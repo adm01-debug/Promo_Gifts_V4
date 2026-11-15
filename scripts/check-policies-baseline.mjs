@@ -436,10 +436,14 @@ async function main() {
   // dormente — static-pass com aviso — até o seed inicial via
   // `--update-baseline` (workflow policies-baseline, dispatch com seed=true).
   if (doc.pending_seed === true) {
+    // GUARD: com --require-live (deploy-gates/policies-baseline.yml) uma linha no JSON versionado
+    // não pode desligar o gate: baseline pendente de seed = falha, nunca static-pass.
     return concludeCheck({
       check: 'policies-baseline',
-      status: CHECK_RESULT_STATUS.STATIC_PASS,
-      summary: 'baseline pendente de seed inicial — gate dormente até o primeiro snapshot live',
+      status: REQUIRE_LIVE ? CHECK_RESULT_STATUS.FAILED : CHECK_RESULT_STATUS.STATIC_PASS,
+      summary: REQUIRE_LIVE
+        ? 'baseline pendente de seed inicial — com --require-live o gate não pode ficar dormente'
+        : 'baseline pendente de seed inicial — gate dormente até o primeiro snapshot live',
       details: { source, liveRows: actual.length },
     });
   }

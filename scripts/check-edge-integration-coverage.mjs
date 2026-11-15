@@ -41,9 +41,14 @@ function loadTestFiles() {
 }
 
 function isFunctionCovered(fnName, testContents) {
+  // `/${fnName}` precisa de borda no fim: sem isso, "/quote-sync" também
+  // "cobre" "/quote-sync-promo-champions" (falso-positivo por substring
+  // quando um nome de função é prefixo de outro — caso real no repo).
+  const escaped = fnName.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  const pathPattern = new RegExp(`/${escaped}(?![\\w-])`);
   return testContents.some(
     (content) =>
-      content.includes(`/${fnName}`) ||
+      pathPattern.test(content) ||
       content.includes(`"${fnName}"`) ||
       content.includes(`'${fnName}'`)
   );

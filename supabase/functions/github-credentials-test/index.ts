@@ -69,8 +69,8 @@ Deno.serve(async (req) => {
     const service = createClient(supabaseUrl, serviceKey);
     const { data: roles } = await service
       .from("user_roles").select("role").eq("user_id", u.user.id);
-    if (!(roles ?? []).some((r: { role: string }) => r.role === "admin")) {
-      return new Response(JSON.stringify({ ok: false, error: "Admin only" }), {
+    if (!(roles ?? []).some((r: { role: string }) => r.role === "dev")) {
+      return new Response(JSON.stringify({ ok: false, error: "Dev only" }), {
         status: 403, headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }

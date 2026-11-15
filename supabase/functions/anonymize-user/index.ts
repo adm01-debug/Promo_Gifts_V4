@@ -390,7 +390,7 @@ Deno.serve(async (req: Request) => {
     }
     try {
       const { error: signOutErr } = await supabaseAdmin.auth.admin.signOut(
-        userId,
+        auth.token,
         "global",
       );
       if (signOutErr) {

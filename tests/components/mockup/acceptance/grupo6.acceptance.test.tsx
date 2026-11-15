@@ -4,11 +4,10 @@
  * Nenhum teste desativado. Só comportamento que JÁ passa no código atual; o que
  * depende de correção não integrada está listado no relato como PENDENTE.
  *
- * PENDENTE (A15, "resposta antiga"): resposta de uma análise ANTERIOR que chega
- * DEPOIS de uma análise mais nova ainda sobrescreve as cores
- * (useLogoColorAnalysis não confere `controller.signal.aborted` após o await da
- * edge). Hoje só vale o caso sequencial abaixo; o caso tardio fica para o cartão
- * que corrigir o hook.
+ * A15 ("resposta antiga") NÃO é pendência: a guarda vive em
+ * src/hooks/simulation/useLogoColorAnalysis.ts:86,105 (`isStale()` conferido depois do await da
+ * edge, desde 50880c967) e quem a protege é src/hooks/simulation/__tests__/useLogoColorAnalysis.test.ts;
+ * aqui o A15 cobre o caso sequencial.
  */
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import React from 'react';
@@ -35,6 +34,41 @@ const mocks = vi.hoisted(() => ({
   getProductById: vi.fn(),
   dbInvoke: vi.fn(),
   untypedFrom: vi.fn(),
+  // Estrato "por área" do gerador: mesma forma e mesma regra de dono do hook real
+  // (src/hooks/simulation/useLogoColorAnalysisByArea.ts) — `clearForArea` só limpa quando a
+  // análise viva pertence à área que saiu, e `restoreFor` sem logo deixa a análise órfã.
+  logoColorAnalysisByArea: (() => {
+    let dona: string | null = null;
+    const analyzeImage = vi.fn((_logo: string, ownerAreaId: string) => {
+      dona = ownerAreaId;
+    });
+    const clearAnalysis = vi.fn(() => {
+      dona = null;
+    });
+    const clearForArea = vi.fn((removedAreaId: string | null) => {
+      if (dona === null || dona !== removedAreaId) return false;
+      clearAnalysis();
+      return true;
+    });
+    const restoreFor = vi.fn((logoUrl: string | null | undefined, restoredAreaId: string) => {
+      if (logoUrl) return analyzeImage(logoUrl, restoredAreaId);
+      dona = null;
+      return undefined;
+    });
+    return {
+      colors: [],
+      isAnalyzing: false,
+      error: null,
+      updatePantone: vi.fn(),
+      analyzeImage,
+      clearAnalysis,
+      clearForArea,
+      restoreFor,
+      get areaId() {
+        return dona;
+      },
+    };
+  })(),
 }));
 
 vi.mock('@/lib/edge/safeInvokeCall', () => ({ invokeEdge: mocks.invokeEdge, newIdempotencyKey: mocks.newIdempotencyKey }));
@@ -52,6 +86,10 @@ vi.mock('@/hooks/mockup/useMockupTechniques', () => ({ useFilteredTechniques: ()
 // hook real pelo caminho direto '@/hooks/simulation/useLogoColorAnalysis'.
 vi.mock('@/hooks/simulation', () => ({
   useLogoColorAnalysis: () => ({ colors: [], isAnalyzing: false, error: null, analyzeImage: vi.fn(), clearAnalysis: vi.fn(), updatePantone: vi.fn() }),
+  // Mesma forma do hook real (src/hooks/simulation/useLogoColorAnalysisByArea.ts), inclusive a
+  // regra de dono: `clearForArea` só limpa quando a análise viva é da área que saiu. Aqui o
+  // estrato é stubado (e não o módulo real) porque o A15 usa o hook base real pelo caminho direto.
+  useLogoColorAnalysisByArea: () => mocks.logoColorAnalysisByArea,
   usePositionHistory: () => ({ setOnApply: vi.fn(), pushState: vi.fn(), clear: vi.fn(), canRedo: false }),
 }));
 vi.mock('@/components/mockup/mockupWizardStep', () => ({ getMockupWizardStep: () => 'product' }));

@@ -70,7 +70,7 @@ function renderProtected(initialPath: string) {
         <Routes>
           <Route path="/auth" element={<div>Login Page</div>} />
           <Route path="/" element={<div>Home Page</div>} />
-          <Route path="/catalogo" element={<div>Catálogo</div>} />
+          <Route path="/produtos" element={<div>Catálogo</div>} />
           <Route path="/admin/usuarios" element={<div>Usuários Admin</div>} />
           <Route element={<DevRoute />}>
             {TECH_ROUTES.map((r) => (
@@ -215,7 +215,7 @@ describe('DevRoute — AGENTE/vendedor vê copy de vendedor + CTA Catálogo', ()
     });
   });
 
-  it('clicar no CTA leva agente para /catalogo', () => {
+  it('clicar no CTA leva agente para /produtos', () => {
     renderAgente('/admin/conexoes');
     fireEvent.click(screen.getByRole('button', { name: /^Voltar$/i }));
     expect(screen.getByText('Catálogo')).toBeInTheDocument();

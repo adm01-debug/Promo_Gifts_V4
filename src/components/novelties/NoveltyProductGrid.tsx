@@ -373,7 +373,9 @@ export function NoveltyProductGrid() {
         <div className="space-y-4">
           <div className="flex items-center gap-3">
             <div className="h-5 w-5 animate-spin rounded-full border-2 border-primary border-t-transparent" />
-            <span className="text-sm text-muted-foreground">Carregando produtos...</span>
+            <span className="text-sm text-muted-foreground">
+              Carregando produtos...
+            </span>
           </div>
           <div className="mb-6 h-1.5 w-64 overflow-hidden rounded-full bg-muted/50">
             <div className="h-full w-2/5 animate-pulse rounded-full bg-gradient-to-r from-primary/60 to-primary" />

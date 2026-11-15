@@ -3,6 +3,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/ui/use-toast';
 import { sanitizeError } from '@/lib/security/sanitize-error';
 import { authService } from '@/services/authService';
+import { untypedRpc } from '@/lib/supabase-untyped';
 
 import { logger } from '@/lib/logger';
 import { assertPasswordResetTransition } from '@/lib/password-reset-status-config';
@@ -153,33 +154,12 @@ export function usePasswordResetRequests() {
   const createRequest = async (email: string) => {
     try {
       const normalizedEmail = email.trim().toLowerCase();
-      // Verificar se já existe uma solicitação pendente para este email
-      // BUG-PASSWORDRESET-DUPCHECK-SELECT-SILENT-FAIL FIX: { data: existing } without error
-      // check — RLS failure silently set existing=null, bypassing the dup-check gate and
-      // allowing duplicate reset requests to be inserted. PGRST116 (no rows = no dup) is
-      // the expected case; any other error code indicates a real RLS/DB failure.
-      const { data: existing, error: dupCheckErr } = await supabase
-        .from('password_reset_requests')
-        .select('id')
-        .eq('email', normalizedEmail)
-        .eq('status', 'pending')
-        .single();
-      if (dupCheckErr && dupCheckErr.code !== 'PGRST116') throw dupCheckErr;
+      // Chamado da tela de login (anon), que não tem SELECT/INSERT em password_reset_requests
+      // (hardening 20260524210352). A RPC SECURITY DEFINER (migration 20261112120900) valida o
+      // e-mail, trata pedido pendente duplicado como no-op e mantém os rate limits da tabela.
+      const { error } = await untypedRpc('request_password_reset', { p_email: normalizedEmail });
 
-      if (existing) {
-        return {
-          success: true,
-          message:
-            'Já existe uma solicitação pendente para este email. Aguarde a aprovação do gestor.',
-        };
-      }
-
-      const { error } = await supabase.from('password_reset_requests').insert({
-        email: normalizedEmail,
-        status: 'pending',
-      });
-
-      if (error) throw error;
+      if (error) throw new Error(error.message);
 
       return {
         success: true,

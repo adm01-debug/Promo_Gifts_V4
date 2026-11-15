@@ -49,6 +49,10 @@ BEGIN
       _table
     );
     EXECUTE format(
+      'DROP POLICY IF EXISTS deny_all ON supplier_stricker.%I',
+      _table
+    );
+    EXECUTE format(
       'CREATE POLICY deny_all ON supplier_stricker.%I AS RESTRICTIVE USING (false)',
       _table
     );

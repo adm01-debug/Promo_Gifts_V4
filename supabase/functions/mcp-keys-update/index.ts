@@ -293,7 +293,7 @@ Deno.serve(async (req) => {
     // Auditoria explícita de concessão FULL (escalada)
     if (escalating) {
       try {
-        await userClient.rpc("log_full_scope_grant", {
+        const grantArgs = {
           _operation: "escalate",
           _key_id: updated.id,
           _key_prefix: updated.key_prefix,
@@ -307,7 +307,23 @@ Deno.serve(async (req) => {
             previous_scopes: current.scopes,
             new_scopes: updated.scopes,
           },
-        });
+        };
+        const { error: rpcErr } = await userClient.rpc("log_full_scope_grant", grantArgs);
+        // Fallback: a RPC não é executável por authenticated; grava o evento via service_role.
+        const auditErr = rpcErr
+          ? (
+              await admin.from("step_up_audit_log").insert({
+                user_id: userId,
+                action: "mcp_full_escalate",
+                target_ref: grantArgs._key_id,
+                event_type: "full_scope_granted",
+                ip_address: grantArgs._ip ?? null,
+                user_agent: grantArgs._user_agent ?? null,
+                metadata: { ...grantArgs, via: "service_role_fallback" },
+              })
+            ).error
+          : null;
+        if (auditErr) throw auditErr;
       } catch (e) {
         await writeAuditEntry(admin, {
           user_id: userId,

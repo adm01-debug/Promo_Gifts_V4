@@ -31,6 +31,7 @@
 import { spawnSync } from "node:child_process";
 import { readdirSync, statSync, existsSync, writeFileSync } from "node:fs";
 import { join, relative } from "node:path";
+import { missingPrerequisite } from "./lib/missing-prerequisite.mjs";
 
 const FUNCTIONS_DIR = "supabase/functions";
 const SKIP = new Set(["_shared", "tests"]);
@@ -53,9 +54,8 @@ const failFast = !flags.all;
 // ---------- helpers ----------
 function ensureDeno() {
   const probe = spawnSync("deno", ["--version"], { encoding: "utf8" });
-  if (probe.status !== 0) {
-    console.error("❌ `deno` não está no PATH. Instale antes de rodar este script.");
-    process.exit(2);
+  if (probe.status !== 0 || probe.error) {
+    missingPrerequisite("triage-edge-typecheck", "`deno` não está no PATH", { exitCode: 2 });
   }
   return probe.stdout.trim().split("\n")[0];
 }

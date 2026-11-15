@@ -66,6 +66,12 @@ export default defineConfig({
       'src/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}',
       'e2e/scripts/__tests__/*.test.ts',
       'supabase/functions/e2e-cleanup/index.mockups.test.ts',
+      // Geometria cm→px da logo no mockup (fórmula pura; index.ts não é
+      // importável sob Node). Sem esta entrada o arquivo não é coletado.
+      'supabase/functions/generate-mockup/index.geometry.test.ts',
+      // Tetos de entrada do generate-mockup (funções puras; index.ts não é
+      // importável sob Node). Sem esta entrada o arquivo não é coletado.
+      'supabase/functions/generate-mockup/index.size.test.ts',
       // T-FIX-5: descobre a suite vitest do script anti-órfão.
       // Ver docs/redeploy/T-FIX-5-CHECKLIST.md (Passo 3).
       'scripts/__tests__/**/*.{test,spec}.{ts,mts,cts}',
@@ -95,6 +101,8 @@ export default defineConfig({
       // Usa node:test (Node.js native runner) — incompatível com vitest client environment.
       // Roda apenas via `node tests/scripts/check-file-size-baseline.test.mjs`.
       'tests/scripts/check-file-size-baseline.test.mjs',
+      // Idem — node:test. Roda via `node tests/scripts/check-as-assertions-baseline.test.mjs`.
+      'tests/scripts/check-as-assertions-baseline.test.mjs',
     ],
     // CI runners (GitHub Actions ubuntu-latest) têm 2 vCPU (4 vThreads).
     // Default thread pool causava timeout de 75min — mitigado com

@@ -18,6 +18,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { cn } from '@/lib/utils';
 import { useProductCustomizationOptions } from '@/hooks/products/useProductCustomizationOptions';
+import { useCustomizationPriceCalculator } from '@/hooks/simulation/useCustomizationPrice';
 import { LocationPanel } from './customization/LocationPanel';
 import type {
   CustomizationPriceResponseV6,
@@ -141,6 +142,52 @@ export function ProductCustomizationOptions({
       forceTick((n) => n + 1);
     }
   }, [initialPersonalizations, productId]);
+
+  const { calculatePrice } = useCustomizationPriceCalculator();
+  const onSelectionChangeRef = useRef(onSelectionChange);
+  onSelectionChangeRef.current = onSelectionChange;
+
+  // Gravações confirmadas com outra quantidade: recalcula o preço da faixa e reemite.
+  useEffect(() => {
+    const stale = Array.from(pricesRef.current.values()).filter(
+      (item) => item.price?.quantidade !== undefined && item.price.quantidade !== quantity,
+    );
+    if (quantity <= 0 || stale.length === 0) return;
+
+    let cancelled = false;
+    const timer = setTimeout(async () => {
+      const results = await Promise.all(
+        stale.map(async (item) => ({
+          item,
+          price: await calculatePrice({
+            areaId: item.techniqueId,
+            quantidade: quantity,
+            numCores: item.numberOfColors,
+            larguraCm: item.width ?? null,
+            alturaCm: item.height ?? null,
+          }),
+        })),
+      );
+      if (cancelled) return;
+
+      let changed = false;
+      results.forEach(({ item, price }) => {
+        const current = pricesRef.current.get(item.locationCode);
+        if (!price || current?.techniqueId !== item.techniqueId) return;
+        pricesRef.current.set(item.locationCode, { ...current, price });
+        changed = true;
+      });
+      if (!changed) return;
+
+      forceTick((n) => n + 1);
+      onSelectionChangeRef.current?.(Array.from(pricesRef.current.values()));
+    }, 400);
+
+    return () => {
+      cancelled = true;
+      clearTimeout(timer);
+    };
+  }, [quantity, productId, initialPersonalizations.length, calculatePrice]);
 
   // Refs for scrolling and offset calculation
   const stickyHeaderRef = useRef<HTMLDivElement>(null);

@@ -77,9 +77,18 @@ export function sanitizeImportRow(row: ImportRow): Record<string, unknown> {
   // Fold the phantom `image_url` into `primary_image_url` (products has no image_url
   // column → PGRST204) AND inject organization_id, which the products RLS INSERT policy
   // is_org_owner_or_admin(organization_id) requires — without it every row is rejected.
-  const { image_url, ...rest } = row as ImportRow & { image_url?: unknown };
+  const {
+    image_url,
+    active: _active,
+    dimensions,
+    ...rest
+  } = row as ImportRow & {
+    image_url?: unknown;
+  };
   const out: Record<string, unknown> = { ...rest, organization_id: ORGANIZATION_ID };
   if (image_url && !out.primary_image_url) out.primary_image_url = String(image_url);
+  if (dimensions && !out.dimensions_display)
+    out.dimensions_display = String(dimensions).slice(0, 255);
   return out;
 }
 

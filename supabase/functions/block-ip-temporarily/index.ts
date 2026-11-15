@@ -1,5 +1,5 @@
 import { getCorsHeaders } from "../_shared/cors.ts";
-import { createClient } from "npm:@supabase/supabase-js@2.49.4";
+import { authorize } from "../_shared/authorize.ts";
 import { parseContract } from "../_shared/contracts/index.ts";
 import {
   BlockIpTemporarilySchemas,
@@ -28,29 +28,10 @@ Deno.serve(async (req) => {
   contractResponseHeaders = {};
 
   try {
-    const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
-    const serviceRoleKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
-    const anonKey = Deno.env.get("SUPABASE_ANON_KEY")!;
-    const supabaseAdmin = createClient(supabaseUrl, serviceRoleKey);
-
-    const authHeader = req.headers.get("Authorization");
-    if (!authHeader) return jsonRes({ error: "Não autorizado" }, 401);
-
-    const callerClient = createClient(supabaseUrl, anonKey, {
-      global: { headers: { Authorization: authHeader } },
-    });
-    const { data: { user: caller }, error: callerError } = await callerClient.auth.getUser();
-    if (callerError || !caller) return jsonRes({ error: "Não autorizado" }, 401);
-
-    const { data: callerRole } = await supabaseAdmin
-      .from("user_roles")
-      .select("role")
-      .eq("user_id", caller.id)
-      .single();
-
-    if (callerRole?.role !== "admin") {
-      return jsonRes({ error: "Apenas admins podem bloquear IPs" }, 403);
-    }
+    const auth = await authorize(req, { requireRole: "admin", requireAal2: true });
+    if (!auth.ok) return auth.response;
+    const caller = auth.user;
+    const supabaseAdmin = auth.supabaseAdmin;
 
     const contractResult = await parseContract(req, BlockIpTemporarilySchemas, {
       corsHeaders,

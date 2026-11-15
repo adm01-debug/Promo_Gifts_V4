@@ -89,4 +89,30 @@ describe('fetchPromobrindProducts — contrato de completude', () => {
     expect(mockedDbInvoke.mock.calls[0]?.[0].select).toContain('allows_personalization');
     expect(mockedDbInvoke.mock.calls.length).toBeGreaterThan(25);
   });
+
+  it('divide limit acima de 1000 em requests de até 1000 (max_rows do PostgREST)', async () => {
+    const total = 2_300;
+    mockedDbInvoke.mockImplementation((query) => {
+      const offset = query.offset ?? 0;
+      const size = Math.max(0, Math.min(query.limit ?? 0, 1000, total - offset));
+      return Promise.resolve({
+        records: Array.from({ length: size }, (_, index) => ({ id: `p-${offset + index}` })),
+        count: offset === 0 ? total : size,
+      });
+    });
+
+    const result = await fetchPromobrindProducts({
+      limit: 3000,
+      enrichment: 'base',
+      returnCount: true,
+    });
+
+    expect(result.products).toHaveLength(total);
+    expect(result.count).toBe(total);
+    expect(mockedDbInvoke.mock.calls.map(([q]) => [q.offset, q.limit, q.countMode])).toEqual([
+      [0, 1000, 'exact'],
+      [1000, 1000, 'none'],
+      [2000, 1000, 'none'],
+    ]);
+  });
 });

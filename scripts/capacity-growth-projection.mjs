@@ -72,7 +72,7 @@ export function computeProjections({
   }
 
   const timestamps = rows.map((r) => new Date(r.captured_at).getTime());
-  const seriesDaysAvailable = (Math.max(...timestamps) - Math.min(...timestamps)) / 86_400_000;
+  const seriesDaysAvailable = (timestamps.reduce((a, b) => Math.max(a, b), -Infinity) - timestamps.reduce((a, b) => Math.min(a, b), Infinity)) / 86_400_000 // reduce: Math.max(...arr) estoura a pilha com ~160k linhas;
 
   if (seriesDaysAvailable < minSeriesDays) {
     return { insufficientData: true, seriesDaysAvailable, flags: [], projections: [] };

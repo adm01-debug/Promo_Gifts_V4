@@ -75,6 +75,7 @@ export function InlineEditField({
           size="icon"
           variant="ghost"
           className="h-6 w-6 text-success hover:text-success/80"
+          onMouseDown={(e) => e.preventDefault()}
           onClick={handleSave}
           aria-label="Confirmar"
         >
@@ -84,6 +85,7 @@ export function InlineEditField({
           size="icon"
           variant="ghost"
           className="h-6 w-6 text-destructive"
+          onMouseDown={(e) => e.preventDefault()}
           onClick={handleCancel}
           aria-label="Fechar"
         >

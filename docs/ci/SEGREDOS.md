@@ -7,7 +7,7 @@
 > Este arquivo é validado pelo script `scripts/check-secrets-inventory.mjs` (E40).
 > Rodar: `node scripts/check-secrets-inventory.mjs --gate` para verificar completude.
 
-Última atualização: 2026-11-07 (Gate 1.14 — SUPABASE_TEST_BYPASS_TOKEN adicionado; ci-freight-quality.yml)
+Última atualização: 2026-11-09 (Gate 1.14 — SMOKE_HEALTH_FN_URL, TEST_ADMIN_PASSWORD, TEST_SELLER_PASSWORD, vars.SMOKE_BASE_URL adicionados; ci.yml)
 
 ---
 
@@ -43,10 +43,15 @@ São usados em workflows de E2E/integração que **não fazem parte do Gate Fina
 | `E2E_USER_PASSWORD` | DevOps | Repo | Anual | Senha do usuário comprador padrão — 45 refs em workflows de E2E/integração |
 | `E2E_ADMIN_EMAIL` | DevOps | Repo | Anual | Usuário administrador de testes — deploy-gates.yml, e2e-cart-*.yml (13 refs) |
 | `E2E_ADMIN_PASSWORD` | DevOps | Repo | Anual | Senha do admin de testes — 13 refs |
+| `E2E_SELLER_EMAIL` | DevOps | Repo | Anual | Opcional: usuário vendedor de testes para `loginAs('seller')` — e2e.yml, e2e-cart.yml (7 refs). Ausente → fallback para `E2E_USER_EMAIL` (papel vendedor) |
+| `E2E_SELLER_PASSWORD` | DevOps | Repo | Anual | Opcional: senha do vendedor de testes — e2e.yml, e2e-cart.yml (7 refs). Ausente → fallback para `E2E_USER_PASSWORD` |
 | `E2E_CLEANUP_TOKEN` | DevOps | Repo + Supabase Edge | Semestral | Token dedicado do cleanup escopado — `e2e-quotes.yml` e função `e2e-cleanup`; o valor do repo deve corresponder ao secret runtime da Edge |
 | `E2E_DEV_EMAIL` | DevOps | Repo | Anual | Usuário developer (edge-integration-all.yml) — 1 ref |
 | `E2E_DEV_PASSWORD` | DevOps | Repo | Anual | Senha do developer de testes — 1 ref |
 | `SUPABASE_TEST_BYPASS_TOKEN` | DevOps | Repo | Semestral | Token de bypass de segurança para testes de carga/stress — `ci-freight-quality.yml` (1 ref), `scripts/massive-load-test.mjs`, `scripts/fuzz-testing.mjs`, `scripts/stress-burst.mjs`, `scripts/freight-quest-load-test.mjs`. **Deve ser o segredo mais controlado do repo** — contorna regras RLS em ambiente de teste |
+| `TEST_ADMIN_PASSWORD` | DevOps | Repo | Anual | Senha do usuário admin para testes de integração — `ci.yml` (1 ref); opcional, job pulado se não configurado |
+| `TEST_SELLER_PASSWORD` | DevOps | Repo | Anual | Senha do usuário vendedor para testes de integração — `ci.yml` (1 ref); opcional, job pulado se não configurado |
+| `SMOKE_HEALTH_FN_URL` | DevOps | Repo | Sob demanda | URL da edge function de health check para smoke tests — `ci.yml` (1 ref) |
 
 ---
 
@@ -117,6 +122,7 @@ Gerado automaticamente em cada run — não armazenado como secret no repositór
 | `vars.CART_TOTAL_SHARDS` | DevOps | Repo | Número de shards em `cart-invariants-smoke.yml` — default 4 |
 | `vars.E2E_BASE_URL` | DevOps | Repo | URL base para E2E em `ci-freight-quality.yml` |
 | `vars.CI_SKIP_FREIGHT_E2E` | DevOps | Repo | Flag para pular E2E de frete em `freight-quality-gates.yml` |
+| `vars.SMOKE_BASE_URL` | DevOps | Repo | URL base para smoke tests de rota/health — `ci.yml` (2 refs) |
 | `vars.KIT_FIXTURE_ID` | DevOps | Repo | UUID do fixture de kit (alternativa ao secret) — `kit-coverage-integration.yml` |
 
 ---
@@ -140,7 +146,7 @@ Não precisam de entrada na tabela acima; estão no allowlist de `check-secrets-
 > São acessados em runtime via `Deno.env.get("NOME")` nas edge functions em `supabase/functions/`.
 > O script `check-secrets-inventory.mjs` verifica edge functions automaticamente (E194 — `--scan-edge`).
 >
-> Última atualização: 2026-11-07 (E194 — 39 segredos de edge functions documentados)
+> Última atualização: 2026-11-13 (E194 — BRIDGE_PATH adicionado; crm-db-bridge/scope_integration_test.ts)
 
 ### Auto-injetados pelo Supabase (sempre disponíveis)
 
@@ -164,6 +170,7 @@ Configurados via `supabase secrets set`; obrigatórios para as funções listada
 | `ANON_KEY` | Supabase Key | Semestral | `_shared/kill_switch.ts` |
 | `ASIA_BASE_URL` | URL serviço | Sob demanda | `asia-ingestion/index.ts` |
 | `BITRIX24_WEBHOOK_URL` | URL webhook | Semestral | `bitrix-sync/index.ts` |
+| `BRIDGE_PATH` | Config/teste | — | `crm-db-bridge/scope_integration_test.ts` |
 | `CF_ORIGIN_SECRET` | Secret Cloudflare | Trimestral | `check-login/index.ts` |
 | `CRM_CALLBACK_API_KEY` | API Key CRM | Trimestral | `receive-crm-callback/index.test.ts` |
 | `CRM_SUPABASE_ANON_KEY` | Supabase Key (CRM) | Semestral | `crm-db-bridge/singleton-client.test.ts` |

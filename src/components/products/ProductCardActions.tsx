@@ -73,7 +73,7 @@ export const ProductCardActions = memo(
     return (
       <div
         className={cn(
-          'absolute right-3 top-3 z-30 flex flex-col items-end gap-2',
+          'pointer-events-none absolute right-3 top-3 z-30 flex flex-col items-end gap-2',
           'transition-all duration-300 ease-out',
           'translate-x-0 opacity-100 md:translate-x-4 md:opacity-0',
           'md:group-hover:translate-x-0 md:group-hover:opacity-100',
@@ -85,7 +85,7 @@ export const ProductCardActions = memo(
           data-testid="product-card-actions-toggle"
           data-actions-open={actionsOpen ? 'true' : 'false'}
           className={cn(
-            'flex h-9 w-9 items-center justify-center rounded-full shadow-lg md:h-11 md:w-11',
+            'pointer-events-auto flex h-9 w-9 items-center justify-center rounded-full shadow-lg md:h-11 md:w-11',
             'transition-all duration-300 ease-out',
             'min-h-[36px] min-w-[36px] md:min-h-[44px] md:min-w-[44px]',
             'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
@@ -109,7 +109,7 @@ export const ProductCardActions = memo(
           className={cn(
             'flex origin-top flex-col gap-2 transition-all duration-300 ease-out',
             actionsOpen
-              ? 'translate-y-0 scale-100 opacity-100'
+              ? 'pointer-events-auto translate-y-0 scale-100 opacity-100'
               : 'pointer-events-none -translate-y-4 scale-75 opacity-0',
           )}
         >

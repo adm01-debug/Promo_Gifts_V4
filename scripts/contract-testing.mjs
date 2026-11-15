@@ -25,6 +25,7 @@
 
 import { createHmac } from 'node:crypto';
 import process from 'node:process';
+import { missingPrerequisite } from './lib/missing-prerequisite.mjs';
 
 // ---------------------------------------------------------------------------
 // Configuração
@@ -40,8 +41,7 @@ const UPSTREAM_RETRY_DELAY_MS = Number(process.env.CONTRACT_TEST_UPSTREAM_RETRY_
 const TRANSIENT_UPSTREAM_STATUSES = new Set([502, 503, 504]);
 
 if (!ANON_KEY) {
-  console.error('❌ SUPABASE_ANON_KEY (ou SERVICE_ROLE_KEY) é obrigatório.');
-  process.exit(2);
+  missingPrerequisite('contract-testing', 'SUPABASE_ANON_KEY (ou SERVICE_ROLE_KEY) ausente', { exitCode: 2 });
 }
 
 // ---------------------------------------------------------------------------

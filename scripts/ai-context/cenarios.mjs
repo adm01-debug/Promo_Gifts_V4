@@ -17,7 +17,7 @@ const TSCONFIG = JSON.stringify({ compilerOptions: { strict: true, paths: { '@/*
 const scenarios = [];
 const sc = (nome, build, check, opts = {}) => scenarios.push({ nome, build, check, ...opts });
 const run = (root) => { execFileSync(process.execPath, [GERADOR, '--quiet'], { cwd: root, stdio: ['ignore', 'pipe', 'pipe'] }); const J = (f) => JSON.parse(fs.readFileSync(path.join(root, 'inventario/ia', f), 'utf8')); return J; };
-const git = (root) => { try { execFileSync('git', ['init', '-q'], { cwd: root }); execFileSync('git', ['-c', 'user.name=t', '-c', 'user.email=t@t', 'add', '-A'], { cwd: root }); execFileSync('git', ['-c', 'user.name=t', '-c', 'user.email=t@t', 'commit', '-q', '-m', 'feat: x'], { cwd: root }); } catch {} };
+const git = (root) => { try { execFileSync('git', ['init', '-q'], { cwd: root }); execFileSync('git', ['-c', 'user.name=t', '-c', 'user.email=t@t', 'add', '-A'], { cwd: root }); execFileSync('git', ['-c', 'user.name=t', '-c', 'user.email=t@t', '-c', 'commit.gpgsign=false', 'commit', '-q', '-m', 'feat: x'], { cwd: root }); } catch {} };
 const base = (root) => { w(root, 'package.json', PKG()); w(root, 'tsconfig.json', TSCONFIG); };
 const eq = (a, b, msg) => { if (JSON.stringify(a) !== JSON.stringify(b)) throw new Error(`${msg}: esperado ${JSON.stringify(b)} obtido ${JSON.stringify(a)}`); };
 const ok = (c, msg) => { if (!c) throw new Error(msg); };

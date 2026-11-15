@@ -62,22 +62,24 @@ Deno.serve(async (req) => {
 
     // Map collection -> user
     const colIds = [...new Set(rows.map((r) => r.collection_id))];
-    const { data: cols } = await service
+    const { data: cols, error: colErr } = await service
       .from("collections")
       .select("id, user_id")
       .in("id", colIds);
+    if (colErr) throw colErr;
     const colUserMap = new Map<string, string>();
     (cols ?? []).forEach((c: { id: string; user_id: string }) => colUserMap.set(c.id, c.user_id));
 
     const productIds = [...new Set(rows.map((r) => r.product_id))];
-    const { data: products } = await service
+    const { data: products, error: prodErr } = await service
       .from("products")
-      .select("id, name, price")
+      .select("id, name, sale_price")
       .in("id", productIds);
+    if (prodErr) throw prodErr;
 
     const priceMap = new Map<string, { name: string; price: number }>();
-    (products ?? []).forEach((p: { id: string; name: string; price: number | null }) => {
-      if (p.price && p.price > 0) priceMap.set(p.id, { name: p.name, price: p.price });
+    (products ?? []).forEach((p: { id: string; name: string; sale_price: number | null }) => {
+      if (p.sale_price && p.sale_price > 0) priceMap.set(p.id, { name: p.name, price: p.sale_price });
     });
 
     const userDrops = new Map<string, Array<{ name: string; pct: number; productId: string; collectionId: string }>>();

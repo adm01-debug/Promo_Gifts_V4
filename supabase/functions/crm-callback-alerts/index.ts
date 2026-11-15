@@ -137,7 +137,7 @@ Deno.serve(async (req) => {
   const { data: rows, error } = await admin
     .from("crm_callback_events")
     .select("result")
-    .gte("created_at", sinceIso);
+    .gte("received_at", sinceIso);
   if (error) {
     log.error("crm_alerts_read_failed", { err: error });
     return log.respond(json(500, { error: "read_failed" }));

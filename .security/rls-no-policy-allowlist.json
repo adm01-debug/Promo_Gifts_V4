@@ -31,6 +31,12 @@
       "reason": "Deny-all intencional desde a criação (nasce assim, mesmo padrão de ops.table_size_history/E30 e ops.pgss_history/E40). Telemetria operacional interna (snapshot diário de age(datfrozenxid), mxid_age, uso de sequências int4/int2, WAL retido por replication slot e proporção TOAST/heap), gravada pelo cron wraparound-toast-sequence-monitor via public.fn_cron_safe_run(167, ...) (SECURITY DEFINER, owner postgres, bypassrls). Consumida só por scripts/wraparound-monitor-check.mjs (Management API/service_role em CI, nunca PostgREST). Sem consumidor em src/ ou supabase/functions/. Nem o schema ops nem a tabela têm GRANT a anon/authenticated.",
       "secdef_fn": "public.fn_cron_safe_run",
       "cron_job": "wraparound-toast-sequence-monitor (p_key=167, 0 6 * * *)"
+    },
+    {
+      "table": "public.crm_seller_identity_links",
+      "reason": "Deny-all intencional desde a criacao (nasce assim, migration 20261107134429). Mapeamento 1:1 entre a identidade canonica (auth.users.id) e o id inteiro do vendedor no CRM externo, lido e gravado SOMENTE pela edge function crm-db-bridge com service_role (bypassrls), em resolveCrmSellerId: consulta o vinculo e, se nao existir, cria pelo bootstrap por e-mail. A propria migration faz REVOKE ALL de PUBLIC, anon e authenticated e GRANT SELECT, INSERT apenas a service_role, portanto policy para esses papeis seria codigo morto: nem chegariam a ser avaliadas. Expor a tabela por PostgREST permitiria a um vendedor descobrir o crm_seller_id de outro, que e justamente a chave de escopo de carteira que esta PR introduz. Zero consumidores em src/ (grep confirmado em 2026-11-15): o front nunca toca esta tabela, so a edge function. Linha removida por ON DELETE CASCADE quando o usuario sai de auth.users.",
+      "secdef_fn": "nenhuma: acesso exclusivo da edge function crm-db-bridge via service_role",
+      "cron_job": null
     }
   ]
 }

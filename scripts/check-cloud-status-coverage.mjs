@@ -5,6 +5,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import process from "node:process";
+import { missingPrerequisite } from "./lib/missing-prerequisite.mjs";
 
 const SUMMARY_PATH = path.resolve("coverage/coverage-summary.json");
 
@@ -37,10 +38,10 @@ function fail(msg) {
 }
 
 if (!fs.existsSync(SUMMARY_PATH)) {
-  fail(
-    `coverage-summary.json não encontrado em ${SUMMARY_PATH}. ` +
-      `Rode 'npm run test:cloud-status-coverage' antes deste script.`,
-  );
+  missingPrerequisite('check-cloud-status-coverage', `coverage-summary.json ausente em ${SUMMARY_PATH}`, {
+    exitCode: 1,
+    hint: "Rode 'npm run test:cloud-status-coverage' antes deste script.",
+  });
 }
 
 const summary = JSON.parse(fs.readFileSync(SUMMARY_PATH, "utf8"));

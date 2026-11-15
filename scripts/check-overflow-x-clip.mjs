@@ -37,7 +37,7 @@ function walk(dir) {
 walk('src');
 
 const htmlBodyHiddenRx =
-  /(html|body)[^{]*\{[^}]*overflow-x\s*:\s*hidden/gis;
+  /(html|body)[^{]*\{[^}]*overflow-x\s*:\s*hidden/is;
 for (const file of cssTargets) {
   const css = readFileSync(file, 'utf8');
   if (htmlBodyHiddenRx.test(css)) {

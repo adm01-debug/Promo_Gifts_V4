@@ -2,52 +2,74 @@ import fs from 'fs';
 import path from 'path';
 
 /**
- * Script para gerar dashboard de métricas do CI para o módulo de Reposição.
- * Consome artefatos de testes de performance e gera um report visual (JSON/HTML).
+ * Dashboard de métricas do CI para o módulo de Reposição.
+ *
+ * Antes: o "dashboard" gravado era SEMPRE um objeto literal no código (rotas/edges/status
+ * 'WARNING' inventados) — o arquivo de métricas real era lido e descartado, e o JSON versionado
+ * parecia medição. Agora o relatório é derivado de `tests/results/performance-metrics.json`
+ * ({ routes: [{ path, avg_response_ms, p95_ms, error_rate }], edge_functions: [{ name,
+ * avg_execution_ms, success_rate }] }). Sem o arquivo NADA é gravado (o dashboard anterior
+ * permanece como está): fora do CI = "NÃO VERIFICADO" (exit 0); em CI/REQUIRE_LIVE=1 = exit 2.
  */
 
-const METRICS_FILE = 'tests/results/performance-metrics.json';
-const OUTPUT_REPORT = 'replenishment-performance-dashboard.json';
+export const METRICS_FILE = 'tests/results/performance-metrics.json';
+export const OUTPUT_REPORT = 'replenishment-performance-dashboard.json';
+export const LATENCY_THRESHOLD_MS = 500;
+export const ERROR_THRESHOLD_PERCENT = 2;
 
-function generateDashboard() {
-  console.log('--- Gerando Dashboard de Performance: Reposição ---');
-  
-  const mockData = {
-    timestamp: new Date().toISOString(),
-    module: 'Reposição',
-    routes: [
-      { path: '/replenishments', avg_response_ms: 120, p95_ms: 350, error_rate: 0.01 },
-      { path: '/api/secure-upload', avg_response_ms: 850, p95_ms: 2100, error_rate: 0.05 },
-    ],
-    edge_functions: [
-      { name: 'product-webhook', avg_execution_ms: 45, success_rate: 0.99 },
-      { name: 'secure-upload', avg_execution_ms: 1200, success_rate: 0.94 }
-    ],
-    gates: {
-      latency_threshold_ms: 500,
-      error_threshold_percent: 2,
-      status: 'WARNING' // Devido ao upload lento
-    }
-  };
-
-  try {
-    // Se existir arquivo real de métricas, mescla. Caso contrário, gera baseline.
-    if (fs.existsSync(METRICS_FILE)) {
-      const realData = JSON.parse(fs.readFileSync(METRICS_FILE, 'utf8'));
-      // Lógica de merge aqui...
-    }
-
-    fs.writeFileSync(OUTPUT_REPORT, JSON.stringify(mockData, null, 2));
-    console.log(`Relatório gerado em: ${OUTPUT_REPORT}`);
-    
-    // Gate logic para bloquear CI
-    if (mockData.gates.status === 'CRITICAL') {
-      console.error('CI GATE FAILED: Performance thresholds not met for Reposição module.');
-      process.exit(1);
-    }
-  } catch (err) {
-    console.error('Erro ao gerar dashboard:', err);
-  }
+export function isStrictRun(env = process.env, argv = process.argv.slice(2)) {
+  return env.CI === 'true' || env.CI === '1' || env.GITHUB_ACTIONS === 'true' || env.REQUIRE_LIVE === '1' || argv.includes('--require-live');
 }
 
-generateDashboard();
+/** CRITICAL: alguma rota acima do limite de erro; WARNING: alguma rota com p95 acima do limite; senão OK. */
+export function evaluateGates(metrics) {
+  const routes = Array.isArray(metrics?.routes) ? metrics.routes : [];
+  const critical = routes.filter((r) => Number(r.error_rate) * 100 > ERROR_THRESHOLD_PERCENT);
+  const slow = routes.filter((r) => Number(r.p95_ms) > LATENCY_THRESHOLD_MS);
+  return {
+    latency_threshold_ms: LATENCY_THRESHOLD_MS,
+    error_threshold_percent: ERROR_THRESHOLD_PERCENT,
+    status: critical.length ? 'CRITICAL' : slow.length ? 'WARNING' : 'OK',
+    critical_routes: critical.map((r) => r.path),
+    slow_routes: slow.map((r) => r.path),
+  };
+}
+
+export function generateDashboard({ metricsFile = METRICS_FILE, outputReport = OUTPUT_REPORT, strict = isStrictRun() } = {}) {
+  console.log('--- Gerando Dashboard de Performance: Reposição ---');
+  if (!fs.existsSync(metricsFile)) {
+    if (strict) {
+      console.error(`❌ ${metricsFile} ausente: nada medido (modo estrito).`);
+      return 2;
+    }
+    console.log(`[metrics-dashboard] static-pass: ${metricsFile} ausente; NÃO VERIFICADO — dashboard não foi alterado (REQUIRE_LIVE=1 torna obrigatório).`);
+    return 0;
+  }
+  let metrics;
+  try {
+    metrics = JSON.parse(fs.readFileSync(metricsFile, 'utf8'));
+  } catch (error) {
+    console.error(`❌ Métricas ilegíveis em ${metricsFile}: ${error.message}`);
+    return 2;
+  }
+  const report = {
+    timestamp: new Date().toISOString(),
+    module: 'Reposição',
+    source: metricsFile,
+    routes: metrics.routes ?? [],
+    edge_functions: metrics.edge_functions ?? [],
+    gates: evaluateGates(metrics),
+  };
+  fs.mkdirSync(path.dirname(path.resolve(outputReport)), { recursive: true });
+  fs.writeFileSync(outputReport, JSON.stringify(report, null, 2));
+  console.log(`Relatório gerado em: ${outputReport} (status ${report.gates.status})`);
+  if (report.gates.status === 'CRITICAL') {
+    console.error('CI GATE FAILED: Performance thresholds not met for Reposição module.');
+    return 1;
+  }
+  return 0;
+}
+
+if (process.argv[1] && path.resolve(process.argv[1]) === path.resolve(new URL(import.meta.url).pathname)) {
+  process.exit(generateDashboard());
+}

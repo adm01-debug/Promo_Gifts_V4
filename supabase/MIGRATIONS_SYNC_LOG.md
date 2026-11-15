@@ -956,20 +956,21 @@ Detalhes, métricas antes/depois e one-shots: docs/EXECUCAO_CORRECOES_MEDALLION_
 | `20261022100001` | `91404707c71551f6060fc1845cfdd24b608cb6338a2685a92f6b4f98f1f9334f` | aplicado via E15 | Claude FASE-B-P10-auto (https://claude.ai/code/session_01JPgV7FqkG4UuFBJWiJa9FB) | db-apply-migration.yml run #40165954774 | 2026-10-25T05:36 UTC | anon_has_execute=false ✅; ledger_count=1 ✅ (job 4 Recibo falhou — non-critical, entrada manual) |
 | `20261022100010` | `8ff71060a255026b55cfd1a7bbd817b7a0de05b79aac68a2b2d8a3d766a35ac7` | `—` (não aplicado) | Claude sessão P18/auditoria | E15 (pendente) | pendente | pendente — 50 ALTER POLICY auth.uid() → (SELECT auth.uid()) em 24 tabelas (ADV-PERF-001) |
 | `20261022100011` | `19392e733d888cb4147bf5ccaace6007d99f4b7870eb8d7c1eaa7b07cf90670d` | `—` (não aplicado) | Claude sessão P18/auditoria | E15 (pendente) | pendente | pendente — 13 DROP INDEX unused (~779 MB); 7 deferred (unique/GIN — aprovação PO) |
-| `20261022100020` | `c429599dc3becf972269b08c994cef994a28c591ba47c41524b5390019546d8a` | `—` (não aplicado) | Claude sessão P19/auditoria | E15 (pendente) | pendente | pendente — dispatcher-failure-alert: */5 → 3,13,23,33,43,53 (offset +3min, P19) |
-| `20261022100021` | `4c3ddf72ef90ac779830893686099c48ef1eb6c524c0269a7b2551665816c888` | `—` (não aplicado) | Claude sessão P19/auditoria | E15 (pendente) | pendente | pendente — hash-product-images: */5 → 4,14,24,34,44,54 (offset +4min, P19) |
-| `20261022100022` | `2cc1e34477a862cccd3c0b7d5925179a755cdda50a7e646bad41e40f277675c7` | `—` (não aplicado) | Claude sessão P19/auditoria | E15 (pendente) | pendente | pendente — sync-is-stockout-universal: */5 → */10 (frequência reduzida, P19) |
+| `20261022100020` | `c429599dc3becf972269b08c994cef994a28c591ba47c41524b5390019546d8a` | `—` | Claude sessão P19/auditoria | E05 (a posteriori) | no ledger do banco (confirmado 2026-11-15); o agendamento que ela escreveu foi **superado** por migrations posteriores da série cron — ver recibo E05 abaixo | pendente — dispatcher-failure-alert: */5 → 3,13,23,33,43,53 (offset +3min, P19) |
+| `20261022100021` | `4c3ddf72ef90ac779830893686099c48ef1eb6c524c0269a7b2551665816c888` | `—` | Claude sessão P19/auditoria | E05 (a posteriori) | no ledger do banco (confirmado 2026-11-15); o agendamento que ela escreveu foi **superado** por migrations posteriores da série cron — ver recibo E05 abaixo | pendente — hash-product-images: */5 → 4,14,24,34,44,54 (offset +4min, P19) |
+| `20261022100022` | `2cc1e34477a862cccd3c0b7d5925179a755cdda50a7e646bad41e40f277675c7` | `—` | Claude sessão P19/auditoria | E05 (a posteriori) | no ledger do banco (confirmado 2026-11-15); o agendamento que ela escreveu foi **superado** por migrations posteriores da série cron — ver recibo E05 abaixo | pendente — sync-is-stockout-universal: */5 → */10 (frequência reduzida, P19) |
 | `20261022193000` | `eaa8a33524f37c7a7f24ddb6c8a23c0a873101d94f01aa9b6257d5423f4b9e68` | — (md5 query timeout; stmts_null=false confirmado) | sessão autônoma pré-FASE-B (P19_cron001) | n/d (autônoma — aplicada antes do início de FASE B; ver correcoes.md §P19_cron001) | 2026-10-22 ~19:30 UTC | ledger_count=1 ✅ (SELECT version FROM schema_migrations WHERE version='20261022193000' — sessão 01JPgV7FqkG4UuFBJWiJa9FB, 2026-10-25) |
-| `20261022194000` | `58785577281c32a9646a416653629d1a69764bb4e4bfc1e310e3b00171e28048` | `—` (não aplicado) | Claude sessão E30/segurança | E15 (pendente) | pendente | pendente — REVOKE INSERT,UPDATE,DELETE,REFERENCES,TRIGGER ON external_connections FROM anon (brecha E30) |
-| `20261022194100` | `389601c24ab27be5fd302b3244724a30966a3ccb280941892ab0116ef1a8888c` | `—` (não aplicado) | Claude sessão E40/segurança | E15 (pendente) | pendente | pendente — REVOKE ALL ON mockup_approval_links FROM anon (brecha E40) |
-| `20261022194200` | `0685d1c62e3908de2b0932809a0bd9adc2cbd3394cb4ce5897e4ddf2d3ccdbb5` | `—` (não aplicado) | Claude sessão E18-complement/segurança | E15 (pendente) | pendente | pendente — REVOKE EXECUTE ON mcp_kv_get FROM authenticated (brecha E18 complemento) |
+| `20261022194000` | `58785577281c32a9646a416653629d1a69764bb4e4bfc1e310e3b00171e28048` | `—` (não aplicado) | Claude sessão E30/segurança | E15 (pendente) | pendente | superado — aplicada em produção (confirmado no ledger 2026-11-11; ver "Reconciliação retroativa"); o sha desta linha é de versão anterior do arquivo, não a aplicada. Nota original: REVOKE INSERT,UPDATE,DELETE,REFERENCES,TRIGGER ON external_connections FROM anon (brecha E30) |
+| `20261022194100` | `389601c24ab27be5fd302b3244724a30966a3ccb280941892ab0116ef1a8888c` | `—` (não aplicado) | Claude sessão E40/segurança | E15 (pendente) | pendente | superado — aplicada em produção (confirmado no ledger 2026-11-11; ver "Reconciliação retroativa"); o sha desta linha é de versão anterior do arquivo, não a aplicada. Nota original: REVOKE ALL ON mockup_approval_links FROM anon (brecha E40) |
+| `20261022194200` | `0685d1c62e3908de2b0932809a0bd9adc2cbd3394cb4ce5897e4ddf2d3ccdbb5` | `—` (não aplicado) | Claude sessão E18-complement/segurança | E15 (pendente) | pendente | superado — aplicada em produção (confirmado no ledger 2026-11-11; ver "Reconciliação retroativa"); o sha desta linha é de versão anterior do arquivo, não a aplicada. Nota original: REVOKE EXECUTE ON mcp_kv_get FROM authenticated (brecha E18 complemento) |
 | `20261024163500` | `7345f667cddc4f123943a5ad0e961736c810b87df747d5178e91f947723aa857` | aplicado via E15 | Claude sessão fix-audit-acl-regrole (https://claude.ai/code/session_016AQbKL51RKSh8VtWxj4b1G) | db-apply-migration.yml (externa — aplicada entre snapshot 2026-10-24T16:05 e início de FASE B) | 2026-10-24 ~16:05 UTC | confirmado via SELECT FROM supabase_migrations.schema_migrations (sessão 01JPgV7FqkG4UuFBJWiJa9FB, 2026-10-25); ver baseline_depois.json delta[1] |
 | `20261024180001` | `855670ae90ad588f045c4672eaba5ca8d28280d620dd6c6e3d55343cd4baf77b` | aplicado via E15 | Claude FASE-B-P02-auto (https://claude.ai/code/session_01JPgV7FqkG4UuFBJWiJa9FB) | db-apply-migration.yml run #40164828396 | 2026-10-25T05:32 UTC | idx_kit_quote_requests_quote_id ✅; idx_kit_save_requests_kit_id ✅ (job 4 Recibo falhou — non-critical, entrada manual) |
 | `20261024180002` | `84ca72d9da2c14b8018e57236a5b5b33cac888068beeab35b2030869ffc86cd1` | aplicado via E15 | Claude FASE-B-P08-auto (https://claude.ai/code/session_01JPgV7FqkG4UuFBJWiJa9FB) | db-apply-migration.yml run #40166677491 | 2026-10-25T05:47 UTC | idempotency_key_exists=1 ✅; ledger_count=1 ✅ (job 4 Recibo falhou — non-critical, entrada manual) |
 | `20261024180003` | `f810068550bbfa2da6179d3772f8187821df732417d48dafd15ffd27acfb2a94` | aplicado via E15 | Claude FASE-B-P19-auto (https://claude.ai/code/session_01JPgV7FqkG4UuFBJWiJa9FB) | db-apply-migration.yml run #40167137573 | 2026-10-25T05:58 UTC | schedule=15min (1,16,31,46) ✅; ledger_count=1 ✅ (job 4 Recibo falhou — non-critical, entrada manual) |
 | `20261024190001` | `eb5c03f7d8f690297ce6960ef0803d7c205fb3999891cbb2ef0a4b85dc82c030` | aplicado via E15 | Claude FASE-B-P01-auto (https://claude.ai/code/session_01JPgV7FqkG4UuFBJWiJa9FB) | db-apply-migration.yml run #40166925674 | 2026-10-25T05:52 UTC | x-cron-secret ✅; ledger_count=1 ✅ (job 4 Recibo falhou — non-critical, entrada manual) |
 | `20261025002500` | `6ce2ca6a8a4228486ae5123574845a11a1f1e59b6e4a316628dc6a56925c1f59` | aplicado via E15 | Claude FASE-B-P03-auto (https://claude.ai/code/session_01JPgV7FqkG4UuFBJWiJa9FB) | db-apply-migration.yml run #40165426404 | 2026-10-25T05:28 UTC | categories last_analyze=2026-10-25T05:28 ✅; ledger_count=1 ✅ (job 4 Recibo falhou — non-critical, entrada manual) |
-| `20261031000000` | `209ba7abacce4f1c1989dfe19c97b470db9dd7a1d9fc74b224acded12187ebd3` | — | claude-code (session_01Gd4dBi3n2GguZNjoaenJgk) | corrigida | 2026-11-01 UTC | corrigida: deleted_at + stock_notes_active_idx adicionados (Gate 1.12); tabela não existe em produção — aplicar via db-apply-migration.yml após merge da PR |
+| `20261031000000` | `209ba7abacce4f1c1989dfe19c97b470db9dd7a1d9fc74b224acded12187ebd3` | — | claude-code (session_01Gd4dBi3n2GguZNjoaenJgk) | corrigida | 2026-11-01 UTC | corrigida: deleted_at + stock_notes_active_idx adicionados (Gate 1.12). CORREÇÃO 2026-11-15: a tabela EXISTE em produção (`to_regclass('public.stock_notes')` devolve `stock_notes`, RLS ligada, 4 policies) e a version `20261031000000` ESTÁ no ledger — a linha de 2026-11-01 que dizia o contrário está vencida; vale o registro de aplicação fora do fluxo E15 (Lovable/PR #2871) mais abaixo |
+| `20261115034500` | `e8cb3bf9a77607728af8ee8cdd59b4927de1e9b58bc0c5383ce418728314c79a` | `—` (não aplicada) | claude-code (session_01Gd4dBhHK5o8Sg5eHHAF3G7) | E15 (pendente) | pendente | pendente — `rpc_sales_assistant_candidates` (SECURITY INVOKER, assistente Encaixe do Cliente). Conferido em produção nesta sessão: a função NÃO existe (`pg_proc` = 0) e a version não está em `schema_migrations`; todas as colunas/tabelas que o corpo lê existem e têm RLS. Aplicar por `db-apply-migration.yml` após o merge. Rollback: `supabase/rollbacks/20261115034500_rollback.sql` |
 
 ---
 
@@ -1119,11 +1120,60 @@ Após VACUUM ANALYZE executado pelos jobs temporários `vacuum-snapshots-now` e
 |---|---|---|
 | `20261106232045` | `fix_handle_updated_at_search_path` | aplicada — ledger e `pg_proc.proconfig = {search_path=public}` confirmados no canônico em 2026-11-08 |
 
+## 2026-11-07 — Identidade canônica de vendedor CRM
+
+| version | sha256 | arquivo | status |
+|---|---|---|---|
+| `20261107134429` | `fd1fbfceb0a148371b9507618ccf3b67a913b6f3f4b1e4e420caf0c273093286` | `create_crm_seller_identity_links` | **aplicada em 2026-11-14 23:41:43 UTC** pelo `db-apply-migration.yml` (run 43654437109; recibo E15 abaixo). Cria vínculo 1:1 privado `auth_user_id → crm_seller_id`. O sha256 registrado antes da aplicação era `c35bd151…`: o arquivo recebeu depois, em `3792045445` (2026-11-14 23:28 UTC, 13 min antes do Apply), a linha de comentário `-- soft-delete-exempt:` exigida pelo Gate de soft-delete — comentário SQL, sem efeito no DDL executado. O hash acima é o do conteúdo que a run de fato aplicou. |
+
 ## Recibos — E15 (workflow de aplicação controlada)
 
 | versão | sha256 arquivo | md5 statements | executor | método | data UTC | pós-check | status |
 |---|---|---|---|---|---|---|---|
 | `20261107180000` | `ad43364e7897bf5cc075d3cefa6328f919f36806c35d6b765572c4d1b5625914` | — | GitHub Actions (db-apply-migration.yml, disparado por adm01-debug, aprovado por @adm01-debug) | E15 | 2026-11-08 04:17:21 UTC | job post-check da run 42444391386 confirmou a version no ledger | aplicada |
+| `20261104100000` | `089f634d125b5fde9e500987182b15e4a67a67726c59bc7d9c0b1bd6ee757281` | — | GitHub Actions (db-apply-migration.yml, disparado por adm01-debug, aprovado por @adm01-debug (Joaquim, aprovado no chat em 11/11)) | E15 | 2026-11-12 03:21:00 UTC | job post-check da run 43131645845 confirmou a version no ledger | aplicada |
+| `20261112011000` | `8e081152c457ed572cb3aa349f62027bc7cd461996bb8036f499efb12af6a449` | — | GitHub Actions (db-apply-migration.yml, disparado por adm01-debug, aprovado por @adm01-debug) | E15 | 2026-11-13 00:31:48 UTC | job post-check da run 43233358789 confirmou a version no ledger | aplicada |
+| `20261108001500` | `b359d0d8445d6ec5c11bbad06b5ce9b82fc2d5bb15aef4c186830f520b953e50` | — | GitHub Actions (db-apply-migration.yml, disparado por adm01-debug, aprovado por @adm01-debug) | E15 | 2026-11-13 02:30:43 UTC | job post-check da run 43322428599 confirmou a version no ledger | aplicada |
+| `20261112130000` | `81e3c7900b74f7de043556d412dae21248e538f70aca73ad1b85f190b6627f52` | — | GitHub Actions (db-apply-migration.yml, disparado por adm01-debug, aprovado por @adm01-debug) | E15 | 2026-11-13 04:55:11 UTC | job post-check da run 43345670118 confirmou a version no ledger | aplicada |
+| `20261108223100` | `a912697ce92a3b6da285fad499575dc89fb8c2138f1f3b573dbdc9206c717dfa` | — | GitHub Actions (db-apply-migration.yml, disparado por adm01-debug, aprovado por @adm01-debug) | E15 | 2026-11-13 07:45:38 UTC | job post-check da run 43384113364 confirmou a version no ledger | aplicada |
+| `20260511235950` | `dfacb733f8b6036b3c00db74dffbf61597f3fc88cc72a50fcbe3a0480b2824a6` | — | GitHub Actions (db-apply-migration.yml, disparado por adm01-debug, aprovado por @adm01-debug) | E15 | 2026-11-13 08:32:53 UTC | job post-check da run 43390126038 confirmou a version no ledger | aplicada |
+| `20261111191000` | `04966954d978ccf4ca7f7a7beb5bd20129243018b303f92575c5b12b4f581524` | — | GitHub Actions (db-apply-migration.yml, disparado por adm01-debug, aprovado por @adm01-debug) | E15 | 2026-11-13 12:07:10 UTC | job post-check da run 43417662659 confirmou a version no ledger | aplicada |
+| `20261112140000` | `6aa856168cc1ef0e6308757fe01b04f4917f043170ff3ce996e0933a52575b9f` | — | GitHub Actions (db-apply-migration.yml, disparado por adm01-debug, aprovado por @adm01-debug) | E15 | 2026-11-13 18:03:52 UTC | job Apply da run 43471685129 concluiu com sucesso (preflight ok); pós-check na fila no momento do registro | aplicada |
+| `20261113235000` | `45dff9f0d993448eae3c68c09aa143304601efb96029ccedda607e976ba28e46` | — | GitHub Actions (db-apply-migration.yml, disparado por adm01-debug, aprovado por @adm01-debug) | E15 | 2026-11-14 02:37:27 UTC | job post-check da run 43546049063 confirmou a version no ledger | aplicada |
+| `20261113235800` | `f0cddef3bb3e9b322c5e9767a1be6e0bb916d65b7bd8d60278e8962ea4db680e` | — | GitHub Actions (db-apply-migration.yml, disparado por adm01-debug, aprovado por @adm01-debug) | E15 | 2026-11-14 05:02:37 UTC | job post-check da run 43557850878 confirmou a version no ledger | aplicada |
+| `20261114040000` | `f34df73857031d37795afbd5519604c3e1604657fb5141eefddb7bcdb677e5bb` | — | GitHub Actions (db-apply-migration.yml, disparado por adm01-debug, aprovado por @adm01-debug) | E15 | 2026-11-14 04:18:25 UTC | job post-check da run 43555824840 confirmou a version no ledger | aplicada |
+| `20261114003000` | `c742a627a964faf49ae9be913336b8aafaa76e8b6f7a3e95bc266d9cc2a54efa` | — | GitHub Actions (db-apply-migration.yml, disparado por adm01-debug, aprovado por @adm01-debug) | E15 | 2026-11-14 06:11:17 UTC | job post-check da run 43564625050 confirmou a version no ledger | aplicada |
+| `20261112120000` | `2843dc46113510dea1810788b9f83c63cd25b02d02befd1f45d27dfec485c393` | — | GitHub Actions (db-apply-migration.yml, disparado por adm01-debug, aprovado por @adm01-debug) | E15 | 2026-11-14 11:13:12 UTC | job post-check da run 43588905947 confirmou a version no ledger | aplicada |
+| `20261112120100` | `6c79e6999200d391e4a0bf79fe72f2a681c3ec01435921e41ae73fbe23d19334` | — | GitHub Actions (db-apply-migration.yml, disparado por adm01-debug, aprovado por @adm01-debug) | E15 | 2026-11-14 11:15:48 UTC | job post-check da run 43589115373 confirmou a version no ledger | aplicada |
+| `20261112120200` | `c8647e9ddd4ea64b072721dcb0336d7738ffe5078ea9652b27100350083a5b54` | — | GitHub Actions (db-apply-migration.yml, disparado por adm01-debug, aprovado por @adm01-debug) | E15 | 2026-11-14 11:17:30 UTC | job post-check da run 43589261116 confirmou a version no ledger | aplicada |
+| `20261112120300` | `c4a2b8606f9bbcd8b56823a41bdda148499f063b4f319fa30952244a59457602` | — | GitHub Actions (db-apply-migration.yml, disparado por adm01-debug, aprovado por @adm01-debug) | E15 | 2026-11-14 11:19:23 UTC | job post-check da run 43589395511 confirmou a version no ledger | aplicada |
+| `20261112120400` | `79c76a16c0036283028028a213eea687bac5caf62685c4373dba543e70a6f612` | — | GitHub Actions (db-apply-migration.yml, disparado por adm01-debug, aprovado por @adm01-debug) | E15 | 2026-11-14 11:21:17 UTC | job post-check da run 43589545510 confirmou a version no ledger | aplicada |
+| `20261112120500` | `dd6849a1c3ff925423ac7bc91eb5605882ea03477b93b199ecf17eb574f3734e` | — | GitHub Actions (db-apply-migration.yml, disparado por adm01-debug, aprovado por @adm01-debug) | E15 | 2026-11-14 11:23:13 UTC | job post-check da run 43589714577 confirmou a version no ledger | aplicada |
+| `20261112120600` | `2aafacec03bb10d108aeda1192f5754600dc071ea420fb9a431a6b3ad26ea07a` | — | GitHub Actions (db-apply-migration.yml, disparado por adm01-debug, aprovado por @adm01-debug) | E15 | 2026-11-14 11:24:50 UTC | job post-check da run 43589851580 confirmou a version no ledger | aplicada |
+| `20261112120700` | `13dcabc4850b19a6f360203693dfc259474adaa42227dcc8ef2ad43587cabaaa` | — | GitHub Actions (db-apply-migration.yml, disparado por adm01-debug, aprovado por @adm01-debug) | E15 | 2026-11-14 11:26:40 UTC | job post-check da run 43589984419 confirmou a version no ledger | aplicada |
+| `20261112120800` | `27438bfdec7aba456af33f6b77e2ceef6d593e20f7a5da5cbb7045661b72371e` | — | GitHub Actions (db-apply-migration.yml, disparado por adm01-debug, aprovado por @adm01-debug) | E15 | 2026-11-14 11:28:47 UTC | job post-check da run 43590125142 confirmou a version no ledger | aplicada |
+| `20261112120900` | `d73e208b1830ab5692904320c746c89e63b46ba4b54a253b147fe65d3f65dda4` | — | GitHub Actions (db-apply-migration.yml, disparado por adm01-debug, aprovado por @adm01-debug) | E15 | 2026-11-14 11:31:01 UTC | job post-check da run 43590307044 confirmou a version no ledger | aplicada |
+| `20260915113458` | `81c17caf85e4ef50c04f4e1382f0a3c75b16967141d33c5c50b1b64328e8846d` | `--` | reconciliação P09 (20261114014500) | E05 | 2026-11-14 (registro no ledger; aplicação original anterior ao contrato E15) | objeto verificado em produção pela auditoria P09 antes do registro | aplicada — registrada no ledger pela 20261114014500 |
+| `20260905033200` | `3607f008f8dec27a2f7707d8775e35bb00ade9b6ba8f2e4c2062809bc2ca29e2` | `--` | reconciliação P09 (20261114014500) | E05 | 2026-11-14 (registro no ledger; aplicação original anterior ao contrato E15) | objeto verificado em produção pela auditoria P09 antes do registro | aplicada — registrada no ledger pela 20261114014500 |
+| `20260905033100` | `a707b8702b68b0bf81b9d21b3970d8bf7c44f35d31ca40f2c800c12faf0a3f68` | `--` | reconciliação P09 (20261114014500) | E05 | 2026-11-14 (registro no ledger; aplicação original anterior ao contrato E15) | objeto verificado em produção pela auditoria P09 antes do registro | aplicada — registrada no ledger pela 20261114014500 |
+| `20260903093500` | `da12bc143a63beaccf269b955eae92d51cc1fdc3673dcd664c8f8738e9999306` | `--` | reconciliação P09 (20261114014500) | E05 | 2026-11-14 (registro no ledger; aplicação original anterior ao contrato E15) | objeto verificado em produção pela auditoria P09 antes do registro | aplicada — registrada no ledger pela 20261114014500 |
+| `20260902221900` | `26ce447711337286d69fd20e1a0eb47ab9df046f7edd270664cac25d5ad497cb` | `--` | reconciliação P09 (20261114014500) | E05 | 2026-11-14 (registro no ledger; aplicação original anterior ao contrato E15) | objeto verificado em produção pela auditoria P09 antes do registro | aplicada — registrada no ledger pela 20261114014500 |
+| `20260902221000` | `301da9c5075d5f95e7e93bb4f0e24c1ee03ffea0d823a4eccc67fc7a5ee0e9bd` | `--` | reconciliação P09 (20261114014500) | E05 | 2026-11-14 (registro no ledger; aplicação original anterior ao contrato E15) | objeto verificado em produção pela auditoria P09 antes do registro | aplicada — registrada no ledger pela 20261114014500 |
+| `20260826000000` | `8c6fce74ad3088b1645ad4c3efe7c13a58cf6f0680dd4d0e78001dfda4e443bd` | `--` | reconciliação P09 (20261114014500) | E05 | 2026-11-14 (registro no ledger; aplicação original anterior ao contrato E15) | objeto verificado em produção pela auditoria P09 antes do registro | aplicada — registrada no ledger pela 20261114014500 |
+| `20260718140000` | `394ee1158bb3573c522204a8ee3476968c38c997aa16df18fc24d2ceb8a0dcef` | `--` | reconciliação P09 (20261114014500) | E05 | 2026-11-14 (registro no ledger; aplicação original anterior ao contrato E15) | objeto verificado em produção pela auditoria P09 antes do registro | aplicada — registrada no ledger pela 20261114014500 |
+| `20260717235500` | `7abba259b5ad7d7ddd2665befb09fd2e058452773855ca9a83d070b9558a5b88` | `--` | reconciliação P09 (20261114014500) | E05 | 2026-11-14 (registro no ledger; aplicação original anterior ao contrato E15) | objeto verificado em produção pela auditoria P09 antes do registro | aplicada — registrada no ledger pela 20261114014500 |
+| `20260717190000` | `950b93a76c8901dca9490a56c64dc350492f864e2b74464467c21f7d9796a6aa` | `--` | reconciliação P09 (20261114014500) | E05 | 2026-11-14 (registro no ledger; aplicação original anterior ao contrato E15) | objeto verificado em produção pela auditoria P09 antes do registro | aplicada — registrada no ledger pela 20261114014500 |
+| `20261113225000` | `4bc14de41e30ea25aabe13a6bb59799b360fbdf2f18a5f9fd93be9aafa9689d2` | `--` | db-apply-migration.yml run 43634465261 | E15 | 2026-11-14 | pós-check do workflow success (run 43634465261) | aplicada em produção |
+| `20261114014100` | `651823afa2f7fd9901fcc185a3147aa53d1cf5ad11fea1374196a3021d200578` | `--` | db-apply-migration.yml run 43634622250 | E15 | 2026-11-14 | pós-check do workflow success (run 43634622250) | aplicada em produção |
+| `20261114031000` | `76b1497b85e289d3de69f01308f325d454436e5a03a59f2f77b5e50a6f1287b6` | `--` | db-apply-migration.yml run 43634805809 | E15 | 2026-11-14 | pós-check do workflow success (run 43634805809) | aplicada em produção |
+| `20261107134429` | `fd1fbfceb0a148371b9507618ccf3b67a913b6f3f4b1e4e420caf0c273093286` | `--` | GitHub Actions (db-apply-migration.yml, run 43654437109; job Recibo saiu success sem gravar — registrado a posteriori) | E15 | 2026-11-14 23:41:43 UTC | job 3 (Pós-check) da run 43654437109: preflight-migration-apply --expect-applied passed — "version 20261107134429 confirmada no ledger pós-aplicação"; isInLedger=true | aplicada |
+| `20261114170845` | `594d31966a784f02c6a69faf144adc3422ab75369a5643a258fc2a7779c7eac4` | `--` | GitHub Actions (db-apply-migration.yml, run 43646998992); recibo do job 4 veio na PR #3632, que ficou em conflito no log — dados copiados dela | E15 | 2026-11-14 22:14:43 UTC | job post-check da run 43646998992 confirmou a version no ledger | aplicada |
+| `20261114170921` | `5b87f587d338b1016e5dce6f36b7f18c488baaa2e0422ac3ea5c23a91d4af9f4` | `--` | GitHub Actions (db-apply-migration.yml, run 43647154042); recibo do job 4 veio na PR #3633, que ficou em conflito no log — dados copiados dela | E15 | 2026-11-14 22:16:55 UTC | job post-check da run 43647154042 confirmou a version no ledger | aplicada |
+| `20261114014500` | `a06fe201d75afdb1be8b99ab19164ca374bb57ec5dae44808049ea33e5e6f8c0` | `--` | GitHub Actions (db-apply-migration.yml, run 43634292304); recibo do job 4 veio na PR #3624, que ficou em conflito no log — dados copiados dela e confirmados no banco | E15 | 2026-11-14 19:51:43 UTC | job 3 (Pós-check) da run 43634292304 success; version confirmada em supabase_migrations.schema_migrations (consulta read-only 2026-11-15) | aplicada |
+| `20261022100020` | `c429599dc3becf972269b08c994cef994a28c591ba47c41524b5390019546d8a` | `--` | NÃO VERIFICADO — a version está em supabase_migrations.schema_migrations com name NULL, o que indica registro por caminho diferente do db-apply-migration.yml; não localizei a run que a inseriu | E05 | NÃO VERIFICADO | version confirmada em supabase_migrations.schema_migrations (consulta read-only 2026-11-15). ATENÇÃO: o agendamento que esta migration escreveu NÃO é o que está em produção — cron.job mostra 'dispatcher-failure-alert' em '5,20,35,50', valor definido por migrations posteriores da série cron (20261027140000, 20261101220000/232022, 20261108230100, 20261113235800). O objetivo original (eliminar colisão de startup) está atingido, mas por outra migration | aplicada (no ledger) — efeito superado por migration posterior |
+| `20261022100021` | `4c3ddf72ef90ac779830893686099c48ef1eb6c524c0269a7b2551665816c888` | `--` | NÃO VERIFICADO — a version está em supabase_migrations.schema_migrations com name NULL, o que indica registro por caminho diferente do db-apply-migration.yml; não localizei a run que a inseriu | E05 | NÃO VERIFICADO | version confirmada em supabase_migrations.schema_migrations (consulta read-only 2026-11-15). ATENÇÃO: o agendamento que esta migration escreveu NÃO é o que está em produção — cron.job mostra 'hash-product-images' em '11,26,41,56', valor definido por migrations posteriores da série cron (20261027140000, 20261101220000/232022, 20261108230100, 20261113235800). O objetivo original (eliminar colisão de startup) está atingido, mas por outra migration | aplicada (no ledger) — efeito superado por migration posterior |
+| `20261022100022` | `2cc1e34477a862cccd3c0b7d5925179a755cdda50a7e646bad41e40f277675c7` | `--` | NÃO VERIFICADO — a version está em supabase_migrations.schema_migrations com name NULL, o que indica registro por caminho diferente do db-apply-migration.yml; não localizei a run que a inseriu | E05 | NÃO VERIFICADO | version confirmada em supabase_migrations.schema_migrations (consulta read-only 2026-11-15). ATENÇÃO: o agendamento que esta migration escreveu NÃO é o que está em produção — cron.job mostra 'sync-is-stockout-universal' em '', valor definido por migrations posteriores da série cron (20261027140000, 20261101220000/232022, 20261108230100, 20261113235800). O objetivo original (eliminar colisão de startup) está atingido, mas por outra migration | aplicada (no ledger) — efeito superado por migration posterior |
+| `20260917061500` | `74f5094bab6b28abe0306f65519ae4d49f3f259a6de8061ea5504c2a0b8577ae` | `--` | GitHub Actions (db-apply-migration.yml, run 43668677152); disparada por mim nesta sessão com a autorização explícita do dono para o banco. O job 4 (Recibo) saiu success e abriu PR em vez de gravar aqui — mesmo padrão já registrado em docs/security/ | E15 | 2026-11-15 02:38:50 UTC | job 3 (Pós-check) da run 43668677152: "version 20260917061500 confirmada no ledger pós-aplicação", isInLedger=true. Efeito conferido por consulta direta ao canônico: has_function_privilege(authenticated, EXECUTE) = false nas 4 funções (registrar_entrada_estoque, registrar_saida_estoque, confirm_notifications_dispatched, fn_notify_user) e service_role preservado = true nas 4 | aplicada |
 
 ## 2026-11-08 — Reconciliação de `e2e_cleanup_audit`
 
@@ -1172,3 +1222,528 @@ Este PR cria o arquivo retroativo para fechar o gap documental.
 | version | arquivo | sha256 | status |
 |---|---|---|---|
 | `20260611014515` | `fn_dryrun_standardize_supplier_real_rollback` | `49c18b67748c6cb7fc39d3b80b1f3eb58fff39fc2f21a20ee7cac92f69e08a3d` | arquivo retroativo — função `fn_dryrun_standardize_supplier` confirmada em produção via `pg_get_functiondef`; versão já estava no ledger (gap era só no repo); sem DDL a aplicar |
+
+## 2026-11-08 — Reconciliação de drift CRON-001 (`20261101223908`/`20261101232022`)
+
+Duas versões estavam no ledger (`supabase_migrations.schema_migrations`), aplicadas em
+produção em 2026-11-01 via `db-apply-migration.yml`, mas sem arquivo correspondente em
+`supabase/migrations/` no main — gap "ledger-sem-arquivo" detectado por `analise-branches`
+e documentado em PR #3015 (fechada sem merge em 2026-11-07, por trazer também mudanças
+não relacionadas em `analise-branches/RELATORIO_BRANCHES.md`; comentário do dono na PR
+confirmou o efeito de produção como correto e pediu uma PR nova só com os arquivos
+espelho — esta PR cumpre essa pendência). Conteúdo confirmado via
+`SELECT statements FROM supabase_migrations.schema_migrations WHERE version IN (...)`
+contra o projeto canônico `doufsxqlfjyuvxuezpln`: ambos só `cron.alter_job` (idempotente,
+sem DDL de schema, sem risco de dado). **Nenhuma DDL nova é executada por esta PR.**
+
+| version | arquivo | sha256 | status |
+|---|---|---|---|
+| `20261101223908` | `cron001_stagger_additional_jobs` | `819350cc0006cbc218b74bd2cd6dee7049586ed6479109b7dcd828f3807ee811` | arquivo retroativo — `cron.alter_job` jobs 292/303/241 confirmado em produção via ledger; versão já estava no ledger (gap era só no repo); sem DDL a aplicar |
+| `20261101232022` | `cron001_stagger_schedules_reapply` | `8fe64496a5dba8e27be274a41522bf9a1988be3f5e912b712c1ce1ddd2d93dad` | arquivo retroativo — `cron.alter_job` jobs 276/224/114/243 (idêntico a `20261101220000`) confirmado em produção via ledger; versão já estava no ledger (gap era só no repo); sem DDL a aplicar |
+## 2026-11-08 — Correção de drift: `categories.level` e `categories.full_path_readable`
+Colunas `public.categories.level` e `public.categories.full_path_readable` existiam em produção sem migration registrada.
+Migration `20260512000000_bootstrap_missing_application_schemas` cria views que referenciam ambas as colunas
+diretamente em DDL (`classification_audit.v_gaps_acionaveis` e `v_kits_para_revisao`), causando
+`SQLSTATE 42703` no shadow DB da Supabase Preview. As migrations (timestamps antes do bootstrap)
+adicionam as colunas com `IF NOT EXISTS` — no-op em produção.
+Cadeia completa de drift em `public.categories`:
+- `20260511235900` — `bitrix_id` (PR #3201, já aplicado)
+- `20260511235950` — `level` (este PR, pendente)
+- `20260511235959` — `full_path_readable` (este PR, pendente)
+- `20260512000000` — bootstrap usa as três em VIEW/MVIEW DDL
+| `20260511235950` | `add_categories_level_drift` | `dfacb733f8b6036b3c00db74dffbf61597f3fc88cc72a50fcbe3a0480b2824a6` | espelho — a coluna já existe em produção (conferido 2026-11-11); registrar via `db-apply-migration.yml` modo repair-only, sem executar DDL |
+| `20260511235960` | `add_categories_full_path_readable_drift` | `bdd3104b7f0f368d59e698b283fc8f35c605e137311f337b48720a8fad04cedd` | pendente — coluna já existe em produção; arquivo criado em 2026-11-13 para satisfazer preflight de db-apply-migration.yml; registrar via db-apply-migration.yml modo repair-only |
+| `20260511235959` | `add_categories_full_path_readable_drift` | `ef9c350896f1729196d2a9d22e9269dd3629ae29f5d52842fb8372b9ac7ab7ae` | espelho — a coluna já existe em produção (conferido 2026-11-11); registrar via `db-apply-migration.yml` modo repair-only, sem executar DDL |
+## 2026-11-09 — DROP `perf002_drop_unused_snapshot_indexes` (PEND-I01)
+Função `public.perf002_drop_unused_snapshot_indexes()` criada como SECURITY DEFINER
+com `authenticated:EXECUTE` via DDL direto (sessão PEND-I01, 2026-11-01). Executa
+DDL por concatenação de string — vetor de escalada de privilégio. Esta migration a
+dropa. Aguardando dispatch via `db-apply-migration.yml` após aprovação do PO (REGRA #8).
+| `20261108223100` | `drop_perf002_incident_ddl_survivor` | `a912697ce92a3b6da285fad499575dc89fb8c2138f1f3b573dbdc9206c717dfa` | pendente — aguardando merge PR #3255 + dispatch `db-apply-migration.yml` (REGRA #8: DDL em produção) |
+
+## 2026-11-11 — Recibos das migrations integradas pela #3400 (lote C)
+
+Conferido no ledger de produção (`supabase_migrations.schema_migrations`) em 2026-11-11: nenhuma destas versões está registrada. Aplicação em produção só via `db-apply-migration.yml` após aprovação do dono (REGRA #8); espelhos via modo repair-only.
+
+| versão | nome | sha256 | status |
+|---|---|---|---|
+| `20261111190000` | `harden_fn_get_rupture_alerts_search_path` | `—` | **removida da pilha antes do merge** — substituída pela `20261112011000_fix_sb0003_fn_get_rupture_alerts` (main, #SB-0003), de efeito idêntico (mesmo corpo com `is_supervisor_or_above`, `search_path = public, pg_catalog, pg_temp`, REVOKE de PUBLIC/anon, GRANT a authenticated). Nunca aplicada. |
+| `20261108030000` | `ft005_cron_scheduled_reports` | `7f9f3b783c80deff3822abf4b6a57ac71bff9444a83c8f9ee19d78642da60586` | espelho — os crons process/send-scheduled-reports já existem em produção com o mesmo agendamento (#3263); registrar via repair-only |
+| `20261108030200` | `ft088_fn_check_item_fits` | `b31bebec36214569a26c8cafb0707166ba6c0a214dc43716f5f5b635420353f3` | espelho — fn_check_item_fits já existe em produção (#3265); registrar via repair-only |
+| `20261108120000` | `p10_categories_indexes_espelho` | `6cb4ae9f62bc37a3bdf54e01eb812a4b8114e51c49bf7c7f796b593db1d8c550` | espelho — os 3 índices de public.categories já existem em produção (#3273); registrar via repair-only |
+| `20261108223000` | `add_stock_daily_summary_date_index` | `79060cb0a256cf08be616273e8aa4803415ff0fdf6f639ae4ad227975477aa2f` | pendente — novo índice CONCURRENTLY (transaction: none) em stock_daily_summary (#3250) |
+| `20261108230000` | `remove_broken_cron_image_dimensions_backfill` | `73174dd8978ed1d0f44fdc76d2c60aba1add07b0bf728bee263bafe24ec921d2` | pendente — remove o cron inativo image-dimensions-backfill (#3251) |
+| `20261108230100` | `cron002_fix_residual_collisions` | `8005166f73bcea1ca7cc39862ceecce653b2258ca86af4145279fee445f9ff74` | pendente — CRON-002: reescalona 4 jobs (#3279; versão ajustada de 230000 para não colidir com #3251) |
+| `20261108235500` | `restrict_art_files_public_read_to_quotes` | `cfca70a22ad5851fec81466e14e923d779b05aec3b7b898c6c5b7ca7b60b6ebd` | pendente — restringe leitura pública de art-files a quotes/ (#3256; todos os objetos atuais já estão em quotes/) |
+| `20261111191000` | `restore_get_sitemap_public_anon_execute` | `04966954d978ccf4ca7f7a7beb5bd20129243018b303f92575c5b12b4f581524` | pendente — restaura EXECUTE de anon em get_sitemap_public (drift: produção só tinha authenticated → /api/sitemap 503); pré-requisito da #3399 |
+
+## 2026-11-11 — Reconciliação retroativa de recibos (ledger de produção)
+
+Versões **já aplicadas em produção** (`supabase_migrations.schema_migrations`, consulta somente leitura em 2026-11-11, 200 mais recentes) que não tinham recibo neste log. Revelado quando o `check-migration-receipts --gate` passou a consultar o ledger ao vivo (#3392). Este registro só documenta o que o ledger já diz — nenhuma migration foi aplicada nem reaplicada. `sha256` = arquivo atual em `supabase/migrations/` (— quando não há arquivo local com essa versão: aplicada fora do repo, via MCP/dashboard). Conferido em 2026-11-11 (md5 normalizado dos `statements` do ledger × arquivo): **131 batem; em 29 o arquivo local NÃO é comprovadamente o que foi aplicado** — ver o status de cada linha.
+
+| versão | nome no ledger | sha256 do arquivo local | arquivo | status |
+|---|---|---|---|---|
+| `20261029160339` | `add_kill_switch_hits_anon_rate_guard` | `4848c21337223a88700efdb3ef9aa99688d65d5b072e108c88d204de1ba596ba` | `20261029160339_add_kill_switch_hits_anon_rate_guard.sql` | aplicada (ledger de produção); recibo retroativo |
+| `20261027180000` | `reactivate_generate_blurhashes_safe_schedule` | `1b47a1d2eadd49608f36331d6be6e93e7478022ed97cbbbae9617e455bcb38a4` | `20261027180000_reactivate_generate_blurhashes_safe_schedule.sql` | aplicada (ledger de produção); recibo retroativo |
+| `20261027160000` | `deactivate_image_dimensions_backfill_cron` | `c20b8190eee43e9a40fe8cc084040f25c94d1c1ef59335efda3da8d39ac6e8d6` | `20261027160000_deactivate_image_dimensions_backfill_cron.sql` | aplicada (ledger de produção); recibo retroativo |
+| `20261027140000` | `stagger_cron_burst_schedules` | `fb095888f074b4cc77b938e82f317627bd5a982b32e8d929e2152d51adb53572` | `20261027140000_stagger_cron_burst_schedules.sql` | aplicada (ledger de produção); recibo retroativo — **arquivo local difere do aplicado** (editado depois de aplicar); sha256 = arquivo atual, não o aplicado; md5 dos statements no ledger = `ef7ed0fc50cc341b2fd3294cdf4b2874` |
+| `20261027120000` | `fix_connections_auto_test_cron_secret` | `76f011d27aef2a34e389a1a3a846ea8304e7d135e5c5da9ed3bc2251dafa7a26` | `20261027120000_fix_connections_auto_test_cron_secret.sql` | aplicada (ledger de produção); recibo retroativo — **arquivo local difere do aplicado** (editado depois de aplicar); sha256 = arquivo atual, não o aplicado; md5 dos statements no ledger = `98d5d46faba8a86ac191b6b658fd651f` |
+| `20261019000000` | `mirror_oob_frontend_telemetry_v_system_health_dashboard` | `620a7fc3538e163a05f087632011140146694369d7c6ee680236c131ec213ec0` | `20261019000000_mirror_oob_frontend_telemetry_v_system_health_dashboard.sql` | aplicada (ledger de produção); recibo retroativo |
+| `20261018170100` | `e070_purge_idempotency_ledgers` | `30a5041cbc6b7cd0d74a8145dc3a33a6340cc0522ec9466e0f5686b027dbac2a` | `20261018170100_e070_purge_idempotency_ledgers.sql` | aplicada (ledger de produção); recibo retroativo |
+| `20261018170000` | `e069_drop_redundant_prefix_index` | `6cabab062ea6746dab49dd5d8ddc73dbf8b0ffeb1c66a609ac876cebfb80c8c4` | `20261018170000_e069_drop_redundant_prefix_index.sql` | aplicada (ledger de produção); recibo retroativo |
+| `20261018160100` | `login_attempts_lower_email_index` | `d357297914857cb69629785fd27491581ad7af92a5bfe1f21a8f2b684c15f808` | `20261018160100_login_attempts_lower_email_index.sql` | aplicada (ledger de produção); recibo retroativo |
+| `20261018160000` | `admin_revoke_sessions_db_guard_audit` | `072e3447adc18ff7060a44168c1f75e599511be3a57dcabf872f24b6ef4bff4f` | `20261018160000_admin_revoke_sessions_db_guard_audit.sql` | aplicada (ledger de produção); recibo retroativo |
+| `20261018000048` | `e047_lote2_restrictive_pii_tables` | `2d15a1bd52c8d0252f5e68dc8a44b737636ac9b2b653c6f51b7866bededbbca1` | `20261018000048_e047_lote2_restrictive_pii_tables.sql` | aplicada (ledger de produção); recibo retroativo |
+| `20261018000047` | `e047_restrictive_policies_tabelas_sensiveis` | `4727f5248f981938f2859439d0d0d0b4304ec7ebd1886cf1d9ebd5f1d5575db8` | `20261018000047_e047_restrictive_policies_tabelas_sensiveis.sql` | aplicada (ledger de produção); recibo retroativo |
+| `20261018000043` | `e042_lote2_ai_art_kits` | `2409bb78c17ba4cca887924b914679d61b2df42a1be280e5a94e76c59b860d2a` | `20261018000043_e042_lote2_ai_art_kits.sql` | aplicada (ledger de produção); recibo retroativo |
+| `20261018000042` | `e042_fix_policies_public_lote1` | `e2ffe313ec2de13ee4e127c61a9c8d262794d7a3a45d3f8455dcdfdac46eb74a` | `20261018000042_e042_fix_policies_public_lote1.sql` | aplicada (ledger de produção); recibo retroativo |
+| `20261018000041` | `e041_fechar_anon_read_tabelas_sensiveis` | `36a578a7becc8e96a2d8706b0e7c0086a774b4c10cea2775aa62c6a0deb65b0f` | `20261018000041_e041_fechar_anon_read_tabelas_sensiveis.sql` | aplicada (ledger de produção); recibo retroativo |
+| `20261015150000` | `admin_active_sessions_rpc` | `df2ffae49ceb7d31de1e88fb816e9ce752a332121b1daa6e6681c3be2042ea64` | `20261015150000_admin_active_sessions_rpc.sql` | aplicada (ledger de produção); recibo retroativo |
+| `20261015140000` | `backfill_primary_image_url_regra_completa` | `2f589c748208ec5e376df281d2c102612a231e1eb80033dd3e4ade987ea46561` | `20261015140000_backfill_primary_image_url_regra_completa.sql` | aplicada (ledger de produção); recibo retroativo |
+| `20261015130000` | `remove_test_agente2_probe` | `147d2612051bdf8cc89f32b88e61c810d1f4ce338bab00ef96391ce06081a8d7` | `20261015130000_remove_test_agente2_probe.sql` | aplicada (ledger de produção); recibo retroativo |
+| `20261015120500` | `fase3_system_settings_policies` | `cafff5df1d3e62ef070c150d0a2ab01ef16bbfdfbfd7ad6e5092c650bba254aa` | `20261015120500_fase3_system_settings_policies.sql` | aplicada (ledger de produção); recibo retroativo |
+| `20261015120000` | `reconcilia_oob_incidente_2026_10_13` | `69f35255eaab300ad72e434ffee17207b81d28d076305d118a6e411cda0e99e6` | `20261015120000_reconcilia_oob_incidente_2026_10_13.sql` | aplicada (ledger de produção); recibo retroativo — **arquivo local difere do aplicado** (editado depois de aplicar); sha256 = arquivo atual, não o aplicado; md5 dos statements no ledger = `b8a28a4b929be144c3de61e7d1663642` |
+| `20261013180000` | `incidente_2026_10_13_drop_trigger_redundante_sync_primary_image_url` | `ff317b5c6a377245ede1a8a9bee8023d6f11fc9cd12300076e4ffafd7ff56079` | `20261013180000_incidente_2026_10_13_drop_trigger_redundante_sync_primary_image_url.sql` | aplicada (ledger de produção); recibo retroativo |
+| `20261013172634` | `agente2_fase6_workmem_and_index` | `b656cab7fef38893b5f7cf69dd4437344a584d60695ab8953948ecb67aa12aae` | `20261013172634_agente2_fase6_workmem_and_index.sql` | aplicada (ledger de produção); recibo retroativo |
+| `20261013171953` | `agente2_fase3_rls_alter_policies` | `9fff1981c7c21dd0ea4534a71f2d72e651d02bba9bc038c6d1157dfdf85e3739` | `20261013171953_agente2_fase3_rls_alter_policies.sql` | aplicada (ledger de produção); recibo retroativo |
+| `20261013171601` | `agente2_fase3_00_index_only` | `ecfb305f84c43541120033d5db3036913e097d442416e4471d4426b78647939d` | `20261013171601_agente2_fase3_00_index_only.sql` | aplicada (ledger de produção); recibo retroativo |
+| `20261013171541` | `agente2_test_ping` | `2cbcb98ce25a8e18a6281e92d2241b109833583a6f0caf184cd6f48903a684ed` | `20261013171541_agente2_test_ping.sql` | aplicada (ledger de produção); recibo retroativo |
+| `20261013171425` | `incidente_2026_10_13_extensoes_diagnostico_bloat` | `66139cd9c74bf5a35ccac0039d17dd72638bd611c08aa78eca7bee364fbf0e80` | `20261013171425_incidente_2026_10_13_extensoes_diagnostico_bloat.sql` | aplicada (ledger de produção); recibo retroativo |
+| `20261013171421` | `incidente_2026_10_13_autovacuum_tuning_tabelas_quentes` | `475f4c8bb8f69f8362a3cd5669ca2996b6a3507593443de504ec3b43d09c69ff` | `20261013171421_incidente_2026_10_13_autovacuum_tuning_tabelas_quentes.sql` | aplicada (ledger de produção); recibo retroativo |
+| `20261013171417` | `incidente_2026_10_13_backfill_queue_reaper_idempotente` | `0101e13ec88484d676a27a06c20dd150663ef0a9c674080e53d61f3d916de871` | `20261013171417_incidente_2026_10_13_backfill_queue_reaper_idempotente.sql` | aplicada (ledger de produção); recibo retroativo |
+| `20261013171045` | `fase0_fase8_contencao_seguranca` | `5eb3c2a36a1047f74744c55aa9315b4d0b4b7d752fe462c05be687db7cba873c` | `20261013171045_fase0_fase8_contencao_seguranca.sql` | aplicada (ledger de produção); recibo retroativo |
+| `20261013171010` | `incidente20261013_fase9_deteccao_erros_recorrentes` | `81051f1498ae4db5eebbc79d60bc4e03bb027cb6568024cd3a74636c0b218995` | `20261013171010_incidente20261013_fase9_deteccao_erros_recorrentes.sql` | aplicada (ledger de produção); recibo retroativo |
+| `20261013170913` | `incidente20261013_fase5_permissoes_auditoria` | `a2adba57c9266be0cf4baeedc1ede7739822792afbeb28e9537932c4cfa28a5f` | `20261013170913_incidente20261013_fase5_permissoes_auditoria.sql` | aplicada (ledger de produção); recibo retroativo |
+| `20261005130000` | `login_lockout_verified_per_ip` | `406650663259774deaa1058f19bf0c64a44e132e76d5e29d0a892e383d61bf26` | `20261005130000_login_lockout_verified_per_ip.sql` | aplicada (ledger de produção); recibo retroativo |
+| `20261005124503` | `discount_approval_expected_version` | `bec8ea85e23114f5ea0d9f1fc837700fab5b473f61cc2a14d56b0fac20a30863` | `20261005124503_discount_approval_expected_version.sql` | aplicada (ledger de produção); recibo retroativo |
+| `20261005124502` | `audit_redact_sensitive_columns` | `73b4f87d15ab8dea1e38ccb54202b6e31dae770b512b9203d718cd9342d461dc` | `20261005124502_audit_redact_sensitive_columns.sql` | aplicada (ledger de produção); recibo retroativo |
+| `20261005124501` | `audit_triggers_critical_tables` | `466c2c0a51c186581c64eca247e2ad0b173f9598a476cfbb4de058b8b93eae99` | `20261005124501_audit_triggers_critical_tables.sql` | aplicada (ledger de produção); recibo retroativo |
+| `20261005124500` | `discount_approval_requests_version` | `e3225c1a3238947bac7c233f5960630f3f88ecea7b756bdf63875e833571cedb` | `20261005124500_discount_approval_requests_version.sql` | aplicada (ledger de produção); recibo retroativo |
+| `20260912205759` | `catalog_e24_zapp_catalog_stats` | `2ed94364aef678b413f1ace537eb42c694c5195b2c57bec34e50da4207631b3d` | `20260912205759_catalog_e24_zapp_catalog_stats.sql` | aplicada (ledger de produção); recibo retroativo |
+| `20260912151000` | `kit_maker_atomic_pin_forward_only` | `0119bee05805389337e409126ff7465965f75dd0923b4229337937b5aab13ea6` | `20260912151000_kit_maker_atomic_pin_forward_only.sql` | aplicada (ledger de produção); recibo retroativo |
+| `20260912150000` | `kit_maker_quote_lineage_forward_only` | `35652b939e1736e8d12fe5eeefc15df9ce7310f34016725fe9a36ea22825a2d4` | `20260912150000_kit_maker_quote_lineage_forward_only.sql` | aplicada (ledger de produção); recibo retroativo |
+| `20260911172000` | `kit_maker_quote_idempotency` | `bbe3fc4926ec0fde6e00ce6e0f4c5518f8ad85dc1f0182f59dc4f40ce957f4cb` | `20260911172000_kit_maker_quote_idempotency.sql` | aplicada (ledger de produção); recibo retroativo |
+| `20260909221000` | `magazine_view_events_rls_initplan` | `fab1ed0304129c0235ffc56b2e45a933bdd510edf76fbf03e5e7297fd51a7a23` | `20260909221000_magazine_view_events_rls_initplan.sql` | aplicada (ledger de produção); recibo retroativo |
+| `20260909220000` | `magazine_duplicate_request_indexes` | `9e17dad83fef512fbe85b54cc544e04188e7402884415ce6f24b39acf88ebbed` | `20260909220000_magazine_duplicate_request_indexes.sql` | aplicada (ledger de produção); recibo retroativo |
+| `20260909210000` | `audit_security_definer_acl_allow_public_endpoints` | `61dd0f3ca570dc275cb6d42147c3ef2582d12bb7b901ce8a4df5227161b73a08` | `20260909210000_audit_security_definer_acl_allow_public_endpoints.sql` | aplicada (ledger de produção); recibo retroativo |
+| `20260909201000` | `public_sitemap_rpc` | `e6c8a3fc9dc356fa4c877bb937b6569e553e6e969233c71cd4598982c47b6770` | `20260909201000_public_sitemap_rpc.sql` | aplicada (ledger de produção); recibo retroativo |
+| `20260909200000` | `magazine_hardening_v2` | `7bac7db06b9c9db2a6f2c6deabff60a763f9dfa45f60cf9125c441febda42175` | `20260909200000_magazine_hardening_v2.sql` | aplicada (ledger de produção); recibo retroativo |
+| `20260909190400` | `magazine_page_order_numeric_version` | `726ed2e2151b9c67177d7224355417fc0fe7203ad49719d08ed4e8541760cb24` | `20260909190400_magazine_page_order_numeric_version.sql` | aplicada (ledger de produção); recibo retroativo |
+| `20260909190300` | `magazine_publish_atomic` | `1e61c4d4d697569282829848b6322c8067d844e501d9eabdcb4736c1cf51cb1b` | `20260909190300_magazine_publish_atomic.sql` | aplicada (ledger de produção); recibo retroativo |
+| `20260909190200` | `magazine_add_items_null_safe` | `e375bea1de0ac159bab7857b29f5bee0187bb09365789b48f13a19998894df87` | `20260909190200_magazine_add_items_null_safe.sql` | aplicada (ledger de produção); recibo retroativo |
+| `20260909190100` | `magazine_page_order_validation_null_safe` | `408b0df86f945b51ee63048ac498b3c02b431682e21502b53924b0a243375872` | `20260909190100_magazine_page_order_validation_null_safe.sql` | aplicada (ledger de produção); recibo retroativo |
+| `20260909190000` | `magazine_duplicate_remap_page_order` | `bf63cfd8c85d517a5402eac88f6509394e697a807da3d91f6354c9756ef5a393` | `20260909190000_magazine_duplicate_remap_page_order.sql` | aplicada (ledger de produção); recibo retroativo |
+| `20260909181400` | `magazine_update_metadata_atomic` | `73e9ad0ea67d2a6b2e9de5697216669c01121c7050db41d063937cbc15c31765` | `20260909181400_magazine_update_metadata_atomic.sql` | aplicada (ledger de produção); recibo retroativo |
+| `20260909181300` | `magazine_duplicate_atomic` | `409203fbce0576b63f8aab60d3baf7da067fcd99ed7d5b33ace2ebe6e512b115` | `20260909181300_magazine_duplicate_atomic.sql` | aplicada (ledger de produção); recibo retroativo |
+| `20260909181200` | `magazine_reorder_items_atomic` | `dc77004a9047e77d8b414b2e0bf7bc3458c8baf52cf202bc71645e99f823a1bb` | `20260909181200_magazine_reorder_items_atomic.sql` | aplicada (ledger de produção); recibo retroativo |
+| `20260909181100` | `magazine_remove_items_atomic` | `3fc04a9a1a406edecfdb55ea37302c89455c2e764491a34affbd1ced1bb00d3a` | `20260909181100_magazine_remove_items_atomic.sql` | aplicada (ledger de produção); recibo retroativo |
+| `20260909181000` | `magazine_add_items_atomic` | `032bc700e50028fb7cf3c90a45fd959b3ab1f201fb8ba551a6934c958c18d34a` | `20260909181000_magazine_add_items_atomic.sql` | aplicada (ledger de produção); recibo retroativo |
+| `20260908191530` | `site_products_public_contract_20260908` | `e201ec2ed902b3da421fa59cfe1c5c2730f987d9eabb11106d3c5a6e828b418c` | `20260908191530_site_products_public_contract_20260908.sql` | aplicada (ledger de produção); recibo retroativo |
+| `20260905040000` | `audit_r3_fn_spr_before_write_short_circuit` | `32313fb8cab57f67baf8f54399c59535013ed9b10b304b6ec33995a00b199e0c` | `20260905040000_audit_r3_fn_spr_before_write_short_circuit.sql` | aplicada (ledger de produção); recibo retroativo — **não verificável**: o ledger guarda só um resumo, não o SQL; sha256 = arquivo atual |
+| `20260905034045` | `audit_r3_revoke_anon_mv_product_compositions` | `dfda3b19ae464464aa4d2ec44c96162ed869ae1987baa88c558ba52fe2e19d9d` | `20260905034045_audit_r3_revoke_anon_mv_product_compositions.sql` | aplicada (ledger de produção); recibo retroativo |
+| `20260905033718` | `audit_r3_anon_insert_rate_guard` | `350efc387a58dd29408bde12c87bb3d0807a27fdd26c9bbc3316690d74787ce2` | `20260905033718_audit_r3_anon_insert_rate_guard.sql` | aplicada (ledger de produção); recibo retroativo |
+| `20260905033652` | `audit_r3_seller_carts_optimistic_version` | `71191f92ba4c59fb72c16c12d5022e6fd83dcce0e4a720270c530387a1703a17` | `20260905033652_audit_r3_seller_carts_optimistic_version.sql` | aplicada (ledger de produção); recibo retroativo |
+| `20260905033000` | `audit_r3_seller_carts_optimistic_version` | `262a6eb200bc79467657052d7873780074e1a3c6487b58914bb43db461f221c7` | `20260905033000_audit_r3_seller_carts_optimistic_version.sql` | aplicada (ledger de produção); recibo retroativo |
+| `20260904150000` | `audit_r4_sec008_v4_revoke_anon_execute` | `e2ec20d780f706d489956d1b57c1ee3a0d9803ae2f2172bad52c4876b5b186b3` | `20260904150000_audit_r4_sec008_v4_revoke_anon_execute.sql` | aplicada (ledger de produção); recibo retroativo |
+| `20260904140000` | `audit_r4_fixup_search_path_pg_temp_and_default3` | `aebb64e85d68e377e19d907abe0f4ad100c345586f74a25fcd8394b0d5433a5e` | `20260904140000_audit_r4_fixup_search_path_pg_temp_and_default3.sql` | aplicada (ledger de produção); recibo retroativo — **não verificável**: o ledger guarda só um resumo, não o SQL; sha256 = arquivo atual |
+| `20260904130000` | `audit_r4_sec008_ip_bypass_fix` | `89fb445a2c061d760943f161bb79743e52ad2e180536b8e98e8e260e85c5d88d` | `20260904130000_audit_r4_sec008_ip_bypass_fix.sql` | aplicada (ledger de produção); recibo retroativo — **não verificável**: o ledger guarda só um resumo, não o SQL; sha256 = arquivo atual |
+| `20260904120000` | `audit_r4_sec008_city_bypass_fix` | `819e9145a167430411ad6ce97635d751c25515622e6f27c07175d35b37fd2d3e` | `20260904120000_audit_r4_sec008_city_bypass_fix.sql` | aplicada (ledger de produção); recibo retroativo — **não verificável**: o ledger guarda só um resumo, não o SQL; sha256 = arquivo atual |
+| `20260904111000` | `audit_r4_sec009_revoke_quote_token_legacy` | `0da7a47549d77071444f073b9ff695e94982f9a0ce03dbc432571fba9766a689` | `20260904111000_audit_r4_sec009_revoke_quote_token_legacy.sql` | aplicada (ledger de produção); recibo retroativo — **não verificável**: o ledger guarda só um resumo, não o SQL; sha256 = arquivo atual |
+| `20260904110000` | `audit_r4_sec008_fn_check_login_allowed_canonical` | `36a11e8dba6fc5064fb988645bd6e43c0d4f4bbb872d2e9a31956c80dfc95fc6` | `20260904110000_audit_r4_sec008_fn_check_login_allowed_canonical.sql` | aplicada (ledger de produção); recibo retroativo — **não verificável**: o ledger guarda só um resumo, não o SQL; sha256 = arquivo atual |
+| `20260904105000` | `audit_r4_sec007_fix_sqlerrm_no_leak` | `a2ab4b6c9b5211c2c2f5e05c53ccb93535513e2fb0adc525babc927276e3b499` | `20260904105000_audit_r4_sec007_fix_sqlerrm_no_leak.sql` | aplicada (ledger de produção); recibo retroativo — **não verificável**: o ledger guarda só um resumo, não o SQL; sha256 = arquivo atual |
+| `20260904103000` | `audit_r4_sec011_fn_purge_spr_history_search_path` | `9c3d3a705443f167fa7aebd2c964c742e45c039320b1ce61732454c8e622b7e8` | `20260904103000_audit_r4_sec011_fn_purge_spr_history_search_path.sql` | aplicada (ledger de produção); recibo retroativo — **não verificável**: o ledger guarda só um resumo, não o SQL; sha256 = arquivo atual (o resumo indica `SET search_path = 'public'`, o arquivo tem `public, pg_temp`: diverge) |
+| `20260904102000` | `audit_r4_sec009_sec010_quote_token_pii_and_password_reset_path` | `775b9156b1790aed65b52edef757e58594ddd2909bb9cb38266f9227cff0a0cb` | `20260904102000_audit_r4_sec009_sec010_quote_token_pii_and_password_reset_path.sql` | aplicada (ledger de produção); recibo retroativo — **não verificável**: o ledger guarda só um resumo, não o SQL; sha256 = arquivo atual |
+| `20260904101500` | `audit_r4_sec007_sec008_login_security_functions` | `718a2c578fa6cf1183dad8313f7c7555b118fa78f753144a3239e7f5b4f85601` | `20260904101500_audit_r4_sec007_sec008_login_security_functions.sql` | aplicada (ledger de produção); recibo retroativo — **não verificável**: o ledger guarda só um resumo, não o SQL; sha256 = arquivo atual |
+| `20260904100000` | `audit_r4_magazine_partitions_and_audit_log_acl` | `6a00e01332ee6e1c7415081f9562af9923a87395673db1853607ad3945b981ef` | `20260904100000_audit_r4_magazine_partitions_and_audit_log_acl.sql` | aplicada (ledger de produção); recibo retroativo — **não verificável**: o ledger guarda só um resumo, não o SQL; sha256 = arquivo atual |
+| `20260903181803` | `fix_regex_relkind_in_purge_and_smoke` | `08c51cad2a322b15252215de4d44111b6c9ff5623163a84d59b880385df40115` | `20260903181803_fix_regex_relkind_in_purge_and_smoke.sql` | aplicada (ledger de produção); recibo retroativo |
+| `20260903130000` | `fix_regex_relkind_in_purge_and_smoke` | `d51a0bc8cc9cd664c0fdb360f1bcf65bf0fc69277fd2e687e498dc48d35b32b2` | `20260903130000_fix_regex_relkind_in_purge_and_smoke.sql` | aplicada (ledger de produção); recibo retroativo — **não verificável**: o ledger guarda só um resumo, não o SQL; sha256 = arquivo atual |
+| `20260903110000` | `p2_fixes_acl_secdef_schema_migrations_registration` | `95ab4b85c941fa817d7f8d08b2407da1832b4b72239b2a950c18717b71a4eb6e` | `20260903110000_p2_fixes_acl_secdef_schema_migrations_registration.sql` | aplicada (ledger de produção); recibo retroativo — **não verificável**: o ledger guarda só um resumo, não o SQL; sha256 = arquivo atual |
+| `20260903100000` | `fix_jwt_dual_read_guard_in_smoke_persist` | `12666de43c2855795d9d7872d6bf9ef92b163b25d8b744a9062fcee1a5ce9aad` | `20260903100000_fix_jwt_dual_read_guard_in_smoke_persist.sql` | aplicada (ledger de produção); recibo retroativo — **não verificável**: o ledger guarda só um resumo, não o SQL; sha256 = arquivo atual |
+| `20260903095502` | `smoke_persist_secdef_chain_and_auth_test_relcheck` | `6d5cdb84935de4403cdc536a1850ab913b8f3296cb8871274ea525aae0fd7453` | `20260903095502_smoke_persist_secdef_chain_and_auth_test_relcheck.sql` | aplicada (ledger de produção); recibo retroativo |
+| `20260903095500` | `smoke_persist_secdef_chain_and_auth_test_relcheck` | `8917788790e7a3411609a673ace3261b3923aa4137b635bcd340f73662ca053d` | `20260903095500_smoke_persist_secdef_chain_and_auth_test_relcheck.sql` | aplicada (ledger de produção); recibo retroativo — **não verificável**: o ledger guarda só um resumo, não o SQL; sha256 = arquivo atual |
+| `20260903093431` | `spr_partition_policies_parity_and_smoke_relkind` | `62cfe947da24fda33e18f098bd51ac48eabfbeb56c0da05fb75414bbbb2ad0fc` | `20260903093431_spr_partition_policies_parity_and_smoke_relkind.sql` | aplicada (ledger de produção); recibo retroativo |
+| `20260903092000` | `harden_smoke_persist_guard_and_revive_auth_test` | `6cf306d13791fdbe8484ac7ab1cba5451f363d4d9cf35ab20e749c4f8bd06881` | `20260903092000_harden_smoke_persist_guard_and_revive_auth_test.sql` | aplicada (ledger de produção); recibo retroativo |
+| `20260903091723` | `harden_smoke_persist_guard_and_revive_auth_test` | `ccd77ddea0ce7803b2c4bcb7e691c0060d12f4cf1db04b10ca98e4ee7c79f7b3` | `20260903091723_harden_smoke_persist_guard_and_revive_auth_test.sql` | aplicada (ledger de produção); recibo retroativo |
+| `20260902221455` | `align_smoke_tests_with_hardening_expectations` | `072e109abc9f8e7b05c00bfc0744005bc2a70813571004f9584b47d85c5fe5fa` | `20260902221455_align_smoke_tests_with_hardening_expectations.sql` | aplicada (ledger de produção); recibo retroativo |
+| `20260902221030` | `fix_smoke_persist_signature_drift` | `600c89fc77902737785aebd1b308a35ebc5c5847bcf366baf83bcd31697903b8` | `20260902221030_fix_smoke_persist_signature_drift.sql` | aplicada (ledger de produção); recibo retroativo |
+| `20260902221020` | `rls_enable_spr_history_partitions_and_fix_creator` | `bbe3dd774fdb8907164b8ef5b75c41529aa2a30d622c6a2cf12a4577e67385d0` | `20260902221020_rls_enable_spr_history_partitions_and_fix_creator.sql` | aplicada (ledger de produção); recibo retroativo |
+| `20260902220900` | `fix_smoke_persist_signature_drift` | `331c5aef2704dab17c1cb153afac93cd2810a535a59250908b3b5fb482d76f39` | `20260902220900_fix_smoke_persist_signature_drift.sql` | aplicada (ledger de produção); recibo retroativo |
+| `20260829123000` | `discount_approval_audit_exact_correlation` | `1576b03a985893d180f58cc9d3f05873b32441151b10c7d1390bbe9494815505` | `20260829123000_discount_approval_audit_exact_correlation.sql` | aplicada (ledger de produção); recibo retroativo — **não verificável**: ledger diz "Applied selectively via Management API" (pode ter sido parte do arquivo); sha256 = arquivo atual, idêntico ao do commit citado |
+| `20260829122000` | `discount_approval_responsible_seller_and_audit_correlation` | `23effb1d033eb560ef00a1d74941f86b96272455e421d9a90d5647489dc4c173` | `20260829122000_discount_approval_responsible_seller_and_audit_correlation.sql` | aplicada (ledger de produção); recibo retroativo — **não verificável**: ledger diz "Applied selectively via Management API" (pode ter sido parte do arquivo); sha256 = arquivo atual, idêntico ao do commit citado |
+| `20260829121000` | `discount_approval_orphan_fail_closed` | `e5c7030cf0c9889d1c6cac336a9414397ea5108cda43c49f65ba37a54405df1d` | `20260829121000_discount_approval_orphan_fail_closed.sql` | aplicada (ledger de produção); recibo retroativo — **não verificável**: ledger diz "Applied selectively via Management API" (pode ter sido parte do arquivo); sha256 = arquivo atual, idêntico ao do commit citado |
+| `20260829120000` | `quote_save_with_discount_approval_transactional` | `ff89af6ce7382903d42d3ea73d68e682def1af1f9f9ec38bb3daeab326987843` | `20260829120000_quote_save_with_discount_approval_transactional.sql` | aplicada (ledger de produção); recibo retroativo — **não verificável**: ledger diz "Applied selectively via Management API" (pode ter sido parte do arquivo); sha256 = arquivo atual, idêntico ao do commit citado |
+| `20260829115000` | `discount_approval_pending_reuse_and_markup_audit` | `baac95f7c5247ce421ad766c4e4f801805ed9da107ecdb1c200bab35be850f71` | `20260829115000_discount_approval_pending_reuse_and_markup_audit.sql` | aplicada (ledger de produção); recibo retroativo — **não verificável**: ledger diz "Applied selectively via Management API" (pode ter sido parte do arquivo); sha256 = arquivo atual, idêntico ao do commit citado |
+| `20260829114000` | `kit_print_areas_anon_complete_minimum_grant` | `ea0a942c88764d68dad3ae91a89a4c5d8f4cb14ff6ed810608e80d9865c41467` | `20260829114000_kit_print_areas_anon_complete_minimum_grant.sql` | aplicada (ledger de produção); recibo retroativo — **não verificável**: ledger diz "Applied selectively via Management API" (pode ter sido parte do arquivo); sha256 = arquivo atual, idêntico ao do commit citado |
+| `20260829113000` | `discount_integrity_owner_and_reparent` | `dbeb319ae32f1de857493ed326a79bf95a0750fc8bbd23522b7286b84f2adb29` | `20260829113000_discount_integrity_owner_and_reparent.sql` | aplicada (ledger de produção); recibo retroativo — **não verificável**: ledger diz "Applied selectively via Management API" (pode ter sido parte do arquivo); sha256 = arquivo atual, idêntico ao do commit citado |
+| `20260829112000` | `discount_approval_reuse_status` | `e2229dd50fd5c0c850ec56cd7821c368155f6b5ed51667bbcd978c89933efbaa` | `20260829112000_discount_approval_reuse_status.sql` | aplicada (ledger de produção); recibo retroativo — **não verificável**: ledger diz "Applied selectively via Management API" (pode ter sido parte do arquivo); sha256 = arquivo atual, idêntico ao do commit citado |
+| `20260829111000` | `discount_approval_transactional_integrity` | `9e88ba97e987b064642f5dc36529e852bb1b7d8e7282404cc30a573b4a4f17da` | `20260829111000_discount_approval_transactional_integrity.sql` | aplicada (ledger de produção); recibo retroativo — **não verificável**: ledger diz "Applied selectively via Management API" (pode ter sido parte do arquivo); sha256 = arquivo atual, idêntico ao do commit citado |
+| `20260829110000` | `kit_print_areas_anon_minimum_grant` | `3cdeea73d9501809a43cfdc5592216a1535f027f7ccaed1a9e2a392a3da8cc00` | `20260829110000_kit_print_areas_anon_minimum_grant.sql` | aplicada (ledger de produção); recibo retroativo — **não verificável**: ledger diz "Applied selectively via Management API" (pode ter sido parte do arquivo); sha256 = arquivo atual, idêntico ao do commit citado |
+| `20260828141200` | `forward_only_fn_quotes_validate_discount_cross_user` | `dfd8084f883f2394f3be7caa087bf5239c47b0664a8297b37336e291fec95bf0` | `20260828141200_forward_only_fn_quotes_validate_discount_cross_user.sql` | aplicada (ledger de produção); recibo retroativo |
+| `20260828141100` | `forward_only_create_quote_transactional_auth_scope` | `28c3de121b7f494b1d0b77c91ef98cb108fba7cd501ad78d035bef523d333f09` | `20260828141100_forward_only_create_quote_transactional_auth_scope.sql` | aplicada (ledger de produção); recibo retroativo |
+| `20260828141000` | `forward_only_v_kit_component_print_areas_security_invoker` | `0a8c6597d1e39214a6b61b5a82495e9fa886c99beb0cb99ab1022f8702640702` | `20260828141000_forward_only_v_kit_component_print_areas_security_invoker.sql` | aplicada (ledger de produção); recibo retroativo |
+| `20260718135800` | `close_anon_write_default_privilege_postgres_role` | `feea569f6b3d9ae1ac335d52c357ff4c312dff3ae60465eedba43b310e325fb1` | `20260718135800_close_anon_write_default_privilege_postgres_role.sql` | aplicada (ledger de produção); recibo retroativo |
+| `20260717235313` | `fix_stock_rupture_kpi_matview_grants_for_authenticated` | `c24bbfb0b16487cdc3b072cb74226832182b9ba13cecc45e5ca16745616cb397` | `20260717235313_fix_stock_rupture_kpi_matview_grants_for_authenticated.sql` | aplicada (ledger de produção); recibo retroativo |
+| `20260717185945` | `narrow_analytics_default_privileges_to_explicit_grants` | `81c4c27fada037b1ffe0b1237ae1d5d395bf0f6b9cfa2ab677755a6e4e5b94ec` | `20260717185945_narrow_analytics_default_privileges_to_explicit_grants.sql` | aplicada (ledger de produção); recibo retroativo |
+| `20260717181201` | `fix_analytics_matview_grants_after_security_invoker` | `fa935e46cdf95c95213ff5518f006708721a1c5cc9564660a4e78595cd56bb17` | `20260717181201_fix_analytics_matview_grants_after_security_invoker.sql` | aplicada (ledger de produção); recibo retroativo — **arquivo local difere do aplicado** (aplicada via MCP com SQL diferente); sha256 = arquivo atual, não o aplicado; md5 dos statements no ledger = `45bc426cd3d9b070cde369ff6027e268` |
+| `20260717173510` | `update_fn_verify_anon_catalog_grants_v3` | `58761333494795251225411d7a0946bdb83dbdba9a3177cff9e4dda432de8da7` | `20260717173510_update_fn_verify_anon_catalog_grants_v3.sql` | aplicada (ledger de produção); recibo retroativo |
+| `20260717173416` | `revoke_anon_pg_stat_statements_v1` | `6853eba2988a7490906a1841bb665b0d6d0b441e27162cbe2c2c1823d3b91cec` | `20260717173416_revoke_anon_pg_stat_statements_v1.sql` | aplicada (ledger de produção); recibo retroativo |
+| `20260717173348` | `secure_tabela_gravacao_anon_definer_v1` | `e8b79e22f2e4425b4c0ec1ae24836f3571a60a2e23017bd98c12badc6f6744cc` | `20260717173348_secure_tabela_gravacao_anon_definer_v1.sql` | aplicada (ledger de produção); recibo retroativo |
+| `20260717173228` | `fix_fn_super_filtro_null_stock_v1` | `183d8959571cb82139c466e231e6af69533bd27874055920e5ada2587a99a61f` | `20260717173228_fix_fn_super_filtro_null_stock_v1.sql` | aplicada (ledger de produção); recibo retroativo |
+| `20260717172936` | `fix_product_variants_anon_policy_v1` | `4a5182f6d36cc9a8834e070a45a2d17f5adb69e4c78a02e902e78ed3bfd2b198` | `20260717172936_fix_product_variants_anon_policy_v1.sql` | aplicada (ledger de produção); recibo retroativo |
+| `20260717161748` | `grant_anon_fn_product_active_rls_v1` | `180267dd928a2f79410c4137ba2389f4a36239842c736d1064582ea29c202e3f` | `20260717161748_grant_anon_fn_product_active_rls_v1.sql` | aplicada (ledger de produção); recibo retroativo |
+| `20260717161653` | `fix_rls_exists_products_definer_v1` | `0994fd7a410fb90281b1a44e34b227bfe9c783a60ea9f076645a5c41319790fb` | `20260717161653_fix_rls_exists_products_definer_v1.sql` | aplicada (ledger de produção); recibo retroativo |
+| `20260717161443` | `secure_catalog_views_definer_v1` | `05b9b5a3367c887a8f20bbdf8c1c5050c003817e056237c90c4244c5c3e182d9` | `20260717161443_secure_catalog_views_definer_v1.sql` | aplicada (ledger de produção); recibo retroativo |
+| `20260717151231` | `update_fn_verify_anon_catalog_grants_v2` | `ad7adc02cc01f2367dfcfa74e6d3ba2e5faf066662c1633454b758002446300b` | `20260717151231_update_fn_verify_anon_catalog_grants_v2.sql` | aplicada (ledger de produção); recibo retroativo |
+| `20260717151138` | `secure_anon_products_suppliers_definer_v1` | `b3d3465c68835326371feb27728b3b40673ce9a8ef863a9259c2e980f626e4fc` | `20260717151138_secure_anon_products_suppliers_definer_v1.sql` | aplicada (ledger de produção); recibo retroativo |
+| `20260717145632` | `fix_cron_and_fn_after_mv_move_to_internal` | `e5f84699550d92a05ff922ad8347a96d6ac4686a8c8d87d62051c8aa8f07d7bb` | `20260717145632_fix_cron_and_fn_after_mv_move_to_internal.sql` | aplicada (ledger de produção); recibo retroativo |
+| `20260717144811` | `schedule_anon_catalog_grant_audit_v1` | `c98adf232b68c79ce506eef3c05cd9ee880663947d3bf4e34e172ac2a079b004` | `20260717144811_schedule_anon_catalog_grant_audit_v1.sql` | aplicada (ledger de produção); recibo retroativo |
+| `20260717144724` | `create_fn_verify_anon_catalog_grants_v1` | `14f3bb8d322d7b2347acfed7d81ebd224b0339d3de97497b7afa31330bb36d3d` | `20260717144724_create_fn_verify_anon_catalog_grants_v1.sql` | aplicada (ledger de produção); recibo retroativo |
+| `20260717144444` | `grant_anon_variant_sale_prices_definer_v1` | `90ff64145029fb411bb6f654e0dbf7310340a8e4b796fdc366d1cbefa979303d` | `20260717144444_grant_anon_variant_sale_prices_definer_v1.sql` | aplicada (ledger de produção); recibo retroativo |
+| `20260717144046` | `grant_anon_public_views_v2` | `22788b73130f1eef7f45e485cf8dca9abb0853ef062ed30e008d8eb9cd32ee5a` | `20260717144046_grant_anon_public_views_v2.sql` | aplicada (ledger de produção); recibo retroativo |
+| `20260717143414` | `grant_anon_catalog_readpath_v2` | `ccac83df2ad780621d801f6bab5d763c7d1df9b758bb5ab5183e9a8b2c6101a3` | `20260717143414_grant_anon_catalog_readpath_v2.sql` | aplicada (ledger de produção); recibo retroativo |
+| `20260717142728` | `final_security_sweep_and_audit_close` | `dbfb2040c2b0466fe91777bb4f6933236d54e5048b6341806147a311f07102f8` | `20260717142728_final_security_sweep_and_audit_close.sql` | aplicada (ledger de produção); recibo retroativo |
+| `20260717141454` | `grant_anon_execute_catalog_rpcs_v1` | `ccf01b02241a1c0f37681f9d655dd52633bdc7cbc16582a240d56661ac9df33d` | `20260717141454_grant_anon_execute_catalog_rpcs_v1.sql` | aplicada (ledger de produção); recibo retroativo |
+| `20260717141215` | `move_mv_product_leaf_category_to_internal` | `887252ba2282579e70c32a6c80216125f44837cd6c33721d8de7f54ddf232038` | `20260717141215_move_mv_product_leaf_category_to_internal.sql` | aplicada (ledger de produção); recibo retroativo |
+| `20260717135935` | `revoke_anon_remaining_41_tables` | `785cfa975de26cb7369d1f496f3a8b7c0e8882d5a57eb21a6ff44b3a1c03ea31` | `20260717135935_revoke_anon_remaining_41_tables.sql` | aplicada (ledger de produção); recibo retroativo |
+| `20260717134612` | `create_collection_products_product_id_idx` | `97f883191e6626b396912738d554bc8967d8c1433499da87dbb2eae1fc7604fe` | `20260717134612_create_collection_products_product_id_idx.sql` | aplicada (ledger de produção); recibo retroativo |
+| `20260717134415` | `fix_grants_anon_public_catalog_tables_v1` | `780097761436bbde24b244886fca487d1d2cbc5786f46db7aa55f999021a085c` | `20260717134415_fix_grants_anon_public_catalog_tables_v1.sql` | aplicada (ledger de produção); recibo retroativo |
+| `20260717133915` | `fix_remaining_fk_index_and_drop_truly_unused` | `7964334a593fee6957e39118aa80a31f531d251c98f601b2e5f27569176ad50d` | `20260717133915_fix_remaining_fk_index_and_drop_truly_unused.sql` | aplicada (ledger de produção); recibo retroativo |
+| `20260717133700` | `fix_grants_public_views_anon_authenticated_v1` | `333785868c639b04fbbadece78eb9ed3c9e7ad45ed47cc4447a7d44faed4a5c6` | `20260717133700_fix_grants_public_views_anon_authenticated_v1.sql` | aplicada (ledger de produção); recibo retroativo |
+| `20260717133334` | `create_fk_indexes` | `d871bc8894740a69c75adb7250538af30172910b8c31af1a42db1fdc22fd09aa` | `20260717133334_create_fk_indexes.sql` | aplicada (ledger de produção); recibo retroativo |
+| `20260717132619` | `drop_unused_indexes` | `e64d9f391e6ae9b20de68cc31ad993f32dd6029c54bcc2087c14ff52a7041411` | `20260717132619_drop_unused_indexes.sql` | aplicada (ledger de produção); recibo retroativo |
+| `20260717130602` | `revoke_direct_anon_select_remaining` | `d9096d7e0c369f0663363140eed37ff10391f3f0850f824afc3e1bdfb3b7eac2` | `20260717130602_revoke_direct_anon_select_remaining.sql` | aplicada (ledger de produção); recibo retroativo |
+| `20260717125807` | `fix_public_grant_revoke_and_analytics_schema` | `ba6c7534932a68325dcd3672f75b0448e7a1a0019f346731de043a4eb3dbc20a` | `20260717125807_fix_public_grant_revoke_and_analytics_schema.sql` | aplicada (ledger de produção); recibo retroativo |
+| `20260717124411` | `definitive_fix_security_invoker_and_grants_v3` | `72bff945308795bb948d220d93c48226b4c82c282bb8048c66f10a4f0feffdfd` | `20260717124411_definitive_fix_security_invoker_and_grants_v3.sql` | aplicada (ledger de produção); recibo retroativo |
+| `20260717124313` | `dynamic_revoke_anon_select_tables` | `7144ba45c9dcaaa7d673b46562a3de930d0c8d02282bf62bb8cb68810a845154` | `20260717124313_dynamic_revoke_anon_select_tables.sql` | aplicada (ledger de produção); recibo retroativo |
+| `20260717123553` | `set_security_invoker_on_views` | `485f45036dbb6b055f96e897f75fff9fe63d3061dbb7449259b0edca43897f4a` | `20260717123553_set_security_invoker_on_views.sql` | aplicada (ledger de produção); recibo retroativo |
+| `20260717123014` | `dynamic_revoke_anon_select_regular_views` | `255a127fb83a626d8fac93c5c7521d8db0054d41714acab3ac02df1a840a8d5d` | `20260717123014_dynamic_revoke_anon_select_regular_views.sql` | aplicada (ledger de produção); recibo retroativo |
+| `20260717121707` | `fix_revoke_public_grant_catalog_functions` | `ec38b18021e1acbf45b536fd9638197c78872266b1ddf736ffde0773ba6f9809` | `20260717121707_fix_revoke_public_grant_catalog_functions.sql` | aplicada (ledger de produção); recibo retroativo |
+| `20260717121531` | `re_fix_security_invoker_exempt_views_v2` | `a39bd81abc04a8a0093184238ae268a20ec28e70f877319708c8b7a6bc3d0794` | `20260717121531_re_fix_security_invoker_exempt_views_v2.sql` | aplicada (ledger de produção); recibo retroativo |
+| `20260717120937` | `dynamic_revoke_matview_api_access` | `6fc5c5eac844ca1b4578284141dfe46dbec667d61e840daa2270a330b0982466` | `20260717120937_dynamic_revoke_matview_api_access.sql` | aplicada (ledger de produção); recibo retroativo |
+| `20260717120914` | `final_sweep_anon_secdef_and_validation` | `170dfebbe07f68df5033df97632b4757ebdfd53bf7e9b0a727e7375f13c20945` | `20260717120914_final_sweep_anon_secdef_and_validation.sql` | aplicada (ledger de produção); recibo retroativo |
+| `20260717120745` | `analyze_all_tables_update_statistics` | `fa52561cfef7d22de5cc05105d30d223c73483403c02e45ffaf36b87f78bfc99` | `20260717120745_analyze_all_tables_update_statistics.sql` | aplicada (ledger de produção); recibo retroativo |
+| `20260717120723` | `dynamic_explicit_deny_rls_no_policy_tables` | `8d02faa3cf007173b1d1ec58818227049189b18a559efdc482e3b55806bdbbc4` | `20260717120723_dynamic_explicit_deny_rls_no_policy_tables.sql` | aplicada (ledger de produção); recibo retroativo |
+| `20260717120702` | `dynamic_add_missing_primary_keys` | `790481ca80f609dca21120064a924263c4096728fcf2f3db99416f5fb64d8c3c` | `20260717120702_dynamic_add_missing_primary_keys.sql` | aplicada (ledger de produção); recibo retroativo |
+| `20260717120634` | `dynamic_drop_duplicate_indexes` | `e7133c8d347a177dbac04ee9510f816c9029463a6ad35b6c53e8385dc380c435` | `20260717120634_dynamic_drop_duplicate_indexes.sql` | aplicada (ledger de produção); recibo retroativo |
+| `20260717120556` | `dynamic_index_unindexed_foreign_keys` | `fd0bd7b77f1cccdca09484a1ff0c4ef415acc1537f27b42539f7c6e095fcf533` | `20260717120556_dynamic_index_unindexed_foreign_keys.sql` | aplicada (ledger de produção); recibo retroativo |
+| `20260717120527` | `consolidate_multiple_permissive_policies` | `13ca8b216ba362bd11a72d2b06cd69baf48b1506c4ee286749f8eaf3b430891b` | `20260717120527_consolidate_multiple_permissive_policies.sql` | aplicada (ledger de produção); recibo retroativo |
+| `20260717120223` | `dynamic_fix_auth_rls_initplan_role_email_jwt` | `5d9d4d58584f9ef94bd60e0438c2a4a9988a5c8036873e1c5fe62f640593be94` | `20260717120223_dynamic_fix_auth_rls_initplan_role_email_jwt.sql` | aplicada (ledger de produção); recibo retroativo |
+| `20260717120142` | `revoke_anon_remaining_secdef_functions` | `c138b9a015d01c41c61768748df9b426e14e5c520c2d0b2b6a06f4acc2e04bcd` | `20260717120142_revoke_anon_remaining_secdef_functions.sql` | aplicada (ledger de produção); recibo retroativo |
+| `20260717120121` | `dynamic_pin_remaining_function_search_paths` | `d2fcb8816eea54aa7cda499403d27e09d14890f90abaf1ecb6e9657401c9e403` | `20260717120121_dynamic_pin_remaining_function_search_paths.sql` | aplicada (ledger de produção); recibo retroativo |
+| `20260717120058` | `revoke_anon_fn_global_search` | `ce17a2e56bad5986affcd1c8b623dd9f0faf932467d570ef992eb94c1599d850` | `20260717120058_revoke_anon_fn_global_search.sql` | aplicada (ledger de produção); recibo retroativo |
+| `20260717120020` | `dynamic_enable_rls_and_revoke_anon_catalog_functions` | `e83cf35c156598d5d917be71f54bbd354a2f3a6f7213f9fdd04d764eee8c582f` | `20260717120020_dynamic_enable_rls_and_revoke_anon_catalog_functions.sql` | aplicada (ledger de produção); recibo retroativo |
+| `20260717115930` | `dynamic_fix_auth_rls_initplan_and_revoke_anon_catalog_functions` | `0923ba5e8feca41f737cdb024039ed7d6dc908e92458c9754ebebe64d777b674` | `20260717115930_dynamic_fix_auth_rls_initplan_and_revoke_anon_catalog_functions.sql` | aplicada (ledger de produção); recibo retroativo |
+| `20260717115536` | `revoke_anon_fn_log_search_analytics_and_move_extensions` | `1cb458173a71dba8a054a0555ca5912fdc4e866552c899f79e9ff989ece1b66d` | `20260717115536_revoke_anon_fn_log_search_analytics_and_move_extensions.sql` | aplicada (ledger de produção); recibo retroativo |
+| `20260717115513` | `dynamic_security_invoker_all_views` | `3fa749b43a18e6b66faeb6df5e618668bc340553780e36515c5742c940fcbef5` | `20260717115513_dynamic_security_invoker_all_views.sql` | aplicada (ledger de produção); recibo retroativo |
+| `20260717115437` | `dynamic_pin_all_function_search_paths_and_fix_fn_global_search` | `3170794fd4d089dfc719156539cbcc7905d0d3c343c8b8993e7fa1811ba14ba5` | `20260717115437_dynamic_pin_all_function_search_paths_and_fix_fn_global_search.sql` | aplicada (ledger de produção); recibo retroativo |
+| `20260717115358` | `revoke_anon_b2b_catalog_secdef_and_fix_fn_super_filtro` | `fe263f7382c3c74510eeda2e7a7d2ff034422c386dc1870c1f668218bf19bf59` | `20260717115358_revoke_anon_b2b_catalog_secdef_and_fix_fn_super_filtro.sql` | aplicada (ledger de produção); recibo retroativo |
+| `20260717115253` | `fix_matview_api_and_anon_security_definer` | `da7fd7be3a85b3cf390f9acd475f8861f74f9f42af1db8e0dbb8fe20a1fcc9c9` | `20260717115253_fix_matview_api_and_anon_security_definer.sql` | aplicada (ledger de produção); recibo retroativo |
+| `20260717115130` | `restore_category_icons_proxy_view_from_categories` | `430da81937746044c9f32fe00da4739bdf36e078d0f0883a3ef54ab77391fbc8` | `20260717115130_restore_category_icons_proxy_view_from_categories.sql` | aplicada (ledger de produção); recibo retroativo |
+| `20260717114423` | `fix_security_invoker_regression_suppliers_and_stock_velocity` | `e3741ab2e327438598750473b05a4b746bf542b05af2d40f7a9381f895bac5f0` | `20260717114423_fix_security_invoker_regression_suppliers_and_stock_velocity.sql` | aplicada (ledger de produção); recibo retroativo |
+| `20261022194200` | `security_revoke_mcp_kv_get_authenticated` | `fda90b7ceff03b01f4d4ed1b59cefbdc398f3c199eb2e2414adbbf98fea8dfb2` | `20261022194200_security_revoke_mcp_kv_get_authenticated.sql` | aplicada (ledger de produção); recibo retroativo — o registro anterior deste log dizia "pendente" |
+| `20261022194100` | `security_revoke_mockup_approval_links_anon` | `44cf101355cc4e3f20db4267b90a3ca8c2a76afa502dca46a1971f6284838abf` | `20261022194100_security_revoke_mockup_approval_links_anon.sql` | aplicada (ledger de produção); recibo retroativo — o registro anterior deste log dizia "pendente" |
+| `20261022194000` | `security_revoke_external_connections_anon` | `cf143e83a55fc4b709ec382ac05d915c2309588e73ab8fa454f649fe222ff791` | `20261022194000_security_revoke_external_connections_anon.sql` | aplicada (ledger de produção); recibo retroativo — o registro anterior deste log dizia "pendente" |
+
+## 2026-11-12 — SB-0003: `fn_get_rupture_alerts` pendente em produção
+
+A função não existe em produção (verificado via `pg_proc` em 2026-11-12) e o painel de alertas de ruptura
+(`src/hooks/stock/useRuptureAlerts.ts`) depende dela. O preflight de `db-apply-migration.yml` recusava a
+migration por `search_path` sem `pg_temp` e por falta de rollback — corrigido aqui (traz a correção da PR #3179).
+A versão original (2026-11-01, nunca aplicada) foi renomeada para nova versão, como manda o gate E15 para migration pendente alterada.
+
+| version | arquivo | sha256 | status |
+|---|---|---|---|
+| `20261112011000` | `fix_sb0003_fn_get_rupture_alerts` | `8e081152c457ed572cb3aa349f62027bc7cd461996bb8036f499efb12af6a449` | **aplicada em 12/11/2026** pelo `db-apply-migration.yml` (run 43233358789, aprovado pelo dono; recibo E15 acima) |
+
+## 2026-11-12 — 10 telas com 42501 ou RPC ausente: migrations pendentes em produção
+
+Correções de acesso e RPCs novas (PR substituta da #3432; a RPC de inteligência de mercado (`fn_market_intelligence_macro`) ficou de fora — ver PR). Nenhuma aplicada ainda; aplicar uma a uma, na ordem da tabela, via `db-apply-migration.yml`.
+
+| version | arquivo | sha256 | status |
+|---|---|---|---|
+| `20261112120000` | `fix_fn_get_supplier_reliability` | `2843dc46113510dea1810788b9f83c63cd25b02d02befd1f45d27dfec485c393` | pendente — aplicar via `db-apply-migration.yml` após merge (aguarda aprovação do dono) |
+| `20261112120100` | `fix_smoke_tests_dashboard_admin_rpc` | `6c79e6999200d391e4a0bf79fe72f2a681c3ec01435921e41ae73fbe23d19334` | pendente — aplicar via `db-apply-migration.yml` após merge (aguarda aprovação do dono) |
+| `20261112120200` | `fix_kill_switch_obs_grant_summary_view` | `c8647e9ddd4ea64b072721dcb0336d7738ffe5078ea9652b27100350083a5b54` | pendente — aplicar via `db-apply-migration.yml` após merge (aguarda aprovação do dono) |
+| `20261112120300` | `fix_medallion_health_dev_rpc` | `c4a2b8606f9bbcd8b56823a41bdda148499f063b4f319fa30952244a59457602` | pendente — aplicar via `db-apply-migration.yml` após merge (aguarda aprovação do dono) |
+| `20261112120400` | `fn_insights_cache_count` | `79c76a16c0036283028028a213eea687bac5caf62685c4373dba543e70a6f612` | pendente — aplicar via `db-apply-migration.yml` após merge (aguarda aprovação do dono) |
+| `20261112120500` | `fix_optimization_queue_rpcs_dev_access` | `dd6849a1c3ff925423ac7bc91eb5605882ea03477b93b199ecf17eb574f3734e` | pendente — aplicar via `db-apply-migration.yml` após merge (aguarda aprovação do dono) |
+| `20261112120600` | `admin_execute_role_migration_batch_rpc` | `2aafacec03bb10d108aeda1192f5754600dc071ea420fb9a431a6b3ad26ea07a` | pendente — aplicar via `db-apply-migration.yml` após merge (aguarda aprovação do dono) |
+| `20261112120700` | `fix_grant_fn_admin_sync_external_connections` | `13dcabc4850b19a6f360203693dfc259474adaa42227dcc8ef2ad43587cabaaa` | pendente — aplicar via `db-apply-migration.yml` após merge (aguarda aprovação do dono) |
+| `20261112120800` | `query_telemetry_delete_dev_policy` | `27438bfdec7aba456af33f6b77e2ceef6d593e20f7a5da5cbb7045661b72371e` | pendente — aplicar via `db-apply-migration.yml` após merge (aguarda aprovação do dono) |
+| `20261112120900` | `fix_password_reset_request_rpc_anon` | `d73e208b1830ab5692904320c746c89e63b46ba4b54a253b147fe65d3f65dda4` | pendente — aplicar via `db-apply-migration.yml` após merge (aguarda aprovação do dono) |
+
+## 2026-11-12 — sitemap: EXECUTE de `anon` em `get_sitemap_public` pendente em produção
+
+`/api/sitemap` responde 503 porque `anon` perdeu EXECUTE em `public.get_sitemap_public(integer, integer)` (verificado via
+`has_function_privilege` em 2026-11-12): a SEC-003 (`20261101160001`) alterou a função e o event trigger
+`evt_auto_revoke_secdef_public_execute` revogou o grant de `20260909201000`.
+
+| version | arquivo | sha256 | status |
+|---|---|---|---|
+| `20261112130000` | `fix_get_sitemap_public_anon_grant` | `81e3c7900b74f7de043556d412dae21248e538f70aca73ad1b85f190b6627f52` | **aplicada em 13/11/2026** pelo `db-apply-migration.yml` (run 43345670118; recibo E15 acima) |
+
+### 2026-11-12 — RLS nas partições p2027_03..p2027_12 (Supabase Linter Gate)
+
+| version | arquivo | sha256 | status |
+|---|---|---|---|
+| `20261112140000` | `fix_rls_supplier_products_raw_history_p2027` | `6aa856168cc1ef0e6308757fe01b04f4917f043170ff3ce996e0933a52575b9f` | **aplicada em 13/11/2026** pelo `db-apply-migration.yml` (run 43471685129; recibo E15 acima) |
+
+## 2026-11-13 — Catálogo: índice parcial para a ordenação "mais novos" em `products`
+
+Consulta read-only em produção (2026-11-13, `pg_indexes`/`pg_get_viewdef`): nenhum dos 36 índices de
+`public.products` cobre `created_at`; `v_products_public` filtra `is_deleted IS NOT TRUE AND is_active = true` e o
+PostgREST ordena por `created_at DESC, id ASC` — 18.163 chamadas × 1.033 ms em 12,8 h com Sort de ~7.500 linhas
+(`pg_stat_statements`). O índice parcial casa com o predicado da view. `VACUUM (FULL, ANALYZE) public.tags`
+(88 linhas em 323 páginas) fica fora da migration: o preflight bloqueia VACUUM sempre. Ainda não está no ledger;
+aplicação só por `db-apply-migration.yml` após `[AUTORIZAÇÃO BD]` (porta 5432, `transaction: none`).
+
+| version | arquivo | sha256 | status |
+|---|---|---|---|
+| `20261113235000` | `perf_idx_products_active_created_at_desc` | `45dff9f0d993448eae3c68c09aa143304601efb96029ccedda607e976ba28e46` | pendente — aguarda `[AUTORIZAÇÃO BD]` do dono (linha `approved-by`) e `db-apply-migration.yml` (branch `claude/feat-idx-products-created-at-vacuum-tags-261113-2350`) |
+
+## 2026-11-14 — P0 da auditoria exaustiva: INSERT em `workspace_notifications` sem escopo (reaplica 20260622185000)
+
+A policy de INSERT viva em produção ainda é a versão fraca de `20260622143055`
+(`WITH CHECK (auth.uid() IS NOT NULL AND user_id IS NOT NULL)`), que permite qualquer
+autenticado notificar qualquer outro usuário (spam/phishing cross-tenant) — confirmado
+via `pg_policies` em 2026-11-14. A migration `20260622185000` já reapertava isso para
+`WITH CHECK (user_id = auth.uid())`, mas nunca foi de fato aplicada. Reaplica o mesmo
+fix; callers revalidados (2 inserts diretos do frontend são auto-notificação, edge
+functions usam `service_role`, aprovação de desconto roda via trigger `SECURITY DEFINER`)
+— nenhum quebra com o check estrito.
+
+| version | arquivo | sha256 | status |
+|---|---|---|---|
+| `20261114170845` | `fix_workspace_notifications_insert_policy_reapply` | `7ab43f818e883b3de852ac10134d1c76614f90e861a11c8c4b08d2edc54b562b` | pendente — aguarda `[AUTORIZAÇÃO BD]` do dono e `db-apply-migration.yml` (branch `claude/fix-workspace-notifications-rls-insert-261114-1708`) |
+
+## 2026-11-14 — Data API cai a cada 10 min: `idle_session_timeout` do `authenticator` mata o LISTEN do PostgREST
+
+Logs do PostgREST (`analytics/endpoints/logs`, `source = 'postgrest_logs'`, 2026-11-14 03:00–04:00Z): a cada ~10 min
+`FATAL: terminating connection due to idle-session timeout` → `Failed listening for database notifications on the "pgrst" channel`
+→ `Schema cache queried in` 12.821–72.852 ms, com rajadas de PGRST002/PGRST003. `pg_db_role_setting` (read-only):
+`authenticator` com `idle_session_timeout=600000` (de `20260524211024`) e `postgres` (DATABASE) com `600000` (de `20260525132458`).
+A migration zera só o do `authenticator`. Ainda não está no ledger; aplicação só por `db-apply-migration.yml`.
+
+| version | arquivo | sha256 | status |
+|---|---|---|---|
+| `20261114040000` | `fix_authenticator_idle_session_timeout_pgrst_listener` | `f34df73857031d37795afbd5519604c3e1604657fb5141eefddb7bcdb677e5bb` | pendente — aplicação só por `db-apply-migration.yml` após o merge |
+
+## 2026-11-14 — P0 (auditoria QA): RLS de `orders`/`order_items` sem escopo por vendedor
+
+Confirmado ao vivo via MCP Supabase (`pg_policies`, schema `public`, projeto `doufsxqlfjyuvxuezpln`): as
+policies `orders_select`, `orders_insert`, `orders_update`, `order_items_select`, `order_items_update`
+checam só `user_is_org_member(organization_id)` — qualquer vendedor autenticado da org lê/edita pedidos,
+faturamento e histórico de clientes de outros vendedores. `docs/security/RLS_MATRIX.md:92-116` exige DENY
+para vendedor terceiro. Nenhuma migration no repo cria essas 5 policies com esse nome (regressão sem
+rastro, mesma classe de `docs/agentes/banco-migrations.md` REGRA #8); a migration
+`20260426125603_b96b3daf-...sql` (linhas 124-257) tinha o padrão correto em policies `*_scope` que foram
+substituídas depois (cadeia `order_items_select_v2..v7`, 2026-05-26) sem nunca recriar o escopo por
+`seller_id` nas 5 vivas hoje. A migration reaplica esse padrão (`can_view_all_sales()` OR
+supervisor-na-org OR `seller_id = auth.uid()`) nas mesmas 5 policies, sem renomear.
+[AUTORIZAÇÃO BD]: aprovado pelo dono no chat desta sessão em 2026-11-14.
+
+| version | arquivo | sha256 | status |
+|---|---|---|---|
+| `20261114170921` | `fix_rls_orders_order_items_seller_scope` | `024b841c5c98e71c2e0a8d958de49e8af7015b7db086fe658ead482d72a73922` | pendente — aguarda `[AUTORIZAÇÃO BD]` do dono (já citada acima) e `db-apply-migration.yml`; PR fica aberta (Git #7 — DDL em produção) |
+
+## 2026-11-13 — CRON-003: proposta de reagendamento noturno dos crons pesados de fornecedores
+
+Consulta read-only em produção (2026-11-13 23:5xZ, `cron.job` + `cron.job_run_details` 24 h): 137 jobs ativos,
+`cron.max_running_jobs = 32`, 70 falhas "job startup timeout" em 15 jobs nas últimas 3 h (prod-readiness §7.4).
+A migration move 14 jobs de scraping/imagens/enriquecimento (xbz-*, sm-*, asia-*, spot-relink, kit-ficha-*) para
+01:00–08:59 UTC (22:00–05:59 BRT) nos mesmos minutos de hoje e reduz 7 jobs de estoque/ingestão/MV para 1×/h ou
+1×/2 h. Opção 2 de prod-readiness §7.8 — decisão de negócio do dono (atraso de estoque/preço); cada linha pode ser
+vetada. `cron.max_running_jobs` não tem caminho por migration (GUC; ALTER SYSTEM bloqueado) — só recomendação.
+Ainda não está no ledger; aplicação só por `db-apply-migration.yml` após `[AUTORIZAÇÃO BD]`.
+
+| version | arquivo | sha256 | status |
+|---|---|---|---|
+| `20261113235800` | `cron003_reagendamento_noturno_fornecedores` | `f0cddef3bb3e9b322c5e9767a1be6e0bb916d65b7bd8d60278e8962ea4db680e` | pendente — aprovada pelo dono no chat da sessão Claude (2026-11-14, "Eu aprovo todas!"); aplicação só por `db-apply-migration.yml` após o merge |
+
+## 2026-11-14 — Desagenda o cron `xbz-image-uploader` (edge esboço, 401 a cada 10 min)
+
+Consulta read-only em produção (2026-11-14): `cron.job` jobid=268 `xbz-image-uploader` ativo (`3,13,23,33,43,53 * * * *`)
+chamando a edge `xbz-image-uploader`, que é um esboço (`not_implemented`) sem o segredo `XBZ_IMAGE_UPLOADER_CRON_SECRET`
+e sem a tabela `xbz_image_import_staging`; logs 24h: 317 POST → 401, 0 → 200. Ainda não está no ledger; aplicação só por
+`db-apply-migration.yml` após `[AUTORIZAÇÃO BD]`.
+
+| version | arquivo | sha256 | status |
+|---|---|---|---|
+| `20261114003000` | `fix_unschedule_cron_xbz_image_uploader` | `c742a627a964faf49ae9be913336b8aafaa76e8b6f7a3e95bc266d9cc2a54efa` | pendente — aguarda `[AUTORIZAÇÃO BD]` do dono e `db-apply-migration.yml` (branch `claude/fix-cron-xbz-image-uploader-261114-0030`) |
+
+| `20261113140000` | `marketing_tab_links_rls_and_endomarketing` | `9b8c6f1f28df01eebaec6c9ee2e456409a9df7ad45cd49b2730a824349c91135` | pendente — aplicar via `db-apply-migration.yml` após merge (aguarda aprovação do dono) |
+## 2026-11-13 — Data API: fecha anon/authenticated em `supabase_functions.*` (e registra o limite em `net.*`)
+
+Consulta read-only em produção (2026-11-13, `has_table_privilege`/`has_schema_privilege`): anon e authenticated com
+SELECT/INSERT/UPDATE/DELETE em `net._http_response`, `net.http_request_queue`, `supabase_functions.hooks`,
+`supabase_functions.migrations` e USAGE em `net`/`supabase_functions`; o PostgREST expõe esses schemas
+(`db_schema`), e um GET anônimo com `Accept-Profile` devolveu 200/206 com linhas. Os grants em
+`supabase_functions.*` são de `supabase_functions_admin` (postgres é membro → REVOKE efetivo); os de `net.*` são a
+PUBLIC por `supabase_admin` e os USAGE de schema também — fora do alcance de `postgres`; fecham só pelo `db_schema`
+(config, dono). Ainda não está no ledger; aplicação só por `db-apply-migration.yml` após `[AUTORIZAÇÃO BD]`.
+
+| version | arquivo | sha256 | status |
+|---|---|---|---|
+| `20261113225000` | `sec_revoke_anon_authenticated_net_supabase_functions` | `4bc14de41e30ea25aabe13a6bb59799b360fbdf2f18a5f9fd93be9aafa9689d2` | pendente — aguarda `[AUTORIZAÇÃO BD]` do dono e `db-apply-migration.yml` (branch `claude/fix-revoke-net-schemas-anon-261113-2230`) |
+## 2026-11-14 — `user_known_devices.is_trusted` (coluna que o front usa e não existe em produção)
+
+Consulta read-only em produção (2026-11-14, `information_schema.columns`): `user_known_devices` não tem `is_trusted`,
+mas `useDeviceDetection.ts:177` faz `.update({ is_trusted: true })` e `KnownDevicesManager.tsx` lê a coluna. Achado na
+análise da #3390 (a migration `20261110024530` dela nunca foi aplicada e não foi levada pela #3548).
+Ainda não está no ledger; aplicação só por `db-apply-migration.yml`.
+
+| version | arquivo | sha256 | status |
+|---|---|---|---|
+| `20261114031000` | `fix_user_known_devices_is_trusted` | `76b1497b85e289d3de69f01308f325d454436e5a03a59f2f77b5e50a6f1287b6` | pendente — aplicação só por `db-apply-migration.yml` após o merge |
+## 2026-11-14 — P09 revisada (supersede #3411): ledger só com versões verificadas
+
+A P09 (`20261108020000`, nunca aplicada) registraria 432 versões como aplicadas; a revisão da PR #3411
+(`20261112013000`, nunca aplicada) tirou 48 com objeto ausente. A verificação ao vivo de 2026-11-14
+(`pg_class`, `pg_proc`, `pg_policies`, `pg_trigger`, `pg_constraint`, `cron.job` e o ledger) achou mais 23
+versões que criam índice, função, trigger, política, constraint ou cron que não existe em produção, sem
+`DROP`/`RENAME` por migration posterior já aplicada e sem gêmea de conteúdo equivalente no ledger. Elas ficam de
+fora (lista no cabeçalho da migration), e também `20261101210000`: as 10 policies `rls_restrictive_*` que ela
+apaga seguem em produção, então o DROP nunca rodou e ela continua pendente. Registra 360 versões; nenhuma estava no ledger. Só escreve no ledger,
+sem DDL de schema. Rollback: `supabase/rollbacks/20261114014500_rollback.sql`.
+O snapshot do ledger do baseline (`supabase/baseline/20261015140000_ledger_versions.json`) foi estendido com as
+mesmas 360 versões (2524 → 2884), porque o efeito delas já está no dump do baseline ou fica fora dos schemas
+comparados; sem isso o `db-schema-drift-check` replayaria as 360 sobre o baseline (72 falham no replay local).
+
+| version | arquivo | sha256 | status |
+|---|---|---|---|
+| `20261114014500` | `p09_reconcile_ledger_schema_migrations` | `a06fe201d75afdb1be8b99ab19164ca374bb57ec5dae44808049ea33e5e6f8c0` | **aplicada em 2026-11-14 19:51:43 UTC** pelo `db-apply-migration.yml` (run 43634292304; recibo E15 abaixo). Confirmada em `supabase_migrations.schema_migrations` por consulta read-only em 2026-11-15. A linha dizia "pendente" porque o job 4 da run abriu a PR #3624 em vez de gravar aqui, e a PR ficou aberta (aprovado pelo dono no chat de 2026-11-14) |
+## 2026-11-14 — Índices de FK em estoque e índices de desempenho ausentes (supersede #3412)
+
+11 índices que faltam em produção (verificado em `pg_indexes` em 2026-11-14): 3 FKs `ON DELETE CASCADE` de
+`stock_snapshots`, 2 FKs de `stock_notes` e 6 índices de migrations antigas que nunca foram aplicadas.
+`CREATE INDEX CONCURRENTLY`, `transaction: none`. Substitui a `20261112014000` da PR #3412 (nunca aplicada): saíram
+`idx_ss_supplier_id` e `idx_stock_snapshots_supplier_branch_id`, que a PERF-002 (`20261101194200`) apagou
+por `idx_scan=0` (FKs `NO ACTION` para tabelas de 5 e 7 linhas).
+
+| version | arquivo | sha256 | status |
+|---|---|---|---|
+| `20261114014100` | `idx_fk_stock_and_missing_perf_indexes` | `651823afa2f7fd9901fcc185a3147aa53d1cf5ad11fea1374196a3021d200578` | pendente — aplicar via `db-apply-migration.yml` após merge (aprovado pelo dono no chat em 2026-11-14) |
+
+## 2026-11-14 — CRON-004: reduz a frequência de 7 jobs ociosos ou redundantes (648 → 97 execuções/dia)
+
+Consulta read-only em produção (2026-11-14, `cron.job_run_details` janela de 6 h, runid > 1399672): 881 execuções e
+244 "job startup timeout". Os 7 jobs abaixo estão ociosos ou redundantes: filas de `product_images` zeradas (as 79 sem
+blurhash nunca são processadas), `external_connections` vazia, `mv_supplier_reliability` com 3 linhas e reload horário
+do PostgREST redundante com `pgrst_ddl_watch`/`pgrst_drop_watch`.
+A migration reagenda `generate-blurhashes`, `hash-product-images` e `backfill-image-dimensions` para a cada 2 h das 09 às 23 UTC (8×/dia, fora da janela dos scrapers; lote fixo no código: 15/80/40 imagens por rodada),
+`connections-auto-test`, `connections-health-check` e `refresh-mv-supplier-reliability` para 1×/h e
+`pgrst-schema-reload` para 1×/dia (09:07 UTC, segue ativo por causa do smoke test #37). Minutos são subconjunto dos
+atuais. `medallion-promote-tick` fica em `6,36 * * * *`: em 30 dias de `pipeline_run_log` há rajadas no teto do lote
+(300 variantes) e 1×/h cortaria pela metade a vazão de promoção. O snapshot
+`supabase/baseline/20261108000000_cron_jobs.json` só muda depois do apply (Gate E40).
+Ainda não está no ledger; aplicação só por `db-apply-migration.yml` após `[AUTORIZAÇÃO BD]`.
+
+| version | arquivo | sha256 | status |
+|---|---|---|---|
+| `20261114120000` | `cron004_reduz_frequencia_jobs_ociosos` | `e1371c31840255c9a9bc071cea76efc543ec02637dba7961f622c10a314c6a18` | pendente — aguarda `[AUTORIZAÇÃO BD]` do dono e `db-apply-migration.yml` (branch `claude/perf-cron004-reduz-jobs-ociosos-261114-1001`) |
+
+## 2026-11-14 — CRON-005: `refresh-all-materialized-views` 1×/dia às 09:38 UTC com `statement_timeout` real de 600 s
+
+Consulta read-only em produção (2026-11-14): `cron.job` jobid=234 `38 */2 * * *`, command
+`fn_cron_safe_run(47, 'SELECT public.refresh_all_materialized_views();', 55000, 'refresh-all-mvs')`; `pg_settings`
+`statement_timeout=120000` (configuration file), `cron.use_background_workers=off`, PG 17.
+As 18 linhas de `postgres_logs` citadas na branch de origem **NÃO foram verificadas por mim** — trato como
+NÃO VERIFICADO. A prova que eu medi, em 2026-11-15, é a duração colada no teto em `cron.job_run_details` do
+jobid=234: 145 das 151 execuções dos últimos 7 dias chegaram a 119 s ou mais, com 8 de 8 em 2026-11-15, 24 de 24
+em 10, 11 e 12 de novembro, e média diária entre 106 e 122 s. `status` diz `succeeded` porque
+`fn_cron_safe_run` é `SECURITY DEFINER` com `EXCEPTION WHEN query_canceled THEN … RETURN` e engole o timeout:
+quem olhar só a coluna `status` conclui, errado, que está tudo bem. O `SET LOCAL` de `fn_cron_safe_run` não rearma
+o timeout do statement em curso e o rollback desfaz as 7 MVs. A migration põe `SET statement_timeout = '600s';` antes do `SELECT` e roda 1×/dia.
+Ainda não está no ledger; aplicação só por `db-apply-migration.yml` após `[AUTORIZAÇÃO BD]`. Depois de aplicada, atualizar
+`supabase/baseline/20261108000000_cron_jobs.json` (`refresh-all-materialized-views` → `38 9 * * *`).
+
+| version | arquivo | sha256 | status |
+|---|---|---|---|
+| `20261114120100` | `cron005_refresh_all_mvs_diario_timeout_real` | `46c10be42fa859abe362cbac3f4b3a0066d0e59115b96ecf3cddf19a2184bfb2` | pendente — aguarda `[AUTORIZAÇÃO BD]` do dono e `db-apply-migration.yml` (branch `claude/perf-cron005-refresh-all-mvs-diario-261114-1002`) |
+
+## 2026-11-14 — Estoque: índice parcial para a contagem de restocks de `fn_get_stock_notification_counts`
+
+Consulta read-only em produção (`pg_indexes`/`pg_get_functiondef`/`pg_stat_statements`).
+**CORREÇÃO 2026-11-15**: os números de 2026-11-14 citados aqui antes (14.871 chamadas, média 522 ms) vinham de uma
+janela de `pg_stat_statements` que foi **resetada em 2026-11-14 16:26 UTC** e não dá para reconstituir. Medição
+própria de 2026-11-15, 22,4 h após o reset: `fn_get_stock_notification_counts()` com **4.732 chamadas, média
+170,0 ms, máximo 12.163,8 ms e 805 s de CPU acumulada** (sino do Header, `StockAlertsIndicator.tsx`). O ganho
+continua justificado pela volumetria e pelos 805 s de CPU em menos de um dia, mas é cerca de 5× menor do que o
+texto anterior sugeria — quem aprovar deve aprovar por este número, não pelo antigo. No bloco `restocks`, `idx_sds_cenario_a` lê ~9,3k linhas/buffers de `stock_daily_summary`
+(30 dias) e descarta 7,8k pelo filtro `COALESCE(stock_open,0)=0 AND COALESCE(stock_close,0)>0`. O índice parcial
+`idx_sds_restock_zero_to_pos_date` usa o mesmo predicado da função e cobre `product_id`. Ainda não está no ledger;
+aplicação só por `db-apply-migration.yml` após `[AUTORIZAÇÃO BD]` (porta 5432, `transaction: none`, fora do pico).
+
+| version | arquivo | sha256 | status |
+|---|---|---|---|
+| `20261114160000` | `perf_idx_sds_restock_counts` | `d538e03130d8151ccde29c56a72c1004a74b76e3789aed0095b64d8c19bcc03a` | pendente — aguarda `[AUTORIZAÇÃO BD]` do dono (linha `approved-by`) e `db-apply-migration.yml` (branch `claude/perf-idx-sds-restock-counts-261114-1006`) |
+
+## 2026-11-15 — Reparo: `trg_anon_rate_guard` em `kill_switch_hits` (resgate da branch `claude/laughing-cori-o9w35e`)
+
+O Gate 1.13.2 (Deploy Gates run 41402296461, 2026-11-02) detectou o trigger `trg_anon_rate_guard` ausente em
+`kill_switch_hits`, embora a `20261029160339` (que o cria) esteja no ledger. Nenhuma migration posterior no `main`
+recria o trigger. A migration de reparo (DROP IF EXISTS + CREATE TRIGGER, mesma definição da `20261029160339`) vem da
+branch `claude/laughing-cori-o9w35e` (commit `1f3a1734e`), com arquivo de rollback (E063).
+**NÃO VERIFICADO no banco em 2026-11-15**: se o trigger já existir em produção, a migration é idempotente (DROP IF EXISTS
+antes do CREATE) — confirmar com `SELECT tgname FROM pg_trigger WHERE tgrelid = 'public.kill_switch_hits'::regclass`
+antes do dispatch. Ainda não está no ledger; aplicação só por `db-apply-migration.yml`.
+
+| version | arquivo | sha256 | status |
+|---|---|---|---|
+| `20261102063000` | `repair_kill_switch_hits_anon_rate_guard` | `1cfc7343ea254805b19c765fbce566eb3acd23f6aea36fa2b35fd38623ce2226` | pendente — aplicar via `db-apply-migration.yml` após merge (estado do trigger em produção NÃO VERIFICADO em 2026-11-15) |
+
+## 2026-11-15 — Inteligência de mercado macro: índice de cobertura + RPC `fn_market_intelligence_macro` (bug #57; o 11º item da #3584)
+
+A `fn_market_intelligence_macro` ficou fora da #3584 por desempenho: EXPLAIN em produção (2026-11-15) da agregação por
+`(summary_date, supplier_id)` sem filtro de fornecedor = Parallel Seq Scan em `stock_daily_summary` (~3,1M linhas, ~1 GB;
+índices existentes: `idx_daily_product_date (product_id, summary_date desc)`, `idx_sds_cenario_a` e `idx_sds_zero_to_positive`
+parciais, `idx_stock_daily_summary_supplier_id`, `uq_stock_daily_vss_date` — nenhum serve a janela de datas).
+Enquanto isso, `useMarketIntelligenceMacro.ts` lê a tabela cru via PostgREST sem filtro de data, ascendente, `limit 5000`:
+o max-rows devolve as linhas mais antigas, todas cortadas pelo `cutoff` no cliente, e a tela mostra o mock como dado real.
+Duas migrations, **nesta ordem**: (1) índice `(summary_date, supplier_id) INCLUDE (stock_close, units_depleted, units_restocked)`
+em `CREATE INDEX CONCURRENTLY` (`transaction: none`; a linha `approved-by` entra no momento da aplicação) — torna
+redundante o `idx_sds_summary_date` da `20261108223000` (pendente; prefixo deste); (2) a RPC (SECURITY INVOKER,
+`search_path = ''`, REVOKE anon/PUBLIC, EXECUTE authenticated/service_role), conteúdo da `20261112121000` da branch
+`claude/fix-migrations-acesso-rpcs-261112-1050` renumerado para ficar atrás do índice. O front
+(`untypedRpc('fn_market_intelligence_macro')`) só funciona depois da (2) aplicada; até lá o gráfico mostra erro (PGRST202)
+em vez de mock. Nenhuma das duas está no ledger; aplicação só por `db-apply-migration.yml`.
+
+| version | arquivo | sha256 | status |
+|---|---|---|---|
+| `20261115130000` | `idx_sds_summary_date_supplier_include` | `d4d441540da99ea12752eeb2253bcef7af00afac0640c85b95ed72107d7bfccc` | pendente — aplicar via `db-apply-migration.yml` após merge, ANTES da `20261115130100` (CONCURRENTLY, `transaction: none`; exige linha `approved-by` do dono; porta 5432, fora do pico) |
+| `20261115130100` | `fn_market_intelligence_macro` | `ea7aa33fb9f533d94229859f35f3814a5792699425728ec36ec9c426574c6771` | pendente — aplicar via `db-apply-migration.yml` após merge e após a `20261115130000` |
+
+## 2026-11-15 — SEC-001 (E056): REVOKE EXECUTE de PUBLIC/anon em 106 funções trigger/internas
+
+Resgate da branch `claude/fix-sec001-revoke-anon-trigger-funcs-261101-2230` (commit `39ec2b456`, version original
+`20261101210000`, que colide com a `sb0007` já no `main` → renumerada). Levantamento de 2026-11-01:
+`has_function_privilege('anon', …, 'EXECUTE') = true` em 106 funções sem referência no TS nem em RLS, todas trigger
+handlers/sync hooks/utilitários internos; o trigger não checa EXECUTE, só a chamada direta (RPC). Revalidação de
+2026-11-15 contra o repo: as 106 existem no baseline `20261015140000_baseline_schema.sql`, nenhuma migration posterior
+as dropa nem já revoga PUBLIC/anon. O REVOKE é `FROM PUBLIC, anon` (o default privileges do Supabase concede anon
+explicitamente). Estado atual dos grants em produção NÃO VERIFICADO nesta sessão (sem acesso ao banco); se uma função
+tiver sumido fora do fluxo, a migration falha inteira (fail-loud). Ainda não está no ledger; aplicação só por
+`db-apply-migration.yml`.
+
+| version | arquivo | sha256 | status |
+|---|---|---|---|
+| `20261115130200` | `sec001_revoke_anon_execute_trigger_functions` | `dd9f99bb3a9d8be6fafd98c12b39c3eec7d181a3793bbce12b97cf2ea4b018f0` | pendente — aplicar via `db-apply-migration.yml` após merge. Grants VERIFICADOS em produção 2026-11-15: 115 de 303 funções trigger de `public` executáveis por `anon` e `authenticated`; esta migration revoga 106 delas. Hash recalculado após corrigir a assinatura `fn_hex_to_rgb(text)` → `fn_hex_to_rgb()` (só existe sem argumentos em `pg_proc`), que abortaria o arquivo inteiro na aplicação transacional |
+
+## 2026-11-15 — `fn_global_search`: clamp de `p_limit` com `search_path` fechado (substitui a `20261101190101`, sem recibo)
+
+A `20261101190101_fn_global_search_clamp_limit.sql` está no `main` desde 2026-11-01 sem recibo, sem rollback e sem
+registro em allowlist/PENDENCIAS; nunca entrou no ledger. Ela recria a função SECURITY DEFINER (executável por anon,
+allowlist E17) com `SET search_path TO 'public', 'extensions'` — o preflight a bloqueia (E066: sem `pg_temp`). A branch
+`codex/fix-db-migration-preflight-261107` (commit `3ebaad4ea`) tinha a versão endurecida como rename
+(`20261107143509_…_hardened`); rename de versão já existente não é permitido, então o conteúdo entra como versão NOVA
+`20261115130300` (única diferença de corpo: `search_path TO 'pg_catalog','public','extensions','pg_temp'`), com
+rollback guardado por `pg_get_functiondef` (remove só o clamp). A `20261101190101` fica registrada aqui como
+substituída e ganha arquivo de rollback (E063), para não ser aplicada por engano. Mesma PR: o rollback da
+`20261101202000` passa a ser fail-closed (REVOKE em vez de re-GRANT a PUBLIC/anon/authenticated em
+`cleanup_expired_auth_sessions()`, SECURITY DEFINER que apaga `auth.sessions`; a `20261101202426`, já aplicada, tinha
+revogado antes) com teste em `tests/security/security-definer-acl-gate.test.ts` — commit `4f235fd50` da mesma branch.
+
+| version | arquivo | sha256 | status |
+|---|---|---|---|
+| `20261101190101` | `fn_global_search_clamp_limit` | `6f97aa10518e4a04edb2fd40f5b7f0b08f70097679449f445741ffe7fb01f3e4` | substituída pela `20261115130300` — NÃO aplicar (preflight E066: SECURITY DEFINER sem `pg_temp`); nunca esteve no ledger; mantida no repo porque sua versão já está no histórico |
+| `20261115130300` | `fn_global_search_clamp_limit_hardened` | `35f326cead81afefcbf4f234ee1a2365fe3d12049dead6469d2325beada7972c` | pendente — aplicar via `db-apply-migration.yml` após merge (estado atual de `fn_global_search` em produção NÃO VERIFICADO em 2026-11-15) |

@@ -2,7 +2,7 @@ import { Suspense } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { PageSEO } from '@/components/seo/PageSEO';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Package, Palette, FolderOpen, Truck, Tags } from 'lucide-react';
+import { Package, Palette, FolderOpen, FolderTree, Truck, Tags } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
 import { lazyWithRetry } from '@/lib/lazyWithRetry';
 
@@ -22,6 +22,10 @@ const BadgesManager = lazyWithRetry(() =>
   import('@/components/admin/badges-manager').then((m) => ({ default: m.BadgesManager })),
 );
 
+const CategoriesManager = lazyWithRetry(() =>
+  import('@/components/admin/categories-manager').then((m) => ({ default: m.CategoriesManager })),
+);
+
 function TabFallback() {
   return (
     <div className="space-y-4 p-4">
@@ -31,7 +35,7 @@ function TabFallback() {
   );
 }
 
-const VALID_TABS = ['products', 'suppliers', 'personalizacao', 'badges'] as const;
+const VALID_TABS = ['products', 'suppliers', 'categorias', 'personalizacao', 'badges'] as const;
 
 export default function AdminCadastrosPage() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -80,6 +84,10 @@ export default function AdminCadastrosPage() {
               <Truck className="h-4 w-4" />
               Fornecedores
             </TabsTrigger>
+            <TabsTrigger value="categorias" className="gap-2">
+              <FolderTree className="h-4 w-4" />
+              Categorias
+            </TabsTrigger>
             <TabsTrigger value="personalizacao" className="gap-2">
               <Palette className="h-4 w-4" />
               Personalização
@@ -99,6 +107,12 @@ export default function AdminCadastrosPage() {
           <TabsContent value="suppliers">
             <Suspense fallback={<TabFallback />}>
               <SuppliersManager />
+            </Suspense>
+          </TabsContent>
+
+          <TabsContent value="categorias">
+            <Suspense fallback={<TabFallback />}>
+              <CategoriesManager />
             </Suspense>
           </TabsContent>
 

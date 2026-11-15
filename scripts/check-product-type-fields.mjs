@@ -80,7 +80,11 @@ function extractInterfaceMembers(sourceText, interfaceName) {
 
   const memberNames = new Set();
 
-  function visit(node) {
+  // Apenas declarações de topo (sf.statements) contam — uma `interface
+  // Product` (ou `type Product`) aninhada dentro de função/classe/namespace
+  // é um tipo local não relacionado ao contrato exportado e não deve poder
+  // "emprestar" seus campos para fazer o gate passar (falso-positivo).
+  for (const node of sf.statements) {
     // interface Product { ... }
     if (
       ts.isInterfaceDeclaration(node) &&
@@ -115,17 +119,26 @@ function extractInterfaceMembers(sourceText, interfaceName) {
         }
       }
     }
-
-    ts.forEachChild(node, visit);
   }
 
-  visit(sf);
   return memberNames.size > 0 ? memberNames : null;
 }
 
 // ----- main -----
 
-const source = readFileSync(CANONICAL_FILE, 'utf-8');
+let source;
+try {
+  source = readFileSync(CANONICAL_FILE, 'utf-8');
+} catch (err) {
+  // Fail-closed: arquivo existe (existsSync passou) mas não pôde ser lido
+  // (permissão negada, é um diretório, etc.) — não dá pra confirmar os
+  // campos críticos, então falha o gate com mensagem clara em vez de
+  // estourar stack trace crua (mesmo padrão de check-no-prod-leak.mjs).
+  console.error(
+    `❌ ${CANONICAL_FILE.replace(ROOT + '/', '')} não pôde ser lido (${err.code || err.message}) — não foi possível verificar \`interface ${CANONICAL_NAME}\`.`,
+  );
+  process.exit(1);
+}
 const members = extractInterfaceMembers(source, CANONICAL_NAME);
 
 console.log(`🔍 Verificando campos críticos de \`interface ${CANONICAL_NAME}\` em ${CANONICAL_FILE.replace(ROOT + '/', '')}...\n`);

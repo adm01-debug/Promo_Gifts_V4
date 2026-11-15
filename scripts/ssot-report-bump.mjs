@@ -17,8 +17,8 @@
  *
  * Exit codes:
  *   0 — bump aplicado (ou --dry sem falhas)
- *   1 — argumentos inválidos / dessincronia detectada
- *   2 — erro de I/O
+ *   1 — dessincronia detectada entre schema e emitter
+ *   2 — argumentos inválidos ou erro de I/O
  */
 
 import { readFileSync, writeFileSync, existsSync } from 'fs';
@@ -43,8 +43,8 @@ function fail(code, msg) {
   process.exit(code);
 }
 
-if (!KIND || !KINDS.has(KIND)) fail(1, `--kind obrigatório e deve ser major|minor|patch (recebido: ${KIND ?? 'ausente'})`);
-if (!REASON || REASON.trim().length < 8) fail(1, `--reason obrigatório com pelo menos 8 caracteres explicando o motivo do bump.`);
+if (!KIND || !KINDS.has(KIND)) fail(2, `--kind obrigatório e deve ser major|minor|patch (recebido: ${KIND ?? 'ausente'})`);
+if (!REASON || REASON.trim().length < 8) fail(2, `--reason obrigatório com pelo menos 8 caracteres explicando o motivo do bump.`);
 
 for (const p of [SCHEMA_PATH, EMITTER_PATH, CHANGELOG_PATH]) {
   if (!existsSync(p)) fail(2, `arquivo ausente: ${p}`);

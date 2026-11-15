@@ -96,6 +96,9 @@ export default function DiscountRequestDetailPage() {
           admin_id: u.user?.id ?? null,
           admin_notes: adminNotes || null,
           responded_at: new Date().toISOString(),
+          valid_until: approved
+            ? new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString()
+            : null,
         })
         .eq('id', id);
       if (error) throw error;

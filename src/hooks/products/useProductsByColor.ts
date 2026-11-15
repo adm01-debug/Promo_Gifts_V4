@@ -179,25 +179,36 @@ export function useProductsByColor({
           chunks.push(colorIdArray.slice(i, i + CHUNK));
         }
 
+        const PAGE = 1000;
+        const MAX_PAGES = 50;
         const chunkResults = await Promise.all(
-          chunks.map((chunk) =>
-            dbInvoke<{ product_id: string }>({
-              table: 'product_variants',
-              operation: 'select',
-              select: 'product_id',
-              filters: { is_active: true, color_id: chunk },
-              limit: 5000,
-              offset: 0,
-              signal,
-            }),
-          ),
+          chunks.map(async (chunk) => {
+            const rows: { product_id: string }[] = [];
+            let from = 0;
+            for (let page = 0; page < MAX_PAGES; page += 1) {
+              if (token !== fetchTokenRef.current) break;
+              const result = await dbInvoke<{ product_id: string }>({
+                table: 'product_variants',
+                operation: 'select',
+                select: 'product_id',
+                filters: { is_active: true, color_id: chunk },
+                orderBy: { column: 'id', ascending: true },
+                limit: PAGE,
+                offset: from,
+                signal,
+              });
+              const records = result?.records ?? [];
+              rows.push(...records);
+              if (records.length < PAGE) break;
+              from += records.length;
+            }
+            return rows;
+          }),
         );
 
-        for (const result of chunkResults) {
-          if (result?.records) {
-            for (const r of result.records) {
-              matchingProductIds.add(r.product_id);
-            }
+        for (const records of chunkResults) {
+          for (const r of records) {
+            matchingProductIds.add(r.product_id);
           }
         }
       }

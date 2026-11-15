@@ -80,6 +80,8 @@ if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) 
         targetOnly,
       });
   if (problems.length) {
+    // GUARD: guarda do alvo de migration de produção — sempre falha fechado.
+    // Variável ausente ou project ref não canônico nunca pode virar static-pass/exit 0.
     console.error(problems.join('; '));
     process.exitCode = 1;
   } else console.log('Migration version and canonical target: OK');

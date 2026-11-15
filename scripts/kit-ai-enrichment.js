@@ -1,8 +1,27 @@
 #!/usr/bin/env node
 // Kit AI Enrichment Pipeline
 // SUPABASE_URL=... SUPABASE_SERVICE_KEY=... BATCH_SIZE=50 DRY_RUN=true node kit-ai-enrichment.js
-import { createClient } from '@supabase/supabase-js';
-import Anthropic from '@anthropic-ai/sdk';
+
+import { missingPrerequisite } from './lib/missing-prerequisite.mjs';
+
+if (!process.env.SUPABASE_URL || !process.env.SUPABASE_SERVICE_KEY) {
+  missingPrerequisite('kit-ai-enrichment', 'SUPABASE_URL e SUPABASE_SERVICE_KEY ausentes', { exitCode: 1 });
+}
+
+let createClient;
+try {
+  ({ createClient } = await import('@supabase/supabase-js'));
+} catch {
+  missingPrerequisite('kit-ai-enrichment', '@supabase/supabase-js não instalado', { exitCode: 1 });
+}
+
+let Anthropic;
+try {
+  Anthropic = (await import('@anthropic-ai/sdk')).default;
+} catch {
+  missingPrerequisite('kit-ai-enrichment', '@anthropic-ai/sdk não instalado', { exitCode: 1 });
+}
+
 const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_KEY);
 const claude = new Anthropic();
 const DRY_RUN = process.env.DRY_RUN === 'true';

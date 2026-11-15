@@ -443,13 +443,13 @@ export function useGlobalSearch() {
               'companies',
               'razao_social',
               searchTerm,
-              { select: 'id, razao_social, nome_fantasia, ramo', limit: 5 },
+              { select: 'id, razao_social, nome_fantasia, ramo_atividade', limit: 5 },
             );
             companies.forEach((c) => {
               allResults.push({
                 id: c.id,
                 title: c.nome_fantasia || c.razao_social,
-                subtitle: c.ramo || 'Empresa',
+                subtitle: c.ramo_atividade || 'Empresa',
                 type: 'client',
                 href: `/cliente/${c.id}`,
               });
@@ -649,7 +649,7 @@ export function useGlobalSearch() {
               title: t.name,
               subtitle: `${itemCount} ${itemCount === 1 ? 'item' : 'itens'} • ${t.description || 'Template de carrinho'}`,
               type: 'cart_template',
-              href: `/carrinho?template=${t.id}`,
+              href: '/carrinhos',
             });
           });
         } catch {

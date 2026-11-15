@@ -57,9 +57,12 @@ const SQL = `
  */
 export function computeViolations(rows) {
   return rows.filter((r) => {
-    const key = `${r.function_name}|${r.arguments}`;
+    // r pode vir nulo/corrompido de uma resposta truncada ou malformada da
+    // Management API; falha-fechado (trata como violação) em vez de
+    // derrubar o processo com TypeError.
+    const key = `${r?.function_name}|${r?.arguments}`;
     if (INTENTIONAL_MISSING_SEARCH_PATH.has(key)) return false;
-    const cfg = r.proconfig;
+    const cfg = r?.proconfig;
     if (!cfg) return true; // null = sem search_path
     const hasSearchPath = Array.isArray(cfg)
       ? cfg.some((c) => String(c).startsWith('search_path='))
@@ -109,9 +112,9 @@ async function main() {
     checkedAt: new Date().toISOString(),
     totalSecurityDefiner: rows.length,
     violations: violations.map((r) => ({
-      function_name: r.function_name,
-      arguments: r.arguments,
-      proconfig: r.proconfig,
+      function_name: r?.function_name,
+      arguments: r?.arguments,
+      proconfig: r?.proconfig,
     })),
   };
 
@@ -120,7 +123,7 @@ async function main() {
       check: 'security-definer-audit',
       status: CHECK_RESULT_STATUS.FAILED,
       summary: `${violations.length} função(ões) SECURITY DEFINER sem search_path explícito (${rows.length} auditadas): ${violations
-        .map((v) => v.function_name)
+        .map((v) => v?.function_name)
         .join(', ')}`,
       details: report,
     });
