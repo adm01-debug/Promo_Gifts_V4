@@ -337,7 +337,7 @@ async function extractEdgeErrorMessage(error: unknown): Promise<string> {
   const ctx = (error as { context?: Response } | null)?.context;
   if (ctx && typeof ctx.json === 'function') {
     try {
-      const body = (await ctx.json()) as { error?: string; errorCode?: string; message?: string };
+      const body: { error?: string; errorCode?: string; message?: string } = await ctx.json();
       if (body?.message) return body.message;
       if (body?.error) return body.error;
     } catch {
@@ -398,7 +398,7 @@ async function invokeMockupForArea(
   });
   if (error) throw new Error(await extractEdgeErrorMessage(error));
   if (!data?.mockupUrl) throw new Error('Nenhuma imagem retornada pela API de mockup.');
-  return data.mockupUrl as string;
+  return data.mockupUrl;
 }
 
 export async function generateMockupApi(
