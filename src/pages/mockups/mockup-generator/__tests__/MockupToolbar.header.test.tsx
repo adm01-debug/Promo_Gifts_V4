@@ -9,13 +9,30 @@
  *   - expõe o acesso ao histórico ("Meus mockups");
  *   - voltar entre etapas do assistente preserva as escolhas já feitas.
  */
-import { describe, it, expect, vi } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { MemoryRouter } from 'react-router-dom';
 import { TooltipProvider } from '@/components/ui/tooltip';
 import { MockupToolbar } from '../MockupToolbar';
 import { MockupWizard } from '@/components/mockup/MockupWizard';
+
+// O painel "Meus mockups" consulta o banco via react-query; aqui interessa só a
+// integração do cabeçalho (abre, chama o hook com o cliente, mostra o rodapé).
+const useClientMockupsMock = vi.fn(() => ({
+  data: [],
+  isPending: false,
+  isError: false,
+  isFetching: false,
+  refetch: vi.fn(),
+}));
+vi.mock('@/hooks/mockup/useClientMockups', () => ({
+  useClientMockups: (...args: unknown[]) => useClientMockupsMock(...args),
+}));
+
+beforeEach(() => {
+  useClientMockupsMock.mockClear();
+});
 
 type ToolbarProps = React.ComponentProps<typeof MockupToolbar>;
 
@@ -60,10 +77,24 @@ describe('MockupToolbar — cabeçalho de trabalho', () => {
     expect(screen.queryByTestId('mockup-toolbar-project')).not.toBeInTheDocument();
   });
 
-  it('expõe o link "Meus mockups" apontando para o histórico', () => {
-    renderToolbar();
-    const link = screen.getByRole('link', { name: /meus mockups/i });
-    expect(link).toHaveAttribute('href', '/mockups/historico');
+  it('"Meus mockups" abre o painel do cliente com o link para o histórico completo', async () => {
+    const user = userEvent.setup();
+    renderToolbar({ client: { id: 'crm-1', name: 'Padaria Aurora', logoUrl: null } });
+
+    // Fechado: nada consultado, nada montado.
+    expect(useClientMockupsMock).not.toHaveBeenCalled();
+    await user.click(screen.getByRole('button', { name: /meus mockups/i }));
+
+    const panel = await screen.findByTestId('client-mockups-panel');
+    expect(useClientMockupsMock).toHaveBeenCalledWith(
+      'crm-1',
+      expect.objectContaining({ limit: 8 }),
+    );
+    expect(panel).toHaveTextContent('Mockups de Padaria Aurora');
+    expect(screen.getByRole('link', { name: /ver histórico completo/i })).toHaveAttribute(
+      'href',
+      '/mockups/historico',
+    );
   });
 
   it('trocar cliente com marca aplicada PERGUNTA o que fazer — nunca troca em silêncio', async () => {
