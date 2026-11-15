@@ -34,6 +34,7 @@ const log = createClientLogger('mockup-generator');
 import { lazyWithRetry } from '@/lib/lazyWithRetry';
 import { useLayoutCaptureRequest } from '@/pages/mockups/mockup-generator/useLayoutCaptureRequest';
 import { useWizardNavigation } from '@/pages/mockups/mockup-generator/useWizardNavigation';
+import { useMockupCompletionStatus } from '@/pages/mockups/mockup-generator/useMockupCompletionStatus';
 
 // Lazy load heavy sub-components
 const LogoPositionEditor = lazyWithRetry(() =>
@@ -153,7 +154,10 @@ export default function MockupGenerator() {
           prev.map((a) => ({ ...a, logoPreview: null, logoFile: null })),
         );
         mg.setGeneratedMockup(null);
+        mg.setGenerationError(null);
       }
+      // Outro cliente = outro projeto: o resultado preservado no card não vale mais.
+      mg.resetProjectIdentity();
       mg.setSelectedClient(null);
       mg.setActiveTab('generator');
       scrollToStep(1, true);
@@ -164,17 +168,17 @@ export default function MockupGenerator() {
       mg.logoColorAnalysis.clearForArea,
       mg.setPersonalizationAreas,
       mg.setGeneratedMockup,
+      mg.setGenerationError,
+      mg.resetProjectIdentity,
       mg.setSelectedClient,
       mg.setActiveTab,
     ],
   );
 
-  const handleLayoutCaptured = useCallback(() => {
-    mg.setLastSavedRecordId(null);
-    mg.setLastSavedMockupUrl(null);
-    mg.fetchHistory();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [mg.setLastSavedRecordId, mg.setLastSavedMockupUrl, mg.fetchHistory]);
+  // Duas condições independentes, cada uma do seu dado: a imagem vem de
+  // generatedMockup/generationError; o salvo segue o resultado EXIBIDO, com o
+  // seu próprio rastreio (useMockupCompletionStatus).
+  const completion = useMockupCompletionStatus(mg);
 
   return (
     <DiagnosticProfiler id="MockupGenerator">
@@ -184,7 +188,10 @@ export default function MockupGenerator() {
         path="/mockup-generator"
       />
       <Suspense fallback={null}>
-        <OffscreenLayoutCapture request={layoutCaptureRequest} onCaptured={handleLayoutCaptured} />
+        <OffscreenLayoutCapture
+          request={layoutCaptureRequest}
+          onCaptured={completion.handleLayoutCaptured}
+        />
       </Suspense>
 
       <GeneratingOverlay
@@ -312,9 +319,13 @@ export default function MockupGenerator() {
                   onProductSelect={(sel) => {
                     mg.setProductSelection(sel);
                     mg.setGeneratedMockup(null);
+                    mg.resetProjectIdentity();
                   }}
                   onTechniqueSelect={handleTechniqueSelect}
-                  onClientSelect={mg.setSelectedClient}
+                  onClientSelect={(client) => {
+                    mg.setSelectedClient(client);
+                    mg.resetProjectIdentity();
+                  }}
                   onReset={mg.resetForm}
                   activeAreaId={mg.activeAreaId}
                   onAreasChange={mg.setPersonalizationAreas}
@@ -464,6 +475,7 @@ export default function MockupGenerator() {
                                 if (recordId) {
                                   mg.setLastSavedMockupUrl(dataUrl);
                                   mg.setLastSavedLayoutMode('static');
+                                  mg.setLastSavedArea(mg.activeArea);
                                   mg.setLastSavedRecordId(recordId);
                                 }
                               } catch (err) {
@@ -499,6 +511,10 @@ export default function MockupGenerator() {
                     beforeImage={mg.beforeImage}
                     annotations={mg.mockupAnnotations}
                     onAnnotationsChange={mg.setMockupAnnotations}
+                    generationError={mg.generationError}
+                    onRetryGenerate={mg.generateMockup}
+                    projectSave={{ status: completion.projectSaveStatus }}
+                    projectResetCount={mg.projectResetCount}
                   />
 
                   {/* A grade "Todas as áreas" é um anexo do preview: o lote sempre
@@ -567,7 +583,10 @@ export default function MockupGenerator() {
                   mg.setDeleteDialogOpen(true);
                 }}
                 onDownload={(mockup) => mg.downloadMockup(mockup)}
-                onLoadFromHistory={mg.loadFromHistory}
+                onLoadFromHistory={(mockup) => {
+                  mg.setGenerationError(null);
+                  mg.loadFromHistory(mockup);
+                }}
               />
             </Suspense>
           </TabsContent>
