@@ -54,8 +54,9 @@ vi.mock("@/hooks/mockup/useMockupDraft", () => {
   return { useMockupDraft: vi.fn(() => draft) };
 });
 
-vi.mock("@/hooks/mockup/useMockupTechniques", () => ({
-  useFilteredTechniques: () => ({ techniques: [], isLoading: false }),
+vi.mock("@/hooks/mockup/useMockupTechniques", async (importOriginal) => ({
+  ...(await importOriginal<Record<string, unknown>>()),
+  useFilteredTechniques: () => [],
   useProductCustomizationOptionsForMockup: () => ({ data: null, isLoading: false }),
 }));
 

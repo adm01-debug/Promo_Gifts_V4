@@ -35,7 +35,10 @@ vi.mock('@/hooks/mockup/useMockupDraft', () => ({
     error: null,
   }),
 }));
-vi.mock('@/hooks/mockup/useMockupTechniques', () => ({
+// `resolveTechnique` vem do modulo real: e funcao pura e o gerador depende dela
+// para resolver a tecnica do rascunho/historico (so os hooks de rede sao substituidos).
+vi.mock('@/hooks/mockup/useMockupTechniques', async (importOriginal) => ({
+  ...(await importOriginal<Record<string, unknown>>()),
   useFilteredTechniques: () => [{ id: 'pat-1', name: 'Serigrafia', code: 'silk' }],
   useProductCustomizationOptionsForMockup: () => ({ data: null, isFetching: false }),
 }));
@@ -47,6 +50,14 @@ vi.mock('@/hooks/simulation', () => ({
     clear: vi.fn(),
     canRedo: false,
   }),
+}));
+// O modulo real de tecnicas (importOriginal acima) importa o client — stub minimo
+// so para nao carregar o client de producao neste worker.
+vi.mock('@/integrations/supabase/client', () => ({
+  supabase: {
+    auth: { getSession: () => Promise.resolve({ data: { session: null } }) },
+    from: () => ({}),
+  },
 }));
 vi.mock('@/lib/db/postgrest', () => ({ dbInvoke: mocks.dbInvoke }));
 vi.mock('sonner', () => ({ toast: { error: vi.fn(), success: vi.fn(), info: vi.fn() } }));
@@ -75,8 +86,18 @@ vi.mock('@/lib/supabase-untyped', () => {
   return { untypedFrom: () => builder };
 });
 
-const PRODUCT_1 = { id: 'prod-1', name: 'Caneca', images: ['p1.png'], dimensions: { width_cm: 8, height_cm: 10 } };
-const PRODUCT_2 = { id: 'prod-2', name: 'Copo', images: ['p2.png'], dimensions: { width_cm: 7, height_cm: 12 } };
+const PRODUCT_1 = {
+  id: 'prod-1',
+  name: 'Caneca',
+  images: ['p1.png'],
+  dimensions: { width_cm: 8, height_cm: 10 },
+};
+const PRODUCT_2 = {
+  id: 'prod-2',
+  name: 'Copo',
+  images: ['p2.png'],
+  dimensions: { width_cm: 7, height_cm: 12 },
+};
 
 function selectionFor(id: string) {
   const product = id === 'prod-1' ? PRODUCT_1 : PRODUCT_2;
