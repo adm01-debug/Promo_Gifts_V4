@@ -22,7 +22,7 @@ type MockupGeneratorState = ReturnType<typeof useMockupGenerator>;
 export function useMockupCompletionStatus(mg: MockupGeneratorState): {
   projectSaveStatus: MockupCompletionStatus;
   handleLayoutCaptured: () => void;
-  handleLayoutFailed: () => void;
+  handleLayoutFailed: (recordId: string) => void;
 } {
   const {
     generatedMockup,
@@ -62,16 +62,23 @@ export function useMockupCompletionStatus(mg: MockupGeneratorState): {
   // pedido ficava preso (o processedRef da captura barra nova tentativa) e a
   // ficha nunca chegava ao cliente, em silêncio. O mockup em si segue salvo.
   const handleLayoutFailed = useCallback(
-    () => {
+    (recordId: string) => {
       // Nao registra log aqui: a captura ja registra a falha na origem, com o
       // erro real (OffscreenLayoutCapture). Log duplicado so poluiria.
-      setLastSavedRecordId(null);
-      setLastSavedMockupUrl(null);
+      // O aviso sai sempre: a ficha DAQUELE mockup falhou, e o vendedor precisa
+      // saber, mesmo que ele ja tenha salvo outro no meio do caminho.
       toast.error(
         'Não foi possível preparar a ficha de aprovação deste mockup. O mockup está salvo — gere a ficha de novo.',
       );
+      // Mas so libera o pedido QUE falhou. Os botoes nao ficam bloqueados
+      // durante a captura (MockupGenerator.tsx), entao outro mockup pode ter
+      // sido salvo enquanto o upload anterior ainda corria; zerar sem conferir
+      // a identidade apagaria o pedido novo e a ficha dele nunca sairia.
+      if (recordId !== lastSavedRecordId) return;
+      setLastSavedRecordId(null);
+      setLastSavedMockupUrl(null);
     },
-    [setLastSavedRecordId, setLastSavedMockupUrl],
+    [lastSavedRecordId, setLastSavedRecordId, setLastSavedMockupUrl],
   );
 
   const projectSaveStatus: MockupCompletionStatus =

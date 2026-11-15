@@ -151,7 +151,7 @@ describe('ficha de aprovação que falha: avisa o vendedor e libera o pedido', (
     );
 
     act(() => {
-      result.current.handleLayoutFailed();
+      result.current.handleLayoutFailed('rec-a1');
     });
 
     // Sem zerar o pedido, o processedRef da captura barra nova tentativa e a
@@ -163,12 +163,40 @@ describe('ficha de aprovação que falha: avisa o vendedor e libera o pedido', (
     );
   });
 
+  it('falha de uma ficha ANTERIOR não apaga o pedido do mockup novo', () => {
+    const setRec = vi.fn();
+    const setUrl = vi.fn();
+    // O vendedor salvou outro mockup enquanto o upload da ficha anterior ainda
+    // corria: o pedido corrente ja e 'rec-a1', e quem falhou foi 'rec-antigo'.
+    // Os botoes nao ficam bloqueados durante a captura, entao isto acontece de
+    // verdade; zerar sem conferir a identidade mataria a ficha do mockup novo.
+    const { result } = statusHook(
+      generatorState({
+        lastSavedRecordId: 'rec-a1',
+        setLastSavedRecordId: setRec,
+        setLastSavedMockupUrl: setUrl,
+      }),
+    );
+
+    act(() => {
+      result.current.handleLayoutFailed('rec-antigo');
+    });
+
+    // O aviso sai: a ficha daquele mockup falhou e o vendedor precisa saber.
+    expect(toast.error).toHaveBeenCalledWith(
+      'Não foi possível preparar a ficha de aprovação deste mockup. O mockup está salvo — gere a ficha de novo.',
+    );
+    // Mas o pedido do mockup NOVO fica de pe.
+    expect(setRec).not.toHaveBeenCalled();
+    expect(setUrl).not.toHaveBeenCalled();
+  });
+
   it('o mockup continua salvo: a falha da ficha não derruba "Projeto salvo"', () => {
     const { result } = statusHook(generatorState());
     expect(result.current.projectSaveStatus).toBe('done');
 
     act(() => {
-      result.current.handleLayoutFailed();
+      result.current.handleLayoutFailed('rec-a1');
     });
 
     expect(result.current.projectSaveStatus).toBe('done');
