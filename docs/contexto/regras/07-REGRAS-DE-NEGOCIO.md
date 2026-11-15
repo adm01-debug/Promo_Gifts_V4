@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.3.2 · commit `4344666f2d` · branch `main` · 2026-11-15 16:05 UTC
+> Gerado automaticamente por AI Context Sync v1.3.2 · commit `6da08832ec` · branch `main` · 2026-11-15 16:37 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -5498,6 +5498,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `MAXIMO_DE_HEXES` | `8` | `src/hooks/assistant/useClientBrandSignals.ts` |
 | `MAXIMO_DE_GRUPOS_DE_COR` | `3` | `src/hooks/assistant/useClientBrandSignals.ts` |
 | `RPC_DE_CANDIDATOS` | `'rpc_sales_assistant_candidates'` | `src/hooks/assistant/useSalesAssistantCandidates.ts` |
+| `CODIGO_FUNCAO_INEXISTENTE` | `'PGRST202'` | `src/hooks/assistant/useSalesAssistantCandidates.ts` |
 | `LIMITE_DE_CANDIDATOS` | `8` | `src/hooks/assistant/useSalesAssistantCandidates.ts` |
 | `SCORE_MINIMO` | `50` | `src/hooks/assistant/useSalesAssistantCandidates.ts` |
 | `MAXIMO_POR_CATEGORIA` | `2` | `src/hooks/assistant/useSalesAssistantCandidates.ts` |
@@ -5605,8 +5606,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `FETCH_ALL_LIMIT` | `2000` | `src/hooks/products/useReplenishments.ts` |
 | `MAX_SELLER_CARTS` | `50` | `src/hooks/products/useSellerCarts.helpers.ts` |
 | `MIN_ITEM_QUANTITY` | `1` | `src/hooks/products/useSellerCarts.helpers.ts` |
-| `MAX_ITEM_QUANTITY` | `999999` | `src/hooks/products/useSellerCarts.helpers.ts` |
-| … +363 linhas — lista completa em `context.json` | | |
+| … +364 linhas — lista completa em `context.json` | | |
 
 ### H.2 Prazos, expirações e janelas de tempo
 
@@ -6519,7 +6519,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `admin` | `supabase/migrations/20261112120500_fix_optimization_queue_rpcs_dev_access.sql` |
 | `anon` | `tests/edge-functions/live/_live-client.ts` |
 
-## K. Testes como especificação (21633 testes em 2187 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (21636 testes em 2187 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -6603,6 +6603,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `src/hooks/__tests__/hooks-audit-regression.unit.test.ts` | 36 | STOCK-01 — toNumber utility (base para buildFutureEntries) · converte number para number sem alteracao · converte string numerica corretamente · retorna fallback para NaN e valores invalidos … |
 | `tests/e2e/phase4-admin-grid.test.ts` | 36 | Phase 4.1 — Variation Axes Config · detects color-only axes · detects color + size axes · detects all three axes … |
 | `tests/lib/kit-builder-volume.test.ts` | 36 | kit-builder volume-calculator · calculateVolume · returns w*h*d · calculateUsableVolume … |
+| `src/hooks/assistant/__tests__/useSalesAssistantCandidates.test.ts` | 35 | sem cliente ou sem sinal · não chama a RPC quando não há sinais · não chama a RPC quando não há cliente · não chama a RPC quando o cliente não tem ramo nem cor … |
 | `tests/e2e/phase5-propagation.test.ts` | 35 | Phase 5.1 — Quote Items with size_code · quote item with color and size · quote item without size (non-apparel) · quote item subtotal calculation … |
 | `tests/lib/date-utils.test.ts` | 35 | date-utils · formatDate · formats ISO string with default pattern · formats Date object … |
 | `tests/scripts/check-types-inventory-drift.test.mjs` | 35 | extractTypesInventory (TypeScript Compiler API) · rejeita entrada vazia, truncada ou desconhecida: %s · extrai Tables/Views/Functions/Enums por schema e ignora __InternalSupabase · countsOf reduz o inventário a contagens por schema/categoria … |
@@ -6613,7 +6614,6 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `tests/components/kit-builder/FreightEstimator.test.tsx` | 33 | FreightEstimator — tabela transportadora (default) · peso zero → alerta de peso não informado visível · 0g → exibe peso 0.0kg · 1000g (1kg) → faixa ≤5kg = R$ 18,00 … |
 | `tests/edge-functions/integration/data-ops.test.ts` | 33 | external-db-bridge · SELECT com tabela válida → 200 + rows · SELECT com filtro WHERE → 200 · INSERT → 200 + inserted_id … |
 | `tests/scripts/check-workflow-contracts.test.mjs` | 33 | C1 — permissions · flags workflow without top-level permissions · accepts workflow with top-level permissions · C2 — concurrency … |
-| `src/hooks/assistant/__tests__/useSalesAssistantCandidates.test.ts` | 32 | sem cliente ou sem sinal · não chama a RPC quando não há sinais · não chama a RPC quando não há cliente · não chama a RPC quando o cliente não tem ramo nem cor … |
 | `src/hooks/mockup/__tests__/useMockupDraft.test.ts` | 32 | estado inicial · retorna isSaving=false, isLoading=true, lastSaved=null, error=null · expõe saveDraft, loadDraft, clearDraft como funções · saveDraft — localStorage … |
 | `src/hooks/products/__tests__/futureStock.battery.test.ts` | 32 | Estoque Futuro · processStockEntries · gera entradas para todas as variantes do fixture realista · preserva entryIndex (1, 2, 3) mesmo quando entradas anteriores são puladas · ignora quantidades negativas, zero, NaN e datas vazias … |
 | `src/pages/magazine/hooks/__tests__/useMagazineReaderState.test.ts` | 32 | useMagazineReaderState — hidratação inicial · estado zerado quando localStorage vazio · lê bookmarks + lastPage válidos do localStorage · sobrevive a JSON corrompido em bookmarks … |

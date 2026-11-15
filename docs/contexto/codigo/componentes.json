@@ -5891,7 +5891,7 @@
     "TITULO_DO_CARD"
    ],
    "export_default": null,
-   "linhas": 168,
+   "linhas": 174,
    "dominio": "components/assistant",
    "hooks_locais": [
     "useClientBrandSignals",
@@ -5921,13 +5921,14 @@
   {
    "arquivo": "src/components/assistant/SalesAssistantStates.tsx",
    "exports": [
+    "SalesAssistantEmPreparacao",
     "SalesAssistantError",
     "SalesAssistantSemCandidatos",
     "SalesAssistantSemSinal",
     "SalesAssistantSkeleton"
    ],
    "export_default": null,
-   "linhas": 153,
+   "linhas": 171,
    "dominio": "components/assistant",
    "hooks_locais": [],
    "tabelas": [],

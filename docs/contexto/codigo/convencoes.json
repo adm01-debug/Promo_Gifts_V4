@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "fix(assistente): card não acusa falha enquanto a RPC não foi aplicada (#3678)",
    "feat(assistente): Encaixe do Cliente — fase 1 validada e com os 2 portões destravados (#3663)",
    "fix(inteligencia): grafico de mercado nao acusa erro quando a RPC ainda nao foi aplicada (#3675)",
    "feat(mockup): aviso de \"não carregou, tentar de novo\" no catálogo do painel de mockup (#3670)",
-   "fix(mockup): etapas do gerador voltam a ser anunciadas pelo leitor de tela no celular (#3671)",
-   "fix(magic-up): resgata varredura axe da pagina e nomeia selects e campos do briefing (#3668)"
+   "fix(mockup): etapas do gerador voltam a ser anunciadas pelo leitor de tela no celular (#3671)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",

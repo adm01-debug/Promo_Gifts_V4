@@ -7047,7 +7047,7 @@
    "hooks_exportados": [
     "useSalesAssistantCandidates"
    ],
-   "linhas": 330,
+   "linhas": 359,
    "dominio": "hooks/assistant",
    "tabelas": [],
    "rpcs": [],

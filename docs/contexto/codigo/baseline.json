@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "4344666f2d78d7be7d3e35efd8a3f89b040ca879",
+  "commit": "6da08832ec70315d42efccfb01b1f7c90701c2a0",
   "branch": "main",
-  "data_commit": "2026-11-15T16:04:18Z",
+  "data_commit": "2026-11-15T16:36:43Z",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "6da08832",
+    "data": "2026-11-15",
+    "assunto": "fix(assistente): card não acusa falha enquanto a RPC não foi aplicada (#3678)"
+   },
    {
     "sha": "4344666f",
     "data": "2026-11-15",
@@ -126,11 +131,6 @@
     "sha": "1fb3a1c0",
     "data": "2026-11-14",
     "assunto": "Merge remote-tracking branch 'origin/main' into claude/fix-crm-ownership-vinculo-261114-2230"
-   },
-   {
-    "sha": "37920454",
-    "data": "2026-11-14",
-    "assunto": "fix(crm): declara isencao de soft-delete na tabela de vinculo de vendedor"
    }
   ],
   "arquivos_mudados_7d": 2137,
@@ -211,11 +211,11 @@
    },
    {
     "arquivo": "package.json",
-    "mudancas": 39
+    "mudancas": 38
    },
    {
     "arquivo": "package-lock.json",
-    "mudancas": 29
+    "mudancas": 28
    },
    {
     "arquivo": "docs/coordenacao/conflitos-semanticos.md",
@@ -243,7 +243,7 @@
    },
    {
     "arquivo": "auditoria-supabase/RELATORIO_AUDITORIA_SUPABASE.md",
-    "mudancas": 15
+    "mudancas": 14
    },
    {
     "arquivo": "analise-prs/RELATORIO_PRS.md",
@@ -301,7 +301,7 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 579
+    "commits": 578
    },
    {
     "autor": "Joaquim Ataides",
@@ -324,7 +324,7 @@
  "contagens": {
   "arquivos_total": 10281,
   "arquivos_codigo": 5306,
-  "linhas_codigo": 1012179,
+  "linhas_codigo": 1012263,
   "rotas": 138,
   "rotas_http_backend": 13,
   "vistas_por_id": 0,
@@ -1884,7 +1884,7 @@
   },
   "src/components": {
    "arquivos": 1382,
-   "linhas": 276004
+   "linhas": 276029
   },
   "src/config": {
    "arquivos": 1,
@@ -1908,7 +1908,7 @@
   },
   "src/hooks": {
    "arquivos": 473,
-   "linhas": 89578
+   "linhas": 89637
   },
   "src/integrations": {
    "arquivos": 11,
@@ -2358,7 +2358,7 @@
   "console_log": 1270,
   "ts_ignore": 0,
   "eslint_disable": 24,
-  "todos": 106,
+  "todos": 107,
   "arquivos_acima_500_linhas": 185
  },
  "todos": [
@@ -2685,6 +2685,12 @@
    "linha": 101,
    "tipo": "TODO",
    "texto": "hook cresceu demais — cascata de imports (Supabase + ProductsContext +"
+  },
+  {
+   "arquivo": "src/hooks/assistant/__tests__/useSalesAssistantCandidates.test.ts",
+   "linha": 430,
+   "tipo": "TODO",
+   "texto": "cliente mostrava \"A busca de brindes falhou\"."
   },
   {
    "arquivo": "src/hooks/common/__tests__/useListUrlState.test.tsx",

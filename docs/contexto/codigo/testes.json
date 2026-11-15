@@ -7918,13 +7918,13 @@
   {
    "arquivo": "src/hooks/assistant/__tests__/useSalesAssistantCandidates.test.ts",
    "tipo": "unit",
-   "linhas": 425,
+   "linhas": 455,
    "testa": [
     "src/hooks/assistant/useClientBrandSignals.ts",
     "src/hooks/assistant/useSalesAssistantCandidates.ts",
     "src/lib/assistant/logoColorToGroups.ts"
    ],
-   "casos": 25
+   "casos": 27
   },
   {
    "arquivo": "src/hooks/auth/__tests__/login-flow.test.ts",

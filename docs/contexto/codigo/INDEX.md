@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e de hora em hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `4344666f2d78d7be7d3e35efd8a3f89b040ca879` (2026-11-15T16:04:18Z).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e de hora em hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `6da08832ec70315d42efccfb01b1f7c90701c2a0` (2026-11-15T16:36:43Z).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -36,7 +36,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 |---|---|
 | arquivos_total | 10281 |
 | arquivos_codigo | 5306 |
-| linhas_codigo | 1012179 |
+| linhas_codigo | 1012263 |
 | rotas | 138 |
 | rotas_http_backend | 13 |
 | vistas_por_id | 0 |
@@ -589,8 +589,8 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - possiveis_segredos_no_codigo: 7 — ex.: scripts/ai-context/cenarios.mjs:102, src/components/admin/connections/__tests__/ConnectionSecurity.unit.test.tsx:9, src/integrations/supabase/client.ts:27
 
 ## Grafo de código (graphify)
-- 43919 nós · 75973 arestas · 2444 comunidades · grafo do commit `4344666f`
-- comunidades maiores: vitest (817), ref_components (768), ref_integrations (629), ref_node_child_process (484), ref_hooks (414), @tanstack/react-query (383), react-router-dom (361), ref_node_fs (357), ref_types (354), ref_utils (328), sonner (327), scripts (302)
+- 43922 nós · 75980 arestas · 2439 comunidades · grafo do commit `6da08832`
+- comunidades maiores: ref_components (755), ref_integrations (678), vitest (595), ref_hooks (498), ref_node_child_process (496), react (409), sonner (346), ref_types (334), @tanstack/react-query (331), ref_utils (321), scripts (302), react-router-dom (301)
 - símbolos mais chamados: gotoAndSettle() (e2e/helpers/nav.ts), re (?), q() (scripts/supabase_snapshot/snapshot.py), analyze() (tests/scripts/test_personalization_artifact_diagnostics.py), outer() (tests/scripts/test_personalization_artifact_diagnostics.py), json (?), useExternalDatabase() (recovery/src-legacy/src/hooks/useExternalDatabase.ts), concludeCheck() (scripts/check-result-contract.mjs), querySupabaseReadOnly() (scripts/supabase-read-only-query.mjs), loginAs() (e2e/helpers/auth.ts), inner() (tests/scripts/test_personalization_artifact_diagnostics.py), excluded_sql() (scripts/supabase_snapshot/snapshot.py)
 - consulta local: `graphify query "<pergunta>"`, `graphify path "<A>" "<B>"`, `graphify explain "<X>"`
 
@@ -598,15 +598,15 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - RELATORIO_CI.md (94)
 - PENDENCIAS.md (89)
 - supabase/MIGRATIONS_SYNC_LOG.md (60)
-- package.json (39)
-- package-lock.json (29)
+- package.json (38)
+- package-lock.json (28)
 - docs/coordenacao/conflitos-semanticos.md (20)
 - analise-prs/progresso.json (19)
 - CHANGELOG.md (18)
 - supabase/EDGE_FUNCTIONS_DEPLOY_LOG.md (18)
 - .github/workflows/deploy-gates.yml (16)
 - src/pages/kit-builder/KitBuilderPage.tsx (16)
-- auditoria-supabase/RELATORIO_AUDITORIA_SUPABASE.md (15)
+- auditoria-supabase/RELATORIO_AUDITORIA_SUPABASE.md (14)
 - analise-prs/RELATORIO_PRS.md (13)
 - analise-prs/prs.json (13)
 - audit/supabase-reference-catalog.temporary.json (13)
@@ -1173,6 +1173,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - CHANGELOG topo: [1.1.0](https://github.com/adm01-debug/Promo_Gifts_V4/compare/v1.0.0...v1.1.0) (2026-11-13)
 
 ## Últimos commits
+- 2026-11-15 `6da08832` fix(assistente): card não acusa falha enquanto a RPC não foi aplicada (#3678)
 - 2026-11-15 `4344666f` feat(assistente): Encaixe do Cliente — fase 1 validada e com os 2 portões destravados (#3663)
 - 2026-11-15 `8ece9cc4` fix(inteligencia): grafico de mercado nao acusa erro quando a RPC ainda nao foi aplicada (#3675)
 - 2026-11-15 `f1044db3` feat(mockup): aviso de "não carregou, tentar de novo" no catálogo do painel de mockup (#3670)
@@ -1187,7 +1188,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-15 `9e656a39` ci: enxuga workflows — checagens estáticas consolidadas, 12 aposentados, contexto 1×/h (#3659)
 - 2026-11-15 `20dfb7b3` chore: trem de infra — BOM da edge asia-ingestion, recibo E66, E2E fora dos PRs e snapshots all-authed (#3658)
 - 2026-11-15 `eecfde92` fix: trem de 3 correções de front — busca, cores por área do mockup e trocar item no kit (#3653)
-- 2026-11-15 `3893d57f` fix(ci): portão de recibos deixa de dar verde com version citada no recibo de outra migration (#3649)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

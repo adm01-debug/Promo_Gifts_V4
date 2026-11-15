@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "4344666f2d78d7be7d3e35efd8a3f89b040ca879",
+  "sha": "6da08832ec70315d42efccfb01b1f7c90701c2a0",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-15 16:05 UTC",
+  "generated_at": "2026-11-15 16:37 UTC",
   "files_total": 10209,
   "code_files": 8734,
-  "code_lines": 1231493
+  "code_lines": 1231577
  },
  "version": "1.3.2",
- "facts_hash": "d74ac068c51224ab",
+ "facts_hash": "e157ead1070102f2",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -149343,7 +149343,7 @@
   {
    "module": "src/components",
    "files": 1382,
-   "lines": 276003,
+   "lines": 276028,
    "tables": [
     "admin_audit_log",
     "art_file_attachments",
@@ -149707,7 +149707,7 @@
   {
    "module": "src/hooks",
    "files": 473,
-   "lines": 89578,
+   "lines": 89637,
    "tables": [
     "admin_audit_log",
     "admin_settings",
@@ -149805,7 +149805,7 @@
     "useSystemSettings.ts: SystemSetting, useSystemSettings",
     "useV4Callbacks.ts: CallbackResult, EventType, CallbackEventRow, CallbackFilters, useV4Callbacks, TimeBucket",
     "useClientBrandSignals.ts: COLUNAS_DE_COR_DA_MARCA, SinaisDaMarcaDoCliente, UseClientBrandSignalsResult, extrairHexesDaMarca, hexesDaMarcaDaEmpresa, useClientBrandSignals",
-    "useSalesAssistantCandidates.ts: RPC_DE_CANDIDATOS, LIMITE_DE_CANDIDATOS, SCORE_MINIMO, MAXIMO_POR_CATEGORIA, ArgsDaRpcDeCandidatos, LinhaDeCandidato",
+    "useSalesAssistantCandidates.ts: RPC_DE_CANDIDATOS, ErroDeRpcNaoAplicada, LIMITE_DE_CANDIDATOS, SCORE_MINIMO, MAXIMO_POR_CATEGORIA, ArgsDaRpcDeCandidatos",
     "use2FA.ts: use2FA",
     "useAccessSecurity.ts: IpWhitelistEntry, CountryWhitelistEntry, AccessBlockedLog, AccessSecuritySettings, useAccessSecurity",
     "useAuthHydrationMetrics.ts: HydrationSample, HydrationMetrics, UseAuthHydrationMetricsResult, useAuthHydrationMetrics",
@@ -197277,6 +197277,11 @@
    },
    {
     "file": "src/hooks/assistant/useSalesAssistantCandidates.ts",
+    "name": "CODIGO_FUNCAO_INEXISTENTE",
+    "value": "'PGRST202'"
+   },
+   {
+    "file": "src/hooks/assistant/useSalesAssistantCandidates.ts",
     "name": "LIMITE_DE_CANDIDATOS",
     "value": "8"
    },
@@ -241331,6 +241336,18 @@
    {
     "file": "src/hooks/assistant/__tests__/useSalesAssistantCandidates.test.ts",
     "name": "data que não é lista vira lista vazia"
+   },
+   {
+    "file": "src/hooks/assistant/__tests__/useSalesAssistantCandidates.test.ts",
+    "name": "RPC ainda não aplicada no banco"
+   },
+   {
+    "file": "src/hooks/assistant/__tests__/useSalesAssistantCandidates.test.ts",
+    "name": "PGRST202 vira ErroDeRpcNaoAplicada, para o card não dizer que falhou"
+   },
+   {
+    "file": "src/hooks/assistant/__tests__/useSalesAssistantCandidates.test.ts",
+    "name": "qualquer outro erro continua sendo erro comum — falha real não fica escondida"
    },
    {
     "file": "src/hooks/auth/__tests__/login-flow.test.ts",
@@ -433648,7 +433665,7 @@
   },
   "src/components/assistant/SalesAssistantCard.tsx": {
    "path": "src/components/assistant/SalesAssistantCard.tsx",
-   "lines": 168,
+   "lines": 174,
    "exports": [
     "const TITULO_DO_CARD",
     "interface SalesAssistantCardProps",
@@ -433692,13 +433709,14 @@
   },
   "src/components/assistant/SalesAssistantStates.tsx": {
    "path": "src/components/assistant/SalesAssistantStates.tsx",
-   "lines": 153,
+   "lines": 171,
    "exports": [
     "function SalesAssistantSkeleton",
     "function SalesAssistantError",
     "function motivosDaFaltaDeSinal",
     "function SalesAssistantSemSinal",
-    "function SalesAssistantSemCandidatos"
+    "function SalesAssistantSemCandidatos",
+    "function SalesAssistantEmPreparacao"
    ],
    "errors": [
     " className="
@@ -433712,7 +433730,7 @@
   },
   "src/components/assistant/index.ts": {
    "path": "src/components/assistant/index.ts",
-   "lines": 11
+   "lines": 12
   },
   "src/components/audit/AuditHistory.tsx": {
    "path": "src/components/audit/AuditHistory.tsx",
@@ -453508,9 +453526,10 @@
   },
   "src/hooks/assistant/useSalesAssistantCandidates.ts": {
    "path": "src/hooks/assistant/useSalesAssistantCandidates.ts",
-   "lines": 330,
+   "lines": 359,
    "exports": [
     "const RPC_DE_CANDIDATOS",
+    "class ErroDeRpcNaoAplicada",
     "const LIMITE_DE_CANDIDATOS",
     "const SCORE_MINIMO",
     "const MAXIMO_POR_CATEGORIA",
@@ -453529,6 +453548,10 @@
     {
      "name": "RPC_DE_CANDIDATOS",
      "value": "'rpc_sales_assistant_candidates'"
+    },
+    {
+     "name": "CODIGO_FUNCAO_INEXISTENTE",
+     "value": "'PGRST202'"
     },
     {
      "name": "LIMITE_DE_CANDIDATOS",
@@ -453593,7 +453616,7 @@
   },
   "src/hooks/assistant/__tests__/useSalesAssistantCandidates.test.ts": {
    "path": "src/hooks/assistant/__tests__/useSalesAssistantCandidates.test.ts",
-   "lines": 425,
+   "lines": 455,
    "is_test": true,
    "rule_comments": [
     "'aproximada', então a frase não pode afirmar \"cor igual à logo\" — o"
@@ -453631,7 +453654,10 @@
     "classe de giro fora de A/B/C é descartada",
     "resposta malformada",
     "descarta linha sem product_id em vez de quebrar a tela",
-    "data que não é lista vira lista vazia"
+    "data que não é lista vira lista vazia",
+    "RPC ainda não aplicada no banco",
+    "PGRST202 vira ErroDeRpcNaoAplicada, para o card não dizer que falhou",
+    "qualquer outro erro continua sendo erro comum — falha real não fica escondida"
    ]
   },
   "src/hooks/auth/index.ts": {
@@ -538694,10 +538720,23 @@
   }
  },
  "git": {
-  "sha": "4344666f2d78d7be7d3e35efd8a3f89b040ca879",
+  "sha": "6da08832ec70315d42efccfb01b1f7c90701c2a0",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "6da0883",
+    "date": "2026-11-15",
+    "author": "adm01-debug",
+    "subject": "fix(assistente): card não acusa falha enquanto a RPC não foi aplicada (#3678)",
+    "files": [
+     "src/components/assistant/SalesAssistantCard.tsx",
+     "src/components/assistant/SalesAssistantStates.tsx",
+     "src/components/assistant/index.ts",
+     "src/hooks/assistant/__tests__/useSalesAssistantCandidates.test.ts",
+     "src/hooks/assistant/useSalesAssistantCandidates.ts"
+    ]
+   },
    {
     "sha": "4344666",
     "date": "2026-11-15",
@@ -539242,18 +539281,6 @@
     "files": [
      "docs/coordenacao/conflitos-semanticos.md"
     ]
-   },
-   {
-    "sha": "9af05ef",
-    "date": "2026-11-14",
-    "author": "Claude",
-    "subject": "fix(crm): fornecedor e transportadora fora do escopo por vendedor, e teste travando a regra nova",
-    "files": [
-     "supabase/functions/crm-db-bridge/index.ts",
-     "supabase/functions/crm-db-bridge/query-policy.ts",
-     "tests/security/crm-db-bridge-ownership.test.ts",
-     "tests/security/crm-db-bridge-seller-scope.test.ts"
-    ]
    }
   ],
   "hot_files": [
@@ -539276,6 +539303,26 @@
    [
     "src/pages/kit-builder/KitBuilderPage.tsx",
     3
+   ],
+   [
+    "src/components/assistant/SalesAssistantCard.tsx",
+    2
+   ],
+   [
+    "src/components/assistant/SalesAssistantStates.tsx",
+    2
+   ],
+   [
+    "src/components/assistant/index.ts",
+    2
+   ],
+   [
+    "src/hooks/assistant/__tests__/useSalesAssistantCandidates.test.ts",
+    2
+   ],
+   [
+    "src/hooks/assistant/useSalesAssistantCandidates.ts",
+    2
    ],
    [
     "src/hooks/intelligence/__tests__/useMarketIntelligenceMacro.test.tsx",
@@ -539315,26 +539362,6 @@
    ],
    [
     "src/hooks/mockup/mockupGenerationService.ts",
-    2
-   ],
-   [
-    ".github/workflows/e2e-stock.yml",
-    2
-   ],
-   [
-    ".github/workflows/global-search-gate.yml",
-    2
-   ],
-   [
-    "src/components/kit-builder/ItemSelector.tsx",
-    2
-   ],
-   [
-    "src/components/kit-builder/ItemSelector.types.ts",
-    2
-   ],
-   [
-    "src/hooks/mockup/useMockupGenerator.ts",
     2
    ]
   ]
