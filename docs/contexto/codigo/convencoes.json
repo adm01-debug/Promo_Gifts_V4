@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "fix(ci): recibo de migration entra sozinho e para de travar o CI (#3662)",
    "fix(ci): E14 volta a valer para PR que só toca docs/ci/SEGREDOS.md (#3661)",
    "fix: trem de resgates — 16 correções recuperadas de branches de outros agentes (#3660)",
    "ci: enxuga workflows — checagens estáticas consolidadas, 12 aposentados, contexto 1×/h (#3659)",
-   "chore: trem de infra — BOM da edge asia-ingestion, recibo E66, E2E fora dos PRs e snapshots all-authed (#3658)",
-   "fix: trem de 3 correções de front — busca, cores por área do mockup e trocar item no kit (#3653)"
+   "chore: trem de infra — BOM da edge asia-ingestion, recibo E66, E2E fora dos PRs e snapshots all-authed (#3658)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",

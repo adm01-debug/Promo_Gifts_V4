@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "7e6d63dedadbd372775f3c84cd52a13e41002c7b",
+  "commit": "335bdb602d2d5292fa6969eb382f180cd68f508b",
   "branch": "main",
-  "data_commit": "2026-11-15T11:01:27-03:00",
+  "data_commit": "2026-11-15T14:27:11Z",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "335bdb60",
+    "data": "2026-11-15",
+    "assunto": "fix(ci): recibo de migration entra sozinho e para de travar o CI (#3662)"
+   },
    {
     "sha": "7e6d63de",
     "data": "2026-11-15",
@@ -126,11 +131,6 @@
     "sha": "1a9cc9a4",
     "data": "2026-11-14",
     "assunto": "fix(migrations): declara o rollback da 20261114170845 e documenta o schema net exposto na API pública (#3628)"
-   },
-   {
-    "sha": "7b84ebe5",
-    "data": "2026-11-14",
-    "assunto": "Merge pull request #3630 from adm01-debug/claude/trem4-front-perf-261114-2020"
    }
   ],
   "arquivos_mudados_7d": 2084,
@@ -211,11 +211,11 @@
    },
    {
     "arquivo": "package.json",
-    "mudancas": 42
+    "mudancas": 41
    },
    {
     "arquivo": "package-lock.json",
-    "mudancas": 32
+    "mudancas": 31
    },
    {
     "arquivo": "analise-prs/progresso.json",
@@ -230,12 +230,12 @@
     "mudancas": 19
    },
    {
-    "arquivo": "analise-prs/RELATORIO_PRS.md",
+    "arquivo": "supabase/EDGE_FUNCTIONS_DEPLOY_LOG.md",
     "mudancas": 19
    },
    {
-    "arquivo": "supabase/EDGE_FUNCTIONS_DEPLOY_LOG.md",
-    "mudancas": 19
+    "arquivo": "analise-prs/RELATORIO_PRS.md",
+    "mudancas": 18
    },
    {
     "arquivo": ".github/workflows/deploy-gates.yml",
@@ -301,7 +301,7 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 581
+    "commits": 582
    },
    {
     "autor": "Joaquim Ataides",
@@ -309,7 +309,7 @@
    },
    {
     "autor": "Claude",
-    "commits": 131
+    "commits": 130
    },
    {
     "autor": "github-actions[bot]",
@@ -317,7 +317,7 @@
    },
    {
     "autor": "dependabot[bot]",
-    "commits": 13
+    "commits": 11
    }
   ]
  },

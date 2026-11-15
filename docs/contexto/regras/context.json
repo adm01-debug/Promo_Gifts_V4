@@ -1,9 +1,9 @@
 {
  "meta": {
-  "sha": "7e6d63dedadbd372775f3c84cd52a13e41002c7b",
+  "sha": "335bdb602d2d5292fa6969eb382f180cd68f508b",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-15 14:02 UTC",
+  "generated_at": "2026-11-15 14:28 UTC",
   "files_total": 10152,
   "code_files": 8677,
   "code_lines": 1223341
@@ -532818,10 +532818,19 @@
   }
  },
  "git": {
-  "sha": "7e6d63dedadbd372775f3c84cd52a13e41002c7b",
+  "sha": "335bdb602d2d5292fa6969eb382f180cd68f508b",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "335bdb6",
+    "date": "2026-11-15",
+    "author": "adm01-debug",
+    "subject": "fix(ci): recibo de migration entra sozinho e para de travar o CI (#3662)",
+    "files": [
+     ".github/workflows/db-apply-migration.yml"
+    ]
+   },
    {
     "sha": "7e6d63d",
     "date": "2026-11-15",
@@ -533286,13 +533295,6 @@
      "src/hooks/products/useProductsLightweight.ts",
      "src/lib/external-db/products-lightweight.ts"
     ]
-   },
-   {
-    "sha": "16bc011",
-    "date": "2026-11-14",
-    "author": "Claude",
-    "subject": "Merge remote-tracking branch 'origin/main' into claude/trem4-front-perf-261114-2020",
-    "files": []
    }
   ],
   "hot_files": [
@@ -533365,15 +533367,15 @@
     2
    ],
    [
+    ".github/workflows/db-apply-migration.yml",
+    1
+   ],
+   [
     "docs/agentes/ci-gates.md",
     1
    ],
    [
     "artifacts/route-test-matrix.json",
-    1
-   ],
-   [
-    "e2e/flows/04r-undo-toast-a11y-keyboard.spec.ts",
     1
    ]
   ]
