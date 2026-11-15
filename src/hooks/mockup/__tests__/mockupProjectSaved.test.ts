@@ -166,20 +166,37 @@ describe('ficha de aprovação que falha: avisa o vendedor e libera o pedido', (
   it('falha de uma ficha ANTERIOR não apaga o pedido do mockup novo', () => {
     const setRec = vi.fn();
     const setUrl = vi.fn();
-    // O vendedor salvou outro mockup enquanto o upload da ficha anterior ainda
-    // corria: o pedido corrente ja e 'rec-a1', e quem falhou foi 'rec-antigo'.
-    // Os botoes nao ficam bloqueados durante a captura, entao isto acontece de
-    // verdade; zerar sem conferir a identidade mataria a ficha do mockup novo.
-    const { result } = statusHook(
+    // Reproduz a sequência REAL, não uma chamada conveniente: o efeito de
+    // OffscreenLayoutCapture tem deps [request?.recordId, isCapturing] com
+    // exhaustive-deps desligado, então o `capture()` assíncrono RETÉM o
+    // callback do render que o iniciou. Por isso o teste guarda o callback
+    // daquele render, re-renderiza com outro pedido corrente e só então invoca
+    // o callback retido. Comparar o recordId com um `lastSavedRecordId`
+    // capturado daria igual (os dois velhos) e apagaria o pedido novo; o
+    // handler lê o pedido corrente por ref justamente por isso.
+    const { result, rerender } = statusHook(
       generatorState({
-        lastSavedRecordId: 'rec-a1',
+        lastSavedRecordId: 'rec-antigo',
+        lastSavedMockupUrl: 'url-antiga',
         setLastSavedRecordId: setRec,
         setLastSavedMockupUrl: setUrl,
       }),
     );
 
+    const callbackRetido = result.current.handleLayoutFailed;
+
+    // O vendedor salvou outro mockup enquanto o upload da ficha anterior corria.
+    rerender({
+      mg: generatorState({
+        lastSavedRecordId: 'rec-novo',
+        lastSavedMockupUrl: 'url-nova',
+        setLastSavedRecordId: setRec,
+        setLastSavedMockupUrl: setUrl,
+      }),
+    });
+
     act(() => {
-      result.current.handleLayoutFailed('rec-antigo');
+      callbackRetido('rec-antigo');
     });
 
     // O aviso sai: a ficha daquele mockup falhou e o vendedor precisa saber.

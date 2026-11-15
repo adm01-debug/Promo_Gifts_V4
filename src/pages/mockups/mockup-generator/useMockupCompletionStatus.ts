@@ -11,7 +11,7 @@
  * "Salvo" é a gravação CONFIRMADA da imagem exibida: `saveBatchResults` devolve
  * a gravação do resultado exibido, não a da última área do lote.
  */
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { toast } from 'sonner';
 import type { useMockupGenerator } from '@/hooks/mockup';
 import type { MockupCompletionStatus } from '@/components/mockup/MockupCompletionStates';
@@ -61,6 +61,17 @@ export function useMockupCompletionStatus(mg: MockupGeneratorState): {
   // Falha na ficha: avisa o vendedor e libera o pedido pendente. Sem isto o
   // pedido ficava preso (o processedRef da captura barra nova tentativa) e a
   // ficha nunca chegava ao cliente, em silêncio. O mockup em si segue salvo.
+  // O pedido corrente lido por REFERENCIA, nao por captura. OffscreenLayoutCapture
+  // nao tem `onFailed` nas dependencias do efeito (:164, exhaustive-deps
+  // desligado), entao o `capture()` assincrono retem o callback do render que o
+  // iniciou — e aquele callback carrega o `lastSavedRecordId` daquele momento.
+  // Comparar os dois valores velhos entre si da sempre igual, e o pedido do
+  // mockup novo era apagado. A ref sempre tem o valor de agora.
+  const lastSavedRecordIdRef = useRef(lastSavedRecordId);
+  useEffect(() => {
+    lastSavedRecordIdRef.current = lastSavedRecordId;
+  }, [lastSavedRecordId]);
+
   const handleLayoutFailed = useCallback(
     (recordId: string) => {
       // Nao registra log aqui: a captura ja registra a falha na origem, com o
@@ -74,11 +85,11 @@ export function useMockupCompletionStatus(mg: MockupGeneratorState): {
       // durante a captura (MockupGenerator.tsx), entao outro mockup pode ter
       // sido salvo enquanto o upload anterior ainda corria; zerar sem conferir
       // a identidade apagaria o pedido novo e a ficha dele nunca sairia.
-      if (recordId !== lastSavedRecordId) return;
+      if (recordId !== lastSavedRecordIdRef.current) return;
       setLastSavedRecordId(null);
       setLastSavedMockupUrl(null);
     },
-    [lastSavedRecordId, setLastSavedRecordId, setLastSavedMockupUrl],
+    [setLastSavedRecordId, setLastSavedMockupUrl],
   );
 
   const projectSaveStatus: MockupCompletionStatus =
