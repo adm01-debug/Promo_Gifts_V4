@@ -31,8 +31,6 @@
 import { useQuery, type UseQueryResult } from '@tanstack/react-query';
 
 import {
-  ORDEM_DOS_SINAIS,
-  type ChaveDeSinal,
   type ClasseDeGiro,
   type DadosDoProduto,
   type SinaisDeEncaixe,
@@ -153,22 +151,19 @@ function comoClasseDeGiro(valor: string | null | undefined): ClasseDeGiro | null
   return classe === 'A' || classe === 'B' || classe === 'C' ? classe : null;
 }
 
-const CAMPO_POR_SINAL: Readonly<Record<ChaveDeSinal, keyof LinhaDeCandidato>> = {
-  cor: 'sinal_cor',
-  estoque: 'sinal_estoque',
-  giro: 'sinal_giro',
-  gravacao: 'sinal_gravacao',
-  novidade: 'sinal_novidade',
-  preco: 'sinal_preco',
-  ramo: 'sinal_ramo',
-};
-
 function sinaisDaLinha(linha: LinhaDeCandidato): SinaisDeEncaixe {
-  const sinais = {} as Record<ChaveDeSinal, boolean>;
-  for (const chave of ORDEM_DOS_SINAIS) {
-    sinais[chave] = comoBooleano(linha[CAMPO_POR_SINAL[chave]] as boolean | null);
-  }
-  return sinais;
+  // Objeto literal em vez de acumulador com asserção: o compilador exige as 7
+  // chaves de ChaveDeSinal e já conhece o tipo de cada campo da linha, então o
+  // gate de `as` (E125) fica limpo sem perder a exaustividade.
+  return {
+    cor: comoBooleano(linha.sinal_cor),
+    estoque: comoBooleano(linha.sinal_estoque),
+    giro: comoBooleano(linha.sinal_giro),
+    gravacao: comoBooleano(linha.sinal_gravacao),
+    novidade: comoBooleano(linha.sinal_novidade),
+    preco: comoBooleano(linha.sinal_preco),
+    ramo: comoBooleano(linha.sinal_ramo),
+  };
 }
 
 /**
