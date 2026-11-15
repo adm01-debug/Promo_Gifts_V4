@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { Save, Palette, Sparkles, Check, Gamepad2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { m as motion } from 'framer-motion';
+import { m as motion, type Variants } from 'framer-motion';
 import { useTheme } from '@/contexts/ThemeContext';
 import { toast } from 'sonner';
 import {
@@ -20,7 +20,7 @@ import { BorderRadiusControl } from '@/components/settings/theme/BorderRadiusCon
 import { ThemeResetDialog } from '@/components/settings/theme/ThemeResetDialog';
 import { PageSEO } from '@/components/seo/PageSEO';
 
-const fadeUp = {
+const fadeUp: Variants = {
   hidden: { opacity: 0, y: 16 },
   visible: (i: number) => ({
     opacity: 1,

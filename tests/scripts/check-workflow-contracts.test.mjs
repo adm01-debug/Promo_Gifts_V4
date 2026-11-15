@@ -4,7 +4,10 @@
  * Verifica que as funções exportadas detectam violações conhecidas
  * e aceitam workflows corretos.
  */
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, afterEach } from 'vitest';
+import { mkdtempSync, mkdirSync, rmSync, symlinkSync, writeFileSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
 import {
   checkC1Permissions,
   checkC2Concurrency,
@@ -14,7 +17,22 @@ import {
   checkC6PlaywrightProjects,
   checkC7NpmScripts,
   checkC8NodeScripts,
+  checkC25E2ECredsOnlyInAuthedJobs,
+  readWorkflowFiles,
 } from '../../scripts/check-workflow-contracts.mjs';
+
+const temporaryRoots = [];
+afterEach(() => {
+  for (const root of temporaryRoots.splice(0)) rmSync(root, { recursive: true, force: true });
+});
+
+function tempRootWithWorkflowsDir() {
+  const root = mkdtempSync(join(tmpdir(), 'check-workflow-contracts-'));
+  temporaryRoots.push(root);
+  const dir = join(root, '.github', 'workflows');
+  mkdirSync(dir, { recursive: true });
+  return { root, dir };
+}
 
 // ---------------------------------------------------------------------------
 // C1 — permissions
@@ -161,5 +179,71 @@ describe('C7 — npm run scripts', () => {
   it('accepts known npm script', () => {
     const wf = { file: 'foo.yml', text: 'run: npm run build\n' };
     expect(checkC7NpmScripts(wf, knownScripts).length).toBe(0);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// C25 — E2E credentials are isolated to authenticated test workflows
+// ---------------------------------------------------------------------------
+describe('C25 — E2E credential isolation', () => {
+  const env = {
+    E2E_USER_EMAIL: '${{ secrets.E2E_USER_EMAIL }}',
+    E2E_USER_PASSWORD: '${{ secrets.E2E_USER_PASSWORD }}',
+  };
+
+  it('allows the read-only Kit Coverage integration script in its dedicated workflow', () => {
+    const wf = {
+      file: 'kit-coverage-integration.yml',
+      text: 'run: npm run test:kit-coverage:integration\n',
+      doc: {
+        jobs: {
+          'kit-coverage-integration': {
+            env,
+            steps: [{ run: 'npm run test:kit-coverage:integration' }],
+          },
+        },
+      },
+    };
+    expect(checkC25E2ECredsOnlyInAuthedJobs(wf)).toEqual([]);
+  });
+
+  it('does not allow the Kit Coverage exception in another workflow', () => {
+    const wf = {
+      file: 'unrelated-integration.yml',
+      text: 'run: npm run test:kit-coverage:integration\n',
+      doc: { jobs: { test: { env, steps: [{ run: 'npm run test:kit-coverage:integration' }] } } },
+    };
+    expect(checkC25E2ECredsOnlyInAuthedJobs(wf)).toHaveLength(1);
+  });
+
+  it('does not allow credentials in the dedicated workflow without its integration command', () => {
+    const wf = {
+      file: 'kit-coverage-integration.yml',
+      text: 'run: npm test\n',
+      doc: { jobs: { test: { env, steps: [{ run: 'npm test' }] } } },
+    };
+    expect(checkC25E2ECredsOnlyInAuthedJobs(wf)).toHaveLength(1);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// readWorkflowFiles — symlink quebrado não pode virar stack trace cru
+// ---------------------------------------------------------------------------
+describe('readWorkflowFiles — arquivo ilegível', () => {
+  it('lança erro legível (não ENOENT cru) quando um workflow é um symlink quebrado', () => {
+    const { root, dir } = tempRootWithWorkflowsDir();
+    writeFileSync(join(dir, 'ok.yml'), 'on:\n  push:\njobs:\n  x:\n    runs-on: ubuntu-24.04\n');
+    symlinkSync(join(dir, 'does-not-exist-target.yml'), join(dir, 'broken-symlink.yml'));
+
+    let caught = null;
+    try {
+      readWorkflowFiles(root);
+    } catch (error) {
+      caught = error;
+    }
+
+    expect(caught).not.toBeNull();
+    expect(caught.message).toMatch(/check-workflow-contracts: falha ao ler broken-symlink\.yml/);
+    expect(caught.code).not.toBe('ENOENT'); // erro embrulhado, não o ENOENT cru do fs
   });
 });

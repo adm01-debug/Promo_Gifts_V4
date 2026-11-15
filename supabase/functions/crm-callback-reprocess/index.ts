@@ -140,10 +140,10 @@ Deno.serve(async (req) => {
       .from("crm_callback_events")
       .select("*")
       .in("result", ["error", "exhausted"])
-      .order("created_at", { ascending: false })
+      .order("received_at", { ascending: false })
       .limit(body.limit ?? 100);
     if (body.external_quote_id) q = q.eq("external_quote_id", body.external_quote_id);
-    if (body.since) q = q.gte("created_at", body.since);
+    if (body.since) q = q.gte("received_at", body.since);
     const { data, error } = await q;
     if (error) return log.respond(json(500, { error: "read_failed", message: error.message }));
     rows = data ?? [];

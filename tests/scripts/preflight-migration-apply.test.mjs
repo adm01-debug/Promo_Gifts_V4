@@ -265,6 +265,19 @@ describe('detectBlockingDdl (E63)', () => {
     const r = detectBlockingDdl('DROP TABLE IF EXISTS public.foo;');
     expect(r.filter((m) => m.toLowerCase().includes('drop'))).toHaveLength(0);
   });
+
+  it('não bloqueia DDL perigosa citada só dentro de um bloco de comentário /* */', () => {
+    const sql = [
+      '/* histórico: antes desta migration tínhamos',
+      '   DROP TABLE public.foo;',
+      '   removido manualmente em 2026-01, mantido aqui só como nota. */',
+      'CREATE VIEW public.x AS SELECT 1;',
+    ].join('\n');
+    // Antes da correção: só comentários de linha (--) eram removidos antes
+    // de testar os padrões bloqueantes — um DROP sem IF EXISTS dentro de um
+    // bloco /* ... */ (puramente documentação) bloqueava a migration à toa.
+    expect(detectBlockingDdl(sql)).toEqual([]);
+  });
 });
 
 describe('evaluatePreflight — --expect-applied (pós-aplicação)', () => {
@@ -346,5 +359,47 @@ describe('detectSecurityDefinerWithoutPgTemp', () => {
   it('acusa pg_temp mencionado só no corpo, fora do valor do search_path', () => {
     const sql = "CREATE OR REPLACE FUNCTION public.f(a int)\n RETURNS int\n LANGUAGE sql\n SECURITY DEFINER\n SET search_path TO 'public'\nAS $$ SELECT 1 /* pg_temp */, 'pg_temp' $$;";
     expect(detectSecurityDefinerWithoutPgTemp(sql)).toEqual(['public.f']);
+  });
+});
+
+describe('parseOptOut — aprovação humana não pode ser forjada por texto explicativo', () => {
+  it('linha própria "-- approved-by: nome" vale', () => {
+    expect(parseOptOut('-- transaction: none\n-- approved-by: comercial@empresa.com.br (E069)\nSELECT 1;').approvedBy).toBe('comercial@empresa.com.br (E069)');
+  });
+  it('approved-by citado no meio de um comentário NÃO vale (falso aprovador)', () => {
+    const sql = '-- transaction: none\n-- (o opt-out exige também a\n--  linha "-- approved-by: <nome>", que é a aprovação humana do dono — adicionar ao aplicar.)\nSELECT 1;';
+    expect(parseOptOut(sql).approvedBy).toBeNull();
+  });
+  it('marcador <nome> não vale como aprovador', () => {
+    expect(parseOptOut('-- transaction: none\n-- approved-by: <nome>\nSELECT 1;').approvedBy).toBeNull();
+  });
+  it('a 20261108223000 da pilha fica SEM aprovação até o dono adicioná-la', async () => {
+    const { readdirSync, readFileSync } = await import('node:fs');
+    const dir = resolve(dirname(fileURLToPath(import.meta.url)), '../../supabase/migrations');
+    const f = readdirSync(dir).find((n) => n.startsWith('20261108223000_'));
+    expect(parseOptOut(readFileSync(join(dir, f), 'utf8'))).toMatchObject({ transactionNone: true, approvedBy: null });
+  });
+});
+
+describe('parseOptOut — mutações que sobreviviam (âncoras e marcadores)', () => {
+  it('approved-by depois de código na mesma linha não vale (âncora ^)', () => {
+    expect(parseOptOut('-- transaction: none\nSELECT 1; -- approved-by: Fulano Real\n').approvedBy).toBeNull();
+  });
+  it('transaction: none depois de código não vale (âncora ^)', () => {
+    expect(parseOptOut('SELECT 1; -- transaction: none\n-- approved-by: Fulano Real\n').transactionNone).toBe(false);
+  });
+  it('indentação antes do -- é aceita', () => {
+    expect(parseOptOut('  -- transaction: none\n  -- approved-by: Fulano Real\n')).toMatchObject({ transactionNone: true, approvedBy: 'Fulano Real' });
+  });
+  it('aspas e <…> no nome não valem', () => {
+    expect(parseOptOut('-- transaction: none\n-- approved-by: "Fulano"\n').approvedBy).toBeNull();
+    expect(parseOptOut('-- transaction: none\n-- approved-by: Fulano <nome>\n').approvedBy).toBeNull();
+  });
+  it('marcadores (TODO, xxx, nome) não valem; a primeira linha com nome real vale', () => {
+    for (const v of ['TODO', 'xxx', 'nome', '...', '-']) expect(parseOptOut(`-- transaction: none\n-- approved-by: ${v}\n`).approvedBy, v).toBeNull();
+    expect(parseOptOut('-- transaction: none\n-- approved-by: <nome>\n-- approved-by: comercial@empresa.com.br\n').approvedBy).toBe('comercial@empresa.com.br');
+  });
+  it('transaction: none-ish não vale como opt-out', () => {
+    expect(parseOptOut('-- transaction: none-ish\n').transactionNone).toBe(false);
   });
 });

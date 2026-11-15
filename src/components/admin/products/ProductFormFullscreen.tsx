@@ -44,8 +44,9 @@ interface ProductFormFullscreenProps {
   initialData?: Partial<ProductFormData>;
   productImages?: string[];
   productId?: string;
-  onSubmit: (data: ProductFormData, images: string[]) => Promise<void>;
+  onSubmit: (data: ProductFormData, images: string[]) => Promise<boolean | undefined>;
   onCancel: () => void;
+  initialUpdatedAt?: string | null;
   isSaving: boolean;
   isEdit: boolean;
   /** BUG-03: ref populated by ProductEngravingSection with flushLocalAreas */
@@ -138,6 +139,7 @@ export function ProductFormFullscreen({
   isEdit,
   engravingFlushRef,
   lastPriceUpdate,
+  initialUpdatedAt,
 }: ProductFormFullscreenProps) {
   const [images, setImages] = useState<string[]>(initialImages);
   const [skuManuallyEdited, setSkuManuallyEdited] = useState(isEdit);
@@ -161,7 +163,8 @@ export function ProductFormFullscreen({
     watch,
     trigger,
     getValues,
-    formState: { errors },
+    reset,
+    formState: { errors, isDirty },
   } = useForm<ProductFormData>({
     resolver: zodResolver(productFormSchema) as unknown as Resolver<ProductFormData>,
     defaultValues: { ...defaultFormValues, ...initialData },
@@ -217,6 +220,8 @@ export function ProductFormFullscreen({
     stepIndex,
     setImages,
     setStepIndex,
+    isDirty,
+    initialUpdatedAt,
   );
 
   useEffect(() => {
@@ -331,10 +336,13 @@ export function ProductFormFullscreen({
       if (firstBadStep >= 0 && firstBadStep !== stepIndex) goStep(firstBadStep);
       return;
     }
-    clearDraft();
     handleSubmit(async (data) => {
       if (skuStatus === 'duplicate' || skuStatus === 'checking') return;
-      await onSubmit(data as ProductFormData, images);
+      const saved = await onSubmit(data as ProductFormData, images);
+      if (saved) {
+        clearDraft();
+        reset(getValues());
+      }
     })(e);
   };
 
@@ -526,7 +534,15 @@ export function ProductFormFullscreen({
                   {isEdit ? 'Salvar produto' : 'Criar produto'}
                 </Button>
               )}
-              <Button type="button" variant="ghost" size="sm" onClick={onCancel}>
+              <Button
+                type="button"
+                variant="ghost"
+                size="sm"
+                onClick={() => {
+                  clearDraft();
+                  onCancel();
+                }}
+              >
                 Cancelar
               </Button>
             </div>
@@ -620,7 +636,15 @@ export function ProductFormFullscreen({
                 {isEdit ? 'Salvar' : 'Criar'}
               </Button>
             )}
-            <Button type="button" variant="ghost" size="sm" onClick={onCancel}>
+            <Button
+              type="button"
+              variant="ghost"
+              size="sm"
+              onClick={() => {
+                clearDraft();
+                onCancel();
+              }}
+            >
               <X className="h-4 w-4" />
             </Button>
           </div>

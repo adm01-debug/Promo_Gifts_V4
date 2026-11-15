@@ -6,17 +6,9 @@ name: E2E — Magazine Header Layout
 # E41: vacuous green eliminado — job condicionado ao secrets-check.
 
 on:
+  # E2E fora dos PRs (14/11): os PRs apontavam o E2E para o Supabase de produção e sobrecarregavam o banco. Roda no merge em main, no agendamento ou manual.
   push:
     branches: [main]
-    paths:
-      - 'src/pages/magazine/**'
-      - 'e2e/flows/magazine-header*.spec.ts'
-      - '.github/workflows/e2e-magazine-header.yml'
-      - 'playwright.config.ts'
-      - 'scripts/e2e-mock-auth-setup.mjs'
-      - 'package.json'
-      - 'package-lock.json'
-  pull_request:
     paths:
       - 'src/pages/magazine/**'
       - 'e2e/flows/magazine-header*.spec.ts'

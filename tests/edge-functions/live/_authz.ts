@@ -135,6 +135,32 @@ export const DESTRUCTIVE = new Set<string>([
   "test-cart-rls",
 ]);
 
+/**
+ * Funções que ACEITAM corpo inválido de propósito (caem em valores padrão e executam:
+ * auditorias, diagnósticos, testes de carga/carrinho). Para elas o teste de "input inválido"
+ * NÃO usa JWT: autenticado, a chamada executaria a função de verdade em produção a cada CI
+ * (as test-cart-* criam/apagam registros). Medido em 2026-11-11, quando E2E_DEV_EMAIL passou
+ * a existir: todas respondiam 200 a JSON quebrado/null/número.
+ */
+export const LENIENT_BODY = new Set<string>([
+  "audit-suite",
+  "bulk-random-passwords",
+  "cors-audit",
+  "ema-pipeline-health",
+  "full-op-diagnostics",
+  "load-test",
+  "rls-audit",
+  "rls-integration-tests",
+  "rls-matrix-export",
+  "test-cart-concurrency",
+  "test-cart-limit",
+  "test-cart-rls",
+  "test-inventory-orchestrator",
+  // não leem o corpo: autenticadas, chamariam integrações reais (external-db-bridge, API do GitHub)
+  "github-credentials-test",
+  "test-contract-orchestrator",
+]);
+
 /** Funções que suportam dry-run seguro (read-only quando dry_run=true). */
 export const SUPPORTS_DRY_RUN = new Set<string>(["ownership-repair"]);
 

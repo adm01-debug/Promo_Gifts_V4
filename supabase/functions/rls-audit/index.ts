@@ -1,11 +1,11 @@
 import { getCorsHeaders } from "../_shared/cors.ts";
 import { safeErrorResponse } from "../_shared/error-response.ts";
+import { authorize } from "../_shared/authorize.ts";
 // RLS Audit: testa SELECT/INSERT/UPDATE/DELETE em quotes, orders e
 // discount_approval_requests usando o JWT do usuário logado (vendedor).
 // Cada cenário retorna ✅/❌ + detalhe para evidência de auditoria.
 // BULK-SDK-FIX: Changed from esm.sh URL to npm: direct.
 // Version upgraded @2.95.0 → @2.49.4 to align with project standard (supabase-js@2.49.4).
-import { createClient } from "npm:@supabase/supabase-js@2.49.4";
 
 interface ScenarioResult {
   table: string;
@@ -22,37 +22,17 @@ Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders });
 
   try {
-    const authHeader = req.headers.get("Authorization") ?? "";
-    if (!authHeader.startsWith("Bearer ")) {
-      return new Response(JSON.stringify({ error: "missing_auth" }), {
-        status: 401,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
-    }
-
-    const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
-    const ANON = Deno.env.get("SUPABASE_ANON_KEY")!;
-    const SERVICE = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
-
-    // Cliente que representa o usuário (respeita RLS)
-    const userClient = createClient(SUPABASE_URL, ANON, {
-      global: { headers: { Authorization: authHeader } },
-      auth: { persistSession: false },
+    // Este endpoint cria e apaga dados de teste com service_role. JWT válido
+    // sozinho não basta: somente desenvolvedores podem executar a auditoria.
+    const auth = await authorize(req, {
+      requireRole: "dev",
+      enforceServerSide: true,
     });
+    if (!auth.ok) return auth.response;
 
-    // Cliente admin para criar registro "de outro vendedor" e cleanup
-    const adminClient = createClient(SUPABASE_URL, SERVICE, {
-      auth: { persistSession: false },
-    });
-
-    const { data: userResp, error: userErr } = await userClient.auth.getUser();
-    if (userErr || !userResp.user) {
-      return new Response(JSON.stringify({ error: "invalid_jwt" }), {
-        status: 401,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
-    }
-    const sellerId = userResp.user.id;
+    const userClient = auth.supabaseUser;
+    const adminClient = auth.supabaseAdmin;
+    const sellerId = auth.user.id;
 
     // Outro vendedor "fantasma" — UUID fixo que não corresponde ao usuário
     const otherSellerId = "00000000-0000-0000-0000-00000000dead";

@@ -5,9 +5,12 @@ name: DB — Aplicação controlada de migration única (E15)
 # MCP-ticket (docs/db/POLITICA_DDL.md). `supabase db push` continua proibido.
 #
 # Fluxo: workflow_dispatch(version) → preflight (read-only) → apply (gated
-# por `environment: production` — configurar required reviewers nas
-# Settings → Environments do repositório; este workflow NÃO pode configurar
-# isso sozinho) → `migration repair --status applied` → post-check
+# SEM gate de aprovação desde 2026-11-14, por decisão explícita do dono
+# registrada no chat da sessão Claude: o `environment: production` e o step
+# que exigia required reviewers foram removidos para que agentes possam
+# aplicar migration sem clique humano. O preflight read-only, o
+# `validate-migration-target`, o rollback obrigatório e o receipt por PR
+# continuam) → `migration repair --status applied` → post-check
 # (read-only) → receipt (abre PR com a linha nova em MIGRATIONS_SYNC_LOG.md,
 # nunca commita direto em main).
 #
@@ -74,6 +77,8 @@ jobs:
 
       - name: E051 — repair-only exige ack de rotação do baseline
         if: inputs.mode == 'repair-only'
+        env:
+          ACK_BASELINE_ROTATION: ${{ inputs.ack_baseline_rotation }}
         run: |
           set -euo pipefail
           {
@@ -86,7 +91,7 @@ jobs:
             echo "**Ação obrigatória após este workflow:**"
             echo "Disparar \`schema-snapshot-export.yml\` com \`force_rotate: true\` para gerar novo baseline."
           } >> "$GITHUB_STEP_SUMMARY"
-          if [ "${{ inputs.ack_baseline_rotation }}" != "true" ]; then
+          if [ "$ACK_BASELINE_ROTATION" != "true" ]; then
             echo "::error::repair-only requer ack_baseline_rotation=true — confirme que você agendará a rotação do baseline (schema-snapshot-export force_rotate=true) antes de prosseguir. Ver E051."
             exit 1
           fi
@@ -106,21 +111,6 @@ jobs:
       - name: Valida input antes de qualquer uso no shell
         run: node scripts/validate-migration-target.mjs --version-only
 
-      - name: Confirma reviewer obrigatório no environment Production
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          set -euo pipefail
-          # O rótulo `environment: production` sozinho NÃO exige revisão.
-          # Em 2026-09-22 o environment existia mas protection_rules=[].
-          reviewer_rules=$(gh api \
-            "repos/${{ github.repository }}/environments/production" \
-            --jq '[.protection_rules[]? | select(.type == "required_reviewers" and (.reviewers | length) > 0)] | length')
-          if [ "$reviewer_rules" -lt 1 ]; then
-            echo "::error::Environment Production sem reviewer obrigatório. Configure a proteção antes de aplicar qualquer migration."
-            exit 1
-          fi
-
       - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           node-version-file: '.nvmrc'
@@ -131,11 +121,10 @@ jobs:
           SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
 
   apply:
-    name: 2. Apply (requer aprovação do environment production)
+    name: 2. Apply (sem gate de aprovação — decisão do dono 2026-11-14)
     needs: preflight
     runs-on: ubuntu-24.04
     timeout-minutes: 15
-    environment: production
     permissions:
       contents: read
     env:
@@ -187,8 +176,7 @@ jobs:
         id: locate
         run: |
           set -euo pipefail
-          # shellcheck disable=SC2010
-          mapfile -t FILES < <(ls supabase/migrations/"${MIGRATION_VERSION}"_*.sql 2>/dev/null | grep -v '_rollback\.sql$' || true)  # ok: ls com glob retorna non-zero se nenhum arquivo encontrado; rollbacks vivem em supabase/rollbacks/
+          mapfile -t FILES < <(find supabase/migrations -maxdepth 1 -name "${MIGRATION_VERSION}_*.sql" ! -name "*_rollback.sql" 2>/dev/null || true)
           if [ "${#FILES[@]}" -ne 1 ]; then
             echo "::error::esperava exatamente 1 arquivo supabase/migrations/${MIGRATION_VERSION}_*.sql (excluindo _rollback.sql), encontrei ${#FILES[@]} (o job 'preflight' deveria ter barrado isso antes)."
             exit 1
@@ -267,7 +255,7 @@ jobs:
           fi
 
       - name: Setup Supabase CLI
-        uses: supabase/setup-cli@45a513f8c64c0bc8e0e3dfe572b5c95be85f6359 # v2
+        uses: supabase/setup-cli@689adcfb80d947100a1eab127289b97d1fb07b13 # v2
         with:
           version: 2.101.0
 
@@ -302,7 +290,7 @@ jobs:
           SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
 
   receipt:
-    name: 4. Recibo (abre PR em MIGRATIONS_SYNC_LOG.md)
+    name: 4. Recibo (PR em MIGRATIONS_SYNC_LOG.md com auto-merge)
     needs: [apply, post-check]
     runs-on: ubuntu-24.04
     timeout-minutes: 10
@@ -380,3 +368,12 @@ jobs:
             --head "$BRANCH" \
             --title "docs: recibo de aplicação — ${MIGRATION_VERSION} (E15)" \
             --body "Recibo automático da aplicação de \`${MIGRATION_VERSION}\` via \`db-apply-migration.yml\` (run ${{ github.run_id }}, disparado por @${{ github.actor }}, aprovado por $APPROVED_BY). A migration já foi aplicada e confirmada no ledger pelos jobs \`apply\`/\`post-check\` desta mesma run — este PR só registra o recibo textual (PLANO_DBA E15/E48)."
+
+          # E15.1: o recibo precisa chegar ao main sozinho. Enquanto ele não chega, o
+          # Gate 1.13.3 (check-migration-receipts) reprova TODA PR aberta, porque a version
+          # já está aplicada em produção e sem recibo no main. Antes desta linha o PR ficava
+          # aberto indefinidamente e o CI do repo inteiro travava a cada migration nova
+          # (3× em 14/11). auto-merge: o PR só entra quando o required check fecha verde;
+          # é docs-only (só MIGRATIONS_SYNC_LOG.md), então o Gate Final passa pelo bypass E14.
+          # Nada é afrouxado: sem check verde, o PR continua aberto, como qualquer outro.
+          gh pr merge "$BRANCH" --squash --auto --delete-branch

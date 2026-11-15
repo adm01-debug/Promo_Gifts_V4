@@ -103,9 +103,9 @@ const ROUTE_PATTERNS = [
   { route: "/montar-kit",   pattern: /src\/pages\/kit-builder\// },
   { route: "/mockups",      pattern: /src\/pages\/mockups\// },
   { route: "/bi",           pattern: /src\/pages\/bi\// },
-  { route: "/favoritos",    pattern: /src\/pages\/.*favor/ },
-  { route: "/simulador",    pattern: /src\/pages\/.*simul/ },
-  { route: "/tendencias",   pattern: /src\/pages\/.*trend/ },
+  { route: "/favoritos",    pattern: /src\/pages\/.*favor/i },
+  { route: "/simulador",    pattern: /src\/pages\/.*simul/i },
+  { route: "/tendencias",   pattern: /src\/pages\/.*trend/i },
 ];
 
 function classifyRoute(filePath) {
@@ -179,7 +179,7 @@ function buildMarkdown(moduleSummary, routeSummary, lowCoverageFiles, totalStats
     lines.push(`| \`${mod}\` | ${stats.lines}% | ${stats.functions}% | ${stats.branches}% | ${icon} |`);
   }
 
-  lines.push(``, `## Cobertura por Rota`, ``, `| Rota | Lines | Functions | Branches | Arquivos |`, `|------|-------|-----------|----------|----------|`);
+  lines.push(``, `## Cobertura por Rota`, ``, `| Rota | Lines | Functions | Branches | Arquivos | Status |`, `|------|-------|-----------|----------|----------|--------|`);
 
   for (const [route, stats] of Object.entries(routeSummary)) {
     const icon = statusIcon(stats.lines, 40);
@@ -249,9 +249,10 @@ const lowCoverageFiles = filteredFiles
     const threshold = getThreshold(f.file);
     const linesPct = pct(f.lines?.covered ?? 0, f.lines?.total ?? 0);
     const fnPct = pct(f.functions?.covered ?? 0, f.functions?.total ?? 0);
-    return { file: f.file, lines: linesPct, functions: fnPct, threshold: threshold.lines };
+    return { file: f.file, lines: linesPct, functions: fnPct, threshold: threshold.lines, fnThreshold: threshold.functions };
   })
-  .filter(f => f.lines < f.threshold)
+  // --check também falha por functions abaixo do piso (antes só `lines` era comparado).
+  .filter(f => f.lines < f.threshold || f.functions < f.fnThreshold)
   .sort((a, b) => a.lines - b.lines);
 
 // Total stats (from summary.total if available)

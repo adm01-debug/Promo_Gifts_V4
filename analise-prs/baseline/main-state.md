@@ -1,25 +1,56 @@
-# Baseline do main — sessão de análise de PRs
+# Baseline — Estado do main
 
-**SHA HEAD main:** `4c5fdd72fc301cdcd65851af30204881bab710c4`
-**Data:** 2026-10-27
-**Gate Final:** ❌ RED — react-day-picker v10 breaking API (10 erros TS). Causa: PR #2588 bumped v8→v10 sem atualizar consumidores.
-**Fix:** PR #2667 (branch `claude_pink/sleepy-cannon-h000nc`, SHA `79ac4d6a3`) — awaiting Gate Final CI.
+**SHA inicial:** `8bc08b12f50872e2d9b9a93d3f7dbae388fec204`  
+**SHA final:** `66d032afa8e31cd4f9b2f60508613794cef928d4`  
+**Data:** 2026-10-29  
+**Sessão:** https://claude.ai/code/session_01RfQzo8Ean3zudG2sEN79b6
 
-## Erros TS confirmados na main (SHA 4c5fdd72)
+## Gate Final (SHA inicial `8bc08b12f5`)
 
-- `src/components/ui/calendar.tsx`: `caption`, `nav_button`, `nav_button_previous`, `nav_button_next`, `IconLeft`, `IconRight` → removidos na v10
-- `src/components/ui/date-picker-field.tsx`: `initialFocus` → `autoFocus`
-- `src/components/admin/security/keys/McpKeysFilters.tsx`: `initialFocus` ×2
-- `src/components/dashboard/widget-filters/WidgetFiltersBar.tsx`: `initialFocus`
-- `src/components/notifications/NotificationDrawer.tsx`: `initialFocus`
-- `src/pages/admin/AdminTelemetriaPage.tsx`: `initialFocus` ×2
-- `src/pages/quotes/QuoteBuilderPage.tsx`: `initialFocus`
+**Status:** ✅ SUCCESS  
+**Workflow run:** deploy-gates.yml  
+**Concluído em:** 2026-10-29T19:59:09Z  
+**Duração:** ~8 min
 
-Total: 10 erros TS no Gate 1 (TypeScript check).
+## Gates individuais (SHA inicial `8bc08b12f5`)
 
-## Falhas pré-existentes (não introduzidas por #2588)
+| Gate | Status |
+|---|---|
+| Gate 0 — SSOT (`doufsxqlfjyuvxuezpln`) | ✅ |
+| Gate 0.5 — npm audit | ✅ |
+| Gate 1 — Lint + TypeScript | ✅ |
+| Gate 1.1 — Campos críticos Product | ✅ |
+| Gate 1.2 — Drift types.ts | ✅ |
+| Gate 1.3 — Contratos migration | ✅ |
+| Gate 1.13.2 — Anon-insert rate guard | ✅ |
+| Gate E23 — Secrets check | ✅ |
+| Gate 2 — Testes unitários (vitest) | ✅ |
+| Gate 2.5 — Integridade transacional PostgreSQL | ✅ |
+| Gate 3 — E2E Smoke (Playwright) | ✅ |
+| Gate 5 — SEO sanity | ✅ |
+| Gate 5.5 — RPC restore_seller_cart | ✅ |
+| Gate 6 — Build Vite | ✅ |
+| Gate E40 — Schema Drift Check | ⚠️ flaky (GHCR toomanyrequests) |
 
-- Running Copilot Code Review: bot externo irresolvível
-- E2E workflows (5): infra CI pré-existente
-- edge-functions-drift-check: 106 funções divergentes, aguarda aprovação PO em `environment: production`
-- Uptime Monitor: transiente
+## Nota sobre Gate E40
+
+O Gate E40 (Schema Drift Check) tem falhas intermitentes por `toomanyrequests` no GHCR ao fazer `docker pull` da imagem Supabase Postgres. Esta falha é de infraestrutura (runner externo), não de código. O Gate Final em main passa mesmo com E40 flaky porque o Gate E40 é advisory na agregação principal (`deploy-gates.yml`). PR #2734 foi criada exatamente para corrigir isso substituindo GHCR por mirror Docker Hub.
+
+## Merges desta sessão (8 total)
+
+| PR | Título | SHA merge | Método | Gate Final |
+|---|---|---|---|---|
+| #2721 | chore: atualiza PENDENCIAS §4 e RELATORIO_CI | `6b48beb` | squash | ✅ |
+| #2735 | docs(analise-prs): rev46 — análise completa 20 PRs | `27f4261` | squash | ✅ |
+| #2733 | fix(banco): adiciona rollback header e arquivo rollback | `8bc08b1` | squash | ✅ |
+| #2695 | docs(db): corrige status do espelho de migration Google | `8da42aa9` | squash | ✅ |
+| #2707 | docs: recibo de deploy de edge function(s) — run 40747468580 | `37ea10a3` | squash | pendente |
+| #2737 | docs(auditoria): relatório de auditoria Supabase — revisão final | `c7f9f4ba` | squash | pendente |
+| #2736 | test+docs(mockup/magic-up): entregas de teste e doc da fábrica VPS (lote A) | `31ebc2d3` | squash | pendente |
+| #2719 | chore(build): separa mapas SQL e amplia referências Graphify | `66d032af` | squash | pendente |
+
+## SHA final do main
+
+`66d032afa8e31cd4f9b2f60508613794cef928d4`
+
+Gate Final neste SHA: pendente (CI em execução no GitHub Actions após os 8 merges).

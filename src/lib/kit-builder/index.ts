@@ -7,9 +7,6 @@
 export * from './types';
 export { mmToCm } from './types';
 
-// Mock data
-export { MOCK_BOXES, MOCK_ITEMS } from './mock-data';
-
 // Volume Calculator
 export {
   calculateVolume,
@@ -32,6 +29,7 @@ export {
 export { evaluateBoxForItems, rankBoxesForItems } from './box-recommendations';
 export type { BoxRecommendation, BoxRecommendationStatus } from './box-recommendations';
 export { resolveKitAICompositions } from './ai-composition';
+export { isKnownItemWeight, summarizeKitWeight } from './weight';
 
 // Persistence snapshot contract
 export { buildKitPersistencePayload, getPersistedKitStatus } from './persistence';

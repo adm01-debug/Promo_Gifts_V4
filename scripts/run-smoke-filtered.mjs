@@ -18,6 +18,18 @@
  */
 import { spawn } from 'node:child_process';
 import { join } from 'node:path';
+import { createServer } from 'node:net';
+import { missingPrerequisite } from './lib/missing-prerequisite.mjs';
+
+await new Promise((resolve) => {
+  const server = createServer();
+  server.once('error', () => {
+    missingPrerequisite('run-smoke-filtered', 'loopback IPv6 (::1) indisponível para o servidor do Playwright', {
+      exitCode: 1,
+    });
+  });
+  server.listen(0, '::1', () => server.close(resolve));
+});
 
 const argv = process.argv.slice(2);
 const passthrough = [];

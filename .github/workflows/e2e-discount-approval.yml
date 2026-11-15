@@ -4,18 +4,9 @@ name: E2E Discount Approval (04c*)
 # do playwright-report + trace/screenshot/video em qualquer falha.
 
 on:
+  # E2E fora dos PRs (14/11): os PRs apontavam o E2E para o Supabase de produção e sobrecarregavam o banco. Roda no merge em main, no agendamento ou manual.
   push:
     branches: [main]
-    paths:
-      - "e2e/flows/04c*.spec.ts"
-      - "e2e/helpers/discount-approval-*.ts"
-      - "e2e/helpers/setup-discount-admin.ts"
-      - "e2e/helpers/discount-notification-seed.ts"
-      - "e2e/helpers/pagination-asserts.ts"
-      - "src/components/admin/DiscountApproval*"
-      - "src/pages/admin/DiscountRequestDetailPage.tsx"
-      - ".github/workflows/e2e-discount-approval.yml"
-  pull_request:
     paths:
       - "e2e/flows/04c*.spec.ts"
       - "e2e/helpers/discount-approval-*.ts"

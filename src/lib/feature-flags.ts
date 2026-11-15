@@ -95,7 +95,7 @@ const FLAG_REGISTRY: Record<FeatureFlag, FlagConfig> = {
   },
   magic_up: {
     enabled: true,
-    description: 'Geração de mockups com IA',
+    description: 'Geração de criativos com IA (Magic Up)',
   },
   e2e_tests: {
     enabled: false,

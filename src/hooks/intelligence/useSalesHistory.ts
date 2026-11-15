@@ -3,6 +3,7 @@
  * Consome: quote_items + quotes, order_items + orders do banco local.
  */
 import { useQuery } from '@tanstack/react-query';
+import { format, parseISO } from 'date-fns';
 import { supabase } from '@/integrations/supabase/client';
 import { fetchAllPages } from '@/lib/db/fetch-all-pages';
 import { logger } from '@/lib/logger';
@@ -168,7 +169,7 @@ export function useSalesHistory(productId: string | undefined, days = 30) {
       // #7 fix: guard against null created_at before substring
       for (const qi of quoteItems || []) {
         if (!qi.created_at) continue;
-        const date = qi.created_at.substring(0, 10);
+        const date = format(parseISO(qi.created_at), 'yyyy-MM-dd'); // dia local (BRT), não UTC
         const entry = dailyMap.get(date) || newDailyPoint(date);
         entry.quotedQty += qi.quantity || 0;
         entry.quotedValue += qi.subtotal ?? (qi.quantity ?? 0) * (qi.unit_price ?? 0);
@@ -178,7 +179,7 @@ export function useSalesHistory(productId: string | undefined, days = 30) {
 
       for (const oi of orderItems || []) {
         if (!oi.created_at) continue;
-        const date = oi.created_at.substring(0, 10);
+        const date = format(parseISO(oi.created_at), 'yyyy-MM-dd');
         const entry = dailyMap.get(date) || newDailyPoint(date);
         entry.orderedQty += oi.quantity || 0;
         entry.orderedValue += (oi.quantity || 0) * (oi.unit_price || 0);

@@ -1,6 +1,11 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+source "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/lib/missing-prerequisite.sh"
+if ! docker ps &>/dev/null; then
+  missing_prerequisite "test-approved-plan-database" "docker daemon não disponível" 1
+fi
+
 readonly container_name="promo_approved_plan_pg17"
 readonly image="postgres:17.6"
 

@@ -4,7 +4,7 @@
  * v1: shape EmailRequest atual (compat). Sunset 2026-10-31.
  * v2: strict + idempotency_key.
  */
-import { z } from "https://esm.sh/zod@3.23.8";
+import { z } from "npm:zod@3.23.8";
 
 const EmailEvent = z.enum([
   "quote_sent",

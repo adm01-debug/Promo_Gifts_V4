@@ -1,11 +1,8 @@
 import { memo } from 'react';
 import { Badge } from '@/components/ui/badge';
 import type { FilterState } from '@/components/filters/FilterPanel';
-import {
-  getCategoryIcon,
-  useCategoryIcons,
-  type CategoryIcon,
-} from '@/hooks/products/useCategoryIcons';
+import { useCategoryIcons, type CategoryIcon } from '@/hooks/products/useCategoryIcons';
+import { getCategoryIcon } from '@/hooks/products/getCategoryIcon';
 import { useExternalCategoriesQuery } from '@/hooks/products/useExternalCategoriesQuery';
 import { useSupplierNames } from '@/hooks/products/useSupplierNames';
 import { toTitleCase } from '@/lib/textUtils';

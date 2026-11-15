@@ -7,7 +7,6 @@ import { Label } from '@/components/ui/label';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import {
-  Upload,
   Loader2,
   MapPin,
   Paintbrush,
@@ -16,7 +15,6 @@ import {
   EyeOff,
   Building2,
   Search,
-  X,
   Sparkles,
   Briefcase,
   Zap,
@@ -42,6 +40,8 @@ import { MagicUpCreativeControls } from '@/components/magic-up/MagicUpCreativeCo
 import { MagicUpRefinementActions } from '@/components/magic-up/MagicUpRefinementActions';
 import { MagicUpBatchGenerationPanel } from '@/components/magic-up/MagicUpBatchGenerationPanel';
 import { BRIEF_OPTIONS, toHuman, type MagicUpBrief } from '@/pages/magic-up/magicUpStrategy';
+import { MagicUpSelectedCompanyRow } from '@/pages/magic-up/MagicUpSelectedCompanyRow';
+import { LogoCard } from '@/pages/magic-up/MagicUpLogoCard';
 
 type MagicUpStateReturn = ReturnType<typeof useMagicUpState>;
 
@@ -132,33 +132,7 @@ function ClientCard({ m }: { m: MagicUpStateReturn }) {
       </CardHeader>
       <CardContent>
         {m.selectedClient ? (
-          <div className="flex items-center gap-3 rounded-lg border border-primary/20 bg-primary/5 p-2">
-            {m.selectedClient.logo_url && (
-              <img
-                src={m.selectedClient.logo_url}
-                alt=""
-                className="h-8 w-8 rounded border bg-background object-contain"
-                loading="lazy"
-              />
-            )}
-            <div className="min-w-0 flex-1">
-              <p className="truncate text-sm font-medium">{m.selectedClient.name}</p>
-              {m.selectedClient.ramo_atividade && (
-                <p className="text-[10px] text-muted-foreground">
-                  {m.selectedClient.ramo_atividade}
-                </p>
-              )}
-            </div>
-            <Button
-              variant="ghost"
-              size="icon"
-              className="h-7 w-7 shrink-0"
-              onClick={m.handleClearClient}
-              aria-label="Fechar"
-            >
-              <X className="h-3.5 w-3.5" />
-            </Button>
-          </div>
+          <MagicUpSelectedCompanyRow client={m.selectedClient} onRemove={m.handleClearClient} />
         ) : (
           <div className="relative">
             <Search className="absolute left-2.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
@@ -338,7 +312,7 @@ function ProductCard({ m }: { m: MagicUpStateReturn }) {
                 m.setSelectedTechnique(m.availableTechniques.find((t) => t.id === v) || null)
               }
             >
-              <SelectTrigger className="h-9">
+              <SelectTrigger className="h-9" aria-label="Técnica de personalização">
                 <SelectValue placeholder="Selecione..." />
               </SelectTrigger>
               <SelectContent>
@@ -351,73 +325,6 @@ function ProductCard({ m }: { m: MagicUpStateReturn }) {
             </Select>
           </div>
         )}
-      </CardContent>
-    </Card>
-  );
-}
-
-function LogoCard({ m }: { m: MagicUpStateReturn }) {
-  return (
-    <Card>
-      <CardHeader className="pb-3">
-        <CardTitle className="flex items-center gap-2 text-base">
-          <span className="flex h-6 w-6 items-center justify-center rounded-full bg-primary/10 text-xs font-bold text-primary">
-            2
-          </span>
-          Logo do Cliente
-        </CardTitle>
-        {m.selectedClient?.logo_url && m.logoPreview === m.selectedClient.logo_url && (
-          <CardDescription className="text-xs">
-            ✓ Logo carregado automaticamente da empresa
-          </CardDescription>
-        )}
-      </CardHeader>
-      <CardContent>
-        <div
-          className={cn(
-            'rounded-lg border-2 border-dashed p-6 text-center transition-colors',
-            m.logoPreview
-              ? 'border-primary/30 bg-primary/5'
-              : 'border-border hover:border-primary/50',
-          )}
-        >
-          <input
-            type="file"
-            accept="image/*"
-            onChange={m.handleLogoUpload}
-            disabled={m.logoUploading}
-            className="hidden"
-            id="magic-logo-upload"
-          />
-          <label
-            htmlFor="magic-logo-upload"
-            className="flex cursor-pointer flex-col items-center gap-2"
-          >
-            {m.logoUploading ? (
-              <Loader2 className="h-10 w-10 animate-spin text-primary" />
-            ) : m.logoPreview ? (
-              <>
-                <div className="h-20 w-20 overflow-hidden rounded-lg border bg-background">
-                  <img
-                    src={m.logoPreview}
-                    alt="Logo"
-                    className="h-full w-full object-contain"
-                    loading="lazy"
-                  />
-                </div>
-                <Button variant="outline" size="sm" type="button">
-                  Trocar logo
-                </Button>
-              </>
-            ) : (
-              <>
-                <Upload className="h-10 w-10 text-muted-foreground" />
-                <p className="text-sm font-medium">Clique para enviar o logo</p>
-                <p className="text-xs text-muted-foreground">PNG, JPG, SVG · Máx. 10MB</p>
-              </>
-            )}
-          </label>
-        </div>
       </CardContent>
     </Card>
   );
@@ -611,24 +518,17 @@ function GenerateButton({ m }: { m: MagicUpStateReturn }) {
         className={cn(
           'flex cursor-pointer items-center justify-between gap-3 rounded-lg border px-3 py-2 transition-colors',
           m.fastMode
-            ? 'border-amber-400/60 bg-amber-50/60 dark:border-amber-700/60 dark:bg-amber-950/30'
+            ? 'border-warning/60 bg-warning/10'
             : 'border-border bg-muted/30 hover:bg-muted/50',
         )}
       >
         <div className="flex items-center gap-2 text-sm">
-          <Zap
-            className={cn(
-              'h-4 w-4',
-              m.fastMode ? 'text-amber-600 dark:text-amber-400' : 'text-muted-foreground',
-            )}
-          />
+          <Zap className={cn('h-4 w-4', m.fastMode ? 'text-warning' : 'text-muted-foreground')} />
           <div className="flex flex-col">
             <span className="font-medium">
               Modo Rápido{' '}
               {m.fastMode && (
-                <span className="text-xs font-normal text-amber-700 dark:text-amber-400">
-                  (Nano Banana)
-                </span>
+                <span className="text-xs font-normal text-warning">(Nano Banana)</span>
               )}
             </span>
             <span className="text-[11px] leading-tight text-muted-foreground">

@@ -110,6 +110,13 @@ function loadBaseline() {
 
 const baseline = loadBaseline();
 
+// GUARD: baseline ausente NÃO é recriada com a dívida atual no gate — um PR que apagasse
+// .security/edge-zod-ratchet.json congelaria qualquer edge nova sem validação zod.
+if (baseline === null && !UPDATE) {
+  console.error(`❌ baseline ausente: ${BASELINE_PATH}. Gere (e revise) com: npm run check:edge-zod-ratchet:update`);
+  process.exit(2);
+}
+
 if (UPDATE || baseline === null) {
   const doc = {
     version: 1,

@@ -27,7 +27,11 @@ const ROOT = path.resolve(__dirname, "..");
 // SSOT do projeto Supabase (mesmo valor em src/integrations/supabase/client.ts).
 const PROJECT_REF = "doufsxqlfjyuvxuezpln";
 const STORAGE_KEY = `sb-${PROJECT_REF}-auth-token`;
-const BASE_URL = process.env.E2E_BASE_URL ?? "http://localhost:8080";
+// `?.trim() || ...` (em vez de `??`) trata também string vazia/whitespace
+// como "não fornecida" — CI costuma exportar a env var vazia (não unset)
+// quando a var não está configurada, e isso não deve derrubar o script
+// com um stack trace cru de `new URL("")`.
+const BASE_URL = process.env.E2E_BASE_URL?.trim() || "http://localhost:8080";
 const OUT = path.resolve(ROOT, "e2e/.auth/storageState.json");
 
 // JWT sintético (header.payload.signature em base64url) — NUNCA será

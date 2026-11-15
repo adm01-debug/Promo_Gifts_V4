@@ -65,6 +65,28 @@ export function auditSupabaseMigrationLedger(document, { remoteOnlyAllowlist = [
     }
   });
 
+  // A CLI pareia as listas de forma sequencial: depois do primeiro desalinhamento ela deixa
+  // de casar versões iguais e lista a MESMA versão como local-only e remote-only em linhas
+  // separadas (visto em 2026-11-12: 20261104100000 nas duas colunas). Versão presente nos
+  // dois lados está aplicada E versionada — conta como alinhada, não como drift.
+  // Subtração por CONTAGEM: cada versão remota casa no máximo com uma ocorrência local
+  // (colisões legadas — 2 arquivos com a mesma versão e 1 aplicado — continuam com 1 local-only).
+  const countOf = (list) => list.reduce((m, v) => m.set(v, (m.get(v) ?? 0) + 1), new Map());
+  const lc = countOf(localOnly);
+  const rc = countOf(remoteOnly);
+  const pairedLate = [];
+  for (const [v, nr] of rc) {
+    const k = Math.min(nr, lc.get(v) ?? 0);
+    for (let n = 0; n < k; n += 1) pairedLate.push(v);
+  }
+  if (pairedLate.length) {
+    matched += pairedLate.length;
+    const take = (list, v, k) => {
+      for (let i = list.length - 1, left = k; i >= 0 && left > 0; i -= 1) if (list[i] === v) { list.splice(i, 1); left -= 1; }
+    };
+    for (const [v, k] of countOf(pairedLate)) { take(localOnly, v, k); take(remoteOnly, v, k); }
+  }
+
   const allowlistedRemoteOnly = remoteOnly.filter((v) => remoteOnlyAllowlist.includes(v));
   const blockingRemoteOnly = remoteOnly.filter((v) => !remoteOnlyAllowlist.includes(v));
 
@@ -73,6 +95,7 @@ export function auditSupabaseMigrationLedger(document, { remoteOnlyAllowlist = [
     source: 'supabase migration list --linked --output-format json',
     rows: document.migrations.length,
     matched,
+    paired_late_count: pairedLate.length,
     local_only_count: localOnly.length,
     remote_only_count: remoteOnly.length,
     blocking_remote_only_count: blockingRemoteOnly.length,

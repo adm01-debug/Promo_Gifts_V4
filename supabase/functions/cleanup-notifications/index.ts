@@ -5,7 +5,7 @@
 //   - Segundo bloco OPTIONS era dead code (nunca alcançado)
 // BUG-NOTIF-007 FIXED:
 //   - stats.deleted_read_old = -1 como sentinel incorreto → agora null
-import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.49.4';
+import { createClient } from 'npm:@supabase/supabase-js@2.49.4';
 import { buildPublicCorsHeaders } from '../_shared/cors.ts';
 import { authorizeCron } from '../_shared/dispatcher-auth.ts';
 import { safeErrorFields } from '../_shared/log-safety.ts';

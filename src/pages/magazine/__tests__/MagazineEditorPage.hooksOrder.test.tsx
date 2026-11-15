@@ -160,6 +160,15 @@ describe('MagazineEditorPage — ordem de hooks (React #310)', () => {
     await mountAndAssertStable(baseMagazine());
   });
 
+  it('mantém o cluster de ações em uma única linha a partir de lg', async () => {
+    await mountAndAssertStable(baseMagazine());
+
+    const heroRow = screen.getByTestId('magazine-editor-hero-row');
+    const actions = heroRow.children.item(1);
+
+    expect(actions).toHaveClass('lg:shrink-0', 'lg:flex-nowrap');
+  });
+
   it('sobrevive a items vazio', async () => {
     await mountAndAssertStable(baseMagazine({ items: [] }));
   });

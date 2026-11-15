@@ -1,6 +1,31 @@
-# Baseline ESLint — main@652a7f14
-# Data: 2026-10-24
-# Observação: npx eslint falha com erro de ESM loader no ambiente cloud (não é regressão da branch)
-# STATUS: lint não executável neste ambiente; gate de CI (Gate 1) é a fonte autoritativa
-LINT_EXECUTAVEL=false
-GATE_1_CI=autoridade
+SHA main baseline: d2033d9237fa72971ff9c92ca47442f7437463ff
+Data: 2026-11-01
+Sessão: claude/chore-analise-branches-revalida-261101-2200
+
+== Lint da branch (arquivos modificados por esta branch) ==
+
+git diff --name-only origin/main...HEAD | grep -E '\.(ts|tsx|js|jsx)$'
+→ 0 arquivos (count=0, exit=1 do grep -c)
+
+A branch modifica EXCLUSIVAMENTE arquivos .md, .json, .txt em analise-branches/:
+  - analise-branches/RELATORIO_BRANCHES.md
+  - analise-branches/baseline/*.txt
+  - analise-branches/confirmacao_ABF.md
+  - analise-branches/cruzamento-supabase.md
+  - analise-branches/dossies/*.md
+  - analise-branches/progresso.json
+
+ESLint verifica .ts/.tsx/.js/.jsx — nenhum desses arquivos foi alterado por esta branch.
+Resultado para os arquivos da branch: 0 arquivos lintáveis → ESLint exit 0 (nada a verificar).
+
+Esta branch NÃO INTRODUZ erros de lint — verificado nesta sessão via
+  git diff --name-only origin/main...HEAD | grep -E '\.(ts|tsx|js|jsx)$' → 0 arquivos
+
+== ESLint projeto completo (baseline informativo) ==
+
+Status: ESLint OOM (V8::FatalProcessOutOfMemory) ao rodar em todo o projeto no container cloud.
+Causa: container cloud não tem memória suficiente para rodar ESLint em ~1500+ arquivos TypeScript.
+Teste pontual: NODE_OPTIONS="--max-old-space-size=2048" npx eslint src/App.tsx → exit 0 (ESLint funciona)
+Autoridade: CI Gate 1 (GitHub Actions) é a autoridade para lint do projeto completo.
+
+Conclusão: baseline de lint para esta branch é LIMPO — nenhum arquivo .ts/.tsx/.js/.jsx foi modificado.

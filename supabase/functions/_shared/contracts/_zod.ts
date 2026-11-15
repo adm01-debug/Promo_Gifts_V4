@@ -9,4 +9,4 @@
  *
  * Regra reforçada por ESLint (no-restricted-imports) em `eslint.config.js`.
  */
-export { z } from "https://esm.sh/zod@3.23.8";
+export { z } from "npm:zod@3.23.8";

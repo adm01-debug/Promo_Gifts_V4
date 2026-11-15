@@ -2,7 +2,7 @@
  * Utilitários compartilhados entre StockHistoryChart e SupplierRiskPanel.
  * Elimina ~198 linhas de duplicação.
  */
-import { format } from 'date-fns';
+import { format, parseISO } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import type { IntelligenceFlag, ProductIntelligenceData } from '@/hooks/intelligence';
 import {
@@ -379,7 +379,7 @@ export function safeParseDateForChart(
   dateStr: string,
 ): { dateFormatted: string; fullDate: string } | null {
   try {
-    const d = new Date(dateStr);
+    const d = /^\d{4}-\d{2}-\d{2}$/.test(dateStr) ? parseISO(dateStr) : new Date(dateStr);
     if (isNaN(d.getTime())) return null;
     return {
       dateFormatted: format(d, 'dd/MM', { locale: ptBR }),

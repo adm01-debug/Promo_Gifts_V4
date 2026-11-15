@@ -13,7 +13,8 @@
  * Asserts emitem evidência (width, min-width, scrollWidth/clientWidth, box) em caso
  * de falha. Sem screenshot baseline — cobertura 100% determinística.
  */
-import { test, expect, type Page, type Locator } from '@playwright/test';
+import type { Page, Locator } from '@playwright/test';
+import { test, expect } from '../fixtures/test-base';
 import { gotoAndSettle } from '../helpers/nav';
 
 const ROUTE = '/orcamentos';
@@ -60,8 +61,7 @@ async function openFirstRowMenu(page: Page): Promise<Locator> {
   // garante que a fonte web foi carregada antes de medir (evita FOUT no measure).
   await page.evaluate(
     () =>
-      document.fonts &&
-      (document as unknown as { fonts: { ready: Promise<unknown> } }).fonts.ready,
+      document.fonts && (document as unknown as { fonts: { ready: Promise<unknown> } }).fonts.ready,
   );
   await page.evaluate(
     () => new Promise<void>((r) => requestAnimationFrame(() => requestAnimationFrame(() => r()))),

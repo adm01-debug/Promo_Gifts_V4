@@ -29,6 +29,7 @@ import { spawnSync } from "node:child_process";
 import { existsSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { missingPrerequisite } from "./lib/missing-prerequisite.mjs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, "..");
@@ -81,12 +82,10 @@ if (isMock) {
     process.env.TEST_PASS ??
     "";
   if (!email || !password) {
-    console.error(
-      "❌ Credenciais E2E ausentes. Escolha um modo:\n" +
-        "   • Modo REAL: defina E2E_USER_EMAIL + E2E_USER_PASSWORD\n" +
-        "   • Modo MOCK: use `npm run test:e2e:quotes-undo:mock` (sem credenciais)\n",
-    );
-    process.exit(2);
+    missingPrerequisite("run-e2e-quotes-undo", "credenciais E2E ausentes (E2E_USER_EMAIL + E2E_USER_PASSWORD)", {
+      exitCode: 2,
+      hint: "Modo MOCK (sem credenciais): npm run test:e2e:quotes-undo:mock",
+    });
   }
   process.env.E2E_USER_EMAIL = email;
   process.env.E2E_USER_PASSWORD = password;

@@ -1,9 +1,8 @@
 /**
  * stockFetcher — Busca paginada e processamento de dados de estoque
  */
-import { untypedFrom } from '@/lib/supabase-untyped';
-import { GOLD_READ_ALIASES } from '@/integrations/supabase/gold-relations';
 import { logger } from '@/lib/logger';
+import { fetchPaginatedFromBridge, UUID_KEYSET_PARTITIONS } from '@/hooks/stock/stockPagination';
 import {
   type VariantStock,
   type ProductStockSummary,
@@ -15,6 +14,13 @@ import {
   aggregateVariantsToProduct,
 } from '@/types/stock';
 import { generateStockAlerts } from '@/hooks/stock/stockAlerts';
+
+export {
+  ALLOWED_FILTER_KEYS,
+  fetchPaginatedFromBridge,
+  uuidKeysetRanges,
+  UUID_KEYSET_PARTITIONS,
+} from '@/hooks/stock/stockPagination';
 
 // ============================================
 // TIPOS PARA API EXTERNA
@@ -114,141 +120,6 @@ export function buildVelocityIndex(rows: ExternalStockVelocity[]): Map<string, n
     if (daily > prev) index.set(v.variant_id, daily);
   }
   return index;
-}
-
-// ============================================
-// BUSCA PAGINADA
-// ============================================
-
-/**
- * Colunas permitidas como filtros por tabela lógica (pré-GOLD_READ_ALIASES).
- * Defesa em profundidade: impede que colunas arbitrárias sejam injetadas via
- * parâmetro `filters` de fetchPaginatedFromBridge. Tabelas ausentes → sem restrição.
- */
-// Inclui apenas tabelas chamadas com filtros em produção. Tabelas ausentes
-// (categories, suppliers, product_images, mv_stock_velocity) não recebem
-// filtros e portanto não precisam de restrição.
-export const ALLOWED_FILTER_KEYS: Readonly<Record<string, ReadonlySet<string>>> = {
-  products: new Set(['active', 'is_active', 'supplier_id', 'category_id', 'brand']),
-  product_variants: new Set(['is_active', 'product_id', 'color_id', 'supplier_id']),
-  variant_supplier_sources: new Set(['is_active', 'variant_id', 'supplier_id']),
-};
-
-/**
- * Busca paginada por keyset (`id`) via PostgREST direto (ponte descontinuada), com deduplicação.
- *
- * A constraint `T extends { id: string | number }` reflete o fato de que:
- *  - Tabelas com UUID PK (products, product_variants, variant_supplier_sources…) → id: string
- *  - Tabelas com bigint PK (stock_snapshots.id = int8) → PostgREST retorna como JS number
- * Ambos os tipos são aceitos. Callers com { id: string } satisfazem a constraint
- * porque string é subtipo de string | number (TypeScript structural typing).
- */
-export async function fetchPaginatedFromBridge<T extends { id: number | string }>(
-  table: string,
-  select: string,
-  pageSize = 1000,
-  maxRecords = 100000,
-  filters?: Record<string, unknown>,
-  keysetColumn = 'id',
-): Promise<T[]> {
-  // PostgREST nativo (Caminho B). A `external-db-bridge` foi descontinuada (410 Gone).
-  //
-  // BUG-STOCK-04 FIX — Paginação por KEYSET (cursor em `id`), não offset/range.
-  // Raiz da contagem de variações inflada no dashboard (ex.: 22.620 vs ~18.4k):
-  // o PostgREST NÃO garante ordem estável entre requisições HTTP separadas.
-  // Com `.range()` e sem `.order()`, durante uma janela de escrita (sync de
-  // fornecedor XBZ/SPOT em product_variants) as páginas se sobrepõem → linhas
-  // duplicadas/saltadas → totais errados. Keyset (`order(id)` + `id > lastId`)
-  // é imune a reordenação de linhas existentes e a inserts concorrentes; o
-  // Set `seen` é cinto-e-suspensório contra qualquer duplicata residual.
-  const all: T[] = [];
-  // Set<string | number>: aceita UUIDs (string, tabelas Ouro com UUID PK)
-  // e bigint PKs (number, ex: stock_snapshots.id=int8 retornado como JS number).
-  // SameValueZero garante deduplicação correta para ambos sem mistura de tipos.
-  const seen = new Set<number | string>();
-  // string | number | null: PostgREST retorna bigint PKs como JS number (não string).
-  // Cursor evolution: null → T.id (string|number) → gt() na próxima página.
-  let lastId: number | string | null = null;
-  let totalCount: number | null = null;
-
-  // Aliases centralizados: tabelas Ouro expostas via views públicas (Medallion).
-  const resolvedTable = (GOLD_READ_ALIASES as Record<string, string>)[table] ?? table;
-
-  while (all.length < maxRecords) {
-    let query = untypedFrom(resolvedTable).select(
-      select,
-      lastId === null ? { count: 'exact' } : undefined,
-    );
-
-    if (filters) {
-      const allowed = ALLOWED_FILTER_KEYS[table];
-      for (const [col, val] of Object.entries(filters)) {
-        if (allowed !== undefined && !allowed.has(col)) {
-          logger.warn(
-            `[Stock] fetchPaginatedFromBridge: coluna de filtro não permitida "${col}" em "${table}" — ignorado`,
-          );
-          continue;
-        }
-        if (val === null) query = query.is(col, null);
-        else if (Array.isArray(val)) query = query.in(col, val);
-        else query = query.eq(col, val);
-      }
-    }
-
-    // Cursor estável: ordena pela coluna de keyset (PK físico) e busca a próxima
-    // página após o último cursor visto. Views Ouro sem coluna `id` física (ex.:
-    // mv_stock_velocity, cujo PK é variant_supplier_source_id) passam o nome real
-    // via `keysetColumn`; o `select` continua expondo o valor como `id` na saída.
-    query = query.order(keysetColumn, { ascending: true }).limit(pageSize);
-    if (lastId !== null) query = query.gt(keysetColumn, lastId);
-
-    const { data, error, count } = await query;
-    if (error) {
-      if (error.message?.includes('410') || error.message?.includes('Gone')) {
-        const { reportSilentEmpty } = await import('@/lib/external-db/silent-empty-report');
-        reportSilentEmpty({
-          reason: 'gone_410',
-          table: resolvedTable,
-          operation: 'select',
-          message: error.message,
-        });
-        logger.warn(`[Stock] Bridge deprecated (410) for ${table} — stopping pagination.`);
-        break;
-      }
-      const errorMsg = `Erro ao buscar ${table}: ${error.message}`;
-      logger.error(`[Stock] ${errorMsg}`, error);
-      throw new Error(errorMsg);
-    }
-
-    const records = (data ?? []) as unknown as T[];
-    if (lastId === null && typeof count === 'number') totalCount = count;
-    if (records.length === 0) break;
-
-    for (const r of records) {
-      const rid = r?.id;
-      if (rid && !seen.has(rid)) {
-        seen.add(rid);
-        all.push(r);
-      }
-    }
-
-    // Otimização: se o total já é conhecido e já buscamos tudo, não faz mais
-    // um round-trip para confirmar página vazia.
-    if (totalCount !== null && all.length >= totalCount) break;
-
-    const nextCursor = records[records.length - 1]?.id ?? null;
-    // Segurança: se o cursor não avançou, paramos para não loopar.
-    if (nextCursor === null || nextCursor === lastId) {
-      logger.warn(`[Stock] ${table}: cursor preso em "${nextCursor}" — interrompendo paginação.`);
-      break;
-    }
-    lastId = nextCursor;
-
-    if (records.length < pageSize) break;
-  }
-
-  logger.log(`[Stock] ${table}: carregados ${all.length}/${totalCount ?? '?'} registros (keyset)`);
-  return all;
 }
 
 // ============================================
@@ -361,6 +232,8 @@ export async function fetchAndProcessStockData(): Promise<{
       1000,
       100000,
       { active: true },
+      'id',
+      UUID_KEYSET_PARTITIONS,
     ),
     fetchPaginatedFromBridge<ExternalVariantStock>(
       'product_variants',
@@ -368,6 +241,8 @@ export async function fetchAndProcessStockData(): Promise<{
       1000,
       100000,
       { is_active: true },
+      'id',
+      UUID_KEYSET_PARTITIONS,
     ),
     fetchPaginatedFromBridge<ExternalSupplierSource>(
       'variant_supplier_sources',
@@ -375,6 +250,8 @@ export async function fetchAndProcessStockData(): Promise<{
       1000,
       100000,
       { is_active: true },
+      'id',
+      UUID_KEYSET_PARTITIONS,
     ).catch(graceful<ExternalSupplierSource>('variant_supplier_sources')),
     fetchPaginatedFromBridge<{ id: string; name: string }>(
       'categories',
@@ -404,6 +281,9 @@ export async function fetchAndProcessStockData(): Promise<{
       'id,product_id,variant_id,supplier_code,url_cdn,is_primary,is_og_image,image_type',
       1000,
       200000,
+      undefined,
+      'id',
+      UUID_KEYSET_PARTITIONS,
     ).catch(
       () =>
         [] as Array<{
@@ -428,6 +308,7 @@ export async function fetchAndProcessStockData(): Promise<{
       undefined,
       // BUGFIX: a view não tem coluna física `id`; o keyset precisa ordenar pelo PK real.
       'variant_supplier_source_id',
+      UUID_KEYSET_PARTITIONS,
     ).catch(() => [] as ExternalStockVelocity[]),
   ]);
 

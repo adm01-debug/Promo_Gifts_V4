@@ -18,6 +18,7 @@ interface KitHeroPricingCardProps {
   kitQuantity: number;
   isValid: boolean;
   hasContent: boolean;
+  pricesKnown?: boolean;
 }
 
 export function KitHeroPricingCard({
@@ -26,6 +27,7 @@ export function KitHeroPricingCard({
   kitQuantity,
   isValid,
   hasContent,
+  pricesKnown = true,
 }: KitHeroPricingCardProps) {
   if (!hasContent) {
     return (
@@ -60,7 +62,7 @@ export function KitHeroPricingCard({
           <p className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
             Preço por kit
           </p>
-          {isValid && (
+          {isValid && pricesKnown && (
             <Badge className="h-5 gap-1 border-success/30 bg-success/15 text-[10px] text-success hover:bg-success/20">
               <TrendingUp className="h-2.5 w-2.5" /> Pronto
             </Badge>
@@ -68,14 +70,14 @@ export function KitHeroPricingCard({
         </div>
         <div className="flex items-baseline gap-1">
           <span className="font-display text-4xl font-bold tabular-nums tracking-tight">
-            {formatCurrency(unitPrice)}
+            {pricesKnown ? formatCurrency(unitPrice) : 'Não informado'}
           </span>
         </div>
         <div className="space-y-1.5 border-t border-border/40 pt-3">
           <div className="flex items-baseline justify-between text-xs">
             <span className="text-muted-foreground">Total ({kitQuantity}x)</span>
             <span className="font-display text-base font-bold tabular-nums text-primary">
-              {formatCurrency(total)}
+              {pricesKnown ? formatCurrency(total) : 'Não informado'}
             </span>
           </div>
         </div>

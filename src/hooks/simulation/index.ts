@@ -4,6 +4,7 @@ export * from '@/hooks/simulation/useExternalSimulator';
 export * from '@/hooks/simulation/useGravacaoPriceV2';
 export * from '@/hooks/simulation/useGravacaoV2';
 export * from '@/hooks/simulation/useLogoColorAnalysis';
+export * from '@/hooks/simulation/useLogoColorAnalysisByArea';
 export * from '@/hooks/simulation/usePositionHistory';
 export * from '@/hooks/simulation/usePrintAreas';
 export * from '@/hooks/simulation/useSimulation';

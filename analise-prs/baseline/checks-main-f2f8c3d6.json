@@ -1,0 +1,51 @@
+{
+  "sha": "f2f8c3d6e316cef8802faf42a64f9f4005970b6a",
+  "date": "2026-10-27",
+  "commit_message": "chore(ci)(deps): bump actions/setup-node from 4 to 7 (#2594)",
+  "tsc_errors": [],
+  "tsc_error_count": 0,
+  "lint_errors": [],
+  "lint_error_count": 0,
+  "lint_warning_count": 0,
+  "lint_note": "ESLint full run OOM'd (FATAL ERROR: Reached heap limit, JavaScript heap out of memory) with default Node.js heap in both npm run lint and direct eslint invocations. Partial runs on subsets (src/integrations, src/types, src/lib/intelligence) returned 0 errors/warnings. .eslint-baseline.json counts = {} (0 known issues in baseline). Unable to confirm full lint error count for this SHA.",
+  "failing_tests": [
+    {
+      "name": "formatDateTime returns dd/MM/yyyy HH:mm for ISO string (BRT)",
+      "file": "tests/unit/date-utils.test.ts",
+      "error": "AssertionError: expected '15/06/2025 15:45' to be '15/06/2025 12:45' // Object.is equality — timezone mismatch: test expects BRT (-03:00) but CI runs in UTC"
+    },
+    {
+      "name": "formatTime returns HH:mm for ISO string",
+      "file": "tests/unit/date-utils.test.ts",
+      "error": "AssertionError: expected '13:05' to be '10:05' // Object.is equality — timezone mismatch: test expects BRT (-03:00) but CI runs in UTC"
+    },
+    {
+      "name": "formatTime zero-pads hours and minutes",
+      "file": "tests/unit/date-utils.test.ts",
+      "error": "AssertionError: expected '05:05' to be '02:05' // Object.is equality — timezone mismatch: test expects BRT (-03:00) but CI runs in UTC"
+    }
+  ],
+  "failing_test_count": 3,
+  "skipped_test_count": 67,
+  "total_test_count": 8535,
+  "passed_test_count": 8465,
+  "build_success": true,
+  "build_errors": [],
+  "build_warnings": [
+    "INEFFECTIVE_DYNAMIC_IMPORT: src/services/telemetryService.ts (dynamically imported but also statically imported, will not move into separate chunk)",
+    "INEFFECTIVE_DYNAMIC_IMPORT: src/lib/external-db/silent-empty-report.ts",
+    "INEFFECTIVE_DYNAMIC_IMPORT: src/lib/db/postgrest.ts",
+    "INEFFECTIVE_DYNAMIC_IMPORT: src/lib/external-db/immutableCache.ts",
+    "INEFFECTIVE_DYNAMIC_IMPORT: src/hooks/products/useCatalogPrefetch.ts",
+    "INEFFECTIVE_DYNAMIC_IMPORT: src/lib/external-db/index.ts",
+    "INEFFECTIVE_DYNAMIC_IMPORT: src/lib/crm-db.ts",
+    "INEFFECTIVE_DYNAMIC_IMPORT: src/components/cart/CartCompanyPickerDialog.tsx",
+    "INEFFECTIVE_DYNAMIC_IMPORT: src/components/cart/CartSelectorDialog.tsx",
+    "INEFFECTIVE_DYNAMIC_IMPORT: src/components/collections/AddToCollectionModal.tsx",
+    "INEFFECTIVE_DYNAMIC_IMPORT: src/components/products/ProductQuickView.tsx",
+    "INEFFECTIVE_DYNAMIC_IMPORT: src/components/products/VariantPickerDialog.tsx",
+    "INEFFECTIVE_DYNAMIC_IMPORT: src/components/products/share/SharePreviewDialog.tsx"
+  ],
+  "npm_install_ok": true,
+  "npm_ci_note": "npm ci --prefer-offline succeeded; npm audit reports issues (run npm audit fix --force to address)"
+}

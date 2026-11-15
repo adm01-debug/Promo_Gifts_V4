@@ -11,7 +11,7 @@
  * v2 = strict envelope: `event`, `occurred_at`, `data` exigidos.
  */
 
-import { z } from "https://esm.sh/zod@3.23.8";
+import { z } from "npm:zod@3.23.8";
 
 // ---------------------------------------------------------------------------
 // v1 — passthrough (zero estrutura imposta) preservando compat

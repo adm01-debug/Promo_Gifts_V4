@@ -1,14 +1,6 @@
 import { supabase } from '@/integrations/supabase/client';
 import { logger } from '@/lib/logger';
 import { safeAuthCall, type SafeAuthResult } from '@/lib/auth/safeAuthCall';
-import type { PostgrestError } from '@supabase/supabase-js';
-
-// BUG-FIX v2.1: tipo explícito para cast seguro de supabase.rpc
-type RPCCallerFn<T = unknown> = (
-  fn: string,
-  args: Record<string, unknown>,
-) => Promise<{ data: T | null; error: PostgrestError | null }>;
-
 type UnknownData = Record<string, unknown> | null;
 
 // E122 — elimina `as unknown as` em safeAuthCall: adapta qualquer resultado
@@ -180,19 +172,9 @@ export const authService = {
     return supabase.from('user_roles').select('role').eq('user_id', userId);
   },
 
-  /**
-   * RPC combinada: retorna profile + roles em um único round-trip.
-   * Seguro: `as unknown as RPCCallerFn` evita erro TS em strict mode.
-   */
-  async getProfileAndRoles(userId: string): Promise<{
-    data: { profile: Record<string, unknown> | null; roles: string[] | null } | null;
-    error: PostgrestError | null;
-  }> {
-    const caller = supabase.rpc as unknown as RPCCallerFn<{
-      profile: Record<string, unknown> | null;
-      roles: string[] | null;
-    }>;
-    return caller('get_profile_and_roles', { _user_id: userId });
+  /** RPC combinada: retorna profile + roles em um único round-trip. */
+  async getProfileAndRoles(userId: string) {
+    return supabase.rpc('get_profile_and_roles', { _user_id: userId });
   },
 
   async fetchProfile(userId: string) {

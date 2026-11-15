@@ -80,6 +80,39 @@ describe('useListUrlState — contrato de /carrinhos (deadline/sort/q)', () => {
     expect(result.current.values.q).toBe('');
   });
 
+  it('remove defaults explícitos ao hidratar e preserva filtros ativos e params externos', async () => {
+    const { wrapper, getSearch } = makeWrapper(
+      '/carrinhos?status=all&deadline=overdue&sort=recent&q=abc&utm=email',
+    );
+    const { result } = renderHook(
+      () => useListUrlState({ keys: CARTS_KEYS, searchKey: 'q', debounceMs: 250 }),
+      { wrapper },
+    );
+
+    await waitFor(() => {
+      const params = new URLSearchParams(getSearch());
+      expect(params.has('status')).toBe(false);
+      expect(params.has('sort')).toBe(false);
+      expect(params.get('deadline')).toBe('overdue');
+      expect(params.get('q')).toBe('abc');
+      expect(params.get('utm')).toBe('email');
+    });
+    expect(result.current.values.deadline).toBe('overdue');
+    expect(result.current.values.q).toBe('abc');
+  });
+
+  it('limpa defaults explícitos do deep-link sem searchKey', async () => {
+    const { wrapper, getSearch } = makeWrapper('/x?status=all&sort=recent&page=2');
+    renderHook(() => useListUrlState({ keys: { status: 'all', sort: 'recent' } }), { wrapper });
+
+    await waitFor(() => {
+      const params = new URLSearchParams(getSearch());
+      expect(params.has('status')).toBe(false);
+      expect(params.has('sort')).toBe(false);
+      expect(params.get('page')).toBe('2');
+    });
+  });
+
   it('preserva params NÃO gerenciados quando clearAll é chamado', async () => {
     // Só limpa as chaves declaradas em `keys`. Params externos (paginação,
     // rastreio, etc.) devem permanecer intactos.
@@ -285,6 +318,47 @@ describe('useListUrlState — botão voltar do navegador durante debounce penden
 
     expect(result.current.values.q).toBe('old');
     expect(result.current.searchInput).toBe('old');
+  });
+
+  it('normaliza defaults após POP quando a busca já está vazia e preserva params externos', async () => {
+    let navigateBack: (() => void) | null = null;
+    let currentSearch = '';
+    const NavigateCapture = () => {
+      const navigate = useNavigate();
+      const location = useLocation();
+      navigateBack = () => navigate(-1);
+      currentSearch = location.search;
+      return null;
+    };
+    const wrapper = ({ children }: { children: ReactNode }) => (
+      <MemoryRouter
+        initialEntries={[
+          '/carrinhos?status=all&deadline=all&sort=recent&q=&utm=email',
+          '/carrinhos',
+        ]}
+      >
+        <NavigateCapture />
+        {children}
+      </MemoryRouter>
+    );
+
+    const { result } = renderHook(
+      () => useListUrlState({ keys: CARTS_KEYS, searchKey: 'q', debounceMs: 250 }),
+      { wrapper },
+    );
+    expect(result.current.searchInput).toBe('');
+
+    act(() => navigateBack?.());
+
+    await waitFor(() => {
+      const params = new URLSearchParams(currentSearch);
+      expect(params.has('status')).toBe(false);
+      expect(params.has('deadline')).toBe(false);
+      expect(params.has('sort')).toBe(false);
+      expect(params.has('q')).toBe(false);
+      expect(params.get('utm')).toBe('email');
+    });
+    expect(result.current.searchInput).toBe('');
   });
 
   it('não interfere em navegação PUSH/REPLACE normal (só reage a POP)', async () => {

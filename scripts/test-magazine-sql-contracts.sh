@@ -1,7 +1,10 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-: "${DATABASE_URL:?DATABASE_URL is required}"
+source "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/lib/missing-prerequisite.sh"
+if [[ -z "${DATABASE_URL:-}" ]]; then
+  missing_prerequisite "test-magazine-sql-contracts" "DATABASE_URL ausente" 1
+fi
 
 PSQL=(psql "$DATABASE_URL" -X -v ON_ERROR_STOP=1)
 "${PSQL[@]}" -f tests/magazine/sql/magazine_rpc_schema.sql

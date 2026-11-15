@@ -11,7 +11,8 @@
  * `transform`/`filter`/`perspective`/`contain: paint|layout|strict`, o que
  * quebraria sticky silenciosamente.
  */
-import { test, expect, type Page } from '@playwright/test';
+import type { Page } from '@playwright/test';
+import { test, expect } from '../fixtures/test-base';
 import { gotoAndSettle } from '../helpers/nav';
 
 const ROUTE = '/__visual/quote-view-order';
@@ -32,34 +33,39 @@ test('@smoke nenhum ancestral da sidebar quebra sticky via overflow ou containin
     '[E108] Rota /__visual/* só disponível em DEV mode — não existe no build de produção',
   );
   await open(page);
-  const violations = await page.evaluate(({ badCb }) => {
-    const aside = document.querySelector('aside');
-    if (!aside) return [{ tag: 'NO_ASIDE', issues: ['<aside> não encontrado'] }];
-    const out: { tag: string; issues: string[] }[] = [];
-    let el: HTMLElement | null = aside.parentElement;
-    while (el && el !== document.documentElement) {
-      const cs = getComputedStyle(el);
-      const issues: string[] = [];
-      if (!['visible', 'clip'].includes(cs.overflowX)) issues.push(`overflow-x=${cs.overflowX}`);
-      if (!['visible', 'clip'].includes(cs.overflowY)) issues.push(`overflow-y=${cs.overflowY}`);
-      for (const prop of badCb) {
-        const v = (cs as unknown as Record<string, string>)[prop];
-        if (!v || v === 'none' || v === 'normal') continue;
-        if (prop === 'contain' && !/(paint|layout|strict|content)/.test(v)) continue;
-        issues.push(`${prop}=${v}`);
+  const violations = await page.evaluate(
+    ({ badCb }) => {
+      const aside = document.querySelector('aside');
+      if (!aside) return [{ tag: 'NO_ASIDE', issues: ['<aside> não encontrado'] }];
+      const out: { tag: string; issues: string[] }[] = [];
+      let el: HTMLElement | null = aside.parentElement;
+      while (el && el !== document.documentElement) {
+        const cs = getComputedStyle(el);
+        const issues: string[] = [];
+        if (!['visible', 'clip'].includes(cs.overflowX)) issues.push(`overflow-x=${cs.overflowX}`);
+        if (!['visible', 'clip'].includes(cs.overflowY)) issues.push(`overflow-y=${cs.overflowY}`);
+        for (const prop of badCb) {
+          const v = (cs as unknown as Record<string, string>)[prop];
+          if (!v || v === 'none' || v === 'normal') continue;
+          if (prop === 'contain' && !/(paint|layout|strict|content)/.test(v)) continue;
+          issues.push(`${prop}=${v}`);
+        }
+        if (issues.length) {
+          out.push({
+            tag: `${el.tagName.toLowerCase()}${el.id ? '#' + el.id : ''}${
+              el.className && typeof el.className === 'string'
+                ? '.' + el.className.split(/\s+/).slice(0, 2).join('.')
+                : ''
+            }`,
+            issues,
+          });
+        }
+        el = el.parentElement;
       }
-      if (issues.length) {
-        out.push({
-          tag: `${el.tagName.toLowerCase()}${el.id ? '#' + el.id : ''}${
-            el.className && typeof el.className === 'string' ? '.' + el.className.split(/\s+/).slice(0, 2).join('.') : ''
-          }`,
-          issues,
-        });
-      }
-      el = el.parentElement;
-    }
-    return out;
-  }, { badCb: BAD_CB });
+      return out;
+    },
+    { badCb: BAD_CB },
+  );
 
   expect(
     violations,
@@ -216,4 +222,3 @@ test('Tab percorre controles dentro da região rolável sem perder foco após sc
   expect(activeAfter).not.toBe('BODY');
   expect(activeBefore).not.toBeNull();
 });
-

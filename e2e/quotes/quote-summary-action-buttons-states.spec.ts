@@ -11,7 +11,8 @@
  * Cobre o invariante: trocar ícone por <Loader2/> ou alternar `disabled`
  * NÃO pode quebrar o flex row do rodapé.
  */
-import { test, expect, type Page, type Locator } from '@playwright/test';
+import type { Page, Locator } from '@playwright/test';
+import { test, expect } from '../fixtures/test-base';
 import { loginAs } from '../helpers/auth';
 import { gotoAndSettle } from '../helpers/nav';
 

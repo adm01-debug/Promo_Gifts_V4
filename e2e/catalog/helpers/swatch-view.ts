@@ -63,7 +63,15 @@ export async function switchCatalogView(page: Page, mode: CatalogView): Promise<
     timeout: DATA_TIMEOUT_MS,
   });
   const option = page.getByTestId(`view-mode-${mode}`);
-  if (!(await option.isVisible())) await trigger.click();
+  if (!(await option.isVisible())) {
+    // A toolbar pode ficar fora da viewport depois que o catálogo restaura a
+    // posição de scroll. Um click de ponteiro entra em retry até o timeout
+    // mesmo com o botão visível no DOM. Foco + Enter exercita o contrato a11y
+    // real do trigger e deixa o browser cuidar do scroll sem `force: true`.
+    await trigger.scrollIntoViewIfNeeded();
+    await trigger.focus();
+    await page.keyboard.press('Enter');
+  }
   await expect(option).toBeVisible({ timeout: 5_000 });
   await option.click();
   await expect(option).toHaveAttribute('aria-pressed', 'true');

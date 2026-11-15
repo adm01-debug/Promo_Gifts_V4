@@ -42,19 +42,3 @@ export function useKeyboardShortcuts({ onGenerate, canGenerate, isLoading }: Key
     return () => document.removeEventListener('keydown', handleKeyDown);
   }, [handleKeyDown]);
 }
-
-// Component that shows keyboard shortcuts hint
-export function KeyboardShortcutsHint({ className }: { className?: string }) {
-  return (
-    <div className={className}>
-      <div className="flex flex-wrap gap-4 text-[10px] text-muted-foreground">
-        <span className="flex items-center gap-1">
-          <kbd className="rounded bg-muted px-1.5 py-0.5 font-mono text-[9px]">Ctrl</kbd>
-          <span>+</span>
-          <kbd className="rounded bg-muted px-1.5 py-0.5 font-mono text-[9px]">Enter</kbd>
-          <span className="ml-1">Gerar</span>
-        </span>
-      </div>
-    </div>
-  );
-}

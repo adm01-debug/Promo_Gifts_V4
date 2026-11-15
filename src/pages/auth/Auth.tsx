@@ -881,7 +881,6 @@ export default function Auth() {
             </div>
           )}
 
-          {/* SupabaseConnectionDebug removido a pedido do usuário */}
           {/* Backend Status Widget removido a pedido do PO */}
 
           <LegalFooter />
