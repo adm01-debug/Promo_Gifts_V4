@@ -705,11 +705,6 @@
     "active": true
   },
   {
-    "jobname": "xbz-image-uploader",
-    "schedule": "3,13,23,33,43,53 1-8 * * *",
-    "active": true
-  },
-  {
     "jobname": "xbz-site-scrape",
     "schedule": "1,31 1-8 * * *",
     "active": true

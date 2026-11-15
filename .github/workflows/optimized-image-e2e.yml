@@ -1,5 +1,6 @@
 name: OptimizedImage E2E CI
 on:
+  # E2E fora dos PRs (14/11): os PRs apontavam o E2E para o Supabase de produção e sobrecarregavam o banco. Roda no merge em main, no agendamento ou manual.
   push:
     branches: [ main ]
     paths:
@@ -8,15 +9,6 @@ on:
       - 'src/routes/AppRoutes.tsx'
       - 'e2e/optimized-image-*.spec.ts'
       - '.github/workflows/optimized-image-e2e.yml'
-  pull_request:
-    branches: [ main ]
-    paths:
-      - 'src/components/ui/OptimizedImage.tsx'
-      - 'src/pages/tools/OptimizedImageDemo.tsx'
-      - 'src/routes/AppRoutes.tsx'
-      - 'e2e/optimized-image-*.spec.ts'
-      - '.github/workflows/optimized-image-e2e.yml'
-
 permissions:
   contents: read
 

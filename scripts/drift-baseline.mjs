@@ -350,14 +350,21 @@ export function replayFileName(baselineVersion, index, original) {
 const REPLAY_PIPELINE_REWRITES = new Map([
   ['20261101140003_sb0006_index_kit_fk_user_id.sql', { concurrentlyIndexes: 2 }],
   ['20261113235000_perf_idx_products_active_created_at_desc.sql', { concurrentlyIndexes: 1 }],
+  ['20261114014100_idx_fk_stock_and_missing_perf_indexes.sql', { concurrentlyIndexes: 11 }],
+  ['20261114160000_perf_idx_sds_restock_counts.sql', { concurrentlyIndexes: 1 }],
+  ['20261115130000_idx_sds_summary_date_supplier_include.sql', { concurrentlyIndexes: 1 }],
 ]);
 
 export function sanitizeReplayMigration(fileName, sql) {
+  // Alguns editores gravam um BOM UTF-8. O PostgreSQL/libpq interpreta U+FEFF
+  // como token inválido quando ele abre a migration. Normalize somente a cópia
+  // temporária do replay; o arquivo histórico e qualquer U+FEFF interno ficam intactos.
+  const normalizedSql = sql.startsWith('\uFEFF') ? sql.slice(1) : sql;
   const expected = REPLAY_PIPELINE_REWRITES.get(fileName)?.concurrentlyIndexes;
-  if (expected === undefined) return sql;
+  if (expected === undefined) return normalizedSql;
 
   let rewritten = 0;
-  const output = sql.replace(
+  const output = normalizedSql.replace(
     /^(\s*CREATE\s+(?:UNIQUE\s+)?INDEX)\s+CONCURRENTLY\b/gim,
     (statement) => {
       rewritten += 1;

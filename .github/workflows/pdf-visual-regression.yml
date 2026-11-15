@@ -1,15 +1,7 @@
 name: PDF Visual Regression
 
 on:
-  pull_request:
-    paths:
-      - 'src/components/pdf/**'
-      - 'src/lib/pdf/**'
-      - 'src/lib/quotes/personalizationSummary.ts'
-      - 'qa/exports/**'
-      - 'scripts/qa/generate-proposal-pdf.mjs'
-      - 'scripts/qa/diff-proposal-pdfs.mjs'
-      - '.github/workflows/pdf-visual-regression.yml'
+  # E2E fora dos PRs (14/11): os PRs apontavam o E2E para o Supabase de produção e sobrecarregavam o banco. Roda no merge em main, no agendamento ou manual.
   workflow_dispatch:
     inputs:
       update_baseline:

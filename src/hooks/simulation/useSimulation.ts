@@ -143,11 +143,12 @@ export function useSimulation() {
         id: string;
         razao_social?: string;
         nome_fantasia?: string;
-        ramo?: string;
-        nicho?: string;
+        ramo_atividade?: string;
+        nicho_cliente?: string;
         logo_url?: string;
       }>('companies', {
-        select: 'id, razao_social, nome_fantasia, ramo, nicho, logo_url',
+        // Colunas reais do CRM: ramo/nicho não existem (PostgREST 400, lista do simulador vazia).
+        select: 'id, razao_social, nome_fantasia, ramo_atividade, nicho_cliente, logo_url',
         filters: { deleted_at: null },
         orderBy: { column: 'razao_social', ascending: true },
         limit: 500,
@@ -155,8 +156,8 @@ export function useSimulation() {
       return companies.map((c) => ({
         id: c.id,
         name: c.nome_fantasia || c.razao_social || '',
-        ramo: c.ramo,
-        nicho: c.nicho,
+        ramo: c.ramo_atividade,
+        nicho: c.nicho_cliente,
         logo_url: c.logo_url,
       })) as Client[];
     },

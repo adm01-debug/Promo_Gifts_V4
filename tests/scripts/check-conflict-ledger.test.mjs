@@ -275,3 +275,69 @@ describe('check-conflict-ledger: resolveRef — casos adversariais (revisão 12/
     expect(r.status).not.toBe(0);
   });
 });
+
+describe('check-conflict-ledger: resolveRef — PR_HEAD_SHA (reforço de mutantes M1/M4, 12/11)', () => {
+  // Repo com: `feat` limpa (sem merge semântico) e `viol` com merge(pr-N) sem ledger.
+  // GITHUB_HEAD_REF aponta sempre para `feat`; quem decide o veredito é qual ref o
+  // resolveRef escolhe: PR_HEAD_SHA válido → `viol` (exit 1); ignorado → `feat` (exit 0).
+  function repoWithViolation(prefix) {
+    const dir = makeRepo(prefix, 'feat');
+    commitOnBranch(dir, 'feat', { message: 'feat: normal' });
+    g(dir, ['branch', 'viol', 'main']);
+    commitOnBranch(dir, 'viol', { message: 'merge(pr-42): resolve conflito' });
+    g(dir, ['checkout', '-q', 'main']);
+    return { dir, violSha: g(dir, ['rev-parse', 'viol']).trim() };
+  }
+
+  it('M1: PR_HEAD_SHA válido (40 hex, existente) tem prioridade sobre o nome da branch', () => {
+    const { dir, violSha } = repoWithViolation('ledger-sha-prio-');
+    const r = run(dir, { GITHUB_BASE_REF: 'main', GITHUB_HEAD_REF: 'feat', PR_HEAD_SHA: violSha }, ['--gate']);
+    expect(r.status).toBe(1);
+    expect(r.stderr).toMatch(/::error::\[E188\] PR contém 1 commit/);
+  });
+
+  it('M1: PR_HEAD_SHA em MAIÚSCULAS também é aceito (regex /i)', () => {
+    const { dir, violSha } = repoWithViolation('ledger-sha-upper-');
+    const r = run(dir, { GITHUB_BASE_REF: 'main', GITHUB_HEAD_REF: 'feat', PR_HEAD_SHA: violSha.toUpperCase() }, ['--gate']);
+    expect(r.status).toBe(1);
+  });
+
+  it('M4: PR_HEAD_SHA com 39 chars (prefixo resolvível pelo git) é ignorado → usa o nome', () => {
+    const { dir, violSha } = repoWithViolation('ledger-sha-39-');
+    const r = run(dir, { GITHUB_BASE_REF: 'main', GITHUB_HEAD_REF: 'feat', PR_HEAD_SHA: violSha.slice(0, 39) }, ['--gate']);
+    expect(r.status, r.stderr).toBe(0);
+    expect(r.stdout).toMatch(/Nenhum commit de merge semântico/);
+  });
+
+  it('M4: PR_HEAD_SHA com 41 chars hex (mesmo existindo como ref) é ignorado → usa o nome', () => {
+    const { dir, violSha } = repoWithViolation('ledger-sha-41-');
+    const ref41 = `${violSha}a`;
+    g(dir, ['branch', ref41, 'viol']); // ref de 41 hex resolvível pelo git
+    const r = run(dir, { GITHUB_BASE_REF: 'main', GITHUB_HEAD_REF: 'feat', PR_HEAD_SHA: ref41 }, ['--gate']);
+    expect(r.status, r.stderr).toBe(0);
+    expect(r.stdout).toMatch(/Nenhum commit de merge semântico/);
+  });
+
+  it('M4: PR_HEAD_SHA não-hex (nome de ref existente) é ignorado → usa o nome', () => {
+    const { dir } = repoWithViolation('ledger-sha-nonhex-');
+    const r = run(dir, { GITHUB_BASE_REF: 'main', GITHUB_HEAD_REF: 'feat', PR_HEAD_SHA: 'viol' }, ['--gate']);
+    expect(r.status, r.stderr).toBe(0);
+    expect(r.stdout).toMatch(/Nenhum commit de merge semântico/);
+  });
+
+  it('PR_HEAD_SHA com 40 hex mas INEXISTENTE no repo não é aceito: cai para o próximo caminho (nome)', () => {
+    const { dir } = repoWithViolation('ledger-sha-missing-');
+    const r = run(dir, { GITHUB_BASE_REF: 'main', GITHUB_HEAD_REF: 'feat', PR_HEAD_SHA: 'deadbeef'.repeat(5) }, ['--gate']);
+    // Aceitar o sha sem verificar faria o git falhar ("Não foi possível calcular") — exit 1 por motivo errado.
+    expect(r.status, r.stderr).toBe(0);
+    expect(r.stdout).toMatch(/Nenhum commit de merge semântico/);
+    expect(r.stderr).not.toMatch(/Não foi possível calcular/);
+  });
+
+  it('PR_HEAD_SHA inexistente + nome inexistente: falha fechado (--gate exit 1)', () => {
+    const { dir } = repoWithViolation('ledger-sha-missing-none-');
+    const r = run(dir, { GITHUB_BASE_REF: 'main', GITHUB_HEAD_REF: 'nao-existe', PR_HEAD_SHA: 'deadbeef'.repeat(5) }, ['--gate']);
+    expect(r.status).toBe(1);
+    expect(r.stderr).toMatch(/Não foi possível calcular/);
+  });
+});
