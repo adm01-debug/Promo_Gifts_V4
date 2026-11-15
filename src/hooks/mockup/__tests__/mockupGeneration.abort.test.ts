@@ -42,7 +42,16 @@ vi.mock('@/hooks/mockup/useMockupTechniques', async (importOriginal) => ({
   useFilteredTechniques: () => [{ id: 'pat-1', name: 'Serigrafia', code: 'silk' }],
   useProductCustomizationOptionsForMockup: () => ({ data: null, isFetching: false }),
 }));
-vi.mock('@/hooks/simulation', () => ({
+// Mock parcial: o estrato "por área" é o módulo REAL (mantém a lógica de qual área é dona
+// da análise) sobre a análise base stubada no caminho direto. O índice NÃO é espalhado de
+// propósito: ele carrega todo o estrato de simulação (client incluso). Logo, export novo do
+// módulo por área já está coberto; hook novo que o gerador passe a importar do índice ainda
+// exige acrescentá-lo aqui.
+vi.mock('@/hooks/simulation/useLogoColorAnalysis', () => ({
+  useLogoColorAnalysis: () => ({ analyzeImage: vi.fn(), clearAnalysis: vi.fn() }),
+}));
+vi.mock('@/hooks/simulation', async () => ({
+  ...(await import('@/hooks/simulation/useLogoColorAnalysisByArea')),
   useLogoColorAnalysis: () => ({ analyzeImage: vi.fn(), clearAnalysis: vi.fn() }),
   usePositionHistory: () => ({
     setOnApply: vi.fn(),
@@ -60,7 +69,16 @@ vi.mock('@/integrations/supabase/client', () => ({
   },
 }));
 vi.mock('@/lib/db/postgrest', () => ({ dbInvoke: mocks.dbInvoke }));
-vi.mock('sonner', () => ({ toast: { error: vi.fn(), success: vi.fn(), info: vi.fn() } }));
+// `custom`/`dismiss` são a API que MockupSuccessToast.tsx:116 usa de fato: sem elas o
+// caminho de sucesso estourava dentro do try do gerador e o teste passava pelo catch.
+vi.mock('sonner', () => ({
+  toast: { error: vi.fn(), success: vi.fn(), info: vi.fn(), custom: vi.fn(), dismiss: vi.fn() },
+}));
+// Upload da logo: o stub do client não tem `storage`, então o upload real quebrava a gravação.
+vi.mock('@/lib/mockup-storage', () => ({
+  uploadLogoToStorage: vi.fn(() => Promise.resolve('https://cdn.example.com/logo.png')),
+  downloadImageAsPdfFromUrl: vi.fn(() => Promise.resolve(undefined)),
+}));
 
 // Superfície da edge consumida pelo service REAL.
 vi.mock('@/lib/edge/safeInvokeCall', () => ({
@@ -230,6 +248,9 @@ describe('Q16 — timeout único e cancelamento da geração de mockup', () => {
       data: null,
       error: { message: 'Failed to fetch', name: 'network', status: 0, request_id: 'req-1' },
     });
+    // A falha de rede É o cenário: o gerador registra o erro com logger.error. O guard de
+    // tests/setup-strict-side-effects.ts exige que o próprio teste intercepte esse console.error.
+    const consoleError = vi.spyOn(console, 'error').mockImplementation(() => {});
 
     await act(async () => {
       await result.current.generateMockup();
@@ -238,6 +259,8 @@ describe('Q16 — timeout único e cancelamento da geração de mockup', () => {
     expect(mocks.invokeEdge).toHaveBeenCalledTimes(1);
     expect(result.current.generationError).toMatch(/Failed to fetch/);
     expect(mocks.insertMockup).not.toHaveBeenCalled();
+    expect(consoleError).toHaveBeenCalled();
+    consoleError.mockRestore();
   });
 
   it('(4) trocar de produto cancela a geração anterior e nada é inserido', async () => {

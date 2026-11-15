@@ -13,6 +13,7 @@
 import type { ExternalVariantStock, Product } from '@/hooks/products';
 import type { MockupProductSelection } from '@/components/mockup/MockupProductSelector';
 import { logger } from '@/lib/logger';
+import { toast } from 'sonner';
 
 export interface MockupSelectionSnapshot {
   /**
@@ -180,8 +181,10 @@ export const mockupSelection = {
         localStorage.setItem(key, JSON.stringify(stored));
       } catch (retryErr) {
         // Degradação local (quota/modo privado): o mockup já foi gerado e salvo,
-        // então só registra — não aborta o fluxo do vendedor.
+        // então não aborta o fluxo do vendedor — mas avisa, senão a variante/foto
+        // somem sem sinal nenhum no próximo "abrir do histórico".
         logger.error('[mockupSelection] Erro ao guardar seleção do histórico:', retryErr, err);
+        toast.error('Não foi possível guardar a variante e a foto escolhidas neste mockup.');
         return;
       }
     }
@@ -202,6 +205,7 @@ export const mockupSelection = {
       return isSnapshot(parsed) ? parsed : null;
     } catch (err) {
       logger.error('[mockupSelection] Erro ao ler seleção do histórico:', err);
+      toast.error('Não foi possível restaurar a variante e a foto deste mockup.');
       return null;
     }
   },
