@@ -54,12 +54,13 @@ vi.mock('@/hooks/mockup/useMockupDraft', () => {
   return { useMockupDraft: vi.fn(() => draft) };
 });
 
-vi.mock('@/hooks/mockup/useMockupTechniques', () => ({
-  useFilteredTechniques: () => ({ techniques: [], isLoading: false }),
+vi.mock('@/hooks/mockup/useMockupTechniques', async (importOriginal) => ({
+  ...(await importOriginal<Record<string, unknown>>()),
+  useFilteredTechniques: () => [],
   useProductCustomizationOptionsForMockup: () => ({ data: null, isLoading: false }),
 }));
 
-// Caminho real: o hook importa `useLogoColorAnalysis` e `usePositionHistory`
+// Caminho real: o hook importa `useLogoColorAnalysisByArea` e `usePositionHistory`
 // do barrel `@/hooks/simulation`.
 vi.mock('@/hooks/simulation', () => {
   const positionHistory = {
@@ -80,10 +81,15 @@ vi.mock('@/hooks/simulation', () => {
     analyzeImage: vi.fn().mockResolvedValue([]),
     updatePantone: vi.fn(),
     clearAnalysis: vi.fn(),
+    // Acrescentados por `useLogoColorAnalysisByArea` (dona da análise por área, 2026-11-15).
+    areaId: null,
+    clearForArea: vi.fn(() => false),
+    restoreFor: vi.fn(),
   };
   return {
     usePositionHistory: vi.fn(() => positionHistory),
     useLogoColorAnalysis: vi.fn(() => logoColorAnalysis),
+    useLogoColorAnalysisByArea: vi.fn(() => logoColorAnalysis),
   };
 });
 
@@ -111,7 +117,6 @@ vi.mock('@/hooks/mockup/mockupGenerationService', () => ({
     logoHeight: 5,
     logoPreview: null,
   })),
-  fetchMockupHistory: vi.fn().mockResolvedValue([]),
   saveMockupToDb: vi.fn().mockResolvedValue('m1'),
   generateMockupApi: vi.fn().mockResolvedValue({
     singleUrl: 'https://cdn.example.com/mockup.png',
@@ -121,18 +126,21 @@ vi.mock('@/hooks/mockup/mockupGenerationService', () => ({
   deleteMockupFromDb: vi.fn().mockResolvedValue(undefined),
 }));
 
+// A aba do histórico pede ao servidor o teto cheio (busca/filtros são no cliente).
+vi.mock('@/hooks/mockup/mockupHistoryAdapter', () => ({
+  MOCKUP_HISTORY_PANEL_LIMIT: 200,
+  fetchRecentMockupHistory: vi.fn().mockResolvedValue([]),
+}));
+
 import '../components/render-helpers'; // Supabase + Auth + sonner globais
 import { toast } from 'sonner';
 import { useMockupGenerator } from '@/hooks/mockup/useMockupGenerator';
-import {
-  generateMockupApi,
-  saveMockupToDb,
-  fetchMockupHistory,
-} from '@/hooks/mockup/mockupGenerationService';
+import { generateMockupApi, saveMockupToDb } from '@/hooks/mockup/mockupGenerationService';
+import { fetchRecentMockupHistory } from '@/hooks/mockup/mockupHistoryAdapter';
 import { showMockupSuccessToast } from '@/components/mockup/MockupSuccessToast';
 import { renderHookWithProviders } from './_helpers/render-hook-providers';
 import { useMockupDraft } from '@/hooks/mockup/useMockupDraft';
-import { usePositionHistory, useLogoColorAnalysis } from '@/hooks/simulation';
+import { usePositionHistory, useLogoColorAnalysisByArea } from '@/hooks/simulation';
 import type { PersonalizationArea } from '@/components/mockup/MultiAreaManager';
 import type { Product } from '@/types/product-catalog';
 
@@ -224,7 +232,7 @@ describe('useMockupGenerator (contrato do módulo)', () => {
     // errado, o módulo real é carregado e estas funções nunca são chamadas.
     expect(vi.mocked(useMockupDraft)).toHaveBeenCalled();
     expect(vi.mocked(usePositionHistory)).toHaveBeenCalledWith({ enabled: true });
-    expect(vi.mocked(useLogoColorAnalysis)).toHaveBeenCalled();
+    expect(vi.mocked(useLogoColorAnalysisByArea)).toHaveBeenCalled();
 
     unmount();
   });
@@ -250,7 +258,7 @@ describe('useMockupGenerator — geração de mockup', () => {
     await flushEffects();
     await selectEverything(result.current);
 
-    const historyCallsAfterMount = vi.mocked(fetchMockupHistory).mock.calls.length;
+    const historyCallsAfterMount = vi.mocked(fetchRecentMockupHistory).mock.calls.length;
 
     await act(async () => {
       await result.current.generateMockup();
@@ -287,7 +295,9 @@ describe('useMockupGenerator — geração de mockup', () => {
     );
     expect(vi.mocked(showMockupSuccessToast)).toHaveBeenCalledTimes(1);
     // BUG-3: o histórico é recarregado logo após gerar.
-    expect(vi.mocked(fetchMockupHistory).mock.calls.length).toBeGreaterThan(historyCallsAfterMount);
+    expect(vi.mocked(fetchRecentMockupHistory).mock.calls.length).toBeGreaterThan(
+      historyCallsAfterMount,
+    );
   });
 
   it('ignora uma segunda chamada concorrente (guard de reentrância)', async () => {
