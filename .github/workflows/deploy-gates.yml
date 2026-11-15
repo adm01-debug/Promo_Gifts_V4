@@ -86,6 +86,9 @@ jobs:
               - 'src/**'
               - 'scripts/**'
               - 'supabase/**'
+              # .security/**: baselines de segurança (policies, allowlists) — sem isto um PR que só
+              # mexe em .security/policies-baseline.json seria docs-only e o Gate 1.13 não rodaria.
+              - '.security/**'
               - 'tests/**'
               - 'e2e/**'
               - 'playwright/**'
@@ -98,6 +101,11 @@ jobs:
               - 'playwright.config.*'
               - '.nvmrc'
               - 'eslint.config*'
+              # baselines na raiz (eslint, as-assertions, file-size...) e o inventário de secrets:
+              # sem isto um PR que só mexe neles é docs_only e o Gate 1 (lint:baseline, 1.14) é pulado.
+              - '.*-baseline*'  # inclui .tsc-ratchet-baseline (Gate 1.7), que não tem extensão
+              - 'bundle-size-baseline.json'
+              - 'docs/ci/SEGREDOS.md'
       - name: Determinar docs_only
         id: result
         run: |
