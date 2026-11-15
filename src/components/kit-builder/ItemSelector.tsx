@@ -14,6 +14,7 @@ import {
   List,
   ArrowRight,
   Trash2,
+  ArrowLeftRight,
 } from 'lucide-react';
 import { SelectedItemsBadges } from './SelectedItemsBadges';
 import { ItemCard } from './ItemCard';
@@ -75,6 +76,8 @@ export function ItemSelector({
   volumeUsagePercent,
   onNext,
   canProceed,
+  replaceTarget,
+  onReplaceItem,
 }: ItemSelectorProps) {
   const [searchValue, setSearchValue] = useState('');
   const [lastError, setLastError] = useState<string | null>(null);
@@ -105,6 +108,14 @@ export function ItemSelector({
   };
 
   const handleAddItem = (item: KitItem) => {
+    if (replaceTarget && onReplaceItem) {
+      const result = onReplaceItem(replaceTarget.itemId, item);
+      if (!result.fits) {
+        setLastError(result.reason || 'Item não cabe na caixa');
+        setTimeout(() => setLastError(null), 3000);
+      }
+      return;
+    }
     const result = onAddItem(item);
     if (!result.fits) {
       setLastError(result.reason || 'Item não cabe na caixa');
@@ -193,6 +204,16 @@ export function ItemSelector({
         <div className="flex items-center gap-3 rounded-lg border border-destructive/30 bg-destructive/10 p-4 animate-in fade-in slide-in-from-top-2">
           <X className="h-5 w-5 flex-shrink-0 text-destructive" />
           <p className="text-sm text-destructive">{lastError}</p>
+        </div>
+      )}
+
+      {replaceTarget && (
+        <div className="flex items-center gap-3 rounded-lg border border-primary/30 bg-primary/5 p-4 animate-in fade-in slide-in-from-top-2">
+          <ArrowLeftRight className="h-5 w-5 flex-shrink-0 text-primary" />
+          <p className="text-sm">
+            Substituindo: <strong className="text-foreground">{replaceTarget.displayName}</strong> —
+            clique em um produto para trocar
+          </p>
         </div>
       )}
 
