@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import { Loader2 } from 'lucide-react';
 import { PageSEO } from '@/components/seo/PageSEO';
 import { useKitBuilderPageState } from '@/hooks/kit-builder';
+import { useKitItemReplaceTarget } from '@/hooks/kit-builder/useKitItemReplaceTarget';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import {
@@ -22,7 +23,7 @@ import { KitOnboardingTour } from '@/components/kit-builder/KitOnboardingTour';
 import { KitMakerGuideDialog } from '@/components/kit-builder/KitMakerGuideDialog';
 import { useKitWizardShortcuts } from '@/hooks/kit-builder/useKitWizardShortcuts';
 import { toast } from 'sonner';
-import { getKitItemLineId, type KitMakerGuideChapterId } from '@/lib/kit-builder';
+import type { KitMakerGuideChapterId } from '@/lib/kit-builder';
 
 const KitIsometricPreview = lazy(() =>
   import('@/components/kit-builder/KitIsometricPreview').then((m) => ({
@@ -36,7 +37,6 @@ export default function KitBuilderPage() {
   const [tourOpen, setTourOpen] = useState(false);
   const [guideOpen, setGuideOpen] = useState(false);
   const [guideChapter, setGuideChapter] = useState<KitMakerGuideChapterId>('items');
-  const [replaceItemTarget, setReplaceItemTarget] = useState<string | null>(null);
   const openGuide = (chapter: KitMakerGuideChapterId) => {
     setGuideChapter(chapter);
     setGuideOpen(true);
@@ -46,21 +46,10 @@ export default function KitBuilderPage() {
   const usesFullWorkspace = ['items', 'personalization', 'summary'].includes(
     state.wizardState.currentStep,
   );
-
-  const replaceTarget = replaceItemTarget
-    ? {
-        itemId: replaceItemTarget,
-        displayName:
-          state.kitState.items.find((i) => getKitItemLineId(i) === replaceItemTarget)?.name ??
-          'item',
-      }
-    : null;
-  // Clear replace target whenever the user leaves the items step without completing a swap.
-  useEffect(() => {
-    if (state.wizardState.currentStep !== 'items') {
-      setReplaceItemTarget(null);
-    }
-  }, [state.wizardState.currentStep]);
+  const { replaceTarget, setReplaceItemTarget } = useKitItemReplaceTarget(
+    state.kitState.items,
+    state.wizardState.currentStep,
+  );
 
   const handleExportPDF = () => {
     window.print();
@@ -410,6 +399,7 @@ export default function KitBuilderPage() {
                         itemPersonalizations={state.kitState.personalization.items}
                         onBoxPersonalizationChange={actions.setBoxPersonalization}
                         onItemPersonalizationChange={actions.setItemPersonalization}
+                        onEditItems={() => actions.goToStep('items')}
                         onReplaceItem={(itemId) => {
                           setReplaceItemTarget(itemId);
                           actions.goToStep('items');

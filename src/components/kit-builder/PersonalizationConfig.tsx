@@ -20,7 +20,6 @@ import {
   Images,
   Sparkles,
   HelpCircle,
-  ArrowLeftRight,
 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Switch } from '@/components/ui/switch';
@@ -47,6 +46,7 @@ import {
   type KitItemPersonalization,
 } from '@/lib/kit-builder';
 import { useProductCustomizationOptions } from '@/hooks/products';
+import { SwapItemBanner } from '@/components/kit-builder/SwapItemBanner';
 import { useKitComponentPrintAreas } from '@/hooks/kit-builder/useKitBuilderQueries';
 import { useCustomizationPriceReactive } from '@/hooks/simulation';
 import type { GravacaoLocation } from '@/types/customization';
@@ -1365,24 +1365,10 @@ export function PersonalizationConfig({
 
             <div className="min-w-0 space-y-2">
               {(onEditItems || onReplaceItem) && !activeTarget.isBox && (
-                <div className="flex items-center justify-between rounded-lg border border-dashed px-3 py-2">
-                  <span className="truncate text-sm text-muted-foreground">
-                    Configurando:{' '}
-                    <strong className="text-foreground">{activeTarget.displayName}</strong>
-                  </span>
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    size="sm"
-                    className="h-auto shrink-0 gap-1.5 px-2 py-1 text-xs"
-                    onClick={() =>
-                      onReplaceItem ? onReplaceItem(activeTarget.key) : onEditItems?.()
-                    }
-                  >
-                    <ArrowLeftRight className="h-3 w-3" />
-                    Trocar item
-                  </Button>
-                </div>
+                <SwapItemBanner
+                  displayName={activeTarget.displayName}
+                  onSwap={() => (onReplaceItem ? onReplaceItem(activeTarget.key) : onEditItems?.())}
+                />
               )}
               <ItemPersonalizationCard
                 key={activeTarget.key}

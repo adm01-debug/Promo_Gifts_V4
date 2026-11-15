@@ -21,7 +21,7 @@ import {
 } from './useMockupTechniques';
 import { useMockupDraft } from './useMockupDraft';
 import { mockupSelection } from './mockupSelectionSnapshot';
-import { useLogoColorAnalysis, usePositionHistory } from '@/hooks/simulation';
+import { useLogoColorAnalysisByArea, usePositionHistory } from '@/hooks/simulation';
 import { useProductsContext } from '@/contexts/ProductsContext';
 import { getMockupWizardStep } from '@/components/mockup/mockupWizardStep';
 import { showMockupSuccessToast } from '@/components/mockup/MockupSuccessToast';
@@ -124,27 +124,7 @@ export function useMockupGenerator() {
   const [activeTab, setActiveTab] = useState<'generator' | 'history'>('generator');
   const [hasUserInteractedPosition, setHasUserInteractedPosition] = useState(false);
 
-  const logoColorAnalysis = useLogoColorAnalysis();
-  // GUARD (2026-11-15): a análise de cores é UMA só por gerador, mas a logo é POR ÁREA.
-  // Sem saber de qual área é a análise viva, os dois comportamentos possíveis erram:
-  // limpar sempre apaga a análise da área aberta ao mexer em outra; nunca limpar deixa
-  // as cores de uma área removida presas em `pantoneColors`, que alimenta o PDF e o
-  // pacote de aprovação. Guardar a área dona resolve os dois casos.
-  const [colorAnalysisAreaId, setColorAnalysisAreaId] = useState<string | null>(null);
-  /**
-   * Limpa a análise de cores somente quando ela pertence à área cuja logo saiu.
-   * Devolve true quando limpou, para o chamador poder testar o comportamento.
-   */
-  const clearColorAnalysisForArea = useCallback(
-    (areaId: string) => {
-      if (colorAnalysisAreaId !== areaId) return false;
-      logoColorAnalysis.clearAnalysis();
-      setColorAnalysisAreaId(null);
-      return true;
-    },
-    [colorAnalysisAreaId, logoColorAnalysis],
-  );
-
+  const logoColorAnalysis = useLogoColorAnalysisByArea();
   const positionHistory = usePositionHistory({ enabled: true });
 
   useEffect(() => {
@@ -476,8 +456,7 @@ export function useMockupGenerator() {
         setPersonalizationAreas((prev) =>
           prev.map((area) => (area.id === areaId ? { ...area, logoPreview: logoData } : area)),
         );
-        setColorAnalysisAreaId(areaId);
-        logoColorAnalysis.analyzeImage(logoData);
+        logoColorAnalysis.analyzeImage(logoData, areaId);
       };
       reader.onerror = (e) => {
         logger.error('[useMockupGenerator] FileReader error ao ler imagem:', e);
@@ -705,7 +684,6 @@ export function useMockupGenerator() {
     positionHistory.clear();
     await clearDraft();
     logoColorAnalysis.clearAnalysis();
-    setColorAnalysisAreaId(null);
   }, [positionHistory, clearDraft, logoColorAnalysis, setAreaErrors]);
 
   const handleShareMockup = useCallback((mockup: GeneratedMockup) => {
@@ -764,14 +742,7 @@ export function useMockupGenerator() {
       setHasUserInteractedPosition(true);
       positionHistory.clear();
       setActiveTab('generator');
-      if (mockup.logo_url) {
-        // A análise restaurada pertence à única área do histórico (`restoredArea`), e não
-        // a uma área genérica: sem isso, remover a logo dela não limparia as cores.
-        setColorAnalysisAreaId(restoredArea.id);
-        logoColorAnalysis.analyzeImage(mockup.logo_url);
-      } else {
-        setColorAnalysisAreaId(null);
-      }
+      logoColorAnalysis.restoreFor(mockup.logo_url, restoredArea.id);
       // BUG-04 FIX: clear stale draft.
       // BUG-F-LOADHISTORY FIX: await clearDraft() — same race as resetForm (BUG-F).
       // Without await, the 1 s auto-save debounce can fire and re-persist the old draft.
@@ -855,7 +826,6 @@ export function useMockupGenerator() {
       hasUserInteractedPosition,
       positionHistory,
       logoColorAnalysis,
-      clearColorAnalysisForArea,
       techniqueColorConfig,
       setTechniqueColorConfig,
       filteredTechniques,
@@ -913,7 +883,6 @@ export function useMockupGenerator() {
       hasUserInteractedPosition,
       positionHistory,
       logoColorAnalysis,
-      clearColorAnalysisForArea,
       techniqueColorConfig,
       filteredTechniques,
       getProductImage,
