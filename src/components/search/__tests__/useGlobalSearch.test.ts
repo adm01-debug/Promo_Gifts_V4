@@ -410,7 +410,12 @@ describe('useGlobalSearch', () => {
       }),
     );
     h.searchCrm.mockResolvedValue([
-      { id: 'c1', razao_social: 'Acme', nome_fantasia: 'ACME', ramo: 'Tech' },
+      // A coluna do CRM é `ramo_atividade`, não `ramo`: é o que a allowlist da edge
+      // permite selecionar em `companies` (supabase/functions/crm-db-bridge/query-policy.ts:50)
+      // e o que a interface da empresa declara (src/types/crm.ts:17). O `ramo` que existia
+      // aqui antes nunca vinha do banco — com ele o mock validava um caminho que em produção
+      // caía sempre no fallback 'Empresa'.
+      { id: 'c1', razao_social: 'Acme', nome_fantasia: 'ACME', ramo_atividade: 'Tech' },
     ]);
     h.state.tableData = {
       custom_kits: [{ id: 'k1', name: 'Kit', status: 's', total_price: 5, kit_quantity: 1 }],
@@ -425,6 +430,37 @@ describe('useGlobalSearch', () => {
     );
     expect(result.current.results.map((r) => r.type)).toEqual(['client', 'kit']);
     expect(result.current.results[0]).toMatchObject({ title: 'ACME', subtitle: 'Tech' });
+  });
+
+  it('cliente sem ramo_atividade cai no rótulo genérico, e com ramo preenchido NUNCA cai', async () => {
+    // GUARD: trava o defeito que existia até 2026-11-15. O código pedia a coluna `ramo`,
+    // que o CRM não tem, então `subtitle` era 'Empresa' para TODA empresa — o ramo do
+    // cliente nunca aparecia na busca global. Se alguém trocar o nome da coluna de novo,
+    // o primeiro caso aqui falha.
+    h.invokeEdge.mockResolvedValue(
+      intentResponse({
+        type: 'client',
+        keywords: ['x'],
+        filters: { clientName: 'Acme' },
+        entities: [],
+      }),
+    );
+    h.searchCrm.mockResolvedValue([
+      {
+        id: 'c1',
+        razao_social: 'Acme Com Ramo',
+        nome_fantasia: 'COM RAMO',
+        ramo_atividade: 'Clínica',
+      },
+      { id: 'c2', razao_social: 'Acme Sem Ramo', nome_fantasia: 'SEM RAMO', ramo_atividade: null },
+    ]);
+    h.state.tableData = {};
+    const { result } = renderHook(() => useGlobalSearch());
+    await runSearch(result, 'cliente acme');
+    const porTitulo = Object.fromEntries(result.current.results.map((r) => [r.title, r.subtitle]));
+    expect(porTitulo['COM RAMO']).toBe('Clínica');
+    expect(porTitulo['COM RAMO']).not.toBe('Empresa');
+    expect(porTitulo['SEM RAMO']).toBe('Empresa');
   });
 
   it('termo vazio após sanitização encerra sem consultar tabelas', async () => {
