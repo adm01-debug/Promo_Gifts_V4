@@ -2,6 +2,10 @@
 
 Diff semântico gerado a cada coleta em que algo mudou.
 
+## 2026-11-15 16:17 UTC
+
+- **functions** alterado (6): `public.fn_anon_insert_rate_guard()`, `public.fn_cron_safe_run(p_key bigint, p_sql text, p_timeout_ms integer, p_job_label text)`, `public.fn_get_stock_notification_counts(p_since date)`, `public.fn_global_search(p_term text, p_limit integer, p_types text[])`, `public.fn_product_market_intelligence(p_product_id uuid, p_days integer)`, `public.refresh_all_materialized_views()`
+
 ## 2026-11-15 02:57 UTC
 
 - **realtime** adicionado (1): `supabase_realtime_messages_publication:realtime.messages_2026_11_18`

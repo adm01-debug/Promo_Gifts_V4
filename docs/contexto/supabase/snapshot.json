@@ -146600,9 +146600,13 @@
             {
               "file": "supabase/migrations/20261029160339_add_kill_switch_hits_anon_rate_guard.sql",
               "hits": 1
+            },
+            {
+              "file": "supabase/migrations/20261102063000_repair_kill_switch_hits_anon_rate_guard.sql",
+              "hits": 1
             }
           ],
-          "code_total_files": 3,
+          "code_total_files": 4,
           "cron": [],
           "db": [],
           "triggers": [
@@ -151763,9 +151767,13 @@
             {
               "file": "supabase/migrations/20261022100022_fix_cron_sync_is_stockout_universal.sql",
               "hits": 1
+            },
+            {
+              "file": "supabase/migrations/20261114120100_cron005_refresh_all_mvs_diario_timeout_real.sql",
+              "hits": 2
             }
           ],
-          "code_total_files": 29,
+          "code_total_files": 30,
           "cron": [
             "204:sync-is-stockout-universal",
             "205:auto-block-offenders",
@@ -156297,9 +156305,13 @@
             {
               "file": "supabase/migrations/20260620000000_fix_recent_restocks_and_metrics.sql",
               "hits": 1
+            },
+            {
+              "file": "supabase/migrations/20261114160000_perf_idx_sds_restock_counts.sql",
+              "hits": 1
             }
           ],
-          "code_total_files": 3,
+          "code_total_files": 4,
           "cron": [],
           "db": [],
           "triggers": [],
@@ -156461,9 +156473,13 @@
             {
               "file": "supabase/migrations/20261101190101_fn_global_search_clamp_limit.sql",
               "hits": 1
+            },
+            {
+              "file": "supabase/migrations/20261115130300_fn_global_search_clamp_limit_hardened.sql",
+              "hits": 1
             }
           ],
-          "code_total_files": 6,
+          "code_total_files": 7,
           "cron": [],
           "db": [],
           "triggers": [],
@@ -161785,9 +161801,13 @@
             {
               "file": "supabase/migrations/20260620190500_faxina_tier3b_archive_dead_functions_bulk.sql",
               "hits": 1
+            },
+            {
+              "file": "supabase/migrations/20261115130100_fn_market_intelligence_macro.sql",
+              "hits": 1
             }
           ],
-          "code_total_files": 1,
+          "code_total_files": 2,
           "cron": [],
           "db": [],
           "triggers": [],
@@ -186606,9 +186626,13 @@
             {
               "file": "supabase/migrations/20261015120000_reconcilia_oob_incidente_2026_10_13.sql",
               "hits": 1
+            },
+            {
+              "file": "supabase/migrations/20261114120100_cron005_refresh_all_mvs_diario_timeout_real.sql",
+              "hits": 1
             }
           ],
-          "code_total_files": 3,
+          "code_total_files": 4,
           "cron": [
             "234:refresh-all-materialized-views"
           ],
