@@ -153,10 +153,6 @@ export default function MockupGenerator() {
           prev.map((a) => ({ ...a, logoPreview: null, logoFile: null })),
         );
         mg.setGeneratedMockup(null);
-        // A grade "Todas as áreas" é renderizada só por generatedBatchMockups.length > 1,
-        // sem olhar o cliente: sem limpar aqui, os PNGs com a marca do cliente anterior
-        // continuariam na tela depois de trocar de cliente (mesmo motivo do resetForm).
-        mg.setGeneratedBatchMockups([]);
       }
       mg.setSelectedClient(null);
       mg.setActiveTab('generator');
@@ -502,7 +498,11 @@ export default function MockupGenerator() {
                     onAnnotationsChange={mg.setMockupAnnotations}
                   />
 
-                  {mg.generatedBatchMockups.length > 1 && (
+                  {/* A grade "Todas as áreas" é um anexo do preview: o lote sempre
+                      vem junto de generatedMockup (useMockupGenerator.ts:613-614).
+                      Sem amarrar as duas coisas, limpar a marca ao trocar de cliente
+                      deixava na tela os PNGs com a marca do cliente anterior. */}
+                  {mg.generatedMockup && mg.generatedBatchMockups.length > 1 && (
                     <div className="space-y-2">
                       <p className="text-sm font-medium text-muted-foreground">
                         Todas as áreas ({mg.generatedBatchMockups.length})
