@@ -71,7 +71,10 @@ vi.mock('@/hooks/mockup/useMockupDraft', () => ({
     error: null,
   }),
 }));
-vi.mock('@/hooks/mockup/useMockupTechniques', () => ({
+// `resolveTechnique` vem do modulo real: e funcao pura e o gerador depende dela
+// para resolver a tecnica do rascunho/historico (so os hooks de rede sao substituidos).
+vi.mock('@/hooks/mockup/useMockupTechniques', async (importOriginal) => ({
+  ...(await importOriginal<Record<string, unknown>>()),
   useFilteredTechniques: () => [],
   useProductCustomizationOptionsForMockup: () => ({ data: undefined }),
 }));
