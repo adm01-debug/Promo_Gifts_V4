@@ -6,7 +6,7 @@ import { type MockupTechnique } from '@/types/external-db';
  * Progressive Preview + Enhanced Header + Sticky Navigator.
  */
 
-import { useMemo, useCallback, Suspense } from 'react';
+import { useCallback, Suspense } from 'react';
 import { PageSEO } from '@/components/seo/PageSEO';
 import { Button } from '@/components/ui/button';
 import { Loader2, AlertCircle, CheckCircle2, History, Wand2 } from 'lucide-react';
@@ -16,21 +16,24 @@ import {
   TechniqueChangeDialog,
   DeleteMockupDialog,
 } from '@/pages/mockups/mockup-generator/MockupDialogs';
-import { MockupToolbar } from '@/pages/mockups/mockup-generator/MockupToolbar';
+import {
+  MockupToolbar,
+  type ClientBrandDisposition,
+} from '@/pages/mockups/mockup-generator/MockupToolbar';
 import { MockupEmptyState } from '@/pages/mockups/mockup-generator/MockupEmptyState';
 import { useKeyboardShortcuts } from '@/components/mockup/KeyboardShortcuts';
 import { GeneratingOverlay } from '@/components/mockup/GeneratingOverlay';
 import { useMockupGenerator } from '@/hooks/mockup';
 import { useAuth } from '@/contexts/AuthContext';
 import { useTechniqueHandlers } from '@/pages/mockups/mockup-generator/MockupTechniqueHandlers';
-import type { MockupApprovalData } from '@/types/mockup-approval';
 import { DiagnosticProfiler } from '@/components/dev/DiagnosticProfiler';
 import { toast } from 'sonner';
 import { createClientLogger } from '@/lib/telemetry/structuredLogger';
 
 const log = createClientLogger('mockup-generator');
 import { lazyWithRetry } from '@/lib/lazyWithRetry';
-import type { LayoutCaptureRequest } from '@/components/mockup/approval/OffscreenLayoutCapture';
+import { useLayoutCaptureRequest } from '@/pages/mockups/mockup-generator/useLayoutCaptureRequest';
+import { useWizardNavigation } from '@/pages/mockups/mockup-generator/useWizardNavigation';
 
 // Lazy load heavy sub-components
 const LogoPositionEditor = lazyWithRetry(() =>
@@ -135,87 +138,36 @@ export default function MockupGenerator() {
     },
   });
 
-  const layoutCaptureRequest = useMemo((): LayoutCaptureRequest | null => {
-    if (!mg.lastSavedRecordId || !user?.id || !mg.selectedProduct || !mg.selectedTechnique)
-      return null;
-    const mockupUrl = mg.lastSavedMockupUrl || mg.generatedMockup || '';
-    if (!mockupUrl) return null;
+  const layoutCaptureRequest = useLayoutCaptureRequest(mg, profile, user?.id);
 
-    // recordId é estável por captura → derivamos data/numeroDoc dele para manter o memo determinístico
-    const stableSeed = mg.lastSavedRecordId;
-    const seedDate = new Date(parseInt(stableSeed.slice(0, 8), 16) * 1000 || Date.now());
-    const dateStr = seedDate.toLocaleDateString('pt-BR', {
-      day: '2-digit',
-      month: '2-digit',
-      year: 'numeric',
-    });
-    const docNumber = `MK-${stableSeed.slice(0, 12).toUpperCase()}`;
+  const { wizardStep, navigateToStep } = useWizardNavigation(mg.wizardStep);
 
-    const tech = mg.selectedTechnique as MockupTechnique;
-    const approvalData: MockupApprovalData = {
-      documentNumber: docNumber,
-      date: dateStr,
-      client: {
-        name:
-          mg.selectedClient?.nome_fantasia ||
-          mg.selectedClient?.razao_social ||
-          mg.selectedClient?.name ||
-          '—',
-        cnpj: mg.selectedClient?.cnpj,
-        logoUrl: mg.selectedClient?.logo_url || undefined,
-      },
-      seller: { name: profile?.full_name || '—', email: profile?.email || undefined },
-      product: {
-        name: mg.selectedProduct.name,
-        sku: mg.selectedProduct.sku,
-        imageUrl: mg.getProductImage() || undefined,
-        color: mg.productSelection?.colorName,
-        colorHex: mg.productSelection?.colorHex,
-        material: mg.selectedProduct.materials?.[0],
-        heightCm: mg.selectedProduct.dimensions?.height_cm ?? null,
-        widthCm: mg.selectedProduct.dimensions?.width_cm ?? null,
-        diameterCm: mg.selectedProduct.dimensions?.diameter_cm ?? null,
-        depthCm: mg.selectedProduct.dimensions?.length_cm ?? null,
-        capacityMl: mg.selectedProduct.dimensions?.capacity_ml ?? null,
-        weightG: mg.selectedProduct.dimensions?.weight_g ?? null,
-      },
-      personalization: {
-        techniqueName: tech.name ?? '',
-        techniqueCode: tech.code ?? '',
-        locationName: tech.locationName ?? mg.activeArea?.name ?? 'Frente',
-        widthCm: mg.activeArea?.logoWidth || 0,
-        heightCm: mg.activeArea?.logoHeight || 0,
-        colorsCount: mg.techniqueColorConfig?.colorCount,
-      },
-      pantoneColors: (mg.logoColorAnalysis.colors || []).map((c) => ({
-        name: c.selectedPantone || c.pantoneMatch?.pantoneCode || c.name || '',
-        hex: c.hex,
-      })),
-      mockupImageUrl: mockupUrl,
-      layoutMode: mg.lastSavedLayoutMode,
-    };
-
-    return { data: approvalData, recordId: mg.lastSavedRecordId, userId: user.id };
+  // Cabeçalho "Trocar cliente": a reconciliação da marca já foi decidida no toolbar.
+  // 'limpar-marca' remove o logo de TODAS as áreas (é a marca do cliente anterior);
+  // 'manter-marca' só solta o cliente. Em ambos, volta à etapa 1 para escolher outro.
+  const handleChangeClient = useCallback(
+    (disposition: ClientBrandDisposition) => {
+      if (disposition === 'limpar-marca') {
+        mg.personalizationAreas.forEach((a) => mg.logoColorAnalysis.clearForArea(a.id));
+        mg.setPersonalizationAreas((prev) =>
+          prev.map((a) => ({ ...a, logoPreview: null, logoFile: null })),
+        );
+        mg.setGeneratedMockup(null);
+      }
+      mg.setSelectedClient(null);
+      mg.setActiveTab('generator');
+      scrollToStep(1, true);
+    },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [
-    mg.lastSavedRecordId,
-    mg.lastSavedMockupUrl,
-    mg.lastSavedLayoutMode,
-    user?.id,
-    mg.selectedProduct,
-    mg.selectedTechnique,
-    mg.selectedClient,
-    mg.activeArea?.logoWidth,
-    mg.activeArea?.logoHeight,
-    mg.activeArea?.name,
-    mg.generatedMockup,
-    profile,
-    mg.techniqueColorConfig?.colorCount,
-    mg.logoColorAnalysis.colors,
-    mg.productSelection?.colorName,
-    mg.productSelection?.colorHex,
-    mg.productSelection?.imageUrl,
-  ]);
+    [
+      mg.personalizationAreas,
+      mg.logoColorAnalysis.clearForArea,
+      mg.setPersonalizationAreas,
+      mg.setGeneratedMockup,
+      mg.setSelectedClient,
+      mg.setActiveTab,
+    ],
+  );
 
   const handleLayoutCaptured = useCallback(() => {
     mg.setLastSavedRecordId(null);
@@ -250,7 +202,8 @@ export default function MockupGenerator() {
           <div className="sticky top-0 z-[40] -mx-2 flex items-center rounded-xl border border-transparent bg-background/80 pb-3 pl-2 pr-8 pt-5 backdrop-blur-md transition-all duration-300 hover:border-border/40">
             <Suspense fallback={null}>
               <MockupWizard
-                currentStep={mg.wizardStep}
+                currentStep={wizardStep}
+                reachableStep={mg.wizardStep}
                 hasClient={!!mg.selectedClient}
                 hasProduct={!!mg.selectedProduct}
                 hasTechnique={!!mg.selectedTechnique}
@@ -259,6 +212,7 @@ export default function MockupGenerator() {
                 hasGenerated={!!mg.generatedMockup}
                 onStepClick={(step) => {
                   mg.setActiveTab('generator');
+                  navigateToStep(step);
                   scrollToStep(step, true);
                 }}
               />
@@ -319,6 +273,20 @@ export default function MockupGenerator() {
               isDraftSaving={mg.isDraftSaving}
               lastSaved={mg.lastSaved}
               draftError={mg.draftError}
+              client={
+                mg.selectedClient
+                  ? {
+                      id: mg.selectedClient.id,
+                      name:
+                        mg.selectedClient.nome_fantasia ||
+                        mg.selectedClient.razao_social ||
+                        mg.selectedClient.name,
+                      logoUrl: mg.selectedClient.logo_url ?? null,
+                    }
+                  : null
+              }
+              hasAppliedBrand={mg.hasLogo}
+              onChangeClient={handleChangeClient}
             />
           </div>
 
@@ -531,7 +499,11 @@ export default function MockupGenerator() {
                     onAnnotationsChange={mg.setMockupAnnotations}
                   />
 
-                  {mg.generatedBatchMockups.length > 1 && (
+                  {/* A grade "Todas as áreas" é um anexo do preview: o lote sempre
+                      vem junto de generatedMockup (useMockupGenerator.ts:613-614).
+                      Sem amarrar as duas coisas, limpar a marca ao trocar de cliente
+                      deixava na tela os PNGs com a marca do cliente anterior. */}
+                  {mg.generatedMockup && mg.generatedBatchMockups.length > 1 && (
                     <div className="space-y-2">
                       <p className="text-sm font-medium text-muted-foreground">
                         Todas as áreas ({mg.generatedBatchMockups.length})
