@@ -1719,3 +1719,22 @@ tiver sumido fora do fluxo, a migration falha inteira (fail-loud). Ainda não es
 | version | arquivo | sha256 | status |
 |---|---|---|---|
 | `20261115130200` | `sec001_revoke_anon_execute_trigger_functions` | `ae08e41935a7c79d7256ef1ba14903ae1694ffd56423c7bc719212997fc736df` | pendente — aplicar via `db-apply-migration.yml` após merge (grants atuais em produção NÃO VERIFICADOS em 2026-11-15) |
+
+## 2026-11-15 — `fn_global_search`: clamp de `p_limit` com `search_path` fechado (substitui a `20261101190101`, sem recibo)
+
+A `20261101190101_fn_global_search_clamp_limit.sql` está no `main` desde 2026-11-01 sem recibo, sem rollback e sem
+registro em allowlist/PENDENCIAS; nunca entrou no ledger. Ela recria a função SECURITY DEFINER (executável por anon,
+allowlist E17) com `SET search_path TO 'public', 'extensions'` — o preflight a bloqueia (E066: sem `pg_temp`). A branch
+`codex/fix-db-migration-preflight-261107` (commit `3ebaad4ea`) tinha a versão endurecida como rename
+(`20261107143509_…_hardened`); rename de versão já existente não é permitido, então o conteúdo entra como versão NOVA
+`20261115130300` (única diferença de corpo: `search_path TO 'pg_catalog','public','extensions','pg_temp'`), com
+rollback guardado por `pg_get_functiondef` (remove só o clamp). A `20261101190101` fica registrada aqui como
+substituída e ganha arquivo de rollback (E063), para não ser aplicada por engano. Mesma PR: o rollback da
+`20261101202000` passa a ser fail-closed (REVOKE em vez de re-GRANT a PUBLIC/anon/authenticated em
+`cleanup_expired_auth_sessions()`, SECURITY DEFINER que apaga `auth.sessions`; a `20261101202426`, já aplicada, tinha
+revogado antes) com teste em `tests/security/security-definer-acl-gate.test.ts` — commit `4f235fd50` da mesma branch.
+
+| version | arquivo | sha256 | status |
+|---|---|---|---|
+| `20261101190101` | `fn_global_search_clamp_limit` | `6f97aa10518e4a04edb2fd40f5b7f0b08f70097679449f445741ffe7fb01f3e4` | substituída pela `20261115130300` — NÃO aplicar (preflight E066: SECURITY DEFINER sem `pg_temp`); nunca esteve no ledger; mantida no repo porque sua versão já está no histórico |
+| `20261115130300` | `fn_global_search_clamp_limit_hardened` | `35f326cead81afefcbf4f234ee1a2365fe3d12049dead6469d2325beada7972c` | pendente — aplicar via `db-apply-migration.yml` após merge (estado atual de `fn_global_search` em produção NÃO VERIFICADO em 2026-11-15) |
