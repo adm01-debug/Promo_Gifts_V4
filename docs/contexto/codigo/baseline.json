@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "c72d30a9ce4eb9dc3c9e5f4f3fc7f094d002e931",
+  "commit": "f1044db3b405b92f1257b81914de7d4e63fa8c7e",
   "branch": "main",
-  "data_commit": "2026-11-15T15:32:34Z",
+  "data_commit": "2026-11-15T15:45:47Z",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "f1044db3",
+    "data": "2026-11-15",
+    "assunto": "feat(mockup): aviso de \"não carregou, tentar de novo\" no catálogo do painel de mockup (#3670)"
+   },
    {
     "sha": "c72d30a9",
     "data": "2026-11-15",
@@ -126,14 +131,9 @@
     "sha": "36b6c1d7",
     "data": "2026-11-14",
     "assunto": "fix(security): corrige o sha256 do retrato de policies (destrava o CI) (#3635)"
-   },
-   {
-    "sha": "c5d670cf",
-    "data": "2026-11-14",
-    "assunto": "Merge remote-tracking branch 'origin/main' into claude/fix-crm-ownership-vinculo-261114-2230"
    }
   ],
-  "arquivos_mudados_7d": 2114,
+  "arquivos_mudados_7d": 2118,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -168,12 +168,12 @@
     "mudancas": 173
    },
    {
-    "pasta": "supabase/functions/_shared",
-    "mudancas": 167
+    "pasta": "src/components/mockup",
+    "mudancas": 169
    },
    {
-    "pasta": "src/components/mockup",
-    "mudancas": 166
+    "pasta": "supabase/functions/_shared",
+    "mudancas": 167
    },
    {
     "pasta": "src/components/ui",
@@ -309,7 +309,7 @@
    },
    {
     "autor": "Claude",
-    "commits": 125
+    "commits": 124
    },
    {
     "autor": "github-actions[bot]",
@@ -322,21 +322,21 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 10262,
-  "arquivos_codigo": 5289,
-  "linhas_codigo": 1008129,
+  "arquivos_total": 10265,
+  "arquivos_codigo": 5292,
+  "linhas_codigo": 1008503,
   "rotas": 138,
   "rotas_http_backend": 13,
   "vistas_por_id": 0,
   "itens_menu": 69,
   "modulos": 158,
-  "componentes": 1229,
+  "componentes": 1231,
   "hooks": 620,
   "edge_functions": 111,
   "tabelas": 548,
   "migrations": 3095,
   "cron_jobs": 122,
-  "testes": 2501,
+  "testes": 2502,
   "workflows": 87,
   "scripts": 272,
   "docs_md": 1024
@@ -1883,8 +1883,8 @@
    "linhas": 130
   },
   "src/components": {
-   "arquivos": 1376,
-   "linhas": 275368
+   "arquivos": 1378,
+   "linhas": 275485
   },
   "src/config": {
    "arquivos": 1,
@@ -1908,7 +1908,7 @@
   },
   "src/hooks": {
    "arquivos": 469,
-   "linhas": 88114
+   "linhas": 88118
   },
   "src/integrations": {
    "arquivos": 11,
@@ -2035,8 +2035,8 @@
    "linhas": 141
   },
   "tests/components": {
-   "arquivos": 154,
-   "linhas": 33958
+   "arquivos": 155,
+   "linhas": 34211
   },
   "tests/config": {
    "arquivos": 6,
@@ -2359,7 +2359,7 @@
   "ts_ignore": 0,
   "eslint_disable": 24,
   "todos": 105,
-  "arquivos_acima_500_linhas": 186
+  "arquivos_acima_500_linhas": 185
  },
  "todos": [
   {

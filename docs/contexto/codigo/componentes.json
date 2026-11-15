@@ -1,7 +1,7 @@
 {
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
- "total": 1229,
+ "total": 1231,
  "orfaos": 160,
  "nomes_duplicados": {
   "AdvancedPriceSearchPage": [
@@ -11392,6 +11392,24 @@
    "orfao": false
   },
   {
+   "arquivo": "src/components/mockup/MockupCatalogStates.tsx",
+   "exports": [
+    "CATALOG_LOAD_ERROR_FALLBACK",
+    "CatalogEmptyState",
+    "CatalogGridSkeleton",
+    "CatalogLoadError",
+    "CatalogLoadErrorProps"
+   ],
+   "export_default": null,
+   "linhas": 73,
+   "dominio": "components/mockup",
+   "hooks_locais": [],
+   "tabelas": [],
+   "edges": [],
+   "usado_por": 1,
+   "orfao": false
+  },
+  {
    "arquivo": "src/components/mockup/MockupClientSelector.tsx",
    "exports": [
     "MockupClientSelector"
@@ -11459,6 +11477,21 @@
    "orfao": false
   },
   {
+   "arquivo": "src/components/mockup/MockupConfigPanelLoadError.tsx",
+   "exports": [
+    "LoadErrorBlock",
+    "LoadErrorBlockProps"
+   ],
+   "export_default": null,
+   "linhas": 55,
+   "dominio": "components/mockup",
+   "hooks_locais": [],
+   "tabelas": [],
+   "edges": [],
+   "usado_por": 1,
+   "orfao": false
+  },
+  {
    "arquivo": "src/components/mockup/MockupHistoryPanel.tsx",
    "exports": [
     "MockupHistoryPanel"
@@ -11509,7 +11542,7 @@
     "MockupProductSelector"
    ],
    "export_default": null,
-   "linhas": 501,
+   "linhas": 490,
    "dominio": "components/mockup",
    "hooks_locais": [
     "useDebounce",
@@ -15737,7 +15770,7 @@
    "hooks_locais": [],
    "tabelas": [],
    "edges": [],
-   "usado_por": 28,
+   "usado_por": 29,
    "orfao": false
   },
   {
@@ -15803,7 +15836,7 @@
    "hooks_locais": [],
    "tabelas": [],
    "edges": [],
-   "usado_por": 618,
+   "usado_por": 620,
    "orfao": false
   },
   {

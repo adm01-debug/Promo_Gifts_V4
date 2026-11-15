@@ -8,7 +8,7 @@
    "api/health.ts (1)"
   ],
   "componentes": [
-   "src/components (934)",
+   "src/components (936)",
    "src/pages (177)",
    "recovery/src-legacy (100)"
   ],
@@ -23,7 +23,7 @@
    "src/services (10)"
   ],
   "testes": [
-   "tests/ (1021)",
+   "tests/ (1022)",
    "co-localizado (__tests__) (659)",
    "e2e/ (625)"
   ],
@@ -49,7 +49,7 @@
  },
  "barrels_index": 44,
  "extensao_componentes": [
-  ".tsx (1229)"
+  ".tsx (1231)"
  ],
  "alias_imports": {
   "e2e/": {},
@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "feat(mockup): aviso de \"não carregou, tentar de novo\" no catálogo do painel de mockup (#3670)",
    "fix(mockup): etapas do gerador voltam a ser anunciadas pelo leitor de tela no celular (#3671)",
    "fix(magic-up): resgata varredura axe da pagina e nomeia selects e campos do briefing (#3668)",
    "fix(db): trem de banco — gráfico de mercado com dado real, revoke de 106 funções, índices e crons mais baratos (#3665)",
-   "feat(orders): resgata conferência do total do pedido contra a soma dos itens (#3667)",
-   "feat(mockup): cabeçalho de trabalho do gerador, Meus mockups do cliente e captura de layout extraída (#3664)"
+   "feat(orders): resgata conferência do total do pedido contra a soma dos itens (#3667)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",

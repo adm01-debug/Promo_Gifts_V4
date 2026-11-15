@@ -6981,6 +6981,11 @@
    "src/components/ui/badge.tsx",
    "src/lib/utils.ts"
   ],
+  "src/components/mockup/MockupCatalogStates.tsx": [
+   "src/components/mockup/MockupConfigPanelLoadError.tsx",
+   "src/components/ui/button.tsx",
+   "src/components/ui/skeleton.tsx"
+  ],
   "src/components/mockup/MockupClientSelector.tsx": [
    "src/components/mockup/CompanyAvatar.tsx",
    "src/components/mockup/MockupConfigPanel.tsx",
@@ -7026,6 +7031,10 @@
    "src/hooks/ui/useMediaQuery.ts",
    "src/lib/telemetry/structuredLogger.ts"
   ],
+  "src/components/mockup/MockupConfigPanelLoadError.tsx": [
+   "src/components/ui/alert.tsx",
+   "src/components/ui/button.tsx"
+  ],
   "src/components/mockup/MockupHistoryPanel.tsx": [
    "src/components/loading/ModernSkeletons.tsx",
    "src/components/mockup/MockupCompareDialog.tsx",
@@ -7056,6 +7065,7 @@
    "src/utils/image-utils.ts"
   ],
   "src/components/mockup/MockupProductSelector.tsx": [
+   "src/components/mockup/MockupCatalogStates.tsx",
    "src/components/mockup/MockupColorSelector.tsx",
    "src/components/mockup/MockupPhotoPicker.tsx",
    "src/components/mockup/mockupVariantPhotos.ts",
@@ -7063,7 +7073,6 @@
    "src/components/ui/button.tsx",
    "src/components/ui/dialog.tsx",
    "src/components/ui/input.tsx",
-   "src/components/ui/skeleton.tsx",
    "src/hooks/common/index.ts",
    "src/hooks/products/index.ts",
    "src/utils/image-utils.ts"

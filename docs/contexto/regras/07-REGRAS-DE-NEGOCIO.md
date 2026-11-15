@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.3.2 · commit `c72d30a9ce` · branch `main` · 2026-11-15 15:33 UTC
+> Gerado automaticamente por AI Context Sync v1.3.2 · commit `f1044db3b4` · branch `main` · 2026-11-15 15:47 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -5388,6 +5388,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `MAX_SIZE_MB` | `25` | `src/components/mockup/ArtFileUpload.tsx` |
 | `MIN_POSITION` | `2` | `src/components/mockup/MockupBeforeAfter.tsx` |
 | `MAX_POSITION` | `98` | `src/components/mockup/MockupBeforeAfter.tsx` |
+| `CATALOG_LOAD_ERROR_FALLBACK` | `'Não foi possível carregar o catálogo de produtos agora.'` | `src/components/mockup/MockupCatalogStates.tsx` |
 | `SEARCH_MIN_CHARS` | `2` | `src/components/mockup/MockupClientSelector.tsx` |
 | `SEARCH_DEBOUNCE_MS` | `300` | `src/components/mockup/MockupClientSelector.tsx` |
 | `ITEMS_PER_PAGE` | `12` | `src/components/mockup/MockupHistoryPanel.tsx` |
@@ -5591,8 +5592,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `TABLE` | `'saved_stock_views'` | `src/hooks/stock/useSavedStockViews.ts` |
 | `MOBILE_BREAKPOINT` | `768` | `src/hooks/ui/use-mobile.tsx` |
 | `HEALTHY_INTERVAL` | `60` | `src/hooks/ui/useCloudStatus.ts` |
-| `DOWN_AUTO_STOP_MS` | `30` | `src/hooks/ui/useCloudStatus.ts` |
-| … +343 linhas — lista completa em `context.json` | | |
+| … +344 linhas — lista completa em `context.json` | | |
 
 ### H.2 Prazos, expirações e janelas de tempo
 
@@ -6381,7 +6381,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | DOWNLOAD_SIZE_LIMIT | `scripts/diagnose-personalization-artifact.py` |
 | DUPLICATE_ACTION_AFTER | `scripts/diagnose-personalization-artifact.py` |
 | DUPLICATE_JSON_KEY | `scripts/diagnose-personalization-artifact.py` |
-| … +1260 linhas — lista completa em `context.json` | |
+| … +1261 linhas — lista completa em `context.json` | |
 
 ## J. Controle de acesso no código (checagens de perfil/permissão)
 
@@ -6505,7 +6505,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `admin` | `supabase/migrations/20261112120500_fix_optimization_queue_rpcs_dev_access.sql` |
 | `anon` | `tests/edge-functions/live/_live-client.ts` |
 
-## K. Testes como especificação (21479 testes em 2181 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (21490 testes em 2182 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -6809,7 +6809,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `tests/edge-functions/integration/product-webhook.test.ts` | 18 | product-webhook · evento product.created · retorna 200 para evento product.created válido · evento product.updated … |
 | `tests/hooks/useGlobalSearch-voice.test.ts` | 18 | Voice Action Handler Logic · navigate action · should extract route from navigate action · should handle navigate without route gracefully … |
 | `tests/lib/product-types.test.ts` | 18 | getProductImageUrl · should prefer primary_image_url · should fallback to image_url · should fallback to first image in images array … |
-| … +1881 linhas — lista completa em `context.json` | | |
+| … +1882 linhas — lista completa em `context.json` | | |
 
 ## L. Eventos de webhook tratados (contratos com sistemas externos)
 

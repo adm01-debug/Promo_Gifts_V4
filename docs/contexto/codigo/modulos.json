@@ -10726,13 +10726,13 @@
   },
   {
    "modulo": "components/mockup",
-   "arquivos": 41,
+   "arquivos": 43,
    "testes": 24,
-   "linhas": 9862,
+   "linhas": 9979,
    "itens_menu": [],
    "telas": [],
    "rotas_http": [],
-   "componentes": 32,
+   "componentes": 34,
    "hooks_locais": [
     "useA11y",
     "useAIRecommendations",

@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e de hora em hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `c72d30a9ce4eb9dc3c9e5f4f3fc7f094d002e931` (2026-11-15T15:32:34Z).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e de hora em hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `f1044db3b405b92f1257b81914de7d4e63fa8c7e` (2026-11-15T15:45:47Z).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -14,7 +14,7 @@ Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR
 Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua tarefa; não carregue tudo.
 
 ## Stack
-- linguagens: TypeScript (4838), SQL (3427), Markdown (1024), JavaScript (443), JSON (126), YAML (112), Shell (27), HTML (20)
+- linguagens: TypeScript (4841), SQL (3427), Markdown (1024), JavaScript (443), JSON (126), YAML (112), Shell (27), HTML (20)
 - linguagem_principal: TypeScript
 - framework: React
 - backend_http: n/d
@@ -34,31 +34,31 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 ## Números
 | item | qtd |
 |---|---|
-| arquivos_total | 10262 |
-| arquivos_codigo | 5289 |
-| linhas_codigo | 1008129 |
+| arquivos_total | 10265 |
+| arquivos_codigo | 5292 |
+| linhas_codigo | 1008503 |
 | rotas | 138 |
 | rotas_http_backend | 13 |
 | vistas_por_id | 0 |
 | itens_menu | 69 |
 | modulos | 158 |
-| componentes | 1229 |
+| componentes | 1231 |
 | hooks | 620 |
 | edge_functions | 111 |
 | tabelas | 548 |
 | migrations | 3095 |
 | cron_jobs | 122 |
-| testes | 2501 |
+| testes | 2502 |
 | workflows | 87 |
 | scripts | 272 |
 | docs_md | 1024 |
 
 ## Onde ficam as coisas
 - telas: src/pages (111), src/components (3), api/health.ts (1)
-- componentes: src/components (934), src/pages (177), recovery/src-legacy (100)
+- componentes: src/components (936), src/pages (177), recovery/src-legacy (100)
 - hooks: src/hooks (294), recovery/src-legacy (196), src/components (76)
 - servicos_logica: src/lib (228), src/utils (30), src/services (10)
-- testes: tests/ (1021), co-localizado (__tests__) (659), e2e/ (625)
+- testes: tests/ (1022), co-localizado (__tests__) (659), e2e/ (625)
 - edge_functions: supabase/functions
 - migrations: supabase/migrations
 - scripts: scripts/lib (7), scripts/graphify (4), scripts/inventario (4)
@@ -92,7 +92,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 | components/kit-library | 0 | 0 | 8 | 27 | 0 | 9 |
 | components/layout | 0 | 4 | 18 | 440 | 8 | 82 |
 | components/magic-up | 0 | 0 | 18 | 267 | 4 | 41 |
-| components/mockup | 0 | 0 | 41 | 270 | 4 | 41 |
+| components/mockup | 0 | 0 | 43 | 270 | 4 | 41 |
 | components/notifications | 0 | 0 | 7 | 31 | 0 | 8 |
 | components/novelties | 0 | 0 | 7 | 299 | 5 | 46 |
 | components/pdf | 0 | 0 | 13 | 0 | 0 | 0 |
@@ -589,8 +589,8 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - possiveis_segredos_no_codigo: 7 — ex.: scripts/ai-context/cenarios.mjs:102, src/components/admin/connections/__tests__/ConnectionSecurity.unit.test.tsx:9, src/integrations/supabase/client.ts:27
 
 ## Grafo de código (graphify)
-- 43765 nós · 75684 arestas · 2481 comunidades · grafo do commit `c72d30a9`
-- comunidades maiores: vitest (944), ref_components (657), ref_integrations (614), ref_node_child_process (477), @tanstack/react-query (421), ref_hooks (404), ref_types (354), ref_utils (336), react (331), scripts (302), ref_node_fs (300), sonner (294)
+- 43778 nós · 75714 arestas · 2303 comunidades · grafo do commit `f1044db3`
+- comunidades maiores: vitest (983), ref_components (656), ref_node_child_process (416), ref_hooks (404), react (391), ref_contexts (380), ref_node_fs (359), cors.ts (316), react-router-dom (311), scripts (302), sonner (285), gotoAndSettle (271)
 - símbolos mais chamados: gotoAndSettle() (e2e/helpers/nav.ts), re (?), q() (scripts/supabase_snapshot/snapshot.py), analyze() (tests/scripts/test_personalization_artifact_diagnostics.py), outer() (tests/scripts/test_personalization_artifact_diagnostics.py), json (?), useExternalDatabase() (recovery/src-legacy/src/hooks/useExternalDatabase.ts), concludeCheck() (scripts/check-result-contract.mjs), querySupabaseReadOnly() (scripts/supabase-read-only-query.mjs), loginAs() (e2e/helpers/auth.ts), inner() (tests/scripts/test_personalization_artifact_diagnostics.py), excluded_sql() (scripts/supabase_snapshot/snapshot.py)
 - consulta local: `graphify query "<pergunta>"`, `graphify path "<A>" "<B>"`, `graphify explain "<X>"`
 
@@ -1173,6 +1173,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - CHANGELOG topo: [1.1.0](https://github.com/adm01-debug/Promo_Gifts_V4/compare/v1.0.0...v1.1.0) (2026-11-13)
 
 ## Últimos commits
+- 2026-11-15 `f1044db3` feat(mockup): aviso de "não carregou, tentar de novo" no catálogo do painel de mockup (#3670)
 - 2026-11-15 `c72d30a9` fix(mockup): etapas do gerador voltam a ser anunciadas pelo leitor de tela no celular (#3671)
 - 2026-11-15 `aa89361b` fix(magic-up): resgata varredura axe da pagina e nomeia selects e campos do briefing (#3668)
 - 2026-11-15 `b89a44e1` fix(db): trem de banco — gráfico de mercado com dado real, revoke de 106 funções, índices e crons mais baratos (#3665)
@@ -1187,7 +1188,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-15 `3893d57f` fix(ci): portão de recibos deixa de dar verde com version citada no recibo de outra migration (#3649)
 - 2026-11-15 `1eafa069` fix(db): cria o rollback que destrava o revoke E18 — estoque alterável por qualquer usuário logado (#3648)
 - 2026-11-15 `e5afe824` fix: trem das 5 correções já verdes — recibos, código morto do CRM, 3 resgates, gerador de mockup e aba Marketing (#3647
-- 2026-11-15 `bc3fdff6` fix(db): get_quote_token_public deixa de devolver dados com link expirado (#3645)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`
