@@ -11,7 +11,7 @@
  "migrations": 3096,
  "seeds": [],
  "avisos": [
-  "319 bloco(s) com DDL dinâmico (EXECUTE format/...) não modelado — policies/colunas criadas dinamicamente podem faltar; confira no banco vivo"
+  "321 bloco(s) com DDL dinâmico (EXECUTE format/...) não modelado — policies/colunas criadas dinamicamente podem faltar; confira no banco vivo"
  ],
  "extensoes": [
   "http",
@@ -171,17 +171,14 @@
   "archive",
   "category_icons",
   "cf_recon",
-  "classification_audit",
   "mv_product_images_audit",
   "mv_product_intelligence",
   "mv_stock_rupture_alert",
   "mv_stock_velocity",
   "mv_supplier_reliability",
-  "prod_audit",
   "public",
   "slow_queries_view",
   "somarcas_catalogo_publico",
-  "supplier_stricker",
   "v_ai_function_routing_effective",
   "v_audit_paradoxos_gravacao",
   "v_catalog_stats",
@@ -328,7 +325,6 @@
   "check_webhook_dedup",
   "claim_next_optimization",
   "claim_webhook_delivery",
-  "classification_audit",
   "classify_balde_gelo",
   "classify_bolsa_termica",
   "classify_bone",
@@ -1300,7 +1296,6 @@
   "process_supplier_product",
   "process_supplier_product_data",
   "process_supplier_products_batch",
-  "prod_audit",
   "products_generate_search_vector",
   "purge_edge_invocations_old",
   "purge_expired_security_data",
@@ -1392,7 +1387,6 @@
   "store_user_token_revocation",
   "strip_html",
   "submit_quote_response",
-  "supplier_stricker",
   "sync_external_connections_from_credentials",
   "sync_order_payment_status",
   "sync_quote_discount_approval",
@@ -3132,41 +3126,6 @@
    "evento": "update",
    "tabela": "supplier_replenishment_events",
    "funcao": "fn_sre_set_updated_at"
-  },
-  {
-   "nome": "trg_customization_options_updated",
-   "quando": "before",
-   "evento": "update",
-   "tabela": "supplier_stricker.customization_options",
-   "funcao": "supplier_stricker"
-  },
-  {
-   "nome": "trg_customization_tables_updated",
-   "quando": "before",
-   "evento": "update",
-   "tabela": "supplier_stricker.customization_tables",
-   "funcao": "supplier_stricker"
-  },
-  {
-   "nome": "trg_optionals_updated",
-   "quando": "before",
-   "evento": "update",
-   "tabela": "supplier_stricker.optionals",
-   "funcao": "supplier_stricker"
-  },
-  {
-   "nome": "trg_products_updated",
-   "quando": "before",
-   "evento": "update",
-   "tabela": "supplier_stricker.products",
-   "funcao": "supplier_stricker"
-  },
-  {
-   "nome": "trg_stocks_updated",
-   "quando": "before",
-   "evento": "update",
-   "tabela": "supplier_stricker.stocks",
-   "funcao": "supplier_stricker"
   },
   {
    "nome": "tr_system_kill_switches_updated_at",
@@ -10314,7 +10273,7 @@
    "policies": [],
    "indices": [],
    "fks": [],
-   "criada_em": "20260512000000_bootstrap_missing_application_schemas.sql",
+   "criada_em": "20260616181001_cf_recon_foundation.sql",
    "usada_no_front": 0,
    "usada_em_edges": [],
    "triggers": [],
@@ -10395,7 +10354,7 @@
     }
    ],
    "fks": [],
-   "criada_em": "20260512000000_bootstrap_missing_application_schemas.sql",
+   "criada_em": "20260617124704_create_cf_ghost_queue_20260617.sql",
    "usada_no_front": 0,
    "usada_em_edges": [],
    "triggers": [],
@@ -10469,7 +10428,7 @@
     }
    ],
    "fks": [],
-   "criada_em": "20260512000000_bootstrap_missing_application_schemas.sql",
+   "criada_em": "20260616181001_cf_recon_foundation.sql",
    "usada_no_front": 0,
    "usada_em_edges": [],
    "triggers": [],
@@ -10539,7 +10498,7 @@
    "policies": [],
    "indices": [],
    "fks": [],
-   "criada_em": "20260512000000_bootstrap_missing_application_schemas.sql",
+   "criada_em": "20260616181001_cf_recon_foundation.sql",
    "usada_no_front": 0,
    "usada_em_edges": [],
    "triggers": [],
@@ -10574,7 +10533,7 @@
    "policies": [],
    "indices": [],
    "fks": [],
-   "criada_em": "20260512000000_bootstrap_missing_application_schemas.sql",
+   "criada_em": "20260616181001_cf_recon_foundation.sql",
    "usada_no_front": 0,
    "usada_em_edges": [],
    "triggers": [],
@@ -10650,7 +10609,7 @@
     }
    ],
    "fks": [],
-   "criada_em": "20260512000000_bootstrap_missing_application_schemas.sql",
+   "criada_em": "20260616181003_cf_recon_remediate_broken_active.sql",
    "usada_no_front": 0,
    "usada_em_edges": [],
    "triggers": [],
@@ -10794,104 +10753,6 @@
    ],
    "sem_rls": false,
    "nao_usada": false
-  },
-  "classification_audit.category_suggestions": {
-   "colunas": {
-    "already_assigned": {
-     "tipo": "boolean",
-     "nn": true,
-     "pk": false,
-     "default": null,
-     "ref": null
-    },
-    "approved_auto": {
-     "tipo": "boolean",
-     "nn": false,
-     "pk": false,
-     "default": null,
-     "ref": null
-    },
-    "category_is_prefix": {
-     "tipo": "boolean",
-     "nn": false,
-     "pk": false,
-     "default": null,
-     "ref": null
-    },
-    "category_level": {
-     "tipo": "integer",
-     "nn": true,
-     "pk": false,
-     "default": null,
-     "ref": null
-    },
-    "computed_at": {
-     "tipo": "timestamp with time zone",
-     "nn": true,
-     "pk": false,
-     "default": "\"now\"()",
-     "ref": null
-    },
-    "id": {
-     "tipo": "bigint",
-     "nn": true,
-     "pk": false,
-     "default": "\"nextval\"('\"classification_audit\".\"category_suggestions_id_seq\"'::\"regclass\")",
-     "ref": null
-    },
-    "is_primary_now": {
-     "tipo": "boolean",
-     "nn": true,
-     "pk": false,
-     "default": null,
-     "ref": null
-    },
-    "matches": {
-     "tipo": "integer",
-     "nn": true,
-     "pk": false,
-     "default": null,
-     "ref": null
-    },
-    "material_conflict": {
-     "tipo": "boolean",
-     "nn": false,
-     "pk": false,
-     "default": null,
-     "ref": null
-    },
-    "score": {
-     "tipo": "integer",
-     "nn": true,
-     "pk": false,
-     "default": null,
-     "ref": null
-    },
-    "tokens_in_name": {
-     "tipo": "boolean",
-     "nn": false,
-     "pk": false,
-     "default": null,
-     "ref": null
-    },
-    "type_conflict": {
-     "tipo": "boolean",
-     "nn": false,
-     "pk": false,
-     "default": null,
-     "ref": null
-    }
-   },
-   "rls": false,
-   "policies": [],
-   "indices": [],
-   "fks": [],
-   "criada_em": "20260512000000_bootstrap_missing_application_schemas.sql",
-   "usada_no_front": 0,
-   "usada_em_edges": [],
-   "triggers": [],
-   "sem_rls": false,
-   "nao_usada": true
   },
   "client_contacts": {
    "colunas": {
@@ -22613,7 +22474,50 @@
    "nao_usada": true
   },
   "material_groups": {
-   "colunas": {},
+   "colunas": {
+    "created_at": {
+     "tipo": "timestamp with time zone",
+     "nn": false,
+     "pk": false,
+     "default": "\"now\"()",
+     "ref": null
+    },
+    "is_active": {
+     "tipo": "boolean",
+     "nn": false,
+     "pk": false,
+     "default": "true",
+     "ref": null
+    },
+    "name": {
+     "tipo": "character varying",
+     "nn": true,
+     "pk": false,
+     "default": null,
+     "ref": null
+    },
+    "slug": {
+     "tipo": "character varying",
+     "nn": true,
+     "pk": false,
+     "default": null,
+     "ref": null
+    },
+    "sort_order": {
+     "tipo": "integer",
+     "nn": false,
+     "pk": false,
+     "default": "100",
+     "ref": null
+    },
+    "updated_at": {
+     "tipo": "timestamp with time zone",
+     "nn": false,
+     "pk": false,
+     "default": "\"now\"()",
+     "ref": null
+    }
+   },
    "rls": false,
    "policies": [
     {
@@ -22645,17 +22549,60 @@
    "fks": [
     "organization_id->organizations"
    ],
-   "criada_em": null,
+   "criada_em": "20260512000000_bootstrap_missing_application_schemas.sql",
    "usada_no_front": 0,
    "usada_em_edges": [
     "materials-api"
    ],
    "triggers": [],
-   "sem_rls": false,
+   "sem_rls": true,
    "nao_usada": false
   },
   "material_types": {
-   "colunas": {},
+   "colunas": {
+    "created_at": {
+     "tipo": "timestamp with time zone",
+     "nn": false,
+     "pk": false,
+     "default": "\"now\"()",
+     "ref": null
+    },
+    "display_order": {
+     "tipo": "integer",
+     "nn": false,
+     "pk": false,
+     "default": "0",
+     "ref": null
+    },
+    "is_active": {
+     "tipo": "boolean",
+     "nn": false,
+     "pk": false,
+     "default": "true",
+     "ref": null
+    },
+    "name": {
+     "tipo": "character varying",
+     "nn": true,
+     "pk": false,
+     "default": null,
+     "ref": null
+    },
+    "slug": {
+     "tipo": "character varying",
+     "nn": true,
+     "pk": false,
+     "default": null,
+     "ref": null
+    },
+    "updated_at": {
+     "tipo": "timestamp with time zone",
+     "nn": false,
+     "pk": false,
+     "default": "\"now\"()",
+     "ref": null
+    }
+   },
    "rls": false,
    "policies": [
     {
@@ -22667,13 +22614,13 @@
    ],
    "indices": [],
    "fks": [],
-   "criada_em": null,
+   "criada_em": "20260512000000_bootstrap_missing_application_schemas.sql",
    "usada_no_front": 0,
    "usada_em_edges": [
     "materials-api"
    ],
    "triggers": [],
-   "sem_rls": false,
+   "sem_rls": true,
    "nao_usada": false
   },
   "material_variations": {
@@ -29142,223 +29089,6 @@
    "sem_rls": false,
    "nao_usada": true
   },
-  "prod_audit.category_keywords": {
-   "colunas": {
-    "is_client_segment": {
-     "tipo": "boolean",
-     "nn": false,
-     "pk": false,
-     "default": "false",
-     "ref": null
-    },
-    "is_eco_segment": {
-     "tipo": "boolean",
-     "nn": false,
-     "pk": false,
-     "default": "false",
-     "ref": null
-    },
-    "is_kit_segment": {
-     "tipo": "boolean",
-     "nn": false,
-     "pk": false,
-     "default": "false",
-     "ref": null
-    },
-    "is_material_segment": {
-     "tipo": "boolean",
-     "nn": false,
-     "pk": false,
-     "default": "false",
-     "ref": null
-    },
-    "level": {
-     "tipo": "integer",
-     "nn": false,
-     "pk": false,
-     "default": null,
-     "ref": null
-    },
-    "refreshed_at": {
-     "tipo": "timestamp with time zone",
-     "nn": false,
-     "pk": false,
-     "default": "\"now\"()",
-     "ref": null
-    }
-   },
-   "rls": false,
-   "policies": [],
-   "indices": [],
-   "fks": [],
-   "criada_em": "20260512000000_bootstrap_missing_application_schemas.sql",
-   "usada_no_front": 0,
-   "usada_em_edges": [],
-   "triggers": [],
-   "sem_rls": false,
-   "nao_usada": true
-  },
-  "prod_audit.category_suggestions": {
-   "colunas": {
-    "accepted": {
-     "tipo": "boolean",
-     "nn": false,
-     "pk": false,
-     "default": null,
-     "ref": null
-    },
-    "created_at": {
-     "tipo": "timestamp with time zone",
-     "nn": false,
-     "pk": false,
-     "default": "\"now\"()",
-     "ref": null
-    },
-    "id": {
-     "tipo": "bigint",
-     "nn": true,
-     "pk": false,
-     "default": "\"nextval\"('\"prod_audit\".\"category_suggestions_id_seq\"'::\"regclass\")",
-     "ref": null
-    },
-    "reviewed": {
-     "tipo": "boolean",
-     "nn": false,
-     "pk": false,
-     "default": "false",
-     "ref": null
-    }
-   },
-   "rls": false,
-   "policies": [],
-   "indices": [],
-   "fks": [],
-   "criada_em": "20260512000000_bootstrap_missing_application_schemas.sql",
-   "usada_no_front": 0,
-   "usada_em_edges": [],
-   "triggers": [],
-   "sem_rls": false,
-   "nao_usada": true
-  },
-  "prod_audit.classification_rules": {
-   "colunas": {
-    "active": {
-     "tipo": "boolean",
-     "nn": false,
-     "pk": false,
-     "default": "true",
-     "ref": null
-    },
-    "created_at": {
-     "tipo": "timestamp with time zone",
-     "nn": false,
-     "pk": false,
-     "default": "\"now\"()",
-     "ref": null
-    },
-    "id": {
-     "tipo": "integer",
-     "nn": true,
-     "pk": false,
-     "default": "\"nextval\"('\"prod_audit\".\"classification_rules_id_seq\"'::\"regclass\")",
-     "ref": null
-    }
-   },
-   "rls": false,
-   "policies": [],
-   "indices": [],
-   "fks": [],
-   "criada_em": "20260512000000_bootstrap_missing_application_schemas.sql",
-   "usada_no_front": 0,
-   "usada_em_edges": [],
-   "triggers": [],
-   "sem_rls": false,
-   "nao_usada": true
-  },
-  "prod_audit.product_features": {
-   "colunas": {
-    "has_eco_keyword": {
-     "tipo": "boolean",
-     "nn": false,
-     "pk": false,
-     "default": "false",
-     "ref": null
-    },
-    "has_kit_keyword": {
-     "tipo": "boolean",
-     "nn": false,
-     "pk": false,
-     "default": "false",
-     "ref": null
-    },
-    "has_textil_flag": {
-     "tipo": "boolean",
-     "nn": false,
-     "pk": false,
-     "default": "false",
-     "ref": null
-    },
-    "has_thermal_flag": {
-     "tipo": "boolean",
-     "nn": false,
-     "pk": false,
-     "default": "false",
-     "ref": null
-    },
-    "refreshed_at": {
-     "tipo": "timestamp with time zone",
-     "nn": false,
-     "pk": false,
-     "default": "\"now\"()",
-     "ref": null
-    }
-   },
-   "rls": false,
-   "policies": [],
-   "indices": [],
-   "fks": [],
-   "criada_em": "20260512000000_bootstrap_missing_application_schemas.sql",
-   "usada_no_front": 0,
-   "usada_em_edges": [],
-   "triggers": [],
-   "sem_rls": false,
-   "nao_usada": true
-  },
-  "prod_audit.test_results": {
-   "colunas": {
-    "duration_ms": {
-     "tipo": "numeric",
-     "nn": false,
-     "pk": false,
-     "default": null,
-     "ref": null
-    },
-    "executed_at": {
-     "tipo": "timestamp with time zone",
-     "nn": false,
-     "pk": false,
-     "default": "\"now\"()",
-     "ref": null
-    },
-    "id": {
-     "tipo": "bigint",
-     "nn": true,
-     "pk": false,
-     "default": "\"nextval\"('\"prod_audit\".\"test_results_id_seq\"'::\"regclass\")",
-     "ref": null
-    }
-   },
-   "rls": false,
-   "policies": [],
-   "indices": [],
-   "fks": [],
-   "criada_em": "20260512000000_bootstrap_missing_application_schemas.sql",
-   "usada_no_front": 0,
-   "usada_em_edges": [],
-   "triggers": [],
-   "sem_rls": false,
-   "nao_usada": true
-  },
   "product_ai_content": {
    "colunas": {
     "ai_description": {
@@ -31597,6 +31327,13 @@
   },
   "product_images": {
    "colunas": {
+    "applies_to_color": {
+     "tipo": "boolean",
+     "nn": false,
+     "pk": false,
+     "default": "false",
+     "ref": null
+    },
     "aspect_ratio": {
      "tipo": "numeric",
      "nn": true,
@@ -31667,11 +31404,25 @@
      "default": null,
      "ref": null
     },
+    "cloudflare_image_id": {
+     "tipo": "character varying",
+     "nn": true,
+     "pk": false,
+     "default": null,
+     "ref": null
+    },
     "content_hash": {
      "tipo": "text",
      "nn": false,
      "pk": false,
      "default": null,
+     "ref": null
+    },
+    "created_at": {
+     "tipo": "timestamp with time zone",
+     "nn": false,
+     "pk": false,
+     "default": "\"now\"()",
      "ref": null
     },
     "deleted_at": {
@@ -31686,6 +31437,69 @@
      "nn": false,
      "pk": false,
      "default": null,
+     "ref": null
+    },
+    "display_order": {
+     "tipo": "integer",
+     "nn": false,
+     "pk": false,
+     "default": "0",
+     "ref": null
+    },
+    "file_size_bytes": {
+     "tipo": "bigint",
+     "nn": false,
+     "pk": false,
+     "default": null,
+     "ref": null
+    },
+    "filename": {
+     "tipo": "character varying",
+     "nn": false,
+     "pk": false,
+     "default": null,
+     "ref": null
+    },
+    "format": {
+     "tipo": "character varying",
+     "nn": false,
+     "pk": false,
+     "default": null,
+     "ref": null
+    },
+    "height_px": {
+     "tipo": "integer",
+     "nn": false,
+     "pk": false,
+     "default": null,
+     "ref": null
+    },
+    "image_type": {
+     "tipo": "character varying",
+     "nn": true,
+     "pk": false,
+     "default": "'gallery'::character varying",
+     "ref": null
+    },
+    "is_active": {
+     "tipo": "boolean",
+     "nn": false,
+     "pk": false,
+     "default": "true",
+     "ref": null
+    },
+    "is_og_image": {
+     "tipo": "boolean",
+     "nn": false,
+     "pk": false,
+     "default": "false",
+     "ref": null
+    },
+    "is_primary": {
+     "tipo": "boolean",
+     "nn": false,
+     "pk": false,
+     "default": "false",
      "ref": null
     },
     "is_shared": {
@@ -31721,6 +31535,34 @@
      "nn": true,
      "pk": false,
      "default": "false",
+     "ref": null
+    },
+    "source_supplier": {
+     "tipo": "character varying",
+     "nn": false,
+     "pk": false,
+     "default": null,
+     "ref": null
+    },
+    "supplier_code": {
+     "tipo": "character varying",
+     "nn": false,
+     "pk": false,
+     "default": null,
+     "ref": null
+    },
+    "updated_at": {
+     "tipo": "timestamp with time zone",
+     "nn": false,
+     "pk": false,
+     "default": "\"now\"()",
+     "ref": null
+    },
+    "width_px": {
+     "tipo": "integer",
+     "nn": false,
+     "pk": false,
+     "default": null,
      "ref": null
     }
    },
@@ -31786,9 +31628,10 @@
     }
    ],
    "fks": [
-    "canonical_image_id->product_images"
+    "canonical_image_id->product_images",
+    "category_id->public"
    ],
-   "criada_em": null,
+   "criada_em": "20260512000000_bootstrap_missing_application_schemas.sql",
    "usada_no_front": 0,
    "usada_em_edges": [
     "backfill-image-dimensions",
@@ -31806,7 +31649,7 @@
     "trg_reset_is_shared_on_canonical_null",
     "trg_sync_backfill_queue"
    ],
-   "sem_rls": false,
+   "sem_rls": true,
    "nao_usada": false
   },
   "product_included_packagings": {
@@ -32023,7 +31866,50 @@
    "nao_usada": true
   },
   "product_materials": {
-   "colunas": {},
+   "colunas": {
+    "created_at": {
+     "tipo": "timestamp with time zone",
+     "nn": false,
+     "pk": false,
+     "default": "\"now\"()",
+     "ref": null
+    },
+    "is_active": {
+     "tipo": "boolean",
+     "nn": false,
+     "pk": false,
+     "default": "true",
+     "ref": null
+    },
+    "part": {
+     "tipo": "character varying",
+     "nn": false,
+     "pk": false,
+     "default": null,
+     "ref": null
+    },
+    "percentage": {
+     "tipo": "numeric",
+     "nn": false,
+     "pk": false,
+     "default": null,
+     "ref": null
+    },
+    "sort_order": {
+     "tipo": "integer",
+     "nn": false,
+     "pk": false,
+     "default": "100",
+     "ref": null
+    },
+    "updated_at": {
+     "tipo": "timestamp with time zone",
+     "nn": false,
+     "pk": false,
+     "default": "\"now\"()",
+     "ref": null
+    }
+   },
    "rls": false,
    "policies": [
     {
@@ -32041,13 +31927,13 @@
    ],
    "indices": [],
    "fks": [],
-   "criada_em": null,
+   "criada_em": "20260512000000_bootstrap_missing_application_schemas.sql",
    "usada_no_front": 0,
    "usada_em_edges": [
     "materials-api"
    ],
    "triggers": [],
-   "sem_rls": false,
+   "sem_rls": true,
    "nao_usada": false
   },
   "product_notebook_features": {
@@ -46047,93 +45933,8 @@
    "sem_rls": false,
    "nao_usada": true
   },
-  "supplier_stricker.canceled_products": {
-   "colunas": {
-    "created_at": {
-     "tipo": "timestamp with time zone",
-     "nn": false,
-     "pk": false,
-     "default": "\"now\"()",
-     "ref": null
-    },
-    "prod_reference": {
-     "tipo": "character varying(20)",
-     "nn": true,
-     "pk": false,
-     "default": null,
-     "ref": null
-    },
-    "reason": {
-     "tipo": "character varying(255)",
-     "nn": false,
-     "pk": false,
-     "default": null,
-     "ref": null
-    }
-   },
-   "rls": false,
-   "policies": [],
-   "indices": [],
-   "fks": [],
-   "criada_em": "20260512000000_bootstrap_missing_application_schemas.sql",
-   "usada_no_front": 0,
-   "usada_em_edges": [],
-   "triggers": [],
-   "sem_rls": false,
-   "nao_usada": true
-  },
   "supplier_stricker.category_mappings": {
-   "colunas": {
-    "created_at": {
-     "tipo": "timestamp with time zone",
-     "nn": false,
-     "pk": false,
-     "default": "\"now\"()",
-     "ref": null
-    },
-    "is_mapped": {
-     "tipo": "boolean",
-     "nn": false,
-     "pk": false,
-     "default": "false",
-     "ref": null
-    },
-    "sub_type_code": {
-     "tipo": "character varying(10)",
-     "nn": false,
-     "pk": false,
-     "default": null,
-     "ref": null
-    },
-    "sub_type_name": {
-     "tipo": "character varying(100)",
-     "nn": false,
-     "pk": false,
-     "default": null,
-     "ref": null
-    },
-    "type_code": {
-     "tipo": "character varying(10)",
-     "nn": true,
-     "pk": false,
-     "default": null,
-     "ref": null
-    },
-    "type_name": {
-     "tipo": "character varying(100)",
-     "nn": false,
-     "pk": false,
-     "default": null,
-     "ref": null
-    },
-    "updated_at": {
-     "tipo": "timestamp with time zone",
-     "nn": false,
-     "pk": false,
-     "default": "\"now\"()",
-     "ref": null
-    }
-   },
+   "colunas": {},
    "rls": false,
    "policies": [],
    "indices": [
@@ -46143,1408 +45944,8 @@
      "unico": false
     }
    ],
-   "fks": [
-    "category_id->public"
-   ],
-   "criada_em": "20260512000000_bootstrap_missing_application_schemas.sql",
-   "usada_no_front": 0,
-   "usada_em_edges": [],
-   "triggers": [],
-   "sem_rls": false,
-   "nao_usada": true
-  },
-  "supplier_stricker.colors": {
-   "colunas": {
-    "color_code": {
-     "tipo": "character varying(10)",
-     "nn": true,
-     "pk": false,
-     "default": null,
-     "ref": null
-    },
-    "color_hex": {
-     "tipo": "character varying(10)",
-     "nn": false,
-     "pk": false,
-     "default": null,
-     "ref": null
-    },
-    "color_name": {
-     "tipo": "character varying(100)",
-     "nn": false,
-     "pk": false,
-     "default": null,
-     "ref": null
-    },
-    "created_at": {
-     "tipo": "timestamp with time zone",
-     "nn": false,
-     "pk": false,
-     "default": "\"now\"()",
-     "ref": null
-    },
-    "updated_at": {
-     "tipo": "timestamp with time zone",
-     "nn": false,
-     "pk": false,
-     "default": "\"now\"()",
-     "ref": null
-    }
-   },
-   "rls": false,
-   "policies": [],
-   "indices": [],
    "fks": [],
-   "criada_em": "20260512000000_bootstrap_missing_application_schemas.sql",
-   "usada_no_front": 0,
-   "usada_em_edges": [],
-   "triggers": [],
-   "sem_rls": false,
-   "nao_usada": true
-  },
-  "supplier_stricker.customization_options": {
-   "colunas": {
-    "area_code": {
-     "tipo": "character varying(10)",
-     "nn": false,
-     "pk": false,
-     "default": null,
-     "ref": null
-    },
-    "area_height_cm": {
-     "tipo": "numeric(6,2)",
-     "nn": false,
-     "pk": false,
-     "default": null,
-     "ref": null
-    },
-    "area_width_cm": {
-     "tipo": "numeric(6,2)",
-     "nn": false,
-     "pk": false,
-     "default": null,
-     "ref": null
-    },
-    "component_code": {
-     "tipo": "character varying(10)",
-     "nn": false,
-     "pk": false,
-     "default": null,
-     "ref": null
-    },
-    "component_name": {
-     "tipo": "character varying(100)",
-     "nn": false,
-     "pk": false,
-     "default": null,
-     "ref": null
-    },
-    "created_at": {
-     "tipo": "timestamp with time zone",
-     "nn": false,
-     "pk": false,
-     "default": "\"now\"()",
-     "ref": null
-    },
-    "is_active": {
-     "tipo": "boolean",
-     "nn": false,
-     "pk": false,
-     "default": "true",
-     "ref": null
-    },
-    "location_code": {
-     "tipo": "character varying(10)",
-     "nn": false,
-     "pk": false,
-     "default": null,
-     "ref": null
-    },
-    "location_name": {
-     "tipo": "character varying(100)",
-     "nn": false,
-     "pk": false,
-     "default": null,
-     "ref": null
-    },
-    "max_colors": {
-     "tipo": "integer",
-     "nn": false,
-     "pk": false,
-     "default": null,
-     "ref": null
-    },
-    "price": {
-     "tipo": "numeric(10,2)",
-     "nn": false,
-     "pk": false,
-     "default": null,
-     "ref": null
-    },
-    "prod_reference": {
-     "tipo": "character varying(20)",
-     "nn": true,
-     "pk": false,
-     "default": null,
-     "ref": null
-    },
-    "serv_code": {
-     "tipo": "character varying(50)",
-     "nn": true,
-     "pk": false,
-     "default": null,
-     "ref": null
-    },
-    "technique_code": {
-     "tipo": "character varying(10)",
-     "nn": false,
-     "pk": false,
-     "default": null,
-     "ref": null
-    },
-    "technique_name": {
-     "tipo": "character varying(100)",
-     "nn": false,
-     "pk": false,
-     "default": null,
-     "ref": null
-    },
-    "updated_at": {
-     "tipo": "timestamp with time zone",
-     "nn": false,
-     "pk": false,
-     "default": "\"now\"()",
-     "ref": null
-    }
-   },
-   "rls": false,
-   "policies": [],
-   "indices": [],
-   "fks": [
-    "prod_reference->supplier_stricker"
-   ],
-   "criada_em": "20260512000000_bootstrap_missing_application_schemas.sql",
-   "usada_no_front": 0,
-   "usada_em_edges": [],
-   "triggers": [
-    "trg_customization_options_updated"
-   ],
-   "sem_rls": false,
-   "nao_usada": true
-  },
-  "supplier_stricker.customization_tables": {
-   "colunas": {
-    "area_max_cm2": {
-     "tipo": "numeric(8,2)",
-     "nn": false,
-     "pk": false,
-     "default": null,
-     "ref": null
-    },
-    "area_min_cm2": {
-     "tipo": "numeric(8,2)",
-     "nn": false,
-     "pk": false,
-     "default": null,
-     "ref": null
-    },
-    "colors": {
-     "tipo": "integer",
-     "nn": false,
-     "pk": false,
-     "default": null,
-     "ref": null
-    },
-    "created_at": {
-     "tipo": "timestamp with time zone",
-     "nn": false,
-     "pk": false,
-     "default": "\"now\"()",
-     "ref": null
-    },
-    "handling_price": {
-     "tipo": "numeric(10,2)",
-     "nn": false,
-     "pk": false,
-     "default": null,
-     "ref": null
-    },
-    "is_active": {
-     "tipo": "boolean",
-     "nn": false,
-     "pk": false,
-     "default": "true",
-     "ref": null
-    },
-    "min_qty_1": {
-     "tipo": "integer",
-     "nn": false,
-     "pk": false,
-     "default": "1",
-     "ref": null
-    },
-    "min_qty_10": {
-     "tipo": "integer",
-     "nn": false,
-     "pk": false,
-     "default": null,
-     "ref": null
-    },
-    "min_qty_11": {
-     "tipo": "integer",
-     "nn": false,
-     "pk": false,
-     "default": null,
-     "ref": null
-    },
-    "min_qty_12": {
-     "tipo": "integer",
-     "nn": false,
-     "pk": false,
-     "default": null,
-     "ref": null
-    },
-    "min_qty_13": {
-     "tipo": "integer",
-     "nn": false,
-     "pk": false,
-     "default": null,
-     "ref": null
-    },
-    "min_qty_14": {
-     "tipo": "integer",
-     "nn": false,
-     "pk": false,
-     "default": null,
-     "ref": null
-    },
-    "min_qty_15": {
-     "tipo": "integer",
-     "nn": false,
-     "pk": false,
-     "default": null,
-     "ref": null
-    },
-    "min_qty_2": {
-     "tipo": "integer",
-     "nn": false,
-     "pk": false,
-     "default": null,
-     "ref": null
-    },
-    "min_qty_3": {
-     "tipo": "integer",
-     "nn": false,
-     "pk": false,
-     "default": null,
-     "ref": null
-    },
-    "min_qty_4": {
-     "tipo": "integer",
-     "nn": false,
-     "pk": false,
-     "default": null,
-     "ref": null
-    },
-    "min_qty_5": {
-     "tipo": "integer",
-     "nn": false,
-     "pk": false,
-     "default": null,
-     "ref": null
-    },
-    "min_qty_6": {
-     "tipo": "integer",
-     "nn": false,
-     "pk": false,
-     "default": null,
-     "ref": null
-    },
-    "min_qty_7": {
-     "tipo": "integer",
-     "nn": false,
-     "pk": false,
-     "default": null,
-     "ref": null
-    },
-    "min_qty_8": {
-     "tipo": "integer",
-     "nn": false,
-     "pk": false,
-     "default": null,
-     "ref": null
-    },
-    "min_qty_9": {
-     "tipo": "integer",
-     "nn": false,
-     "pk": false,
-     "default": null,
-     "ref": null
-    },
-    "price_1": {
-     "tipo": "numeric(10,2)",
-     "nn": false,
-     "pk": false,
-     "default": null,
-     "ref": null
-    },
-    "price_10": {
-     "tipo": "numeric(10,2)",
-     "nn": false,
-     "pk": false,
-     "default": null,
-     "ref": null
-    },
-    "price_11": {
-     "tipo": "numeric(10,2)",
-     "nn": false,
-     "pk": false,
-     "default": null,
-     "ref": null
-    },
-    "price_12": {
-     "tipo": "numeric(10,2)",
-     "nn": false,
-     "pk": false,
-     "default": null,
-     "ref": null
-    },
-    "price_13": {
-     "tipo": "numeric(10,2)",
-     "nn": false,
-     "pk": false,
-     "default": null,
-     "ref": null
-    },
-    "price_14": {
-     "tipo": "numeric(10,2)",
-     "nn": false,
-     "pk": false,
-     "default": null,
-     "ref": null
-    },
-    "price_15": {
-     "tipo": "numeric(10,2)",
-     "nn": false,
-     "pk": false,
-     "default": null,
-     "ref": null
-    },
-    "price_2": {
-     "tipo": "numeric(10,2)",
-     "nn": false,
-     "pk": false,
-     "default": null,
-     "ref": null
-    },
-    "price_3": {
-     "tipo": "numeric(10,2)",
-     "nn": false,
-     "pk": false,
-     "default": null,
-     "ref": null
-    },
-    "price_4": {
-     "tipo": "numeric(10,2)",
-     "nn": false,
-     "pk": false,
-     "default": null,
-     "ref": null
-    },
-    "price_5": {
-     "tipo": "numeric(10,2)",
-     "nn": false,
-     "pk": false,
-     "default": null,
-     "ref": null
-    },
-    "price_6": {
-     "tipo": "numeric(10,2)",
-     "nn": false,
-     "pk": false,
-     "default": null,
-     "ref": null
-    },
-    "price_7": {
-     "tipo": "numeric(10,2)",
-     "nn": false,
-     "pk": false,
-     "default": null,
-     "ref": null
-    },
-    "price_8": {
-     "tipo": "numeric(10,2)",
-     "nn": false,
-     "pk": false,
-     "default": null,
-     "ref": null
-    },
-    "price_9": {
-     "tipo": "numeric(10,2)",
-     "nn": false,
-     "pk": false,
-     "default": null,
-     "ref": null
-    },
-    "setup_price": {
-     "tipo": "numeric(10,2)",
-     "nn": false,
-     "pk": false,
-     "default": null,
-     "ref": null
-    },
-    "sla_1": {
-     "tipo": "integer",
-     "nn": false,
-     "pk": false,
-     "default": null,
-     "ref": null
-    },
-    "sla_10": {
-     "tipo": "integer",
-     "nn": false,
-     "pk": false,
-     "default": null,
-     "ref": null
-    },
-    "sla_11": {
-     "tipo": "integer",
-     "nn": false,
-     "pk": false,
-     "default": null,
-     "ref": null
-    },
-    "sla_12": {
-     "tipo": "integer",
-     "nn": false,
-     "pk": false,
-     "default": null,
-     "ref": null
-    },
-    "sla_13": {
-     "tipo": "integer",
-     "nn": false,
-     "pk": false,
-     "default": null,
-     "ref": null
-    },
-    "sla_14": {
-     "tipo": "integer",
-     "nn": false,
-     "pk": false,
-     "default": null,
-     "ref": null
-    },
-    "sla_15": {
-     "tipo": "integer",
-     "nn": false,
-     "pk": false,
-     "default": null,
-     "ref": null
-    },
-    "sla_2": {
-     "tipo": "integer",
-     "nn": false,
-     "pk": false,
-     "default": null,
-     "ref": null
-    },
-    "sla_3": {
-     "tipo": "integer",
-     "nn": false,
-     "pk": false,
-     "default": null,
-     "ref": null
-    },
-    "sla_4": {
-     "tipo": "integer",
-     "nn": false,
-     "pk": false,
-     "default": null,
-     "ref": null
-    },
-    "sla_5": {
-     "tipo": "integer",
-     "nn": false,
-     "pk": false,
-     "default": null,
-     "ref": null
-    },
-    "sla_6": {
-     "tipo": "integer",
-     "nn": false,
-     "pk": false,
-     "default": null,
-     "ref": null
-    },
-    "sla_7": {
-     "tipo": "integer",
-     "nn": false,
-     "pk": false,
-     "default": null,
-     "ref": null
-    },
-    "sla_8": {
-     "tipo": "integer",
-     "nn": false,
-     "pk": false,
-     "default": null,
-     "ref": null
-    },
-    "sla_9": {
-     "tipo": "integer",
-     "nn": false,
-     "pk": false,
-     "default": null,
-     "ref": null
-    },
-    "table_code": {
-     "tipo": "character varying(30)",
-     "nn": true,
-     "pk": false,
-     "default": null,
-     "ref": null
-    },
-    "technique_code": {
-     "tipo": "character varying(10)",
-     "nn": false,
-     "pk": false,
-     "default": null,
-     "ref": null
-    },
-    "technique_name": {
-     "tipo": "character varying(100)",
-     "nn": false,
-     "pk": false,
-     "default": null,
-     "ref": null
-    },
-    "updated_at": {
-     "tipo": "timestamp with time zone",
-     "nn": false,
-     "pk": false,
-     "default": "\"now\"()",
-     "ref": null
-    }
-   },
-   "rls": false,
-   "policies": [],
-   "indices": [],
-   "fks": [],
-   "criada_em": "20260512000000_bootstrap_missing_application_schemas.sql",
-   "usada_no_front": 0,
-   "usada_em_edges": [],
-   "triggers": [
-    "trg_customization_tables_updated"
-   ],
-   "sem_rls": false,
-   "nao_usada": true
-  },
-  "supplier_stricker.optionals": {
-   "colunas": {
-    "capacity": {
-     "tipo": "character varying(50)",
-     "nn": false,
-     "pk": false,
-     "default": null,
-     "ref": null
-    },
-    "color_code": {
-     "tipo": "character varying(10)",
-     "nn": false,
-     "pk": false,
-     "default": null,
-     "ref": null
-    },
-    "color_hex": {
-     "tipo": "character varying(10)",
-     "nn": false,
-     "pk": false,
-     "default": null,
-     "ref": null
-    },
-    "color_name": {
-     "tipo": "character varying(100)",
-     "nn": false,
-     "pk": false,
-     "default": null,
-     "ref": null
-    },
-    "created_at": {
-     "tipo": "timestamp with time zone",
-     "nn": false,
-     "pk": false,
-     "default": "\"now\"()",
-     "ref": null
-    },
-    "is_active": {
-     "tipo": "boolean",
-     "nn": false,
-     "pk": false,
-     "default": "true",
-     "ref": null
-    },
-    "min_qty_1": {
-     "tipo": "integer",
-     "nn": false,
-     "pk": false,
-     "default": "1",
-     "ref": null
-    },
-    "min_qty_2": {
-     "tipo": "integer",
-     "nn": false,
-     "pk": false,
-     "default": null,
-     "ref": null
-    },
-    "min_qty_3": {
-     "tipo": "integer",
-     "nn": false,
-     "pk": false,
-     "default": null,
-     "ref": null
-    },
-    "min_qty_4": {
-     "tipo": "integer",
-     "nn": false,
-     "pk": false,
-     "default": null,
-     "ref": null
-    },
-    "min_qty_5": {
-     "tipo": "integer",
-     "nn": false,
-     "pk": false,
-     "default": null,
-     "ref": null
-    },
-    "price_1": {
-     "tipo": "numeric(10,2)",
-     "nn": false,
-     "pk": false,
-     "default": null,
-     "ref": null
-    },
-    "price_2": {
-     "tipo": "numeric(10,2)",
-     "nn": false,
-     "pk": false,
-     "default": null,
-     "ref": null
-    },
-    "price_3": {
-     "tipo": "numeric(10,2)",
-     "nn": false,
-     "pk": false,
-     "default": null,
-     "ref": null
-    },
-    "price_4": {
-     "tipo": "numeric(10,2)",
-     "nn": false,
-     "pk": false,
-     "default": null,
-     "ref": null
-    },
-    "price_5": {
-     "tipo": "numeric(10,2)",
-     "nn": false,
-     "pk": false,
-     "default": null,
-     "ref": null
-    },
-    "prod_reference": {
-     "tipo": "character varying(20)",
-     "nn": true,
-     "pk": false,
-     "default": null,
-     "ref": null
-    },
-    "size": {
-     "tipo": "character varying(20)",
-     "nn": false,
-     "pk": false,
-     "default": null,
-     "ref": null
-    },
-    "sku": {
-     "tipo": "character varying(30)",
-     "nn": true,
-     "pk": false,
-     "default": null,
-     "ref": null
-    },
-    "synced_at": {
-     "tipo": "timestamp with time zone",
-     "nn": false,
-     "pk": false,
-     "default": "\"now\"()",
-     "ref": null
-    },
-    "updated_at": {
-     "tipo": "timestamp with time zone",
-     "nn": false,
-     "pk": false,
-     "default": "\"now\"()",
-     "ref": null
-    },
-    "web_sku": {
-     "tipo": "character varying(30)",
-     "nn": false,
-     "pk": false,
-     "default": null,
-     "ref": null
-    }
-   },
-   "rls": false,
-   "policies": [],
-   "indices": [],
-   "fks": [
-    "prod_reference->supplier_stricker"
-   ],
-   "criada_em": "20260512000000_bootstrap_missing_application_schemas.sql",
-   "usada_no_front": 0,
-   "usada_em_edges": [],
-   "triggers": [
-    "trg_optionals_updated"
-   ],
-   "sem_rls": false,
-   "nao_usada": true
-  },
-  "supplier_stricker.product_types": {
-   "colunas": {
-    "created_at": {
-     "tipo": "timestamp with time zone",
-     "nn": false,
-     "pk": false,
-     "default": "\"now\"()",
-     "ref": null
-    },
-    "is_active": {
-     "tipo": "boolean",
-     "nn": false,
-     "pk": false,
-     "default": "true",
-     "ref": null
-    },
-    "level": {
-     "tipo": "integer",
-     "nn": false,
-     "pk": false,
-     "default": "1",
-     "ref": null
-    },
-    "parent_type_code": {
-     "tipo": "character varying(10)",
-     "nn": false,
-     "pk": false,
-     "default": null,
-     "ref": null
-    },
-    "subtype_code": {
-     "tipo": "character varying(10)",
-     "nn": false,
-     "pk": false,
-     "default": null,
-     "ref": null
-    },
-    "subtype_name": {
-     "tipo": "character varying(100)",
-     "nn": false,
-     "pk": false,
-     "default": null,
-     "ref": null
-    },
-    "type_code": {
-     "tipo": "character varying(10)",
-     "nn": true,
-     "pk": false,
-     "default": null,
-     "ref": null
-    },
-    "type_name": {
-     "tipo": "character varying(100)",
-     "nn": false,
-     "pk": false,
-     "default": null,
-     "ref": null
-    },
-    "updated_at": {
-     "tipo": "timestamp with time zone",
-     "nn": false,
-     "pk": false,
-     "default": "\"now\"()",
-     "ref": null
-    }
-   },
-   "rls": false,
-   "policies": [],
-   "indices": [],
-   "fks": [],
-   "criada_em": "20260512000000_bootstrap_missing_application_schemas.sql",
-   "usada_no_front": 0,
-   "usada_em_edges": [],
-   "triggers": [],
-   "sem_rls": false,
-   "nao_usada": true
-  },
-  "supplier_stricker.products": {
-   "colunas": {
-    "box_height_mm": {
-     "tipo": "integer",
-     "nn": false,
-     "pk": false,
-     "default": null,
-     "ref": null
-    },
-    "box_length_mm": {
-     "tipo": "integer",
-     "nn": false,
-     "pk": false,
-     "default": null,
-     "ref": null
-    },
-    "box_weight_kg": {
-     "tipo": "numeric(10,3)",
-     "nn": false,
-     "pk": false,
-     "default": null,
-     "ref": null
-    },
-    "box_width_mm": {
-     "tipo": "integer",
-     "nn": false,
-     "pk": false,
-     "default": null,
-     "ref": null
-    },
-    "brand": {
-     "tipo": "character varying(50)",
-     "nn": false,
-     "pk": false,
-     "default": null,
-     "ref": null
-    },
-    "catalog_page": {
-     "tipo": "integer",
-     "nn": false,
-     "pk": false,
-     "default": null,
-     "ref": null
-    },
-    "combined_sizes": {
-     "tipo": "character varying(100)",
-     "nn": false,
-     "pk": false,
-     "default": null,
-     "ref": null
-    },
-    "created_at": {
-     "tipo": "timestamp with time zone",
-     "nn": false,
-     "pk": false,
-     "default": "\"now\"()",
-     "ref": null
-    },
-    "gender": {
-     "tipo": "character varying(20)",
-     "nn": false,
-     "pk": false,
-     "default": null,
-     "ref": null
-    },
-    "has_capacity": {
-     "tipo": "boolean",
-     "nn": false,
-     "pk": false,
-     "default": "false",
-     "ref": null
-    },
-    "has_colors": {
-     "tipo": "boolean",
-     "nn": false,
-     "pk": false,
-     "default": "false",
-     "ref": null
-    },
-    "has_sizes": {
-     "tipo": "boolean",
-     "nn": false,
-     "pk": false,
-     "default": "false",
-     "ref": null
-    },
-    "is_active": {
-     "tipo": "boolean",
-     "nn": false,
-     "pk": false,
-     "default": "true",
-     "ref": null
-    },
-    "is_online_exclusive": {
-     "tipo": "boolean",
-     "nn": false,
-     "pk": false,
-     "default": "false",
-     "ref": null
-    },
-    "is_stockout": {
-     "tipo": "boolean",
-     "nn": false,
-     "pk": false,
-     "default": "false",
-     "ref": null
-    },
-    "is_textil": {
-     "tipo": "boolean",
-     "nn": false,
-     "pk": false,
-     "default": "false",
-     "ref": null
-    },
-    "name": {
-     "tipo": "character varying(500)",
-     "nn": false,
-     "pk": false,
-     "default": null,
-     "ref": null
-    },
-    "prod_reference": {
-     "tipo": "character varying(20)",
-     "nn": true,
-     "pk": false,
-     "default": null,
-     "ref": null
-    },
-    "product_weight_g": {
-     "tipo": "integer",
-     "nn": false,
-     "pk": false,
-     "default": null,
-     "ref": null
-    },
-    "short_description": {
-     "tipo": "character varying(500)",
-     "nn": false,
-     "pk": false,
-     "default": null,
-     "ref": null
-    },
-    "subtype_code": {
-     "tipo": "character varying(10)",
-     "nn": false,
-     "pk": false,
-     "default": null,
-     "ref": null
-    },
-    "subtype_name": {
-     "tipo": "character varying(100)",
-     "nn": false,
-     "pk": false,
-     "default": null,
-     "ref": null
-    },
-    "synced_at": {
-     "tipo": "timestamp with time zone",
-     "nn": false,
-     "pk": false,
-     "default": "\"now\"()",
-     "ref": null
-    },
-    "type_code": {
-     "tipo": "character varying(10)",
-     "nn": false,
-     "pk": false,
-     "default": null,
-     "ref": null
-    },
-    "type_name": {
-     "tipo": "character varying(100)",
-     "nn": false,
-     "pk": false,
-     "default": null,
-     "ref": null
-    },
-    "updated_at": {
-     "tipo": "timestamp with time zone",
-     "nn": false,
-     "pk": false,
-     "default": "\"now\"()",
-     "ref": null
-    }
-   },
-   "rls": false,
-   "policies": [],
-   "indices": [],
-   "fks": [],
-   "criada_em": "20260512000000_bootstrap_missing_application_schemas.sql",
-   "usada_no_front": 0,
-   "usada_em_edges": [],
-   "triggers": [
-    "trg_products_updated"
-   ],
-   "sem_rls": false,
-   "nao_usada": true
-  },
-  "supplier_stricker.stg_colors": {
-   "colunas": {
-    "created_at": {
-     "tipo": "timestamp with time zone",
-     "nn": false,
-     "pk": false,
-     "default": "\"now\"()",
-     "ref": null
-    },
-    "hex_code": {
-     "tipo": "character varying(7)",
-     "nn": false,
-     "pk": false,
-     "default": null,
-     "ref": null
-    },
-    "id": {
-     "tipo": "integer",
-     "nn": true,
-     "pk": false,
-     "default": "\"nextval\"('\"supplier_stricker\".\"stg_colors_id_seq\"'::\"regclass\")",
-     "ref": null
-    },
-    "stricker_ref": {
-     "tipo": "character varying(50)",
-     "nn": true,
-     "pk": false,
-     "default": null,
-     "ref": null
-    },
-    "synced_at": {
-     "tipo": "timestamp with time zone",
-     "nn": false,
-     "pk": false,
-     "default": "\"now\"()",
-     "ref": null
-    }
-   },
-   "rls": false,
-   "policies": [],
-   "indices": [],
-   "fks": [],
-   "criada_em": "20260512000000_bootstrap_missing_application_schemas.sql",
-   "usada_no_front": 0,
-   "usada_em_edges": [],
-   "triggers": [],
-   "sem_rls": false,
-   "nao_usada": true
-  },
-  "supplier_stricker.stg_customizations": {
-   "colunas": {
-    "created_at": {
-     "tipo": "timestamp with time zone",
-     "nn": false,
-     "pk": false,
-     "default": "\"now\"()",
-     "ref": null
-    },
-    "id": {
-     "tipo": "integer",
-     "nn": true,
-     "pk": false,
-     "default": "\"nextval\"('\"supplier_stricker\".\"stg_customizations_id_seq\"'::\"regclass\")",
-     "ref": null
-    },
-    "max_colors": {
-     "tipo": "integer",
-     "nn": false,
-     "pk": false,
-     "default": null,
-     "ref": null
-    },
-    "max_height": {
-     "tipo": "numeric(10,2)",
-     "nn": false,
-     "pk": false,
-     "default": null,
-     "ref": null
-    },
-    "max_width": {
-     "tipo": "numeric(10,2)",
-     "nn": false,
-     "pk": false,
-     "default": null,
-     "ref": null
-    },
-    "product_ref": {
-     "tipo": "character varying(50)",
-     "nn": false,
-     "pk": false,
-     "default": null,
-     "ref": null
-    },
-    "stricker_ref": {
-     "tipo": "character varying(50)",
-     "nn": true,
-     "pk": false,
-     "default": null,
-     "ref": null
-    },
-    "synced_at": {
-     "tipo": "timestamp with time zone",
-     "nn": false,
-     "pk": false,
-     "default": "\"now\"()",
-     "ref": null
-    }
-   },
-   "rls": false,
-   "policies": [],
-   "indices": [],
-   "fks": [],
-   "criada_em": "20260512000000_bootstrap_missing_application_schemas.sql",
-   "usada_no_front": 0,
-   "usada_em_edges": [],
-   "triggers": [],
-   "sem_rls": false,
-   "nao_usada": true
-  },
-  "supplier_stricker.stg_images": {
-   "colunas": {
-    "created_at": {
-     "tipo": "timestamp with time zone",
-     "nn": false,
-     "pk": false,
-     "default": "\"now\"()",
-     "ref": null
-    },
-    "id": {
-     "tipo": "integer",
-     "nn": true,
-     "pk": false,
-     "default": "\"nextval\"('\"supplier_stricker\".\"stg_images_id_seq\"'::\"regclass\")",
-     "ref": null
-    },
-    "image_type": {
-     "tipo": "character varying(50)",
-     "nn": false,
-     "pk": false,
-     "default": null,
-     "ref": null
-    },
-    "optional_ref": {
-     "tipo": "character varying(50)",
-     "nn": false,
-     "pk": false,
-     "default": null,
-     "ref": null
-    },
-    "position": {
-     "tipo": "integer",
-     "nn": false,
-     "pk": false,
-     "default": null,
-     "ref": null
-    },
-    "processed_at": {
-     "tipo": "timestamp with time zone",
-     "nn": false,
-     "pk": false,
-     "default": null,
-     "ref": null
-    },
-    "product_ref": {
-     "tipo": "character varying(50)",
-     "nn": false,
-     "pk": false,
-     "default": null,
-     "ref": null
-    },
-    "stricker_ref": {
-     "tipo": "character varying(50)",
-     "nn": false,
-     "pk": false,
-     "default": null,
-     "ref": null
-    },
-    "synced_at": {
-     "tipo": "timestamp with time zone",
-     "nn": false,
-     "pk": false,
-     "default": "\"now\"()",
-     "ref": null
-    }
-   },
-   "rls": false,
-   "policies": [],
-   "indices": [],
-   "fks": [],
-   "criada_em": "20260512000000_bootstrap_missing_application_schemas.sql",
-   "usada_no_front": 0,
-   "usada_em_edges": [],
-   "triggers": [],
-   "sem_rls": false,
-   "nao_usada": true
-  },
-  "supplier_stricker.stg_optionals": {
-   "colunas": {
-    "capacity": {
-     "tipo": "character varying(50)",
-     "nn": false,
-     "pk": false,
-     "default": null,
-     "ref": null
-    },
-    "color_code": {
-     "tipo": "character varying(20)",
-     "nn": false,
-     "pk": false,
-     "default": null,
-     "ref": null
-    },
-    "color_hex": {
-     "tipo": "character varying(7)",
-     "nn": false,
-     "pk": false,
-     "default": null,
-     "ref": null
-    },
-    "color_name": {
-     "tipo": "character varying(100)",
-     "nn": false,
-     "pk": false,
-     "default": null,
-     "ref": null
-    },
-    "created_at": {
-     "tipo": "timestamp with time zone",
-     "nn": false,
-     "pk": false,
-     "default": "\"now\"()",
-     "ref": null
-    },
-    "min_qt_1": {
-     "tipo": "integer",
-     "nn": false,
-     "pk": false,
-     "default": null,
-     "ref": null
-    },
-    "min_qt_2": {
-     "tipo": "integer",
-     "nn": false,
-     "pk": false,
-     "default": null,
-     "ref": null
-    },
-    "min_qt_3": {
-     "tipo": "integer",
-     "nn": false,
-     "pk": false,
-     "default": null,
-     "ref": null
-    },
-    "min_qt_4": {
-     "tipo": "integer",
-     "nn": false,
-     "pk": false,
-     "default": null,
-     "ref": null
-    },
-    "min_qt_5": {
-     "tipo": "integer",
-     "nn": false,
-     "pk": false,
-     "default": null,
-     "ref": null
-    },
-    "price_1": {
-     "tipo": "numeric(10,4)",
-     "nn": false,
-     "pk": false,
-     "default": null,
-     "ref": null
-    },
-    "price_2": {
-     "tipo": "numeric(10,4)",
-     "nn": false,
-     "pk": false,
-     "default": null,
-     "ref": null
-    },
-    "price_3": {
-     "tipo": "numeric(10,4)",
-     "nn": false,
-     "pk": false,
-     "default": null,
-     "ref": null
-    },
-    "price_4": {
-     "tipo": "numeric(10,4)",
-     "nn": false,
-     "pk": false,
-     "default": null,
-     "ref": null
-    },
-    "price_5": {
-     "tipo": "numeric(10,4)",
-     "nn": false,
-     "pk": false,
-     "default": null,
-     "ref": null
-    },
-    "processed": {
-     "tipo": "boolean",
-     "nn": false,
-     "pk": false,
-     "default": "false",
-     "ref": null
-    },
-    "processed_at": {
-     "tipo": "timestamp with time zone",
-     "nn": false,
-     "pk": false,
-     "default": null,
-     "ref": null
-    },
-    "prod_reference": {
-     "tipo": "character varying(50)",
-     "nn": true,
-     "pk": false,
-     "default": null,
-     "ref": null
-    },
-    "size": {
-     "tipo": "character varying(50)",
-     "nn": false,
-     "pk": false,
-     "default": null,
-     "ref": null
-    },
-    "sku": {
-     "tipo": "character varying(50)",
-     "nn": true,
-     "pk": false,
-     "default": null,
-     "ref": null
-    },
-    "updated_at": {
-     "tipo": "timestamp with time zone",
-     "nn": false,
-     "pk": false,
-     "default": "\"now\"()",
-     "ref": null
-    },
-    "web_sku": {
-     "tipo": "character varying(50)",
-     "nn": false,
-     "pk": false,
-     "default": null,
-     "ref": null
-    }
-   },
-   "rls": false,
-   "policies": [],
-   "indices": [],
-   "fks": [],
-   "criada_em": "20260512000000_bootstrap_missing_application_schemas.sql",
+   "criada_em": null,
    "usada_no_front": 0,
    "usada_em_edges": [],
    "triggers": [],
@@ -47552,50 +45953,7 @@
    "nao_usada": true
   },
   "supplier_stricker.stg_product_types": {
-   "colunas": {
-    "created_at": {
-     "tipo": "timestamp with time zone",
-     "nn": false,
-     "pk": false,
-     "default": "\"now\"()",
-     "ref": null
-    },
-    "id": {
-     "tipo": "integer",
-     "nn": true,
-     "pk": false,
-     "default": "\"nextval\"('\"supplier_stricker\".\"stg_product_types_id_seq\"'::\"regclass\")",
-     "ref": null
-    },
-    "level": {
-     "tipo": "integer",
-     "nn": false,
-     "pk": false,
-     "default": null,
-     "ref": null
-    },
-    "parent_ref": {
-     "tipo": "character varying(50)",
-     "nn": false,
-     "pk": false,
-     "default": null,
-     "ref": null
-    },
-    "stricker_ref": {
-     "tipo": "character varying(50)",
-     "nn": true,
-     "pk": false,
-     "default": null,
-     "ref": null
-    },
-    "synced_at": {
-     "tipo": "timestamp with time zone",
-     "nn": false,
-     "pk": false,
-     "default": "\"now\"()",
-     "ref": null
-    }
-   },
+   "colunas": {},
    "rls": false,
    "policies": [],
    "indices": [
@@ -47605,392 +45963,8 @@
      "unico": false
     }
    ],
-   "fks": [
-    "mapped_to_category_id->public"
-   ],
-   "criada_em": "20260512000000_bootstrap_missing_application_schemas.sql",
-   "usada_no_front": 0,
-   "usada_em_edges": [],
-   "triggers": [],
-   "sem_rls": false,
-   "nao_usada": true
-  },
-  "supplier_stricker.stg_products": {
-   "colunas": {
-    "box_height_mm": {
-     "tipo": "integer",
-     "nn": false,
-     "pk": false,
-     "default": null,
-     "ref": null
-    },
-    "box_length_mm": {
-     "tipo": "integer",
-     "nn": false,
-     "pk": false,
-     "default": null,
-     "ref": null
-    },
-    "box_weight_kg": {
-     "tipo": "numeric(10,3)",
-     "nn": false,
-     "pk": false,
-     "default": null,
-     "ref": null
-    },
-    "box_width_mm": {
-     "tipo": "integer",
-     "nn": false,
-     "pk": false,
-     "default": null,
-     "ref": null
-    },
-    "brand": {
-     "tipo": "character varying(50)",
-     "nn": false,
-     "pk": false,
-     "default": null,
-     "ref": null
-    },
-    "created_at": {
-     "tipo": "timestamp with time zone",
-     "nn": false,
-     "pk": false,
-     "default": "\"now\"()",
-     "ref": null
-    },
-    "gender": {
-     "tipo": "character varying(20)",
-     "nn": false,
-     "pk": false,
-     "default": null,
-     "ref": null
-    },
-    "has_capacity": {
-     "tipo": "boolean",
-     "nn": false,
-     "pk": false,
-     "default": "false",
-     "ref": null
-    },
-    "has_colors": {
-     "tipo": "boolean",
-     "nn": false,
-     "pk": false,
-     "default": "false",
-     "ref": null
-    },
-    "has_sizes": {
-     "tipo": "boolean",
-     "nn": false,
-     "pk": false,
-     "default": "false",
-     "ref": null
-    },
-    "is_stockout": {
-     "tipo": "boolean",
-     "nn": false,
-     "pk": false,
-     "default": "false",
-     "ref": null
-    },
-    "is_textil": {
-     "tipo": "boolean",
-     "nn": false,
-     "pk": false,
-     "default": "false",
-     "ref": null
-    },
-    "processed": {
-     "tipo": "boolean",
-     "nn": false,
-     "pk": false,
-     "default": "false",
-     "ref": null
-    },
-    "processed_at": {
-     "tipo": "timestamp with time zone",
-     "nn": false,
-     "pk": false,
-     "default": null,
-     "ref": null
-    },
-    "prod_reference": {
-     "tipo": "character varying(50)",
-     "nn": true,
-     "pk": false,
-     "default": null,
-     "ref": null
-    },
-    "product_weight_g": {
-     "tipo": "integer",
-     "nn": false,
-     "pk": false,
-     "default": null,
-     "ref": null
-    },
-    "sub_type_code": {
-     "tipo": "character varying(10)",
-     "nn": false,
-     "pk": false,
-     "default": null,
-     "ref": null
-    },
-    "type_code": {
-     "tipo": "character varying(10)",
-     "nn": false,
-     "pk": false,
-     "default": null,
-     "ref": null
-    },
-    "updated_at": {
-     "tipo": "timestamp with time zone",
-     "nn": false,
-     "pk": false,
-     "default": "\"now\"()",
-     "ref": null
-    }
-   },
-   "rls": false,
-   "policies": [],
-   "indices": [],
    "fks": [],
-   "criada_em": "20260512000000_bootstrap_missing_application_schemas.sql",
-   "usada_no_front": 0,
-   "usada_em_edges": [],
-   "triggers": [],
-   "sem_rls": false,
-   "nao_usada": true
-  },
-  "supplier_stricker.stg_stock": {
-   "colunas": {
-    "created_at": {
-     "tipo": "timestamp with time zone",
-     "nn": false,
-     "pk": false,
-     "default": "\"now\"()",
-     "ref": null
-    },
-    "next_quantity_1": {
-     "tipo": "integer",
-     "nn": false,
-     "pk": false,
-     "default": null,
-     "ref": null
-    },
-    "next_quantity_2": {
-     "tipo": "integer",
-     "nn": false,
-     "pk": false,
-     "default": null,
-     "ref": null
-    },
-    "next_quantity_3": {
-     "tipo": "integer",
-     "nn": false,
-     "pk": false,
-     "default": null,
-     "ref": null
-    },
-    "sku": {
-     "tipo": "character varying(50)",
-     "nn": true,
-     "pk": false,
-     "default": null,
-     "ref": null
-    },
-    "stock_quantity": {
-     "tipo": "integer",
-     "nn": false,
-     "pk": false,
-     "default": "0",
-     "ref": null
-    },
-    "synced_at": {
-     "tipo": "timestamp with time zone",
-     "nn": false,
-     "pk": false,
-     "default": "\"now\"()",
-     "ref": null
-    },
-    "updated_at": {
-     "tipo": "timestamp with time zone",
-     "nn": false,
-     "pk": false,
-     "default": "\"now\"()",
-     "ref": null
-    }
-   },
-   "rls": false,
-   "policies": [],
-   "indices": [],
-   "fks": [],
-   "criada_em": "20260512000000_bootstrap_missing_application_schemas.sql",
-   "usada_no_front": 0,
-   "usada_em_edges": [],
-   "triggers": [],
-   "sem_rls": false,
-   "nao_usada": true
-  },
-  "supplier_stricker.stocks": {
-   "colunas": {
-    "created_at": {
-     "tipo": "timestamp with time zone",
-     "nn": false,
-     "pk": false,
-     "default": "\"now\"()",
-     "ref": null
-    },
-    "last_sync_at": {
-     "tipo": "timestamp with time zone",
-     "nn": false,
-     "pk": false,
-     "default": "\"now\"()",
-     "ref": null
-    },
-    "next_quantity_1": {
-     "tipo": "integer",
-     "nn": false,
-     "pk": false,
-     "default": null,
-     "ref": null
-    },
-    "next_quantity_2": {
-     "tipo": "integer",
-     "nn": false,
-     "pk": false,
-     "default": null,
-     "ref": null
-    },
-    "next_quantity_3": {
-     "tipo": "integer",
-     "nn": false,
-     "pk": false,
-     "default": null,
-     "ref": null
-    },
-    "sku": {
-     "tipo": "character varying(30)",
-     "nn": true,
-     "pk": false,
-     "default": null,
-     "ref": null
-    },
-    "stock_quantity": {
-     "tipo": "integer",
-     "nn": false,
-     "pk": false,
-     "default": "0",
-     "ref": null
-    },
-    "updated_at": {
-     "tipo": "timestamp with time zone",
-     "nn": false,
-     "pk": false,
-     "default": "\"now\"()",
-     "ref": null
-    }
-   },
-   "rls": false,
-   "policies": [],
-   "indices": [],
-   "fks": [
-    "sku->supplier_stricker"
-   ],
-   "criada_em": "20260512000000_bootstrap_missing_application_schemas.sql",
-   "usada_no_front": 0,
-   "usada_em_edges": [],
-   "triggers": [
-    "trg_stocks_updated"
-   ],
-   "sem_rls": false,
-   "nao_usada": true
-  },
-  "supplier_stricker.sync_log": {
-   "colunas": {
-    "completed_at": {
-     "tipo": "timestamp with time zone",
-     "nn": false,
-     "pk": false,
-     "default": null,
-     "ref": null
-    },
-    "duration_seconds": {
-     "tipo": "integer",
-     "nn": false,
-     "pk": false,
-     "default": null,
-     "ref": null
-    },
-    "records_deleted": {
-     "tipo": "integer",
-     "nn": false,
-     "pk": false,
-     "default": "0",
-     "ref": null
-    },
-    "records_fetched": {
-     "tipo": "integer",
-     "nn": false,
-     "pk": false,
-     "default": "0",
-     "ref": null
-    },
-    "records_inserted": {
-     "tipo": "integer",
-     "nn": false,
-     "pk": false,
-     "default": "0",
-     "ref": null
-    },
-    "records_updated": {
-     "tipo": "integer",
-     "nn": false,
-     "pk": false,
-     "default": "0",
-     "ref": null
-    },
-    "started_at": {
-     "tipo": "timestamp with time zone",
-     "nn": false,
-     "pk": false,
-     "default": "\"now\"()",
-     "ref": null
-    },
-    "status": {
-     "tipo": "character varying(20)",
-     "nn": false,
-     "pk": false,
-     "default": "'running'::character varying",
-     "ref": null
-    },
-    "sync_source": {
-     "tipo": "character varying(50)",
-     "nn": false,
-     "pk": false,
-     "default": "'api'::character varying",
-     "ref": null
-    },
-    "sync_type": {
-     "tipo": "character varying(50)",
-     "nn": true,
-     "pk": false,
-     "default": null,
-     "ref": null
-    },
-    "triggered_by": {
-     "tipo": "character varying(50)",
-     "nn": false,
-     "pk": false,
-     "default": "'n8n'::character varying",
-     "ref": null
-    }
-   },
-   "rls": false,
-   "policies": [],
-   "indices": [],
-   "fks": [],
-   "criada_em": "20260512000000_bootstrap_missing_application_schemas.sql",
+   "criada_em": null,
    "usada_no_front": 0,
    "usada_em_edges": [],
    "triggers": [],

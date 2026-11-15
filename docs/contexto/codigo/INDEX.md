@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e de hora em hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `24038f15deed8574a4578abae55da45c49aadaef` (2026-11-15T20:03:31-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e de hora em hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `26d93948f5745e0b96aad0868e304270e340d62f` (2026-11-15T20:50:24-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -45,7 +45,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 | componentes | 1235 |
 | hooks | 626 |
 | edge_functions | 111 |
-| tabelas | 548 |
+| tabelas | 527 |
 | migrations | 3096 |
 | cron_jobs | 122 |
 | testes | 2517 |
@@ -577,7 +577,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - menu_sem_destino: 18 — ex.: Ação -> #fab, AI Router -> ai-router, Bem-vindo ao Promo Brindes! -> welcome
 - edges_orfas: 49 — ex.: anonymize-user, audit-suite, bi-copilot
 - edges_chamadas_sem_pasta: 1 — ex.: receive-quote-sync
-- tabelas_sem_rls: 26 — ex.: _backup_quotes_orgid_null_20260614, _bkp_asia_raw_pre_fix_referencia, binding_colors
+- tabelas_sem_rls: 30 — ex.: _backup_quotes_orgid_null_20260614, _bkp_asia_raw_pre_fix_referencia, binding_colors
 - tabelas_usadas_sem_definicao: 11 — ex.: ai_models, avatars, categories_tree_visual
 - tabelas_com_drift_migration_vs_types: 0
 - rpcs_sem_definicao: 5 — ex.: fn_get_color_swatches_batch, fn_get_reposicao_variants_summary, fn_rupture_health_check
@@ -589,15 +589,15 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - possiveis_segredos_no_codigo: 7 — ex.: scripts/ai-context/cenarios.mjs:102, src/components/admin/connections/__tests__/ConnectionSecurity.unit.test.tsx:9, src/integrations/supabase/client.ts:27
 
 ## Grafo de código (graphify)
-- 44367 nós · 76661 arestas · 2498 comunidades · grafo do commit `24038f15`
-- comunidades maiores: vitest (854), ref_components (774), ref_integrations (604), ref_hooks (456), gotoAndSettle (389), @tanstack/react-query (380), ref_node_child_process (373), react (366), ref_types (321), scripts (302), sonner (301), ref_utils (299)
+- 44368 nós · 76662 arestas · 2512 comunidades · grafo do commit `26d93948`
+- comunidades maiores: vitest (963), ref_components (716), ref_integrations (628), ref_node_child_process (447), ref_hooks (420), @tanstack/react-query (396), react (357), gotoAndSettle (355), sonner (333), ref_types (315), ref_node_fs (314), ref_utils (310)
 - símbolos mais chamados: gotoAndSettle() (e2e/helpers/nav.ts), re (?), q() (scripts/supabase_snapshot/snapshot.py), analyze() (tests/scripts/test_personalization_artifact_diagnostics.py), outer() (tests/scripts/test_personalization_artifact_diagnostics.py), json (?), useExternalDatabase() (recovery/src-legacy/src/hooks/useExternalDatabase.ts), concludeCheck() (scripts/check-result-contract.mjs), querySupabaseReadOnly() (scripts/supabase-read-only-query.mjs), loginAs() (e2e/helpers/auth.ts), inner() (tests/scripts/test_personalization_artifact_diagnostics.py), excluded_sql() (scripts/supabase_snapshot/snapshot.py)
 - consulta local: `graphify query "<pergunta>"`, `graphify path "<A>" "<B>"`, `graphify explain "<X>"`
 
 ## Hotspots (arquivos mais alterados, 90 dias)
-- RELATORIO_CI.md (90)
-- PENDENCIAS.md (85)
-- supabase/MIGRATIONS_SYNC_LOG.md (57)
+- RELATORIO_CI.md (89)
+- PENDENCIAS.md (84)
+- supabase/MIGRATIONS_SYNC_LOG.md (58)
 - package.json (41)
 - package-lock.json (26)
 - docs/coordenacao/conflitos-semanticos.md (20)
@@ -1173,6 +1173,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - CHANGELOG topo: [1.1.0](https://github.com/adm01-debug/Promo_Gifts_V4/compare/v1.0.0...v1.1.0) (2026-11-13)
 
 ## Últimos commits
+- 2026-11-15 `26d93948` fix(db): replay do zero — colunas e tabelas perdidas por no-op de CREATE TABLE IF NOT EXISTS (#3686)
 - 2026-11-15 `24038f15` fix(mockup): avisa o vendedor quando a ficha de aprovação falha (#3684)
 - 2026-11-15 `956593c0` fix(mockup): teto de corpo e de lote na edge generate-mockup antes de processar (#3673)
 - 2026-11-15 `ef2a7fa1` fix(e2e): orcamento do teste cobre a espera de 150s do login em CI (#3682)
@@ -1187,7 +1188,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-15 `6da08832` fix(assistente): card não acusa falha enquanto a RPC não foi aplicada (#3678)
 - 2026-11-15 `4344666f` feat(assistente): Encaixe do Cliente — fase 1 validada e com os 2 portões destravados (#3663)
 - 2026-11-15 `8ece9cc4` fix(inteligencia): grafico de mercado nao acusa erro quando a RPC ainda nao foi aplicada (#3675)
-- 2026-11-15 `f1044db3` feat(mockup): aviso de "não carregou, tentar de novo" no catálogo do painel de mockup (#3670)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "24038f15deed8574a4578abae55da45c49aadaef",
+  "commit": "26d93948f5745e0b96aad0868e304270e340d62f",
   "branch": "main",
-  "data_commit": "2026-11-15T20:03:31-03:00",
+  "data_commit": "2026-11-15T20:50:24-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "26d93948",
+    "data": "2026-11-15",
+    "assunto": "fix(db): replay do zero — colunas e tabelas perdidas por no-op de CREATE TABLE IF NOT EXISTS (#3686)"
+   },
    {
     "sha": "24038f15",
     "data": "2026-11-15",
@@ -126,14 +131,9 @@
     "sha": "9e656a39",
     "data": "2026-11-15",
     "assunto": "ci: enxuga workflows — checagens estáticas consolidadas, 12 aposentados, contexto 1×/h (#3659)"
-   },
-   {
-    "sha": "20dfb7b3",
-    "data": "2026-11-15",
-    "assunto": "chore: trem de infra — BOM da edge asia-ingestion, recibo E66, E2E fora dos PRs e snapshots all-authed (#3658)"
    }
   ],
-  "arquivos_mudados_7d": 2166,
+  "arquivos_mudados_7d": 2159,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -177,11 +177,11 @@
    },
    {
     "pasta": "RELATORIO_CI.md",
-    "mudancas": 90
+    "mudancas": 89
    },
    {
     "pasta": "PENDENCIAS.md",
-    "mudancas": 85
+    "mudancas": 84
    },
    {
     "pasta": "src/components/kit-builder",
@@ -199,15 +199,15 @@
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "RELATORIO_CI.md",
-    "mudancas": 90
+    "mudancas": 89
    },
    {
     "arquivo": "PENDENCIAS.md",
-    "mudancas": 85
+    "mudancas": 84
    },
    {
     "arquivo": "supabase/MIGRATIONS_SYNC_LOG.md",
-    "mudancas": 57
+    "mudancas": 58
    },
    {
     "arquivo": "package.json",
@@ -333,7 +333,7 @@
   "componentes": 1235,
   "hooks": 626,
   "edge_functions": 111,
-  "tabelas": 548,
+  "tabelas": 527,
   "migrations": 3096,
   "cron_jobs": 122,
   "testes": 2517,
@@ -3095,12 +3095,16 @@
    "cover_materials",
    "cover_types",
    "import_staging_images",
+   "material_groups",
+   "material_types",
    "notebook_features",
    "paper_colors",
    "paper_formats",
    "paper_rulings",
    "paper_weights",
    "product_customization_prices",
+   "product_images",
+   "product_materials",
    "product_notebook_features",
    "product_notebook_specs",
    "product_packaging",

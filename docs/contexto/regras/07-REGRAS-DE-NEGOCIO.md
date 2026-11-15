@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.3.2 · commit `24038f15de` · branch `main` · 2026-11-15 23:04 UTC
+> Gerado automaticamente por AI Context Sync v1.3.2 · commit `26d93948f5` · branch `main` · 2026-11-15 23:51 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -606,19 +606,10 @@ Fornecedor Asia → supplier_products_raw (Bronze) → normalização (Silver) �
 | `material_groups` | `is_active` | default true |
 | `material_groups` | `created_at` | default "now"() |
 | `material_groups` | `updated_at` | default "now"() |
-| `material_groups` | `(tabela)` | CONSTRAINT "check_sort_order_positive_mg" CHECK (("sort_order" >= 0)) |
-| `material_groups` | `(tabela)` | constraint material_groups_organization_id_name_key UNIQUE ("organization_id", "name") |
-| `material_groups` | `(tabela)` | constraint material_groups_organization_id_slug_key UNIQUE ("organization_id", "slug") |
-| `material_groups` | `(tabela)` | constraint material_groups_pkey PRIMARY KEY ("id") |
-| `material_groups` | `(tabela)` | constraint material_groups_organization_id_fkey FOREIGN KEY ("organization_id") REFERENCES "public"."organizations"("id") ON DELETE CASCADE |
-| `material_groups` | `(tabela)` | constraint material_groups_organization_id_name_key UNIQUE ("organization_id", "name") |
-| `material_groups` | `(tabela)` | constraint material_groups_organization_id_slug_key UNIQUE ("organization_id", "slug") |
-| `material_groups` | `(tabela)` | constraint material_groups_pkey PRIMARY KEY ("id") |
-| `material_groups` | `(tabela)` | constraint material_groups_organization_id_fkey FOREIGN KEY ("organization_id") REFERENCES "public"."organizations"("id") ON DELETE CASCADE |
 | `material_groups` | `(tabela)` | constraint material_groups_organization_id_fkey FOREIGN KEY (organization_id) REFERENCES public.organizations(id) ON DELETE CASCADE |
 | `material_types` | `id` | default "gen_random_uuid"() |
-| `material_types` | `organization_id` | obrigatório; FK → organizations.id ON DELETE CASCADE |
-| `material_types` | `group_id` | obrigatório; FK → material_groups.id ON DELETE CASCADE |
+| `material_types` | `organization_id` | obrigatório |
+| `material_types` | `group_id` | obrigatório |
 | `material_types` | `name` | obrigatório |
 | `material_types` | `slug` | obrigatório |
 | `material_types` | `properties` | default '{}'::"jsonb" |
@@ -626,31 +617,14 @@ Fornecedor Asia → supplier_products_raw (Bronze) → normalização (Silver) �
 | `material_types` | `is_active` | default true |
 | `material_types` | `created_at` | default "now"() |
 | `material_types` | `updated_at` | default "now"() |
-| `material_types` | `(tabela)` | constraint material_types_organization_id_slug_key UNIQUE ("organization_id", "slug") |
-| `material_types` | `(tabela)` | constraint material_types_pkey PRIMARY KEY ("id") |
-| `material_types` | `(tabela)` | constraint material_types_group_id_fkey FOREIGN KEY ("group_id") REFERENCES "public"."material_groups"("id") ON DELETE CASCADE |
-| `material_types` | `(tabela)` | constraint material_types_organization_id_fkey FOREIGN KEY ("organization_id") REFERENCES "public"."organizations"("id") ON DELETE CASCADE |
-| `material_types` | `(tabela)` | constraint material_types_organization_id_slug_key UNIQUE ("organization_id", "slug") |
-| `material_types` | `(tabela)` | constraint material_types_pkey PRIMARY KEY ("id") |
-| `material_types` | `(tabela)` | constraint material_types_group_id_fkey FOREIGN KEY ("group_id") REFERENCES "public"."material_groups"("id") ON DELETE CASCADE |
-| `material_types` | `(tabela)` | constraint material_types_organization_id_fkey FOREIGN KEY ("organization_id") REFERENCES "public"."organizations"("id") ON DELETE CASCADE |
 | `product_materials` | `id` | default "gen_random_uuid"() |
 | `product_materials` | `organization_id` | obrigatório |
-| `product_materials` | `product_id` | obrigatório; FK → products.id ON DELETE CASCADE |
-| `product_materials` | `material_id` | obrigatório; FK → material_types.id ON DELETE CASCADE |
+| `product_materials` | `product_id` | obrigatório |
+| `product_materials` | `material_id` | obrigatório |
 | `product_materials` | `sort_order` | default 100 |
 | `product_materials` | `created_at` | default "now"() |
 | `product_materials` | `updated_at` | default "now"() |
 | `product_materials` | `is_active` | default true |
-| `product_materials` | `(tabela)` | CONSTRAINT "product_materials_percentage_check" CHECK ((("percentage" IS NULL) OR (("percentage" >= (0)::numeric) AND ("percentage" <= (100)::numeric)))) |
-| `product_materials` | `(tabela)` | constraint product_materials_pkey PRIMARY KEY ("id") |
-| `product_materials` | `(tabela)` | constraint product_materials_product_material_unique UNIQUE ("product_id", "material_id") |
-| `product_materials` | `(tabela)` | constraint product_materials_material_id_fkey FOREIGN KEY ("material_id") REFERENCES "public"."material_types"("id") ON DELETE CASCADE |
-| `product_materials` | `(tabela)` | constraint product_materials_product_id_fkey FOREIGN KEY ("product_id") REFERENCES "public"."products"("id") ON DELETE CASCADE |
-| `product_materials` | `(tabela)` | constraint product_materials_pkey PRIMARY KEY ("id") |
-| `product_materials` | `(tabela)` | constraint product_materials_product_material_unique UNIQUE ("product_id", "material_id") |
-| `product_materials` | `(tabela)` | constraint product_materials_material_id_fkey FOREIGN KEY ("material_id") REFERENCES "public"."material_types"("id") ON DELETE CASCADE |
-| `product_materials` | `(tabela)` | constraint product_materials_product_id_fkey FOREIGN KEY ("product_id") REFERENCES "public"."products"("id") ON DELETE CASCADE |
 | `quotes_inbound` | `quote_id` | PK |
 | `quotes_inbound` | `raw_payload` | obrigatório |
 | `quotes_inbound` | `received_at` | default now() |
@@ -809,7 +783,33 @@ Fornecedor Asia → supplier_products_raw (Bronze) → normalização (Silver) �
 | `art_file_attachments` | `user_id` | obrigatório |
 | `art_file_attachments` | `file_url` | obrigatório |
 | `art_file_attachments` | `file_path` | obrigatório |
-| … +3789 linhas — lista completa em `context.json` | | |
+| `art_file_attachments` | `original_name` | obrigatório |
+| `art_file_attachments` | `created_at` | default now() |
+| `art_file_attachments` | `updated_at` | default now() |
+| `audit_logs` | `id` | PK; default gen_random_uuid() |
+| `audit_logs` | `event_type` | obrigatório |
+| `audit_logs` | `endpoint` | obrigatório |
+| `audit_logs` | `identifier` | obrigatório |
+| `audit_logs` | `metadata` | default '{}'::jsonb |
+| `audit_logs` | `created_at` | default now() |
+| `auth_login_attempts` | `id` | default gen_random_uuid() |
+| `auth_login_attempts` | `email` | obrigatório |
+| `auth_login_attempts` | `success` | default false |
+| `auth_login_attempts` | `created_at` | default now() |
+| `auth_login_attempts` | `(tabela)` | constraint auth_login_attempts_pkey PRIMARY KEY (id) |
+| `bot_detection_log` | `id` | PK; default gen_random_uuid() |
+| `bot_detection_log` | `ip_address` | obrigatório |
+| `bot_detection_log` | `endpoint` | obrigatório |
+| `bot_detection_log` | `detection_reason` | obrigatório |
+| `bot_detection_log` | `request_count` | default 1 |
+| `bot_detection_log` | `blocked` | default false |
+| `bot_detection_log` | `metadata` | default '{}'::jsonb |
+| `bot_detection_log` | `created_at` | default now() |
+| `cart_templates` | `id` | PK; default gen_random_uuid() |
+| `cart_templates` | `user_id` | obrigatório; FK → users.id ON DELETE CASCADE |
+| `cart_templates` | `name` | obrigatório |
+| `cart_templates` | `items` | default '[]'::jsonb |
+| … +3763 linhas — lista completa em `context.json` | | |
 
 ## D. Automações no banco (triggers e funções — regras que rodam sozinhas)
 
@@ -1051,6 +1051,11 @@ Fornecedor Asia → supplier_products_raw (Bronze) → normalização (Silver) �
 | update_user_search_history_updated_at | BEFORE UPDATE | `user_search_history` | `update_updated_at_column` |  |
 | validate_percentages_before_insert | BEFORE INSERT | `product_materials` | `validate_material_percentages` |  |
 | validate_percentages_before_update | BEFORE UPDATE | `product_materials` | `validate_material_percentages` |  |
+| trg_customization_options_updated | BEFORE UPDATE | `supplier_stricker.customization_options` | `update_timestamp` |  |
+| trg_customization_tables_updated | BEFORE UPDATE | `supplier_stricker.customization_tables` | `update_timestamp` |  |
+| trg_optionals_updated | BEFORE UPDATE | `supplier_stricker.optionals` | `update_timestamp` |  |
+| trg_products_updated | BEFORE UPDATE | `supplier_stricker.products` | `update_timestamp` |  |
+| trg_stocks_updated | BEFORE UPDATE | `supplier_stricker.stocks` | `update_timestamp` |  |
 | trigger_saved_filters_updated_at | BEFORE UPDATE | `saved_filters` | `update_saved_filters_updated_at` |  |
 | trigger_single_default_filter | BEFORE INSERT OR UPDATE OF IS_DEFAULT | `saved_filters` | `ensure_single_default_filter` | `NEW.is_default = true` |
 | trigger_create_credit_account | AFTER INSERT | `auth.users` | `create_mockup_credit_account` |  |
@@ -1110,11 +1115,6 @@ Fornecedor Asia → supplier_products_raw (Bronze) → normalização (Silver) �
 | trg_validate_approval_token_status | BEFORE INSERT OR UPDATE | `quote_approval_tokens` | `validate_status_fields` |  |
 | update_seller_discount_limits_updated_at | BEFORE UPDATE | `seller_discount_limits` | `update_updated_at_column` |  |
 | update_discount_approval_requests_updated_at | BEFORE UPDATE | `discount_approval_requests` | `update_updated_at_column` |  |
-| validate_discount_approval_status_trigger | BEFORE INSERT OR UPDATE | `discount_approval_requests` | `validate_discount_approval_status` |  |
-| notify_discount_approval_trigger | AFTER INSERT OR UPDATE | `discount_approval_requests` | `notify_discount_approval_request` |  |
-| trg_validate_commission_status | BEFORE INSERT OR UPDATE | `commission_entries` | `validate_commission_status` |  |
-| update_commission_rules_updated_at | BEFORE UPDATE | `commission_rules` | `update_updated_at_column` |  |
-| update_commission_entries_updated_at | BEFORE UPDATE | `commission_entries` | `update_updated_at_column` |  |
 | … +180 linhas — lista completa em `context.json` | | | | |
 
 Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banco):
