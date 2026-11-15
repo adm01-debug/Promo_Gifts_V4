@@ -4,6 +4,12 @@
  *
  * Usage: set `captureRequest` with the data + record ID. Once captured, it
  * auto-clears and calls `onCaptured`.
+ *
+ * Toda falha REAL chama `onFailed`. Antes, as falhas de upload, de gravacao do
+ * layout_url, do catch e da trava de loop apenas iam para o log e voltavam sem
+ * chamar `onCaptured`: o pedido ficava pendente para sempre (processedRef ja
+ * marcado barra nova tentativa), a ficha nunca chegava ao cliente e nem o
+ * vendedor nem ninguem era avisado. Saida por desmontagem NAO e falha.
  */
 
 import { useEffect, useRef, useState } from 'react';
@@ -23,9 +29,15 @@ export interface LayoutCaptureRequest {
 interface OffscreenLayoutCaptureProps {
   request: LayoutCaptureRequest | null;
   onCaptured?: (recordId: string) => void;
+  /** Chamado quando a ficha NAO foi gerada. `motivo` e tecnico, para o log. */
+  onFailed?: (recordId: string, motivo: string) => void;
 }
 
-export function OffscreenLayoutCapture({ request, onCaptured }: OffscreenLayoutCaptureProps) {
+export function OffscreenLayoutCapture({
+  request,
+  onCaptured,
+  onFailed,
+}: OffscreenLayoutCaptureProps) {
   const templateRef = useRef<HTMLDivElement>(null);
   const [isCapturing, setIsCapturing] = useState(false);
   const processedRef = useRef<string | null>(null);
@@ -54,6 +66,7 @@ export function OffscreenLayoutCapture({ request, onCaptured }: OffscreenLayoutC
         recordId: request.recordId,
         attempts: count,
       });
+      onFailed?.(request.recordId, `loop de captura apos ${count} tentativas`);
       return;
     }
 
@@ -115,6 +128,7 @@ export function OffscreenLayoutCapture({ request, onCaptured }: OffscreenLayoutC
 
         if (uploadError) {
           logger.error('Layout auto-capture upload error:', uploadError);
+          if (mountedRef.current) onFailed?.(currentRecordId, `upload: ${uploadError.message}`);
           return;
         }
 
@@ -127,6 +141,7 @@ export function OffscreenLayoutCapture({ request, onCaptured }: OffscreenLayoutC
 
         if (updateError) {
           logger.error('Layout auto-capture DB update error:', updateError);
+          if (mountedRef.current) onFailed?.(currentRecordId, `layout_url: ${updateError.message}`);
           return;
         }
 
@@ -136,6 +151,9 @@ export function OffscreenLayoutCapture({ request, onCaptured }: OffscreenLayoutC
         }
       } catch (err) {
         logger.error('Layout auto-capture error:', err);
+        if (mountedRef.current) {
+          onFailed?.(currentRecordId, err instanceof Error ? err.message : String(err));
+        }
       } finally {
         if (mountedRef.current) setIsCapturing(false);
       }

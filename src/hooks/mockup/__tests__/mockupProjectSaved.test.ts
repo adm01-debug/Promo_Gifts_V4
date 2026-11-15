@@ -15,6 +15,11 @@ import { describe, it, expect, vi } from 'vitest';
 import { act, renderHook } from '@testing-library/react';
 import { saveBatchResults, type BatchMockupResult } from '../mockupGeneratorModel';
 import { useMockupCompletionStatus } from '@/pages/mockups/mockup-generator/useMockupCompletionStatus';
+import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
+import { toast } from 'sonner';
+
+vi.mock('sonner', () => ({ toast: { error: vi.fn(), success: vi.fn() } }));
 
 const AREAS = [{ id: 'a1' }, { id: 'a2' }, { id: 'a3' }];
 const LOTE: BatchMockupResult[] = [
@@ -134,5 +139,64 @@ describe('useMockupCompletionStatus — re-geração que falha não desfaz "Proj
     });
 
     expect(result.current.projectSaveStatus).toBe('done');
+  });
+});
+
+describe('ficha de aprovação que falha: avisa o vendedor e libera o pedido', () => {
+  it('handleLayoutFailed avisa na tela e zera o pedido pendente', () => {
+    const setRec = vi.fn();
+    const setUrl = vi.fn();
+    const { result } = statusHook(
+      generatorState({ setLastSavedRecordId: setRec, setLastSavedMockupUrl: setUrl }),
+    );
+
+    act(() => {
+      result.current.handleLayoutFailed();
+    });
+
+    // Sem zerar o pedido, o processedRef da captura barra nova tentativa e a
+    // ficha fica pendente para sempre.
+    expect(setRec).toHaveBeenCalledWith(null);
+    expect(setUrl).toHaveBeenCalledWith(null);
+    expect(toast.error).toHaveBeenCalledWith(
+      'Não foi possível preparar a ficha de aprovação deste mockup. O mockup está salvo — gere a ficha de novo.',
+    );
+  });
+
+  it('o mockup continua salvo: a falha da ficha não derruba "Projeto salvo"', () => {
+    const { result } = statusHook(generatorState());
+    expect(result.current.projectSaveStatus).toBe('done');
+
+    act(() => {
+      result.current.handleLayoutFailed();
+    });
+
+    expect(result.current.projectSaveStatus).toBe('done');
+  });
+
+  // As 4 saídas de falha da captura são travadas por asserção no TEXTO do
+  // componente: ele espera 1s em timers e carrega html2canvas por import
+  // dinâmico, o que torna um teste de render desproporcional para o que há a
+  // provar — que nenhuma delas volta calada.
+  it('toda saída de falha da captura chama onFailed, nenhuma volta calada', () => {
+    const src = readFileSync(
+      join(process.cwd(), 'src/components/mockup/approval/OffscreenLayoutCapture.tsx'),
+      'utf-8',
+    );
+
+    expect(src).toMatch(/onFailed\?: \(recordId: string, motivo: string\) => void/);
+
+    // trava de loop, upload, gravação do layout_url e catch
+    expect(src).toMatch(/loop de captura apos/);
+    expect(src).toMatch(/onFailed\?\.\(currentRecordId, `upload:/);
+    expect(src).toMatch(/onFailed\?\.\(currentRecordId, `layout_url:/);
+    expect(src).toMatch(/err instanceof Error \? err\.message : String\(err\)/);
+
+    // 4 chamadas de onFailed, uma por saída de falha
+    expect(src.match(/onFailed\?\./g)?.length).toBe(4);
+
+    // Nenhum `return;` logo depois de um logger.error sem avisar antes
+    expect(src).not.toMatch(/logger\.error\('Layout auto-capture upload error:', uploadError\);\s*\n\s*return;/);
+    expect(src).not.toMatch(/logger\.error\('Layout auto-capture DB update error:', updateError\);\s*\n\s*return;/);
   });
 });
