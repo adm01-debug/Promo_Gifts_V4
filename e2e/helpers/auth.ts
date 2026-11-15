@@ -19,7 +19,7 @@
 import { expect, type Page, type Request } from "@playwright/test";
 
 import { Sel } from "../fixtures/selectors";
-import { test } from "../fixtures/test-base";
+import { authSetupProducedNoSession, test } from "../fixtures/test-base";
 import { rewriteCiSharedIpLockout } from "./ci-auth-lockout";
 import { gotoAndSettle, waitForRouteIdle } from "./nav";
 import { clickTestId } from "./waits";
@@ -227,6 +227,22 @@ export async function loginAs(page: Page, role: Role = "user"): Promise<void> {
   // para evitar timeout de 75s × N testes em CI com E2E_MOCK_AUTH=1.
   if (process.env.E2E_MOCK_AUTH === "1") {
     test.skip(true, "E2E_MOCK_AUTH=1 — smoke público, teste autenticado ignorado");
+    return;
+  }
+
+  // Projetos autenticados dependem do storageState do auth.setup. Fora de CI,
+  // quando o setup degrada ele grava `{cookies: [], origins: []}`; aí cada spec
+  // ainda tentava o mesmo login pela tela e queimava até 150 s antes de falhar.
+  // Com sessão ausente, pula na hora. Em CI o próprio setup lança (E21), então
+  // este caminho não é alcançado lá. Token vencido durante a suíte NÃO entra
+  // aqui: o navegador renova a sessão e o login via UI segue valendo.
+  const projectName = test.info().project.name;
+  const usesSetupStorage =
+    projectName === "chromium-smoke" ||
+    projectName.endsWith("-authed") ||
+    projectName.startsWith("mobile-");
+  if (usesSetupStorage && authSetupProducedNoSession()) {
+    test.skip(true, "Auth setup não produziu sessão — spec autenticado pulado");
     return;
   }
 
