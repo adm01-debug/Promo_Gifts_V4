@@ -1004,3 +1004,87 @@ local_only≈1142; remote_only≈678
 **O que o dono precisa fazer:**
 1. Resolver PENDENCIAS #1 (reconciliar ledger: `supabase migration list --linked` → `supabase migration repair --status applied <versão>`)
 2. Após reconciliar: re-executar Deploy Gates na PR #3202 — Gate E40 passará
+
+---
+
+## 53. Sessão de 2026-11-15 — o que depende do dono
+
+Tudo abaixo está **pronto ou diagnosticado**; o que falta é uma decisão que o agente não pode tomar.
+Cada item traz o passo a passo em linguagem de quem não é dev.
+
+### 53.1 — Tirar o E2E dos PRs (PRs #3525 e #3612) · DECISÃO DE NEGÓCIO
+
+**O que é.** Os testes de ponta a ponta (E2E) rodam em cada PR apontando para o **banco de
+produção**, e o tráfego de teste estava sobrecarregando o banco. Duas PRs propõem tirá-los dos PRs.
+
+**O trade-off, sem jargão.** Hoje: cada PR testa muitos fluxos antes de entrar, ao custo de
+castigar o banco real. Com a mudança: o banco deixa de sofrer, mas vários fluxos passam a ser
+testados só **depois** do merge. O teste de fumaça (`Gate 3 - E2E Smoke`) continua em todo PR e
+continua obrigatório — então não ficamos sem rede nenhuma.
+
+**O que eu preciso que você responda.** Uma das três:
+- `1` — aceito, tire o E2E detalhado dos PRs (o banco para de sofrer);
+- `2` — não tire; prefiro o banco sofrendo a perder teste antes do merge;
+- `3` — tire, mas antes aponte o E2E para um banco de teste separado (mais trabalho, melhor solução).
+
+Enquanto não houver resposta, as duas PRs ficam abertas e nada muda.
+
+### 53.2 — Aposentar os 3 workflows do Lovable (dentro da PR #3525) · DECISÃO
+
+**O que é.** Três automações vigiam commits do Lovable (`gpt-engineer-app[bot]`) direto na `main`.
+A evidência diz que o Lovable não commita mais: último commit dele na `main` em **2026-08-31**, e
+197 execuções em 7 dias sem encontrar nada.
+
+**O conflito.** O `AGENTS.md` ainda afirma que "Lovable commita direto em main". Ou a regra está
+velha, ou as automações ainda são necessárias. Só você sabe se ainda usa o Lovable.
+
+**O que responder.** `SIM` (não uso mais o Lovable, pode aposentar e atualizar o AGENTS.md) ou
+`NÃO` (ainda uso, mantenha a vigilância).
+
+### 53.3 — Release 1.2.0 (PR #3566, do release-please) · DECISÃO
+
+Mergear essa PR **cria a release e a tag** 1.2.0. É publicação de versão, não correção de bug —
+pela regra Git 7, quem decide é você. Responda `PUBLICAR` quando quiser que eu mergeie.
+
+### 53.4 — Rotação da chave `service_role` do Supabase · JANELA DE MANUTENÇÃO
+
+Pendência mais antiga desta frente, e a única travada em você desde o começo. A troca da chave
+derruba momentaneamente o que usa a chave de serviço, então precisa de uma janela combinada.
+Me diga o dia e a hora e eu preparo tudo para rodar na hora marcada.
+
+### 53.5 — O job "Recibo" do `db-apply-migration.yml` abre PR que ninguém mergeia · PRECISA DE MIM, MAS É DO GIT 7
+
+**O defeito, em uma frase.** Quando uma migration vai para produção, o workflow abre uma PR com o
+"recibo" dela — e essa PR fica aberta para sempre. Como o portão `Gate 1.13.3` exige o recibo
+registrado, **toda PR do repositório trava** 24 horas depois, por uma causa que não está em
+nenhuma delas.
+
+**Prova.** Hoje isso aconteceu duas vezes. Há **7 PRs de recibo abertas** (#3609, #3624, #3625,
+#3626, #3627, #3632, #3633, #3637). Cinco já estão cobertas; as duas que faltavam
+(`20261114170845` e `20261114170921`) iam travar o CI hoje às **17:08 UTC** e foram gravadas na PR
+de recibos desta sessão. Pior: as PRs do bot ficam em **conflito** com o tempo (a #3632 devolveu
+`405: merge conflicts`), porque o arquivo de log muda a cada novo recibo.
+
+**A correção de raiz** é fazer o workflow gravar o recibo direto na `main` (ou mergear a própria
+PR que ele abre) em vez de deixá-la aberta. Isso é mexer em `.github/workflows/`, que pela regra
+Git 7 é item seu. Responda `CORRIGIR O WORKFLOW` e eu abro a PR com a correção.
+
+**Enquanto não for corrigido**, toda migration nova vai repetir o problema, e alguém precisa
+gravar o recibo à mão a cada vez.
+
+### 53.6 — As 6 branches com veredito "decisão humana" da auditoria anterior
+
+Continuam aguardando. Serão reapresentadas com o relatório da auditoria completa desta sessão.
+
+### 53.7 — Trabalho do seu PC/VPS encontrado no repositório · EM ANÁLISE, SEM PENDÊNCIA AINDA
+
+Levantamento desta sessão: o repositório tem **498 branches**, e 145 delas são `importado/*` —
+trabalho feito no seu PC e numa VPS ("fabrica"), com **132 commits de `ti@promobrindes.com.br`**
+e 187 de `fabrica-hermes`, de agosto a outubro de 2026.
+
+Entre os temas há correções do **gerador de mockup** (rascunho que perde dados, busca de cliente,
+exclusão no histórico, arraste da logo pelo teclado, gravar `technique_id`) e o que parece ser um
+**assistente de mockup** inteiro, que talvez nunca tenha entrado no sistema.
+
+Nenhuma dessas branches foi apagada, e nenhuma será sem prova byte-a-byte. A análise está em
+andamento; o que exigir sua decisão aparecerá aqui como item próprio.
