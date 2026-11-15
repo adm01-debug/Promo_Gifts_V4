@@ -290,7 +290,7 @@ jobs:
           SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
 
   receipt:
-    name: 4. Recibo (abre PR em MIGRATIONS_SYNC_LOG.md)
+    name: 4. Recibo (PR em MIGRATIONS_SYNC_LOG.md com auto-merge)
     needs: [apply, post-check]
     runs-on: ubuntu-24.04
     timeout-minutes: 10
@@ -368,3 +368,12 @@ jobs:
             --head "$BRANCH" \
             --title "docs: recibo de aplicação — ${MIGRATION_VERSION} (E15)" \
             --body "Recibo automático da aplicação de \`${MIGRATION_VERSION}\` via \`db-apply-migration.yml\` (run ${{ github.run_id }}, disparado por @${{ github.actor }}, aprovado por $APPROVED_BY). A migration já foi aplicada e confirmada no ledger pelos jobs \`apply\`/\`post-check\` desta mesma run — este PR só registra o recibo textual (PLANO_DBA E15/E48)."
+
+          # E15.1: o recibo precisa chegar ao main sozinho. Enquanto ele não chega, o
+          # Gate 1.13.3 (check-migration-receipts) reprova TODA PR aberta, porque a version
+          # já está aplicada em produção e sem recibo no main. Antes desta linha o PR ficava
+          # aberto indefinidamente e o CI do repo inteiro travava a cada migration nova
+          # (3× em 14/11). auto-merge: o PR só entra quando o required check fecha verde;
+          # é docs-only (só MIGRATIONS_SYNC_LOG.md), então o Gate Final passa pelo bypass E14.
+          # Nada é afrouxado: sem check verde, o PR continua aberto, como qualquer outro.
+          gh pr merge "$BRANCH" --squash --auto --delete-branch
