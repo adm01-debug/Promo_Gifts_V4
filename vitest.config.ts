@@ -69,6 +69,9 @@ export default defineConfig({
       // Geometria cm→px da logo no mockup (fórmula pura; index.ts não é
       // importável sob Node). Sem esta entrada o arquivo não é coletado.
       'supabase/functions/generate-mockup/index.geometry.test.ts',
+      // Tetos de entrada do generate-mockup (funções puras; index.ts não é
+      // importável sob Node). Sem esta entrada o arquivo não é coletado.
+      'supabase/functions/generate-mockup/index.size.test.ts',
       // T-FIX-5: descobre a suite vitest do script anti-órfão.
       // Ver docs/redeploy/T-FIX-5-CHECKLIST.md (Passo 3).
       'scripts/__tests__/**/*.{test,spec}.{ts,mts,cts}',

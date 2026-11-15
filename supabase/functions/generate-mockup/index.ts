@@ -7,6 +7,11 @@ import {
   allowedFetchHosts, fetchBytes as guardedFetchBytes, ImageFetchError, isAllowedFetchHost, MAX_IMAGE_BYTES,
 } from "./fetch-guard.ts";
 import { logoSizePx } from "./geometry.ts";
+// Tetos de ENTRADA (corpo e lote) em módulo testável — ver limits.ts. O teto de
+// TAMANHO DE IMAGEM não vem de lá: já é o MAX_IMAGE_BYTES do fetch-guard acima.
+import {
+  MAX_BATCH_AREAS, MAX_BODY_BYTES, PayloadTooLargeError, batchExceedsLimit, readBodyTextCapped,
+} from "./limits.ts";
 
 // ─ Types ─────────────────────────────────────────────────────────────────
 
@@ -23,6 +28,11 @@ interface GenerateMockupBody {
   // does not use it internally (single-area compositor) but declaring it prevents
   // implicit `any` in the parsed body and documents the full client contract.
   areaName?: string;
+  // Lote declarado: o cliente dispara uma invocação por área
+  // (mockupGenerationService) em paralelo, então um chamador que declare o lote
+  // inteiro manda a lista aqui. Acima de MAX_BATCH_AREAS a requisição é recusada
+  // ANTES de qualquer fetch/composição (ver handler).
+  areas?: unknown;
   positionX?: number;
   positionY?: number;
   logoWidthCm?: number;
@@ -54,6 +64,9 @@ const mockupBodySchema = z.object({
   techniqueName: z.string().max(200).optional(),
   techniquePrompt: z.string().max(8000).optional(),
   areaName: z.string().max(200).optional(),
+  // `z.unknown()` de propósito: um `areas` malformado (objeto, string) não pode
+  // derrubar o safeParse inteiro — `batchExceedsLimit` já só conta array.
+  areas: z.unknown().optional(),
   positionX: z.coerce.number().finite().optional(),
   positionY: z.coerce.number().finite().optional(),
   logoWidthCm: z.coerce.number().finite().optional(),
@@ -77,6 +90,23 @@ function validationError(
   return new Response(
     JSON.stringify({ error: "validation_failed", errorCode, message }),
     { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } },
+  );
+}
+
+// C-4: corpo acima de MAX_BODY_BYTES é recusado ANTES de parsear/processar, com
+// status próprio (413) e corpo estruturado — nunca 200 com erro dentro.
+function bodyTooLargeResponse(
+  corsHeaders: Record<string, string>,
+  limitBytes: number,
+): Response {
+  return new Response(
+    JSON.stringify({
+      error: "payload_too_large",
+      errorCode: "BODY_TOO_LARGE",
+      message: `Corpo da requisição acima do limite de ${limitBytes} bytes.`,
+      limit_bytes: limitBytes,
+    }),
+    { status: 413, headers: { ...corsHeaders, "Content-Type": "application/json" } },
   );
 }
 
@@ -316,7 +346,13 @@ Deno.serve(async (req) => {
 
   let body: GenerateMockupBody;
   try {
-    const parsed = await req.json();
+    // C-4: corpo lido com TETO e contagem de bytes (MAX_BODY_BYTES) — recusa 413
+    // antes de parsear/processar, em vez de bufferizar um JSON de tamanho livre.
+    // Sem stream (corpo ausente) a leitura padrão devolve "" e mantém o 400 de JSON
+    // inválido — e é ela que mantém a edge classificada como body-accepting pelas
+    // heurísticas do portão (req.json/req.text), que audita a dívida de validação.
+    const raw = req.body ? await readBodyTextCapped(req, MAX_BODY_BYTES) : await req.text();
+    const parsed: unknown = JSON.parse(raw);
     // Guard: null / array / primitive bodies would throw when we access
     // body.productImageUrl below — treat them as an empty object so the
     // validation error path fires cleanly instead of a 500.
@@ -325,7 +361,19 @@ Deno.serve(async (req) => {
       : {};
     const bodyParsed = mockupBodySchema.safeParse(guarded);
     body = (bodyParsed.success ? bodyParsed.data : {}) as GenerateMockupBody;
-  } catch { return validationError("Request body must be valid JSON", corsHeaders); }
+  } catch (e) {
+    if (e instanceof PayloadTooLargeError) return bodyTooLargeResponse(corsHeaders, e.limitBytes);
+    return validationError("Request body must be valid JSON", corsHeaders);
+  }
+
+  // C-4: lote declarado acima do teto é recusado antes de qualquer fetch/composição,
+  // para um chamador não multiplicar memória e CPU por N áreas em paralelo.
+  if (batchExceedsLimit(body.areas))
+    return validationError(
+      `No máximo ${MAX_BATCH_AREAS} áreas por lote.`,
+      corsHeaders,
+      "BATCH_TOO_LARGE",
+    );
 
   // isFetchableUrl unifies scheme validation + SSRF blocking + mandatory allowlist.
   if (!isFetchableUrl(body.productImageUrl))
@@ -349,6 +397,8 @@ Deno.serve(async (req) => {
 
   // Bound the inline logo BEFORE decoding it (base64 inflates ~4/3 vs. the raw bytes),
   // so an oversized data: URL can't exhaust memory in base64ToBytes/createImageBitmap.
+  // Invariante: MAX_BODY_BYTES é DERIVADO de MAX_IMAGE_BYTES (ver limits.ts), então o
+  // teto do corpo nunca recusa com 413 um logo inline que este teto aqui aceita.
   if (body.logoBase64 && body.logoBase64.length > Math.ceil((MAX_IMAGE_BYTES * 4) / 3) + 64)
     return validationError(
       "Logo é muito grande. Envie uma imagem menor.",
