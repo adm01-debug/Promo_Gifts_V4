@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import { Loader2 } from 'lucide-react';
 import { PageSEO } from '@/components/seo/PageSEO';
 import { useKitBuilderPageState } from '@/hooks/kit-builder';
+import { useKitItemReplaceTarget } from '@/hooks/kit-builder/useKitItemReplaceTarget';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import {
@@ -45,6 +46,11 @@ export default function KitBuilderPage() {
   const usesFullWorkspace = ['items', 'personalization', 'summary'].includes(
     state.wizardState.currentStep,
   );
+  const { replaceTarget, setReplaceItemTarget } = useKitItemReplaceTarget(
+    state.kitState.items,
+    state.wizardState.currentStep,
+  );
+
   const handleExportPDF = () => {
     window.print();
   };
@@ -374,6 +380,14 @@ export default function KitBuilderPage() {
                         volumeUsagePercent={state.kitState.volumeUsagePercent}
                         onNext={actions.nextStep}
                         canProceed={state.wizardState.canProceed}
+                        replaceTarget={replaceTarget}
+                        onReplaceItem={(oldItemId, newItem) => {
+                          actions.removeItem(oldItemId);
+                          const result = actions.addItem(newItem);
+                          setReplaceItemTarget(null);
+                          actions.goToStep('personalization');
+                          return result;
+                        }}
                       />
                     )}
                     {state.wizardState.currentStep === 'personalization' && (
@@ -386,6 +400,10 @@ export default function KitBuilderPage() {
                         onBoxPersonalizationChange={actions.setBoxPersonalization}
                         onItemPersonalizationChange={actions.setItemPersonalization}
                         onEditItems={() => actions.goToStep('items')}
+                        onReplaceItem={(itemId) => {
+                          setReplaceItemTarget(itemId);
+                          actions.goToStep('items');
+                        }}
                         onOpenGuide={() => openGuide('personalization')}
                       />
                     )}
@@ -426,7 +444,11 @@ export default function KitBuilderPage() {
                         <Button variant="outline" onClick={actions.prevStep}>
                           Voltar
                         </Button>
-                        <Button onClick={actions.nextStep} disabled={!state.wizardState.canProceed}>
+                        <Button
+                          data-testid="wizard-next"
+                          onClick={actions.nextStep}
+                          disabled={!state.wizardState.canProceed}
+                        >
                           {state.wizardState.currentStep === 'personalization'
                             ? 'Revisar kit'
                             : 'Continuar'}

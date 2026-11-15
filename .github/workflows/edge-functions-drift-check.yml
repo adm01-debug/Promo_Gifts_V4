@@ -6,10 +6,14 @@ name: edge-functions-drift-check
 #
 # Rodadas:
 #   - cron diário (06:06 BRT = 09:06 UTC)
-#   - todo PR (sem filtro paths — step check_paths decide se drift é necessário;
-#     E74 fix: required check funciona em qualquer PR, não só os que tocam funções)
 #   - manual via workflow_dispatch
 #   - logo após "Deploy Edge Functions" terminar em main (E65)
+#   - PR só quando ele mexe nas allowlists/config que este job valida contra o
+#     canônico (wf-consolida 2026-11-13). Antes rodava em TODO PR (E74) porque
+#     "Compare GitHub × Canonical" constava como required; nunca esteve no ruleset
+#     (só "Gate Final - Deploy Ready", conferido via API) e o drift em PR já era
+#     advisory (E203): função alterada no PR só é deployada depois do merge. O
+#     drift é produção × repo — quem o pega é o cron e o workflow_run pós-deploy.
 #
 # Requer um secret: SUPABASE_ACCESS_TOKEN
 #   Personal Access Token de Management API:
@@ -23,10 +27,16 @@ on:
   schedule:
     - cron: '6 9 * * *'   # 09:06 UTC / 06:06 BRT (E58)
   pull_request:
-    # Sem filtro paths — roda em todos os PRs para que o required check
-    # "Compare GitHub × Canonical" seja efetivo (E74 fix — Codex P1).
-    # O step check_paths detecta se algum arquivo de edge function mudou;
-    # se não mudou, o job passa sem executar o drift check custoso.
+    # Só o que um PR pode quebrar aqui: as allowlists conferidas contra o canônico
+    # (verify_jwt=false e funções só-canônico), o config.toml e o próprio gate.
+    # Mudança só em supabase/functions/** não dispara: em PR esse drift é advisory
+    # (E203) e é coberto pelo workflow_run após o "Deploy Edge Functions".
+    paths:
+      - '.security/edge-functions-verify-jwt-false-allowlist.json'
+      - 'audit/edge-functions-canonical-only.json'
+      - 'supabase/config.toml'
+      - 'scripts/check-edge-verify-jwt-allowlist.mjs'
+      - '.github/workflows/edge-functions-drift-check.yml'
   workflow_dispatch:
   # E65 (plano de 100, 2026-09-24): antes só rodava em PR e no cron diário —
   # drift introduzido entre um merge e o próximo cron (até 24h) era
@@ -93,7 +103,7 @@ jobs:
           # Usar herestring <<< ao invés de printf|grep-q para evitar SIGPIPE
           # com pipefail ativo (grep -q sai cedo após match, status 141 do pipe
           # propaga via pipefail e o if avalia falso silenciosamente).
-          if grep -qE '^(supabase/functions/|audit/edge-functions-canonical-only\.json|\.github/workflows/edge-functions-drift-check\.yml|supabase/config\.toml|\.security/edge-functions-verify-jwt-false-allowlist\.json)' <<< "$changed"; then
+          if grep -qE '^(supabase/functions/|audit/edge-functions-canonical-only\.json|\.github/workflows/edge-functions-drift-check\.yml|supabase/config\.toml|\.security/edge-functions-verify-jwt-false-allowlist\.json|scripts/check-edge-verify-jwt-allowlist\.mjs)' <<< "$changed"; then
             needs_drift=true
           fi
           echo "needs_drift=$needs_drift" >> "$GITHUB_OUTPUT"

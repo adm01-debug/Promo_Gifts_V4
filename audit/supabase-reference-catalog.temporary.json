@@ -45,6 +45,7 @@
     "color_groups",
     "color_nuances",
     "color_variations",
+    "commemorative_dates",
     "companies",
     "component_media",
     "connection_test_history",
@@ -111,6 +112,7 @@
     "price_history",
     "print_area_techniques",
     "product_badge_definitions",
+    "product_commemorative_dates",
     "product_component_location_techniques",
     "product_component_locations",
     "product_components",
@@ -127,6 +129,7 @@
     "product_relationships",
     "product_sync_logs",
     "product_tags",
+    "product_target_audiences",
     "product_variants",
     "product_videos",
     "product_views",
@@ -168,6 +171,7 @@
     "tabela_preco_gravacao_oficial",
     "tabela_preco_gravacao_oficial_faixa",
     "tags",
+    "target_audiences",
     "tecnicas_gravacao",
     "user_2fa_settings",
     "user_comparisons",
@@ -328,14 +332,22 @@
   "relation_aliases": {
     "customization_price_tables": {
       "target": "tabela_preco_gravacao_oficial",
-      "forms": ["wrapper"],
-      "receivers": ["dbInvoke"],
+      "forms": [
+        "wrapper"
+      ],
+      "receivers": [
+        "dbInvoke"
+      ],
       "reason": "Alias de leitura resolvido por BRIDGE_ALIASES em src/lib/db/postgrest.ts."
     },
     "tecnica_gravacao": {
       "target": "tabela_preco_gravacao_oficial",
-      "forms": ["wrapper"],
-      "receivers": ["dbInvoke"],
+      "forms": [
+        "wrapper"
+      ],
+      "receivers": [
+        "dbInvoke"
+      ],
       "reason": "Alias de leitura resolvido por BRIDGE_ALIASES em src/lib/db/postgrest.ts."
     }
   },
@@ -499,6 +511,38 @@
       "occurrences": 1,
       "stage": 103,
       "reason": "RPC criada pela migration supabase/migrations/20261112120000_fix_fn_get_supplier_reliability.sql (SECURITY DEFINER sobre mv_supplier_reliability, restrita a is_supervisor_or_above), ainda nao aplicada no canonico. Remover esta excecao e registrar o RPC em rpcs depois de aplicar via db-apply-migration.yml e confirmar via pg_catalog."
+    },
+    {
+      "kind": "rpc",
+      "name": "fn_market_intelligence_macro",
+      "file": "src/hooks/intelligence/useMarketIntelligenceMacro.ts",
+      "occurrences": 1,
+      "stage": 103,
+      "reason": "RPC criada pela migration supabase/migrations/20261115130100_fn_market_intelligence_macro.sql (agregacao macro de stock_daily_summary no servidor, SECURITY INVOKER; depende do indice 20261115130000), ainda nao aplicada no canonico. Remover esta excecao e registrar o RPC em rpcs depois de aplicar via db-apply-migration.yml e confirmar via pg_catalog."
+    },
+    {
+      "kind": "relation",
+      "name": "endomarketing_themes",
+      "file": "src/components/admin/products/productMarketingData.ts",
+      "occurrences": 1,
+      "stage": 67,
+      "reason": "Tabela criada pela migration supabase/migrations/20261113140000_marketing_tab_links_rls_and_endomarketing.sql (aba Marketing do produto, endomarketing separado por decisao do dono), ainda NAO aplicada em producao em 2026-11-13. Ate a aplicacao via db-apply-migration.yml a aba mostra so a categoria Endomarketing como 'nao carregou' (as outras funcionam). Remover esta excecao e mover o nome para relations depois de confirmar a tabela via pg_catalog apos aplicar."
+    },
+    {
+      "kind": "relation",
+      "name": "product_endomarketing",
+      "file": "src/components/admin/products/productMarketingData.ts",
+      "occurrences": 4,
+      "stage": 67,
+      "reason": "Tabela criada pela migration supabase/migrations/20261113140000_marketing_tab_links_rls_and_endomarketing.sql (aba Marketing do produto, endomarketing separado por decisao do dono), ainda NAO aplicada em producao em 2026-11-13. Ate a aplicacao via db-apply-migration.yml a aba mostra so a categoria Endomarketing como 'nao carregou' (as outras funcionam). Remover esta excecao e mover o nome para relations depois de confirmar a tabela via pg_catalog apos aplicar."
+    },
+    {
+      "kind": "rpc",
+      "name": "rpc_sales_assistant_candidates",
+      "file": "src/hooks/assistant/useSalesAssistantCandidates.ts",
+      "occurrences": 1,
+      "stage": 115,
+      "reason": "RPC versionada na migration 20261115034500 (assistente Encaixe do Cliente), ainda pendente do workflow E15 — conferido no canônico em 2026-11-15: pg_proc = 0 e version fora de schema_migrations. Remover esta exceção source-scoped e promover a RPC a `rpcs` somente após a aplicação por db-apply-migration.yml, verificação via pg_catalog e recaptura administrativa."
     }
   ],
   "dynamic_baseline": [

@@ -15,11 +15,13 @@ import { useAuth } from '@/contexts/AuthContext';
 import {
   useFilteredTechniques,
   useProductCustomizationOptionsForMockup,
+  resolveTechnique,
   type CustomizationOption,
   type TechniqueWithLimits,
 } from './useMockupTechniques';
 import { useMockupDraft } from './useMockupDraft';
-import { useLogoColorAnalysis, usePositionHistory } from '@/hooks/simulation';
+import { mockupSelection } from './mockupSelectionSnapshot';
+import { useLogoColorAnalysisByArea, usePositionHistory } from '@/hooks/simulation';
 import { useProductsContext } from '@/contexts/ProductsContext';
 import { getMockupWizardStep } from '@/components/mockup/mockupWizardStep';
 import { showMockupSuccessToast } from '@/components/mockup/MockupSuccessToast';
@@ -32,15 +34,17 @@ import {
   type Technique,
   type GeneratedMockup,
   createDefaultArea,
-  fetchMockupHistory,
   saveMockupToDb,
   generateMockupApi,
   downloadMockupAsPdf,
   deleteMockupFromDb,
 } from '@/hooks/mockup/mockupGenerationService';
+import { fetchRecentMockupHistory } from '@/hooks/mockup/mockupHistoryAdapter';
 import { buildHistoryClients } from '@/hooks/mockup/mockupHistoryClients';
 import { useMockupAreaRetry } from '@/hooks/mockup/useMockupAreaRetry';
 import { useMockupEntryParams } from '@/hooks/mockup/useMockupEntryParams';
+import { useMockupTechniquesLoad } from '@/hooks/mockup/useMockupTechniquesLoad';
+import { useSavedMockupProject } from '@/hooks/mockup/useSavedMockupProject';
 import {
   MAX_BATCH_AREAS,
   MISSING_DIMENSIONS_MESSAGE,
@@ -48,7 +52,6 @@ import {
   resolveProductDimensions,
   hasRealProductDimensions,
   logoLimitWarnings,
-  loadMockupTechniques,
   saveBatchResults,
   failedAreaErrors,
   type BatchMockupResult,
@@ -72,8 +75,9 @@ export function useMockupGenerator() {
   } = useMockupDraft();
   const { getProductById } = useProductsContext();
 
-  const [techniques, setTechniques] = useState<Technique[]>([]);
-  const [isLoadingData, setIsLoadingData] = useState(true);
+  // Carga das técnicas (lista, carregando e ERRO) mora em useMockupTechniquesLoad.
+  const { techniques, isLoadingData, techniquesError, reloadTechniques } =
+    useMockupTechniquesLoad();
   const [productSelection, setProductSelection] = useState<MockupProductSelection | null>(null);
   const [selectedTechnique, setSelectedTechnique] = useState<
     Technique | TechniqueWithLimits | null
@@ -106,9 +110,8 @@ export function useMockupGenerator() {
   const [isLoadingHistory, setIsLoadingHistory] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [mockupToDelete, setMockupToDelete] = useState<string | null>(null);
-  const [lastSavedRecordId, setLastSavedRecordId] = useState<string | null>(null);
-  const [lastSavedMockupUrl, setLastSavedMockupUrl] = useState<string | null>(null);
-  const [lastSavedLayoutMode, setLastSavedLayoutMode] = useState<'ai' | 'static'>('ai');
+  // Registro gravado do resultado exibido (id, URL, modo, ÁREA) + identidade do projeto.
+  const savedProject = useSavedMockupProject();
   const [hasDraftRestored, setHasDraftRestored] = useState(false);
   const [showDraftRestoredNotice, setShowDraftRestoredNotice] = useState(false);
   const isRestoringDraft = useRef(false);
@@ -122,7 +125,7 @@ export function useMockupGenerator() {
   const [activeTab, setActiveTab] = useState<'generator' | 'history'>('generator');
   const [hasUserInteractedPosition, setHasUserInteractedPosition] = useState(false);
 
-  const logoColorAnalysis = useLogoColorAnalysis();
+  const logoColorAnalysis = useLogoColorAnalysisByArea();
   const positionHistory = usePositionHistory({ enabled: true });
 
   useEffect(() => {
@@ -224,14 +227,14 @@ export function useMockupGenerator() {
       setActiveAreaId(personalizationAreas[0].id);
   }, [activeAreaId, personalizationAreas]);
 
+  // F-03: reconcilia a técnica restaurada com o id canônico de filteredTechniques (os ids vêm de
+  // espaços diferentes — RPC print_area_techniques x tabela_preco_gravacao_oficial — e mudam de
+  // produto para produto); só limpa quando a técnica não existe para o produto. Grava SÓ quando o
+  // id muda: filteredTechniques recalculado devolve objetos novos, e gravar sempre faria loop.
   useEffect(() => {
-    fetchData();
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
-
-  useEffect(() => {
-    if (selectedTechnique && filteredTechniques.length > 0)
-      if (!filteredTechniques.some((t) => t.id === selectedTechnique.id))
-        setSelectedTechnique(null);
+    if (!selectedTechnique || filteredTechniques.length === 0) return;
+    const resolved = resolveTechnique(filteredTechniques, selectedTechnique);
+    if (resolved?.id !== selectedTechnique.id) setSelectedTechnique(resolved);
   }, [filteredTechniques, selectedTechnique]);
 
   useEffect(() => {
@@ -275,17 +278,11 @@ export function useMockupGenerator() {
         ) {
           if (draft.productId) {
             const product = getProductById(draft.productId);
-            if (product)
-              setProductSelection({
-                product,
-                variant: null,
-                imageUrl: product.images?.[0] || '/placeholder.svg',
-              });
+            if (product) setProductSelection(mockupSelection.restore(product, draft.selection));
           }
-          if (draft.techniqueId) {
-            const technique = techniques.find((t) => t.id === draft.techniqueId);
-            if (technique) setSelectedTechnique(technique);
-          }
+          const ref = { id: draft.techniqueId, name: draft.techniqueName };
+          const draftTechnique = resolveTechnique(techniques, ref);
+          if (draftTechnique) setSelectedTechnique(draftTechnique);
           if (draft.clientId && draft.clientName)
             setSelectedClient({ id: draft.clientId, name: draft.clientName });
           if (draft.personalizationAreas.length > 0) {
@@ -334,6 +331,7 @@ export function useMockupGenerator() {
         clientId: selectedClient?.id || null,
         clientName: selectedClient?.name || null,
         personalizationAreas,
+        selection: mockupSelection.snapshot(productSelection),
         updatedAt: new Date().toISOString(),
       });
     }, 1000);
@@ -351,22 +349,11 @@ export function useMockupGenerator() {
     if (user?.id) fetchHistory();
   }, [user?.id]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  const fetchData = useCallback(async () => {
-    try {
-      const techniquesData = await loadMockupTechniques();
-      setTechniques(techniquesData);
-    } catch (error) {
-      logger.error('Error fetching data:', error);
-      toast.error('Erro ao carregar dados. Tente novamente.');
-    } finally {
-      setIsLoadingData(false);
-    }
-  }, []);
-
   const fetchHistory = useCallback(async () => {
     setIsLoadingHistory(true);
     try {
-      const data = await fetchMockupHistory(user?.id);
+      // Busca/filtros/paginação da aba são no cliente: o servidor devolve o teto cheio.
+      const data = await fetchRecentMockupHistory(user?.id);
       setMockupHistory(data);
     } catch (error) {
       logger.error('Error fetching history:', error);
@@ -454,7 +441,7 @@ export function useMockupGenerator() {
         setPersonalizationAreas((prev) =>
           prev.map((area) => (area.id === areaId ? { ...area, logoPreview: logoData } : area)),
         );
-        logoColorAnalysis.analyzeImage(logoData);
+        logoColorAnalysis.analyzeImage(logoData, areaId);
       };
       reader.onerror = (e) => {
         logger.error('[useMockupGenerator] FileReader error ao ler imagem:', e);
@@ -480,7 +467,7 @@ export function useMockupGenerator() {
       extra?: { layoutUrl?: string; locationName?: string; colorsCount?: number },
     ): Promise<string | null> => {
       if (!user || !selectedProduct || !selectedTechnique || !area.logoPreview) return null;
-      return saveMockupToDb({
+      const recordId = await saveMockupToDb({
         userId: user.id,
         product: selectedProduct,
         technique: selectedTechnique,
@@ -490,8 +477,11 @@ export function useMockupGenerator() {
         annotations: mockupAnnotations,
         extra,
       });
+      // Histórico sem coluna para variante/foto: guarda a seleção junto do registro.
+      mockupSelection.saveForHistory(user.id, recordId, mockupSelection.snapshot(productSelection));
+      return recordId;
     },
-    [user, selectedProduct, selectedTechnique, selectedClient, mockupAnnotations],
+    [user, selectedProduct, selectedTechnique, selectedClient, mockupAnnotations, productSelection],
   );
 
   const downloadMockup = useCallback(
@@ -580,9 +570,10 @@ export function useMockupGenerator() {
         setGeneratedMockup(result.singleUrl);
         const recordId = await saveMockupToHistory(result.singleUrl, areasWithLogos[0]);
         if (recordId) {
-          setLastSavedMockupUrl(result.singleUrl);
-          setLastSavedLayoutMode('ai');
-          setLastSavedRecordId(recordId);
+          savedProject.setLastSavedMockupUrl(result.singleUrl);
+          savedProject.setLastSavedLayoutMode('ai');
+          savedProject.setLastSavedArea(areasWithLogos[0]);
+          savedProject.setLastSavedRecordId(recordId);
         }
         showMockupSuccessToast({
           mockupUrl: result.singleUrl,
@@ -601,9 +592,10 @@ export function useMockupGenerator() {
         const failed = failedAreaErrors(result.batchResults, areasWithLogos);
         if (failed) setAreaErrors(failed);
         if (savedLast) {
-          setLastSavedMockupUrl(savedLast.url);
-          setLastSavedLayoutMode('ai');
-          setLastSavedRecordId(savedLast.recordId);
+          savedProject.setLastSavedMockupUrl(savedLast.url);
+          savedProject.setLastSavedLayoutMode('ai');
+          savedProject.setLastSavedArea(savedLast.area);
+          savedProject.setLastSavedRecordId(savedLast.recordId);
         }
         setGeneratedMockup(result.batchResults[0]?.url || result.singleUrl || null);
         setGeneratedBatchMockups(result.batchResults);
@@ -637,12 +629,14 @@ export function useMockupGenerator() {
     downloadMockup,
     fetchHistory,
     setAreaErrors,
+    savedProject,
   ]);
 
   const deleteMockup = useCallback(async () => {
     if (!mockupToDelete) return;
     try {
       await deleteMockupFromDb(mockupToDelete, user?.id);
+      mockupSelection.clearForHistory(user?.id, mockupToDelete);
       setMockupHistory((prev) => prev.filter((m) => m.id !== mockupToDelete));
       toast.success('Mockup excluído');
     } catch (error) {
@@ -672,13 +666,11 @@ export function useMockupGenerator() {
     setBeforeImage(null);
     setHasUserInteractedPosition(false);
     setTechniqueColorConfig(null);
-    setLastSavedRecordId(null);
-    setLastSavedMockupUrl(null);
-    setLastSavedLayoutMode('ai');
+    savedProject.resetProjectIdentity();
     positionHistory.clear();
     await clearDraft();
     logoColorAnalysis.clearAnalysis();
-  }, [positionHistory, clearDraft, logoColorAnalysis, setAreaErrors]);
+  }, [positionHistory, clearDraft, logoColorAnalysis, setAreaErrors, savedProject]);
 
   const handleShareMockup = useCallback((mockup: GeneratedMockup) => {
     const text = `Confira o mockup: ${mockup.product_name} com ${mockup.technique_name}`;
@@ -691,21 +683,16 @@ export function useMockupGenerator() {
   const loadFromHistory = useCallback(
     async (mockup: GeneratedMockup) => {
       const product = mockup.product_id ? getProductById(mockup.product_id) : null;
-      // BUG-11 FIX: technique_id is now always null (BUG-10 fix) because the FK points to
-      // personalization_techniques but the UI loads from tabela_preco_gravacao_oficial.
-      // Fall back to name-matching so the technique is correctly pre-selected when loading from history.
-      const technique =
-        (mockup.technique_id && techniques.find((t) => t.id === mockup.technique_id)) ||
-        (mockup.technique_name &&
-          techniques.find((t) => t.name.toLowerCase() === mockup.technique_name?.toLowerCase())) ||
-        null;
-      if (product)
-        setProductSelection({
-          product,
-          variant: null,
-          imageUrl: product.images?.[0] || '/placeholder.svg',
-        });
-      else setProductSelection(null);
+      // BUG-11 FIX: technique_id vem null (fix do BUG-10) ou com id de outro espaço (FK aponta para
+      // personalization_techniques, UI carrega de tabela_preco_gravacao_oficial) — cai para nome.
+      const technique = resolveTechnique(techniques, {
+        id: mockup.technique_id,
+        name: mockup.technique_name,
+      });
+      if (product) {
+        const snapshot = mockupSelection.readForHistory(user?.id, mockup.id);
+        setProductSelection(mockupSelection.restore(product, snapshot));
+      } else setProductSelection(null);
       setSelectedTechnique(technique || null);
       // BUG-LOADFROMHISTORY-CLIENT FIX: client_id was always null (BUG-CLIENT-ID) so
       // the client was never restored. Restore the client for display when only the
@@ -738,17 +725,26 @@ export function useMockupGenerator() {
       // locations chegarem tarde para o mesmo produto.
       areasProductIdRef.current = product?.id ?? null;
       setGeneratedMockup(null);
+      savedProject.resetProjectIdentity();
       setHasUserInteractedPosition(true);
       positionHistory.clear();
       setActiveTab('generator');
-      if (mockup.logo_url) logoColorAnalysis.analyzeImage(mockup.logo_url);
+      logoColorAnalysis.restoreFor(mockup.logo_url, restoredArea.id);
       // BUG-04 FIX: clear stale draft.
       // BUG-F-LOADHISTORY FIX: await clearDraft() — same race as resetForm (BUG-F).
       // Without await, the 1 s auto-save debounce can fire and re-persist the old draft.
       await clearDraft();
       toast.success('Configurações carregadas!');
     },
-    [techniques, getProductById, logoColorAnalysis, clearDraft, positionHistory],
+    [
+      techniques,
+      getProductById,
+      logoColorAnalysis,
+      clearDraft,
+      positionHistory,
+      user?.id,
+      savedProject,
+    ],
   );
 
   const wizardStep = getMockupWizardStep({
@@ -765,6 +761,8 @@ export function useMockupGenerator() {
       user,
       techniques,
       isLoadingData,
+      techniquesError,
+      reloadTechniques,
       productSelection,
       setProductSelection,
       selectedProduct,
@@ -806,12 +804,7 @@ export function useMockupGenerator() {
       loadFromHistory,
       handleShareMockup,
       historyClients,
-      lastSavedRecordId,
-      setLastSavedRecordId,
-      lastSavedMockupUrl,
-      setLastSavedMockupUrl,
-      lastSavedLayoutMode,
-      setLastSavedLayoutMode,
+      ...savedProject,
       isDraftSaving,
       isDraftLoading,
       lastSaved,
@@ -837,6 +830,8 @@ export function useMockupGenerator() {
       user,
       techniques,
       isLoadingData,
+      techniquesError,
+      reloadTechniques,
       productSelection,
       selectedProduct,
       selectedTechnique,
@@ -867,9 +862,7 @@ export function useMockupGenerator() {
       loadFromHistory,
       handleShareMockup,
       historyClients,
-      lastSavedRecordId,
-      lastSavedMockupUrl,
-      lastSavedLayoutMode,
+      savedProject,
       isDraftSaving,
       isDraftLoading,
       lastSaved,

@@ -8,7 +8,6 @@ import { useNavigate } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import {
   AlertTriangle,
-  FileText,
   LayoutGrid,
   Library,
   List,
@@ -32,6 +31,7 @@ import { KitCardSkeletonGrid } from '@/components/kit-library/KitCardSkeleton';
 import { KitLibraryFilters, type SortOption } from '@/components/kit-library/KitLibraryFilters';
 import { KitTemplatePreviewDialog } from '@/components/kit-library/KitTemplatePreviewDialog';
 import { KitCategoryChips } from '@/components/kit-library/KitCategoryChips';
+import { KitLibraryStats } from '@/components/kit-library/KitLibraryStats';
 import {
   useCustomKitPersistence,
   useKitTemplates,
@@ -381,26 +381,7 @@ export default function KitLibraryPage() {
         </Button>
       </div>
 
-      <div className="grid gap-3 sm:grid-cols-3">
-        <LibraryStat
-          icon={<Library className="h-5 w-5" />}
-          label="Total de kits"
-          value={myKits.length}
-          detail="Seus projetos no Kit Maker"
-        />
-        <LibraryStat
-          icon={<FileText className="h-5 w-5" />}
-          label="Rascunhos"
-          value={myKits.filter((kit) => kit.status === 'draft').length}
-          detail="Em edição"
-        />
-        <LibraryStat
-          icon={<Star className="h-5 w-5" />}
-          label="Favoritos"
-          value={myKits.filter((kit) => kit.is_favorite).length}
-          detail="Acesso rápido"
-        />
-      </div>
+      <KitLibraryStats kits={myKits} />
 
       {/* Search */}
       <div className="relative max-w-md">
@@ -677,31 +658,6 @@ export default function KitLibraryPage() {
         testId="kit-library-delete-dialog"
       />
     </div>
-  );
-}
-
-function LibraryStat({
-  icon,
-  label,
-  value,
-  detail,
-}: {
-  icon: React.ReactNode;
-  label: string;
-  value: number;
-  detail: string;
-}) {
-  return (
-    <Card>
-      <CardContent className="flex items-center gap-3 p-4">
-        <div className="rounded-xl bg-primary/10 p-3 text-primary">{icon}</div>
-        <div>
-          <p className="text-xs text-muted-foreground">{label}</p>
-          <p className="text-2xl font-bold">{value}</p>
-          <p className="text-xs text-muted-foreground">{detail}</p>
-        </div>
-      </CardContent>
-    </Card>
   );
 }
 

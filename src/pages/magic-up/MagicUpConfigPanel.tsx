@@ -312,7 +312,7 @@ function ProductCard({ m }: { m: MagicUpStateReturn }) {
                 m.setSelectedTechnique(m.availableTechniques.find((t) => t.id === v) || null)
               }
             >
-              <SelectTrigger className="h-9">
+              <SelectTrigger className="h-9" aria-label="Técnica de personalização">
                 <SelectValue placeholder="Selecione..." />
               </SelectTrigger>
               <SelectContent>
