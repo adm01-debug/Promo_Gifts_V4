@@ -3,6 +3,76 @@ import { describe, expect, it, vi } from 'vitest';
 import { KitCard } from '@/components/kit-library/KitCard';
 
 describe('KitCard', () => {
+  it('shows historical unknown values honestly and keeps the draft actions available', () => {
+    const onEdit = vi.fn();
+    render(
+      <KitCard
+        variant="mine"
+        data={{
+          id: 'draft-null',
+          name: null,
+          color: '#2563eb',
+          icon: 'Package',
+          totalPrice: null,
+          itemsCount: null,
+          kitQuantity: null,
+          status: null,
+          updatedAt: null,
+          isDraft: true,
+        }}
+        onEdit={onEdit}
+      />,
+    );
+    expect(screen.getByText('Nome não informado')).toBeInTheDocument();
+    expect(screen.getByText('Não informado')).toBeInTheDocument();
+    expect(screen.getByText('Quantidade de itens não informada')).toBeInTheDocument();
+    expect(screen.getByText('Quantidade não informada')).toBeInTheDocument();
+    expect(screen.getByText('Status não informado')).toBeInTheDocument();
+    expect(screen.getByText('Edição não informada')).toBeInTheDocument();
+    expect(screen.queryByText(/R\$\s*0,00/)).not.toBeInTheDocument();
+    fireEvent.click(screen.getByRole('button', { name: /continuar edição/i }));
+    expect(onEdit).toHaveBeenCalledOnce();
+  });
+  it('distinguishes a known numerical zero from an unknown value', () => {
+    render(
+      <KitCard
+        variant="mine"
+        data={{
+          id: 'zero',
+          name: 'Kit zero',
+          color: '#2563eb',
+          icon: 'Package',
+          totalPrice: 0,
+          itemsCount: 0,
+          kitQuantity: 0,
+        }}
+      />,
+    );
+    expect(screen.getByText(/R\$\s*0,00/)).toBeInTheDocument();
+    expect(screen.getByText('0 itens')).toBeInTheDocument();
+    expect(screen.queryByText('Não informado')).not.toBeInTheDocument();
+  });
+  it.each([NaN, Infinity, -Infinity])(
+    'does not format a non-finite price %s as money',
+    (totalPrice) => {
+      render(
+        <KitCard
+          variant="mine"
+          data={{
+            id: 'nonfinite',
+            name: 'Incompleto',
+            color: '#2563eb',
+            icon: 'Package',
+            totalPrice,
+            itemsCount: 2,
+            updatedAt: 'invalid-date',
+          }}
+        />,
+      );
+      expect(screen.getByText('Não informado')).toBeInTheDocument();
+      expect(screen.getByText('Edição não informada')).toBeInTheDocument();
+    },
+  );
   it('renders the canonical cover image when the saved kit has one', () => {
     render(
       <KitCard

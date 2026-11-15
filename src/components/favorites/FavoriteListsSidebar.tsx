@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { m as motion } from 'framer-motion';
-import { Heart, Plus, MoreVertical, Pencil, Trash2, Share2, Archive, Users } from 'lucide-react';
+import { Heart, Plus, MoreVertical, Pencil, Trash2, Archive, Users } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import {
@@ -114,11 +114,6 @@ export function FavoriteListsSidebar({
                     <span className="flex items-center gap-0.5 truncate">
                       <Users className="h-2.5 w-2.5" />
                       {list.client_name}
-                    </span>
-                  )}
-                  {list.shared_token && (
-                    <span className="flex items-center gap-0.5 text-primary">
-                      <Share2 className="h-2.5 w-2.5" />
                     </span>
                   )}
                 </div>

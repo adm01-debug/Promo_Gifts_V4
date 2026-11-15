@@ -1,5 +1,6 @@
 name: Quote Builder Delivery Quality
 on:
+  # E2E fora dos PRs (14/11): os PRs apontavam o E2E para o Supabase de produção e sobrecarregavam o banco. Roda no merge em main, no agendamento ou manual.
   push:
     branches: [ main ]
     paths:
@@ -15,22 +16,6 @@ on:
       - 'vite.config.*'
       - '.github/workflows/delivery-quality.yml'
       - '.github/scripts/e2e-relevance.mjs'
-  pull_request:
-    branches: [ main ]
-    paths:  # E14: evitar CI em PRs doc-only
-      - 'src/**'
-      - '!src/**/__tests__/**'
-      - '!src/**/*.test.*'
-      - '!src/**/*.spec.*'
-      - 'src/pages/__tests__/QuoteBuilderDeliveryTooltip.test.tsx'
-      - 'tests/**'
-      - 'e2e/**'
-      - 'package*.json'
-      - '.nvmrc'
-      - 'vite.config.*'
-      - '.github/workflows/delivery-quality.yml'
-      - '.github/scripts/e2e-relevance.mjs'
-
 permissions:
   contents: read
   pull-requests: read

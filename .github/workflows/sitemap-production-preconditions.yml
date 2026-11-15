@@ -3,20 +3,12 @@ name: Sitemap — precondições públicas de ativação
 # Read-only requests to the fixed canonical origin. No deployment or credentials.
 # A recognized exact legacy XML is NOT public-health success; only the dynamic
 # API/served-SHA preconditions can pass while that known shadow is documented.
+# Mede o estado de PRODUÇÃO (origem canônica), não o diff do PR (wf-consolida 2026-11-13):
+# saiu de pull_request para um agendamento diário + dispatch. Os testes do coletor sem rede
+# (test_production_sitemap_probe.py) rodam em todo PR no static-checks.yml.
 on:
-  pull_request:
-    branches: [main]
-    paths:
-      - '.github/workflows/sitemap-production-preconditions.yml'
-      - 'scripts/probe-production-sitemap.py'
-      - 'tests/scripts/test_production_sitemap_probe.py'
-      - '.vercel/project.json'
-      - 'api/sitemap.ts'
-      - 'api/health.ts'
-      - 'public/sitemap.xml'
-      - 'public/robots.txt'
-      - 'recovery/site-artifacts/**'
-      - 'vercel.json'
+  schedule:
+    - cron: '17 11 * * *' # diário 11:17 UTC (08:17 BRT) — sem segredo, fora do E89
   workflow_dispatch:
 
 permissions:
@@ -41,12 +33,13 @@ jobs:
           persist-credentials: false
 
       - name: Testar o coletor sem rede
+        # Também roda em todo PR no static-checks.yml; aqui garante o coletor antes da sonda.
         run: python3 -m unittest discover -s tests/scripts -p test_production_sitemap_probe.py -v
 
       - name: Verificar cinco GET/HEAD públicos e o SHA servido
         run: >-
           python3 scripts/probe-production-sitemap.py
-          --expected-sha "${{ github.event.pull_request.base.sha || github.sha }}"
+          --expected-sha "${{ github.sha }}"
           --output work/sitemap-production/report.json
           --summary work/sitemap-production/summary.md
 

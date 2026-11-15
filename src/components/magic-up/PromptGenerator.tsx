@@ -271,7 +271,7 @@ export function PromptGenerator({
             <Target className="h-3 w-3" /> Objetivo
           </Label>
           <Select value={objective} onValueChange={setObjective}>
-            <SelectTrigger className="h-8 text-xs">
+            <SelectTrigger className="h-8 text-xs" aria-label="Objetivo da campanha">
               <SelectValue placeholder="Escolha..." />
             </SelectTrigger>
             <SelectContent>
@@ -289,7 +289,7 @@ export function PromptGenerator({
             <Sparkles className="h-3 w-3" /> Tom
           </Label>
           <Select value={tone} onValueChange={setTone}>
-            <SelectTrigger className="h-8 text-xs">
+            <SelectTrigger className="h-8 text-xs" aria-label="Tom da comunicação">
               <SelectValue placeholder="Escolha..." />
             </SelectTrigger>
             <SelectContent>
@@ -307,7 +307,7 @@ export function PromptGenerator({
             <Users className="h-3 w-3" /> Público-alvo
           </Label>
           <Select value={audience} onValueChange={setAudience}>
-            <SelectTrigger className="h-8 text-xs">
+            <SelectTrigger className="h-8 text-xs" aria-label="Público-alvo">
               <SelectValue placeholder="Escolha..." />
             </SelectTrigger>
             <SelectContent>
@@ -325,7 +325,7 @@ export function PromptGenerator({
             <CalendarDays className="h-3 w-3" /> Temporada
           </Label>
           <Select value={season} onValueChange={setSeason}>
-            <SelectTrigger className="h-8 text-xs">
+            <SelectTrigger className="h-8 text-xs" aria-label="Temporada">
               <SelectValue placeholder="Opcional..." />
             </SelectTrigger>
             <SelectContent>

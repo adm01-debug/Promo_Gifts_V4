@@ -1675,7 +1675,11 @@ describe('Analise estatica — MockupProductSelector.tsx (aria-hidden em icones 
     );
   });
   it('icone SearchX no estado sem resultados tem aria-hidden', () => {
-    expect(src).toContain('<SearchX aria-hidden="true" className="h-10 w-10 opacity-20"');
+    // O bloco "Nenhum resultado" passou a morar em MockupCatalogStates.tsx (o selector está no
+    // teto do gate de tamanho de arquivo). A asserção é a mesma: o ícone segue decorativo.
+    expect(readSrc('src/components/mockup/MockupCatalogStates.tsx')).toContain(
+      '<SearchX aria-hidden="true" className="h-10 w-10 opacity-20"',
+    );
   });
 });
 
