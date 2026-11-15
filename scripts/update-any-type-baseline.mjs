@@ -7,7 +7,7 @@
  *   node scripts/update-any-type-baseline.mjs
  */
 import { execSync } from 'node:child_process';
-import { writeFileSync } from 'node:fs';
+import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 import { join, relative } from 'node:path';
 
 const ROOT = process.cwd();
@@ -23,6 +23,7 @@ function countAnyInSrc() {
   const counts = {};
 
   for (const pattern of patterns) {
+    const occurrenceRe = new RegExp(pattern, 'g');
     let output = '';
     try {
       output = execSync(
@@ -54,7 +55,12 @@ function countAnyInSrc() {
 
       const file = rawLine.slice(0, colonIdx);
       const relFile = relative(ROOT, file.startsWith('/') ? file : join(ROOT, file));
-      counts[relFile] = (counts[relFile] ?? 0) + 1;
+      // grep -n reporta a linha 1x mesmo com N ocorrências do padrão nela
+      // (ex.: `(a: any, b: any): any`); contar matches evita baseline
+      // divergente do gate (check-any-type-baseline.mjs), que conta por
+      // ocorrência e por isso acusa regressão falsa logo após um --update.
+      const occurrences = (content.match(occurrenceRe) ?? []).length || 1;
+      counts[relFile] = (counts[relFile] ?? 0) + occurrences;
     }
   }
 
@@ -64,10 +70,20 @@ function countAnyInSrc() {
 const counts = countAnyInSrc();
 const total = Object.values(counts).reduce((a, b) => a + b, 0);
 
+let prevMeta;
+try {
+  prevMeta = existsSync(BASELINE_PATH)
+    ? JSON.parse(readFileSync(BASELINE_PATH, 'utf8'))?.meta
+    : undefined;
+} catch {
+  prevMeta = undefined; // baseline corrompido — nao travar o --update (QODO c466935b)
+}
+
 const baseline = {
   generatedAt: new Date().toISOString(),
   description: 'Baseline de `as any` / `: any` em código de produção (excluindo testes e comentários JSDoc). Falha apenas em REGRESSÃO (contagem cresce).',
   productionAnyCount: total,
+  ...(prevMeta ? { meta: prevMeta } : {}),
   counts,
 };
 

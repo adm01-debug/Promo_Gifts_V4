@@ -84,6 +84,17 @@ function isControlledInternalFailure(input: ErrorLike): boolean {
 }
 
 /**
+ * Negação por RLS detectada pelo próprio app (UPDATE/DELETE que afeta 0 linhas).
+ * A mensagem é escrita por nós e segura para exibir: sanitizeError a repassa.
+ */
+export class RlsDeniedError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = 'RlsDeniedError';
+  }
+}
+
+/**
  * Recebe a resposta de uma edge function ou um Error e devolve uma
  * mensagem segura para exibir ao usuário.
  *
@@ -96,6 +107,7 @@ function isControlledInternalFailure(input: ErrorLike): boolean {
  */
 export function sanitizeError(input: unknown): string {
   if (!input) return SAFE_MESSAGES.GENERIC;
+  if (input instanceof RlsDeniedError) return input.message;
 
   const obj = (typeof input === 'object' ? input : {}) as ErrorLike;
   const code = String(obj.error ?? obj.code ?? '').toLowerCase();

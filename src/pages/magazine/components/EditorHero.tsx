@@ -74,7 +74,7 @@ export function EditorHero({ magazine, onChangeTemplate, onLeave, readOnly = fal
 
         <h1
           data-testid="page-title-magazine-editor"
-          className="line-clamp-2 font-display text-[26px] font-bold leading-tight tracking-tight text-foreground sm:text-[28px]"
+          className="line-clamp-2 min-w-[12rem] font-display text-[26px] font-bold leading-tight tracking-tight text-foreground sm:text-[28px]"
         >
           {magazine.title || 'Nova revista'}
         </h1>

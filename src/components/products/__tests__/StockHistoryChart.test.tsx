@@ -80,6 +80,25 @@ describe('StockHistoryChart Tooltips', () => {
   });
 });
 
+describe('StockHistoryChart — rótulo de dados simulados', () => {
+  it('exibe "dados simulados (sem histórico)" quando isDemo é true', () => {
+    vi.mocked(useStockChartData).mockReturnValue({
+      ...mockData,
+      isDemo: true,
+    } as unknown as ReturnType<typeof useStockChartData>);
+    render(<StockHistoryChart productId="test-prod" />);
+    expect(screen.getByText('dados simulados (sem histórico)')).toBeInTheDocument();
+  });
+
+  it('não exibe o rótulo quando há histórico real', () => {
+    vi.mocked(useStockChartData).mockReturnValue(
+      mockData as unknown as ReturnType<typeof useStockChartData>,
+    );
+    render(<StockHistoryChart productId="test-prod" />);
+    expect(screen.queryByText('dados simulados (sem histórico)')).not.toBeInTheDocument();
+  });
+});
+
 describe('Gallery Tooltip Regression', () => {
   it("ensures no title attribute exists on chart elements that shouldn't have them", () => {
     render(<StockHistoryChart productId="test-prod" />);

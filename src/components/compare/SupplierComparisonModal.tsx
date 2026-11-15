@@ -48,6 +48,8 @@ interface SupplierComparisonModalProps {
   productId?: string;
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  /** Chamado ao confirmar a troca para o produto de outro fornecedor. */
+  onSelectSupplier: (productId: string) => void;
 }
 
 /** Linha de comparação renderizada nas variações tabela/card (base + alternativas). */
@@ -65,6 +67,8 @@ interface ComparisonItemProps {
   row: ComparisonRowData;
   formatCurrency: (value: number) => string;
   formatPercent: (value: number) => string;
+  isSelected: boolean;
+  onSelect: (productId: string) => void;
 }
 
 const SORT_LABEL: Record<string, string> = {
@@ -97,11 +101,13 @@ export function SupplierComparisonModal({
   product,
   open,
   onOpenChange,
+  onSelectSupplier,
 }: SupplierComparisonModalProps) {
   const [onlyVerified, setOnlyVerified] = useState(false);
   const [sortBy, setSortBy] = useState<SupplierComparisonSort>('score');
   const [viewMode, setViewMode] = useState<'grid' | 'table'>('table');
   const [activeFilters, setActiveFilters] = useState<string[]>([]);
+  const [selectedId, setSelectedId] = useState<string | null>(null);
 
   const { result: comparison, isLoading } = useSupplierComparison(product ?? null, {
     onlyVerified,
@@ -220,8 +226,25 @@ export function SupplierComparisonModal({
 
   const { lowestPrice, highestStock, maxEconomiaPorMOQ, fastestLeadTimeDays } = comparison;
 
+  const selectedProduct =
+    allProducts.find((r) => r.product.id === selectedId)?.product ?? displayProduct;
+
+  const handleOpenChange = (next: boolean) => {
+    if (!next) setSelectedId(null);
+    onOpenChange(next);
+  };
+
+  const handleConfirm = () => {
+    if (selectedProduct.id === displayProduct.id) {
+      handleOpenChange(false);
+      return;
+    }
+    setSelectedId(null);
+    onSelectSupplier(selectedProduct.id);
+  };
+
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
+    <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogContent className="flex max-h-[90vh] max-w-6xl flex-col overflow-hidden p-0 focus:ring-2 focus:ring-primary">
         <div className="border-b bg-muted/30 p-6">
           <div className="mb-4 flex items-center justify-between">
@@ -423,6 +446,8 @@ export function SupplierComparisonModal({
                       row={row}
                       formatCurrency={formatCurrency}
                       formatPercent={formatPercent}
+                      isSelected={row.product.id === selectedProduct.id}
+                      onSelect={setSelectedId}
                     />
                   ))}
                 </TableBody>
@@ -436,6 +461,8 @@ export function SupplierComparisonModal({
                   row={row}
                   formatCurrency={formatCurrency}
                   formatPercent={formatPercent}
+                  isSelected={row.product.id === selectedProduct.id}
+                  onSelect={setSelectedId}
                 />
               ))}
             </div>
@@ -471,16 +498,21 @@ export function SupplierComparisonModal({
               <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
                 Produto Selecionado
               </span>
-              <span className="text-sm font-bold text-primary">{displayProduct.supplier.name}</span>
+              <span className="text-sm font-bold text-primary">
+                {selectedProduct.supplier.name}
+              </span>
             </div>
             <Button
               variant="ghost"
               className="h-11 px-6 font-bold"
-              onClick={() => onOpenChange(false)}
+              onClick={() => handleOpenChange(false)}
             >
               Cancelar
             </Button>
-            <Button className="h-11 bg-primary px-8 font-black shadow-xl shadow-primary/30 transition-all hover:bg-primary/90 active:scale-95">
+            <Button
+              className="h-11 bg-primary px-8 font-black shadow-xl shadow-primary/30 transition-all hover:bg-primary/90 active:scale-95"
+              onClick={handleConfirm}
+            >
               Confirmar Escolha <ChevronRight className="ml-2 h-4 w-4" />
             </Button>
           </div>
@@ -545,7 +577,13 @@ function KPICard({
   );
 }
 
-function ComparisonRow({ row, formatCurrency, formatPercent }: ComparisonItemProps) {
+function ComparisonRow({
+  row,
+  formatCurrency,
+  formatPercent,
+  isSelected,
+  onSelect,
+}: ComparisonItemProps) {
   const {
     product: p,
     isBase,
@@ -690,8 +728,10 @@ function ComparisonRow({ row, formatCurrency, formatPercent }: ComparisonItemPro
                 : 'bg-primary shadow-lg shadow-primary/20',
             )}
             disabled={isBase}
+            aria-pressed={isBase ? undefined : isSelected}
+            onClick={() => onSelect(p.id)}
           >
-            {isBase ? 'Atual' : 'Trocar'}
+            {isBase ? 'Atual' : isSelected ? 'Selecionado' : 'Trocar'}
           </Button>
         </div>
       </TableCell>
@@ -699,7 +739,13 @@ function ComparisonRow({ row, formatCurrency, formatPercent }: ComparisonItemPro
   );
 }
 
-function ComparisonCard({ row, formatCurrency, formatPercent }: ComparisonItemProps) {
+function ComparisonCard({
+  row,
+  formatCurrency,
+  formatPercent,
+  isSelected,
+  onSelect,
+}: ComparisonItemProps) {
   const { product: p, isBase, isLowestPrice, score, scoreBreakdown, priceDiffPercent } = row;
 
   return (
@@ -787,8 +833,10 @@ function ComparisonCard({ row, formatCurrency, formatPercent }: ComparisonItemPr
           className="h-12 w-full rounded-2xl text-sm font-black uppercase tracking-widest shadow-xl shadow-primary/20 transition-all active:scale-95"
           variant={isBase ? 'secondary' : 'default'}
           disabled={isBase}
+          aria-pressed={isBase ? undefined : isSelected}
+          onClick={() => onSelect(p.id)}
         >
-          {isBase ? 'Produto Ativo' : 'Selecionar Fornecedor'}
+          {isBase ? 'Produto Ativo' : isSelected ? 'Selecionado' : 'Selecionar Fornecedor'}
         </Button>
       </div>
     </div>

@@ -1,0 +1,256 @@
+name: Lovable Autoheal
+
+# Objetivo: corrigir automaticamente violações ESLint auto-fixáveis
+# introduzidas por commits do Lovable direto na branch main.
+#
+# Guard anti-loop: commits com "[autoheal]" nunca re-trigam o workflow.
+# Regras auto-fixáveis: unused-imports/no-unused-imports, consistent-type-imports, prefer-const
+# Não auto-fixável → issue criada: rules-of-hooks (requer refactor manual)
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      target_sha:
+        description: 'SHA para re-analisar (vazio = HEAD)'
+        required: false
+        type: string
+
+concurrency:
+  group: lovable-autoheal
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+  issues: write
+  pull-requests: write
+
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  autoheal:
+    name: ESLint auto-fix (Lovable commits)
+    runs-on: ubuntu-24.04
+    timeout-minutes: 12
+
+    if: |
+      !contains(github.event.head_commit.message, '[autoheal]') &&
+      !startsWith(github.event.head_commit.message, 'Merge pull request #') &&
+      !startsWith(github.event.head_commit.message, 'Merge PR #') &&
+      !startsWith(github.event.head_commit.message, 'merge(pr-')
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: true  # E179: autoheal precisa de credencial para git push
+          token: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 2
+
+      - name: Setup Node.js
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'npm'
+
+      - name: Instalar dependências
+        run: npm ci
+
+      - name: Validar contrato do autoheal
+        run: node --test scripts/autoheal-eslint/run.test.mjs
+
+      - name: Detectar arquivos TypeScript alterados
+        id: changed_files
+        env:
+          TARGET_SHA: ${{ inputs.target_sha }}
+          AUTOHEAL_FILES_PATH: ${{ runner.temp }}/autoheal-files.json
+        run: node scripts/autoheal-eslint/run.mjs select
+
+      - name: Corrigir e validar ESLint nos arquivos alterados
+        id: eslint_fix
+        if: steps.changed_files.outputs.has_ts_files == 'true'
+        env:
+          AUTOHEAL_FILES_PATH: ${{ runner.temp }}/autoheal-files.json
+          NODE_OPTIONS: --max-old-space-size=4096
+        run: node scripts/autoheal-eslint/run.mjs fix
+
+      - name: Verificar se há correções a commitar
+        id: check_changes
+        if: steps.changed_files.outputs.has_ts_files == 'true'
+        run: |
+          if git diff --quiet; then
+            echo "has_fixes=false" >> "$GITHUB_OUTPUT"
+            echo "✅ Nenhuma correcao necessaria; ESLint validado no escopo alterado."
+          else
+            echo "has_fixes=true" >> "$GITHUB_OUTPUT"
+            git diff --name-only
+            git diff --stat
+          fi
+
+      - name: Verificar compilação TypeScript pós-fix
+        id: tsc_check
+        if: steps.check_changes.outputs.has_fixes == 'true'
+        run: |
+          if npx tsc -p tsconfig.app.json --noEmit 2>&1; then
+            echo "tsc_ok=true" >> "$GITHUB_OUTPUT"
+            echo "✅ TypeScript compilou sem erros."
+          else
+            echo "tsc_ok=false" >> "$GITHUB_OUTPUT"
+            echo "❌ TypeScript falhou após fix — correções serão descartadas."
+          fi
+
+      # Se o Lovable alterou TypeScript mas o ESLint não teve nada para corrigir,
+      # o workflow antigo terminava verde sem compilar o código. Isso mascarou a
+      # substituição de types.ts por um snapshot de outro projeto em 2026-08-31.
+      - name: Verificar contrato TypeScript quando não houve auto-fix
+        id: source_tsc_check
+        if: |
+          steps.changed_files.outputs.has_ts_files == 'true' &&
+          steps.check_changes.outputs.has_fixes != 'true'
+        run: |
+          if npm run typecheck; then
+            echo "tsc_ok=true" >> "$GITHUB_OUTPUT"
+            echo "✅ TypeScript do commit original compilou sem regressões."
+          else
+            echo "tsc_ok=false" >> "$GITHUB_OUTPUT"
+            echo "❌ Commit original introduziu regressão TypeScript."
+            exit 1
+          fi
+
+      - name: Credencial de push sem token em disco (E32)
+        run: |
+          # persist-credentials:false nao grava token; o helper le GIT_PUSH_TOKEN so no passo de push.
+          # shellcheck disable=SC2016 # aspas simples intencionais: $1 e GIT_PUSH_TOKEN expandem quando o git chama o helper
+          git config --local credential.helper '!f() { test "$1" = get || exit 0; echo username=x-access-token; echo "password=${GIT_PUSH_TOKEN}"; }; f'
+      - name: Commitar correções ESLint e abrir PR
+        if: |
+          steps.check_changes.outputs.has_fixes == 'true' &&
+          steps.tsc_check.outputs.tsc_ok == 'true'
+        env:
+          GIT_PUSH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TRIGGER_MESSAGE: ${{ github.event.head_commit.message }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          HUSKY: "0"
+        run: |
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git config user.name "github-actions[bot]"
+
+          TRIGGER_SHA="${{ github.sha }}"
+          TRIGGER_MSG=$(printf '%s\n' "$TRIGGER_MESSAGE" | head -1 | cut -c1-80)
+          BRANCH="autoheal/fix-${TRIGGER_SHA:0:7}"
+          git checkout -b "$BRANCH"
+          git add -- src/ tests/ e2e/
+
+          FILES_FIXED=$(git diff --cached --name-only | tr '\n' ', ' | sed 's/,$//')
+
+          git commit -m "fix(autoheal): ESLint --fix automático [autoheal]
+
+          Disparado por: ${TRIGGER_SHA:0:7} — ${TRIGGER_MSG}
+          Arquivos: ${FILES_FIXED}
+          Regras: unused-imports/no-unused-imports, consistent-type-imports, prefer-const
+          TSC: ✅ passou após o fix"
+
+          git push origin "$BRANCH"
+
+          PR_BODY="## Autoheal ESLint
+
+          Correções automáticas aplicadas após commit do Lovable.
+
+          **Commit original:** \`${TRIGGER_SHA:0:7}\` — ${TRIGGER_MSG}
+          **Arquivos:** ${FILES_FIXED}
+          **Regras:** unused-imports/no-unused-imports, consistent-type-imports, prefer-const
+          **TSC:** ✅ passou"
+
+          gh pr create \
+            --base main \
+            --head "$BRANCH" \
+            --title "fix(autoheal): ESLint --fix em ${TRIGGER_SHA:0:7}" \
+            --body "$PR_BODY" \
+            --label "autoheal" || echo "⚠️ PR já existe — ver logs"
+
+      - name: Compute issue body (autoheal TSC fail)
+        id: issue_body
+        if: |
+          steps.check_changes.outputs.has_fixes == 'true' &&
+          steps.tsc_check.outputs.tsc_ok == 'false'
+        env:
+          TRIGGER_MESSAGE: ${{ github.event.head_commit.message }}
+          TRIGGER_SHA: ${{ github.sha }}
+        run: |
+          node <<'NODEEOF' >> "$GITHUB_OUTPUT"
+          const DELIM = 'BODY_EOF_AUTOHEAL';
+          const sha = process.env.TRIGGER_SHA || '';
+          const msg = (process.env.TRIGGER_MESSAGE || '').split('\n')[0].slice(0, 200);
+          const runUrl = `${process.env.GITHUB_SERVER_URL}/${process.env.GITHUB_REPOSITORY}/actions/runs/${process.env.GITHUB_RUN_ID}`;
+          const title = `\u{1F6A8} Autoheal: fix ESLint quebrou TSC — ${sha.slice(0,7)}`;
+          const body = [
+            '## \u{1F6A8} Autoheal: fix ESLint quebrou TypeScript',
+            '',
+            `**Commit:** [\`${sha.slice(0,7)}\`](${process.env.GITHUB_SERVER_URL}/${process.env.GITHUB_REPOSITORY}/commit/${sha})`,
+            `**Mensagem:** ${msg}`,
+            `**Workflow:** [Ver logs](${runUrl})`,
+            '',
+            '### O que aconteceu',
+            '1. Autoheal detectou violações ESLint nos arquivos alterados',
+            '2. Aplicou `eslint --fix` → TSC **FALHOU** (fix causou erro de tipo)',
+            '3. Correções descartadas — produção não foi quebrada',
+            '',
+            '### Como corrigir manualmente',
+            '```bash',
+            'git checkout main && git pull',
+            'npx eslint --fix <arquivos-alterados>',
+            'npm run typecheck',
+            'git commit -m "fix: corrige ESLint pós-Lovable" && git push',
+            '```',
+            '',
+            '> **Dica:** `rules-of-hooks` NÃO é auto-fixável.',
+            '> Mover hooks para ANTES de early returns geralmente resolve.',
+          ].join('\n');
+          process.stdout.write(`title=${title}\n`);
+          process.stdout.write(`body<<${DELIM}\n${body}\n${DELIM}\n`);
+          process.stdout.write(`skip=false\n`);
+          NODEEOF
+
+      - name: Reportar issue — autoheal TSC fail
+        # E12 — ci-issue action com dedupe por marcador <!-- ci-issue:autoheal-tsc-fail -->
+        if: |
+          steps.check_changes.outputs.has_fixes == 'true' &&
+          steps.tsc_check.outputs.tsc_ok == 'false' &&
+          steps.issue_body.outputs.skip != 'true'
+        uses: ./.github/actions/ci-issue
+        with:
+          key: autoheal-tsc-fail
+          title: ${{ steps.issue_body.outputs.title }}
+          body: ${{ steps.issue_body.outputs.body }}
+          labels: bug,Lovable,autoheal
+          state: open
+
+      - name: Bloquear resultado com TypeScript invalido apos fix
+        if: steps.tsc_check.outputs.tsc_ok == 'false'
+        run: exit 1
+
+      - name: Step Summary
+        if: always()
+        run: |
+          {
+            echo "## 🤖 Lovable Autoheal"
+            echo ""
+            echo "**Commit:** ${{ github.sha }}"
+            TS="${{ steps.changed_files.outputs.has_ts_files }}"
+            FIX="${{ steps.check_changes.outputs.has_fixes }}"
+            TSC="${{ steps.tsc_check.outputs.tsc_ok }}"
+            SOURCE_TSC="${{ steps.source_tsc_check.outputs.tsc_ok }}"
+            if   [ "$TS"  = "false" ]; then echo "✅ Nenhum arquivo TypeScript alterado."
+            elif [ "$SOURCE_TSC" = "false" ]; then echo "❌ **Commit original quebrou o contrato TypeScript.**"
+            elif [ "$FIX" = "false" ]; then echo "✅ ESLint validado no escopo alterado — sem correcoes."
+            elif [ "$TSC" = "true"  ]; then echo "✅ **Correções aplicadas e commitadas.**"
+            elif [ "$TSC" = "false" ]; then echo "❌ **Fix quebrou TSC — issue criada.**"
+            else echo "⏭ Sem ação necessária."; fi
+            echo ""
+            echo "---"
+            echo "*Lovable Autoheal · .github/workflows/lovable-autoheal.yml*"
+          } >> "$GITHUB_STEP_SUMMARY"

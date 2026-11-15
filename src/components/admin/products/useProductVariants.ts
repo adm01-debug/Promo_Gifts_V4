@@ -137,7 +137,9 @@ export function useProductVariants(productId: string, productName?: string, prod
   const handleCreate = async (formData: VariantFormData) => {
     setIsSaving(true);
     try {
-      await createVariantApi(formToPayload(formData, { product_id: productId, is_active: true }));
+      await createVariantApi(
+        formToPayload(formData, { product_id: productId, is_active: true, attributes: {} }),
+      );
       toast.success('Variação criada com sucesso');
       setIsCreating(false);
       invalidate();

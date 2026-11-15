@@ -23,8 +23,9 @@ test.describe("Catalog Visual Regression & Edge Cases", () => {
 
   test("persistence: filters and sort should persist when navigating back", async ({ page }) => {
     // 1. Aplica filtros e ordenação via URL para ser determinístico
-    // Note: useCatalogState usa sortBy como param, priceRange como array
-    await gotoAndSettle(page, "/produtos?sort=price-asc&priceRange=100&priceRange=500");
+    // Note: /produtos lê/grava a ordenação como sortBy e o preço como priceMin/priceMax
+    // (src/pages/filters/useFiltersPageState.ts)
+    await gotoAndSettle(page, "/produtos?sortBy=price-asc&priceMin=100&priceMax=500");
     
     // 2. Aguarda os cards carregarem
     await page.waitForSelector('[data-testid="product-card"]');
@@ -40,16 +41,17 @@ test.describe("Catalog Visual Regression & Edge Cases", () => {
     await page.goBack();
     
     // 6. Valida se os parâmetros persistem na URL e a UI reflete o estado
-    await expect(page).toHaveURL(/\/produtos\?.*sort=price-asc.*/);
-    await expect(page).toHaveURL(/\/produtos\?.*priceRange=100.*/);
+    await expect(page).toHaveURL(/\/produtos\?.*sortBy=price-asc.*/);
+    await expect(page).toHaveURL(/\/produtos\?.*priceMin=100.*/);
     
-    // Verifica badge de filtro ativo
-    await expect(page.locator('[data-testid="active-filter-badge"]')).toBeVisible();
+    // Verifica o chip de filtro ativo de preço e a ordenação exibida no seletor
+    await expect(page.getByText(/Preço:\s*R\$\s*100\s*–\s*R\$\s*500/)).toBeVisible();
+    await expect(page.locator('[data-testid="catalog-sort-trigger"]')).toContainText("Preço (Menor → Maior)");
   });
 
   test("normalization: invalid parameters should not break layout", async ({ page }) => {
     // Parâmetros inválidos: ordenação inexistente, cor inexistente, price malformado
-    const invalidUrl = "/produtos?sort=INVALID_SORT&colorGroups=999&priceRange=NaN&q=<script>alert(1)</script>";
+    const invalidUrl = "/produtos?sortBy=INVALID_SORT&colorGroups=999&priceMin=NaN&search=<script>alert(1)</script>";
     
     await gotoAndSettle(page, invalidUrl);
     
@@ -60,7 +62,9 @@ test.describe("Catalog Visual Regression & Edge Cases", () => {
     await expect(page.locator('[data-testid="catalog-sort-trigger"]')).toBeVisible();
     
     // O grid deve estar presente (ou empty state se filtrar tudo)
-    const gridOrEmpty = page.locator('[data-testid="product-grid"], [data-testid="empty-catalog-state"]');
+    const gridOrEmpty = page
+      .locator('[data-testid="virtualized-product-grid"]')
+      .or(page.getByRole("heading", { name: "Nenhum produto encontrado" }));
     await expect(gridOrEmpty.first()).toBeVisible();
     
     expect(await page.screenshot()).toMatchSnapshot('catalog-invalid-params.png');

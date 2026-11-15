@@ -1,7 +1,7 @@
 import { getCorsHeaders } from '../_shared/cors.ts';
 import { getCredential } from '../_shared/credentials.ts';
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2.49.4";
-import { z } from "https://esm.sh/zod@3.23.8";
+import { createClient } from "npm:@supabase/supabase-js@2.49.4";
+import { z } from "npm:zod@3.23.8";
 import { runBotProtection } from '../_shared/bot-protection.ts';
 
 const BodySchema = z.object({
@@ -56,11 +56,11 @@ Deno.serve(async (req) => {
       .from('user_roles')
       .select('role')
       .eq('user_id', user.id)
-      .eq('role', 'admin')
+      .eq('role', 'dev')
       .maybeSingle();
 
     if (!roleData) {
-      return jsonResponse({ error: 'Forbidden: admin role required' }, 403);
+      return jsonResponse({ error: 'Forbidden: dev role required' }, 403);
     }
 
     // Validate body

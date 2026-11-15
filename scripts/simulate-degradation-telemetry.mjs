@@ -105,20 +105,20 @@ const SCOPES = [
 ];
 
 const DEGRADABLE = [
-  { code: '42501', message: 'permission denied for table orders' },
-  { code: '42P01', message: 'relation "public.gold_orders" does not exist' },
-  { code: '42703', message: 'column o.total does not exist' },
-  { code: '42883', message: 'function public.fn_kpi(uuid) does not exist' },
-  { code: 'PGRST202', message: 'Could not find the function' },
-  { code: 'PGRST205', message: 'Could not find the table' },
-  { code: 'PGRST301', message: 'JWT expired' },
-  { code: 'PGRST116', message: 'JSON object requested, multiple rows returned' },
-  { status: 401, message: 'Unauthorized' },
-  { status: 403, message: 'Forbidden' },
-  { status: 429, message: 'Too Many Requests' },
-  { code: '429', message: 'rate limit exceeded' },
-  { message: 'new row violates row-level security policy' },
-  { message: 'permission denied for schema gold' },
+  { code: '42501', message: 'permission denied for table orders', reason: 'permission_denied' },
+  { code: '42P01', message: 'relation "public.gold_orders" does not exist', reason: 'missing_relation' },
+  { code: '42703', message: 'column o.total does not exist', reason: 'schema_mismatch' },
+  { code: '42883', message: 'function public.fn_kpi(uuid) does not exist', reason: 'missing_relation' },
+  { code: 'PGRST202', message: 'Could not find the function', reason: 'missing_relation' },
+  { code: 'PGRST205', message: 'Could not find the table', reason: 'missing_relation' },
+  { code: 'PGRST301', message: 'JWT expired', reason: 'permission_denied' },
+  { code: 'PGRST116', message: 'JSON object requested, multiple rows returned', reason: 'schema_mismatch' },
+  { status: 401, message: 'Unauthorized', reason: 'permission_denied' },
+  { status: 403, message: 'Forbidden', reason: 'permission_denied' },
+  { status: 429, message: 'Too Many Requests', reason: 'quota_exceeded' },
+  { code: '429', message: 'rate limit exceeded', reason: 'quota_exceeded' },
+  { message: 'new row violates row-level security policy', reason: 'permission_denied' },
+  { message: 'permission denied for schema gold', reason: 'permission_denied' },
 ];
 
 const TRANSIENT = [
@@ -156,6 +156,10 @@ for (const scope of SCOPES) {
     assert(out === 'degraded', `I2 degradável tratado: ${scope} ${JSON.stringify(err)}`);
     assert(reg.all.length === 1, `I2 exatamente 1 evento: ${scope}`);
     assert(reg.all[0].scope === scope, `I2 scope preservado: ${scope}`);
+    assert(
+      reg.all[0].reason === err.reason,
+      `I2 motivo correto (esperado ${err.reason}, obteve ${reg.all[0].reason}): ${scope} ${JSON.stringify(err)}`,
+    );
   }
   for (const err of TRANSIENT) {
     const reg = createRegistry();

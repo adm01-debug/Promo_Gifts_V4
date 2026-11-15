@@ -111,9 +111,17 @@ export function ConfirmDialog({
   const descriptionTestId = testId ? `${testId}-description` : 'confirm-dialog-description';
 
   return (
-    <AlertDialog open={open} onOpenChange={onOpenChange}>
+    <AlertDialog
+      open={open}
+      onOpenChange={(nextOpen) => {
+        if (!loading) onOpenChange(nextOpen);
+      }}
+    >
       <AlertDialogContent
-        className="!max-w-[358px] w-[92vw] gap-0 overflow-hidden rounded-xl border border-border/60 bg-card/95 p-0 shadow-xl backdrop-blur-xl supports-[backdrop-filter]:bg-card/80"
+        onEscapeKeyDown={(event) => {
+          if (loading) event.preventDefault();
+        }}
+        className="w-[92vw] !max-w-[358px] gap-0 overflow-hidden rounded-xl border border-border/60 bg-card/95 p-0 shadow-xl backdrop-blur-xl supports-[backdrop-filter]:bg-card/80"
         data-testid={testId}
       >
         {/* Top accent bar — sutil, casa com a variante */}
@@ -136,7 +144,7 @@ export function ConfirmDialog({
                 <span
                   aria-hidden="true"
                   className={cn(
-                    'absolute inset-0 -z-10 rounded-xl blur-lg opacity-60',
+                    'absolute inset-0 -z-10 rounded-xl opacity-60 blur-lg',
                     config.iconGlow,
                   )}
                 />
@@ -181,10 +189,7 @@ export function ConfirmDialog({
               </h4>
               <ul className="stagger-children space-y-1">
                 {impactPreview.items.map((item, index) => (
-                  <li
-                    key={index}
-                    className="flex items-start gap-2 text-xs text-foreground/80"
-                  >
+                  <li key={index} className="flex items-start gap-2 text-xs text-foreground/80">
                     <span
                       className={cn(
                         'mt-1.5 h-1 w-1 flex-shrink-0 rounded-full',

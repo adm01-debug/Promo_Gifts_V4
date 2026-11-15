@@ -38,9 +38,12 @@ const LEAK_PATTERNS = [
 const IGNORE_PATH_RE = /(?:\.test\.|\.spec\.|__tests__|__mocks__|safeToast\.ts|sanitize-error\.ts)/;
 
 function listSourceFiles() {
-  const out = execSync('git ls-files src', { cwd: ROOT, encoding: 'utf8' });
+  // -z: evita que o git coloque entre aspas/escape em octal paths com
+  // caracteres não-ASCII (ex.: acentos), o que quebraria o readFileSync
+  // abaixo e faria o arquivo ser pulado silenciosamente (falso-negativo).
+  const out = execSync('git ls-files -z src', { cwd: ROOT, encoding: 'utf8' });
   return out
-    .split('\n')
+    .split('\0')
     .filter(Boolean)
     .filter((f) => /\.(ts|tsx)$/.test(f) && !IGNORE_PATH_RE.test(f));
 }
@@ -72,7 +75,10 @@ function findLeaks() {
 
 function loadBaseline() {
   try {
-    return JSON.parse(readFileSync(BASELINE_PATH, 'utf8'));
+    // Remove BOM UTF-8 (comum em editores Windows): sem isso, JSON.parse
+    // quebrava e o catch descartava a baseline inteira (todo o legado
+    // virava "novo" e quebrava o CI).
+    return JSON.parse(readFileSync(BASELINE_PATH, 'utf8').replace(/^\uFEFF/, ''));
   } catch {
     return { entries: [] };
   }

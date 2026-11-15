@@ -24,6 +24,11 @@ vi.mock('sonner', () => ({
   }),
 }));
 
+const mockDbInvoke = vi.fn();
+vi.mock('@/lib/db/postgrest', () => ({
+  dbInvoke: (...args: unknown[]) => mockDbInvoke(...args),
+}));
+
 // ── Fixture ───────────────────────────────────────────────────────────────────
 function makeRow(
   opts: {
@@ -411,21 +416,40 @@ describe('bulkCompare', () => {
 
 // ── bulkQuote ─────────────────────────────────────────────────────────────────
 describe('bulkQuote', () => {
-  it('nada se seleção vazia', () => {
-    const { result } = renderHook(() => useStockSelection([]));
+  beforeEach(() => {
+    mockDbInvoke.mockResolvedValue({ records: [{ id: 'p1', sale_price: '12.5' }], count: null });
+  });
+  it('inclui o preço de venda do produto (products.sale_price) no item', async () => {
+    const row = makeRow({ productId: 'p1', variantId: 'v1' });
+    const { result } = renderHook(() => useStockSelection([row]));
     act(() => {
-      result.current.bulkQuote();
+      result.current.toggle(rowKey({ productId: 'p1', variantId: 'v1' }));
+    });
+    await act(async () => {
+      await result.current.bulkQuote();
+    });
+    expect(mockDbInvoke).toHaveBeenCalledWith(
+      expect.objectContaining({ table: 'products', filters: { id: ['p1'] } }),
+    );
+    // v_products_public (alias de products) não tem base_price — select com ela dá 400.
+    expect(mockDbInvoke.mock.calls[0][0].select).toBe('id, sale_price');
+    expect(decodeURIComponent(mockNavigate.mock.calls[0][0])).toContain('"product_price":12.5');
+  });
+  it('nada se seleção vazia', async () => {
+    const { result } = renderHook(() => useStockSelection([]));
+    await act(async () => {
+      await result.current.bulkQuote();
     });
     expect(mockNavigate).not.toHaveBeenCalled();
   });
-  it('navega para /orcamentos/novo?items[]=...', () => {
+  it('navega para /orcamentos/novo?items[]=...', async () => {
     const row = makeRow({ productId: 'p1', variantId: 'v1', variantSku: 'SKU-CANETA' });
     const { result } = renderHook(() => useStockSelection([row]));
     act(() => {
       result.current.toggle(rowKey({ productId: 'p1', variantId: 'v1' }));
     });
-    act(() => {
-      result.current.bulkQuote();
+    await act(async () => {
+      await result.current.bulkQuote();
     });
     expect(mockNavigate).toHaveBeenCalledTimes(1);
     const [path] = mockNavigate.mock.calls[0];
@@ -433,7 +457,7 @@ describe('bulkQuote', () => {
     expect(path).toContain('items[]');
     expect(decodeURIComponent(path)).toContain('SKU-CANETA');
   });
-  it('inclui todos os itens no param de URL', () => {
+  it('inclui todos os itens no param de URL', async () => {
     const rows = [
       makeRow({ productId: 'p1', variantId: 'v1', variantSku: 'SKU-A' }),
       makeRow({ productId: 'p2', variantId: 'v2', variantSku: 'SKU-B' }),
@@ -442,35 +466,35 @@ describe('bulkQuote', () => {
     act(() => {
       result.current.selectAllVisible(rows);
     });
-    act(() => {
-      result.current.bulkQuote();
+    await act(async () => {
+      await result.current.bulkQuote();
     });
     const decoded = decodeURIComponent(mockNavigate.mock.calls[0][0]);
     expect(decoded).toContain('SKU-A');
     expect(decoded).toContain('SKU-B');
   });
-  it('usa minStock como quantity, fallback 1 se zero', () => {
+  it('usa minStock como quantity, fallback 1 se zero', async () => {
     const rowA = makeRow({ minStock: 50 });
     const rowB = makeRow({ productId: 'p2', variantId: 'v2', minStock: 0 });
     const { result } = renderHook(() => useStockSelection([rowA, rowB]));
     act(() => {
       result.current.selectAllVisible([rowA, rowB]);
     });
-    act(() => {
-      result.current.bulkQuote();
+    await act(async () => {
+      await result.current.bulkQuote();
     });
     const decoded = decodeURIComponent(mockNavigate.mock.calls[0][0]);
     expect(decoded).toContain('"quantity":50');
     expect(decoded).toContain('"quantity":1');
   });
-  it('limpa seleção após navegar', () => {
+  it('limpa seleção após navegar', async () => {
     const row = makeRow();
     const { result } = renderHook(() => useStockSelection([row]));
     act(() => {
       result.current.toggle(rowKey({ productId: 'prod-1', variantId: 'var-1' }));
     });
-    act(() => {
-      result.current.bulkQuote();
+    await act(async () => {
+      await result.current.bulkQuote();
     });
     expect(result.current.selectedCount).toBe(0);
   });

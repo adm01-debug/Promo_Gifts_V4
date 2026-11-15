@@ -11,7 +11,7 @@
  *
  * Padrão alinhado a quote-summary-card-collapse.spec.ts.
  */
-import { test, expect } from '@playwright/test';
+import { test, expect } from '../fixtures/test-base';
 import { loginAs } from '../helpers/auth';
 import { gotoAndSettle } from '../helpers/nav';
 
@@ -36,7 +36,10 @@ test.describe('Quote Builder · botão global Recolher / Expandir', () => {
 
     const firstCard = page.getByTestId('quote-summary-item-0');
     if ((await firstCard.count()) === 0) {
-      expect(false, '[E108] Resumo vazio — adicionar produto está fora do escopo desta spec.').toBeTruthy();
+      expect(
+        false,
+        '[E108] Resumo vazio — adicionar produto está fora do escopo desta spec.',
+      ).toBeTruthy();
     }
     await expect(firstCard).toBeVisible({ timeout: 10_000 });
 
@@ -118,7 +121,7 @@ test.describe('Quote Builder · botão global Recolher / Expandir', () => {
       expect(collapseBox).not.toBeNull();
       expect(groupBox).not.toBeNull();
       // Tolerância: ±4px de alinhamento vertical.
-      expect(Math.abs((collapseBox!.y) - (groupBox!.y))).toBeLessThanOrEqual(4);
+      expect(Math.abs(collapseBox!.y - groupBox!.y)).toBeLessThanOrEqual(4);
     }
   });
 });

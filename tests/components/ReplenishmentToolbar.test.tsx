@@ -12,7 +12,6 @@ const baseProps = {
   totalCount: 200,
   filteredCount: 150,
   isLoading: false,
-  loadingProgress: 0,
   searchQuery: "",
   onSearchChange: vi.fn(),
   selectedSupplier: "all",
@@ -60,11 +59,13 @@ describe("ReplenishmentToolbar", () => {
     expect(screen.getByText("/200")).toBeInTheDocument();
   });
 
-  it("shows progress bar when loading with progress", () => {
+  it("shows count badge without percentage when loading with existing items", () => {
     renderWithProviders(
-      <ReplenishmentToolbar {...baseProps} isLoading loadingProgress={45} />
+      <ReplenishmentToolbar {...baseProps} isLoading totalCount={200} filteredCount={150} />
     );
-    expect(screen.getByText("45%")).toBeInTheDocument();
+    // Progress bar (percentual) foi removida — apenas o count badge persiste
+    expect(screen.getByText("150")).toBeInTheDocument();
+    expect(screen.queryByText(/%/)).toBeNull();
   });
 
   it("toggles selection mode on button click", () => {

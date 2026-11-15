@@ -46,6 +46,7 @@ interface DiscountNotification {
     seller_id?: string | null;
     seller_name?: string | null;
     requested_discount_percent?: number | null;
+    requested_pct?: number | null;
     max_allowed_percent?: number | null;
     seller_notes?: string | null;
   } | null;
@@ -67,7 +68,8 @@ export function DiscountNotificationFilterPanel() {
         .from('workspace_notifications')
         .select('id, title, message, action_url, is_read, created_at, metadata')
         .eq('user_id', user.id)
-        .eq('category', 'discount')
+        .eq('category', 'quotes')
+        .like('action_url', '/admin/usuarios?tab=discounts%')
         .order('created_at', { ascending: false })
         .limit(100);
       if (error) throw error;
@@ -93,7 +95,9 @@ export function DiscountNotificationFilterPanel() {
     return (data ?? []).filter((n) => {
       if (onlyUnread && n.is_read) return false;
       if (sellerId !== 'all' && n.metadata?.seller_id !== sellerId) return false;
-      const pct = Number(n.metadata?.requested_discount_percent ?? NaN);
+      const pct = Number(
+        n.metadata?.requested_discount_percent ?? n.metadata?.requested_pct ?? NaN,
+      );
       if (min !== null && (Number.isNaN(pct) || pct < min)) return false;
       if (max !== null && (Number.isNaN(pct) || pct > max)) return false;
       return true;
@@ -239,7 +243,7 @@ export function DiscountNotificationFilterPanel() {
         ) : (
           <ul className="space-y-2" data-testid="dn-list">
             {filtered.map((n) => {
-              const pct = n.metadata?.requested_discount_percent;
+              const pct = n.metadata?.requested_discount_percent ?? n.metadata?.requested_pct;
               const url =
                 n.action_url ||
                 (n.metadata?.request_id

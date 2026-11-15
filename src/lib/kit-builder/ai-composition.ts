@@ -1,4 +1,5 @@
 import { rankBoxesForItems } from './box-recommendations';
+import { hasKnownKitPrice } from './pricing-availability';
 import {
   normalizeKitItemLine,
   type KitAIComposition,
@@ -59,6 +60,7 @@ export function resolveKitAICompositions(
   const rankedItems = catalogItems
     .filter(
       (item) =>
+        hasKnownKitPrice(item) &&
         Number.isFinite(item.price) &&
         item.price >= 0 &&
         item.dimensionsKnown !== false &&
@@ -110,7 +112,7 @@ export function resolveKitAICompositions(
     for (let mask = 1; mask < subsetCount; mask += 1) {
       const subset = selected.filter((_, index) => (mask & (1 << index)) !== 0);
       const subsetTotal = subset.reduce((total, item) => total + item.price, 0);
-      const compatibleBoxes = rankBoxesForItems(catalogBoxes, subset)
+      const compatibleBoxes = rankBoxesForItems(catalogBoxes.filter(hasKnownKitPrice), subset)
         .filter((candidate) => candidate.status !== 'incompatible')
         .sort((left, right) => {
           const keywordDifference =

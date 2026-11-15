@@ -46,6 +46,7 @@ import {
 } from '@/hooks/bi/useIndustryCategoryTrends';
 import type { BICategorySlug } from '@/lib/bi/categoryResolver';
 import { useBICategoryFocus } from '@/contexts/BICategoryFocusContext';
+import { isDemoClient } from '@/lib/bi/demoClient';
 
 interface Props {
   clientId: string;
@@ -170,7 +171,7 @@ export function ClientCategoryRadar({ clientId, ramoAtividade, clientName }: Pro
 
   const handleDrillDown = (row: MergedRow) => {
     const params = new URLSearchParams();
-    if (clientId) params.set('clientId', clientId);
+    if (clientId && !isDemoClient(clientId)) params.set('clientId', clientId);
     if (row.label) params.set('category', row.label);
     navigate(`/orcamentos/novo?${params.toString()}`);
   };

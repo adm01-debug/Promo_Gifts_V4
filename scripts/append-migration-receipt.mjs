@@ -124,7 +124,7 @@ export function runCli(argv = process.argv.slice(2)) {
     opts = parseCliOptions(argv);
   } catch (error) {
     process.stderr.write(`[append-migration-receipt] erro: ${error.message}\n`);
-    process.exit(1);
+    process.exit(2);
     return;
   }
 

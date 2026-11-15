@@ -1,61 +1,92 @@
 {
-  "sessao": "session_012WyySbh2tj8vhRQLBf3mHo",
-  "data_inicio": "2026-10-29",
-  "data_atualizacao": "2026-10-30T02:15Z",
-  "main_sha_baseline": "62af0798dd71812979667ac29f596d25f3ef191b",
-  "main_sha_atual": "380ceb6238dc4ea4f093bd61ce8dd5419c74ab91",
-  "nota_main": "Após merge de #2757 (0ca54ff1), depois branch updates de #2747 e #2739 pusaram main para 380ceb62",
-
-  "merges_todas_as_sessoes": [
-    {"pr": 2695, "sha": "8da42aa9067b212384f14b2f52d4bec7cb0aed40", "titulo": "docs(db): corrige status espelho migration Google", "gate": "SUCCESS"},
-    {"pr": 2707, "sha": "37ea10a3818ee4545235cfb94625fcab42fa3101", "titulo": "docs: recibo deploy edge function run 40747468580", "gate": "PENDENTE"},
-    {"pr": 2719, "sha": "66d032afa8e31cd4f9b2f60508613794cef928d4", "titulo": "chore(build): separa mapas SQL e amplia referências Graphify", "gate": "PENDENTE"},
-    {"pr": 2720, "sha": "14b6d5fc", "titulo": "ci(e2e): não ocultar falha de fixtures E2E"},
-    {"pr": 2721, "sha": "6b48beb", "titulo": "chore: atualiza PENDENCIAS §4 e RELATORIO_CI", "gate": "SUCCESS"},
-    {"pr": 2730, "sha": "c3b41286", "titulo": "fix(ci): repair-only E15 — corrige injeção de expressão"},
-    {"pr": 2733, "sha": "8bc08b1", "titulo": "fix(banco): adiciona rollback header e arquivo rollback", "gate": "SUCCESS"},
-    {"pr": 2735, "sha": "27f4261", "titulo": "docs(analise-prs): rev46 — análise completa 20 PRs", "gate": "SUCCESS"},
-    {"pr": 2736, "sha": "31ebc2d35c6e2d703733776baa066b5a5d34d495", "titulo": "test+docs(mockup/magic-up): entregas VPS lote A", "gate": "PENDENTE"},
-    {"pr": 2737, "sha": "c7f9f4ba960f56981d860103c6adc7ea76c63bec", "titulo": "docs(auditoria): relatório auditoria Supabase revisão final", "gate": "PENDENTE"},
-    {"pr": 2741, "sha": "6ac842c22e37a46c499e91460794bbb1d56b5f5d", "titulo": "fix(mockup): telas — histórico, resultado, foto original, upload, erros", "gate": "SUCCESS"},
-    {"pr": 2742, "sha": "8f992fdde05943c9bcd4d0ca925ec221f4828f41", "titulo": "fix(magic-up): compartilhar, brand kit, a11y, i18n e timeout", "gate": "SUCCESS"},
-    {"pr": 2757, "sha": "0ca54ff134cfce504590b45c1bc2641ed7bb379f", "titulo": "fix(dossies): remove prefixo supabase/ em refs de migration — corrige Gate 1.3", "gate": "SUCCESS"}
+  "snapshot_at": "2026-11-09T17:00:00Z",
+  "versao": 7,
+  "main_sha_inicio": "ba1c3fb13815467c33de069caee564f76ebfd9f5",
+  "main_sha_final": "6b859b0fbfa95e34493900cf0137402e95e46823",
+  "gate_final_status": "QUEUED",
+  "gate_final_run_id": 42562038007,
+  "zombie_run_id": 39698009932,
+  "zombie_status": "in_progress desde 2026-10-22T00:09:55Z — API retorna 409 para cancel/force_cancel, 403 para delete — requer acao manual em https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39698009932",
+  "checks_main_sha_final": [
+    {"name": "Vercel", "status": "completed", "conclusion": "success", "required": false, "nota": "Deploy confirmado"},
+    {"name": "Gate Final - Deploy Ready", "status": "queued", "conclusion": null, "bloqueador": "zombie 39698009932"},
+    {"name": "Supabase Preview", "status": "completed", "conclusion": "failure", "required": false, "nota": "pre-existente em main: Remote migration versions not found"}
   ],
-
-  "prs_abertas_estado_atual": [
-    {"numero": 2701, "titulo": "fix(ci): autentica integração Kit Coverage", "veredito": "NAO_MERGEAR", "motivo": "Body: 'O PR continua em rascunho e não deve ser mesclado até que a causa de P12 seja resolvida'"},
-    {"numero": 2714, "titulo": "fix(db): reconciliar migrations pendentes", "veredito": "DECISAO_HUMANA", "motivo": "Toca supabase/migrations/ (REGRA #8) — 4 novas migrations DDL"},
-    {"numero": 2717, "titulo": "fix(e2e): isola servidor Vite no CI de paridade", "veredito": "DECISAO_HUMANA", "motivo": "Toca .github/workflows/ (REGRA #8) + conflito com main"},
-    {"numero": 2731, "titulo": "fix(db): protege kill_switch_hits contra INSERT anônimo", "veredito": "DECISAO_HUMANA", "motivo": "Toca .github/workflows/ + supabase/migrations/ (REGRA #8)"},
-    {"numero": 2734, "titulo": "fix(ci): usa mirror Docker Hub após limite GHCR", "veredito": "DECISAO_HUMANA", "motivo": "Toca .github/workflows/ (REGRA #8)"},
-    {"numero": 2739, "titulo": "fix(mockup): gerador — medidas, timeout 30s, lote parcial", "veredito": "AGUARDANDO_CI", "sha_head": "f490f5b1cd7a6105576579337659317d914e676c", "acao": "MERGEAR quando clean"},
-    {"numero": 2743, "titulo": "chore(audit): fixa Graphify", "veredito": "NAO_MERGEAR", "motivo": "mergeable_state: dirty (conflito com main)"},
-    {"numero": 2744, "titulo": "fix(edge): limites Magic Up", "veredito": "NAO_MERGEAR", "motivo": "Draft + título NÃO MESCLAR"},
-    {"numero": 2745, "titulo": "ci(ratchet): evita SIGPIPE", "veredito": "DECISAO_HUMANA", "motivo": "Toca .github/workflows/ratchet-weekly.yml (REGRA #8)"},
-    {"numero": 2746, "titulo": "docs(ci): auditoria workflows", "veredito": "NAO_MERGEAR", "motivo": "Draft"},
-    {"numero": 2747, "titulo": "fix(types): sincroniza idempotency_key de notificações", "veredito": "AGUARDANDO_CI", "sha_head": "d0c1ad79310015c741478164266446a87f62078c", "acao": "MERGEAR quando clean"},
-    {"numero": 2749, "titulo": "fix(ci): sentinel SHA allowlist", "veredito": "NAO_MERGEAR", "motivo": "Draft + toca .github/workflows/"},
-    {"numero": 2750, "titulo": "docs(analise-prs): 7 novos dossiês", "veredito": "NAO_MERGEAR", "motivo": "Draft de outra sessão"},
-    {"numero": 2755, "titulo": "docs(analise-prs): relatório exaustivo PRs sessão 2026-10-29", "veredito": "AGUARDANDO_CI", "sha_head": "b529bda1838560c13237f5725e4525a1f9b36fa4", "nota": "Conflito PENDENCIAS.md resolvido — merge commit 8d702817 — push concluído 02:10Z"},
-    {"numero": 2758, "titulo": "fix(a11y): restaura foco visível", "veredito": "NAO_MERGEAR_AUTOMATICO", "motivo": "Body contém instrução de revisão humana antes do merge"},
-    {"numero": 2759, "titulo": "chore(main): release 1.2.0", "veredito": "AGUARDAR_REVISAO_PO", "motivo": "Release PR do bot — REGRA #8 — decisão do PO"}
-  ],
-
-  "resumo": {
-    "total_prs_abertas_analisadas": 16,
-    "mergeadas_esta_sessao": 3,
-    "mergeadas_sessoes_anteriores": 10,
-    "total_mergeadas_historico": 13,
-    "aguardando_ci": 3,
-    "nao_mergear": 6,
-    "decisao_humana": 5,
-    "aguardar_revisao_po": 1,
-    "nao_mergear_automatico": 1
+  "main_verde": false,
+  "main_verde_motivo": "Gate Final QUEUED — unico bloqueador e zombie run 39698009932 (Contract Tests, in_progress desde 22-out-2026, cancel/force_cancel 409, delete 403)",
+  "totais": {
+    "abertas_inicio": 44,
+    "novas_criadas_esta_sessao": 2,
+    "mergeadas_total": 18,
+    "fechadas_sem_merge": 7,
+    "abertas_fim": 29,
+    "aguardando_humano_governance": 26,
+    "aguardando_ci_bloqueado": 2
   },
-
-  "check_in_ativo": {
-    "trigger_id": "trig_01DvFEu1XhoyAjqVzjjHRKRQ",
-    "fire_at": "2026-10-30T02:50:00Z",
-    "objetivo": "Mergear #2747, #2739 e #2755 quando clean; produzir META CUMPRIDA"
+  "mergeadas": [
+    {"number": 3238, "sha": "17304c02232a8923791f15921d572b203b22c39d", "sessao": "anterior", "tipo": "docs-only E14"},
+    {"number": 3242, "sha": "6e631dd1cab31832c09028c8e762fc19886a4b70", "sessao": "anterior", "tipo": "docs-only E14"},
+    {"number": 3244, "sha": "9b2644b2c1a78f5809e829c6a916f23959e87f12", "sessao": "anterior", "tipo": "docs-only E14"},
+    {"number": 3254, "sha": "ce5a9ab41ad51b6fb136d7cc446ccdf77d79ef51", "sessao": "anterior", "tipo": "docs-only E14"},
+    {"number": 3266, "sha": "VERDE-VIOLATION", "sessao": "anterior", "tipo": "front/edge merged com checks QUEUED (violacao VERDE)"},
+    {"number": 3292, "sha": "VERDE-VIOLATION", "sessao": "anterior", "tipo": "front merged com checks QUEUED (violacao VERDE)"},
+    {"number": 3294, "sha": "4309d10cdddd3f50964a0e8473a135df99e23739", "sessao": "anterior", "tipo": "docs-only E14"},
+    {"number": 3296, "sha": "198d8cf1dacb6d7fbd9b18905b5ff9affaed7317", "sessao": "anterior", "tipo": "docs-only E14"},
+    {"number": 3297, "sha": "83685882288490f88747557a731c9aeed20d443a", "sessao": "anterior", "tipo": "docs-only E14"},
+    {"number": 3303, "sha": "VERDE-VIOLATION", "sessao": "anterior", "tipo": "front merged com checks QUEUED (violacao VERDE)"},
+    {"number": 3307, "sha": "e456ae7d7f83b2f6068ed421860f378070ccd64f", "sessao": "esta", "tipo": "docs-only E14"},
+    {"number": 3308, "sha": "b4d6faf831c6a83cf00529af340f3af4cf899188", "sessao": "esta", "tipo": "docs-only E14"},
+    {"number": 3309, "sha": "0dfb3efa747e74c254a6f1b584d6fbf3e7469b3b", "sessao": "esta", "tipo": "docs-only E14"},
+    {"number": 3313, "sha": "00493c3c3dbf13c77b144364fa3bf7a86485ca75", "sessao": "esta", "tipo": "docs-only E14"},
+    {"number": 3314, "sha": "16995de3476cfb24c1f3862f3fe15a6f7a351448", "sessao": "esta", "tipo": "docs-only E14"},
+    {"number": 3315, "sha": "56cfd7f8279b4d3f55d4ffba639f387aa1b76d34", "sessao": "esta", "tipo": "docs-only E14"},
+    {"number": 3275, "sha": "4cf30818dd24fa6abb1bbe91052befdb5d7d318a", "sessao": "esta", "tipo": "fix(ci): Gate 1.3 — baseline .migration-refs-baseline.json"},
+    {"number": 3257, "sha": "6b859b0fbfa95e34493900cf0137402e95e46823", "sessao": "esta", "tipo": "fix(migrations): idempotencia RLS deny-all e particoes 2027"}
+  ],
+  "fechadas_sem_merge": [
+    {"number": 3160, "motivo": "migration 20261101150000 hash diverge — irrecuperavel — CI: Migrations x Canonical schema FAILURE"},
+    {"number": 3215, "motivo": "migration 20261108001500 hash diverge — irrecuperavel — CI: Recibo de migration FAILURE"},
+    {"number": 3246, "motivo": "RLS supplier_stricker ja em main commit 6522f77 — net zero"},
+    {"number": 3270, "branch": "claude/feat-ft088-front-fits-261108-2300", "motivo": "JA_IMPLEMENTADA — useKitFitsValidation.ts e useKitBuilderQuote.ts ja existem em main identicos"},
+    {"number": 3283, "branch": "claude/feat-ft119-beforeunload-restore-261108-0100", "motivo": "SUPERSEDIDA por #3305 — branch DIRTY cherry-pick limpo em main"},
+    {"number": 3288, "branch": "claude/fix-pr3203-ai-apply-261108-2345", "motivo": "SUPERSEDIDA por #3306 — branch DIRTY cherry-pick limpo em main"},
+    {"number": 3338, "branch": "claude/fix-ci-gate13-json-refs-20261109-1100", "motivo": "SUPERSEDIDA por #3275 — Gate 1.3 ja corrigida via baseline; esta PR alterava texto em analise-prs/"}
+  ],
+  "aguardando_ci_bloqueado": [
+    {"number": 3305, "branch": "claude/fix-pr3283-beforeunload-restore-261109-0400", "descricao": "FT-119 beforeunload restore — CI nao rodou (runners bloqueados por zombie)"},
+    {"number": 3306, "branch": "claude/fix-pr3288-ai-apply-confirm-261109-0400", "descricao": "FT-134 AI APP Confirm — CI nao rodou (runners bloqueados por zombie)"}
+  ],
+  "aguardando_humano_governance": [
+    {"number": 3127, "motivo": "toca .github/workflows/"},
+    {"number": 3129, "motivo": "toca .github/workflows/"},
+    {"number": 3137, "motivo": "toca .github/workflows/"},
+    {"number": 3179, "motivo": "toca .github/workflows/ + bloqueio ledger P09 estrutural"},
+    {"number": 3203, "motivo": "conflito 132 arquivos gerados — DIRTY — mergeable_state: CONFLICTING"},
+    {"number": 3210, "motivo": "Supabase Preview FAILURE — decisao de release"},
+    {"number": 3214, "motivo": "toca .github/workflows/ + cron DDL producao"},
+    {"number": 3228, "motivo": "toca .github/workflows/"},
+    {"number": 3243, "motivo": "migration DDL producao"},
+    {"number": 3247, "motivo": "toca .github/workflows/"},
+    {"number": 3250, "motivo": "migration DDL producao (indice)"},
+    {"number": 3251, "motivo": "cron DDL — toca .github/workflows/"},
+    {"number": 3255, "motivo": "DDL/migration producao"},
+    {"number": 3256, "motivo": "migration RLS producao"},
+    {"number": 3261, "motivo": "migration/cron DDL"},
+    {"number": 3263, "motivo": "feat + cron DDL producao"},
+    {"number": 3264, "motivo": "migration (view) producao"},
+    {"number": 3265, "motivo": "migration (function) producao"},
+    {"number": 3273, "motivo": "migration/indices producao"},
+    {"number": 3274, "motivo": "toca .github/workflows/"},
+    {"number": 3277, "motivo": "456 arquivos DIRTY: .github/workflows/x35 + supabase/migrations/(x6)"},
+    {"number": 3278, "motivo": "sentinel allowlist expansion — aprovacao de seguranca"},
+    {"number": 3279, "motivo": "migration/cron DDL producao"},
+    {"number": 3284, "motivo": "migration/drift DDL"},
+    {"number": 3290, "motivo": "toca .github/workflows/"},
+    {"number": 3257, "motivo": "AGUARDANDO_HUMANO — migration producao — MERGED 2026-11-09T15:46:32Z"}
+  ],
+  "acoes_bloqueio_esgotadas": {
+    "runs_cancelados_total": 21,
+    "zombie_cancel_tentativas": ["cancel_workflow_run 409", "force_cancel_workflow_run 409", "delete_workflow_run 403"],
+    "acao_humana_necessaria": "Cancelar https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39698009932 via UI GitHub"
   }
 }

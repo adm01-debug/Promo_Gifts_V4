@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import type { TablesUpdate } from '@/integrations/supabase/types';
 import { useAuth } from '@/contexts/AuthContext';
@@ -130,6 +130,7 @@ export function useCollections(options?: { enabled?: boolean }) {
   const [isLoaded, setIsLoaded] = useState(false);
   // BUG-HEAD-GUARD FIX (2026-06-23): HEAD em collections sem guard.
   const { user, rolesLoaded } = useAuth();
+  const pendingCreatesRef = useRef(new Map<string, PromiseLike<boolean>>());
 
   // Load collections from DB
   // PERFORMANCE FIX: Verifica enabled antes de carregar
@@ -282,7 +283,7 @@ export function useCollections(options?: { enabled?: boolean }) {
       clientId?: string | null,
       clientName?: string | null,
     ): Collection => {
-      const tempId = `temp-${Date.now()}`;
+      const tempId = crypto.randomUUID();
       const now = new Date().toISOString();
       const chosenColor =
         color || DEFAULT_COLORS[Math.floor(Math.random() * DEFAULT_COLORS.length)];
@@ -307,9 +308,10 @@ export function useCollections(options?: { enabled?: boolean }) {
 
       // Persist to DB
       if (user?.id) {
-        supabase
+        const pendingCreate = supabase
           .from('collections')
           .insert({
+            id: tempId,
             user_id: user.id,
             name,
             description: description || null,
@@ -320,17 +322,23 @@ export function useCollections(options?: { enabled?: boolean }) {
           })
           .select()
           .single()
-          .then(({ data }) => {
-            if (data) {
-              setCollections((prev) =>
-                prev.map((c) =>
-                  c.id === tempId
-                    ? { ...c, id: data.id, createdAt: data.created_at, updatedAt: data.updated_at }
-                    : c,
-                ),
-              );
+          .then(({ data, error: createErr }) => {
+            pendingCreatesRef.current.delete(tempId);
+            if (createErr || !data) {
+              logger.warn('[collections] create failed:', createErr);
+              setCollections((prev) => prev.filter((c) => c.id !== tempId));
+              return false;
             }
+            setCollections((prev) =>
+              prev.map((c) =>
+                c.id === tempId
+                  ? { ...c, id: data.id, createdAt: data.created_at, updatedAt: data.updated_at }
+                  : c,
+              ),
+            );
+            return true;
           });
+        pendingCreatesRef.current.set(tempId, pendingCreate);
       }
 
       return newCollection;
@@ -409,20 +417,29 @@ export function useCollections(options?: { enabled?: boolean }) {
       );
 
       // BUG-COLLECTION-ADD-PRODUCT-SILENT-FAIL FIX: .then() with no args swallowed errors.
-      supabase
-        .from('collection_items')
-        .insert({
-          collection_id: collectionId,
-          product_id: productId,
-          color_name: variant?.color_name || null,
-          color_hex: variant?.color_hex || null,
-          thumbnail_url: variant?.thumbnail || null,
-          price_at_save: priceAtSave ?? null,
-          sort_order: 0,
-        })
-        .then(({ error: insErr }) => {
-          if (insErr) logger.warn('[collections] add product failed:', insErr);
+      const persist = () =>
+        supabase
+          .from('collection_items')
+          .insert({
+            collection_id: collectionId,
+            product_id: productId,
+            color_name: variant?.color_name || null,
+            color_hex: variant?.color_hex || null,
+            thumbnail_url: variant?.thumbnail || null,
+            price_at_save: priceAtSave ?? null,
+            sort_order: 0,
+          })
+          .then(({ error: insErr }) => {
+            if (insErr) logger.warn('[collections] add product failed:', insErr);
+          });
+      const pendingCreate = pendingCreatesRef.current.get(collectionId);
+      if (pendingCreate) {
+        void pendingCreate.then((created) => {
+          if (created) persist();
         });
+      } else {
+        persist();
+      }
     },
     [],
   );

@@ -9,6 +9,7 @@ export * from '@/hooks/kit-builder/useKitBuilderQueries';
 export * from '@/hooks/kit-builder/useKitBuilderTransformers';
 export * from '@/hooks/kit-builder/useKitCollaboration';
 export * from '@/hooks/kit-builder/useKitIdentitySuggestion';
+export * from '@/hooks/kit-builder/useKitItemReplaceTarget';
 export * from '@/hooks/kit-builder/useKitStockForecast';
 export * from '@/hooks/kit-builder/useKitStockValidation';
 export * from '@/hooks/kit-builder/useKitTemplates';

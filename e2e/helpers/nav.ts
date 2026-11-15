@@ -9,7 +9,7 @@
  *  5. body sem aria-busy
  *  6. CSS kill-switch de animações (defensivo)
  */
-import { expect, type Locator, type Page } from "@playwright/test";
+import { expect, type Locator, type Page } from '@playwright/test';
 
 const ANIM_KILL_CSS = `
   *, *::before, *::after {
@@ -40,15 +40,16 @@ async function injectAnimKill(page: Page) {
  */
 export async function waitForRouteIdle(page: Page, opts?: { timeout?: number }) {
   const timeout = opts?.timeout ?? 10_000;
-  await page.waitForLoadState("domcontentloaded", { timeout });
+  await page.waitForLoadState('domcontentloaded', { timeout });
   await page
     .waitForFunction(
       () => !document.querySelector('[data-state="loading"], [data-skeleton]'),
+      undefined,
       { timeout: Math.min(timeout, 20_000) },
     )
     .catch(() => {});
   await page
-    .waitForFunction(() => !document.querySelector('[aria-busy="true"]'), {
+    .waitForFunction(() => !document.querySelector('[aria-busy="true"]'), undefined, {
       timeout: Math.min(timeout, 3_000),
     })
     .catch(() => {});
@@ -63,18 +64,19 @@ export async function expectOnRoute(
   pathOrRegex: string | RegExp,
   opts?: { timeout?: number },
 ) {
-  const re = typeof pathOrRegex === "string"
-    ? new RegExp(pathOrRegex.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"))
-    : pathOrRegex;
+  const re =
+    typeof pathOrRegex === 'string'
+      ? new RegExp(pathOrRegex.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'))
+      : pathOrRegex;
   await expect(page, `esperado URL match ${re}`).toHaveURL(re, {
     timeout: opts?.timeout ?? 10_000,
   });
 }
 
 export async function gotoAndSettle(page: Page, path: string, opts?: { timeout?: number }) {
-  await page.goto(path, { waitUntil: "domcontentloaded", timeout: opts?.timeout ?? 20_000 });
+  await page.goto(path, { waitUntil: 'domcontentloaded', timeout: opts?.timeout ?? 20_000 });
 
-  await page.waitForLoadState("networkidle", { timeout: 5_000 }).catch(() => {
+  await page.waitForLoadState('networkidle', { timeout: 5_000 }).catch(() => {
     /* best-effort: SPA pode manter conexões abertas (websockets/realtime) */
   });
 
@@ -82,9 +84,10 @@ export async function gotoAndSettle(page: Page, path: string, opts?: { timeout?:
   await page
     .waitForFunction(
       () => {
-        const root = document.querySelector("#root");
+        const root = document.querySelector('#root');
         return !!root && root.children.length > 0;
       },
+      undefined,
       { timeout: 10_000 },
     )
     .catch(() => {
@@ -95,6 +98,7 @@ export async function gotoAndSettle(page: Page, path: string, opts?: { timeout?:
   await page
     .waitForFunction(
       () => !document.querySelector('[data-state="loading"], [data-skeleton]'),
+      undefined,
       { timeout: 20_000 },
     )
     .catch(() => {
@@ -108,6 +112,7 @@ export async function gotoAndSettle(page: Page, path: string, opts?: { timeout?:
         const busy = document.querySelector('[aria-busy="true"]');
         return !busy;
       },
+      undefined,
       { timeout: 3_000 },
     )
     .catch(() => {
@@ -122,10 +127,11 @@ export async function gotoAndSettle(page: Page, path: string, opts?: { timeout?:
  */
 export async function settleAfterAction(page: Page, opts?: { timeout?: number }) {
   const timeout = opts?.timeout ?? 5_000;
-  await page.waitForLoadState("networkidle", { timeout }).catch(() => {});
+  await page.waitForLoadState('networkidle', { timeout }).catch(() => {});
   await page
     .waitForFunction(
       () => !document.querySelector('[data-state="loading"], [data-skeleton]'),
+      undefined,
       { timeout },
     )
     .catch(() => {});
@@ -140,7 +146,7 @@ export async function waitForVisible(
   timeout = 10_000,
 ): Promise<Locator> {
   const loc = page.locator(selector).first();
-  await loc.waitFor({ state: "visible", timeout });
+  await loc.waitFor({ state: 'visible', timeout });
   return loc;
 }
 
@@ -163,7 +169,7 @@ export async function waitForCount(
 export async function expectNoConsoleErrors(consoleLogs: Array<{ type: string; text: string }>) {
   const errors = consoleLogs.filter(
     (l) =>
-      l.type === "error" &&
+      l.type === 'error' &&
       // ruído conhecido aceitável
       !/Download the React DevTools/.test(l.text) &&
       !/ResizeObserver loop/.test(l.text) &&
@@ -173,6 +179,6 @@ export async function expectNoConsoleErrors(consoleLogs: Array<{ type: string; t
       !/analytics/i.test(l.text),
   );
   if (errors.length > 0) {
-    throw new Error(`Console errors detected:\n${errors.map((e) => e.text).join("\n")}`);
+    throw new Error(`Console errors detected:\n${errors.map((e) => e.text).join('\n')}`);
   }
 }

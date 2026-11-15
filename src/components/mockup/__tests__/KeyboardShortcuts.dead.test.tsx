@@ -28,13 +28,13 @@ vi.mock('sonner', () => ({
   }),
 }));
 
-/** Dispara um keydown global (o hook escuta em `document`). */
+/** Dispara um keydown global (o hook escuta em `document`); devolve o evento. */
 function pressKey(options: KeyboardEventInit) {
+  const event = new KeyboardEvent('keydown', { bubbles: true, cancelable: true, ...options });
   act(() => {
-    document.dispatchEvent(
-      new KeyboardEvent('keydown', { bubbles: true, cancelable: true, ...options }),
-    );
+    document.dispatchEvent(event);
   });
+  return event;
 }
 
 /**
@@ -94,5 +94,30 @@ describe('useKeyboardShortcuts depois da limpeza', () => {
     const { onGenerate } = renderShortcuts({ canGenerate: false });
     pressKey({ key: 'Enter', ctrlKey: true });
     expect(onGenerate).not.toHaveBeenCalled();
+  });
+});
+
+describe('atalhos destrutivos removidos (Esc, Ctrl+R, Ctrl+D) continuam fora', () => {
+  it('Escape não reseta o formulário nem previne o evento', () => {
+    const { onReset } = renderShortcuts();
+    const e = pressKey({ key: 'Escape' });
+    expect(onReset).not.toHaveBeenCalled();
+    expect(e.defaultPrevented).toBe(false);
+  });
+
+  it('Ctrl+R e Cmd+R não resetam e deixam o navegador agir', () => {
+    const { onReset } = renderShortcuts();
+    const e1 = pressKey({ key: 'r', ctrlKey: true });
+    const e2 = pressKey({ key: 'r', metaKey: true });
+    expect(onReset).not.toHaveBeenCalled();
+    expect(e1.defaultPrevented).toBe(false);
+    expect(e2.defaultPrevented).toBe(false);
+  });
+
+  it('Ctrl+D não baixa nem sequestra o atalho do navegador', () => {
+    const { onDownload } = renderShortcuts();
+    const e = pressKey({ key: 'd', ctrlKey: true });
+    expect(onDownload).not.toHaveBeenCalled();
+    expect(e.defaultPrevented).toBe(false);
   });
 });

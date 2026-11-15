@@ -93,6 +93,32 @@ Deno.serve(async (req) => {
     status_code: 500,
     scan_result: { message: "Iniciando processamento" },
   };
+  const scanMeta: { file_name: string; file_size: number | null; mime_type: string | null } = {
+    file_name: "n/a",
+    file_size: null,
+    mime_type: null,
+  };
+  const insertScanLog = async (entry: Partial<ScanLog>) => {
+    const statusCode = entry.status_code ?? 500;
+    const details = entry.scan_result ?? {};
+    const verdict = statusCode === 200
+      ? "clean"
+      : details.error
+      ? (statusCode >= 500 ? "error" : "rejected")
+      : "suspicious";
+    const { error } = await supabaseAdmin.from("file_scan_logs").insert({
+      user_id: entry.user_id ?? auth.userId,
+      file_name: scanMeta.file_name,
+      file_size: scanMeta.file_size,
+      file_hash: entry.hash && entry.hash !== "not_computed" ? entry.hash : null,
+      mime_type: scanMeta.mime_type,
+      scan_provider: "virustotal",
+      scan_result: verdict,
+      scan_response: { ...details, status_code: statusCode, bucket: entry.bucket ?? null },
+      storage_path: entry.path ?? null,
+    });
+    if (error) log.error("scan_log_insert_failed", { err: error, user_id: auth.userId });
+  };
 
   try {
     // formData() lança em body malformado/sem boundary — era 500 via
@@ -112,7 +138,7 @@ Deno.serve(async (req) => {
     const rawFolder = (formData.get("folder") as string) || "uploads";
     if (!folderSchema.safeParse(rawFolder).success) {
       log.warn("upload_blocked_bad_folder", { folder: rawFolder, user_id: auth.userId });
-      await supabaseAdmin.from("file_scan_logs").insert({
+      await insertScanLog({
         user_id: auth.userId,
         bucket: "personalization-images",
         path: "rejected/invalid_folder",
@@ -133,7 +159,7 @@ Deno.serve(async (req) => {
     // TypeError em file.name/file.size caindo no catch externo como 500.
     const parsedFile = fileFieldSchema.safeParse(fileField);
     if (!parsedFile.success) {
-      await supabaseAdmin.from("file_scan_logs").insert({
+      await insertScanLog({
         user_id: auth.userId,
         bucket: "personalization-images",
         path: `rejected/${folder}/missing_file`,
@@ -151,6 +177,9 @@ Deno.serve(async (req) => {
     const file = parsedFile.data;
 
     const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, "_");
+    scanMeta.file_name = safeName;
+    scanMeta.file_size = file.size;
+    scanMeta.mime_type = file.type || null;
 
     // Rejeição por tamanho ANTES de materializar o buffer — file.size não
     // consome memória nem CPU de hashing do worker.
@@ -160,7 +189,7 @@ Deno.serve(async (req) => {
       const message = tooBig
         ? `Arquivo excede o limite de ${MAX_UPLOAD_BYTES / 1024 / 1024}MB`
         : "Arquivo vazio";
-      await supabaseAdmin.from("file_scan_logs").insert({
+      await insertScanLog({
         user_id: auth.userId,
         bucket: "personalization-images",
         path: `rejected/${folder}/${safeName}`,
@@ -182,8 +211,6 @@ Deno.serve(async (req) => {
       .map((b) => b.toString(16).padStart(2, "0"))
       .join("");
 
-    // file_scan_logs exige bucket/path/hash NOT NULL — preencher já na
-    // entrada para as trilhas de rejeição não falharem silenciosamente.
     auditData = {
       user_id: auth.userId,
       bucket: "personalization-images",
@@ -201,7 +228,7 @@ Deno.serve(async (req) => {
         sniffed: sniffedMime,
         user_id: auth.userId,
       });
-      await supabaseAdmin.from("file_scan_logs").insert({
+      await insertScanLog({
         ...auditData,
         status_code: 415,
         scan_result: {
@@ -237,7 +264,7 @@ Deno.serve(async (req) => {
     // E020: fail-closed — sem chave VirusTotal = configuração ausente = rejeita upload
     if (!vtApiKey) {
       log.error("vt_key_missing", { user_id: auth.userId });
-      await supabaseAdmin.from("file_scan_logs").insert({
+      await insertScanLog({
         ...auditData,
         status_code: 503,
         scan_result: { error: true, reason: "VIRUSTOTAL_API_KEY não configurado" },
@@ -290,7 +317,7 @@ Deno.serve(async (req) => {
           : (errorObj.message ?? "Erro desconhecido");
         log.error("security_check_failed", { err, reason, user_id: auth.userId });
 
-        await supabaseAdmin.from("file_scan_logs").insert({
+        await insertScanLog({
           ...auditData,
           status_code: 403,
           scan_result: { ...scanDetails, error: true, reason: `Bloqueio preventivo: ${reason}` },
@@ -328,7 +355,7 @@ Deno.serve(async (req) => {
     auditData.status_code = isSuspicious ? 403 : 200;
     auditData.scan_result = scanDetails;
 
-    await supabaseAdmin.from("file_scan_logs").insert(auditData as ScanLog);
+    await insertScanLog(auditData);
 
     if (isSuspicious) {
       log.warn("upload_blocked_malware", {
@@ -364,7 +391,7 @@ Deno.serve(async (req) => {
     const errorObj = error as { message?: string };
     log.error("upload_failed", { err: error, user_id: auth.userId });
     if (auditData.hash) {
-      await supabaseAdmin.from("file_scan_logs").insert({
+      await insertScanLog({
         ...auditData,
         status_code: 500,
         scan_result: { error: true, message: errorObj.message ?? "Erro desconhecido" },

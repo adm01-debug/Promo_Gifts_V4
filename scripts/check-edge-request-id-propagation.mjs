@@ -80,7 +80,13 @@ const WINDOW_LINES = 30;
 function readSource(name) {
   for (const file of ["index.ts", "index.tsx"]) {
     const p = join(FN_ROOT, name, file);
-    if (existsSync(p)) return { src: readFileSync(p, "utf8"), path: p };
+    if (existsSync(p)) {
+      try {
+        return { src: readFileSync(p, "utf8"), path: p };
+      } catch (err) {
+        return { readError: err, path: p };
+      }
+    }
   }
   return null;
 }
@@ -127,6 +133,16 @@ function main() {
         edge: name,
         kind: "missing",
         detail: "edge function não encontrada — atualize CRITICAL_EDGES",
+      });
+      continue;
+    }
+    if (found.readError) {
+      violations.push({
+        edge: name,
+        kind: "read_error",
+        detail:
+          `${found.path}: falha ao ler arquivo (${found.readError.code ?? found.readError.message}) ` +
+          "— verifique permissões do arquivo.",
       });
       continue;
     }

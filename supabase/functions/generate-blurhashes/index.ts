@@ -13,9 +13,9 @@
 // Throughput: 15 images/invocation × 12/hour ≈ 180 hashes/hour (safe sub-batching).
 import { createClient } from 'jsr:@supabase/supabase-js@2'
 import { authorizeCron } from '../_shared/dispatcher-auth.ts'
-import { encode } from 'https://esm.sh/blurhash@2.0.5'
-import jpeg from 'https://esm.sh/jpeg-js@0.4.4'
-import { decode as decodePng } from 'https://esm.sh/fast-png@6.0.0'
+import { encode } from 'npm:blurhash@2.0.5'
+import jpeg from 'npm:jpeg-js@0.4.4'
+import { decode as decodePng } from 'npm:fast-png@6.0.0'
 import { createStructuredLogger } from '../_shared/structured-logger.ts';
 import { getOrCreateRequestId } from '../_shared/request-id.ts';
 

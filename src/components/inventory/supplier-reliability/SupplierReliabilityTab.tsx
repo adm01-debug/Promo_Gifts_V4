@@ -1,9 +1,10 @@
 import { useState } from 'react';
-import { AlertCircle, RefreshCw, ShieldCheck } from 'lucide-react';
+import { AlertCircle, Lock, RefreshCw, ShieldCheck } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Button } from '@/components/ui/button';
 import { useSupplierReliability } from '@/hooks/inventory/useSupplierReliability';
+import { useAuth } from '@/contexts/AuthContext';
 import { ReliabilityKpiBar } from './ReliabilityKpiBar';
 import { SupplierReliabilityTable } from './SupplierReliabilityTable';
 import { SupplierDrawer } from './SupplierDrawer';
@@ -11,10 +12,11 @@ import { SupplierDrawer } from './SupplierDrawer';
 export function SupplierReliabilityTab() {
   const { isLoading, isFetching, isError, suppliers, matching, refetch, rawCounts } =
     useSupplierReliability();
+  const { rolesLoaded, isSupervisorOrAbove } = useAuth();
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const selected = selectedId ? suppliers.find((s) => s.supplierId === selectedId) ?? null : null;
 
-  if (isLoading) {
+  if (!rolesLoaded || isLoading) {
     return (
       <div className="space-y-4" data-testid="reliability-tab-loading">
         <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
@@ -24,6 +26,23 @@ export function SupplierReliabilityTab() {
         </div>
         <Skeleton className="h-72 w-full" />
       </div>
+    );
+  }
+
+  // GUARD: fn_get_supplier_reliability só devolve linhas para supervisor+ (is_supervisor_or_above).
+  if (!isSupervisorOrAbove) {
+    return (
+      <Card data-testid="reliability-tab-forbidden">
+        <CardContent className="flex flex-col items-center gap-3 py-12 text-center">
+          <Lock className="h-10 w-10 text-muted-foreground" />
+          <div>
+            <h3 className="font-medium">Sem permissão</h3>
+            <p className="mt-1 max-w-md text-sm text-muted-foreground">
+              A confiabilidade de fornecedores é visível apenas para supervisores e administradores.
+            </p>
+          </div>
+        </CardContent>
+      </Card>
     );
   }
 

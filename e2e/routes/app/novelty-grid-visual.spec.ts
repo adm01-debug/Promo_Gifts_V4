@@ -66,8 +66,11 @@ test.describe('Novelty Grid Advanced Visual & A11y @mobile', () => {
       test('Grid Visual Regression & Scroll', async ({ page }) => {
         await page.goto('/novidades');
         const grid = page.locator('div[role="list"]');
-        await grid.waitFor({ state: 'visible' });
+        await grid.waitFor({ state: 'attached' });
         await page.waitForTimeout(1000);
+        if ((await grid.locator('[role="listitem"]').count()) === 0) {
+          test.skip(true, `[E108] Sem novidades no dataset (${viewport.name}).`);
+        }
 
         await expect(grid).toHaveScreenshot(`novelty-grid-initial-${viewport.name}.png`, {
           maxDiffPixelRatio: 0.02,
@@ -84,7 +87,10 @@ test.describe('Novelty Grid Advanced Visual & A11y @mobile', () => {
       test('Accessibility Scan', async ({ page }) => {
         await page.goto('/novidades');
         const grid = page.locator('div[role="list"]');
-        await grid.waitFor({ state: 'visible' });
+        await grid.waitFor({ state: 'attached' });
+        if ((await grid.locator('[role="listitem"]').count()) === 0) {
+          test.skip(true, `[E108] Sem novidades no dataset (${viewport.name}).`);
+        }
 
         const results = await new AxeBuilder({ page })
           .include('div[role="list"]')
@@ -112,7 +118,10 @@ test.describe('Novelty Grid Advanced Visual & A11y @mobile', () => {
 
         await page.goto('/novidades');
         const grid = page.locator('div[role="list"]');
-        await grid.waitFor({ state: 'visible' });
+        await grid.waitFor({ state: 'attached' });
+        if ((await grid.locator('[role="listitem"]').count()) === 0) {
+          test.skip(true, `[E108] Sem novidades no dataset (${viewport.name}).`);
+        }
 
         await expect(grid).toHaveScreenshot(`novelty-grid-a11y-prefs-${viewport.name}.png`);
       });

@@ -155,8 +155,6 @@
         "e2e/routes/app/stock-dashboard.spec.ts",
         "e2e/routes/app/tendencias.spec.ts",
         "e2e/routes/public/approve.spec.ts",
-        "e2e/routes/public/colecao-publica.spec.ts",
-        "e2e/routes/public/comparar-publica.spec.ts",
         "e2e/routes/public/dossie.spec.ts",
         "e2e/routes/public/kit-publico.spec.ts",
         "e2e/routes/public/login.spec.ts",
@@ -701,8 +699,7 @@
         "e2e/flows/26-catalog-to-kit-flow.spec.ts",
         "e2e/flows/catalog-resilience.spec.ts",
         "e2e/routes/app/cliente-comparator.spec.ts",
-        "e2e/routes/app/comparar.spec.ts",
-        "e2e/routes/public/comparar-publica.spec.ts"
+        "e2e/routes/app/comparar.spec.ts"
       ],
       "status": "hit"
     },

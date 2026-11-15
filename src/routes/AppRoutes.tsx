@@ -12,7 +12,6 @@ import { productRoutes } from './product-routes';
 import { publicRoutes } from './public-routes';
 import { quoteRoutes } from './quote-routes';
 import { toolsRoutes } from './tools-routes';
-import { OptimizedImageDemo } from './lazy-pages';
 
 // Dev-only visual harness — não monta em build de produção.
 // Suíte versionada em e2e/visual/preview-button.spec.ts e protegida
@@ -43,6 +42,10 @@ const NegotiationMarkupCardHarness = import.meta.env.DEV
   : null;
 const QuoteFreightBlockHarness = import.meta.env.DEV
   ? lazyWithRetry(() => import('@/pages/__visual/QuoteFreightBlockHarness'))
+  : null;
+// Página de QA do OptimizedImage (URLs de teste) — só em dev, como os harnesses.
+const OptimizedImageDemo = import.meta.env.DEV
+  ? lazyWithRetry(() => import('@/pages/tools/OptimizedImageDemo'))
   : null;
 
 // NProgress configuration
@@ -123,13 +126,12 @@ export function AppRoutes() {
       <Routes>
         {publicRoutes}
 
-        {/* Debug / QA routes — no auth required in any environment.
-            These pages do not expose sensitive user data and must be
-            accessible to E2E tests (Playwright routes-public project)
-            and to local development tooling without a logged-in session.
-            /debug/images was previously inside toolsRoutes (ProtectedRoute)
-            which caused E2E specs to fail with auth redirect. */}
-        <Route path="/debug/images" element={<OptimizedImageDemo />} />
+        {/* Debug / QA route — sem auth, mas só montada em dev (import.meta.env.DEV).
+            Os specs E2E (optimized-image-*.spec.ts, project chromium-public) rodam
+            contra o dev server; em build de produção a rota cai no 404. */}
+        {OptimizedImageDemo && (
+          <Route path="/debug/images" element={<OptimizedImageDemo />} />
+        )}
 
         {/* Dev-only visual regression harness — não monta em produção */}
         {PreviewButtonHarness && (

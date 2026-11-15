@@ -1,8 +1,8 @@
 {
-  "generated_at": "2026-10-05T22:22:55.257Z",
-  "total": 109,
+  "generated_at": "2026-11-08T03:21:44.263Z",
+  "total": 110,
   "counts": {
-    "shared": 104,
+    "shared": 105,
     "inline": 0,
     "none": 5
   },
@@ -33,7 +33,7 @@
     },
     {
       "name": "asia-ingestion",
-      "mode": "none",
+      "mode": "shared",
       "allowHeaders": [],
       "exposeHeaders": [],
       "allowMethods": null,
@@ -874,6 +874,14 @@
     {
       "name": "word-magic",
       "mode": "shared",
+      "allowHeaders": [],
+      "exposeHeaders": [],
+      "allowMethods": null,
+      "allowOrigin": null
+    },
+    {
+      "name": "xbz-image-uploader",
+      "mode": "none",
       "allowHeaders": [],
       "exposeHeaders": [],
       "allowMethods": null,

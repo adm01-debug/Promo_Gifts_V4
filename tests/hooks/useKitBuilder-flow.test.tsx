@@ -107,7 +107,10 @@ describe('useKitBuilder — fluxos de montagem', () => {
     act(() => {
       result.current.selectBox(box);
       result.current.addItem(item);
-      result.current.goToStep('personalization');
+    });
+    act(() => result.current.nextStep());
+    act(() => result.current.nextStep());
+    act(() => {
       result.current.setItemPersonalization(item.id, { enabled: true });
     });
 

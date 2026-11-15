@@ -1,9 +1,69 @@
 import { test, expect } from '@playwright/test';
 import { loginAs } from './helpers/auth';
+import { installMockAuth, isMockAuthEnabled } from './helpers/mock-auth';
+
+const MOCK_USER_ID = '00000000-0000-0000-0000-e2e0e2e0e2e0';
+
+async function installReplenishmentBootMocks(page: import('@playwright/test').Page) {
+  await installMockAuth(page);
+
+  // Respostas determinísticas para dependências globais do shell. Os mocks
+  // específicos de cada teste são registrados depois e têm precedência.
+  await page.route(/\/rest\/v1\//, (route) =>
+    route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      headers: { 'content-range': '*/0' },
+      body: '[]',
+    }),
+  );
+  await page.route(/\/rest\/v1\/rpc\/get_profile_and_roles(\?|$)/, (route) =>
+    route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify({
+        profile: {
+          id: MOCK_USER_ID,
+          user_id: MOCK_USER_ID,
+          email: 'e2e-mock@promogifts.local',
+          full_name: 'E2E Mock User',
+          role: 'vendedor',
+          avatar_url: null,
+          phone: null,
+          department: null,
+          is_active: true,
+          last_login_at: null,
+          preferences: {},
+          created_at: '2026-01-01T00:00:00.000Z',
+          updated_at: '2026-01-01T00:00:00.000Z',
+        },
+        roles: ['vendedor'],
+      }),
+    }),
+  );
+  await page.route('**/functions/v1/get-visitor-info**', (route) =>
+    route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify({ ip: '127.0.0.1' }),
+    }),
+  );
+  await page.route('**/functions/v1/validate-access**', (route) =>
+    route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify({ allowed: true, reason: 'e2e_mock' }),
+    }),
+  );
+}
 
 test.describe('Reposição Module - Stress & Load Testing', () => {
   test.beforeEach(async ({ page }) => {
-    await loginAs(page, 'user');
+    if (isMockAuthEnabled()) {
+      await installReplenishmentBootMocks(page);
+    } else {
+      await loginAs(page, 'user');
+    }
     await page.goto('/reposicao');
   });
 

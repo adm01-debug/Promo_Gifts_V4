@@ -16,7 +16,8 @@
  * Asserts emitem evidência (width, min-width, scrollWidth/clientWidth, box).
  * Cobre desktop (1280) e mobile (390).
  */
-import { test, expect, type Page, type Locator } from '@playwright/test';
+import type { Page, Locator } from '@playwright/test';
+import { test, expect } from '../fixtures/test-base';
 import { gotoAndSettle } from '../helpers/nav';
 
 const ROUTE = '/orcamentos';
@@ -94,7 +95,11 @@ for (const vp of [
       await expect(view, '"Visualizar" não foi renderizado').toBeVisible();
       const cut = await view.evaluate((el) => {
         const h = el as HTMLElement;
-        return { scrollW: h.scrollWidth, clientW: h.clientWidth, ws: getComputedStyle(h).whiteSpace };
+        return {
+          scrollW: h.scrollWidth,
+          clientW: h.clientWidth,
+          ws: getComputedStyle(h).whiteSpace,
+        };
       });
       expect(
         cut.scrollW - cut.clientW,

@@ -24,6 +24,7 @@
  */
 import fs from "node:fs";
 import path from "node:path";
+import { missingPrerequisite } from "./lib/missing-prerequisite.mjs";
 
 const C = {
   reset: "\x1b[0m",
@@ -41,11 +42,10 @@ const SMOKE_PROJECT = process.env.E2E_SMOKE_PROJECT || "chromium-smoke";
 const SMOKE_FILE_RE = /flows\/20-all-features-smoke\.spec\.tsx?$/;
 
 if (!fs.existsSync(REPORT)) {
-  console.error(
-    `${C.red}[smoke-summary] não encontrei ${REPORT}.${C.reset}\n` +
-      `Rode antes: npm run test:e2e:smoke`,
-  );
-  process.exit(2);
+  missingPrerequisite('smoke-summary', `${REPORT} ausente`, {
+    exitCode: 2,
+    hint: 'Rode antes: npm run test:e2e:smoke',
+  });
 }
 
 let raw;

@@ -10,7 +10,7 @@ import { createStructuredLogger } from "../_shared/structured-logger.ts";
 import { resolveCredential } from "../_shared/credentials.ts";
 
 const cors = buildPublicCorsHeaders({ allowMethods: "POST, OPTIONS" });
-const baseLog = createStructuredLogger("quote-sync-promo-champions");
+const baseLog = createStructuredLogger({ fn: "quote-sync-promo-champions", requestId: crypto.randomUUID() });
 
 const CHAMPIONS_URL =
   "https://rapjswienfhkobhlamxb.supabase.co/functions/v1/receive-quote-sync";

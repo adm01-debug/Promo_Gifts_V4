@@ -9,7 +9,7 @@
  *     focáveis (ordem visual = ordem DOM = ordem de tab).
  *  5. Snapshot visual do header por viewport.
  */
-import { test, expect } from '@playwright/test';
+import { test, expect } from '../fixtures/test-base';
 import { gotoAndSettle } from '../helpers/nav';
 
 const ROUTE = '/__visual/quote-item-editor-sheet';
@@ -45,10 +45,7 @@ for (const vp of VIEWPORTS) {
       const dialog = page.getByRole('dialog');
       const btn = page.getByTestId('quote-save-item-button-sheet');
 
-      const [dlgBox, btnBox] = await Promise.all([
-        dialog.boundingBox(),
-        btn.boundingBox(),
-      ]);
+      const [dlgBox, btnBox] = await Promise.all([dialog.boundingBox(), btn.boundingBox()]);
       expect(dlgBox && btnBox).toBeTruthy();
       if (!dlgBox || !btnBox) return;
 
@@ -64,9 +61,7 @@ for (const vp of VIEWPORTS) {
       expect(scrollW).toBeLessThanOrEqual(clientW + 1);
     });
 
-    test('a11y: foco entra no dialog e "Salvar" é um dos primeiros focáveis', async ({
-      page,
-    }) => {
+    test('a11y: foco entra no dialog e "Salvar" é um dos primeiros focáveis', async ({ page }) => {
       // Com item ativo o "Salvar" fica habilitado (sem item ele é `disabled` e
       // sai da ordem de tab, então não dá para medir a posição dele).
       await gotoAndSettle(page, `${ROUTE}?withItem=1`);
@@ -133,7 +128,9 @@ for (const vp of VIEWPORTS) {
       );
     });
 
-    test(`layout: conteúdo preenche o sheet (sem rodapé vazio > ${vp.maxGap}px)`, async ({ page }) => {
+    test(`layout: conteúdo preenche o sheet (sem rodapé vazio > ${vp.maxGap}px)`, async ({
+      page,
+    }) => {
       const dialog = page.getByRole('dialog');
       // Estabiliza fontes + 2 RAFs + animações off para evitar flake de medição.
       await page.addStyleTag({
@@ -146,9 +143,7 @@ for (const vp of VIEWPORTS) {
       });
       const gap = await dialog.evaluate((root) => {
         const r = root.getBoundingClientRect();
-        const focusables = Array.from(
-          root.querySelectorAll<HTMLElement>('*'),
-        ).filter((el) => {
+        const focusables = Array.from(root.querySelectorAll<HTMLElement>('*')).filter((el) => {
           const b = el.getBoundingClientRect();
           return b.width > 0 && b.height > 0 && b.bottom <= r.bottom + 1;
         });
@@ -177,7 +172,9 @@ for (const vp of VIEWPORTS) {
       expect(iconAriaHidden).toBe('true');
     });
 
-    test('estado: sem item ativo, "Salvar" fica desabilitado e anuncia indisponibilidade', async ({ page }) => {
+    test('estado: sem item ativo, "Salvar" fica desabilitado e anuncia indisponibilidade', async ({
+      page,
+    }) => {
       // Harness default (sem ?withItem=1) → item=null → Salvar desabilitado.
       const btn = page.getByTestId('quote-save-item-button-sheet');
       await expect(btn).toBeDisabled();
@@ -284,17 +281,14 @@ for (const vp of VIEWPORTS) {
       for (let i = 0; i < 10; i++) {
         await page.keyboard.press('Tab');
         const focusedTid = await page.evaluate(
-          () =>
-            (document.activeElement as HTMLElement | null)?.getAttribute('data-testid') ?? '',
+          () => (document.activeElement as HTMLElement | null)?.getAttribute('data-testid') ?? '',
         );
-        expect(
-          focusedTid,
-          `pós-reabrir: Tab #${i + 1} pousou no preço`,
-        ).not.toBe('quote-item-price-display');
+        expect(focusedTid, `pós-reabrir: Tab #${i + 1} pousou no preço`).not.toBe(
+          'quote-item-price-display',
+        );
       }
     });
   });
-
 
   test.describe(`QuoteItemEditorSheet @ ${vp.name}px (unsaved guard)`, () => {
     test('hasUnsavedChanges=true: ESC abre AlertDialog; cancelar mantém aberto, confirmar fecha', async ({
@@ -407,6 +401,3 @@ for (const vp of VIEWPORTS) {
     });
   });
 }
-
-
-

@@ -18,8 +18,6 @@
  *      contendo texto de "Desfazer".
  */
 import { test, expect } from "../fixtures/test-base";
-import { dismissOnboardingTour } from "../helpers/auth";
-import { installMockAuth, isMockAuthEnabled } from "../helpers/mock-auth";
 import { gotoAndSettle } from "../helpers/nav";
 
 test.use({ trace: "retain-on-failure", screenshot: "only-on-failure" });
@@ -30,7 +28,7 @@ const UNDO_BTN = '[data-testid="undo-toast-button"]';
 /**
  * Instala um contador global `window.__undoCallCount` e dispara o toast
  * via `window.__showUndoToast`. Retorna imediatamente após o toast estar
- * no DOM. Usa duração longa (8s) exceto no cenário de expiração (500ms).
+ * no DOM. Usa duração longa (8s) exceto no cenário de expiração (mínimo de 1s).
  */
 async function showUndoToastInBrowser(
   page: import("@playwright/test").Page,
@@ -72,13 +70,13 @@ async function getUndoCount(page: import("@playwright/test").Page) {
 
 test.describe("Toast Desfazer — acessibilidade + teclado", () => {
   test.beforeEach(async ({ page }) => {
-    if (isMockAuthEnabled()) await installMockAuth(page);
-    // Qualquer rota autenticada serve; a home carrega os providers e o
-    // `<Toaster />`. Não precisamos de dados de orçamento.
-    await gotoAndSettle(page, "/orcamentos");
-    // O tour de onboarding (overlay full-screen) intercepta cliques e prende o
-    // foco; sem dispensá-lo, Tab/clique nunca chegam ao toast.
-    await dismissOnboardingTour(page);
+    // O harness DEV importa o componente e disponibiliza o disparador global,
+    // sem autenticação, dados do banco ou overlays de onboarding.
+    await gotoAndSettle(page, "/__test/undo-toast?interactive=1");
+    await expect(page.getByTestId("harness-ready")).toHaveAttribute(
+      "data-harness-mode",
+      "interactive",
+    );
   });
 
   test("A. aria-label começa com 'Desfazer ação' e cita segundos restantes/totais", async ({
@@ -147,14 +145,21 @@ test.describe("Toast Desfazer — acessibilidade + teclado", () => {
     await expect(page.locator(UNDO_TOAST)).toHaveCount(0, { timeout: 3_000 });
   });
 
-  test("E. clique após expiração (500ms) NÃO chama onUndo e não gera toasts duplicados", async ({
+  test("E. clique após expiração (1s) NÃO chama onUndo e não gera toasts duplicados", async ({
     page,
   }) => {
-    // Duration curta para expirar rápido — o wrapper dispara dismiss no
-    // onTimeout. Como estamos testando o botão em si (guarda `undone` +
-    // disabled), tentamos click FORÇADO enquanto ainda houver resíduo.
-    await showUndoToastInBrowser(page, 500);
-    await page.waitForTimeout(700);
+    // 1s é a duração mínima aplicada pelo componente (`Math.max(1000, duration)`).
+    // Aguarda o estado expirar ou o dismiss remover o botão, sem depender de
+    // um sleep menor que a duração efetiva.
+    await showUndoToastInBrowser(page, 1000);
+    await page.waitForFunction(
+      (selector) => {
+        const button = document.querySelector<HTMLButtonElement>(selector);
+        return !button || button.dataset.expired === "true";
+      },
+      UNDO_BTN,
+      { timeout: 3_000 },
+    );
 
     // Aguarda expiração (state remainingMs <= 0). O toast é dismissed logo
     // em seguida — pode não haver janela para clique normal. Tentamos

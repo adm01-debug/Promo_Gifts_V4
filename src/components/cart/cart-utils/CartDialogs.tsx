@@ -199,6 +199,7 @@ export function LoadTemplateDialog({
   templates,
   onLoad,
   onDelete,
+  deleting = false,
 }: {
   templates: {
     id: string;
@@ -207,15 +208,44 @@ export function LoadTemplateDialog({
     items: CartTemplateItem[];
     created_at: string;
   }[];
-  onLoad: (items: CartTemplateItem[]) => void;
+  onLoad: (items: CartTemplateItem[]) => Promise<void> | void;
   onDelete: (id: string) => void;
+  /** Exclusão em andamento: desabilita aplicar/excluir para evitar cliques repetidos. */
+  deleting?: boolean;
 }) {
+  const [open, setOpen] = useState(false);
+  const [applying, setApplying] = useState(false);
+  const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
+
   if (templates.length === 0) return null;
 
+  const handleOpenChange = (next: boolean) => {
+    setOpen(next);
+    if (!next) setConfirmDeleteId(null);
+  };
+
+  // Aplicar soma quantidades no carrinho: fecha o dialog e trava cliques
+  // repetidos até o carregamento terminar, para não duplicar itens.
+  const handleApply = async (items: CartTemplateItem[]) => {
+    if (applying) return;
+    setApplying(true);
+    handleOpenChange(false);
+    try {
+      await onLoad(items);
+    } finally {
+      setApplying(false);
+    }
+  };
+
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogTrigger asChild>
-        <Button variant="outline" size="sm" className="w-full gap-1.5 text-xs">
+        <Button
+          variant="outline"
+          size="sm"
+          disabled={applying}
+          className="w-full gap-1.5 text-xs"
+        >
           <BookTemplate aria-hidden="true" className="h-3.5 w-3.5" />
           Usar Template ({templates.length})
         </Button>
@@ -241,19 +271,39 @@ export function LoadTemplateDialog({
                       size="sm"
                       variant="outline"
                       className="h-7 text-xs"
-                      onClick={() => onLoad(t.items)}
+                      disabled={applying || deleting}
+                      onClick={() => handleApply(t.items).catch(() => undefined)}
                     >
                       Aplicar
                     </Button>
-                    <Button
-                      size="sm"
-                      variant="ghost"
-                      aria-label={`Excluir template ${t.name}`}
-                      className="h-7 text-xs text-destructive"
-                      onClick={() => onDelete(t.id)}
-                    >
-                      <Trash2 aria-hidden="true" className="h-3 w-3" />
-                    </Button>
+                    {confirmDeleteId === t.id ? (
+                      <Button
+                        size="sm"
+                        variant="destructive"
+                        className="h-7 text-xs"
+                        disabled={deleting}
+                        onClick={() => {
+                          onDelete(t.id);
+                          setConfirmDeleteId(null);
+                          // Último template: o dialog some (retorna null); fecha o estado
+                          // para não reabrir sozinho quando um novo template for salvo.
+                          if (templates.length === 1) handleOpenChange(false);
+                        }}
+                      >
+                        Confirmar exclusão
+                      </Button>
+                    ) : (
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        aria-label={`Excluir template ${t.name}`}
+                        className="h-7 text-xs text-destructive"
+                        disabled={deleting}
+                        onClick={() => setConfirmDeleteId(t.id)}
+                      >
+                        <Trash2 aria-hidden="true" className="h-3 w-3" />
+                      </Button>
+                    )}
                   </div>
                 </div>
               </Card>
