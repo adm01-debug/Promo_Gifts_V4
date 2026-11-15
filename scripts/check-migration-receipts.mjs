@@ -93,11 +93,30 @@ function hasReceiptForVersion(logContent, version) {
   // fora do formato canônico de 14 dígitos; sem escape, um metacaractere de
   // regex (ex.: "(", "*") quebra o RegExp com SyntaxError não tratada.
   const re = new RegExp(`(?<!\\d)${escapeRegExp(version)}(?!\\d)`);
+
+  // FALSO POSITIVO CORRIGIDO (2026-11-15): antes este gate aceitava QUALQUER linha que
+  // contivesse a version. Isso o fazia passar quando a version aparecia só como texto de
+  // referência dentro do recibo de OUTRA migration — e essas linhas trazem "aplicada" por
+  // falarem da outra. Caso real que escapou: a `20261114014500` ficou com o próprio recibo
+  // marcado "pendente", mas 10 linhas de outras versions diziam "reconciliação P09
+  // (20261114014500) ... aplicada", e o gate deu verde com a migration já aplicada em
+  // produção e sem recibo. Agora só conta a linha de tabela cuja PRIMEIRA CÉLULA é a
+  // própria version — que é como `append-migration-receipt.mjs` grava o recibo.
+  const linhasDeRecibo = logContent.split('\n').filter((l) => {
+    if (!l.trimStart().startsWith('|')) return false;
+    const primeiraCelula = (l.split('|')[1] ?? '').trim().replace(/`/g, '');
+    return primeiraCelula === String(version);
+  });
+  // Fallback: formatos legados que registram a version fora da primeira célula continuam
+  // aceitos, mas só se a linha NÃO for de tabela (parágrafo de registro antigo). Assim o
+  // histórico anterior ao `append-migration-receipt.mjs` não vira falso negativo.
+  const linhas = linhasDeRecibo.length > 0
+    ? linhasDeRecibo
+    : logContent.split('\n').filter((l) => !l.trimStart().startsWith('|') && re.test(l));
+  if (linhas.length === 0) return false;
   // Linha "pendente-only" (contém a versão mas apenas status pendente, sem "aplicada")
   // NÃO conta como recibo — a migration ainda não foi efetivada em produção.
-  const lines = logContent.split('\n').filter((l) => re.test(l));
-  if (lines.length === 0) return false;
-  return lines.some((l) => {
+  return linhas.some((l) => {
     if (!/pendente/i.test(l)) return true;
     // Tem "pendente" — só conta se também tem "aplicada" positivo (não "não aplicada")
     return /\baplicada\b/i.test(l) && !/não\s+aplicada/i.test(l);
