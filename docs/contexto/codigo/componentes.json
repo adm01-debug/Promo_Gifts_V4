@@ -11519,7 +11519,7 @@
     "MockupConfigPanel"
    ],
    "export_default": null,
-   "linhas": 500,
+   "linhas": 494,
    "dominio": "components/mockup",
    "hooks_locais": [
     "useMediaQuery"
@@ -11533,15 +11533,16 @@
    "arquivo": "src/components/mockup/MockupConfigPanelLoadError.tsx",
    "exports": [
     "LoadErrorBlock",
-    "LoadErrorBlockProps"
+    "LoadErrorBlockProps",
+    "TechniquesLoadError"
    ],
    "export_default": null,
-   "linhas": 55,
+   "linhas": 74,
    "dominio": "components/mockup",
    "hooks_locais": [],
    "tabelas": [],
    "edges": [],
-   "usado_por": 1,
+   "usado_por": 2,
    "orfao": false
   },
   {
@@ -19169,7 +19170,7 @@
     "MockupGenerator"
    ],
    "export_default": "MockupGenerator",
-   "linhas": 608,
+   "linhas": 610,
    "dominio": "pages/mockups",
    "hooks_locais": [
     "useAuth",

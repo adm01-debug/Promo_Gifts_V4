@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "6da08832ec70315d42efccfb01b1f7c90701c2a0",
+  "commit": "a78b0bacfd0cbf45e9c8186ebf9d1f55f1e535d1",
   "branch": "main",
-  "data_commit": "2026-11-15T16:36:43Z",
+  "data_commit": "2026-11-15T16:49:15Z",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "a78b0bac",
+    "data": "2026-11-15",
+    "assunto": "feat(mockup): aviso de falha ao carregar as técnicas de personalização, com \"Tentar novamente\" (#3677)"
+   },
    {
     "sha": "6da08832",
     "data": "2026-11-15",
@@ -126,18 +131,13 @@
     "sha": "847aa874",
     "data": "2026-11-14",
     "assunto": "fix(crm): vendedor com vínculo fixo em vez de identificação por e-mail (#3636)"
-   },
-   {
-    "sha": "1fb3a1c0",
-    "data": "2026-11-14",
-    "assunto": "Merge remote-tracking branch 'origin/main' into claude/fix-crm-ownership-vinculo-261114-2230"
    }
   ],
-  "arquivos_mudados_7d": 2137,
+  "arquivos_mudados_7d": 2141,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
-    "mudancas": 649
+    "mudancas": 648
    },
    {
     "pasta": "src/components/products",
@@ -169,7 +169,7 @@
    },
    {
     "pasta": "src/components/mockup",
-    "mudancas": 169
+    "mudancas": 173
    },
    {
     "pasta": "supabase/functions/_shared",
@@ -177,11 +177,11 @@
    },
    {
     "pasta": "src/components/ui",
-    "mudancas": 159
+    "mudancas": 157
    },
    {
     "pasta": "src/pages/admin",
-    "mudancas": 135
+    "mudancas": 134
    },
    {
     "pasta": "src/components/kit-builder",
@@ -193,7 +193,7 @@
    },
    {
     "pasta": "src/pages/quotes",
-    "mudancas": 112
+    "mudancas": 111
    }
   ],
   "arquivos_mais_mudados_90d": [
@@ -215,7 +215,7 @@
    },
    {
     "arquivo": "package-lock.json",
-    "mudancas": 28
+    "mudancas": 27
    },
    {
     "arquivo": "docs/coordenacao/conflitos-semanticos.md",
@@ -317,26 +317,26 @@
    },
    {
     "autor": "dependabot[bot]",
-    "commits": 10
+    "commits": 9
    }
   ]
  },
  "contagens": {
-  "arquivos_total": 10281,
-  "arquivos_codigo": 5306,
-  "linhas_codigo": 1012263,
+  "arquivos_total": 10285,
+  "arquivos_codigo": 5310,
+  "linhas_codigo": 1012589,
   "rotas": 138,
   "rotas_http_backend": 13,
   "vistas_por_id": 0,
   "itens_menu": 69,
   "modulos": 161,
   "componentes": 1234,
-  "hooks": 622,
+  "hooks": 623,
   "edge_functions": 111,
   "tabelas": 548,
   "migrations": 3096,
   "cron_jobs": 122,
-  "testes": 2507,
+  "testes": 2509,
   "workflows": 87,
   "scripts": 272,
   "docs_md": 1024
@@ -1883,8 +1883,8 @@
    "linhas": 130
   },
   "src/components": {
-   "arquivos": 1382,
-   "linhas": 276029
+   "arquivos": 1384,
+   "linhas": 276230
   },
   "src/config": {
    "arquivos": 1,
@@ -1907,8 +1907,8 @@
    "linhas": 7
   },
   "src/hooks": {
-   "arquivos": 473,
-   "linhas": 89637
+   "arquivos": 475,
+   "linhas": 89760
   },
   "src/integrations": {
    "arquivos": 11,
@@ -1928,7 +1928,7 @@
   },
   "src/pages": {
    "arquivos": 359,
-   "linhas": 83646
+   "linhas": 83648
   },
   "src/routes": {
    "arquivos": 14,

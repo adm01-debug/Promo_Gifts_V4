@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "6da08832ec70315d42efccfb01b1f7c90701c2a0",
+  "sha": "a78b0bacfd0cbf45e9c8186ebf9d1f55f1e535d1",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-15 16:37 UTC",
-  "files_total": 10209,
-  "code_files": 8734,
-  "code_lines": 1231577
+  "generated_at": "2026-11-15 16:50 UTC",
+  "files_total": 10213,
+  "code_files": 8738,
+  "code_lines": 1231903
  },
  "version": "1.3.2",
- "facts_hash": "e157ead1070102f2",
+ "facts_hash": "1c73b911f20f91d0",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -1104,8 +1104,8 @@
   "package_manager": "npm",
   "languages": {
    ".sql": 3429,
-   ".ts": 2964,
-   ".tsx": 1892,
+   ".ts": 2967,
+   ".tsx": 1893,
    ".mjs": 436,
    ".py": 13,
    ".js": 7
@@ -138317,7 +138317,7 @@
      "get_profile_and_roles",
      "log_user_logout"
     ],
-    "deps_count": 84
+    "deps_count": 85
    },
    {
     "path": "",
@@ -144771,7 +144771,7 @@
     "file": ".github/workflows/wraparound-monitor-report.yml"
    }
   ],
-  "components_count": 1642,
+  "components_count": 1644,
   "hooks": [
    {
     "name": "useCommandBar",
@@ -147270,6 +147270,10 @@
     "file": "src/hooks/mockup/useMockupTechniques.ts"
    },
    {
+    "name": "useMockupTechniquesLoad",
+    "file": "src/hooks/mockup/useMockupTechniquesLoad.ts"
+   },
+   {
     "name": "useAdvancedFilters",
     "file": "src/hooks/products/useAdvancedFilters.ts"
    },
@@ -149342,8 +149346,8 @@
   },
   {
    "module": "src/components",
-   "files": 1382,
-   "lines": 276028,
+   "files": 1384,
+   "lines": 276229,
    "tables": [
     "admin_audit_log",
     "art_file_attachments",
@@ -149706,8 +149710,8 @@
   },
   {
    "module": "src/hooks",
-   "files": 473,
-   "lines": 89637,
+   "files": 475,
+   "lines": 89760,
    "tables": [
     "admin_audit_log",
     "admin_settings",
@@ -150200,7 +150204,7 @@
   {
    "module": "src/pages",
    "files": 359,
-   "lines": 83646,
+   "lines": 83648,
    "tables": [
     "ai_usage_events",
     "bot_detection_log",
@@ -166880,10 +166884,6 @@
    },
    {
     "file": "src/hooks/mockup/useMockupGenerator.ts",
-    "msg": "Erro ao carregar dados. Tente novamente."
-   },
-   {
-    "file": "src/hooks/mockup/useMockupGenerator.ts",
     "msg": "Erro ao converter imagem. Tente usar PNG ou JPG."
    },
    {
@@ -166909,6 +166909,10 @@
    {
     "file": "src/hooks/mockup/useMockupGenerator.ts",
     "msg": "Selecione empresa, produto, técnica e faça upload de pelo menos um logo"
+   },
+   {
+    "file": "src/hooks/mockup/useMockupTechniquesLoad.ts",
+    "msg": "Erro ao carregar dados. Tente novamente."
    },
    {
     "file": "src/hooks/products/sellerCartToasts.ts",
@@ -233426,6 +233430,30 @@
     "name": "sem técnica selecionada: nenhum aviso"
    },
    {
+    "file": "src/components/mockup/__tests__/MockupConfigPanel.techniques.test.tsx",
+    "name": "MockupConfigPanel — erro de carga das técnicas"
+   },
+   {
+    "file": "src/components/mockup/__tests__/MockupConfigPanel.techniques.test.tsx",
+    "name": "sem erro de carga, nenhum aviso de técnica aparece (guarda de regressão)"
+   },
+   {
+    "file": "src/components/mockup/__tests__/MockupConfigPanel.techniques.test.tsx",
+    "name": "com erro: mensagem + Tentar novamente no bloco da técnica (e não no do produto)"
+   },
+   {
+    "file": "src/components/mockup/__tests__/MockupConfigPanel.techniques.test.tsx",
+    "name": "clicar em "
+   },
+   {
+    "file": "src/components/mockup/__tests__/MockupConfigPanel.techniques.test.tsx",
+    "name": "o aviso não esconde o resto do painel"
+   },
+   {
+    "file": "src/components/mockup/__tests__/MockupConfigPanel.techniques.test.tsx",
+    "name": "sem callback de retry, o bloco avisa sem botão (não inventa ação)"
+   },
+   {
     "file": "src/components/mockup/__tests__/MockupLayoutButtons.test.tsx",
     "name": "MockupLayoutButtons — Gerar Mockup / Gerar documento"
    },
@@ -242312,6 +242340,26 @@
    {
     "file": "src/hooks/kit-builder/useKitPriceValidation.test.ts",
     "name": "não permite orçamento sem nenhuma linha comercial"
+   },
+   {
+    "file": "src/hooks/mockup/useMockupTechniquesLoad.test.ts",
+    "name": "useMockupTechniquesLoad"
+   },
+   {
+    "file": "src/hooks/mockup/useMockupTechniquesLoad.test.ts",
+    "name": "carga ok: lista preenchida e sem erro"
+   },
+   {
+    "file": "src/hooks/mockup/useMockupTechniquesLoad.test.ts",
+    "name": "falha: guarda a mensagem do erro em estado"
+   },
+   {
+    "file": "src/hooks/mockup/useMockupTechniquesLoad.test.ts",
+    "name": "falha sem mensagem utilizável: cai no texto padrão"
+   },
+   {
+    "file": "src/hooks/mockup/useMockupTechniquesLoad.test.ts",
+    "name": "reloadTechniques refaz a carga e limpa o erro quando ela passa"
    },
    {
     "file": "src/hooks/mockup/__tests__/colorAnalysisPorArea.test.ts",
@@ -441435,7 +441483,7 @@
   },
   "src/components/mockup/MockupConfigPanel.tsx": {
    "path": "src/components/mockup/MockupConfigPanel.tsx",
-   "lines": 500,
+   "lines": 494,
    "exports": [
     "interface MockupClient",
     "function MockupConfigPanel"
@@ -441448,10 +441496,11 @@
   },
   "src/components/mockup/MockupConfigPanelLoadError.tsx": {
    "path": "src/components/mockup/MockupConfigPanelLoadError.tsx",
-   "lines": 55,
+   "lines": 74,
    "exports": [
     "interface LoadErrorBlockProps",
-    "function LoadErrorBlock"
+    "function LoadErrorBlock",
+    "function TechniquesLoadError"
    ],
    "errors": [
     ";\nimport { Button } from "
@@ -441644,6 +441693,14 @@
     "de virar 'image/png' e furar a validação de file.type do upload manual."
    ],
    "doc": "clientLogoFile — baixa a logo do cliente no CRM como File para o upload do mockup. Fica fora do MockupConfigPanel (no teto do gate de tamanho de arquivo) e isola a validação do Content-Type: sem um tipo de imagem reconhecido a logo é RECUSADA, em vez de virar 'image/png' e furar a validação de file. …"
+  },
+  "src/components/mockup/mockupTechnique.ts": {
+   "path": "src/components/mockup/mockupTechnique.ts",
+   "lines": 27,
+   "exports": [
+    "interface Technique"
+   ],
+   "doc": "Tipo da técnica de personalização usada pelo painel de configuração do mockup. Saiu de MockupConfigPanel.tsx (que está no teto do gate de tamanho de arquivo, 500 linhas) sem nenhuma mudança de forma: só mudou de arquivo."
   },
   "src/components/mockup/mockupVariantPhotos.ts": {
    "path": "src/components/mockup/mockupVariantPhotos.ts",
@@ -441870,6 +441927,24 @@
     "logo com 3 cores e técnica de 4 cores: nenhum aviso",
     "técnica sem limite cadastrado (null): nenhum aviso",
     "sem técnica selecionada: nenhum aviso"
+   ]
+  },
+  "src/components/mockup/__tests__/MockupConfigPanel.techniques.test.tsx": {
+   "path": "src/components/mockup/__tests__/MockupConfigPanel.techniques.test.tsx",
+   "lines": 161,
+   "is_test": true,
+   "errors": [
+    ");\n}\n\nfunction retryButtonsIn(section: HTMLElement): HTMLElement[] {\n  return within(section).queryAllByRole(",
+    "botão de retry das técnicas não encontrado",
+    "seção ${id} não encontrada"
+   ],
+   "tests": [
+    "MockupConfigPanel — erro de carga das técnicas",
+    "sem erro de carga, nenhum aviso de técnica aparece (guarda de regressão)",
+    "com erro: mensagem + Tentar novamente no bloco da técnica (e não no do produto)",
+    "clicar em ",
+    "o aviso não esconde o resto do painel",
+    "sem callback de retry, o bloco avisa sem botão (não inventa ação)"
    ]
   },
   "src/components/mockup/__tests__/MockupLayoutButtons.test.tsx": {
@@ -458793,13 +458868,12 @@
   },
   "src/hooks/mockup/useMockupGenerator.ts": {
    "path": "src/hooks/mockup/useMockupGenerator.ts",
-   "lines": 895,
+   "lines": 884,
    "exports": [
     "function useMockupGenerator"
    ],
    "errors": [
     "A imagem deve ter no máximo 10MB",
-    "Erro ao carregar dados. Tente novamente.",
     "Erro ao converter imagem. Tente usar PNG ou JPG.",
     "Erro ao excluir mockup",
     "Erro ao ler o arquivo de imagem. Tente novamente.",
@@ -458839,6 +458913,34 @@
    ],
    "temporal": [
     "staleTime: 10 * 60 * 1000,"
+   ]
+  },
+  "src/hooks/mockup/useMockupTechniquesLoad.test.ts": {
+   "path": "src/hooks/mockup/useMockupTechniquesLoad.test.ts",
+   "lines": 74,
+   "is_test": true,
+   "doc": "useMockupTechniquesLoad — o erro de carga das técnicas vira ESTADO, e reloadTechniques recarrega a MESMA lista que falhou (antes o erro só virava toast e sumia). Fica ao lado do módulo (e não em __tests__/) para não cruzar com a PR #3672, que mexe em src/hooks/mockup/__tests__/.",
+   "tests": [
+    "useMockupTechniquesLoad",
+    "carga ok: lista preenchida e sem erro",
+    "falha: guarda a mensagem do erro em estado",
+    "falha sem mensagem utilizável: cai no texto padrão",
+    "reloadTechniques refaz a carga e limpa o erro quando ela passa"
+   ]
+  },
+  "src/hooks/mockup/useMockupTechniquesLoad.ts": {
+   "path": "src/hooks/mockup/useMockupTechniquesLoad.ts",
+   "lines": 60,
+   "exports": [
+    "const TECHNIQUES_LOAD_ERROR_FALLBACK",
+    "interface MockupTechniquesLoadState",
+    "function useMockupTechniquesLoad"
+   ],
+   "errors": [
+    "Erro ao carregar dados. Tente novamente."
+   ],
+   "hooks": [
+    "useMockupTechniquesLoad"
    ]
   },
   "src/hooks/mockup/__tests__/colorAnalysisPorArea.test.ts": {
@@ -480427,7 +480529,7 @@
   },
   "src/pages/mockups/MockupGenerator.tsx": {
    "path": "src/pages/mockups/MockupGenerator.tsx",
-   "lines": 608,
+   "lines": 610,
    "exports": [
     "function MockupGenerator"
    ],
@@ -538720,10 +538822,26 @@
   }
  },
  "git": {
-  "sha": "6da08832ec70315d42efccfb01b1f7c90701c2a0",
+  "sha": "a78b0bacfd0cbf45e9c8186ebf9d1f55f1e535d1",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "a78b0ba",
+    "date": "2026-11-15",
+    "author": "adm01-debug",
+    "subject": "feat(mockup): aviso de falha ao carregar as técnicas de personalização, com \"Tentar novamente\" (#3677)",
+    "files": [
+     "src/components/mockup/MockupConfigPanel.tsx",
+     "src/components/mockup/MockupConfigPanelLoadError.tsx",
+     "src/components/mockup/__tests__/MockupConfigPanel.techniques.test.tsx",
+     "src/components/mockup/mockupTechnique.ts",
+     "src/hooks/mockup/useMockupGenerator.ts",
+     "src/hooks/mockup/useMockupTechniquesLoad.test.ts",
+     "src/hooks/mockup/useMockupTechniquesLoad.ts",
+     "src/pages/mockups/MockupGenerator.tsx"
+    ]
+   },
    {
     "sha": "6da0883",
     "date": "2026-11-15",
@@ -539272,37 +539390,40 @@
     "author": "Claude",
     "subject": "Merge remote-tracking branch 'origin/main' into claude/fix-crm-ownership-vinculo-261114-2230",
     "files": []
-   },
-   {
-    "sha": "98589a4",
-    "date": "2026-11-14",
-    "author": "Claude",
-    "subject": "chore(coordenacao): registra o resgate da correcao de ownership do CRM (E188)",
-    "files": [
-     "docs/coordenacao/conflitos-semanticos.md"
-    ]
    }
   ],
   "hot_files": [
    [
     "docs/coordenacao/conflitos-semanticos.md",
-    7
+    6
    ],
    [
     "supabase/MIGRATIONS_SYNC_LOG.md",
     5
    ],
    [
-    "audit/supabase-reference-catalog.temporary.json",
+    "src/pages/mockups/MockupGenerator.tsx",
+    4
+   ],
+   [
+    "src/components/mockup/MockupConfigPanel.tsx",
     3
    ],
    [
-    "src/pages/mockups/MockupGenerator.tsx",
+    "src/hooks/mockup/useMockupGenerator.ts",
+    3
+   ],
+   [
+    "audit/supabase-reference-catalog.temporary.json",
     3
    ],
    [
     "src/pages/kit-builder/KitBuilderPage.tsx",
     3
+   ],
+   [
+    "src/components/mockup/MockupConfigPanelLoadError.tsx",
+    2
    ],
    [
     "src/components/assistant/SalesAssistantCard.tsx",
@@ -539350,18 +539471,6 @@
    ],
    [
     "src/components/mockup/MockupClientSelector.tsx",
-    2
-   ],
-   [
-    "src/components/mockup/MockupConfigPanel.tsx",
-    2
-   ],
-   [
-    "src/components/mockup/__tests__/MockupClientSelector.a11y.test.tsx",
-    2
-   ],
-   [
-    "src/hooks/mockup/mockupGenerationService.ts",
     2
    ]
   ]

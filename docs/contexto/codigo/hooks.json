@@ -1,7 +1,7 @@
 {
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
- "total": 622,
+ "total": 623,
  "hooks": [
   {
    "arquivo": "recovery/src-legacy/src/components/command/GlobalCommandBar.tsx",
@@ -10266,7 +10266,7 @@
    "hooks_exportados": [
     "useMockupGenerator"
    ],
-   "linhas": 895,
+   "linhas": 884,
    "dominio": "hooks/mockup",
    "tabelas": [],
    "rpcs": [],
@@ -10281,6 +10281,7 @@
     "useMockupAreaRetry",
     "useMockupDraft",
     "useMockupEntryParams",
+    "useMockupTechniquesLoad",
     "usePositionHistory",
     "useProductCustomizationOptionsForMockup",
     "useProductsContext",
@@ -10317,6 +10318,28 @@
     "src/hooks/mockup/useMockupGenerator.ts"
    ],
    "coberto_por_testes": 3
+  },
+  {
+   "arquivo": "src/hooks/mockup/useMockupTechniquesLoad.ts",
+   "hooks_exportados": [
+    "useMockupTechniquesLoad"
+   ],
+   "linhas": 60,
+   "dominio": "hooks/mockup",
+   "tabelas": [],
+   "rpcs": [],
+   "edges": [],
+   "hooks_internos": [
+    "useCallback",
+    "useEffect",
+    "useState"
+   ],
+   "canais_realtime": [],
+   "usado_por": 1,
+   "usado_por_arquivos": [
+    "src/hooks/mockup/useMockupGenerator.ts"
+   ],
+   "coberto_por_testes": 1
   },
   {
    "arquivo": "src/hooks/products/useAdvancedFilters.ts",

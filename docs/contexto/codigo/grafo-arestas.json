@@ -7041,10 +7041,12 @@
    "src/components/mockup/ArtFileUpload.tsx",
    "src/components/mockup/LogoColorAnalyzer.tsx",
    "src/components/mockup/MockupClientSelector.tsx",
+   "src/components/mockup/MockupConfigPanelLoadError.tsx",
    "src/components/mockup/MockupProductSelector.tsx",
    "src/components/mockup/MultiAreaManager.tsx",
    "src/components/mockup/TechniqueTooltip.tsx",
    "src/components/mockup/clientLogoFile.ts",
+   "src/components/mockup/mockupTechnique.ts",
    "src/components/ui/ConfirmDialog.tsx",
    "src/components/ui/button.tsx",
    "src/components/ui/card.tsx",
@@ -10681,6 +10683,7 @@
    "src/hooks/mockup/useMockupDraft.ts",
    "src/hooks/mockup/useMockupEntryParams.ts",
    "src/hooks/mockup/useMockupTechniques.ts",
+   "src/hooks/mockup/useMockupTechniquesLoad.ts",
    "src/hooks/simulation/index.ts",
    "src/lib/image-converter.ts",
    "src/lib/logger.ts",
@@ -10691,6 +10694,11 @@
    "src/lib/db/postgrest.ts",
    "src/lib/external-rpc.ts",
    "src/lib/personalization/adapters/index.ts"
+  ],
+  "src/hooks/mockup/useMockupTechniquesLoad.ts": [
+   "src/hooks/mockup/mockupGenerationService.ts",
+   "src/hooks/mockup/mockupGeneratorModel.ts",
+   "src/lib/logger.ts"
   ],
   "src/hooks/products/dailyCatalogDefaults.ts": [
    "src/components/products/ColumnSelector.tsx"

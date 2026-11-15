@@ -1,8 +1,8 @@
 {
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
- "nos": 2799,
- "arestas": 11049,
+ "nos": 2801,
+ "arestas": 11055,
  "hubs": [
   {
    "arquivo": "src/lib/utils.ts",
@@ -26,11 +26,11 @@
   },
   {
    "arquivo": "src/lib/logger.ts",
-   "importado_por": 314
+   "importado_por": 315
   },
   {
    "arquivo": "src/components/ui/tooltip.tsx",
-   "importado_por": 296
+   "importado_por": 297
   },
   {
    "arquivo": "src/components/ui/input.tsx",
@@ -169,7 +169,7 @@
   "total": 20,
   "maiores": [
    {
-    "tamanho": 55,
+    "tamanho": 56,
     "arquivos": [
      "src/components/catalog/useCatalogSelection.ts",
      "src/components/filters/ColorGroupFilter.tsx",

@@ -13,7 +13,7 @@
    "recovery/src-legacy (100)"
   ],
   "hooks": [
-   "src/hooks (296)",
+   "src/hooks (297)",
    "recovery/src-legacy (196)",
    "src/components (76)"
   ],
@@ -24,7 +24,7 @@
   ],
   "testes": [
    "tests/ (1022)",
-   "co-localizado (__tests__) (664)",
+   "co-localizado (__tests__) (665)",
    "e2e/ (625)"
   ],
   "edge_functions": "supabase/functions",
@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "feat(mockup): aviso de falha ao carregar as técnicas de personalização, com \"Tentar novamente\" (#3677)",
    "fix(assistente): card não acusa falha enquanto a RPC não foi aplicada (#3678)",
    "feat(assistente): Encaixe do Cliente — fase 1 validada e com os 2 portões destravados (#3663)",
    "fix(inteligencia): grafico de mercado nao acusa erro quando a RPC ainda nao foi aplicada (#3675)",
-   "feat(mockup): aviso de \"não carregou, tentar de novo\" no catálogo do painel de mockup (#3670)",
-   "fix(mockup): etapas do gerador voltam a ser anunciadas pelo leitor de tela no celular (#3671)"
+   "feat(mockup): aviso de \"não carregou, tentar de novo\" no catálogo do painel de mockup (#3670)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",
