@@ -129,9 +129,7 @@
     "TARGET_SHA"
    ],
    "npm_scripts": [],
-   "workflows": [
-    "lovable-autoheal.yml"
-   ],
+   "workflows": [],
    "orfao": false
   },
   {
@@ -153,7 +151,7 @@
     "automation:uninstall-hooks"
    ],
    "workflows": [
-    "automation-local.yml"
+    "static-checks.yml"
    ],
    "orfao": false
   },
@@ -328,7 +326,6 @@
     "check:aschild-nesting"
    ],
    "workflows": [
-    "ci.yml",
     "deploy-gates.yml"
    ],
    "orfao": false
@@ -623,7 +620,6 @@
    ],
    "npm_scripts": [],
    "workflows": [
-    "ci.yml",
     "deploy-gates.yml"
    ],
    "orfao": false
@@ -734,9 +730,7 @@
     "lint:baseline",
     "lint:baseline:incremental"
    ],
-   "workflows": [
-    "ci.yml"
-   ],
+   "workflows": [],
    "orfao": false
   },
   {
@@ -1003,7 +997,7 @@
     "check:migrations-sync-log-gate"
    ],
    "workflows": [
-    "migrations-sync-log-gate.yml"
+    "static-checks.yml"
    ],
    "orfao": false
   },
@@ -1065,7 +1059,6 @@
     "check:no-inline-cors"
    ],
    "workflows": [
-    "ci.yml",
     "deploy-gates.yml"
    ],
    "orfao": false
@@ -1079,7 +1072,7 @@
     "check:no-prod-leak"
    ],
    "workflows": [
-    "check-no-prod-leak.yml"
+    "static-checks.yml"
    ],
    "orfao": false
   },
@@ -1304,7 +1297,7 @@
    "env": [],
    "npm_scripts": [],
    "workflows": [
-    "required-checks-guard.yml"
+    "static-checks.yml"
    ],
    "orfao": false
   },
@@ -1361,7 +1354,6 @@
     "check:route-error-element"
    ],
    "workflows": [
-    "ci.yml",
     "deploy-gates.yml"
    ],
    "orfao": false
@@ -1377,7 +1369,6 @@
     "check:route-ref-usage"
    ],
    "workflows": [
-    "ci.yml",
     "deploy-gates.yml"
    ],
    "orfao": false
@@ -1518,7 +1509,7 @@
     "check:select-columns"
    ],
    "workflows": [
-    "check-select-columns.yml"
+    "static-checks.yml"
    ],
    "orfao": false
   },
@@ -1531,7 +1522,6 @@
     "check:seller-scope"
    ],
    "workflows": [
-    "ci.yml",
     "deploy-gates.yml"
    ],
    "orfao": false
@@ -1702,7 +1692,7 @@
   {
    "arquivo": "scripts/check-visual-baselines.mjs",
    "descricao": "* Guard E44 — Toda spec rodada em workflow visual \"estrito\" (sem",
-   "linhas": 111,
+   "linhas": 113,
    "env": [],
    "npm_scripts": [],
    "workflows": [
@@ -2402,8 +2392,8 @@
    "env": [],
    "npm_scripts": [],
    "workflows": [
-    "lint-untyped-from.yml",
-    "regenerate-supabase-types.yml"
+    "regenerate-supabase-types.yml",
+    "static-checks.yml"
    ],
    "orfao": false
   },

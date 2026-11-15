@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "20dfb7b30bca9e3636a8c990bec6bbcfbd0581ed",
+  "sha": "9e656a39b9b062f310c3ef02b8341fe9505c36b9",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-15 12:28 UTC",
-  "files_total": 10143,
+  "generated_at": "2026-11-15 12:49 UTC",
+  "files_total": 10145,
   "code_files": 8670,
-  "code_lines": 1222622
+  "code_lines": 1222624
  },
  "version": "1.3.2",
- "facts_hash": "2a71dda78a9c6b24",
+ "facts_hash": "c0984406ff58dc0d",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -434,15 +434,6 @@
     ]
    },
    {
-    "file": ".github/workflows/automation-local.yml",
-    "name": "Automação local",
-    "triggers": [
-     "pull_request",
-     "push",
-     "workflow_dispatch"
-    ]
-   },
-   {
     "file": ".github/workflows/branch-protection-sentinel.yml",
     "name": "Branch Protection Sentinel",
     "triggers": [
@@ -471,22 +462,6 @@
     "triggers": [
      "schedule",
      "workflow_dispatch"
-    ]
-   },
-   {
-    "file": ".github/workflows/check-no-prod-leak.yml",
-    "name": "No Prod Leak in Dev/Test Config",
-    "triggers": [
-     "pull_request",
-     "push"
-    ]
-   },
-   {
-    "file": ".github/workflows/check-select-columns.yml",
-    "name": "Select Columns vs Types",
-    "triggers": [
-     "pull_request",
-     "push"
     ]
    },
    {
@@ -526,7 +501,7 @@
    },
    {
     "file": ".github/workflows/contexto.yml",
-    "name": "Contexto para agentes de IA (10 min)",
+    "name": "Contexto para agentes de IA (1 h)",
     "triggers": [
      "push",
      "schedule",
@@ -567,7 +542,6 @@
     "file": ".github/workflows/db-schema-drift-check.yml",
     "name": "db-schema-drift-check",
     "triggers": [
-     "pull_request",
      "schedule",
      "workflow_dispatch"
     ]
@@ -753,7 +727,7 @@
     "file": ".github/workflows/e2e-stock.yml",
     "name": "E2E Stock — Matrix (E80)",
     "triggers": [
-     "push",
+     "schedule",
      "workflow_dispatch"
     ]
    },
@@ -831,43 +805,11 @@
     ]
    },
    {
-    "file": ".github/workflows/lint-untyped-from.yml",
-    "name": "Lint untypedFrom",
-    "triggers": [
-     "pull_request",
-     "push",
-     "workflow_dispatch"
-    ]
-   },
-   {
     "file": ".github/workflows/log-login-fuzz-weekly.yml",
     "name": "log-login-attempt — Fuzz Stress Weekly",
     "triggers": [
      "schedule",
      "workflow_dispatch"
-    ]
-   },
-   {
-    "file": ".github/workflows/lovable-autoheal.yml",
-    "name": "Lovable Autoheal",
-    "triggers": [
-     "push",
-     "workflow_dispatch"
-    ]
-   },
-   {
-    "file": ".github/workflows/lovable-edit-tracker.yml",
-    "name": "Lovable Edit Tracker",
-    "triggers": [
-     "push",
-     "workflow_dispatch"
-    ]
-   },
-   {
-    "file": ".github/workflows/lovable-protected-audit.yml",
-    "name": "\"Lovable Protected-File Audit (E196)\"",
-    "triggers": [
-     "push"
     ]
    },
    {
@@ -900,13 +842,6 @@
     "name": "migration-dry-run",
     "triggers": [
      "workflow_dispatch"
-    ]
-   },
-   {
-    "file": ".github/workflows/migrations-sync-log-gate.yml",
-    "name": "migrations-sync-log-gate",
-    "triggers": [
-     "pull_request"
     ]
    },
    {
@@ -960,8 +895,6 @@
     "file": ".github/workflows/policies-baseline.yml",
     "name": "Policies Baseline",
     "triggers": [
-     "pull_request",
-     "push",
      "schedule",
      "workflow_dispatch"
     ]
@@ -1030,20 +963,9 @@
     ]
    },
    {
-    "file": ".github/workflows/restore-seller-cart-rpc.yml",
-    "name": "E2E · restore_seller_cart RPC (multi-env)",
-    "triggers": [
-     "push",
-     "schedule",
-     "workflow_dispatch"
-    ]
-   },
-   {
     "file": ".github/workflows/schema-snapshot-export.yml",
     "name": "schema-snapshot-export",
     "triggers": [
-     "pull_request",
-     "push",
      "schedule",
      "workflow_dispatch"
     ]
@@ -1078,7 +1000,7 @@
     "file": ".github/workflows/sitemap-production-preconditions.yml",
     "name": "Sitemap — precondições públicas de ativação",
     "triggers": [
-     "pull_request",
+     "schedule",
      "workflow_dispatch"
     ]
    },
@@ -1098,6 +1020,15 @@
     ]
    },
    {
+    "file": ".github/workflows/static-checks.yml",
+    "name": "Static Checks",
+    "triggers": [
+     "pull_request",
+     "push",
+     "workflow_dispatch"
+    ]
+   },
+   {
     "file": ".github/workflows/stock-rupture-fuzz.yml",
     "name": "stock-rupture-fuzz",
     "triggers": [
@@ -1109,7 +1040,6 @@
     "file": ".github/workflows/supabase-linter-gate.yml",
     "name": "Supabase Linter Gate",
     "triggers": [
-     "pull_request",
      "push",
      "schedule",
      "workflow_dispatch"
@@ -1140,14 +1070,6 @@
     ]
    },
    {
-    "file": ".github/workflows/ui-visual-a11y.yml",
-    "name": "UI · Visual & A11y",
-    "triggers": [
-     "pull_request",
-     "push"
-    ]
-   },
-   {
     "file": ".github/workflows/update-snapshots.yml",
     "name": "E2E · Atualizar snapshots visuais (E155)",
     "triggers": [
@@ -1164,26 +1086,9 @@
     ]
    },
    {
-    "file": ".github/workflows/url-state-unit.yml",
-    "name": "URL State — Unit & Fuzz",
-    "triggers": [
-     "pull_request",
-     "push",
-     "schedule"
-    ]
-   },
-   {
     "file": ".github/workflows/visual-tests.yml",
     "name": "Visual Baseline Tests — Nightly",
     "triggers": [
-     "push"
-    ]
-   },
-   {
-    "file": ".github/workflows/workflow-lint.yml",
-    "name": "Workflow Lint",
-    "triggers": [
-     "pull_request",
      "push"
     ]
    },
@@ -142940,7 +142845,7 @@
    },
    {
     "kind": "GitHub Actions cron",
-    "detail": "3,13,23,33,43,53 * * * *",
+    "detail": "7 * * * *",
     "file": ".github/workflows/contexto.yml"
    },
    {
@@ -142972,6 +142877,11 @@
     "kind": "GitHub Actions cron",
     "detail": "0 2 * * 1",
     "file": ".github/workflows/e2e-focused.yml"
+   },
+   {
+    "kind": "GitHub Actions cron",
+    "detail": "27 4 * * *",
+    "file": ".github/workflows/e2e-stock.yml"
    },
    {
     "kind": "GitHub Actions cron",
@@ -143035,11 +142945,6 @@
    },
    {
     "kind": "GitHub Actions cron",
-    "detail": "49 9 * * *",
-    "file": ".github/workflows/restore-seller-cart-rpc.yml"
-   },
-   {
-    "kind": "GitHub Actions cron",
     "detail": "36 6 * * 1",
     "file": ".github/workflows/schema-snapshot-export.yml"
    },
@@ -143052,6 +142957,11 @@
     "kind": "GitHub Actions cron",
     "detail": "25 6 * * 1",
     "file": ".github/workflows/security.yml"
+   },
+   {
+    "kind": "GitHub Actions cron",
+    "detail": "17 11 * * *",
+    "file": ".github/workflows/sitemap-production-preconditions.yml"
    },
    {
     "kind": "GitHub Actions cron",
@@ -143077,11 +142987,6 @@
     "kind": "GitHub Actions cron",
     "detail": "*/30 * * * *",
     "file": ".github/workflows/uptime-monitor.yml"
-   },
-   {
-    "kind": "GitHub Actions cron",
-    "detail": "41 6 * * 1",
-    "file": ".github/workflows/url-state-unit.yml"
    },
    {
     "kind": "GitHub Actions cron",
@@ -147401,7 +147306,7 @@
   {
    "module": "scripts",
    "files": 287,
-   "lines": 62093,
+   "lines": 62095,
    "tables": [
     "a",
     "b",
@@ -292900,7 +292805,7 @@
    },
    {
     "file": "tests/scripts/contexto-produtores.test.mjs",
-    "name": "não usa SUPABASE_ACCESS_TOKEN (Gate E89: cron de 10 min colidiria com os crons privilegiados)"
+    "name": "não usa SUPABASE_ACCESS_TOKEN (Gate E89: cron horário colidiria com os crons privilegiados)"
    },
    {
     "file": "tests/scripts/contexto-produtores.test.mjs",
@@ -418026,7 +417931,7 @@
   },
   "scripts/check-visual-baselines.mjs": {
    "path": "scripts/check-visual-baselines.mjs",
-   "lines": 111,
+   "lines": 113,
    "params": [
     {
      "name": "DEFAULT_PROJECT",
@@ -527919,7 +527824,7 @@
     "indice.py monta o 00-INDEX.md a partir dos manifests",
     "lista as três fontes e marca a que ainda não foi gerada",
     "invariantes do contexto.yml",
-    "não usa SUPABASE_ACCESS_TOKEN (Gate E89: cron de 10 min colidiria com os crons privilegiados)",
+    "não usa SUPABASE_ACCESS_TOKEN (Gate E89: cron horário colidiria com os crons privilegiados)",
     "não roda em pull_request (o job publicar tem contents: write e faz git push)",
     "publica só na branch gerada contexto, nunca na main",
     "banco: sessão pelas variáveis PG* com URI vazia (sem connection string com senha)",
@@ -532643,10 +532548,60 @@
   }
  },
  "git": {
-  "sha": "20dfb7b30bca9e3636a8c990bec6bbcfbd0581ed",
+  "sha": "9e656a39b9b062f310c3ef02b8341fe9505c36b9",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "9e656a3",
+    "date": "2026-11-15",
+    "author": "adm01-debug",
+    "subject": "ci: enxuga workflows — checagens estáticas consolidadas, 12 aposentados, contexto 1×/h (#3659)",
+    "files": [
+     ".github/required-checks.json",
+     ".github/workflows/branch-protection-sentinel.yml",
+     ".github/workflows/ci.yml",
+     ".github/workflows/contexto.yml",
+     ".github/workflows/db-schema-drift-check.yml",
+     ".github/workflows/deploy-gates.yml",
+     ".github/workflows/e2e-stock.yml",
+     ".github/workflows/edge-functions-drift-check.yml",
+     ".github/workflows/global-search-gate.yml",
+     ".github/workflows/policies-baseline.yml",
+     ".github/workflows/required-checks-guard.yml",
+     ".github/workflows/schema-snapshot-export.yml",
+     ".github/workflows/security-definer-acl-multi-env.yml",
+     ".github/workflows/sentinel-self-test.yml",
+     ".github/workflows/sitemap-production-preconditions.yml",
+     ".github/workflows/static-checks.yml",
+     ".github/workflows/supabase-linter-gate.yml",
+     "ai-context.config.json",
+     "docs/coordenacao/conflitos-semanticos.md",
+     "recovery/workflows-aposentados/README.md",
+     "recovery/workflows-aposentados/automation-local.yml",
+     "recovery/workflows-aposentados/check-no-prod-leak.yml",
+     "recovery/workflows-aposentados/check-select-columns.yml",
+     "recovery/workflows-aposentados/lint-untyped-from.yml",
+     "recovery/workflows-aposentados/lovable-autoheal.yml",
+     "recovery/workflows-aposentados/lovable-edit-tracker.yml",
+     "recovery/workflows-aposentados/lovable-protected-audit.yml",
+     "recovery/workflows-aposentados/migrations-sync-log-gate.yml",
+     "recovery/workflows-aposentados/restore-seller-cart-rpc.yml",
+     "recovery/workflows-aposentados/ui-visual-a11y.yml",
+     "recovery/workflows-aposentados/url-state-unit.yml",
+     "recovery/workflows-aposentados/workflow-lint.yml",
+     "scripts/ai-context/README.md",
+     "scripts/autoheal-eslint/run.test.mjs",
+     "scripts/automation.config.json",
+     "scripts/check-visual-baselines.mjs",
+     "scripts/check-workflow-contracts.allowlist.json",
+     "scripts/lint-untyped-from.sh",
+     "scripts/supabase_snapshot/README.md",
+     "scripts/supabase_snapshot/snapshot.py",
+     "src/lib/supabase-untyped.ts",
+     "tests/scripts/contexto-produtores.test.mjs"
+    ]
+   },
    {
     "sha": "20dfb7b",
     "date": "2026-11-15",
@@ -533033,15 +532988,6 @@
      "docs/faxina-261114/05-plano-workflows.md",
      "supabase/MIGRATIONS_SYNC_LOG.md"
     ]
-   },
-   {
-    "sha": "8288d68",
-    "date": "2026-11-14",
-    "author": "Claude",
-    "subject": "chore(coordenacao): registra o trem 4 no ledger (E188)",
-    "files": [
-     "docs/coordenacao/conflitos-semanticos.md"
-    ]
    }
   ],
   "hot_files": [
@@ -533052,6 +532998,14 @@
    [
     "supabase/MIGRATIONS_SYNC_LOG.md",
     4
+   ],
+   [
+    ".github/workflows/e2e-stock.yml",
+    2
+   ],
+   [
+    ".github/workflows/global-search-gate.yml",
+    2
    ],
    [
     "src/components/kit-builder/ItemSelector.tsx",
@@ -533086,43 +533040,35 @@
     2
    ],
    [
-    ".github/workflows/delivery-quality.yml",
+    ".github/required-checks.json",
     1
    ],
    [
-    ".github/workflows/e2e-cart.yml",
+    ".github/workflows/branch-protection-sentinel.yml",
     1
    ],
    [
-    ".github/workflows/e2e-check-calendar-snapshots.yml",
+    ".github/workflows/ci.yml",
     1
    ],
    [
-    ".github/workflows/e2e-color-swatch-grid.yml",
+    ".github/workflows/contexto.yml",
     1
    ],
    [
-    ".github/workflows/e2e-crm-callback-approved.yml",
+    ".github/workflows/db-schema-drift-check.yml",
     1
    ],
    [
-    ".github/workflows/e2e-customization-collapse.yml",
+    ".github/workflows/deploy-gates.yml",
     1
    ],
    [
-    ".github/workflows/e2e-dialogs-pr-check.yml",
+    ".github/workflows/edge-functions-drift-check.yml",
     1
    ],
    [
-    ".github/workflows/e2e-discount-approval.yml",
-    1
-   ],
-   [
-    ".github/workflows/e2e-flows.yml",
-    1
-   ],
-   [
-    ".github/workflows/e2e-focused.yml",
+    ".github/workflows/policies-baseline.yml",
     1
    ]
   ]

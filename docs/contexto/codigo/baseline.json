@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "20dfb7b30bca9e3636a8c990bec6bbcfbd0581ed",
+  "commit": "9e656a39b9b062f310c3ef02b8341fe9505c36b9",
   "branch": "main",
-  "data_commit": "2026-11-15T09:27:19-03:00",
+  "data_commit": "2026-11-15T09:47:43-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "9e656a39",
+    "data": "2026-11-15",
+    "assunto": "ci: enxuga workflows — checagens estáticas consolidadas, 12 aposentados, contexto 1×/h (#3659)"
+   },
    {
     "sha": "20dfb7b3",
     "data": "2026-11-15",
@@ -126,14 +131,9 @@
     "sha": "23cfcc13",
     "data": "2026-11-14",
     "assunto": "fix(pdp): aborta de verdade a consulta do produto ao estourar o limite de 15 s (#3622)"
-   },
-   {
-    "sha": "a47e0824",
-    "data": "2026-11-14",
-    "assunto": "Merge remote-tracking branch 'origin/main' into claude/fix-pdp-abort-real-261114-1945"
    }
   ],
-  "arquivos_mudados_7d": 2033,
+  "arquivos_mudados_7d": 2061,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -203,7 +203,7 @@
    },
    {
     "arquivo": "PENDENCIAS.md",
-    "mudancas": 90
+    "mudancas": 89
    },
    {
     "arquivo": "supabase/MIGRATIONS_SYNC_LOG.md",
@@ -211,22 +211,22 @@
    },
    {
     "arquivo": "package.json",
-    "mudancas": 44
+    "mudancas": 43
    },
    {
     "arquivo": "package-lock.json",
-    "mudancas": 34
+    "mudancas": 33
    },
    {
     "arquivo": "analise-prs/progresso.json",
     "mudancas": 21
    },
    {
-    "arquivo": "analise-prs/RELATORIO_PRS.md",
-    "mudancas": 19
+    "arquivo": "docs/coordenacao/conflitos-semanticos.md",
+    "mudancas": 20
    },
    {
-    "arquivo": "docs/coordenacao/conflitos-semanticos.md",
+    "arquivo": "analise-prs/RELATORIO_PRS.md",
     "mudancas": 19
    },
    {
@@ -236,6 +236,10 @@
    {
     "arquivo": "supabase/EDGE_FUNCTIONS_DEPLOY_LOG.md",
     "mudancas": 18
+   },
+   {
+    "arquivo": ".github/workflows/deploy-gates.yml",
+    "mudancas": 15
    },
    {
     "arquivo": "analise-prs/prs.json",
@@ -248,10 +252,6 @@
    {
     "arquivo": "src/pages/kit-builder/KitBuilderPage.tsx",
     "mudancas": 15
-   },
-   {
-    "arquivo": ".github/workflows/deploy-gates.yml",
-    "mudancas": 14
    },
    {
     "arquivo": "docs/plans/PLANO_MELHORIAS_CORRECOES_200_ETAPAS_2026-10-18.md",
@@ -274,6 +274,10 @@
     "mudancas": 10
    },
    {
+    "arquivo": ".github/workflows/db-schema-drift-check.yml",
+    "mudancas": 9
+   },
+   {
     "arquivo": "AGENTS.md",
     "mudancas": 9
    },
@@ -292,10 +296,6 @@
    {
     "arquivo": "src/hooks/kit-builder/useKitAutoSave.ts",
     "mudancas": 9
-   },
-   {
-    "arquivo": ".github/workflows/db-schema-drift-check.yml",
-    "mudancas": 8
    }
   ],
   "autores_30d": [
@@ -317,14 +317,14 @@
    },
    {
     "autor": "dependabot[bot]",
-    "commits": 16
+    "commits": 15
    }
   ]
  },
  "contagens": {
-  "arquivos_total": 10215,
+  "arquivos_total": 10217,
   "arquivos_codigo": 5265,
-  "linhas_codigo": 1004402,
+  "linhas_codigo": 1004404,
   "rotas": 138,
   "rotas_http_backend": 13,
   "vistas_por_id": 0,
@@ -337,9 +337,9 @@
   "migrations": 3087,
   "cron_jobs": 122,
   "testes": 2487,
-  "workflows": 98,
+  "workflows": 87,
   "scripts": 272,
-  "docs_md": 1023
+  "docs_md": 1024
  },
  "por_pasta": {
   ".github/scripts": {
@@ -1444,7 +1444,7 @@
   },
   "scripts/check-visual-baselines.mjs": {
    "arquivos": 1,
-   "linhas": 111
+   "linhas": 113
   },
   "scripts/check-visual-preview-suite.mjs": {
    "arquivos": 1,

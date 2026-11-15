@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "ci: enxuga workflows — checagens estáticas consolidadas, 12 aposentados, contexto 1×/h (#3659)",
    "chore: trem de infra — BOM da edge asia-ingestion, recibo E66, E2E fora dos PRs e snapshots all-authed (#3658)",
    "fix: trem de 3 correções de front — busca, cores por área do mockup e trocar item no kit (#3653)",
    "fix(ci): portão de recibos deixa de dar verde com version citada no recibo de outra migration (#3649)",
-   "fix(db): cria o rollback que destrava o revoke E18 — estoque alterável por qualquer usuário logado (#3648)",
-   "fix: trem das 5 correções já verdes — recibos, código morto do CRM, 3 resgates, gerador de mockup e aba Marketing (#3647)"
+   "fix(db): cria o rollback que destrava o revoke E18 — estoque alterável por qualquer usuário logado (#3648)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",

@@ -5,10 +5,10 @@
   "linguagens": [
    "TypeScript (4814)",
    "SQL (3406)",
-   "Markdown (1023)",
+   "Markdown (1024)",
    "JavaScript (443)",
    "JSON (126)",
-   "YAML (111)",
+   "YAML (112)",
    "Shell (27)",
    "HTML (20)"
   ],
@@ -482,34 +482,6 @@
    ]
   },
   {
-   "arquivo": ".github/workflows/automation-local.yml",
-   "nome": "Automação local",
-   "gatilhos": [
-    "pull_request",
-    "push",
-    "workflow_dispatch"
-   ],
-   "crons": [],
-   "branches": [
-    "main"
-   ],
-   "jobs": [
-    "contracts"
-   ],
-   "permissoes": [
-    "contents: read"
-   ],
-   "scripts_usados": [
-    "scripts/automation.mjs"
-   ],
-   "npm_scripts": [],
-   "secrets": [],
-   "actions": [
-    "actions/checkout",
-    "actions/setup-node"
-   ]
-  },
-  {
    "arquivo": ".github/workflows/branch-protection-sentinel.yml",
    "nome": "Branch Protection Sentinel",
    "gatilhos": [
@@ -521,8 +493,7 @@
     "main"
    ],
    "jobs": [
-    "verify-merge-pattern",
-    "check-protection-config"
+    "verify-merge-pattern"
    ],
    "permissoes": [
     "contents: read"
@@ -533,7 +504,6 @@
    ],
    "npm_scripts": [],
    "secrets": [
-    "GITHUB_TOKEN",
     "SENTINEL_SLACK_WEBHOOK"
    ],
    "actions": [
@@ -626,59 +596,6 @@
     "actions/checkout",
     "actions/setup-node",
     "actions/upload-artifact"
-   ]
-  },
-  {
-   "arquivo": ".github/workflows/check-no-prod-leak.yml",
-   "nome": "No Prod Leak in Dev/Test Config",
-   "gatilhos": [
-    "pull_request",
-    "push"
-   ],
-   "crons": [],
-   "branches": [
-    "main"
-   ],
-   "jobs": [
-    "no_prod_leak"
-   ],
-   "permissoes": [
-    "contents: read"
-   ],
-   "scripts_usados": [
-    "scripts/check-no-prod-leak.mjs"
-   ],
-   "npm_scripts": [],
-   "secrets": [],
-   "actions": [
-    "actions/checkout",
-    "actions/setup-node"
-   ]
-  },
-  {
-   "arquivo": ".github/workflows/check-select-columns.yml",
-   "nome": "Select Columns vs Types",
-   "gatilhos": [
-    "pull_request",
-    "push"
-   ],
-   "crons": [],
-   "branches": [
-    "main"
-   ],
-   "jobs": [
-    "select_columns"
-   ],
-   "permissoes": [
-    "contents: read"
-   ],
-   "scripts_usados": [
-    "scripts/check-select-columns.mjs"
-   ],
-   "npm_scripts": [],
-   "secrets": [],
-   "actions": [
-    "actions/checkout"
    ]
   },
   {
@@ -801,25 +718,20 @@
    ],
    "scripts_usados": [
     "scripts/build-cors-snapshot.mjs",
-    "scripts/check-aschild-nesting.mjs",
-    "scripts/check-edge-authorization.mjs",
     "scripts/check-edge-cors-headers.mjs",
     "scripts/check-edge-request-id-propagation.mjs",
     "scripts/check-edge-structured-logging.mjs",
-    "scripts/check-eslint-baseline.mjs",
     "scripts/check-no-db-push.mjs",
-    "scripts/check-no-inline-cors.mjs",
     "scripts/check-price-freshness-coverage.mjs",
-    "scripts/check-route-error-element.mjs",
-    "scripts/check-route-ref-usage.mjs",
     "scripts/check-security-definer-acl.mjs",
     "scripts/check-security-definer-hardening.mjs",
-    "scripts/check-seller-scope.mjs",
     "scripts/smoke-tests.mjs",
     "scripts/typecheck-edge-functions.mjs"
    ],
    "npm_scripts": [
     "check:critical-coverage",
+    "lint:baseline",
+    "test:ci-core",
     "test:cloud-status-coverage",
     "test:e2e:critical",
     "test:edge:integration",
@@ -878,14 +790,14 @@
   },
   {
    "arquivo": ".github/workflows/contexto.yml",
-   "nome": "Contexto para agentes de IA (10 min)",
+   "nome": "Contexto para agentes de IA (1 h)",
    "gatilhos": [
     "push",
     "schedule",
     "workflow_dispatch"
    ],
    "crons": [
-    "3,13,23,33,43,53 * * * *"
+    "7 * * * *"
    ],
    "branches": [
     "main"
@@ -1052,7 +964,6 @@
    "arquivo": ".github/workflows/db-schema-drift-check.yml",
    "nome": "db-schema-drift-check",
    "gatilhos": [
-    "pull_request",
     "schedule",
     "workflow_call",
     "workflow_dispatch"
@@ -1910,13 +1821,13 @@
    "arquivo": ".github/workflows/e2e-stock.yml",
    "nome": "E2E Stock — Matrix (E80)",
    "gatilhos": [
-    "push",
+    "schedule",
     "workflow_dispatch"
    ],
-   "crons": [],
-   "branches": [
-    "main"
+   "crons": [
+    "27 4 * * *"
    ],
+   "branches": [],
    "jobs": [
     "secrets_check",
     "e2e_stock"
@@ -2247,33 +2158,6 @@
    ]
   },
   {
-   "arquivo": ".github/workflows/lint-untyped-from.yml",
-   "nome": "Lint untypedFrom",
-   "gatilhos": [
-    "pull_request",
-    "push",
-    "workflow_dispatch"
-   ],
-   "crons": [],
-   "branches": [
-    "main"
-   ],
-   "jobs": [
-    "lint"
-   ],
-   "permissoes": [
-    "contents: read"
-   ],
-   "scripts_usados": [
-    "scripts/lint-untyped-from.sh"
-   ],
-   "npm_scripts": [],
-   "secrets": [],
-   "actions": [
-    "actions/checkout"
-   ]
-  },
-  {
    "arquivo": ".github/workflows/log-login-fuzz-weekly.yml",
    "nome": "log-login-attempt — Fuzz Stress Weekly",
    "gatilhos": [
@@ -2299,88 +2183,6 @@
     "actions/checkout",
     "actions/setup-node",
     "denoland/setup-deno"
-   ]
-  },
-  {
-   "arquivo": ".github/workflows/lovable-autoheal.yml",
-   "nome": "Lovable Autoheal",
-   "gatilhos": [
-    "push",
-    "workflow_dispatch"
-   ],
-   "crons": [],
-   "branches": [
-    "main"
-   ],
-   "jobs": [
-    "autoheal"
-   ],
-   "permissoes": [
-    "contents: write",
-    "issues: write",
-    "pull-requests: write"
-   ],
-   "scripts_usados": [
-    "scripts/autoheal-eslint/run.mjs"
-   ],
-   "npm_scripts": [
-    "typecheck"
-   ],
-   "secrets": [
-    "GITHUB_TOKEN"
-   ],
-   "actions": [
-    "actions/checkout",
-    "actions/setup-node"
-   ]
-  },
-  {
-   "arquivo": ".github/workflows/lovable-edit-tracker.yml",
-   "nome": "Lovable Edit Tracker",
-   "gatilhos": [
-    "push",
-    "workflow_dispatch"
-   ],
-   "crons": [],
-   "branches": [
-    "main"
-   ],
-   "jobs": [
-    "track-lovable-edits"
-   ],
-   "permissoes": [
-    "contents: read"
-   ],
-   "scripts_usados": [],
-   "npm_scripts": [],
-   "secrets": [],
-   "actions": [
-    "actions/checkout"
-   ]
-  },
-  {
-   "arquivo": ".github/workflows/lovable-protected-audit.yml",
-   "nome": "Lovable Protected-File Audit (E196)",
-   "gatilhos": [
-    "push"
-   ],
-   "crons": [],
-   "branches": [
-    "main"
-   ],
-   "jobs": [
-    "audit"
-   ],
-   "permissoes": [
-    "contents: read",
-    "issues: write"
-   ],
-   "scripts_usados": [],
-   "npm_scripts": [],
-   "secrets": [],
-   "actions": [
-    "actions/checkout",
-    "actions/github-script"
    ]
   },
   {
@@ -2512,32 +2314,6 @@
     "SUPABASE_SERVICE_ROLE_KEY",
     "VITE_SUPABASE_URL"
    ],
-   "actions": [
-    "actions/checkout",
-    "actions/setup-node"
-   ]
-  },
-  {
-   "arquivo": ".github/workflows/migrations-sync-log-gate.yml",
-   "nome": "migrations-sync-log-gate",
-   "gatilhos": [
-    "pull_request"
-   ],
-   "crons": [],
-   "branches": [
-    "main"
-   ],
-   "jobs": [
-    "gate"
-   ],
-   "permissoes": [
-    "contents: read"
-   ],
-   "scripts_usados": [
-    "scripts/check-migrations-sync-log-gate.mjs"
-   ],
-   "npm_scripts": [],
-   "secrets": [],
    "actions": [
     "actions/checkout",
     "actions/setup-node"
@@ -2730,17 +2506,13 @@
    "arquivo": ".github/workflows/policies-baseline.yml",
    "nome": "Policies Baseline",
    "gatilhos": [
-    "pull_request",
-    "push",
     "schedule",
     "workflow_dispatch"
    ],
    "crons": [
     "30 10 * * 1"
    ],
-   "branches": [
-    "main"
-   ],
+   "branches": [],
    "jobs": [
     "check",
     "seed"
@@ -2986,14 +2758,12 @@
    ],
    "jobs": [
     "assert-required-checks",
-    "ghost-check-guard",
     "secrets-inventory-check"
    ],
    "permissoes": [
     "contents: read"
    ],
    "scripts_usados": [
-    "scripts/check-required-checks.mjs",
     "scripts/check-secrets-inventory.mjs"
    ],
    "npm_scripts": [],
@@ -3006,54 +2776,16 @@
    ]
   },
   {
-   "arquivo": ".github/workflows/restore-seller-cart-rpc.yml",
-   "nome": "E2E · restore_seller_cart RPC (multi-env)",
-   "gatilhos": [
-    "push",
-    "schedule",
-    "workflow_dispatch"
-   ],
-   "crons": [
-    "49 9 * * *"
-   ],
-   "branches": [
-    "main"
-   ],
-   "jobs": [
-    "rpc-availability"
-   ],
-   "permissoes": [
-    "contents: read"
-   ],
-   "scripts_usados": [],
-   "npm_scripts": [
-    "test:restore-seller-cart-rpc"
-   ],
-   "secrets": [
-    "SUPABASE_ANON_KEY",
-    "SUPABASE_SERVICE_ROLE_KEY",
-    "VITE_SUPABASE_URL"
-   ],
-   "actions": [
-    "actions/checkout",
-    "actions/setup-node"
-   ]
-  },
-  {
    "arquivo": ".github/workflows/schema-snapshot-export.yml",
    "nome": "schema-snapshot-export",
    "gatilhos": [
-    "pull_request",
-    "push",
     "schedule",
     "workflow_dispatch"
    ],
    "crons": [
     "36 6 * * 1"
    ],
-   "branches": [
-    "main"
-   ],
+   "branches": [],
    "jobs": [
     "drift-gate",
     "export",
@@ -3179,13 +2911,13 @@
    "arquivo": ".github/workflows/sitemap-production-preconditions.yml",
    "nome": "Sitemap — precondições públicas de ativação",
    "gatilhos": [
-    "pull_request",
+    "schedule",
     "workflow_dispatch"
    ],
-   "crons": [],
-   "branches": [
-    "main"
+   "crons": [
+    "17 11 * * *"
    ],
+   "branches": [],
    "jobs": [
     "sitemap-production-preconditions"
    ],
@@ -3265,6 +2997,42 @@
    ]
   },
   {
+   "arquivo": ".github/workflows/static-checks.yml",
+   "nome": "Static Checks",
+   "gatilhos": [
+    "pull_request",
+    "push",
+    "workflow_dispatch"
+   ],
+   "crons": [],
+   "branches": [
+    "main"
+   ],
+   "jobs": [
+    "static-checks"
+   ],
+   "permissoes": [
+    "contents: read",
+    "pull-requests: read  # dorny/paths-filter lista os arquivos do PR pela API"
+   ],
+   "scripts_usados": [
+    "scripts/automation.mjs",
+    "scripts/check-migrations-sync-log-gate.mjs",
+    "scripts/check-no-prod-leak.mjs",
+    "scripts/check-required-checks.mjs",
+    "scripts/check-select-columns.mjs",
+    "scripts/lint-untyped-from.sh"
+   ],
+   "npm_scripts": [
+    "test:quality"
+   ],
+   "secrets": [],
+   "actions": [
+    "actions/checkout",
+    "dorny/paths-filter"
+   ]
+  },
+  {
    "arquivo": ".github/workflows/stock-rupture-fuzz.yml",
    "nome": "stock-rupture-fuzz",
    "gatilhos": [
@@ -3294,7 +3062,6 @@
    "arquivo": ".github/workflows/supabase-linter-gate.yml",
    "nome": "Supabase Linter Gate",
    "gatilhos": [
-    "pull_request",
     "push",
     "schedule",
     "workflow_dispatch"
@@ -3417,31 +3184,6 @@
    ]
   },
   {
-   "arquivo": ".github/workflows/ui-visual-a11y.yml",
-   "nome": "UI · Visual & A11y",
-   "gatilhos": [
-    "pull_request",
-    "push"
-   ],
-   "crons": [],
-   "branches": [
-    "main"
-   ],
-   "jobs": [
-    "optimized-image"
-   ],
-   "permissoes": [
-    "contents: read"
-   ],
-   "scripts_usados": [],
-   "npm_scripts": [],
-   "secrets": [],
-   "actions": [
-    "actions/checkout",
-    "actions/setup-node"
-   ]
-  },
-  {
    "arquivo": ".github/workflows/update-snapshots.yml",
    "nome": "E2E · Atualizar snapshots visuais (E155)",
    "gatilhos": [
@@ -3510,34 +3252,6 @@
    ]
   },
   {
-   "arquivo": ".github/workflows/url-state-unit.yml",
-   "nome": "URL State — Unit & Fuzz",
-   "gatilhos": [
-    "pull_request",
-    "push",
-    "schedule"
-   ],
-   "crons": [
-    "41 6 * * 1"
-   ],
-   "branches": [
-    "main"
-   ],
-   "jobs": [
-    "url-state-unit"
-   ],
-   "permissoes": [
-    "contents: read"
-   ],
-   "scripts_usados": [],
-   "npm_scripts": [],
-   "secrets": [],
-   "actions": [
-    "actions/checkout",
-    "actions/setup-node"
-   ]
-  },
-  {
    "arquivo": ".github/workflows/visual-tests.yml",
    "nome": "Visual Baseline Tests — Nightly",
    "gatilhos": [
@@ -3564,30 +3278,6 @@
     "actions/checkout",
     "actions/setup-node",
     "actions/upload-artifact"
-   ]
-  },
-  {
-   "arquivo": ".github/workflows/workflow-lint.yml",
-   "nome": "Workflow Lint",
-   "gatilhos": [
-    "pull_request",
-    "push"
-   ],
-   "crons": [],
-   "branches": [
-    "main"
-   ],
-   "jobs": [
-    "actionlint"
-   ],
-   "permissoes": [
-    "contents: read"
-   ],
-   "scripts_usados": [],
-   "npm_scripts": [],
-   "secrets": [],
-   "actions": [
-    "actions/checkout"
    ]
   },
   {

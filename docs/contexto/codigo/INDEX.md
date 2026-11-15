@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada 10 minutos pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `20dfb7b30bca9e3636a8c990bec6bbcfbd0581ed` (2026-11-15T09:27:19-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e de hora em hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `9e656a39b9b062f310c3ef02b8341fe9505c36b9` (2026-11-15T09:47:43-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -14,7 +14,7 @@ Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR
 Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua tarefa; não carregue tudo.
 
 ## Stack
-- linguagens: TypeScript (4814), SQL (3406), Markdown (1023), JavaScript (443), JSON (126), YAML (111), Shell (27), HTML (20)
+- linguagens: TypeScript (4814), SQL (3406), Markdown (1024), JavaScript (443), JSON (126), YAML (112), Shell (27), HTML (20)
 - linguagem_principal: TypeScript
 - framework: React
 - backend_http: n/d
@@ -34,9 +34,9 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 ## Números
 | item | qtd |
 |---|---|
-| arquivos_total | 10215 |
+| arquivos_total | 10217 |
 | arquivos_codigo | 5265 |
-| linhas_codigo | 1004402 |
+| linhas_codigo | 1004404 |
 | rotas | 138 |
 | rotas_http_backend | 13 |
 | vistas_por_id | 0 |
@@ -49,9 +49,9 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 | migrations | 3087 |
 | cron_jobs | 122 |
 | testes | 2487 |
-| workflows | 98 |
+| workflows | 87 |
 | scripts | 272 |
-| docs_md | 1023 |
+| docs_md | 1024 |
 
 ## Onde ficam as coisas
 - telas: src/pages (111), src/components (3), api/health.ts (1)
@@ -589,49 +589,46 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - possiveis_segredos_no_codigo: 7 — ex.: scripts/ai-context/cenarios.mjs:102, src/components/admin/connections/__tests__/ConnectionSecurity.unit.test.tsx:9, src/integrations/supabase/client.ts:27
 
 ## Grafo de código (graphify)
-- 43597 nós · 75401 arestas · 2414 comunidades · grafo do commit `20dfb7b3`
-- comunidades maiores: vitest (854), ref_components (781), ref_integrations (630), ref_node_child_process (461), @tanstack/react-query (394), react-router-dom (381), ref_hooks (355), ref_types (349), ref_node_fs (328), sonner (327), gotoAndSettle (317), react (307)
+- 43601 nós · 75405 arestas · 2509 comunidades · grafo do commit `9e656a39`
+- comunidades maiores: ref_integrations (603), react (514), gotoAndSettle (431), lucide-react (415), vitest (400), ref_node_child_process (391), ref_hooks (359), @testing-library/react (348), ref_node_fs (313), scripts (302), ref_contexts (299), ref_lib (284)
 - símbolos mais chamados: gotoAndSettle() (e2e/helpers/nav.ts), re (?), q() (scripts/supabase_snapshot/snapshot.py), analyze() (tests/scripts/test_personalization_artifact_diagnostics.py), outer() (tests/scripts/test_personalization_artifact_diagnostics.py), json (?), useExternalDatabase() (recovery/src-legacy/src/hooks/useExternalDatabase.ts), concludeCheck() (scripts/check-result-contract.mjs), querySupabaseReadOnly() (scripts/supabase-read-only-query.mjs), loginAs() (e2e/helpers/auth.ts), inner() (tests/scripts/test_personalization_artifact_diagnostics.py), excluded_sql() (scripts/supabase_snapshot/snapshot.py)
 - consulta local: `graphify query "<pergunta>"`, `graphify path "<A>" "<B>"`, `graphify explain "<X>"`
 
 ## Hotspots (arquivos mais alterados, 90 dias)
 - RELATORIO_CI.md (94)
-- PENDENCIAS.md (90)
+- PENDENCIAS.md (89)
 - supabase/MIGRATIONS_SYNC_LOG.md (59)
-- package.json (44)
-- package-lock.json (34)
+- package.json (43)
+- package-lock.json (33)
 - analise-prs/progresso.json (21)
+- docs/coordenacao/conflitos-semanticos.md (20)
 - analise-prs/RELATORIO_PRS.md (19)
-- docs/coordenacao/conflitos-semanticos.md (19)
 - CHANGELOG.md (18)
 - supabase/EDGE_FUNCTIONS_DEPLOY_LOG.md (18)
+- .github/workflows/deploy-gates.yml (15)
 - analise-prs/prs.json (15)
 - auditoria-supabase/RELATORIO_AUDITORIA_SUPABASE.md (15)
 - src/pages/kit-builder/KitBuilderPage.tsx (15)
-- .github/workflows/deploy-gates.yml (14)
 - docs/plans/PLANO_MELHORIAS_CORRECOES_200_ETAPAS_2026-10-18.md (12)
 
 ## Workflows
 - `_e2e-relevance.yml` — Reusable — E2E Runtime Relevance (workflow_call)
 - `_secrets-check.yml` — _secrets-check (reusable) (workflow_call)
 - `auth-fuzz-weekly.yml` — Auth surface fuzz (weekly) (schedule, workflow_dispatch; cron 12 5 * * 1)
-- `automation-local.yml` — Automação local (pull_request, push, workflow_dispatch)
 - `branch-protection-sentinel.yml` — Branch Protection Sentinel (push, workflow_dispatch)
 - `bundle-size-report.yml` — Bundle size report (pull_request)
 - `cache-prune.yml` — Cache Prune (schedule, workflow_dispatch; cron 11 7 * * 1)
 - `capacity-growth-report.yml` — capacity-growth-report (schedule, workflow_dispatch; cron 12 11 * * 1)
-- `check-no-prod-leak.yml` — No Prod Leak in Dev/Test Config (pull_request, push)
-- `check-select-columns.yml` — Select Columns vs Types (pull_request, push)
 - `ci-metrics-weekly.yml` — CI Metrics Weekly (E66/E87) (schedule, workflow_dispatch; cron 15 7 * * 1)
 - `ci-security-drift.yml` — CI Security & Drift Checks (push, schedule, workflow_dispatch; cron 55 5 * * 1)
 - `ci.yml` — CI (pull_request, push, workflow_dispatch)
 - `codeql.yml` — CodeQL (pull_request, push, schedule; cron 33 9 * * 1)
-- `contexto.yml` — Contexto para agentes de IA (10 min) (push, schedule, workflow_dispatch; cron 3,13,23,33,43,53 * * * *)
+- `contexto.yml` — Contexto para agentes de IA (1 h) (push, schedule, workflow_dispatch; cron 7 * * * *)
 - `contract-tests.yml` — Contract Tests (pull_request, workflow_dispatch)
 - `cross-reference-issues.yml` — Cross-reference PR ↔ Issue (issues, pull_request)
 - `daily-flows-simulation.yml` — Daily flows simulation (schedule, workflow_dispatch; cron 12 6 * * *)
 - `db-apply-migration.yml` — DB — Aplicação controlada de migration única (E15) (workflow_dispatch)
-- `db-schema-drift-check.yml` — db-schema-drift-check (pull_request, schedule, workflow_call, workflow_dispatch; cron 29 9 * * *)
+- `db-schema-drift-check.yml` — db-schema-drift-check (schedule, workflow_call, workflow_dispatch; cron 29 9 * * *)
 - `ddl-out-of-band-detector.yml` — ddl-out-of-band-detector (schedule, workflow_dispatch; cron 8 8 * * 1)
 - `delete-orphan-edges.yml` — Delete Orphan Edge Functions (workflow_dispatch)
 - `delivery-quality.yml` — Quote Builder Delivery Quality (push)
@@ -655,7 +652,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - `e2e-pdf-dialog.yml` — E2E — PDF Dialog (watermark pixel-diff, authed) (push, workflow_dispatch)
 - `e2e-personalization.yml` — E2E — Personalization Flow (push, workflow_dispatch)
 - `e2e-quotes.yml` — E2E Quotes — Matrix (E77) (workflow_dispatch)
-- `e2e-stock.yml` — E2E Stock — Matrix (E80) (push, workflow_dispatch)
+- `e2e-stock.yml` — E2E Stock — Matrix (E80) (schedule, workflow_dispatch; cron 27 4 * * *)
 - `e2e-swatch-quickview.yml` — E2E • Swatch QuickView (Lista + Tabela) (push)
 - `e2e-visual-preview-button.yml` — E2E — Visual Regression (Preview button) (push, workflow_dispatch)
 - `e2e.yml` — E2E (Playwright) (push, workflow_dispatch)
@@ -665,23 +662,18 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - `global-search-gate.yml` — Global Search Quality Gate (push)
 - `kit-coverage-integration.yml` — Kit Coverage — Integration (schedule, workflow_dispatch; cron 41 3 * * *)
 - `labels-sync.yml` — Sync labels (push, workflow_dispatch)
-- `lint-untyped-from.yml` — Lint untypedFrom (pull_request, push, workflow_dispatch)
 - `log-login-fuzz-weekly.yml` — log-login-attempt — Fuzz Stress Weekly (schedule, workflow_dispatch; cron 17 6 * * 1)
-- `lovable-autoheal.yml` — Lovable Autoheal (push, workflow_dispatch)
-- `lovable-edit-tracker.yml` — Lovable Edit Tracker (push, workflow_dispatch)
-- `lovable-protected-audit.yml` — Lovable Protected-File Audit (E196) (push)
 - `magazine-flakiness.yml` — Magazine Flakiness Guard (schedule, workflow_dispatch; cron 18 6 * * 1)
 - `magazine-mutation.yml` — Magazine Mutation Testing (pull_request, schedule, workflow_dispatch; cron 27 6 * * 1)
 - `magazine-unit-tests.yml` — Magazine Unit Tests (pull_request, push)
 - `migration-dry-run.yml` — migration-dry-run (workflow_dispatch)
-- `migrations-sync-log-gate.yml` — migrations-sync-log-gate (pull_request)
 - `nightly-full.yml` — Nightly Full CI (schedule, workflow_dispatch; cron 43 2 * * *)
 - `optimized-image-e2e.yml` — OptimizedImage E2E CI (push)
 - `pdf-quality.yml` — PDF Quality Gate (pull_request, push, workflow_dispatch)
 - `pdf-visual-regression.yml` — PDF Visual Regression (workflow_dispatch)
 - `personalization-trace-diagnostics.yml` — Personalização — diagnóstico readonly do artifact fixo (pull_request, workflow_dispatch)
 - `pgss-slo-report.yml` — pgss-slo-report (schedule, workflow_dispatch; cron 52 10 * * 1)
-- `policies-baseline.yml` — Policies Baseline (pull_request, push, schedule, workflow_dispatch; cron 30 10 * * 1)
+- `policies-baseline.yml` — Policies Baseline (schedule, workflow_dispatch; cron 30 10 * * 1)
 - `pr-size-guard.yml` — PR Size Guard (E185) (pull_request)
 - `prod-health.yml` — Static Health Checks (push, workflow_dispatch)
 - `quote-number-hardening-verify.yml` — Quote Number Hardening — Verify (canonical DB) (push, schedule, workflow_dispatch; cron 15 */6 * * *)
@@ -690,25 +682,22 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - `release-please.yml` — Release Please (push)
 - `replenishment-quality.yml` — CI - Replenishment Module Quality Gate (push)
 - `required-checks-guard.yml` — Required Checks Guard (pull_request, push, schedule, workflow_dispatch; cron 45 8 * * *)
-- `restore-seller-cart-rpc.yml` — E2E · restore_seller_cart RPC (multi-env) (push, schedule, workflow_dispatch; cron 49 9 * * *)
-- `schema-snapshot-export.yml` — schema-snapshot-export (pull_request, push, schedule, workflow_dispatch; cron 36 6 * * 1)
+- `schema-snapshot-export.yml` — schema-snapshot-export (schedule, workflow_dispatch; cron 36 6 * * 1)
 - `security-definer-acl-multi-env.yml` — SECURITY DEFINER ACL — Multi-Env (push, schedule, workflow_dispatch; cron 9 10 * * *)
 - `security.yml` — Security Scan (pull_request, push, schedule; cron 25 6 * * 1)
 - `sentinel-self-test.yml` — Sentinel Self-Test (pull_request, workflow_dispatch)
-- `sitemap-production-preconditions.yml` — Sitemap — precondições públicas de ativação (pull_request, workflow_dispatch)
+- `sitemap-production-preconditions.yml` — Sitemap — precondições públicas de ativação (schedule, workflow_dispatch; cron 17 11 * * *)
 - `ssot-supabase.yml` — SSOT Supabase Guard (pull_request, push)
 - `stale.yml` — Mark stale issues and pull requests (schedule; cron 16 11 * * *)
+- `static-checks.yml` — Static Checks (pull_request, push, workflow_dispatch)
 - `stock-rupture-fuzz.yml` — stock-rupture-fuzz (schedule, workflow_dispatch; cron 11 4 * * *)
-- `supabase-linter-gate.yml` — Supabase Linter Gate (pull_request, push, schedule, workflow_dispatch; cron 57 6 * * *)
+- `supabase-linter-gate.yml` — Supabase Linter Gate (push, schedule, workflow_dispatch; cron 57 6 * * *)
 - `supabase-security-gate.yml` — Gate 5 — Supabase Security Audit (pull_request, push)
 - `supplier-comparison.yml` — Supplier Comparison CI (workflow_dispatch)
 - `ts-unused-ratchet.yml` — TS Unused Locals Ratchet (pull_request, push, schedule; cron 47 6 * * 1)
-- `ui-visual-a11y.yml` — UI · Visual & A11y (pull_request, push)
 - `update-snapshots.yml` — E2E · Atualizar snapshots visuais (E155) (push, workflow_dispatch)
 - `uptime-monitor.yml` — Uptime Monitor (schedule, workflow_dispatch; cron */30 * * * *)
-- `url-state-unit.yml` — URL State — Unit & Fuzz (pull_request, push, schedule; cron 41 6 * * 1)
 - `visual-tests.yml` — Visual Baseline Tests — Nightly (push)
-- `workflow-lint.yml` — Workflow Lint (pull_request, push)
 - `wraparound-monitor-report.yml` — wraparound-monitor-report (schedule, workflow_dispatch; cron 30 5 * * *)
 
 ## Scripts npm
@@ -1184,6 +1173,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - CHANGELOG topo: [1.1.0](https://github.com/adm01-debug/Promo_Gifts_V4/compare/v1.0.0...v1.1.0) (2026-11-13)
 
 ## Últimos commits
+- 2026-11-15 `9e656a39` ci: enxuga workflows — checagens estáticas consolidadas, 12 aposentados, contexto 1×/h (#3659)
 - 2026-11-15 `20dfb7b3` chore: trem de infra — BOM da edge asia-ingestion, recibo E66, E2E fora dos PRs e snapshots all-authed (#3658)
 - 2026-11-15 `eecfde92` fix: trem de 3 correções de front — busca, cores por área do mockup e trocar item no kit (#3653)
 - 2026-11-15 `3893d57f` fix(ci): portão de recibos deixa de dar verde com version citada no recibo de outra migration (#3649)
@@ -1198,7 +1188,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-14 `1fb3a1c0` Merge remote-tracking branch 'origin/main' into claude/fix-crm-ownership-vinculo-261114-2230
 - 2026-11-14 `37920454` fix(crm): declara isencao de soft-delete na tabela de vinculo de vendedor
 - 2026-11-14 `e998b095` fix(kit): rascunhos de kit salvos sem personalização voltam a abrir (resgate cirúrgico da #3390) (#3631)
-- 2026-11-14 `36b6c1d7` fix(security): corrige o sha256 do retrato de policies (destrava o CI) (#3635)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`
