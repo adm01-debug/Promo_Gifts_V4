@@ -2508,7 +2508,7 @@
    "zod_schemas": 0,
    "flags": [],
    "papeis": [],
-   "usado_por": 79,
+   "usado_por": 78,
    "usado_por_modulos": [
     "components/admin",
     "components/expert",
@@ -6691,7 +6691,7 @@
    "zod_schemas": 0,
    "flags": [],
    "papeis": [],
-   "usado_por": 57,
+   "usado_por": 58,
    "usado_por_modulos": [
     "components/admin",
     "components/mockup",
@@ -6712,7 +6712,7 @@
     "pages/admin",
     "pages/bi"
    ],
-   "coberto_por_testes": 1,
+   "coberto_por_testes": 2,
    "orfao": false
   },
   {

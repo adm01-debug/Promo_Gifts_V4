@@ -10334,7 +10334,7 @@
   ],
   "src/hooks/intelligence/useMarketIntelligenceMacro.ts": [
    "src/hooks/intelligence/useStockHistory.ts",
-   "src/lib/db/postgrest.ts"
+   "src/lib/supabase-untyped.ts"
   ],
   "src/hooks/intelligence/usePromoSales90dByProduct.ts": [
    "src/integrations/supabase/client.ts",
@@ -15039,7 +15039,8 @@
    "supabase/functions/_shared/cors.ts",
    "supabase/functions/_shared/kill_switch.ts",
    "supabase/functions/_shared/zod-validate.ts",
-   "supabase/functions/generate-mockup/fetch-guard.ts"
+   "supabase/functions/generate-mockup/fetch-guard.ts",
+   "supabase/functions/generate-mockup/geometry.ts"
   ],
   "supabase/functions/generate-product-seo/index.ts": [
    "supabase/functions/_shared/ai-credentials.ts",

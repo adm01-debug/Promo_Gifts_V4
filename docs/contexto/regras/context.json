@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "a03adc35485eea4e060b4576ff25a842e8c08d10",
+  "sha": "b89a44e100c15de131ecdcffebc549dbd141097d",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-15 14:59 UTC",
-  "files_total": 10164,
-  "code_files": 8689,
-  "code_lines": 1225242
+  "generated_at": "2026-11-15 15:18 UTC",
+  "files_total": 10188,
+  "code_files": 8713,
+  "code_lines": 1226492
  },
  "version": "1.3.2",
- "facts_hash": "a72d7c5dce9d5e80",
+ "facts_hash": "ef2b5c7c94e038b4",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -1103,9 +1103,9 @@
   ],
   "package_manager": "npm",
   "languages": {
-   ".sql": 3406,
-   ".ts": 2951,
-   ".tsx": 1883,
+   ".sql": 3427,
+   ".ts": 2953,
+   ".tsx": 1884,
    ".mjs": 436,
    ".py": 13,
    ".js": 7
@@ -42828,77 +42828,6 @@
     "comment": "PLANO_DBA E33 — snapshot diário de risco de wraparound de XID/multixact, ",
     "origin": "migration"
    },
-   "stock_notes": {
-    "columns": [
-     {
-      "name": "id",
-      "type": "uuid PRIMARY KEY DEFAULT gen_random_uuid()",
-      "fk": "",
-      "generated": "",
-      "src": "supabase/migrations/20261031000000_create_stock_notes.sql"
-     },
-     {
-      "name": "variant_id",
-      "type": "uuid NOT NULL REFERENCES public.product_variants(id) ON DELETE CASCADE",
-      "fk": "product_variants.id ON DELETE CASCADE",
-      "generated": "",
-      "src": "supabase/migrations/20261031000000_create_stock_notes.sql"
-     },
-     {
-      "name": "supplier_id",
-      "type": "uuid REFERENCES public.suppliers(id) ON DELETE SET NULL",
-      "fk": "suppliers.id ON DELETE SET NULL",
-      "generated": "",
-      "src": "supabase/migrations/20261031000000_create_stock_notes.sql"
-     },
-     {
-      "name": "created_by",
-      "type": "uuid NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE",
-      "fk": "users.id ON DELETE CASCADE",
-      "generated": "",
-      "src": "supabase/migrations/20261031000000_create_stock_notes.sql"
-     },
-     {
-      "name": "note",
-      "type": "text NOT NULL",
-      "fk": "",
-      "generated": "",
-      "src": "supabase/migrations/20261031000000_create_stock_notes.sql"
-     },
-     {
-      "name": "is_pinned",
-      "type": "boolean NOT NULL DEFAULT false",
-      "fk": "",
-      "generated": "",
-      "src": "supabase/migrations/20261031000000_create_stock_notes.sql"
-     },
-     {
-      "name": "created_at",
-      "type": "timestamptz NOT NULL DEFAULT now()",
-      "fk": "",
-      "generated": "",
-      "src": "supabase/migrations/20261031000000_create_stock_notes.sql"
-     },
-     {
-      "name": "updated_at",
-      "type": "timestamptz NOT NULL DEFAULT now()",
-      "fk": "",
-      "generated": "",
-      "src": "supabase/migrations/20261031000000_create_stock_notes.sql"
-     },
-     {
-      "name": "deleted_at",
-      "type": "timestamptz DEFAULT NULL",
-      "fk": "",
-      "generated": "",
-      "src": "supabase/migrations/20261031000000_create_stock_notes.sql"
-     }
-    ],
-    "constraints": [],
-    "src": "supabase/migrations/20261031000000_create_stock_notes.sql",
-    "comment": "",
-    "origin": "migration"
-   },
    "webhook_configs": {
     "columns": [
      {
@@ -55342,15 +55271,6 @@
     "src": "supabase/migrations/20261005124500_discount_approval_requests_version.sql"
    },
    {
-    "name": "set_stock_notes_updated_at",
-    "when": "BEFORE UPDATE",
-    "table": "stock_notes",
-    "function": "handle_updated_at",
-    "condition": "",
-    "each": "row",
-    "src": "supabase/migrations/20261031000000_create_stock_notes.sql"
-   },
-   {
     "name": "set_updated_at_trigger",
     "when": "BEFORE UPDATE",
     "table": "endomarketing_themes",
@@ -62079,7 +61999,7 @@
     "args": "p_term text, p_limit integer DEFAULT 12, p_types text[] DEFAULT ARRAY['product'::text, 'quote'::text]",
     "returns": "TABLE(result_id text, result_type text, result_title text, result_description text, result_url text, result_image_url text, result_metadata jsonb, result_relevance numeric)",
     "lang": "plpgsql",
-    "src": "supabase/migrations/20261101190101_fn_global_search_clamp_limit.sql",
+    "src": "supabase/migrations/20261115130300_fn_global_search_clamp_limit_hardened.sql",
     "security_definer": true,
     "search_path": true,
     "body": "DECLARE v_term_norm text; v_tsquery tsquery; v_lim_each integer; BEGIN IF p_term IS NULL OR length(trim(p_term)) < 2 THEN RETURN; END IF; IF p_limit IS NULL OR p_limit <= 0 THEN RETURN; END IF; v_term_norm := lower(unaccent(trim(p_term))); v_lim_each := GREATEST(1, LEAST(p_limit, 100) / GREATEST(array_length(p_types, 1), 1)); BEGIN v_tsquery := websearch_to_tsquery('portuguese', unaccent(trim(p_term))); EXCEPTION WHEN OTHERS THEN v_tsquery := NULL; END; PERFORM set_config('pg_trgm.similarity_threshold', '0.2', true); IF 'product' = ANY(p_types) THEN RETURN QUERY SELECT p.id::text, 'product'::text, p.name::text, ('SKU: ' || p.sku || CASE WHEN c.name IS NOT NULL THEN ' · ' || c.name ELSE '' EN …",
@@ -90671,6 +90591,22 @@
     "src": "supabase/migrations/20261114014100_idx_fk_stock_and_missing_perf_indexes.sql"
    },
    {
+    "name": "idx_sds_restock_zero_to_pos_date",
+    "table": "stock_daily_summary",
+    "columns": "summary_date",
+    "unique": false,
+    "where": "",
+    "src": "supabase/migrations/20261114160000_perf_idx_sds_restock_counts.sql"
+   },
+   {
+    "name": "idx_sds_summary_date_supplier",
+    "table": "stock_daily_summary",
+    "columns": "summary_date, supplier_id",
+    "unique": false,
+    "where": "",
+    "src": "supabase/migrations/20261115130000_idx_sds_summary_date_supplier_include.sql"
+   },
+   {
     "name": "idx_user_organizations_user",
     "table": "user_organizations",
     "columns": "user_id",
@@ -92139,6 +92075,18 @@
     "schedule": "* * * * *",
     "body": "SELECT public.perf002_drop_unused_snapshot_indexes()",
     "src": "supabase/migrations/20261101194851_perf002_schedule_drop_indexes.sql"
+   },
+   {
+    "job": "process-webhook-outbox",
+    "schedule": "* * * * *",
+    "body": "SELECT public.fn_process_webhook_outbox_batch(10);",
+    "src": "supabase/rollbacks/20260917070000_rollback.sql"
+   },
+   {
+    "job": "pipeline-classify-categories",
+    "schedule": "2,12,22,32,42,52 * * * *",
+    "body": "SELECT public.fn_cron_safe_run(55::bigint, 'SELECT public.fn_pipeline_classify_pending_products(50);', 580000, 'pipeline-classify');",
+    "src": "supabase/rollbacks/20260917070000_rollback.sql"
    },
    {
     "job": "vacuum-analyze-weekly",
@@ -96167,6 +96115,7 @@
    "supabase/migrations/20261101220000_cron001_stagger_schedules.sql",
    "supabase/migrations/20261101223908_cron001_stagger_additional_jobs.sql",
    "supabase/migrations/20261101232022_cron001_stagger_schedules_reapply.sql",
+   "supabase/migrations/20261102063000_repair_kill_switch_hits_anon_rate_guard.sql",
    "supabase/migrations/20261104100000_partitions_supplier_products_raw_history_2027.sql",
    "supabase/migrations/20261106232045_fix_handle_updated_at_search_path.sql",
    "supabase/migrations/20261107134429_create_crm_seller_identity_links.sql",
@@ -96205,15 +96154,25 @@
    "supabase/migrations/20261114014500_p09_reconcile_ledger_schema_migrations.sql",
    "supabase/migrations/20261114031000_fix_user_known_devices_is_trusted.sql",
    "supabase/migrations/20261114040000_fix_authenticator_idle_session_timeout_pgrst_listener.sql",
+   "supabase/migrations/20261114120000_cron004_reduz_frequencia_jobs_ociosos.sql",
+   "supabase/migrations/20261114120100_cron005_refresh_all_mvs_diario_timeout_real.sql",
+   "supabase/migrations/20261114160000_perf_idx_sds_restock_counts.sql",
    "supabase/migrations/20261114170845_fix_workspace_notifications_insert_policy_reapply.sql",
    "supabase/migrations/20261114170921_fix_rls_orders_order_items_seller_scope.sql",
    "supabase/migrations/20261115013000_fix_get_quote_token_public_respeita_expiracao.sql",
+   "supabase/migrations/20261115130000_idx_sds_summary_date_supplier_include.sql",
+   "supabase/migrations/20261115130100_fn_market_intelligence_macro.sql",
+   "supabase/migrations/20261115130200_sec001_revoke_anon_execute_trigger_functions.sql",
+   "supabase/migrations/20261115130300_fn_global_search_clamp_limit_hardened.sql",
    "supabase/rollbacks/20260511235950_rollback.sql",
    "supabase/rollbacks/20260511235959_rollback.sql",
    "supabase/rollbacks/20260611014515_fn_dryrun_standardize_supplier_real_rollback.sql",
    "supabase/rollbacks/20260611124000_fn_dryrun_standardize_supplier_real_rollback.sql",
    "supabase/rollbacks/20260916202000_rollback.sql",
    "supabase/rollbacks/20260917061500_rollback.sql",
+   "supabase/rollbacks/20260917070000_rollback.sql",
+   "supabase/rollbacks/20260917090000_rollback.sql",
+   "supabase/rollbacks/20260917100000_rollback.sql",
    "supabase/rollbacks/20261015150000_rollback.sql",
    "supabase/rollbacks/20261018000041_rollback.sql",
    "supabase/rollbacks/20261018000042_rollback.sql",
@@ -96252,9 +96211,12 @@
    "supabase/rollbacks/20261027233000_rollback.sql",
    "supabase/rollbacks/20261027234500_rollback.sql",
    "supabase/rollbacks/20261029160339_rollback.sql",
+   "supabase/rollbacks/20261031000000_rollback.sql",
    "supabase/rollbacks/20261101150000_rollback.sql",
+   "supabase/rollbacks/20261101190101_rollback.sql",
    "supabase/rollbacks/20261101201000_rollback.sql",
    "supabase/rollbacks/20261101202000_rollback.sql",
+   "supabase/rollbacks/20261102063000_rollback.sql",
    "supabase/rollbacks/20261104100000_rollback.sql",
    "supabase/rollbacks/20261106232045_rollback.sql",
    "supabase/rollbacks/20261107134429_rollback.sql",
@@ -96293,9 +96255,16 @@
    "supabase/rollbacks/20261114014500_rollback.sql",
    "supabase/rollbacks/20261114031000_rollback.sql",
    "supabase/rollbacks/20261114040000_rollback.sql",
+   "supabase/rollbacks/20261114120000_rollback.sql",
+   "supabase/rollbacks/20261114120100_rollback.sql",
+   "supabase/rollbacks/20261114160000_rollback.sql",
    "supabase/rollbacks/20261114170845_rollback.sql",
    "supabase/rollbacks/20261114170921_rollback.sql",
    "supabase/rollbacks/20261115013000_rollback.sql",
+   "supabase/rollbacks/20261115130000_rollback.sql",
+   "supabase/rollbacks/20261115130100_rollback.sql",
+   "supabase/rollbacks/20261115130200_rollback.sql",
+   "supabase/rollbacks/20261115130300_rollback.sql",
    "supabase/rollbacks/rollback_20261025002500_analyze_tables_p03.sql",
    "supabase/sql-legacy/001_notification_system.sql",
    "supabase/sql-legacy/002_notification_preferences.sql",
@@ -131856,6 +131825,870 @@
    {
     "kind": "revoke",
     "privs": "all",
+    "object": "fn_market_intelligence_macro",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261115130100_fn_market_intelligence_macro.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_market_intelligence_macro",
+    "objkind": "function",
+    "roles": "authenticated, service_role",
+    "src": "supabase/migrations/20261115130100_fn_market_intelligence_macro.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "fn_audit_role_changes",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261115130200_sec001_revoke_anon_execute_trigger_functions.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "fn_auto_classify_kit_product",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261115130200_sec001_revoke_anon_execute_trigger_functions.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "fn_auto_classify_packing",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261115130200_sec001_revoke_anon_execute_trigger_functions.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "fn_auto_classify_product_image",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261115130200_sec001_revoke_anon_execute_trigger_functions.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "fn_auto_criar_equivalencia_spot",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261115130200_sec001_revoke_anon_execute_trigger_functions.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "fn_auto_link_eco_material",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261115130200_sec001_revoke_anon_execute_trigger_functions.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "fn_auto_link_feminine_color",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261115130200_sec001_revoke_anon_execute_trigger_functions.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "fn_auto_set_same_supplier",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261115130200_sec001_revoke_anon_execute_trigger_functions.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "fn_auto_vincular_cor_variante",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261115130200_sec001_revoke_anon_execute_trigger_functions.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "fn_block_unauthorized_product_deactivation",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261115130200_sec001_revoke_anon_execute_trigger_functions.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "fn_category_copywriting_updated",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261115130200_sec001_revoke_anon_execute_trigger_functions.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "fn_color_equiv_clear_primary_on_inactive",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261115130200_sec001_revoke_anon_execute_trigger_functions.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "fn_color_equiv_ensure_primary",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261115130200_sec001_revoke_anon_execute_trigger_functions.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "fn_color_equiv_ensure_primary_stmt",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261115130200_sec001_revoke_anon_execute_trigger_functions.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "fn_cor_generate_slug",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261115130200_sec001_revoke_anon_execute_trigger_functions.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "fn_cor_updated_at",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261115130200_sec001_revoke_anon_execute_trigger_functions.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "fn_custom_kits_sync_user_id",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261115130200_sec001_revoke_anon_execute_trigger_functions.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "fn_dar_check_valid_until_future",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261115130200_sec001_revoke_anon_execute_trigger_functions.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "fn_dar_set_snapshot_hash",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261115130200_sec001_revoke_anon_execute_trigger_functions.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "fn_enforce_inactive_variant_zero_stock",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261115130200_sec001_revoke_anon_execute_trigger_functions.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "fn_ensure_single_primary_image",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261115130200_sec001_revoke_anon_execute_trigger_functions.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "fn_force_user_logout",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261115130200_sec001_revoke_anon_execute_trigger_functions.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "fn_hex_to_rgb",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261115130200_sec001_revoke_anon_execute_trigger_functions.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "fn_image_types_check_constraint_reminder",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261115130200_sec001_revoke_anon_execute_trigger_functions.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "fn_inherit_techniques_from_material",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261115130200_sec001_revoke_anon_execute_trigger_functions.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "fn_kit_component_calc_circumference",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261115130200_sec001_revoke_anon_execute_trigger_functions.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "fn_kit_component_inherit_personalization",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261115130200_sec001_revoke_anon_execute_trigger_functions.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "fn_kit_print_area_normalizar_eixos",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261115130200_sec001_revoke_anon_execute_trigger_functions.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "fn_log_login_attempt",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261115130200_sec001_revoke_anon_execute_trigger_functions.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "fn_log_price_change",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261115130200_sec001_revoke_anon_execute_trigger_functions.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "fn_log_step_up_event",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261115130200_sec001_revoke_anon_execute_trigger_functions.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "fn_normalize_image_format",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261115130200_sec001_revoke_anon_execute_trigger_functions.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "fn_normalize_source_supplier",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261115130200_sec001_revoke_anon_execute_trigger_functions.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "fn_normalize_source_supplier_videos",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261115130200_sec001_revoke_anon_execute_trigger_functions.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "fn_order_items_calc_subtotal",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261115130200_sec001_revoke_anon_execute_trigger_functions.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "fn_orders_sync_seller",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261115130200_sec001_revoke_anon_execute_trigger_functions.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "fn_pad_sync_status",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261115130200_sec001_revoke_anon_execute_trigger_functions.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "fn_pbd_before_write",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261115130200_sec001_revoke_anon_execute_trigger_functions.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "fn_pbd_block_system_delete",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261115130200_sec001_revoke_anon_execute_trigger_functions.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "fn_pipeline_steps_updated_at",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261115130200_sec001_revoke_anon_execute_trigger_functions.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "fn_pkc_auto_enrich_status",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261115130200_sec001_revoke_anon_execute_trigger_functions.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "fn_pkc_auto_inherit_material",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261115130200_sec001_revoke_anon_execute_trigger_functions.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "fn_products_capture_manual_edits",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261115130200_sec001_revoke_anon_execute_trigger_functions.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "fn_propagar_atualizacao_cor",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261115130200_sec001_revoke_anon_execute_trigger_functions.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "fn_quote_items_calc_subtotal",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261115130200_sec001_revoke_anon_execute_trigger_functions.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "fn_quotes_sync_seller",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261115130200_sec001_revoke_anon_execute_trigger_functions.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "fn_recalc_compat_on_dim_change",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261115130200_sec001_revoke_anon_execute_trigger_functions.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "fn_set_updated_at_aeq",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261115130200_sec001_revoke_anon_execute_trigger_functions.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "fn_set_updated_at_pa",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261115130200_sec001_revoke_anon_execute_trigger_functions.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "fn_silver_set_updated_at",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261115130200_sec001_revoke_anon_execute_trigger_functions.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "fn_sm_category_set_updated",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261115130200_sec001_revoke_anon_execute_trigger_functions.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "fn_sm_url_map_set_updated",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261115130200_sec001_revoke_anon_execute_trigger_functions.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "fn_spr_before_write",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261115130200_sec001_revoke_anon_execute_trigger_functions.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "fn_spr_normalize_keys",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261115130200_sec001_revoke_anon_execute_trigger_functions.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "fn_sync_color_variation_group",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261115130200_sec001_revoke_anon_execute_trigger_functions.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "fn_sync_dimensions_display",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261115130200_sec001_revoke_anon_execute_trigger_functions.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "fn_sync_image_type_code",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261115130200_sec001_revoke_anon_execute_trigger_functions.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "fn_sync_novelty_expires_at",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261115130200_sec001_revoke_anon_execute_trigger_functions.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "fn_sync_product_category_name",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261115130200_sec001_revoke_anon_execute_trigger_functions.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "fn_sync_product_has_sizes",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261115130200_sec001_revoke_anon_execute_trigger_functions.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "fn_sync_variant_to_product",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261115130200_sec001_revoke_anon_execute_trigger_functions.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "fn_sync_vss_to_variant",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261115130200_sec001_revoke_anon_execute_trigger_functions.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "fn_trigger_auto_classify_product",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261115130200_sec001_revoke_anon_execute_trigger_functions.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "fn_trigger_auto_extract_attributes",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261115130200_sec001_revoke_anon_execute_trigger_functions.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "fn_trigger_auto_sync_dimensions",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261115130200_sec001_revoke_anon_execute_trigger_functions.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "fn_trigger_calculate_sale_price",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261115130200_sec001_revoke_anon_execute_trigger_functions.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "fn_trigger_classify_packing",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261115130200_sec001_revoke_anon_execute_trigger_functions.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "fn_trigger_extract_materials_from_name",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261115130200_sec001_revoke_anon_execute_trigger_functions.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "fn_trigger_product_status_sync_category_count",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261115130200_sec001_revoke_anon_execute_trigger_functions.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "fn_trigger_propagate_category_min",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261115130200_sec001_revoke_anon_execute_trigger_functions.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "fn_trigger_propagate_fpr",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261115130200_sec001_revoke_anon_execute_trigger_functions.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "fn_trigger_set_has_gift_box",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261115130200_sec001_revoke_anon_execute_trigger_functions.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "fn_trigger_set_has_optional_packaging",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261115130200_sec001_revoke_anon_execute_trigger_functions.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "fn_trigger_set_min_quantity",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261115130200_sec001_revoke_anon_execute_trigger_functions.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "fn_trigger_supplier_source_price",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261115130200_sec001_revoke_anon_execute_trigger_functions.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "fn_trigger_sync_category_ancestors",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261115130200_sec001_revoke_anon_execute_trigger_functions.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "fn_trigger_sync_colors_to_product",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261115130200_sec001_revoke_anon_execute_trigger_functions.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "fn_trigger_sync_descendants_count",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261115130200_sec001_revoke_anon_execute_trigger_functions.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "fn_trigger_sync_pca_products_count",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261115130200_sec001_revoke_anon_execute_trigger_functions.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "fn_trigger_sync_product_status_fields",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261115130200_sec001_revoke_anon_execute_trigger_functions.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "fn_trigger_track_price_updated_products",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261115130200_sec001_revoke_anon_execute_trigger_functions.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "fn_trigger_track_price_updated_vss",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261115130200_sec001_revoke_anon_execute_trigger_functions.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "fn_trigger_update_price_last_verified",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261115130200_sec001_revoke_anon_execute_trigger_functions.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "fn_trigger_variant_automation",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261115130200_sec001_revoke_anon_execute_trigger_functions.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "fn_trigger_variant_price",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261115130200_sec001_revoke_anon_execute_trigger_functions.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "fn_update_cat_acc_timestamp",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261115130200_sec001_revoke_anon_execute_trigger_functions.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "fn_update_cat_comm_timestamp",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261115130200_sec001_revoke_anon_execute_trigger_functions.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "fn_update_prod_comm_timestamp",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261115130200_sec001_revoke_anon_execute_trigger_functions.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "fn_update_product_search_vector",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261115130200_sec001_revoke_anon_execute_trigger_functions.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "fn_update_ptm_timestamp",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261115130200_sec001_revoke_anon_execute_trigger_functions.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "fn_update_target_aud_timestamp",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261115130200_sec001_revoke_anon_execute_trigger_functions.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "fn_update_timestamp",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261115130200_sec001_revoke_anon_execute_trigger_functions.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "fn_update_updated_at",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261115130200_sec001_revoke_anon_execute_trigger_functions.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "fn_validate_packaging_config_hierarchy",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261115130200_sec001_revoke_anon_execute_trigger_functions.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "fn_validate_packaging_type_on_compat",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261115130200_sec001_revoke_anon_execute_trigger_functions.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "fn_validate_role_change",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261115130200_sec001_revoke_anon_execute_trigger_functions.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "fn_validate_selected_packaging",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261115130200_sec001_revoke_anon_execute_trigger_functions.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "fn_validate_video_on_change",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261115130200_sec001_revoke_anon_execute_trigger_functions.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "fn_vss_sync_warehouse_from_qty",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261115130200_sec001_revoke_anon_execute_trigger_functions.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "fn_xbz_derivar_campos_editoriais",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261115130200_sec001_revoke_anon_execute_trigger_functions.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "fn_xbz_enrich_from_site",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261115130200_sec001_revoke_anon_execute_trigger_functions.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "fn_xbz_propagate_site_to_silver",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261115130200_sec001_revoke_anon_execute_trigger_functions.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "increment_quote_version",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261115130200_sec001_revoke_anon_execute_trigger_functions.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "products_search_vector_update",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261115130200_sec001_revoke_anon_execute_trigger_functions.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "trg_content_articles_updated_at",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261115130200_sec001_revoke_anon_execute_trigger_functions.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "trg_fn_sanitize_restock_dates",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261115130200_sec001_revoke_anon_execute_trigger_functions.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "all",
     "object": "fn_dryrun_standardize_supplier",
     "objkind": "function",
     "roles": "PUBLIC",
@@ -132118,27 +132951,11 @@
     "src": "supabase/rollbacks/20261027233000_rollback.sql"
    },
    {
-    "kind": "grant",
+    "kind": "revoke",
     "privs": "execute",
     "object": "cleanup_expired_auth_sessions",
     "objkind": "function",
-    "roles": "PUBLIC",
-    "src": "supabase/rollbacks/20261101202000_rollback.sql"
-   },
-   {
-    "kind": "grant",
-    "privs": "execute",
-    "object": "cleanup_expired_auth_sessions",
-    "objkind": "function",
-    "roles": "anon",
-    "src": "supabase/rollbacks/20261101202000_rollback.sql"
-   },
-   {
-    "kind": "grant",
-    "privs": "execute",
-    "object": "cleanup_expired_auth_sessions",
-    "objkind": "function",
-    "roles": "authenticated",
+    "roles": "PUBLIC, anon, authenticated",
     "src": "supabase/rollbacks/20261101202000_rollback.sql"
    },
    {
@@ -132244,6 +133061,854 @@
     "objkind": "function",
     "roles": "anon",
     "src": "supabase/rollbacks/20261112130000_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_audit_role_changes",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/rollbacks/20261115130200_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_auto_classify_kit_product",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/rollbacks/20261115130200_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_auto_classify_packing",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/rollbacks/20261115130200_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_auto_classify_product_image",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/rollbacks/20261115130200_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_auto_criar_equivalencia_spot",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/rollbacks/20261115130200_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_auto_link_eco_material",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/rollbacks/20261115130200_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_auto_link_feminine_color",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/rollbacks/20261115130200_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_auto_set_same_supplier",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/rollbacks/20261115130200_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_auto_vincular_cor_variante",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/rollbacks/20261115130200_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_block_unauthorized_product_deactivation",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/rollbacks/20261115130200_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_category_copywriting_updated",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/rollbacks/20261115130200_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_color_equiv_clear_primary_on_inactive",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/rollbacks/20261115130200_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_color_equiv_ensure_primary",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/rollbacks/20261115130200_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_color_equiv_ensure_primary_stmt",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/rollbacks/20261115130200_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_cor_generate_slug",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/rollbacks/20261115130200_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_cor_updated_at",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/rollbacks/20261115130200_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_custom_kits_sync_user_id",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/rollbacks/20261115130200_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_dar_check_valid_until_future",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/rollbacks/20261115130200_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_dar_set_snapshot_hash",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/rollbacks/20261115130200_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_enforce_inactive_variant_zero_stock",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/rollbacks/20261115130200_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_ensure_single_primary_image",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/rollbacks/20261115130200_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_force_user_logout",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/rollbacks/20261115130200_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_hex_to_rgb",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/rollbacks/20261115130200_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_image_types_check_constraint_reminder",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/rollbacks/20261115130200_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_inherit_techniques_from_material",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/rollbacks/20261115130200_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_kit_component_calc_circumference",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/rollbacks/20261115130200_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_kit_component_inherit_personalization",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/rollbacks/20261115130200_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_kit_print_area_normalizar_eixos",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/rollbacks/20261115130200_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_log_login_attempt",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/rollbacks/20261115130200_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_log_price_change",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/rollbacks/20261115130200_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_log_step_up_event",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/rollbacks/20261115130200_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_normalize_image_format",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/rollbacks/20261115130200_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_normalize_source_supplier",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/rollbacks/20261115130200_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_normalize_source_supplier_videos",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/rollbacks/20261115130200_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_order_items_calc_subtotal",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/rollbacks/20261115130200_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_orders_sync_seller",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/rollbacks/20261115130200_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_pad_sync_status",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/rollbacks/20261115130200_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_pbd_before_write",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/rollbacks/20261115130200_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_pbd_block_system_delete",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/rollbacks/20261115130200_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_pipeline_steps_updated_at",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/rollbacks/20261115130200_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_pkc_auto_enrich_status",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/rollbacks/20261115130200_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_pkc_auto_inherit_material",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/rollbacks/20261115130200_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_products_capture_manual_edits",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/rollbacks/20261115130200_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_propagar_atualizacao_cor",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/rollbacks/20261115130200_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_quote_items_calc_subtotal",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/rollbacks/20261115130200_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_quotes_sync_seller",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/rollbacks/20261115130200_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_recalc_compat_on_dim_change",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/rollbacks/20261115130200_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_set_updated_at_aeq",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/rollbacks/20261115130200_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_set_updated_at_pa",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/rollbacks/20261115130200_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_silver_set_updated_at",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/rollbacks/20261115130200_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_sm_category_set_updated",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/rollbacks/20261115130200_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_sm_url_map_set_updated",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/rollbacks/20261115130200_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_spr_before_write",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/rollbacks/20261115130200_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_spr_normalize_keys",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/rollbacks/20261115130200_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_sync_color_variation_group",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/rollbacks/20261115130200_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_sync_dimensions_display",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/rollbacks/20261115130200_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_sync_image_type_code",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/rollbacks/20261115130200_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_sync_novelty_expires_at",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/rollbacks/20261115130200_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_sync_product_category_name",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/rollbacks/20261115130200_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_sync_product_has_sizes",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/rollbacks/20261115130200_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_sync_variant_to_product",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/rollbacks/20261115130200_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_sync_vss_to_variant",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/rollbacks/20261115130200_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_trigger_auto_classify_product",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/rollbacks/20261115130200_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_trigger_auto_extract_attributes",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/rollbacks/20261115130200_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_trigger_auto_sync_dimensions",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/rollbacks/20261115130200_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_trigger_calculate_sale_price",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/rollbacks/20261115130200_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_trigger_classify_packing",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/rollbacks/20261115130200_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_trigger_extract_materials_from_name",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/rollbacks/20261115130200_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_trigger_product_status_sync_category_count",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/rollbacks/20261115130200_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_trigger_propagate_category_min",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/rollbacks/20261115130200_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_trigger_propagate_fpr",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/rollbacks/20261115130200_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_trigger_set_has_gift_box",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/rollbacks/20261115130200_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_trigger_set_has_optional_packaging",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/rollbacks/20261115130200_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_trigger_set_min_quantity",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/rollbacks/20261115130200_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_trigger_supplier_source_price",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/rollbacks/20261115130200_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_trigger_sync_category_ancestors",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/rollbacks/20261115130200_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_trigger_sync_colors_to_product",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/rollbacks/20261115130200_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_trigger_sync_descendants_count",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/rollbacks/20261115130200_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_trigger_sync_pca_products_count",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/rollbacks/20261115130200_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_trigger_sync_product_status_fields",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/rollbacks/20261115130200_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_trigger_track_price_updated_products",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/rollbacks/20261115130200_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_trigger_track_price_updated_vss",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/rollbacks/20261115130200_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_trigger_update_price_last_verified",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/rollbacks/20261115130200_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_trigger_variant_automation",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/rollbacks/20261115130200_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_trigger_variant_price",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/rollbacks/20261115130200_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_update_cat_acc_timestamp",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/rollbacks/20261115130200_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_update_cat_comm_timestamp",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/rollbacks/20261115130200_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_update_prod_comm_timestamp",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/rollbacks/20261115130200_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_update_product_search_vector",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/rollbacks/20261115130200_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_update_ptm_timestamp",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/rollbacks/20261115130200_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_update_target_aud_timestamp",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/rollbacks/20261115130200_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_update_timestamp",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/rollbacks/20261115130200_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_update_updated_at",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/rollbacks/20261115130200_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_validate_packaging_config_hierarchy",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/rollbacks/20261115130200_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_validate_packaging_type_on_compat",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/rollbacks/20261115130200_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_validate_role_change",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/rollbacks/20261115130200_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_validate_selected_packaging",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/rollbacks/20261115130200_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_validate_video_on_change",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/rollbacks/20261115130200_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_vss_sync_warehouse_from_qty",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/rollbacks/20261115130200_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_xbz_derivar_campos_editoriais",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/rollbacks/20261115130200_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_xbz_enrich_from_site",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/rollbacks/20261115130200_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_xbz_propagate_site_to_silver",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/rollbacks/20261115130200_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "increment_quote_version",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/rollbacks/20261115130200_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "products_search_vector_update",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/rollbacks/20261115130200_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "trg_content_articles_updated_at",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/rollbacks/20261115130200_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "trg_fn_sanitize_restock_dates",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/rollbacks/20261115130200_rollback.sql"
    },
    {
     "kind": "grant",
@@ -146684,7 +148349,7 @@
   {
    "module": "(raiz)",
    "files": 9,
-   "lines": 3397,
+   "lines": 3400,
    "tables": [],
    "exports": [
     "playwright.config.ts: defineConfig",
@@ -147321,7 +148986,7 @@
   {
    "module": "scripts",
    "files": 287,
-   "lines": 62099,
+   "lines": 62101,
    "tables": [
     "a",
     "b",
@@ -147924,8 +149589,8 @@
   },
   {
    "module": "src/hooks",
-   "files": 468,
-   "lines": 88008,
+   "files": 469,
+   "lines": 88114,
    "tables": [
     "admin_audit_log",
     "admin_settings",
@@ -149125,8 +150790,8 @@
   },
   {
    "module": "supabase/functions",
-   "files": 271,
-   "lines": 50360,
+   "files": 273,
+   "lines": 50610,
    "tables": [
     "access_blocked_log",
     "access_security_settings",
@@ -149274,6 +150939,7 @@
     "node:async_hooks",
     "node:fs",
     "node:path",
+    "node:process",
     "npm:@supabase",
     "npm:blurhash@2.0.5",
     "npm:fast-png@6.0.0",
@@ -149370,8 +151036,8 @@
   },
   {
    "module": "supabase/migrations",
-   "files": 3086,
-   "lines": 222136,
+   "files": 3094,
+   "lines": 222560,
    "tables": [
     "...",
     "admin_audit_log",
@@ -149469,8 +151135,8 @@
   },
   {
    "module": "supabase/rollbacks",
-   "files": 89,
-   "lines": 2538,
+   "files": 102,
+   "lines": 2988,
    "tables": [],
    "exports": [],
    "docs": [],
@@ -149483,6 +151149,9 @@
     "supabase/rollbacks/20260611124000_fn_dryrun_standardize_supplier_real_rollback.sql",
     "supabase/rollbacks/20260916202000_rollback.sql",
     "supabase/rollbacks/20260917061500_rollback.sql",
+    "supabase/rollbacks/20260917070000_rollback.sql",
+    "supabase/rollbacks/20260917090000_rollback.sql",
+    "supabase/rollbacks/20260917100000_rollback.sql",
     "supabase/rollbacks/20261015150000_rollback.sql",
     "supabase/rollbacks/20261018000041_rollback.sql",
     "supabase/rollbacks/20261018000042_rollback.sql",
@@ -149521,9 +151190,12 @@
     "supabase/rollbacks/20261027233000_rollback.sql",
     "supabase/rollbacks/20261027234500_rollback.sql",
     "supabase/rollbacks/20261029160339_rollback.sql",
+    "supabase/rollbacks/20261031000000_rollback.sql",
     "supabase/rollbacks/20261101150000_rollback.sql",
+    "supabase/rollbacks/20261101190101_rollback.sql",
     "supabase/rollbacks/20261101201000_rollback.sql",
     "supabase/rollbacks/20261101202000_rollback.sql",
+    "supabase/rollbacks/20261102063000_rollback.sql",
     "supabase/rollbacks/20261104100000_rollback.sql",
     "supabase/rollbacks/20261106232045_rollback.sql",
     "supabase/rollbacks/20261107134429_rollback.sql",
@@ -149550,13 +151222,7 @@
     "supabase/rollbacks/20261112120600_rollback.sql",
     "supabase/rollbacks/20261112120700_rollback.sql",
     "supabase/rollbacks/20261112120800_rollback.sql",
-    "supabase/rollbacks/20261112120900_rollback.sql",
-    "supabase/rollbacks/20261112130000_rollback.sql",
-    "supabase/rollbacks/20261112140000_rollback.sql",
-    "supabase/rollbacks/20261113140000_rollback.sql",
-    "supabase/rollbacks/20261113225000_rollback.sql",
-    "supabase/rollbacks/20261113235000_rollback.sql",
-    "supabase/rollbacks/20261113235800_rollback.sql"
+    "supabase/rollbacks/20261112120900_rollback.sql"
    ]
   },
   {
@@ -149646,7 +151312,7 @@
   {
    "module": "tests",
    "files": 1033,
-   "lines": 158323,
+   "lines": 158338,
    "tables": [
     "bot_detection_log",
     "clients",
@@ -156001,7 +157667,6 @@
     "kit_component_variant_skus",
     "markup_configurations",
     "variant_commemorative_dates",
-    "stock_notes",
     "b2b_collection_products",
     "collection_products",
     "kit_component_enrichment_raw",
@@ -156117,7 +157782,6 @@
     "client_notes",
     "seller_gamification",
     "seller_achievements",
-    "stock_notes",
     "webhook_configs",
     "webhook_logs"
    ],
@@ -156198,8 +157862,7 @@
     "commemorative_date_exclusions",
     "kit_component_variant_skus",
     "markup_configurations",
-    "variant_commemorative_dates",
-    "stock_notes"
+    "variant_commemorative_dates"
    ],
    "suppliers": [
     "variant_supplier_sources",
@@ -156374,6 +158037,7 @@
    "runtime_table",
    "so_teste",
    "some_table",
+   "stock_notes",
    "sync_logs",
    "t",
    "t1",
@@ -173216,12 +174880,40 @@
     "text": "* Máximo de redirects seguidos antes de desistir (fail-closed). */"
    },
    {
+    "file": "supabase/functions/generate-mockup/geometry.ts",
+    "text": "mudar regra de negócio para o usuário final — decisão registrada no commit.)"
+   },
+   {
+    "file": "supabase/functions/generate-mockup/geometry.ts",
+    "text": "* Lado mínimo (px) abaixo do qual a logo é ampliada para continuar visível. */"
+   },
+   {
+    "file": "supabase/functions/generate-mockup/geometry.ts",
+    "text": "(CANVAS_PX = 1024 em index.ts). NÃO é regra de WYSIWYG — uma logo que"
+   },
+   {
+    "file": "supabase/functions/generate-mockup/geometry.ts",
+    "text": "mínimo de 40 px (o servidor anterior usava 8 px e um produto-referência de"
+   },
+   {
+    "file": "supabase/functions/generate-mockup/geometry.ts",
+    "text": "* Tamanho final desenhado no canvas: a caixa de `cmParaPx` (já com o mínimo de"
+   },
+   {
     "file": "supabase/functions/generate-mockup/index.ts",
     "text": "─ Validation ──────────────────────────────────────────────────────────────"
    },
    {
     "file": "supabase/functions/generate-mockup/index.ts",
     "text": "SVG cannot be rasterised by createImageBitmap in the Deno edge runtime, so it must"
+   },
+   {
+    "file": "supabase/functions/generate-mockup/index.ts",
+    "text": "fórmula do editor, inclusive o mínimo de 40 px, a inferência de uma dimensão"
+   },
+   {
+    "file": "supabase/functions/generate-mockup/index.ts",
+    "text": "mínimo de 8 px. A sanitização de cm ≤ 0 e o teto proporcional de absurdo"
    },
    {
     "file": "supabase/functions/generate-mockup/index.ts",
@@ -194312,51 +196004,6 @@
     "rule": "CONSTRAINT wraparound_monitor_log_metric_check CHECK (metric IN ('xid_age', 'mxid_age', 'sequence_pct_used', 'replication_slot_retained_bytes', 'toast_pct_of_heap'))"
    },
    {
-    "table": "stock_notes",
-    "column": "id",
-    "rule": "PK; default gen_random_uuid()"
-   },
-   {
-    "table": "stock_notes",
-    "column": "variant_id",
-    "rule": "obrigatório; FK → product_variants.id ON DELETE CASCADE"
-   },
-   {
-    "table": "stock_notes",
-    "column": "supplier_id",
-    "rule": "FK → suppliers.id ON DELETE SET NULL"
-   },
-   {
-    "table": "stock_notes",
-    "column": "created_by",
-    "rule": "obrigatório; FK → users.id ON DELETE CASCADE"
-   },
-   {
-    "table": "stock_notes",
-    "column": "note",
-    "rule": "obrigatório"
-   },
-   {
-    "table": "stock_notes",
-    "column": "is_pinned",
-    "rule": "default false"
-   },
-   {
-    "table": "stock_notes",
-    "column": "created_at",
-    "rule": "default now()"
-   },
-   {
-    "table": "stock_notes",
-    "column": "updated_at",
-    "rule": "default now()"
-   },
-   {
-    "table": "stock_notes",
-    "column": "deleted_at",
-    "rule": "default NULL"
-   },
-   {
     "table": "webhook_configs",
     "column": "id",
     "rule": "PK; default gen_random_uuid()"
@@ -197394,24 +199041,24 @@
     "value": "\"Não foi possível baixar a imagem.\""
    },
    {
+    "file": "supabase/functions/generate-mockup/geometry.ts",
+    "name": "MIN_LOGO_PX",
+    "value": "40"
+   },
+   {
+    "file": "supabase/functions/generate-mockup/geometry.ts",
+    "name": "MAX_LOGO_PX",
+    "value": "8"
+   },
+   {
+    "file": "supabase/functions/generate-mockup/geometry.ts",
+    "name": "DEFAULT_PRODUCT_FRACTION",
+    "value": "0.85"
+   },
+   {
     "file": "supabase/functions/generate-mockup/index.ts",
     "name": "CANVAS_PX",
     "value": "1024"
-   },
-   {
-    "file": "supabase/functions/generate-mockup/index.ts",
-    "name": "FALLBACK_PRODUCT_REFERENCE_CM",
-    "value": "20"
-   },
-   {
-    "file": "supabase/functions/generate-mockup/index.ts",
-    "name": "MAX_LOGO_CANVAS_FRACTION",
-    "value": "0.98"
-   },
-   {
-    "file": "supabase/functions/generate-mockup/index.ts",
-    "name": "MIN_LOGO_PX",
-    "value": "8"
    },
    {
     "file": "supabase/functions/generate-mockup/index.ts",
@@ -212909,12 +214556,6 @@
     "body": "return new Response( JSON.stringify({ error: \"validation_failed\", errorCode, message }), { status: 400, headers: { ...corsHeaders, \"Content-Type\": \"application/json\" } }, );"
    },
    {
-    "file": "supabase/functions/generate-mockup/index.ts",
-    "name": "computeLogoPx",
-    "params": "containW: number, containH: number, logoWidthCm: unknown, logoHeightCm: unknown, productWidthCm: unknown, productHeightC",
-    "body": "lw: number; lh: number"
-   },
-   {
     "file": "supabase/functions/market-intelligence-insights/index.ts",
     "name": "calcMetrics",
     "params": "quotes: { data: any[] | null }, orders: { data: any[] | null }",
@@ -215733,6 +217374,22 @@
     "line": "ALTER ROLE authenticator SET idle_session_timeout = 0;"
    },
    {
+    "file": "supabase/migrations/20261114160000_perf_idx_sds_restock_counts.sql",
+    "line": "-- O db-apply-migration usa lock_timeout=1s: o CONCURRENTLY espera transações antigas, então esta"
+   },
+   {
+    "file": "supabase/migrations/20261115130000_idx_sds_summary_date_supplier_include.sql",
+    "line": "-- O db-apply-migration usa lock_timeout=1s: o CONCURRENTLY espera transações antigas, então esta"
+   },
+   {
+    "file": "supabase/rollbacks/20260917100000_rollback.sql",
+    "line": "WHERE status='processing' AND locked_at < now() - interval '1 hour' AND attempts >= max_attempts;"
+   },
+   {
+    "file": "supabase/rollbacks/20260917100000_rollback.sql",
+    "line": "WHERE status='processing' AND locked_at < now() - interval '2 hours' AND attempts < max_attempts;"
+   },
+   {
     "file": "tests/sql/wave1_forward_only_migrations_test.sql",
     "line": "_approved_quote, 'approved', now() + interval '1 day', 20,"
    }
@@ -216693,6 +218350,14 @@
    {
     "file": "supabase/functions/generate-blurhashes/index.ts",
     "line": "// Coverage: JPEG+PNG+WebP+GIF ≈ 99.9% of all verified product images."
+   },
+   {
+    "file": "supabase/functions/generate-mockup/geometry.ts",
+    "line": "* - não há teto de 98% do quadro (o `MAX_LOGO_CANVAS_FRACTION` anterior): o canvas"
+   },
+   {
+    "file": "supabase/functions/generate-mockup/geometry.ts",
+    "line": "const physW = prodW ?? (prodH ? prodH * 0.4 : 8);"
    },
    {
     "file": "supabase/functions/image-proxy/index.ts",
@@ -239925,6 +241590,26 @@
     "name": "7 dias, 100 produtos com 2 un/30d: soma proporcional (~47), não zera por arredondar cada produto"
    },
    {
+    "file": "src/hooks/intelligence/__tests__/useMarketIntelligenceMacro.test.tsx",
+    "name": "useMarketIntelligenceMacro (RPC fn_market_intelligence_macro)"
+   },
+   {
+    "file": "src/hooks/intelligence/__tests__/useMarketIntelligenceMacro.test.tsx",
+    "name": "chama a RPC com p_days e p_supplier_id (null quando não há filtro) — não lê a tabela cru"
+   },
+   {
+    "file": "src/hooks/intelligence/__tests__/useMarketIntelligenceMacro.test.tsx",
+    "name": "repassa o fornecedor escolhido em p_supplier_id"
+   },
+   {
+    "file": "src/hooks/intelligence/__tests__/useMarketIntelligenceMacro.test.tsx",
+    "name": "agrega por data e por fornecedor as linhas (já somadas por dia × fornecedor) que a RPC devolve"
+   },
+   {
+    "file": "src/hooks/intelligence/__tests__/useMarketIntelligenceMacro.test.tsx",
+    "name": "propaga o erro da RPC (função ausente → PGRST202) em vez de devolver dados vazios como se fossem reais"
+   },
+   {
     "file": "src/hooks/intelligence/__tests__/useStockHistory.test.ts",
     "name": "useStockHistory helpers"
    },
@@ -258831,6 +260516,66 @@
    {
     "file": "supabase/functions/generate-ad-prompt/index.timeout.test.ts",
     "name": "estouro devolve erro genérico com code timeout, nunca a mensagem crua"
+   },
+   {
+    "file": "supabase/functions/generate-mockup/index.geometry.test.ts",
+    "name": "geometry (generate-mockup) — sem dimensões cadastradas, o fallback é a estimativa do editor"
+   },
+   {
+    "file": "supabase/functions/generate-mockup/index.geometry.test.ts",
+    "name": "sem dimensões a conta usa 8×20 cm (o que o editor mostra), não o produto-referência de 20 cm do canvas"
+   },
+   {
+    "file": "supabase/functions/generate-mockup/index.geometry.test.ts",
+    "name": "dimensões inválidas (0, negativa, string) valem como ausentes — mesmo fallback, nunca NaN"
+   },
+   {
+    "file": "supabase/functions/generate-mockup/index.geometry.test.ts",
+    "name": "o handler não recusa payload sem dimensões (kit-builder depende disso)"
+   },
+   {
+    "file": "supabase/functions/generate-mockup/index.geometry.test.ts",
+    "name": "geometry (generate-mockup) — mesmos números da função compartilhada do cliente"
+   },
+   {
+    "file": "supabase/functions/generate-mockup/index.geometry.test.ts",
+    "name": "logo minúscula usa o mínimo de 40 px (o antigo mínimo de 8 px foi removido)"
+   },
+   {
+    "file": "supabase/functions/generate-mockup/index.geometry.test.ts",
+    "name": "fração ausente cai no default do cliente (0.85), não em 1"
+   },
+   {
+    "file": "supabase/functions/generate-mockup/index.geometry.test.ts",
+    "name": "fração inválida (0, >1, NaN) também cai no default 0.85"
+   },
+   {
+    "file": "supabase/functions/generate-mockup/index.geometry.test.ts",
+    "name": "logo MAIOR que o quadro não é mais encolhida (o teto de 98% quebrava o WYSIWYG)"
+   },
+   {
+    "file": "supabase/functions/generate-mockup/index.geometry.test.ts",
+    "name": "geometry (generate-mockup) — proteções herdadas do main"
+   },
+   {
+    "file": "supabase/functions/generate-mockup/index.geometry.test.ts",
+    "name": "teto proporcional de absurdo: productWidthCm minúsculo não gera drawImage de milhões de px"
+   },
+   {
+    "file": "supabase/functions/generate-mockup/index.geometry.test.ts",
+    "name": "cm da logo ≤ 0 cai nos defaults 5×3 em vez de virar caixa negativa"
+   },
+   {
+    "file": "supabase/functions/generate-mockup/index.geometry.test.ts",
+    "name": "index.ts está ligado à geometria compartilhada"
+   },
+   {
+    "file": "supabase/functions/generate-mockup/index.geometry.test.ts",
+    "name": "importa e usa o cálculo compartilhado, sem o produto-referência de 20 cm nem o mínimo de 8 px"
+   },
+   {
+    "file": "supabase/functions/generate-mockup/index.geometry.test.ts",
+    "name": "validationError segue com 400 fixo (nenhum status novo entrou no handler)"
    },
    {
     "file": "supabase/functions/generate-mockup/index.test.ts",
@@ -296713,6 +298458,18 @@
     "name": "reporta inconclusive quando falta credencial e live é obrigatório"
    },
    {
+    "file": "tests/security/security-definer-acl-gate.test.ts",
+    "name": "rollback do cleanup de funções de auditoria"
+   },
+   {
+    "file": "tests/security/security-definer-acl-gate.test.ts",
+    "name": "não reabre EXECUTE para papéis públicos"
+   },
+   {
+    "file": "tests/security/security-definer-acl-gate.test.ts",
+    "name": "mantém o ACL canônico fail-closed e idempotente"
+   },
+   {
     "file": "tests/security/security-headers.test.ts",
     "name": "Security Headers: HSTS"
    },
@@ -315369,15 +317126,6 @@
     "src": "supabase/migrations/20261005124500_discount_approval_requests_version.sql"
    },
    {
-    "name": "set_stock_notes_updated_at",
-    "when": "BEFORE UPDATE",
-    "table": "stock_notes",
-    "function": "handle_updated_at",
-    "condition": "",
-    "each": "row",
-    "src": "supabase/migrations/20261031000000_create_stock_notes.sql"
-   },
-   {
     "name": "set_updated_at_trigger",
     "when": "BEFORE UPDATE",
     "table": "endomarketing_themes",
@@ -322106,7 +323854,7 @@
     "args": "p_term text, p_limit integer DEFAULT 12, p_types text[] DEFAULT ARRAY['product'::text, 'quote'::text]",
     "returns": "TABLE(result_id text, result_type text, result_title text, result_description text, result_url text, result_image_url text, result_metadata jsonb, result_relevance numeric)",
     "lang": "plpgsql",
-    "src": "supabase/migrations/20261101190101_fn_global_search_clamp_limit.sql",
+    "src": "supabase/migrations/20261115130300_fn_global_search_clamp_limit_hardened.sql",
     "security_definer": true,
     "search_path": true,
     "body": "DECLARE v_term_norm text; v_tsquery tsquery; v_lim_each integer; BEGIN IF p_term IS NULL OR length(trim(p_term)) < 2 THEN RETURN; END IF; IF p_limit IS NULL OR p_limit <= 0 THEN RETURN; END IF; v_term_norm := lower(unaccent(trim(p_term))); v_lim_each := GREATEST(1, LEAST(p_limit, 100) / GREATEST(array_length(p_types, 1), 1)); BEGIN v_tsquery := websearch_to_tsquery('portuguese', unaccent(trim(p_term))); EXCEPTION WHEN OTHERS THEN v_tsquery := NULL; END; PERFORM set_config('pg_trgm.similarity_threshold', '0.2', true); IF 'product' = ANY(p_types) THEN RETURN QUERY SELECT p.id::text, 'product'::text, p.name::text, ('SKU: ' || p.sku || CASE WHEN c.name IS NOT NULL THEN ' · ' || c.name ELSE '' EN …",
@@ -348604,21 +350352,6 @@
     "UPDATE": [],
     "DELETE": []
    },
-   "stock_notes": {
-    "rls": "enabled",
-    "SELECT": [
-     "authenticated: true"
-    ],
-    "INSERT": [
-     "authenticated: created_by = auth.uid()"
-    ],
-    "UPDATE": [
-     "authenticated: created_by = auth.uid()"
-    ],
-    "DELETE": [
-     "authenticated: created_by = auth.uid()"
-    ]
-   },
    "stock_snapshots": {
     "rls": "enabled",
     "SELECT": [],
@@ -350720,6 +352453,7 @@
    "supabase/migrations/20261113225000_sec_revoke_anon_authenticated_net_supabase_functions.sql",
    "supabase/migrations/20261114040000_fix_authenticator_idle_session_timeout_pgrst_listener.sql",
    "supabase/migrations/20261114170845_fix_workspace_notifications_insert_policy_reapply.sql",
+   "supabase/migrations/20261115130100_fn_market_intelligence_macro.sql",
    "supabase/rollbacks/20260611014515_fn_dryrun_standardize_supplier_real_rollback.sql",
    "supabase/rollbacks/20260611124000_fn_dryrun_standardize_supplier_real_rollback.sql",
    "supabase/rollbacks/20260917061500_rollback.sql",
@@ -386497,6 +388231,870 @@
    {
     "kind": "revoke",
     "privs": "all",
+    "object": "fn_market_intelligence_macro",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261115130100_fn_market_intelligence_macro.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_market_intelligence_macro",
+    "objkind": "function",
+    "roles": "authenticated, service_role",
+    "src": "supabase/migrations/20261115130100_fn_market_intelligence_macro.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "fn_audit_role_changes",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261115130200_sec001_revoke_anon_execute_trigger_functions.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "fn_auto_classify_kit_product",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261115130200_sec001_revoke_anon_execute_trigger_functions.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "fn_auto_classify_packing",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261115130200_sec001_revoke_anon_execute_trigger_functions.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "fn_auto_classify_product_image",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261115130200_sec001_revoke_anon_execute_trigger_functions.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "fn_auto_criar_equivalencia_spot",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261115130200_sec001_revoke_anon_execute_trigger_functions.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "fn_auto_link_eco_material",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261115130200_sec001_revoke_anon_execute_trigger_functions.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "fn_auto_link_feminine_color",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261115130200_sec001_revoke_anon_execute_trigger_functions.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "fn_auto_set_same_supplier",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261115130200_sec001_revoke_anon_execute_trigger_functions.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "fn_auto_vincular_cor_variante",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261115130200_sec001_revoke_anon_execute_trigger_functions.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "fn_block_unauthorized_product_deactivation",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261115130200_sec001_revoke_anon_execute_trigger_functions.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "fn_category_copywriting_updated",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261115130200_sec001_revoke_anon_execute_trigger_functions.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "fn_color_equiv_clear_primary_on_inactive",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261115130200_sec001_revoke_anon_execute_trigger_functions.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "fn_color_equiv_ensure_primary",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261115130200_sec001_revoke_anon_execute_trigger_functions.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "fn_color_equiv_ensure_primary_stmt",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261115130200_sec001_revoke_anon_execute_trigger_functions.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "fn_cor_generate_slug",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261115130200_sec001_revoke_anon_execute_trigger_functions.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "fn_cor_updated_at",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261115130200_sec001_revoke_anon_execute_trigger_functions.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "fn_custom_kits_sync_user_id",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261115130200_sec001_revoke_anon_execute_trigger_functions.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "fn_dar_check_valid_until_future",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261115130200_sec001_revoke_anon_execute_trigger_functions.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "fn_dar_set_snapshot_hash",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261115130200_sec001_revoke_anon_execute_trigger_functions.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "fn_enforce_inactive_variant_zero_stock",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261115130200_sec001_revoke_anon_execute_trigger_functions.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "fn_ensure_single_primary_image",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261115130200_sec001_revoke_anon_execute_trigger_functions.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "fn_force_user_logout",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261115130200_sec001_revoke_anon_execute_trigger_functions.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "fn_hex_to_rgb",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261115130200_sec001_revoke_anon_execute_trigger_functions.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "fn_image_types_check_constraint_reminder",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261115130200_sec001_revoke_anon_execute_trigger_functions.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "fn_inherit_techniques_from_material",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261115130200_sec001_revoke_anon_execute_trigger_functions.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "fn_kit_component_calc_circumference",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261115130200_sec001_revoke_anon_execute_trigger_functions.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "fn_kit_component_inherit_personalization",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261115130200_sec001_revoke_anon_execute_trigger_functions.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "fn_kit_print_area_normalizar_eixos",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261115130200_sec001_revoke_anon_execute_trigger_functions.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "fn_log_login_attempt",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261115130200_sec001_revoke_anon_execute_trigger_functions.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "fn_log_price_change",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261115130200_sec001_revoke_anon_execute_trigger_functions.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "fn_log_step_up_event",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261115130200_sec001_revoke_anon_execute_trigger_functions.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "fn_normalize_image_format",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261115130200_sec001_revoke_anon_execute_trigger_functions.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "fn_normalize_source_supplier",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261115130200_sec001_revoke_anon_execute_trigger_functions.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "fn_normalize_source_supplier_videos",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261115130200_sec001_revoke_anon_execute_trigger_functions.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "fn_order_items_calc_subtotal",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261115130200_sec001_revoke_anon_execute_trigger_functions.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "fn_orders_sync_seller",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261115130200_sec001_revoke_anon_execute_trigger_functions.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "fn_pad_sync_status",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261115130200_sec001_revoke_anon_execute_trigger_functions.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "fn_pbd_before_write",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261115130200_sec001_revoke_anon_execute_trigger_functions.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "fn_pbd_block_system_delete",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261115130200_sec001_revoke_anon_execute_trigger_functions.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "fn_pipeline_steps_updated_at",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261115130200_sec001_revoke_anon_execute_trigger_functions.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "fn_pkc_auto_enrich_status",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261115130200_sec001_revoke_anon_execute_trigger_functions.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "fn_pkc_auto_inherit_material",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261115130200_sec001_revoke_anon_execute_trigger_functions.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "fn_products_capture_manual_edits",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261115130200_sec001_revoke_anon_execute_trigger_functions.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "fn_propagar_atualizacao_cor",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261115130200_sec001_revoke_anon_execute_trigger_functions.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "fn_quote_items_calc_subtotal",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261115130200_sec001_revoke_anon_execute_trigger_functions.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "fn_quotes_sync_seller",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261115130200_sec001_revoke_anon_execute_trigger_functions.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "fn_recalc_compat_on_dim_change",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261115130200_sec001_revoke_anon_execute_trigger_functions.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "fn_set_updated_at_aeq",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261115130200_sec001_revoke_anon_execute_trigger_functions.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "fn_set_updated_at_pa",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261115130200_sec001_revoke_anon_execute_trigger_functions.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "fn_silver_set_updated_at",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261115130200_sec001_revoke_anon_execute_trigger_functions.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "fn_sm_category_set_updated",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261115130200_sec001_revoke_anon_execute_trigger_functions.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "fn_sm_url_map_set_updated",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261115130200_sec001_revoke_anon_execute_trigger_functions.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "fn_spr_before_write",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261115130200_sec001_revoke_anon_execute_trigger_functions.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "fn_spr_normalize_keys",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261115130200_sec001_revoke_anon_execute_trigger_functions.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "fn_sync_color_variation_group",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261115130200_sec001_revoke_anon_execute_trigger_functions.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "fn_sync_dimensions_display",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261115130200_sec001_revoke_anon_execute_trigger_functions.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "fn_sync_image_type_code",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261115130200_sec001_revoke_anon_execute_trigger_functions.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "fn_sync_novelty_expires_at",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261115130200_sec001_revoke_anon_execute_trigger_functions.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "fn_sync_product_category_name",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261115130200_sec001_revoke_anon_execute_trigger_functions.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "fn_sync_product_has_sizes",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261115130200_sec001_revoke_anon_execute_trigger_functions.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "fn_sync_variant_to_product",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261115130200_sec001_revoke_anon_execute_trigger_functions.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "fn_sync_vss_to_variant",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261115130200_sec001_revoke_anon_execute_trigger_functions.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "fn_trigger_auto_classify_product",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261115130200_sec001_revoke_anon_execute_trigger_functions.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "fn_trigger_auto_extract_attributes",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261115130200_sec001_revoke_anon_execute_trigger_functions.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "fn_trigger_auto_sync_dimensions",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261115130200_sec001_revoke_anon_execute_trigger_functions.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "fn_trigger_calculate_sale_price",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261115130200_sec001_revoke_anon_execute_trigger_functions.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "fn_trigger_classify_packing",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261115130200_sec001_revoke_anon_execute_trigger_functions.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "fn_trigger_extract_materials_from_name",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261115130200_sec001_revoke_anon_execute_trigger_functions.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "fn_trigger_product_status_sync_category_count",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261115130200_sec001_revoke_anon_execute_trigger_functions.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "fn_trigger_propagate_category_min",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261115130200_sec001_revoke_anon_execute_trigger_functions.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "fn_trigger_propagate_fpr",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261115130200_sec001_revoke_anon_execute_trigger_functions.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "fn_trigger_set_has_gift_box",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261115130200_sec001_revoke_anon_execute_trigger_functions.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "fn_trigger_set_has_optional_packaging",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261115130200_sec001_revoke_anon_execute_trigger_functions.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "fn_trigger_set_min_quantity",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261115130200_sec001_revoke_anon_execute_trigger_functions.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "fn_trigger_supplier_source_price",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261115130200_sec001_revoke_anon_execute_trigger_functions.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "fn_trigger_sync_category_ancestors",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261115130200_sec001_revoke_anon_execute_trigger_functions.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "fn_trigger_sync_colors_to_product",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261115130200_sec001_revoke_anon_execute_trigger_functions.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "fn_trigger_sync_descendants_count",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261115130200_sec001_revoke_anon_execute_trigger_functions.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "fn_trigger_sync_pca_products_count",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261115130200_sec001_revoke_anon_execute_trigger_functions.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "fn_trigger_sync_product_status_fields",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261115130200_sec001_revoke_anon_execute_trigger_functions.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "fn_trigger_track_price_updated_products",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261115130200_sec001_revoke_anon_execute_trigger_functions.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "fn_trigger_track_price_updated_vss",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261115130200_sec001_revoke_anon_execute_trigger_functions.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "fn_trigger_update_price_last_verified",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261115130200_sec001_revoke_anon_execute_trigger_functions.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "fn_trigger_variant_automation",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261115130200_sec001_revoke_anon_execute_trigger_functions.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "fn_trigger_variant_price",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261115130200_sec001_revoke_anon_execute_trigger_functions.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "fn_update_cat_acc_timestamp",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261115130200_sec001_revoke_anon_execute_trigger_functions.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "fn_update_cat_comm_timestamp",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261115130200_sec001_revoke_anon_execute_trigger_functions.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "fn_update_prod_comm_timestamp",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261115130200_sec001_revoke_anon_execute_trigger_functions.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "fn_update_product_search_vector",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261115130200_sec001_revoke_anon_execute_trigger_functions.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "fn_update_ptm_timestamp",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261115130200_sec001_revoke_anon_execute_trigger_functions.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "fn_update_target_aud_timestamp",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261115130200_sec001_revoke_anon_execute_trigger_functions.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "fn_update_timestamp",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261115130200_sec001_revoke_anon_execute_trigger_functions.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "fn_update_updated_at",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261115130200_sec001_revoke_anon_execute_trigger_functions.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "fn_validate_packaging_config_hierarchy",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261115130200_sec001_revoke_anon_execute_trigger_functions.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "fn_validate_packaging_type_on_compat",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261115130200_sec001_revoke_anon_execute_trigger_functions.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "fn_validate_role_change",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261115130200_sec001_revoke_anon_execute_trigger_functions.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "fn_validate_selected_packaging",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261115130200_sec001_revoke_anon_execute_trigger_functions.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "fn_validate_video_on_change",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261115130200_sec001_revoke_anon_execute_trigger_functions.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "fn_vss_sync_warehouse_from_qty",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261115130200_sec001_revoke_anon_execute_trigger_functions.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "fn_xbz_derivar_campos_editoriais",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261115130200_sec001_revoke_anon_execute_trigger_functions.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "fn_xbz_enrich_from_site",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261115130200_sec001_revoke_anon_execute_trigger_functions.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "fn_xbz_propagate_site_to_silver",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261115130200_sec001_revoke_anon_execute_trigger_functions.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "increment_quote_version",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261115130200_sec001_revoke_anon_execute_trigger_functions.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "products_search_vector_update",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261115130200_sec001_revoke_anon_execute_trigger_functions.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "trg_content_articles_updated_at",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261115130200_sec001_revoke_anon_execute_trigger_functions.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "trg_fn_sanitize_restock_dates",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261115130200_sec001_revoke_anon_execute_trigger_functions.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "all",
     "object": "fn_dryrun_standardize_supplier",
     "objkind": "function",
     "roles": "PUBLIC",
@@ -386759,27 +389357,11 @@
     "src": "supabase/rollbacks/20261027233000_rollback.sql"
    },
    {
-    "kind": "grant",
+    "kind": "revoke",
     "privs": "execute",
     "object": "cleanup_expired_auth_sessions",
     "objkind": "function",
-    "roles": "PUBLIC",
-    "src": "supabase/rollbacks/20261101202000_rollback.sql"
-   },
-   {
-    "kind": "grant",
-    "privs": "execute",
-    "object": "cleanup_expired_auth_sessions",
-    "objkind": "function",
-    "roles": "anon",
-    "src": "supabase/rollbacks/20261101202000_rollback.sql"
-   },
-   {
-    "kind": "grant",
-    "privs": "execute",
-    "object": "cleanup_expired_auth_sessions",
-    "objkind": "function",
-    "roles": "authenticated",
+    "roles": "PUBLIC, anon, authenticated",
     "src": "supabase/rollbacks/20261101202000_rollback.sql"
    },
    {
@@ -386885,6 +389467,854 @@
     "objkind": "function",
     "roles": "anon",
     "src": "supabase/rollbacks/20261112130000_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_audit_role_changes",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/rollbacks/20261115130200_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_auto_classify_kit_product",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/rollbacks/20261115130200_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_auto_classify_packing",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/rollbacks/20261115130200_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_auto_classify_product_image",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/rollbacks/20261115130200_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_auto_criar_equivalencia_spot",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/rollbacks/20261115130200_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_auto_link_eco_material",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/rollbacks/20261115130200_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_auto_link_feminine_color",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/rollbacks/20261115130200_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_auto_set_same_supplier",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/rollbacks/20261115130200_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_auto_vincular_cor_variante",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/rollbacks/20261115130200_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_block_unauthorized_product_deactivation",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/rollbacks/20261115130200_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_category_copywriting_updated",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/rollbacks/20261115130200_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_color_equiv_clear_primary_on_inactive",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/rollbacks/20261115130200_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_color_equiv_ensure_primary",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/rollbacks/20261115130200_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_color_equiv_ensure_primary_stmt",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/rollbacks/20261115130200_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_cor_generate_slug",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/rollbacks/20261115130200_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_cor_updated_at",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/rollbacks/20261115130200_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_custom_kits_sync_user_id",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/rollbacks/20261115130200_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_dar_check_valid_until_future",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/rollbacks/20261115130200_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_dar_set_snapshot_hash",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/rollbacks/20261115130200_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_enforce_inactive_variant_zero_stock",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/rollbacks/20261115130200_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_ensure_single_primary_image",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/rollbacks/20261115130200_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_force_user_logout",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/rollbacks/20261115130200_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_hex_to_rgb",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/rollbacks/20261115130200_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_image_types_check_constraint_reminder",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/rollbacks/20261115130200_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_inherit_techniques_from_material",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/rollbacks/20261115130200_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_kit_component_calc_circumference",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/rollbacks/20261115130200_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_kit_component_inherit_personalization",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/rollbacks/20261115130200_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_kit_print_area_normalizar_eixos",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/rollbacks/20261115130200_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_log_login_attempt",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/rollbacks/20261115130200_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_log_price_change",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/rollbacks/20261115130200_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_log_step_up_event",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/rollbacks/20261115130200_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_normalize_image_format",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/rollbacks/20261115130200_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_normalize_source_supplier",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/rollbacks/20261115130200_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_normalize_source_supplier_videos",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/rollbacks/20261115130200_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_order_items_calc_subtotal",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/rollbacks/20261115130200_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_orders_sync_seller",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/rollbacks/20261115130200_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_pad_sync_status",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/rollbacks/20261115130200_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_pbd_before_write",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/rollbacks/20261115130200_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_pbd_block_system_delete",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/rollbacks/20261115130200_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_pipeline_steps_updated_at",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/rollbacks/20261115130200_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_pkc_auto_enrich_status",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/rollbacks/20261115130200_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_pkc_auto_inherit_material",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/rollbacks/20261115130200_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_products_capture_manual_edits",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/rollbacks/20261115130200_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_propagar_atualizacao_cor",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/rollbacks/20261115130200_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_quote_items_calc_subtotal",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/rollbacks/20261115130200_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_quotes_sync_seller",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/rollbacks/20261115130200_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_recalc_compat_on_dim_change",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/rollbacks/20261115130200_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_set_updated_at_aeq",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/rollbacks/20261115130200_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_set_updated_at_pa",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/rollbacks/20261115130200_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_silver_set_updated_at",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/rollbacks/20261115130200_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_sm_category_set_updated",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/rollbacks/20261115130200_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_sm_url_map_set_updated",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/rollbacks/20261115130200_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_spr_before_write",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/rollbacks/20261115130200_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_spr_normalize_keys",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/rollbacks/20261115130200_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_sync_color_variation_group",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/rollbacks/20261115130200_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_sync_dimensions_display",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/rollbacks/20261115130200_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_sync_image_type_code",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/rollbacks/20261115130200_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_sync_novelty_expires_at",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/rollbacks/20261115130200_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_sync_product_category_name",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/rollbacks/20261115130200_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_sync_product_has_sizes",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/rollbacks/20261115130200_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_sync_variant_to_product",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/rollbacks/20261115130200_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_sync_vss_to_variant",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/rollbacks/20261115130200_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_trigger_auto_classify_product",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/rollbacks/20261115130200_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_trigger_auto_extract_attributes",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/rollbacks/20261115130200_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_trigger_auto_sync_dimensions",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/rollbacks/20261115130200_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_trigger_calculate_sale_price",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/rollbacks/20261115130200_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_trigger_classify_packing",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/rollbacks/20261115130200_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_trigger_extract_materials_from_name",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/rollbacks/20261115130200_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_trigger_product_status_sync_category_count",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/rollbacks/20261115130200_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_trigger_propagate_category_min",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/rollbacks/20261115130200_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_trigger_propagate_fpr",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/rollbacks/20261115130200_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_trigger_set_has_gift_box",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/rollbacks/20261115130200_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_trigger_set_has_optional_packaging",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/rollbacks/20261115130200_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_trigger_set_min_quantity",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/rollbacks/20261115130200_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_trigger_supplier_source_price",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/rollbacks/20261115130200_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_trigger_sync_category_ancestors",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/rollbacks/20261115130200_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_trigger_sync_colors_to_product",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/rollbacks/20261115130200_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_trigger_sync_descendants_count",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/rollbacks/20261115130200_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_trigger_sync_pca_products_count",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/rollbacks/20261115130200_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_trigger_sync_product_status_fields",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/rollbacks/20261115130200_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_trigger_track_price_updated_products",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/rollbacks/20261115130200_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_trigger_track_price_updated_vss",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/rollbacks/20261115130200_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_trigger_update_price_last_verified",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/rollbacks/20261115130200_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_trigger_variant_automation",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/rollbacks/20261115130200_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_trigger_variant_price",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/rollbacks/20261115130200_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_update_cat_acc_timestamp",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/rollbacks/20261115130200_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_update_cat_comm_timestamp",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/rollbacks/20261115130200_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_update_prod_comm_timestamp",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/rollbacks/20261115130200_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_update_product_search_vector",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/rollbacks/20261115130200_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_update_ptm_timestamp",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/rollbacks/20261115130200_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_update_target_aud_timestamp",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/rollbacks/20261115130200_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_update_timestamp",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/rollbacks/20261115130200_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_update_updated_at",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/rollbacks/20261115130200_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_validate_packaging_config_hierarchy",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/rollbacks/20261115130200_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_validate_packaging_type_on_compat",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/rollbacks/20261115130200_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_validate_role_change",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/rollbacks/20261115130200_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_validate_selected_packaging",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/rollbacks/20261115130200_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_validate_video_on_change",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/rollbacks/20261115130200_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_vss_sync_warehouse_from_qty",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/rollbacks/20261115130200_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_xbz_derivar_campos_editoriais",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/rollbacks/20261115130200_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_xbz_enrich_from_site",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/rollbacks/20261115130200_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_xbz_propagate_site_to_silver",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/rollbacks/20261115130200_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "increment_quote_version",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/rollbacks/20261115130200_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "products_search_vector_update",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/rollbacks/20261115130200_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "trg_content_articles_updated_at",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/rollbacks/20261115130200_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "trg_fn_sanitize_restock_dates",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/rollbacks/20261115130200_rollback.sql"
    },
    {
     "kind": "grant",
@@ -387902,10 +391332,6 @@
    [
     "product_specifications",
     "is_active"
-   ],
-   [
-    "stock_notes",
-    "deleted_at"
    ],
    [
     "webhook_configs",
@@ -389360,11 +392786,6 @@
    "ops.table_size_history": [],
    "ops.pgss_history": [],
    "ops.wraparound_monitor_log": [],
-   "stock_notes": [
-    "created_at",
-    "created_by",
-    "updated_at"
-   ],
    "webhook_configs": [
     "created_at"
    ],
@@ -391619,6 +395040,14 @@
    },
    {
     "kind": "tabela",
+    "msg": "tabela `stock_notes` usada no código não existe nas migrations/types do repo",
+    "where": [
+     "src/hooks/stock/useStockNotes.ts",
+     "tests/scripts/check-supabase-reference-catalog.test.mjs"
+    ]
+   },
+   {
+    "kind": "tabela",
     "msg": "tabela `sync_logs` usada no código não existe nas migrations/types do repo",
     "where": [
      "supabase/functions/bitrix-sync/index.ts"
@@ -393720,7 +397149,7 @@
    "`quote_approval_tokens.status` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.",
    "`kit_share_tokens.status` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.",
    "`_deprecated_silver_images_queue_20260606.img_status` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.",
-   "268/495 tabelas sem `COMMENT ON TABLE` — o significado de negócio não está no schema: `optimization_queue`, `quotes`, `magazines`, `material_types`, `quotes_inbound`, `webhook_inbound_dedupe`, `webhook_inbound_log`, `magazine_items`, `magazine_reader_state`, `magazine_templates`, `admin_audit_log_y2025m12`, `admin_audit_log_y2026m01` …",
+   "267/494 tabelas sem `COMMENT ON TABLE` — o significado de negócio não está no schema: `optimization_queue`, `quotes`, `magazines`, `material_types`, `quotes_inbound`, `webhook_inbound_dedupe`, `webhook_inbound_log`, `magazine_items`, `magazine_reader_state`, `magazine_templates`, `admin_audit_log_y2025m12`, `admin_audit_log_y2026m01` …",
    "Há tabelas usadas no código sem migration no repo — o schema real pode ter sido alterado pelo painel."
   ]
  },
@@ -393935,7 +397364,7 @@
   },
   "vitest.config.ts": {
    "path": "vitest.config.ts",
-   "lines": 168,
+   "lines": 171,
    "exports": [
     "default defineConfig"
    ],
@@ -418709,7 +422138,7 @@
   },
   "scripts/drift-baseline.mjs": {
    "path": "scripts/drift-baseline.mjs",
-   "lines": 1255,
+   "lines": 1257,
    "exports": [
     "const BASELINE_DIR",
     "const BASELINE_NAME_RE",
@@ -452212,7 +455641,7 @@
   },
   "src/hooks/intelligence/useMarketIntelligenceMacro.ts": {
    "path": "src/hooks/intelligence/useMarketIntelligenceMacro.ts",
-   "lines": 197,
+   "lines": 198,
    "exports": [
     "interface MacroMarketPoint",
     "interface MacroSupplierMetrics",
@@ -452220,7 +455649,7 @@
     "interface MacroMarketData",
     "function useMarketIntelligenceMacro"
    ],
-   "doc": "Hook para Inteligência de Mercado MACRO (agregada por todos os produtos). Consome stock_daily_summary via external-db-bridge. Retorna dados agregados + breakdown por fornecedor para comparação.",
+   "doc": "Hook para Inteligência de Mercado MACRO (agregada por todos os produtos). Consome a RPC fn_market_intelligence_macro (stock_daily_summary já somado por dia × fornecedor no banco, só dentro da janela pedida). Retorna dados agregados + breakdown por fornecedor para comparação.",
    "hooks": [
     "useMarketIntelligenceMacro"
    ],
@@ -452809,6 +456238,22 @@
    "tests": [
     "fetchCategoryRanking — marketDepleted",
     "7 dias, 100 produtos com 2 un/30d: soma proporcional (~47), não zera por arredondar cada produto"
+   ]
+  },
+  "src/hooks/intelligence/__tests__/useMarketIntelligenceMacro.test.tsx": {
+   "path": "src/hooks/intelligence/__tests__/useMarketIntelligenceMacro.test.tsx",
+   "lines": 105,
+   "is_test": true,
+   "rule_comments": [
+    "* Antes: dbInvoke em stock_daily_summary sem filtro de data, ascendente, limit 5000 → o max-rows"
+   ],
+   "doc": "useMarketIntelligenceMacro — bug #57 (market-intel). Antes: dbInvoke em stock_daily_summary sem filtro de data, ascendente, limit 5000 → o max-rows devolvia as linhas mais antigas, todas cortadas pelo `cutoff` no cliente → `daily` vazio. Depois: untypedRpc('fn_market_intelligence_macro', { p_days, p …",
+   "tests": [
+    "useMarketIntelligenceMacro (RPC fn_market_intelligence_macro)",
+    "chama a RPC com p_days e p_supplier_id (null quando não há filtro) — não lê a tabela cru",
+    "repassa o fornecedor escolhido em p_supplier_id",
+    "agrega por data e por fornecedor as linhas (já somadas por dia × fornecedor) que a RPC devolve",
+    "propaga o erro da RPC (função ausente → PGRST202) em vez de devolver dados vazios como se fossem reais"
    ]
   },
   "src/hooks/intelligence/__tests__/useStockHistory.test.ts": {
@@ -489808,6 +493253,70 @@
    ],
    "doc": "generate-mockup — allowlist de egresso + download com redirect validado. AUDIT (plano etapa 35): o download seguia 3xx às cegas (a allowlist só era vista na URL inicial) e `MOCKUP_FETCH_ALLOWED_HOSTS` ausente = tudo liberado. Aqui: - env ausente → default restrito ao host Supabase do projeto (Storag …"
   },
+  "supabase/functions/generate-mockup/geometry.ts": {
+   "path": "supabase/functions/generate-mockup/geometry.ts",
+   "lines": 141,
+   "exports": [
+    "const MIN_LOGO_PX",
+    "const MAX_LOGO_PX",
+    "const DEFAULT_PRODUCT_FRACTION",
+    "interface CmParaPxInput",
+    "interface CmParaPxResult",
+    "function cmParaPx",
+    "function logoSizePx"
+   ],
+   "params": [
+    {
+     "name": "MIN_LOGO_PX",
+     "value": "40"
+    },
+    {
+     "name": "MAX_LOGO_PX",
+     "value": "8"
+    },
+    {
+     "name": "DEFAULT_PRODUCT_FRACTION",
+     "value": "0.85"
+    }
+   ],
+   "rule_comments": [
+    "mudar regra de negócio para o usuário final — decisão registrada no commit.)",
+    "* Lado mínimo (px) abaixo do qual a logo é ampliada para continuar visível. */",
+    "(CANVAS_PX = 1024 em index.ts). NÃO é regra de WYSIWYG — uma logo que",
+    "mínimo de 40 px (o servidor anterior usava 8 px e um produto-referência de",
+    "* Tamanho final desenhado no canvas: a caixa de `cmParaPx` (já com o mínimo de"
+   ],
+   "percents": [
+    "* - não há teto de 98% do quadro (o `MAX_LOGO_CANVAS_FRACTION` anterior): o canvas",
+    "const physW = prodW ?? (prodH ? prodH * 0.4 : 8);"
+   ]
+  },
+  "supabase/functions/generate-mockup/index.geometry.test.ts": {
+   "path": "supabase/functions/generate-mockup/index.geometry.test.ts",
+   "lines": 156,
+   "is_test": true,
+   "rule_comments": [
+    "mínimo de 8 px — a logo saía na imagem gerada num tamanho diferente do que o",
+    "(src/lib/mockup-geometry.ts): mesmos physW/physH, mínimo de 40 px e ordem"
+   ],
+   "tests": [
+    "geometry (generate-mockup) — sem dimensões cadastradas, o fallback é a estimativa do editor",
+    "sem dimensões a conta usa 8×20 cm (o que o editor mostra), não o produto-referência de 20 cm do canvas",
+    "dimensões inválidas (0, negativa, string) valem como ausentes — mesmo fallback, nunca NaN",
+    "o handler não recusa payload sem dimensões (kit-builder depende disso)",
+    "geometry (generate-mockup) — mesmos números da função compartilhada do cliente",
+    "logo minúscula usa o mínimo de 40 px (o antigo mínimo de 8 px foi removido)",
+    "fração ausente cai no default do cliente (0.85), não em 1",
+    "fração inválida (0, >1, NaN) também cai no default 0.85",
+    "logo MAIOR que o quadro não é mais encolhida (o teto de 98% quebrava o WYSIWYG)",
+    "geometry (generate-mockup) — proteções herdadas do main",
+    "teto proporcional de absurdo: productWidthCm minúsculo não gera drawImage de milhões de px",
+    "cm da logo ≤ 0 cai nos defaults 5×3 em vez de virar caixa negativa",
+    "index.ts está ligado à geometria compartilhada",
+    "importa e usa o cálculo compartilhado, sem o produto-referência de 20 cm nem o mínimo de 8 px",
+    "validationError segue com 400 fixo (nenhum status novo entrou no handler)"
+   ]
+  },
   "supabase/functions/generate-mockup/index.test.ts": {
    "path": "supabase/functions/generate-mockup/index.test.ts",
    "lines": 84,
@@ -489828,7 +493337,7 @@
   },
   "supabase/functions/generate-mockup/index.ts": {
    "path": "supabase/functions/generate-mockup/index.ts",
-   "lines": 554,
+   "lines": 507,
    "storage": [
     "mockup-assets"
    ],
@@ -489856,18 +493365,6 @@
      "value": "1024"
     },
     {
-     "name": "FALLBACK_PRODUCT_REFERENCE_CM",
-     "value": "20"
-    },
-    {
-     "name": "MAX_LOGO_CANVAS_FRACTION",
-     "value": "0.98"
-    },
-    {
-     "name": "MIN_LOGO_PX",
-     "value": "8"
-    },
-    {
      "name": "MAX_BITMAP_PIXELS",
      "value": "40"
     }
@@ -489887,6 +493384,8 @@
    "rule_comments": [
     "─ Validation ──────────────────────────────────────────────────────────────",
     "SVG cannot be rasterised by createImageBitmap in the Deno edge runtime, so it must",
+    "fórmula do editor, inclusive o mínimo de 40 px, a inferência de uma dimensão",
+    "mínimo de 8 px. A sanitização de cm ≤ 0 e o teto proporcional de absurdo",
     "validation error path fires cleanly instead of a 500.",
     "isFetchableUrl unifies scheme validation + SSRF blocking + mandatory allowlist."
    ],
@@ -489895,11 +493394,6 @@
      "name": "validationError",
      "params": "message: string, corsHeaders: Record<string, string>, errorCode?: string,",
      "body": "return new Response( JSON.stringify({ error: \"validation_failed\", errorCode, message }), { status: 400, headers: { ...corsHeaders, \"Content-Type\": \"application/json\" } }, );"
-    },
-    {
-     "name": "computeLogoPx",
-     "params": "containW: number, containH: number, logoWidthCm: unknown, logoHeightCm: unknown, productWidthCm: unknown, productHeightC",
-     "body": "lw: number; lh: number"
     }
    ],
    "uses_service_role": true
@@ -508977,6 +512471,10 @@
    "path": "supabase/migrations/20261101232022_cron001_stagger_schedules_reapply.sql",
    "lines": 15
   },
+  "supabase/migrations/20261102063000_repair_kill_switch_hits_anon_rate_guard.sql": {
+   "path": "supabase/migrations/20261102063000_repair_kill_switch_hits_anon_rate_guard.sql",
+   "lines": 10
+  },
   "supabase/migrations/20261104100000_partitions_supplier_products_raw_history_2027.sql": {
    "path": "supabase/migrations/20261104100000_partitions_supplier_products_raw_history_2027.sql",
    "lines": 53
@@ -509170,6 +512668,21 @@
    ],
    "uses_service_role": true
   },
+  "supabase/migrations/20261114120000_cron004_reduz_frequencia_jobs_ociosos.sql": {
+   "path": "supabase/migrations/20261114120000_cron004_reduz_frequencia_jobs_ociosos.sql",
+   "lines": 55
+  },
+  "supabase/migrations/20261114120100_cron005_refresh_all_mvs_diario_timeout_real.sql": {
+   "path": "supabase/migrations/20261114120100_cron005_refresh_all_mvs_diario_timeout_real.sql",
+   "lines": 21
+  },
+  "supabase/migrations/20261114160000_perf_idx_sds_restock_counts.sql": {
+   "path": "supabase/migrations/20261114160000_perf_idx_sds_restock_counts.sql",
+   "lines": 29,
+   "temporal": [
+    "-- O db-apply-migration usa lock_timeout=1s: o CONCURRENTLY espera transações antigas, então esta"
+   ]
+  },
   "supabase/migrations/20261114170845_fix_workspace_notifications_insert_policy_reapply.sql": {
    "path": "supabase/migrations/20261114170845_fix_workspace_notifications_insert_policy_reapply.sql",
    "lines": 37,
@@ -509185,6 +512698,26 @@
   "supabase/migrations/20261115013000_fix_get_quote_token_public_respeita_expiracao.sql": {
    "path": "supabase/migrations/20261115013000_fix_get_quote_token_public_respeita_expiracao.sql",
    "lines": 68
+  },
+  "supabase/migrations/20261115130000_idx_sds_summary_date_supplier_include.sql": {
+   "path": "supabase/migrations/20261115130000_idx_sds_summary_date_supplier_include.sql",
+   "lines": 30,
+   "temporal": [
+    "-- O db-apply-migration usa lock_timeout=1s: o CONCURRENTLY espera transações antigas, então esta"
+   ]
+  },
+  "supabase/migrations/20261115130100_fn_market_intelligence_macro.sql": {
+   "path": "supabase/migrations/20261115130100_fn_market_intelligence_macro.sql",
+   "lines": 68,
+   "uses_service_role": true
+  },
+  "supabase/migrations/20261115130200_sec001_revoke_anon_execute_trigger_functions.sql": {
+   "path": "supabase/migrations/20261115130200_sec001_revoke_anon_execute_trigger_functions.sql",
+   "lines": 127
+  },
+  "supabase/migrations/20261115130300_fn_global_search_clamp_limit_hardened.sql": {
+   "path": "supabase/migrations/20261115130300_fn_global_search_clamp_limit_hardened.sql",
+   "lines": 84
   },
   "supabase/rollbacks/20260511235950_rollback.sql": {
    "path": "supabase/rollbacks/20260511235950_rollback.sql",
@@ -509212,6 +512745,22 @@
    "path": "supabase/rollbacks/20260917061500_rollback.sql",
    "lines": 39,
    "uses_service_role": true
+  },
+  "supabase/rollbacks/20260917070000_rollback.sql": {
+   "path": "supabase/rollbacks/20260917070000_rollback.sql",
+   "lines": 44
+  },
+  "supabase/rollbacks/20260917090000_rollback.sql": {
+   "path": "supabase/rollbacks/20260917090000_rollback.sql",
+   "lines": 34
+  },
+  "supabase/rollbacks/20260917100000_rollback.sql": {
+   "path": "supabase/rollbacks/20260917100000_rollback.sql",
+   "lines": 86,
+   "temporal": [
+    "WHERE status='processing' AND locked_at < now() - interval '1 hour' AND attempts >= max_attempts;",
+    "WHERE status='processing' AND locked_at < now() - interval '2 hours' AND attempts < max_attempts;"
+   ]
   },
   "supabase/rollbacks/20261015150000_rollback.sql": {
    "path": "supabase/rollbacks/20261015150000_rollback.sql",
@@ -509373,9 +512922,17 @@
    "path": "supabase/rollbacks/20261029160339_rollback.sql",
    "lines": 5
   },
+  "supabase/rollbacks/20261031000000_rollback.sql": {
+   "path": "supabase/rollbacks/20261031000000_rollback.sql",
+   "lines": 54
+  },
   "supabase/rollbacks/20261101150000_rollback.sql": {
    "path": "supabase/rollbacks/20261101150000_rollback.sql",
    "lines": 6
+  },
+  "supabase/rollbacks/20261101190101_rollback.sql": {
+   "path": "supabase/rollbacks/20261101190101_rollback.sql",
+   "lines": 29
   },
   "supabase/rollbacks/20261101201000_rollback.sql": {
    "path": "supabase/rollbacks/20261101201000_rollback.sql",
@@ -509383,7 +512940,11 @@
   },
   "supabase/rollbacks/20261101202000_rollback.sql": {
    "path": "supabase/rollbacks/20261101202000_rollback.sql",
-   "lines": 9
+   "lines": 12
+  },
+  "supabase/rollbacks/20261102063000_rollback.sql": {
+   "path": "supabase/rollbacks/20261102063000_rollback.sql",
+   "lines": 5
   },
   "supabase/rollbacks/20261104100000_rollback.sql": {
    "path": "supabase/rollbacks/20261104100000_rollback.sql",
@@ -509541,6 +513102,18 @@
    "path": "supabase/rollbacks/20261114040000_rollback.sql",
    "lines": 3
   },
+  "supabase/rollbacks/20261114120000_rollback.sql": {
+   "path": "supabase/rollbacks/20261114120000_rollback.sql",
+   "lines": 27
+  },
+  "supabase/rollbacks/20261114120100_rollback.sql": {
+   "path": "supabase/rollbacks/20261114120100_rollback.sql",
+   "lines": 12
+  },
+  "supabase/rollbacks/20261114160000_rollback.sql": {
+   "path": "supabase/rollbacks/20261114160000_rollback.sql",
+   "lines": 2
+  },
   "supabase/rollbacks/20261114170845_rollback.sql": {
    "path": "supabase/rollbacks/20261114170845_rollback.sql",
    "lines": 16
@@ -509552,6 +513125,22 @@
   "supabase/rollbacks/20261115013000_rollback.sql": {
    "path": "supabase/rollbacks/20261115013000_rollback.sql",
    "lines": 30
+  },
+  "supabase/rollbacks/20261115130000_rollback.sql": {
+   "path": "supabase/rollbacks/20261115130000_rollback.sql",
+   "lines": 6
+  },
+  "supabase/rollbacks/20261115130100_rollback.sql": {
+   "path": "supabase/rollbacks/20261115130100_rollback.sql",
+   "lines": 7
+  },
+  "supabase/rollbacks/20261115130200_rollback.sql": {
+   "path": "supabase/rollbacks/20261115130200_rollback.sql",
+   "lines": 112
+  },
+  "supabase/rollbacks/20261115130300_rollback.sql": {
+   "path": "supabase/rollbacks/20261115130300_rollback.sql",
+   "lines": 29
   },
   "supabase/rollbacks/rollback_20261025002500_analyze_tables_p03.sql": {
    "path": "supabase/rollbacks/rollback_20261025002500_analyze_tables_p03.sql",
@@ -530959,7 +534548,7 @@
   },
   "tests/security/security-definer-acl-gate.test.ts": {
    "path": "tests/security/security-definer-acl-gate.test.ts",
-   "lines": 30,
+   "lines": 45,
    "is_test": true,
    "env": [
     "HOME",
@@ -530969,7 +534558,10 @@
    "tests": [
     "check-security-definer-acl gate",
     "reporta static-pass quando falta credencial e live não é obrigatório",
-    "reporta inconclusive quando falta credencial e live é obrigatório"
+    "reporta inconclusive quando falta credencial e live é obrigatório",
+    "rollback do cleanup de funções de auditoria",
+    "não reabre EXECUTE para papéis públicos",
+    "mantém o ACL canônico fail-closed e idempotente"
    ]
   },
   "tests/security/security-definer-acl.test.ts": {
@@ -533447,10 +537039,50 @@
   }
  },
  "git": {
-  "sha": "a03adc35485eea4e060b4576ff25a842e8c08d10",
+  "sha": "b89a44e100c15de131ecdcffebc549dbd141097d",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "b89a44e",
+    "date": "2026-11-15",
+    "author": "adm01-debug",
+    "subject": "fix(db): trem de banco — gráfico de mercado com dado real, revoke de 106 funções, índices e crons mais baratos (#3665)",
+    "files": [
+     "audit/supabase-reference-catalog.temporary.json",
+     "scripts/drift-baseline.mjs",
+     "src/hooks/intelligence/__tests__/useMarketIntelligenceMacro.test.tsx",
+     "src/hooks/intelligence/useMarketIntelligenceMacro.ts",
+     "supabase/MIGRATIONS_SYNC_LOG.md",
+     "supabase/functions/generate-mockup/geometry.ts",
+     "supabase/functions/generate-mockup/index.geometry.test.ts",
+     "supabase/functions/generate-mockup/index.ts",
+     "supabase/migrations/20261102063000_repair_kill_switch_hits_anon_rate_guard.sql",
+     "supabase/migrations/20261114120000_cron004_reduz_frequencia_jobs_ociosos.sql",
+     "supabase/migrations/20261114120100_cron005_refresh_all_mvs_diario_timeout_real.sql",
+     "supabase/migrations/20261114160000_perf_idx_sds_restock_counts.sql",
+     "supabase/migrations/20261115130000_idx_sds_summary_date_supplier_include.sql",
+     "supabase/migrations/20261115130100_fn_market_intelligence_macro.sql",
+     "supabase/migrations/20261115130200_sec001_revoke_anon_execute_trigger_functions.sql",
+     "supabase/migrations/20261115130300_fn_global_search_clamp_limit_hardened.sql",
+     "supabase/rollbacks/20260917070000_rollback.sql",
+     "supabase/rollbacks/20260917090000_rollback.sql",
+     "supabase/rollbacks/20260917100000_rollback.sql",
+     "supabase/rollbacks/20261031000000_rollback.sql",
+     "supabase/rollbacks/20261101190101_rollback.sql",
+     "supabase/rollbacks/20261101202000_rollback.sql",
+     "supabase/rollbacks/20261102063000_rollback.sql",
+     "supabase/rollbacks/20261114120000_rollback.sql",
+     "supabase/rollbacks/20261114120100_rollback.sql",
+     "supabase/rollbacks/20261114160000_rollback.sql",
+     "supabase/rollbacks/20261115130000_rollback.sql",
+     "supabase/rollbacks/20261115130100_rollback.sql",
+     "supabase/rollbacks/20261115130200_rollback.sql",
+     "supabase/rollbacks/20261115130300_rollback.sql",
+     "tests/security/security-definer-acl-gate.test.ts",
+     "vitest.config.ts"
+    ]
+   },
    {
     "sha": "a03adc3",
     "date": "2026-11-15",
@@ -533932,19 +537564,16 @@
     "author": "adm01-debug",
     "subject": "Merge branch 'main' into claude/trem4-front-perf-261114-2020",
     "files": []
-   },
-   {
-    "sha": "23cfcc1",
-    "date": "2026-11-14",
-    "author": "adm01-debug",
-    "subject": "fix(pdp): aborta de verdade a consulta do produto ao estourar o limite de 15 s (#3622)",
-    "files": []
    }
   ],
   "hot_files": [
    [
     "docs/coordenacao/conflitos-semanticos.md",
     8
+   ],
+   [
+    "supabase/MIGRATIONS_SYNC_LOG.md",
+    4
    ],
    [
     "src/pages/mockups/MockupGenerator.tsx",
@@ -533955,8 +537584,12 @@
     3
    ],
    [
-    "supabase/MIGRATIONS_SYNC_LOG.md",
-    3
+    "audit/supabase-reference-catalog.temporary.json",
+    2
+   ],
+   [
+    "scripts/drift-baseline.mjs",
+    2
    ],
    [
     ".github/workflows/deploy-gates.yml",
@@ -534011,15 +537644,7 @@
     2
    ],
    [
-    "src/services/__tests__/orderService.test.ts",
-    1
-   ],
-   [
-    "src/services/orderService.ts",
-    1
-   ],
-   [
-    "src/components/mockup/MockupWizard.tsx",
+    "src/hooks/intelligence/__tests__/useMarketIntelligenceMacro.test.tsx",
     1
    ]
   ]

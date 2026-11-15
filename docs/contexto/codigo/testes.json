@@ -5,13 +5,13 @@
   "vitest",
   "playwright"
  ],
- "total": 2497,
+ "total": 2499,
  "por_tipo": {
   "contrato": 65,
   "e2e": 677,
   "pytest": 4,
   "qa": 17,
-  "unit": 1734
+  "unit": 1736
  },
  "onde_ficam": [
   {
@@ -20,7 +20,7 @@
   },
   {
    "padrao": "co-localizado (__tests__)",
-   "arquivos": 658
+   "arquivos": 659
   },
   {
    "padrao": "e2e/",
@@ -28,7 +28,7 @@
   },
   {
    "padrao": "co-localizado (*.test)",
-   "arquivos": 145
+   "arquivos": 146
   },
   {
    "padrao": "outro",
@@ -8066,6 +8066,16 @@
    "casos": 1
   },
   {
+   "arquivo": "src/hooks/intelligence/__tests__/useMarketIntelligenceMacro.test.tsx",
+   "tipo": "unit",
+   "linhas": 105,
+   "testa": [
+    "src/hooks/intelligence/useMarketIntelligenceMacro.ts",
+    "src/lib/supabase-untyped.ts"
+   ],
+   "casos": 4
+  },
+  {
    "arquivo": "src/hooks/intelligence/__tests__/useStockHistory.test.ts",
    "tipo": "unit",
    "linhas": 213,
@@ -12129,6 +12139,15 @@
     "supabase/functions/generate-ad-prompt/timeout.ts"
    ],
    "casos": 4
+  },
+  {
+   "arquivo": "supabase/functions/generate-mockup/index.geometry.test.ts",
+   "tipo": "unit",
+   "linhas": 156,
+   "testa": [
+    "supabase/functions/generate-mockup/geometry.ts"
+   ],
+   "casos": 12
   },
   {
    "arquivo": "supabase/functions/generate-mockup/index.test.ts",
@@ -20217,9 +20236,9 @@
   {
    "arquivo": "tests/security/security-definer-acl-gate.test.ts",
    "tipo": "unit",
-   "linhas": 30,
+   "linhas": 45,
    "testa": [],
-   "casos": 2
+   "casos": 4
   },
   {
    "arquivo": "tests/security/security-definer-acl.test.ts",
@@ -21500,7 +21519,7 @@
   "src/hooks/intelligence/useMagicUpGeneration.ts": 2,
   "src/hooks/intelligence/useMagicUpState.helpers.ts": 1,
   "src/hooks/intelligence/useMagicUpState.ts": 3,
-  "src/hooks/intelligence/useMarketIntelligenceMacro.ts": 1,
+  "src/hooks/intelligence/useMarketIntelligenceMacro.ts": 2,
   "src/hooks/intelligence/useSalesGoals.ts": 1,
   "src/hooks/intelligence/useSalesHistoryMacro.ts": 1,
   "src/hooks/intelligence/useSparklineSales.tsx": 1,
@@ -21745,7 +21764,7 @@
   "src/lib/sentry.ts": 3,
   "src/lib/stock-chart-utils.ts": 1,
   "src/lib/supabase-direct.ts": 2,
-  "src/lib/supabase-untyped.ts": 1,
+  "src/lib/supabase-untyped.ts": 2,
   "src/lib/supplier-colors.ts": 2,
   "src/lib/sw-register.ts": 1,
   "src/lib/system/dev-gate/DevInfraGate.ts": 5,
@@ -21953,6 +21972,7 @@
   "supabase/functions/generate-ad-image/sanitize.ts": 1,
   "supabase/functions/generate-ad-prompt/timeout.ts": 1,
   "supabase/functions/generate-mockup/fetch-guard.ts": 1,
+  "supabase/functions/generate-mockup/geometry.ts": 1,
   "supabase/functions/magazine-import-local/logic.ts": 1,
   "supabase/functions/magic-up-score/index.ts": 2,
   "supabase/functions/process-scheduled-reports/index.ts": 1,

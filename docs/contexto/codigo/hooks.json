@@ -9208,7 +9208,7 @@
    "hooks_exportados": [
     "useMarketIntelligenceMacro"
    ],
-   "linhas": 197,
+   "linhas": 198,
    "dominio": "hooks/intelligence",
    "tabelas": [],
    "rpcs": [],
@@ -9222,7 +9222,7 @@
     "src/components/intelligence/MarketIntelligenceChart.tsx",
     "src/hooks/intelligence/index.ts"
    ],
-   "coberto_por_testes": 1
+   "coberto_por_testes": 2
   },
   {
    "arquivo": "src/hooks/intelligence/usePromoSales90dByProduct.ts",

@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.3.2 · commit `a03adc3548` · branch `main` · 2026-11-15 14:59 UTC
+> Gerado automaticamente por AI Context Sync v1.3.2 · commit `b89a44e100` · branch `main` · 2026-11-15 15:18 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -809,7 +809,7 @@ Fornecedor Asia → supplier_products_raw (Bronze) → normalização (Silver) �
 | `art_file_attachments` | `user_id` | obrigatório |
 | `art_file_attachments` | `file_url` | obrigatório |
 | `art_file_attachments` | `file_path` | obrigatório |
-| … +3798 linhas — lista completa em `context.json` | | |
+| … +3789 linhas — lista completa em `context.json` | | |
 
 ## D. Automações no banco (triggers e funções — regras que rodam sozinhas)
 
@@ -1115,7 +1115,7 @@ Fornecedor Asia → supplier_products_raw (Bronze) → normalização (Silver) �
 | trg_validate_commission_status | BEFORE INSERT OR UPDATE | `commission_entries` | `validate_commission_status` |  |
 | update_commission_rules_updated_at | BEFORE UPDATE | `commission_rules` | `update_updated_at_column` |  |
 | update_commission_entries_updated_at | BEFORE UPDATE | `commission_entries` | `update_updated_at_column` |  |
-| … +181 linhas — lista completa em `context.json` | | | | |
+| … +180 linhas — lista completa em `context.json` | | | | |
 
 Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banco):
 
@@ -4970,10 +4970,6 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
   ```
   return new Response( JSON.stringify({ error: "validation_failed", errorCode, message }), { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }, );
   ```
-- **computeLogoPx(containW: number, containH: number, logoWidthCm: unknown, logoHeightCm: unknown, productWidthCm: unknown, productHeightC)** — `supabase/functions/generate-mockup/index.ts`
-  ```
-  lw: number; lh: number
-  ```
 - **calcMetrics(quotes: { data: any[] | null }, orders: { data: any[] | null })** — `supabase/functions/market-intelligence-insights/index.ts`
   ```
   const qData = quotes.data ?? []; const oData = orders.data ?? []; const revenue = oData.reduce((s, o) => s + (Number(o.total) || 0), 0); const orderCount = oData.length; const quoteCount = qData.length; const avg_ticket = orderCount > 0 ? revenue / orderCount : 0; const conversion_rate = quoteCount > 0 ? Number(((orderCount / quoteCount) * 100).toFixed(1)) : 0; return { revenue, orders: orderCount, quotes: quoteCount, avg_ticket, conversion_rate };
@@ -5274,6 +5270,8 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `// vazavam nos resultados (696 casos = 2.49% dos assignments).` | `supabase/functions/categories-api/index.ts` |
 | `* Cruza user_comparisons ativas com price_history; se houve queda > 5% nos` | `supabase/functions/comparison-price-watcher/index.ts` |
 | `// Coverage: JPEG+PNG+WebP+GIF ≈ 99.9% of all verified product images.` | `supabase/functions/generate-blurhashes/index.ts` |
+| `* - não há teto de 98% do quadro (o `MAX_LOGO_CANVAS_FRACTION` anterior): o canvas` | `supabase/functions/generate-mockup/geometry.ts` |
+| `const physW = prodW ?? (prodH ? prodH * 0.4 : 8);` | `supabase/functions/generate-mockup/geometry.ts` |
 | `'cdn.xbzbrindes.com.br', // XBZ CDN de imagens — 67.96% product_images` | `supabase/functions/image-proxy/index.ts` |
 | `'cdndeprodutos.azureedge.net', // XBZ Azure CDN — 4.5% product_images` | `supabase/functions/image-proxy/index.ts` |
 | `'media.asiaimport.com.br', // Asia Import CDN — 8.96% product_images` | `supabase/functions/image-proxy/index.ts` |
@@ -5900,7 +5898,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `const NINETY_DAYS = 90 * 24 * 60 * 60 * 1000;` | `src/hooks/bi/useClientCategoryAffinity.ts` |
 | `staleTime: 5 * 60 * 1000,` | `src/hooks/bi/useClientCategoryAffinity.ts` |
 | `staleTime: 5 * 60 * 1000,` | `src/hooks/bi/useClientOrdersHistory.ts` |
-| … +384 linhas — lista completa em `context.json` | |
+| … +388 linhas — lista completa em `context.json` | |
 
 ### H.3 Limites de paginação
 
@@ -6507,7 +6505,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `admin` | `supabase/migrations/20261112120500_fix_optimization_queue_rpcs_dev_access.sql` |
 | `anon` | `tests/edge-functions/live/_live-client.ts` |
 
-## K. Testes como especificação (21443 testes em 2177 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (21466 testes em 2179 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -6811,7 +6809,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `tests/edge-functions/integration/product-webhook.test.ts` | 18 | product-webhook · evento product.created · retorna 200 para evento product.created válido · evento product.updated … |
 | `tests/hooks/useGlobalSearch-voice.test.ts` | 18 | Voice Action Handler Logic · navigate action · should extract route from navigate action · should handle navigate without route gracefully … |
 | `tests/lib/product-types.test.ts` | 18 | getProductImageUrl · should prefer primary_image_url · should fallback to image_url · should fallback to first image in images array … |
-| … +1877 linhas — lista completa em `context.json` | | |
+| … +1879 linhas — lista completa em `context.json` | | |
 
 ## L. Eventos de webhook tratados (contratos com sistemas externos)
 
@@ -7279,4 +7277,4 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | ANTI-REGRESSÃO: primary_image_url deve vir ANTES de og_image_url. | `src/components/mockup/ProductSearchCombobox.tsx` |
 | NÃO contém limites numéricos: qualquer número de limite (cores, dimensões, | `src/components/mockup/TechniqueTooltip.tsx` |
 | qualitativos abaixo são apenas estimativas e aparecem rotulados como tal. | `src/components/mockup/TechniqueTooltip.tsx` |
-| … +1284 linhas — lista completa em `context.json` | |
+| … +1291 linhas — lista completa em `context.json` | |

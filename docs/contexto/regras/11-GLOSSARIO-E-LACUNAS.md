@@ -1,6 +1,6 @@
 # 11 · GLOSSÁRIO, DADOS DE REFERÊNCIA E LACUNAS
 
-> Gerado automaticamente por AI Context Sync v1.3.2 · commit `a03adc3548` · branch `main` · 2026-11-15 14:59 UTC
+> Gerado automaticamente por AI Context Sync v1.3.2 · commit `b89a44e100` · branch `main` · 2026-11-15 15:18 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## Glossário do domínio (entidades do sistema)
@@ -307,7 +307,7 @@
 | `product_print_positions` | _(sem COMMENT ON TABLE — significado não documentado)_ | 18 colunas | migration |
 | `product_properties` | Relacionamento entre produtos e suas propriedades | 9 colunas | migration |
 | `product_qa_image_alerts` | Tabela de qualidade: rastreia produtos ativos que foram ativados ou encontrados sem imagem. Regra de negócio violada: "nenhum produto ativo pode existir sem ao menos uma imagem".  ━━━ CICLO DE VIDA DE UM ALERTA ━━━ ABERTO    → is_resolved=false, resolved_at=NULL RESOLVIDO → is_resolved=true,  resolved_at=timestamp, resolution_notes=motivo  ━━━ FONTES DE CRIAÇÃO (2 caminhos) ━━━ 1. Trigger em tempo real  — products: BEFORE UPDATE    Função: fn_qa_alert_on_activate_without_image()    Gatilho: qualquer UPDATE que mude is_active de false/NULL → true    Efeito: além do alerta, seta products.sync_status = 'activated_no_image' (18 chars, MAX varchar(20))     2. Varredura periódica — pg_cron 'qa-imageless-products' (a cada 30 minutos)    Função: fn_qa_scan_imageless_products()    Detecta produtos que escaparam do trigger (ex.: criados diretamente em pipeline mode)    Também auto-resolve alertas de produtos que já sanaram a situação  ━━━ AUTO-RESOLUÇÃO (fn_qa_scan_imageless_products) ━━━ Um alerta aberto é marcado is_resolved=true automaticamente quando:   • O produto recebeu uma imagem  (row ativa em product_images, primary_image_url, ou images JSONB)   • O produto foi desativado      (is_active=false)   • O produto foi deletado        (is_deleted=true) Para forçar uma varredura manual: SELECT * FROM fn_qa_scan_imageless_products();  ━━━ RELACIONAMENTOS ━━━ • products (FK product_id, ON DELETE CASCADE) — produto monitorado • supplier_id, sku_promo, product_name        — denormalizados no momento do alerta   (para leitura rápida sem JOIN, mesmo se o produto for deletado depois)  ━━━ QUEM ALIMENTA / CONSOME ━━━ Escreve:  trigger fn_qa_alert_on_activate_without_image() \| fn_qa_scan_imageless_products() Lê:       dashboards de qualidade \| rotinas de re-ativação pós-imagem \| n8n workflows de alerta NÃO deve ser editado manualmente — gerenciado exclusivamente pelas funções acima.  ━━━ ÍNDICES ━━━ • idx_pqia_product_id   — busca por produto • idx_pqia_is_resolved  — WHERE is_resolved=false (alertas abertos) • idx_pqia_detected_at  — ordenação por data de detecção  | 11 colunas | migration |
-| … +491 linhas — lista completa em `context.json` | | | |
+| … +490 linhas — lista completa em `context.json` | | | |
 
 ## Dados de referência (seed — planos, categorias, perfis fixos)
 
@@ -585,6 +585,7 @@
 | tabela | tabela `runtime_table` usada no código não existe nas migrations/types do repo | `scripts/ai-context/gerar.unit.mjs` |
 | tabela | tabela `so_teste` usada no código não existe nas migrations/types do repo | `scripts/ai-context/cenarios.mjs` |
 | tabela | tabela `some_table` usada no código não existe nas migrations/types do repo | `src/lib/intelligence/degradation.ts` |
+| tabela | tabela `stock_notes` usada no código não existe nas migrations/types do repo | `src/hooks/stock/useStockNotes.ts`<br>`tests/scripts/check-supabase-reference-catalog.test.mjs` |
 | tabela | tabela `sync_logs` usada no código não existe nas migrations/types do repo | `supabase/functions/bitrix-sync/index.ts` |
 | tabela | tabela `t` usada no código não existe nas migrations/types do repo | `scripts/ai-context/cenarios.mjs`<br>`scripts/inventario/gerar-banco.mjs`<br>`scripts/inventario/gerar-rotas.mjs`<br>`src/lib/supabase/empty-in-guard.ts` |
 | tabela | tabela `t1` usada no código não existe nas migrations/types do repo | `scripts/ai-context/cenarios.mjs` |
@@ -645,8 +646,7 @@
 | edge | edge function `fixture-edge` invocada mas não existe em supabase/functions/ | `scripts/ai-context/gerar.unit.mjs` |
 | edge | edge function `fn` invocada mas não existe em supabase/functions/ | `tests/scripts/gate-baseline-absence.test.mjs` |
 | edge | edge function `ghost-edge` invocada mas não existe em supabase/functions/ | `scripts/ai-context/gerar.unit.mjs` |
-| edge | edge function `inexistente` invocada mas não existe em supabase/functions/ | `scripts/ai-context/cenarios.mjs` |
-| … +227 linhas — lista completa em `context.json` | | |
+| … +228 linhas — lista completa em `context.json` | | |
 
 ## Lacunas — o que este contexto NÃO consegue responder (perguntas para o dono do negócio)
 
@@ -716,7 +716,7 @@
 - `quote_approval_tokens.status` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.
 - `kit_share_tokens.status` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.
 - `_deprecated_silver_images_queue_20260606.img_status` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.
-- 268/495 tabelas sem `COMMENT ON TABLE` — o significado de negócio não está no schema: `optimization_queue`, `quotes`, `magazines`, `material_types`, `quotes_inbound`, `webhook_inbound_dedupe`, `webhook_inbound_log`, `magazine_items`, `magazine_reader_state`, `magazine_templates`, `admin_audit_log_y2025m12`, `admin_audit_log_y2026m01` …
+- 267/494 tabelas sem `COMMENT ON TABLE` — o significado de negócio não está no schema: `optimization_queue`, `quotes`, `magazines`, `material_types`, `quotes_inbound`, `webhook_inbound_dedupe`, `webhook_inbound_log`, `magazine_items`, `magazine_reader_state`, `magazine_templates`, `admin_audit_log_y2025m12`, `admin_audit_log_y2026m01` …
 - Há tabelas usadas no código sem migration no repo — o schema real pode ter sido alterado pelo painel.
 
 ## Regras manuais presentes

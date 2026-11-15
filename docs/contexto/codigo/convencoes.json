@@ -24,7 +24,7 @@
   ],
   "testes": [
    "tests/ (1019)",
-   "co-localizado (__tests__) (658)",
+   "co-localizado (__tests__) (659)",
    "e2e/ (625)"
   ],
   "edge_functions": "supabase/functions",
@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "fix(db): trem de banco — gráfico de mercado com dado real, revoke de 106 funções, índices e crons mais baratos (#3665)",
    "feat(orders): resgata conferência do total do pedido contra a soma dos itens (#3667)",
    "feat(mockup): cabeçalho de trabalho do gerador, Meus mockups do cliente e captura de layout extraída (#3664)",
    "fix(ci): recibo de migration entra sozinho e para de travar o CI (#3662)",
-   "fix(ci): E14 volta a valer para PR que só toca docs/ci/SEGREDOS.md (#3661)",
-   "fix: trem de resgates — 16 correções recuperadas de branches de outros agentes (#3660)"
+   "fix(ci): E14 volta a valer para PR que só toca docs/ci/SEGREDOS.md (#3661)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",

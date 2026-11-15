@@ -1577,8 +1577,8 @@
   {
    "nome": "generate-mockup",
    "entrada": "supabase/functions/generate-mockup/index.ts",
-   "arquivos": 2,
-   "linhas": 645,
+   "arquivos": 3,
+   "linhas": 739,
    "verify_jwt": true,
    "metodos": [
     "OPTIONS",
@@ -1605,7 +1605,7 @@
    "chamada_por_edges": [],
    "chamada_por_sql_ou_cron": false,
    "orfa": true,
-   "testes": 3
+   "testes": 4
   },
   {
    "nome": "generate-product-seo",

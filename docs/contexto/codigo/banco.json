@@ -8,7 +8,7 @@
   "supabase/migrations",
   "typeorm"
  ],
- "migrations": 3087,
+ "migrations": 3095,
  "seeds": [],
  "avisos": [
   "319 bloco(s) com DDL dinâmico (EXECUTE format/...) não modelado — policies/colunas criadas dinamicamente podem faltar; confira no banco vivo"
@@ -713,6 +713,7 @@
   "fn_map_value",
   "fn_mapear_oficial_para_staging",
   "fn_mark_removed_from_spot",
+  "fn_market_intelligence_macro",
   "fn_master_classify_product",
   "fn_match_canonical_color",
   "fn_match_supplier_color",
@@ -43801,8 +43802,18 @@
    ],
    "indices": [
     {
+     "nome": "idx_sds_restock_zero_to_pos_date",
+     "colunas": "summary_date",
+     "unico": false
+    },
+    {
      "nome": "idx_sds_summary_date",
      "colunas": "summary_date",
+     "unico": false
+    },
+    {
+     "nome": "idx_sds_summary_date_supplier",
+     "colunas": "summary_date, supplier_id",
      "unico": false
     },
     {

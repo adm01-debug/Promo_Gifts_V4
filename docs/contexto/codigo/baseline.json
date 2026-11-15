@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "a03adc35485eea4e060b4576ff25a842e8c08d10",
+  "commit": "b89a44e100c15de131ecdcffebc549dbd141097d",
   "branch": "main",
-  "data_commit": "2026-11-15T14:58:46Z",
+  "data_commit": "2026-11-15T15:14:59Z",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "b89a44e1",
+    "data": "2026-11-15",
+    "assunto": "fix(db): trem de banco — gráfico de mercado com dado real, revoke de 106 funções, índices e crons mais baratos (#3665)"
+   },
    {
     "sha": "a03adc35",
     "data": "2026-11-15",
@@ -126,14 +131,9 @@
     "sha": "9af05ef8",
     "data": "2026-11-14",
     "assunto": "fix(crm): fornecedor e transportadora fora do escopo por vendedor, e teste travando a regra nova"
-   },
-   {
-    "sha": "29569b16",
-    "data": "2026-11-14",
-    "assunto": "fix(security): sincroniza o retrato de policies com producao apos as 6 migracoes (#3634)"
    }
   ],
-  "arquivos_mudados_7d": 2100,
+  "arquivos_mudados_7d": 2109,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -207,7 +207,7 @@
    },
    {
     "arquivo": "supabase/MIGRATIONS_SYNC_LOG.md",
-    "mudancas": 58
+    "mudancas": 59
    },
    {
     "arquivo": "package.json",
@@ -238,12 +238,12 @@
     "mudancas": 16
    },
    {
-    "arquivo": "analise-prs/RELATORIO_PRS.md",
+    "arquivo": "src/pages/kit-builder/KitBuilderPage.tsx",
     "mudancas": 16
    },
    {
-    "arquivo": "src/pages/kit-builder/KitBuilderPage.tsx",
-    "mudancas": 16
+    "arquivo": "analise-prs/RELATORIO_PRS.md",
+    "mudancas": 15
    },
    {
     "arquivo": "auditoria-supabase/RELATORIO_AUDITORIA_SUPABASE.md",
@@ -252,6 +252,10 @@
    {
     "arquivo": "analise-prs/prs.json",
     "mudancas": 14
+   },
+   {
+    "arquivo": "audit/supabase-reference-catalog.temporary.json",
+    "mudancas": 12
    },
    {
     "arquivo": "docs/plans/PLANO_MELHORIAS_CORRECOES_200_ETAPAS_2026-10-18.md",
@@ -263,10 +267,6 @@
    },
    {
     "arquivo": "analise-branches/RELATORIO_BRANCHES.md",
-    "mudancas": 11
-   },
-   {
-    "arquivo": "audit/supabase-reference-catalog.temporary.json",
     "mudancas": 11
    },
    {
@@ -309,7 +309,7 @@
    },
    {
     "autor": "Claude",
-    "commits": 128
+    "commits": 127
    },
    {
     "autor": "github-actions[bot]",
@@ -322,9 +322,9 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 10236,
-  "arquivos_codigo": 5284,
-  "linhas_codigo": 1007022,
+  "arquivos_total": 10260,
+  "arquivos_codigo": 5287,
+  "linhas_codigo": 1007398,
   "rotas": 138,
   "rotas_http_backend": 13,
   "vistas_por_id": 0,
@@ -334,9 +334,9 @@
   "hooks": 620,
   "edge_functions": 111,
   "tabelas": 548,
-  "migrations": 3087,
+  "migrations": 3095,
   "cron_jobs": 122,
-  "testes": 2497,
+  "testes": 2499,
   "workflows": 87,
   "scripts": 272,
   "docs_md": 1024
@@ -1492,7 +1492,7 @@
   },
   "scripts/drift-baseline.mjs": {
    "arquivos": 1,
-   "linhas": 1255
+   "linhas": 1257
   },
   "scripts/dry-run-migration-draft.mjs": {
    "arquivos": 1,
@@ -1907,8 +1907,8 @@
    "linhas": 7
   },
   "src/hooks": {
-   "arquivos": 468,
-   "linhas": 88008
+   "arquivos": 469,
+   "linhas": 88114
   },
   "src/integrations": {
    "arquivos": 11,
@@ -1959,8 +1959,8 @@
    "linhas": 8174
   },
   "supabase/functions": {
-   "arquivos": 271,
-   "linhas": 50360
+   "arquivos": 273,
+   "linhas": 50610
   },
   "tailwind.config.ts": {
    "arquivos": 1,
@@ -2148,7 +2148,7 @@
   },
   "tests/security": {
    "arquivos": 29,
-   "linhas": 2771
+   "linhas": 2786
   },
   "tests/setup-ref-warning-capture.ts": {
    "arquivos": 1,
@@ -2248,7 +2248,7 @@
   },
   "vitest.config.ts": {
    "arquivos": 1,
-   "linhas": 168
+   "linhas": 171
   }
  },
  "maiores_arquivos": [
@@ -2286,7 +2286,7 @@
   },
   {
    "arquivo": "scripts/drift-baseline.mjs",
-   "linhas": 1255
+   "linhas": 1257
   },
   {
    "arquivo": "src/pages/products/SellerCartsPage.tsx",
@@ -2610,7 +2610,7 @@
   },
   {
    "arquivo": "scripts/drift-baseline.mjs",
-   "linha": 605,
+   "linha": 607,
    "tipo": "TODO",
    "texto": "objeto (ex.: `.*`, `^create table`, `public`)."
   },
