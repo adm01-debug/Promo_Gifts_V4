@@ -8,6 +8,10 @@ import {
   validateReceipts,
 } from '../../scripts/plan-status.mjs';
 
+function stage(id, wave, status) {
+  return { id, wave, status };
+}
+
 const plan = readFileSync(PLAN_PATH, 'utf8');
 
 describe('plan-status — evidência verificável', () => {
@@ -57,6 +61,27 @@ describe('plan-status — evidência verificável', () => {
     expect(status[0].status).toBe('verified');
     expect(() => validateReceipts({ ...receipt, records: { E010: { ...receipt.records.E010, exitCode: 1 } } })).toThrow(/exitCode 0/);
     expect(classifyStages([stage], { E010: { ...receipt.records.E010, criterion: 'outro critério' } })[0].status).toBe('claimed');
+  });
+
+  it('calcula eligible pelo NÚMERO da onda, não pelo índice do array, quando há uma onda sem etapas', () => {
+    // wave 2 não tem nenhuma etapa (ex.: resultado de um filtro por --wave/--priority/--trail
+    // aplicado direto em summarizeStages). O array `waves` fica [w0, w1, w3] — o índice 2
+    // deixa de corresponder à onda 2, e passa a apontar pra própria onda 3 (ainda sem
+    // `eligible` atribuído nesta mesma iteração do loop).
+    const stages = [
+      ...Array.from({ length: 10 }, (_, i) => stage(`E${String(i + 1).padStart(3, '0')}`, 0, 'verified')),
+      ...Array.from({ length: 10 }, (_, i) => stage(`E${String(i + 11).padStart(3, '0')}`, 1, 'verified')),
+      // onda 2 — propositalmente vazia (gap)
+      ...Array.from({ length: 10 }, (_, i) => stage(`E${String(i + 31).padStart(3, '0')}`, 3, 'verified')),
+    ];
+    const summary = summarizeStages(stages);
+    const wave3 = summary.waves.find(({ wave }) => wave === 3);
+
+    // Antes da correção: `waves[wave.wave - 1]` (índice 2) resolvia pra própria
+    // onda 3 (self-reference) antes de `eligible` ser atribuído — o resultado
+    // virava `undefined` (campo ausente no JSON), nunca um boolean `false`.
+    expect(wave3.eligible).toBe(false);
+    expect(typeof wave3.eligible).toBe('boolean');
   });
 
   it('falha fechado quando o plano perde uma etapa ou um critério Pronto', () => {

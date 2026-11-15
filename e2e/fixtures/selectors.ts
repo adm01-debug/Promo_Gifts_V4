@@ -250,7 +250,7 @@ export const Sel = {
     /** Step 1 — Cliente: opção "Sem empresa" no CompanySearchDropdown. */
     noCompanyOption: TID("no-company-option"),
     /** Step 3 — Itens: botão "Produto" que abre o ProductSearch dialog. */
-    addProductButton: TID("quote-add-product-button"),
+    addProductButton: TID("quote-add-product-button-summary"),
     /** ProductSearch dialog: input de busca. */
     productSearchInput: TID("product-search-input"),
     /** ProductSearch dialog: opção de produto (indexado pelo id). */
@@ -261,6 +261,16 @@ export const Sel = {
     saveDraft: TID("quote-save-draft"),
     /** Submeter completo (status 'pending'). */
     saveFinal: TID("quote-save-final"),
+    /** Resumo: CurrencyInput do desconto (QuoteBuilderSummaryPricing). */
+    discountInput: TID("quote-discount-input"),
+    /** Resumo: "Solicitar Aprovação" — substitui o saveFinal quando o desconto excede o limite. */
+    requestApprovalButton: TID("quote-request-approval-button"),
+    /** Diálogo de solicitação de aprovação de desconto (QuoteBuilderSummaryDialogs). */
+    approvalDialog: TID("quote-approval-dialog"),
+    approvalLimit: TID("quote-approval-limit"),
+    approvalRequested: TID("quote-approval-requested"),
+    approvalJustification: TID("quote-approval-justification"),
+    approvalSubmit: TID("quote-approval-submit"),
     /** Wizard nav. */
     next: TID("wizard-next-button"),
     prev: TID("wizard-prev-button"),

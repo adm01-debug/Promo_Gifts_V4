@@ -14,6 +14,8 @@ export function useProductFormDraft(
   stepIndex: number,
   setImages: (imgs: string[]) => void,
   setStepIndex: (i: number) => void,
+  isDirty: boolean,
+  initialUpdatedAt?: string | null,
 ) {
   const DRAFT_KEY = `product-draft-${productId || 'new'}`;
   const draftRestoredRef = useRef(false);
@@ -32,7 +34,11 @@ export function useProductFormDraft(
         stepIndex: number;
         savedAt: number;
       };
-      if (Date.now() - draft.savedAt > 24 * 60 * 60 * 1000) {
+      const updatedAtMs = initialUpdatedAt ? Date.parse(initialUpdatedAt) : NaN;
+      if (
+        Date.now() - draft.savedAt > 24 * 60 * 60 * 1000 ||
+        (!Number.isNaN(updatedAtMs) && draft.savedAt < updatedAtMs)
+      ) {
         localStorage.removeItem(DRAFT_KEY);
         return;
       }
@@ -52,7 +58,7 @@ export function useProductFormDraft(
     } catch {
       /* ignore corrupt drafts */
     }
-  }, [DRAFT_KEY, setValue, setImages, setStepIndex]);
+  }, [DRAFT_KEY, setValue, setImages, setStepIndex, initialUpdatedAt]);
 
   // Show draft restored notification
   useEffect(() => {
@@ -72,8 +78,22 @@ export function useProductFormDraft(
 
   // Save draft with debounce (2s)
   const saveTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const baselineRef = useRef<string | null>(null);
+  const latestSnapshotRef = useRef<string | null>(null);
+  const wroteDraftRef = useRef(false);
   useEffect(() => {
     if (saveTimerRef.current) clearTimeout(saveTimerRef.current);
+    const snapshot = JSON.stringify({ formValues, images });
+    latestSnapshotRef.current = snapshot;
+    if (baselineRef.current === null) baselineRef.current = snapshot;
+    if (!isDirty && snapshot === baselineRef.current) {
+      // Edição desfeita: o rascunho gravado nesta sessão não pode reviver o valor desfeito.
+      if (wroteDraftRef.current) {
+        wroteDraftRef.current = false;
+        localStorage.removeItem(DRAFT_KEY);
+      }
+      return;
+    }
     saveTimerRef.current = setTimeout(() => {
       if (!formValues.name && !formValues.sku) return;
       try {
@@ -81,6 +101,7 @@ export function useProductFormDraft(
           DRAFT_KEY,
           JSON.stringify({ formData: formValues, images, stepIndex, savedAt: Date.now() }),
         );
+        wroteDraftRef.current = true;
       } catch {
         /* quota exceeded */
       }
@@ -88,9 +109,11 @@ export function useProductFormDraft(
     return () => {
       if (saveTimerRef.current) clearTimeout(saveTimerRef.current);
     };
-  }, [formValues, images, stepIndex, DRAFT_KEY]);
+  }, [formValues, images, stepIndex, DRAFT_KEY, isDirty]);
 
   const clearDraft = useCallback(() => {
+    if (saveTimerRef.current) clearTimeout(saveTimerRef.current);
+    baselineRef.current = latestSnapshotRef.current;
     localStorage.removeItem(DRAFT_KEY);
   }, [DRAFT_KEY]);
 

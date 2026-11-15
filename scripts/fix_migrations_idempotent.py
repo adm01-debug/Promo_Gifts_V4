@@ -22,7 +22,10 @@ import os
 import sys
 from pathlib import Path
 
-MIGRATIONS_DIR = Path("/home/user/Promo_Gifts/supabase/migrations")
+MIGRATIONS_DIR = Path(__file__).resolve().parents[1] / "supabase" / "migrations"
+if not MIGRATIONS_DIR.is_dir():
+    print(f"ERRO: diretório de migrations não encontrado: {MIGRATIONS_DIR}", file=sys.stderr)
+    sys.exit(2)
 
 # The list of files NOT in production that need fixing (from the task description)
 NOT_IN_PRODUCTION_TIMESTAMPS = set("""

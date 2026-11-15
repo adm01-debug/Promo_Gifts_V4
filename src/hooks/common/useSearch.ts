@@ -2,7 +2,6 @@ import { useState, useMemo, useCallback, useContext } from 'react';
 import Fuse from 'fuse.js';
 import { useQuery } from '@tanstack/react-query';
 import { type Product } from '@/hooks/products';
-import { CATEGORIES, SUPPLIERS } from '@/data/mockData';
 import { ProductsContext } from '@/contexts/ProductsContext';
 import { dbInvoke } from '@/lib/db/postgrest';
 import {
@@ -52,7 +51,7 @@ export function useSearch(products: Product[] = []) {
     [products, productsContext?.products],
   );
 
-  // FIX 2026-06-14 (#5-raiz): categorias e fornecedores REAIS (fallback p/ mock enquanto carrega).
+  // FIX 2026-06-14 (#5-raiz): categorias e fornecedores REAIS (sem dado: lista vazia).
   const { data: realCategories } = useQuery<RealCategory[]>({
     queryKey: ['search-autocomplete-categories'],
     queryFn: async () =>
@@ -89,18 +88,8 @@ export function useSearch(products: Product[] = []) {
     gcTime: 60 * 60 * 1000,
     refetchOnWindowFocus: false,
   });
-  const categorySource = useMemo<RealCategory[]>(
-    () =>
-      realCategories?.length
-        ? realCategories
-        : CATEGORIES.map((c) => ({ id: String(c.id), name: c.name, icon: c.icon })),
-    [realCategories],
-  );
-  const supplierSource = useMemo<RealSupplier[]>(
-    () =>
-      realSuppliers?.length ? realSuppliers : SUPPLIERS.map((s) => ({ id: s.id, name: s.name })),
-    [realSuppliers],
-  );
+  const categorySource = useMemo<RealCategory[]>(() => realCategories ?? [], [realCategories]);
+  const supplierSource = useMemo<RealSupplier[]>(() => realSuppliers ?? [], [realSuppliers]);
   // Produtos referenciam categorias-FOLHA: pré-filtra fontes aos ids PRESENTES no catálogo
   // carregado -> Fuse só ranqueia categorias/fornecedores que TÊM produtos (evita ruído).
   const presentCategoryIds = useMemo(

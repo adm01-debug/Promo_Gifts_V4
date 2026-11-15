@@ -1,4 +1,4 @@
-import { createClient, SupabaseClient } from "https://esm.sh/@supabase/supabase-js@2.49.1";
+import { createClient, SupabaseClient } from "npm:@supabase/supabase-js@2.49.1";
 import { handleCorsPreflight, buildPublicCorsHeaders } from "../_shared/cors.ts";
 import { getOrCreateRequestId } from "../_shared/request-id.ts";
 import { createStructuredLogger } from "../_shared/structured-logger.ts";
@@ -19,8 +19,8 @@ interface HealthChecker {
   check(): Promise<CheckResult>;
 }
 
-// Per-check timeout: gate is 500ms total; cap each probe to keep the worst case bounded.
-const PROBE_TIMEOUT_MS = 1500;
+// Absorb observed 2–4s PostgREST cold starts without exceeding the 30s uptime probe budget.
+const PROBE_TIMEOUT_MS = 5000;
 // Vault credential lookup timeout: if getCredential() hangs, bail fast so curl --max-time 30 isn't hit.
 const CREDENTIAL_TIMEOUT_MS = 5000;
 
@@ -66,7 +66,7 @@ function getExternalClient(): Promise<SupabaseClient | null> {
   return externalClientPromise;
 }
 
-async function withTimeout<T>(p: Promise<T>, ms: number, label: string): Promise<T> {
+async function withTimeout<T>(p: PromiseLike<T>, ms: number, label: string): Promise<T> {
   return await Promise.race([
     p,
     new Promise<T>((_, reject) =>
@@ -191,7 +191,7 @@ Deno.serve(async (req) => {
   const corsHeaders = {
     ...buildPublicCorsHeaders(),
     "Content-Type": "application/json",
-    "X-Health-Version": "1.3.1",
+    "X-Health-Version": "1.3.2",
   };
 
   const start = Date.now();

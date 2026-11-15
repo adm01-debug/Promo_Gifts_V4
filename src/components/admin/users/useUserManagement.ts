@@ -177,15 +177,17 @@ export function useUserManagement() {
     form: { full_name: string; email: string; is_active: boolean },
   ) => {
     try {
-      const { error } = await supabase
-        .from('profiles')
-        .update({
+      const { data, error } = await supabase.functions.invoke('manage-users', {
+        body: {
+          action: 'update_profile',
+          user_id: userId,
           full_name: form.full_name.trim() || null,
           email: form.email.trim() || null,
           is_active: form.is_active,
-        })
-        .eq('user_id', userId);
+        },
+      });
       if (error) throw error;
+      if (data?.error) throw new Error(data.error);
 
       setUsers((prev) =>
         prev.map((u) =>
@@ -225,11 +227,12 @@ export function useUserManagement() {
       const { data: urlData } = supabase.storage.from('avatars').getPublicUrl(filePath);
       const publicUrl = `${urlData.publicUrl}?t=${Date.now()}`;
       // BUG-AVATAR-UPDATE-SILENT-FAIL FIX: bare await swallowed RLS errors.
-      const { error: profileErr } = await supabase
-        .from('profiles')
-        .update({ avatar_url: publicUrl })
-        .eq('user_id', userId);
-      if (profileErr) logger.warn('[useUserManagement] avatar update failed:', profileErr);
+      const { data: profileData, error: profileErr } = await supabase.functions.invoke(
+        'manage-users',
+        { body: { action: 'update_profile', user_id: userId, avatar_url: publicUrl } },
+      );
+      if (profileErr) throw profileErr;
+      if (profileData?.error) throw new Error(profileData.error);
       setUsers((prev) =>
         prev.map((u) => (u.user_id === userId ? { ...u, avatar_url: publicUrl } : u)),
       );
@@ -247,10 +250,11 @@ export function useUserManagement() {
   const handleRemoveAvatar = async (userId: string) => {
     try {
       // BUG-AVATAR-REMOVE-SILENT-FAIL FIX: bare await swallowed RLS errors.
-      const { error: removeErr } = await supabase
-        .from('profiles')
-        .update({ avatar_url: null })
-        .eq('user_id', userId);
+      const { data: removeData, error: invokeErr } = await supabase.functions.invoke(
+        'manage-users',
+        { body: { action: 'update_profile', user_id: userId, avatar_url: null } },
+      );
+      const removeErr = invokeErr ?? (removeData?.error ? new Error(removeData.error) : null);
       if (removeErr) {
         logger.warn('[useUserManagement] avatar remove failed:', removeErr);
         toast.error('Erro ao remover foto');

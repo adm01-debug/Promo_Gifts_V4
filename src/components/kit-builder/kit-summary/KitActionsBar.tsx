@@ -5,6 +5,7 @@ import type { KitStockStatus } from '@/hooks/kit-builder/useKitStockValidation';
 
 interface KitActionsBarProps {
   isValid: boolean;
+  pricesKnown?: boolean;
   isAddingToQuote?: boolean;
   hasStockIssues?: boolean;
   stockStatus?: KitStockStatus;
@@ -22,6 +23,7 @@ interface KitActionsBarProps {
 
 export function KitActionsBar({
   isValid,
+  pricesKnown = true,
   isAddingToQuote,
   hasStockIssues = false,
   stockStatus = 'idle',
@@ -39,7 +41,7 @@ export function KitActionsBar({
   return (
     <div className={`grid grid-cols-1 gap-3 ${onSaveDraft ? 'sm:grid-cols-4' : 'sm:grid-cols-3'}`}>
       {onSaveDraft && (
-        <Button variant="outline" onClick={onSaveDraft} disabled={isSavingDraft}>
+        <Button variant="outline" onClick={onSaveDraft} disabled={isSavingDraft || !pricesKnown}>
           {isSavingDraft ? (
             <Loader2 className="mr-2 h-4 w-4 animate-spin" />
           ) : (
@@ -48,11 +50,14 @@ export function KitActionsBar({
           Salvar rascunho
         </Button>
       )}
-      <Button variant="outline" onClick={onExportPDF}>
+      <Button variant="outline" onClick={onExportPDF} disabled={!pricesKnown}>
         <Download className="mr-2 h-4 w-4" />
         Exportar PDF
       </Button>
-      <Button disabled={!isValid || hasStockIssues || isAddingToQuote} onClick={onAddToQuote}>
+      <Button
+        disabled={!pricesKnown || !isValid || hasStockIssues || isAddingToQuote}
+        onClick={onAddToQuote}
+      >
         {isAddingToQuote ? (
           <Loader2 className="mr-2 h-4 w-4 animate-spin" />
         ) : (
@@ -71,7 +76,7 @@ export function KitActionsBar({
       <Button
         variant="outline"
         className="border-primary/50 text-primary hover:bg-primary/10 dark:text-primary"
-        disabled={!isValid}
+        disabled={!pricesKnown || !isValid}
         onClick={() => {
           const kitLabel = kitName || 'Kit Personalizado';
           const title = kitTag ? `*${kitLabel} — ${kitTag}*` : `*${kitLabel}*`;

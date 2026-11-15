@@ -75,10 +75,18 @@ export default function SellerDiscountLimitsAdminPage() {
     enabled: rolesLoaded && Boolean(isAdmin),
     retry: 0,
     queryFn: async (): Promise<SellerRow[]> => {
+      const { data: roleRows, error: rErr } = await supabase
+        .from('user_roles')
+        .select('user_id')
+        .eq('role', 'vendedor');
+      if (rErr) throw rErr;
+      const sellerIds = (roleRows ?? []).map((r) => r.user_id);
+      if (!sellerIds.length) return [];
+
       const { data: profiles, error: pErr } = await supabase
         .from('profiles')
         .select('user_id, full_name, email, role, is_active')
-        .eq('role', 'vendedor')
+        .in('user_id', sellerIds)
         .eq('is_active', true)
         .order('full_name');
       if (pErr) throw pErr;

@@ -873,6 +873,7 @@ export function CartHeaderButton() {
                                 items: activeCart.items.map((item) => ({
                                   product_id: item.product_id,
                                   product_name: item.product_name,
+                                  product_sku: item.product_sku || undefined,
                                   product_image_url: item.product_image_url ?? null,
                                   quantity: item.quantity,
                                   unit_price: item.product_price,

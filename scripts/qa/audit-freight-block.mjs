@@ -18,9 +18,7 @@ import { readFileSync } from 'node:fs';
 import { resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { parse } from '@babel/parser';
-import traverseModule from '@babel/traverse';
 
-const traverse = traverseModule.default ?? traverseModule;
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const FILE = resolve(__dirname, '../../src/pages/quotes/QuoteBuilderPage.tsx');
 const src = readFileSync(FILE, 'utf8');
@@ -89,44 +87,47 @@ function attrLiteral(attr) {
 function isInsideFreteBlock(nodeStart) {
   return nodeStart >= start && nodeStart <= end;
 }
-function ancestorIsGridCol(path) {
-  let p = path.parentPath;
-  while (p) {
-    if (p.isJSXElement()) {
-      const tid = attrLiteral(jsxAttr(p.node, 'data-testid'));
-      if (tid && gridColTestids.has(tid)) return true;
-    }
-    p = p.parentPath;
-  }
-  return false;
-}
+// Walker recursivo custom — substitui @babel/traverse (não instalado)
+function walkNode(node, ancestorElements) {
+  if (!node || typeof node !== 'object' || !node.type) return;
 
-traverse(ast, {
-  JSXOpeningElement(path) {
-    if (!isInsideFreteBlock(path.node.start ?? -1)) return;
-    const idAttr = attrLiteral(jsxAttr(path.parent, 'id'));
-    if (idAttr) idsDeclarados.add(idAttr);
-  },
-  JSXElement(path) {
-    if (!isInsideFreteBlock(path.node.start ?? -1)) return;
-    const name = path.node.openingElement.name;
+  if (node.type === 'JSXElement' && isInsideFreteBlock(node.start ?? -1)) {
+    const name = node.openingElement.name;
     const localName = name.type === 'JSXIdentifier' ? name.name : null;
-    if (!localName) return;
+
+    const idAttr = attrLiteral(jsxAttr(node, 'id'));
+    if (idAttr) idsDeclarados.add(idAttr);
 
     // (3) <Label> deve estar dentro de uma célula do grid.
     if (localName === 'Label') {
-      if (!ancestorIsGridCol(path)) {
-        push(`<Label> fora de célula do grid (line ~${path.node.loc?.start.line})`);
-      }
+      const insideCol = ancestorElements.some((anc) => {
+        const tid = attrLiteral(jsxAttr(anc, 'data-testid'));
+        return tid && gridColTestids.has(tid);
+      });
+      if (!insideCol) push(`<Label> fora de célula do grid (line ~${node.loc?.start.line})`);
     }
 
-    // (6) coletar htmlFor + id
-    const htmlFor = attrLiteral(jsxAttr(path.node, 'htmlFor'));
-    if (htmlFor) htmlForRefs.push({ id: htmlFor, line: path.node.loc?.start.line });
-    const idAttr = attrLiteral(jsxAttr(path.node, 'id'));
-    if (idAttr) idsDeclarados.add(idAttr);
-  },
-});
+    // (6) coletar htmlFor
+    const htmlFor = attrLiteral(jsxAttr(node, 'htmlFor'));
+    if (htmlFor) htmlForRefs.push({ id: htmlFor, line: node.loc?.start.line });
+  }
+
+  const nextAncestors =
+    node.type === 'JSXElement' ? [...ancestorElements, node] : ancestorElements;
+
+  for (const key of Object.keys(node)) {
+    const child = node[key];
+    if (Array.isArray(child)) {
+      for (const item of child) {
+        if (item && typeof item === 'object' && item.type) walkNode(item, nextAncestors);
+      }
+    } else if (child && typeof child === 'object' && child.type) {
+      walkNode(child, nextAncestors);
+    }
+  }
+}
+
+walkNode(ast, []);
 
 for (const ref of htmlForRefs) {
   if (!idsDeclarados.has(ref.id)) {

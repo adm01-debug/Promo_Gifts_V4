@@ -88,7 +88,7 @@ fi
 # ATENÇÃO: cada novo prefixo aqui é uma porta de fuga. Adicione só com
 # justificativa documentada em .github/SENTINEL_CHANGELOG.md
 # ----------------------------------------------------------------------------
-if echo "$SUBJECT" | grep -qE '^(docs\(redeploy\)|chore\(workflows\)|ci\(workflows\)|chore\(docs\)):'; then
+if echo "$SUBJECT" | grep -qE '^(docs\([a-z][a-z0-9-]*\)|chore\(workflows\)|ci\(workflows\)|chore\(docs\)):'; then
   PREFIX="${SUBJECT%%:*}"
   echo "allowlist: $PREFIX"
   exit 0
@@ -140,8 +140,8 @@ fi
 AGENT_PREFIXES="(claude|codex|devin|cline|lovable)/"
 if echo "$SUBJECT" | grep -qiE "^Merge branch '${AGENT_PREFIXES}"; then
   # Extrai os dois nomes de branch do subject "Merge branch 'X' into 'Y'"
-  BRANCH_A=$(echo "$SUBJECT" | grep -oE "'[^']+'" | head -1 | tr -d "'")
-  BRANCH_B=$(echo "$SUBJECT" | grep -oE "'[^']+'" | tail -1 | tr -d "'")
+  BRANCH_A=$(echo "$SUBJECT" | grep -oE "'[^']+" | head -1 | tr -d "'")
+  BRANCH_B=$(echo "$SUBJECT" | grep -oE "'[^']+" | tail -1 | tr -d "'")
   PREFIX_A=$(echo "$BRANCH_A" | grep -oE "^(claude|codex|devin|cline|lovable)" || echo "")
   PREFIX_B=$(echo "$BRANCH_B" | grep -oE "^(claude|codex|devin|cline|lovable)" || echo "")
 

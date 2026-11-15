@@ -4,7 +4,7 @@
  * v1: opcionais com defaults no handler. Sunset 2026-11-30.
  * v2: targetFunctions com 1+ items, mode obrigatório, idempotency_key.
  */
-import { z } from "https://esm.sh/zod@3.23.8";
+import { z } from "npm:zod@3.23.8";
 
 const ModeEnum = z.enum(["resilience", "load", "fuzzing"]);
 const TargetFnEnum = z.enum([

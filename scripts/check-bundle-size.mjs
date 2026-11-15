@@ -118,9 +118,12 @@ if (UPDATE_FLAG) {
 
   // Preserva criticalChunks existentes; recalcula os limites com +20% mas
   // NUNCA aumenta um limite existente — E04: ratchet só desce.
-  const previousBaseline = existsSync(BASELINE_PATH)
-    ? JSON.parse(readFileSync(BASELINE_PATH, 'utf8'))
-    : {};
+  let previousBaseline = {};
+  try {
+    previousBaseline = JSON.parse(readFileSync(BASELINE_PATH, 'utf8'));
+  } catch (e) {
+    if (e.code !== 'ENOENT') throw e;
+  }
   const existingCritical = previousBaseline.criticalChunks ?? DEFAULT_CRITICAL_CHUNKS;
 
   const criticalChunks = {};

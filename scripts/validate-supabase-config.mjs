@@ -16,7 +16,10 @@ try {
   const content = readFileSync(CLIENT_PATH, 'utf-8');
 
   // 1. Check if the canonical project ID constant matches
-  const hasProjectId = content.includes(`const CURRENT_PROJECT_ID = "doufsxqlfjyuvxuezpln"`) || content.includes(`const CURRENT_PROJECT_ID = 'doufsxqlfjyuvxuezpln'`);
+  // GUARD: a constante tem de ser a declaração real (início de linha, fora de comentário
+  // `//`): `// const CURRENT_PROJECT_ID = "doufs…"` não conta, nem o ID em qualquer lugar.
+  const withoutLineComments = content.replace(/^[ \t]*\/\/.*$/gm, '');
+  const hasProjectId = /^[ \t]*(?:export\s+)?const\s+CURRENT_PROJECT_ID\s*=\s*["']doufsxqlfjyuvxuezpln["']/m.test(withoutLineComments);
   if (!hasProjectId) {
     console.error(`\u274C ERROR: Project ID "${CANONICAL_PROJECT_ID}" not found as CURRENT_PROJECT_ID in ${CLIENT_PATH}.`);
     process.exit(1);
@@ -128,17 +131,28 @@ function stripSqlComments(sql) {
   return out;
 }
 
+// GUARD: entrada ilegível (symlink quebrado, permissão) ou diretório ausente nunca pode
+// descartar em silêncio o resto da varredura: vira erro (fail-closed).
+const unreadable = [];
+
 function walkSql(dir) {
   let files = [];
+  let entries;
   try {
-    for (const entry of readdirSync(dir)) {
-      const full = join(dir, entry);
+    entries = readdirSync(dir);
+  } catch (error) {
+    unreadable.push(`${dir.replace(ROOT + '/', '')} (${error.code ?? error.message})`);
+    return files;
+  }
+  for (const entry of entries) {
+    const full = join(dir, entry);
+    try {
       const st = statSync(full);
       if (st.isDirectory()) files = files.concat(walkSql(full));
       else if (st.isFile() && entry.toLowerCase().endsWith('.sql')) files.push(full);
+    } catch (error) {
+      unreadable.push(`${full.replace(ROOT + '/', '')} (${error.code ?? error.message})`);
     }
-  } catch {
-    // directory may not exist
   }
   return files;
 }
@@ -153,6 +167,14 @@ const LEGACY_GENERATED_SNAPSHOT = 'supabase/migrations-snapshot/ALL_IN_ONE.sql';
 
 const migrationFiles = MIGRATIONS_DIRS.flatMap(walkSql);
 const migrationViolations = [];
+
+if (unreadable.length > 0 || migrationFiles.length === 0) {
+  console.error(
+    `\u274C E064: n\u00E3o foi poss\u00EDvel varrer as migrations (${migrationFiles.length} arquivo(s) .sql lidos):\n` +
+    (unreadable.length ? unreadable.map((f) => `   - ${f}`).join('\n') : '   - nenhum .sql encontrado'),
+  );
+  process.exit(1);
+}
 
 for (const f of migrationFiles) {
   const rel = f.replace(ROOT + '/', '');

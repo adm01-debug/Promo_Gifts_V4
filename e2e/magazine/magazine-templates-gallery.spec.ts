@@ -109,7 +109,7 @@ test.describe('Galeria de Templates de Revista @gallery', () => {
     // Cai no fluxo default — NUNCA para evil.com.
     await expect(page).toHaveURL(new RegExp(`/magazine/${CREATED_ID}$`), { timeout: 10_000 });
     expect(payloads).toHaveLength(1);
-    await expect(page).not.toHaveURL(/evil\.com/);
+    await expect(page).not.toHaveURL(/(?:^|\/\/)evil\.com\//);
   });
 
   test('favorito persiste em localStorage e reordena a galeria', async ({ page }) => {

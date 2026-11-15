@@ -77,7 +77,7 @@ export function MagicUpCampaignPanel({
             value={campaign?.status || 'draft'}
             onValueChange={(value) => updateCampaign({ status: value as MagicUpCampaignStatus })}
           >
-            <SelectTrigger className="h-9">
+            <SelectTrigger className="h-9" aria-label="Status da campanha">
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
@@ -98,7 +98,7 @@ export function MagicUpCampaignPanel({
               value={brief[field]}
               onValueChange={(value) => onBriefChange({ ...brief, [field]: value })}
             >
-              <SelectTrigger className="h-9">
+              <SelectTrigger className="h-9" aria-label={toHuman(field)}>
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
@@ -114,16 +114,22 @@ export function MagicUpCampaignPanel({
       </div>
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
         <div className="space-y-1.5">
-          <Label className="text-xs text-muted-foreground">CTA</Label>
+          <Label htmlFor="magic-up-brief-cta" className="text-xs text-muted-foreground">
+            CTA
+          </Label>
           <Input
+            id="magic-up-brief-cta"
             value={brief.cta}
             onChange={(e) => onBriefChange({ ...brief, cta: e.target.value })}
             className="h-9"
           />
         </div>
         <div className="space-y-1.5">
-          <Label className="text-xs text-muted-foreground">Ocasião</Label>
+          <Label htmlFor="magic-up-brief-occasion" className="text-xs text-muted-foreground">
+            Ocasião
+          </Label>
           <Input
+            id="magic-up-brief-occasion"
             value={brief.occasion}
             onChange={(e) => onBriefChange({ ...brief, occasion: e.target.value })}
             className="h-9"

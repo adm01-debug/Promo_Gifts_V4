@@ -70,6 +70,18 @@ describe('Deploy Gates E007/E008 — credenciais e auditoria live', () => {
     expect(forkPr.stdout).toContain('PR de fork sem secrets E2E');
   });
 
+  it('mantém o E23 fora da agregação bloqueante do Gate Final', () => {
+    const workflow = readWorkflow('deploy-gates.yml');
+    const deployReady = workflow.jobs['deploy-ready'];
+    const aggregate = deployReady.steps.find((candidate) =>
+      candidate.name.startsWith('Require every blocking gate to pass'),
+    );
+
+    expect(deployReady.needs).not.toContain('secrets-check');
+    expect(aggregate.env).not.toHaveProperty('R_SECRETS');
+    expect(aggregate.run).not.toMatch(/R_SECRETS\s*==\s*["']success/);
+  });
+
   it('não permite que push pule o E2E nem por falta dos secrets', () => {
     const push = runGateFinal({ eventName: 'push', isFork: false, e2eResult: 'skipped' });
     expect(push.status).toBe(1);

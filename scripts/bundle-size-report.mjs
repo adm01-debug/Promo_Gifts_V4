@@ -135,7 +135,14 @@ function readCurrentByPrefix() {
     process.exit(2);
   }
   const byPrefix = {};
-  for (const name of readdirSync(DIST_ASSETS)) {
+  let names;
+  try {
+    names = readdirSync(DIST_ASSETS);
+  } catch (err) {
+    console.error(`❌ Falha ao ler ${DIST_ASSETS}: ${err.message}`);
+    process.exit(2);
+  }
+  for (const name of names) {
     if (!name.endsWith('.js')) continue;
     const size = statSync(join(DIST_ASSETS, name)).size;
     const prefix = extractChunkPrefix(name);
@@ -149,14 +156,25 @@ function main() {
   const outFile = outIdx > -1 ? process.argv[outIdx + 1] : null;
 
   const currentByPrefix = readCurrentByPrefix();
-  const baseline = existsSync(BASELINE_PATH)
-    ? JSON.parse(readFileSync(BASELINE_PATH, 'utf8'))
-    : null;
+  let baseline = null;
+  if (existsSync(BASELINE_PATH)) {
+    try {
+      baseline = JSON.parse(readFileSync(BASELINE_PATH, 'utf8'));
+    } catch (err) {
+      console.error(`⚠️  Ignorando ${BASELINE_PATH} inválido: ${err.message}`);
+    }
+  }
 
   const md = buildReport({ currentByPrefix, baseline });
   process.stdout.write(md);
 
-  if (outFile) writeFileSync(outFile, md);
+  if (outFile) {
+    try {
+      writeFileSync(outFile, md);
+    } catch (err) {
+      console.error(`⚠️  Falha ao escrever ${outFile}: ${err.message}`);
+    }
+  }
   if (process.env.GITHUB_STEP_SUMMARY) {
     try {
       writeFileSync(process.env.GITHUB_STEP_SUMMARY, md, { flag: 'a' });

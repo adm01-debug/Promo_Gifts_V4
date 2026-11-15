@@ -18,8 +18,28 @@
       "ref": "supabase/migrations-snapshot/SCHEMA_DRIFT.sql"
     },
     {
-      "file": "analise-prs/dossies/PR-2731.md",
-      "ref": "supabase/migrations/20261029160339_add_kill_switch_hits_anon_rate_guard.sql"
+      "file": "analise-prs/2026-11-12/prs.json",
+      "ref": "supabase/migrations/20261101150000_fix_sb0003_fn_get_rupture_alerts.sql"
+    },
+    {
+      "file": "analise-prs/2026-11-12/prs.json",
+      "ref": "supabase/migrations/20261108230000_cron002_fix_residual_collisions.sql"
+    },
+    {
+      "file": "analise-prs/dossies/PR-2426.md",
+      "ref": "qa/migrations-draft/probe_e184_legacy_refs.sql"
+    },
+    {
+      "file": "analise-prs/dossies/PR-2432.md",
+      "ref": "qa/migrations-draft/probe_e184_legacy_refs.sql"
+    },
+    {
+      "file": "analise-prs/dossies/PR-2714.md",
+      "ref": "supabase/migrations/20261027200000_supplier_stricker_rls_deny_all.sql"
+    },
+    {
+      "file": "CHANGELOG.md",
+      "ref": "supabase/migrations/x6"
     },
     {
       "file": "CONTRIBUTING.md",
@@ -1067,10 +1087,6 @@
     },
     {
       "file": "docs/arquivo/2026-09/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-09-16.json",
-      "ref": "supabase/migrations/20260611014515_fn_dryrun_standardize_supplier_real_rollback.sql"
-    },
-    {
-      "file": "docs/arquivo/2026-09/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-09-16.json",
       "ref": "supabase/migrations/20260611120000_fix_standardize_variant_fcode_fhex_swallowed_by_comment.sql"
     },
     {
@@ -1364,10 +1380,6 @@
     {
       "file": "docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json",
       "ref": "supabase/migrations/20260610120000_silver_depara_01_apply_transform_color_resolver.sql"
-    },
-    {
-      "file": "docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json",
-      "ref": "supabase/migrations/20260611014515_fn_dryrun_standardize_supplier_real_rollback.sql"
     },
     {
       "file": "docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json",
@@ -1871,6 +1883,10 @@
     },
     {
       "file": "inventario/branches.json",
+      "ref": "qa/migrations-draft/probe_e184_legacy_refs.sql"
+    },
+    {
+      "file": "inventario/branches.json",
       "ref": "supabase/migrations/20261015150000"
     },
     {
@@ -1884,6 +1900,38 @@
     {
       "file": "qa/reports/magazine-publish-fuzz-2026-07-15.md",
       "ref": "qa/migrations-draft/2026-07-15_magazine_public_token_trigger.sql"
+    },
+    {
+      "file": "RECOVERY_PLAN.md",
+      "ref": "supabase/migrations/_recovery/"
+    },
+    {
+      "file": "recovery/HANDOFF_2026-05-10.md",
+      "ref": "supabase/migrations/2026XXXXXXXXXX_recovery_missing_tables.sql"
+    },
+    {
+      "file": "scripts/ai-context/cenarios.mjs",
+      "ref": "supabase/migrations/001.sql"
+    },
+    {
+      "file": "scripts/ai-context/cenarios.mjs",
+      "ref": "supabase/migrations/1.sql"
+    },
+    {
+      "file": "scripts/ai-context/gerar.unit.mjs",
+      "ref": "supabase/migrations/_foreign/singu/001_foreign.sql"
+    },
+    {
+      "file": "scripts/ai-context/gerar.unit.mjs",
+      "ref": "supabase/migrations/_superseded/000_old.sql"
+    },
+    {
+      "file": "scripts/ai-context/gerar.unit.mjs",
+      "ref": "supabase/migrations/001_init.sql"
+    },
+    {
+      "file": "scripts/ai-context/gerar.unit.mjs",
+      "ref": "supabase/migrations/002_evolve.sql"
     },
     {
       "file": "scripts/build-drafts-pr-comment.mjs",
@@ -1900,6 +1948,18 @@
     {
       "file": "src/lib/feature-flags.ts",
       "ref": "qa/migrations-draft/2026-07-12_magazines.sql"
+    },
+    {
+      "file": "tests/scripts/build-migration-ledger-manifest.test.mjs",
+      "ref": "supabase/migrations/20260101000001_a.sql"
+    },
+    {
+      "file": "tests/scripts/canonical-project-guards.test.mjs",
+      "ref": "supabase/migrations-snapshot/SNAPSHOT.sql"
+    },
+    {
+      "file": "tests/scripts/canonical-project-guards.test.mjs",
+      "ref": "supabase/migrations/000_quebrado.sql"
     },
     {
       "file": "tests/scripts/check-migration-filename-contract.test.mjs",
@@ -1922,8 +1982,48 @@
       "ref": "supabase/migrations/20260826010203_second_change.sql"
     },
     {
+      "file": "tests/scripts/check-migration-path-references.test.mjs",
+      "ref": "supabase/migrations/20260101_inexistente.sql"
+    },
+    {
+      "file": "tests/scripts/check-migration-path-references.test.mjs",
+      "ref": "supabase/migrations/20260101_x.sql"
+    },
+    {
       "file": "tests/scripts/check-no-db-push.test.mjs",
       "ref": "supabase/migrations/README.md"
+    },
+    {
+      "file": "tests/scripts/check-security-definer-hardening.test.mjs",
+      "ref": "supabase/migrations/20260101000000_base.sql"
+    },
+    {
+      "file": "tests/scripts/check-security-definer-hardening.test.mjs",
+      "ref": "supabase/migrations/20260102000000_nova.sql"
+    },
+    {
+      "file": "tests/scripts/classify-unledgered-migrations.test.mjs",
+      "ref": "supabase/migrations/a.sql"
+    },
+    {
+      "file": "tests/scripts/classify-unledgered-migrations.test.mjs",
+      "ref": "supabase/migrations/noop.sql"
+    },
+    {
+      "file": "tests/scripts/classify-unledgered-migrations.test.mjs",
+      "ref": "supabase/migrations/ok.sql"
+    },
+    {
+      "file": "tests/scripts/gates-failopen-batch2.test.mjs",
+      "ref": "supabase/migrations/a.sql"
+    },
+    {
+      "file": "tests/scripts/qa-price-readonly-regression.test.mjs",
+      "ref": "supabase/migrations/20250101_trigger.sql"
+    },
+    {
+      "file": "tests/scripts/tools-batch3.test.mjs",
+      "ref": "qa/migrations-draft/PR_COMMENT.md"
     },
     {
       "file": "tests/security/restore-seller-cart-rpc.test.ts",

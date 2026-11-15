@@ -182,4 +182,9 @@ function main() {
   console.log(`✅ CORS gate passed: x-request-id present in Allow-Headers and Expose-Headers across all browser-callable edge functions.`);
 }
 
-main();
+try {
+  main();
+} catch (error) {
+  console.error(`❌ Falha ao executar o gate CORS: ${error.message}`);
+  process.exit(1);
+}

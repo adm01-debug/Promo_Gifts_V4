@@ -13,7 +13,13 @@ export interface UserNotificationPreference {
 
 export const notificationPreferenceService = {
   async getPreferences(): Promise<UserNotificationPreference[]> {
-    const { data, error } = await supabase.from('user_notification_preferences').select('*');
+    const { data: userData } = await supabase.auth.getUser();
+    if (!userData.user) return [];
+
+    const { data, error } = await supabase
+      .from('user_notification_preferences')
+      .select('*')
+      .eq('user_id', userData.user.id);
 
     if (error) {
       logger.error('[notificationPreferenceService] getPreferences error:', error.message);
@@ -49,25 +55,33 @@ export const notificationPreferenceService = {
   },
 
   subscribeToPreferences(onUpdate: (preference: UserNotificationPreference) => void): () => void {
-    const channel = supabase
-      // BUG-RT-CHANNEL FIX: tópico único por inscrição — evita reaproveitar canal já
-      // inscrito (crash "postgres_changes ... after subscribe()") em montagens concorrentes.
-      .channel(`user_notification_preferences_realtime:${crypto.randomUUID()}`)
-      .on(
-        'postgres_changes',
-        {
-          event: '*',
-          schema: 'public',
-          table: 'user_notification_preferences',
-        },
-        (payload) => {
-          onUpdate(payload.new as UserNotificationPreference);
-        },
-      )
-      .subscribe();
+    let channel: ReturnType<typeof supabase.channel> | null = null;
+    let cancelled = false;
+
+    void supabase.auth.getUser().then(({ data: userData }) => {
+      if (cancelled || !userData.user) return;
+      channel = supabase
+        // BUG-RT-CHANNEL FIX: tópico único por inscrição — evita reaproveitar canal já
+        // inscrito (crash "postgres_changes ... after subscribe()") em montagens concorrentes.
+        .channel(`user_notification_preferences_realtime:${crypto.randomUUID()}`)
+        .on(
+          'postgres_changes',
+          {
+            event: '*',
+            schema: 'public',
+            table: 'user_notification_preferences',
+            filter: `user_id=eq.${userData.user.id}`,
+          },
+          (payload) => {
+            onUpdate(payload.new as UserNotificationPreference);
+          },
+        )
+        .subscribe();
+    });
 
     return () => {
-      supabase.removeChannel(channel);
+      cancelled = true;
+      if (channel) supabase.removeChannel(channel);
     };
   },
 };

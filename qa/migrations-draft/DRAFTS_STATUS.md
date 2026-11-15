@@ -1,6 +1,6 @@
 # Rastreamento draft → migration → DB
 
-_Atualizado em 2026-10-24T23:42:23.445Z · 11 rascunho(s) · **sem acesso ao DB** (PGHOST ausente)._
+_Atualizado em 2026-11-01T14:14:42.477Z · 10 rascunho(s) · **sem acesso ao DB** (PGHOST ausente)._
 
 Gerado por `scripts/map-drafts-to-migrations.mjs`. Não editar à mão.
 
@@ -32,7 +32,6 @@ Gerado por `scripts/map-drafts-to-migrations.mjs`. Não editar à mão.
 | `2026-07-13_secdef_revoke_webhook_locks_ROLLBACK.sql` | `secdef_revoke_webhook_locks_ROLLBACK`<br>`secdef` `revoke` `webhook` `locks` `ROLLBACK` | `20260713154845_secdef_revoke_webhook_locks.sql` — **80%**<br>&nbsp;&nbsp;↳ bateu: `secdef` `revoke` `webhook` `locks` · faltou: ~~`ROLLBACK`~~ | ❔ PGHOST ausente |
 | `2026-07-23_get_edge_invoke_summary.sql` | `get_edge_invoke_summary`<br>`get` `edge` `invoke` `summary` | _(nenhum match)_ | 🟡 não promovido |
 | `2026-09-09_magazine_rpc_only_contract.sql` | `magazine_rpc_only_contract`<br>`magazine` `rpc` `only` `contract` | _(nenhum match)_ | 🟡 não promovido |
-| `probe_e184_legacy_refs.sql` | `e184_legacy_refs`<br>`e184` `legacy` `refs` | _(nenhum match)_ | 🟡 não promovido |
 
 ## Como agir
 

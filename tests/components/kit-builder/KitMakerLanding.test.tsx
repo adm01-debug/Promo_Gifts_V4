@@ -170,8 +170,8 @@ describe('KitMakerLanding', () => {
     fireEvent.click(screen.getByRole('button', { name: /começar pelos itens/i }));
     fireEvent.click(screen.getByRole('button', { name: /começar pela caixa/i }));
 
-    expect(onStart).toHaveBeenNthCalledWith(1, 'items-first');
-    expect(onStart).toHaveBeenNthCalledWith(2, 'box-first');
+    expect(onStart).toHaveBeenNthCalledWith(1, 'items-first', 'manual');
+    expect(onStart).toHaveBeenNthCalledWith(2, 'box-first', 'manual');
   });
 
   it('has a truthful empty-state when the catalog has no highlighted product', async () => {
@@ -245,7 +245,7 @@ describe('KitMakerLanding', () => {
     );
     expect(screen.getByRole('button', { name: /tentar novamente/i })).toBeInTheDocument();
     fireEvent.click(screen.getByRole('button', { name: /começar pelos itens/i }));
-    expect(onStart).toHaveBeenCalledWith('items-first');
+    expect(onStart).toHaveBeenCalledWith('items-first', 'manual');
   });
 
   it('keeps cached templates visible when a background refresh fails', async () => {

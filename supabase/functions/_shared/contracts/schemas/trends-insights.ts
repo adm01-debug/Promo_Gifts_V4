@@ -4,7 +4,7 @@
  * v1: days opcional (1-365). Sunset 2026-11-30.
  * v2: strict.
  */
-import { z } from "https://esm.sh/zod@3.23.8";
+import { z } from "npm:zod@3.23.8";
 
 export const TrendsInsightsV1 = z.object({
   days: z.number().int().min(1).max(365).optional(),

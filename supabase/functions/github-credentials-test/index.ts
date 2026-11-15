@@ -2,7 +2,7 @@ import { getCorsHeaders } from "../_shared/cors.ts";
 // github-credentials-test: valida GITHUB_TOKEN/REPO/DEFAULT_BRANCH lendo
 // a API do GitHub. Admin-only. Lê credenciais do `integration_credentials`
 // com fallback para Deno.env (mesma política do secrets-manager).
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2.49.4";
+import { createClient } from "npm:@supabase/supabase-js@2.49.4";
 
 interface CheckResult {
   ok: boolean;
@@ -69,8 +69,8 @@ Deno.serve(async (req) => {
     const service = createClient(supabaseUrl, serviceKey);
     const { data: roles } = await service
       .from("user_roles").select("role").eq("user_id", u.user.id);
-    if (!(roles ?? []).some((r: { role: string }) => r.role === "admin")) {
-      return new Response(JSON.stringify({ ok: false, error: "Admin only" }), {
+    if (!(roles ?? []).some((r: { role: string }) => r.role === "dev")) {
+      return new Response(JSON.stringify({ ok: false, error: "Dev only" }), {
         status: 403, headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }

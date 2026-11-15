@@ -20,7 +20,9 @@ describe('Playwright server isolation contract', () => {
   beforeEach(() => {
     process.env = { ...originalEnv };
     delete process.env.E2E_BASE_URL;
+    delete process.env.E2E_FORCE_START_SERVER;
     delete process.env.E2E_REUSE_EXISTING_SERVER;
+    delete process.env.E2E_SERVER_MODE;
     delete process.env.CI;
     vi.resetModules();
   });
@@ -49,6 +51,20 @@ describe('Playwright server isolation contract', () => {
     expect(config.webServer).toMatchObject({
       url: 'http://localhost:8080',
       reuseExistingServer: false,
+    });
+  }, 90_000);
+
+  it('builds and serves the production preview when explicitly requested', async () => {
+    process.env.E2E_BASE_URL = 'http://127.0.0.1:8081';
+    process.env.E2E_FORCE_START_SERVER = '1';
+    process.env.E2E_SERVER_MODE = 'preview';
+    const config = (await import('../../playwright.config')).default;
+
+    expect(config.webServer).toMatchObject({
+      command: 'npm run build && npm run preview -- --host 127.0.0.1 --port 8081 --strictPort',
+      url: 'http://127.0.0.1:8081',
+      reuseExistingServer: false,
+      timeout: 240_000,
     });
   }, 90_000);
 

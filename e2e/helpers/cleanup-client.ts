@@ -14,11 +14,11 @@
  *   - E2E_ADMIN_EMAIL  (opcional)
  *   - E2E_CLEANUP_DRY_RUN ("1" para apenas contar)
  */
-const YELLOW = "\x1b[33m";
-const GREEN = "\x1b[32m";
-const RED = "\x1b[31m";
-const DIM = "\x1b[2m";
-const RESET = "\x1b[0m";
+const YELLOW = '\x1b[33m';
+const GREEN = '\x1b[32m';
+const RED = '\x1b[31m';
+const DIM = '\x1b[2m';
+const RESET = '\x1b[0m';
 
 export type CleanupResponse = {
   ok: boolean;
@@ -38,7 +38,7 @@ export interface CleanupConfig {
   adminEmail?: string;
   dryRun: boolean;
   /** "explicit" exige que sellerId resolvido bata com o user_id resolvido por email. */
-  sellerScope?: "self" | "explicit";
+  sellerScope?: 'self' | 'explicit';
   /** Quando sellerScope === "explicit", deve bater com o user_id real do email. */
   sellerId?: string;
   /**
@@ -51,25 +51,24 @@ export interface CleanupConfig {
 }
 
 export function loadCleanupConfig(): CleanupConfig | null {
-  const baseUrl =
-    process.env.VITE_SUPABASE_URL || process.env.SUPABASE_URL || "";
-  const token = process.env.E2E_CLEANUP_TOKEN || "";
-  const userEmail = process.env.E2E_USER_EMAIL || "";
-  const adminEmail = process.env.E2E_ADMIN_EMAIL || "";
-  const dryRun = process.env.E2E_CLEANUP_DRY_RUN === "1";
-  const sellerScope: "self" | "explicit" =
-    process.env.E2E_CLEANUP_SELLER_SCOPE === "explicit" ? "explicit" : "self";
+  const baseUrl = process.env.VITE_SUPABASE_URL || process.env.SUPABASE_URL || '';
+  const token = process.env.E2E_CLEANUP_TOKEN || '';
+  const userEmail = process.env.E2E_USER_EMAIL || '';
+  const adminEmail = process.env.E2E_ADMIN_EMAIL || '';
+  const dryRun = process.env.E2E_CLEANUP_DRY_RUN === '1';
+  const sellerScope: 'self' | 'explicit' =
+    process.env.E2E_CLEANUP_SELLER_SCOPE === 'explicit' ? 'explicit' : 'self';
   const sellerId = process.env.E2E_CLEANUP_SELLER_ID || undefined;
 
   // Filtro por prefixo de nome — ATIVO POR PADRÃO. Use o mesmo prefixo
   // usado por `e2eName(label)` para garantir paridade.
-  const noNameFilter = process.env.E2E_CLEANUP_NO_NAME_FILTER === "1";
+  const noNameFilter = process.env.E2E_CLEANUP_NO_NAME_FILTER === '1';
   const explicitPrefix = process.env.E2E_TEST_PREFIX?.trim();
   const nameFilterPrefix = noNameFilter
     ? null
     : explicitPrefix && explicitPrefix.length > 0
       ? explicitPrefix
-      : "[E2E]"; // fallback alinhado ao DEFAULT_PREFIX de test-user.ts
+      : '[E2E]'; // fallback alinhado ao DEFAULT_PREFIX de test-user.ts
 
   if (!baseUrl || !token) return null;
   if (!userEmail && !adminEmail) return null;
@@ -115,10 +114,10 @@ export function loadRetryPolicy(): RetryPolicy {
     return Number.isFinite(v) && v > 0 ? v : def;
   };
   return {
-    attempts: Math.max(1, num("E2E_CLEANUP_RETRY_ATTEMPTS", 4)),
-    baseDelayMs: num("E2E_CLEANUP_RETRY_BASE_MS", 500),
-    maxDelayMs: num("E2E_CLEANUP_RETRY_MAX_MS", 5_000),
-    requestTimeoutMs: num("E2E_CLEANUP_REQUEST_TIMEOUT_MS", 15_000),
+    attempts: Math.max(1, num('E2E_CLEANUP_RETRY_ATTEMPTS', 4)),
+    baseDelayMs: num('E2E_CLEANUP_RETRY_BASE_MS', 500),
+    maxDelayMs: num('E2E_CLEANUP_RETRY_MAX_MS', 5_000),
+    requestTimeoutMs: num('E2E_CLEANUP_REQUEST_TIMEOUT_MS', 15_000),
   };
 }
 
@@ -138,37 +137,36 @@ async function attemptCleanupRequest(
   email: string,
   policy: RetryPolicy,
 ): Promise<AttemptOutcome> {
-  const url = `${cfg.baseUrl.replace(/\/$/, "")}/functions/v1/e2e-cleanup`;
+  const url = `${cfg.baseUrl.replace(/\/$/, '')}/functions/v1/e2e-cleanup`;
   const ctrl = new AbortController();
   const t = setTimeout(() => ctrl.abort(), policy.requestTimeoutMs);
   try {
     const res = await fetch(url, {
-      method: "POST",
+      method: 'POST',
       headers: {
-        "Content-Type": "application/json",
-        "x-e2e-cleanup-token": cfg.token,
+        'Content-Type': 'application/json',
+        'x-e2e-cleanup-token': cfg.token,
       },
       body: JSON.stringify({
         email,
         dryRun: cfg.dryRun,
-        sellerScope: cfg.sellerScope ?? "self",
+        sellerScope: cfg.sellerScope ?? 'self',
         ...(cfg.sellerId ? { sellerId: cfg.sellerId } : {}),
-        ...(cfg.nameFilterPrefix
-          ? { nameFilterPrefix: cfg.nameFilterPrefix }
-          : {}),
+        ...(cfg.nameFilterPrefix ? { nameFilterPrefix: cfg.nameFilterPrefix } : {}),
       }),
       signal: ctrl.signal,
     });
     const json = (await res.json().catch(() => ({}))) as CleanupResponse;
-    const headerRetry = Number(res.headers.get("Retry-After"));
+    const headerRetry = Number(res.headers.get('Retry-After'));
     const bodyRetry = Number(
       (json as unknown as { retry_after_seconds?: number }).retry_after_seconds,
     );
-    const retryAfterSeconds = Number.isFinite(headerRetry) && headerRetry > 0
-      ? headerRetry
-      : Number.isFinite(bodyRetry) && bodyRetry > 0
-        ? bodyRetry
-        : null;
+    const retryAfterSeconds =
+      Number.isFinite(headerRetry) && headerRetry > 0
+        ? headerRetry
+        : Number.isFinite(bodyRetry) && bodyRetry > 0
+          ? bodyRetry
+          : null;
     return { json, status: res.status, retryAfterSeconds, networkError: null };
   } catch (err) {
     return {
@@ -199,9 +197,8 @@ function computeBackoff(
   policy: RetryPolicy,
   retryAfterSeconds: number | null,
 ): number {
-  const base = retryAfterSeconds !== null
-    ? retryAfterSeconds * 1000
-    : policy.baseDelayMs * 2 ** attempt;
+  const base =
+    retryAfterSeconds !== null ? retryAfterSeconds * 1000 : policy.baseDelayMs * 2 ** attempt;
   const jitter = base * (0.75 + Math.random() * 0.5); // ±25%
   return Math.min(Math.round(jitter), policy.maxDelayMs);
 }
@@ -214,7 +211,7 @@ export interface PurgeOpts {
   retryPolicy?: RetryPolicy;
   /**
    * Sobrescreve `cfg.nameFilterPrefix` apenas para esta chamada. Use para
-   * cleanup escopado por spec (ex.: prefixo `[E2E:quote-create]` derivado
+   * cleanup escopado por spec (ex.: prefixo `[E2E] quote-create` derivado
    * de `e2eScope`). Passe `null` para forçar purga sem filtro de nome.
    */
   nameFilterPrefix?: string | null;
@@ -227,9 +224,7 @@ export async function purgeOne(
 ): Promise<CleanupResponse | null> {
   const policy = opts.retryPolicy ?? loadRetryPolicy();
   const effectiveCfg: CleanupConfig =
-    opts.nameFilterPrefix !== undefined
-      ? { ...cfg, nameFilterPrefix: opts.nameFilterPrefix }
-      : cfg;
+    opts.nameFilterPrefix !== undefined ? { ...cfg, nameFilterPrefix: opts.nameFilterPrefix } : cfg;
   let lastOutcome: AttemptOutcome | null = null;
 
   for (let attempt = 0; attempt < policy.attempts; attempt++) {
@@ -269,7 +264,7 @@ export async function purgeOne(
   // Resposta com erro estruturado (4xx/5xx parseados)
   if (lastOutcome.status >= 400 || !json.ok) {
     console.warn(
-      `${YELLOW}[e2e-cleanup] falha para ${email}: HTTP ${lastOutcome.status} ${json.error ?? ""}${RESET}`,
+      `${YELLOW}[e2e-cleanup] falha para ${email}: HTTP ${lastOutcome.status} ${json.error ?? ''}${RESET}`,
     );
     return json;
   }
@@ -278,24 +273,24 @@ export async function purgeOne(
   if (!opts.quiet) {
     const deleted = json.deleted ?? {};
     const total = Object.values(deleted).reduce((a, b) => a + b, 0);
-    const tag = json.dryRun ? "DRY-RUN" : "DELETED";
-    const reason = opts.reason ? ` ${DIM}[${opts.reason}]${RESET}` : "";
+    const tag = json.dryRun ? 'DRY-RUN' : 'DELETED';
+    const reason = opts.reason ? ` ${DIM}[${opts.reason}]${RESET}` : '';
     const scope = effectiveCfg.nameFilterPrefix
       ? ` ${DIM}<${effectiveCfg.nameFilterPrefix}>${RESET}`
-      : "";
+      : '';
     console.log(
       `${GREEN}[e2e-cleanup] ${tag} ${total} linha(s) para ${email}${RESET}${reason}${scope} ${DIM}(${json.totalMs ?? 0}ms)${RESET}`,
     );
     const rows = Object.entries(deleted)
       .filter(([, n]) => n > 0)
       .map(([t, n]) => `  · ${t.padEnd(32)} ${n}`)
-      .join("\n");
+      .join('\n');
     if (rows) console.log(rows);
     if (json.errors && Object.keys(json.errors).length > 0) {
       console.warn(
         `${YELLOW}[e2e-cleanup] avisos:${RESET}\n${Object.entries(json.errors)
           .map(([t, e]) => `  · ${t}: ${e}`)
-          .join("\n")}`,
+          .join('\n')}`,
       );
     }
   }
@@ -306,10 +301,7 @@ export async function purgeOne(
  * Purga TODOS os usuários configurados (user + admin se distintos).
  * Aceita `nameFilterPrefix` para escopar por spec — propaga para `purgeOne`.
  */
-export async function purgeAll(
-  cfg: CleanupConfig,
-  opts: PurgeOpts = {},
-): Promise<void> {
+export async function purgeAll(cfg: CleanupConfig, opts: PurgeOpts = {}): Promise<void> {
   const seen = new Set<string>();
   if (cfg.userEmail) {
     seen.add(cfg.userEmail.toLowerCase());
@@ -320,19 +312,18 @@ export async function purgeAll(
   }
 }
 
-export function logSkipReason(phase: "setup" | "teardown"): void {
-  const baseUrl =
-    process.env.VITE_SUPABASE_URL || process.env.SUPABASE_URL || "";
-  const token = process.env.E2E_CLEANUP_TOKEN || "";
+export function logSkipReason(phase: 'setup' | 'teardown'): void {
+  const baseUrl = process.env.VITE_SUPABASE_URL || process.env.SUPABASE_URL || '';
+  const token = process.env.E2E_CLEANUP_TOKEN || '';
   const hasEmail = !!(process.env.E2E_USER_EMAIL || process.env.E2E_ADMIN_EMAIL);
 
   let msg = `[e2e-cleanup:${phase}] pulado — `;
   if (!baseUrl || !token) {
-    msg += "VITE_SUPABASE_URL ou E2E_CLEANUP_TOKEN ausentes.";
+    msg += 'VITE_SUPABASE_URL ou E2E_CLEANUP_TOKEN ausentes.';
   } else if (!hasEmail) {
-    msg += "nenhum E2E_USER_EMAIL/E2E_ADMIN_EMAIL definido.";
+    msg += 'nenhum E2E_USER_EMAIL/E2E_ADMIN_EMAIL definido.';
   } else {
-    msg += "configuração incompleta.";
+    msg += 'configuração incompleta.';
   }
   if (process.env.CI) console.warn(`${YELLOW}${msg}${RESET}`);
   else console.log(`${DIM}${msg}${RESET}`);

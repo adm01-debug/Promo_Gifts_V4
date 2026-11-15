@@ -1,3 +1,4 @@
+import { hasKnownKitPrice } from '@/lib/kit-builder/pricing-availability';
 /**
  * Item Selector
  * Seletor de itens para compor o kit (refatorado)
@@ -13,6 +14,7 @@ import {
   List,
   ArrowRight,
   Trash2,
+  ArrowLeftRight,
 } from 'lucide-react';
 import { SelectedItemsBadges } from './SelectedItemsBadges';
 import { ItemCard } from './ItemCard';
@@ -47,44 +49,10 @@ import {
   formatCurrency,
   sortItemsByRelevance,
   type KitItem,
-  type ItemFilters,
-  type CompatibilityResult,
-  type KitBuilderFlow,
 } from '@/lib/kit-builder';
 import { useKitStockValidation } from '@/hooks/kit-builder';
-import type { VariantSelectionData } from './VariantSelector';
-
-interface ItemWithCompatibility extends KitItem {
-  compatibility: CompatibilityResult | null;
-}
-
-interface ItemSelectorProps {
-  items: ItemWithCompatibility[];
-  /** Stable, unfiltered catalog used to keep facet options/counts visible. */
-  catalogItems?: KitItem[];
-  selectedItems: KitItem[];
-  isLoading: boolean;
-  filters: ItemFilters;
-  onFiltersChange: (filters: ItemFilters) => void;
-  onAddItem: (item: KitItem) => CompatibilityResult;
-  onRemoveItem: (itemId: string) => void;
-  onUpdateQuantity: (itemId: string, quantity: number) => void;
-  onUpdateVariant: (itemId: string, data: VariantSelectionData) => void;
-  onReorder?: (fromIndex: number, toIndex: number) => void;
-  onClearAll?: () => void;
-  boxSelected: boolean;
-  errorMessage?: string | null;
-  onRetry?: () => void;
-  /** Total catalog size before filtering — powers the "X de Y produtos" counter. */
-  totalCount?: number;
-  /** Journey badge shown in the step header. */
-  flow?: KitBuilderFlow;
-  kitQuantity?: number;
-  /** Real occupancy once a box exists; undefined/no box shows the "pending" copy. */
-  volumeUsagePercent?: number;
-  onNext?: () => void;
-  canProceed?: boolean;
-}
+import type { ItemSelectorProps } from './ItemSelector.types';
+export type { ItemSelectorProps, ItemWithCompatibility } from './ItemSelector.types';
 
 export function ItemSelector({
   items,
@@ -108,6 +76,8 @@ export function ItemSelector({
   volumeUsagePercent,
   onNext,
   canProceed,
+  replaceTarget,
+  onReplaceItem,
 }: ItemSelectorProps) {
   const [searchValue, setSearchValue] = useState('');
   const [lastError, setLastError] = useState<string | null>(null);
@@ -138,6 +108,14 @@ export function ItemSelector({
   };
 
   const handleAddItem = (item: KitItem) => {
+    if (replaceTarget && onReplaceItem) {
+      const result = onReplaceItem(replaceTarget.itemId, item);
+      if (!result.fits) {
+        setLastError(result.reason || 'Item não cabe na caixa');
+        setTimeout(() => setLastError(null), 3000);
+      }
+      return;
+    }
     const result = onAddItem(item);
     if (!result.fits) {
       setLastError(result.reason || 'Item não cabe na caixa');
@@ -226,6 +204,16 @@ export function ItemSelector({
         <div className="flex items-center gap-3 rounded-lg border border-destructive/30 bg-destructive/10 p-4 animate-in fade-in slide-in-from-top-2">
           <X className="h-5 w-5 flex-shrink-0 text-destructive" />
           <p className="text-sm text-destructive">{lastError}</p>
+        </div>
+      )}
+
+      {replaceTarget && (
+        <div className="flex items-center gap-3 rounded-lg border border-primary/30 bg-primary/5 p-4 animate-in fade-in slide-in-from-top-2">
+          <ArrowLeftRight className="h-5 w-5 flex-shrink-0 text-primary" />
+          <p className="text-sm">
+            Substituindo: <strong className="text-foreground">{replaceTarget.displayName}</strong> —
+            clique em um produto para trocar
+          </p>
         </div>
       )}
 
@@ -534,7 +522,9 @@ export function ItemSelector({
             </div>
             <div className="mt-1 flex justify-between">
               <span className="text-muted-foreground">Subtotal</span>
-              <strong>{formatCurrency(subtotal)}</strong>
+              <strong>
+                {selectedItems.every(hasKnownKitPrice) ? formatCurrency(subtotal) : 'Não informado'}
+              </strong>
             </div>
           </div>
 

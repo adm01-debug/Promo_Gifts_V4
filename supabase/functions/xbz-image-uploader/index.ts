@@ -11,16 +11,22 @@
 // TODO: implementar a lógica de upload (ver complete_xbz_image_import em public schema)
 import { createClient } from 'jsr:@supabase/supabase-js@2'
 import { authorizeCron } from '../_shared/dispatcher-auth.ts'
+import { createStructuredLogger } from '../_shared/structured-logger.ts'
+import { getOrCreateRequestId } from '../_shared/request-id.ts'
 
 const SUPABASE_URL = Deno.env.get('SUPABASE_URL')!
 const SUPABASE_SERVICE_KEY = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!
 
 Deno.serve(async (req: Request) => {
+  const requestId = getOrCreateRequestId(req)
+  const log = createStructuredLogger({ fn: 'xbz-image-uploader', requestId, req })
+  log.info('request_start')
+
   if (req.method !== 'POST') {
-    return new Response(JSON.stringify({ error: 'method_not_allowed' }), {
+    return log.respond(new Response(JSON.stringify({ error: 'method_not_allowed' }), {
       status: 405,
       headers: { 'Content-Type': 'application/json' },
-    })
+    }))
   }
 
   const cronAuth = await authorizeCron(req, {
@@ -28,7 +34,7 @@ Deno.serve(async (req: Request) => {
     secretEnvName: 'XBZ_IMAGE_UPLOADER_CRON_SECRET',
     headerName: 'x-cron-secret',
   })
-  if (!cronAuth.ok) return cronAuth.response
+  if (!cronAuth.ok) return log.respond(cronAuth.response)
 
   const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY)
 
@@ -40,19 +46,19 @@ Deno.serve(async (req: Request) => {
     .limit(20)
 
   if (selectErr) {
-    console.error('xbz-image-uploader: select_failed', { message: selectErr.message })
-    return new Response(JSON.stringify({ error: 'select_failed', detail: selectErr.message }), {
+    log.error('select_failed', { message: selectErr.message })
+    return log.respond(new Response(JSON.stringify({ error: 'select_failed', detail: selectErr.message }), {
       status: 500,
       headers: { 'Content-Type': 'application/json' },
-    })
+    }))
   }
 
   // TODO: implementar upload para Cloudflare Images + chamada a complete_xbz_image_import
   // Por ora retorna contagem de pendentes sem processar
-  console.log('xbz-image-uploader: pending_count', { count: pending?.length ?? 0 })
+  log.info('pending_count', { count: pending?.length ?? 0 })
 
-  return new Response(
+  return log.respond(new Response(
     JSON.stringify({ ok: true, pending: pending?.length ?? 0, processed: 0, message: 'not_implemented' }),
     { status: 200, headers: { 'Content-Type': 'application/json' } },
-  )
+  ))
 })

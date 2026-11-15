@@ -3,7 +3,7 @@
  * Sticky thumbnails ao rolar, hover swatch troca foto, AnimatePresence em colunas,
  * sparkline 30d, badge risco estoque, linha "outros fornecedores".
  */
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -74,7 +74,7 @@ export function CompareTableView({
     return () => observer.disconnect();
   }, []);
 
-  const eq = {
+  const eq = useMemo(() => ({
     sku: allEqual(products.map((p) => p.sku)),
     category: allEqual(products.map((p) => p.category?.name)),
     supplier: allEqual(products.map((p) => p.supplier?.name)),
@@ -92,7 +92,7 @@ export function CompareTableView({
           `${p.dimensions?.height_cm ?? ''}x${p.dimensions?.width_cm ?? ''}x${p.dimensions?.length_cm ?? ''}`,
       ),
     ),
-  };
+  }), [products]);
 
   const showRow = (key: keyof typeof eq) => !differencesOnly || !eq[key];
 

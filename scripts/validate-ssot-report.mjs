@@ -37,6 +37,7 @@
 
 import { readFileSync, existsSync } from 'fs';
 import { resolve } from 'path';
+import { missingPrerequisite } from './lib/missing-prerequisite.mjs';
 
 const argv = process.argv.slice(2);
 const getArg = (name, dflt) => {
@@ -63,7 +64,9 @@ function die(code, msg) {
   process.exit(code);
 }
 
-if (!existsSync(FILE)) die(2, `arquivo não encontrado: ${FILE}`);
+if (!existsSync(FILE)) {
+  missingPrerequisite('validate-ssot-report', `arquivo não encontrado: ${FILE}`, { exitCode: 2 });
+}
 if (!existsSync(SCHEMA)) die(2, `schema não encontrado: ${SCHEMA}`);
 
 let data, schema;

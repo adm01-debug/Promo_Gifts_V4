@@ -1,23 +1,23 @@
 import { test, expect } from '@playwright/test';
+import { gotoAndSettle } from '../helpers/nav';
+
+// RPC mockada abaixo: nada é gravado, então o e-mail não precisa de prefixo de cleanup.
+const RECOVERY_EMAIL = 'test-recovery@example.com';
 
 test.describe('Forgot Password Flow', () => {
   test('fluxo completo de recuperação de senha até confirmação', async ({ page }) => {
-    await page.goto('/login');
+    await gotoAndSettle(page, '/login');
     
     // Abre o formulário de esqueci senha
     await page.locator('[data-testid="login-forgot-link"]').click();
     await expect(page.locator('[data-testid="forgot-password-screen"]')).toBeVisible();
 
     // Preenche o email
-    await page.locator('#forgot-email').fill('test-recovery@example.com');
+    await page.locator('#forgot-email').fill(RECOVERY_EMAIL);
     
-    // Mock da resposta do Supabase para evitar erro de rede/banco
-    await page.route('**/rest/v1/password_reset_requests*', async route => {
-      await route.fulfill({
-        status: 201,
-        contentType: 'application/json',
-        body: JSON.stringify({ id: '123' }),
-      });
+    // Mock da RPC request_password_reset (RETURNS void → PostgREST responde 204 sem corpo)
+    await page.route('**/rest/v1/rpc/request_password_reset*', async route => {
+      await route.fulfill({ status: 204, body: '' });
     });
 
     // Envia solicitação

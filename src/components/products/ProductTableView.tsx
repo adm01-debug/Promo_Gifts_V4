@@ -185,24 +185,23 @@ export const ProductTableView = memo(
     const favStore = useFavoritesStore();
     const compStore = useComparisonStore();
     const setSelectedColor = useProductSelectionStore((s) => s.setSelectedColor);
+    const setSelectedVariant = useProductSelectionStore((s) => s.setSelectedVariant);
+    const clearSelectedColorInStore = useProductSelectionStore((s) => s.clearSelectedColor);
     // Persiste a cor selecionada na URL (mesma estratégia do ProductCard) e atualiza o store.
     const selectColorWithUrl = useCallback(
-      (productId: string, colorName: string) => {
-        setSelectedColor(productId, colorName);
+      (productId: string, colorName: string, variantId?: string) => {
+        if (variantId) setSelectedVariant(productId, variantId, colorName);
+        else setSelectedColor(productId, colorName);
         if (typeof window === 'undefined') return;
         const url = new URL(window.location.href);
         url.searchParams.set('cor', colorName);
         url.searchParams.set('pid', productId);
         window.history.replaceState({}, '', url.toString());
       },
-      [setSelectedColor],
+      [setSelectedColor, setSelectedVariant],
     );
     const clearSelectedColor = useCallback((productId: string) => {
-      useProductSelectionStore.setState((state) => {
-        const next = { ...state.selectedColors };
-        delete next[productId];
-        return { selectedColors: next };
-      });
+      clearSelectedColorInStore(productId);
       if (typeof window === 'undefined') return;
       const url = new URL(window.location.href);
       if (url.searchParams.get('pid') === productId) {
@@ -210,7 +209,7 @@ export const ProductTableView = memo(
         url.searchParams.delete('pid');
         window.history.replaceState({}, '', url.toString());
       }
-    }, []);
+    }, [clearSelectedColorInStore]);
 
     // FIX(catalog-table-cores): o fetch lightweight do catalogo NAO traz `colors`
     // (chega `[]`), entao a tabela caia no placeholder "–". Grid/Lista ja hidratam

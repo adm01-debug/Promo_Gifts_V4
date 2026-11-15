@@ -1056,7 +1056,7 @@ function SellerCartsContent() {
             </div>
 
             {/* Sidebar */}
-            {s.activeCart.items.length > 0 && (
+            {(s.activeCart.items.length > 0 || s.templates.length > 0) && (
               <CartSidebar
                 key={s.activeCart.id}
                 cart={s.activeCart}

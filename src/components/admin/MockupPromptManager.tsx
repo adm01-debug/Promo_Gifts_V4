@@ -107,29 +107,34 @@ export function MockupPromptManager() {
     if (!hasChanges(config)) return;
     setSavingId(config.id);
     try {
-      // BUG-MOCKUP-HISTORY-SILENT-FAIL FIX: bare await swallowed RLS/constraint errors.
-      // History insert is best-effort — log failure but let config update proceed.
-      const { error: histErr } = await supabase.from('mockup_prompt_history').insert({
-        config_id: config.id,
-        config_key: config.config_key,
-        version: config.version,
-        new_prompt: edited.prompt_text,
-        old_prompt: config.prompt_text,
-        ai_model: config.ai_model,
-        changed_by: user?.id,
-        change_notes: changeNotes[config.id] || null,
-      });
-      if (histErr) logger.warn('[mockup-prompts] history insert failed:', histErr);
-      const { error } = await supabase
+      // Linha de histórico é gravada pelo trigger trg_log_mockup_prompt_change (com NEW.version).
+      const { data, error } = await supabase
         .from('mockup_prompt_configs')
         .update({
           prompt_text: edited.prompt_text,
           ai_model: edited.ai_model,
           version: config.version + 1,
         })
-        .eq('id', config.id);
+        .eq('id', config.id)
+        .select('version')
+        .single();
       if (error) throw error;
-      toast.success(`Prompt "${config.label}" salvo (v${config.version + 1})`);
+      // Nota da alteração (o trigger não grava change_notes): linha com a versão real gerada.
+      const note = changeNotes[config.id]?.trim();
+      if (note) {
+        const { error: histErr } = await supabase.from('mockup_prompt_history').insert({
+          config_id: config.id,
+          config_key: config.config_key,
+          version: data.version,
+          new_prompt: edited.prompt_text,
+          old_prompt: config.prompt_text,
+          ai_model: edited.ai_model,
+          changed_by: user?.id,
+          change_notes: note,
+        });
+        if (histErr) logger.warn('[mockup-prompts] history note insert failed:', histErr);
+      }
+      toast.success(`Prompt "${config.label}" salvo (v${data.version})`);
       setEditedPrompts((p) => {
         const n = { ...p };
         delete n[config.id];

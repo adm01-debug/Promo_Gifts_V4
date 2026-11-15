@@ -1,5 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
+import { fetchFilteredProductIds } from '@/hooks/intelligence/useCommercialIntelligence.helpers';
 
 export type FilterKey = 'category' | 'product' | 'supplier';
 
@@ -38,6 +39,20 @@ interface Params {
 
 const getSince = (days: number) => new Date(Date.now() - days * 86_400_000).toISOString();
 
+const ID_CHUNK_SIZE = 150;
+
+async function sumCountsByIdChunks(
+  productIds: string[],
+  countChunk: (chunk: string[]) => PromiseLike<{ count: number | null }>,
+): Promise<number> {
+  const chunks: string[][] = [];
+  for (let i = 0; i < productIds.length; i += ID_CHUNK_SIZE) {
+    chunks.push(productIds.slice(i, i + ID_CHUNK_SIZE));
+  }
+  const counts = await Promise.all(chunks.map((chunk) => countChunk(chunk)));
+  return counts.reduce((total, { count }) => total + (count ?? 0), 0);
+}
+
 /**
  * Conta orçamentos (proxy de "atividade comercial") na janela, opcionalmente
  * restringido a um conjunto de product_ids. Usa `count: 'exact', head: true`
@@ -54,13 +69,14 @@ async function countQuotesInWindow(sinceIso: string, productIds: string[] | null
     return count ?? 0;
   }
 
-  // quote_items.product_id — limita a 200 ids p/ não estourar querystring
-  const { count } = await supabase
-    .from('quote_items')
-    .select('quote_id', { count: 'exact', head: true })
-    .gte('created_at', sinceIso)
-    .in('product_id', productIds.slice(0, 200));
-  return count ?? 0;
+  // quote_items.product_id — lotes de ids p/ não estourar querystring
+  return sumCountsByIdChunks(productIds, (chunk) =>
+    supabase
+      .from('quote_items')
+      .select('quote_id', { count: 'exact', head: true })
+      .gte('created_at', sinceIso)
+      .in('product_id', chunk),
+  );
 }
 
 /**
@@ -78,12 +94,13 @@ async function countOrdersInWindow(sinceIso: string, productIds: string[] | null
     return count ?? 0;
   }
 
-  const { count } = await supabase
-    .from('order_items')
-    .select('order_id', { count: 'exact', head: true })
-    .gte('created_at', sinceIso)
-    .in('product_id', productIds.slice(0, 200));
-  return count ?? 0;
+  return sumCountsByIdChunks(productIds, (chunk) =>
+    supabase
+      .from('order_items')
+      .select('order_id', { count: 'exact', head: true })
+      .gte('created_at', sinceIso)
+      .in('product_id', chunk),
+  );
 }
 
 async function resolveProductIds(
@@ -91,14 +108,8 @@ async function resolveProductIds(
   supplierId?: string | null,
   productId?: string | null,
 ): Promise<string[] | null> {
-  if (productId) return [productId];
-  if (!categoryId && !supplierId) return null;
-  const { fetchPromobrindProducts } = await import('@/lib/external-db');
-  const filters: Record<string, unknown> = {};
-  if (categoryId) filters.category_id = categoryId;
-  if (supplierId) filters.supplier_id = supplierId;
-  const products = await fetchPromobrindProducts({ limit: 5000, filters });
-  return products.map((p) => p.id);
+  const ids = await fetchFilteredProductIds(categoryId, supplierId, productId);
+  return ids ? Array.from(ids) : null;
 }
 
 /**

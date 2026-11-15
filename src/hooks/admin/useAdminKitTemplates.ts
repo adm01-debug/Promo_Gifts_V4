@@ -56,15 +56,20 @@ export function useAdminKitTemplates() {
 
   const deleteMutation = useMutation({
     mutationFn: async (id: string) => {
-      const { error } = await supabase.from('kit_templates').delete().eq('id', id);
+      const { data, error } = await supabase
+        .from('kit_templates')
+        .delete()
+        .eq('id', id)
+        .select('id');
       if (error) throw error;
+      if (!data?.length) throw new Error('Sem permissão para excluir (apenas dev)');
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: QUERY_KEY });
       queryClient.invalidateQueries({ queryKey: ['kit-templates'] });
       toast.success('Template removido');
     },
-    onError: () => toast.error('Erro ao remover'),
+    onError: (err: Error) => toast.error('Erro ao remover', { description: sanitizeError(err) }),
   });
 
   const toggleActiveMutation = useMutation({

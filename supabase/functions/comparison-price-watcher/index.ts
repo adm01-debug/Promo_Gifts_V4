@@ -9,7 +9,7 @@ import { authorizeCron } from "../_shared/dispatcher-auth.ts";
  * em `new_values->>'price'` e timestamp em `changed_at`. Como as comparações
  * guardam `productId`, resolvemos os variants de cada produto via product_variants.
  */
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
+import { createClient } from "npm:@supabase/supabase-js@2.45.0";
 
 const THRESHOLD_PCT = 5;
 const LOOKBACK_DAYS = 7;

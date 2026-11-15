@@ -15,10 +15,9 @@
  *   UPDATE_BASELINE=1 node scripts/eslint-baseline-generate.mjs   (idem; apenas semântico)
  */
 import { spawnSync } from 'node:child_process';
-import { writeFileSync, mkdtempSync } from 'node:fs';
+import { writeFileSync, mkdtempSync, existsSync, readFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join, relative } from 'node:path';
-import { readFileSync } from 'node:fs';
 
 const ROOT = process.cwd();
 const BASELINE_PATH = join(ROOT, '.eslint-baseline.json');
@@ -31,10 +30,19 @@ function runEslint() {
     stdio: ['ignore', 'inherit', 'inherit'],
     shell: false,
   });
+  // null status = killed by signal (OOM, SIGKILL). Treat as infrastructure failure.
+  if (res.signal) {
+    console.error(`eslint killed by signal ${res.signal} — possível OOM. Use NODE_OPTIONS='--max-old-space-size=4096' para aumentar memória.`);
+    process.exit(2);
+  }
   if (res.status !== 0 && res.status !== 1) {
     // 0 = clean, 1 = lint problems found. Anything else = real failure.
     console.error(`eslint exited with status ${res.status}`);
     process.exit(res.status ?? 2);
+  }
+  if (!existsSync(out)) {
+    console.error(`eslint não gerou o arquivo de relatório: ${out}`);
+    process.exit(2);
   }
   return JSON.parse(readFileSync(out, 'utf8'));
 }

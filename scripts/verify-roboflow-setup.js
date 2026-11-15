@@ -19,14 +19,11 @@ const SUPABASE_URL = process.env.SUPABASE_URL;
 const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
 if (!SUPABASE_URL || !SUPABASE_SERVICE_KEY) {
-  console.error('❌ Missing required environment variables:');
-  if (!SUPABASE_URL) console.error('   - SUPABASE_URL');
-  if (!SUPABASE_SERVICE_KEY) console.error('   - SUPABASE_SERVICE_ROLE_KEY');
-  console.error('\nUsage:');
-  console.error('  SUPABASE_URL=https://xxx.supabase.co \\');
-  console.error('  SUPABASE_SERVICE_ROLE_KEY=xxx \\');
-  console.error('  node scripts/verify-roboflow-setup.js');
-  process.exit(1);
+  const { missingPrerequisite } = await import('./lib/missing-prerequisite.mjs');
+  missingPrerequisite('verify-roboflow-setup', 'SUPABASE_URL e/ou SUPABASE_SERVICE_ROLE_KEY ausentes', {
+    exitCode: 1,
+    hint: 'Uso: SUPABASE_URL=https://xxx.supabase.co SUPABASE_SERVICE_ROLE_KEY=xxx node scripts/verify-roboflow-setup.js',
+  });
 }
 
 async function querySupabase(sql, params = []) {

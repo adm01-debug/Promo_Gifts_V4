@@ -14,18 +14,39 @@
  *   0  → build OK, integridade JSX verificada
  *   1  → build falhou (sintaxe JSX, import quebrado, etc.)
  */
-import { spawnSync } from 'node:child_process';
+import { spawn } from 'node:child_process';
 
 console.log('🔎 [integrity] Rodando vite build para validar JSX...');
-const result = spawnSync('npx', ['vite', 'build', '--logLevel', 'error'], {
+const child = spawn('npx', ['vite', 'build', '--logLevel', 'error'], {
   stdio: 'inherit',
   env: { ...process.env, NODE_ENV: 'production' },
+  detached: true,
 });
 
-if (result.status !== 0) {
-  console.error('\n❌ [integrity] Build falhou — provavelmente há tag JSX/motion mal fechada.');
-  process.exit(1);
-}
+// spawnSync bloqueava o main thread: SIGINT/SIGTERM matavam só o processo pai
+// (default do sinal) e `npx`/`npm exec`/`vite`/workers do esbuild ficavam
+// órfãos, continuando a rodar em background. Repassa o sinal para todo o
+// grupo de processos do filho (detached: true o torna líder de grupo).
+const forwardSignal = (signal) => {
+  try {
+    process.kill(-child.pid, signal);
+  } catch {
+    // grupo já encerrado
+  }
+};
+process.on('SIGINT', () => forwardSignal('SIGINT'));
+process.on('SIGTERM', () => forwardSignal('SIGTERM'));
 
-console.log('\n✅ [integrity] Build OK — todas as tags JSX/motion estão sintaticamente corretas.');
-process.exit(0);
+child.on('error', (err) => {
+  console.error(`\n❌ [integrity] Não foi possível iniciar o build (${err.message}).`);
+  process.exit(1);
+});
+
+child.on('exit', (code) => {
+  if (code !== 0) {
+    console.error('\n❌ [integrity] Build falhou — provavelmente há tag JSX/motion mal fechada.');
+    process.exit(1);
+  }
+  console.log('\n✅ [integrity] Build OK — todas as tags JSX/motion estão sintaticamente corretas.');
+  process.exit(0);
+});

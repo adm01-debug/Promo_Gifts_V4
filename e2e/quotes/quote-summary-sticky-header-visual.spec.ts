@@ -9,7 +9,8 @@
  * Baselines são geradas no primeiro run com `--update-snapshots`.
  * Tolerância: 0.2% pixel diff (Playwright default `maxDiffPixelRatio`).
  */
-import { test, expect, type Page } from '@playwright/test';
+import type { Page } from '@playwright/test';
+import { test, expect } from '../fixtures/test-base';
 import { loginAs } from '../helpers/auth';
 import { gotoAndSettle } from '../helpers/nav';
 
@@ -52,19 +53,23 @@ async function scrollContainerToBottomSync(page: Page) {
     window.scrollTo(0, document.body.scrollHeight);
   });
   // espera o scroll estabilizar (sem race com animações de hover/tooltip)
-  await page.waitForFunction(() => {
-    const header = document.querySelector('[data-testid="quote-summary-header"]');
-    if (!header) return false;
-    let el: HTMLElement | null = header.parentElement;
-    while (el) {
-      const s = getComputedStyle(el);
-      if (/(auto|scroll)/.test(s.overflowY) && el.scrollHeight > el.clientHeight) {
-        return el.scrollTop + el.clientHeight >= el.scrollHeight - 2;
+  await page.waitForFunction(
+    () => {
+      const header = document.querySelector('[data-testid="quote-summary-header"]');
+      if (!header) return false;
+      let el: HTMLElement | null = header.parentElement;
+      while (el) {
+        const s = getComputedStyle(el);
+        if (/(auto|scroll)/.test(s.overflowY) && el.scrollHeight > el.clientHeight) {
+          return el.scrollTop + el.clientHeight >= el.scrollHeight - 2;
+        }
+        el = el.parentElement;
       }
-      el = el.parentElement;
-    }
-    return true;
-  }, null, { timeout: 5000 });
+      return true;
+    },
+    null,
+    { timeout: 5000 },
+  );
 }
 
 const VIEWPORTS = [
@@ -84,10 +89,10 @@ for (const vp of VIEWPORTS) {
       const header = page.getByTestId('quote-summary-header');
       await expect(header).toBeVisible();
       await page.mouse.move(0, 0);
-      await expect(header).toHaveScreenshot(
-        `summary-header-initial-${vp.name}.png`,
-        { animations: 'disabled', maxDiffPixelRatio: 0.02 },
-      );
+      await expect(header).toHaveScreenshot(`summary-header-initial-${vp.name}.png`, {
+        animations: 'disabled',
+        maxDiffPixelRatio: 0.02,
+      });
     });
 
     test(`estado sticky após rolar — ${vp.name}`, async ({ page }) => {
@@ -97,10 +102,10 @@ for (const vp of VIEWPORTS) {
       await scrollContainerToBottomSync(page);
       await page.mouse.move(0, 0);
 
-      await expect(header).toHaveScreenshot(
-        `summary-header-sticky-${vp.name}.png`,
-        { animations: 'disabled', maxDiffPixelRatio: 0.02 },
-      );
+      await expect(header).toHaveScreenshot(`summary-header-sticky-${vp.name}.png`, {
+        animations: 'disabled',
+        maxDiffPixelRatio: 0.02,
+      });
     });
 
     test(`par de botões Criar + Rascunho — ${vp.name}`, async ({ page }, testInfo) => {
@@ -141,7 +146,5 @@ for (const vp of VIEWPORTS) {
         throw err;
       }
     });
-
   });
 }
-

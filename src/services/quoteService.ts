@@ -51,7 +51,7 @@ export const quoteService = {
       // rls-allow: escopo aplicado condicionalmente abaixo (self → seller_id; admin scope=all sem filtro); RLS reforça
       .from('quotes')
       .select(
-        'id,quote_number,client_id,contact_id,client_name,client_email,client_phone,client_company,seller_id,status,payment_method,subtotal,discount_percent,discount_amount,total,valid_until,payment_terms,delivery_time,shipping_type,shipping_cost,notes,internal_notes,bitrix_deal_id,bitrix_quote_id,synced_to_bitrix,synced_at,client_response,client_response_at,client_response_notes,created_at,updated_at,sent_at',
+        'id,quote_number,client_id,contact_id,client_name,client_email,client_phone,client_company,seller_id,status,payment_method,subtotal,discount_percent,discount_amount,total,valid_until,payment_terms,delivery_time,shipping_type,shipping_cost,notes,internal_notes,bitrix_deal_id,bitrix_quote_id,synced_to_bitrix,synced_at,client_response,client_response_at,client_response_notes,created_at,updated_at,sent_at,discount_approval_status,discount_approved_at',
       )
       .order('created_at', { ascending: false })
       .limit(500);
@@ -507,9 +507,10 @@ export const quoteService = {
   },
 
   async deleteQuote(quoteId: string) {
-    // rls-allow: DELETE por id; RLS (can_access_quote) valida ownership
-    const { error } = await supabase.from('quotes').delete().eq('id', quoteId);
+    // rls-allow: DELETE por id; RLS (org_admins_delete_quotes) valida permissão
+    const { data, error } = await supabase.from('quotes').delete().eq('id', quoteId).select('id');
     if (error) throw error;
+    if (!data?.length) throw new Error('Sem permissão para excluir este orçamento');
   },
 
   async fetchTechniques(): Promise<PersonalizationTechnique[]> {

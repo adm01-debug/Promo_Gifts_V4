@@ -1,3 +1,4 @@
+import { getKitValidationErrors } from '@/lib/kit-builder/validate-composition';
 /**
  * Kit Builder Hook
  * Gerencia o estado completo do montador de kits
@@ -30,6 +31,7 @@ import {
 } from '@/lib/kit-builder';
 import { useKitBuilderQueries } from '@/hooks/kit-builder/useKitBuilderQueries';
 import type { KitSnapshot } from '@/hooks/kit-builder/useKitUndoRedo';
+import type { KitOrigin } from '@/lib/kit-builder/types';
 
 // ============================================
 // HOOK PRINCIPAL
@@ -66,6 +68,7 @@ export function useKitBuilder({ initialFlow = 'box-first' }: UseKitBuilderOption
     initialFlow === 'items-first' ? 'items' : 'box',
   );
   const [personalizationReviewed, setPersonalizationReviewed] = useState(false);
+  const [kitOrigin, setKitOrigin] = useState<KitOrigin | undefined>(undefined);
 
   // Queries isoladas em hook separado
   const {
@@ -108,79 +111,19 @@ export function useKitBuilder({ initialFlow = 'box-first' }: UseKitBuilderOption
       kitQuantity,
     );
 
-    const validationErrors: string[] = [];
-    if (!selectedBox) validationErrors.push('Selecione uma caixa');
-    if (selectedItems.length === 0) validationErrors.push('Adicione pelo menos um item ao kit');
-    if (volumeUsagePercent > 100)
-      validationErrors.push('Volume dos itens excede a capacidade da caixa');
-
-    if (selectedBox) {
-      if (selectedBox.dimensionsKnown === false) {
-        validationErrors.push('A caixa selecionada não possui dimensões internas confirmadas');
-      }
-      const itemWithUnknownDimensions = selectedItems.find(
-        (item) => item.dimensionsKnown === false,
-      );
-      if (itemWithUnknownDimensions) {
-        validationErrors.push(
-          `${itemWithUnknownDimensions.name} não possui dimensões confirmadas para validação`,
-        );
-      }
-      const incompatibleItem = selectedItems.find((item) => {
-        const otherItems = selectedItems.filter((candidate) => candidate !== item);
-        return !checkItemFits(item, selectedBox, otherItems, item.quantity).fits;
-      });
-      if (incompatibleItem) {
-        validationErrors.push(`${incompatibleItem.name} não é compatível com a caixa selecionada`);
-      }
-    }
-
-    // Weight validation
-    if (selectedBox?.maxWeight && itemsWeight > selectedBox.maxWeight) {
-      validationErrors.push(
-        `Peso dos itens (${(itemsWeight / 1000).toFixed(1)}kg) excede o limite da caixa (${(selectedBox.maxWeight / 1000).toFixed(1)}kg)`,
-      );
-    }
-
-    const incompletePersonalization = [
-      personalization.box,
-      ...Object.values(personalization.items),
-    ].find(
-      (config) =>
-        config.enabled &&
-        (!config.techniqueId || !(config.positionCode || config.position || config.positionName)),
-    );
-    if (incompletePersonalization) {
-      validationErrors.push(
-        'Conclua técnica e área de aplicação da personalização antes de revisar',
-      );
-    }
-
-    const personalizationPricingTargets = [
-      { config: personalization.box, quantity: kitQuantity },
-      ...selectedItems.map((item) => ({
-        config: personalization.items[getKitItemLineId(item)] ?? personalization.items[item.id],
-        quantity: item.quantity * kitQuantity,
-      })),
-    ];
-    const personalizationWithoutPrice = personalizationPricingTargets.find(
-      ({ config, quantity }) =>
-        config?.enabled &&
-        (!Number.isFinite(config.estimatedPrice) ||
-          (config.estimatedPrice ?? -1) < 0 ||
-          config.pricedQuantity !== quantity ||
-          !Number.isFinite(config.totalPrice) ||
-          (config.totalPrice ?? -1) < 0),
-    );
-    if (personalizationWithoutPrice) {
-      validationErrors.push(
-        'Aguarde o preço da personalização antes de revisar ou criar o orçamento',
-      );
-    }
+    const validationErrors = getKitValidationErrors({
+      box: selectedBox,
+      items: selectedItems,
+      personalization,
+      kitQuantity,
+      volumeUsagePercent,
+      itemsWeight,
+    });
 
     return {
       name: kitName,
       kitType,
+      origin: kitOrigin,
       box: selectedBox,
       items: selectedItems,
       personalization,
@@ -197,18 +140,27 @@ export function useKitBuilder({ initialFlow = 'box-first' }: UseKitBuilderOption
       isValid: validationErrors.length === 0,
       validationErrors,
     };
-  }, [kitName, kitType, selectedBox, selectedItems, personalization, kitQuantity, identity, notes]);
+  }, [
+    kitName,
+    kitType,
+    kitOrigin,
+    selectedBox,
+    selectedItems,
+    personalization,
+    kitQuantity,
+    identity,
+    notes,
+  ]);
+
+  const completedSteps = useMemo((): KitBuilderStep[] => {
+    const steps: KitBuilderStep[] = [];
+    if (selectedBox) steps.push('box');
+    if (selectedItems.length > 0) steps.push('items');
+    if (personalizationReviewed) steps.push('personalization');
+    return steps;
+  }, [selectedBox, selectedItems.length, personalizationReviewed]);
 
   const wizardState = useMemo((): KitBuilderWizardState => {
-    const completedSteps: KitBuilderStep[] = [];
-
-    if (selectedBox) completedSteps.push('box');
-    if (selectedItems.length > 0) completedSteps.push('items');
-
-    if (personalizationReviewed) {
-      completedSteps.push('personalization');
-    }
-
     let canProceed = false;
     switch (currentStep) {
       case 'box':
@@ -235,7 +187,7 @@ export function useKitBuilder({ initialFlow = 'box-first' }: UseKitBuilderOption
       canProceed,
       flow,
     };
-  }, [currentStep, selectedBox, selectedItems, personalizationReviewed, kitState, flow]);
+  }, [currentStep, completedSteps, selectedBox, selectedItems, kitState, flow]);
 
   // ============================================
   // AÇÕES
@@ -478,9 +430,13 @@ export function useKitBuilder({ initialFlow = 'box-first' }: UseKitBuilderOption
     }));
   }, []);
 
-  const goToStep = useCallback((step: KitBuilderStep) => {
-    setCurrentStep(step);
-  }, []);
+  const goToStep = useCallback(
+    (step: KitBuilderStep) => {
+      if (step !== currentStep && !completedSteps.includes(step)) return;
+      setCurrentStep(step);
+    },
+    [completedSteps, currentStep],
+  );
 
   const nextStep = useCallback(() => {
     const steps: KitBuilderStep[] =
@@ -531,7 +487,7 @@ export function useKitBuilder({ initialFlow = 'box-first' }: UseKitBuilderOption
     setCurrentStep(flow === 'items-first' ? 'items' : 'box');
   }, [flow]);
 
-  const startNewFlow = useCallback((nextFlow: KitBuilderFlow) => {
+  const startNewFlow = useCallback((nextFlow: KitBuilderFlow, origin?: KitOrigin) => {
     setKitName('');
     setKitType('montado');
     setSelectedBox(null);
@@ -541,6 +497,7 @@ export function useKitBuilder({ initialFlow = 'box-first' }: UseKitBuilderOption
     setNotes('');
     setIdentity({ color: '#3B82F6', icon: 'Package', tag: '', description: '', isFavorite: false });
     setPersonalizationReviewed(false);
+    setKitOrigin(origin);
     setFlow(nextFlow);
     setCurrentStep(nextFlow === 'items-first' ? 'items' : 'box');
   }, []);
@@ -747,6 +704,7 @@ export function useKitBuilder({ initialFlow = 'box-first' }: UseKitBuilderOption
     prevStep,
     resetKit,
     startNewFlow,
+    setKitOrigin,
     loadKit,
     restoreKitSnapshot,
     applyAIComposition,

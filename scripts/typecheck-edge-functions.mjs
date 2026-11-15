@@ -18,6 +18,7 @@
 import { spawnSync } from "node:child_process";
 import { readdirSync, statSync, existsSync } from "node:fs";
 import { join } from "node:path";
+import { missingPrerequisite } from "./lib/missing-prerequisite.mjs";
 
 const FUNCTIONS_DIR = "supabase/functions";
 // "tests" é diretório de integração (sem index.ts) — não é edge function.
@@ -49,11 +50,8 @@ function listFilesToCheck(fnDir) {
 
 function ensureDeno() {
   const probe = spawnSync("deno", ["--version"], { encoding: "utf8" });
-  if (probe.status !== 0) {
-    console.error(
-      "❌ `deno` is not available on PATH. Install it before running this script.",
-    );
-    process.exit(2);
+  if (probe.status !== 0 || probe.error) {
+    missingPrerequisite("typecheck-edge-functions", "`deno` não está no PATH", { exitCode: 2 });
   }
   console.log(probe.stdout.trim().split("\n")[0]);
 }

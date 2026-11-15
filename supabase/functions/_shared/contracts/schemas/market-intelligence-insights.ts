@@ -4,7 +4,7 @@
  * v1: todos campos opcionais (compat com body vazio). Sunset 2026-10-31.
  * v2: strict, UUIDs validados.
  */
-import { z } from "https://esm.sh/zod@3.23.8";
+import { z } from "npm:zod@3.23.8";
 
 export const InsightFocusEnum = z.enum(["auto", "conversion", "ticket", "rupture"]);
 export type InsightFocus = z.infer<typeof InsightFocusEnum>;

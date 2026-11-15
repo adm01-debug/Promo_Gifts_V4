@@ -1,4 +1,4 @@
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2.49.4";
+import { createClient } from "npm:@supabase/supabase-js@2.49.4";
 import { buildPublicCorsHeaders } from "../_shared/cors.ts";
 import { safeErrorResponse } from "../_shared/error-response.ts";
 import { authorizeCron } from "../_shared/dispatcher-auth.ts";
@@ -92,24 +92,30 @@ Deno.serve(async (req) => {
         }
 
         // Send email via Resend
-        const resendKey = await resolveCredential("RESEND_API_KEY");
-        if (resendKey) {
-          const htmlContent = generateEmailHtml(report.report_name, reportData);
+        // resolveCredential devolve { value, source… }; usar o objeto como string mandava "Bearer [object Object]".
+        const { value: resendKey } = await resolveCredential("RESEND_API_KEY");
+        // FIX: sem chave ou com recusa do Resend o relatório NÃO pode ser marcado como
+        // enviado — o erro cai no catch abaixo, que registra o motivo e preserva o next_run_at.
+        if (!resendKey) throw new Error("RESEND_API_KEY não configurado");
 
-          await fetch("https://api.resend.com/emails", {
-            method: "POST",
-            signal: AbortSignal.timeout(25_000),
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${resendKey}`,
-            },
-            body: JSON.stringify({
-              from: "Promo Gifts <noreply@promogifts.com.br>",
-              to: [report.email_to],
-              subject: `📊 ${report.report_name} — ${reportData.period}`,
-              html: htmlContent,
-            }),
-          });
+        const htmlContent = generateEmailHtml(report.report_name, reportData);
+
+        const sendRes = await fetch("https://api.resend.com/emails", {
+          method: "POST",
+          signal: AbortSignal.timeout(25_000),
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${resendKey}`,
+          },
+          body: JSON.stringify({
+            from: "Promo Gifts <noreply@promobrindes.com.br>",
+            to: [report.email_to],
+            subject: `📊 ${report.report_name} — ${reportData.period}`,
+            html: htmlContent,
+          }),
+        });
+        if (!sendRes.ok) {
+          throw new Error(`Resend ${sendRes.status}: ${(await sendRes.text()).slice(0, 300)}`);
         }
 
         // Update next_run_at
@@ -125,7 +131,13 @@ Deno.serve(async (req) => {
 
         results.push({ id: report.id, status: "sent", email: report.email_to });
       } catch (err) {
-        results.push({ id: report.id, status: "error", error: (err as Error).message });
+        const message = err instanceof Error ? err.message : "Unknown error";
+        // Registro do motivo da falha: sem isso o envio quebrado some dos logs.
+        console.error("process-scheduled-reports: falha no envio do relatório", {
+          reportId: report.id,
+          message,
+        });
+        results.push({ id: report.id, status: "error", error: message });
       }
     }
 
