@@ -37,6 +37,7 @@ import {
 } from '@/lib/assistant/buildReason';
 import { useClientBrandSignals } from '@/hooks/assistant/useClientBrandSignals';
 import {
+  ErroDeRpcNaoAplicada,
   SCORE_MINIMO,
   nomeDoGrupoDeCorUnico,
   useSalesAssistantCandidates,
@@ -45,6 +46,7 @@ import {
 
 import { SalesAssistantProductRow } from './SalesAssistantProductRow';
 import {
+  SalesAssistantEmPreparacao,
   SalesAssistantError,
   SalesAssistantSemCandidatos,
   SalesAssistantSemSinal,
@@ -119,6 +121,10 @@ export function SalesAssistantCard({ clientId }: SalesAssistantCardProps) {
           /* Sem botão: `useClientBrandSignals` não expõe `refetch`. */
         />
       );
+    }
+
+    if (candidatosQuery.error instanceof ErroDeRpcNaoAplicada) {
+      return <SalesAssistantEmPreparacao />;
     }
 
     if (candidatosQuery.isError) {

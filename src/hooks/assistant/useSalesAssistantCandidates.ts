@@ -42,6 +42,20 @@ import type { SinaisDaMarcaDoCliente } from '@/hooks/assistant/useClientBrandSig
 /** Nome da função no banco. */
 export const RPC_DE_CANDIDATOS = 'rpc_sales_assistant_candidates';
 
+/** PostgREST devolve este código quando a função chamada não existe no banco. */
+const CODIGO_FUNCAO_INEXISTENTE = 'PGRST202';
+
+/**
+ * A RPC de candidatos ainda não foi aplicada neste banco. Não é falha: é
+ * recurso não ligado. O card trata este caso com estado próprio.
+ */
+export class ErroDeRpcNaoAplicada extends Error {
+  constructor(mensagem: string) {
+    super(mensagem);
+    this.name = 'ErroDeRpcNaoAplicada';
+  }
+}
+
 /** Até 8 brindes na ficha do cliente — o número da fase 1. */
 export const LIMITE_DE_CANDIDATOS = 8;
 
@@ -320,7 +334,22 @@ export function useSalesAssistantCandidates(
       // `RPC_DE_CANDIDATOS` segue como SSOT do nome e um teste garante que os
       // dois não divergem.
       const { data, error } = await untypedRpc('rpc_sales_assistant_candidates', { ...args });
-      if (error) throw new Error(error.message);
+      if (error) {
+        // A migration que cria a RPC chega ao `main` antes de ser aplicada em
+        // produção (só o db-apply-migration.yml aplica, por disparo manual).
+        // Sem distinguir isso de falha real, o card virava "A busca de brindes
+        // falhou" na ficha de qualquer cliente — o vendedor acha que o sistema
+        // quebrou, quando o recurso ainda não foi ligado.
+        if (
+          typeof error === 'object' &&
+          error !== null &&
+          'code' in error &&
+          error.code === CODIGO_FUNCAO_INEXISTENTE
+        ) {
+          throw new ErroDeRpcNaoAplicada(error.message);
+        }
+        throw new Error(error.message);
+      }
 
       const linhas = Array.isArray(data) ? (data as unknown[]) : [];
       return linhas.filter(ehLinhaDeCandidato).map((linha) => mapearCandidato(linha, contexto));

@@ -150,3 +150,21 @@ export function SalesAssistantSemCandidatos({
     </div>
   );
 }
+
+/**
+ * A RPC de candidatos existe no repositório mas ainda não foi aplicada neste
+ * banco. Estado próprio porque "não ligado ainda" não é "falhou": erro manda o
+ * vendedor procurar suporte, isto só diz que o recurso está a caminho.
+ */
+export function SalesAssistantEmPreparacao() {
+  return (
+    <div className="space-y-3 py-4 text-center">
+      <Search className="mx-auto h-5 w-5 text-muted-foreground" aria-hidden="true" />
+      <p className="text-sm font-medium text-foreground">Encaixe do Cliente em preparação</p>
+      <p className="text-xs text-muted-foreground">
+        A busca de brindes por encaixe ainda não foi liberada neste ambiente. As sugestões aparecem
+        aqui assim que ela entrar.
+      </p>
+    </div>
+  );
+}
