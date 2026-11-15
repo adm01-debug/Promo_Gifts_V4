@@ -77,6 +77,8 @@ jobs:
       # gate. Sem esta saída, um PR que só edita o ledger pula justamente o portão que o valida
       # e a quebra só aparece no push para main (onde docs_only é false).
       ledger: ${{ steps.filter.outputs.ledger }}
+      # E40/E98: mesma razão do ledger — o inventário de secrets é .md, mas o Gate 1.14 o lê.
+      segredos: ${{ steps.filter.outputs.segredos }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -88,6 +90,9 @@ jobs:
           filters: |
             ledger:
               - 'docs/coordenacao/conflitos-semanticos.md'
+            segredos:
+              - 'docs/ci/SEGREDOS.md'
+              - 'scripts/check-secrets-inventory.mjs'
             code:
               - 'src/**'
               - 'scripts/**'
@@ -196,7 +201,7 @@ jobs:
     # E188: entra também quando o PR só mexe no ledger de conflitos — é .md (docs-only),
     # mas o Gate 1.18 abaixo lê exatamente esse arquivo. Nesse caso só o 1.18 roda: todos os
     # outros steps deste job seguem com `if: docs_only != 'true'`.
-    if: always() && needs.ssot-gate.result == 'success' && (needs.changes.result == 'skipped' || needs.changes.outputs.docs_only != 'true' || needs.changes.outputs.ledger == 'true')
+    if: always() && needs.ssot-gate.result == 'success' && (needs.changes.result == 'skipped' || needs.changes.outputs.docs_only != 'true' || needs.changes.outputs.ledger == 'true' || needs.changes.outputs.segredos == 'true')
     env:
       NODE_OPTIONS: --max-old-space-size=4096
     steps:
@@ -209,13 +214,14 @@ jobs:
             echo "Exceção E188: o PR mexe no ledger de conflitos, então o Gate 1.18 roda mesmo assim." >> "$GITHUB_STEP_SUMMARY"
           fi
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-        # E188: checkout e Node também no caso ledger-only, senão o Gate 1.18 não tem o que ler.
-        if: needs.changes.outputs.docs_only != 'true' || needs.changes.outputs.ledger == 'true'
+        # E188/E40: checkout e Node também nos casos ledger-only e SEGREDOS-only, senão os
+        # Gates 1.18 e 1.14 não têm o que ler.
+        if: needs.changes.outputs.docs_only != 'true' || needs.changes.outputs.ledger == 'true' || needs.changes.outputs.segredos == 'true'
         with:
           persist-credentials: false  # E32
           fetch-depth: 0
       - name: Setup Node CI
-        if: needs.changes.outputs.docs_only != 'true' || needs.changes.outputs.ledger == 'true'
+        if: needs.changes.outputs.docs_only != 'true' || needs.changes.outputs.ledger == 'true' || needs.changes.outputs.segredos == 'true'
         uses: ./.github/actions/setup-node-ci
       - run: npm run typecheck
         if: needs.changes.outputs.docs_only != 'true'
@@ -393,7 +399,8 @@ jobs:
       # Garante que todo secrets.NAME / vars.NAME referenciado nos workflows
       # está documentado em docs/ci/SEGREDOS.md.
       - name: Gate 1.14 — Secrets inventory (bloqueante)
-        if: needs.changes.outputs.docs_only != 'true'
+        # Roda fora de docs-only E quando o PR mexe no inventário/validador (E40/E98).
+        if: needs.changes.outputs.docs_only != 'true' || needs.changes.outputs.segredos == 'true'
         run: node scripts/check-secrets-inventory.mjs --gate
       # E15: Gates migrados de quality-gate.yml (agora removido) para evitar duplicação.
       # Gate 2.6 e 2.7 eram únicos naquele arquivo; os demais já existiam aqui.
