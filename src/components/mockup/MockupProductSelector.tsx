@@ -14,7 +14,6 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { getCdnUrl } from '@/utils/image-utils';
-import { Skeleton } from '@/components/ui/skeleton';
 import {
   Dialog,
   DialogContent,
@@ -23,7 +22,7 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog';
 import { useProductsCatalog, type ExternalVariantStock, type Product } from '@/hooks/products';
-import { CatalogEmptyState, CatalogLoadError } from './MockupCatalogStates';
+import { CatalogEmptyState, CatalogGridSkeleton, CatalogLoadError } from './MockupCatalogStates';
 import { ProductLoaderAndColorSelector } from './MockupColorSelector';
 import { MockupPhotoPicker } from './MockupPhotoPicker';
 import { getMockupVariantPhotos } from './mockupVariantPhotos';
@@ -275,13 +274,18 @@ export function MockupProductSelector({
       />
     );
   }
+  // Ver MockupProductSelector.errors.test.tsx: exigir lista vazia evita que o aviso apague a grade.
+  const catalogoFalhouSemNada = isCatalogError && sortedProducts.length === 0;
+
 
   // ─── State: Product list (search) ──────────────────────────────────
   return (
     <div className="flex flex-col gap-3">
       {/* A-estados: a falha de carga do catálogo avisa no bloco do produto, antes de abrir a
           busca — sem ela o painel só mostrava o botão e o vendedor não sabia o que houve. */}
-      {isCatalogError && <CatalogLoadError error={catalogError} onRetry={() => refetchCatalog()} />}
+      {catalogoFalhouSemNada && (
+        <CatalogLoadError error={catalogError} onRetry={() => refetchCatalog()} />
+      )}
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
         <DialogTrigger asChild>
           <Button
@@ -382,21 +386,8 @@ export function MockupProductSelector({
                 onScroll={handleScroll}
               >
                 {isLoadingProducts || isFilterPending ? (
-                  <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
-                    {Array.from({ length: 12 }).map((_, i) => (
-                      <div
-                        key={i}
-                        className="space-y-3 rounded-2xl border border-border/30 bg-card p-3"
-                      >
-                        <Skeleton className="aspect-square w-full rounded-xl" />
-                        <div className="space-y-2">
-                          <Skeleton className="h-4 w-3/4" />
-                          <Skeleton className="h-3 w-1/2" />
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                ) : isCatalogError ? (
+                  <CatalogGridSkeleton />
+                ) : catalogoFalhouSemNada ? (
                   <CatalogLoadError error={catalogError} onRetry={() => refetchCatalog()} />
                 ) : sortedProducts.length === 0 ? (
                   <CatalogEmptyState onClearSearch={() => setSearchQuery('')} />

@@ -208,3 +208,45 @@ describe('MockupProductSelector — erro de carga x catálogo vazio', () => {
     expect(aviso).toHaveTextContent('Não foi possível carregar o catálogo de produtos agora.');
   });
 });
+
+describe('MockupProductSelector — erro de paginação não apaga o que já carregou', () => {
+  beforeEach(() => {
+    catalog.products = [];
+    catalog.isError = false;
+    catalog.error = null;
+    catalog.refetch.mockReset();
+  });
+
+  it('isError com produtos já carregados: a grade continua e nenhum aviso aparece', () => {
+    // `useProductsCatalog` é useInfiniteQuery: uma falha de `fetchNextPage`
+    // liga `isError` MANTENDO as páginas já carregadas. Sem exigir lista vazia,
+    // o aviso substituía a grade e o vendedor perdia os produtos clicáveis.
+    catalog.products = [
+      {
+        id: 'p-1',
+        name: 'Caneca Inox 500ml',
+        sku: 'SKU-1',
+        price: 10,
+        images: [],
+        category_name: 'Canecas',
+      },
+    ];
+    catalog.isError = true;
+    catalog.error = new Error(CATALOG_ERROR);
+
+    renderWithProviders(<MockupConfigPanel {...panelProps()} />);
+
+    expect(screen.queryByTestId('mockup-products-error')).toBeNull();
+    expect(screen.queryByText('Não foi possível carregar produtos')).toBeNull();
+  });
+
+  it('isError sem nenhum produto: o aviso aparece, como deve', () => {
+    catalog.products = [];
+    catalog.isError = true;
+    catalog.error = new Error(CATALOG_ERROR);
+
+    renderWithProviders(<MockupConfigPanel {...panelProps()} />);
+
+    expect(within(productSection()).getAllByTestId('mockup-products-error')).not.toHaveLength(0);
+  });
+});

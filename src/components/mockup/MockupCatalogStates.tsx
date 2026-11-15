@@ -10,6 +10,7 @@
  */
 import { SearchX } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { Skeleton } from '@/components/ui/skeleton';
 import { LoadErrorBlock } from './MockupConfigPanelLoadError';
 
 /** Mensagem exibida quando o erro do react-query não traz texto utilizável. */
@@ -49,6 +50,23 @@ export function CatalogEmptyState({ onClearSearch }: { onClearSearch: () => void
       <Button variant="link" className="mt-2" onClick={onClearSearch}>
         Limpar busca
       </Button>
+    </div>
+  );
+}
+
+/** Esqueleto da grade enquanto o catálogo carrega. Mora aqui pelo mesmo motivo acima. */
+export function CatalogGridSkeleton() {
+  return (
+    <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
+      {Array.from({ length: 12 }).map((_, i) => (
+        <div key={i} className="space-y-3 rounded-2xl border border-border/30 bg-card p-3">
+          <Skeleton className="aspect-square w-full rounded-xl" />
+          <div className="space-y-2">
+            <Skeleton className="h-4 w-3/4" />
+            <Skeleton className="h-3 w-1/2" />
+          </div>
+        </div>
+      ))}
     </div>
   );
 }
