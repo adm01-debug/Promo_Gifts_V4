@@ -44,6 +44,13 @@ export interface CrmCompany {
   facebook: string | null;
   linkedin: string | null;
   logo_url: string | null;
+  // Cores da marca — colunas liberadas na allowlist da edge `crm-db-bridge`
+  // (query-policy.ts: `brand_colors` L111, `cores_marca` L76). Tipadas como
+  // `unknown` DE PROPÓSITO: o formato gravado no CRM não foi verificado, e
+  // prometer `string[]` aqui obrigaria quem lê a mentir com um cast. Quem usa
+  // passa por `extrairHexesDaMarca` (src/hooks/assistant/useClientBrandSignals.ts).
+  brand_colors?: unknown;
+  cores_marca?: unknown;
   // Organização
   grupo_economico: string | null;
   grupo_economico_id: string | null;

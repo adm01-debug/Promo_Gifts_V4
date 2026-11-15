@@ -1,14 +1,8 @@
 name: E2E — Customization Collapse (LocationPanel)
 
 on:
+  # E2E fora dos PRs (14/11): os PRs apontavam o E2E para o Supabase de produção e sobrecarregavam o banco. Roda no merge em main, no agendamento ou manual.
   push:
-    branches: [main]
-    paths:
-      - 'src/components/products/customization/**'
-      - 'e2e/flows/04d-customization-collapse.spec.ts'
-      - 'e2e/customization/**'
-      - '.github/workflows/e2e-customization-collapse.yml'
-  pull_request:
     branches: [main]
     paths:
       - 'src/components/products/customization/**'

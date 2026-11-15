@@ -1,6 +1,16 @@
 import { forwardRef } from 'react';
 import { cn } from '@/lib/utils';
-import { CheckCircle2, Package, Paintbrush, Upload, Move, Sparkles, Building2 } from 'lucide-react';
+import {
+  CheckCircle2,
+  Package,
+  Paintbrush,
+  Upload,
+  Move,
+  Sparkles,
+  Building2,
+  ChevronLeft,
+} from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 interface MockupWizardStep {
   id: number;
@@ -13,6 +23,13 @@ interface MockupWizardStep {
 
 interface MockupWizardProps {
   currentStep: number;
+  /**
+   * Etapa mais avançada que o preenchimento já liberou. `currentStep` é a etapa
+   * EM FOCO (o Voltar move só ela), então os atalhos precisam deste valor:
+   * sem ele, voltar uma etapa tirava o clique da etapa pendente que estava
+   * disponível antes.
+   */
+  reachableStep?: number;
   hasClient: boolean;
   hasProduct: boolean;
   hasTechnique: boolean;
@@ -27,6 +44,7 @@ export const MockupWizard = forwardRef<HTMLDivElement, MockupWizardProps>(
   (
     {
       currentStep,
+      reachableStep,
       hasClient,
       hasProduct,
       hasTechnique,
@@ -105,6 +123,24 @@ export const MockupWizard = forwardRef<HTMLDivElement, MockupWizardProps>(
 
     return (
       <div ref={ref} className={cn('w-full transition-all duration-300', className)}>
+        {onStepClick && (
+          <div className="mb-1 flex items-center">
+            {/* Voltar navega para a etapa anterior SEM resetar nada: escolhas
+                já feitas permanecem (quem controla o estado é a página). */}
+            <Button
+              variant="ghost"
+              size="sm"
+              className="h-8 gap-1 px-2 text-xs"
+              aria-label="Voltar para a etapa anterior"
+              disabled={currentStep <= 1}
+              onClick={() => onStepClick(currentStep - 1)}
+            >
+              <ChevronLeft aria-hidden="true" className="h-4 w-4" />
+              Voltar
+            </Button>
+          </div>
+        )}
+
         {/* Desktop Stepper */}
         <nav aria-label="Etapas do processo de criação de mockup" className="hidden py-1 md:block">
           <div className="relative flex items-start justify-between">
@@ -119,7 +155,8 @@ export const MockupWizard = forwardRef<HTMLDivElement, MockupWizardProps>(
 
             {steps.map((step, _index) => {
               // Allow clicking completed steps or the current active step's next
-              const isClickable = onStepClick && (step.isCompleted || step.id <= currentStep);
+              const maxClickable = Math.max(reachableStep ?? currentStep, currentStep);
+              const isClickable = onStepClick && (step.isCompleted || step.id <= maxClickable);
               return (
                 <div
                   key={step.id}
@@ -226,10 +263,11 @@ export const MockupWizard = forwardRef<HTMLDivElement, MockupWizardProps>(
           </div>
 
           {/* Step Pills */}
-          <div className="flex items-center justify-center gap-1.5">
+          <div className="flex items-center justify-center gap-1.5" role="list">
             {steps.map((step) => (
               <div
                 key={step.id}
+                role="listitem"
                 aria-current={step.isActive ? 'step' : undefined}
                 aria-label={`Etapa ${step.id}: ${step.label}${step.isCompleted ? ' (concluída)' : step.isActive ? ' (atual)' : ''}`}
                 className={cn(

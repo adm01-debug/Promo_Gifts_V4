@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback, useRef } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { type PersonalizationArea } from '@/components/mockup/MultiAreaManager';
+import type { MockupSelectionSnapshot } from '@/hooks/mockup/mockupSelectionSnapshot';
 import type { Json } from '@/integrations/supabase/types';
 
 import { logger } from '@/lib/logger';
@@ -59,6 +60,14 @@ export interface MockupDraftData {
   clientName: string | null;
   personalizationAreas: PersonalizationArea[];
   updatedAt: string;
+  /**
+   * Seleção exata do vendedor (variante + foto) para remontar a seleção ao
+   * reabrir o rascunho. `mockup_drafts` não tem coluna para isso e o schema
+   * está congelado (REGRA #8), então o campo viaja só na cópia local do
+   * rascunho — como a logo em data-URL — e é re-hidratado do localStorage
+   * quando o registro do backend vence a checagem de recência.
+   */
+  selection?: MockupSelectionSnapshot | null;
 }
 
 interface UseMockupDraftOptions {
@@ -362,7 +371,22 @@ export function useMockupDraft(options: UseMockupDraftOptions = {}) {
       if (local && backendData) {
         const localDate = new Date(local.updatedAt || 0);
         const backendDate = new Date(backendData.updatedAt || 0);
-        return backendDate > localDate ? backendData : local;
+        // Desempate IDÊNTICO ao anterior (`backendDate > localDate ? backend : local`):
+        // com data inválida em qualquer ponta a comparação é falsa e a cópia LOCAL
+        // vence — quem está na frente do vendedor não é descartado por um updatedAt
+        // que não parseia.
+        if (!(backendDate > localDate)) return local;
+        // Mesma razão das logos acima: `selection` não existe em mockup_drafts
+        // (schema congelado), então a seleção (variante + foto) continua vindo
+        // da cópia local quando o backend vence a recência — SÓ quando as duas
+        // pontas falam do MESMO produto. Backend mais novo com outro produto
+        // (vendedor trocou de produto em outro dispositivo) descarta a seleção
+        // local: colar variante/foto do produto antigo no produto novo faria o
+        // mockup ser GERADO sobre a foto errada (getProductImage → edge).
+        const sameProduct = !!local.productId && local.productId === backendData.productId;
+        return local.selection && sameProduct
+          ? { ...backendData, selection: local.selection }
+          : backendData;
       }
 
       return backendData || local;
@@ -384,27 +408,48 @@ export function useMockupDraft(options: UseMockupDraftOptions = {}) {
       saveTimeoutRef.current = null;
     }
 
+    // B F-10 FIX: cancelar o temporizador não alcança um save JÁ em voo (timer
+    // disparado, logo subindo ou upsert enviado) — ele resolveria depois do delete
+    // e recriaria a linha, fazendo o rascunho reaparecer. O delete entra na mesma
+    // ordem dos saves: o bump de saveSeqRef supera quem ainda não gravou
+    // (saveToBackend desiste em `seq !== saveSeqRef.current`) e aguardar a cadeia
+    // espera o upsert que já está no ar. Assim o delete é a ÚLTIMA escrita.
+    const clearSeq = ++saveSeqRef.current;
+    let releaseChain: () => void = () => undefined;
+    await upsertChainRef.current;
+    upsertChainRef.current = new Promise<void>((resolve) => {
+      releaseChain = resolve;
+    });
+
     try {
-      const key = `${LOCAL_STORAGE_KEY}_${user?.id || 'anonymous'}_${draftKey}`;
-      localStorage.removeItem(key);
-    } catch (err) {
-      logger.error('Erro ao limpar localStorage:', err);
-    }
-
-    if (user) {
       try {
-        const { error: deleteError } = await supabase
-          .from('mockup_drafts')
-          .delete()
-          .eq('user_id', user.id)
-          .eq('draft_key', draftKey);
-        if (deleteError) throw deleteError;
+        const key = `${LOCAL_STORAGE_KEY}_${user?.id || 'anonymous'}_${draftKey}`;
+        localStorage.removeItem(key);
       } catch (err) {
-        logger.error('Erro ao limpar rascunho do backend:', err);
+        logger.error('Erro ao limpar localStorage:', err);
       }
-    }
 
-    setLastSaved(null);
+      if (user) {
+        try {
+          const { error: deleteError } = await supabase
+            .from('mockup_drafts')
+            .delete()
+            .eq('user_id', user.id)
+            .eq('draft_key', draftKey);
+          if (deleteError) throw deleteError;
+        } catch (err) {
+          logger.error('Erro ao limpar rascunho do backend:', err);
+        }
+      }
+
+      setLastSaved(null);
+    } finally {
+      releaseChain();
+      // O save superado não limpa `isSaving` (a guarda de seq é dele), então o
+      // clear que o superou desliga o indicador — a menos que já exista um save
+      // mais novo, que cuidará do próprio estado.
+      if (clearSeq === saveSeqRef.current) setIsSaving(false);
+    }
   }, [user, draftKey]);
 
   useEffect(() => {

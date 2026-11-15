@@ -173,9 +173,9 @@ describe('ProductRiskDetail — demo mode', () => {
     expect(screen.getByText('p123')).toBeInTheDocument();
   });
 
-  it('renders "demo" badge in demo mode', () => {
+  it('renders "dados simulados (sem histórico)" badge in demo mode', () => {
     render(<ProductRiskDetail productId="p1" productName="Test" />);
-    expect(screen.getByText('demo')).toBeInTheDocument();
+    expect(screen.getByText('dados simulados (sem histórico)')).toBeInTheDocument();
   });
 
   it('renders period tab buttons 15d through 180d', () => {
