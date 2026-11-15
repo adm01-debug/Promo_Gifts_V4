@@ -78,7 +78,16 @@ vi.mock('@/hooks/mockup/useMockupTechniques', async (importOriginal) => ({
   useFilteredTechniques: () => [],
   useProductCustomizationOptionsForMockup: () => ({ data: undefined }),
 }));
-vi.mock('@/hooks/simulation', () => ({
+// Mock parcial: o estrato "por área" é o módulo REAL (mantém a lógica de qual área é dona
+// da análise) sobre a análise base stubada no caminho direto. O índice NÃO é espalhado de
+// propósito: ele carrega todo o estrato de simulação (client incluso). Logo, export novo do
+// módulo por área já está coberto; hook novo que o gerador passe a importar do índice ainda
+// exige acrescentá-lo aqui.
+vi.mock('@/hooks/simulation/useLogoColorAnalysis', () => ({
+  useLogoColorAnalysis: () => colorAnalysis,
+}));
+vi.mock('@/hooks/simulation', async () => ({
+  ...(await import('@/hooks/simulation/useLogoColorAnalysisByArea')),
   useLogoColorAnalysis: () => colorAnalysis,
   usePositionHistory: () => positionHistory,
 }));
@@ -176,11 +185,16 @@ describe('lote multi-área — falha parcial e id estável', () => {
       await result.current.generateMockup();
     });
     api.generateMockupApi.mockRejectedValueOnce(new Error('edge fora do ar'));
+    // A falha É o cenário: o gerador registra o erro com logger.error. O guard de
+    // tests/setup-strict-side-effects.ts exige que o próprio teste intercepte esse console.error.
+    const consoleError = vi.spyOn(console, 'error').mockImplementation(() => {});
     await act(async () => {
       await result.current.retryArea('a2');
     });
     expect(result.current.areaErrors.a2).toBe('edge fora do ar');
     expect(result.current.retryingAreaIds).toEqual([]);
+    expect(consoleError).toHaveBeenCalled();
+    consoleError.mockRestore();
   });
 
   it(`${MAX_BATCH_AREAS + 1} áreas: lote recusado com mensagem, sem chamar a geração`, async () => {
