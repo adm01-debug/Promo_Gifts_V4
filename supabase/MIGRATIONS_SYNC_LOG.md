@@ -1123,7 +1123,7 @@ Após VACUUM ANALYZE executado pelos jobs temporários `vacuum-snapshots-now` e
 
 | version | sha256 | arquivo | status |
 |---|---|---|---|
-| `20261107134429` | `c35bd1512cfb61af55cc132e1f43332789911483f581d7f7c08e432ed521642d` | `create_crm_seller_identity_links` | pendente — cria vínculo 1:1 privado `auth_user_id → crm_seller_id`; aplicar via `db-apply-migration.yml` após merge da PR, antes do deploy do `crm-db-bridge` |
+| `20261107134429` | `fd1fbfceb0a148371b9507618ccf3b67a913b6f3f4b1e4e420caf0c273093286` | `create_crm_seller_identity_links` | **aplicada em 2026-11-14 23:41:43 UTC** pelo `db-apply-migration.yml` (run 43654437109; recibo E15 abaixo). Cria vínculo 1:1 privado `auth_user_id → crm_seller_id`. O sha256 registrado antes da aplicação era `c35bd151…`: o arquivo recebeu depois, em `3792045445` (2026-11-14 23:28 UTC, 13 min antes do Apply), a linha de comentário `-- soft-delete-exempt:` exigida pelo Gate de soft-delete — comentário SQL, sem efeito no DDL executado. O hash acima é o do conteúdo que a run de fato aplicou. |
 
 ## Recibos — E15 (workflow de aplicação controlada)
 
@@ -1165,6 +1165,7 @@ Após VACUUM ANALYZE executado pelos jobs temporários `vacuum-snapshots-now` e
 | `20261113225000` | `4bc14de41e30ea25aabe13a6bb59799b360fbdf2f18a5f9fd93be9aafa9689d2` | `--` | db-apply-migration.yml run 43634465261 | E15 | 2026-11-14 | pós-check do workflow success (run 43634465261) | aplicada em produção |
 | `20261114014100` | `651823afa2f7fd9901fcc185a3147aa53d1cf5ad11fea1374196a3021d200578` | `--` | db-apply-migration.yml run 43634622250 | E15 | 2026-11-14 | pós-check do workflow success (run 43634622250) | aplicada em produção |
 | `20261114031000` | `76b1497b85e289d3de69f01308f325d454436e5a03a59f2f77b5e50a6f1287b6` | `--` | db-apply-migration.yml run 43634805809 | E15 | 2026-11-14 | pós-check do workflow success (run 43634805809) | aplicada em produção |
+| `20261107134429` | `fd1fbfceb0a148371b9507618ccf3b67a913b6f3f4b1e4e420caf0c273093286` | `--` | GitHub Actions (db-apply-migration.yml, run 43654437109; job Recibo saiu success sem gravar — registrado a posteriori) | E15 | 2026-11-14 23:41:43 UTC | job 3 (Pós-check) da run 43654437109: preflight-migration-apply --expect-applied passed — "version 20261107134429 confirmada no ledger pós-aplicação"; isInLedger=true | aplicada |
 
 ## 2026-11-08 — Reconciliação de `e2e_cleanup_audit`
 
