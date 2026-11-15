@@ -93,12 +93,78 @@ describe('useMarketIntelligenceMacro (RPC fn_market_intelligence_macro)', () => 
     expect(a.currentStock).toBe(90);
   });
 
-  it('propaga o erro da RPC (função ausente → PGRST202) em vez de devolver dados vazios como se fossem reais', async () => {
+  // CONTRATO ALTERADO DE PROPÓSITO (2026-11-15). A versão anterior deste teste
+  // exigia que o PGRST202 virasse `isError`, para não "devolver dados vazios
+  // como se fossem reais" — preocupação correta. O efeito colateral, porém, foi
+  // uma regressão em produção: a migration 20261115130100 chegou ao `main`
+  // antes de ser aplicada, então TODO usuário logado passou a ver o cartão
+  // vermelho "Erro ao carregar dados de mercado" em /inteligencia-comercial.
+  // A preocupação original segue atendida sem o cartão de erro: o vazio NÃO é
+  // apresentado como real — vem marcado com `aggregationUnavailable` e a tela
+  // mostra "Visão de mercado em preparação" (MarketIntelligenceChart.tsx).
+  // Os casos novos estão no describe "RPC ainda não aplicada no banco".
+  it('vazio por RPC ausente nunca é apresentado como dado real', async () => {
     mockedRpc.mockResolvedValue({ data: null, error: { code: 'PGRST202', message: 'not found' } } as never);
+
+    const { result } = renderHook(() => useMarketIntelligenceMacro(30), { wrapper: makeWrapper() });
+    await waitFor(() => expect(result.current.isSuccess).toBe(true));
+
+    // O que importa: quem consome tem como distinguir "não tem dado" de
+    // "o recurso não existe ainda".
+    expect(result.current.data?.aggregationUnavailable).toBe(true);
+    expect(result.current.data?.daily).toEqual([]);
+  });
+});
+
+describe('useMarketIntelligenceMacro — RPC ainda não aplicada no banco', () => {
+  it('PGRST202 vira ausência de recurso, não erro: sucesso com aggregationUnavailable', async () => {
+    // A migration 20261115130100 chegou ao main antes de ser aplicada em produção.
+    // Tratar o "função não existe" como erro trocava o gráfico por "Erro ao
+    // carregar dados de mercado" para todo usuário logado.
+    mockedRpc.mockResolvedValue({
+      data: null,
+      error: { code: 'PGRST202', message: 'Could not find the function' },
+    } as never);
+
+    const { result } = renderHook(() => useMarketIntelligenceMacro(30), { wrapper: makeWrapper() });
+    await waitFor(() => expect(result.current.isSuccess).toBe(true));
+
+    expect(result.current.error).toBeNull();
+    expect(result.current.data?.aggregationUnavailable).toBe(true);
+    expect(result.current.data?.daily).toEqual([]);
+    expect(result.current.data?.kpis.avgDailyDepletion).toBe(0);
+  });
+
+  it('qualquer outro erro continua subindo — falha de verdade não fica escondida', async () => {
+    mockedRpc.mockResolvedValue({
+      data: null,
+      error: { code: '42501', message: 'permission denied for function' },
+    } as never);
 
     const { result } = renderHook(() => useMarketIntelligenceMacro(30), { wrapper: makeWrapper() });
     await waitFor(() => expect(result.current.isError).toBe(true));
 
     expect(result.current.data).toBeUndefined();
+  });
+
+  it('com a RPC aplicada, aggregationUnavailable é false', async () => {
+    mockedRpc.mockResolvedValue({
+      data: [
+        {
+          summary_date: isoDaysAgo(1),
+          supplier_id: '11111111-1111-4111-8111-111111111111',
+          stock_close: 10,
+          units_depleted: 2,
+          units_restocked: 1,
+        },
+      ],
+      error: null,
+    } as never);
+
+    const { result } = renderHook(() => useMarketIntelligenceMacro(30), { wrapper: makeWrapper() });
+    await waitFor(() => expect(result.current.isSuccess).toBe(true));
+
+    expect(result.current.data?.aggregationUnavailable).toBe(false);
+    expect(result.current.data?.daily.length).toBe(1);
   });
 });
