@@ -10846,7 +10846,7 @@
    "modulo": "components/mockup",
    "arquivos": 46,
    "testes": 29,
-   "linhas": 10334,
+   "linhas": 10352,
    "itens_menu": [],
    "telas": [],
    "rotas_http": [],
@@ -31064,7 +31064,7 @@
    "modulo": "pages/mockups",
    "arquivos": 10,
    "testes": 9,
-   "linhas": 1869,
+   "linhas": 1906,
    "itens_menu": [
     "Gerador de Mockups",
     "Gerar Mockup",

@@ -8270,12 +8270,12 @@
   {
    "arquivo": "src/hooks/mockup/__tests__/mockupProjectSaved.test.ts",
    "tipo": "unit",
-   "linhas": 139,
+   "linhas": 248,
    "testa": [
     "src/hooks/mockup/mockupGeneratorModel.ts",
     "src/pages/mockups/mockup-generator/useMockupCompletionStatus.ts"
    ],
-   "casos": 7
+   "casos": 11
   },
   {
    "arquivo": "src/hooks/mockup/__tests__/mockupRestore.selection.test.ts",

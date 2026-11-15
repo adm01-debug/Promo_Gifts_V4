@@ -1,17 +1,17 @@
 # Graph Report - Promo_Gifts_V4  (2026-11-15)
 
 ## Corpus Check
-- 6541 files · ~5,841,675 words
+- 6541 files · ~5,842,585 words
 - Verdict: corpus is large enough that graph structure adds value.
 - Unclassified: 63 file(s) not represented in the graph (top: (none) 27, .css 10, .toml 6)
 
 ## Summary
-- 44367 nodes · 76657 edges · 2497 communities (2312 shown, 185 thin omitted)
+- 44367 nodes · 76661 edges · 2498 communities (2313 shown, 185 thin omitted)
 - Extraction: 95% EXTRACTED · 5% INFERRED · 0% AMBIGUOUS · INFERRED: 3485 edges (avg confidence: 0.93)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `956593c0`
+- Built from commit: `24038f15`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -21,8 +21,8 @@
 - ref_integrations
 - ref_hooks
 - gotoAndSettle
-- ref_node_child_process
 - @tanstack/react-query
+- ref_node_child_process
 - react
 - ref_types
 - scripts
@@ -1444,6 +1444,7 @@
 - ProductsContext.tsx
 - ThemeContext.tsx
 - useClientVsIndustry.ts
+- useCustomizationCollapsePrefs.ts
 - fetchCategoryRanking.marketDepleted.test.ts
 - intelligence/useScheduledReports.ts
 - useKitPriceValidation.test.ts
@@ -2473,7 +2474,7 @@
 4. `@testing-library/react` - 735 edges
 5. `gotoAndSettle()` - 467 edges
 6. `@tanstack/react-query` - 446 edges
-7. `sonner` - 413 edges
+7. `sonner` - 415 edges
 8. `react-router-dom` - 393 edges
 9. `test` - 354 edges
 10. `@playwright/test` - 303 edges
@@ -2493,7 +2494,7 @@
 ## Import Cycles
 - None detected.
 
-## Communities (2497 total, 185 thin omitted)
+## Communities (2498 total, 185 thin omitted)
 
 ### Community 0 - "vitest"
 Cohesion: 0.00
@@ -2501,35 +2502,35 @@ Nodes (280): qrcode.react, @testing-library/react, vitest, created, fetchAllPage
 
 ### Community 1 - "ref_components"
 Cohesion: 0.00
-Nodes (426): B.2 Os casos mais graves (features de negócio dadas como prontas), ColdStartRetriesPanel(), IncidentRow(), OutcomeBadge(), Props, CartActionsMenuProps, SaveTemplateDialogProps, TemplateGridView() (+418 more)
+Nodes (418): B.2 Os casos mais graves (features de negócio dadas como prontas), ColdStartRetriesPanel(), IncidentRow(), OutcomeBadge(), Props, CartActionsMenuProps, SaveTemplateDialogProps, TemplateGridView() (+410 more)
 
 ### Community 2 - "ref_integrations"
 Cohesion: 0.00
-Nodes (306): QualityMetrics, Props, QuoteTemplatePickerProps, KitTemplateInput, QUERY_KEY, AllowedIP, CartTemplate, CartTemplateItem (+298 more)
+Nodes (305): QualityMetrics, Props, QuoteTemplatePickerProps, KitTemplateInput, QUERY_KEY, AllowedIP, CartTemplate, CartTemplateItem (+297 more)
 
 ### Community 3 - "ref_hooks"
 Cohesion: 0.00
-Nodes (212): variantIcons, UseComparisonOptions, FavoriteItem, UseFavoritesOptions, CatalogFlags, IntelligenceBadge, IntelligenceBadgeType, ProductIntelligenceBadgesResult (+204 more)
+Nodes (214): variantIcons, UseComparisonOptions, FavoriteItem, UseFavoritesOptions, CatalogFlags, IntelligenceBadge, IntelligenceBadgeType, ProductIntelligenceBadgesResult (+206 more)
 
 ### Community 4 - "gotoAndSettle"
 Cohesion: 0.02
 Nodes (147): PARTE 10 — PONTOS POSITIVOS (O QUE FUNCIONA BEM), E47 — Flakiness e mutation medidos de verdade (`retry` global, `rg` ausente, `--only`), `e2e/helpers/waits.ts` (commit `b340ec38`), ADMIN_ROUTES, VIEWPORTS, RULESET, ROUTES, Case (+139 more)
 
-### Community 5 - "ref_node_child_process"
+### Community 5 - "@tanstack/react-query"
+Cohesion: 0.01
+Nodes (200): Category, sectionMap, ExternalVariantStock, KitStockForecast, StockAlert, VariantStock, ProductIntelligenceRanking, SupplierSalesEntry (+192 more)
+
+### Community 6 - "ref_node_child_process"
 Cohesion: 0.01
 Nodes (182): extractPdfPages(), baseline, BASELINE_PATH, currentCount, out, ROOT, UPDATE, ADDED_FILES (+174 more)
 
-### Community 6 - "@tanstack/react-query"
-Cohesion: 0.01
-Nodes (194): Category, sectionMap, ExternalVariantStock, KitStockForecast, StockAlert, VariantStock, ProductIntelligenceRanking, SupplierSalesEntry (+186 more)
-
 ### Community 7 - "react"
 Cohesion: 0.01
-Nodes (183): BridgeCallItem, BridgeCallItemProps, DEGRADED_BACKOFF, UseCloudStatusReturn, ColorEnrichmentData, UseColorEnrichmentOptions, UseInfiniteScrollOptions, UndoRedoSnapshot (+175 more)
+Nodes (181): BridgeCallItem, BridgeCallItemProps, DEGRADED_BACKOFF, UseCloudStatusReturn, ColorEnrichmentData, UseColorEnrichmentOptions, UseInfiniteScrollOptions, UndoRedoSnapshot (+173 more)
 
 ### Community 8 - "ref_types"
 Cohesion: 0.01
-Nodes (161): Fluxo 6 — Comparação, O escape hatch `Record<string, unknown>`, Props, Props, FornecedorFormData, generateSlug(), useVariantesGravacao(), CalculatePriceParamsV6 (+153 more)
+Nodes (152): Fluxo 6 — Comparação, O escape hatch `Record<string, unknown>`, Props, Props, FornecedorFormData, generateSlug(), useVariantesGravacao(), CalculatePriceParamsV6 (+144 more)
 
 ### Community 9 - "scripts"
 Cohesion: 0.01
@@ -2537,7 +2538,7 @@ Nodes (302): scripts, audit:credentials, audit:credentials:all, audit:credential
 
 ### Community 10 - "sonner"
 Cohesion: 0.01
-Nodes (172): AlertRow(), BridgeAlertsCard(), BRIDGES, formatBytes(), formatMs(), ThresholdEditor(), FIELDS, Props (+164 more)
+Nodes (177): AlertRow(), BridgeAlertsCard(), BRIDGES, formatBytes(), formatMs(), ThresholdEditor(), FIELDS, Props (+169 more)
 
 ### Community 11 - "ref_utils"
 Cohesion: 0.01
@@ -8200,3559 +8201,3563 @@ Nodes (7): ThemeContext, ThemeContextType, ThemeProvider(), ThemeProviderProps, 
 Cohesion: 0.31
 Nodes (8): BenchmarkRow, buildInsight(), classify(), ClientVsIndustryResult, ComparisonClassification, MetricComparison, pctDelta(), useClientVsIndustry()
 
-### Community 1429 - "fetchCategoryRanking.marketDepleted.test.ts"
+### Community 1429 - "useCustomizationCollapsePrefs.ts"
+Cohesion: 0.36
+Nodes (7): upsertMock, log, Map, migrateLegacyCollapseKeys(), readLocal(), useCustomizationCollapsePrefs(), writeLocal()
+
+### Community 1430 - "fetchCategoryRanking.marketDepleted.test.ts"
 Cohesion: 0.25
 Nodes (7): Call, calls, dbInvokeMock, makeBuilder(), b, marketMock, tableHandler()
 
-### Community 1430 - "intelligence/useScheduledReports.ts"
+### Community 1431 - "intelligence/useScheduledReports.ts"
 Cohesion: 0.25
 Nodes (8): calculateNextRun(), CreateReportInput, FREQUENCY_LABELS, REPORT_TYPE_LABELS, ReportFrequency, ReportType, ScheduledReport, useScheduledReports()
 
-### Community 1431 - "useKitPriceValidation.test.ts"
+### Community 1432 - "useKitPriceValidation.test.ts"
 Cohesion: 0.28
 Nodes (7): KitPriceValidationResult, priceInCents(), ProductPriceRow, box, { dbInvokeMock }, item, validateKitPricesForQuote()
 
-### Community 1432 - "products/useMaterialTypes.ts"
+### Community 1433 - "products/useMaterialTypes.ts"
 Cohesion: 0.22
 Nodes (4): UseMaterialsCompleteReturn, UseMaterialSearchReturn, UseMaterialTypesByGroupReturn, UseMaterialTypesReturn
 
-### Community 1433 - "products/useSimilarProducts.ts"
+### Community 1434 - "products/useSimilarProducts.ts"
 Cohesion: 0.33
 Nodes (6): fetchProductsByIds(), LightweightProduct, mapLightweightToSimilarItem(), SimilarProductItem, mockProduct, useSimilarProducts()
 
-### Community 1434 - "simulation/useTechniquePricingOptions.ts"
+### Community 1435 - "simulation/useTechniquePricingOptions.ts"
 Cohesion: 0.33
 Nodes (8): ColorOption, hasAreaSize(), hasMaxColors(), PriceTableEntry, SizeOption, TechniquePricingInfo, useMultipleTechniquePricing(), useTechniquePricingOptions()
 
-### Community 1435 - "usePrecoCalculation.ts"
+### Community 1436 - "usePrecoCalculation.ts"
 Cohesion: 0.31
 Nodes (8): calculatePriceForQuantity(), extractPriceTiersFromTabela(), LegacyPriceTable, PriceCalculation, PriceTier, STANDARD_QUANTITIES, usePrecoCalculation(), usePriceSimulator()
 
-### Community 1436 - "webSpeechFallback.ts"
+### Community 1437 - "webSpeechFallback.ts"
 Cohesion: 0.25
 Nodes (6): SpeechRecognition, SpeechRecognitionConstructor, SpeechRecognitionEvent, startWebSpeech(), stopWebSpeech(), WebSpeechCallbacks
 
-### Community 1437 - "auth-utils.ts"
+### Community 1438 - "auth-utils.ts"
 Cohesion: 0.44
 Nodes (6): FLOW_GREETINGS, getGreeting(), getHighestRole(), getRandomGreeting(), isSupervisorOrAbove(), ROLE_HIERARCHY
 
-### Community 1438 - "logger.ts"
+### Community 1439 - "logger.ts"
 Cohesion: 0.31
 Nodes (8): BLOCKED_KEYS, extractData(), formatEntry(), LogEntry, logger, LogLevel, redactValue(), serializeError()
 
-### Community 1439 - "quotesLayout.ts"
+### Community 1440 - "quotesLayout.ts"
 Cohesion: 0.28
 Nodes (8): breakpointForWidth(), chromeHeight(), containerMaxHeight(), QUOTES_CHROME_BY_BREAKPOINT, QUOTES_MAX_VISIBLE_ROWS, QUOTES_MIN_VISIBLE_ROWS, QUOTES_ROW_H, QuotesBreakpoint
 
-### Community 1440 - "DevChallengeExamplesPage.tsx"
+### Community 1441 - "DevChallengeExamplesPage.tsx"
 Cohesion: 0.31
 Nodes (8): CodeBlock(), DevChallengeExamplesPage(), EXAMPLE_CARD_STATUS_COLORS, ExampleCard(), ExampleConfig, ExampleId, EXAMPLES, ResultState
 
-### Community 1441 - "usePlatformFailureAlert.ts"
+### Community 1442 - "usePlatformFailureAlert.ts"
 Cohesion: 0.31
 Nodes (8): AlertLevel, AlertState, classify(), DEFAULT_ALERT_CONFIG, FailureAlertConfig, loadAlertConfig(), saveAlertConfig(), usePlatformFailureAlert()
 
-### Community 1442 - "useTelemetryData.ts"
+### Community 1443 - "useTelemetryData.ts"
 Cohesion: 0.22
 Nodes (6): SeverityFilter, TableStat, TelemetryRow, TIME_FILTER_MS, TimeFilter, useTelemetryData()
 
-### Community 1443 - "ResetPassword.updatePassword.test.tsx"
+### Community 1444 - "ResetPassword.updatePassword.test.tsx"
 Cohesion: 0.22
 Nodes (6): mockGetSession, mockNavigate, mockOnAuthStateChange, mockToast, mockUnsubscribe, mockUpdatePasswordSafe
 
-### Community 1444 - "MagazineEditorPage.hooksOrder.test.tsx"
+### Community 1445 - "MagazineEditorPage.hooksOrder.test.tsx"
 Cohesion: 0.33
 Nodes (5): baseMagazine(), Boundary, makeItem(), mockGet, mountAndAssertStable()
 
-### Community 1445 - "useQuotesListPage.bulkDelete.test.tsx"
+### Community 1446 - "useQuotesListPage.bulkDelete.test.tsx"
 Cohesion: 0.22
 Nodes (7): mockCreateQuote, mockDeleteQuote, mockFetchQuote, showUndoToast, toastError, toastSuccess, toastWarning
 
-### Community 1446 - "useQuotesListPage.duplicateUndo.test.tsx"
+### Community 1447 - "useQuotesListPage.duplicateUndo.test.tsx"
 Cohesion: 0.22
 Nodes (7): mockCreate, mockDelete, mockDuplicate, mockFetch, showUndoToast, toastError, toastSuccess
 
-### Community 1447 - "TrendsKpiCards.tsx"
+### Community 1448 - "TrendsKpiCards.tsx"
 Cohesion: 0.25
 Nodes (8): COLOR_CLASSES, ColorKey, DeltaBadge(), ITEMS, KpiData, KpiItem, TrendsKpiCards(), TrendsKpiCardsProps
 
-### Community 1448 - "magazinePublish.fuzz.test.ts"
+### Community 1449 - "magazinePublish.fuzz.test.ts"
 Cohesion: 0.22
 Nodes (6): builder, MagRow, Result, results, Scenario, state
 
-### Community 1449 - "useRecentlyViewedStore.ts"
+### Community 1450 - "useRecentlyViewedStore.ts"
 Cohesion: 0.33
 Nodes (7): loadFromStorage(), RecentlyViewedActions, RecentlyViewedItem, RecentlyViewedState, RecentlyViewedStore, saveToStorage(), useRecentlyViewedStore
 
-### Community 1450 - "customization.ts"
+### Community 1451 - "customization.ts"
 Cohesion: 0.22
 Nodes (8): CustomizationOptionsResponse, CustomizationPriceResponseV6, GravacaoLocation, MarkupInfo, PersonalizationItem, PriceDetalhes, PriceFaixa, TechniqueOption
 
-### Community 1451 - "image-utils.fuzz.test.ts"
+### Community 1452 - "image-utils.fuzz.test.ts"
 Cohesion: 0.28
 Nodes (7): CDN_BASES, NON_CDN, pick(), randomImage(), randomSet(), TYPES, VARIANTS
 
-### Community 1452 - "DevRoute.test.tsx"
+### Community 1453 - "DevRoute.test.tsx"
 Cohesion: 0.31
 Nodes (8): baseAuthShape, mockUseAuth, PathProbe(), Persona, renderAgente(), renderProtected(), renderSupervisor(), TECH_ROUTES
 
-### Community 1453 - "QuoteBuilder.test.ts"
+### Community 1454 - "QuoteBuilder.test.ts"
 Cohesion: 0.25
 Nodes (4): calculateItemTotal(), calculateQuoteSubtotal(), QuoteItem, sampleItems
 
-### Community 1454 - "audit-db-frontend-coverage.test.mjs"
+### Community 1455 - "audit-db-frontend-coverage.test.mjs"
 Cohesion: 0.28
 Nodes (6): makeFixture(), REAL_SCRIPT, ROOT, shQuote(), temporaryRoots, withBrokenRg()
 
-### Community 1455 - "check-allowlist-memory-crosscheck.test.mjs"
+### Community 1456 - "check-allowlist-memory-crosscheck.test.mjs"
 Cohesion: 0.28
 Nodes (6): fixtureRoot(), ROOT, rootWithDoc(), SCRIPT, tempRoots, writeDoc()
 
-### Community 1456 - "check-gates-table.test.mjs"
+### Community 1457 - "check-gates-table.test.mjs"
 Cohesion: 0.22
 Nodes (4): BASE_DOCS, BASE_YAML, ROOT, SCRIPT
 
-### Community 1457 - "db-apply-migration-workflow.test.mjs"
+### Community 1458 - "db-apply-migration-workflow.test.mjs"
 Cohesion: 0.25
 Nodes (6): prepareReceiptRun(), RECEIPT_SCRIPT, ROOT, temporaryRoot(), temporaryRoots, WORKFLOW_PATH
 
-### Community 1458 - "generate-theme-report-ts.test.mjs"
+### Community 1459 - "generate-theme-report-ts.test.mjs"
 Cohesion: 0.22
 Nodes (4): ROOT, SCRIPT, temporaryRoots, TSX_BIN
 
-### Community 1459 - "setup-ref-warning-capture.ts"
+### Community 1460 - "setup-ref-warning-capture.ts"
 Cohesion: 0.25
 Nodes (8): captured, CapturedEntry, formatArgs(), makeWrapper(), origError, origWarn, REF_PATTERNS, SNAPSHOT_PATH
 
-### Community 1460 - "supabase-schema-contract.test.ts"
+### Community 1461 - "supabase-schema-contract.test.ts"
 Cohesion: 0.22
 Nodes (7): _assertId, _assertName, ProductRow, PublicTables, PublicViews, REQUIRED_TABLES, TableOrView
 
-### Community 1461 - "Baseline Local — Typecheck / Lint / Test / Build"
+### Community 1462 - "Baseline Local — Typecheck / Lint / Test / Build"
 Cohesion: 0.25
 Nodes (7): Baseline Local — Typecheck / Lint / Test / Build, Falhas pré-existentes (NÃO locais — CI externo), Lint (`npx eslint src --ext .ts,.tsx --quiet`), Migrations de PR #2646 em produção (MCP read-only), Nomes de testes capturados (137 únicos, via `--reporter=dot 2>&1 | tee`), TypeScript (`npx tsc --noEmit`), Unit Tests (`npx vitest run --testPathPattern='src/'`)
 
-### Community 1462 - "PRs sem conflito (exit=0)"
+### Community 1463 - "PRs sem conflito (exit=0)"
 Cohesion: 0.25
 Nodes (7): Merge-Test Diffs Reais — `git merge --no-commit --no-ff`, PR #2579 — release-please bot (NAO_MERGEAR), PR #2588 — react-day-picker 8→10 (DECISAO_HUMANA), PR #2600 — NÃO MERGEAR (NAO_MERGEAR), PR #2646 — fix(migrations): rollback headers (CI_FALHOU), PRs com conflito (exit=1), PRs sem conflito (exit=0)
 
-### Community 1463 - "Baseline — Typecheck / Lint / Build / Testes"
+### Community 1464 - "Baseline — Typecheck / Lint / Build / Testes"
 Cohesion: 0.25
 Nodes (7): Baseline — Typecheck / Lint / Build / Testes, Build (Vite), Comparação pós-merge (SHA `66d032af` — main após 8 merges), Gates adicionais — todos passando no baseline, Lint (ESLint), Testes unitários, TypeScript (typecheck)
 
-### Community 1464 - "PR #2415 — DECISAO_HUMANA"
+### Community 1465 - "PR #2415 — DECISAO_HUMANA"
 Cohesion: 0.25
 Nodes (7): Arquivos únicos desta PR (git diff origin/main...refs/remotes/pr/2415), Ação requerida, Contexto, Evidência, PR #2415 — DECISAO_HUMANA, Resultado da análise, Test-merge (git merge-tree)
 
-### Community 1465 - "PR #2428 — DECISAO_HUMANA"
+### Community 1466 - "PR #2428 — DECISAO_HUMANA"
 Cohesion: 0.25
 Nodes (7): Arquivos únicos desta PR (git diff origin/main...refs/remotes/pr/2428), Ação requerida, Contexto, Evidência, PR #2428 — DECISAO_HUMANA, Resultado da análise, Test-merge (git merge-tree)
 
-### Community 1466 - "PR #2449 — DECISAO_HUMANA"
+### Community 1467 - "PR #2449 — DECISAO_HUMANA"
 Cohesion: 0.25
 Nodes (7): Arquivos únicos desta PR (git diff origin/main...refs/remotes/pr/2449), Ação requerida, Contexto, Evidência, PR #2449 — DECISAO_HUMANA, Resultado da análise, Test-merge (git merge-tree)
 
-### Community 1467 - "PR #2452 — DECISAO_HUMANA"
+### Community 1468 - "PR #2452 — DECISAO_HUMANA"
 Cohesion: 0.25
 Nodes (7): Arquivos únicos desta PR (git diff origin/main...refs/remotes/pr/2452), Ação requerida, Contexto, Evidência, PR #2452 — DECISAO_HUMANA, Resultado da análise, Test-merge (git merge-tree)
 
-### Community 1468 - "PR #2455 — docs(ci): RELATORIO_CI.md rev7 + PENDENCIAS.md rev13 — evidência Gate Final PR #2454"
+### Community 1469 - "PR #2455 — docs(ci): RELATORIO_CI.md rev7 + PENDENCIAS.md rev13 — evidência Gate Final PR #2454"
 Cohesion: 0.25
 Nodes (7): Análise REGRA #8, Arquivos modificados, Conteúdo, Estado antes do merge, Evidência do merge, PR #2455 — docs(ci): RELATORIO_CI.md rev7 + PENDENCIAS.md rev13 — evidência Gate Final PR #2454, Worktree test
 
-### Community 1469 - "PR #2469 — DECISAO_HUMANA"
+### Community 1470 - "PR #2469 — DECISAO_HUMANA"
 Cohesion: 0.25
 Nodes (7): Arquivos únicos desta PR (git diff origin/main...refs/remotes/pr/2469), Ação requerida, Contexto, Evidência, PR #2469 — DECISAO_HUMANA, Resultado da análise, Test-merge (git merge-tree)
 
-### Community 1470 - "Dossier PR #2480"
+### Community 1471 - "Dossier PR #2480"
 Cohesion: 0.25
 Nodes (7): Arquivos tocados, Ação recomendada, Blockers, Dados da PR, Dossier PR #2480, Evidência, Veredito
 
-### Community 1471 - "PR #2503 — DECISAO_HUMANA"
+### Community 1472 - "PR #2503 — DECISAO_HUMANA"
 Cohesion: 0.25
 Nodes (7): Arquivos únicos desta PR (git diff origin/main...refs/remotes/pr/2503), Ação requerida, Contexto, Evidência, PR #2503 — DECISAO_HUMANA, Resultado da análise, Test-merge (git merge-tree)
 
-### Community 1472 - "Dossiê PR #2517 — fix(ci): aumenta timeout quality-gate de 30→60 min"
+### Community 1473 - "Dossiê PR #2517 — fix(ci): aumenta timeout quality-gate de 30→60 min"
 Cohesion: 0.25
 Nodes (7): Critérios de Merge (avaliados retroativamente), Diff Verificado, Dossiê PR #2517 — fix(ci): aumenta timeout quality-gate de 30→60 min, Gate Final pós-merge, Nota sobre `ci-security-drift.yml`, Problema Corrigido, Rule 8
 
-### Community 1473 - "PR #2527 — fix(drift): injeta semente pg_cron como migration B+1 no replay"
+### Community 1474 - "PR #2527 — fix(drift): injeta semente pg_cron como migration B+1 no replay"
 Cohesion: 0.25
 Nodes (7): Análise, Arquivos alterados (diff lido nesta sessão), Evidência, PR #2527 — fix(drift): injeta semente pg_cron como migration B+1 no replay, Rule 8, Test-merge, Veredito: PENDENTE (draft — não pode ser mergeado autonomamente)
 
-### Community 1474 - "PR #2532 — DECISAO_HUMANA"
+### Community 1475 - "PR #2532 — DECISAO_HUMANA"
 Cohesion: 0.25
 Nodes (7): Arquivos únicos desta PR (git diff origin/main...refs/remotes/pr/2532), Ação requerida, Contexto, Evidência, PR #2532 — DECISAO_HUMANA, Resultado da análise, Test-merge (git merge-tree)
 
-### Community 1475 - "4 Perguntas"
+### Community 1476 - "4 Perguntas"
 Cohesion: 0.25
 Nodes (7): 1. Ainda é válida?, 2. Traz regressão?, 3. Já está implementada no main?, 4. A regra de negócio está correta?, 4 Perguntas, Dossier PR #2594, Veredicto: MERGEADA_PELO_OWNER
 
-### Community 1476 - "4 Perguntas"
+### Community 1477 - "4 Perguntas"
 Cohesion: 0.25
 Nodes (7): 1. Ainda é válida?, 2. Traz regressão?, 3. Já está implementada no main?, 4. A regra de negócio está correta?, 4 Perguntas, Dossier PR #2648, Veredicto: MERGEADA_PELO_OWNER
 
-### Community 1477 - "4 Perguntas"
+### Community 1478 - "4 Perguntas"
 Cohesion: 0.25
 Nodes (7): 1. Ainda é válida?, 2. Traz regressão?, 3. Já está implementada no main?, 4. A regra de negócio está correta?, 4 Perguntas, Dossier PR #2649, Veredicto: MERGEADA_PELO_OWNER
 
-### Community 1478 - "Dossiê PR #2719 — chore(build): separa mapas SQL e amplia referências Graphify"
+### Community 1479 - "Dossiê PR #2719 — chore(build): separa mapas SQL e amplia referências Graphify"
 Cohesion: 0.25
 Nodes (7): 1. Ainda é válida?, 2. Traz regressão?, 3. Já está em main?, 4. Regra de negócio correta?, Arquivos alterados (11 arquivos), Dossiê PR #2719 — chore(build): separa mapas SQL e amplia referências Graphify, Veredito (original: CONFLITO — atualizado)
 
-### Community 1479 - "Dossiê PR #2736 — test+docs(mockup/magic-up): entregas de teste e doc da fábrica VPS (lote A)"
+### Community 1480 - "Dossiê PR #2736 — test+docs(mockup/magic-up): entregas de teste e doc da fábrica VPS (lote A)"
 Cohesion: 0.25
 Nodes (7): 1. Ainda é válida?, 2. Traz regressão?, 3. Já está em main?, 4. Regra de negócio correta?, Arquivos alterados, Dossiê PR #2736 — test+docs(mockup/magic-up): entregas de teste e doc da fábrica VPS (lote A), Veredito
 
-### Community 1480 - "Dossiê PR #2737 — docs(auditoria): relatório de auditoria Supabase — revisão final"
+### Community 1481 - "Dossiê PR #2737 — docs(auditoria): relatório de auditoria Supabase — revisão final"
 Cohesion: 0.25
 Nodes (7): 1. Ainda é válida?, 2. Traz regressão?, 3. Já está em main?, 4. Regra de negócio correta?, Arquivos alterados, Dossiê PR #2737 — docs(auditoria): relatório de auditoria Supabase — revisão final, Veredito
 
-### Community 1481 - "Evidências (4 perguntas obrigatórias)"
+### Community 1482 - "Evidências (4 perguntas obrigatórias)"
 Cohesion: 0.25
 Nodes (7): 1. Ainda válida?, 2. Traz regressão?, 3. Já está em main?, 4. Regra de negócio correta?, Bloqueadores, Evidências (4 perguntas obrigatórias), PR #2750 — docs(analise-prs): 7 novos dossiês da sessão 2026-10-29
 
-### Community 1482 - "Evidências (4 perguntas obrigatórias)"
+### Community 1483 - "Evidências (4 perguntas obrigatórias)"
 Cohesion: 0.25
 Nodes (7): 1. Ainda válida?, 2. Traz regressão?, 3. Já está em main?, 4. Regra de negócio correta?, Bloqueadores, Evidências (4 perguntas obrigatórias), PR #2758 — fix(a11y): restaura foco visível em botões e links interativos
 
-### Community 1483 - "Evidências (4 perguntas obrigatórias)"
+### Community 1484 - "Evidências (4 perguntas obrigatórias)"
 Cohesion: 0.25
 Nodes (7): 1. Ainda válida?, 2. Traz regressão?, 3. Já está em main?, 4. Regra de negócio correta?, Bloqueadores, Evidências (4 perguntas obrigatórias), PR #2759 — chore(main): release 1.2.0
 
-### Community 1484 - "Evidências (4 perguntas obrigatórias)"
+### Community 1485 - "Evidências (4 perguntas obrigatórias)"
 Cohesion: 0.25
 Nodes (7): 1. Ainda válida?, 2. Traz regressão?, 3. Já está em main?, 4. Regra de negócio correta?, Bloqueadores, Evidências (4 perguntas obrigatórias), PR #2799 — chore(main): release 1.4.0
 
-### Community 1485 - "Evidências (4 perguntas obrigatórias)"
+### Community 1486 - "Evidências (4 perguntas obrigatórias)"
 Cohesion: 0.25
 Nodes (7): 1. Ainda válida?, 2. Traz regressão?, 3. Já está em main?, 4. Regra de negócio correta?, Bloqueadores, Evidências (4 perguntas obrigatórias), PR #2810 — feat(e128): split PromoFlixPlayer.tsx 1512→699 linhas + usePromoFlixPlayer hook
 
-### Community 1486 - "Evidências (4 perguntas obrigatórias)"
+### Community 1487 - "Evidências (4 perguntas obrigatórias)"
 Cohesion: 0.25
 Nodes (7): 1. Ainda válida?, 2. Traz regressão?, 3. Já está em main?, 4. Regra de negócio correta?, Bloqueadores, Evidências (4 perguntas obrigatórias), PR #2813 — refactor(quotes): E128 — split QuoteBuilderSummaryColumn 1697→588 linhas
 
-### Community 1487 - "Evidências (4 perguntas obrigatórias)"
+### Community 1488 - "Evidências (4 perguntas obrigatórias)"
 Cohesion: 0.25
 Nodes (7): 1. Ainda válida?, 2. Traz regressão?, 3. Já está em main?, 4. Regra de negócio correta?, Bloqueadores, Evidências (4 perguntas obrigatórias), PR #2821 — fix(ci): registra status HTTP no monitor de uptime
 
-### Community 1488 - "Evidências (4 perguntas obrigatórias)"
+### Community 1489 - "Evidências (4 perguntas obrigatórias)"
 Cohesion: 0.25
 Nodes (7): 1. Ainda válida?, 2. Traz regressão?, 3. Já está em main?, 4. Regra de negócio correta?, Bloqueadores, Evidências (4 perguntas obrigatórias), PR #2822 — fix(types): sincroniza idempotency_key de notificações
 
-### Community 1489 - "Evidências (4 perguntas obrigatórias)"
+### Community 1490 - "Evidências (4 perguntas obrigatórias)"
 Cohesion: 0.25
 Nodes (7): 1. Ainda válida?, 2. Traz regressão?, 3. Já está em main?, 4. Regra de negócio correta?, Bloqueadores, Evidências (4 perguntas obrigatórias), PR #2823 — fix(db): reconciliar migrations pendentes com o canônico
 
-### Community 1490 - "Evidências (4 perguntas obrigatórias)"
+### Community 1491 - "Evidências (4 perguntas obrigatórias)"
 Cohesion: 0.25
 Nodes (7): 1. Ainda válida?, 2. Traz regressão?, 3. Já está em main?, 4. Regra de negócio correta?, Bloqueadores, Evidências (4 perguntas obrigatórias), PR #2824 — fix(e2e): isola servidor Vite no CI de paridade
 
-### Community 1491 - "Evidências (4 perguntas obrigatórias)"
+### Community 1492 - "Evidências (4 perguntas obrigatórias)"
 Cohesion: 0.25
 Nodes (7): 1. Ainda válida?, 2. Traz regressão?, 3. Já está em main?, 4. Regra de negócio correta?, Bloqueadores, Evidências (4 perguntas obrigatórias), PR #2825 — chore(audit): fixa Graphify e atualiza estado CI
 
-### Community 1492 - "Evidências (4 perguntas obrigatórias)"
+### Community 1493 - "Evidências (4 perguntas obrigatórias)"
 Cohesion: 0.25
 Nodes (7): 1. Ainda válida?, 2. Traz regressão?, 3. Já está em main?, 4. Regra de negócio correta?, Bloqueadores, Evidências (4 perguntas obrigatórias), PR #2826 — fix(ci): sentinel SHA allowlist + E2E PDF Dialog skip
 
-### Community 1493 - "Evidências (4 perguntas obrigatórias)"
+### Community 1494 - "Evidências (4 perguntas obrigatórias)"
 Cohesion: 0.25
 Nodes (7): 1. Ainda válida?, 2. Traz regressão?, 3. Já está em main?, 4. Regra de negócio correta?, Bloqueadores, Evidências (4 perguntas obrigatórias), PR #2827 — fix(ci): corrige erros TypeScript e persistência do tour de kits
 
-### Community 1494 - "Evidências (4 perguntas obrigatórias)"
+### Community 1495 - "Evidências (4 perguntas obrigatórias)"
 Cohesion: 0.25
 Nodes (7): 1. Ainda válida?, 2. Traz regressão?, 3. Já está em main?, 4. Regra de negócio correta?, Critério para merge, Evidências (4 perguntas obrigatórias), PR #2830 — docs(ci): P30 inventário completo de falhas + baseline P29
 
-### Community 1495 - "Evidências (4 perguntas obrigatórias)"
+### Community 1496 - "Evidências (4 perguntas obrigatórias)"
 Cohesion: 0.25
 Nodes (7): 1. Ainda válida?, 2. Traz regressão?, 3. Já está em main?, 4. Regra de negócio correta?, Bloqueadores, Evidências (4 perguntas obrigatórias), PR #2831 — docs(analise-prs): atualiza veredictos PRs 2799-2828 (sessão 2026-10-30) [DRAFT]
 
-### Community 1496 - "Evidências (4 perguntas obrigatórias)"
+### Community 1497 - "Evidências (4 perguntas obrigatórias)"
 Cohesion: 0.25
 Nodes (7): 1. Ainda válida?, 2. Traz regressão?, 3. Já está em main?, 4. Regra de negócio correta?, Critério para merge, Evidências (4 perguntas obrigatórias), PR #2832 — chore(analise-prs): atualiza veredictos PRs 2799-2828 (sessão 2026-10-30)
 
-### Community 1497 - "A.6 / A.10 — Logs e Cron (últimas 48h)"
+### Community 1498 - "A.6 / A.10 — Logs e Cron (últimas 48h)"
 Cohesion: 0.25
 Nodes (7): A.6 / A.10 — Logs e Cron (últimas 48h), A.6 — Cron Jobs: resumo, Causa raiz identificada, INCIDENTE ATIVO — Connection Pool Exhaustion Recorrente, Jobs com maior taxa de falha (24h), Logs de acesso (L1-L5), Padrão de falhas por hora (últimas 48h)
 
-### Community 1498 - "[Unreleased]"
+### Community 1499 - "[Unreleased]"
 Cohesion: 0.25
 Nodes (6): 🚀 Adicionado — Hardening 10/10 (Onda 1), 🔬 Auditorias técnicas r1→r3 e hardening (2026-09-01 → 2026-09-05), 🚀 Redeploy 2026-05 — Fase 2 (T19–T23) + Fase 3 (T24–T30), 🔒 Segurança, [Unreleased], CartVersionConflictError
 
-### Community 1499 - "CI_PROVA_P33.md — Prova Final de Conclusão CI (Sessão P33, 2026-10-30)"
+### Community 1500 - "CI_PROVA_P33.md — Prova Final de Conclusão CI (Sessão P33, 2026-10-30)"
 Cohesion: 0.25
 Nodes (7): 1. Branch de fix e commits por causa raiz, 2. Baseline Local — HEAD `dfec2236c` (2026-10-30T17:43Z), 3. Tabela de prova — 11 workflows em falha (baseline × final), 4. Comparação baseline × final, 5. Gate Final — SHA `e68cb955` ✅ conclusion=success, 6. Motivo deste PR, CI_PROVA_P33.md — Prova Final de Conclusão CI (Sessão P33, 2026-10-30)
 
-### Community 1500 - "ADR 0006 — Baseline de Migrations: Aceitar Estado Atual (Opção A)"
+### Community 1501 - "ADR 0006 — Baseline de Migrations: Aceitar Estado Atual (Opção A)"
 Cohesion: 0.25
 Nodes (7): ADR 0006 — Baseline de Migrations: Aceitar Estado Atual (Opção A), Consequências, Contexto, Decisão, Justificativa (por que não Opção B), Referências, Revisão futura
 
-### Community 1501 - "ADR 0008 — Normalização de variante 100% de-para na Silver"
+### Community 1502 - "ADR 0008 — Normalização de variante 100% de-para na Silver"
 Cohesion: 0.25
 Nodes (7): ADR 0008 — Normalização de variante 100% de-para na Silver, Consequências, Contexto, Decisão, Justificativa, Migrations, Referências
 
-### Community 1502 - "ADR — contrato por ação do `bitrix-sync`"
+### Community 1503 - "ADR — contrato por ação do `bitrix-sync`"
 Cohesion: 0.25
 Nodes (7): ADR — contrato por ação do `bitrix-sync`, Decisão pendente, Evidência do banco canônico (somente leitura), Fonte de verdade e divergências, Matriz de contrato observado, Próxima decisão necessária do PO, Teste de caracterização entregue
 
-### Community 1503 - "14. Decisões necessárias antes de alterar produção"
+### Community 1504 - "14. Decisões necessárias antes de alterar produção"
 Cohesion: 0.25
 Nodes (8): 14. Decisões necessárias antes de alterar produção, D1 — Identidade e segredo, D2 — Headers HMAC legados, D3 — V1 após o sunset, D4 — Eventos permitidos, D5 — Significado de `processed`, D6 — Sucesso de criação, D7 — Retenção/idempotência
 
-### Community 1504 - "Plano de melhorias e correções em exatamente 100 etapas"
+### Community 1505 - "Plano de melhorias e correções em exatamente 100 etapas"
 Cohesion: 0.25
 Nodes (8): Banco, jobs e migrations — leitura primeiro, CI, dependências e gates determinísticos, Edge, integrações, testes e observabilidade, Fundação, proteção e critérios de aceite, Ligações quebradas entre código e banco, Limpeza autorizada e release, Módulos parciais e experiência do usuário, Plano de melhorias e correções em exatamente 100 etapas
 
-### Community 1505 - "E09 — 4 IDs de ledger não-canônicos: investigação e proposta de remediação (2026-09-16)"
+### Community 1506 - "E09 — 4 IDs de ledger não-canônicos: investigação e proposta de remediação (2026-09-16)"
 Cohesion: 0.25
 Nodes (7): Achado #1: `2026062311292414001` — malformado mas com arquivo, Achado #4: `20260623_fix_google_provider_secret_name` — real e correta, só sem arquivo, Achado central: #2 e #3 são placeholders que nunca foram SQL executável, Checklist de conclusão (E09), E09 — 4 IDs de ledger não-canônicos: investigação e proposta de remediação (2026-09-16), Proposta de remediação (pacote `[REQUER-PO]`, nada aplicado ainda), Resumo
 
-### Community 1506 - "E13 — Decisão por objeto: drafts ativos e arquivados (2026-09-16)"
+### Community 1507 - "E13 — Decisão por objeto: drafts ativos e arquivados (2026-09-16)"
 Cohesion: 0.25
 Nodes (7): 0. Correção de contagem, 1. Metodologia, 2. Tabela de decisão, 3. Gaps encontrados (checklist "nenhum `pendente` sem etapa que o consuma"), 4. Achados adicionais (fora do escopo estrito da classificação), 5. Arquivos tocados nesta etapa, E13 — Decisão por objeto: drafts ativos e arquivados (2026-09-16)
 
-### Community 1507 - "E18 — Achados secundários: 4 gaps de autorização em funções `SECURITY DEFINER` executáveis por `authenticated`"
+### Community 1508 - "E18 — Achados secundários: 4 gaps de autorização em funções `SECURITY DEFINER` executáveis por `authenticated`"
 Cohesion: 0.25
 Nodes (7): Achado 1 — `public.confirm_notifications_dispatched(p_ids uuid[])`, Achado 4 — `public.fn_notify_user(_target_user_id uuid, _title text, _message text, _type text, _category text, _action_url text, _metadata jsonb)`, Achados 2 e 3 — `public.registrar_entrada_estoque(...)` e `public.registrar_saida_estoque(...)`, Decisão proposta, E18 — Achados secundários: 4 gaps de autorização em funções `SECURITY DEFINER` executáveis por `authenticated`, Resumo, Resumo para aprovação
 
-### Community 1508 - "E18 — Revisão das 94 funções SECURITY DEFINER executáveis por `authenticated`"
+### Community 1509 - "E18 — Revisão das 94 funções SECURITY DEFINER executáveis por `authenticated`"
 Cohesion: 0.25
 Nodes (7): 1. Método `[RO]`, 2. Resultado agregado — 94/94 classificadas, 3. Achados com REVOKE preparado (resumo), 4. Allowlist atualizada, 5. Checklist de conclusão (do plano, §E18), 6. Resumo para aprovação, E18 — Revisão das 94 funções SECURITY DEFINER executáveis por `authenticated`
 
-### Community 1509 - "E23 — FORCE RLS e revogação em tabelas de segredo (2026-09-16)"
+### Community 1510 - "E23 — FORCE RLS e revogação em tabelas de segredo (2026-09-16)"
 Cohesion: 0.25
 Nodes (7): 1. Estado ao vivo `[RO]`, 2. Achado central — BYPASSRLS torna FORCE um no-op funcional para os owners atuais, 3. Funções SECURITY DEFINER que tocam as 6 tabelas `[RO]`, 4. Edge functions — quais tabelas cada uma toca `[RO, grep]`, 5. Ação preparada, 6. Resumo para aprovação, E23 — FORCE RLS e revogação em tabelas de segredo (2026-09-16)
 
-### Community 1510 - "E30 — Plano de capacidade e alerta de crescimento"
+### Community 1511 - "E30 — Plano de capacidade e alerta de crescimento"
 Cohesion: 0.25
 Nodes (7): Checklist de conclusão (do plano), Cron: escolha de `p_key`, Decisão de schema, E30 — Plano de capacidade e alerta de crescimento, O que NÃO foi feito nesta etapa, Problema medido, RLS e superfície de acesso
 
-### Community 1511 - "E44 — Contrato de enums: teste de consistência `types.ts` ↔ union manual em `src/`"
+### Community 1512 - "E44 — Contrato de enums: teste de consistência `types.ts` ↔ union manual em `src/`"
 Cohesion: 0.25
 Nodes (7): 1. Os 15 enums e seus valores ao vivo, 2. Union manual duplicada em `src/` (risco real), 3. Teste novo, 4. Execução, E44 — Contrato de enums: teste de consistência `types.ts` ↔ union manual em `src/`, Problema, Resumo
 
-### Community 1512 - "Pós-mortem — 29+ commits de governança presos só no disco local (2026-09-17)"
+### Community 1513 - "Pós-mortem — 29+ commits de governança presos só no disco local (2026-09-17)"
 Cohesion: 0.25
 Nodes (7): Causa raiz, Correção, Impacto, Não foi feito (fora de escopo deste documento), O que aconteceu, Por que não foi notado antes, Pós-mortem — 29+ commits de governança presos só no disco local (2026-09-17)
 
-### Community 1513 - "PARTE 2 — VULNERABILIDADES DE ALTA SEVERIDADE"
+### Community 1514 - "PARTE 2 — VULNERABILIDADES DE ALTA SEVERIDADE"
 Cohesion: 0.25
 Nodes (8): ALTO-001: `webhook-dispatcher` — Endpoint Sem Autenticação com Service Role Key, ALTO-002: Content-Security-Policy Ausente no `index.html`, ALTO-003: CSP com Placeholder `{{nonce}}` Não Substituído nas Edge Functions, ALTO-004: Kong 2.8.1 em Self-Hosted — Versão com CVEs Conhecidos, ALTO-005: Branch `main` sem Proteção — Push Direto por Qualquer Colaborador, ALTO-006: `collections` Table — Qualquer Agente Pode Deletar Collections, ALTO-007: Containers Supabase Auth Exited na VPS, PARTE 2 — VULNERABILIDADES DE ALTA SEVERIDADE
 
-### Community 1514 - "SSOT Supabase — Painel de Saúde"
+### Community 1515 - "SSOT Supabase — Painel de Saúde"
 Cohesion: 0.25
 Nodes (8): Caminhos históricos tolerados, Como executar tudo, Marcadores legítimos, Onde falha um PR, Referências, Simulação (200+ cenários), Sinal verde (o que garantimos), SSOT Supabase — Painel de Saúde
 
-### Community 1515 - "Kit Maker — recibo de execução do plano de 50 etapas"
+### Community 1516 - "Kit Maker — recibo de execução do plano de 50 etapas"
 Cohesion: 0.25
 Nodes (8): Bloqueios preservados, Evidências locais, Gates remotos e reconciliação da base, Kit Maker — recibo de execução do plano de 50 etapas, Remediação pós-auditoria de 27/09 — sessão e retry, Simulação executada antes da consolidação, Situação por etapa afetada nesta onda, Verificação read-only do canônico e isolamento da biblioteca
 
-### Community 1516 - "Revalidação da Onda 0 do P200 — 2026-10-30"
+### Community 1517 - "Revalidação da Onda 0 do P200 — 2026-10-30"
 Cohesion: 0.25
 Nodes (6): Escopo e regra de evidência, Limitações, Portão da Onda 0, Próximas ações seguras, Resultado por etapa, Revalidação da Onda 0 do P200 — 2026-10-30
 
-### Community 1517 - "🟢 BAIXOS (7)"
+### Community 1518 - "🟢 BAIXOS (7)"
 Cohesion: 0.25
 Nodes (8): 🟢 BAIXOS (7), BUG-24 · `useNewSupplierForm.ts` — Carrier timeout sem cleanup (igual BUG-23), BUG-25 · `useSuppliersManager.ts` — `address_details`/`social_details` — dead code, BUG-26 · `useProductsManager.ts` — `toggleSelectAll` seleciona apenas página atual, BUG-27 · `useProductsManager.ts` — `handlePageChange` não passa `advancedFilters` explicitamente, BUG-28 · `useEngravingWizard.ts` — Área com `technique_name: '—'` sem alerta, BUG-29 · `useProductsManager.ts` — `useEffect` inicial com `[]` pode ter race condition, BUG-30 · `useSuppliersManager.ts` — Social media fields na interface mas nunca lidos/escritos do DB
 
-### Community 1518 - "Auditoria de Tabelas Vazias — 2026-05-12"
+### Community 1519 - "Auditoria de Tabelas Vazias — 2026-05-12"
 Cohesion: 0.25
 Nodes (7): Auditoria de Tabelas Vazias — 2026-05-12, 🔴 DROP — Remover (funcionalidade removida ou staging), 🔵 KEEP_FEATURE — Manter (feature ativa, vazia por ser início de vida), 🟢 KEEP_INFRA — Manter (infra/log/audit que crescerá em produção), Próximas ações, Resumo, 🟡 TODO — Decisão de produto necessária
 
-### Community 1519 - "56. PROTOCOLO DE IMPLEMENTAÇÃO DO CLAUDE"
+### Community 1520 - "56. PROTOCOLO DE IMPLEMENTAÇÃO DO CLAUDE"
 Cohesion: 0.25
 Nodes (8): 56. PROTOCOLO DE IMPLEMENTAÇÃO DO CLAUDE, Fase A — Recon, Fase B — Plano, Fase C — Estrutura, Fase D — Componentes, Fase E — Responsive, Fase F — Polimento, Fase G — QA
 
-### Community 1520 - "📝 4. GESTÃO DE ORÇAMENTOS (QUOTES)"
+### Community 1521 - "📝 4. GESTÃO DE ORÇAMENTOS (QUOTES)"
 Cohesion: 0.25
 Nodes (8): 4.1 CRUD de Orçamentos, 4.2 Kanban de Orçamentos, 4.3 Templates de Orçamento, 4.4 Aprovação de Orçamentos, 4.5 Histórico e Versões, 4.6 Geração de Propostas PDF, 4.7 Sincronização com Bitrix, 📝 4. GESTÃO DE ORÇAMENTOS (QUOTES)
 
-### Community 1521 - "🔐 Credenciais e Acessos"
+### Community 1522 - "🔐 Credenciais e Acessos"
 Cohesion: 0.25
 Nodes (8): Acesso ao Lovable (faz Joaquim fazer), Anon key do Supabase Lovable (PromoGifts), Bancos Supabase, Como localizar a anon key (Método #1 do playbook), 🔐 Credenciais e Acessos, MCPs disponíveis nesta sessão (verificar disponibilidade na próxima), Validar que key funciona, Vercel
 
-### Community 1522 - "✅ O que JÁ foi feito (sessão de 07/05/2026)"
+### Community 1523 - "✅ O que JÁ foi feito (sessão de 07/05/2026)"
 Cohesion: 0.25
 Nodes (8): Commits aplicados na main (em ordem cronológica), Documentação criada/atualizada, Drift de edge functions, Inventário do Supabase do Lovable (`nmojwpihnslkssljowjh`), Investigação técnica das 5 funções de plataforma Lovable, Investigações realizadas, Mudanças no banco do Lovable (DDL aplicado via SQL Editor), ✅ O que JÁ foi feito (sessão de 07/05/2026)
 
-### Community 1523 - "ONDA-16 — Modelo de Roles: `agente` == `vendedor` (fonte da verdade)"
+### Community 1524 - "ONDA-16 — Modelo de Roles: `agente` == `vendedor` (fonte da verdade)"
 Cohesion: 0.25
 Nodes (7): Arquivos tocados nesta onda, Como ficou (a regra), O bug que isso causou (403 em massa), ONDA-16 — Modelo de Roles: `agente` == `vendedor` (fonte da verdade), Para novas Edge Functions, TL;DR, Validacao funcional
 
-### Community 1524 - "Onda 4 — esbuild preservar console.warn/error em produção"
+### Community 1525 - "Onda 4 — esbuild preservar console.warn/error em produção"
 Cohesion: 0.25
 Nodes (7): Contexto, Impacto, Onda 4 — esbuild preservar console.warn/error em produção, Próximo passo (Onda 5), Riscos / rollback, Solução, Validação empírica
 
-### Community 1525 - "simulation/usePositionHistory.ts"
+### Community 1526 - "simulation/usePositionHistory.ts"
 Cohesion: 0.29
 Nodes (7): BUG-14 🟡 P2 — `usePositionHistory.ts`, HistoryAction, historyReducer(), HistoryReducerState, PositionState, usePositionHistory(), UsePositionHistoryOptions
 
-### Community 1526 - "Decisões do dono sobre o módulo Mockup — 08/10/2026"
+### Community 1527 - "Decisões do dono sobre o módulo Mockup — 08/10/2026"
 Cohesion: 0.25
 Nodes (7): 1. Como ler este documento (proveniência e limites), 2. Decidido — as 29 decisões da entrevista (Q1 a Q29), 3. Decidido depois da entrevista — D3, D4 e as pastas por vendedor, 4. Pendente — espera o dono, 5. Futuro — registrado, não decidido para agora, 6. O que isto significa para o time e para os agentes, Decisões do dono sobre o módulo Mockup — 08/10/2026
 
-### Community 1527 - "Patch manual: `external-db-bridge/index.ts` — kill-switch integration"
+### Community 1528 - "Patch manual: `external-db-bridge/index.ts` — kill-switch integration"
 Cohesion: 0.25
 Nodes (8): Como ativar / desativar o kill-switch, Identificar callers (quem ainda chama), Impacto esperado nos logs do Postgres, Mudança 1 — Adicionar import (linha ~36), Mudança 2 — Inserir checagem do kill-switch (linha ~451), Patch manual: `external-db-bridge/index.ts` — kill-switch integration, Por que esse patch não foi feito via PR automatizado, Validação após aplicar
 
-### Community 1528 - "DIMENSÃO 13: AUTOMAÇÃO E PRODUTIVIDADE (Etapas 142–175)"
+### Community 1529 - "DIMENSÃO 13: AUTOMAÇÃO E PRODUTIVIDADE (Etapas 142–175)"
 Cohesion: 0.25
 Nodes (8): DIMENSÃO 13: AUTOMAÇÃO E PRODUTIVIDADE (Etapas 142–175), 🟡 E142 — Criar scheduled task para lembrar da deadline E016 [AUTO], 🟡 E143 — Verificar `auto-update-pr-branch.yml` funcionando [AUTO], 🟡 E144 — Verificar `branch-hygiene-audit.yml` [AUTO], 🟡 E145 — Atualizar inventário semanal (inventario-estado-semanal.yml) [AUTO], 🟢 E146 — Verificar que types-sync.yml funciona corretamente [AUTO], 🟢 E147 — Verificar `db-live-guard.yml` último resultado [AUTO], 🟢 E148 — Verificar `talkx-status-regen.yml` [AUTO]
 
-### Community 1529 - "FASE 2 — Testes e cobertura"
+### Community 1530 - "FASE 2 — Testes e cobertura"
 Cohesion: 0.25
 Nodes (8): E15 · Restabelecer execução local da suíte, E16 · Medir e publicar a cobertura global real, E17 · Thresholds por módulo, não global, E18 · Cobrir as 112 edge functions, E19 · Caçar flakiness nos 713 arquivos de teste, E20 · Separar fast lane de slow lane, E21 · Testes de contrato das RPCs do Kit Maker, FASE 2 — Testes e cobertura
 
-### Community 1530 - "FASE 3 — Toolchain e dependências"
+### Community 1531 - "FASE 3 — Toolchain e dependências"
 Cohesion: 0.25
 Nodes (8): E22 · Resolver os 2 CVEs `high`, E23 · Eliminar o lockfile duplo, E24 · Consertar o `tsconfig.json` raiz, E25 · TypeScript 5.4.5 → 5.9.x, E26 · Vitest 4 → 5 e `@vitest/coverage-v8` 4 → 5, E27 · Tailwind 3.4.19 → 4.x, E28 · Zod 3.25.76 → 4.x, FASE 3 — Toolchain e dependências
 
-### Community 1531 - "Postmortem — Merge cross-agente sem PR (2026-08-31)"
+### Community 1532 - "Postmortem — Merge cross-agente sem PR (2026-08-31)"
 Cohesion: 0.25
 Nodes (7): Ação corretiva, Causa raiz, Impacto, Postmortem — Merge cross-agente sem PR (2026-08-31), Prevenção (gates, regras), Resumo, Timeline
 
-### Community 1532 - "Postmortem — DDL via MCP sem migration (2026-10-13)"
+### Community 1533 - "Postmortem — DDL via MCP sem migration (2026-10-13)"
 Cohesion: 0.25
 Nodes (7): Ação corretiva, Causa raiz, Impacto, Postmortem — DDL via MCP sem migration (2026-10-13), Prevenção (gates, regras), Resumo, Timeline
 
-### Community 1533 - "Post-mortem — <TÍTULO DO INCIDENTE> (<DATA>)"
+### Community 1534 - "Post-mortem — <TÍTULO DO INCIDENTE> (<DATA>)"
 Cohesion: 0.25
 Nodes (7): Ações corretivas (com dono e prazo), Causa raiz, Linha do tempo (UTC), Lições aprendidas, O que funcionou / o que falhou, Post-mortem — <TÍTULO DO INCIDENTE> (<DATA>), Resumo (2 linhas)
 
-### Community 1534 - "D.8 — Tarefa 4: Dump por chunks (3 padrões) {#d8-dump}"
+### Community 1535 - "D.8 — Tarefa 4: Dump por chunks (3 padrões) {#d8-dump}"
 Cohesion: 0.25
 Nodes (8): A.1 — Criar RPC no Lovable que retorna a tabela inteira, A.2 — Pull no Oficial, B.1 — Loop em chunks de 1000, B.2 — Keyset pagination (mais seguro que OFFSET para tabelas grandes), D.8 — Tarefa 4: Dump por chunks (3 padrões) {#d8-dump}, Padrão A — Pull via RPC HTTP (tabelas pequenas, <1k rows), Padrão B — `lovable_dump_data` em chunks (DEFAULT), Padrão C — pg_dump + restore (volume grande)
 
-### Community 1535 - "Redeploy 2026-05 Fase 1 — Sincronização repo↔DB de migrations órfãs"
+### Community 1536 - "Redeploy 2026-05 Fase 1 — Sincronização repo↔DB de migrations órfãs"
 Cohesion: 0.25
 Nodes (7): Comportamento esperado pós-merge, Gap A — `20260511200056_create_painel_users` (segurança), Gap B — `20260512201700_t17_fix_function_search_path_mutable_22_funcs` (reconstrução impossível com info disponível), NÃO sincronizadas nesta PR (2) — gaps abertos, Redeploy 2026-05 Fase 1 — Sincronização repo↔DB de migrations órfãs, Sincronizadas nesta PR (6), Verificação local (DoD desta PR)
 
-### Community 1536 - "2026-11-14 — schema `net` estava exposto na API pública (corrigido)"
+### Community 1537 - "2026-11-14 — schema `net` estava exposto na API pública (corrigido)"
 Cohesion: 0.25
 Nodes (7): 2026-11-14 — schema `net` estava exposto na API pública (corrigido), A correção aplicada, O que estava acontecendo, O que ficou e o que vigiar, Por que a migration de revogação não resolveu, Por que isso era grave, Verificação depois da correção
 
-### Community 1537 - "4. Histórico cronológico — do início ao fim da Onda 1"
+### Community 1538 - "4. Histórico cronológico — do início ao fim da Onda 1"
 Cohesion: 0.25
 Nodes (8): 4.1 Origem da Onda 1 (2026-05-08, antes desta sessão), 4.2 Decisão npm vs bun (você + Claude, em sessão anterior), 4.3 Os 8 commits originais da Onda 1 (preservados via tag), 4.4 Fluxo do PR #102, 4.5 Validação cruzada do merge (executada ainda em 2026-05-09), 4.6 Simulação exaustiva de 60+ cenários antes do delete (esta sessão), 4.7 Plano refinado de delete em 5 etapas (executado nesta sessão), 4. Histórico cronológico — do início ao fim da Onda 1
 
-### Community 1538 - "3. Campos — Variante (`optionals` / `optionalscomplete`)"
+### Community 1539 - "3. Campos — Variante (`optionals` / `optionalscomplete`)"
 Cohesion: 0.25
 Nodes (8): 3.1 Identificação da Variante, 3.2 Cor (até 2 cores por variante), 3.3 Tamanho e Capacidade, 3.4 Preços da Variante (até 10 faixas), 3.5 Imagens da Variante, 3.6 Status da Variante, 3.7 Localização de Impressão por Variante (até 8 locais), 3. Campos — Variante (`optionals` / `optionalscomplete`)
 
-### Community 1539 - "Calendar Shrink ~50% — Quality Gate Report"
+### Community 1540 - "Calendar Shrink ~50% — Quality Gate Report"
 Cohesion: 0.25
 Nodes (7): A11y (verificada no contract test), Calendar Shrink ~50% — Quality Gate Report, Execução, Gaps considerados e mitigados, Invariantes blindadas, Redução real, Sumário
 
-### Community 1540 - "53. Sessão de 2026-11-15 — o que depende do dono"
+### Community 1541 - "53. Sessão de 2026-11-15 — o que depende do dono"
 Cohesion: 0.25
 Nodes (8): 53.1 — Tirar o E2E dos PRs (PRs #3525 e #3612) · DECISÃO DE NEGÓCIO, 53.2 — Aposentar os 3 workflows do Lovable (dentro da PR #3525) · DECISÃO, 53.3 — Release 1.2.0 (PR #3566, do release-please) · DECISÃO, 53.4 — Rotação da chave `service_role` do Supabase · JANELA DE MANUTENÇÃO, 53.5 — O job "Recibo" do `db-apply-migration.yml` abre PR que ninguém mergeia · PRECISA DE MIM, MAS É DO GIT 7, 53.6 — As 6 branches com veredito "decisão humana" da auditoria anterior, 53.7 — Trabalho do seu PC/VPS encontrado no repositório · EM ANÁLISE, SEM PENDÊNCIA AINDA, 53. Sessão de 2026-11-15 — o que depende do dono
 
-### Community 1541 - "Open Graph Image — Self-hosted"
+### Community 1542 - "Open Graph Image — Self-hosted"
 Cohesion: 0.25
 Nodes (7): Cache headers, Como gerar, Open Graph Image — Self-hosted, Opção A — Screenshot da landing, Opção B — Design dedicado, `/public/og-image.png`, Validação após upload
 
-### Community 1542 - "Validação Exaustiva — Bloco Frete: label "Valor R$" alinhado + sem cifrão duplicado"
+### Community 1543 - "Validação Exaustiva — Bloco Frete: label "Valor R$" alinhado + sem cifrão duplicado"
 Cohesion: 0.25
 Nodes (7): 1. Matriz de execução, 2. Simulador em massa (novo), 3. Diff da correção (referência), 4. Gaps encontrados, 5. Critério de aceite, 6. Fora de escopo (não executado), Validação Exaustiva — Bloco Frete: label "Valor R$" alinhado + sem cifrão duplicado
 
-### Community 1543 - "FiltersPage.test.tsx"
+### Community 1544 - "FiltersPage.test.tsx"
 Cohesion: 0.25
 Nodes (3): mocks, product1, product2
 
-### Community 1544 - "Progresso Recovery — Status atual"
+### Community 1545 - "Progresso Recovery — Status atual"
 Cohesion: 0.25
 Nodes (7): Batch D.1 + D.2 + Fase 2 (PR #143), Batch D.3 + D.4 (esta PR — recovery/d3-d5-complete), ✅ Concluído (em PROD, mergeado em main), 📊 Estado do banco PROD, 🟦 Fase C — Bitrix24 como fonte da verdade (Decision 012), 🟦 Pendente (decisão de produto), Progresso Recovery — Status atual
 
-### Community 1545 - "🧪 Smoke Test — D1.2_optimization_queue"
+### Community 1546 - "🧪 Smoke Test — D1.2_optimization_queue"
 Cohesion: 0.25
 Nodes (7): Cenários do app, Functions a chamar como RPC, ✅ Pré-flight, ❌ Se falhar, ✅ Se passar, 🧪 Smoke Test — D1.2_optimization_queue, Tabelas a verificar no Dashboard
 
-### Community 1546 - "🧪 Smoke Test — D1.3_collection_items"
+### Community 1547 - "🧪 Smoke Test — D1.3_collection_items"
 Cohesion: 0.25
 Nodes (7): Cenários do app, Functions a chamar como RPC, ✅ Pré-flight, ❌ Se falhar, ✅ Se passar, 🧪 Smoke Test — D1.3_collection_items, Tabelas a verificar no Dashboard
 
-### Community 1547 - "🧪 Smoke Test — D1.4_kit_collaboration"
+### Community 1548 - "🧪 Smoke Test — D1.4_kit_collaboration"
 Cohesion: 0.25
 Nodes (7): Cenários do app, Functions a chamar como RPC, ✅ Pré-flight, ❌ Se falhar, ✅ Se passar, 🧪 Smoke Test — D1.4_kit_collaboration, Tabelas a verificar no Dashboard
 
-### Community 1548 - "🧪 Smoke Test — D1.5_dashboard_widgets"
+### Community 1549 - "🧪 Smoke Test — D1.5_dashboard_widgets"
 Cohesion: 0.25
 Nodes (7): Cenários do app, Functions a chamar como RPC, ✅ Pré-flight, ❌ Se falhar, ✅ Se passar, 🧪 Smoke Test — D1.5_dashboard_widgets, Tabelas a verificar no Dashboard
 
-### Community 1549 - "🧪 SMOKE TEST — D.2.3 MCP API Keys System"
+### Community 1550 - "🧪 SMOKE TEST — D.2.3 MCP API Keys System"
 Cohesion: 0.25
 Nodes (7): ✅ Critério de aprovação, Pré-requisitos, 🧪 SMOKE TEST — D.2.3 MCP API Keys System, Teste 1 — RPC can_grant_mcp_full, Teste 2 — FORCE RLS funcionando, Teste 3 — Registrar violação de acesso, Teste 4 — Cleanup
 
-### Community 1550 - "🧪 SMOKE TEST — D.2.4 External Connections"
+### Community 1551 - "🧪 SMOKE TEST — D.2.4 External Connections"
 Cohesion: 0.25
 Nodes (7): ✅ Critério de aprovação, Pré-requisitos, 🧪 SMOKE TEST — D.2.4 External Connections, Teste 1 — RPCs de configuração (o bug histórico), Teste 2 — Inserir external_connection manualmente, Teste 3 — FK CASCADE com connection_test_history, Teste 4 — sync_external_connections_from_credentials
 
-### Community 1551 - "AUDIT.md — Snapshot pré-execução D.7 Fase B"
+### Community 1552 - "AUDIT.md — Snapshot pré-execução D.7 Fase B"
 Cohesion: 0.25
 Nodes (7): AUDIT.md — Snapshot pré-execução D.7 Fase B, Código produtivo afetado (descoberto na auditoria), Documentos históricos (mantidos como estão), Funções a refatorar (branches mortos), Funções candidatas a DROP, Migration histórica preparada mas NÃO rodada (pré-existente), Tables candidatas a DROP
 
-### Community 1552 - "EdgeFunctionLogsPanel.tsx"
+### Community 1553 - "EdgeFunctionLogsPanel.tsx"
 Cohesion: 0.36
 Nodes (7): copyText(), EdgeFunctionLogsPanel(), fmtBytes(), fmtTime(), SOURCE_OPTIONS, STATUS_OPTIONS, UnifiedSample
 
-### Community 1553 - "hooks/useAuditLog.ts"
+### Community 1554 - "hooks/useAuditLog.ts"
 Cohesion: 0.25
 Nodes (4): AuditAction, AuditEntityType, AuditLogEntry, AuditLogParams
 
-### Community 1554 - "hooks/useCategoriesTree.ts"
+### Community 1555 - "hooks/useCategoriesTree.ts"
 Cohesion: 0.32
 Nodes (7): CategoryIcon, CategoryNode, CategoryOption, CategoryTreeItem, HIDDEN_CATEGORIES, useCategoriesTree(), useCategorySelection()
 
-### Community 1555 - "hooks/useComparisonScore.ts"
+### Community 1556 - "hooks/useComparisonScore.ts"
 Cohesion: 0.36
 Nodes (7): ComparisonScoreWeights, DEFAULT_SCORE_WEIGHTS, leadTimeProxy(), normalizeHigherBetter(), normalizeLowerBetter(), ProductScore, useComparisonScore()
 
-### Community 1556 - "hooks/useConnectionsOverviewFilters.ts"
+### Community 1557 - "hooks/useConnectionsOverviewFilters.ts"
 Cohesion: 0.25
 Nodes (5): DEFAULT_FILTERS, OverviewFilters, OverviewStatusFilter, OverviewWindowFilter, WINDOW_MS
 
-### Community 1557 - "hooks/useDeviceDetection.ts"
+### Community 1558 - "hooks/useDeviceDetection.ts"
 Cohesion: 0.43
 Nodes (7): DeviceInfo, generateDeviceFingerprint(), getBrowserName(), getDeviceInfo(), getDeviceType(), getOSName(), useDeviceDetection()
 
-### Community 1558 - "hooks/useExternalCategoriesQuery.ts"
+### Community 1559 - "hooks/useExternalCategoriesQuery.ts"
 Cohesion: 0.36
 Nodes (7): EXTERNAL_CATEGORIES_QUERY_KEY, ExternalCategory, fetchExternalCategories(), QueryResult, useCategoriesByIds(), useCategoryById(), useExternalCategoriesQuery()
 
-### Community 1559 - "hooks/useExternalCollections.ts"
+### Community 1560 - "hooks/useExternalCollections.ts"
 Cohesion: 0.32
 Nodes (5): ExternalCollection, ExternalCollectionProduct, useExternalCollectionMutations(), useExternalCollections(), useExternalCollectionsManager()
 
-### Community 1560 - "hooks/useRoleMigration.ts"
+### Community 1561 - "hooks/useRoleMigration.ts"
 Cohesion: 0.25
 Nodes (6): AppRole, BatchRow, BatchStatus, ItemRow, ItemStatus, MigrationItemInput
 
-### Community 1561 - "pages/quotes-dashboard/useQuotesDashboard.ts"
+### Community 1562 - "pages/quotes-dashboard/useQuotesDashboard.ts"
 Cohesion: 0.57
 Nodes (6): Client, formatCurrency(), formatResponseTime(), statusConfig, useQuotesDashboard(), QuotesDashboardPage()
 
-### Community 1562 - "§25 — Prova Gate Final SHA `2a042dab` + atualização PENDENCIAS #26 #30 #37"
+### Community 1563 - "§25 — Prova Gate Final SHA `2a042dab` + atualização PENDENCIAS #26 #30 #37"
 Cohesion: 0.25
 Nodes (8): §25 — Prova Gate Final SHA `2a042dab` + atualização PENDENCIAS #26 #30 #37, Alterações desta sessão em main, Ações pendentes do dono (REGRA #8 — não executáveis sem aprovação), Baseline local (SHA `bfb2926d` — referência §23, inalterado), Comparação SHA `be7688da` → `2a042dab`, Gate Final (SHA `2a042dab`), Tabela de prova completa — todos os workflows em falha/action_required (SHA `2a042dab`), Workflows antes verdes — confirmação de não-regressão (SHA `2a042dab`)
 
-### Community 1563 - "check-edge-cors-headers.mjs"
+### Community 1564 - "check-edge-cors-headers.mjs"
 Cohesion: 0.43
 Nodes (7): checkInlineFunction(), checkSharedCors(), extractCorsLiterals(), listFunctionDirs(), main(), SERVER_ONLY_ALLOWLIST, SHARED_CORS
 
-### Community 1564 - "check-outline-none.mjs"
+### Community 1565 - "check-outline-none.mjs"
 Cohesion: 0.39
 Nodes (7): extractLiterals(), EXTS, hashLit(), isViolation(), main(), SKIP_DIRS, walk()
 
-### Community 1565 - "ci-performance-gate.ts"
+### Community 1566 - "ci-performance-gate.ts"
 Cohesion: 0.36
 Nodes (7): evaluate(), isStrictRun(), loadResults(), METRICS_FILE, runPerfGate(), TestResult, THRESHOLDS
 
-### Community 1566 - "ConnectionsOverviewFilters.tsx"
+### Community 1567 - "ConnectionsOverviewFilters.tsx"
 Cohesion: 0.32
 Nodes (7): ConnectionsOverviewFilters(), Props, STATUS_OPTIONS, TYPE_OPTIONS, typeLabel(), WINDOW_OPTIONS, windowLabel()
 
-### Community 1567 - "EdgeInvokeLivePanel.tsx"
+### Community 1568 - "EdgeInvokeLivePanel.tsx"
 Cohesion: 0.36
 Nodes (7): EdgeInvokeLivePanel(), fmtMs(), fmtPct(), MiniKpi(), MiniKpiProps, WINDOW_OPTIONS, WindowMs
 
-### Community 1568 - "ResolveProductsSelectComparisonCard.tsx"
+### Community 1569 - "ResolveProductsSelectComparisonCard.tsx"
 Cohesion: 0.43
 Nodes (7): DeltaDirection, deltaTone(), formatMs(), formatPct(), MetricRow(), ResolveProductsSelectComparisonCard(), SamplesBadge()
 
-### Community 1569 - "ClientCategoryRadar.tsx"
+### Community 1570 - "ClientCategoryRadar.tsx"
 Cohesion: 0.36
 Nodes (7): classify(), ClientCategoryRadar(), fmtBRL(), fmtPct(), MergedRow, Props, STATUS_META
 
-### Community 1570 - "ClientVsIndustryComparison.tsx"
+### Community 1571 - "ClientVsIndustryComparison.tsx"
 Cohesion: 0.43
 Nodes (7): classificationStyles(), ClientVsIndustryComparison(), formatIndustry(), formatValue(), MetricRow(), Props, ShareOfWalletCard()
 
-### Community 1571 - "EntityBadge.tsx"
+### Community 1572 - "EntityBadge.tsx"
 Cohesion: 0.32
 Nodes (6): BADGE_DOT_SIZE_CLASSES, BADGE_SIZE_CLASSES, BADGE_VARIANT_CLASSES, DEFAULT_MAX_WIDTH, EntityBadge(), EntityBadgeProps
 
-### Community 1572 - "VariantStockTable.fuzz-invariants.test.tsx"
+### Community 1573 - "VariantStockTable.fuzz-invariants.test.tsx"
 Cohesion: 0.25
 Nodes (4): CATEGORIES, COLORS, STATUSES, SUPPLIERS
 
-### Community 1573 - "MockupConfigPanel.techniques.test.tsx"
+### Community 1574 - "MockupConfigPanel.techniques.test.tsx"
 Cohesion: 0.32
 Nodes (5): baseProps(), firstSection(), PanelProps, renderPanel(), sections()
 
-### Community 1574 - "pdfContrastReport.test.ts"
+### Community 1575 - "pdfContrastReport.test.ts"
 Cohesion: 0.32
 Nodes (7): contrastRatio(), hexToRgb(), Pair, PAIRS, relativeLuminance(), REPORT_DIR, REPORT_PATH
 
-### Community 1575 - "PdfGenerationModule.test.ts"
+### Community 1576 - "PdfGenerationModule.test.ts"
 Cohesion: 0.36
 Nodes (6): estimateItemHeight(), { html2canvasMock, jsPdfCtorMock, jsPdfInstanceFactory }, itemsBudget(), makeData(), makeItem(), paginateItems()
 
-### Community 1576 - "PdfPrintHelpDialog.tsx"
+### Community 1577 - "PdfPrintHelpDialog.tsx"
 Cohesion: 0.32
 Nodes (7): COPY, CopySpec, isMacLike(), PdfPrintFallbackReason, PdfPrintHelpDialog(), Props, shortcut()
 
-### Community 1577 - "ReplenishmentToolbar.tsx"
+### Community 1578 - "ReplenishmentToolbar.tsx"
 Cohesion: 0.29
 Nodes (7): CategoryOption, ReplenishmentToolbar(), ReplenishmentToolbarProps, SearchInput(), SortMode, SupplierOption, ViewMode
 
-### Community 1578 - "ColorSwatch.ssot.test.tsx"
+### Community 1579 - "ColorSwatch.ssot.test.tsx"
 Cohesion: 0.32
 Nodes (7): assertInvariants(), buildColor(), COLORS, hexToRgb(), renderOne(), SIZES, STOCK
 
-### Community 1579 - "data/mockData.ts"
+### Community 1580 - "data/mockData.ts"
 Cohesion: 0.25
 Nodes (7): CATEGORIES, Category, DATAS_COMEMORATIVAS, ENDOMARKETING, PUBLICO_ALVO, Supplier, SUPPLIERS
 
-### Community 1580 - "admin/useAuditLog.ts"
+### Community 1581 - "admin/useAuditLog.ts"
 Cohesion: 0.25
 Nodes (4): AuditAction, AuditEntityType, AuditLogEntry, AuditLogParams
 
-### Community 1581 - "admin/useDeviceDetection.ts"
+### Community 1582 - "admin/useDeviceDetection.ts"
 Cohesion: 0.43
 Nodes (7): DeviceInfo, generateDeviceFingerprint(), getBrowserName(), getDeviceInfo(), getDeviceType(), getOSName(), useDeviceDetection()
 
-### Community 1582 - "admin/useRoleMigration.ts"
+### Community 1583 - "admin/useRoleMigration.ts"
 Cohesion: 0.25
 Nodes (6): AppRole, BatchRow, BatchStatus, ItemRow, ItemStatus, MigrationItemInput
 
-### Community 1583 - "collections/useExternalCollections.ts"
+### Community 1584 - "collections/useExternalCollections.ts"
 Cohesion: 0.32
 Nodes (5): ExternalCollection, ExternalCollectionProduct, useExternalCollectionMutations(), useExternalCollections(), useExternalCollectionsManager()
 
-### Community 1584 - "common/__tests__/useSearchHistory.test.ts"
+### Community 1585 - "common/__tests__/useSearchHistory.test.ts"
 Cohesion: 0.29
 Nodes (5): localStorageMock, store, HistoryItem, HistoryType, useSearchHistory()
 
-### Community 1585 - "intelligence/useConnectionsOverviewFilters.ts"
+### Community 1586 - "intelligence/useConnectionsOverviewFilters.ts"
 Cohesion: 0.25
 Nodes (5): DEFAULT_FILTERS, OverviewFilters, OverviewStatusFilter, OverviewWindowFilter, WINDOW_MS
 
-### Community 1586 - "intelligence/useContextualSuggestions.ts"
+### Community 1587 - "intelligence/useContextualSuggestions.ts"
 Cohesion: 0.32
 Nodes (7): ContextualSuggestion, deriveSection(), FILTER_LABELS, isActiveValue(), RouteContext, useContextualSuggestions(), UseContextualSuggestionsOptions
 
-### Community 1587 - "products/useCategoriesTree.ts"
+### Community 1588 - "products/useCategoriesTree.ts"
 Cohesion: 0.32
 Nodes (7): CategoryIcon, CategoryNode, CategoryOption, CategoryTreeItem, HIDDEN_CATEGORIES, useCategoriesTree(), useCategorySelection()
 
-### Community 1588 - "ui/useWorkspaceNotifications.tsx"
+### Community 1589 - "ui/useWorkspaceNotifications.tsx"
 Cohesion: 0.39
 Nodes (7): CacheEntry, debugLog(), isDebugEnabled(), readCache(), useWorkspaceNotifications(), WorkspaceNotification, writeCache()
 
-### Community 1589 - "useProductColorSwatch.test.tsx"
+### Community 1590 - "useProductColorSwatch.test.tsx"
 Cohesion: 0.36
 Nodes (5): ColorSwatch, ProductWithSwatches, { rpc }, swatches, useProductColorSwatch()
 
-### Community 1590 - "feedbackSounds.ts"
+### Community 1591 - "feedbackSounds.ts"
 Cohesion: 0.46
 Nodes (7): getAudioContext(), playErrorSound(), playProcessingSound(), playSpeakingSound(), playStartSound(), playStopSound(), playTone()
 
-### Community 1591 - "playTtsAudio"
+### Community 1592 - "playTtsAudio"
 Cohesion: 0.36
 Nodes (5): createSilentWavUrl(), playTtsAudio(), cleanup(), pause(), stop()
 
-### Community 1592 - "request-dev-access.ts"
+### Community 1593 - "request-dev-access.ts"
 Cohesion: 0.39
 Nodes (7): buildMailto(), DEV_ACCESS_CONTACT_EMAIL, getThrottleStatus(), requestDevAccess(), RequestDevAccessInput, RequestDevAccessResult, throttleKey()
 
-### Community 1593 - "oauth-pending.ts"
+### Community 1594 - "oauth-pending.ts"
 Cohesion: 0.43
 Nodes (6): clearOAuthPending(), markOAuthPending(), OAUTH_PENDING_TTL_MS, OAuthPendingState, OAuthProvider, readOAuthPending()
 
-### Community 1594 - "rupture-risk.ts"
+### Community 1595 - "rupture-risk.ts"
 Cohesion: 0.29
 Nodes (7): computeRuptureRisk(), DEFAULT_RUPTURE_HORIZON, isPositiveFinite(), RUPTURE_HORIZON_OPTIONS, RuptureHorizonDays, RuptureRiskInput, RuptureRiskResult
 
-### Community 1595 - "stock-filter.fuzz.test.ts"
+### Community 1596 - "stock-filter.fuzz.test.ts"
 Cohesion: 0.29
 Nodes (5): COLORS, makeProduct(), makeVariant(), SimReport, STATUSES
 
-### Community 1596 - "json-value.test.ts"
+### Community 1597 - "json-value.test.ts"
 Cohesion: 0.32
 Nodes (4): isJsonValue(), serializeJsonValue(), cases, date
 
-### Community 1597 - "masked-suffix.ts"
+### Community 1598 - "masked-suffix.ts"
 Cohesion: 0.32
 Nodes (6): formatDisplaySuffix(), formatMaskedSuffix(), MaskedSuffixDiagnosis, MaskedSuffixStatus, normalizeMaskedSuffix(), resolveDisplaySuffix()
 
-### Community 1598 - "mockup-geometry.test.ts"
+### Community 1599 - "mockup-geometry.test.ts"
 Cohesion: 0.36
 Nodes (6): cmParaPx(), CmParaPxInput, CmParaPxResult, MIN_LOGO_PX, positivo(), base
 
-### Community 1599 - "customization-options.adapter.ts"
+### Community 1600 - "customization-options.adapter.ts"
 Cohesion: 0.54
 Nodes (7): adaptCustomizationOptions(), adaptLocation(), adaptOption(), pick(), Raw, toBool(), toNumber()
 
-### Community 1600 - "print-area.adapter.ts"
+### Community 1601 - "print-area.adapter.ts"
 Cohesion: 0.39
 Nodes (7): adaptPrintAreaRow(), adaptPrintAreaRows(), NormalizedPrintAreaRow, pick(), Raw, toBool(), toNumber()
 
-### Community 1601 - "AdminCloudflareImagesPage.tsx"
+### Community 1602 - "AdminCloudflareImagesPage.tsx"
 Cohesion: 0.36
 Nodes (7): AdminCloudflareImagesPage(), CfStats, CfSyncStatus, computeStats(), fetchCfImages(), STATUS_CONFIG, StatusBadge()
 
-### Community 1602 - "AiTables.tsx"
+### Community 1603 - "AiTables.tsx"
 Cohesion: 0.32
 Nodes (7): AiTables(), AiTablesProps, formatCurrency(), formatNumber(), LogEntry, ModelStats, UserStats
 
-### Community 1603 - "ResetPassword.test.tsx"
+### Community 1604 - "ResetPassword.test.tsx"
 Cohesion: 0.25
 Nodes (6): mockGetSession, mockNavigate, mockOnAuthStateChange, mockToast, mockUnsubscribe, mockUpdateUser
 
-### Community 1604 - "MockupDialogs.test.tsx"
+### Community 1605 - "MockupDialogs.test.tsx"
 Cohesion: 0.43
 Nodes (6): DeleteDialogProps, DeleteMockupDialog(), TechniqueChangeDialog(), TechniqueChangeDialogProps, DualDialogs(), renderTechnique()
 
-### Community 1605 - "useQuotesListPage.fuzz.test.ts"
+### Community 1606 - "useQuotesListPage.fuzz.test.ts"
 Cohesion: 0.25
 Nodes (6): deleteQuote, duplicateQuote, mockQuotes, quoteArb, statusArb, updateQuoteStatus
 
-### Community 1606 - "SidebarQAPage.tsx"
+### Community 1607 - "SidebarQAPage.tsx"
 Cohesion: 0.36
 Nodes (7): GroupHeaderSample(), NavItemSample(), SidebarPreview(), SidebarQAPage(), State, STATES, VIEWPORT_WIDTHS
 
-### Community 1607 - "browser.d.ts"
+### Community 1608 - "browser.d.ts"
 Cohesion: 0.25
 Nodes (7): LayoutShift, Navigator, PerformanceEventTiming, SpeechRecognition, SpeechRecognitionErrorEvent, SpeechRecognitionEvent, Window
 
-### Community 1608 - "laser-logo-processor.ts"
+### Community 1609 - "laser-logo-processor.ts"
 Cohesion: 0.39
 Nodes (7): fetchAsBlob(), hexToRgb(), hexToRgbInternal(), LASER_TONES, LaserToneConfig, processLogoForLaser(), processLogoForSerigrafia()
 
-### Community 1609 - "price-freshness.ts"
+### Community 1610 - "price-freshness.ts"
 Cohesion: 0.32
 Nodes (6): DEFAULT_PRICE_FRESHNESS_THRESHOLD_DAYS, formatPriceDateLong(), formatRelativeDays(), getPriceFreshness(), PriceFreshness, PriceFreshnessStatus
 
-### Community 1610 - "product-sorting.ts"
+### Community 1611 - "product-sorting.ts"
 Cohesion: 0.39
 Nodes (5): byNameThenId(), compareNamePtBR(), PT_BR_COLLATOR, sortProducts(), withIdTiebreak()
 
-### Community 1611 - "product-visual-search/deno.json"
+### Community 1612 - "product-visual-search/deno.json"
 Cohesion: 0.25
 Nodes (7): description, main, $schema, scripts, dev, start, test
 
-### Community 1612 - "imports"
+### Community 1613 - "imports"
 Cohesion: 0.25
 Nodes (7): imports, https://esm.sh/@supabase/supabase-js@2.45.0, https://esm.sh/@supabase/supabase-js@2.49.1, https://esm.sh/@supabase/supabase-js@2.49.4, https://esm.sh/@supabase/supabase-js@2.95.0, https://esm.sh/zod@3.23.8, nodeModulesDir
 
-### Community 1613 - "magic-up-variations.keyboard.test.tsx"
+### Community 1614 - "magic-up-variations.keyboard.test.tsx"
 Cohesion: 0.32
 Nodes (4): buildStubState(), buildVariations(), ComparatorHarness(), StubState
 
-### Community 1614 - "freight-quest-webhook-simulation.test.ts"
+### Community 1615 - "freight-quest-webhook-simulation.test.ts"
 Cohesion: 0.36
 Nodes (6): buildV1Payload(), buildV2Payload(), EVENT_TYPES, iso(), uuid(), WEBHOOK_SOURCES
 
-### Community 1615 - "integration/magic-up-score.test.ts"
+### Community 1616 - "integration/magic-up-score.test.ts"
 Cohesion: 0.25
 Nodes (3): DIAGNOSIS, EdgeHandler, shared
 
-### Community 1616 - "rupture-risk.simulation.test.ts"
+### Community 1617 - "rupture-risk.simulation.test.ts"
 Cohesion: 0.43
 Nodes (6): genValidScenario(), pick(), rand, randInt(), Scenario, SCENARIOS
 
-### Community 1617 - "image-proxy.ts"
+### Community 1618 - "image-proxy.ts"
 Cohesion: 0.25
 Nodes (3): MOCK_CLOUDFLARE_ACCOUNT, MOCK_SUPABASE_HOST, MOCK_UNSPLASH_ID
 
-### Community 1618 - "check-edge-live-coverage.test.mjs"
+### Community 1619 - "check-edge-live-coverage.test.mjs"
 Cohesion: 0.25
 Nodes (3): ROOT, SCRIPT, temporaryRoots
 
-### Community 1619 - "check-edge-request-id-propagation.test.mjs"
+### Community 1620 - "check-edge-request-id-propagation.test.mjs"
 Cohesion: 0.29
 Nodes (6): CRITICAL_EDGES, ROOT, SCRIPT, temporaryRoots, tempRepo(), writeFn()
 
-### Community 1621 - "e2e-smoke-coverage-doc.test.mjs"
+### Community 1622 - "e2e-smoke-coverage-doc.test.mjs"
 Cohesion: 0.25
 Nodes (4): REAL_CATALOG, REAL_SCRIPT, REAL_SPEC, ROOT
 
-### Community 1622 - "Promo Gifts V4 — como trabalhar neste repo"
+### Community 1623 - "Promo Gifts V4 — como trabalhar neste repo"
 Cohesion: 0.29
 Nodes (6): Branch, commit, PR, Comandos, Identidade, Nunca, Onde olhar, Promo Gifts V4 — como trabalhar neste repo
 
-### Community 1623 - "VEREDITO_106 — leitura das 106 branches apagadas sem dossiê"
+### Community 1624 - "VEREDITO_106 — leitura das 106 branches apagadas sem dossiê"
 Cohesion: 0.29
 Nodes (6): 1. Onde a medição mecânica errou (o achado principal), 2. DECISAO_HUMANA — 1 branch, 3. APROVEITAR — 1 branch, 4. Documentos que não existem em nenhum lugar da `main`, Tabela — 106 vereditos, VEREDITO_106 — leitura das 106 branches apagadas sem dossiê
 
-### Community 1624 - "Baseline — Sessão 012WyySbh2tj8vhRQLBf3mHo"
+### Community 1625 - "Baseline — Sessão 012WyySbh2tj8vhRQLBf3mHo"
 Cohesion: 0.29
 Nodes (6): Baseline — Sessão 012WyySbh2tj8vhRQLBf3mHo, Gate Final — CI, Produção Supabase, PRs Analisadas — 22 total, SHA do main, Vitest — Falhas Pré-existentes
 
-### Community 1625 - "Comparação CI: main a0560fdc → f6f9889a"
+### Community 1626 - "Comparação CI: main a0560fdc → f6f9889a"
 Cohesion: 0.29
 Nodes (6): Comparação CI: main a0560fdc → f6f9889a, Conclusão, Contexto dos SHAs, Falhas Pré-Existentes (presentes em ambos), Novas Falhas em f6f9889a (não eram falhas em a0560fdc), Resultado Principal
 
-### Community 1626 - "CI Baseline — Por Nome de Step/Job"
+### Community 1627 - "CI Baseline — Por Nome de Step/Job"
 Cohesion: 0.29
 Nodes (6): CI Baseline — Por Nome de Step/Job, Job `quality-gate` — FAILURE ❌, Job `security-audit` — SUCCESS ✅, Resumo Comparativo, Run #40127820215 — Deploy Gates (Gate Final), Run #40129973781 — CI Security & Drift Checks
 
-### Community 1627 - "Baseline local — main SHA `9a97f9a2`"
+### Community 1628 - "Baseline local — main SHA `9a97f9a2`"
 Cohesion: 0.29
 Nodes (6): Baseline local — main SHA `9a97f9a2`, Build (`npm run build`), ESLint (`npx eslint src --ext .ts,.tsx`), Resumo comparativo vs. baseline anterior (`2fafe8ed`, 2026-10-27), TypeCheck (`npx tsc --noEmit`), Vitest (`npx vitest run` no worktree `/tmp/claude-0/main-baseline`)
 
-### Community 1628 - "Baseline — Estado do main"
+### Community 1629 - "Baseline — Estado do main"
 Cohesion: 0.29
 Nodes (6): Baseline — Estado do main, Gate Final (SHA inicial `8bc08b12f5`), Gates individuais (SHA inicial `8bc08b12f5`), Merges desta sessão (8 total), Nota sobre Gate E40, SHA final do main
 
-### Community 1629 - "Baseline de CI — main `8bafc7d5a0a1f0f6a06d88adc6577098f873dfcb`"
+### Community 1630 - "Baseline de CI — main `8bafc7d5a0a1f0f6a06d88adc6577098f873dfcb`"
 Cohesion: 0.29
 Nodes (6): Baseline de CI — main `8bafc7d5a0a1f0f6a06d88adc6577098f873dfcb`, Checks cancelados em main (`8e8053b9`), Checks com failure em main (`8e8053b9`), Checks com success em main (`8e8053b9`) — amostra relevante, Nota sobre CI local, Resultado do Gate Final
 
-### Community 1630 - "Baseline — Sessão session_012WyySbh2tj8vhRQLBf3mHo (continuação — 2026-10-29)"
+### Community 1631 - "Baseline — Sessão session_012WyySbh2tj8vhRQLBf3mHo (continuação — 2026-10-29)"
 Cohesion: 0.29
 Nodes (6): Baseline anterior (sessão 01Ss1tXZ4cAbxBvdmu95uNPz — 2026-10-25), Baseline — Sessão session_012WyySbh2tj8vhRQLBf3mHo (continuação — 2026-10-29), Gate Final no main atual (c3b41286), Merges executados nesta sessão, Nota sobre Gate E40 (2026-10-28), PRs abertas atuais (14 total) — 2026-10-29T22:30Z
 
-### Community 1631 - "Dossie PR #2360 (sucessora de #2357)"
+### Community 1632 - "Dossie PR #2360 (sucessora de #2357)"
 Cohesion: 0.29
 Nodes (6): CI pos-merge, Conteudo, Dossie PR #2360 (sucessora de #2357), Estado das migrations (2026-10-23), Producao Vercel, REGISTRO FORMAL DE FALHA CI (MISSAO.md)
 
-### Community 1632 - "Dossiê PR #2414"
+### Community 1633 - "Dossiê PR #2414"
 Cohesion: 0.29
 Nodes (6): Análise, CI, Diff, Dossiê PR #2414, Intenção, Verdict
 
-### Community 1633 - "Dossiê PR #2426"
+### Community 1634 - "Dossiê PR #2426"
 Cohesion: 0.29
 Nodes (6): Análise, Diff Verificado (100%), Dossiê PR #2426, Intenção, Rule 8, Verdict
 
-### Community 1634 - "Dossiê PR #2427"
+### Community 1635 - "Dossiê PR #2427"
 Cohesion: 0.29
 Nodes (6): Análise, Diff Verificado (100%), Dossiê PR #2427, Intenção, Rule 8, Verdict
 
-### Community 1635 - "Dossiê PR #2435"
+### Community 1636 - "Dossiê PR #2435"
 Cohesion: 0.29
 Nodes (6): Análise, Diff — Confirmado por Leitura (1,398 linhas, arquivo tool-results mcp-GITHUB_-_MCP_-_FOREVER-github_get_pr_diff-1792894002641.txt), Dossiê PR #2435, Intenção, Triggers REGRA 8 — Confirmados por Diff Real, VEREDICTO FINAL
 
-### Community 1636 - "Dossiê PR #2437"
+### Community 1637 - "Dossiê PR #2437"
 Cohesion: 0.29
 Nodes (6): Análise, Diff, Dossiê PR #2437, Intenção, Triggers REGRA 8, Verdict
 
-### Community 1637 - "Dossiê PR #2438"
+### Community 1638 - "Dossiê PR #2438"
 Cohesion: 0.29
 Nodes (6): Análise, Diff, Dossiê PR #2438, Intenção, Triggers REGRA 8, Verdict
 
-### Community 1638 - "Dossiê PR #2439"
+### Community 1639 - "Dossiê PR #2439"
 Cohesion: 0.29
 Nodes (6): Análise, Diff, Dossiê PR #2439, Evidência, Intenção, VEREDICTO FINAL
 
-### Community 1639 - "Dossiê PR #2447 — deliverables analise-prs (esta sessão)"
+### Community 1640 - "Dossiê PR #2447 — deliverables analise-prs (esta sessão)"
 Cohesion: 0.29
 Nodes (6): Análise, Dossiê PR #2447 — deliverables analise-prs (esta sessão), Estado atual, Evidência, Intenção, VEREDICTO FINAL
 
-### Community 1640 - "Dossiê PR #2451"
+### Community 1641 - "Dossiê PR #2451"
 Cohesion: 0.29
 Nodes (6): Análise, Correção de Estado (esta atualização), Diff (evidência — lido via API nesta sessão), Dossiê PR #2451, Intenção, VEREDICTO FINAL
 
-### Community 1641 - "Dossiê PR #2457"
+### Community 1642 - "Dossiê PR #2457"
 Cohesion: 0.29
 Nodes (6): Análise, Diff, Dossiê PR #2457, Evidência, Intenção, VEREDICTO FINAL
 
-### Community 1642 - "Dossiê PR #2458"
+### Community 1643 - "Dossiê PR #2458"
 Cohesion: 0.29
 Nodes (6): Análise, Correção de Estado (esta atualização), Diff (evidência — lido via API nesta sessão), Dossiê PR #2458, Intenção, VEREDICTO FINAL
 
-### Community 1643 - "Dossiê PR #2465"
+### Community 1644 - "Dossiê PR #2465"
 Cohesion: 0.29
 Nodes (6): Análise, Correção de Estado (esta atualização), Diff (evidência — lido via API nesta sessão), Dossiê PR #2465, Intenção, VEREDICTO FINAL
 
-### Community 1644 - "Dossiê PR #2470"
+### Community 1645 - "Dossiê PR #2470"
 Cohesion: 0.29
 Nodes (6): Análise, Bloqueios ao merge autônomo, Diff lido (100%), Dossiê PR #2470, Intenção, VEREDICTO FINAL
 
-### Community 1645 - "Dossiê PR #2471"
+### Community 1646 - "Dossiê PR #2471"
 Cohesion: 0.29
 Nodes (6): Análise, Bloqueios ao merge autônomo, Diff lido (100%), Dossiê PR #2471, Intenção, VEREDICTO FINAL
 
-### Community 1646 - "Dossiê PR #2512 — fix(gate1.3): remove 2 entradas stale — .migration-refs-baseline.json 485→483"
+### Community 1647 - "Dossiê PR #2512 — fix(gate1.3): remove 2 entradas stale — .migration-refs-baseline.json 485→483"
 Cohesion: 0.29
 Nodes (6): Correção Aplicada, Critérios de Merge, Dossiê PR #2512 — fix(gate1.3): remove 2 entradas stale — .migration-refs-baseline.json 485→483, Evidência diff lido, Gate Final pós-merge, Problema Corrigido
 
-### Community 1647 - "PR #2531 — docs(pendencias): P63 E2E Swatch QuickView — falha pré-existente"
+### Community 1648 - "PR #2531 — docs(pendencias): P63 E2E Swatch QuickView — falha pré-existente"
 Cohesion: 0.29
 Nodes (6): Análise, Arquivos alterados (diff lido nesta sessão), Evidência, PR #2531 — docs(pendencias): P63 E2E Swatch QuickView — falha pré-existente, Razão da rejeição de merge autônomo, Veredito: PENDENTE (draft — não pode ser mergeado autonomamente)
 
-### Community 1648 - "PR #2547 — DECISAO_HUMANA"
+### Community 1649 - "PR #2547 — DECISAO_HUMANA"
 Cohesion: 0.29
 Nodes (6): Ação requerida do PO, Bloqueios, Conteúdo, Critérios, PR #2547 — DECISAO_HUMANA, Veredito: DECISAO_HUMANA
 
-### Community 1649 - "PR #2550 — DECISAO_HUMANA"
+### Community 1650 - "PR #2550 — DECISAO_HUMANA"
 Cohesion: 0.29
 Nodes (6): Ação requerida do PO, Bloqueios, Conteúdo, Critérios, PR #2550 — DECISAO_HUMANA, Veredito: DECISAO_HUMANA
 
-### Community 1650 - "PR #2557 — DECISAO_HUMANA"
+### Community 1651 - "PR #2557 — DECISAO_HUMANA"
 Cohesion: 0.29
 Nodes (6): Ação requerida do PO, Bloqueios, Conteúdo, Critérios, PR #2557 — DECISAO_HUMANA, Veredito: DECISAO_HUMANA
 
-### Community 1651 - "Dossiê PR #2664 — docs: auditoria Supabase"
+### Community 1652 - "Dossiê PR #2664 — docs: auditoria Supabase"
 Cohesion: 0.29
 Nodes (6): 1. Ainda é válida?, 2. Traz regressão?, 3. Já está implementada no main?, 4. Regra de negócio correta?, Dossiê PR #2664 — docs: auditoria Supabase, VEREDITO
 
-### Community 1652 - "Dossiê PR #2667 — fix(calendar): react-day-picker v10 API"
+### Community 1653 - "Dossiê PR #2667 — fix(calendar): react-day-picker v10 API"
 Cohesion: 0.29
 Nodes (6): 1. Ainda é válida?, 2. Traz regressão?, 3. Já está implementada no main?, 4. Regra de negócio correta?, Dossiê PR #2667 — fix(calendar): react-day-picker v10 API, VEREDITO
 
-### Community 1653 - "Dossier PR-2701 — fix(ci): autentica integração Kit Coverage com usuário E2E"
+### Community 1654 - "Dossier PR-2701 — fix(ci): autentica integração Kit Coverage com usuário E2E"
 Cohesion: 0.29
 Nodes (6): (1) Ainda é válida?, (2) Traz regressão?, (3) Já está implementada no main?, (4) A regra de negócio está correta?, Dossier PR-2701 — fix(ci): autentica integração Kit Coverage com usuário E2E, Veredito
 
-### Community 1654 - "Dossier PR-2713 — chore(main): release 1.1.0"
+### Community 1655 - "Dossier PR-2713 — chore(main): release 1.1.0"
 Cohesion: 0.29
 Nodes (6): (1) Ainda é válida?, (2) Traz regressão?, (3) Já está implementada no main?, (4) A regra de negócio está correta?, Dossier PR-2713 — chore(main): release 1.1.0, Veredito
 
-### Community 1655 - "Dossier PR-2738 — docs(analise-prs): rev47 — análise exaustiva 23 PRs, 8 mergeadas"
+### Community 1656 - "Dossier PR-2738 — docs(analise-prs): rev47 — análise exaustiva 23 PRs, 8 mergeadas"
 Cohesion: 0.29
 Nodes (6): (1) Ainda é válida?, (2) Traz regressão?, (3) Já está implementada no main?, (4) A regra de negócio está correta?, Dossier PR-2738 — docs(analise-prs): rev47 — análise exaustiva 23 PRs, 8 mergeadas, Veredito
 
-### Community 1656 - "Dossier PR-2739 — fix(mockup): gerador — medidas, timeout 30s, lote parcial, erros"
+### Community 1657 - "Dossier PR-2739 — fix(mockup): gerador — medidas, timeout 30s, lote parcial, erros"
 Cohesion: 0.29
 Nodes (6): (1) Ainda é válida?, (2) Traz regressão?, (3) Já está implementada no main?, (4) A regra de negócio está correta?, Dossier PR-2739 — fix(mockup): gerador — medidas, timeout 30s, lote parcial, erros, Veredito
 
-### Community 1657 - "Dossier PR-2741 — fix(mockup): telas — histórico, resultado, foto original, upload, erros"
+### Community 1658 - "Dossier PR-2741 — fix(mockup): telas — histórico, resultado, foto original, upload, erros"
 Cohesion: 0.29
 Nodes (6): (1) Ainda é válida?, (2) Traz regressão?, (3) Já está implementada no main?, (4) A regra de negócio está correta?, Dossier PR-2741 — fix(mockup): telas — histórico, resultado, foto original, upload, erros, Veredito
 
-### Community 1658 - "Dossier PR-2742 — fix(magic-up): compartilhar, brand kit, a11y, i18n e timeout"
+### Community 1659 - "Dossier PR-2742 — fix(magic-up): compartilhar, brand kit, a11y, i18n e timeout"
 Cohesion: 0.29
 Nodes (6): (1) Ainda é válida?, (2) Traz regressão?, (3) Já está implementada no main?, (4) A regra de negócio está correta?, Dossier PR-2742 — fix(magic-up): compartilhar, brand kit, a11y, i18n e timeout, Veredito
 
-### Community 1659 - "Dossier PR-2743 — chore(audit): fixa Graphify e atualiza estado CI"
+### Community 1660 - "Dossier PR-2743 — chore(audit): fixa Graphify e atualiza estado CI"
 Cohesion: 0.29
 Nodes (6): (1) Ainda é válida?, (2) Traz regressão?, (3) Já está implementada no main?, (4) A regra de negócio está correta?, Dossier PR-2743 — chore(audit): fixa Graphify e atualiza estado CI, Veredito
 
-### Community 1660 - "Dossier PR-2744 — [NÃO MESCLAR sem OK do dono] fix(edge): limites e tempo do Magic-Up"
+### Community 1661 - "Dossier PR-2744 — [NÃO MESCLAR sem OK do dono] fix(edge): limites e tempo do Magic-Up"
 Cohesion: 0.29
 Nodes (6): (1) Ainda é válida?, (2) Traz regressão?, (3) Já está implementada no main?, (4) A regra de negócio está correta?, Dossier PR-2744 — [NÃO MESCLAR sem OK do dono] fix(edge): limites e tempo do Magic-Up, Veredito
 
-### Community 1661 - "Dossier PR-2745 — ci(ratchet): evita SIGPIPE no relatório de diff"
+### Community 1662 - "Dossier PR-2745 — ci(ratchet): evita SIGPIPE no relatório de diff"
 Cohesion: 0.29
 Nodes (6): (1) Ainda é válida?, (2) Traz regressão?, (3) Já está implementada no main?, (4) A regra de negócio está correta?, Dossier PR-2745 — ci(ratchet): evita SIGPIPE no relatório de diff, Veredito
 
-### Community 1662 - "Dossier PR-2746 — docs(ci): auditoria completa de workflows com falha — 2026-10-29"
+### Community 1663 - "Dossier PR-2746 — docs(ci): auditoria completa de workflows com falha — 2026-10-29"
 Cohesion: 0.29
 Nodes (6): (1) Ainda é válida?, (2) Traz regressão?, (3) Já está implementada no main?, (4) A regra de negócio está correta?, Dossier PR-2746 — docs(ci): auditoria completa de workflows com falha — 2026-10-29, Veredito
 
-### Community 1663 - "Dossiê PR #2747 — fix(types): sincroniza idempotency_key de notificações"
+### Community 1664 - "Dossiê PR #2747 — fix(types): sincroniza idempotency_key de notificações"
 Cohesion: 0.29
 Nodes (6): (1) Ainda é válida?, (2) Traz regressão?, (3) Já está implementada no main?, (4) A regra de negócio está correta?, Dossiê PR #2747 — fix(types): sincroniza idempotency_key de notificações, Veredito: AGUARDANDO_CI
 
-### Community 1664 - "Dossiê PR #2749 — fix(ci): sentinel SHA allowlist + E2E PDF Dialog skip"
+### Community 1665 - "Dossiê PR #2749 — fix(ci): sentinel SHA allowlist + E2E PDF Dialog skip"
 Cohesion: 0.29
 Nodes (6): (1) Ainda é válida?, (2) Traz regressão?, (3) Já está implementada no main?, (4) A regra de negócio está correta?, Dossiê PR #2749 — fix(ci): sentinel SHA allowlist + E2E PDF Dialog skip, Veredito: NÃO MERGEAR — DRAFT
 
-### Community 1665 - "MISSÃO DAS PRs — adm01-debug/Promo_Gifts_V4"
+### Community 1666 - "MISSÃO DAS PRs — adm01-debug/Promo_Gifts_V4"
 Cohesion: 0.29
 Nodes (6): Limites que nunca caem, META CUMPRIDA somente quando mostrar no chat, com evidência:, MISSÃO DAS PRs — adm01-debug/Promo_Gifts_V4, Se chegar a 80 turnos sem cumprir, Sessão atual — contexto, Texto original da missão (verbatim)
 
-### Community 1666 - "5. Manutenibilidade"
+### Community 1667 - "5. Manutenibilidade"
 Cohesion: 0.29
 Nodes (7): 5.1 Duplicação entre as 81 funções, 5.2 Tamanho de arquivos, 5.3 Testes back-end, 5. Manutenibilidade, `MAINT-001` 🟡 MÉDIO — Adoção parcial das primitivas `_shared/`, `MAINT-002` 🟡 MÉDIO — `expert-chat/index.ts` (1301 linhas) sem decomposição clara, `TEST-001` 🟢 POSITIVO — Disciplina de teste alta para um time pequeno
 
-### Community 1667 - "Inventário — Tabelas"
+### Community 1668 - "Inventário — Tabelas"
 Cohesion: 0.29
 Nodes (6): Estrutura da integridade de auth.users × profiles, Inventário — Tabelas, Resumo, Tabela de backup encontrada, Tabelas maiores (top 10 por tamanho total), Tabelas sem RLS
 
-### Community 1668 - "Inventário — Cron Jobs"
+### Community 1669 - "Inventário — Cron Jobs"
 Cohesion: 0.29
 Nodes (6): Inventário — Cron Jobs, Jobs ativos críticos (seleção), Jobs INATIVOS, Resumo, Segredos nos comandos, UUID hardcoded detectado
 
-### Community 1669 - "Inventário — Auth & Logs"
+### Community 1670 - "Inventário — Auth & Logs"
 Cohesion: 0.29
 Nodes (6): Análise: `missing sub claim` (625 hits/24h), Análise: `refresh_token_length_invalid` (122 hits/24h), Auth — estado atual, Inventário — Auth & Logs, Logs de erro auth_logs (últimas 24h), Storage — Buckets
 
-### Community 1670 - "A.5 — Performance"
+### Community 1671 - "A.5 — Performance"
 Cohesion: 0.29
 Nodes (6): A.5 — Performance, P1 — Top queries por total_time (pg_stat_statements), P2 — Sequential Scans em tabelas grandes, P3 — Índices não utilizados, P4 — Bloat (dead tuples), P5 — Supabase Performance Advisors
 
-### Community 1671 - "Promo Gifts V4 — como trabalhar neste repo"
+### Community 1672 - "Promo Gifts V4 — como trabalhar neste repo"
 Cohesion: 0.29
 Nodes (6): Branch, commit, PR, Comandos, Identidade, Nunca, Onde olhar, Promo Gifts V4 — como trabalhar neste repo
 
-### Community 1672 - "🎓 Convenções específicas"
+### Community 1673 - "🎓 Convenções específicas"
 Cohesion: 0.29
 Nodes (7): Bitrix24, 🎓 Convenções específicas, Edge Functions Supabase, Migrations Supabase, ⛔ NUNCA rodar `supabase db push` neste projeto, Processo correto para DDL, Regras de migration
 
-### Community 1673 - "ADR-001 — Unificação da normalização na Silver de-para (pipeline Medallion 3 fases)"
+### Community 1674 - "ADR-001 — Unificação da normalização na Silver de-para (pipeline Medallion 3 fases)"
 Cohesion: 0.29
 Nodes (6): ADR-001 — Unificação da normalização na Silver de-para (pipeline Medallion 3 fases), Consequências, Contexto, Decisão, Garantias (validadas por simulação massiva — 546 cenários, 2026-06-11), Incidentes corrigidos pela simulação (2026-06-11)
 
-### Community 1674 - "Fase 9 — Gravação por perfil + robustez do cron (execução 2026-06-11)"
+### Community 1675 - "Fase 9 — Gravação por perfil + robustez do cron (execução 2026-06-11)"
 Cohesion: 0.29
 Nodes (6): Fase 9 — Gravação por perfil + robustez do cron (execução 2026-06-11), Item A — Robustez do cron (`process_pending_batches`), Item B — Áreas de gravação por perfil de categoria, Migrations, O que a simulação revelou (antes de executar), Rollback
 
-### Community 1675 - "3. Catálogo"
+### Community 1676 - "3. Catálogo"
 Cohesion: 0.29
 Nodes (7): 3. Catálogo, Contratos detectados, Critérios de sucesso propostos, Decisões pendentes do PO, Mapa do caminho, Rollback, flags e pendências, Testes encontrados
 
-### Community 1676 - "E08 · Lote 2 — candidatos a `migration repair --status applied` (proposta para aprovação do PO)"
+### Community 1677 - "E08 · Lote 2 — candidatos a `migration repair --status applied` (proposta para aprovação do PO)"
 Cohesion: 0.29
 Nodes (6): Candidatos por tipo de objeto, Comando de repair proposto (após aprovação do PO), E08 · Lote 2 — candidatos a `migration repair --status applied` (proposta para aprovação do PO), Fora de escopo nesta rodada — colisão de `version` (aguarda E10), Lista completa (versão · arquivo · tipo), Resumo
 
-### Community 1677 - "E24 — Higiene de Credenciais (2026-09-16)"
+### Community 1678 - "E24 — Higiene de Credenciais (2026-09-16)"
 Cohesion: 0.29
 Nodes (6): 1. `cron.job` — segredo literal em jobs vivos, 2. JWT commitado em `supabase/migrations/` (histórico git), 3. `.env.local` ignorado pelo git, 4. `service_role` hardcoded em `src/`, E24 — Higiene de Credenciais (2026-09-16), Resumo final
 
-### Community 1678 - "Onda 0 — Triagem de emergência (2026-09-20)"
+### Community 1679 - "Onda 0 — Triagem de emergência (2026-09-20)"
 Cohesion: 0.29
 Nodes (6): 1. `RPC availability · staging/production` — `AuthApiError: Database error creating new user`, 2. `Dry-run migration drafts` — `PGHOST` não resolve (DNS), 3. `Migrations x Canonical schema` / `db-schema-drift-check` — `column categories.bitrix_id does not exist`, 4. Engenharia E17 (P0 — issue #1807) — confirmado resolvido, Notas, Onda 0 — Triagem de emergência (2026-09-20)
 
-### Community 1679 - "Pacote de Aprovação #1 — Segurança + Ledger (2026-09-16)"
+### Community 1680 - "Pacote de Aprovação #1 — Segurança + Ledger (2026-09-16)"
 Cohesion: 0.29
 Nodes (6): Ação 1 — REVOKE real: `zapp_catalog_stats()` de `authenticated`, Ação 2 — E08 lote 2: `migration repair --status applied` (179 versões), Ação 3 — E09: 4 IDs de ledger não-canônicos (3 sub-ações), Ação 4 — Novo achado ao vivo: 2ª DDL out-of-band na mesma função (hoje, 2026-09-16), Pacote de Aprovação #1 — Segurança + Ledger (2026-09-16), Resumo para aprovação
 
-### Community 1680 - "[ARQUIVADO] Kit Maker — Plano de finalização em 20 etapas"
+### Community 1681 - "[ARQUIVADO] Kit Maker — Plano de finalização em 20 etapas"
 Cohesion: 0.29
 Nodes (3): Anexo — o que este plano NÃO cobre, [ARQUIVADO] Kit Maker — Plano de finalização em 20 etapas, Sequência recomendada
 
-### Community 1681 - "Login com Google — Ativação"
+### Community 1682 - "Login com Google — Ativação"
 Cohesion: 0.29
 Nodes (6): 1. Google Cloud Console, 2. Supabase externo (Gestão de Produtos), 3. Checklist de validação, Login com Google — Ativação, Onde NÃO mexer, Troubleshooting
 
-### Community 1682 - "Baseline Vitest Sample — 2026-10-30T17:43Z"
+### Community 1683 - "Baseline Vitest Sample — 2026-10-30T17:43Z"
 Cohesion: 0.29
 Nodes (4): Arquivos testados, Baseline Vitest Sample — 2026-10-30T17:43Z, Contexto, Referências
 
-### Community 1683 - "E03 — Backup/PITR e snapshot lógico pré-plano (2026-09-16)"
+### Community 1684 - "E03 — Backup/PITR e snapshot lógico pré-plano (2026-09-16)"
 Cohesion: 0.29
 Nodes (6): 1. PITR / backup automático — ⏳ PENDENTE (ação humana, painel Supabase), 2. Dump schema-only — ✅ concluído, 3. Ledger exportado com hash — ✅ concluído, 4. `cron.job` exportado — ✅ concluído, Checklist de conclusão (E03), E03 — Backup/PITR e snapshot lógico pré-plano (2026-09-16)
 
-### Community 1684 - "Política Soft-Delete vs Delete/Archive"
+### Community 1685 - "Política Soft-Delete vs Delete/Archive"
 Cohesion: 0.29
 Nodes (6): Convenção da coluna, Enforcement, Política Soft-Delete vs Delete/Archive, Quando NÃO exigir soft-delete (exempt legítimo), Regra, Retenção e GDPR/LGPD
 
-### Community 1685 - "Regras de execução"
+### Community 1686 - "Regras de execução"
 Cohesion: 0.29
 Nodes (6): Antes de editar, CLAUDE — PROMPT DE ATIVAÇÃO DO BLUE PREMIUM DESIGN SYSTEM, Durante a implementação, QA obrigatório, Qualidade visual, Regras de execução
 
-### Community 1686 - "42. RESPONSIVIDADE"
+### Community 1687 - "42. RESPONSIVIDADE"
 Cohesion: 0.29
 Nodes (7): 1024–1279, 1280–1439, 1440–1679, ≥ 1680, 42. RESPONSIVIDADE, 768–1023, Mobile
 
-### Community 1687 - "18. INPUTS / SELECTS / TEXTAREAS"
+### Community 1688 - "18. INPUTS / SELECTS / TEXTAREAS"
 Cohesion: 0.29
 Nodes (7): 18. INPUTS / SELECTS / TEXTAREAS, Focus, Helper text, Input, Label, Select, Textarea
 
-### Community 1688 - "23. DIALOG / TEMPLATE INSPECTOR"
+### Community 1689 - "23. DIALOG / TEMPLATE INSPECTOR"
 Cohesion: 0.29
 Nodes (7): 23. DIALOG / TEMPLATE INSPECTOR, Canvas, Desktop, Dialog width, Height, Left metadata, Overlay
 
-### Community 1689 - "53. DESIGN REVIEW CHECKLIST"
+### Community 1690 - "53. DESIGN REVIEW CHECKLIST"
 Cohesion: 0.29
 Nodes (7): 53. DESIGN REVIEW CHECKLIST, A11y, Consistência, Densidade, Estados, Funcional, Hierarquia
 
-### Community 1690 - "8. SOMBRAS E EFEITOS"
+### Community 1691 - "8. SOMBRAS E EFEITOS"
 Cohesion: 0.29
 Nodes (7): 8.1 Card default, 8.2 Card hover, 8.3 Elevated / menu, 8.4 Dialog, 8.5 Selected glow, 8. SOMBRAS E EFEITOS, Proibido
 
-### Community 1691 - "Dívida Crônica — Promo Gifts V4"
+### Community 1692 - "Dívida Crônica — Promo Gifts V4"
 Cohesion: 0.29
 Nodes (6): Custo estimado por retrabalho, Dívida Crônica — Promo Gifts V4, Dívidas Ativas, Dívidas Resolvidas, Mitigações em vigor, Próximas ações
 
-### Community 1692 - "🧠 34. INTELIGÊNCIA DE MERCADO (`/inteligencia-comercial`)"
+### Community 1693 - "🧠 34. INTELIGÊNCIA DE MERCADO (`/inteligencia-comercial`)"
 Cohesion: 0.29
 Nodes (7): 🧠 34. INTELIGÊNCIA DE MERCADO (`/inteligencia-comercial`), Backend, Componentes, Painel Admin, Performance, MarketIntelInsightsUsagePanel(), StatTile()
 
-### Community 1693 - "Graphify — mapas separados e benchmark de versão"
+### Community 1694 - "Graphify — mapas separados e benchmark de versão"
 Cohesion: 0.29
 Nodes (6): Atualização reproduzível, Benchmark isolado: 0.9.68 versus 0.9.91, Decisões, Estado dos mapas em 2026-10-29, Graphify — mapas separados e benchmark de versão, Refresh após sincronização com `main` — 2026-10-29
 
-### Community 1694 - "Padrão de Estrutura de Páginas"
+### Community 1695 - "Padrão de Estrutura de Páginas"
 Cohesion: 0.29
 Nodes (6): Checklist obrigatório, Onde o `MainLayout` mora, Padrão de Estrutura de Páginas, Páginas relacionadas a filtros (status), Template canônico, Testes recomendados
 
-### Community 1695 - "Matriz consolidada dos três planos de 50 etapas — 2026-09"
+### Community 1696 - "Matriz consolidada dos três planos de 50 etapas — 2026-09"
 Cohesion: 0.29
 Nodes (6): Achados da própria consolidação (coisas que só apareceram ao cruzar os 3 planos), Como manter esta matriz viva, Matriz consolidada dos três planos de 50 etapas — 2026-09, Plano [13] — Melhorias e Correções (2026-09-13), Plano [15] — Reconciliação Local × GitHub × Supabase (2026-09-15), Plano [16] — DBA: Correções e Melhorias (2026-09-16, este)
 
-### Community 1696 - "FASE 0 — Desbloqueio imediato"
+### Community 1697 - "FASE 0 — Desbloqueio imediato"
 Cohesion: 0.29
 Nodes (7): E01 · Documentar o finding 0029 órfão e destravar o CI/CD Pipeline, E02 · Restaurar cobertura do módulo de estoque acima do threshold, E03 · Fast-forward do `main` e poda de branches mortos, E04 · Triagem dos 2 stashes órfãos, E05 · Ressincronizar o grafo graphify, E06 · Fechar o ciclo do PR #1860, FASE 0 — Desbloqueio imediato
 
-### Community 1697 - "FASE 4 — Schema e migrations"
+### Community 1698 - "FASE 4 — Schema e migrations"
 Cohesion: 0.29
 Nodes (7): E30 · Inventário das 2.983 migrations, E31 · Normalizar os 67 nomes fora do padrão, E32 · `[REQUER-PO]` Baseline/squash das migrations históricas, E33 · Reduzir o `types.ts` de 64.637 linhas, E34 · Reconciliar `.migration-refs-baseline.json`, E35 · Runbook de auditoria via `pg_catalog`, FASE 4 — Schema e migrations
 
-### Community 1698 - "Checklist de QA Visual - Módulo Admin"
+### Community 1699 - "Checklist de QA Visual - Módulo Admin"
 Cohesion: 0.29
 Nodes (6): 1. Estrutura Base, 2. Navegação (Sidebar), 3. Espaçamento e Alinhamento, 4. Comportamento Responsivo, 5. SEO e Meta-dados, Checklist de QA Visual - Módulo Admin
 
-### Community 1699 - "Runbook — Loop de erro em trigger (ou função chamada por trigger)"
+### Community 1700 - "Runbook — Loop de erro em trigger (ou função chamada por trigger)"
 Cohesion: 0.29
 Nodes (6): Causa raiz comum (já vista neste projeto), Contenção, Diagnóstico (somente leitura), Não faça, Runbook — Loop de erro em trigger (ou função chamada por trigger), Sintomas
 
-### Community 1700 - "Runbook — Pico de tráfego indevido (bot/scraper/DDoS leve)"
+### Community 1701 - "Runbook — Pico de tráfego indevido (bot/scraper/DDoS leve)"
 Cohesion: 0.29
 Nodes (6): Contenção, Depois que passar, Diagnóstico (somente leitura), Não faça, Runbook — Pico de tráfego indevido (bot/scraper/DDoS leve), Sintomas
 
-### Community 1701 - "Seller-scope checker"
+### Community 1702 - "Seller-scope checker"
 Cohesion: 0.29
 Nodes (6): Allowlist explícita, Comandos, Por que não confiar só no RLS?, Seller-scope checker, Sinais aceitos como "scope aplicado", Tabelas monitoradas
 
-### Community 1702 - "13. Comandos úteis para retomar"
+### Community 1703 - "13. Comandos úteis para retomar"
 Cohesion: 0.29
 Nodes (7): 13.1 Pegar estado atual do repo, 13.2 Validar repo está saudável, 13.3 Acessar histórico granular dos 8 commits da Onda 1, 13.4 Rollback de emergência (se algo quebrar), 13.5 Iniciar Onda 2, 13.6 Comandos de auditoria para o próximo Claude verificar a faxina, 13. Comandos úteis para retomar
 
-### Community 1703 - "5. Decisões técnicas tomadas (com justificativa)"
+### Community 1704 - "5. Decisões técnicas tomadas (com justificativa)"
 Cohesion: 0.29
 Nodes (7): 5.1 npm vs bun, 5.2 Como fazer squash merge quando GitHub MCP retorna 403, 5.3 Tag git como safety net permanente, 5.4 Husky pre-push com `--no-verify` em commits intermediários, 5.6 Quando deletar tests vs marcar como skip, 5.7 `.coderabbit.yaml` parsing issue, 5. Decisões técnicas tomadas (com justificativa)
 
-### Community 1704 - "Apêndice C — Verificações cruzadas"
+### Community 1705 - "Apêndice C — Verificações cruzadas"
 Cohesion: 0.29
 Nodes (7): Apêndice C — Verificações cruzadas, C.1 Pré-merge, C.2 Pós-merge na main, C.3 Pós-tag, C.4 Pós-delete branch, C.5 Vercel produção, C.6 Ainda saudável
 
-### Community 1705 - "Validação — Undo remove item no Resumo do Novo Orçamento"
+### Community 1706 - "Validação — Undo remove item no Resumo do Novo Orçamento"
 Cohesion: 0.29
 Nodes (6): Conclusão, Fase 2 — Testes unitários, Fase 3 — Fuzz (550 iterações), Fase 4 — Infra Playwright (validação estática), Gaps identificados, Validação — Undo remove item no Resumo do Novo Orçamento
 
-### Community 1706 - "mockup-comprehensive.spec.ts"
+### Community 1707 - "mockup-comprehensive.spec.ts"
 Cohesion: 0.57
 Nodes (6): LOGO, preencherComLogo(), selecionarCliente(), selecionarPrimeiroProduto(), selecionarTecnica(), visivel()
 
-### Community 1707 - "mockup-upload-flow.spec.ts"
+### Community 1708 - "mockup-upload-flow.spec.ts"
 Cohesion: 0.57
 Nodes (6): LOGO, preencherComLogo(), selecionarCliente(), selecionarPrimeiroProduto(), selecionarTecnica(), visivel()
 
-### Community 1708 - "e2e/tsconfig.json"
+### Community 1709 - "e2e/tsconfig.json"
 Cohesion: 0.29
 Nodes (6): compilerOptions, baseUrl, types, extends, include, ../tsconfig.app.json
 
-### Community 1709 - "Promo_Gifts_V4 — Regras da Casa (Hermes) — suplemento"
+### Community 1710 - "Promo_Gifts_V4 — Regras da Casa (Hermes) — suplemento"
 Cohesion: 0.29
 Nodes (6): Barreiras (cadeado físico), Comandos usuais, Identidade, Padrão de Chat (Hermes) — subpasta por sessão, Promo_Gifts_V4 — Regras da Casa (Hermes) — suplemento, Regra de Ouro (casa do Joaquim)
 
-### Community 1710 - "2. SPOT / Stricker — 3 Canais Distintos"
+### Community 1711 - "2. SPOT / Stricker — 3 Canais Distintos"
 Cohesion: 0.29
 Nodes (7): 2.1 Canal A — Webservice API (AccessKey → Token), 2.2 Canal B — Portal Web Público (sem autenticação), 2.3 Canal C — Portal Web Autenticado (login + senha → PHPSESSID), 2. SPOT / Stricker — 3 Canais Distintos, ⚠️ Alertas do Canal C:, O que o `OptionalsComplete` entrega (feed-mãe):, Onde cada feed aterra no Bronze:
 
-### Community 1711 - "Falhas e gaps PREVISTOS pela simulação (e o que foi feito)"
+### Community 1712 - "Falhas e gaps PREVISTOS pela simulação (e o que foi feito)"
 Cohesion: 0.29
 Nodes (6): Críticos — corrigidos, Falhas e gaps PREVISTOS pela simulação (e o que foi feito), Limites de fonte — documentados (não fabricáveis), Resultado por bateria, Simulação de Cenários V6 — Prevendo Falhas e Gaps, Teóricos — documentados, sem ação (0 ocorrências reais no corpus)
 
-### Community 1712 - "Auth Surface Hardening — Relatório final 10/10"
+### Community 1713 - "Auth Surface Hardening — Relatório final 10/10"
 Cohesion: 0.29
 Nodes (6): Auth Surface Hardening — Relatório final 10/10, Cenários simulados (fuzz), CI, Conformidade com regras do projeto, Migração pendente (opcional, futuro), Ondas entregues
 
-### Community 1713 - "📦 Módulos Principais"
+### Community 1714 - "📦 Módulos Principais"
 Cohesion: 0.29
 Nodes (7): 1. Catálogo (`/` e `/filtros`), 2. Simulador de Preços (`/simulador`), 3. Criador de Orçamentos (`/orcamentos/novo`), 4. Flow — Assistente IA, 5. Montador de Kits (`/montar-kit`), 6. Dashboard BI (`/bi`), 📦 Módulos Principais
 
-### Community 1714 - "Decision 010 — Manter REMOVIDAS as rotas públicas com token"
+### Community 1715 - "Decision 010 — Manter REMOVIDAS as rotas públicas com token"
 Cohesion: 0.29
 Nodes (7): Auditoria de tables/functions órfãos relacionados (validada em 2026-05-12 contra PROD), Decision 010 — Manter REMOVIDAS as rotas públicas com token, Decisão original (07/05/2026, commit 0bc97759b), Escopo da remoção (já consolidado em main), Implicações para o trabalho de recovery, Onde NÃO mais aparecer como pendente, Trigger
 
-### Community 1715 - "✅ Decisão 008 — Fase 2: Migração de secrets para integration_credentials"
+### Community 1716 - "✅ Decisão 008 — Fase 2: Migração de secrets para integration_credentials"
 Cohesion: 0.29
 Nodes (7): Comando de reversão, ✅ Decisão 008 — Fase 2: Migração de secrets para integration_credentials, Decisão APROVADA, Estratégia: dual storage temporário, Melhoria incremental (1%), Resultado, Situação
 
-### Community 1716 - "1️⃣ GAP DE TABELAS"
+### Community 1717 - "1️⃣ GAP DE TABELAS"
 Cohesion: 0.29
 Nodes (7): 1️⃣ GAP DE TABELAS, 🔴 ALTO IMPACTO (subsistemas críticos), 🟢 As 154 tabelas extras (evolução pós-Lovable), 🔴 As 95 tabelas faltantes — categorizadas por DOMÍNIO, 🟢 BAIXO IMPACTO (histórico/partições), Estatísticas, 🟡 MÉDIO IMPACTO (features perdidas/substituídas)
 
-### Community 1717 - "2️⃣ GAP DE FUNCTIONS"
+### Community 1718 - "2️⃣ GAP DE FUNCTIONS"
 Cohesion: 0.29
 Nodes (7): 2️⃣ GAP DE FUNCTIONS, ✅ As 20 functions SOBREVIVENTES (núcleo histórico), 🔴 CRÍTICAS, Estatísticas, 🟡 IMPORTANTES, 🟢 Situacionais, 🔴 Top 5 categorias de functions FALTANTES
 
-### Community 1718 - "🧪 SMOKE TEST — D.2.2 Outbound Webhooks"
+### Community 1719 - "🧪 SMOKE TEST — D.2.2 Outbound Webhooks"
 Cohesion: 0.29
 Nodes (6): ✅ Critério de aprovação, Pré-requisitos, 🧪 SMOKE TEST — D.2.2 Outbound Webhooks, Teste 1 — Criar webhook outbound, Teste 2 — Registrar entrega, Teste 3 — FK CASCADE
 
-### Community 1719 - "D.6 — Advisor Fixes (pós D.3+D.4)"
+### Community 1720 - "D.6 — Advisor Fixes (pós D.3+D.4)"
 Cohesion: 0.29
 Nodes (6): 1. `conversation_delivery_status` — RLS sem policies, 2. `cleanup_webhook_logs` — SECURITY DEFINER sem search_path, D.6 — Advisor Fixes (pós D.3+D.4), Issues corrigidas, Issues NÃO corrigidas (preexistentes, fora do escopo), Validação após aplicação
 
-### Community 1720 - "useLoginRateLimit.ts"
+### Community 1721 - "useLoginRateLimit.ts"
 Cohesion: 0.57
 Nodes (6): AttemptRecord, checkLoginAllowed(), clearLoginAttempts(), getRecords(), recordFailedAttempt(), saveRecords()
 
-### Community 1721 - "hooks/useQuoteTemplates.ts"
+### Community 1722 - "hooks/useQuoteTemplates.ts"
 Cohesion: 0.33
 Nodes (6): CreateTemplateInput, QuoteTemplate, QuoteTemplateItem, QuoteTemplateRow, transformTemplates(), useQuoteTemplates()
 
-### Community 1722 - "hooks/useRetestCooldownSetting.ts"
+### Community 1723 - "hooks/useRetestCooldownSetting.ts"
 Cohesion: 0.33
 Nodes (6): broadcast(), listeners, RETEST_COOLDOWN_PRESETS_MS, RetestCooldownPreset, SettingRow, useRetestCooldownSetting()
 
-### Community 1723 - "hooks/useSupplierComparison.ts"
+### Community 1724 - "hooks/useSupplierComparison.ts"
 Cohesion: 0.33
 Nodes (5): calculateNameSimilarity(), STOP_WORDS, SupplierComparisonResult, SupplierProduct, useSupplierComparison()
 
-### Community 1724 - "hooks/useSupplierFiscalData.ts"
+### Community 1725 - "hooks/useSupplierFiscalData.ts"
 Cohesion: 0.33
 Nodes (6): BranchRecord, buildFromBranch(), FiscalOverrideInput, SupplierFiscalData, useSupplierFiscalData(), VSSRecord
 
-### Community 1725 - "hooks/useVariantSupplierSources.ts"
+### Community 1726 - "hooks/useVariantSupplierSources.ts"
 Cohesion: 0.29
 Nodes (3): ColorSummary, StockEntry, VariantWithStock
 
-### Community 1726 - "hooks/useVoiceCommandHistory.ts"
+### Community 1727 - "hooks/useVoiceCommandHistory.ts"
 Cohesion: 0.43
 Nodes (6): CommandPattern, detectCommandType(), normalizeCommand(), useVoiceCommandHistory(), UseVoiceCommandHistoryReturn, VoiceCommandRecord
 
-### Community 1727 - "pages/MagicUp.tsx"
+### Community 1728 - "pages/MagicUp.tsx"
 Cohesion: 0.43
 Nodes (4): MagicUp(), MagicUpHeader(), MagicUpProgress(), MagicUpSkeleton()
 
-### Community 1728 - "pptxGenerator.ts"
+### Community 1729 - "pptxGenerator.ts"
 Cohesion: 0.43
 Nodes (6): pptxgenjs, Args, fmtBRL(), generateBIPptx(), tierColor(), tierLabel()
 
-### Community 1729 - "§32 — Inventário pós-PR #3193 e commit fix(e2e) (2026-11-08T03:48Z)"
+### Community 1730 - "§32 — Inventário pós-PR #3193 e commit fix(e2e) (2026-11-08T03:48Z)"
 Cohesion: 0.29
 Nodes (7): §32 — Inventário pós-PR #3193 e commit fix(e2e) (2026-11-08T03:48Z), Comparação baseline × final (§31 → §32), Deploy Gates em `5e28c6c85`, Inventário de required checks em `5e28c6c85`, O que aconteceu desde §31, PRs desta sessão (§32), Workflows não-required em falha confirmada
 
-### Community 1730 - "RELATORIO_CI_P34.md — Prova Final Sessão P34 (2026-10-30)"
+### Community 1731 - "RELATORIO_CI_P34.md — Prova Final Sessão P34 (2026-10-30)"
 Cohesion: 0.29
 Nodes (6): 1. Gate Final — HEAD `6bc42d682c` ✅ conclusion=success, 2. Baseline Local — HEAD `8146d79e0` (local, 2026-10-30T19:xxZ), 3. Tabela de Prova Final — 11 Workflows NÃO-REQUIRED, 4. Comparação Baseline × Final (P34), 5. Registro de Conformidade Final, RELATORIO_CI_P34.md — Prova Final Sessão P34 (2026-10-30)
 
-### Community 1731 - "build-cors-snapshot.mjs"
+### Community 1732 - "build-cors-snapshot.mjs"
 Cohesion: 0.48
 Nodes (6): classify(), extractCorsLiterals(), listFunctions(), main(), SNAPSHOT_PATH, tokenizeList()
 
-### Community 1732 - "check-edge-request-id-propagation.mjs"
+### Community 1733 - "check-edge-request-id-propagation.mjs"
 Cohesion: 0.48
 Nodes (6): checkInternalCalls(), checkLogger(), checkResponsePropagation(), CRITICAL_EDGES, main(), readSource()
 
-### Community 1733 - "check-env.mjs"
+### Community 1734 - "check-env.mjs"
 Cohesion: 0.29
 Nodes (5): all, args, OPTIONAL, REQUIRED, strict
 
-### Community 1734 - "check-no-bypass-literals.mjs"
+### Community 1735 - "check-no-bypass-literals.mjs"
 Cohesion: 0.29
 Nodes (6): files, ROOT, SKIP_PATTERNS, TARGET_DIRS, violations, walk()
 
-### Community 1735 - "check-no-template-thumbnail.mjs"
+### Community 1736 - "check-no-template-thumbnail.mjs"
 Cohesion: 0.33
 Nodes (6): ALLOWLIST, BANNED_FILES, main(), projectRoot, srcRoot, walk()
 
-### Community 1736 - "check-visual-preview-suite.mjs"
+### Community 1737 - "check-visual-preview-suite.mjs"
 Cohesion: 0.33
 Nodes (6): isFile(), missing, REQUIRED_FILES, ROOT, ROUTE_MARKERS, routeMissing
 
-### Community 1737 - "list-migration-drafts.mjs"
+### Community 1738 - "list-migration-drafts.mjs"
 Cohesion: 0.33
 Nodes (6): check, DRAFT_DIR, extractSummary(), main(), README, ROOT
 
-### Community 1738 - "regras_negocio — regras de negócio para agentes de IA"
+### Community 1739 - "regras_negocio — regras de negócio para agentes de IA"
 Cohesion: 0.29
 Nodes (6): Arquivos, Fontes SQL, Regras humanas, regras_negocio — regras de negócio para agentes de IA, Rodar local, Testes de regressão
 
-### Community 1739 - "simulate-bi-partial-degradation.mjs"
+### Community 1740 - "simulate-bi-partial-degradation.mjs"
 Cohesion: 0.29
 Nodes (3): BLOCKS, CAUSES, violations
 
-### Community 1740 - "simulate-degradation-sink.mjs"
+### Community 1741 - "simulate-degradation-sink.mjs"
 Cohesion: 0.29
 Nodes (3): REASONS, SCOPES, violations
 
-### Community 1741 - "ssot-report-summary.mjs"
+### Community 1742 - "ssot-report-summary.mjs"
 Cohesion: 0.38
 Nodes (6): argv, build(), countErrorLines(), fmtMs(), inArg, { md }
 
-### Community 1742 - "verify-roboflow-setup.js"
+### Community 1743 - "verify-roboflow-setup.js"
 Cohesion: 0.48
 Nodes (5): checkEdgeFunction(), checkProductImagesTable(), checkRoboflowCredentials(), main(), testDatabaseConnection()
 
-### Community 1743 - "AiRoutingTab.tsx"
+### Community 1744 - "AiRoutingTab.tsx"
 Cohesion: 0.38
 Nodes (6): AiRoutingTab(), EMPTY_FORM, formToInput(), KNOWN_CAPABILITIES, RoutingFormState, rowToForm()
 
-### Community 1744 - "AutoRevocationsPanel.tsx"
+### Community 1745 - "AutoRevocationsPanel.tsx"
 Cohesion: 0.43
 Nodes (5): AutoRevocationsPanel(), SOURCE_META, AutoRevocationRow, RawRow, useAutoRevocations()
 
-### Community 1745 - "ColdVsWarmCrmCard.tsx"
+### Community 1746 - "ColdVsWarmCrmCard.tsx"
 Cohesion: 0.43
 Nodes (6): BASE_URL, ColdVsWarmCrmCard(), DiagSnapshot, fmtAge(), fmtMs(), tone()
 
-### Community 1746 - "QuoteBuilderHandoffCard.tsx"
+### Community 1747 - "QuoteBuilderHandoffCard.tsx"
 Cohesion: 0.38
 Nodes (6): ALL_SOURCES, countInWindow(), HandoffRow, QuoteBuilderHandoffCard(), SOURCE_LABELS, stripPrefix()
 
-### Community 1748 - "CartHeaderButton.delete.test.tsx"
+### Community 1749 - "CartHeaderButton.delete.test.tsx"
 Cohesion: 0.29
 Nodes (3): EventLike, trashOnClick(), trashPointerDown()
 
-### Community 1749 - "ZeroResultSubstitutes.tsx"
+### Community 1750 - "ZeroResultSubstitutes.tsx"
 Cohesion: 0.38
 Nodes (6): AXIS_ICON, AXIS_LABEL_PLURAL, AxisSection(), Props, SubstituteRow(), ZeroResultSubstitutes()
 
-### Community 1750 - "Breadcrumbs.tsx"
+### Community 1751 - "Breadcrumbs.tsx"
 Cohesion: 0.43
 Nodes (6): BreadcrumbItem, Breadcrumbs(), BreadcrumbsProps, generateBreadcrumbs(), routeLabels, useBreadcrumbs()
 
-### Community 1751 - "LocationPanelAdvanced.test.tsx"
+### Community 1752 - "LocationPanelAdvanced.test.tsx"
 Cohesion: 0.29
 Nodes (5): location, techA, techB, techNoColor, techSmall
 
-### Community 1752 - "swatchSizing.ts"
+### Community 1753 - "swatchSizing.ts"
 Cohesion: 0.38
 Nodes (6): resolveSwatchSizeToken(), SWATCH_SIZE_VAR, swatchSizeCssValue(), swatchSizeStyle(), SwatchSizeToken, SwatchViewMode
 
-### Community 1753 - "ColorSwatch.tsx"
+### Community 1754 - "ColorSwatch.tsx"
 Cohesion: 0.38
 Nodes (6): ColorSwatch, ColorSwatchProps, getColorSwatchClasses(), MIXED_COLOR_GRADIENT, resolveSwatchBackground(), SwatchStateClassesOptions
 
-### Community 1754 - "card.tsx"
+### Community 1755 - "card.tsx"
 Cohesion: 0.29
 Nodes (6): Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle
 
-### Community 1755 - "currency-input.tsx"
+### Community 1756 - "currency-input.tsx"
 Cohesion: 0.62
 Nodes (5): CurrencyInput(), CurrencyInputProps, formatBR(), parseStrict(), round2()
 
-### Community 1756 - "stat-card.tsx"
+### Community 1757 - "stat-card.tsx"
 Cohesion: 0.29
 Nodes (4): MiniStatCardProps, StatCardProps, StatVariant, variantStyles
 
-### Community 1757 - "DevChallengeContext.tsx"
+### Community 1758 - "DevChallengeContext.tsx"
 Cohesion: 0.33
 Nodes (5): ChallengeRequest, DevChallengeContext, DevChallengeContextValue, PendingChallenge, useDevChallenge()
 
-### Community 1758 - "admin/useRetestCooldownSetting.ts"
+### Community 1759 - "admin/useRetestCooldownSetting.ts"
 Cohesion: 0.33
 Nodes (6): broadcast(), listeners, RETEST_COOLDOWN_PRESETS_MS, RetestCooldownPreset, SettingRow, useRetestCooldownSetting()
 
-### Community 1759 - "useBridgeMetrics.ts"
+### Community 1760 - "useBridgeMetrics.ts"
 Cohesion: 0.33
 Nodes (6): BridgeMetricsEntry, BridgeMetricsFilter, BridgeMetricsReturn, BridgeMetricsSummary, samplesToEntries(), useBridgeMetrics()
 
-### Community 1760 - "magicUpShare.ts"
+### Community 1761 - "magicUpShare.ts"
 Cohesion: 0.38
 Nodes (6): buildMagicUpCreativeName(), buildMagicUpShareText(), MAGIC_UP_SHARE_NO_IMAGE_REASON, MagicUpShareResult, MagicUpShareSource, prepareMagicUpShare()
 
-### Community 1761 - "intelligence/useSalesHistory.ts"
+### Community 1762 - "intelligence/useSalesHistory.ts"
 Cohesion: 0.38
 Nodes (6): DailySalesPoint, emptyKpis(), newDailyPoint(), SalesKpis, SellerRanking, useSalesHistory()
 
-### Community 1762 - "intelligence/useVoiceCommandHistory.ts"
+### Community 1763 - "intelligence/useVoiceCommandHistory.ts"
 Cohesion: 0.43
 Nodes (6): CommandPattern, detectCommandType(), normalizeCommand(), useVoiceCommandHistory(), UseVoiceCommandHistoryReturn, VoiceCommandRecord
 
-### Community 1763 - "kit-builder/useKitBuilderTransformers.ts"
+### Community 1764 - "kit-builder/useKitBuilderTransformers.ts"
 Cohesion: 0.62
 Nodes (6): resolveAllProductMaterials(), resolveProductImageUrl(), resolveProductMaterial(), resolveProductPrice(), transformToKitBox(), transformToKitItem()
 
-### Community 1764 - "useProductsColorsBatch.aggregation.test.tsx"
+### Community 1765 - "useProductsColorsBatch.aggregation.test.tsx"
 Cohesion: 0.38
 Nodes (6): MockBuilder, Row, __rows, runFor(), uuid(), wrapper()
 
-### Community 1765 - "products/useExternalCategoriesQuery.ts"
+### Community 1766 - "products/useExternalCategoriesQuery.ts"
 Cohesion: 0.43
 Nodes (6): EXTERNAL_CATEGORIES_QUERY_KEY, ExternalCategory, fetchExternalCategories(), useCategoriesByIds(), useCategoryById(), useExternalCategoriesQuery()
 
-### Community 1766 - "products/useSupplierFiscalData.ts"
+### Community 1767 - "products/useSupplierFiscalData.ts"
 Cohesion: 0.33
 Nodes (6): BranchRecord, buildFromBranch(), FiscalOverrideInput, SupplierFiscalData, useSupplierFiscalData(), VSSRecord
 
-### Community 1767 - "useQuoteBuilderState.draftHandoff.test.tsx"
+### Community 1768 - "useQuoteBuilderState.draftHandoff.test.tsx"
 Cohesion: 0.33
 Nodes (5): draftItem, Harness(), mockSearch, mount(), onChangeLog
 
-### Community 1768 - "simulationPriceFetcher.ts"
+### Community 1769 - "simulationPriceFetcher.ts"
 Cohesion: 0.52
 Nodes (6): buildLegacyFallbackOption(), buildUnavailableOption(), fetchAllOptions(), fetchOptionForTechnique(), FetchOptionsParams, resolveAreaIdForTechnique()
 
-### Community 1771 - "rate-limit.ts"
+### Community 1772 - "rate-limit.ts"
 Cohesion: 0.57
 Nodes (6): AttemptRecord, checkLoginAllowed(), clearLoginAttempts(), getRecords(), recordFailedAttempt(), saveRecords()
 
-### Community 1772 - "step-up-error.ts"
+### Community 1773 - "step-up-error.ts"
 Cohesion: 0.43
 Nodes (6): BackendErrorShape, collectCandidates(), extractStepUpError(), handleStepUpError(), showStepUpToast(), StepUpErrorKind
 
-### Community 1773 - "categoryResolver.ts"
+### Community 1774 - "categoryResolver.ts"
 Cohesion: 0.33
 Nodes (6): BICategoryMeta, BICategorySlug, FALLBACK, REGEX_RULES, resolveBICategory(), resolveBICategoryLabel()
 
-### Community 1774 - "status-transition-guard.ts"
+### Community 1775 - "status-transition-guard.ts"
 Cohesion: 0.33
 Nodes (6): EMPTY_CART_BLOCK_MESSAGE, EMPTY_CART_BLOCK_TITLE, evaluateCartStatusTransition(), EvaluateCartStatusTransitionInput, normalizeItemCount(), TransitionDecision
 
-### Community 1775 - "discount-approval-status-config.ts"
+### Community 1776 - "discount-approval-status-config.ts"
 Cohesion: 0.33
 Nodes (5): assertDiscountApprovalTransition(), DAR_VALID_TRANSITIONS, DiscountApprovalStatus, isValidDiscountApprovalTransition(), STATUS_LABEL
 
-### Community 1777 - "stock-filter.perf.test.ts"
+### Community 1778 - "stock-filter.perf.test.ts"
 Cohesion: 0.33
 Nodes (4): COLORS, makeProduct(), makeVariant(), STATUSES
 
-### Community 1778 - "kit-detection.ts"
+### Community 1779 - "kit-detection.ts"
 Cohesion: 0.43
 Nodes (5): hasKitNamePrefix(), hasKitToken(), isProductKit(), KitDetectionContext, KitDetectionProduct
 
-### Community 1779 - "novelty-days.ts"
+### Community 1780 - "novelty-days.ts"
 Cohesion: 0.38
 Nodes (5): MS_PER_DAY, NOVELTY_WINDOW_DAYS, noveltyBadgeLabel(), noveltyBadgeLabelFromElapsed(), noveltyDaysElapsed()
 
-### Community 1780 - "expiration.ts"
+### Community 1781 - "expiration.ts"
 Cohesion: 0.43
 Nodes (6): computeExpiration(), ExpirationInfo, ExpirationTone, formatDDMMYYYY(), pad2(), parseValidUntil()
 
-### Community 1781 - "mfaChallengeDismissal.ts"
+### Community 1782 - "mfaChallengeDismissal.ts"
 Cohesion: 0.62
 Nodes (6): clearDismissed(), clearIfElevated(), isDismissed(), keyFor(), markDismissed(), safeSession()
 
-### Community 1782 - "AdminConexoesStatusPage.tsx"
+### Community 1783 - "AdminConexoesStatusPage.tsx"
 Cohesion: 0.33
 Nodes (6): AdminConexoesStatusPage(), ConnectionRow, CredentialRow, Diagnosis, fmt(), REQUIRED_SECRETS_BY_ENV
 
-### Community 1783 - "AdminSegurancaAcessoPage.tsx"
+### Community 1784 - "AdminSegurancaAcessoPage.tsx"
 Cohesion: 0.33
 Nodes (6): AdminSegurancaAcessoPage(), BotLog, IpAccessEntry, ipSchema, RateLimit, StatCard()
 
-### Community 1784 - "QuotesDashboardPage.pdfDisabled.test.tsx"
+### Community 1785 - "QuotesDashboardPage.pdfDisabled.test.tsx"
 Cohesion: 0.29
 Nodes (4): baseHook, emptyMetrics, exportToPdf, HookReturn
 
-### Community 1785 - "useQuotesListPage.test.ts"
+### Community 1786 - "useQuotesListPage.test.ts"
 Cohesion: 0.29
 Nodes (5): deleteQuote, duplicateQuote, mockQuotes, quote(), updateQuoteStatus
 
-### Community 1786 - "RoutePrefetcher.tsx"
+### Community 1787 - "RoutePrefetcher.tsx"
 Cohesion: 0.43
 Nodes (5): ConnectionInfo, idlePrefetch(), NavigatorWithConnection, RoutePrefetcher(), shouldSkipPrefetch()
 
-### Community 1787 - "kill_switch_contract_test.ts"
+### Community 1788 - "kill_switch_contract_test.ts"
 Cohesion: 0.29
 Nodes (4): EdgeHandler, ENV_NAMES, originalEnv, serveDescriptor
 
-### Community 1788 - "2026-11-01 — Auditoria Supabase: 13 corrections aplicadas via MCP (E056 — sem workflow)"
+### Community 1789 - "2026-11-01 — Auditoria Supabase: 13 corrections aplicadas via MCP (E056 — sem workflow)"
 Cohesion: 0.29
 Nodes (7): 2026-11-01 — Auditoria Supabase: 13 corrections aplicadas via MCP (E056 — sem workflow), Fix vw_system_health_quick — 2026-11-01, Hardening funções criadas pela sessão de auditoria — 2026-11-01, Migrations adicionais 2026-11-01 (PERF-002/003 — VACUUM e índices), Migrations descartadas (nunca aplicadas — removidas do repo), Recibos — ledger_version vs file_version (drift de timestamp auto-gerado pelo MCP), Reconciliação de drift PERF-002 — 2026-11-01 (arquivos espelho)
 
-### Community 1789 - "magic-up-curation.a11y.test.tsx"
+### Community 1790 - "magic-up-curation.a11y.test.tsx"
 Cohesion: 0.38
 Nodes (5): checkedRadio(), labelFor(), radioName(), radios(), renderStatus()
 
-### Community 1790 - "PageUtilities.test.ts"
+### Community 1791 - "PageUtilities.test.ts"
 Cohesion: 0.29
 Nodes (4): calculateCartTotal(), CartStatus, getStatusColor(), STATUS_COLORS
 
-### Community 1791 - "StatsPopover.test.tsx"
+### Community 1792 - "StatsPopover.test.tsx"
 Cohesion: 0.33
 Nodes (4): makeProduct(), makeProducts(), MockProduct, StatItem
 
-### Community 1792 - "navigation-layout.test.tsx"
+### Community 1793 - "navigation-layout.test.tsx"
 Cohesion: 0.29
 Nodes (5): ADMIN_ROUTES, PROTECTED_ROUTES, PUBLIC_ROUTES, REDIRECT_ROUTES, SIDEBAR_SECTIONS
 
-### Community 1793 - "phase1-foundation-types.test.ts"
+### Community 1794 - "phase1-foundation-types.test.ts"
 Cohesion: 0.29
 Nodes (6): BulkAction, KitItem, ProductColor, ProductVariant, SimulationProduct, VariantGridItem
 
-### Community 1794 - "phase5-propagation.test.ts"
+### Community 1795 - "phase5-propagation.test.ts"
 Cohesion: 0.29
 Nodes (4): KitItem, ProductVariant, QuoteItem, VariantSelectionData
 
-### Community 1795 - "tools-simulator.test.ts"
+### Community 1796 - "tools-simulator.test.ts"
 Cohesion: 0.33
 Nodes (6): calcSimulatorTotal(), getPriceForQuantity(), PriceTier, priceTiers, TECHNIQUES, WIZARD_STEPS
 
-### Community 1797 - "totalexpress.ts"
+### Community 1798 - "totalexpress.ts"
 Cohesion: 0.29
 Nodes (6): totalexpressDeliveryEstimate, totalexpressQuoteError, totalexpressQuoteResponse, totalexpressTrackResponse, totalexpressZipNotCovered, totalexpressZipValidation
 
-### Community 1798 - "freight-quest-regression-suite.test.ts"
+### Community 1799 - "freight-quest-regression-suite.test.ts"
 Cohesion: 0.29
 Nodes (4): BASE_VALID, FREIGHT_TABLE, FreightMethod, quoteSchema
 
-### Community 1799 - "magazine-flakiness-report.test.mjs"
+### Community 1800 - "magazine-flakiness-report.test.mjs"
 Cohesion: 0.38
 Nodes (6): makeFakeNpx(), makeSandbox(), REAL_SCRIPT, ROOT, runScript(), sandboxes
 
-### Community 1800 - "sentinel-push-range.test.mjs"
+### Community 1801 - "sentinel-push-range.test.mjs"
 Cohesion: 0.29
 Nodes (3): root, selector, sentinelCheck
 
-### Community 1801 - "freight-calculations.test.ts"
+### Community 1802 - "freight-calculations.test.ts"
 Cohesion: 0.29
 Nodes (4): FREIGHT_TABLE, FreightMethod, QuoteTotalsInput, ShippingType
 
-### Community 1802 - "freight-property-based.test.ts"
+### Community 1803 - "freight-property-based.test.ts"
 Cohesion: 0.29
 Nodes (3): ALL_METHODS, FREIGHT_TABLE, FreightMethod
 
-### Community 1803 - "Auditoria das branches — 2026-11-15"
+### Community 1804 - "Auditoria das branches — 2026-11-15"
 Cohesion: 0.33
 Nodes (5): Arquivos, As 11 branches 100% dentro da `main`, Auditoria das branches — 2026-11-15, O que foi verificado, Três branches que NÃO devem ser mergeadas, apesar de incorporadas
 
-### Community 1804 - "Baseline Vitest — main SHA `9a97f9a2`"
+### Community 1805 - "Baseline Vitest — main SHA `9a97f9a2`"
 Cohesion: 0.33
 Nodes (5): Análise: os mesmos 21 testes falham ambientalmente, Baseline Vitest — main SHA `9a97f9a2`, Conclusão, Novos testes adicionados (PRs #2741, #2742), Resultado de execução direta
 
-### Community 1805 - "Dossiê PR #2424"
+### Community 1806 - "Dossiê PR #2424"
 Cohesion: 0.33
 Nodes (5): Dossiê PR #2424, Intenção, Rule 8 — Evidência por Diff, Sugestão de Comentário (NÃO postar automaticamente), VEREDICTO FINAL
 
-### Community 1806 - "Dossiê PR #2434"
+### Community 1807 - "Dossiê PR #2434"
 Cohesion: 0.33
 Nodes (5): Análise, Diff Verificado (100%), Dossiê PR #2434, Intenção, Verdict
 
-### Community 1807 - "Dossiê PR #2436"
+### Community 1808 - "Dossiê PR #2436"
 Cohesion: 0.33
 Nodes (5): Análise, Diff Verificado (100%), Dossiê PR #2436, Intenção, Verdict
 
-### Community 1808 - "PR #2445 — fix(cron): FASE B P01 — cron auth header para image-dimensions-backfill"
+### Community 1809 - "PR #2445 — fix(cron): FASE B P01 — cron auth header para image-dimensions-backfill"
 Cohesion: 0.33
 Nodes (5): Análise REGRA #8, Arquivos modificados, Conteúdo da migration, Estado em 2026-10-25, PR #2445 — fix(cron): FASE B P01 — cron auth header para image-dimensions-backfill
 
-### Community 1809 - "PR #2450 — docs: RELATORIO_CI.md rev5 — tabela de prova de conclusão pós-merge PR #2438"
+### Community 1810 - "PR #2450 — docs: RELATORIO_CI.md rev5 — tabela de prova de conclusão pós-merge PR #2438"
 Cohesion: 0.33
 Nodes (5): Análise REGRA #8, Arquivos modificados, Conteúdo, Estado em 2026-10-25, PR #2450 — docs: RELATORIO_CI.md rev5 — tabela de prova de conclusão pós-merge PR #2438
 
-### Community 1810 - "Dossiê PR #2473"
+### Community 1811 - "Dossiê PR #2473"
 Cohesion: 0.33
 Nodes (5): Análise, Diff (evidência — lido via API nesta sessão), Dossiê PR #2473, Intenção, VEREDICTO FINAL
 
-### Community 1811 - "Dossiê PR #2511 — docs(analise-prs): deliverables finais rev11 — META CUMPRIDA"
+### Community 1812 - "Dossiê PR #2511 — docs(analise-prs): deliverables finais rev11 — META CUMPRIDA"
 Cohesion: 0.33
 Nodes (5): Conteúdo do PR, Critérios de Merge, Dossiê PR #2511 — docs(analise-prs): deliverables finais rev11 — META CUMPRIDA, Evidência diff lido, Gate Final pós-merge
 
-### Community 1812 - "Dossiê PR #2514 — fix(test): corrige check-supabase-linter-fallback:51 — alinha com E103 + docs CI"
+### Community 1813 - "Dossiê PR #2514 — fix(test): corrige check-supabase-linter-fallback:51 — alinha com E103 + docs CI"
 Cohesion: 0.33
 Nodes (5): Análise, Arquivos alterados, Dossiê PR #2514 — fix(test): corrige check-supabase-linter-fallback:51 — alinha com E103 + docs CI, Histórico desta sessão, Veredito: MERGEADO_PO ✅
 
-### Community 1813 - "Dossiê PR #2515 — docs(analise-prs): deliverables finais rev14 — análise 50 PRs + META CUMPRIDA"
+### Community 1814 - "Dossiê PR #2515 — docs(analise-prs): deliverables finais rev14 — análise 50 PRs + META CUMPRIDA"
 Cohesion: 0.33
 Nodes (5): Conteúdo, Critérios de Merge (avaliados retroativamente), Dossiê PR #2515 — docs(analise-prs): deliverables finais rev14 — análise 50 PRs + META CUMPRIDA, Gate Final pós-merge, Motivo MERGEADO_PO
 
-### Community 1814 - "PR #2552 — MERGEADO_AUTONOMO"
+### Community 1815 - "PR #2552 — MERGEADO_AUTONOMO"
 Cohesion: 0.33
 Nodes (5): Conteúdo, Critérios, Observação, PR #2552 — MERGEADO_AUTONOMO, Veredito: MERGEADO_AUTONOMO
 
-### Community 1815 - "Dossiê PR #2627 — fix(rollbacks): 2 rollbacks únicos migrations 20261027 (233000 + 234500)"
+### Community 1816 - "Dossiê PR #2627 — fix(rollbacks): 2 rollbacks únicos migrations 20261027 (233000 + 234500)"
 Cohesion: 0.33
 Nodes (5): Arquivos alterados (2), Ação após merge, Contexto, Dossiê PR #2627 — fix(rollbacks): 2 rollbacks únicos migrations 20261027 (233000 + 234500), Verificações
 
-### Community 1816 - "Dossiê PR #2646"
+### Community 1817 - "Dossiê PR #2646"
 Cohesion: 0.33
 Nodes (5): Arquivos modificados, Bloqueio, Dossiê PR #2646, Intenção, Veredito
 
-### Community 1817 - "Dossier PR #2652 — docs(e15): recibo migration 20261027140000"
+### Community 1818 - "Dossier PR #2652 — docs(e15): recibo migration 20261027140000"
 Cohesion: 0.33
 Nodes (5): 1. Ainda é válida?, 2. Traz regressão?, 3. Já está implementada no main?, 4. A regra de negócio está correta?, Dossier PR #2652 — docs(e15): recibo migration 20261027140000
 
-### Community 1818 - "Dossier PR #2654 — fix(ci): adiciona xbz-image-uploader ao SERVER_ONLY_ALLOWLIST"
+### Community 1819 - "Dossier PR #2654 — fix(ci): adiciona xbz-image-uploader ao SERVER_ONLY_ALLOWLIST"
 Cohesion: 0.33
 Nodes (5): 1. Ainda é válida?, 2. Traz regressão?, 3. Já está implementada no main?, 4. A regra de negócio está correta?, Dossier PR #2654 — fix(ci): adiciona xbz-image-uploader ao SERVER_ONLY_ALLOWLIST
 
-### Community 1819 - "Dossier PR #2655 — fix(tests): add xbz-image-uploader descriptor with pendingDeploy=true"
+### Community 1820 - "Dossier PR #2655 — fix(tests): add xbz-image-uploader descriptor with pendingDeploy=true"
 Cohesion: 0.33
 Nodes (5): 1. Ainda é válida?, 2. Traz regressão?, 3. Já está implementada no main?, 4. A regra de negócio está correta?, Dossier PR #2655 — fix(tests): add xbz-image-uploader descriptor with pendingDeploy=true
 
-### Community 1820 - "Dossiê PR #2663"
+### Community 1821 - "Dossiê PR #2663"
 Cohesion: 0.33
 Nodes (5): Arquivos modificados, Bloqueio, Dossiê PR #2663, Intenção, Veredito
 
-### Community 1821 - "PR #2723 — fix(security): corrige race condition em temp file do pdfContrastReport (CodeQL #117)"
+### Community 1822 - "PR #2723 — fix(security): corrige race condition em temp file do pdfContrastReport (CodeQL #117)"
 Cohesion: 0.33
 Nodes (5): Análise, CI, Mudança, Observação, PR #2723 — fix(security): corrige race condition em temp file do pdfContrastReport (CodeQL #117)
 
-### Community 1822 - "PR #2728 — docs(governance): sincroniza AGENTS e amplia regra E056"
+### Community 1823 - "PR #2728 — docs(governance): sincroniza AGENTS e amplia regra E056"
 Cohesion: 0.33
 Nodes (5): Análise, CI, Mudança, Observação, PR #2728 — docs(governance): sincroniza AGENTS e amplia regra E056
 
-### Community 1823 - "Dossiê PR #3179 — fix: corrige preflight db-apply-migration (search_path + rollback)"
+### Community 1824 - "Dossiê PR #3179 — fix: corrige preflight db-apply-migration (search_path + rollback)"
 Cohesion: 0.33
 Nodes (5): Causa (corrigida), Ciclos de correção, Dossiê PR #3179 — fix: corrige preflight db-apply-migration (search_path + rollback), Estado CI, Veredicto: AGUARDANDO HUMANO
 
-### Community 1824 - "Dossiê PR #3203 — fix: scripts — static-pass, exit codes e regressão TypeScript inert"
+### Community 1825 - "Dossiê PR #3203 — fix: scripts — static-pass, exit codes e regressão TypeScript inert"
 Cohesion: 0.33
 Nodes (5): Causa (corrigida), Ciclos de correção, Dossiê PR #3203 — fix: scripts — static-pass, exit codes e regressão TypeScript inert, Estado CI, Veredicto: AGUARDANDO HUMANO
 
-### Community 1825 - "Dossiê PR #3243 — fix(migrations): adiciona migrations de drift para categories.level e full_path_readable"
+### Community 1826 - "Dossiê PR #3243 — fix(migrations): adiciona migrations de drift para categories.level e full_path_readable"
 Cohesion: 0.33
 Nodes (5): Categoria, Dossiê PR #3243 — fix(migrations): adiciona migrations de drift para categories.level e full_path_readable, Estado CI, Notas, Veredicto: AGUARDANDO_HUMANO
 
-### Community 1826 - "Dossiê PR #3247 — chore(ci): adiciona workflows de atualização de snapshots E2E e templates"
+### Community 1827 - "Dossiê PR #3247 — chore(ci): adiciona workflows de atualização de snapshots E2E e templates"
 Cohesion: 0.33
 Nodes (5): Categoria, Dossiê PR #3247 — chore(ci): adiciona workflows de atualização de snapshots E2E e templates, Estado CI, Notas, Veredicto: AGUARDANDO_HUMANO
 
-### Community 1827 - "Dossiê PR #3248 — feat(e2e): adiciona specs E2E para rotas públicas e config Claude"
+### Community 1828 - "Dossiê PR #3248 — feat(e2e): adiciona specs E2E para rotas públicas e config Claude"
 Cohesion: 0.33
 Nodes (5): Categoria, Dossiê PR #3248 — feat(e2e): adiciona specs E2E para rotas públicas e config Claude, Estado CI, Notas, Veredicto: AGUARDANDO_CI
 
-### Community 1828 - "Dossiê PR #3250 — fix: índice summary_date em stock_daily_summary (fix timeout cron diário)"
+### Community 1829 - "Dossiê PR #3250 — fix: índice summary_date em stock_daily_summary (fix timeout cron diário)"
 Cohesion: 0.33
 Nodes (5): Categoria, Dossiê PR #3250 — fix: índice summary_date em stock_daily_summary (fix timeout cron diário), Estado CI, Notas, Veredicto: AGUARDANDO_HUMANO
 
-### Community 1829 - "Dossiê PR #3251 — fix: remove cron inativa image-dimensions-backfill (run-script inexistente)"
+### Community 1830 - "Dossiê PR #3251 — fix: remove cron inativa image-dimensions-backfill (run-script inexistente)"
 Cohesion: 0.33
 Nodes (5): Categoria, Dossiê PR #3251 — fix: remove cron inativa image-dimensions-backfill (run-script inexistente), Estado CI, Notas, Veredicto: AGUARDANDO_HUMANO
 
-### Community 1830 - "Dossiê PR #3252 — fix: onLogoRemove usa areaId correto no MockupGenerator"
+### Community 1831 - "Dossiê PR #3252 — fix: onLogoRemove usa areaId correto no MockupGenerator"
 Cohesion: 0.33
 Nodes (5): Categoria, Dossiê PR #3252 — fix: onLogoRemove usa areaId correto no MockupGenerator, Estado CI, Notas, Veredicto: AGUARDANDO_CI
 
-### Community 1831 - "Dossiê PR #3253 — fix: arredondamento de ponto flutuante em calculateTotalKitPrice"
+### Community 1832 - "Dossiê PR #3253 — fix: arredondamento de ponto flutuante em calculateTotalKitPrice"
 Cohesion: 0.33
 Nodes (5): Categoria, Dossiê PR #3253 — fix: arredondamento de ponto flutuante em calculateTotalKitPrice, Estado CI, Notas, Veredicto: AGUARDANDO_CI
 
-### Community 1832 - "Dossiê PR #3255 — fix: drop perf002_drop_unused_snapshot_indexes (survivor incidente PEND-I01)"
+### Community 1833 - "Dossiê PR #3255 — fix: drop perf002_drop_unused_snapshot_indexes (survivor incidente PEND-I01)"
 Cohesion: 0.33
 Nodes (5): Categoria, Dossiê PR #3255 — fix: drop perf002_drop_unused_snapshot_indexes (survivor incidente PEND-I01), Estado CI, Notas, Veredicto: AGUARDANDO_HUMANO
 
-### Community 1833 - "Dossiê PR #3256 — fix: restringe RLS pública de art-files ao path quotes/"
+### Community 1834 - "Dossiê PR #3256 — fix: restringe RLS pública de art-files ao path quotes/"
 Cohesion: 0.33
 Nodes (5): Categoria, Dossiê PR #3256 — fix: restringe RLS pública de art-files ao path quotes/, Estado CI, Notas, Veredicto: AGUARDANDO_HUMANO
 
-### Community 1834 - "Dossiê PR #3257 — fix(migrations): idempotência em RLS deny-all e partições 2027"
+### Community 1835 - "Dossiê PR #3257 — fix(migrations): idempotência em RLS deny-all e partições 2027"
 Cohesion: 0.33
 Nodes (5): Categoria, Dossiê PR #3257 — fix(migrations): idempotência em RLS deny-all e partições 2027, Estado CI, Notas, Veredicto: AGUARDANDO_HUMANO
 
-### Community 1835 - "Dossiê PR #3261 — chore(migrations): arquivos espelho DRIFT CRON-001 — reconciliação de 20261101223908 e 20261101232022"
+### Community 1836 - "Dossiê PR #3261 — chore(migrations): arquivos espelho DRIFT CRON-001 — reconciliação de 20261101223908 e 20261101232022"
 Cohesion: 0.33
 Nodes (5): Categoria, Dossiê PR #3261 — chore(migrations): arquivos espelho DRIFT CRON-001 — reconciliação de 20261101223908 e 20261101232022, Estado CI, Notas, Veredicto: AGUARDANDO_HUMANO
 
-### Community 1836 - "Dossiê PR #3263 — feat: versionar cron jobs process/send-scheduled-reports (FT-005)"
+### Community 1837 - "Dossiê PR #3263 — feat: versionar cron jobs process/send-scheduled-reports (FT-005)"
 Cohesion: 0.33
 Nodes (5): Categoria, Dossiê PR #3263 — feat: versionar cron jobs process/send-scheduled-reports (FT-005), Estado CI, Notas, Veredicto: AGUARDANDO_HUMANO
 
-### Community 1837 - "Dossiê PR #3264 — feat: versionar view vw_products_min_quantity (FT-079)"
+### Community 1838 - "Dossiê PR #3264 — feat: versionar view vw_products_min_quantity (FT-079)"
 Cohesion: 0.33
 Nodes (5): Categoria, Dossiê PR #3264 — feat: versionar view vw_products_min_quantity (FT-079), Estado CI, Notas, Veredicto: AGUARDANDO_HUMANO
 
-### Community 1838 - "Dossiê PR #3265 — feat: versionar function fn_check_item_fits (FT-088)"
+### Community 1839 - "Dossiê PR #3265 — feat: versionar function fn_check_item_fits (FT-088)"
 Cohesion: 0.33
 Nodes (5): Categoria, Dossiê PR #3265 — feat: versionar function fn_check_item_fits (FT-088), Estado CI, Notas, Veredicto: AGUARDANDO_HUMANO
 
-### Community 1839 - "Dossiê PR #3266 — fix: scripts static-pass, exit codes e endurecimento (supersede #3203)"
+### Community 1840 - "Dossiê PR #3266 — fix: scripts static-pass, exit codes e endurecimento (supersede #3203)"
 Cohesion: 0.33
 Nodes (5): Ciclos de correção, Dossiê PR #3266 — fix: scripts static-pass, exit codes e endurecimento (supersede #3203), Estado CI, Origem, Veredicto: AGUARDANDO_CI
 
-### Community 1840 - "Dossiê PR #3269 — feat(kit-builder): FT-079 validação de quantidade mínima antes de criar orçamento"
+### Community 1841 - "Dossiê PR #3269 — feat(kit-builder): FT-079 validação de quantidade mínima antes de criar orçamento"
 Cohesion: 0.33
 Nodes (5): Categoria, Dossiê PR #3269 — feat(kit-builder): FT-079 validação de quantidade mínima antes de criar orçamento, Estado CI, Notas, Veredicto: AGUARDANDO_CI
 
-### Community 1841 - "Dossiê PR #3270 — feat(kit-builder): FT-088 validação fn_check_item_fits antes de criar orçamento"
+### Community 1842 - "Dossiê PR #3270 — feat(kit-builder): FT-088 validação fn_check_item_fits antes de criar orçamento"
 Cohesion: 0.33
 Nodes (5): Categoria, Dossiê PR #3270 — feat(kit-builder): FT-088 validação fn_check_item_fits antes de criar orçamento, Estado CI, Notas, Veredicto: AGUARDANDO_CI
 
-### Community 1842 - "Dossiê PR #3272 — fix(kit-builder): conecta isConflictError e consumeUnloadBackup às camadas de UI (FT-118/FT-119)"
+### Community 1843 - "Dossiê PR #3272 — fix(kit-builder): conecta isConflictError e consumeUnloadBackup às camadas de UI (FT-118/FT-119)"
 Cohesion: 0.33
 Nodes (5): Categoria, Dossiê PR #3272 — fix(kit-builder): conecta isConflictError e consumeUnloadBackup às camadas de UI (FT-118/FT-119), Estado CI, Notas, Veredicto: AGUARDANDO_CI
 
-### Community 1843 - "Dossiê PR #3273 — chore(migrations): espelho P-10 — 3 índices out-of-band de public.categories"
+### Community 1844 - "Dossiê PR #3273 — chore(migrations): espelho P-10 — 3 índices out-of-band de public.categories"
 Cohesion: 0.33
 Nodes (5): Categoria, Dossiê PR #3273 — chore(migrations): espelho P-10 — 3 índices out-of-band de public.categories, Estado CI, Notas, Veredicto: AGUARDANDO_HUMANO
 
-### Community 1844 - "Dossiê PR #3274 — fix(ci): gate E42 — if a nível de step, sem continue-on-error"
+### Community 1845 - "Dossiê PR #3274 — fix(ci): gate E42 — if a nível de step, sem continue-on-error"
 Cohesion: 0.33
 Nodes (5): Categoria, Dossiê PR #3274 — fix(ci): gate E42 — if a nível de step, sem continue-on-error, Estado CI, Notas, Veredicto: AGUARDANDO_HUMANO
 
-### Community 1845 - "Dossiê PR #3275 — fix(ci): Gate 1.3 — congela ref PENDENCIAS.md → migration futura no baseline"
+### Community 1846 - "Dossiê PR #3275 — fix(ci): Gate 1.3 — congela ref PENDENCIAS.md → migration futura no baseline"
 Cohesion: 0.33
 Nodes (5): Categoria, Dossiê PR #3275 — fix(ci): Gate 1.3 — congela ref PENDENCIAS.md → migration futura no baseline, Estado CI, Notas, Veredicto: AGUARDANDO_HUMANO
 
-### Community 1846 - "Dossiê PR #3276 — fix(kit-builder): confetti só na transição válido + botão Cancelar IA"
+### Community 1847 - "Dossiê PR #3276 — fix(kit-builder): confetti só na transição válido + botão Cancelar IA"
 Cohesion: 0.33
 Nodes (5): Categoria, Dossiê PR #3276 — fix(kit-builder): confetti só na transição válido + botão Cancelar IA, Estado CI, Notas, Veredicto: AGUARDANDO_CI
 
-### Community 1847 - "Dossiê PR #3277 — fix(ux): UX batch6 — FT-174/040/083/093/134/136/139"
+### Community 1848 - "Dossiê PR #3277 — fix(ux): UX batch6 — FT-174/040/083/093/134/136/139"
 Cohesion: 0.33
 Nodes (5): Categoria, Dossiê PR #3277 — fix(ux): UX batch6 — FT-174/040/083/093/134/136/139, Estado CI, Notas, Veredicto: AGUARDANDO_CI
 
-### Community 1848 - "Dossiê PR #3278 — chore(sentinel): grandfather SHA d50ae76c — squash sem (#NNN) por override"
+### Community 1849 - "Dossiê PR #3278 — chore(sentinel): grandfather SHA d50ae76c — squash sem (#NNN) por override"
 Cohesion: 0.33
 Nodes (5): Categoria, Dossiê PR #3278 — chore(sentinel): grandfather SHA d50ae76c — squash sem (#NNN) por override, Estado CI, Notas, Veredicto: AGUARDANDO_HUMANO
 
-### Community 1849 - "Dossiê PR #3279 — fix(cron): CRON-002 — corrige colisões residuais de startup timeout pós-CRON-001"
+### Community 1850 - "Dossiê PR #3279 — fix(cron): CRON-002 — corrige colisões residuais de startup timeout pós-CRON-001"
 Cohesion: 0.33
 Nodes (5): Categoria, Dossiê PR #3279 — fix(cron): CRON-002 — corrige colisões residuais de startup timeout pós-CRON-001, Estado CI, Notas, Veredicto: AGUARDANDO_HUMANO
 
-### Community 1850 - "Dossiê PR #3283 — feat(kit-builder): backup completo no beforeunload + restore real (FT-119)"
+### Community 1851 - "Dossiê PR #3283 — feat(kit-builder): backup completo no beforeunload + restore real (FT-119)"
 Cohesion: 0.33
 Nodes (5): Categoria, Dossiê PR #3283 — feat(kit-builder): backup completo no beforeunload + restore real (FT-119), Estado CI, Notas, Veredicto: AGUARDANDO_CI
 
-### Community 1851 - "Dossiê PR #3284 — chore(migrations): DRIFT mirror — arquivos espelho CRON-001 (versionar DDL aplicada out-of-band)"
+### Community 1852 - "Dossiê PR #3284 — chore(migrations): DRIFT mirror — arquivos espelho CRON-001 (versionar DDL aplicada out-of-band)"
 Cohesion: 0.33
 Nodes (5): Categoria, Dossiê PR #3284 — chore(migrations): DRIFT mirror — arquivos espelho CRON-001 (versionar DDL aplicada out-of-band), Estado CI, Notas, Veredicto: AGUARDANDO_HUMANO
 
-### Community 1852 - "Dossiê PR #3288 — feat(kit-builder): confirmar substituição ao aplicar composição da IA (FT-134)"
+### Community 1853 - "Dossiê PR #3288 — feat(kit-builder): confirmar substituição ao aplicar composição da IA (FT-134)"
 Cohesion: 0.33
 Nodes (5): Categoria, Dossiê PR #3288 — feat(kit-builder): confirmar substituição ao aplicar composição da IA (FT-134), Estado CI, Notas, Veredicto: AGUARDANDO_CI
 
-### Community 1853 - "Dossiê PR #3290 — fix(ci): detector E12 — índices out-of-band via pg_indexes antes do ledger parity"
+### Community 1854 - "Dossiê PR #3290 — fix(ci): detector E12 — índices out-of-band via pg_indexes antes do ledger parity"
 Cohesion: 0.33
 Nodes (5): Categoria, Dossiê PR #3290 — fix(ci): detector E12 — índices out-of-band via pg_indexes antes do ledger parity, Estado CI, Notas, Veredicto: AGUARDANDO_HUMANO
 
-### Community 1854 - "Dossiê PR #3291 — docs(pendencias): P-14 — drift sistêmico 220 índices out-of-band + fix E12 PR #3290"
+### Community 1855 - "Dossiê PR #3291 — docs(pendencias): P-14 — drift sistêmico 220 índices out-of-band + fix E12 PR #3290"
 Cohesion: 0.33
 Nodes (5): Categoria, Dossiê PR #3291 — docs(pendencias): P-14 — drift sistêmico 220 índices out-of-band + fix E12 PR #3290, Estado CI, Notas, Veredicto: AGUARDANDO_CI
 
-### Community 1855 - "Dossiê PR #3292 — feat(kit-builder): guard goToStep para etapas não completadas (FT-122)"
+### Community 1856 - "Dossiê PR #3292 — feat(kit-builder): guard goToStep para etapas não completadas (FT-122)"
 Cohesion: 0.33
 Nodes (5): Categoria, Dossiê PR #3292 — feat(kit-builder): guard goToStep para etapas não completadas (FT-122), Estado CI, Notas, Veredicto: AGUARDANDO_CI
 
-### Community 1856 - "Edge Functions com verify_jwt=false"
+### Community 1857 - "Edge Functions com verify_jwt=false"
 Cohesion: 0.33
 Nodes (5): Edge Functions com verify_jwt=false, Evidência coletada em: 2026-10-22, Funções Críticas sem Autenticação JWT, Lista Completa de verify_jwt=false, Query de evidência usada
 
-### Community 1857 - "EXPLAIN — Top queries por tempo total (pg_stat_statements)"
+### Community 1858 - "EXPLAIN — Top queries por tempo total (pg_stat_statements)"
 Cohesion: 0.33
 Nodes (5): EXPLAIN — Top queries por tempo total (pg_stat_statements), Query #1 — v_products_public ORDER BY created_at DESC (1,507,971 ms total), Query #2 — v_products_public ORDER BY name ASC (1,389,220 ms total), Query #3 — tags full scan (1,005,555 ms total), Top-10 resumo (dados de pg_stat_statements)
 
-### Community 1858 - "VERIFICAÇÃO END-TO-END (2026-11-01 — sessão claude/fix-post-review-bugs-261101-2015)"
+### Community 1859 - "VERIFICAÇÃO END-TO-END (2026-11-01 — sessão claude/fix-post-review-bugs-261101-2015)"
 Cohesion: 0.33
 Nodes (6): 1. PERF-005 — Aprovação do workflow de migration, 2. CRON-001 — cron.max_running_jobs=4, Ações manuais obrigatórias (não executáveis por agente de IA), Dependabot alerts (GitHub — não Supabase), schema-snapshot-export, VERIFICAÇÃO END-TO-END (2026-11-01 — sessão claude/fix-post-review-bugs-261101-2015)
 
-### Community 1859 - "ECC for Codex CLI"
+### Community 1860 - "ECC for Codex CLI"
 Cohesion: 0.33
 Nodes (5): ECC for Codex CLI, MCP Baseline, Multi-Agent Support, Repo Skill, Workflow Files
 
-### Community 1860 - "🎯 FASE 2: Páginas Principais (3-5 dias)"
+### Community 1861 - "🎯 FASE 2: Páginas Principais (3-5 dias)"
 Cohesion: 0.33
 Nodes (6): **2.1: Dashboard**, **2.2: Produtos**, **2.3: Orçamentos (Quotes)**, **2.4: Pedidos (Orders)**, **2.5: Clientes**, 🎯 FASE 2: Páginas Principais (3-5 dias)
 
-### Community 1861 - "🎯 FASE 3: Features Avançadas (5-7 dias)"
+### Community 1862 - "🎯 FASE 3: Features Avançadas (5-7 dias)"
 Cohesion: 0.33
 Nodes (6): **3.1: Geração de Mockups com IA**, **3.2: Aprovação Pública de Orçamentos**, **3.3: Módulo de Pagamentos**, **3.4: Relatórios e Analytics**, **3.5: Gerenciamento de Usuários**, 🎯 FASE 3: Features Avançadas (5-7 dias)
 
-### Community 1862 - "ADR 0001 — SSOT em Banco Externo (Catálogo & CRM)"
+### Community 1863 - "ADR 0001 — SSOT em Banco Externo (Catálogo & CRM)"
 Cohesion: 0.33
 Nodes (5): ADR 0001 — SSOT em Banco Externo (Catálogo & CRM), Alternativas rejeitadas, Consequências, Contexto, Decisão
 
-### Community 1863 - "ADR 0002 — RLS-First Security Model"
+### Community 1864 - "ADR 0002 — RLS-First Security Model"
 Cohesion: 0.33
 Nodes (5): ADR 0002 — RLS-First Security Model, Alternativas rejeitadas, Consequências, Contexto, Decisão
 
-### Community 1864 - "ADR 0003 — Validação Zod Obrigatória em Edge Functions"
+### Community 1865 - "ADR 0003 — Validação Zod Obrigatória em Edge Functions"
 Cohesion: 0.33
 Nodes (5): ADR 0003 — Validação Zod Obrigatória em Edge Functions, Consequências, Contexto, Decisão, Padrão
 
-### Community 1865 - "ADR 0009 — Hash canônico no Bronze e não-aplicação das migrações silver_depara no banco"
+### Community 1866 - "ADR 0009 — Hash canônico no Bronze e não-aplicação das migrações silver_depara no banco"
 Cohesion: 0.33
 Nodes (5): ADR 0009 — Hash canônico no Bronze e não-aplicação das migrações silver_depara no banco, Consequências, Contexto, Decisão 1 — Hash canônico configurável por fornecedor, Decisão 2 — silver_depara_01..06 (PR #693) permanecem NÃO aplicadas no banco
 
-### Community 1867 - "Fase 8 — Completude da normalização no pipeline (de-para)"
+### Community 1868 - "Fase 8 — Completude da normalização no pipeline (de-para)"
 Cohesion: 0.33
 Nodes (5): Fase 8 — Completude da normalização no pipeline (de-para), Item 5 — Plano: áreas de gravação no de-para da Silver (alto risco), Migrations aplicadas (Fase 8), Resultado por domínio, Veredito
 
-### Community 1868 - "Contrato local de nomes e versões para migrations novas"
+### Community 1869 - "Contrato local de nomes e versões para migrations novas"
 Cohesion: 0.33
 Nodes (5): Contrato local de nomes e versões para migrations novas, Execução local, Limites e decisões ainda necessárias, Por que há uma baseline, Regra aplicada a arquivos novos
 
-### Community 1869 - "6. Carrinho"
+### Community 1870 - "6. Carrinho"
 Cohesion: 0.33
 Nodes (6): 6. Carrinho, Contratos detectados, Critérios de sucesso propostos, Decisões pendentes do PO, Rollback, flags e pendências, Testes encontrados
 
-### Community 1870 - "Ownership por Domínio — v0.1 RASCUNHO (2026-08-29)"
+### Community 1871 - "Ownership por Domínio — v0.1 RASCUNHO (2026-08-29)"
 Cohesion: 0.33
 Nodes (5): 1. Estado atual (evidência), 2. Domínios propostos e owners (a nomear pelo PO), 3. Proposta de evolução do CODEOWNERS (NÃO aplicada), 4. Critério de conclusão da etapa 003, Ownership por Domínio — v0.1 RASCUNHO (2026-08-29)
 
-### Community 1871 - "Readiness e Lifecycle por Feature — v0.1 RASCUNHO (2026-08-29)"
+### Community 1872 - "Readiness e Lifecycle por Feature — v0.1 RASCUNHO (2026-08-29)"
 Cohesion: 0.33
 Nodes (5): 1. Features de produto, 2. Flags de plataforma (registro `src/lib/feature-flags.ts`), 3. Superfícies externas gerenciadas, 4. Critério de conclusão da etapa 004, Readiness e Lifecycle por Feature — v0.1 RASCUNHO (2026-08-29)
 
-### Community 1872 - "E38 — Decisão sobre os 2 cron jobs desligados"
+### Community 1873 - "E38 — Decisão sobre os 2 cron jobs desligados"
 Cohesion: 0.33
 Nodes (5): 1. Método `[DB-RO]`, 2. `pipeline-classify-categories` (jobid 274) — função não existe mais, 3. `process-webhook-outbox` (jobid 202) — fila vazia, substituída por padrão de dispatch direto, 4. Resumo para aprovação, E38 — Decisão sobre os 2 cron jobs desligados
 
-### Community 1873 - "E058 — Relatório de Duplicatas de Versão em supabase/migrations/"
+### Community 1874 - "E058 — Relatório de Duplicatas de Versão em supabase/migrations/"
 Cohesion: 0.33
 Nodes (5): Como resolver os restantes, E058 — Relatório de Duplicatas de Versão em supabase/migrations/, Grupos duplicados restantes (30 grupos), Status, Verificação após resolver
 
-### Community 1874 - "E059 — Triagem das Migrations Local-Only"
+### Community 1875 - "E059 — Triagem das Migrations Local-Only"
 Cohesion: 0.33
 Nodes (5): E059 — Triagem das Migrations Local-Only, G2 — Necessárias / E-plano (102 arquivos, sample), G3 — Obsoletas para arquivar (150 arquivos), Metodologia, Próximos passos
 
-### Community 1875 - "P200 — Placar Final de Execução"
+### Community 1876 - "P200 — Placar Final de Execução"
 Cohesion: 0.33
 Nodes (5): Gate de validação final, Nota sobre o placar do script vs. execução real, P200 — Placar Final de Execução, Portão Final Onda 19 — APROVADO, Resultado de `npm run plan:status` (2026-10-19T01:05 UTC)
 
-### Community 1876 - "🟡 Médio"
+### Community 1877 - "🟡 Médio"
 Cohesion: 0.33
 Nodes (6): M1) Segurança central do banco depende de credenciais CI indisponíveis localmente, M2) Chaves `apikey` hardcoded em migrations de cron HTTP, M3) Dependências com vulnerabilidades abertas, M4) Bundle grande em módulos críticos, M5) APIs de segurança do GitHub sem acesso na integração MCP, 🟡 Médio
 
-### Community 1877 - "Dependabot / npm audit — Dismissal Baseline"
+### Community 1878 - "Dependabot / npm audit — Dismissal Baseline"
 Cohesion: 0.33
 Nodes (5): Contexto de risco, Dependabot / npm audit — Dismissal Baseline, Próximos passos, Vulnerabilidades com override aplicado, Vulnerabilidades sem fix disponível (dismissal datado)
 
-### Community 1878 - "Métricas de CI — 2026-11-09"
+### Community 1879 - "Métricas de CI — 2026-11-09"
 Cohesion: 0.33
 Nodes (5): Alertas, Métricas de CI — 2026-11-09, Por workflow, Resumo, Top 10 por minutos estimados (7d)
 
-### Community 1879 - "Retrospectiva — Plano CI/CD v2 (100 etapas)"
+### Community 1880 - "Retrospectiva — Plano CI/CD v2 (100 etapas)"
 Cohesion: 0.33
 Nodes (5): Itens que requerem ação do PO, Métricas antes (2026-10-14) vs meta, Placar, Próximos passos sugeridos (Plano v3), Retrospectiva — Plano CI/CD v2 (100 etapas)
 
-### Community 1880 - "🔧 **AÇÕES NECESSÁRIAS**"
+### Community 1881 - "🔧 **AÇÕES NECESSÁRIAS**"
 Cohesion: 0.33
 Nodes (6): 1️⃣ **Configurar locale pt-BR no Componente Calendar**, 2️⃣ **Criar Utilitário de Formatação de Data**, 3️⃣ **Substituir Formatações Manuais de Data**, 4️⃣ **Adicionar Configuração Global de Locale (Opcional)**, 5️⃣ **Configurar Timezone para Brasília (Opcional)**, 🔧 **AÇÕES NECESSÁRIAS**
 
-### Community 1881 - "13. SIDEBAR"
+### Community 1882 - "13. SIDEBAR"
 Cohesion: 0.33
 Nodes (6): 13. SIDEBAR, Active, Hover, Item default, Não fazer, Section label
 
-### Community 1882 - "17. BUTTON SYSTEM"
+### Community 1883 - "17. BUTTON SYSTEM"
 Cohesion: 0.33
 Nodes (6): 17.1 Primary, 17.2 Outline, 17.3 Ghost, 17.4 Danger, 17.5 Icon button, 17. BUTTON SYSTEM
 
-### Community 1883 - "20. MAGAZINE CARD — PADRÃO APROVADO"
+### Community 1884 - "20. MAGAZINE CARD — PADRÃO APROVADO"
 Cohesion: 0.33
 Nodes (6): 20. MAGAZINE CARD — PADRÃO APROVADO, Ações, Desktop Full HD, Metadata, Preview, Status
 
-### Community 1884 - "25. STEPPER"
+### Community 1885 - "25. STEPPER"
 Cohesion: 0.33
 Nodes (6): 25. STEPPER, Active, Complete, Desktop, Future, Interação
 
-### Community 1885 - "33. BADGES / STATUS"
+### Community 1886 - "33. BADGES / STATUS"
 Cohesion: 0.33
 Nodes (6): 33. BADGES / STATUS, Archived, Danger, Draft, Published, Warning
 
-### Community 1886 - "3. DNA VISUAL"
+### Community 1887 - "3. DNA VISUAL"
 Cohesion: 0.33
 Nodes (6): 3.1 Profundidade por superfícies, não por sombras exageradas, 3.2 Azul reservado para intenção e estado, 3.3 Conteúdo domina a interface, 3.4 Densidade operacional, 3.5 Progressive disclosure, 3. DNA VISUAL
 
-### Community 1887 - "49. REGRAS DE CÓDIGO PARA CLAUDE"
+### Community 1888 - "49. REGRAS DE CÓDIGO PARA CLAUDE"
 Cohesion: 0.33
 Nodes (6): 49.1 Reutilizar antes de criar, 49.2 Não duplicar design system, 49.3 Sem magic numbers espalhados, 49.4 Sem `!important`, 49.5 Sem CSS screenshot-hack, 49. REGRAS DE CÓDIGO PARA CLAUDE
 
-### Community 1888 - "51. SEMÂNTICA DE AÇÕES"
+### Community 1889 - "51. SEMÂNTICA DE AÇÕES"
 Cohesion: 0.33
 Nodes (6): 51. SEMÂNTICA DE AÇÕES, Danger, Ghost, Link, Primary, Secondary
 
-### Community 1889 - "5. HIERARQUIA DE SUPERFÍCIES"
+### Community 1890 - "5. HIERARQUIA DE SUPERFÍCIES"
 Cohesion: 0.33
 Nodes (6): 5. HIERARQUIA DE SUPERFÍCIES, Nível 0 — App background, Nível 1 — Card / panel, Nível 2 — Nested surface, Nível 3 — Elevated, Regra
 
-### Community 1890 - "61. EXEMPLOS TAILWIND DE REFERÊNCIA"
+### Community 1891 - "61. EXEMPLOS TAILWIND DE REFERÊNCIA"
 Cohesion: 0.33
 Nodes (6): 61. EXEMPLOS TAILWIND DE REFERÊNCIA, Input, Interactive card, Panel, Primary CTA, Selected panel
 
-### Community 1891 - "63. REFERÊNCIAS VISUAIS APROVADAS — O QUE COPIAR DE CADA UMA"
+### Community 1892 - "63. REFERÊNCIAS VISUAIS APROVADAS — O QUE COPIAR DE CADA UMA"
 Cohesion: 0.33
 Nodes (6): 63. REFERÊNCIAS VISUAIS APROVADAS — O QUE COPIAR DE CADA UMA, A. Magazine Library, B. Templates Gallery, C. Template Inspector, D. Editor Identity, E. Editor Products
 
-### Community 1892 - "6. BORDAS"
+### Community 1893 - "6. BORDAS"
 Cohesion: 0.33
 Nodes (6): 6. BORDAS, Danger, Default, Evitar, Hover, Selected
 
-### Community 1893 - "Auditoria de cobertura — Smoke E2E"
+### Community 1894 - "Auditoria de cobertura — Smoke E2E"
 Cohesion: 0.33
 Nodes (5): Auditoria de cobertura — Smoke E2E, Governança, Resumo, Smoke autenticado — features × rotas, Smoke público (sem auth)
 
-### Community 1894 - "🏭 Fábrica de Correções (VPS Hostinger)"
+### Community 1895 - "🏭 Fábrica de Correções (VPS Hostinger)"
 Cohesion: 0.33
 Nodes (5): 1. O que é a fábrica, 2. Convenção de branch, 3. O portão automático, 4. Padrão de commit, 🏭 Fábrica de Correções (VPS Hostinger)
 
-### Community 1895 - "3.B — Com pré-requisito (11)"
+### Community 1896 - "3.B — Com pré-requisito (11)"
 Cohesion: 0.33
 Nodes (6): 15–17. `automation-local.yml`, `ui-visual-a11y.yml`, `url-state-unit.yml`, 18–23. `e2e-focused.yml`, `e2e-cart.yml`, `e2e-stock.yml`, `e2e-freight.yml`, `e2e-personalization.yml`, `e2e-discount-approval.yml`, 24. `e2e-check-calendar-snapshots.yml`, 25. `restore-seller-cart-rpc.yml`, 3.B — Com pré-requisito (11), 3) EXCLUIR / MOVER PARA `recovery/workflows-aposentados/`
 
-### Community 1896 - "⚠️ LEIA PRIMEIRO — Regras de ouro"
+### Community 1897 - "⚠️ LEIA PRIMEIRO — Regras de ouro"
 Cohesion: 0.33
 Nodes (6): 1. NÃO seja afoito, 2. NÃO mexa no banco do Lovable a não ser que afete segurança em produção AGORA, 3. NÃO trabalhe em paralelo com outras instâncias minhas sem coordenação, 4. Comunicação: PT-BR direto, denso, sem floreio, 5. Joaquim NÃO é dev, ⚠️ LEIA PRIMEIRO — Regras de ouro
 
-### Community 1897 - "Tabelas (~120 total)"
+### Community 1898 - "Tabelas (~120 total)"
 Cohesion: 0.33
 Nodes (6): 🟡 AVALIAR (decisão Joaquim — 7 perguntas listadas acima), Edge functions (94 painel × 80 repo), 📊 Inventário do banco do Lovable (resumo), 🟢 MIGRAR (essencial), 🔴 NÃO MIGRAR, Tabelas (~120 total)
 
-### Community 1898 - "Rate-Limiter Monitoring — Consumidores"
+### Community 1899 - "Rate-Limiter Monitoring — Consumidores"
 Cohesion: 0.33
 Nodes (5): CI — auto-redeploy, Consumidores validados (smoke test pós-deploy), Observabilidade e alertas, Rate-limit específico, Rate-Limiter Monitoring — Consumidores
 
-### Community 1899 - "Coleta somente leitura do trace de personalização"
+### Community 1900 - "Coleta somente leitura do trace de personalização"
 Cohesion: 0.33
 Nodes (5): Autorização e transporte, Coleta somente leitura do trace de personalização, Como interpretar, Formato e privacidade, Limites de leitura
 
-### Community 1901 - "RESUMO EXECUTIVO"
+### Community 1902 - "RESUMO EXECUTIVO"
 Cohesion: 0.33
 Nodes (6): Achados Críticos (ação imediata):, Etapas de backlog (E166-E200): 35, Etapas executáveis sem aprovação do PO (classificadas [AUTO]): ~148, Etapas que requerem aprovação do PO ([REQUER-PO]): ~12, Métricas de Dívida Técnica Atual:, RESUMO EXECUTIVO
 
-### Community 1902 - "DIMENSÃO 12: CORREÇÕES DE ALTA PRIORIDADE IMEDIATA (Etapas 136–160)"
+### Community 1903 - "DIMENSÃO 12: CORREÇÕES DE ALTA PRIORIDADE IMEDIATA (Etapas 136–160)"
 Cohesion: 0.33
 Nodes (6): DIMENSÃO 12: CORREÇÕES DE ALTA PRIORIDADE IMEDIATA (Etapas 136–160), 🔴 E136 — HOTFIX IMEDIATO: SEGREDOS.md não lista contexto.yml como consumidor PG* [AUTO], 🔴 E137 — HOTFIX: Verificar que Gate Final passou no PR #3059 [AUTO], 🟠 E138 — Verificar que deploy Vercel do PR #3059 não introduziu regressão [AUTO], 🟠 E139 — Verificar que contexto.yml run inicial gerou branch contexto [AUTO], 🟡 E141 — Verificar que Gate 0 (SSOT) falha corretamente se banco errado [AUTO]
 
-### Community 1903 - "DIMENSÃO 14: MONITORAMENTO E OBSERVABILIDADE (Etapas 149–175)"
+### Community 1904 - "DIMENSÃO 14: MONITORAMENTO E OBSERVABILIDADE (Etapas 149–175)"
 Cohesion: 0.33
 Nodes (6): DIMENSÃO 14: MONITORAMENTO E OBSERVABILIDADE (Etapas 149–175), 🟡 E149 — Verificar `uptime-monitor.yml` (a cada 30min) [AUTO], 🟡 E150 — Verificar `vw_system_health_quick` após E017 (fix health view) [AUTO], 🟡 E151 — Verificar alertas de cron jobs com falha [AUTO], 🟢 E152 — Verificar métricas de Vercel (runtime errors) [AUTO], 🟢 E153 — Verificar Web Analytics do Vercel [AUTO]
 
-### Community 1904 - "GRUPO 11 — Release e Versionamento 🟡"
+### Community 1905 - "GRUPO 11 — Release e Versionamento 🟡"
 Cohesion: 0.33
 Nodes (6): Etapa 101 — Aprovar e mergear release 1.8.0, Etapa 102 — Verificar dependabot PRs bloqueadas, Etapa 103 — Configurar limite de dependabot PRs simultâneas, Etapa 104 — Verificar CHANGELOG.md ou release notes, Etapa 105 — Configurar auto-merge para dependabot patch, GRUPO 11 — Release e Versionamento 🟡
 
-### Community 1905 - "GRUPO 12 — Edge Functions: Deploy e Sincronização 🟡"
+### Community 1906 - "GRUPO 12 — Edge Functions: Deploy e Sincronização 🟡"
 Cohesion: 0.33
 Nodes (6): Etapa 106 — Verificar estado do "Compare GitHub × Canonical", Etapa 107 — Listar edge functions deployadas vs. no repo, Etapa 108 — Verificar function `crm-db-bridge`, Etapa 109 — Documentar secrets de edge functions, Etapa 110 — Criar teste de smoke de edge functions, GRUPO 12 — Edge Functions: Deploy e Sincronização 🟡
 
-### Community 1906 - "GRUPO 14 — Testes: Cobertura e Qualidade 🟡"
+### Community 1907 - "GRUPO 14 — Testes: Cobertura e Qualidade 🟡"
 Cohesion: 0.33
 Nodes (6): Etapa 121 — Medir cobertura de testes unitários, Etapa 122 — Adicionar testes para hooks críticos sem cobertura, Etapa 123 — Verificar testes de integridade transacional (Gate 2.5), Etapa 124 — Adicionar testes de contrato de API para edge functions, Etapa 125 — Verificar se suíte Vitest tem timeout adequado, GRUPO 14 — Testes: Cobertura e Qualidade 🟡
 
-### Community 1907 - "GRUPO 16 — Performance e Monitoramento 🟢"
+### Community 1908 - "GRUPO 16 — Performance e Monitoramento 🟢"
 Cohesion: 0.33
 Nodes (6): Etapa 131 — Verificar uptime-monitor, Etapa 132 — Verificar queries lentas no banco, Etapa 133 — Verificar índices faltando, Etapa 134 — Verificar bloat de tabelas, Etapa 135 — Verificar uso de cache no Supabase, GRUPO 16 — Performance e Monitoramento 🟢
 
-### Community 1908 - "GRUPO 17 — Dependências e Segurança de Supply Chain 🟢"
+### Community 1909 - "GRUPO 17 — Dependências e Segurança de Supply Chain 🟢"
 Cohesion: 0.33
 Nodes (6): Etapa 136 — Atualizar dependências com CVE crítico, Etapa 137 — Verificar actions de terceiros na allowlist, Etapa 138 — Atualizar pins de actions para SHA mais recente, Etapa 139 — Revisar requirements.txt do supabase_snapshot, Etapa 140 — Verificar se gitleaks está atualizado, GRUPO 17 — Dependências e Segurança de Supply Chain 🟢
 
-### Community 1909 - "GRUPO 18 — Automações e Scripts 🟢"
+### Community 1910 - "GRUPO 18 — Automações e Scripts 🟢"
 Cohesion: 0.33
 Nodes (6): Etapa 141 — Verificar scripts do inventário, Etapa 142 — Automatizar geração semanal do inventário estático, Etapa 143 — Criar script de healthcheck pré-PR, Etapa 144 — Verificar `scripts/sentinel-check.sh`, Etapa 145 — Verificar `commitlint.config.js`, GRUPO 18 — Automações e Scripts 🟢
 
-### Community 1910 - "GRUPO 19 — Coordenação Multi-Agente 🟢"
+### Community 1911 - "GRUPO 19 — Coordenação Multi-Agente 🟢"
 Cohesion: 0.33
 Nodes (6): Etapa 146 — Criar issue template de branch contaminada, Etapa 147 — Adicionar verificação de carimbo no sentinel, Etapa 148 — Documentar protocolo de resolução de conflitos semânticos, Etapa 149 — Criar tabela de agentes ativos, Etapa 150 — Verificar Gate 1.18 (conflitos semânticos), GRUPO 19 — Coordenação Multi-Agente 🟢
 
-### Community 1911 - "GRUPO 21 — Gaps Identificados nos Últimos 500 Commits 🟡"
+### Community 1912 - "GRUPO 21 — Gaps Identificados nos Últimos 500 Commits 🟡"
 Cohesion: 0.33
 Nodes (6): Etapa 161 — Investigar commits "chore: bump baseline" duplicados, Etapa 162 — Verificar se commits do Lovable retornam após inatividade, Etapa 163 — Investigar alto volume de commits docs (165/500 = 33%), Etapa 164 — Verificar se há commits de múltiplos autores no mesmo arquivo, Etapa 165 — Mapear frequência de conflitos de merge por arquivo, GRUPO 21 — Gaps Identificados nos Últimos 500 Commits 🟡
 
-### Community 1912 - "GRUPO 22 — Supabase: Funções e Triggers 🟡"
+### Community 1913 - "GRUPO 22 — Supabase: Funções e Triggers 🟡"
 Cohesion: 0.33
 Nodes (6): Etapa 166 — Verificar funções sem migration correspondente, Etapa 167 — Verificar triggers em tabelas críticas, Etapa 168 — Verificar RPC `restore_seller_cart` (Gate 5.5), Etapa 169 — Auditar cron jobs ativos, Etapa 170 — Verificar logs de cron jobs com falha, GRUPO 22 — Supabase: Funções e Triggers 🟡
 
-### Community 1913 - "GRUPO 23 — Configurações do GitHub e Branch Protection 🟡"
+### Community 1914 - "GRUPO 23 — Configurações do GitHub e Branch Protection 🟡"
 Cohesion: 0.33
 Nodes (6): Etapa 171 — Verificar se required-checks.json está atualizado, Etapa 172 — Verificar se "Assert Gate Final is required on main" ainda passa, Etapa 173 — Verificar CODEOWNERS coverage (Gate 1.17), Etapa 174 — Verificar `workflow-lint.yml` passa em todos os workflows, Etapa 175 — Verificar se settings-guard está verde, GRUPO 23 — Configurações do GitHub e Branch Protection 🟡
 
-### Community 1914 - "GRUPO 24 — Limpeza e Housekeeping 🟢"
+### Community 1915 - "GRUPO 24 — Limpeza e Housekeeping 🟢"
 Cohesion: 0.33
 Nodes (6): Etapa 176 — Remover branches obsoletas de agentes, Etapa 177 — Limpar artifacts expirados no Actions, Etapa 178 — Remover dependências não utilizadas, Etapa 179 — Limpar `__pycache__` do .gitignore, Etapa 180 — Verificar se `.env.example` está atualizado, GRUPO 24 — Limpeza e Housekeeping 🟢
 
-### Community 1915 - "GRUPO 25 — Melhorias de DX (Developer Experience) 🟢"
+### Community 1916 - "GRUPO 25 — Melhorias de DX (Developer Experience) 🟢"
 Cohesion: 0.33
 Nodes (6): Etapa 181 — Criar script de setup de ambiente local, Etapa 182 — Adicionar volta ao script de CI local, Etapa 183 — Documentar comandos mais usados, Etapa 184 — Criar atalho para verificar estado de CI, Etapa 185 — Adicionar validação de branch name no commit-msg hook, GRUPO 25 — Melhorias de DX (Developer Experience) 🟢
 
-### Community 1916 - "GRUPO 26 — Monitoramento e Alertas de Produção 🟢"
+### Community 1917 - "GRUPO 26 — Monitoramento e Alertas de Produção 🟢"
 Cohesion: 0.33
 Nodes (6): Etapa 186 — Verificar alertas do inventário (`banco.json.alertas`), Etapa 187 — Configurar alerta de deploy demorado, Etapa 188 — Verificar se uptime monitor tem cobertura de endpoints críticos, Etapa 189 — Criar dashboard de saúde do CI, Etapa 190 — Configurar alerta de RLS deny-all, GRUPO 26 — Monitoramento e Alertas de Produção 🟢
 
-### Community 1917 - "FASE 3 — PRs abertas (exceto #2228) (E111–E160)"
+### Community 1918 - "FASE 3 — PRs abertas (exceto #2228) (E111–E160)"
 Cohesion: 0.33
 Nodes (6): 3.0 Mapa das 17 PRs abertas, 3A — Gate 3: #2271, #2269, #2267, 3B — Dependabot, 3C — PRs pequenas de CI (Claude), 3D — PRs do Devin, FASE 3 — PRs abertas (exceto #2228) (E111–E160)
 
-### Community 1918 - "Fase A — Controle de mudança e preservação multiagente"
+### Community 1919 - "Fase A — Controle de mudança e preservação multiagente"
 Cohesion: 0.33
 Nodes (6): E01 — Congelar a linha de base da reconciliação `[RO]`, E02 — Criar o inventário de refs locais e remotas `[RO]`, E03 — Preservar commits e objetos inalcançáveis `[GIT]`, E04 — Auditar stashes, checkpoints e cópias temporárias `[RO]`, E05 — Definir o ledger de decisões multiagente `[GIT]`, Fase A — Controle de mudança e preservação multiagente
 
-### Community 1919 - "Fase D — Restaurar observabilidade real do Supabase"
+### Community 1920 - "Fase D — Restaurar observabilidade real do Supabase"
 Cohesion: 0.33
 Nodes (6): E26 — Restaurar autenticação local da CLI `[DB-RO]`, E27 — Restaurar a credencial de banco no GitHub Actions `[GIT]`, E28 — Eliminar o falso verde do drift check `[GIT]` ✅ Workflow corrigido em `origin/main`; ainda `BLOQUEADO` na prática (ver §1.1), E29 — Fixar e validar o alvo canônico em todos os caminhos `[RO]`, E30 — Ler o ledger remoto sem aplicar nada `[DB-RO]`, Fase D — Restaurar observabilidade real do Supabase
 
-### Community 1920 - "Fase E — Reconciliação bidirecional do ledger"
+### Community 1921 - "Fase E — Reconciliação bidirecional do ledger"
 Cohesion: 0.33
 Nodes (6): E31 — Calcular `remoto − local` `[DB-RO]`, E32 — Calcular `local − remoto` `[DB-RO]`, E33 — Comparar statements das versões compartilhadas `[DB-RO]`, E34 — Classificar os três IDs históricos inválidos `[DB-RO]`, E35 — Produzir matriz de decisão por migration `[RO]`, Fase E — Reconciliação bidirecional do ledger
 
-### Community 1921 - "Fase F — Auditoria completa do schema por `pg_catalog`"
+### Community 1922 - "Fase F — Auditoria completa do schema por `pg_catalog`"
 Cohesion: 0.33
 Nodes (6): E36 — Inventariar schemas, tabelas, partições e colunas `[DB-RO]`, E37 — Inventariar constraints e índices `[DB-RO]`, E38 — Inventariar RLS, policies e privilégios `[DB-RO]`, E39 — Inventariar funções, triggers e views `[DB-RO]`, E40 — Inventariar enums, extensões, jobs e publicação realtime `[DB-RO]`, Fase F — Auditoria completa do schema por `pg_catalog`
 
-### Community 1922 - "D.9 — Tarefa 5: Restore com `ON CONFLICT` {#d9-restore}"
+### Community 1923 - "D.9 — Tarefa 5: Restore com `ON CONFLICT` {#d9-restore}"
 Cohesion: 0.33
 Nodes (6): Como transformar JSON do dump em INSERT bulk, Cuidado com triggers `BEFORE INSERT`, D.9 — Tarefa 5: Restore com `ON CONFLICT` {#d9-restore}, Estratégia universal — `ON CONFLICT (pk) DO NOTHING`, Estratégia "update se mais recente", Migração completa de uma tabela — template padrão
 
-### Community 1923 - "D.12 — Templates prontos {#d12-templates}"
+### Community 1924 - "D.12 — Templates prontos {#d12-templates}"
 Cohesion: 0.33
 Nodes (6): D.12 — Templates prontos {#d12-templates}, Template — Limpeza pós-migração, Template — Loop completo de uma tabela (Estratégia B), Template — Migração de tabela com FK para auth.users, Template — Relatório de migração, Template — RPC dump no Lovable (Estratégia A)
 
-### Community 1924 - "Runbook — Cron job travado ou parado (`pg_cron`)"
+### Community 1925 - "Runbook — Cron job travado ou parado (`pg_cron`)"
 Cohesion: 0.33
 Nodes (5): Contenção, Diagnóstico (somente leitura), Não faça, Runbook — Cron job travado ou parado (`pg_cron`), Sintomas
 
-### Community 1925 - "Runbook — Disco/tamanho de banco crescendo ou perto do limite"
+### Community 1926 - "Runbook — Disco/tamanho de banco crescendo ou perto do limite"
 Cohesion: 0.33
 Nodes (5): Contenção, Diagnóstico (somente leitura), Não faça, Runbook — Disco/tamanho de banco crescendo ou perto do limite, Sintomas
 
-### Community 1926 - "Runbook — Vazamento de chave/secret (ex.: credencial em `COMMENT ON`, código ou log)"
+### Community 1927 - "Runbook — Vazamento de chave/secret (ex.: credencial em `COMMENT ON`, código ou log)"
 Cohesion: 0.33
 Nodes (5): Contenção imediata, Depois da rotação (quando o PO confirmar que rotacionou), Não faça, Runbook — Vazamento de chave/secret (ex.: credencial em `COMMENT ON`, código ou log), Sintomas / onde procurar
 
-### Community 1927 - "Security Best Practices"
+### Community 1928 - "Security Best Practices"
 Cohesion: 0.33
 Nodes (5): API Security, Authentication, Data Protection, Monitoring, Security Best Practices
 
-### Community 1928 - "Mitigação temporária — `image-size` via `pptxgenjs`"
+### Community 1929 - "Mitigação temporária — `image-size` via `pptxgenjs`"
 Cohesion: 0.33
 Nodes (5): Condição de encerramento, Contexto, Controles compensatórios, Exposição validada, Mitigação temporária — `image-size` via `pptxgenjs`
 
-### Community 1929 - "15. Exemplo Real — Têxtil GOIABA WOMEN 30511"
+### Community 1930 - "15. Exemplo Real — Têxtil GOIABA WOMEN 30511"
 Cohesion: 0.33
 Nodes (6): 15. Exemplo Real — Têxtil GOIABA WOMEN 30511, Dados do Produto, Imagens, Personalização, Preços (€) — 4 faixas, Variantes — SKU de 3 partes
 
-### Community 1930 - "16. Exemplo Real — Agenda SPECT A5 66190"
+### Community 1931 - "16. Exemplo Real — Agenda SPECT A5 66190"
 Cohesion: 0.33
 Nodes (6): 16. Exemplo Real — Agenda SPECT A5 66190, Dados do Produto, Imagens, Personalização, Preços (€) — 4 faixas, Variantes
 
-### Community 1931 - "Staging para gates destrutivos"
+### Community 1932 - "Staging para gates destrutivos"
 Cohesion: 0.33
 Nodes (5): Como apontar um gate para o staging, Como provisionar o staging (ação do PO, ~10 min), Gates que tocam o canônico hoje, Regras, Staging para gates destrutivos
 
-### Community 1932 - "Testes de integração LIVE das Edge Functions"
+### Community 1933 - "Testes de integração LIVE das Edge Functions"
 Cohesion: 0.33
 Nodes (5): Adicionando uma função nova, Como rodar, O que cada spec valida, Segurança — NUNCA disparar efeito real, Testes de integração LIVE das Edge Functions
 
-### Community 1933 - "supplier-comparison-visual.spec.ts"
+### Community 1934 - "supplier-comparison-visual.spec.ts"
 Cohesion: 0.40
 Nodes (5): CORS_HEADERS, fulfillRows(), gotoProductDetail(), mockAlternativeRows, mockBaseRow
 
-### Community 1934 - "stock-alerts-panel.spec.ts"
+### Community 1935 - "stock-alerts-panel.spec.ts"
 Cohesion: 0.33
 Nodes (5): BELL, CHIP_ORDER, openBell(), PANEL, VIEWPORTS
 
-### Community 1935 - ".eslint-baseline-scope.json"
+### Community 1936 - ".eslint-baseline-scope.json"
 Cohesion: 0.33
 Nodes (5): exclude, include, mode, notes, $schema
 
-### Community 1936 - "Branch Protection — Quote Summary (sticky header + action buttons)"
+### Community 1937 - "Branch Protection — Quote Summary (sticky header + action buttons)"
 Cohesion: 0.33
 Nodes (5): Branch Protection — Quote Summary (sticky header + action buttons), Como configurar (UI do GitHub), Configuração via API (alternativa), Manutenção, Required check a marcar
 
-### Community 1937 - "QA Baseline — promo-gifts-v4"
+### Community 1938 - "QA Baseline — promo-gifts-v4"
 Cohesion: 0.33
 Nodes (5): ESLint, npm audit, Outdated dependencies, QA Baseline — promo-gifts-v4, TypeScript (`tsc --noEmit`)
 
-### Community 1938 - "Onda 15 — Auth hooks/integrations hardening"
+### Community 1939 - "Onda 15 — Auth hooks/integrations hardening"
 Cohesion: 0.33
 Nodes (5): Critério de aceite, Mudanças aplicadas, Onda 15 — Auth hooks/integrations hardening, Próximo passo — Onda 16 (fora de escopo), Simulação — mapa exaustivo dos call sites
 
-### Community 1939 - "⏳ Pendências pós-D.1"
+### Community 1940 - "⏳ Pendências pós-D.1"
 Cohesion: 0.33
 Nodes (6): #1 — FK pendente (resolverá em D.2), #2 — Cron de cleanup, #3 — Smoke test manual (sponsor), #4 — Regenerar types.ts, #5 — GlitchTip Auth Token (Frente A), ⏳ Pendências pós-D.1
 
-### Community 1940 - "🔧 Post-merge fix — `auth_login_attempts` policies"
+### Community 1941 - "🔧 Post-merge fix — `auth_login_attempts` policies"
 Cohesion: 0.33
 Nodes (5): Fix aplicado direto em PROD, 🔧 Post-merge fix — `auth_login_attempts` policies, Problema, Resultado, Rollback (se necessário)
 
-### Community 1941 - "🎯 TASK — FASE 0 — Setup do Agente DB"
+### Community 1942 - "🎯 TASK — FASE 0 — Setup do Agente DB"
 Cohesion: 0.33
 Nodes (5): 📡 Como responder, ✅ Critérios de sucesso, 🚦 O que NÃO fazer agora, 📋 Objetivo, 🎯 TASK — FASE 0 — Setup do Agente DB
 
-### Community 1942 - "📊 Análise: faltam 85 tabelas (não 64)"
+### Community 1943 - "📊 Análise: faltam 85 tabelas (não 64)"
 Cohesion: 0.33
 Nodes (5): 30 tabelas adicionais (não detectadas pela Fase 1), 📊 Análise: faltam 85 tabelas (não 64), Categorias, Impacto, Re-contagem com o dump real
 
-### Community 1943 - "gen_summary.sh"
+### Community 1944 - "gen_summary.sh"
 Cohesion: 0.40
 Nodes (4): count(), LABEL, METRIC, gen_summary.sh script
 
-### Community 1944 - "run_all.sh"
+### Community 1945 - "run_all.sh"
 Cohesion: 0.53
 Nodes (5): FILES, fmt_ms(), is_block_ok(), preflight(), run_all.sh script
 
-### Community 1945 - "run_all (1).sh"
+### Community 1946 - "run_all (1).sh"
 Cohesion: 0.53
 Nodes (5): FILES, fmt_ms(), is_block_ok(), preflight(), run_all (1).sh script
 
-### Community 1946 - "run_blocks.sh"
+### Community 1947 - "run_blocks.sh"
 Cohesion: 0.53
 Nodes (4): c_grn(), c_red(), c_ylw(), run_blocks.sh script
 
-### Community 1947 - "run_blocks (1).sh"
+### Community 1948 - "run_blocks (1).sh"
 Cohesion: 0.53
 Nodes (4): c_grn(), c_red(), c_ylw(), run_blocks (1).sh script
 
-### Community 1948 - "ProductCardSkeleton.tsx"
+### Community 1949 - "ProductCardSkeleton.tsx"
 Cohesion: 0.40
 Nodes (4): ProductCardSkeleton(), ProductCardSkeletonProps, ProductGridSkeleton(), ProductGridSkeletonProps
 
-### Community 1950 - "hooks/useSimilarProducts.ts"
+### Community 1951 - "hooks/useSimilarProducts.ts"
 Cohesion: 0.53
 Nodes (5): fetchProductsByIds(), LightweightProduct, mapLightweightToSimilarItem(), SimilarProductItem, useSimilarProducts()
 
-### Community 1951 - "templateExport.ts"
+### Community 1952 - "templateExport.ts"
 Cohesion: 0.47
 Nodes (5): ExportedTemplate, exportSingleTemplate(), exportTemplatesToJson(), readTemplateFile(), validateImportedTemplates()
 
-### Community 1952 - "input-otp.tsx"
+### Community 1953 - "input-otp.tsx"
 Cohesion: 0.33
 Nodes (5): input-otp, InputOTP, InputOTPGroup, InputOTPSeparator, InputOTPSlot
 
-### Community 1953 - "§20 — Prova Final — Sessão 2026-11-07"
+### Community 1954 - "§20 — Prova Final — Sessão 2026-11-07"
 Cohesion: 0.33
 Nodes (6): §20 — Prova Final — Sessão 2026-11-07, Comparação Baseline × Final (HEAD `df81a741`), Gate Final - Deploy Ready — CONFIRMADO ✅ (attempt 3), lint:baseline — CONFIRMADO ✅, Tabela de prova — todos os workflows com falha/action_required desta sessão, Workflows antes verdes — confirmação de não-regressão
 
-### Community 1954 - "§21 — Prova Final — Sessão 2026-11-07 (merge PR #3172 → main `1a47c6972c`)"
+### Community 1955 - "§21 — Prova Final — Sessão 2026-11-07 (merge PR #3172 → main `1a47c6972c`)"
 Cohesion: 0.33
 Nodes (6): §21 — Prova Final — Sessão 2026-11-07 (merge PR #3172 → main `1a47c6972c`), Checks locais na main `1a47c6972c` (executados nesta sessão), Comparação Baseline × Final (HEAD `1a47c6972c`), Gate Final (Deploy Gates) na main `1a47c6972c`, Tabela de prova — workflows em falha/action_required (atualizada para SHA `1a47c6972c`), Workflows antes verdes — confirmação de não-regressão (SHA `1a47c6972c`)
 
-### Community 1955 - "§23 — Sessão 2026-11-07 (continuação pós-compactação) — SHA `bfb2926d`"
+### Community 1956 - "§23 — Sessão 2026-11-07 (continuação pós-compactação) — SHA `bfb2926d`"
 Cohesion: 0.33
 Nodes (6): §23 — Sessão 2026-11-07 (continuação pós-compactação) — SHA `bfb2926d`, Ações pendentes do dono (REGRA #8 — não executáveis sem aprovação), Baseline local (SHA `bfb2926d`), Comparação Baseline × Final (SHA `bfb2926d`), Gate Final (SHA `bfb2926d`), Tabela de prova completa — todos os workflows em falha/action_required (SHA `bfb2926d`)
 
-### Community 1956 - "§27 — Baseline local sessão 2026-11-08T00:30Z (SHA `12e873af`)"
+### Community 1957 - "§27 — Baseline local sessão 2026-11-08T00:30Z (SHA `12e873af`)"
 Cohesion: 0.33
 Nodes (6): §27 — Baseline local sessão 2026-11-08T00:30Z (SHA `12e873af`), Ações pendentes do dono (REGRA #8 — não executáveis sem aprovação), Baseline local completo executado nesta sessão, Inventário dos workflows com falha em `main` nesta sessão, PRs desta sessão, Verificação de gates verdes antes × depois desta sessão
 
-### Community 1957 - "§28 — Baseline × Final sessão 2026-11-08T01:15Z (SHA `561693ff`)"
+### Community 1958 - "§28 — Baseline × Final sessão 2026-11-08T01:15Z (SHA `561693ff`)"
 Cohesion: 0.33
 Nodes (6): §28 — Baseline × Final sessão 2026-11-08T01:15Z (SHA `561693ff`), Ações pendentes do dono (REGRA #8 — não executáveis sem aprovação), Inventário dos workflows com falha em `main` nesta sessão — com causas corrigidas, PENDENCIAS.md — itens adicionados nesta sessão, PRs desta sessão, Verificação de gates verdes antes × depois desta sessão
 
-### Community 1958 - "§29 — Baseline local SHA `9feb0148` + branch `fix/ci-workflows` (2026-11-08T02:00Z)"
+### Community 1959 - "§29 — Baseline local SHA `9feb0148` + branch `fix/ci-workflows` (2026-11-08T02:00Z)"
 Cohesion: 0.33
 Nodes (6): §29 — Baseline local SHA `9feb0148` + branch `fix/ci-workflows` (2026-11-08T02:00Z), Baseline local — ANTES de qualquer alteração, Comparação baseline × final (checks required em main), Inventário final de falhas (last run na main `9feb0148`), PRs desta sessão (§29), Testes locais: comparação antes × depois
 
-### Community 1959 - "§33 — Baseline + Inventário Final + Prova (2026-11-08T07:30Z) — SHA main `8c3abe3bcb`"
+### Community 1960 - "§33 — Baseline + Inventário Final + Prova (2026-11-08T07:30Z) — SHA main `8c3abe3bcb`"
 Cohesion: 0.33
 Nodes (6): §33 — Baseline + Inventário Final + Prova (2026-11-08T07:30Z) — SHA main `8c3abe3bcb`, Baseline local desta sessão (2026-11-08T07:00–07:30Z), Comparação baseline × final (§32 → §33), Inventário: última execução por workflow na `main` (branch=main, 2026-11-08T07:00Z), Prova de conclusão, Required checks na main (`8c3abe3bcb`) — `.github/required-checks.json`
 
-### Community 1960 - "check-client-structured-logging.mjs"
+### Community 1961 - "check-client-structured-logging.mjs"
 Cohesion: 0.40
 Nodes (5): checkFile(), CRITICAL_MODULES, LEGACY_ALLOWLIST, main(), ROOT
 
-### Community 1961 - "check-gates-table.mjs"
+### Community 1962 - "check-gates-table.mjs"
 Cohesion: 0.33
 Nodes (5): args, claudeGates, gate, missing, yamlGates
 
-### Community 1962 - "DegradedBlocksCard.tsx"
+### Community 1963 - "DegradedBlocksCard.tsx"
 Cohesion: 0.40
 Nodes (5): DegradedBlocksCard(), EMPTY, formatTime(), REASON_LABEL, REASON_TONE
 
-### Community 1963 - "HighLimitTelemetryCard.tsx"
+### Community 1964 - "HighLimitTelemetryCard.tsx"
 Cohesion: 0.40
 Nodes (5): ERROR_COLORS, ERROR_KINDS_FOR_STACK, formatTick(), HighLimitTelemetryCard(), RANGE_LABEL
 
-### Community 1964 - "ProductsListingLatencyAlert.tsx"
+### Community 1965 - "ProductsListingLatencyAlert.tsx"
 Cohesion: 0.53
 Nodes (5): formatMs(), formatPct(), Metric(), ProductsListingLatencyAlert(), TONE
 
-### Community 1965 - "IndustryTrendingProducts.tsx"
+### Community 1966 - "IndustryTrendingProducts.tsx"
 Cohesion: 0.47
 Nodes (5): fmtBRL(), IndustryTrendingProducts(), normalize(), Props, trendIcon
 
-### Community 1966 - "common/ConfirmDialog.tsx"
+### Community 1967 - "common/ConfirmDialog.tsx"
 Cohesion: 0.40
 Nodes (5): ConfirmDialog(), ConfirmDialogProps, ConfirmVariant, iconMap, useConfirm()
 
-### Community 1969 - "CommemorativeDateFilter.tsx"
+### Community 1970 - "CommemorativeDateFilter.tsx"
 Cohesion: 0.47
 Nodes (5): CommemorativeDateFilter(), CommemorativeDateFilterProps, CommemorativeDateItem(), CommemorativeDateItemProps, getDaysUntilText()
 
-### Community 1970 - "IntelligenceFilterBar.tsx"
+### Community 1971 - "IntelligenceFilterBar.tsx"
 Cohesion: 0.40
 Nodes (5): HighlightText(), IntelligenceFilterBar(), IntelligenceFilterBarProps, IntelligenceFilters, PERIOD_OPTIONS
 
-### Community 1971 - "PackagingModal.tsx"
+### Community 1972 - "PackagingModal.tsx"
 Cohesion: 0.40
 Nodes (5): contextLabels, DimensionItem(), PackagingContext, PackagingModal(), PackagingModalProps
 
-### Community 1972 - "QuoteStatusTimeline.tsx"
+### Community 1973 - "QuoteStatusTimeline.tsx"
 Cohesion: 0.40
 Nodes (5): formatTs(), QuoteStatusTimeline(), QuoteStatusTimelineProps, statusOrder, steps
 
-### Community 1975 - "BICategoryFocusContext.tsx"
+### Community 1976 - "BICategoryFocusContext.tsx"
 Cohesion: 0.33
 Nodes (3): BICategoryFocusContext, BICategoryFocusContextValue, FocusedCategorySlug
 
-### Community 1976 - "__tests__/useDebounce.test.ts"
+### Community 1977 - "__tests__/useDebounce.test.ts"
 Cohesion: 0.67
 Nodes (4): useDebounce(), useDebouncedCallback(), useSearchAsYouType(), useThrottle()
 
-### Community 1977 - "useUnsavedChangesGuard.test.ts"
+### Community 1978 - "useUnsavedChangesGuard.test.ts"
 Cohesion: 0.40
 Nodes (4): addEventSpy, removeEventSpy, useUnsavedChangesGuard(), UseUnsavedChangesGuardOptions
 
-### Community 1978 - "dailyCatalogDefaults.ts"
+### Community 1979 - "dailyCatalogDefaults.ts"
 Cohesion: 0.40
 Nodes (5): CATALOG_SORT_SESSION_KEY, CATALOG_VIEW_MODE_KEY, DAILY_RESET_KEY, ensureDailyCatalogDefaults(), todayKey()
 
-### Community 1982 - "dev-route-telemetry.ts"
+### Community 1983 - "dev-route-telemetry.ts"
 Cohesion: 0.40
 Nodes (5): DevRouteUxEvent, recent, recordDevRouteTelemetry(), RecordParams, shouldDrop()
 
-### Community 1983 - "log-access-denied.ts"
+### Community 1984 - "log-access-denied.ts"
 Cohesion: 0.47
 Nodes (5): loadThrottle(), logAccessDenied(), LogAccessDeniedInput, saveThrottle(), ThrottleMap
 
-### Community 1984 - "oauth-error-messages.ts"
+### Community 1985 - "oauth-error-messages.ts"
 Cohesion: 0.40
 Nodes (5): normalizeKey(), OAuthErrorCopy, RAW_MAP, resolveOAuthError(), RFC-6749
 
-### Community 1985 - "executive-summary.ts"
+### Community 1986 - "executive-summary.ts"
 Cohesion: 0.40
 Nodes (5): buildCategorySection(), CategoryGap, CategoryMapRow, CategorySection, clampPct()
 
-### Community 1987 - "external-db-prewarm.ts"
+### Community 1988 - "external-db-prewarm.ts"
 Cohesion: 0.40
 Nodes (4): PREWARM_TABLES, prewarmExternalDb(), PrewarmTable, warmAllTables()
 
-### Community 1988 - "degradation.ts"
+### Community 1989 - "degradation.ts"
 Cohesion: 0.40
 Nodes (5): classifyDegradable(), CODE_MAP, DegradationReason, degradeOrThrow(), SupabaseLikeError
 
-### Community 1989 - "stock-filter.future-minqty.fuzz.test.ts"
+### Community 1990 - "stock-filter.future-minqty.fuzz.test.ts"
 Cohesion: 0.40
 Nodes (3): COLORS, makeProduct(), makeVariant()
 
-### Community 1990 - "stock-filter.rupture-risk.fuzz.test.ts"
+### Community 1991 - "stock-filter.rupture-risk.fuzz.test.ts"
 Cohesion: 0.40
 Nodes (4): COLORS, makeUniverse(), rng(), STATUSES
 
-### Community 1991 - "magazine-status-config.ts"
+### Community 1992 - "magazine-status-config.ts"
 Cohesion: 0.40
 Nodes (5): assertMagazineTransition(), isValidMagazineTransition(), MAGAZINE_VALID_TRANSITIONS, MagazineStatus, STATUS_LABEL
 
-### Community 1992 - "password-reset-status-config.ts"
+### Community 1993 - "password-reset-status-config.ts"
 Cohesion: 0.40
 Nodes (5): assertPasswordResetTransition(), isValidPasswordResetTransition(), PASSWORD_RESET_VALID_TRANSITIONS, PasswordResetStatus, STATUS_LABEL
 
-### Community 1993 - "roles.ts"
+### Community 1994 - "roles.ts"
 Cohesion: 0.33
 Nodes (3): AppRole, ROLE_VISUAL, RoleVisual
 
-### Community 1994 - "sensitive-masking.ts"
+### Community 1995 - "sensitive-masking.ts"
 Cohesion: 0.40
 Nodes (4): FILL, maskSecretValue(), maskSensitiveText(), PATTERNS
 
-### Community 1996 - "quoteHandoffTelemetry.ts"
+### Community 1997 - "quoteHandoffTelemetry.ts"
 Cohesion: 0.33
 Nodes (4): QUOTE_HANDOFF_EVENT_TYPE, QUOTE_HANDOFF_NAME_PREFIX, QuoteHandoffMetadata, QuoteHandoffSource
 
-### Community 1997 - "variant-matching.ts"
+### Community 1998 - "variant-matching.ts"
 Cohesion: 0.53
 Nodes (5): ColorLike, findMatchingColorIndex(), hexDistance(), normalizeColorName(), parseHex()
 
-### Community 1998 - "engraving-schema-diff.ts"
+### Community 1999 - "engraving-schema-diff.ts"
 Cohesion: 0.33
 Nodes (3): ENGRAVING_TABLES, ExpectedTable, TableDiff
 
-### Community 2000 - "mapRestoreCartError.ts"
+### Community 2001 - "mapRestoreCartError.ts"
 Cohesion: 0.47
 Nodes (4): MappedRestoreError, mapRestoreCartError(), PgErrorLike, toPgError()
 
-### Community 2001 - "QuotesListPage.fab.test.tsx"
+### Community 2002 - "QuotesListPage.fab.test.tsx"
 Cohesion: 0.33
 Nodes (3): baseHook, HookReturn, navigateMock
 
-### Community 2002 - "tools/MagicUp.tsx"
+### Community 2003 - "tools/MagicUp.tsx"
 Cohesion: 0.60
 Nodes (5): MagicUp(), MagicUpContent(), MagicUpHeader(), MagicUpProgress(), MagicUpSkeleton()
 
-### Community 2003 - "magazineEdgeContract.test.ts"
+### Community 2004 - "magazineEdgeContract.test.ts"
 Cohesion: 0.33
 Nodes (4): calls, nextReply, RecordedCall, VALID_PAYLOAD
 
-### Community 2004 - "performance-budget.ts"
+### Community 2005 - "performance-budget.ts"
 Cohesion: 0.47
 Nodes (5): BUDGETS, getRating(), initPerformanceBudget(), MetricName, reportMetric()
 
-### Community 2005 - "pixMask.ts"
+### Community 2006 - "pixMask.ts"
 Cohesion: 0.47
 Nodes (3): validateCnpjDigits(), validateCpfDigits(), validatePixKey()
 
-### Community 2006 - "product-colors.ts"
+### Community 2007 - "product-colors.ts"
 Cohesion: 0.47
 Nodes (5): COLOR_GROUP_KEYWORDS, detectColorGroup(), findKnownHex(), KNOWN_COLOR_HEX, normalizeColors()
 
-### Community 2007 - "cnpj-display-contract.test.ts"
+### Community 2008 - "cnpj-display-contract.test.ts"
 Cohesion: 0.53
 Nodes (4): calcDv(), rand, randomDigits(), randomValidCnpj()
 
-### Community 2009 - "sql-legacy — SQL histórico não-migration"
+### Community 2010 - "sql-legacy — SQL histórico não-migration"
 Cohesion: 0.33
 Nodes (5): Reentrada indevida via #3361 (corrigido em 2026-11-11), Referência, Regras, Situação de cada arquivo, sql-legacy — SQL histórico não-migration
 
-### Community 2010 - "route-guards-redirects.test.tsx"
+### Community 2011 - "route-guards-redirects.test.tsx"
 Cohesion: 0.40
 Nodes (4): AuthProbe(), authState, renderApp(), savePostLoginRedirect
 
-### Community 2011 - "products-catalog.test.ts"
+### Community 2012 - "products-catalog.test.ts"
 Cohesion: 0.33
 Nodes (3): Product, sampleProducts, SortBy
 
-### Community 2012 - "log-login-attempt-fuzz.test.ts"
+### Community 2013 - "log-login-attempt-fuzz.test.ts"
 Cohesion: 0.33
 Nodes (4): CT_JSON, Outcome, OUTCOMES, VALID_BODY
 
-### Community 2013 - "platform-ops.test.ts"
+### Community 2014 - "platform-ops.test.ts"
 Cohesion: 0.33
 Nodes (5): AUTH, CT, OK200, OK200CORS, stdTests()
 
-### Community 2015 - "filter-dev-only-items.test.ts"
+### Community 2016 - "filter-dev-only-items.test.ts"
 Cohesion: 0.33
 Nodes (5): ADMIN, DEV, Item, items, VENDEDOR
 
-### Community 2016 - "rbac-permissions.test.ts"
+### Community 2017 - "rbac-permissions.test.ts"
 Cohesion: 0.33
 Nodes (4): getRoleName(), Permission, RoleName, rolePermissions
 
-### Community 2017 - "tests/lib/theme-presets.test.ts"
+### Community 2018 - "tests/lib/theme-presets.test.ts"
 Cohesion: 0.33
 Nodes (3): CLASSIC_IDS, GX_IDS, ZAPP_GX_HSL
 
-### Community 2018 - "RLS Test Suite"
+### Community 2019 - "RLS Test Suite"
 Cohesion: 0.33
 Nodes (5): Matriz de cobertura, Personas, RLS Test Suite, Setup, Status
 
-### Community 2019 - "check-generated-files-protected.test.mjs"
+### Community 2020 - "check-generated-files-protected.test.mjs"
 Cohesion: 0.40
 Nodes (4): git(), SCRIPT_PATH, singleCommitRepoWithGeneratedFile(), temporaryRoots
 
-### Community 2020 - "check-visual-tests-specs.test.mjs"
+### Community 2021 - "check-visual-tests-specs.test.mjs"
 Cohesion: 0.40
 Nodes (3): runScript(), runScriptUnprivileged(), SCRIPT
 
-### Community 2022 - "rls-seller-policies.spec.ts"
+### Community 2023 - "rls-seller-policies.spec.ts"
 Cohesion: 0.33
 Nodes (4): CHILD_POLICY_SNAPSHOT, EXPECTED_POLICIES, POLICY_SNAPSHOT, PolicyExpectation
 
-### Community 2023 - "supplierReliability.fuzz.test.ts"
+### Community 2024 - "supplierReliability.fuzz.test.ts"
 Cohesion: 0.53
 Nodes (5): genScenario(), isoDate(), isoTs(), mulberry32(), Scenario
 
-### Community 2024 - "freight-coverage-validation.test.ts"
+### Community 2025 - "freight-coverage-validation.test.ts"
 Cohesion: 0.47
 Nodes (5): checkCoverage(), FreightQuoteRequest, FreightQuoteResult, getFreightQuote(), validateCep()
 
-### Community 2025 - "sales-goal.fuzz.test.ts"
+### Community 2026 - "sales-goal.fuzz.test.ts"
 Cohesion: 0.47
 Nodes (5): BASE_VALID, FuzzCase, makeCase(), mulberry32(), pick()
 
-### Community 2026 - "Confirmação Branches Descartáveis (A + B + F) — 44 branches"
+### Community 2027 - "Confirmação Branches Descartáveis (A + B + F) — 44 branches"
 Cohesion: 0.40
 Nodes (4): Categoria A (2) — cherry=0, subsumed, Categoria B (3) — mergeados ou sem trabalho útil, Categoria F (39) — trabalho antigo superado por main, Confirmação Branches Descartáveis (A + B + F) — 44 branches
 
-### Community 2027 - "Baseline: Testes Falhos em main"
+### Community 2028 - "Baseline: Testes Falhos em main"
 Cohesion: 0.40
 Nodes (4): Arquivo: `src/components/ui/__tests__/calendar.redesign.test.tsx`, Baseline: Testes Falhos em main, Status, Testes que falham em main (por nome)
 
-### Community 2028 - "Dossie PR #2312"
+### Community 2029 - "Dossie PR #2312"
 Cohesion: 0.40
 Nodes (4): Analise, Dossie PR #2312, Estado, Recomendacao para Joaquim
 
-### Community 2029 - "Dossie PR #2315"
+### Community 2030 - "Dossie PR #2315"
 Cohesion: 0.40
 Nodes (4): Analise, Dossie PR #2315, Estado, Recomendacao para Joaquim
 
-### Community 2030 - "Dossie PR #2316"
+### Community 2031 - "Dossie PR #2316"
 Cohesion: 0.40
 Nodes (4): Analise, Dossie PR #2316, Evidencia, Resolucao
 
-### Community 2031 - "Dossie PR #2357"
+### Community 2032 - "Dossie PR #2357"
 Cohesion: 0.40
 Nodes (4): Analise, Dossie PR #2357, Evidencia, Resolucao
 
-### Community 2032 - "Dossie PR #2361 (sucessora de #2316)"
+### Community 2033 - "Dossie PR #2361 (sucessora de #2316)"
 Cohesion: 0.40
 Nodes (4): CI pos-merge, Conteudo, Dossie PR #2361 (sucessora de #2316), Producao Vercel
 
-### Community 2033 - "PR #2417 — FECHAR (órfã)"
+### Community 2034 - "PR #2417 — FECHAR (órfã)"
 Cohesion: 0.40
 Nodes (4): Ação requerida, Evidência, PR #2417 — FECHAR (órfã), Resultado da análise
 
-### Community 2034 - "PR #2418 — FECHAR (órfã)"
+### Community 2035 - "PR #2418 — FECHAR (órfã)"
 Cohesion: 0.40
 Nodes (4): Ação requerida, Evidência, PR #2418 — FECHAR (órfã), Resultado da análise
 
-### Community 2035 - "PR #2419 — FECHAR (órfã)"
+### Community 2036 - "PR #2419 — FECHAR (órfã)"
 Cohesion: 0.40
 Nodes (4): Ação requerida, Evidência, PR #2419 — FECHAR (órfã), Resultado da análise
 
-### Community 2036 - "PR #2422 — FECHAR (órfã)"
+### Community 2037 - "PR #2422 — FECHAR (órfã)"
 Cohesion: 0.40
 Nodes (4): Ação requerida, Evidência, PR #2422 — FECHAR (órfã), Resultado da análise
 
-### Community 2037 - "Dossiê PR #2518 — docs(analise-prs): reconcilia prs.json rev15"
+### Community 2038 - "Dossiê PR #2518 — docs(analise-prs): reconcilia prs.json rev15"
 Cohesion: 0.40
 Nodes (4): Critérios de Merge, Dossiê PR #2518 — docs(analise-prs): reconcilia prs.json rev15, Gate Final pós-merge, Problema Corrigido
 
-### Community 2038 - "PR #2521 — FECHADO_PO"
+### Community 2039 - "PR #2521 — FECHADO_PO"
 Cohesion: 0.40
 Nodes (4): Nota, PR #2521 — FECHADO_PO, REGRA#8, Resumo
 
-### Community 2039 - "PR #2529 — MERGEADO_AUTONOMO"
+### Community 2040 - "PR #2529 — MERGEADO_AUTONOMO"
 Cohesion: 0.40
 Nodes (4): Critérios de Merge (todos passaram), Gate Final pós-merge, PR #2529 — MERGEADO_AUTONOMO, Resolução de conflito
 
-### Community 2040 - "PR #2538 — MERGEADO_PO"
+### Community 2041 - "PR #2538 — MERGEADO_PO"
 Cohesion: 0.40
 Nodes (4): Efeitos colaterais detectados, Impacto, PR #2538 — MERGEADO_PO, Resumo
 
-### Community 2041 - "PR #2544 — MERGEADO_AUTONOMO"
+### Community 2042 - "PR #2544 — MERGEADO_AUTONOMO"
 Cohesion: 0.40
 Nodes (4): Conteúdo, Critérios, PR #2544 — MERGEADO_AUTONOMO, Veredito: MERGEADO_AUTONOMO
 
-### Community 2042 - "PR #2545 — MERGEADO_AUTONOMO"
+### Community 2043 - "PR #2545 — MERGEADO_AUTONOMO"
 Cohesion: 0.40
 Nodes (4): Conteúdo, Critérios, PR #2545 — MERGEADO_AUTONOMO, Veredito: MERGEADO_AUTONOMO
 
-### Community 2043 - "PR #2548 — MERGEADO_AUTONOMO"
+### Community 2044 - "PR #2548 — MERGEADO_AUTONOMO"
 Cohesion: 0.40
 Nodes (4): Conteúdo, Critérios, PR #2548 — MERGEADO_AUTONOMO, Veredito: MERGEADO_AUTONOMO
 
-### Community 2044 - "PR #2549 — MERGEADO_AUTONOMO"
+### Community 2045 - "PR #2549 — MERGEADO_AUTONOMO"
 Cohesion: 0.40
 Nodes (4): Conteúdo, Critérios, PR #2549 — MERGEADO_AUTONOMO, Veredito: MERGEADO_AUTONOMO
 
-### Community 2045 - "PR #2551 — MERGEADO_AUTONOMO"
+### Community 2046 - "PR #2551 — MERGEADO_AUTONOMO"
 Cohesion: 0.40
 Nodes (4): Conteúdo, Critérios, PR #2551 — MERGEADO_AUTONOMO, Veredito: MERGEADO_AUTONOMO
 
-### Community 2046 - "PR #2553 — MERGEADO_AUTONOMO"
+### Community 2047 - "PR #2553 — MERGEADO_AUTONOMO"
 Cohesion: 0.40
 Nodes (4): Conteúdo, Critérios, PR #2553 — MERGEADO_AUTONOMO, Veredito: MERGEADO_AUTONOMO
 
-### Community 2047 - "PR #2554 — MERGEADO_AUTONOMO"
+### Community 2048 - "PR #2554 — MERGEADO_AUTONOMO"
 Cohesion: 0.40
 Nodes (4): Conteúdo, Critérios, PR #2554 — MERGEADO_AUTONOMO, Veredito: MERGEADO_AUTONOMO
 
-### Community 2048 - "PR #2555 — MERGEADO_AUTONOMO"
+### Community 2049 - "PR #2555 — MERGEADO_AUTONOMO"
 Cohesion: 0.40
 Nodes (4): Conteúdo, Critérios, PR #2555 — MERGEADO_AUTONOMO, Veredito: MERGEADO_AUTONOMO
 
-### Community 2049 - "PR #2556 — MERGEADO_AUTONOMO"
+### Community 2050 - "PR #2556 — MERGEADO_AUTONOMO"
 Cohesion: 0.40
 Nodes (4): Conteúdo, Critérios, PR #2556 — MERGEADO_AUTONOMO, Veredito: MERGEADO_AUTONOMO
 
-### Community 2050 - "Dossiê PR #2600"
+### Community 2051 - "Dossiê PR #2600"
 Cohesion: 0.40
 Nodes (4): Conflito, Dossiê PR #2600, Intenção, Veredito
 
-### Community 2051 - "Dossier PR #2605 — FECHADA"
+### Community 2052 - "Dossier PR #2605 — FECHADA"
 Cohesion: 0.40
 Nodes (4): Contexto, Dossier PR #2605 — FECHADA, Estado, Veredicto: FECHADA (não requer ação)
 
-### Community 2052 - "Dossier PR #2622 — FECHADA"
+### Community 2053 - "Dossier PR #2622 — FECHADA"
 Cohesion: 0.40
 Nodes (4): Contexto, Dossier PR #2622 — FECHADA, Estado, Veredicto: FECHADA (não requer ação)
 
-### Community 2053 - "Dossiê PR #2631"
+### Community 2054 - "Dossiê PR #2631"
 Cohesion: 0.40
 Nodes (4): Conflito, Dossiê PR #2631, Intenção, Veredito
 
-### Community 2054 - "Dossier PR #2645 — FECHADA"
+### Community 2055 - "Dossier PR #2645 — FECHADA"
 Cohesion: 0.40
 Nodes (4): Contexto, Dossier PR #2645 — FECHADA, Estado, Veredicto: FECHADA (não requer ação)
 
-### Community 2055 - "Dossiê PR #2666"
+### Community 2056 - "Dossiê PR #2666"
 Cohesion: 0.40
 Nodes (4): Dossiê PR #2666, Intenção, Problema, Veredito
 
-### Community 2056 - "Dossiê PR #2675"
+### Community 2057 - "Dossiê PR #2675"
 Cohesion: 0.40
 Nodes (4): Bloqueio — REGRA #10, Dossiê PR #2675, Intenção, Veredito
 
-### Community 2057 - "PR #2712 — docs: recibo de deploy de edge function(s) — run 40750221254 (E66)"
+### Community 2058 - "PR #2712 — docs: recibo de deploy de edge function(s) — run 40750221254 (E66)"
 Cohesion: 0.40
 Nodes (4): Análise, Critério de merge, Mudança, PR #2712 — docs: recibo de deploy de edge function(s) — run 40750221254 (E66)
 
-### Community 2058 - "PR #2725 — docs(ci): inventário completo CI — 119 workflows"
+### Community 2059 - "PR #2725 — docs(ci): inventário completo CI — 119 workflows"
 Cohesion: 0.40
 Nodes (4): Análise, CI, Mudança, PR #2725 — docs(ci): inventário completo CI — 119 workflows
 
-### Community 2059 - "Dossiê PR #3127 — fix(ci): estabiliza o núcleo E2E sem ocultar dívida de cobertura"
+### Community 2060 - "Dossiê PR #3127 — fix(ci): estabiliza o núcleo E2E sem ocultar dívida de cobertura"
 Cohesion: 0.40
 Nodes (4): Ciclos de correção, Dossiê PR #3127 — fix(ci): estabiliza o núcleo E2E sem ocultar dívida de cobertura, Estado CI, Veredicto: AGUARDANDO HUMANO
 
-### Community 2060 - "Dossiê PR #3129 — ci(e2e): reduzir pressão dos runners sem perder cobertura"
+### Community 2061 - "Dossiê PR #3129 — ci(e2e): reduzir pressão dos runners sem perder cobertura"
 Cohesion: 0.40
 Nodes (4): Ciclos de correção, Dossiê PR #3129 — ci(e2e): reduzir pressão dos runners sem perder cobertura, Estado CI, Veredicto: AGUARDANDO HUMANO
 
-### Community 2061 - "Dossiê PR #3137 — fix(ci): impedir falso negativo no detector E2E compartilhado"
+### Community 2062 - "Dossiê PR #3137 — fix(ci): impedir falso negativo no detector E2E compartilhado"
 Cohesion: 0.40
 Nodes (4): Ciclos de correção, Dossiê PR #3137 — fix(ci): impedir falso negativo no detector E2E compartilhado, Estado CI, Veredicto: AGUARDANDO HUMANO
 
-### Community 2062 - "Dossiê PR #3160 — fix: DB E15 (pg_temp + rollback)"
+### Community 2063 - "Dossiê PR #3160 — fix: DB E15 (pg_temp + rollback)"
 Cohesion: 0.40
 Nodes (4): Ciclos de correção, Dossiê PR #3160 — fix: DB E15 (pg_temp + rollback), Estado CI, Veredicto: AGUARDANDO HUMANO
 
-### Community 2063 - "Dossiê PR #3210 — chore(main): release 1.9.0"
+### Community 2064 - "Dossiê PR #3210 — chore(main): release 1.9.0"
 Cohesion: 0.40
 Nodes (4): Ciclos de correção, Dossiê PR #3210 — chore(main): release 1.9.0, Estado CI, Veredicto: AGUARDANDO HUMANO
 
-### Community 2064 - "Dossiê PR #3214 — fix(cron): CRON-001 — escalonar 4 cron jobs"
+### Community 2065 - "Dossiê PR #3214 — fix(cron): CRON-001 — escalonar 4 cron jobs"
 Cohesion: 0.40
 Nodes (4): Ciclos de correção, Dossiê PR #3214 — fix(cron): CRON-001 — escalonar 4 cron jobs, Estado CI, Veredicto: AGUARDANDO HUMANO
 
-### Community 2065 - "Dossiê PR #3215 — fix(migration): adiciona -- Rollback header"
+### Community 2066 - "Dossiê PR #3215 — fix(migration): adiciona -- Rollback header"
 Cohesion: 0.40
 Nodes (4): Ciclos de correção, Dossiê PR #3215 — fix(migration): adiciona -- Rollback header, Estado CI, Veredicto: AGUARDANDO HUMANO
 
-### Community 2066 - "Dossiê PR #3228 — chore(workflows): adiciona workflow_dispatch ao e2e-color-swatch-grid"
+### Community 2067 - "Dossiê PR #3228 — chore(workflows): adiciona workflow_dispatch ao e2e-color-swatch-grid"
 Cohesion: 0.40
 Nodes (4): Ciclos de correção, Dossiê PR #3228 — chore(workflows): adiciona workflow_dispatch ao e2e-color-swatch-grid, Estado CI, Veredicto: AGUARDANDO HUMANO
 
-### Community 2067 - "Dossiê PR #3236 — fix(migrations): adiciona cabeçalho -- Rollback em reconcile_e2e_cleanup_audit"
+### Community 2068 - "Dossiê PR #3236 — fix(migrations): adiciona cabeçalho -- Rollback em reconcile_e2e_cleanup_audit"
 Cohesion: 0.40
 Nodes (4): Ciclos de correção, Dossiê PR #3236 — fix(migrations): adiciona cabeçalho -- Rollback em reconcile_e2e_cleanup_audit, Estado CI, Veredicto: AGUARDANDO HUMANO
 
-### Community 2068 - "7. Custos"
+### Community 2069 - "7. Custos"
 Cohesion: 0.40
 Nodes (5): 7.1 Edge Function invocations, 7.2 Banco de dados, 7.3 IA (Lovable AI Gateway, ElevenLabs), 7. Custos, `COST-001` 🟢 POSITIVO — Tracking de uso de IA pronto
 
-### Community 2069 - "8. Benchmarking"
+### Community 2070 - "8. Benchmarking"
 Cohesion: 0.40
 Nodes (5): 8.1 OWASP Top 10 (2021), 8.2 Padrão Supabase, 8.3 12-Factor App, 8.4 Comparativo com SaaS B2B equivalente, 8. Benchmarking
 
-### Community 2070 - "Schema vivo — snapshot de auditoria (doufsxqlfjyuvxuezpln)"
+### Community 2071 - "Schema vivo — snapshot de auditoria (doufsxqlfjyuvxuezpln)"
 Cohesion: 0.40
 Nodes (4): Estado, Fonte de verdade do drift, Por que este arquivo existe, Schema vivo — snapshot de auditoria (doufsxqlfjyuvxuezpln)
 
-### Community 2071 - "Inventário — Edge Functions"
+### Community 2072 - "Inventário — Edge Functions"
 Cohesion: 0.40
 Nodes (4): Funções com verify_jwt = false, Funções invocadas do frontend (verificadas contra publicadas), Inventário — Edge Functions, Resumo
 
-### Community 2072 - "Inventário — Realtime / Replicação"
+### Community 2073 - "Inventário — Realtime / Replicação"
 Cohesion: 0.40
 Nodes (4): Inventário — Realtime / Replicação, Publication supabase_realtime, SB-0001 — auth.users na publication, SB-0003 — REPLICA IDENTITY DEFAULT
 
-### Community 2073 - "Baseline de Imutabilidade da Produção"
+### Community 2074 - "Baseline de Imutabilidade da Produção"
 Cohesion: 0.40
 Nodes (4): Baseline de Imutabilidade da Produção, Medições ao FINAL da Auditoria, Medições no INÍCIO da Auditoria, Verificação
 
-### Community 2074 - "session-start.sh"
+### Community 2075 - "session-start.sh"
 Cohesion: 0.50
 Nodes (3): estado(), PATH, session-start.sh script
 
-### Community 2076 - "📊 CATEGORIES (Categorias)"
+### Community 2077 - "📊 CATEGORIES (Categorias)"
 Cohesion: 0.40
 Nodes (5): 📊 CATEGORIES (Categorias), **Policy 1: org_members_view_categories**, **Policy 2: org_admins_create_categories**, **Policy 3: org_admins_update_categories**, **Policy 4: org_admins_delete_categories**
 
-### Community 2077 - "💰 QUOTES (Orçamentos)"
+### Community 2078 - "💰 QUOTES (Orçamentos)"
 Cohesion: 0.40
 Nodes (5): **Policy 1: org_members_view_quotes**, **Policy 2: org_members_create_quotes**, **Policy 3: org_members_update_own_quotes**, **Policy 4: org_admins_delete_quotes**, 💰 QUOTES (Orçamentos)
 
-### Community 2078 - "🎯 FASE 1: Setup Inicial (1-2 dias)"
+### Community 2079 - "🎯 FASE 1: Setup Inicial (1-2 dias)"
 Cohesion: 0.40
 Nodes (5): **1.1: Criar primeira Organization**, **1.2: Implementar OrganizationContext**, **1.3: Criar hooks customizados**, **1.4: Adicionar OrganizationSwitcher**, 🎯 FASE 1: Setup Inicial (1-2 dias)
 
-### Community 2079 - "ADR 0004 — Plataforma Fechada (No Public Signup)"
+### Community 2080 - "ADR 0004 — Plataforma Fechada (No Public Signup)"
 Cohesion: 0.40
 Nodes (4): ADR 0004 — Plataforma Fechada (No Public Signup), Consequências, Contexto, Decisão
 
-### Community 2080 - "ADR 0005 — Circuit Breaker em Bridges Externas"
+### Community 2081 - "ADR 0005 — Circuit Breaker em Bridges Externas"
 Cohesion: 0.40
 Nodes (4): ADR 0005 — Circuit Breaker em Bridges Externas, Consequências, Contexto, Decisão
 
-### Community 2081 - "Matriz de Fluxos Críticos — v0.2 (2026-08-29)"
+### Community 2082 - "Matriz de Fluxos Críticos — v0.2 (2026-08-29)"
 Cohesion: 0.40
 Nodes (4): 2. Dependências cruzadas, 3. Decisões pendentes do PO (consolidado), 4. Regras de uso desta matriz, Matriz de Fluxos Críticos — v0.2 (2026-08-29)
 
-### Community 2082 - "3. Etapa 069 — relações com estimativa zero: finalidade e owner"
+### Community 2083 - "3. Etapa 069 — relações com estimativa zero: finalidade e owner"
 Cohesion: 0.40
 Nodes (5): 3. Etapa 069 — relações com estimativa zero: finalidade e owner, Estado da etapa, Evidência confirmada nas fotografias, Matriz de triagem — não é atribuição fictícia de owner, Perguntas obrigatórias ao PO/DBA
 
-### Community 2083 - "4. Etapa 070 — mapa de dependências de colunas"
+### Community 2084 - "4. Etapa 070 — mapa de dependências de colunas"
 Cohesion: 0.40
 Nodes (5): 4. Etapa 070 — mapa de dependências de colunas, Bloqueios, Estado da etapa, Evidência confirmada nas fotografias, Protocolo de prova antes de chamar uma coluna de órfã
 
-### Community 2084 - "6. Etapas 072 e 073 — matriz de RLS/policies e partição sem RLS"
+### Community 2085 - "6. Etapas 072 e 073 — matriz de RLS/policies e partição sem RLS"
 Cohesion: 0.40
 Nodes (5): 6. Etapas 072 e 073 — matriz de RLS/policies e partição sem RLS, Estado das etapas, Evidência confirmada nas fotografias, Matriz de teste a registrar antes de qualquer mutação, Perguntas ao PO/DBA
 
-### Community 2085 - "Sumário Executivo — Auditoria Front-end ↔ DB (Promo_Gifts)"
+### Community 2086 - "Sumário Executivo — Auditoria Front-end ↔ DB (Promo_Gifts)"
 Cohesion: 0.40
 Nodes (4): Ação imediata necessária, Contagem de achados por severidade, Inventário resumido, Sumário Executivo — Auditoria Front-end ↔ DB (Promo_Gifts)
 
-### Community 2086 - "Auditoria Técnica — 20 Dimensões"
+### Community 2087 - "Auditoria Técnica — 20 Dimensões"
 Cohesion: 0.40
 Nodes (4): Auditoria Técnica — 20 Dimensões, Implementado nesta rodada (auditoria → ação), Scorecard, Top 10 ações por ROI
 
-### Community 2087 - "Relatório de Baseline CI — 2026-10-30"
+### Community 2088 - "Relatório de Baseline CI — 2026-10-30"
 Cohesion: 0.40
 Nodes (4): Baseline Local (SHA 468ac058, 2026-10-30T17:43Z), Gate Final — Deploy Gates, Inventário de Workflows em Falha — Última Execução em main, Relatório de Baseline CI — 2026-10-30
 
-### Community 2088 - "📝 **CHECKLIST DE IMPLEMENTAÇÃO**"
+### Community 2089 - "📝 **CHECKLIST DE IMPLEMENTAÇÃO**"
 Cohesion: 0.40
 Nodes (5): 📝 **CHECKLIST DE IMPLEMENTAÇÃO**, ✅ **Tarefas Obrigatórias:**, 🔧 **Tarefas Opcionais (Recomendadas):**, HistoryEntry(), QuoteHistoryPanel()
 
-### Community 2089 - "✅ **RESUMO FINAL**"
+### Community 2090 - "✅ **RESUMO FINAL**"
 Cohesion: 0.40
 Nodes (5): ❌ **NÃO É NECESSÁRIO:**, ✅ **O QUE FAZER:**, 🎯 **Resultado esperado:**, ✅ **RESUMO FINAL**, ⏱️ **Tempo estimado:** 1-2 horas
 
-### Community 2090 - "19. CARDS"
+### Community 2091 - "19. CARDS"
 Cohesion: 0.40
 Nodes (5): 19. CARDS, Card de entidade com imagem, Card operacional, Hover, Selected
 
-### Community 2091 - "1. REGRA DE FONTE DA VERDADE"
+### Community 2092 - "1. REGRA DE FONTE DA VERDADE"
 Cohesion: 0.40
 Nodes (5): 1. REGRA DE FONTE DA VERDADE, Fonte funcional, Fonte sistêmica, Fonte visual, Ordem de prioridade
 
-### Community 2092 - "21. PRODUCT CARD"
+### Community 2093 - "21. PRODUCT CARD"
 Cohesion: 0.40
 Nodes (5): 21. PRODUCT CARD, Favorito, Imagem, Preço, Seleção
 
-### Community 2093 - "22. TEMPLATE CARD"
+### Community 2094 - "22. TEMPLATE CARD"
 Cohesion: 0.40
 Nodes (5): 22. TEMPLATE CARD, CTA, Família, Paleta, Preview
 
-### Community 2094 - "26. EDITOR — ETAPA IDENTIDADE"
+### Community 2095 - "26. EDITOR — ETAPA IDENTIDADE"
 Cohesion: 0.40
 Nodes (5): 26. EDITOR — ETAPA IDENTIDADE, Configuração, Desktop largo, Pages rail, Preview
 
-### Community 2095 - "27. EDITOR — ETAPA PRODUTOS"
+### Community 2096 - "27. EDITOR — ETAPA PRODUTOS"
 Cohesion: 0.40
 Nodes (5): 27. EDITOR — ETAPA PRODUTOS, Catálogo, Desktop, “Na revista”, Preview
 
-### Community 2096 - "31. PAGE RAIL"
+### Community 2097 - "31. PAGE RAIL"
 Cohesion: 0.40
 Nodes (5): 31. PAGE RAIL, Active, Item, Scroll, Width
 
-### Community 2097 - "37. FEEDBACK"
+### Community 2098 - "37. FEEDBACK"
 Cohesion: 0.40
 Nodes (5): 37. FEEDBACK, Error, Saved, Saving, Toast
 
-### Community 2098 - "9. BACKDROP / BLUR"
+### Community 2099 - "9. BACKDROP / BLUR"
 Cohesion: 0.40
 Nodes (5): 9. BACKDROP / BLUR, Dialog overlay, Drawers, Header sticky, Regra
 
-### Community 2099 - "Faxina de 2026-11-14 — provas e registros"
+### Community 2100 - "Faxina de 2026-11-14 — provas e registros"
 Cohesion: 0.40
 Nodes (4): Como ler a prova de uma branch excluída, Faxina de 2026-11-14 — provas e registros, O que fazer se faltar algo, O que tem em cada arquivo
 
-### Community 2100 - "📁 10. COLEÇÕES E FAVORITOS"
+### Community 2101 - "📁 10. COLEÇÕES E FAVORITOS"
 Cohesion: 0.40
 Nodes (5): 10.1 Sistema de Favoritos, 10.2 Coleções de Produtos, 10.3 Comparação de Produtos, 10.4 Visualizados Recentemente, 📁 10. COLEÇÕES E FAVORITOS
 
-### Community 2101 - "💰 22. SIMULADOR DE PREÇOS"
+### Community 2102 - "💰 22. SIMULADOR DE PREÇOS"
 Cohesion: 0.40
 Nodes (5): 22.1 Simulador Wizard (Principal), 22.2 Simulador de Preços (Compacto), 22.3 Simulador de Personalização (Legacy), 22.4 Gravação e Técnicas de Preço, 💰 22. SIMULADOR DE PREÇOS
 
-### Community 2102 - "📋 Decisões já tomadas (NÃO REVISITAR)"
+### Community 2103 - "📋 Decisões já tomadas (NÃO REVISITAR)"
 Cohesion: 0.40
 Nodes (5): Arquitetura, 📋 Decisões já tomadas (NÃO REVISITAR), Fluxo técnico, Governança de mudanças, Modelo de negócio
 
-### Community 2103 - "🛠️ Convenções de trabalho"
+### Community 2104 - "🛠️ Convenções de trabalho"
 Cohesion: 0.40
 Nodes (5): Atualização do doc de auditoria, 🛠️ Convenções de trabalho, Edição do doc com Node (python3 não disponível no VPS), Mensagens de commit, Nomes de branches
 
-### Community 2104 - "📂 Localização de tudo"
+### Community 2105 - "📂 Localização de tudo"
 Cohesion: 0.40
 Nodes (5): Documentação versionada (no repo), 📂 Localização de tudo, Migration preparada pendente (NÃO aplicar até Fase 3), Notas persistentes (no VPS), Repositório
 
-### Community 2105 - "20260625120000_align_quote_status_check — RESOLVIDO (não aplicar)"
+### Community 2106 - "20260625120000_align_quote_status_check — RESOLVIDO (não aplicar)"
 Cohesion: 0.40
 Nodes (4): 20260625120000_align_quote_status_check — RESOLVIDO (não aplicar), docs/migrations — histórico, Por que os arquivos foram removidos, Resumo
 
-### Community 2106 - "E01 — Linha de base registrada (2026-09-16)"
+### Community 2107 - "E01 — Linha de base registrada (2026-09-16)"
 Cohesion: 0.40
 Nodes (4): Checklist de conclusão (E01), E01 — Linha de base registrada (2026-09-16), Estado do git, Estado do ledger de migrations
 
-### Community 2107 - "Helpers semânticos de RBAC (RLS)"
+### Community 2108 - "Helpers semânticos de RBAC (RLS)"
 Cohesion: 0.40
 Nodes (4): Exemplo de uso em policy, Funções disponíveis, Helpers semânticos de RBAC (RLS), Regras
 
-### Community 2108 - "Runbook — Redeploy de Edge Function (desvio N-1 → N)"
+### Community 2109 - "Runbook — Redeploy de Edge Function (desvio N-1 → N)"
 Cohesion: 0.40
 Nodes (4): Causas típicas, Nunca, Procedimento, Runbook — Redeploy de Edge Function (desvio N-1 → N)
 
-### Community 2109 - "Runbook — Caminho de Hotfix em Produção"
+### Community 2110 - "Runbook — Caminho de Hotfix em Produção"
 Cohesion: 0.40
 Nodes (4): Evidências do incidente 2026-10-11 (plano Supabase), Pessoas, Runbook — Caminho de Hotfix em Produção, Sequência (sempre nesta ordem)
 
-### Community 2110 - "Runbook — Rotação de Secrets"
+### Community 2111 - "Runbook — Rotação de Secrets"
 Cohesion: 0.40
 Nodes (4): Armadilhas conhecidas, Cadência, Procedimento (todos seguem o mesmo padrão), Runbook — Rotação de Secrets
 
-### Community 2111 - "19. Recomendações de Uso"
+### Community 2112 - "19. Recomendações de Uso"
 Cohesion: 0.40
 Nodes (5): 19. Recomendações de Uso, Conversão de Preços (€ → R$), Estratégia de Sincronização Recomendada, Identificação dos Campos de Capacidade/Tamanho, Qual feed usar para cada propósito?
 
-### Community 2112 - "Testing Guide"
+### Community 2113 - "Testing Guide"
 Cohesion: 0.40
 Nodes (4): Running Tests, Test Structure, Testing Guide, Writing Tests
 
-### Community 2113 - "required-checks.json"
+### Community 2114 - "required-checks.json"
 Cohesion: 0.40
 Nodes (4): description, _removidos, rulesets, $schema
 
-### Community 2115 - "3. Sistema de Autenticação"
+### Community 2116 - "3. Sistema de Autenticação"
 Cohesion: 0.40
 Nodes (5): 3.1 Fluxo de Login, 3.2 Parâmetros de Login, 3.3 Proteção Anti-Fraude — Bloqueio Geolocalizado, 3.4 Comportamento de Redirecionamento de Auth, 3. Sistema de Autenticação
 
-### Community 2116 - "7. Schemas de Resposta JSON"
+### Community 2117 - "7. Schemas de Resposta JSON"
 Cohesion: 0.40
 Nodes (5): 7. Schemas de Resposta JSON, Enum de Tipos (`data.type`), Padrão 1 — `_status` wrapper (catalogo.ajax.php), Padrão 2 — `success` + `data.type` (simulador, carrinho, maquetas), Padrão 3 — `result` wrapper (loja.ajax.php)
 
-### Community 2117 - "QA Test Matrix — promo-gifts-v4"
+### Community 2118 - "QA Test Matrix — promo-gifts-v4"
 Cohesion: 0.40
 Nodes (4): Existing Test Infrastructure, Priority Test Gaps, QA Test Matrix — promo-gifts-v4, Test Coverage by Module
 
-### Community 2118 - "Relatório de Verificação: Projeto Canônico `doufsxqlfjyuvxuezpln`"
+### Community 2119 - "Relatório de Verificação: Projeto Canônico `doufsxqlfjyuvxuezpln`"
 Cohesion: 0.40
 Nodes (4): 1. Barreiras de Segurança Implementadas, 2. Status das Chamadas de API e Páginas, 3. Verificações de Ambiente, Relatório de Verificação: Projeto Canônico `doufsxqlfjyuvxuezpln`
 
-### Community 2119 - "Round Quality Report — 2026-07-23T16:36:38.224Z"
+### Community 2120 - "Round Quality Report — 2026-07-23T16:36:38.224Z"
 Cohesion: 0.40
 Nodes (4): Arquivos alterados (0), ESLint, Round Quality Report — 2026-07-23T16:36:38.224Z, TypeScript
 
-### Community 2120 - "CartHeader — Relatório de Invariantes"
+### Community 2121 - "CartHeader — Relatório de Invariantes"
 Cohesion: 0.40
 Nodes (4): CartHeader — Relatório de Invariantes, Especificação de cobertura fuzz, Invariantes cobertas, Resumo
 
-### Community 2121 - "Decision 009 — RPCs follow-up post-merge: criação de tables auxiliares e adaptações de tipos"
+### Community 2122 - "Decision 009 — RPCs follow-up post-merge: criação de tables auxiliares e adaptações de tipos"
 Cohesion: 0.40
 Nodes (5): Alternativas consideradas (rejeitadas), Decision 009 — RPCs follow-up post-merge: criação de tables auxiliares e adaptações de tipos, Decisão, Justificativa, Trade-offs aceitos
 
-### Community 2122 - "✅ Decisão 007 — Plano A'' (Rename system_settings para coexistência)"
+### Community 2123 - "✅ Decisão 007 — Plano A'' (Rename system_settings para coexistência)"
 Cohesion: 0.40
 Nodes (5): Análise, ✅ Decisão 007 — Plano A'' (Rename system_settings para coexistência), Decisão APROVADA, Resultado, Situação
 
-### Community 2123 - "🚨 Achado Bombástico: 0% overlap entre repo e banco"
+### Community 2124 - "🚨 Achado Bombástico: 0% overlap entre repo e banco"
 Cohesion: 0.40
 Nodes (4): 🚨 Achado Bombástico: 0% overlap entre repo e banco, Implicação pro Recovery, O que isso significa, Os números
 
-### Community 2124 - "PlatformFailureCards.tsx"
+### Community 2125 - "PlatformFailureCards.tsx"
 Cohesion: 0.70
 Nodes (4): DeltaIndicator(), PlatformFailureCards(), statusClass(), statusForRate()
 
-### Community 2125 - "MockupSkeleton.tsx"
+### Community 2126 - "MockupSkeleton.tsx"
 Cohesion: 0.60
 Nodes (4): MockupHistorySkeleton(), MockupPageSkeleton(), MockupSkeleton(), MockupSkeletonProps
 
-### Community 2126 - "hooks/useAutoSaveQuote.ts"
+### Community 2127 - "hooks/useAutoSaveQuote.ts"
 Cohesion: 0.50
 Nodes (4): AutoSaveOptions, AutoSavePayload, migratePayload(), useAutoSaveQuote()
 
-### Community 2127 - "hooks/useCatalogRealStats.ts"
+### Community 2128 - "hooks/useCatalogRealStats.ts"
 Cohesion: 0.50
 Nodes (4): CatalogRealStats, HIDDEN_CATEGORY_PATTERNS, isHiddenCategory(), useCatalogRealStats()
 
-### Community 2130 - "hooks/useSimilarKits.ts"
+### Community 2131 - "hooks/useSimilarKits.ts"
 Cohesion: 0.50
 Nodes (4): extractSkus(), Options, TemplateRow, useSimilarKits()
 
-### Community 2131 - "kit-og-image.ts"
+### Community 2132 - "kit-og-image.ts"
 Cohesion: 0.60
 Nodes (4): generateKitOgImage(), KitOgInput, shade(), wrapText()
 
-### Community 2132 - "accordion.tsx"
+### Community 2133 - "accordion.tsx"
 Cohesion: 0.40
 Nodes (4): @radix-ui/react-accordion, AccordionContent, AccordionItem, AccordionTrigger
 
-### Community 2133 - "avatar.tsx"
+### Community 2134 - "avatar.tsx"
 Cohesion: 0.40
 Nodes (4): @radix-ui/react-avatar, Avatar, AvatarFallback, AvatarImage
 
-### Community 2134 - "§24 — Prova Gate Final SHA `be7688da` + PR #3179"
+### Community 2135 - "§24 — Prova Gate Final SHA `be7688da` + PR #3179"
 Cohesion: 0.40
 Nodes (5): §24 — Prova Gate Final SHA `be7688da` + PR #3179, Comparação SHA `bfb2926d` → `be7688da`, Gate Final (SHA `be7688da` — main atual), magazine-unit-tests — estado em main, PR #3179 — fix preflight `db-apply-migration`
 
-### Community 2135 - "§26 — Baseline local sessão 2026-11-07T23:00Z (SHA `d2ce504a`)"
+### Community 2136 - "§26 — Baseline local sessão 2026-11-07T23:00Z (SHA `d2ce504a`)"
 Cohesion: 0.40
 Nodes (5): §26 — Baseline local sessão 2026-11-07T23:00Z (SHA `d2ce504a`), Baseline local completo executado nesta sessão, PENDENCIAS.md — itens com motivo exato registrado nesta sessão, PRs desta sessão, Verificação de gates verdes antes × depois desta sessão
 
-### Community 2136 - "§30 — Fix Branch Protection Sentinel (2026-11-08T02:33Z)"
+### Community 2137 - "§30 — Fix Branch Protection Sentinel (2026-11-08T02:33Z)"
 Cohesion: 0.40
 Nodes (5): §30 — Fix Branch Protection Sentinel (2026-11-08T02:33Z), Causa raiz — Branch Protection Sentinel failure, Correção aplicada, Inventário de workflows em `46212f02`, PRs desta sessão (§30)
 
-### Community 2137 - "check-restore-seller-cart-rpc.mjs"
+### Community 2138 - "check-restore-seller-cart-rpc.mjs"
 Cohesion: 0.70
 Nodes (4): fail(), log(), main(), skip()
 
-### Community 2138 - "Manutenção local sem IA"
+### Community 2139 - "Manutenção local sem IA"
 Cohesion: 0.40
 Nodes (4): Ciclo de correção, Manutenção local sem IA, Relatórios e códigos de saída, Uso
 
-### Community 2139 - "inject-crm-dead-letters.mjs"
+### Community 2140 - "inject-crm-dead-letters.mjs"
 Cohesion: 0.40
 Nodes (4): args, now, results, scenarios
 
-### Community 2140 - "test-wave1-forward-only-migrations.sh"
+### Community 2141 - "test-wave1-forward-only-migrations.sh"
 Cohesion: 0.50
 Nodes (4): cleanup(), container_name, image, test-wave1-forward-only-migrations.sh script
 
-### Community 2141 - "lint-0029-allowlist.json"
+### Community 2142 - "lint-0029-allowlist.json"
 Cohesion: 0.40
 Nodes (4): description, documented_in, functions, $schema
 
-### Community 2142 - "SkipToContent.tsx"
+### Community 2143 - "SkipToContent.tsx"
 Cohesion: 0.40
 Nodes (4): defaultLinks, SkipLink, SkipToContent, SkipToContentProps
 
-### Community 2143 - "ZeroResultDiagnosisCallout.tsx"
+### Community 2144 - "ZeroResultDiagnosisCallout.tsx"
 Cohesion: 0.50
 Nodes (4): KEY_LABEL, PreviewBadges(), Props, ZeroResultDiagnosisCallout()
 
-### Community 2144 - "kit-template-icons.ts"
+### Community 2145 - "kit-template-icons.ts"
 Cohesion: 0.70
 Nodes (3): getKitTemplateIcon(), KIT_TEMPLATE_ICON_NAMES, KIT_TEMPLATE_ICONS
 
-### Community 2145 - "mockupWizardStep.test.ts"
+### Community 2146 - "mockupWizardStep.test.ts"
 Cohesion: 0.60
 Nodes (3): getMockupWizardStep(), MockupWizardStepState, BASE
 
-### Community 2146 - "ProductDimensions.tsx"
+### Community 2147 - "ProductDimensions.tsx"
 Cohesion: 0.50
 Nodes (4): ProductDimensions(), ProductDimensionsProps, SpecItem(), SpecItemProps
 
-### Community 2150 - "useKillSwitchObservability.ts"
+### Community 2151 - "useKillSwitchObservability.ts"
 Cohesion: 0.40
 Nodes (4): KillSwitchObservabilityData, SwitchHitSummary, SwitchState, useKillSwitchObservability()
 
-### Community 2151 - "useAuthHydrationMetrics.ts"
+### Community 2152 - "useAuthHydrationMetrics.ts"
 Cohesion: 0.40
 Nodes (3): HydrationMetrics, HydrationSample, UseAuthHydrationMetricsResult
 
-### Community 2152 - "gravacao-types.ts"
+### Community 2153 - "gravacao-types.ts"
 Cohesion: 0.40
 Nodes (4): CustomizationPriceV2, FaixaPrecoOficial, PrintAreaWithTechniques, TabelaPrecoOficial
 
-### Community 2153 - "kit-builder/useKitWizardShortcuts.ts"
+### Community 2154 - "kit-builder/useKitWizardShortcuts.ts"
 Cohesion: 0.40
 Nodes (3): BOX_FIRST_STEPS, ITEMS_FIRST_STEPS, Options
 
-### Community 2154 - "kit-builder/useSimilarKits.ts"
+### Community 2155 - "kit-builder/useSimilarKits.ts"
 Cohesion: 0.50
 Nodes (4): extractSkus(), Options, TemplateRow, useSimilarKits()
 
-### Community 2155 - "products/useCatalogRealStats.ts"
+### Community 2156 - "products/useCatalogRealStats.ts"
 Cohesion: 0.50
 Nodes (4): CatalogRealStats, HIDDEN_CATEGORY_PATTERNS, isHiddenCategory(), useCatalogRealStats()
 
-### Community 2156 - "useQuoteClientLogos.ts"
+### Community 2157 - "useQuoteClientLogos.ts"
 Cohesion: 0.50
 Nodes (4): CrmCompanyLogoRow, LogoByCnpj, normalizeCnpj(), useQuoteClientLogos()
 
-### Community 2157 - "simulation/useTechniquePricing.ts"
+### Community 2158 - "simulation/useTechniquePricing.ts"
 Cohesion: 0.40
 Nodes (3): ColorOption, SizeOption, TechniquePriceOption
 
-### Community 2160 - "useVoiceHistory.ts"
+### Community 2161 - "useVoiceHistory.ts"
 Cohesion: 0.60
 Nodes (4): loadHistory(), saveHistory(), useVoiceHistory(), VoiceHistoryEntry
 
-### Community 2161 - "invoke-full-scope.ts"
+### Community 2162 - "invoke-full-scope.ts"
 Cohesion: 0.40
 Nodes (3): ChallengeFn, InvokeFullScopeOptions, InvokeFullScopeResult
 
-### Community 2162 - "industryRecommendations.ts"
+### Community 2163 - "industryRecommendations.ts"
 Cohesion: 0.40
 Nodes (3): FALLBACK, INDUSTRY_RECOMMENDATIONS, IndustryRecommendation
 
-### Community 2164 - "forecast.ts"
+### Community 2165 - "forecast.ts"
 Cohesion: 0.50
 Nodes (3): ForecastPoint, linearRegression(), projectForecast()
 
-### Community 2165 - "__tests__/format-utils.test.ts"
+### Community 2166 - "__tests__/format-utils.test.ts"
 Cohesion: 0.80
 Nodes (3): formatTooltipCurrency(), formatTooltipNumber(), formatTooltipPercent()
 
-### Community 2166 - "image-converter.ts"
+### Community 2167 - "image-converter.ts"
 Cohesion: 0.60
 Nodes (4): convertToPng(), ensureSupportedFormat(), needsConversion(), SUPPORTED_FORMATS
 
-### Community 2167 - "stock-filter.test.ts"
+### Community 2168 - "stock-filter.test.ts"
 Cohesion: 0.60
 Nodes (3): fixture(), p(), v()
 
-### Community 2168 - "routePrefetch.ts"
+### Community 2169 - "routePrefetch.ts"
 Cohesion: 0.50
 Nodes (4): getPrefetchHandlers(), prefetched, prefetchRoute(), routeImportMap
 
-### Community 2169 - "supplier-colors.ts"
+### Community 2170 - "supplier-colors.ts"
 Cohesion: 0.50
 Nodes (4): getSupplierBadgeClasses(), getSupplierColors(), SUPPLIER_COLORS, SupplierColorConfig
 
-### Community 2172 - "CartHeader.contract-snapshot.test.ts"
+### Community 2173 - "CartHeader.contract-snapshot.test.ts"
 Cohesion: 0.50
 Nodes (4): CATALOG, computeHeaderMeta(), Item, norm()
 
-### Community 2173 - "QuotesListPage.deleteDisabled.test.tsx"
+### Community 2174 - "QuotesListPage.deleteDisabled.test.tsx"
 Cohesion: 0.40
 Nodes (3): baseHook, handleDelete, HookReturn
 
-### Community 2175 - "orderService.ts"
+### Community 2176 - "orderService.ts"
 Cohesion: 0.40
 Nodes (3): OrderLookup, OrderLookupItem, orderService
 
-### Community 2176 - "magazineService.shapeDrift.test.ts"
+### Community 2177 - "magazineService.shapeDrift.test.ts"
 Cohesion: 0.40
 Nodes (4): legacyItemRow, loggerWarn, mockMagazineRow, wellFormedItemRow
 
-### Community 2178 - "external-db.ts"
+### Community 2179 - "external-db.ts"
 Cohesion: 0.40
 Nodes (4): ExternalPrintArea, ExternalProduct, ExternalTechnique, MockupTechnique
 
-### Community 2179 - "collections-watcher/notification-insert.contract_test.ts"
+### Community 2180 - "collections-watcher/notification-insert.contract_test.ts"
 Cohesion: 0.50
 Nodes (3): assert(), assertRejects(), InsertResult
 
-### Community 2180 - "favorites-watcher/notification-insert.contract_test.ts"
+### Community 2181 - "favorites-watcher/notification-insert.contract_test.ts"
 Cohesion: 0.50
 Nodes (3): assert(), assertRejects(), InsertResult
 
-### Community 2182 - "parseAiResponse.ts"
+### Community 2183 - "parseAiResponse.ts"
 Cohesion: 0.50
 Nodes (4): FALLBACK_RESULT, parseAiResponse(), validateResult(), VoiceCommandResult
 
-### Community 2183 - "2026-05-24 â€” Fix definitivo sort-order 20250103"
+### Community 2184 - "2026-05-24 â€” Fix definitivo sort-order 20250103"
 Cohesion: 0.40
 Nodes (5): 2026-05-24 â€” Fix definitivo sort-order 20250103, Estado banco de producao, Estado final, Fix aplicado (2026-05-24), Root cause
 
-### Community 2184 - "2026-06-05 - Reconciliacao TOTAL de junho + hardening (PR #659 review)"
+### Community 2185 - "2026-06-05 - Reconciliacao TOTAL de junho + hardening (PR #659 review)"
 Cohesion: 0.40
 Nodes (5): 2026-06-05 - Reconciliacao TOTAL de junho + hardening (PR #659 review), Caveat de replay byte-exato (decisao: manter byte-exato + documentar), Forward fix adicional (regressao Spot detectada na 2a rodada de review), Forward fixes aplicados em producao (aprovados pelo usuario), Hardening abrangente pos-review (CodeRabbit/Codex/cubic) — aprovado pelo usuario
 
-### Community 2185 - "2026-10-22 — Auditoria DRIFT-003: 448 migrations sem ledger identificadas"
+### Community 2186 - "2026-10-22 — Auditoria DRIFT-003: 448 migrations sem ledger identificadas"
 Cohesion: 0.40
 Nodes (5): 2026-10-22 — Auditoria DRIFT-003: 448 migrations sem ledger identificadas, 5 migrations mais críticas sem ledger (repair-only markers criados), Distribuição por tipo, Próximo passo, Resumo do drift identificado
 
-### Community 2188 - "favorites-module.test.ts"
+### Community 2189 - "favorites-module.test.ts"
 Cohesion: 0.40
 Nodes (4): FavoriteItem, FavoriteList, mockItems, mockLists
 
-### Community 2190 - "quote-flow.test.ts"
+### Community 2191 - "quote-flow.test.ts"
 Cohesion: 0.40
 Nodes (4): AUTH, CT, VALID_REMINDER_PAYLOAD, VALID_SYNC_PAYLOAD
 
-### Community 2191 - "webhooks.test.ts"
+### Community 2192 - "webhooks.test.ts"
 Cohesion: 0.40
 Nodes (4): AUTH, CT, VALID_DISPATCHER, VALID_INBOUND_V2
 
-### Community 2193 - "kit-builder-price.test.ts"
+### Community 2194 - "kit-builder-price.test.ts"
 Cohesion: 0.40
 Nodes (4): emptyPersonalization, fullPersonalization, mockBox, mockItems
 
-### Community 2195 - "frenet.ts"
+### Community 2196 - "frenet.ts"
 Cohesion: 0.40
 Nodes (4): frenetQuoteError, frenetQuoteResponse, frenetTrackResponse, frenetZipResponse
 
-### Community 2196 - "P0 Test Skeletons"
+### Community 2197 - "P0 Test Skeletons"
 Cohesion: 0.40
 Nodes (4): Como destravar, Convenção, Mapeamento P0 → Arquivo, P0 Test Skeletons
 
-### Community 2198 - "Dossiê — `claude/chore-migrations-sync-log-261019-1600`"
+### Community 2199 - "Dossiê — `claude/chore-migrations-sync-log-261019-1600`"
 Cohesion: 0.50
 Nodes (3): Análise (método analise-branches.md), Dossiê — `claude/chore-migrations-sync-log-261019-1600`, Evidências desta sessão
 
-### Community 2199 - "Dossiê — `devin/probe-e184-legacy-refs`"
+### Community 2200 - "Dossiê — `devin/probe-e184-legacy-refs`"
 Cohesion: 0.50
 Nodes (3): Análise (método analise-branches.md), Dossiê — `devin/probe-e184-legacy-refs`, Evidências desta sessão
 
-### Community 2200 - "Dossiê — `claude/fix-audit-acl-regrole-261024-1635`"
+### Community 2201 - "Dossiê — `claude/fix-audit-acl-regrole-261024-1635`"
 Cohesion: 0.50
 Nodes (3): Análise (método analise-branches.md), Dossiê — `claude/fix-audit-acl-regrole-261024-1635`, Evidências desta sessão
 
-### Community 2201 - "Dossiê — `claude/fix-contract-mag-reader-261019-2110`"
+### Community 2202 - "Dossiê — `claude/fix-contract-mag-reader-261019-2110`"
 Cohesion: 0.50
 Nodes (3): Análise (método analise-branches.md), Dossiê — `claude/fix-contract-mag-reader-261019-2110`, Evidências desta sessão
 
-### Community 2202 - "Dossiê — `claude/fix-gitleaks-gate-261019-1800`"
+### Community 2203 - "Dossiê — `claude/fix-gitleaks-gate-261019-1800`"
 Cohesion: 0.50
 Nodes (3): Análise (método analise-branches.md), Dossiê — `claude/fix-gitleaks-gate-261019-1800`, Evidências desta sessão
 
-### Community 2203 - "Dossiê — `claude/fix-rollback-261019-1637`"
+### Community 2204 - "Dossiê — `claude/fix-rollback-261019-1637`"
 Cohesion: 0.50
 Nodes (3): Análise (método analise-branches.md), Dossiê — `claude/fix-rollback-261019-1637`, Evidências desta sessão
 
-### Community 2204 - "Dossiê — `claude/fix-sync-log-ci-261019-1730`"
+### Community 2205 - "Dossiê — `claude/fix-sync-log-ci-261019-1730`"
 Cohesion: 0.50
 Nodes (3): Análise (método analise-branches.md), Dossiê — `claude/fix-sync-log-ci-261019-1730`, Evidências desta sessão
 
-### Community 2205 - "Dossiê — `claude/gifted-dijkstra-uojt52`"
+### Community 2206 - "Dossiê — `claude/gifted-dijkstra-uojt52`"
 Cohesion: 0.50
 Nodes (3): Análise (método analise-branches.md), Dossiê — `claude/gifted-dijkstra-uojt52`, Evidências desta sessão
 
-### Community 2206 - "Dossiê — `claude/security-brechas-e30-e40-e18-2026-10-22`"
+### Community 2207 - "Dossiê — `claude/security-brechas-e30-e40-e18-2026-10-22`"
 Cohesion: 0.50
 Nodes (3): Análise (método analise-branches.md), Dossiê — `claude/security-brechas-e30-e40-e18-2026-10-22`, Evidências desta sessão
 
-### Community 2207 - "Dossie PR #2290"
+### Community 2208 - "Dossie PR #2290"
 Cohesion: 0.50
 Nodes (3): Analise, Dossie PR #2290, Evidencia de fechamento
 
-### Community 2208 - "Dossie PR #2293"
+### Community 2209 - "Dossie PR #2293"
 Cohesion: 0.50
 Nodes (3): Analise, Dossie PR #2293, Evidencia de fechamento
 
-### Community 2209 - "Dossie PR #2314"
+### Community 2210 - "Dossie PR #2314"
 Cohesion: 0.50
 Nodes (3): Analise, Dossie PR #2314, Evidencia de fechamento
 
-### Community 2210 - "Dossie PR #2319"
+### Community 2211 - "Dossie PR #2319"
 Cohesion: 0.50
 Nodes (3): Analise, Dossie PR #2319, Evidencia de fechamento
 
-### Community 2211 - "Dossie PR #2320"
+### Community 2212 - "Dossie PR #2320"
 Cohesion: 0.50
 Nodes (3): Analise, Dossie PR #2320, Evidencia de fechamento
 
-### Community 2212 - "Dossie PR #2322"
+### Community 2213 - "Dossie PR #2322"
 Cohesion: 0.50
 Nodes (3): Analise, Dossie PR #2322, Evidencia de fechamento
 
-### Community 2213 - "Dossie PR #2323"
+### Community 2214 - "Dossie PR #2323"
 Cohesion: 0.50
 Nodes (3): Analise, Dossie PR #2323, Evidencia de fechamento
 
-### Community 2214 - "Dossie PR #2324"
+### Community 2215 - "Dossie PR #2324"
 Cohesion: 0.50
 Nodes (3): Analise, Dossie PR #2324, Evidencia de fechamento
 
-### Community 2215 - "Dossie PR #2325"
+### Community 2216 - "Dossie PR #2325"
 Cohesion: 0.50
 Nodes (3): Analise, Dossie PR #2325, Evidencia de fechamento
 
-### Community 2216 - "Dossie PR #2326"
+### Community 2217 - "Dossie PR #2326"
 Cohesion: 0.50
 Nodes (3): Analise, Dossie PR #2326, Evidencia de fechamento
 
-### Community 2217 - "Dossie PR #2327"
+### Community 2218 - "Dossie PR #2327"
 Cohesion: 0.50
 Nodes (3): Analise, Dossie PR #2327, Evidencia de fechamento
 
-### Community 2218 - "Dossie PR #2328"
+### Community 2219 - "Dossie PR #2328"
 Cohesion: 0.50
 Nodes (3): Analise, Dossie PR #2328, Evidencia de fechamento
 
-### Community 2219 - "Dossie PR #2329"
+### Community 2220 - "Dossie PR #2329"
 Cohesion: 0.50
 Nodes (3): Analise, Dossie PR #2329, Evidencia de fechamento
 
-### Community 2220 - "Dossie PR #2330"
+### Community 2221 - "Dossie PR #2330"
 Cohesion: 0.50
 Nodes (3): Analise, Dossie PR #2330, Evidencia de fechamento
 
-### Community 2221 - "Dossie PR #2331"
+### Community 2222 - "Dossie PR #2331"
 Cohesion: 0.50
 Nodes (3): Analise, Dossie PR #2331, Evidencia de fechamento
 
-### Community 2222 - "Dossie PR #2333"
+### Community 2223 - "Dossie PR #2333"
 Cohesion: 0.50
 Nodes (3): Analise, Dossie PR #2333, Evidencia de fechamento
 
-### Community 2223 - "Dossie PR #2334"
+### Community 2224 - "Dossie PR #2334"
 Cohesion: 0.50
 Nodes (3): Analise, Dossie PR #2334, Evidencia de fechamento
 
-### Community 2224 - "Dossie PR #2335"
+### Community 2225 - "Dossie PR #2335"
 Cohesion: 0.50
 Nodes (3): Analise, Dossie PR #2335, Evidencia de fechamento
 
-### Community 2225 - "Dossie PR #2336"
+### Community 2226 - "Dossie PR #2336"
 Cohesion: 0.50
 Nodes (3): Analise, Dossie PR #2336, Evidencia de fechamento
 
-### Community 2226 - "Dossie PR #2337"
+### Community 2227 - "Dossie PR #2337"
 Cohesion: 0.50
 Nodes (3): Analise, Dossie PR #2337, Evidencia de fechamento
 
-### Community 2227 - "PR #2487 — docs(ci): RELATORIO_CI Rev18 + PENDENCIAS Rev18"
+### Community 2228 - "PR #2487 — docs(ci): RELATORIO_CI Rev18 + PENDENCIAS Rev18"
 Cohesion: 0.50
 Nodes (3): Análise, PR #2487 — docs(ci): RELATORIO_CI Rev18 + PENDENCIAS Rev18, Veredito: DECISÃO_HUMANA
 
-### Community 2228 - "Dossiê PR #2688"
+### Community 2229 - "Dossiê PR #2688"
 Cohesion: 0.50
 Nodes (3): 4 perguntas, Dossiê PR #2688, Evidência
 
-### Community 2229 - "Dossiê PR #2693"
+### Community 2230 - "Dossiê PR #2693"
 Cohesion: 0.50
 Nodes (3): 4 perguntas, Dossiê PR #2693, Evidência
 
-### Community 2230 - "Dossiê PR #2695"
+### Community 2231 - "Dossiê PR #2695"
 Cohesion: 0.50
 Nodes (3): 4 perguntas, Dossiê PR #2695, Evidência
 
-### Community 2231 - "Dossiê PR #2733"
+### Community 2232 - "Dossiê PR #2733"
 Cohesion: 0.50
 Nodes (3): 4 perguntas, Dossiê PR #2733, Evidência
 
-### Community 2232 - "Dossiê PR #2735"
+### Community 2233 - "Dossiê PR #2735"
 Cohesion: 0.50
 Nodes (3): 4 perguntas, Dossiê PR #2735, Evidência
 
-### Community 2233 - "1.0.0 (2026-10-05)"
+### Community 2234 - "1.0.0 (2026-10-05)"
 Cohesion: 0.50
 Nodes (4): 1.0.0 (2026-10-05), Bug Fixes, Features, Performance Improvements
 
-### Community 2234 - "1.0.0 (2026-10-28)"
+### Community 2235 - "1.0.0 (2026-10-28)"
 Cohesion: 0.50
 Nodes (4): 1.0.0 (2026-10-28), Bug Fixes, Features, Performance Improvements
 
-### Community 2235 - "[1.1.0](https://github.com/adm01-debug/Promo_Gifts_V4/compare/v1.0.0...v1.1.0) (2026-10-30)"
+### Community 2236 - "[1.1.0](https://github.com/adm01-debug/Promo_Gifts_V4/compare/v1.0.0...v1.1.0) (2026-10-30)"
 Cohesion: 0.50
 Nodes (4): [1.1.0](https://github.com/adm01-debug/Promo_Gifts_V4/compare/v1.0.0...v1.1.0) (2026-10-30), Bug Fixes, Features, Performance Improvements
 
-### Community 2236 - "[1.2.0](https://github.com/adm01-debug/Promo_Gifts_V4/compare/v1.1.0...v1.2.0) (2026-10-30)"
+### Community 2237 - "[1.2.0](https://github.com/adm01-debug/Promo_Gifts_V4/compare/v1.1.0...v1.2.0) (2026-10-30)"
 Cohesion: 0.50
 Nodes (4): [1.2.0](https://github.com/adm01-debug/Promo_Gifts_V4/compare/v1.1.0...v1.2.0) (2026-10-30), Bug Fixes, Features, Performance Improvements
 
-### Community 2237 - "[1.5.0](https://github.com/adm01-debug/Promo_Gifts_V4/compare/v1.4.1...v1.5.0) (2026-11-01)"
+### Community 2238 - "[1.5.0](https://github.com/adm01-debug/Promo_Gifts_V4/compare/v1.4.1...v1.5.0) (2026-11-01)"
 Cohesion: 0.50
 Nodes (4): [1.5.0](https://github.com/adm01-debug/Promo_Gifts_V4/compare/v1.4.1...v1.5.0) (2026-11-01), Bug Fixes, Features, Performance Improvements
 
-### Community 2238 - "🎯 Funções Helper"
+### Community 2239 - "🎯 Funções Helper"
 Cohesion: 0.50
 Nodes (4): **1. user_is_org_member()**, **2. is_org_admin()**, **3. is_org_owner_or_admin()**, 🎯 Funções Helper
 
-### Community 2239 - "🧪 Como Testar Policies"
+### Community 2240 - "🧪 Como Testar Policies"
 Cohesion: 0.50
 Nodes (4): 🧪 Como Testar Policies, **Teste 1: Member vê apenas dados da própria org**, **Teste 2: Member não pode deletar**, **Teste 3: Admin pode gerenciar**
 
-### Community 2240 - "⭐ PRODUCT_REVIEWS"
+### Community 2241 - "⭐ PRODUCT_REVIEWS"
 Cohesion: 0.50
 Nodes (4): **Policy 1: org_members_view_product_reviews**, **Policy 2: authenticated_create_reviews**, **Policy 3: users_manage_own_reviews**, ⭐ PRODUCT_REVIEWS
 
-### Community 2241 - "🎯 FASE 6: Testes e Qualidade (3-4 dias)"
+### Community 2242 - "🎯 FASE 6: Testes e Qualidade (3-4 dias)"
 Cohesion: 0.50
 Nodes (4): **6.1: Testes Unitários**, **6.2: Testes E2E**, **6.3: Testes de RLS**, 🎯 FASE 6: Testes e Qualidade (3-4 dias)
 
-### Community 2242 - "5. Snapshot estrutural live, somente leitura"
+### Community 2243 - "5. Snapshot estrutural live, somente leitura"
 Cohesion: 0.50
 Nodes (4): 5.1 `public.inbound_webhook_endpoints`, 5.2 `public.inbound_webhook_events`, 5.3 Funções, privilégios e retenção relacionados, 5. Snapshot estrutural live, somente leitura
 
-### Community 2243 - "11. Etapas 078–080 — jobs, cron e manutenção"
+### Community 2244 - "11. Etapas 078–080 — jobs, cron e manutenção"
 Cohesion: 0.50
 Nodes (4): 11. Etapas 078–080 — jobs, cron e manutenção, Estado das etapas, Evidência confirmada nas fotografias, Perguntas ao PO/DBA
 
-### Community 2244 - "5. Etapa 071 — constraints e índices"
+### Community 2245 - "5. Etapa 071 — constraints e índices"
 Cohesion: 0.50
 Nodes (4): 5. Etapa 071 — constraints e índices, Estado da etapa, Evidência confirmada nas fotografias, Perguntas ao DBA
 
-### Community 2245 - "7. Etapa 074 — rotinas `SECURITY DEFINER`"
+### Community 2246 - "7. Etapa 074 — rotinas `SECURITY DEFINER`"
 Cohesion: 0.50
 Nodes (4): 7. Etapa 074 — rotinas `SECURITY DEFINER`, Estado da etapa, Evidência confirmada nas fotografias, Ordem de revisão sem revogação em massa
 
-### Community 2246 - "3) Evidências de execução (testes e verificações)"
+### Community 2247 - "3) Evidências de execução (testes e verificações)"
 Cohesion: 0.50
 Nodes (4): 3.1 Qualidade e build, 3.2 Testes, 3.3 Segurança e banco (estático), 3) Evidências de execução (testes e verificações)
 
-### Community 2247 - "6) Priorização recomendada (pré-produção)"
+### Community 2248 - "6) Priorização recomendada (pré-produção)"
 Cohesion: 0.50
 Nodes (4): 6) Priorização recomendada (pré-produção), Fase 0 — Bloqueadores de entrada em produção, Fase 1 — Segurança e confiabilidade, Fase 2 — Performance e governança
 
-### Community 2248 - "10. Observabilidade — 7.5/10"
+### Community 2249 - "10. Observabilidade — 7.5/10"
 Cohesion: 0.50
 Nodes (4): 10. Observabilidade — 7.5/10, Ações, Evidências, Gaps
 
-### Community 2249 - "11. Lógica de Negócio — 8.0/10"
+### Community 2250 - "11. Lógica de Negócio — 8.0/10"
 Cohesion: 0.50
 Nodes (4): 11. Lógica de Negócio — 8.0/10, Ações, Evidências, Gaps
 
-### Community 2250 - "12. Manutenibilidade — 7.5/10"
+### Community 2251 - "12. Manutenibilidade — 7.5/10"
 Cohesion: 0.50
 Nodes (4): 12. Manutenibilidade — 7.5/10, Ações, Evidências, Gaps
 
-### Community 2251 - "13. Operacionalidade — 7.5/10"
+### Community 2252 - "13. Operacionalidade — 7.5/10"
 Cohesion: 0.50
 Nodes (4): 13. Operacionalidade — 7.5/10, Ações, Evidências, Gaps
 
-### Community 2252 - "14. Performance — 7.5/10"
+### Community 2253 - "14. Performance — 7.5/10"
 Cohesion: 0.50
 Nodes (4): 14. Performance — 7.5/10, Ações, Evidências, Gaps
 
-### Community 2253 - "15. Qualidade de Código — 7.5/10"
+### Community 2254 - "15. Qualidade de Código — 7.5/10"
 Cohesion: 0.50
 Nodes (4): 15. Qualidade de Código — 7.5/10, Ações, Evidências, Gaps
 
-### Community 2254 - "16. Segurança — 8.5/10"
+### Community 2255 - "16. Segurança — 8.5/10"
 Cohesion: 0.50
 Nodes (4): 16. Segurança — 8.5/10, Ações, Evidências, Gaps
 
-### Community 2255 - "17. Testes — 7/10"
+### Community 2256 - "17. Testes — 7/10"
 Cohesion: 0.50
 Nodes (4): 17. Testes — 7/10, Ações, Evidências, Gaps
 
-### Community 2256 - "18. Tipagem / Type Safety — 8/10"
+### Community 2257 - "18. Tipagem / Type Safety — 8/10"
 Cohesion: 0.50
 Nodes (4): 18. Tipagem / Type Safety — 8/10, Ações, Evidências, Gaps
 
-### Community 2257 - "19. Validação — 6.5/10"
+### Community 2258 - "19. Validação — 6.5/10"
 Cohesion: 0.50
 Nodes (4): 19. Validação — 6.5/10, Ações, Evidências, Gaps
 
-### Community 2258 - "1. Arquitetura — 7.5/10"
+### Community 2259 - "1. Arquitetura — 7.5/10"
 Cohesion: 0.50
 Nodes (4): 1. Arquitetura — 7.5/10, Ações, Evidências, Gaps
 
-### Community 2259 - "20. Operações (Processos) — 8.5/10"
+### Community 2260 - "20. Operações (Processos) — 8.5/10"
 Cohesion: 0.50
 Nodes (4): 20. Operações (Processos) — 8.5/10, Ações, Evidências, Gaps
 
-### Community 2260 - "2. Autenticação — 8/10"
+### Community 2261 - "2. Autenticação — 8/10"
 Cohesion: 0.50
 Nodes (4): 2. Autenticação — 8/10, Ações, Evidências, Gaps
 
-### Community 2261 - "3. Autorização — 8.5/10"
+### Community 2262 - "3. Autorização — 8.5/10"
 Cohesion: 0.50
 Nodes (4): 3. Autorização — 8.5/10, Ações, Evidências, Gaps
 
-### Community 2262 - "4. Banco de Dados — 7/10"
+### Community 2263 - "4. Banco de Dados — 7/10"
 Cohesion: 0.50
 Nodes (4): 4. Banco de Dados — 7/10, Ações, Evidências, Gaps
 
-### Community 2263 - "5. CI/CD — 8.5/10"
+### Community 2264 - "5. CI/CD — 8.5/10"
 Cohesion: 0.50
 Nodes (4): 5. CI/CD — 8.5/10, Ações, Evidências, Gaps
 
-### Community 2264 - "6. Data Integrity — 7.5/10"
+### Community 2265 - "6. Data Integrity — 7.5/10"
 Cohesion: 0.50
 Nodes (4): 6. Data Integrity — 7.5/10, Ações, Evidências, Gaps
 
-### Community 2265 - "7. Documentação — 7/10"
+### Community 2266 - "7. Documentação — 7/10"
 Cohesion: 0.50
 Nodes (4): 7. Documentação — 7/10, Ações, Evidências, Gaps
 
-### Community 2266 - "8. Infraestrutura / DevOps — 6.5/10"
+### Community 2267 - "8. Infraestrutura / DevOps — 6.5/10"
 Cohesion: 0.50
 Nodes (4): 8. Infraestrutura / DevOps — 6.5/10, Ações, Evidências, Gaps
 
-### Community 2267 - "9. Logging / Monitoring — 7.5/10"
+### Community 2268 - "9. Logging / Monitoring — 7.5/10"
 Cohesion: 0.50
 Nodes (4): 9. Logging / Monitoring — 7.5/10, Ações, Evidências, Gaps
 
-### Community 2268 - "Roadmap — 3 ondas"
+### Community 2269 - "Roadmap — 3 ondas"
 Cohesion: 0.50
 Nodes (4): Onda 1 — Quick Wins ✅ (esta PR), Onda 2 — Sprint 1 (código + processo, sem aprovação de schema), Onda 3 — Sprint 2 (requer PO / produção), Roadmap — 3 ondas
 
-### Community 2269 - "🔍 Auditoria Exaustiva Round 2 — APIs Externas"
+### Community 2270 - "🔍 Auditoria Exaustiva Round 2 — APIs Externas"
 Cohesion: 0.50
 Nodes (3): 🔍 Auditoria Exaustiva Round 2 — APIs Externas, Métricas da Auditoria (Round 2), Não-Problemas (falsos positivos investigados)
 
-### Community 2270 - "12. LAYOUT GLOBAL DESKTOP"
+### Community 2271 - "12. LAYOUT GLOBAL DESKTOP"
 Cohesion: 0.50
 Nodes (4): 12. LAYOUT GLOBAL DESKTOP, Header global, Page content, Sidebar
 
-### Community 2271 - "14. PAGE HEADER"
+### Community 2272 - "14. PAGE HEADER"
 Cohesion: 0.50
 Nodes (4): 14. PAGE HEADER, Ações, Não fazer, Ícone contextual
 
-### Community 2272 - "16. TOOLBAR DE FILTROS"
+### Community 2273 - "16. TOOLBAR DE FILTROS"
 Cohesion: 0.50
 Nodes (4): 16. TOOLBAR DE FILTROS, Density, Search, Segmented filters
 
-### Community 2273 - "24. EDITOR / STUDIO SHELL"
+### Community 2274 - "24. EDITOR / STUDIO SHELL"
 Cohesion: 0.50
 Nodes (4): 24. EDITOR / STUDIO SHELL, Header do editor, Stepper, Workspace
 
-### Community 2274 - "36. SKELETON / LOADING"
+### Community 2275 - "36. SKELETON / LOADING"
 Cohesion: 0.50
 Nodes (4): 36. SKELETON / LOADING, Cards, Editor, Grid
 
-### Community 2275 - "38. MICROINTERAÇÕES"
+### Community 2276 - "38. MICROINTERAÇÕES"
 Cohesion: 0.50
 Nodes (4): 38. MICROINTERAÇÕES, Durações, Easing, Regras
 
-### Community 2276 - "39. ICONOGRAFIA"
+### Community 2277 - "39. ICONOGRAFIA"
 Cohesion: 0.50
 Nodes (4): 39. ICONOGRAFIA, Icon-only, Stroke, Tamanhos
 
-### Community 2277 - "40. IMAGENS"
+### Community 2278 - "40. IMAGENS"
 Cohesion: 0.50
 Nodes (4): 40. IMAGENS, Card images, Magazine cover / hero, Product imagery
 
-### Community 2278 - "4. PALETA CANÔNICA BLUE PREMIUM"
+### Community 2279 - "4. PALETA CANÔNICA BLUE PREMIUM"
 Cohesion: 0.50
 Nodes (4): 4.1 Core, 4.2 Regra de tradução para o repositório, 4.3 Alpha recomendada para azul, 4. PALETA CANÔNICA BLUE PREMIUM
 
-### Community 2279 - "Backlog CI / PRs abertas — O1 (2026-10-25)"
+### Community 2280 - "Backlog CI / PRs abertas — O1 (2026-10-25)"
 Cohesion: 0.50
 Nodes (3): 1. Workflows do main, 3. PRs abertas (veredito do dossiê), Backlog CI / PRs abertas — O1 (2026-10-25)
 
-### Community 2280 - "P33 — Falhas pré-existentes na main: Replenishment e Edge Functions Integration (2026-10-25)"
+### Community 2281 - "P33 — Falhas pré-existentes na main: Replenishment e Edge Functions Integration (2026-10-25)"
 Cohesion: 0.50
 Nodes (3): Edge Functions Integration — step "LIVE", P33 — Falhas pré-existentes na main: Replenishment e Edge Functions Integration (2026-10-25), Replenishment Module Quality Gate — step "E2E — Paridade visual /novidades vs /reposicao"
 
-### Community 2281 - "👤 29. ADMINISTRAÇÃO"
+### Community 2282 - "👤 29. ADMINISTRAÇÃO"
 Cohesion: 0.50
 Nodes (4): 29.1 Painel Admin, 29.2 Perfil do Usuário, 29.3 Status do Sistema, 👤 29. ADMINISTRAÇÃO
 
-### Community 2282 - "👥 6. GESTÃO DE CLIENTES E CRM"
+### Community 2283 - "👥 6. GESTÃO DE CLIENTES E CRM"
 Cohesion: 0.50
 Nodes (4): 6.1 CRM de Empresas, 6.2 Integração Bitrix24, 6.3 Datas Comemorativas, 👥 6. GESTÃO DE CLIENTES E CRM
 
-### Community 2283 - "📊 8. ANALYTICS E BI"
+### Community 2284 - "📊 8. ANALYTICS E BI"
 Cohesion: 0.50
 Nodes (4): 8.1 Dashboard Customizável, 8.3 Tendências, 8.4 Analytics de Produtos, 📊 8. ANALYTICS E BI
 
-### Community 2284 - "❓ Decisões PENDENTES (precisam de Joaquim)"
+### Community 2285 - "❓ Decisões PENDENTES (precisam de Joaquim)"
 Cohesion: 0.50
 Nodes (4): 7 decisões pra triagem do banco do Lovable (CRÍTICAS pra Fase 3), Bloqueadores pra Fase 3, ❓ Decisões PENDENTES (precisam de Joaquim), Outras decisões pendentes (Fase 1)
 
-### Community 2285 - "🎯 O que é o PromoGifts"
+### Community 2286 - "🎯 O que é o PromoGifts"
 Cohesion: 0.50
 Nodes (4): Features core que ficam, Features removidas nesta sessão, Modelo de negócio (decisões definitivas), 🎯 O que é o PromoGifts
 
-### Community 2286 - "SLOs e Burn-Rate — Observabilidade"
+### Community 2287 - "SLOs e Burn-Rate — Observabilidade"
 Cohesion: 0.50
 Nodes (3): Alertas (configurar no Sentry → Alerts → Metric), SLOs definidos, SLOs e Burn-Rate — Observabilidade
 
-### Community 2287 - "Precondições públicas de ativação do sitemap"
+### Community 2288 - "Precondições públicas de ativação do sitemap"
 Cohesion: 0.50
 Nodes (3): Cache, contagem e volume, O que o resultado significa, Precondições públicas de ativação do sitemap
 
-### Community 2288 - "📋 **CONFIGURAÇÕES OBRIGATÓRIAS:**"
+### Community 2289 - "📋 **CONFIGURAÇÕES OBRIGATÓRIAS:**"
 Cohesion: 0.50
 Nodes (4): **Configuração global:**, 📋 **CONFIGURAÇÕES OBRIGATÓRIAS:**, **date-fns:**, **react-day-picker (Calendar):**
 
-### Community 2289 - "Rotas críticas de negócio (P0/P1/P2)"
+### Community 2290 - "Rotas críticas de negócio (P0/P1/P2)"
 Cohesion: 0.50
 Nodes (3): Critérios de criticidade, Observações rápidas, Rotas críticas de negócio (P0/P1/P2)
 
-### Community 2290 - "Limpeza: Branches `lovable-sync-*` deletadas em 2026-05-09"
+### Community 2291 - "Limpeza: Branches `lovable-sync-*` deletadas em 2026-05-09"
 Cohesion: 0.50
 Nodes (3): Estatísticas, Limpeza: Branches `lovable-sync-*` deletadas em 2026-05-09, Lista completa (data | nome | SHA do tip)
 
-### Community 2291 - "🔧 Correções Aplicadas em 25/05 (Detalhe Técnico)"
+### Community 2292 - "🔧 Correções Aplicadas em 25/05 (Detalhe Técnico)"
 Cohesion: 0.50
 Nodes (4): 🔧 Correções Aplicadas em 25/05 (Detalhe Técnico), Operação 1 — Timeouts de conexão idle, Operação 2 — Log de queries lentas, Registro versionado
 
-### Community 2292 - "quarantine.json"
+### Community 2293 - "quarantine.json"
 Cohesion: 0.50
 Nodes (3): $comment, entries, $schema
 
-### Community 2293 - "e2e-relevance.mjs"
+### Community 2294 - "e2e-relevance.mjs"
 Cohesion: 0.67
 Nodes (3): files, hasE2ERuntimeChanges(), isE2ERuntimeFile()
 
-### Community 2294 - "11. Checkout — Formulário de Destino e Pagamento"
+### Community 2295 - "11. Checkout — Formulário de Destino e Pagamento"
 Cohesion: 0.50
 Nodes (4): 11.1 Fluxo de Checkout, 11.2 Campos do Formulário `/pt/loja/destino/`, 11.3 Loja AJAX — Cálculo de Entrega (encadeado), 11. Checkout — Formulário de Destino e Pagamento
 
-### Community 2295 - "6. Mapeamento Completo de Endpoints — 28 Endpoints"
+### Community 2296 - "6. Mapeamento Completo de Endpoints — 28 Endpoints"
 Cohesion: 0.50
 Nodes (4): 6. Mapeamento Completo de Endpoints — 28 Endpoints, Dispatchers Multipropósito, Endpoints com Auth Obrigatória, Endpoints Públicos (sem auth)
 
-### Community 2296 - "8. Catálogo — Motor de Busca e Filtros"
+### Community 2297 - "8. Catálogo — Motor de Busca e Filtros"
 Cohesion: 0.50
 Nodes (4): 8.1 Pesquisa Rápida, 8.2 Filtros do Catálogo, 8.3 Técnicas de Impressão (14 completas), 8. Catálogo — Motor de Busca e Filtros
 
-### Community 2297 - "9. Produto — Personalização e Técnicas de Impressão"
+### Community 2298 - "9. Produto — Personalização e Técnicas de Impressão"
 Cohesion: 0.50
 Nodes (4): 9.1 Sistema Dual de IDs, 9.2 Padrão de URLs de Imagens, 9.3 Data-Attributes do Produto (HTML), 9. Produto — Personalização e Técnicas de Impressão
 
-### Community 2298 - "REVIEWS.json"
+### Community 2299 - "REVIEWS.json"
 Cohesion: 0.50
 Nodes (3): acknowledged_not_promoted, _doc, $schema
 
-### Community 2299 - "Daily Flows Simulation — 2026-07-23"
+### Community 2300 - "Daily Flows Simulation — 2026-07-23"
 Cohesion: 0.50
 Nodes (3): Daily Flows Simulation — 2026-07-23, Gaps detectados (primeiros 20), Sumário por fluxo
 
-### Community 2300 - "Daily Flows Simulation — 2026-08-26"
+### Community 2301 - "Daily Flows Simulation — 2026-08-26"
 Cohesion: 0.50
 Nodes (3): Daily Flows Simulation — 2026-08-26, Gaps detectados (primeiros 20), Sumário por fluxo
 
-### Community 2301 - "Daily Flows Simulation — 2026-08-28"
+### Community 2302 - "Daily Flows Simulation — 2026-08-28"
 Cohesion: 0.50
 Nodes (3): Daily Flows Simulation — 2026-08-28, Gaps detectados (primeiros 20), Sumário por fluxo
 
-### Community 2302 - "Daily Flows Simulation — 2026-08-29"
+### Community 2303 - "Daily Flows Simulation — 2026-08-29"
 Cohesion: 0.50
 Nodes (3): Daily Flows Simulation — 2026-08-29, Gaps detectados (primeiros 20), Sumário por fluxo
 
-### Community 2303 - "Daily Flows Simulation — 2026-09-07"
+### Community 2304 - "Daily Flows Simulation — 2026-09-07"
 Cohesion: 0.50
 Nodes (3): Daily Flows Simulation — 2026-09-07, Gaps detectados (primeiros 20), Sumário por fluxo
 
-### Community 2304 - "📦 Recovery SQL — arquivos preparados (ainda NÃO aplicados)"
+### Community 2305 - "📦 Recovery SQL — arquivos preparados (ainda NÃO aplicados)"
 Cohesion: 0.50
 Nodes (3): Arquivos prontos, 📦 Recovery SQL — arquivos preparados (ainda NÃO aplicados), Status
 
-### Community 2305 - "hooks/useNoveltiesSelectionMode.ts"
+### Community 2306 - "hooks/useNoveltiesSelectionMode.ts"
 Cohesion: 0.67
 Nodes (3): noveltyToProduct(), useNoveltiesSelectionMode(), UseNoveltiesSelectionModeParams
 
-### Community 2306 - "hooks/usePasswordBreachCheck.tsx"
+### Community 2307 - "hooks/usePasswordBreachCheck.tsx"
 Cohesion: 0.67
 Nodes (3): BreachCheckResult, sha1Hash(), usePasswordBreachCheck()
 
-### Community 2308 - "hooks/useReplenishmentsSelectionMode.ts"
+### Community 2309 - "hooks/useReplenishmentsSelectionMode.ts"
 Cohesion: 0.67
 Nodes (3): replenishmentToProduct(), useReplenishmentsSelectionMode(), UseReplenishmentsSelectionModeParams
 
-### Community 2309 - "hooks/useScrollLockFix.ts"
+### Community 2310 - "hooks/useScrollLockFix.ts"
 Cohesion: 0.83
 Nodes (3): cleanupScrollLock(), hasActiveOverlay(), useScrollLockFix()
 
-### Community 2312 - "scroll-area.tsx"
+### Community 2313 - "scroll-area.tsx"
 Cohesion: 0.67
 Nodes (3): @radix-ui/react-scroll-area, ScrollArea, ScrollBar
 
-### Community 2313 - "Ações realizadas nesta sessão"
+### Community 2314 - "Ações realizadas nesta sessão"
 Cohesion: 0.50
 Nodes (4): 1. PR #3245 — fix P-06 E2E ColorSwatch + VirtualizedProductGrid, 2. Workflows dispatched no SHA `d56979f6` (via `workflow_dispatch`), 3. Documentados em PENDENCIAS.md como bloqueados por PO, Ações realizadas nesta sessão
 
-### Community 2314 - "§22 — Gate Final SHA `a882bcc1` (2026-11-07T20:49:48Z)"
+### Community 2315 - "§22 — Gate Final SHA `a882bcc1` (2026-11-07T20:49:48Z)"
 Cohesion: 0.50
 Nodes (4): §22 — Gate Final SHA `a882bcc1` (2026-11-07T20:49:48Z), Comparação Baseline × Final (esta sessão — SHA `a882bcc1`), Tabela de prova — workflows em falha/action_required (SHA `a882bcc1`), Workflows antes verdes — confirmação de não-regressão (SHA `a882bcc1`)
 
-### Community 2315 - "release-please-config.json"
+### Community 2316 - "release-please-config.json"
 Cohesion: 0.50
 Nodes (3): packages, release-type, $schema
 
-### Community 2316 - "SSOT Report — Changelog de contrato"
+### Community 2317 - "SSOT Report — Changelog de contrato"
 Cohesion: 0.50
 Nodes (3): 1.0.0 — 2026-07-14, 2.0.0 — 2026-07-15, SSOT Report — Changelog de contrato
 
-### Community 2317 - "isSrc"
+### Community 2318 - "isSrc"
 Cohesion: 0.50
 Nodes (4): appFiles, envUsadas, isSrc(), routeFiles
 
-### Community 2319 - "totalsWidthSsotUsage.test.ts"
+### Community 2320 - "totalsWidthSsotUsage.test.ts"
 Cohesion: 0.50
 Nodes (3): COMPONENT_FILES, ROOT, UNRELATED_WIDTHS
 
-### Community 2322 - "filters.ts"
+### Community 2323 - "filters.ts"
 Cohesion: 0.50
 Nodes (3): defaultAdvancedFilters, SORT_OPTIONS, STOCK_FILTER_OPTIONS
 
-### Community 2325 - "products/useNoveltiesSelectionMode.ts"
+### Community 2326 - "products/useNoveltiesSelectionMode.ts"
 Cohesion: 0.67
 Nodes (3): noveltyToProduct(), useNoveltiesSelectionMode(), UseNoveltiesSelectionModeParams
 
-### Community 2326 - "products/useReplenishmentsSelectionMode.ts"
+### Community 2327 - "products/useReplenishmentsSelectionMode.ts"
 Cohesion: 0.67
 Nodes (3): replenishmentToProduct(), useReplenishmentsSelectionMode(), UseReplenishmentsSelectionModeParams
 
-### Community 2330 - "access-denied-strings.tsx"
+### Community 2331 - "access-denied-strings.tsx"
 Cohesion: 0.50
 Nodes (3): ACCESS_DENIED_STRINGS, Role, RoleCopy
 
-### Community 2332 - "external-rpc.ts"
+### Community 2333 - "external-rpc.ts"
 Cohesion: 0.67
 Nodes (3): invokeExternalRpc(), isRetryableError(), RETRYABLE_PATTERNS
 
-### Community 2335 - "EmaHealthPage.tsx"
+### Community 2336 - "EmaHealthPage.tsx"
 Cohesion: 0.83
 Nodes (3): EmaHealthPage(), formatDate(), StatusBadge()
 
-### Community 2338 - "magazineListPagination.test.ts"
+### Community 2339 - "magazineListPagination.test.ts"
 Cohesion: 0.67
 Nodes (3): allRows, row(), state
 
-### Community 2339 - "ema-health.ts"
+### Community 2340 - "ema-health.ts"
 Cohesion: 0.50
 Nodes (3): EmaHealthComponentV1, EmaHealthResponseV1, EmaHealthStatus
 
-### Community 2341 - "2026-09-11 — Reconciliação do ledger canônico (fase 1: snapshots remotos)"
+### Community 2342 - "2026-09-11 — Reconciliação do ledger canônico (fase 1: snapshots remotos)"
 Cohesion: 0.50
 Nodes (4): 2026-09-11 — Reconciliação do ledger canônico (fase 1: snapshots remotos), Escopo e fonte, Itens deliberadamente não alterados nesta fase, Resultado verificável
 
-### Community 2348 - "super-filtro-price-sentinel.test.ts"
+### Community 2349 - "super-filtro-price-sentinel.test.ts"
 Cohesion: 0.50
 Nodes (3): applyPriceFilter(), catalog, P
 
-### Community 2349 - "postgrest-migration.test.ts"
+### Community 2350 - "postgrest-migration.test.ts"
 Cohesion: 0.67
 Nodes (3): callArgs(), callsOf(), Recorded
 
-### Community 2350 - "preview-zoom-a11y.test.tsx"
+### Community 2351 - "preview-zoom-a11y.test.tsx"
 Cohesion: 0.83
 Nodes (3): buildMagazine(), makeItem(), renderSidebar()
 
-### Community 2351 - "preview-zoom-shortcuts.test.tsx"
+### Community 2352 - "preview-zoom-shortcuts.test.tsx"
 Cohesion: 0.83
 Nodes (3): buildMagazine(), makeItem(), renderSidebar()
 
-### Community 2352 - "quote-calculations.test.ts"
+### Community 2353 - "quote-calculations.test.ts"
 Cohesion: 0.67
 Nodes (3): calcItemTotal(), calcQuoteTotal(), QuoteItem
 
-### Community 2353 - "price-freshness.default-threshold.test.ts"
+### Community 2354 - "price-freshness.default-threshold.test.ts"
 Cohesion: 0.67
 Nodes (3): daysAgo(), FIXED_NOW, makeRaw()
 
-### Community 2358 - "[1.1.0](https://github.com/adm01-debug/Promo_Gifts_V4/compare/v1.0.0...v1.1.0) (2026-11-13)"
+### Community 2359 - "[1.1.0](https://github.com/adm01-debug/Promo_Gifts_V4/compare/v1.0.0...v1.1.0) (2026-11-13)"
 Cohesion: 0.67
 Nodes (3): [1.1.0](https://github.com/adm01-debug/Promo_Gifts_V4/compare/v1.0.0...v1.1.0) (2026-11-13), Bug Fixes, Features
 
-### Community 2359 - "[1.1.0](https://github.com/adm01-debug/Promo_Gifts_V4/compare/v1.0.6...v1.1.0) (2026-10-14)"
+### Community 2360 - "[1.1.0](https://github.com/adm01-debug/Promo_Gifts_V4/compare/v1.0.6...v1.1.0) (2026-10-14)"
 Cohesion: 0.67
 Nodes (3): [1.1.0](https://github.com/adm01-debug/Promo_Gifts_V4/compare/v1.0.6...v1.1.0) (2026-10-14), Bug Fixes, Features
 
-### Community 2360 - "[3.0.0] - 2025-02-01"
+### Community 2361 - "[3.0.0] - 2025-02-01"
 Cohesion: 0.67
 Nodes (3): [3.0.0] - 2025-02-01, Adicionado, 💥 Breaking
 
-### Community 2361 - "👀 PRODUCT_VIEWS (Analytics)"
+### Community 2362 - "👀 PRODUCT_VIEWS (Analytics)"
 Cohesion: 0.67
 Nodes (3): **Policy 1: authenticated_view_product_views**, **Policy 2: authenticated_create_product_views**, 👀 PRODUCT_VIEWS (Analytics)
 
-### Community 2362 - "💵 PRODUCT_PRICE_HISTORY"
+### Community 2363 - "💵 PRODUCT_PRICE_HISTORY"
 Cohesion: 0.67
 Nodes (3): **Policy 1: org_members_view_price_history**, **Policy 2: system_create_price_history**, 💵 PRODUCT_PRICE_HISTORY
 
-### Community 2363 - "📦 PRODUCTS (Produtos)"
+### Community 2364 - "📦 PRODUCTS (Produtos)"
 Cohesion: 0.67
 Nodes (3): **Policy 1: org_members_view_products**, **Policy 2: org_admins_manage_products**, 📦 PRODUCTS (Produtos)
 
-### Community 2364 - "🏭 SUPPLIERS (Fornecedores)"
+### Community 2365 - "🏭 SUPPLIERS (Fornecedores)"
 Cohesion: 0.67
 Nodes (3): **Policy 1: org_members_view_suppliers**, **Policy 2: org_admins_manage_suppliers**, 🏭 SUPPLIERS (Fornecedores)
 
-### Community 2365 - "T"
+### Community 2366 - "T"
 Cohesion: 0.67
 Nodes (3): 8. Inventário mestre das 105 funções, T(), tname()
 
-### Community 2366 - "10. Etapa 077 — matriz de grants efetivos"
+### Community 2367 - "10. Etapa 077 — matriz de grants efetivos"
 Cohesion: 0.67
 Nodes (3): 10. Etapa 077 — matriz de grants efetivos, Estado da etapa, Evidência confirmada na fotografia E2
 
-### Community 2368 - "10. TIPOGRAFIA"
+### Community 2369 - "10. TIPOGRAFIA"
 Cohesion: 0.67
 Nodes (3): 10.1 Escala desktop, 10.2 Regras, 10. TIPOGRAFIA
 
-### Community 2369 - "11. SPACING SYSTEM"
+### Community 2370 - "11. SPACING SYSTEM"
 Cohesion: 0.67
 Nodes (3): 11. SPACING SYSTEM, Regra, Uso recomendado
 
-### Community 2370 - "2. CONTEXTO TÉCNICO REAL DO REPOSITÓRIO"
+### Community 2371 - "2. CONTEXTO TÉCNICO REAL DO REPOSITÓRIO"
 Cohesion: 0.67
 Nodes (3): 2. CONTEXTO TÉCNICO REAL DO REPOSITÓRIO, Observação importante sobre tokens existentes, REGRA PARA NOVO REDESIGN
 
-### Community 2371 - "41. SCROLL"
+### Community 2372 - "41. SCROLL"
 Cohesion: 0.67
 Nodes (3): 41. SCROLL, Princípio, Scrollbar
 
-### Community 2372 - "44. TABELAS"
+### Community 2373 - "44. TABELAS"
 Cohesion: 0.67
 Nodes (3): 44. TABELAS, Actions, Padrão
 
-### Community 2373 - "45. FORMULÁRIOS"
+### Community 2374 - "45. FORMULÁRIOS"
 Cohesion: 0.67
 Nodes (3): 45. FORMULÁRIOS, Advanced, Agrupamento
 
-### Community 2374 - "50. POLÍTICA DE CORES LITERAIS"
+### Community 2375 - "50. POLÍTICA DE CORES LITERAIS"
 Cohesion: 0.67
 Nodes (3): 50. POLÍTICA DE CORES LITERAIS, Em JSX/TSX, Exceções
 
-### Community 2375 - "Manual de Design, UX/UI e Implementação para Claude"
+### Community 2376 - "Manual de Design, UX/UI e Implementação para Claude"
 Cohesion: 0.67
 Nodes (3): Manual de Design, UX/UI e Implementação para Claude, PROMO GIFTS V4 — BLUE PREMIUM DESIGN SYSTEM, Versão 1.0 — 07/09/2026
 
-### Community 2376 - "⚡ 15. PERFORMANCE E CACHE"
+### Community 2377 - "⚡ 15. PERFORMANCE E CACHE"
 Cohesion: 0.67
 Nodes (3): 15.1 Caching, 15.2 Rate Limit Dashboard, ⚡ 15. PERFORMANCE E CACHE
 
-### Community 2377 - "🔍 21. BUSCA E FILTROS"
+### Community 2378 - "🔍 21. BUSCA E FILTROS"
 Cohesion: 0.67
 Nodes (3): 21.1 Busca Global, 21.2 Filtros Avançados, 🔍 21. BUSCA E FILTROS
 
-### Community 2378 - "🏆 7. GAMIFICAÇÃO"
+### Community 2379 - "🏆 7. GAMIFICAÇÃO"
 Cohesion: 0.67
 Nodes (3): 7.1 Sistema de Recompensas, 7.2 Metas de Vendas, 🏆 7. GAMIFICAÇÃO
 
-### Community 2379 - "🔔 9. NOTIFICAÇÕES"
+### Community 2380 - "🔔 9. NOTIFICAÇÕES"
 Cohesion: 0.67
 Nodes (3): 9.1 Sistema de Notificações, 9.2 Notificações Push, 🔔 9. NOTIFICAÇÕES
 
-### Community 2380 - "📝 Tom de comunicação esperado"
+### Community 2381 - "📝 Tom de comunicação esperado"
 Cohesion: 0.67
 Nodes (3): ❌ Evite, ✅ Faça, 📝 Tom de comunicação esperado
 
-### Community 2382 - "14. Exemplo Real — Preços de Personalização `51102`"
+### Community 2383 - "14. Exemplo Real — Preços de Personalização `51102`"
 Cohesion: 0.67
 Nodes (3): 14. Exemplo Real — Preços de Personalização `51102`, Silk Screen Circular 1 cor no Corpo (40 × 25 mm) — Padrão, Tampografia 1 cor no Corpo (45 × 6 mm)
 
-### Community 2383 - "5. Personalização — Localizações e Técnicas"
+### Community 2384 - "5. Personalização — Localizações e Técnicas"
 Cohesion: 0.67
 Nodes (3): 5.1 Estrutura da Árvore de Personalização (`productsTree`), 5.2 Técnicas de Personalização Identificadas, 5. Personalização — Localizações e Técnicas
 
-### Community 2385 - "1. Identidade e Contexto de Negócio"
+### Community 2386 - "1. Identidade e Contexto de Negócio"
 Cohesion: 0.67
 Nodes (3): 1.1 Quem é a SPOT / Stricker, 1.2 Subcatálogos Identificados, 1. Identidade e Contexto de Negócio
 
-### Community 2386 - "2. Infraestrutura e Stack Técnica"
+### Community 2387 - "2. Infraestrutura e Stack Técnica"
 Cohesion: 0.67
 Nodes (3): 2.1 Stack Completa, 2.2 Bundle JavaScript (v49.10.7), 2. Infraestrutura e Stack Técnica
 
-### Community 2390 - "useCollectionsGlobalShortcuts"
+### Community 2391 - "useCollectionsGlobalShortcuts"
 Cohesion: 1.00
 Nodes (3): useCollectionsGlobalShortcuts(), isTyping(), onKey()
 
-### Community 2391 - "useFavoritesGlobalShortcuts"
+### Community 2392 - "useFavoritesGlobalShortcuts"
 Cohesion: 1.00
 Nodes (3): useFavoritesGlobalShortcuts(), isTyping(), onKey()
 
-### Community 2407 - "useCollectionsGlobalShortcuts"
+### Community 2408 - "useCollectionsGlobalShortcuts"
 Cohesion: 1.00
 Nodes (3): useCollectionsGlobalShortcuts(), isTyping(), onKey()
 
-### Community 2408 - "useFavoritesGlobalShortcuts"
+### Community 2409 - "useFavoritesGlobalShortcuts"
 Cohesion: 1.00
 Nodes (3): useFavoritesGlobalShortcuts(), isTyping(), onKey()
 
@@ -11764,17 +11769,17 @@ Nodes (3): useFavoritesGlobalShortcuts(), isTyping(), onKey()
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `vitest` connect `vitest` to `ref_components`, `ref_integrations`, `ref_hooks`, `gotoAndSettle`, `ref_node_child_process`, `@tanstack/react-query`, `react`, `ref_types`, `sonner`, `ref_utils`, `@playwright/test`, `ref_node_fs`, `ProductCard.tsx`, `loginAs`, `framer-motion`, `ref_node_url`, `parseContract`, `ref_node_assert`, `@dnd-kit/sortable`, `concludeCheck`, `ref_fs`, `ref_services`, `recharts`, `_live-suite.ts`, `@/lib`, `missingPrerequisite`, `ref_stores`, `ref_pages`, `lib.mjs`, `magic-up.spec.ts`, `package.json`, `quotes-status-seed.ts`, `NoveltyProductGrid.tsx`, `crm-db-bridge/index.ts`, `MagazineListPage.tsx`, `webhook-schemas.ts`, `ProductColorSelector.tsx`, `gates-hardening-regressions.test.mjs`, `round-quality-report.mjs`, `AdminRoute`, `MagazineEditorPage.tsx`, `render-hook-providers.tsx`, `ref_node_process`, `external-db/index.ts`, `ringsOf`, `check-edge-verify-jwt-allowlist.mjs`, `SidebarNavGroup.suspense.test.tsx`, `useSellerCarts.helpers.ts`, `check-conflict-ledger.test.mjs`, `check-workflow-contracts.mjs`, `localStorage`, `drift-baseline.mjs`, `check-infrastructure-drift-snapshots.test.mjs`, `editorRecovery.ts`, `reduced-app-navigation.test.tsx`, `bridgeCallMetrics.ts`, `rest-native.ts`, `kit-template-icons.ts`, `mockupWizardStep.test.ts`, `useMagazineGoldImport`, `searchStates.test.ts`, `TemplateRegistry.ts`, `client.ts`, `EnhancedErrorBoundary`, `check-types-inventory-drift.mjs`, `fuzz-testing.mjs`, `fetch-all-pages.test.ts`, `__tests__/format-utils.test.ts`, `generate-mockup/index.ts`, `stock-filter.test.ts`, `ProductFormFullscreen.tsx`, `CartHeader.contract-snapshot.test.ts`, `QuotesListPage.deleteDisabled.test.tsx`, `QuotesListPage.layout.test.tsx`, `A) Tabela por FERRAMENTA`, `ProductsStep.tsx`, `magazineService.shapeDrift.test.ts`, `quoteNumberConcurrency.test.ts`, `C.1 — Teste-espelho (o teste reimplementa a lógica e testa a si mesmo)`, `StockDashboard.tsx`, `favorites-module.test.ts`, `phase4-admin-grid.test.ts`, `masks.ts`, `mockEdgeFunctionFetch`, `quote-flow.test.ts`, `ProductPersonalizationRules.tsx`, `postgrest.ts`, `webhooks.test.ts`, `devInfraGate`, `kit-builder-price.test.ts`, `validate.test.ts`, `ref_constants`, `drift-baseline.test.mjs`, `check-supabase-reference-catalog.mjs`, `setup-strict-side-effects.ts`, `auth/index.ts`, `CategoriesManager.tsx`, `hooks/useExternalDatabase.ts`, `@supabase/supabase-js`, `check-dependency-audit.mjs`, `simulation-orchestrator/index.ts`, `check-public-views-drift.mjs`, `enrich-typescript-references.mjs`, `promote-draft-migration.mjs`, `cartViewModePrefs.ts`, `magic-up-result-panel-keyboard.test.tsx`, `MockupResultCard.tsx`, `generate-ad-image/index.ts`, `mockupGeneratorModel.ts`, `check-ledger-statements-gate.mjs`, `check-seller-scope.mjs`, `MagazinePageRenderer`, `Auditoria — Galeria de Templates de Revista (Hardening 10/10)`, `ProposalHtmlTemplate.tsx`, `AdvancedSearch.tsx`, `products/useNovelties.ts`, `product-webhook/index.ts`, `zod`, `checkLoginGate.ts`, `sentry.ts`, `QuotesStatusChips.tsx`, `useQuoteBuilderState.helpers.ts`, `secretValidators.ts`, `VariantStockTable.tsx`, `GlobalSearchPalette.tsx`, `sw-harness.ts`, `useListUrlState.fuzz.test.tsx`, `health-score.ts`, `SellerCartContext.tsx`, `PdfGenerationDialog.tsx`, `CartHeaderButton.undoSnapshot.test.ts`, `totalsWidthSsotUsage.test.ts`, `QuickAddToQuote.guard.test.ts`, `QuoteBuilderActionButtons.fuzz.test.ts`, `LogoPositionEditor.tsx`, `quoteHelpers.ts`, `buildReason.ts`, `auth-debug.ts`, `useFavoritesStore.ts`, `_live-client.ts`, `_authz.ts`, `CartUtilComponents.tsx`, `latency-percentiles.test.ts`, `QuotesListPage.render.test.tsx`, `navigationMetrics.ts`, `magazineListPagination.test.ts`, `ui/ConfirmDialog.tsx`, `preflight-migration-apply.mjs`, `LocationPanel.tsx`, `ai-usage.test.ts`, `admin-module.test.ts`, `phase2-filters-catalog.test.ts`, `log-login-attempt-race.test.ts`, `super-filtro-price-sentinel.test.ts`, `postgrest-migration.test.ts`, `preview-zoom-a11y.test.tsx`, `preview-zoom-shortcuts.test.tsx`, `useStockVelocityPrefetch.ts`, `quote-calculations.test.ts`, `PersonalizationConfig.tsx`, `price-freshness.default-threshold.test.ts`, `invokeTelemetrySink.ts`, `StockAlertsIndicator.tsx`, `PropostaComercialTailwind.tsx`, `useGlobalSearch.ts`, `validation.ts`, `OrganizationContext.tsx`, `LogoPreviewCanvas.tsx`, `grupo6.acceptance.test.tsx`, `ref_test`, `QuickAddToQuote.toast.test.ts`, `PageTransition.tsx`, `VariantStockRowActions.test.tsx`, `check-migration-filename-contract.mjs`, `RolePermissionsPage.save.test.tsx`, `useMagazineReaderState.ts`, `check-migrations-sync-log-gate.mjs`, `magazineService.branding.test.ts`, `seller-carts.test.ts`, `ai-features.test.ts`, `auth-security.test.ts`, `FutureStockDialog.tsx`, `data-ops.test.ts`, `integration/log-login-attempt.test.ts`, `grupo5.acceptance.test.tsx`, `integration/webhook-inbound.test.ts`, `parseAiResponse.test.ts`, `SupplierRiskPanel.tsx`, `MockupConfigPanel.tsx`, `notifications-metrics.ts`, `ClientMockupsMenu.tsx`, `magic-up-onda5.test.tsx`, `sitemap.ts`, `kill-switch-client.ts`, `App.tsx`, `check-anon-insert-rate-guard.mjs`, `fuzz-edge-uploads.mjs`, `mockup/useMockupGenerator.ts`, `receive-crm-callback.fuzz.test.ts`, `tests/p0/_mocks.ts`, `check-ledger-manifest-drift.mjs`, `PopoverQtyInput.tsx`, `bridge/external-db-bridge-telemetry.test.ts`, `lib/external-db-bridge-telemetry.test.ts`, `Veredito — grupo 07 (13 branches apagadas do GitHub, commits ainda no clone local)`, `PresetsBar.tsx`, `ProposalProductTable.tsx`, `AreaCard.tsx`, `useRuptureAlerts.test.tsx`, `sanitizeError`, `useOrgData.test.ts`, `ProductFlagsSection.tsx`, `StockHealthBreakdownDrawer.tsx`, `mockup/useMockupDraft.ts`, `products/useSupplierComparison.ts`, `undoCopy.ts`, `webhook-contracts.test.ts`, `useSalesHistoryMacro.product-filter.test.ts`, `check-supabase-migration-ledger.mjs`, `ConfigurationPanelV6`, `SecretField.a11y.test.tsx`, `append-migration-receipt.test.mjs`, `honest-reports.test.mjs`, `SupplierComparisonModal.tsx`, `InlinePriceCalculator.tsx`, `calculations.ts`, `index.geometry.test.ts`, `useWorkspaceNotifications-cache-freshness.test.tsx`, `graph-metrics.mjs`, `theme-validation.spec.ts`, `append-edge-deploy-receipt.test.mjs`, `MockupClientSelector.tsx`, `watermarkTokens.ts`, `useZeroResultSubstitutes.test.tsx`, `products/useReplenishments.ts`, `ramoAliases.ts`, `index.mockups.test.ts`, `route-no-error-element.test.tsx`, `grupo4.acceptance.test.tsx`, `validate-cart-undo.mjs`, `ProductMarketingSection.tsx`, `useProductLeafCategories.tsx`, `sellerCartRestoreHelpers.tsx`, `commercial-intelligence.test.ts`, `inventario-repo.test.mjs`, `gerar-rotas.mjs`, `check-package-duplicate-scripts.mjs`, `StockHistoryChart.tsx`, `QuoteBuilderSummaryCollapseAll.fuzz.test.ts`, `products/useProductsLightweight.ts`, `stockFetcher.test.ts`, `grupo7.acceptance.test.tsx`, `MagicUp.a11y.test.tsx`, `Numeração de Orçamentos (`quote_number`) — Arquitetura`, `matrix-automated.spec.ts`, `check-summary-color-tokens.mjs`, `dry-run-migration-draft.mjs`, `validate-quote-conditions-workflows.mjs`, `MockupApprovalTemplate.tsx`, `calendar.tsx`, `useFutureStockPreference.fuzz.test.ts`, `mfaNavigationAnalytics.ts`, `restricted-routes.ts`, `collapsedItemsStorage.fuzz.test.ts`, `useConnectionTester.test.tsx`, `lib/bridge.test.ts`, `QuantityPriceCalculator.officialPrice.test.tsx`, `magazine-guard.ts`, `quotes/useAutoSaveQuote.ts`, `shipping-deadline.ts`, `stock-status.ts`, `personalizationSummary.ts`, `CartHeaderExhaustiveFuzz.test.ts`, `quotes-flow.test.ts`, `critical-tables-rls.test.ts`, `check-eslint-config-parses.test.mjs`, `browser/main.tsx`, `plan-status.mjs`, `IntegrationsHealthCard.tsx`, `useLogoDrag.ts`, `GlobalSearch.tsx`, `simulation/useLogoColorAnalysis.ts`, `stock-filter.stress.test.ts`, `discount-validation-messages.ts`, `quote-builder-freight-block-fuzz.test.tsx`, `useQuotesListPage.expiring.test.ts`, `index.send-failure.test.ts`, `KitComposition.test.tsx`, `simulator-wizard-pricing-parity.test.ts`, `index.timeout.test.ts`, `vercel-health-ready.test.ts`, `MockupLayoutButtons.test.tsx`, `fast-check`, `TurnstileWidget.test.tsx`, `StockBadge.tsx`, `AppLogo.tsx`, `MockupColorSelector.error.test.tsx`, `ColumnSelector.tsx`, `SearchResultGroups.tsx`, `login-flow.test.ts`, `common/useGenericFuzzySearch.ts`, `useIntersectionObserver.test.ts`, `intelligence/useMarketIntelligenceMacro.ts`, `futureStock.battery.test.ts`, `kit-coverage.ts`, `exportDiscountAuditPdf.ts`, `fichaDaAreaDaImagem.test.ts`, `SSOCallbackPage.race.test.tsx`, `SSOCallbackPage.test.tsx`, `grupo3.acceptance.test.tsx`, `PriceFreshnessBadge.colorAndIcon.test.tsx`, `PriceFreshnessBadge.thresholdHosts.test.tsx`, `edge-function-harness.ts`, `receive-crm-callback.duplicates-and-dispatcher.test.ts`, `useKitBuilderQuote.test.ts`, `MockupGenerator.a11y.test.tsx`, `tests/setup.ts`, `legacy-filters.ts`, `C) As sete armadilhas`, `AuditHistory.tsx`, `check-pptx-image-parser-exposure.test.mjs`, `react-dom`, `cartCompanyCnpjMaskContract.test.ts`, `useProductsByColor.test.ts`, `useSellerCarts.updateItemQuantity.rollback.test.tsx`, `order-payment-simulator.ts`, `CartStatusSelect.fuzz.test.tsx`, `resolveColorStock.colorFallback.test.ts`, `cross-cutting-regression.test.ts`, `phase3-detail-experience.test.ts`, `freight-quest-fuzzer.test.ts`, `useSellerCarts.robustness.test.tsx`, `useWorkspaceNotifications-unread-count.test.tsx`, `webhook-matrix-1000.test.ts`, `session-recovery.ts`, `🔴 FASE 5 — Hardening (Segurança e Performance)`, `hooks/useGenericFuzzySearch.ts`, `check-chunk-cycles.test.mjs`, `productMarketingData.test.ts`, `MarketIntelligenceChart.tsx`, `BulkAddToCollectionModal.test.tsx`, `StockCategoryTreeSelect.tsx`, `StockDashboard.test.tsx`, `TechniqueTooltip.data.test.tsx`, `exportSampleProposal.test.tsx`, `VoiceOverlaySections.tsx`, `mockupAreas.preserve.test.ts`, `useMockupGenerator.techniques.test.ts`, `useSellerCarts.restore.test.tsx`, `useSellerCarts.versionGuard.test.tsx`, `processTranscript.ts`, `lastInternalRoute.ts`, `useQuotesListPage.singleDelete.test.tsx`, `currency.ts`, `useClientMockups.edge.test.ts`, `useProductMatch.simulation.test.ts`, `useVoiceAgent.test.ts`, `useWorkspaceNotifications-cache-invalidation.test.tsx`, `magazine-service-fuzz.test.ts`, `mutation-test-magazine.test.mjs`, `validate-quotes-list.test.mjs`, `3.9 Mobile, PWA e offline`, `hooks/useLoginAttempts.unit.test.tsx`, `stock-benchmark.test.ts`, `pdfHardcodedColors.test.ts`, `ThemeContext.tsx`, `fetchCategoryRanking.marketDepleted.test.ts`, `useKitPriceValidation.test.ts`, `products/useSimilarProducts.ts`, `auth-utils.ts`, `ResetPassword.updatePassword.test.tsx`, `MagazineEditorPage.hooksOrder.test.tsx`, `useQuotesListPage.bulkDelete.test.tsx`, `useQuotesListPage.duplicateUndo.test.tsx`, `magazinePublish.fuzz.test.ts`, `image-utils.fuzz.test.ts`, `DevRoute.test.tsx`, `QuoteBuilder.test.ts`, `audit-db-frontend-coverage.test.mjs`, `check-allowlist-memory-crosscheck.test.mjs`, `check-gates-table.test.mjs`, `db-apply-migration-workflow.test.mjs`, `generate-theme-report-ts.test.mjs`, `setup-ref-warning-capture.ts`, `supabase-schema-contract.test.ts`, `FiltersPage.test.tsx`, `VariantStockTable.fuzz-invariants.test.tsx`, `MockupConfigPanel.techniques.test.tsx`, `pdfContrastReport.test.ts`, `PdfGenerationModule.test.ts`, `ColorSwatch.ssot.test.tsx`, `common/__tests__/useSearchHistory.test.ts`, `useProductColorSwatch.test.tsx`, `oauth-pending.ts`, `stock-filter.fuzz.test.ts`, `json-value.test.ts`, `mockup-geometry.test.ts`, `ResetPassword.test.tsx`, `MockupDialogs.test.tsx`, `useQuotesListPage.fuzz.test.ts`, `product-sorting.ts`, `magic-up-variations.keyboard.test.tsx`, `freight-quest-webhook-simulation.test.ts`, `integration/magic-up-score.test.ts`, `rupture-risk.simulation.test.ts`, `image-proxy.ts`, `check-edge-live-coverage.test.mjs`, `check-edge-request-id-propagation.test.mjs`, `check-visual-baselines.test.mjs`, `e2e-smoke-coverage-doc.test.mjs`, `CartHeaderButton.delete.test.tsx`, `LocationPanelAdvanced.test.tsx`, `currency-input.tsx`, `useProductsColorsBatch.aggregation.test.tsx`, `useQuoteBuilderState.draftHandoff.test.tsx`, `hooks-audit-regression.unit.test.ts`, `intelligenceAnalytics.failure-event.test.ts`, `stock-filter.perf.test.ts`, `kit-detection.ts`, `QuotesDashboardPage.pdfDisabled.test.tsx`, `useQuotesListPage.test.ts`, `RoutePrefetcher.tsx`, `magic-up-curation.a11y.test.tsx`, `PageUtilities.test.ts`, `StatsPopover.test.tsx`, `navigation-layout.test.tsx`, `phase1-foundation-types.test.ts`, `phase5-propagation.test.ts`, `tools-simulator.test.ts`, `useTechniquePricing.test.ts`, `freight-quest-regression-suite.test.ts`, `magazine-flakiness-report.test.mjs`, `sentinel-push-range.test.mjs`, `freight-calculations.test.ts`, `freight-property-based.test.ts`, `__tests__/useDebounce.test.ts`, `useUnsavedChangesGuard.test.ts`, `stock-filter.future-minqty.fuzz.test.ts`, `stock-filter.rupture-risk.fuzz.test.ts`, `mapRestoreCartError.ts`, `QuotesListPage.fab.test.tsx`, `magazineEdgeContract.test.ts`, `cnpj-display-contract.test.ts`, `route-guards-redirects.test.tsx`, `products-catalog.test.ts`, `log-login-attempt-fuzz.test.ts`, `platform-ops.test.ts`, `useReplenishments.test.ts`, `filter-dev-only-items.test.ts`, `rbac-permissions.test.ts`, `tests/lib/theme-presets.test.ts`, `check-generated-files-protected.test.mjs`, `check-visual-tests-specs.test.mjs`, `e2e-mock-auth-setup.test.mjs`, `rls-seller-policies.spec.ts`, `supplierReliability.fuzz.test.ts`, `freight-coverage-validation.test.ts`, `sales-goal.fuzz.test.ts`?**
+- **Why does `vitest` connect `vitest` to `ref_components`, `ref_integrations`, `ref_hooks`, `gotoAndSettle`, `@tanstack/react-query`, `ref_node_child_process`, `react`, `ref_types`, `sonner`, `ref_utils`, `@playwright/test`, `ref_node_fs`, `ProductCard.tsx`, `loginAs`, `framer-motion`, `ref_node_url`, `parseContract`, `ref_node_assert`, `@dnd-kit/sortable`, `concludeCheck`, `ref_fs`, `ref_services`, `recharts`, `_live-suite.ts`, `@/lib`, `missingPrerequisite`, `ref_stores`, `ref_pages`, `lib.mjs`, `magic-up.spec.ts`, `package.json`, `quotes-status-seed.ts`, `NoveltyProductGrid.tsx`, `crm-db-bridge/index.ts`, `MagazineListPage.tsx`, `webhook-schemas.ts`, `ProductColorSelector.tsx`, `gates-hardening-regressions.test.mjs`, `round-quality-report.mjs`, `AdminRoute`, `MagazineEditorPage.tsx`, `render-hook-providers.tsx`, `ref_node_process`, `external-db/index.ts`, `ringsOf`, `check-edge-verify-jwt-allowlist.mjs`, `SidebarNavGroup.suspense.test.tsx`, `useSellerCarts.helpers.ts`, `check-conflict-ledger.test.mjs`, `check-workflow-contracts.mjs`, `localStorage`, `drift-baseline.mjs`, `check-infrastructure-drift-snapshots.test.mjs`, `editorRecovery.ts`, `reduced-app-navigation.test.tsx`, `bridgeCallMetrics.ts`, `rest-native.ts`, `kit-template-icons.ts`, `mockupWizardStep.test.ts`, `useMagazineGoldImport`, `TemplateRegistry.ts`, `searchStates.test.ts`, `client.ts`, `EnhancedErrorBoundary`, `check-types-inventory-drift.mjs`, `fuzz-testing.mjs`, `fetch-all-pages.test.ts`, `generate-mockup/index.ts`, `__tests__/format-utils.test.ts`, `ProductFormFullscreen.tsx`, `stock-filter.test.ts`, `CartHeader.contract-snapshot.test.ts`, `QuotesListPage.deleteDisabled.test.tsx`, `A) Tabela por FERRAMENTA`, `ProductsStep.tsx`, `QuotesListPage.layout.test.tsx`, `magazineService.shapeDrift.test.ts`, `quoteNumberConcurrency.test.ts`, `C.1 — Teste-espelho (o teste reimplementa a lógica e testa a si mesmo)`, `StockDashboard.tsx`, `favorites-module.test.ts`, `masks.ts`, `phase4-admin-grid.test.ts`, `mockEdgeFunctionFetch`, `ProductPersonalizationRules.tsx`, `postgrest.ts`, `quote-flow.test.ts`, `devInfraGate`, `webhooks.test.ts`, `kit-builder-price.test.ts`, `ref_constants`, `validate.test.ts`, `drift-baseline.test.mjs`, `check-supabase-reference-catalog.mjs`, `setup-strict-side-effects.ts`, `auth/index.ts`, `CategoriesManager.tsx`, `hooks/useExternalDatabase.ts`, `@supabase/supabase-js`, `check-dependency-audit.mjs`, `simulation-orchestrator/index.ts`, `check-public-views-drift.mjs`, `enrich-typescript-references.mjs`, `promote-draft-migration.mjs`, `cartViewModePrefs.ts`, `magic-up-result-panel-keyboard.test.tsx`, `MockupResultCard.tsx`, `generate-ad-image/index.ts`, `mockupGeneratorModel.ts`, `check-ledger-statements-gate.mjs`, `check-seller-scope.mjs`, `MagazinePageRenderer`, `Auditoria — Galeria de Templates de Revista (Hardening 10/10)`, `ProposalHtmlTemplate.tsx`, `AdvancedSearch.tsx`, `products/useNovelties.ts`, `product-webhook/index.ts`, `zod`, `checkLoginGate.ts`, `sentry.ts`, `QuotesStatusChips.tsx`, `useQuoteBuilderState.helpers.ts`, `secretValidators.ts`, `VariantStockTable.tsx`, `GlobalSearchPalette.tsx`, `sw-harness.ts`, `useListUrlState.fuzz.test.tsx`, `health-score.ts`, `SellerCartContext.tsx`, `PdfGenerationDialog.tsx`, `useFavoritesStore.ts`, `CartHeaderButton.undoSnapshot.test.ts`, `totalsWidthSsotUsage.test.ts`, `QuickAddToQuote.guard.test.ts`, `LogoPositionEditor.tsx`, `QuoteBuilderActionButtons.fuzz.test.ts`, `quoteHelpers.ts`, `buildReason.ts`, `auth-debug.ts`, `_live-client.ts`, `_authz.ts`, `CartUtilComponents.tsx`, `latency-percentiles.test.ts`, `navigationMetrics.ts`, `QuotesListPage.render.test.tsx`, `ui/ConfirmDialog.tsx`, `magazineListPagination.test.ts`, `preflight-migration-apply.mjs`, `LocationPanel.tsx`, `ai-usage.test.ts`, `admin-module.test.ts`, `phase2-filters-catalog.test.ts`, `log-login-attempt-race.test.ts`, `super-filtro-price-sentinel.test.ts`, `postgrest-migration.test.ts`, `preview-zoom-a11y.test.tsx`, `useStockVelocityPrefetch.ts`, `preview-zoom-shortcuts.test.tsx`, `PersonalizationConfig.tsx`, `quote-calculations.test.ts`, `price-freshness.default-threshold.test.ts`, `invokeTelemetrySink.ts`, `StockAlertsIndicator.tsx`, `PropostaComercialTailwind.tsx`, `useGlobalSearch.ts`, `validation.ts`, `OrganizationContext.tsx`, `LogoPreviewCanvas.tsx`, `grupo6.acceptance.test.tsx`, `ref_test`, `check-migration-filename-contract.mjs`, `PageTransition.tsx`, `VariantStockRowActions.test.tsx`, `QuickAddToQuote.toast.test.ts`, `RolePermissionsPage.save.test.tsx`, `useMagazineReaderState.ts`, `check-migrations-sync-log-gate.mjs`, `magazineService.branding.test.ts`, `seller-carts.test.ts`, `ai-features.test.ts`, `FutureStockDialog.tsx`, `auth-security.test.ts`, `data-ops.test.ts`, `grupo5.acceptance.test.tsx`, `integration/log-login-attempt.test.ts`, `integration/webhook-inbound.test.ts`, `parseAiResponse.test.ts`, `SupplierRiskPanel.tsx`, `MockupConfigPanel.tsx`, `notifications-metrics.ts`, `ClientMockupsMenu.tsx`, `magic-up-onda5.test.tsx`, `sitemap.ts`, `kill-switch-client.ts`, `App.tsx`, `check-anon-insert-rate-guard.mjs`, `fuzz-edge-uploads.mjs`, `mockup/useMockupGenerator.ts`, `receive-crm-callback.fuzz.test.ts`, `tests/p0/_mocks.ts`, `check-ledger-manifest-drift.mjs`, `PopoverQtyInput.tsx`, `bridge/external-db-bridge-telemetry.test.ts`, `lib/external-db-bridge-telemetry.test.ts`, `Veredito — grupo 07 (13 branches apagadas do GitHub, commits ainda no clone local)`, `PresetsBar.tsx`, `ProposalProductTable.tsx`, `AreaCard.tsx`, `useRuptureAlerts.test.tsx`, `sanitizeError`, `useOrgData.test.ts`, `ProductFlagsSection.tsx`, `StockHealthBreakdownDrawer.tsx`, `mockup/useMockupDraft.ts`, `products/useSupplierComparison.ts`, `undoCopy.ts`, `webhook-contracts.test.ts`, `useSalesHistoryMacro.product-filter.test.ts`, `check-supabase-migration-ledger.mjs`, `ConfigurationPanelV6`, `SecretField.a11y.test.tsx`, `append-migration-receipt.test.mjs`, `honest-reports.test.mjs`, `SupplierComparisonModal.tsx`, `InlinePriceCalculator.tsx`, `calculations.ts`, `index.geometry.test.ts`, `useWorkspaceNotifications-cache-freshness.test.tsx`, `graph-metrics.mjs`, `theme-validation.spec.ts`, `append-edge-deploy-receipt.test.mjs`, `MockupClientSelector.tsx`, `watermarkTokens.ts`, `useZeroResultSubstitutes.test.tsx`, `products/useReplenishments.ts`, `ramoAliases.ts`, `index.mockups.test.ts`, `route-no-error-element.test.tsx`, `grupo4.acceptance.test.tsx`, `validate-cart-undo.mjs`, `ProductMarketingSection.tsx`, `useProductLeafCategories.tsx`, `sellerCartRestoreHelpers.tsx`, `commercial-intelligence.test.ts`, `inventario-repo.test.mjs`, `gerar-rotas.mjs`, `check-package-duplicate-scripts.mjs`, `StockHistoryChart.tsx`, `QuoteBuilderSummaryCollapseAll.fuzz.test.ts`, `products/useProductsLightweight.ts`, `stockFetcher.test.ts`, `grupo7.acceptance.test.tsx`, `MagicUp.a11y.test.tsx`, `Numeração de Orçamentos (`quote_number`) — Arquitetura`, `matrix-automated.spec.ts`, `check-summary-color-tokens.mjs`, `dry-run-migration-draft.mjs`, `validate-quote-conditions-workflows.mjs`, `MockupApprovalTemplate.tsx`, `calendar.tsx`, `useFutureStockPreference.fuzz.test.ts`, `mfaNavigationAnalytics.ts`, `restricted-routes.ts`, `collapsedItemsStorage.fuzz.test.ts`, `useConnectionTester.test.tsx`, `lib/bridge.test.ts`, `QuantityPriceCalculator.officialPrice.test.tsx`, `magazine-guard.ts`, `quotes/useAutoSaveQuote.ts`, `shipping-deadline.ts`, `stock-status.ts`, `personalizationSummary.ts`, `CartHeaderExhaustiveFuzz.test.ts`, `quotes-flow.test.ts`, `critical-tables-rls.test.ts`, `check-eslint-config-parses.test.mjs`, `browser/main.tsx`, `plan-status.mjs`, `IntegrationsHealthCard.tsx`, `useLogoDrag.ts`, `GlobalSearch.tsx`, `simulation/useLogoColorAnalysis.ts`, `stock-filter.stress.test.ts`, `discount-validation-messages.ts`, `quote-builder-freight-block-fuzz.test.tsx`, `useQuotesListPage.expiring.test.ts`, `index.send-failure.test.ts`, `KitComposition.test.tsx`, `simulator-wizard-pricing-parity.test.ts`, `index.timeout.test.ts`, `vercel-health-ready.test.ts`, `MockupLayoutButtons.test.tsx`, `fast-check`, `TurnstileWidget.test.tsx`, `StockBadge.tsx`, `AppLogo.tsx`, `MockupColorSelector.error.test.tsx`, `ColumnSelector.tsx`, `SearchResultGroups.tsx`, `login-flow.test.ts`, `common/useGenericFuzzySearch.ts`, `useIntersectionObserver.test.ts`, `intelligence/useMarketIntelligenceMacro.ts`, `futureStock.battery.test.ts`, `kit-coverage.ts`, `exportDiscountAuditPdf.ts`, `fichaDaAreaDaImagem.test.ts`, `SSOCallbackPage.race.test.tsx`, `SSOCallbackPage.test.tsx`, `grupo3.acceptance.test.tsx`, `PriceFreshnessBadge.colorAndIcon.test.tsx`, `PriceFreshnessBadge.thresholdHosts.test.tsx`, `edge-function-harness.ts`, `receive-crm-callback.duplicates-and-dispatcher.test.ts`, `useKitBuilderQuote.test.ts`, `MockupGenerator.a11y.test.tsx`, `tests/setup.ts`, `legacy-filters.ts`, `C) As sete armadilhas`, `AuditHistory.tsx`, `check-pptx-image-parser-exposure.test.mjs`, `react-dom`, `cartCompanyCnpjMaskContract.test.ts`, `useProductsByColor.test.ts`, `useSellerCarts.updateItemQuantity.rollback.test.tsx`, `order-payment-simulator.ts`, `CartStatusSelect.fuzz.test.tsx`, `resolveColorStock.colorFallback.test.ts`, `cross-cutting-regression.test.ts`, `phase3-detail-experience.test.ts`, `freight-quest-fuzzer.test.ts`, `useSellerCarts.robustness.test.tsx`, `useWorkspaceNotifications-unread-count.test.tsx`, `webhook-matrix-1000.test.ts`, `session-recovery.ts`, `🔴 FASE 5 — Hardening (Segurança e Performance)`, `hooks/useGenericFuzzySearch.ts`, `check-chunk-cycles.test.mjs`, `productMarketingData.test.ts`, `MarketIntelligenceChart.tsx`, `BulkAddToCollectionModal.test.tsx`, `StockCategoryTreeSelect.tsx`, `StockDashboard.test.tsx`, `TechniqueTooltip.data.test.tsx`, `exportSampleProposal.test.tsx`, `VoiceOverlaySections.tsx`, `mockupAreas.preserve.test.ts`, `useMockupGenerator.techniques.test.ts`, `useSellerCarts.restore.test.tsx`, `useSellerCarts.versionGuard.test.tsx`, `processTranscript.ts`, `lastInternalRoute.ts`, `useQuotesListPage.singleDelete.test.tsx`, `currency.ts`, `useClientMockups.edge.test.ts`, `useProductMatch.simulation.test.ts`, `useVoiceAgent.test.ts`, `useWorkspaceNotifications-cache-invalidation.test.tsx`, `magazine-service-fuzz.test.ts`, `mutation-test-magazine.test.mjs`, `validate-quotes-list.test.mjs`, `3.9 Mobile, PWA e offline`, `hooks/useLoginAttempts.unit.test.tsx`, `stock-benchmark.test.ts`, `pdfHardcodedColors.test.ts`, `ThemeContext.tsx`, `useCustomizationCollapsePrefs.ts`, `fetchCategoryRanking.marketDepleted.test.ts`, `useKitPriceValidation.test.ts`, `products/useSimilarProducts.ts`, `auth-utils.ts`, `ResetPassword.updatePassword.test.tsx`, `MagazineEditorPage.hooksOrder.test.tsx`, `useQuotesListPage.bulkDelete.test.tsx`, `useQuotesListPage.duplicateUndo.test.tsx`, `magazinePublish.fuzz.test.ts`, `image-utils.fuzz.test.ts`, `DevRoute.test.tsx`, `QuoteBuilder.test.ts`, `audit-db-frontend-coverage.test.mjs`, `check-allowlist-memory-crosscheck.test.mjs`, `check-gates-table.test.mjs`, `db-apply-migration-workflow.test.mjs`, `generate-theme-report-ts.test.mjs`, `setup-ref-warning-capture.ts`, `supabase-schema-contract.test.ts`, `FiltersPage.test.tsx`, `VariantStockTable.fuzz-invariants.test.tsx`, `MockupConfigPanel.techniques.test.tsx`, `pdfContrastReport.test.ts`, `PdfGenerationModule.test.ts`, `ColorSwatch.ssot.test.tsx`, `common/__tests__/useSearchHistory.test.ts`, `useProductColorSwatch.test.tsx`, `oauth-pending.ts`, `stock-filter.fuzz.test.ts`, `json-value.test.ts`, `mockup-geometry.test.ts`, `ResetPassword.test.tsx`, `MockupDialogs.test.tsx`, `useQuotesListPage.fuzz.test.ts`, `product-sorting.ts`, `magic-up-variations.keyboard.test.tsx`, `freight-quest-webhook-simulation.test.ts`, `integration/magic-up-score.test.ts`, `rupture-risk.simulation.test.ts`, `image-proxy.ts`, `check-edge-live-coverage.test.mjs`, `check-edge-request-id-propagation.test.mjs`, `check-visual-baselines.test.mjs`, `e2e-smoke-coverage-doc.test.mjs`, `CartHeaderButton.delete.test.tsx`, `LocationPanelAdvanced.test.tsx`, `currency-input.tsx`, `useProductsColorsBatch.aggregation.test.tsx`, `useQuoteBuilderState.draftHandoff.test.tsx`, `hooks-audit-regression.unit.test.ts`, `intelligenceAnalytics.failure-event.test.ts`, `stock-filter.perf.test.ts`, `kit-detection.ts`, `QuotesDashboardPage.pdfDisabled.test.tsx`, `useQuotesListPage.test.ts`, `RoutePrefetcher.tsx`, `magic-up-curation.a11y.test.tsx`, `PageUtilities.test.ts`, `StatsPopover.test.tsx`, `navigation-layout.test.tsx`, `phase1-foundation-types.test.ts`, `phase5-propagation.test.ts`, `tools-simulator.test.ts`, `useTechniquePricing.test.ts`, `freight-quest-regression-suite.test.ts`, `magazine-flakiness-report.test.mjs`, `sentinel-push-range.test.mjs`, `freight-calculations.test.ts`, `freight-property-based.test.ts`, `__tests__/useDebounce.test.ts`, `useUnsavedChangesGuard.test.ts`, `stock-filter.future-minqty.fuzz.test.ts`, `stock-filter.rupture-risk.fuzz.test.ts`, `mapRestoreCartError.ts`, `QuotesListPage.fab.test.tsx`, `magazineEdgeContract.test.ts`, `cnpj-display-contract.test.ts`, `route-guards-redirects.test.tsx`, `products-catalog.test.ts`, `log-login-attempt-fuzz.test.ts`, `platform-ops.test.ts`, `useReplenishments.test.ts`, `filter-dev-only-items.test.ts`, `rbac-permissions.test.ts`, `tests/lib/theme-presets.test.ts`, `check-generated-files-protected.test.mjs`, `check-visual-tests-specs.test.mjs`, `e2e-mock-auth-setup.test.mjs`, `rls-seller-policies.spec.ts`, `supplierReliability.fuzz.test.ts`, `freight-coverage-validation.test.ts`, `sales-goal.fuzz.test.ts`?**
   _High betweenness centrality (0.206) - this node is a cross-community bridge._
 - **What connects `PATH`, `../tsconfig.app.json`, `@fontsource/archivo-black` to the rest of the system?**
   _72 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `vitest` be split into smaller, more focused modules?**
   _Cohesion score 0.00371742108716721 - nodes in this community are weakly interconnected._
-- **Why does `react` connect `react` to `vitest`, `ref_components`, `ref_integrations`, `ref_hooks`, `ref_node_child_process`, `@tanstack/react-query`, `ref_types`, `sonner`, `ref_utils`, `ref_node_fs`, `ProductCard.tsx`, `framer-motion`, `@dnd-kit/sortable`, `ref_services`, `recharts`, `@/lib`, `ref_stores`, `ref_pages`, `package.json`, `NoveltyProductGrid.tsx`, `ProductPriceSimulator.tsx`, `MagazineListPage.tsx`, `ProductColorSelector.tsx`, `AdminRoute`, `MagazineEditorPage.tsx`, `render-hook-providers.tsx`, `C) "Sem consumidor" — dupla verificação e confiança`, `ringsOf`, `SidebarNavGroup.suspense.test.tsx`, `useSellerCarts.helpers.ts`, `ItemSelector.tsx`, `hooks/useAutoSaveQuote.ts`, `hooks/useDebounce.ts`, `hooks/useProductsByCategory.ts`, `Rotas públicas e harnesses`, `accordion.tsx`, `avatar.tsx`, `KitSummary.tsx`, `editorRecovery.ts`, `reduced-app-navigation.test.tsx`, `SkipToContent.tsx`, `A. BI por cliente — fontes e estados mistos`, `useMagazineGoldImport`, `TemplateRegistry.ts`, `timeline.tsx`, `SupabaseConnectionsTab.tsx`, `ConnectionTestHistoryPanel.tsx`, `useKillSwitchObservability.ts`, `useAuthHydrationMetrics.ts`, `kit-builder/useKitWizardShortcuts.ts`, `simulation/useTechniquePricing.ts`, `useWizardPersistence.ts`, `useRuptureHorizon.ts`, `useVoiceHistory.ts`, `ProductFormFullscreen.tsx`, `Auditoria Exaustiva — Viewer Público da Revista`, `A) Tabela por FERRAMENTA`, `ProductsStep.tsx`, `ProductFormStepContent.tsx`, `StockDashboard.tsx`, `ProductPersonalizationRules.tsx`, `BadgeFormDialog.tsx`, `ProductKitComponentsSection.tsx`, `ref_constants`, `TestAllConnectionsButton.tsx`, `FilterPanel.tsx`, `A.5.2 — Sob `<AdminRoute>` (`admin-routes.tsx:65`) — exige `canManage` **+ MFA em AAL2**`, `auth/index.ts`, `ProductImageGallery.tsx`, `CategoriesManager.tsx`, `hooks/useExternalDatabase.ts`, `@supabase/supabase-js`, `jspdf`, `cartViewModePrefs.ts`, `A.1 — Tabela dos 46 (+1)`, `MockupResultCard.tsx`, `A.6 — Ferramentas — `src/routes/tools-routes.tsx` (sob `PR` + `PAL`)`, `useMcpKeys.ts`, `AIChat.tsx`, `MagazinePageRenderer`, `Auditoria — Galeria de Templates de Revista (Hardening 10/10)`, `ProposalHtmlTemplate.tsx`, `Rotas técnicas `DevRoute``, `AdvancedSearch.tsx`, `BulkImportDialog.tsx`, `LayoutComponents.tsx`, `products/useNovelties.ts`, `5.21 Observações (áreas 12–20)`, `ICON_MAP — Referência completa`, `undoToast.tsx`, `MyDiscountRequestsWidget.tsx`, `checkLoginGate.ts`, `QuotesStatusChips.tsx`, `useQuoteBuilderState.helpers.ts`, `VariantStockTable.tsx`, `GlobalSearchPalette.tsx`, `hooks/usePasswordBreachCheck.tsx`, `hooks/usePositionHistory.ts`, `useListUrlState.fuzz.test.tsx`, `hooks/useScrollLockFix.ts`, `hooks/useUndoStack.ts`, `SellerCartContext.tsx`, `scroll-area.tsx`, `PdfGenerationDialog.tsx`, `CredentialCacheMetricsPanel.tsx`, `useSuppliersManager.ts`, `LogoPositionEditor.tsx`, `useUndoRedo.ts`, `CartUtilComponents.tsx`, `access-denied-strings.tsx`, `5. Kit Maker — plano mestre de 200 etapas (2026-09-10)`, `AdImageResult.tsx`, `useExpertChat.ts`, `ZoneCommandPalette.tsx`, `ui/ConfirmDialog.tsx`, `useSecretField.ts`, `SupplierDrawer.tsx`, `LocationPanel.tsx`, `VoiceSearchOverlay.tsx`, `useClientBI`, `PersonalizationConfig.tsx`, `BrandColorPicker.tsx`, `class-variance-authority`, `StockAlertsIndicator.tsx`, `PropostaComercialTailwind.tsx`, `useGlobalSearch.ts`, `kit-builder/useKitBuilderQueries.ts`, `OrganizationContext.tsx`, `Design Tokens — Orange Premium SSOT`, `ConnectionsPulseBar.tsx`, `LogoPreviewCanvas.tsx`, `sidebar.tsx`, `grupo6.acceptance.test.tsx`, `hooks/useUnsavedChangesGuard.ts`, `PromptGenerator.tsx`, `PageTransition.tsx`, `VariantStockRowActions.test.tsx`, `ReplenishmentProductGrid.tsx`, `useIdleEffect.ts`, `useMagazineReaderState.ts`, `GroupComponentCard.tsx`, `useNewSupplierForm.ts`, `ProductVideoGallery.tsx`, `FutureStockDialog.tsx`, `QuoteItemsTable.tsx`, `SecurityDashboard.tsx`, `grupo5.acceptance.test.tsx`, `stockFetcher.ts`, `Auditoria Exaustiva — Super Filtro (2026-06-18)`, `SupplierRiskPanel.tsx`, `MockupConfigPanel.tsx`, `ClientMockupsMenu.tsx`, `magic-up-onda5.test.tsx`, `A) Tabela por FUNCIONALIDADE`, `usePersonalizationManager.ts`, `hooks/useRamoAtividadeFilho.ts`, `command.tsx`, `App.tsx`, `sections/ProductEngravingSection.tsx`, `SocialProof.tsx`, `mockup/useMockupGenerator.ts`, `MockupProductSelector.tsx`, `quote-sync-promo-champions/index.test.ts`, `AutoTestJobStatusCard.tsx`, `PopoverQtyInput.tsx`, `SkeletonLoaders.tsx`, `Veredito — grupo 07 (13 branches apagadas do GitHub, commits ainda no clone local)`, `describe`, `Grupo C — Frontend (T21–T30)`, `PresetsBar.tsx`, `ProposalProductTable.tsx`, `intelligence/useExternalDatabase.ts`, `AreaCard.tsx`, `useRuptureAlerts.test.tsx`, `kit-builder/KitLibraryPage.tsx`, `ContactSelector.tsx`, `useSupplierReliabilityServer.ts`, `useOrgData.test.ts`, `SkeletonShimmer.tsx`, `AppRoutes.tsx`, `ErrorDetailsDialog.tsx`, `ProductFlagsSection.tsx`, `StockHealthBreakdownDrawer.tsx`, `mockup/useMockupDraft.ts`, `products/useSupplierComparison.ts`, `useCatalogState.helpers.ts`, `products/useProductMatch.ts`, `useSalesHistoryMacro.product-filter.test.ts`, `Veredito — grupo 09 (13 branches)`, `ConfigurationPanelV6`, `SecretField.a11y.test.tsx`, `MicroInteractions.tsx`, `SupplierComparisonModal.tsx`, `InlinePriceCalculator.tsx`, `RankingFilterToolbar.tsx`, `DiscountApprovalQueue.tsx`, `RupturePanelEma.tsx`, `MockupClientSelector.tsx`, `NotificationsBadgeStatsPanel.tsx`, `useZeroResultSubstitutes.test.tsx`, `route-no-error-element.test.tsx`, `grupo4.acceptance.test.tsx`, `useKitBuilderQuote.ts`, `LocationCard.tsx`, `hooks/useMaterialTypes.ts`, `breadcrumb.tsx`, `MockupPromptManager.tsx`, `ProductMarketingSection.tsx`, `useProductVariants.ts`, `FlowFilterPanel.tsx`, `useClientBrandSignals.ts`, `useProductLeafCategories.tsx`, `sellerCartRestoreHelpers.tsx`, `ColorGroupFilter.tsx`, `hooks/useSpeechRecognition.ts`, `form.tsx`, `McpAuditFeed.tsx`, `personalization/TechniqueSelector.tsx`, `StockHistoryChart.tsx`, `AdminTelemetriaPage.tsx`, `grupo7.acceptance.test.tsx`, `CartsListPage.tsx`, `OnboardingContext.tsx`, `useIntelligenceBadgeSettings.ts`, `hooks/use-toast.ts`, `hooks/useGravacaoPriceV2.ts`, `carousel.tsx`, `DataSourceDebugTab.tsx`, `IncidentTimeline72h.tsx`, `SeverityFilterContext.tsx`, `MockupApprovalTemplate.tsx`, `MockupHistoryPanel.tsx`, `calendar.tsx`, `intelligence/useMagicUpState.ts`, `useFutureStockPreference.fuzz.test.ts`, `QuantityPriceCalculator.officialPrice.test.tsx`, `KitAIPromptDialog.tsx`, `ExportCollectionButton.tsx`, `hooks/useConnectionTester.ts`, `LogoColorAnalyzer.tsx`, `ProductSupplierSection.tsx`, `WorkflowCanvas.tsx`, `useV4Callbacks.ts`, `quotes/useAutoSaveQuote.ts`, `simulation/useGravacaoPriceV2.ts`, `AppHealthDashboard.tsx`, `GlobalCommandBar.tsx`, `browser/main.tsx`, `ui/useErrorHandler.ts`, `CardSourceDiagnostic.tsx`, `ConnectionsIncidentStrip.tsx`, `OwnershipRepairDialog.tsx`, `GroupAccordionItem.tsx`, `StepUpAttemptsPanel.tsx`, `useLogoDrag.ts`, `VariantGridMatrix.tsx`, `GlobalSearch.tsx`, `comparison/useComparisonWeights.ts`, `intelligence/useSparklineSales.tsx`, `simulation/useLogoColorAnalysis.ts`, `quote-builder-freight-block-fuzz.test.tsx`, `useQuotesListPage.expiring.test.ts`, `hooks/useGravacaoV2.ts`, `hooks/useWorkspaceNotifications.tsx`, `AuthBranding.tsx`, `ProductClassificationSection.tsx`, `TurnstileWidget.test.tsx`, `DraggableDashboard.tsx`, `BridgeMetricsSummary.tsx`, `AppLogo.tsx`, `ColumnSelector.tsx`, `SearchResultGroups.tsx`, `sheet.tsx`, `common/useGenericFuzzySearch.ts`, `useIntersectionObserver.test.ts`, `intelligence/useMarketIntelligenceMacro.ts`, `fichaDaAreaDaImagem.test.ts`, `grupo3.acceptance.test.tsx`, `MockupGenerator.a11y.test.tsx`, `useProductsColorsBatch.ts`, `ui/use-toast.ts`, `AuditHistory.tsx`, `kit-builder/useKitStockValidation.ts`, `BridgesLiveCard.tsx`, `toast.tsx`, `hooks/useTechniqueRecommendations.ts`, `hooks/useVoiceAgent.ts`, `dropdown-menu.tsx`, `react-dom`, `KeysValidationTab.tsx`, `useRecentIncidents.ts`, `CategoryCascadeSelector.tsx`, `ProductVariationAxesConfig.tsx`, `BulkVariantWizard.tsx`, `GlassElements.tsx`, `QuoteVersionCompare.tsx`, `RamoAtividadeGroupAccordion.tsx`, `chart.tsx`, `useSmokeTests.ts`, `collections/useCollections.ts`, `useProductsByColor.test.ts`, `useSellerCarts.updateItemQuantity.rollback.test.tsx`, `simulation/useTechniqueRecommendations.ts`, `useSellerCarts.robustness.test.tsx`, `QuoteAutoSave.tsx`, `hooks/useCollections.ts`, `hooks/useGenericFuzzySearch.ts`, `hooks/useKitBuilderQueries.ts`, `hooks/useMockupTechniques.ts`, `hooks/useProductMatch.ts`, `SavedFilters.tsx`, `MarketIntelligenceChart.tsx`, `StockCategoryTreeSelect.tsx`, `TechniqueTooltip.data.test.tsx`, `exportSampleProposal.test.tsx`, `VoiceOverlaySections.tsx`, `table.tsx`, `admin/useSecretsManager.ts`, `intelligence/useAIRecommendations.ts`, `useMockupGenerator.techniques.test.ts`, `useSellerCarts.restore.test.tsx`, `useSellerCarts.versionGuard.test.tsx`, `auth/SSOCallbackPage.tsx`, `useQuotesListPage.singleDelete.test.tsx`, `useClientMockups.edge.test.ts`, `3.9 Mobile, PWA e offline`, `A.2 — Atenção especial: `src/components/providers/AppProviders.tsx``, `hooks/useAIRecommendations.ts`, `hooks/useContextualSuggestions.ts`, `hooks/useFavoriteLists.ts`, `hooks/useRBAC.tsx`, `hooks/useScheduledReports.ts`, `hooks/useSecretsManager.ts`, `hooks/useSparklineSales.tsx`, `select.tsx`, `drawer.tsx`, `FocusTrap.tsx`, `pagination.tsx`, `ProductsContext.tsx`, `ThemeContext.tsx`, `intelligence/useScheduledReports.ts`, `products/useSimilarProducts.ts`, `simulation/useTechniquePricingOptions.ts`, `usePrecoCalculation.ts`, `DevChallengeExamplesPage.tsx`, `usePlatformFailureAlert.ts`, `useTelemetryData.ts`, `MagazineEditorPage.hooksOrder.test.tsx`, `useQuotesListPage.bulkDelete.test.tsx`, `useQuotesListPage.duplicateUndo.test.tsx`, `simulation/usePositionHistory.ts`, `FiltersPage.test.tsx`, `EdgeFunctionLogsPanel.tsx`, `hooks/useCategoriesTree.ts`, `hooks/useComparisonScore.ts`, `hooks/useConnectionsOverviewFilters.ts`, `hooks/useDeviceDetection.ts`, `hooks/useRoleMigration.ts`, `pages/quotes-dashboard/useQuotesDashboard.ts`, `EdgeInvokeLivePanel.tsx`, `ResolveProductsSelectComparisonCard.tsx`, `ClientCategoryRadar.tsx`, `ClientVsIndustryComparison.tsx`, `EntityBadge.tsx`, `MockupConfigPanel.techniques.test.tsx`, `admin/useDeviceDetection.ts`, `admin/useRoleMigration.ts`, `common/__tests__/useSearchHistory.test.ts`, `intelligence/useConnectionsOverviewFilters.ts`, `intelligence/useContextualSuggestions.ts`, `products/useCategoriesTree.ts`, `ui/useWorkspaceNotifications.tsx`, `useProductColorSwatch.test.tsx`, `AdminCloudflareImagesPage.tsx`, `MockupDialogs.test.tsx`, `useQuotesListPage.fuzz.test.ts`, `SidebarQAPage.tsx`, `magic-up-variations.keyboard.test.tsx`, `hooks/useQuoteTemplates.ts`, `hooks/useRetestCooldownSetting.ts`, `hooks/useSupplierComparison.ts`, `hooks/useSupplierFiscalData.ts`, `hooks/useVoiceCommandHistory.ts`, `AiRoutingTab.tsx`, `ColdVsWarmCrmCard.tsx`, `QuoteBuilderHandoffCard.tsx`, `Breadcrumbs.tsx`, `swatchSizing.ts`, `ColorSwatch.tsx`, `card.tsx`, `currency-input.tsx`, `DevChallengeContext.tsx`, `admin/useRetestCooldownSetting.ts`, `useBridgeMetrics.ts`, `intelligence/useVoiceCommandHistory.ts`, `useProductsColorsBatch.aggregation.test.tsx`, `products/useExternalCategoriesQuery.ts`, `products/useSupplierFiscalData.ts`, `useQuoteBuilderState.draftHandoff.test.tsx`, `AdminConexoesStatusPage.tsx`, `AdminSegurancaAcessoPage.tsx`, `useQuotesListPage.test.ts`, `RoutePrefetcher.tsx`, `magic-up-curation.a11y.test.tsx`, `StatsPopover.test.tsx`, `navigation-layout.test.tsx`, `hooks/useScroll.ts`, `input-otp.tsx`, `DegradedBlocksCard.tsx`, `HighLimitTelemetryCard.tsx`, `IndustryTrendingProducts.tsx`, `common/ConfirmDialog.tsx`, `IntelligenceFilterBar.tsx`, `PackagingModal.tsx`, `BICategoryFocusContext.tsx`, `__tests__/useDebounce.test.ts`, `useUnsavedChangesGuard.test.ts`, `ui/useScroll.ts`, `route-guards-redirects.test.tsx`?**
+- **Why does `react` connect `react` to `vitest`, `ref_components`, `ref_integrations`, `ref_hooks`, `@tanstack/react-query`, `ref_node_child_process`, `ref_types`, `sonner`, `ref_utils`, `ref_node_fs`, `ProductCard.tsx`, `framer-motion`, `@dnd-kit/sortable`, `ref_services`, `recharts`, `@/lib`, `ref_stores`, `ref_pages`, `package.json`, `NoveltyProductGrid.tsx`, `ProductPriceSimulator.tsx`, `MagazineListPage.tsx`, `ProductColorSelector.tsx`, `AdminRoute`, `MagazineEditorPage.tsx`, `render-hook-providers.tsx`, `C) "Sem consumidor" — dupla verificação e confiança`, `ringsOf`, `SidebarNavGroup.suspense.test.tsx`, `useSellerCarts.helpers.ts`, `ItemSelector.tsx`, `hooks/useAutoSaveQuote.ts`, `Rotas públicas e harnesses`, `hooks/useDebounce.ts`, `hooks/useProductsByCategory.ts`, `accordion.tsx`, `avatar.tsx`, `KitSummary.tsx`, `editorRecovery.ts`, `reduced-app-navigation.test.tsx`, `SkipToContent.tsx`, `A. BI por cliente — fontes e estados mistos`, `useMagazineGoldImport`, `TemplateRegistry.ts`, `SupabaseConnectionsTab.tsx`, `ConnectionTestHistoryPanel.tsx`, `timeline.tsx`, `useKillSwitchObservability.ts`, `useAuthHydrationMetrics.ts`, `kit-builder/useKitWizardShortcuts.ts`, `simulation/useTechniquePricing.ts`, `useWizardPersistence.ts`, `useRuptureHorizon.ts`, `useVoiceHistory.ts`, `ProductFormFullscreen.tsx`, `Auditoria Exaustiva — Viewer Público da Revista`, `A) Tabela por FERRAMENTA`, `ProductsStep.tsx`, `ProductFormStepContent.tsx`, `StockDashboard.tsx`, `ProductPersonalizationRules.tsx`, `BadgeFormDialog.tsx`, `ProductKitComponentsSection.tsx`, `ref_constants`, `TestAllConnectionsButton.tsx`, `FilterPanel.tsx`, `A.5.2 — Sob `<AdminRoute>` (`admin-routes.tsx:65`) — exige `canManage` **+ MFA em AAL2**`, `auth/index.ts`, `ProductImageGallery.tsx`, `CategoriesManager.tsx`, `hooks/useExternalDatabase.ts`, `@supabase/supabase-js`, `jspdf`, `cartViewModePrefs.ts`, `A.1 — Tabela dos 46 (+1)`, `MockupResultCard.tsx`, `A.6 — Ferramentas — `src/routes/tools-routes.tsx` (sob `PR` + `PAL`)`, `useMcpKeys.ts`, `AIChat.tsx`, `MagazinePageRenderer`, `Auditoria — Galeria de Templates de Revista (Hardening 10/10)`, `ProposalHtmlTemplate.tsx`, `Rotas técnicas `DevRoute``, `AdvancedSearch.tsx`, `BulkImportDialog.tsx`, `LayoutComponents.tsx`, `products/useNovelties.ts`, `5.21 Observações (áreas 12–20)`, `ICON_MAP — Referência completa`, `undoToast.tsx`, `MyDiscountRequestsWidget.tsx`, `checkLoginGate.ts`, `QuotesStatusChips.tsx`, `useQuoteBuilderState.helpers.ts`, `VariantStockTable.tsx`, `GlobalSearchPalette.tsx`, `hooks/usePasswordBreachCheck.tsx`, `hooks/usePositionHistory.ts`, `useListUrlState.fuzz.test.tsx`, `hooks/useScrollLockFix.ts`, `SellerCartContext.tsx`, `hooks/useUndoStack.ts`, `scroll-area.tsx`, `PdfGenerationDialog.tsx`, `CredentialCacheMetricsPanel.tsx`, `useSuppliersManager.ts`, `LogoPositionEditor.tsx`, `useUndoRedo.ts`, `CartUtilComponents.tsx`, `access-denied-strings.tsx`, `5. Kit Maker — plano mestre de 200 etapas (2026-09-10)`, `AdImageResult.tsx`, `useExpertChat.ts`, `ZoneCommandPalette.tsx`, `ui/ConfirmDialog.tsx`, `useSecretField.ts`, `SupplierDrawer.tsx`, `LocationPanel.tsx`, `VoiceSearchOverlay.tsx`, `useClientBI`, `PersonalizationConfig.tsx`, `BrandColorPicker.tsx`, `class-variance-authority`, `StockAlertsIndicator.tsx`, `PropostaComercialTailwind.tsx`, `useGlobalSearch.ts`, `kit-builder/useKitBuilderQueries.ts`, `OrganizationContext.tsx`, `Design Tokens — Orange Premium SSOT`, `ConnectionsPulseBar.tsx`, `LogoPreviewCanvas.tsx`, `sidebar.tsx`, `grupo6.acceptance.test.tsx`, `hooks/useUnsavedChangesGuard.ts`, `PromptGenerator.tsx`, `PageTransition.tsx`, `VariantStockRowActions.test.tsx`, `ReplenishmentProductGrid.tsx`, `useIdleEffect.ts`, `useMagazineReaderState.ts`, `GroupComponentCard.tsx`, `useNewSupplierForm.ts`, `ProductVideoGallery.tsx`, `FutureStockDialog.tsx`, `QuoteItemsTable.tsx`, `SecurityDashboard.tsx`, `grupo5.acceptance.test.tsx`, `stockFetcher.ts`, `Auditoria Exaustiva — Super Filtro (2026-06-18)`, `SupplierRiskPanel.tsx`, `MockupConfigPanel.tsx`, `ClientMockupsMenu.tsx`, `magic-up-onda5.test.tsx`, `A) Tabela por FUNCIONALIDADE`, `usePersonalizationManager.ts`, `hooks/useRamoAtividadeFilho.ts`, `command.tsx`, `App.tsx`, `sections/ProductEngravingSection.tsx`, `SocialProof.tsx`, `mockup/useMockupGenerator.ts`, `MockupProductSelector.tsx`, `quote-sync-promo-champions/index.test.ts`, `AutoTestJobStatusCard.tsx`, `PopoverQtyInput.tsx`, `SkeletonLoaders.tsx`, `Veredito — grupo 07 (13 branches apagadas do GitHub, commits ainda no clone local)`, `describe`, `Grupo C — Frontend (T21–T30)`, `PresetsBar.tsx`, `ProposalProductTable.tsx`, `intelligence/useExternalDatabase.ts`, `AreaCard.tsx`, `useRuptureAlerts.test.tsx`, `kit-builder/KitLibraryPage.tsx`, `ContactSelector.tsx`, `useSupplierReliabilityServer.ts`, `useOrgData.test.ts`, `SkeletonShimmer.tsx`, `AppRoutes.tsx`, `ErrorDetailsDialog.tsx`, `ProductFlagsSection.tsx`, `StockHealthBreakdownDrawer.tsx`, `mockup/useMockupDraft.ts`, `products/useSupplierComparison.ts`, `useCatalogState.helpers.ts`, `products/useProductMatch.ts`, `useSalesHistoryMacro.product-filter.test.ts`, `Veredito — grupo 09 (13 branches)`, `ConfigurationPanelV6`, `SecretField.a11y.test.tsx`, `MicroInteractions.tsx`, `SupplierComparisonModal.tsx`, `InlinePriceCalculator.tsx`, `RankingFilterToolbar.tsx`, `DiscountApprovalQueue.tsx`, `RupturePanelEma.tsx`, `MockupClientSelector.tsx`, `NotificationsBadgeStatsPanel.tsx`, `useZeroResultSubstitutes.test.tsx`, `route-no-error-element.test.tsx`, `grupo4.acceptance.test.tsx`, `useKitBuilderQuote.ts`, `LocationCard.tsx`, `hooks/useMaterialTypes.ts`, `breadcrumb.tsx`, `MockupPromptManager.tsx`, `ProductMarketingSection.tsx`, `useProductVariants.ts`, `FlowFilterPanel.tsx`, `useClientBrandSignals.ts`, `useProductLeafCategories.tsx`, `sellerCartRestoreHelpers.tsx`, `ColorGroupFilter.tsx`, `hooks/useSpeechRecognition.ts`, `form.tsx`, `McpAuditFeed.tsx`, `personalization/TechniqueSelector.tsx`, `StockHistoryChart.tsx`, `AdminTelemetriaPage.tsx`, `grupo7.acceptance.test.tsx`, `CartsListPage.tsx`, `OnboardingContext.tsx`, `useIntelligenceBadgeSettings.ts`, `hooks/use-toast.ts`, `hooks/useGravacaoPriceV2.ts`, `carousel.tsx`, `DataSourceDebugTab.tsx`, `IncidentTimeline72h.tsx`, `SeverityFilterContext.tsx`, `MockupApprovalTemplate.tsx`, `MockupHistoryPanel.tsx`, `calendar.tsx`, `intelligence/useMagicUpState.ts`, `useFutureStockPreference.fuzz.test.ts`, `QuantityPriceCalculator.officialPrice.test.tsx`, `KitAIPromptDialog.tsx`, `ExportCollectionButton.tsx`, `hooks/useConnectionTester.ts`, `LogoColorAnalyzer.tsx`, `ProductSupplierSection.tsx`, `WorkflowCanvas.tsx`, `useV4Callbacks.ts`, `quotes/useAutoSaveQuote.ts`, `simulation/useGravacaoPriceV2.ts`, `AppHealthDashboard.tsx`, `GlobalCommandBar.tsx`, `browser/main.tsx`, `ui/useErrorHandler.ts`, `CardSourceDiagnostic.tsx`, `ConnectionsIncidentStrip.tsx`, `OwnershipRepairDialog.tsx`, `GroupAccordionItem.tsx`, `StepUpAttemptsPanel.tsx`, `useLogoDrag.ts`, `VariantGridMatrix.tsx`, `GlobalSearch.tsx`, `comparison/useComparisonWeights.ts`, `intelligence/useSparklineSales.tsx`, `simulation/useLogoColorAnalysis.ts`, `quote-builder-freight-block-fuzz.test.tsx`, `useQuotesListPage.expiring.test.ts`, `hooks/useGravacaoV2.ts`, `hooks/useWorkspaceNotifications.tsx`, `AuthBranding.tsx`, `ProductClassificationSection.tsx`, `TurnstileWidget.test.tsx`, `DraggableDashboard.tsx`, `BridgeMetricsSummary.tsx`, `AppLogo.tsx`, `ColumnSelector.tsx`, `SearchResultGroups.tsx`, `sheet.tsx`, `common/useGenericFuzzySearch.ts`, `useIntersectionObserver.test.ts`, `intelligence/useMarketIntelligenceMacro.ts`, `fichaDaAreaDaImagem.test.ts`, `grupo3.acceptance.test.tsx`, `MockupGenerator.a11y.test.tsx`, `useProductsColorsBatch.ts`, `ui/use-toast.ts`, `AuditHistory.tsx`, `kit-builder/useKitStockValidation.ts`, `BridgesLiveCard.tsx`, `toast.tsx`, `hooks/useTechniqueRecommendations.ts`, `hooks/useVoiceAgent.ts`, `dropdown-menu.tsx`, `react-dom`, `KeysValidationTab.tsx`, `useRecentIncidents.ts`, `CategoryCascadeSelector.tsx`, `ProductVariationAxesConfig.tsx`, `BulkVariantWizard.tsx`, `GlassElements.tsx`, `QuoteVersionCompare.tsx`, `RamoAtividadeGroupAccordion.tsx`, `chart.tsx`, `useSmokeTests.ts`, `collections/useCollections.ts`, `useProductsByColor.test.ts`, `useSellerCarts.updateItemQuantity.rollback.test.tsx`, `simulation/useTechniqueRecommendations.ts`, `useSellerCarts.robustness.test.tsx`, `QuoteAutoSave.tsx`, `hooks/useCollections.ts`, `hooks/useGenericFuzzySearch.ts`, `hooks/useKitBuilderQueries.ts`, `hooks/useMockupTechniques.ts`, `hooks/useProductMatch.ts`, `SavedFilters.tsx`, `MarketIntelligenceChart.tsx`, `StockCategoryTreeSelect.tsx`, `TechniqueTooltip.data.test.tsx`, `exportSampleProposal.test.tsx`, `VoiceOverlaySections.tsx`, `table.tsx`, `admin/useSecretsManager.ts`, `intelligence/useAIRecommendations.ts`, `useMockupGenerator.techniques.test.ts`, `useSellerCarts.restore.test.tsx`, `useSellerCarts.versionGuard.test.tsx`, `auth/SSOCallbackPage.tsx`, `useQuotesListPage.singleDelete.test.tsx`, `useClientMockups.edge.test.ts`, `3.9 Mobile, PWA e offline`, `A.2 — Atenção especial: `src/components/providers/AppProviders.tsx``, `hooks/useAIRecommendations.ts`, `hooks/useContextualSuggestions.ts`, `hooks/useFavoriteLists.ts`, `hooks/useRBAC.tsx`, `hooks/useScheduledReports.ts`, `hooks/useSecretsManager.ts`, `hooks/useSparklineSales.tsx`, `select.tsx`, `drawer.tsx`, `FocusTrap.tsx`, `pagination.tsx`, `ProductsContext.tsx`, `ThemeContext.tsx`, `useCustomizationCollapsePrefs.ts`, `intelligence/useScheduledReports.ts`, `products/useSimilarProducts.ts`, `simulation/useTechniquePricingOptions.ts`, `usePrecoCalculation.ts`, `DevChallengeExamplesPage.tsx`, `usePlatformFailureAlert.ts`, `useTelemetryData.ts`, `MagazineEditorPage.hooksOrder.test.tsx`, `useQuotesListPage.bulkDelete.test.tsx`, `useQuotesListPage.duplicateUndo.test.tsx`, `simulation/usePositionHistory.ts`, `FiltersPage.test.tsx`, `EdgeFunctionLogsPanel.tsx`, `hooks/useCategoriesTree.ts`, `hooks/useComparisonScore.ts`, `hooks/useConnectionsOverviewFilters.ts`, `hooks/useDeviceDetection.ts`, `hooks/useRoleMigration.ts`, `pages/quotes-dashboard/useQuotesDashboard.ts`, `EdgeInvokeLivePanel.tsx`, `ResolveProductsSelectComparisonCard.tsx`, `ClientCategoryRadar.tsx`, `ClientVsIndustryComparison.tsx`, `EntityBadge.tsx`, `MockupConfigPanel.techniques.test.tsx`, `admin/useDeviceDetection.ts`, `admin/useRoleMigration.ts`, `common/__tests__/useSearchHistory.test.ts`, `intelligence/useConnectionsOverviewFilters.ts`, `intelligence/useContextualSuggestions.ts`, `products/useCategoriesTree.ts`, `ui/useWorkspaceNotifications.tsx`, `useProductColorSwatch.test.tsx`, `AdminCloudflareImagesPage.tsx`, `MockupDialogs.test.tsx`, `useQuotesListPage.fuzz.test.ts`, `SidebarQAPage.tsx`, `magic-up-variations.keyboard.test.tsx`, `hooks/useQuoteTemplates.ts`, `hooks/useRetestCooldownSetting.ts`, `hooks/useSupplierComparison.ts`, `hooks/useSupplierFiscalData.ts`, `hooks/useVoiceCommandHistory.ts`, `AiRoutingTab.tsx`, `ColdVsWarmCrmCard.tsx`, `QuoteBuilderHandoffCard.tsx`, `Breadcrumbs.tsx`, `swatchSizing.ts`, `ColorSwatch.tsx`, `card.tsx`, `currency-input.tsx`, `DevChallengeContext.tsx`, `admin/useRetestCooldownSetting.ts`, `useBridgeMetrics.ts`, `intelligence/useVoiceCommandHistory.ts`, `useProductsColorsBatch.aggregation.test.tsx`, `products/useExternalCategoriesQuery.ts`, `products/useSupplierFiscalData.ts`, `useQuoteBuilderState.draftHandoff.test.tsx`, `AdminConexoesStatusPage.tsx`, `AdminSegurancaAcessoPage.tsx`, `useQuotesListPage.test.ts`, `RoutePrefetcher.tsx`, `magic-up-curation.a11y.test.tsx`, `StatsPopover.test.tsx`, `navigation-layout.test.tsx`, `hooks/useScroll.ts`, `input-otp.tsx`, `DegradedBlocksCard.tsx`, `HighLimitTelemetryCard.tsx`, `IndustryTrendingProducts.tsx`, `common/ConfirmDialog.tsx`, `IntelligenceFilterBar.tsx`, `PackagingModal.tsx`, `BICategoryFocusContext.tsx`, `__tests__/useDebounce.test.ts`, `useUnsavedChangesGuard.test.ts`, `ui/useScroll.ts`, `route-guards-redirects.test.tsx`?**
   _High betweenness centrality (0.088) - this node is a cross-community bridge._
 - **Should `ref_components` be split into smaller, more focused modules?**
-  _Cohesion score 0.003949571555205358 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.003981266985569161 - nodes in this community are weakly interconnected._
 - **Why does `scripts` connect `scripts` to `package.json`?**
   _High betweenness centrality (0.030) - this node is a cross-community bridge._
 - **Should `ref_integrations` be split into smaller, more focused modules?**
-  _Cohesion score 0.004054353854686633 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.004030619529285142 - nodes in this community are weakly interconnected._

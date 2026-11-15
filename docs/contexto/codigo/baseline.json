@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "956593c027a45574a38d4f18ed82445f38e9d1d9",
+  "commit": "24038f15deed8574a4578abae55da45c49aadaef",
   "branch": "main",
-  "data_commit": "2026-11-15T17:23:39-03:00",
+  "data_commit": "2026-11-15T20:03:31-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "24038f15",
+    "data": "2026-11-15",
+    "assunto": "fix(mockup): avisa o vendedor quando a ficha de aprovação falha (#3684)"
+   },
    {
     "sha": "956593c0",
     "data": "2026-11-15",
@@ -126,14 +131,9 @@
     "sha": "20dfb7b3",
     "data": "2026-11-15",
     "assunto": "chore: trem de infra — BOM da edge asia-ingestion, recibo E66, E2E fora dos PRs e snapshots all-authed (#3658)"
-   },
-   {
-    "sha": "eecfde92",
-    "data": "2026-11-15",
-    "assunto": "fix: trem de 3 correções de front — busca, cores por área do mockup e trocar item no kit (#3653)"
    }
   ],
-  "arquivos_mudados_7d": 2173,
+  "arquivos_mudados_7d": 2166,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -149,7 +149,7 @@
    },
    {
     "pasta": "src/components/mockup",
-    "mudancas": 136
+    "mudancas": 137
    },
    {
     "pasta": "tests/edge-functions/live",
@@ -177,11 +177,11 @@
    },
    {
     "pasta": "RELATORIO_CI.md",
-    "mudancas": 91
+    "mudancas": 90
    },
    {
     "pasta": "PENDENCIAS.md",
-    "mudancas": 86
+    "mudancas": 85
    },
    {
     "pasta": "src/components/kit-builder",
@@ -199,11 +199,11 @@
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "RELATORIO_CI.md",
-    "mudancas": 91
+    "mudancas": 90
    },
    {
     "arquivo": "PENDENCIAS.md",
-    "mudancas": 86
+    "mudancas": 85
    },
    {
     "arquivo": "supabase/MIGRATIONS_SYNC_LOG.md",
@@ -274,6 +274,10 @@
     "mudancas": 9
    },
    {
+    "arquivo": "src/pages/mockups/MockupGenerator.tsx",
+    "mudancas": 9
+   },
+   {
     "arquivo": "AGENTS.md",
     "mudancas": 8
    },
@@ -291,10 +295,6 @@
    },
    {
     "arquivo": "e2e/helpers/auth.ts",
-    "mudancas": 8
-   },
-   {
-    "arquivo": "src/hooks/kit-builder/useKitAutoSave.ts",
     "mudancas": 8
    }
   ],
@@ -324,7 +324,7 @@
  "contagens": {
   "arquivos_total": 10323,
   "arquivos_codigo": 5323,
-  "linhas_codigo": 1014497,
+  "linhas_codigo": 1014661,
   "rotas": 138,
   "rotas_http_backend": 13,
   "vistas_por_id": 0,
@@ -1884,7 +1884,7 @@
   },
   "src/components": {
    "arquivos": 1390,
-   "linhas": 277075
+   "linhas": 277093
   },
   "src/config": {
    "arquivos": 1,
@@ -1908,7 +1908,7 @@
   },
   "src/hooks": {
    "arquivos": 478,
-   "linhas": 90173
+   "linhas": 90282
   },
   "src/integrations": {
    "arquivos": 11,
@@ -1928,7 +1928,7 @@
   },
   "src/pages": {
    "arquivos": 361,
-   "linhas": 83851
+   "linhas": 83888
   },
   "src/routes": {
    "arquivos": 14,

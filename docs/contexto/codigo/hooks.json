@@ -14510,7 +14510,7 @@
    "hooks_exportados": [
     "useMockupCompletionStatus"
    ],
-   "linhas": 64,
+   "linhas": 100,
    "dominio": "pages/mockups",
    "tabelas": [],
    "rpcs": [],
@@ -14518,7 +14518,8 @@
    "hooks_internos": [
     "useCallback",
     "useEffect",
-    "usePreservedMockupResult"
+    "usePreservedMockupResult",
+    "useRef"
    ],
    "canais_realtime": [],
    "usado_por": 1,
