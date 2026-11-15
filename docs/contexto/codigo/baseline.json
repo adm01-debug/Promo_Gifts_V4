@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "aa89361bea4842dc36749d19949c8df0a883ad87",
+  "commit": "c72d30a9ce4eb9dc3c9e5f4f3fc7f094d002e931",
   "branch": "main",
-  "data_commit": "2026-11-15T15:23:04Z",
+  "data_commit": "2026-11-15T15:32:34Z",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "c72d30a9",
+    "data": "2026-11-15",
+    "assunto": "fix(mockup): etapas do gerador voltam a ser anunciadas pelo leitor de tela no celular (#3671)"
+   },
    {
     "sha": "aa89361b",
     "data": "2026-11-15",
@@ -126,14 +131,9 @@
     "sha": "c5d670cf",
     "data": "2026-11-14",
     "assunto": "Merge remote-tracking branch 'origin/main' into claude/fix-crm-ownership-vinculo-261114-2230"
-   },
-   {
-    "sha": "98589a4e",
-    "data": "2026-11-14",
-    "assunto": "chore(coordenacao): registra o resgate da correcao de ownership do CRM (E188)"
    }
   ],
-  "arquivos_mudados_7d": 2113,
+  "arquivos_mudados_7d": 2114,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -173,7 +173,7 @@
    },
    {
     "pasta": "src/components/mockup",
-    "mudancas": 165
+    "mudancas": 166
    },
    {
     "pasta": "src/components/ui",
@@ -242,12 +242,12 @@
     "mudancas": 16
    },
    {
-    "arquivo": "analise-prs/RELATORIO_PRS.md",
+    "arquivo": "auditoria-supabase/RELATORIO_AUDITORIA_SUPABASE.md",
     "mudancas": 15
    },
    {
-    "arquivo": "auditoria-supabase/RELATORIO_AUDITORIA_SUPABASE.md",
-    "mudancas": 15
+    "arquivo": "analise-prs/RELATORIO_PRS.md",
+    "mudancas": 14
    },
    {
     "arquivo": "analise-prs/prs.json",
@@ -309,7 +309,7 @@
    },
    {
     "autor": "Claude",
-    "commits": 126
+    "commits": 125
    },
    {
     "autor": "github-actions[bot]",
@@ -322,9 +322,9 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 10261,
-  "arquivos_codigo": 5288,
-  "linhas_codigo": 1007767,
+  "arquivos_total": 10262,
+  "arquivos_codigo": 5289,
+  "linhas_codigo": 1008129,
   "rotas": 138,
   "rotas_http_backend": 13,
   "vistas_por_id": 0,
@@ -336,7 +336,7 @@
   "tabelas": 548,
   "migrations": 3095,
   "cron_jobs": 122,
-  "testes": 2500,
+  "testes": 2501,
   "workflows": 87,
   "scripts": 272,
   "docs_md": 1024
@@ -1884,7 +1884,7 @@
   },
   "src/components": {
    "arquivos": 1376,
-   "linhas": 275367
+   "linhas": 275368
   },
   "src/config": {
    "arquivos": 1,
@@ -2115,8 +2115,8 @@
    "linhas": 580
   },
   "tests/pages": {
-   "arquivos": 14,
-   "linhas": 2927
+   "arquivos": 15,
+   "linhas": 3288
   },
   "tests/product-form-improvements.test.ts": {
    "arquivos": 1,

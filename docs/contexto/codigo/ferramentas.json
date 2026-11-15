@@ -3,7 +3,7 @@
  "format_version": 2,
  "stack": {
   "linguagens": [
-   "TypeScript (4837)",
+   "TypeScript (4838)",
    "SQL (3427)",
    "Markdown (1024)",
    "JavaScript (443)",
@@ -4606,6 +4606,10 @@
     "arquivos": 17
    },
    {
+    "host": "test.supabase.co",
+    "arquivos": 11
+   },
+   {
     "host": "cdn.test",
     "arquivos": 10
    },
@@ -4615,10 +4619,6 @@
    },
    {
     "host": "imagedelivery.net",
-    "arquivos": 10
-   },
-   {
-    "host": "test.supabase.co",
     "arquivos": 10
    },
    {
@@ -5341,11 +5341,11 @@
     "ocorrencias": 30
    },
    {
-    "papel": "agente",
-    "ocorrencias": 26
+    "papel": "listitem",
+    "ocorrencias": 27
    },
    {
-    "papel": "listitem",
+    "papel": "agente",
     "ocorrencias": 26
    },
    {
@@ -5365,12 +5365,12 @@
     "ocorrencias": 21
    },
    {
-    "papel": "radiogroup",
+    "papel": "list",
     "ocorrencias": 18
    },
    {
-    "papel": "list",
-    "ocorrencias": 17
+    "papel": "radiogroup",
+    "ocorrencias": 18
    },
    {
     "papel": "system",

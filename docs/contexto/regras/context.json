@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "aa89361bea4842dc36749d19949c8df0a883ad87",
+  "sha": "c72d30a9ce4eb9dc3c9e5f4f3fc7f094d002e931",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-15 15:24 UTC",
-  "files_total": 10189,
-  "code_files": 8714,
-  "code_lines": 1226861
+  "generated_at": "2026-11-15 15:33 UTC",
+  "files_total": 10190,
+  "code_files": 8715,
+  "code_lines": 1227223
  },
  "version": "1.3.2",
- "facts_hash": "ce6c36818187b027",
+ "facts_hash": "d2d4b43fe20a987a",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -1105,7 +1105,7 @@
   "languages": {
    ".sql": 3427,
    ".ts": 2953,
-   ".tsx": 1885,
+   ".tsx": 1886,
    ".mjs": 436,
    ".py": 13,
    ".js": 7
@@ -138272,6 +138272,29 @@
    },
    {
     "path": "",
+    "file": "tests/pages/MockupGenerator.a11y.test.tsx",
+    "component": "MockupGenerator.a11y.test",
+    "tables_transitive": [
+     "...",
+     "art_file_attachments",
+     "generated_mockups",
+     "mockup_drafts",
+     "profiles",
+     "user_roles"
+    ],
+    "invokes_transitive": [
+     "crm-db-bridge",
+     "external-db-bridge"
+    ],
+    "rpc_transitive": [
+     "fn_my_rpc",
+     "get_profile_and_roles",
+     "log_user_logout"
+    ],
+    "deps_count": 84
+   },
+   {
+    "path": "",
     "file": "tests/pages/MockupHistoryPage.test.tsx",
     "component": "MockupHistoryPage.test",
     "tables_transitive": [],
@@ -149286,7 +149309,7 @@
   {
    "module": "src/components",
    "files": 1376,
-   "lines": 275366,
+   "lines": 275367,
    "tables": [
     "admin_audit_log",
     "art_file_attachments",
@@ -151371,8 +151394,8 @@
   },
   {
    "module": "tests",
-   "files": 1034,
-   "lines": 158701,
+   "files": 1035,
+   "lines": 159062,
    "tables": [
     "bot_detection_log",
     "clients",
@@ -289836,6 +289859,34 @@
    {
     "file": "tests/pages/MagicUp.a11y.test.tsx",
     "name": "resultado: mantém a semântica do radiogroup de curadoria (radiogroup/radio/aria-checked)"
+   },
+   {
+    "file": "tests/pages/MockupGenerator.a11y.test.tsx",
+    "name": "MockupGenerator — acessibilidade da página ($width px)"
+   },
+   {
+    "file": "tests/pages/MockupGenerator.a11y.test.tsx",
+    "name": "estado vazio (nada selecionado): axe sem violações e chrome nomeado"
+   },
+   {
+    "file": "tests/pages/MockupGenerator.a11y.test.tsx",
+    "name": "estado configurando (produto + técnica + logo): axe sem violações"
+   },
+   {
+    "file": "tests/pages/MockupGenerator.a11y.test.tsx",
+    "name": "estado resultado (mockup gerado): axe sem violações"
+   },
+   {
+    "file": "tests/pages/MockupGenerator.a11y.test.tsx",
+    "name": "MockupGenerator — diálogos da página (portal)"
+   },
+   {
+    "file": "tests/pages/MockupGenerator.a11y.test.tsx",
+    "name": "diálogo de troca de técnica mantém nome/descrição acessíveis e axe limpo"
+   },
+   {
+    "file": "tests/pages/MockupGenerator.a11y.test.tsx",
+    "name": "diálogo de exclusão de mockup mantém nome acessível e botões nomeados"
    },
    {
     "file": "tests/pages/MockupHistoryPage.test.tsx",
@@ -440484,7 +440535,7 @@
   },
   "src/components/mockup/MockupWizard.tsx": {
    "path": "src/components/mockup/MockupWizard.tsx",
-   "lines": 287,
+   "lines": 288,
    "exports": [
     "const MockupWizard"
    ]
@@ -529344,6 +529395,41 @@
     "resultado: mantém a semântica do radiogroup de curadoria (radiogroup/radio/aria-checked)"
    ]
   },
+  "tests/pages/MockupGenerator.a11y.test.tsx": {
+   "path": "tests/pages/MockupGenerator.a11y.test.tsx",
+   "lines": 361,
+   "is_test": true,
+   "rule_comments": [
+    "`matchMedia` responder `min-width`/`max-width` do viewport corrente. Nenhuma regra do runner é",
+    "* Dublê mínimo e acessível dos painéis que buscam dados no mount (ver cabeçalho)."
+   ],
+   "calc_fns": [
+    {
+     "name": "applyResponsiveVisibility",
+     "params": "root: HTMLElement, width: number",
+     "body": "root.querySelectorAll<HTMLElement>('*').forEach((element) => { let hidden = false; for (const token of (element.getAttribute('class') ?? '').split(/\\s+/)) { if (token === 'hidden') hidden = true; const match = BREAKPOINT_VISIBILITY.exec(token); if (!match || width < BREAKPOINTS[match[1]]) continue; hidden = match[2] === 'hidden'; } if (hidden) element.style.display = 'none'; });"
+    },
+    {
+     "name": "applyConfiguringState",
+     "params": "",
+     "body": "Object.assign(mockMg, { selectedProduct: { id: 'product-1', name: 'Garrafa térmica', sku: 'GF-001' }, selectedTechnique: { id: 'technique-1', name: 'Gravação a laser', code: 'LASER' }, selectedClient: { id: 'client-1', nome_fantasia: 'Empresa Exemplo' }, productSelection: { colorName: 'Azul', colorHex: '#0047AB' }, activeAreaId: 'area-1', activeArea: { id: 'area-1', name: 'Frente', positionX: 50, positionY: 50 }, hasLogo: true, hasUserInteractedPosition: true, wizardStep: 5, getProductImage: vi. …"
+    },
+    {
+     "name": "applyResultState",
+     "params": "",
+     "body": "applyConfiguringState(); Object.assign(mockMg, { wizardStep: 6, generatedMockup: 'https://example.com/generated.png', generatedBatchMockups: [ { url: 'https://example.com/front.png', areaName: 'Frente' }, { url: 'https://example.com/back.png', areaName: 'Verso' }, ], });"
+    }
+   ],
+   "tests": [
+    "MockupGenerator — acessibilidade da página ($width px)",
+    "estado vazio (nada selecionado): axe sem violações e chrome nomeado",
+    "estado configurando (produto + técnica + logo): axe sem violações",
+    "estado resultado (mockup gerado): axe sem violações",
+    "MockupGenerator — diálogos da página (portal)",
+    "diálogo de troca de técnica mantém nome/descrição acessíveis e axe limpo",
+    "diálogo de exclusão de mockup mantém nome acessível e botões nomeados"
+   ]
+  },
   "tests/pages/MockupHistoryPage.test.tsx": {
    "path": "tests/pages/MockupHistoryPage.test.tsx",
    "lines": 107,
@@ -537136,10 +537222,20 @@
   }
  },
  "git": {
-  "sha": "aa89361bea4842dc36749d19949c8df0a883ad87",
+  "sha": "c72d30a9ce4eb9dc3c9e5f4f3fc7f094d002e931",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "c72d30a",
+    "date": "2026-11-15",
+    "author": "adm01-debug",
+    "subject": "fix(mockup): etapas do gerador voltam a ser anunciadas pelo leitor de tela no celular (#3671)",
+    "files": [
+     "src/components/mockup/MockupWizard.tsx",
+     "tests/pages/MockupGenerator.a11y.test.tsx"
+    ]
+   },
    {
     "sha": "aa89361",
     "date": "2026-11-15",
@@ -537660,13 +537756,6 @@
      "docs/security/2026-11-14-schema-net-exposto.md",
      "supabase/migrations/20261114170845_fix_workspace_notifications_insert_policy_reapply.sql"
     ]
-   },
-   {
-    "sha": "7b84ebe",
-    "date": "2026-11-14",
-    "author": "adm01-debug",
-    "subject": "Merge pull request #3630 from adm01-debug/claude/trem4-front-perf-261114-2020",
-    "files": []
    }
   ],
   "hot_files": [
@@ -537685,6 +537774,10 @@
    [
     "src/pages/kit-builder/KitBuilderPage.tsx",
     3
+   ],
+   [
+    "src/components/mockup/MockupWizard.tsx",
+    2
    ],
    [
     "audit/supabase-reference-catalog.temporary.json",
@@ -537745,10 +537838,6 @@
    [
     ".security/policies-baseline.json",
     2
-   ],
-   [
-    "src/components/magic-up/MagicUpCampaignPanel.tsx",
-    1
    ]
   ]
  }

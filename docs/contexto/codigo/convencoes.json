@@ -23,7 +23,7 @@
    "src/services (10)"
   ],
   "testes": [
-   "tests/ (1020)",
+   "tests/ (1021)",
    "co-localizado (__tests__) (659)",
    "e2e/ (625)"
   ],
@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "fix(mockup): etapas do gerador voltam a ser anunciadas pelo leitor de tela no celular (#3671)",
    "fix(magic-up): resgata varredura axe da pagina e nomeia selects e campos do briefing (#3668)",
    "fix(db): trem de banco — gráfico de mercado com dado real, revoke de 106 funções, índices e crons mais baratos (#3665)",
    "feat(orders): resgata conferência do total do pedido contra a soma dos itens (#3667)",
-   "feat(mockup): cabeçalho de trabalho do gerador, Meus mockups do cliente e captura de layout extraída (#3664)",
-   "fix(ci): recibo de migration entra sozinho e para de travar o CI (#3662)"
+   "feat(mockup): cabeçalho de trabalho do gerador, Meus mockups do cliente e captura de layout extraída (#3664)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",
