@@ -19,7 +19,7 @@
 import { expect, type Page, type Request } from "@playwright/test";
 
 import { Sel } from "../fixtures/selectors";
-import { requireAuth, test } from "../fixtures/test-base";
+import { authSetupProducedNoSession, test } from "../fixtures/test-base";
 import { rewriteCiSharedIpLockout } from "./ci-auth-lockout";
 import { gotoAndSettle, waitForRouteIdle } from "./nav";
 import { clickTestId } from "./waits";
@@ -230,18 +230,20 @@ export async function loginAs(page: Page, role: Role = "user"): Promise<void> {
     return;
   }
 
-  // Projetos autenticados dependem do storageState produzido pelo auth.setup.
-  // Se o setup degradou para um estado vazio após indisponibilidade transitória
-  // do Supabase, não repita o mesmo login (até 150 s) em cada teste: requireAuth
-  // encerra o teste imediatamente. Projetos públicos continuam podendo exercer
-  // o login via UI sem depender desse arquivo compartilhado.
+  // Projetos autenticados dependem do storageState do auth.setup. Fora de CI,
+  // quando o setup degrada ele grava `{cookies: [], origins: []}`; aí cada spec
+  // ainda tentava o mesmo login pela tela e queimava até 150 s antes de falhar.
+  // Com sessão ausente, pula na hora. Em CI o próprio setup lança (E21), então
+  // este caminho não é alcançado lá. Token vencido durante a suíte NÃO entra
+  // aqui: o navegador renova a sessão e o login via UI segue valendo.
   const projectName = test.info().project.name;
   const usesSetupStorage =
     projectName === "chromium-smoke" ||
     projectName.endsWith("-authed") ||
     projectName.startsWith("mobile-");
-  if (usesSetupStorage) {
-    requireAuth("Auth setup não produziu uma sessão utilizável");
+  if (usesSetupStorage && authSetupProducedNoSession()) {
+    test.skip(true, "Auth setup não produziu sessão — spec autenticado pulado");
+    return;
   }
 
   const email = role === "dev" ? process.env.E2E_DEV_EMAIL :
