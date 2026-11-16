@@ -23,16 +23,16 @@
    "src/services (10)"
   ],
   "testes": [
-   "tests/ (1028)",
+   "tests/ (1029)",
    "co-localizado (__tests__) (672)",
    "e2e/ (625)"
   ],
   "edge_functions": "supabase/functions",
   "migrations": "supabase/migrations",
   "scripts": [
+   "scripts/ci-local (11)",
    "scripts/lib (7)",
-   "scripts/graphify (4)",
-   "scripts/inventario (4)"
+   "scripts/graphify (4)"
   ],
   "docs": [
    "docs (147)",
@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "feat(ci): resgata o executor de CI local — 15 commits que nunca viraram PR (#3709)",
    "chore(deps): bump production-minor-patch group — 12 atualizacoes (#3693)",
    "fix(migrations): restaura 325 recibos do ledger apagados por um commit de E2E (#3708)",
    "docs(audit): retrata o veredito dos 52 testes legacy — 21 dos 26 modulos estao vivos (#3706)",
-   "fix(ci): Gate E23 e Gate Final aceitam fork/Dependabot sem secrets (#3707)",
-   "feat(audit): resgata 267 arquivos de analise-prs que existiam só em branch de agente (#3705)"
+   "fix(ci): Gate E23 e Gate Final aceitam fork/Dependabot sem secrets (#3707)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",

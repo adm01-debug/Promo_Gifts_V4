@@ -5,10 +5,10 @@
   "linguagens": [
    "TypeScript (4879)",
    "SQL (3431)",
-   "Markdown (1454)",
-   "JavaScript (444)",
+   "Markdown (1455)",
+   "JavaScript (456)",
    "JSON (132)",
-   "YAML (112)",
+   "YAML (115)",
    "Shell (27)",
    "HTML (20)"
   ],
@@ -148,6 +148,13 @@
    "check:visual-preview-suite": "node scripts/check-visual-preview-suite.mjs",
    "ci:build": "npm run ci:verify && node scripts/check-build-warnings.mjs",
    "ci:build:warnings": "node scripts/check-build-log.mjs",
+   "ci:local": "node scripts/ci-local/index.mjs run",
+   "ci:local:all": "node scripts/ci-local/index.mjs run --all",
+   "ci:local:compare": "node scripts/ci-local/index.mjs compare",
+   "ci:local:extras": "node scripts/ci-local/index.mjs extras",
+   "ci:local:fast": "node scripts/ci-local/index.mjs fast",
+   "ci:local:list": "node scripts/ci-local/index.mjs list",
+   "ci:local:nightly": "node scripts/ci-local/index.mjs run --event schedule --all",
    "ci:verify": "node scripts/verify-build-integrity.mjs",
    "coverage": "TZ=America/Sao_Paulo vitest run --coverage",
    "coverage:ci:collect": "node scripts/collect-coverage-ci.mjs",
@@ -4194,15 +4201,15 @@
    "arquivos_md": 12
   },
   {
+   "pasta": "docs/ci",
+   "arquivos_md": 12
+  },
+  {
    "pasta": "docs/adr",
    "arquivos_md": 11
   },
   {
    "pasta": "docs/auditoria-planejado-nao-executado-2026-10-11",
-   "arquivos_md": 11
-  },
-  {
-   "pasta": "docs/ci",
    "arquivos_md": 11
   },
   {

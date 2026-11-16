@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "dc5f7b42bc7fa043f783b4afcbba3dd347ba3d43",
+  "commit": "656e9bc97c859536878b359fa0363ad65f269675",
   "branch": "main",
-  "data_commit": "2026-11-16T13:14:25-03:00",
+  "data_commit": "2026-11-16T14:18:13-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "656e9bc9",
+    "data": "2026-11-16",
+    "assunto": "feat(ci): resgata o executor de CI local — 15 commits que nunca viraram PR (#3709)"
+   },
    {
     "sha": "dc5f7b42",
     "data": "2026-11-16",
@@ -126,88 +131,83 @@
     "sha": "80ea9910",
     "data": "2026-11-16",
     "assunto": "chore(audit): dossie por branch das 160 branches do GitHub fora da main"
-   },
-   {
-    "sha": "22db4dcb",
-    "data": "2026-11-16",
-    "assunto": "fix(mockup): o mouse passa a mover o destaque na lista de empresas (#3690)"
    }
   ],
-  "arquivos_mudados_7d": 2553,
+  "arquivos_mudados_7d": 2569,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
-    "mudancas": 944
+    "mudancas": 648
    },
    {
     "pasta": "src/components/products",
-    "mudancas": 483
-   },
-   {
-    "pasta": "tests/edge-functions/live",
-    "mudancas": 363
-   },
-   {
-    "pasta": "src/hooks/products",
-    "mudancas": 334
+    "mudancas": 333
    },
    {
     "pasta": "recovery/src-legacy/src",
     "mudancas": 317
    },
    {
-    "pasta": "src/pages/magazine",
-    "mudancas": 280
+    "pasta": "tests/edge-functions/live",
+    "mudancas": 248
+   },
+   {
+    "pasta": "src/hooks/products",
+    "mudancas": 230
    },
    {
     "pasta": "src/components/quotes",
-    "mudancas": 275
-   },
-   {
-    "pasta": "src/components/inventory",
-    "mudancas": 253
-   },
-   {
-    "pasta": "supabase/functions/_shared",
-    "mudancas": 238
-   },
-   {
-    "pasta": "src/components/ui",
-    "mudancas": 224
-   },
-   {
-    "pasta": "src/components/mockup",
-    "mudancas": 206
-   },
-   {
-    "pasta": "src/pages/admin",
     "mudancas": 193
    },
    {
+    "pasta": "src/pages/magazine",
+    "mudancas": 188
+   },
+   {
+    "pasta": "src/components/inventory",
+    "mudancas": 173
+   },
+   {
+    "pasta": "supabase/functions/_shared",
+    "mudancas": 169
+   },
+   {
+    "pasta": "src/components/mockup",
+    "mudancas": 160
+   },
+   {
+    "pasta": "src/components/ui",
+    "mudancas": 151
+   },
+   {
+    "pasta": "src/pages/admin",
+    "mudancas": 134
+   },
+   {
     "pasta": "src/components/kit-builder",
-    "mudancas": 176
+    "mudancas": 129
    },
    {
     "pasta": "src/pages/products",
-    "mudancas": 164
+    "mudancas": 114
    },
    {
     "pasta": "src/pages/quotes",
-    "mudancas": 158
+    "mudancas": 111
    }
   ],
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "RELATORIO_CI.md",
-    "mudancas": 80
+    "mudancas": 79
    },
    {
     "arquivo": "PENDENCIAS.md",
-    "mudancas": 72
+    "mudancas": 71
    },
    {
     "arquivo": "supabase/MIGRATIONS_SYNC_LOG.md",
-    "mudancas": 63
+    "mudancas": 62
    },
    {
     "arquivo": "package.json",
@@ -215,87 +215,87 @@
    },
    {
     "arquivo": "package-lock.json",
-    "mudancas": 29
+    "mudancas": 28
    },
    {
     "arquivo": "docs/coordenacao/conflitos-semanticos.md",
-    "mudancas": 24
+    "mudancas": 23
    },
    {
     "arquivo": "analise-prs/progresso.json",
-    "mudancas": 19
+    "mudancas": 18
    },
    {
     "arquivo": ".github/workflows/deploy-gates.yml",
-    "mudancas": 18
-   },
-   {
-    "arquivo": "CHANGELOG.md",
-    "mudancas": 18
-   },
-   {
-    "arquivo": "supabase/EDGE_FUNCTIONS_DEPLOY_LOG.md",
-    "mudancas": 18
-   },
-   {
-    "arquivo": "src/pages/kit-builder/KitBuilderPage.tsx",
     "mudancas": 17
    },
    {
-    "arquivo": "auditoria-supabase/RELATORIO_AUDITORIA_SUPABASE.md",
-    "mudancas": 15
+    "arquivo": "CHANGELOG.md",
+    "mudancas": 17
    },
    {
-    "arquivo": "audit/supabase-reference-catalog.temporary.json",
+    "arquivo": "supabase/EDGE_FUNCTIONS_DEPLOY_LOG.md",
+    "mudancas": 17
+   },
+   {
+    "arquivo": "src/pages/kit-builder/KitBuilderPage.tsx",
+    "mudancas": 16
+   },
+   {
+    "arquivo": "auditoria-supabase/RELATORIO_AUDITORIA_SUPABASE.md",
     "mudancas": 14
    },
    {
+    "arquivo": "audit/supabase-reference-catalog.temporary.json",
+    "mudancas": 13
+   },
+   {
     "arquivo": "analise-prs/RELATORIO_PRS.md",
-    "mudancas": 13
-   },
-   {
-    "arquivo": "analise-prs/prs.json",
-    "mudancas": 13
-   },
-   {
-    "arquivo": "src/hooks/kit-builder/useKitBuilderPageState.ts",
-    "mudancas": 13
-   },
-   {
-    "arquivo": "analise-branches/RELATORIO_BRANCHES.md",
     "mudancas": 12
    },
    {
-    "arquivo": "e2e/flows/magazine-publish-smoke.spec.ts",
+    "arquivo": "analise-prs/prs.json",
+    "mudancas": 12
+   },
+   {
+    "arquivo": "src/hooks/kit-builder/useKitBuilderPageState.ts",
+    "mudancas": 12
+   },
+   {
+    "arquivo": "analise-branches/RELATORIO_BRANCHES.md",
     "mudancas": 11
+   },
+   {
+    "arquivo": "e2e/flows/magazine-publish-smoke.spec.ts",
+    "mudancas": 10
    },
    {
     "arquivo": "src/pages/mockups/MockupGenerator.tsx",
-    "mudancas": 11
+    "mudancas": 10
    },
    {
     "arquivo": "docs/ci/SEGREDOS.md",
-    "mudancas": 10
+    "mudancas": 9
    },
    {
     "arquivo": "docs/plans/PLANO_MELHORIAS_CORRECOES_200_ETAPAS_2026-10-18.md",
-    "mudancas": 10
+    "mudancas": 9
    },
    {
     "arquivo": "e2e/flows/magazine-preview-sticky-smoke.spec.ts",
-    "mudancas": 10
+    "mudancas": 9
    },
    {
     "arquivo": "e2e/helpers/auth.ts",
-    "mudancas": 10
+    "mudancas": 9
    },
    {
     "arquivo": "src/hooks/kit-builder/useKitAutoSave.ts",
-    "mudancas": 10
+    "mudancas": 9
    },
    {
     "arquivo": ".github/workflows/db-schema-drift-check.yml",
-    "mudancas": 9
+    "mudancas": 8
    }
   ],
   "autores_30d": [
@@ -309,7 +309,7 @@
    },
    {
     "autor": "Joaquim Ataides",
-    "commits": 99
+    "commits": 97
    },
    {
     "autor": "github-actions[bot]",
@@ -322,9 +322,9 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 10776,
-  "arquivos_codigo": 5331,
-  "linhas_codigo": 1016031,
+  "arquivos_total": 10792,
+  "arquivos_codigo": 5343,
+  "linhas_codigo": 1018265,
   "rotas": 138,
   "rotas_http_backend": 13,
   "vistas_por_id": 0,
@@ -336,10 +336,10 @@
   "tabelas": 527,
   "migrations": 3097,
   "cron_jobs": 122,
-  "testes": 2524,
+  "testes": 2525,
   "workflows": 87,
-  "scripts": 272,
-  "docs_md": 1454
+  "scripts": 283,
+  "docs_md": 1455
  },
  "por_pasta": {
   ".github/scripts": {
@@ -1462,6 +1462,10 @@
    "arquivos": 1,
    "linhas": 239
   },
+  "scripts/ci-local": {
+   "arquivos": 11,
+   "linhas": 1714
+  },
   "scripts/ci-metrics.mjs": {
    "arquivos": 1,
    "linhas": 276
@@ -2139,8 +2143,8 @@
    "linhas": 89
   },
   "tests/scripts": {
-   "arquivos": 177,
-   "linhas": 27819
+   "arquivos": 178,
+   "linhas": 28339
   },
   "tests/search": {
    "arquivos": 1,
@@ -2355,10 +2359,10 @@
  ],
  "qualidade": {
   "any": 696,
-  "console_log": 1271,
+  "console_log": 1305,
   "ts_ignore": 0,
   "eslint_disable": 24,
-  "todos": 107,
+  "todos": 108,
   "arquivos_acima_500_linhas": 185
  },
  "todos": [
@@ -2607,6 +2611,12 @@
    "linha": 22,
    "tipo": "TODO",
    "texto": "|FIXME|HACK)\\b/g, // sem `i`: a palavra \"todo\" (PT-BR, \"todo o catálogo\") não é marcador de débito"
+  },
+  {
+   "arquivo": "scripts/ci-local/inventory.mjs",
+   "linha": 97,
+   "tipo": "TODO",
+   "texto": "o trabalho depende do GitHub (reusable externo, ou todos os passos não-setup são github-only);"
   },
   {
    "arquivo": "scripts/drift-baseline.mjs",

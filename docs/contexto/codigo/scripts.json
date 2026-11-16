@@ -1,7 +1,7 @@
 {
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
- "total": 272,
+ "total": 283,
  "scripts": [
   {
    "arquivo": ".github/scripts/e2e-relevance.mjs",
@@ -1744,6 +1744,155 @@
    "workflows": [
     "deploy-gates.yml"
    ],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/ci-local/compare.mjs",
+   "descricao": "scripts/ci-local/compare.mjs Cruza o resultado local (report.json) com os check-runs do GitHub para o mesmo",
+   "linhas": 54,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/ci-local/extras.mjs",
+   "descricao": "scripts/ci-local/extras.mjs Scripts npm de verificação (test:*, check:*, lint:*, e2e:*, audit:*, typecheck:*, validate:*)",
+   "linhas": 72,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/ci-local/index.mjs",
+   "descricao": "scripts/ci-local/index.mjs — roda localmente os workflows do GitHub Actions.   npm run ci:local:list                 inventário: todos os workflows/jobs e o que dispararia agora",
+   "linhas": 327,
+   "env": [
+    "XDG_CACHE_HOME"
+   ],
+   "npm_scripts": [
+    "ci:local",
+    "ci:local:list",
+    "ci:local:all",
+    "ci:local:nightly",
+    "ci:local:fast",
+    "ci:local:extras",
+    "ci:local:compare"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/ci-local/inventory.mjs",
+   "descricao": "scripts/ci-local/inventory.mjs Lê TODOS os workflows de .github/workflows e classifica cada job pelo que ele",
+   "linhas": 172,
+   "env": [],
+   "npm_scripts": [
+    "check:types-inventory",
+    "check:secrets-inventory"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/ci-local/native.mjs",
+   "descricao": "scripts/ci-local/native.mjs Motor RÁPIDO (sem Docker): executa os passos `run:` de jobs dos workflows direto",
+   "linhas": 403,
+   "env": [
+    "DENO_DIR",
+    "PATH",
+    "PLAYWRIGHT_BROWSERS_PATH",
+    "XDG_CACHE_HOME",
+    "npm_config_cache"
+   ],
+   "npm_scripts": [],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/ci-local/run-act.mjs",
+   "descricao": "scripts/ci-local/run-act.mjs Executa workflows do GitHub Actions localmente com o `act` (Docker), num clone",
+   "linhas": 403,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/ci-local/select.mjs",
+   "descricao": "scripts/ci-local/select.mjs Decide quais workflows o GitHub dispararia para um evento, branch e conjunto de",
+   "linhas": 93,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/ci-local/shims/artifact-store.mjs",
+   "descricao": "Armazenamento local de artefatos do CI local: diretório montado em TODOS os contêineres de jobs do act (CI_LOCAL_ARTIFACTS, via --container-options), compartilhado entre jobs",
+   "linhas": 30,
+   "env": [
+    "CI_LOCAL_ARTIFACTS",
+    "GITHUB_OUTPUT",
+    "GITHUB_WORKSPACE"
+   ],
+   "npm_scripts": [],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/ci-local/shims/download-artifact/index.mjs",
+   "descricao": "Shim local de actions/download-artifact (name | artifact-ids | pattern, merge-multiple).",
+   "linhas": 31,
+   "env": [],
+   "npm_scripts": [
+    "ci:local",
+    "ci:local:list",
+    "ci:local:all",
+    "ci:local:nightly",
+    "ci:local:fast",
+    "ci:local:extras",
+    "ci:local:compare"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/ci-local/shims/paths-filter/index.mjs",
+   "descricao": "Shim LOCAL de dorny/paths-filter para o CI local (act). O original, em eventos pull_request, pede a lista de arquivos à API do GitHub pelo",
+   "linhas": 74,
+   "env": [
+    "GITHUB_EVENT_PATH",
+    "GITHUB_OUTPUT"
+   ],
+   "npm_scripts": [
+    "ci:local",
+    "ci:local:list",
+    "ci:local:all",
+    "ci:local:nightly",
+    "ci:local:fast",
+    "ci:local:extras",
+    "ci:local:compare"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/ci-local/shims/upload-artifact/index.mjs",
+   "descricao": "Shim local de actions/upload-artifact (mesmas entradas/saídas usadas no repo).",
+   "linhas": 55,
+   "env": [],
+   "npm_scripts": [
+    "ci:local",
+    "ci:local:list",
+    "ci:local:all",
+    "ci:local:nightly",
+    "ci:local:fast",
+    "ci:local:extras",
+    "ci:local:compare"
+   ],
+   "workflows": [],
    "orfao": false
   },
   {

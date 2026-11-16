@@ -1848,6 +1848,18 @@
   "scripts/check-types-inventory-drift.mjs": [
    "scripts/extract-types-inventory.mjs"
   ],
+  "scripts/ci-local/index.mjs": [
+   "scripts/ci-local/compare.mjs",
+   "scripts/ci-local/extras.mjs",
+   "scripts/ci-local/inventory.mjs",
+   "scripts/ci-local/native.mjs",
+   "scripts/ci-local/run-act.mjs",
+   "scripts/ci-local/select.mjs"
+  ],
+  "scripts/ci-local/native.mjs": [
+   "scripts/ci-local/inventory.mjs",
+   "scripts/ci-local/run-act.mjs"
+  ],
   "scripts/ci-metrics.mjs": [
    "scripts/lib/missing-prerequisite.mjs"
   ],

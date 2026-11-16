@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "dc5f7b42bc7fa043f783b4afcbba3dd347ba3d43",
+  "sha": "656e9bc97c859536878b359fa0363ad65f269675",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-16 16:21 UTC",
-  "files_total": 10704,
-  "code_files": 8761,
-  "code_lines": 1235844
+  "generated_at": "2026-11-16 17:21 UTC",
+  "files_total": 10720,
+  "code_files": 8773,
+  "code_lines": 1238078
  },
  "version": "1.3.2",
- "facts_hash": "491e8e5797a7ea8f",
+ "facts_hash": "cb1ff7f421768360",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -191,6 +191,13 @@
    "test:quality": "TZ=America/Sao_Paulo vitest run --exclude 'tests/hooks/**'",
    "test:ci-core": "TZ=America/Sao_Paulo STRICT_TEST_SIDE_EFFECTS=1 vitest run tests/contracts/migrated-endpoints.contract.test.ts src/lib/theme-presets.test.ts tests/components/products/ProductSparkline.labels.test.tsx src/pages/filters/__tests__/FiltersPage.sorting.test.tsx src/components/products/__tests__/ProductSortAccessibility.test.tsx tests/unit/supabase-schema-contract.test.ts tests/unit/favorites-migration.test.ts tests/unit/trending-score.test.ts tests/unit/variant-matching.test.ts tests/unit/text-utils.test.ts tests/unit/print-area-grouping.test.ts tests/unit/format.test.ts tests/unit/to-error-message.test.ts tests/unit/catalog-stock-status.test.ts tests/unit/masked-suffix.test.ts tests/unit/forecast.test.ts tests/unit/stock-chart-utils.test.ts tests/unit/novelty-dates.test.ts tests/unit/sensitive-masking.test.ts tests/unit/error-kind-inference.test.ts tests/unit/connection-error-copy.test.ts tests/unit/roles.test.ts tests/unit/supplier-colors.test.ts tests/unit/date-utils.test.ts tests/unit/format-utils.test.ts tests/unit/quote-status-config.test.ts tests/config/vitest-config-smoke.test.ts tests/config/e2e-http-status.test.ts tests/scripts/check-supabase-reference-catalog.test.mjs tests/scripts/check-migration-filename-contract.test.mjs tests/scripts/check-schema-reference-drift.test.mjs tests/scripts/check-result-contract.test.mjs tests/scripts/check-production-harnesses.test.mjs tests/scripts/check-dependency-audit.test.mjs tests/scripts/check-types-inventory-drift.test.mjs tests/scripts/check-pptx-image-parser-exposure.test.mjs tests/scripts/contexto-produtores.test.mjs tests/scripts/rpc-live-evidence-contract.test.mjs tests/scripts/strict-test-side-effects-contract.test.mjs tests/security/lint-0011-drift.test.ts tests/security/lint-0029-drift.test.ts tests/security/secdef-anon-drift.test.ts tests/security/security-definer-acl-gate.test.ts src/components/mockup/logo-editor/__tests__/LogoControls.test.tsx src/hooks/mockup/__tests__/mockupAreas.preserve.test.ts src/hooks/mockup/__tests__/mockupBatch.partial.test.ts src/hooks/mockup/__tests__/mockupDimensions.guard.test.ts src/hooks/mockup/__tests__/mockupEntry.params.test.ts src/hooks/mockup/__tests__/mockupGeneration.abort.test.ts src/hooks/mockup/__tests__/mockupRestore.selection.test.ts src/hooks/mockup/__tests__/useMockupGenerator.techniques.test.ts tests/components/mockup/acceptance/grupo1.acceptance.test.tsx tests/components/mockup/acceptance/grupo3.acceptance.test.tsx tests/components/mockup/acceptance/grupo6.acceptance.test.tsx src/hooks/simulation/__tests__/useLogoColorAnalysis.test.ts src/components/mockup/__tests__/mockupA11y.slice2.test.tsx src/hooks/mockup/__tests__/mockupSelectionSnapshot.test.ts src/components/mockup/__tests__/MockupResultCard.states.test.tsx src/components/mockup/__tests__/MockupResultCard.preserved.test.tsx src/hooks/mockup/__tests__/mockupProjectSaved.test.ts src/pages/mockups/mockup-generator/__tests__/fichaDaAreaDaImagem.test.ts src/hooks/mockup/__tests__/trocaDeProjeto.test.ts tests/edge-functions/mockup-assistant.test.ts",
    "test:ci-core:coverage": "TZ=America/Sao_Paulo vitest run tests/contracts/migrated-endpoints.contract.test.ts src/lib/theme-presets.test.ts tests/components/products/ProductSparkline.labels.test.tsx --coverage --coverage.include=src/lib/theme-presets.ts --coverage.include=src/components/products/ProductSparkline.tsx --coverage.reporter=text --coverage.reporter=json --coverage.reporter=json-summary --coverage.thresholds.lines=50 --coverage.thresholds.functions=50 --coverage.thresholds.branches=30 --coverage.thresholds.statements=50",
+   "ci:local": "node scripts/ci-local/index.mjs run",
+   "ci:local:list": "node scripts/ci-local/index.mjs list",
+   "ci:local:all": "node scripts/ci-local/index.mjs run --all",
+   "ci:local:nightly": "node scripts/ci-local/index.mjs run --event schedule --all",
+   "ci:local:fast": "node scripts/ci-local/index.mjs fast",
+   "ci:local:extras": "node scripts/ci-local/index.mjs extras",
+   "ci:local:compare": "node scripts/ci-local/index.mjs compare",
    "test:deploy-gate": "TZ=America/Sao_Paulo vitest run tests/contracts/migrated-endpoints.contract.test.ts src/lib/theme-presets.test.ts tests/components/products/ProductSparkline.labels.test.tsx --reporter=dot",
    "test:watch": "TZ=America/Sao_Paulo vitest",
    "test:run": "TZ=America/Sao_Paulo vitest run",
@@ -1106,7 +1113,7 @@
    ".sql": 3431,
    ".ts": 2981,
    ".tsx": 1899,
-   ".mjs": 437,
+   ".mjs": 449,
    ".py": 13,
    ".js": 7
   },
@@ -144566,6 +144573,11 @@
    },
    {
     "kind": "cron (código)",
+    "detail": "0 0 * * *",
+    "file": "scripts/ci-local/run-act.mjs"
+   },
+   {
+    "kind": "cron (código)",
     "detail": "auto-block-offenders 1,6,11,16,21,26,31,36,41,46,51,56 * * * *",
     "file": "scripts/drift-baseline.mjs"
    },
@@ -149117,8 +149129,8 @@
   },
   {
    "module": "scripts",
-   "files": 287,
-   "lines": 62115,
+   "files": 298,
+   "lines": 63829,
    "tables": [
     "a",
     "b",
@@ -151443,8 +151455,8 @@
   },
   {
    "module": "tests",
-   "files": 1042,
-   "lines": 160062,
+   "files": 1043,
+   "lines": 160582,
    "tables": [
     "bot_detection_log",
     "clients",
@@ -155445,6 +155457,9 @@
     "src/lib/inventory/__tests__/stock-filter.perf.test.ts",
     "tests/config/playwright-config-smoke.test.ts"
    ],
+   "CI_LOCAL_ARTIFACTS": [
+    "scripts/ci-local/shims/artifact-store.mjs"
+   ],
    "CI_SKIP_FREIGHT_E2E": [
     "e2e/flows/36-freight-dashboard-stress.spec.ts",
     "e2e/flows/freight-quest-complete-flow.spec.ts"
@@ -155534,6 +155549,9 @@
    ],
    "DB_URL": [
     "scripts/ai-context/gerar.unit.mjs"
+   ],
+   "DENO_DIR": [
+    "scripts/ci-local/native.mjs"
    ],
    "DEV": [
     "e2e/helpers/dev-only-route.ts",
@@ -155831,7 +155849,8 @@
    ],
    "GH_TOKEN": [
     "scripts/ci-metrics.mjs",
-    "scripts/validate-lovable-sync-target.mjs"
+    "scripts/validate-lovable-sync-target.mjs",
+    "tests/scripts/ci-local.test.mjs"
    ],
    "GITHUB_ACTIONS": [
     "scripts/check-edge-authorization.mjs",
@@ -155854,6 +155873,9 @@
     "e2e/helpers/auth.ts",
     "scripts/check-bundle-size.mjs"
    ],
+   "GITHUB_EVENT_PATH": [
+    "scripts/ci-local/shims/paths-filter/index.mjs"
+   ],
    "GITHUB_HEAD_REF": [
     "scripts/check-conflict-ledger.mjs"
    ],
@@ -155861,7 +155883,9 @@
     "scripts/check-bundle-size.mjs"
    ],
    "GITHUB_OUTPUT": [
-    "scripts/autoheal-eslint/run.mjs"
+    "scripts/autoheal-eslint/run.mjs",
+    "scripts/ci-local/shims/artifact-store.mjs",
+    "scripts/ci-local/shims/paths-filter/index.mjs"
    ],
    "GITHUB_REPOSITORY": [
     "scripts/ci-metrics.mjs"
@@ -155882,7 +155906,11 @@
    "GITHUB_TOKEN": [
     "scripts/ci-metrics.mjs",
     "scripts/diagnose-personalization-artifact.py",
-    "scripts/validate-lovable-sync-target.mjs"
+    "scripts/validate-lovable-sync-target.mjs",
+    "tests/scripts/ci-local.test.mjs"
+   ],
+   "GITHUB_WORKSPACE": [
+    "scripts/ci-local/shims/artifact-store.mjs"
    ],
    "GRAPHIFY_FIXTURE_": [
     "scripts/graphify-local.unit.mjs"
@@ -156012,6 +156040,7 @@
     "scripts/validate-lovable-sync-target.mjs"
    ],
    "PATH": [
+    "scripts/ci-local/native.mjs",
     "scripts/export-schema-snapshot.mjs",
     "scripts/graphify-local.unit.mjs",
     "tests/scripts/audit-db-frontend-coverage.test.mjs",
@@ -156022,6 +156051,7 @@
     "tests/scripts/check-restore-seller-cart-rpc.test.mjs",
     "tests/scripts/check-security-definer-hardening.base-ref-injection.test.mjs",
     "tests/scripts/check-security-definer-hardening.test.mjs",
+    "tests/scripts/ci-local.test.mjs",
     "tests/scripts/gate-baseline-absence.test.mjs",
     "tests/scripts/gates-failopen-batch2.test.mjs",
     "tests/scripts/gates-hardening-regressions.test.mjs",
@@ -156080,6 +156110,9 @@
    ],
    "PGUSER": [
     "tests/scripts/check-infrastructure-drift-snapshots.test.mjs"
+   ],
+   "PLAYWRIGHT_BROWSERS_PATH": [
+    "scripts/ci-local/native.mjs"
    ],
    "PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH": [
     "scripts/qa/generate-proposal-pdf.mjs"
@@ -156203,6 +156236,9 @@
    ],
    "SRK": [
     "scripts/ai-context/cenarios.mjs"
+   ],
+   "SSH_AUTH_SOCK": [
+    "tests/scripts/ci-local.test.mjs"
    ],
    "STAT_STATEMENTS_TOP": [
     "scripts/supabase_snapshot/snapshot.py"
@@ -156837,6 +156873,10 @@
    "WEBHOOK_DISPATCHER_SECRET": [
     "scripts/contract-testing.mjs",
     "supabase/functions/_shared/dispatcher-auth.ts"
+   ],
+   "XDG_CACHE_HOME": [
+    "scripts/ci-local/index.mjs",
+    "scripts/ci-local/native.mjs"
    ],
    "XDG_STATE_HOME": [
     "scripts/maintenance/run.mjs"
@@ -164326,6 +164366,22 @@
    {
     "file": "scripts/autoheal-eslint/run.mjs",
     "msg": "git falhou (${result.status}): ${result.stderr.trim()}"
+   },
+   {
+    "file": "scripts/ci-local/index.mjs",
+    "msg": "argumento desconhecido: ${a}"
+   },
+   {
+    "file": "scripts/ci-local/native.mjs",
+    "msg": "GITHUB_OUTPUT: delimitador ${h[2]} não encontrado"
+   },
+   {
+    "file": "scripts/ci-local/run-act.mjs",
+    "msg": "arquivo de segredos contém um token do GitHub (gh*_ / github_pat_): o CI local nunca recebe credencial do GitHub"
+   },
+   {
+    "file": "scripts/ci-local/run-act.mjs",
+    "msg": "arquivo de segredos não pode conter ${bad.join("
    },
    {
     "file": "scripts/graphify/build-sql-graph.py",
@@ -296516,6 +296572,266 @@
     "name": "lança erro legível (não ENOENT cru) quando um workflow é um symlink quebrado"
    },
    {
+    "file": "tests/scripts/ci-local.test.mjs",
+    "name": "filtros de paths/branches (semântica do GitHub Actions)"
+   },
+   {
+    "file": "tests/scripts/ci-local.test.mjs",
+    "name": "** atravessa diretórios e * não"
+   },
+   {
+    "file": "tests/scripts/ci-local.test.mjs",
+    "name": "negação "
+   },
+   {
+    "file": "tests/scripts/ci-local.test.mjs",
+    "name": "paths: roda se ALGUM arquivo casa; sem arquivos não roda"
+   },
+   {
+    "file": "tests/scripts/ci-local.test.mjs",
+    "name": "paths-ignore: só pula quando TODOS os arquivos são ignorados"
+   },
+   {
+    "file": "tests/scripts/ci-local.test.mjs",
+    "name": "branches / branches-ignore / push só de tags"
+   },
+   {
+    "file": "tests/scripts/ci-local.test.mjs",
+    "name": "pull_request filtra pelo branch BASE; push pelo branch enviado"
+   },
+   {
+    "file": "tests/scripts/ci-local.test.mjs",
+    "name": "YAML inválido nunca "
+   },
+   {
+    "file": "tests/scripts/ci-local.test.mjs",
+    "name": "inventário: classificação por passo"
+   },
+   {
+    "file": "tests/scripts/ci-local.test.mjs",
+    "name": "normaliza on: string, lista e objeto"
+   },
+   {
+    "file": "tests/scripts/ci-local.test.mjs",
+    "name": "segredo com fallback (secrets.X || ...) não bloqueia; GITHUB_TOKEN nunca conta"
+   },
+   {
+    "file": "tests/scripts/ci-local.test.mjs",
+    "name": "passos que escrevem no GitHub são github-only"
+   },
+   {
+    "file": "tests/scripts/ci-local.test.mjs",
+    "name": "um único passo github-only NÃO rebaixa o job inteiro (ex.: attest no Build)"
+   },
+   {
+    "file": "tests/scripts/ci-local.test.mjs",
+    "name": "segredo em env: do job é herdado por todos os passos"
+   },
+   {
+    "file": "tests/scripts/ci-local.test.mjs",
+    "name": "act: leitura do log, nome do check e veredito"
+   },
+   {
+    "file": "tests/scripts/ci-local.test.mjs",
+    "name": "consolida jobs e o passo que falhou; ignora linhas não-JSON"
+   },
+   {
+    "file": "tests/scripts/ci-local.test.mjs",
+    "name": "nome do check segue o GitHub: "
+   },
+   {
+    "file": "tests/scripts/ci-local.test.mjs",
+    "name": "falha num passo que precisa de segredo ausente → inconclusivo; em passo comum → FALHOU"
+   },
+   {
+    "file": "tests/scripts/ci-local.test.mjs",
+    "name": "evento de PR traz head/base/labels coerentes"
+   },
+   {
+    "file": "tests/scripts/ci-local.test.mjs",
+    "name": "comparação local × GitHub"
+   },
+   {
+    "file": "tests/scripts/ci-local.test.mjs",
+    "name": "classifica igual / DIVERGE / não comparável / só GitHub"
+   },
+   {
+    "file": "tests/scripts/ci-local.test.mjs",
+    "name": "motor nativo: expressões e if:"
+   },
+   {
+    "file": "tests/scripts/ci-local.test.mjs",
+    "name": "resolve contexto, literais e "
+   },
+   {
+    "file": "tests/scripts/ci-local.test.mjs",
+    "name": "if: de passo — failure()/always()/igualdade"
+   },
+   {
+    "file": "tests/scripts/ci-local.test.mjs",
+    "name": "nomes de check em workflows reutilizáveis"
+   },
+   {
+    "file": "tests/scripts/ci-local.test.mjs",
+    "name": "shim local de dorny/paths-filter"
+   },
+   {
+    "file": "tests/scripts/ci-local.test.mjs",
+    "name": "calcula filtros via git diff com o mesmo contrato de saídas"
+   },
+   {
+    "file": "tests/scripts/ci-local.test.mjs",
+    "name": "reutilizáveis, neutralização no clone e ok-parcial"
+   },
+   {
+    "file": "tests/scripts/ci-local.test.mjs",
+    "name": "act prefixa pelo NOME do chamador (ou id); GitHub mostra "
+   },
+   {
+    "file": "tests/scripts/ci-local.test.mjs",
+    "name": "neutraliza só passos com segredo ausente ou API do GitHub"
+   },
+   {
+    "file": "tests/scripts/ci-local.test.mjs",
+    "name": "job verde com passo neutralizado que falhou → ok-parcial (nunca "
+   },
+   {
+    "file": "tests/scripts/ci-local.test.mjs",
+    "name": "veredito considera TODOS os passos que falharam"
+   },
+   {
+    "file": "tests/scripts/ci-local.test.mjs",
+    "name": "falha real depois de um passo inconclusivo → FALHOU (não esconde)"
+   },
+   {
+    "file": "tests/scripts/ci-local.test.mjs",
+    "name": "só passos sem segredo falharam → inconclusivo"
+   },
+   {
+    "file": "tests/scripts/ci-local.test.mjs",
+    "name": "achados da revisão adversarial (token, exit do act, nomes, matrix, types, nativo)"
+   },
+   {
+    "file": "tests/scripts/ci-local.test.mjs",
+    "name": "act recebe -s GITHUB_TOKEN= e o processo não herda token nem config do gh"
+   },
+   {
+    "file": "tests/scripts/ci-local.test.mjs",
+    "name": "arquivo de segredos com token do GitHub é recusado"
+   },
+   {
+    "file": "tests/scripts/ci-local.test.mjs",
+    "name": "nome com ${{ }} e uses@sha ligam ao passo do YAML"
+   },
+   {
+    "file": "tests/scripts/ci-local.test.mjs",
+    "name": "falha real em passo com nome interpolado num job com segredo → FALHOU (não inconclusivo)"
+   },
+   {
+    "file": "tests/scripts/ci-local.test.mjs",
+    "name": "Gate emulado: não executado / só GitHub nos needs → inconclusivo (nunca ok)"
+   },
+   {
+    "file": "tests/scripts/ci-local.test.mjs",
+    "name": "pull_request com types: [opened, closed] não dispara em synchronize"
+   },
+   {
+    "file": "tests/scripts/ci-local.test.mjs",
+    "name": "nativo: if: do job não entendido não roda; instalação some do script multi-linha"
+   },
+   {
+    "file": "tests/scripts/ci-local.test.mjs",
+    "name": "2ª revisão adversarial (socket, strip, needs/steps, curinga, HOME, segredos)"
+   },
+   {
+    "file": "tests/scripts/ci-local.test.mjs",
+    "name": "socket do Docker só é montado em workflow que chama docker num passo"
+   },
+   {
+    "file": "tests/scripts/ci-local.test.mjs",
+    "name": "instalação neutralizada mantém if/else, &&, continuação e heredoc válidos (setup-node-ci)"
+   },
+   {
+    "file": "tests/scripts/ci-local.test.mjs",
+    "name": "if: com needs/vars não avaliável → null (inconclusivo), nunca pulado calado; steps.* usa outputs reais"
+   },
+   {
+    "file": "tests/scripts/ci-local.test.mjs",
+    "name": "nome curinga não engole a falha de outro passo; exato tem prioridade; ambíguo = não mapeado"
+   },
+   {
+    "file": "tests/scripts/ci-local.test.mjs",
+    "name": "shims locais de upload/download-artifact"
+   },
+   {
+    "file": "tests/scripts/ci-local.test.mjs",
+    "name": "upload (pasta, glob com !exclusão, artifact-id) → download por nome e por id"
+   },
+   {
+    "file": "tests/scripts/ci-local.test.mjs",
+    "name": "emulação de job always() não executado pelo act"
+   },
+   {
+    "file": "tests/scripts/ci-local.test.mjs",
+    "name": "pior resultado dos needs vence, e sai marcado como EMULADO"
+   },
+   {
+    "file": "tests/scripts/ci-local.test.mjs",
+    "name": "não emula sem always() ou com need sem resultado"
+   },
+   {
+    "file": "tests/scripts/ci-local.test.mjs",
+    "name": "3ª revisão adversarial (sudo, segredos YAML, docker por comentário, shims, steps desconhecidos, CRLF)"
+   },
+   {
+    "file": "tests/scripts/ci-local.test.mjs",
+    "name": "sudo / apt-get install / pip install nunca rodam no host (inconclusivo)"
+   },
+   {
+    "file": "tests/scripts/ci-local.test.mjs",
+    "name": "segredos: "
+   },
+   {
+    "file": "tests/scripts/ci-local.test.mjs",
+    "name": "docker: comentário não conta; reutilizável/composite local que usa docker conta"
+   },
+   {
+    "file": "tests/scripts/ci-local.test.mjs",
+    "name": "shims barram instalação em qualquer forma e repassam o resto ao binário real"
+   },
+   {
+    "file": "tests/scripts/ci-local.test.mjs",
+    "name": "if: steps.<id> de passo que não rodou de fato → inconclusivo, nunca pulado calado"
+   },
+   {
+    "file": "tests/scripts/ci-local.test.mjs",
+    "name": "GITHUB_OUTPUT: CRLF lido; delimitador sem fechamento é erro"
+   },
+   {
+    "file": "tests/scripts/ci-local.test.mjs",
+    "name": "modo nativo isola a home real (bwrap) quando disponível"
+   },
+   {
+    "file": "tests/scripts/ci-local.test.mjs",
+    "name": "4ª revisão adversarial (sandbox, shims por subcomando, segredos)"
+   },
+   {
+    "file": "tests/scripts/ci-local.test.mjs",
+    "name": "sandbox: docker, /mnt/c, interop do Windows, .git comum e token do gh ficam inacessíveis"
+   },
+   {
+    "file": "tests/scripts/ci-local.test.mjs",
+    "name": "shim decide pelo subcomando: scripts chamados install/ci rodam; variantes de install são barradas"
+   },
+   {
+    "file": "tests/scripts/ci-local.test.mjs",
+    "name": "segredos: token colado a outro texto e github_token minúsculo são recusados; "
+   },
+   {
+    "file": "tests/scripts/ci-local.test.mjs",
+    "name": "if: steps["
+   },
+   {
     "file": "tests/scripts/classify-unledgered-migrations.test.mjs",
     "name": "classify-unledgered-migrations.mjs — uso básico"
    },
@@ -426211,6 +426527,190 @@
     "ESLint real continua bloqueando warning genuino com ignored na mesma lista"
    ]
   },
+  "scripts/ci-local/compare.mjs": {
+   "path": "scripts/ci-local/compare.mjs",
+   "lines": 54,
+   "exports": [
+    "function fetchGithubChecks",
+    "function compareResults"
+   ],
+   "params": [
+    {
+     "name": "REPO",
+     "value": "'adm01-debug/Promo_Gifts_V4'"
+    }
+   ],
+   "doc": "scripts/ci-local/compare.mjs Cruza o resultado local (report.json) com os check-runs do GitHub para o mesmo commit. Só LÊ a API (gh api, GET) — nada é escrito no GitHub."
+  },
+  "scripts/ci-local/extras.mjs": {
+   "path": "scripts/ci-local/extras.mjs",
+   "lines": 72,
+   "exports": [
+    "const UNSAFE_RE",
+    "function findUncovered"
+   ],
+   "doc": "scripts/ci-local/extras.mjs Scripts npm de verificação (test:*, check:*, lint:*, e2e:*, audit:*, typecheck:*, validate:*) que NENHUM workflow/hook roda — direta ou indiretamente. Sem isto, esses testes só rodariam se alguém lembrasse de chamá-los à mão. Cobertura considerada (transitiva): • o workfl …"
+  },
+  "scripts/ci-local/index.mjs": {
+   "path": "scripts/ci-local/index.mjs",
+   "lines": 327,
+   "env": [
+    "XDG_CACHE_HOME"
+   ],
+   "errors": [
+    "argumento desconhecido: ${a}"
+   ],
+   "doc": "!/usr/bin/env node scripts/ci-local/index.mjs — roda localmente os workflows do GitHub Actions. npm run ci:local:list inventário: todos os workflows/jobs e o que dispararia agora npm run ci:local roda no act (Docker) tudo que o GitHub rodaria numa PR contra main npm run ci:local -- --all roda TODOS …",
+   "temporal": [
+    "const o = { cmd, unsafe: false, listOnly: false, event: 'pull_request', base: 'origin/main', sha: 'HEAD', all: false, workflows: [], exclude: [], jobs: 2, timeo …"
+   ]
+  },
+  "scripts/ci-local/inventory.mjs": {
+   "path": "scripts/ci-local/inventory.mjs",
+   "lines": 172,
+   "exports": [
+    "const GITHUB_ONLY_ACTIONS",
+    "function loadWorkflows",
+    "function normalizeTriggers",
+    "function classifyStep",
+    "function classifyJob",
+    "function buildInventory",
+    "function summarize"
+   ],
+   "role_checks": [
+    "object"
+   ],
+   "doc": "scripts/ci-local/inventory.mjs Lê TODOS os workflows de .github/workflows e classifica cada job pelo que ele precisa para rodar fora do GitHub. Nenhuma execução acontece aqui (puro). Classes (da mais para a menos executável localmente): local — roda no act sem segredo nem API do GitHub. secret — ref …"
+  },
+  "scripts/ci-local/native.mjs": {
+   "path": "scripts/ci-local/native.mjs",
+   "lines": 403,
+   "exports": [
+    "function makeEvaluator",
+    "function stepShouldRun",
+    "function jobShouldRun",
+    "function stripInstallLines",
+    "const SYSTEM_INSTALL_RE",
+    "function writeInstallShims",
+    "function sandboxPrefix",
+    "function parseGithubOutput",
+    "function runJobNative"
+   ],
+   "env": [
+    "DENO_DIR",
+    "PATH",
+    "PLAYWRIGHT_BROWSERS_PATH",
+    "XDG_CACHE_HOME"
+   ],
+   "errors": [
+    "GITHUB_OUTPUT: delimitador ${h[2]} não encontrado"
+   ],
+   "rule_comments": [
+    "* `if:` de passo: avalia o mínimo seguro. Devolve true/false, ou null quando depende de",
+    "Sistema inteiro SOMENTE LEITURA; /mnt (disco do Windows), /run (docker.sock, interop do WSL,"
+   ],
+   "doc": "scripts/ci-local/native.mjs Motor RÁPIDO (sem Docker): executa os passos `run:` de jobs dos workflows direto no WSL, lendo o YAML a cada execução (nunca fica desatualizado em relação ao CI). Fidelidade menor que o act — serve para o ciclo rápido antes do push; o act é a referência. Ações de preparaç …",
+   "calc_fns": [
+    {
+     "name": "stepShouldRun",
+     "params": "cond, { failed, evaluate, steps = null }",
+     "body": "if (cond === undefined || cond === null || cond === '') return !failed; const c = String(cond).replace(/^\\$\\{\\{\\s*|\\s*\\}\\}$/g, '').trim(); // steps.<id> de passo que não rodou de fato (inconclusivo/ambiente/ausente) = desconhecido. if (steps) { const refs = [...c.matchAll(/\\bsteps(?:\\.([\\w-]+)\\.|\\[['\"]([\\w-]+)['\"]\\])/g)].map((m) => m[1] ?? m[2]); if (refs.some((id) => !steps[id] || steps[id].unknown)) return null; } if (/^fai"
+    },
+    {
+     "name": "jobShouldRun",
+     "params": "cond, evaluate",
+     "body": "if (cond === undefined || cond === null || cond === '' || cond === true) return true; if (cond === false) return false; const c = String(cond).replace(/^\\$\\{\\{\\s*|\\s*\\}\\}$/g, '').trim(); if (/^(always|success|!\\s*cancelled)\\(\\)$/.test(c)) return true; if (/\\b(needs|steps|vars|inputs|jobs)\\./.test(c)) return null; // contexto ausente no nativo const eq = c.match(/^([\\w.\\-[\\]'\"]+)\\s*(==|!=)\\s*'([^']*)'$/); if (eq) { const left = evaluate(`\\${{ ${eq[1]} }}`); return eq[2] === '==' ? left === eq[3] …"
+    }
+   ]
+  },
+  "scripts/ci-local/run-act.mjs": {
+   "path": "scripts/ci-local/run-act.mjs",
+   "lines": 403,
+   "exports": [
+    "function prepareShims",
+    "function prepareClone",
+    "function buildEvent",
+    "function checkName",
+    "function displayName",
+    "function matchReusable",
+    "function parseActJsonl",
+    "const TOKEN_ENV",
+    "function tokenlessEnv",
+    "function assertNoGithubTokenInSecrets",
+    "function sameStepName",
+    "function matchStep",
+    "function workflowNeedsDocker",
+    "const GITHUB_TOKEN_VALUE_RE",
+    "function parseSecretsText",
+    "function runWorkflow",
+    "function verdict",
+    "function neutralizeUnverifiable",
+    "function emulateAlwaysJob",
+    "function writeJson"
+   ],
+   "errors": [
+    "arquivo de segredos contém um token do GitHub (gh*_ / github_pat_): o CI local nunca recebe credencial do GitHub",
+    "arquivo de segredos não pode conter ${bad.join("
+   ],
+   "rule_comments": [
+    "* Payload mínimo e coerente do evento, como o GitHub entregaria. */"
+   ],
+   "doc": "scripts/ci-local/run-act.mjs Executa workflows do GitHub Actions localmente com o `act` (Docker), num clone isolado do commit alvo, e devolve o resultado de cada job com o MESMO nome de check que o GitHub mostra. Segurança (de propósito): • Nenhum GITHUB_TOKEN/PAT é repassado → nada pode escrever no …",
+   "cron": [
+    "0 0 * * *"
+   ]
+  },
+  "scripts/ci-local/select.mjs": {
+   "path": "scripts/ci-local/select.mjs",
+   "lines": 93,
+   "exports": [
+    "function matchesPatternList",
+    "function branchAllowed",
+    "function pathsAllowed",
+    "function selectWorkflows"
+   ],
+   "doc": "scripts/ci-local/select.mjs Decide quais workflows o GitHub dispararia para um evento, branch e conjunto de arquivos alterados — mesma semântica dos filtros do Actions: • paths: roda se ALGUM arquivo casa com a lista; padrões \"!x\" (avaliados em ordem) retiram arquivos que um padrão anterior incluiu. …"
+  },
+  "scripts/ci-local/shims/artifact-store.mjs": {
+   "path": "scripts/ci-local/shims/artifact-store.mjs",
+   "lines": 30,
+   "exports": [
+    "const STORE",
+    "const input",
+    "const output",
+    "function readIndex",
+    "function writeIndex",
+    "function workspace"
+   ],
+   "env": [
+    "CI_LOCAL_ARTIFACTS",
+    "GITHUB_OUTPUT",
+    "GITHUB_WORKSPACE"
+   ],
+   "doc": "Armazenamento local de artefatos do CI local: diretório montado em TODOS os contêineres de jobs do act (CI_LOCAL_ARTIFACTS, via --container-options), compartilhado entre jobs de uma mesma execução. Substitui o servidor de artefatos do act, que não fala o protocolo novo usado por actions/upload-artif …"
+  },
+  "scripts/ci-local/shims/download-artifact/index.mjs": {
+   "path": "scripts/ci-local/shims/download-artifact/index.mjs",
+   "lines": 31,
+   "doc": "Shim local de actions/download-artifact (name | artifact-ids | pattern, merge-multiple)."
+  },
+  "scripts/ci-local/shims/paths-filter/index.mjs": {
+   "path": "scripts/ci-local/shims/paths-filter/index.mjs",
+   "lines": 74,
+   "env": [
+    "GITHUB_EVENT_PATH",
+    "GITHUB_OUTPUT"
+   ],
+   "doc": "Shim LOCAL de dorny/paths-filter para o CI local (act). O original, em eventos pull_request, pede a lista de arquivos à API do GitHub pelo número da PR — localmente não há PR (nem token), então ele falha com \"Not Found\". Este shim mantém o MESMO contrato de entradas/saídas, mas calcula as mudanças c …"
+  },
+  "scripts/ci-local/shims/upload-artifact/index.mjs": {
+   "path": "scripts/ci-local/shims/upload-artifact/index.mjs",
+   "lines": 55,
+   "rule_comments": [
+    "Raiz = maior ancestral comum dos caminhos de inclusão (mesma regra do upload-artifact)."
+   ],
+   "doc": "Shim local de actions/upload-artifact (mesmas entradas/saídas usadas no repo)."
+  },
   "scripts/graphify/build-sql-graph.py": {
    "path": "scripts/graphify/build-sql-graph.py",
    "lines": 102,
@@ -535055,6 +535555,87 @@
     "lança erro legível (não ENOENT cru) quando um workflow é um symlink quebrado"
    ]
   },
+  "tests/scripts/ci-local.test.mjs": {
+   "path": "tests/scripts/ci-local.test.mjs",
+   "lines": 520,
+   "is_test": true,
+   "env": [
+    "GH_TOKEN",
+    "GITHUB_TOKEN",
+    "PATH",
+    "SSH_AUTH_SOCK"
+   ],
+   "rule_comments": [
+    "só-GitHub é PULADO (nunca roda sem token), não apenas tolerado"
+   ],
+   "tests": [
+    "filtros de paths/branches (semântica do GitHub Actions)",
+    "** atravessa diretórios e * não",
+    "negação ",
+    "paths: roda se ALGUM arquivo casa; sem arquivos não roda",
+    "paths-ignore: só pula quando TODOS os arquivos são ignorados",
+    "branches / branches-ignore / push só de tags",
+    "pull_request filtra pelo branch BASE; push pelo branch enviado",
+    "YAML inválido nunca ",
+    "inventário: classificação por passo",
+    "normaliza on: string, lista e objeto",
+    "segredo com fallback (secrets.X || ...) não bloqueia; GITHUB_TOKEN nunca conta",
+    "passos que escrevem no GitHub são github-only",
+    "um único passo github-only NÃO rebaixa o job inteiro (ex.: attest no Build)",
+    "segredo em env: do job é herdado por todos os passos",
+    "act: leitura do log, nome do check e veredito",
+    "consolida jobs e o passo que falhou; ignora linhas não-JSON",
+    "nome do check segue o GitHub: ",
+    "falha num passo que precisa de segredo ausente → inconclusivo; em passo comum → FALHOU",
+    "evento de PR traz head/base/labels coerentes",
+    "comparação local × GitHub",
+    "classifica igual / DIVERGE / não comparável / só GitHub",
+    "motor nativo: expressões e if:",
+    "resolve contexto, literais e ",
+    "if: de passo — failure()/always()/igualdade",
+    "nomes de check em workflows reutilizáveis",
+    "shim local de dorny/paths-filter",
+    "calcula filtros via git diff com o mesmo contrato de saídas",
+    "reutilizáveis, neutralização no clone e ok-parcial",
+    "act prefixa pelo NOME do chamador (ou id); GitHub mostra ",
+    "neutraliza só passos com segredo ausente ou API do GitHub",
+    "job verde com passo neutralizado que falhou → ok-parcial (nunca ",
+    "veredito considera TODOS os passos que falharam",
+    "falha real depois de um passo inconclusivo → FALHOU (não esconde)",
+    "só passos sem segredo falharam → inconclusivo",
+    "achados da revisão adversarial (token, exit do act, nomes, matrix, types, nativo)",
+    "act recebe -s GITHUB_TOKEN= e o processo não herda token nem config do gh",
+    "arquivo de segredos com token do GitHub é recusado",
+    "nome com ${{ }} e uses@sha ligam ao passo do YAML",
+    "falha real em passo com nome interpolado num job com segredo → FALHOU (não inconclusivo)",
+    "Gate emulado: não executado / só GitHub nos needs → inconclusivo (nunca ok)",
+    "pull_request com types: [opened, closed] não dispara em synchronize",
+    "nativo: if: do job não entendido não roda; instalação some do script multi-linha",
+    "2ª revisão adversarial (socket, strip, needs/steps, curinga, HOME, segredos)",
+    "socket do Docker só é montado em workflow que chama docker num passo",
+    "instalação neutralizada mantém if/else, &&, continuação e heredoc válidos (setup-node-ci)",
+    "if: com needs/vars não avaliável → null (inconclusivo), nunca pulado calado; steps.* usa outputs reais",
+    "nome curinga não engole a falha de outro passo; exato tem prioridade; ambíguo = não mapeado",
+    "shims locais de upload/download-artifact",
+    "upload (pasta, glob com !exclusão, artifact-id) → download por nome e por id",
+    "emulação de job always() não executado pelo act",
+    "pior resultado dos needs vence, e sai marcado como EMULADO",
+    "não emula sem always() ou com need sem resultado",
+    "3ª revisão adversarial (sudo, segredos YAML, docker por comentário, shims, steps desconhecidos, CRLF)",
+    "sudo / apt-get install / pip install nunca rodam no host (inconclusivo)",
+    "segredos: ",
+    "docker: comentário não conta; reutilizável/composite local que usa docker conta",
+    "shims barram instalação em qualquer forma e repassam o resto ao binário real",
+    "if: steps.<id> de passo que não rodou de fato → inconclusivo, nunca pulado calado",
+    "GITHUB_OUTPUT: CRLF lido; delimitador sem fechamento é erro",
+    "modo nativo isola a home real (bwrap) quando disponível",
+    "4ª revisão adversarial (sandbox, shims por subcomando, segredos)",
+    "sandbox: docker, /mnt/c, interop do Windows, .git comum e token do gh ficam inacessíveis",
+    "shim decide pelo subcomando: scripts chamados install/ci rodam; variantes de install são barradas",
+    "segredos: token colado a outro texto e github_token minúsculo são recusados; ",
+    "if: steps["
+   ]
+  },
   "tests/scripts/classify-unledgered-migrations.test.mjs": {
    "path": "tests/scripts/classify-unledgered-migrations.test.mjs",
    "lines": 186,
@@ -539862,10 +540443,36 @@
   }
  },
  "git": {
-  "sha": "dc5f7b42bc7fa043f783b4afcbba3dd347ba3d43",
+  "sha": "656e9bc97c859536878b359fa0363ad65f269675",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "656e9bc",
+    "date": "2026-11-16",
+    "author": "adm01-debug",
+    "subject": "feat(ci): resgata o executor de CI local — 15 commits que nunca viraram PR (#3709)",
+    "files": [
+     "docs/ci/CI_LOCAL.md",
+     "package.json",
+     "scripts/automation.config.json",
+     "scripts/ci-local/compare.mjs",
+     "scripts/ci-local/extras.mjs",
+     "scripts/ci-local/index.mjs",
+     "scripts/ci-local/inventory.mjs",
+     "scripts/ci-local/native.mjs",
+     "scripts/ci-local/run-act.mjs",
+     "scripts/ci-local/select.mjs",
+     "scripts/ci-local/shims/artifact-store.mjs",
+     "scripts/ci-local/shims/download-artifact/action.yml",
+     "scripts/ci-local/shims/download-artifact/index.mjs",
+     "scripts/ci-local/shims/paths-filter/action.yml",
+     "scripts/ci-local/shims/paths-filter/index.mjs",
+     "scripts/ci-local/shims/upload-artifact/action.yml",
+     "scripts/ci-local/shims/upload-artifact/index.mjs",
+     "tests/scripts/ci-local.test.mjs"
+    ]
+   },
    {
     "sha": "dc5f7b4",
     "date": "2026-11-16",
@@ -540605,15 +541212,6 @@
      "supabase/functions/generate-mockup/limits.ts",
      "vitest.config.ts"
     ]
-   },
-   {
-    "sha": "ef2a7fa",
-    "date": "2026-11-15",
-    "author": "adm01-debug",
-    "subject": "fix(e2e): orcamento do teste cobre a espera de 150s do login em CI (#3682)",
-    "files": [
-     "e2e/helpers/auth.ts"
-    ]
    }
   ],
   "hot_files": [
@@ -540623,7 +541221,7 @@
    ],
    [
     "package.json",
-    3
+    4
    ],
    [
     "docs/coordenacao/conflitos-semanticos.md",
@@ -540694,7 +541292,7 @@
     2
    ],
    [
-    "analise-branches/VEREDITO-52-TESTES-LEGACY-261116.md",
+    "docs/ci/CI_LOCAL.md",
     1
    ]
   ]

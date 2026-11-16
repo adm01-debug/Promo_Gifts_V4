@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.3.2 · commit `dc5f7b42bc` · branch `main` · 2026-11-16 16:21 UTC
+> Gerado automaticamente por AI Context Sync v1.3.2 · commit `656e9bc97c` · branch `main` · 2026-11-16 17:21 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -6406,7 +6406,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | DOWNLOAD_SIZE_LIMIT | `scripts/diagnose-personalization-artifact.py` |
 | DUPLICATE_ACTION_AFTER | `scripts/diagnose-personalization-artifact.py` |
 | DUPLICATE_JSON_KEY | `scripts/diagnose-personalization-artifact.py` |
-| … +1264 linhas — lista completa em `context.json` | |
+| … +1268 linhas — lista completa em `context.json` | |
 
 ## J. Controle de acesso no código (checagens de perfil/permissão)
 
@@ -6530,7 +6530,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `admin` | `supabase/migrations/20261112120500_fix_optimization_queue_rpcs_dev_access.sql` |
 | `anon` | `tests/edge-functions/live/_live-client.ts` |
 
-## K. Testes como especificação (21766 testes em 2203 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (21831 testes em 2204 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -6563,6 +6563,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `src/lib/products/__tests__/stock-status.test.ts` | 66 | isProductInStock · sem variações — stockStatus canônico (catálogo, hífen) · in-stock → true (even if stock=0) · low-stock → true … |
 | `tests/hooks/quotes/quoteHelpers.freight.test.ts` | 66 | round2 — arredondamento monetário · 1.005 → 1.01 (half-up) · 1.004 → 1.00 (trunca) · 0 → 0 … |
 | `tests/hooks/useProductMatch.test.ts` | 65 | normalizeText · lowercases text · removes accents · handles empty string … |
+| `tests/scripts/ci-local.test.mjs` | 65 | filtros de paths/branches (semântica do GitHub Actions) · ** atravessa diretórios e * não · negação  · paths: roda se ALGUM arquivo casa; sem arquivos não roda … |
 | `tests/scripts/preflight-migration-apply.test.mjs` | 63 | findMigrationFiles · devolve [] quando nenhum arquivo bate com o prefixo · encontra exatamente um arquivo quando o prefixo é único · encontra múltiplos arquivos em colisão de prefixo (caso E10) … |
 | `src/contexts/__tests__/SellerCartContext.restoreTelemetry.test.tsx` | 62 | SellerCartContext — telemetria do restoreCart (Undo) · restore_ok — desfechos success \| partial \| deduped · classifica  · classifica  … |
 | `tests/e2e/quotes-flow.test.ts` | 60 | E2E Quotes — Status Machine · has 6 statuses · draft → sent is valid · draft → pending is valid … |
@@ -6833,8 +6834,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `src/lib/inventory/__tests__/health-score.test.ts` | 18 | calcHealthScore · retorna 100 quando não há produtos · retorna 100 quando todos estão adequados · retorna 0 quando nenhum está adequado … |
 | `src/pages/magazine/templates-gallery/__tests__/gallery.test.tsx` | 18 | MagazineTemplatesGalleryPage · renderiza os 12 cards de template · filtro  · filtro  … |
 | `src/pages/quotes/__tests__/quote-builder-freight-block.rtl.test.tsx` | 18 | Bloco Frete — hierarquia + data-testid do grid · shippingType= · shippingType= · shippingType= … |
-| `src/utils/__tests__/cnpj-exhaustive.test.ts` | 18 | CNPJ — B1 idempotência massiva (1.000 casos) · normalize(normalize(x)) === normalize(x) · CNPJ — B2 roundtrip (1.000 casos) · normalize(mask(normalize(v))) === normalize(v) … |
-| … +1903 linhas — lista completa em `context.json` | | |
+| … +1904 linhas — lista completa em `context.json` | | |
 
 ## L. Eventos de webhook tratados (contratos com sistemas externos)
 

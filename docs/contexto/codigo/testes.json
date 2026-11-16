@@ -5,18 +5,18 @@
   "vitest",
   "playwright"
  ],
- "total": 2524,
+ "total": 2525,
  "por_tipo": {
   "contrato": 65,
   "e2e": 677,
   "pytest": 4,
   "qa": 17,
-  "unit": 1761
+  "unit": 1762
  },
  "onde_ficam": [
   {
    "padrao": "tests/",
-   "arquivos": 1028
+   "arquivos": 1029
   },
   {
    "padrao": "co-localizado (__tests__)",
@@ -19683,6 +19683,19 @@
    "casos": 24
   },
   {
+   "arquivo": "tests/scripts/ci-local.test.mjs",
+   "tipo": "unit",
+   "linhas": 520,
+   "testa": [
+    "scripts/ci-local/compare.mjs",
+    "scripts/ci-local/inventory.mjs",
+    "scripts/ci-local/native.mjs",
+    "scripts/ci-local/run-act.mjs",
+    "scripts/ci-local/select.mjs"
+   ],
+   "casos": 16
+  },
+  {
    "arquivo": "tests/scripts/classify-unledgered-migrations.test.mjs",
    "tipo": "unit",
    "linhas": 186,
@@ -21398,6 +21411,11 @@
   "scripts/check-supabase-reference-catalog.mjs": 1,
   "scripts/check-types-inventory-drift.mjs": 1,
   "scripts/check-workflow-contracts.mjs": 3,
+  "scripts/ci-local/compare.mjs": 1,
+  "scripts/ci-local/inventory.mjs": 1,
+  "scripts/ci-local/native.mjs": 1,
+  "scripts/ci-local/run-act.mjs": 1,
+  "scripts/ci-local/select.mjs": 1,
   "scripts/drift-baseline.mjs": 2,
   "scripts/extract-types-inventory.mjs": 1,
   "scripts/fuzz-edge-uploads.mjs": 1,
