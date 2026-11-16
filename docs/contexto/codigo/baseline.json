@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "16cfec32a086fbf4ff64a51c9d25f92d4ae1685b",
+  "commit": "9bd4a4bf6642ac8ff23a86c51d9d1a6415d9eaed",
   "branch": "main",
-  "data_commit": "2026-11-16T19:15:36-03:00",
+  "data_commit": "2026-11-16T19:28:08-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "9bd4a4bf",
+    "data": "2026-11-16",
+    "assunto": "chore(docs): arquiva a passagem de sessão de 15/11 que a main não tinha (#3717)"
+   },
    {
     "sha": "16cfec32",
     "data": "2026-11-16",
@@ -126,14 +131,9 @@
     "sha": "18cbbcc6",
     "data": "2026-11-16",
     "assunto": "docs(audit): manual de continuidade para a proxima sessao"
-   },
-   {
-    "sha": "04d251e1",
-    "data": "2026-11-16",
-    "assunto": "docs(audit): relatorio completo branch a branch, aberta e fechada"
    }
   ],
-  "arquivos_mudados_7d": 1991,
+  "arquivos_mudados_7d": 1992,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -301,7 +301,7 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 568
+    "commits": 569
    },
    {
     "autor": "Claude",
@@ -313,7 +313,7 @@
    },
    {
     "autor": "github-actions[bot]",
-    "commits": 34
+    "commits": 33
    },
    {
     "autor": "dependabot[bot]",
@@ -322,7 +322,7 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 10798,
+  "arquivos_total": 10799,
   "arquivos_codigo": 5347,
   "linhas_codigo": 1018684,
   "rotas": 138,
@@ -339,7 +339,7 @@
   "testes": 2528,
   "workflows": 87,
   "scripts": 283,
-  "docs_md": 1457
+  "docs_md": 1458
  },
  "por_pasta": {
   ".github/scripts": {

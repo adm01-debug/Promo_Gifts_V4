@@ -1,10 +1,10 @@
 {
  "meta": {
-  "sha": "16cfec32a086fbf4ff64a51c9d25f92d4ae1685b",
+  "sha": "9bd4a4bf6642ac8ff23a86c51d9d1a6415d9eaed",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-16 22:18 UTC",
-  "files_total": 10726,
+  "generated_at": "2026-11-16 23:13 UTC",
+  "files_total": 10727,
   "code_files": 8777,
   "code_lines": 1238497
  },
@@ -540686,10 +540686,19 @@
   }
  },
  "git": {
-  "sha": "16cfec32a086fbf4ff64a51c9d25f92d4ae1685b",
+  "sha": "9bd4a4bf6642ac8ff23a86c51d9d1a6415d9eaed",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "9bd4a4b",
+    "date": "2026-11-16",
+    "author": "adm01-debug",
+    "subject": "chore(docs): arquiva a passagem de sessão de 15/11 que a main não tinha (#3717)",
+    "files": [
+     "docs/agentes/passagens/2026-11-15-passagem-sessao.md"
+    ]
+   },
    {
     "sha": "16cfec3",
     "date": "2026-11-16",
@@ -541261,21 +541270,6 @@
      "analise-branches/dossies/recuperado__fix-gitleaks-allowlist-261101-2209.md",
      "analise-branches/dossies/recuperado__fix-gitleaks-gate-261024-1930.md"
     ]
-   },
-   {
-    "sha": "3e89427",
-    "date": "2026-11-16",
-    "author": "Claude",
-    "subject": "chore(audit): segunda passada nos 7 dossies de branch grande",
-    "files": [
-     "analise-branches/dossies/claude_04__optimistic-bohr-qplx94.md",
-     "analise-branches/dossies/claude_05__youthful-ride-vcdchy.md",
-     "analise-branches/dossies/claude__fix-pr3517-gate1-baseline-261113-2336.md",
-     "analise-branches/dossies/claude__resgate-3390-261113.md",
-     "analise-branches/dossies/claude_pink__lucid-franklin-mjhkyc.md",
-     "analise-branches/dossies/claude_pink__sleepy-cannon-h000nc.md",
-     "analise-branches/dossies/codex__fix-gate1-kit-pdf-types-261109-2252.md"
-    ]
    }
   ],
   "hot_files": [
@@ -541324,6 +541318,10 @@
     2
    ],
    [
+    "docs/agentes/passagens/2026-11-15-passagem-sessao.md",
+    1
+   ],
+   [
     "src/components/quotes/QuoteAutoSave.tsx",
     1
    ],
@@ -541353,10 +541351,6 @@
    ],
    [
     "docs/ci/CI_LOCAL.md",
-    1
-   ],
-   [
-    "scripts/automation.config.json",
     1
    ]
   ]
