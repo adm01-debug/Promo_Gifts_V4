@@ -2406,8 +2406,54 @@
       "manual": ["python3", "scripts/diagnose-personalization-artifact.py"],
       "triggers": ["manual"],
       "reason": "Legado mantido no fluxo existente; referências literais: .github/workflows/personalization-trace-diagnostics.yml. O dispatcher não executa esta operação."
+    },
+    {
+      "id": "ci-local-cli",
+      "kind": "legacy",
+      "files": ["scripts/ci-local/index.mjs"],
+      "manual": ["node", "scripts/ci-local/index.mjs", "list"],
+      "triggers": ["manual"],
+      "reason": "Executor de CI local (act + sandbox bwrap). Roda so por npm run ci:local*; execucao automatica e proibida de proposito, para nao subir container em hook nem no CI do GitHub."
+    },
+    {
+      "id": "ci-local-modulos",
+      "kind": "helper",
+      "files": ["scripts/ci-local/compare.mjs", "scripts/ci-local/extras.mjs", "scripts/ci-local/inventory.mjs", "scripts/ci-local/native.mjs", "scripts/ci-local/run-act.mjs", "scripts/ci-local/select.mjs"],
+      "triggers": ["manual"],
+      "callers": ["scripts/ci-local/index.mjs"]
+    },
+    {
+      "id": "ci-local-artifact-store",
+      "kind": "helper",
+      "files": ["scripts/ci-local/shims/artifact-store.mjs"],
+      "triggers": ["manual"],
+      "callers": ["scripts/ci-local/run-act.mjs"]
+    },
+    {
+      "id": "ci-local-shim-upload-artifact",
+      "kind": "legacy",
+      "files": ["scripts/ci-local/shims/upload-artifact/index.mjs"],
+      "manual": ["node", "scripts/ci-local/shims/upload-artifact/index.mjs"],
+      "triggers": ["manual"],
+      "reason": "Shim local da action upload-artifact: o act nao fala o protocolo v4 da action oficial. Executado pelo act como entrypoint da action, nao importado por nenhum modulo."
+    },
+    {
+      "id": "ci-local-shim-download-artifact",
+      "kind": "legacy",
+      "files": ["scripts/ci-local/shims/download-artifact/index.mjs"],
+      "manual": ["node", "scripts/ci-local/shims/download-artifact/index.mjs"],
+      "triggers": ["manual"],
+      "reason": "Shim local da action download-artifact: o act nao fala o protocolo v4 da action oficial. Executado pelo act como entrypoint da action, nao importado por nenhum modulo."
+    },
+    {
+      "id": "ci-local-shim-paths-filter",
+      "kind": "legacy",
+      "files": ["scripts/ci-local/shims/paths-filter/index.mjs"],
+      "manual": ["node", "scripts/ci-local/shims/paths-filter/index.mjs"],
+      "triggers": ["manual"],
+      "reason": "Shim local da action paths-filter: o act nao fala o protocolo v4 da action oficial. Executado pelo act como entrypoint da action, nao importado por nenhum modulo."
     }
-  ],
+],
   "ci": [
     {
       "file": ".github/workflows/static-checks.yml",
