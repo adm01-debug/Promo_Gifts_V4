@@ -415,6 +415,7 @@ export function MockupClientSelector({
                           index === activeIndex && 'bg-primary/10',
                           index < filteredCompanies.length - 1 && 'border-b border-border/30',
                         )}
+                        onMouseEnter={() => setActiveIndex(index)}
                         onClick={() => selectCompany(company)}
                       >
                         <CompanyAvatar name={company.name} logoUrl={company.logo_url} size="sm" />
