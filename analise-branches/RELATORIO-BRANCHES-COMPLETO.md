@@ -1090,7 +1090,7 @@ Trabalho que entrou na `main` e está em produção.
 
 Honestidade sobre a cobertura:
 
-- `importado/vps-fabrica/v2/n68-2610082251` — apareceu no GitHub depois da análise e **não tem veredito**.
+- `importado/vps-fabrica/v2/n68-2610082251` — apareceu depois da análise e foi decidida na conferência final: **INCORPORADA_TOTAL**, por identidade de blob (`bcae903d98` igual na branch e na `main`). Entrou pela PR #3668. Dossiê próprio em `dossies/`.
 - As **379 pontas de branch do PC do dono** (ref `salvo/261116-pc-tips`) estão preservadas e
   os nomes recuperados em `dados/branches-do-pc-261116.md`, mas **nenhuma foi analisada**.
 - `salvo/*`, `main`, `gh-pages`, `contexto`, `computador_local`, recibos e branches do
