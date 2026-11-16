@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "8a13c8882d26e181cf4e1fa92e4c31ff82efe4b1",
+  "commit": "7dad78c4ce8cd7fd304a3139edbc48f09e8e609e",
   "branch": "main",
-  "data_commit": "2026-11-16T10:52:25-03:00",
+  "data_commit": "2026-11-16T10:59:23-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "7dad78c4",
+    "data": "2026-11-16",
+    "assunto": "chore(deps): aproveita as 5 atualizações seguras de dev da #3695 e deixa os 6 majors fora (#3702)"
+   },
    {
     "sha": "8a13c888",
     "data": "2026-11-16",
@@ -126,11 +131,6 @@
     "sha": "54826844",
     "data": "2026-11-15",
     "assunto": "fix(mockup): resgata teste de a11y da fatia 2, aviso de falha na seleção do mockup e trava do braces (#3676)"
-   },
-   {
-    "sha": "dbe11812",
-    "data": "2026-11-15",
-    "assunto": "test(mockup): resgata 39 testes do gerador de mockup que estavam desligados por mock incompleto (#3672)"
    }
   ],
   "arquivos_mudados_7d": 2292,
@@ -177,7 +177,7 @@
    },
    {
     "pasta": "src/components/mockup",
-    "mudancas": 267
+    "mudancas": 266
    },
    {
     "pasta": "src/pages/admin",
@@ -199,11 +199,11 @@
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "RELATORIO_CI.md",
-    "mudancas": 88
+    "mudancas": 87
    },
    {
     "arquivo": "PENDENCIAS.md",
-    "mudancas": 84
+    "mudancas": 83
    },
    {
     "arquivo": "supabase/MIGRATIONS_SYNC_LOG.md",
@@ -211,11 +211,11 @@
    },
    {
     "arquivo": "package.json",
-    "mudancas": 44
+    "mudancas": 45
    },
    {
     "arquivo": "package-lock.json",
-    "mudancas": 28
+    "mudancas": 29
    },
    {
     "arquivo": "docs/coordenacao/conflitos-semanticos.md",
@@ -301,7 +301,7 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 577
+    "commits": 576
    },
    {
     "autor": "Claude",
@@ -309,7 +309,7 @@
    },
    {
     "autor": "Joaquim Ataides",
-    "commits": 125
+    "commits": 123
    },
    {
     "autor": "github-actions[bot]",

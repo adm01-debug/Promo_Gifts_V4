@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "chore(deps): aproveita as 5 atualizações seguras de dev da #3695 e deixa os 6 majors fora (#3702)",
    "chore(ci): destrava os recibos do ledger e o baseline do ratchet (#3699)",
    "fix(ci): Gate 1.3 para de varrer analise-branches e destrava todo PR de código (#3701)",
    "docs(migrations-log): recibo E15 — aplicação de 20261115130200 (#3694)",
-   "chore(ci): métricas semanais 2026-W47 (#3691)",
-   "docs(audit): handoff para a próxima sessão, com o estado de 16/11 (#3698)"
+   "chore(ci): métricas semanais 2026-W47 (#3691)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",
