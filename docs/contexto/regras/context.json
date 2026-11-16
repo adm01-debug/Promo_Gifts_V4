@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "5c39856ebc3f5385c929193e0d20fa9184fe8938",
+  "sha": "dc5f7b42bc7fa043f783b4afcbba3dd347ba3d43",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-16 16:16 UTC",
+  "generated_at": "2026-11-16 16:21 UTC",
   "files_total": 10704,
   "code_files": 8761,
   "code_lines": 1235844
  },
  "version": "1.3.2",
- "facts_hash": "f8116ca858a390f2",
+ "facts_hash": "491e8e5797a7ea8f",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -27,7 +27,7 @@
     "in": "package.json"
    },
    "@tanstack/react-query": {
-    "version": "^5.106.1",
+    "version": "^5.107.1",
     "role": "Cache/fetch de dados (TanStack Query)",
     "in": "package.json"
    },
@@ -42,7 +42,7 @@
     "in": "package.json"
    },
    "lucide-react": {
-    "version": "1.70.0",
+    "version": "1.72.0",
     "role": "Ícones Lucide",
     "in": "package.json"
    },
@@ -52,7 +52,7 @@
     "in": "package.json"
    },
    "react-hook-form": {
-    "version": "^7.91.0",
+    "version": "^7.92.0",
     "role": "Forms (react-hook-form)",
     "in": "package.json"
    },
@@ -72,7 +72,7 @@
     "in": "package.json"
    },
    "zustand": {
-    "version": "^5.0.16",
+    "version": "^5.1.0",
     "role": "Estado Zustand",
     "in": "package.json"
    },
@@ -539862,10 +539862,20 @@
   }
  },
  "git": {
-  "sha": "5c39856ebc3f5385c929193e0d20fa9184fe8938",
+  "sha": "dc5f7b42bc7fa043f783b4afcbba3dd347ba3d43",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "dc5f7b4",
+    "date": "2026-11-16",
+    "author": "dependabot[bot]",
+    "subject": "chore(deps): bump production-minor-patch group — 12 atualizacoes (#3693)",
+    "files": [
+     "package-lock.json",
+     "package.json"
+    ]
+   },
    {
     "sha": "5c39856",
     "date": "2026-11-16",
@@ -540604,31 +540614,6 @@
     "files": [
      "e2e/helpers/auth.ts"
     ]
-   },
-   {
-    "sha": "ecface8",
-    "date": "2026-11-15",
-    "author": "adm01-debug",
-    "subject": "feat(mockup): preserva o resultado quando a geração falha, e a ficha sai com as medidas da área certa (#3674)",
-    "files": [
-     "package.json",
-     "src/components/mockup/MockupCompletionStates.tsx",
-     "src/components/mockup/MockupResultCard.tsx",
-     "src/components/mockup/__tests__/MockupResultCard.preserved.test.tsx",
-     "src/components/mockup/__tests__/MockupResultCard.states.test.tsx",
-     "src/components/mockup/usePreservedMockupResult.ts",
-     "src/hooks/mockup/__tests__/mockupProjectSaved.test.ts",
-     "src/hooks/mockup/__tests__/trocaDeProjeto.test.ts",
-     "src/hooks/mockup/mockupGeneratorModel.ts",
-     "src/hooks/mockup/useMockupGenerator.ts",
-     "src/hooks/mockup/useSavedMockupProject.ts",
-     "src/pages/mockups/MockupGenerator.tsx",
-     "src/pages/mockups/mockup-generator/__tests__/fichaDaAreaDaImagem.test.ts",
-     "src/pages/mockups/mockup-generator/useLayoutCaptureRequest.ts",
-     "src/pages/mockups/mockup-generator/useMockupCompletionStatus.ts",
-     "src/tests/MockupDeletion.test.tsx",
-     "tests/pages/MockupGenerator.a11y.test.tsx"
-    ]
    }
   ],
   "hot_files": [
@@ -540637,11 +540622,11 @@
     5
    ],
    [
-    "docs/coordenacao/conflitos-semanticos.md",
+    "package.json",
     3
    ],
    [
-    "package.json",
+    "docs/coordenacao/conflitos-semanticos.md",
     3
    ],
    [
@@ -540655,6 +540640,10 @@
    [
     "analise-branches/RELATORIO-BRANCHES-COMPLETO.md",
     3
+   ],
+   [
+    "package-lock.json",
+    2
    ],
    [
     ".github/workflows/deploy-gates.yml",
@@ -540705,12 +540694,8 @@
     2
    ],
    [
-    "src/hooks/mockup/__tests__/mockupProjectSaved.test.ts",
-    2
-   ],
-   [
-    "src/pages/mockups/MockupGenerator.tsx",
-    2
+    "analise-branches/VEREDITO-52-TESTES-LEGACY-261116.md",
+    1
    ]
   ]
  }

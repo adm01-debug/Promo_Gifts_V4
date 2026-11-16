@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "chore(deps): bump production-minor-patch group — 12 atualizacoes (#3693)",
    "fix(migrations): restaura 325 recibos do ledger apagados por um commit de E2E (#3708)",
    "docs(audit): retrata o veredito dos 52 testes legacy — 21 dos 26 modulos estao vivos (#3706)",
    "fix(ci): Gate E23 e Gate Final aceitam fork/Dependabot sem secrets (#3707)",
-   "feat(audit): resgata 267 arquivos de analise-prs que existiam só em branch de agente (#3705)",
-   "docs(audit): 12 recibos do ledger com sha256 que não bate com o arquivo (#3704)"
+   "feat(audit): resgata 267 arquivos de analise-prs que existiam só em branch de agente (#3705)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",
