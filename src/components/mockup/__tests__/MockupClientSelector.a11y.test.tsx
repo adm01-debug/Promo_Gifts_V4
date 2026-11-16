@@ -170,6 +170,29 @@ describe('MockupClientSelector — combobox acessível', () => {
     );
   });
 
+  it('o mouse move aria-activedescendant, então Enter escolhe a empresa sob o cursor', async () => {
+    const user = userEvent.setup();
+    const { onClientSelect } = renderSelector();
+
+    const { input, listbox } = await openListbox(user);
+    const options = within(listbox).getAllByRole('option');
+
+    // Teclado deixa o destaque na 1ª empresa.
+    await user.keyboard('{ArrowDown}');
+    expect(input).toHaveAttribute('aria-activedescendant', options[0].id);
+
+    // O mouse vai para a 2ª: o destaque tem de acompanhar o cursor.
+    await user.hover(options[1]);
+    expect(input).toHaveAttribute('aria-activedescendant', options[1].id);
+
+    // Sem isso o Enter grava a empresa de cima, não a que está sob o cursor.
+    await user.keyboard('{Enter}');
+    expect(onClientSelect).toHaveBeenCalledTimes(1);
+    expect(onClientSelect).toHaveBeenCalledWith(
+      expect.objectContaining({ id: 'c2', name: 'Beta Promo' }),
+    );
+  });
+
   it('Esc fecha apenas a lista e não altera a seleção', async () => {
     const user = userEvent.setup();
     const { onClientSelect } = renderSelector();
