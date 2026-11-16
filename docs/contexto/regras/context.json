@@ -1,9 +1,9 @@
 {
  "meta": {
-  "sha": "7dad78c4ce8cd7fd304a3139edbc48f09e8e609e",
+  "sha": "2d3c2f74d450b6eaf57809e14bf8e229f0acf00a",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-16 14:01 UTC",
+  "generated_at": "2026-11-16 14:31 UTC",
   "files_total": 10431,
   "code_files": 8758,
   "code_lines": 1235397
@@ -539761,10 +539761,20 @@
   }
  },
  "git": {
-  "sha": "7dad78c4ce8cd7fd304a3139edbc48f09e8e609e",
+  "sha": "2d3c2f74d450b6eaf57809e14bf8e229f0acf00a",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "2d3c2f7",
+    "date": "2026-11-16",
+    "author": "adm01-debug",
+    "subject": "fix(ci): gates não exigem do Dependabot segredo que o GitHub nunca lhe entrega (#3700)",
+    "files": [
+     ".github/workflows/deploy-gates.yml",
+     "docs/coordenacao/conflitos-semanticos.md"
+    ]
+   },
    {
     "sha": "7dad78c",
     "date": "2026-11-16",
@@ -540291,16 +540301,6 @@
      "analise-branches/auditoria-261115/veredito_lote04.md",
      "analise-branches/auditoria-261115/veredito_lote05.md"
     ]
-   },
-   {
-    "sha": "56ea27f",
-    "date": "2026-11-15",
-    "author": "adm01-debug",
-    "subject": "fix(e2e): não repetir o login em cada teste quando o auth.setup degradou (#3680)",
-    "files": [
-     "e2e/fixtures/test-base.ts",
-     "e2e/helpers/auth.ts"
-    ]
    }
   ],
   "hot_files": [
@@ -540313,6 +540313,10 @@
     4
    ],
    [
+    "docs/coordenacao/conflitos-semanticos.md",
+    3
+   ],
+   [
     "analise-branches/ESTADO-EM-261116.md",
     3
    ],
@@ -540323,10 +540327,6 @@
    [
     "analise-branches/RELATORIO-BRANCHES-COMPLETO.md",
     3
-   ],
-   [
-    "docs/coordenacao/conflitos-semanticos.md",
-    2
    ],
    [
     "analise-branches/dados/LEIA-ME.md",
@@ -540381,7 +540381,7 @@
     2
    ],
    [
-    "e2e/helpers/auth.ts",
+    "analise-branches/auditoria-261115/veredito_grupo00.md",
     2
    ]
   ]
