@@ -172,6 +172,32 @@ $seed$;
 -- 20261101140001 prova a remoção de auth.users da publication. O dump de
 -- schema preserva a publication, mas não sua lista de tabelas; restaure somente
 -- a associação que a migration histórica precisa remover.
+-- 20261115230000 insere em public.ai_function_routing com o uuid do modelo
+-- escrito a mao ('e375d89c-...'), e ha FK para ai_models(id). O uuid so existe
+-- no banco de producao: quem criou a linha foi 20260615210001, com
+-- gen_random_uuid() (linha 15), e o baseline e schema-only. No shadow a FK
+-- estoura e o supabase db diff inteiro falha. Recria a dupla provedor+modelo
+-- com os ids reais de producao (lidos read-only em 2026-11-16), so o que a FK
+-- exige; o resto das colunas fica no default.
+DO $seed$
+BEGIN
+  IF to_regclass('public.ai_providers') IS NOT NULL THEN
+    INSERT INTO public.ai_providers (id, slug, display_name, api_base_url, api_format, secret_name)
+    VALUES ('404b2f04-6e86-4240-997a-ce4390d3cebc'::uuid, 'deepseek', 'DeepSeek',
+            'https://api.deepseek.com/v1', 'openai_compatible', 'DEEPSEEK_API_KEY')
+    ON CONFLICT (id) DO NOTHING;
+  END IF;
+  IF to_regclass('public.ai_models') IS NOT NULL
+     AND EXISTS (SELECT 1 FROM public.ai_providers WHERE id = '404b2f04-6e86-4240-997a-ce4390d3cebc'::uuid) THEN
+    INSERT INTO public.ai_models (id, provider_id, model_id, display_name)
+    VALUES ('e375d89c-8f14-44c9-892b-d213372dbc44'::uuid,
+            '404b2f04-6e86-4240-997a-ce4390d3cebc'::uuid,
+            'deepseek-v4-flash', 'DeepSeek V4-Flash')
+    ON CONFLICT (id) DO NOTHING;
+  END IF;
+END
+$seed$;
+
 DO $seed$
 BEGIN
   IF to_regclass('auth.users') IS NOT NULL
