@@ -45,3 +45,8 @@ Nada depende mais de máquina nenhuma:
 
 São commits de preservação: a árvore é igual à da `main` e o que importa são os pais.
 Não são para mergear.
+
+## Antes de usar estes dados
+
+Leia `../MANUAL-DE-CONTINUIDADE.md`. Ele explica por que a medição mecânica destes
+arquivos **não decide** nada sozinha, e qual é o teste que de fato decide.

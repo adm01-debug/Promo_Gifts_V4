@@ -3,6 +3,11 @@
 Documento de passagem. A sessão que produziu isto acabou por limite de tokens; o dono
 continua em outra conta. Aqui está o que está feito, o que falta e onde cada coisa mora.
 
+> **Leia antes `analise-branches/MANUAL-DE-CONTINUIDADE.md`.** Ele traz as armadilhas de
+> ferramenta e de método que custaram horas nesta sessão: por que o botão "Update branch"
+> quebra PR aqui, por que medir identificador de commit engana, o limite de agentes em
+> paralelo, e os erros que eu cometi para você não repetir.
+
 ## Feito e confirmado em produção
 
 | O quê | Prova |
