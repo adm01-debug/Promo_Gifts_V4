@@ -11,7 +11,8 @@
  * "Salvo" é a gravação CONFIRMADA da imagem exibida: `saveBatchResults` devolve
  * a gravação do resultado exibido, não a da última área do lote.
  */
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
+import { toast } from 'sonner';
 import type { useMockupGenerator } from '@/hooks/mockup';
 import type { MockupCompletionStatus } from '@/components/mockup/MockupCompletionStates';
 import { usePreservedMockupResult } from '@/components/mockup/usePreservedMockupResult';
@@ -21,6 +22,7 @@ type MockupGeneratorState = ReturnType<typeof useMockupGenerator>;
 export function useMockupCompletionStatus(mg: MockupGeneratorState): {
   projectSaveStatus: MockupCompletionStatus;
   handleLayoutCaptured: () => void;
+  handleLayoutFailed: (recordId: string) => void;
 } {
   const {
     generatedMockup,
@@ -56,8 +58,42 @@ export function useMockupCompletionStatus(mg: MockupGeneratorState): {
     fetchHistory();
   }, [setLastSavedRecordId, setLastSavedMockupUrl, fetchHistory]);
 
+  // Falha na ficha: avisa o vendedor e libera o pedido pendente. Sem isto o
+  // pedido ficava preso (o processedRef da captura barra nova tentativa) e a
+  // ficha nunca chegava ao cliente, em silêncio. O mockup em si segue salvo.
+  // O pedido corrente lido por REFERENCIA, nao por captura. OffscreenLayoutCapture
+  // nao tem `onFailed` nas dependencias do efeito (:164, exhaustive-deps
+  // desligado), entao o `capture()` assincrono retem o callback do render que o
+  // iniciou — e aquele callback carrega o `lastSavedRecordId` daquele momento.
+  // Comparar os dois valores velhos entre si da sempre igual, e o pedido do
+  // mockup novo era apagado. A ref sempre tem o valor de agora.
+  const lastSavedRecordIdRef = useRef(lastSavedRecordId);
+  useEffect(() => {
+    lastSavedRecordIdRef.current = lastSavedRecordId;
+  }, [lastSavedRecordId]);
+
+  const handleLayoutFailed = useCallback(
+    (recordId: string) => {
+      // Nao registra log aqui: a captura ja registra a falha na origem, com o
+      // erro real (OffscreenLayoutCapture). Log duplicado so poluiria.
+      // O aviso sai sempre: a ficha DAQUELE mockup falhou, e o vendedor precisa
+      // saber, mesmo que ele ja tenha salvo outro no meio do caminho.
+      toast.error(
+        'Não foi possível preparar a ficha de aprovação deste mockup. O mockup está salvo — gere a ficha de novo.',
+      );
+      // Mas so libera o pedido QUE falhou. Os botoes nao ficam bloqueados
+      // durante a captura (MockupGenerator.tsx), entao outro mockup pode ter
+      // sido salvo enquanto o upload anterior ainda corria; zerar sem conferir
+      // a identidade apagaria o pedido novo e a ficha dele nunca sairia.
+      if (recordId !== lastSavedRecordIdRef.current) return;
+      setLastSavedRecordId(null);
+      setLastSavedMockupUrl(null);
+    },
+    [setLastSavedRecordId, setLastSavedMockupUrl],
+  );
+
   const projectSaveStatus: MockupCompletionStatus =
     !!displayedMockup && savedMockupUrl === displayedMockup ? 'done' : 'idle';
 
-  return { projectSaveStatus, handleLayoutCaptured };
+  return { projectSaveStatus, handleLayoutCaptured, handleLayoutFailed };
 }
