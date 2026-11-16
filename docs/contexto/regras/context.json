@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "26996059bf2f53471398756e0e102eced301c150",
+  "sha": "8e5aaaa23df849743d8334e99a5330663cd3a540",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-16 19:14 UTC",
-  "files_total": 10722,
-  "code_files": 8773,
-  "code_lines": 1238078
+  "generated_at": "2026-11-16 19:35 UTC",
+  "files_total": 10724,
+  "code_files": 8775,
+  "code_lines": 1238291
  },
  "version": "1.3.2",
- "facts_hash": "cb1ff7f421768360",
+ "facts_hash": "d9ce6164e4a3cb5a",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -1111,8 +1111,8 @@
   "package_manager": "npm",
   "languages": {
    ".sql": 3431,
-   ".ts": 2981,
-   ".tsx": 1899,
+   ".ts": 2982,
+   ".tsx": 1900,
    ".mjs": 449,
    ".py": 13,
    ".js": 7
@@ -150020,8 +150020,8 @@
   },
   {
    "module": "src/lib",
-   "files": 340,
-   "lines": 52646,
+   "files": 341,
+   "lines": 52695,
    "tables": [
     "...",
     "companies",
@@ -150181,6 +150181,7 @@
     "src/lib/__tests__/chunk-recovery.shared-reload-budget.test.ts",
     "src/lib/__tests__/chunk-recovery.url-cleanup.test.ts",
     "src/lib/__tests__/discount-approval-status-config.transitions.test.ts",
+    "src/lib/__tests__/external-rpc.test.ts",
     "src/lib/__tests__/format-utils.test.ts",
     "src/lib/__tests__/json-value.test.ts",
     "src/lib/__tests__/latency-percentiles.test.ts",
@@ -150197,8 +150198,7 @@
     "src/lib/access/access-policy.test.ts",
     "src/lib/access/access-policy.ts",
     "src/lib/access/dev-route-telemetry.ts",
-    "src/lib/access/log-access-denied.ts",
-    "src/lib/access/request-dev-access.ts"
+    "src/lib/access/log-access-denied.ts"
    ]
   },
   {
@@ -151455,8 +151455,8 @@
   },
   {
    "module": "tests",
-   "files": 1043,
-   "lines": 160582,
+   "files": 1044,
+   "lines": 160746,
    "tables": [
     "bot_detection_log",
     "clients",
@@ -151618,6 +151618,7 @@
     "tests/_helpers/live-supabase-env.ts",
     "tests/a11y/axe-helper.ts",
     "tests/a11y/clickable-drift.test.ts",
+    "tests/a11y/magazine-a11y.test.tsx",
     "tests/a11y/onda5-a11y.test.tsx",
     "tests/admin/__strict-ref-gate-smoke.skip.ts",
     "tests/admin/admin-ref-warning-guard.test.tsx",
@@ -151656,8 +151657,7 @@
     "tests/components/NotificationDrawer-a11y.test.tsx",
     "tests/components/NotificationDrawer-debounce-config.test.tsx",
     "tests/components/NotificationDrawer-debounce.test.tsx",
-    "tests/components/NotificationDrawer-trigger-fetch-counters.test.tsx",
-    "tests/components/NotificationDrawer-trigger-to-fetch-timing.test.tsx"
+    "tests/components/NotificationDrawer-trigger-fetch-counters.test.tsx"
    ]
   }
  ],
@@ -247088,6 +247088,18 @@
     "name": "lança erro descritivo para transição inválida"
    },
    {
+    "file": "src/lib/__tests__/external-rpc.test.ts",
+    "name": "invokeExternalRpc — binding de "
+   },
+   {
+    "file": "src/lib/__tests__/external-rpc.test.ts",
+    "name": "preserva o contexto do supabase (não estoura "
+   },
+   {
+    "file": "src/lib/__tests__/external-rpc.test.ts",
+    "name": "propaga erro não-retryável após a chamada bem-sucedida do client"
+   },
+   {
     "file": "src/lib/__tests__/format-utils.test.ts",
     "name": "format-utils"
    },
@@ -264718,6 +264730,26 @@
    {
     "file": "tests/a11y/clickable-drift.test.ts",
     "name": "baseline não referencia o próprio Clickable.tsx"
+   },
+   {
+    "file": "tests/a11y/magazine-a11y.test.tsx",
+    "name": "Onda 3 — Magazine editor a11y (WCAG 2.1 AA)"
+   },
+   {
+    "file": "tests/a11y/magazine-a11y.test.tsx",
+    "name": "não viola regras WCAG na etapa LayoutStep (DnD + sumário)"
+   },
+   {
+    "file": "tests/a11y/magazine-a11y.test.tsx",
+    "name": "expõe aria-label dinâmico com nome do produto nos botões de arrastar e remover"
+   },
+   {
+    "file": "tests/a11y/magazine-a11y.test.tsx",
+    "name": "marca item destacado com aria-current="
+   },
+   {
+    "file": "tests/a11y/magazine-a11y.test.tsx",
+    "name": "imagens dos produtos usam alt significativo (não vazio, não decorativo)"
    },
    {
     "file": "tests/a11y/onda5-a11y.test.tsx",
@@ -469081,6 +469113,23 @@
     "lança erro descritivo para transição inválida"
    ]
   },
+  "src/lib/__tests__/external-rpc.test.ts": {
+   "path": "src/lib/__tests__/external-rpc.test.ts",
+   "lines": 49,
+   "is_test": true,
+   "errors": [
+    "Cannot read properties of undefined (reading "
+   ],
+   "rule_comments": [
+    "* Regressão: invokeExternalRpc deve preservar o `this` do supabase ao chamar `.rpc`."
+   ],
+   "doc": "Regressão: invokeExternalRpc deve preservar o `this` do supabase ao chamar `.rpc`. Sem bind, supabase-js v2 dispara \"Cannot read properties of undefined (reading 'rest')\" porque internamente executa `this.rest.rpc(...)`.",
+   "tests": [
+    "invokeExternalRpc — binding de ",
+    "preserva o contexto do supabase (não estoura ",
+    "propaga erro não-retryável após a chamada bem-sucedida do client"
+   ]
+  },
   "src/lib/__tests__/format-utils.test.ts": {
    "path": "src/lib/__tests__/format-utils.test.ts",
    "lines": 61,
@@ -517668,6 +517717,19 @@
     "baseline não referencia o próprio Clickable.tsx"
    ]
   },
+  "tests/a11y/magazine-a11y.test.tsx": {
+   "path": "tests/a11y/magazine-a11y.test.tsx",
+   "lines": 164,
+   "is_test": true,
+   "doc": "Onda 3 — auditoria automatizada axe-core do editor Magazine (WCAG 2.1 AA). Foco: `LayoutStep` (DnD + sumário), etapa onde a interação por teclado é mais complexa. Valida: - Estrutura semântica (list/listitem) - `aria-label` dinâmico com nome do produto nos botões de arrastar/remover - `aria-current` …",
+   "tests": [
+    "Onda 3 — Magazine editor a11y (WCAG 2.1 AA)",
+    "não viola regras WCAG na etapa LayoutStep (DnD + sumário)",
+    "expõe aria-label dinâmico com nome do produto nos botões de arrastar e remover",
+    "marca item destacado com aria-current=",
+    "imagens dos produtos usam alt significativo (não vazio, não decorativo)"
+   ]
+  },
   "tests/a11y/onda5-a11y.test.tsx": {
    "path": "tests/a11y/onda5-a11y.test.tsx",
    "lines": 99,
@@ -540443,10 +540505,20 @@
   }
  },
  "git": {
-  "sha": "26996059bf2f53471398756e0e102eced301c150",
+  "sha": "8e5aaaa23df849743d8334e99a5330663cd3a540",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "8e5aaaa",
+    "date": "2026-11-16",
+    "author": "adm01-debug",
+    "subject": "test: resgata os 2 testes que sobreviveram a refutacao adversarial (#3712)",
+    "files": [
+     "src/lib/__tests__/external-rpc.test.ts",
+     "tests/a11y/magazine-a11y.test.tsx"
+    ]
+   },
    {
     "sha": "2699605",
     "date": "2026-11-16",
@@ -541195,26 +541267,15 @@
      "tests/edge-functions/live/mockup-assistant.test.ts",
      "tests/edge-functions/mockup-assistant.test.ts"
     ]
-   },
-   {
-    "sha": "26d9394",
-    "date": "2026-11-15",
-    "author": "adm01-debug",
-    "subject": "fix(db): replay do zero — colunas e tabelas perdidas por no-op de CREATE TABLE IF NOT EXISTS (#3686)",
-    "files": [
-     "supabase/MIGRATIONS_SYNC_LOG.md",
-     "supabase/migrations/20250103080000_complete_schema.sql",
-     "supabase/migrations/20260512000000_bootstrap_missing_application_schemas.sql"
-    ]
    }
   ],
   "hot_files": [
    [
-    "supabase/MIGRATIONS_SYNC_LOG.md",
-    5
+    "package.json",
+    4
    ],
    [
-    "package.json",
+    "supabase/MIGRATIONS_SYNC_LOG.md",
     4
    ],
    [

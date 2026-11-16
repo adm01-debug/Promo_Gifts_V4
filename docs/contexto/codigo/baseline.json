@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "26996059bf2f53471398756e0e102eced301c150",
+  "commit": "8e5aaaa23df849743d8334e99a5330663cd3a540",
   "branch": "main",
-  "data_commit": "2026-11-16T14:18:48-03:00",
+  "data_commit": "2026-11-16T16:33:44-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "8e5aaaa2",
+    "data": "2026-11-16",
+    "assunto": "test: resgata os 2 testes que sobreviveram a refutacao adversarial (#3712)"
+   },
    {
     "sha": "26996059",
     "data": "2026-11-16",
@@ -126,14 +131,9 @@
     "sha": "766597e8",
     "data": "2026-11-16",
     "assunto": "chore(audit): dados brutos da analise das 160 branches"
-   },
-   {
-    "sha": "af6fe704",
-    "data": "2026-11-16",
-    "assunto": "chore(audit): redige o exemplo de chave AWS citado em dois dossies"
    }
   ],
-  "arquivos_mudados_7d": 1997,
+  "arquivos_mudados_7d": 1999,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -180,12 +180,12 @@
     "mudancas": 82
    },
    {
-    "pasta": "RELATORIO_CI.md",
+    "pasta": "src/components/ui",
     "mudancas": 78
    },
    {
-    "pasta": "src/components/ui",
-    "mudancas": 78
+    "pasta": "RELATORIO_CI.md",
+    "mudancas": 77
    },
    {
     "pasta": "src/pages/admin",
@@ -193,17 +193,17 @@
    },
    {
     "pasta": "PENDENCIAS.md",
-    "mudancas": 70
+    "mudancas": 69
    }
   ],
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "RELATORIO_CI.md",
-    "mudancas": 78
+    "mudancas": 77
    },
    {
     "arquivo": "PENDENCIAS.md",
-    "mudancas": 70
+    "mudancas": 69
    },
    {
     "arquivo": "supabase/MIGRATIONS_SYNC_LOG.md",
@@ -322,9 +322,9 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 10794,
-  "arquivos_codigo": 5343,
-  "linhas_codigo": 1018265,
+  "arquivos_total": 10796,
+  "arquivos_codigo": 5345,
+  "linhas_codigo": 1018478,
   "rotas": 138,
   "rotas_http_backend": 13,
   "vistas_por_id": 0,
@@ -336,7 +336,7 @@
   "tabelas": 527,
   "migrations": 3097,
   "cron_jobs": 122,
-  "testes": 2525,
+  "testes": 2527,
   "workflows": 87,
   "scripts": 283,
   "docs_md": 1457
@@ -1919,8 +1919,8 @@
    "linhas": 66577
   },
   "src/lib": {
-   "arquivos": 339,
-   "linhas": 52636
+   "arquivos": 340,
+   "linhas": 52685
   },
   "src/logic": {
    "arquivos": 4,
@@ -2011,8 +2011,8 @@
    "linhas": 168
   },
   "tests/a11y": {
-   "arquivos": 3,
-   "linhas": 157
+   "arquivos": 4,
+   "linhas": 321
   },
   "tests/admin": {
    "arquivos": 14,

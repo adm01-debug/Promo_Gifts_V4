@@ -3694,7 +3694,7 @@
     "hooks/simulator",
     "pages/admin"
    ],
-   "coberto_por_testes": 6,
+   "coberto_por_testes": 7,
    "orfao": false
   },
   {

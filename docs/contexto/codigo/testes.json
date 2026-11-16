@@ -5,22 +5,22 @@
   "vitest",
   "playwright"
  ],
- "total": 2525,
+ "total": 2527,
  "por_tipo": {
   "contrato": 65,
   "e2e": 677,
   "pytest": 4,
   "qa": 17,
-  "unit": 1762
+  "unit": 1764
  },
  "onde_ficam": [
   {
    "padrao": "tests/",
-   "arquivos": 1029
+   "arquivos": 1030
   },
   {
    "padrao": "co-localizado (__tests__)",
-   "arquivos": 672
+   "arquivos": 673
   },
   {
    "padrao": "e2e/",
@@ -9028,6 +9028,15 @@
    "casos": 9
   },
   {
+   "arquivo": "src/lib/__tests__/external-rpc.test.ts",
+   "tipo": "unit",
+   "linhas": 49,
+   "testa": [
+    "src/lib/external-rpc.ts"
+   ],
+   "casos": 2
+  },
+  {
    "arquivo": "src/lib/__tests__/format-utils.test.ts",
    "tipo": "unit",
    "linhas": 61,
@@ -12749,6 +12758,16 @@
    "linhas": 34,
    "testa": [],
    "casos": 3
+  },
+  {
+   "arquivo": "tests/a11y/magazine-a11y.test.tsx",
+   "tipo": "unit",
+   "linhas": 164,
+   "testa": [
+    "src/pages/magazine/components/steps/LayoutStep.tsx",
+    "src/types/magazine.ts"
+   ],
+   "casos": 4
   },
   {
    "arquivo": "tests/a11y/onda5-a11y.test.tsx",
@@ -21975,7 +21994,7 @@
   "src/lib/external-db/rest-native.ts": 3,
   "src/lib/external-db/silent-empty-report.ts": 1,
   "src/lib/external-db/tables.ts": 1,
-  "src/lib/external-rpc.ts": 6,
+  "src/lib/external-rpc.ts": 7,
   "src/lib/feature-flags.ts": 2,
   "src/lib/forecast.ts": 1,
   "src/lib/format-utils.ts": 2,
@@ -22107,7 +22126,7 @@
   "src/pages/magazine/components/StructuredPagesEditor.tsx": 1,
   "src/pages/magazine/components/steps/ContentStep.tsx": 1,
   "src/pages/magazine/components/steps/DesignStep.tsx": 1,
-  "src/pages/magazine/components/steps/LayoutStep.tsx": 3,
+  "src/pages/magazine/components/steps/LayoutStep.tsx": 4,
   "src/pages/magazine/components/steps/ProductsStep.tsx": 1,
   "src/pages/magazine/components/templates/TemplateRegistry.ts": 3,
   "src/pages/magazine/components/templates/corporate/CorporateExecutiveTemplate.tsx": 1,
@@ -22188,7 +22207,7 @@
   "src/types/domain/simulator-wizard.ts": 2,
   "src/types/external-db.ts": 2,
   "src/types/gravacao.ts": 2,
-  "src/types/magazine.ts": 28,
+  "src/types/magazine.ts": 29,
   "src/types/mockup-approval.ts": 3,
   "src/types/product-catalog.ts": 24,
   "src/types/quote.ts": 8,

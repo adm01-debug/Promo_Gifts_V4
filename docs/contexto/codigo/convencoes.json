@@ -23,8 +23,8 @@
    "src/services (10)"
   ],
   "testes": [
-   "tests/ (1029)",
-   "co-localizado (__tests__) (672)",
+   "tests/ (1030)",
+   "co-localizado (__tests__) (673)",
    "e2e/ (625)"
   ],
   "edge_functions": "supabase/functions",
@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "test: resgata os 2 testes que sobreviveram a refutacao adversarial (#3712)",
    "docs(audit): corrige a classificacao dos 52 testes — faltava a classe \"falha 100%\" (#3711)",
    "docs(audit): prova de incorporacao — 117 caminhos de residuo + as 5 PRs fechadas (#3710)",
    "feat(ci): resgata o executor de CI local — 15 commits que nunca viraram PR (#3709)",
-   "chore(deps): bump production-minor-patch group — 12 atualizacoes (#3693)",
-   "fix(migrations): restaura 325 recibos do ledger apagados por um commit de E2E (#3708)"
+   "chore(deps): bump production-minor-patch group — 12 atualizacoes (#3693)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",
