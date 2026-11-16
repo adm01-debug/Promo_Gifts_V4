@@ -577,7 +577,14 @@ jobs:
       # "Dependabot secrets" (vazio) e não os Actions secrets, então E2E_USER_* chega sempre
       # em branco. Ver run 43841024996, job "Gate E23". Nos PRs dele o Gate 3 fica em skip,
       # que o Gate Final já trata, e a bateria completa roda no push para main.
-      fail_if_missing: ${{ github.actor != 'dependabot[bot]' }}
+      # A expressao vem do teste tests/scripts/p200-e007-dependabot-secrets.test.mjs, escrito por
+      # um agente anterior e resgatado nesta PR. Ela e mais correta que a anterior
+      # (`github.actor != 'dependabot[bot]'`), que deixava PR de FORK ainda reprovando aqui:
+      #   push (nao e PR)                      -> true  -> gate estrito
+      #   PR do proprio repo e nao-Dependabot  -> true  -> gate estrito
+      #   PR de fork                           -> false -> nao exige (fork nao recebe secrets)
+      #   PR do Dependabot                     -> false -> nao exige (cofre separado, vazio)
+      fail_if_missing: ${{ github.event_name != 'pull_request' || (github.event.pull_request.head.repo.full_name == github.repository && github.actor != 'dependabot[bot]') }}
     secrets: inherit
 
   e2e-smoke:
