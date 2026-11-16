@@ -13,7 +13,7 @@ docs ou mock tokens de testes, nenhuma silencia segredo operacional real".
 Na pratica, a branch mexe em **um unico arquivo**, `.gitleaks.toml`, e acrescenta 10 expressoes a lista
 `[allowlist] regexes` (textos que o scanner de segredos deve ignorar onde quer que apareçam):
 `SERVICE_ROLE_KEY`, `YOUR_JWT_TOKEN`, `abc123def456`, `anon-key-12345678`, `sup-tok-abc123`,
-`idem-duplicate-test-001`, `h\.eyJzdWIiOiJ1MSJ9\.s`, `eyJzdWIiOiIxMjM0NTY3ODkw`, `AKIA1234567890ABCDEF`,
+`idem-duplicate-test-001`, `h\.eyJzdWIiOiJ1MSJ9\.s`, `eyJzdWIiOiIxMjM0NTY3ODkw`, `AKIA<exemplo-redigido>`,
 `a1b2c3d4e5f60718293a4b5c6d7e8f90`. Tambem reescreve a `description` da secao e adiciona dois comentarios
 de titulo. Nenhuma mudanca de codigo, banco, edge function ou workflow.
 
@@ -56,7 +56,7 @@ desde o merge-base — logo as entradas da branch ja eram em grande parte redund
 | --- | --- | --- |
 | `description` "+ falsos-positivos documentados" + 2 comentarios de titulo | NAO ESTA (cosmetico) | `origin/main:.gitleaks.toml:19` ainda diz "Chaves publishable do Supabase (valores publicos embutidos nos bundles)" |
 | `YOUR_JWT_TOKEN` | Efeito ja coberto: unica ocorrencia e `docs/ROBOFLOW_SETUP.md`, e `docs/.*` esta em `paths` | `git grep -l YOUR_JWT_TOKEN origin/main` -> so `docs/ROBOFLOW_SETUP.md`; `origin/main:.gitleaks.toml` paths `'''docs/.*'''` |
-| `AKIA1234567890ABCDEF` | Efeito ja coberto: unica ocorrencia em `docs/redeploy/REDEPLOY-FASE2-EXECUTION-LOG.md` (`docs/.*` isento) | `git grep -l AKIA1234567890ABCDEF origin/main` -> so esse arquivo |
+| `AKIA<exemplo-redigido>` | Efeito ja coberto: unica ocorrencia em `docs/redeploy/REDEPLOY-FASE2-EXECUTION-LOG.md` (`docs/.*` isento) | `git grep -l AKIA<exemplo-redigido> origin/main` -> so esse arquivo |
 | `anon-key-12345678` | Efeito ja coberto: unica ocorrencia em `supabase/functions/_shared/credentials.test.ts`, caminho isento nominalmente | paths `'''supabase/functions/_shared/credentials\.test\.ts'''` |
 | `sup-tok-abc123` | Efeito ja coberto: so `tests/edge-functions/integration/step-up-verify.test.ts` (`tests/.*` isento) | `git grep -l sup-tok-abc123 origin/main` |
 | `idem-duplicate-test-001` | Efeito ja coberto: so `tests/integration/freight-quest/quote-freight-integration.test.ts` | `git grep -l idem-duplicate-test-001 origin/main` |

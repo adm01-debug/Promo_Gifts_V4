@@ -9,7 +9,7 @@
 Um unico commit, que toca um unico arquivo (`.gitleaks.toml`). O gitleaks e o detector de
 segredos (senhas/chaves) do CI: ele bloqueia o merge quando acha algo parecido com uma chave.
 O problema que a branch atacava: ele estava acusando *falso positivo* — tokens de mentira usados
-em testes e em documentacao (`abc123def456`, `sup-tok-abc123`, `AKIA1234567890ABCDEF`,
+em testes e em documentacao (`abc123def456`, `sup-tok-abc123`, `AKIA<exemplo-redigido>`,
 `YOUR_JWT_TOKEN`, etc.).
 
 A solucao da branch foi listar esses 10 textos de mentira numa lista de excecoes por **expressao**
@@ -33,7 +33,7 @@ e as marcacoes `[ROTACIONAR]`. Ou seja: a main esta a frente, nao atras.
 |---|---|---|
 | **Objetivo da branch: gate de segredos verde, sem falso positivo** | ATINGIDO na main, por outro mecanismo | Run `43778393242` no tip `e4ab7f85d9` — job "Gate E23 - Secret Scan (gitleaks)" `conclusion: success`, com o passo "Run gitleaks" executado de verdade (00:07:56→00:08:08). E o workflow "Gitleaks — Full History Audit" (run `43778393123`, mesmo sha) tambem `success` |
 | regex `YOUR_JWT_TOKEN` | Desnecessaria: so ocorre em `docs/ROBOFLOW_SETUP.md`, coberto por `docs/.*` | `git grep -ln` → unico arquivo; `.gitleaks.toml:39` |
-| regex `AKIA1234567890ABCDEF` | Desnecessaria: so ocorre em `docs/redeploy/REDEPLOY-FASE2-EXECUTION-LOG.md`, coberto por `docs/.*`; a main ainda cita o caso AKIA ao liberar `analise-prs/.*` | `.gitleaks.toml:39` e `.gitleaks.toml:61-63` |
+| regex `AKIA<exemplo-redigido>` | Desnecessaria: so ocorre em `docs/redeploy/REDEPLOY-FASE2-EXECUTION-LOG.md`, coberto por `docs/.*`; a main ainda cita o caso AKIA ao liberar `analise-prs/.*` | `.gitleaks.toml:39` e `.gitleaks.toml:61-63` |
 | regex `anon-key-12345678` | Desnecessaria: so em `supabase/functions/_shared/credentials.test.ts`, que a main libera **nominalmente** | `.gitleaks.toml:52-53` |
 | regex `sup-tok-abc123` | Desnecessaria: so em `tests/edge-functions/integration/step-up-verify.test.ts`, coberto por `tests/.*` | `.gitleaks.toml:45` |
 | regex `idem-duplicate-test-001` | Desnecessaria: so em `tests/integration/freight-quest/quote-freight-integration.test.ts`, coberto por `tests/.*` | `.gitleaks.toml:45` |
