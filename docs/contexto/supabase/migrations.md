@@ -2974,6 +2974,7 @@ SQL em `migrations/<versao>_<nome>.sql`. Mudanças feitas pelo Dashboard/SQL Edi
 | 20261114014500 | [p09_reconcile_ledger_schema_migrations](migrations/20261114014500_p09_reconcile_ledger_schema_migrations.sql) | 1 |
 | 20261114031000 | [fix_user_known_devices_is_trusted](migrations/20261114031000_fix_user_known_devices_is_trusted.sql) | 1 |
 | 20261114040000 | [fix_authenticator_idle_session_timeout_pgrst_listener](migrations/20261114040000_fix_authenticator_idle_session_timeout_pgrst_listener.sql) | 1 |
+| 20261114120100 | [cron005_refresh_all_mvs_diario_timeout_real](migrations/20261114120100_cron005_refresh_all_mvs_diario_timeout_real.sql) | 1 |
 | 20261114170845 | [fix_workspace_notifications_insert_policy_reapply](migrations/20261114170845_fix_workspace_notifications_insert_policy_reapply.sql) | 3 |
 | 20261114170921 | [fix_rls_orders_order_items_seller_scope](migrations/20261114170921_fix_rls_orders_order_items_seller_scope.sql) | 12 |
 | 20261115130200 | [sec001_revoke_anon_execute_trigger_functions](migrations/20261115130200_sec001_revoke_anon_execute_trigger_functions.sql) | 106 |

@@ -137627,11 +137627,11 @@
         },
         {
           "active": true,
-          "command": "SELECT public.fn_cron_safe_run(47::bigint, 'SELECT public.refresh_all_materialized_views();', 55000, 'refresh-all-mvs');",
+          "command": "SET statement_timeout = '600s'; SELECT public.fn_cron_safe_run(47::bigint, 'SELECT public.refresh_all_materialized_views();', 600000, 'refresh-all-mvs');",
           "database": "postgres",
           "jobid": 234,
           "jobname": "refresh-all-materialized-views",
-          "schedule": "38 */2 * * *",
+          "schedule": "38 9 * * *",
           "username": "postgres"
         },
         {
@@ -238617,6 +238617,12 @@
         "statements": 1,
         "statements_sha": "fdc507d1eb24e555",
         "version": "20261114040000"
+      },
+      {
+        "name": "cron005_refresh_all_mvs_diario_timeout_real",
+        "statements": 1,
+        "statements_sha": "07cb99aaca5c43cb",
+        "version": "20261114120100"
       },
       {
         "name": "fix_workspace_notifications_insert_policy_reapply",
