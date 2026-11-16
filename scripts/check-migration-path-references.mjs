@@ -54,6 +54,11 @@ const IGNORE_RELATIVE_DIRS = new Set([
   'graphify-out/cache',
   'graphify-out',
   'analise-branches',
+  // analise-prs/ é o mesmo caso de analise-branches/: dossiês SOBRE PRs, muitas delas
+  // nunca mergeadas, que citam de propósito o nome do arquivo de migration que cada PR
+  // criou — arquivo que por definição não existe na main. Sem isto, resgatar os dossiês
+  // faz o gate reprovar 23 referências corretas.
+  'analise-prs',
 ]);
 // Arquivos que só falam de paths (README/snapshot meta), varremos normal —
 // mas ignoramos o próprio SELF para não recursivar em exemplos.

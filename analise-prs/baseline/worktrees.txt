@@ -1,0 +1,15 @@
+## Worktrees — session_01VXkRxWq5ZUCmvuNx5e2TGX — 2026-11-09
+
+### Worktrees encontrados no inicio desta sessao
+- /home/user/Promo_Gifts_V4 (principal, claude_pink/sleepy-cannon-h000nc, 269a93180)
+- /tmp/baseline-main (orfao de sessao anterior, 78729fc11, detached HEAD)
+
+### Operacoes realizadas
+1. REMOVIDO: /tmp/baseline-main — worktree orfao de sessao anterior — git worktree remove /tmp/baseline-main --force
+2. CRIADO: /tmp/merge-test-3243 — merge test PR #3243 (claude/fix-categories-level-drift-261108-1952) base 0818809d
+3. REMOVIDO: /tmp/merge-test-3243 — apos merge test concluido
+
+### Estado final
+- Nenhum worktree orfao restante (alem do principal)
+
+Verificado em 2026-11-09 nesta sessao.

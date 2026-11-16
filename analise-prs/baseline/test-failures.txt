@@ -1,0 +1,19 @@
+BASELINE VITEST — main HEAD 1ce29cf2f95ecf851eef580974130a46f5a4f53a
+Data: 2026-10-27 (sessão rev59)
+
+NOTA: vitest run local não concluiu (timeout; 1815 arquivos de teste, ~45 min necessários).
+Baseline derivado do CI do PR #2633 (merge commit 1ce29cf2f).
+
+Gate Final run #40482105056 — conclusion: success (completed_at 2026-10-27T09:42:42Z)
+Vitest (Gate 2) — PASSOU (todos os testes verdes no CI).
+
+FALHAS CORRIGIDAS PELO PR #2633 (agora em main):
+1. tests/config/playwright-config-smoke.test.ts — mock @playwright/test incompleto (defineConfig pass-through, devices={})
+2. src/components/products/customization/LocationPanel.tsx:367 — window.setTimeout → globalThis.setTimeout
+3. src/lib/auth/__tests__/safeAuthCall.test.ts:109 — toBeGreaterThanOrEqual(20) → toBeGreaterThanOrEqual(15)
+
+FALHAS CONHECIDAS ANTES DO BASELINE (já corrigidas em commits anteriores):
+- PromoFlixPlayer.test.tsx (React 19 volumechange) — corrigida em PR #2605/#2620
+- chunk-recovery.shared-reload-budget.test.ts — corrigida em PR #2620
+- replenishment-resilience.test.ts — corrigida em PR #2620
+- NegotiationMarkupCard.visualA11y.test.tsx.snap — atualizada em PR #2620
