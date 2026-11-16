@@ -238629,6 +238629,12 @@
         "statements": 12,
         "statements_sha": "d56a64997fb72d9b",
         "version": "20261114170921"
+      },
+      {
+        "name": "ai_function_routing_mockup_assistant",
+        "statements": 1,
+        "statements_sha": "7793b98ba8884f8d",
+        "version": "20261115230000"
       }
     ],
     "policies": [
@@ -251322,6 +251328,11 @@
           "publication": "supabase_realtime_messages_publication",
           "schema": "realtime",
           "table": "messages_2026_11_18"
+        },
+        {
+          "publication": "supabase_realtime_messages_publication",
+          "schema": "realtime",
+          "table": "messages_2026_11_19"
         }
       ]
     },
