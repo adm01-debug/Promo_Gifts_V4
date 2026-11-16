@@ -64,11 +64,23 @@ trabalho que a `main` já decidiu descartar, com o motivo escrito.
 
 **Não entram.** A branch local de teste foi descartada sem push.
 
-## O único item que sobra desta leva
+## O item que parecia sobrar — e não sobra
 
 `src/components/cart/LegacyCartInsights` é o **único** dos 26 que não está nem em `src/` nem em
-`recovery/src-legacy/` na `main`. Tem 2 versões em branch. Precisa de veredito próprio — está na
-fila de classificação, não neste documento.
+`recovery/src-legacy/` na `main`. Cheguei a registrá-lo como pendência; **estava errado**. O
+veredito já existia no próprio repositório, em dois lugares, e o Devin Review apontou os dois na
+PR #3706:
+
+- `analise-branches/auditoria-261115/veredito_lote00.md:148-152` — "`LegacyCartInsights.tsx`
+  (281 linhas) + teste (319): **código morto**. O único consumidor na própria branch é o teste
+  dele (`git grep -ln LegacyCartInsights` → só o arquivo e o `__tests__`)."
+- `analise-branches/dossies/claude__resgate-3390-261113.md:83-84` — "**Não resgatar (decisão da
+  main, com guarda no CI)**: `LegacyCartInsights.tsx` e seu teste — a main removeu esses painéis
+  de propósito e **tem teste que quebra se voltarem**."
+
+Ou seja: não há pendência nenhuma desta leva. Os 52 testes são obsoletos e os 26 módulos que eles
+importam estão todos decididos — 25 aposentados em `recovery/src-legacy/` e este um removido de
+propósito, com guarda ativa no CI contra o retorno.
 
 ## Regra que isto estabelece para o resto do resgate
 
