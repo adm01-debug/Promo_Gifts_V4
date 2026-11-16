@@ -617,13 +617,9 @@ f6def33d0c79c66aab118335ed95d9e3a9b40536cca5cd397bacc54e7858ae96
 | `20260717000068` | `99ec2b9e8773cf0cd97b715cffcda7b87aa5e6b71e7e4a8da05b2c5b4ca02531` | `9b0bf71aab61f365fd37999a274d2d30` | n/d | n/d (pré-E48; ledger não registra por linha) | n/d | n/d (não capturado retroativamente; ver E07 — verificação por objeto) |
 | `20261027200000` | `9737df0d29ff332d5ae3d359c2d4c068c894ef861bbbd6e0a8b0e50caf710c5a` | `—` | claude-code (PR #2603) | E15 | 2026-10-27 UTC (previsto) | pendente — a ser aplicado via db-apply-migration.yml após merge do PR #2603 |
 | `20261027220000` | `d2947144ecf3877fe590c2ca0982661d9c90e60d3bcab996ae3a8c3c2b1b782d` | `—` | claude-code (PR #2603/#2646) | E15 | 2026-10-27 UTC (previsto) | pendente — aplicar via db-apply-migration.yml para desativar cron XBZ sem secret no Vault |
-| `20261027220000` | `fb16901b0c1edd37080aada4edd16de71cbb6e128dca12764cfc22947f6797af` | `—` | claude-code (PR #2646) | E15 | 2026-10-27 UTC (previsto) | a aplicar via db-apply-migration.yml após merge do PR #2646 (arquivo revisado no PR #2646) |
 | `20261027230000` | `e74521f182e1a0da59ca962a824353a7bc19c5f19a7bd4704bbd492a23042e11` | `—` | claude-code (PR #2603/#2646) | E15 | 2026-10-27 UTC (previsto) | pendente — allowlist stale confirmada no canônico; aplicar via db-apply-migration.yml |
-| `20261027230000` | `2d6a57f537d962a89ff44e80244f94ad0baff9292cfcd8bd65a295978107ff26` | `—` | claude-code (PR #2646) | E15 | 2026-10-27 UTC (previsto) | a aplicar via db-apply-migration.yml após merge do PR #2646 (arquivo revisado no PR #2646) |
 | `20261027233000` | `d55fe52339240b24a32192b1363d0914ce54e97bfe57b7f2397f13f4e65e7b73` | `—` | claude-code (PR #2603/#2646) | E15 | 2026-10-27 UTC (previsto) | bloqueada — não aplicar até XBZ_IMAGE_UPLOADER_CRON_SECRET existir no Vault |
-| `20261027233000` | `bd5d0bc3262f9b34b6108c42c7ec186f8f9066d97dbd881a6276a2bb97d87885` | `—` | claude-code (PR #2603) | E15 | 2026-10-27 UTC (previsto) | pendente — a ser aplicado via db-apply-migration.yml após merge do PR #2603 |
 | `20261027234500` | `b73793066e69362966b9edf32182c226fa141c62b4e7b5a2f2705eb1d8ffdd04` | `—` | claude-code (PR #2603/#2646) | E15 | 2026-10-27 UTC (previsto) | bloqueada — exige secret no Vault, allowlist e edge function implantada; cron permanece sem reativação |
-| `20261027234500` | `272850e119d8798e7aac9242e4b774309f22a8227e7b6bbac4a086ab945f6cec` | `—` | claude-code (PR #2603) | E15 | 2026-10-27 UTC (previsto) | pendente — a ser aplicado via db-apply-migration.yml após merge do PR #2603 |
 
 ## Gate de CI (E48)
 
@@ -2327,3 +2323,32 @@ ativo.
 | versão | arquivo | sha256 | status |
 |---|---|---|---|
 | `20261115230000` | `ai_function_routing_mockup_assistant` | `2937d5ff62750fed7a98cec78f147de2547df00055d361796ce65ee6db996dec` | pendente — aplicar via `db-apply-migration.yml` após merge (banco de produção autorizado pelo dono no chat em 2026-11-15) |
+
+## 2026-11-16 — Recibos superseded: hashes de arquivos revisados antes de aplicar
+
+Quatro versions tinham **duas** linhas na seção "Recibos", com sha256 diferentes, porque o
+arquivo foi revisado entre a PR #2603 e a PR #2646 e os dois recibos foram escritos lado a
+lado. Isso fazia `check-migrations-sync-log-gate.mjs` falhar com `versões duplicadas no log`
+em **qualquer** PR que tocasse `supabase/migrations/**` (medido em 2026-11-16 no run
+43968994894). Nenhuma linha foi apagada: a contagem do gate é por seção, então as linhas
+superseded foram movidas para cá, onde continuam legíveis e não colidem.
+
+Qual linha ficou na seção "Recibos": a que bate com o sha256 real do arquivo na `main` hoje.
+Conferido arquivo por arquivo em 2026-11-16 (`git show origin/main:<arquivo> | sha256sum`):
+
+| versão | arquivo | sha256 que ficou (= arquivo na `main`) |
+|---|---|---|
+| `20261027220000` | `deactivate_xbz_image_uploader_cron` | `d2947144ecf3877fe590c2ca0982661d9c90e60d3bcab996ae3a8c3c2b1b782d` |
+| `20261027230000` | `cleanup_get_edge_function_secret_allowlist` | `e74521f182e1a0da59ca962a824353a7bc19c5f19a7bd4704bbd492a23042e11` |
+| `20261027233000` | `add_xbz_image_uploader_secret_to_allowlist` | `d55fe52339240b24a32192b1363d0914ce54e97bfe57b7f2397f13f4e65e7b73` |
+| `20261027234500` | `reactivate_xbz_image_uploader_cron` | `b73793066e69362966b9edf32182c226fa141c62b4e7b5a2f2705eb1d8ffdd04` |
+
+### Linhas superseded, preservadas na íntegra
+
+sha256 que não corresponde a nenhum arquivo da `main`; as quatro versions seguem
+**pendentes**, nunca aplicadas:
+
+| `20261027220000` | `fb16901b0c1edd37080aada4edd16de71cbb6e128dca12764cfc22947f6797af` | `—` | claude-code (PR #2646) | E15 | 2026-10-27 UTC (previsto) | a aplicar via db-apply-migration.yml após merge do PR #2646 (arquivo revisado no PR #2646) |
+| `20261027230000` | `2d6a57f537d962a89ff44e80244f94ad0baff9292cfcd8bd65a295978107ff26` | `—` | claude-code (PR #2646) | E15 | 2026-10-27 UTC (previsto) | a aplicar via db-apply-migration.yml após merge do PR #2646 (arquivo revisado no PR #2646) |
+| `20261027233000` | `bd5d0bc3262f9b34b6108c42c7ec186f8f9066d97dbd881a6276a2bb97d87885` | `—` | claude-code (PR #2603) | E15 | 2026-10-27 UTC (previsto) | pendente — a ser aplicado via db-apply-migration.yml após merge do PR #2603 |
+| `20261027234500` | `272850e119d8798e7aac9242e4b774309f22a8227e7b6bbac4a086ab945f6cec` | `—` | claude-code (PR #2603) | E15 | 2026-10-27 UTC (previsto) | pendente — a ser aplicado via db-apply-migration.yml após merge do PR #2603 |
