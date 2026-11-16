@@ -197,13 +197,35 @@ contra a `main` atual.
 
 O resgate correto não é "trazer os 52" nem "descartar os 52". É, por arquivo:
 
-1. **Passa 100%** → entra na `main` como teste de regressão. 2 arquivos, feito na PR #3707.
-2. **Passa parcial** → a parte verde é contrato válido que a `main` não testava; a parte vermelha é
-   deriva de comportamento a investigar (o teste está velho ou a `main` regrediu — não dá para
-   afirmar qual sem ler caso a caso). 30 arquivos.
-3. **Depende só dos 4 módulos em `recovery/src-legacy/`** → fica fora, pelo motivo do `README.md`
-   daquela pasta.
-4. **`0 testes` coletados** → problema de config de vitest, não de resgate. 5 arquivos.
+| Classe | Arquivos | O que fazer |
+| --- | --: | --- |
+| **Passa 100%** | 2 | entra na `main` como teste de regressão — feito na PR #3707 |
+| **Passa parcial** | 22 | a parte verde é contrato válido que a `main` não testava; a parte vermelha é deriva de comportamento a investigar (o teste está velho ou a `main` regrediu — não dá para afirmar qual sem ler caso a caso) |
+| **Falha 100%** | 10 | carrega e roda, mas nenhuma asserção passa. É o grupo que exige leitura caso a caso antes de qualquer decisão |
+| **`0 testes` coletados** | 5 | problema de config de vitest, não de resgate |
+| **Total** | **39** | |
+
+Os 10 que falham inteiros, com o número de testes de cada um:
+
+| Arquivo | testes |
+| --- | --: |
+| `tests/hooks/useKitBuilderPageState.legacy.test.tsx` | 31 |
+| `tests/hooks/useQuoteVersions.legacy.test.ts` | 6 |
+| `tests/hooks/mockupHistoryAdapter.test.ts` | 5 |
+| `tests/pages/legacy-KitBuilder.partial-preservation.test.tsx` | 5 |
+| `tests/pages/legacy-QuoteBuilder.partial-preservation.test.tsx` | 5 |
+| `tests/hooks/useQuoteTemplates.raw-fetch.test.ts` | 3 |
+| `tests/pages/legacy-MagicUp.search-lifetime.test.tsx` | 2 |
+| `tests/scripts/e2e-cart-artifact-safety.test.mjs` | 2 |
+| `tests/scripts/p200-e007-dependabot-secrets.test.mjs` | 2 |
+| `tests/components/mockup/MockupHistoryPanel.techniques.test.tsx` | 1 |
+
+**`p200-e007-dependabot-secrets.test.mjs` já saiu desta lista:** ele falhava porque afirmava a
+política de secrets de fork/Dependabot que a `main` não cumpria. A PR #3707 implementou a política
+e o teste está verde na `main` hoje. Sobram **9** falhando inteiros.
+
+Os arquivos que dependem **só** dos 4 módulos em `recovery/src-legacy/` ficam fora pelo motivo do
+`README.md` daquela pasta — eles estão distribuídos entre as classes acima, não formam uma quinta.
 
 ## A regra que o primeiro veredito estabeleceu, corrigida
 
