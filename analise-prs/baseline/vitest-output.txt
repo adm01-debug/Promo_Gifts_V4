@@ -1,0 +1,12 @@
+## Vitest baseline — main@9541666bf62883b06117b03cae0368b2c7d55314
+## Gate: Gate 2 (unit-tests) — vitest
+## Fonte: CI Gate Final run #40218104943 (main@c113300c, 429/0, success)
+## Nota: npm ci inacessível no container (Lovable registry 403). Referência autoritativa = CI.
+## Gate 2 verde em main@9541666bf — PR #2843 mergeada com Gate Final verde.
+
+## Testes por check name (Gate 2):
+## test:deploy-gate: 334 testes, 0 falhas — PASS
+## webhook-scenario-matrix.test.ts: 95 testes, 0 falhas — PASS
+## Total: 429 testes, 0 falhas
+
+## Baseline completo por nome de teste: analise-prs/baseline/vitest-per-test-name.txt

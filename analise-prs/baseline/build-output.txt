@@ -1,0 +1,16 @@
+## Vite build baseline — main@9541666bf62883b06117b03cae0368b2c7d55314
+## Gate: Gate 6 (build) — npm run build
+## Executado em: 2026-10-30T19:52Z
+## Resultado: CLEAN — sem erros
+
+[INEFFECTIVE_DYNAMIC_IMPORT] src/components/products/ProductQuickView.tsx is dynamically imported by src/components/products/ProductCard.tsx but also statically imported by src/components/products/ProductListItem.tsx, src/components/products/ProductQuickActionsFAB.tsx, src/components/products/ProductTableView.tsx, src/components/products/QuickViewThumb.tsx, dynamic import will not move module into another chunk.
+
+[INEFFECTIVE_DYNAMIC_IMPORT] src/components/products/VariantPickerDialog.tsx is dynamically imported by src/components/products/ProductCard.tsx, src/pages/products/ProductDetail.tsx but also statically imported by src/components/products/ProductListItem.tsx, src/components/products/ProductQuickActionsFAB.tsx, src/components/products/ProductTableView.tsx, src/pages/Index.tsx, src/pages/products/FiltersPage.tsx, dynamic import will not move module into another chunk.
+
+[INEFFECTIVE_DYNAMIC_IMPORT] src/components/products/share/SharePreviewDialog.tsx is dynamically imported by src/components/products/ProductCard.tsx but also statically imported by src/components/products/ProductListItem.tsx, src/components/products/ProductQuickActionsFAB.tsx, src/components/products/ProductTableView.tsx, src/components/products/ShareActions.tsx, src/pages/Index.tsx, dynamic import will not move module into another chunk.
+
+✓ built in 12.37s
+[chunk-cycles] OK: no static import cycles between production chunks.
+[production-harnesses] OK: no /__test routes or harness chunks in dist/.
+
+EXIT:0

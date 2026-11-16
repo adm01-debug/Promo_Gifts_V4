@@ -1,0 +1,35 @@
+{
+  "sessao": "session_01Ss1tXZ4cAbxBvdmu95uNPz",
+  "data": "2026-11-08",
+  "main_sha_inicio": "1d3dafae93722b7e19f426bcf63701a80ab4b148",
+  "main_sha_atual": "1d3dafae93722b7e19f426bcf63701a80ab4b148",
+  "merges_esta_sessao": 0,
+  "prs_abertas_analisadas": 18,
+  "metodo": "git cherry -v + git diff --stat direto no transcript principal",
+  "prs_estado": [
+    {"pr":3127,"draft":false,"mergeable":"CONFLICTING","ci":"FAILURE","governance":".github/workflows/","veredito":"DECISAO_HUMANA","motivo":"REGRA#8 .github/workflows/ + CONFLICTING + CI=FAILURE","commits_novos":3,"arquivos_alterados":15},
+    {"pr":3129,"draft":false,"mergeable":"CONFLICTING","ci":"FAILURE","governance":".github/workflows/","veredito":"DECISAO_HUMANA","motivo":"REGRA#8 .github/workflows/ + CONFLICTING + CI=FAILURE","commits_novos":2,"arquivos_alterados":8},
+    {"pr":3137,"draft":false,"mergeable":"CONFLICTING","ci":"FAILURE","governance":".github/workflows/ + .github/scripts/","veredito":"DECISAO_HUMANA","motivo":"REGRA#8 .github/ + CONFLICTING + CI=FAILURE","commits_novos":3,"arquivos_alterados":11},
+    {"pr":3144,"draft":false,"mergeable":"CONFLICTING","ci":"FAILURE","governance":".github/workflows/ + supabase/migrations/","veredito":"DECISAO_HUMANA","motivo":"REGRA#8 dupla (workflows+migrations) + CONFLICTING + CI=FAILURE","commits_novos":3,"arquivos_alterados":10},
+    {"pr":3148,"draft":true,"mergeable":"CONFLICTING","ci":"FAILURE","governance":"supabase/migrations/","veredito":"DECISAO_HUMANA","motivo":"REGRA#8 migrations + DRAFT + CONFLICTING + CI=FAILURE","commits_novos":1,"arquivos_alterados":11},
+    {"pr":3150,"draft":false,"mergeable":"CONFLICTING","ci":"FAILURE","governance":".github/workflows/","veredito":"DECISAO_HUMANA","motivo":"REGRA#8 workflows + CONFLICTING + CI=FAILURE","commits_novos":3,"arquivos_alterados":17},
+    {"pr":3160,"draft":true,"mergeable":"CONFLICTING","ci":"FAILURE","governance":"supabase/migrations/20261101150000","veredito":"DECISAO_HUMANA","motivo":"REGRA#8 migrations + DRAFT + CONFLICTING + CI=FAILURE","commits_novos":3,"arquivos_alterados":4},
+    {"pr":3179,"draft":true,"mergeable":"MERGEABLE","ci":"FAILURE","governance":"supabase/migrations/ + supabase/rollbacks/","veredito":"DECISAO_HUMANA","motivo":"REGRA#8 migrations+rollbacks + DRAFT + CI=FAILURE","commits_novos":1,"arquivos_alterados":2},
+    {"pr":3202,"draft":true,"mergeable":"CONFLICTING","ci":"FAILURE","governance":"supabase/migrations/20261108001500","veredito":"DECISAO_HUMANA","motivo":"REGRA#8 migrations + DRAFT + CONFLICTING + CI=FAILURE","commits_novos":3,"arquivos_alterados":4},
+    {"pr":3203,"draft":false,"mergeable":"CONFLICTING","ci":"FAILURE","governance":"nenhum","veredito":"NAO_MERGEAVEL","motivo":"CONFLICTING com main + CI=FAILURE (precisa rebase)","commits_novos":5,"arquivos_alterados":132},
+    {"pr":3205,"draft":false,"mergeable":"MERGEABLE","ci":"FAILURE","governance":"supabase/migrations/20261108132000","veredito":"DECISAO_HUMANA","motivo":"REGRA#8 migrations + CI=FAILURE","commits_novos":3,"arquivos_alterados":4},
+    {"pr":3210,"draft":false,"mergeable":"MERGEABLE","ci":"FAILURE","governance":"nenhum","veredito":"NAO_MERGEAVEL","motivo":"CI=FAILURE (release-please, precisa CI verde)","commits_novos":2,"arquivos_alterados":6},
+    {"pr":3212,"draft":false,"mergeable":"MERGEABLE","ci":"FAILURE","governance":"nenhum","veredito":"NAO_MERGEAVEL","motivo":"CI=FAILURE (bot deploy log, precisa CI verde)","commits_novos":1,"arquivos_alterados":1},
+    {"pr":3214,"draft":true,"mergeable":"CONFLICTING","ci":"FAILURE","governance":".github/workflows/ + supabase/rollbacks/","veredito":"DECISAO_HUMANA","motivo":"REGRA#8 dupla + DRAFT + CONFLICTING + branch do agente","commits_novos":10,"arquivos_alterados":124},
+    {"pr":3215,"draft":false,"mergeable":"MERGEABLE","ci":"FAILURE","governance":"supabase/migrations/20261108001500","veredito":"DECISAO_HUMANA","motivo":"REGRA#8 migrations + CI=FAILURE","commits_novos":3,"arquivos_alterados":1},
+    {"pr":3216,"draft":true,"mergeable":"CONFLICTING","ci":"FAILURE","governance":"supabase/migrations/20261108001500","veredito":"DECISAO_HUMANA","motivo":"REGRA#8 migrations + DRAFT + CONFLICTING + CI=FAILURE","commits_novos":2,"arquivos_alterados":4},
+    {"pr":3217,"draft":true,"mergeable":"MERGEABLE","ci":"SUCCESS","governance":"nenhum","veredito":"DECISAO_HUMANA","motivo":"DRAFT (unico bloqueio - CI=SUCCESS, MERGEABLE, docs-only)","commits_novos":1,"arquivos_alterados":2},
+    {"pr":3220,"draft":true,"mergeable":"MERGEABLE","ci":"FAILURE","governance":".github/workflows/ + supabase/migrations/20261108001500","veredito":"DECISAO_HUMANA","motivo":"REGRA#8 dupla + DRAFT + CI=FAILURE","commits_novos":4,"arquivos_alterados":7}
+  ],
+  "resumo": {
+    "total_analisadas": 18,
+    "DECISAO_HUMANA": 15,
+    "NAO_MERGEAVEL": 3,
+    "MERGEADA_AGENTE": 0
+  }
+}

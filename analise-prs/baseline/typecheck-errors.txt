@@ -1,0 +1,1 @@
+TSC_EXIT:0 — zero TypeScript errors on main HEAD confirmed by Gate 1 (linter+TS) success in Gate Final run 122342656953 on SHA 16ad57c66e (2026-10-27T17:08:33Z).

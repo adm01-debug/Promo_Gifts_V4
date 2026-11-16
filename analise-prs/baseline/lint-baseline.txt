@@ -1,0 +1,11 @@
+## Lint Baseline — main HEAD 6dbc9387fedbd1118613eb07eb2315bfc1e722ea
+## Data: 2026-10-30
+## Comando: NODE_OPTIONS="--max-old-space-size=4096" npm run lint:baseline
+## Resultado: EXIT 0
+
+ESLint baseline gate [full] — atual: 0 erros, 0 warnings · baseline: 0 erros
+Δ vs baseline: regressões +0 · melhorias −0 · líquido +0
+✅ Nenhuma regressão de lint detectada.
+
+eslint.config.js — parseia e exporta 11 blocos de config
+NOTA: Sem NODE_OPTIONS aumentado, o processo crasha com OOM (heap > 2GB no container remoto).

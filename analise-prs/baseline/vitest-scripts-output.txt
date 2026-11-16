@@ -1,0 +1,310 @@
+# Baseline Vitest — tests/scripts/ subset
+# Executado em: 2026-10-30 (esta sessão)
+# Comando: timeout 45 node --max-old-space-size=512 node_modules/.bin/vitest run tests/scripts/ --reporter=verbose
+# Nota: execução interrompida por timeout de 45s; testes capturados até a linha 301 todos passaram
+# SHA base de execução: main@3bfc9dc5 (início da sessão)
+
+(!) Your Vite config uses features that are unsupported by `configLoader: 'native'`, which is planned to become the default in a future major version of Vite:
+  - `__dirname` (vitest.config.ts:149:46). Use `import.meta.dirname` instead
+Set `VITE_CONFIG_NATIVE_IGNORE_WARNING=true` to suppress this warning.
+
+ RUN  v5.0.5 /home/user/Promo_Gifts_V4
+
+ ✓ tests/scripts/check-types-inventory-drift.test.mjs > extractTypesInventory (TypeScript Compiler API) > rejeita entrada vazia, truncada ou desconhecida: export type Database = {} 12ms
+ ✓ tests/scripts/check-types-inventory-drift.test.mjs > extractTypesInventory (TypeScript Compiler API) > rejeita entrada vazia, truncada ou desconhecida: export type Database = { public: { Tables: { broken: 4ms
+ ✓ tests/scripts/check-types-inventory-drift.test.mjs > extractTypesInventory (TypeScript Compiler API) > rejeita entrada vazia, truncada ou desconhecida: export type Database = { public: UnknownSchema } 2ms
+ ✓ tests/scripts/check-types-inventory-drift.test.mjs > extractTypesInventory (TypeScript Compiler API) > rejeita entrada vazia, truncada ou desconhecida: export type Database = { public: { Tables: UnknownTables } } 2ms
+ ✓ tests/scripts/check-types-inventory-drift.test.mjs > extractTypesInventory (TypeScript Compiler API) > extrai Tables/Views/Functions/Enums por schema e ignora __InternalSupabase 11ms
+ ✓ tests/scripts/check-types-inventory-drift.test.mjs > extractTypesInventory (TypeScript Compiler API) > countsOf reduz o inventário a contagens por schema/categoria 3ms
+ ✓ tests/scripts/check-types-inventory-drift.test.mjs > extractTypesInventory (TypeScript Compiler API) > lança erro claro quando não encontra "export type Database = { ... }" 2ms
+ ✓ tests/scripts/check-types-inventory-drift.test.mjs > extractTypesInventory (TypeScript Compiler API) > extrai o inventário real do repo e confirma que "magazines" está presente hoje 325ms
+ ✓ tests/scripts/check-types-inventory-drift.test.mjs > contratos detalhados > ignora comentários, ordem de propriedades, whitespace e ordem de union 9ms
+ ✓ tests/scripts/check-types-inventory-drift.test.mjs > contratos detalhados > detecta mudança de nulabilidade sem mudar nome de objeto 13ms
+ ✓ tests/scripts/check-types-inventory-drift.test.mjs > contratos detalhados > detecta mudança de argumento RPC sem mudar nome de objeto 3ms
+ ✓ tests/scripts/check-types-inventory-drift.test.mjs > contratos detalhados > detecta mudança de retorno RPC sem mudar nome de objeto 3ms
+ ✓ tests/scripts/check-types-inventory-drift.test.mjs > contratos detalhados > detecta mudança de FK sem mudar nome de objeto 3ms
+ ✓ tests/scripts/check-types-inventory-drift.test.mjs > contratos detalhados > uma exceção da tabela inteira não autoriza remover silenciosamente uma coluna 1ms
+ ✓ tests/scripts/check-types-inventory-drift.test.mjs > diffInventories > detecta remoção e adição por objeto individual, não só por contagem 1ms
+ ✓ tests/scripts/check-types-inventory-drift.test.mjs > auditRemovals > classifica uma remoção sem allowlist como não justificada (fail-closed) 0ms
+ ✓ tests/scripts/check-types-inventory-drift.test.mjs > auditRemovals > classifica uma remoção coberta pela allowlist como justificada 0ms
+ ✓ tests/scripts/check-types-inventory-drift.test.mjs > loadRemovalAllowlist > devolve [] quando o arquivo não existe 0ms
+ ✓ tests/scripts/check-types-inventory-drift.test.mjs > loadRemovalAllowlist > aceita {entries: [...]} e valida campos obrigatórios 3ms
+ ✓ tests/scripts/check-types-inventory-drift.test.mjs > loadRemovalAllowlist > lança erro quando uma entrada está incompleta 1ms
+ ✓ tests/scripts/check-types-inventory-drift.test.mjs > loadRemovalAllowlist > lança erro quando a categoria é inválida 1ms
+ ✓ tests/scripts/check-types-inventory-drift.test.mjs > diffLiveVsTypes > lista tabelas/views/enums vivas ausentes de types.ts e ignora Functions 0ms
+ ✓ tests/scripts/check-types-inventory-drift.test.mjs > gate end-to-end: repositório git temporário > readFileAtGitRef lê o arquivo em um commit anterior 156ms
+ ✓ tests/scripts/check-types-inventory-drift.test.mjs > gate end-to-end: repositório git temporário > readFileAtGitRef sinaliza skip (não erro fatal) quando o ref não existe 139ms
+ ✓ tests/scripts/check-types-inventory-drift.test.mjs > gate end-to-end: repositório git temporário > FALHA o gate quando "magazines" é removida entre o commit-base e o atual, sem allowlist 253ms
+ ✓ tests/scripts/check-types-inventory-drift.test.mjs > gate end-to-end: repositório git temporário > PASSA o gate quando a remoção de "magazines" está coberta pela allowlist 231ms
+ ✓ tests/scripts/strict-test-side-effects-contract.test.mjs > strict test side-effects contract > reprova fetch e console.error não mockados em subprocesso hermético 1956ms
+ ✓ tests/scripts/check-types-inventory-drift.test.mjs > gate end-to-end: repositório git temporário > falha fechado quando o commit-base não existe — comparação não realizada não é sucesso 139ms
+ ✓ tests/scripts/check-types-inventory-drift.test.mjs > gate end-to-end: repositório git temporário > não consulta banco implicitamente, mesmo com credenciais disponíveis 163ms
+ ✓ tests/scripts/check-types-inventory-drift.test.mjs > gate end-to-end: repositório git temporário > report.ok é falso se a leitura live explicitamente solicitada não estiver disponível 146ms
+ ✓ tests/scripts/check-types-inventory-drift.test.mjs > gate end-to-end: repositório git temporário > detecta coluna perdida sem mudar o nome nem a quantidade de tabelas 133ms
+ ✓ tests/scripts/check-types-inventory-drift.test.mjs > gate end-to-end: repositório git temporário > --generated falha com coluna nova e identifica o contrato 160ms
+ ✓ tests/scripts/check-types-inventory-drift.test.mjs > gate end-to-end: repositório git temporário > --generated falha com tipo da coluna e identifica o contrato 150ms
+ ✓ tests/scripts/check-types-inventory-drift.test.mjs > gate end-to-end: repositório git temporário > --generated falha com RPC nova e identifica o contrato 152ms
+ ✓ tests/scripts/check-types-inventory-drift.test.mjs > gate end-to-end: repositório git temporário > --generated passa somente quando ambos os contratos coincidem 142ms
+ ✓ tests/scripts/graphify-typescript-references.test.mjs > Graphify TypeScript type references > adds cross-file type/interface edges and stays idempotent 1746ms
+ ✓ tests/scripts/rpc-live-evidence-contract.test.mjs > RPC live-evidence checks > classifica uma negativa sem prova 42501 como inconclusiva em modo live obrigatório 103ms
+ ✓ tests/scripts/rpc-live-evidence-contract.test.mjs > RPC live-evidence checks > aprova a permissão apenas após anon receber a negativa 42501 da RPC exata 86ms
+ ✓ tests/scripts/rpc-live-evidence-contract.test.mjs > RPC live-evidence checks > falha quando anon consegue alcançar a execução da RPC 118ms
+ ✓ tests/scripts/rpc-live-evidence-contract.test.mjs > RPC live-evidence checks > não converte falta de credencial em aprovação 52ms
+ ✓ tests/scripts/rpc-live-evidence-contract.test.mjs > RPC live-evidence checks > exige audit e confirmação de existência quando o smoke retorna 404 150ms
+ ✓ tests/scripts/rpc-live-evidence-contract.test.mjs > RPC live-evidence checks > falha explicitamente quando fn_rpc_exists comprova ausência da RPC 160ms
+ ✓ tests/scripts/check-types-inventory-drift.test.mjs > gate end-to-end: repositório git temporário > CLI devolve exit 2 e JSON ok:false quando a base é inválida 1825ms
+ ✓ tests/scripts/check-types-inventory-drift.test.mjs > gate end-to-end: repositório git temporário > CLI devolve exit 1 e diagnóstico de coluna quando a geração diverge 2489ms
+ ✓ tests/scripts/rpc-live-evidence-contract.test.mjs > RPC live-evidence checks > aprova a RPC protegida quando o PostgREST comprova existência por 42501 88ms
+ ✓ tests/scripts/rpc-live-evidence-contract.test.mjs > RPC live-evidence checks > não aceita audit inacessível como smoke aprovado 149ms
+ ✓ tests/scripts/drift-baseline.test.mjs > selectReplayMigrations > replaya só o que foi aplicado depois do dump, inclusive versão menor que B 5ms
+ ✓ tests/scripts/drift-baseline.test.mjs > replayFileName > renumera para depois do baseline mantendo o nome original 1ms
+ ✓ tests/scripts/drift-baseline.test.mjs > prepareWorkdir > monta config.toml com PG 17, o baseline e o replay renumerado em ordem 8ms
+ ✓ tests/scripts/drift-baseline.test.mjs > prepareWorkdir > falha sem baseline e com baseline sem a lista de versões do ledger 3ms
+ ✓ tests/scripts/drift-baseline.test.mjs > prepareWorkdir > falha com mais de um baseline 2ms
+ ✓ tests/scripts/drift-baseline.test.mjs > filterDiff > remove comentários, linhas vazias, "no schema changes" e o que a allowlist cobre 1ms
+ ✓ tests/scripts/drift-baseline.test.mjs > filterDiff > allowlist vazia não esconde nada 1ms
+ ✓ tests/scripts/drift-baseline.test.mjs > findSecrets > acha JWT, PAT do Supabase e token Cloudflare, e ignora o ID do projeto 2ms
+ ✓ tests/scripts/drift-baseline.test.mjs > findSecrets — anon key pública > aceita a anon key (role anon) embutida no schema, como em get_edge_anon_key() 1ms
+ ✓ tests/scripts/drift-baseline.test.mjs > findSecrets — anon key pública > bloqueia service_role, inclusive na mesma linha de uma anon key 1ms
+ ✓ tests/scripts/drift-baseline.test.mjs > sanitizeBaselineForReplay > remove COMMENT/ALTER ON EVENT TRIGGER, que o dump emite sem o CREATE correspondente 0ms
+ ✓ tests/scripts/drift-baseline.test.mjs > sanitizeBaselineForReplay > remove o comando inteiro quando o texto do comentário ocupa várias linhas e tem ponto-e-vírgula 0ms
+ ✓ tests/scripts/drift-baseline.test.mjs > sanitizeBaselineForReplay > não toca na mesma frase dentro de corpo de função (dollar-quote) nem em string 0ms
+ ✓ tests/scripts/drift-baseline.test.mjs > sanitizeBaselineForReplay > prepareWorkdir entrega ao shadow o baseline já sem event trigger, sem alterar o arquivo original 3ms
+ ✓ tests/scripts/drift-baseline.test.mjs > sanitizeBaselineForReplay > prepareWorkdir semeia os jobs do pg_cron em migration própria B+1, fora do baseline 3ms
+ ✓ tests/scripts/drift-baseline.test.mjs > maxNumericVersion > ignora versões não numéricas do ledger 0ms
+ ✓ tests/scripts/drift-baseline.test.mjs > selectReplayMigrations — versões não canônicas do ledger > replaya migration aplicada depois do dump com versão de 8 ou 19 dígitos (produção tem as duas) 0ms
+ ✓ tests/scripts/drift-baseline.test.mjs > findBaseline — JSON do ledger inválido > aceita o JSON válido 2ms
+ ✓ tests/scripts/drift-baseline.test.mjs > findBaseline — JSON do ledger inválido > recusa JSON corrompido, citando o arquivo 2ms
+ ✓ tests/scripts/drift-baseline.test.mjs > findBaseline — JSON do ledger inválido > recusa "versions" ausente, vazio ou com item que não é texto (Set vazio replayaria o histórico inteiro) 4ms
+ ✓ tests/scripts/drift-baseline.test.mjs > findBaseline — JSON do ledger inválido > recusa JSON de outra versão de baseline 2ms
+ ✓ tests/scripts/drift-baseline.test.mjs > prepareWorkdir — nomes de migration com caracteres especiais > copia sem interpretar espaço, aspas, $(), crase, ponto-e-vírgula e acento 4ms
+ ✓ tests/scripts/drift-baseline.test.mjs > prepareWorkdir — project ref > recusa ref que quebraria a string TOML do config.toml 3ms
+ ✓ tests/scripts/drift-baseline.test.mjs > sanitizeBaselineForReplay — lacunas além do event trigger > remove ALTER/COMMENT de publication que o shadow não tem, e mantém supabase_realtime 0ms
+ ✓ tests/scripts/drift-baseline.test.mjs > sanitizeBaselineForReplay — lacunas além do event trigger > identificador entre aspas duplas com apóstrofo não abre string (senão o COMMENT seguinte não é removido) 0ms
+ ✓ tests/scripts/drift-baseline.test.mjs > sanitizeBaselineForReplay — lacunas além do event trigger > dollar-quote com dígito na tag e `$` dentro de identificador 0ms
+ ✓ tests/scripts/drift-baseline.test.mjs > loadAllowlist — entrada genérica > recusa regex que esconderia drift de qualquer objeto 1ms
+ ✓ tests/scripts/drift-baseline.test.mjs > loadAllowlist — entrada genérica > recusa padrão que esconderia uma classe inteira de DDL (Codex P2) 1ms
+ ✓ tests/scripts/drift-baseline.test.mjs > loadAllowlist — entrada genérica > rejeita também variantes if exists / unique / only e classes restantes (revisão adversarial) 2ms
+ ✓ tests/scripts/drift-baseline.test.mjs > loadAllowlist — entrada genérica > aceita entrada que nomeia o objeto 1ms
+ ✓ tests/scripts/drift-baseline.test.mjs > loadAllowlist — entrada genérica > o arquivo versionado continua carregando 1ms
+ ✓ tests/scripts/drift-baseline.test.mjs > findSecrets — formatos além de JWT > acha chave secreta nova do Supabase, URL de banco com senha, Slack, Google e PASSWORD literal 0ms
+ ✓ tests/scripts/drift-baseline.test.mjs > findSecrets — formatos além de JWT > não acusa chave publicável, URL sem senha nem a palavra password em nome de objeto 0ms
+ ✓ tests/scripts/drift-baseline.test.mjs > looksLikeSchemaDump > recusa dump vazio ou curto e aceita um dump com tabelas 0ms
+ ✓ tests/scripts/drift-baseline.test.mjs > export-schema-snapshot — credenciais presentes e CLI ausente > com token (schedule/dispatch) sai com erro em vez de verde sem dump 52ms
+ ✓ tests/scripts/drift-baseline.test.mjs > export-schema-snapshot — credenciais presentes e CLI ausente > sem token (PR/push) só pula o dump 45ms
+ ✓ tests/scripts/drift-baseline.test.mjs > sanitizeBaselineForReplay — round-trip do dump > passa o ARRAY de varchar por `::character varying[]` antes do cast para text[] 1ms
+ ✓ tests/scripts/drift-baseline.test.mjs > sanitizeBaselineForReplay — round-trip do dump > não reescreve dentro de corpo de função (dollar-quote) 0ms
+ ✓ tests/scripts/drift-baseline.test.mjs > sanitizeBaselineForReplay — round-trip do dump > ordena os roles de CREATE POLICY e preserva as policies de ordem própria em produção 1ms
+ ✓ tests/scripts/drift-baseline.test.mjs > sanitizeBaselineForReplay — round-trip do dump > policy com `$` em regex de string continua reescrita 0ms
+ ✓ tests/scripts/drift-baseline.test.mjs > prepareWorkdir — semente de privilégios padrão > grava a semente antes do baseline e ela revoga os privilégios padrão do shadow 3ms
+ ✓ tests/scripts/drift-baseline.test.mjs > dropDumpLossyFunctions > descarta a função que só difere por comentário de coluna 0 e espaçamento 3ms
+ ✓ tests/scripts/drift-baseline.test.mjs > dropDumpLossyFunctions > mantém a função quando o corpo muda de verdade 1ms
+ ✓ tests/scripts/drift-baseline.test.mjs > dropDumpLossyFunctions > mantém a função quando só o cabeçalho muda (SECURITY DEFINER removido) 0ms
+ ✓ tests/scripts/drift-baseline.test.mjs > dropDumpLossyFunctions > usa a última definição do replay: migration posterior que mudou a função mantém o drift 1ms
+ ✓ tests/scripts/drift-baseline.test.mjs > dropDumpLossyFunctions > extractFunctionStatements ignora CREATE FUNCTION sem corpo em dollar-quote 0ms
+ ✓ tests/scripts/drift-baseline.test.mjs > collapseSqlWhitespace — literais preservados > normaliza espaço fora de literal e mantém o de dentro 0ms
+ ✓ tests/scripts/drift-baseline.test.mjs > collapseSqlWhitespace — literais preservados > mantém o \n depois de comentário de linha 0ms
+ ✓ tests/scripts/drift-baseline.test.mjs > collapseSqlWhitespace — literais preservados > literal com espaço diferente mantém a função no resíduo (Codex P1) 1ms
+ ✓ tests/scripts/drift-baseline.test.mjs > dropDumpLossyFunctions — cabeçalho preserva literais e identificadores (Codex P1) > DEFAULT com caixa diferente é diferença real e fica no resíduo 0ms
+ ✓ tests/scripts/drift-baseline.test.mjs > dropDumpLossyFunctions — cabeçalho preserva literais e identificadores (Codex P1) > identificador entre aspas com maiúscula não equivale ao minúsculo 1ms
+ ✓ tests/scripts/drift-baseline.test.mjs > dropDumpLossyFunctions — cabeçalho preserva literais e identificadores (Codex P1) > aspas redundantes e caixa de palavra-chave seguem equivalentes 0ms
+ ✓ tests/scripts/drift-baseline.test.mjs > dropDumpLossyFunctions — cabeçalho preserva literais e identificadores (Codex P1) > literal do SET no cabeçalho com caixa diferente fica no resíduo 0ms
+ ✓ tests/scripts/drift-baseline.test.mjs > dropDumpLossyFunctions — mudanças posteriores ao CREATE não são escondidas (revisão adversarial) > controle: CREATE idêntico é removido do resíduo; OWNER TO é inócuo 0ms
+ ✓ tests/scripts/drift-baseline.test.mjs > dropDumpLossyFunctions — mudanças posteriores ao CREATE não são escondidas (revisão adversarial) > ALTER FUNCTION (SECURITY DEFINER / SET) e DROP FUNCTION posteriores mantêm a função no resíduo 0ms
+ ✓ tests/scripts/drift-baseline.test.mjs > dropDumpLossyFunctions — mudanças posteriores ao CREATE não são escondidas (revisão adversarial) > DROP FUNCTION sem lista de argumentos (IF EXISTS … CASCADE) invalida o nome e não puxa "(" de outro comando 1ms
+ ✓ tests/scripts/drift-baseline.test.mjs > dropDumpLossyFunctions — mudanças posteriores ao CREATE não são escondidas (revisão adversarial) > CREATE dentro de comentário de bloco não é definição vigente 0ms
+ ✓ tests/scripts/drift-baseline.test.mjs > dropDumpLossyFunctions — mudanças posteriores ao CREATE não são escondidas (revisão adversarial) > comentário de bloco aninhado só fecha no `*/` mais externo 0ms
+ ✓ tests/scripts/drift-baseline.test.mjs > dropDumpLossyFunctions — mudanças posteriores ao CREATE não são escondidas (revisão adversarial) > atributos depois do corpo ($$ … $$ SECURITY DEFINER;) são comparados 0ms
+ ✓ tests/scripts/drift-baseline.test.mjs > dropDumpLossyFunctions — mudanças posteriores ao CREATE não são escondidas (revisão adversarial) > linha "--" de coluna 0 dentro de literal multilinha é dado, fora dele é comentário 0ms
+ ✓ tests/scripts/drift-baseline.test.mjs > dropDumpLossyFunctions — mudanças posteriores ao CREATE não são escondidas (revisão adversarial) > "char" (tipo interno) não equivale a char 0ms
+ ✓ tests/scripts/drift-baseline.test.mjs > filterDiff — "No schema changes found" só como linha inteira > não esconde DDL que apenas menciona a frase 0ms
+ ✓ tests/scripts/drift-baseline.test.mjs > collapseSqlWhitespace — string de escape E'…' (Codex P1) > a barra invertida escapa a aspa: o espaçamento dentro do literal é dado 0ms
+ ✓ tests/scripts/drift-baseline.test.mjs > collapseSqlWhitespace — string de escape E'…' (Codex P1) > sem o prefixo E a barra invertida é literal (standard_conforming_strings) 0ms
+ ✓ tests/scripts/drift-baseline.test.mjs > collapseSqlWhitespace — string de escape E'…' (Codex P1) > função cujo corpo muda só dentro de E'…' continua no resíduo 0ms
+ ✓ tests/scripts/drift-baseline.test.mjs > loadAllowlist — produto verbo × classe e GRANT × privilégio (Codex P2) > recusa ^grant usage 0ms
+ ✓ tests/scripts/drift-baseline.test.mjs > loadAllowlist — produto verbo × classe e GRANT × privilégio (Codex P2) > recusa ^grant usage on schema 0ms
+ ✓ tests/scripts/drift-baseline.test.mjs > loadAllowlist — produto verbo × classe e GRANT × privilégio (Codex P2) > recusa ^revoke all privileges 0ms
+ ✓ tests/scripts/drift-baseline.test.mjs > loadAllowlist — produto verbo × classe e GRANT × privilégio (Codex P2) > recusa ^comment on view 0ms
+ ✓ tests/scripts/drift-baseline.test.mjs > loadAllowlist — produto verbo × classe e GRANT × privilégio (Codex P2) > recusa ^comment on schema 0ms
+ ✓ tests/scripts/drift-baseline.test.mjs > loadAllowlist — produto verbo × classe e GRANT × privilégio (Codex P2) > recusa ^alter view 0ms
+ ✓ tests/scripts/drift-baseline.test.mjs > loadAllowlist — produto verbo × classe e GRANT × privilégio (Codex P2) > recusa ^drop domain 0ms
+ ✓ tests/scripts/drift-baseline.test.mjs > loadAllowlist — produto verbo × classe e GRANT × privilégio (Codex P2) > recusa ^create collation 0ms
+ ✓ tests/scripts/drift-baseline.test.mjs > loadAllowlist — produto verbo × classe e GRANT × privilégio (Codex P2) > recusa ^alter default privileges 0ms
+ ✓ tests/scripts/drift-baseline.test.mjs > loadAllowlist — produto verbo × classe e GRANT × privilégio (Codex P2) > aceita entrada que nomeia o objeto 0ms
+ ✓ tests/scripts/drift-baseline.test.mjs > dropDumpLossyFunctions — dollar-quote no cabeçalho (Codex P1) > DEFAULT $$…$$ com caixa ou espaço diferente é diferença real e fica no resíduo 0ms
+ ✓ tests/scripts/drift-baseline.test.mjs > dropDumpLossyFunctions — dollar-quote no cabeçalho (Codex P1) > DEFAULT $$…$$ idêntico segue equivalente 0ms
+ ✓ tests/scripts/drift-baseline.test.mjs > dropDumpLossyFunctions — dollar-quote no cabeçalho (Codex P1) > `a$b` num identificador não abre dollar-quote 0ms
+ ✓ tests/scripts/drift-baseline.test.mjs > dropDumpLossyFunctions — DROP sem argumentos com nome entre aspas (Codex P1) > controle: sem DROP posterior a função é removida do resíduo 3ms
+ ✓ tests/scripts/drift-baseline.test.mjs > dropDumpLossyFunctions — DROP sem argumentos com nome entre aspas (Codex P1) > `DROP FUNCTION public."my f";` invalida o nome inteiro, não só até o primeiro espaço 0ms
+ ✓ tests/scripts/drift-baseline.test.mjs > dropDumpLossyFunctions — DROP sem argumentos com nome entre aspas (Codex P1) > DROP com vários alvos separados por vírgula invalida cada um 0ms
+ ✓ tests/scripts/drift-baseline.test.mjs > dropDumpLossyFunctions — DROP sem argumentos com nome entre aspas (Codex P1) > `;` dentro de identificador entre aspas não encerra o comando 0ms
+ ✓ tests/scripts/drift-baseline.test.mjs > dropDumpLossyFunctions — DROP sem argumentos com nome entre aspas (Codex P1) > outro nome com prefixo parecido não é afetado 0ms
+ ✓ tests/scripts/drift-baseline.test.mjs > dropDumpLossyFunctions — DROP sem argumentos com nome entre aspas (Codex P1) > ALTER … OWNER TO com argumentos aninhados continua inócuo 0ms
+ ✓ tests/scripts/drift-baseline.test.mjs > loadAllowlist — privilégios novos e entrada sem identificador (Codex P2) > recusa ^grant maintain 0ms
+ ✓ tests/scripts/drift-baseline.test.mjs > loadAllowlist — privilégios novos e entrada sem identificador (Codex P2) > recusa ^revoke maintain 0ms
+ ✓ tests/scripts/drift-baseline.test.mjs > loadAllowlist — privilégios novos e entrada sem identificador (Codex P2) > recusa ^grant set on parameter 0ms
+ ✓ tests/scripts/drift-baseline.test.mjs > loadAllowlist — privilégios novos e entrada sem identificador (Codex P2) > recusa ^drop foreign data wrapper 0ms
+ ✓ tests/scripts/drift-baseline.test.mjs > loadAllowlist — privilégios novos e entrada sem identificador (Codex P2) > exige ao menos um identificador entre aspas, mesmo que nenhuma sonda case 0ms
+ ✓ tests/scripts/drift-baseline.test.mjs > loadAllowlist — privilégios novos e entrada sem identificador (Codex P2) > aceita entrada que cita o objeto 0ms
+ ✓ tests/scripts/drift-baseline.test.mjs > loadAllowlist — entrada literal e objeto concreto (Codex P2) > recusa ^create table "public"."(?!__drift_probe__) 0ms
+ ✓ tests/scripts/drift-baseline.test.mjs > loadAllowlist — entrada literal e objeto concreto (Codex P2) > recusa ^create table "public"." 0ms
+ ✓ tests/scripts/drift-baseline.test.mjs > loadAllowlist — entrada literal e objeto concreto (Codex P2) > recusa ^create table "public"."[a-z_]+" 0ms
+ ✓ tests/scripts/drift-baseline.test.mjs > loadAllowlist — entrada literal e objeto concreto (Codex P2) > recusa ^grant select on table "public"."t.*" to 0ms
+ ✓ tests/scripts/drift-baseline.test.mjs > loadAllowlist — entrada literal e objeto concreto (Codex P2) > recusa ^drop table "public"."a"|^drop table "public"."b" 0ms
+ ✓ tests/scripts/drift-baseline.test.mjs > loadAllowlist — entrada literal e objeto concreto (Codex P2) > recusa ^alter table "public".\w+ 0ms
+ ✓ tests/scripts/drift-baseline.test.mjs > loadAllowlist — entrada literal e objeto concreto (Codex P2) > só schema ou papel citado não nomeia objeto 0ms
+ ✓ tests/scripts/drift-baseline.test.mjs > loadAllowlist — entrada literal e objeto concreto (Codex P2) > prefixo literal com objeto continua aceito 0ms
+ ✓ tests/scripts/drift-baseline.test.mjs > dropDumpLossyFunctions — tipo entre aspas com nome de palavra-chave (Codex P1) > "integer" (tipo de usuário) não equivale a integer (built-in) 0ms
+ ✓ tests/scripts/drift-baseline.test.mjs > dropDumpLossyFunctions — tipo entre aspas com nome de palavra-chave (Codex P1) > outros apelidos de tipo e palavras-chave também preservam as aspas 1ms
+ ✓ tests/scripts/drift-baseline.test.mjs > dropDumpLossyFunctions — tipo entre aspas com nome de palavra-chave (Codex P1) > controle: "text" (não é palavra-chave) segue equivalente a text 0ms
+ ✓ tests/scripts/check-visual-baselines.test.mjs > check-visual-baselines gate > passa quando todos os baselines estão commitados 173ms
+ ✓ tests/scripts/check-visual-baselines.test.mjs > check-visual-baselines gate > falha quando um baseline é removido 293ms
+ ✓ tests/scripts/check-visual-baselines.test.mjs > check-visual-baselines gate > falha quando spec protegida não existe no disco 196ms
+ ✓ tests/scripts/check-quote-rpc-canonical-readiness.test.mjs > quote RPC canonical readiness gate > falha fechado contra o contrato destrutivo ainda instalado no canônico 75ms
+ ✓ tests/scripts/check-quote-rpc-canonical-readiness.test.mjs > quote RPC canonical readiness gate > aprova apenas quando as tres funcoes atendem ao contrato revisado 50ms
+ ✓ tests/scripts/check-quote-rpc-canonical-readiness.test.mjs > quote RPC canonical readiness gate > nao transforma falta de credenciais em aprovacao live 38ms
+ ✓ tests/scripts/check-quote-rpc-canonical-readiness.test.mjs > quote RPC canonical readiness gate > recusa um project ref diferente do SSOT 37ms
+ ✓ tests/scripts/preflight-migration-apply.test.mjs > findMigrationFiles > devolve [] quando nenhum arquivo bate com o prefixo 5ms
+ ✓ tests/scripts/preflight-migration-apply.test.mjs > findMigrationFiles > encontra exatamente um arquivo quando o prefixo é único 2ms
+ ✓ tests/scripts/preflight-migration-apply.test.mjs > findMigrationFiles > encontra múltiplos arquivos em colisão de prefixo (caso E10) 1ms
+ ✓ tests/scripts/preflight-migration-apply.test.mjs > findMigrationFiles > devolve [] quando o diretório não existe 1ms
+ ✓ tests/scripts/preflight-migration-apply.test.mjs > hasRollbackHeader > reconhece "-- Rollback:" no cabeçalho 1ms
+ ✓ tests/scripts/preflight-migration-apply.test.mjs > hasRollbackHeader > é case-insensitive 0ms
+ ✓ tests/scripts/preflight-migration-apply.test.mjs > hasRollbackHeader > devolve false sem cabeçalho de rollback 0ms
+ ✓ tests/scripts/preflight-migration-apply.test.mjs > hasRollbackHeader > ignora "-- Rollback:" fora das primeiras N linhas 0ms
+ ✓ tests/scripts/preflight-migration-apply.test.mjs > detectNonTransactionalDdl > devolve [] para SQL transacional normal 1ms
+ ✓ tests/scripts/preflight-migration-apply.test.mjs > detectNonTransactionalDdl > detecta CREATE INDEX CONCURRENTLY 0ms
+ ✓ tests/scripts/preflight-migration-apply.test.mjs > detectNonTransactionalDdl > detecta VACUUM e ALTER SYSTEM juntos 0ms
+ ✓ tests/scripts/preflight-migration-apply.test.mjs > evaluatePreflight — modo padrão (pré-aplicação) > passa quando arquivo único, rollback presente, ainda não no ledger 2ms
+ ✓ tests/scripts/preflight-migration-apply.test.mjs > evaluatePreflight — modo padrão (pré-aplicação) > falha quando nenhum arquivo é encontrado 0ms
+ ✓ tests/scripts/preflight-migration-apply.test.mjs > evaluatePreflight — modo padrão (pré-aplicação) > falha em colisão de prefixo (mais de um arquivo) 0ms
+ ✓ tests/scripts/preflight-migration-apply.test.mjs > evaluatePreflight — modo padrão (pré-aplicação) > falha sem cabeçalho de rollback 1ms
+ ✓ tests/scripts/preflight-migration-apply.test.mjs > evaluatePreflight — modo padrão (pré-aplicação) > falha quando a versão já está no ledger (reaplicação) 1ms
+ ✓ tests/scripts/preflight-migration-apply.test.mjs > evaluatePreflight — modo padrão (pré-aplicação) > CONCURRENTLY sem opt-out bloqueia (E63) 0ms
+ ✓ tests/scripts/preflight-migration-apply.test.mjs > evaluatePreflight — modo padrão (pré-aplicação) > CONCURRENTLY com opt-out completo passa (E63) 1ms
+ ✓ tests/scripts/preflight-migration-apply.test.mjs > parseOptOut (E63) > devolve false/null quando não há opt-out 0ms
+ ✓ tests/scripts/preflight-migration-apply.test.mjs > parseOptOut (E63) > detecta transaction: none 0ms
+ ✓ tests/scripts/preflight-migration-apply.test.mjs > parseOptOut (E63) > detecta approved-by 0ms
+ ✓ tests/scripts/preflight-migration-apply.test.mjs > parseOptOut (E63) > só transaction: none sem approved-by não configura opt-out completo 0ms
+ ✓ tests/scripts/preflight-migration-apply.test.mjs > parseOptOut (E63) > ignora opt-out fora das primeiras 40 linhas 0ms
+ ✓ tests/scripts/preflight-migration-apply.test.mjs > detectBlockingDdl (E63) > devolve [] para SQL transacional simples 0ms
+ ✓ tests/scripts/preflight-migration-apply.test.mjs > detectBlockingDdl (E63) > bloqueia CONCURRENTLY sem opt-out 0ms
+ ✓ tests/scripts/preflight-migration-apply.test.mjs > detectBlockingDdl (E63) > não bloqueia CONCURRENTLY com opt-out 0ms
+ ✓ tests/scripts/preflight-migration-apply.test.mjs > detectBlockingDdl (E63) > bloqueia BEGIN de topo sem opt-out 0ms
+ ✓ tests/scripts/preflight-migration-apply.test.mjs > detectBlockingDdl (E63) > bloqueia ALTER TYPE … ADD VALUE sem opt-out 0ms
+ ✓ tests/scripts/preflight-migration-apply.test.mjs > detectBlockingDdl (E63) > bloqueia DROP TABLE sem IF EXISTS mesmo com opt-out 0ms
+ ✓ tests/scripts/preflight-migration-apply.test.mjs > detectBlockingDdl (E63) > não bloqueia DROP TABLE IF EXISTS 1ms
+ ✓ tests/scripts/preflight-migration-apply.test.mjs > evaluatePreflight — --expect-applied (pós-aplicação) > passa quando a versão já está no ledger 0ms
+ ✓ tests/scripts/preflight-migration-apply.test.mjs > evaluatePreflight — --expect-applied (pós-aplicação) > falha quando a versão NÃO está no ledger 0ms
+ ✓ tests/scripts/preflight-migration-apply.test.mjs > CLI (sem credenciais Supabase) > exit 2 sem --version 46ms
+ ✓ tests/scripts/preflight-migration-apply.test.mjs > CLI (sem credenciais Supabase) > degrada para static-pass (exit 0) com --version mas sem credenciais 54ms
+ ✓ tests/scripts/preflight-migration-apply.test.mjs > CLI (sem credenciais Supabase) > degrada para inconclusive (exit 2) com --require-live e sem credenciais 48ms
+ ✓ tests/scripts/preflight-migration-apply.test.mjs > detectSecurityDefinerWithoutPgTemp > aceita SET search_path TO com pg_temp (formato do pg_dump) 1ms
+ ✓ tests/scripts/preflight-migration-apply.test.mjs > detectSecurityDefinerWithoutPgTemp > aceita SET search_path = com pg_temp 1ms
+ ✓ tests/scripts/preflight-migration-apply.test.mjs > detectSecurityDefinerWithoutPgTemp > aceita SET search_path= sem espaço após o igual 1ms
+ ✓ tests/scripts/preflight-migration-apply.test.mjs > detectSecurityDefinerWithoutPgTemp > acusa SET search_path TO sem pg_temp 0ms
+ ✓ tests/scripts/preflight-migration-apply.test.mjs > detectSecurityDefinerWithoutPgTemp > aceita identificador entre aspas com $ no search_path ("$user") 0ms
+ ✓ tests/scripts/preflight-migration-apply.test.mjs > detectSecurityDefinerWithoutPgTemp > acusa pg_temp mencionado só no corpo, fora do valor do search_path 0ms
+ ✓ tests/scripts/check-anon-write-grants.test.mjs > loadAllowlist > devolve grants=[] quando o arquivo não existe 3ms
+ ✓ tests/scripts/check-anon-write-grants.test.mjs > loadAllowlist > lê grants de um arquivo válido 3ms
+ ✓ tests/scripts/check-anon-write-grants.test.mjs > loadAllowlist > tolera arquivo sem campo grants (array vazio) 1ms
+ ✓ tests/scripts/check-anon-write-grants.test.mjs > loadAllowlist > a allowlist real do repo está vazia (P1 continua fechado) 1ms
+ ✓ tests/scripts/check-anon-write-grants.test.mjs > computeViolations > não sinaliza nada quando não há grants ao vivo 0ms
+ ✓ tests/scripts/check-anon-write-grants.test.mjs > computeViolations > sinaliza qualquer grant de escrita quando a allowlist está vazia 0ms
+ ✓ tests/scripts/check-anon-write-grants.test.mjs > computeViolations > não sinaliza um grant coberto exatamente pela allowlist (table_name + privilege_type) 0ms
+ ✓ tests/scripts/check-anon-write-grants.test.mjs > computeViolations > sinaliza um privilege_type não coberto mesmo que a tabela esteja parcialmente na allowlist 0ms
+ ✓ tests/scripts/check-anon-write-grants.test.mjs > computeViolations > ordena os candidatos por table_name, depois privilege_type 1ms
+ ✓ tests/scripts/check-anon-write-grants.test.mjs > CLI (sem credenciais Supabase) > degrada para static-pass (exit 0) sem SUPABASE_ACCESS_TOKEN/SUPABASE_PROJECT_REF 53ms
+ ✓ tests/scripts/check-anon-write-grants.test.mjs > CLI (sem credenciais Supabase) > degrada para inconclusive (exit 2) com --require-live e sem credenciais 43ms
+ ✓ tests/scripts/check-anon-write-grants.test.mjs > CLI --from-file > passa (exit 0) quando o arquivo injetado não tem grants de escrita para anon 48ms
+ ✓ tests/scripts/check-anon-write-grants.test.mjs > CLI --from-file > falha (exit 1) quando o arquivo injetado tem um grant fora da allowlist — reabertura do P1 46ms
+ ✓ tests/scripts/append-edge-deploy-receipt.test.mjs > formatReceiptRow > formata todos os campos como células markdown 3ms
+ ✓ tests/scripts/append-edge-deploy-receipt.test.mjs > formatReceiptRow > usa em-dash para campos ausentes 1ms
+ ✓ tests/scripts/append-edge-deploy-receipt.test.mjs > appendReceiptRow > insere a linha nova como última linha da tabela de Recibos 1ms
+ ✓ tests/scripts/append-edge-deploy-receipt.test.mjs > appendReceiptRow > preserva múltiplas inserções em ordem (a segunda vai depois da primeira) 1ms
+ ✓ tests/scripts/append-edge-deploy-receipt.test.mjs > appendReceiptRow > lança erro se a seção "## Recibos" não existir 2ms
+ ✓ tests/scripts/append-edge-deploy-receipt.test.mjs > appendReceiptRow > funciona contra o EDGE_FUNCTIONS_DEPLOY_LOG.md real do repo (seção Recibos já existe, vazia) 1ms
+ ✓ tests/scripts/append-edge-deploy-receipt.test.mjs > parseCliOptions > exige --slug 1ms
+ ✓ tests/scripts/append-edge-deploy-receipt.test.mjs > parseCliOptions > converte --log-path para logPath (camelCase) 1ms
+ ✓ tests/scripts/append-edge-deploy-receipt.test.mjs > CLI > escreve o recibo no arquivo apontado por --log-path 46ms
+ ✓ tests/scripts/append-edge-deploy-receipt.test.mjs > CLI > sai com erro (exit 1) se a seção de Recibos não existir no log alvo 38ms
+ ✓ tests/scripts/append-edge-deploy-receipt.test.mjs > CLI > sai com erro (exit 1) se --slug faltar 39ms
+ ✓ tests/scripts/pgss-slo-check.test.mjs > evaluateSloBreaches > marca insufficientData quando não há linhas 4ms
+ ✓ tests/scripts/pgss-slo-check.test.mjs > evaluateSloBreaches > não sinaliza RPC com p95 estimado dentro do SLO 1ms
+ ✓ tests/scripts/pgss-slo-check.test.mjs > evaluateSloBreaches > sinaliza RPC cujo p95 estimado (mean + 1.645*stddev) passa do SLO 1ms
+ ✓ tests/scripts/pgss-slo-check.test.mjs > evaluateSloBreaches > usa só a captura mais recente por RPC, ignorando capturas antigas 1ms
+ ✓ tests/scripts/pgss-slo-check.test.mjs > evaluateSloBreaches > lista em untrackedTargets os SLOs declarados sem nenhuma captura 1ms
+ ✓ tests/scripts/pgss-slo-check.test.mjs > evaluateSloBreaches > ignora linhas sem fn_name 1ms
+ ✓ tests/scripts/pgss-slo-check.test.mjs > evaluateSloBreaches > trata múltiplas RPCs independentemente 1ms
+ ✓ tests/scripts/pgss-slo-check.test.mjs > CLI (sem credenciais Supabase) > degrada para static-pass (exit 0) sem credenciais 45ms
+ ✓ tests/scripts/pgss-slo-check.test.mjs > CLI (sem credenciais Supabase) > degrada para inconclusive (exit 2) com --require-live e sem credenciais 42ms
+ ✓ tests/scripts/capacity-growth-projection.test.mjs > computeProjections > marca insufficientData quando não há linhas 3ms
+ ✓ tests/scripts/capacity-growth-projection.test.mjs > computeProjections > marca insufficientData quando a série tem menos que minSeriesDays 1ms
+ ✓ tests/scripts/capacity-growth-projection.test.mjs > computeProjections > não sinaliza tabela com crescimento estável e pequena fração do banco 0ms
+ ✓ tests/scripts/capacity-growth-projection.test.mjs > computeProjections > sinaliza tabela cuja projeção passa de objectSharePct do banco 0ms
+ ✓ tests/scripts/capacity-growth-projection.test.mjs > computeProjections > sinaliza tabela cujo crescimento mensal projetado passa de monthlyGrowthPct 0ms
+ ✓ tests/scripts/capacity-growth-projection.test.mjs > computeProjections > ignora divisão por zero quando o ponto mais antigo tem total_bytes=0 (tabela nova) 0ms
+ ✓ tests/scripts/capacity-growth-projection.test.mjs > computeProjections > trata múltiplas tabelas independentemente 1ms
+ ✓ tests/scripts/capacity-growth-projection.test.mjs > CLI (sem credenciais Supabase) > degrada para static-pass (exit 0) sem credenciais 57ms
+ ✓ tests/scripts/capacity-growth-projection.test.mjs > CLI (sem credenciais Supabase) > degrada para inconclusive (exit 2) com --require-live e sem credenciais 43ms
+ ✓ tests/scripts/db-apply-migration-workflow.test.mjs > workflow db-apply-migration E051 — ack de rotação > falha e registra a ação obrigatória quando o ack é falso 18ms
+ ✓ tests/scripts/db-apply-migration-workflow.test.mjs > workflow db-apply-migration E051 — ack de rotação > prossegue quando o operador confirma a rotação do baseline 11ms
+ ✓ tests/scripts/db-apply-migration-workflow.test.mjs > workflow db-apply-migration E052 — recibo fiel ao modo > registra repair-only sem afirmar que o SQL foi aplicado 46ms
+ ✓ tests/scripts/db-apply-migration-workflow.test.mjs > workflow db-apply-migration E052 — recibo fiel ao modo > registra apply como E15 aplicada após o post-check 47ms
+ ✓ tests/scripts/wraparound-monitor-check.test.mjs > evaluateWraparoundAlerts > marca insufficientData quando não há linhas 2ms
+ ✓ tests/scripts/wraparound-monitor-check.test.mjs > evaluateWraparoundAlerts > não sinaliza xid_age abaixo do aviso 1ms
+ ✓ tests/scripts/wraparound-monitor-check.test.mjs > evaluateWraparoundAlerts > sinaliza xid_age acima do crítico 0ms
+ ✓ tests/scripts/wraparound-monitor-check.test.mjs > evaluateWraparoundAlerts > sinaliza xid_age em aviso (entre warn e crit) 1ms
+ ✓ tests/scripts/wraparound-monitor-check.test.mjs > evaluateWraparoundAlerts > sinaliza sequência acima de 50% via value_pct 0ms
+ ✓ tests/scripts/wraparound-monitor-check.test.mjs > evaluateWraparoundAlerts > não sinaliza replication slot com WAL retido alto se está ativo 0ms
+ ✓ tests/scripts/wraparound-monitor-check.test.mjs > evaluateWraparoundAlerts > sinaliza replication slot inativo com WAL retido acima do crítico 0ms
+ ✓ tests/scripts/wraparound-monitor-check.test.mjs > evaluateWraparoundAlerts > não sinaliza TOAST com % alto mas volume trivial (evita ruído) 0ms
+ ✓ tests/scripts/wraparound-monitor-check.test.mjs > evaluateWraparoundAlerts > sinaliza TOAST composto (% E volume) acima do aviso 0ms
+ ✓ tests/scripts/wraparound-monitor-check.test.mjs > evaluateWraparoundAlerts > usa só a captura mais recente, ignorando linhas antigas 0ms
+ ✓ tests/scripts/wraparound-monitor-check.test.mjs > evaluateWraparoundAlerts > avalia várias métricas/objetos da mesma captura independentemente 0ms
+ ✓ tests/scripts/wraparound-monitor-check.test.mjs > CLI (sem credenciais Supabase) > degrada para static-pass (exit 0) sem credenciais 50ms
+ ✓ tests/scripts/wraparound-monitor-check.test.mjs > CLI (sem credenciais Supabase) > degrada para inconclusive (exit 2) com --require-live e sem credenciais 40ms
+ ✓ tests/scripts/append-migration-receipt.test.mjs > formatReceiptRow > formata todos os campos como células markdown 2ms
+ ✓ tests/scripts/append-migration-receipt.test.mjs > formatReceiptRow > usa em-dash para campos ausentes 1ms
+ ✓ tests/scripts/append-migration-receipt.test.mjs > appendReceiptRow > insere a linha nova como última linha da tabela da seção E15 1ms
+ ✓ tests/scripts/append-migration-receipt.test.mjs > appendReceiptRow > preserva múltiplas inserções em ordem (a segunda vai depois da primeira) 0ms
+ ✓ tests/scripts/append-migration-receipt.test.mjs > appendReceiptRow > lança erro se a seção não existir 1ms
+ ✓ tests/scripts/append-migration-receipt.test.mjs > appendReceiptRow > funciona contra o MIGRATIONS_SYNC_LOG.md real do repo (seção E15 já existe, vazia) 3ms
+ ✓ tests/scripts/append-migration-receipt.test.mjs > parseCliOptions > exige --version 1ms
+ ✓ tests/scripts/append-migration-receipt.test.mjs > parseCliOptions > converte --log-path para logPath (camelCase) 0ms
+ ✓ tests/scripts/append-migration-receipt.test.mjs > CLI > escreve o recibo no arquivo apontado por --log-path 56ms
+ ✓ tests/scripts/check-schema-reference-drift.test.mjs > check-schema-reference-drift > reproduz o diff documental entre SCHEMA_REFERENCE e FOTOGRAFIA 46ms
+ ✓ tests/scripts/append-migration-receipt.test.mjs > CLI > sai com erro (exit 1) se a seção E15 não existir no log alvo 38ms
+ ✓ tests/scripts/check-eslint-baseline.test.mjs > check-eslint-baseline carrega o export nomeado de minimatch@10 antes do gate 86ms
+ ✓ tests/scripts/quote-rpc-proposals.test.mjs > quote RPC proposal boundaries (static, not PostgreSQL simulation) > 20260922210000_create_quote_lineage.sql stays outside the auto-apply migration directory 4ms
+ ✓ tests/scripts/quote-rpc-proposals.test.mjs > quote RPC proposal boundaries (static, not PostgreSQL simulation) > 20260922210500_increment_quote_version_explicit_bump.sql stays outside the auto-apply migration directory 1ms
+ ✓ tests/scripts/quote-rpc-proposals.test.mjs > quote RPC proposal boundaries (static, not PostgreSQL simulation) > 20260922211000_update_quote_lineage_lock.sql stays outside the auto-apply migration directory 1ms
+ ✓ tests/scripts/quote-rpc-proposals.test.mjs > quote RPC proposal boundaries (static, not PostgreSQL simulation) > proposal 0 changes one RPC, never schema/ACL/other functions 5ms
+ ✓ tests/scripts/quote-rpc-proposals.test.mjs > quote RPC proposal boundaries (static, not PostgreSQL simulation) > proposal 2 changes one RPC, never schema/ACL/other functions 2ms
+ ✓ tests/scripts/quote-rpc-proposals.test.mjs > quote RPC proposal boundaries (static, not PostgreSQL simulation) > version helper changes one trigger function and preserves metadata 1ms
+ ✓ tests/scripts/quote-rpc-proposals.test.mjs > quote RPC proposal boundaries (static, not PostgreSQL simulation) > machine manifest pins every reviewed artifact and the immutable PG17 image 4ms
+ ✓ tests/scripts/quote-rpc-proposals.test.mjs > quote RPC proposal boundaries (static, not PostgreSQL simulation) > promotion manifest applies exactly the three reviewed proposals in dependency order 2ms
+ ✓ tests/scripts/quote-rpc-proposals.test.mjs > quote RPC proposal boundaries (static, not PostgreSQL simulation) > simulator rejects a deployment/remote argument before starting Docker 48ms
+ ✓ tests/scripts/quote-rpc-proposals.test.mjs > quote RPC proposal boundaries (static, not PostgreSQL simulation) > simulator uses only its named isolated container and advertises limits 1ms
+ ✓ tests/scripts/check-migrations-sync-log-gate.test.mjs > extractMigrationVersion > extrai o prefixo canônico de 14 dígitos 2ms
+ ✓ tests/scripts/check-migrations-sync-log-gate.test.mjs > extractMigrationVersion > extrai um prefixo malformado de 19 dígitos (achado real da E09) 1ms
+ ✓ tests/scripts/check-migrations-sync-log-gate.test.mjs > extractMigrationVersion > devolve null quando o nome não começa com dígitos seguidos de "_" 0ms
+ ✓ tests/scripts/check-migrations-sync-log-gate.test.mjs > extractRegisteredVersions > extrai versões canônicas e não-canônicas entre crases 1ms
+ ✓ tests/scripts/check-migrations-sync-log-gate.test.mjs > extractRegisteredVersions > não confunde um hash SHA-256/MD5 entre crases com uma versão 0ms
+ ✓ tests/scripts/check-migrations-sync-log-gate.test.mjs > extractRegisteredVersions > devolve conjunto vazio para um log sem nenhuma versão registrada 0ms
+ ✓ tests/scripts/check-migrations-sync-log-gate.test.mjs > changedMigrationFilenames > filtra só .sql dentro de supabase/migrations/ e remove o prefixo do diretório 0ms
+ ✓ tests/scripts/check-migrations-sync-log-gate.test.mjs > changedMigrationFilenames > devolve array vazio para diff vazio 0ms
+ ✓ tests/scripts/check-migrations-sync-log-gate.test.mjs > evaluateSyncLogGate > FALHA quando um arquivo de migration alterado não tem versão registrada no log 1ms
+ ✓ tests/scripts/check-migrations-sync-log-gate.test.mjs > evaluateSyncLogGate > PASSA quando a versão do arquivo alterado está registrada no log 0ms
+ ✓ tests/scripts/check-migrations-sync-log-gate.test.mjs > evaluateSyncLogGate > sinaliza version_unparseable para um nome de arquivo sem prefixo numérico 0ms
+ ✓ tests/scripts/check-migrations-sync-log-gate.test.mjs > evaluateSyncLogGate > avalia múltiplos arquivos independentemente (mistura de presente/ausente) 1ms
+ ✓ tests/scripts/check-migrations-sync-log-gate.test.mjs > resolveBaseRef > usa GITHUB_BASE_REF quando presente (evento pull_request em CI) 0ms
+ ✓ tests/scripts/check-migrations-sync-log-gate.test.mjs > resolveBaseRef > cai para "main" quando nenhuma env var de base está definida 0ms
+ ✓ tests/scripts/check-migrations-sync-log-gate.test.mjs > runCheck > FALHA (status failed) quando um .sql alterado não tem recibo no log 1ms
+ ✓ tests/scripts/check-migrations-sync-log-gate.test.mjs > runCheck > PASSA (status passed) quando todo .sql alterado tem recibo no log 0ms
+ ✓ tests/scripts/check-migrations-sync-log-gate.test.mjs > runCheck > PASSA (status passed) quando o diff não toca supabase/migrations/** — gate não se aplica 0ms
+ ✓ tests/scripts/check-migrations-sync-log-gate.test.mjs > runCheck > INCONCLUSIVE quando MIGRATIONS_SYNC_LOG.md não existe no root informado 1ms
+
+[SAÍDA TRUNCADA — timeout de 45s atingido antes do sumário final do vitest]
+[Arquivos de teste visíveis: 19 arquivos, todos os testes visíveis passaram (0 falhas)]
+[Nota: Gate 2 completo (full suite) requer VITE_SUPABASE_URL e não está disponível neste container]

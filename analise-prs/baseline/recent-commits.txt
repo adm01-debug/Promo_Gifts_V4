@@ -1,0 +1,10 @@
+16ad57c66 chore(deps): bump zustand from 4.5.7 to 5.0.16 (#2587)
+22ba938e0 docs(e15): recibo aplicação migration 20261027140000 (#2652)
+f0689734b fix(e2e): corrige testids e landing state em catalog.spec e kit-builder.spec (#2650)
+f2f8c3d6e chore(ci)(deps): bump actions/setup-node from 4 to 7 (#2594)
+61a0cfa17 fix(e2e): corrige rotas admin e redirect de auth em personalization (#2649)
+ed87db31b docs: atualiza PENDENCIAS.md §12 com diagnóstico exato do schema-snapshot-export
+5d049ef11 fix(ci): aumenta timeout swatch-quickview 40→90 min (#2647)
+78d083f16 docs: recibo de aplicação — 20261027120000 (E15) (#2637)
+b752faf8e fix(ci): corrige project E2E autenticado e aumenta timeout swatch (#2644)
+13f459d53 fix(tests): mock @playwright/test em playwright-config-smoke para evitar timeout CI (#2642)
