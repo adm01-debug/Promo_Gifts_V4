@@ -585,8 +585,17 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 30  # E24: E2E shard ≤ 30 min (aumentado de 20 — smoke estourou 20 min em 22:39Z por saturação Auth transitória)
     needs: [ssot-gate, secrets-check, changes, e2e-relevance]
-    if: always() && needs.ssot-gate.result == 'success' && needs.secrets-check.result == 'success' && (needs.changes.result == 'skipped' || needs.changes.outputs.docs_only != 'true')
-    # E015+E14: sem guard de auth — Gate 3 executa quando há código; docs-only faz skip gracioso
+    if: always() && needs.ssot-gate.result == 'success' && needs.secrets-check.result == 'success' && needs.secrets-check.outputs.has_e2e == 'true' && (needs.changes.result == 'skipped' || needs.changes.outputs.docs_only != 'true')
+    # E14: docs-only faz skip gracioso.
+    # has_e2e == 'true' é obrigatório desde que o Gate E23 deixou de reprovar em PR do
+    # Dependabot: antes, credencial ausente derrubava o secrets-check e o Gate 3 nem
+    # chegava a existir. Sem esta condição o Gate 3 passaria a RODAR sem credencial e o
+    # fallback público (--project=chromium-public --grep @smoke) seleciona 4 specs que
+    # chamam requireAuth() — 03d-superfiltro-toolbar-alignment, 20-all-features-smoke,
+    # 25-quote-full-flow e 40-catalog-persistence — e requireAuth() LANÇA erro em CI sem
+    # credencial (e2e/fixtures/test-base.ts:382-386), porque chromium-public só ignora
+    # auth.setup.ts (playwright.config.ts). O bloqueio apenas migraria do Gate E23 para o
+    # Gate 3. Achado P1 do Codex Review na PR #3700.
     env:
       VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL || 'https://doufsxqlfjyuvxuezpln.supabase.co' }}
       VITE_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.VITE_SUPABASE_PUBLISHABLE_KEY || 'sb_publishable_tjH5qAbZ0e5HTTd872NijQ_s9m6JvYU' }}
