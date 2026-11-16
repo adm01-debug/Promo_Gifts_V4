@@ -2,6 +2,11 @@
 
 Diff semântico gerado a cada coleta em que algo mudou.
 
+## 2026-11-16 10:21 UTC
+
+- **functions** alterado (106): `public.fn_audit_role_changes()`, `public.fn_auto_classify_kit_product()`, `public.fn_auto_classify_packing()`, `public.fn_auto_classify_product_image()`, `public.fn_auto_criar_equivalencia_spot()`, `public.fn_auto_link_eco_material()`, `public.fn_auto_link_feminine_color()`, `public.fn_auto_set_same_supplier()`, `public.fn_auto_vincular_cor_variante()`, `public.fn_block_unauthorized_product_deactivation()`, `public.fn_category_copywriting_updated()`, `public.fn_color_equiv_clear_primary_on_inactive()`, `public.fn_color_equiv_ensure_primary()`, `public.fn_color_equiv_ensure_primary_stmt()`, `public.fn_cor_generate_slug()`, `public.fn_cor_updated_at()`, `public.fn_custom_kits_sync_user_id()`, `public.fn_dar_check_valid_until_future()`, `public.fn_dar_set_snapshot_hash()`, `public.fn_enforce_inactive_variant_zero_stock()`, `public.fn_ensure_single_primary_image()`, `public.fn_force_user_logout()`, `public.fn_hex_to_rgb()`, `public.fn_image_types_check_constraint_reminder()`, `public.fn_inherit_techniques_from_material()`, `public.fn_kit_component_calc_circumference()`, `public.fn_kit_component_inherit_personalization()`, `public.fn_kit_print_area_normalizar_eixos()`, `public.fn_log_login_attempt()`, `public.fn_log_price_change()`, `public.fn_log_step_up_event()`, `public.fn_normalize_image_format()`, `public.fn_normalize_source_supplier()`, `public.fn_normalize_source_supplier_videos()`, `public.fn_order_items_calc_subtotal()`, `public.fn_orders_sync_seller()`, `public.fn_pad_sync_status()`, `public.fn_pbd_before_write()`, `public.fn_pbd_block_system_delete()`, `public.fn_pipeline_steps_updated_at()` … (+66)
+- **migrations** adicionado (1): `20261115130200_sec001_revoke_anon_execute_trigger_functions`
+
 ## 2026-11-16 03:22 UTC
 
 - **realtime** removido (1): `supabase_realtime_messages_publication:realtime.messages_2026_11_12`
