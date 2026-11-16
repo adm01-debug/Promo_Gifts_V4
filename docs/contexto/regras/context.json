@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "26d93948f5745e0b96aad0868e304270e340d62f",
+  "sha": "e4ab7f85d9d32ad142c8f1d8b9d581816fc4cf8c",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-15 23:51 UTC",
-  "files_total": 10251,
-  "code_files": 8751,
-  "code_lines": 1234411
+  "generated_at": "2026-11-16 00:07 UTC",
+  "files_total": 10258,
+  "code_files": 8758,
+  "code_lines": 1235364
  },
  "version": "1.3.2",
- "facts_hash": "98f39509ef6e3109",
+ "facts_hash": "584f61c61eb73d0e",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -189,7 +189,7 @@
    "test:quote-rpc:postgres": "node scripts/simulate-quote-rpc-proposals.mjs",
    "check:quote-rpc:canonical": "node scripts/check-quote-rpc-canonical-readiness.mjs",
    "test:quality": "TZ=America/Sao_Paulo vitest run --exclude 'tests/hooks/**'",
-   "test:ci-core": "TZ=America/Sao_Paulo STRICT_TEST_SIDE_EFFECTS=1 vitest run tests/contracts/migrated-endpoints.contract.test.ts src/lib/theme-presets.test.ts tests/components/products/ProductSparkline.labels.test.tsx src/pages/filters/__tests__/FiltersPage.sorting.test.tsx src/components/products/__tests__/ProductSortAccessibility.test.tsx tests/unit/supabase-schema-contract.test.ts tests/unit/favorites-migration.test.ts tests/unit/trending-score.test.ts tests/unit/variant-matching.test.ts tests/unit/text-utils.test.ts tests/unit/print-area-grouping.test.ts tests/unit/format.test.ts tests/unit/to-error-message.test.ts tests/unit/catalog-stock-status.test.ts tests/unit/masked-suffix.test.ts tests/unit/forecast.test.ts tests/unit/stock-chart-utils.test.ts tests/unit/novelty-dates.test.ts tests/unit/sensitive-masking.test.ts tests/unit/error-kind-inference.test.ts tests/unit/connection-error-copy.test.ts tests/unit/roles.test.ts tests/unit/supplier-colors.test.ts tests/unit/date-utils.test.ts tests/unit/format-utils.test.ts tests/unit/quote-status-config.test.ts tests/config/vitest-config-smoke.test.ts tests/config/e2e-http-status.test.ts tests/scripts/check-supabase-reference-catalog.test.mjs tests/scripts/check-migration-filename-contract.test.mjs tests/scripts/check-schema-reference-drift.test.mjs tests/scripts/check-result-contract.test.mjs tests/scripts/check-production-harnesses.test.mjs tests/scripts/check-dependency-audit.test.mjs tests/scripts/check-types-inventory-drift.test.mjs tests/scripts/check-pptx-image-parser-exposure.test.mjs tests/scripts/contexto-produtores.test.mjs tests/scripts/rpc-live-evidence-contract.test.mjs tests/scripts/strict-test-side-effects-contract.test.mjs tests/security/lint-0011-drift.test.ts tests/security/lint-0029-drift.test.ts tests/security/secdef-anon-drift.test.ts tests/security/security-definer-acl-gate.test.ts src/components/mockup/logo-editor/__tests__/LogoControls.test.tsx src/hooks/mockup/__tests__/mockupAreas.preserve.test.ts src/hooks/mockup/__tests__/mockupBatch.partial.test.ts src/hooks/mockup/__tests__/mockupDimensions.guard.test.ts src/hooks/mockup/__tests__/mockupEntry.params.test.ts src/hooks/mockup/__tests__/mockupGeneration.abort.test.ts src/hooks/mockup/__tests__/mockupRestore.selection.test.ts src/hooks/mockup/__tests__/useMockupGenerator.techniques.test.ts tests/components/mockup/acceptance/grupo1.acceptance.test.tsx tests/components/mockup/acceptance/grupo3.acceptance.test.tsx tests/components/mockup/acceptance/grupo6.acceptance.test.tsx src/hooks/simulation/__tests__/useLogoColorAnalysis.test.ts src/components/mockup/__tests__/mockupA11y.slice2.test.tsx src/hooks/mockup/__tests__/mockupSelectionSnapshot.test.ts src/components/mockup/__tests__/MockupResultCard.states.test.tsx src/components/mockup/__tests__/MockupResultCard.preserved.test.tsx src/hooks/mockup/__tests__/mockupProjectSaved.test.ts src/pages/mockups/mockup-generator/__tests__/fichaDaAreaDaImagem.test.ts src/hooks/mockup/__tests__/trocaDeProjeto.test.ts",
+   "test:ci-core": "TZ=America/Sao_Paulo STRICT_TEST_SIDE_EFFECTS=1 vitest run tests/contracts/migrated-endpoints.contract.test.ts src/lib/theme-presets.test.ts tests/components/products/ProductSparkline.labels.test.tsx src/pages/filters/__tests__/FiltersPage.sorting.test.tsx src/components/products/__tests__/ProductSortAccessibility.test.tsx tests/unit/supabase-schema-contract.test.ts tests/unit/favorites-migration.test.ts tests/unit/trending-score.test.ts tests/unit/variant-matching.test.ts tests/unit/text-utils.test.ts tests/unit/print-area-grouping.test.ts tests/unit/format.test.ts tests/unit/to-error-message.test.ts tests/unit/catalog-stock-status.test.ts tests/unit/masked-suffix.test.ts tests/unit/forecast.test.ts tests/unit/stock-chart-utils.test.ts tests/unit/novelty-dates.test.ts tests/unit/sensitive-masking.test.ts tests/unit/error-kind-inference.test.ts tests/unit/connection-error-copy.test.ts tests/unit/roles.test.ts tests/unit/supplier-colors.test.ts tests/unit/date-utils.test.ts tests/unit/format-utils.test.ts tests/unit/quote-status-config.test.ts tests/config/vitest-config-smoke.test.ts tests/config/e2e-http-status.test.ts tests/scripts/check-supabase-reference-catalog.test.mjs tests/scripts/check-migration-filename-contract.test.mjs tests/scripts/check-schema-reference-drift.test.mjs tests/scripts/check-result-contract.test.mjs tests/scripts/check-production-harnesses.test.mjs tests/scripts/check-dependency-audit.test.mjs tests/scripts/check-types-inventory-drift.test.mjs tests/scripts/check-pptx-image-parser-exposure.test.mjs tests/scripts/contexto-produtores.test.mjs tests/scripts/rpc-live-evidence-contract.test.mjs tests/scripts/strict-test-side-effects-contract.test.mjs tests/security/lint-0011-drift.test.ts tests/security/lint-0029-drift.test.ts tests/security/secdef-anon-drift.test.ts tests/security/security-definer-acl-gate.test.ts src/components/mockup/logo-editor/__tests__/LogoControls.test.tsx src/hooks/mockup/__tests__/mockupAreas.preserve.test.ts src/hooks/mockup/__tests__/mockupBatch.partial.test.ts src/hooks/mockup/__tests__/mockupDimensions.guard.test.ts src/hooks/mockup/__tests__/mockupEntry.params.test.ts src/hooks/mockup/__tests__/mockupGeneration.abort.test.ts src/hooks/mockup/__tests__/mockupRestore.selection.test.ts src/hooks/mockup/__tests__/useMockupGenerator.techniques.test.ts tests/components/mockup/acceptance/grupo1.acceptance.test.tsx tests/components/mockup/acceptance/grupo3.acceptance.test.tsx tests/components/mockup/acceptance/grupo6.acceptance.test.tsx src/hooks/simulation/__tests__/useLogoColorAnalysis.test.ts src/components/mockup/__tests__/mockupA11y.slice2.test.tsx src/hooks/mockup/__tests__/mockupSelectionSnapshot.test.ts src/components/mockup/__tests__/MockupResultCard.states.test.tsx src/components/mockup/__tests__/MockupResultCard.preserved.test.tsx src/hooks/mockup/__tests__/mockupProjectSaved.test.ts src/pages/mockups/mockup-generator/__tests__/fichaDaAreaDaImagem.test.ts src/hooks/mockup/__tests__/trocaDeProjeto.test.ts tests/edge-functions/mockup-assistant.test.ts",
    "test:ci-core:coverage": "TZ=America/Sao_Paulo vitest run tests/contracts/migrated-endpoints.contract.test.ts src/lib/theme-presets.test.ts tests/components/products/ProductSparkline.labels.test.tsx --coverage --coverage.include=src/lib/theme-presets.ts --coverage.include=src/components/products/ProductSparkline.tsx --coverage.reporter=text --coverage.reporter=json --coverage.reporter=json-summary --coverage.thresholds.lines=50 --coverage.thresholds.functions=50 --coverage.thresholds.branches=30 --coverage.thresholds.statements=50",
    "test:deploy-gate": "TZ=America/Sao_Paulo vitest run tests/contracts/migrated-endpoints.contract.test.ts src/lib/theme-presets.test.ts tests/components/products/ProductSparkline.labels.test.tsx --reporter=dot",
    "test:watch": "TZ=America/Sao_Paulo vitest",
@@ -1103,8 +1103,8 @@
   ],
   "package_manager": "npm",
   "languages": {
-   ".sql": 3429,
-   ".ts": 2975,
+   ".sql": 3431,
+   ".ts": 2980,
    ".tsx": 1898,
    ".mjs": 436,
    ".py": 13,
@@ -96137,6 +96137,7 @@
    "supabase/migrations/20261115130100_fn_market_intelligence_macro.sql",
    "supabase/migrations/20261115130200_sec001_revoke_anon_execute_trigger_functions.sql",
    "supabase/migrations/20261115130300_fn_global_search_clamp_limit_hardened.sql",
+   "supabase/migrations/20261115230000_ai_function_routing_mockup_assistant.sql",
    "supabase/rollbacks/20260511235950_rollback.sql",
    "supabase/rollbacks/20260511235959_rollback.sql",
    "supabase/rollbacks/20260611014515_fn_dryrun_standardize_supplier_real_rollback.sql",
@@ -96239,6 +96240,7 @@
    "supabase/rollbacks/20261115130100_rollback.sql",
    "supabase/rollbacks/20261115130200_rollback.sql",
    "supabase/rollbacks/20261115130300_rollback.sql",
+   "supabase/rollbacks/20261115230000_rollback.sql",
    "supabase/rollbacks/rollback_20261025002500_analyze_tables_p03.sql",
    "supabase/sql-legacy/001_notification_system.sql",
    "supabase/sql-legacy/002_notification_preferences.sql",
@@ -141725,6 +141727,31 @@
     "idempotency": false
    },
    {
+    "name": "mockup-assistant",
+    "file": "supabase/functions/mockup-assistant/index.ts",
+    "methods": [
+     "OPTIONS"
+    ],
+    "auth": "service_role (ignora RLS) — NÃO valida usuário no código",
+    "tables": [
+     "ai_models",
+     "ai_providers",
+     "ai_usage_logs",
+     "integration_credentials",
+     "user_roles",
+     "user_token_revocations",
+     "v_ai_function_routing_effective"
+    ],
+    "env": [],
+    "external": [],
+    "invokes": [],
+    "doc": "supabase/functions/mockup-assistant/index.ts",
+    "errors": [],
+    "side_effects": [],
+    "webhook_events": [],
+    "idempotency": false
+   },
+   {
     "name": "ownership-audit",
     "file": "supabase/functions/ownership-audit/index.ts",
     "methods": [
@@ -150895,8 +150922,8 @@
   },
   {
    "module": "supabase/functions",
-   "files": 275,
-   "lines": 50941,
+   "files": 277,
+   "lines": 51590,
    "tables": [
     "access_blocked_log",
     "access_security_settings",
@@ -151141,8 +151168,8 @@
   },
   {
    "module": "supabase/migrations",
-   "files": 3095,
-   "lines": 223200,
+   "files": 3096,
+   "lines": 223245,
    "tables": [
     "...",
     "admin_audit_log",
@@ -151240,8 +151267,8 @@
   },
   {
    "module": "supabase/rollbacks",
-   "files": 103,
-   "lines": 3004,
+   "files": 104,
+   "lines": 3022,
    "tables": [],
    "exports": [],
    "docs": [],
@@ -151416,8 +151443,8 @@
   },
   {
    "module": "tests",
-   "files": 1036,
-   "lines": 159379,
+   "files": 1039,
+   "lines": 159620,
    "tables": [
     "bot_detection_log",
     "clients",
@@ -160433,6 +160460,22 @@
     "chain": []
    },
    {
+    "file": "supabase/functions/mockup-assistant/index.ts",
+    "name": "MockupContextSchema",
+    "kind": "object",
+    "body": "{ productName: z.string().trim().max(200).optional(), techniqueName: z.string().trim().max(200).optional(), dimensions: z.string().trim().max(200).optional(), hasLogo: z.boolean().optional(), }",
+    "refines": [],
+    "chain": []
+   },
+   {
+    "file": "supabase/functions/mockup-assistant/index.ts",
+    "name": "MockupAssistantRequestSchema",
+    "kind": "object",
+    "body": "{ message: z.string().trim().min(1, 'A mensagem não pode ser vazia').max(2000), history: z .array(z.object({ role: z.enum(['user', 'assistant']), content: z.string().trim().min(1).max(2000) })) .max(20) .optional(), context: MockupContextSchema.optional(), }",
+    "refines": [],
+    "chain": []
+   },
+   {
     "file": "supabase/functions/product-visual-search/index.ts",
     "name": "InputSchema",
     "kind": "object",
@@ -160820,6 +160863,22 @@
    },
    {
     "file": "tests/contracts/webhook-schemas.ts",
+    "name": "MockupAssistantContextSchema",
+    "kind": "object",
+    "body": "{ productName: z.string().trim().max(200).optional(), techniqueName: z.string().trim().max(200).optional(), dimensions: z.string().trim().max(200).optional(), hasLogo: z.boolean().optional(), }",
+    "refines": [],
+    "chain": []
+   },
+   {
+    "file": "tests/contracts/webhook-schemas.ts",
+    "name": "MockupAssistantSchemaV1",
+    "kind": "object",
+    "body": "{ message: nonEmptyString.max(2000), history: z .array( z.object({ role: z.enum([\"user\", \"assistant\"]), content: nonEmptyString.max(2000), }), ) .max(20) .optional(), context: MockupAssistantContextSchema.optional(), }",
+    "refines": [],
+    "chain": []
+   },
+   {
+    "file": "tests/contracts/webhook-schemas.ts",
     "name": "GenerateAdImageSchemaV1",
     "kind": "object",
     "body": "{ productImageUrl: z.string().url(), scenePrompt: nonEmptyString, logoBase64: z.string().optional(), logoUrl: z.string().url().optional(), productName: z.string().optional(), aspectRatio: z.string().optional(), }",
@@ -160833,26 +160892,6 @@
     "body": "{ productName: nonEmptyString.max(255), productColor: z.string().max(100).optional(), productCategory: z.string().max(100).optional(), numberOfPrompts: z.number().int().min(1).max(6).optional(), }",
     "refines": [],
     "chain": []
-   },
-   {
-    "file": "tests/contracts/webhook-schemas.ts",
-    "name": "GenerateProductSeoSchemaV1",
-    "kind": "object",
-    "body": "{ product: z.object({ name: nonEmptyString.max(255), sku: z.string().max(100).optional(), description: z.string().max(5000).optional(), }), }",
-    "refines": [],
-    "chain": []
-   },
-   {
-    "file": "tests/contracts/webhook-schemas.ts",
-    "name": "GenerateMockupSchemaV1",
-    "kind": "object",
-    "body": "{ productImageUrl: z.string().url(), logoBase64: z.string().min(10).optional(), logoUrl: z.string().url().optional(), technique: z.string().max(100).optional(), }",
-    "refines": [
-     "logoBase64 or logoUrl required"
-    ],
-    "chain": [
-     "refine"
-    ]
    },
    {
     "file": "tests/edge-functions/live/_schemas.ts",
@@ -168450,7 +168489,7 @@
    },
    {
     "file": "supabase/functions/_shared/ai-router/anthropic-native.ts",
-    "msg": "HTTP ${resp.status}: ${text.slice(0, 500)}"
+    "msg": "HTTP ${resp.status}"
    },
    {
     "file": "supabase/functions/_shared/ai-router/anthropic-native.ts",
@@ -168462,7 +168501,7 @@
    },
    {
     "file": "supabase/functions/_shared/ai-router/google-genai.ts",
-    "msg": "HTTP ${resp.status}: ${text.slice(0, 500)}"
+    "msg": "HTTP ${resp.status}"
    },
    {
     "file": "supabase/functions/_shared/ai-router/google-genai.ts",
@@ -168482,7 +168521,7 @@
    },
    {
     "file": "supabase/functions/_shared/ai-router/openai-compatible.ts",
-    "msg": "HTTP ${resp.status}: ${text.slice(0, 500)}"
+    "msg": "HTTP ${resp.status}"
    },
    {
     "file": "supabase/functions/_shared/ai-router/openai-compatible.ts",
@@ -175305,6 +175344,34 @@
     "text": "migrate-helper foi um utilitário temporário e não deve executar migrações,"
    },
    {
+    "file": "supabase/functions/mockup-assistant/index.ts",
+    "text": "* Política do dono: este chat usa SOMENTE o DeepSeek Flash, nunca o Pro."
+   },
+   {
+    "file": "supabase/functions/mockup-assistant/index.ts",
+    "text": "Erros de auth do _shared (401/403) sobem para o limite HTTP, que os traduz."
+   },
+   {
+    "file": "supabase/functions/mockup-assistant/index.ts",
+    "text": "Limite técnico: 20 mensagens/minuto por usuário (SSOT: rateLimiters.ai)."
+   },
+   {
+    "file": "supabase/functions/mockup-assistant/index.ts",
+    "text": "Somente texto: o assistente orienta e nunca gera imagem."
+   },
+   {
+    "file": "supabase/functions/mockup-assistant/index.ts",
+    "text": "NÃO engole: relança como erro de borda (o limite HTTP traduz para 502 com"
+   },
+   {
+    "file": "supabase/functions/mockup-assistant/index.ts",
+    "text": "Defesa em profundidade da regra \"só Flash\": o modelo vem da linha de roteamento"
+   },
+   {
+    "file": "supabase/functions/mockup-assistant/index.ts",
+    "text": "Log sem conteúdo do cliente: apenas metadados."
+   },
+   {
     "file": "supabase/functions/ownership-audit/index.ts",
     "text": "(`audit_ownership_orphans`) verifica permissão internamente quando"
    },
@@ -175851,6 +175918,10 @@
    {
     "file": "tests/edge-functions/live/descriptors.ts",
     "text": "+ validação de input (UUID/bool) sem disparar geração real."
+   },
+   {
+    "file": "tests/edge-functions/live/descriptors.ts",
+    "text": "validação de input, sem disparar chamada real à IA."
    },
    {
     "file": "tests/helpers/react-warning-guard.ts",
@@ -199389,6 +199460,11 @@
     "value": "\"mcp-server\""
    },
    {
+    "file": "supabase/functions/mockup-assistant/index.ts",
+    "name": "QUOTA_ERROR_MESSAGE",
+    "value": "'Limite mensal de IA atingido. Contate o administrador.'"
+   },
+   {
     "file": "supabase/functions/product-visual-search/index.ts",
     "name": "ROBOFLOW_API_BASE",
     "value": "'https://detect.roboflow.com'"
@@ -211436,6 +211512,24 @@
     "kind": "escreve"
    },
    {
+    "file": "supabase/functions/mockup-assistant/index.ts",
+    "field": "role",
+    "value": "system",
+    "kind": "escreve"
+   },
+   {
+    "file": "supabase/functions/mockup-assistant/index.ts",
+    "field": "role",
+    "value": "user",
+    "kind": "escreve"
+   },
+   {
+    "file": "supabase/functions/mockup-assistant/index.ts",
+    "field": "status",
+    "value": "number",
+    "kind": "compara"
+   },
+   {
     "file": "supabase/functions/process-scheduled-reports/index.ts",
     "field": "status",
     "value": "sent",
@@ -212417,6 +212511,12 @@
     "file": "tests/edge-functions/live/descriptors.ts",
     "field": "role",
     "value": "authenticated",
+    "kind": "escreve"
+   },
+   {
+    "file": "tests/edge-functions/live/descriptors.ts",
+    "field": "role",
+    "value": "system",
     "kind": "escreve"
    },
    {
@@ -261928,6 +262028,66 @@
     "name": "corta os textos livres antes de compor o prompt"
    },
    {
+    "file": "supabase/functions/mockup-assistant/index.test.ts",
+    "name": "mockup-assistant — contrato da edge"
+   },
+   {
+    "file": "supabase/functions/mockup-assistant/index.test.ts",
+    "name": "sem JWT retorna 401 e não chama a IA"
+   },
+   {
+    "file": "supabase/functions/mockup-assistant/index.test.ts",
+    "name": "token inválido, expirado, revogado ou sem permissão não chega ao limiter nem à IA"
+   },
+   {
+    "file": "supabase/functions/mockup-assistant/index.test.ts",
+    "name": "corpo inválido é rejeitado pelo Zod com 422"
+   },
+   {
+    "file": "supabase/functions/mockup-assistant/index.test.ts",
+    "name": "a 21ª mensagem no minuto retorna 429 (limite de 20/min por usuário)"
+   },
+   {
+    "file": "supabase/functions/mockup-assistant/index.test.ts",
+    "name": "usa o roteador (rota flash), sem override de modelo e sem imagem"
+   },
+   {
+    "file": "supabase/functions/mockup-assistant/index.test.ts",
+    "name": "erro do provedor devolve mensagem genérica e log sem o texto do usuário"
+   },
+   {
+    "file": "supabase/functions/mockup-assistant/index.test.ts",
+    "name": "cota mensal de IA esgotada devolve 429 claro (não "
+   },
+   {
+    "file": "supabase/functions/mockup-assistant/index.test.ts",
+    "name": "resposta vazia do provedor vira 502, nunca 200 com answer vazio"
+   },
+   {
+    "file": "supabase/functions/mockup-assistant/index.test.ts",
+    "name": "resposta de modelo que não é Flash (ex.: Pro) é recusada com 502 e não chega ao usuário"
+   },
+   {
+    "file": "supabase/functions/mockup-assistant/index.test.ts",
+    "name": "a migration exige uma capability que o modelo REALMENTE tem"
+   },
+   {
+    "file": "supabase/functions/mockup-assistant/index.test.ts",
+    "name": "sem X-Request-Id, o id devolvido na falha e o MESMO usado nos logs"
+   },
+   {
+    "file": "supabase/functions/mockup-assistant/index.test.ts",
+    "name": "no caminho de sucesso o log não contém o texto do usuário"
+   },
+   {
+    "file": "supabase/functions/mockup-assistant/index.test.ts",
+    "name": "o código da edge não fixa nenhum modelo Pro"
+   },
+   {
+    "file": "supabase/functions/mockup-assistant/index.test.ts",
+    "name": "está declarada no manifest SSOT de autorização como edge autenticada"
+   },
+   {
     "file": "supabase/functions/process-scheduled-reports/index.send-failure.test.ts",
     "name": "process-scheduled-reports — status reflete a resposta do Resend"
    },
@@ -276464,6 +276624,10 @@
     "name": "cada insert usa SENTINEL_USER_ID como fallback"
    },
    {
+    "file": "tests/edge-functions/mockup-assistant.test.ts",
+    "name": "expõe o handler da edge mockup-assistant para o runner"
+   },
+   {
     "file": "tests/edge-functions/parseAiResponse.test.ts",
     "name": "parseAiResponse"
    },
@@ -278426,6 +278590,34 @@
    {
     "file": "tests/edge-functions/integration/misc-functions.test.ts",
     "name": "OPTIONS /secrets-manager — responde CORS preflight"
+   },
+   {
+    "file": "tests/edge-functions/integration/mockup-assistant.test.ts",
+    "name": "mockup-assistant — entrada, custo e CORS (handler real)"
+   },
+   {
+    "file": "tests/edge-functions/integration/mockup-assistant.test.ts",
+    "name": "aceita exatamente os limites de tamanho (2000 / 20 turnos / 200) e a IA recebe o pedido"
+   },
+   {
+    "file": "tests/edge-functions/integration/mockup-assistant.test.ts",
+    "name": "um acima do limite ou tipo errado é 422 VALIDATION_FAILED e não gasta IA"
+   },
+   {
+    "file": "tests/edge-functions/integration/mockup-assistant.test.ts",
+    "name": "o cliente não escolhe modelo nem custo: model/max_tokens/system do corpo são ignorados"
+   },
+   {
+    "file": "tests/edge-functions/integration/mockup-assistant.test.ts",
+    "name": "método diferente de POST é 405 e não chega à IA"
+   },
+   {
+    "file": "tests/edge-functions/integration/mockup-assistant.test.ts",
+    "name": "CORS: origin permitido é refletido em 200, 401, 422, 429, 502 e no preflight; origin estranho nunca"
+   },
+   {
+    "file": "tests/edge-functions/integration/mockup-assistant.test.ts",
+    "name": "o limiter SSOT de IA que a edge usa fixa 20 mensagens por minuto, por chave "
    },
    {
     "file": "tests/edge-functions/integration/notifications.test.ts",
@@ -346143,6 +346335,7 @@
       "compara:supabase/functions/_shared/auth.ts",
       "compara:supabase/functions/_shared/connection-test-runner.ts",
       "compara:supabase/functions/_shared/createEdge.ts",
+      "compara:supabase/functions/mockup-assistant/index.ts",
       "compara:supabase/functions/visual-search/index.ts"
      ],
      "crit": [
@@ -346970,6 +347163,7 @@
       "escreve:supabase/functions/kit-identity-suggest/index.ts",
       "escreve:supabase/functions/magic-up-score/index.ts",
       "escreve:supabase/functions/market-intelligence-insights/index.ts",
+      "escreve:supabase/functions/mockup-assistant/index.ts",
       "escreve:supabase/functions/rls-integration-tests/index.ts",
       "escreve:supabase/functions/semantic-search/index.ts",
       "escreve:supabase/functions/trends-insights/index.ts",
@@ -347073,11 +347267,13 @@
       "escreve:supabase/functions/kit-ai-builder/index.ts",
       "escreve:supabase/functions/kit-identity-suggest/index.ts",
       "escreve:supabase/functions/market-intelligence-insights/index.ts",
+      "escreve:supabase/functions/mockup-assistant/index.ts",
       "escreve:supabase/functions/semantic-search/index.ts",
       "escreve:supabase/functions/trends-insights/index.ts",
       "escreve:supabase/functions/visual-search/index.ts",
       "escreve:supabase/functions/voice-agent/index.ts",
-      "escreve:supabase/functions/word-magic/index.ts"
+      "escreve:supabase/functions/word-magic/index.ts",
+      "escreve:tests/edge-functions/live/descriptors.ts"
      ],
      "coordenador": [
       "compara:supabase/functions/crm-db-bridge/query-policy.ts"
@@ -490000,7 +490196,7 @@
   },
   "supabase/functions/_shared/edge-authz-manifest.ts": {
    "path": "supabase/functions/_shared/edge-authz-manifest.ts",
-   "lines": 188,
+   "lines": 191,
    "exports": [
     "type AuthzCategory",
     "interface AuthzEntry",
@@ -490830,13 +491026,13 @@
   },
   "supabase/functions/_shared/ai-router/anthropic-native.ts": {
    "path": "supabase/functions/_shared/ai-router/anthropic-native.ts",
-   "lines": 138,
+   "lines": 142,
    "exports": [
     "const anthropicNativeAdapter"
    ],
    "errors": [
     "Anthropic error: ${data.error.message ?? ",
-    "HTTP ${resp.status}: ${text.slice(0, 500)}",
+    "HTTP ${resp.status}",
     "Invalid JSON in Anthropic response"
    ],
    "status_values": [
@@ -490918,13 +491114,13 @@
   },
   "supabase/functions/_shared/ai-router/google-genai.ts": {
    "path": "supabase/functions/_shared/ai-router/google-genai.ts",
-   "lines": 166,
+   "lines": 170,
    "exports": [
     "const googleGenaiAdapter"
    ],
    "errors": [
     "Gemini error: ${data.error.message ?? ",
-    "HTTP ${resp.status}: ${text.slice(0, 500)}",
+    "HTTP ${resp.status}",
     "Invalid JSON in Gemini response"
    ],
    "status_values": [
@@ -491100,12 +491296,12 @@
   },
   "supabase/functions/_shared/ai-router/openai-compatible.ts": {
    "path": "supabase/functions/_shared/ai-router/openai-compatible.ts",
-   "lines": 128,
+   "lines": 132,
    "exports": [
     "const openaiCompatibleAdapter"
    ],
    "errors": [
-    "HTTP ${resp.status}: ${text.slice(0, 500)}",
+    "HTTP ${resp.status}",
     "Invalid JSON in provider response",
     "Provider error: ${data.error.message ?? "
    ],
@@ -497877,6 +498073,98 @@
    "path": "supabase/functions/migrate-helper/source_contract_test.ts",
    "lines": 14,
    "uses_service_role": true
+  },
+  "supabase/functions/mockup-assistant/index.test.ts": {
+   "path": "supabase/functions/mockup-assistant/index.test.ts",
+   "lines": 418,
+   "is_test": true,
+   "rule_comments": [
+    "mockadas; a validação Zod é a REAL.",
+    "quem não autentica não consome nem polui o limite",
+    "O limite é delegado ao limiter SSOT de IA, pelo id do usuário (o valor 20/min do"
+   ],
+   "doc": "Contrato da edge `mockup-assistant` (teste co-localizado). Prova: sem JWT → 401; corpo inválido → 422; 21ª mensagem no minuto → 429; roteador sem override de modelo (o flash vem da ROTA) e só texto; erro do provedor → mensagem genérica; log nunca contém o texto do usuário; cota mensal → 429; respost …",
+   "tests": [
+    "mockup-assistant — contrato da edge",
+    "sem JWT retorna 401 e não chama a IA",
+    "token inválido, expirado, revogado ou sem permissão não chega ao limiter nem à IA",
+    "corpo inválido é rejeitado pelo Zod com 422",
+    "a 21ª mensagem no minuto retorna 429 (limite de 20/min por usuário)",
+    "usa o roteador (rota flash), sem override de modelo e sem imagem",
+    "erro do provedor devolve mensagem genérica e log sem o texto do usuário",
+    "cota mensal de IA esgotada devolve 429 claro (não ",
+    "resposta vazia do provedor vira 502, nunca 200 com answer vazio",
+    "resposta de modelo que não é Flash (ex.: Pro) é recusada com 502 e não chega ao usuário",
+    "a migration exige uma capability que o modelo REALMENTE tem",
+    "sem X-Request-Id, o id devolvido na falha e o MESMO usado nos logs",
+    "no caminho de sucesso o log não contém o texto do usuário",
+    "o código da edge não fixa nenhum modelo Pro",
+    "está declarada no manifest SSOT de autorização como edge autenticada"
+   ]
+  },
+  "supabase/functions/mockup-assistant/index.ts": {
+   "path": "supabase/functions/mockup-assistant/index.ts",
+   "lines": 216,
+   "exports": [
+    "const AI_FUNCTION_NAME",
+    "const PROVIDER_ERROR_MESSAGE",
+    "const QUOTA_ERROR_MESSAGE",
+    "function isFlashModel",
+    "const MockupAssistantRequestSchema",
+    "type MockupContext",
+    "function buildSystemPrompt",
+    "function handleMockupAssistantRequest",
+    "function serveMockupAssistant"
+   ],
+   "zod": [
+    {
+     "name": "MockupContextSchema",
+     "kind": "object",
+     "body": "{ productName: z.string().trim().max(200).optional(), techniqueName: z.string().trim().max(200).optional(), dimensions: z.string().trim().max(200).optional(), hasLogo: z.boolean().optional(), }",
+     "refines": [],
+     "chain": []
+    },
+    {
+     "name": "MockupAssistantRequestSchema",
+     "kind": "object",
+     "body": "{ message: z.string().trim().min(1, 'A mensagem não pode ser vazia').max(2000), history: z .array(z.object({ role: z.enum(['user', 'assistant']), content: z.string().trim().min(1).max(2000) })) .max(20) .optional(), context: MockupContextSchema.optional(), }",
+     "refines": [],
+     "chain": []
+    }
+   ],
+   "params": [
+    {
+     "name": "QUOTA_ERROR_MESSAGE",
+     "value": "'Limite mensal de IA atingido. Contate o administrador.'"
+    }
+   ],
+   "status_values": [
+    {
+     "field": "role",
+     "value": "system",
+     "kind": "escreve"
+    },
+    {
+     "field": "role",
+     "value": "user",
+     "kind": "escreve"
+    },
+    {
+     "field": "status",
+     "value": "number",
+     "kind": "compara"
+    }
+   ],
+   "rule_comments": [
+    "* Política do dono: este chat usa SOMENTE o DeepSeek Flash, nunca o Pro.",
+    "Erros de auth do _shared (401/403) sobem para o limite HTTP, que os traduz.",
+    "Limite técnico: 20 mensagens/minuto por usuário (SSOT: rateLimiters.ai).",
+    "Somente texto: o assistente orienta e nunca gera imagem.",
+    "NÃO engole: relança como erro de borda (o limite HTTP traduz para 502 com",
+    "Defesa em profundidade da regra \"só Flash\": o modelo vem da linha de roteamento",
+    "Log sem conteúdo do cliente: apenas metadados."
+   ],
+   "doc": "supabase/functions/mockup-assistant/index.ts"
   },
   "supabase/functions/ownership-audit/index.ts": {
    "path": "supabase/functions/ownership-audit/index.ts",
@@ -515016,6 +515304,10 @@
    "path": "supabase/migrations/20261115130300_fn_global_search_clamp_limit_hardened.sql",
    "lines": 84
   },
+  "supabase/migrations/20261115230000_ai_function_routing_mockup_assistant.sql": {
+   "path": "supabase/migrations/20261115230000_ai_function_routing_mockup_assistant.sql",
+   "lines": 45
+  },
   "supabase/rollbacks/20260511235950_rollback.sql": {
    "path": "supabase/rollbacks/20260511235950_rollback.sql",
    "lines": 5
@@ -515442,6 +515734,10 @@
   "supabase/rollbacks/20261115130300_rollback.sql": {
    "path": "supabase/rollbacks/20261115130300_rollback.sql",
    "lines": 29
+  },
+  "supabase/rollbacks/20261115230000_rollback.sql": {
+   "path": "supabase/rollbacks/20261115230000_rollback.sql",
+   "lines": 18
   },
   "supabase/rollbacks/rollback_20261025002500_analyze_tables_p03.sql": {
    "path": "supabase/rollbacks/rollback_20261025002500_analyze_tables_p03.sql",
@@ -521480,7 +521776,7 @@
   },
   "tests/contracts/webhook-schemas.ts": {
    "path": "tests/contracts/webhook-schemas.ts",
-   "lines": 1209,
+   "lines": 1242,
    "exports": [
     "const uuidSchema",
     "const nonEmptyString",
@@ -521510,6 +521806,7 @@
     "const ComparisonAiAdvisorSchemaV1",
     "const ElevenLabsTtsSchemaV1",
     "const ExpertChatSchemaV1",
+    "const MockupAssistantSchemaV1",
     "const GenerateAdImageSchemaV1",
     "const GenerateAdPromptSchemaV1",
     "const GenerateProductSeoSchemaV1",
@@ -521540,8 +521837,7 @@
     "const LoadTestSchemaV1",
     "const McpKeysUpdateSchemaV1",
     "const OwnershipAuditSchemaV1",
-    "const OwnershipRepairSchemaV1",
-    "const SecretsManagerSchemaV1"
+    "const OwnershipRepairSchemaV1"
    ],
    "zod": [
     {
@@ -521735,6 +522031,20 @@
      "chain": []
     },
     {
+     "name": "MockupAssistantContextSchema",
+     "kind": "object",
+     "body": "{ productName: z.string().trim().max(200).optional(), techniqueName: z.string().trim().max(200).optional(), dimensions: z.string().trim().max(200).optional(), hasLogo: z.boolean().optional(), }",
+     "refines": [],
+     "chain": []
+    },
+    {
+     "name": "MockupAssistantSchemaV1",
+     "kind": "object",
+     "body": "{ message: nonEmptyString.max(2000), history: z .array( z.object({ role: z.enum([\"user\", \"assistant\"]), content: nonEmptyString.max(2000), }), ) .max(20) .optional(), context: MockupAssistantContextSchema.optional(), }",
+     "refines": [],
+     "chain": []
+    },
+    {
      "name": "GenerateAdImageSchemaV1",
      "kind": "object",
      "body": "{ productImageUrl: z.string().url(), scenePrompt: nonEmptyString, logoBase64: z.string().optional(), logoUrl: z.string().url().optional(), productName: z.string().optional(), aspectRatio: z.string().optional(), }",
@@ -521747,24 +522057,6 @@
      "body": "{ productName: nonEmptyString.max(255), productColor: z.string().max(100).optional(), productCategory: z.string().max(100).optional(), numberOfPrompts: z.number().int().min(1).max(6).optional(), }",
      "refines": [],
      "chain": []
-    },
-    {
-     "name": "GenerateProductSeoSchemaV1",
-     "kind": "object",
-     "body": "{ product: z.object({ name: nonEmptyString.max(255), sku: z.string().max(100).optional(), description: z.string().max(5000).optional(), }), }",
-     "refines": [],
-     "chain": []
-    },
-    {
-     "name": "GenerateMockupSchemaV1",
-     "kind": "object",
-     "body": "{ productImageUrl: z.string().url(), logoBase64: z.string().min(10).optional(), logoUrl: z.string().url().optional(), technique: z.string().max(100).optional(), }",
-     "refines": [
-      "logoBase64 or logoUrl required"
-     ],
-     "chain": [
-      "refine"
-     ]
     }
    ],
    "rule_comments": [
@@ -523445,6 +523737,15 @@
     "cada insert usa SENTINEL_USER_ID como fallback"
    ]
   },
+  "tests/edge-functions/mockup-assistant.test.ts": {
+   "path": "tests/edge-functions/mockup-assistant.test.ts",
+   "lines": 11,
+   "is_test": true,
+   "doc": "Entrada do runner Vitest para o teste co-localizado da edge mockup-assistant (`supabase/functions/**` não está no include do vitest.config.ts, que é caminho bloqueado pelo portão do projeto).",
+   "tests": [
+    "expõe o handler da edge mockup-assistant para o runner"
+   ]
+  },
   "tests/edge-functions/parseAiResponse.test.ts": {
    "path": "tests/edge-functions/parseAiResponse.test.ts",
    "lines": 176,
@@ -524386,6 +524687,32 @@
     "GET /secrets-manager — retorna 401 sem JWT",
     "GET /secrets-manager — retorna 200 com lista de segredos (sem valores)",
     "OPTIONS /secrets-manager — responde CORS preflight"
+   ]
+  },
+  "tests/edge-functions/integration/mockup-assistant.test.ts": {
+   "path": "tests/edge-functions/integration/mockup-assistant.test.ts",
+   "lines": 174,
+   "is_test": true,
+   "errors": [
+    "Too Many Requests"
+   ],
+   "params": [
+    {
+     "name": "ORIGIN",
+     "value": "\"https://www.promogifts.com.br\""
+    }
+   ],
+   "role_checks": [
+    "system"
+   ],
+   "tests": [
+    "mockup-assistant — entrada, custo e CORS (handler real)",
+    "aceita exatamente os limites de tamanho (2000 / 20 turnos / 200) e a IA recebe o pedido",
+    "um acima do limite ou tipo errado é 422 VALIDATION_FAILED e não gasta IA",
+    "o cliente não escolhe modelo nem custo: model/max_tokens/system do corpo são ignorados",
+    "método diferente de POST é 405 e não chega à IA",
+    "CORS: origin permitido é refletido em 200, 401, 422, 429, 502 e no preflight; origin estranho nunca",
+    "o limiter SSOT de IA que a edge usa fixa 20 mensagens por minuto, por chave "
    ]
   },
   "tests/edge-functions/integration/notifications.test.ts": {
@@ -525468,7 +525795,7 @@
   },
   "tests/edge-functions/live/descriptors.ts": {
    "path": "tests/edge-functions/live/descriptors.ts",
-   "lines": 251,
+   "lines": 264,
    "exports": [
     "const DESCRIPTORS",
     "function descriptorFor"
@@ -525508,12 +525835,18 @@
      "field": "role",
      "value": "authenticated",
      "kind": "escreve"
+    },
+    {
+     "field": "role",
+     "value": "system",
+     "kind": "escreve"
     }
    ],
    "rule_comments": [
     "Sem CRM_CALLBACK_API_KEY nas creds locais, cobrimos apenas fronteira/CORS.",
     "No CORS (never browser-callable); no validation logic in handler.",
-    "+ validação de input (UUID/bool) sem disparar geração real."
+    "+ validação de input (UUID/bool) sem disparar geração real.",
+    "validação de input, sem disparar chamada real à IA."
    ],
    "uses_service_role": true
   },
@@ -525799,6 +526132,12 @@
    "lines": 10,
    "is_test": true,
    "doc": "Integração LIVE — migrate-helper Gerado por scripts/gen-edge-live-tests.mjs. Enriqueça o descritor em tests/edge-functions/live/descriptors.ts (não edite este shim)."
+  },
+  "tests/edge-functions/live/mockup-assistant.test.ts": {
+   "path": "tests/edge-functions/live/mockup-assistant.test.ts",
+   "lines": 10,
+   "is_test": true,
+   "doc": "Integração LIVE — mockup-assistant Gerado por scripts/gen-edge-live-tests.mjs. Enriqueça o descritor em tests/edge-functions/live/descriptors.ts (não edite este shim)."
   },
   "tests/edge-functions/live/ownership-audit.test.ts": {
    "path": "tests/edge-functions/live/ownership-audit.test.ts",
@@ -539417,10 +539756,34 @@
   }
  },
  "git": {
-  "sha": "26d93948f5745e0b96aad0868e304270e340d62f",
+  "sha": "e4ab7f85d9d32ad142c8f1d8b9d581816fc4cf8c",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "e4ab7f8",
+    "date": "2026-11-15",
+    "author": "adm01-debug",
+    "subject": "feat(mockup-assistant): resgata a edge do assistente Matheus com rota de IA, testes e registro de authz (#3666)",
+    "files": [
+     "package.json",
+     "supabase/MIGRATIONS_SYNC_LOG.md",
+     "supabase/config.toml",
+     "supabase/functions/_shared/ai-router/anthropic-native.ts",
+     "supabase/functions/_shared/ai-router/google-genai.ts",
+     "supabase/functions/_shared/ai-router/openai-compatible.ts",
+     "supabase/functions/_shared/edge-authz-manifest.ts",
+     "supabase/functions/mockup-assistant/index.test.ts",
+     "supabase/functions/mockup-assistant/index.ts",
+     "supabase/migrations/20261115230000_ai_function_routing_mockup_assistant.sql",
+     "supabase/rollbacks/20261115230000_rollback.sql",
+     "tests/contracts/webhook-schemas.ts",
+     "tests/edge-functions/integration/mockup-assistant.test.ts",
+     "tests/edge-functions/live/descriptors.ts",
+     "tests/edge-functions/live/mockup-assistant.test.ts",
+     "tests/edge-functions/mockup-assistant.test.ts"
+    ]
+   },
    {
     "sha": "26d9394",
     "date": "2026-11-15",
@@ -539960,102 +540323,31 @@
      "docs/coordenacao/conflitos-semanticos.md",
      "supabase/rollbacks/20260917061500_rollback.sql"
     ]
-   },
-   {
-    "sha": "e5afe82",
-    "date": "2026-11-14",
-    "author": "adm01-debug",
-    "subject": "fix: trem das 5 correções já verdes — recibos, código morto do CRM, 3 resgates, gerador de mockup e aba Marketing (#3647)",
-    "files": [
-     "audit/supabase-reference-catalog.temporary.json",
-     "docs/coordenacao/conflitos-semanticos.md",
-     "recovery/src-legacy/src/components/admin/products/ProductMarketingSection.tags-legacy.ts",
-     "src/components/admin/products/ProductMarketingSection.tsx",
-     "src/components/admin/products/__tests__/ProductMarketingSection.test.tsx",
-     "src/components/admin/products/__tests__/productMarketingData.test.ts",
-     "src/components/admin/products/productMarketingData.ts",
-     "src/components/mockup/MockupClientSelector.tsx",
-     "src/components/mockup/MockupConfigPanel.tsx",
-     "src/components/mockup/MockupHistoryPanel.tsx",
-     "src/components/mockup/MockupProductSelector.tsx",
-     "src/components/mockup/__tests__/MockupClientSelector.a11y.test.tsx",
-     "src/components/mockup/__tests__/MockupClientSelector.logo.test.tsx",
-     "src/components/mockup/clientLogoFile.ts",
-     "src/data/mockData.ts",
-     "src/hooks/mockup/__tests__/mockupAreas.preserve.test.ts",
-     "src/hooks/mockup/__tests__/mockupBatch.partial.test.ts",
-     "src/hooks/mockup/__tests__/mockupDimensions.guard.test.ts",
-     "src/hooks/mockup/__tests__/mockupEntry.params.test.ts",
-     "src/hooks/mockup/__tests__/mockupGeneration.abort.test.ts",
-     "src/hooks/mockup/__tests__/mockupHistoryAdapter.test.ts",
-     "src/hooks/mockup/__tests__/mockupRestore.selection.test.ts",
-     "src/hooks/mockup/__tests__/mockupSelectionSnapshot.test.ts",
-     "src/hooks/mockup/__tests__/resolveTechnique.order.test.ts",
-     "src/hooks/mockup/__tests__/useMockupDraft.race.test.ts",
-     "src/hooks/mockup/__tests__/useMockupGenerator.techniques.test.ts",
-     "src/hooks/mockup/mockupGenerationService.ts",
-     "src/hooks/mockup/mockupHistoryAdapter.ts",
-     "src/hooks/mockup/mockupSelectionSnapshot.ts",
-     "src/hooks/mockup/useMockupDraft.ts",
-     "src/hooks/mockup/useMockupGenerator.ts",
-     "src/hooks/mockup/useMockupTechniques.ts",
-     "src/integrations/supabase/types.ts",
-     "src/pages/kit-builder/__tests__/useKitBuilderQuote.sem-cliente.test.tsx",
-     "src/pages/kit-builder/useKitBuilderQuote.ts",
-     "src/pages/mockups/MockupGenerator.tsx",
-     "src/pages/mockups/MockupHistoryPage.tsx",
-     "src/pages/mockups/__tests__/MockupHistoryPage.test.tsx",
-     "src/pages/quotes/QuotesDashboardPage.tsx",
-     "src/pages/quotes/__tests__/QuotesDashboardPage.pdfDisabled.test.tsx",
-     "src/tests/MockupDeletion.test.tsx",
-     "supabase/MIGRATIONS_SYNC_LOG.md",
-     "supabase/functions/crm-db-bridge/ownership.ts",
-     "supabase/migrations/20261113140000_marketing_tab_links_rls_and_endomarketing.sql",
-     "supabase/rollbacks/20261113140000_rollback.sql",
-     "tests/components/mockup/MockupHistoryPanel.actions.test.tsx",
-     "tests/components/mockup/MockupHistoryPanel.pagination.test.tsx",
-     "tests/components/mockup/MockupHistoryPanel.targets.test.tsx",
-     "tests/components/mockup/MockupProductSelector.states.test.tsx",
-     "tests/hooks/useMockupGenerator.test.ts",
-     "tests/pages/kit-builder/useKitBuilderQuote.test.ts"
-    ]
    }
   ],
   "hot_files": [
    [
-    "src/pages/mockups/MockupGenerator.tsx",
-    6
-   ],
-   [
-    "docs/coordenacao/conflitos-semanticos.md",
-    6
+    "package.json",
+    5
    ],
    [
     "supabase/MIGRATIONS_SYNC_LOG.md",
     5
    ],
    [
-    "package.json",
-    4
+    "src/pages/mockups/MockupGenerator.tsx",
+    5
    ],
    [
-    "src/hooks/mockup/useMockupGenerator.ts",
-    4
+    "docs/coordenacao/conflitos-semanticos.md",
+    5
    ],
    [
     "e2e/helpers/auth.ts",
     3
    ],
    [
-    "src/tests/MockupDeletion.test.tsx",
-    3
-   ],
-   [
-    "src/components/mockup/MockupConfigPanel.tsx",
-    3
-   ],
-   [
-    "audit/supabase-reference-catalog.temporary.json",
+    "src/hooks/mockup/useMockupGenerator.ts",
     3
    ],
    [
@@ -540079,27 +540371,39 @@
     2
    ],
    [
+    "src/tests/MockupDeletion.test.tsx",
+    2
+   ],
+   [
     "tests/pages/MockupGenerator.a11y.test.tsx",
     2
    ],
    [
-    "src/hooks/mockup/__tests__/mockupSelectionSnapshot.test.ts",
+    "analise-branches/auditoria-261115/veredito_grupo00.md",
     2
    ],
    [
-    "src/hooks/mockup/mockupSelectionSnapshot.ts",
+    "analise-branches/auditoria-261115/veredito_grupo02.md",
     2
    ],
    [
-    "src/hooks/mockup/__tests__/mockupAreas.preserve.test.ts",
+    "analise-branches/auditoria-261115/veredito_lote00.md",
     2
    ],
    [
-    "src/hooks/mockup/__tests__/mockupBatch.partial.test.ts",
+    "analise-branches/auditoria-261115/veredito_lote02.md",
     2
    ],
    [
-    "src/hooks/mockup/__tests__/mockupDimensions.guard.test.ts",
+    "analise-branches/auditoria-261115/veredito_lote03.md",
+    2
+   ],
+   [
+    "analise-branches/auditoria-261115/veredito_lote04.md",
+    2
+   ],
+   [
+    "src/components/mockup/MockupConfigPanel.tsx",
     2
    ]
   ]

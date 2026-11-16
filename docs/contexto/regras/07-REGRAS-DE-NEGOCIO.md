@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.3.2 · commit `26d93948f5` · branch `main` · 2026-11-15 23:51 UTC
+> Gerado automaticamente por AI Context Sync v1.3.2 · commit `e4ab7f85d9` · branch `main` · 2026-11-16 00:07 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -1815,7 +1815,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `status` | `not_found` | escreve | `supabase/functions/e2e-cleanup/index.ts` |
 | `status` | `not_ready` | escreve | `api/ready.ts` |
 | `status` | `novo` | escreve | `recovery/src-legacy/src/hooks/useSellerCarts.ts` |
-| `status` | `number` | compara | `recovery/src-legacy/src/components/admin/telemetry/BridgeCallDetailDrawer.tsx`<br>`src/components/admin/connections/SecretsManagerHealthPanel.tsx`<br>`src/components/admin/connections/TestAllConnectionsButton.tsx`<br>`src/contexts/SellerCartContext.tsx`<br>`src/lib/crm-db.ts`<br>… +7 |
+| `status` | `number` | compara | `recovery/src-legacy/src/components/admin/telemetry/BridgeCallDetailDrawer.tsx`<br>`src/components/admin/connections/SecretsManagerHealthPanel.tsx`<br>`src/components/admin/connections/TestAllConnectionsButton.tsx`<br>`src/contexts/SellerCartContext.tsx`<br>`src/lib/crm-db.ts`<br>… +8 |
 | `status` | `offline` | compara | `src/components/quotes/QuoteAutoSave.tsx` |
 | `status` | `ok` | compara, escreve | `api/health.ts`<br>`api/ready.ts`<br>`recovery/src-legacy/src/components/admin/telemetry/PlatformFailureCards.tsx`<br>`recovery/src-legacy/src/hooks/useConnectionsOverviewFilters.ts`<br>`recovery/src-legacy/src/pages/SystemStatusPage.tsx`<br>… +15 |
 | `status` | `order` | compara | `src/components/dashboard/MyClientsWidget.tsx` |
@@ -2826,6 +2826,14 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
   ```ts
   { key_id: z.string().uuid(), name: z.string().trim().min(3).max(100).optional(), description: z.string().trim().max(1000).nullable().optional(), scopes: z .array(z.enum(KNOWN_SCOPES as unknown as [string, ...string[]])) .min(1) .max(KNOWN_SCOPES.length) .optional(), expires_at: z.string().datetime({ offset: true }).nullable().optional(), justification: z.string().trim().max(1000).optional().nullable(), confirmation_phrase: z.string().optional().nullable(), /** Token de step-up (senha + OTP) — obrigatório para escalar para FULL. */ step_up_token: z.string().min(32).max(256).optional().nullable(), }
   ```
+- **MockupContextSchema** (`supabase/functions/mockup-assistant/index.ts`, z.object):
+  ```ts
+  { productName: z.string().trim().max(200).optional(), techniqueName: z.string().trim().max(200).optional(), dimensions: z.string().trim().max(200).optional(), hasLogo: z.boolean().optional(), }
+  ```
+- **MockupAssistantRequestSchema** (`supabase/functions/mockup-assistant/index.ts`, z.object):
+  ```ts
+  { message: z.string().trim().min(1, 'A mensagem não pode ser vazia').max(2000), history: z .array(z.object({ role: z.enum(['user', 'assistant']), content: z.string().trim().min(1).max(2000) })) .max(20) .optional(), context: MockupContextSchema.optional(), }
+  ```
 - **InputSchema** (`supabase/functions/product-visual-search/index.ts`, z.object):
   ```ts
   { imageBase64: z.string().min(10, 'Image is required').max(10_000_000, 'Image too large'), searchTerms: z.array(z.string()).optional(), categoryFilter: z.string().optional(), }
@@ -3016,6 +3024,14 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
   ```ts
   { message: nonEmptyString.max(4000), conversation_id: uuidSchema.optional(), context: z.record(z.unknown()).optional(), }
   ```
+- **MockupAssistantContextSchema** (`tests/contracts/webhook-schemas.ts`, z.object):
+  ```ts
+  { productName: z.string().trim().max(200).optional(), techniqueName: z.string().trim().max(200).optional(), dimensions: z.string().trim().max(200).optional(), hasLogo: z.boolean().optional(), }
+  ```
+- **MockupAssistantSchemaV1** (`tests/contracts/webhook-schemas.ts`, z.object):
+  ```ts
+  { message: nonEmptyString.max(2000), history: z .array( z.object({ role: z.enum(["user", "assistant"]), content: nonEmptyString.max(2000), }), ) .max(20) .optional(), context: MockupAssistantContextSchema.optional(), }
+  ```
 - **GenerateAdImageSchemaV1** (`tests/contracts/webhook-schemas.ts`, z.object):
   ```ts
   { productImageUrl: z.string().url(), scenePrompt: nonEmptyString, logoBase64: z.string().optional(), logoUrl: z.string().url().optional(), productName: z.string().optional(), aspectRatio: z.string().optional(), }
@@ -3024,15 +3040,6 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
   ```ts
   { productName: nonEmptyString.max(255), productColor: z.string().max(100).optional(), productCategory: z.string().max(100).optional(), numberOfPrompts: z.number().int().min(1).max(6).optional(), }
   ```
-- **GenerateProductSeoSchemaV1** (`tests/contracts/webhook-schemas.ts`, z.object):
-  ```ts
-  { product: z.object({ name: nonEmptyString.max(255), sku: z.string().max(100).optional(), description: z.string().max(5000).optional(), }), }
-  ```
-- **GenerateMockupSchemaV1** (`tests/contracts/webhook-schemas.ts`, z.object, encadeia refine):
-  ```ts
-  { productImageUrl: z.string().url(), logoBase64: z.string().min(10).optional(), logoUrl: z.string().url().optional(), technique: z.string().max(100).optional(), }
-  ```
-  - Regras cruzadas (refine): “logoBase64 or logoUrl required”
 - **fieldIssueSchema** (`tests/edge-functions/live/_schemas.ts`, z.union):
   ```ts
   [ z.string(), z.object({ path: z.string(), message: z.string(), code: z.string().optional() }).passthrough(), ]
@@ -5610,7 +5617,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `FETCH_ALL_LIMIT` | `2000` | `src/hooks/products/useReplenishments.ts` |
 | `MAX_SELLER_CARTS` | `50` | `src/hooks/products/useSellerCarts.helpers.ts` |
 | `MIN_ITEM_QUANTITY` | `1` | `src/hooks/products/useSellerCarts.helpers.ts` |
-| … +366 linhas — lista completa em `context.json` | | |
+| … +367 linhas — lista completa em `context.json` | | |
 
 ### H.2 Prazos, expirações e janelas de tempo
 
@@ -6523,7 +6530,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `admin` | `supabase/migrations/20261112120500_fix_optimization_queue_rpcs_dev_access.sql` |
 | `anon` | `tests/edge-functions/live/_live-client.ts` |
 
-## K. Testes como especificação (21726 testes em 2197 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (21749 testes em 2200 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -6827,7 +6834,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `src/pages/magazine/templates-gallery/__tests__/gallery.test.tsx` | 18 | MagazineTemplatesGalleryPage · renderiza os 12 cards de template · filtro  · filtro  … |
 | `src/pages/quotes/__tests__/quote-builder-freight-block.rtl.test.tsx` | 18 | Bloco Frete — hierarquia + data-testid do grid · shippingType= · shippingType= · shippingType= … |
 | `src/utils/__tests__/cnpj-exhaustive.test.ts` | 18 | CNPJ — B1 idempotência massiva (1.000 casos) · normalize(normalize(x)) === normalize(x) · CNPJ — B2 roundtrip (1.000 casos) · normalize(mask(normalize(v))) === normalize(v) … |
-| … +1897 linhas — lista completa em `context.json` | | |
+| … +1900 linhas — lista completa em `context.json` | | |
 
 ## L. Eventos de webhook tratados (contratos com sistemas externos)
 
@@ -7295,4 +7302,4 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | Fecha APENAS a lista — a empresa selecionada permanece intacta. | `src/components/mockup/MockupClientSelector.tsx` |
 | * Máximo de cores suportadas na área */ | `src/components/mockup/MultiAreaManager.tsx` |
 | ANTI-REGRESSÃO: primary_image_url deve vir ANTES de og_image_url. | `src/components/mockup/ProductSearchCombobox.tsx` |
-| … +1313 linhas — lista completa em `context.json` | |
+| … +1321 linhas — lista completa em `context.json` | |

@@ -5,18 +5,18 @@
   "vitest",
   "playwright"
  ],
- "total": 2517,
+ "total": 2521,
  "por_tipo": {
   "contrato": 65,
   "e2e": 677,
   "pytest": 4,
   "qa": 17,
-  "unit": 1754
+  "unit": 1758
  },
  "onde_ficam": [
   {
    "padrao": "tests/",
-   "arquivos": 1022
+   "arquivos": 1025
   },
   {
    "padrao": "co-localizado (__tests__)",
@@ -28,7 +28,7 @@
   },
   {
    "padrao": "co-localizado (*.test)",
-   "arquivos": 148
+   "arquivos": 149
   },
   {
    "padrao": "outro",
@@ -12339,6 +12339,18 @@
    "casos": 6
   },
   {
+   "arquivo": "supabase/functions/mockup-assistant/index.test.ts",
+   "tipo": "unit",
+   "linhas": 418,
+   "testa": [
+    "supabase/functions/_shared/ai-usage.ts",
+    "supabase/functions/_shared/edge-authz-manifest.ts",
+    "supabase/functions/_shared/rate-limiter.ts",
+    "supabase/functions/mockup-assistant/index.ts"
+   ],
+   "casos": 14
+  },
+  {
    "arquivo": "supabase/functions/process-scheduled-reports/index.send-failure.test.ts",
    "tipo": "unit",
    "linhas": 226,
@@ -14696,7 +14708,7 @@
   {
    "arquivo": "tests/contracts/webhook-schemas.ts",
    "tipo": "contrato",
-   "linhas": 1209,
+   "linhas": 1242,
    "testa": [],
    "casos": 0
   },
@@ -15332,6 +15344,15 @@
    "casos": 11
   },
   {
+   "arquivo": "tests/edge-functions/integration/mockup-assistant.test.ts",
+   "tipo": "unit",
+   "linhas": 174,
+   "testa": [
+    "supabase/functions/mockup-assistant/index.ts"
+   ],
+   "casos": 6
+  },
+  {
    "arquivo": "tests/edge-functions/integration/notifications.test.ts",
    "tipo": "unit",
    "linhas": 403,
@@ -15693,7 +15714,7 @@
   {
    "arquivo": "tests/edge-functions/live/descriptors.ts",
    "tipo": "unit",
-   "linhas": 251,
+   "linhas": 264,
    "testa": [],
    "casos": 0
   },
@@ -15999,6 +16020,13 @@
    "casos": 0
   },
   {
+   "arquivo": "tests/edge-functions/live/mockup-assistant.test.ts",
+   "tipo": "unit",
+   "linhas": 10,
+   "testa": [],
+   "casos": 0
+  },
+  {
    "arquivo": "tests/edge-functions/live/ownership-audit.test.ts",
    "tipo": "unit",
    "linhas": 10,
@@ -16291,6 +16319,15 @@
    "linhas": 28,
    "testa": [],
    "casos": 2
+  },
+  {
+   "arquivo": "tests/edge-functions/mockup-assistant.test.ts",
+   "tipo": "unit",
+   "linhas": 11,
+   "testa": [
+    "supabase/functions/mockup-assistant/index.ts"
+   ],
+   "casos": 1
   },
   {
    "arquivo": "tests/edge-functions/parseAiResponse.test.ts",
@@ -22127,7 +22164,7 @@
   "src/utils/quote-number.ts": 5,
   "src/utils/undoToast.tsx": 5,
   "src/utils/viacep.ts": 1,
-  "supabase/functions/_shared/ai-usage.ts": 1,
+  "supabase/functions/_shared/ai-usage.ts": 2,
   "supabase/functions/_shared/connection-test-runner.ts": 1,
   "supabase/functions/_shared/contracts/_zod.ts": 1,
   "supabase/functions/_shared/contracts/errors.ts": 2,
@@ -22153,10 +22190,10 @@
   "supabase/functions/_shared/createEdge.ts": 1,
   "supabase/functions/_shared/credentials.ts": 3,
   "supabase/functions/_shared/dispatcher-auth.ts": 1,
-  "supabase/functions/_shared/edge-authz-manifest.ts": 3,
+  "supabase/functions/_shared/edge-authz-manifest.ts": 4,
   "supabase/functions/_shared/external-db-telemetry.ts": 1,
   "supabase/functions/_shared/kill_switch.ts": 1,
-  "supabase/functions/_shared/rate-limiter.ts": 1,
+  "supabase/functions/_shared/rate-limiter.ts": 2,
   "supabase/functions/_shared/retry-backoff.ts": 1,
   "supabase/functions/_shared/token-revocation.ts": 1,
   "supabase/functions/_shared/url-allowlist.ts": 1,
@@ -22174,6 +22211,7 @@
   "supabase/functions/generate-mockup/limits.ts": 1,
   "supabase/functions/magazine-import-local/logic.ts": 1,
   "supabase/functions/magic-up-score/index.ts": 2,
+  "supabase/functions/mockup-assistant/index.ts": 3,
   "supabase/functions/process-scheduled-reports/index.ts": 1,
   "supabase/functions/quote-sync-promo-champions/index.ts": 1,
   "supabase/functions/receive-crm-callback/index.ts": 1,

@@ -15305,6 +15305,17 @@
    "supabase/functions/_shared/request-id.ts",
    "supabase/functions/_shared/structured-logger.ts"
   ],
+  "supabase/functions/mockup-assistant/index.ts": [
+   "supabase/functions/_shared/ai-router/index.ts",
+   "supabase/functions/_shared/ai-usage.ts",
+   "supabase/functions/_shared/auth.ts",
+   "supabase/functions/_shared/cors.ts",
+   "supabase/functions/_shared/error-response.ts",
+   "supabase/functions/_shared/log-safety.ts",
+   "supabase/functions/_shared/rate-limiter.ts",
+   "supabase/functions/_shared/request-id.ts",
+   "supabase/functions/_shared/zod-validate.ts"
+  ],
   "supabase/functions/ownership-audit/index.ts": [
    "supabase/functions/_shared/auth.ts",
    "supabase/functions/_shared/contracts/index.ts",

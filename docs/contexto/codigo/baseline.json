@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "26d93948f5745e0b96aad0868e304270e340d62f",
+  "commit": "e4ab7f85d9d32ad142c8f1d8b9d581816fc4cf8c",
   "branch": "main",
-  "data_commit": "2026-11-15T20:50:24-03:00",
+  "data_commit": "2026-11-15T21:06:22-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "e4ab7f85",
+    "data": "2026-11-15",
+    "assunto": "feat(mockup-assistant): resgata a edge do assistente Matheus com rota de IA, testes e registro de authz (#3666)"
+   },
    {
     "sha": "26d93948",
     "data": "2026-11-15",
@@ -126,14 +131,9 @@
     "sha": "5e59cb9c",
     "data": "2026-11-15",
     "assunto": "fix: trem de resgates — 16 correções recuperadas de branches de outros agentes (#3660)"
-   },
-   {
-    "sha": "9e656a39",
-    "data": "2026-11-15",
-    "assunto": "ci: enxuga workflows — checagens estáticas consolidadas, 12 aposentados, contexto 1×/h (#3659)"
    }
   ],
-  "arquivos_mudados_7d": 2159,
+  "arquivos_mudados_7d": 2172,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -153,7 +153,7 @@
    },
    {
     "pasta": "tests/edge-functions/live",
-    "mudancas": 132
+    "mudancas": 134
    },
    {
     "pasta": "src/hooks/products",
@@ -165,7 +165,7 @@
    },
    {
     "pasta": "supabase/functions/_shared",
-    "mudancas": 98
+    "mudancas": 102
    },
    {
     "pasta": "src/pages/magazine",
@@ -207,11 +207,11 @@
    },
    {
     "arquivo": "supabase/MIGRATIONS_SYNC_LOG.md",
-    "mudancas": 58
+    "mudancas": 59
    },
    {
     "arquivo": "package.json",
-    "mudancas": 41
+    "mudancas": 42
    },
    {
     "arquivo": "package-lock.json",
@@ -322,9 +322,9 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 10323,
-  "arquivos_codigo": 5323,
-  "linhas_codigo": 1014661,
+  "arquivos_total": 10330,
+  "arquivos_codigo": 5328,
+  "linhas_codigo": 1015551,
   "rotas": 138,
   "rotas_http_backend": 13,
   "vistas_por_id": 0,
@@ -332,11 +332,11 @@
   "modulos": 161,
   "componentes": 1235,
   "hooks": 626,
-  "edge_functions": 111,
+  "edge_functions": 112,
   "tabelas": 527,
-  "migrations": 3096,
+  "migrations": 3097,
   "cron_jobs": 122,
-  "testes": 2517,
+  "testes": 2521,
   "workflows": 87,
   "scripts": 272,
   "docs_md": 1046
@@ -1959,8 +1959,8 @@
    "linhas": 8174
   },
   "supabase/functions": {
-   "arquivos": 275,
-   "linhas": 50941
+   "arquivos": 277,
+   "linhas": 51590
   },
   "tailwind.config.ts": {
    "arquivos": 1,
@@ -2048,7 +2048,7 @@
   },
   "tests/contracts": {
    "arquivos": 17,
-   "linhas": 4777
+   "linhas": 4810
   },
   "tests/e2e": {
    "arquivos": 48,
@@ -2059,8 +2059,8 @@
    "linhas": 165
   },
   "tests/edge-functions": {
-   "arquivos": 174,
-   "linhas": 13292
+   "arquivos": 177,
+   "linhas": 13500
   },
   "tests/fixtures": {
    "arquivos": 3,
@@ -2355,7 +2355,7 @@
  ],
  "qualidade": {
   "any": 696,
-  "console_log": 1270,
+  "console_log": 1271,
   "ts_ignore": 0,
   "eslint_disable": 24,
   "todos": 107,
@@ -3060,6 +3060,7 @@
    "mcp-keys-rotate",
    "mcp-query",
    "migrate-helper",
+   "mockup-assistant",
    "ownership-repair",
    "product-visual-search",
    "product-webhook",

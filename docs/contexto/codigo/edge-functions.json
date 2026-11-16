@@ -2,7 +2,7 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "pasta": "supabase/functions",
- "total": 111,
+ "total": 112,
  "verify_jwt_false": [
   "ai-recommendations",
   "asia-ingestion",
@@ -2535,6 +2535,39 @@
    "chamada_por_sql_ou_cron": false,
    "orfa": true,
    "testes": 1
+  },
+  {
+   "nome": "mockup-assistant",
+   "entrada": "supabase/functions/mockup-assistant/index.ts",
+   "arquivos": 1,
+   "linhas": 216,
+   "verify_jwt": true,
+   "metodos": [
+    "OPTIONS",
+    "POST"
+   ],
+   "tabelas": [],
+   "rpcs": [],
+   "env": [],
+   "buckets": [],
+   "chama_edges": [],
+   "hosts_externos": [],
+   "usa_shared": [
+    "ai-usage.ts",
+    "auth.ts",
+    "cors.ts",
+    "error-response.ts",
+    "index.ts",
+    "log-safety.ts",
+    "rate-limiter.ts",
+    "request-id.ts",
+    "zod-validate.ts"
+   ],
+   "chamada_pelo_front": [],
+   "chamada_por_edges": [],
+   "chamada_por_sql_ou_cron": false,
+   "orfa": true,
+   "testes": 4
   },
   {
    "nome": "ownership-audit",
