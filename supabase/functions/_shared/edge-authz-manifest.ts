@@ -108,6 +108,9 @@ export const EDGE_AUTHZ_MANIFEST: Record<string, AuthzEntry> = {
   // GUARD: manter como "authenticated" — não reverter para "public". verify_jwt=true (config.toml).
   "generate-mockup": { category: "authenticated", rationale: "Geração de mockup (compositor canvas) — authenticateRequest (JWT obrigatório)", enforcedBy: "custom" },
   "magic-up-score": { category: "authenticated", rationale: "Scoring criativo do user" },
+  // mockup-assistant: chat de orientação do Matheus — exige JWT via authenticateRequest()
+  // (orienta por texto, NÃO gera imagem). verify_jwt=true (config.toml).
+  "mockup-assistant": { category: "authenticated", rationale: "Assistente Matheus — JWT user, IA Flash sem geração de imagem", enforcedBy: "custom" },
   "voice-agent": { category: "authenticated", rationale: "Voice agent do user" },
   "quote-sync": { category: "authenticated", rationale: "Sync do orçamento do próprio vendedor" },
   "sync-quote-bitrix": { category: "authenticated", rationale: "Sync do orçamento do vendedor" },

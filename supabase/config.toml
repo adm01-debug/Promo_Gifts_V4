@@ -119,6 +119,9 @@ verify_jwt = true
 [functions.analyze-logo-colors]
 verify_jwt = true
 
+[functions.mockup-assistant]
+verify_jwt = true
+
 # ============================================================================
 # Módulo Magazine (2026-07-12) — FIX CRÍTICO pós-validação exaustiva
 # ============================================================================

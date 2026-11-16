@@ -225,6 +225,19 @@ export const DESCRIPTORS: Record<string, Descriptor> = {
       expectStatus: [200],
     },
   },
+  'mockup-assistant': {
+    // Assistente "Matheus": chat de orientação via DeepSeek Flash — consome
+    // créditos pagos. Sem happy-path: cobrimos CORS + fronteira de auth +
+    // validação de input, sem disparar chamada real à IA.
+    validBody: { message: 'Onde posiciono a logo?' },
+    invalidInputs: [
+      { label: 'message vazia', body: { message: '' } },
+      { label: 'history com role inválido', body: { message: 'ok', history: [{ role: 'system', content: 'x' }] } },
+    ],
+    // Ainda não deployada no canônico (deploy via deploy-edge-functions.yml
+    // pós-merge deste PR) — aceita 404 na fronteira de auth até lá.
+    pendingDeploy: true,
+  },
   'voice-agent': {},
   'visual-search': {},
   'product-visual-search': {
