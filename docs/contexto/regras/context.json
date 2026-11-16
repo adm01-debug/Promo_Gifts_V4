@@ -1,10 +1,10 @@
 {
  "meta": {
-  "sha": "25ea4f33c2826a13d83404d62e97f11fd8416b62",
+  "sha": "157c261084b2ea432ea8d77580bd91eec3565f23",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-16 12:29 UTC",
-  "files_total": 10430,
+  "generated_at": "2026-11-16 12:52 UTC",
+  "files_total": 10431,
   "code_files": 8758,
   "code_lines": 1235388
  },
@@ -539761,10 +539761,39 @@
   }
  },
  "git": {
-  "sha": "25ea4f33c2826a13d83404d62e97f11fd8416b62",
+  "sha": "157c261084b2ea432ea8d77580bd91eec3565f23",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "157c261",
+    "date": "2026-11-16",
+    "author": "github-actions[bot]",
+    "subject": "docs(migrations-log): recibo E15 — aplicação de 20261115130200 (#3694)",
+    "files": [
+     "supabase/MIGRATIONS_SYNC_LOG.md"
+    ]
+   },
+   {
+    "sha": "1c6abc8",
+    "date": "2026-11-16",
+    "author": "github-actions[bot]",
+    "subject": "chore(ci): métricas semanais 2026-W47 (#3691)",
+    "files": [
+     "docs/ci/METRICAS_SEMANAIS.md"
+    ]
+   },
+   {
+    "sha": "5c497ed",
+    "date": "2026-11-16",
+    "author": "adm01-debug",
+    "subject": "docs(audit): handoff para a próxima sessão, com o estado de 16/11 (#3698)",
+    "files": [
+     "analise-branches/ESTADO-EM-261116.md",
+     "analise-branches/HANDOFF-PROXIMA-SESSAO.md",
+     "analise-branches/MANUAL-DE-CONTINUIDADE.md"
+    ]
+   },
    {
     "sha": "25ea4f3",
     "date": "2026-11-16",
@@ -540299,40 +540328,6 @@
      "supabase/migrations/20261115034500_rpc_sales_assistant_candidates.sql",
      "supabase/rollbacks/20261115034500_rollback.sql"
     ]
-   },
-   {
-    "sha": "8ece9cc",
-    "date": "2026-11-15",
-    "author": "adm01-debug",
-    "subject": "fix(inteligencia): grafico de mercado nao acusa erro quando a RPC ainda nao foi aplicada (#3675)",
-    "files": [
-     "src/components/intelligence/MarketIntelligenceChart.tsx",
-     "src/hooks/intelligence/__tests__/useMarketIntelligenceMacro.test.tsx",
-     "src/hooks/intelligence/useMarketIntelligenceMacro.ts"
-    ]
-   },
-   {
-    "sha": "f1044db",
-    "date": "2026-11-15",
-    "author": "adm01-debug",
-    "subject": "feat(mockup): aviso de \"não carregou, tentar de novo\" no catálogo do painel de mockup (#3670)",
-    "files": [
-     "src/components/mockup/MockupCatalogStates.tsx",
-     "src/components/mockup/MockupConfigPanelLoadError.tsx",
-     "src/components/mockup/MockupProductSelector.tsx",
-     "src/hooks/mockup/__tests__/mockup-audit.test.ts",
-     "tests/components/mockup/MockupProductSelector.errors.test.tsx"
-    ]
-   },
-   {
-    "sha": "c72d30a",
-    "date": "2026-11-15",
-    "author": "adm01-debug",
-    "subject": "fix(mockup): etapas do gerador voltam a ser anunciadas pelo leitor de tela no celular (#3671)",
-    "files": [
-     "src/components/mockup/MockupWizard.tsx",
-     "tests/pages/MockupGenerator.a11y.test.tsx"
-    ]
    }
   ],
   "hot_files": [
@@ -540341,24 +540336,24 @@
     5
    ],
    [
-    "analise-branches/RELATORIO-BRANCHES-COMPLETO.md",
+    "supabase/MIGRATIONS_SYNC_LOG.md",
+    4
+   ],
+   [
+    "analise-branches/ESTADO-EM-261116.md",
     3
    ],
    [
-    "supabase/MIGRATIONS_SYNC_LOG.md",
+    "analise-branches/MANUAL-DE-CONTINUIDADE.md",
+    3
+   ],
+   [
+    "analise-branches/RELATORIO-BRANCHES-COMPLETO.md",
     3
    ],
    [
     "src/pages/mockups/MockupGenerator.tsx",
     3
-   ],
-   [
-    "analise-branches/MANUAL-DE-CONTINUIDADE.md",
-    2
-   ],
-   [
-    "analise-branches/ESTADO-EM-261116.md",
-    2
    ],
    [
     "analise-branches/dados/LEIA-ME.md",

@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "docs(migrations-log): recibo E15 — aplicação de 20261115130200 (#3694)",
+   "chore(ci): métricas semanais 2026-W47 (#3691)",
+   "docs(audit): handoff para a próxima sessão, com o estado de 16/11 (#3698)",
    "docs(audit): registra a exclusão das 71 branches, o fechamento da #3685 e o alarme falso do clone raso (#3697)",
-   "Merge pull request #3689 from adm01-debug/claude/chore-dossies-branches-261116-0154",
-   "docs(audit): veredito da n68 e protecao dos refs de preservacao",
-   "docs(audit): manual de continuidade para a proxima sessao",
-   "docs(audit): relatorio completo branch a branch, aberta e fechada"
+   "Merge pull request #3689 from adm01-debug/claude/chore-dossies-branches-261116-0154"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",

@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e de hora em hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `25ea4f33c2826a13d83404d62e97f11fd8416b62` (2026-11-16T08:53:45-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e de hora em hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `157c261084b2ea432ea8d77580bd91eec3565f23` (2026-11-16T09:49:02-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -14,7 +14,7 @@ Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR
 Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua tarefa; não carregue tudo.
 
 ## Stack
-- linguagens: TypeScript (4877), SQL (3431), Markdown (1214), JavaScript (443), JSON (127), YAML (112), Shell (27), HTML (20)
+- linguagens: TypeScript (4877), SQL (3431), Markdown (1215), JavaScript (443), JSON (127), YAML (112), Shell (27), HTML (20)
 - linguagem_principal: TypeScript
 - framework: React
 - backend_http: n/d
@@ -34,7 +34,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 ## Números
 | item | qtd |
 |---|---|
-| arquivos_total | 10502 |
+| arquivos_total | 10503 |
 | arquivos_codigo | 5328 |
 | linhas_codigo | 1015575 |
 | rotas | 138 |
@@ -51,7 +51,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 | testes | 2521 |
 | workflows | 87 |
 | scripts | 272 |
-| docs_md | 1214 |
+| docs_md | 1215 |
 
 ## Onde ficam as coisas
 - telas: src/pages (111), src/components (3), api/health.ts (1)
@@ -590,27 +590,27 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - possiveis_segredos_no_codigo: 7 — ex.: scripts/ai-context/cenarios.mjs:102, src/components/admin/connections/__tests__/ConnectionSecurity.unit.test.tsx:9, src/integrations/supabase/client.ts:27
 
 ## Grafo de código (graphify)
-- 45761 nós · 78294 arestas · 2525 comunidades · grafo do commit `25ea4f33`
-- comunidades maiores: ref_integrations (639), ref_components (557), vitest (547), ref_node_child_process (514), ref_hooks (499), lucide-react (478), @tanstack/react-query (398), ref_types (365), gotoAndSettle (354), ref_node_fs (338), sonner (322), react (321)
+- 45786 nós · 78319 arestas · 2579 comunidades · grafo do commit `157c2610`
+- comunidades maiores: ref_hooks (722), lucide-react (655), ref_integrations (612), react (607), vitest (570), gotoAndSettle (444), ref_node_child_process (419), @tanstack/react-query (399), ref_components (365), ref_types (340), scripts (302), ref_node_fs (291)
 - símbolos mais chamados: gotoAndSettle() (e2e/helpers/nav.ts), re (?), q() (scripts/supabase_snapshot/snapshot.py), analyze() (tests/scripts/test_personalization_artifact_diagnostics.py), outer() (tests/scripts/test_personalization_artifact_diagnostics.py), json (?), useExternalDatabase() (recovery/src-legacy/src/hooks/useExternalDatabase.ts), concludeCheck() (scripts/check-result-contract.mjs), querySupabaseReadOnly() (scripts/supabase-read-only-query.mjs), loginAs() (e2e/helpers/auth.ts), inner() (tests/scripts/test_personalization_artifact_diagnostics.py), excluded_sql() (scripts/supabase_snapshot/snapshot.py)
 - consulta local: `graphify query "<pergunta>"`, `graphify path "<A>" "<B>"`, `graphify explain "<X>"`
 
 ## Hotspots (arquivos mais alterados, 90 dias)
 - RELATORIO_CI.md (88)
-- PENDENCIAS.md (83)
-- supabase/MIGRATIONS_SYNC_LOG.md (60)
-- package.json (43)
-- package-lock.json (27)
-- docs/coordenacao/conflitos-semanticos.md (21)
-- CHANGELOG.md (18)
-- analise-prs/progresso.json (18)
-- supabase/EDGE_FUNCTIONS_DEPLOY_LOG.md (18)
-- src/pages/kit-builder/KitBuilderPage.tsx (16)
-- .github/workflows/deploy-gates.yml (15)
-- auditoria-supabase/RELATORIO_AUDITORIA_SUPABASE.md (14)
-- audit/supabase-reference-catalog.temporary.json (13)
-- analise-prs/RELATORIO_PRS.md (12)
-- analise-prs/prs.json (12)
+- PENDENCIAS.md (84)
+- supabase/MIGRATIONS_SYNC_LOG.md (63)
+- package.json (45)
+- package-lock.json (29)
+- docs/coordenacao/conflitos-semanticos.md (23)
+- CHANGELOG.md (20)
+- analise-prs/progresso.json (20)
+- supabase/EDGE_FUNCTIONS_DEPLOY_LOG.md (20)
+- src/pages/kit-builder/KitBuilderPage.tsx (18)
+- .github/workflows/deploy-gates.yml (17)
+- auditoria-supabase/RELATORIO_AUDITORIA_SUPABASE.md (16)
+- audit/supabase-reference-catalog.temporary.json (15)
+- analise-prs/RELATORIO_PRS.md (14)
+- analise-prs/prs.json (14)
 
 ## Workflows
 - `_e2e-relevance.yml` — Reusable — E2E Runtime Relevance (workflow_call)
@@ -1174,6 +1174,9 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - CHANGELOG topo: [1.1.0](https://github.com/adm01-debug/Promo_Gifts_V4/compare/v1.0.0...v1.1.0) (2026-11-13)
 
 ## Últimos commits
+- 2026-11-16 `157c2610` docs(migrations-log): recibo E15 — aplicação de 20261115130200 (#3694)
+- 2026-11-16 `1c6abc8b` chore(ci): métricas semanais 2026-W47 (#3691)
+- 2026-11-16 `5c497ed2` docs(audit): handoff para a próxima sessão, com o estado de 16/11 (#3698)
 - 2026-11-16 `25ea4f33` docs(audit): registra a exclusão das 71 branches, o fechamento da #3685 e o alarme falso do clone raso (#3697)
 - 2026-11-16 `2d1d7cab` Merge pull request #3689 from adm01-debug/claude/chore-dossies-branches-261116-0154
 - 2026-11-16 `7d34968e` docs(audit): veredito da n68 e protecao dos refs de preservacao
@@ -1186,9 +1189,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-16 `3e894270` chore(audit): segunda passada nos 7 dossies de branch grande
 - 2026-11-16 `80ea9910` chore(audit): dossie por branch das 160 branches do GitHub fora da main
 - 2026-11-16 `22db4dcb` fix(mockup): o mouse passa a mover o destaque na lista de empresas (#3690)
-- 2026-11-15 `e4ab7f85` feat(mockup-assistant): resgata a edge do assistente Matheus com rota de IA, testes e registro de authz (#3666)
-- 2026-11-15 `26d93948` fix(db): replay do zero — colunas e tabelas perdidas por no-op de CREATE TABLE IF NOT EXISTS (#3686)
-- 2026-11-15 `24038f15` fix(mockup): avisa o vendedor quando a ficha de aprovação falha (#3684)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`
