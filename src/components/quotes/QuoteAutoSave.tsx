@@ -13,6 +13,7 @@ import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 
 import { logger } from '@/lib/logger';
+import { quoteDraftRecoverySchema } from '@/lib/quotes/quoteDraftRecovery';
 import {
   QUOTE_AUTOSAVE_STATUS_TEXT,
   QUOTE_AUTOSAVE_ARIA_LABEL,
@@ -377,7 +378,23 @@ export function useQuoteAutoSave(quoteId?: string) {
     if (stored) {
       try {
         const draft: QuoteDraft = JSON.parse(stored);
-        return draft.data;
+        // O rascunho vem do localStorage do navegador: pode ter sido gravado por uma versão
+        // anterior do app, ter sido truncado por cota, ou ter sido editado à mão. Antes desta
+        // validação, draft.data voltava como `unknown` e o consumidor lia os campos direto
+        // (useQuoteBuilderState lê saved.shippingType, saved.shippingCost, saved.validUntil,
+        // saved.notes), então um rascunho fora de forma entrava no estado da tela sem conferência.
+        const parsed = quoteDraftRecoverySchema.safeParse(draft.data);
+        if (!parsed.success) {
+          logger.warn('Rascunho de orçamento fora de forma — restauração ignorada', {
+            storageKey,
+            issues: parsed.error.issues.slice(0, 5).map((i) => ({
+              path: i.path.join('.'),
+              code: i.code,
+            })),
+          });
+          return null;
+        }
+        return parsed.data;
       } catch {
         return null;
       }
