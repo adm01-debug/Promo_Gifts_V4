@@ -1,5 +1,9 @@
 # Manual de continuidade — leia antes de tocar em qualquer coisa
 
+> **Comece por `analise-branches/HANDOFF-PROXIMA-SESSAO.md`.** Ele dá o estado de hoje
+> (SHA da `main`, PRs abertas, refs de preservação) e a ordem de leitura. Este manual é
+> o passo 3 de lá.
+
 Escrito em 2026-11-16 por uma sessão que acabou por limite de tokens, para a próxima.
 **Isto não é o relatório do que foi feito** (esse é o `RELATORIO-SESSAO-261116.md`). Isto é
 o que custou caro descobrir e que não está em nenhum outro lugar. Ler os 15 minutos deste
