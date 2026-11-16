@@ -1,9 +1,9 @@
 {
  "meta": {
-  "sha": "2d1d7cabee7fdcf1589f7adb62498e3b910e428d",
+  "sha": "25ea4f33c2826a13d83404d62e97f11fd8416b62",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-16 11:19 UTC",
+  "generated_at": "2026-11-16 12:29 UTC",
   "files_total": 10430,
   "code_files": 8758,
   "code_lines": 1235388
@@ -539761,10 +539761,20 @@
   }
  },
  "git": {
-  "sha": "2d1d7cabee7fdcf1589f7adb62498e3b910e428d",
+  "sha": "25ea4f33c2826a13d83404d62e97f11fd8416b62",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "25ea4f3",
+    "date": "2026-11-16",
+    "author": "adm01-debug",
+    "subject": "docs(audit): registra a exclusão das 71 branches, o fechamento da #3685 e o alarme falso do clone raso (#3697)",
+    "files": [
+     "analise-branches/MANUAL-DE-CONTINUIDADE.md",
+     "analise-branches/RELATORIO-BRANCHES-COMPLETO.md"
+    ]
+   },
    {
     "sha": "2d1d7ca",
     "date": "2026-11-16",
@@ -540323,25 +540333,16 @@
      "src/components/mockup/MockupWizard.tsx",
      "tests/pages/MockupGenerator.a11y.test.tsx"
     ]
-   },
-   {
-    "sha": "aa89361",
-    "date": "2026-11-15",
-    "author": "adm01-debug",
-    "subject": "fix(magic-up): resgata varredura axe da pagina e nomeia selects e campos do briefing (#3668)",
-    "files": [
-     "src/components/magic-up/MagicUpCampaignPanel.tsx",
-     "src/components/magic-up/PromptCustomizationPanel.tsx",
-     "src/components/magic-up/PromptGenerator.tsx",
-     "src/pages/magic-up/MagicUpConfigPanel.tsx",
-     "tests/pages/MagicUp.a11y.test.tsx"
-    ]
    }
   ],
   "hot_files": [
    [
     "package.json",
     5
+   ],
+   [
+    "analise-branches/RELATORIO-BRANCHES-COMPLETO.md",
+    3
    ],
    [
     "supabase/MIGRATIONS_SYNC_LOG.md",
@@ -540352,7 +540353,7 @@
     3
    ],
    [
-    "analise-branches/RELATORIO-BRANCHES-COMPLETO.md",
+    "analise-branches/MANUAL-DE-CONTINUIDADE.md",
     2
    ],
    [
@@ -540413,10 +540414,6 @@
    ],
    [
     "src/hooks/mockup/useMockupGenerator.ts",
-    2
-   ],
-   [
-    "tests/pages/MockupGenerator.a11y.test.tsx",
     2
    ]
   ]

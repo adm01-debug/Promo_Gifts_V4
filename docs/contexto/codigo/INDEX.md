@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e de hora em hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `2d1d7cabee7fdcf1589f7adb62498e3b910e428d` (2026-11-16T07:47:45-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e de hora em hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `25ea4f33c2826a13d83404d62e97f11fd8416b62` (2026-11-16T08:53:45-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -590,8 +590,8 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - possiveis_segredos_no_codigo: 7 — ex.: scripts/ai-context/cenarios.mjs:102, src/components/admin/connections/__tests__/ConnectionSecurity.unit.test.tsx:9, src/integrations/supabase/client.ts:27
 
 ## Grafo de código (graphify)
-- 45760 nós · 78292 arestas · 2572 comunidades · grafo do commit `2d1d7cab`
-- comunidades maiores: ref_components (771), ref_integrations (643), vitest (555), ref_node_child_process (503), @testing-library/react (441), ref_hooks (391), @tanstack/react-query (387), ref_types (373), sonner (373), react (322), react-router-dom (315), nav.ts (311)
+- 45761 nós · 78294 arestas · 2525 comunidades · grafo do commit `25ea4f33`
+- comunidades maiores: ref_integrations (639), ref_components (557), vitest (547), ref_node_child_process (514), ref_hooks (499), lucide-react (478), @tanstack/react-query (398), ref_types (365), gotoAndSettle (354), ref_node_fs (338), sonner (322), react (321)
 - símbolos mais chamados: gotoAndSettle() (e2e/helpers/nav.ts), re (?), q() (scripts/supabase_snapshot/snapshot.py), analyze() (tests/scripts/test_personalization_artifact_diagnostics.py), outer() (tests/scripts/test_personalization_artifact_diagnostics.py), json (?), useExternalDatabase() (recovery/src-legacy/src/hooks/useExternalDatabase.ts), concludeCheck() (scripts/check-result-contract.mjs), querySupabaseReadOnly() (scripts/supabase-read-only-query.mjs), loginAs() (e2e/helpers/auth.ts), inner() (tests/scripts/test_personalization_artifact_diagnostics.py), excluded_sql() (scripts/supabase_snapshot/snapshot.py)
 - consulta local: `graphify query "<pergunta>"`, `graphify path "<A>" "<B>"`, `graphify explain "<X>"`
 
@@ -1174,6 +1174,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - CHANGELOG topo: [1.1.0](https://github.com/adm01-debug/Promo_Gifts_V4/compare/v1.0.0...v1.1.0) (2026-11-13)
 
 ## Últimos commits
+- 2026-11-16 `25ea4f33` docs(audit): registra a exclusão das 71 branches, o fechamento da #3685 e o alarme falso do clone raso (#3697)
 - 2026-11-16 `2d1d7cab` Merge pull request #3689 from adm01-debug/claude/chore-dossies-branches-261116-0154
 - 2026-11-16 `7d34968e` docs(audit): veredito da n68 e protecao dos refs de preservacao
 - 2026-11-16 `18cbbcc6` docs(audit): manual de continuidade para a proxima sessao
@@ -1188,7 +1189,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-15 `e4ab7f85` feat(mockup-assistant): resgata a edge do assistente Matheus com rota de IA, testes e registro de authz (#3666)
 - 2026-11-15 `26d93948` fix(db): replay do zero — colunas e tabelas perdidas por no-op de CREATE TABLE IF NOT EXISTS (#3686)
 - 2026-11-15 `24038f15` fix(mockup): avisa o vendedor quando a ficha de aprovação falha (#3684)
-- 2026-11-15 `956593c0` fix(mockup): teto de corpo e de lote na edge generate-mockup antes de processar (#3673)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

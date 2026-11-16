@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "2d1d7cabee7fdcf1589f7adb62498e3b910e428d",
+  "commit": "25ea4f33c2826a13d83404d62e97f11fd8416b62",
   "branch": "main",
-  "data_commit": "2026-11-16T07:47:45-03:00",
+  "data_commit": "2026-11-16T08:53:45-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "25ea4f33",
+    "data": "2026-11-16",
+    "assunto": "docs(audit): registra a exclusão das 71 branches, o fechamento da #3685 e o alarme falso do clone raso (#3697)"
+   },
    {
     "sha": "2d1d7cab",
     "data": "2026-11-16",
@@ -126,14 +131,9 @@
     "sha": "a78b0bac",
     "data": "2026-11-15",
     "assunto": "feat(mockup): aviso de falha ao carregar as técnicas de personalização, com \"Tentar novamente\" (#3677)"
-   },
-   {
-    "sha": "6da08832",
-    "data": "2026-11-15",
-    "assunto": "fix(assistente): card não acusa falha enquanto a RPC não foi aplicada (#3678)"
    }
   ],
-  "arquivos_mudados_7d": 2295,
+  "arquivos_mudados_7d": 2292,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -165,7 +165,7 @@
    },
    {
     "pasta": "src/components/mockup",
-    "mudancas": 183
+    "mudancas": 182
    },
    {
     "pasta": "src/components/inventory",
@@ -305,7 +305,7 @@
    },
    {
     "autor": "Joaquim Ataides",
-    "commits": 135
+    "commits": 134
    },
    {
     "autor": "Claude",
