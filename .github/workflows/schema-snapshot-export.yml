@@ -22,6 +22,9 @@ name: schema-snapshot-export
 # 2026-09-27: paths filter em PR e push — 12min de snapshot só quando schema muda.
 # 2026-10-02: E84 — no-op guard em schedule + branch fixa bot/schema-snapshot.
 # Schedule semanal mantém varredura incondicional (segunda 06:36 UTC).
+# 2026-11-16: export deixava de rodar (skipped) quando o drift-gate era cancelado, mesmo
+#   com force_rotate — o !cancelled() do job barrava. Resgatado de claude/fix-schema-
+#   snapshot-export-cancelled-skip-261101-2344 (run 41363217079 como evidência).
 # =============================================================================
 
 # 2026-11-13 (wf-consolida): saíram pull_request e push. Sem credenciais (que PR/push nunca
@@ -75,8 +78,13 @@ jobs:
     timeout-minutes: 30  # supabase db dump --linked > 388 tabelas leva >10min (run #40480567522 cancelado)
     # E27: SUPABASE_ACCESS_TOKEN não deve chegar a PRs de forks.
     # drift-gate: skipped em PR/push; em schedule/dispatch tem de passar, salvo force_rotate.
+    # drift-gate cancelado deixava este job em 'skipped' e a rotação do baseline não
+    # acontecia, mesmo com force_rotate (observado na run 41363217079:
+    # drift-gate=cancelled, export=skipped). O bloqueio era o `!cancelled()`, que o
+    # cancelled() do drift-gate propaga; a cláusula de force_rotate logo abaixo já
+    # libera o job sem olhar o result, então basta não ser barrado aqui.
     if: >-
-      !cancelled() &&
+      (inputs.force_rotate == true || !cancelled()) &&
       (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository) &&
       (needs.drift-gate.result == 'success' || needs.drift-gate.result == 'skipped' ||
        (github.event_name == 'workflow_dispatch' && inputs.force_rotate))
