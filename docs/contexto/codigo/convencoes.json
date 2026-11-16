@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "fix(ci): Gate 1.3 para de varrer analise-branches e destrava todo PR de código (#3701)",
    "docs(migrations-log): recibo E15 — aplicação de 20261115130200 (#3694)",
    "chore(ci): métricas semanais 2026-W47 (#3691)",
    "docs(audit): handoff para a próxima sessão, com o estado de 16/11 (#3698)",
-   "docs(audit): registra a exclusão das 71 branches, o fechamento da #3685 e o alarme falso do clone raso (#3697)",
-   "Merge pull request #3689 from adm01-debug/claude/chore-dossies-branches-261116-0154"
+   "docs(audit): registra a exclusão das 71 branches, o fechamento da #3685 e o alarme falso do clone raso (#3697)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",

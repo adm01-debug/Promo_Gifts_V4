@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "157c261084b2ea432ea8d77580bd91eec3565f23",
+  "commit": "a36e24d98abf92a0db39846cf56a1b721e53aee3",
   "branch": "main",
-  "data_commit": "2026-11-16T09:49:02-03:00",
+  "data_commit": "2026-11-16T10:13:54-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "a36e24d9",
+    "data": "2026-11-16",
+    "assunto": "fix(ci): Gate 1.3 para de varrer analise-branches e destrava todo PR de código (#3701)"
+   },
    {
     "sha": "157c2610",
     "data": "2026-11-16",
@@ -126,11 +131,6 @@
     "sha": "3bd8af66",
     "data": "2026-11-15",
     "assunto": "feat(mockup): editor de logo com largura e altura proporcionais e botão \"Girar\" (#3669)"
-   },
-   {
-    "sha": "0c05df33",
-    "data": "2026-11-15",
-    "assunto": "fix(docs): dossies nao citam migration de branch apagada como caminho da arvore (#3681)"
    }
   ],
   "arquivos_mudados_7d": 2294,
@@ -169,7 +169,7 @@
    },
    {
     "pasta": "supabase/functions/_shared",
-    "mudancas": 309
+    "mudancas": 308
    },
    {
     "pasta": "src/components/ui",
@@ -177,7 +177,7 @@
    },
    {
     "pasta": "src/components/mockup",
-    "mudancas": 269
+    "mudancas": 268
    },
    {
     "pasta": "src/pages/admin",
@@ -211,19 +211,15 @@
    },
    {
     "arquivo": "package.json",
-    "mudancas": 45
+    "mudancas": 44
    },
    {
     "arquivo": "package-lock.json",
-    "mudancas": 29
+    "mudancas": 28
    },
    {
     "arquivo": "docs/coordenacao/conflitos-semanticos.md",
     "mudancas": 23
-   },
-   {
-    "arquivo": "CHANGELOG.md",
-    "mudancas": 20
    },
    {
     "arquivo": "analise-prs/progresso.json",
@@ -232,6 +228,10 @@
    {
     "arquivo": "supabase/EDGE_FUNCTIONS_DEPLOY_LOG.md",
     "mudancas": 20
+   },
+   {
+    "arquivo": "CHANGELOG.md",
+    "mudancas": 19
    },
    {
     "arquivo": "src/pages/kit-builder/KitBuilderPage.tsx",
@@ -301,7 +301,7 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 578
+    "commits": 577
    },
    {
     "autor": "Claude",
@@ -309,7 +309,7 @@
    },
    {
     "autor": "Joaquim Ataides",
-    "commits": 129
+    "commits": 127
    },
    {
     "autor": "github-actions[bot]",
@@ -324,7 +324,7 @@
  "contagens": {
   "arquivos_total": 10503,
   "arquivos_codigo": 5328,
-  "linhas_codigo": 1015575,
+  "linhas_codigo": 1015584,
   "rotas": 138,
   "rotas_http_backend": 13,
   "vistas_por_id": 0,
@@ -1220,7 +1220,7 @@
   },
   "scripts/check-migration-path-references.mjs": {
    "arquivos": 1,
-   "linhas": 205
+   "linhas": 214
   },
   "scripts/check-migration-receipts.mjs": {
    "arquivos": 1,

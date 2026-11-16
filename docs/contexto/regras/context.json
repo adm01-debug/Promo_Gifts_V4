@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "157c261084b2ea432ea8d77580bd91eec3565f23",
+  "sha": "a36e24d98abf92a0db39846cf56a1b721e53aee3",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-16 12:52 UTC",
+  "generated_at": "2026-11-16 13:38 UTC",
   "files_total": 10431,
   "code_files": 8758,
-  "code_lines": 1235388
+  "code_lines": 1235397
  },
  "version": "1.3.2",
- "facts_hash": "4284dc9dfa8c59e5",
+ "facts_hash": "417db12f524f1411",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -149118,7 +149118,7 @@
   {
    "module": "scripts",
    "files": 287,
-   "lines": 62101,
+   "lines": 62110,
    "tables": [
     "a",
     "b",
@@ -422515,7 +422515,7 @@
   },
   "scripts/check-migration-path-references.mjs": {
    "path": "scripts/check-migration-path-references.mjs",
-   "lines": 205,
+   "lines": 214,
    "params": [
     {
      "name": "SELF",
@@ -539761,10 +539761,19 @@
   }
  },
  "git": {
-  "sha": "157c261084b2ea432ea8d77580bd91eec3565f23",
+  "sha": "a36e24d98abf92a0db39846cf56a1b721e53aee3",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "a36e24d",
+    "date": "2026-11-16",
+    "author": "adm01-debug",
+    "subject": "fix(ci): Gate 1.3 para de varrer analise-branches e destrava todo PR de código (#3701)",
+    "files": [
+     "scripts/check-migration-path-references.mjs"
+    ]
+   },
    {
     "sha": "157c261",
     "date": "2026-11-16",
@@ -540299,35 +540308,6 @@
      "src/hooks/assistant/__tests__/useSalesAssistantCandidates.test.ts",
      "src/hooks/assistant/useSalesAssistantCandidates.ts"
     ]
-   },
-   {
-    "sha": "4344666",
-    "date": "2026-11-15",
-    "author": "adm01-debug",
-    "subject": "feat(assistente): Encaixe do Cliente — fase 1 validada e com os 2 portões destravados (#3663)",
-    "files": [
-     "audit/supabase-reference-catalog.temporary.json",
-     "src/components/assistant/SalesAssistantCard.tsx",
-     "src/components/assistant/SalesAssistantProductRow.tsx",
-     "src/components/assistant/SalesAssistantStates.tsx",
-     "src/components/assistant/index.ts",
-     "src/hooks/assistant/__tests__/useClientBrandSignals.test.ts",
-     "src/hooks/assistant/__tests__/useSalesAssistantCandidates.test.ts",
-     "src/hooks/assistant/useClientBrandSignals.ts",
-     "src/hooks/assistant/useSalesAssistantCandidates.ts",
-     "src/lib/assistant/__tests__/buildReason.test.ts",
-     "src/lib/assistant/__tests__/logoColorToGroups.test.ts",
-     "src/lib/assistant/__tests__/ramoAliases.test.ts",
-     "src/lib/assistant/buildReason.ts",
-     "src/lib/assistant/logoColorToGroups.ts",
-     "src/lib/assistant/ramoAliases.ts",
-     "src/pages/clients/ClientDetailPage.tsx",
-     "src/types/crm.ts",
-     "src/utils/color-matching.ts",
-     "supabase/MIGRATIONS_SYNC_LOG.md",
-     "supabase/migrations/20261115034500_rpc_sales_assistant_candidates.sql",
-     "supabase/rollbacks/20261115034500_rollback.sql"
-    ]
    }
   ],
   "hot_files": [
@@ -540337,7 +540317,7 @@
    ],
    [
     "supabase/MIGRATIONS_SYNC_LOG.md",
-    4
+    3
    ],
    [
     "analise-branches/ESTADO-EM-261116.md",

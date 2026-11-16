@@ -965,7 +965,7 @@
   {
    "arquivo": "scripts/check-migration-path-references.mjs",
    "descricao": "* check-migration-path-references.mjs",
-   "linhas": 205,
+   "linhas": 214,
    "env": [],
    "npm_scripts": [
     "check:migration-refs"
