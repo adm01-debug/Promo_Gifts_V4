@@ -1,9 +1,9 @@
 {
  "meta": {
-  "sha": "a36e24d98abf92a0db39846cf56a1b721e53aee3",
+  "sha": "8a13c8882d26e181cf4e1fa92e4c31ff82efe4b1",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-16 13:38 UTC",
+  "generated_at": "2026-11-16 13:53 UTC",
   "files_total": 10431,
   "code_files": 8758,
   "code_lines": 1235397
@@ -539761,10 +539761,22 @@
   }
  },
  "git": {
-  "sha": "a36e24d98abf92a0db39846cf56a1b721e53aee3",
+  "sha": "8a13c8882d26e181cf4e1fa92e4c31ff82efe4b1",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "8a13c88",
+    "date": "2026-11-16",
+    "author": "adm01-debug",
+    "subject": "chore(ci): destrava os recibos do ledger e o baseline do ratchet (#3699)",
+    "files": [
+     "bundle-size-baseline.json",
+     "docs/coordenacao/conflitos-semanticos.md",
+     "supabase/EDGE_FUNCTIONS_DEPLOY_LOG.md",
+     "supabase/MIGRATIONS_SYNC_LOG.md"
+    ]
+   },
    {
     "sha": "a36e24d",
     "date": "2026-11-16",
@@ -540295,19 +540307,6 @@
      "src/hooks/mockup/useMockupTechniquesLoad.ts",
      "src/pages/mockups/MockupGenerator.tsx"
     ]
-   },
-   {
-    "sha": "6da0883",
-    "date": "2026-11-15",
-    "author": "adm01-debug",
-    "subject": "fix(assistente): card não acusa falha enquanto a RPC não foi aplicada (#3678)",
-    "files": [
-     "src/components/assistant/SalesAssistantCard.tsx",
-     "src/components/assistant/SalesAssistantStates.tsx",
-     "src/components/assistant/index.ts",
-     "src/hooks/assistant/__tests__/useSalesAssistantCandidates.test.ts",
-     "src/hooks/assistant/useSalesAssistantCandidates.ts"
-    ]
    }
   ],
   "hot_files": [
@@ -540317,7 +540316,7 @@
    ],
    [
     "supabase/MIGRATIONS_SYNC_LOG.md",
-    3
+    4
    ],
    [
     "analise-branches/ESTADO-EM-261116.md",
@@ -540334,6 +540333,10 @@
    [
     "src/pages/mockups/MockupGenerator.tsx",
     3
+   ],
+   [
+    "docs/coordenacao/conflitos-semanticos.md",
+    2
    ],
    [
     "analise-branches/dados/LEIA-ME.md",
@@ -540385,10 +540388,6 @@
    ],
    [
     "e2e/helpers/auth.ts",
-    2
-   ],
-   [
-    "src/hooks/mockup/useMockupGenerator.ts",
     2
    ]
   ]

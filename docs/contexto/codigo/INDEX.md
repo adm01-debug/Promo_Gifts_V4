@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e de hora em hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `a36e24d98abf92a0db39846cf56a1b721e53aee3` (2026-11-16T10:13:54-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e de hora em hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `8a13c8882d26e181cf4e1fa92e4c31ff82efe4b1` (2026-11-16T10:52:25-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -590,7 +590,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - possiveis_segredos_no_codigo: 7 — ex.: scripts/ai-context/cenarios.mjs:102, src/components/admin/connections/__tests__/ConnectionSecurity.unit.test.tsx:9, src/integrations/supabase/client.ts:27
 
 ## Grafo de código (graphify)
-- 45786 nós · 78319 arestas · 2579 comunidades · grafo do commit `a36e24d9`
+- 45786 nós · 78319 arestas · 2579 comunidades · grafo do commit `8a13c888`
 - comunidades maiores: ref_hooks (722), lucide-react (655), ref_integrations (612), react (607), vitest (570), gotoAndSettle (444), ref_node_child_process (419), @tanstack/react-query (399), ref_components (365), ref_types (340), scripts (302), ref_node_fs (291)
 - símbolos mais chamados: gotoAndSettle() (e2e/helpers/nav.ts), re (?), q() (scripts/supabase_snapshot/snapshot.py), analyze() (tests/scripts/test_personalization_artifact_diagnostics.py), outer() (tests/scripts/test_personalization_artifact_diagnostics.py), json (?), useExternalDatabase() (recovery/src-legacy/src/hooks/useExternalDatabase.ts), concludeCheck() (scripts/check-result-contract.mjs), querySupabaseReadOnly() (scripts/supabase-read-only-query.mjs), loginAs() (e2e/helpers/auth.ts), inner() (tests/scripts/test_personalization_artifact_diagnostics.py), excluded_sql() (scripts/supabase_snapshot/snapshot.py)
 - consulta local: `graphify query "<pergunta>"`, `graphify path "<A>" "<B>"`, `graphify explain "<X>"`
@@ -598,12 +598,12 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 ## Hotspots (arquivos mais alterados, 90 dias)
 - RELATORIO_CI.md (88)
 - PENDENCIAS.md (84)
-- supabase/MIGRATIONS_SYNC_LOG.md (63)
+- supabase/MIGRATIONS_SYNC_LOG.md (64)
 - package.json (44)
 - package-lock.json (28)
-- docs/coordenacao/conflitos-semanticos.md (23)
+- docs/coordenacao/conflitos-semanticos.md (24)
+- supabase/EDGE_FUNCTIONS_DEPLOY_LOG.md (21)
 - analise-prs/progresso.json (20)
-- supabase/EDGE_FUNCTIONS_DEPLOY_LOG.md (20)
 - CHANGELOG.md (19)
 - src/pages/kit-builder/KitBuilderPage.tsx (18)
 - .github/workflows/deploy-gates.yml (17)
@@ -1174,6 +1174,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - CHANGELOG topo: [1.1.0](https://github.com/adm01-debug/Promo_Gifts_V4/compare/v1.0.0...v1.1.0) (2026-11-13)
 
 ## Últimos commits
+- 2026-11-16 `8a13c888` chore(ci): destrava os recibos do ledger e o baseline do ratchet (#3699)
 - 2026-11-16 `a36e24d9` fix(ci): Gate 1.3 para de varrer analise-branches e destrava todo PR de código (#3701)
 - 2026-11-16 `157c2610` docs(migrations-log): recibo E15 — aplicação de 20261115130200 (#3694)
 - 2026-11-16 `1c6abc8b` chore(ci): métricas semanais 2026-W47 (#3691)
@@ -1188,7 +1189,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-16 `766597e8` chore(audit): dados brutos da analise das 160 branches
 - 2026-11-16 `af6fe704` chore(audit): redige o exemplo de chave AWS citado em dois dossies
 - 2026-11-16 `3e894270` chore(audit): segunda passada nos 7 dossies de branch grande
-- 2026-11-16 `80ea9910` chore(audit): dossie por branch das 160 branches do GitHub fora da main
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`
