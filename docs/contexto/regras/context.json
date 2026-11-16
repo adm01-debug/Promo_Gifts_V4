@@ -1,10 +1,10 @@
 {
  "meta": {
-  "sha": "f6335b1c50500425d454cdd9c55158f7adf1d860",
+  "sha": "5c39856ebc3f5385c929193e0d20fa9184fe8938",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-16 15:37 UTC",
-  "files_total": 10703,
+  "generated_at": "2026-11-16 16:16 UTC",
+  "files_total": 10704,
   "code_files": 8761,
   "code_lines": 1235844
  },
@@ -539862,10 +539862,28 @@
   }
  },
  "git": {
-  "sha": "f6335b1c50500425d454cdd9c55158f7adf1d860",
+  "sha": "5c39856ebc3f5385c929193e0d20fa9184fe8938",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "5c39856",
+    "date": "2026-11-16",
+    "author": "adm01-debug",
+    "subject": "fix(migrations): restaura 325 recibos do ledger apagados por um commit de E2E (#3708)",
+    "files": [
+     "supabase/MIGRATIONS_SYNC_LOG.md"
+    ]
+   },
+   {
+    "sha": "ec9b8e7",
+    "date": "2026-11-16",
+    "author": "adm01-debug",
+    "subject": "docs(audit): retrata o veredito dos 52 testes legacy — 21 dos 26 modulos estao vivos (#3706)",
+    "files": [
+     "analise-branches/VEREDITO-52-TESTES-LEGACY-261116.md"
+    ]
+   },
    {
     "sha": "f6335b1",
     "date": "2026-11-16",
@@ -540611,50 +540629,19 @@
      "src/tests/MockupDeletion.test.tsx",
      "tests/pages/MockupGenerator.a11y.test.tsx"
     ]
-   },
-   {
-    "sha": "5482684",
-    "date": "2026-11-15",
-    "author": "adm01-debug",
-    "subject": "fix(mockup): resgata teste de a11y da fatia 2, aviso de falha na seleção do mockup e trava do braces (#3676)",
-    "files": [
-     "package.json",
-     "src/components/mockup/__tests__/mockupA11y.slice2.test.tsx",
-     "src/hooks/mockup/__tests__/mockupSelectionSnapshot.test.ts",
-     "src/hooks/mockup/mockupSelectionSnapshot.ts"
-    ]
-   },
-   {
-    "sha": "dbe1181",
-    "date": "2026-11-15",
-    "author": "adm01-debug",
-    "subject": "test(mockup): resgata 39 testes do gerador de mockup que estavam desligados por mock incompleto (#3672)",
-    "files": [
-     "package.json",
-     "src/hooks/mockup/__tests__/mockupAreas.preserve.test.ts",
-     "src/hooks/mockup/__tests__/mockupBatch.partial.test.ts",
-     "src/hooks/mockup/__tests__/mockupDimensions.guard.test.ts",
-     "src/hooks/mockup/__tests__/mockupEntry.params.test.ts",
-     "src/hooks/mockup/__tests__/mockupGeneration.abort.test.ts",
-     "src/hooks/mockup/__tests__/mockupRestore.selection.test.ts",
-     "src/hooks/mockup/__tests__/useMockupGenerator.techniques.test.ts",
-     "tests/components/mockup/acceptance/grupo1.acceptance.test.tsx",
-     "tests/components/mockup/acceptance/grupo3.acceptance.test.tsx",
-     "tests/components/mockup/acceptance/grupo6.acceptance.test.tsx"
-    ]
    }
   ],
   "hot_files": [
    [
-    "package.json",
+    "supabase/MIGRATIONS_SYNC_LOG.md",
     5
    ],
    [
-    "supabase/MIGRATIONS_SYNC_LOG.md",
-    4
+    "docs/coordenacao/conflitos-semanticos.md",
+    3
    ],
    [
-    "docs/coordenacao/conflitos-semanticos.md",
+    "package.json",
     3
    ],
    [

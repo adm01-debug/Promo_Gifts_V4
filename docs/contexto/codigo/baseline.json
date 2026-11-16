@@ -2,11 +2,21 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "f6335b1c50500425d454cdd9c55158f7adf1d860",
+  "commit": "5c39856ebc3f5385c929193e0d20fa9184fe8938",
   "branch": "main",
-  "data_commit": "2026-11-16T12:36:11-03:00",
+  "data_commit": "2026-11-16T13:14:11-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "5c39856e",
+    "data": "2026-11-16",
+    "assunto": "fix(migrations): restaura 325 recibos do ledger apagados por um commit de E2E (#3708)"
+   },
+   {
+    "sha": "ec9b8e75",
+    "data": "2026-11-16",
+    "assunto": "docs(audit): retrata o veredito dos 52 testes legacy — 21 dos 26 modulos estao vivos (#3706)"
+   },
    {
     "sha": "f6335b1c",
     "data": "2026-11-16",
@@ -121,187 +131,177 @@
     "sha": "e4ab7f85",
     "data": "2026-11-15",
     "assunto": "feat(mockup-assistant): resgata a edge do assistente Matheus com rota de IA, testes e registro de authz (#3666)"
-   },
-   {
-    "sha": "26d93948",
-    "data": "2026-11-15",
-    "assunto": "fix(db): replay do zero — colunas e tabelas perdidas por no-op de CREATE TABLE IF NOT EXISTS (#3686)"
-   },
-   {
-    "sha": "24038f15",
-    "data": "2026-11-15",
-    "assunto": "fix(mockup): avisa o vendedor quando a ficha de aprovação falha (#3684)"
    }
   ],
-  "arquivos_mudados_7d": 2556,
+  "arquivos_mudados_7d": 2553,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
-    "mudancas": 2128
+    "mudancas": 1240
    },
    {
     "pasta": "src/components/products",
-    "mudancas": 1080
+    "mudancas": 633
    },
    {
     "pasta": "tests/edge-functions/live",
-    "mudancas": 823
+    "mudancas": 478
    },
    {
     "pasta": "src/hooks/products",
-    "mudancas": 750
+    "mudancas": 438
    },
    {
     "pasta": "src/pages/magazine",
-    "mudancas": 648
+    "mudancas": 372
    },
    {
     "pasta": "src/components/quotes",
-    "mudancas": 603
+    "mudancas": 357
    },
    {
     "pasta": "src/components/inventory",
-    "mudancas": 573
-   },
-   {
-    "pasta": "src/components/ui",
-    "mudancas": 516
-   },
-   {
-    "pasta": "supabase/functions/_shared",
-    "mudancas": 514
-   },
-   {
-    "pasta": "src/pages/admin",
-    "mudancas": 429
-   },
-   {
-    "pasta": "src/components/mockup",
-    "mudancas": 397
-   },
-   {
-    "pasta": "src/components/kit-builder",
-    "mudancas": 364
-   },
-   {
-    "pasta": "src/pages/products",
-    "mudancas": 364
-   },
-   {
-    "pasta": "src/pages/quotes",
-    "mudancas": 346
+    "mudancas": 333
    },
    {
     "pasta": "recovery/src-legacy/src",
     "mudancas": 317
+   },
+   {
+    "pasta": "supabase/functions/_shared",
+    "mudancas": 307
+   },
+   {
+    "pasta": "src/components/ui",
+    "mudancas": 297
+   },
+   {
+    "pasta": "src/components/mockup",
+    "mudancas": 252
+   },
+   {
+    "pasta": "src/pages/admin",
+    "mudancas": 252
+   },
+   {
+    "pasta": "src/components/kit-builder",
+    "mudancas": 223
+   },
+   {
+    "pasta": "src/pages/products",
+    "mudancas": 214
+   },
+   {
+    "pasta": "src/pages/quotes",
+    "mudancas": 205
    }
   ],
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "RELATORIO_CI.md",
-    "mudancas": 86
+    "mudancas": 81
    },
    {
     "arquivo": "PENDENCIAS.md",
-    "mudancas": 78
+    "mudancas": 73
    },
    {
     "arquivo": "supabase/MIGRATIONS_SYNC_LOG.md",
-    "mudancas": 67
+    "mudancas": 64
    },
    {
     "arquivo": "package.json",
-    "mudancas": 48
+    "mudancas": 44
    },
    {
     "arquivo": "package-lock.json",
-    "mudancas": 32
+    "mudancas": 29
    },
    {
     "arquivo": "docs/coordenacao/conflitos-semanticos.md",
-    "mudancas": 28
+    "mudancas": 25
    },
    {
     "arquivo": "analise-prs/progresso.json",
-    "mudancas": 23
+    "mudancas": 20
    },
    {
     "arquivo": ".github/workflows/deploy-gates.yml",
-    "mudancas": 22
-   },
-   {
-    "arquivo": "CHANGELOG.md",
-    "mudancas": 22
-   },
-   {
-    "arquivo": "supabase/EDGE_FUNCTIONS_DEPLOY_LOG.md",
-    "mudancas": 22
-   },
-   {
-    "arquivo": "src/pages/kit-builder/KitBuilderPage.tsx",
-    "mudancas": 21
-   },
-   {
-    "arquivo": "auditoria-supabase/RELATORIO_AUDITORIA_SUPABASE.md",
     "mudancas": 19
    },
    {
-    "arquivo": "audit/supabase-reference-catalog.temporary.json",
+    "arquivo": "CHANGELOG.md",
+    "mudancas": 19
+   },
+   {
+    "arquivo": "supabase/EDGE_FUNCTIONS_DEPLOY_LOG.md",
+    "mudancas": 19
+   },
+   {
+    "arquivo": "src/pages/kit-builder/KitBuilderPage.tsx",
     "mudancas": 18
    },
    {
-    "arquivo": "analise-prs/RELATORIO_PRS.md",
-    "mudancas": 17
-   },
-   {
-    "arquivo": "analise-prs/prs.json",
-    "mudancas": 17
-   },
-   {
-    "arquivo": "src/hooks/kit-builder/useKitBuilderPageState.ts",
-    "mudancas": 17
-   },
-   {
-    "arquivo": "analise-branches/RELATORIO_BRANCHES.md",
+    "arquivo": "auditoria-supabase/RELATORIO_AUDITORIA_SUPABASE.md",
     "mudancas": 16
    },
    {
-    "arquivo": "e2e/flows/magazine-publish-smoke.spec.ts",
+    "arquivo": "audit/supabase-reference-catalog.temporary.json",
     "mudancas": 15
+   },
+   {
+    "arquivo": "analise-prs/RELATORIO_PRS.md",
+    "mudancas": 14
+   },
+   {
+    "arquivo": "analise-prs/prs.json",
+    "mudancas": 14
+   },
+   {
+    "arquivo": "src/hooks/kit-builder/useKitBuilderPageState.ts",
+    "mudancas": 14
+   },
+   {
+    "arquivo": "analise-branches/RELATORIO_BRANCHES.md",
+    "mudancas": 13
+   },
+   {
+    "arquivo": "e2e/flows/magazine-publish-smoke.spec.ts",
+    "mudancas": 12
    },
    {
     "arquivo": "src/pages/mockups/MockupGenerator.tsx",
-    "mudancas": 15
+    "mudancas": 12
    },
    {
     "arquivo": "docs/ci/SEGREDOS.md",
-    "mudancas": 14
+    "mudancas": 11
    },
    {
     "arquivo": "docs/plans/PLANO_MELHORIAS_CORRECOES_200_ETAPAS_2026-10-18.md",
-    "mudancas": 14
+    "mudancas": 11
    },
    {
     "arquivo": "e2e/flows/magazine-preview-sticky-smoke.spec.ts",
-    "mudancas": 14
+    "mudancas": 11
    },
    {
     "arquivo": "e2e/helpers/auth.ts",
-    "mudancas": 14
+    "mudancas": 11
    },
    {
     "arquivo": "src/hooks/kit-builder/useKitAutoSave.ts",
-    "mudancas": 14
+    "mudancas": 11
    },
    {
     "arquivo": ".github/workflows/db-schema-drift-check.yml",
-    "mudancas": 13
+    "mudancas": 10
    }
   ],
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 573
+    "commits": 569
    },
    {
     "autor": "Claude",
@@ -309,7 +309,7 @@
    },
    {
     "autor": "Joaquim Ataides",
-    "commits": 109
+    "commits": 102
    },
    {
     "autor": "github-actions[bot]",
@@ -322,7 +322,7 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 10775,
+  "arquivos_total": 10776,
   "arquivos_codigo": 5331,
   "linhas_codigo": 1016031,
   "rotas": 138,
@@ -339,7 +339,7 @@
   "testes": 2524,
   "workflows": 87,
   "scripts": 272,
-  "docs_md": 1453
+  "docs_md": 1454
  },
  "por_pasta": {
   ".github/scripts": {
