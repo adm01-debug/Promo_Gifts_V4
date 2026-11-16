@@ -23,7 +23,7 @@
    "src/services (10)"
   ],
   "testes": [
-   "tests/ (1030)",
+   "tests/ (1031)",
    "co-localizado (__tests__) (674)",
    "e2e/ (625)"
   ],
@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "fix(kit): fixar/desafixar kit anuncia o estado da requisição velha (#3723)",
    "chore(docs): arquiva a passagem de sessão de 15/11 que a main não tinha (#3717)",
    "chore(deps): sobe jest-dom 7 e react-hooks 7; rejeita jsdom 31 com a evidência (#3715)",
    "docs(migrations): registra recibo oficial da CRON-005 aplicada em producao (#3716)",
-   "fix(quotes): valida o rascunho antes de restaurar na tela do orcamento (#3713)",
-   "test: resgata os 2 testes que sobreviveram a refutacao adversarial (#3712)"
+   "fix(quotes): valida o rascunho antes de restaurar na tela do orcamento (#3713)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",

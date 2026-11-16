@@ -5,18 +5,18 @@
   "vitest",
   "playwright"
  ],
- "total": 2528,
+ "total": 2529,
  "por_tipo": {
   "contrato": 65,
   "e2e": 677,
   "pytest": 4,
   "qa": 17,
-  "unit": 1765
+  "unit": 1766
  },
  "onde_ficam": [
   {
    "padrao": "tests/",
-   "arquivos": 1030
+   "arquivos": 1031
   },
   {
    "padrao": "co-localizado (__tests__)",
@@ -16899,6 +16899,15 @@
    "casos": 1
   },
   {
+   "arquivo": "tests/hooks/useCustomKitPersistence.pin-order.test.tsx",
+   "tipo": "unit",
+   "linhas": 93,
+   "testa": [
+    "src/hooks/kit-builder/useCustomKitPersistence.ts"
+   ],
+   "casos": 2
+  },
+  {
    "arquivo": "tests/hooks/useDebounce-extended.test.ts",
    "tipo": "unit",
    "linhas": 168,
@@ -21835,7 +21844,7 @@
   "src/hooks/intelligence/useVoiceAgent.ts": 2,
   "src/hooks/intelligence/useZeroResultSubstitutes.ts": 1,
   "src/hooks/kit-builder/index.ts": 1,
-  "src/hooks/kit-builder/useCustomKitPersistence.ts": 2,
+  "src/hooks/kit-builder/useCustomKitPersistence.ts": 3,
   "src/hooks/kit-builder/useKitAutoSave.ts": 4,
   "src/hooks/kit-builder/useKitBuilder.ts": 2,
   "src/hooks/kit-builder/useKitBuilderPageState.ts": 3,

@@ -9688,7 +9688,7 @@
    "hooks_exportados": [
     "useCustomKitPersistence"
    ],
-   "linhas": 208,
+   "linhas": 223,
    "dominio": "hooks/kit-builder",
    "tabelas": [
     "custom_kits"
@@ -9700,10 +9700,12 @@
    "hooks_internos": [
     "useAuth",
     "useCallback",
+    "useEffect",
     "useMemo",
     "useMutation",
     "useQuery",
-    "useQueryClient"
+    "useQueryClient",
+    "useRef"
    ],
    "canais_realtime": [],
    "usado_por": 2,
@@ -9711,7 +9713,7 @@
     "src/hooks/kit-builder/index.ts",
     "src/hooks/kit-builder/useKitTemplates.ts"
    ],
-   "coberto_por_testes": 2
+   "coberto_por_testes": 3
   },
   {
    "arquivo": "src/hooks/kit-builder/useCustomKitsRealtime.ts",

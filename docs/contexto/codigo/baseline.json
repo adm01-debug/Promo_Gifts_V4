@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "9bd4a4bf6642ac8ff23a86c51d9d1a6415d9eaed",
+  "commit": "eadb47a7593310ee841557b686fc9443adf860e5",
   "branch": "main",
-  "data_commit": "2026-11-16T19:28:08-03:00",
+  "data_commit": "2026-11-16T20:36:17-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "eadb47a7",
+    "data": "2026-11-16",
+    "assunto": "fix(kit): fixar/desafixar kit anuncia o estado da requisição velha (#3723)"
+   },
    {
     "sha": "9bd4a4bf",
     "data": "2026-11-16",
@@ -126,14 +131,9 @@
     "sha": "7d34968e",
     "data": "2026-11-16",
     "assunto": "docs(audit): veredito da n68 e protecao dos refs de preservacao"
-   },
-   {
-    "sha": "18cbbcc6",
-    "data": "2026-11-16",
-    "assunto": "docs(audit): manual de continuidade para a proxima sessao"
    }
   ],
-  "arquivos_mudados_7d": 1992,
+  "arquivos_mudados_7d": 1951,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -185,7 +185,7 @@
    },
    {
     "pasta": "RELATORIO_CI.md",
-    "mudancas": 76
+    "mudancas": 75
    },
    {
     "pasta": "src/pages/admin",
@@ -193,17 +193,17 @@
    },
    {
     "pasta": "PENDENCIAS.md",
-    "mudancas": 68
+    "mudancas": 67
    }
   ],
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "RELATORIO_CI.md",
-    "mudancas": 76
+    "mudancas": 75
    },
    {
     "arquivo": "PENDENCIAS.md",
-    "mudancas": 68
+    "mudancas": 67
    },
    {
     "arquivo": "supabase/MIGRATIONS_SYNC_LOG.md",
@@ -322,9 +322,9 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 10799,
-  "arquivos_codigo": 5347,
-  "linhas_codigo": 1018684,
+  "arquivos_total": 10800,
+  "arquivos_codigo": 5348,
+  "linhas_codigo": 1018792,
   "rotas": 138,
   "rotas_http_backend": 13,
   "vistas_por_id": 0,
@@ -336,7 +336,7 @@
   "tabelas": 527,
   "migrations": 3097,
   "cron_jobs": 122,
-  "testes": 2528,
+  "testes": 2529,
   "workflows": 87,
   "scripts": 283,
   "docs_md": 1458
@@ -1912,7 +1912,7 @@
   },
   "src/hooks": {
    "arquivos": 478,
-   "linhas": 90282
+   "linhas": 90297
   },
   "src/integrations": {
    "arquivos": 11,
@@ -2083,8 +2083,8 @@
    "linhas": 325
   },
   "tests/hooks": {
-   "arquivos": 137,
-   "linhas": 19030
+   "arquivos": 138,
+   "linhas": 19123
   },
   "tests/integration": {
    "arquivos": 11,
