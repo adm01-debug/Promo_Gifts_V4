@@ -956,7 +956,7 @@ O primeiro agente disse que podia fechar. O segundo achou coisa que a `main` nã
 - **Estado:** no GitHub
 - **Risco de fechar:** Praticamente nulo, e menor que o risco de reabrir. A capacidade de negocio (regenerar as imagens de referencia dos testes visuais) segue na main em um lugar so, com os mesmos gatilhos automaticos e com uma protecao que os originais nao tinham: 6 dos 11 antigos comitavam direto na branch, o consolidado sempre abre PR e bloqueia push em main. Reaplicar esta branch seria regressao deliberada — desfaria a PR #3055 (106 para 92 workflows), traria de volta 11 workflows duplicados, um workflow-fantasma que so imprime "descontinuado" e um _template.yml que aparece na tela de Actions como executavel sem funcao, justamente quando o dono mandou reduzir workflows. Unica diferenca residual, que nao justifica resgate: magazine-typed-queries.yml tinha um contador fixo (13 RPCs transacionais v2) que falhava se alguem removesse um RPC; o numero bate hoje, o comportamento tem teste SQL dedicado na main, e um contador por grep sobre migracao concluida acusa falso positivo a cada RPC novo legitimo.
 
-## 6. Liberadas para apagar (72) — **70 apagadas em 2026-11-16**
+## 6. Liberadas para apagar (72) — **71 apagadas em 2026-11-16, 1 já não existia**
 
 Veredito de que o trabalho já está no sistema, **confirmado** pelo segundo agente.
 
@@ -978,7 +978,7 @@ Veredito de que o trabalho já está no sistema, **confirmado** pelo segundo age
 > - Total de branches no remoto: **176 → 107** — 71 apagadas, mais dois refs novos
 >   (`salvo/261116-apagadas-70` e a branch desta própria atualização, que some no merge).
 
-| Branch | O que fazia | Ainda no GitHub? |
+| Branch | O que fazia | Existia no GitHub na análise (todas apagadas em 16/11) |
 |---|---|---|
 | `claude/chore-ci-static-checks-supersede-3525-261114-0206` | Enxuga a fila de verificacoes automaticas que roda a cada alteracao do sistema (menos tempo e custo de maquina para publicar) sem abrir mao de nenhuma | sim |
 | `claude/fix-e2e-kit-builder-etapas-261114-0735` | Fez o teste automatico do "monte seu kit" avancar de etapa como um cliente real avanca, para que uma quebra nesse fluxo de venda apareca antes de ir a | sim |
@@ -1091,7 +1091,7 @@ Trabalho que entrou na `main` e está em produção.
 
 | PR | Branch | O que é | Situação |
 |---|---|---|---|
-| [#3689](https://github.com/adm01-debug/Promo_Gifts_V4/pull/3689) | `claude/chore-dossies-branches-261116-0154` | dossie por branch das 160 branches do GitHub fora da main | minha, pronta para mergear |
+| ~~[#3689](https://github.com/adm01-debug/Promo_Gifts_V4/pull/3689)~~ | `claude/chore-dossies-branches-261116-0154` | dossie por branch das 160 branches do GitHub fora da main | **MERGEADA em 16/11** — `main` = `2d1d7cabee`, deploy de produção READY |
 | ~~[#3685](https://github.com/adm01-debug/Promo_Gifts_V4/pull/3685)~~ | `claude/fix-replay-migrations-261115-1400` | colunas perdidas por CREATE TABLE IF NOT EXISTS no-op no replay | **FECHADA em 16/11 — redundante, ver nota abaixo** |
 | [#3683](https://github.com/adm01-debug/Promo_Gifts_V4/pull/3683) | `claude/feat-crm-vendedor-sem-dono-261115-1622` | vendedor com vinculo ve a carteira dele e os clientes sem dono | decisao de negocio |
 | [#3566](https://github.com/adm01-debug/Promo_Gifts_V4/pull/3566) | `release-please--branches--main--components--gifts-store` | release 1.2.0 | 1.2.0 ja foi publicado em outubro |
