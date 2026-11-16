@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "43fc3595af3adc3a9882118c37af5938b6922f52",
+  "sha": "f6335b1c50500425d454cdd9c55158f7adf1d860",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-16 15:25 UTC",
-  "files_total": 10700,
-  "code_files": 8758,
-  "code_lines": 1235402
+  "generated_at": "2026-11-16 15:37 UTC",
+  "files_total": 10703,
+  "code_files": 8761,
+  "code_lines": 1235844
  },
  "version": "1.3.2",
- "facts_hash": "7aee88f70442044b",
+ "facts_hash": "f8116ca858a390f2",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -1104,9 +1104,9 @@
   "package_manager": "npm",
   "languages": {
    ".sql": 3431,
-   ".ts": 2980,
-   ".tsx": 1898,
-   ".mjs": 436,
+   ".ts": 2981,
+   ".tsx": 1899,
+   ".mjs": 437,
    ".py": 13,
    ".js": 7
   },
@@ -151443,8 +151443,8 @@
   },
   {
    "module": "tests",
-   "files": 1039,
-   "lines": 159620,
+   "files": 1042,
+   "lines": 160062,
    "tables": [
     "bot_detection_log",
     "clients",
@@ -280872,6 +280872,18 @@
     "name": "disable2FA falha sem token e sem targetUserId"
    },
    {
+    "file": "tests/hooks/useAIRecommendations.legacy-retry.test.ts",
+    "name": "legacy recommendation retry contract"
+   },
+   {
+    "file": "tests/hooks/useAIRecommendations.legacy-retry.test.ts",
+    "name": "retries after exactly 500ms and 1000ms, then retains the successful result and cache"
+   },
+   {
+    "file": "tests/hooks/useAIRecommendations.legacy-retry.test.ts",
+    "name": "retains immediate non-retry handling for status %s"
+   },
+   {
     "file": "tests/hooks/useAIRecommendations.test.ts",
     "name": "useAIRecommendations"
    },
@@ -282382,6 +282394,46 @@
    {
     "file": "tests/hooks/useKitBuilder-flow.test.tsx",
     "name": "restaura o fluxo persistido sem inferi-lo do passo de revisão"
+   },
+   {
+    "file": "tests/hooks/useKitBuilderPageState.quantity.test.tsx",
+    "name": "Canonical controller guards nullable historical drafts without writes"
+   },
+   {
+    "file": "tests/hooks/useKitBuilderPageState.quantity.test.tsx",
+    "name": "presets raw null quantity for display but blocks autosave/save/quote until explicit quantity"
+   },
+   {
+    "file": "tests/hooks/useKitBuilderPageState.quantity.test.tsx",
+    "name": "valid stored quantity remains operational without confirmation regression"
+   },
+   {
+    "file": "tests/hooks/useKitBuilderPageState.quantity.test.tsx",
+    "name": "malformed item cannot be silently removed and saved over the original raw draft"
+   },
+   {
+    "file": "tests/hooks/useKitBuilderPageState.quantity.test.tsx",
+    "name": "pending saved query does not enable operations"
+   },
+   {
+    "file": "tests/hooks/useKitBuilderPageState.quantity.test.tsx",
+    "name": "Hydrated controller roundtrip preserves nested future metadata"
+   },
+   {
+    "file": "tests/hooks/useKitBuilderPageState.quantity.test.tsx",
+    "name": "hydrate→edit only name→save keeps client, briefing and target-budget extras"
+   },
+   {
+    "file": "tests/hooks/useKitBuilderPageState.quantity.test.tsx",
+    "name": "explicitly clearing the client never revives old known fields or another client metadata"
+   },
+   {
+    "file": "tests/hooks/useKitBuilderPageState.quantity.test.tsx",
+    "name": "a same-client edit clears omitted known name while retaining unknown extras"
+   },
+   {
+    "file": "tests/hooks/useKitBuilderPageState.quantity.test.tsx",
+    "name": "switching to a different client does not copy metadata from the previous client"
    },
    {
     "file": "tests/hooks/useKitBuilderPageState.route.test.ts",
@@ -298018,6 +298070,18 @@
    {
     "file": "tests/scripts/nightly-audit-wiring.test.mjs",
     "name": "segurança não é afirmada: não há AUDIT_SECURITY sem etapa que a execute"
+   },
+   {
+    "file": "tests/scripts/p200-e007-dependabot-secrets.test.mjs",
+    "name": "P200 E007 — segredos E2E indisponíveis para Dependabot"
+   },
+   {
+    "file": "tests/scripts/p200-e007-dependabot-secrets.test.mjs",
+    "name": "não exige credenciais de Actions em PRs de fork ou Dependabot"
+   },
+   {
+    "file": "tests/scripts/p200-e007-dependabot-secrets.test.mjs",
+    "name": "a política permite o gate estrito em push e PR interno de usuário comum"
    },
    {
     "file": "tests/scripts/pgss-slo-check.test.mjs",
@@ -526816,6 +526880,16 @@
     "disable2FA falha sem token e sem targetUserId"
    ]
   },
+  "tests/hooks/useAIRecommendations.legacy-retry.test.ts": {
+   "path": "tests/hooks/useAIRecommendations.legacy-retry.test.ts",
+   "lines": 83,
+   "is_test": true,
+   "tests": [
+    "legacy recommendation retry contract",
+    "retries after exactly 500ms and 1000ms, then retains the successful result and cache",
+    "retains immediate non-retry handling for status %s"
+   ]
+  },
   "tests/hooks/useAIRecommendations.test.ts": {
    "path": "tests/hooks/useAIRecommendations.test.ts",
    "lines": 226,
@@ -527572,6 +527646,23 @@
     "rejeita quantidades não inteiras ou não positivas sem alterar a linha",
     "aplica a quantidade solicitada junto com a composição da IA",
     "restaura o fluxo persistido sem inferi-lo do passo de revisão"
+   ]
+  },
+  "tests/hooks/useKitBuilderPageState.quantity.test.tsx": {
+   "path": "tests/hooks/useKitBuilderPageState.quantity.test.tsx",
+   "lines": 329,
+   "is_test": true,
+   "tests": [
+    "Canonical controller guards nullable historical drafts without writes",
+    "presets raw null quantity for display but blocks autosave/save/quote until explicit quantity",
+    "valid stored quantity remains operational without confirmation regression",
+    "malformed item cannot be silently removed and saved over the original raw draft",
+    "pending saved query does not enable operations",
+    "Hydrated controller roundtrip preserves nested future metadata",
+    "hydrate→edit only name→save keeps client, briefing and target-budget extras",
+    "explicitly clearing the client never revives old known fields or another client metadata",
+    "a same-client edit clears omitted known name while retaining unknown extras",
+    "switching to a different client does not copy metadata from the previous client"
    ]
   },
   "tests/hooks/useKitBuilderPageState.route.test.ts": {
@@ -535943,6 +536034,16 @@
     "segurança não é afirmada: não há AUDIT_SECURITY sem etapa que a execute"
    ]
   },
+  "tests/scripts/p200-e007-dependabot-secrets.test.mjs": {
+   "path": "tests/scripts/p200-e007-dependabot-secrets.test.mjs",
+   "lines": 30,
+   "is_test": true,
+   "tests": [
+    "P200 E007 — segredos E2E indisponíveis para Dependabot",
+    "não exige credenciais de Actions em PRs de fork ou Dependabot",
+    "a política permite o gate estrito em push e PR interno de usuário comum"
+   ]
+  },
   "tests/scripts/pgss-slo-check.test.mjs": {
    "path": "tests/scripts/pgss-slo-check.test.mjs",
    "lines": 101,
@@ -539761,10 +539862,22 @@
   }
  },
  "git": {
-  "sha": "43fc3595af3adc3a9882118c37af5938b6922f52",
+  "sha": "f6335b1c50500425d454cdd9c55158f7adf1d860",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "f6335b1",
+    "date": "2026-11-16",
+    "author": "adm01-debug",
+    "subject": "fix(ci): Gate E23 e Gate Final aceitam fork/Dependabot sem secrets (#3707)",
+    "files": [
+     ".github/workflows/deploy-gates.yml",
+     "tests/hooks/useAIRecommendations.legacy-retry.test.ts",
+     "tests/hooks/useKitBuilderPageState.quantity.test.tsx",
+     "tests/scripts/p200-e007-dependabot-secrets.test.mjs"
+    ]
+   },
    {
     "sha": "43fc359",
     "date": "2026-11-16",
@@ -540529,24 +540642,12 @@
      "tests/components/mockup/acceptance/grupo3.acceptance.test.tsx",
      "tests/components/mockup/acceptance/grupo6.acceptance.test.tsx"
     ]
-   },
-   {
-    "sha": "3bd8af6",
-    "date": "2026-11-15",
-    "author": "adm01-debug",
-    "subject": "feat(mockup): editor de logo com largura e altura proporcionais e botão \"Girar\" (#3669)",
-    "files": [
-     "package.json",
-     "src/components/mockup/logo-editor/LogoQuickActions.tsx",
-     "src/components/mockup/logo-editor/LogoSizeControls.tsx",
-     "src/components/mockup/logo-editor/__tests__/LogoControls.test.tsx"
-    ]
    }
   ],
   "hot_files": [
    [
     "package.json",
-    6
+    5
    ],
    [
     "supabase/MIGRATIONS_SYNC_LOG.md",
@@ -540567,6 +540668,10 @@
    [
     "analise-branches/RELATORIO-BRANCHES-COMPLETO.md",
     3
+   ],
+   [
+    ".github/workflows/deploy-gates.yml",
+    2
    ],
    [
     "scripts/check-migration-path-references.mjs",
@@ -540618,10 +540723,6 @@
    ],
    [
     "src/pages/mockups/MockupGenerator.tsx",
-    2
-   ],
-   [
-    "src/pages/mockups/mockup-generator/useMockupCompletionStatus.ts",
     2
    ]
   ]

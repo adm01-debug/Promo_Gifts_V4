@@ -3363,7 +3363,7 @@
     "hooks/products",
     "lib/external-db"
    ],
-   "coberto_por_testes": 2,
+   "coberto_por_testes": 3,
    "orfao": false
   },
   {
@@ -4419,7 +4419,7 @@
     "pages/admin",
     "pages/kit-builder"
    ],
-   "coberto_por_testes": 31,
+   "coberto_por_testes": 32,
    "orfao": false
   },
   {
@@ -4476,7 +4476,7 @@
     "lib/kit-builder",
     "pages/kit-builder"
    ],
-   "coberto_por_testes": 2,
+   "coberto_por_testes": 3,
    "orfao": false
   },
   {

@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e de hora em hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `43fc3595af3adc3a9882118c37af5938b6922f52` (2026-11-16T12:00:10-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e de hora em hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `f6335b1c50500425d454cdd9c55158f7adf1d860` (2026-11-16T12:36:11-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -14,7 +14,7 @@ Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR
 Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua tarefa; não carregue tudo.
 
 ## Stack
-- linguagens: TypeScript (4877), SQL (3431), Markdown (1453), JavaScript (443), JSON (132), YAML (112), Shell (27), HTML (20)
+- linguagens: TypeScript (4879), SQL (3431), Markdown (1453), JavaScript (444), JSON (132), YAML (112), Shell (27), HTML (20)
 - linguagem_principal: TypeScript
 - framework: React
 - backend_http: n/d
@@ -34,9 +34,9 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 ## Números
 | item | qtd |
 |---|---|
-| arquivos_total | 10772 |
-| arquivos_codigo | 5328 |
-| linhas_codigo | 1015589 |
+| arquivos_total | 10775 |
+| arquivos_codigo | 5331 |
+| linhas_codigo | 1016031 |
 | rotas | 138 |
 | rotas_http_backend | 13 |
 | vistas_por_id | 0 |
@@ -48,7 +48,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 | tabelas | 527 |
 | migrations | 3097 |
 | cron_jobs | 122 |
-| testes | 2521 |
+| testes | 2524 |
 | workflows | 87 |
 | scripts | 272 |
 | docs_md | 1453 |
@@ -58,7 +58,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - componentes: src/components (940), src/pages (177), recovery/src-legacy (100)
 - hooks: src/hooks (298), recovery/src-legacy (196), src/components (77)
 - servicos_logica: src/lib (231), src/utils (30), src/services (10)
-- testes: tests/ (1025), co-localizado (__tests__) (672), e2e/ (625)
+- testes: tests/ (1028), co-localizado (__tests__) (672), e2e/ (625)
 - edge_functions: supabase/functions
 - migrations: supabase/migrations
 - scripts: scripts/lib (7), scripts/graphify (4), scripts/inventario (4)
@@ -590,22 +590,22 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - possiveis_segredos_no_codigo: 7 — ex.: scripts/ai-context/cenarios.mjs:102, src/components/admin/connections/__tests__/ConnectionSecurity.unit.test.tsx:9, src/integrations/supabase/client.ts:27
 
 ## Grafo de código (graphify)
-- 47651 nós · 80085 arestas · 2789 comunidades · grafo do commit `43fc3595`
-- comunidades maiores: ref_components (777), vitest (684), ref_integrations (675), @tanstack/react-query (504), ref_hooks (466), @testing-library/react (406), ref_node_child_process (395), nav.ts (378), react (350), ref_types (336), scripts (302), ref_node_fs (293)
+- 47665 nós · 80109 arestas · 2773 comunidades · grafo do commit `f6335b1c`
+- comunidades maiores: vitest (952), ref_components (815), react (534), ref_node_child_process (442), @tanstack/react-query (412), ref_hooks (398), gotoAndSettle (382), ref_integrations (373), sonner (347), ref_types (345), ref_node_fs (311), react-router-dom (308)
 - símbolos mais chamados: gotoAndSettle() (e2e/helpers/nav.ts), re (?), q() (scripts/supabase_snapshot/snapshot.py), analyze() (tests/scripts/test_personalization_artifact_diagnostics.py), outer() (tests/scripts/test_personalization_artifact_diagnostics.py), json (?), useExternalDatabase() (recovery/src-legacy/src/hooks/useExternalDatabase.ts), concludeCheck() (scripts/check-result-contract.mjs), querySupabaseReadOnly() (scripts/supabase-read-only-query.mjs), loginAs() (e2e/helpers/auth.ts), inner() (tests/scripts/test_personalization_artifact_diagnostics.py), excluded_sql() (scripts/supabase_snapshot/snapshot.py)
 - consulta local: `graphify query "<pergunta>"`, `graphify path "<A>" "<B>"`, `graphify explain "<X>"`
 
 ## Hotspots (arquivos mais alterados, 90 dias)
-- RELATORIO_CI.md (87)
-- PENDENCIAS.md (80)
+- RELATORIO_CI.md (86)
+- PENDENCIAS.md (78)
 - supabase/MIGRATIONS_SYNC_LOG.md (67)
 - package.json (48)
 - package-lock.json (32)
 - docs/coordenacao/conflitos-semanticos.md (28)
 - analise-prs/progresso.json (23)
+- .github/workflows/deploy-gates.yml (22)
 - CHANGELOG.md (22)
 - supabase/EDGE_FUNCTIONS_DEPLOY_LOG.md (22)
-- .github/workflows/deploy-gates.yml (21)
 - src/pages/kit-builder/KitBuilderPage.tsx (21)
 - auditoria-supabase/RELATORIO_AUDITORIA_SUPABASE.md (19)
 - audit/supabase-reference-catalog.temporary.json (18)
@@ -1174,6 +1174,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - CHANGELOG topo: [1.1.0](https://github.com/adm01-debug/Promo_Gifts_V4/compare/v1.0.0...v1.1.0) (2026-11-13)
 
 ## Últimos commits
+- 2026-11-16 `f6335b1c` fix(ci): Gate E23 e Gate Final aceitam fork/Dependabot sem secrets (#3707)
 - 2026-11-16 `43fc3595` feat(audit): resgata 267 arquivos de analise-prs que existiam só em branch de agente (#3705)
 - 2026-11-16 `1f642122` docs(audit): 12 recibos do ledger com sha256 que não bate com o arquivo (#3704)
 - 2026-11-16 `2d3c2f74` fix(ci): gates não exigem do Dependabot segredo que o GitHub nunca lhe entrega (#3700)
@@ -1188,7 +1189,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-16 `7d34968e` docs(audit): veredito da n68 e protecao dos refs de preservacao
 - 2026-11-16 `18cbbcc6` docs(audit): manual de continuidade para a proxima sessao
 - 2026-11-16 `04d251e1` docs(audit): relatorio completo branch a branch, aberta e fechada
-- 2026-11-16 `b63eeb55` docs(audit): relatorio da sessao, indice da preservacao e branches do PC
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

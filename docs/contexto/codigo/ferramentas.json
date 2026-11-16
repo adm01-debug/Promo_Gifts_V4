@@ -3,10 +3,10 @@
  "format_version": 2,
  "stack": {
   "linguagens": [
-   "TypeScript (4877)",
+   "TypeScript (4879)",
    "SQL (3431)",
    "Markdown (1453)",
-   "JavaScript (443)",
+   "JavaScript (444)",
    "JSON (132)",
    "YAML (112)",
    "Shell (27)",
@@ -1228,7 +1228,8 @@
     "SUPABASE_ACCESS_TOKEN",
     "SUPABASE_SERVICE_ROLE_KEY",
     "VITE_SUPABASE_PUBLISHABLE_KEY",
-    "VITE_SUPABASE_URL"
+    "VITE_SUPABASE_URL",
+    "test"
    ],
    "actions": [
     "actions/attest-build-provenance",
@@ -4545,7 +4546,8 @@
    "VITE_SUPABASE_PROJECT_ID",
    "VITE_SUPABASE_PUBLISHABLE_KEY",
    "VITE_SUPABASE_URL",
-   "outputs"
+   "outputs",
+   "test"
   ]
  },
  "deploy": {

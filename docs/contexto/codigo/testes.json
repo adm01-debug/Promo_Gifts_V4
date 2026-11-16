@@ -5,18 +5,18 @@
   "vitest",
   "playwright"
  ],
- "total": 2521,
+ "total": 2524,
  "por_tipo": {
   "contrato": 65,
   "e2e": 677,
   "pytest": 4,
   "qa": 17,
-  "unit": 1758
+  "unit": 1761
  },
  "onde_ficam": [
   {
    "padrao": "tests/",
-   "arquivos": 1025
+   "arquivos": 1028
   },
   {
    "padrao": "co-localizado (__tests__)",
@@ -16653,6 +16653,15 @@
    "casos": 6
   },
   {
+   "arquivo": "tests/hooks/useAIRecommendations.legacy-retry.test.ts",
+   "tipo": "unit",
+   "linhas": 83,
+   "testa": [
+    "src/hooks/intelligence/useAIRecommendations.ts"
+   ],
+   "casos": 2
+  },
+  {
    "arquivo": "tests/hooks/useAIRecommendations.test.ts",
    "tipo": "unit",
    "linhas": 226,
@@ -17029,6 +17038,22 @@
     "src/lib/kit-builder/index.ts"
    ],
    "casos": 9
+  },
+  {
+   "arquivo": "tests/hooks/useKitBuilderPageState.quantity.test.tsx",
+   "tipo": "unit",
+   "linhas": 329,
+   "testa": [
+    "src/hooks/kit-builder/useCustomKitPersistence.ts",
+    "src/hooks/kit-builder/useKitAutoSave.ts",
+    "src/hooks/kit-builder/useKitBuilder.ts",
+    "src/hooks/kit-builder/useKitBuilderPageState.ts",
+    "src/hooks/kit-builder/useKitBuilderTransformers.ts",
+    "src/lib/external-db/product-types.ts",
+    "src/lib/kit-builder/index.ts",
+    "src/lib/kit-builder/persistence.ts"
+   ],
+   "casos": 8
   },
   {
    "arquivo": "tests/hooks/useKitBuilderPageState.route.test.ts",
@@ -19959,6 +19984,13 @@
    "casos": 3
   },
   {
+   "arquivo": "tests/scripts/p200-e007-dependabot-secrets.test.mjs",
+   "tipo": "unit",
+   "linhas": 30,
+   "testa": [],
+   "casos": 2
+  },
+  {
    "arquivo": "tests/scripts/pgss-slo-check.test.mjs",
    "tipo": "unit",
    "linhas": 101,
@@ -21736,7 +21768,7 @@
   "src/hooks/intelligence/index.ts": 9,
   "src/hooks/intelligence/intelligenceHelpers.ts": 1,
   "src/hooks/intelligence/magicUpShare.ts": 1,
-  "src/hooks/intelligence/useAIRecommendations.ts": 2,
+  "src/hooks/intelligence/useAIRecommendations.ts": 3,
   "src/hooks/intelligence/useCommercialIntelligence.helpers.ts": 1,
   "src/hooks/intelligence/useConnectionTester.ts": 2,
   "src/hooks/intelligence/useConnectionsOverview.ts": 1,
@@ -21757,12 +21789,12 @@
   "src/hooks/intelligence/useVoiceAgent.ts": 2,
   "src/hooks/intelligence/useZeroResultSubstitutes.ts": 1,
   "src/hooks/kit-builder/index.ts": 1,
-  "src/hooks/kit-builder/useCustomKitPersistence.ts": 1,
-  "src/hooks/kit-builder/useKitAutoSave.ts": 3,
-  "src/hooks/kit-builder/useKitBuilder.ts": 1,
-  "src/hooks/kit-builder/useKitBuilderPageState.ts": 2,
+  "src/hooks/kit-builder/useCustomKitPersistence.ts": 2,
+  "src/hooks/kit-builder/useKitAutoSave.ts": 4,
+  "src/hooks/kit-builder/useKitBuilder.ts": 2,
+  "src/hooks/kit-builder/useKitBuilderPageState.ts": 3,
   "src/hooks/kit-builder/useKitBuilderQueries.ts": 2,
-  "src/hooks/kit-builder/useKitBuilderTransformers.ts": 1,
+  "src/hooks/kit-builder/useKitBuilderTransformers.ts": 2,
   "src/hooks/kit-builder/useKitFitsValidation.ts": 1,
   "src/hooks/kit-builder/useKitPriceValidation.ts": 1,
   "src/hooks/kit-builder/useKitStockValidation.ts": 2,
@@ -21918,7 +21950,7 @@
   "src/lib/external-db/kill-switch-telemetry.ts": 1,
   "src/lib/external-db/kit-coverage.ts": 2,
   "src/lib/external-db/price-tables.ts": 1,
-  "src/lib/external-db/product-types.ts": 2,
+  "src/lib/external-db/product-types.ts": 3,
   "src/lib/external-db/products-detail.ts": 1,
   "src/lib/external-db/products-lightweight.ts": 1,
   "src/lib/external-db/products.ts": 1,
@@ -21946,9 +21978,9 @@
   "src/lib/inventory/supplier-reliability/types.ts": 4,
   "src/lib/json-value.ts": 1,
   "src/lib/kit-builder/ai-composition.ts": 1,
-  "src/lib/kit-builder/index.ts": 31,
+  "src/lib/kit-builder/index.ts": 32,
   "src/lib/kit-builder/item-sort.ts": 1,
-  "src/lib/kit-builder/persistence.ts": 2,
+  "src/lib/kit-builder/persistence.ts": 3,
   "src/lib/kit-builder/price-calculator.ts": 2,
   "src/lib/kit-builder/snapshot/read-draft.ts": 1,
   "src/lib/kit-builder/types.ts": 6,

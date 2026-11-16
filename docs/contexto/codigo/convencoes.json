@@ -23,7 +23,7 @@
    "src/services (10)"
   ],
   "testes": [
-   "tests/ (1025)",
+   "tests/ (1028)",
    "co-localizado (__tests__) (672)",
    "e2e/ (625)"
   ],
@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "fix(ci): Gate E23 e Gate Final aceitam fork/Dependabot sem secrets (#3707)",
    "feat(audit): resgata 267 arquivos de analise-prs que existiam só em branch de agente (#3705)",
    "docs(audit): 12 recibos do ledger com sha256 que não bate com o arquivo (#3704)",
    "fix(ci): gates não exigem do Dependabot segredo que o GitHub nunca lhe entrega (#3700)",
-   "chore(deps): aproveita as 5 atualizações seguras de dev da #3695 e deixa os 6 majors fora (#3702)",
-   "chore(ci): destrava os recibos do ledger e o baseline do ratchet (#3699)"
+   "chore(deps): aproveita as 5 atualizações seguras de dev da #3695 e deixa os 6 majors fora (#3702)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",

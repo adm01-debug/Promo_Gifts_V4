@@ -8788,7 +8788,7 @@
     "src/components/products/SmartRecommendations.tsx",
     "src/hooks/intelligence/index.ts"
    ],
-   "coberto_por_testes": 2
+   "coberto_por_testes": 3
   },
   {
    "arquivo": "src/hooks/intelligence/useAiRouter.ts",
@@ -9711,7 +9711,7 @@
     "src/hooks/kit-builder/index.ts",
     "src/hooks/kit-builder/useKitTemplates.ts"
    ],
-   "coberto_por_testes": 1
+   "coberto_por_testes": 2
   },
   {
    "arquivo": "src/hooks/kit-builder/useCustomKitsRealtime.ts",
@@ -9782,7 +9782,7 @@
    "usado_por_arquivos": [
     "src/hooks/kit-builder/index.ts"
    ],
-   "coberto_por_testes": 3
+   "coberto_por_testes": 4
   },
   {
    "arquivo": "src/hooks/kit-builder/useKitBuilder.ts",
@@ -9805,7 +9805,7 @@
    "usado_por_arquivos": [
     "src/hooks/kit-builder/index.ts"
    ],
-   "coberto_por_testes": 1
+   "coberto_por_testes": 2
   },
   {
    "arquivo": "src/hooks/kit-builder/useKitBuilderPageState.ts",
@@ -9837,7 +9837,7 @@
    "usado_por_arquivos": [
     "src/hooks/kit-builder/index.ts"
    ],
-   "coberto_por_testes": 2
+   "coberto_por_testes": 3
   },
   {
    "arquivo": "src/hooks/kit-builder/useKitBuilderQueries.ts",
@@ -9881,7 +9881,7 @@
     "src/hooks/kit-builder/index.ts",
     "src/hooks/kit-builder/useKitBuilderQueries.ts"
    ],
-   "coberto_por_testes": 1
+   "coberto_por_testes": 2
   },
   {
    "arquivo": "src/hooks/kit-builder/useKitCollaboration.ts",
