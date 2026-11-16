@@ -120,3 +120,95 @@ Nao ha risco de conflito com trabalho de outro agente: a branch nao compete por 
 - **Por que a PR #3543 foi fechada sem merge.** O corpo da PR diz que ela seria completada depois; o fechamento
   (07:19Z) e minutos antes da abertura da #3579 (07:10Z) e da #3585 (07:35Z) da mesma sessao, o que sugere troca
   deliberada de branch — mas nao ha comentario de fechamento que eu possa citar.
+
+
+## Segunda passada — arquivos que faltavam
+
+**Veredito revisado: RESGATAR_PARCIAL — com item que exige DECISÃO DO DONO.** O alarme nº 1 da branch
+(alterações de banco que estão no projeto e não constam como aplicadas) deixou de ser "NÃO VERIFICADO":
+**consultei o banco de produção e a branch está certa; a main está errada.**
+
+Recontagem independente: `git diff --name-only --diff-filter=A 333fe6e8 b51ea779` → 50 arquivos criados, **os
+50 ausentes da main**: 32 fichas `analise-prs/dossies/pr-33xx…pr-3539.md`, 17 em
+`docs/prod-readiness-evidencias/`, 1 `analise-prs/baseline/main.json`. **Lista (A) de código vazia
+comprovada:** nenhum dos 50 está fora de pasta de registro, e a branch **não tocou um único arquivo** fora
+delas (`git diff --name-status 333fe6e8 b51ea779 | grep -v registro` → vazio). Correção de contagem da 1ª
+passada: são **32** fichas e **17** arquivos de evidência (não 33 e 18) —
+`git ls-tree -r --name-only b51ea779 -- analise-prs/dossies | grep -c '/pr-'` → 32;
+`git ls-tree -r --name-only b51ea779 -- docs/prod-readiness-evidencias | wc -l` → 17.
+
+### O alarme do ledger, agora medido no banco (16/11)
+
+| fato | número | evidência |
+|---|---|---|
+| versões registradas como aplicadas na produção | **2.973** (maior = `20261115230000`) | `select count(*), max(version) from supabase_migrations.schema_migrations` no projeto `doufsxqlfjyuvxuezpln` (MCP, somente leitura) |
+| versões distintas presentes como arquivo na main | **3.092** (3.097 arquivos `.sql`) | `git ls-tree -r --name-only origin/main -- supabase/migrations \| sed -n 's#.*/\([0-9]\{14\}\)_.*#\1#p' \| sort -u \| wc -l` |
+| **alterações de banco no projeto sem registro de aplicação** | **128**, distribuídas em 2026-05 (24), 06 (40), 07 (8), 09 (18), 10 (13), **11 (25)** | comparação mês a mês entre a contagem local distinta e `select substr(version,1,6), count(*) … group by 1` |
+| versões registradas na produção que não existem no projeto | **0** nas de 14 dígitos (só 9 registros legados de formato antigo, ex. `001`–`005`) | `comm -13` entre as listas de nov/2026; soma dos meses remotos = 2.964 de 2.973 |
+| a main afirma o contrário | `docs/prod-readiness.md:367` diz "**OK**. Gate E40 … 2583 versões alinhadas" e trata a diferença como "branch desatualizada" | arquivo citado na main de hoje |
+
+**Não é só desencontro de papelada.** Duas das 25 de novembro foram testadas no próprio banco e o efeito
+**não está lá**:
+
+- `20261115130200_sec001_revoke_anon_execute_trigger_functions.sql` — devia tirar de visitante não logado o
+  direito de executar funções internas do banco. **115 das 303 funções de gatilho de `public` continuam
+  executáveis pelo papel `anon`** (`has_function_privilege('anon', p.oid, 'EXECUTE')`).
+- `20261115130300_fn_global_search_clamp_limit_hardened.sql` — devia pôr teto no tamanho da busca global
+  (hoje um pedido com limite enorme vira consulta enorme). Rodei a **própria verificação escrita dentro da
+  migration** (`select position('LEAST(p_limit, 100)' in pg_get_functiondef('public.fn_global_search(text,integer,text[])'::regprocedure)) > 0`)
+  → **false**.
+
+Lista nominal das 25 de novembro que estão no projeto e sem registro na produção:
+`20261101190101_fn_global_search_clamp_limit`, `20261101194200_perf002_drop_unused_indexes_stock_snapshots`,
+`20261101202000_drop_revoke_agent_created_functions`, `20261101205400_perf005_drop_unused_indexes`,
+`20261101210000_sb0007_drop_noop_restrictive_policies`, `20261102063000_repair_kill_switch_hits_anon_rate_guard`,
+`20261108030000_ft005_cron_scheduled_reports`, `20261108030100_ft079_view_products_min_quantity`,
+`20261108030200_ft088_fn_check_item_fits`, `20261108120000_p10_categories_indexes_espelho`,
+`20261108223000_add_stock_daily_summary_date_index`, `20261108230000_remove_broken_cron_image_dimensions_backfill`,
+`20261108230100_cron002_fix_residual_collisions`, `20261108235500_restrict_art_files_public_read_to_quotes`,
+`20261111222500_fix_touch_seller_cart_secdef`, `20261113140000_marketing_tab_links_rls_and_endomarketing`,
+`20261114120000_cron004_reduz_frequencia_jobs_ociosos`, `20261114120100_cron005_refresh_all_mvs_diario_timeout_real`,
+`20261114160000_perf_idx_sds_restock_counts`, `20261115013000_fix_get_quote_token_public_respeita_expiracao`,
+`20261115034500_rpc_sales_assistant_candidates`, `20261115130000_idx_sds_summary_date_supplier_include`,
+`20261115130100_fn_market_intelligence_macro`, `20261115130200_sec001_revoke_anon_execute_trigger_functions`,
+`20261115130300_fn_global_search_clamp_limit_hardened`.
+
+### Os outros arquivos que faltavam
+
+| arquivo / conjunto | está na main? | evidência |
+|---|---|---|
+| `audit/edge-functions-canonical-only.json` — entrada `mcp-query` obsoleta (item 2 da 1ª passada) | **Defeito segue vivo, confirmado hoje** | `origin/main:audit/edge-functions-canonical-only.json:7` → `"slug": "mcp-query"` com motivo "Mantê-lo fora deste repositório", mas `origin/main:supabase/functions/mcp-query/index.ts` existe; a lista é usada em `.github/workflows/edge-functions-drift-check.yml:135` |
+| `docs/prod-readiness-evidencias/pss_tags.json` (**não lido na 1ª passada**) — mede a listagem de etiquetas em 886 ms por chamada, 10.656 chamadas | **Achado novo e ainda vivo.** Na janela atual do banco: **657 ms por chamada, 2.748 chamadas, 1.807 s somados** — numa tabela de **88 linhas / 2,9 MB** | `extensions.pg_stat_statements` para `SELECT "public"."tags".* … LIMIT/OFFSET`; `select count(*) from public.tags` → 88; `pg_total_relation_size` → 2.896 kB |
+| `rls.json`, `edge-probes.json`, `explain_created.json`, `health-samples.txt`, `latest-main-runs.json`, `probes.tsv`, `pss_vpp_tail.json`, `tags_meta.json` (os outros 8 não lidos) | **Não estão na main e não precisam estar** — medições de 13/11 cuja conclusão a main já tem com medição mais nova. `rls.json` fecha limpo (`public_no_rls: 0`, `public_rls_no_policy: 0`, `offenders: null`); `pss_vpp_tail.json` é a lentidão do catálogo já corrigida por índice | li o conteúdo dos 9 nesta passada; `git log origin/main -- docs/prod-readiness-evidencias` → vazio |
+| 32 fichas `pr-*.md` e `analise-prs/baseline/main.json` | **NÃO ESTÃO** (nenhuma ficha em minúscula na main; maior ficha da main = `PR-3292`) | `git ls-tree -r --name-only origin/main -- analise-prs/dossies \| grep -c '/pr-'` → 0 |
+
+### O que falta resgatar
+
+1. **Aplicar em produção, pelo fluxo oficial, as alterações de banco que faltam — a começar pela trava de
+   segurança** (`20261115130200`) e pelo teto da busca global (`20261115130300`). É DDL em produção: só pelo
+   workflow `db-apply-migration.yml` e com decisão do dono (Git 7). As outras 23 de novembro precisam ser
+   triadas uma a uma; 103 de meses anteriores idem.
+2. **Corrigir `docs/prod-readiness.md:367`**, que hoje diz ao dono que está tudo alinhado.
+3. **Tirar `mcp-query` da lista `canonical-only`** (1 linha de JSON, por PR) — enquanto ficar, o fiscal de
+   divergência das edges ignora de propósito uma função que está no repositório.
+4. **Investigar a listagem de etiquetas:** 657 ms para ler 88 linhas é desproporcional e a etiqueta é filtro
+   do catálogo público. Causa provável (NÃO VERIFICADO): custo da política de RLS por linha.
+5. **Bloco de registro (50 arquivos):** recomendação **resgatar inteiro, em pasta datada**
+   (`analise-prs/2026-11-13/` para as 32 fichas + `main.json`, e `docs/prod-readiness-evidencias/` como está).
+   As 32 fichas são o único texto que descreve o que havia de aproveitável em PRs fechadas sem merge
+   (inclusive os 2 itens de orçamento da pendência nº 16); os 17 arquivos de evidência são a prova bruta do
+   item 1 acima — e agora que o item 1 foi confirmado no banco, `mig-compare.json` deixou de ser história e
+   passou a ser documento de trabalho. **Não sobrescrever** `analise-prs/RELATORIO_PRS.md`, `prs.json` nem
+   `progresso.json` do topo. Docs-only (E14).
+
+### NÃO VERIFICADO nesta passada
+
+- **O efeito real das outras 126 migrations sem registro** (checadas 2 de 128). Não sei quantas são
+  inofensivas (arquivo-espelho de algo já aplicado) e quantas, como as duas testadas, representam mudança
+  que a produção nunca recebeu. É exatamente a triagem do item 1.
+- **Por que a listagem de etiquetas custa 657 ms.** Medi o custo, não a causa; não rodei `EXPLAIN`.
+- **Conteúdo integral de 30 das 32 fichas** (a 1ª passada leu `pr-3517.md` e `pr-3533.md`; aqui conferi
+  ausência na main das 32 e li as 9 evidências que faltavam, não as fichas).
+- **Por que o portão E40 não acusa esse desencontro:** a leitura da branch
+  (`scripts/check-supabase-migration-ledger.mjs:113-117` só reprova com `remote_only`) continua sem
+  reconferência minha; o número agora confirmado dá peso a ela, mas não li o script nesta passada.

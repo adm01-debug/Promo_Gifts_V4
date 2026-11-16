@@ -50,3 +50,56 @@ Apagar esta branch destrói o único registro de por que 103 pedidos de mudança
 - Dos 87 dossiês só-da-branch, li o veredito de todos (87/87) e o texto completo de um (PR-3023). O mérito técnico individual de cada um dos outros 86 não foi reconferido contra o código.
 - O pacote de evidência veio TRUNCADO (só os 40 primeiros arquivos com diff). Supri isso comparando as árvores git das duas pontas, o que resolve presença/ausência de todos os 142, mas não o conteúdo dos 102 restantes.
 - Não testei em produção se tirar o acesso público à tabela de sinônimos de cor quebra a busca por cor; a existência de `fn_verify_anon_catalog_grants` exigindo esse acesso é indício, não prova.
+
+
+## Segunda passada — arquivos que faltavam
+
+**Veredito revisado: RESGATAR_PARCIAL** (sem mudança), **com um item novo e grave:** a correção de segurança
+que a ficha PR-2969 cobrava já está escrita no projeto, mas **não está em efeito no banco de produção**.
+
+Recontagem independente: `git diff --name-only --diff-filter=A 4c5fdd72 c8e0e1b4` → 128 arquivos criados, dos
+quais **103 não existem na main** (87 em `analise-prs/dossies/`, 14 em `analise-prs/baseline/`, 2 na raiz de
+`analise-prs/`) — número idêntico ao da 1ª passada. Extensões: 93 `.md`, 9 `.txt`, 1 `.json`. **Lista (A) de
+código vazia comprovada:** nenhum dos 103 está fora de pasta de registro
+(`grep -vE '^(analise-prs|docs|recovery|analise-branches|inventario|audit|qa)/'` → nenhuma linha). Fora de
+registro a branch tocou **um só** arquivo: o snapshot da lista (C), abaixo.
+
+### Lista (C) — o único arquivo de código, agora lido nos dois sentidos
+
+| arquivo | está na main? | evidência |
+|---|---|---|
+| `src/components/quotes/__tests__/__snapshots__/NegotiationMarkupCard.visualA11y.test.tsx.snap` | **Sim, e a versão da main é a certa. Nada a resgatar** — confirma a 1ª passada, agora com o diff lido | `git diff 4c5fdd72 c8e0e1b4 -- <arq>`: a branch **acrescentou** 620 linhas = 2 chaves novas `snapshot em 'desktop'` / `snapshot em 'mobile'` (nome entre aspas), ficando com 4 chaves (`grep '^exports\['` → base 2, branch 4, main 2). O teste vivo na main é `it.each(VIEWPORTS)('snapshot em $label ($width px) …')` (`origin/main:src/components/quotes/__tests__/NegotiationMarkupCard.visualA11y.test.tsx:28`), que gera o nome **sem aspas** — as 2 chaves da branch não casam com teste nenhum e o vitest as marcaria obsoletas. `git diff c8e0e1b4 origin/main -- <arq>` remove exatamente essas 2 |
+
+### Fichas não lidas que cobravam ação: a ação aconteceu?
+
+| pedido registrado na ficha | está na main? onde | evidência |
+|---|---|---|
+| **PR-2969 — SEC-001: revogar execução pública/anônima de 106 funções de gatilho** (ficha `OPEN (DRAFT)`) | **No projeto sim; na produção NÃO.** O arquivo existe, mas o banco nunca registrou a aplicação e o efeito não está lá | arquivo: `origin/main:supabase/migrations/20261115130200_sec001_revoke_anon_execute_trigger_functions.sql`. Banco `doufsxqlfjyuvxuezpln` (consulta de leitura, 16/11): a versão `20261115130200` **não consta** em `supabase_migrations.schema_migrations` (maior versão registrada = `20261115230000`, lista de nov/2026 completa no dossiê de `lucid-franklin`), e **115 das 303 funções de gatilho de `public` continuam executáveis pelo papel `anon`** (`has_function_privilege('anon', p.oid,'EXECUTE')`) |
+| PR-2619 — tempo limite de 5 s na busca de credencial do health-check (evita travar) | **ESTÁ** | `origin/main:supabase/functions/health-check/index.ts:25` → `const CREDENTIAL_TIMEOUT_MS = 5000;` |
+| PR-2632 — subir de 10 para 30 min o tempo do job de exportação do schema | **ESTÁ** | `origin/main:.github/workflows/schema-snapshot-export.yml:75` → `timeout-minutes: 30  # supabase db dump --linked > 388 tabelas leva >10min` |
+| PR-2626 — parar de reprovar PR por divergência não estrutural de banco | **ESTÁ, por outro caminho:** a main removeu o gatilho de PR desse workflow em vez de afrouxar o critério | `origin/main:.github/workflows/db-schema-drift-check.yml:66` → `# pull_request: removido — o mesmo conjunto de paths dispara este workflow via …` |
+| PR-2967 — gate E42 não rodar `check-min-tests` sem credencial | **ESTÁ** (uso presente nos workflows de e2e) | `git grep -l 'check-min-tests' origin/main -- .github` → `e2e-flows.yml`, `e2e-focused.yml`, `e2e-personalization.yml`, `e2e-quotes.yml`, `e2e-swatch-quickview.yml` |
+| PR-3017 — linha de base das políticas de RLS | **ESTÁ** | `origin/main:.security/policies-baseline.json` e `.security/rls-no-policy-allowlist.json` |
+
+### O que falta resgatar
+
+Os 5 itens da primeira passada seguem valendo, e entra **um sexto, que é o mais urgente de todos e não é
+documentação**: a trava que impediria visitante não logado de executar 115 funções internas do banco está
+escrita no projeto mas **não vale na produção**. Isso não se resolve copiando arquivo: a migration
+`20261115130200` precisa ir a produção pelo fluxo oficial (`db-apply-migration.yml`) — é DDL em produção,
+portanto decisão do dono (Git 7).
+
+Recomendação do bloco de registro: **resgatar inteiro** — são 103 arquivos (87 fichas de PR da faixa
+#2582–#3023, 14 medições de linha de base, 2 relatórios de agrupamento) e é a única memória escrita dessa
+faixa, que a main salta por completo. Copiar para pasta datada (ex. `analise-prs/arquivo-261102/`) sem
+sobrescrever os arquivos de topo da main. Docs-only (E14).
+
+### NÃO VERIFICADO nesta passada
+
+- Mérito individual das 87 fichas: li inteira apenas a de PR-3382 (na outra branch) e, aqui, os vereditos de
+  todas (`grep '^\*\*Veredito'`: 20 `DRAFT_NOMERGE`, 21 mergeadas autônomas, 4 `FECHADA_EXTERNA`, 5
+  `BLOQUEADA_PO/DECISAO_HUMANA`, resto mergeada) + cabeçalho dos 13 que pediam ação, checados na tabela.
+- **Se a DDL de SEC-001 foi aplicada por fora sem registro:** não foi — a ausência do efeito (115 funções
+  ainda abertas a `anon`) prova que não; mas **não** verifiquei se alguma das outras 24 migrations de
+  novembro sem registro teve o efeito aplicado por fora (duas foram checadas no dossiê de `lucid-franklin`).
+- Os 14 arquivos de `analise-prs/baseline/` continuam sem leitura linha a linha.

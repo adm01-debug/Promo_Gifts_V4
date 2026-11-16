@@ -71,3 +71,99 @@ Fechar sem resgatar **nao quebra nada no ar**: todo o conserto que afetava clien
 - **207 dos 243 arquivos de `recovery/src-legacy/**` nao foram lidos um por um** (36 vieram com diff no pacote; o resto esta so listado por nome). A conclusao de que nao tem valor vem de tres coisas verificaveis e nao de leitura integral: a pasta esta fora de `tsconfig.app.json` e de `vitest.config.ts` (nao entra em build, lint nem teste), o ledger da main ja a excluiu por escrito (item 4 de `docs/coordenacao/conflitos-semanticos.md:31`) e os 36 diffs lidos sao todos cosmeticos. Se o dono quiser reativar algum desses arquivos legados, a leitura dos 207 precisa ser feita.
 - **Nenhum comando de build, lint ou teste foi executado** nesta analise (a tarefa e somente leitura). As afirmacoes de "verde" nos corpos dos commits sao do agente que fez a branch, nao conferidas aqui.
 - **Nao conferido em producao** se a cor da marca da empresa existe como dado disponivel na tela do carrinho (o item 4 pode nao ter de onde tirar a cor).
+
+
+## Segunda passada — arquivos que faltavam
+
+A 1a passada leu so os 40 primeiros arquivos. Esta passada fechou os 11 de codigo criados pela branch e
+ausentes da main (lista A), os 10 que existem na main com conteudo diferente (lista C) e decidiu o bloco de
+registro em conjunto. **21 arquivos de codigo lidos.** Esta branch compartilha o commit `85c9194777` com
+`claude/resgate-3390-261113`; conferi que, nos arquivos destas listas, as duas branches sao praticamente
+iguais (`git diff --numstat c5297cf f4e6811 -- <lista C>` difere so em `ModernSkeletons.tsx` 0/1 e
+`mockupGenerationService.ts` 2/4), entao as conclusoes valem para as duas.
+
+### Achado que muda o metodo
+
+Para 5 dos 10 arquivos da lista (C), **a main esta byte-identica ao ponto de partida desta branch** — nada do
+que a branch fez neles chegou a main, e nao houve "a main andou por outro caminho":
+
+```
+git diff --numstat 835fee0 e4ab7f8 -- src/components/cart/SortableCartItem.tsx \
+  src/components/cart/__tests__/SortableCartItemVariant.test.tsx \
+  src/components/loading/ModernSkeletons.tsx src/components/quotes/QuoteAutoSave.tsx \
+  src/components/quotes/QuotesConfigurableList.tsx
+→ (saida vazia)
+```
+
+### Correcao de rumo (vale tambem para o dossie irmao)
+
+A 1a passada desta branch ja tinha registrado certo: a main **restaura o rascunho de orcamento NOVO
+automaticamente** (`main:src/hooks/quotes/useQuoteBuilderState.ts:257` `restoreEnabled: !isEditMode && !hasIncomingHandoff`,
+`onRestore` em `:276`), e **nao restaura em modo edicao**. Confirmado nesta passada. O dossie de
+`claude/resgate-3390-261113` dizia "NAO ESTA" sem essa ressalva e foi corrigido lá.
+
+### Tabela — lista (A): criados pela branch, ausentes da main
+
+| arquivo | esta na main? onde | evidencia |
+| --- | --- | --- |
+| `src/lib/filters/voiceFilterPatch.ts` | **ESTA, com outro nome e melhor** — `main:src/pages/products/applyVoiceFilters.ts` | mesmo mapeamento campo a campo; a main ainda trava preco negativo, ignora `NaN`, respeita o sentinela 9999 e trata `endomarketing`. `main:src/pages/products/__tests__/applyVoiceFilters.test.ts` tem **37** `it(` |
+| `tests/pages/legacy-filter-voice.test.ts` | coberto pelo teste da main | o da branch so confere limites de preco e que dois caminhos apontam para a mesma funcao |
+| `src/components/loading/ModernSkeletons.types.ts` | **ESTA** — as mesmas interfaces, dentro do componente | `main:src/components/loading/ModernSkeletons.tsx:4` e `:554`, campo a campo iguais; o arquivo da branch so muda de lugar (`git diff 835fee0 f4e6811 -- src/components/loading/ModernSkeletons.tsx` = so recorta/reimporta tipos) |
+| `src/components/cart/SortableCartItem.types.ts` | **NAO ESTA** (novidade: `companyAccentColor`) | `git grep companyAccentColor e4ab7f8 -- src` → 0 resultados |
+| `src/components/mockup/MockupHistoryPanel.types.ts` | **NAO ESTA** (novidade: `techniques?`) | `git grep techniques e4ab7f8 -- src/components/mockup/MockupHistoryPanel.tsx` → 0 resultados |
+| `src/components/quotes/QuoteAutoSave.types.ts` | **PARCIAL** — a main tem as mesmas props menos `onRestore` | `main:src/components/quotes/QuoteAutoSave.tsx:38` tem `serverSavedAt`; `onRestore` nao aparece no arquivo |
+| `src/components/quotes/quoteList.types.ts` | **PARCIAL** — `ColumnDef`/`PrefetchRowProps` ja existem na main; so `onMarkApproved` e novo | `git grep onMarkApproved e4ab7f8 -- src tests` → 0 resultados |
+| `src/lib/quotes/quoteDraftRecovery.ts` | **NAO ESTA** | `git grep quoteDraftRecoverySchema e4ab7f8 -- src tests` → 0 resultados |
+| `tests/components/QuoteAutoSave.recovery.test.tsx` | **NAO ESTA** | nada na main cita `quote-autosave-restore` |
+| `tests/components/QuotesConfigurableList.approval.test.tsx` | **NAO ESTA** | nada na main cita `quote-row-menu-approve` |
+| `tests/components/mockup/MockupHistoryPanel.techniques.test.tsx` | **NAO ESTA** | idem `techniques` |
+
+### Tabela — lista (C): existem na main com conteudo diferente
+
+| arquivo | a intencao da branch esta na main? | evidencia |
+| --- | --- | --- |
+| `src/components/kit-builder/ItemSelector.types.ts` | **ESTA, e a main e superconjunto** | `git diff f4e6811 e4ab7f8 -- <arq>` = a main **soma** `replaceTarget` e `onReplaceItem` |
+| `src/components/kit-builder/ItemSelector.tsx` | **ESTA, e a main e superconjunto** | mesmo diff: a main so acrescenta o modo "substituir item" (banner "Substituindo: …" e desvio em `handleAddItem`) |
+| `src/pages/kit-builder/KitBuilderPage.tsx` | **ESTA, e a main e superconjunto** | `git diff f4e6811 e4ab7f8 -- <arq>` tem **so linhas `+`** (`useKitItemReplaceTarget`, fiacao do `onReplaceItem`, `data-testid="wizard-next"`) |
+| `src/hooks/mockup/mockupGenerationService.ts` | **ESTA, byte-identico no trecho que importa** | o bloco `downloadMockupAsPdf` que a branch escreveu (`product?`/`technique?` opcionais, fallback `'personalizacao'`) e **exatamente** o que esta em `main`; a main ainda tornou o `limit` do historico parametrizavel. Confirma o item (9) do ledger: o merge da branch pioraria o arquivo |
+| `src/components/mockup/MockupHistoryPanel.tsx` | **NAO** — a main foi por outro caminho | branch: extrai tipos e **soma `techniques`** ao filtro. Main: dois `useEffect` que corrigem pagina e comparacao apos excluir, layout A-33 em 375px, alvos de toque de 44px — sem `techniques`. Reaplicar exige remontar o trecho sobre a versao de hoje |
+| `src/components/cart/SortableCartItem.tsx` | **NAO** — main identica ao ponto de partida | branch soma `companyAccentColor` validado por `CSS.supports` e `style={{ borderColor }}` no `Card` |
+| `src/components/cart/__tests__/SortableCartItemVariant.test.tsx` | **NAO** — main identica ao ponto de partida | 27 linhas de teste da cor da marca, ausentes |
+| `src/components/loading/ModernSkeletons.tsx` | **NAO** — e sem efeito | a mudanca e so recortar duas interfaces e reimporta-las; zero comportamento |
+| `src/components/quotes/QuoteAutoSave.tsx` | **NAO** — main identica ao ponto de partida | 111 linhas somadas pela branch (botao "Restaurar rascunho", leitura do `localStorage`, `isRecoverableDraft`) nao existem na main |
+| `src/components/quotes/QuotesConfigurableList.tsx` | **NAO** — main identica ao ponto de partida | a branch soma "Aprovar" no menu da linha com trava de papel (`canManage \|\| (isSeller && quote.seller_id === user.id)`) e de transicao (`isValidQuoteTransition(quote.status, 'approved')`); o menu da main tem so ver/editar/duplicar/excluir (`main:…QuotesConfigurableList.tsx:521-548`) |
+
+### O que falta resgatar (confirmado nesta passada)
+
+Igual ao que a 1a passada ja listou, agora com a prova de que a main nunca tocou esses arquivos. Veredito
+segue **COMPLETAR** — e **nao por merge da branch**, que apagaria a troca de item no kit-builder, o `limit`
+do historico de mockups, as correcoes A-33/paginacao e 25 linhas do ledger.
+
+1. **Recuperar o rascunho ao EDITAR um orcamento** (`QuoteAutoSave` + `onRestore` + `quoteDraftRecovery` +
+   268 linhas de teste). Em orcamento novo a main ja devolve sozinha; na edicao, nao.
+2. **Aprovar o orcamento direto na lista** (`QuotesConfigurableList` + `quoteList.types.ts` + 130 linhas de
+   teste). Hoje exige abrir o kanban e arrastar.
+3. **Filtro do historico de mockups listar as tecnicas cadastradas** — so o trecho `techniques`, remontado
+   sobre o arquivo de hoje.
+4. **Cor da marca do cliente na borda do item do carrinho** — valor baixo; ninguem passa a cor nem na branch.
+
+### Bloco de registro — `recovery/src-legacy/` (decisao da pasta inteira)
+
+48 arquivos novos (24 `.ts` + 24 `.tsx`) alem dos 195 alterados: 14 extracoes de tipo e componentes antigos
+(carrinho, favoritos, orcamento), 34 testes legados (kit, orcamento, mockup, favoritos, lint).
+**Recomendacao: nao incorporar, e nao usar isso como motivo para manter a branch viva.** Confirmado que a
+pasta nao entra no compilador (`main:tsconfig.app.json:30-32` → `"include": ["src"]`) nem no Vitest
+(`main:vitest.config.ts:45-77` coleta so `tests/`, `src/`, `e2e/scripts/__tests__`, `supabase/functions/...`,
+`scripts/__tests__`). E os testes legados apontam para o layout antigo: `recovery/src-legacy/tests/hooks/useKitAutoSave.financial.test.tsx:15`
+importa `@/hooks/useKitAutoSave`, caminho que **nao existe na main** (o hook vive em
+`main:src/hooks/kit-builder/useKitAutoSave.ts`, com teste proprio em
+`main:tests/hooks/useKitAutoSave.validation-recovery.test.tsx`). Como estao, nao rodam e nao protegem nada.
+
+### Nao verificado nesta passada
+
+- **O conteudo das assercoes dos 48 arquivos novos de `recovery/src-legacy/`**: li os nomes, os imports de um
+  deles e a exclusao da pasta no `tsconfig`/`vitest`; nao conferi um a um se alguma assercao cobre regra de
+  negocio que a main hoje nao cobre.
+- **Os 195 arquivos alterados em `recovery/src-legacy/`** seguem sem leitura integral (a 1a passada leu 36).
+- **Nenhum comando de build, lint ou teste foi executado** (tarefa somente leitura).
+- **Nada conferido em producao**: tudo acima e leitura de codigo e de historico do git.

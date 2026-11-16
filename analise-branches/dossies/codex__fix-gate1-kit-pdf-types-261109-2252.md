@@ -135,3 +135,96 @@ tirou do sistema de proposito, afrouxa 4 catracas de qualidade que hoje estao ma
 - Nao rodei `npm test`, `lint` nem `typecheck` em nada desta branch; nao havia como, sem alterar a arvore de
   trabalho (proibido nesta tarefa). Os numeros de teste citados sao contagem de `it(...)` nos arquivos, nao
   execucao.
+
+
+## Segunda passada — arquivos que faltavam
+
+Lidos nesta passada: **89 arquivos de codigo** (70 da lista "criados pela branch e ausentes da main" + 19 da
+lista "existem na main com conteudo diferente"). Veredito revisado: **RESGATAR_PARCIAL** (confianca alta) —
+os 3 itens da primeira passada continuam valendo e entram **2 itens novos**.
+
+### Correcao de autoria (muda a leitura de tudo abaixo)
+
+Nenhum dos 70 arquivos "novos" e dos 18 arquivos "diferentes" foi escrito pelo agente desta branch. Todos
+chegaram pelo commit `e77827893c` ("fix(app): restaurar contratos e preservar implementacoes"), que **nao
+esta na main** (`git merge-base --is-ancestor e77827893c origin/main` → falso). Prova por arquivo:
+`git diff --name-only e77827893c da57cd671d` lista 45 arquivos, e **nenhum** deles e da lista A ou da lista C
+(exceto `src/components/search/__tests__/useGlobalSearch.test.ts`, ja julgado na 1a passada).
+
+Consequencia pratica para o dono: o codigo util que esta aqui (recuperar rascunho, aprovar na lista, filtros
+por voz) e uma **copia orfa** — nao existe na main nem na pasta de arquivo morto `recovery/src-legacy/`
+(`git cat-file -e origin/main:recovery/src-legacy/src/lib/quotes/quoteDraftRecovery.ts` → falha, idem para os
+outros 7 testados). Se a branch for apagada, esse codigo desaparece.
+
+### Lista A — 70 arquivos criados pela branch
+
+| arquivo | esta na main? onde | evidencia |
+|---|---|---|
+| `src/lib/filters/voiceFilterPatch.ts` + `src/pages/filters/voiceFilterPatch.ts` + `tests/pages/legacy-filter-voice.test.ts` | **NAO ESTA** — nem na main, nem no arquivo morto | `git grep -ln applyVoiceFilterPatch origin/main -- src tests` → vazio. Na main, `src/components/search/useGlobalSearch.ts:189-196` so junta categoria/cor/material num **texto de busca**; nao aplica filtro nenhum. A pagina viva e `src/pages/products/FiltersPage.tsx` (rota em `src/routes/product-routes.tsx:24` e `:34`) e nao tem uma linha de voz; a unica copia com voz e `recovery/src-legacy/src/pages/FiltersPage.tsx` (10 ocorrencias), que nao esta em rota nenhuma |
+| `tests/hooks/useKitBuilderPageState.quantity.test.tsx` (16 casos) | **NAO ESTA** — mas roda contra a main de hoje | todos os `import '@/...'` resolvem na main (inclusive `@/hooks/kit-builder/useKitBuilderPageState`); a main tem so `useKitBuilderPageState.route.test.ts` e `.snapshot.test.tsx` |
+| `src/lib/kit-library/library-list-utils.ts` (`getItemsCount`, `applySort`) | **ESTA** | `git grep -ln getItemsCount origin/main -- src` → `src/pages/kit-builder/KitLibraryPage.tsx` |
+| `src/pages/quote-view/quoteBitrixId.ts` (`normalizeBitrixQuoteId`) | **ESTA em essencia** | `origin/main:src/pages/quotes/quote-view/QuoteBitrixSync.ts:144-146` faz `Number(result.quote_id)` + `isNaN` + `String(...)`. A versao da branch e um pouco mais rigorosa (recusa fracionario/negativo, tira zero a esquerda); ganho marginal, nao e perda |
+| `src/components/quotes/quote-view-status-config.ts` | **ESTA** — a main monta o mesmo objeto dentro da propria tela | `git diff origin/main da57cd671d -- src/pages/quotes/QuoteViewPage.tsx` mostra a main com o `Object.fromEntries(Object.entries(QUOTE_STATUS_CONFIG)...)` inline; a branch so moveu para um arquivo separado |
+| `src/components/quotes/QuoteBuilderPaymentMethodField.tsx` | **ESTA** — forma de pagamento existe na tela viva | `git grep -ln "forma_pagamento\|setPaymentMethod" origin/main -- src` → `QuoteBuilderSummaryColumn.tsx`, `useQuoteBuilderState.ts`, `quoteSchema.ts`, `QuoteBuilderPage.tsx` |
+| 7 arquivos so de tipo (`collection-types.ts`, `magic-up-state-types.ts`, `mockup/state-types.ts`, `quote-builder-state-types.ts`, `simulation/state-types.ts`, `TrendsPage.types.ts`, `MockupHistoryPanel.types.ts`) | **nao sao comportamento** | sao `interface`/`type` extraidos das copias que a main arquivou; nenhum tem logica (lidos: 16 a 62 linhas, so declaracoes) |
+| `src/components/search/__tests__/SmartSuggestions.test.tsx` (6 casos) | **nao roda na main** | importa `'../SmartSuggestions'`, e `SmartSuggestions.tsx` so existe em `recovery/src-legacy/`. A main cobre o equivalente vivo em `src/components/search/__tests__/SearchWithSuggestions.test.tsx` e `useQuickSuggestions.test.ts` |
+| `src/hooks/__tests__/useAutoSaveQuote.legacy.test.ts` (4 casos) | **coberto em substancia** | importa `'../useAutoSaveQuote'` (arquivado). A main tem `src/hooks/quotes/__tests__/useAutoSaveQuote.test.ts` com "restaura apenas uma vez mesmo apos re-renders" e "restoreEnabled: restaura no mount... e nao reaplica" — os mesmos 2 contratos principais |
+| `tests/hooks/device-and-supplier-trust.contract.test.ts` + `tests/fixtures/supplier-trust-demo.ts` (1 caso) | **os hooks existem na main, em outro caminho** | `src/hooks/admin/useDeviceDetection.ts` e `src/hooks/products/useSupplierTrust.ts`; o teste aponta para `@/hooks/useDeviceDetection` e `@/hooks/useSupplierTrust` (arquivados) |
+| `tests/sql/device-trust/` (README + fixture + runner Python) | **NAO ESTA**, e testa migration que a main nao tem | `git ls-tree -r origin/main tests/sql` → 7 arquivos, nenhum de device trust; `git grep -ln user_known_devices origin/main -- tests scripts` → vazio. O runner valida `20261110024530_restore_device_trust_contract.sql`, que a main substituiu por `20261114031000_fix_user_known_devices_is_trusted.sql` (ja em producao) |
+| 19 testes `legacy-*` / `*.legacy.test.*` restantes (~190 casos) | **nao rodam na main** | checagem de import por arquivo: todos tem de 1 a 6 modulos `@/...` que nao existem em `src/` da main (ex.: `@/hooks/useQuoteTemplates`, `@/hooks/useKitAutoSave`, `@/hooks/useAdvancedFilters`, `@/pages/quote-view/QuoteActionHandlers`) |
+| `tests/components/QuoteCommentsSection.test.tsx`, `tests/hooks/useQuoteComments.test.ts`, `tests/sql/quote-comments/`, migration + rollback `20261110022404` | **item 4 da 1a passada (decisao do dono)** | sem mudanca |
+| migration + rollback `20261110024530` (confianca de dispositivo) | **resolvido na main por outro arquivo, ja em producao** | sem mudanca em relacao a 1a passada |
+
+### Lista C — 19 arquivos que existem na main com conteudo diferente
+
+**Nada a resgatar, e 4 pontos onde a branch pioraria a producao.** Para os 18 arquivos (todos menos
+`useGlobalSearch.test.ts`, ja julgado), `git diff --name-only e77827893c da57cd671d -- <arquivo>` e vazio:
+a branch nao escreveu uma linha neles. O que a branch carrega e um estado anterior ao da main, em geral so
+reformatado (quebra de linha do prettier). Onde a diferenca e de comportamento, **a main esta certa e a
+branch esta errada**:
+
+| arquivo | o que a branch desfaria | evidencia |
+|---|---|---|
+| `src/lib/kit-builder/snapshot/read-draft.ts` | tira o `.default({ enabled: false })` de personalizacao. Efeito: kit salvo com personalizacao vazia (`{}`) para de abrir — e esse e o formato de **15 dos 21 kits em producao** | `git diff origin/main da57cd671d -- src/lib/kit-builder/snapshot/read-draft.ts`: a main tem o default e o comentario com a contagem de producao; a branch exige os campos |
+| `tests/hooks/useKitBuilderPageState.snapshot.test.tsx` | volta a tratar `{}` como rascunho invalido | mesmo diff: a branch re-insere `{}` na lista de formatos recusados |
+| `src/pages/quotes/QuoteViewPage.tsx` | tira a protecao `if (!(await deleteQuote(quote.id))) return;`. Efeito: se o banco negar a exclusao por permissao, a tela diz que apagou e navega para a lista mesmo assim | mesmo diff, trecho do `ConfirmDialog` |
+| `src/hooks/quotes/useQuoteTemplates.ts` | tira o `usage_count: 0` na copia de template. Efeito: template copiado nasce herdando o contador de uso do original | mesmo diff, funcao `templateCopyPayload` |
+| `src/hooks/mockup/mockupGenerationService.ts` | tira o parametro de limite de `fetchMockupHistory` (volta a 200 fixo) | mesmo diff |
+| `src/hooks/useDevGate.ts`, `src/hooks/useReplenishments.ts`, `src/utils/product-sorting.ts`, `src/lib/external-db/product-types.ts` | so formatacao / troca de `useMemo` por `useRef` | mesmo diff; nenhuma mudanca de resultado |
+| `src/hooks/kit-builder/useKitAutoSave.ts`, `useKitBuilderPageState.ts`, `src/pages/kit-builder/KitBuilderPage.tsx`, `tests/components/pages/KitBuilderPage.test.tsx` | nada: o que parecia novo ja esta na main | `consumeUnloadBackup` → `origin/main:src/hooks/kit-builder/useKitAutoSave.ts:57,395,442`; guarda de quantidade → `origin/main:src/hooks/kit-builder/useKitBuilderPageState.ts:53,108-113,310,369`; mensagem "O rascunho contem campos incompletos" → `:235` |
+| `src/integrations/supabase/types.ts` | acrescenta o tipo da tabela `quote_comments` ("not yet applied live") | parte do item 4 (decisao do dono) |
+| `supabase/MIGRATIONS_SYNC_LOG.md` | a branch tem 680 linhas **menos** que a main. As 3 migrations de seguranca que ela lista como "pendentes" (E30 `external_connections`, E40 `mockup_approval_links`, E18 `mcp_kv_get`) **ja estao na main** | `git ls-tree -r --name-only origin/main supabase/migrations \| grep 202610221940` → os 3 arquivos existem com o mesmo nome |
+
+### Lista B — arquivos de registro
+
+**Zero.** Esta branch nao produziu documentacao propria (`total de registro: 0` no levantamento).
+
+### O que falta resgatar (lista final, somando a 1a passada)
+
+1. a 3. — itens 1, 2 e 3 da secao "A resgatar" acima (recuperacao de rascunho de orcamento, aprovar
+   orcamento pela lista, filtro de tecnicas do historico de mockups). Sem alteracao.
+4. **DECISAO DO DONO — comentarios em orcamento.** Sem alteracao.
+5. **NOVO — filtros do catalogo por voz.** Hoje, se o vendedor fala "camiseta azul em estoque" no catalogo,
+   a main apenas joga as palavras na caixa de busca; nenhum filtro e marcado. O codigo que marca os filtros
+   de verdade (cor, categoria, material, genero, publico-alvo, faixa de preco, estoque minimo, kit, destaque,
+   novidade, personalizavel, promocao) existe so aqui, em 29 linhas, com 3 testes. **Arquivos:**
+   `src/lib/filters/voiceFilterPatch.ts`, `tests/pages/legacy-filter-voice.test.ts`. **Observacao:** precisa
+   ser ligado na pagina viva `src/pages/products/FiltersPage.tsx`; o arquivo
+   `src/pages/filters/voiceFilterPatch.ts` e so um reexport e nao serve para nada na main.
+6. **NOVO — rede de protecao da quantidade do kit (16 testes).** `tests/hooks/useKitBuilderPageState.quantity.test.tsx`
+   e o unico arquivo desta branch que roda contra a main de hoje sem nenhuma adaptacao. Ele trava quatro
+   coisas que a main **ja faz certo** e que ninguem testa: kit antigo sem quantidade nao pode ser salvo por
+   cima do original sem o usuario confirmar; item com quantidade quebrada nao pode ser removido em silencio;
+   e, ao trocar o cliente de um kit, os dados do cliente anterior nao podem vazar para o novo. Custo de
+   resgate: copiar 1 arquivo. **Nao verificado:** nao rodei o teste (proibido alterar a arvore nesta tarefa),
+   entao nao posso afirmar que passa — so que todos os seus imports existem na main.
+
+### Nao verificado (segunda passada)
+
+- **Nao rodei nenhum teste, lint ou build.** Contagens de caso sao `grep -c 'it('`; "roda contra a main" quer
+  dizer "todos os imports `@/...` resolvem na arvore da main", nao "passou".
+- **Os 195 arquivos de `src/` que a main arquivou em `recovery/src-legacy/`** continuam julgados pela prova
+  estrutural da 1a passada, nao pela leitura do diff de cada um. Nesta passada abri 18 deles (a lista C) e em
+  todos a main estava igual ou melhor, o que reforca a conclusao — mas nao a prova para os 177 restantes.
+- **De onde o commit `e77827893c` tirou esses 70 arquivos** nao foi rastreado. Eles nao estao no ponto de
+  partida da branch nem em lugar nenhum da main; podem ter vindo de uma arvore de trabalho nao versionada.

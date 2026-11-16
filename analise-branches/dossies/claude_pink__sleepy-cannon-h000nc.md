@@ -101,3 +101,45 @@ recomendacao e: copiar os 47 arquivos para pasta datada e so depois fechar a bra
   varia de analise solida a rascunho vazio; nao sei a proporcao.
 - **Nao verifiquei se as 11 PRs fechadas sem merge deixaram trabalho perdido.** Isso e assunto das
   branches delas, nao desta; esta branch so comenta sobre elas.
+
+
+## Segunda passada — arquivos que faltavam
+
+**Veredito revisado: RESGATAR_PARCIAL** (sem mudança) · **prioridade: baixa** — nada vivo sobrou aqui.
+
+Recontagem independente da branch inteira (não só dos 40 primeiros):
+`git diff --name-only --diff-filter=A a58b98ee 1b82ee71` → 114 arquivos criados; destes, 73 não existem na
+main (`git cat-file -e origin/main:<arquivo>` falha). Extensões dos 73: 65 `.md`, 6 `.txt`, 2 `.json`.
+Caminhos: 61 em `analise-prs/dossies/`, 12 em `analise-prs/baseline/`. **Zero código** — a lista (A) de
+código está vazia de fato, não por falta de leitura:
+`grep -vE '^(analise-prs|docs|recovery|analise-branches|inventario|audit|qa)/'` sobre os 73 → nenhuma linha.
+Fora de pasta de registro a branch tocou **um** arquivo na vida (`git diff --name-status a58b98ee 1b82ee71 |
+grep -v registro` → `M .eslint-baseline-scope.json`), já julgado na primeira passada.
+
+### Está na main?
+
+| arquivo / conjunto | está na main? onde | evidência |
+|---|---|---|
+| 61 fichas em `analise-prs/dossies/` + 12 em `analise-prs/baseline/` (os 73 ausentes) | **NÃO ESTÃO** por caminho. Das 61 fichas, 26 têm registro equivalente em outro lugar da main (1ª passada); 35 não têm em lugar nenhum | contagem acima; `sed 's#/[^/]*$##' \| uniq -c` → 61 + 12 |
+| PR-3382 — correção do fiscal de workflows (Gate 1.11): ler `- uses:`, `- run:`, `pull_request_target` e acusar YAML inválido. A ficha diz "válida, testada e **não está no main**" e deixa decisão para o dono | **ESTÁ na main hoje**, por outro caminho. A PR #3382 foi fechada **sem merge** (`gh api .../pulls/3382` → `state=closed merged=false`), mas o conteúdo entrou pelo commit `e2c070e35b` ("reconciliar parser YAML e contratos preservados") | `origin/main:scripts/check-workflow-contracts.mjs:72` tem `export function hasPullRequestTrigger(doc)`; `:245` tem `/^\s+(?:-\s+)?run:/m` (com a flag `m` que faltava); `:668-677` e `:703-710` tratam `parseError` em vez de descartar YAML inválido; `tests/scripts/check-workflow-contracts-parser.test.mjs` existe na main |
+| As 3 exceções duvidosas que a ficha pedia ao dono para decidir (allowlistar `checkout@v4`/`setup-node@v4` sem SHA e falta de `defaults.run.shell` no `ci.yml`) | **NÃO entraram** — e esse é o desfecho conservador que a ficha recomendava | `git show origin/main:scripts/check-workflow-contracts.allowlist.json \| grep 'ci.yml'` → vazio |
+| O bloqueio que a ficha previa (Gate 1.11 reprovando por 19 pendências do `ci.yml`) | **Resolvido.** O fiscal passa na main de hoje | `node scripts/check-workflow-contracts.mjs --gate` em `e4ab7f85` → `EXIT=0`, só 1 aviso não bloqueante `[C27-warn]` |
+| PR-3369, PR-3370, PR-3371 (fichas `DECISAO_HUMANA`: gates de governança "falham fechado", dry-run de migration recusando `COMMIT/ROLLBACK`) | **Entraram.** As 3 PRs foram mergeadas | `gh api .../pulls/{3369,3370,3371}` → `state=closed merged=true` nas três |
+
+### O que falta resgatar
+
+Nada de funcionamento. Confirmado em cima do conjunto completo (73 arquivos, não 47 como a 1ª passada
+estimou): o valor é só de memória — o porquê escrito de 61 decisões de PR e 12 medições de CI de 09/11.
+Recomendação do bloco de registro: **vale copiar, não vale discutir** — 73 arquivos de diário de bordo
+(fichas de PR + linha de base de CI daquele dia), nenhum com decisão pendente, todos para pasta nova e datada
+(ex. `analise-prs/arquivo-261109/`), sem tocar `prs.json`/`prs.csv`/`progresso.json`/`RELATORIO_PRS.md`.
+É docs-only (E14): não dispara portão.
+
+### NÃO VERIFICADO nesta passada
+
+- Mérito individual das 61 fichas. Li por inteiro apenas `PR-3382.md`; nas outras 60 extraí o veredito
+  (`grep '^\*\*Veredito'`) e conferi presença/ausência na main. A distribuição dos vereditos é 17
+  `NAO_MERGEAR`, 9 `MERGEADA_EXTERNA`, 5 `BLOQUEADO_DRAFT`, 4 `DECISAO_HUMANA`, 4 `AGUARDA_CI/PO`, resto
+  mergeada — e os 4 `DECISAO_HUMANA`/`AGUARDA_PO` com conteúdo de código foram todos checados acima.
+- Os 12 arquivos de `analise-prs/baseline/` continuam sem leitura linha a linha (números de execução de CI
+  de 09/11, superados pela main de hoje).
