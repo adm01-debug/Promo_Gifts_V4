@@ -1,9 +1,9 @@
 {
  "meta": {
-  "sha": "eadb47a7593310ee841557b686fc9443adf860e5",
+  "sha": "de5ce2cc85872ed0f91a150f031f1bf9ab5b5822",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-16 23:38 UTC",
+  "generated_at": "2026-11-16 23:49 UTC",
   "files_total": 10728,
   "code_files": 8778,
   "code_lines": 1238605
@@ -540708,10 +540708,19 @@
   }
  },
  "git": {
-  "sha": "eadb47a7593310ee841557b686fc9443adf860e5",
+  "sha": "de5ce2cc85872ed0f91a150f031f1bf9ab5b5822",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "de5ce2c",
+    "date": "2026-11-16",
+    "author": "adm01-debug",
+    "subject": "fix(ci): export do schema snapshot não roda quando o drift-gate é cancelado (#3718)",
+    "files": [
+     ".github/workflows/schema-snapshot-export.yml"
+    ]
+   },
    {
     "sha": "eadb47a",
     "date": "2026-11-16",
@@ -541279,19 +541288,6 @@
     "files": [
      "analise-branches/ESTADO-EM-261116.md"
     ]
-   },
-   {
-    "sha": "766597e",
-    "date": "2026-11-16",
-    "author": "Claude",
-    "subject": "chore(audit): dados brutos da analise das 160 branches",
-    "files": [
-     "analise-branches/dados/LEIA-ME.md",
-     "analise-branches/dados/auditoria-branches-locais.tsv",
-     "analise-branches/dados/branch-x-arquivo.tsv",
-     "analise-branches/dados/ranking-arquivos-por-branch.tsv",
-     "analise-branches/dados/vereditos-160-branches.json"
-    ]
    }
   ],
   "hot_files": [
@@ -541336,8 +541332,8 @@
     2
    ],
    [
-    "analise-branches/dados/LEIA-ME.md",
-    2
+    ".github/workflows/schema-snapshot-export.yml",
+    1
    ],
    [
     "src/hooks/kit-builder/useCustomKitPersistence.ts",

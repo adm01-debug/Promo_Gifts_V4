@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e de hora em hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `eadb47a7593310ee841557b686fc9443adf860e5` (2026-11-16T20:36:17-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e de hora em hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `de5ce2cc85872ed0f91a150f031f1bf9ab5b5822` (2026-11-16T20:48:26-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -590,7 +590,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - possiveis_segredos_no_codigo: 7 — ex.: scripts/ai-context/cenarios.mjs:102, src/components/admin/connections/__tests__/ConnectionSecurity.unit.test.tsx:9, src/integrations/supabase/client.ts:27
 
 ## Grafo de código (graphify)
-- 47986 nós · 80626 arestas · 2798 comunidades · grafo do commit `eadb47a7`
+- 47986 nós · 80626 arestas · 2798 comunidades · grafo do commit `de5ce2cc`
 - comunidades maiores: ref_components (803), ref_integrations (624), ref_hooks (572), vitest (567), ref_node_child_process (442), react (382), react-router-dom (359), @tanstack/react-query (349), ref_types (333), sonner (328), gotoAndSettle (311), ref_node_fs (309)
 - símbolos mais chamados: gotoAndSettle() (e2e/helpers/nav.ts), re (?), q() (scripts/supabase_snapshot/snapshot.py), analyze() (tests/scripts/test_personalization_artifact_diagnostics.py), outer() (tests/scripts/test_personalization_artifact_diagnostics.py), json (?), useExternalDatabase() (recovery/src-legacy/src/hooks/useExternalDatabase.ts), concludeCheck() (scripts/check-result-contract.mjs), querySupabaseReadOnly() (scripts/supabase-read-only-query.mjs), loginAs() (e2e/helpers/auth.ts), inner() (tests/scripts/test_personalization_artifact_diagnostics.py), excluded_sql() (scripts/supabase_snapshot/snapshot.py)
 - consulta local: `graphify query "<pergunta>"`, `graphify path "<A>" "<B>"`, `graphify explain "<X>"`
@@ -1181,6 +1181,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - CHANGELOG topo: [1.1.0](https://github.com/adm01-debug/Promo_Gifts_V4/compare/v1.0.0...v1.1.0) (2026-11-13)
 
 ## Últimos commits
+- 2026-11-16 `de5ce2cc` fix(ci): export do schema snapshot não roda quando o drift-gate é cancelado (#3718)
 - 2026-11-16 `eadb47a7` fix(kit): fixar/desafixar kit anuncia o estado da requisição velha (#3723)
 - 2026-11-16 `9bd4a4bf` chore(docs): arquiva a passagem de sessão de 15/11 que a main não tinha (#3717)
 - 2026-11-16 `16cfec32` chore(deps): sobe jest-dom 7 e react-hooks 7; rejeita jsdom 31 com a evidência (#3715)
@@ -1195,7 +1196,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-16 `ec9b8e75` docs(audit): retrata o veredito dos 52 testes legacy — 21 dos 26 modulos estao vivos (#3706)
 - 2026-11-16 `f6335b1c` fix(ci): Gate E23 e Gate Final aceitam fork/Dependabot sem secrets (#3707)
 - 2026-11-16 `43fc3595` feat(audit): resgata 267 arquivos de analise-prs que existiam só em branch de agente (#3705)
-- 2026-11-16 `1f642122` docs(audit): 12 recibos do ledger com sha256 que não bate com o arquivo (#3704)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

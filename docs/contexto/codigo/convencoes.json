@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "fix(ci): export do schema snapshot não roda quando o drift-gate é cancelado (#3718)",
    "fix(kit): fixar/desafixar kit anuncia o estado da requisição velha (#3723)",
    "chore(docs): arquiva a passagem de sessão de 15/11 que a main não tinha (#3717)",
    "chore(deps): sobe jest-dom 7 e react-hooks 7; rejeita jsdom 31 com a evidência (#3715)",
-   "docs(migrations): registra recibo oficial da CRON-005 aplicada em producao (#3716)",
-   "fix(quotes): valida o rascunho antes de restaurar na tela do orcamento (#3713)"
+   "docs(migrations): registra recibo oficial da CRON-005 aplicada em producao (#3716)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",

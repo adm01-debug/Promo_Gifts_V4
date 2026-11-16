@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "eadb47a7593310ee841557b686fc9443adf860e5",
+  "commit": "de5ce2cc85872ed0f91a150f031f1bf9ab5b5822",
   "branch": "main",
-  "data_commit": "2026-11-16T20:36:17-03:00",
+  "data_commit": "2026-11-16T20:48:26-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "de5ce2cc",
+    "data": "2026-11-16",
+    "assunto": "fix(ci): export do schema snapshot não roda quando o drift-gate é cancelado (#3718)"
+   },
    {
     "sha": "eadb47a7",
     "data": "2026-11-16",
@@ -126,14 +131,9 @@
     "sha": "2d1d7cab",
     "data": "2026-11-16",
     "assunto": "Merge pull request #3689 from adm01-debug/claude/chore-dossies-branches-261116-0154"
-   },
-   {
-    "sha": "7d34968e",
-    "data": "2026-11-16",
-    "assunto": "docs(audit): veredito da n68 e protecao dos refs de preservacao"
    }
   ],
-  "arquivos_mudados_7d": 1951,
+  "arquivos_mudados_7d": 1940,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
