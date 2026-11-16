@@ -956,11 +956,29 @@ O primeiro agente disse que podia fechar. O segundo achou coisa que a `main` nã
 - **Estado:** no GitHub
 - **Risco de fechar:** Praticamente nulo, e menor que o risco de reabrir. A capacidade de negocio (regenerar as imagens de referencia dos testes visuais) segue na main em um lugar so, com os mesmos gatilhos automaticos e com uma protecao que os originais nao tinham: 6 dos 11 antigos comitavam direto na branch, o consolidado sempre abre PR e bloqueia push em main. Reaplicar esta branch seria regressao deliberada — desfaria a PR #3055 (106 para 92 workflows), traria de volta 11 workflows duplicados, um workflow-fantasma que so imprime "descontinuado" e um _template.yml que aparece na tela de Actions como executavel sem funcao, justamente quando o dono mandou reduzir workflows. Unica diferenca residual, que nao justifica resgate: magazine-typed-queries.yml tinha um contador fixo (13 RPCs transacionais v2) que falhava se alguem removesse um RPC; o numero bate hoje, o comportamento tem teste SQL dedicado na main, e um contador por grep sobre migracao concluida acusa falso positivo a cada RPC novo legitimo.
 
-## 6. Liberadas para apagar (72)
+## 6. Liberadas para apagar (72) — **71 apagadas em 2026-11-16, 1 já não existia**
 
 Veredito de que o trabalho já está no sistema, **confirmado** pelo segundo agente.
 
-| Branch | O que fazia | Ainda no GitHub? |
+> **Estado em 2026-11-16, 11h UTC — esta lista já foi executada. Não tente apagar de novo.**
+>
+> - **70 apagadas** do GitHub, com autorização do dono. Cada uma foi conferida antes:
+>   ponta no GitHub idêntica à analisada (nenhuma recebeu push depois da análise), nenhuma
+>   era cabeça de PR aberta, nenhuma era `main`/`salvo/*`/`contexto`.
+> - **Nada ficou inalcançável.** Antes de apagar, as 70 pontas foram preservadas em
+>   `salvo/261116-apagadas-70` = `a429382c1362308dfe7db0aa50604a9aae950827` — commit com a
+>   árvore da `main` e **as 70 pontas exatas como parents**, protegido pelo ruleset `27365809`
+>   (`deletion` + `non_fast_forward`, sem bypass). Para ressuscitar qualquer uma:
+>   `git cat-file -p a429382c13 | grep '^parent '` dá os 70 SHAs.
+> - **`claude/fix-pr3685-replay-stubs-261115-2150`** já não existia no remoto.
+> - **`claude/fix-replay-migrations-261115-1400`**: ficou de pé no primeiro lote por ser a
+>   cabeça da PR #3685. A PR foi fechada no mesmo dia (ver seção 8) e a branch foi apagada
+>   em seguida; a ponta `8efffeb0e5` entrou em `salvo/261116-apagadas-70` pelo commit
+>   `ef7889218a`. **As 71 estão fechadas.**
+> - Total de branches no remoto: **176 → 107** — 71 apagadas, mais dois refs novos
+>   (`salvo/261116-apagadas-70` e a branch desta própria atualização, que some no merge).
+
+| Branch | O que fazia | Existia no GitHub na análise (todas apagadas em 16/11) |
 |---|---|---|
 | `claude/chore-ci-static-checks-supersede-3525-261114-0206` | Enxuga a fila de verificacoes automaticas que roda a cada alteracao do sistema (menos tempo e custo de maquina para publicar) sem abrir mao de nenhuma | sim |
 | `claude/fix-e2e-kit-builder-etapas-261114-0735` | Fez o teste automatico do "monte seu kit" avancar de etapa como um cliente real avanca, para que uma quebra nesse fluxo de venda apareca antes de ir a | sim |
@@ -1069,12 +1087,12 @@ Trabalho que entrou na `main` e está em produção.
 | [#3660](https://github.com/adm01-debug/Promo_Gifts_V4/pull/3660) | `claude/fix-trem-resgates-261115-1240` | trem de resgates — 16 correcoes recuperadas de branches de outros agentes |
 | [#3659](https://github.com/adm01-debug/Promo_Gifts_V4/pull/3659) | `claude/infra-wf-limpeza-supersede-3525-261115-1220` | enxuga workflows — 12 aposentados, contexto 1x/h |
 
-## 8. PRs abertas agora (12)
+## 8. PRs abertas agora (12 — hoje 10: #3689 mergeada, #3685 fechada)
 
 | PR | Branch | O que é | Situação |
 |---|---|---|---|
-| [#3689](https://github.com/adm01-debug/Promo_Gifts_V4/pull/3689) | `claude/chore-dossies-branches-261116-0154` | dossie por branch das 160 branches do GitHub fora da main | minha, pronta para mergear |
-| [#3685](https://github.com/adm01-debug/Promo_Gifts_V4/pull/3685) | `claude/fix-replay-migrations-261115-1400` | colunas perdidas por CREATE TABLE IF NOT EXISTS no-op no replay | toca banco |
+| ~~[#3689](https://github.com/adm01-debug/Promo_Gifts_V4/pull/3689)~~ | `claude/chore-dossies-branches-261116-0154` | dossie por branch das 160 branches do GitHub fora da main | **MERGEADA em 16/11** — `main` = `2d1d7cabee`, deploy de produção READY |
+| ~~[#3685](https://github.com/adm01-debug/Promo_Gifts_V4/pull/3685)~~ | `claude/fix-replay-migrations-261115-1400` | colunas perdidas por CREATE TABLE IF NOT EXISTS no-op no replay | **FECHADA em 16/11 — redundante, ver nota abaixo** |
 | [#3683](https://github.com/adm01-debug/Promo_Gifts_V4/pull/3683) | `claude/feat-crm-vendedor-sem-dono-261115-1622` | vendedor com vinculo ve a carteira dele e os clientes sem dono | decisao de negocio |
 | [#3566](https://github.com/adm01-debug/Promo_Gifts_V4/pull/3566) | `release-please--branches--main--components--gifts-store` | release 1.2.0 | 1.2.0 ja foi publicado em outubro |
 | [#3687](https://github.com/adm01-debug/Promo_Gifts_V4/pull/3687) | `e15-receipt-20261115230000-43778467997` | recibo de aplicacao — 20261115230000 (E15) | recibo da migration da rota de IA |
@@ -1085,6 +1103,33 @@ Trabalho que entrou na `main` e está em produção.
 | [#3693](https://github.com/adm01-debug/Promo_Gifts_V4/pull/3693) | `dependabot/npm_and_yarn/production-minor-patch-8bc99cdd0a` | bump production-minor-patch, 12 updates | Dependabot |
 | [#3695](https://github.com/adm01-debug/Promo_Gifts_V4/pull/3695) | `dependabot/npm_and_yarn/development-all-2c14067ca6` | bump development-all, 11 updates | Dependabot |
 | [#3696](https://github.com/adm01-debug/Promo_Gifts_V4/pull/3696) | `dependabot/npm_and_yarn/hookform/resolvers-7.0.6` | bump @hookform/resolvers 5.9.1 -> 7.0.6 | Dependabot, bump MAJOR |
+
+### PR #3685 — redundante, e mergear seria pior que não mergear
+
+Conferido à mão em 2026-11-16 contra a `main` `2d1d7cabee` (não é afirmação de subagente):
+
+1. **Nenhum statement do PR falta na `main`.** Comparando os statements `CREATE TABLE` /
+   `ALTER TABLE` dos dois arquivos SQL: `20250103080000_complete_schema.sql` tem 107 no PR
+   e 109 na `main`; `20260512000000_bootstrap_missing_application_schemas.sql` tem 107 no PR
+   e 110 na `main`. `comm -23` (no PR e ausente na main) = **vazio nos dois**. A `main` é
+   superconjunto estrito, pelo merge da PR #3686 (`26d93948f5`).
+2. **A seção do ledger já está na `main`**, em `supabase/MIGRATIONS_SYNC_LOG.md:1750`.
+3. **Mergear reintroduziria um registro errado.** A única linha de conteúdo exclusiva do PR
+   é a de `20261031000000` dizendo *"tabela não existe em produção"* — a `main` já corrigiu
+   isso em `MIGRATIONS_SYNC_LOG.md:972`: a tabela **existe** (`to_regclass('public.stock_notes')`
+   responde, RLS ligada, 4 policies). As outras linhas exclusivas são dois `sha256`
+   intermediários que **não batem** com os arquivos da `main` (os corretos,
+   `096a7a6b18…` e `7e848bc78a…`, já estão no ledger, um registro cada).
+
+**Decisão tomada em 2026-11-16, a pedido do dono: PR fechada**, com o comentário de
+evidência em [#3685](https://github.com/adm01-debug/Promo_Gifts_V4/pull/3685#issuecomment-6915240462).
+Produção não foi tocada: as duas `version` já estão aplicadas no ledger e os arquivos não
+voltam a rodar. A PR estava, aliás, em `mergeable_state: dirty` — já não era mergeável.
+A branch foi apagada depois, com a ponta preservada.
+
+**O problema de origem continua aberto, e não é desta PR:** o próprio commit da branch
+avisa que o replay do zero ainda não completa ("restam 76 relações órfãs"). Isso é uma
+pendência própria, não um motivo para reabrir a #3685.
 
 ## 9. O que ficou sem análise
 
