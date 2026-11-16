@@ -1624,6 +1624,7 @@ Após VACUUM ANALYZE executado pelos jobs temporários `vacuum-snapshots-now` e
 | `20260917061500` | `74f5094bab6b28abe0306f65519ae4d49f3f259a6de8061ea5504c2a0b8577ae` | `--` | GitHub Actions (db-apply-migration.yml, run 43668677152); disparada por mim nesta sessão com a autorização explícita do dono para o banco. O job 4 (Recibo) saiu success e abriu PR em vez de gravar aqui — mesmo padrão já registrado em docs/security/ | E15 | 2026-11-15 02:38:50 UTC | job 3 (Pós-check) da run 43668677152: "version 20260917061500 confirmada no ledger pós-aplicação", isInLedger=true. Efeito conferido por consulta direta ao canônico: has_function_privilege(authenticated, EXECUTE) = false nas 4 funções (registrar_entrada_estoque, registrar_saida_estoque, confirm_notifications_dispatched, fn_notify_user) e service_role preservado = true nas 4 | aplicada |
 | `20261115130200` | `dd9f99bb3a9d8be6fafd98c12b39c3eec7d181a3793bbce12b97cf2ea4b018f0` | — | GitHub Actions (db-apply-migration.yml, disparado por adm01-debug, aprovado por @adm01-debug) | E15 | 2026-11-16 09:32:16 UTC | job post-check da run 43840519779 confirmou a version no ledger | aplicada |
 | `20261115230000` | `2937d5ff62750fed7a98cec78f147de2547df00055d361796ce65ee6db996dec` | — | GitHub Actions (db-apply-migration.yml, disparado por adm01-debug, aprovado por @adm01-debug) | E15 | 2026-11-16 00:08:09 UTC | job post-check da run 43778467997 confirmou a version no ledger | aplicada |
+| `20261114120100` | `46c10be42fa859abe362cbac3f4b3a0066d0e59115b96ecf3cddf19a2184bfb2` | — | GitHub Actions (db-apply-migration.yml, disparado por adm01-debug, aprovado por @adm01-debug) | E15 | 2026-11-16 21:22:51 UTC | job post-check da run 43959381044 confirmou a version no ledger | aplicada |
 | `20260928212000` | `0ea5dfd928fca67e7553ca2d0ea9414b18efa90a3586588ba5f9870c2c283720` | — | — (aguardando `workflow_dispatch` E15 pelo PO) | E15 | — | pendente: preflight local OK; back-link `products.padronizacao_id` (522 linhas) + `fn_promote_padronizacao` passa a gravar o back-link | **pendente — não aplicada** |
 | `20260928213000` | `2d7310551455781832bb2f474f08a398f8289af1532279dcc3610c3325a87728` | — | — (aguardando `workflow_dispatch` E15 pelo PO) | E15 | — | pendente: backfill `products.main_category_id = category_id` (489 linhas), sem DDL | **pendente — não aplicada** |
 | `20261008230000` | `47a7acec83ba86fff31362ee83652b53f7d361e2fb46121db51fbdbf91e5ed4e` | — | — (aguardando `workflow_dispatch` E15 pelo PO) | E15 | — | pendente: `DROP POLICY mal_public_select_active` + `REVOKE ALL` de anon em `mockup_approval_links`; bucket `mockup-assets` passa a listar só `<uid>/`; tripwire `fn_verify_anon_catalog_grants` v4 sem a tabela. Aprovada pelo dono em 08/10 (PR #2097); recibo pendente registrado retroativamente — baseline de policies 2026-10-15 ainda mostra `mal_public_select_active` {anon} viva | **pendente — não aplicada** |
@@ -2114,7 +2115,32 @@ Ainda não está no ledger; aplicação só por `db-apply-migration.yml` após `
 
 | version | arquivo | sha256 | status |
 |---|---|---|---|
-| `20261114120100` | `cron005_refresh_all_mvs_diario_timeout_real` | `46c10be42fa859abe362cbac3f4b3a0066d0e59115b96ecf3cddf19a2184bfb2` | pendente — aguarda `[AUTORIZAÇÃO BD]` do dono e `db-apply-migration.yml` (branch `claude/perf-cron005-refresh-all-mvs-diario-261114-1002`) |
+| `20261114120100` | `cron005_refresh_all_mvs_diario_timeout_real` | `46c10be42fa859abe362cbac3f4b3a0066d0e59115b96ecf3cddf19a2184bfb2` | **aplicada** 2026-11-16 21:22:51 UTC via `db-apply-migration.yml` run 43959381044 (recibo abaixo) |
+
+### Por que foi aplicada: o job estava falhando em 100% das execuções
+
+Medido em `postgres_logs` no dia da aplicação, janela de 24 h
+(2026-11-15 21:20 UTC → 2026-11-16 21:18 UTC), antes do `alter_job`:
+
+```
+timeouts de refresh-all-mvs ...................... 12
+conclusoes de refresh_all_materialized_views ......  0
+chamadas totais de fn_cron_safe_run ............ 1658
+```
+
+As 7 materialized views de `analytics` mais `internal.mv_product_leaf_category`
+não foram atualizadas uma única vez em 24 h. O `fn_cron_safe_run` funcionava
+(1658 chamadas no período); só este job falhava sempre. A branch
+`claude/perf-cron005-refresh-all-mvs-diario-261114-1002` já havia observado o
+mesmo padrão em 2026-11-13/14 (18 timeouts, 0 conclusões).
+
+Estado conferido em produção depois do `apply`, read-only:
+
+| | antes | depois |
+| --- | --- | --- |
+| `cron.job.schedule` | `38 */2 * * *` | `38 9 * * *` |
+| `cron.job.command` | sem `statement_timeout` | `SET statement_timeout = '600s';` antes do `SELECT` |
+| `supabase_migrations.schema_migrations` | ausente | presente |
 
 ## 2026-11-14 — Estoque: índice parcial para a contagem de restocks de `fn_get_stock_notification_counts`
 
