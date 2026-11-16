@@ -48,19 +48,32 @@ reescrevê-los: o ruleset `27365809` aplica `deletion` + `non_fast_forward` com
 
 | Ref | SHA | Guarda |
 |---|---|---|
-| `salvo/261116-apagadas-70` | `ef7889218a0704c04f25e0d13b33da2bcd91792f` | 71 pontas das branches apagadas em 16/11 |
+| `salvo/261116-apagadas-70` | `ef7889218a0704c04f25e0d13b33da2bcd91792f` | 71 pontas das branches apagadas em 16/11 — **70 sob `a429382c13`, 1 sob a ponta** |
 | `salvo/261116-pc-tips` | `f3194c077e…` | 379 pontas vindas do PC do dono — **nunca analisadas** |
 | `salvo/261116-orfaos-container` | `a8a4a647ab73a218b5a7d508791b483a457fe720` | 2110 commits que só existiam no container |
 | `salvo/261115-preservacao` | `e356346785…` | 61 pontas de outros agentes |
 | `salvo/261116-container` | `6ca50cad25…` | 36 pontas do container |
 
-**Como ressuscitar uma branch apagada:**
+**Como ressuscitar uma branch apagada** (testado em clone limpo; restaurou 20 commits e
+8495 arquivos):
 
 ```bash
-git fetch --depth=1 origin salvo/261116-apagadas-70
-git cat-file -p ef7889218a | grep '^parent '      # lista os 71 SHAs
-git branch <nome-novo> <sha-da-ponta>
+# 1. depth=2, nao 1: o ref e um commit de fast-forward, e as 70 pontas sao pais do
+#    commit anterior. Com --depth=1 o pai nem chega, e o passo 3 falha com
+#    "fatal: not a valid branch point".
+git fetch --depth=2 origin salvo/261116-apagadas-70
+
+# 2. os SHAs estao em DOIS commits: 70 em a429382c13, mais a 71a em ef7889218a
+git cat-file -p a429382c1362308dfe7db0aa50604a9aae950827 | grep '^parent '   # 70
+git cat-file -p ef7889218a0704c04f25e0d13b33da2bcd91792f | grep '^parent '   # +1
+
+# 3. buscar a ponta escolhida PELO SHA, com historia, antes de criar a branch
+git fetch --depth=20 origin <sha-da-ponta>
+git branch <nome-novo> FETCH_HEAD
 ```
+
+Os outros 4 refs guardam as pontas como pais de um commit só, então para eles o passo 1
+é `--depth=1` e o passo 2 lê um `cat-file` apenas.
 
 Para as 363 branches apagadas **antes** desta sessão, o mapa nome→SHA está em
 `analise-branches/auditoria-261115/363-apagadas-sha-para-restaurar.psv`.
