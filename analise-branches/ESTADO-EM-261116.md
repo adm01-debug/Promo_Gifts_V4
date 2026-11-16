@@ -1,5 +1,11 @@
 # Onde o trabalho parou — 2026-11-16
 
+> **ATENÇÃO: a seção "Aberto" deste arquivo venceu.** A PR #3689 foi mergeada, a #3685
+> foi fechada e 71 branches foram apagadas no mesmo dia, depois que este texto foi
+> escrito. O delta está em `analise-branches/HANDOFF-PROXIMA-SESSAO.md`, seção 3 —
+> leia lá antes de agir sobre qualquer coisa daqui. As 7 pendências abaixo continuam
+> válidas.
+
 Documento de passagem. A sessão que produziu isto acabou por limite de tokens; o dono
 continua em outra conta. Aqui está o que está feito, o que falta e onde cada coisa mora.
 
