@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "docs(migrations): registra recibo oficial da CRON-005 aplicada em producao (#3716)",
    "fix(quotes): valida o rascunho antes de restaurar na tela do orcamento (#3713)",
    "test: resgata os 2 testes que sobreviveram a refutacao adversarial (#3712)",
    "docs(audit): corrige a classificacao dos 52 testes — faltava a classe \"falha 100%\" (#3711)",
-   "docs(audit): prova de incorporacao — 117 caminhos de residuo + as 5 PRs fechadas (#3710)",
-   "feat(ci): resgata o executor de CI local — 15 commits que nunca viraram PR (#3709)"
+   "docs(audit): prova de incorporacao — 117 caminhos de residuo + as 5 PRs fechadas (#3710)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",

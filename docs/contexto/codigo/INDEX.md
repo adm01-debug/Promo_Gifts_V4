@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e de hora em hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `7a7a5bc32b40d2562c47fabd145130b4278d8089` (2026-11-16T17:09:08-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e de hora em hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `cd67884f9eeec674c82d758fae8202af7ecbf753` (2026-11-16T18:44:40-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -590,15 +590,15 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - possiveis_segredos_no_codigo: 7 — ex.: scripts/ai-context/cenarios.mjs:102, src/components/admin/connections/__tests__/ConnectionSecurity.unit.test.tsx:9, src/integrations/supabase/client.ts:27
 
 ## Grafo de código (graphify)
-- 47956 nós · 80589 arestas · 2663 comunidades · grafo do commit `7a7a5bc3`
-- comunidades maiores: ref_components (787), vitest (751), ref_integrations (684), ref_node_child_process (507), ref_hooks (485), react (432), lucide-react (385), @tanstack/react-query (383), gotoAndSettle (370), ref_utils (347), sonner (339), concludeCheck (315)
+- 47957 nós · 80590 arestas · 2776 comunidades · grafo do commit `cd67884f`
+- comunidades maiores: vitest (965), ref_components (888), ref_integrations (633), ref_node_child_process (544), ref_types (372), @tanstack/react-query (364), ref_hooks (343), react (338), gotoAndSettle (332), sonner (332), ref_node_fs (329), react-router-dom (311)
 - símbolos mais chamados: gotoAndSettle() (e2e/helpers/nav.ts), re (?), q() (scripts/supabase_snapshot/snapshot.py), analyze() (tests/scripts/test_personalization_artifact_diagnostics.py), outer() (tests/scripts/test_personalization_artifact_diagnostics.py), json (?), useExternalDatabase() (recovery/src-legacy/src/hooks/useExternalDatabase.ts), concludeCheck() (scripts/check-result-contract.mjs), querySupabaseReadOnly() (scripts/supabase-read-only-query.mjs), loginAs() (e2e/helpers/auth.ts), inner() (tests/scripts/test_personalization_artifact_diagnostics.py), excluded_sql() (scripts/supabase_snapshot/snapshot.py)
 - consulta local: `graphify query "<pergunta>"`, `graphify path "<A>" "<B>"`, `graphify explain "<X>"`
 
 ## Hotspots (arquivos mais alterados, 90 dias)
 - RELATORIO_CI.md (76)
 - PENDENCIAS.md (68)
-- supabase/MIGRATIONS_SYNC_LOG.md (61)
+- supabase/MIGRATIONS_SYNC_LOG.md (62)
 - package.json (43)
 - package-lock.json (27)
 - docs/coordenacao/conflitos-semanticos.md (22)
@@ -1181,6 +1181,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - CHANGELOG topo: [1.1.0](https://github.com/adm01-debug/Promo_Gifts_V4/compare/v1.0.0...v1.1.0) (2026-11-13)
 
 ## Últimos commits
+- 2026-11-16 `cd67884f` docs(migrations): registra recibo oficial da CRON-005 aplicada em producao (#3716)
 - 2026-11-16 `7a7a5bc3` fix(quotes): valida o rascunho antes de restaurar na tela do orcamento (#3713)
 - 2026-11-16 `8e5aaaa2` test: resgata os 2 testes que sobreviveram a refutacao adversarial (#3712)
 - 2026-11-16 `26996059` docs(audit): corrige a classificacao dos 52 testes — faltava a classe "falha 100%" (#3711)
@@ -1195,7 +1196,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-16 `2d3c2f74` fix(ci): gates não exigem do Dependabot segredo que o GitHub nunca lhe entrega (#3700)
 - 2026-11-16 `7dad78c4` chore(deps): aproveita as 5 atualizações seguras de dev da #3695 e deixa os 6 majors fora (#3702)
 - 2026-11-16 `8a13c888` chore(ci): destrava os recibos do ledger e o baseline do ratchet (#3699)
-- 2026-11-16 `a36e24d9` fix(ci): Gate 1.3 para de varrer analise-branches e destrava todo PR de código (#3701)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

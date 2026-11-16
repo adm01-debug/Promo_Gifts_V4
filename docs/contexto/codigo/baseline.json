@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "7a7a5bc32b40d2562c47fabd145130b4278d8089",
+  "commit": "cd67884f9eeec674c82d758fae8202af7ecbf753",
   "branch": "main",
-  "data_commit": "2026-11-16T17:09:08-03:00",
+  "data_commit": "2026-11-16T18:44:40-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "cd67884f",
+    "data": "2026-11-16",
+    "assunto": "docs(migrations): registra recibo oficial da CRON-005 aplicada em producao (#3716)"
+   },
    {
     "sha": "7a7a5bc3",
     "data": "2026-11-16",
@@ -126,14 +131,9 @@
     "sha": "b63eeb55",
     "data": "2026-11-16",
     "assunto": "docs(audit): relatorio da sessao, indice da preservacao e branches do PC"
-   },
-   {
-    "sha": "5097b558",
-    "data": "2026-11-16",
-    "assunto": "docs(audit): estado do trabalho em 2026-11-16 e as 7 pendencias"
    }
   ],
-  "arquivos_mudados_7d": 1995,
+  "arquivos_mudados_7d": 1993,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -207,7 +207,7 @@
    },
    {
     "arquivo": "supabase/MIGRATIONS_SYNC_LOG.md",
-    "mudancas": 61
+    "mudancas": 62
    },
    {
     "arquivo": "package.json",
