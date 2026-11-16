@@ -1,0 +1,43 @@
+# MERGE TESTS — base main 293b9287 — 2026-11-09T23:15
+# Método: git fetch --deepen=500 + git merge --no-commit --no-ff por PR
+# Formato: PR | GIT_RESULT | arquivos_modificados | +ins/-del | arquivos_conflito
+
+3179 | CLEAN  | 3 files  |  6705+/5540- | none — toca .github/workflows/ (governance)
+3203 | CONFLICT | 0 conflict | - | (merge-exit!=0 sem U-files; PR DIRTY 132 arq gerados)
+3210 | CLEAN  | 5 files  |  6743+/5543- | none — release-please branch
+3214 | CONFLICT | 63 files | - | .eslint-baseline.json,.file-size-baseline.json,PENDENCIAS.md,analise-prs/**,scripts/migration-ledger-remote-only-allowlist.json,src/components/kit-builder/ItemCard.tsx
+3228 | CLEAN  | 2 files  |  6700+/5539- | none — toca .github/workflows/
+3243 | CONFLICT | 1 file  | - | supabase/MIGRATIONS_SYNC_LOG.md
+3247 | CLEAN  | 15 files |  8320+/5539- | none — toca .github/workflows/
+3250 | CLEAN  | 3 files  |  6708+/5539- | none — migration DDL (index)
+3251 | CLEAN  | 3 files  |  6720+/5539- | none — cron DDL + .github/workflows/
+3255 | CONFLICT | 1 file  | - | supabase/MIGRATIONS_SYNC_LOG.md
+3256 | CLEAN  | 3 files  |  6742+/5539- | none — migration RLS
+3263 | CLEAN  | 3 files  |  6740+/5539- | none — feat + cron DDL
+3265 | CLEAN  | 3 files  |  6749+/5539- | none — migration (function)
+3273 | CLEAN  | 3 files  |  6724+/5539- | none — migration/indices
+3279 | CLEAN  | 2 files  |  6738+/5539- | none — migration/cron DDL (draft)
+3284 | CONFLICT | 2 files | - | supabase/migrations/20261101223908_cron001_stagger_additional_jobs.sql,supabase/migrations/20261101232022_cron001_stagger_schedules_reapply.sql
+3327 | CLEAN  | 2 files  |  6700+/5540- | none — .github/workflows/gitleaks-history-audit.yml +1 line (Dependabot)
+3328 | CLEAN  | 2 files  |  6700+/5540- | none — .github/workflows/codeql.yml +1 line (Dependabot)
+3329 | CLEAN  | 10 files |  6710+/5550- | none — .github/workflows/ 9 arquivos (Dependabot supabase/setup-cli)
+3330 | CLEAN  | 2 files  |  6700+/5540- | none — .github/workflows/codeql.yml +1 line (Dependabot)
+3331 | CLEAN  | 3 files  |  6704+/5554- | none — package.json bump (Dependabot)
+3332 | CLEAN  | 3 files  |  9055+/7553- | none — package.json 32 deps bumps (Dependabot)
+3333 | CLEAN  | 3 files  |  6718+/5558- | none — package.json bump (Dependabot)
+3334 | CLEAN  | 3 files  |  6799+/5621- | none — package.json bump (Dependabot)
+3339 | CONFLICT | 2 files | - | src/tests/MockupDeletion.test.tsx,tests/pages/kit-builder/useKitBuilderQuote.test.ts
+3355 | CONFLICT | 55 files | - | analise-prs/** — delivery branch desta sessão (NUNCA_MERGEAR)
+3363 | CLEAN  | 12 files |  6856+/6305- | none — edge functions + tests (draft)
+3364 | CLEAN  | 6 files  |  6709+/5574- | none — front + scripts (draft)
+3367 | CLEAN  | 4 files  |  6907+/5543- | none — src/hooks/kit-builder/ + src/pages/kit-builder/ (AGUARDA_CI zombie)
+3368 | CLEAN  | 5 files  |  7402+/5665- | none — .eslint-baseline.json +540 linhas RATCHET_VIOLATION (draft)
+3369 | DIRTY  | - | - | analise-prs/RELATORIO_PRS.md,analise-prs/baseline/build.txt,analise-prs/baseline/lint.txt,analise-prs/baseline/main-sha.txt,analise-prs/baseline/state.md — base 5098c8d4; CLEAN contra 293b9287
+3370 | DIRTY  | - | - | analise-prs/RELATORIO_PRS.md,analise-prs/baseline/build.txt,analise-prs/baseline/lint.txt,analise-prs/baseline/main-sha.txt,analise-prs/baseline/state.md — base 5098c8d4; CLEAN contra 293b9287
+3371 | DIRTY  | - | - | analise-prs/RELATORIO_PRS.md,analise-prs/baseline/build.txt,analise-prs/baseline/lint.txt,analise-prs/baseline/main-sha.txt,analise-prs/baseline/state.md — base 5098c8d4; CLEAN contra 293b9287
+
+# RESUMO
+# CLEAN (git level, base 293b9287):  28 PRs
+# DIRTY (conflito analise-prs/ por delivery branch, base 5098c8d4): 3 PRs (3369,3370,3371) — CLEAN contra base original 293b9287
+# CONFLICT (git level): 7 PRs (3203,3214,3243,3255,3284,3339,3355)
+# ZERO PRs mergeáveis hoje: Gate Final QUEUED (zombie 39698009932) + governança + draft + DIRTY
