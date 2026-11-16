@@ -5,13 +5,13 @@
   "vitest",
   "playwright"
  ],
- "total": 2527,
+ "total": 2528,
  "por_tipo": {
   "contrato": 65,
   "e2e": 677,
   "pytest": 4,
   "qa": 17,
-  "unit": 1764
+  "unit": 1765
  },
  "onde_ficam": [
   {
@@ -20,7 +20,7 @@
   },
   {
    "padrao": "co-localizado (__tests__)",
-   "arquivos": 673
+   "arquivos": 674
   },
   {
    "padrao": "e2e/",
@@ -9826,6 +9826,15 @@
     "src/lib/quotes/personalizationSummary.ts"
    ],
    "casos": 19
+  },
+  {
+   "arquivo": "src/lib/quotes/__tests__/quoteDraftRecovery.test.ts",
+   "tipo": "unit",
+   "linhas": 71,
+   "testa": [
+    "src/lib/quotes/quoteDraftRecovery.ts"
+   ],
+   "casos": 8
   },
   {
    "arquivo": "src/lib/security/__tests__/file-validation.test.ts",
@@ -22053,6 +22062,7 @@
   "src/lib/quotes/expiration.ts": 1,
   "src/lib/quotes/exportDiscountAuditPdf.ts": 1,
   "src/lib/quotes/personalizationSummary.ts": 2,
+  "src/lib/quotes/quoteDraftRecovery.ts": 1,
   "src/lib/roles.ts": 1,
   "src/lib/security/file-validation.ts": 1,
   "src/lib/security/lastInternalRoute.ts": 1,

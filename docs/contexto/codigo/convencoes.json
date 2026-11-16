@@ -18,13 +18,13 @@
    "src/components (77)"
   ],
   "servicos_logica": [
-   "src/lib (231)",
+   "src/lib (232)",
    "src/utils (30)",
    "src/services (10)"
   ],
   "testes": [
    "tests/ (1030)",
-   "co-localizado (__tests__) (673)",
+   "co-localizado (__tests__) (674)",
    "e2e/ (625)"
   ],
   "edge_functions": "supabase/functions",
@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "fix(quotes): valida o rascunho antes de restaurar na tela do orcamento (#3713)",
    "test: resgata os 2 testes que sobreviveram a refutacao adversarial (#3712)",
    "docs(audit): corrige a classificacao dos 52 testes — faltava a classe \"falha 100%\" (#3711)",
    "docs(audit): prova de incorporacao — 117 caminhos de residuo + as 5 PRs fechadas (#3710)",
-   "feat(ci): resgata o executor de CI local — 15 commits que nunca viraram PR (#3709)",
-   "chore(deps): bump production-minor-patch group — 12 atualizacoes (#3693)"
+   "feat(ci): resgata o executor de CI local — 15 commits que nunca viraram PR (#3709)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",

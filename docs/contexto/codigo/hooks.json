@@ -5963,7 +5963,7 @@
    "hooks_exportados": [
     "useQuoteAutoSave"
    ],
-   "linhas": 394,
+   "linhas": 411,
    "dominio": "components/quotes",
    "tabelas": [],
    "rpcs": [],

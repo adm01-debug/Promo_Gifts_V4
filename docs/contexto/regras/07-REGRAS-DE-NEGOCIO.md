@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.3.2 · commit `8e5aaaa23d` · branch `main` · 2026-11-16 19:35 UTC
+> Gerado automaticamente por AI Context Sync v1.3.2 · commit `7a7a5bc32b` · branch `main` · 2026-11-16 20:10 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -2224,6 +2224,35 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
   ```ts
   itemSnapshotSchema
   ```
+- **optionalNumber** (`src/lib/quotes/quoteDraftRecovery.ts`, z.number, encadeia optional):
+  ```ts
+  
+  ```
+- **nullableString** (`src/lib/quotes/quoteDraftRecovery.ts`, z.string):
+  ```ts
+  
+  ```
+- **company** (`src/lib/quotes/quoteDraftRecovery.ts`, z.object):
+  ```ts
+  { id: z.string(), name: z.string(), cnpj: z.string().optional(), ramo_atividade: z.string().optional(), }
+  ```
+- **contact** (`src/lib/quotes/quoteDraftRecovery.ts`, z.object):
+  ```ts
+  { id: z.string(), name: z.string(), email: z.string().optional(), phone: z.string().optional(), cargo: z.string().optional(), }
+  ```
+- **personalization** (`src/lib/quotes/quoteDraftRecovery.ts`, z.object):
+  ```ts
+  { technique_id: z.string(), technique_name: z.string().optional(), location_code: z.string().optional(), location_name: z.string().optional(), colors_count: optionalNumber, positions_count: optionalNumber, area_cm2: optionalNumber, width_cm: optionalNumber, height_cm: optionalNumber, personalized_quantity: optionalNumber, setup_cost: optionalNumber, unit_cost: optionalNumber, total_cost: optionalNumber, notes: z.string().optional(), }
+  ```
+- **item** (`src/lib/quotes/quoteDraftRecovery.ts`, z.object):
+  ```ts
+  { id: z.string().optional(), quote_id: z.string().optional(), product_id: z.string(), product_variant_id: nullableString, product_name: z.string(), product_description: nullableString, product_sku: z.string().optional(), product_image_url: z.string().optional(), has_personalization: z.boolean().optional(), personalization_config: z.json().optional(), personalization_cost: optionalNumber, mockup_urls: z.array(z.string()).optional(), artwork_urls: z.array(z.string()).optional(), quantity: z.number().finite(), unit_price: z.number().finite(), discount_percentage: optionalNumber, discount_amount: optionalNumber, subtotal: optionalNumber, color_name: z.string().optional(), color_hex: z.string().optional(), notes: z.string().optional(), sort_order: optionalNumber, bitrix_product_id: z.union([z.s …
+  ```
+- **quoteDraftRecoverySchema** (`src/lib/quotes/quoteDraftRecovery.ts`, z.object):
+  ```ts
+  { clientId: nullableString, contactId: nullableString, companyInfo: company.nullish(), contactInfo: contact.nullish(), validityDays: nullableString, validUntil: z .string() .refine((value) => value === '' || isCalendarDate(value)) .nullish(), discountType: z.enum(['amount', 'percent']).nullish(), discountValue: z.number().finite().nullish(), negotiationMarkup: z.number().finite().nullish(), notes: nullableString, internalNotes: nullableString, paymentMethod: nullableString, paymentTerms: nullableString, deliveryTime: z .string() .refine((value) => !value.startsWith('date:') || isCalendarDate(value.slice(5))) .nullish(), deliveryMode: z.enum(['data', 'prazo']).nullish(), deliveryDate: z.iso.datetime().nullish(), shippingMethod: nullableString, shippingType: nullableString, shippingCost: z.n …
+  ```
+  - Regras cruzadas (refine): “percent” · “prazo”
 - **safeString** (`src/lib/security/validation.ts`, z.string, encadeia transform):
   ```ts
   
@@ -6530,7 +6559,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `admin` | `supabase/migrations/20261112120500_fix_optimization_queue_rpcs_dev_access.sql` |
 | `anon` | `tests/edge-functions/live/_live-client.ts` |
 
-## K. Testes como especificação (21839 testes em 2206 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (21848 testes em 2207 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -6834,7 +6863,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `src/lib/inventory/__tests__/health-score.test.ts` | 18 | calcHealthScore · retorna 100 quando não há produtos · retorna 100 quando todos estão adequados · retorna 0 quando nenhum está adequado … |
 | `src/pages/magazine/templates-gallery/__tests__/gallery.test.tsx` | 18 | MagazineTemplatesGalleryPage · renderiza os 12 cards de template · filtro  · filtro  … |
 | `src/pages/quotes/__tests__/quote-builder-freight-block.rtl.test.tsx` | 18 | Bloco Frete — hierarquia + data-testid do grid · shippingType= · shippingType= · shippingType= … |
-| … +1906 linhas — lista completa em `context.json` | | |
+| … +1907 linhas — lista completa em `context.json` | | |
 
 ## L. Eventos de webhook tratados (contratos com sistemas externos)
 
@@ -7302,4 +7331,4 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | Fecha APENAS a lista — a empresa selecionada permanece intacta. | `src/components/mockup/MockupClientSelector.tsx` |
 | * Máximo de cores suportadas na área */ | `src/components/mockup/MultiAreaManager.tsx` |
 | ANTI-REGRESSÃO: primary_image_url deve vir ANTES de og_image_url. | `src/components/mockup/ProductSearchCombobox.tsx` |
-| … +1321 linhas — lista completa em `context.json` | |
+| … +1322 linhas — lista completa em `context.json` | |

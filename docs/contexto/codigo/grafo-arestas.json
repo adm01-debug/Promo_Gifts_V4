@@ -8590,6 +8590,7 @@
    "src/components/ui/badge.tsx",
    "src/components/ui/tooltip.tsx",
    "src/lib/logger.ts",
+   "src/lib/quotes/quoteDraftRecovery.ts",
    "src/lib/utils.ts"
   ],
   "src/components/quotes/QuoteBuilderNavigation.tsx": [
@@ -12112,6 +12113,9 @@
   ],
   "src/lib/quotes/personalizationSummary.ts": [
    "src/lib/customization/format-engraving-title.ts"
+  ],
+  "src/lib/quotes/quoteDraftRecovery.ts": [
+   "src/hooks/quotes/quoteTypes.ts"
   ],
   "src/lib/routePrefetch.ts": [
    "src/pages/CustomizableDashboard.tsx",

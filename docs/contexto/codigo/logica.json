@@ -1,13 +1,13 @@
 {
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
- "total": 303,
+ "total": 304,
  "por_camada": {
   "api": 3,
   "config": 1,
   "data": 3,
   "integrations": 8,
-  "lib": 231,
+  "lib": 232,
   "python": 9,
   "services": 10,
   "stores": 8,
@@ -6207,6 +6207,31 @@
     "components/quotes"
    ],
    "coberto_por_testes": 2,
+   "orfao": false
+  },
+  {
+   "arquivo": "src/lib/quotes/quoteDraftRecovery.ts",
+   "camada": "lib",
+   "exports": [
+    "quoteDraftRecoverySchema"
+   ],
+   "export_default": null,
+   "linhas": 118,
+   "tabelas": [],
+   "rpcs": [],
+   "edges": [],
+   "env": [],
+   "externos": [
+    "zod"
+   ],
+   "zod_schemas": 0,
+   "flags": [],
+   "papeis": [],
+   "usado_por": 1,
+   "usado_por_modulos": [
+    "components/quotes"
+   ],
+   "coberto_por_testes": 1,
    "orfao": false
   },
   {

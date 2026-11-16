@@ -13594,7 +13594,7 @@
    "modulo": "components/quotes",
    "arquivos": 50,
    "testes": 36,
-   "linhas": 11094,
+   "linhas": 11111,
    "itens_menu": [],
    "telas": [],
    "rotas_http": [],
@@ -21885,6 +21885,7 @@
     "components/admin",
     "components/dashboard",
     "components/quotes",
+    "lib/quotes",
     "pages/__visual",
     "pages/quotes",
     "services"
@@ -25294,9 +25295,9 @@
   },
   {
    "modulo": "lib/quotes",
-   "arquivos": 6,
-   "testes": 7,
-   "linhas": 727,
+   "arquivos": 7,
+   "testes": 8,
+   "linhas": 845,
    "itens_menu": [],
    "telas": [],
    "rotas_http": [],
@@ -25323,10 +25324,12 @@
     "pages/quotes"
    ],
    "depende_de_modulos": [
+    "hooks/quotes",
     "lib/customization"
    ],
    "pacotes_externos": [
-    "jspdf"
+    "jspdf",
+    "zod"
    ]
   },
   {

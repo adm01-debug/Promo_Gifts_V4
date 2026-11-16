@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "8e5aaaa23df849743d8334e99a5330663cd3a540",
+  "sha": "7a7a5bc32b40d2562c47fabd145130b4278d8089",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-16 19:35 UTC",
-  "files_total": 10724,
-  "code_files": 8775,
-  "code_lines": 1238291
+  "generated_at": "2026-11-16 20:10 UTC",
+  "files_total": 10726,
+  "code_files": 8777,
+  "code_lines": 1238497
  },
  "version": "1.3.2",
- "facts_hash": "d9ce6164e4a3cb5a",
+ "facts_hash": "4b22be94fb9f4223",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -1111,7 +1111,7 @@
   "package_manager": "npm",
   "languages": {
    ".sql": 3431,
-   ".ts": 2982,
+   ".ts": 2984,
    ".tsx": 1900,
    ".mjs": 449,
    ".py": 13,
@@ -139795,7 +139795,7 @@
      "respond_discount_approval_transactional",
      "restore_seller_cart"
     ],
-    "deps_count": 279
+    "deps_count": 280
    },
    {
     "path": "/promoflix-playground",
@@ -149370,7 +149370,7 @@
   {
    "module": "src/components",
    "files": 1390,
-   "lines": 277116,
+   "lines": 277133,
    "tables": [
     "admin_audit_log",
     "art_file_attachments",
@@ -150020,8 +150020,8 @@
   },
   {
    "module": "src/lib",
-   "files": 341,
-   "lines": 52695,
+   "files": 343,
+   "lines": 52884,
    "tables": [
     "...",
     "companies",
@@ -159240,6 +159240,67 @@
     "kind": "array",
     "body": "itemSnapshotSchema",
     "refines": [],
+    "chain": []
+   },
+   {
+    "file": "src/lib/quotes/quoteDraftRecovery.ts",
+    "name": "optionalNumber",
+    "kind": "number",
+    "body": "",
+    "refines": [],
+    "chain": [
+     "optional"
+    ]
+   },
+   {
+    "file": "src/lib/quotes/quoteDraftRecovery.ts",
+    "name": "nullableString",
+    "kind": "string",
+    "body": "",
+    "refines": [],
+    "chain": []
+   },
+   {
+    "file": "src/lib/quotes/quoteDraftRecovery.ts",
+    "name": "company",
+    "kind": "object",
+    "body": "{ id: z.string(), name: z.string(), cnpj: z.string().optional(), ramo_atividade: z.string().optional(), }",
+    "refines": [],
+    "chain": []
+   },
+   {
+    "file": "src/lib/quotes/quoteDraftRecovery.ts",
+    "name": "contact",
+    "kind": "object",
+    "body": "{ id: z.string(), name: z.string(), email: z.string().optional(), phone: z.string().optional(), cargo: z.string().optional(), }",
+    "refines": [],
+    "chain": []
+   },
+   {
+    "file": "src/lib/quotes/quoteDraftRecovery.ts",
+    "name": "personalization",
+    "kind": "object",
+    "body": "{ technique_id: z.string(), technique_name: z.string().optional(), location_code: z.string().optional(), location_name: z.string().optional(), colors_count: optionalNumber, positions_count: optionalNumber, area_cm2: optionalNumber, width_cm: optionalNumber, height_cm: optionalNumber, personalized_quantity: optionalNumber, setup_cost: optionalNumber, unit_cost: optionalNumber, total_cost: optionalNumber, notes: z.string().optional(), }",
+    "refines": [],
+    "chain": []
+   },
+   {
+    "file": "src/lib/quotes/quoteDraftRecovery.ts",
+    "name": "item",
+    "kind": "object",
+    "body": "{ id: z.string().optional(), quote_id: z.string().optional(), product_id: z.string(), product_variant_id: nullableString, product_name: z.string(), product_description: nullableString, product_sku: z.string().optional(), product_image_url: z.string().optional(), has_personalization: z.boolean().optional(), personalization_config: z.json().optional(), personalization_cost: optionalNumber, mockup_urls: z.array(z.string()).optional(), artwork_urls: z.array(z.string()).optional(), quantity: z.number().finite(), unit_price: z.number().finite(), discount_percentage: optionalNumber, discount_amount: optionalNumber, subtotal: optionalNumber, color_name: z.string().optional(), color_hex: z.string().optional(), notes: z.string().optional(), sort_order: optionalNumber, bitrix_product_id: z.union([z.s …",
+    "refines": [],
+    "chain": []
+   },
+   {
+    "file": "src/lib/quotes/quoteDraftRecovery.ts",
+    "name": "quoteDraftRecoverySchema",
+    "kind": "object",
+    "body": "{ clientId: nullableString, contactId: nullableString, companyInfo: company.nullish(), contactInfo: contact.nullish(), validityDays: nullableString, validUntil: z .string() .refine((value) => value === '' || isCalendarDate(value)) .nullish(), discountType: z.enum(['amount', 'percent']).nullish(), discountValue: z.number().finite().nullish(), negotiationMarkup: z.number().finite().nullish(), notes: nullableString, internalNotes: nullableString, paymentMethod: nullableString, paymentTerms: nullableString, deliveryTime: z .string() .refine((value) => !value.startsWith('date:') || isCalendarDate(value.slice(5))) .nullish(), deliveryMode: z.enum(['data', 'prazo']).nullish(), deliveryDate: z.iso.datetime().nullish(), shippingMethod: nullableString, shippingType: nullableString, shippingCost: z.n …",
+    "refines": [
+     "percent",
+     "prazo"
+    ],
     "chain": []
    },
    {
@@ -171222,6 +171283,10 @@
    {
     "file": "src/components/quotes/QuoteAutoSave.tsx",
     "text": "devemos manter apenas MAX_VERSIONS - 1 dos existentes."
+   },
+   {
+    "file": "src/components/quotes/QuoteAutoSave.tsx",
+    "text": "validação, draft.data voltava como `unknown` e o consumidor lia os campos direto"
    },
    {
     "file": "src/components/quotes/QuoteBuilderSummaryColumn.tsx",
@@ -251538,6 +251603,42 @@
    {
     "file": "src/lib/quotes/__tests__/personalizationSummary.test.ts",
     "name": "produz o mesmo output em chamadas independentes"
+   },
+   {
+    "file": "src/lib/quotes/__tests__/quoteDraftRecovery.test.ts",
+    "name": "quoteDraftRecoverySchema"
+   },
+   {
+    "file": "src/lib/quotes/__tests__/quoteDraftRecovery.test.ts",
+    "name": "aceita rascunho vazio — autosave grava parcial desde a primeira tecla"
+   },
+   {
+    "file": "src/lib/quotes/__tests__/quoteDraftRecovery.test.ts",
+    "name": "aceita o rascunho típico de um orçamento em edição"
+   },
+   {
+    "file": "src/lib/quotes/__tests__/quoteDraftRecovery.test.ts",
+    "name": "preserva campo desconhecido em vez de descartar o rascunho"
+   },
+   {
+    "file": "src/lib/quotes/__tests__/quoteDraftRecovery.test.ts",
+    "name": "recusa valor numérico que chegou como texto"
+   },
+   {
+    "file": "src/lib/quotes/__tests__/quoteDraftRecovery.test.ts",
+    "name": "recusa NaN e Infinity, que sobrevivem a um JSON.parse malfeito"
+   },
+   {
+    "file": "src/lib/quotes/__tests__/quoteDraftRecovery.test.ts",
+    "name": "recusa data de validade que não é uma data de calendário"
+   },
+   {
+    "file": "src/lib/quotes/__tests__/quoteDraftRecovery.test.ts",
+    "name": "recusa item sem os campos que a tela usa para calcular o total"
+   },
+   {
+    "file": "src/lib/quotes/__tests__/quoteDraftRecovery.test.ts",
+    "name": "recusa modo de entrega fora do par aceito pela tela"
    },
    {
     "file": "src/lib/security/sanitize-error.test.ts",
@@ -448294,7 +448395,7 @@
   },
   "src/components/quotes/QuoteAutoSave.tsx": {
    "path": "src/components/quotes/QuoteAutoSave.tsx",
-   "lines": 394,
+   "lines": 411,
    "exports": [
     "function QuoteAutoSave",
     "function useQuoteAutoSave"
@@ -448365,7 +448466,8 @@
    "rule_comments": [
     "truncado por quota, adulteração, drift de schema) NÃO deve abortar o",
     "Limpar versões antigas (manter apenas MAX_VERSIONS).",
-    "devemos manter apenas MAX_VERSIONS - 1 dos existentes."
+    "devemos manter apenas MAX_VERSIONS - 1 dos existentes.",
+    "validação, draft.data voltava como `unknown` e o consumidor lia os campos direto"
    ],
    "doc": "QuoteAutoSave - Sistema de auto-save para orçamentos Salva rascunhos automaticamente no localStorage com indicador visual",
    "hooks": [
@@ -474677,6 +474779,69 @@
    ],
    "doc": "SSOT para formatação do resumo de uma personalização em orçamentos. Usado por: - Builder (QuoteBuilderSummaryColumn) — partes individuais - PDF/HTML (ProposalProductTable, ProposalSections) — string completa Garante prefixo `[Local]`, separadores e unidades idênticos em todos os pontos (web ↔ PDF ↔ …"
   },
+  "src/lib/quotes/quoteDraftRecovery.ts": {
+   "path": "src/lib/quotes/quoteDraftRecovery.ts",
+   "lines": 118,
+   "exports": [
+    "const quoteDraftRecoverySchema"
+   ],
+   "zod": [
+    {
+     "name": "optionalNumber",
+     "kind": "number",
+     "body": "",
+     "refines": [],
+     "chain": [
+      "optional"
+     ]
+    },
+    {
+     "name": "nullableString",
+     "kind": "string",
+     "body": "",
+     "refines": [],
+     "chain": []
+    },
+    {
+     "name": "company",
+     "kind": "object",
+     "body": "{ id: z.string(), name: z.string(), cnpj: z.string().optional(), ramo_atividade: z.string().optional(), }",
+     "refines": [],
+     "chain": []
+    },
+    {
+     "name": "contact",
+     "kind": "object",
+     "body": "{ id: z.string(), name: z.string(), email: z.string().optional(), phone: z.string().optional(), cargo: z.string().optional(), }",
+     "refines": [],
+     "chain": []
+    },
+    {
+     "name": "personalization",
+     "kind": "object",
+     "body": "{ technique_id: z.string(), technique_name: z.string().optional(), location_code: z.string().optional(), location_name: z.string().optional(), colors_count: optionalNumber, positions_count: optionalNumber, area_cm2: optionalNumber, width_cm: optionalNumber, height_cm: optionalNumber, personalized_quantity: optionalNumber, setup_cost: optionalNumber, unit_cost: optionalNumber, total_cost: optionalNumber, notes: z.string().optional(), }",
+     "refines": [],
+     "chain": []
+    },
+    {
+     "name": "item",
+     "kind": "object",
+     "body": "{ id: z.string().optional(), quote_id: z.string().optional(), product_id: z.string(), product_variant_id: nullableString, product_name: z.string(), product_description: nullableString, product_sku: z.string().optional(), product_image_url: z.string().optional(), has_personalization: z.boolean().optional(), personalization_config: z.json().optional(), personalization_cost: optionalNumber, mockup_urls: z.array(z.string()).optional(), artwork_urls: z.array(z.string()).optional(), quantity: z.number().finite(), unit_price: z.number().finite(), discount_percentage: optionalNumber, discount_amount: optionalNumber, subtotal: optionalNumber, color_name: z.string().optional(), color_hex: z.string().optional(), notes: z.string().optional(), sort_order: optionalNumber, bitrix_product_id: z.union([z.s …",
+     "refines": [],
+     "chain": []
+    },
+    {
+     "name": "quoteDraftRecoverySchema",
+     "kind": "object",
+     "body": "{ clientId: nullableString, contactId: nullableString, companyInfo: company.nullish(), contactInfo: contact.nullish(), validityDays: nullableString, validUntil: z .string() .refine((value) => value === '' || isCalendarDate(value)) .nullish(), discountType: z.enum(['amount', 'percent']).nullish(), discountValue: z.number().finite().nullish(), negotiationMarkup: z.number().finite().nullish(), notes: nullableString, internalNotes: nullableString, paymentMethod: nullableString, paymentTerms: nullableString, deliveryTime: z .string() .refine((value) => !value.startsWith('date:') || isCalendarDate(value.slice(5))) .nullish(), deliveryMode: z.enum(['data', 'prazo']).nullish(), deliveryDate: z.iso.datetime().nullish(), shippingMethod: nullableString, shippingType: nullableString, shippingCost: z.n …",
+     "refines": [
+      "percent",
+      "prazo"
+     ],
+     "chain": []
+    }
+   ]
+  },
   "src/lib/quotes/quotesLayout.ts": {
    "path": "src/lib/quotes/quotesLayout.ts",
    "lines": 43,
@@ -474887,6 +475052,22 @@
     "junta com separador padrão ",
     "Identidade builder ↔ PDF/HTML",
     "produz o mesmo output em chamadas independentes"
+   ]
+  },
+  "src/lib/quotes/__tests__/quoteDraftRecovery.test.ts": {
+   "path": "src/lib/quotes/__tests__/quoteDraftRecovery.test.ts",
+   "lines": 71,
+   "is_test": true,
+   "tests": [
+    "quoteDraftRecoverySchema",
+    "aceita rascunho vazio — autosave grava parcial desde a primeira tecla",
+    "aceita o rascunho típico de um orçamento em edição",
+    "preserva campo desconhecido em vez de descartar o rascunho",
+    "recusa valor numérico que chegou como texto",
+    "recusa NaN e Infinity, que sobrevivem a um JSON.parse malfeito",
+    "recusa data de validade que não é uma data de calendário",
+    "recusa item sem os campos que a tela usa para calcular o total",
+    "recusa modo de entrega fora do par aceito pela tela"
    ]
   },
   "src/lib/rbac/route-matrix.ts": {
@@ -540505,10 +540686,21 @@
   }
  },
  "git": {
-  "sha": "8e5aaaa23df849743d8334e99a5330663cd3a540",
+  "sha": "7a7a5bc32b40d2562c47fabd145130b4278d8089",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "7a7a5bc",
+    "date": "2026-11-16",
+    "author": "adm01-debug",
+    "subject": "fix(quotes): valida o rascunho antes de restaurar na tela do orcamento (#3713)",
+    "files": [
+     "src/components/quotes/QuoteAutoSave.tsx",
+     "src/lib/quotes/__tests__/quoteDraftRecovery.test.ts",
+     "src/lib/quotes/quoteDraftRecovery.ts"
+    ]
+   },
    {
     "sha": "8e5aaaa",
     "date": "2026-11-16",
@@ -541243,40 +541435,16 @@
      "src/components/mockup/MockupClientSelector.tsx",
      "src/components/mockup/__tests__/MockupClientSelector.a11y.test.tsx"
     ]
-   },
-   {
-    "sha": "e4ab7f8",
-    "date": "2026-11-15",
-    "author": "adm01-debug",
-    "subject": "feat(mockup-assistant): resgata a edge do assistente Matheus com rota de IA, testes e registro de authz (#3666)",
-    "files": [
-     "package.json",
-     "supabase/MIGRATIONS_SYNC_LOG.md",
-     "supabase/config.toml",
-     "supabase/functions/_shared/ai-router/anthropic-native.ts",
-     "supabase/functions/_shared/ai-router/google-genai.ts",
-     "supabase/functions/_shared/ai-router/openai-compatible.ts",
-     "supabase/functions/_shared/edge-authz-manifest.ts",
-     "supabase/functions/mockup-assistant/index.test.ts",
-     "supabase/functions/mockup-assistant/index.ts",
-     "supabase/migrations/20261115230000_ai_function_routing_mockup_assistant.sql",
-     "supabase/rollbacks/20261115230000_rollback.sql",
-     "tests/contracts/webhook-schemas.ts",
-     "tests/edge-functions/integration/mockup-assistant.test.ts",
-     "tests/edge-functions/live/descriptors.ts",
-     "tests/edge-functions/live/mockup-assistant.test.ts",
-     "tests/edge-functions/mockup-assistant.test.ts"
-    ]
    }
   ],
   "hot_files": [
    [
     "package.json",
-    4
+    3
    ],
    [
     "supabase/MIGRATIONS_SYNC_LOG.md",
-    4
+    3
    ],
    [
     "analise-branches/ESTADO-EM-261116.md",
