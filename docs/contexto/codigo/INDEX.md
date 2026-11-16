@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e de hora em hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `e4ab7f85d9d32ad142c8f1d8b9d581816fc4cf8c` (2026-11-15T21:06:22-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e de hora em hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `22db4dcbe7736c5aa5066e4fa4721b0a520516f3` (2026-11-16T06:35:32-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -36,7 +36,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 |---|---|
 | arquivos_total | 10330 |
 | arquivos_codigo | 5328 |
-| linhas_codigo | 1015551 |
+| linhas_codigo | 1015575 |
 | rotas | 138 |
 | rotas_http_backend | 13 |
 | vistas_por_id | 0 |
@@ -590,7 +590,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - possiveis_segredos_no_codigo: 7 — ex.: scripts/ai-context/cenarios.mjs:102, src/components/admin/connections/__tests__/ConnectionSecurity.unit.test.tsx:9, src/integrations/supabase/client.ts:27
 
 ## Grafo de código (graphify)
-- 44400 nós · 76729 arestas · 2467 comunidades · grafo do commit `e4ab7f85`
+- 44400 nós · 76729 arestas · 2467 comunidades · grafo do commit `22db4dcb`
 - comunidades maiores: vitest (941), ref_components (842), ref_integrations (603), ref_node_child_process (490), ref_hooks (431), @tanstack/react-query (424), sonner (384), ref_types (335), react (331), ref_utils (323), ref_node_fs (302), scripts (302)
 - símbolos mais chamados: gotoAndSettle() (e2e/helpers/nav.ts), re (?), q() (scripts/supabase_snapshot/snapshot.py), analyze() (tests/scripts/test_personalization_artifact_diagnostics.py), outer() (tests/scripts/test_personalization_artifact_diagnostics.py), json (?), useExternalDatabase() (recovery/src-legacy/src/hooks/useExternalDatabase.ts), concludeCheck() (scripts/check-result-contract.mjs), querySupabaseReadOnly() (scripts/supabase-read-only-query.mjs), loginAs() (e2e/helpers/auth.ts), inner() (tests/scripts/test_personalization_artifact_diagnostics.py), excluded_sql() (scripts/supabase_snapshot/snapshot.py)
 - consulta local: `graphify query "<pergunta>"`, `graphify path "<A>" "<B>"`, `graphify explain "<X>"`
@@ -598,19 +598,19 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 ## Hotspots (arquivos mais alterados, 90 dias)
 - RELATORIO_CI.md (89)
 - PENDENCIAS.md (84)
-- supabase/MIGRATIONS_SYNC_LOG.md (59)
-- package.json (42)
-- package-lock.json (26)
-- docs/coordenacao/conflitos-semanticos.md (20)
-- CHANGELOG.md (17)
-- analise-prs/progresso.json (17)
-- supabase/EDGE_FUNCTIONS_DEPLOY_LOG.md (17)
-- src/pages/kit-builder/KitBuilderPage.tsx (15)
-- .github/workflows/deploy-gates.yml (14)
-- auditoria-supabase/RELATORIO_AUDITORIA_SUPABASE.md (13)
-- audit/supabase-reference-catalog.temporary.json (12)
-- analise-prs/RELATORIO_PRS.md (11)
-- analise-prs/prs.json (11)
+- supabase/MIGRATIONS_SYNC_LOG.md (60)
+- package.json (43)
+- package-lock.json (27)
+- docs/coordenacao/conflitos-semanticos.md (21)
+- CHANGELOG.md (18)
+- analise-prs/progresso.json (18)
+- supabase/EDGE_FUNCTIONS_DEPLOY_LOG.md (18)
+- src/pages/kit-builder/KitBuilderPage.tsx (16)
+- .github/workflows/deploy-gates.yml (15)
+- auditoria-supabase/RELATORIO_AUDITORIA_SUPABASE.md (14)
+- audit/supabase-reference-catalog.temporary.json (13)
+- analise-prs/RELATORIO_PRS.md (12)
+- analise-prs/prs.json (12)
 
 ## Workflows
 - `_e2e-relevance.yml` — Reusable — E2E Runtime Relevance (workflow_call)
@@ -1174,6 +1174,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - CHANGELOG topo: [1.1.0](https://github.com/adm01-debug/Promo_Gifts_V4/compare/v1.0.0...v1.1.0) (2026-11-13)
 
 ## Últimos commits
+- 2026-11-16 `22db4dcb` fix(mockup): o mouse passa a mover o destaque na lista de empresas (#3690)
 - 2026-11-15 `e4ab7f85` feat(mockup-assistant): resgata a edge do assistente Matheus com rota de IA, testes e registro de authz (#3666)
 - 2026-11-15 `26d93948` fix(db): replay do zero — colunas e tabelas perdidas por no-op de CREATE TABLE IF NOT EXISTS (#3686)
 - 2026-11-15 `24038f15` fix(mockup): avisa o vendedor quando a ficha de aprovação falha (#3684)
@@ -1188,7 +1189,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-15 `56ea27fb` fix(e2e): não repetir o login em cada teste quando o auth.setup degradou (#3680)
 - 2026-11-15 `a78b0bac` feat(mockup): aviso de falha ao carregar as técnicas de personalização, com "Tentar novamente" (#3677)
 - 2026-11-15 `6da08832` fix(assistente): card não acusa falha enquanto a RPC não foi aplicada (#3678)
-- 2026-11-15 `4344666f` feat(assistente): Encaixe do Cliente — fase 1 validada e com os 2 portões destravados (#3663)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

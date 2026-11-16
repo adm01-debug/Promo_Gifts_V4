@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "fix(mockup): o mouse passa a mover o destaque na lista de empresas (#3690)",
    "feat(mockup-assistant): resgata a edge do assistente Matheus com rota de IA, testes e registro de authz (#3666)",
    "fix(db): replay do zero — colunas e tabelas perdidas por no-op de CREATE TABLE IF NOT EXISTS (#3686)",
    "fix(mockup): avisa o vendedor quando a ficha de aprovação falha (#3684)",
-   "fix(mockup): teto de corpo e de lote na edge generate-mockup antes de processar (#3673)",
-   "fix(e2e): orcamento do teste cobre a espera de 150s do login em CI (#3682)"
+   "fix(mockup): teto de corpo e de lote na edge generate-mockup antes de processar (#3673)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",

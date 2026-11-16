@@ -11468,7 +11468,7 @@
     "MockupClientSelector"
    ],
    "export_default": null,
-   "linhas": 478,
+   "linhas": 479,
    "dominio": "components/mockup",
    "hooks_locais": [
     "useClientFuzzySearch",

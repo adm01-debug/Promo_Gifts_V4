@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "e4ab7f85d9d32ad142c8f1d8b9d581816fc4cf8c",
+  "sha": "22db4dcbe7736c5aa5066e4fa4721b0a520516f3",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-16 00:07 UTC",
+  "generated_at": "2026-11-16 09:36 UTC",
   "files_total": 10258,
   "code_files": 8758,
-  "code_lines": 1235364
+  "code_lines": 1235388
  },
  "version": "1.3.2",
- "facts_hash": "584f61c61eb73d0e",
+ "facts_hash": "4284dc9dfa8c59e5",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -149358,7 +149358,7 @@
   {
    "module": "src/components",
    "files": 1390,
-   "lines": 277092,
+   "lines": 277116,
    "tables": [
     "admin_audit_log",
     "art_file_attachments",
@@ -233366,6 +233366,10 @@
    {
     "file": "src/components/mockup/__tests__/MockupClientSelector.a11y.test.tsx",
     "name": "Enter escolhe o option ativo"
+   },
+   {
+    "file": "src/components/mockup/__tests__/MockupClientSelector.a11y.test.tsx",
+    "name": "o mouse move aria-activedescendant, então Enter escolhe a empresa sob o cursor"
    },
    {
     "file": "src/components/mockup/__tests__/MockupClientSelector.a11y.test.tsx",
@@ -441909,7 +441913,7 @@
   },
   "src/components/mockup/MockupClientSelector.tsx": {
    "path": "src/components/mockup/MockupClientSelector.tsx",
-   "lines": 478,
+   "lines": 479,
    "exports": [
     "function MockupClientSelector"
    ],
@@ -442393,7 +442397,7 @@
   },
   "src/components/mockup/__tests__/MockupClientSelector.a11y.test.tsx": {
    "path": "src/components/mockup/__tests__/MockupClientSelector.a11y.test.tsx",
-   "lines": 293,
+   "lines": 316,
    "is_test": true,
    "doc": "A11y — combobox acessível do seletor de cliente do mockup: roles combobox/listbox/option, setas circulares + Enter escolhem e Esc fecha só a lista (sem mexer na seleção). Sem a correção estes casos falham.",
    "tests": [
@@ -442402,6 +442406,7 @@
     "lista resultados como listbox com um option por empresa",
     "ArrowDown/ArrowUp movem aria-activedescendant em ciclo",
     "Enter escolhe o option ativo",
+    "o mouse move aria-activedescendant, então Enter escolhe a empresa sob o cursor",
     "Esc fecha apenas a lista e não altera a seleção",
     "sem violações WCAG no combobox aberto com resultados",
     "sem violações WCAG no erro do CRM (ramo aberto sem listbox)",
@@ -539756,10 +539761,20 @@
   }
  },
  "git": {
-  "sha": "e4ab7f85d9d32ad142c8f1d8b9d581816fc4cf8c",
+  "sha": "22db4dcbe7736c5aa5066e4fa4721b0a520516f3",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "22db4dc",
+    "date": "2026-11-16",
+    "author": "adm01-debug",
+    "subject": "fix(mockup): o mouse passa a mover o destaque na lista de empresas (#3690)",
+    "files": [
+     "src/components/mockup/MockupClientSelector.tsx",
+     "src/components/mockup/__tests__/MockupClientSelector.a11y.test.tsx"
+    ]
+   },
    {
     "sha": "e4ab7f8",
     "date": "2026-11-15",
@@ -540313,16 +540328,6 @@
      "scripts/check-migration-receipts.mjs",
      "supabase/MIGRATIONS_SYNC_LOG.md"
     ]
-   },
-   {
-    "sha": "1eafa06",
-    "date": "2026-11-14",
-    "author": "adm01-debug",
-    "subject": "fix(db): cria o rollback que destrava o revoke E18 — estoque alterável por qualquer usuário logado (#3648)",
-    "files": [
-     "docs/coordenacao/conflitos-semanticos.md",
-     "supabase/rollbacks/20260917061500_rollback.sql"
-    ]
    }
   ],
   "hot_files": [
@@ -540340,7 +540345,7 @@
    ],
    [
     "docs/coordenacao/conflitos-semanticos.md",
-    5
+    4
    ],
    [
     "e2e/helpers/auth.ts",
@@ -540349,6 +540354,14 @@
    [
     "src/hooks/mockup/useMockupGenerator.ts",
     3
+   ],
+   [
+    "src/components/mockup/MockupClientSelector.tsx",
+    2
+   ],
+   [
+    "src/components/mockup/__tests__/MockupClientSelector.a11y.test.tsx",
+    2
    ],
    [
     "src/hooks/mockup/__tests__/mockupProjectSaved.test.ts",
@@ -540396,14 +540409,6 @@
    ],
    [
     "analise-branches/auditoria-261115/veredito_lote03.md",
-    2
-   ],
-   [
-    "analise-branches/auditoria-261115/veredito_lote04.md",
-    2
-   ],
-   [
-    "src/components/mockup/MockupConfigPanel.tsx",
     2
    ]
   ]

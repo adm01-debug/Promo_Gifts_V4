@@ -5947,11 +5947,11 @@
   {
    "arquivo": "src/components/mockup/__tests__/MockupClientSelector.a11y.test.tsx",
    "tipo": "unit",
-   "linhas": 293,
+   "linhas": 316,
    "testa": [
     "src/components/mockup/MockupClientSelector.tsx"
    ],
-   "casos": 12
+   "casos": 13
   },
   {
    "arquivo": "src/components/mockup/__tests__/MockupClientSelector.logo.test.tsx",

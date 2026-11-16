@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "e4ab7f85d9d32ad142c8f1d8b9d581816fc4cf8c",
+  "commit": "22db4dcbe7736c5aa5066e4fa4721b0a520516f3",
   "branch": "main",
-  "data_commit": "2026-11-15T21:06:22-03:00",
+  "data_commit": "2026-11-16T06:35:32-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "22db4dcb",
+    "data": "2026-11-16",
+    "assunto": "fix(mockup): o mouse passa a mover o destaque na lista de empresas (#3690)"
+   },
    {
     "sha": "e4ab7f85",
     "data": "2026-11-15",
@@ -126,74 +131,69 @@
     "sha": "7e6d63de",
     "data": "2026-11-15",
     "assunto": "fix(ci): E14 volta a valer para PR que só toca docs/ci/SEGREDOS.md (#3661)"
-   },
-   {
-    "sha": "5e59cb9c",
-    "data": "2026-11-15",
-    "assunto": "fix: trem de resgates — 16 correções recuperadas de branches de outros agentes (#3660)"
    }
   ],
-  "arquivos_mudados_7d": 2172,
+  "arquivos_mudados_7d": 2123,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
-    "mudancas": 352
+    "mudancas": 648
+   },
+   {
+    "pasta": "src/components/products",
+    "mudancas": 335
    },
    {
     "pasta": "recovery/src-legacy/src",
     "mudancas": 317
    },
    {
-    "pasta": "src/components/products",
-    "mudancas": 185
-   },
-   {
-    "pasta": "src/components/mockup",
-    "mudancas": 137
-   },
-   {
     "pasta": "tests/edge-functions/live",
-    "mudancas": 134
+    "mudancas": 249
    },
    {
     "pasta": "src/hooks/products",
-    "mudancas": 126
+    "mudancas": 230
    },
    {
     "pasta": "src/components/quotes",
-    "mudancas": 112
-   },
-   {
-    "pasta": "supabase/functions/_shared",
-    "mudancas": 102
+    "mudancas": 194
    },
    {
     "pasta": "src/pages/magazine",
-    "mudancas": 96
+    "mudancas": 188
+   },
+   {
+    "pasta": "src/components/mockup",
+    "mudancas": 184
    },
    {
     "pasta": "src/components/inventory",
-    "mudancas": 93
+    "mudancas": 173
    },
    {
-    "pasta": "RELATORIO_CI.md",
-    "mudancas": 89
-   },
-   {
-    "pasta": "PENDENCIAS.md",
-    "mudancas": 84
-   },
-   {
-    "pasta": "src/components/kit-builder",
-    "mudancas": 82
+    "pasta": "supabase/functions/_shared",
+    "mudancas": 171
    },
    {
     "pasta": "src/components/ui",
-    "mudancas": 80
+    "mudancas": 153
    },
    {
     "pasta": "src/pages/admin",
-    "mudancas": 75
+    "mudancas": 134
+   },
+   {
+    "pasta": "src/components/kit-builder",
+    "mudancas": 129
+   },
+   {
+    "pasta": "src/pages/products",
+    "mudancas": 114
+   },
+   {
+    "pasta": "src/pages/quotes",
+    "mudancas": 111
    }
   ],
   "arquivos_mais_mudados_90d": [
@@ -207,95 +207,95 @@
    },
    {
     "arquivo": "supabase/MIGRATIONS_SYNC_LOG.md",
-    "mudancas": 59
+    "mudancas": 60
    },
    {
     "arquivo": "package.json",
-    "mudancas": 42
+    "mudancas": 43
    },
    {
     "arquivo": "package-lock.json",
-    "mudancas": 26
+    "mudancas": 27
    },
    {
     "arquivo": "docs/coordenacao/conflitos-semanticos.md",
-    "mudancas": 20
+    "mudancas": 21
    },
    {
     "arquivo": "CHANGELOG.md",
-    "mudancas": 17
+    "mudancas": 18
    },
    {
     "arquivo": "analise-prs/progresso.json",
-    "mudancas": 17
+    "mudancas": 18
    },
    {
     "arquivo": "supabase/EDGE_FUNCTIONS_DEPLOY_LOG.md",
-    "mudancas": 17
+    "mudancas": 18
    },
    {
     "arquivo": "src/pages/kit-builder/KitBuilderPage.tsx",
-    "mudancas": 15
+    "mudancas": 16
    },
    {
     "arquivo": ".github/workflows/deploy-gates.yml",
-    "mudancas": 14
+    "mudancas": 15
    },
    {
     "arquivo": "auditoria-supabase/RELATORIO_AUDITORIA_SUPABASE.md",
-    "mudancas": 13
+    "mudancas": 14
    },
    {
     "arquivo": "audit/supabase-reference-catalog.temporary.json",
-    "mudancas": 12
+    "mudancas": 13
    },
    {
     "arquivo": "analise-prs/RELATORIO_PRS.md",
-    "mudancas": 11
+    "mudancas": 12
    },
    {
     "arquivo": "analise-prs/prs.json",
-    "mudancas": 11
+    "mudancas": 12
    },
    {
     "arquivo": "docs/plans/PLANO_MELHORIAS_CORRECOES_200_ETAPAS_2026-10-18.md",
-    "mudancas": 11
+    "mudancas": 12
    },
    {
     "arquivo": "src/hooks/kit-builder/useKitBuilderPageState.ts",
-    "mudancas": 11
+    "mudancas": 12
    },
    {
     "arquivo": "analise-branches/RELATORIO_BRANCHES.md",
-    "mudancas": 10
+    "mudancas": 11
    },
    {
     "arquivo": "e2e/flows/magazine-publish-smoke.spec.ts",
-    "mudancas": 9
+    "mudancas": 10
    },
    {
     "arquivo": "src/pages/mockups/MockupGenerator.tsx",
-    "mudancas": 9
+    "mudancas": 10
    },
    {
     "arquivo": "AGENTS.md",
-    "mudancas": 8
+    "mudancas": 9
    },
    {
     "arquivo": "CLAUDE.md",
-    "mudancas": 8
+    "mudancas": 9
    },
    {
     "arquivo": "docs/ci/SEGREDOS.md",
-    "mudancas": 8
+    "mudancas": 9
    },
    {
     "arquivo": "e2e/flows/magazine-preview-sticky-smoke.spec.ts",
-    "mudancas": 8
+    "mudancas": 9
    },
    {
     "arquivo": "e2e/helpers/auth.ts",
-    "mudancas": 8
+    "mudancas": 9
    }
   ],
   "autores_30d": [
@@ -324,7 +324,7 @@
  "contagens": {
   "arquivos_total": 10330,
   "arquivos_codigo": 5328,
-  "linhas_codigo": 1015551,
+  "linhas_codigo": 1015575,
   "rotas": 138,
   "rotas_http_backend": 13,
   "vistas_por_id": 0,
@@ -1884,7 +1884,7 @@
   },
   "src/components": {
    "arquivos": 1390,
-   "linhas": 277093
+   "linhas": 277117
   },
   "src/config": {
    "arquivos": 1,
