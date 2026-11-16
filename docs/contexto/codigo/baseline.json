@@ -2,11 +2,61 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "22db4dcbe7736c5aa5066e4fa4721b0a520516f3",
+  "commit": "2d1d7cabee7fdcf1589f7adb62498e3b910e428d",
   "branch": "main",
-  "data_commit": "2026-11-16T06:35:32-03:00",
+  "data_commit": "2026-11-16T07:47:45-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "2d1d7cab",
+    "data": "2026-11-16",
+    "assunto": "Merge pull request #3689 from adm01-debug/claude/chore-dossies-branches-261116-0154"
+   },
+   {
+    "sha": "7d34968e",
+    "data": "2026-11-16",
+    "assunto": "docs(audit): veredito da n68 e protecao dos refs de preservacao"
+   },
+   {
+    "sha": "18cbbcc6",
+    "data": "2026-11-16",
+    "assunto": "docs(audit): manual de continuidade para a proxima sessao"
+   },
+   {
+    "sha": "04d251e1",
+    "data": "2026-11-16",
+    "assunto": "docs(audit): relatorio completo branch a branch, aberta e fechada"
+   },
+   {
+    "sha": "b63eeb55",
+    "data": "2026-11-16",
+    "assunto": "docs(audit): relatorio da sessao, indice da preservacao e branches do PC"
+   },
+   {
+    "sha": "5097b558",
+    "data": "2026-11-16",
+    "assunto": "docs(audit): estado do trabalho em 2026-11-16 e as 7 pendencias"
+   },
+   {
+    "sha": "766597e8",
+    "data": "2026-11-16",
+    "assunto": "chore(audit): dados brutos da analise das 160 branches"
+   },
+   {
+    "sha": "af6fe704",
+    "data": "2026-11-16",
+    "assunto": "chore(audit): redige o exemplo de chave AWS citado em dois dossies"
+   },
+   {
+    "sha": "3e894270",
+    "data": "2026-11-16",
+    "assunto": "chore(audit): segunda passada nos 7 dossies de branch grande"
+   },
+   {
+    "sha": "80ea9910",
+    "data": "2026-11-16",
+    "assunto": "chore(audit): dossie por branch das 160 branches do GitHub fora da main"
+   },
    {
     "sha": "22db4dcb",
     "data": "2026-11-16",
@@ -81,59 +131,9 @@
     "sha": "6da08832",
     "data": "2026-11-15",
     "assunto": "fix(assistente): card não acusa falha enquanto a RPC não foi aplicada (#3678)"
-   },
-   {
-    "sha": "4344666f",
-    "data": "2026-11-15",
-    "assunto": "feat(assistente): Encaixe do Cliente — fase 1 validada e com os 2 portões destravados (#3663)"
-   },
-   {
-    "sha": "8ece9cc4",
-    "data": "2026-11-15",
-    "assunto": "fix(inteligencia): grafico de mercado nao acusa erro quando a RPC ainda nao foi aplicada (#3675)"
-   },
-   {
-    "sha": "f1044db3",
-    "data": "2026-11-15",
-    "assunto": "feat(mockup): aviso de \"não carregou, tentar de novo\" no catálogo do painel de mockup (#3670)"
-   },
-   {
-    "sha": "c72d30a9",
-    "data": "2026-11-15",
-    "assunto": "fix(mockup): etapas do gerador voltam a ser anunciadas pelo leitor de tela no celular (#3671)"
-   },
-   {
-    "sha": "aa89361b",
-    "data": "2026-11-15",
-    "assunto": "fix(magic-up): resgata varredura axe da pagina e nomeia selects e campos do briefing (#3668)"
-   },
-   {
-    "sha": "b89a44e1",
-    "data": "2026-11-15",
-    "assunto": "fix(db): trem de banco — gráfico de mercado com dado real, revoke de 106 funções, índices e crons mais baratos (#3665)"
-   },
-   {
-    "sha": "a03adc35",
-    "data": "2026-11-15",
-    "assunto": "feat(orders): resgata conferência do total do pedido contra a soma dos itens (#3667)"
-   },
-   {
-    "sha": "7307f533",
-    "data": "2026-11-15",
-    "assunto": "feat(mockup): cabeçalho de trabalho do gerador, Meus mockups do cliente e captura de layout extraída (#3664)"
-   },
-   {
-    "sha": "335bdb60",
-    "data": "2026-11-15",
-    "assunto": "fix(ci): recibo de migration entra sozinho e para de travar o CI (#3662)"
-   },
-   {
-    "sha": "7e6d63de",
-    "data": "2026-11-15",
-    "assunto": "fix(ci): E14 volta a valer para PR que só toca docs/ci/SEGREDOS.md (#3661)"
    }
   ],
-  "arquivos_mudados_7d": 2123,
+  "arquivos_mudados_7d": 2295,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -165,7 +165,7 @@
    },
    {
     "pasta": "src/components/mockup",
-    "mudancas": 184
+    "mudancas": 183
    },
    {
     "pasta": "src/components/inventory",
@@ -199,11 +199,11 @@
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "RELATORIO_CI.md",
-    "mudancas": 89
+    "mudancas": 88
    },
    {
     "arquivo": "PENDENCIAS.md",
-    "mudancas": 84
+    "mudancas": 83
    },
    {
     "arquivo": "supabase/MIGRATIONS_SYNC_LOG.md",
@@ -305,11 +305,11 @@
    },
    {
     "autor": "Joaquim Ataides",
-    "commits": 136
+    "commits": 135
    },
    {
     "autor": "Claude",
-    "commits": 124
+    "commits": 133
    },
    {
     "autor": "github-actions[bot]",
@@ -322,7 +322,7 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 10330,
+  "arquivos_total": 10502,
   "arquivos_codigo": 5328,
   "linhas_codigo": 1015575,
   "rotas": 138,
@@ -339,7 +339,7 @@
   "testes": 2521,
   "workflows": 87,
   "scripts": 272,
-  "docs_md": 1046
+  "docs_md": 1214
  },
  "por_pasta": {
   ".github/scripts": {

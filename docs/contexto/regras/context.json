@@ -1,10 +1,10 @@
 {
  "meta": {
-  "sha": "22db4dcbe7736c5aa5066e4fa4721b0a520516f3",
+  "sha": "2d1d7cabee7fdcf1589f7adb62498e3b910e428d",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-16 09:36 UTC",
-  "files_total": 10258,
+  "generated_at": "2026-11-16 11:19 UTC",
+  "files_total": 10430,
   "code_files": 8758,
   "code_lines": 1235388
  },
@@ -539761,10 +539761,273 @@
   }
  },
  "git": {
-  "sha": "22db4dcbe7736c5aa5066e4fa4721b0a520516f3",
+  "sha": "2d1d7cabee7fdcf1589f7adb62498e3b910e428d",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "2d1d7ca",
+    "date": "2026-11-16",
+    "author": "adm01-debug",
+    "subject": "Merge pull request #3689 from adm01-debug/claude/chore-dossies-branches-261116-0154",
+    "files": []
+   },
+   {
+    "sha": "7d34968",
+    "date": "2026-11-16",
+    "author": "Claude",
+    "subject": "docs(audit): veredito da n68 e protecao dos refs de preservacao",
+    "files": [
+     "analise-branches/RELATORIO-BRANCHES-COMPLETO.md",
+     "analise-branches/dossies/importado__vps-fabrica__v2__n68-2610082251.md"
+    ]
+   },
+   {
+    "sha": "18cbbcc",
+    "date": "2026-11-16",
+    "author": "Claude",
+    "subject": "docs(audit): manual de continuidade para a proxima sessao",
+    "files": [
+     "analise-branches/ESTADO-EM-261116.md",
+     "analise-branches/MANUAL-DE-CONTINUIDADE.md",
+     "analise-branches/dados/LEIA-ME.md"
+    ]
+   },
+   {
+    "sha": "04d251e",
+    "date": "2026-11-16",
+    "author": "Claude",
+    "subject": "docs(audit): relatorio completo branch a branch, aberta e fechada",
+    "files": [
+     "analise-branches/RELATORIO-BRANCHES-COMPLETO.md"
+    ]
+   },
+   {
+    "sha": "b63eeb5",
+    "date": "2026-11-16",
+    "author": "Claude",
+    "subject": "docs(audit): relatorio da sessao, indice da preservacao e branches do PC",
+    "files": [
+     "analise-branches/RELATORIO-SESSAO-261116.md",
+     "analise-branches/dados/branches-do-pc-261116.md",
+     "analise-branches/dados/indice-preservacao.md"
+    ]
+   },
+   {
+    "sha": "5097b55",
+    "date": "2026-11-16",
+    "author": "Claude",
+    "subject": "docs(audit): estado do trabalho em 2026-11-16 e as 7 pendencias",
+    "files": [
+     "analise-branches/ESTADO-EM-261116.md"
+    ]
+   },
+   {
+    "sha": "766597e",
+    "date": "2026-11-16",
+    "author": "Claude",
+    "subject": "chore(audit): dados brutos da analise das 160 branches",
+    "files": [
+     "analise-branches/dados/LEIA-ME.md",
+     "analise-branches/dados/auditoria-branches-locais.tsv",
+     "analise-branches/dados/branch-x-arquivo.tsv",
+     "analise-branches/dados/ranking-arquivos-por-branch.tsv",
+     "analise-branches/dados/vereditos-160-branches.json"
+    ]
+   },
+   {
+    "sha": "af6fe70",
+    "date": "2026-11-16",
+    "author": "Claude",
+    "subject": "chore(audit): redige o exemplo de chave AWS citado em dois dossies",
+    "files": [
+     "analise-branches/dossies/recuperado__fix-gitleaks-allowlist-261101-2209.md",
+     "analise-branches/dossies/recuperado__fix-gitleaks-gate-261024-1930.md"
+    ]
+   },
+   {
+    "sha": "3e89427",
+    "date": "2026-11-16",
+    "author": "Claude",
+    "subject": "chore(audit): segunda passada nos 7 dossies de branch grande",
+    "files": [
+     "analise-branches/dossies/claude_04__optimistic-bohr-qplx94.md",
+     "analise-branches/dossies/claude_05__youthful-ride-vcdchy.md",
+     "analise-branches/dossies/claude__fix-pr3517-gate1-baseline-261113-2336.md",
+     "analise-branches/dossies/claude__resgate-3390-261113.md",
+     "analise-branches/dossies/claude_pink__lucid-franklin-mjhkyc.md",
+     "analise-branches/dossies/claude_pink__sleepy-cannon-h000nc.md",
+     "analise-branches/dossies/codex__fix-gate1-kit-pdf-types-261109-2252.md"
+    ]
+   },
+   {
+    "sha": "80ea991",
+    "date": "2026-11-16",
+    "author": "Claude",
+    "subject": "chore(audit): dossie por branch das 160 branches do GitHub fora da main",
+    "files": [
+     "analise-branches/dossies/bot__schema-snapshot.md",
+     "analise-branches/dossies/claude_04__optimistic-bohr-qplx94.md",
+     "analise-branches/dossies/claude_04__optimistic-lovelace-n960f7.md",
+     "analise-branches/dossies/claude_05__serene-clarke-1o02ey.md",
+     "analise-branches/dossies/claude_05__youthful-ride-vcdchy.md",
+     "analise-branches/dossies/claude__analise-merge-prs-abertas-shh8ez.md",
+     "analise-branches/dossies/claude__chore-analise-prs-261030-1600.md",
+     "analise-branches/dossies/claude__chore-ci-static-checks-supersede-3525-261114-0206.md",
+     "analise-branches/dossies/claude__chore-e2e-modules-matrix-261102-2115.md",
+     "analise-branches/dossies/claude__clever-lamport-zlmati.md",
+     "analise-branches/dossies/claude__feat-crm-vendedor-sem-dono-261115-1622.md",
+     "analise-branches/dossies/claude__fix-attest-provenance-sigstore-261107-1500.md",
+     "analise-branches/dossies/claude__fix-bot-pr-approval-261113-1030.md",
+     "analise-branches/dossies/claude__fix-e125-mockup-casts-261030.md",
+     "analise-branches/dossies/claude__fix-e2e-fora-do-banco-de-producao-261114-1003.md",
+     "analise-branches/dossies/claude__fix-e2e-kit-builder-etapas-261114-0735.md",
+     "analise-branches/dossies/claude__fix-email-remetente-261114-2300.md",
+     "analise-branches/dossies/claude__fix-email-remetente-resend-261112-0034.md",
+     "analise-branches/dossies/claude__fix-email-resend-status-261115-0040.md",
+     "analise-branches/dossies/claude__fix-ft-ux-batch4-261101-2215.md",
+     "analise-branches/dossies/claude__fix-ft-ux-batch5-261101-2222.md",
+     "analise-branches/dossies/claude__fix-ft004-ft033-pptx-mock-labels-261101-2212.md",
+     "analise-branches/dossies/claude__fix-kit-maker-publicados-261101-2202.md",
+     "analise-branches/dossies/claude__fix-ledger-allowlist-p2027-261113-0705.md",
+     "analise-branches/dossies/claude__fix-links-publicos-mortos-261101-2156.md",
+     "analise-branches/dossies/claude__fix-logo-cores-tecnica-261114-2300.md",
+     "analise-branches/dossies/claude__fix-migrations-acesso-rpcs-261112-1050.md",
+     "analise-branches/dossies/claude__fix-mockup-geometria-wysiwyg-261115-0045.md",
+     "analise-branches/dossies/claude__fix-mockup-logo-tamanho-real-261114-2200.md",
+     "analise-branches/dossies/claude__fix-pptx-mock-badges-261101-2315.md",
+     "analise-branches/dossies/claude__fix-pr3305-duplicate-ref-261109-0623.md",
+     "analise-branches/dossies/claude__fix-pr3517-gate1-baseline-261113-2336.md",
+     "analise-branches/dossies/claude__fix-pr3685-replay-stubs-261115-2150.md",
+     "analise-branches/dossies/claude__fix-release-manifest-versao-real-261114-0305.md",
+     "analise-branches/dossies/claude__fix-replay-migrations-261115-1400.md",
+     "analise-branches/dossies/claude__fix-rollback-e38-e47-e37-261101-2200.md",
+     "analise-branches/dossies/claude__fix-schema-snapshot-export-cancelled-skip-261101-2344.md",
+     "analise-branches/dossies/claude__fix-sec001-revoke-anon-trigger-funcs-261101-2230.md",
+     "analise-branches/dossies/claude__fix-sentinel-e2e-pdf-261029-2310.md",
+     "analise-branches/dossies/claude__fix-stock-notes-rollback-header-261101-2151.md",
+     "analise-branches/dossies/claude__fix-sync-e2e-vite-port-isolation-261030-1430.md",
+     "analise-branches/dossies/claude__fix-ts-gate1-261109-1915.md",
+     "analise-branches/dossies/claude__infra-inventario-semanal-261102-1120.md",
+     "analise-branches/dossies/claude__infra-workflows-supersede-3525-261114-1740.md",
+     "analise-branches/dossies/claude__laughing-cori-o9w35e.md",
+     "analise-branches/dossies/claude__perf-cron004-reduz-jobs-ociosos-261114-1001.md",
+     "analise-branches/dossies/claude__perf-cron005-refresh-all-mvs-diario-261114-1002.md",
+     "analise-branches/dossies/claude__perf-idx-sds-restock-counts-261114-1006.md",
+     "analise-branches/dossies/claude__resgate-3390-261113.md",
+     "analise-branches/dossies/claude__verify-logo-cores-261114-2359.md",
+     "analise-branches/dossies/claude__wf-limpeza-261113.md",
+     "analise-branches/dossies/claude__wip-assistente-encaixe-cliente-261115-0400.md",
+     "analise-branches/dossies/claude_pink__lucid-franklin-mjhkyc.md",
+     "analise-branches/dossies/claude_pink__peaceful-planck-q4ee1i.md",
+     "analise-branches/dossies/claude_pink__sleepy-cannon-h000nc.md",
+     "analise-branches/dossies/codex__e23-required-secrets-20261030.md",
+     "analise-branches/dossies/codex__fix-db-migration-preflight-261107.md",
+     "analise-branches/dossies/codex__fix-e2e-ci-pressure-261107-0238.md",
+     "analise-branches/dossies/codex__fix-e2e-cleanup-rollback-header-261108.md",
+     "analise-branches/dossies/codex__fix-e2e-relevance-261107-1148.md",
+     "analise-branches/dossies/codex__fix-gate1-kit-pdf-types-261109-2252.md",
+     "analise-branches/dossies/dependabot__npm_and_yarn__development-all-bec0ad7abb.md",
+     "analise-branches/dossies/e15-receipt-20261022100001-40165954774.md",
+     "analise-branches/dossies/e15-receipt-20261024180001-40164828396.md",
+     "analise-branches/dossies/e15-receipt-20261024180002-40166677491.md",
+     "analise-branches/dossies/e15-receipt-20261024180003-40167137573.md",
+     "analise-branches/dossies/e15-receipt-20261024190001-40166925674.md",
+     "analise-branches/dossies/e15-receipt-20261025002500-40165426404.md",
+     "analise-branches/dossies/e15-receipt-20261027140000-40512572184.md",
+     "analise-branches/dossies/e15-receipt-20261106232045-42325571775.md",
+     "analise-branches/dossies/e15-receipt-20261112140000-43471685129.md",
+     "analise-branches/dossies/fix__e2e-url-state-defaults-20261030.md",
+     "analise-branches/dossies/fix__gate-e40-cron-seed-261028.md",
+     "analise-branches/dossies/importado__backup-20261028__claude__audit-gaps-20260915.md",
+     "analise-branches/dossies/importado__local__projetos__Promo_Gifts_V4.backup-20261028.md",
+     "analise-branches/dossies/importado__vps-fabrica__v2__docs-criar-docs-fabrica-vps-faq-md-com-p-2610081318.md",
+     "analise-branches/dossies/importado__vps-fabrica__v2__fix-remover-atalhos-destrutivos-do-gerad-2610081909.md",
+     "analise-branches/dossies/importado__vps-fabrica__v2__mockup-assistant-tests-int.md",
+     "analise-branches/dossies/importado__vps-fabrica__v2__n03-2610082244.md",
+     "analise-branches/dossies/importado__vps-fabrica__v2__n11-2610082244.md",
+     "analise-branches/dossies/importado__vps-fabrica__v2__n28-2610082246.md",
+     "analise-branches/dossies/importado__vps-fabrica__v2__n52-2610082250.md",
+     "analise-branches/dossies/importado__vps-fabrica__v2__n64-2610082251.md",
+     "analise-branches/dossies/importado__vps-fabrica__v2__n67-2610082251.md",
+     "analise-branches/dossies/importado__vps-fabrica__v2__refazer-04c25ae0.md",
+     "analise-branches/dossies/importado__vps-fabrica__v2__refazer-0b0b9032.md",
+     "analise-branches/dossies/importado__vps-fabrica__v2__refazer-1da3ac33.md",
+     "analise-branches/dossies/importado__vps-fabrica__v2__refazer-2c328ea8.md",
+     "analise-branches/dossies/importado__vps-fabrica__v2__refazer-3bc83637.md",
+     "analise-branches/dossies/importado__vps-fabrica__v2__refazer-68f33d86.md",
+     "analise-branches/dossies/importado__vps-fabrica__v2__refazer-b14fb844.md",
+     "analise-branches/dossies/importado__vps-fabrica__v2__refazer-b6819758.md",
+     "analise-branches/dossies/importado__vps-fabrica__v2__refazer-cab127be.md",
+     "analise-branches/dossies/importado__vps-fabrica__v2__refazer-cc1ea0bf.md",
+     "analise-branches/dossies/importado__vps-fabrica__v2__refazer-d198425f.md",
+     "analise-branches/dossies/importado__vps-fabrica__v2__refazer-d295390f.md",
+     "analise-branches/dossies/importado__vps-fabrica__v2__refazer-d3b19f40.md",
+     "analise-branches/dossies/importado__vps-fabrica__v2__refazer-d7100518.md",
+     "analise-branches/dossies/importado__vps-fabrica__v2__refazer-dc12be92.md",
+     "analise-branches/dossies/importado__vps-fabrica__v2__refazer-dce5709d.md",
+     "analise-branches/dossies/importado__vps-fabrica__v2__refazer-dff79a9a.md",
+     "analise-branches/dossies/importado__vps-fabrica__v2__refazer-e128a94b.md",
+     "analise-branches/dossies/importado__vps-fabrica__v2__refazer-f5f7f446.md",
+     "analise-branches/dossies/importado__vps-fabrica__v2__refazer-f753ee81.md",
+     "analise-branches/dossies/importado__vps-fabrica__v2__refazer-fc9bc61b.md",
+     "analise-branches/dossies/importado__vps-fabrica__v2__refazer-fdac7577.md",
+     "analise-branches/dossies/importado__vps-fabrica__v2__s13-2610081946.md",
+     "analise-branches/dossies/importado__vps-fabrica__v2__s14-2610081946.md",
+     "analise-branches/dossies/importado__vps-fabrica__v2__s15-2610081946.md",
+     "analise-branches/dossies/importado__vps-fabrica__v2__s17-2610081946.md",
+     "analise-branches/dossies/importado__vps-fabrica__v2__s18a-2610081946.md",
+     "analise-branches/dossies/importado__vps-fabrica__v2__s24-2610081947.md",
+     "analise-branches/dossies/importado__vps-fabrica__v2__s30-2610081946.md",
+     "analise-branches/dossies/importado__vps-fabrica__v2__s33-2610081947.md",
+     "analise-branches/dossies/importado__vps-fabrica__v2__s36-2610081947.md",
+     "analise-branches/dossies/importado__vps-fabrica__v2__s37-2610081949.md",
+     "analise-branches/dossies/importado__vps-fabrica__v2__s41-2610081949.md",
+     "analise-branches/dossies/importado__vps-fabrica__v2__s44-2610081949.md",
+     "analise-branches/dossies/importado__vps-fabrica__v2__s46-1-2610081949.md",
+     "analise-branches/dossies/importado__vps-fabrica__v2__s46-2-2610081949.md",
+     "analise-branches/dossies/importado__vps-fabrica__v2__s47-generatebutton-2610081950.md",
+     "analise-branches/dossies/importado__vps-fabrica__v2__s47-savetemplatedialog-2610081950.md",
+     "analise-branches/dossies/importado__vps-fabrica__v2__s47-templateselector-2610081950.md",
+     "analise-branches/dossies/importado__vps-fabrica__v2__s48b-2610081950.md",
+     "analise-branches/dossies/importado__vps-fabrica__v2__s49-2610081950.md",
+     "analise-branches/dossies/importado__vps-fabrica__v2__s51-2610081948.md",
+     "analise-branches/dossies/importado__vps-fabrica__v2__s52-2610081948.md",
+     "analise-branches/dossies/importado__vps-fabrica__v2__s53-2610081948.md",
+     "analise-branches/dossies/importado__vps-fabrica__v2__s54-2610081948.md",
+     "analise-branches/dossies/importado__vps-fabrica__v2__s55-2610081946.md",
+     "analise-branches/dossies/importado__vps-fabrica__v2__s63-2610081947.md",
+     "analise-branches/dossies/importado__vps-fabrica__v2__s69-2610081946.md",
+     "analise-branches/dossies/importado__vps-fabrica__v2__s71-2610081948.md",
+     "analise-branches/dossies/importado__vps-fabrica__v2__s74-2610081948.md",
+     "analise-branches/dossies/importado__vps-fabrica__v2__s75-2610081948.md",
+     "analise-branches/dossies/importado__vps-fabrica__v2__s76-2610081949.md",
+     "analise-branches/dossies/importado__vps-fabrica__v2__s77-1-2610081950.md",
+     "analise-branches/dossies/importado__vps-fabrica__v2__s77-4-2610081951-int.md",
+     "analise-branches/dossies/importado__vps-fabrica__v2__s77-4-2610081951.md",
+     "analise-branches/dossies/importado__vps-fabrica__v2__s77-5-2610081951.md",
+     "analise-branches/dossies/importado__vps-fabrica__v2__s77-6-2610081951.md",
+     "analise-branches/dossies/importado__vps-fabrica__v2__s77-7-2610081951.md",
+     "analise-branches/dossies/importado__vps-fabrica__v2__s78-2610081949.md",
+     "analise-branches/dossies/importado__vps-fabrica__v2__s80-2610081950.md",
+     "analise-branches/dossies/integra__vps-testes-docs.md",
+     "analise-branches/dossies/recuperado__chore-migration-supplier-rls-261108-2230.md",
+     "analise-branches/dossies/recuperado__chore-workflows-snapshot-261108-2230.md",
+     "analise-branches/dossies/recuperado__chore__graphify-sql-map-20261029.md",
+     "analise-branches/dossies/recuperado__fix-dep-overrides-e95-261102.md",
+     "analise-branches/dossies/recuperado__fix-ft005-cron-scheduled-261108-2215.md",
+     "analise-branches/dossies/recuperado__fix-ft079-min-quantity-261108-2215.md",
+     "analise-branches/dossies/recuperado__fix-ft088-check-item-fits-261108-2215.md",
+     "analise-branches/dossies/recuperado__fix-gitleaks-allowlist-261101-2209.md",
+     "analise-branches/dossies/recuperado__fix-gitleaks-gate-261024-1930.md",
+     "analise-branches/dossies/recuperado__fix-legacy-filters-261113-1430.md",
+     "analise-branches/dossies/recuperado__fix-p06-p15-security-20261101-1000.md",
+     "analise-branches/dossies/recuperado__fix-sb0002-sb0006-migrations-261101-1825.md",
+     "analise-branches/dossies/recuperado__fix-ts-unused-rupture-20261101-2300.md",
+     "analise-branches/dossies/release-please--branches--main--components--gifts-store.md",
+     "analise-branches/dossies/temp-rebase-3321.md"
+    ]
+   },
    {
     "sha": "22db4dc",
     "date": "2026-11-16",
@@ -540073,261 +540336,6 @@
      "src/pages/magic-up/MagicUpConfigPanel.tsx",
      "tests/pages/MagicUp.a11y.test.tsx"
     ]
-   },
-   {
-    "sha": "b89a44e",
-    "date": "2026-11-15",
-    "author": "adm01-debug",
-    "subject": "fix(db): trem de banco — gráfico de mercado com dado real, revoke de 106 funções, índices e crons mais baratos (#3665)",
-    "files": [
-     "audit/supabase-reference-catalog.temporary.json",
-     "scripts/drift-baseline.mjs",
-     "src/hooks/intelligence/__tests__/useMarketIntelligenceMacro.test.tsx",
-     "src/hooks/intelligence/useMarketIntelligenceMacro.ts",
-     "supabase/MIGRATIONS_SYNC_LOG.md",
-     "supabase/functions/generate-mockup/geometry.ts",
-     "supabase/functions/generate-mockup/index.geometry.test.ts",
-     "supabase/functions/generate-mockup/index.ts",
-     "supabase/migrations/20261102063000_repair_kill_switch_hits_anon_rate_guard.sql",
-     "supabase/migrations/20261114120000_cron004_reduz_frequencia_jobs_ociosos.sql",
-     "supabase/migrations/20261114120100_cron005_refresh_all_mvs_diario_timeout_real.sql",
-     "supabase/migrations/20261114160000_perf_idx_sds_restock_counts.sql",
-     "supabase/migrations/20261115130000_idx_sds_summary_date_supplier_include.sql",
-     "supabase/migrations/20261115130100_fn_market_intelligence_macro.sql",
-     "supabase/migrations/20261115130200_sec001_revoke_anon_execute_trigger_functions.sql",
-     "supabase/migrations/20261115130300_fn_global_search_clamp_limit_hardened.sql",
-     "supabase/rollbacks/20260917070000_rollback.sql",
-     "supabase/rollbacks/20260917090000_rollback.sql",
-     "supabase/rollbacks/20260917100000_rollback.sql",
-     "supabase/rollbacks/20261031000000_rollback.sql",
-     "supabase/rollbacks/20261101190101_rollback.sql",
-     "supabase/rollbacks/20261101202000_rollback.sql",
-     "supabase/rollbacks/20261102063000_rollback.sql",
-     "supabase/rollbacks/20261114120000_rollback.sql",
-     "supabase/rollbacks/20261114120100_rollback.sql",
-     "supabase/rollbacks/20261114160000_rollback.sql",
-     "supabase/rollbacks/20261115130000_rollback.sql",
-     "supabase/rollbacks/20261115130100_rollback.sql",
-     "supabase/rollbacks/20261115130200_rollback.sql",
-     "supabase/rollbacks/20261115130300_rollback.sql",
-     "tests/security/security-definer-acl-gate.test.ts",
-     "vitest.config.ts"
-    ]
-   },
-   {
-    "sha": "a03adc3",
-    "date": "2026-11-15",
-    "author": "adm01-debug",
-    "subject": "feat(orders): resgata conferência do total do pedido contra a soma dos itens (#3667)",
-    "files": [
-     "src/services/__tests__/orderService.test.ts",
-     "src/services/orderService.ts"
-    ]
-   },
-   {
-    "sha": "7307f53",
-    "date": "2026-11-15",
-    "author": "adm01-debug",
-    "subject": "feat(mockup): cabeçalho de trabalho do gerador, Meus mockups do cliente e captura de layout extraída (#3664)",
-    "files": [
-     "src/components/mockup/MockupWizard.tsx",
-     "src/components/mockup/__tests__/MockupWizard.navegacao.test.tsx",
-     "src/hooks/mockup/__tests__/useClientMockups.test.ts",
-     "src/hooks/mockup/useClientMockups.ts",
-     "src/pages/mockups/MockupGenerator.tsx",
-     "src/pages/mockups/mockup-generator/ClientMockupsMenu.tsx",
-     "src/pages/mockups/mockup-generator/MockupToolbar.tsx",
-     "src/pages/mockups/mockup-generator/__tests__/ClientMockupsMenu.test.tsx",
-     "src/pages/mockups/mockup-generator/__tests__/MockupToolbar.header.test.tsx",
-     "src/pages/mockups/mockup-generator/__tests__/MockupToolbar.test.tsx",
-     "src/pages/mockups/mockup-generator/__tests__/useWizardNavigation.test.ts",
-     "src/pages/mockups/mockup-generator/useLayoutCaptureRequest.ts",
-     "src/pages/mockups/mockup-generator/useWizardNavigation.ts",
-     "tests/edge-functions/integration/magic-up-score.test.ts",
-     "tests/hooks/useClientMockups.edge.test.ts"
-    ]
-   },
-   {
-    "sha": "335bdb6",
-    "date": "2026-11-15",
-    "author": "adm01-debug",
-    "subject": "fix(ci): recibo de migration entra sozinho e para de travar o CI (#3662)",
-    "files": [
-     ".github/workflows/db-apply-migration.yml"
-    ]
-   },
-   {
-    "sha": "7e6d63d",
-    "date": "2026-11-15",
-    "author": "adm01-debug",
-    "subject": "fix(ci): E14 volta a valer para PR que só toca docs/ci/SEGREDOS.md (#3661)",
-    "files": [
-     ".github/workflows/deploy-gates.yml",
-     "docs/agentes/ci-gates.md"
-    ]
-   },
-   {
-    "sha": "5e59cb9",
-    "date": "2026-11-15",
-    "author": "adm01-debug",
-    "subject": "fix: trem de resgates — 16 correções recuperadas de branches de outros agentes (#3660)",
-    "files": [
-     "artifacts/route-test-matrix.json",
-     "e2e/flows/04r-undo-toast-a11y-keyboard.spec.ts",
-     "e2e/helpers/auth.ts",
-     "e2e/routes/public/colecao-publica.spec.ts",
-     "e2e/routes/public/comparar-publica.spec.ts",
-     "scripts/drift-baseline.mjs",
-     "src/components/admin/products/new-supplier/useNewSupplierForm.ts",
-     "src/components/favorites/FavoriteListsSidebar.tsx",
-     "src/components/inventory/StockDashboard.tsx",
-     "src/components/inventory/stockTabDefault.ts",
-     "src/components/kit-library/KitLibraryStats.tsx",
-     "src/components/mockup/CompanyAvatar.tsx",
-     "src/components/mockup/MockupClientSelector.tsx",
-     "src/components/mockup/MockupConfigPanel.tsx",
-     "src/components/mockup/__tests__/KeyboardShortcuts.dead.test.tsx",
-     "src/components/mockup/__tests__/MockupClientSelector.a11y.test.tsx",
-     "src/components/mockup/__tests__/MockupConfigPanel.maxColors.test.tsx",
-     "src/hooks/admin/useDeviceDetection.ts",
-     "src/hooks/intelligence/useMagicUpState.helpers.ts",
-     "src/hooks/mockup/mockupGenerationService.ts",
-     "src/hooks/quotes/useQuoteTemplates.ts",
-     "src/lib/bi/pptxGenerator.ts",
-     "src/lib/bi/pptxTheme.ts",
-     "src/lib/external-db/product-types.ts",
-     "src/pages/kit-builder/KitBuilderPage.tsx",
-     "src/pages/kit-builder/KitLibraryPage.tsx",
-     "src/pages/products/ComparePage.tsx",
-     "src/utils/product-sorting.ts",
-     "supabase/functions/process-scheduled-reports/index.send-failure.test.ts",
-     "supabase/functions/process-scheduled-reports/index.ts",
-     "tests/edge-functions/process-scheduled-reports.send-failure.test.ts",
-     "tests/hooks/mockupGenerationService.download.test.ts",
-     "tests/hooks/useMagicUpProducts.helpers.test.ts",
-     "tests/scripts/drift-baseline.test.mjs"
-    ]
-   },
-   {
-    "sha": "9e656a3",
-    "date": "2026-11-15",
-    "author": "adm01-debug",
-    "subject": "ci: enxuga workflows — checagens estáticas consolidadas, 12 aposentados, contexto 1×/h (#3659)",
-    "files": [
-     ".github/required-checks.json",
-     ".github/workflows/branch-protection-sentinel.yml",
-     ".github/workflows/ci.yml",
-     ".github/workflows/contexto.yml",
-     ".github/workflows/db-schema-drift-check.yml",
-     ".github/workflows/deploy-gates.yml",
-     ".github/workflows/e2e-stock.yml",
-     ".github/workflows/edge-functions-drift-check.yml",
-     ".github/workflows/global-search-gate.yml",
-     ".github/workflows/policies-baseline.yml",
-     ".github/workflows/required-checks-guard.yml",
-     ".github/workflows/schema-snapshot-export.yml",
-     ".github/workflows/security-definer-acl-multi-env.yml",
-     ".github/workflows/sentinel-self-test.yml",
-     ".github/workflows/sitemap-production-preconditions.yml",
-     ".github/workflows/static-checks.yml",
-     ".github/workflows/supabase-linter-gate.yml",
-     "ai-context.config.json",
-     "docs/coordenacao/conflitos-semanticos.md",
-     "recovery/workflows-aposentados/README.md",
-     "recovery/workflows-aposentados/automation-local.yml",
-     "recovery/workflows-aposentados/check-no-prod-leak.yml",
-     "recovery/workflows-aposentados/check-select-columns.yml",
-     "recovery/workflows-aposentados/lint-untyped-from.yml",
-     "recovery/workflows-aposentados/lovable-autoheal.yml",
-     "recovery/workflows-aposentados/lovable-edit-tracker.yml",
-     "recovery/workflows-aposentados/lovable-protected-audit.yml",
-     "recovery/workflows-aposentados/migrations-sync-log-gate.yml",
-     "recovery/workflows-aposentados/restore-seller-cart-rpc.yml",
-     "recovery/workflows-aposentados/ui-visual-a11y.yml",
-     "recovery/workflows-aposentados/url-state-unit.yml",
-     "recovery/workflows-aposentados/workflow-lint.yml",
-     "scripts/ai-context/README.md",
-     "scripts/autoheal-eslint/run.test.mjs",
-     "scripts/automation.config.json",
-     "scripts/check-visual-baselines.mjs",
-     "scripts/check-workflow-contracts.allowlist.json",
-     "scripts/lint-untyped-from.sh",
-     "scripts/supabase_snapshot/README.md",
-     "scripts/supabase_snapshot/snapshot.py",
-     "src/lib/supabase-untyped.ts",
-     "tests/scripts/contexto-produtores.test.mjs"
-    ]
-   },
-   {
-    "sha": "20dfb7b",
-    "date": "2026-11-15",
-    "author": "adm01-debug",
-    "subject": "chore: trem de infra — BOM da edge asia-ingestion, recibo E66, E2E fora dos PRs e snapshots all-authed (#3658)",
-    "files": [
-     ".github/workflows/delivery-quality.yml",
-     ".github/workflows/e2e-cart.yml",
-     ".github/workflows/e2e-check-calendar-snapshots.yml",
-     ".github/workflows/e2e-color-swatch-grid.yml",
-     ".github/workflows/e2e-crm-callback-approved.yml",
-     ".github/workflows/e2e-customization-collapse.yml",
-     ".github/workflows/e2e-dialogs-pr-check.yml",
-     ".github/workflows/e2e-discount-approval.yml",
-     ".github/workflows/e2e-flows.yml",
-     ".github/workflows/e2e-focused.yml",
-     ".github/workflows/e2e-freight.yml",
-     ".github/workflows/e2e-magazine-header.yml",
-     ".github/workflows/e2e-pdf-dialog.yml",
-     ".github/workflows/e2e-personalization.yml",
-     ".github/workflows/e2e-quotes.yml",
-     ".github/workflows/e2e-stock.yml",
-     ".github/workflows/e2e-swatch-quickview.yml",
-     ".github/workflows/e2e-visual-preview-button.yml",
-     ".github/workflows/e2e.yml",
-     ".github/workflows/global-search-gate.yml",
-     ".github/workflows/optimized-image-e2e.yml",
-     ".github/workflows/pdf-visual-regression.yml",
-     ".github/workflows/replenishment-quality.yml",
-     ".github/workflows/supplier-comparison.yml",
-     ".github/workflows/update-snapshots.yml",
-     ".github/workflows/visual-tests.yml",
-     "supabase/EDGE_FUNCTIONS_DEPLOY_LOG.md",
-     "supabase/functions/asia-ingestion/index.ts"
-    ]
-   },
-   {
-    "sha": "eecfde9",
-    "date": "2026-11-15",
-    "author": "adm01-debug",
-    "subject": "fix: trem de 3 correções de front — busca, cores por área do mockup e trocar item no kit (#3653)",
-    "files": [
-     "docs/coordenacao/conflitos-semanticos.md",
-     "src/components/kit-builder/ItemSelector.tsx",
-     "src/components/kit-builder/ItemSelector.types.ts",
-     "src/components/kit-builder/PersonalizationConfig.tsx",
-     "src/components/kit-builder/SwapItemBanner.tsx",
-     "src/components/search/__tests__/useGlobalSearch.test.ts",
-     "src/hooks/kit-builder/index.ts",
-     "src/hooks/kit-builder/useKitItemReplaceTarget.ts",
-     "src/hooks/mockup/__tests__/colorAnalysisPorArea.test.ts",
-     "src/hooks/mockup/useMockupGenerator.ts",
-     "src/hooks/simulation/index.ts",
-     "src/hooks/simulation/useLogoColorAnalysisByArea.ts",
-     "src/pages/kit-builder/KitBuilderPage.tsx",
-     "src/pages/mockups/MockupGenerator.tsx",
-     "src/tests/MockupDeletion.test.tsx",
-     "tests/hooks/useMockupGenerator.test.ts"
-    ]
-   },
-   {
-    "sha": "3893d57",
-    "date": "2026-11-15",
-    "author": "adm01-debug",
-    "subject": "fix(ci): portão de recibos deixa de dar verde com version citada no recibo de outra migration (#3649)",
-    "files": [
-     "docs/coordenacao/conflitos-semanticos.md",
-     "scripts/check-migration-receipts.mjs",
-     "supabase/MIGRATIONS_SYNC_LOG.md"
-    ]
    }
   ],
   "hot_files": [
@@ -540337,30 +540345,58 @@
    ],
    [
     "supabase/MIGRATIONS_SYNC_LOG.md",
-    5
+    3
    ],
    [
     "src/pages/mockups/MockupGenerator.tsx",
-    5
-   ],
-   [
-    "docs/coordenacao/conflitos-semanticos.md",
-    4
-   ],
-   [
-    "e2e/helpers/auth.ts",
     3
    ],
    [
-    "src/hooks/mockup/useMockupGenerator.ts",
-    3
-   ],
-   [
-    "src/components/mockup/MockupClientSelector.tsx",
+    "analise-branches/RELATORIO-BRANCHES-COMPLETO.md",
     2
    ],
    [
-    "src/components/mockup/__tests__/MockupClientSelector.a11y.test.tsx",
+    "analise-branches/ESTADO-EM-261116.md",
+    2
+   ],
+   [
+    "analise-branches/dados/LEIA-ME.md",
+    2
+   ],
+   [
+    "analise-branches/dossies/recuperado__fix-gitleaks-allowlist-261101-2209.md",
+    2
+   ],
+   [
+    "analise-branches/dossies/recuperado__fix-gitleaks-gate-261024-1930.md",
+    2
+   ],
+   [
+    "analise-branches/dossies/claude_04__optimistic-bohr-qplx94.md",
+    2
+   ],
+   [
+    "analise-branches/dossies/claude_05__youthful-ride-vcdchy.md",
+    2
+   ],
+   [
+    "analise-branches/dossies/claude__fix-pr3517-gate1-baseline-261113-2336.md",
+    2
+   ],
+   [
+    "analise-branches/dossies/claude__resgate-3390-261113.md",
+    2
+   ],
+   [
+    "analise-branches/dossies/claude_pink__lucid-franklin-mjhkyc.md",
+    2
+   ],
+   [
+    "analise-branches/dossies/claude_pink__sleepy-cannon-h000nc.md",
+    2
+   ],
+   [
+    "analise-branches/dossies/codex__fix-gate1-kit-pdf-types-261109-2252.md",
     2
    ],
    [
@@ -540372,43 +540408,15 @@
     2
    ],
    [
-    "supabase/functions/generate-mockup/index.ts",
+    "e2e/helpers/auth.ts",
     2
    ],
    [
-    "vitest.config.ts",
-    2
-   ],
-   [
-    "src/pages/mockups/mockup-generator/useLayoutCaptureRequest.ts",
-    2
-   ],
-   [
-    "src/tests/MockupDeletion.test.tsx",
+    "src/hooks/mockup/useMockupGenerator.ts",
     2
    ],
    [
     "tests/pages/MockupGenerator.a11y.test.tsx",
-    2
-   ],
-   [
-    "analise-branches/auditoria-261115/veredito_grupo00.md",
-    2
-   ],
-   [
-    "analise-branches/auditoria-261115/veredito_grupo02.md",
-    2
-   ],
-   [
-    "analise-branches/auditoria-261115/veredito_lote00.md",
-    2
-   ],
-   [
-    "analise-branches/auditoria-261115/veredito_lote02.md",
-    2
-   ],
-   [
-    "analise-branches/auditoria-261115/veredito_lote03.md",
     2
    ]
   ]

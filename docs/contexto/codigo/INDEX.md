@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e de hora em hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `22db4dcbe7736c5aa5066e4fa4721b0a520516f3` (2026-11-16T06:35:32-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e de hora em hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `2d1d7cabee7fdcf1589f7adb62498e3b910e428d` (2026-11-16T07:47:45-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -14,7 +14,7 @@ Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR
 Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua tarefa; não carregue tudo.
 
 ## Stack
-- linguagens: TypeScript (4877), SQL (3431), Markdown (1046), JavaScript (443), JSON (126), YAML (112), Shell (27), HTML (20)
+- linguagens: TypeScript (4877), SQL (3431), Markdown (1214), JavaScript (443), JSON (127), YAML (112), Shell (27), HTML (20)
 - linguagem_principal: TypeScript
 - framework: React
 - backend_http: n/d
@@ -34,7 +34,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 ## Números
 | item | qtd |
 |---|---|
-| arquivos_total | 10330 |
+| arquivos_total | 10502 |
 | arquivos_codigo | 5328 |
 | linhas_codigo | 1015575 |
 | rotas | 138 |
@@ -51,7 +51,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 | testes | 2521 |
 | workflows | 87 |
 | scripts | 272 |
-| docs_md | 1046 |
+| docs_md | 1214 |
 
 ## Onde ficam as coisas
 - telas: src/pages (111), src/components (3), api/health.ts (1)
@@ -590,14 +590,14 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - possiveis_segredos_no_codigo: 7 — ex.: scripts/ai-context/cenarios.mjs:102, src/components/admin/connections/__tests__/ConnectionSecurity.unit.test.tsx:9, src/integrations/supabase/client.ts:27
 
 ## Grafo de código (graphify)
-- 44400 nós · 76729 arestas · 2467 comunidades · grafo do commit `22db4dcb`
-- comunidades maiores: vitest (941), ref_components (842), ref_integrations (603), ref_node_child_process (490), ref_hooks (431), @tanstack/react-query (424), sonner (384), ref_types (335), react (331), ref_utils (323), ref_node_fs (302), scripts (302)
+- 45760 nós · 78292 arestas · 2572 comunidades · grafo do commit `2d1d7cab`
+- comunidades maiores: ref_components (771), ref_integrations (643), vitest (555), ref_node_child_process (503), @testing-library/react (441), ref_hooks (391), @tanstack/react-query (387), ref_types (373), sonner (373), react (322), react-router-dom (315), nav.ts (311)
 - símbolos mais chamados: gotoAndSettle() (e2e/helpers/nav.ts), re (?), q() (scripts/supabase_snapshot/snapshot.py), analyze() (tests/scripts/test_personalization_artifact_diagnostics.py), outer() (tests/scripts/test_personalization_artifact_diagnostics.py), json (?), useExternalDatabase() (recovery/src-legacy/src/hooks/useExternalDatabase.ts), concludeCheck() (scripts/check-result-contract.mjs), querySupabaseReadOnly() (scripts/supabase-read-only-query.mjs), loginAs() (e2e/helpers/auth.ts), inner() (tests/scripts/test_personalization_artifact_diagnostics.py), excluded_sql() (scripts/supabase_snapshot/snapshot.py)
 - consulta local: `graphify query "<pergunta>"`, `graphify path "<A>" "<B>"`, `graphify explain "<X>"`
 
 ## Hotspots (arquivos mais alterados, 90 dias)
-- RELATORIO_CI.md (89)
-- PENDENCIAS.md (84)
+- RELATORIO_CI.md (88)
+- PENDENCIAS.md (83)
 - supabase/MIGRATIONS_SYNC_LOG.md (60)
 - package.json (43)
 - package-lock.json (27)
@@ -1174,21 +1174,21 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - CHANGELOG topo: [1.1.0](https://github.com/adm01-debug/Promo_Gifts_V4/compare/v1.0.0...v1.1.0) (2026-11-13)
 
 ## Últimos commits
+- 2026-11-16 `2d1d7cab` Merge pull request #3689 from adm01-debug/claude/chore-dossies-branches-261116-0154
+- 2026-11-16 `7d34968e` docs(audit): veredito da n68 e protecao dos refs de preservacao
+- 2026-11-16 `18cbbcc6` docs(audit): manual de continuidade para a proxima sessao
+- 2026-11-16 `04d251e1` docs(audit): relatorio completo branch a branch, aberta e fechada
+- 2026-11-16 `b63eeb55` docs(audit): relatorio da sessao, indice da preservacao e branches do PC
+- 2026-11-16 `5097b558` docs(audit): estado do trabalho em 2026-11-16 e as 7 pendencias
+- 2026-11-16 `766597e8` chore(audit): dados brutos da analise das 160 branches
+- 2026-11-16 `af6fe704` chore(audit): redige o exemplo de chave AWS citado em dois dossies
+- 2026-11-16 `3e894270` chore(audit): segunda passada nos 7 dossies de branch grande
+- 2026-11-16 `80ea9910` chore(audit): dossie por branch das 160 branches do GitHub fora da main
 - 2026-11-16 `22db4dcb` fix(mockup): o mouse passa a mover o destaque na lista de empresas (#3690)
 - 2026-11-15 `e4ab7f85` feat(mockup-assistant): resgata a edge do assistente Matheus com rota de IA, testes e registro de authz (#3666)
 - 2026-11-15 `26d93948` fix(db): replay do zero — colunas e tabelas perdidas por no-op de CREATE TABLE IF NOT EXISTS (#3686)
 - 2026-11-15 `24038f15` fix(mockup): avisa o vendedor quando a ficha de aprovação falha (#3684)
 - 2026-11-15 `956593c0` fix(mockup): teto de corpo e de lote na edge generate-mockup antes de processar (#3673)
-- 2026-11-15 `ef2a7fa1` fix(e2e): orcamento do teste cobre a espera de 150s do login em CI (#3682)
-- 2026-11-15 `ecface83` feat(mockup): preserva o resultado quando a geração falha, e a ficha sai com as medidas da área certa (#3674)
-- 2026-11-15 `54826844` fix(mockup): resgata teste de a11y da fatia 2, aviso de falha na seleção do mockup e trava do braces (#3676)
-- 2026-11-15 `dbe11812` test(mockup): resgata 39 testes do gerador de mockup que estavam desligados por mock incompleto (#3672)
-- 2026-11-15 `3bd8af66` feat(mockup): editor de logo com largura e altura proporcionais e botão "Girar" (#3669)
-- 2026-11-15 `0c05df33` fix(docs): dossies nao citam migration de branch apagada como caminho da arvore (#3681)
-- 2026-11-15 `956761e5` docs(coordenacao): auditoria das 528 branches — 9 achados de produção e vereditos com evidência (#3679)
-- 2026-11-15 `56ea27fb` fix(e2e): não repetir o login em cada teste quando o auth.setup degradou (#3680)
-- 2026-11-15 `a78b0bac` feat(mockup): aviso de falha ao carregar as técnicas de personalização, com "Tentar novamente" (#3677)
-- 2026-11-15 `6da08832` fix(assistente): card não acusa falha enquanto a RPC não foi aplicada (#3678)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`
