@@ -45,7 +45,16 @@ const IGNORE_DIRS = new Set([
 // Todo o graphify-out/ é conteúdo derivado (grafo, wiki, manifesto, cache).
 // Ele pode reter paths históricos de migrations já reconciliadas e não deve
 // fazer o gate falhar por texto derivado (E13.3).
-const IGNORE_RELATIVE_DIRS = new Set(['graphify-out/cache', 'graphify-out']);
+// analise-branches/ é o mesmo caso (E13.3): são dossiês e relatórios SOBRE branches
+// que nunca entraram na main. Eles citam, de propósito, o nome do arquivo de migration
+// que cada branch criou — arquivo que por definição não existe na main. Varrer essa
+// pasta fazia o gate reprovar 43 referências corretas e travava todo PR não-docs-only
+// (Gate 1 passo 9 → Gate Final), inclusive na própria main.
+const IGNORE_RELATIVE_DIRS = new Set([
+  'graphify-out/cache',
+  'graphify-out',
+  'analise-branches',
+]);
 // Arquivos que só falam de paths (README/snapshot meta), varremos normal —
 // mas ignoramos o próprio SELF para não recursivar em exemplos.
 const SELF = 'scripts/check-migration-path-references.mjs';
