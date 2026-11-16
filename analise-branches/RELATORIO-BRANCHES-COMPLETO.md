@@ -975,7 +975,8 @@ Veredito de que o trabalho já está no sistema, **confirmado** pelo segundo age
 >   cabeça da PR #3685. A PR foi fechada no mesmo dia (ver seção 8) e a branch foi apagada
 >   em seguida; a ponta `8efffeb0e5` entrou em `salvo/261116-apagadas-70` pelo commit
 >   `ef7889218a`. **As 71 estão fechadas.**
-> - Total de branches no remoto: **176 → 106**.
+> - Total de branches no remoto: **176 → 107** — 71 apagadas, mais dois refs novos
+>   (`salvo/261116-apagadas-70` e a branch desta própria atualização, que some no merge).
 
 | Branch | O que fazia | Ainda no GitHub? |
 |---|---|---|
