@@ -2,11 +2,21 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "2d3c2f74d450b6eaf57809e14bf8e229f0acf00a",
+  "commit": "43fc3595af3adc3a9882118c37af5938b6922f52",
   "branch": "main",
-  "data_commit": "2026-11-16T11:30:14-03:00",
+  "data_commit": "2026-11-16T12:00:10-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "43fc3595",
+    "data": "2026-11-16",
+    "assunto": "feat(audit): resgata 267 arquivos de analise-prs que existiam só em branch de agente (#3705)"
+   },
+   {
+    "sha": "1f642122",
+    "data": "2026-11-16",
+    "assunto": "docs(audit): 12 recibos do ledger com sha256 que não bate com o arquivo (#3704)"
+   },
    {
     "sha": "2d3c2f74",
     "data": "2026-11-16",
@@ -121,187 +131,177 @@
     "sha": "956593c0",
     "data": "2026-11-15",
     "assunto": "fix(mockup): teto de corpo e de lote na edge generate-mockup antes de processar (#3673)"
-   },
-   {
-    "sha": "ef2a7fa1",
-    "data": "2026-11-15",
-    "assunto": "fix(e2e): orcamento do teste cobre a espera de 150s do login em CI (#3682)"
-   },
-   {
-    "sha": "ecface83",
-    "data": "2026-11-15",
-    "assunto": "feat(mockup): preserva o resultado quando a geração falha, e a ficha sai com as medidas da área certa (#3674)"
    }
   ],
-  "arquivos_mudados_7d": 2292,
+  "arquivos_mudados_7d": 2553,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
-    "mudancas": 1536
+    "mudancas": 2128
    },
    {
     "pasta": "src/components/products",
-    "mudancas": 783
+    "mudancas": 1080
    },
    {
     "pasta": "tests/edge-functions/live",
-    "mudancas": 594
+    "mudancas": 824
    },
    {
     "pasta": "src/hooks/products",
-    "mudancas": 542
+    "mudancas": 750
    },
    {
     "pasta": "src/pages/magazine",
-    "mudancas": 464
+    "mudancas": 648
    },
    {
     "pasta": "src/components/quotes",
-    "mudancas": 439
+    "mudancas": 603
    },
    {
     "pasta": "src/components/inventory",
-    "mudancas": 413
-   },
-   {
-    "pasta": "supabase/functions/_shared",
-    "mudancas": 376
+    "mudancas": 573
    },
    {
     "pasta": "src/components/ui",
-    "mudancas": 371
+    "mudancas": 516
+   },
+   {
+    "pasta": "supabase/functions/_shared",
+    "mudancas": 514
+   },
+   {
+    "pasta": "src/pages/admin",
+    "mudancas": 429
+   },
+   {
+    "pasta": "src/components/mockup",
+    "mudancas": 398
+   },
+   {
+    "pasta": "src/components/kit-builder",
+    "mudancas": 364
+   },
+   {
+    "pasta": "src/pages/products",
+    "mudancas": 364
+   },
+   {
+    "pasta": "src/pages/quotes",
+    "mudancas": 346
    },
    {
     "pasta": "recovery/src-legacy/src",
     "mudancas": 317
-   },
-   {
-    "pasta": "src/components/mockup",
-    "mudancas": 311
-   },
-   {
-    "pasta": "src/pages/admin",
-    "mudancas": 311
-   },
-   {
-    "pasta": "src/components/kit-builder",
-    "mudancas": 270
-   },
-   {
-    "pasta": "src/pages/products",
-    "mudancas": 264
-   },
-   {
-    "pasta": "src/pages/quotes",
-    "mudancas": 252
    }
   ],
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "RELATORIO_CI.md",
-    "mudancas": 88
+    "mudancas": 87
    },
    {
     "arquivo": "PENDENCIAS.md",
-    "mudancas": 84
+    "mudancas": 80
    },
    {
     "arquivo": "supabase/MIGRATIONS_SYNC_LOG.md",
-    "mudancas": 65
+    "mudancas": 67
    },
    {
     "arquivo": "package.json",
-    "mudancas": 46
+    "mudancas": 48
    },
    {
     "arquivo": "package-lock.json",
-    "mudancas": 30
+    "mudancas": 32
    },
    {
     "arquivo": "docs/coordenacao/conflitos-semanticos.md",
-    "mudancas": 26
+    "mudancas": 28
+   },
+   {
+    "arquivo": "analise-prs/progresso.json",
+    "mudancas": 23
+   },
+   {
+    "arquivo": "CHANGELOG.md",
+    "mudancas": 22
    },
    {
     "arquivo": "supabase/EDGE_FUNCTIONS_DEPLOY_LOG.md",
     "mudancas": 22
    },
    {
-    "arquivo": "analise-prs/progresso.json",
+    "arquivo": ".github/workflows/deploy-gates.yml",
     "mudancas": 21
    },
    {
-    "arquivo": "CHANGELOG.md",
-    "mudancas": 20
-   },
-   {
-    "arquivo": ".github/workflows/deploy-gates.yml",
-    "mudancas": 19
-   },
-   {
     "arquivo": "src/pages/kit-builder/KitBuilderPage.tsx",
-    "mudancas": 19
+    "mudancas": 21
    },
    {
     "arquivo": "auditoria-supabase/RELATORIO_AUDITORIA_SUPABASE.md",
-    "mudancas": 17
+    "mudancas": 19
    },
    {
     "arquivo": "audit/supabase-reference-catalog.temporary.json",
-    "mudancas": 16
+    "mudancas": 18
    },
    {
     "arquivo": "analise-prs/RELATORIO_PRS.md",
-    "mudancas": 15
+    "mudancas": 17
    },
    {
     "arquivo": "analise-prs/prs.json",
-    "mudancas": 15
+    "mudancas": 17
    },
    {
     "arquivo": "src/hooks/kit-builder/useKitBuilderPageState.ts",
-    "mudancas": 15
+    "mudancas": 17
    },
    {
     "arquivo": "analise-branches/RELATORIO_BRANCHES.md",
-    "mudancas": 14
+    "mudancas": 16
    },
    {
     "arquivo": "docs/plans/PLANO_MELHORIAS_CORRECOES_200_ETAPAS_2026-10-18.md",
-    "mudancas": 14
+    "mudancas": 15
    },
    {
     "arquivo": "e2e/flows/magazine-publish-smoke.spec.ts",
-    "mudancas": 13
+    "mudancas": 15
    },
    {
     "arquivo": "src/pages/mockups/MockupGenerator.tsx",
-    "mudancas": 13
-   },
-   {
-    "arquivo": "AGENTS.md",
-    "mudancas": 12
-   },
-   {
-    "arquivo": "CLAUDE.md",
-    "mudancas": 12
+    "mudancas": 15
    },
    {
     "arquivo": "docs/ci/SEGREDOS.md",
-    "mudancas": 12
+    "mudancas": 14
    },
    {
     "arquivo": "e2e/flows/magazine-preview-sticky-smoke.spec.ts",
-    "mudancas": 12
+    "mudancas": 14
    },
    {
     "arquivo": "e2e/helpers/auth.ts",
-    "mudancas": 12
+    "mudancas": 14
+   },
+   {
+    "arquivo": "src/hooks/kit-builder/useKitAutoSave.ts",
+    "mudancas": 14
+   },
+   {
+    "arquivo": ".github/workflows/db-schema-drift-check.yml",
+    "mudancas": 13
    }
   ],
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 575
+    "commits": 574
    },
    {
     "autor": "Claude",
@@ -309,11 +309,11 @@
    },
    {
     "autor": "Joaquim Ataides",
-    "commits": 121
+    "commits": 113
    },
    {
     "autor": "github-actions[bot]",
-    "commits": 36
+    "commits": 35
    },
    {
     "autor": "dependabot[bot]",
@@ -322,9 +322,9 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 10503,
+  "arquivos_total": 10772,
   "arquivos_codigo": 5328,
-  "linhas_codigo": 1015584,
+  "linhas_codigo": 1015589,
   "rotas": 138,
   "rotas_http_backend": 13,
   "vistas_por_id": 0,
@@ -339,7 +339,7 @@
   "testes": 2521,
   "workflows": 87,
   "scripts": 272,
-  "docs_md": 1215
+  "docs_md": 1453
  },
  "por_pasta": {
   ".github/scripts": {
@@ -1220,7 +1220,7 @@
   },
   "scripts/check-migration-path-references.mjs": {
    "arquivos": 1,
-   "linhas": 214
+   "linhas": 219
   },
   "scripts/check-migration-receipts.mjs": {
    "arquivos": 1,
