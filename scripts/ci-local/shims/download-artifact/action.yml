@@ -1,0 +1,19 @@
+name: download-artifact (shim local do CI local)
+description: Mesmo contrato de actions/download-artifact, gravando num diretório compartilhado entre os jobs do act.
+inputs:
+  name: { required: false, default: '' }
+  path: { required: false, default: '' }
+  retention-days: { required: false, default: '' }
+  if-no-files-found: { required: false, default: 'warn' }
+  compression-level: { required: false, default: '' }
+  overwrite: { required: false, default: 'false' }
+  include-hidden-files: { required: false, default: 'false' }
+  artifact-ids: { required: false, default: '' }
+  pattern: { required: false, default: '' }
+  merge-multiple: { required: false, default: 'false' }
+  github-token: { required: false, default: '' }
+  repository: { required: false, default: '' }
+  run-id: { required: false, default: '' }
+runs:
+  using: node24
+  main: index.mjs

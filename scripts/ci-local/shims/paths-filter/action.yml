@@ -1,0 +1,17 @@
+name: paths-filter (shim local do CI local)
+description: Mesmo contrato de dorny/paths-filter, calculando mudanças via git diff (sem API do GitHub).
+inputs:
+  token: { required: false, default: '' }
+  working-directory: { required: false, default: '' }
+  ref: { required: false, default: '' }
+  base: { required: false, default: '' }
+  filters: { required: true }
+  list-files: { required: false, default: 'none' }
+  initial-fetch-depth: { required: false, default: '100' }
+  predicate-quantifier: { required: false, default: 'some' }
+outputs:
+  changes:
+    description: JSON com os nomes dos filtros que casaram
+runs:
+  using: node20
+  main: index.mjs
