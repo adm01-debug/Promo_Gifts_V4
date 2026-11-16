@@ -371,11 +371,21 @@ jobs:
         env:
           SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
           SUPABASE_PROJECT_REF: doufsxqlfjyuvxuezpln
+      # Gate 1.13.2 — mesmo tratamento do 1.13: quem nao recebe SUPABASE_ACCESS_TOKEN
+      # (fork e Dependabot) roda a validacao estatica do manifest. Medido: com o token
+      # ausente, `--gate --require-live` E tambem `--gate` sozinho saem com exit 2
+      # (status inconclusive/missing-config); sem flag, o script valida o manifest e sai 0
+      # (status static-pass). Achado do Devin Review na PR #3700.
       - name: Gate 1.13.2 — Anon-insert rate guard manifest (E049)
-        if: needs.changes.outputs.docs_only != 'true'
+        if: needs.changes.outputs.docs_only != 'true' && github.actor != 'dependabot[bot]' && (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository)
         run: node scripts/check-anon-insert-rate-guard.mjs --gate --require-live
         env:
           SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+          SUPABASE_PROJECT_REF: doufsxqlfjyuvxuezpln
+      - name: Gate 1.13.2 — Anon-insert rate guard manifest estático (fork ou Dependabot)
+        if: needs.changes.outputs.docs_only != 'true' && github.event_name == 'pull_request' && (github.event.pull_request.head.repo.full_name != github.repository || github.actor == 'dependabot[bot]')
+        run: node scripts/check-anon-insert-rate-guard.mjs
+        env:
           SUPABASE_PROJECT_REF: doufsxqlfjyuvxuezpln
       - name: Gate 1.13.3 — Migration receipts (E055)
         if: needs.changes.outputs.docs_only != 'true'
@@ -974,8 +984,8 @@ jobs:
           if [[ "$R_E2E" == "skipped" ]]; then
             if [[ "$DOCS_ONLY" == "true" ]]; then
               echo "::notice::Gate 3 e2e-smoke skipped (docs-only PR — E14)"
-            elif [[ "$GITHUB_EVENT_NAME" == "pull_request" && "$IS_FORK" == "true" ]]; then
-              echo "::warning::Gate 3 e2e-smoke skipped (PR de fork sem secrets E2E — E59)"
+            elif [[ "$GITHUB_EVENT_NAME" == "pull_request" && ( "$IS_FORK" == "true" || "$IS_DEPENDABOT" == "true" ) ]]; then
+              echo "::warning::Gate 3 e2e-smoke skipped (PR de fork ou Dependabot sem secrets E2E — E59)"
             else
               fail_gate "Gate 3 e2e-smoke skipped em execução confiável — verifique secrets E2E_USER_EMAIL/PASSWORD"
             fi
