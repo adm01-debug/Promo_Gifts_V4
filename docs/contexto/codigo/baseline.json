@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "cd67884f9eeec674c82d758fae8202af7ecbf753",
+  "commit": "16cfec32a086fbf4ff64a51c9d25f92d4ae1685b",
   "branch": "main",
-  "data_commit": "2026-11-16T18:44:40-03:00",
+  "data_commit": "2026-11-16T19:15:36-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "16cfec32",
+    "data": "2026-11-16",
+    "assunto": "chore(deps): sobe jest-dom 7 e react-hooks 7; rejeita jsdom 31 com a evidência (#3715)"
+   },
    {
     "sha": "cd67884f",
     "data": "2026-11-16",
@@ -126,14 +131,9 @@
     "sha": "04d251e1",
     "data": "2026-11-16",
     "assunto": "docs(audit): relatorio completo branch a branch, aberta e fechada"
-   },
-   {
-    "sha": "b63eeb55",
-    "data": "2026-11-16",
-    "assunto": "docs(audit): relatorio da sessao, indice da preservacao e branches do PC"
    }
   ],
-  "arquivos_mudados_7d": 1993,
+  "arquivos_mudados_7d": 1991,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -226,16 +226,16 @@
     "mudancas": 16
    },
    {
-    "arquivo": "CHANGELOG.md",
-    "mudancas": 16
-   },
-   {
     "arquivo": "analise-prs/progresso.json",
     "mudancas": 16
    },
    {
     "arquivo": "supabase/EDGE_FUNCTIONS_DEPLOY_LOG.md",
     "mudancas": 16
+   },
+   {
+    "arquivo": "CHANGELOG.md",
+    "mudancas": 15
    },
    {
     "arquivo": "src/pages/kit-builder/KitBuilderPage.tsx",

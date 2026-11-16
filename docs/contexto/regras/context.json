@@ -1,9 +1,9 @@
 {
  "meta": {
-  "sha": "cd67884f9eeec674c82d758fae8202af7ecbf753",
+  "sha": "16cfec32a086fbf4ff64a51c9d25f92d4ae1685b",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-16 21:46 UTC",
+  "generated_at": "2026-11-16 22:18 UTC",
   "files_total": 10726,
   "code_files": 8777,
   "code_lines": 1238497
@@ -540686,10 +540686,20 @@
   }
  },
  "git": {
-  "sha": "cd67884f9eeec674c82d758fae8202af7ecbf753",
+  "sha": "16cfec32a086fbf4ff64a51c9d25f92d4ae1685b",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "16cfec3",
+    "date": "2026-11-16",
+    "author": "adm01-debug",
+    "subject": "chore(deps): sobe jest-dom 7 e react-hooks 7; rejeita jsdom 31 com a evidência (#3715)",
+    "files": [
+     "package-lock.json",
+     "package.json"
+    ]
+   },
    {
     "sha": "cd67884",
     "date": "2026-11-16",
@@ -541266,183 +541276,19 @@
      "analise-branches/dossies/claude_pink__sleepy-cannon-h000nc.md",
      "analise-branches/dossies/codex__fix-gate1-kit-pdf-types-261109-2252.md"
     ]
-   },
-   {
-    "sha": "80ea991",
-    "date": "2026-11-16",
-    "author": "Claude",
-    "subject": "chore(audit): dossie por branch das 160 branches do GitHub fora da main",
-    "files": [
-     "analise-branches/dossies/bot__schema-snapshot.md",
-     "analise-branches/dossies/claude_04__optimistic-bohr-qplx94.md",
-     "analise-branches/dossies/claude_04__optimistic-lovelace-n960f7.md",
-     "analise-branches/dossies/claude_05__serene-clarke-1o02ey.md",
-     "analise-branches/dossies/claude_05__youthful-ride-vcdchy.md",
-     "analise-branches/dossies/claude__analise-merge-prs-abertas-shh8ez.md",
-     "analise-branches/dossies/claude__chore-analise-prs-261030-1600.md",
-     "analise-branches/dossies/claude__chore-ci-static-checks-supersede-3525-261114-0206.md",
-     "analise-branches/dossies/claude__chore-e2e-modules-matrix-261102-2115.md",
-     "analise-branches/dossies/claude__clever-lamport-zlmati.md",
-     "analise-branches/dossies/claude__feat-crm-vendedor-sem-dono-261115-1622.md",
-     "analise-branches/dossies/claude__fix-attest-provenance-sigstore-261107-1500.md",
-     "analise-branches/dossies/claude__fix-bot-pr-approval-261113-1030.md",
-     "analise-branches/dossies/claude__fix-e125-mockup-casts-261030.md",
-     "analise-branches/dossies/claude__fix-e2e-fora-do-banco-de-producao-261114-1003.md",
-     "analise-branches/dossies/claude__fix-e2e-kit-builder-etapas-261114-0735.md",
-     "analise-branches/dossies/claude__fix-email-remetente-261114-2300.md",
-     "analise-branches/dossies/claude__fix-email-remetente-resend-261112-0034.md",
-     "analise-branches/dossies/claude__fix-email-resend-status-261115-0040.md",
-     "analise-branches/dossies/claude__fix-ft-ux-batch4-261101-2215.md",
-     "analise-branches/dossies/claude__fix-ft-ux-batch5-261101-2222.md",
-     "analise-branches/dossies/claude__fix-ft004-ft033-pptx-mock-labels-261101-2212.md",
-     "analise-branches/dossies/claude__fix-kit-maker-publicados-261101-2202.md",
-     "analise-branches/dossies/claude__fix-ledger-allowlist-p2027-261113-0705.md",
-     "analise-branches/dossies/claude__fix-links-publicos-mortos-261101-2156.md",
-     "analise-branches/dossies/claude__fix-logo-cores-tecnica-261114-2300.md",
-     "analise-branches/dossies/claude__fix-migrations-acesso-rpcs-261112-1050.md",
-     "analise-branches/dossies/claude__fix-mockup-geometria-wysiwyg-261115-0045.md",
-     "analise-branches/dossies/claude__fix-mockup-logo-tamanho-real-261114-2200.md",
-     "analise-branches/dossies/claude__fix-pptx-mock-badges-261101-2315.md",
-     "analise-branches/dossies/claude__fix-pr3305-duplicate-ref-261109-0623.md",
-     "analise-branches/dossies/claude__fix-pr3517-gate1-baseline-261113-2336.md",
-     "analise-branches/dossies/claude__fix-pr3685-replay-stubs-261115-2150.md",
-     "analise-branches/dossies/claude__fix-release-manifest-versao-real-261114-0305.md",
-     "analise-branches/dossies/claude__fix-replay-migrations-261115-1400.md",
-     "analise-branches/dossies/claude__fix-rollback-e38-e47-e37-261101-2200.md",
-     "analise-branches/dossies/claude__fix-schema-snapshot-export-cancelled-skip-261101-2344.md",
-     "analise-branches/dossies/claude__fix-sec001-revoke-anon-trigger-funcs-261101-2230.md",
-     "analise-branches/dossies/claude__fix-sentinel-e2e-pdf-261029-2310.md",
-     "analise-branches/dossies/claude__fix-stock-notes-rollback-header-261101-2151.md",
-     "analise-branches/dossies/claude__fix-sync-e2e-vite-port-isolation-261030-1430.md",
-     "analise-branches/dossies/claude__fix-ts-gate1-261109-1915.md",
-     "analise-branches/dossies/claude__infra-inventario-semanal-261102-1120.md",
-     "analise-branches/dossies/claude__infra-workflows-supersede-3525-261114-1740.md",
-     "analise-branches/dossies/claude__laughing-cori-o9w35e.md",
-     "analise-branches/dossies/claude__perf-cron004-reduz-jobs-ociosos-261114-1001.md",
-     "analise-branches/dossies/claude__perf-cron005-refresh-all-mvs-diario-261114-1002.md",
-     "analise-branches/dossies/claude__perf-idx-sds-restock-counts-261114-1006.md",
-     "analise-branches/dossies/claude__resgate-3390-261113.md",
-     "analise-branches/dossies/claude__verify-logo-cores-261114-2359.md",
-     "analise-branches/dossies/claude__wf-limpeza-261113.md",
-     "analise-branches/dossies/claude__wip-assistente-encaixe-cliente-261115-0400.md",
-     "analise-branches/dossies/claude_pink__lucid-franklin-mjhkyc.md",
-     "analise-branches/dossies/claude_pink__peaceful-planck-q4ee1i.md",
-     "analise-branches/dossies/claude_pink__sleepy-cannon-h000nc.md",
-     "analise-branches/dossies/codex__e23-required-secrets-20261030.md",
-     "analise-branches/dossies/codex__fix-db-migration-preflight-261107.md",
-     "analise-branches/dossies/codex__fix-e2e-ci-pressure-261107-0238.md",
-     "analise-branches/dossies/codex__fix-e2e-cleanup-rollback-header-261108.md",
-     "analise-branches/dossies/codex__fix-e2e-relevance-261107-1148.md",
-     "analise-branches/dossies/codex__fix-gate1-kit-pdf-types-261109-2252.md",
-     "analise-branches/dossies/dependabot__npm_and_yarn__development-all-bec0ad7abb.md",
-     "analise-branches/dossies/e15-receipt-20261022100001-40165954774.md",
-     "analise-branches/dossies/e15-receipt-20261024180001-40164828396.md",
-     "analise-branches/dossies/e15-receipt-20261024180002-40166677491.md",
-     "analise-branches/dossies/e15-receipt-20261024180003-40167137573.md",
-     "analise-branches/dossies/e15-receipt-20261024190001-40166925674.md",
-     "analise-branches/dossies/e15-receipt-20261025002500-40165426404.md",
-     "analise-branches/dossies/e15-receipt-20261027140000-40512572184.md",
-     "analise-branches/dossies/e15-receipt-20261106232045-42325571775.md",
-     "analise-branches/dossies/e15-receipt-20261112140000-43471685129.md",
-     "analise-branches/dossies/fix__e2e-url-state-defaults-20261030.md",
-     "analise-branches/dossies/fix__gate-e40-cron-seed-261028.md",
-     "analise-branches/dossies/importado__backup-20261028__claude__audit-gaps-20260915.md",
-     "analise-branches/dossies/importado__local__projetos__Promo_Gifts_V4.backup-20261028.md",
-     "analise-branches/dossies/importado__vps-fabrica__v2__docs-criar-docs-fabrica-vps-faq-md-com-p-2610081318.md",
-     "analise-branches/dossies/importado__vps-fabrica__v2__fix-remover-atalhos-destrutivos-do-gerad-2610081909.md",
-     "analise-branches/dossies/importado__vps-fabrica__v2__mockup-assistant-tests-int.md",
-     "analise-branches/dossies/importado__vps-fabrica__v2__n03-2610082244.md",
-     "analise-branches/dossies/importado__vps-fabrica__v2__n11-2610082244.md",
-     "analise-branches/dossies/importado__vps-fabrica__v2__n28-2610082246.md",
-     "analise-branches/dossies/importado__vps-fabrica__v2__n52-2610082250.md",
-     "analise-branches/dossies/importado__vps-fabrica__v2__n64-2610082251.md",
-     "analise-branches/dossies/importado__vps-fabrica__v2__n67-2610082251.md",
-     "analise-branches/dossies/importado__vps-fabrica__v2__refazer-04c25ae0.md",
-     "analise-branches/dossies/importado__vps-fabrica__v2__refazer-0b0b9032.md",
-     "analise-branches/dossies/importado__vps-fabrica__v2__refazer-1da3ac33.md",
-     "analise-branches/dossies/importado__vps-fabrica__v2__refazer-2c328ea8.md",
-     "analise-branches/dossies/importado__vps-fabrica__v2__refazer-3bc83637.md",
-     "analise-branches/dossies/importado__vps-fabrica__v2__refazer-68f33d86.md",
-     "analise-branches/dossies/importado__vps-fabrica__v2__refazer-b14fb844.md",
-     "analise-branches/dossies/importado__vps-fabrica__v2__refazer-b6819758.md",
-     "analise-branches/dossies/importado__vps-fabrica__v2__refazer-cab127be.md",
-     "analise-branches/dossies/importado__vps-fabrica__v2__refazer-cc1ea0bf.md",
-     "analise-branches/dossies/importado__vps-fabrica__v2__refazer-d198425f.md",
-     "analise-branches/dossies/importado__vps-fabrica__v2__refazer-d295390f.md",
-     "analise-branches/dossies/importado__vps-fabrica__v2__refazer-d3b19f40.md",
-     "analise-branches/dossies/importado__vps-fabrica__v2__refazer-d7100518.md",
-     "analise-branches/dossies/importado__vps-fabrica__v2__refazer-dc12be92.md",
-     "analise-branches/dossies/importado__vps-fabrica__v2__refazer-dce5709d.md",
-     "analise-branches/dossies/importado__vps-fabrica__v2__refazer-dff79a9a.md",
-     "analise-branches/dossies/importado__vps-fabrica__v2__refazer-e128a94b.md",
-     "analise-branches/dossies/importado__vps-fabrica__v2__refazer-f5f7f446.md",
-     "analise-branches/dossies/importado__vps-fabrica__v2__refazer-f753ee81.md",
-     "analise-branches/dossies/importado__vps-fabrica__v2__refazer-fc9bc61b.md",
-     "analise-branches/dossies/importado__vps-fabrica__v2__refazer-fdac7577.md",
-     "analise-branches/dossies/importado__vps-fabrica__v2__s13-2610081946.md",
-     "analise-branches/dossies/importado__vps-fabrica__v2__s14-2610081946.md",
-     "analise-branches/dossies/importado__vps-fabrica__v2__s15-2610081946.md",
-     "analise-branches/dossies/importado__vps-fabrica__v2__s17-2610081946.md",
-     "analise-branches/dossies/importado__vps-fabrica__v2__s18a-2610081946.md",
-     "analise-branches/dossies/importado__vps-fabrica__v2__s24-2610081947.md",
-     "analise-branches/dossies/importado__vps-fabrica__v2__s30-2610081946.md",
-     "analise-branches/dossies/importado__vps-fabrica__v2__s33-2610081947.md",
-     "analise-branches/dossies/importado__vps-fabrica__v2__s36-2610081947.md",
-     "analise-branches/dossies/importado__vps-fabrica__v2__s37-2610081949.md",
-     "analise-branches/dossies/importado__vps-fabrica__v2__s41-2610081949.md",
-     "analise-branches/dossies/importado__vps-fabrica__v2__s44-2610081949.md",
-     "analise-branches/dossies/importado__vps-fabrica__v2__s46-1-2610081949.md",
-     "analise-branches/dossies/importado__vps-fabrica__v2__s46-2-2610081949.md",
-     "analise-branches/dossies/importado__vps-fabrica__v2__s47-generatebutton-2610081950.md",
-     "analise-branches/dossies/importado__vps-fabrica__v2__s47-savetemplatedialog-2610081950.md",
-     "analise-branches/dossies/importado__vps-fabrica__v2__s47-templateselector-2610081950.md",
-     "analise-branches/dossies/importado__vps-fabrica__v2__s48b-2610081950.md",
-     "analise-branches/dossies/importado__vps-fabrica__v2__s49-2610081950.md",
-     "analise-branches/dossies/importado__vps-fabrica__v2__s51-2610081948.md",
-     "analise-branches/dossies/importado__vps-fabrica__v2__s52-2610081948.md",
-     "analise-branches/dossies/importado__vps-fabrica__v2__s53-2610081948.md",
-     "analise-branches/dossies/importado__vps-fabrica__v2__s54-2610081948.md",
-     "analise-branches/dossies/importado__vps-fabrica__v2__s55-2610081946.md",
-     "analise-branches/dossies/importado__vps-fabrica__v2__s63-2610081947.md",
-     "analise-branches/dossies/importado__vps-fabrica__v2__s69-2610081946.md",
-     "analise-branches/dossies/importado__vps-fabrica__v2__s71-2610081948.md",
-     "analise-branches/dossies/importado__vps-fabrica__v2__s74-2610081948.md",
-     "analise-branches/dossies/importado__vps-fabrica__v2__s75-2610081948.md",
-     "analise-branches/dossies/importado__vps-fabrica__v2__s76-2610081949.md",
-     "analise-branches/dossies/importado__vps-fabrica__v2__s77-1-2610081950.md",
-     "analise-branches/dossies/importado__vps-fabrica__v2__s77-4-2610081951-int.md",
-     "analise-branches/dossies/importado__vps-fabrica__v2__s77-4-2610081951.md",
-     "analise-branches/dossies/importado__vps-fabrica__v2__s77-5-2610081951.md",
-     "analise-branches/dossies/importado__vps-fabrica__v2__s77-6-2610081951.md",
-     "analise-branches/dossies/importado__vps-fabrica__v2__s77-7-2610081951.md",
-     "analise-branches/dossies/importado__vps-fabrica__v2__s78-2610081949.md",
-     "analise-branches/dossies/importado__vps-fabrica__v2__s80-2610081950.md",
-     "analise-branches/dossies/integra__vps-testes-docs.md",
-     "analise-branches/dossies/recuperado__chore-migration-supplier-rls-261108-2230.md",
-     "analise-branches/dossies/recuperado__chore-workflows-snapshot-261108-2230.md",
-     "analise-branches/dossies/recuperado__chore__graphify-sql-map-20261029.md",
-     "analise-branches/dossies/recuperado__fix-dep-overrides-e95-261102.md",
-     "analise-branches/dossies/recuperado__fix-ft005-cron-scheduled-261108-2215.md",
-     "analise-branches/dossies/recuperado__fix-ft079-min-quantity-261108-2215.md",
-     "analise-branches/dossies/recuperado__fix-ft088-check-item-fits-261108-2215.md",
-     "analise-branches/dossies/recuperado__fix-gitleaks-allowlist-261101-2209.md",
-     "analise-branches/dossies/recuperado__fix-gitleaks-gate-261024-1930.md",
-     "analise-branches/dossies/recuperado__fix-legacy-filters-261113-1430.md",
-     "analise-branches/dossies/recuperado__fix-p06-p15-security-20261101-1000.md",
-     "analise-branches/dossies/recuperado__fix-sb0002-sb0006-migrations-261101-1825.md",
-     "analise-branches/dossies/recuperado__fix-ts-unused-rupture-20261101-2300.md",
-     "analise-branches/dossies/release-please--branches--main--components--gifts-store.md",
-     "analise-branches/dossies/temp-rebase-3321.md"
-    ]
    }
   ],
   "hot_files": [
+   [
+    "package.json",
+    4
+   ],
    [
     "supabase/MIGRATIONS_SYNC_LOG.md",
     4
    ],
    [
-    "package.json",
+    "package-lock.json",
     3
    ],
    [
@@ -541462,10 +541308,6 @@
     2
    ],
    [
-    "package-lock.json",
-    2
-   ],
-   [
     ".github/workflows/deploy-gates.yml",
     2
    ],
@@ -541482,40 +541324,40 @@
     2
    ],
    [
-    "analise-branches/dossies/recuperado__fix-gitleaks-allowlist-261101-2209.md",
-    2
+    "src/components/quotes/QuoteAutoSave.tsx",
+    1
    ],
    [
-    "analise-branches/dossies/recuperado__fix-gitleaks-gate-261024-1930.md",
-    2
+    "src/lib/quotes/__tests__/quoteDraftRecovery.test.ts",
+    1
    ],
    [
-    "analise-branches/dossies/claude_04__optimistic-bohr-qplx94.md",
-    2
+    "src/lib/quotes/quoteDraftRecovery.ts",
+    1
    ],
    [
-    "analise-branches/dossies/claude_05__youthful-ride-vcdchy.md",
-    2
+    "src/lib/__tests__/external-rpc.test.ts",
+    1
    ],
    [
-    "analise-branches/dossies/claude__fix-pr3517-gate1-baseline-261113-2336.md",
-    2
+    "tests/a11y/magazine-a11y.test.tsx",
+    1
    ],
    [
-    "analise-branches/dossies/claude__resgate-3390-261113.md",
-    2
+    "analise-branches/PROVA-ENCERRAMENTO-PRS-261116.md",
+    1
    ],
    [
-    "analise-branches/dossies/claude_pink__lucid-franklin-mjhkyc.md",
-    2
+    "analise-branches/PROVA-RESIDUO-OBJETOS-261116.md",
+    1
    ],
    [
-    "analise-branches/dossies/claude_pink__sleepy-cannon-h000nc.md",
-    2
+    "docs/ci/CI_LOCAL.md",
+    1
    ],
    [
-    "analise-branches/dossies/codex__fix-gate1-kit-pdf-types-261109-2252.md",
-    2
+    "scripts/automation.config.json",
+    1
    ]
   ]
  }
