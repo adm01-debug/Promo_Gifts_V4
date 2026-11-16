@@ -2,6 +2,10 @@
 
 Diff semântico gerado a cada coleta em que algo mudou.
 
+## 2026-11-16 03:22 UTC
+
+- **realtime** removido (1): `supabase_realtime_messages_publication:realtime.messages_2026_11_12`
+
 ## 2026-11-16 00:44 UTC
 
 - **migrations** adicionado (1): `20261115230000_ai_function_routing_mockup_assistant`
