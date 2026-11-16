@@ -71,6 +71,14 @@ outro agente dentro, e o relatório diria que estava tudo salvo.
 
 ### Git
 
+- **ALARME FALSO: "15.634 commits só existem neste container".** O container usa clone
+  **raso** (`.git/shallow` com 17 fronteiras), então `git rev-list --all --reflog --not
+  --remotes=origin` acusa milhares de commits que **estão no GitHub** — ele só não consegue
+  alcançá-los a partir das refs locais truncadas. Conferi 24 por amostra pela API do GitHub
+  (16 recentes + 8 antigos, incluindo o `Initial import` de maio): **todos existem lá**.
+  Não saia caçando. Para checar de verdade se um commit está no GitHub, pergunte ao GitHub:
+  `query{repository(owner:"adm01-debug",name:"Promo_Gifts_V4"){object(oid:"<sha>"){... on Commit{oid messageHeadline}}}}`
+  via `github_graphql` — dá para empilhar dezenas de aliases numa chamada só.
 - **Nunca troque de branch durante um push.** O hook de pré-push roda lint na árvore
   **atual**; se você trocar no meio, ele linta a árvore errada e o push falha. Guarda:
   `pgrep -f 'git push' >/dev/null && exit 1`.
@@ -236,18 +244,31 @@ E dois alarmes **dos meus próprios agentes** que eu tive de corrigir:
 
 ## 8. Riscos vivos neste momento
 
-1. **Os refs `salvo/*` não têm proteção nenhuma.** Um agente antagonista mediu: **198
-   commits são alcançáveis no GitHub apenas via `salvo/*`, e 154 têm árvore que não existe
-   em nenhum outro ref.** Um `git push origin --delete salvo/...` apaga tudo, sem revisão e
-   sem rastro. Criar o ruleset é governança — decisão do dono.
-2. **A PR #3689 não está mergeada.** Os 169 dossiês, os dados brutos e todos os documentos
-   de passagem vivem **só nessa branch**. CI verde; falta rebasear (lembre: **não** use o
-   botão "Update branch").
+1. ~~Os refs `salvo/*` não têm proteção nenhuma.~~ **RESOLVIDO em 2026-11-16.** Ruleset
+   `27365809` em `refs/heads/salvo/*` com `deletion` + `non_fast_forward` e
+   `current_user_can_bypass: never`. Hoje são 5 refs: `261115-preservacao` (61 pontas),
+   `261116-container` (36), `261116-orfaos-container` (2110), `261116-pc-tips` (379) e
+   `261116-apagadas-70` (70).
+2. ~~A PR #3689 não está mergeada.~~ **RESOLVIDO em 2026-11-16:** mergeada, `main` =
+   `2d1d7cabee`, deploy de produção `READY`. Entrou como **commit de merge**, não squash —
+   o auto-merge foi ligado na interface do GitHub (ator tipo `User`, não app) às 10:46:49 e
+   disparou antes de eu alcançá-lo; `disablePullRequestAutoMerge` devolveu `UNPROCESSABLE`
+   nas duas tentativas. **Não é automação**: nenhum workflow do repo liga auto-merge (o
+   único `gh pr merge` é o de recibo em `db-apply-migration.yml:379`, com `--squash`), não
+   há PAT em workflow, e 24 dos 25 últimos commits da `main` são squash. Se o dono quiser
+   impedir de vez, é desligar "Allow merge commits" nas configurações do repositório —
+   governança, decisão dele.
 3. **379 pontas do PC do dono estão preservadas e não analisadas.** Os nomes foram
    recuperados por extração de texto (312 de ~320) e **não há mapeamento nome→SHA** — esse
    só existia na máquina. Para casar, compare conteúdo.
-4. **`importado/vps-fabrica/v2/n68-2610082251`** apareceu depois da análise e está sem
-   veredito.
+4. ~~`importado/vps-fabrica/v2/n68-2610082251` está sem veredito.~~ **RESOLVIDO:**
+   INCORPORADA_TOTAL por identidade de blob; dossiê próprio em `dossies/`.
+5. **A PR #3685 continua aberta e é redundante.** Conferido statement a statement: nada
+   dela falta na `main`, e a única linha de conteúdo exclusiva é um registro que a `main`
+   já corrigiu como errado. Toca `supabase/migrations/`, então só o dono fecha. Evidência
+   completa em `RELATORIO-BRANCHES-COMPLETO.md`, seção 8.
+6. **As 70 branches liberadas foram apagadas** (ver seção 6 do relatório). Não refaça a
+   análise delas: as pontas estão em `salvo/261116-apagadas-70`.
 
 ---
 
