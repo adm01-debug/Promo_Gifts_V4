@@ -263,12 +263,14 @@ E dois alarmes **dos meus próprios agentes** que eu tive de corrigir:
    só existia na máquina. Para casar, compare conteúdo.
 4. ~~`importado/vps-fabrica/v2/n68-2610082251` está sem veredito.~~ **RESOLVIDO:**
    INCORPORADA_TOTAL por identidade de blob; dossiê próprio em `dossies/`.
-5. **A PR #3685 continua aberta e é redundante.** Conferido statement a statement: nada
-   dela falta na `main`, e a única linha de conteúdo exclusiva é um registro que a `main`
-   já corrigiu como errado. Toca `supabase/migrations/`, então só o dono fecha. Evidência
-   completa em `RELATORIO-BRANCHES-COMPLETO.md`, seção 8.
-6. **As 70 branches liberadas foram apagadas** (ver seção 6 do relatório). Não refaça a
-   análise delas: as pontas estão em `salvo/261116-apagadas-70`.
+5. ~~A PR #3685 continua aberta e é redundante.~~ **RESOLVIDO em 2026-11-16: fechada**,
+   por decisão do dono, com comentário de evidência na própria PR. Nada dela faltava na
+   `main` e a única linha exclusiva era um registro que a `main` já corrigiu como errado.
+   **Não reabra.** O que continua aberto é outra coisa: **o replay do zero ainda não
+   completa** — o commit da branch registra "restam 76 relações órfãs", e ninguém mediu
+   quantas são hoje.
+6. **As 71 branches liberadas foram apagadas** (ver seção 6 do relatório). Não refaça a
+   análise delas: as pontas estão em `salvo/261116-apagadas-70` (`ef7889218a`, 70 + 1).
 
 ---
 

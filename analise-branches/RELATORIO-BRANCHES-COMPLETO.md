@@ -971,9 +971,11 @@ Veredito de que o trabalho já está no sistema, **confirmado** pelo segundo age
 >   (`deletion` + `non_fast_forward`, sem bypass). Para ressuscitar qualquer uma:
 >   `git cat-file -p a429382c13 | grep '^parent '` dá os 70 SHAs.
 > - **`claude/fix-pr3685-replay-stubs-261115-2150`** já não existia no remoto.
-> - **`claude/fix-replay-migrations-261115-1400` NÃO foi apagada**: é a cabeça da PR aberta
->   #3685. Veja a nota dela na seção 8.
-> - Total de branches no remoto: **176 → 107**.
+> - **`claude/fix-replay-migrations-261115-1400`**: ficou de pé no primeiro lote por ser a
+>   cabeça da PR #3685. A PR foi fechada no mesmo dia (ver seção 8) e a branch foi apagada
+>   em seguida; a ponta `8efffeb0e5` entrou em `salvo/261116-apagadas-70` pelo commit
+>   `ef7889218a`. **As 71 estão fechadas.**
+> - Total de branches no remoto: **176 → 106**.
 
 | Branch | O que fazia | Ainda no GitHub? |
 |---|---|---|
@@ -1084,12 +1086,12 @@ Trabalho que entrou na `main` e está em produção.
 | [#3660](https://github.com/adm01-debug/Promo_Gifts_V4/pull/3660) | `claude/fix-trem-resgates-261115-1240` | trem de resgates — 16 correcoes recuperadas de branches de outros agentes |
 | [#3659](https://github.com/adm01-debug/Promo_Gifts_V4/pull/3659) | `claude/infra-wf-limpeza-supersede-3525-261115-1220` | enxuga workflows — 12 aposentados, contexto 1x/h |
 
-## 8. PRs abertas agora (12)
+## 8. PRs abertas agora (12 — hoje 10: #3689 mergeada, #3685 fechada)
 
 | PR | Branch | O que é | Situação |
 |---|---|---|---|
 | [#3689](https://github.com/adm01-debug/Promo_Gifts_V4/pull/3689) | `claude/chore-dossies-branches-261116-0154` | dossie por branch das 160 branches do GitHub fora da main | minha, pronta para mergear |
-| [#3685](https://github.com/adm01-debug/Promo_Gifts_V4/pull/3685) | `claude/fix-replay-migrations-261115-1400` | colunas perdidas por CREATE TABLE IF NOT EXISTS no-op no replay | **redundante — ver nota abaixo** |
+| ~~[#3685](https://github.com/adm01-debug/Promo_Gifts_V4/pull/3685)~~ | `claude/fix-replay-migrations-261115-1400` | colunas perdidas por CREATE TABLE IF NOT EXISTS no-op no replay | **FECHADA em 16/11 — redundante, ver nota abaixo** |
 | [#3683](https://github.com/adm01-debug/Promo_Gifts_V4/pull/3683) | `claude/feat-crm-vendedor-sem-dono-261115-1622` | vendedor com vinculo ve a carteira dele e os clientes sem dono | decisao de negocio |
 | [#3566](https://github.com/adm01-debug/Promo_Gifts_V4/pull/3566) | `release-please--branches--main--components--gifts-store` | release 1.2.0 | 1.2.0 ja foi publicado em outubro |
 | [#3687](https://github.com/adm01-debug/Promo_Gifts_V4/pull/3687) | `e15-receipt-20261115230000-43778467997` | recibo de aplicacao — 20261115230000 (E15) | recibo da migration da rota de IA |
@@ -1118,8 +1120,15 @@ Conferido à mão em 2026-11-16 contra a `main` `2d1d7cabee` (não é afirmaçã
    intermediários que **não batem** com os arquivos da `main` (os corretos,
    `096a7a6b18…` e `7e848bc78a…`, já estão no ledger, um registro cada).
 
-**Não mergeie e não feche por conta própria**: toca `supabase/migrations/`, então é decisão
-do dono (Git, regra 7). O que falta é só o dono mandar fechar.
+**Decisão tomada em 2026-11-16, a pedido do dono: PR fechada**, com o comentário de
+evidência em [#3685](https://github.com/adm01-debug/Promo_Gifts_V4/pull/3685#issuecomment-6915240462).
+Produção não foi tocada: as duas `version` já estão aplicadas no ledger e os arquivos não
+voltam a rodar. A PR estava, aliás, em `mergeable_state: dirty` — já não era mergeável.
+A branch foi apagada depois, com a ponta preservada.
+
+**O problema de origem continua aberto, e não é desta PR:** o próprio commit da branch
+avisa que o replay do zero ainda não completa ("restam 76 relações órfãs"). Isso é uma
+pendência própria, não um motivo para reabrir a #3685.
 
 ## 9. O que ficou sem análise
 
