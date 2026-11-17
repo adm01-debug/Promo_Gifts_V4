@@ -4,7 +4,7 @@
 import { useEffect, useMemo, useRef, useState, useCallback } from 'react';
 import { useSearchStore } from '@/stores/useSearchStore';
 import { useOracleVoiceBridge } from '@/stores/oracleVoiceBridge';
-import { useVoiceFilterBridge } from '@/stores/voiceFilterBridge';
+import { despacharBuscaDeVoz, despacharFiltroDeVoz } from '@/components/search/voiceFilterDispatch';
 import Fuse from 'fuse.js';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
@@ -167,6 +167,13 @@ export function useGlobalSearch() {
   // ── Voice Agent (ElevenLabs + AI) ──
   const handleVoiceAction = useCallback(
     (action: VoiceAgentAction) => {
+      const despachoDeVoz = {
+        timers: voiceTimersRef.current,
+        fecharOverlay: () => setVoiceOverlayOpen(false),
+        setQuery,
+        setOpen,
+        navigate,
+      };
       addVoiceCommand(
         action.data?.query || action.response,
         action.action as VoiceCommandRecord['type'],
@@ -186,50 +193,10 @@ export function useGlobalSearch() {
           }
           break;
         case 'filter':
-          // Comando de FILTRO (distinto de 'search'): aplica os critérios ditados no
-          // FilterState do catálogo via ponte, em vez de colar categoria/cor/material
-          // numa busca textual e descartar preço, estoque, gênero e o resto.
-          if (action.data?.filters) {
-            const filtros = action.data.filters;
-            const termo = action.data?.query ?? '';
-            voiceTimersRef.current.add(
-              setTimeout(() => {
-                setVoiceOverlayOpen(false);
-                useVoiceFilterBridge.getState().requestFilters(filtros);
-                navigate(termo ? `/?search=${encodeURIComponent(termo)}` : '/');
-              }, 500),
-            );
-          } else if (action.data?.query) {
-            // 'filter' sem critérios estruturais: nada a filtrar, cai na busca textual.
-            const finalQuery = action.data.query;
-            voiceTimersRef.current.add(
-              setTimeout(() => {
-                setVoiceOverlayOpen(false);
-                setQuery(finalQuery);
-                setOpen(true);
-              }, 500),
-            );
-          }
+          despacharFiltroDeVoz(action.data, despachoDeVoz);
           break;
         case 'search':
-          if (action.data?.query || action.data?.filters) {
-            const searchTerm = action.data?.query ?? '';
-            const filterParts: string[] = [];
-            if (action.data?.filters?.category) filterParts.push(action.data.filters.category);
-            if (action.data?.filters?.color) filterParts.push(action.data.filters.color);
-            if (action.data?.filters?.material) filterParts.push(action.data.filters.material);
-
-            const finalQuery = searchTerm || filterParts.join(' ');
-            if (finalQuery) {
-              voiceTimersRef.current.add(
-                setTimeout(() => {
-                  setVoiceOverlayOpen(false);
-                  setQuery(finalQuery);
-                  setOpen(true);
-                }, 500),
-              );
-            }
-          }
+          despacharBuscaDeVoz(action.data, despachoDeVoz);
           break;
         case 'clear':
           voiceTimersRef.current.add(

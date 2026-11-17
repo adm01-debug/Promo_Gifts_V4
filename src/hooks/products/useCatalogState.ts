@@ -17,7 +17,6 @@ import type { Product } from '@/types/product-catalog';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 
 import { defaultFilters, type FilterState } from '@/components/filters/FilterPanel';
-import { useVoiceFilterApply } from '@/hooks/products/useVoiceFilterApply';
 import {
   getDefaultColumns,
   STORAGE_KEY as GRID_COLUMNS_KEY,
@@ -110,10 +109,6 @@ export function useCatalogState() {
   const searchQueryRef = useRef('');
 
   const [filters, setFilters] = useState<FilterState>(defaultFilters);
-
-  // Filtros ditados por voz: o overlay vive na busca global, que pede a aplicação
-  // pela ponte; aqui é o único lugar com o FilterState real.
-  useVoiceFilterApply(setFilters);
   const [viewMode, setViewModeState] = useState<ViewMode>(getPersistedViewMode);
 
   const setViewMode = useCallback((mode: ViewMode) => {

@@ -650,6 +650,22 @@ describe('useGlobalSearch', () => {
       expect(h.setOpen).not.toHaveBeenCalledWith(true);
     });
 
+    // Comportamento do main preservado na extração para voiceFilterDispatch: 'search'
+    // sem termo falado monta a consulta com categoria/cor/material.
+    it('search sem termo usa categoria/cor/material como consulta', () => {
+      const { result } = renderHook(() => useGlobalSearch());
+      act(() =>
+        result.current.handleVoiceAction({
+          action: 'search',
+          response: 'r',
+          data: { filters: { category: 'canecas', color: 'azul', material: 'vidro' } },
+        }),
+      );
+      act(() => vi.advanceTimersByTime(500));
+      expect(result.current.query).toBe('canecas azul vidro');
+      expect(h.setOpen).toHaveBeenCalledWith(true);
+    });
+
     it('filter sem critérios estruturais cai na busca textual', () => {
       const { result } = renderHook(() => useGlobalSearch());
       act(() =>
