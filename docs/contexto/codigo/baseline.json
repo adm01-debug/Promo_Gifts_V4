@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "ef8a595f6f9365b73a887ac3105530f43b14a3e4",
+  "commit": "dd6464daca9453e4f1446e49e78d4ed64b917e23",
   "branch": "main",
-  "data_commit": "2026-11-17T18:16:12-03:00",
+  "data_commit": "2026-11-17T18:31:27-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "dd6464da",
+    "data": "2026-11-17",
+    "assunto": "fix(hooks): restaura a guarda de matchTypes que a refatoracao de pasta derrubou (#3808)"
+   },
    {
     "sha": "ef8a595f",
     "data": "2026-11-17",
@@ -126,14 +131,9 @@
     "sha": "cda9cbfa",
     "data": "2026-11-17",
     "assunto": "docs: anexo da prova byte-a-byte por branch + prova do filtro do CRM contra PostgREST real (#3766)"
-   },
-   {
-    "sha": "f40d2618",
-    "data": "2026-11-17",
-    "assunto": "docs: recibo de aplicação — 20261117073000 (E15) (#3768)"
    }
   ],
-  "arquivos_mudados_7d": 1959,
+  "arquivos_mudados_7d": 1961,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -153,7 +153,7 @@
    },
    {
     "pasta": "src/hooks/products",
-    "mudancas": 127
+    "mudancas": 128
    },
    {
     "pasta": "src/components/mockup",
@@ -322,9 +322,9 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 10867,
-  "arquivos_codigo": 5392,
-  "linhas_codigo": 1029717,
+  "arquivos_total": 10868,
+  "arquivos_codigo": 5393,
+  "linhas_codigo": 1029890,
   "rotas": 139,
   "rotas_http_backend": 13,
   "vistas_por_id": 0,
@@ -336,7 +336,7 @@
   "tabelas": 527,
   "migrations": 3099,
   "cron_jobs": 122,
-  "testes": 2565,
+  "testes": 2566,
   "workflows": 88,
   "scripts": 283,
   "docs_md": 1470
@@ -1920,7 +1920,7 @@
   },
   "src/hooks": {
    "arquivos": 480,
-   "linhas": 90880
+   "linhas": 90895
   },
   "src/integrations": {
    "arquivos": 11,
@@ -2091,8 +2091,8 @@
    "linhas": 325
   },
   "tests/hooks": {
-   "arquivos": 152,
-   "linhas": 23508
+   "arquivos": 153,
+   "linhas": 23666
   },
   "tests/integration": {
    "arquivos": 11,

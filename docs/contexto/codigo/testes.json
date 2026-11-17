@@ -5,18 +5,18 @@
   "vitest",
   "playwright"
  ],
- "total": 2565,
+ "total": 2566,
  "por_tipo": {
   "contrato": 66,
   "e2e": 677,
   "pytest": 5,
   "qa": 17,
-  "unit": 1800
+  "unit": 1801
  },
  "onde_ficam": [
   {
    "padrao": "tests/",
-   "arquivos": 1060
+   "arquivos": 1061
   },
   {
    "padrao": "co-localizado (__tests__)",
@@ -17621,6 +17621,16 @@
    "casos": 7
   },
   {
+   "arquivo": "tests/hooks/useProductMatch.matchTypes-guard.test.ts",
+   "tipo": "unit",
+   "linhas": 158,
+   "testa": [
+    "src/hooks/products/useProductMatch.ts",
+    "src/types/product-catalog.ts"
+   ],
+   "casos": 4
+  },
+  {
    "arquivo": "tests/hooks/useProductMatch.simulation.test.ts",
    "tipo": "unit",
    "linhas": 215,
@@ -22260,7 +22270,7 @@
   "src/hooks/products/useProductCustomizationOptions.ts": 1,
   "src/hooks/products/useProductIntelligenceBadges.ts": 2,
   "src/hooks/products/useProductLeafCategories.tsx": 1,
-  "src/hooks/products/useProductMatch.ts": 5,
+  "src/hooks/products/useProductMatch.ts": 6,
   "src/hooks/products/useProducts.ts": 6,
   "src/hooks/products/useProductsByCategory.ts": 2,
   "src/hooks/products/useProductsByColor.ts": 1,
@@ -22614,7 +22624,7 @@
   "src/types/gravacao.ts": 2,
   "src/types/magazine.ts": 29,
   "src/types/mockup-approval.ts": 3,
-  "src/types/product-catalog.ts": 25,
+  "src/types/product-catalog.ts": 26,
   "src/types/quote.ts": 8,
   "src/types/ramo-atividade.ts": 1,
   "src/types/simulation.ts": 3,
