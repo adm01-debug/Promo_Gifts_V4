@@ -126,7 +126,7 @@ export default function FavoritesPage() {
   });
   const [showTrash, setShowTrash] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  
+
   const [ariaAnnouncement, setAriaAnnouncement] = useState('');
 
   useEffect(() => {
@@ -888,7 +888,6 @@ export default function FavoritesPage() {
       <div role="status" aria-live="polite" className="sr-only">
         {ariaAnnouncement}
       </div>
-
     </>
   );
 }
