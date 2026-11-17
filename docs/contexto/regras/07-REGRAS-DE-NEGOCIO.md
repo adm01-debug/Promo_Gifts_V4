@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.3.2 · commit `86c10c8d3b` · branch `main` · 2026-11-17 14:06 UTC
+> Gerado automaticamente por AI Context Sync v1.3.2 · commit `5ca60929fc` · branch `main` · 2026-11-17 14:21 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -6559,7 +6559,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `admin` | `supabase/migrations/20261112120500_fix_optimization_queue_rpcs_dev_access.sql` |
 | `anon` | `tests/edge-functions/live/_live-client.ts` |
 
-## K. Testes como especificação (21950 testes em 2221 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (21952 testes em 2221 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -6654,6 +6654,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `src/pages/magazine/__tests__/stepValidation.test.ts` | 34 | validateStep identity · bloqueia se título vazio · bloqueia se título apenas espaços · NÃO bloqueia se título preenchido … |
 | `tests/components/kit-builder/FreightEstimator.test.tsx` | 33 | FreightEstimator — tabela transportadora (default) · peso zero → alerta de peso não informado visível · 0g → exibe peso 0.0kg · 1000g (1kg) → faixa ≤5kg = R$ 18,00 … |
 | `tests/edge-functions/integration/data-ops.test.ts` | 33 | external-db-bridge · SELECT com tabela válida → 200 + rows · SELECT com filtro WHERE → 200 · INSERT → 200 + inserted_id … |
+| `tests/scripts/check-conflict-ledger.test.mjs` | 33 | check-conflict-ledger: comportamento básico (sem bug) · sem GITHUB_BASE_REF/GITHUB_HEAD_REF, pula a verificação com exit 0 · sem commits de merge semântico, passa com exit 0 · commit merge(pr-N): sem atualizar o ledger + --gate => exit 1 … |
 | `tests/scripts/check-workflow-contracts.test.mjs` | 33 | C1 — permissions · flags workflow without top-level permissions · accepts workflow with top-level permissions · C2 — concurrency … |
 | `src/hooks/mockup/__tests__/useMockupDraft.test.ts` | 32 | estado inicial · retorna isSaving=false, isLoading=true, lastSaved=null, error=null · expõe saveDraft, loadDraft, clearDraft como funções · saveDraft — localStorage … |
 | `src/hooks/products/__tests__/futureStock.battery.test.ts` | 32 | Estoque Futuro · processStockEntries · gera entradas para todas as variantes do fixture realista · preserva entryIndex (1, 2, 3) mesmo quando entradas anteriores são puladas · ignora quantidades negativas, zero, NaN e datas vazias … |
@@ -6667,7 +6668,6 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `tests/edge-functions/integration/ai-features.test.ts` | 31 | ai-recommendations · product_id válido → 200 + recomendações · contexto de orçamento → 200 + recomendações contextuais · produto inexistente → 404 … |
 | `tests/edge-functions/integration/notifications.test.ts` | 31 | send-notification · notificação válida → 200 + notification_id · notificação broadcast para múltiplos usuários → 200 + count · user_id inexistente → 404 … |
 | `tests/lib/date-utils-extended.test.ts` | 31 | formatDate — extended · formats Date object dd/MM/yyyy · formats ISO string · formats timestamp … |
-| `tests/scripts/check-conflict-ledger.test.mjs` | 31 | check-conflict-ledger: comportamento básico (sem bug) · sem GITHUB_BASE_REF/GITHUB_HEAD_REF, pula a verificação com exit 0 · sem commits de merge semântico, passa com exit 0 · commit merge(pr-N): sem atualizar o ledger + --gate => exit 1 … |
 | `tests/unit/quote-status-config.test.ts` | 31 | QUOTE_STATUS_CONFIG shape · defines all 10 expected statuses · every entry has a non-empty label · every entry has a color string … |
 | `src/pages/products/seller-carts/__tests__/cartViewModePrefs.test.ts` | 30 | getLocalDateStamp — timezone local · usa componentes de data LOCAL (não UTC) · formata com padding de mês/dia · não depende de toISOString (UTC) … |
 | `src/utils/masks.test.ts` | 30 | Utility Masks & Validation · CNPJ Masking & Validation · masks a raw 14-digit string to CNPJ format · masks the reference format 02.931.668/0001-88 … |

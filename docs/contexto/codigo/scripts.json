@@ -468,7 +468,7 @@
   {
    "arquivo": "scripts/check-conflict-ledger.mjs",
    "descricao": "* check-conflict-ledger.mjs — E188 (P200)",
-   "linhas": 151,
+   "linhas": 204,
    "env": [
     "GITHUB_BASE_REF",
     "GITHUB_HEAD_REF",

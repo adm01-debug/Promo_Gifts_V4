@@ -19275,9 +19275,9 @@
   {
    "arquivo": "tests/scripts/check-conflict-ledger.test.mjs",
    "tipo": "unit",
-   "linhas": 344,
+   "linhas": 391,
    "testa": [],
-   "casos": 24
+   "casos": 26
   },
   {
    "arquivo": "tests/scripts/check-console-baseline.test.mjs",

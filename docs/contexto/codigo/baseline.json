@@ -2,11 +2,26 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "86c10c8d3b69e578a98c8f9433c64ec6f09783fb",
+  "commit": "5ca60929fc3f3b382e3a56344f853ba98565a1ad",
   "branch": "main",
-  "data_commit": "2026-11-17T11:02:58-03:00",
+  "data_commit": "2026-11-17T11:03:24-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "5ca60929",
+    "data": "2026-11-17",
+    "assunto": "docs: marca como vivos na main os 3 itens que o dossiê pedia para completar (#3780)"
+   },
+   {
+    "sha": "5ce8d792",
+    "data": "2026-11-17",
+    "assunto": "docs: retira o \"0 ausentes\" da auditoria — era defeito do instrumento (#3779)"
+   },
+   {
+    "sha": "378aeff5",
+    "data": "2026-11-17",
+    "assunto": "fix(ci): isenta do E188 o merge automático da base sem conflito (#3776)"
+   },
    {
     "sha": "86c10c8d",
     "data": "2026-11-17",
@@ -116,24 +131,9 @@
     "sha": "416e5fde",
     "data": "2026-11-17",
     "assunto": "fix(db): versiona o rollback de SB-0001 (auth.users fora do Realtime) (#3756)"
-   },
-   {
-    "sha": "25bbb95d",
-    "data": "2026-11-17",
-    "assunto": "fix(test): corrige a guarda de rota protegida e estabiliza o tooltip da sidebar (#3755)"
-   },
-   {
-    "sha": "3784247c",
-    "data": "2026-11-17",
-    "assunto": "feat(test): resgata o contrato SQL de device-trust e o poe a rodar no Gate 2.5 (#3754)"
-   },
-   {
-    "sha": "8749d83a",
-    "data": "2026-11-17",
-    "assunto": "ci: resgata o workflow semanal que mantem o inventario de estado vivo (#3722)"
    }
   ],
-  "arquivos_mudados_7d": 1948,
+  "arquivos_mudados_7d": 1940,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -207,15 +207,15 @@
    },
    {
     "arquivo": "PENDENCIAS.md",
-    "mudancas": 48
+    "mudancas": 47
    },
    {
     "arquivo": "package.json",
-    "mudancas": 42
+    "mudancas": 41
    },
    {
     "arquivo": "package-lock.json",
-    "mudancas": 25
+    "mudancas": 24
    },
    {
     "arquivo": "docs/coordenacao/conflitos-semanticos.md",
@@ -243,7 +243,7 @@
    },
    {
     "arquivo": "CHANGELOG.md",
-    "mudancas": 12
+    "mudancas": 11
    },
    {
     "arquivo": "audit/supabase-reference-catalog.temporary.json",
@@ -258,12 +258,12 @@
     "mudancas": 10
    },
    {
-    "arquivo": "src/pages/mockups/MockupGenerator.tsx",
+    "arquivo": "docs/agentes/resgates/2026-11-16-auditoria-branches.md",
     "mudancas": 10
    },
    {
-    "arquivo": "docs/agentes/resgates/2026-11-16-auditoria-branches.md",
-    "mudancas": 9
+    "arquivo": "src/pages/mockups/MockupGenerator.tsx",
+    "mudancas": 10
    },
    {
     "arquivo": "docs/ci/SEGREDOS.md",
@@ -301,7 +301,7 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 541
+    "commits": 542
    },
    {
     "autor": "Claude",
@@ -313,7 +313,7 @@
    },
    {
     "autor": "github-actions[bot]",
-    "commits": 30
+    "commits": 29
    },
    {
     "autor": "dependabot[bot]",
@@ -324,7 +324,7 @@
  "contagens": {
   "arquivos_total": 10841,
   "arquivos_codigo": 5367,
-  "linhas_codigo": 1022579,
+  "linhas_codigo": 1022679,
   "rotas": 138,
   "rotas_http_backend": 13,
   "vistas_por_id": 0,
@@ -1060,7 +1060,7 @@
   },
   "scripts/check-conflict-ledger.mjs": {
    "arquivos": 1,
-   "linhas": 151
+   "linhas": 204
   },
   "scripts/check-console-baseline.mjs": {
    "arquivos": 1,
@@ -2148,7 +2148,7 @@
   },
   "tests/scripts": {
    "arquivos": 179,
-   "linhas": 28489
+   "linhas": 28536
   },
   "tests/search": {
    "arquivos": 1,
@@ -2367,7 +2367,7 @@
  ],
  "qualidade": {
   "any": 695,
-  "console_log": 1305,
+  "console_log": 1306,
   "ts_ignore": 0,
   "eslint_disable": 24,
   "todos": 108,
