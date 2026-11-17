@@ -245,6 +245,10 @@ vi.mock('@/components/quotes/QuoteAutoSave', () => ({
     captured.autoSave = props;
     return null;
   },
+  // A página também renderiza QuoteDraftRecovery, re-exportado por este módulo
+  // (QuoteAutoSave.tsx:427, usado em QuoteBuilderPage.tsx:200). Sem o export aqui o
+  // vi.mock derruba o render inteiro da página.
+  QuoteDraftRecovery: () => null,
 }));
 vi.mock('@/components/common/UnsavedChangesDialog', () => ({ UnsavedChangesDialog: () => null }));
 vi.mock('@/components/quotes/CompanyContactSelector', () => ({
