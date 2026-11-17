@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "92a5c9a07b9137918f1234f3e0f5d8a25456e530",
+  "commit": "ac37480a8ca15271c62c484b6bf8a0f18a7c8dc2",
   "branch": "main",
-  "data_commit": "2026-11-17T18:39:47-03:00",
+  "data_commit": "2026-11-17T18:49:26-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "ac37480a",
+    "data": "2026-11-17",
+    "assunto": "fix(quotes): histórico de versões não cai mais quando a data da versão é nula (#3810)"
+   },
    {
     "sha": "92a5c9a0",
     "data": "2026-11-17",
@@ -126,14 +131,9 @@
     "sha": "a521c74f",
     "data": "2026-11-17",
     "assunto": "docs: adjudica os 32 refs salvo/* contra o main (0 arquivos ausentes) (#3770)"
-   },
-   {
-    "sha": "10455e7a",
-    "data": "2026-11-17",
-    "assunto": "chore(main): release gifts-store 1.9.0 (#3753)"
    }
   ],
-  "arquivos_mudados_7d": 1961,
+  "arquivos_mudados_7d": 1965,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -161,7 +161,7 @@
    },
    {
     "pasta": "src/components/quotes",
-    "mudancas": 114
+    "mudancas": 116
    },
    {
     "pasta": "supabase/functions/_shared",
@@ -322,9 +322,9 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 10868,
-  "arquivos_codigo": 5393,
-  "linhas_codigo": 1029931,
+  "arquivos_total": 10869,
+  "arquivos_codigo": 5394,
+  "linhas_codigo": 1030046,
   "rotas": 139,
   "rotas_http_backend": 13,
   "vistas_por_id": 0,
@@ -336,7 +336,7 @@
   "tabelas": 527,
   "migrations": 3099,
   "cron_jobs": 122,
-  "testes": 2566,
+  "testes": 2567,
   "workflows": 88,
   "scripts": 283,
   "docs_md": 1470
@@ -1896,7 +1896,7 @@
   },
   "src/components": {
    "arquivos": 1395,
-   "linhas": 277642
+   "linhas": 277647
   },
   "src/config": {
    "arquivos": 1,
@@ -1920,7 +1920,7 @@
   },
   "src/hooks": {
    "arquivos": 480,
-   "linhas": 90936
+   "linhas": 90940
   },
   "src/integrations": {
    "arquivos": 11,
@@ -2047,8 +2047,8 @@
    "linhas": 141
   },
   "tests/components": {
-   "arquivos": 160,
-   "linhas": 34974
+   "arquivos": 161,
+   "linhas": 35072
   },
   "tests/config": {
    "arquivos": 6,
@@ -2092,7 +2092,7 @@
   },
   "tests/hooks": {
    "arquivos": 153,
-   "linhas": 23666
+   "linhas": 23674
   },
   "tests/integration": {
    "arquivos": 11,

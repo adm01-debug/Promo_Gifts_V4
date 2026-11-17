@@ -12291,7 +12291,7 @@
    "hooks_exportados": [
     "useQuoteVersions"
    ],
-   "linhas": 269,
+   "linhas": 273,
    "dominio": "hooks/quotes",
    "tabelas": [
     "quote_items",
@@ -12310,7 +12310,7 @@
    "usado_por_arquivos": [
     "src/hooks/quotes/index.ts"
    ],
-   "coberto_por_testes": 2
+   "coberto_por_testes": 3
   },
   {
    "arquivo": "src/hooks/quotes/useSellerDiscountLimits.ts",

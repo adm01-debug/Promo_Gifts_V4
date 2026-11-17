@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.3.2 · commit `92a5c9a07b` · branch `main` · 2026-11-17 21:42 UTC
+> Gerado automaticamente por AI Context Sync v1.3.2 · commit `ac37480a8c` · branch `main` · 2026-11-17 21:50 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -6564,7 +6564,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `admin` | `supabase/migrations/20261112120500_fix_optimization_queue_rpcs_dev_access.sql` |
 | `anon` | `tests/edge-functions/live/_live-client.ts` |
 
-## K. Testes como especificação (22179 testes em 2244 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (22181 testes em 2245 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -6868,7 +6868,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `src/components/search/__tests__/searchCache.test.ts` | 18 | searchCache.set / searchCache.get · returns null for an unknown key · returns results immediately after set · is case-insensitive (normalized key) … |
 | `src/hooks/auth/__tests__/login-flow.test.ts` | 18 | Login Flow & Role Loading — RPC get_profile_and_roles · 1. deve carregar perfil e roles com sucesso via RPC · 2. deve tratar erro RLS 42501 sem lançar exceção · 3. deve tratar erros genéricos de rede sem crash … |
 | `src/hooks/products/__tests__/useProductsByColor.test.ts` | 18 | hasFilter OR entre 4 grupos · false quando todos arrays vazios · true quando qualquer grupo nao-vazio · sem filtro ativo … |
-| … +1944 linhas — lista completa em `context.json` | | |
+| … +1945 linhas — lista completa em `context.json` | | |
 
 ## L. Eventos de webhook tratados (contratos com sistemas externos)
 

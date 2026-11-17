@@ -14624,7 +14624,7 @@
     "QuoteVersionCompare"
    ],
    "export_default": null,
-   "linhas": 354,
+   "linhas": 358,
    "dominio": "components/quotes",
    "hooks_locais": [],
    "tabelas": [
@@ -14641,7 +14641,7 @@
     "QuoteVersionHistory"
    ],
    "export_default": null,
-   "linhas": 199,
+   "linhas": 200,
    "dominio": "components/quotes",
    "hooks_locais": [
     "useQuoteVersions"
