@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "de5ce2cc85872ed0f91a150f031f1bf9ab5b5822",
+  "sha": "98a305c2fdee1bece23442edbc2edb258480060c",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-16 23:49 UTC",
+  "generated_at": "2026-11-17 00:20 UTC",
   "files_total": 10728,
   "code_files": 8778,
-  "code_lines": 1238605
+  "code_lines": 1238631
  },
  "version": "1.3.2",
- "facts_hash": "da3526fb67d458f5",
+ "facts_hash": "fba4912f6e12cf77",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -149130,7 +149130,7 @@
   {
    "module": "scripts",
    "files": 298,
-   "lines": 63829,
+   "lines": 63855,
    "tables": [
     "a",
     "b",
@@ -424233,7 +424233,7 @@
   },
   "scripts/drift-baseline.mjs": {
    "path": "scripts/drift-baseline.mjs",
-   "lines": 1257,
+   "lines": 1283,
    "exports": [
     "const BASELINE_DIR",
     "const BASELINE_NAME_RE",
@@ -540708,10 +540708,21 @@
   }
  },
  "git": {
-  "sha": "de5ce2cc85872ed0f91a150f031f1bf9ab5b5822",
+  "sha": "98a305c2fdee1bece23442edbc2edb258480060c",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "98a305c",
+    "date": "2026-11-16",
+    "author": "adm01-debug",
+    "subject": "fix(ci): destrava o Gate E40, que reprova toda PR com migration desde 15/11 (#3721)",
+    "files": [
+     "scripts/drift-baseline.mjs",
+     "supabase/baseline/20261108000000_cron_jobs.json",
+     "supabase/baseline/20261116000000_cron_jobs.json"
+    ]
+   },
    {
     "sha": "de5ce2c",
     "date": "2026-11-16",
@@ -541279,15 +541290,6 @@
      "analise-branches/dados/branches-do-pc-261116.md",
      "analise-branches/dados/indice-preservacao.md"
     ]
-   },
-   {
-    "sha": "5097b55",
-    "date": "2026-11-16",
-    "author": "Claude",
-    "subject": "docs(audit): estado do trabalho em 2026-11-16 e as 7 pendencias",
-    "files": [
-     "analise-branches/ESTADO-EM-261116.md"
-    ]
    }
   ],
   "hot_files": [
@@ -541301,10 +541303,6 @@
    ],
    [
     "package-lock.json",
-    3
-   ],
-   [
-    "analise-branches/ESTADO-EM-261116.md",
     3
    ],
    [
@@ -541332,6 +541330,22 @@
     2
    ],
    [
+    "analise-branches/ESTADO-EM-261116.md",
+    2
+   ],
+   [
+    "scripts/drift-baseline.mjs",
+    1
+   ],
+   [
+    "supabase/baseline/20261108000000_cron_jobs.json",
+    1
+   ],
+   [
+    "supabase/baseline/20261116000000_cron_jobs.json",
+    1
+   ],
+   [
     ".github/workflows/schema-snapshot-export.yml",
     1
    ],
@@ -541357,18 +541371,6 @@
    ],
    [
     "src/lib/quotes/quoteDraftRecovery.ts",
-    1
-   ],
-   [
-    "src/lib/__tests__/external-rpc.test.ts",
-    1
-   ],
-   [
-    "tests/a11y/magazine-a11y.test.tsx",
-    1
-   ],
-   [
-    "analise-branches/PROVA-ENCERRAMENTO-PRS-261116.md",
     1
    ]
   ]

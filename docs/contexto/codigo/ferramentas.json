@@ -4731,6 +4731,10 @@
     "arquivos": 3
    },
    {
+    "host": "api.deepseek.com",
+    "arquivos": 2
+   },
+   {
     "host": "api.elevenlabs.io",
     "arquivos": 2
    },
@@ -4844,10 +4848,6 @@
    },
    {
     "host": "api.cnpja.com",
-    "arquivos": 1
-   },
-   {
-    "host": "api.deepseek.com",
     "arquivos": 1
    },
    {

@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "de5ce2cc85872ed0f91a150f031f1bf9ab5b5822",
+  "commit": "98a305c2fdee1bece23442edbc2edb258480060c",
   "branch": "main",
-  "data_commit": "2026-11-16T20:48:26-03:00",
+  "data_commit": "2026-11-16T21:18:46-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "98a305c2",
+    "data": "2026-11-16",
+    "assunto": "fix(ci): destrava o Gate E40, que reprova toda PR com migration desde 15/11 (#3721)"
+   },
    {
     "sha": "de5ce2cc",
     "data": "2026-11-16",
@@ -126,14 +131,9 @@
     "sha": "25ea4f33",
     "data": "2026-11-16",
     "assunto": "docs(audit): registra a exclusão das 71 branches, o fechamento da #3685 e o alarme falso do clone raso (#3697)"
-   },
-   {
-    "sha": "2d1d7cab",
-    "data": "2026-11-16",
-    "assunto": "Merge pull request #3689 from adm01-debug/claude/chore-dossies-branches-261116-0154"
    }
   ],
-  "arquivos_mudados_7d": 1940,
+  "arquivos_mudados_7d": 1906,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -259,11 +259,11 @@
    },
    {
     "arquivo": "analise-prs/RELATORIO_PRS.md",
-    "mudancas": 10
+    "mudancas": 9
    },
    {
     "arquivo": "analise-prs/prs.json",
-    "mudancas": 10
+    "mudancas": 9
    },
    {
     "arquivo": "e2e/flows/magazine-publish-smoke.spec.ts",
@@ -290,12 +290,12 @@
     "mudancas": 8
    },
    {
-    "arquivo": "src/hooks/kit-builder/useKitAutoSave.ts",
+    "arquivo": "scripts/drift-baseline.mjs",
     "mudancas": 8
    },
    {
-    "arquivo": ".github/workflows/db-schema-drift-check.yml",
-    "mudancas": 7
+    "arquivo": "src/hooks/kit-builder/useKitAutoSave.ts",
+    "mudancas": 8
    }
   ],
   "autores_30d": [
@@ -324,7 +324,7 @@
  "contagens": {
   "arquivos_total": 10800,
   "arquivos_codigo": 5348,
-  "linhas_codigo": 1018792,
+  "linhas_codigo": 1018818,
   "rotas": 138,
   "rotas_http_backend": 13,
   "vistas_por_id": 0,
@@ -1496,7 +1496,7 @@
   },
   "scripts/drift-baseline.mjs": {
    "arquivos": 1,
-   "linhas": 1257
+   "linhas": 1283
   },
   "scripts/dry-run-migration-draft.mjs": {
    "arquivos": 1,
@@ -2281,16 +2281,16 @@
    "linhas": 1408
   },
   {
+   "arquivo": "scripts/drift-baseline.mjs",
+   "linhas": 1283
+  },
+  {
    "arquivo": "src/pages/tools/VisualSearchPage.tsx",
    "linhas": 1274
   },
   {
    "arquivo": "src/components/kit-builder/BoxSelector.tsx",
    "linhas": 1260
-  },
-  {
-   "arquivo": "scripts/drift-baseline.mjs",
-   "linhas": 1257
   },
   {
    "arquivo": "src/pages/products/SellerCartsPage.tsx",
@@ -2620,7 +2620,7 @@
   },
   {
    "arquivo": "scripts/drift-baseline.mjs",
-   "linha": 607,
+   "linha": 633,
    "tipo": "TODO",
    "texto": "objeto (ex.: `.*`, `^create table`, `public`)."
   },
