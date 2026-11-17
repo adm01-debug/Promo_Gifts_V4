@@ -2384,3 +2384,60 @@ outras é o **GRANT SELECT**. Pelo critério correto, quase todas ficariam de fo
 Para o P06 voltar, ele precisa de duas fases: primeiro os `GRANT SELECT` que faltam nas
 tabelas-base (ampliação de superfície, exige medir policy por policy), depois o
 `security_invoker`. Enquanto isso não existir, aplicar é quebrar leitura pública em produção.
+
+## 2026-11-17 — P06 / A-V01: `security_invoker=true` só em `v_product_properties_public` (1 de 8)
+
+Medido com `execute_sql` **read-only** em `doufsxqlfjyuvxuezpln` em 2026-11-17. O P06 pedia 7 views; a
+contagem real é **8** views de `public` com `relkind='v'`, `security_invoker<>true` e
+`has_table_privilege('anon','SELECT')=true`. `v_system_health_dashboard` fica fora como o P06 previa —
+confirmado: `anon=false` **e** `authenticated=false`, logo não é superfície pública.
+`vw_system_health_quick` já está com `security_invoker=on`.
+
+**Duas premissas do P06 não se confirmaram.** (1) `products_anon_read.polqual IS NULL` = **false**; o
+`USING` é `((is_active = true) AND (is_deleted IS NOT TRUE))`, idêntico ao `WHERE` de `v_products_public`.
+Prova empírica (`SET LOCAL ROLE anon; SELECT count(*) FROM products`) = **7926** de 8360: os 434
+inativos/deletados **já** estão escondidos de `anon` pelo RLS, então o `GRANT` não exporia linha nova e a
+FASE 1 pedida ("endurecer as policies") é **no-op verificado** em todas as tabelas-base. (2) O item (c) do
+P06 também não é impedimento: `anon` já tem `USAGE` em `internal` e `SELECT` nas 7 colunas de
+`internal.mv_product_leaf_category`.
+
+**Por que só 1 das 8.** As 8 views foram tornadas SECURITY DEFINER **de propósito** pelo hardening
+`fix_version 20260717`, registrado em `supabase/migrations/20260717114423_fix_security_invoker_regression_suppliers_and_stock_velocity.sql`
+("NAO reintroduzir security_invoker=on nestas views"; a tentativa anterior deu PostgREST 403 para
+`authenticated`) e em `COMMENT ON VIEW` vivo nas 8 — 4 deles com proibição textual
+(`v_products_public`, `v_suppliers_public`, `v_variant_sale_prices_public`,
+`v_tabela_preco_gravacao_oficial_public`). Nas 7 bloqueadas o "fix" do A-V01 exige **re-expor ao `anon` a
+tabela-base que a view mascara**, sem ganhar segurança (as policies de `anon` já aplicam o mesmo filtro das
+views), e em 3 delas quebra comportamento medido:
+
+| view | bloqueio medido |
+|---|---|
+| `v_product_tags_public` | `product_tags_select_org` e `tags_select_org` são org-scoped para `authenticated`. `auth.users`=86, vinculados à única `organization_id` dos 8360 produtos=18 → **72 de 86 usuários logados veriam 0 linhas** (hoje 50611) |
+| `v_variant_sale_prices_public` | única policy de SELECT de `variant_supplier_sources` é org-scoped a PUBLIC → `anon` (`auth.uid()` NULL) zera o INNER JOIN: **20592 → 0**. E funcionar exigiria `GRANT` em `cost_price_1..5` + `markup_percent` = **vazamento de custo/margem ao `anon`**, pior que o achado |
+| `v_suppliers_public` | guarda em migration + catálogo; view é `FROM suppliers` sem `WHERE` e a policy é `active=true` → divergência latente (hoje empata: 5 fornecedores, 5 ativos) |
+| `v_products_public` | exigiria `GRANT` em 154 colunas novas de `products`; guarda textual. Linhas não mudariam (7926) e `cost_price` não vazaria (não está entre as 157 colunas do `_RETURN`), mas re-expor `products` é decisão do dono |
+| `v_tabela_preco_gravacao_oficial_public` | o `COMMENT` proíbe literalmente "re-expor a tabela base ao anon"; exigiria `GRANT` em 37 colunas. O `COMMENT` também está **desatualizado**: diz que `custo_setup` está excluído, mas `pg_depend` mostra que a view já projeta `custo_setup_por_cor` e `custo_manuseio_por_peca` |
+| `v_kit_component_media_public` | `product_kit_components_public_read` é `USING true`; com `GRANT`, `anon` passaria a ler **todas** as linhas da tabela-base via PostgREST, inclusive componentes de produto inativo que a view esconde. Endurecer a policy mexeria em `authenticated` (roles `anon,authenticated`) → PR própria |
+| `v_product_compositions_public` | cadeia de 2 níveis até `analytics.mv_product_compositions` (matview, **sem RLS**): o `GRANT` entregaria 8312 linhas, 434 de produto inativo. **NÃO VERIFICADO** se o PostgREST expõe o schema `analytics` (`pgrst.db_schemas` não está em `pg_db_role_setting` nem em `current_setting`) |
+
+A única view convertida é `v_product_properties_public`: `anon` **já** tinha `SELECT` nas 9 colunas de
+`public.product_properties` e nas 3 de `products` usadas no JOIN, então a FASE 2 é **vazia** (nenhum
+`GRANT`, superfície inalterada) e o conjunto de linhas é idêntico — medido 33116 para dono, `anon` e
+`authenticated` (`product_properties` tem 34165 linhas; 1049 são de produto inativo/deletado).
+
+Auto-verificação (FASE 4, mesma transação, falha fechada) compara dono × `anon` **e** dono ×
+`authenticated` — verificar só `anon` deixaria passar exatamente a regressão de PostgREST 403 de
+20260717 —, exige que `anon` veja em `products` só os ativos, assere que 5 grupos de colunas sensíveis
+seguem invisíveis e que as 7 views bloqueadas continuam com `security_invoker` desligado.
+
+**Executada em PostgreSQL 16.15 local** (produção é PG17) contra schema-stub espelhando policies, grants e
+as 8 views, via `psql -X -w -1` igual ao workflow: aplicação exit **0** com as 4 fases OK; rollback exit
+**0** e idempotente (2ª execução no-op, `COMMENT` original restaurado byte a byte); cenário quebrado de
+propósito (policy de `products` mais estrita que a view) → exit **3** com
+`P06 FASE 4 ABORT: ... ANTES (dono) = 2 linhas; DEPOIS (como anon) = 0 linhas` e `security_invoker`
+permanecendo `false` (ROLLBACK total). **NÃO VERIFICADO:** execução contra o banco de produção — nada foi
+aplicado.
+
+| versão | arquivo | sha256 | status |
+|---|---|---|---|
+| `20261117073000` | `p06_security_invoker_v_product_properties_public` | `87b5a2646e3e05fb85515f463f1a31ad01562076a011756992f3a76ffffede10` | pendente — aplicar via `db-apply-migration.yml` (`version=20261117073000`) após merge. As outras 7 views do P06 ficam como estão: exigem decisão do dono (Git 7) sobre aposentar o desenho SECURITY DEFINER de `fix_version 20260717` |
