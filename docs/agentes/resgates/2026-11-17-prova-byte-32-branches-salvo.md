@@ -143,3 +143,79 @@ branches não fecham.
 
 Nenhuma branch foi apagada nesta medição. O comando que gerou cada número está no método acima e é
 reproduzível em qualquer clone completo.
+
+---
+
+# Adendo da mesma sessão — adjudicação da fila aberta: 14 dos 27 resolvidos
+
+Medição feita depois de publicar o corpo acima. Nenhum dos vereditos abaixo depende de decisão do
+dono: são medidas no código da `main`.
+
+## Resolvidos — 14
+
+### 11 extrações de tipo: obsoletas, zero perda
+
+A regra foi: extrair os nomes exportados do arquivo e procurar cada um na `main`. Em 9 dos 11,
+**todos** os nomes já existem — a extração não foi adotada e os tipos vivem inline. Nos outros 2,
+os 3 nomes órfãos têm equivalente nomeado, e em dois casos a `main` é **mais rica**:
+
+| nome órfão | equivalente vivo na `main` |
+|---|---|
+| `SimulatorPrefill` | `SimulatorPrefillData` + a função `buildSimulatorQuoteItem`, em `useQuoteBuilderState.helpers.ts:334,345` |
+| `BatchMockup { areaName, url }` | o mesmo objeto inline em `mockupGenerationService.ts:310,440`, **com `areaId` a mais** |
+| `MockupAnnotation` | `interface Annotation` em `MockupAnnotations.tsx:13` |
+
+### 1 rollback órfão: obsoleto
+
+`20261110024530_rollback.sql`. A adjudicação dos 219 ausentes já registra que a migration
+correspondente foi **substituída pela `20261114031000`**, que está na `main`. Rollback de migration
+superada.
+
+### 1 teste resgatado
+
+`QuotesConfigurableList.approval.test.tsx` — 12 casos, PR própria. Era o **único** dos 7 arquivos de
+teste que roda sobre código que existe.
+
+Achado no caminho: 4 casos do arquivo original estavam **verdes pelo motivo errado**. Eles afirmavam
+que o item Aprovar não aparece para comprador, outro vendedor, papéis carregando e anônimo — e
+passavam porque, sem o handler, o item nunca renderizava. Com o handler correto eles reprovam:
+`QuoteRowApproveItem.tsx:23-25` não checa permissão, por escolha declarada no próprio componente
+("a permissão efetiva continua sendo a do banco"). **Hoje o botão Aprovar aparece para qualquer
+papel e a RLS recusa no clique.** Decisão de produto, registrada em comentário no arquivo.
+
+### 1 teste obsoleto
+
+`QuoteTemplatePreservation.test.tsx` — exercita `QuoteTemplatesList`, `QuoteTemplateForm`,
+`AdminTemplatesManager` e o `useQuoteTemplates` raiz, todos quarentenados e já adjudicados.
+
+## Pendentes de decisão do dono — 13
+
+Os 7 arquivos de teste **não** eram da mesma classe dos 19 gaps: 5 deles testam componente que
+também nunca subiu. São par, não cobertura perdida. Somados aos 8 componentes soltos, sobram 13
+itens que são **funcionalidade nova**, e decidir se o negócio quer é seu, não meu.
+
+Para a decisão ficar barata, o candidato a equivalente que já existe na `main` — **nomeado, não
+verificado linha a linha**:
+
+| item (branch do Codex) | candidato a equivalente na `main` |
+|---|---|
+| `CartEmptyStateWithTemplates.tsx` | `CartEmptyStateSmart.tsx` (`src/components/cart/`) |
+| `DetailedProductDetailSkeleton.tsx` | `ModernSkeletons.tsx` (`src/components/loading/`) |
+| `LegacyFavoritesAdapters.tsx` + teste de compat | a família moderna em `src/components/favorites/` |
+| `LegacyCartInsights.tsx` + teste (220 linhas) | `BundleSuggestionCard.tsx` e vizinhos (`src/components/cart/`) |
+| `QuoteBuilderPaymentMethodField.tsx` | campo de pagamento dentro do builder (`src/components/quotes/`) |
+| `library-list-utils.ts` | `src/lib/kit-library/` tem só `buildCustomKitInsert.ts` — **sem candidato óbvio** |
+| `voiceFilterPatch.ts` + teste | `src/lib/filters/` **não existe** na `main`; há `src/components/filters/FilterPanel` |
+| `SmartSuggestions.tsx` + teste | **sem candidato** encontrado |
+| `QuoteBuilderDraftRecovery.tsx` | depende da decisão de dono do rascunho (abaixo) |
+
+**`QuoteBuilderDraftRecovery.tsx` tem bloqueio próprio, e ele é de arquitetura.** Existem duas
+restaurações em dois storages: a automática em `useAutoSaveQuote.ts:92` (chave
+`quote_builder_autosave`, que **apaga** o rascunho corrompido na linha 122) e o botão explícito da PR
+de restauração (chave `quote_draft_<id>`, que preserva). Integrar o componente sem escolher o dono
+daria duas restaurações disputando, de fontes diferentes — pior que hoje.
+
+## Consequência para o fechamento das branches
+
+As 2 branches do Codex passam de "27 arquivos sem veredito" para **13 itens de decisão de produto**.
+Elas continuam sem poder fechar, mas o que falta deixou de ser investigação e passou a ser escolha.
