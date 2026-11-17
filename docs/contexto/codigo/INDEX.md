@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e de hora em hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `6ac0c72e3775ebb5356430bc26ae37ece5b6dece` (2026-11-17T02:13:15-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e de hora em hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `ca4cee9a2cc6a1f2f39e362540a94aeb9afae1af` (2026-11-17T02:30:00-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -590,7 +590,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - possiveis_segredos_no_codigo: 7 — ex.: scripts/ai-context/cenarios.mjs:102, src/components/admin/connections/__tests__/ConnectionSecurity.unit.test.tsx:9, src/integrations/supabase/client.ts:27
 
 ## Grafo de código (graphify)
-- 48141 nós · 80873 arestas · 2759 comunidades · grafo do commit `6ac0c72e`
+- 48141 nós · 80873 arestas · 2759 comunidades · grafo do commit `ca4cee9a`
 - comunidades maiores: lucide-react (655), vitest (646), ref_integrations (628), ref_components (560), ref_node_child_process (508), @tanstack/react-query (424), ref_hooks (382), react-router-dom (373), gotoAndSettle (362), ref_node_fs (344), react (342), ref_utils (337)
 - símbolos mais chamados: gotoAndSettle() (e2e/helpers/nav.ts), re (?), q() (scripts/supabase_snapshot/snapshot.py), analyze() (tests/scripts/test_personalization_artifact_diagnostics.py), outer() (tests/scripts/test_personalization_artifact_diagnostics.py), json (?), useExternalDatabase() (recovery/src-legacy/src/hooks/useExternalDatabase.ts), concludeCheck() (scripts/check-result-contract.mjs), querySupabaseReadOnly() (scripts/supabase-read-only-query.mjs), loginAs() (e2e/helpers/auth.ts), inner() (tests/scripts/test_personalization_artifact_diagnostics.py), excluded_sql() (scripts/supabase_snapshot/snapshot.py)
 - consulta local: `graphify query "<pergunta>"`, `graphify path "<A>" "<B>"`, `graphify explain "<X>"`
@@ -602,7 +602,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - package.json (42)
 - package-lock.json (25)
 - docs/coordenacao/conflitos-semanticos.md (22)
-- .github/workflows/deploy-gates.yml (16)
+- .github/workflows/deploy-gates.yml (17)
 - supabase/EDGE_FUNCTIONS_DEPLOY_LOG.md (16)
 - analise-prs/progresso.json (15)
 - src/pages/kit-builder/KitBuilderPage.tsx (15)
@@ -1184,6 +1184,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - CHANGELOG topo: [1.1.0](https://github.com/adm01-debug/Promo_Gifts_V4/compare/v1.0.0...v1.1.0) (2026-11-13)
 
 ## Últimos commits
+- 2026-11-17 `ca4cee9a` fix(ci): Sigstore fora do ar nao derruba mais o deploy (#3751)
 - 2026-11-17 `6ac0c72e` fix(ci): migration e edge function passam a exigir E2E relevante (#3726)
 - 2026-11-17 `a8f57a4f` fix(ci): force_rotate tambem libera a publicacao do snapshot (#3725)
 - 2026-11-17 `cca81a8f` fix(ci): dispara o gate de banco quando o ledger de migrations muda (#3747)
@@ -1198,7 +1199,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-17 `a5099c4c` docs(audit): retira um achado que eu registrei errado e fecha o placar de 17/11 (#3739)
 - 2026-11-16 `4963dcdf` fix(quotes): erro ao salvar o rascunho do orçamento ficava invisível para o vendedor (#3732)
 - 2026-11-16 `0f7644a2` test(mockup): resgata o contrato do handler REAL do generate-mockup (#3737)
-- 2026-11-16 `a4ac9034` docs(audit): resgata as regras de negócio que só existiam em 2 branches, reconferidas no código (#3738)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

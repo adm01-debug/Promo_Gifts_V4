@@ -1,9 +1,9 @@
 {
  "meta": {
-  "sha": "6ac0c72e3775ebb5356430bc26ae37ece5b6dece",
+  "sha": "ca4cee9a2cc6a1f2f39e362540a94aeb9afae1af",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-17 05:14 UTC",
+  "generated_at": "2026-11-17 05:30 UTC",
   "files_total": 10747,
   "code_files": 8790,
   "code_lines": 1240256
@@ -541247,10 +541247,19 @@
   }
  },
  "git": {
-  "sha": "6ac0c72e3775ebb5356430bc26ae37ece5b6dece",
+  "sha": "ca4cee9a2cc6a1f2f39e362540a94aeb9afae1af",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "ca4cee9",
+    "date": "2026-11-17",
+    "author": "adm01-debug",
+    "subject": "fix(ci): Sigstore fora do ar nao derruba mais o deploy (#3751)",
+    "files": [
+     ".github/workflows/deploy-gates.yml"
+    ]
+   },
    {
     "sha": "6ac0c72",
     "date": "2026-11-17",
@@ -541544,16 +541553,6 @@
     "files": [
      "docs/agentes/passagens/2026-11-15-passagem-sessao.md"
     ]
-   },
-   {
-    "sha": "16cfec3",
-    "date": "2026-11-16",
-    "author": "adm01-debug",
-    "subject": "chore(deps): sobe jest-dom 7 e react-hooks 7; rejeita jsdom 31 com a evidência (#3715)",
-    "files": [
-     "package-lock.json",
-     "package.json"
-    ]
    }
   ],
   "hot_files": [
@@ -541562,7 +541561,7 @@
     4
    ],
    [
-    "package.json",
+    ".github/workflows/deploy-gates.yml",
     2
    ],
    [
@@ -541606,11 +541605,11 @@
     1
    ],
    [
-    "tests/scripts/e2e-relevance.test.mjs",
+    "package.json",
     1
    ],
    [
-    ".github/workflows/deploy-gates.yml",
+    "tests/scripts/e2e-relevance.test.mjs",
     1
    ],
    [
