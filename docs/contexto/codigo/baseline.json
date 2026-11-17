@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "dd6464daca9453e4f1446e49e78d4ed64b917e23",
+  "commit": "92a5c9a07b9137918f1234f3e0f5d8a25456e530",
   "branch": "main",
-  "data_commit": "2026-11-17T18:31:27-03:00",
+  "data_commit": "2026-11-17T18:39:47-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "92a5c9a0",
+    "data": "2026-11-17",
+    "assunto": "fix(kit): autosave nao grava mais o rascunho de um kit em cima de outro (#3809)"
+   },
    {
     "sha": "dd6464da",
     "data": "2026-11-17",
@@ -126,11 +131,6 @@
     "sha": "10455e7a",
     "data": "2026-11-17",
     "assunto": "chore(main): release gifts-store 1.9.0 (#3753)"
-   },
-   {
-    "sha": "cda9cbfa",
-    "data": "2026-11-17",
-    "assunto": "docs: anexo da prova byte-a-byte por branch + prova do filtro do CRM contra PostgREST real (#3766)"
    }
   ],
   "arquivos_mudados_7d": 1961,
@@ -274,6 +274,10 @@
     "mudancas": 9
    },
    {
+    "arquivo": "src/hooks/kit-builder/useKitAutoSave.ts",
+    "mudancas": 9
+   },
+   {
     "arquivo": ".github/workflows/replenishment-quality.yml",
     "mudancas": 8
    },
@@ -287,10 +291,6 @@
    },
    {
     "arquivo": "scripts/drift-baseline.mjs",
-    "mudancas": 8
-   },
-   {
-    "arquivo": "src/hooks/kit-builder/useKitAutoSave.ts",
     "mudancas": 8
    },
    {
@@ -324,7 +324,7 @@
  "contagens": {
   "arquivos_total": 10868,
   "arquivos_codigo": 5393,
-  "linhas_codigo": 1029890,
+  "linhas_codigo": 1029931,
   "rotas": 139,
   "rotas_http_backend": 13,
   "vistas_por_id": 0,
@@ -1920,7 +1920,7 @@
   },
   "src/hooks": {
    "arquivos": 480,
-   "linhas": 90895
+   "linhas": 90936
   },
   "src/integrations": {
    "arquivos": 11,

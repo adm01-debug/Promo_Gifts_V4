@@ -9793,7 +9793,7 @@
    "hooks_exportados": [
     "useKitAutoSave"
    ],
-   "linhas": 446,
+   "linhas": 487,
    "dominio": "hooks/kit-builder",
    "tabelas": [],
    "rpcs": [],
