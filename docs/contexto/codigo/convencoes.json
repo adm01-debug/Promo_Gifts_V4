@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "chore(ci): reativa o contrato device-trust no Gate 2.5 (#3767)",
    "fix(db): corrige o comentario de rollback que mandava apagar auditoria em producao (#3765)",
    "fix(test): corrige a corrida de inicializacao que reprovava 2 de 55 no device-trust (#3764)",
    "feat(db): P06 na unica view onde security_invoker nao quebra nem re-expoe (#3762)",
-   "test(magicup): resgata o teste do ciclo de vida da busca (#3759)",
-   "chore(docs): publica a prova byte a byte das branches fechadas (#3760)"
+   "test(magicup): resgata o teste do ciclo de vida da busca (#3759)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",

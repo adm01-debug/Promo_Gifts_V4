@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e de hora em hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `202a82d2b3ce344f351d00c634c81a889f8382c5` (2026-11-17T06:01:14-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e de hora em hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `e17c6c97080fb26908030667e1e4996557d71d23` (2026-11-17T06:13:50-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -590,7 +590,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - possiveis_segredos_no_codigo: 7 — ex.: scripts/ai-context/cenarios.mjs:102, src/components/admin/connections/__tests__/ConnectionSecurity.unit.test.tsx:9, src/integrations/supabase/client.ts:27
 
 ## Grafo de código (graphify)
-- 48248 nós · 81046 arestas · 2800 comunidades · grafo do commit `202a82d2`
+- 48248 nós · 81046 arestas · 2800 comunidades · grafo do commit `e17c6c97`
 - comunidades maiores: ref_integrations (595), react (521), ref_components (513), lucide-react (446), ref_node_child_process (428), vitest (405), @tanstack/react-query (404), ref_hooks (389), nav.ts (350), sonner (314), scripts (310), ref_types (303)
 - símbolos mais chamados: gotoAndSettle() (e2e/helpers/nav.ts), re (?), q() (scripts/supabase_snapshot/snapshot.py), analyze() (tests/scripts/test_personalization_artifact_diagnostics.py), outer() (tests/scripts/test_personalization_artifact_diagnostics.py), json (?), useExternalDatabase() (recovery/src-legacy/src/hooks/useExternalDatabase.ts), concludeCheck() (scripts/check-result-contract.mjs), querySupabaseReadOnly() (scripts/supabase-read-only-query.mjs), loginAs() (e2e/helpers/auth.ts), inner() (tests/scripts/test_personalization_artifact_diagnostics.py), excluded_sql() (scripts/supabase_snapshot/snapshot.py)
 - consulta local: `graphify query "<pergunta>"`, `graphify path "<A>" "<B>"`, `graphify explain "<X>"`
@@ -599,10 +599,10 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - supabase/MIGRATIONS_SYNC_LOG.md (67)
 - RELATORIO_CI.md (60)
 - PENDENCIAS.md (53)
-- package.json (42)
+- package.json (41)
 - package-lock.json (25)
 - docs/coordenacao/conflitos-semanticos.md (23)
-- .github/workflows/deploy-gates.yml (20)
+- .github/workflows/deploy-gates.yml (21)
 - supabase/EDGE_FUNCTIONS_DEPLOY_LOG.md (17)
 - analise-prs/progresso.json (16)
 - src/pages/kit-builder/KitBuilderPage.tsx (16)
@@ -1186,6 +1186,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - CHANGELOG topo: [1.1.0](https://github.com/adm01-debug/Promo_Gifts_V4/compare/v1.0.0...v1.1.0) (2026-11-13)
 
 ## Últimos commits
+- 2026-11-17 `e17c6c97` chore(ci): reativa o contrato device-trust no Gate 2.5 (#3767)
 - 2026-11-17 `202a82d2` fix(db): corrige o comentario de rollback que mandava apagar auditoria em producao (#3765)
 - 2026-11-17 `dc82e4de` fix(test): corrige a corrida de inicializacao que reprovava 2 de 55 no device-trust (#3764)
 - 2026-11-17 `001d9708` feat(db): P06 na unica view onde security_invoker nao quebra nem re-expoe (#3762)
@@ -1200,7 +1201,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-17 `8749d83a` ci: resgata o workflow semanal que mantem o inventario de estado vivo (#3722)
 - 2026-11-17 `8b5adaa4` fix(db): revoga escrita de anon em color_synonym_map (P15) (#3752)
 - 2026-11-17 `c9cb18f0` fix(ci): corrige a regressao de versao (1.1.0 para 1.8.1) e a causa raiz no release-please (#3749)
-- 2026-11-17 `ca4cee9a` fix(ci): Sigstore fora do ar nao derruba mais o deploy (#3751)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

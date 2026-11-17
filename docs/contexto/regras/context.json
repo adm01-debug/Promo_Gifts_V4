@@ -1,9 +1,9 @@
 {
  "meta": {
-  "sha": "202a82d2b3ce344f351d00c634c81a889f8382c5",
+  "sha": "e17c6c97080fb26908030667e1e4996557d71d23",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-17 09:02 UTC",
+  "generated_at": "2026-11-17 09:15 UTC",
   "files_total": 10769,
   "code_files": 8806,
   "code_lines": 1243111
@@ -541867,10 +541867,19 @@
   }
  },
  "git": {
-  "sha": "202a82d2b3ce344f351d00c634c81a889f8382c5",
+  "sha": "e17c6c97080fb26908030667e1e4996557d71d23",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "e17c6c9",
+    "date": "2026-11-17",
+    "author": "adm01-debug",
+    "subject": "chore(ci): reativa o contrato device-trust no Gate 2.5 (#3767)",
+    "files": [
+     ".github/workflows/deploy-gates.yml"
+    ]
+   },
    {
     "sha": "202a82d",
     "date": "2026-11-17",
@@ -542176,24 +542185,15 @@
     "files": [
      "tests/edge-functions/integration/generate-mockup.handler.test.ts"
     ]
-   },
-   {
-    "sha": "a4ac903",
-    "date": "2026-11-16",
-    "author": "adm01-debug",
-    "subject": "docs(audit): resgata as regras de negócio que só existiam em 2 branches, reconferidas no código (#3738)",
-    "files": [
-     "analise-prs/regras-de-negocio.md"
-    ]
    }
   ],
   "hot_files": [
    [
-    "supabase/MIGRATIONS_SYNC_LOG.md",
-    4
+    ".github/workflows/deploy-gates.yml",
+    5
    ],
    [
-    ".github/workflows/deploy-gates.yml",
+    "supabase/MIGRATIONS_SYNC_LOG.md",
     4
    ],
    [
