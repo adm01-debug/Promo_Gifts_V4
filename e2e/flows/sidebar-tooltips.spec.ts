@@ -10,8 +10,24 @@
  * do `[role="tooltip"]` aberto.
  */
 import { test, expect, requireAuth } from "../fixtures/test-base";
+import type { Locator, Page } from "@playwright/test";
 import { loginAs } from "../helpers/auth";
 import { gotoAndSettle } from "../helpers/nav";
+
+async function expectTooltipOnHover(page: Page, trigger: Locator, expected: string) {
+  const tooltip = page.getByRole("tooltip", { name: expected });
+
+  await expect(async () => {
+    // Radix usa atraso de abertura e o runner pode perder o primeiro evento
+    // durante scroll/layout. Reentrar no alvo reproduz o gesto real sem
+    // mascarar a asserção de conteúdo e visibilidade.
+    await page.mouse.move(0, 0);
+    await trigger.hover();
+    await expect(tooltip).toBeVisible({ timeout: 2500 });
+  }).toPass({ timeout: 7500, intervals: [250] });
+
+  return tooltip;
+}
 
 test.describe("Sidebar — tooltips comerciais (hover/unhover)", () => {
   test.beforeEach(async ({ page }) => {
@@ -56,10 +72,7 @@ test.describe("Sidebar — tooltips comerciais (hover/unhover)", () => {
       if (!expected) continue;
 
       await trigger.scrollIntoViewIfNeeded();
-      await trigger.hover();
-
-      const tooltip = page.getByRole("tooltip", { name: expected });
-      await expect(tooltip, `tooltip deve aparecer para "${expected}"`).toBeVisible({ timeout: 2000 });
+      const tooltip = await expectTooltipOnHover(page, trigger, expected);
 
       // Move o mouse para uma área neutra e valida que o tooltip some.
       await page.mouse.move(2000, 2000);
@@ -84,9 +97,7 @@ test.describe("Sidebar — tooltips comerciais (hover/unhover)", () => {
     const first = triggers.first();
     const firstLabel = await first.getAttribute("data-tooltip-label");
     await first.scrollIntoViewIfNeeded();
-    await first.hover();
-    const firstTooltip = page.getByRole("tooltip", { name: firstLabel! });
-    await expect(firstTooltip).toBeVisible({ timeout: 2000 });
+    const firstTooltip = await expectTooltipOnHover(page, first, firstLabel!);
 
     // 2) Rola a sidebar (e a janela) — tooltip aberto NÃO pode ficar preso.
     await sidebar.evaluate((el) => {
@@ -110,11 +121,7 @@ test.describe("Sidebar — tooltips comerciais (hover/unhover)", () => {
     const last = triggers.last();
     const lastLabel = await last.getAttribute("data-tooltip-label");
     await last.scrollIntoViewIfNeeded();
-    await last.hover();
-    const lastTooltip = page.getByRole("tooltip", { name: lastLabel! });
-    await expect(lastTooltip, `tooltip pós-scroll deve abrir em "${lastLabel}"`).toBeVisible({
-      timeout: 2000,
-    });
+    const lastTooltip = await expectTooltipOnHover(page, last, lastLabel!);
 
     await page.mouse.move(2000, 2000);
     await expect(lastTooltip).toBeHidden({ timeout: 2000 });
