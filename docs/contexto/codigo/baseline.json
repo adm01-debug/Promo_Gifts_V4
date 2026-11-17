@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "d1a098ad5dd0a71d5815abdd0786de514db9d56c",
+  "commit": "216fad0f11a15cb5c71a813abca48658da8bb893",
   "branch": "main",
-  "data_commit": "2026-11-17T17:05:44-03:00",
+  "data_commit": "2026-11-17T17:58:00-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "216fad0f",
+    "data": "2026-11-17",
+    "assunto": "test(resgate): 218 casos de teste de outro agente que nunca chegaram à main (#3807)"
+   },
    {
     "sha": "d1a098ad",
     "data": "2026-11-17",
@@ -126,14 +131,9 @@
     "sha": "d56cb122",
     "data": "2026-11-17",
     "assunto": "feat(crm): vendedor vê a carteira dele mais os clientes sem dono (somente leitura) (#3769)"
-   },
-   {
-    "sha": "e17c6c97",
-    "data": "2026-11-17",
-    "assunto": "chore(ci): reativa o contrato device-trust no Gate 2.5 (#3767)"
    }
   ],
-  "arquivos_mudados_7d": 1940,
+  "arquivos_mudados_7d": 1955,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -322,9 +322,9 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 10849,
-  "arquivos_codigo": 5374,
-  "linhas_codigo": 1024126,
+  "arquivos_total": 10864,
+  "arquivos_codigo": 5389,
+  "linhas_codigo": 1028964,
   "rotas": 139,
   "rotas_http_backend": 13,
   "vistas_por_id": 0,
@@ -336,7 +336,7 @@
   "tabelas": 527,
   "migrations": 3099,
   "cron_jobs": 122,
-  "testes": 2549,
+  "testes": 2564,
   "workflows": 88,
   "scripts": 283,
   "docs_md": 1470
@@ -2047,8 +2047,8 @@
    "linhas": 141
   },
   "tests/components": {
-   "arquivos": 158,
-   "linhas": 34505
+   "arquivos": 160,
+   "linhas": 34974
   },
   "tests/config": {
    "arquivos": 6,
@@ -2091,8 +2091,8 @@
    "linhas": 325
   },
   "tests/hooks": {
-   "arquivos": 142,
-   "linhas": 20071
+   "arquivos": 152,
+   "linhas": 23508
   },
   "tests/integration": {
    "arquivos": 11,
@@ -2103,8 +2103,8 @@
    "linhas": 42
   },
   "tests/lib": {
-   "arquivos": 66,
-   "linhas": 9437
+   "arquivos": 67,
+   "linhas": 9660
   },
   "tests/magazine": {
    "arquivos": 18,
@@ -2127,8 +2127,8 @@
    "linhas": 580
   },
   "tests/pages": {
-   "arquivos": 16,
-   "linhas": 3344
+   "arquivos": 18,
+   "linhas": 4053
   },
   "tests/product-form-improvements.test.ts": {
    "arquivos": 1,
@@ -2374,7 +2374,7 @@
   "console_log": 1306,
   "ts_ignore": 0,
   "eslint_disable": 24,
-  "todos": 110,
+  "todos": 111,
   "arquivos_acima_500_linhas": 185
  },
  "todos": [
@@ -2809,6 +2809,12 @@
    "linha": 54,
    "tipo": "TODO",
    "texto": "(test-debt): 1 testes falham — output do AI mudou (tech vs Cliente de tecnologia)."
+  },
+  {
+   "arquivo": "tests/hooks/useKitAutoSave.legacy.test.tsx",
+   "linha": 39,
+   "tipo": "TODO",
+   "texto": "sucesso, inclusive em update (useKitAutoSave.ts:191), porque o consumidor"
   },
   {
    "arquivo": "tests/lib/date-utils-extended.test.ts",

@@ -23,7 +23,7 @@
    "src/services (10)"
   ],
   "testes": [
-   "tests/ (1045)",
+   "tests/ (1060)",
    "co-localizado (__tests__) (677)",
    "e2e/ (625)"
   ],
@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "test(resgate): 218 casos de teste de outro agente que nunca chegaram à main (#3807)",
    "fix(deps): move ferramentas de build para devDependencies (#3804)",
    "fix(ci): tolera o ReDoS do picomatch, que travava toda PR do repositorio (#3800)",
    "test(products): resgata a cobertura de ciclo de vida de filtros e fornecedores (#3790)",
-   "test(products): resgata a cobertura de enriquecimento de cor (#3789)",
-   "fix(observabilidade): tunela envelopes do Sentry pela própria origem (CORS matava 100% dos relatórios) (#3784)"
+   "test(products): resgata a cobertura de enriquecimento de cor (#3789)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",

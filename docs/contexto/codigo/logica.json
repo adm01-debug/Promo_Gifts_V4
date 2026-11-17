@@ -988,7 +988,7 @@
     "services",
     "stores"
    ],
-   "coberto_por_testes": 5,
+   "coberto_por_testes": 6,
    "orfao": false
   },
   {
@@ -2650,7 +2650,7 @@
     "pages/admin",
     "services"
    ],
-   "coberto_por_testes": 16,
+   "coberto_por_testes": 17,
    "orfao": false
   },
   {
@@ -3387,7 +3387,7 @@
     "hooks/products",
     "lib/external-db"
    ],
-   "coberto_por_testes": 3,
+   "coberto_por_testes": 6,
    "orfao": false
   },
   {
@@ -4331,7 +4331,7 @@
    "usado_por_modulos": [
     "lib/kit-builder"
    ],
-   "coberto_por_testes": 1,
+   "coberto_por_testes": 2,
    "orfao": false
   },
   {
@@ -4443,7 +4443,7 @@
     "pages/admin",
     "pages/kit-builder"
    ],
-   "coberto_por_testes": 33,
+   "coberto_por_testes": 38,
    "orfao": false
   },
   {
@@ -4500,7 +4500,7 @@
     "lib/kit-builder",
     "pages/kit-builder"
    ],
-   "coberto_por_testes": 3,
+   "coberto_por_testes": 4,
    "orfao": false
   },
   {
@@ -4561,7 +4561,7 @@
     "lib/kit-builder",
     "pages/kit-builder"
    ],
-   "coberto_por_testes": 0,
+   "coberto_por_testes": 1,
    "orfao": false
   },
   {
@@ -6255,7 +6255,7 @@
    "usado_por_modulos": [
     "components/quotes"
    ],
-   "coberto_por_testes": 1,
+   "coberto_por_testes": 2,
    "orfao": false
   },
   {
@@ -8349,7 +8349,7 @@
     "components/layout",
     "components/products"
    ],
-   "coberto_por_testes": 3,
+   "coberto_por_testes": 4,
    "orfao": false
   },
   {

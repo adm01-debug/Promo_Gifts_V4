@@ -54,7 +54,7 @@
   },
   {
    "arquivo": "src/hooks/products/index.ts",
-   "importado_por": 140
+   "importado_por": 142
   },
   {
    "arquivo": "src/components/ui/dialog.tsx",
@@ -65,16 +65,16 @@
    "importado_por": 132
   },
   {
+   "arquivo": "src/lib/kit-builder/index.ts",
+   "importado_por": 110
+  },
+  {
    "arquivo": "supabase/functions/_shared/cors.ts",
    "importado_por": 109
   },
   {
-   "arquivo": "src/lib/kit-builder/index.ts",
-   "importado_por": 105
-  },
-  {
    "arquivo": "src/lib/db/postgrest.ts",
-   "importado_por": 94
+   "importado_por": 95
   },
   {
    "arquivo": "src/components/ui/scroll-area.tsx",
@@ -82,7 +82,7 @@
   },
   {
    "arquivo": "src/types/product-catalog.ts",
-   "importado_por": 86
+   "importado_por": 87
   },
   {
    "arquivo": "src/hooks/intelligence/index.ts",
@@ -114,7 +114,7 @@
   },
   {
    "arquivo": "src/integrations/supabase/types.ts",
-   "importado_por": 59
+   "importado_por": 60
   },
   {
    "arquivo": "src/utils/image-utils.ts",

@@ -3,7 +3,7 @@
  "format_version": 2,
  "stack": {
   "linguagens": [
-   "TypeScript (4907)",
+   "TypeScript (4922)",
    "SQL (3440)",
    "Markdown (1470)",
    "JavaScript (457)",
@@ -4667,11 +4667,11 @@
    },
    {
     "host": "test.supabase.co",
-    "arquivos": 11
+    "arquivos": 12
    },
    {
     "host": "cdn.test",
-    "arquivos": 10
+    "arquivos": 11
    },
    {
     "host": "fixture.invalid",
@@ -5446,7 +5446,7 @@
    },
    {
     "papel": "tooltip",
-    "ocorrencias": 17
+    "ocorrencias": 18
    },
    {
     "papel": "option",

@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "d1a098ad5dd0a71d5815abdd0786de514db9d56c",
+  "sha": "216fad0f11a15cb5c71a813abca48658da8bb893",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-17 20:13 UTC",
-  "files_total": 10777,
-  "code_files": 8813,
-  "code_lines": 1244858
+  "generated_at": "2026-11-17 21:15 UTC",
+  "files_total": 10792,
+  "code_files": 8828,
+  "code_lines": 1249696
  },
  "version": "1.3.2",
- "facts_hash": "8e57cc9ef2763c5a",
+ "facts_hash": "3da8879121740b0a",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -1120,8 +1120,8 @@
   "package_manager": "npm",
   "languages": {
    ".sql": 3440,
-   ".ts": 2997,
-   ".tsx": 1911,
+   ".ts": 3002,
+   ".tsx": 1921,
    ".mjs": 450,
    ".py": 15,
    ".js": 7
@@ -138485,6 +138485,86 @@
     "deps_count": 38
    },
    {
+    "path": "",
+    "file": "tests/pages/legacy-KitBuilder.partial-preservation.test.tsx",
+    "component": "legacy-KitBuilder.partial-preservation.test",
+    "tables_transitive": [
+     "...",
+     "custom_kits",
+     "generated_mockups",
+     "kit_collaborators",
+     "kit_comments",
+     "kit_quote_requests",
+     "kit_templates",
+     "kit_variants",
+     "login_attempts",
+     "password_reset_requests",
+     "profiles",
+     "role_permissions",
+     "user_roles"
+    ],
+    "invokes_transitive": [
+     "crm-db-bridge",
+     "mcp-keys-issue"
+    ],
+    "rpc_transitive": [
+     "create_kit_quote_transactional",
+     "fn_my_rpc",
+     "get_profile_and_roles",
+     "increment_kit_template_usage",
+     "log_user_logout",
+     "save_custom_kit_atomic",
+     "set_custom_kit_pinned"
+    ],
+    "deps_count": 132
+   },
+   {
+    "path": "",
+    "file": "tests/pages/legacy-QuoteBuilder.partial-preservation.test.tsx",
+    "component": "legacy-QuoteBuilder.partial-preservation.test",
+    "tables_transitive": [
+     "admin_audit_log",
+     "cart_templates",
+     "catalog_analytics",
+     "category_icons",
+     "discount_approval_requests",
+     "frontend_telemetry",
+     "order_items",
+     "orders",
+     "product_component_locations",
+     "product_components",
+     "product_price_freshness_overrides",
+     "product_variants",
+     "product_views",
+     "products",
+     "profiles",
+     "quote_history",
+     "quote_item_personalizations",
+     "quote_items",
+     "quotes",
+     "search_analytics",
+     "seller_cart_items",
+     "seller_carts",
+     "seller_discount_limits",
+     "t",
+     "video_variant_links"
+    ],
+    "invokes_transitive": [
+     "crm-db-bridge",
+     "external-db-bridge",
+     "mcp-keys-issue"
+    ],
+    "rpc_transitive": [
+     "fn_batch_update_cart_item_sort_order",
+     "fn_get_similar_products",
+     "get_catalog_bestseller_page",
+     "log_rls_denial",
+     "request_discount_approval_transactional",
+     "respond_discount_approval_transactional"
+    ],
+    "deps_count": 190
+   },
+   {
     "path": "*",
     "file": "src/pages/NotFound.tsx",
     "component": "NotFound",
@@ -144869,7 +144949,7 @@
     "file": ".github/workflows/wraparound-monitor-report.yml"
    }
   ],
-  "components_count": 1657,
+  "components_count": 1659,
   "hooks": [
    {
     "name": "useQuoteComments",
@@ -151578,14 +151658,15 @@
   },
   {
    "module": "tests",
-   "files": 1060,
-   "lines": 163447,
+   "files": 1075,
+   "lines": 168285,
    "tables": [
     "bot_detection_log",
     "clients",
     "companies",
     "crm_callback_events",
     "crm_seller_identity_links",
+    "custom_kits",
     "customization_price_tables",
     "e2e_cleanup_rate_limit",
     "foreign_quotes",
@@ -151595,6 +151676,7 @@
     "products",
     "produtos",
     "profiles",
+    "quote_templates",
     "quotes",
     "seller_cart_items",
     "stock_notes",
@@ -151663,6 +151745,7 @@
     "@testing-library/user-event",
     "@vitejs/plugin-react",
     "child_process",
+    "date-fns",
     "esbuild",
     "fast-check",
     "framer-motion",
@@ -151678,8 +151761,7 @@
     "node:module",
     "node:net",
     "node:os",
-    "node:path",
-    "node:test"
+    "node:path"
    ],
    "imports_modules": [
     ".github",
@@ -151777,11 +151859,11 @@
     "tests/components/DevInfraGateStability.test.tsx",
     "tests/components/DevOnlyBridgeOverlay.test.tsx",
     "tests/components/DevRoute.test.tsx",
+    "tests/components/IntelligenceBadges.legacy-compat.test.tsx",
     "tests/components/KitComposition.test.tsx",
     "tests/components/LastTestLine.test.tsx",
     "tests/components/LoadingScreen.test.tsx",
-    "tests/components/NotificationDrawer-a11y.test.tsx",
-    "tests/components/NotificationDrawer-debounce-config.test.tsx"
+    "tests/components/NotificationDrawer-a11y.test.tsx"
    ]
   }
  ],
@@ -152256,7 +152338,8 @@
      "src/pages/kit-builder/KitLibraryPage.tsx"
     ],
     "ref": [
-     "src/hooks/kit-builder/useKitTemplates.ts"
+     "src/hooks/kit-builder/useKitTemplates.ts",
+     "tests/hooks/useKitAutoSave.financial.test.tsx"
     ]
    },
    "customers": {
@@ -153504,7 +153587,8 @@
     "select": [
      "recovery/src-legacy/src/components/quotes/QuoteTemplatePicker.tsx",
      "recovery/src-legacy/src/hooks/useQuoteTemplates.ts",
-     "src/hooks/quotes/useQuoteTemplates.ts"
+     "src/hooks/quotes/useQuoteTemplates.ts",
+     "tests/hooks/useQuoteTemplates.raw-fetch.test.ts"
     ],
     "update": [
      "recovery/src-legacy/src/hooks/useQuoteTemplates.ts",
@@ -157486,7 +157570,8 @@
     "scripts/ai-context/gerar.unit.mjs"
    ],
    "save_custom_kit_atomic": [
-    "src/lib/kit-builder/persistence.ts"
+    "src/lib/kit-builder/persistence.ts",
+    "tests/hooks/useKitAutoSave.financial.test.tsx"
    ],
    "search_products_semantic": [
     "supabase/functions/semantic-search/index.ts",
@@ -157948,6 +158033,10 @@
    {
     "file": "tests/components/render-helpers.tsx",
     "count": 1
+   },
+   {
+    "file": "tests/hooks/legacy-admin-utils-preservation.test.ts",
+    "count": 2
    },
    {
     "file": "tests/rls/live-rls.test.ts",
@@ -266442,6 +266531,22 @@
     "name": "${persona} → ${area}: ${expectAccess ? "
    },
    {
+    "file": "tests/components/IntelligenceBadges.legacy-compat.test.tsx",
+    "name": "preserves legacy identity, emoji and tooltip\n * for %s"
+   },
+   {
+    "file": "tests/components/IntelligenceBadges.legacy-compat.test.tsx",
+    "name": "IntelligenceBadges preserves the canonical badge contract"
+   },
+   {
+    "file": "tests/components/IntelligenceBadges.legacy-compat.test.tsx",
+    "name": "keeps canonical identity, icon and tooltip for %s"
+   },
+   {
+    "file": "tests/components/IntelligenceBadges.legacy-compat.test.tsx",
+    "name": "keeps input order, turnover and the explicit illustrative-data label"
+   },
+   {
     "file": "tests/components/KitComposition.test.tsx",
     "name": "KitComposition"
    },
@@ -267640,6 +267745,54 @@
    {
     "file": "tests/components/ProtectedRoute.test.tsx",
     "name": "renders when requiredRole="
+   },
+   {
+    "file": "tests/components/QuoteAutoSave.recovery.test.tsx",
+    "name": "QuoteAutoSave optional recovery preserves existing contracts"
+   },
+   {
+    "file": "tests/components/QuoteAutoSave.recovery.test.tsx",
+    "name": "keeps the original indicator and no restore control without a callback"
+   },
+   {
+    "file": "tests/components/QuoteAutoSave.recovery.test.tsx",
+    "name": "keeps %s untouched and offers no recovery"
+   },
+   {
+    "file": "tests/components/QuoteAutoSave.recovery.test.tsx",
+    "name": "handles %s storage without destructive recovery"
+   },
+   {
+    "file": "tests/components/QuoteAutoSave.recovery.test.tsx",
+    "name": "hides an already restored identical snapshot"
+   },
+   {
+    "file": "tests/components/QuoteAutoSave.recovery.test.tsx",
+    "name": "keeps restored partial JSON on the next autosave, retains dirty guard and server-save reset"
+   },
+   {
+    "file": "tests/components/QuoteAutoSave.recovery.test.tsx",
+    "name": "preserves debounce and the five-version bound"
+   },
+   {
+    "file": "tests/components/QuoteAutoSave.recovery.test.tsx",
+    "name": "handles inaccessible storage without crashing"
+   },
+   {
+    "file": "tests/components/QuoteAutoSave.recovery.test.tsx",
+    "name": "legacy quote draft payload validation"
+   },
+   {
+    "file": "tests/components/QuoteAutoSave.recovery.test.tsx",
+    "name": "keeps extra JSON fields at root, item, and personalization boundaries"
+   },
+   {
+    "file": "tests/components/QuoteAutoSave.recovery.test.tsx",
+    "name": "rejects invalid known fields before changing live quote state: %j"
+   },
+   {
+    "file": "tests/components/QuoteAutoSave.recovery.test.tsx",
+    "name": "supports older partial snapshots without requiring newly introduced fields"
    },
    {
     "file": "tests/components/QuoteBuilderSummaryColumn.confirmAll.test.tsx",
@@ -281430,6 +281583,38 @@
     "name": "should combine catalog flags + intelligence badges"
    },
    {
+    "file": "tests/hooks/legacy-admin-utils-preservation.test.ts",
+    "name": "ramo filter keeps cascading selection and clearAll contract"
+   },
+   {
+    "file": "tests/hooks/legacy-admin-utils-preservation.test.ts",
+    "name": "ramo=$ramo selected=$selected"
+   },
+   {
+    "file": "tests/hooks/legacy-admin-utils-preservation.test.ts",
+    "name": "removes only segments belonging to the deselected ramo"
+   },
+   {
+    "file": "tests/hooks/legacy-admin-utils-preservation.test.ts",
+    "name": "legacy fiscal writes keep their supplier/product invalidation key"
+   },
+   {
+    "file": "tests/hooks/legacy-admin-utils-preservation.test.ts",
+    "name": "%s keeps scoped VSS operation and invalidation"
+   },
+   {
+    "file": "tests/hooks/legacy-admin-utils-preservation.test.ts",
+    "name": "category rows retain partial database values"
+   },
+   {
+    "file": "tests/hooks/legacy-admin-utils-preservation.test.ts",
+    "name": "returns every original row and fields without filtering or normalizing"
+   },
+   {
+    "file": "tests/hooks/legacy-admin-utils-preservation.test.ts",
+    "name": "handles $name with $expected"
+   },
+   {
     "file": "tests/hooks/mockupGenerationService.download.test.ts",
     "name": "Mockup PDF downloads retain object metadata and historical fallback"
    },
@@ -283218,6 +283403,70 @@
     "name": "logLoginAttempt invoca a edge function correta"
    },
    {
+    "file": "tests/hooks/useKitAutoSave.financial.test.tsx",
+    "name": "Legacy autosave respects explicit financial availability"
+   },
+   {
+    "file": "tests/hooks/useKitAutoSave.financial.test.tsx",
+    "name": "never writes a tagged unknown price even after a real edit and elapsed debounce"
+   },
+   {
+    "file": "tests/hooks/useKitAutoSave.financial.test.tsx",
+    "name": "persists a genuine zero after an edit without changing the original undefined-flag contract"
+   },
+   {
+    "file": "tests/hooks/useKitAutoSave.legacy.test.tsx",
+    "name": "Original autosave confirms real server success and preserves pending work"
+   },
+   {
+    "file": "tests/hooks/useKitAutoSave.legacy.test.tsx",
+    "name": "never saves on initial hydration, empty data or an anonymous mount"
+   },
+   {
+    "file": "tests/hooks/useKitAutoSave.legacy.test.tsx",
+    "name": "callback churn and equivalent rerenders do not cancel an existing debounce"
+   },
+   {
+    "file": "tests/hooks/useKitAutoSave.legacy.test.tsx",
+    "name": "creation %s never marks saved or invokes success callback"
+   },
+   {
+    "file": "tests/hooks/useKitAutoSave.legacy.test.tsx",
+    "name": "update %s never claims success"
+   },
+   {
+    "file": "tests/hooks/useKitAutoSave.legacy.test.tsx",
+    "name": "an update whose RPC returns another row adopts it instead of claiming the stale id"
+   },
+   {
+    "file": "tests/hooks/useKitAutoSave.legacy.test.tsx",
+    "name": "a confirmed update sets saved time and reports the same kit id, never a new one"
+   },
+   {
+    "file": "tests/hooks/useKitAutoSave.legacy.test.tsx",
+    "name": "a new edit after a failed save remains eligible for persistence"
+   },
+   {
+    "file": "tests/hooks/useKitAutoSave.legacy.test.tsx",
+    "name": "unmount cancels a pending timer"
+   },
+   {
+    "file": "tests/hooks/useKitAutoSave.legacy.test.tsx",
+    "name": "%s leaves the pending timer scheduled and still issues exactly one save (known defect)"
+   },
+   {
+    "file": "tests/hooks/useKitAutoSave.legacy.test.tsx",
+    "name": "%s does not suppress a late response or its callback (known defect)"
+   },
+   {
+    "file": "tests/hooks/useKitAutoSave.legacy.test.tsx",
+    "name": "serializes an edit that reaches its debounce while the previous save is in flight"
+   },
+   {
+    "file": "tests/hooks/useKitAutoSave.legacy.test.tsx",
+    "name": "created-ID handoff preserves the next pending edit without inserting a duplicate kit"
+   },
+   {
     "file": "tests/hooks/useKitAutoSave.validation-recovery.test.tsx",
     "name": "Canonical autosave preserves failed validation as a recoverable unsaved draft"
    },
@@ -283354,6 +283603,30 @@
     "name": "restaura o fluxo persistido sem inferi-lo do passo de revisão"
    },
    {
+    "file": "tests/hooks/useKitBuilderPageState.financial.test.tsx",
+    "name": "Legacy financial availability reaches UI state and every action boundary"
+   },
+   {
+    "file": "tests/hooks/useKitBuilderPageState.financial.test.tsx",
+    "name": "snapshot hydration preserves the unavailable flag and partial JSON without editing the original row"
+   },
+   {
+    "file": "tests/hooks/useKitBuilderPageState.financial.test.tsx",
+    "name": "rejects malformed priceKnown=%s rather than treating it as known"
+   },
+   {
+    "file": "tests/hooks/useKitBuilderPageState.financial.test.tsx",
+    "name": "keeps unknown items selected and invalidates the composition"
+   },
+   {
+    "file": "tests/hooks/useKitBuilderPageState.financial.test.tsx",
+    "name": "honors a genuine zero price and the historical undefined flag"
+   },
+   {
+    "file": "tests/hooks/useKitBuilderPageState.financial.test.tsx",
+    "name": "a variant callback cannot relabel an unknown price as known or normalize a negative value"
+   },
+   {
     "file": "tests/hooks/useKitBuilderPageState.quantity.test.tsx",
     "name": "Canonical controller guards nullable historical drafts without writes"
    },
@@ -283464,6 +283737,34 @@
    {
     "file": "tests/hooks/useKitBuilderQueries.contract.test.ts",
     "name": "does not turn an invalid box range into a silent empty catalogue"
+   },
+   {
+    "file": "tests/hooks/useKitBuilderQueries.legacy.test.tsx",
+    "name": "Original query uses Gold, all pages and truthful state"
+   },
+   {
+    "file": "tests/hooks/useKitBuilderQueries.legacy.test.tsx",
+    "name": "loads >200 boxes/items and server catalog facts; never treats shipping package as product role"
+   },
+   {
+    "file": "tests/hooks/useKitBuilderQueries.legacy.test.tsx",
+    "name": "preserves aggregated positive/zero/unknown stock distinctions"
+   },
+   {
+    "file": "tests/hooks/useKitBuilderQueries.legacy.test.tsx",
+    "name": "keeps unfiltered AI catalogs while search/material/dimension selectors filter locally"
+   },
+   {
+    "file": "tests/hooks/useKitBuilderQueries.legacy.test.tsx",
+    "name": "returns real empty arrays instead of production mock data"
+   },
+   {
+    "file": "tests/hooks/useKitBuilderQueries.legacy.test.tsx",
+    "name": "exposes server failure and no fabricated product fallback"
+   },
+   {
+    "file": "tests/hooks/useKitBuilderQueries.legacy.test.tsx",
+    "name": "stock failure becomes unknown rather than zero or endless loading"
    },
    {
     "file": "tests/hooks/useKitBuilderQueries.test.ts",
@@ -283622,6 +283923,70 @@
     "name": "não rouba atalhos enquanto o foco está em um campo de texto"
    },
    {
+    "file": "tests/hooks/useLegacyCatalogContracts.test.ts",
+    "name": "rejects malformed\n * batch record %#"
+   },
+   {
+    "file": "tests/hooks/useLegacyCatalogContracts.test.ts",
+    "name": "original advanced filter state"
+   },
+   {
+    "file": "tests/hooks/useLegacyCatalogContracts.test.ts",
+    "name": "loads the current default without an orphaned quantityRange crash"
+   },
+   {
+    "file": "tests/hooks/useLegacyCatalogContracts.test.ts",
+    "name": "ignores orphaned legacy quantityRange %# without crashing"
+   },
+   {
+    "file": "tests/hooks/useLegacyCatalogContracts.test.ts",
+    "name": "original lightweight catalog boundary"
+   },
+   {
+    "file": "tests/hooks/useLegacyCatalogContracts.test.ts",
+    "name": "preserves price precedence for $sale_price / $cost_price"
+   },
+   {
+    "file": "tests/hooks/useLegacyCatalogContracts.test.ts",
+    "name": "preserves stock %s and status %s"
+   },
+   {
+    "file": "tests/hooks/useLegacyCatalogContracts.test.ts",
+    "name": "keeps a partial product rather than silently dropping the row"
+   },
+   {
+    "file": "tests/hooks/useLegacyCatalogContracts.test.ts",
+    "name": "preserves description, image precedence, minimum quantity and price age"
+   },
+   {
+    "file": "tests/hooks/useLegacyCatalogContracts.test.ts",
+    "name": "original novelty and replenishment converters"
+   },
+   {
+    "file": "tests/hooks/useLegacyCatalogContracts.test.ts",
+    "name": "propagates real quantity %s and status %s in both converters"
+   },
+   {
+    "file": "tests/hooks/useLegacyCatalogContracts.test.ts",
+    "name": "original catalog filters"
+   },
+   {
+    "file": "tests/hooks/useLegacyCatalogContracts.test.ts",
+    "name": "applies filters %# without mutating the source"
+   },
+   {
+    "file": "tests/hooks/useLegacyCatalogContracts.test.ts",
+    "name": "preserves empty pre-fetched material intersection"
+   },
+   {
+    "file": "tests/hooks/useLegacyCatalogContracts.test.ts",
+    "name": "uses the immutable sorter return for visible %s order"
+   },
+   {
+    "file": "tests/hooks/useLegacyCatalogContracts.test.ts",
+    "name": "retains fuzzy result order when %s skips sorting"
+   },
+   {
     "file": "tests/hooks/useLegacyLintDerived.test.tsx",
     "name": "legacy derived memo preservation"
    },
@@ -283732,6 +284097,86 @@
    {
     "file": "tests/hooks/useLegacyLintLifecycle.test.ts",
     "name": "keeps successful sibling results when another technique request fails"
+   },
+   {
+    "file": "tests/hooks/useLegacyLintMemoContracts.test.tsx",
+    "name": "ROOT search context, ranking and actual history"
+   },
+   {
+    "file": "tests/hooks/useLegacyLintMemoContracts.test.tsx",
+    "name": "prefers explicit products and places exact SKU first without duplicate matches"
+   },
+   {
+    "file": "tests/hooks/useLegacyLintMemoContracts.test.tsx",
+    "name": "uses context products for an empty explicit source and reacts to new context data"
+   },
+   {
+    "file": "tests/hooks/useLegacyLintMemoContracts.test.tsx",
+    "name": "handles missing provider and short queries without leaking suggestions"
+   },
+   {
+    "file": "tests/hooks/useLegacyLintMemoContracts.test.tsx",
+    "name": "matches supplier reference and refreshes explicit products after rerender"
+   },
+   {
+    "file": "tests/hooks/useLegacyLintMemoContracts.test.tsx",
+    "name": "keeps fuzzy product ranking and real add/remove/clear history"
+   },
+   {
+    "file": "tests/hooks/useLegacyLintMemoContracts.test.tsx",
+    "name": "ROOT product match valid enum subsets and ranking"
+   },
+   {
+    "file": "tests/hooks/useLegacyLintMemoContracts.test.tsx",
+    "name": "preserves the single %s match type"
+   },
+   {
+    "file": "tests/hooks/useLegacyLintMemoContracts.test.tsx",
+    "name": "preserves pair %s + %s and filter order"
+   },
+   {
+    "file": "tests/hooks/useLegacyLintMemoContracts.test.tsx",
+    "name": "retains all three default types, exact scores/reasons, and descending rank across equivalent filters"
+   },
+   {
+    "file": "tests/hooks/useLegacyLintMemoContracts.test.tsx",
+    "name": "keeps stock, category, supplier and minimum-score predicates"
+   },
+   {
+    "file": "tests/hooks/useLegacyLintMemoContracts.test.tsx",
+    "name": "returns empty for an empty type subset, absent source, empty catalog, and self-only pool"
+   },
+   {
+    "file": "tests/hooks/useLegacyLintMemoContracts.test.tsx",
+    "name": "ROOT catalog stats across pagination-only changes"
+   },
+   {
+    "file": "tests/hooks/useLegacyLintMemoContracts.test.tsx",
+    "name": "preserves all statistics and contextual favorites when hasNextPage starts %s"
+   },
+   {
+    "file": "tests/hooks/useLegacyLintMemoContracts.test.tsx",
+    "name": "deduplicates locally filtered counts and reflects favorite count changes"
+   },
+   {
+    "file": "tests/hooks/useLegacyLintMemoContracts.test.tsx",
+    "name": "keeps safe local fallback statistics for an empty catalog"
+   },
+   {
+    "file": "tests/hooks/useLegacyLintMemoContracts.test.tsx",
+    "name": "ROOT product match adversarial input boundaries"
+   },
+   {
+    "file": "tests/hooks/useLegacyLintMemoContracts.test.tsx",
+    "name": "does not interpret one comma-containing string as two selected enum values"
+   },
+   {
+    "file": "tests/hooks/useLegacyLintMemoContracts.test.tsx",
+    "name": "keeps only exact valid members next to a comma-containing value"
+   },
+   {
+    "file": "tests/hooks/useLegacyLintMemoContracts.test.tsx",
+    "name": "accepts the explicit valid triple and preserves the ranked results reference on rerender"
    },
    {
     "file": "tests/hooks/useLoginAttempts.test.ts",
@@ -283860,6 +284305,42 @@
    {
     "file": "tests/hooks/useMagicUpState.brandkit.test.tsx",
     "name": "sem kit salvo, editar o kit e trocar a logo preserva as edições locais"
+   },
+   {
+    "file": "tests/hooks/useMagicUpState.legacy.test.tsx",
+    "name": "Original MagicUp search and asynchronous navigation"
+   },
+   {
+    "file": "tests/hooks/useMagicUpState.legacy.test.tsx",
+    "name": "first load failure finishes initial skeleton and exposes no fabricated products"
+   },
+   {
+    "file": "tests/hooks/useMagicUpState.legacy.test.tsx",
+    "name": "debounces real search, keeps selection and accepts only the latest server response"
+   },
+   {
+    "file": "tests/hooks/useMagicUpState.legacy.test.tsx",
+    "name": "clears selected-product loading state and suppresses stale images/colors after navigation"
+   },
+   {
+    "file": "tests/hooks/useMagicUpState.legacy.test.tsx",
+    "name": "hydrates a changed brand-kit version and preserves local edits across a same-version refetch"
+   },
+   {
+    "file": "tests/hooks/useMagicUpState.legacy.test.tsx",
+    "name": "hydrates the same client for a changed authenticated user scope"
+   },
+   {
+    "file": "tests/hooks/useMagicUpState.legacy.test.tsx",
+    "name": "MagicUp active Gold colors/images"
+   },
+   {
+    "file": "tests/hooks/useMagicUpState.legacy.test.tsx",
+    "name": "queries real product IDs/order/limits and preserves image/color behavior"
+   },
+   {
+    "file": "tests/hooks/useMagicUpState.legacy.test.tsx",
+    "name": "a late color/gallery response from the previous product cannot replace current assets"
    },
    {
     "file": "tests/hooks/useMockupGenerator.test.ts",
@@ -284588,6 +285069,42 @@
    {
     "file": "tests/hooks/useQuoteItems.bugfix.test.ts",
     "name": "activeItemIndex deve ser null ao remover o próprio item ativo"
+   },
+   {
+    "file": "tests/hooks/useQuoteTemplates.raw-fetch.test.ts",
+    "name": "real canonical fetch raw preservation"
+   },
+   {
+    "file": "tests/hooks/useQuoteTemplates.raw-fetch.test.ts",
+    "name": "keeps the original non-array items and primitive metadata in the raw fields while coercing the typed view"
+   },
+   {
+    "file": "tests/hooks/useQuoteTemplates.raw-fetch.test.ts",
+    "name": "keeps the complete raw partial array without dropping the incomplete entry"
+   },
+   {
+    "file": "tests/hooks/useQuoteTemplates.raw-fetch.test.ts",
+    "name": "retains valid items, array metadata and the real extra table fields"
+   },
+   {
+    "file": "tests/hooks/useQuoteVersions.legacy.test.ts",
+    "name": "legacy quote version raw financial contract"
+   },
+   {
+    "file": "tests/hooks/useQuoteVersions.legacy.test.ts",
+    "name": "normalizes nullable financial values, status and timestamps to the non-null QuoteVersion contract"
+   },
+   {
+    "file": "tests/hooks/useQuoteVersions.legacy.test.ts",
+    "name": "preserves the exact financial value %s"
+   },
+   {
+    "file": "tests/hooks/useQuoteVersions.legacy.test.ts",
+    "name": "preserves every version and associates item counts with the correct ID"
+   },
+   {
+    "file": "tests/hooks/useQuoteVersions.legacy.test.ts",
+    "name": "does not query without a target quote ID"
    },
    {
     "file": "tests/hooks/useQuotes-helpers.test.ts",
@@ -289034,6 +289551,42 @@
     "name": "caixa de personalização com enabled inválido continua recusada (não descarta em silêncio)"
    },
    {
+    "file": "tests/lib/legacy-kit-price-source.test.ts",
+    "name": "legacy Gold price source preserves unknown and factual zero distinctly"
+   },
+   {
+    "file": "tests/lib/legacy-kit-price-source.test.ts",
+    "name": "keeps a missing-price product out of the kit instead of pricing it at zero"
+   },
+   {
+    "file": "tests/lib/legacy-kit-price-source.test.ts",
+    "name": "preserves a genuine zero selling price rather than falling back to an unrelated base value"
+   },
+   {
+    "file": "tests/lib/legacy-kit-price-source.test.ts",
+    "name": "does not convert an invalid negative price into a legitimate zero"
+   },
+   {
+    "file": "tests/lib/legacy-kit-price-source.test.ts",
+    "name": "rejects the invalid raw %s price instead of treating it as a priced line"
+   },
+   {
+    "file": "tests/lib/legacy-kit-price-source.test.ts",
+    "name": "uses an actual base price only when the sale price is absent"
+   },
+   {
+    "file": "tests/lib/legacy-kit-price-source.test.ts",
+    "name": "excludes unavailable financial facts from AI while retaining genuine zero compositions"
+   },
+   {
+    "file": "tests/lib/legacy-kit-price-source.test.ts",
+    "name": "retains historical undefined flags and blocks only explicit false"
+   },
+   {
+    "file": "tests/lib/legacy-kit-price-source.test.ts",
+    "name": "fails closed at the shared persistence boundary without dropping the selected item"
+   },
+   {
     "file": "tests/lib/logger.test.ts",
     "name": "logger"
    },
@@ -292700,6 +293253,54 @@
    {
     "file": "tests/pages/QuoteBuilder.test.ts",
     "name": "reports multiple errors"
+   },
+   {
+    "file": "tests/pages/legacy-KitBuilder.partial-preservation.test.tsx",
+    "name": "legacy KitBuilder preserves saved snapshots and functional actions"
+   },
+   {
+    "file": "tests/pages/legacy-KitBuilder.partial-preservation.test.tsx",
+    "name": "shows loading before mounting editors so a late snapshot cannot overwrite fresh user input"
+   },
+   {
+    "file": "tests/pages/legacy-KitBuilder.partial-preservation.test.tsx",
+    "name": "shows a recoverable navigation path without concealing the original malformed-snapshot error"
+   },
+   {
+    "file": "tests/pages/legacy-KitBuilder.partial-preservation.test.tsx",
+    "name": "requires an explicit quantity confirmation for a historical unknown quantity"
+   },
+   {
+    "file": "tests/pages/legacy-KitBuilder.partial-preservation.test.tsx",
+    "name": "keeps the full Gold catalogs, AI action, PDF export and quote action connected to real state"
+   },
+   {
+    "file": "tests/pages/legacy-KitBuilder.partial-preservation.test.tsx",
+    "name": "propagates the unknown price of a selected item to the pricing surfaces"
+   },
+   {
+    "file": "tests/pages/legacy-QuoteBuilder.partial-preservation.test.tsx",
+    "name": "legacy QuoteBuilder — fiação que permanece na página"
+   },
+   {
+    "file": "tests/pages/legacy-QuoteBuilder.partial-preservation.test.tsx",
+    "name": "keeps the commercial payment-method field wired to the builder state"
+   },
+   {
+    "file": "tests/pages/legacy-QuoteBuilder.partial-preservation.test.tsx",
+    "name": "connects autosave dirty changes to the existing navigation guard"
+   },
+   {
+    "file": "tests/pages/legacy-QuoteBuilder.partial-preservation.test.tsx",
+    "name": "legacy QuoteBuilder — restauração de rascunho parcial (useQuoteBuilderState)"
+   },
+   {
+    "file": "tests/pages/legacy-QuoteBuilder.partial-preservation.test.tsx",
+    "name": "restores real item metadata and payment fields without navigating away"
+   },
+   {
+    "file": "tests/pages/legacy-QuoteBuilder.partial-preservation.test.tsx",
+    "name": "restores contact metadata, commercial margin and the visible dated-delivery mode"
    },
    {
     "file": "tests/pages/kit-builder/KitLibraryPage.ownership.test.ts",
@@ -398958,6 +399559,13 @@
     "msg": "1 chamada(s) `.from(variável)` — tabela só conhecida em runtime",
     "where": [
      "tests/components/render-helpers.tsx"
+    ]
+   },
+   {
+    "kind": "dinâmico",
+    "msg": "2 chamada(s) `.from(variável)` — tabela só conhecida em runtime",
+    "where": [
+     "tests/hooks/legacy-admin-utils-preservation.test.ts"
     ]
    },
    {
@@ -520245,6 +520853,22 @@
     "${persona} → ${area}: ${expectAccess ? "
    ]
   },
+  "tests/components/IntelligenceBadges.legacy-compat.test.tsx": {
+   "path": "tests/components/IntelligenceBadges.legacy-compat.test.tsx",
+   "lines": 191,
+   "is_test": true,
+   "rule_comments": [
+    "IntelligenceBadge[]`, badgeConfig (linhas 17-61) tem apenas os 9 tipos canonicos e o",
+    "perdeu foi apenas a parte \"input misto legado+canonico\", que o contrato atual nao",
+    "`{ type, label, icon, color, priority, description? }` e apenas 9 tipos."
+   ],
+   "tests": [
+    "preserves legacy identity, emoji and tooltip\n * for %s",
+    "IntelligenceBadges preserves the canonical badge contract",
+    "keeps canonical identity, icon and tooltip for %s",
+    "keeps input order, turnover and the explicit illustrative-data label"
+   ]
+  },
   "tests/components/KitComposition.test.tsx": {
    "path": "tests/components/KitComposition.test.tsx",
    "lines": 257,
@@ -520862,6 +521486,35 @@
     "renders children when requireAdmin=true and user is supervisor",
     "blocks with Acesso Restrito when requiredRole=",
     "renders when requiredRole="
+   ]
+  },
+  "tests/components/QuoteAutoSave.recovery.test.tsx": {
+   "path": "tests/components/QuoteAutoSave.recovery.test.tsx",
+   "lines": 278,
+   "is_test": true,
+   "errors": [
+    "blocked"
+   ],
+   "rule_comments": [
+    "(linhas 303-366) renderiza apenas o indicador dentro do Tooltip, sem nenhum botão.",
+    "resgatado. Como a regra proíbe tocar src/, os casos que dependem do botão foram",
+    "dependia do clique em \"Restaurar rascunho\" apenas como gatilho; as asserções",
+    "\"legacy quote draft payload validation\" (passthrough em root/item/personalization,",
+    "`localStorage.getItem`; a leitura/validação vive só no hook imperativo"
+   ],
+   "tests": [
+    "QuoteAutoSave optional recovery preserves existing contracts",
+    "keeps the original indicator and no restore control without a callback",
+    "keeps %s untouched and offers no recovery",
+    "handles %s storage without destructive recovery",
+    "hides an already restored identical snapshot",
+    "keeps restored partial JSON on the next autosave, retains dirty guard and server-save reset",
+    "preserves debounce and the five-version bound",
+    "handles inaccessible storage without crashing",
+    "legacy quote draft payload validation",
+    "keeps extra JSON fields at root, item, and personalization boundaries",
+    "rejects invalid known fields before changing live quote state: %j",
+    "supports older partial snapshots without requiring newly introduced fields"
    ]
   },
   "tests/components/QuoteBuilderSummaryColumn.confirmAll.test.tsx": {
@@ -528925,6 +529578,27 @@
     "should combine catalog flags + intelligence badges"
    ]
   },
+  "tests/hooks/legacy-admin-utils-preservation.test.ts": {
+   "path": "tests/hooks/legacy-admin-utils-preservation.test.ts",
+   "lines": 349,
+   "is_test": true,
+   "dyn_from": 2,
+   "rule_comments": [
+    "`@/lib/external-db` e troquei as asserções de payload `{table, filters, limit}` /",
+    "limit(1), depois update(payload)/delete() -> eq('id','source'). O contrato que o",
+    "apenas como campo morto do state (:57), nunca escrito. Chamar"
+   ],
+   "tests": [
+    "ramo filter keeps cascading selection and clearAll contract",
+    "ramo=$ramo selected=$selected",
+    "removes only segments belonging to the deselected ramo",
+    "legacy fiscal writes keep their supplier/product invalidation key",
+    "%s keeps scoped VSS operation and invalidation",
+    "category rows retain partial database values",
+    "returns every original row and fields without filtering or normalizing",
+    "handles $name with $expected"
+   ]
+  },
   "tests/hooks/mockupGenerationService.download.test.ts": {
    "path": "tests/hooks/mockupGenerationService.download.test.ts",
    "lines": 33,
@@ -529856,6 +530530,49 @@
     "logLoginAttempt invoca a edge function correta"
    ]
   },
+  "tests/hooks/useKitAutoSave.financial.test.tsx": {
+   "path": "tests/hooks/useKitAutoSave.financial.test.tsx",
+   "lines": 150,
+   "is_test": true,
+   "tables": [
+    {
+     "table": "custom_kits",
+     "op": "ref"
+    }
+   ],
+   "rpc": [
+    "save_custom_kit_atomic"
+   ],
+   "tests": [
+    "Legacy autosave respects explicit financial availability",
+    "never writes a tagged unknown price even after a real edit and elapsed debounce",
+    "persists a genuine zero after an edit without changing the original undefined-flag contract"
+   ]
+  },
+  "tests/hooks/useKitAutoSave.legacy.test.tsx": {
+   "path": "tests/hooks/useKitAutoSave.legacy.test.tsx",
+   "lines": 472,
+   "is_test": true,
+   "rule_comments": [
+    "tests/hooks/useKitAutoSave.validation-recovery.test.tsx (30/30). Nenhum",
+    "A failed automatic save must stay visible, never log-only."
+   ],
+   "tests": [
+    "Original autosave confirms real server success and preserves pending work",
+    "never saves on initial hydration, empty data or an anonymous mount",
+    "callback churn and equivalent rerenders do not cancel an existing debounce",
+    "creation %s never marks saved or invokes success callback",
+    "update %s never claims success",
+    "an update whose RPC returns another row adopts it instead of claiming the stale id",
+    "a confirmed update sets saved time and reports the same kit id, never a new one",
+    "a new edit after a failed save remains eligible for persistence",
+    "unmount cancels a pending timer",
+    "%s leaves the pending timer scheduled and still issues exactly one save (known defect)",
+    "%s does not suppress a late response or its callback (known defect)",
+    "serializes an edit that reaches its debounce while the previous save is in flight",
+    "created-ID handoff preserves the next pending edit without inserting a duplicate kit"
+   ]
+  },
   "tests/hooks/useKitAutoSave.validation-recovery.test.tsx": {
    "path": "tests/hooks/useKitAutoSave.validation-recovery.test.tsx",
    "lines": 171,
@@ -529912,6 +530629,24 @@
     "restaura o fluxo persistido sem inferi-lo do passo de revisão"
    ]
   },
+  "tests/hooks/useKitBuilderPageState.financial.test.tsx": {
+   "path": "tests/hooks/useKitBuilderPageState.financial.test.tsx",
+   "lines": 390,
+   "is_test": true,
+   "rule_comments": [
+    "expõe apenas `isSaving, isAutoSaving, isCreatingQuote, lastSavedAt, autoSaveError,",
+    "mas migrou para a validação do kit: `getKitValidationErrors` inclui 'Há preço não",
+    "somente na UI, via `hasKnownKitPrices` nos componentes"
+   ],
+   "tests": [
+    "Legacy financial availability reaches UI state and every action boundary",
+    "snapshot hydration preserves the unavailable flag and partial JSON without editing the original row",
+    "rejects malformed priceKnown=%s rather than treating it as known",
+    "keeps unknown items selected and invalidates the composition",
+    "honors a genuine zero price and the historical undefined flag",
+    "a variant callback cannot relabel an unknown price as known or normalize a negative value"
+   ]
+  },
   "tests/hooks/useKitBuilderPageState.quantity.test.tsx": {
    "path": "tests/hooks/useKitBuilderPageState.quantity.test.tsx",
    "lines": 329,
@@ -529966,6 +530701,23 @@
     "keeps non-packaging products eligible even when shipping metadata mentions a box",
     "matches names and categories independently of accents or case",
     "does not turn an invalid box range into a silent empty catalogue"
+   ]
+  },
+  "tests/hooks/useKitBuilderQueries.legacy.test.tsx": {
+   "path": "tests/hooks/useKitBuilderQueries.legacy.test.tsx",
+   "lines": 180,
+   "is_test": true,
+   "temporal": [
+    "timeout: 4000,"
+   ],
+   "tests": [
+    "Original query uses Gold, all pages and truthful state",
+    "loads >200 boxes/items and server catalog facts; never treats shipping package as product role",
+    "preserves aggregated positive/zero/unknown stock distinctions",
+    "keeps unfiltered AI catalogs while search/material/dimension selectors filter locally",
+    "returns real empty arrays instead of production mock data",
+    "exposes server failure and no fabricated product fallback",
+    "stock failure becomes unknown rather than zero or endless loading"
    ]
   },
   "tests/hooks/useKitBuilderQueries.test.ts": {
@@ -530049,6 +530801,32 @@
     "não rouba atalhos enquanto o foco está em um campo de texto"
    ]
   },
+  "tests/hooks/useLegacyCatalogContracts.test.ts": {
+   "path": "tests/hooks/useLegacyCatalogContracts.test.ts",
+   "lines": 289,
+   "is_test": true,
+   "rule_comments": [
+    "`src/hooks/products/useProductsLightweight.ts` exporta apenas"
+   ],
+   "tests": [
+    "rejects malformed\n * batch record %#",
+    "original advanced filter state",
+    "loads the current default without an orphaned quantityRange crash",
+    "ignores orphaned legacy quantityRange %# without crashing",
+    "original lightweight catalog boundary",
+    "preserves price precedence for $sale_price / $cost_price",
+    "preserves stock %s and status %s",
+    "keeps a partial product rather than silently dropping the row",
+    "preserves description, image precedence, minimum quantity and price age",
+    "original novelty and replenishment converters",
+    "propagates real quantity %s and status %s in both converters",
+    "original catalog filters",
+    "applies filters %# without mutating the source",
+    "preserves empty pre-fetched material intersection",
+    "uses the immutable sorter return for visible %s order",
+    "retains fuzzy result order when %s skips sorting"
+   ]
+  },
   "tests/hooks/useLegacyLintDerived.test.tsx": {
    "path": "tests/hooks/useLegacyLintDerived.test.tsx",
    "lines": 133,
@@ -530105,6 +530883,41 @@
    ],
    "side_effects": [
     "invoke("
+   ]
+  },
+  "tests/hooks/useLegacyLintMemoContracts.test.tsx": {
+   "path": "tests/hooks/useLegacyLintMemoContracts.test.tsx",
+   "lines": 684,
+   "is_test": true,
+   "rule_comments": [
+    "SINGLE_TOKEN_IDENTICAL_SIMILARITY = 1: com apenas 1 token compartilhado so e"
+   ],
+   "tests": [
+    "ROOT search context, ranking and actual history",
+    "prefers explicit products and places exact SKU first without duplicate matches",
+    "uses context products for an empty explicit source and reacts to new context data",
+    "handles missing provider and short queries without leaking suggestions",
+    "matches supplier reference and refreshes explicit products after rerender",
+    "keeps fuzzy product ranking and real add/remove/clear history",
+    "ROOT product match valid enum subsets and ranking",
+    "preserves the single %s match type",
+    "preserves pair %s + %s and filter order",
+    "retains all three default types, exact scores/reasons, and descending rank across equivalent filters",
+    "keeps stock, category, supplier and minimum-score predicates",
+    "returns empty for an empty type subset, absent source, empty catalog, and self-only pool",
+    "ROOT catalog stats across pagination-only changes",
+    "preserves all statistics and contextual favorites when hasNextPage starts %s",
+    "deduplicates locally filtered counts and reflects favorite count changes",
+    "keeps safe local fallback statistics for an empty catalog",
+    "ROOT product match adversarial input boundaries",
+    "does not interpret one comma-containing string as two selected enum values",
+    "keeps only exact valid members next to a comma-containing value",
+    "accepts the explicit valid triple and preserves the ranked results reference on rerender"
+   ],
+   "side_effects": [
+    ".add('outside'",
+    ".add('p1'",
+    ".add('p2'"
    ]
   },
   "tests/hooks/useLoginAttempts.test.ts": {
@@ -530185,6 +530998,26 @@
     "useMagicUpState — Brand Kit não apaga edições nem desfaz a logo principal (E-6)",
     "editar o kit e trocar a logo mantém as edições locais e a logo principal escolhida",
     "sem kit salvo, editar o kit e trocar a logo preserva as edições locais"
+   ]
+  },
+  "tests/hooks/useMagicUpState.legacy.test.tsx": {
+   "path": "tests/hooks/useMagicUpState.legacy.test.tsx",
+   "lines": 507,
+   "is_test": true,
+   "rule_comments": [
+    "* E-6 — Brand Kit do Magic Up: o efeito de sincronização NÃO pode apagar",
+    "* Chain mínimo do supabase-js: métodos encadeáveis + terminais que resolvem. */"
+   ],
+   "tests": [
+    "Original MagicUp search and asynchronous navigation",
+    "first load failure finishes initial skeleton and exposes no fabricated products",
+    "debounces real search, keeps selection and accepts only the latest server response",
+    "clears selected-product loading state and suppresses stale images/colors after navigation",
+    "hydrates a changed brand-kit version and preserves local edits across a same-version refetch",
+    "hydrates the same client for a changed authenticated user scope",
+    "MagicUp active Gold colors/images",
+    "queries real product IDs/order/limits and preserves image/color behavior",
+    "a late color/gallery response from the previous product cannot replace current assets"
    ]
   },
   "tests/hooks/useMockupGenerator.test.ts": {
@@ -530526,6 +531359,53 @@
     "REGRESSÃO: sem o fix, remoção do meio deixaria expandedItems com índices stale",
     "activeItemIndex deve ser ajustado ao remover item antes do ativo",
     "activeItemIndex deve ser null ao remover o próprio item ativo"
+   ]
+  },
+  "tests/hooks/useQuoteTemplates.raw-fetch.test.ts": {
+   "path": "tests/hooks/useQuoteTemplates.raw-fetch.test.ts",
+   "lines": 186,
+   "is_test": true,
+   "tables": [
+    {
+     "table": "quote_templates",
+     "op": "select"
+    }
+   ],
+   "rule_comments": [
+    "supabase.from('quote_templates').select('*').order('updated_at').limit(200) (linhas",
+    "retiradas apenas as asserções sobre os campos `items_data` e `items_error`, que não",
+    "- Causa com arquivo:linha: a validação que gerava esse par (`validateTemplateItems`",
+    "(item.items as unknown as QuoteTemplateItem[]) : []` — cast duplo sem validação,",
+    "são entregues à UI tipadas como QuoteTemplateItem. A validação que barrava isso",
+    "negócio/PR separada: reintroduzir a validação no transform canônico ou aceitar o"
+   ],
+   "tests": [
+    "real canonical fetch raw preservation",
+    "keeps the original non-array items and primitive metadata in the raw fields while coercing the typed view",
+    "keeps the complete raw partial array without dropping the incomplete entry",
+    "retains valid items, array metadata and the real extra table fields"
+   ],
+   "pagination": [
+    "200"
+   ]
+  },
+  "tests/hooks/useQuoteVersions.legacy.test.ts": {
+   "path": "tests/hooks/useQuoteVersions.legacy.test.ts",
+   "lines": 230,
+   "is_test": true,
+   "errors": [
+    "Unexpected test query"
+   ],
+   "rule_comments": [
+    "* Secundário, mesma origem (apenas enganoso, sem crash): `total ?? 0` / `status ??",
+    "* Não toquei em src/ (regra). Correção sugerida para PR separada: ou manter"
+   ],
+   "tests": [
+    "legacy quote version raw financial contract",
+    "normalizes nullable financial values, status and timestamps to the non-null QuoteVersion contract",
+    "preserves the exact financial value %s",
+    "preserves every version and associates item counts with the correct ID",
+    "does not query without a target quote ID"
    ]
   },
   "tests/hooks/useQuotes-helpers.test.ts": {
@@ -532734,6 +533614,26 @@
     "caixa de personalização com enabled inválido continua recusada (não descarta em silêncio)"
    ]
   },
+  "tests/lib/legacy-kit-price-source.test.ts": {
+   "path": "tests/lib/legacy-kit-price-source.test.ts",
+   "lines": 223,
+   "is_test": true,
+   "errors": [
+    "Fixture requires a priced catalog item",
+    "Fixture requires a real compatible box"
+   ],
+   "tests": [
+    "legacy Gold price source preserves unknown and factual zero distinctly",
+    "keeps a missing-price product out of the kit instead of pricing it at zero",
+    "preserves a genuine zero selling price rather than falling back to an unrelated base value",
+    "does not convert an invalid negative price into a legitimate zero",
+    "rejects the invalid raw %s price instead of treating it as a priced line",
+    "uses an actual base price only when the sale price is absent",
+    "excludes unavailable financial facts from AI while retaining genuine zero compositions",
+    "retains historical undefined flags and blocks only explicit false",
+    "fails closed at the shared persistence boundary without dropping the selected item"
+   ]
+  },
   "tests/lib/logger.test.ts": {
    "path": "tests/lib/logger.test.ts",
    "lines": 52,
@@ -534527,6 +535427,48 @@
     "rejects negative price",
     "rejects missing product name",
     "reports multiple errors"
+   ]
+  },
+  "tests/pages/legacy-KitBuilder.partial-preservation.test.tsx": {
+   "path": "tests/pages/legacy-KitBuilder.partial-preservation.test.tsx",
+   "lines": 334,
+   "is_test": true,
+   "errors": [
+    ")).toHaveTextContent("
+   ],
+   "rule_comments": [
+    "= 0 ocorrencias; src/utils/ tem apenas productPdfExport.ts e",
+    "--listFiles` nao lista o arquivo), entao a validacao possivel e vitest + eslint —"
+   ],
+   "tests": [
+    "legacy KitBuilder preserves saved snapshots and functional actions",
+    "shows loading before mounting editors so a late snapshot cannot overwrite fresh user input",
+    "shows a recoverable navigation path without concealing the original malformed-snapshot error",
+    "requires an explicit quantity confirmation for a historical unknown quantity",
+    "keeps the full Gold catalogs, AI action, PDF export and quote action connected to real state",
+    "propagates the unknown price of a selected item to the pricing surfaces"
+   ]
+  },
+  "tests/pages/legacy-QuoteBuilder.partial-preservation.test.tsx": {
+   "path": "tests/pages/legacy-QuoteBuilder.partial-preservation.test.tsx",
+   "lines": 375,
+   "is_test": true,
+   "rule_comments": [
+    "* 6) Do caso 1 sobrevivia apenas a última asserção (campo \"Forma | Pagamento\").",
+    "chama onRestore; não há validação de schema. E o onRestore",
+    "apenas em src/components/quotes/QuoteAutoSave.tsx:400, dentro de `useQuoteAutoSave`",
+    "* 1) Rascunho de orçamento entra no estado da tela SEM validação de schema."
+   ],
+   "temporal": [
+    "const validUntil = format(addDays(startOfDay(new Date()), 15), 'yyyy-MM-dd');"
+   ],
+   "tests": [
+    "legacy QuoteBuilder — fiação que permanece na página",
+    "keeps the commercial payment-method field wired to the builder state",
+    "connects autosave dirty changes to the existing navigation guard",
+    "legacy QuoteBuilder — restauração de rascunho parcial (useQuoteBuilderState)",
+    "restores real item metadata and payment fields without navigating away",
+    "restores contact metadata, commercial margin and the visible dated-delivery mode"
    ]
   },
   "tests/pages/kit-builder/KitLibraryPage.ownership.test.ts": {
@@ -542333,10 +543275,33 @@
   }
  },
  "git": {
-  "sha": "d1a098ad5dd0a71d5815abdd0786de514db9d56c",
+  "sha": "216fad0f11a15cb5c71a813abca48658da8bb893",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "216fad0",
+    "date": "2026-11-17",
+    "author": "adm01-debug",
+    "subject": "test(resgate): 218 casos de teste de outro agente que nunca chegaram à main (#3807)",
+    "files": [
+     "tests/components/IntelligenceBadges.legacy-compat.test.tsx",
+     "tests/components/QuoteAutoSave.recovery.test.tsx",
+     "tests/hooks/legacy-admin-utils-preservation.test.ts",
+     "tests/hooks/useKitAutoSave.financial.test.tsx",
+     "tests/hooks/useKitAutoSave.legacy.test.tsx",
+     "tests/hooks/useKitBuilderPageState.financial.test.tsx",
+     "tests/hooks/useKitBuilderQueries.legacy.test.tsx",
+     "tests/hooks/useLegacyCatalogContracts.test.ts",
+     "tests/hooks/useLegacyLintMemoContracts.test.tsx",
+     "tests/hooks/useMagicUpState.legacy.test.tsx",
+     "tests/hooks/useQuoteTemplates.raw-fetch.test.ts",
+     "tests/hooks/useQuoteVersions.legacy.test.ts",
+     "tests/lib/legacy-kit-price-source.test.ts",
+     "tests/pages/legacy-KitBuilder.partial-preservation.test.tsx",
+     "tests/pages/legacy-QuoteBuilder.partial-preservation.test.tsx"
+    ]
+   },
    {
     "sha": "d1a098a",
     "date": "2026-11-17",
@@ -542619,15 +543584,6 @@
     "files": [
      "tests/pages/MagicUp.search-lifetime.test.tsx"
     ]
-   },
-   {
-    "sha": "879cd72",
-    "date": "2026-11-17",
-    "author": "adm01-debug",
-    "subject": "chore(docs): publica a prova byte a byte das branches fechadas (#3760)",
-    "files": [
-     "docs/agentes/resgates/2026-11-17-prova-byte-a-byte.md"
-    ]
    }
   ],
   "hot_files": [
@@ -542668,47 +543624,47 @@
     2
    ],
    [
-    "docs/agentes/resgates/2026-11-17-prova-byte-a-byte.md",
-    2
-   ],
-   [
-    "tests/hooks/useLegacyLintLifecycle.test.ts",
+    "tests/components/IntelligenceBadges.legacy-compat.test.tsx",
     1
    ],
    [
-    "tests/hooks/useLegacyLintDerived.test.tsx",
+    "tests/components/QuoteAutoSave.recovery.test.tsx",
     1
    ],
    [
-    "api/monitoring.ts",
+    "tests/hooks/legacy-admin-utils-preservation.test.ts",
     1
    ],
    [
-    "src/lib/__tests__/sentry.tunnel.test.ts",
+    "tests/hooks/useKitAutoSave.financial.test.tsx",
     1
    ],
    [
-    "src/lib/sentry.ts",
+    "tests/hooks/useKitAutoSave.legacy.test.tsx",
     1
    ],
    [
-    "tests/api/vercel-monitoring-tunnel.http.test.ts",
+    "tests/hooks/useKitBuilderPageState.financial.test.tsx",
     1
    ],
    [
-    "tests/api/vercel-monitoring-tunnel.test.ts",
+    "tests/hooks/useKitBuilderQueries.legacy.test.tsx",
     1
    ],
    [
-    "docs/agentes/resgates/2026-11-17-adjudicacao-219-ausentes.md",
+    "tests/hooks/useLegacyCatalogContracts.test.ts",
     1
    ],
    [
-    "tests/hooks/useCustomKitPersistence.financial.test.tsx",
+    "tests/hooks/useLegacyLintMemoContracts.test.tsx",
     1
    ],
    [
-    "scripts/check-conflict-ledger.mjs",
+    "tests/hooks/useMagicUpState.legacy.test.tsx",
+    1
+   ],
+   [
+    "tests/hooks/useQuoteTemplates.raw-fetch.test.ts",
     1
    ]
   ]

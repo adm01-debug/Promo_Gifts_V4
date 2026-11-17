@@ -5,18 +5,18 @@
   "vitest",
   "playwright"
  ],
- "total": 2549,
+ "total": 2564,
  "por_tipo": {
   "contrato": 66,
   "e2e": 677,
   "pytest": 5,
   "qa": 17,
-  "unit": 1784
+  "unit": 1799
  },
  "onde_ficam": [
   {
    "padrao": "tests/",
-   "arquivos": 1045
+   "arquivos": 1060
   },
   {
    "padrao": "co-localizado (__tests__)",
@@ -13319,6 +13319,17 @@
    "casos": 111
   },
   {
+   "arquivo": "tests/components/IntelligenceBadges.legacy-compat.test.tsx",
+   "tipo": "unit",
+   "linhas": 191,
+   "testa": [
+    "src/components/common/IntelligenceBadges.tsx",
+    "src/hooks/products/index.ts",
+    "src/stores/useBadgeVisibilityStore.ts"
+   ],
+   "casos": 3
+  },
+  {
    "arquivo": "tests/components/inventory/ReliabilityBadge.test.tsx",
    "tipo": "unit",
    "linhas": 72,
@@ -14390,6 +14401,16 @@
     "src/components/layout/ProtectedRoute.tsx"
    ],
    "casos": 7
+  },
+  {
+   "arquivo": "tests/components/QuoteAutoSave.recovery.test.tsx",
+   "tipo": "unit",
+   "linhas": 278,
+   "testa": [
+    "src/components/quotes/QuoteAutoSave.tsx",
+    "src/lib/quotes/quoteDraftRecovery.ts"
+   ],
+   "casos": 10
   },
   {
    "arquivo": "tests/components/QuoteBuilderSummaryColumn.confirmAll.test.tsx",
@@ -16647,6 +16668,19 @@
    "casos": 2
   },
   {
+   "arquivo": "tests/hooks/legacy-admin-utils-preservation.test.ts",
+   "tipo": "unit",
+   "linhas": 349,
+   "testa": [
+    "src/hooks/crm/useRamoAtividadeFilter.ts",
+    "src/hooks/products/getCategoryIcon.ts",
+    "src/hooks/products/useCategoryIcons.ts",
+    "src/hooks/products/useSupplierFiscalData.ts",
+    "src/types/ramo-atividade.ts"
+   ],
+   "casos": 5
+  },
+  {
    "arquivo": "tests/hooks/mockupGenerationService.download.test.ts",
    "tipo": "unit",
    "linhas": 33,
@@ -17184,6 +17218,26 @@
    "casos": 6
   },
   {
+   "arquivo": "tests/hooks/useKitAutoSave.financial.test.tsx",
+   "tipo": "unit",
+   "linhas": 150,
+   "testa": [
+    "src/hooks/kit-builder/useKitAutoSave.ts",
+    "src/lib/kit-builder/index.ts"
+   ],
+   "casos": 2
+  },
+  {
+   "arquivo": "tests/hooks/useKitAutoSave.legacy.test.tsx",
+   "tipo": "unit",
+   "linhas": 472,
+   "testa": [
+    "src/hooks/kit-builder/useKitAutoSave.ts",
+    "src/lib/kit-builder/index.ts"
+   ],
+   "casos": 12
+  },
+  {
    "arquivo": "tests/hooks/useKitAutoSave.validation-recovery.test.tsx",
    "tipo": "unit",
    "linhas": 171,
@@ -17212,6 +17266,17 @@
     "src/lib/kit-builder/index.ts"
    ],
    "casos": 9
+  },
+  {
+   "arquivo": "tests/hooks/useKitBuilderPageState.financial.test.tsx",
+   "tipo": "unit",
+   "linhas": 390,
+   "testa": [
+    "src/hooks/kit-builder/useKitBuilderPageState.ts",
+    "src/lib/external-db/product-types.ts",
+    "src/lib/kit-builder/index.ts"
+   ],
+   "casos": 5
   },
   {
    "arquivo": "tests/hooks/useKitBuilderPageState.quantity.test.tsx",
@@ -17258,6 +17323,16 @@
    "casos": 4
   },
   {
+   "arquivo": "tests/hooks/useKitBuilderQueries.legacy.test.tsx",
+   "tipo": "unit",
+   "linhas": 180,
+   "testa": [
+    "src/hooks/kit-builder/useKitBuilderQueries.ts",
+    "src/lib/external-db/product-types.ts"
+   ],
+   "casos": 6
+  },
+  {
    "arquivo": "tests/hooks/useKitBuilderQueries.test.ts",
    "tipo": "unit",
    "linhas": 436,
@@ -17299,6 +17374,22 @@
    "casos": 2
   },
   {
+   "arquivo": "tests/hooks/useLegacyCatalogContracts.test.ts",
+   "tipo": "unit",
+   "linhas": 289,
+   "testa": [
+    "src/components/filters/filter-panel/types.ts",
+    "src/constants/filters.ts",
+    "src/hooks/products/index.ts",
+    "src/hooks/products/useAdvancedFilters.ts",
+    "src/hooks/products/useCatalogFiltering.ts",
+    "src/hooks/products/useNoveltiesSelectionMode.ts",
+    "src/hooks/products/useProductsLightweight.ts",
+    "src/hooks/products/useReplenishmentsSelectionMode.ts"
+   ],
+   "casos": 12
+  },
+  {
    "arquivo": "tests/hooks/useLegacyLintDerived.test.tsx",
    "tipo": "unit",
    "linhas": 133,
@@ -17321,6 +17412,21 @@
     "src/lib/product-bounds-detector.ts"
    ],
    "casos": 18
+  },
+  {
+   "arquivo": "tests/hooks/useLegacyLintMemoContracts.test.tsx",
+   "tipo": "unit",
+   "linhas": 684,
+   "testa": [
+    "src/components/filters/filter-panel/types.ts",
+    "src/contexts/ProductsContext.tsx",
+    "src/hooks/common/useSearch.ts",
+    "src/hooks/products/useCatalogState.ts",
+    "src/hooks/products/useProductMatch.ts",
+    "src/lib/db/postgrest.ts",
+    "src/types/product-catalog.ts"
+   ],
+   "casos": 17
   },
   {
    "arquivo": "tests/hooks/useLoginAttempts.test.ts",
@@ -17379,6 +17485,17 @@
     "src/pages/magic-up/magicUpStrategy.ts"
    ],
    "casos": 2
+  },
+  {
+   "arquivo": "tests/hooks/useMagicUpState.legacy.test.tsx",
+   "tipo": "unit",
+   "linhas": 507,
+   "testa": [
+    "src/hooks/intelligence/useMagicUpState.ts",
+    "src/pages/magic-up/magicUpStrategy.ts",
+    "src/types/crm.ts"
+   ],
+   "casos": 7
   },
   {
    "arquivo": "tests/hooks/useMockupGenerator.test.ts",
@@ -17556,6 +17673,25 @@
    "linhas": 129,
    "testa": [],
    "casos": 13
+  },
+  {
+   "arquivo": "tests/hooks/useQuoteTemplates.raw-fetch.test.ts",
+   "tipo": "unit",
+   "linhas": 186,
+   "testa": [
+    "src/hooks/quotes/useQuoteTemplates.ts",
+    "src/integrations/supabase/types.ts"
+   ],
+   "casos": 3
+  },
+  {
+   "arquivo": "tests/hooks/useQuoteVersions.legacy.test.ts",
+   "tipo": "unit",
+   "linhas": 230,
+   "testa": [
+    "src/hooks/quotes/useQuoteVersions.ts"
+   ],
+   "casos": 4
   },
   {
    "arquivo": "tests/hooks/useRBAC.test.tsx",
@@ -18395,6 +18531,20 @@
    "casos": 4
   },
   {
+   "arquivo": "tests/lib/legacy-kit-price-source.test.ts",
+   "tipo": "unit",
+   "linhas": 223,
+   "testa": [
+    "src/hooks/kit-builder/useKitBuilderTransformers.ts",
+    "src/lib/external-db/product-types.ts",
+    "src/lib/kit-builder/ai-composition.ts",
+    "src/lib/kit-builder/index.ts",
+    "src/lib/kit-builder/persistence.ts",
+    "src/lib/kit-builder/pricing-availability.ts"
+   ],
+   "casos": 8
+  },
+  {
    "arquivo": "tests/lib/logger.test.ts",
    "tipo": "unit",
    "linhas": 52,
@@ -18962,6 +19112,29 @@
     "src/pages/kit-builder/useKitBuilderQuote.ts"
    ],
    "casos": 20
+  },
+  {
+   "arquivo": "tests/pages/legacy-KitBuilder.partial-preservation.test.tsx",
+   "tipo": "unit",
+   "linhas": 334,
+   "testa": [
+    "src/components/kit-builder/KitBuilderHeader.tsx",
+    "src/components/kit-builder/KitHeroPricingCard.tsx",
+    "src/lib/kit-builder/index.ts",
+    "src/pages/kit-builder/KitBuilderPage.tsx"
+   ],
+   "casos": 5
+  },
+  {
+   "arquivo": "tests/pages/legacy-QuoteBuilder.partial-preservation.test.tsx",
+   "tipo": "unit",
+   "linhas": 375,
+   "testa": [
+    "src/components/quotes/QuoteAutoSave.tsx",
+    "src/hooks/quotes/useQuoteBuilderState.ts",
+    "src/pages/quotes/QuoteBuilderPage.tsx"
+   ],
+   "casos": 4
   },
   {
    "arquivo": "tests/pages/MagicUp.a11y.test.tsx",
@@ -21715,7 +21888,7 @@
   "src/components/catalog/BulkVariantWizard.tsx": 1,
   "src/components/catalog/CatalogToolbar.tsx": 4,
   "src/components/common/BulkSelectionBar.tsx": 1,
-  "src/components/common/IntelligenceBadges.tsx": 1,
+  "src/components/common/IntelligenceBadges.tsx": 2,
   "src/components/common/PersistentBreadcrumbs.tsx": 2,
   "src/components/common/RouteScrollReset.tsx": 1,
   "src/components/compare/CompareTableView.tsx": 1,
@@ -21732,7 +21905,7 @@
   "src/components/filters/FilterPanel.tsx": 10,
   "src/components/filters/PresetsBar.tsx": 1,
   "src/components/filters/StickyFilterBar.tsx": 2,
-  "src/components/filters/filter-panel/types.ts": 1,
+  "src/components/filters/filter-panel/types.ts": 3,
   "src/components/intelligence/MarketIntelligenceChart.tsx": 1,
   "src/components/intelligence/SalesOverviewChart.tsx": 1,
   "src/components/inventory/BulkAddToCollectionModal.tsx": 2,
@@ -21772,9 +21945,9 @@
   "src/components/kit-builder/ItemCard.tsx": 3,
   "src/components/kit-builder/ItemSelector.tsx": 2,
   "src/components/kit-builder/KitAIPromptDialog.tsx": 1,
-  "src/components/kit-builder/KitBuilderHeader.tsx": 1,
+  "src/components/kit-builder/KitBuilderHeader.tsx": 2,
   "src/components/kit-builder/KitComparisonDialog.tsx": 1,
-  "src/components/kit-builder/KitHeroPricingCard.tsx": 1,
+  "src/components/kit-builder/KitHeroPricingCard.tsx": 2,
   "src/components/kit-builder/KitMakerGuideDialog.tsx": 1,
   "src/components/kit-builder/KitMakerLanding.tsx": 1,
   "src/components/kit-builder/KitMobileSummaryBar.tsx": 1,
@@ -21902,7 +22075,7 @@
   "src/components/quotes/EngravingBadge.tsx": 1,
   "src/components/quotes/NegotiationMarkupCard.tsx": 3,
   "src/components/quotes/PdfGenerationDialog.tsx": 5,
-  "src/components/quotes/QuoteAutoSave.tsx": 2,
+  "src/components/quotes/QuoteAutoSave.tsx": 4,
   "src/components/quotes/QuoteBuilderStepper.tsx": 2,
   "src/components/quotes/QuoteBuilderSummaryColumn.tsx": 5,
   "src/components/quotes/QuoteItemsList.tsx": 1,
@@ -21961,12 +22134,12 @@
   "src/components/ui/tooltip.tsx": 123,
   "src/components/ui/truncated-tooltip.tsx": 1,
   "src/components/workflows/WorkflowEditDialog.tsx": 1,
-  "src/constants/filters.ts": 7,
+  "src/constants/filters.ts": 8,
   "src/contexts/AuthContext.tsx": 38,
   "src/contexts/CloudStatusContext.tsx": 1,
   "src/contexts/OnboardingContext.tsx": 1,
   "src/contexts/OrganizationContext.tsx": 2,
-  "src/contexts/ProductsContext.tsx": 4,
+  "src/contexts/ProductsContext.tsx": 5,
   "src/contexts/SellerCartContext.tsx": 9,
   "src/contexts/ThemeContext.tsx": 16,
   "src/hooks/admin/index.ts": 7,
@@ -21998,7 +22171,7 @@
   "src/hooks/common/useListUrlState.ts": 2,
   "src/hooks/common/useNetworkStatus.ts": 1,
   "src/hooks/common/useOrgData.ts": 1,
-  "src/hooks/common/useSearch.ts": 1,
+  "src/hooks/common/useSearch.ts": 2,
   "src/hooks/common/useSearchHistory.ts": 2,
   "src/hooks/common/useUndoStack.ts": 1,
   "src/hooks/common/useUnsavedChangesGuard.ts": 1,
@@ -22007,6 +22180,7 @@
   "src/hooks/comparison/useComparisonScore.ts": 1,
   "src/hooks/comparison/useComparisonSync.ts": 1,
   "src/hooks/comparison/useComparisonWeights.ts": 1,
+  "src/hooks/crm/useRamoAtividadeFilter.ts": 1,
   "src/hooks/customization/useCustomizationCollapsePrefs.ts": 1,
   "src/hooks/dev/useBridgeMetrics.ts": 10,
   "src/hooks/favorites/useFavoriteLists.ts": 1,
@@ -22024,7 +22198,7 @@
   "src/hooks/intelligence/useExternalDatabase.ts": 1,
   "src/hooks/intelligence/useMagicUpGeneration.ts": 2,
   "src/hooks/intelligence/useMagicUpState.helpers.ts": 1,
-  "src/hooks/intelligence/useMagicUpState.ts": 3,
+  "src/hooks/intelligence/useMagicUpState.ts": 4,
   "src/hooks/intelligence/useMarketIntelligenceMacro.ts": 2,
   "src/hooks/intelligence/useSalesGoals.ts": 1,
   "src/hooks/intelligence/useSalesHistoryMacro.ts": 1,
@@ -22036,11 +22210,11 @@
   "src/hooks/intelligence/useZeroResultSubstitutes.ts": 1,
   "src/hooks/kit-builder/index.ts": 1,
   "src/hooks/kit-builder/useCustomKitPersistence.ts": 4,
-  "src/hooks/kit-builder/useKitAutoSave.ts": 4,
+  "src/hooks/kit-builder/useKitAutoSave.ts": 6,
   "src/hooks/kit-builder/useKitBuilder.ts": 2,
-  "src/hooks/kit-builder/useKitBuilderPageState.ts": 3,
-  "src/hooks/kit-builder/useKitBuilderQueries.ts": 2,
-  "src/hooks/kit-builder/useKitBuilderTransformers.ts": 2,
+  "src/hooks/kit-builder/useKitBuilderPageState.ts": 4,
+  "src/hooks/kit-builder/useKitBuilderQueries.ts": 3,
+  "src/hooks/kit-builder/useKitBuilderTransformers.ts": 3,
   "src/hooks/kit-builder/useKitFitsValidation.ts": 1,
   "src/hooks/kit-builder/useKitPriceValidation.ts": 1,
   "src/hooks/kit-builder/useKitStockValidation.ts": 2,
@@ -22057,40 +22231,43 @@
   "src/hooks/mockup/useMockupTechniques.ts": 3,
   "src/hooks/mockup/useMockupTechniquesLoad.ts": 1,
   "src/hooks/products/dailyCatalogDefaults.ts": 1,
-  "src/hooks/products/index.ts": 28,
+  "src/hooks/products/getCategoryIcon.ts": 1,
+  "src/hooks/products/index.ts": 30,
   "src/hooks/products/sellerCartToasts.ts": 4,
-  "src/hooks/products/useAdvancedFilters.ts": 3,
-  "src/hooks/products/useCatalogFiltering.ts": 3,
-  "src/hooks/products/useCatalogState.ts": 2,
+  "src/hooks/products/useAdvancedFilters.ts": 4,
+  "src/hooks/products/useCatalogFiltering.ts": 4,
+  "src/hooks/products/useCatalogState.ts": 3,
   "src/hooks/products/useCategories.ts": 1,
-  "src/hooks/products/useCategoryIcons.ts": 1,
+  "src/hooks/products/useCategoryIcons.ts": 2,
   "src/hooks/products/useColorEnrichment.ts": 1,
   "src/hooks/products/useColorSystem.ts": 1,
   "src/hooks/products/useDebouncedCartItemActions.ts": 1,
   "src/hooks/products/useExternalVariantStock.ts": 1,
   "src/hooks/products/useNovelties.ts": 10,
+  "src/hooks/products/useNoveltiesSelectionMode.ts": 1,
   "src/hooks/products/usePrefetchProduct.ts": 1,
   "src/hooks/products/useProductAnalytics.ts": 1,
   "src/hooks/products/useProductBounds.ts": 1,
   "src/hooks/products/useProductCustomizationOptions.ts": 1,
   "src/hooks/products/useProductIntelligenceBadges.ts": 2,
   "src/hooks/products/useProductLeafCategories.tsx": 1,
-  "src/hooks/products/useProductMatch.ts": 4,
+  "src/hooks/products/useProductMatch.ts": 5,
   "src/hooks/products/useProducts.ts": 6,
   "src/hooks/products/useProductsByCategory.ts": 2,
   "src/hooks/products/useProductsByColor.ts": 1,
   "src/hooks/products/useProductsByMetadata.ts": 1,
   "src/hooks/products/useProductsBySize.ts": 1,
   "src/hooks/products/useProductsColorsBatch.ts": 1,
-  "src/hooks/products/useProductsLightweight.ts": 4,
+  "src/hooks/products/useProductsLightweight.ts": 5,
   "src/hooks/products/usePublicoAlvoOptions.ts": 1,
   "src/hooks/products/useReplenishments.ts": 4,
-  "src/hooks/products/useReplenishmentsSelectionMode.ts": 1,
+  "src/hooks/products/useReplenishmentsSelectionMode.ts": 2,
   "src/hooks/products/useSellerCarts.ts": 11,
   "src/hooks/products/useSimilarProducts.ts": 1,
   "src/hooks/products/useStockAlerts.ts": 1,
   "src/hooks/products/useStockNotifications.ts": 1,
   "src/hooks/products/useSupplierComparison.ts": 5,
+  "src/hooks/products/useSupplierFiscalData.ts": 1,
   "src/hooks/products/useSupplierSalesRanking.ts": 2,
   "src/hooks/products/useSupplierTrust.ts": 1,
   "src/hooks/products/useSuppliers.ts": 1,
@@ -22104,13 +22281,13 @@
   "src/hooks/quotes/useAutoSaveQuote.ts": 7,
   "src/hooks/quotes/useDiscountApproval.ts": 3,
   "src/hooks/quotes/useQuoteBuilderState.helpers.ts": 1,
-  "src/hooks/quotes/useQuoteBuilderState.ts": 8,
+  "src/hooks/quotes/useQuoteBuilderState.ts": 9,
   "src/hooks/quotes/useQuoteConcurrencyGuard.ts": 1,
   "src/hooks/quotes/useQuoteFunnel.ts": 1,
   "src/hooks/quotes/useQuoteHistory.ts": 1,
   "src/hooks/quotes/useQuoteItems.ts": 5,
-  "src/hooks/quotes/useQuoteTemplates.ts": 1,
-  "src/hooks/quotes/useQuoteVersions.ts": 1,
+  "src/hooks/quotes/useQuoteTemplates.ts": 2,
+  "src/hooks/quotes/useQuoteVersions.ts": 2,
   "src/hooks/quotes/useQuotes.ts": 2,
   "src/hooks/quotes/useSellerDiscountLimits.ts": 2,
   "src/hooks/simulation/index.ts": 3,
@@ -22148,7 +22325,7 @@
   "src/integrations/supabase/client.ts": 52,
   "src/integrations/supabase/gold-relations.ts": 1,
   "src/integrations/supabase/gold.ts": 1,
-  "src/integrations/supabase/types.ts": 5,
+  "src/integrations/supabase/types.ts": 6,
   "src/lib/access/access-policy.ts": 1,
   "src/lib/access/dev-route-telemetry.ts": 1,
   "src/lib/analytics/cartAnalytics.ts": 1,
@@ -22182,7 +22359,7 @@
   "src/lib/date-utils.ts": 3,
   "src/lib/db-retry.ts": 1,
   "src/lib/db/fetch-all-pages.ts": 1,
-  "src/lib/db/postgrest.ts": 16,
+  "src/lib/db/postgrest.ts": 17,
   "src/lib/discount-approval-status-config.ts": 1,
   "src/lib/dom/scroll-lock.ts": 2,
   "src/lib/edge/invokeBottlenecks.ts": 1,
@@ -22202,7 +22379,7 @@
   "src/lib/external-db/kill-switch-telemetry.ts": 1,
   "src/lib/external-db/kit-coverage.ts": 2,
   "src/lib/external-db/price-tables.ts": 1,
-  "src/lib/external-db/product-types.ts": 3,
+  "src/lib/external-db/product-types.ts": 6,
   "src/lib/external-db/products-detail.ts": 1,
   "src/lib/external-db/products-lightweight.ts": 1,
   "src/lib/external-db/products.ts": 1,
@@ -22229,11 +22406,12 @@
   "src/lib/inventory/supplier-reliability/score.ts": 1,
   "src/lib/inventory/supplier-reliability/types.ts": 4,
   "src/lib/json-value.ts": 1,
-  "src/lib/kit-builder/ai-composition.ts": 1,
-  "src/lib/kit-builder/index.ts": 33,
+  "src/lib/kit-builder/ai-composition.ts": 2,
+  "src/lib/kit-builder/index.ts": 38,
   "src/lib/kit-builder/item-sort.ts": 1,
-  "src/lib/kit-builder/persistence.ts": 3,
+  "src/lib/kit-builder/persistence.ts": 4,
   "src/lib/kit-builder/price-calculator.ts": 2,
+  "src/lib/kit-builder/pricing-availability.ts": 1,
   "src/lib/kit-builder/snapshot/read-draft.ts": 1,
   "src/lib/kit-builder/types.ts": 6,
   "src/lib/kit-builder/volume-calculator.ts": 1,
@@ -22269,7 +22447,7 @@
   "src/lib/quotes/expiration.ts": 1,
   "src/lib/quotes/exportDiscountAuditPdf.ts": 1,
   "src/lib/quotes/personalizationSummary.ts": 2,
-  "src/lib/quotes/quoteDraftRecovery.ts": 1,
+  "src/lib/quotes/quoteDraftRecovery.ts": 2,
   "src/lib/roles.ts": 1,
   "src/lib/security/file-validation.ts": 1,
   "src/lib/security/lastInternalRoute.ts": 1,
@@ -22328,7 +22506,7 @@
   "src/pages/auth/postLoginGuards.ts": 1,
   "src/pages/filters/applyProductFilters.ts": 1,
   "src/pages/filters/useFiltersPageState.ts": 3,
-  "src/pages/kit-builder/KitBuilderPage.tsx": 1,
+  "src/pages/kit-builder/KitBuilderPage.tsx": 2,
   "src/pages/kit-builder/KitLibraryPage.tsx": 1,
   "src/pages/kit-builder/useKitBuilderQuote.ts": 2,
   "src/pages/magazine/MagazineEditorPage.tsx": 2,
@@ -22365,7 +22543,7 @@
   "src/pages/magazine/utils/stepValidation.ts": 2,
   "src/pages/magic-up/MagicUpConfigPanel.tsx": 2,
   "src/pages/magic-up/MagicUpResultPanel.tsx": 2,
-  "src/pages/magic-up/magicUpStrategy.ts": 9,
+  "src/pages/magic-up/magicUpStrategy.ts": 10,
   "src/pages/mockups/MockupGenerator.tsx": 2,
   "src/pages/mockups/MockupHistoryPage.tsx": 2,
   "src/pages/mockups/mockup-generator/ClientMockupsMenu.tsx": 1,
@@ -22390,7 +22568,7 @@
   "src/pages/products/seller-carts/purgeOrphanCartPrefs.ts": 1,
   "src/pages/products/seller-carts/undoCopy.ts": 2,
   "src/pages/products/seller-carts/useMidnightReset.ts": 1,
-  "src/pages/quotes/QuoteBuilderPage.tsx": 6,
+  "src/pages/quotes/QuoteBuilderPage.tsx": 7,
   "src/pages/quotes/QuoteViewPage.tsx": 1,
   "src/pages/quotes/QuotesDashboardPage.tsx": 1,
   "src/pages/quotes/QuotesListPage.tsx": 5,
@@ -22414,20 +22592,21 @@
   "src/services/productService.ts": 2,
   "src/services/quoteItemsReorder.ts": 2,
   "src/services/quoteService.ts": 5,
-  "src/stores/useBadgeVisibilityStore.ts": 3,
+  "src/stores/useBadgeVisibilityStore.ts": 4,
   "src/stores/useComparisonStore.ts": 12,
   "src/stores/useFavoritesStore.ts": 7,
   "src/stores/useProductSelectionStore.ts": 1,
   "src/types/advancedFilters.ts": 1,
-  "src/types/crm.ts": 1,
+  "src/types/crm.ts": 2,
   "src/types/customization.ts": 6,
   "src/types/domain/simulator-wizard.ts": 2,
   "src/types/external-db.ts": 2,
   "src/types/gravacao.ts": 2,
   "src/types/magazine.ts": 29,
   "src/types/mockup-approval.ts": 3,
-  "src/types/product-catalog.ts": 24,
+  "src/types/product-catalog.ts": 25,
   "src/types/quote.ts": 8,
+  "src/types/ramo-atividade.ts": 1,
   "src/types/simulation.ts": 3,
   "src/types/stock.ts": 42,
   "src/utils/br-schemas.ts": 1,
@@ -22889,7 +23068,6 @@
    "src/hooks/crm/useProdutoRamoAtividade.ts",
    "src/hooks/crm/useRamoAtividade.ts",
    "src/hooks/crm/useRamoAtividadeFilho.ts",
-   "src/hooks/crm/useRamoAtividadeFilter.ts",
    "src/hooks/favorites/useCollectionsGlobalShortcuts.ts",
    "src/hooks/favorites/useEnrichedFavoriteItems.ts",
    "src/hooks/favorites/useFavoriteQuickAdd.ts",
@@ -22937,7 +23115,6 @@
    "src/hooks/products/useMaterialGroups.ts",
    "src/hooks/products/useMaterialTypes.ts",
    "src/hooks/products/useNovelties.helpers.ts",
-   "src/hooks/products/useNoveltiesSelectionMode.ts",
    "src/hooks/products/useProductEngravingOptions.ts",
    "src/hooks/products/useProductFreshnessOverride.ts",
    "src/hooks/products/useProductFuzzySearch.ts",
@@ -22951,7 +23128,6 @@
    "src/hooks/products/useRecentProducts.ts",
    "src/hooks/products/useReposicaoVariantsSummary.ts",
    "src/hooks/products/useSellerCarts.helpers.ts",
-   "src/hooks/products/useSupplierFiscalData.ts",
    "src/hooks/products/useSupplierNames.ts",
    "src/hooks/quotes/useNextQuoteNumberPreview.ts",
    "src/hooks/quotes/useProdutoPersonalizacao.ts",
