@@ -172,7 +172,7 @@
   {
    "arquivo": "e2e/auth-debug-removal.spec.ts",
    "tipo": "e2e",
-   "linhas": 94,
+   "linhas": 92,
    "testa": [],
    "casos": 7
   },

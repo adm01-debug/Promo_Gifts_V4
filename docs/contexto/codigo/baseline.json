@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "9657d523c2bb250fe9de7c635b229c4c5a0c88c1",
+  "commit": "eed9fdda81f6cbc9359cf95b3c56daed0d8ef15f",
   "branch": "main",
-  "data_commit": "2026-11-16T21:29:19-03:00",
+  "data_commit": "2026-11-16T22:05:57-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "eed9fdda",
+    "data": "2026-11-16",
+    "assunto": "test(security): guarda de dado interno na tela de login nunca podia passar no CI (#3727)"
+   },
    {
     "sha": "9657d523",
     "data": "2026-11-16",
@@ -126,11 +131,6 @@
     "sha": "1c6abc8b",
     "data": "2026-11-16",
     "assunto": "chore(ci): métricas semanais 2026-W47 (#3691)"
-   },
-   {
-    "sha": "5c497ed2",
-    "data": "2026-11-16",
-    "assunto": "docs(audit): handoff para a próxima sessão, com o estado de 16/11 (#3698)"
    }
   ],
   "arquivos_mudados_7d": 1907,
@@ -193,7 +193,7 @@
    },
    {
     "pasta": "PENDENCIAS.md",
-    "mudancas": 66
+    "mudancas": 65
    }
   ],
   "arquivos_mais_mudados_90d": [
@@ -203,7 +203,7 @@
    },
    {
     "arquivo": "PENDENCIAS.md",
-    "mudancas": 66
+    "mudancas": 65
    },
    {
     "arquivo": "supabase/MIGRATIONS_SYNC_LOG.md",
@@ -226,15 +226,15 @@
     "mudancas": 16
    },
    {
-    "arquivo": "analise-prs/progresso.json",
-    "mudancas": 16
-   },
-   {
     "arquivo": "supabase/EDGE_FUNCTIONS_DEPLOY_LOG.md",
     "mudancas": 16
    },
    {
     "arquivo": "CHANGELOG.md",
+    "mudancas": 15
+   },
+   {
+    "arquivo": "analise-prs/progresso.json",
     "mudancas": 15
    },
    {
@@ -262,16 +262,16 @@
     "mudancas": 9
    },
    {
-    "arquivo": "analise-prs/prs.json",
-    "mudancas": 9
-   },
-   {
     "arquivo": "e2e/flows/magazine-publish-smoke.spec.ts",
     "mudancas": 9
    },
    {
     "arquivo": "src/pages/mockups/MockupGenerator.tsx",
     "mudancas": 9
+   },
+   {
+    "arquivo": "analise-prs/prs.json",
+    "mudancas": 8
    },
    {
     "arquivo": "docs/ci/SEGREDOS.md",
@@ -324,7 +324,7 @@
  "contagens": {
   "arquivos_total": 10801,
   "arquivos_codigo": 5348,
-  "linhas_codigo": 1018818,
+  "linhas_codigo": 1018816,
   "rotas": 138,
   "rotas_http_backend": 13,
   "vistas_por_id": 0,
@@ -400,7 +400,7 @@
   },
   "e2e/auth-debug-removal.spec.ts": {
    "arquivos": 1,
-   "linhas": 94
+   "linhas": 92
   },
   "e2e/auth-guard-redirect.spec.ts": {
    "arquivos": 1,
