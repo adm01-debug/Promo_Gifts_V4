@@ -8,7 +8,7 @@
    "api/health.ts (1)"
   ],
   "componentes": [
-   "src/components (940)",
+   "src/components (941)",
    "src/pages (177)",
    "recovery/src-legacy (100)"
   ],
@@ -24,7 +24,7 @@
   ],
   "testes": [
    "tests/ (1037)",
-   "co-localizado (__tests__) (675)",
+   "co-localizado (__tests__) (676)",
    "e2e/ (625)"
   ],
   "edge_functions": "supabase/functions",
@@ -49,7 +49,7 @@
  },
  "barrels_index": 46,
  "extensao_componentes": [
-  ".tsx (1235)"
+  ".tsx (1236)"
  ],
  "alias_imports": {
   "e2e/": {},
@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
-   "feat(mockup): técnica nova do catálogo não aparecia no filtro do histórico (#3740)",
-   "docs(audit): restaura o pós-mortem dos 29 commits presos fora do GitHub (#3741)",
-   "docs(audit): retira um achado que eu registrei errado e fecha o placar de 17/11 (#3739)",
-   "fix(quotes): erro ao salvar o rascunho do orçamento ficava invisível para o vendedor (#3732)",
-   "test(mockup): resgata o contrato do handler REAL do generate-mockup (#3737)"
+   "feat(quotes): aprovar orçamento direto da lista — a ação existia no pai e era descartada (#3746)",
+   "docs(audit): resgata a auditoria E06 das migrations fora do baseline (07/10) (#3745)",
+   "fix(ci): lacra a allowlist do ledger de migrations, que era lida em try/catch silencioso (#3744)",
+   "fix(test): o teste do logo da sidebar contradizia o próprio componente (#3742)",
+   "feat(mockup): técnica nova do catálogo não aparecia no filtro do histórico (#3740)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",

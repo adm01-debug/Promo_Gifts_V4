@@ -13592,13 +13592,13 @@
   },
   {
    "modulo": "components/quotes",
-   "arquivos": 50,
-   "testes": 37,
-   "linhas": 11125,
+   "arquivos": 51,
+   "testes": 38,
+   "linhas": 11163,
    "itens_menu": [],
    "telas": [],
    "rotas_http": [],
-   "componentes": 46,
+   "componentes": 47,
    "hooks_locais": [
     "useA11y",
     "useAIRecommendations",

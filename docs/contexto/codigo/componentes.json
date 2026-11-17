@@ -1,7 +1,7 @@
 {
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
- "total": 1235,
+ "total": 1236,
  "orfaos": 160,
  "nomes_duplicados": {
   "AdvancedPriceSearchPage": [
@@ -14466,13 +14466,27 @@
    "orfao": false
   },
   {
+   "arquivo": "src/components/quotes/QuoteRowApproveItem.tsx",
+   "exports": [
+    "QuoteRowApproveItem"
+   ],
+   "export_default": null,
+   "linhas": 37,
+   "dominio": "components/quotes",
+   "hooks_locais": [],
+   "tabelas": [],
+   "edges": [],
+   "usado_por": 1,
+   "orfao": false
+  },
+  {
    "arquivo": "src/components/quotes/QuotesConfigurableList.tsx",
    "exports": [
     "ColumnDef",
     "QuotesConfigurableList"
    ],
    "export_default": null,
-   "linhas": 618,
+   "linhas": 619,
    "dominio": "components/quotes",
    "hooks_locais": [
     "useBulkSelection",
@@ -16187,7 +16201,7 @@
    ],
    "tabelas": [],
    "edges": [],
-   "usado_por": 41,
+   "usado_por": 42,
    "orfao": false
   },
   {

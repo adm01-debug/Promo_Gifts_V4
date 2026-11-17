@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e de hora em hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `6a8cd1ffd274a0d1964652bc86b19c8e85af1f67` (2026-11-17T00:28:52-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e de hora em hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `ec183890df552b7759cc45158d1a3a586e404d6f` (2026-11-17T00:49:58-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -14,7 +14,7 @@ Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR
 Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua tarefa; não carregue tudo.
 
 ## Stack
-- linguagens: TypeScript (4893), SQL (3431), Markdown (1464), JavaScript (456), JSON (132), YAML (115), Shell (27), HTML (20)
+- linguagens: TypeScript (4895), SQL (3431), Markdown (1465), JavaScript (456), JSON (132), YAML (115), Shell (27), HTML (20)
 - linguagem_principal: TypeScript
 - framework: React
 - backend_http: n/d
@@ -34,31 +34,31 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 ## Números
 | item | qtd |
 |---|---|
-| arquivos_total | 10815 |
-| arquivos_codigo | 5357 |
-| linhas_codigo | 1020027 |
+| arquivos_total | 10818 |
+| arquivos_codigo | 5359 |
+| linhas_codigo | 1020259 |
 | rotas | 138 |
 | rotas_http_backend | 13 |
 | vistas_por_id | 0 |
 | itens_menu | 69 |
 | modulos | 161 |
-| componentes | 1235 |
+| componentes | 1236 |
 | hooks | 626 |
 | edge_functions | 112 |
 | tabelas | 527 |
 | migrations | 3097 |
 | cron_jobs | 122 |
-| testes | 2537 |
+| testes | 2538 |
 | workflows | 87 |
 | scripts | 283 |
-| docs_md | 1464 |
+| docs_md | 1465 |
 
 ## Onde ficam as coisas
 - telas: src/pages (111), src/components (3), api/health.ts (1)
-- componentes: src/components (940), src/pages (177), recovery/src-legacy (100)
+- componentes: src/components (941), src/pages (177), recovery/src-legacy (100)
 - hooks: src/hooks (298), recovery/src-legacy (196), src/components (77)
 - servicos_logica: src/lib (232), src/utils (30), src/services (10)
-- testes: tests/ (1037), co-localizado (__tests__) (675), e2e/ (625)
+- testes: tests/ (1037), co-localizado (__tests__) (676), e2e/ (625)
 - edge_functions: supabase/functions
 - migrations: supabase/migrations
 - scripts: scripts/ci-local (11), scripts/lib (7), scripts/graphify (4)
@@ -98,7 +98,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 | components/pdf | 0 | 0 | 13 | 0 | 0 | 0 |
 | components/pricing | 0 | 0 | 20 | 269 | 4 | 41 |
 | components/products | 0 | 0 | 103 | 311 | 5 | 49 |
-| components/quotes | 0 | 0 | 50 | 296 | 5 | 50 |
+| components/quotes | 0 | 0 | 51 | 296 | 5 | 50 |
 | components/replenishments | 0 | 0 | 9 | 302 | 5 | 46 |
 | components/search | 0 | 0 | 25 | 295 | 5 | 47 |
 | components/security | 0 | 0 | 10 | 51 | 0 | 17 |
@@ -590,13 +590,13 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - possiveis_segredos_no_codigo: 7 — ex.: scripts/ai-context/cenarios.mjs:102, src/components/admin/connections/__tests__/ConnectionSecurity.unit.test.tsx:9, src/integrations/supabase/client.ts:27
 
 ## Grafo de código (graphify)
-- 48107 nós · 80813 arestas · 2743 comunidades · grafo do commit `6a8cd1ff`
-- comunidades maiores: vitest (631), lucide-react (618), ref_integrations (614), ref_components (573), ref_node_child_process (526), ref_hooks (462), @tanstack/react-query (452), ref_node_fs (362), ref_types (352), ref_utils (345), sonner (345), react (338)
+- 48122 nós · 80844 arestas · 2769 comunidades · grafo do commit `ec183890`
+- comunidades maiores: ref_integrations (582), react (554), ref_components (540), vitest (524), ref_node_child_process (455), ref_node_fs (381), ref_hooks (362), @tanstack/react-query (334), concludeCheck (320), ref_types (319), scripts (309), cors.ts (282)
 - símbolos mais chamados: gotoAndSettle() (e2e/helpers/nav.ts), re (?), q() (scripts/supabase_snapshot/snapshot.py), analyze() (tests/scripts/test_personalization_artifact_diagnostics.py), outer() (tests/scripts/test_personalization_artifact_diagnostics.py), json (?), useExternalDatabase() (recovery/src-legacy/src/hooks/useExternalDatabase.ts), concludeCheck() (scripts/check-result-contract.mjs), querySupabaseReadOnly() (scripts/supabase-read-only-query.mjs), loginAs() (e2e/helpers/auth.ts), inner() (tests/scripts/test_personalization_artifact_diagnostics.py), excluded_sql() (scripts/supabase_snapshot/snapshot.py)
 - consulta local: `graphify query "<pergunta>"`, `graphify path "<A>" "<B>"`, `graphify explain "<X>"`
 
 ## Hotspots (arquivos mais alterados, 90 dias)
-- RELATORIO_CI.md (68)
+- RELATORIO_CI.md (67)
 - supabase/MIGRATIONS_SYNC_LOG.md (62)
 - PENDENCIAS.md (57)
 - package.json (42)
@@ -1180,10 +1180,14 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - `docs/motor-v2-test-report.md` — 🧪 Relatório Exaustivo de Testes — Motor V2 (Bronze Layer) (401 linhas)
 - `docs/notifications-module-audit.md` — Auditoria — Módulo "Notificações de Estoque" (sino do header) (110 linhas)
 - `docs/prod-readiness.md` — Prontidão para produção — inventário e prova (1148 linhas)
-- subpastas de docs/: docs/arquivo (91), docs/redeploy (27), docs/estado (26), docs/plans (24), docs/db (14), docs/audits (12), docs/ci (12), docs/adr (11), docs/auditoria-planejado-nao-executado-2026-10-11 (11), docs/hardening (11), docs/validation (11), docs/architecture (9), docs/runbooks (8), docs/agentes (7), docs/bugs (6), docs/security (6), docs/sessoes (5), docs/suppliers (5), docs/arquitetura (4), docs/audit (4), docs/operations (4), docs/testing (4), docs/RUNBOOKS (3), docs/contexto (3), docs/design (3), docs/fabrica-vps (3), docs/faxina-261114 (3), docs/observability (3), docs/qa (3), docs/reports (3), docs/INCIDENTS (2), docs/contracts (2), docs/coordenacao (2), docs/edge-functions (2), docs/historico (2), docs/incidente-2026-10-13 (2), docs/prompts (2), docs/e2e (1), docs/graphify (1), docs/incidents (1), docs/migrations (1), docs/pipelines (1), docs/postmortems (1), docs/promo-champions (1), docs/storage (1), docs/workflows (1)
+- subpastas de docs/: docs/arquivo (92), docs/redeploy (27), docs/estado (26), docs/plans (24), docs/db (14), docs/audits (12), docs/ci (12), docs/adr (11), docs/auditoria-planejado-nao-executado-2026-10-11 (11), docs/hardening (11), docs/validation (11), docs/architecture (9), docs/runbooks (8), docs/agentes (7), docs/bugs (6), docs/security (6), docs/sessoes (5), docs/suppliers (5), docs/arquitetura (4), docs/audit (4), docs/operations (4), docs/testing (4), docs/RUNBOOKS (3), docs/contexto (3), docs/design (3), docs/fabrica-vps (3), docs/faxina-261114 (3), docs/observability (3), docs/qa (3), docs/reports (3), docs/INCIDENTS (2), docs/contracts (2), docs/coordenacao (2), docs/edge-functions (2), docs/historico (2), docs/incidente-2026-10-13 (2), docs/prompts (2), docs/e2e (1), docs/graphify (1), docs/incidents (1), docs/migrations (1), docs/pipelines (1), docs/postmortems (1), docs/promo-champions (1), docs/storage (1), docs/workflows (1)
 - CHANGELOG topo: [1.1.0](https://github.com/adm01-debug/Promo_Gifts_V4/compare/v1.0.0...v1.1.0) (2026-11-13)
 
 ## Últimos commits
+- 2026-11-17 `ec183890` feat(quotes): aprovar orçamento direto da lista — a ação existia no pai e era descartada (#3746)
+- 2026-11-17 `c66bd143` docs(audit): resgata a auditoria E06 das migrations fora do baseline (07/10) (#3745)
+- 2026-11-17 `b71caed6` fix(ci): lacra a allowlist do ledger de migrations, que era lida em try/catch silencioso (#3744)
+- 2026-11-17 `244702aa` fix(test): o teste do logo da sidebar contradizia o próprio componente (#3742)
 - 2026-11-17 `6a8cd1ff` feat(mockup): técnica nova do catálogo não aparecia no filtro do histórico (#3740)
 - 2026-11-17 `b2048b0e` docs(audit): restaura o pós-mortem dos 29 commits presos fora do GitHub (#3741)
 - 2026-11-17 `a5099c4c` docs(audit): retira um achado que eu registrei errado e fecha o placar de 17/11 (#3739)
@@ -1195,10 +1199,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-16 `d1091fe1` docs(audit): rodada de 17/11 no ledger de auditoria de branches (#3734)
 - 2026-11-16 `79c56401` fix(docs): número errado de migration no doc resgatado deixou o Gate 1 vermelho na main (#3733)
 - 2026-11-16 `bf156d3f` docs(audit): resgata 4 documentos da fábrica VPS que não existiam na main (#3731)
-- 2026-11-16 `bd18202a` test(mockup): resgata as 4 guardas que faltavam das fatias da fábrica VPS (#3730)
-- 2026-11-16 `8ba14375` fix(edge-fn): mockup baixava a imagem inteira na memória antes de recusar (#3729)
-- 2026-11-16 `32563063` test(e2e): três specs que davam falso verde ou vermelho garantido (#3728)
-- 2026-11-16 `eed9fdda` test(security): guarda de dado interno na tela de login nunca podia passar no CI (#3727)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

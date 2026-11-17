@@ -2,11 +2,31 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "6a8cd1ffd274a0d1964652bc86b19c8e85af1f67",
+  "commit": "ec183890df552b7759cc45158d1a3a586e404d6f",
   "branch": "main",
-  "data_commit": "2026-11-17T00:28:52-03:00",
+  "data_commit": "2026-11-17T00:49:58-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "ec183890",
+    "data": "2026-11-17",
+    "assunto": "feat(quotes): aprovar orçamento direto da lista — a ação existia no pai e era descartada (#3746)"
+   },
+   {
+    "sha": "c66bd143",
+    "data": "2026-11-17",
+    "assunto": "docs(audit): resgata a auditoria E06 das migrations fora do baseline (07/10) (#3745)"
+   },
+   {
+    "sha": "b71caed6",
+    "data": "2026-11-17",
+    "assunto": "fix(ci): lacra a allowlist do ledger de migrations, que era lida em try/catch silencioso (#3744)"
+   },
+   {
+    "sha": "244702aa",
+    "data": "2026-11-17",
+    "assunto": "fix(test): o teste do logo da sidebar contradizia o próprio componente (#3742)"
+   },
    {
     "sha": "6a8cd1ff",
     "data": "2026-11-17",
@@ -111,29 +131,9 @@
     "sha": "16cfec32",
     "data": "2026-11-16",
     "assunto": "chore(deps): sobe jest-dom 7 e react-hooks 7; rejeita jsdom 31 com a evidência (#3715)"
-   },
-   {
-    "sha": "cd67884f",
-    "data": "2026-11-16",
-    "assunto": "docs(migrations): registra recibo oficial da CRON-005 aplicada em producao (#3716)"
-   },
-   {
-    "sha": "7a7a5bc3",
-    "data": "2026-11-16",
-    "assunto": "fix(quotes): valida o rascunho antes de restaurar na tela do orcamento (#3713)"
-   },
-   {
-    "sha": "8e5aaaa2",
-    "data": "2026-11-16",
-    "assunto": "test: resgata os 2 testes que sobreviveram a refutacao adversarial (#3712)"
-   },
-   {
-    "sha": "26996059",
-    "data": "2026-11-16",
-    "assunto": "docs(audit): corrige a classificacao dos 52 testes — faltava a classe \"falha 100%\" (#3711)"
    }
   ],
-  "arquivos_mudados_7d": 1927,
+  "arquivos_mudados_7d": 1933,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -161,7 +161,7 @@
    },
    {
     "pasta": "src/components/quotes",
-    "mudancas": 114
+    "mudancas": 117
    },
    {
     "pasta": "supabase/functions/_shared",
@@ -189,7 +189,7 @@
    },
    {
     "pasta": "RELATORIO_CI.md",
-    "mudancas": 68
+    "mudancas": 67
    },
    {
     "pasta": "src/pages/products",
@@ -199,7 +199,7 @@
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "RELATORIO_CI.md",
-    "mudancas": 68
+    "mudancas": 67
    },
    {
     "arquivo": "supabase/MIGRATIONS_SYNC_LOG.md",
@@ -301,7 +301,7 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 569
+    "commits": 570
    },
    {
     "autor": "Claude",
@@ -313,7 +313,7 @@
    },
    {
     "autor": "github-actions[bot]",
-    "commits": 33
+    "commits": 32
    },
    {
     "autor": "dependabot[bot]",
@@ -322,24 +322,24 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 10815,
-  "arquivos_codigo": 5357,
-  "linhas_codigo": 1020027,
+  "arquivos_total": 10818,
+  "arquivos_codigo": 5359,
+  "linhas_codigo": 1020259,
   "rotas": 138,
   "rotas_http_backend": 13,
   "vistas_por_id": 0,
   "itens_menu": 69,
   "modulos": 161,
-  "componentes": 1235,
+  "componentes": 1236,
   "hooks": 626,
   "edge_functions": 112,
   "tabelas": 527,
   "migrations": 3097,
   "cron_jobs": 122,
-  "testes": 2537,
+  "testes": 2538,
   "workflows": 87,
   "scripts": 283,
-  "docs_md": 1464
+  "docs_md": 1465
  },
  "por_pasta": {
   ".github/scripts": {
@@ -812,7 +812,7 @@
   },
   "e2e/sidebar-logo.spec.ts": {
    "arquivos": 1,
-   "linhas": 52
+   "linhas": 55
   },
   "e2e/smoke.spec.ts": {
    "arquivos": 1,
@@ -1412,7 +1412,7 @@
   },
   "scripts/check-supabase-migration-ledger.mjs": {
    "arquivos": 1,
-   "linhas": 237
+   "linhas": 319
   },
   "scripts/check-supabase-reference-catalog.mjs": {
    "arquivos": 1,
@@ -1887,8 +1887,8 @@
    "linhas": 130
   },
   "src/components": {
-   "arquivos": 1392,
-   "linhas": 277326
+   "arquivos": 1394,
+   "linhas": 277473
   },
   "src/config": {
    "arquivos": 1,

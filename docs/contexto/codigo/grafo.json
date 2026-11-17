@@ -1,8 +1,8 @@
 {
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
- "nos": 2820,
- "arestas": 11087,
+ "nos": 2821,
+ "arestas": 11091,
  "hubs": [
   {
    "arquivo": "src/lib/utils.ts",
@@ -30,7 +30,7 @@
   },
   {
    "arquivo": "src/components/ui/tooltip.tsx",
-   "importado_por": 299
+   "importado_por": 300
   },
   {
    "arquivo": "src/components/ui/input.tsx",
@@ -145,15 +145,15 @@
    "importado_por": 51
   },
   {
+   "arquivo": "src/hooks/quotes/index.ts",
+   "importado_por": 48
+  },
+  {
    "arquivo": "supabase/functions/_shared/request-id.ts",
    "importado_por": 47
   },
   {
    "arquivo": "src/components/ui/ConfirmDialog.tsx",
-   "importado_por": 46
-  },
-  {
-   "arquivo": "src/hooks/quotes/index.ts",
    "importado_por": 46
   },
   {

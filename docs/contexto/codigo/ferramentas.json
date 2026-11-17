@@ -3,9 +3,9 @@
  "format_version": 2,
  "stack": {
   "linguagens": [
-   "TypeScript (4893)",
+   "TypeScript (4895)",
    "SQL (3431)",
-   "Markdown (1464)",
+   "Markdown (1465)",
    "JavaScript (456)",
    "JSON (132)",
    "YAML (115)",
@@ -4193,7 +4193,7 @@
  "docs_em_subpastas": [
   {
    "pasta": "docs/arquivo",
-   "arquivos_md": 91
+   "arquivos_md": 92
   },
   {
    "pasta": "docs/redeploy",

@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "6a8cd1ffd274a0d1964652bc86b19c8e85af1f67",
+  "sha": "ec183890df552b7759cc45158d1a3a586e404d6f",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-17 03:30 UTC",
-  "files_total": 10743,
-  "code_files": 8787,
-  "code_lines": 1239840
+  "generated_at": "2026-11-17 03:50 UTC",
+  "files_total": 10746,
+  "code_files": 8789,
+  "code_lines": 1240072
  },
  "version": "1.3.2",
- "facts_hash": "27eba5eb09ead35b",
+ "facts_hash": "b7b0f71ed2ab326f",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -1112,7 +1112,7 @@
   "languages": {
    ".sql": 3431,
    ".ts": 2990,
-   ".tsx": 1904,
+   ".tsx": 1906,
    ".mjs": 449,
    ".py": 13,
    ".js": 7
@@ -139648,7 +139648,7 @@
      "request_discount_approval_transactional",
      "respond_discount_approval_transactional"
     ],
-    "deps_count": 205
+    "deps_count": 206
    },
    {
     "path": "/orcamentos/dashboard",
@@ -144782,7 +144782,7 @@
     "file": ".github/workflows/wraparound-monitor-report.yml"
    }
   ],
-  "components_count": 1655,
+  "components_count": 1657,
   "hooks": [
    {
     "name": "useCommandBar",
@@ -148660,7 +148660,7 @@
   {
    "module": "e2e",
    "files": 626,
-   "lines": 75831,
+   "lines": 75834,
    "tables": [
     "discount_approval_requests",
     "quote_items"
@@ -149130,7 +149130,7 @@
   {
    "module": "scripts",
    "files": 298,
-   "lines": 63855,
+   "lines": 63937,
    "tables": [
     "a",
     "b",
@@ -149179,7 +149179,7 @@
     "check-security-definer-audit.mjs: computeViolations",
     "check-summary-color-tokens.mjs: ROOT, TITLE, START_MARKER, END_MARKER, REQUIRED, FORBIDDEN",
     "check-supabase-linter.mjs: runCatalogChecks, runLinter",
-    "check-supabase-migration-ledger.mjs: auditSupabaseMigrationLedger, parseSupabaseMigrationLedgerOutput, parseCliOptions, runCli",
+    "check-supabase-migration-ledger.mjs: versionsDigest, validateRemoteOnlyAllowlist, auditSupabaseMigrationLedger, parseSupabaseMigrationLedgerOutput, parseCliOptions, runCli",
     "check-supabase-reference-catalog.mjs: scanSupabaseReferences, collectProjectSupabaseReferences, auditSupabaseReferences, loadReferenceCatalog, runCli",
     "check-types-inventory-drift.mjs: DEFAULT_BASE_REF, DEFAULT_ALLOWLIST_PATH, readFileAtGitRef, diffInventories, loadRemovalAllowlist, diffContracts",
     "check-workflow-contracts.mjs: checkC1Permissions, hasPullRequestTrigger, checkC2Concurrency, checkC3Timeout, checkC4NoDeadBranches, checkC5NoInjection",
@@ -149369,8 +149369,8 @@
   },
   {
    "module": "src/components",
-   "files": 1392,
-   "lines": 277325,
+   "files": 1394,
+   "lines": 277472,
    "tables": [
     "admin_audit_log",
     "art_file_attachments",
@@ -163950,6 +163950,38 @@
    },
    {
     "file": "scripts/check-supabase-migration-ledger.mjs",
+    "msg": "allowlist inválida: ${field} ausente ou insuficiente"
+   },
+   {
+    "file": "scripts/check-supabase-migration-ledger.mjs",
+    "msg": "allowlist inválida: esperado objeto JSON"
+   },
+   {
+    "file": "scripts/check-supabase-migration-ledger.mjs",
+    "msg": "allowlist inválida: project_ref=${document.project_ref ?? "
+   },
+   {
+    "file": "scripts/check-supabase-migration-ledger.mjs",
+    "msg": "allowlist inválida: schema_version deve ser 1"
+   },
+   {
+    "file": "scripts/check-supabase-migration-ledger.mjs",
+    "msg": "allowlist inválida: versions contém duplicatas"
+   },
+   {
+    "file": "scripts/check-supabase-migration-ledger.mjs",
+    "msg": "allowlist inválida: versions contém valor vazio/não textual"
+   },
+   {
+    "file": "scripts/check-supabase-migration-ledger.mjs",
+    "msg": "allowlist inválida: versions deve ser array não vazio"
+   },
+   {
+    "file": "scripts/check-supabase-migration-ledger.mjs",
+    "msg": "allowlist inválida: versions_sha256 divergente; calculado=${digest}"
+   },
+   {
+    "file": "scripts/check-supabase-migration-ledger.mjs",
     "msg": "saída não é JSON nem tabela reconhecida de migration list"
    },
    {
@@ -171315,6 +171347,10 @@
    {
     "file": "src/components/quotes/QuoteItemsList.tsx",
     "text": "Sincroniza quando o item muda externamente (apenas se o usuário não está editando algo diferente)."
+   },
+   {
+    "file": "src/components/quotes/QuoteRowApproveItem.tsx",
+    "text": "permissão efetiva continua sendo a do banco: a lista não cria regra nova"
    },
    {
     "file": "src/components/quotes/QuoteTotalsSummary.tsx",
@@ -238091,6 +238127,22 @@
    {
     "file": "src/components/quotes/__tests__/QuoteStatusTimeline.states.test.tsx",
     "name": "estados terminais (rejected/expired/cancelled) substituem último step"
+   },
+   {
+    "file": "src/components/quotes/__tests__/QuotesConfigurableList.approve.test.tsx",
+    "name": "QuotesConfigurableList — aprovar da lista"
+   },
+   {
+    "file": "src/components/quotes/__tests__/QuotesConfigurableList.approve.test.tsx",
+    "name": "aprova o orçamento pelo mesmo caminho que o pai já usa para o lote"
+   },
+   {
+    "file": "src/components/quotes/__tests__/QuotesConfigurableList.approve.test.tsx",
+    "name": "não oferece aprovar quando a transição é inválida para o status atual"
+   },
+   {
+    "file": "src/components/quotes/__tests__/QuotesConfigurableList.approve.test.tsx",
+    "name": "não oferece aprovar quando o pai não passa o handler"
    },
    {
     "file": "src/components/quotes/__tests__/QuotesConfigurableList.selection.test.tsx",
@@ -401992,8 +402044,11 @@
   },
   "e2e/sidebar-logo.spec.ts": {
    "path": "e2e/sidebar-logo.spec.ts",
-   "lines": 52,
+   "lines": 55,
    "is_test": true,
+   "rule_comments": [
+    "O limite anterior era `< 20`, que contradizia o próprio componente — e o"
+   ],
    "tests": [
     "Sidebar Logo Visual Regression",
     "should render small logo correctly in sidebar on desktop",
@@ -424006,8 +424061,10 @@
   },
   "scripts/check-supabase-migration-ledger.mjs": {
    "path": "scripts/check-supabase-migration-ledger.mjs",
-   "lines": 237,
+   "lines": 319,
    "exports": [
+    "function versionsDigest",
+    "function validateRemoteOnlyAllowlist",
     "function auditSupabaseMigrationLedger",
     "function parseSupabaseMigrationLedgerOutput",
     "function parseCliOptions",
@@ -424017,15 +424074,36 @@
     "--summary exige um caminho de saída.",
     "Argumento inválido: ${arg}",
     "Uso: node scripts/check-supabase-migration-ledger.mjs <ledger.json> [--summary <saida.json>]",
+    "allowlist inválida: ${field} ausente ou insuficiente",
+    "allowlist inválida: esperado objeto JSON",
+    "allowlist inválida: project_ref=${document.project_ref ?? ",
+    "allowlist inválida: schema_version deve ser 1",
+    "allowlist inválida: versions contém duplicatas",
+    "allowlist inválida: versions contém valor vazio/não textual",
+    "allowlist inválida: versions deve ser array não vazio",
+    "allowlist inválida: versions_sha256 divergente; calculado=${digest}",
     "saída não é JSON nem tabela reconhecida de migration list",
     "saída vazia do supabase migration list"
+   ],
+   "params": [
+    {
+     "name": "CANONICAL_PROJECT_REF",
+     "value": "'doufsxqlfjyuvxuezpln'"
+    }
    ],
    "rule_comments": [
     "Subtração por CONTAGEM: cada versão remota casa no máximo com uma ocorrência local",
     "Apenas remote_only não-allowlistado, mismatched e malformed bloqueiam.",
     "os formatos porque a semântica do gate não pode depender dessa variação do"
    ],
-   "doc": "!/usr/bin/env node"
+   "doc": "!/usr/bin/env node",
+   "calc_fns": [
+    {
+     "name": "validateRemoteOnlyAllowlist",
+     "params": "document, { expectedProjectRef = CANONICAL_PROJECT_REF } = {},",
+     "body": "if (!document || typeof document !== 'object' || Array.isArray(document)) { throw new Error('allowlist inválida: esperado objeto JSON'); } if (document.schema_version !== 1) { throw new Error('allowlist inválida: schema_version deve ser 1'); } if (document.project_ref !== expectedProjectRef) { throw new Error( `allowlist inválida: project_ref=${document.project_ref ?? 'ausente'}; esperado=${expectedProjectRef}`, ); } if (!Array.isArray(document.versions) || document.versions.length === 0) { thro …"
+    }
+   ]
   },
   "scripts/check-supabase-reference-catalog.mjs": {
    "path": "scripts/check-supabase-reference-catalog.mjs",
@@ -448969,6 +449047,16 @@
    ],
    "doc": "QuoteProductCustomization — Personalização de produto dentro do orçamento Usa ProductCustomizationOptions v6 com o novo fluxo: Local → Técnica → Dimensões/Cores → Preço → AUTO-CONFIRMA A personalização é confirmada automaticamente quando o preço é calculado, sem necessidade de clicar em \"Adicionar\" …"
   },
+  "src/components/quotes/QuoteRowApproveItem.tsx": {
+   "path": "src/components/quotes/QuoteRowApproveItem.tsx",
+   "lines": 37,
+   "exports": [
+    "function QuoteRowApproveItem"
+   ],
+   "rule_comments": [
+    "permissão efetiva continua sendo a do banco: a lista não cria regra nova"
+   ]
+  },
   "src/components/quotes/QuoteSignaturePad.tsx": {
    "path": "src/components/quotes/QuoteSignaturePad.tsx",
    "lines": 147,
@@ -449103,7 +449191,7 @@
   },
   "src/components/quotes/QuotesConfigurableList.tsx": {
    "path": "src/components/quotes/QuotesConfigurableList.tsx",
-   "lines": 618,
+   "lines": 619,
    "exports": [
     "interface ColumnDef",
     "function QuotesConfigurableList"
@@ -449943,6 +450031,21 @@
     "mantém steps acessíveis em viewport %s (%spx)",
     "não usa cores arbitrárias do Tailwind (regressão de contraste)",
     "estados terminais (rejected/expired/cancelled) substituem último step"
+   ]
+  },
+  "src/components/quotes/__tests__/QuotesConfigurableList.approve.test.tsx": {
+   "path": "src/components/quotes/__tests__/QuotesConfigurableList.approve.test.tsx",
+   "lines": 109,
+   "is_test": true,
+   "rule_comments": [
+    "nova: a permissão efetiva continua sendo a do banco, a mesma do caminho em",
+    "lote. A UI não cria regra de quem pode aprovar."
+   ],
+   "tests": [
+    "QuotesConfigurableList — aprovar da lista",
+    "aprova o orçamento pelo mesmo caminho que o pai já usa para o lote",
+    "não oferece aprovar quando a transição é inválida para o status atual",
+    "não oferece aprovar quando o pai não passa o handler"
    ]
   },
   "src/components/quotes/__tests__/QuotesConfigurableList.selection.test.tsx": {
@@ -541094,10 +541197,49 @@
   }
  },
  "git": {
-  "sha": "6a8cd1ffd274a0d1964652bc86b19c8e85af1f67",
+  "sha": "ec183890df552b7759cc45158d1a3a586e404d6f",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "ec18389",
+    "date": "2026-11-17",
+    "author": "adm01-debug",
+    "subject": "feat(quotes): aprovar orçamento direto da lista — a ação existia no pai e era descartada (#3746)",
+    "files": [
+     "src/components/quotes/QuoteRowApproveItem.tsx",
+     "src/components/quotes/QuotesConfigurableList.tsx",
+     "src/components/quotes/__tests__/QuotesConfigurableList.approve.test.tsx"
+    ]
+   },
+   {
+    "sha": "c66bd14",
+    "date": "2026-11-17",
+    "author": "adm01-debug",
+    "subject": "docs(audit): resgata a auditoria E06 das migrations fora do baseline (07/10) (#3745)",
+    "files": [
+     "docs/arquivo/2026-10/AUDITORIA_CANDIDATAS_FORA_BASELINE_E06_2026-10-07.md"
+    ]
+   },
+   {
+    "sha": "b71caed",
+    "date": "2026-11-17",
+    "author": "adm01-debug",
+    "subject": "fix(ci): lacra a allowlist do ledger de migrations, que era lida em try/catch silencioso (#3744)",
+    "files": [
+     "scripts/check-supabase-migration-ledger.mjs",
+     "scripts/migration-ledger-remote-only-allowlist.json"
+    ]
+   },
+   {
+    "sha": "244702a",
+    "date": "2026-11-17",
+    "author": "adm01-debug",
+    "subject": "fix(test): o teste do logo da sidebar contradizia o próprio componente (#3742)",
+    "files": [
+     "e2e/sidebar-logo.spec.ts"
+    ]
+   },
    {
     "sha": "6a8cd1f",
     "date": "2026-11-17",
@@ -541357,69 +541499,11 @@
      "analise-branches/PROVA-ENCERRAMENTO-PRS-261116.md",
      "analise-branches/PROVA-RESIDUO-OBJETOS-261116.md"
     ]
-   },
-   {
-    "sha": "656e9bc",
-    "date": "2026-11-16",
-    "author": "adm01-debug",
-    "subject": "feat(ci): resgata o executor de CI local — 15 commits que nunca viraram PR (#3709)",
-    "files": [
-     "docs/ci/CI_LOCAL.md",
-     "package.json",
-     "scripts/automation.config.json",
-     "scripts/ci-local/compare.mjs",
-     "scripts/ci-local/extras.mjs",
-     "scripts/ci-local/index.mjs",
-     "scripts/ci-local/inventory.mjs",
-     "scripts/ci-local/native.mjs",
-     "scripts/ci-local/run-act.mjs",
-     "scripts/ci-local/select.mjs",
-     "scripts/ci-local/shims/artifact-store.mjs",
-     "scripts/ci-local/shims/download-artifact/action.yml",
-     "scripts/ci-local/shims/download-artifact/index.mjs",
-     "scripts/ci-local/shims/paths-filter/action.yml",
-     "scripts/ci-local/shims/paths-filter/index.mjs",
-     "scripts/ci-local/shims/upload-artifact/action.yml",
-     "scripts/ci-local/shims/upload-artifact/index.mjs",
-     "tests/scripts/ci-local.test.mjs"
-    ]
-   },
-   {
-    "sha": "dc5f7b4",
-    "date": "2026-11-16",
-    "author": "dependabot[bot]",
-    "subject": "chore(deps): bump production-minor-patch group — 12 atualizacoes (#3693)",
-    "files": [
-     "package-lock.json",
-     "package.json"
-    ]
-   },
-   {
-    "sha": "5c39856",
-    "date": "2026-11-16",
-    "author": "adm01-debug",
-    "subject": "fix(migrations): restaura 325 recibos do ledger apagados por um commit de E2E (#3708)",
-    "files": [
-     "supabase/MIGRATIONS_SYNC_LOG.md"
-    ]
-   },
-   {
-    "sha": "ec9b8e7",
-    "date": "2026-11-16",
-    "author": "adm01-debug",
-    "subject": "docs(audit): retrata o veredito dos 52 testes legacy — 21 dos 26 modulos estao vivos (#3706)",
-    "files": [
-     "analise-branches/VEREDITO-52-TESTES-LEGACY-261116.md"
-    ]
    }
   ],
   "hot_files": [
    [
     "docs/agentes/resgates/2026-11-16-auditoria-branches.md",
-    3
-   ],
-   [
-    "package.json",
     3
    ],
    [
@@ -541431,16 +541515,32 @@
     2
    ],
    [
-    "package-lock.json",
-    2
+    "src/components/quotes/QuoteRowApproveItem.tsx",
+    1
    ],
    [
-    "supabase/MIGRATIONS_SYNC_LOG.md",
-    2
+    "src/components/quotes/QuotesConfigurableList.tsx",
+    1
    ],
    [
-    "analise-branches/VEREDITO-52-TESTES-LEGACY-261116.md",
-    2
+    "src/components/quotes/__tests__/QuotesConfigurableList.approve.test.tsx",
+    1
+   ],
+   [
+    "docs/arquivo/2026-10/AUDITORIA_CANDIDATAS_FORA_BASELINE_E06_2026-10-07.md",
+    1
+   ],
+   [
+    "scripts/check-supabase-migration-ledger.mjs",
+    1
+   ],
+   [
+    "scripts/migration-ledger-remote-only-allowlist.json",
+    1
+   ],
+   [
+    "e2e/sidebar-logo.spec.ts",
+    1
    ],
    [
     "src/components/mockup/MockupHistoryPanel.tsx",
@@ -541480,18 +541580,6 @@
    ],
    [
     "auditoria-supabase/correcoes.md",
-    1
-   ],
-   [
-    "src/hooks/products/useSupplierTrust.ts",
-    1
-   ],
-   [
-    "tests/hooks/device-and-supplier-trust.contract.test.ts",
-    1
-   ],
-   [
-    "docs/FABRICA_VPS_FAQ.md",
     1
    ]
   ]

@@ -8766,6 +8766,11 @@
    "src/hooks/quotes/index.ts",
    "src/types/customization.ts"
   ],
+  "src/components/quotes/QuoteRowApproveItem.tsx": [
+   "src/components/ui/dropdown-menu.tsx",
+   "src/hooks/quotes/index.ts",
+   "src/lib/quote-status-config.ts"
+  ],
   "src/components/quotes/QuoteSignaturePad.tsx": [
    "src/components/ui/button.tsx",
    "src/components/ui/card.tsx",
@@ -8806,6 +8811,7 @@
   ],
   "src/components/quotes/QuotesConfigurableList.tsx": [
    "src/components/quotes/QuoteListCellRenderer.tsx",
+   "src/components/quotes/QuoteRowApproveItem.tsx",
    "src/components/ui/button.tsx",
    "src/components/ui/checkbox.tsx",
    "src/components/ui/dropdown-menu.tsx",

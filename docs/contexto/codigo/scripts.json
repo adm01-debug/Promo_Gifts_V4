@@ -1588,7 +1588,7 @@
   {
    "arquivo": "scripts/check-supabase-migration-ledger.mjs",
    "descricao": "* Compara o ledger de migrations devolvido pelo Supabase CLI com a árvore",
-   "linhas": 237,
+   "linhas": 319,
    "env": [],
    "npm_scripts": [],
    "workflows": [

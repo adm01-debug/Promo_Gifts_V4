@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.3.2 · commit `6a8cd1ffd2` · branch `main` · 2026-11-17 03:30 UTC
+> Gerado automaticamente por AI Context Sync v1.3.2 · commit `ec183890df` · branch `main` · 2026-11-17 03:50 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -6411,6 +6411,14 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | --summary exige um caminho de saída. | `scripts/check-supabase-migration-ledger.mjs` |
 | Argumento inválido: ${arg} | `scripts/check-supabase-migration-ledger.mjs` |
 | Uso: node scripts/check-supabase-migration-ledger.mjs <ledger.json> [--summary <saida.json>] | `scripts/check-supabase-migration-ledger.mjs` |
+| allowlist inválida: ${field} ausente ou insuficiente | `scripts/check-supabase-migration-ledger.mjs` |
+| allowlist inválida: esperado objeto JSON | `scripts/check-supabase-migration-ledger.mjs` |
+| allowlist inválida: project_ref=${document.project_ref ??  | `scripts/check-supabase-migration-ledger.mjs` |
+| allowlist inválida: schema_version deve ser 1 | `scripts/check-supabase-migration-ledger.mjs` |
+| allowlist inválida: versions contém duplicatas | `scripts/check-supabase-migration-ledger.mjs` |
+| allowlist inválida: versions contém valor vazio/não textual | `scripts/check-supabase-migration-ledger.mjs` |
+| allowlist inválida: versions deve ser array não vazio | `scripts/check-supabase-migration-ledger.mjs` |
+| allowlist inválida: versions_sha256 divergente; calculado=${digest} | `scripts/check-supabase-migration-ledger.mjs` |
 | saída não é JSON nem tabela reconhecida de migration list | `scripts/check-supabase-migration-ledger.mjs` |
 | saída vazia do supabase migration list | `scripts/check-supabase-migration-ledger.mjs` |
 | --catalog exige um caminho. | `scripts/check-supabase-reference-catalog.mjs` |
@@ -6427,15 +6435,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | GET ${url} → ${r.status} ${r.statusText} | `scripts/ci-metrics.mjs` |
 | ${path}: esperado um array de resultados | `scripts/ci-performance-gate.ts` |
 | ACTION_ID_REJECTED | `scripts/diagnose-personalization-artifact.py` |
-| ARCHIVE_FORMAT_OR_CRC_ERROR | `scripts/diagnose-personalization-artifact.py` |
-| ARCHIVE_IDENTITY_MISMATCH | `scripts/diagnose-personalization-artifact.py` |
-| ASSET_DESTINATION_REJECTED | `scripts/diagnose-personalization-artifact.py` |
-| AUTHORIZATION_DESTINATION_REJECTED | `scripts/diagnose-personalization-artifact.py` |
-| DEADLINE_EXCEEDED | `scripts/diagnose-personalization-artifact.py` |
-| DOWNLOAD_SIZE_LIMIT | `scripts/diagnose-personalization-artifact.py` |
-| DUPLICATE_ACTION_AFTER | `scripts/diagnose-personalization-artifact.py` |
-| DUPLICATE_JSON_KEY | `scripts/diagnose-personalization-artifact.py` |
-| … +1269 linhas — lista completa em `context.json` | |
+| … +1277 linhas — lista completa em `context.json` | |
 
 ## J. Controle de acesso no código (checagens de perfil/permissão)
 
@@ -6559,7 +6559,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `admin` | `supabase/migrations/20261112120500_fix_optimization_queue_rpcs_dev_access.sql` |
 | `anon` | `tests/edge-functions/live/_live-client.ts` |
 
-## K. Testes como especificação (21893 testes em 2216 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (21897 testes em 2217 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -6863,7 +6863,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `src/lib/inventory/__tests__/health-score.test.ts` | 18 | calcHealthScore · retorna 100 quando não há produtos · retorna 100 quando todos estão adequados · retorna 0 quando nenhum está adequado … |
 | `src/pages/magazine/templates-gallery/__tests__/gallery.test.tsx` | 18 | MagazineTemplatesGalleryPage · renderiza os 12 cards de template · filtro  · filtro  … |
 | `src/pages/quotes/__tests__/quote-builder-freight-block.rtl.test.tsx` | 18 | Bloco Frete — hierarquia + data-testid do grid · shippingType= · shippingType= · shippingType= … |
-| … +1916 linhas — lista completa em `context.json` | | |
+| … +1917 linhas — lista completa em `context.json` | | |
 
 ## L. Eventos de webhook tratados (contratos com sistemas externos)
 
@@ -7331,4 +7331,4 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | Remover a empresa exige confirmação (mesma regra do Magic Up) — evita perda acidental. | `src/components/mockup/MockupClientSelector.tsx` |
 | Fecha APENAS a lista — a empresa selecionada permanece intacta. | `src/components/mockup/MockupClientSelector.tsx` |
 | * Máximo de cores suportadas na área */ | `src/components/mockup/MultiAreaManager.tsx` |
-| … +1324 linhas — lista completa em `context.json` | |
+| … +1325 linhas — lista completa em `context.json` | |
