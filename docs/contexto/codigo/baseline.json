@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "ec183890df552b7759cc45158d1a3a586e404d6f",
+  "commit": "13a9f8eb19f5e79f8f900e53133cfb0e92c07bb1",
   "branch": "main",
-  "data_commit": "2026-11-17T00:49:58-03:00",
+  "data_commit": "2026-11-17T01:00:48-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "13a9f8eb",
+    "data": "2026-11-17",
+    "assunto": "chore(docs): fechamento da auditoria de branches com o veredito das 24 restantes (#3748)"
+   },
    {
     "sha": "ec183890",
     "data": "2026-11-17",
@@ -126,14 +131,9 @@
     "sha": "9bd4a4bf",
     "data": "2026-11-16",
     "assunto": "chore(docs): arquiva a passagem de sessão de 15/11 que a main não tinha (#3717)"
-   },
-   {
-    "sha": "16cfec32",
-    "data": "2026-11-16",
-    "assunto": "chore(deps): sobe jest-dom 7 e react-hooks 7; rejeita jsdom 31 com a evidência (#3715)"
    }
   ],
-  "arquivos_mudados_7d": 1933,
+  "arquivos_mudados_7d": 1929,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -189,7 +189,7 @@
    },
    {
     "pasta": "RELATORIO_CI.md",
-    "mudancas": 67
+    "mudancas": 66
    },
    {
     "pasta": "src/pages/products",
@@ -199,7 +199,7 @@
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "RELATORIO_CI.md",
-    "mudancas": 67
+    "mudancas": 66
    },
    {
     "arquivo": "supabase/MIGRATIONS_SYNC_LOG.md",

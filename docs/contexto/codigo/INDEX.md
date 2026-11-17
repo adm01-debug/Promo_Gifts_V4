@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e de hora em hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `ec183890df552b7759cc45158d1a3a586e404d6f` (2026-11-17T00:49:58-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e de hora em hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `13a9f8eb19f5e79f8f900e53133cfb0e92c07bb1` (2026-11-17T01:00:48-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -590,13 +590,13 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - possiveis_segredos_no_codigo: 7 — ex.: scripts/ai-context/cenarios.mjs:102, src/components/admin/connections/__tests__/ConnectionSecurity.unit.test.tsx:9, src/integrations/supabase/client.ts:27
 
 ## Grafo de código (graphify)
-- 48122 nós · 80844 arestas · 2769 comunidades · grafo do commit `ec183890`
-- comunidades maiores: ref_integrations (582), react (554), ref_components (540), vitest (524), ref_node_child_process (455), ref_node_fs (381), ref_hooks (362), @tanstack/react-query (334), concludeCheck (320), ref_types (319), scripts (309), cors.ts (282)
+- 48132 nós · 80857 arestas · 2748 comunidades · grafo do commit `13a9f8eb`
+- comunidades maiores: vitest (824), ref_integrations (605), ref_hooks (453), ref_lib (452), lucide-react (432), ref_node_child_process (386), @tanstack/react-query (354), gotoAndSettle (350), sonner (325), ref_node_url (311), scripts (309), ref_node_fs (295)
 - símbolos mais chamados: gotoAndSettle() (e2e/helpers/nav.ts), re (?), q() (scripts/supabase_snapshot/snapshot.py), analyze() (tests/scripts/test_personalization_artifact_diagnostics.py), outer() (tests/scripts/test_personalization_artifact_diagnostics.py), json (?), useExternalDatabase() (recovery/src-legacy/src/hooks/useExternalDatabase.ts), concludeCheck() (scripts/check-result-contract.mjs), querySupabaseReadOnly() (scripts/supabase-read-only-query.mjs), loginAs() (e2e/helpers/auth.ts), inner() (tests/scripts/test_personalization_artifact_diagnostics.py), excluded_sql() (scripts/supabase_snapshot/snapshot.py)
 - consulta local: `graphify query "<pergunta>"`, `graphify path "<A>" "<B>"`, `graphify explain "<X>"`
 
 ## Hotspots (arquivos mais alterados, 90 dias)
-- RELATORIO_CI.md (67)
+- RELATORIO_CI.md (66)
 - supabase/MIGRATIONS_SYNC_LOG.md (62)
 - PENDENCIAS.md (57)
 - package.json (42)
@@ -1184,6 +1184,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - CHANGELOG topo: [1.1.0](https://github.com/adm01-debug/Promo_Gifts_V4/compare/v1.0.0...v1.1.0) (2026-11-13)
 
 ## Últimos commits
+- 2026-11-17 `13a9f8eb` chore(docs): fechamento da auditoria de branches com o veredito das 24 restantes (#3748)
 - 2026-11-17 `ec183890` feat(quotes): aprovar orçamento direto da lista — a ação existia no pai e era descartada (#3746)
 - 2026-11-17 `c66bd143` docs(audit): resgata a auditoria E06 das migrations fora do baseline (07/10) (#3745)
 - 2026-11-17 `b71caed6` fix(ci): lacra a allowlist do ledger de migrations, que era lida em try/catch silencioso (#3744)
@@ -1198,7 +1199,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-16 `083510fb` fix(trust): resgata o contrato de "dispositivo confiável" e tapa o furo que ele achou (#3735)
 - 2026-11-16 `d1091fe1` docs(audit): rodada de 17/11 no ledger de auditoria de branches (#3734)
 - 2026-11-16 `79c56401` fix(docs): número errado de migration no doc resgatado deixou o Gate 1 vermelho na main (#3733)
-- 2026-11-16 `bf156d3f` docs(audit): resgata 4 documentos da fábrica VPS que não existiam na main (#3731)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`
