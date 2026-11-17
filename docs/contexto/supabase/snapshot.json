@@ -221476,12 +221476,6 @@
       {
         "code": "view_security_definer",
         "detail": "View em public sem security_invoker: executa como owner e ignora RLS das tabelas base.",
-        "object": "public.v_product_properties_public",
-        "severity": "ALTA"
-      },
-      {
-        "code": "view_security_definer",
-        "detail": "View em public sem security_invoker: executa como owner e ignora RLS das tabelas base.",
         "object": "public.v_product_tags_public",
         "severity": "ALTA"
       },
@@ -238661,6 +238655,12 @@
         "statements": 1,
         "statements_sha": "7793b98ba8884f8d",
         "version": "20261115230000"
+      },
+      {
+        "name": "p06_security_invoker_v_product_properties_public",
+        "statements": 8,
+        "statements_sha": "981bb1b24ba04913",
+        "version": "20261117073000"
       }
     ],
     "policies": [
@@ -265123,7 +265123,7 @@
         "security_invoker": true
       },
       {
-        "comment": "SECURITY DEFINER intencional (fix_version 20260717). Colunas: property_code, property_value.",
+        "comment": "Propriedades de produtos ativos. security_invoker=true desde P06/A-V01 (20261117073000): o corte das linhas e o RLS de public.product_properties (product_properties_anon_read -> fn_product_active_for_rls), nao o JOIN da view. Nenhum GRANT novo foi necessario — anon ja tinha SELECT nas 9 colunas da tabela-base. Colunas de output: id, product_id, property_code, property_value, source.",
         "definition": " SELECT pp.id,\n    pp.product_id,\n    pp.property_code,\n    pp.property_value,\n    pp.source\n   FROM product_properties pp\n     JOIN products p ON p.id = pp.product_id AND p.is_active = true AND p.is_deleted IS NOT TRUE;",
         "depends_on": [
           "public.product_properties",
@@ -265132,12 +265132,12 @@
         "kind": "view",
         "name": "v_product_properties_public",
         "options": [
-          "security_invoker=false"
+          "security_invoker=true"
         ],
         "owner": "postgres",
         "populated": null,
         "schema": "public",
-        "security_invoker": false
+        "security_invoker": true
       },
       {
         "comment": "SECURITY DEFINER intencional (fix_version 20260717). Colunas: product_id, tag_id.",

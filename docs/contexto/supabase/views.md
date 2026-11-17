@@ -3656,11 +3656,11 @@ SELECT pi.source_supplier,
 | campo | valor |
 |---|---|
 | owner | postgres |
-| security_invoker | não |
-| opções | security_invoker=false |
+| security_invoker | sim |
+| opções | security_invoker=true |
 | depende de | public.product_properties, public.products |
 | populada | n/a |
-| comentário | SECURITY DEFINER intencional (fix_version 20260717). Colunas: property_code, property_value. |
+| comentário | Propriedades de produtos ativos. security_invoker=true desde P06/A-V01 (20261117073000): o corte das linhas e o RLS de public.product_properties (product_properties_anon_read -> fn_product_active_for_rls), nao o JOIN da view. Nenhum GRANT novo foi necessario — anon ja tinha SELECT nas 9 colunas da tabela-base. Colunas de output: id, product_id, property_code, property_value, source. |
 
 
 ```sql

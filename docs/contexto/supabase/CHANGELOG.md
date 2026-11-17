@@ -2,6 +2,12 @@
 
 Diff semântico gerado a cada coleta em que algo mudou.
 
+## 2026-11-17 09:20 UTC
+
+- **lints** removido (1): `view_security_definer:public.v_product_properties_public`
+- **migrations** adicionado (1): `20261117073000_p06_security_invoker_v_product_properties_public`
+- **views** alterado (1): `public.v_product_properties_public`
+
 ## 2026-11-17 08:22 UTC
 
 - **functions** alterado (2): `public.fn_product_active_for_rls(p_id uuid)`, `public.user_belongs_to_org(org_id uuid)`

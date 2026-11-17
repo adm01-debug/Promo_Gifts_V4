@@ -6,7 +6,6 @@ Verificações objetivas feitas no catálogo. Um agente deve ler isto antes de p
 |---|---|---|---|
 | ALTA | view_security_definer | public.v_kit_component_media_public | View em public sem security_invoker: executa como owner e ignora RLS das tabelas base. |
 | ALTA | view_security_definer | public.v_product_compositions_public | View em public sem security_invoker: executa como owner e ignora RLS das tabelas base. |
-| ALTA | view_security_definer | public.v_product_properties_public | View em public sem security_invoker: executa como owner e ignora RLS das tabelas base. |
 | ALTA | view_security_definer | public.v_product_tags_public | View em public sem security_invoker: executa como owner e ignora RLS das tabelas base. |
 | ALTA | view_security_definer | public.v_products_public | View em public sem security_invoker: executa como owner e ignora RLS das tabelas base. |
 | ALTA | view_security_definer | public.v_suppliers_public | View em public sem security_invoker: executa como owner e ignora RLS das tabelas base. |
