@@ -1,4 +1,13 @@
 /**
+ * UNIAO DE DOIS RESGATES (nao escolha de um lado):
+ * - a main ja tinha os 9 casos resgatados na PR #3807 (cabecalho de procedencia abaixo);
+ * - a PR #3787 trazia os MESMOS 9 mais o describe E-6 (Brand Kit nao apaga edicoes nem
+ *   desfaz a logo principal), 2 casos que nao existiam na main.
+ * O conflito de rebase era "adicionado nos dois lados"; escolher um lado perderia os 2
+ * casos ou a procedencia. Resolvido mantendo a versao da main e enxertando o describe
+ * E-6 da PR, verbatim.
+ */
+/**
  * RESGATE — teste escrito por outro agente de IA que nunca chegou a main.
  *
  * Fonte: origin/salvo/codex-fix-gate1-kit-pdf-types-261109-2252
@@ -321,6 +330,83 @@ beforeEach(() => {
   );
 });
 
+describe('useMagicUpState — Brand Kit não apaga edições nem desfaz a logo principal (E-6)', () => {
+  it('editar o kit e trocar a logo mantém as edições locais e a logo principal escolhida', async () => {
+    mocks.brandKitRow = serverKitRow();
+    const { result } = renderHook(() => useMagicUpState(), { wrapper });
+
+    act(() => {
+      result.current.handleSelectClient(company({ id: 'client-1', razao_social: 'ACME LTDA' }));
+    });
+
+    // Kit do servidor entra na carga inicial.
+    await waitFor(() => expect(result.current.brandKit.id).toBe('kit-1'));
+    expect(result.current.brandKit.toneOfVoice).toBe('premium-consultivo');
+
+    // Usuário edita o kit (edição ainda não salva).
+    act(() => {
+      result.current.handleUpdateBrandKit({ toneOfVoice: 'editorial', notes: 'minha edição' });
+    });
+    expect(result.current.brandKit.toneOfVoice).toBe('editorial');
+
+    // Usuário escolhe outra logo do kit como principal.
+    act(() => {
+      result.current.handleUseBrandLogo(SERVER_KIT_LOGO_B);
+    });
+
+    // As edições permanecem (não são resetadas ao kit do servidor).
+    expect(result.current.brandKit.toneOfVoice).toBe('editorial');
+    expect(result.current.brandKit.notes).toBe('minha edição');
+    // A logo principal escolhida persiste.
+    expect(result.current.brandKit.primaryLogoUrl).toBe(SERVER_KIT_LOGO_B.url);
+    expect(result.current.brandKit.logoUrls.find((l) => l.id === 'srv-2')?.isPrimary).toBe(true);
+    expect(result.current.brandKit.logoUrls.find((l) => l.id === 'srv-1')?.isPrimary).toBe(false);
+    expect(result.current.logoPreview).toBe(SERVER_KIT_LOGO_B.url);
+    // E o kit do servidor não foi reaplicado (logo principal não voltou para srv-1).
+    expect(result.current.brandKit.primaryLogoUrl).not.toBe(SERVER_KIT_LOGO_A.url);
+  });
+
+  it('sem kit salvo, editar o kit e trocar a logo preserva as edições locais', async () => {
+    mocks.brandKitRow = null;
+    const { result } = renderHook(() => useMagicUpState(), { wrapper });
+
+    act(() => {
+      result.current.handleSelectClient(
+        company({
+          id: 'client-2',
+          razao_social: 'Sem Kit LTDA',
+          logo_url: 'https://crm.example.com/sem-kit.png',
+        }),
+      );
+    });
+
+    await waitFor(() => expect(result.current.brandKit.clientId).toBe('client-2'));
+    expect(result.current.brandKit.id).toBeNull();
+
+    act(() => {
+      result.current.handleUpdateBrandKit({
+        toneOfVoice: 'editorial',
+        notes: 'edição sem kit salvo',
+      });
+    });
+
+    act(() => {
+      result.current.handleUseBrandLogo({
+        id: 'avulsa-1',
+        label: 'Logo avulsa',
+        url: 'https://cdn.example.com/avulsa.png',
+        variant: 'icone',
+        isPrimary: true,
+      });
+    });
+
+    // A edição local sobrevive à troca de logo (o fallback do CRM não é reaplicado).
+    expect(result.current.brandKit.toneOfVoice).toBe('editorial');
+    expect(result.current.brandKit.notes).toBe('edição sem kit salvo');
+    expect(result.current.brandKit.primaryLogoUrl).toBe('https://cdn.example.com/avulsa.png');
+  });
+});
+
 describe('Original MagicUp search and asynchronous navigation', () => {
   it('first load failure finishes initial skeleton and exposes no fabricated products', async () => {
     mocks.products.mockRejectedValue(Error('offline'));
@@ -378,10 +464,13 @@ describe('Original MagicUp search and asynchronous navigation', () => {
     act(() => result.current.handleSelectProduct(null));
     await act(async () => resolveOld({ records: [{ id: 'late', url_cdn: 'late.png' }], count: 1 }));
     expect(result.current.productImages).toEqual([]);
-    // BUG DE PRODUÇÃO (não coberto aqui de propósito): ao desselecionar o produto
-    // com a busca em voo, `loadingColors` fica preso em `true` —
-    // useMagicUpState.ts:209-215 (ramo `!selectedProduct`) não chama
-    // setLoadingColors(false) e o `finally` em :268 é pulado por `cancelled`.
+    // O defeito que o resgate da PR #3807 registrou como "não coberto de propósito"
+    // (ali src/ não podia ser tocado) é consertado NESTA PR, então a asserção entra:
+    // ao desselecionar o produto com a busca em voo, o ramo `!selectedProduct`
+    // (useMagicUpState.ts:209-215) precisa soltar o spinner; sem o
+    // setLoadingColors(false) o `finally` de :268 é pulado por `cancelled` e o
+    // spinner de cores fica preso em true para sempre.
+    expect(result.current.loadingColors).toBe(false);
   });
   it('hydrates a changed brand-kit version and preserves local edits across a same-version refetch', async () => {
     mocks.brandKitRow = serverKitRow();
