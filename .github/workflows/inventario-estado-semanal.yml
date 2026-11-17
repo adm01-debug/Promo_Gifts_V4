@@ -37,7 +37,7 @@ jobs:
           node-version-file: '.nvmrc'
 
       - name: Instalar ripgrep (usado pelo gerar-repo.mjs)
-        run: command -v rg || sudo apt-get install -y --no-install-recommends ripgrep
+        run: command -v rg || { sudo apt-get update && sudo apt-get install -y --no-install-recommends ripgrep; }
 
       - name: Inventário do banco (somente leitura)
         env:
@@ -86,7 +86,7 @@ jobs:
             echo "Inventário sem mudança de conteúdo (só carimbo de data) — nenhum PR a abrir."
             exit 0
           fi
-          WEEK=$(date -u +%Y-W%V)
+          WEEK=$(date -u +%G-W%V)
           BRANCH="inventario/estado-${WEEK}"
           git checkout -b "$BRANCH"
           git commit -m "chore: inventário do estado real ${WEEK}
