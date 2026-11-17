@@ -127,6 +127,14 @@ export function useKitAutoSave(
   // Set to true by persistUnloadBackup immediately before cross-kit navigation
   // so the beforeunload handler won't overwrite the just-persisted backup.
   const suppressNextUnloadBackupRef = useRef(false);
+  // Geracao do contexto (dono + kit). Incrementa a cada troca REAL, para que uma
+  // operacao em voo saiba que a resposta dela ja nao pertence a esta tela.
+  const contextGenerationRef = useRef(0);
+  const mountedRef = useRef(true);
+  const identityRef = useRef<{ userId: string | undefined; kitId: string | null | undefined }>({
+    userId: user?.id,
+    kitId: currentKitId,
+  });
 
   // Update mutable callback inputs only after React commits the render. Writing
   // refs during render can leak an abandoned concurrent render into a timer.
@@ -158,6 +166,7 @@ export function useKitAutoSave(
     if (!currentKitState.box && currentKitState.items.length === 0) return;
 
     const kitId = autoSavedKitIdRef.current || currentKitId;
+    const generationAtStart = contextGenerationRef.current;
     saveInFlightRef.current = true;
     setIsSaving(true);
     try {
@@ -184,6 +193,17 @@ export function useKitAutoSave(
         payload: operation.payload,
         requestId: operation.requestId,
       });
+      // A resposta pertence ao contexto em que a operacao COMECOU. Se o usuario saiu da
+      // tela, trocou de conta ou trocou de kit enquanto ela estava em voo, adotar
+      // id/revisao aqui escreveria o resultado do kit A no estado do kit B — e o
+      // consumidor (useKitBuilderPageState.ts:139-142) propagaria isso para
+      // setCurrentKitId/setCurrentRevision, fazendo os autosaves seguintes mirarem o kit
+      // errado com a revisao errada e anulando a trava otimista.
+      if (!mountedRef.current || contextGenerationRef.current !== generationAtStart) {
+        pendingOperationRef.current = null;
+        saveQueuedRef.current = false;
+        return;
+      }
       pendingOperationRef.current = null;
       autoSavedKitIdRef.current = data.id;
       revisionRef.current = data.revision;
@@ -217,7 +237,7 @@ export function useKitAutoSave(
       );
     } finally {
       saveInFlightRef.current = false;
-      setIsSaving(false);
+      if (mountedRef.current) setIsSaving(false);
       if (saveQueuedRef.current) {
         saveQueuedRef.current = false;
         queueMicrotask(() => {
@@ -238,6 +258,26 @@ export function useKitAutoSave(
     }
     saveQueuedRef.current = false;
   }, []);
+
+  // Trocar de dono ou de kit invalida o trabalho pendente DESTA tela. O timer de
+  // debounce guarda o closure do render que o agendou (saveToDb le user?.id do proprio
+  // closure, :147) e o effect de snapshot sai cedo quando o snapshot nao mudou (:298),
+  // entao sem isto o timer antigo dispara depois da troca: medido, gravava o rascunho
+  // anterior com p_kit_id do kit novo e o usuario ja deslogado no payload.
+  //
+  // Adotar o id que o servidor devolveu para um kit novo NAO e troca de contexto —
+  // cancelar ali derrubaria a edicao pendente que o handoff de created-ID preserva.
+  useEffect(() => {
+    const anterior = identityRef.current;
+    identityRef.current = { userId: user?.id, kitId: currentKitId };
+    const trocouDono = anterior.userId !== user?.id;
+    const adotouProprioId = !!currentKitId && currentKitId === autoSavedKitIdRef.current;
+    const trocouKit = anterior.kitId !== currentKitId && !adotouProprioId;
+    if (!trocouDono && !trocouKit) return;
+    contextGenerationRef.current += 1;
+    cancelPendingSave();
+    pendingOperationRef.current = null;
+  }, [user?.id, currentKitId, cancelPendingSave]);
 
   const retryLastSave = useCallback(async () => {
     setAutoSaveError(null);
@@ -325,6 +365,7 @@ export function useKitAutoSave(
   // Cleanup dedicado ao unmount -- cancela qualquer timer pendente
   useEffect(() => {
     return () => {
+      mountedRef.current = false;
       if (timerRef.current) clearTimeout(timerRef.current);
     };
   }, []);
