@@ -10695,7 +10695,7 @@
     "src/hooks/products/useCatalogState.ts",
     "src/pages/filters/useFiltersPageState.ts"
    ],
-   "coberto_por_testes": 0
+   "coberto_por_testes": 1
   },
   {
    "arquivo": "src/hooks/products/useColorFanout.ts",
@@ -11897,7 +11897,7 @@
    "usado_por_arquivos": [
     "src/hooks/products/index.ts"
    ],
-   "coberto_por_testes": 0
+   "coberto_por_testes": 1
   },
   {
    "arquivo": "src/hooks/products/useVariantSupplierSources.ts",

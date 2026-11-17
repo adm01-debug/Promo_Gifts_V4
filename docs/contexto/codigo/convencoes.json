@@ -23,7 +23,7 @@
    "src/services (10)"
   ],
   "testes": [
-   "tests/ (1043)",
+   "tests/ (1044)",
    "co-localizado (__tests__) (677)",
    "e2e/ (625)"
   ],
@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "test(products): resgata a cobertura de enriquecimento de cor (#3789)",
    "fix(observabilidade): tunela envelopes do Sentry pela própria origem (CORS matava 100% dos relatórios) (#3784)",
    "docs(resgate): adjudica byte-a-byte os 219 arquivos ausentes do main (#3785)",
    "test(kit-builder): resgata o teste da guarda financeira de kit (#3786)",
-   "docs(resgate): conserta as 13 referencias quebradas do dossie da 3390 (#3783)",
-   "chore(deps): tira basic-ftp da lista de risco tolerado, ja que o override o eliminou (#3782)"
+   "docs(resgate): conserta as 13 referencias quebradas do dossie da 3390 (#3783)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",

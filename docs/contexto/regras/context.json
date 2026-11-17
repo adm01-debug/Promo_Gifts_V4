@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "87ffb0ee00da078e13b041022aaa4874014dafe1",
+  "sha": "3077bc05cb416b0b1120fa3e345fa0b8f3f18acc",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-17 16:33 UTC",
-  "files_total": 10775,
-  "code_files": 8811,
-  "code_lines": 1244127
+  "generated_at": "2026-11-17 17:15 UTC",
+  "files_total": 10776,
+  "code_files": 8812,
+  "code_lines": 1244260
  },
  "version": "1.3.2",
- "facts_hash": "a79947ab86818942",
+ "facts_hash": "89175eaf0eb7549c",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -1121,7 +1121,7 @@
   "languages": {
    ".sql": 3440,
    ".ts": 2996,
-   ".tsx": 1910,
+   ".tsx": 1911,
    ".mjs": 450,
    ".py": 15,
    ".js": 7
@@ -151578,8 +151578,8 @@
   },
   {
    "module": "tests",
-   "files": 1058,
-   "lines": 162830,
+   "files": 1059,
+   "lines": 162963,
    "tables": [
     "bot_detection_log",
     "clients",
@@ -283619,6 +283619,26 @@
    {
     "file": "tests/hooks/useKitWizardShortcuts.test.tsx",
     "name": "não rouba atalhos enquanto o foco está em um campo de texto"
+   },
+   {
+    "file": "tests/hooks/useLegacyLintDerived.test.tsx",
+    "name": "legacy derived memo preservation"
+   },
+   {
+    "file": "tests/hooks/useLegacyLintDerived.test.tsx",
+    "name": "keeps empty stock references stable before data arrives without dropping the public API"
+   },
+   {
+    "file": "tests/hooks/useLegacyLintDerived.test.tsx",
+    "name": "re-enriches the same product when the selected color changes"
+   },
+   {
+    "file": "tests/hooks/useLegacyLintDerived.test.tsx",
+    "name": "preserves incremental enrichment without requesting old product IDs again"
+   },
+   {
+    "file": "tests/hooks/useLegacyLintDerived.test.tsx",
+    "name": "does not query when no color filter is active"
    },
    {
     "file": "tests/hooks/useLoginAttempts.test.ts",
@@ -529935,6 +529955,18 @@
     "não rouba atalhos enquanto o foco está em um campo de texto"
    ]
   },
+  "tests/hooks/useLegacyLintDerived.test.tsx": {
+   "path": "tests/hooks/useLegacyLintDerived.test.tsx",
+   "lines": 133,
+   "is_test": true,
+   "tests": [
+    "legacy derived memo preservation",
+    "keeps empty stock references stable before data arrives without dropping the public API",
+    "re-enriches the same product when the selected color changes",
+    "preserves incremental enrichment without requesting old product IDs again",
+    "does not query when no color filter is active"
+   ]
+  },
   "tests/hooks/useLoginAttempts.test.ts": {
    "path": "tests/hooks/useLoginAttempts.test.ts",
    "lines": 95,
@@ -542161,10 +542193,19 @@
   }
  },
  "git": {
-  "sha": "87ffb0ee00da078e13b041022aaa4874014dafe1",
+  "sha": "3077bc05cb416b0b1120fa3e345fa0b8f3f18acc",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "3077bc0",
+    "date": "2026-11-17",
+    "author": "adm01-debug",
+    "subject": "test(products): resgata a cobertura de enriquecimento de cor (#3789)",
+    "files": [
+     "tests/hooks/useLegacyLintDerived.test.tsx"
+    ]
+   },
    {
     "sha": "87ffb0e",
     "date": "2026-11-17",
@@ -542458,15 +542499,6 @@
     "files": [
      "docs/agentes/resgates/2026-11-16-auditoria-branches.md"
     ]
-   },
-   {
-    "sha": "416e5fd",
-    "date": "2026-11-17",
-    "author": "adm01-debug",
-    "subject": "fix(db): versiona o rollback de SB-0001 (auth.users fora do Realtime) (#3756)",
-    "files": [
-     "supabase/rollbacks/20261101140001_rollback.sql"
-    ]
    }
   ],
   "hot_files": [
@@ -542507,6 +542539,10 @@
     2
    ],
    [
+    "tests/hooks/useLegacyLintDerived.test.tsx",
+    1
+   ],
+   [
     "api/monitoring.ts",
     1
    ],
@@ -542544,10 +542580,6 @@
    ],
    [
     "tests/scripts/check-conflict-ledger.test.mjs",
-    1
-   ],
-   [
-    "scripts/lib/missing-prerequisite.mjs",
     1
    ]
   ]

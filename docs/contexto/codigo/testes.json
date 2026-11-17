@@ -5,18 +5,18 @@
   "vitest",
   "playwright"
  ],
- "total": 2547,
+ "total": 2548,
  "por_tipo": {
   "contrato": 66,
   "e2e": 677,
   "pytest": 5,
   "qa": 17,
-  "unit": 1782
+  "unit": 1783
  },
  "onde_ficam": [
   {
    "padrao": "tests/",
-   "arquivos": 1043
+   "arquivos": 1044
   },
   {
    "padrao": "co-localizado (__tests__)",
@@ -17299,6 +17299,16 @@
    "casos": 2
   },
   {
+   "arquivo": "tests/hooks/useLegacyLintDerived.test.tsx",
+   "tipo": "unit",
+   "linhas": 133,
+   "testa": [
+    "src/hooks/products/useColorEnrichment.ts",
+    "src/hooks/products/useVariantStock.ts"
+   ],
+   "casos": 4
+  },
+  {
    "arquivo": "tests/hooks/useLoginAttempts.test.ts",
    "tipo": "unit",
    "linhas": 95,
@@ -22040,6 +22050,7 @@
   "src/hooks/products/useCatalogState.ts": 2,
   "src/hooks/products/useCategories.ts": 1,
   "src/hooks/products/useCategoryIcons.ts": 1,
+  "src/hooks/products/useColorEnrichment.ts": 1,
   "src/hooks/products/useColorSystem.ts": 1,
   "src/hooks/products/useDebouncedCartItemActions.ts": 1,
   "src/hooks/products/useExternalVariantStock.ts": 1,
@@ -22067,6 +22078,7 @@
   "src/hooks/products/useSupplierComparison.ts": 5,
   "src/hooks/products/useSupplierSalesRanking.ts": 2,
   "src/hooks/products/useSupplierTrust.ts": 1,
+  "src/hooks/products/useVariantStock.ts": 1,
   "src/hooks/products/useVariantSupplierSources.ts": 6,
   "src/hooks/products/useVideoVariantLinks.ts": 1,
   "src/hooks/quotes/index.ts": 20,
@@ -22901,7 +22913,6 @@
    "src/hooks/products/useCatalogRealStats.ts",
    "src/hooks/products/useCatalogState.helpers.ts",
    "src/hooks/products/useCategoriesTree.ts",
-   "src/hooks/products/useColorEnrichment.ts",
    "src/hooks/products/useColorFanout.ts",
    "src/hooks/products/useExternalCategoriesQuery.ts",
    "src/hooks/products/useMaterialFilter.ts",
@@ -22926,7 +22937,6 @@
    "src/hooks/products/useSupplierFiscalData.ts",
    "src/hooks/products/useSupplierNames.ts",
    "src/hooks/products/useSuppliers.ts",
-   "src/hooks/products/useVariantStock.ts",
    "src/hooks/quotes/useNextQuoteNumberPreview.ts",
    "src/hooks/quotes/useProdutoPersonalizacao.ts",
    "src/hooks/quotes/useQuoteClientLogos.ts",

@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.3.2 · commit `87ffb0ee00` · branch `main` · 2026-11-17 16:33 UTC
+> Gerado automaticamente por AI Context Sync v1.3.2 · commit `3077bc05cb` · branch `main` · 2026-11-17 17:15 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -6560,7 +6560,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `admin` | `supabase/migrations/20261112120500_fix_optimization_queue_rpcs_dev_access.sql` |
 | `anon` | `tests/edge-functions/live/_live-client.ts` |
 
-## K. Testes como especificação (21978 testes em 2225 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (21983 testes em 2226 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -6864,7 +6864,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `src/hooks/products/__tests__/useProductsLightweight.test.ts` | 18 | mapLightweightToProduct · retorna id como string mesmo quando input é number · FIX BUG-D: prefere leaf_category_id sobre category_id sobre main_category_id · FIX BUG-D: usa category_id quando leaf_category_id nulo … |
 | `src/lib/carts/__tests__/shipping-deadline.edge.test.ts` | 18 | shipping-deadline · edge cases · borda +3 / +4 dias (soon vs ok) · +3 dias exatamente → soon com rótulo  · +4 dias exatamente → ok com rótulo  … |
 | `src/lib/inventory/__tests__/health-score.test.ts` | 18 | calcHealthScore · retorna 100 quando não há produtos · retorna 100 quando todos estão adequados · retorna 0 quando nenhum está adequado … |
-| … +1925 linhas — lista completa em `context.json` | | |
+| … +1926 linhas — lista completa em `context.json` | | |
 
 ## L. Eventos de webhook tratados (contratos com sistemas externos)
 

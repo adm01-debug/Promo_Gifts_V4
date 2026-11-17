@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "87ffb0ee00da078e13b041022aaa4874014dafe1",
+  "commit": "3077bc05cb416b0b1120fa3e345fa0b8f3f18acc",
   "branch": "main",
-  "data_commit": "2026-11-17T13:31:52-03:00",
+  "data_commit": "2026-11-17T14:14:38-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "3077bc05",
+    "data": "2026-11-17",
+    "assunto": "test(products): resgata a cobertura de enriquecimento de cor (#3789)"
+   },
    {
     "sha": "87ffb0ee",
     "data": "2026-11-17",
@@ -126,14 +131,9 @@
     "sha": "001d9708",
     "data": "2026-11-17",
     "assunto": "feat(db): P06 na unica view onde security_invoker nao quebra nem re-expoe (#3762)"
-   },
-   {
-    "sha": "7edc9f85",
-    "data": "2026-11-17",
-    "assunto": "test(magicup): resgata o teste do ciclo de vida da busca (#3759)"
    }
   ],
-  "arquivos_mudados_7d": 1938,
+  "arquivos_mudados_7d": 1939,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -322,9 +322,9 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 10847,
-  "arquivos_codigo": 5372,
-  "linhas_codigo": 1023395,
+  "arquivos_total": 10848,
+  "arquivos_codigo": 5373,
+  "linhas_codigo": 1023528,
   "rotas": 139,
   "rotas_http_backend": 13,
   "vistas_por_id": 0,
@@ -336,7 +336,7 @@
   "tabelas": 527,
   "migrations": 3099,
   "cron_jobs": 122,
-  "testes": 2547,
+  "testes": 2548,
   "workflows": 88,
   "scripts": 283,
   "docs_md": 1470
@@ -2091,8 +2091,8 @@
    "linhas": 325
   },
   "tests/hooks": {
-   "arquivos": 140,
-   "linhas": 19454
+   "arquivos": 141,
+   "linhas": 19587
   },
   "tests/integration": {
    "arquivos": 11,
