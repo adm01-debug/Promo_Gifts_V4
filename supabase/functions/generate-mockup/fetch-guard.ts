@@ -57,6 +57,46 @@ export class ImageFetchError extends Error {
  * scheme + SSRF + allowlist). 3xx para alvo recusado falha antes de abrir conexão;
  * redirect opaco (status 0, alvo escondido) falha fechado.
  */
+/**
+ * Corpo da resposta → bytes, abortando no primeiro pedaço que passa de `limitBytes`.
+ * Nunca acumula mais que o teto: é a guarda de memória da edge, não só uma checagem.
+ * Sem `body` legível (mock antigo/compat), cai no caminho bufferizado — ainda com teto.
+ */
+export async function readCapped(res: Response, limitBytes: number): Promise<Uint8Array> {
+  const reader = res.body?.getReader?.();
+  if (!reader) {
+    const bytes = new Uint8Array(await res.arrayBuffer());
+    if (bytes.byteLength > limitBytes) {
+      throw new ImageFetchError(`image too large (${bytes.byteLength} bytes)`);
+    }
+    return bytes;
+  }
+  const chunks: Uint8Array[] = [];
+  let total = 0;
+  try {
+    for (;;) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      if (!value) continue;
+      total += value.byteLength;
+      if (total > limitBytes) {
+        try { await reader.cancel(); } catch { /* já fechado */ }
+        throw new ImageFetchError(`image too large (${total} bytes)`);
+      }
+      chunks.push(value);
+    }
+  } finally {
+    try { reader.releaseLock(); } catch { /* já liberado */ }
+  }
+  const out = new Uint8Array(total);
+  let offset = 0;
+  for (const chunk of chunks) {
+    out.set(chunk, offset);
+    offset += chunk.byteLength;
+  }
+  return out;
+}
+
 export async function fetchBytes(
   url: string,
   ms: number,
@@ -78,12 +118,18 @@ export async function fetchBytes(
       }
       if (res.status === 0) throw new ImageFetchError("opaque redirect — target cannot be validated");
       if (!res.ok) throw new ImageFetchError(`HTTP ${res.status} fetching image`);
-      // Content-Length up-front, and again after download for servers that omit it.
+      // Content-Length declarado: recusa sem abrir o corpo.
       const declared = Number(res.headers.get("content-length") || 0);
-      if (declared > MAX_IMAGE_BYTES) throw new ImageFetchError(`image too large (${declared} bytes)`);
-      const bytes = new Uint8Array(await res.arrayBuffer());
-      if (bytes.byteLength > MAX_IMAGE_BYTES) throw new ImageFetchError(`image too large (${bytes.byteLength} bytes)`);
-      return bytes;
+      if (declared > MAX_IMAGE_BYTES) {
+        try { await res.body?.cancel(); } catch { /* corpo já indisponível */ }
+        throw new ImageFetchError(`image too large (${declared} bytes)`);
+      }
+      // Servidor que OMITE ou MENTE no Content-Length: lê em pedaços e corta no teto.
+      // A versão anterior fazia `await res.arrayBuffer()` e só então comparava, ou seja,
+      // bufferizava o arquivo inteiro na memória da edge antes de recusar — com N
+      // invocações em paralelo isso derruba o gerador de mockup. Resgatado de
+      // importado/vps-fabrica/v2/s36-2610081947 (readImageResponseCapped).
+      return await readCapped(res, MAX_IMAGE_BYTES);
     }
     throw new ImageFetchError(`too many redirects (> ${MAX_REDIRECTS})`);
   } finally { clearTimeout(t); }
