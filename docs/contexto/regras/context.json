@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "216fad0f11a15cb5c71a813abca48658da8bb893",
+  "sha": "ef8a595f6f9365b73a887ac3105530f43b14a3e4",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-17 21:15 UTC",
-  "files_total": 10792,
-  "code_files": 8828,
-  "code_lines": 1249696
+  "generated_at": "2026-11-17 21:24 UTC",
+  "files_total": 10795,
+  "code_files": 8831,
+  "code_lines": 1250449
  },
  "version": "1.3.2",
- "facts_hash": "3da8879121740b0a",
+ "facts_hash": "7823e4dc0b498d59",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -1120,8 +1120,8 @@
   "package_manager": "npm",
   "languages": {
    ".sql": 3440,
-   ".ts": 3002,
-   ".tsx": 1921,
+   ".ts": 3004,
+   ".tsx": 1922,
    ".mjs": 450,
    ".py": 15,
    ".js": 7
@@ -138562,7 +138562,7 @@
      "request_discount_approval_transactional",
      "respond_discount_approval_transactional"
     ],
-    "deps_count": 190
+    "deps_count": 192
    },
    {
     "path": "*",
@@ -139957,7 +139957,7 @@
      "respond_discount_approval_transactional",
      "restore_seller_cart"
     ],
-    "deps_count": 280
+    "deps_count": 282
    },
    {
     "path": "/promoflix-playground",
@@ -144949,7 +144949,7 @@
     "file": ".github/workflows/wraparound-monitor-report.yml"
    }
   ],
-  "components_count": 1659,
+  "components_count": 1660,
   "hooks": [
    {
     "name": "useQuoteComments",
@@ -149572,8 +149572,8 @@
   },
   {
    "module": "src/components",
-   "files": 1394,
-   "lines": 277472,
+   "files": 1395,
+   "lines": 277641,
    "tables": [
     "admin_audit_log",
     "art_file_attachments",
@@ -149936,8 +149936,8 @@
   },
   {
    "module": "src/hooks",
-   "files": 478,
-   "lines": 90298,
+   "files": 480,
+   "lines": 90880,
    "tables": [
     "admin_audit_log",
     "admin_settings",
@@ -150430,7 +150430,7 @@
   {
    "module": "src/pages",
    "files": 361,
-   "lines": 83889,
+   "lines": 83891,
    "tables": [
     "ai_usage_events",
     "bot_detection_log",
@@ -162306,6 +162306,11 @@
     "values": "commonColors | leadTime | price | score | stock"
    },
    {
+    "file": "src/hooks/quotes/quoteDraftApply.ts",
+    "name": "MotivoIlegivel",
+    "values": "data-invalida | envelope-invalido | fora-de-forma | inacessivel | json-invalido"
+   },
+   {
     "file": "src/hooks/simulation/useTechniqueRecommendations.ts",
     "name": "SortOption",
     "values": "popularity | price_asc | price_desc | recommended | time_asc | time_desc"
@@ -171669,6 +171674,10 @@
     "text": "diretamente no scroll container, dando ao browser um limite EXPLÍCITO"
    },
    {
+    "file": "src/components/quotes/QuoteDraftRecovery.tsx",
+    "text": "que existe mas não pode ser lido é DITO ao vendedor e NÃO é apagado;"
+   },
+   {
     "file": "src/components/quotes/QuoteItemEditorSheet.tsx",
     "text": "* Lógica de preço/personalização é preservada — apenas o invólucro muda."
    },
@@ -172855,6 +172864,18 @@
    {
     "file": "src/hooks/quotes/discountApprovalResponder.ts",
     "text": "* discountApprovalResponder — decisão do admin sobre solicitação de desconto."
+   },
+   {
+    "file": "src/hooks/quotes/quoteDraftApply.ts",
+    "text": "lado, useAutoSaveQuote só restaura a chave `quote_builder_autosave` e apenas"
+   },
+   {
+    "file": "src/hooks/quotes/quoteDraftApply.ts",
+    "text": "que existe mas não pode ser lido tem de ser DITO ao vendedor, não só logado —"
+   },
+   {
+    "file": "src/hooks/quotes/quoteDraftApply.ts",
+    "text": "* Aplica o rascunho ao builder usando apenas setters já expostos."
    },
    {
     "file": "src/hooks/quotes/quoteHelpers.ts",
@@ -204887,6 +204908,54 @@
     "kind": "escreve"
    },
    {
+    "file": "src/components/quotes/QuoteDraftRecovery.tsx",
+    "field": "tipo",
+    "value": "ilegivel",
+    "kind": "escreve"
+   },
+   {
+    "file": "src/components/quotes/QuoteDraftRecovery.tsx",
+    "field": "tipo",
+    "value": "rascunho",
+    "kind": "escreve"
+   },
+   {
+    "file": "src/components/quotes/QuoteDraftRecovery.tsx",
+    "field": "tipo",
+    "value": "ilegivel",
+    "kind": "escreve"
+   },
+   {
+    "file": "src/components/quotes/QuoteDraftRecovery.tsx",
+    "field": "tipo",
+    "value": "rascunho",
+    "kind": "escreve"
+   },
+   {
+    "file": "src/components/quotes/QuoteDraftRecovery.tsx",
+    "field": "estado",
+    "value": "ausente",
+    "kind": "compara"
+   },
+   {
+    "file": "src/components/quotes/QuoteDraftRecovery.tsx",
+    "field": "estado",
+    "value": "ilegivel",
+    "kind": "compara"
+   },
+   {
+    "file": "src/components/quotes/QuoteDraftRecovery.tsx",
+    "field": "tipo",
+    "value": "rascunho",
+    "kind": "compara"
+   },
+   {
+    "file": "src/components/quotes/QuoteDraftRecovery.tsx",
+    "field": "tipo",
+    "value": "ilegivel",
+    "kind": "compara"
+   },
+   {
     "file": "src/components/quotes/QuoteItemsTable.tsx",
     "field": "role",
     "value": "region",
@@ -206691,6 +206760,72 @@
     "field": "status",
     "value": "pending",
     "kind": "filtra"
+   },
+   {
+    "file": "src/hooks/quotes/quoteDraftApply.ts",
+    "field": "estado",
+    "value": "ausente",
+    "kind": "escreve"
+   },
+   {
+    "file": "src/hooks/quotes/quoteDraftApply.ts",
+    "field": "estado",
+    "value": "ilegivel",
+    "kind": "escreve"
+   },
+   {
+    "file": "src/hooks/quotes/quoteDraftApply.ts",
+    "field": "estado",
+    "value": "ok",
+    "kind": "escreve"
+   },
+   {
+    "file": "src/hooks/quotes/quoteDraftApply.ts",
+    "field": "estado",
+    "value": "ilegivel",
+    "kind": "escreve"
+   },
+   {
+    "file": "src/hooks/quotes/quoteDraftApply.ts",
+    "field": "estado",
+    "value": "ausente",
+    "kind": "escreve"
+   },
+   {
+    "file": "src/hooks/quotes/quoteDraftApply.ts",
+    "field": "estado",
+    "value": "ilegivel",
+    "kind": "escreve"
+   },
+   {
+    "file": "src/hooks/quotes/quoteDraftApply.ts",
+    "field": "estado",
+    "value": "ilegivel",
+    "kind": "escreve"
+   },
+   {
+    "file": "src/hooks/quotes/quoteDraftApply.ts",
+    "field": "estado",
+    "value": "ilegivel",
+    "kind": "escreve"
+   },
+   {
+    "file": "src/hooks/quotes/quoteDraftApply.ts",
+    "field": "estado",
+    "value": "ilegivel",
+    "kind": "escreve"
+   },
+   {
+    "file": "src/hooks/quotes/quoteDraftApply.ts",
+    "field": "estado",
+    "value": "ok",
+    "kind": "escreve"
+   },
+   {
+    "file": "src/hooks/quotes/quoteDraftApply.ts",
+    "field": "estado",
+    "value": "ok",
+    "kind": "compara"
    },
    {
     "file": "src/hooks/quotes/useDiscountApproval.ts",
@@ -214097,6 +214232,12 @@
     "name": "calculateColorSummary",
     "params": "variants: VariantWithStock[], stockEntries: StockEntry[],",
     "body": "const colorMap = new Map<string, ColorSummary>(); // Agregar estoque atual por cor for (const v of variants) { const name = v.color_name || 'Sem cor'; const existing = colorMap.get(name); if (existing) { existing.currentStock += v.stock_quantity || 0; } else { colorMap.set(name, { name, hex: v.color_hex, thumbnail: v.selected_thumbnail, currentStock: v.stock_quantity || 0, incomingTotal: 0, incomingCount: 0, }); } } // Agregar previsões de reposição por cor for (const entry of stockEntries) { co …"
+   },
+   {
+    "file": "src/hooks/quotes/quoteDraftApply.ts",
+    "name": "applyDraftToBuilder",
+    "params": "draft: RecoveredQuoteDraft, s: QuoteDraftApplyTarget",
+    "body": "if (draft.clientId) s.setClientId(draft.clientId); if (draft.contactId) s.setContactId(draft.contactId); if (draft.companyInfo) s.setCompanyInfo(draft.companyInfo); if (draft.contactInfo) s.setContactInfo(draft.contactInfo); if (draft.items) s.setItems(draft.items); if (draft.discountType) s.setDiscountType(draft.discountType); if (typeof draft.discountValue === 'number') s.setDiscountValue(draft.discountValue); if (typeof draft.negotiationMarkup === 'number' && draft.negotiationMarkup > 0) { s. …"
    },
    {
     "file": "src/hooks/quotes/quoteHelpers.ts",
@@ -246205,6 +246346,166 @@
    {
     "file": "src/hooks/quotes/__tests__/handoff-clear-autosave.functional.test.ts",
     "name": "clearAutoSave retornado pelo hook remove a chave correta do localStorage"
+   },
+   {
+    "file": "src/hooks/quotes/__tests__/quoteDraftApply.test.ts",
+    "name": "quoteDraftKey"
+   },
+   {
+    "file": "src/hooks/quotes/__tests__/quoteDraftApply.test.ts",
+    "name": "usa o prefixo que o QuoteAutoSave grava"
+   },
+   {
+    "file": "src/hooks/quotes/__tests__/quoteDraftApply.test.ts",
+    "name": "readStoredQuoteDraft"
+   },
+   {
+    "file": "src/hooks/quotes/__tests__/quoteDraftApply.test.ts",
+    "name": "devolve null quando não há rascunho"
+   },
+   {
+    "file": "src/hooks/quotes/__tests__/quoteDraftApply.test.ts",
+    "name": "devolve null e não lança quando o envelope está corrompido"
+   },
+   {
+    "file": "src/hooks/quotes/__tests__/quoteDraftApply.test.ts",
+    "name": "não apaga o rascunho corrompido — descartar é decisão do usuário"
+   },
+   {
+    "file": "src/hooks/quotes/__tests__/quoteDraftApply.test.ts",
+    "name": "devolve null quando o conteúdo não passa pelo schema"
+   },
+   {
+    "file": "src/hooks/quotes/__tests__/quoteDraftApply.test.ts",
+    "name": "devolve null quando savedAt não é data válida"
+   },
+   {
+    "file": "src/hooks/quotes/__tests__/quoteDraftApply.test.ts",
+    "name": "lê o rascunho válido com savedAt em epoch ms"
+   },
+   {
+    "file": "src/hooks/quotes/__tests__/quoteDraftApply.test.ts",
+    "name": "draftDiffersFromCurrent"
+   },
+   {
+    "file": "src/hooks/quotes/__tests__/quoteDraftApply.test.ts",
+    "name": "nulo no rascunho e vazio na tela não contam como diferença"
+   },
+   {
+    "file": "src/hooks/quotes/__tests__/quoteDraftApply.test.ts",
+    "name": "detecta item a mais no rascunho"
+   },
+   {
+    "file": "src/hooks/quotes/__tests__/quoteDraftApply.test.ts",
+    "name": "detecta desconto diferente"
+   },
+   {
+    "file": "src/hooks/quotes/__tests__/quoteDraftApply.test.ts",
+    "name": "não acusa diferença quando o rascunho repete a tela"
+   },
+   {
+    "file": "src/hooks/quotes/__tests__/quoteDraftApply.test.ts",
+    "name": "applyDraftToBuilder"
+   },
+   {
+    "file": "src/hooks/quotes/__tests__/quoteDraftApply.test.ts",
+    "name": "preserva o frete: setShippingType vem antes de setShippingCost"
+   },
+   {
+    "file": "src/hooks/quotes/__tests__/quoteDraftApply.test.ts",
+    "name": "entrega por data: muda o modo antes de aplicar a data (o handler limpa o campo)"
+   },
+   {
+    "file": "src/hooks/quotes/__tests__/quoteDraftApply.test.ts",
+    "name": "entrega por prazo: muda o modo antes de gravar o texto"
+   },
+   {
+    "file": "src/hooks/quotes/__tests__/quoteDraftApply.test.ts",
+    "name": "sincroniza o Select de validade junto com a data (QBP-12)"
+   },
+   {
+    "file": "src/hooks/quotes/__tests__/quoteDraftApply.test.ts",
+    "name": "não toca em campo ausente do rascunho"
+   },
+   {
+    "file": "src/hooks/quotes/__tests__/quoteDraftApply.test.ts",
+    "name": "ignora markup zero ou negativo, como o onRestore original"
+   },
+   {
+    "file": "src/hooks/quotes/__tests__/quoteDraftApply.test.ts",
+    "name": "aplica itens e cliente do rascunho"
+   },
+   {
+    "file": "src/hooks/quotes/__tests__/quoteDraftApply.test.ts",
+    "name": "discardStoredQuoteDraft"
+   },
+   {
+    "file": "src/hooks/quotes/__tests__/quoteDraftApply.test.ts",
+    "name": "remove o rascunho e todo o histórico _v<n>"
+   },
+   {
+    "file": "src/hooks/quotes/__tests__/quoteDraftApply.test.ts",
+    "name": "applyDraftToBuilder — campos colhidos do QuoteBuilderDraftRecovery de outro agente"
+   },
+   {
+    "file": "src/hooks/quotes/__tests__/quoteDraftApply.test.ts",
+    "name": "respeita deliveryMode explícito "
+   },
+   {
+    "file": "src/hooks/quotes/__tests__/quoteDraftApply.test.ts",
+    "name": "respeita deliveryMode explícito "
+   },
+   {
+    "file": "src/hooks/quotes/__tests__/quoteDraftApply.test.ts",
+    "name": "modo "
+   },
+   {
+    "file": "src/hooks/quotes/__tests__/quoteDraftApply.test.ts",
+    "name": "deliveryDate explícito vence o prefixo date: do deliveryTime"
+   },
+   {
+    "file": "src/hooks/quotes/__tests__/quoteDraftApply.test.ts",
+    "name": "usa o validityDays do rascunho em vez de deduzir da data"
+   },
+   {
+    "file": "src/hooks/quotes/__tests__/quoteDraftApply.test.ts",
+    "name": "aplica validityDays mesmo sem validUntil"
+   },
+   {
+    "file": "src/hooks/quotes/__tests__/quoteDraftApply.test.ts",
+    "name": "inspectStoredQuoteDraft — distingue ausente de ilegível"
+   },
+   {
+    "file": "src/hooks/quotes/__tests__/quoteDraftApply.test.ts",
+    "name": "ausente quando não há nada gravado"
+   },
+   {
+    "file": "src/hooks/quotes/__tests__/quoteDraftApply.test.ts",
+    "name": "ilegível/json-invalido quando o arquivo não é JSON"
+   },
+   {
+    "file": "src/hooks/quotes/__tests__/quoteDraftApply.test.ts",
+    "name": "ilegível/envelope-invalido quando o JSON não é objeto"
+   },
+   {
+    "file": "src/hooks/quotes/__tests__/quoteDraftApply.test.ts",
+    "name": "ilegível/data-invalida quando savedAt não é data"
+   },
+   {
+    "file": "src/hooks/quotes/__tests__/quoteDraftApply.test.ts",
+    "name": "ilegível/fora-de-forma quando o conteúdo não passa pelo schema"
+   },
+   {
+    "file": "src/hooks/quotes/__tests__/quoteDraftApply.test.ts",
+    "name": "ok com o rascunho quando está íntegro"
+   },
+   {
+    "file": "src/hooks/quotes/__tests__/quoteDraftApply.test.ts",
+    "name": "nenhum estado ilegível apaga o rascunho — descartar é do usuário"
+   },
+   {
+    "file": "src/hooks/quotes/__tests__/quoteDraftApply.test.ts",
+    "name": "readStoredQuoteDraft devolve null em qualquer estado que não seja ok"
    },
    {
     "file": "src/hooks/quotes/__tests__/quoteHelpers.validation.test.ts",
@@ -349547,32 +349848,15 @@
       "compara:src/pages/admin/AdminCloudflareImagesPage.tsx"
      ]
     },
-    "discount_approval_status": {
-     "pending": [
-      "compara:src/components/quotes/QuotesStatusChips.tsx"
-     ],
-     "approved": [
-      "compara:src/components/quotes/QuotesStatusChips.tsx"
-     ],
-     "rejected": [
-      "compara:src/components/quotes/QuotesStatusChips.tsx"
-     ],
-     "expired": [
-      "compara:src/components/quotes/QuotesStatusChips.tsx"
-     ]
-    },
-    "estado": {
-     "SP": [
-      "escreve:src/lib/bi/demoClient.ts",
-      "escreve:supabase/functions/cnpj-lookup/index.ts"
-     ]
-    },
-    "cloudflare_status": {
-     "ready": [
-      "compara:src/lib/external-db/products-detail.ts"
-     ]
-    },
     "tipo": {
+     "ilegivel": [
+      "compara:src/components/quotes/QuoteDraftRecovery.tsx",
+      "escreve:src/components/quotes/QuoteDraftRecovery.tsx"
+     ],
+     "rascunho": [
+      "compara:src/components/quotes/QuoteDraftRecovery.tsx",
+      "escreve:src/components/quotes/QuoteDraftRecovery.tsx"
+     ],
      "fosco": [
       "escreve:src/types/infrastructure/promobrind.ts"
      ],
@@ -349590,6 +349874,43 @@
      ],
      "Aleatória": [
       "compara:src/utils/pixMask.ts"
+     ]
+    },
+    "estado": {
+     "ausente": [
+      "compara:src/components/quotes/QuoteDraftRecovery.tsx",
+      "escreve:src/hooks/quotes/quoteDraftApply.ts"
+     ],
+     "ilegivel": [
+      "compara:src/components/quotes/QuoteDraftRecovery.tsx",
+      "escreve:src/hooks/quotes/quoteDraftApply.ts"
+     ],
+     "ok": [
+      "compara:src/hooks/quotes/quoteDraftApply.ts",
+      "escreve:src/hooks/quotes/quoteDraftApply.ts"
+     ],
+     "SP": [
+      "escreve:src/lib/bi/demoClient.ts",
+      "escreve:supabase/functions/cnpj-lookup/index.ts"
+     ]
+    },
+    "discount_approval_status": {
+     "pending": [
+      "compara:src/components/quotes/QuotesStatusChips.tsx"
+     ],
+     "approved": [
+      "compara:src/components/quotes/QuotesStatusChips.tsx"
+     ],
+     "rejected": [
+      "compara:src/components/quotes/QuotesStatusChips.tsx"
+     ],
+     "expired": [
+      "compara:src/components/quotes/QuotesStatusChips.tsx"
+     ]
+    },
+    "cloudflare_status": {
+     "ready": [
+      "compara:src/lib/external-db/products-detail.ts"
      ]
     },
     "sync_status": {
@@ -397760,6 +398081,22 @@
     "msg": "valor `orphaned` para `cf_sync_status` usado no código não existe em nenhum enum do banco/TS",
     "where": [
      "compara:src/pages/admin/AdminCloudflareImagesPage.tsx"
+    ]
+   },
+   {
+    "kind": "status",
+    "msg": "valor `ausente` para `estado` usado no código não existe em nenhum enum do banco/TS",
+    "where": [
+     "compara:src/components/quotes/QuoteDraftRecovery.tsx",
+     "escreve:src/hooks/quotes/quoteDraftApply.ts"
+    ]
+   },
+   {
+    "kind": "status",
+    "msg": "valor `ilegivel` para `estado` usado no código não existe em nenhum enum do banco/TS",
+    "where": [
+     "compara:src/components/quotes/QuoteDraftRecovery.tsx",
+     "escreve:src/hooks/quotes/quoteDraftApply.ts"
     ]
    },
    {
@@ -450227,7 +450564,7 @@
   },
   "src/components/quotes/QuoteAutoSave.tsx": {
    "path": "src/components/quotes/QuoteAutoSave.tsx",
-   "lines": 425,
+   "lines": 428,
    "exports": [
     "function QuoteAutoSave",
     "function useQuoteAutoSave"
@@ -450444,6 +450781,58 @@
     ";\nimport { Button } from "
    ],
    "doc": "QuoteConcurrencyAlert — alerta visual de edição simultânea. Renderiza um banner não-obstrutivo informando que outro usuário modificou o orçamento enquanto estava aberto. Oferece duas ações: - \"Recarregar\" → descarta alterações locais e puxa versão mais recente - \"Salvar mesmo assim\" → continua o flu …"
+  },
+  "src/components/quotes/QuoteDraftRecovery.tsx": {
+   "path": "src/components/quotes/QuoteDraftRecovery.tsx",
+   "lines": 166,
+   "exports": [
+    "function QuoteDraftRecovery"
+   ],
+   "status_values": [
+    {
+     "field": "tipo",
+     "value": "ilegivel",
+     "kind": "escreve"
+    },
+    {
+     "field": "tipo",
+     "value": "rascunho",
+     "kind": "escreve"
+    },
+    {
+     "field": "tipo",
+     "value": "ilegivel",
+     "kind": "escreve"
+    },
+    {
+     "field": "tipo",
+     "value": "rascunho",
+     "kind": "escreve"
+    },
+    {
+     "field": "estado",
+     "value": "ausente",
+     "kind": "compara"
+    },
+    {
+     "field": "estado",
+     "value": "ilegivel",
+     "kind": "compara"
+    },
+    {
+     "field": "tipo",
+     "value": "rascunho",
+     "kind": "compara"
+    },
+    {
+     "field": "tipo",
+     "value": "ilegivel",
+     "kind": "compara"
+    }
+   ],
+   "rule_comments": [
+    "que existe mas não pode ser lido é DITO ao vendedor e NÃO é apagado;"
+   ]
   },
   "src/components/quotes/QuoteFilters.tsx": {
    "path": "src/components/quotes/QuoteFilters.tsx",
@@ -465794,6 +466183,100 @@
    "lines": 15,
    "doc": "Exporting all hooks from quotes"
   },
+  "src/hooks/quotes/quoteDraftApply.ts": {
+   "path": "src/hooks/quotes/quoteDraftApply.ts",
+   "lines": 243,
+   "exports": [
+    "const QUOTE_DRAFT_KEY_PREFIX",
+    "type QuoteDraftSnapshot",
+    "type QuoteDraftApplyTarget",
+    "type RecoveredQuoteDraft",
+    "interface StoredQuoteDraft",
+    "function quoteDraftKey",
+    "type MotivoIlegivel",
+    "type EstadoRascunho",
+    "function inspectStoredQuoteDraft",
+    "function readStoredQuoteDraft",
+    "function draftDiffersFromCurrent",
+    "function applyDraftToBuilder",
+    "function discardStoredQuoteDraft"
+   ],
+   "enums": [
+    {
+     "name": "MotivoIlegivel",
+     "values": "data-invalida | envelope-invalido | fora-de-forma | inacessivel | json-invalido"
+    }
+   ],
+   "status_values": [
+    {
+     "field": "estado",
+     "value": "ausente",
+     "kind": "escreve"
+    },
+    {
+     "field": "estado",
+     "value": "ilegivel",
+     "kind": "escreve"
+    },
+    {
+     "field": "estado",
+     "value": "ok",
+     "kind": "escreve"
+    },
+    {
+     "field": "estado",
+     "value": "ilegivel",
+     "kind": "escreve"
+    },
+    {
+     "field": "estado",
+     "value": "ausente",
+     "kind": "escreve"
+    },
+    {
+     "field": "estado",
+     "value": "ilegivel",
+     "kind": "escreve"
+    },
+    {
+     "field": "estado",
+     "value": "ilegivel",
+     "kind": "escreve"
+    },
+    {
+     "field": "estado",
+     "value": "ilegivel",
+     "kind": "escreve"
+    },
+    {
+     "field": "estado",
+     "value": "ilegivel",
+     "kind": "escreve"
+    },
+    {
+     "field": "estado",
+     "value": "ok",
+     "kind": "escreve"
+    },
+    {
+     "field": "estado",
+     "value": "ok",
+     "kind": "compara"
+    }
+   ],
+   "rule_comments": [
+    "lado, useAutoSaveQuote só restaura a chave `quote_builder_autosave` e apenas",
+    "que existe mas não pode ser lido tem de ser DITO ao vendedor, não só logado —",
+    "* Aplica o rascunho ao builder usando apenas setters já expostos."
+   ],
+   "calc_fns": [
+    {
+     "name": "applyDraftToBuilder",
+     "params": "draft: RecoveredQuoteDraft, s: QuoteDraftApplyTarget",
+     "body": "if (draft.clientId) s.setClientId(draft.clientId); if (draft.contactId) s.setContactId(draft.contactId); if (draft.companyInfo) s.setCompanyInfo(draft.companyInfo); if (draft.contactInfo) s.setContactInfo(draft.contactInfo); if (draft.items) s.setItems(draft.items); if (draft.discountType) s.setDiscountType(draft.discountType); if (typeof draft.discountValue === 'number') s.setDiscountValue(draft.discountValue); if (typeof draft.negotiationMarkup === 'number' && draft.negotiationMarkup > 0) { s. …"
+    }
+   ]
+  },
   "src/hooks/quotes/quoteHelpers.ts": {
    "path": "src/hooks/quotes/quoteHelpers.ts",
    "lines": 314,
@@ -466783,6 +467266,54 @@
     "handoff que chama clearAutoSave() antes de habilitar → onRestore não roda",
     "SEM clearAutoSave() no handoff, o rascunho antigo é restaurado (comportamento do bug)",
     "clearAutoSave retornado pelo hook remove a chave correta do localStorage"
+   ]
+  },
+  "src/hooks/quotes/__tests__/quoteDraftApply.test.ts": {
+   "path": "src/hooks/quotes/__tests__/quoteDraftApply.test.ts",
+   "lines": 339,
+   "is_test": true,
+   "doc": "Testes — quoteDraftApply Cobre o contrato que faltava: ler o rascunho que o QuoteAutoSave grava em `quote_draft_<quoteId>` e aplicá-lo de volta ao builder. O teste mais importante aqui é a ORDEM do frete. O `setShippingType` exposto pelo useQuoteBuilderState é o handleShippingTypeChange (:155-170), …",
+   "tests": [
+    "quoteDraftKey",
+    "usa o prefixo que o QuoteAutoSave grava",
+    "readStoredQuoteDraft",
+    "devolve null quando não há rascunho",
+    "devolve null e não lança quando o envelope está corrompido",
+    "não apaga o rascunho corrompido — descartar é decisão do usuário",
+    "devolve null quando o conteúdo não passa pelo schema",
+    "devolve null quando savedAt não é data válida",
+    "lê o rascunho válido com savedAt em epoch ms",
+    "draftDiffersFromCurrent",
+    "nulo no rascunho e vazio na tela não contam como diferença",
+    "detecta item a mais no rascunho",
+    "detecta desconto diferente",
+    "não acusa diferença quando o rascunho repete a tela",
+    "applyDraftToBuilder",
+    "preserva o frete: setShippingType vem antes de setShippingCost",
+    "entrega por data: muda o modo antes de aplicar a data (o handler limpa o campo)",
+    "entrega por prazo: muda o modo antes de gravar o texto",
+    "sincroniza o Select de validade junto com a data (QBP-12)",
+    "não toca em campo ausente do rascunho",
+    "ignora markup zero ou negativo, como o onRestore original",
+    "aplica itens e cliente do rascunho",
+    "discardStoredQuoteDraft",
+    "remove o rascunho e todo o histórico _v<n>",
+    "applyDraftToBuilder — campos colhidos do QuoteBuilderDraftRecovery de outro agente",
+    "respeita deliveryMode explícito ",
+    "respeita deliveryMode explícito ",
+    "modo ",
+    "deliveryDate explícito vence o prefixo date: do deliveryTime",
+    "usa o validityDays do rascunho em vez de deduzir da data",
+    "aplica validityDays mesmo sem validUntil",
+    "inspectStoredQuoteDraft — distingue ausente de ilegível",
+    "ausente quando não há nada gravado",
+    "ilegível/json-invalido quando o arquivo não é JSON",
+    "ilegível/envelope-invalido quando o JSON não é objeto",
+    "ilegível/data-invalida quando savedAt não é data",
+    "ilegível/fora-de-forma quando o conteúdo não passa pelo schema",
+    "ok com o rascunho quando está íntegro",
+    "nenhum estado ilegível apaga o rascunho — descartar é do usuário",
+    "readStoredQuoteDraft devolve null em qualquer estado que não seja ok"
    ]
   },
   "src/hooks/quotes/__tests__/quoteHelpers.validation.test.ts": {
@@ -478941,7 +479472,7 @@
   },
   "src/pages/__tests__/QuoteBuilderDeliveryTooltip.test.tsx": {
    "path": "src/pages/__tests__/QuoteBuilderDeliveryTooltip.test.tsx",
-   "lines": 202,
+   "lines": 203,
    "is_test": true,
    "tests": [
     "QuoteBuilderPage Delivery Tooltip",
@@ -485561,7 +486092,7 @@
   },
   "src/pages/quotes/QuoteBuilderPage.tsx": {
    "path": "src/pages/quotes/QuoteBuilderPage.tsx",
-   "lines": 831,
+   "lines": 832,
    "exports": [
     "function QuoteBuilderPage"
    ],
@@ -543275,10 +543806,24 @@
   }
  },
  "git": {
-  "sha": "216fad0f11a15cb5c71a813abca48658da8bb893",
+  "sha": "ef8a595f6f9365b73a887ac3105530f43b14a3e4",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "ef8a595",
+    "date": "2026-11-17",
+    "author": "adm01-debug",
+    "subject": "feat(quotes): recupera rascunho local ao reabrir orçamento existente (#3805)",
+    "files": [
+     "src/components/quotes/QuoteAutoSave.tsx",
+     "src/components/quotes/QuoteDraftRecovery.tsx",
+     "src/hooks/quotes/__tests__/quoteDraftApply.test.ts",
+     "src/hooks/quotes/quoteDraftApply.ts",
+     "src/pages/__tests__/QuoteBuilderDeliveryTooltip.test.tsx",
+     "src/pages/quotes/QuoteBuilderPage.tsx"
+    ]
+   },
    {
     "sha": "216fad0",
     "date": "2026-11-17",
@@ -543575,15 +544120,6 @@
      "supabase/migrations/20261117073000_p06_security_invoker_v_product_properties_public.sql",
      "supabase/rollbacks/20261117073000_rollback.sql"
     ]
-   },
-   {
-    "sha": "7edc9f8",
-    "date": "2026-11-17",
-    "author": "adm01-debug",
-    "subject": "test(magicup): resgata o teste do ciclo de vida da busca (#3759)",
-    "files": [
-     "tests/pages/MagicUp.search-lifetime.test.tsx"
-    ]
    }
   ],
   "hot_files": [
@@ -543624,6 +544160,30 @@
     2
    ],
    [
+    "src/components/quotes/QuoteAutoSave.tsx",
+    1
+   ],
+   [
+    "src/components/quotes/QuoteDraftRecovery.tsx",
+    1
+   ],
+   [
+    "src/hooks/quotes/__tests__/quoteDraftApply.test.ts",
+    1
+   ],
+   [
+    "src/hooks/quotes/quoteDraftApply.ts",
+    1
+   ],
+   [
+    "src/pages/__tests__/QuoteBuilderDeliveryTooltip.test.tsx",
+    1
+   ],
+   [
+    "src/pages/quotes/QuoteBuilderPage.tsx",
+    1
+   ],
+   [
     "tests/components/IntelligenceBadges.legacy-compat.test.tsx",
     1
    ],
@@ -543641,30 +544201,6 @@
    ],
    [
     "tests/hooks/useKitAutoSave.legacy.test.tsx",
-    1
-   ],
-   [
-    "tests/hooks/useKitBuilderPageState.financial.test.tsx",
-    1
-   ],
-   [
-    "tests/hooks/useKitBuilderQueries.legacy.test.tsx",
-    1
-   ],
-   [
-    "tests/hooks/useLegacyCatalogContracts.test.ts",
-    1
-   ],
-   [
-    "tests/hooks/useLegacyLintMemoContracts.test.tsx",
-    1
-   ],
-   [
-    "tests/hooks/useMagicUpState.legacy.test.tsx",
-    1
-   ],
-   [
-    "tests/hooks/useQuoteTemplates.raw-fetch.test.ts",
     1
    ]
   ]

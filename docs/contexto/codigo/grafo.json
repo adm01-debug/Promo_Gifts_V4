@@ -1,8 +1,8 @@
 {
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
- "nos": 2825,
- "arestas": 11105,
+ "nos": 2827,
+ "arestas": 11113,
  "hubs": [
   {
    "arquivo": "src/lib/utils.ts",
@@ -10,7 +10,7 @@
   },
   {
    "arquivo": "src/components/ui/button.tsx",
-   "importado_por": 628
+   "importado_por": 629
   },
   {
    "arquivo": "src/components/ui/badge.tsx",
@@ -26,7 +26,7 @@
   },
   {
    "arquivo": "src/lib/logger.ts",
-   "importado_por": 316
+   "importado_por": 317
   },
   {
    "arquivo": "src/components/ui/tooltip.tsx",

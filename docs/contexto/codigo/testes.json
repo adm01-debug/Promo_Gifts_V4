@@ -5,13 +5,13 @@
   "vitest",
   "playwright"
  ],
- "total": 2564,
+ "total": 2565,
  "por_tipo": {
   "contrato": 66,
   "e2e": 677,
   "pytest": 5,
   "qa": 17,
-  "unit": 1799
+  "unit": 1800
  },
  "onde_ficam": [
   {
@@ -20,7 +20,7 @@
   },
   {
    "padrao": "co-localizado (__tests__)",
-   "arquivos": 677
+   "arquivos": 678
   },
   {
    "padrao": "e2e/",
@@ -8757,6 +8757,15 @@
    "casos": 3
   },
   {
+   "arquivo": "src/hooks/quotes/__tests__/quoteDraftApply.test.ts",
+   "tipo": "unit",
+   "linhas": 339,
+   "testa": [
+    "src/hooks/quotes/quoteDraftApply.ts"
+   ],
+   "casos": 33
+  },
+  {
    "arquivo": "src/hooks/quotes/__tests__/quoteHelpers.validation.test.ts",
    "tipo": "unit",
    "linhas": 169,
@@ -10117,7 +10126,7 @@
   {
    "arquivo": "src/pages/__tests__/QuoteBuilderDeliveryTooltip.test.tsx",
    "tipo": "unit",
-   "linhas": 202,
+   "linhas": 203,
    "testa": [
     "src/components/ui/tooltip.tsx",
     "src/pages/quotes/QuoteBuilderPage.tsx"
@@ -22275,6 +22284,7 @@
   "src/hooks/products/useVariantSupplierSources.ts": 6,
   "src/hooks/products/useVideoVariantLinks.ts": 1,
   "src/hooks/quotes/index.ts": 20,
+  "src/hooks/quotes/quoteDraftApply.ts": 1,
   "src/hooks/quotes/quoteHelpers.ts": 8,
   "src/hooks/quotes/quoteMarkup.ts": 1,
   "src/hooks/quotes/quoteTypes.ts": 12,

@@ -1,6 +1,6 @@
 # 11 · GLOSSÁRIO, DADOS DE REFERÊNCIA E LACUNAS
 
-> Gerado automaticamente por AI Context Sync v1.3.2 · commit `216fad0f11` · branch `main` · 2026-11-17 21:15 UTC
+> Gerado automaticamente por AI Context Sync v1.3.2 · commit `ef8a595f6f` · branch `main` · 2026-11-17 21:24 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## Glossário do domínio (entidades do sistema)
@@ -307,7 +307,7 @@
 | `product_price_freshness_overrides` | Override local da janela de validade de preço por produto (30/60/90 dias). Sobrescreve o valor padrão de 60 dias e tem precedência sobre qualquer valor que venha a ser exposto pelo BD externo no futuro. | 6 colunas | migration |
 | `product_print_positions` | _(sem COMMENT ON TABLE — significado não documentado)_ | 18 colunas | migration |
 | `product_properties` | Relacionamento entre produtos e suas propriedades | 9 colunas | migration |
-| … +498 linhas — lista completa em `context.json` | | | |
+| … +499 linhas — lista completa em `context.json` | | | |
 
 ## Dados de referência (seed — planos, categorias, perfis fixos)
 
@@ -411,6 +411,8 @@
 | status | valor `selected` para `state` usado no código não existe em nenhum enum do banco/TS | `compara:src/pages/__visual/DatePickerFieldHarness.tsx` |
 | status | valor `uploaded` para `cf_sync_status` usado no código não existe em nenhum enum do banco/TS | `compara:src/pages/admin/AdminCloudflareImagesPage.tsx` |
 | status | valor `orphaned` para `cf_sync_status` usado no código não existe em nenhum enum do banco/TS | `compara:src/pages/admin/AdminCloudflareImagesPage.tsx` |
+| status | valor `ausente` para `estado` usado no código não existe em nenhum enum do banco/TS | `compara:src/components/quotes/QuoteDraftRecovery.tsx`<br>`escreve:src/hooks/quotes/quoteDraftApply.ts` |
+| status | valor `ilegivel` para `estado` usado no código não existe em nenhum enum do banco/TS | `compara:src/components/quotes/QuoteDraftRecovery.tsx`<br>`escreve:src/hooks/quotes/quoteDraftApply.ts` |
 | status | valor `ready` para `cloudflare_status` usado no código não existe em nenhum enum do banco/TS | `compara:src/lib/external-db/products-detail.ts` |
 | status | valor `synced` para `sync_status` usado no código não existe em nenhum enum do banco/TS | `escreve:supabase/functions/product-webhook/index.ts` |
 | coluna | coluna `avatar_url` usada no código não existe no schema de `profiles` |  |
@@ -644,9 +646,7 @@
 | edge | edge function `e1` invocada mas não existe em supabase/functions/ | `src/integrations/supabase/__tests__/edge-request-id.test.ts` |
 | edge | edge function `e2` invocada mas não existe em supabase/functions/ | `src/integrations/supabase/__tests__/edge-request-id.test.ts` |
 | edge | edge function `fixture-edge` invocada mas não existe em supabase/functions/ | `scripts/ai-context/gerar.unit.mjs` |
-| edge | edge function `fn` invocada mas não existe em supabase/functions/ | `tests/scripts/gate-baseline-absence.test.mjs` |
-| edge | edge function `ghost-edge` invocada mas não existe em supabase/functions/ | `scripts/ai-context/gerar.unit.mjs` |
-| … +230 linhas — lista completa em `context.json` | | |
+| … +232 linhas — lista completa em `context.json` | | |
 
 ## Lacunas — o que este contexto NÃO consegue responder (perguntas para o dono do negócio)
 

@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.3.2 · commit `216fad0f11` · branch `main` · 2026-11-17 21:15 UTC
+> Gerado automaticamente por AI Context Sync v1.3.2 · commit `ef8a595f6f` · branch `main` · 2026-11-17 21:24 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -1863,7 +1863,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `status` | `unhealthy` | compara, escreve | `supabase/functions/health-check/index.ts` |
 | `status` | `unknown` | compara, escreve | `src/components/products/PriceFreshnessBadge.tsx`<br>`src/components/simulator/StockAlert.tsx`<br>`src/components/system/CloudStatusDot.tsx`<br>`src/pages/kit-builder/useKitBuilderQuote.ts`<br>`src/utils/price-freshness.ts` |
 | `status` | `valid` | compara, escreve | `src/components/admin/connections/MaskedSuffixBadge.tsx`<br>`src/lib/masked-suffix.ts` |
-| … +115 linhas — lista completa em `context.json` | | | |
+| … +120 linhas — lista completa em `context.json` | | | |
 
 ### E.4 Enums e listas de valores
 
@@ -2019,6 +2019,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | AlertLevel | critical \| low \| out | `src/hooks/products/useStockAlerts.ts` |
 | StockNotificationKind | low \| new \| restocked \| stockout | `src/hooks/products/useStockNotifications.ts` |
 | SupplierComparisonSort | commonColors \| leadTime \| price \| score \| stock | `src/hooks/products/useSupplierComparison.ts` |
+| MotivoIlegivel | data-invalida \| envelope-invalido \| fora-de-forma \| inacessivel \| json-invalido | `src/hooks/quotes/quoteDraftApply.ts` |
 | SortOption | popularity \| price_asc \| price_desc \| recommended \| time_asc \| time_desc | `src/hooks/simulation/useTechniqueRecommendations.ts` |
 | EtlStatus | ERROR \| OK \| WARN | `src/hooks/stock/useEmaRiskSummary.ts` |
 | RuptureLevel | ALERTA \| ATENÇÃO \| CRÍTICO \| OK \| RUPTURA | `src/hooks/stock/useRuptureAlerts.ts` |
@@ -2168,8 +2169,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | InsertResultShape | rows \| empty-array \| null \| generic-string-error \| single-object \| primitive \| unknown | `supabase/functions/crm-db-bridge/index.ts` |
 | CRM_TABLES | 'companies', 'contacts', 'company_addresses', 'company_social_media', 'contact_emails', 'contact_phones', 'customers', 'suppliers', 'carriers', | `supabase/functions/crm-db-bridge/query-policy.ts` |
 | EmaHealthStatus | OK \| WARN \| ERROR \| UNKNOWN | `supabase/functions/ema-pipeline-health/handler.ts` |
-| ALLOWED_EVENT_TYPES | "approved", "rejected", "order_created", "sent_to_client", "expired", | `supabase/functions/receive-crm-callback/index.ts` |
-| … +3 linhas — lista completa em `context.json` | | |
+| … +4 linhas — lista completa em `context.json` | | |
 
 ## F. Validações de entrada
 
@@ -4106,6 +4106,10 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 - **calculateColorSummary(variants: VariantWithStock[], stockEntries: StockEntry[],)** — `src/hooks/products/useVariantSupplierSources.ts`
   ```
   const colorMap = new Map<string, ColorSummary>(); // Agregar estoque atual por cor for (const v of variants) { const name = v.color_name || 'Sem cor'; const existing = colorMap.get(name); if (existing) { existing.currentStock += v.stock_quantity || 0; } else { colorMap.set(name, { name, hex: v.color_hex, thumbnail: v.selected_thumbnail, currentStock: v.stock_quantity || 0, incomingTotal: 0, incomingCount: 0, }); } } // Agregar previsões de reposição por cor for (const entry of stockEntries) { co …
+  ```
+- **applyDraftToBuilder(draft: RecoveredQuoteDraft, s: QuoteDraftApplyTarget)** — `src/hooks/quotes/quoteDraftApply.ts`
+  ```
+  if (draft.clientId) s.setClientId(draft.clientId); if (draft.contactId) s.setContactId(draft.contactId); if (draft.companyInfo) s.setCompanyInfo(draft.companyInfo); if (draft.contactInfo) s.setContactInfo(draft.contactInfo); if (draft.items) s.setItems(draft.items); if (draft.discountType) s.setDiscountType(draft.discountType); if (typeof draft.discountValue === 'number') s.setDiscountValue(draft.discountValue); if (typeof draft.negotiationMarkup === 'number' && draft.negotiationMarkup > 0) { s. …
   ```
 - **round2(n: number | null | undefined)** — `src/hooks/quotes/quoteHelpers.ts`
   ```
@@ -6560,7 +6564,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `admin` | `supabase/migrations/20261112120500_fix_optimization_queue_rpcs_dev_access.sql` |
 | `anon` | `tests/edge-functions/live/_live-client.ts` |
 
-## K. Testes como especificação (22134 testes em 2242 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (22174 testes em 2243 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -6625,6 +6629,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `tests/utils/tailwindRings.interaction.test.tsx` | 43 | hoverRingsOf / ringsByVariant — interação · (I1) hoverRingsOf é estável antes/durante/depois de pointerenter+leave · (I2) focusRingsOf é estável sob Tab e blur programático · (I3) hover e focus-visible NÃO se contaminam no elemento  … |
 | `src/components/inventory/__tests__/useStockSelection.test.ts` | 42 | rowKey · gera chave  · chaves diferentes para IDs diferentes · é determinístico … |
 | `src/components/cart/__tests__/PopoverQtyInput.test.tsx` | 40 | normalizeQty (regra pura) · aceita inteiros dentro do intervalo · faz clamp acima do máximo · rejeita valores abaixo do mínimo … |
+| `src/hooks/quotes/__tests__/quoteDraftApply.test.ts` | 40 | quoteDraftKey · usa o prefixo que o QuoteAutoSave grava · readStoredQuoteDraft · devolve null quando não há rascunho … |
 | `src/lib/carts/__tests__/shipping-deadline.test.ts` | 39 | shipping-deadline · daysUntilDeadline · retorna 0 para hoje · retorna 3 para +3 dias … |
 | `src/pages/magazine/__tests__/pagination.test.ts` | 39 | paginateMagazine — null/undefined safety · handles null magazine → returns [cover, back-cover] · handles undefined magazine → returns [cover, back-cover] · handles magazine.content = undefined → no crash, no grouping … |
 | `tests/e2e/auth-flow.test.tsx` | 39 | E2E Auth — Login Validation · rejects empty email · rejects invalid email format · rejects email without domain … |
@@ -6863,8 +6868,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `src/components/search/__tests__/searchCache.test.ts` | 18 | searchCache.set / searchCache.get · returns null for an unknown key · returns results immediately after set · is case-insensitive (normalized key) … |
 | `src/hooks/auth/__tests__/login-flow.test.ts` | 18 | Login Flow & Role Loading — RPC get_profile_and_roles · 1. deve carregar perfil e roles com sucesso via RPC · 2. deve tratar erro RLS 42501 sem lançar exceção · 3. deve tratar erros genéricos de rede sem crash … |
 | `src/hooks/products/__tests__/useProductsByColor.test.ts` | 18 | hasFilter OR entre 4 grupos · false quando todos arrays vazios · true quando qualquer grupo nao-vazio · sem filtro ativo … |
-| `src/hooks/products/__tests__/useProductsLightweight.test.ts` | 18 | mapLightweightToProduct · retorna id como string mesmo quando input é number · FIX BUG-D: prefere leaf_category_id sobre category_id sobre main_category_id · FIX BUG-D: usa category_id quando leaf_category_id nulo … |
-| … +1942 linhas — lista completa em `context.json` | | |
+| … +1943 linhas — lista completa em `context.json` | | |
 
 ## L. Eventos de webhook tratados (contratos com sistemas externos)
 
@@ -7332,4 +7336,4 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | Regra única do logo do mockup (SVG fora: a edge generate-mockup rejeita SVG). | `src/components/mockup/AreaCard.tsx` |
 | * Validação sem rede: extensão, tipo informado pelo navegador e tamanho. Retorna a mensagem de erro ou null. */ | `src/components/mockup/ArtFileUpload.tsx` |
 | Remover a empresa exige confirmação (mesma regra do Magic Up) — evita perda acidental. | `src/components/mockup/MockupClientSelector.tsx` |
-| … +1329 linhas — lista completa em `context.json` | |
+| … +1333 linhas — lista completa em `context.json` | |

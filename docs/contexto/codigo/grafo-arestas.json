@@ -8605,6 +8605,7 @@
    "src/lib/quote-status-config.ts"
   ],
   "src/components/quotes/QuoteAutoSave.tsx": [
+   "src/components/quotes/QuoteDraftRecovery.tsx",
    "src/components/quotes/quoteAutoSaveStatus.ts",
    "src/components/ui/badge.tsx",
    "src/components/ui/tooltip.tsx",
@@ -8691,6 +8692,11 @@
    "src/components/ui/alert.tsx",
    "src/components/ui/button.tsx",
    "src/hooks/quotes/useQuoteConcurrencyGuard.ts"
+  ],
+  "src/components/quotes/QuoteDraftRecovery.tsx": [
+   "src/components/ui/alert-dialog.tsx",
+   "src/components/ui/button.tsx",
+   "src/hooks/quotes/quoteDraftApply.ts"
   ],
   "src/components/quotes/QuoteFilters.tsx": [
    "src/components/ui/input.tsx",
@@ -11176,6 +11182,12 @@
    "src/hooks/quotes/useQuoteVersions.ts",
    "src/hooks/quotes/useQuotes.ts",
    "src/hooks/quotes/useSellerDiscountLimits.ts"
+  ],
+  "src/hooks/quotes/quoteDraftApply.ts": [
+   "src/hooks/quotes/useQuoteBuilderState.helpers.ts",
+   "src/hooks/quotes/useQuoteBuilderState.ts",
+   "src/lib/logger.ts",
+   "src/lib/quotes/quoteDraftRecovery.ts"
   ],
   "src/hooks/quotes/quoteHelpers.ts": [
    "src/hooks/quotes/quoteTypes.ts",

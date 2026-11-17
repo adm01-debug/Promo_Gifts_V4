@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "216fad0f11a15cb5c71a813abca48658da8bb893",
+  "commit": "ef8a595f6f9365b73a887ac3105530f43b14a3e4",
   "branch": "main",
-  "data_commit": "2026-11-17T17:58:00-03:00",
+  "data_commit": "2026-11-17T18:16:12-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "ef8a595f",
+    "data": "2026-11-17",
+    "assunto": "feat(quotes): recupera rascunho local ao reabrir orçamento existente (#3805)"
+   },
    {
     "sha": "216fad0f",
     "data": "2026-11-17",
@@ -126,14 +131,9 @@
     "sha": "f40d2618",
     "data": "2026-11-17",
     "assunto": "docs: recibo de aplicação — 20261117073000 (E15) (#3768)"
-   },
-   {
-    "sha": "d56cb122",
-    "data": "2026-11-17",
-    "assunto": "feat(crm): vendedor vê a carteira dele mais os clientes sem dono (somente leitura) (#3769)"
    }
   ],
-  "arquivos_mudados_7d": 1955,
+  "arquivos_mudados_7d": 1959,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -161,7 +161,7 @@
    },
    {
     "pasta": "src/components/quotes",
-    "mudancas": 112
+    "mudancas": 114
    },
    {
     "pasta": "supabase/functions/_shared",
@@ -192,8 +192,8 @@
     "mudancas": 67
    },
    {
-    "pasta": "src/pages/products",
-    "mudancas": 64
+    "pasta": "src/pages/quotes",
+    "mudancas": 65
    }
   ],
   "arquivos_mais_mudados_90d": [
@@ -230,12 +230,12 @@
     "mudancas": 16
    },
    {
-    "arquivo": "analise-prs/progresso.json",
+    "arquivo": "src/pages/kit-builder/KitBuilderPage.tsx",
     "mudancas": 15
    },
    {
-    "arquivo": "src/pages/kit-builder/KitBuilderPage.tsx",
-    "mudancas": 15
+    "arquivo": "analise-prs/progresso.json",
+    "mudancas": 14
    },
    {
     "arquivo": "auditoria-supabase/RELATORIO_AUDITORIA_SUPABASE.md",
@@ -278,10 +278,6 @@
     "mudancas": 8
    },
    {
-    "arquivo": "analise-prs/RELATORIO_PRS.md",
-    "mudancas": 8
-   },
-   {
     "arquivo": "e2e/flows/magazine-preview-sticky-smoke.spec.ts",
     "mudancas": 8
    },
@@ -295,6 +291,10 @@
    },
    {
     "arquivo": "src/hooks/kit-builder/useKitAutoSave.ts",
+    "mudancas": 8
+   },
+   {
+    "arquivo": "supabase/functions/crm-db-bridge/index.ts",
     "mudancas": 8
    }
   ],
@@ -322,21 +322,21 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 10864,
-  "arquivos_codigo": 5389,
-  "linhas_codigo": 1028964,
+  "arquivos_total": 10867,
+  "arquivos_codigo": 5392,
+  "linhas_codigo": 1029717,
   "rotas": 139,
   "rotas_http_backend": 13,
   "vistas_por_id": 0,
   "itens_menu": 69,
   "modulos": 161,
-  "componentes": 1237,
+  "componentes": 1238,
   "hooks": 627,
   "edge_functions": 112,
   "tabelas": 527,
   "migrations": 3099,
   "cron_jobs": 122,
-  "testes": 2564,
+  "testes": 2565,
   "workflows": 88,
   "scripts": 283,
   "docs_md": 1470
@@ -1895,8 +1895,8 @@
    "linhas": 130
   },
   "src/components": {
-   "arquivos": 1394,
-   "linhas": 277473
+   "arquivos": 1395,
+   "linhas": 277642
   },
   "src/config": {
    "arquivos": 1,
@@ -1919,8 +1919,8 @@
    "linhas": 7
   },
   "src/hooks": {
-   "arquivos": 478,
-   "linhas": 90298
+   "arquivos": 480,
+   "linhas": 90880
   },
   "src/integrations": {
    "arquivos": 11,
@@ -1940,7 +1940,7 @@
   },
   "src/pages": {
    "arquivos": 361,
-   "linhas": 83889
+   "linhas": 83891
   },
   "src/routes": {
    "arquivos": 14,
@@ -3414,6 +3414,7 @@
    "QuoteBuilderPage",
    "QuoteCardSkeleton",
    "QuoteCommentsSection",
+   "QuoteDraftRecovery",
    "QuoteListSkeleton",
    "QuoteViewPage",
    "QuotesDashboardPage",

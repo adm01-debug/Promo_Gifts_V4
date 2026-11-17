@@ -13590,13 +13590,13 @@
   },
   {
    "modulo": "components/quotes",
-   "arquivos": 51,
+   "arquivos": 52,
    "testes": 38,
-   "linhas": 11163,
+   "linhas": 11332,
    "itens_menu": [],
    "telas": [],
    "rotas_http": [],
-   "componentes": 47,
+   "componentes": 48,
    "hooks_locais": [
     "useA11y",
     "useAIRecommendations",
@@ -21408,9 +21408,9 @@
   },
   {
    "modulo": "hooks/quotes",
-   "arquivos": 21,
-   "testes": 21,
-   "linhas": 4978,
+   "arquivos": 22,
+   "testes": 22,
+   "linhas": 5221,
    "itens_menu": [],
    "telas": [],
    "rotas_http": [],
@@ -21899,6 +21899,7 @@
     "lib/auth",
     "lib/edge",
     "lib/external-db",
+    "lib/quotes",
     "lib/security",
     "lib/supabase",
     "lib/telemetry",
@@ -25316,6 +25317,7 @@
     "components/admin",
     "components/pdf",
     "components/quotes",
+    "hooks/quotes",
     "pages/quotes"
    ],
    "depende_de_modulos": [
@@ -32092,7 +32094,7 @@
    "modulo": "pages/quotes",
    "arquivos": 13,
    "testes": 39,
-   "linhas": 4305,
+   "linhas": 4306,
    "itens_menu": [
     "Gestão de Orçamentos",
     "Novo Orçamento",

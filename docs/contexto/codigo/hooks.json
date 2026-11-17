@@ -5989,7 +5989,7 @@
    "hooks_exportados": [
     "useQuoteAutoSave"
    ],
-   "linhas": 425,
+   "linhas": 428,
    "dominio": "components/quotes",
    "tabelas": [],
    "rpcs": [],
@@ -12060,8 +12060,9 @@
     "useMemo"
    ],
    "canais_realtime": [],
-   "usado_por": 1,
+   "usado_por": 2,
    "usado_por_arquivos": [
+    "src/hooks/quotes/quoteDraftApply.ts",
     "src/hooks/quotes/useQuoteBuilderState.ts"
    ],
    "coberto_por_testes": 1
@@ -12098,9 +12099,10 @@
     "useState"
    ],
    "canais_realtime": [],
-   "usado_por": 1,
+   "usado_por": 2,
    "usado_por_arquivos": [
-    "src/hooks/quotes/index.ts"
+    "src/hooks/quotes/index.ts",
+    "src/hooks/quotes/quoteDraftApply.ts"
    ],
    "coberto_por_testes": 9
   },

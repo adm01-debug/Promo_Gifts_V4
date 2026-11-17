@@ -8,7 +8,7 @@
    "api/health.ts (1)"
   ],
   "componentes": [
-   "src/components (941)",
+   "src/components (942)",
    "src/pages (177)",
    "recovery/src-legacy (100)"
   ],
@@ -24,7 +24,7 @@
   ],
   "testes": [
    "tests/ (1060)",
-   "co-localizado (__tests__) (677)",
+   "co-localizado (__tests__) (678)",
    "e2e/ (625)"
   ],
   "edge_functions": "supabase/functions",
@@ -49,7 +49,7 @@
  },
  "barrels_index": 46,
  "extensao_componentes": [
-  ".tsx (1237)"
+  ".tsx (1238)"
  ],
  "alias_imports": {
   "e2e/": {},
@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "feat(quotes): recupera rascunho local ao reabrir orçamento existente (#3805)",
    "test(resgate): 218 casos de teste de outro agente que nunca chegaram à main (#3807)",
    "fix(deps): move ferramentas de build para devDependencies (#3804)",
    "fix(ci): tolera o ReDoS do picomatch, que travava toda PR do repositorio (#3800)",
-   "test(products): resgata a cobertura de ciclo de vida de filtros e fornecedores (#3790)",
-   "test(products): resgata a cobertura de enriquecimento de cor (#3789)"
+   "test(products): resgata a cobertura de ciclo de vida de filtros e fornecedores (#3790)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",

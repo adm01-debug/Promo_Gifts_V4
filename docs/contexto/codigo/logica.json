@@ -4813,7 +4813,7 @@
    "zod_schemas": 0,
    "flags": [],
    "papeis": [],
-   "usado_por": 302,
+   "usado_por": 303,
    "usado_por_modulos": [
     "components",
     "components/admin",
@@ -6251,9 +6251,10 @@
    "zod_schemas": 0,
    "flags": [],
    "papeis": [],
-   "usado_por": 1,
+   "usado_por": 2,
    "usado_por_modulos": [
-    "components/quotes"
+    "components/quotes",
+    "hooks/quotes"
    ],
    "coberto_por_testes": 2,
    "orfao": false

@@ -1,7 +1,7 @@
 {
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
- "total": 1237,
+ "total": 1238,
  "orfaos": 161,
  "nomes_duplicados": {
   "AdvancedPriceSearchPage": [
@@ -293,6 +293,10 @@
   "QuoteCommentsSection": [
    "docs/agentes/resgates/quote-comments/codigo/QuoteCommentsSection.tsx",
    "recovery/src-legacy/src/components/quotes/QuoteCommentsSection.tsx"
+  ],
+  "QuoteDraftRecovery": [
+   "src/components/quotes/QuoteAutoSave.tsx",
+   "src/components/quotes/QuoteDraftRecovery.tsx"
   ],
   "QuoteListSkeleton": [
    "recovery/src-legacy/src/components/common/ContextualSkeleton.tsx",
@@ -14166,10 +14170,11 @@
   {
    "arquivo": "src/components/quotes/QuoteAutoSave.tsx",
    "exports": [
-    "QuoteAutoSave"
+    "QuoteAutoSave",
+    "QuoteDraftRecovery"
    ],
    "export_default": null,
-   "linhas": 425,
+   "linhas": 428,
    "dominio": "components/quotes",
    "hooks_locais": [
     "useQuoteAutoSave"
@@ -14330,6 +14335,20 @@
    ],
    "export_default": null,
    "linhas": 71,
+   "dominio": "components/quotes",
+   "hooks_locais": [],
+   "tabelas": [],
+   "edges": [],
+   "usado_por": 1,
+   "orfao": false
+  },
+  {
+   "arquivo": "src/components/quotes/QuoteDraftRecovery.tsx",
+   "exports": [
+    "QuoteDraftRecovery"
+   ],
+   "export_default": null,
+   "linhas": 166,
    "dominio": "components/quotes",
    "hooks_locais": [],
    "tabelas": [],
@@ -15861,7 +15880,7 @@
    ],
    "tabelas": [],
    "edges": [],
-   "usado_por": 31,
+   "usado_por": 32,
    "orfao": false
   },
   {
@@ -15943,7 +15962,7 @@
    "hooks_locais": [],
    "tabelas": [],
    "edges": [],
-   "usado_por": 623,
+   "usado_por": 624,
    "orfao": false
   },
   {
@@ -19605,7 +19624,7 @@
     "QuoteBuilderPage"
    ],
    "export_default": "QuoteBuilderPage",
-   "linhas": 831,
+   "linhas": 832,
    "dominio": "pages/quotes",
    "hooks_locais": [
     "useNextQuoteNumberPreview",
