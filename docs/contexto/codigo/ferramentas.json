@@ -5,7 +5,7 @@
   "linguagens": [
    "TypeScript (4887)",
    "SQL (3431)",
-   "Markdown (1459)",
+   "Markdown (1463)",
    "JavaScript (456)",
    "JSON (132)",
    "YAML (115)",
@@ -3715,6 +3715,11 @@
    "linhas": 61
   },
   {
+   "arquivo": "docs/FABRICA_VPS_FAQ.md",
+   "titulo": "❓ FAQ da Fábrica de Correções (VPS Hostinger)",
+   "linhas": 49
+  },
+  {
    "arquivo": "docs/FLAG_faxina_archive_false_positives_20260621.md",
    "titulo": "🚩 FLAG — Faxina arquivando tabelas com `.from()` vivo (falsos-positivos) + código morto a limpar",
    "linhas": 49
@@ -3795,6 +3800,11 @@
    "linhas": 199
   },
   {
+   "arquivo": "docs/MAGIC_UP_AUDITORIA_2026-10-08.md",
+   "titulo": "Auditoria do módulo Magic Up — resumo para a entrevista (08/10/2026)",
+   "linhas": 166
+  },
+  {
    "arquivo": "docs/MAGIC_UP_ONDA5_A11Y.md",
    "titulo": "♿ Magic Up — Onda 5 a11y guideline",
    "linhas": 81
@@ -3813,6 +3823,11 @@
    "arquivo": "docs/MOCKUP_ESTADOS.md",
    "titulo": "Estados do Mockup — glossário",
    "linhas": 204
+  },
+  {
+   "arquivo": "docs/MOCKUP_OPERACAO.md",
+   "titulo": "Operação do módulo Mockup (fluxo, estados, falhas, permissões e retenção)",
+   "linhas": 207
   },
   {
    "arquivo": "docs/MOCKUP_RETENCAO.md",
@@ -4230,7 +4245,7 @@
   },
   {
    "pasta": "docs/agentes",
-   "arquivos_md": 6
+   "arquivos_md": 7
   },
   {
    "pasta": "docs/bugs",

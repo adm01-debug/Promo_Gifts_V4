@@ -1,10 +1,10 @@
 {
  "meta": {
-  "sha": "bd18202a0ce8d2d8b427f8279435ad85365d1a03",
+  "sha": "d1091fe14c20b1ac01086a89601c1fe28f1d6b0f",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-17 01:39 UTC",
-  "files_total": 10732,
+  "generated_at": "2026-11-17 02:21 UTC",
+  "files_total": 10736,
   "code_files": 8781,
   "code_lines": 1239028
  },
@@ -540857,10 +540857,41 @@
   }
  },
  "git": {
-  "sha": "bd18202a0ce8d2d8b427f8279435ad85365d1a03",
+  "sha": "d1091fe14c20b1ac01086a89601c1fe28f1d6b0f",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "d1091fe",
+    "date": "2026-11-16",
+    "author": "adm01-debug",
+    "subject": "docs(audit): rodada de 17/11 no ledger de auditoria de branches (#3734)",
+    "files": [
+     "docs/agentes/resgates/2026-11-16-auditoria-branches.md"
+    ]
+   },
+   {
+    "sha": "79c5640",
+    "date": "2026-11-16",
+    "author": "adm01-debug",
+    "subject": "fix(docs): número errado de migration no doc resgatado deixou o Gate 1 vermelho na main (#3733)",
+    "files": [
+     "docs/MOCKUP_OPERACAO.md"
+    ]
+   },
+   {
+    "sha": "bf156d3",
+    "date": "2026-11-16",
+    "author": "adm01-debug",
+    "subject": "docs(audit): resgata 4 documentos da fábrica VPS que não existiam na main (#3731)",
+    "files": [
+     "docs/FABRICA_VPS_FAQ.md",
+     "docs/MAGIC_UP_AUDITORIA_2026-10-08.md",
+     "docs/MOCKUP_OPERACAO.md",
+     "docs/MOCKUP_RETENCAO.md",
+     "docs/agentes/resgates/2026-10-08-proposta-snapshot-mockup-etapas-16-69.md"
+    ]
+   },
    {
     "sha": "bd18202",
     "date": "2026-11-16",
@@ -541414,36 +541445,6 @@
     "files": [
      "supabase/MIGRATIONS_SYNC_LOG.md"
     ]
-   },
-   {
-    "sha": "1c6abc8",
-    "date": "2026-11-16",
-    "author": "github-actions[bot]",
-    "subject": "chore(ci): métricas semanais 2026-W47 (#3691)",
-    "files": [
-     "docs/ci/METRICAS_SEMANAIS.md"
-    ]
-   },
-   {
-    "sha": "5c497ed",
-    "date": "2026-11-16",
-    "author": "adm01-debug",
-    "subject": "docs(audit): handoff para a próxima sessão, com o estado de 16/11 (#3698)",
-    "files": [
-     "analise-branches/ESTADO-EM-261116.md",
-     "analise-branches/HANDOFF-PROXIMA-SESSAO.md",
-     "analise-branches/MANUAL-DE-CONTINUIDADE.md"
-    ]
-   },
-   {
-    "sha": "25ea4f3",
-    "date": "2026-11-16",
-    "author": "adm01-debug",
-    "subject": "docs(audit): registra a exclusão das 71 branches, o fechamento da #3685 e o alarme falso do clone raso (#3697)",
-    "files": [
-     "analise-branches/MANUAL-DE-CONTINUIDADE.md",
-     "analise-branches/RELATORIO-BRANCHES-COMPLETO.md"
-    ]
    }
   ],
   "hot_files": [
@@ -541458,6 +541459,14 @@
    [
     "package-lock.json",
     3
+   ],
+   [
+    "docs/agentes/resgates/2026-11-16-auditoria-branches.md",
+    2
+   ],
+   [
+    "docs/MOCKUP_OPERACAO.md",
+    2
    ],
    [
     "analise-branches/VEREDITO-52-TESTES-LEGACY-261116.md",
@@ -541476,8 +541485,20 @@
     2
    ],
    [
-    "analise-branches/MANUAL-DE-CONTINUIDADE.md",
-    2
+    "docs/FABRICA_VPS_FAQ.md",
+    1
+   ],
+   [
+    "docs/MAGIC_UP_AUDITORIA_2026-10-08.md",
+    1
+   ],
+   [
+    "docs/MOCKUP_RETENCAO.md",
+    1
+   ],
+   [
+    "docs/agentes/resgates/2026-10-08-proposta-snapshot-mockup-etapas-16-69.md",
+    1
    ],
    [
     "src/components/mockup/MockupCatalogStates.tsx",
@@ -541505,26 +541526,6 @@
    ],
    [
     "supabase/functions/generate-mockup/fetch-guard.ts",
-    1
-   ],
-   [
-    "vitest.config.ts",
-    1
-   ],
-   [
-    "e2e/protected-routes.spec.ts",
-    1
-   ],
-   [
-    "e2e/routes/public/reset-password.spec.ts",
-    1
-   ],
-   [
-    "e2e/spa-rewrite.spec.ts",
-    1
-   ],
-   [
-    "e2e/auth-debug-removal.spec.ts",
     1
    ]
   ]

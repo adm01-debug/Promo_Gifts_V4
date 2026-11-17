@@ -2,11 +2,26 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "bd18202a0ce8d2d8b427f8279435ad85365d1a03",
+  "commit": "d1091fe14c20b1ac01086a89601c1fe28f1d6b0f",
   "branch": "main",
-  "data_commit": "2026-11-16T22:36:25-03:00",
+  "data_commit": "2026-11-16T23:16:48-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "d1091fe1",
+    "data": "2026-11-16",
+    "assunto": "docs(audit): rodada de 17/11 no ledger de auditoria de branches (#3734)"
+   },
+   {
+    "sha": "79c56401",
+    "data": "2026-11-16",
+    "assunto": "fix(docs): número errado de migration no doc resgatado deixou o Gate 1 vermelho na main (#3733)"
+   },
+   {
+    "sha": "bf156d3f",
+    "data": "2026-11-16",
+    "assunto": "docs(audit): resgata 4 documentos da fábrica VPS que não existiam na main (#3731)"
+   },
    {
     "sha": "bd18202a",
     "data": "2026-11-16",
@@ -116,24 +131,9 @@
     "sha": "1f642122",
     "data": "2026-11-16",
     "assunto": "docs(audit): 12 recibos do ledger com sha256 que não bate com o arquivo (#3704)"
-   },
-   {
-    "sha": "2d3c2f74",
-    "data": "2026-11-16",
-    "assunto": "fix(ci): gates não exigem do Dependabot segredo que o GitHub nunca lhe entrega (#3700)"
-   },
-   {
-    "sha": "7dad78c4",
-    "data": "2026-11-16",
-    "assunto": "chore(deps): aproveita as 5 atualizações seguras de dev da #3695 e deixa os 6 majors fora (#3702)"
-   },
-   {
-    "sha": "8a13c888",
-    "data": "2026-11-16",
-    "assunto": "chore(ci): destrava os recibos do ledger e o baseline do ratchet (#3699)"
    }
   ],
-  "arquivos_mudados_7d": 1912,
+  "arquivos_mudados_7d": 1917,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -189,7 +189,7 @@
    },
    {
     "pasta": "RELATORIO_CI.md",
-    "mudancas": 72
+    "mudancas": 71
    },
    {
     "pasta": "src/pages/products",
@@ -199,15 +199,15 @@
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "RELATORIO_CI.md",
-    "mudancas": 72
-   },
-   {
-    "arquivo": "PENDENCIAS.md",
-    "mudancas": 63
+    "mudancas": 71
    },
    {
     "arquivo": "supabase/MIGRATIONS_SYNC_LOG.md",
     "mudancas": 62
+   },
+   {
+    "arquivo": "PENDENCIAS.md",
+    "mudancas": 61
    },
    {
     "arquivo": "package.json",
@@ -322,7 +322,7 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 10804,
+  "arquivos_total": 10808,
   "arquivos_codigo": 5351,
   "linhas_codigo": 1019215,
   "rotas": 138,
@@ -339,7 +339,7 @@
   "testes": 2532,
   "workflows": 87,
   "scripts": 283,
-  "docs_md": 1459
+  "docs_md": 1463
  },
  "por_pasta": {
   ".github/scripts": {

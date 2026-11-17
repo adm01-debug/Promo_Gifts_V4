@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e de hora em hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `bd18202a0ce8d2d8b427f8279435ad85365d1a03` (2026-11-16T22:36:25-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e de hora em hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `d1091fe14c20b1ac01086a89601c1fe28f1d6b0f` (2026-11-16T23:16:48-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -14,7 +14,7 @@ Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR
 Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua tarefa; não carregue tudo.
 
 ## Stack
-- linguagens: TypeScript (4887), SQL (3431), Markdown (1459), JavaScript (456), JSON (132), YAML (115), Shell (27), HTML (20)
+- linguagens: TypeScript (4887), SQL (3431), Markdown (1463), JavaScript (456), JSON (132), YAML (115), Shell (27), HTML (20)
 - linguagem_principal: TypeScript
 - framework: React
 - backend_http: n/d
@@ -34,7 +34,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 ## Números
 | item | qtd |
 |---|---|
-| arquivos_total | 10804 |
+| arquivos_total | 10808 |
 | arquivos_codigo | 5351 |
 | linhas_codigo | 1019215 |
 | rotas | 138 |
@@ -51,7 +51,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 | testes | 2532 |
 | workflows | 87 |
 | scripts | 283 |
-| docs_md | 1459 |
+| docs_md | 1463 |
 
 ## Onde ficam as coisas
 - telas: src/pages (111), src/components (3), api/health.ts (1)
@@ -62,7 +62,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - edge_functions: supabase/functions
 - migrations: supabase/migrations
 - scripts: scripts/ci-local (11), scripts/lib (7), scripts/graphify (4)
-- docs: docs (147), (raiz) (14), .github (4)
+- docs: docs (150), (raiz) (14), .github (4)
 - nomenclatura: {"componentes":"PascalCase (95%)","hooks":"use + PascalCase","servicos":"kebab-case (52%)","edge_functions":"kebab-case (99%)","tabelas":"snake_case (86%)"}
 - instruções para agentes no repo: .claude/CLAUDE.md, AGENTS.md, CLAUDE.md
 
@@ -590,15 +590,15 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - possiveis_segredos_no_codigo: 7 — ex.: scripts/ai-context/cenarios.mjs:102, src/components/admin/connections/__tests__/ConnectionSecurity.unit.test.tsx:9, src/integrations/supabase/client.ts:27
 
 ## Grafo de código (graphify)
-- 48008 nós · 80663 arestas · 2748 comunidades · grafo do commit `bd18202a`
-- comunidades maiores: vitest (868), ref_components (715), ref_integrations (628), ref_node_child_process (494), ref_hooks (470), @tanstack/react-query (410), sonner (383), nav.ts (372), react (353), ref_node_fs (347), concludeCheck (324), ref_types (318)
+- 48050 nós · 80727 arestas · 2738 comunidades · grafo do commit `d1091fe1`
+- comunidades maiores: ref_components (801), vitest (653), ref_integrations (642), ref_node_child_process (466), ref_hooks (437), @tanstack/react-query (434), sonner (413), @testing-library/react (368), ref_types (350), react (340), cors.ts (334), ref_node_fs (324)
 - símbolos mais chamados: gotoAndSettle() (e2e/helpers/nav.ts), re (?), q() (scripts/supabase_snapshot/snapshot.py), analyze() (tests/scripts/test_personalization_artifact_diagnostics.py), outer() (tests/scripts/test_personalization_artifact_diagnostics.py), json (?), useExternalDatabase() (recovery/src-legacy/src/hooks/useExternalDatabase.ts), concludeCheck() (scripts/check-result-contract.mjs), querySupabaseReadOnly() (scripts/supabase-read-only-query.mjs), loginAs() (e2e/helpers/auth.ts), inner() (tests/scripts/test_personalization_artifact_diagnostics.py), excluded_sql() (scripts/supabase_snapshot/snapshot.py)
 - consulta local: `graphify query "<pergunta>"`, `graphify path "<A>" "<B>"`, `graphify explain "<X>"`
 
 ## Hotspots (arquivos mais alterados, 90 dias)
-- RELATORIO_CI.md (72)
-- PENDENCIAS.md (63)
+- RELATORIO_CI.md (71)
 - supabase/MIGRATIONS_SYNC_LOG.md (62)
+- PENDENCIAS.md (61)
 - package.json (43)
 - package-lock.json (27)
 - docs/coordenacao/conflitos-semanticos.md (22)
@@ -1085,6 +1085,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - `docs/ENVIRONMENTS_PARITY.md` — Ambientes e Paridade Mínima (local / CI / staging) (136 linhas)
 - `docs/EXCEL_INTEGRATION_GUIDE.md` — 📊 Guia de Integração - Botão Export Excel (140 linhas)
 - `docs/FABRICA_VPS.md` — 🏭 Fábrica de Correções (VPS Hostinger) (61 linhas)
+- `docs/FABRICA_VPS_FAQ.md` — ❓ FAQ da Fábrica de Correções (VPS Hostinger) (49 linhas)
 - `docs/FLAG_faxina_archive_false_positives_20260621.md` — 🚩 FLAG — Faxina arquivando tabelas com `.from()` vivo (falsos-positivos) + código morto a limpar (49 linhas)
 - `docs/FORM_VALIDATION.md` (5 linhas)
 - `docs/FOTOGRAFIA_PG_CATALOG_2026-08-26.md` — Fotografia pg_catalog — 2026-08-26 (25 linhas)
@@ -1101,10 +1102,12 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - `docs/JORNADAS_PERSONAS_ROTAS_CRITICAS.md` — Jornadas fim-a-fim por persona (com rastreabilidade de rotas críticas) (221 linhas)
 - `docs/LGPD.md` — LGPD — Política de Dados Pessoais (Promo_Gifts_V4) (29 linhas)
 - `docs/MAGAZINE_MODULE.md` — Magazine Module — Architecture & Engineering Reference (199 linhas)
+- `docs/MAGIC_UP_AUDITORIA_2026-10-08.md` — Auditoria do módulo Magic Up — resumo para a entrevista (08/10/2026) (166 linhas)
 - `docs/MAGIC_UP_ONDA5_A11Y.md` — ♿ Magic Up — Onda 5 a11y guideline (81 linhas)
 - `docs/MOBILE.md` — 📱 Guia de Responsividade Mobile (100 linhas)
 - `docs/MOCKUP_DECISOES_2026-10-08.md` — Decisões do dono sobre o módulo Mockup — 08/10/2026 (111 linhas)
 - `docs/MOCKUP_ESTADOS.md` — Estados do Mockup — glossário (204 linhas)
+- `docs/MOCKUP_OPERACAO.md` — Operação do módulo Mockup (fluxo, estados, falhas, permissões e retenção) (207 linhas)
 - `docs/MOCKUP_RETENCAO.md` — Mockup — Retenção e Lixeira (roteiro) (219 linhas)
 - `docs/NOTIFICATION_SYSTEM.md` — 🔔 SISTEMA UNIFICADO DE NOTIFICAÇÕES (309 linhas)
 - `docs/OBSERVABILITY.md` — Observabilidade — Promo Gifts (189 linhas)
@@ -1177,10 +1180,13 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - `docs/motor-v2-test-report.md` — 🧪 Relatório Exaustivo de Testes — Motor V2 (Bronze Layer) (401 linhas)
 - `docs/notifications-module-audit.md` — Auditoria — Módulo "Notificações de Estoque" (sino do header) (110 linhas)
 - `docs/prod-readiness.md` — Prontidão para produção — inventário e prova (1148 linhas)
-- subpastas de docs/: docs/arquivo (90), docs/redeploy (27), docs/estado (26), docs/plans (24), docs/db (14), docs/audits (12), docs/ci (12), docs/adr (11), docs/auditoria-planejado-nao-executado-2026-10-11 (11), docs/hardening (11), docs/validation (11), docs/architecture (9), docs/runbooks (8), docs/agentes (6), docs/bugs (6), docs/security (6), docs/sessoes (5), docs/suppliers (5), docs/arquitetura (4), docs/audit (4), docs/operations (4), docs/testing (4), docs/RUNBOOKS (3), docs/contexto (3), docs/design (3), docs/fabrica-vps (3), docs/faxina-261114 (3), docs/observability (3), docs/qa (3), docs/reports (3), docs/INCIDENTS (2), docs/contracts (2), docs/coordenacao (2), docs/edge-functions (2), docs/historico (2), docs/incidente-2026-10-13 (2), docs/prompts (2), docs/e2e (1), docs/graphify (1), docs/incidents (1), docs/migrations (1), docs/pipelines (1), docs/postmortems (1), docs/promo-champions (1), docs/storage (1), docs/workflows (1)
+- subpastas de docs/: docs/arquivo (90), docs/redeploy (27), docs/estado (26), docs/plans (24), docs/db (14), docs/audits (12), docs/ci (12), docs/adr (11), docs/auditoria-planejado-nao-executado-2026-10-11 (11), docs/hardening (11), docs/validation (11), docs/architecture (9), docs/runbooks (8), docs/agentes (7), docs/bugs (6), docs/security (6), docs/sessoes (5), docs/suppliers (5), docs/arquitetura (4), docs/audit (4), docs/operations (4), docs/testing (4), docs/RUNBOOKS (3), docs/contexto (3), docs/design (3), docs/fabrica-vps (3), docs/faxina-261114 (3), docs/observability (3), docs/qa (3), docs/reports (3), docs/INCIDENTS (2), docs/contracts (2), docs/coordenacao (2), docs/edge-functions (2), docs/historico (2), docs/incidente-2026-10-13 (2), docs/prompts (2), docs/e2e (1), docs/graphify (1), docs/incidents (1), docs/migrations (1), docs/pipelines (1), docs/postmortems (1), docs/promo-champions (1), docs/storage (1), docs/workflows (1)
 - CHANGELOG topo: [1.1.0](https://github.com/adm01-debug/Promo_Gifts_V4/compare/v1.0.0...v1.1.0) (2026-11-13)
 
 ## Últimos commits
+- 2026-11-16 `d1091fe1` docs(audit): rodada de 17/11 no ledger de auditoria de branches (#3734)
+- 2026-11-16 `79c56401` fix(docs): número errado de migration no doc resgatado deixou o Gate 1 vermelho na main (#3733)
+- 2026-11-16 `bf156d3f` docs(audit): resgata 4 documentos da fábrica VPS que não existiam na main (#3731)
 - 2026-11-16 `bd18202a` test(mockup): resgata as 4 guardas que faltavam das fatias da fábrica VPS (#3730)
 - 2026-11-16 `8ba14375` fix(edge-fn): mockup baixava a imagem inteira na memória antes de recusar (#3729)
 - 2026-11-16 `32563063` test(e2e): três specs que davam falso verde ou vermelho garantido (#3728)
@@ -1193,9 +1199,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-16 `16cfec32` chore(deps): sobe jest-dom 7 e react-hooks 7; rejeita jsdom 31 com a evidência (#3715)
 - 2026-11-16 `cd67884f` docs(migrations): registra recibo oficial da CRON-005 aplicada em producao (#3716)
 - 2026-11-16 `7a7a5bc3` fix(quotes): valida o rascunho antes de restaurar na tela do orcamento (#3713)
-- 2026-11-16 `8e5aaaa2` test: resgata os 2 testes que sobreviveram a refutacao adversarial (#3712)
-- 2026-11-16 `26996059` docs(audit): corrige a classificacao dos 52 testes — faltava a classe "falha 100%" (#3711)
-- 2026-11-16 `36bbcaf9` docs(audit): prova de incorporacao — 117 caminhos de residuo + as 5 PRs fechadas (#3710)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

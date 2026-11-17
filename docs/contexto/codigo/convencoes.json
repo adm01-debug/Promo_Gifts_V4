@@ -35,7 +35,7 @@
    "scripts/graphify (4)"
   ],
   "docs": [
-   "docs (147)",
+   "docs (150)",
    "(raiz) (14)",
    ".github (4)"
   ]
@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "docs(audit): rodada de 17/11 no ledger de auditoria de branches (#3734)",
+   "fix(docs): número errado de migration no doc resgatado deixou o Gate 1 vermelho na main (#3733)",
+   "docs(audit): resgata 4 documentos da fábrica VPS que não existiam na main (#3731)",
    "test(mockup): resgata as 4 guardas que faltavam das fatias da fábrica VPS (#3730)",
-   "fix(edge-fn): mockup baixava a imagem inteira na memória antes de recusar (#3729)",
-   "test(e2e): três specs que davam falso verde ou vermelho garantido (#3728)",
-   "test(security): guarda de dado interno na tela de login nunca podia passar no CI (#3727)",
-   "docs(audit): laudo da auditoria das 82 branches antes de fechar (#3724)"
+   "fix(edge-fn): mockup baixava a imagem inteira na memória antes de recusar (#3729)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",
