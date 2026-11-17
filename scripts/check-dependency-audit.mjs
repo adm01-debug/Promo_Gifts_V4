@@ -53,13 +53,16 @@ const ALLOWED_VITEST_PACKAGES = new Set([
 // All of these are pulled exclusively by @lhci/cli (Lighthouse CI) and its own transitives
 // (puppeteer-core → @puppeteer/browsers → extract-zip/tar-fs, lighthouse → @sentry/node,
 // proxy-agent → pac-proxy-agent → get-uri → basic-ftp, etc.).
+// 2026-11-17: `basic-ftp` SAIU desta lista. A PR #3774 fixou `overrides: basic-ftp ^6.2.4`
+// em package.json, entao a versao vulneravel (<= 6.2.3, GHSA-5pm8-86m8-9m6r) nao volta a
+// resolver. Risco eliminado na estrutura, nao tolerado por prazo: se um advisory NOVO
+// aparecer em basic-ftp, este gate deve falhar e exigir revisao, nao passar por heranca.
 // None can be reached from production code. Accepted 2026-09-27. Revisit by RISK_REVIEW_DEADLINE.
 const ALLOWED_LHCI_PACKAGES = new Set([
   '@lhci/cli', // direct devDependency; moderate severity
   '@lhci/utils',
   '@puppeteer/browsers',
   '@sentry/node',
-  'basic-ftp',            // transitive: proxy-agent → pac-proxy-agent → get-uri → basic-ftp
   'cookie',
   'external-editor',
   'extract-zip',
