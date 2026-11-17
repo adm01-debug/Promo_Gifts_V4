@@ -21,10 +21,12 @@ const protectedRoutes = [
 
 test.describe('Protected Routes — Auth Guards', () => {
   for (const route of protectedRoutes) {
-    test(`${route} should redirect to /login`, async ({ page }) => {
+    test(`${route} should redirect to the auth surface`, async ({ page }) => {
       await page.goto(route);
-      await page.waitForURL(/login/, { timeout: 10000 });
-      expect(page.url()).toMatch(/login/);
+      // ProtectedRoute redireciona para /auth (rota canonica); /login segue como
+      // alias legado. Aceitar as duas evita vermelho que nao diz nada sobre a guarda.
+      await page.waitForURL(/\/(?:auth|login)(?:[/?#]|$)/, { timeout: 10000 });
+      expect(page.url()).toMatch(/\/(?:auth|login)(?:[/?#]|$)/);
     });
   }
 });
@@ -38,17 +40,19 @@ const publicRoutes = [
   '/auth',
   '/login',
   '/reset-password',
+  '/forgot-password-confirmation',
   '/unauthorized',
   '/termos',
   '/privacidade',
+  '/revista-publica/test-token',
 ];
 
 test.describe('Public Routes — No Auth Required', () => {
   for (const route of publicRoutes) {
-    test(`${route} should NOT redirect to /login`, async ({ page }) => {
+    test(`${route} should remain accessible without a session`, async ({ page }) => {
       await page.goto(route);
-      await page.waitForTimeout(2000);
-      expect(page.url()).not.toMatch(/\/login$/);
+      await expect(page).toHaveURL(new RegExp(`${route.replaceAll('/', '\\/')}(?:[?#]|$)`));
+      await expect(page.getByTestId('app-not-found')).toHaveCount(0);
     });
   }
 });

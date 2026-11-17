@@ -1,0 +1,34 @@
+-- Rollback de 20261101140001_sb0001_remove_auth_users_realtime.sql
+--
+-- ============================ LEIA ANTES DE EXECUTAR ============================
+-- Este rollback REABRE uma falha de segurança CRÍTICA. Ele existe para cumprir a
+-- convenção de rollback versionado do repo (docs/agentes/banco-migrations.md:73,
+-- cobrada pelo preflight E063), NÃO porque executá-lo seja esperado.
+--
+-- O que a migration original fechou: auth.users estava na publication
+-- supabase_realtime, então qualquer subscriber autenticado recebia INSERT/UPDATE/
+-- DELETE da tabela de usuários em tempo real.
+--
+-- O que este arquivo reabre, medido no canônico em 2026-11-17:
+-- auth.users tem, além de `email`, `phone` e `encrypted_password`, SEIS colunas de
+-- token — confirmation_token, recovery_token, email_change_token_new,
+-- email_change_token_current, phone_change_token e reauthentication_token.
+-- Reexpor a tabela no Realtime vaza tokens de confirmação e de redefinição de
+-- senha, em tempo real, para qualquer subscriber autenticado. Isso é TOMADA DE
+-- CONTA, não apenas exposição de dado pessoal.
+--
+-- Estado atual de produção (2026-11-17): a proteção está de pé —
+--   SELECT count(*) FROM pg_publication_tables
+--    WHERE pubname = 'supabase_realtime' AND schemaname = 'auth';  -->  0
+-- (a publication tem 9 tabelas, nenhuma do schema auth).
+--
+-- Risco de NÃO executar: nenhum conhecido. A migration original registrou
+-- "risco de regressão: baixo — nenhum canal do repo assina auth.users via
+-- realtime", e isso continua verdade.
+--
+-- Nenhuma automação aplica este arquivo: db-apply-migration.yml lê apenas
+-- supabase/migrations/ e exclui *_rollback.sql (linhas 179 e 181). Executar exige
+-- psql manual contra produção, o que o AGENTS.md proíbe sem exceção.
+-- ===============================================================================
+
+ALTER PUBLICATION supabase_realtime ADD TABLE auth.users;
