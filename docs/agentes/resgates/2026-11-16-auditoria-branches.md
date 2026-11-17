@@ -763,3 +763,41 @@ diff): para eles o teste decisivo é o de ausência, e ele deu 0.
 #3766 (prova por branch, `cda9cbfa`) e #3753 (release `gifts-store 1.9.0`,
 `10455e7a`) — as três com deploy de Production SUCCESS e a tag
 `gifts-store-v1.9.0` criada às 11:38:47Z.
+
+### Medida 3 — as migrations que os sync logs preservados declaravam "pendente"
+
+Os 3 refs de migration diferem do `main` em `supabase/MIGRATIONS_SYNC_LOG.md` (log
+append-only). As linhas que existem **só** na cópia preservada — 4, 11 e 3 linhas,
+por `comm -23` entre as duas versões — não são conteúdo perdido: são linhas de
+estado **"pendente"** que o `main` substituiu pelo estado final. Era preciso provar
+que cada pendência foi mesmo concluída, e não esquecida.
+
+Consultado o banco canônico (`doufsxqlfjyuvxuezpln`, `supabase_migrations.schema_migrations`,
+leitura):
+
+| version | aplicada em produção |
+| --- | --- |
+| `20261022100020` (dispatcher-failure-alert, P19) | **sim** |
+| `20261022100021` (hash-product-images, P19) | **sim** |
+| `20261022100022` (sync-is-stockout-universal, P19) | **sim** |
+| `20261031000000` (stock_notes deleted_at + índice) | **sim** |
+| `20261101000002` (P15 — `color_synonym_map`) | **sim** |
+| `20261108001500` (reconcile `e2e_cleanup_audit`) | **sim** |
+| `20261114120100` (CRON005 refresh_all_mvs diário) | **sim** |
+| `20261117073000` (P06 medida, 1 view) | **sim** |
+| `20261101000001` (P06 original, 8 views) | **não — e por decisão** |
+
+7 das 8 pendências estão aplicadas. A única que não está é a P06 de 8 views, que foi
+deliberadamente substituída pela `20261117073000` (aplicada hoje), cujo cabeçalho
+documenta o BLOQUEIO medido de cada uma das outras 7 views — e cujo rollback existe
+em `supabase/rollbacks/20261117073000_rollback.sql`.
+
+Efeito do P15 conferido no banco, não só no log: `anon` em
+`public.color_synonym_map` detém hoje apenas `REFERENCES`, `SELECT` e `TRIGGER` —
+`INSERT`, `UPDATE` e `DELETE` foram revogados, que era exatamente o que aquele
+agente tinha deixado pela metade (o corpo original só dava `DROP POLICY` e deixava
+os GRANTs de escrita vivos).
+
+**Conclusão da adjudicação:** nenhum trabalho de agente nas 32 cópias preservadas
+está ausente do `main` nem pendente de execução. O único item fora do `main` é uma
+migration superseded com medida publicada.
