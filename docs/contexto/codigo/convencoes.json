@@ -23,7 +23,7 @@
    "src/services (10)"
   ],
   "testes": [
-   "tests/ (1037)",
+   "tests/ (1038)",
    "co-localizado (__tests__) (676)",
    "e2e/ (625)"
   ],
@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "fix(ci): migration e edge function passam a exigir E2E relevante (#3726)",
    "fix(ci): force_rotate tambem libera a publicacao do snapshot (#3725)",
    "fix(ci): dispara o gate de banco quando o ledger de migrations muda (#3747)",
    "fix(ci): corrige SHA inexistente na allowlist do sentinel (#3743)",
-   "chore(docs): fechamento da auditoria de branches com o veredito das 24 restantes (#3748)",
-   "feat(quotes): aprovar orçamento direto da lista — a ação existia no pai e era descartada (#3746)"
+   "chore(docs): fechamento da auditoria de branches com o veredito das 24 restantes (#3748)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",

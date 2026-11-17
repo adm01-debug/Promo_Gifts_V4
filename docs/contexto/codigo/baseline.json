@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "a8f57a4fc55107c709a3fcc9c07654ca86cdca58",
+  "commit": "6ac0c72e3775ebb5356430bc26ae37ece5b6dece",
   "branch": "main",
-  "data_commit": "2026-11-17T02:06:14-03:00",
+  "data_commit": "2026-11-17T02:13:15-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "6ac0c72e",
+    "data": "2026-11-17",
+    "assunto": "fix(ci): migration e edge function passam a exigir E2E relevante (#3726)"
+   },
    {
     "sha": "a8f57a4f",
     "data": "2026-11-17",
@@ -126,14 +131,9 @@
     "sha": "9657d523",
     "data": "2026-11-16",
     "assunto": "docs(audit): laudo da auditoria das 82 branches antes de fechar (#3724)"
-   },
-   {
-    "sha": "98a305c2",
-    "data": "2026-11-16",
-    "assunto": "fix(ci): destrava o Gate E40, que reprova toda PR com migration desde 15/11 (#3721)"
    }
   ],
-  "arquivos_mudados_7d": 1930,
+  "arquivos_mudados_7d": 1932,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -211,7 +211,7 @@
    },
    {
     "arquivo": "package.json",
-    "mudancas": 41
+    "mudancas": 42
    },
    {
     "arquivo": "package-lock.json",
@@ -270,6 +270,10 @@
     "mudancas": 9
    },
    {
+    "arquivo": ".github/workflows/replenishment-quality.yml",
+    "mudancas": 8
+   },
+   {
     "arquivo": "analise-prs/prs.json",
     "mudancas": 8
    },
@@ -292,10 +296,6 @@
    {
     "arquivo": "src/hooks/kit-builder/useKitAutoSave.ts",
     "mudancas": 8
-   },
-   {
-    "arquivo": ".github/SENTINEL_SHA_ALLOWLIST.txt",
-    "mudancas": 7
    }
   ],
   "autores_30d": [
@@ -322,9 +322,9 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 10818,
-  "arquivos_codigo": 5359,
-  "linhas_codigo": 1020259,
+  "arquivos_total": 10819,
+  "arquivos_codigo": 5360,
+  "linhas_codigo": 1020443,
   "rotas": 138,
   "rotas_http_backend": 13,
   "vistas_por_id": 0,
@@ -336,7 +336,7 @@
   "tabelas": 527,
   "migrations": 3097,
   "cron_jobs": 122,
-  "testes": 2538,
+  "testes": 2539,
   "workflows": 87,
   "scripts": 283,
   "docs_md": 1465
@@ -344,7 +344,7 @@
  "por_pasta": {
   ".github/scripts": {
    "arquivos": 1,
-   "linhas": 28
+   "linhas": 77
   },
   "api/health.ts": {
    "arquivos": 1,
@@ -2143,8 +2143,8 @@
    "linhas": 89
   },
   "tests/scripts": {
-   "arquivos": 178,
-   "linhas": 28339
+   "arquivos": 179,
+   "linhas": 28474
   },
   "tests/search": {
    "arquivos": 1,

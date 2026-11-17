@@ -6,7 +6,7 @@
   {
    "arquivo": ".github/scripts/e2e-relevance.mjs",
    "descricao": null,
-   "linhas": 28,
+   "linhas": 77,
    "env": [
     "CHANGED_FILES"
    ],

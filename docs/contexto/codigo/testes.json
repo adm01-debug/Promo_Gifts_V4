@@ -5,18 +5,18 @@
   "vitest",
   "playwright"
  ],
- "total": 2538,
+ "total": 2539,
  "por_tipo": {
   "contrato": 66,
   "e2e": 677,
   "pytest": 4,
   "qa": 17,
-  "unit": 1774
+  "unit": 1775
  },
  "onde_ficam": [
   {
    "padrao": "tests/",
-   "arquivos": 1037
+   "arquivos": 1038
   },
   {
    "padrao": "co-localizado (__tests__)",
@@ -19877,6 +19877,15 @@
    "casos": 5
   },
   {
+   "arquivo": "tests/scripts/e2e-relevance.test.mjs",
+   "tipo": "unit",
+   "linhas": 135,
+   "testa": [
+    ".github/scripts/e2e-relevance.mjs"
+   ],
+   "casos": 8
+  },
+  {
    "arquivo": "tests/scripts/e2e-smoke-coverage-doc.test.mjs",
    "tipo": "unit",
    "linhas": 182,
@@ -21495,6 +21504,7 @@
  ],
  "sql": [],
  "cobertura_por_arquivo": {
+  ".github/scripts/e2e-relevance.mjs": 1,
   "api/health.ts": 1,
   "api/ready.ts": 1,
   "api/sitemap.ts": 1,
