@@ -51,6 +51,28 @@ A branch nao toca banco, edge function, workflow nem script:
 | Correcoes da #3390 nos 243 arquivos de `recovery/src-legacy/` | **NAO ESTA** — a main manteve a versao antiga do arquivo arquivado | o (B) do pacote e o inverso exato do (A) em todos os casos lidos (ex.: `BridgesLiveCard.tsx` L258, `<th className="p-2"></th>` ↔ `<th className="p-2" />`). Codigo fora do compilador: `tsconfig.app.json` tem `"include": ["src"]` |
 | 4 baselines (`.file-size`, `.as-assertions`, `.as-unknown`, `.indexed-access`) | divergentes, irrelevante | sao arquivos gerados por script; a main tem os seus, regenerados depois |
 
+## STATUS EM 2026-11-17 — os 3 itens de "A resgatar" estão VIVOS na main
+
+Medido contra a `main` de 17/11 (`f129270a`). As três capacidades que esta seção pedia
+para completar **foram entregues depois**, por implementações próprias da main, com
+nomes diferentes dos da branch. Quem ler a seção abaixo sem este aviso vai refazer
+trabalho pronto.
+
+| item | onde está hoje na main |
+| --- | --- |
+| 1. Recuperar orçamento quando o navegador fecha | `src/hooks/quotes/useQuoteBuilderState.ts:255-257` chama `useAutoSaveQuote({ restoreEnabled: !isEditMode && !hasIncomingHandoff, ... })`, e o `onRestore` logo abaixo aplica cliente, contato, itens, desconto, markup, pagamento e prazo (inclusive reconstruindo o modo de entrega a partir de `date:`). A validação do payload está em `src/lib/quotes/quoteDraftRecovery.ts`, consumida por `QuoteAutoSave.loadDraft`. É **mais completa** que a da branch: payload versionado com `migratePayload` e consciência de handoff, que a branch não tinha. |
+| 2. Aprovar orçamento direto da lista | `src/components/quotes/QuotesConfigurableList.tsx:540` renderiza `<QuoteRowApproveItem quote={quote} onApprove={onBulkStatusChange} />`, e `src/components/quotes/QuoteRowApproveItem.tsx:25` aplica a guarda `isValidQuoteTransition(quote.status, 'approved')`. O `onMarkApproved` da branch não existe na main porque a main resolveu por outro componente. Teste: `src/components/quotes/__tests__/QuotesConfigurableList.approve.test.tsx`. |
+| 3. Filtro do histórico de mockups por técnica cadastrada | `src/components/mockup/MockupHistoryPanel.tsx:73` recebe `techniques` e a linha 121 monta as opções com `buildMockupTechniqueOptions(mockupHistory, techniques)`. Teste: `tests/components/mockup/MockupHistoryPanel.techniques.test.tsx`. |
+
+**Consequência para o fechamento da branch:** o parágrafo "Risco de fechar esta branch"
+abaixo dizia que apagá-la perderia essas melhorias e "402 linhas de teste". Isso deixou
+de valer: as três estão na main, com testes próprios. O que resta exclusivo da branch
+são 59 arquivos que nunca existiram na main — `.types.ts` extraídos, testes
+`*legacy*`/`*preservation*` e componentes sem consumidor —, todos adjudicados em
+`docs/agentes/resgates/2026-11-16-auditoria-branches.md`. A cópia
+`salvo/codex-fix-gate1-kit-pdf-types-261109-2252` continua preservada e não será
+apagada.
+
 ## A resgatar
 
 Nada aqui funciona ponta a ponta nem na branch — sao capacidades sem quem as chame. Por isso o veredito e
