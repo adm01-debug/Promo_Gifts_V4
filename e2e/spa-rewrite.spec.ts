@@ -73,14 +73,16 @@ test.describe("SPA rewrite — deep routes serve index.html", () => {
       return link?.href ?? script?.src ?? null;
     });
 
-    if (!assetHref) {
-      expect(false, "[E108] Sem /assets/* — dev server inline (esperado em vite dev).").toBeTruthy();
-      return;
-    }
+    // Em Vite dev o entrypoint e /src/main.tsx; no preview/deploy ele vira /assets/*.
+    // Nos dois casos tem de ser servido como modulo, nunca como index.html. A versao
+    // anterior fazia expect(false) quando nao achava /assets/*, e o CI sempre sobe o
+    // Vite dev (.github/actions/e2e-setup/action.yml:74-78, "npm run dev"): o contrato
+    // de rewrite nunca era verificado, so produzia vermelho a ser ignorado.
+    const directAsset = assetHref ?? new URL("/src/main.tsx", page.url()).href;
 
-    const res = await page.request.get(assetHref);
-    expect(res.status(), `Asset ${assetHref} deveria responder 200`).toBe(200);
+    const res = await page.request.get(directAsset);
+    expect(res.status(), `Asset ${directAsset} deveria responder 200`).toBe(200);
     const ct = res.headers()["content-type"] ?? "";
-    expect(ct).not.toContain("text/html"); // se virou index.html, é regressão do rewrite
+    expect(ct, "asset servido como index.html = regressao do rewrite").not.toContain("text/html");
   });
 });
