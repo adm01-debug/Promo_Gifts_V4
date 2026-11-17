@@ -4,6 +4,7 @@
 import { useEffect, useMemo, useRef, useState, useCallback } from 'react';
 import { useSearchStore } from '@/stores/useSearchStore';
 import { useOracleVoiceBridge } from '@/stores/oracleVoiceBridge';
+import { despacharBuscaDeVoz, despacharFiltroDeVoz } from '@/components/search/voiceFilterDispatch';
 import Fuse from 'fuse.js';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
@@ -166,6 +167,13 @@ export function useGlobalSearch() {
   // ── Voice Agent (ElevenLabs + AI) ──
   const handleVoiceAction = useCallback(
     (action: VoiceAgentAction) => {
+      const despachoDeVoz = {
+        timers: voiceTimersRef.current,
+        fecharOverlay: () => setVoiceOverlayOpen(false),
+        setQuery,
+        setOpen,
+        navigate,
+      };
       addVoiceCommand(
         action.data?.query || action.response,
         action.action as VoiceCommandRecord['type'],
@@ -184,26 +192,11 @@ export function useGlobalSearch() {
             );
           }
           break;
-        case 'search':
         case 'filter':
-          if (action.data?.query || action.data?.filters) {
-            const searchTerm = action.data?.query ?? '';
-            const filterParts: string[] = [];
-            if (action.data?.filters?.category) filterParts.push(action.data.filters.category);
-            if (action.data?.filters?.color) filterParts.push(action.data.filters.color);
-            if (action.data?.filters?.material) filterParts.push(action.data.filters.material);
-
-            const finalQuery = searchTerm || filterParts.join(' ');
-            if (finalQuery) {
-              voiceTimersRef.current.add(
-                setTimeout(() => {
-                  setVoiceOverlayOpen(false);
-                  setQuery(finalQuery);
-                  setOpen(true);
-                }, 500),
-              );
-            }
-          }
+          despacharFiltroDeVoz(action.data, despachoDeVoz);
+          break;
+        case 'search':
+          despacharBuscaDeVoz(action.data, despachoDeVoz);
           break;
         case 'clear':
           voiceTimersRef.current.add(
