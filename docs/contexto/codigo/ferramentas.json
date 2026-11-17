@@ -4,8 +4,8 @@
  "stack": {
   "linguagens": [
    "TypeScript (4895)",
-   "SQL (3433)",
-   "Markdown (1465)",
+   "SQL (3434)",
+   "Markdown (1466)",
    "JavaScript (457)",
    "JSON (132)",
    "YAML (116)",
@@ -272,6 +272,7 @@
    "test:contract": "node scripts/contract-testing.mjs",
    "test:coverage": "TZ=America/Sao_Paulo vitest run --coverage",
    "test:deploy-gate": "TZ=America/Sao_Paulo vitest run tests/contracts/migrated-endpoints.contract.test.ts src/lib/theme-presets.test.ts tests/components/products/ProductSparkline.labels.test.tsx --reporter=dot",
+   "test:device-trust:postgres": "python3 tests/sql/device-trust/run-tests.py --output-dir work/device-trust-sql",
    "test:e2e": "npx playwright test --grep-invert @smoke && npx playwright test e2e/product-card-click.spec.ts --project=chromium-public --project=mobile-chrome",
    "test:e2e:all": "npm run test:e2e:smoke && npm run test:e2e:regression",
    "test:e2e:auth-baseline": "npx playwright test e2e/flows/99-auth-ui-baseline.spec.ts",
@@ -1221,6 +1222,7 @@
     "check:restore-seller-cart-rpc",
     "lint:baseline",
     "test:ci-core",
+    "test:device-trust:postgres",
     "test:e2e:smoke",
     "test:quote-rpc:postgres",
     "typecheck"

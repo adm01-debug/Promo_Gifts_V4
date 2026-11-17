@@ -5,18 +5,18 @@
   "vitest",
   "playwright"
  ],
- "total": 2539,
+ "total": 2540,
  "por_tipo": {
   "contrato": 66,
   "e2e": 677,
-  "pytest": 4,
+  "pytest": 5,
   "qa": 17,
   "unit": 1775
  },
  "onde_ficam": [
   {
    "padrao": "tests/",
-   "arquivos": 1038
+   "arquivos": 1039
   },
   {
    "padrao": "co-localizado (__tests__)",
@@ -20697,6 +20697,13 @@
    "linhas": 37,
    "testa": [],
    "casos": 3
+  },
+  {
+   "arquivo": "tests/sql/device-trust/run-tests.py",
+   "tipo": "pytest",
+   "linhas": 245,
+   "testa": [],
+   "casos": 0
   },
   {
    "arquivo": "tests/ssot/publish-ssot-schema.test.ts",

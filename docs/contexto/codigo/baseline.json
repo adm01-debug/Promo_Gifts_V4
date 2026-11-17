@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "8749d83aaca4fb570081cd527326eed76ee8af09",
+  "commit": "3784247cb33779ae8a72b974a425a62a73a27d7a",
   "branch": "main",
-  "data_commit": "2026-11-17T02:49:54-03:00",
+  "data_commit": "2026-11-17T03:04:51-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "3784247c",
+    "data": "2026-11-17",
+    "assunto": "feat(test): resgata o contrato SQL de device-trust e o poe a rodar no Gate 2.5 (#3754)"
+   },
    {
     "sha": "8749d83a",
     "data": "2026-11-17",
@@ -126,14 +131,9 @@
     "sha": "bf156d3f",
     "data": "2026-11-16",
     "assunto": "docs(audit): resgata 4 documentos da fábrica VPS que não existiam na main (#3731)"
-   },
-   {
-    "sha": "bd18202a",
-    "data": "2026-11-16",
-    "assunto": "test(mockup): resgata as 4 guardas que faltavam das fatias da fábrica VPS (#3730)"
    }
   ],
-  "arquivos_mudados_7d": 1937,
+  "arquivos_mudados_7d": 1940,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -199,7 +199,7 @@
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "RELATORIO_CI.md",
-    "mudancas": 67
+    "mudancas": 66
    },
    {
     "arquivo": "supabase/MIGRATIONS_SYNC_LOG.md",
@@ -207,11 +207,11 @@
    },
    {
     "arquivo": "PENDENCIAS.md",
-    "mudancas": 58
+    "mudancas": 57
    },
    {
     "arquivo": "package.json",
-    "mudancas": 41
+    "mudancas": 42
    },
    {
     "arquivo": "package-lock.json",
@@ -223,7 +223,7 @@
    },
    {
     "arquivo": ".github/workflows/deploy-gates.yml",
-    "mudancas": 18
+    "mudancas": 19
    },
    {
     "arquivo": "supabase/EDGE_FUNCTIONS_DEPLOY_LOG.md",
@@ -313,7 +313,7 @@
    },
    {
     "autor": "github-actions[bot]",
-    "commits": 29
+    "commits": 28
    },
    {
     "autor": "dependabot[bot]",
@@ -322,9 +322,9 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 10822,
-  "arquivos_codigo": 5360,
-  "linhas_codigo": 1020443,
+  "arquivos_total": 10825,
+  "arquivos_codigo": 5361,
+  "linhas_codigo": 1020688,
   "rotas": 138,
   "rotas_http_backend": 13,
   "vistas_por_id": 0,
@@ -336,10 +336,10 @@
   "tabelas": 527,
   "migrations": 3098,
   "cron_jobs": 122,
-  "testes": 2539,
+  "testes": 2540,
   "workflows": 88,
   "scripts": 283,
-  "docs_md": 1465
+  "docs_md": 1466
  },
  "por_pasta": {
   ".github/scripts": {
@@ -2173,6 +2173,10 @@
   "tests/snapshots": {
    "arquivos": 1,
    "linhas": 37
+  },
+  "tests/sql": {
+   "arquivos": 1,
+   "linhas": 245
   },
   "tests/ssot": {
    "arquivos": 8,

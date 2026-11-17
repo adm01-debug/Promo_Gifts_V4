@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "8749d83aaca4fb570081cd527326eed76ee8af09",
+  "sha": "3784247cb33779ae8a72b974a425a62a73a27d7a",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-17 05:51 UTC",
-  "files_total": 10750,
-  "code_files": 8792,
-  "code_lines": 1240296
+  "generated_at": "2026-11-17 06:06 UTC",
+  "files_total": 10753,
+  "code_files": 8794,
+  "code_lines": 1240605
  },
  "version": "1.3.2",
- "facts_hash": "308f8ab4359e4c7f",
+ "facts_hash": "4bacaf692068dbb3",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -187,6 +187,7 @@
    "check:edge-zod-ratchet:update": "node scripts/check-edge-zod-ratchet.mjs --update-baseline",
    "test": "TZ=America/Sao_Paulo vitest run",
    "test:quote-rpc:postgres": "node scripts/simulate-quote-rpc-proposals.mjs",
+   "test:device-trust:postgres": "python3 tests/sql/device-trust/run-tests.py --output-dir work/device-trust-sql",
    "check:quote-rpc:canonical": "node scripts/check-quote-rpc-canonical-readiness.mjs",
    "test:quality": "TZ=America/Sao_Paulo vitest run --exclude 'tests/hooks/**'",
    "test:ci-core": "TZ=America/Sao_Paulo STRICT_TEST_SIDE_EFFECTS=1 vitest run tests/contracts/migrated-endpoints.contract.test.ts src/lib/theme-presets.test.ts tests/components/products/ProductSparkline.labels.test.tsx src/pages/filters/__tests__/FiltersPage.sorting.test.tsx src/components/products/__tests__/ProductSortAccessibility.test.tsx tests/unit/supabase-schema-contract.test.ts tests/unit/favorites-migration.test.ts tests/unit/trending-score.test.ts tests/unit/variant-matching.test.ts tests/unit/text-utils.test.ts tests/unit/print-area-grouping.test.ts tests/unit/format.test.ts tests/unit/to-error-message.test.ts tests/unit/catalog-stock-status.test.ts tests/unit/masked-suffix.test.ts tests/unit/forecast.test.ts tests/unit/stock-chart-utils.test.ts tests/unit/novelty-dates.test.ts tests/unit/sensitive-masking.test.ts tests/unit/error-kind-inference.test.ts tests/unit/connection-error-copy.test.ts tests/unit/roles.test.ts tests/unit/supplier-colors.test.ts tests/unit/date-utils.test.ts tests/unit/format-utils.test.ts tests/unit/quote-status-config.test.ts tests/config/vitest-config-smoke.test.ts tests/config/e2e-http-status.test.ts tests/scripts/check-supabase-reference-catalog.test.mjs tests/scripts/check-migration-filename-contract.test.mjs tests/scripts/check-schema-reference-drift.test.mjs tests/scripts/check-result-contract.test.mjs tests/scripts/check-production-harnesses.test.mjs tests/scripts/check-dependency-audit.test.mjs tests/scripts/e2e-relevance.test.mjs tests/scripts/check-types-inventory-drift.test.mjs tests/scripts/check-pptx-image-parser-exposure.test.mjs tests/scripts/contexto-produtores.test.mjs tests/scripts/rpc-live-evidence-contract.test.mjs tests/scripts/strict-test-side-effects-contract.test.mjs tests/security/lint-0011-drift.test.ts tests/security/lint-0029-drift.test.ts tests/security/secdef-anon-drift.test.ts tests/security/security-definer-acl-gate.test.ts src/components/mockup/logo-editor/__tests__/LogoControls.test.tsx src/hooks/mockup/__tests__/mockupAreas.preserve.test.ts src/hooks/mockup/__tests__/mockupBatch.partial.test.ts src/hooks/mockup/__tests__/mockupDimensions.guard.test.ts src/hooks/mockup/__tests__/mockupEntry.params.test.ts src/hooks/mockup/__tests__/mockupGeneration.abort.test.ts src/hooks/mockup/__tests__/mockupRestore.selection.test.ts src/hooks/mockup/__tests__/useMockupGenerator.techniques.test.ts tests/components/mockup/acceptance/grupo1.acceptance.test.tsx tests/components/mockup/acceptance/grupo3.acceptance.test.tsx tests/components/mockup/acceptance/grupo6.acceptance.test.tsx src/hooks/simulation/__tests__/useLogoColorAnalysis.test.ts src/components/mockup/__tests__/mockupA11y.slice2.test.tsx src/hooks/mockup/__tests__/mockupSelectionSnapshot.test.ts src/components/mockup/__tests__/MockupResultCard.states.test.tsx src/components/mockup/__tests__/MockupResultCard.preserved.test.tsx src/hooks/mockup/__tests__/mockupProjectSaved.test.ts src/pages/mockups/mockup-generator/__tests__/fichaDaAreaDaImagem.test.ts src/hooks/mockup/__tests__/trocaDeProjeto.test.ts tests/edge-functions/mockup-assistant.test.ts",
@@ -1118,11 +1119,11 @@
   ],
   "package_manager": "npm",
   "languages": {
-   ".sql": 3433,
+   ".sql": 3434,
    ".ts": 2990,
    ".tsx": 1906,
    ".mjs": 450,
-   ".py": 13,
+   ".py": 14,
    ".js": 7
   },
   "monorepo_packages": [],
@@ -151480,8 +151481,8 @@
   },
   {
    "module": "tests",
-   "files": 1052,
-   "lines": 161802,
+   "files": 1054,
+   "lines": 162111,
    "tables": [
     "bot_detection_log",
     "clients",
@@ -151546,7 +151547,7 @@
     "inventario-rotas.test.mjs: AppRoutes, adminRoutes",
     "test_personalization_artifact_diagnostics.py: encode, network, trace, zipped, inner, outer",
     "test_production_sitemap_probe.py: xml, legacy, responses, Contracts, model_test, invalid_case",
-    "sw-harness.ts: ORIGIN, MockCache, MockCacheStorage, FakeRequest, urlOf, makeRequest"
+    "run-tests.py: missing_prerequisite, docker, cleanup_owned_container, main, run_cases"
    ],
    "docs": [
     "StockFilterToolbar.field-order.test.tsx: Field-order regression: o filtro \"Preciso de X un...\" (quantidade) deve aparecer ANTES do campo de busca \"Buscar no Estoque...\". Cobre a troca solicitada pelo PO em 2026-06-16.",
@@ -155481,7 +155482,8 @@
     "scripts/kit-enrichment/asia-dims-batch.py",
     "scripts/kit-enrichment/xbz-dims-batch.py",
     "src/lib/inventory/__tests__/stock-filter.perf.test.ts",
-    "tests/config/playwright-config-smoke.test.ts"
+    "tests/config/playwright-config-smoke.test.ts",
+    "tests/sql/device-trust/run-tests.py"
    ],
    "CI_LOCAL_ARTIFACTS": [
     "scripts/ci-local/shims/artifact-store.mjs"
@@ -155884,7 +155886,8 @@
     "scripts/check-security-definer-hardening.mjs",
     "scripts/e2e-smoke-summary.mjs",
     "scripts/kit-enrichment/asia-dims-batch.py",
-    "scripts/kit-enrichment/xbz-dims-batch.py"
+    "scripts/kit-enrichment/xbz-dims-batch.py",
+    "tests/sql/device-trust/run-tests.py"
    ],
    "GITHUB_BASE_REF": [
     "scripts/check-conflict-ledger.mjs",
@@ -156188,7 +156191,8 @@
    ],
    "REQUIRE_LIVE": [
     "scripts/kit-enrichment/asia-dims-batch.py",
-    "scripts/kit-enrichment/xbz-dims-batch.py"
+    "scripts/kit-enrichment/xbz-dims-batch.py",
+    "tests/sql/device-trust/run-tests.py"
    ],
    "RESEND_API_KEY": [
     "scripts/ai-context/gerar.unit.mjs"
@@ -169173,6 +169177,30 @@
    {
     "file": "tests/scripts/test_production_sitemap_probe.py",
     "msg": "Exact preserved historical XML fixture is required"
+   },
+   {
+    "file": "tests/sql/device-trust/run-tests.py",
+    "msg": "Container ownership could not be verified; no container was removed."
+   },
+   {
+    "file": "tests/sql/device-trust/run-tests.py",
+    "msg": "Could not remove the owned disposable container: "
+   },
+   {
+    "file": "tests/sql/device-trust/run-tests.py",
+    "msg": "Disposable PostgreSQL did not become ready in 30 seconds."
+   },
+   {
+    "file": "tests/sql/device-trust/run-tests.py",
+    "msg": "Local PostgreSQL 17 image/daemon unavailable: "
+   },
+   {
+    "file": "tests/sql/device-trust/run-tests.py",
+    "msg": "Local concurrency session did not reach synchronization marker."
+   },
+   {
+    "file": "tests/sql/device-trust/run-tests.py",
+    "msg": "Local fixture failed: "
    },
    {
     "file": "tests/sw/sw-harness.ts",
@@ -217993,6 +218021,10 @@
    {
     "file": "tests/sql/wave1_forward_only_migrations_test.sql",
     "line": "_approved_quote, 'approved', now() + interval '1 day', 20,"
+   },
+   {
+    "file": "tests/sql/device-trust/run-tests.py",
+    "line": "stdout, stderr = process.communicate(timeout=10)"
    }
   ],
   "percents": [
@@ -538967,6 +538999,38 @@
    ],
    "uses_service_role": true
   },
+  "tests/sql/device-trust/fixture.sql": {
+   "path": "tests/sql/device-trust/fixture.sql",
+   "lines": 64
+  },
+  "tests/sql/device-trust/run-tests.py": {
+   "path": "tests/sql/device-trust/run-tests.py",
+   "lines": 245,
+   "exports": [
+    "def missing_prerequisite",
+    "def docker",
+    "def cleanup_owned_container",
+    "def main",
+    "def run_cases"
+   ],
+   "env": [
+    "CI",
+    "GITHUB_ACTIONS",
+    "REQUIRE_LIVE"
+   ],
+   "errors": [
+    "Container ownership could not be verified; no container was removed.",
+    "Could not remove the owned disposable container: ",
+    "Disposable PostgreSQL did not become ready in 30 seconds.",
+    "Local PostgreSQL 17 image/daemon unavailable: ",
+    "Local concurrency session did not reach synchronization marker.",
+    "Local fixture failed: "
+   ],
+   "doc": "!/usr/bin/env python3",
+   "temporal": [
+    "stdout, stderr = process.communicate(timeout=10)"
+   ]
+  },
   "tests/ssot/publish-ssot-schema.test.ts": {
    "path": "tests/ssot/publish-ssot-schema.test.ts",
    "lines": 107,
@@ -541286,10 +541350,24 @@
   }
  },
  "git": {
-  "sha": "8749d83aaca4fb570081cd527326eed76ee8af09",
+  "sha": "3784247cb33779ae8a72b974a425a62a73a27d7a",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "3784247",
+    "date": "2026-11-17",
+    "author": "adm01-debug",
+    "subject": "feat(test): resgata o contrato SQL de device-trust e o poe a rodar no Gate 2.5 (#3754)",
+    "files": [
+     ".github/workflows/deploy-gates.yml",
+     ".gitignore",
+     "package.json",
+     "tests/sql/device-trust/README.md",
+     "tests/sql/device-trust/fixture.sql",
+     "tests/sql/device-trust/run-tests.py"
+    ]
+   },
    {
     "sha": "8749d83",
     "date": "2026-11-17",
@@ -541587,17 +541665,6 @@
     "files": [
      "docs/agentes/resgates/2026-11-16-auditoria-branches.md"
     ]
-   },
-   {
-    "sha": "98a305c",
-    "date": "2026-11-16",
-    "author": "adm01-debug",
-    "subject": "fix(ci): destrava o Gate E40, que reprova toda PR com migration desde 15/11 (#3721)",
-    "files": [
-     "scripts/drift-baseline.mjs",
-     "supabase/baseline/20261108000000_cron_jobs.json",
-     "supabase/baseline/20261116000000_cron_jobs.json"
-    ]
    }
   ],
   "hot_files": [
@@ -541606,16 +541673,32 @@
     4
    ],
    [
-    "package.json",
-    2
+    ".github/workflows/deploy-gates.yml",
+    3
    ],
    [
-    ".github/workflows/deploy-gates.yml",
-    2
+    "package.json",
+    3
    ],
    [
     "docs/MOCKUP_OPERACAO.md",
     2
+   ],
+   [
+    ".gitignore",
+    1
+   ],
+   [
+    "tests/sql/device-trust/README.md",
+    1
+   ],
+   [
+    "tests/sql/device-trust/fixture.sql",
+    1
+   ],
+   [
+    "tests/sql/device-trust/run-tests.py",
+    1
    ],
    [
     ".github/workflows/codeql.yml",
@@ -541663,22 +541746,6 @@
    ],
    [
     ".github/workflows/e2e-flows.yml",
-    1
-   ],
-   [
-    ".github/workflows/e2e-personalization.yml",
-    1
-   ],
-   [
-    ".github/workflows/e2e-swatch-quickview.yml",
-    1
-   ],
-   [
-    ".github/workflows/e2e.yml",
-    1
-   ],
-   [
-    ".github/workflows/replenishment-quality.yml",
     1
    ]
   ]

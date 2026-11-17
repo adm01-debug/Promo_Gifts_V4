@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.3.2 · commit `8749d83aac` · branch `main` · 2026-11-17 05:51 UTC
+> Gerado automaticamente por AI Context Sync v1.3.2 · commit `3784247cb3` · branch `main` · 2026-11-17 06:06 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -5952,7 +5952,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `staleTime: 5 * 60 * 1000,` | `src/hooks/bi/useClientAffinity.ts` |
 | `const NINETY_DAYS = 90 * 24 * 60 * 60 * 1000;` | `src/hooks/bi/useClientCategoryAffinity.ts` |
 | `staleTime: 5 * 60 * 1000,` | `src/hooks/bi/useClientCategoryAffinity.ts` |
-| … +389 linhas — lista completa em `context.json` | |
+| … +390 linhas — lista completa em `context.json` | |
 
 ### H.3 Limites de paginação
 
@@ -6435,7 +6435,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | GET ${url} → ${r.status} ${r.statusText} | `scripts/ci-metrics.mjs` |
 | ${path}: esperado um array de resultados | `scripts/ci-performance-gate.ts` |
 | ACTION_ID_REJECTED | `scripts/diagnose-personalization-artifact.py` |
-| … +1277 linhas — lista completa em `context.json` | |
+| … +1283 linhas — lista completa em `context.json` | |
 
 ## J. Controle de acesso no código (checagens de perfil/permissão)
 
