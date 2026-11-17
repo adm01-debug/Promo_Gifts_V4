@@ -2286,7 +2286,7 @@
   {
    "arquivo": "e2e/flows/sidebar-tooltips.spec.ts",
    "tipo": "e2e",
-   "linhas": 123,
+   "linhas": 130,
    "testa": [],
    "casos": 3
   },
@@ -2862,7 +2862,7 @@
   {
    "arquivo": "e2e/protected-routes.spec.ts",
    "tipo": "e2e",
-   "linhas": 55,
+   "linhas": 59,
    "testa": [],
    "casos": 2
   },

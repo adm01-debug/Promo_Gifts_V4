@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "fix(db): versiona o rollback de SB-0001 (auth.users fora do Realtime) (#3756)",
+   "fix(test): corrige a guarda de rota protegida e estabiliza o tooltip da sidebar (#3755)",
    "feat(test): resgata o contrato SQL de device-trust e o poe a rodar no Gate 2.5 (#3754)",
    "ci: resgata o workflow semanal que mantem o inventario de estado vivo (#3722)",
-   "fix(db): revoga escrita de anon em color_synonym_map (P15) (#3752)",
-   "fix(ci): corrige a regressao de versao (1.1.0 para 1.8.1) e a causa raiz no release-please (#3749)",
-   "fix(ci): Sigstore fora do ar nao derruba mais o deploy (#3751)"
+   "fix(db): revoga escrita de anon em color_synonym_map (P15) (#3752)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",

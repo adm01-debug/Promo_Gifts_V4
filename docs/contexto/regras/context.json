@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "3784247cb33779ae8a72b974a425a62a73a27d7a",
+  "sha": "416e5fde570121689ac38b1a113785de70a296fe",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-17 06:06 UTC",
-  "files_total": 10753,
-  "code_files": 8794,
-  "code_lines": 1240605
+  "generated_at": "2026-11-17 06:09 UTC",
+  "files_total": 10754,
+  "code_files": 8795,
+  "code_lines": 1240651
  },
  "version": "1.3.2",
- "facts_hash": "4bacaf692068dbb3",
+ "facts_hash": "be7497650d83b1d3",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -1119,7 +1119,7 @@
   ],
   "package_manager": "npm",
   "languages": {
-   ".sql": 3434,
+   ".sql": 3435,
    ".ts": 2990,
    ".tsx": 1906,
    ".mjs": 450,
@@ -96204,6 +96204,7 @@
    "supabase/rollbacks/20261029160339_rollback.sql",
    "supabase/rollbacks/20261031000000_rollback.sql",
    "supabase/rollbacks/20261101000002_rollback.sql",
+   "supabase/rollbacks/20261101140001_rollback.sql",
    "supabase/rollbacks/20261101150000_rollback.sql",
    "supabase/rollbacks/20261101190101_rollback.sql",
    "supabase/rollbacks/20261101201000_rollback.sql",
@@ -148686,7 +148687,7 @@
   {
    "module": "e2e",
    "files": 626,
-   "lines": 75834,
+   "lines": 75845,
    "tables": [
     "discount_approval_requests",
     "quote_items"
@@ -151305,8 +151306,8 @@
   },
   {
    "module": "supabase/rollbacks",
-   "files": 105,
-   "lines": 3045,
+   "files": 106,
+   "lines": 3080,
    "tables": [],
    "exports": [],
    "docs": [],
@@ -151362,6 +151363,7 @@
     "supabase/rollbacks/20261029160339_rollback.sql",
     "supabase/rollbacks/20261031000000_rollback.sql",
     "supabase/rollbacks/20261101000002_rollback.sql",
+    "supabase/rollbacks/20261101140001_rollback.sql",
     "supabase/rollbacks/20261101150000_rollback.sql",
     "supabase/rollbacks/20261101190101_rollback.sql",
     "supabase/rollbacks/20261101201000_rollback.sql",
@@ -151391,8 +151393,7 @@
     "supabase/rollbacks/20261112120400_rollback.sql",
     "supabase/rollbacks/20261112120500_rollback.sql",
     "supabase/rollbacks/20261112120600_rollback.sql",
-    "supabase/rollbacks/20261112120700_rollback.sql",
-    "supabase/rollbacks/20261112120800_rollback.sql"
+    "supabase/rollbacks/20261112120700_rollback.sql"
    ]
   },
   {
@@ -221076,7 +221077,7 @@
    },
    {
     "file": "e2e/protected-routes.spec.ts",
-    "name": "${route} should redirect to /login"
+    "name": "${route} should redirect to the auth surface"
    },
    {
     "file": "e2e/protected-routes.spec.ts",
@@ -221084,7 +221085,7 @@
    },
    {
     "file": "e2e/protected-routes.spec.ts",
-    "name": "${route} should NOT redirect to /login"
+    "name": "${route} should remain accessible without a session"
    },
    {
     "file": "e2e/quote-autosave-calculations.spec.ts",
@@ -401699,17 +401700,17 @@
   },
   "e2e/protected-routes.spec.ts": {
    "path": "e2e/protected-routes.spec.ts",
-   "lines": 55,
+   "lines": 59,
    "is_test": true,
    "doc": "E2E: Protected Routes — Verify auth guards on all critical routes",
    "temporal": [
-    "await page.waitForURL(/login/, { timeout: 10000 });"
+    "await page.waitForURL(/\\/(?:auth|login)(?:[/?#]|$)/, { timeout: 10000 });"
    ],
    "tests": [
     "Protected Routes — Auth Guards",
-    "${route} should redirect to /login",
+    "${route} should redirect to the auth surface",
     "Public Routes — No Auth Required",
-    "${route} should NOT redirect to /login"
+    "${route} should remain accessible without a session"
    ]
   },
   "e2e/quote-autosave-calculations.spec.ts": {
@@ -408322,7 +408323,7 @@
   },
   "e2e/flows/sidebar-tooltips.spec.ts": {
    "path": "e2e/flows/sidebar-tooltips.spec.ts",
-   "lines": 123,
+   "lines": 130,
    "is_test": true,
    "rule_comments": [
     "2) Rola a sidebar (e a janela) — tooltip aberto NÃO pode ficar preso.",
@@ -408332,11 +408333,11 @@
    "doc": "Regressão E2E — Tooltips comerciais da sidebar. Garante que TODO item visível da sidebar com `data-tooltip-label` mostra a mensagem ao hover e a esconde ao mouse out, em runtime real (Radix Tooltip + pointer events nativos do Chromium). Selecionamos itens via `[data-tooltip-label]` para evitar acopl …",
    "temporal": [
     ").toBeHidden({ timeout: 2000 });",
-    "await expect(firstTooltip).toBeVisible({ timeout: 2000 });",
     "await expect(lastTooltip).toBeHidden({ timeout: 2000 });",
-    "await expect(tooltip, `tooltip deve aparecer para \"${expected}\"`).toBeVisible({ timeout: 2000 });",
+    "await expect(tooltip).toBeVisible({ timeout: 2500 });",
     "await sidebar.waitFor({ state: \"visible\", timeout: 3000 }).catch(() => {});",
-    "timeout: 2000,"
+    "timeout: 2000,",
+    "}).toPass({ timeout: 7500, intervals: [250] });"
    ],
    "tests": [
     "Sidebar — tooltips comerciais (hover/unhover)",
@@ -516792,6 +516793,10 @@
    "path": "supabase/rollbacks/20261101000002_rollback.sql",
    "lines": 23
   },
+  "supabase/rollbacks/20261101140001_rollback.sql": {
+   "path": "supabase/rollbacks/20261101140001_rollback.sql",
+   "lines": 35
+  },
   "supabase/rollbacks/20261101150000_rollback.sql": {
    "path": "supabase/rollbacks/20261101150000_rollback.sql",
    "lines": 6
@@ -541350,10 +541355,29 @@
   }
  },
  "git": {
-  "sha": "3784247cb33779ae8a72b974a425a62a73a27d7a",
+  "sha": "416e5fde570121689ac38b1a113785de70a296fe",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "416e5fd",
+    "date": "2026-11-17",
+    "author": "adm01-debug",
+    "subject": "fix(db): versiona o rollback de SB-0001 (auth.users fora do Realtime) (#3756)",
+    "files": [
+     "supabase/rollbacks/20261101140001_rollback.sql"
+    ]
+   },
+   {
+    "sha": "25bbb95",
+    "date": "2026-11-17",
+    "author": "adm01-debug",
+    "subject": "fix(test): corrige a guarda de rota protegida e estabiliza o tooltip da sidebar (#3755)",
+    "files": [
+     "e2e/flows/sidebar-tooltips.spec.ts",
+     "e2e/protected-routes.spec.ts"
+    ]
+   },
    {
     "sha": "3784247",
     "date": "2026-11-17",
@@ -541647,31 +541671,9 @@
      "e2e/routes/public/reset-password.spec.ts",
      "e2e/spa-rewrite.spec.ts"
     ]
-   },
-   {
-    "sha": "eed9fdd",
-    "date": "2026-11-16",
-    "author": "adm01-debug",
-    "subject": "test(security): guarda de dado interno na tela de login nunca podia passar no CI (#3727)",
-    "files": [
-     "e2e/auth-debug-removal.spec.ts"
-    ]
-   },
-   {
-    "sha": "9657d52",
-    "date": "2026-11-16",
-    "author": "adm01-debug",
-    "subject": "docs(audit): laudo da auditoria das 82 branches antes de fechar (#3724)",
-    "files": [
-     "docs/agentes/resgates/2026-11-16-auditoria-branches.md"
-    ]
    }
   ],
   "hot_files": [
-   [
-    "docs/agentes/resgates/2026-11-16-auditoria-branches.md",
-    4
-   ],
    [
     ".github/workflows/deploy-gates.yml",
     3
@@ -541681,8 +541683,24 @@
     3
    ],
    [
+    "docs/agentes/resgates/2026-11-16-auditoria-branches.md",
+    3
+   ],
+   [
+    "e2e/protected-routes.spec.ts",
+    2
+   ],
+   [
     "docs/MOCKUP_OPERACAO.md",
     2
+   ],
+   [
+    "supabase/rollbacks/20261101140001_rollback.sql",
+    1
+   ],
+   [
+    "e2e/flows/sidebar-tooltips.spec.ts",
+    1
    ],
    [
     ".gitignore",
@@ -541734,18 +541752,6 @@
    ],
    [
     "package-lock.json",
-    1
-   ],
-   [
-    ".github/scripts/e2e-relevance.mjs",
-    1
-   ],
-   [
-    ".github/workflows/delivery-quality.yml",
-    1
-   ],
-   [
-    ".github/workflows/e2e-flows.yml",
     1
    ]
   ]

@@ -2,11 +2,21 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "3784247cb33779ae8a72b974a425a62a73a27d7a",
+  "commit": "416e5fde570121689ac38b1a113785de70a296fe",
   "branch": "main",
-  "data_commit": "2026-11-17T03:04:51-03:00",
+  "data_commit": "2026-11-17T03:08:17-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "416e5fde",
+    "data": "2026-11-17",
+    "assunto": "fix(db): versiona o rollback de SB-0001 (auth.users fora do Realtime) (#3756)"
+   },
+   {
+    "sha": "25bbb95d",
+    "data": "2026-11-17",
+    "assunto": "fix(test): corrige a guarda de rota protegida e estabiliza o tooltip da sidebar (#3755)"
+   },
    {
     "sha": "3784247c",
     "data": "2026-11-17",
@@ -121,27 +131,17 @@
     "sha": "d1091fe1",
     "data": "2026-11-16",
     "assunto": "docs(audit): rodada de 17/11 no ledger de auditoria de branches (#3734)"
-   },
-   {
-    "sha": "79c56401",
-    "data": "2026-11-16",
-    "assunto": "fix(docs): número errado de migration no doc resgatado deixou o Gate 1 vermelho na main (#3733)"
-   },
-   {
-    "sha": "bf156d3f",
-    "data": "2026-11-16",
-    "assunto": "docs(audit): resgata 4 documentos da fábrica VPS que não existiam na main (#3731)"
    }
   ],
-  "arquivos_mudados_7d": 1940,
+  "arquivos_mudados_7d": 1942,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
-    "mudancas": 648
+    "mudancas": 638
    },
    {
     "pasta": "src/components/products",
-    "mudancas": 332
+    "mudancas": 330
    },
    {
     "pasta": "recovery/src-legacy/src",
@@ -199,7 +199,7 @@
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "RELATORIO_CI.md",
-    "mudancas": 66
+    "mudancas": 65
    },
    {
     "arquivo": "supabase/MIGRATIONS_SYNC_LOG.md",
@@ -207,7 +207,7 @@
    },
    {
     "arquivo": "PENDENCIAS.md",
-    "mudancas": 57
+    "mudancas": 56
    },
    {
     "arquivo": "package.json",
@@ -301,7 +301,7 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 571
+    "commits": 569
    },
    {
     "autor": "Claude",
@@ -322,9 +322,9 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 10825,
+  "arquivos_total": 10826,
   "arquivos_codigo": 5361,
-  "linhas_codigo": 1020688,
+  "linhas_codigo": 1020699,
   "rotas": 138,
   "rotas_http_backend": 13,
   "vistas_por_id": 0,
@@ -548,7 +548,7 @@
   },
   "e2e/flows": {
    "arquivos": 183,
-   "linhas": 25329
+   "linhas": 25336
   },
   "e2e/future-stock.spec.ts": {
    "arquivos": 1,
@@ -708,7 +708,7 @@
   },
   "e2e/protected-routes.spec.ts": {
    "arquivos": 1,
-   "linhas": 55
+   "linhas": 59
   },
   "e2e/quote-autosave-calculations.spec.ts": {
    "arquivos": 1,
