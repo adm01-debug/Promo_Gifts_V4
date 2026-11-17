@@ -1,9 +1,9 @@
 {
  "meta": {
-  "sha": "d56cb122f93ef389f14c333e4684a53aea5d5ada",
+  "sha": "f40d2618268c3d98243715f3ca920b3ffeadd757",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-17 10:09 UTC",
+  "generated_at": "2026-11-17 11:19 UTC",
   "files_total": 10769,
   "code_files": 8806,
   "code_lines": 1243288
@@ -541922,10 +541922,20 @@
   }
  },
  "git": {
-  "sha": "d56cb122f93ef389f14c333e4684a53aea5d5ada",
+  "sha": "f40d2618268c3d98243715f3ca920b3ffeadd757",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "f40d261",
+    "date": "2026-11-17",
+    "author": "github-actions[bot]",
+    "subject": "docs: recibo de aplicação — 20261117073000 (E15) (#3768)",
+    "files": [
+     "docs/coordenacao/conflitos-semanticos.md",
+     "supabase/MIGRATIONS_SYNC_LOG.md"
+    ]
+   },
    {
     "sha": "d56cb12",
     "date": "2026-11-17",
@@ -542233,19 +542243,13 @@
     "files": [
      "docs/agentes/resgates/2026-11-16-auditoria-branches.md"
     ]
-   },
-   {
-    "sha": "4963dcd",
-    "date": "2026-11-16",
-    "author": "adm01-debug",
-    "subject": "fix(quotes): erro ao salvar o rascunho do orçamento ficava invisível para o vendedor (#3732)",
-    "files": [
-     "src/components/quotes/QuoteAutoSave.tsx",
-     "src/components/quotes/__tests__/QuoteAutoSave.failureVisible.test.tsx"
-    ]
    }
   ],
   "hot_files": [
+   [
+    "supabase/MIGRATIONS_SYNC_LOG.md",
+    5
+   ],
    [
     ".github/workflows/deploy-gates.yml",
     5
@@ -542255,16 +542259,16 @@
     4
    ],
    [
-    "supabase/MIGRATIONS_SYNC_LOG.md",
-    4
-   ],
-   [
     "docs/agentes/resgates/2026-11-16-auditoria-branches.md",
     3
    ],
    [
     "tests/sql/device-trust/run-tests.py",
     2
+   ],
+   [
+    "docs/coordenacao/conflitos-semanticos.md",
+    1
    ],
    [
     "supabase/functions/crm-db-bridge/index.ts",
@@ -542320,10 +542324,6 @@
    ],
    [
     "docs/agentes/resgates/quote-comments/sql/20261110022404_restore_quote_comments_scoped_threads.sql",
-    1
-   ],
-   [
-    "docs/agentes/resgates/quote-comments/sql/20261110022404_rollback.sql",
     1
    ]
   ]

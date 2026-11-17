@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e de hora em hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `d56cb122f93ef389f14c333e4684a53aea5d5ada` (2026-11-17T07:07:57-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e de hora em hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `f40d2618268c3d98243715f3ca920b3ffeadd757` (2026-11-17T08:16:29-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -590,27 +590,27 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - possiveis_segredos_no_codigo: 7 — ex.: scripts/ai-context/cenarios.mjs:102, src/components/admin/connections/__tests__/ConnectionSecurity.unit.test.tsx:9, src/integrations/supabase/client.ts:27
 
 ## Grafo de código (graphify)
-- 48249 nós · 81055 arestas · 2796 comunidades · grafo do commit `d56cb122`
+- 48249 nós · 81055 arestas · 2796 comunidades · grafo do commit `f40d2618`
 - comunidades maiores: vitest (904), ref_components (843), ref_integrations (630), ref_hooks (473), ref_node_child_process (459), @tanstack/react-query (434), react (366), ref_types (358), nav.ts (348), sonner (329), ref_utils (325), ref_node_fs (316)
 - símbolos mais chamados: gotoAndSettle() (e2e/helpers/nav.ts), re (?), q() (scripts/supabase_snapshot/snapshot.py), analyze() (tests/scripts/test_personalization_artifact_diagnostics.py), outer() (tests/scripts/test_personalization_artifact_diagnostics.py), json (?), useExternalDatabase() (recovery/src-legacy/src/hooks/useExternalDatabase.ts), concludeCheck() (scripts/check-result-contract.mjs), querySupabaseReadOnly() (scripts/supabase-read-only-query.mjs), loginAs() (e2e/helpers/auth.ts), inner() (tests/scripts/test_personalization_artifact_diagnostics.py), excluded_sql() (scripts/supabase_snapshot/snapshot.py)
 - consulta local: `graphify query "<pergunta>"`, `graphify path "<A>" "<B>"`, `graphify explain "<X>"`
 
 ## Hotspots (arquivos mais alterados, 90 dias)
-- supabase/MIGRATIONS_SYNC_LOG.md (67)
-- RELATORIO_CI.md (60)
+- supabase/MIGRATIONS_SYNC_LOG.md (69)
+- RELATORIO_CI.md (61)
 - PENDENCIAS.md (53)
-- package.json (42)
-- package-lock.json (25)
-- docs/coordenacao/conflitos-semanticos.md (23)
-- .github/workflows/deploy-gates.yml (21)
-- supabase/EDGE_FUNCTIONS_DEPLOY_LOG.md (17)
-- analise-prs/progresso.json (16)
-- src/pages/kit-builder/KitBuilderPage.tsx (16)
-- auditoria-supabase/RELATORIO_AUDITORIA_SUPABASE.md (14)
-- CHANGELOG.md (12)
-- audit/supabase-reference-catalog.temporary.json (12)
-- src/hooks/kit-builder/useKitBuilderPageState.ts (12)
-- analise-branches/RELATORIO_BRANCHES.md (11)
+- package.json (43)
+- package-lock.json (26)
+- docs/coordenacao/conflitos-semanticos.md (25)
+- .github/workflows/deploy-gates.yml (22)
+- supabase/EDGE_FUNCTIONS_DEPLOY_LOG.md (18)
+- analise-prs/progresso.json (17)
+- src/pages/kit-builder/KitBuilderPage.tsx (17)
+- auditoria-supabase/RELATORIO_AUDITORIA_SUPABASE.md (15)
+- CHANGELOG.md (13)
+- audit/supabase-reference-catalog.temporary.json (13)
+- src/hooks/kit-builder/useKitBuilderPageState.ts (13)
+- analise-branches/RELATORIO_BRANCHES.md (12)
 
 ## Workflows
 - `_e2e-relevance.yml` — Reusable — E2E Runtime Relevance (workflow_call)
@@ -1186,6 +1186,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - CHANGELOG topo: [1.1.0](https://github.com/adm01-debug/Promo_Gifts_V4/compare/v1.0.0...v1.1.0) (2026-11-13)
 
 ## Últimos commits
+- 2026-11-17 `f40d2618` docs: recibo de aplicação — 20261117073000 (E15) (#3768)
 - 2026-11-17 `d56cb122` feat(crm): vendedor vê a carteira dele mais os clientes sem dono (somente leitura) (#3769)
 - 2026-11-17 `e17c6c97` chore(ci): reativa o contrato device-trust no Gate 2.5 (#3767)
 - 2026-11-17 `202a82d2` fix(db): corrige o comentario de rollback que mandava apagar auditoria em producao (#3765)
@@ -1200,7 +1201,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-17 `25bbb95d` fix(test): corrige a guarda de rota protegida e estabiliza o tooltip da sidebar (#3755)
 - 2026-11-17 `3784247c` feat(test): resgata o contrato SQL de device-trust e o poe a rodar no Gate 2.5 (#3754)
 - 2026-11-17 `8749d83a` ci: resgata o workflow semanal que mantem o inventario de estado vivo (#3722)
-- 2026-11-17 `8b5adaa4` fix(db): revoga escrita de anon em color_synonym_map (P15) (#3752)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "d56cb122f93ef389f14c333e4684a53aea5d5ada",
+  "commit": "f40d2618268c3d98243715f3ca920b3ffeadd757",
   "branch": "main",
-  "data_commit": "2026-11-17T07:07:57-03:00",
+  "data_commit": "2026-11-17T08:16:29-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "f40d2618",
+    "data": "2026-11-17",
+    "assunto": "docs: recibo de aplicação — 20261117073000 (E15) (#3768)"
+   },
    {
     "sha": "d56cb122",
     "data": "2026-11-17",
@@ -126,84 +131,79 @@
     "sha": "c66bd143",
     "data": "2026-11-17",
     "assunto": "docs(audit): resgata a auditoria E06 das migrations fora do baseline (07/10) (#3745)"
-   },
-   {
-    "sha": "b71caed6",
-    "data": "2026-11-17",
-    "assunto": "fix(ci): lacra a allowlist do ledger de migrations, que era lida em try/catch silencioso (#3744)"
    }
   ],
   "arquivos_mudados_7d": 1951,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
-    "mudancas": 638
+    "mudancas": 936
    },
    {
     "pasta": "src/components/products",
-    "mudancas": 330
+    "mudancas": 480
+   },
+   {
+    "pasta": "tests/edge-functions/live",
+    "mudancas": 363
+   },
+   {
+    "pasta": "src/hooks/products",
+    "mudancas": 335
    },
    {
     "pasta": "recovery/src-legacy/src",
     "mudancas": 317
    },
    {
-    "pasta": "tests/edge-functions/live",
-    "mudancas": 248
-   },
-   {
-    "pasta": "src/hooks/products",
-    "mudancas": 231
-   },
-   {
     "pasta": "src/components/quotes",
-    "mudancas": 199
+    "mudancas": 281
    },
    {
     "pasta": "src/pages/magazine",
-    "mudancas": 188
-   },
-   {
-    "pasta": "src/components/mockup",
-    "mudancas": 177
+    "mudancas": 280
    },
    {
     "pasta": "src/components/inventory",
-    "mudancas": 173
+    "mudancas": 253
    },
    {
     "pasta": "supabase/functions/_shared",
-    "mudancas": 169
+    "mudancas": 238
+   },
+   {
+    "pasta": "src/components/mockup",
+    "mudancas": 236
    },
    {
     "pasta": "src/components/ui",
-    "mudancas": 151
+    "mudancas": 224
    },
    {
     "pasta": "src/pages/admin",
-    "mudancas": 134
+    "mudancas": 193
    },
    {
     "pasta": "src/components/kit-builder",
-    "mudancas": 128
+    "mudancas": 175
    },
    {
     "pasta": "src/pages/products",
-    "mudancas": 114
+    "mudancas": 164
    },
    {
     "pasta": "src/pages/quotes",
-    "mudancas": 111
+    "mudancas": 158
    }
   ],
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "supabase/MIGRATIONS_SYNC_LOG.md",
-    "mudancas": 67
+    "mudancas": 69
    },
    {
     "arquivo": "RELATORIO_CI.md",
-    "mudancas": 60
+    "mudancas": 61
    },
    {
     "arquivo": "PENDENCIAS.md",
@@ -211,97 +211,97 @@
    },
    {
     "arquivo": "package.json",
-    "mudancas": 42
+    "mudancas": 43
    },
    {
     "arquivo": "package-lock.json",
-    "mudancas": 25
+    "mudancas": 26
    },
    {
     "arquivo": "docs/coordenacao/conflitos-semanticos.md",
-    "mudancas": 23
+    "mudancas": 25
    },
    {
     "arquivo": ".github/workflows/deploy-gates.yml",
-    "mudancas": 21
+    "mudancas": 22
    },
    {
     "arquivo": "supabase/EDGE_FUNCTIONS_DEPLOY_LOG.md",
-    "mudancas": 17
+    "mudancas": 18
    },
    {
     "arquivo": "analise-prs/progresso.json",
-    "mudancas": 16
+    "mudancas": 17
    },
    {
     "arquivo": "src/pages/kit-builder/KitBuilderPage.tsx",
-    "mudancas": 16
+    "mudancas": 17
    },
    {
     "arquivo": "auditoria-supabase/RELATORIO_AUDITORIA_SUPABASE.md",
-    "mudancas": 14
+    "mudancas": 15
    },
    {
     "arquivo": "CHANGELOG.md",
-    "mudancas": 12
+    "mudancas": 13
    },
    {
     "arquivo": "audit/supabase-reference-catalog.temporary.json",
-    "mudancas": 12
+    "mudancas": 13
    },
    {
     "arquivo": "src/hooks/kit-builder/useKitBuilderPageState.ts",
-    "mudancas": 12
+    "mudancas": 13
    },
    {
     "arquivo": "analise-branches/RELATORIO_BRANCHES.md",
-    "mudancas": 11
+    "mudancas": 12
    },
    {
     "arquivo": "src/pages/mockups/MockupGenerator.tsx",
-    "mudancas": 11
+    "mudancas": 12
    },
    {
     "arquivo": "analise-prs/RELATORIO_PRS.md",
-    "mudancas": 10
+    "mudancas": 11
    },
    {
     "arquivo": "docs/ci/SEGREDOS.md",
-    "mudancas": 10
+    "mudancas": 11
    },
    {
     "arquivo": "e2e/flows/magazine-publish-smoke.spec.ts",
-    "mudancas": 10
+    "mudancas": 11
    },
    {
     "arquivo": ".github/workflows/replenishment-quality.yml",
-    "mudancas": 9
+    "mudancas": 10
    },
    {
     "arquivo": "analise-prs/prs.json",
-    "mudancas": 9
+    "mudancas": 10
    },
    {
     "arquivo": "e2e/flows/magazine-preview-sticky-smoke.spec.ts",
-    "mudancas": 9
+    "mudancas": 10
    },
    {
     "arquivo": "e2e/helpers/auth.ts",
-    "mudancas": 9
+    "mudancas": 10
    },
    {
     "arquivo": "scripts/drift-baseline.mjs",
-    "mudancas": 9
+    "mudancas": 10
    },
    {
     "arquivo": "src/hooks/kit-builder/useKitAutoSave.ts",
-    "mudancas": 9
+    "mudancas": 10
    }
   ],
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 559
+    "commits": 557
    },
    {
     "autor": "Claude",
@@ -313,7 +313,7 @@
    },
    {
     "autor": "github-actions[bot]",
-    "commits": 28
+    "commits": 29
    },
    {
     "autor": "dependabot[bot]",
