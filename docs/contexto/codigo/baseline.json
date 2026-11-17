@@ -2,11 +2,21 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "eed9fdda81f6cbc9359cf95b3c56daed0d8ef15f",
+  "commit": "8ba1437531cc15f2ae3e920ccbae736969358f9e",
   "branch": "main",
-  "data_commit": "2026-11-16T22:05:57-03:00",
+  "data_commit": "2026-11-16T22:36:15-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "8ba14375",
+    "data": "2026-11-16",
+    "assunto": "fix(edge-fn): mockup baixava a imagem inteira na memória antes de recusar (#3729)"
+   },
+   {
+    "sha": "32563063",
+    "data": "2026-11-16",
+    "assunto": "test(e2e): três specs que davam falso verde ou vermelho garantido (#3728)"
+   },
    {
     "sha": "eed9fdda",
     "data": "2026-11-16",
@@ -121,19 +131,9 @@
     "sha": "a36e24d9",
     "data": "2026-11-16",
     "assunto": "fix(ci): Gate 1.3 para de varrer analise-branches e destrava todo PR de código (#3701)"
-   },
-   {
-    "sha": "157c2610",
-    "data": "2026-11-16",
-    "assunto": "docs(migrations-log): recibo E15 — aplicação de 20261115130200 (#3694)"
-   },
-   {
-    "sha": "1c6abc8b",
-    "data": "2026-11-16",
-    "assunto": "chore(ci): métricas semanais 2026-W47 (#3691)"
    }
   ],
-  "arquivos_mudados_7d": 1907,
+  "arquivos_mudados_7d": 1912,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -189,21 +189,21 @@
    },
    {
     "pasta": "RELATORIO_CI.md",
-    "mudancas": 74
+    "mudancas": 73
    },
    {
     "pasta": "PENDENCIAS.md",
-    "mudancas": 65
+    "mudancas": 64
    }
   ],
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "RELATORIO_CI.md",
-    "mudancas": 74
+    "mudancas": 73
    },
    {
     "arquivo": "PENDENCIAS.md",
-    "mudancas": 65
+    "mudancas": 64
    },
    {
     "arquivo": "supabase/MIGRATIONS_SYNC_LOG.md",
@@ -322,9 +322,9 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 10801,
-  "arquivos_codigo": 5348,
-  "linhas_codigo": 1018816,
+  "arquivos_total": 10802,
+  "arquivos_codigo": 5349,
+  "linhas_codigo": 1019003,
   "rotas": 138,
   "rotas_http_backend": 13,
   "vistas_por_id": 0,
@@ -336,7 +336,7 @@
   "tabelas": 527,
   "migrations": 3097,
   "cron_jobs": 122,
-  "testes": 2529,
+  "testes": 2530,
   "workflows": 87,
   "scripts": 283,
   "docs_md": 1459
@@ -708,7 +708,7 @@
   },
   "e2e/protected-routes.spec.ts": {
    "arquivos": 1,
-   "linhas": 47
+   "linhas": 55
   },
   "e2e/quote-autosave-calculations.spec.ts": {
    "arquivos": 1,
@@ -824,7 +824,7 @@
   },
   "e2e/spa-rewrite.spec.ts": {
    "arquivos": 1,
-   "linhas": 87
+   "linhas": 89
   },
   "e2e/stock-410-resilience.spec.ts": {
    "arquivos": 1,
@@ -1963,8 +1963,8 @@
    "linhas": 8174
   },
   "supabase/functions": {
-   "arquivos": 277,
-   "linhas": 51590
+   "arquivos": 278,
+   "linhas": 51764
   },
   "tailwind.config.ts": {
    "arquivos": 1,
@@ -2252,7 +2252,7 @@
   },
   "vitest.config.ts": {
    "arquivos": 1,
-   "linhas": 174
+   "linhas": 177
   }
  },
  "maiores_arquivos": [

@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.3.2 · commit `eed9fdda81` · branch `main` · 2026-11-17 01:17 UTC
+> Gerado automaticamente por AI Context Sync v1.3.2 · commit `8ba1437531` · branch `main` · 2026-11-17 01:37 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -6435,7 +6435,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | DOWNLOAD_SIZE_LIMIT | `scripts/diagnose-personalization-artifact.py` |
 | DUPLICATE_ACTION_AFTER | `scripts/diagnose-personalization-artifact.py` |
 | DUPLICATE_JSON_KEY | `scripts/diagnose-personalization-artifact.py` |
-| … +1268 linhas — lista completa em `context.json` | |
+| … +1269 linhas — lista completa em `context.json` | |
 
 ## J. Controle de acesso no código (checagens de perfil/permissão)
 
@@ -6559,7 +6559,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `admin` | `supabase/migrations/20261112120500_fix_optimization_queue_rpcs_dev_access.sql` |
 | `anon` | `tests/edge-functions/live/_live-client.ts` |
 
-## K. Testes como especificação (21851 testes em 2208 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (21857 testes em 2209 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -6863,7 +6863,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `src/lib/inventory/__tests__/health-score.test.ts` | 18 | calcHealthScore · retorna 100 quando não há produtos · retorna 100 quando todos estão adequados · retorna 0 quando nenhum está adequado … |
 | `src/pages/magazine/templates-gallery/__tests__/gallery.test.tsx` | 18 | MagazineTemplatesGalleryPage · renderiza os 12 cards de template · filtro  · filtro  … |
 | `src/pages/quotes/__tests__/quote-builder-freight-block.rtl.test.tsx` | 18 | Bloco Frete — hierarquia + data-testid do grid · shippingType= · shippingType= · shippingType= … |
-| … +1908 linhas — lista completa em `context.json` | | |
+| … +1909 linhas — lista completa em `context.json` | | |
 
 ## L. Eventos de webhook tratados (contratos com sistemas externos)
 
@@ -7066,6 +7066,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | Somente os ícones usados pelo shell/login. Agrupá-los evita | `vite.config.ts` |
 | de filtros para não ultrapassar o limite de 1011 KB por chunk (E146 v2). | `vite.config.ts` |
 | Juntos reduzem de 856 KB para dois chunks abaixo do limite (E146 v2). | `vite.config.ts` |
+| Teto de download da imagem (fetchBytes corta o stream no limite; index.ts | `vitest.config.ts` |
 | called here". Rodam apenas via Playwright. Mantemos os specs Vitest legítimos | `vitest.config.ts` |
 | Deve rodar apenas em ambientes com VITE_SUPABASE_URL/KEY reais configurados. | `vitest.config.ts` |
 | Roda apenas via `node tests/scripts/check-file-size-baseline.test.mjs`. | `vitest.config.ts` |
@@ -7330,5 +7331,4 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | Remover a empresa exige confirmação (mesma regra do Magic Up) — evita perda acidental. | `src/components/mockup/MockupClientSelector.tsx` |
 | Fecha APENAS a lista — a empresa selecionada permanece intacta. | `src/components/mockup/MockupClientSelector.tsx` |
 | * Máximo de cores suportadas na área */ | `src/components/mockup/MultiAreaManager.tsx` |
-| ANTI-REGRESSÃO: primary_image_url deve vir ANTES de og_image_url. | `src/components/mockup/ProductSearchCombobox.tsx` |
-| … +1322 linhas — lista completa em `context.json` | |
+| … +1323 linhas — lista completa em `context.json` | |

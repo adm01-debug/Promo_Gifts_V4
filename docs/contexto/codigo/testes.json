@@ -5,13 +5,13 @@
   "vitest",
   "playwright"
  ],
- "total": 2529,
+ "total": 2530,
  "por_tipo": {
   "contrato": 65,
   "e2e": 677,
   "pytest": 4,
   "qa": 17,
-  "unit": 1766
+  "unit": 1767
  },
  "onde_ficam": [
   {
@@ -28,7 +28,7 @@
   },
   {
    "padrao": "co-localizado (*.test)",
-   "arquivos": 149
+   "arquivos": 150
   },
   {
    "padrao": "outro",
@@ -2862,7 +2862,7 @@
   {
    "arquivo": "e2e/protected-routes.spec.ts",
    "tipo": "e2e",
-   "linhas": 47,
+   "linhas": 55,
    "testa": [],
    "casos": 2
   },
@@ -3927,7 +3927,7 @@
    "tipo": "e2e",
    "linhas": 93,
    "testa": [],
-   "casos": 9
+   "casos": 8
   },
   {
    "arquivo": "e2e/routes/public/tooltip-style.spec.ts",
@@ -4121,7 +4121,7 @@
   {
    "arquivo": "e2e/spa-rewrite.spec.ts",
    "tipo": "e2e",
-   "linhas": 87,
+   "linhas": 89,
    "testa": [],
    "casos": 3
   },
@@ -12302,6 +12302,15 @@
     "supabase/functions/generate-ad-prompt/timeout.ts"
    ],
    "casos": 4
+  },
+  {
+   "arquivo": "supabase/functions/generate-mockup/fetch-guard.cap.test.ts",
+   "tipo": "unit",
+   "linhas": 128,
+   "testa": [
+    "supabase/functions/generate-mockup/fetch-guard.ts"
+   ],
+   "casos": 5
   },
   {
    "arquivo": "supabase/functions/generate-mockup/index.geometry.test.ts",
@@ -22294,7 +22303,7 @@
   "supabase/functions/generate-ad-image/index.ts": 1,
   "supabase/functions/generate-ad-image/sanitize.ts": 1,
   "supabase/functions/generate-ad-prompt/timeout.ts": 1,
-  "supabase/functions/generate-mockup/fetch-guard.ts": 2,
+  "supabase/functions/generate-mockup/fetch-guard.ts": 3,
   "supabase/functions/generate-mockup/geometry.ts": 1,
   "supabase/functions/generate-mockup/limits.ts": 1,
   "supabase/functions/magazine-import-local/logic.ts": 1,

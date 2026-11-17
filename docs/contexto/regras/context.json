@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "eed9fdda81f6cbc9359cf95b3c56daed0d8ef15f",
+  "sha": "8ba1437531cc15f2ae3e920ccbae736969358f9e",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-17 01:17 UTC",
-  "files_total": 10729,
-  "code_files": 8778,
-  "code_lines": 1238629
+  "generated_at": "2026-11-17 01:37 UTC",
+  "files_total": 10730,
+  "code_files": 8779,
+  "code_lines": 1238816
  },
  "version": "1.3.2",
- "facts_hash": "98696ab0c2b8050a",
+ "facts_hash": "fc981e52f8a67199",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -1111,7 +1111,7 @@
   "package_manager": "npm",
   "languages": {
    ".sql": 3431,
-   ".ts": 2984,
+   ".ts": 2985,
    ".tsx": 1901,
    ".mjs": 449,
    ".py": 13,
@@ -148493,7 +148493,7 @@
   {
    "module": "(raiz)",
    "files": 9,
-   "lines": 3403,
+   "lines": 3406,
    "tables": [],
    "exports": [
     "playwright.config.ts: defineConfig",
@@ -148660,7 +148660,7 @@
   {
    "module": "e2e",
    "files": 626,
-   "lines": 75821,
+   "lines": 75831,
    "tables": [
     "discount_approval_requests",
     "quote_items"
@@ -150934,8 +150934,8 @@
   },
   {
    "module": "supabase/functions",
-   "files": 277,
-   "lines": 51590,
+   "files": 278,
+   "lines": 51764,
    "tables": [
     "access_blocked_log",
     "access_security_settings",
@@ -168794,6 +168794,10 @@
    },
    {
     "file": "supabase/functions/generate-mockup/fetch-guard.ts",
+    "msg": "image too large (${total} bytes)"
+   },
+   {
+    "file": "supabase/functions/generate-mockup/fetch-guard.ts",
     "msg": "opaque redirect — target cannot be validated"
    },
    {
@@ -169727,6 +169731,10 @@
    {
     "file": "vite.config.ts",
     "text": "Juntos reduzem de 856 KB para dois chunks abaixo do limite (E146 v2)."
+   },
+   {
+    "file": "vitest.config.ts",
+    "text": "Teto de download da imagem (fetchBytes corta o stream no limite; index.ts"
    },
    {
     "file": "vitest.config.ts",
@@ -261971,6 +261979,30 @@
    {
     "file": "supabase/functions/generate-ad-prompt/index.timeout.test.ts",
     "name": "estouro devolve erro genérico com code timeout, nunca a mensagem crua"
+   },
+   {
+    "file": "supabase/functions/generate-mockup/fetch-guard.cap.test.ts",
+    "name": "fetchBytes — teto de imagem"
+   },
+   {
+    "file": "supabase/functions/generate-mockup/fetch-guard.cap.test.ts",
+    "name": "recusa sem abrir o corpo quando o Content-Length declarado passa do teto"
+   },
+   {
+    "file": "supabase/functions/generate-mockup/fetch-guard.cap.test.ts",
+    "name": "corta no teto quando o servidor OMITE o Content-Length"
+   },
+   {
+    "file": "supabase/functions/generate-mockup/fetch-guard.cap.test.ts",
+    "name": "corta no teto quando o servidor MENTE no Content-Length"
+   },
+   {
+    "file": "supabase/functions/generate-mockup/fetch-guard.cap.test.ts",
+    "name": "imagem dentro do teto passa e volta com os bytes completos"
+   },
+   {
+    "file": "supabase/functions/generate-mockup/fetch-guard.cap.test.ts",
+    "name": "imagem exatamente no teto passa (o corte é > teto, não >=)"
    },
    {
     "file": "supabase/functions/generate-mockup/index.geometry.test.ts",
@@ -399456,7 +399488,7 @@
   },
   "vitest.config.ts": {
    "path": "vitest.config.ts",
-   "lines": 174,
+   "lines": 177,
    "exports": [
     "default defineConfig"
    ],
@@ -399464,6 +399496,7 @@
     "VITEST_RETRY"
    ],
    "rule_comments": [
+    "Teto de download da imagem (fetchBytes corta o stream no limite; index.ts",
     "called here\". Rodam apenas via Playwright. Mantemos os specs Vitest legítimos",
     "Deve rodar apenas em ambientes com VITE_SUPABASE_URL/KEY reais configurados.",
     "Roda apenas via `node tests/scripts/check-file-size-baseline.test.mjs`."
@@ -401355,7 +401388,7 @@
   },
   "e2e/protected-routes.spec.ts": {
    "path": "e2e/protected-routes.spec.ts",
-   "lines": 47,
+   "lines": 55,
    "is_test": true,
    "doc": "E2E: Protected Routes — Verify auth guards on all critical routes",
    "temporal": [
@@ -401847,7 +401880,7 @@
   },
   "e2e/spa-rewrite.spec.ts": {
    "path": "e2e/spa-rewrite.spec.ts",
-   "lines": 87,
+   "lines": 89,
    "is_test": true,
    "rule_comments": [
     "Sem requerer auth: a validação aqui é do contrato HTTP/servidor (rewrite"
@@ -496460,9 +496493,34 @@
    ],
    "uses_service_role": true
   },
+  "supabase/functions/generate-mockup/fetch-guard.cap.test.ts": {
+   "path": "supabase/functions/generate-mockup/fetch-guard.cap.test.ts",
+   "lines": 128,
+   "is_test": true,
+   "params": [
+    {
+     "name": "CHUNK",
+     "value": "64"
+    }
+   ],
+   "rule_comments": [
+    "cdn.example.com/limite.png', 20000, ALLOW_ALL, impl);"
+   ],
+   "tests": [
+    "fetchBytes — teto de imagem",
+    "recusa sem abrir o corpo quando o Content-Length declarado passa do teto",
+    "corta no teto quando o servidor OMITE o Content-Length",
+    "corta no teto quando o servidor MENTE no Content-Length",
+    "imagem dentro do teto passa e volta com os bytes completos",
+    "imagem exatamente no teto passa (o corte é > teto, não >=)"
+   ],
+   "side_effects": [
+    "enqueue("
+   ]
+  },
   "supabase/functions/generate-mockup/fetch-guard.ts": {
    "path": "supabase/functions/generate-mockup/fetch-guard.ts",
-   "lines": 91,
+   "lines": 137,
    "exports": [
     "const DEFAULT_MOCKUP_FETCH_HOSTS",
     "const MAX_REDIRECTS",
@@ -496472,6 +496530,7 @@
     "function isAllowedFetchHost",
     "const GENERIC_FETCH_ERROR_MESSAGE",
     "class ImageFetchError",
+    "function readCapped",
     "function fetchBytes"
    ],
    "errors": [
@@ -496479,6 +496538,7 @@
     "blocked fetch target at hop ${hop}",
     "image too large (${bytes.byteLength} bytes)",
     "image too large (${declared} bytes)",
+    "image too large (${total} bytes)",
     "opaque redirect — target cannot be validated",
     "redirect without location (${res.status})",
     "too many redirects (> ${MAX_REDIRECTS})"
@@ -540712,10 +540772,32 @@
   }
  },
  "git": {
-  "sha": "eed9fdda81f6cbc9359cf95b3c56daed0d8ef15f",
+  "sha": "8ba1437531cc15f2ae3e920ccbae736969358f9e",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "8ba1437",
+    "date": "2026-11-16",
+    "author": "adm01-debug",
+    "subject": "fix(edge-fn): mockup baixava a imagem inteira na memória antes de recusar (#3729)",
+    "files": [
+     "supabase/functions/generate-mockup/fetch-guard.cap.test.ts",
+     "supabase/functions/generate-mockup/fetch-guard.ts",
+     "vitest.config.ts"
+    ]
+   },
+   {
+    "sha": "3256306",
+    "date": "2026-11-16",
+    "author": "adm01-debug",
+    "subject": "test(e2e): três specs que davam falso verde ou vermelho garantido (#3728)",
+    "files": [
+     "e2e/protected-routes.spec.ts",
+     "e2e/routes/public/reset-password.spec.ts",
+     "e2e/spa-rewrite.spec.ts"
+    ]
+   },
    {
     "sha": "eed9fdd",
     "date": "2026-11-16",
@@ -541271,27 +541353,6 @@
     "author": "adm01-debug",
     "subject": "Merge pull request #3689 from adm01-debug/claude/chore-dossies-branches-261116-0154",
     "files": []
-   },
-   {
-    "sha": "7d34968",
-    "date": "2026-11-16",
-    "author": "Claude",
-    "subject": "docs(audit): veredito da n68 e protecao dos refs de preservacao",
-    "files": [
-     "analise-branches/RELATORIO-BRANCHES-COMPLETO.md",
-     "analise-branches/dossies/importado__vps-fabrica__v2__n68-2610082251.md"
-    ]
-   },
-   {
-    "sha": "18cbbcc",
-    "date": "2026-11-16",
-    "author": "Claude",
-    "subject": "docs(audit): manual de continuidade para a proxima sessao",
-    "files": [
-     "analise-branches/ESTADO-EM-261116.md",
-     "analise-branches/MANUAL-DE-CONTINUIDADE.md",
-     "analise-branches/dados/LEIA-ME.md"
-    ]
    }
   ],
   "hot_files": [
@@ -541305,10 +541366,6 @@
    ],
    [
     "package-lock.json",
-    3
-   ],
-   [
-    "analise-branches/MANUAL-DE-CONTINUIDADE.md",
     3
    ],
    [
@@ -541328,12 +541385,32 @@
     2
    ],
    [
-    "analise-branches/ESTADO-EM-261116.md",
+    "analise-branches/MANUAL-DE-CONTINUIDADE.md",
     2
    ],
    [
-    "analise-branches/RELATORIO-BRANCHES-COMPLETO.md",
-    2
+    "supabase/functions/generate-mockup/fetch-guard.cap.test.ts",
+    1
+   ],
+   [
+    "supabase/functions/generate-mockup/fetch-guard.ts",
+    1
+   ],
+   [
+    "vitest.config.ts",
+    1
+   ],
+   [
+    "e2e/protected-routes.spec.ts",
+    1
+   ],
+   [
+    "e2e/routes/public/reset-password.spec.ts",
+    1
+   ],
+   [
+    "e2e/spa-rewrite.spec.ts",
+    1
    ],
    [
     "e2e/auth-debug-removal.spec.ts",
@@ -541357,22 +541434,6 @@
    ],
    [
     ".github/workflows/schema-snapshot-export.yml",
-    1
-   ],
-   [
-    "src/hooks/kit-builder/useCustomKitPersistence.ts",
-    1
-   ],
-   [
-    "tests/hooks/useCustomKitPersistence.pin-order.test.tsx",
-    1
-   ],
-   [
-    "docs/agentes/passagens/2026-11-15-passagem-sessao.md",
-    1
-   ],
-   [
-    "src/components/quotes/QuoteAutoSave.tsx",
     1
    ]
   ]
