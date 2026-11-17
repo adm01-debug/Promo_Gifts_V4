@@ -559,3 +559,132 @@ decisão de produto.
 5. **E2E com Supabase local no CI** — `supabase start` já roda em `contract-tests.yml:152`
    (traz Auth, Storage e Edge). Custo R$ 0; o gargalo é seed de dados e criar os usuários
    `E2E_*` no stack local.
+
+---
+
+## Fechamento das últimas branches — 17/11, 09:00–10:00 UTC
+
+Rodada final. O que faltava era o que estava parado esperando decisão do dono; ele respondeu
+"resolva o que depende de mim" e, na única pergunta de negócio que sobrou, escolheu a opção
+descrita abaixo. Tudo o que segue tem a medição ao lado.
+
+### P06 — aplicada em produção
+
+`supabase/migrations/20261117073000_p06_security_invoker_v_product_properties_public.sql`
+estava em `main` com recibo "pendente". Antes de aplicar, a dúvida real era uma só: `anon`
+perde linhas quando a view deixa de rodar como dono?
+
+| medição (execute_sql read-only, 17/11) | resultado |
+|---|---|
+| `select count(*) from v_product_properties_public` (dono) | **33.119** |
+| `set local role anon` + mesmo filtro na tabela-base `product_properties` | **33.119** |
+
+Iguais → virar `security_invoker=true` é neutro para o catálogo público. Aplicada pelo
+`db-apply-migration.yml` (run 44053465413, recibo na PR #3768). Confirmado **depois** da
+aplicação: `security_invoker=true`, version `20261117073000` em
+`supabase_migrations.schema_migrations`, e `set local role anon; select count(*) from
+public.v_product_properties_public` = **33.119**. Nenhuma linha perdida.
+
+As outras 7 views (`v_products_public`, `v_suppliers_public`, `v_product_tags_public`,
+`v_product_compositions_public`, `v_kit_component_media_public`,
+`v_tabela_preco_gravacao_oficial_public`, `v_variant_sale_prices_public`) seguem
+`security_invoker=false` **por motivo medido**, registrado no cabeçalho da própria migration:
+em pelo menos duas delas a policy da tabela-base diverge do `WHERE` da view (em `suppliers` é
+mais estrita → `anon` perderia linhas; em `product_kit_components` é mais frouxa → re-exporia).
+Não é pendência de decisão: é bloqueio com prova.
+
+### #3720 — fechada, sem perda
+
+A branch `claude/fix-resgate-p06-p15-security-261116-2215` tinha 5 arquivos. Estado contra `main`:
+
+| arquivo | em `main` |
+|---|---|
+| `supabase/migrations/20261101000002_revoke_anon_color_synonym_map_p15.sql` | **existe** (aplicada, run 44031053680) |
+| `supabase/rollbacks/20261101000002_rollback.sql` | **existe** |
+| `20261101000001_security_invoker_views_p06.sql` (migration da branch, ausente do main) | ausente — é a versão de 8 views, substituída pela de 1 view já aplicada |
+| `20261101000001_rollback.sql` (rollback da branch, ausente do main) | ausente — rollback da acima |
+| `supabase/MIGRATIONS_SYNC_LOG.md` | existe, com as duas versões |
+
+Tip preservado em `refs/heads/salvo/claude-fix-resgate-p06-p15-security-261116-2215`.
+
+### #3683 → #3769 — decisão do dono, com a parte "somente leitura" provada
+
+A #3683 (branch de 15/11 de outro agente) revertia a decisão de 14/11 deste mesmo ledger
+(`docs/coordenacao/conflitos-semanticos.md:35`): lá, consultado com **48.623 clientes / 13.501
+(28%) sem vendedor**, o dono escolheu "só o dono vê cada cliente". Não havia registro no repo
+da reversão de 15/11 — só o comentário do commit. Perguntado hoje, o dono decidiu:
+**vendedor vê a carteira dele mais os sem dono, mas não edita nem assume.**
+
+A segunda metade não é promessa. `supabase/functions/crm-db-bridge/index.ts:227` tem
+`const VENDOR_WRITE_TABLES: string[] = []` e `index.ts:1024-1028` devolve 403 para qualquer
+`insert`/`update`/`delete` de `vendedor`, `agente` ou `coordenador` — lista vazia, nada passa
+no `includes`. E o diff da #3683 toca **0 linhas** de `handleUpdate`, `handleDelete`,
+`handleInsert` ou `VENDOR_WRITE_TABLES`.
+
+Resgate em `claude/feat-crm-vendedor-sem-dono-261117-0930` (PR #3769): os 2 commits originais
+por cherry-pick com autoria preservada, `index.ts`/`query-policy.ts`/teste **byte-idênticos**
+ao original, e o `package.json` reconstruído a partir do `main` (o `-X theirs` havia trazido a
+linha `test:ci-core` de 15/11, que não conhecia `tests/scripts/e2e-relevance.test.mjs` nem
+`tests/edge-functions/mockup-assistant.test.ts`). `tsc --noEmit` exit 0; o teste de ownership
+passou 18/18.
+
+### As duas últimas branches órfãs — adjudicadas e fechadas
+
+| branch | arquivos | idênticos | diferentes | movidos | ausentes reais |
+|---|---|---|---|---|---|
+| `claude/fix-pr3517-gate1-baseline-261113-2336` | 309 | 42 | 210 | 5 | **52** |
+| `codex/fix-gate1-kit-pdf-types-261109-2252` | 368 | 53 | 48 | 208 | **59** |
+
+Os ausentes são o mesmo conjunto nas duas (uma os tem sob `recovery/src-legacy/`, a outra sob
+`src/` e `tests/`): a suíte `legacy-*` de preservação e os módulos `*.types.ts` de uma extração
+de tipos que o `main` reverteu. Teste decisivo aplicado a cada um — os módulos `@/...` que o
+arquivo importa existem em `main`?
+
+- **39 dos 47** têm pelo menos um import que não existe mais em `main`: não compilam contra o
+  `main`, testam código que o `main` apagou. Obsoletos.
+- Dos 8 restantes, 6 tiveram seus símbolos **incorporados** ao `main` em outro arquivo:
+  `LegacyCartInsights` → `src/components/cart/CartUtilComponents.tsx` (6 dos 8 exports),
+  `quote-view-status-config.ts` → `statusConfig` em `src/pages/quotes/QuoteViewPage.tsx`,
+  `library-list-utils.ts` → `applySort`/`getItemsCount` em
+  `src/pages/kit-builder/KitLibraryPage.tsx`.
+- `supplier-trust-demo.ts` (fixture da branch, ausente do main): o `main` **apagou de propósito** — está escrito no
+  cabeçalho do próprio `tests/hooks/device-and-supplier-trust.contract.test.ts:12-13` do `main`,
+  que só menciona a fixture num comentário e não a importa.
+- `QuotesConfigurableList.approval.test.tsx` (teste da branch, ausente do main) era o candidato mais forte (todos
+  os imports existem em `main`). Testava a aprovação manual pela lista via prop `onMarkApproved`.
+  **A funcionalidade está no `main`, com outro desenho**: `QuoteRowApproveItem` em
+  `src/components/quotes/QuotesConfigurableList.tsx:34,540`, reusando o `onBulkStatusChange` que
+  o pai já passa, com teste próprio em
+  `src/components/quotes/__tests__/QuotesConfigurableList.approve.test.tsx` cobrindo os mesmos
+  três casos (aprova pelo caminho do pai, não oferece em transição inválida, não oferece sem
+  handler). Nada a resgatar.
+- `20261110024530_restore_device_trust_contract.sql` (migration da branch, ausente do main) (da branch do Codex)
+  propunha `is_trusted boolean NOT NULL DEFAULT false` em `public.user_known_devices`. Medido em
+  produção: a coluna **já existe** exatamente assim. A própria migration tem `IF FOUND ... RETURN`
+  — seria no-op. Obsoleta.
+
+Sobram 7 símbolos órfãos sem nenhum consumidor em `main` (`FollowUpTimer`,
+`isSuggestionProduct`, `FavoriteDeleteConfirmDialog`, `FavoritesHeaderWithPresentation`,
+`DetailedProductDetailSkeleton`, `applyVoiceFilterPatch`, `normalizeBitrixQuoteId`). Trazê-los
+seria acrescentar arquivo sem importador — código morto, que as regras do repo proíbem. Ficam
+preservados nos refs `salvo/claude-fix-pr3517-gate1-baseline-261113-2336` e
+`salvo/codex-fix-gate1-kit-pdf-types-261109-2252`, e listados aqui para quem quiser terminar
+qualquer um deles como feature própria.
+
+### Dependabot
+
+- **#3750** fechada: `npm ci` aborta com ERESOLVE (conflito de peer dependency no grupo de 6),
+  `Setup Node CI` reprovou nos dois jobs da run 44029419713 — nenhum chegou a rodar lint ou teste.
+- **#3696** fechada: 5.9.1 → 7.0.6 do `@hookform/resolvers` são dois majors, e os 4 únicos
+  consumidores são formulários de autenticação (`Auth.tsx:8`, `ResetPassword.tsx:4`,
+  `ForgotPasswordForm.tsx:6`, `ProductFormFullscreen.tsx:11`). O `Gate 3 - E2E Smoke` sai
+  SKIPPED em PR do Dependabot, então o caminho de login não foi exercido. `zod` já está em
+  4.6.7 e o `Gate 0.5` está verde com a 5.9.1 — sem advisory, o bump não é indispensável
+  (regra 4).
+
+### Fragilidade medida, não corrigida nesta rodada
+
+O `Gate 2.5` depende de Docker no runner e, quando o runner não tem, reprova em modo estrito:
+`[simulate-quote-rpc-proposals] ❌ pré-requisito ausente: Docker indisponível` na run
+44052951491 derrubou uma PR docs-only. Re-executar resolveu. Fica anotado: o gate não distingue
+"contrato violado" de "runner sem Docker".
