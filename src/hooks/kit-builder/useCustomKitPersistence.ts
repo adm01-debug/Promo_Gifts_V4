@@ -3,7 +3,7 @@
  * CRUD para a tabela custom_kits (banco local)
  */
 
-import { useCallback, useMemo } from 'react';
+import { useCallback, useEffect, useMemo, useRef } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
@@ -58,6 +58,15 @@ export function useCustomKitPersistence() {
   // RLS protects the server, but a shared React Query cache must also be
   // partitioned by account when users switch without a full page reload.
   const queryKey = useMemo(() => ['custom-kits', user?.id] as const, [user?.id]);
+  // Ordena as requisições de pin. Sem isso, duas chamadas em sequência (ou uma
+  // rede lenta) resolviam fora de ordem e o último toast exibido era o da
+  // requisição velha, anunciando um estado que já não era o pedido. Trocar de
+  // conta também incrementa: a resposta em voo da conta anterior não anuncia
+  // nada nem invalida a chave da conta nova.
+  const pinSeqRef = useRef(0);
+  useEffect(() => {
+    pinSeqRef.current += 1;
+  }, [user?.id]);
 
   // Lista os kits do usuário
   const { data: savedKits = [], isLoading: isLoadingKits } = useQuery({
@@ -176,6 +185,8 @@ export function useCustomKitPersistence() {
   const togglePinned = useCallback(
     async (kitId: string, value: boolean) => {
       if (!user?.id) return;
+      pinSeqRef.current += 1;
+      const seq = pinSeqRef.current;
       try {
         // A pair of browser updates cannot preserve this invariant when two
         // tabs act at once. The RPC owns the transaction, lock and unique
@@ -184,10 +195,14 @@ export function useCustomKitPersistence() {
           _kit_id: kitId,
           _is_pinned: value,
         });
+        // Resposta obsoleta: outro toggle (ou uma troca de conta) aconteceu
+        // depois desta chamada. Quem decide o que a tela diz é a última.
+        if (seq !== pinSeqRef.current) return;
         if (pinErr) throw new Error(pinErr.message || 'Não foi possível alterar o destaque');
         queryClient.invalidateQueries({ queryKey });
         toast.success(value ? 'Kit fixado em destaque' : 'Kit desafixado');
       } catch (err) {
+        if (seq !== pinSeqRef.current) return;
         toast.error('Erro ao alterar destaque', { description: sanitizeError(err) });
       }
     },
