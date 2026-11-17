@@ -338,6 +338,130 @@ Dos 14 testes inéditos dela, **11 são descartáveis** (testam código que a `m
   `suppliers.active` é `boolean` **nullable** com default `true` (conferido em
   `information_schema.columns`). Um fornecedor com `active = null` faz `isVerified` virar `null` e
   vazar para a tela em vez de "não verificado". **Latente hoje:** 5 fornecedores, 0 com `null`.
-- **`src/components/common/IntelligenceBadges.tsx:97-98`** — `const config = badgeConfig[badge.type];
-  const Icon = config.icon;` sem fallback. Um selo com `type` fora das 9 chaves derruba a tela com
-  `TypeError`. Nenhum teste da `main` cobre isso.
+- ~~`src/components/common/IntelligenceBadges.tsx:97-98` — indexa `badgeConfig` sem fallback~~
+  **RETIRADO em 17/11, depois de reverificar.** O acesso existe (`const config =
+  badgeConfig[badge.type]; const Icon = config.icon;`), mas **não é alcançável**: os dois
+  consumidores de produção — `src/components/products/ProductCard.tsx:166` e
+  `src/pages/products/product-detail/ProductDetailHero.tsx:114` — recebem os selos do próprio
+  `useProductIntelligenceBadges`, que os constrói com tipo literal (`type: 'featured'`,
+  `'new-arrival'`, …) sobre o union fechado `BadgeType` de
+  `src/hooks/products/useProductIntelligenceBadges.ts:23-32`. Nenhum caminho passa string livre do
+  banco. É robustez teórica, não defeito — só chegaria lá um chamador que burlasse o tipo. Fica
+  registrado para o próximo agente não gastar tempo nisso.
+
+## Fechamentos da segunda leva de 17/11 — 12 branches
+
+Total da sessão: **59 branches fechadas com prova**. Refs de preservação no remoto:
+`salvo/261117-adjudicadas-10` (10 pais) e `salvo/261117-regras-negocio-2` (2 pais). Cada mensagem
+de commit do `salvo/*` carrega o veredito por branch com a evidência.
+
+**Resgatado antes de fechar** (nada foi apagado antes de o conteúdo estar na `main`):
+
+| de onde | o que | onde está |
+|---|---|---|
+| `codex/fix-gate1-kit-pdf-types` | contrato de "dispositivo confiável" + o furo do `active` nulo | #3735 |
+| `codex/fix-gate1-kit-pdf-types` | 4 documentos de operação e auditoria da fábrica | #3731 |
+| `claude_pink/peaceful-planck` | aviso de ordem antes do `DROP COLUMN secret_value` | #3736 |
+| `youthful-ride` + `sleepy-cannon` | as regras de negócio que a `main` não tinha, reconferidas | #3738 |
+| `importado/vps-fabrica/v2/n28` | harness do handler **real** do `generate-mockup` | #3737 |
+
+**Fechadas sem resgate, com o motivo provado:** as 5 fatias de mockup da fábrica (`s36`, `s44`,
+`s51`, `s75`, `fix-remover-atalhos`) — em três delas o que parecia melhoria é o que a `main`
+**rejeitou de propósito**, registrado em `supabase/functions/generate-mockup/limits.ts:8-12` e
+`supabase/functions/generate-mockup/geometry.ts:13-18`; e 5 sessões de triagem de PR
+(`optimistic-bohr`, `optimistic-lovelace`, `serene-clarke`, `lucid-franklin`, `peaceful-planck`),
+cujo trabalho próprio é dossiê de PR já encerrada e planilha de controle sobrescrita por rodada
+posterior.
+
+**Uma branch que nunca deve ser mergeada, só lida:** `claude_05/youthful-ride-vcdchy` apagava
+`src/components/layout/UserMenuShortcutItems.tsx`, que a `main` importa em
+`src/components/layout/Header.tsx:50` e usa em `:533`, além dos dois arquivos de rollback exigidos
+por `docs/agentes/banco-migrations.md`. Abrir PR dela pararia o build. O tip fica em
+`salvo/261117-regras-negocio-2`.
+
+---
+
+# Fechamento da auditoria — 17/11/2026
+
+**82 branches fechadas com prova.** Nenhuma apagada antes de o conteúdo estar na `main`.
+Tips preservados em refs `salvo/*` no remoto, cada commit carregando o veredito por branch e a
+medida que o sustenta.
+
+Restam **24 branches, todas com destino definido** — nenhuma pendente de auditoria.
+
+## As 24, por categoria
+
+### Automáticas (4) — não se encerram por auditoria
+`bot/schema-snapshot` (branch de trabalho do bot; o `schema-snapshot-export.yml` está
+`disabled_manually` desde 14/11 por decisão anterior — reativar é do dono),
+`dependabot/npm_and_yarn/development-all-40947bae1c`,
+`dependabot/npm_and_yarn/hookform/resolvers-7.0.6`,
+`release-please--branches--main--components--gifts-store`.
+
+### Do dono / de outra sessão (2)
+`claude/feat-crm-vendedor-sem-dono-261115-1622` (PR #3683, dele) e `computador_local`, que foi
+**recriada** apontando para o merge da #3732 e é ancestral da `main` — é a branch do computador
+dele, não resíduo de agente.
+
+### Minhas, em PR aberta porque o AGENTS.md Git 7 manda (6)
+DDL em produção, `.github/workflows/**` e governança ficam abertas e chamam o dono. Não é trabalho
+inacabado: é a regra do projeto.
+
+| branch | PR | o que carrega |
+|---|---|---|
+| `fix-resgate-p06-p15-security-261116-2215` | #3720 | migrations de segurança P06/P15 |
+| `infra-inventario-semanal-261116-2305` | #3722 | o inventário que todo agente lê como "estado real", parado desde 02/11 |
+| `fix-snapshot-commit-force-rotate-261117-0005` | #3725 | `force_rotate` também libera a publicação do snapshot |
+| `fix-e2e-relevance-backend-261117-0015` | #3726 | migration e edge function entravam verdes sem rodar E2E |
+| `fix-sentinel-sha-inexistente-261117-0325` | #3743 | SHA que não existe na allowlist do guarda de branch |
+| `fix-gatilho-drift-ledger-261117-0410` | #3747 | mexer nas 681 exceções do ledger não disparava o gate de banco |
+
+### Aguardando o merge de uma PR que já carrega o resgate delas (4)
+`codex/fix-db-migration-preflight-261107` (#3747), `codex/fix-e2e-ci-pressure-261107-0238` (#3726;
+o item do logo já entrou pela #3742), `codex/fix-e2e-relevance-261107-1148` (#3726, que é
+superconjunto dela) e `claude/fix-sentinel-e2e-pdf-261029-2310` (#3743). Fecham no merge, não antes.
+
+### Preservadas aguardando decisão de negócio ou custo (6)
+
+| branch | a pergunta exata |
+|---|---|
+| `fix-release-manifest-versao-real-261114-0305` | A versão do sistema andou para trás: diz `1.1.0`, a última tag real é `v1.8.1`, e a #3566 quer emitir `1.2.0`. Autoriza voltar para o número real e corrigir a configuração? Toca `.github/` |
+| `fix-e2e-fora-do-banco-de-producao-261114-1003` | Autoriza um projeto Supabase de staging só para o E2E (custo novo)? Sem ele, 23 workflows seguem apontando para produção nos pushes em `main`; com a branch como está, todo E2E com backend para de rodar |
+| `chore-e2e-modules-matrix-261102-2115` | Consolidar 19 workflows de E2E em 1 (44 suítes numa matriz)? Como está, roda tudo **em dobro** — para valer é preciso apagar os 16 antigos no mesmo PR |
+| `fix-attest-provenance-sigstore-261107-1500` | Aceita que a assinatura de proveniência do build deixe de bloquear o deploy quando o serviço da Sigstore cair? (1 linha) |
+| `recuperado/fix-gitleaks-allowlist-261101-2209` | Autoriza silenciar 10 padrões no detector de segredos, incluindo qualquer achado com o texto `SERVICE_ROLE_KEY` em todo o repo? O portão está verde hoje |
+| `fix/e2e-url-state-defaults-20261030` | Quer versionar o rollback da remoção de `auth.users` do Realtime, sabendo que executá-lo reexpõe dados pessoais de todos os usuários? O resto dela já está na `main`, e o item de `check-dependency-audit` foi descartado (ver abaixo) |
+
+### Preservada de propósito (1)
+`claude/fix-pr3517-gate1-baseline-261113-2336` — a PR #3548 foi fechada com auditoria arquivo por
+arquivo. A branch fica, e `refs/pull/3548/head` é permanente: a PR pode ser reaberta.
+
+### Com os dois últimos itens não resgatáveis aqui (1)
+`codex/fix-gate1-kit-pdf-types-261109-2252`. Tudo o mais dela foi resgatado (#3735, #3740, #3746).
+Sobram:
+- **comentários em orçamento** — feature que a `main` cancelou em 27/06, com 2 travas de CI; é
+  decisão de negócio, e o material fica preservado na branch;
+- **`tests/sql/device-trust/`** — 77 asserções que a `main` não tem em lugar nenhum
+  (`git grep -ln user_known_devices origin/main -- tests scripts` é vazio), mas o harness exige
+  Docker, que este container não tem, e registro num workflow. Não trago teste que não consigo
+  executar.
+
+## Itens que um relatório apontou como resgate e que NÃO são — com a medida
+
+Registrado para ninguém gastar tempo de novo:
+
+- **`scripts/check-select-columns.mjs`** — a `main` resolve o mesmo falso positivo **melhor**:
+  trunca a janela no próximo `.from(` (`:113-118`), com o comentário explicando o caso. A branch
+  descartava a correspondência; a `main` ainda encontra o `select` correto quando ele vem antes.
+- **`scripts/check-dependency-audit.mjs`** — a `main` é **mais restritiva**, não menos. A validação
+  de `fixAvailable` vive dentro do ramo `if (packageName === 'minimatch')` com um conjunto exato de
+  condições (`source`, `name`, `dependency`, `severity`, `range`, `url`, `fix.name`, `fix.version`,
+  `isSemVerMajor`). Torná-la genérica, como a branch fazia, **afrouxaria** a exceção nomeada.
+- **`querySupabaseReadOnly` no gate do ledger** — a `main` já lê o ledger autoritativo, via
+  `supabase migration list --linked --output-format json` em `db-schema-drift-check.yml:234`.
+- **`MANIFESTO_LEDGER` com `aggregate_entries_sha256`** — `scripts/check-ledger-manifest-drift.mjs`
+  não valida integridade do baseline e nunca validou; o campo não ligaria alarme. E o arquivo da
+  branch é de setembro, anterior ao baseline recriado de propósito em 01/11.
+- **`IntelligenceBadges.tsx:97-98`** — já retirado acima: não é alcançável.
+
+Em dois desses eu só não introduzi regressão porque verifiquei antes de aplicar o relatório.

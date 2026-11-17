@@ -579,6 +579,7 @@ export default function MockupGenerator() {
                 mockupHistory={mg.mockupHistory}
                 isLoading={mg.isLoadingHistory}
                 clients={mg.historyClients}
+                techniques={mg.techniques}
                 onDelete={(id) => {
                   mg.setMockupToDelete(id);
                   mg.setDeleteDialogOpen(true);

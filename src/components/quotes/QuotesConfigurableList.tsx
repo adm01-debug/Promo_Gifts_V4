@@ -31,7 +31,7 @@ import {
 } from 'lucide-react';
 
 import type { Quote } from '@/hooks/quotes';
-
+import { QuoteRowApproveItem } from '@/components/quotes/QuoteRowApproveItem';
 import { useBulkSelection } from '@/hooks/common';
 
 import { cn } from '@/lib/utils';
@@ -107,7 +107,7 @@ export function QuotesConfigurableList({
   quotes,
   onDelete,
   onBulkDelete,
-  onBulkStatusChange: _onBulkStatusChange,
+  onBulkStatusChange,
   onBulkExport: _onBulkExport,
   onDuplicate,
   isFetching = false,
@@ -537,6 +537,7 @@ export function QuotesConfigurableList({
                             >
                               <Copy className="mr-2 h-4 w-4" /> Duplicar
                             </DropdownMenuItem>
+                            <QuoteRowApproveItem quote={quote} onApprove={onBulkStatusChange} />
                             <DropdownMenuSeparator />
                             <DropdownMenuItem
                               data-testid={`quote-row-menu-delete-${quote.id}`}
