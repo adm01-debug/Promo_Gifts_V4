@@ -191,6 +191,10 @@ async function loadSentry(): Promise<SentryModule | null> {
           (import.meta.env.VITE_SENTRY_ENVIRONMENT as string | undefined) || import.meta.env.MODE,
         // Release tag = commit SHA do Vercel — permite associar erro ao deploy
         release: (import.meta.env.VITE_VERCEL_GIT_COMMIT_SHA as string | undefined) || undefined,
+        // O host de erros não manda `Access-Control-Allow-Origin` para
+        // www.promogifts.com.br: o envio direto morria em CORS e o monitoramento
+        // ficava cego em produção. O envelope vai pela própria origem (api/monitoring.ts).
+        tunnel: '/api/monitoring',
         tracesSampleRate: import.meta.env.PROD ? 0.1 : 0,
         replaysSessionSampleRate: 0,
         // Onda 5: aprovado por Joaquim — replay 100% quando dá erro
