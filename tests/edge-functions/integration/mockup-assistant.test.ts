@@ -64,6 +64,12 @@ function post(body: unknown, origin = ORIGIN): Promise<Response> {
   return serveMockupAssistant(new Request(URL_EDGE, { method: "POST", headers, body: JSON.stringify(body) }));
 }
 
+/** POST com corpo CRU — para provar EMPTY_BODY e INVALID_JSON pelo codigo real. */
+function postRaw(body: string | null, origin = ORIGIN): Promise<Response> {
+  const headers = { "Content-Type": "application/json", Authorization: "Bearer test.jwt.user", origin };
+  return serveMockupAssistant(new Request(URL_EDGE, { method: "POST", headers, body }));
+}
+
 function reset() {
   h.authError = null;
   h.rateLimited = false;
@@ -99,8 +105,45 @@ describe("mockup-assistant — entrada, custo e CORS (handler real)", () => {
     for (const body of invalidos) {
       const res = await post(body);
       expect(res.status).toBe(422);
+      // O header X-Error-Code deixa a tela distinguir "voce preencheu errado" de
+      // "o sistema caiu" sem abrir o corpo (supabase/functions/_shared/zod-validate.ts:82).
+      expect(res.headers.get("x-error-code")).toBe("VALIDATION_FAILED");
       expect((await res.json()).code).toBe("VALIDATION_FAILED");
     }
+    expect(h.aiCalls).toHaveLength(0);
+  });
+
+  // Resgatado de importado/vps-fabrica/v2/s44-2610081949: a main conferia o `code` no
+  // corpo, mas nao o header, nem a forma de `fields[]`, nem corpo vazio/JSON quebrado.
+  it("o 422 diz QUAL campo esta errado, em fields[] com path/code/message", async () => {
+    const res = await post({ message: 42 });
+
+    expect(res.status).toBe(422);
+    const corpo = (await res.json()) as { code: string; fields?: Array<Record<string, unknown>> };
+    expect(corpo.code).toBe("VALIDATION_FAILED");
+    expect(Array.isArray(corpo.fields)).toBe(true);
+    expect(corpo.fields!.length).toBeGreaterThan(0);
+    for (const campo of corpo.fields!) {
+      expect(typeof campo.path).toBe("string");
+      expect(typeof campo.code).toBe("string");
+      expect(typeof campo.message).toBe("string");
+    }
+    // Sem isso a tela so sabe dizer "dados invalidos".
+    expect(corpo.fields!.some((c) => String(c.path).includes("message"))).toBe(true);
+    expect(h.aiCalls).toHaveLength(0);
+  });
+
+  it("corpo vazio e 400 EMPTY_BODY; JSON quebrado e 400 INVALID_JSON — nunca 500", async () => {
+    const vazio = await postRaw(null);
+    expect(vazio.status).toBeLessThan(500);
+    expect(vazio.headers.get("x-error-code")).toBe("EMPTY_BODY");
+    expect((await vazio.json()).code).toBe("EMPTY_BODY");
+
+    const quebrado = await postRaw("{ isso nao e json");
+    expect(quebrado.status).toBeLessThan(500);
+    expect(quebrado.headers.get("x-error-code")).toBe("INVALID_JSON");
+    expect((await quebrado.json()).code).toBe("INVALID_JSON");
+
     expect(h.aiCalls).toHaveLength(0);
   });
 

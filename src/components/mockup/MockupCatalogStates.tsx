@@ -57,9 +57,24 @@ export function CatalogEmptyState({ onClearSearch }: { onClearSearch: () => void
 /** Esqueleto da grade enquanto o catálogo carrega. Mora aqui pelo mesmo motivo acima. */
 export function CatalogGridSkeleton() {
   return (
-    <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
+    // A grade de skeleton era só uma pilha de divs: quem usa leitor de tela não recebia
+    // aviso nenhum enquanto o catálogo carregava e não sabia se a busca estava em
+    // andamento ou se não achou nada. role=status + aria-busy + o texto sr-only fazem o
+    // diálogo anunciar o carregamento; os blocos visuais ficam aria-hidden para não
+    // virar ruído. Resgatado de importado/vps-fabrica/v2/s75-2610081948.
+    <div
+      role="status"
+      aria-busy="true"
+      aria-live="polite"
+      className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4"
+    >
+      <span className="sr-only">Carregando produtos do catálogo…</span>
       {Array.from({ length: 12 }).map((_, i) => (
-        <div key={i} className="space-y-3 rounded-2xl border border-border/30 bg-card p-3">
+        <div
+          key={i}
+          aria-hidden="true"
+          className="space-y-3 rounded-2xl border border-border/30 bg-card p-3"
+        >
           <Skeleton className="aspect-square w-full rounded-xl" />
           <div className="space-y-2">
             <Skeleton className="h-4 w-3/4" />

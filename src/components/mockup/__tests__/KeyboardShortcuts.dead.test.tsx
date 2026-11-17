@@ -45,16 +45,18 @@ function renderShortcuts(overrides: { canGenerate?: boolean; isLoading?: boolean
   const onGenerate = vi.fn();
   const onReset = vi.fn();
   const onDownload = vi.fn();
+  const onStepChange = vi.fn();
   const props = {
     onGenerate,
     onReset,
     onDownload,
+    onStepChange,
     canGenerate: overrides.canGenerate ?? true,
     canDownload: true,
     isLoading: overrides.isLoading ?? false,
   };
   renderHook(() => useKeyboardShortcuts(props));
-  return { onGenerate, onReset, onDownload };
+  return { onGenerate, onReset, onDownload, onStepChange };
 }
 
 afterEach(() => {
@@ -119,5 +121,29 @@ describe('atalhos destrutivos removidos (Esc, Ctrl+R, Ctrl+D) continuam fora', (
     const e = pressKey({ key: 'd', ctrlKey: true });
     expect(onDownload).not.toHaveBeenCalled();
     expect(e.defaultPrevented).toBe(false);
+  });
+
+  // Faltava na main: Esc, Ctrl+R e Ctrl+D tinham guarda, as teclas 1-6 nao.
+  // Se alguem reintroduzir o atalho de passo, o vendedor volta a trocar de etapa do
+  // wizard ao digitar um numero fora de campo de texto - e perde o que estava
+  // preenchendo. Resgatado de
+  // importado/vps-fabrica/v2/fix-remover-atalhos-destrutivos-do-gerad-2610081909.
+  it.each(['1', '2', '3', '4', '5', '6'])(
+    'tecla %s não troca o passo do wizard nem previne o evento',
+    (key) => {
+      const { onStepChange } = renderShortcuts();
+      const e = pressKey({ key });
+      expect(onStepChange).not.toHaveBeenCalled();
+      expect(e.defaultPrevented).toBe(false);
+    },
+  );
+
+  it('1-6 com Ctrl ou Cmd também não trocam o passo', () => {
+    const { onStepChange } = renderShortcuts();
+    const comCtrl = pressKey({ key: '3', ctrlKey: true });
+    const comMeta = pressKey({ key: '3', metaKey: true });
+    expect(onStepChange).not.toHaveBeenCalled();
+    expect(comCtrl.defaultPrevented).toBe(false);
+    expect(comMeta.defaultPrevented).toBe(false);
   });
 });
