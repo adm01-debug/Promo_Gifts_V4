@@ -12,7 +12,7 @@ Alimentado por fn_link_images_to_variants_by_synonym() para backfill do variant_
 | owner | postgres |
 | RLS habilitado | sim |
 | RLS forçado (owner) | não |
-| policies | 5 |
+| policies | 4 |
 | realtime (publication) | não |
 | replica identity | default |
 | vem de extensão | não |
@@ -93,16 +93,6 @@ Alimentado por fn_link_images_to_variants_by_synonym() para backfill do variant_
 | USING | `true` |
 | WITH CHECK |  |
 
-### `rls_anon_read_color_synonym_map`
-
-| campo | valor |
-|---|---|
-| comando | SELECT |
-| tipo | PERMISSIVE |
-| roles | anon |
-| USING | `true` |
-| WITH CHECK |  |
-
 
 ## Triggers
 
@@ -113,6 +103,6 @@ _nenhum_
 
 | role | privilégios |
 |---|---|
-| anon | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
+| anon | REFERENCES, SELECT, TRIGGER |
 | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |

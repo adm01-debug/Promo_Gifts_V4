@@ -80,7 +80,7 @@ Um arquivo por tabela em `tables/<schema>/<tabela>.md` (colunas, constraints, í
 | [public.color_equivalences](tables/public/color_equivalences.md) | table | sim | 4 | 16 | não |  |
 | [public.color_groups](tables/public/color_groups.md) | table | sim | 4 | 12 | não |  |
 | [public.color_nuances](tables/public/color_nuances.md) | table | sim | 6 | 10 | não |  |
-| [public.color_synonym_map](tables/public/color_synonym_map.md) | table | sim | 5 | 9 | não | Mapeamento de nomes de cores do fornecedor para color_variations canônico. Usado para corrigir discrepâncias entre como o fornecedor nomeia as cores nas imagens vs como o pipeline de variantes as padroniza. Exemplos: Fumê (XBZ) → Preto, Cinza Claro (XBZ) → Cinza. Alimentado por fn_link_images_to_variants_by_synonym() para backfill do variant_id. |
+| [public.color_synonym_map](tables/public/color_synonym_map.md) | table | sim | 4 | 9 | não | Mapeamento de nomes de cores do fornecedor para color_variations canônico. Usado para corrigir discrepâncias entre como o fornecedor nomeia as cores nas imagens vs como o pipeline de variantes as padroniza. Exemplos: Fumê (XBZ) → Preto, Cinza Claro (XBZ) → Cinza. Alimentado por fn_link_images_to_variants_by_synonym() para backfill do variant_id. |
 | [public.color_variations](tables/public/color_variations.md) | table | sim | 5 | 18 | não |  |
 | [public.commemorative_date_colors](tables/public/commemorative_date_colors.md) | table | sim | 4 | 6 | não |  |
 | [public.commemorative_date_exclusions](tables/public/commemorative_date_exclusions.md) | table | sim | 4 | 7 | não |  |

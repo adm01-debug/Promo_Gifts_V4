@@ -2,6 +2,12 @@
 
 Diff semântico gerado a cada coleta em que algo mudou.
 
+## 2026-11-17 07:19 UTC
+
+- **grants** alterado (1): `public.color_synonym_map:anon`
+- **migrations** adicionado (1): `20261101000002_revoke_anon_color_synonym_map_p15`
+- **policies (RLS)** removido (1): `public.color_synonym_map.rls_anon_read_color_synonym_map`
+
 ## 2026-11-17 02:24 UTC
 
 - **realtime** adicionado (1): `supabase_realtime_messages_publication:realtime.messages_2026_11_20`

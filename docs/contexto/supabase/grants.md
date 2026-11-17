@@ -177,7 +177,7 @@ Roles da API: `anon` (sem login), `authenticated` (logado), `service_role` (bypa
 | public.color_nuances | anon | SELECT |
 | public.color_nuances | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | public.color_nuances | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
-| public.color_synonym_map | anon | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
+| public.color_synonym_map | anon | REFERENCES, SELECT, TRIGGER |
 | public.color_synonym_map | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | public.color_synonym_map | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
 | public.color_variations | anon | SELECT |

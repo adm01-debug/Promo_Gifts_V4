@@ -166,7 +166,6 @@ Visão consolidada (inclui `storage.objects` e `realtime.messages`); detalhes po
 | public.color_synonym_map | csm_admin_insert | INSERT | PERMISSIVE | authenticated |  | `is_admin_or_above(( SELECT ( SELECT auth.uid() AS uid) AS uid))` |
 | public.color_synonym_map | csm_admin_update | UPDATE | PERMISSIVE | authenticated | `is_admin_or_above(( SELECT ( SELECT auth.uid() AS uid) AS uid))` | `is_admin_or_above(( SELECT ( SELECT auth.uid() AS uid) AS uid))` |
 | public.color_synonym_map | csm_read_authenticated | SELECT | PERMISSIVE | authenticated | `true` |  |
-| public.color_synonym_map | rls_anon_read_color_synonym_map | SELECT | PERMISSIVE | anon | `true` |  |
 | public.color_variations | color_variations_oa_del | DELETE | PERMISSIVE | authenticated | `is_org_owner_or_admin(organization_id)` |  |
 | public.color_variations | color_variations_oa_ins | INSERT | PERMISSIVE | authenticated |  | `is_org_owner_or_admin(organization_id)` |
 | public.color_variations | color_variations_oa_upd | UPDATE | PERMISSIVE | authenticated | `is_org_owner_or_admin(organization_id)` | `is_org_owner_or_admin(organization_id)` |

@@ -194866,7 +194866,7 @@
         },
         {
           "grantee": "anon",
-          "privileges": "DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE",
+          "privileges": "REFERENCES, SELECT, TRIGGER",
           "schema": "public",
           "table": "color_synonym_map"
         },
@@ -238296,6 +238296,12 @@
         "version": "20261031000000"
       },
       {
+        "name": "revoke_anon_color_synonym_map_p15",
+        "statements": 2,
+        "statements_sha": "33623c60fec7671a",
+        "version": "20261101000002"
+      },
+      {
         "name": "20261101140001_sb0001_remove_auth_users_realtime",
         "statements": 1,
         "statements_sha": "6609a8a04b8e7cbc",
@@ -240581,18 +240587,6 @@
         "permissive": "PERMISSIVE",
         "roles": [
           "authenticated"
-        ],
-        "schema": "public",
-        "table": "color_synonym_map",
-        "using": "true",
-        "with_check": null
-      },
-      {
-        "cmd": "SELECT",
-        "name": "rls_anon_read_color_synonym_map",
-        "permissive": "PERMISSIVE",
-        "roles": [
-          "anon"
         ],
         "schema": "public",
         "table": "color_synonym_map",
