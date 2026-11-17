@@ -82,6 +82,14 @@
  * `created_at: string | null` em QuoteVersion e guardar o format no componente, ou
  * preencher com `v.created_at ?? null` e renderizar "—" quando ausente.
  *
+ * CORRIGIDO depois deste resgate: QuoteVersion.created_at/updated_at voltaram a ser
+ * `string | null`, o hook preserva o null do banco e QuoteVersionHistory.tsx /
+ * QuoteVersionCompare.tsx mostram "—" quando não há data. Os asserts de timestamp
+ * deste arquivo acompanharam a volta ao contrato original ("nulls preservados"); a
+ * coerção financeira (`total ?? 0`, `status ?? 'draft'`), que o caso denunciava como
+ * enganosa, segue como estava e está registrada em "Próximos passos".
+ * Crash reproduzido antes do fix: `RangeError: Invalid time value`.
+ *
  */
 import { act, renderHook } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
@@ -115,9 +123,9 @@ function version(overrides: Partial<QuoteVersion> = {}): QuoteVersion {
     ...overrides,
   };
 }
-// Contrato atual de useQuoteVersions.fetchVersions (src/hooks/quotes/useQuoteVersions.ts:84-91):
-// a linha crua do banco (colunas nullable, ver src/integrations/supabase/types.ts) é
-// normalizada para os tipos não-nulos de QuoteVersion antes de ir para o estado.
+// Contrato de useQuoteVersions.fetchVersions: os valores financeiros e o status seguem
+// normalizados, mas os TIMESTAMPS preservam o null do banco desde o fix do crash de
+// render (coagir para '' fazia `format(new Date(''))` lançar em QuoteVersionHistory).
 function coerced(raw: QuoteVersion, items_count: number): QuoteVersion {
   return {
     ...raw,
@@ -126,8 +134,8 @@ function coerced(raw: QuoteVersion, items_count: number): QuoteVersion {
     subtotal: raw.subtotal ?? 0,
     discount_amount: raw.discount_amount ?? 0,
     discount_percent: raw.discount_percent ?? 0,
-    created_at: raw.created_at ?? '',
-    updated_at: raw.updated_at ?? '',
+    created_at: raw.created_at,
+    updated_at: raw.updated_at,
     items_count,
   };
 }
@@ -177,8 +185,8 @@ describe('legacy quote version raw financial contract', () => {
       subtotal: 0,
       discount_amount: 0,
       discount_percent: 0,
-      created_at: '',
-      updated_at: '',
+      created_at: null,
+      updated_at: null,
     });
     expect(result.current.isLoading).toBe(false);
   });
