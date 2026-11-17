@@ -148,13 +148,25 @@ def run_cases(container: str, output: Path, forward: Path, rollback: Path) -> in
         stdout, stderr = process.communicate(timeout=10)
         record(name, process.returncode == 0, exitCode=process.returncode, output=stdout, error=stderr)
 
-    deadline = time.monotonic() + 30
+    # GUARD: pg_isready (and any query) also answers OK on the TEMPORARY server that
+    # docker-entrypoint.sh starts during initialization with -c listen_addresses='';
+    # that server is then stopped with `pg_ctl -m fast` before the real one is exec'd.
+    # Breaking out on pg_isready alone makes the first calls after the fixture land in
+    # that stop/start window, where psql cannot connect: stdout is empty, so lines[-1]
+    # is '' and the case fails whatever SQL it carries. The image prints this marker
+    # only after the temporary server is gone, so marker + a real query closes the race.
+    marker = 'PostgreSQL init process complete; ready for start up.'
+    deadline = time.monotonic() + 60
     while time.monotonic() < deadline:
-        if docker('exec', container, 'pg_isready', '-U', 'postgres').returncode == 0:
-            break
+        logs = docker('logs', container)
+        if marker in logs.stdout + logs.stderr:
+            probe = docker('exec', container, 'psql', '-X', '-q', '-A', '-t',
+                           '-U', 'postgres', '-v', 'ON_ERROR_STOP=1', '-c', 'SELECT 1')
+            if probe.returncode == 0 and probe.stdout.strip() == '1':
+                break
         time.sleep(0.25)
     else:
-        raise RuntimeError('Disposable PostgreSQL did not become ready in 30 seconds.')
+        raise RuntimeError('Disposable PostgreSQL did not finish initialization in 60 seconds.')
     setup = sql((HERE / 'fixture.sql').read_text())
     (output / 'fixture.log').write_text(setup.stdout + setup.stderr)
     if setup.returncode:
