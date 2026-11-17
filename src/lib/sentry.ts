@@ -191,6 +191,15 @@ async function loadSentry(): Promise<SentryModule | null> {
           (import.meta.env.VITE_SENTRY_ENVIRONMENT as string | undefined) || import.meta.env.MODE,
         // Release tag = commit SHA do Vercel — permite associar erro ao deploy
         release: (import.meta.env.VITE_VERCEL_GIT_COMMIT_SHA as string | undefined) || undefined,
+        // O host de erros não manda `Access-Control-Allow-Origin` para
+        // www.promogifts.com.br: o envio direto morria em CORS e o monitoramento
+        // ficava cego em produção. O envelope vai pela própria origem (api/monitoring.ts).
+        //
+        // Só em build de produção: `api/` é função Vercel e o dev server do Vite
+        // não a serve (nenhum proxy/middleware em vite.config.ts), então apontar
+        // o túnel em dev mandaria todo envelope para um 404 — pior que o envio
+        // direto, que ao menos tenta. Em dev segue direto, como era antes.
+        tunnel: import.meta.env.PROD ? '/api/monitoring' : undefined,
         tracesSampleRate: import.meta.env.PROD ? 0.1 : 0,
         replaysSessionSampleRate: 0,
         // Onda 5: aprovado por Joaquim — replay 100% quando dá erro
