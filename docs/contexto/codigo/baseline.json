@@ -2,11 +2,21 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "001d97084ffdfc4324d68e199de97b1cdac284dc",
+  "commit": "202a82d2b3ce344f351d00c634c81a889f8382c5",
   "branch": "main",
-  "data_commit": "2026-11-17T05:16:06-03:00",
+  "data_commit": "2026-11-17T06:01:14-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "202a82d2",
+    "data": "2026-11-17",
+    "assunto": "fix(db): corrige o comentario de rollback que mandava apagar auditoria em producao (#3765)"
+   },
+   {
+    "sha": "dc82e4de",
+    "data": "2026-11-17",
+    "assunto": "fix(test): corrige a corrida de inicializacao que reprovava 2 de 55 no device-trust (#3764)"
+   },
    {
     "sha": "001d9708",
     "data": "2026-11-17",
@@ -121,19 +131,9 @@
     "sha": "6a8cd1ff",
     "data": "2026-11-17",
     "assunto": "feat(mockup): técnica nova do catálogo não aparecia no filtro do histórico (#3740)"
-   },
-   {
-    "sha": "b2048b0e",
-    "data": "2026-11-17",
-    "assunto": "docs(audit): restaura o pós-mortem dos 29 commits presos fora do GitHub (#3741)"
-   },
-   {
-    "sha": "a5099c4c",
-    "data": "2026-11-17",
-    "assunto": "docs(audit): retira um achado que eu registrei errado e fecha o placar de 17/11 (#3739)"
    }
   ],
-  "arquivos_mudados_7d": 1957,
+  "arquivos_mudados_7d": 1958,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -199,15 +199,15 @@
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "supabase/MIGRATIONS_SYNC_LOG.md",
-    "mudancas": 66
+    "mudancas": 67
    },
    {
     "arquivo": "RELATORIO_CI.md",
-    "mudancas": 62
+    "mudancas": 60
    },
    {
     "arquivo": "PENDENCIAS.md",
-    "mudancas": 54
+    "mudancas": 53
    },
    {
     "arquivo": "package.json",
@@ -301,7 +301,7 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 563
+    "commits": 561
    },
    {
     "autor": "Claude",
@@ -324,7 +324,7 @@
  "contagens": {
   "arquivos_total": 10841,
   "arquivos_codigo": 5367,
-  "linhas_codigo": 1022367,
+  "linhas_codigo": 1022379,
   "rotas": 138,
   "rotas_http_backend": 13,
   "vistas_por_id": 0,
@@ -2180,7 +2180,7 @@
   },
   "tests/sql": {
    "arquivos": 1,
-   "linhas": 245
+   "linhas": 257
   },
   "tests/ssot": {
    "arquivos": 8,

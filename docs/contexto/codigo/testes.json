@@ -20726,7 +20726,7 @@
   {
    "arquivo": "tests/sql/device-trust/run-tests.py",
    "tipo": "pytest",
-   "linhas": 245,
+   "linhas": 257,
    "testa": [],
    "casos": 0
   },
