@@ -17,7 +17,7 @@
  *   GITHUB_EVENT_PATH — caminho para o payload do evento GitHub Actions
  */
 
-import { execFileSync } from 'child_process';
+import { execFileSync, spawnSync } from 'child_process';
 import { existsSync, readFileSync } from 'fs';
 
 const isGate = process.argv.includes('--gate');
@@ -39,6 +39,48 @@ function git(args) {
     gitFailed = true;
     return '';
   }
+}
+
+/**
+ * Roda git sem marcar `gitFailed`: usado onde exit != 0 é um DESFECHO esperado
+ * (merge-tree acusando conflito), não uma falha de ambiente.
+ * @returns {{ status: number, stdout: string }}
+ */
+function gitTry(args) {
+  const res = spawnSync('git', args, { encoding: 'utf8' });
+  return { status: res.status ?? 1, stdout: (res.stdout || '').trim() };
+}
+
+/**
+ * Isenta do E188 apenas UM caso, o do "Update branch" do GitHub: trazer a branch
+ * BASE em dia, sem conflito. Três condições, todas medidas, nenhuma heurística de
+ * mensagem de commit:
+ *
+ *   1. o commit tem exatamente 2 pais;
+ *   2. o 2º pai está contido na base (`merge-base --is-ancestor <p2> origin/<base>`),
+ *      isto é, o que entrou foi a própria base e não o trabalho de outra branch;
+ *   3. o tree commitado é exatamente o tree que o git produziria sozinho
+ *      (`merge-tree --write-tree`, exit 0 = sem conflito).
+ *
+ * Satisfeitas as três, não houve decisão humana nenhuma e o ledger não tem o que
+ * registrar. Merge de branch lateral (ainda que limpo) continua exigindo registro:
+ * integrar trabalho alheio é evento semântico mesmo sem conflito textual.
+ *
+ * Fecha fechado: qualquer coisa que impeça a medida (git antigo, 3+ pais, objeto
+ * ausente num fetch raso) devolve `false`, e o merge continua exigindo ledger.
+ */
+function isAutomaticBaseMerge(oid, baseRef) {
+  const parents = gitTry(['rev-parse', `${oid}^@`]).stdout.split('\n').filter(Boolean);
+  if (parents.length !== 2) return false;
+  if (!baseRef) return false;
+  const inBase = gitTry(['merge-base', '--is-ancestor', parents[1], `origin/${baseRef}`]);
+  if (inBase.status !== 0) return false; // o 2º pai não é a base: trabalho de outra branch
+  const mergeTree = gitTry(['merge-tree', '--write-tree', parents[0], parents[1]]);
+  if (mergeTree.status !== 0) return false; // conflito de verdade
+  const auto = mergeTree.stdout.split('\n')[0]?.trim();
+  const committed = gitTry(['rev-parse', `${oid}^{tree}`]).stdout;
+  if (!auto || !committed) return false;
+  return auto === committed;
 }
 
 const verifyCommit = (ref) => {
@@ -77,8 +119,19 @@ function getChangedFiles(baseRef, headRef) {
 function getMergeCommits(baseRef, headRef) {
   if (!baseRef || !headRef) return [];
   // Commits no PR que seguem o padrão de resolução de conflito (REGRA #3)
-  const out = git(['log', `origin/${baseRef}..${headRef}`, '--format=%s', '--merges']);
-  const mergeSubjects = out ? out.split('\n').filter(Boolean) : [];
+  const out = git(['log', `origin/${baseRef}..${headRef}`, '--format=%H\t%s', '--merges']);
+  const mergeRows = out ? out.split('\n').filter(Boolean) : [];
+  const mergeSubjects = [];
+  for (const row of mergeRows) {
+    const tab = row.indexOf('\t');
+    const oid = tab === -1 ? row : row.slice(0, tab);
+    const subject = tab === -1 ? '' : row.slice(tab + 1);
+    if (isAutomaticBaseMerge(oid, baseRef)) {
+      console.log(`   (isento E188) merge automático da base, sem conflito: ${subject}`);
+      continue;
+    }
+    mergeSubjects.push(subject);
+  }
 
   // Também verificar commits com subject no padrão merge(pr-NNN)
   const allOut = git(['log', `origin/${baseRef}..${headRef}`, '--format=%s']);

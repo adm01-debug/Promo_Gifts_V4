@@ -212,6 +212,53 @@ describe('check-conflict-ledger: casos adicionais (sem bug, documentados)', () =
     expect(r.status).toBe(1);
     expect(r.stdout).toMatch(/merge branch side into feat/);
   });
+
+  // "Update branch" do GitHub: trazer a base em dia não é decisão humana nenhuma.
+  // Antes, todo PR obrigado a ficar em dia (main é strict) tinha que escrever no
+  // ledger mesmo sem conflito — foi o que travou a #3768 por dois ciclos de CI.
+  it('merge automático da BASE, sem conflito, é isento do E188 (exit 0 sem tocar o ledger)', () => {
+    const dir = makeRepo('ledger-basemerge-', 'feat');
+    commitOnBranch(dir, 'feat', { file: 'feat.txt', message: 'feat: só na feat' });
+    g(dir, ['checkout', '-q', 'main']);
+    execFileSync('bash', ['-c', 'echo avancou > so-na-main.txt'], { cwd: dir });
+    g(dir, ['add', '-A']);
+    g(dir, ['commit', '-q', '-m', 'chore: main avança']);
+    g(dir, ['update-ref', 'refs/remotes/origin/main', 'refs/heads/main']);
+    g(dir, ['checkout', '-q', 'feat']);
+    g(dir, ['merge', '-q', '--no-ff', '-m', "Merge branch 'main' into feat", 'main']);
+
+    const r = run(dir, { GITHUB_BASE_REF: 'main', GITHUB_HEAD_REF: 'feat' }, ['--gate']);
+    expect(r.status).toBe(0);
+    expect(r.stdout).toMatch(/isento E188.*merge automático da base/);
+    expect(r.stdout).toMatch(/Nenhum commit de merge semântico/);
+  });
+
+  // A isenção vale só para merge automático: resolução à mão muda o tree e volta a exigir.
+  it('merge da BASE com conflito resolvido à mão NÃO é isento (exit 1)', () => {
+    const dir = makeRepo('ledger-conflito-', 'feat');
+    execFileSync('bash', ['-c', 'echo original > disputado.txt'], { cwd: dir });
+    g(dir, ['add', '-A']);
+    g(dir, ['commit', '-q', '-m', 'chore: arquivo disputado']);
+    g(dir, ['update-ref', 'refs/remotes/origin/main', 'refs/heads/main']);
+    g(dir, ['checkout', '-q', '-b', 'feat2', 'main']);
+    execFileSync('bash', ['-c', 'echo lado-da-feat > disputado.txt'], { cwd: dir });
+    g(dir, ['add', '-A']);
+    g(dir, ['commit', '-q', '-m', 'feat: feat2 muda disputado.txt']);
+    g(dir, ['checkout', '-q', 'main']);
+    execFileSync('bash', ['-c', 'echo lado-da-main > disputado.txt'], { cwd: dir });
+    g(dir, ['add', '-A']);
+    g(dir, ['commit', '-q', '-m', 'chore: main muda disputado.txt']);
+    g(dir, ['update-ref', 'refs/remotes/origin/main', 'refs/heads/main']);
+    g(dir, ['checkout', '-q', 'feat2']);
+    spawnSync('git', ['merge', '--no-ff', '-m', "Merge branch 'main' into feat2", 'main'], { cwd: dir });
+    execFileSync('bash', ['-c', 'echo resolucao-humana > disputado.txt'], { cwd: dir });
+    g(dir, ['add', 'disputado.txt']);
+    g(dir, ['commit', '-q', '-m', "Merge branch 'main' into feat2"]);
+
+    const r = run(dir, { GITHUB_BASE_REF: 'main', GITHUB_HEAD_REF: 'feat2' }, ['--gate']);
+    expect(r.status).toBe(1);
+    expect(r.stdout).not.toMatch(/isento E188/);
+  });
 });
 
 describe('check-conflict-ledger: checkout de pull_request do GitHub (só origin/<branch>)', () => {
