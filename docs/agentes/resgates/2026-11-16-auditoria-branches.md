@@ -688,3 +688,32 @@ O `Gate 2.5` depende de Docker no runner e, quando o runner não tem, reprova em
 `[simulate-quote-rpc-proposals] ❌ pré-requisito ausente: Docker indisponível` na run
 44052951491 derrubou uma PR docs-only. Re-executar resolveu. Fica anotado: o gate não distingue
 "contrato violado" de "runner sem Docker".
+
+### O risco que a #3683 declarava em aberto — provado contra PostgREST real
+
+O corpo da #3683 avisava, com honestidade, que o formato do filtro **nunca tinha sido
+exercitado contra um PostgREST de verdade**, e que "se o formato estiver errado, toda leitura
+de vendedor no CRM passa a dar erro depois do deploy". O merge da #3769 **não** faz deploy
+(edge sobe só pelo `deploy-edge-functions.yml`), então houve tempo de provar antes.
+
+O PostgREST do CRM não é alcançável deste container. A prova foi feita contra o PostgREST do
+projeto canônico de produtos, com a chave publishable do próprio projeto — a mesma que o app
+manda do navegador. O que se decide aqui é se o **parser** aceita a forma, e isso não depende
+de qual banco está atrás.
+
+| caso | querystring | resposta |
+|---|---|---|
+| A — forma que o bridge gera | `__s.products.or=(is_active.eq.true,is_active.is.null)` | **401 `42501`** permission denied for table |
+| A2 — alias + 2 níveis (profundidade exata do `contact_emails`) | `__s.products.product_properties.or=(product_id.eq.…,product_id.is.null)` | **401 `42501`** permission denied for table |
+| B — controle, forma errada | `or=(__s.products.is_active.eq.true,…)` | **400 `PGRST100`** `unexpected "p" expecting "not" or operator` |
+| C — sem prefixo, coluna própria (caso `customers`) | `or=(is_active.eq.true,is_active.is.null)` | **200**, com linha |
+| D — controle, sintaxe quebrada | `or=(is_active.eq.true,` | **400 `PGRST100`** |
+
+`42501` é erro do **Postgres**, não do parser: a query foi lida e planejada, e parou só no
+privilégio da tabela (`anon` não tem acesso a `variant_supplier_sources`). Se o formato fosse
+inválido viria `PGRST100`, como em B — que é justamente a forma que o nosso código **não**
+gera. C mostra o caminho sem prefixo respondendo 200.
+
+Para isso o host `doufsxqlfjyuvxuezpln.supabase.co` foi liberado na allowlist de rede do
+ambiente (era bloqueado: `CONNECT tunnel failed, response 403`). A sonda ficou no scratchpad
+da sessão, não no repo: é diagnóstico de uma vez, não um portão.
