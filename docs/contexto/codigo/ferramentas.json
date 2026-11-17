@@ -8,7 +8,7 @@
    "Markdown (1465)",
    "JavaScript (457)",
    "JSON (132)",
-   "YAML (115)",
+   "YAML (116)",
    "Shell (27)",
    "HTML (20)"
   ],
@@ -2097,6 +2097,40 @@
     "E2E_USER_PASSWORD",
     "VITE_SUPABASE_PUBLISHABLE_KEY",
     "VITE_SUPABASE_URL"
+   ],
+   "actions": [
+    "actions/checkout",
+    "actions/setup-node",
+    "actions/upload-artifact"
+   ]
+  },
+  {
+   "arquivo": ".github/workflows/inventario-estado-semanal.yml",
+   "nome": "Inventário do estado real (semanal)",
+   "gatilhos": [
+    "schedule",
+    "workflow_dispatch"
+   ],
+   "crons": [
+    "41 12 * * 1"
+   ],
+   "branches": [],
+   "jobs": [
+    "gerar"
+   ],
+   "permissoes": [
+    "contents: write      # criar branch e commitar o inventário",
+    "pull-requests: write # abrir PR"
+   ],
+   "scripts_usados": [
+    "scripts/inventario/gerar-banco.mjs",
+    "scripts/inventario/gerar-repo.mjs",
+    "scripts/inventario/gerar-rotas.mjs"
+   ],
+   "npm_scripts": [],
+   "secrets": [
+    "GITHUB_TOKEN",
+    "SUPABASE_ACCESS_TOKEN"
    ],
    "actions": [
     "actions/checkout",

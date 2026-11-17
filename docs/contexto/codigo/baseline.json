@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "8b5adaa4eb94db5c2924f48463e297990001c057",
+  "commit": "8749d83aaca4fb570081cd527326eed76ee8af09",
   "branch": "main",
-  "data_commit": "2026-11-17T02:39:15-03:00",
+  "data_commit": "2026-11-17T02:49:54-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "8749d83a",
+    "data": "2026-11-17",
+    "assunto": "ci: resgata o workflow semanal que mantem o inventario de estado vivo (#3722)"
+   },
    {
     "sha": "8b5adaa4",
     "data": "2026-11-17",
@@ -126,14 +131,9 @@
     "sha": "bd18202a",
     "data": "2026-11-16",
     "assunto": "test(mockup): resgata as 4 guardas que faltavam das fatias da fábrica VPS (#3730)"
-   },
-   {
-    "sha": "8ba14375",
-    "data": "2026-11-16",
-    "assunto": "fix(edge-fn): mockup baixava a imagem inteira na memória antes de recusar (#3729)"
    }
   ],
-  "arquivos_mudados_7d": 1935,
+  "arquivos_mudados_7d": 1937,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -211,11 +211,11 @@
    },
    {
     "arquivo": "package.json",
-    "mudancas": 42
+    "mudancas": 41
    },
    {
     "arquivo": "package-lock.json",
-    "mudancas": 26
+    "mudancas": 25
    },
    {
     "arquivo": "docs/coordenacao/conflitos-semanticos.md",
@@ -243,7 +243,7 @@
    },
    {
     "arquivo": "CHANGELOG.md",
-    "mudancas": 13
+    "mudancas": 12
    },
    {
     "arquivo": "audit/supabase-reference-catalog.temporary.json",
@@ -266,6 +266,10 @@
     "mudancas": 10
    },
    {
+    "arquivo": "docs/ci/SEGREDOS.md",
+    "mudancas": 10
+   },
+   {
     "arquivo": "e2e/flows/magazine-publish-smoke.spec.ts",
     "mudancas": 10
    },
@@ -275,10 +279,6 @@
    },
    {
     "arquivo": "analise-prs/prs.json",
-    "mudancas": 9
-   },
-   {
-    "arquivo": "docs/ci/SEGREDOS.md",
     "mudancas": 9
    },
    {
@@ -301,7 +301,7 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 572
+    "commits": 571
    },
    {
     "autor": "Claude",
@@ -322,7 +322,7 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 10821,
+  "arquivos_total": 10822,
   "arquivos_codigo": 5360,
   "linhas_codigo": 1020443,
   "rotas": 138,
@@ -337,7 +337,7 @@
   "migrations": 3098,
   "cron_jobs": 122,
   "testes": 2539,
-  "workflows": 87,
+  "workflows": 88,
   "scripts": 283,
   "docs_md": 1465
  },

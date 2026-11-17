@@ -2416,7 +2416,9 @@
     "SUPABASE_PROJECT_REF"
    ],
    "npm_scripts": [],
-   "workflows": [],
+   "workflows": [
+    "inventario-estado-semanal.yml"
+   ],
    "orfao": false
   },
   {
@@ -2425,7 +2427,9 @@
    "linhas": 139,
    "env": [],
    "npm_scripts": [],
-   "workflows": [],
+   "workflows": [
+    "inventario-estado-semanal.yml"
+   ],
    "orfao": false
   },
   {
@@ -2436,7 +2440,9 @@
     "DEV"
    ],
    "npm_scripts": [],
-   "workflows": [],
+   "workflows": [
+    "inventario-estado-semanal.yml"
+   ],
    "orfao": false
   },
   {

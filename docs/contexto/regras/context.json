@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "8b5adaa4eb94db5c2924f48463e297990001c057",
+  "sha": "8749d83aaca4fb570081cd527326eed76ee8af09",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-17 05:40 UTC",
-  "files_total": 10749,
+  "generated_at": "2026-11-17 05:51 UTC",
+  "files_total": 10750,
   "code_files": 8792,
   "code_lines": 1240296
  },
  "version": "1.3.2",
- "facts_hash": "99687e23154b0be9",
+ "facts_hash": "308f8ab4359e4c7f",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -793,6 +793,14 @@
     "name": "Global Search Quality Gate",
     "triggers": [
      "push"
+    ]
+   },
+   {
+    "file": ".github/workflows/inventario-estado-semanal.yml",
+    "name": "Inventário do estado real (semanal)",
+    "triggers": [
+     "schedule",
+     "workflow_dispatch"
     ]
    },
    {
@@ -144690,6 +144698,11 @@
     "kind": "GitHub Actions cron",
     "detail": "44 6 * * *",
     "file": ".github/workflows/gitleaks-history-audit.yml"
+   },
+   {
+    "kind": "GitHub Actions cron",
+    "detail": "41 12 * * 1",
+    "file": ".github/workflows/inventario-estado-semanal.yml"
    },
    {
     "kind": "GitHub Actions cron",
@@ -541273,10 +541286,21 @@
   }
  },
  "git": {
-  "sha": "8b5adaa4eb94db5c2924f48463e297990001c057",
+  "sha": "8749d83aaca4fb570081cd527326eed76ee8af09",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "8749d83",
+    "date": "2026-11-17",
+    "author": "adm01-debug",
+    "subject": "ci: resgata o workflow semanal que mantem o inventario de estado vivo (#3722)",
+    "files": [
+     ".github/workflows/codeql.yml",
+     ".github/workflows/inventario-estado-semanal.yml",
+     "docs/ci/SEGREDOS.md"
+    ]
+   },
    {
     "sha": "8b5adaa",
     "date": "2026-11-17",
@@ -541574,15 +541598,6 @@
      "supabase/baseline/20261108000000_cron_jobs.json",
      "supabase/baseline/20261116000000_cron_jobs.json"
     ]
-   },
-   {
-    "sha": "de5ce2c",
-    "date": "2026-11-16",
-    "author": "adm01-debug",
-    "subject": "fix(ci): export do schema snapshot não roda quando o drift-gate é cancelado (#3718)",
-    "files": [
-     ".github/workflows/schema-snapshot-export.yml"
-    ]
    }
   ],
   "hot_files": [
@@ -541599,12 +541614,20 @@
     2
    ],
    [
-    ".github/workflows/schema-snapshot-export.yml",
+    "docs/MOCKUP_OPERACAO.md",
     2
    ],
    [
-    "docs/MOCKUP_OPERACAO.md",
-    2
+    ".github/workflows/codeql.yml",
+    1
+   ],
+   [
+    ".github/workflows/inventario-estado-semanal.yml",
+    1
+   ],
+   [
+    "docs/ci/SEGREDOS.md",
+    1
    ],
    [
     "supabase/MIGRATIONS_SYNC_LOG.md",
@@ -541656,14 +541679,6 @@
    ],
    [
     ".github/workflows/replenishment-quality.yml",
-    1
-   ],
-   [
-    ".github/workflows/visual-tests.yml",
-    1
-   ],
-   [
-    "tests/scripts/e2e-relevance.test.mjs",
     1
    ]
   ]
