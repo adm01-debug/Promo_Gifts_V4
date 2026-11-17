@@ -13593,8 +13593,8 @@
   {
    "modulo": "components/quotes",
    "arquivos": 50,
-   "testes": 36,
-   "linhas": 11111,
+   "testes": 37,
+   "linhas": 11125,
    "itens_menu": [],
    "telas": [],
    "rotas_http": [],

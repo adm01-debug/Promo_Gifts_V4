@@ -14148,7 +14148,7 @@
     "QuoteAutoSave"
    ],
    "export_default": null,
-   "linhas": 411,
+   "linhas": 425,
    "dominio": "components/quotes",
    "hooks_locais": [
     "useQuoteAutoSave"

@@ -23,8 +23,8 @@
    "src/services (10)"
   ],
   "testes": [
-   "tests/ (1034)",
-   "co-localizado (__tests__) (674)",
+   "tests/ (1035)",
+   "co-localizado (__tests__) (675)",
    "e2e/ (625)"
   ],
   "edge_functions": "supabase/functions",
@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
-   "fix(trust): resgata o contrato de \"dispositivo confiável\" e tapa o furo que ele achou (#3735)",
-   "docs(audit): rodada de 17/11 no ledger de auditoria de branches (#3734)",
-   "fix(docs): número errado de migration no doc resgatado deixou o Gate 1 vermelho na main (#3733)",
-   "docs(audit): resgata 4 documentos da fábrica VPS que não existiam na main (#3731)",
-   "test(mockup): resgata as 4 guardas que faltavam das fatias da fábrica VPS (#3730)"
+   "fix(quotes): erro ao salvar o rascunho do orçamento ficava invisível para o vendedor (#3732)",
+   "test(mockup): resgata o contrato do handler REAL do generate-mockup (#3737)",
+   "docs(audit): resgata as regras de negócio que só existiam em 2 branches, reconferidas no código (#3738)",
+   "docs(audit): o plano C3 mandava apagar secret_value sem avisar que a edge lê essa coluna (#3736)",
+   "fix(trust): resgata o contrato de \"dispositivo confiável\" e tapa o furo que ele achou (#3735)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",

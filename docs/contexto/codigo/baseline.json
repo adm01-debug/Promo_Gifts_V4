@@ -2,11 +2,31 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "083510fb18758c9564ec000fc0f462385fa4b383",
+  "commit": "4963dcdfdbc0388a090b560eb49a387d044e4aa6",
   "branch": "main",
-  "data_commit": "2026-11-16T23:32:11-03:00",
+  "data_commit": "2026-11-16T23:42:48-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "4963dcdf",
+    "data": "2026-11-16",
+    "assunto": "fix(quotes): erro ao salvar o rascunho do orçamento ficava invisível para o vendedor (#3732)"
+   },
+   {
+    "sha": "0f7644a2",
+    "data": "2026-11-16",
+    "assunto": "test(mockup): resgata o contrato do handler REAL do generate-mockup (#3737)"
+   },
+   {
+    "sha": "a4ac9034",
+    "data": "2026-11-16",
+    "assunto": "docs(audit): resgata as regras de negócio que só existiam em 2 branches, reconferidas no código (#3738)"
+   },
+   {
+    "sha": "9d1bb689",
+    "data": "2026-11-16",
+    "assunto": "docs(audit): o plano C3 mandava apagar secret_value sem avisar que a edge lê essa coluna (#3736)"
+   },
    {
     "sha": "083510fb",
     "data": "2026-11-16",
@@ -111,29 +131,9 @@
     "sha": "dc5f7b42",
     "data": "2026-11-16",
     "assunto": "chore(deps): bump production-minor-patch group — 12 atualizacoes (#3693)"
-   },
-   {
-    "sha": "5c39856e",
-    "data": "2026-11-16",
-    "assunto": "fix(migrations): restaura 325 recibos do ledger apagados por um commit de E2E (#3708)"
-   },
-   {
-    "sha": "ec9b8e75",
-    "data": "2026-11-16",
-    "assunto": "docs(audit): retrata o veredito dos 52 testes legacy — 21 dos 26 modulos estao vivos (#3706)"
-   },
-   {
-    "sha": "f6335b1c",
-    "data": "2026-11-16",
-    "assunto": "fix(ci): Gate E23 e Gate Final aceitam fork/Dependabot sem secrets (#3707)"
-   },
-   {
-    "sha": "43fc3595",
-    "data": "2026-11-16",
-    "assunto": "feat(audit): resgata 267 arquivos de analise-prs que existiam só em branch de agente (#3705)"
    }
   ],
-  "arquivos_mudados_7d": 1919,
+  "arquivos_mudados_7d": 1923,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -161,7 +161,7 @@
    },
    {
     "pasta": "src/components/quotes",
-    "mudancas": 112
+    "mudancas": 114
    },
    {
     "pasta": "supabase/functions/_shared",
@@ -189,7 +189,7 @@
    },
    {
     "pasta": "RELATORIO_CI.md",
-    "mudancas": 70
+    "mudancas": 69
    },
    {
     "pasta": "src/pages/products",
@@ -199,7 +199,7 @@
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "RELATORIO_CI.md",
-    "mudancas": 70
+    "mudancas": 69
    },
    {
     "arquivo": "supabase/MIGRATIONS_SYNC_LOG.md",
@@ -207,7 +207,7 @@
    },
    {
     "arquivo": "PENDENCIAS.md",
-    "mudancas": 60
+    "mudancas": 58
    },
    {
     "arquivo": "package.json",
@@ -222,12 +222,12 @@
     "mudancas": 22
    },
    {
-    "arquivo": ".github/workflows/deploy-gates.yml",
+    "arquivo": "supabase/EDGE_FUNCTIONS_DEPLOY_LOG.md",
     "mudancas": 16
    },
    {
-    "arquivo": "supabase/EDGE_FUNCTIONS_DEPLOY_LOG.md",
-    "mudancas": 16
+    "arquivo": ".github/workflows/deploy-gates.yml",
+    "mudancas": 15
    },
    {
     "arquivo": "CHANGELOG.md",
@@ -322,9 +322,9 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 10809,
-  "arquivos_codigo": 5352,
-  "linhas_codigo": 1019436,
+  "arquivos_total": 10811,
+  "arquivos_codigo": 5354,
+  "linhas_codigo": 1019802,
   "rotas": 138,
   "rotas_http_backend": 13,
   "vistas_por_id": 0,
@@ -336,7 +336,7 @@
   "tabelas": 527,
   "migrations": 3097,
   "cron_jobs": 122,
-  "testes": 2533,
+  "testes": 2535,
   "workflows": 87,
   "scripts": 283,
   "docs_md": 1463
@@ -1887,8 +1887,8 @@
    "linhas": 130
   },
   "src/components": {
-   "arquivos": 1390,
-   "linhas": 277175
+   "arquivos": 1391,
+   "linhas": 277292
   },
   "src/config": {
    "arquivos": 1,
@@ -2063,8 +2063,8 @@
    "linhas": 165
   },
   "tests/edge-functions": {
-   "arquivos": 178,
-   "linhas": 13630
+   "arquivos": 179,
+   "linhas": 13879
   },
   "tests/fixtures": {
    "arquivos": 3,

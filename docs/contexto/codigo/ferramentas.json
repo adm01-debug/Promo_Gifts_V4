@@ -3,7 +3,7 @@
  "format_version": 2,
  "stack": {
   "linguagens": [
-   "TypeScript (4888)",
+   "TypeScript (4890)",
    "SQL (3431)",
    "Markdown (1463)",
    "JavaScript (456)",
@@ -4619,7 +4619,7 @@
   "hosts_externos": [
    {
     "host": "doufsxqlfjyuvxuezpln.supabase.co",
-    "arquivos": 61
+    "arquivos": 62
    },
    {
     "host": "wa.me",
@@ -5377,11 +5377,11 @@
     "ocorrencias": 27
    },
    {
-    "papel": "agente",
-    "ocorrencias": 26
+    "papel": "vendedor",
+    "ocorrencias": 27
    },
    {
-    "papel": "vendedor",
+    "papel": "agente",
     "ocorrencias": 26
    },
    {
