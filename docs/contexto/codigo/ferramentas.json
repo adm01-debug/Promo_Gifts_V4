@@ -3,9 +3,9 @@
  "format_version": 2,
  "stack": {
   "linguagens": [
-   "TypeScript (4900)",
+   "TypeScript (4905)",
    "SQL (3440)",
-   "Markdown (1469)",
+   "Markdown (1470)",
    "JavaScript (457)",
    "JSON (132)",
    "YAML (116)",
@@ -4260,6 +4260,10 @@
    "arquivos_md": 11
   },
   {
+   "pasta": "docs/agentes",
+   "arquivos_md": 11
+  },
+  {
    "pasta": "docs/auditoria-planejado-nao-executado-2026-10-11",
    "arquivos_md": 11
   },
@@ -4270,10 +4274,6 @@
   {
    "pasta": "docs/validation",
    "arquivos_md": 11
-  },
-  {
-   "pasta": "docs/agentes",
-   "arquivos_md": 10
   },
   {
    "pasta": "docs/architecture",
@@ -4818,6 +4818,10 @@
     "arquivos": 2
    },
    {
+    "host": "erros.atomicabr.com.br",
+    "arquivos": 2
+   },
+   {
     "host": "example.invalid",
     "arquivos": 2
    },
@@ -5003,10 +5007,6 @@
    },
    {
     "host": "doufsxqlfjyuvxuezpln.functions.supabase.co",
-    "arquivos": 1
-   },
-   {
-    "host": "erros.atomicabr.com.br",
     "arquivos": 1
    },
    {

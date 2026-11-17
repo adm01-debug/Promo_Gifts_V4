@@ -23,8 +23,8 @@
    "src/services (10)"
   ],
   "testes": [
-   "tests/ (1040)",
-   "co-localizado (__tests__) (676)",
+   "tests/ (1043)",
+   "co-localizado (__tests__) (677)",
    "e2e/ (625)"
   ],
   "edge_functions": "supabase/functions",
@@ -43,7 +43,7 @@
  "nomenclatura": {
   "componentes": "PascalCase (95%)",
   "hooks": "use + PascalCase",
-  "servicos": "kebab-case (52%)",
+  "servicos": "kebab-case (51%)",
   "edge_functions": "kebab-case (99%)",
   "tabelas": "snake_case (86%)"
  },
@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "fix(observabilidade): tunela envelopes do Sentry pela própria origem (CORS matava 100% dos relatórios) (#3784)",
+   "docs(resgate): adjudica byte-a-byte os 219 arquivos ausentes do main (#3785)",
+   "test(kit-builder): resgata o teste da guarda financeira de kit (#3786)",
    "docs(resgate): conserta as 13 referencias quebradas do dossie da 3390 (#3783)",
-   "chore(deps): tira basic-ftp da lista de risco tolerado, ja que o override o eliminou (#3782)",
-   "docs: marca como vivos na main os 3 itens que o dossiê pedia para completar (#3780)",
-   "docs: retira o \"0 ausentes\" da auditoria — era defeito do instrumento (#3779)",
-   "fix(ci): isenta do E188 o merge automático da base sem conflito (#3776)"
+   "chore(deps): tira basic-ftp da lista de risco tolerado, ja que o override o eliminou (#3782)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",

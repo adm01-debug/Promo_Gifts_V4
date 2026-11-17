@@ -5,12 +5,13 @@
  "modulos": [
   {
    "modulo": "api",
-   "arquivos": 3,
+   "arquivos": 4,
    "testes": 0,
-   "linhas": 425,
+   "linhas": 612,
    "itens_menu": [],
    "telas": [
     "/api/health",
+    "/api/monitoring",
     "/api/ready",
     "/api/sitemap"
    ],
@@ -22905,7 +22906,7 @@
    "modulo": "lib",
    "arquivos": 58,
    "testes": 1,
-   "linhas": 8906,
+   "linhas": 8915,
    "itens_menu": [],
    "telas": [],
    "rotas_http": [],
@@ -23715,7 +23716,7 @@
   {
    "modulo": "lib/__tests__",
    "arquivos": 0,
-   "testes": 16,
+   "testes": 17,
    "linhas": 0,
    "itens_menu": [],
    "telas": [],

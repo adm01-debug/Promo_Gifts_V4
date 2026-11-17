@@ -1,7 +1,7 @@
 {
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
- "nos": 2824,
+ "nos": 2825,
  "arestas": 11105,
  "hubs": [
   {
@@ -70,7 +70,7 @@
   },
   {
    "arquivo": "src/lib/kit-builder/index.ts",
-   "importado_por": 104
+   "importado_por": 105
   },
   {
    "arquivo": "src/lib/db/postgrest.ts",

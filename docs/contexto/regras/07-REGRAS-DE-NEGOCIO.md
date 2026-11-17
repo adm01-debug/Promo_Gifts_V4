@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.3.2 · commit `3c57858443` · branch `main` · 2026-11-17 15:17 UTC
+> Gerado automaticamente por AI Context Sync v1.3.2 · commit `87ffb0ee00` · branch `main` · 2026-11-17 16:33 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -5084,6 +5084,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 
 | Trecho | Arquivo |
 |---|---|
+| `* + `net::ERR_FAILED`) — o monitoramento de produção estava 100% cego. Com` | `api/monitoring.ts` |
 | `* - Amarelo (warning): falhas dentro do esperado (<2% taxa).` | `recovery/src-legacy/src/components/admin/telemetry/PlatformFailureCards.tsx` |
 | `* - Vermelho (destructive): pico de falhas (>2% taxa) ou delta crescente.` | `recovery/src-legacy/src/components/admin/telemetry/PlatformFailureCards.tsx` |
 | `transition={{ delay: idx * 0.05 }}` | `recovery/src-legacy/src/components/cart/CartHealthChecklist.tsx` |
@@ -5346,6 +5347,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 
 | Constante | Valor | Arquivo |
 |---|---|---|
+| `MAX_BODY_BYTES` | `20` | `api/monitoring.ts` |
 | `PROBE_TIMEOUT_MS` | `3` | `api/ready.ts` |
 | `PAGE_SIZE` | `1000` | `api/sitemap.ts` |
 | `CACHE_VERSION` | `'v19'` | `public/sw.js` |
@@ -5645,8 +5647,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `REPLENISHMENT_WINDOW_DAYS` | `30` | `src/hooks/products/useReplenishments.ts` |
 | `FETCH_ALL_LIMIT` | `2000` | `src/hooks/products/useReplenishments.ts` |
 | `MAX_SELLER_CARTS` | `50` | `src/hooks/products/useSellerCarts.helpers.ts` |
-| `MIN_ITEM_QUANTITY` | `1` | `src/hooks/products/useSellerCarts.helpers.ts` |
-| … +367 linhas — lista completa em `context.json` | | |
+| … +368 linhas — lista completa em `context.json` | | |
 
 ### H.2 Prazos, expirações e janelas de tempo
 
@@ -6137,6 +6138,9 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 |---|---|
 | Assertion failed: ${message} | `test-hooks-safety.mjs` |
 | Assertion failed: ${message} | `test-magazine-fix.mjs` |
+| dsn_nao_permitido | `api/monitoring.ts` |
+| envelope_vazio | `api/monitoring.ts` |
+| method_not_allowed | `api/monitoring.ts` |
 |              className= | `docs/agentes/resgates/quote-comments/codigo/QuoteCommentsSection.tsx` |
 | Comment insert returned no row | `docs/agentes/resgates/quote-comments/codigo/useQuoteComments.ts` |
 | Comment not found or delete not permitted | `docs/agentes/resgates/quote-comments/codigo/useQuoteComments.ts` |
@@ -6432,10 +6436,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | allowlist inválida: versions contém duplicatas | `scripts/check-supabase-migration-ledger.mjs` |
 | allowlist inválida: versions contém valor vazio/não textual | `scripts/check-supabase-migration-ledger.mjs` |
 | allowlist inválida: versions deve ser array não vazio | `scripts/check-supabase-migration-ledger.mjs` |
-| allowlist inválida: versions_sha256 divergente; calculado=${digest} | `scripts/check-supabase-migration-ledger.mjs` |
-| saída não é JSON nem tabela reconhecida de migration list | `scripts/check-supabase-migration-ledger.mjs` |
-| saída vazia do supabase migration list | `scripts/check-supabase-migration-ledger.mjs` |
-| … +1297 linhas — lista completa em `context.json` | |
+| … +1300 linhas — lista completa em `context.json` | |
 
 ## J. Controle de acesso no código (checagens de perfil/permissão)
 
@@ -6559,7 +6560,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `admin` | `supabase/migrations/20261112120500_fix_optimization_queue_rpcs_dev_access.sql` |
 | `anon` | `tests/edge-functions/live/_live-client.ts` |
 
-## K. Testes como especificação (21952 testes em 2221 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (21978 testes em 2225 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -6863,7 +6864,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `src/hooks/products/__tests__/useProductsLightweight.test.ts` | 18 | mapLightweightToProduct · retorna id como string mesmo quando input é number · FIX BUG-D: prefere leaf_category_id sobre category_id sobre main_category_id · FIX BUG-D: usa category_id quando leaf_category_id nulo … |
 | `src/lib/carts/__tests__/shipping-deadline.edge.test.ts` | 18 | shipping-deadline · edge cases · borda +3 / +4 dias (soon vs ok) · +3 dias exatamente → soon com rótulo  · +4 dias exatamente → ok com rótulo  … |
 | `src/lib/inventory/__tests__/health-score.test.ts` | 18 | calcHealthScore · retorna 100 quando não há produtos · retorna 100 quando todos estão adequados · retorna 0 quando nenhum está adequado … |
-| … +1921 linhas — lista completa em `context.json` | | |
+| … +1925 linhas — lista completa em `context.json` | | |
 
 ## L. Eventos de webhook tratados (contratos com sistemas externos)
 
@@ -7070,6 +7071,8 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | called here". Rodam apenas via Playwright. Mantemos os specs Vitest legítimos | `vitest.config.ts` |
 | Deve rodar apenas em ambientes com VITE_SUPABASE_URL/KEY reais configurados. | `vitest.config.ts` |
 | Roda apenas via `node tests/scripts/check-file-size-baseline.test.mjs`. | `vitest.config.ts` |
+| diz apenas que a mensagem HTTP chegou inteira: com o corpo ainda no buffer, | `api/monitoring.ts` |
+| GUARD: devolver o status original e os headers de limite. O transporte do | `api/monitoring.ts` |
 | * Pré-requisito: vercel.json deve mapear /sitemap.xml → /api/sitemap e não | `api/sitemap.ts` |
 | -- Usar cron.alter_job (não execute_sql direto — REGRA #8 corolário E056) | `auditoria-supabase/propostas/P12_cron_new_001_run_script_auth.sql` |
 | Apenas tipos que o browser carrega como módulo/stylesheet — usados na | `public/sw.js` |
@@ -7329,6 +7332,4 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | Regra única do logo do mockup (SVG fora: a edge generate-mockup rejeita SVG). | `src/components/mockup/AreaCard.tsx` |
 | * Validação sem rede: extensão, tipo informado pelo navegador e tamanho. Retorna a mensagem de erro ou null. */ | `src/components/mockup/ArtFileUpload.tsx` |
 | Remover a empresa exige confirmação (mesma regra do Magic Up) — evita perda acidental. | `src/components/mockup/MockupClientSelector.tsx` |
-| Fecha APENAS a lista — a empresa selecionada permanece intacta. | `src/components/mockup/MockupClientSelector.tsx` |
-| * Máximo de cores suportadas na área */ | `src/components/mockup/MultiAreaManager.tsx` |
-| … +1327 linhas — lista completa em `context.json` | |
+| … +1329 linhas — lista completa em `context.json` | |

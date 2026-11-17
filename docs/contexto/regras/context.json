@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "3c578584436cc94c9531304379850b13daa65413",
+  "sha": "87ffb0ee00da078e13b041022aaa4874014dafe1",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-17 15:17 UTC",
-  "files_total": 10769,
-  "code_files": 8806,
-  "code_lines": 1243414
+  "generated_at": "2026-11-17 16:33 UTC",
+  "files_total": 10775,
+  "code_files": 8811,
+  "code_lines": 1244127
  },
  "version": "1.3.2",
- "facts_hash": "ef1b071b541a81f6",
+ "facts_hash": "a79947ab86818942",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -1120,8 +1120,8 @@
   "package_manager": "npm",
   "languages": {
    ".sql": 3440,
-   ".ts": 2992,
-   ".tsx": 1909,
+   ".ts": 2996,
+   ".tsx": 1910,
    ".mjs": 450,
    ".py": 15,
    ".js": 7
@@ -148648,11 +148648,12 @@
   },
   {
    "module": "api",
-   "files": 3,
-   "lines": 425,
+   "files": 4,
+   "lines": 612,
    "tables": [],
    "exports": [
     "health.ts: handler",
+    "monitoring.ts: config, readEnvelope, resolveUpstream, handler, async",
     "ready.ts: handler, async",
     "sitemap.ts: handler, async"
    ],
@@ -148665,6 +148666,7 @@
    "imports_modules": [],
    "file_list": [
     "api/health.ts",
+    "api/monitoring.ts",
     "api/ready.ts",
     "api/sitemap.ts"
    ]
@@ -150141,8 +150143,8 @@
   },
   {
    "module": "src/lib",
-   "files": 343,
-   "lines": 52884,
+   "files": 344,
+   "lines": 52957,
    "tables": [
     "...",
     "companies",
@@ -150314,12 +150316,12 @@
     "src/lib/__tests__/quote-status-config.transitions.test.ts",
     "src/lib/__tests__/quote-status-transitions.matrix.test.ts",
     "src/lib/__tests__/sentry.scrub.test.ts",
+    "src/lib/__tests__/sentry.tunnel.test.ts",
     "src/lib/__tests__/sw-register.reload-cap.test.ts",
     "src/lib/access/access-denied-strings.tsx",
     "src/lib/access/access-policy.test.ts",
     "src/lib/access/access-policy.ts",
-    "src/lib/access/dev-route-telemetry.ts",
-    "src/lib/access/log-access-denied.ts"
+    "src/lib/access/dev-route-telemetry.ts"
    ]
   },
   {
@@ -151576,8 +151578,8 @@
   },
   {
    "module": "tests",
-   "files": 1055,
-   "lines": 162377,
+   "files": 1058,
+   "lines": 162830,
    "tables": [
     "bot_detection_log",
     "clients",
@@ -151757,6 +151759,8 @@
     "tests/admin/skeleton-snapshots.test.tsx",
     "tests/admin/stock-help-tooltip-ref-warning.test.tsx",
     "tests/api/vercel-health-ready.test.ts",
+    "tests/api/vercel-monitoring-tunnel.http.test.ts",
+    "tests/api/vercel-monitoring-tunnel.test.ts",
     "tests/api/vercel-sitemap.test.ts",
     "tests/audit/kit-maker-plan-review.test.tsx",
     "tests/compare/compare-table-rings.test.tsx",
@@ -151777,9 +151781,7 @@
     "tests/components/LastTestLine.test.tsx",
     "tests/components/LoadingScreen.test.tsx",
     "tests/components/NotificationDrawer-a11y.test.tsx",
-    "tests/components/NotificationDrawer-debounce-config.test.tsx",
-    "tests/components/NotificationDrawer-debounce.test.tsx",
-    "tests/components/NotificationDrawer-trigger-fetch-counters.test.tsx"
+    "tests/components/NotificationDrawer-debounce-config.test.tsx"
    ]
   }
  ],
@@ -162989,6 +162991,18 @@
     "msg": "Assertion failed: ${message}"
    },
    {
+    "file": "api/monitoring.ts",
+    "msg": "dsn_nao_permitido"
+   },
+   {
+    "file": "api/monitoring.ts",
+    "msg": "envelope_vazio"
+   },
+   {
+    "file": "api/monitoring.ts",
+    "msg": "method_not_allowed"
+   },
+   {
     "file": "docs/agentes/resgates/quote-comments/codigo/QuoteCommentsSection.tsx",
     "msg": "\n            className="
    },
@@ -169995,6 +170009,14 @@
    {
     "file": "vitest.config.ts",
     "text": "Roda apenas via `node tests/scripts/check-file-size-baseline.test.mjs`."
+   },
+   {
+    "file": "api/monitoring.ts",
+    "text": "diz apenas que a mensagem HTTP chegou inteira: com o corpo ainda no buffer,"
+   },
+   {
+    "file": "api/monitoring.ts",
+    "text": "GUARD: devolver o status original e os headers de limite. O transporte do"
    },
    {
     "file": "api/sitemap.ts",
@@ -196673,6 +196695,11 @@
   ],
   "params": [
    {
+    "file": "api/monitoring.ts",
+    "name": "MAX_BODY_BYTES",
+    "value": "20"
+   },
+   {
     "file": "api/ready.ts",
     "name": "PROBE_TIMEOUT_MS",
     "value": "3"
@@ -218203,6 +218230,10 @@
    }
   ],
   "percents": [
+   {
+    "file": "api/monitoring.ts",
+    "line": "* + `net::ERR_FAILED`) — o monitoramento de produção estava 100% cego. Com"
+   },
    {
     "file": "recovery/src-legacy/src/components/admin/telemetry/PlatformFailureCards.tsx",
     "line": "* - Amarelo (warning): falhas dentro do esperado (<2% taxa)."
@@ -247998,6 +248029,18 @@
     "name": "não mexe na URL quando não há nenhum param de recovery presente"
    },
    {
+    "file": "src/lib/__tests__/sentry.tunnel.test.ts",
+    "name": "Sentry — túnel de mesma origem"
+   },
+   {
+    "file": "src/lib/__tests__/sentry.tunnel.test.ts",
+    "name": "em build de produção manda o envelope pela própria origem"
+   },
+   {
+    "file": "src/lib/__tests__/sentry.tunnel.test.ts",
+    "name": "em dev não usa o túnel (o Vite não serve api/, seria 404 em todo envio)"
+   },
+   {
     "file": "src/lib/__tests__/sw-register.reload-cap.test.ts",
     "name": "scheduleStaleChunkReload"
    },
@@ -265894,6 +265937,86 @@
     "name": "returns the readiness status on HEAD without a response body"
    },
    {
+    "file": "tests/api/vercel-monitoring-tunnel.http.test.ts",
+    "name": "api/monitoring sobre HTTP real"
+   },
+   {
+    "file": "tests/api/vercel-monitoring-tunnel.http.test.ts",
+    "name": "repassa o envelope mesmo quando o corpo já chegou inteiro antes da leitura"
+   },
+   {
+    "file": "tests/api/vercel-monitoring-tunnel.http.test.ts",
+    "name": "não trava: POST sem corpo responde 400 em vez de esperar evento que não vem"
+   },
+   {
+    "file": "tests/api/vercel-monitoring-tunnel.test.ts",
+    "name": "api/monitoring — túnel de envelopes"
+   },
+   {
+    "file": "tests/api/vercel-monitoring-tunnel.test.ts",
+    "name": "repassa o envelope para o endpoint derivado do DSN do próprio envelope"
+   },
+   {
+    "file": "tests/api/vercel-monitoring-tunnel.test.ts",
+    "name": "não é proxy aberto: DSN de host não liberado é recusado SEM fazer requisição"
+   },
+   {
+    "file": "tests/api/vercel-monitoring-tunnel.test.ts",
+    "name": "recusa método diferente de POST"
+   },
+   {
+    "file": "tests/api/vercel-monitoring-tunnel.test.ts",
+    "name": "devolve 502 quando a ingestão falha, sem derrubar a função"
+   },
+   {
+    "file": "tests/api/vercel-monitoring-tunnel.test.ts",
+    "name": "corpo bruto — não pode ficar pendurado no parser da Vercel"
+   },
+   {
+    "file": "tests/api/vercel-monitoring-tunnel.test.ts",
+    "name": "desliga o bodyParser (sem isto o stream chega drenado e o túnel engole tudo)"
+   },
+   {
+    "file": "tests/api/vercel-monitoring-tunnel.test.ts",
+    "name": "usa req.body quando algum runtime já consumiu o stream (Buffer)"
+   },
+   {
+    "file": "tests/api/vercel-monitoring-tunnel.test.ts",
+    "name": "usa req.body quando ele chega como string"
+   },
+   {
+    "file": "tests/api/vercel-monitoring-tunnel.test.ts",
+    "name": "complete=true com bytes ainda no buffer NÃO descarta o envelope (le o stream)"
+   },
+   {
+    "file": "tests/api/vercel-monitoring-tunnel.test.ts",
+    "name": "stream drenado e sem corpo devolve null em vez de esperar evento que não vem"
+   },
+   {
+    "file": "tests/api/vercel-monitoring-tunnel.test.ts",
+    "name": "handler responde 400 em envelope vazio, sem chamar a ingestão"
+   },
+   {
+    "file": "tests/api/vercel-monitoring-tunnel.test.ts",
+    "name": "limite de ingestão — o SDK precisa do status e dos headers"
+   },
+   {
+    "file": "tests/api/vercel-monitoring-tunnel.test.ts",
+    "name": "repassa 429 com Retry-After e X-Sentry-Rate-Limits"
+   },
+   {
+    "file": "tests/api/vercel-monitoring-tunnel.test.ts",
+    "name": "repassa limite por categoria que vem junto com 200"
+   },
+   {
+    "file": "tests/api/vercel-monitoring-tunnel.test.ts",
+    "name": "resolveUpstream — fecha fechado"
+   },
+   {
+    "file": "tests/api/vercel-monitoring-tunnel.test.ts",
+    "name": "aceita só https + host liberado + project id numérico"
+   },
+   {
     "file": "tests/api/vercel-sitemap.test.ts",
     "name": "Vercel dynamic sitemap"
    },
@@ -282308,6 +282431,18 @@
    {
     "file": "tests/hooks/useCustomKitPersistence.account.test.tsx",
     "name": "não mostra kits da conta A ao trocar para B na mesma sessão de navegador"
+   },
+   {
+    "file": "tests/hooks/useCustomKitPersistence.financial.test.tsx",
+    "name": "Legacy explicit persistence financial boundary"
+   },
+   {
+    "file": "tests/hooks/useCustomKitPersistence.financial.test.tsx",
+    "name": "rejects unknown selected prices before insert or update"
+   },
+   {
+    "file": "tests/hooks/useCustomKitPersistence.financial.test.tsx",
+    "name": "retains genuine zero with historical/new flag %s"
    },
    {
     "file": "tests/hooks/useCustomKitPersistence.pin-order.test.tsx",
@@ -400228,6 +400363,35 @@
     }
    ]
   },
+  "api/monitoring.ts": {
+   "path": "api/monitoring.ts",
+   "lines": 187,
+   "exports": [
+    "const config",
+    "function readEnvelope",
+    "function resolveUpstream",
+    "function handler",
+    "default async"
+   ],
+   "errors": [
+    "dsn_nao_permitido",
+    "envelope_vazio",
+    "method_not_allowed"
+   ],
+   "params": [
+    {
+     "name": "MAX_BODY_BYTES",
+     "value": "20"
+    }
+   ],
+   "rule_comments": [
+    "diz apenas que a mensagem HTTP chegou inteira: com o corpo ainda no buffer,",
+    "GUARD: devolver o status original e os headers de limite. O transporte do"
+   ],
+   "percents": [
+    "* + `net::ERR_FAILED`) — o monitoramento de produção estava 100% cego. Com"
+   ]
+  },
   "api/ready.ts": {
    "path": "api/ready.ts",
    "lines": 152,
@@ -469738,7 +469902,7 @@
   },
   "src/lib/sentry.ts": {
    "path": "src/lib/sentry.ts",
-   "lines": 330,
+   "lines": 339,
    "exports": [
     "function scrubBeforeSend",
     "function initSentry",
@@ -470401,6 +470565,17 @@
     "continua removendo headers sensíveis (authorization/cookie) — comportamento pré-existente preservado",
     "não quebra quando o evento não tem request nem breadcrumbs",
     "não mexe na URL quando não há nenhum param de recovery presente"
+   ]
+  },
+  "src/lib/__tests__/sentry.tunnel.test.ts": {
+   "path": "src/lib/__tests__/sentry.tunnel.test.ts",
+   "lines": 64,
+   "is_test": true,
+   "doc": "O túnel só pode valer em build de produção: `api/monitoring` é função Vercel e o dev server do Vite não a serve, então apontar o túnel em dev mandaria todo envelope para um 404 — pior que o envio direto, que ao menos tenta.",
+   "tests": [
+    "Sentry — túnel de mesma origem",
+    "em build de produção manda o envelope pela própria origem",
+    "em dev não usa o túnel (o Vite não serve api/, seria 404 em todo envio)"
    ]
   },
   "src/lib/__tests__/sw-register.reload-cap.test.ts": {
@@ -519558,6 +519733,44 @@
     "returns the readiness status on HEAD without a response body"
    ]
   },
+  "tests/api/vercel-monitoring-tunnel.http.test.ts": {
+   "path": "tests/api/vercel-monitoring-tunnel.http.test.ts",
+   "lines": 114,
+   "is_test": true,
+   "doc": "Integração com HTTP de verdade (node:http), não mock de stream. Por que existe: o mock dispara `data`/`end` no ato em que o listener é registrado, então ele não reproduz o estado real de um `IncomingMessage` — foi assim que passou batido um guard que descartava envelope válido (`complete === true` n …",
+   "tests": [
+    "api/monitoring sobre HTTP real",
+    "repassa o envelope mesmo quando o corpo já chegou inteiro antes da leitura",
+    "não trava: POST sem corpo responde 400 em vez de esperar evento que não vem"
+   ]
+  },
+  "tests/api/vercel-monitoring-tunnel.test.ts": {
+   "path": "tests/api/vercel-monitoring-tunnel.test.ts",
+   "lines": 226,
+   "is_test": true,
+   "errors": [
+    "não deve tentar ler o stream já consumido"
+   ],
+   "tests": [
+    "api/monitoring — túnel de envelopes",
+    "repassa o envelope para o endpoint derivado do DSN do próprio envelope",
+    "não é proxy aberto: DSN de host não liberado é recusado SEM fazer requisição",
+    "recusa método diferente de POST",
+    "devolve 502 quando a ingestão falha, sem derrubar a função",
+    "corpo bruto — não pode ficar pendurado no parser da Vercel",
+    "desliga o bodyParser (sem isto o stream chega drenado e o túnel engole tudo)",
+    "usa req.body quando algum runtime já consumiu o stream (Buffer)",
+    "usa req.body quando ele chega como string",
+    "complete=true com bytes ainda no buffer NÃO descarta o envelope (le o stream)",
+    "stream drenado e sem corpo devolve null em vez de esperar evento que não vem",
+    "handler responde 400 em envelope vazio, sem chamar a ingestão",
+    "limite de ingestão — o SDK precisa do status e dos headers",
+    "repassa 429 com Retry-After e X-Sentry-Rate-Limits",
+    "repassa limite por categoria que vem junto com 200",
+    "resolveUpstream — fecha fechado",
+    "aceita só https + host liberado + project id numérico"
+   ]
+  },
   "tests/api/vercel-sitemap.test.ts": {
    "path": "tests/api/vercel-sitemap.test.ts",
    "lines": 182,
@@ -529149,6 +529362,19 @@
    "tests": [
     "useCustomKitPersistence account cache",
     "não mostra kits da conta A ao trocar para B na mesma sessão de navegador"
+   ]
+  },
+  "tests/hooks/useCustomKitPersistence.financial.test.tsx": {
+   "path": "tests/hooks/useCustomKitPersistence.financial.test.tsx",
+   "lines": 113,
+   "is_test": true,
+   "rule_comments": [
+    "direto. A asserção financeira segue a mesma: o payload não pode chegar"
+   ],
+   "tests": [
+    "Legacy explicit persistence financial boundary",
+    "rejects unknown selected prices before insert or update",
+    "retains genuine zero with historical/new flag %s"
    ]
   },
   "tests/hooks/useCustomKitPersistence.pin-order.test.tsx": {
@@ -541935,10 +542161,41 @@
   }
  },
  "git": {
-  "sha": "3c578584436cc94c9531304379850b13daa65413",
+  "sha": "87ffb0ee00da078e13b041022aaa4874014dafe1",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "87ffb0e",
+    "date": "2026-11-17",
+    "author": "adm01-debug",
+    "subject": "fix(observabilidade): tunela envelopes do Sentry pela própria origem (CORS matava 100% dos relatórios) (#3784)",
+    "files": [
+     "api/monitoring.ts",
+     "src/lib/__tests__/sentry.tunnel.test.ts",
+     "src/lib/sentry.ts",
+     "tests/api/vercel-monitoring-tunnel.http.test.ts",
+     "tests/api/vercel-monitoring-tunnel.test.ts"
+    ]
+   },
+   {
+    "sha": "353c2a8",
+    "date": "2026-11-17",
+    "author": "adm01-debug",
+    "subject": "docs(resgate): adjudica byte-a-byte os 219 arquivos ausentes do main (#3785)",
+    "files": [
+     "docs/agentes/resgates/2026-11-17-adjudicacao-219-ausentes.md"
+    ]
+   },
+   {
+    "sha": "4a982eb",
+    "date": "2026-11-17",
+    "author": "adm01-debug",
+    "subject": "test(kit-builder): resgata o teste da guarda financeira de kit (#3786)",
+    "files": [
+     "tests/hooks/useCustomKitPersistence.financial.test.tsx"
+    ]
+   },
    {
     "sha": "3c57858",
     "date": "2026-11-17",
@@ -542210,41 +542467,6 @@
     "files": [
      "supabase/rollbacks/20261101140001_rollback.sql"
     ]
-   },
-   {
-    "sha": "25bbb95",
-    "date": "2026-11-17",
-    "author": "adm01-debug",
-    "subject": "fix(test): corrige a guarda de rota protegida e estabiliza o tooltip da sidebar (#3755)",
-    "files": [
-     "e2e/flows/sidebar-tooltips.spec.ts",
-     "e2e/protected-routes.spec.ts"
-    ]
-   },
-   {
-    "sha": "3784247",
-    "date": "2026-11-17",
-    "author": "adm01-debug",
-    "subject": "feat(test): resgata o contrato SQL de device-trust e o poe a rodar no Gate 2.5 (#3754)",
-    "files": [
-     ".github/workflows/deploy-gates.yml",
-     ".gitignore",
-     "package.json",
-     "tests/sql/device-trust/README.md",
-     "tests/sql/device-trust/fixture.sql",
-     "tests/sql/device-trust/run-tests.py"
-    ]
-   },
-   {
-    "sha": "8749d83",
-    "date": "2026-11-17",
-    "author": "adm01-debug",
-    "subject": "ci: resgata o workflow semanal que mantem o inventario de estado vivo (#3722)",
-    "files": [
-     ".github/workflows/codeql.yml",
-     ".github/workflows/inventario-estado-semanal.yml",
-     "docs/ci/SEGREDOS.md"
-    ]
    }
   ],
   "hot_files": [
@@ -542254,15 +542476,15 @@
    ],
    [
     "package.json",
-    5
-   ],
-   [
-    ".github/workflows/deploy-gates.yml",
     4
    ],
    [
     "supabase/MIGRATIONS_SYNC_LOG.md",
     4
+   ],
+   [
+    ".github/workflows/deploy-gates.yml",
+    3
    ],
    [
     "package-lock.json",
@@ -542285,8 +542507,32 @@
     2
    ],
    [
-    "tests/sql/device-trust/run-tests.py",
-    2
+    "api/monitoring.ts",
+    1
+   ],
+   [
+    "src/lib/__tests__/sentry.tunnel.test.ts",
+    1
+   ],
+   [
+    "src/lib/sentry.ts",
+    1
+   ],
+   [
+    "tests/api/vercel-monitoring-tunnel.http.test.ts",
+    1
+   ],
+   [
+    "tests/api/vercel-monitoring-tunnel.test.ts",
+    1
+   ],
+   [
+    "docs/agentes/resgates/2026-11-17-adjudicacao-219-ausentes.md",
+    1
+   ],
+   [
+    "tests/hooks/useCustomKitPersistence.financial.test.tsx",
+    1
    ],
    [
     "scripts/check-dependency-audit.mjs",
@@ -542302,30 +542548,6 @@
    ],
    [
     "scripts/lib/missing-prerequisite.mjs",
-    1
-   ],
-   [
-    "tests/scripts/check-infrastructure-drift-snapshots.test.mjs",
-    1
-   ],
-   [
-    "src/hooks/stock/useRuptureAlerts.ts",
-    1
-   ],
-   [
-    "docs/coordenacao/conflitos-semanticos.md",
-    1
-   ],
-   [
-    "supabase/functions/crm-db-bridge/index.ts",
-    1
-   ],
-   [
-    "supabase/functions/crm-db-bridge/query-policy.ts",
-    1
-   ],
-   [
-    "tests/security/crm-db-bridge-ownership.test.ts",
     1
    ]
   ]

@@ -5,22 +5,22 @@
   "vitest",
   "playwright"
  ],
- "total": 2543,
+ "total": 2547,
  "por_tipo": {
   "contrato": 66,
   "e2e": 677,
   "pytest": 5,
   "qa": 17,
-  "unit": 1778
+  "unit": 1782
  },
  "onde_ficam": [
   {
    "padrao": "tests/",
-   "arquivos": 1040
+   "arquivos": 1043
   },
   {
    "padrao": "co-localizado (__tests__)",
-   "arquivos": 676
+   "arquivos": 677
   },
   {
    "padrao": "e2e/",
@@ -9177,6 +9177,15 @@
    "casos": 6
   },
   {
+   "arquivo": "src/lib/__tests__/sentry.tunnel.test.ts",
+   "tipo": "unit",
+   "linhas": 64,
+   "testa": [
+    "src/lib/sentry.ts"
+   ],
+   "casos": 2
+  },
+  {
    "arquivo": "src/lib/__tests__/sw-register.reload-cap.test.ts",
    "tipo": "unit",
    "linhas": 145,
@@ -12987,6 +12996,24 @@
     "api/ready.ts"
    ],
    "casos": 6
+  },
+  {
+   "arquivo": "tests/api/vercel-monitoring-tunnel.http.test.ts",
+   "tipo": "unit",
+   "linhas": 114,
+   "testa": [
+    "api/monitoring.ts"
+   ],
+   "casos": 2
+  },
+  {
+   "arquivo": "tests/api/vercel-monitoring-tunnel.test.ts",
+   "tipo": "unit",
+   "linhas": 226,
+   "testa": [
+    "api/monitoring.ts"
+   ],
+   "casos": 14
   },
   {
    "arquivo": "tests/api/vercel-sitemap.test.ts",
@@ -16997,6 +17024,16 @@
     "src/hooks/kit-builder/useCustomKitPersistence.ts"
    ],
    "casos": 1
+  },
+  {
+   "arquivo": "tests/hooks/useCustomKitPersistence.financial.test.tsx",
+   "tipo": "unit",
+   "linhas": 113,
+   "testa": [
+    "src/hooks/kit-builder/useCustomKitPersistence.ts",
+    "src/lib/kit-builder/index.ts"
+   ],
+   "casos": 2
   },
   {
    "arquivo": "tests/hooks/useCustomKitPersistence.pin-order.test.tsx",
@@ -21538,6 +21575,7 @@
  "cobertura_por_arquivo": {
   ".github/scripts/e2e-relevance.mjs": 1,
   "api/health.ts": 1,
+  "api/monitoring.ts": 2,
   "api/ready.ts": 1,
   "api/sitemap.ts": 1,
   "playwright.config.ts": 1,
@@ -21973,7 +22011,7 @@
   "src/hooks/intelligence/useVoiceAgent.ts": 2,
   "src/hooks/intelligence/useZeroResultSubstitutes.ts": 1,
   "src/hooks/kit-builder/index.ts": 1,
-  "src/hooks/kit-builder/useCustomKitPersistence.ts": 3,
+  "src/hooks/kit-builder/useCustomKitPersistence.ts": 4,
   "src/hooks/kit-builder/useKitAutoSave.ts": 4,
   "src/hooks/kit-builder/useKitBuilder.ts": 2,
   "src/hooks/kit-builder/useKitBuilderPageState.ts": 3,
@@ -22163,7 +22201,7 @@
   "src/lib/inventory/supplier-reliability/types.ts": 4,
   "src/lib/json-value.ts": 1,
   "src/lib/kit-builder/ai-composition.ts": 1,
-  "src/lib/kit-builder/index.ts": 32,
+  "src/lib/kit-builder/index.ts": 33,
   "src/lib/kit-builder/item-sort.ts": 1,
   "src/lib/kit-builder/persistence.ts": 3,
   "src/lib/kit-builder/price-calculator.ts": 2,
@@ -22211,7 +22249,7 @@
   "src/lib/security/sanitize-message.ts": 1,
   "src/lib/security/validation.ts": 3,
   "src/lib/sensitive-masking.ts": 1,
-  "src/lib/sentry.ts": 3,
+  "src/lib/sentry.ts": 4,
   "src/lib/stock-chart-utils.ts": 1,
   "src/lib/supabase-direct.ts": 2,
   "src/lib/supabase-untyped.ts": 2,
