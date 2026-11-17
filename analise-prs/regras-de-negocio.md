@@ -75,7 +75,7 @@ export type ClientResponse = 'approved' | 'changes_requested' | 'rejected';  // 
 
 ## 6. CI / Gate Final (Fonte: `CLAUDE.md CI — ESTRUTURA DE GATES`, `.github/workflows/deploy-gates.yml`)
 
-- **Único required check em `main`:** "Gate Final - Deploy Ready" em `deploy-gates.yml`
+- **Required checks em `main` (3):** "Gate Final - Deploy Ready" e "Gate E23 - Secret Scan (gitleaks)" em `deploy-gates.yml`, e "Analyze (javascript-typescript)" em `codeql.yml` — lista em `.github/required-checks.json`
 - Gate Final = agregador de todos os gates em sequência
 - Gate 0: SSOT Supabase (validate-supabase-config.mjs)
 - Gate 1: Lint + TypeScript (0 erros é baseline — `62af0798`)
@@ -139,3 +139,73 @@ export type ClientResponse = 'approved' | 'changes_requested' | 'rejected';  // 
 ---
 
 *Fontes verificadas em 2026-10-28 contra código em `62af0798` (main HEAD do baseline)*
+
+---
+
+## Procedência — seções recuperadas de duas branches encerradas
+
+As seções 12–18 vêm do arquivo `analise-prs/regras-de-negocio.md` de duas branches que foram
+fechadas: `claude_05/youthful-ride-vcdchy` (tip 2026-11-09) e `claude_pink/sleepy-cannon-h000nc`
+(tip 2026-11-10). Cada afirmação abaixo foi reconferida contra o código da `main` e contra o banco
+canônico (leitura) em 17/11/2026. O que não teve prova está em "Não reconfirmado", no fim.
+
+## 12. Isolamento de Tenant e RLS
+
+- O escopo de tenant no schema `public` é `supplier_id` (80 colunas; 7 policies o referenciam) — verificado em produção por `information_schema.columns` / `pg_policies` em 17/11/2026.
+- Gate 1.13 compara `.security/policies-baseline.json` com `pg_policies` ao vivo (`--require-live`); fork e Dependabot rodam só a checagem estática — `.github/workflows/deploy-gates.yml:357`
+- Gate 1.13.1 reprova tabela com RLS ligada e zero policies que não esteja na allowlist de deny-all declarado — `.github/workflows/deploy-gates.yml:368`
+- Gate 1.13.2 exige trigger de rate guard nas 7 tabelas com INSERT anônimo (`analytics_events`, `catalog_analytics`, `product_views`, `search_analytics`, `frontend_telemetry`, `kill_switch_hits`, `password_reset_requests`) — `.github/workflows/deploy-gates.yml:379`
+
+## 13. Kit Builder — Validação Pré-Orçamento
+
+- Todas as validações rodam dentro de `if (!serverConfirmedCommit)`: orçamento já confirmado no servidor não é revalidado no retry — `src/pages/kit-builder/useKitBuilderQuote.ts:369`
+- Ordem fixa: preços → quantidade mínima → estoque → volume/encaixe — `src/pages/kit-builder/useKitBuilderQuote.ts:370`, `src/pages/kit-builder/useKitBuilderQuote.ts:382`, `src/pages/kit-builder/useKitBuilderQuote.ts:397`, `src/pages/kit-builder/useKitBuilderQuote.ts:409`
+- A mínima lê a view `vw_products_min_quantity` — `src/hooks/kit-builder/useKitMinQuantityValidation.ts:30`
+- Regra: `item.quantity × kitQuantity` precisa ser ≥ `effective_min_quantity` — `src/hooks/kit-builder/useKitMinQuantityValidation.ts:45-46`
+- Produto com `effectiveMin <= 1` nunca bloqueia (fail-open) — `src/hooks/kit-builder/useKitMinQuantityValidation.ts:44`
+- Erro de banco na mínima é fail-closed: status `unavailable` e nenhum orçamento criado — `src/hooks/kit-builder/useKitMinQuantityValidation.ts:33` e `src/pages/kit-builder/useKitBuilderQuote.ts:383`
+- O encaixe chama `fn_check_item_fits(p_packaging_id, p_product_id, p_current_used_liters)` item por item, acumulando litros — `src/hooks/kit-builder/useKitFitsValidation.ts:42` (assinatura confirmada em produção via `pg_proc`)
+- Só bloqueia com `fits === false` explícito; `fits = null` (produto sem dimensão) passa — `src/hooks/kit-builder/useKitFitsValidation.ts:53`
+- Erro de RPC em um item é fail-open (`continue`) — `src/hooks/kit-builder/useKitFitsValidation.ts:70`
+- Sem embalagem selecionada o encaixe retorna `skipped` — `src/hooks/kit-builder/useKitFitsValidation.ts:34`
+
+## 14. Kit Builder — Navegação por Etapas
+
+- São 4 etapas: `box`, `items`, `personalization`, `summary` — `src/lib/kit-builder/types.ts:228`
+- Duas ordens, conforme o fluxo: `items-first` = items → box → personalization → summary; o outro = box → items → personalization → summary — `src/hooks/kit-builder/useKitBuilder.ts:443-445`
+- `goToStep` só aceita a etapa atual ou uma já concluída (`completedSteps`) — `src/hooks/kit-builder/useKitBuilder.ts:433-437`
+- O backup de `beforeunload` é consumido ao reentrar na página — `src/hooks/kit-builder/useKitAutoSave.ts:395` e `src/pages/kit-builder/KitBuilderPage.tsx:67`
+
+## 15. Precificação de Produto
+
+- `Product` mantém `price: number` obrigatório e `sale_price?: number` opcional — `src/types/product-catalog.ts:31-32`
+- Gate 1.1 bloqueia a remoção desses campos; o motivo está registrado no próprio script (Lovable renomeou `price`→`sale_price` em 2026-06-11 e causou 400 em produção) — `scripts/check-product-type-fields.mjs:35-43` e `.github/workflows/deploy-gates.yml:237`
+- `calculateTotalKitPrice` arredonda subtotal, total e preço unitário a 2 casas (`Math.round(x*100)/100`), evitando resíduo de float — `src/lib/kit-builder/price-calculator.ts:95-97`
+
+## 16. Orçamentos e Carrinhos
+
+- A restauração do carrinho do vendedor é atômica, via RPC `restore_seller_cart` — `src/hooks/products/useSellerCarts.helpers.ts:342` (a função existe no canônico, confirmada via `pg_proc`)
+- A RPC é deliberadamente invisível para `anon`; o Gate 5.5 confere a assinatura publicada usando service_role — `.github/workflows/deploy-gates.yml:735`
+
+## 17. Produtos e Pedido Mínimo
+
+- Soft-delete: `deleted_at IS NULL` = registro ativo — `src/hooks/crm/useCrmCompanies.ts:39`; a coluna `products.deleted_at` existe no canônico.
+- `vw_products_min_quantity` existe em produção e expõe `category_min`, `product_override`, `effective_min_quantity` e `min_quantity_source` — mínimo por produto com fallback por categoria (verificado em 17/11/2026).
+
+## 18. Gates de CI reconfirmados
+
+- Nomes e linhas em `.github/workflows/deploy-gates.yml`: Gate 0 SSOT (`.github/workflows/deploy-gates.yml:142`), Gate 0.5 npm audit (`.github/workflows/deploy-gates.yml:160`), Gate 1 Lint+TypeScript (`.github/workflows/deploy-gates.yml:198`), Gate 1.6 bundle size (`.github/workflows/deploy-gates.yml:797`), Gate 1.9 ratchets (`.github/workflows/deploy-gates.yml:322`), Gate 1.9.1 console baseline (`.github/workflows/deploy-gates.yml:332`), Gate 1.10 indexed-access (`.github/workflows/deploy-gates.yml:400`), Gate 1.14 inventário de segredos (`.github/workflows/deploy-gates.yml:415`), Gate 2 vitest (`.github/workflows/deploy-gates.yml:513`), Gate 3 E2E smoke (`.github/workflows/deploy-gates.yml:591`), Gate 6 build (`.github/workflows/deploy-gates.yml:759`).
+- `main` exige 3 checks required, não um: `Gate Final - Deploy Ready`, `Analyze (javascript-typescript)` e `Gate E23 - Secret Scan (gitleaks)` — `.github/required-checks.json:10-20`
+- `TEST_ADMIN_PASSWORD`, `TEST_SELLER_PASSWORD`, `SMOKE_HEALTH_FN_URL` e `vars.SMOKE_BASE_URL` estão no inventário lido pelo Gate 1.14 — `docs/ci/SEGREDOS.md:52-54` e `docs/ci/SEGREDOS.md:125`
+- As migrations espelho CRON-001 existem na main: `supabase/migrations/20261101223908_cron001_stagger_additional_jobs.sql` e `supabase/migrations/20261101232022_cron001_stagger_schedules_reapply.sql`
+
+### Não reconfirmado
+
+- **`org_id` como chave de tenant** — não existe coluna `org_id` em `public` hoje; o escopo é `supplier_id` (§12).
+- **Etapa "Orçamento" no wizard do Kit Builder** — `KitBuilderStep` tem 4 valores e nenhum é orçamento; o orçamento parte de `summary`.
+- **"Gate Final é o único check required em `main`"** — hoje são 3 (§18).
+- **"Bypass docs-only vale só para `docs/**`; arquivos na raiz disparam CI"** — o bypass vem da ausência do filtro `code:`, logo um PR que só toca `PENDENCIAS.md` fica docs-only — `.github/workflows/deploy-gates.yml:96-121`
+- **Arquitetura Bronze → Silver → Gold com tabelas `*_raw`/`*_clean`** — não há schema `bronze`/`silver`/`gold` nem tabela `*_clean` no canônico (só 4 tabelas `*_raw`); o rótulo não corresponde a estrutura no banco.
+- **Cron `process_scheduled_reports` / `send_scheduled_reports`** — existem com hífen: `process-scheduled-reports` e `send-scheduled-reports`.
+- **"8321 produtos ativos"** — número instantâneo: 8360 em 17/11/2026.
+- **SINGU fora do escopo, regras de merge autônomo, Dependabot #3327–#3334, OOM do hook `scripts/check-eslint-baseline.mjs`** — regras de sessão ou estado de PRs já encerradas, sem prova no código de hoje; a parte de governança já está em `AGENTS.md`.
