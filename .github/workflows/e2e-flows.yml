@@ -21,6 +21,19 @@ on:
       - 'vite.config.*'
       - '.github/workflows/e2e-flows.yml'
       - '.github/scripts/e2e-relevance.mjs'
+      # Infra compartilhada do E2E: sem estes caminhos, mexer no classificador,
+      # na reusable de relevancia, nas composite actions ou nos scripts do smoke
+      # nao reexecuta este workflow - a mudanca entra sem ser exercitada.
+      - '.github/workflows/_e2e-relevance.yml'
+      - '.github/workflows/_secrets-check.yml'
+      - '.github/actions/e2e-setup/**'
+      - '.github/actions/check-min-tests/**'
+      - '.github/actions/setup-node-ci/**'
+      - 'scripts/check-playwright-min-executed.mjs'
+      - 'scripts/run-smoke-filtered.mjs'
+      - 'scripts/check-smoke-tags.mjs'
+      - 'scripts/e2e-smoke-coverage-doc.mjs'
+      - 'scripts/e2e-mock-auth-setup.mjs'
   workflow_dispatch:
 
 concurrency:
@@ -94,7 +107,12 @@ jobs:
     needs: [e2e-error-boundaries]
     runs-on: ubuntu-24.04
     timeout-minutes: 30
-    if: github.event_name == 'push' || github.event_name == 'pull_request'
+    # Os gatilhos deste arquivo sao push em main e workflow_dispatch (linhas 9 e 24):
+    # o `pull_request` saiu em 14/11 junto com o do e2e.yml. A condicao antiga ainda
+    # citava pull_request e NAO citava workflow_dispatch, entao no disparo manual -
+    # hoje a unica porta sob demanda - este job aparecia como 'skipped' e o caminho de
+    # montar e enviar orcamento nao era exercitado. Pulado nao e vermelho: ninguem via.
+    if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
 
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1

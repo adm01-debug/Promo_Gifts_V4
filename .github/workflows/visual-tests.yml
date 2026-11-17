@@ -16,6 +16,19 @@ on:
       - 'package-lock.json'
       - '.github/workflows/visual-tests.yml'
       - '.github/scripts/e2e-relevance.mjs'
+      # Infra compartilhada do E2E: sem estes caminhos, mexer no classificador,
+      # na reusable de relevancia, nas composite actions ou nos scripts do smoke
+      # nao reexecuta este workflow - a mudanca entra sem ser exercitada.
+      - '.github/workflows/_e2e-relevance.yml'
+      - '.github/workflows/_secrets-check.yml'
+      - '.github/actions/e2e-setup/**'
+      - '.github/actions/check-min-tests/**'
+      - '.github/actions/setup-node-ci/**'
+      - 'scripts/check-playwright-min-executed.mjs'
+      - 'scripts/run-smoke-filtered.mjs'
+      - 'scripts/check-smoke-tags.mjs'
+      - 'scripts/e2e-smoke-coverage-doc.mjs'
+      - 'scripts/e2e-mock-auth-setup.mjs'
 permissions:
   contents: read
   pull-requests: read
