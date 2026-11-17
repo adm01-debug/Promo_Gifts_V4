@@ -1,9 +1,9 @@
 {
  "meta": {
-  "sha": "68cc659c1c2e1fe2049ebae97aec145e50d91c7b",
+  "sha": "cfe603d51f69e9c88c17958b82d32184ea55c7ee",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-17 12:41 UTC",
+  "generated_at": "2026-11-17 13:13 UTC",
   "files_total": 10769,
   "code_files": 8806,
   "code_lines": 1243286
@@ -541922,10 +541922,29 @@
   }
  },
  "git": {
-  "sha": "68cc659c1c2e1fe2049ebae97aec145e50d91c7b",
+  "sha": "cfe603d51f69e9c88c17958b82d32184ea55c7ee",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "cfe603d",
+    "date": "2026-11-17",
+    "author": "adm01-debug",
+    "subject": "fix(deps): override basic-ftp para ^6.2.4 e fecha o GHSA-5pm8-86m8-9m6r (#3774)",
+    "files": [
+     "package-lock.json",
+     "package.json"
+    ]
+   },
+   {
+    "sha": "e85f935",
+    "date": "2026-11-17",
+    "author": "adm01-debug",
+    "subject": "docs: troca a classificação por data por identidade de blob no histórico (#3772)",
+    "files": [
+     "docs/agentes/resgates/2026-11-16-auditoria-branches.md"
+    ]
+   },
    {
     "sha": "68cc659",
     "date": "2026-11-17",
@@ -542224,30 +542243,15 @@
      "src/components/quotes/QuotesConfigurableList.tsx",
      "src/components/quotes/__tests__/QuotesConfigurableList.approve.test.tsx"
     ]
-   },
-   {
-    "sha": "c66bd14",
-    "date": "2026-11-17",
-    "author": "adm01-debug",
-    "subject": "docs(audit): resgata a auditoria E06 das migrations fora do baseline (07/10) (#3745)",
-    "files": [
-     "docs/arquivo/2026-10/AUDITORIA_CANDIDATAS_FORA_BASELINE_E06_2026-10-07.md"
-    ]
-   },
-   {
-    "sha": "b71caed",
-    "date": "2026-11-17",
-    "author": "adm01-debug",
-    "subject": "fix(ci): lacra a allowlist do ledger de migrations, que era lida em try/catch silencioso (#3744)",
-    "files": [
-     "scripts/check-supabase-migration-ledger.mjs",
-     "scripts/migration-ledger-remote-only-allowlist.json"
-    ]
    }
   ],
   "hot_files": [
    [
     "package.json",
+    6
+   ],
+   [
+    "docs/agentes/resgates/2026-11-16-auditoria-branches.md",
     5
    ],
    [
@@ -542259,15 +542263,11 @@
     5
    ],
    [
-    "docs/agentes/resgates/2026-11-16-auditoria-branches.md",
-    4
+    "package-lock.json",
+    3
    ],
    [
     ".release-please-manifest.json",
-    2
-   ],
-   [
-    "package-lock.json",
     2
    ],
    [

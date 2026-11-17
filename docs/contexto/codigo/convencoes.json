@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "fix(deps): override basic-ftp para ^6.2.4 e fecha o GHSA-5pm8-86m8-9m6r (#3774)",
+   "docs: troca a classificação por data por identidade de blob no histórico (#3772)",
    "chore(hooks): reaproveita untypedRpc nos alertas de ruptura, sem as any (#3771)",
    "docs: adjudica os 32 refs salvo/* contra o main (0 arquivos ausentes) (#3770)",
-   "chore(main): release gifts-store 1.9.0 (#3753)",
-   "docs: anexo da prova byte-a-byte por branch + prova do filtro do CRM contra PostgREST real (#3766)",
-   "docs: recibo de aplicação — 20261117073000 (E15) (#3768)"
+   "chore(main): release gifts-store 1.9.0 (#3753)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",
