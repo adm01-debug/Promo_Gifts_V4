@@ -19449,12 +19449,12 @@
   {
    "arquivo": "tests/scripts/check-infrastructure-drift-snapshots.test.mjs",
    "tipo": "unit",
-   "linhas": 229,
+   "linhas": 244,
    "testa": [
     "scripts/lib/canonical-pg-connection.mjs",
     "scripts/validate-migration-target.mjs"
    ],
-   "casos": 9
+   "casos": 10
   },
   {
    "arquivo": "tests/scripts/check-ledger-manifest-drift.test.mjs",

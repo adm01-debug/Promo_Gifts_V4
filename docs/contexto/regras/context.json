@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "cfe603d51f69e9c88c17958b82d32184ea55c7ee",
+  "sha": "f129270af74a6af7276f7b7ac2be7ceca6569ddd",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-17 13:13 UTC",
+  "generated_at": "2026-11-17 13:46 UTC",
   "files_total": 10769,
   "code_files": 8806,
-  "code_lines": 1243286
+  "code_lines": 1243301
  },
  "version": "1.3.2",
- "facts_hash": "ba1491530ddc677a",
+ "facts_hash": "d27754c6ceac65ed",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -151577,7 +151577,7 @@
   {
    "module": "tests",
    "files": 1055,
-   "lines": 162315,
+   "lines": 162330,
    "tables": [
     "bot_detection_log",
     "clients",
@@ -535688,7 +535688,7 @@
   },
   "tests/scripts/check-infrastructure-drift-snapshots.test.mjs": {
    "path": "tests/scripts/check-infrastructure-drift-snapshots.test.mjs",
-   "lines": 229,
+   "lines": 244,
    "is_test": true,
    "env": [
     "CAPTURE_PATH",
@@ -541922,10 +541922,40 @@
   }
  },
  "git": {
-  "sha": "cfe603d51f69e9c88c17958b82d32184ea55c7ee",
+  "sha": "f129270af74a6af7276f7b7ac2be7ceca6569ddd",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "f129270",
+    "date": "2026-11-17",
+    "author": "github-actions[bot]",
+    "subject": "chore(main): release gifts-store 1.9.1 (#3777)",
+    "files": [
+     ".release-please-manifest.json",
+     "CHANGELOG.md",
+     "package-lock.json",
+     "package.json"
+    ]
+   },
+   {
+    "sha": "c2629ac",
+    "date": "2026-11-17",
+    "author": "adm01-debug",
+    "subject": "fix(test): acompanha o snapshot de cron vigente em vez de fixar o de 08/11 (#3773)",
+    "files": [
+     "tests/scripts/check-infrastructure-drift-snapshots.test.mjs"
+    ]
+   },
+   {
+    "sha": "dfe9e70",
+    "date": "2026-11-17",
+    "author": "adm01-debug",
+    "subject": "docs: mede os 28 arquivos da branch do Codex, que estavam inferidos (#3778)",
+    "files": [
+     "docs/agentes/resgates/2026-11-16-auditoria-branches.md"
+    ]
+   },
    {
     "sha": "cfe603d",
     "date": "2026-11-17",
@@ -542214,41 +542244,12 @@
     "files": [
      ".github/workflows/deploy-gates.yml"
     ]
-   },
-   {
-    "sha": "b6674d6",
-    "date": "2026-11-17",
-    "author": "adm01-debug",
-    "subject": "fix(ci): corrige SHA inexistente na allowlist do sentinel (#3743)",
-    "files": [
-     ".github/SENTINEL_SHA_ALLOWLIST.txt"
-    ]
-   },
-   {
-    "sha": "13a9f8e",
-    "date": "2026-11-17",
-    "author": "adm01-debug",
-    "subject": "chore(docs): fechamento da auditoria de branches com o veredito das 24 restantes (#3748)",
-    "files": [
-     "docs/agentes/resgates/2026-11-16-auditoria-branches.md"
-    ]
-   },
-   {
-    "sha": "ec18389",
-    "date": "2026-11-17",
-    "author": "adm01-debug",
-    "subject": "feat(quotes): aprovar orçamento direto da lista — a ação existia no pai e era descartada (#3746)",
-    "files": [
-     "src/components/quotes/QuoteRowApproveItem.tsx",
-     "src/components/quotes/QuotesConfigurableList.tsx",
-     "src/components/quotes/__tests__/QuotesConfigurableList.approve.test.tsx"
-    ]
    }
   ],
   "hot_files": [
    [
     "package.json",
-    6
+    7
    ],
    [
     "docs/agentes/resgates/2026-11-16-auditoria-branches.md",
@@ -542264,10 +542265,14 @@
    ],
    [
     "package-lock.json",
-    3
+    4
    ],
    [
     ".release-please-manifest.json",
+    3
+   ],
+   [
+    "CHANGELOG.md",
     2
    ],
    [
@@ -542279,11 +542284,11 @@
     2
    ],
    [
-    "src/hooks/stock/useRuptureAlerts.ts",
+    "tests/scripts/check-infrastructure-drift-snapshots.test.mjs",
     1
    ],
    [
-    "CHANGELOG.md",
+    "src/hooks/stock/useRuptureAlerts.ts",
     1
    ],
    [
@@ -542320,10 +542325,6 @@
    ],
    [
     ".security/policies-baseline.json",
-    1
-   ],
-   [
-    "docs/agentes/resgates/quote-comments/README.md",
     1
    ]
   ]
