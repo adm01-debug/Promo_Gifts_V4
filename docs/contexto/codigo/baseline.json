@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "98a305c2fdee1bece23442edbc2edb258480060c",
+  "commit": "9657d523c2bb250fe9de7c635b229c4c5a0c88c1",
   "branch": "main",
-  "data_commit": "2026-11-16T21:18:46-03:00",
+  "data_commit": "2026-11-16T21:29:19-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "9657d523",
+    "data": "2026-11-16",
+    "assunto": "docs(audit): laudo da auditoria das 82 branches antes de fechar (#3724)"
+   },
    {
     "sha": "98a305c2",
     "data": "2026-11-16",
@@ -126,14 +131,9 @@
     "sha": "5c497ed2",
     "data": "2026-11-16",
     "assunto": "docs(audit): handoff para a próxima sessão, com o estado de 16/11 (#3698)"
-   },
-   {
-    "sha": "25ea4f33",
-    "data": "2026-11-16",
-    "assunto": "docs(audit): registra a exclusão das 71 branches, o fechamento da #3685 e o alarme falso do clone raso (#3697)"
    }
   ],
-  "arquivos_mudados_7d": 1906,
+  "arquivos_mudados_7d": 1907,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -184,26 +184,26 @@
     "mudancas": 78
    },
    {
-    "pasta": "RELATORIO_CI.md",
-    "mudancas": 75
-   },
-   {
     "pasta": "src/pages/admin",
     "mudancas": 75
    },
    {
+    "pasta": "RELATORIO_CI.md",
+    "mudancas": 74
+   },
+   {
     "pasta": "PENDENCIAS.md",
-    "mudancas": 67
+    "mudancas": 66
    }
   ],
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "RELATORIO_CI.md",
-    "mudancas": 75
+    "mudancas": 74
    },
    {
     "arquivo": "PENDENCIAS.md",
-    "mudancas": 67
+    "mudancas": 66
    },
    {
     "arquivo": "supabase/MIGRATIONS_SYNC_LOG.md",
@@ -322,7 +322,7 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 10800,
+  "arquivos_total": 10801,
   "arquivos_codigo": 5348,
   "linhas_codigo": 1018818,
   "rotas": 138,
@@ -339,7 +339,7 @@
   "testes": 2529,
   "workflows": 87,
   "scripts": 283,
-  "docs_md": 1458
+  "docs_md": 1459
  },
  "por_pasta": {
   ".github/scripts": {

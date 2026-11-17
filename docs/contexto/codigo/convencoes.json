@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "docs(audit): laudo da auditoria das 82 branches antes de fechar (#3724)",
    "fix(ci): destrava o Gate E40, que reprova toda PR com migration desde 15/11 (#3721)",
    "fix(ci): export do schema snapshot não roda quando o drift-gate é cancelado (#3718)",
    "fix(kit): fixar/desafixar kit anuncia o estado da requisição velha (#3723)",
-   "chore(docs): arquiva a passagem de sessão de 15/11 que a main não tinha (#3717)",
-   "chore(deps): sobe jest-dom 7 e react-hooks 7; rejeita jsdom 31 com a evidência (#3715)"
+   "chore(docs): arquiva a passagem de sessão de 15/11 que a main não tinha (#3717)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",

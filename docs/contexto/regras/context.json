@@ -1,10 +1,10 @@
 {
  "meta": {
-  "sha": "98a305c2fdee1bece23442edbc2edb258480060c",
+  "sha": "9657d523c2bb250fe9de7c635b229c4c5a0c88c1",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-17 00:20 UTC",
-  "files_total": 10728,
+  "generated_at": "2026-11-17 00:37 UTC",
+  "files_total": 10729,
   "code_files": 8778,
   "code_lines": 1238631
  },
@@ -540708,10 +540708,19 @@
   }
  },
  "git": {
-  "sha": "98a305c2fdee1bece23442edbc2edb258480060c",
+  "sha": "9657d523c2bb250fe9de7c635b229c4c5a0c88c1",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "9657d52",
+    "date": "2026-11-16",
+    "author": "adm01-debug",
+    "subject": "docs(audit): laudo da auditoria das 82 branches antes de fechar (#3724)",
+    "files": [
+     "docs/agentes/resgates/2026-11-16-auditoria-branches.md"
+    ]
+   },
    {
     "sha": "98a305c",
     "date": "2026-11-16",
@@ -541279,17 +541288,6 @@
     "files": [
      "analise-branches/RELATORIO-BRANCHES-COMPLETO.md"
     ]
-   },
-   {
-    "sha": "b63eeb5",
-    "date": "2026-11-16",
-    "author": "Claude",
-    "subject": "docs(audit): relatorio da sessao, indice da preservacao e branches do PC",
-    "files": [
-     "analise-branches/RELATORIO-SESSAO-261116.md",
-     "analise-branches/dados/branches-do-pc-261116.md",
-     "analise-branches/dados/indice-preservacao.md"
-    ]
    }
   ],
   "hot_files": [
@@ -541334,6 +541332,10 @@
     2
    ],
    [
+    "docs/agentes/resgates/2026-11-16-auditoria-branches.md",
+    1
+   ],
+   [
     "scripts/drift-baseline.mjs",
     1
    ],
@@ -541367,10 +541369,6 @@
    ],
    [
     "src/lib/quotes/__tests__/quoteDraftRecovery.test.ts",
-    1
-   ],
-   [
-    "src/lib/quotes/quoteDraftRecovery.ts",
     1
    ]
   ]
