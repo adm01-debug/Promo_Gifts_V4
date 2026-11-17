@@ -13,7 +13,11 @@ import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 
 import { logger } from '@/lib/logger';
-import { quoteDraftRecoverySchema } from '@/lib/quotes/quoteDraftRecovery';
+import {
+  quoteDraftRecoverySchema,
+  mergeRestoredBase,
+  readRecoverableDraft,
+} from '@/lib/quotes/quoteDraftRecovery';
 import {
   QUOTE_AUTOSAVE_STATUS_TEXT,
   QUOTE_AUTOSAVE_ARIA_LABEL,
@@ -49,57 +53,6 @@ interface QuoteAutoSaveProps {
    * investigação. Pode devolver Promise; cliques repetidos não duplicam a chamada.
    */
   onRestore?: (data: unknown) => Promise<void> | void;
-}
-
-/**
- * Mantém as chaves do rascunho restaurado que a tela atual não conhece. A tela
- * manda em tudo que ela modela; o resto sobrevive. Sem base restaurada, devolve
- * os dados da tela sem tocar em nada.
- */
-function mergeRestoredBase(base: unknown, current: unknown): unknown {
-  const isPlain = (v: unknown) => typeof v === 'object' && v !== null && !Array.isArray(v);
-  if (!isPlain(base) || !isPlain(current)) return current;
-  return { ...(base as Record<string, unknown>), ...(current as Record<string, unknown>) };
-}
-
-/** Envelope íntegro e de fato recuperável, ou `null`. Nunca escreve no storage. */
-function readRecoverableDraft(
-  storageKey: string,
-  expectedId: string,
-  currentData: unknown,
-): unknown | null {
-  let stored: string | null = null;
-  try {
-    stored = localStorage.getItem(storageKey);
-  } catch {
-    return null; // storage bloqueado (modo privado, cota): não há oferta a fazer
-  }
-  if (!stored) return null;
-
-  let envelope: unknown;
-  try {
-    envelope = JSON.parse(stored);
-  } catch {
-    return null; // JSON corrompido fica como está, para ser investigado
-  }
-  if (typeof envelope !== 'object' || envelope === null || Array.isArray(envelope)) return null;
-
-  const { id, data, savedAt, version } = envelope as Partial<QuoteDraft>;
-  if (id !== expectedId) return null;
-  if (typeof data !== 'object' || data === null || Array.isArray(data)) return null;
-  if (typeof savedAt !== 'string' || !Number.isFinite(new Date(savedAt).getTime())) return null;
-  if (typeof version !== 'number' || !Number.isSafeInteger(version) || version <= 0) return null;
-
-  const parsed = quoteDraftRecoverySchema.safeParse(data);
-  if (!parsed.success) return null;
-
-  // Já restaurado (ou idêntico ao que está na tela): não há o que oferecer.
-  try {
-    if (JSON.stringify(parsed.data) === JSON.stringify(currentData)) return null;
-  } catch {
-    return null;
-  }
-  return parsed.data;
 }
 
 const STORAGE_KEY_PREFIX = 'quote_draft_';

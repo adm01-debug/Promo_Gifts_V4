@@ -115,3 +115,57 @@ export const quoteDraftRecoverySchema = z
     items: z.array(item).nullish(),
   })
   .passthrough();
+
+function isPlainRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === 'object' && value !== null && !Array.isArray(value);
+}
+
+/**
+ * Mantém as chaves do rascunho restaurado que a tela atual não conhece. A tela
+ * manda em tudo que ela modela; o resto sobrevive. Sem base restaurada, devolve
+ * os dados da tela sem tocar em nada.
+ */
+export function mergeRestoredBase(base: unknown, current: unknown): unknown {
+  if (!isPlainRecord(base) || !isPlainRecord(current)) return current;
+  return { ...base, ...current };
+}
+
+/** Envelope íntegro e de fato recuperável, ou `null`. Nunca escreve no storage. */
+export function readRecoverableDraft(
+  storageKey: string,
+  expectedId: string,
+  currentData: unknown,
+): unknown | null {
+  let stored: string | null = null;
+  try {
+    stored = localStorage.getItem(storageKey);
+  } catch {
+    return null; // storage bloqueado (modo privado, cota): não há oferta a fazer
+  }
+  if (!stored) return null;
+
+  let envelope: unknown;
+  try {
+    envelope = JSON.parse(stored);
+  } catch {
+    return null; // JSON corrompido fica como está, para ser investigado
+  }
+  if (!isPlainRecord(envelope)) return null;
+
+  const { id, data, savedAt, version } = envelope;
+  if (id !== expectedId) return null;
+  if (typeof data !== 'object' || data === null || Array.isArray(data)) return null;
+  if (typeof savedAt !== 'string' || !Number.isFinite(new Date(savedAt).getTime())) return null;
+  if (typeof version !== 'number' || !Number.isSafeInteger(version) || version <= 0) return null;
+
+  const parsed = quoteDraftRecoverySchema.safeParse(data);
+  if (!parsed.success) return null;
+
+  // Já restaurado (ou idêntico ao que está na tela): não há o que oferecer.
+  try {
+    if (JSON.stringify(parsed.data) === JSON.stringify(currentData)) return null;
+  } catch {
+    return null;
+  }
+  return parsed.data;
+}
