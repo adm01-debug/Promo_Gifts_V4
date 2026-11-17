@@ -465,6 +465,111 @@ function isAllowedPptxPropagation(vulnerability) {
   );
 }
 
+// picomatch — GHSA-fc5q-39xc-vjpf (ReDoS por extglob repetido de ramo único),
+// advisory publicada em 2026-11-17, faixa afetada `<=4.0.7`.
+//
+// NÃO existe versão sã: a última publicada do picomatch É a 4.0.7, então um
+// `overrides` como o que a PR #3774 usou para basic-ftp não resolve. O
+// `fixAvailable` que o npm sugere é rebaixar o vitest para 3.1.4
+// (isSemVerMajor), e isso nem remove o picomatch de vite, lint-staged ou
+// micromatch.
+//
+// Alcançabilidade: o picomatch só casa padrão de glob, e todo padrão desta base
+// vem de arquivo de configuração do próprio repositório (vite.config.ts,
+// tailwind.config.ts, lint-staged, vitest) — nunca de entrada de usuário. 25 dos
+// 27 pacotes são devDependencies ou transitivos delas. Os outros 2
+// (lovable-tagger, rollup-plugin-visualizer) estão declarados em `dependencies`
+// por engano histórico, mas são plugins de build usados só no vite.config.ts:
+// não há nenhum import deles em src/ (verificado por grep), logo não entram no
+// bundle do navegador. Corrigir essa declaração é tarefa própria.
+//
+// A exceção é exata por pacote, com o grafo via/effects que o `npm audit`
+// reportou em 2026-11-17: pacote novo, advisory nova, severidade diferente ou
+// caminho de dependência diferente FALHA o gate, em vez de passar por herança.
+// Mesmo padrão do E206 (minimatch). Revisit by RISK_REVIEW_DEADLINE.
+// (E207 — 2026-11-17)
+const PICOMATCH_ADVISORY_URL = 'https://github.com/advisories/GHSA-fc5q-39xc-vjpf';
+
+export const REVIEWED_PICOMATCH_VIA = new Map([
+  ['@typescript-eslint/eslint-plugin', ['@typescript-eslint/parser', '@typescript-eslint/type-utils', '@typescript-eslint/utils']],
+  ['@typescript-eslint/parser', ['@typescript-eslint/typescript-estree']],
+  ['@typescript-eslint/type-utils', ['@typescript-eslint/typescript-estree', '@typescript-eslint/utils']],
+  ['@typescript-eslint/typescript-estree', ['tinyglobby']],
+  ['@typescript-eslint/utils', ['@typescript-eslint/typescript-estree']],
+  ['@vitejs/plugin-react', ['vite']],
+  ['@vitest/coverage-v8', ['vitest']],
+  ['anymatch', ['picomatch']],
+  ['chokidar', ['anymatch', 'readdirp']],
+  ['expect', ['jest-message-util', 'jest-mock', 'jest-util']],
+  ['fast-glob', ['micromatch']],
+  ['fdir', ['picomatch']],
+  ['jest-message-util', ['jest-util', 'picomatch']],
+  ['jest-mock', ['jest-util']],
+  ['jest-util', ['picomatch']],
+  ['lint-staged', ['picomatch']],
+  ['lovable-tagger', ['tailwindcss']],
+  ['micromatch', ['picomatch']],
+  ['picomatch', ['picomatch']],
+  ['readdirp', ['picomatch']],
+  ['rollup-plugin-visualizer', ['picomatch']],
+  ['sucrase', ['tinyglobby']],
+  ['tailwindcss', ['chokidar', 'fast-glob', 'micromatch']],
+  ['tailwindcss-animate', ['tailwindcss']],
+  ['tinyglobby', ['fdir', 'picomatch']],
+  ['vite', ['picomatch', 'tinyglobby']],
+  ['vitest', ['@vitest/coverage-v8', 'picomatch', 'tinyglobby', 'vite']],
+  // O npm alterna entre reportar `expect` e `@types/jest` como o nó do cluster
+  // do jest (27 ou 28 pacotes, dependendo da execução). Os dois entram na
+  // revisão para o gate não piscar.
+  ['@types/jest', ['expect']],
+]);
+
+
+function hasOnlyPicomatchAdvisory(vulnerability) {
+  const advisories = (vulnerability.via ?? []).filter((entry) => entry && typeof entry === 'object');
+  if (advisories.length === 0) return true;
+  return advisories.every(
+    (advisory) =>
+      advisory.url === PICOMATCH_ADVISORY_URL &&
+      advisory.severity === 'high' &&
+      advisory.range === '<=4.0.7',
+  );
+}
+
+
+// IMPORTANTE — por que este checker verifica FECHAMENTO do grafo em vez de
+// casar `via`/`effects` exatos, ao contrário do E206 (minimatch): o
+// `npm audit --json` NÃO é determinístico. Medido em execuções seguidas, com o
+// MESMO lockfile e sem nada mudar no repositório:
+//
+//   - `chokidar` foi atribuído ora a `anymatch`, ora a `readdirp`;
+//   - `tailwindcss` saiu e voltou ao `effects` de `chokidar`;
+//   - `@typescript-eslint/eslint-plugin` apareceu e desapareceu do `effects` de
+//     `@typescript-eslint/utils`;
+//   - o conjunto oscilou entre 27 e 28 pacotes, com o npm alternando entre
+//     `expect` e `@types/jest` como nó do cluster do jest.
+//
+// O npm credita o efeito a quem ele percorre primeiro. Fixar lista exata deixa
+// o gate piscando — verde numa execução, vermelho na seguinte —, e gate que
+// pisca é pior que gate ausente, porque ensina a ignorar vermelho.
+//
+// A garantia de falhar fechado é preservada: um pacote só é aceito se ele
+// estiver na revisão E se TODO vizinho dele (via e effects) também estiver na
+// revisão, ou for o próprio picomatch. Se o raio de alcance crescer para um
+// pacote fora da lista, ou se chegar outra advisory, o gate reprova.
+function isAllowedPicomatchChainPackage(packageName, vulnerability) {
+  if (!REVIEWED_PICOMATCH_VIA.has(packageName)) return false;
+  if (vulnerability.severity !== 'high') return false;
+  if (!hasOnlyPicomatchAdvisory(vulnerability)) return false;
+  const vizinhoRevisado = (nome) => nome === 'picomatch' || REVIEWED_PICOMATCH_VIA.has(nome);
+  const via = (vulnerability.via ?? []).map((entry) =>
+    typeof entry === 'string' ? entry : entry?.name,
+  );
+  const effects = vulnerability.effects ?? [];
+  if (!Array.isArray(effects)) return false;
+  return via.every(vizinhoRevisado) && effects.every(vizinhoRevisado);
+}
+
 export function evaluateAuditReport(report, now = new Date()) {
   const violations = [];
   const accepted = [];
@@ -517,6 +622,10 @@ export function evaluateAuditReport(report, now = new Date()) {
       accepted.push(packageName);
       continue;
     }
+    if (isAllowedPicomatchChainPackage(packageName, vulnerability)) {
+      accepted.push(packageName);
+      continue;
+    }
     if (isAllowedMinimatchChainPackage(packageName, vulnerability)) {
       accepted.push(packageName);
       continue;
@@ -532,7 +641,12 @@ export function evaluateAuditReport(report, now = new Date()) {
   }
 
   // Defence-in-depth: no package outside known allowlists should appear in accepted[].
-  const unexpected = accepted.filter((p) => !ALL_KNOWN_ACCEPTED_PACKAGES.has(p));
+  // `REVIEWED_PICOMATCH_VIA` entra aqui, e não em ALL_KNOWN_ACCEPTED_PACKAGES,
+  // porque aquele Set é montado na carga do módulo, antes desta declaração
+  // (`const` não sofre hoisting). A verificação acontece em tempo de chamada.
+  const unexpected = accepted.filter(
+    (p) => !ALL_KNOWN_ACCEPTED_PACKAGES.has(p) && !REVIEWED_PICOMATCH_VIA.has(p),
+  );
   if (unexpected.length > 0) {
     violations.push(`unexpected packages in temporary acceptance: ${unexpected.join(', ')}`);
   }
