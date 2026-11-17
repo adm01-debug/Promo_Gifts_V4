@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "docs(resgate): conserta as 13 referencias quebradas do dossie da 3390 (#3783)",
+   "chore(deps): tira basic-ftp da lista de risco tolerado, ja que o override o eliminou (#3782)",
    "docs: marca como vivos na main os 3 itens que o dossiê pedia para completar (#3780)",
    "docs: retira o \"0 ausentes\" da auditoria — era defeito do instrumento (#3779)",
-   "fix(ci): isenta do E188 o merge automático da base sem conflito (#3776)",
-   "fix(ci): separa \"runner sem Docker\" de \"contrato violado\" no Gate 2.5 (#3775)",
-   "chore(main): release gifts-store 1.9.1 (#3777)"
+   "fix(ci): isenta do E188 o merge automático da base sem conflito (#3776)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",

@@ -2,11 +2,21 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "5ca60929fc3f3b382e3a56344f853ba98565a1ad",
+  "commit": "3c578584436cc94c9531304379850b13daa65413",
   "branch": "main",
-  "data_commit": "2026-11-17T11:03:24-03:00",
+  "data_commit": "2026-11-17T11:26:35-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "3c578584",
+    "data": "2026-11-17",
+    "assunto": "docs(resgate): conserta as 13 referencias quebradas do dossie da 3390 (#3783)"
+   },
+   {
+    "sha": "92bec3ca",
+    "data": "2026-11-17",
+    "assunto": "chore(deps): tira basic-ftp da lista de risco tolerado, ja que o override o eliminou (#3782)"
+   },
    {
     "sha": "5ca60929",
     "data": "2026-11-17",
@@ -121,19 +131,9 @@
     "sha": "e59ffe3f",
     "data": "2026-11-17",
     "assunto": "docs(resgate): preserva quote_comments integral e inerte, sem ligar nem destravar (#3763)"
-   },
-   {
-    "sha": "3510fbc4",
-    "data": "2026-11-17",
-    "assunto": "chore(docs): registra a rodada de decisoes de 17/11 no ledger da auditoria (#3757)"
-   },
-   {
-    "sha": "416e5fde",
-    "data": "2026-11-17",
-    "assunto": "fix(db): versiona o rollback de SB-0001 (auth.users fora do Realtime) (#3756)"
    }
   ],
-  "arquivos_mudados_7d": 1940,
+  "arquivos_mudados_7d": 1931,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -324,7 +324,7 @@
  "contagens": {
   "arquivos_total": 10841,
   "arquivos_codigo": 5367,
-  "linhas_codigo": 1022679,
+  "linhas_codigo": 1022682,
   "rotas": 138,
   "rotas_http_backend": 13,
   "vistas_por_id": 0,
@@ -1092,7 +1092,7 @@
   },
   "scripts/check-dependency-audit.mjs": {
    "arquivos": 1,
-   "linhas": 595
+   "linhas": 598
   },
   "scripts/check-doc-refs.mjs": {
    "arquivos": 1,

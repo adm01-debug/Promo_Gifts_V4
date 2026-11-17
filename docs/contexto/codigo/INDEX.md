@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e de hora em hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `5ca60929fc3f3b382e3a56344f853ba98565a1ad` (2026-11-17T11:03:24-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e de hora em hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `3c578584436cc94c9531304379850b13daa65413` (2026-11-17T11:26:35-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -36,7 +36,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 |---|---|
 | arquivos_total | 10841 |
 | arquivos_codigo | 5367 |
-| linhas_codigo | 1022679 |
+| linhas_codigo | 1022682 |
 | rotas | 138 |
 | rotas_http_backend | 13 |
 | vistas_por_id | 0 |
@@ -590,7 +590,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - possiveis_segredos_no_codigo: 7 — ex.: scripts/ai-context/cenarios.mjs:102, src/components/admin/connections/__tests__/ConnectionSecurity.unit.test.tsx:9, src/integrations/supabase/client.ts:27
 
 ## Grafo de código (graphify)
-- 48285 nós · 81102 arestas · 2753 comunidades · grafo do commit `5ca60929`
+- 48285 nós · 81102 arestas · 2753 comunidades · grafo do commit `3c578584`
 - comunidades maiores: vitest (860), ref_integrations (627), lucide-react (509), ref_node_child_process (488), @tanstack/react-query (411), ref_hooks (388), ref_types (373), ref_components (351), ref_node_fs (337), sonner (336), concludeCheck (316), react-router-dom (310)
 - símbolos mais chamados: gotoAndSettle() (e2e/helpers/nav.ts), re (?), q() (scripts/supabase_snapshot/snapshot.py), analyze() (tests/scripts/test_personalization_artifact_diagnostics.py), outer() (tests/scripts/test_personalization_artifact_diagnostics.py), json (?), useExternalDatabase() (recovery/src-legacy/src/hooks/useExternalDatabase.ts), concludeCheck() (scripts/check-result-contract.mjs), querySupabaseReadOnly() (scripts/supabase-read-only-query.mjs), loginAs() (e2e/helpers/auth.ts), inner() (tests/scripts/test_personalization_artifact_diagnostics.py), excluded_sql() (scripts/supabase_snapshot/snapshot.py)
 - consulta local: `graphify query "<pergunta>"`, `graphify path "<A>" "<B>"`, `graphify explain "<X>"`
@@ -1186,6 +1186,8 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - CHANGELOG topo: [1.9.1](https://github.com/adm01-debug/Promo_Gifts_V4/compare/gifts-store-v1.9.0...gifts-store-v1.9.1) (2026-11-17)
 
 ## Últimos commits
+- 2026-11-17 `3c578584` docs(resgate): conserta as 13 referencias quebradas do dossie da 3390 (#3783)
+- 2026-11-17 `92bec3ca` chore(deps): tira basic-ftp da lista de risco tolerado, ja que o override o eliminou (#3782)
 - 2026-11-17 `5ca60929` docs: marca como vivos na main os 3 itens que o dossiê pedia para completar (#3780)
 - 2026-11-17 `5ce8d792` docs: retira o "0 ausentes" da auditoria — era defeito do instrumento (#3779)
 - 2026-11-17 `378aeff5` fix(ci): isenta do E188 o merge automático da base sem conflito (#3776)
@@ -1199,8 +1201,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-17 `a521c74f` docs: adjudica os 32 refs salvo/* contra o main (0 arquivos ausentes) (#3770)
 - 2026-11-17 `10455e7a` chore(main): release gifts-store 1.9.0 (#3753)
 - 2026-11-17 `cda9cbfa` docs: anexo da prova byte-a-byte por branch + prova do filtro do CRM contra PostgREST real (#3766)
-- 2026-11-17 `f40d2618` docs: recibo de aplicação — 20261117073000 (E15) (#3768)
-- 2026-11-17 `d56cb122` feat(crm): vendedor vê a carteira dele mais os clientes sem dono (somente leitura) (#3769)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`
