@@ -855,3 +855,39 @@ cada blob intermediário não é factível e não é o que preservação exige: 
 segue alcançável pelo ref, que não será apagado. O que foi provado é o que decide
 regressão: nenhum arquivo existe num ref sem existir no `main` (teste estrito, 0/32),
 e as features autorais dos refs estão no `main`, verificadas arquivo a arquivo.
+
+### Medida 5 — classificação do conteúdo divergente (resposta ao Codex P2 e ao Devin)
+
+A exigência era classificar as diferenças de conteúdo dos refs como **incorporada**,
+**substituída** ou **descartada por decisão** antes de declarar o resgate fechado.
+Feito, e no caminho apareceu de novo o mesmo ponto cego: a varredura anterior exigia
+blob só no lado do `main`, então **arquivo que não existe no tip do ref** era rotulado
+`DIFERE`. Isso só inflava o número. Corrigido para exigir blob nas **duas** pontas:
+
+- divergência real de conteúdo em área de comportamento (código, migrations,
+  workflows, testes): **277 pares (ref, arquivo)** — não os 9.407 de antes;
+- `salvo/261115-preservacao` sai inteiro da lista: o tip dele guarda só o que existia
+  apenas no container, e nenhum desses caminhos colide com o `main` em área de
+  comportamento. Os 3.107 "migrations divergentes" eram arquivos que **só o `main`
+  tem** (ex.: `supabase/migrations/20241231000000_saved_filters.sql`, 129 linhas no
+  `main`, ausente no tip do ref) — o oposto de perda.
+
+Dos 277: **267 substituídos** (o `main` tocou aquele caminho *depois* do tip do ref,
+logo o `main` é o estado posterior) e **10 candidatos** (o ref mudou depois do último
+toque do `main`). Os 10, adjudicados um por um:
+
+| ref · arquivo | veredito |
+| --- | --- |
+| `261117-residuos-medidos-2` · `.github/workflows/codeql.yml` | **substituído** — o `main` tem uma linha a mais (`inventario/estado/**` no filtro de paths); o ref não tem nada que o `main` não tenha. |
+| `claude-fix-pr3517-gate1-baseline` e `codex-fix-gate1-kit-pdf-types` · `SortableCartItem.tsx`, `SortableCartItemVariant.test.tsx`, `ModernSkeletons.tsx` (5 pares) | **descartado por decisão** — os refs extraem as interfaces de props para `*.types.ts`; esses arquivos não existem no `main` e o `main` passa o Gate 1 hoje. Refactor movido por lint cuja necessidade deixou de existir; nenhuma função ou comportamento envolvido. |
+| `codex-fix-gate1-kit-pdf-types` · `src/components/common/IntelligenceBadges.tsx` | **incorporado com renome** — o ref tinha a entrada `emergente` (do hook legado em `@/hooks/useProductIntelligenceBadges`, caminho que o `main` não tem mais). No `main` o hook vive em `src/hooks/products/useProductIntelligenceBadges.ts` e emite `'emerging'`, com a entrada `emerging` no mapa (linha 37, mapa com 9 entradas). Badge preservada, em inglês. |
+| `codex-fix-gate1-kit-pdf-types` · `src/components/dev/metrics/MetricUtils.ts` | **não incorporado, registrado** — o ref exporta `bridgeBadge(bridge: BridgeName)` (8 linhas de cor por bridge); o `main` não tem a função, embora tenha `src/lib/telemetry/bridgeCallMetrics.ts`. Helper de cor de uma tela de métricas de dev, sem efeito em produção. |
+| `261117-laughing-cori-o9w35e` · `src/hooks/stock/useRuptureAlerts.ts` | **melhoria real que o `main` não pegou — reaproveitada** (ver abaixo). |
+
+**A melhoria reaproveitada.** O `main` chama a RPC de alertas de ruptura com
+`(supabase as any).rpc('fn_get_rupture_alerts')` e uma linha
+`// eslint-disable-next-line @typescript-eslint/no-explicit-any`. O ref usa
+`untypedRpc('fn_get_rupture_alerts')` de `@/lib/supabase-untyped` — helper que **já
+existe no `main`** (`src/lib/supabase-untyped.ts`) justamente para eliminar `as any`
+em call site. Mesma chamada, sem `any` e sem supressão de lint. Portada em PR
+própria, porque é mudança de código e esta é docs-only.
