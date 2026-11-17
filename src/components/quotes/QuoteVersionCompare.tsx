@@ -43,7 +43,7 @@ interface QuoteDetail {
   payment_terms: string | null;
   delivery_time: string | null;
   notes: string | null;
-  created_at: string;
+  created_at: string | null;
   items: QuoteItem[];
 }
 
@@ -230,7 +230,11 @@ export function QuoteVersionCompare({
                       </Badge>
                     </CardTitle>
                     <p className="text-xs text-muted-foreground">
-                      {format(new Date(detail.created_at), 'dd/MM/yyyy HH:mm', { locale: ptBR })}
+                      {detail.created_at
+                        ? format(new Date(detail.created_at), 'dd/MM/yyyy HH:mm', {
+                            locale: ptBR,
+                          })
+                        : '—'}
                     </p>
                   </CardHeader>
                   <CardContent className="space-y-2 text-sm">
