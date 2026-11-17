@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "416e5fde570121689ac38b1a113785de70a296fe",
+  "commit": "3510fbc451d568388c672cd0a7f81e15ec08b7ef",
   "branch": "main",
-  "data_commit": "2026-11-17T03:08:17-03:00",
+  "data_commit": "2026-11-17T03:18:24-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "3510fbc4",
+    "data": "2026-11-17",
+    "assunto": "chore(docs): registra a rodada de decisoes de 17/11 no ledger da auditoria (#3757)"
+   },
    {
     "sha": "416e5fde",
     "data": "2026-11-17",
@@ -126,18 +131,13 @@
     "sha": "083510fb",
     "data": "2026-11-16",
     "assunto": "fix(trust): resgata o contrato de \"dispositivo confiável\" e tapa o furo que ele achou (#3735)"
-   },
-   {
-    "sha": "d1091fe1",
-    "data": "2026-11-16",
-    "assunto": "docs(audit): rodada de 17/11 no ledger de auditoria de branches (#3734)"
    }
   ],
   "arquivos_mudados_7d": 1942,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
-    "mudancas": 638
+    "mudancas": 637
    },
    {
     "pasta": "src/components/products",
@@ -301,7 +301,7 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 569
+    "commits": 568
    },
    {
     "autor": "Claude",
