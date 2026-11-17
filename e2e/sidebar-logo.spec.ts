@@ -24,7 +24,10 @@ test.describe('Sidebar Logo Visual Regression', () => {
 
     // Visual sanity check for sizes (rough bounds)
     const iconBox = await logoIcon.boundingBox();
-    expect(iconBox?.width).toBeLessThan(20); // Delicate icon
+    // Contrato V3: o ícone é `h-6 w-6` = 24px (src/components/layout/AppLogo.tsx:106).
+    // O limite anterior era `< 20`, que contradizia o próprio componente — e o
+    // spec não é invocado por nenhum workflow, então o vermelho nunca aparecia.
+    expect(iconBox?.width).toBe(24);
 
     const textBox = await logoText.boundingBox();
     expect(textBox?.height).toBeLessThan(25); // Delicate text
