@@ -1,9 +1,9 @@
 {
  "meta": {
-  "sha": "ca4cee9a2cc6a1f2f39e362540a94aeb9afae1af",
+  "sha": "c9cb18f040613bd6adf6008b5a770faee8c6728a",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-17 05:30 UTC",
+  "generated_at": "2026-11-17 05:34 UTC",
   "files_total": 10747,
   "code_files": 8790,
   "code_lines": 1240256
@@ -541247,10 +541247,22 @@
   }
  },
  "git": {
-  "sha": "ca4cee9a2cc6a1f2f39e362540a94aeb9afae1af",
+  "sha": "c9cb18f040613bd6adf6008b5a770faee8c6728a",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "c9cb18f",
+    "date": "2026-11-17",
+    "author": "adm01-debug",
+    "subject": "fix(ci): corrige a regressao de versao (1.1.0 para 1.8.1) e a causa raiz no release-please (#3749)",
+    "files": [
+     ".github/workflows/release-please.yml",
+     ".release-please-manifest.json",
+     "package-lock.json",
+     "package.json"
+    ]
+   },
    {
     "sha": "ca4cee9",
     "date": "2026-11-17",
@@ -541544,21 +541556,16 @@
      "src/hooks/kit-builder/useCustomKitPersistence.ts",
      "tests/hooks/useCustomKitPersistence.pin-order.test.tsx"
     ]
-   },
-   {
-    "sha": "9bd4a4b",
-    "date": "2026-11-16",
-    "author": "adm01-debug",
-    "subject": "chore(docs): arquiva a passagem de sessão de 15/11 que a main não tinha (#3717)",
-    "files": [
-     "docs/agentes/passagens/2026-11-15-passagem-sessao.md"
-    ]
    }
   ],
   "hot_files": [
    [
     "docs/agentes/resgates/2026-11-16-auditoria-branches.md",
     4
+   ],
+   [
+    "package.json",
+    2
    ],
    [
     ".github/workflows/deploy-gates.yml",
@@ -541571,6 +541578,18 @@
    [
     "docs/MOCKUP_OPERACAO.md",
     2
+   ],
+   [
+    ".github/workflows/release-please.yml",
+    1
+   ],
+   [
+    ".release-please-manifest.json",
+    1
+   ],
+   [
+    "package-lock.json",
+    1
    ],
    [
     ".github/scripts/e2e-relevance.mjs",
@@ -541605,10 +541624,6 @@
     1
    ],
    [
-    "package.json",
-    1
-   ],
-   [
     "tests/scripts/e2e-relevance.test.mjs",
     1
    ],
@@ -541622,18 +541637,6 @@
    ],
    [
     "src/components/quotes/QuotesConfigurableList.tsx",
-    1
-   ],
-   [
-    "src/components/quotes/__tests__/QuotesConfigurableList.approve.test.tsx",
-    1
-   ],
-   [
-    "docs/arquivo/2026-10/AUDITORIA_CANDIDATAS_FORA_BASELINE_E06_2026-10-07.md",
-    1
-   ],
-   [
-    "scripts/check-supabase-migration-ledger.mjs",
     1
    ]
   ]
