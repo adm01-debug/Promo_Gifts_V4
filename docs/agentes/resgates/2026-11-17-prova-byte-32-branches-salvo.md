@@ -219,3 +219,42 @@ daria duas restaurações disputando, de fontes diferentes — pior que hoje.
 
 As 2 branches do Codex passam de "27 arquivos sem veredito" para **13 itens de decisão de produto**.
 Elas continuam sem poder fechar, mas o que falta deixou de ser investigação e passou a ser escolha.
+
+---
+
+# Segundo adendo — mais 4 obsoletos medidos: 18 dos 27 adjudicados
+
+Mesma regra: nada aqui depende de decisão do dono, tudo é medida na `main`.
+
+## Obsoletos por medida (4 itens, 240 linhas)
+
+| item | evidência na `main` |
+|---|---|
+| `library-list-utils.ts` | os **dois** exports (`getItemsCount`, `applySort`) existem inline em `KitLibraryPage.tsx` — extração não adotada |
+| `QuoteBuilderPaymentMethodField.tsx` | extração pura de campo que já existe inline no builder; `validationErrors`, que ele consome, está em `useQuoteBuilderState.ts:656`. O `data-testid` dele é `legacy-quote-payment-method`: era para a tela antiga |
+| `DetailedProductDetailSkeleton.tsx` | `ProductDetail.tsx` já tem 10 usos de skeleton; `ModernSkeletons.tsx` cobre card, grid, tabela e stats |
+| `voiceFilterPatch.ts` + `legacy-filter-voice.test.ts` | entrada por voz está **integrada** em `useFilterPanelState.ts` e em `useCatalogState.ts`/`.helpers.ts`; o módulo era um "patch" sobre o que hoje é nativo |
+
+## Decisão de produto — 9 itens restantes
+
+Aqui eu paro por princípio: são funcionalidades que nunca subiram, e querer ou não é do negócio.
+
+| item | o que a `main` tem hoje | a pergunta |
+|---|---|---|
+| `CartEmptyStateWithTemplates.tsx` | `CartEmptyStateSmart.tsx`, **sem nenhuma menção a template/modelo** | o carrinho vazio deve oferecer começar de um template? |
+| `LegacyCartInsights.tsx` + teste (478 linhas) | o **dado** existe (`useSellerCarts.ts`, `.helpers.ts` e testes), a **tela** não: não há `seller-carts` em `src/pages/` | quer o painel de insights do carrinho do vendedor de volta? |
+| `LegacyFavoritesAdapters.tsx` + teste do launcher | modo apresentação existe, mas só a partir da revista (`usePresentationMode.ts`, `PublicMagazineView.tsx`) | quer apresentar a partir dos favoritos? |
+| `SmartSuggestions.tsx` + teste (148 linhas) | família própria de busca: `AdvancedSearch`, `GlobalSearch`, `GlobalSearchPalette`, `GlobalSearchIdleState`, `EmptySearchState` | as sugestões inline do arquivo abandonado agregam algo à família atual? |
+| `QuoteBuilderDraftRecovery.tsx` | **bloqueio de arquitetura**, não de produto | qual storage é o dono do rascunho (ver primeiro adendo)? |
+
+## Placar do fechamento
+
+| situação | itens |
+|---|---:|
+| adjudicados (incorporado, obsoleto ou resgatado) | **18** |
+| aguardando decisão de produto | 8 |
+| aguardando decisão de arquitetura | 1 |
+
+As 2 branches do Codex seguem sem poder fechar — mas o que falta nelas são **9 perguntas**, nenhuma
+investigação. As outras 30 branches: 19 provadas com zero resíduo, 11 com resíduo resolvido, das
+quais 2 dependem apenas de decidir o destino de uma nota de sessão.
