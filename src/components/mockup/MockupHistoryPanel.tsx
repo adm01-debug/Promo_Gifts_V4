@@ -5,6 +5,7 @@
 
 import { useState, useMemo, useCallback, useDeferredValue, useEffect, memo } from 'react';
 import { cn } from '@/lib/utils';
+import { buildMockupTechniqueOptions } from '@/components/mockup/mockupTechniqueOptions';
 import { LayoutPopover } from '@/components/products/LayoutPopover';
 import { getDefaultColumns, type ColumnCount } from '@/components/products/ColumnSelector';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -67,6 +68,9 @@ interface MockupHistoryPanelProps {
   onLoadFromHistory: (mockup: GeneratedMockup) => void;
   onDownload: (url: string) => void;
   onDelete: (id: string) => void;
+  /** Técnicas do catálogo. Sem elas o filtro só oferece técnica que já apareceu
+   *  em algum mockup antigo, e técnica nova fica fora da lista. */
+  techniques?: readonly { name: string }[];
 }
 
 const ITEMS_PER_PAGE = 12;
@@ -78,6 +82,7 @@ export function MockupHistoryPanel({
   onLoadFromHistory,
   onDownload,
   onDelete,
+  techniques,
 }: MockupHistoryPanelProps) {
   const [filterClient, setFilterClient] = useState('all');
   const [filterProduct, setFilterProduct] = useState('');
@@ -112,17 +117,10 @@ export function MockupHistoryPanel({
   const compareMode = selectedForCompare.size > 0;
   const compareMockups = mockupHistory.filter((m) => selectedForCompare.has(m.id));
 
-  const historyTechniques = useMemo(() => {
-    const seen = new Set<string>();
-    const result: { id: string; name: string }[] = [];
-    for (const m of mockupHistory) {
-      if (m.technique_name && !seen.has(m.technique_name)) {
-        seen.add(m.technique_name);
-        result.push({ id: m.technique_name, name: m.technique_name });
-      }
-    }
-    return result.sort((a, b) => a.name.localeCompare(b.name));
-  }, [mockupHistory]);
+  const historyTechniques = useMemo(
+    () => buildMockupTechniqueOptions(mockupHistory, techniques),
+    [mockupHistory, techniques],
+  );
 
   const filteredMockups = useMemo(() => {
     return mockupHistory.filter((mockup) => {
