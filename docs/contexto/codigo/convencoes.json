@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "fix(ci): dispara o gate de banco quando o ledger de migrations muda (#3747)",
+   "fix(ci): corrige SHA inexistente na allowlist do sentinel (#3743)",
    "chore(docs): fechamento da auditoria de branches com o veredito das 24 restantes (#3748)",
    "feat(quotes): aprovar orçamento direto da lista — a ação existia no pai e era descartada (#3746)",
-   "docs(audit): resgata a auditoria E06 das migrations fora do baseline (07/10) (#3745)",
-   "fix(ci): lacra a allowlist do ledger de migrations, que era lida em try/catch silencioso (#3744)",
-   "fix(test): o teste do logo da sidebar contradizia o próprio componente (#3742)"
+   "docs(audit): resgata a auditoria E06 das migrations fora do baseline (07/10) (#3745)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",

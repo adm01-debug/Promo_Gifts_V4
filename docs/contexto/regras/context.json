@@ -1,9 +1,9 @@
 {
  "meta": {
-  "sha": "13a9f8eb19f5e79f8f900e53133cfb0e92c07bb1",
+  "sha": "cca81a8f65de42de14cf25b4c0ed14409fb6f5f8",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-17 04:18 UTC",
+  "generated_at": "2026-11-17 05:07 UTC",
   "files_total": 10746,
   "code_files": 8789,
   "code_lines": 1240072
@@ -541197,10 +541197,28 @@
   }
  },
  "git": {
-  "sha": "13a9f8eb19f5e79f8f900e53133cfb0e92c07bb1",
+  "sha": "cca81a8f65de42de14cf25b4c0ed14409fb6f5f8",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "cca81a8",
+    "date": "2026-11-17",
+    "author": "adm01-debug",
+    "subject": "fix(ci): dispara o gate de banco quando o ledger de migrations muda (#3747)",
+    "files": [
+     ".github/workflows/deploy-gates.yml"
+    ]
+   },
+   {
+    "sha": "b6674d6",
+    "date": "2026-11-17",
+    "author": "adm01-debug",
+    "subject": "fix(ci): corrige SHA inexistente na allowlist do sentinel (#3743)",
+    "files": [
+     ".github/SENTINEL_SHA_ALLOWLIST.txt"
+    ]
+   },
    {
     "sha": "13a9f8e",
     "date": "2026-11-17",
@@ -541479,25 +541497,6 @@
      "src/lib/quotes/__tests__/quoteDraftRecovery.test.ts",
      "src/lib/quotes/quoteDraftRecovery.ts"
     ]
-   },
-   {
-    "sha": "8e5aaaa",
-    "date": "2026-11-16",
-    "author": "adm01-debug",
-    "subject": "test: resgata os 2 testes que sobreviveram a refutacao adversarial (#3712)",
-    "files": [
-     "src/lib/__tests__/external-rpc.test.ts",
-     "tests/a11y/magazine-a11y.test.tsx"
-    ]
-   },
-   {
-    "sha": "2699605",
-    "date": "2026-11-16",
-    "author": "adm01-debug",
-    "subject": "docs(audit): corrige a classificacao dos 52 testes — faltava a classe \"falha 100%\" (#3711)",
-    "files": [
-     "analise-branches/VEREDITO-52-TESTES-LEGACY-261116.md"
-    ]
    }
   ],
   "hot_files": [
@@ -541512,6 +541511,14 @@
    [
     "docs/MOCKUP_OPERACAO.md",
     2
+   ],
+   [
+    ".github/workflows/deploy-gates.yml",
+    1
+   ],
+   [
+    ".github/SENTINEL_SHA_ALLOWLIST.txt",
+    1
    ],
    [
     "src/components/quotes/QuoteRowApproveItem.tsx",
@@ -541571,14 +541578,6 @@
    ],
    [
     "tests/edge-functions/integration/generate-mockup.handler.test.ts",
-    1
-   ],
-   [
-    "analise-prs/regras-de-negocio.md",
-    1
-   ],
-   [
-    "auditoria-supabase/correcoes.md",
     1
    ]
   ]

@@ -2,11 +2,21 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "13a9f8eb19f5e79f8f900e53133cfb0e92c07bb1",
+  "commit": "cca81a8f65de42de14cf25b4c0ed14409fb6f5f8",
   "branch": "main",
-  "data_commit": "2026-11-17T01:00:48-03:00",
+  "data_commit": "2026-11-17T02:06:06-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "cca81a8f",
+    "data": "2026-11-17",
+    "assunto": "fix(ci): dispara o gate de banco quando o ledger de migrations muda (#3747)"
+   },
+   {
+    "sha": "b6674d6f",
+    "data": "2026-11-17",
+    "assunto": "fix(ci): corrige SHA inexistente na allowlist do sentinel (#3743)"
+   },
    {
     "sha": "13a9f8eb",
     "data": "2026-11-17",
@@ -121,19 +131,9 @@
     "sha": "de5ce2cc",
     "data": "2026-11-16",
     "assunto": "fix(ci): export do schema snapshot não roda quando o drift-gate é cancelado (#3718)"
-   },
-   {
-    "sha": "eadb47a7",
-    "data": "2026-11-16",
-    "assunto": "fix(kit): fixar/desafixar kit anuncia o estado da requisição velha (#3723)"
-   },
-   {
-    "sha": "9bd4a4bf",
-    "data": "2026-11-16",
-    "assunto": "chore(docs): arquiva a passagem de sessão de 15/11 que a main não tinha (#3717)"
    }
   ],
-  "arquivos_mudados_7d": 1929,
+  "arquivos_mudados_7d": 1930,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -211,23 +211,23 @@
    },
    {
     "arquivo": "package.json",
-    "mudancas": 42
+    "mudancas": 41
    },
    {
     "arquivo": "package-lock.json",
-    "mudancas": 26
+    "mudancas": 25
    },
    {
     "arquivo": "docs/coordenacao/conflitos-semanticos.md",
     "mudancas": 22
    },
    {
-    "arquivo": "supabase/EDGE_FUNCTIONS_DEPLOY_LOG.md",
+    "arquivo": ".github/workflows/deploy-gates.yml",
     "mudancas": 16
    },
    {
-    "arquivo": ".github/workflows/deploy-gates.yml",
-    "mudancas": 15
+    "arquivo": "supabase/EDGE_FUNCTIONS_DEPLOY_LOG.md",
+    "mudancas": 16
    },
    {
     "arquivo": "analise-prs/progresso.json",
@@ -239,7 +239,7 @@
    },
    {
     "arquivo": "CHANGELOG.md",
-    "mudancas": 14
+    "mudancas": 13
    },
    {
     "arquivo": "auditoria-supabase/RELATORIO_AUDITORIA_SUPABASE.md",
@@ -294,14 +294,14 @@
     "mudancas": 8
    },
    {
-    "arquivo": ".github/workflows/db-schema-drift-check.yml",
+    "arquivo": ".github/SENTINEL_SHA_ALLOWLIST.txt",
     "mudancas": 7
    }
   ],
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 570
+    "commits": 571
    },
    {
     "autor": "Claude",
@@ -313,7 +313,7 @@
    },
    {
     "autor": "github-actions[bot]",
-    "commits": 32
+    "commits": 31
    },
    {
     "autor": "dependabot[bot]",

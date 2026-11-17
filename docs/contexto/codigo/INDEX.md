@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e de hora em hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `13a9f8eb19f5e79f8f900e53133cfb0e92c07bb1` (2026-11-17T01:00:48-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e de hora em hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `cca81a8f65de42de14cf25b4c0ed14409fb6f5f8` (2026-11-17T02:06:06-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -590,7 +590,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - possiveis_segredos_no_codigo: 7 — ex.: scripts/ai-context/cenarios.mjs:102, src/components/admin/connections/__tests__/ConnectionSecurity.unit.test.tsx:9, src/integrations/supabase/client.ts:27
 
 ## Grafo de código (graphify)
-- 48132 nós · 80857 arestas · 2748 comunidades · grafo do commit `13a9f8eb`
+- 48132 nós · 80857 arestas · 2748 comunidades · grafo do commit `cca81a8f`
 - comunidades maiores: vitest (824), ref_integrations (605), ref_hooks (453), ref_lib (452), lucide-react (432), ref_node_child_process (386), @tanstack/react-query (354), gotoAndSettle (350), sonner (325), ref_node_url (311), scripts (309), ref_node_fs (295)
 - símbolos mais chamados: gotoAndSettle() (e2e/helpers/nav.ts), re (?), q() (scripts/supabase_snapshot/snapshot.py), analyze() (tests/scripts/test_personalization_artifact_diagnostics.py), outer() (tests/scripts/test_personalization_artifact_diagnostics.py), json (?), useExternalDatabase() (recovery/src-legacy/src/hooks/useExternalDatabase.ts), concludeCheck() (scripts/check-result-contract.mjs), querySupabaseReadOnly() (scripts/supabase-read-only-query.mjs), loginAs() (e2e/helpers/auth.ts), inner() (tests/scripts/test_personalization_artifact_diagnostics.py), excluded_sql() (scripts/supabase_snapshot/snapshot.py)
 - consulta local: `graphify query "<pergunta>"`, `graphify path "<A>" "<B>"`, `graphify explain "<X>"`
@@ -599,14 +599,14 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - RELATORIO_CI.md (66)
 - supabase/MIGRATIONS_SYNC_LOG.md (62)
 - PENDENCIAS.md (57)
-- package.json (42)
-- package-lock.json (26)
+- package.json (41)
+- package-lock.json (25)
 - docs/coordenacao/conflitos-semanticos.md (22)
+- .github/workflows/deploy-gates.yml (16)
 - supabase/EDGE_FUNCTIONS_DEPLOY_LOG.md (16)
-- .github/workflows/deploy-gates.yml (15)
 - analise-prs/progresso.json (15)
 - src/pages/kit-builder/KitBuilderPage.tsx (15)
-- CHANGELOG.md (14)
+- CHANGELOG.md (13)
 - auditoria-supabase/RELATORIO_AUDITORIA_SUPABASE.md (13)
 - audit/supabase-reference-catalog.temporary.json (12)
 - src/hooks/kit-builder/useKitBuilderPageState.ts (11)
@@ -1184,6 +1184,8 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - CHANGELOG topo: [1.1.0](https://github.com/adm01-debug/Promo_Gifts_V4/compare/v1.0.0...v1.1.0) (2026-11-13)
 
 ## Últimos commits
+- 2026-11-17 `cca81a8f` fix(ci): dispara o gate de banco quando o ledger de migrations muda (#3747)
+- 2026-11-17 `b6674d6f` fix(ci): corrige SHA inexistente na allowlist do sentinel (#3743)
 - 2026-11-17 `13a9f8eb` chore(docs): fechamento da auditoria de branches com o veredito das 24 restantes (#3748)
 - 2026-11-17 `ec183890` feat(quotes): aprovar orçamento direto da lista — a ação existia no pai e era descartada (#3746)
 - 2026-11-17 `c66bd143` docs(audit): resgata a auditoria E06 das migrations fora do baseline (07/10) (#3745)
@@ -1197,8 +1199,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-16 `a4ac9034` docs(audit): resgata as regras de negócio que só existiam em 2 branches, reconferidas no código (#3738)
 - 2026-11-16 `9d1bb689` docs(audit): o plano C3 mandava apagar secret_value sem avisar que a edge lê essa coluna (#3736)
 - 2026-11-16 `083510fb` fix(trust): resgata o contrato de "dispositivo confiável" e tapa o furo que ele achou (#3735)
-- 2026-11-16 `d1091fe1` docs(audit): rodada de 17/11 no ledger de auditoria de branches (#3734)
-- 2026-11-16 `79c56401` fix(docs): número errado de migration no doc resgatado deixou o Gate 1 vermelho na main (#3733)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`
