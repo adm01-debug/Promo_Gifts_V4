@@ -335,11 +335,13 @@ export const INTERNAL_ADDRESS_ALIAS = '__address_filter';
 export type OwnershipRule =
   | { kind: 'direct'; filterColumn: 'vendedor_id' }
   | { kind: 'relation'; relation: string; embed: string; filterColumn: string }
-  // GUARD (decisão do dono, 2026-11-14): tabela SEM escopo por vendedor. A decisão de
-  // privacidade foi sobre carteira de CLIENTES; fornecedor e transportadora não são dado
-  // de cliente e não eram escopados antes (ownership.ts do main listava como PII apenas
-  // companies, contacts, contact_emails, contact_phones e customers). Escopá-los deixaria
-  // o cadastro de produto com a lista de fornecedores vazia para vendedor e agente.
+  // GUARD (decisão do dono, 2026-11-14; reconfirmada em 2026-11-15): tabela SEM escopo por
+  // vendedor. A decisão de privacidade foi sobre carteira de CLIENTES; fornecedor e
+  // transportadora não são dado de cliente e não eram escopados antes (ownership.ts do main
+  // listava como PII apenas companies, contacts, contact_emails, contact_phones e customers).
+  // Escopá-los deixaria o cadastro de produto com a lista de fornecedores vazia para vendedor
+  // e agente. A decisão de 2026-11-15 (vendedor vê a carteira dele MAIS os clientes sem dono)
+  // mudou só o FILTRO das tabelas escopadas — não mexeu nesta guarda.
   | { kind: 'none' };
 
 export const OWNERSHIP_RULES: Record<CrmTable, OwnershipRule> = {
@@ -552,6 +554,29 @@ export function sellerScopeFilter(table: CrmTable): { column: string; relation?:
   if (rule.kind === 'none') return null;
   if (rule.kind === 'direct') return { column: rule.filterColumn };
   return { column: rule.filterColumn, relation: rule.relation };
+}
+
+/**
+ * GUARD (decisão do dono, 2026-11-15 — REVERTE a de 2026-11-14): vendedor COM vínculo no CRM
+ * vê a carteira dele MAIS os clientes sem dono (`vendedor_id IS NULL`). Não apagar nem
+ * "restaurar" para `.eq` achando que é regressão: é decisão de negócio, não afrouxamento.
+ *
+ * Monta esse "igual a X OU nulo" na forma que o PostgREST aceita quando a coluna está num
+ * recurso EMBUTIDO: o `or` leva como prefixo o caminho do embed (`referencedTable`) e as
+ * colunas dentro dos parênteses são relativas a esse embed — ou seja
+ * `__seller_scope.customers.or=(vendedor_id.eq.7,vendedor_id.is.null)`, nunca
+ * `or=(__seller_scope.customers.vendedor_id.eq.7,...)`, que o PostgREST leria como coluna da
+ * tabela de topo. Para `customers` (coluna própria) não há prefixo.
+ */
+export function sellerScopeOrFilter(
+  column: string,
+  sellerId: number,
+): { filters: string; referencedTable?: string } {
+  const parts = column.split('.');
+  const leaf = parts.pop() as string;
+  const referencedTable = parts.join('.');
+  const filters = `${leaf}.eq.${sellerId},${leaf}.is.null`;
+  return referencedTable ? { filters, referencedTable } : { filters };
 }
 
 export function splitCompanyAddressFilters(filters: Record<string, unknown> | undefined): {
