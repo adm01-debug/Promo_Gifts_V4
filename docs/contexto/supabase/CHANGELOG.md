@@ -2,6 +2,10 @@
 
 Diff semântico gerado a cada coleta em que algo mudou.
 
+## 2026-11-17 13:22 UTC
+
+- **functions** alterado (1): `public.fn_get_rupture_alerts()`
+
 ## 2026-11-17 09:20 UTC
 
 - **lints** removido (1): `view_security_definer:public.v_product_properties_public`
