@@ -291,6 +291,11 @@ export function QuoteAutoSave({
 
   const statusText = getStatusText();
   const showIcon = status !== 'idle' || statusText !== '';
+  // A página pode esconder o indicador no estado normal (QuoteBuilderPage passa
+  // `sr-only`), mas falha de salvamento não pode ficar só para leitor de tela:
+  // o vendedor precisa ver que o rascunho NÃO foi salvo. `not-sr-only` vence o
+  // `sr-only` externo no twMerge; o texto também sai do `hidden` do mobile.
+  const isFailure = status === 'error' || status === 'offline';
   // aria-live: 'polite' anuncia mudanças de status sem interromper o leitor.
   // 'off' quando não há texto, para evitar anúncios vazios.
   const ariaLive: 'off' | 'polite' = statusText ? 'polite' : 'off';
@@ -301,7 +306,11 @@ export function QuoteAutoSave({
       <Tooltip>
         <TooltipTrigger asChild>
           <div
-            className={cn('flex items-center gap-2', className)}
+            className={cn(
+              'flex items-center gap-2',
+              className,
+              isFailure && 'not-sr-only pointer-events-auto',
+            )}
             role="status"
             aria-label={QUOTE_AUTOSAVE_ARIA_LABEL}
             aria-live={ariaLive}
@@ -324,7 +333,12 @@ export function QuoteAutoSave({
               )}
             </AnimatePresence>
             <span
-              className="hidden text-xs text-muted-foreground sm:inline"
+              className={cn(
+                'text-xs',
+                isFailure
+                  ? 'inline font-medium text-destructive'
+                  : 'hidden text-muted-foreground sm:inline',
+              )}
               data-testid="quote-autosave-text"
             >
               {statusText}
