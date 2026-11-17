@@ -1,9 +1,9 @@
 {
  "meta": {
-  "sha": "cca81a8f65de42de14cf25b4c0ed14409fb6f5f8",
+  "sha": "a8f57a4fc55107c709a3fcc9c07654ca86cdca58",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-17 05:07 UTC",
+  "generated_at": "2026-11-17 05:10 UTC",
   "files_total": 10746,
   "code_files": 8789,
   "code_lines": 1240072
@@ -541197,10 +541197,19 @@
   }
  },
  "git": {
-  "sha": "cca81a8f65de42de14cf25b4c0ed14409fb6f5f8",
+  "sha": "a8f57a4fc55107c709a3fcc9c07654ca86cdca58",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "a8f57a4",
+    "date": "2026-11-17",
+    "author": "adm01-debug",
+    "subject": "fix(ci): force_rotate tambem libera a publicacao do snapshot (#3725)",
+    "files": [
+     ".github/workflows/schema-snapshot-export.yml"
+    ]
+   },
    {
     "sha": "cca81a8",
     "date": "2026-11-17",
@@ -541486,17 +541495,6 @@
     "files": [
      "supabase/MIGRATIONS_SYNC_LOG.md"
     ]
-   },
-   {
-    "sha": "7a7a5bc",
-    "date": "2026-11-16",
-    "author": "adm01-debug",
-    "subject": "fix(quotes): valida o rascunho antes de restaurar na tela do orcamento (#3713)",
-    "files": [
-     "src/components/quotes/QuoteAutoSave.tsx",
-     "src/lib/quotes/__tests__/quoteDraftRecovery.test.ts",
-     "src/lib/quotes/quoteDraftRecovery.ts"
-    ]
    }
   ],
   "hot_files": [
@@ -541505,7 +541503,7 @@
     4
    ],
    [
-    "src/components/quotes/QuoteAutoSave.tsx",
+    ".github/workflows/schema-snapshot-export.yml",
     2
    ],
    [
@@ -541573,11 +541571,11 @@
     1
    ],
    [
-    "src/components/quotes/__tests__/QuoteAutoSave.failureVisible.test.tsx",
+    "src/components/quotes/QuoteAutoSave.tsx",
     1
    ],
    [
-    "tests/edge-functions/integration/generate-mockup.handler.test.ts",
+    "src/components/quotes/__tests__/QuoteAutoSave.failureVisible.test.tsx",
     1
    ]
   ]

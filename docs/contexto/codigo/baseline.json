@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "cca81a8f65de42de14cf25b4c0ed14409fb6f5f8",
+  "commit": "a8f57a4fc55107c709a3fcc9c07654ca86cdca58",
   "branch": "main",
-  "data_commit": "2026-11-17T02:06:06-03:00",
+  "data_commit": "2026-11-17T02:06:14-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "a8f57a4f",
+    "data": "2026-11-17",
+    "assunto": "fix(ci): force_rotate tambem libera a publicacao do snapshot (#3725)"
+   },
    {
     "sha": "cca81a8f",
     "data": "2026-11-17",
@@ -126,11 +131,6 @@
     "sha": "98a305c2",
     "data": "2026-11-16",
     "assunto": "fix(ci): destrava o Gate E40, que reprova toda PR com migration desde 15/11 (#3721)"
-   },
-   {
-    "sha": "de5ce2cc",
-    "data": "2026-11-16",
-    "assunto": "fix(ci): export do schema snapshot não roda quando o drift-gate é cancelado (#3718)"
    }
   ],
   "arquivos_mudados_7d": 1930,
@@ -247,7 +247,7 @@
    },
    {
     "arquivo": "audit/supabase-reference-catalog.temporary.json",
-    "mudancas": 12
+    "mudancas": 11
    },
    {
     "arquivo": "src/hooks/kit-builder/useKitBuilderPageState.ts",
@@ -301,7 +301,7 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 571
+    "commits": 572
    },
    {
     "autor": "Claude",
@@ -313,7 +313,7 @@
    },
    {
     "autor": "github-actions[bot]",
-    "commits": 31
+    "commits": 30
    },
    {
     "autor": "dependabot[bot]",

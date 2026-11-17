@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "fix(ci): force_rotate tambem libera a publicacao do snapshot (#3725)",
    "fix(ci): dispara o gate de banco quando o ledger de migrations muda (#3747)",
    "fix(ci): corrige SHA inexistente na allowlist do sentinel (#3743)",
    "chore(docs): fechamento da auditoria de branches com o veredito das 24 restantes (#3748)",
-   "feat(quotes): aprovar orçamento direto da lista — a ação existia no pai e era descartada (#3746)",
-   "docs(audit): resgata a auditoria E06 das migrations fora do baseline (07/10) (#3745)"
+   "feat(quotes): aprovar orçamento direto da lista — a ação existia no pai e era descartada (#3746)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",
