@@ -351,15 +351,16 @@ describe('Original autosave confirms real server success and preserves pending w
     expect(m.rpc).not.toHaveBeenCalled();
   });
   it.each(['logout', 'other user', 'other kit'])(
-    '%s leaves the pending timer scheduled and still issues exactly one save (known defect)',
+    '%s cancela o timer pendente e nao grava nada',
     async (mode) => {
-      // KNOWN DEFECT, pinned so a fix is noticed here:
-      // src/hooks/kit-builder/useKitAutoSave.ts:305 schedules the timer with the
-      // saveToDb closure of the render that scheduled it, and the snapshot effect
-      // bails out at line 298 when the state did not change, so neither an auth
-      // change nor a kit change cancels it. The legacy hook cancelled all three.
-      // In production the `enabled` gate (useKitBuilderPageState.ts:143) blocks
-      // the write while a different kit hydrates.
+      // Este caso era um pino de defeito conhecido quando o arquivo foi resgatado: o
+      // timer agendado em useKitAutoSave.ts:305 guardava o closure do render que o
+      // agendou, e o effect de snapshot saia cedo (:298) quando o estado nao mudava,
+      // entao nem troca de conta nem troca de kit cancelavam — o rascunho anterior era
+      // gravado com p_kit_id do kit novo e o usuario ja deslogado no payload.
+      //
+      // O hook legado cancelava os tres, e a assercao abaixo e a daquele contrato,
+      // restaurada agora que o effect de identidade existe de novo.
       const props = initialProps();
       const { rerender } = renderHook(
         ({ state, id, revision }) => useKitAutoSave(state, 1, id, revision),
@@ -376,20 +377,19 @@ describe('Original autosave confirms real server success and preserves pending w
         revision: mode === 'other kit' ? 7 : null,
       });
       await tick();
-      expect(calls()).toHaveLength(1);
-      // The payload still carries the user captured before the change.
-      expect(calls()[0].userId).toBe('u1');
-      expect(calls()[0].name).toBe('Edited');
-      expect(calls()[0].kitId).toBe(mode === 'other kit' ? 'new-kit' : null);
+      expect(calls()).toHaveLength(0);
     },
   );
   it.each(['unmount', 'logout', 'other user', 'other kit'])(
-    '%s does not suppress a late response or its callback (known defect)',
+    '%s suprime a resposta tardia e o callback dela',
     async (mode) => {
-      // KNOWN DEFECT, pinned so a fix is noticed here: the resolution path in
-      // src/hooks/kit-builder/useKitAutoSave.ts:187-208 re-checks neither mount
-      // status, nor user, nor currentKitId, so a response that lands after the
-      // owner changed is still adopted. The legacy hook suppressed all four.
+      // Este caso era um pino de defeito conhecido quando o arquivo foi resgatado: o
+      // caminho de resolucao nao revalidava montagem, dono nem currentKitId depois do
+      // await, entao uma resposta que chegava apos a troca era adotada — e o consumidor
+      // (useKitBuilderPageState.ts:139-142) propagava id/revisao do kit A para o kit B,
+      // anulando a trava otimista.
+      //
+      // O hook legado suprimia os quatro. A assercao abaixo e a daquele contrato.
       let resolve: (value: unknown) => void = () => {};
       m.createResult.mockImplementationOnce(
         () =>
@@ -416,8 +416,8 @@ describe('Original autosave confirms real server success and preserves pending w
         });
       }
       await act(async () => resolve({ data: { id: 'late', revision: 3 }, error: null }));
-      expect(props.callback).toHaveBeenCalledWith('late', 3);
-      if (mode !== 'unmount') expect(result.current.lastSavedAt).toBeInstanceOf(Date);
+      expect(props.callback).not.toHaveBeenCalled();
+      if (mode !== 'unmount') expect(result.current.lastSavedAt).toBeNull();
     },
   );
   it('serializes an edit that reaches its debounce while the previous save is in flight', async () => {
