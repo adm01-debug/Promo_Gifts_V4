@@ -465,3 +465,97 @@ Registrado para ninguém gastar tempo de novo:
 - **`IntelligenceBadges.tsx:97-98`** — já retirado acima: não é alcançável.
 
 Em dois desses eu só não introduzi regressão porque verifiquei antes de aplicar o relatório.
+
+---
+
+# Rodada de decisões — 17/11/2026 (madrugada)
+
+O fechamento acima dizia que 6 PRs ficavam abertas "porque o Git 7 manda" e que 6 itens
+aguardavam decisão do dono. Com a autorização explícita dele para decidir, **todos os 12
+foram adjudicados e executados**. Esta seção registra o que mudou, e as duas vezes em que a
+medição me contrariou.
+
+## 12 PRs mergeadas
+
+| PR | o que resolve | evidência que sustentou |
+|---|---|---|
+| #3743 | SHA inexistente na allowlist do guarda de branch | os 11 SHAs testados com `git cat-file -e`; 1 não existia |
+| #3747 | mexer no ledger de migrations não disparava o gate de banco | padrão testado contra caminhos reais |
+| #3725 | `force_rotate` não liberava a publicação do snapshot | o job consumidor ficava travado no mesmo `!cancelled()` |
+| #3726 | migration e edge function entravam verdes sem rodar E2E | o classificador da main respondia `relevant=false` para `supabase/**` |
+| #3751 | Sigstore fora do ar travava o deploy | **nada** no repo consome a attestation (grep) |
+| #3749 | versão andava para trás (1.1.0 ↔ v1.8.1) | causa raiz: o input `release-type` força a janela de 250 commits |
+| #3752 | `anon` tinha INSERT/UPDATE/DELETE em `color_synonym_map` | privilégios confirmados no canônico |
+| #3722 | inventário de estado parado desde 02/11 | os 3 scripts existem na main; cron sem colisão |
+| #3754 | 55 asserções SQL de device-trust que a main não tinha | rodadas aqui: 54 PASS, 1 falha só por PG local |
+| #3755 | guarda de rota protegida que **não podia passar** | `ProtectedRoute.tsx:48` navega para `/auth`, o teste esperava `/login` |
+| #3756 | rollback de `auth.users` versionado | os 4 vizinhos de data tinham o seu; faltava este |
+| #3748 | o fechamento da auditoria (seção acima) | — |
+
+E a **PR #3566** foi fechada: propunha `1.2.0`, e a tag `v1.2.0` existe desde 18/10 — o
+release-please bateria em `DuplicateReleaseError`, job vermelho, nada publicado.
+
+## As duas vezes em que a medição me contrariou
+
+Registrado porque em ambos os casos eu já havia escrito a conclusão errada.
+
+1. **"O E2E apaga dados de produção."** Falso. Medido: `quotes` tem **7 linhas no total**,
+   **0** com prefixo `[E2E]`, `discount_approval_requests` tem 0, e `e2e_cleanup_audit` tem
+   **375** execuções registradas. A edge `e2e-cleanup` exige token timing-safe, e-mail em
+   allowlist, prefixo validado por regex `^\[E2E\]`, escopo ao `userId` de teste e teto de
+   1000 linhas. O isolamento funciona; não havia dado de cliente em risco. Ligar
+   `E2E_MOCK_AUTH=1` em push, como eu ia propor, mataria a cobertura autenticada real em
+   troca de nada.
+2. **"O replay de migrations está quebrado."** Falso. O `supabase db diff` falhou numa PR
+   que estava **desatualizada** — o diff contra o merge-base antigo incluía migrations que
+   já haviam entrado na main. Com a branch rebaseada, o `Gate E40 - Schema Drift Check`
+   passou **verde** na #3752.
+
+## O que eu barrei, e por quê
+
+| item | o que seria se eu tivesse aceitado |
+|---|---|
+| **P06** do #3720 (`security_invoker` em 8 views) | 7 das 8 views responderiam `permission denied`: `anon` não tem SELECT em `products`, `suppliers`, `product_kit_components` nem `tabela_preco_gravacao_oficial`. `authenticated` também não tem em `suppliers`, então o autocomplete de fornecedores cairia. O autor conferiu **policy** onde faltava **grant** |
+| consolidar 19 workflows de E2E em 1 | 8 jobs **verdes cobrindo 2% da suíte** (o `testMatch` casa ~11 de 567 specs, e `check-min-tests` exige `min: 1`); e `chromium-authed` → `chromium-public` em 6 suítes, rodando teste logado deslogado |
+| allowlist do gitleaks (10 padrões, incl. `SERVICE_ROLE_KEY`) | cegaria o Gate E23, um dos 3 required checks — que está **verde** hoje, logo não há falso positivo a suprimir |
+| reduzir a allowlist do ledger de 681 para 13 | o checker da main devolve **EXIT 1** com `blocking_remote_only=668` num dos dois layouts possíveis da CLI, e sem credencial não se sabe qual é emitido |
+| reviver `quote_comments` | cancelamento deliberado (commit `3413dd136`, 27/06) + guarda de CI criada no mesmo dia. Produção: tabela ausente, 0 policies, 0 linhas — não há dado de cliente a preservar |
+| 13 dos 15 arquivos de `codex/fix-e2e-ci-pressure` | ver `salvo/261117-e2e-ci-pressure` |
+
+## Inventário de branches
+
+**92 fechadas** com prova. **28 refs `salvo/*`** no remoto, cada commit carregando o veredito
+e a medida da branch que preserva.
+
+Restam 8, nenhuma pendente de auditoria:
+
+- **automáticas (5):** `bot/schema-snapshot`, `contexto`, `gh-pages`, 2 do dependabot,
+  `release-please--branches--main--components--gifts-store`
+- **do dono (2):** `claude/feat-crm-vendedor-sem-dono-261115-1622` (PR #3683, dele) e
+  `computador_local`
+- **preservadas por decisão (3):**
+  - `claude/fix-pr3517-gate1-baseline-261113-2336` — a PR #3548 foi fechada com auditoria
+    arquivo por arquivo; `refs/pull/3548/head` é permanente
+  - `claude/fix-resgate-p06-p15-security-261116-2215` — PR #3720 fica **aberta**: é o único
+    lugar com o arquivo do P06 e o rollback que escrevi para ele
+  - `codex/fix-gate1-kit-pdf-types-261109-2252` — tudo resgatado (#3735, #3740, #3746,
+    #3754); sobra só o material de `quote_comments`, preservado como arquivo
+
+## Follow-ups abertos, nomeados
+
+Nada aqui é código morto nem feature pela metade; são itens que precisam de banco ou de
+decisão de produto.
+
+1. **P06 em duas fases** — primeiro os `GRANT SELECT` que faltam nas tabelas-base (ampliação
+   de superfície, exige medir policy por policy), depois o `security_invoker`.
+2. **`ADD COLUMN IF NOT EXISTS` com tipo errado** — os testes do #3754 provam que a migration
+   da main faz **no-op silencioso** se a coluna já existir com outro tipo (exit 0 +
+   `NOTICE 42701`). Endurecer é DDL em produção.
+3. **Asserção da tabela de backup** — o rollback da main cria
+   `_backup_user_known_devices_YYYYMMDD` antes do DROP, e nenhuma das 55 asserções cobre isso.
+4. **`page.goto` direto em 2 pontos de `protected-routes.spec.ts`** — `eslint.config.js:1505`
+   pede `gotoAndSettle`. São warnings pré-existentes e o lint passa; trocar num spec de
+   redirect precisa do E2E rodando.
+5. **E2E com Supabase local no CI** — `supabase start` já roda em `contract-tests.yml:152`
+   (traz Auth, Storage e Edge). Custo R$ 0; o gargalo é seed de dados e criar os usuários
+   `E2E_*` no stack local.
