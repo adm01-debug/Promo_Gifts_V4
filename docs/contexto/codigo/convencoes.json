@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "fix(db): revoga escrita de anon em color_synonym_map (P15) (#3752)",
    "fix(ci): corrige a regressao de versao (1.1.0 para 1.8.1) e a causa raiz no release-please (#3749)",
    "fix(ci): Sigstore fora do ar nao derruba mais o deploy (#3751)",
    "fix(ci): migration e edge function passam a exigir E2E relevante (#3726)",
-   "fix(ci): force_rotate tambem libera a publicacao do snapshot (#3725)",
-   "fix(ci): dispara o gate de banco quando o ledger de migrations muda (#3747)"
+   "fix(ci): force_rotate tambem libera a publicacao do snapshot (#3725)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",

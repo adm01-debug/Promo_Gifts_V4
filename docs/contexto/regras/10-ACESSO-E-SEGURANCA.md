@@ -1,6 +1,6 @@
 # 10 · ACESSO E SEGURANÇA — quem pode o quê
 
-> Gerado automaticamente por AI Context Sync v1.3.2 · commit `c9cb18f040` · branch `main` · 2026-11-17 05:34 UTC
+> Gerado automaticamente por AI Context Sync v1.3.2 · commit `8b5adaa4eb` · branch `main` · 2026-11-17 05:40 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## Perfis / roles identificados
@@ -1280,7 +1280,7 @@ Middleware matcher (Next.js): nenhum
 | revoke | anon | delete, trigger, truncate | `supplier_products_raw` |
 | revoke | anon | delete, update, trigger, references | `frontend_telemetry`, `frontend_telemetry` |
 | revoke | anon | execute | `fn_magazine_public_token`, `public`, `can_access_quote`, `org_has_any_members`, `org_has_any_members`, `create_organization_with_owner`, `get_quote_token_by_value`, `public`, `fn_purge_spr_history`, `fn_process_raw_v2`, `fn_dryrun_raw_v2`, `fn_purge_spr_history`, `reconcile_cf_image_status`, `fn_get_reposicao_listing`, `fn_get_replenishment_stats` … +24 |
-| revoke | anon | insert, update, delete | `workspace_notifications`, `workspace_notifications`, `product_badge_definitions` |
+| revoke | anon | insert, update, delete | `workspace_notifications`, `workspace_notifications`, `product_badge_definitions`, `color_synonym_map` |
 | revoke | anon | insert, update, delete, references, trigger | `external_connections` |
 | revoke | anon | insert, update, delete, truncate | `products` |
 | revoke | anon | insert, update, delete, truncate, references, trigger | `system_kill_switches` |

@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "c9cb18f040613bd6adf6008b5a770faee8c6728a",
+  "commit": "8b5adaa4eb94db5c2924f48463e297990001c057",
   "branch": "main",
-  "data_commit": "2026-11-17T02:30:06-03:00",
+  "data_commit": "2026-11-17T02:39:15-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "8b5adaa4",
+    "data": "2026-11-17",
+    "assunto": "fix(db): revoga escrita de anon em color_synonym_map (P15) (#3752)"
+   },
    {
     "sha": "c9cb18f0",
     "data": "2026-11-17",
@@ -126,14 +131,9 @@
     "sha": "8ba14375",
     "data": "2026-11-16",
     "assunto": "fix(edge-fn): mockup baixava a imagem inteira na memória antes de recusar (#3729)"
-   },
-   {
-    "sha": "32563063",
-    "data": "2026-11-16",
-    "assunto": "test(e2e): três specs que davam falso verde ou vermelho garantido (#3728)"
    }
   ],
-  "arquivos_mudados_7d": 1933,
+  "arquivos_mudados_7d": 1935,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -203,7 +203,7 @@
    },
    {
     "arquivo": "supabase/MIGRATIONS_SYNC_LOG.md",
-    "mudancas": 63
+    "mudancas": 64
    },
    {
     "arquivo": "PENDENCIAS.md",
@@ -211,7 +211,7 @@
    },
    {
     "arquivo": "package.json",
-    "mudancas": 43
+    "mudancas": 42
    },
    {
     "arquivo": "package-lock.json",
@@ -313,7 +313,7 @@
    },
    {
     "autor": "github-actions[bot]",
-    "commits": 30
+    "commits": 29
    },
    {
     "autor": "dependabot[bot]",
@@ -322,7 +322,7 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 10819,
+  "arquivos_total": 10821,
   "arquivos_codigo": 5360,
   "linhas_codigo": 1020443,
   "rotas": 138,
@@ -334,7 +334,7 @@
   "hooks": 626,
   "edge_functions": 112,
   "tabelas": 527,
-  "migrations": 3097,
+  "migrations": 3098,
   "cron_jobs": 122,
   "testes": 2539,
   "workflows": 87,
