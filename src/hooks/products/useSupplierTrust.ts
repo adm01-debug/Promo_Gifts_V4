@@ -21,7 +21,8 @@ interface VSSRecord {
 interface SupplierRecord {
   id: string;
   name: string;
-  active: boolean;
+  /** Nullable no banco (information_schema: is_nullable=YES, default true). */
+  active: boolean | null;
 }
 
 /**
@@ -84,7 +85,9 @@ export function useSupplierTrust(productId?: string) {
               countMode: 'none',
             });
             if (supplierResult.records.length) {
-              isVerified = supplierResult.records[0].active;
+              // `active` é nullable: sem a coerção, um fornecedor com status
+              // indefinido vazava `null` para a UI em vez de "não verificado".
+              isVerified = supplierResult.records[0].active === true;
             }
           } catch {
             // Supplier lookup failed — mark as not verified
