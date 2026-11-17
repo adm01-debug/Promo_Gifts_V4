@@ -554,6 +554,21 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false  # E32
+      # Separa "runner sem Docker" de "contrato violado": os dois davam o mesmo
+      # vermelho anonimo neste job (run 44052951491 reprovou uma PR boa por Docker
+      # ausente). Este passo falha ANTES dos contratos e com nome proprio, entao a
+      # pagina de checks ja diz qual dos dois aconteceu. Nao afrouxa nada: sem Docker
+      # o gate continua vermelho, porque um contrato nao verificado nao pode passar.
+      - name: Pre-requisito do runner - Docker disponivel
+        run: |
+          set -euo pipefail
+          if docker info >/dev/null 2>&1; then
+            echo "Docker disponivel no runner: os contratos PG17 abaixo podem rodar de verdade."
+            exit 0
+          fi
+          echo "::error title=Infra do runner, nao contrato::Docker indisponivel neste runner. Os contratos PG17 do Gate 2.5 (plano aprovado, quote RPC, device-trust) sobem um PostgreSQL 17 em container e nao tem como rodar. Nada foi verificado: isto NAO e violacao de contrato."
+          exit 1
+
       - name: Validate discount approval, grants and trigger races on PG17
         run: scripts/test-approved-plan-database.sh
       - name: Validate guarded quote RPC proposals on pinned isolated PG17

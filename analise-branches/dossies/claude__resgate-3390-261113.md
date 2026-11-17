@@ -51,6 +51,28 @@ A branch nao toca banco, edge function, workflow nem script:
 | Correcoes da #3390 nos 243 arquivos de `recovery/src-legacy/` | **NAO ESTA** — a main manteve a versao antiga do arquivo arquivado | o (B) do pacote e o inverso exato do (A) em todos os casos lidos (ex.: `BridgesLiveCard.tsx` L258, `<th className="p-2"></th>` ↔ `<th className="p-2" />`). Codigo fora do compilador: `tsconfig.app.json` tem `"include": ["src"]` |
 | 4 baselines (`.file-size`, `.as-assertions`, `.as-unknown`, `.indexed-access`) | divergentes, irrelevante | sao arquivos gerados por script; a main tem os seus, regenerados depois |
 
+## STATUS EM 2026-11-17 — os 3 itens de "A resgatar" estão VIVOS na main
+
+Medido contra a `main` de 17/11 (`f129270a`). As três capacidades que esta seção pedia
+para completar **foram entregues depois**, por implementações próprias da main, com
+nomes diferentes dos da branch. Quem ler a seção abaixo sem este aviso vai refazer
+trabalho pronto.
+
+| item | onde está hoje na main |
+| --- | --- |
+| 1. Recuperar orçamento quando o navegador fecha | `src/hooks/quotes/useQuoteBuilderState.ts:255-257` chama `useAutoSaveQuote({ restoreEnabled: !isEditMode && !hasIncomingHandoff, ... })`, e o `onRestore` logo abaixo aplica cliente, contato, itens, desconto, markup, pagamento e prazo (inclusive reconstruindo o modo de entrega a partir de `date:`). A validação do payload está em `src/lib/quotes/quoteDraftRecovery.ts`, consumida por `QuoteAutoSave.loadDraft`. É **mais completa** que a da branch: payload versionado com `migratePayload` e consciência de handoff, que a branch não tinha. |
+| 2. Aprovar orçamento direto da lista | `src/components/quotes/QuotesConfigurableList.tsx:540` renderiza `<QuoteRowApproveItem quote={quote} onApprove={onBulkStatusChange} />`, e `src/components/quotes/QuoteRowApproveItem.tsx:25` aplica a guarda `isValidQuoteTransition(quote.status, 'approved')`. O `onMarkApproved` da branch não existe na main porque a main resolveu por outro componente. Teste: `src/components/quotes/__tests__/QuotesConfigurableList.approve.test.tsx`. |
+| 3. Filtro do histórico de mockups por técnica cadastrada | `src/components/mockup/MockupHistoryPanel.tsx:73` recebe `techniques` e a linha 121 monta as opções com `buildMockupTechniqueOptions(mockupHistory, techniques)`. Teste: `tests/components/mockup/MockupHistoryPanel.techniques.test.tsx`. |
+
+**Consequência para o fechamento da branch:** o parágrafo "Risco de fechar esta branch"
+abaixo dizia que apagá-la perderia essas melhorias e "402 linhas de teste". Isso deixou
+de valer: as três estão na main, com testes próprios. O que resta exclusivo da branch
+são 59 arquivos que nunca existiram na main — `.types.ts` extraídos, testes
+`*legacy*`/`*preservation*` e componentes sem consumidor —, todos adjudicados em
+`docs/agentes/resgates/2026-11-16-auditoria-branches.md`. A cópia
+`salvo/codex-fix-gate1-kit-pdf-types-261109-2252` continua preservada e não será
+apagada.
+
 ## A resgatar
 
 Nada aqui funciona ponta a ponta nem na branch — sao capacidades sem quem as chame. Por isso o veredito e
@@ -58,7 +80,7 @@ COMPLETAR, nao RESGATAR_PARCIAL puro.
 
 1. **Recuperar orcamento perdido quando o navegador fecha** — `src/components/quotes/QuoteAutoSave.tsx`
    (+ `QuoteAutoSave.types.ts`, `src/lib/quotes/quoteDraftRecovery.ts`, teste
-   `tests/components/QuoteAutoSave.recovery.test.tsx`, 272 linhas).
+   `QuoteAutoSave.recovery.test.tsx` (em `tests/components/` **da branch**, ausente do main), 272 linhas).
    Por que importa: hoje o sistema **grava** o rascunho no navegador e nao sabe devolver. Se o vendedor
    fecha a aba no meio de um orcamento grande, o trabalho esta salvo e inacessivel.
    O que falta: ninguem passa `onRestore` — nem na branch. `git show c5297cf:src/pages/quotes/QuoteBuilderPage.tsx`
@@ -66,7 +88,7 @@ COMPLETAR, nao RESGATAR_PARCIAL puro.
    botao invisivel. Terminar = ligar o `QuoteBuilderPage` ao schema de validacao e confirmar com o dono o
    que acontece com os itens ja digitados na tela.
 2. **Aprovar orcamento direto da lista** — `src/components/quotes/QuotesConfigurableList.tsx`
-   (+ `quoteList.types.ts`, teste `tests/components/QuotesConfigurableList.approval.test.tsx`, 130 linhas).
+   (+ `quoteList.types.ts`, teste `QuotesConfigurableList.approval.test.tsx` (em `tests/components/` **da branch**, ausente do main), 130 linhas).
    Por que importa: tira cliques do dia do vendedor/gestor (hoje precisa abrir o orcamento para aprovar) e
    a regra de quem pode aprovar ja esta escrita (gestor, ou vendedor dono do orcamento, e so em transicao
    valida de status via `isValidQuoteTransition`).
@@ -150,21 +172,21 @@ novo nao perde o trabalho; quem perde a aba **editando** um orcamento existente,
 
 | arquivo | esta na main? onde | evidencia |
 | --- | --- | --- |
-| `src/lib/filters/voiceFilterPatch.ts` | **ESTA, com outro nome e melhor** — `main:src/pages/products/applyVoiceFilters.ts` | mesma assinatura (`FilterState`, `VoiceFilters`) e o mesmo mapeamento campo a campo; a main ainda trava preco negativo, ignora `NaN`, respeita o sentinela 9999 e trata `endomarketing`. Testes: `main:src/pages/products/__tests__/applyVoiceFilters.test.ts` tem **37** `it(` contra ~6 do teste da branch |
-| `src/pages/filters/voiceFilterPatch.ts` | idem (e e so um reexport de 1 linha) | `git show c5297cf:src/pages/filters/voiceFilterPatch.ts` → `export { applyVoiceFilterPatch } from '@/lib/filters/voiceFilterPatch';` |
-| `tests/pages/legacy-filter-voice.test.ts` | coberto pelo teste da main | o teste da branch so verifica que os dois caminhos apontam para a mesma funcao e os limites de preco — tudo coberto pelos 37 casos da main |
-| `src/components/loading/ModernSkeletons.types.ts` | **ESTA** — as mesmas interfaces, dentro do proprio componente | `main:src/components/loading/ModernSkeletons.tsx:4` (`ProductCardSkeletonProps`) e `:554` (`MockupSkeletonProps`), campo a campo iguais. O arquivo da branch so muda de lugar |
-| `src/components/loading/DetailedProductDetailSkeleton.tsx` | **NAO ESTA**, mas a main ja tem equivalente ligado | `main:src/components/loading/ModernSkeletons.tsx:505` `ProductDetailSkeleton()`, usada em `main:src/pages/products/ProductDetail.tsx:278`. O arquivo da branch e um segundo esqueleto, mais fiel ao layout 5fr/7fr, que **nenhuma tela chamava nem na branch**: `git grep DetailedProductDetailSkeleton c5297cf -- src tests` acha so o proprio arquivo e um reexport em `ModernSkeletons.tsx:744` |
-| `src/components/cart/LegacyCartInsights.tsx` | **NAO ESTA — e a main proibiu de voltar** | `main:src/components/cart/CartUtilComponents.tsx:7-11` registra a exclusao de `SmartSuggestions`/`ActionHistoryPanel`/`recordAction`/`getActionHistory`; `main:src/contexts/__tests__/SellerCartContext.test.tsx:68-69` e `main:src/pages/products/seller-carts/__tests__/CartSidebar.render.test.tsx:133` quebram se voltarem. O `FollowUpTimer` do mesmo arquivo ja tinha saido de `src/` **antes** do ponto de partida (`git log -S FollowUpTimer --oneline e4ab7f8 -- src` → `5dd9b949d3 chore(repo): move 316 arquivos obsoletos da #3361 de src/ para recovery/src-legacy`) |
-| `src/components/cart/__tests__/LegacyCartInsights.test.tsx` | idem — e o teste do que a main proibiu | mesma evidencia |
-| `src/components/cart/SortableCartItem.types.ts` | **NAO ESTA** (so a cor da marca e novidade; o resto e mudanca de lugar) | `git grep companyAccentColor e4ab7f8 -- src` → 0 resultados |
-| `src/components/mockup/MockupHistoryPanel.types.ts` | **NAO ESTA** (novidade: o campo `techniques?`) | `git grep techniques e4ab7f8 -- src/components/mockup/MockupHistoryPanel.tsx` → 0 resultados |
-| `src/components/quotes/QuoteAutoSave.types.ts` | **PARCIAL** — a main tem as mesmas props menos `onRestore` | `main:src/components/quotes/QuoteAutoSave.tsx:38` tem `serverSavedAt`; `git grep onRestore e4ab7f8 -- src/components/quotes/QuoteAutoSave.tsx` → 0 |
-| `src/components/quotes/quoteList.types.ts` | **PARCIAL** — `ColumnDef`/`PrefetchRowProps` existem na main; so `onMarkApproved` e novo | `git grep onMarkApproved e4ab7f8 -- src tests` → 0 resultados |
+| `voiceFilterPatch.ts` (em `src/lib/filters/` **da branch**, ausente do main) | **ESTA, com outro nome e melhor** — `main:src/pages/products/applyVoiceFilters.ts` | mesma assinatura (`FilterState`, `VoiceFilters`) e o mesmo mapeamento campo a campo; a main ainda trava preco negativo, ignora `NaN`, respeita o sentinela 9999 e trata `endomarketing`. Testes: `main:src/pages/products/__tests__/applyVoiceFilters.test.ts` tem **37** `it(` contra ~6 do teste da branch |
+| `voiceFilterPatch.ts` (em `src/pages/filters/` **da branch**, ausente do main) | idem (e e so um reexport de 1 linha) | `git show c5297cf:src/pages/filters/<voiceFilterPatch.ts>` → `export { applyVoiceFilterPatch } from '@/lib/filters/voiceFilterPatch';` |
+| `legacy-filter-voice.test.ts` (em `tests/pages/` **da branch**, ausente do main) | coberto pelo teste da main | o teste da branch so verifica que os dois caminhos apontam para a mesma funcao e os limites de preco — tudo coberto pelos 37 casos da main |
+| `ModernSkeletons.types.ts` (em `src/components/loading/` **da branch**, ausente do main) | **ESTA** — as mesmas interfaces, dentro do proprio componente | `main:src/components/loading/ModernSkeletons.tsx:4` (`ProductCardSkeletonProps`) e `:554` (`MockupSkeletonProps`), campo a campo iguais. O arquivo da branch so muda de lugar |
+| `DetailedProductDetailSkeleton.tsx` (em `src/components/loading/` **da branch**, ausente do main) | **NAO ESTA**, mas a main ja tem equivalente ligado | `main:src/components/loading/ModernSkeletons.tsx:505` `ProductDetailSkeleton()`, usada em `main:src/pages/products/ProductDetail.tsx:278`. O arquivo da branch e um segundo esqueleto, mais fiel ao layout 5fr/7fr, que **nenhuma tela chamava nem na branch**: `git grep DetailedProductDetailSkeleton c5297cf -- src tests` acha so o proprio arquivo e um reexport em `ModernSkeletons.tsx:744` |
+| `LegacyCartInsights.tsx` (em `src/components/cart/` **da branch**, ausente do main) | **NAO ESTA — e a main proibiu de voltar** | `main:src/components/cart/CartUtilComponents.tsx:7-11` registra a exclusao de `SmartSuggestions`/`ActionHistoryPanel`/`recordAction`/`getActionHistory`; `main:src/contexts/__tests__/SellerCartContext.test.tsx:68-69` e `main:src/pages/products/seller-carts/__tests__/CartSidebar.render.test.tsx:133` quebram se voltarem. O `FollowUpTimer` do mesmo arquivo ja tinha saido de `src/` **antes** do ponto de partida (`git log -S FollowUpTimer --oneline e4ab7f8 -- src` → `5dd9b949d3 chore(repo): move 316 arquivos obsoletos da #3361 de src/ para recovery/src-legacy`) |
+| `LegacyCartInsights.test.tsx` (em `src/components/cart/__tests__/` **da branch**, ausente do main) | idem — e o teste do que a main proibiu | mesma evidencia |
+| `SortableCartItem.types.ts` (em `src/components/cart/` **da branch**, ausente do main) | **NAO ESTA** (so a cor da marca e novidade; o resto e mudanca de lugar) | `git grep companyAccentColor e4ab7f8 -- src` → 0 resultados |
+| `MockupHistoryPanel.types.ts` (em `src/components/mockup/` **da branch**, ausente do main) | **NAO ESTA** (novidade: o campo `techniques?`) | `git grep techniques e4ab7f8 -- src/components/mockup/MockupHistoryPanel.tsx` → 0 resultados |
+| `QuoteAutoSave.types.ts` (em `src/components/quotes/` **da branch**, ausente do main) | **PARCIAL** — a main tem as mesmas props menos `onRestore` | `main:src/components/quotes/QuoteAutoSave.tsx:38` tem `serverSavedAt`; `git grep onRestore e4ab7f8 -- src/components/quotes/QuoteAutoSave.tsx` → 0 |
+| `quoteList.types.ts` (em `src/components/quotes/` **da branch**, ausente do main) | **PARCIAL** — `ColumnDef`/`PrefetchRowProps` existem na main; so `onMarkApproved` e novo | `git grep onMarkApproved e4ab7f8 -- src tests` → 0 resultados |
 | `src/lib/quotes/quoteDraftRecovery.ts` | **NAO ESTA** | `git grep quoteDraftRecoverySchema e4ab7f8 -- src tests` → 0 resultados |
-| `src/pages/quoteDraftRecovery.ts` | idem (reexport de 1 linha) | `git show c5297cf:src/pages/quoteDraftRecovery.ts` → `export { quoteDraftRecoverySchema } from '@/lib/quotes/quoteDraftRecovery';` |
-| `tests/components/QuoteAutoSave.recovery.test.tsx` | **NAO ESTA** | nenhum teste da main cita `quote-autosave-restore` |
-| `tests/components/QuotesConfigurableList.approval.test.tsx` | **NAO ESTA** | nenhum teste da main cita `quote-row-menu-approve` |
+| `quoteDraftRecovery.ts` sob `src/pages/` **na branch** (caminho que nunca existiu no main) | idem (reexport de 1 linha) | `git show c5297cf:<esse caminho>` → `export { quoteDraftRecoverySchema } from '@/lib/quotes/quoteDraftRecovery';` |
+| `QuoteAutoSave.recovery.test.tsx` (em `tests/components/` **da branch**, ausente do main) | **NAO ESTA** | nenhum teste da main cita `quote-autosave-restore` |
+| `QuotesConfigurableList.approval.test.tsx` (em `tests/components/` **da branch**, ausente do main) | **NAO ESTA** | nenhum teste da main cita `quote-row-menu-approve` |
 | `tests/components/mockup/MockupHistoryPanel.techniques.test.tsx` | **NAO ESTA** | idem `techniques` |
 
 ### Tabela — lista (C): existem na main com conteudo diferente
