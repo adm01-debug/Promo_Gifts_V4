@@ -617,13 +617,9 @@ f6def33d0c79c66aab118335ed95d9e3a9b40536cca5cd397bacc54e7858ae96
 | `20260717000068` | `99ec2b9e8773cf0cd97b715cffcda7b87aa5e6b71e7e4a8da05b2c5b4ca02531` | `9b0bf71aab61f365fd37999a274d2d30` | n/d | n/d (pré-E48; ledger não registra por linha) | n/d | n/d (não capturado retroativamente; ver E07 — verificação por objeto) |
 | `20261027200000` | `9737df0d29ff332d5ae3d359c2d4c068c894ef861bbbd6e0a8b0e50caf710c5a` | `—` | claude-code (PR #2603) | E15 | 2026-10-27 UTC (previsto) | pendente — a ser aplicado via db-apply-migration.yml após merge do PR #2603 |
 | `20261027220000` | `d2947144ecf3877fe590c2ca0982661d9c90e60d3bcab996ae3a8c3c2b1b782d` | `—` | claude-code (PR #2603/#2646) | E15 | 2026-10-27 UTC (previsto) | pendente — aplicar via db-apply-migration.yml para desativar cron XBZ sem secret no Vault |
-| `20261027220000` | `fb16901b0c1edd37080aada4edd16de71cbb6e128dca12764cfc22947f6797af` | `—` | claude-code (PR #2646) | E15 | 2026-10-27 UTC (previsto) | a aplicar via db-apply-migration.yml após merge do PR #2646 (arquivo revisado no PR #2646) |
 | `20261027230000` | `e74521f182e1a0da59ca962a824353a7bc19c5f19a7bd4704bbd492a23042e11` | `—` | claude-code (PR #2603/#2646) | E15 | 2026-10-27 UTC (previsto) | pendente — allowlist stale confirmada no canônico; aplicar via db-apply-migration.yml |
-| `20261027230000` | `2d6a57f537d962a89ff44e80244f94ad0baff9292cfcd8bd65a295978107ff26` | `—` | claude-code (PR #2646) | E15 | 2026-10-27 UTC (previsto) | a aplicar via db-apply-migration.yml após merge do PR #2646 (arquivo revisado no PR #2646) |
 | `20261027233000` | `d55fe52339240b24a32192b1363d0914ce54e97bfe57b7f2397f13f4e65e7b73` | `—` | claude-code (PR #2603/#2646) | E15 | 2026-10-27 UTC (previsto) | bloqueada — não aplicar até XBZ_IMAGE_UPLOADER_CRON_SECRET existir no Vault |
-| `20261027233000` | `bd5d0bc3262f9b34b6108c42c7ec186f8f9066d97dbd881a6276a2bb97d87885` | `—` | claude-code (PR #2603) | E15 | 2026-10-27 UTC (previsto) | pendente — a ser aplicado via db-apply-migration.yml após merge do PR #2603 |
 | `20261027234500` | `b73793066e69362966b9edf32182c226fa141c62b4e7b5a2f2705eb1d8ffdd04` | `—` | claude-code (PR #2603/#2646) | E15 | 2026-10-27 UTC (previsto) | bloqueada — exige secret no Vault, allowlist e edge function implantada; cron permanece sem reativação |
-| `20261027234500` | `272850e119d8798e7aac9242e4b774309f22a8227e7b6bbac4a086ab945f6cec` | `—` | claude-code (PR #2603) | E15 | 2026-10-27 UTC (previsto) | pendente — a ser aplicado via db-apply-migration.yml após merge do PR #2603 |
 
 ## Gate de CI (E48)
 
@@ -1630,6 +1626,7 @@ Após VACUUM ANALYZE executado pelos jobs temporários `vacuum-snapshots-now` e
 | `20261008230000` | `47a7acec83ba86fff31362ee83652b53f7d361e2fb46121db51fbdbf91e5ed4e` | — | — (aguardando `workflow_dispatch` E15 pelo PO) | E15 | — | pendente: `DROP POLICY mal_public_select_active` + `REVOKE ALL` de anon em `mockup_approval_links`; bucket `mockup-assets` passa a listar só `<uid>/`; tripwire `fn_verify_anon_catalog_grants` v4 sem a tabela. Aprovada pelo dono em 08/10 (PR #2097); recibo pendente registrado retroativamente — baseline de policies 2026-10-15 ainda mostra `mal_public_select_active` {anon} viva | **pendente — não aplicada** |
 | `20261022000000` | `59de927fcd55b764b70cd084f452aa914bbc2f555aca475caf08fb5b0cc16bef` | — | — (aguardando `workflow_dispatch` E15 pelo PO) | E15 | — | pendente: REVOKE EXECUTE ON FUNCTION public.fn_backfill_queue_reap_stuck(integer, integer) FROM PUBLIC — gap de segurança (Qodo High): qualquer `authenticated` pode chamar rotina SECURITY DEFINER de manutenção de fila com parâmetros arbitrários (p_stuck_minutes=0, p_max_attempts=1), reaping jobs em voo. PR #2338. | **pendente — não aplicada** |
 | `20261022000100` | `3053ee2aa80da1521b32638bc8b45b14ee7fe7a81cf1ef645051a95e8a47d0bb` | — | — (aguardando `workflow_dispatch` E15 pelo PO) | E15 | — | pendente: REVOKE EXECUTE ON FUNCTION public.fn_detect_recurring_errors_last_hour(integer) FROM PUBLIC — gap de segurança (Qodo High): qualquer `authenticated` pode chamar função SECURITY DEFINER de diagnóstico com parâmetros arbitrários, expondo dados de telemetria de erros internos. PR #2338. | **pendente — não aplicada** |
+| `20261101000002` | `4f16cf430c2a27dcf840324329a45d7546dd418a88f787cad8ec33676f860b79` | — | — (aguardando `workflow_dispatch` E15 pelo PO) | E15 | — | pendente: FASE B — P15 (SEG-003), `color_synonym_map`. Resgatada de `recuperado/fix-p06-p15-security-20261101-1000` e **completada**: o corpo original só fazia `DROP POLICY rls_anon_read_color_synonym_map` e deixava vivos os GRANTs de escrita de `anon`, apesar do título. Medido no canônico em 2026-11-16: `anon` detém INSERT, UPDATE e DELETE na tabela — privilégios mortos hoje (sem policy de escrita para `anon`), efetivos se alguma policy de escrita for criada. Acrescentei `REVOKE INSERT, UPDATE, DELETE ... FROM anon`, por isso o sha256 difere do declarado na branch (`8fd47417…66d`). Rollback `20261101000002_rollback.sql` escrito nesta PR e testado em PG 16 local: policy 1→0 e grants 3→0, rollback devolve 0→1 e 0→3, idempotente | **pendente — não aplicada** |
 
 ## 2026-11-08 — Reconciliação de `e2e_cleanup_audit`
 
@@ -2325,3 +2322,65 @@ ativo.
 | versão | arquivo | sha256 | status |
 |---|---|---|---|
 | `20261115230000` | `ai_function_routing_mockup_assistant` | `2937d5ff62750fed7a98cec78f147de2547df00055d361796ce65ee6db996dec` | pendente — aplicar via `db-apply-migration.yml` após merge (banco de produção autorizado pelo dono no chat em 2026-11-15) |
+
+## 2026-11-16 — Recibos superseded: hashes de arquivos revisados antes de aplicar
+
+Quatro versions tinham **duas** linhas na seção "Recibos", com sha256 diferentes, porque o
+arquivo foi revisado entre a PR #2603 e a PR #2646 e os dois recibos foram escritos lado a
+lado. Isso fazia `check-migrations-sync-log-gate.mjs` falhar com `versões duplicadas no log`
+em **qualquer** PR que tocasse `supabase/migrations/**` (medido em 2026-11-16 no run
+43968994894). Nenhuma linha foi apagada: a contagem do gate é por seção, então as linhas
+superseded foram movidas para cá, onde continuam legíveis e não colidem.
+
+Qual linha ficou na seção "Recibos": a que bate com o sha256 real do arquivo na `main` hoje.
+Conferido arquivo por arquivo em 2026-11-16 (`git show origin/main:<arquivo> | sha256sum`):
+
+| versão | arquivo | sha256 que ficou (= arquivo na `main`) |
+|---|---|---|
+| `20261027220000` | `deactivate_xbz_image_uploader_cron` | `d2947144ecf3877fe590c2ca0982661d9c90e60d3bcab996ae3a8c3c2b1b782d` |
+| `20261027230000` | `cleanup_get_edge_function_secret_allowlist` | `e74521f182e1a0da59ca962a824353a7bc19c5f19a7bd4704bbd492a23042e11` |
+| `20261027233000` | `add_xbz_image_uploader_secret_to_allowlist` | `d55fe52339240b24a32192b1363d0914ce54e97bfe57b7f2397f13f4e65e7b73` |
+| `20261027234500` | `reactivate_xbz_image_uploader_cron` | `b73793066e69362966b9edf32182c226fa141c62b4e7b5a2f2705eb1d8ffdd04` |
+
+### Linhas superseded, preservadas na íntegra
+
+sha256 que não corresponde a nenhum arquivo da `main`; as quatro versions seguem
+**pendentes**, nunca aplicadas:
+
+| `20261027220000` | `fb16901b0c1edd37080aada4edd16de71cbb6e128dca12764cfc22947f6797af` | `—` | claude-code (PR #2646) | E15 | 2026-10-27 UTC (previsto) | a aplicar via db-apply-migration.yml após merge do PR #2646 (arquivo revisado no PR #2646) |
+| `20261027230000` | `2d6a57f537d962a89ff44e80244f94ad0baff9292cfcd8bd65a295978107ff26` | `—` | claude-code (PR #2646) | E15 | 2026-10-27 UTC (previsto) | a aplicar via db-apply-migration.yml após merge do PR #2646 (arquivo revisado no PR #2646) |
+| `20261027233000` | `bd5d0bc3262f9b34b6108c42c7ec186f8f9066d97dbd881a6276a2bb97d87885` | `—` | claude-code (PR #2603) | E15 | 2026-10-27 UTC (previsto) | pendente — a ser aplicado via db-apply-migration.yml após merge do PR #2603 |
+| `20261027234500` | `272850e119d8798e7aac9242e4b774309f22a8227e7b6bbac4a086ab945f6cec` | `—` | claude-code (PR #2603) | E15 | 2026-10-27 UTC (previsto) | pendente — a ser aplicado via db-apply-migration.yml após merge do PR #2603 |
+
+## 2026-11-17 — P06 (`security_invoker` em views públicas) NÃO entra: quebraria o catálogo
+
+A migration `20261101000001_security_invoker_views_p06.sql` ficou **fora** desta PR, e o
+arquivo segue preservado em `claude/fix-resgate-p06-p15-security-261116-2215`. O motivo foi
+medido no canônico em 2026-11-17, não suposto.
+
+Com `security_invoker = true` o Postgres passa a checar o privilégio das **tabelas-base**
+como o papel que consulta a view, e não como o dono dela. Medição:
+
+| teste | resultado |
+|---|---|
+| `has_table_privilege('anon', 'public.products', 'SELECT')` | **false** |
+| `has_table_privilege('anon', 'public.suppliers', 'SELECT')` | **false** |
+| `has_table_privilege('anon', 'public.product_kit_components', 'SELECT')` | **false** |
+| `has_table_privilege('anon', 'public.tabela_preco_gravacao_oficial', 'SELECT')` | **false** |
+| `has_table_privilege('anon', '<view>', 'SELECT')` | **true** em 7 das 8 views |
+
+Logo, aplicar o P06 faria 7 das 8 views responderem `permission denied for table …`:
+`v_products_public`, `v_suppliers_public`, `v_product_compositions_public`,
+`v_product_properties_public`, `v_product_tags_public`, `v_kit_component_media_public` e
+`v_tabela_preco_gravacao_oficial_public`. Não é só o catálogo anônimo:
+`has_table_privilege('authenticated', 'public.suppliers', 'SELECT')` também é **false**, e
+`v_suppliers_public` alimenta o autocomplete de fornecedores
+(`src/integrations/supabase/gold-relations.ts:41` → `src/hooks/common/useSearch.ts:77-80`).
+
+O autor do P06 usou o critério errado: excluiu apenas `v_variant_sale_prices_public` por
+"`markup_configurations` sem policy para anon" — conferiu **policy**, quando o que falta nas
+outras é o **GRANT SELECT**. Pelo critério correto, quase todas ficariam de fora.
+
+Para o P06 voltar, ele precisa de duas fases: primeiro os `GRANT SELECT` que faltam nas
+tabelas-base (ampliação de superfície, exige medir policy por policy), depois o
+`security_invoker`. Enquanto isso não existir, aplicar é quebrar leitura pública em produção.

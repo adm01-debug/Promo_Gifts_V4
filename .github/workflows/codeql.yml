@@ -8,6 +8,7 @@ on:
     paths:
       - 'src/**'
       - 'supabase/functions/**'
+      - 'inventario/estado/**'  # PR semanal do inventario so mexe aqui; sem isso o check required nao roda
       - '.github/workflows/codeql.yml'  # R12: self-reference
   schedule:
     - cron: '33 9 * * 1'  # segunda 09:33 UTC (E89)
