@@ -93,7 +93,7 @@ e "documento".
 | Estado | O que é | Onde vive (fonte) |
 |---|---|---|
 | **Imagem gerada** | PNG 1024×1024 composto (produto + logo) | Bucket `mockup-assets`, caminho `${userId}/mockups/*.png`; URL devolvida em `mockupUrl` (`generate-mockup/index.ts:504-522`). Em memória: state `generatedMockup` (`useMockupGenerator.ts:71`). |
-| **Projeto salvo** | (a) rascunho editável; (b) registro persistente do histórico | (a) `mockup_drafts` (`supabase/migrations/20260107013155_66a04f90-a966-424c-a356-15f40b5f08b7.sql:2`, chave `user_id,draft_key` + `personalization_areas` JSONB). (b) `generated_mockups` (`mockupGenerationService.ts:190-226`), com `position_x/y`, `logo_width_cm/height_cm`, `layout_url` em colunas top-level (`supabase/migrations/20251215011449_730d6884-f2e8-4fe0-96e6-b03c13694aa4.sql:51-57`) e `client_id`/`client_name`/`logo_rotation`/`logo_scale` (`supabase/migrations/20260620000001_mockup_client_logo_rotation_cols.sql:19-39`). |
+| **Projeto salvo** | (a) rascunho editável; (b) registro persistente do histórico | (a) `mockup_drafts` (`supabase/migrations/20260107013155_66a04f90-a966-424c-a356-15f40b5f08b7.sql:2`, chave `user_id,draft_key` + `personalization_areas` JSONB). (b) `generated_mockups` (`mockupGenerationService.ts:190-226`), com `position_x/y`, `logo_width_cm/height_cm`, `layout_url` em colunas top-level (`supabase/migrations/20251215011449_730d6884-f2e8-4fe0-96e6-b03c13694aa4.sql:51-57`) e `client_id`/`client_name`/`logo_rotation`/`logo_scale` (`supabase/migrations/20260620000002_mockup_client_logo_rotation_cols.sql:19-39`). |
 | **Ficha (documento)** | Ficha de aprovação capturada (JPEG) com cabeçalho timbrado | `generated_mockups.layout_url`; arquivo em `${userId}/mockup-layouts/` (`OffscreenLayoutCapture.tsx:111,125`). O histórico prefere mostrar a ficha quando existe: `mockup.layout_url \|\| mockup.mockup_url` (`src/components/mockup/MockupHistoryPanel.tsx:547`). |
 
 Observação: o rascunho **não** guarda `data:` URLs no backend — só logos já em `http(s)` para não
@@ -173,7 +173,7 @@ vendedor` (`src/integrations/supabase/types.ts:64470`); rótulos de UI em `src/l
 `supabase/migrations/20260416195918_397d6363-83a0-45f5-a8f6-ea33e21352a6.sql:171-203`). Consequência: um vendedor não lê os logos, PNGs nem
 fichas de outro; a Edge Function usa `service_role` para gravar o PNG composto
 (`generate-mockup/index.ts:504-522`). Limites do bucket `mockup-assets`: 10 MB e
-`image/jpeg|png|webp|gif` (`supabase/migrations/20260620000001_mockup_client_logo_rotation_cols.sql:89-94`).
+`image/jpeg|png|webp|gif` (`supabase/migrations/20260620000002_mockup_client_logo_rotation_cols.sql:89-94`).
 
 ---
 
