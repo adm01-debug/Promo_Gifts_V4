@@ -558,18 +558,14 @@ jobs:
         run: scripts/test-approved-plan-database.sh
       - name: Validate guarded quote RPC proposals on pinned isolated PG17
         run: npm run test:quote-rpc:postgres
-      # Registro no gate SUSPENSO em 2026-11-17, no mesmo dia em que entrou (#3754).
-      # Motivo medido no run 44034922737: 53 de 55 assercoes passam no CI (docker ok,
-      # productionTouched=false), mas 2 reprovam e sao PRE-CONDICOES do harness, nao o
-      # contrato de device-trust:
-      #   FAIL PostgreSQL 17 is used            -> assercao sobre a versao do container
-      #   FAIL Authenticated test role cannot bypass RLS -> assercao sobre o fixture
-      # Como o Gate 2.5 e bloqueante, isso deixou TODA PR vermelha, inclusive docs-only.
-      # O teste continua no repo e invocavel por `npm run test:device-trust:postgres`;
-      # volta ao gate quando as 2 pre-condicoes forem corrigidas (ver o follow-up no
-      # ledger docs/agentes/resgates/2026-11-16-auditoria-branches.md).
-      # - name: Validate device-trust contract on isolated PG17
-      #   run: npm run test:device-trust:postgres
+      # Suspenso em 2026-11-17 (#3761) porque 2 das 55 assercoes reprovavam no CI
+      # (`PostgreSQL 17 is used` e `Authenticated test role cannot bypass RLS`) — eram
+      # pre-condicoes do harness, nao o contrato. Causa: o runner falava com o servidor
+      # TEMPORARIO que o docker-entrypoint sobe durante o initdb (pg_isready responde
+      # nele). Corrigido em #3764: espera o marcador `PostgreSQL init process complete`
+      # e so entao sonda com `SELECT 1`. Reativado aqui.
+      - name: Validate device-trust contract on isolated PG17
+        run: npm run test:device-trust:postgres
       - name: Block frontend promotion until canonical quote RPC contract is live
         run: npm run check:quote-rpc:canonical -- --require-live
         env:
