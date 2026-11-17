@@ -41,11 +41,21 @@ GRANT SELECT ON products, product_variants, suppliers TO anon;
 
 **Impacto:** segredos de integração ficam criptografados em repouso e fora do alcance de SQL injection
 
-**Passos:**
+⚠️ **A ORDEM É OBRIGATÓRIA — o `DROP COLUMN` não pode ser o passo seguinte ao backfill.**
+`supabase/functions/_shared/credentials.ts` lê `secret_value` direto da tabela:
+`resolveCredential()` (`:410`) em `:444` (`.select("secret_value")`) e `resolveCredentials()`
+(`:565`) em `:600` (`.select("secret_name, secret_value")`). Apagar a coluna antes de trocar essa
+leitura derruba **todas** as edge functions que resolvem credencial, de uma vez — e só volta com
+outra migration.
+
+**Passos (ordem obrigatória):**
 1. Para cada linha: `SELECT vault.create_secret(secret_value, provider) FROM integration_credentials`
 2. Adicionar coluna `vault_secret_id UUID REFERENCES vault.secrets(id)`
 3. Popular com os IDs dos secrets criados
-4. `ALTER TABLE integration_credentials DROP COLUMN secret_value` (migration separada, após validação)
+4. **Antes de prosseguir:** `credentials.ts` passa a ler de `vault.decrypted_secrets` via
+   `vault_secret_id`; deploy da edge function atualizada por `deploy-edge-functions.yml`; validar
+   que as credenciais resolvem com a coluna ainda presente (as duas leituras convivem nesta fase)
+5. `ALTER TABLE integration_credentials DROP COLUMN secret_value` (migration separada, após validação)
 
 **Via:** `db-apply-migration.yml` em duas fases (adicionar coluna + popular; depois remover coluna)
 
