@@ -153,10 +153,7 @@ export function QuoteVersionHistory({
                         <Badge
                           variant={
                             (statusCfg?.badgeVariant as
-                              | 'default'
-                              | 'destructive'
-                              | 'outline'
-                              | 'secondary') || 'secondary'
+                              'default' | 'destructive' | 'outline' | 'secondary') || 'secondary'
                           }
                           className="h-4 flex-shrink-0 px-1 text-[10px]"
                         >
@@ -166,7 +163,11 @@ export function QuoteVersionHistory({
                       <div className="mt-1 flex items-center justify-between">
                         <span className="flex items-center gap-1 text-[10px] text-muted-foreground">
                           <Clock className="h-2.5 w-2.5" />
-                          {format(new Date(version.created_at), 'dd/MM/yy HH:mm', { locale: ptBR })}
+                          {version.created_at
+                            ? format(new Date(version.created_at), 'dd/MM/yy HH:mm', {
+                                locale: ptBR,
+                              })
+                            : '—'}
                         </span>
                         <div className="flex items-center gap-2">
                           <span className="flex items-center gap-0.5 text-[10px] text-muted-foreground">

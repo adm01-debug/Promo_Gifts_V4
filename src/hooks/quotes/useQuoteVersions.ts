@@ -15,8 +15,10 @@ export interface QuoteVersion {
   subtotal: number;
   discount_amount: number;
   discount_percent: number;
-  created_at: string;
-  updated_at: string;
+  // Colunas nullable no schema real (src/integrations/supabase/types.ts, bloco `quotes`).
+  // Coagir para '' fazia `new Date('')` => Invalid Date e `format()` derrubava o render.
+  created_at: string | null;
+  updated_at: string | null;
   is_latest_version: boolean;
   parent_quote_id: string | null;
   items_count?: number;
@@ -89,8 +91,8 @@ export function useQuoteVersions(quoteId?: string) {
           subtotal: v.subtotal ?? 0,
           discount_amount: v.discount_amount ?? 0,
           discount_percent: v.discount_percent ?? 0,
-          created_at: v.created_at ?? '',
-          updated_at: v.updated_at ?? '',
+          created_at: v.created_at ?? null,
+          updated_at: v.updated_at ?? null,
           items_count: countMap.get(v.id) || 0,
         }));
 
@@ -126,7 +128,8 @@ export function useQuoteVersions(quoteId?: string) {
           .select('version, parent_quote_id')
           .eq('id', sourceQuoteId)
           .single();
-        if (versionCtxErr) logger.warn('Failed to fetch version context, defaulting:', versionCtxErr);
+        if (versionCtxErr)
+          logger.warn('Failed to fetch version context, defaulting:', versionCtxErr);
 
         const _parentId2 = currentData?.parent_quote_id ?? null;
         const rootId =
@@ -144,7 +147,8 @@ export function useQuoteVersions(quoteId?: string) {
           .or(`id.eq.${rootId},parent_quote_id.eq.${rootId}`)
           .order('version', { ascending: false })
           .limit(1);
-        if (maxVersionErr) logger.warn('Failed to fetch max version, defaulting to currentVersion:', maxVersionErr);
+        if (maxVersionErr)
+          logger.warn('Failed to fetch max version, defaulting to currentVersion:', maxVersionErr);
 
         // BUG-033: use ?? not || so version=0 (impossible but defensive) doesn't
         // fall back to currentVersion and produce a duplicate version number.
