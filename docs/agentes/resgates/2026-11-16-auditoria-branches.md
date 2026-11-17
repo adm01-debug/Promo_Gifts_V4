@@ -801,3 +801,57 @@ os GRANTs de escrita vivos).
 **Conclusão da adjudicação:** nenhum trabalho de agente nas 32 cópias preservadas
 está ausente do `main` nem pendente de execução. O único item fora do `main` é uma
 migration superseded com medida publicada.
+
+### Medida 4 — correção do método, depois da revisão da #3770
+
+A revisão automática da #3770 (Devin, 2026-11-17) levantou duas objeções corretas:
+existência de caminho não prova preservação de conteúdo, e casar **basename** não
+prova que o arquivo foi movido. As duas foram atacadas com medida nova, não com
+texto.
+
+**(a) Teste estrito, sem basename.** Repetida a varredura dos 32 refs contando
+apenas: "o ref tem blob neste caminho exato e o `main` não tem nada neste caminho".
+**Resultado: 0 em todos os 32 refs.** A inferência por basename nunca foi
+determinante — ela não decidiu nenhum caso.
+
+**(b) O tip não é a única coisa preservada, e isso escondia um caso.** Medir
+`merge-base → tip` tem um ponto cego: um ref pode **apagar no tip** arquivos que o
+próprio histórico dele criou, e o par (não existia na base, não existe no tip) sai
+do diff sem aparecer. Isso acontece de fato em `salvo/261115-preservacao`
+(tip `e35634678`, "preserva no remoto o que existia so no container", 217 commits
+exclusivos): o tip **não** contém `src/components/mockup/MockupResultCard.tsx`, mas
+o commit `f43d22906` do próprio ref o cria.
+
+Esse ref carrega trabalho de feature real no gerador de mockup — "separa imagem,
+projeto salvo e ficha, e preserva o resultado quando a geração falha"
+(`f43d22906`), "resultado preservado por projeto, salvo/ficha exibido e alerta
+separado" (`f8a7eba67`), "ficha com as medidas da área da imagem salva"
+(`35ac8b9d5`). Veredito medido contra o `main` de hoje:
+
+| arquivo | no `main` |
+| --- | --- |
+| `src/components/mockup/MockupResultCard.tsx` | existe, 496 linhas |
+| `src/components/mockup/MockupCompletionStates.tsx` | existe, 155 linhas |
+| `src/components/mockup/usePreservedMockupResult.ts` | existe, 56 linhas |
+| `src/components/mockup/__tests__/MockupResultCard.preserved.test.tsx` | existe, 102 linhas — **byte-idêntico** ao commit `f8a7eba67` do ref |
+| `src/components/mockup/__tests__/MockupResultCard.states.test.tsx` | existe, 146 linhas |
+| `src/pages/mockups/mockup-generator/useMockupCompletionStatus.ts` | existe, 99 linhas |
+| `src/pages/mockups/mockup-generator/__tests__/fichaDaAreaDaImagem.test.ts` | existe, 116 linhas |
+
+No commit mais novo do ref (`35ac8b9d5`), 8 arquivos já são **byte-idênticos** ao
+`main`: `mockupGeneratorModel.ts`, `useMockupGenerator.ts`, `useSavedMockupProject.ts`,
+`useLayoutCaptureRequest.ts`, `trocaDeProjeto.test.ts`, `fichaDaAreaDaImagem.test.ts`,
+`MockupDeletion.test.tsx` e `MockupGenerator.a11y.test.tsx` — a feature foi mergeada.
+E o comportamento está vivo no código do `main`: `usePreservedMockupResult.ts` abre
+com "Uma tentativa que FALHA não apaga da tela o mockup que o vendedor já tinha", com
+as duas amarras (resultado pertence a um projeto; dispensar o alerta não descarta o
+resultado).
+
+**Limite declarado desta auditoria.** `git rev-list --objects <ref> --not origin/main`
+devolve blobs alcançáveis pelos refs e não pelo `main` — 40.210 somando os 32. Esse
+número **não** é trabalho perdido: ele enumera toda versão intermediária de cada
+commit exclusivo (um arquivo editado 10 vezes conta 10 blobs). Provar supersessão de
+cada blob intermediário não é factível e não é o que preservação exige: o conteúdo
+segue alcançável pelo ref, que não será apagado. O que foi provado é o que decide
+regressão: nenhum arquivo existe num ref sem existir no `main` (teste estrito, 0/32),
+e as features autorais dos refs estão no `main`, verificadas arquivo a arquivo.
