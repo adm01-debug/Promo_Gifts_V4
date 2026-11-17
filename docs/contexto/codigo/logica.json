@@ -2480,7 +2480,7 @@
     "pages/quotes",
     "pages/system"
    ],
-   "coberto_por_testes": 2,
+   "coberto_por_testes": 3,
    "orfao": false
   },
   {
@@ -3387,7 +3387,7 @@
     "hooks/products",
     "lib/external-db"
    ],
-   "coberto_por_testes": 6,
+   "coberto_por_testes": 7,
    "orfao": false
   },
   {
@@ -4466,7 +4466,7 @@
     "pages/admin",
     "pages/kit-builder"
    ],
-   "coberto_por_testes": 38,
+   "coberto_por_testes": 39,
    "orfao": false
   },
   {
@@ -4523,7 +4523,7 @@
     "lib/kit-builder",
     "pages/kit-builder"
    ],
-   "coberto_por_testes": 4,
+   "coberto_por_testes": 5,
    "orfao": false
   },
   {

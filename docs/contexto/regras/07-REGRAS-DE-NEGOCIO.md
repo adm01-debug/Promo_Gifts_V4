@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.3.2 · commit `4700bff94c` · branch `main` · 2026-11-17 22:47 UTC
+> Gerado automaticamente por AI Context Sync v1.3.2 · commit `9ae8ea15b5` · branch `main` · 2026-11-17 23:14 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -6568,7 +6568,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `admin` | `supabase/migrations/20261112120500_fix_optimization_queue_rpcs_dev_access.sql` |
 | `anon` | `tests/edge-functions/live/_live-client.ts` |
 
-## K. Testes como especificação (22196 testes em 2248 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (22242 testes em 2250 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -6734,6 +6734,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `src/lib/auth/__tests__/post-login-redirect.test.ts` | 25 | clearPostLoginRedirect · remove a chave do sessionStorage quando ela existe · nao lanca erro quando sessionStorage esta vazio · nao lanca erro quando sessionStorage.removeItem lanca excecao … |
 | `src/utils/__tests__/cnpj-gap-hunt.test.ts` | 25 | G1 — maskCnpj com input já mascarado não duplica separadores · idempotência: mask(mask(x)) === mask(x) · input parcial mascarado não gera pontuação órfã · G2 — normalizeCnpj com surrogate pairs / emoji / unicode invisível … |
 | `tests/contracts/webhooks.contract.test.ts` | 25 | contract: webhook-inbound v1 (passthrough) · aceita qualquer objeto (compat com produção) · aceita array (compat — v1 é any) · body vazio → 400 missing_body … |
+| `tests/hooks/useKitBuilderPageState.legacy.test.tsx` | 25 | Original PageState operational integration preserves its state/actions · empty save is rejected without success or network mutation · manual save uses real state and response, cancels debounce and acknowledges ID/revision · does not race with %s save … |
 | `tests/hooks/voice/retry.test.ts` | 25 | withRetry · returns result on first success · retries on retryable error and succeeds · does not retry on non-retryable error … |
 | `tests/integration/magazine-service-fuzz.test.ts` | 25 | magazineService — lifecycle happy path · snapshot legado ao editar título não apaga itens quando INSERT está indisponível · snapshot legado de metadados preserva IDs e ordem dos itens · falha de inclusão rejeita, nunca confirma o snapshot antigo como sucesso … |
 | `scripts/__tests__/promote-draft-migration.test.ts` | 24 | parseHandleList · retorna [] para vazio/undefined/null · aceita separador vírgula · aceita separador espaço … |
@@ -6802,6 +6803,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `tests/hooks/useProducts.test.ts` | 21 | findKnownHex · finds exact match · is case insensitive · handles accents (NFD normalization) … |
 | `tests/hooks/useTechniquePricing.test.ts` | 21 | filterMatchingTables · filters by table_code match · filters by fullcode match · filters case-insensitively … |
 | `tests/pages/kit-builder/useKitBuilderQuote.test.ts` | 21 | useKitBuilderQuote — payloads · inclui seller_id e chave de idempotência na RPC transacional · anexa a observação do kit ao final das notas do orçamento · não anexa observação quando o kit não tem notas … |
+| `tests/pages/quote-view/root-quote-helpers.test.ts` | 21 | %s root quote synchronization · accepts the actual Edge success envelope using ok · retains both explicit success envelopes: %j · never treats failure/nonboolean envelopes as success: %j … |
 | `tests/scripts/check-dependency-audit.test.mjs` | 21 | dependency audit policy · accepts only the reviewed image-size propagation before its deadline · fails closed for any new vulnerable package or advisory · requires the complete reviewed advisory set … |
 | `tests/scripts/gates-hardening-regressions.test.mjs` | 21 | check-generated-files-protected · redução real ≥20% num arquivo gerado reprova (100 → 50 linhas) · redução pequena (<20%) passa · GITHUB_BASE_SHA com opção do git ( … |
 | `tests/unit/format.test.ts` | 21 | formatCurrency · formats zero with two decimal places · formats a positive integer · formats decimal values with exactly 2 fractional digits … |
@@ -6870,9 +6872,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `src/components/layout/sidebar/__tests__/SidebarNavGroup.history.test.tsx` | 18 | SidebarNavGroup — back/forward (histórico real) preservam paridade entre os 3 itens · back: /carrinhos -> /orcamentos/novo, voltar reativa Carrinhos e desativa Novo Orçamento · forward: depois de voltar, avançar restaura o destaque de Novo Orçamento · back/forward atravessando os 3 itens mantém destaque correto a cada salto … |
 | `src/components/products/customization/__tests__/ConfigurationPanelV6.collapse.test.tsx` | 18 | ConfigurationPanelV6 — contrato de colapso · Grupo A — wrapper externo (contrato visual) · expandido: contém flex/flex-col/gap-4/p-4/transition-[gap]/motion-reduce · colapsado: contém gap-0 e NÃO contém gap-4 nem space-y-4 … |
 | `src/components/search/__tests__/searchCache.test.ts` | 18 | searchCache.set / searchCache.get · returns null for an unknown key · returns results immediately after set · is case-insensitive (normalized key) … |
-| `src/hooks/auth/__tests__/login-flow.test.ts` | 18 | Login Flow & Role Loading — RPC get_profile_and_roles · 1. deve carregar perfil e roles com sucesso via RPC · 2. deve tratar erro RLS 42501 sem lançar exceção · 3. deve tratar erros genéricos de rede sem crash … |
-| `src/hooks/products/__tests__/useProductsByColor.test.ts` | 18 | hasFilter OR entre 4 grupos · false quando todos arrays vazios · true quando qualquer grupo nao-vazio · sem filtro ativo … |
-| … +1948 linhas — lista completa em `context.json` | | |
+| … +1950 linhas — lista completa em `context.json` | | |
 
 ## L. Eventos de webhook tratados (contratos com sistemas externos)
 

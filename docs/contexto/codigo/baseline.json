@@ -2,11 +2,21 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "4700bff94c8dc9026aa3ed2f42594501e2e8d055",
+  "commit": "9ae8ea15b5efb695720e0871a0026728343d5f7b",
   "branch": "main",
-  "data_commit": "2026-11-17T19:46:24-03:00",
+  "data_commit": "2026-11-17T20:04:11-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "9ae8ea15",
+    "data": "2026-11-17",
+    "assunto": "test(quotes): resgata 91 casos dos helpers da tela de orcamento (#3795)"
+   },
+   {
+    "sha": "bd48bc95",
+    "data": "2026-11-17",
+    "assunto": "test(kit): resgata a cobertura do montador de kit (#3796)"
+   },
    {
     "sha": "4700bff9",
     "data": "2026-11-17",
@@ -121,19 +131,9 @@
     "sha": "c2629acd",
     "data": "2026-11-17",
     "assunto": "fix(test): acompanha o snapshot de cron vigente em vez de fixar o de 08/11 (#3773)"
-   },
-   {
-    "sha": "dfe9e705",
-    "data": "2026-11-17",
-    "assunto": "docs: mede os 28 arquivos da branch do Codex, que estavam inferidos (#3778)"
-   },
-   {
-    "sha": "cfe603d5",
-    "data": "2026-11-17",
-    "assunto": "fix(deps): override basic-ftp para ^6.2.4 e fecha o GHSA-5pm8-86m8-9m6r (#3774)"
    }
   ],
-  "arquivos_mudados_7d": 1975,
+  "arquivos_mudados_7d": 1977,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -322,9 +322,9 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 10877,
-  "arquivos_codigo": 5402,
-  "linhas_codigo": 1030706,
+  "arquivos_total": 10879,
+  "arquivos_codigo": 5404,
+  "linhas_codigo": 1031491,
   "rotas": 139,
   "rotas_http_backend": 13,
   "vistas_por_id": 0,
@@ -336,7 +336,7 @@
   "tabelas": 527,
   "migrations": 3099,
   "cron_jobs": 122,
-  "testes": 2570,
+  "testes": 2572,
   "workflows": 88,
   "scripts": 283,
   "docs_md": 1470
@@ -2091,8 +2091,8 @@
    "linhas": 325
   },
   "tests/hooks": {
-   "arquivos": 154,
-   "linhas": 23791
+   "arquivos": 155,
+   "linhas": 24287
   },
   "tests/integration": {
    "arquivos": 11,
@@ -2127,8 +2127,8 @@
    "linhas": 580
   },
   "tests/pages": {
-   "arquivos": 19,
-   "linhas": 4243
+   "arquivos": 20,
+   "linhas": 4532
   },
   "tests/product-form-improvements.test.ts": {
    "arquivos": 1,

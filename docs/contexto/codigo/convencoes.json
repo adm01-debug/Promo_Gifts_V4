@@ -23,7 +23,7 @@
    "src/services (10)"
   ],
   "testes": [
-   "tests/ (1065)",
+   "tests/ (1067)",
    "co-localizado (__tests__) (678)",
    "e2e/ (625)"
   ],
@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "test(quotes): resgata 91 casos dos helpers da tela de orcamento (#3795)",
+   "test(kit): resgata a cobertura do montador de kit (#3796)",
    "feat(voz): comando de filtro aplica os critérios ditados no catálogo (#3813)",
    "feat(favoritos): botão \"Apresentar lista\" abre o modo apresentação dos favoritos (#3812)",
-   "fix(tests): mock de QuoteAutoSave precisa exportar QuoteDraftRecovery (#3811)",
-   "fix(quotes): histórico de versões não cai mais quando a data da versão é nula (#3810)",
-   "fix(kit): autosave nao grava mais o rascunho de um kit em cima de outro (#3809)"
+   "fix(tests): mock de QuoteAutoSave precisa exportar QuoteDraftRecovery (#3811)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",

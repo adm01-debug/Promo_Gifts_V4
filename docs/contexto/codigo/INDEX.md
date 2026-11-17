@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e de hora em hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `4700bff94c8dc9026aa3ed2f42594501e2e8d055` (2026-11-17T19:46:24-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e de hora em hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `9ae8ea15b5efb695720e0871a0026728343d5f7b` (2026-11-17T20:04:11-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -14,7 +14,7 @@ Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR
 Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua tarefa; não carregue tudo.
 
 ## Stack
-- linguagens: TypeScript (4935), SQL (3440), Markdown (1470), JavaScript (457), JSON (132), YAML (116), Shell (27), HTML (20)
+- linguagens: TypeScript (4937), SQL (3440), Markdown (1470), JavaScript (457), JSON (132), YAML (116), Shell (27), HTML (20)
 - linguagem_principal: TypeScript
 - framework: React
 - backend_http: n/d
@@ -34,9 +34,9 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 ## Números
 | item | qtd |
 |---|---|
-| arquivos_total | 10877 |
-| arquivos_codigo | 5402 |
-| linhas_codigo | 1030706 |
+| arquivos_total | 10879 |
+| arquivos_codigo | 5404 |
+| linhas_codigo | 1031491 |
 | rotas | 139 |
 | rotas_http_backend | 13 |
 | vistas_por_id | 0 |
@@ -48,7 +48,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 | tabelas | 527 |
 | migrations | 3099 |
 | cron_jobs | 122 |
-| testes | 2570 |
+| testes | 2572 |
 | workflows | 88 |
 | scripts | 283 |
 | docs_md | 1470 |
@@ -58,7 +58,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - componentes: src/components (943), src/pages (177), recovery/src-legacy (100)
 - hooks: src/hooks (299), recovery/src-legacy (196), src/components (77)
 - servicos_logica: src/lib (233), src/utils (30), src/services (10)
-- testes: tests/ (1065), co-localizado (__tests__) (678), e2e/ (625)
+- testes: tests/ (1067), co-localizado (__tests__) (678), e2e/ (625)
 - edge_functions: supabase/functions
 - migrations: supabase/migrations
 - scripts: scripts/ci-local (11), scripts/lib (7), scripts/graphify (4)
@@ -563,7 +563,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 
 ## Integrações externas
 - SDKs: ElevenLabs, Sentry, Supabase, react-query, zod
-- hosts mais citados: doufsxqlfjyuvxuezpln.supabase.co, wa.me, www.promogifts.com.br, test.supabase.co, cdn.test, fixture.invalid, imagedelivery.net, api.supabase.com, edge-contract.invalid, ai.gateway.lovable.dev, api.ipify.org, api.resend.com, edge.local, fonts.googleapis.com, images.unsplash.com
+- hosts mais citados: doufsxqlfjyuvxuezpln.supabase.co, wa.me, www.promogifts.com.br, test.supabase.co, cdn.test, fixture.invalid, imagedelivery.net, api.supabase.com, edge-contract.invalid, ai.gateway.lovable.dev, api.ipify.org, api.resend.com, edge.local, example.test, fonts.googleapis.com
 - webhooks recebidos: ai-recommendations, asia-ingestion, backfill-image-dimensions, check-login, cleanup-notifications, cleanup-novelties, collections-watcher, comparison-price-watcher, connections-auto-test, connections-health-check, crm-callback-alerts, crm-callback-reprocess, crm-db-bridge, e2e-cleanup, external-db-inspect, favorites-watcher, get-visitor-info, image-proxy, log-login-attempt, magazine-import-local, magazine-public-react, magazine-public-view, magazine-reader-state-read, magazine-reader-state-write, mcp-server, ownership-audit, process-queue, process-scheduled-reports, quote-followup-reminders, receive-crm-callback, send-digest, send-notification, send-scheduled-reports, sync-external-db, webhook-dispatcher, webhook-inbound
 - env de integração (só nomes): CF_ORIGIN_SECRET, CONNECTIONS_AUTO_TEST_SECRET, CRM_CALLBACK_API_KEY, CSRF_SECRET, E2E_CLEANUP_TOKEN, LOVABLE_API_KEY, PRODUCT_WEBHOOK_ALLOWED_ORIGINS, PRODUCT_WEBHOOK_BATCH_SIZE, PROMO_CHAMPIONS_WEBHOOK_SECRET, TURNSTILE_SECRET_KEY, VITE_SENTRY_DSN, VITE_SENTRY_ENVIRONMENT, WEBHOOK_DISPATCHER_SECRET
 
@@ -591,8 +591,8 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - possiveis_segredos_no_codigo: 7 — ex.: scripts/ai-context/cenarios.mjs:102, src/components/admin/connections/__tests__/ConnectionSecurity.unit.test.tsx:9, src/integrations/supabase/client.ts:27
 
 ## Grafo de código (graphify)
-- 48538 nós · 81545 arestas · 2759 comunidades · grafo do commit `4700bff9`
-- comunidades maiores: ref_hooks (818), ref_components (816), vitest (650), ref_integrations (641), @tanstack/react-query (462), ref_node_child_process (430), ref_types (359), react (354), sonner (332), scripts (310), ref_node_fs (302), nav.ts (286)
+- 48555 nós · 81570 arestas · 2656 comunidades · grafo do commit `9ae8ea15`
+- comunidades maiores: vitest (823), ref_components (746), ref_integrations (636), ref_lib (495), ref_node_child_process (455), @tanstack/react-query (453), ref_hooks (408), sonner (346), react (336), ref_node_fs (335), scripts (310), ref_utils (309)
 - símbolos mais chamados: gotoAndSettle() (e2e/helpers/nav.ts), re (?), q() (scripts/supabase_snapshot/snapshot.py), analyze() (tests/scripts/test_personalization_artifact_diagnostics.py), outer() (tests/scripts/test_personalization_artifact_diagnostics.py), json (?), useExternalDatabase() (recovery/src-legacy/src/hooks/useExternalDatabase.ts), concludeCheck() (scripts/check-result-contract.mjs), querySupabaseReadOnly() (scripts/supabase-read-only-query.mjs), loginAs() (e2e/helpers/auth.ts), inner() (tests/scripts/test_personalization_artifact_diagnostics.py), excluded_sql() (scripts/supabase_snapshot/snapshot.py)
 - consulta local: `graphify query "<pergunta>"`, `graphify path "<A>" "<B>"`, `graphify explain "<X>"`
 
@@ -1187,6 +1187,8 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - CHANGELOG topo: [1.9.1](https://github.com/adm01-debug/Promo_Gifts_V4/compare/gifts-store-v1.9.0...gifts-store-v1.9.1) (2026-11-17)
 
 ## Últimos commits
+- 2026-11-17 `9ae8ea15` test(quotes): resgata 91 casos dos helpers da tela de orcamento (#3795)
+- 2026-11-17 `bd48bc95` test(kit): resgata a cobertura do montador de kit (#3796)
 - 2026-11-17 `4700bff9` feat(voz): comando de filtro aplica os critérios ditados no catálogo (#3813)
 - 2026-11-17 `1e9864f4` feat(favoritos): botão "Apresentar lista" abre o modo apresentação dos favoritos (#3812)
 - 2026-11-17 `2d43e629` fix(tests): mock de QuoteAutoSave precisa exportar QuoteDraftRecovery (#3811)
@@ -1200,8 +1202,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-17 `4250cdea` test(products): resgata a cobertura de ciclo de vida de filtros e fornecedores (#3790)
 - 2026-11-17 `3077bc05` test(products): resgata a cobertura de enriquecimento de cor (#3789)
 - 2026-11-17 `87ffb0ee` fix(observabilidade): tunela envelopes do Sentry pela própria origem (CORS matava 100% dos relatórios) (#3784)
-- 2026-11-17 `353c2a8d` docs(resgate): adjudica byte-a-byte os 219 arquivos ausentes do main (#3785)
-- 2026-11-17 `4a982eb8` test(kit-builder): resgata o teste da guarda financeira de kit (#3786)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

@@ -3,7 +3,7 @@
  "format_version": 2,
  "stack": {
   "linguagens": [
-   "TypeScript (4935)",
+   "TypeScript (4937)",
    "SQL (3440)",
    "Markdown (1470)",
    "JavaScript (457)",
@@ -4659,7 +4659,7 @@
    },
    {
     "host": "wa.me",
-    "arquivos": 21
+    "arquivos": 22
    },
    {
     "host": "www.promogifts.com.br",
@@ -4706,6 +4706,10 @@
     "arquivos": 5
    },
    {
+    "host": "example.test",
+    "arquivos": 5
+   },
+   {
     "host": "fonts.googleapis.com",
     "arquivos": 5
    },
@@ -4735,10 +4739,6 @@
    },
    {
     "host": "example.supabase.co",
-    "arquivos": 4
-   },
-   {
-    "host": "example.test",
     "arquivos": 4
    },
    {
@@ -5035,6 +5035,10 @@
    },
    {
     "host": "fake.supabase.co",
+    "arquivos": 1
+   },
+   {
+    "host": "files.example.test",
     "arquivos": 1
    },
    {

@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "4700bff94c8dc9026aa3ed2f42594501e2e8d055",
+  "sha": "9ae8ea15b5efb695720e0871a0026728343d5f7b",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-17 22:47 UTC",
-  "files_total": 10805,
-  "code_files": 8841,
-  "code_lines": 1251438
+  "generated_at": "2026-11-17 23:14 UTC",
+  "files_total": 10807,
+  "code_files": 8843,
+  "code_lines": 1252223
  },
  "version": "1.3.2",
- "facts_hash": "15be57917692dd61",
+ "facts_hash": "9ec7206860b39cf4",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -1120,8 +1120,8 @@
   "package_manager": "npm",
   "languages": {
    ".sql": 3440,
-   ".ts": 3010,
-   ".tsx": 1926,
+   ".ts": 3011,
+   ".tsx": 1927,
    ".mjs": 450,
    ".py": 15,
    ".js": 7
@@ -151703,8 +151703,8 @@
   },
   {
    "module": "tests",
-   "files": 1080,
-   "lines": 168940,
+   "files": 1082,
+   "lines": 169725,
    "tables": [
     "bot_detection_log",
     "clients",
@@ -284036,6 +284036,106 @@
     "name": "a variant callback cannot relabel an unknown price as known or normalize a negative value"
    },
    {
+    "file": "tests/hooks/useKitBuilderPageState.legacy.test.tsx",
+    "name": "Original PageState operational integration preserves its state/actions"
+   },
+   {
+    "file": "tests/hooks/useKitBuilderPageState.legacy.test.tsx",
+    "name": "empty save is rejected without success or network mutation"
+   },
+   {
+    "file": "tests/hooks/useKitBuilderPageState.legacy.test.tsx",
+    "name": "manual save uses real state and response, cancels debounce and acknowledges ID/revision"
+   },
+   {
+    "file": "tests/hooks/useKitBuilderPageState.legacy.test.tsx",
+    "name": "does not race with %s save"
+   },
+   {
+    "file": "tests/hooks/useKitBuilderPageState.legacy.test.tsx",
+    "name": "save rejection preserves current data and does not acknowledge success"
+   },
+   {
+    "file": "tests/hooks/useKitBuilderPageState.legacy.test.tsx",
+    "name": "hydrates saved partial snapshot before autosave and retains identity/client/flow/revision"
+   },
+   {
+    "file": "tests/hooks/useKitBuilderPageState.legacy.test.tsx",
+    "name": "missing kit blocks autosave and explicit save"
+   },
+   {
+    "file": "tests/hooks/useKitBuilderPageState.legacy.test.tsx",
+    "name": "waiting saved-kit query never writes the empty initial state"
+   },
+   {
+    "file": "tests/hooks/useKitBuilderPageState.legacy.test.tsx",
+    "name": "exposes actual catalog/filter callbacks and retains all original callback names"
+   },
+   {
+    "file": "tests/hooks/useKitBuilderPageState.legacy.test.tsx",
+    "name": "deep link without a box preloads real product into items-first flow once"
+   },
+   {
+    "file": "tests/hooks/useKitBuilderPageState.legacy.test.tsx",
+    "name": "Deep-link product integration respects mode, URL, account and deadlines"
+   },
+   {
+    "file": "tests/hooks/useKitBuilderPageState.legacy.test.tsx",
+    "name": "a selected box keeps box-first flow and uses actual fit validation"
+   },
+   {
+    "file": "tests/hooks/useKitBuilderPageState.legacy.test.tsx",
+    "name": "saved-kit URL takes precedence over an additional product parameter"
+   },
+   {
+    "file": "tests/hooks/useKitBuilderPageState.legacy.test.tsx",
+    "name": "load failure retains the prior editable kit"
+   },
+   {
+    "file": "tests/hooks/useKitBuilderPageState.legacy.test.tsx",
+    "name": "Quote action shares hydration safety with persistence"
+   },
+   {
+    "file": "tests/hooks/useKitBuilderPageState.legacy.test.tsx",
+    "name": "blocks quote from %s requested snapshot"
+   },
+   {
+    "file": "tests/hooks/useKitBuilderPageState.legacy.test.tsx",
+    "name": "keeps the real quote action callable after a valid saved snapshot restores"
+   },
+   {
+    "file": "tests/hooks/useKitBuilderPageState.legacy.test.tsx",
+    "name": "Raw NULL draft quantity requires an explicit operational choice"
+   },
+   {
+    "file": "tests/hooks/useKitBuilderPageState.legacy.test.tsx",
+    "name": "reads the draft with preset1 but cannot autosave/nameedit/save/quote until quantity is defined"
+   },
+   {
+    "file": "tests/hooks/useKitBuilderPageState.legacy.test.tsx",
+    "name": "invalid quantities never dismiss the missing-quantity alert"
+   },
+   {
+    "file": "tests/hooks/useKitBuilderPageState.legacy.test.tsx",
+    "name": "Hydrated controller roundtrip preserves nested future metadata"
+   },
+   {
+    "file": "tests/hooks/useKitBuilderPageState.legacy.test.tsx",
+    "name": "hydrate→edit only name→save keeps client, briefing and target-budget extras"
+   },
+   {
+    "file": "tests/hooks/useKitBuilderPageState.legacy.test.tsx",
+    "name": "explicitly clearing the client never revives old known fields or another client metadata"
+   },
+   {
+    "file": "tests/hooks/useKitBuilderPageState.legacy.test.tsx",
+    "name": "a same-client edit clears omitted known name while retaining unknown extras"
+   },
+   {
+    "file": "tests/hooks/useKitBuilderPageState.legacy.test.tsx",
+    "name": "switching to a different client does not copy metadata from the previous client"
+   },
+   {
     "file": "tests/hooks/useKitBuilderPageState.quantity.test.tsx",
     "name": "Canonical controller guards nullable historical drafts without writes"
    },
@@ -293854,6 +293954,90 @@
    {
     "file": "tests/pages/kit-builder/useKitBuilderQuote.test.ts",
     "name": "preserva tamanho e identidade de variante no payload de linha"
+   },
+   {
+    "file": "tests/pages/quote-view/root-quote-helpers.test.ts",
+    "name": "%s root quote synchronization"
+   },
+   {
+    "file": "tests/pages/quote-view/root-quote-helpers.test.ts",
+    "name": "accepts the actual Edge success envelope using ok"
+   },
+   {
+    "file": "tests/pages/quote-view/root-quote-helpers.test.ts",
+    "name": "retains both explicit success envelopes: %j"
+   },
+   {
+    "file": "tests/pages/quote-view/root-quote-helpers.test.ts",
+    "name": "never treats failure/nonboolean envelopes as success: %j"
+   },
+   {
+    "file": "tests/pages/quote-view/root-quote-helpers.test.ts",
+    "name": "blocks unsaved quote id %s before any external operation"
+   },
+   {
+    "file": "tests/pages/quote-view/root-quote-helpers.test.ts",
+    "name": "retains CRM company fallback and primary-field precedence $expected"
+   },
+   {
+    "file": "tests/pages/quote-view/root-quote-helpers.test.ts",
+    "name": "stops without a company when CRM is %s"
+   },
+   {
+    "file": "tests/pages/quote-view/root-quote-helpers.test.ts",
+    "name": "retains empty/absent item guard"
+   },
+   {
+    "file": "tests/pages/quote-view/root-quote-helpers.test.ts",
+    "name": "warns with color names while preserving the complete edge payload for mixed items"
+   },
+   {
+    "file": "tests/pages/quote-view/root-quote-helpers.test.ts",
+    "name": "generates PDF with draft flag for %s"
+   },
+   {
+    "file": "tests/pages/quote-view/root-quote-helpers.test.ts",
+    "name": "preserves edge sync when optional PDF phase fails: %s"
+   },
+   {
+    "file": "tests/pages/quote-view/root-quote-helpers.test.ts",
+    "name": "propagates $expected and never marks failure as sent"
+   },
+   {
+    "file": "tests/pages/quote-view/root-quote-helpers.test.ts",
+    "name": "standalone sync error history"
+   },
+   {
+    "file": "tests/pages/quote-view/root-quote-helpers.test.ts",
+    "name": "keeps the explicit sync_error event when the edge rejects the operation"
+   },
+   {
+    "file": "tests/pages/quote-view/root-quote-helpers.test.ts",
+    "name": "keeps successful edge result when best-effort local update throws"
+   },
+   {
+    "file": "tests/pages/quote-view/root-quote-helpers.test.ts",
+    "name": "root PDF and message helpers"
+   },
+   {
+    "file": "tests/pages/quote-view/root-quote-helpers.test.ts",
+    "name": "downloads generated $status proposal using $filename"
+   },
+   {
+    "file": "tests/pages/quote-view/root-quote-helpers.test.ts",
+    "name": "propagates a PDF failure without download or success notification"
+   },
+   {
+    "file": "tests/pages/quote-view/root-quote-helpers.test.ts",
+    "name": "omits optional validity/approval lines while preserving zero value"
+   },
+   {
+    "file": "tests/pages/quote-view/root-quote-helpers.test.ts",
+    "name": "rounds personalization per unit: $total / $quantity"
+   },
+   {
+    "file": "tests/pages/quote-view/root-quote-helpers.test.ts",
+    "name": "formats only complete CNPJ %s"
    },
    {
     "file": "tests/regression/freight-quest-regression-suite.test.ts",
@@ -531433,6 +531617,41 @@
     "a variant callback cannot relabel an unknown price as known or normalize a negative value"
    ]
   },
+  "tests/hooks/useKitBuilderPageState.legacy.test.tsx": {
+   "path": "tests/hooks/useKitBuilderPageState.legacy.test.tsx",
+   "lines": 496,
+   "is_test": true,
+   "errors": [
+    ", async () => {\n    m.search = "
+   ],
+   "tests": [
+    "Original PageState operational integration preserves its state/actions",
+    "empty save is rejected without success or network mutation",
+    "manual save uses real state and response, cancels debounce and acknowledges ID/revision",
+    "does not race with %s save",
+    "save rejection preserves current data and does not acknowledge success",
+    "hydrates saved partial snapshot before autosave and retains identity/client/flow/revision",
+    "missing kit blocks autosave and explicit save",
+    "waiting saved-kit query never writes the empty initial state",
+    "exposes actual catalog/filter callbacks and retains all original callback names",
+    "deep link without a box preloads real product into items-first flow once",
+    "Deep-link product integration respects mode, URL, account and deadlines",
+    "a selected box keeps box-first flow and uses actual fit validation",
+    "saved-kit URL takes precedence over an additional product parameter",
+    "load failure retains the prior editable kit",
+    "Quote action shares hydration safety with persistence",
+    "blocks quote from %s requested snapshot",
+    "keeps the real quote action callable after a valid saved snapshot restores",
+    "Raw NULL draft quantity requires an explicit operational choice",
+    "reads the draft with preset1 but cannot autosave/nameedit/save/quote until quantity is defined",
+    "invalid quantities never dismiss the missing-quantity alert",
+    "Hydrated controller roundtrip preserves nested future metadata",
+    "hydrate→edit only name→save keeps client, briefing and target-budget extras",
+    "explicitly clearing the client never revives old known fields or another client metadata",
+    "a same-client edit clears omitted known name while retaining unknown extras",
+    "switching to a different client does not copy metadata from the previous client"
+   ]
+  },
   "tests/hooks/useKitBuilderPageState.quantity.test.tsx": {
    "path": "tests/hooks/useKitBuilderPageState.quantity.test.tsx",
    "lines": 329,
@@ -536336,6 +536555,34 @@
     "não reutiliza a operação de outro kit salvo com composição igual",
     "pula a revalidação apenas quando o ledger confirma o commit perdido",
     "preserva tamanho e identidade de variante no payload de linha"
+   ]
+  },
+  "tests/pages/quote-view/root-quote-helpers.test.ts": {
+   "path": "tests/pages/quote-view/root-quote-helpers.test.ts",
+   "lines": 289,
+   "is_test": true,
+   "tests": [
+    "%s root quote synchronization",
+    "accepts the actual Edge success envelope using ok",
+    "retains both explicit success envelopes: %j",
+    "never treats failure/nonboolean envelopes as success: %j",
+    "blocks unsaved quote id %s before any external operation",
+    "retains CRM company fallback and primary-field precedence $expected",
+    "stops without a company when CRM is %s",
+    "retains empty/absent item guard",
+    "warns with color names while preserving the complete edge payload for mixed items",
+    "generates PDF with draft flag for %s",
+    "preserves edge sync when optional PDF phase fails: %s",
+    "propagates $expected and never marks failure as sent",
+    "standalone sync error history",
+    "keeps the explicit sync_error event when the edge rejects the operation",
+    "keeps successful edge result when best-effort local update throws",
+    "root PDF and message helpers",
+    "downloads generated $status proposal using $filename",
+    "propagates a PDF failure without download or success notification",
+    "omits optional validity/approval lines while preserving zero value",
+    "rounds personalization per unit: $total / $quantity",
+    "formats only complete CNPJ %s"
    ]
   },
   "tests/regression/freight-quest-regression-suite.test.ts": {
@@ -544100,10 +544347,28 @@
   }
  },
  "git": {
-  "sha": "4700bff94c8dc9026aa3ed2f42594501e2e8d055",
+  "sha": "9ae8ea15b5efb695720e0871a0026728343d5f7b",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "9ae8ea1",
+    "date": "2026-11-17",
+    "author": "adm01-debug",
+    "subject": "test(quotes): resgata 91 casos dos helpers da tela de orcamento (#3795)",
+    "files": [
+     "tests/pages/quote-view/root-quote-helpers.test.ts"
+    ]
+   },
+   {
+    "sha": "bd48bc9",
+    "date": "2026-11-17",
+    "author": "adm01-debug",
+    "subject": "test(kit): resgata a cobertura do montador de kit (#3796)",
+    "files": [
+     "tests/hooks/useKitBuilderPageState.legacy.test.tsx"
+    ]
+   },
    {
     "sha": "4700bff",
     "date": "2026-11-17",
@@ -544402,42 +544667,20 @@
     "files": [
      "docs/agentes/resgates/2026-11-16-auditoria-branches.md"
     ]
-   },
-   {
-    "sha": "10455e7",
-    "date": "2026-11-17",
-    "author": "github-actions[bot]",
-    "subject": "chore(main): release gifts-store 1.9.0 (#3753)",
-    "files": [
-     ".release-please-manifest.json",
-     "CHANGELOG.md",
-     "package-lock.json",
-     "package.json"
-    ]
-   },
-   {
-    "sha": "cda9cbf",
-    "date": "2026-11-17",
-    "author": "adm01-debug",
-    "subject": "docs: anexo da prova byte-a-byte por branch + prova do filtro do CRM contra PostgREST real (#3766)",
-    "files": [
-     "docs/agentes/resgates/2026-11-16-auditoria-branches.md",
-     "docs/agentes/resgates/2026-11-17-prova-byte-a-byte.md"
-    ]
    }
   ],
   "hot_files": [
    [
     "docs/agentes/resgates/2026-11-16-auditoria-branches.md",
-    5
+    4
    ],
    [
     "package-lock.json",
-    4
+    3
    ],
    [
     "package.json",
-    4
+    3
    ],
    [
     "tests/pages/legacy-QuoteBuilder.partial-preservation.test.tsx",
@@ -544460,12 +544703,12 @@
     2
    ],
    [
-    ".release-please-manifest.json",
-    2
+    "tests/pages/quote-view/root-quote-helpers.test.ts",
+    1
    ],
    [
-    "CHANGELOG.md",
-    2
+    "tests/hooks/useKitBuilderPageState.legacy.test.tsx",
+    1
    ],
    [
     "src/components/search/__tests__/useGlobalSearch.test.ts",

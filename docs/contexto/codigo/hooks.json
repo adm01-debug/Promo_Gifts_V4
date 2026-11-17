@@ -9865,7 +9865,7 @@
    "usado_por_arquivos": [
     "src/hooks/kit-builder/index.ts"
    ],
-   "coberto_por_testes": 4
+   "coberto_por_testes": 5
   },
   {
    "arquivo": "src/hooks/kit-builder/useKitBuilderQueries.ts",
