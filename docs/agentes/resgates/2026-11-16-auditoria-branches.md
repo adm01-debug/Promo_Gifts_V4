@@ -931,3 +931,41 @@ e compara o blob de cada commit com o blob do ref.
 Com isso, cada um dos 277 pares de divergência real está classificado como
 **incorporado**, **substituído** ou **descartado por decisão** — e a única melhoria
 que faltava foi reaproveitada.
+
+### Medida 7 — os 28 arquivos da branch do Codex, medidos um a um
+
+A Medida 5 classificou `salvo/codex-fix-gate1-kit-pdf-types-261109-2252` como "família
+de ratchet de lint/tipos" a partir de 3 arquivos inspecionados. Isso era **inferência
+sobre 28 caminhos**. O dossiê que o `main` já tinha para essa branch
+(`analise-branches/dossies/claude__resgate-3390-261113.md`) cobre **12 dos 28** — os
+outros 16 nunca tinham sido medidos. Medidos agora, por símbolo exportado e por delta
+de linhas:
+
+- **1 arquivo exporta símbolo que o `main` não tem**: `src/components/dev/metrics/MetricUtils.ts`
+  → `bridgeBadge`. **Obsoleto**: os dois consumidores (`BridgeCallItem.tsx`,
+  `BridgesLiveCard.tsx`) não existem no `main`, sobrevivem só em `recovery/src-legacy/`,
+  e o próprio dossiê do `main` já o julgara — "NAO ESTA — e sem consumidor vivo".
+  Portar as 8 linhas criaria função que ninguém chama.
+- **Maior delta a favor do ref** (`src/components/quotes/QuoteAutoSave.tsx`, 114 linhas
+  só no ref): é o type-guard `isRecoverableDraft`, que confere o envelope do rascunho
+  (id, version inteiro positivo, savedAt parseável). O `main` tem validação **mais
+  forte**: `quoteDraftRecoverySchema.safeParse(draft.data)` valida o payload e loga os
+  `issues`. Superado.
+- **Os outros 26**: nenhum símbolo exportado falta no `main`, e na maioria o `main` tem
+  mais linhas — `src/integrations/supabase/types.ts` 369×53, `KitBuilderPage.tsx`
+  135×3, `useKitBuilderPageState.ts` 101×26, `useKitAutoSave.ts` 80×3,
+  `useQuoteTemplates.ts` 53×12, `buildCustomKitInsert.ts` 49×14,
+  `tests/components/pages/KitBuilderPage.test.tsx` 190×6.
+
+Também fechado o par do `useRuptureAlerts` em `salvo/261117-laughing-cori-o9w35e`: a
+implementação foi reaproveitada (PR #3771) e o **teste** que vinha junto não acrescenta
+cobertura — os dois lados têm os mesmos 4 casos e a diferença de 6 linhas é apenas qual
+módulo é mockado (`@/lib/supabase-untyped` no ref, o client no `main`). Como
+`untypedRpc` chama `supabase.rpc` por dentro, a costura do `main` intercepta o mesmo
+caminho: o teste existente passou sem alteração depois da troca.
+
+**Nenhum ref `salvo/*` foi ou será apagado.** Eles são a camada de preservação — cada
+um é a cópia de uma branch antes de ela ser removida. A regra do dono é ter certeza
+byte a byte ANTES de excluir e só excluir o que está incorporado; apagar as cópias
+destruiria justamente o que ela manda guardar, inclusive os blobs intermediários que
+só existem ali.
