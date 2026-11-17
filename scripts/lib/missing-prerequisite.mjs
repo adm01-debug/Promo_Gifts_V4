@@ -35,6 +35,16 @@ export function resolveMissingPrerequisite(
     lines.push(
       `[${check}] modo estrito (CI ou REQUIRE_LIVE=1): a verificação não pode ser pulada.`,
     );
+    // No GitHub Actions, rotula a anotação como INFRA DO RUNNER. Pré-requisito ausente
+    // e contrato violado davam o mesmo vermelho anônimo, e quem lê a página de checks
+    // não tinha como distinguir sem abrir o log (run 44052951491: Gate 2.5 vermelho por
+    // Docker ausente no runner, não por contrato). O exit code NÃO muda: a guarda acima
+    // continua fechando o gate.
+    if (env.GITHUB_ACTIONS === 'true') {
+      lines.unshift(
+        `::error title=Pré-requisito ausente (infra do runner, não contrato)::[${check}] ${reason}`,
+      );
+    }
     return { strict: true, exitCode: exitCode === 0 ? 1 : exitCode, stream: 'stderr', lines };
   }
   const lines = [
