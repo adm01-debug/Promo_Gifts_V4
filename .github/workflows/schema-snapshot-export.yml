@@ -261,8 +261,14 @@ jobs:
   commit-snapshot:
     name: Commit snapshot to bot/schema-snapshot
     needs: export
+    # A mesma exceção do job `export`: cancelled() é do workflow inteiro, então um
+    # drift-gate cancelado deixava ESTE job em 'skipped' mesmo com force_rotate — o
+    # export gerava os artefatos e a rotação não chegava à branch nem à PR do bot,
+    # que é o que de fato gira o baseline. Liberar só o export não completava nada.
+    # `needs.export.result == 'success'` continua exigido: nada é publicado sem um
+    # export que terminou bem.
     if: >-
-      !cancelled() &&
+      (inputs.force_rotate == true || !cancelled()) &&
       (github.event_name == 'schedule' || github.event_name == 'workflow_dispatch') &&
       needs.export.result == 'success'
     runs-on: ubuntu-24.04
