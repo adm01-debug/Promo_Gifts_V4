@@ -5,6 +5,7 @@
 
 import { useState, useMemo, useCallback, useDeferredValue, useEffect, memo } from 'react';
 import { cn } from '@/lib/utils';
+import { buildMockupTechniqueOptions } from '@/components/mockup/mockupTechniqueOptions';
 import { LayoutPopover } from '@/components/products/LayoutPopover';
 import { getDefaultColumns, type ColumnCount } from '@/components/products/ColumnSelector';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -116,26 +117,10 @@ export function MockupHistoryPanel({
   const compareMode = selectedForCompare.size > 0;
   const compareMockups = mockupHistory.filter((m) => selectedForCompare.has(m.id));
 
-  const historyTechniques = useMemo(() => {
-    const seen = new Set<string>();
-    const result: { id: string; name: string }[] = [];
-    for (const m of mockupHistory) {
-      if (m.technique_name && !seen.has(m.technique_name)) {
-        seen.add(m.technique_name);
-        result.push({ id: m.technique_name, name: m.technique_name });
-      }
-    }
-    // Funde o catálogo: técnica recém-cadastrada, ainda sem nenhum mockup, também
-    // precisa aparecer no filtro. A chave é o NOME porque o filtro compara com
-    // `mockup.technique_name` (ver o filtro abaixo), não com o id da técnica.
-    for (const t of techniques ?? []) {
-      if (t.name && !seen.has(t.name)) {
-        seen.add(t.name);
-        result.push({ id: t.name, name: t.name });
-      }
-    }
-    return result.sort((a, b) => a.name.localeCompare(b.name));
-  }, [mockupHistory, techniques]);
+  const historyTechniques = useMemo(
+    () => buildMockupTechniqueOptions(mockupHistory, techniques),
+    [mockupHistory, techniques],
+  );
 
   const filteredMockups = useMemo(() => {
     return mockupHistory.filter((mockup) => {
