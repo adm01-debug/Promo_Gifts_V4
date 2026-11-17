@@ -422,3 +422,6 @@ export function useQuoteAutoSave(quoteId?: string) {
 
   return { saveDraft, loadDraft, clearDraft };
 }
+
+// Reexport para que o QuoteBuilderPage importe ambos do mesmo módulo (mesmas chaves de rascunho).
+export { QuoteDraftRecovery } from './QuoteDraftRecovery';
