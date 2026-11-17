@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "2d43e62910f1fe8291572e79d132d20083f25453",
+  "sha": "1e9864f481d84e0236eb62a41de64825ff2f96b2",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-17 22:15 UTC",
-  "files_total": 10797,
-  "code_files": 8833,
-  "code_lines": 1250782
+  "generated_at": "2026-11-17 22:35 UTC",
+  "files_total": 10799,
+  "code_files": 8835,
+  "code_lines": 1251038
  },
  "version": "1.3.2",
- "facts_hash": "4e51e910dd0238b7",
+ "facts_hash": "4f68e8a50977abbd",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -1121,7 +1121,7 @@
   "languages": {
    ".sql": 3440,
    ".ts": 3005,
-   ".tsx": 1923,
+   ".tsx": 1925,
    ".mjs": 450,
    ".py": 15,
    ".js": 7
@@ -138263,6 +138263,39 @@
    },
    {
     "path": "",
+    "file": "tests/pages/FavoritesPage.apresentar-lista.test.tsx",
+    "component": "FavoritesPage.apresentar-lista.test",
+    "tables_transitive": [
+     "...",
+     "admin_settings",
+     "category_icons",
+     "favorite_items",
+     "favorite_items_trash",
+     "favorite_lists",
+     "frontend_telemetry",
+     "profiles",
+     "user_roles"
+    ],
+    "invokes_transitive": [
+     "crm-db-bridge",
+     "external-db-bridge",
+     "mcp-keys-issue"
+    ],
+    "rpc_transitive": [
+     "ensure_default_favorite_list",
+     "fn_get_color_swatches_batch",
+     "fn_my_rpc",
+     "get_favorite_list_counts",
+     "get_favorites_weekly_count",
+     "get_profile_and_roles",
+     "get_top_favorited_products",
+     "log_user_logout",
+     "restore_favorite_from_trash"
+    ],
+    "deps_count": 216
+   },
+   {
+    "path": "",
     "file": "tests/pages/MagicUp.a11y.test.tsx",
     "component": "MagicUp.a11y.test",
     "tables_transitive": [
@@ -139343,7 +139376,7 @@
      "restore_favorite_from_trash",
      "restore_seller_cart"
     ],
-    "deps_count": 334
+    "deps_count": 336
    },
    {
     "path": "/ferramentas/bi",
@@ -144949,7 +144982,7 @@
     "file": ".github/workflows/wraparound-monitor-report.yml"
    }
   ],
-  "components_count": 1661,
+  "components_count": 1662,
   "hooks": [
    {
     "name": "useQuoteComments",
@@ -149572,8 +149605,8 @@
   },
   {
    "module": "src/components",
-   "files": 1395,
-   "lines": 277646,
+   "files": 1396,
+   "lines": 277717,
    "tables": [
     "admin_audit_log",
     "art_file_attachments",
@@ -150430,7 +150463,7 @@
   {
    "module": "src/pages",
    "files": 361,
-   "lines": 83891,
+   "lines": 83890,
    "tables": [
     "ai_usage_events",
     "bot_detection_log",
@@ -151658,8 +151691,8 @@
   },
   {
    "module": "tests",
-   "files": 1077,
-   "lines": 168553,
+   "files": 1078,
+   "lines": 168739,
    "tables": [
     "bot_detection_log",
     "clients",
@@ -170952,6 +170985,10 @@
    {
     "file": "src/components/favorites/FavoritesSortBar.tsx",
     "text": "* Filtro: mostrar apenas items com queda de preço */"
+   },
+   {
+    "file": "src/components/favorites/FavoritesViewHeader.tsx",
+    "text": "acima do limite do gate de tamanho de arquivo; PresentationMode e um overlay"
    },
    {
     "file": "src/components/filters/ColorGroupFilter.tsx",
@@ -293238,6 +293275,18 @@
    {
     "file": "tests/pages/DiscountRequestDetailPage.test.tsx",
     "name": "não reporta sucesso quando a atualização do orçamento falha"
+   },
+   {
+    "file": "tests/pages/FavoritesPage.apresentar-lista.test.tsx",
+    "name": "FavoritesPage — apresentar lista"
+   },
+   {
+    "file": "tests/pages/FavoritesPage.apresentar-lista.test.tsx",
+    "name": "abre o modo apresentação com os produtos favoritos ao clicar em "
+   },
+   {
+    "file": "tests/pages/FavoritesPage.apresentar-lista.test.tsx",
+    "name": "não oferece apresentação quando a lista está vazia"
    },
    {
     "file": "tests/pages/MagicUp.a11y.test.tsx",
@@ -440516,6 +440565,14 @@
     "function FavoriteListsSidebar"
    ]
   },
+  "src/components/favorites/FavoritePresentationLauncher.tsx": {
+   "path": "src/components/favorites/FavoritePresentationLauncher.tsx",
+   "lines": 48,
+   "exports": [
+    "function FavoritePresentationLauncher"
+   ],
+   "doc": "FavoritePresentationLauncher — monta os slides da lista de favoritos e renderiza o PresentationMode existente. Mesmo padrão de CollectionPresentationLauncher e ComparisonPresentationLauncher."
+  },
   "src/components/favorites/FavoritesClientPicker.tsx": {
    "path": "src/components/favorites/FavoritesClientPicker.tsx",
    "lines": 155,
@@ -440588,12 +440645,15 @@
   },
   "src/components/favorites/FavoritesViewHeader.tsx": {
    "path": "src/components/favorites/FavoritesViewHeader.tsx",
-   "lines": 138,
+   "lines": 161,
    "exports": [
     "function FavoritesViewHeader"
    ],
    "navigates": [
     "/orcamentos/novo?"
+   ],
+   "rule_comments": [
+    "acima do limite do gate de tamanho de arquivo; PresentationMode e um overlay"
    ]
   },
   "src/components/favorites/ItemNoteEditor.tsx": {
@@ -484877,7 +484937,7 @@
   },
   "src/pages/products/FavoritesPage.tsx": {
    "path": "src/pages/products/FavoritesPage.tsx",
-   "lines": 895,
+   "lines": 894,
    "exports": [
     "function FavoritesPage"
    ],
@@ -535815,6 +535875,21 @@
     "não reporta sucesso quando a atualização do orçamento falha"
    ]
   },
+  "tests/pages/FavoritesPage.apresentar-lista.test.tsx": {
+   "path": "tests/pages/FavoritesPage.apresentar-lista.test.tsx",
+   "lines": 186,
+   "is_test": true,
+   "rule_comments": [
+    "* O main tinha o estado `presenting` apenas no hook órfão",
+    "não é o objeto deste teste, então o contexto vai mockado com o mínimo que ele lê."
+   ],
+   "doc": "FavoritesPage — botão \"Apresentar lista\" e modo apresentação. O main tinha o estado `presenting` apenas no hook órfão src/hooks/favorites/useFavoritesPageState.ts:92 (nenhum consumidor em src/), e o launcher de favoritos existia só em recovery/src-legacy/, enquanto coleções e comparação têm launcher …",
+   "tests": [
+    "FavoritesPage — apresentar lista",
+    "abre o modo apresentação com os produtos favoritos ao clicar em ",
+    "não oferece apresentação quando a lista está vazia"
+   ]
+  },
   "tests/pages/MagicUp.a11y.test.tsx": {
    "path": "tests/pages/MagicUp.a11y.test.tsx",
    "lines": 363,
@@ -543856,10 +543931,22 @@
   }
  },
  "git": {
-  "sha": "2d43e62910f1fe8291572e79d132d20083f25453",
+  "sha": "1e9864f481d84e0236eb62a41de64825ff2f96b2",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "1e9864f",
+    "date": "2026-11-17",
+    "author": "adm01-debug",
+    "subject": "feat(favoritos): botão \"Apresentar lista\" abre o modo apresentação dos favoritos (#3812)",
+    "files": [
+     "src/components/favorites/FavoritePresentationLauncher.tsx",
+     "src/components/favorites/FavoritesViewHeader.tsx",
+     "src/pages/products/FavoritesPage.tsx",
+     "tests/pages/FavoritesPage.apresentar-lista.test.tsx"
+    ]
+   },
    {
     "sha": "2d43e62",
     "date": "2026-11-17",
@@ -544161,31 +544248,19 @@
      "docs/coordenacao/conflitos-semanticos.md",
      "supabase/MIGRATIONS_SYNC_LOG.md"
     ]
-   },
-   {
-    "sha": "d56cb12",
-    "date": "2026-11-17",
-    "author": "adm01-debug",
-    "subject": "feat(crm): vendedor vê a carteira dele mais os clientes sem dono (somente leitura) (#3769)",
-    "files": [
-     "package.json",
-     "supabase/functions/crm-db-bridge/index.ts",
-     "supabase/functions/crm-db-bridge/query-policy.ts",
-     "tests/security/crm-db-bridge-ownership.test.ts"
-    ]
    }
   ],
   "hot_files": [
-   [
-    "package.json",
-    5
-   ],
    [
     "docs/agentes/resgates/2026-11-16-auditoria-branches.md",
     5
    ],
    [
     "package-lock.json",
+    4
+   ],
+   [
+    "package.json",
     4
    ],
    [
@@ -544217,6 +544292,22 @@
     2
    ],
    [
+    "src/components/favorites/FavoritePresentationLauncher.tsx",
+    1
+   ],
+   [
+    "src/components/favorites/FavoritesViewHeader.tsx",
+    1
+   ],
+   [
+    "src/pages/products/FavoritesPage.tsx",
+    1
+   ],
+   [
+    "tests/pages/FavoritesPage.apresentar-lista.test.tsx",
+    1
+   ],
+   [
     "src/components/quotes/QuoteVersionCompare.tsx",
     1
    ],
@@ -544238,22 +544329,6 @@
    ],
    [
     "src/hooks/products/useProductMatch.ts",
-    1
-   ],
-   [
-    "tests/hooks/useProductMatch.matchTypes-guard.test.ts",
-    1
-   ],
-   [
-    "src/components/quotes/QuoteAutoSave.tsx",
-    1
-   ],
-   [
-    "src/components/quotes/QuoteDraftRecovery.tsx",
-    1
-   ],
-   [
-    "src/hooks/quotes/__tests__/quoteDraftApply.test.ts",
     1
    ]
   ]

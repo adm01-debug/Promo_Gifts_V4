@@ -8428,7 +8428,7 @@
     "pages/filters",
     "pages/products"
    ],
-   "coberto_por_testes": 7,
+   "coberto_por_testes": 8,
    "orfao": false
   },
   {

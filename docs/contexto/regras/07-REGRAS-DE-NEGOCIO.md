@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.3.2 · commit `2d43e62910` · branch `main` · 2026-11-17 22:15 UTC
+> Gerado automaticamente por AI Context Sync v1.3.2 · commit `1e9864f481` · branch `main` · 2026-11-17 22:35 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -6564,7 +6564,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `admin` | `supabase/migrations/20261112120500_fix_optimization_queue_rpcs_dev_access.sql` |
 | `anon` | `tests/edge-functions/live/_live-client.ts` |
 
-## K. Testes como especificação (22181 testes em 2245 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (22184 testes em 2246 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -6868,7 +6868,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `src/components/search/__tests__/searchCache.test.ts` | 18 | searchCache.set / searchCache.get · returns null for an unknown key · returns results immediately after set · is case-insensitive (normalized key) … |
 | `src/hooks/auth/__tests__/login-flow.test.ts` | 18 | Login Flow & Role Loading — RPC get_profile_and_roles · 1. deve carregar perfil e roles com sucesso via RPC · 2. deve tratar erro RLS 42501 sem lançar exceção · 3. deve tratar erros genéricos de rede sem crash … |
 | `src/hooks/products/__tests__/useProductsByColor.test.ts` | 18 | hasFilter OR entre 4 grupos · false quando todos arrays vazios · true quando qualquer grupo nao-vazio · sem filtro ativo … |
-| … +1945 linhas — lista completa em `context.json` | | |
+| … +1946 linhas — lista completa em `context.json` | | |
 
 ## L. Eventos de webhook tratados (contratos com sistemas externos)
 
@@ -7287,6 +7287,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | MUST be declared before all useEffect hooks that reference it. | `src/components/expert/chat/useExpertChat.ts` |
 | Server-side search apenas (preload de 100 empresas estourava statement_timeout no CRM). | `src/components/favorites/FavoritesClientPicker.tsx` |
 | * Filtro: mostrar apenas items com queda de preço */ | `src/components/favorites/FavoritesSortBar.tsx` |
+| acima do limite do gate de tamanho de arquivo; PresentationMode e um overlay | `src/components/favorites/FavoritesViewHeader.tsx` |
 | VERSÃO COMPACTA (apenas swatches inline) | `src/components/filters/ColorGroupFilter.tsx` |
 | Auto-swap: se novo mínimo supera máximo real (< sentinela 9999), inverte | `src/components/filters/FilterPanel.tsx` |
 | Auto-swap: se novo máximo real é menor que mínimo, inverte | `src/components/filters/FilterPanel.tsx` |
@@ -7335,5 +7336,4 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | ArrowRight/Down no último e ArrowLeft/Up no primeiro param no limite (não ciclam); | `src/components/magic-up/MagicUpVariationComparator.tsx` |
 | Regra única do logo do mockup (SVG fora: a edge generate-mockup rejeita SVG). | `src/components/mockup/AreaCard.tsx` |
 | * Validação sem rede: extensão, tipo informado pelo navegador e tamanho. Retorna a mensagem de erro ou null. */ | `src/components/mockup/ArtFileUpload.tsx` |
-| Remover a empresa exige confirmação (mesma regra do Magic Up) — evita perda acidental. | `src/components/mockup/MockupClientSelector.tsx` |
-| … +1333 linhas — lista completa em `context.json` | |
+| … +1334 linhas — lista completa em `context.json` | |

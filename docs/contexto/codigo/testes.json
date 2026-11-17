@@ -5,18 +5,18 @@
   "vitest",
   "playwright"
  ],
- "total": 2567,
+ "total": 2568,
  "por_tipo": {
   "contrato": 66,
   "e2e": 677,
   "pytest": 5,
   "qa": 17,
-  "unit": 1802
+  "unit": 1803
  },
  "onde_ficam": [
   {
    "padrao": "tests/",
-   "arquivos": 1062
+   "arquivos": 1063
   },
   {
    "padrao": "co-localizado (__tests__)",
@@ -19124,6 +19124,20 @@
    "casos": 2
   },
   {
+   "arquivo": "tests/pages/FavoritesPage.apresentar-lista.test.tsx",
+   "tipo": "unit",
+   "linhas": 186,
+   "testa": [
+    "src/components/a11y/AriaLive.tsx",
+    "src/components/ui/tooltip.tsx",
+    "src/contexts/AuthContext.tsx",
+    "src/contexts/ProductsContext.tsx",
+    "src/pages/products/FavoritesPage.tsx",
+    "src/stores/useFavoritesStore.ts"
+   ],
+   "casos": 2
+  },
+  {
    "arquivo": "tests/pages/kit-builder/KitLibraryPage.ownership.test.ts",
    "tipo": "unit",
    "linhas": 74,
@@ -21874,7 +21888,7 @@
   "src/components/LoadingScreen.tsx": 1,
   "src/components/RoleBadge.tsx": 1,
   "src/components/ThemeInitializer.tsx": 2,
-  "src/components/a11y/AriaLive.tsx": 7,
+  "src/components/a11y/AriaLive.tsx": 8,
   "src/components/a11y/index.ts": 2,
   "src/components/admin/DiscountApprovalHeaderBadge.tsx": 1,
   "src/components/admin/OwnershipRepairDialog.tsx": 1,
@@ -22162,15 +22176,15 @@
   "src/components/ui/label.tsx": 3,
   "src/components/ui/popover.tsx": 2,
   "src/components/ui/select.tsx": 6,
-  "src/components/ui/tooltip.tsx": 124,
+  "src/components/ui/tooltip.tsx": 125,
   "src/components/ui/truncated-tooltip.tsx": 1,
   "src/components/workflows/WorkflowEditDialog.tsx": 1,
   "src/constants/filters.ts": 8,
-  "src/contexts/AuthContext.tsx": 38,
+  "src/contexts/AuthContext.tsx": 39,
   "src/contexts/CloudStatusContext.tsx": 1,
   "src/contexts/OnboardingContext.tsx": 1,
   "src/contexts/OrganizationContext.tsx": 2,
-  "src/contexts/ProductsContext.tsx": 5,
+  "src/contexts/ProductsContext.tsx": 6,
   "src/contexts/SellerCartContext.tsx": 9,
   "src/contexts/ThemeContext.tsx": 16,
   "src/hooks/admin/index.ts": 7,
@@ -22587,7 +22601,7 @@
   "src/pages/mockups/mockup-generator/useMockupCompletionStatus.ts": 1,
   "src/pages/mockups/mockup-generator/useWizardNavigation.ts": 1,
   "src/pages/products/ComparePage.tsx": 1,
-  "src/pages/products/FavoritesPage.tsx": 2,
+  "src/pages/products/FavoritesPage.tsx": 3,
   "src/pages/products/FiltersPage.tsx": 1,
   "src/pages/products/SellerCartsPage.tsx": 5,
   "src/pages/products/applyVoiceFilters.ts": 1,
@@ -22626,7 +22640,7 @@
   "src/services/quoteService.ts": 5,
   "src/stores/useBadgeVisibilityStore.ts": 4,
   "src/stores/useComparisonStore.ts": 12,
-  "src/stores/useFavoritesStore.ts": 7,
+  "src/stores/useFavoritesStore.ts": 8,
   "src/stores/useProductSelectionStore.ts": 1,
   "src/types/advancedFilters.ts": 1,
   "src/types/crm.ts": 2,

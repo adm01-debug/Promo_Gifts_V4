@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e de hora em hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `2d43e62910f1fe8291572e79d132d20083f25453` (2026-11-17T19:04:53-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e de hora em hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `1e9864f481d84e0236eb62a41de64825ff2f96b2` (2026-11-17T19:34:01-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -14,7 +14,7 @@ Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR
 Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua tarefa; não carregue tudo.
 
 ## Stack
-- linguagens: TypeScript (4927), SQL (3440), Markdown (1470), JavaScript (457), JSON (132), YAML (116), Shell (27), HTML (20)
+- linguagens: TypeScript (4929), SQL (3440), Markdown (1470), JavaScript (457), JSON (132), YAML (116), Shell (27), HTML (20)
 - linguagem_principal: TypeScript
 - framework: React
 - backend_http: n/d
@@ -34,31 +34,31 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 ## Números
 | item | qtd |
 |---|---|
-| arquivos_total | 10869 |
-| arquivos_codigo | 5394 |
-| linhas_codigo | 1030050 |
+| arquivos_total | 10871 |
+| arquivos_codigo | 5396 |
+| linhas_codigo | 1030306 |
 | rotas | 139 |
 | rotas_http_backend | 13 |
 | vistas_por_id | 0 |
 | itens_menu | 69 |
 | modulos | 161 |
-| componentes | 1238 |
+| componentes | 1239 |
 | hooks | 627 |
 | edge_functions | 112 |
 | tabelas | 527 |
 | migrations | 3099 |
 | cron_jobs | 122 |
-| testes | 2567 |
+| testes | 2568 |
 | workflows | 88 |
 | scripts | 283 |
 | docs_md | 1470 |
 
 ## Onde ficam as coisas
 - telas: src/pages (111), src/components (3), api/health.ts (1)
-- componentes: src/components (942), src/pages (177), recovery/src-legacy (100)
+- componentes: src/components (943), src/pages (177), recovery/src-legacy (100)
 - hooks: src/hooks (298), recovery/src-legacy (196), src/components (77)
 - servicos_logica: src/lib (232), src/utils (30), src/services (10)
-- testes: tests/ (1062), co-localizado (__tests__) (678), e2e/ (625)
+- testes: tests/ (1063), co-localizado (__tests__) (678), e2e/ (625)
 - edge_functions: supabase/functions
 - migrations: supabase/migrations
 - scripts: scripts/ci-local (11), scripts/lib (7), scripts/graphify (4)
@@ -84,7 +84,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 | components/dev | 0 | 0 | 6 | 20 | 0 | 7 |
 | components/effects | 0 | 0 | 5 | 27 | 0 | 7 |
 | components/expert | 0 | 0 | 14 | 272 | 5 | 41 |
-| components/favorites | 0 | 0 | 11 | 269 | 4 | 41 |
+| components/favorites | 0 | 0 | 12 | 269 | 4 | 41 |
 | components/filters | 0 | 0 | 23 | 270 | 4 | 42 |
 | components/intelligence | 0 | 0 | 27 | 290 | 4 | 44 |
 | components/inventory | 0 | 0 | 41 | 319 | 5 | 46 |
@@ -584,15 +584,15 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - tabelas_com_drift_migration_vs_types: 0
 - rpcs_sem_definicao: 5 — ex.: fn_get_color_swatches_batch, fn_get_reposicao_variants_summary, fn_rupture_health_check
 - componentes_orfaos: 161 — ex.: docs/agentes/resgates/quote-comments/codigo/QuoteCommentsSection.tsx, recovery/RealtimeMessagesExample.tsx, recovery/src-legacy/src/components/admin/CatalogQualityDashboard.tsx
-- componentes_com_nome_duplicado: 107 — ex.: AdvancedPriceSearchPage, Auth, BreadcrumbItem
+- componentes_com_nome_duplicado: 108 — ex.: AdvancedPriceSearchPage, Auth, BreadcrumbItem
 - scripts_orfaos: 0
 - env_usadas_nao_declaradas: 23 — ex.: CI, DEV, E2E_USER_EMAIL
 - ciclos_de_import: 20
 - possiveis_segredos_no_codigo: 7 — ex.: scripts/ai-context/cenarios.mjs:102, src/components/admin/connections/__tests__/ConnectionSecurity.unit.test.tsx:9, src/integrations/supabase/client.ts:27
 
 ## Grafo de código (graphify)
-- 48511 nós · 81488 arestas · 2745 comunidades · grafo do commit `2d43e629`
-- comunidades maiores: ref_integrations (595), ref_components (554), react (487), ref_node_child_process (473), ref_types (458), lucide-react (440), sonner (432), ref_hooks (385), @testing-library/react (381), vitest (366), gotoAndSettle (331), ref_node_fs (329)
+- 48520 nós · 81506 arestas · 2733 comunidades · grafo do commit `1e9864f4`
+- comunidades maiores: ref_hooks (801), ref_components (756), ref_integrations (667), vitest (659), ref_node_child_process (509), @tanstack/react-query (406), nav.ts (358), react (354), ref_types (333), ref_node_fs (319), scripts (310), sonner (308)
 - símbolos mais chamados: gotoAndSettle() (e2e/helpers/nav.ts), re (?), q() (scripts/supabase_snapshot/snapshot.py), analyze() (tests/scripts/test_personalization_artifact_diagnostics.py), outer() (tests/scripts/test_personalization_artifact_diagnostics.py), json (?), useExternalDatabase() (recovery/src-legacy/src/hooks/useExternalDatabase.ts), concludeCheck() (scripts/check-result-contract.mjs), querySupabaseReadOnly() (scripts/supabase-read-only-query.mjs), loginAs() (e2e/helpers/auth.ts), inner() (tests/scripts/test_personalization_artifact_diagnostics.py), excluded_sql() (scripts/supabase_snapshot/snapshot.py)
 - consulta local: `graphify query "<pergunta>"`, `graphify path "<A>" "<B>"`, `graphify explain "<X>"`
 
@@ -1187,6 +1187,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - CHANGELOG topo: [1.9.1](https://github.com/adm01-debug/Promo_Gifts_V4/compare/gifts-store-v1.9.0...gifts-store-v1.9.1) (2026-11-17)
 
 ## Últimos commits
+- 2026-11-17 `1e9864f4` feat(favoritos): botão "Apresentar lista" abre o modo apresentação dos favoritos (#3812)
 - 2026-11-17 `2d43e629` fix(tests): mock de QuoteAutoSave precisa exportar QuoteDraftRecovery (#3811)
 - 2026-11-17 `ac37480a` fix(quotes): histórico de versões não cai mais quando a data da versão é nula (#3810)
 - 2026-11-17 `92a5c9a0` fix(kit): autosave nao grava mais o rascunho de um kit em cima de outro (#3809)
@@ -1201,7 +1202,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-17 `353c2a8d` docs(resgate): adjudica byte-a-byte os 219 arquivos ausentes do main (#3785)
 - 2026-11-17 `4a982eb8` test(kit-builder): resgata o teste da guarda financeira de kit (#3786)
 - 2026-11-17 `3c578584` docs(resgate): conserta as 13 referencias quebradas do dossie da 3390 (#3783)
-- 2026-11-17 `92bec3ca` chore(deps): tira basic-ftp da lista de risco tolerado, ja que o override o eliminou (#3782)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

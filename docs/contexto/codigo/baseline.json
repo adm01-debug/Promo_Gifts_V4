@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "2d43e62910f1fe8291572e79d132d20083f25453",
+  "commit": "1e9864f481d84e0236eb62a41de64825ff2f96b2",
   "branch": "main",
-  "data_commit": "2026-11-17T19:04:53-03:00",
+  "data_commit": "2026-11-17T19:34:01-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "1e9864f4",
+    "data": "2026-11-17",
+    "assunto": "feat(favoritos): botão \"Apresentar lista\" abre o modo apresentação dos favoritos (#3812)"
+   },
    {
     "sha": "2d43e629",
     "data": "2026-11-17",
@@ -126,14 +131,9 @@
     "sha": "e85f9352",
     "data": "2026-11-17",
     "assunto": "docs: troca a classificação por data por identidade de blob no histórico (#3772)"
-   },
-   {
-    "sha": "68cc659c",
-    "data": "2026-11-17",
-    "assunto": "chore(hooks): reaproveita untypedRpc nos alertas de ruptura, sem as any (#3771)"
    }
   ],
-  "arquivos_mudados_7d": 1965,
+  "arquivos_mudados_7d": 1968,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -322,21 +322,21 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 10869,
-  "arquivos_codigo": 5394,
-  "linhas_codigo": 1030050,
+  "arquivos_total": 10871,
+  "arquivos_codigo": 5396,
+  "linhas_codigo": 1030306,
   "rotas": 139,
   "rotas_http_backend": 13,
   "vistas_por_id": 0,
   "itens_menu": 69,
   "modulos": 161,
-  "componentes": 1238,
+  "componentes": 1239,
   "hooks": 627,
   "edge_functions": 112,
   "tabelas": 527,
   "migrations": 3099,
   "cron_jobs": 122,
-  "testes": 2567,
+  "testes": 2568,
   "workflows": 88,
   "scripts": 283,
   "docs_md": 1470
@@ -1895,8 +1895,8 @@
    "linhas": 130
   },
   "src/components": {
-   "arquivos": 1395,
-   "linhas": 277647
+   "arquivos": 1396,
+   "linhas": 277718
   },
   "src/config": {
    "arquivos": 1,
@@ -1940,7 +1940,7 @@
   },
   "src/pages": {
    "arquivos": 361,
-   "linhas": 83891
+   "linhas": 83890
   },
   "src/routes": {
    "arquivos": 14,
@@ -2127,8 +2127,8 @@
    "linhas": 580
   },
   "tests/pages": {
-   "arquivos": 18,
-   "linhas": 4057
+   "arquivos": 19,
+   "linhas": 4243
   },
   "tests/product-form-improvements.test.ts": {
    "arquivos": 1,
@@ -3371,6 +3371,7 @@
    "EngravingRegistrationContent",
    "ExternalDatabaseTest",
    "FadeInView",
+   "FavoritePresentationLauncher",
    "FavoritesPage",
    "FilterSection",
    "FiltersPage",

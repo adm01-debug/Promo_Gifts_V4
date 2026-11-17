@@ -4453,7 +4453,7 @@
     "src/components/a11y/index.ts",
     "src/components/notifications/NotificationDrawer.tsx"
    ],
-   "coberto_por_testes": 7
+   "coberto_por_testes": 8
   },
   {
    "arquivo": "src/components/a11y/index.ts",
@@ -6332,7 +6332,7 @@
     "recovery/src-legacy/src/hooks/useMockupDraft.ts",
     "recovery/src-legacy/src/hooks/useMockupGenerator.ts"
    ],
-   "coberto_por_testes": 38
+   "coberto_por_testes": 39
   },
   {
    "arquivo": "src/contexts/BICategoryFocusContext.tsx",
@@ -6552,7 +6552,7 @@
     "src/pages/products/FavoritesPage.tsx",
     "src/pages/products/seller-carts/useSellerCartsPage.ts"
    ],
-   "coberto_por_testes": 5
+   "coberto_por_testes": 6
   },
   {
    "arquivo": "src/contexts/SellerCartContext.tsx",
@@ -14846,7 +14846,7 @@
     "src/pages/products/FiltersPage.tsx",
     "src/pages/products/ProductDetail.tsx"
    ],
-   "coberto_por_testes": 7
+   "coberto_por_testes": 8
   },
   {
    "arquivo": "src/stores/useProductSelectionStore.ts",

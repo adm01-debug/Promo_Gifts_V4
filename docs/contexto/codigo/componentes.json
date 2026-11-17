@@ -1,7 +1,7 @@
 {
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
- "total": 1238,
+ "total": 1239,
  "orfaos": 161,
  "nomes_duplicados": {
   "AdvancedPriceSearchPage": [
@@ -116,6 +116,10 @@
   "FadeInView": [
    "src/components/common/MicroInteractions.tsx",
    "src/components/effects/PageTransition.tsx"
+  ],
+  "FavoritePresentationLauncher": [
+   "recovery/src-legacy/src/components/favorites/FavoritePresentationLauncher.tsx",
+   "src/components/favorites/FavoritePresentationLauncher.tsx"
   ],
   "FavoritesPage": [
    "recovery/src-legacy/src/pages/FavoritesPage.tsx",
@@ -8355,6 +8359,20 @@
    "orfao": false
   },
   {
+   "arquivo": "src/components/favorites/FavoritePresentationLauncher.tsx",
+   "exports": [
+    "FavoritePresentationLauncher"
+   ],
+   "export_default": null,
+   "linhas": 48,
+   "dominio": "components/favorites",
+   "hooks_locais": [],
+   "tabelas": [],
+   "edges": [],
+   "usado_por": 2,
+   "orfao": false
+  },
+  {
    "arquivo": "src/components/favorites/FavoritesClientPicker.tsx",
    "exports": [
     "FavoritesClientPicker"
@@ -8438,7 +8456,7 @@
     "FavoritesViewHeader"
    ],
    "export_default": null,
-   "linhas": 138,
+   "linhas": 161,
    "dominio": "components/favorites",
    "hooks_locais": [],
    "tabelas": [],
@@ -12251,7 +12269,7 @@
    "hooks_locais": [],
    "tabelas": [],
    "edges": [],
-   "usado_por": 3,
+   "usado_por": 4,
    "orfao": false
   },
   {
@@ -19335,7 +19353,7 @@
     "FavoritesPage"
    ],
    "export_default": "FavoritesPage",
-   "linhas": 895,
+   "linhas": 894,
    "dominio": "pages/products",
    "hooks_locais": [
     "useCatalogSelection",

@@ -1209,6 +1209,7 @@
    "src/components/catalog/CatalogBulkModals.tsx",
    "src/components/catalog/useCatalogSelection.ts",
    "src/components/favorites/FavoriteListsSidebar.tsx",
+   "src/components/favorites/FavoritePresentationLauncher.tsx",
    "src/components/favorites/FavoritesEmptyStateSmart.tsx",
    "src/components/favorites/FavoritesSortBar.tsx",
    "src/components/favorites/FavoritesTrashView.tsx",
@@ -5502,6 +5503,10 @@
    "src/hooks/favorites/index.ts",
    "src/lib/utils.ts"
   ],
+  "src/components/favorites/FavoritePresentationLauncher.tsx": [
+   "src/components/presentation/PresentationMode.tsx",
+   "src/types/product-catalog.ts"
+  ],
   "src/components/favorites/FavoritesClientPicker.tsx": [
    "src/components/ui/button.tsx",
    "src/components/ui/input.tsx",
@@ -5535,6 +5540,7 @@
    "src/hooks/favorites/index.ts"
   ],
   "src/components/favorites/FavoritesViewHeader.tsx": [
+   "src/components/favorites/FavoritePresentationLauncher.tsx",
    "src/components/favorites/FavoritesHeatmap.tsx",
    "src/components/favorites/FavoritesSortBar.tsx",
    "src/components/ui/badge.tsx",

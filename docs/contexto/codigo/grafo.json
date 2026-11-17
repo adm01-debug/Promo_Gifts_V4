@@ -1,8 +1,8 @@
 {
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
- "nos": 2827,
- "arestas": 11113,
+ "nos": 2828,
+ "arestas": 11117,
  "hubs": [
   {
    "arquivo": "src/lib/utils.ts",
@@ -30,7 +30,7 @@
   },
   {
    "arquivo": "src/components/ui/tooltip.tsx",
-   "importado_por": 301
+   "importado_por": 302
   },
   {
    "arquivo": "src/components/ui/input.tsx",
@@ -38,7 +38,7 @@
   },
   {
    "arquivo": "src/contexts/AuthContext.tsx",
-   "importado_por": 245
+   "importado_por": 246
   },
   {
    "arquivo": "src/components/ui/skeleton.tsx",
@@ -82,7 +82,7 @@
   },
   {
    "arquivo": "src/types/product-catalog.ts",
-   "importado_por": 88
+   "importado_por": 89
   },
   {
    "arquivo": "src/hooks/intelligence/index.ts",

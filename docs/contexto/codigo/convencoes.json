@@ -8,7 +8,7 @@
    "api/health.ts (1)"
   ],
   "componentes": [
-   "src/components (942)",
+   "src/components (943)",
    "src/pages (177)",
    "recovery/src-legacy (100)"
   ],
@@ -23,7 +23,7 @@
    "src/services (10)"
   ],
   "testes": [
-   "tests/ (1062)",
+   "tests/ (1063)",
    "co-localizado (__tests__) (678)",
    "e2e/ (625)"
   ],
@@ -49,7 +49,7 @@
  },
  "barrels_index": 46,
  "extensao_componentes": [
-  ".tsx (1238)"
+  ".tsx (1239)"
  ],
  "alias_imports": {
   "e2e/": {},
@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "feat(favoritos): botão \"Apresentar lista\" abre o modo apresentação dos favoritos (#3812)",
    "fix(tests): mock de QuoteAutoSave precisa exportar QuoteDraftRecovery (#3811)",
    "fix(quotes): histórico de versões não cai mais quando a data da versão é nula (#3810)",
    "fix(kit): autosave nao grava mais o rascunho de um kit em cima de outro (#3809)",
-   "fix(hooks): restaura a guarda de matchTypes que a refatoracao de pasta derrubou (#3808)",
-   "feat(quotes): recupera rascunho local ao reabrir orçamento existente (#3805)"
+   "fix(hooks): restaura a guarda de matchTypes que a refatoracao de pasta derrubou (#3808)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",

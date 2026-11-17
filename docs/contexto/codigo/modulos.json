@@ -6099,13 +6099,13 @@
   },
   {
    "modulo": "components/favorites",
-   "arquivos": 11,
+   "arquivos": 12,
    "testes": 0,
-   "linhas": 1429,
+   "linhas": 1500,
    "itens_menu": [],
    "telas": [],
    "rotas_http": [],
-   "componentes": 11,
+   "componentes": 12,
    "hooks_locais": [
     "useA11y",
     "useAIRecommendations",
@@ -6501,6 +6501,7 @@
    ],
    "depende_de_modulos": [
     "components/common",
+    "components/presentation",
     "components/ui",
     "contexts",
     "hooks/favorites",
@@ -12144,7 +12145,8 @@
     "rpcs": []
    },
    "importado_por_outros_modulos": [
-    "components/collections"
+    "components/collections",
+    "components/favorites"
    ],
    "depende_de_modulos": [
     "lib"
@@ -31513,7 +31515,7 @@
    "modulo": "pages/products",
    "arquivos": 24,
    "testes": 24,
-   "linhas": 8066,
+   "linhas": 8065,
    "itens_menu": [
     "Carrinhos",
     "Comparador de Produtos",
