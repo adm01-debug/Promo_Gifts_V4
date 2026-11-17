@@ -188,12 +188,19 @@ describe.each(helpers)('%s root quote synchronization', helper => {
     { id: 123, expected: '123' }, { id: '0042', expected: '42' },
     { id: undefined, expected: undefined }, { id: null, expected: undefined },
     { id: 0, expected: undefined }, { id: '', expected: undefined },
-    { id: 'abc', expected: undefined }, { id: NaN, expected: undefined },
+    { id: 'abc', expected: undefined }, { id: 'Infinity', expected: undefined },
+    { id: '-Infinity', expected: undefined }, { id: NaN, expected: undefined },
+    { id: '9007199254740993', expected: '9007199254740993' },
+    { id: '0009007199254740993', expected: '9007199254740993' },
+    { id: '9'.repeat(100), expected: '9'.repeat(100) },
     { id: Number.MAX_SAFE_INTEGER, expected: String(Number.MAX_SAFE_INTEGER) },
+    { id: Number.MAX_SAFE_INTEGER + 1, expected: undefined },
+    { id: -1, expected: undefined }, { id: 1.25, expected: undefined },
+    { id: '-1', expected: undefined }, { id: '1.25', expected: undefined },
     { id: '+12', expected: '12' }, { id: '1e3', expected: '1000' },
     { id: '0x10', expected: '16' }, { id: '1.0', expected: '1' },
     { id: '  12  ', expected: '12' }, { id: '000', expected: undefined },
-    { id: [], expected: undefined },
+    { id: true, expected: undefined }, { id: [], expected: undefined },
   ])('normalizes response id $id without persisting nonfinite values', async ({ id, expected }) => {
     mocks.invoke.mockResolvedValue({ data: { ok: true, result: { quote_id: id } }, error: null });
     const result = await run(helper);

@@ -10,6 +10,7 @@ import { toast } from 'sonner';
 import { format, parseISO } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { logger } from '@/lib/logger';
+import { normalizeBitrixQuoteId } from './QuoteBitrixSync';
 import { isValidQuoteTransition } from '@/lib/quote-status-config';
 import type { QuoteStatus } from '@/types/quote';
 import { invokeEdge } from '@/lib/edge/safeInvokeCall';
@@ -175,9 +176,7 @@ export async function handleSyncBitrix(params: {
   if (error || !data?.ok) throw new Error(data?.error || error?.message || 'Erro desconhecido');
 
   const result = data.result;
-  const parsedBitrixId = result?.quote_id ? Number(result.quote_id) : null;
-  const bitrixQuoteIdFromResponse =
-    parsedBitrixId && !isNaN(parsedBitrixId) ? String(parsedBitrixId) : null;
+  const bitrixQuoteIdFromResponse = normalizeBitrixQuoteId(result?.quote_id);
 
   // Only transition to 'sent' if the current status allows it — guard against
   // silently resetting terminal states (converted, cancelled) via Bitrix sync.
