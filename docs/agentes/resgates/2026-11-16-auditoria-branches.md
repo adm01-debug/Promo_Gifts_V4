@@ -891,3 +891,43 @@ toque do `main`). Os 10, adjudicados um por um:
 existe no `main`** (`src/lib/supabase-untyped.ts`) justamente para eliminar `as any`
 em call site. Mesma chamada, sem `any` e sem supressão de lint. Portada em PR
 própria, porque é mudança de código e esta é docs-only.
+
+### Medida 6 — a classificação por data estava fraca; refeita por identidade de blob
+
+A revisão da #3770 (Devin, 2026-11-17) apontou, com razão, que a Medida 5 provava
+pouco: dizer "o `main` tocou este caminho **depois** do tip do ref" não demonstra que
+a alteração preservada entrou — uma edição posterior pode ter mexido em outro trecho.
+A classificação dos 267 por ordem temporal fica **retirada**. Substituída por duas
+medidas de conteúdo:
+
+**(a) Contenção linha a linha.** Dos 277 pares com divergência real,
+**86 estão contidos** no `main` (zero linhas presentes só no ref). Os outros 191 têm
+ao menos uma linha que o `main` não tem — mas esse teste é severo: uma linha
+reescrita pelo `main` conta como "só no ref".
+
+**(b) O blob do ref já existiu no histórico do `main` naquele caminho?** Este é o
+teste que decide, e não depende de data: percorre `git rev-list origin/main -- <path>`
+e compara o blob de cada commit com o blob do ref.
+
+- **139 dos 191: sim.** O `main` teve exatamente aquele conteúdo naquele caminho e
+  depois evoluiu. Incorporado e superado, provado por identidade de blob.
+- **52: não.** Conteúdo autoral que nunca existiu no `main`. Todos em 7 refs, com
+  veredito:
+
+| ref (nº de arquivos) | veredito |
+| --- | --- |
+| `codex-fix-gate1-kit-pdf-types-261109-2252` (28) e `claude-fix-pr3517-gate1-baseline-261113-2336` (8) | **descartado por decisão** — branches de 09/11 e 13/11 movidas por ratchet de lint/tipos (extração de props para `*.types.ts`, anotações). O `main` passa o Gate 1 hoje sem elas; nenhuma função ou comportamento envolvido. |
+| `261117-laughing-cori-o9w35e` (8) | 1 **melhoria reaproveitada** (`useRuptureAlerts.ts` → `untypedRpc`, PR própria) + seu teste; 6 workflows, detalhados abaixo. |
+| `claude-fix-mockup-geometria-wysiwyg-261115-0045` (3) e `claude-fix-mockup-logo-tamanho-real-261114-2200` (3) | **decidido e registrado** no ledger 2026-11-15T14:45 — a geometria ficou com a #3665 (resgate byte-idêntico) e o portão `422 missing_dimensions` ficou fora por trade-off de negócio do dono. |
+| `importado-vps-fabrica-v2-refazer-dc12be92-261116` (1) | `e2e-cleanup/index.ts`: o `main` está à frente (+699/−118) e `comm -23` das funções da branch contra as do `main` volta vazio. |
+| `261117-schema-snapshot-cancelled-skip` (1) | o `main` é o lado novo e cita a procedência do conserto no próprio cabeçalho. |
+
+**Os 6 workflows do `261117-laughing-cori-o9w35e`:**
+
+- `contract-tests.yml` → **substituído**: o ref instala a CLI do Supabase com `wget` (contorno de quando `supabase/setup-cli` estava bloqueada por policy); o `main` usa a action com SHA fixo (`supabase/setup-cli@689adcfb`, v2, versão 2.101.0).
+- `db-schema-drift-check.yml`, `edge-functions-drift-check.yml`, `deploy-gates.yml`, `schema-snapshot-export.yml` → **substituídos**: o `main` tem mais conteúdo em todos (85, 50, 1.039 e 61 linhas só no `main`, contra 21, 16, 907 e 50 só no ref).
+- `db-apply-migration.yml` → **descartado por decisão do dono, documentada no próprio `main`**. O ref tem o passo "Confirma reviewer obrigatório no environment Production", que checa via API se `production` tem de fato `required_reviewers` (o ref registra que em 2026-09-22 o environment existia com `protection_rules=[]`). O `main` não tem o passo, e explica por quê em `.github/workflows/db-apply-migration.yml:7-13`: *"gated SEM gate de aprovação desde 2026-11-14, por decisão explícita do dono (...) o `environment: production` e o step que exigia required reviewers foram removidos para que agentes possam aplicar migration sem clique humano"*. **Não restaurado**: reverteria uma decisão do dono e travaria o caminho de DDL. O que continua no lugar, pelo mesmo cabeçalho: preflight read-only, `validate-migration-target`, rollback obrigatório e recibo por PR.
+
+Com isso, cada um dos 277 pares de divergência real está classificado como
+**incorporado**, **substituído** ou **descartado por decisão** — e a única melhoria
+que faltava foi reaproveitada.
