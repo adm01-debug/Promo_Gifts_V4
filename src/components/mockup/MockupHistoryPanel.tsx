@@ -67,6 +67,9 @@ interface MockupHistoryPanelProps {
   onLoadFromHistory: (mockup: GeneratedMockup) => void;
   onDownload: (url: string) => void;
   onDelete: (id: string) => void;
+  /** Técnicas do catálogo. Sem elas o filtro só oferece técnica que já apareceu
+   *  em algum mockup antigo, e técnica nova fica fora da lista. */
+  techniques?: readonly { name: string }[];
 }
 
 const ITEMS_PER_PAGE = 12;
@@ -78,6 +81,7 @@ export function MockupHistoryPanel({
   onLoadFromHistory,
   onDownload,
   onDelete,
+  techniques,
 }: MockupHistoryPanelProps) {
   const [filterClient, setFilterClient] = useState('all');
   const [filterProduct, setFilterProduct] = useState('');
@@ -121,8 +125,17 @@ export function MockupHistoryPanel({
         result.push({ id: m.technique_name, name: m.technique_name });
       }
     }
+    // Funde o catálogo: técnica recém-cadastrada, ainda sem nenhum mockup, também
+    // precisa aparecer no filtro. A chave é o NOME porque o filtro compara com
+    // `mockup.technique_name` (ver o filtro abaixo), não com o id da técnica.
+    for (const t of techniques ?? []) {
+      if (t.name && !seen.has(t.name)) {
+        seen.add(t.name);
+        result.push({ id: t.name, name: t.name });
+      }
+    }
     return result.sort((a, b) => a.name.localeCompare(b.name));
-  }, [mockupHistory]);
+  }, [mockupHistory, techniques]);
 
   const filteredMockups = useMemo(() => {
     return mockupHistory.filter((mockup) => {
