@@ -1,9 +1,9 @@
 {
  "meta": {
-  "sha": "f40d2618268c3d98243715f3ca920b3ffeadd757",
+  "sha": "10455e7ac887d281c32a65ab5cbc7e93bd2d5de4",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-17 11:19 UTC",
+  "generated_at": "2026-11-17 11:40 UTC",
   "files_total": 10769,
   "code_files": 8806,
   "code_lines": 1243288
@@ -541922,10 +541922,32 @@
   }
  },
  "git": {
-  "sha": "f40d2618268c3d98243715f3ca920b3ffeadd757",
+  "sha": "10455e7ac887d281c32a65ab5cbc7e93bd2d5de4",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "10455e7",
+    "date": "2026-11-17",
+    "author": "github-actions[bot]",
+    "subject": "chore(main): release gifts-store 1.9.0 (#3753)",
+    "files": [
+     ".release-please-manifest.json",
+     "CHANGELOG.md",
+     "package-lock.json",
+     "package.json"
+    ]
+   },
+   {
+    "sha": "cda9cbf",
+    "date": "2026-11-17",
+    "author": "adm01-debug",
+    "subject": "docs: anexo da prova byte-a-byte por branch + prova do filtro do CRM contra PostgREST real (#3766)",
+    "files": [
+     "docs/agentes/resgates/2026-11-16-auditoria-branches.md",
+     "docs/agentes/resgates/2026-11-17-prova-byte-a-byte.md"
+    ]
+   },
    {
     "sha": "f40d261",
     "date": "2026-11-17",
@@ -542225,27 +542247,13 @@
      "tests/components/mockup/MockupHistoryPanel.techniques.test.tsx",
      "tests/components/mockup/mockupTechniqueOptions.test.ts"
     ]
-   },
-   {
-    "sha": "b2048b0",
-    "date": "2026-11-17",
-    "author": "adm01-debug",
-    "subject": "docs(audit): restaura o pós-mortem dos 29 commits presos fora do GitHub (#3741)",
-    "files": [
-     "docs/arquivo/2026-09/POSMORTEM_COMMITS_LOCAIS_2026-09-17.md"
-    ]
-   },
-   {
-    "sha": "a5099c4",
-    "date": "2026-11-17",
-    "author": "adm01-debug",
-    "subject": "docs(audit): retira um achado que eu registrei errado e fecha o placar de 17/11 (#3739)",
-    "files": [
-     "docs/agentes/resgates/2026-11-16-auditoria-branches.md"
-    ]
    }
   ],
   "hot_files": [
+   [
+    "package.json",
+    5
+   ],
    [
     "supabase/MIGRATIONS_SYNC_LOG.md",
     5
@@ -542255,16 +542263,28 @@
     5
    ],
    [
-    "package.json",
-    4
-   ],
-   [
     "docs/agentes/resgates/2026-11-16-auditoria-branches.md",
     3
    ],
    [
+    ".release-please-manifest.json",
+    2
+   ],
+   [
+    "package-lock.json",
+    2
+   ],
+   [
+    "docs/agentes/resgates/2026-11-17-prova-byte-a-byte.md",
+    2
+   ],
+   [
     "tests/sql/device-trust/run-tests.py",
     2
+   ],
+   [
+    "CHANGELOG.md",
+    1
    ],
    [
     "docs/coordenacao/conflitos-semanticos.md",
@@ -542299,10 +542319,6 @@
     1
    ],
    [
-    "docs/agentes/resgates/2026-11-17-prova-byte-a-byte.md",
-    1
-   ],
-   [
     ".security/policies-baseline.json",
     1
    ],
@@ -542312,18 +542328,6 @@
    ],
    [
     "docs/agentes/resgates/quote-comments/codigo/QuoteCommentsSection.tsx",
-    1
-   ],
-   [
-    "docs/agentes/resgates/quote-comments/codigo/useQuoteComments.ts",
-    1
-   ],
-   [
-    "docs/agentes/resgates/quote-comments/montagem-QuoteViewPage.patch",
-    1
-   ],
-   [
-    "docs/agentes/resgates/quote-comments/sql/20261110022404_restore_quote_comments_scoped_threads.sql",
     1
    ]
   ]
