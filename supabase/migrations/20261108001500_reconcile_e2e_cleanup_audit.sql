@@ -1,5 +1,7 @@
 -- Migration: 20261108001500_reconcile_e2e_cleanup_audit
--- Rollback: DROP TABLE IF EXISTS public.e2e_cleanup_audit;
+-- Rollback: use supabase/rollbacks/20261108001500_rollback.sql — NÃO remova esta
+-- tabela à mão: é auditoria append-only com dados em produção, e aquele roteiro
+-- recusa a remoção (RAISE EXCEPTION) enquanto houver linhas.
 
 -- Reconcilia o drift em que o ledger registra as migrations históricas do
 -- e2e_cleanup_audit, mas a tabela não existe no projeto canônico.
