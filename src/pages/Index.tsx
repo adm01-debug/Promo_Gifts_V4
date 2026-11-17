@@ -10,6 +10,7 @@ import { CatalogToolbar } from '@/components/catalog/CatalogToolbar';
 import { CatalogActiveFilters } from '@/components/catalog/CatalogActiveFilters';
 import { CatalogContent } from '@/components/catalog/CatalogContent';
 import { useCatalogState } from '@/hooks/products/useCatalogState';
+import { useVoiceFilterApply } from '@/hooks/products/useVoiceFilterApply';
 import type { FilterState } from '@/components/filters/FilterPanel';
 import type { ExternalVariantStock } from '@/hooks/products/useExternalVariantStock';
 
@@ -32,6 +33,8 @@ export default function Index() {
   );
 
   const { navigate: catalogNavigate, setFilters, handleSearch } = catalog;
+  // Filtros ditados por voz (ponte voiceFilterBridge) aplicados no FilterState real.
+  useVoiceFilterApply(setFilters);
   const handleHeaderSelect = useCallback(
     (result: { type: string; id: string; label: string }) => {
       if (result.type === 'product') {
