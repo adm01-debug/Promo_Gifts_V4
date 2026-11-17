@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "fix(deps): move ferramentas de build para devDependencies (#3804)",
+   "fix(ci): tolera o ReDoS do picomatch, que travava toda PR do repositorio (#3800)",
    "test(products): resgata a cobertura de ciclo de vida de filtros e fornecedores (#3790)",
    "test(products): resgata a cobertura de enriquecimento de cor (#3789)",
-   "fix(observabilidade): tunela envelopes do Sentry pela própria origem (CORS matava 100% dos relatórios) (#3784)",
-   "docs(resgate): adjudica byte-a-byte os 219 arquivos ausentes do main (#3785)",
-   "test(kit-builder): resgata o teste da guarda financeira de kit (#3786)"
+   "fix(observabilidade): tunela envelopes do Sentry pela própria origem (CORS matava 100% dos relatórios) (#3784)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",

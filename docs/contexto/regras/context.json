@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "4250cdea4e1bea74124852814153da2e241926e7",
+  "sha": "d1a098ad5dd0a71d5815abdd0786de514db9d56c",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-17 18:19 UTC",
+  "generated_at": "2026-11-17 20:13 UTC",
   "files_total": 10777,
   "code_files": 8813,
-  "code_lines": 1244744
+  "code_lines": 1244858
  },
  "version": "1.3.2",
- "facts_hash": "6ed01ddda293728f",
+ "facts_hash": "8e57cc9ef2763c5a",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -149253,7 +149253,7 @@
   {
    "module": "scripts",
    "files": 298,
-   "lines": 64003,
+   "lines": 64117,
    "tables": [
     "a",
     "b",
@@ -149287,7 +149287,7 @@
     "check-anon-write-grants.mjs: loadAllowlist, computeViolations",
     "check-chunk-cycles.mjs: auditChunkCycles",
     "check-critical-coverage.mjs: SUMMARY_PATH, TOLERANCE_PP, CRITICAL_MODULES, TRACKED_FILES, findCoverageEntry, getMetricSnapshot",
-    "check-dependency-audit.mjs: RISK_REVIEW_DEADLINE, REVIEWED_MINIMATCH_VIA, REVIEWED_MINIMATCH_EFFECTS, REVIEWED_MINIMATCH_RANGES, evaluateAuditReport",
+    "check-dependency-audit.mjs: RISK_REVIEW_DEADLINE, REVIEWED_MINIMATCH_VIA, REVIEWED_MINIMATCH_EFFECTS, REVIEWED_MINIMATCH_RANGES, REVIEWED_PICOMATCH_VIA, evaluateAuditReport",
     "check-edge-verify-jwt-allowlist.mjs: normalizeFunctions, loadAllowlist, diff",
     "check-ledger-manifest-drift.mjs: declaredVersionOf, localVersions, parseBaseline, loadBaseline, computeDriftCandidates",
     "check-ledger-statements-gate.mjs: isCanonicalVersion, asStatementsArray, hasStatements, loadAllowlist, isHistoricallyExempt, findMissingStatements",
@@ -423660,12 +423660,13 @@
   },
   "scripts/check-dependency-audit.mjs": {
    "path": "scripts/check-dependency-audit.mjs",
-   "lines": 598,
+   "lines": 712,
    "exports": [
     "const RISK_REVIEW_DEADLINE",
     "const REVIEWED_MINIMATCH_VIA",
     "const REVIEWED_MINIMATCH_EFFECTS",
     "const REVIEWED_MINIMATCH_RANGES",
+    "const REVIEWED_PICOMATCH_VIA",
     "function evaluateAuditReport"
    ],
    "params": [
@@ -542332,10 +542333,29 @@
   }
  },
  "git": {
-  "sha": "4250cdea4e1bea74124852814153da2e241926e7",
+  "sha": "d1a098ad5dd0a71d5815abdd0786de514db9d56c",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "d1a098a",
+    "date": "2026-11-17",
+    "author": "adm01-debug",
+    "subject": "fix(deps): move ferramentas de build para devDependencies (#3804)",
+    "files": [
+     "package-lock.json",
+     "package.json"
+    ]
+   },
+   {
+    "sha": "58c24f8",
+    "date": "2026-11-17",
+    "author": "adm01-debug",
+    "subject": "fix(ci): tolera o ReDoS do picomatch, que travava toda PR do repositorio (#3800)",
+    "files": [
+     "scripts/check-dependency-audit.mjs"
+    ]
+   },
    {
     "sha": "4250cde",
     "date": "2026-11-17",
@@ -542608,61 +542628,35 @@
     "files": [
      "docs/agentes/resgates/2026-11-17-prova-byte-a-byte.md"
     ]
-   },
-   {
-    "sha": "1404642",
-    "date": "2026-11-17",
-    "author": "adm01-debug",
-    "subject": "fix(ci): destrava a main - suspende device-trust do Gate 2.5, atualiza baseline e recibo (#3761)",
-    "files": [
-     ".github/workflows/deploy-gates.yml",
-     ".security/policies-baseline.json",
-     "supabase/MIGRATIONS_SYNC_LOG.md"
-    ]
-   },
-   {
-    "sha": "e59ffe3",
-    "date": "2026-11-17",
-    "author": "adm01-debug",
-    "subject": "docs(resgate): preserva quote_comments integral e inerte, sem ligar nem destravar (#3763)",
-    "files": [
-     "docs/agentes/resgates/quote-comments/README.md",
-     "docs/agentes/resgates/quote-comments/codigo/QuoteCommentsSection.tsx",
-     "docs/agentes/resgates/quote-comments/codigo/useQuoteComments.ts",
-     "docs/agentes/resgates/quote-comments/montagem-QuoteViewPage.patch",
-     "docs/agentes/resgates/quote-comments/sql/20261110022404_restore_quote_comments_scoped_threads.sql",
-     "docs/agentes/resgates/quote-comments/sql/20261110022404_rollback.sql",
-     "docs/agentes/resgates/quote-comments/testes-sql/README-original.md",
-     "docs/agentes/resgates/quote-comments/testes-sql/fixture.sql",
-     "docs/agentes/resgates/quote-comments/testes-sql/run-tests.py",
-     "docs/agentes/resgates/quote-comments/testes/QuoteCommentsSection.test.tsx",
-     "docs/agentes/resgates/quote-comments/testes/useQuoteComments.test.ts"
-    ]
    }
   ],
   "hot_files": [
+   [
+    "package.json",
+    5
+   ],
    [
     "docs/agentes/resgates/2026-11-16-auditoria-branches.md",
     5
    ],
    [
-    "package.json",
+    "package-lock.json",
     4
    ],
    [
     "supabase/MIGRATIONS_SYNC_LOG.md",
-    4
-   ],
-   [
-    ".github/workflows/deploy-gates.yml",
     3
    ],
    [
-    "package-lock.json",
-    3
+    "scripts/check-dependency-audit.mjs",
+    2
    ],
    [
     "analise-branches/dossies/claude__resgate-3390-261113.md",
+    2
+   ],
+   [
+    ".github/workflows/deploy-gates.yml",
     2
    ],
    [
@@ -542711,10 +542705,6 @@
    ],
    [
     "tests/hooks/useCustomKitPersistence.financial.test.tsx",
-    1
-   ],
-   [
-    "scripts/check-dependency-audit.mjs",
     1
    ],
    [

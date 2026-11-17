@@ -356,8 +356,8 @@
    "visual:preview:all": "bash scripts/visual-preview-local.sh --update && bash scripts/visual-preview-local.sh",
    "visual:preview:update": "bash scripts/visual-preview-local.sh --update"
   },
-  "dependencias": 78,
-  "dev_dependencias": 42,
+  "dependencias": 76,
+  "dev_dependencias": 44,
   "principais": {
    "@supabase/supabase-js": "^2.119.0",
    "@tanstack/react-query": "^5.107.1",

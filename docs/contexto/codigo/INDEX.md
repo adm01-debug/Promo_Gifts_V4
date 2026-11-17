@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e de hora em hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `4250cdea4e1bea74124852814153da2e241926e7` (2026-11-17T14:14:44-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e de hora em hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `d1a098ad5dd0a71d5815abdd0786de514db9d56c` (2026-11-17T17:05:44-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -36,7 +36,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 |---|---|
 | arquivos_total | 10849 |
 | arquivos_codigo | 5374 |
-| linhas_codigo | 1024012 |
+| linhas_codigo | 1024126 |
 | rotas | 139 |
 | rotas_http_backend | 13 |
 | vistas_por_id | 0 |
@@ -591,8 +591,8 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - possiveis_segredos_no_codigo: 7 — ex.: scripts/ai-context/cenarios.mjs:102, src/components/admin/connections/__tests__/ConnectionSecurity.unit.test.tsx:9, src/integrations/supabase/client.ts:27
 
 ## Grafo de código (graphify)
-- 48373 nós · 81220 arestas · 2728 comunidades · grafo do commit `4250cdea`
-- comunidades maiores: ref_components (804), vitest (686), ref_integrations (650), ref_node_child_process (543), @testing-library/react (463), @tanstack/react-query (425), ref_hooks (400), ref_types (373), react (346), ref_node_fs (337), nav.ts (324), cors.ts (321)
+- 48376 nós · 81225 arestas · 2676 comunidades · grafo do commit `d1a098ad`
+- comunidades maiores: vitest (816), ref_integrations (642), ref_lib (537), ref_node_child_process (514), ref_hooks (495), @tanstack/react-query (406), lucide-react (358), gotoAndSettle (342), ref_node_fs (333), sonner (324), react (318), scripts (310)
 - símbolos mais chamados: gotoAndSettle() (e2e/helpers/nav.ts), re (?), q() (scripts/supabase_snapshot/snapshot.py), analyze() (tests/scripts/test_personalization_artifact_diagnostics.py), outer() (tests/scripts/test_personalization_artifact_diagnostics.py), json (?), useExternalDatabase() (recovery/src-legacy/src/hooks/useExternalDatabase.ts), concludeCheck() (scripts/check-result-contract.mjs), querySupabaseReadOnly() (scripts/supabase-read-only-query.mjs), loginAs() (e2e/helpers/auth.ts), inner() (tests/scripts/test_personalization_artifact_diagnostics.py), excluded_sql() (scripts/supabase_snapshot/snapshot.py)
 - consulta local: `graphify query "<pergunta>"`, `graphify path "<A>" "<B>"`, `graphify explain "<X>"`
 
@@ -600,8 +600,8 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - supabase/MIGRATIONS_SYNC_LOG.md (67)
 - RELATORIO_CI.md (54)
 - PENDENCIAS.md (47)
-- package.json (41)
-- package-lock.json (24)
+- package.json (42)
+- package-lock.json (25)
 - docs/coordenacao/conflitos-semanticos.md (23)
 - .github/workflows/deploy-gates.yml (20)
 - supabase/EDGE_FUNCTIONS_DEPLOY_LOG.md (16)
@@ -1187,6 +1187,8 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - CHANGELOG topo: [1.9.1](https://github.com/adm01-debug/Promo_Gifts_V4/compare/gifts-store-v1.9.0...gifts-store-v1.9.1) (2026-11-17)
 
 ## Últimos commits
+- 2026-11-17 `d1a098ad` fix(deps): move ferramentas de build para devDependencies (#3804)
+- 2026-11-17 `58c24f8b` fix(ci): tolera o ReDoS do picomatch, que travava toda PR do repositorio (#3800)
 - 2026-11-17 `4250cdea` test(products): resgata a cobertura de ciclo de vida de filtros e fornecedores (#3790)
 - 2026-11-17 `3077bc05` test(products): resgata a cobertura de enriquecimento de cor (#3789)
 - 2026-11-17 `87ffb0ee` fix(observabilidade): tunela envelopes do Sentry pela própria origem (CORS matava 100% dos relatórios) (#3784)
@@ -1200,8 +1202,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-17 `86c10c8d` fix(ci): separa "runner sem Docker" de "contrato violado" no Gate 2.5 (#3775)
 - 2026-11-17 `f129270a` chore(main): release gifts-store 1.9.1 (#3777)
 - 2026-11-17 `c2629acd` fix(test): acompanha o snapshot de cron vigente em vez de fixar o de 08/11 (#3773)
-- 2026-11-17 `dfe9e705` docs: mede os 28 arquivos da branch do Codex, que estavam inferidos (#3778)
-- 2026-11-17 `cfe603d5` fix(deps): override basic-ftp para ^6.2.4 e fecha o GHSA-5pm8-86m8-9m6r (#3774)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

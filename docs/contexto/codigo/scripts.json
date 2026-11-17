@@ -566,7 +566,7 @@
   {
    "arquivo": "scripts/check-dependency-audit.mjs",
    "descricao": "npm updated source IDs and advisory ranges for these CVEs (2026-09-26): GHSA-5p2g: source 1138809 → 1239765, range >=1.2.0 <=2.0.2",
-   "linhas": 598,
+   "linhas": 712,
    "env": [],
    "npm_scripts": [
     "check:dependency-audit"

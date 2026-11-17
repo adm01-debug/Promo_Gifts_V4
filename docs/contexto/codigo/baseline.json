@@ -2,11 +2,21 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "4250cdea4e1bea74124852814153da2e241926e7",
+  "commit": "d1a098ad5dd0a71d5815abdd0786de514db9d56c",
   "branch": "main",
-  "data_commit": "2026-11-17T14:14:44-03:00",
+  "data_commit": "2026-11-17T17:05:44-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "d1a098ad",
+    "data": "2026-11-17",
+    "assunto": "fix(deps): move ferramentas de build para devDependencies (#3804)"
+   },
+   {
+    "sha": "58c24f8b",
+    "data": "2026-11-17",
+    "assunto": "fix(ci): tolera o ReDoS do picomatch, que travava toda PR do repositorio (#3800)"
+   },
    {
     "sha": "4250cdea",
     "data": "2026-11-17",
@@ -121,16 +131,6 @@
     "sha": "e17c6c97",
     "data": "2026-11-17",
     "assunto": "chore(ci): reativa o contrato device-trust no Gate 2.5 (#3767)"
-   },
-   {
-    "sha": "202a82d2",
-    "data": "2026-11-17",
-    "assunto": "fix(db): corrige o comentario de rollback que mandava apagar auditoria em producao (#3765)"
-   },
-   {
-    "sha": "dc82e4de",
-    "data": "2026-11-17",
-    "assunto": "fix(test): corrige a corrida de inicializacao que reprovava 2 de 55 no device-trust (#3764)"
    }
   ],
   "arquivos_mudados_7d": 1940,
@@ -161,7 +161,7 @@
    },
    {
     "pasta": "src/components/quotes",
-    "mudancas": 113
+    "mudancas": 112
    },
    {
     "pasta": "supabase/functions/_shared",
@@ -211,11 +211,11 @@
    },
    {
     "arquivo": "package.json",
-    "mudancas": 41
+    "mudancas": 42
    },
    {
     "arquivo": "package-lock.json",
-    "mudancas": 24
+    "mudancas": 25
    },
    {
     "arquivo": "docs/coordenacao/conflitos-semanticos.md",
@@ -324,7 +324,7 @@
  "contagens": {
   "arquivos_total": 10849,
   "arquivos_codigo": 5374,
-  "linhas_codigo": 1024012,
+  "linhas_codigo": 1024126,
   "rotas": 139,
   "rotas_http_backend": 13,
   "vistas_por_id": 0,
@@ -1096,7 +1096,7 @@
   },
   "scripts/check-dependency-audit.mjs": {
    "arquivos": 1,
-   "linhas": 598
+   "linhas": 712
   },
   "scripts/check-doc-refs.mjs": {
    "arquivos": 1,
@@ -2374,7 +2374,7 @@
   "console_log": 1306,
   "ts_ignore": 0,
   "eslint_disable": 24,
-  "todos": 109,
+  "todos": 110,
   "arquivos_acima_500_linhas": 185
  },
  "todos": [
@@ -2515,6 +2515,12 @@
    "linha": 85,
    "tipo": "TODO",
    "texto": ").`);"
+  },
+  {
+   "arquivo": "scripts/check-dependency-audit.mjs",
+   "linha": 557,
+   "tipo": "TODO",
+   "texto": "vizinho dele (via e effects) também estiver na"
   },
   {
    "arquivo": "scripts/check-edge-live-coverage.mjs",
