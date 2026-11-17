@@ -9,12 +9,81 @@
  * arquivo local que não foi aplicado não é automaticamente seguro para
  * `db push` — ele exige reconciliação semântica e autorização explícita.
  */
+import { createHash } from 'node:crypto';
 import { readFileSync, writeFileSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 function normalizedVersion(value) {
   return typeof value === 'string' ? value.trim() : '';
+}
+
+const CANONICAL_PROJECT_REF = 'doufsxqlfjyuvxuezpln';
+
+/**
+ * Digest canônico das versões: calculado sobre o conjunto ORDENADO, para ser
+ * invariante à ordem em que elas aparecem no arquivo. Detecta qualquer adição,
+ * remoção ou alteração de versão.
+ */
+export function versionsDigest(versions) {
+  const canonical = [...versions].sort((left, right) => left.localeCompare(right, 'en'));
+  return createHash('sha256').update(canonical.join('\n')).digest('hex');
+}
+
+/**
+ * Valida o lacre da allowlist remote_only e devolve as versões.
+ *
+ * Resgatado de codex/fix-db-migration-preflight-261107. Antes, o arquivo era lido
+ * dentro de um try/catch silencioso: allowlist corrompida, apontando para outro
+ * projeto ou com versão acrescentada à mão passava sem ninguém notar, e cada
+ * versão nela deixa de bloquear o gate do ledger.
+ *
+ * Diferenças deliberadas em relação à branch de origem:
+ *  - o digest é sobre o conjunto ordenado, não sobre a ordem do arquivo: as 681
+ *    versões atuais não estão ordenadas e reordená-las seria um diff de 681
+ *    linhas sem ganho;
+ *  - `source` (workflow_run_id, artifact_id, …) fica OPCIONAL, porque o workflow
+ *    que gera este arquivo ainda não emite esses campos e inventá-los seria
+ *    fabricar procedência. Quando ele passar a emitir, basta exigir aqui.
+ */
+export function validateRemoteOnlyAllowlist(
+  document,
+  { expectedProjectRef = CANONICAL_PROJECT_REF } = {},
+) {
+  if (!document || typeof document !== 'object' || Array.isArray(document)) {
+    throw new Error('allowlist inválida: esperado objeto JSON');
+  }
+  if (document.schema_version !== 1) {
+    throw new Error('allowlist inválida: schema_version deve ser 1');
+  }
+  if (document.project_ref !== expectedProjectRef) {
+    throw new Error(
+      `allowlist inválida: project_ref=${document.project_ref ?? 'ausente'}; esperado=${expectedProjectRef}`,
+    );
+  }
+  if (!Array.isArray(document.versions) || document.versions.length === 0) {
+    throw new Error('allowlist inválida: versions deve ser array não vazio');
+  }
+
+  const versions = document.versions.map(normalizedVersion);
+  if (versions.some((version) => !version)) {
+    throw new Error('allowlist inválida: versions contém valor vazio/não textual');
+  }
+  if (new Set(versions).size !== versions.length) {
+    throw new Error('allowlist inválida: versions contém duplicatas');
+  }
+
+  const digest = versionsDigest(versions);
+  if (document.versions_sha256 !== digest) {
+    throw new Error(`allowlist inválida: versions_sha256 divergente; calculado=${digest}`);
+  }
+  for (const field of ['reason', 'approved_by']) {
+    if (typeof document[field] !== 'string' || document[field].trim().length < 10) {
+      throw new Error(`allowlist inválida: ${field} ausente ou insuficiente`);
+    }
+  }
+
+  return versions;
 }
 
 function sample(values, limit = 20) {
@@ -196,15 +265,28 @@ export function runCli(argv = process.argv.slice(2)) {
     return { exitCode: 2, result };
   }
 
+  // Fail-closed: cada versão da allowlist deixa de bloquear o gate, então uma
+  // allowlist que não valida precisa reprovar — não ser silenciosamente ignorada.
   let remoteOnlyAllowlist = [];
+  const allowlistPath = resolve(
+    dirname(fileURLToPath(import.meta.url)),
+    'migration-ledger-remote-only-allowlist.json',
+  );
   try {
-    const allowlistPath = resolve(
-      dirname(fileURLToPath(import.meta.url)),
-      'migration-ledger-remote-only-allowlist.json',
+    remoteOnlyAllowlist = validateRemoteOnlyAllowlist(
+      JSON.parse(readFileSync(allowlistPath, 'utf8')),
     );
-    remoteOnlyAllowlist = JSON.parse(readFileSync(allowlistPath, 'utf8')).versions ?? [];
-  } catch {
-    // allowlist ausente é equivalente a lista vazia — não bloqueia
+  } catch (error) {
+    const failure = {
+      ok: false,
+      error: `Não foi possível validar a allowlist remote_only: ${error.message}`,
+      summary: null,
+    };
+    const failureOutput = JSON.stringify(failure, null, 2) + '\n';
+    if (summaryPath) writeFileSync(resolve(summaryPath), failureOutput, 'utf8');
+    else process.stdout.write(failureOutput);
+    console.error(`[migration-ledger][erro] ${failure.error}`);
+    return { exitCode: 2, result: failure };
   }
 
   const result = auditSupabaseMigrationLedger(document, { remoteOnlyAllowlist });
