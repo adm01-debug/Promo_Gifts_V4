@@ -37,8 +37,15 @@ const RATE_LIMIT_HEADERS = ['retry-after', 'x-sentry-rate-limits'];
 interface TunnelRequest {
   method?: string;
   headers: Record<string, string | string[] | undefined>;
-  /** `true` quando o stream já foi lido até o fim (parser externo, por ex.). */
-  complete?: boolean;
+  /**
+   * `true` só depois que o evento `end` saiu, isto é, quando alguém REALMENTE
+   * consumiu o stream. Não confundir com `complete` do `IncomingMessage`, que
+   * diz apenas que a mensagem HTTP chegou inteira: com o corpo ainda no buffer,
+   * `complete` é `true` e `readableEnded` é `false`. Usar `complete` aqui
+   * descartava envelope válido com 400 (reproduzido em
+   * tests/api/vercel-monitoring-tunnel.http.test.ts).
+   */
+  readableEnded?: boolean;
   body?: unknown;
   on(event: string, listener: (arg?: unknown) => void): void;
 }
@@ -95,7 +102,7 @@ export async function readEnvelope(req: TunnelRequest): Promise<Uint8Array | nul
     return new Uint8Array(prelido.buffer, prelido.byteOffset, prelido.byteLength);
   }
   if (typeof prelido === 'string') return new TextEncoder().encode(prelido);
-  if (req.complete === true) return null;
+  if (req.readableEnded === true) return null;
   return readRawBody(req);
 }
 

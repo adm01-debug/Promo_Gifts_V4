@@ -117,7 +117,7 @@ describe('api/monitoring — túnel de envelopes', () => {
       const drenado = {
         method: 'POST',
         headers: {},
-        complete: true,
+        readableEnded: true,
         body: new TextEncoder().encode(ENVELOPE),
         on() {
           throw new Error('não deve tentar ler o stream já consumido');
@@ -131,15 +131,30 @@ describe('api/monitoring — túnel de envelopes', () => {
       const lido = await readEnvelope({
         method: 'POST',
         headers: {},
-        complete: true,
+        readableEnded: true,
         body: ENVELOPE,
         on() {},
       });
       expect(new TextDecoder().decode(lido!)).toBe(ENVELOPE);
     });
 
+    it('complete=true com bytes ainda no buffer NÃO descarta o envelope (le o stream)', async () => {
+      // IncomingMessage real: mensagem HTTP completa, corpo ainda por consumir.
+      const lido = await readEnvelope({
+        method: 'POST',
+        headers: {},
+        complete: true,
+        readableEnded: false,
+        on(evento: string, listener: (arg?: unknown) => void) {
+          if (evento === 'data') listener(new TextEncoder().encode(ENVELOPE));
+          if (evento === 'end') listener();
+        },
+      } as never);
+      expect(new TextDecoder().decode(lido!)).toBe(ENVELOPE);
+    });
+
     it('stream drenado e sem corpo devolve null em vez de esperar evento que não vem', async () => {
-      const lido = await readEnvelope({ method: 'POST', headers: {}, complete: true, on() {} });
+      const lido = await readEnvelope({ method: 'POST', headers: {}, readableEnded: true, on() {} });
       expect(lido).toBeNull();
     });
 
@@ -147,7 +162,7 @@ describe('api/monitoring — túnel de envelopes', () => {
       const fetchSpy = vi.spyOn(globalThis, 'fetch');
       const res = responseMock();
 
-      await monitoringHandler({ method: 'POST', headers: {}, complete: true, on() {} }, res);
+      await monitoringHandler({ method: 'POST', headers: {}, readableEnded: true, on() {} }, res);
 
       expect(fetchSpy).not.toHaveBeenCalled();
       expect(res.statusCode).toBe(400);
