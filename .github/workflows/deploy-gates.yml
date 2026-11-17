@@ -543,7 +543,7 @@ jobs:
   database-integrity:
     name: Gate 2.5 - PostgreSQL Transactional Integrity
     runs-on: ubuntu-24.04
-    timeout-minutes: 10
+    timeout-minutes: 12
     needs: [ssot-gate]
     # Dependabot e forks não têm acesso a secrets live — marca skipped
     # explicitamente em vez de falhar verde vazio (E59).
@@ -558,6 +558,8 @@ jobs:
         run: scripts/test-approved-plan-database.sh
       - name: Validate guarded quote RPC proposals on pinned isolated PG17
         run: npm run test:quote-rpc:postgres
+      - name: Validate device-trust contract on isolated PG17
+        run: npm run test:device-trust:postgres
       - name: Block frontend promotion until canonical quote RPC contract is live
         run: npm run check:quote-rpc:canonical -- --require-live
         env:
