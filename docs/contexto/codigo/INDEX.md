@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e de hora em hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `e17c6c97080fb26908030667e1e4996557d71d23` (2026-11-17T06:13:50-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e de hora em hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `d56cb122f93ef389f14c333e4684a53aea5d5ada` (2026-11-17T07:07:57-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -36,7 +36,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 |---|---|
 | arquivos_total | 10841 |
 | arquivos_codigo | 5367 |
-| linhas_codigo | 1022379 |
+| linhas_codigo | 1022556 |
 | rotas | 138 |
 | rotas_http_backend | 13 |
 | vistas_por_id | 0 |
@@ -590,8 +590,8 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - possiveis_segredos_no_codigo: 7 — ex.: scripts/ai-context/cenarios.mjs:102, src/components/admin/connections/__tests__/ConnectionSecurity.unit.test.tsx:9, src/integrations/supabase/client.ts:27
 
 ## Grafo de código (graphify)
-- 48248 nós · 81046 arestas · 2800 comunidades · grafo do commit `e17c6c97`
-- comunidades maiores: ref_integrations (595), react (521), ref_components (513), lucide-react (446), ref_node_child_process (428), vitest (405), @tanstack/react-query (404), ref_hooks (389), nav.ts (350), sonner (314), scripts (310), ref_types (303)
+- 48249 nós · 81055 arestas · 2796 comunidades · grafo do commit `d56cb122`
+- comunidades maiores: vitest (904), ref_components (843), ref_integrations (630), ref_hooks (473), ref_node_child_process (459), @tanstack/react-query (434), react (366), ref_types (358), nav.ts (348), sonner (329), ref_utils (325), ref_node_fs (316)
 - símbolos mais chamados: gotoAndSettle() (e2e/helpers/nav.ts), re (?), q() (scripts/supabase_snapshot/snapshot.py), analyze() (tests/scripts/test_personalization_artifact_diagnostics.py), outer() (tests/scripts/test_personalization_artifact_diagnostics.py), json (?), useExternalDatabase() (recovery/src-legacy/src/hooks/useExternalDatabase.ts), concludeCheck() (scripts/check-result-contract.mjs), querySupabaseReadOnly() (scripts/supabase-read-only-query.mjs), loginAs() (e2e/helpers/auth.ts), inner() (tests/scripts/test_personalization_artifact_diagnostics.py), excluded_sql() (scripts/supabase_snapshot/snapshot.py)
 - consulta local: `graphify query "<pergunta>"`, `graphify path "<A>" "<B>"`, `graphify explain "<X>"`
 
@@ -599,7 +599,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - supabase/MIGRATIONS_SYNC_LOG.md (67)
 - RELATORIO_CI.md (60)
 - PENDENCIAS.md (53)
-- package.json (41)
+- package.json (42)
 - package-lock.json (25)
 - docs/coordenacao/conflitos-semanticos.md (23)
 - .github/workflows/deploy-gates.yml (21)
@@ -795,7 +795,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - `test:device-trust:postgres`: `python3 tests/sql/device-trust/run-tests.py --output-dir work/device-trust-sql`
 - `check:quote-rpc:canonical`: `node scripts/check-quote-rpc-canonical-readiness.mjs`
 - `test:quality`: `TZ=America/Sao_Paulo vitest run --exclude 'tests/hooks/**'`
-- `test:ci-core`: `TZ=America/Sao_Paulo STRICT_TEST_SIDE_EFFECTS=1 vitest run tests/contracts/migrated-endpoints.contract.test.ts src/lib/theme-presets.test.ts tests/components/products/ProductSparkline.labels.test.tsx src/pages/filters/__tests__/FiltersPage.sorting.test.tsx src/components/products/__tests__/ProductSortAccessibility.test.tsx tests/unit/supabase-schema-contract.test.ts tests/unit/favorites-migration.test.ts tests/unit/trending-score.test.ts tests/unit/variant-matching.test.ts tests/unit/text-utils.test.ts tests/unit/print-area-grouping.test.ts tests/unit/format.test.ts tests/unit/to-error-message.test.ts tests/unit/catalog-stock-status.test.ts tests/unit/masked-suffix.test.ts tests/unit/forecast.test.ts tests/unit/stock-chart-utils.test.ts tests/unit/novelty-dates.test.ts tests/unit/sensitive-masking.test.ts tests/unit/error-kind-inference.test.ts tests/unit/connection-error-copy.test.ts tests/unit/roles.test.ts tests/unit/supplier-colors.test.ts tests/unit/date-utils.test.ts tests/unit/format-utils.test.ts tests/unit/quote-status-config.test.ts tests/config/vitest-config-smoke.test.ts tests/config/e2e-http-status.test.ts tests/scripts/check-supabase-reference-catalog.test.mjs tests/scripts/check-migration-filename-contract.test.mjs tests/scripts/check-schema-reference-drift.test.mjs tests/scripts/check-result-contract.test.mjs tests/scripts/check-production-harnesses.test.mjs tests/scripts/check-dependency-audit.test.mjs tests/scripts/e2e-relevance.test.mjs tests/scripts/check-types-inventory-drift.test.mjs tests/scripts/check-pptx-image-parser-exposure.test.mjs tests/scripts/contexto-produtores.test.mjs tests/scripts/rpc-live-evidence-contract.test.mjs tests/scripts/strict-test-side-effects-contract.test.mjs tests/security/lint-0011-drift.test.ts tests/security/lint-0029-drift.test.ts tests/security/secdef-anon-drift.test.ts tests/security/security-definer-acl-gate.test.ts src/components/mockup/logo-editor/__tests__/LogoControls.test.tsx src/hooks/mockup/__tests__/mockupAreas.preserve.test.ts src/hooks/mockup/__tests__/mockupBatch.partial.test.ts src/hooks/mockup/__tests__/mockupDimensions.guard.test.ts src/hooks/mockup/__tests__/mockupEntry.params.test.ts src/hooks/mockup/__tests__/mockupGeneration.abort.test.ts src/hooks/mockup/__tests__/mockupRestore.selection.test.ts src/hooks/mockup/__tests__/useMockupGenerator.techniques.test.ts tests/components/mockup/acceptance/grupo1.acceptance.test.tsx tests/components/mockup/acceptance/grupo3.acceptance.test.tsx tests/components/mockup/acceptance/grupo6.acceptance.test.tsx src/hooks/simulation/__tests__/useLogoColorAnalysis.test.ts src/components/mockup/__tests__/mockupA11y.slice2.test.tsx src/hooks/mockup/__tests__/mockupSelectionSnapshot.test.ts src/components/mockup/__tests__/MockupResultCard.states.test.tsx src/components/mockup/__tests__/MockupResultCard.preserved.test.tsx src/hooks/mockup/__tests__/mockupProjectSaved.test.ts src/pages/mockups/mockup-generator/__tests__/fichaDaAreaDaImagem.test.ts src/hooks/mockup/__tests__/trocaDeProjeto.test.ts tests/edge-functions/mockup-assistant.test.ts`
+- `test:ci-core`: `TZ=America/Sao_Paulo STRICT_TEST_SIDE_EFFECTS=1 vitest run tests/contracts/migrated-endpoints.contract.test.ts src/lib/theme-presets.test.ts tests/components/products/ProductSparkline.labels.test.tsx src/pages/filters/__tests__/FiltersPage.sorting.test.tsx src/components/products/__tests__/ProductSortAccessibility.test.tsx tests/unit/supabase-schema-contract.test.ts tests/unit/favorites-migration.test.ts tests/unit/trending-score.test.ts tests/unit/variant-matching.test.ts tests/unit/text-utils.test.ts tests/unit/print-area-grouping.test.ts tests/unit/format.test.ts tests/unit/to-error-message.test.ts tests/unit/catalog-stock-status.test.ts tests/unit/masked-suffix.test.ts tests/unit/forecast.test.ts tests/unit/stock-chart-utils.test.ts tests/unit/novelty-dates.test.ts tests/unit/sensitive-masking.test.ts tests/unit/error-kind-inference.test.ts tests/unit/connection-error-copy.test.ts tests/unit/roles.test.ts tests/unit/supplier-colors.test.ts tests/unit/date-utils.test.ts tests/unit/format-utils.test.ts tests/unit/quote-status-config.test.ts tests/config/vitest-config-smoke.test.ts tests/config/e2e-http-status.test.ts tests/scripts/check-supabase-reference-catalog.test.mjs tests/scripts/check-migration-filename-contract.test.mjs tests/scripts/check-schema-reference-drift.test.mjs tests/scripts/check-result-contract.test.mjs tests/scripts/check-production-harnesses.test.mjs tests/scripts/check-dependency-audit.test.mjs tests/scripts/e2e-relevance.test.mjs tests/scripts/check-types-inventory-drift.test.mjs tests/scripts/check-pptx-image-parser-exposure.test.mjs tests/scripts/contexto-produtores.test.mjs tests/scripts/rpc-live-evidence-contract.test.mjs tests/scripts/strict-test-side-effects-contract.test.mjs tests/security/lint-0011-drift.test.ts tests/security/lint-0029-drift.test.ts tests/security/secdef-anon-drift.test.ts tests/security/security-definer-acl-gate.test.ts src/components/mockup/logo-editor/__tests__/LogoControls.test.tsx src/hooks/mockup/__tests__/mockupAreas.preserve.test.ts src/hooks/mockup/__tests__/mockupBatch.partial.test.ts src/hooks/mockup/__tests__/mockupDimensions.guard.test.ts src/hooks/mockup/__tests__/mockupEntry.params.test.ts src/hooks/mockup/__tests__/mockupGeneration.abort.test.ts src/hooks/mockup/__tests__/mockupRestore.selection.test.ts src/hooks/mockup/__tests__/useMockupGenerator.techniques.test.ts tests/components/mockup/acceptance/grupo1.acceptance.test.tsx tests/components/mockup/acceptance/grupo3.acceptance.test.tsx tests/components/mockup/acceptance/grupo6.acceptance.test.tsx src/hooks/simulation/__tests__/useLogoColorAnalysis.test.ts src/components/mockup/__tests__/mockupA11y.slice2.test.tsx src/hooks/mockup/__tests__/mockupSelectionSnapshot.test.ts src/components/mockup/__tests__/MockupResultCard.states.test.tsx src/components/mockup/__tests__/MockupResultCard.preserved.test.tsx src/hooks/mockup/__tests__/mockupProjectSaved.test.ts src/pages/mockups/mockup-generator/__tests__/fichaDaAreaDaImagem.test.ts src/hooks/mockup/__tests__/trocaDeProjeto.test.ts tests/edge-functions/mockup-assistant.test.ts tests/security/crm-db-bridge-ownership.test.ts`
 - `test:ci-core:coverage`: `TZ=America/Sao_Paulo vitest run tests/contracts/migrated-endpoints.contract.test.ts src/lib/theme-presets.test.ts tests/components/products/ProductSparkline.labels.test.tsx --coverage --coverage.include=src/lib/theme-presets.ts --coverage.include=src/components/products/ProductSparkline.tsx --coverage.reporter=text --coverage.reporter=json --coverage.reporter=json-summary --coverage.thresholds.lines=50 --coverage.thresholds.functions=50 --coverage.thresholds.branches=30 --coverage.thresholds.statements=50`
 - `ci:local`: `node scripts/ci-local/index.mjs run`
 - `ci:local:list`: `node scripts/ci-local/index.mjs list`
@@ -1186,6 +1186,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - CHANGELOG topo: [1.1.0](https://github.com/adm01-debug/Promo_Gifts_V4/compare/v1.0.0...v1.1.0) (2026-11-13)
 
 ## Últimos commits
+- 2026-11-17 `d56cb122` feat(crm): vendedor vê a carteira dele mais os clientes sem dono (somente leitura) (#3769)
 - 2026-11-17 `e17c6c97` chore(ci): reativa o contrato device-trust no Gate 2.5 (#3767)
 - 2026-11-17 `202a82d2` fix(db): corrige o comentario de rollback que mandava apagar auditoria em producao (#3765)
 - 2026-11-17 `dc82e4de` fix(test): corrige a corrida de inicializacao que reprovava 2 de 55 no device-trust (#3764)
@@ -1200,7 +1201,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-17 `3784247c` feat(test): resgata o contrato SQL de device-trust e o poe a rodar no Gate 2.5 (#3754)
 - 2026-11-17 `8749d83a` ci: resgata o workflow semanal que mantem o inventario de estado vivo (#3722)
 - 2026-11-17 `8b5adaa4` fix(db): revoga escrita de anon em color_synonym_map (P15) (#3752)
-- 2026-11-17 `c9cb18f0` fix(ci): corrige a regressao de versao (1.1.0 para 1.8.1) e a causa raiz no release-please (#3749)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

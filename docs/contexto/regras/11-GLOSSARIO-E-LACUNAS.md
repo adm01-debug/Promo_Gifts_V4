@@ -1,6 +1,6 @@
 # 11 · GLOSSÁRIO, DADOS DE REFERÊNCIA E LACUNAS
 
-> Gerado automaticamente por AI Context Sync v1.3.2 · commit `e17c6c9708` · branch `main` · 2026-11-17 09:15 UTC
+> Gerado automaticamente por AI Context Sync v1.3.2 · commit `d56cb122f9` · branch `main` · 2026-11-17 10:09 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## Glossário do domínio (entidades do sistema)
@@ -646,7 +646,7 @@
 | edge | edge function `fixture-edge` invocada mas não existe em supabase/functions/ | `scripts/ai-context/gerar.unit.mjs` |
 | edge | edge function `fn` invocada mas não existe em supabase/functions/ | `tests/scripts/gate-baseline-absence.test.mjs` |
 | edge | edge function `ghost-edge` invocada mas não existe em supabase/functions/ | `scripts/ai-context/gerar.unit.mjs` |
-| … +228 linhas — lista completa em `context.json` | | |
+| … +229 linhas — lista completa em `context.json` | | |
 
 ## Lacunas — o que este contexto NÃO consegue responder (perguntas para o dono do negócio)
 

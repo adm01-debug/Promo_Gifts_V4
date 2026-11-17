@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.3.2 · commit `e17c6c9708` · branch `main` · 2026-11-17 09:15 UTC
+> Gerado automaticamente por AI Context Sync v1.3.2 · commit `d56cb122f9` · branch `main` · 2026-11-17 10:09 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -6559,7 +6559,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `admin` | `supabase/migrations/20261112120500_fix_optimization_queue_rpcs_dev_access.sql` |
 | `anon` | `tests/edge-functions/live/_live-client.ts` |
 
-## K. Testes como especificação (21944 testes em 2221 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (21950 testes em 2221 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -6747,6 +6747,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `tests/edge-functions/integration/webhooks.test.ts` | 23 | webhook-inbound · payload válido · POST com envelope v2 → 200 · idempotência: segundo request com mesma idempotency_key → 200 sem duplicar … |
 | `tests/lib/catalog-stock-status.test.ts` | 23 | getCatalogStockStatus — fronteiras do limiar padrão (10) · stock=%s => %s · getCatalogStockStatus — entradas anômalas normalizam para out-of-stock · %s => out-of-stock … |
 | `tests/scripts/check-workflow-contracts-parser.test.mjs` | 23 | hasPullRequestTrigger · %j → %s · C2/C12/C22 agora valem para pull_request_target (gatilho mais perigoso) · comentários não aplicam restrições de PR a um workflow apenas push … |
+| `tests/security/crm-db-bridge-ownership.test.ts` | 23 | crm-db-bridge — resolução de role · papéis amplos não são tratados como vendedor · vendedor e agente têm escopo por carteira · vendedor, agente e coordenador têm escrita restrita … |
 | `tests/unit/db-retry.test.ts` | 23 | A: erro exato do incidente 403 · B: status no texto (coderabbit Major) · C: UUID contendo dígitos de status · 4403 dentro de UUID não vira permanente … |
 | `tests/unit/forecast.test.ts` | 23 | linearRegression · returns zero slope/intercept/std for empty array · returns zero slope for single element (uses element as intercept) · computes slope=0 for a flat series … |
 | `tests/utils/masks-extended.test.ts` | 23 | maskCnpj · should format full CNPJ · should handle partial input · should strip non-digits … |
@@ -6862,7 +6863,6 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `src/hooks/products/__tests__/useProductsLightweight.test.ts` | 18 | mapLightweightToProduct · retorna id como string mesmo quando input é number · FIX BUG-D: prefere leaf_category_id sobre category_id sobre main_category_id · FIX BUG-D: usa category_id quando leaf_category_id nulo … |
 | `src/lib/carts/__tests__/shipping-deadline.edge.test.ts` | 18 | shipping-deadline · edge cases · borda +3 / +4 dias (soon vs ok) · +3 dias exatamente → soon com rótulo  · +4 dias exatamente → ok com rótulo  … |
 | `src/lib/inventory/__tests__/health-score.test.ts` | 18 | calcHealthScore · retorna 100 quando não há produtos · retorna 100 quando todos estão adequados · retorna 0 quando nenhum está adequado … |
-| `src/pages/magazine/templates-gallery/__tests__/gallery.test.tsx` | 18 | MagazineTemplatesGalleryPage · renderiza os 12 cards de template · filtro  · filtro  … |
 | … +1921 linhas — lista completa em `context.json` | | |
 
 ## L. Eventos de webhook tratados (contratos com sistemas externos)
@@ -7331,4 +7331,4 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | Remover a empresa exige confirmação (mesma regra do Magic Up) — evita perda acidental. | `src/components/mockup/MockupClientSelector.tsx` |
 | Fecha APENAS a lista — a empresa selecionada permanece intacta. | `src/components/mockup/MockupClientSelector.tsx` |
 | * Máximo de cores suportadas na área */ | `src/components/mockup/MultiAreaManager.tsx` |
-| … +1325 linhas — lista completa em `context.json` | |
+| … +1327 linhas — lista completa em `context.json` | |

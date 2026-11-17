@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "e17c6c97080fb26908030667e1e4996557d71d23",
+  "commit": "d56cb122f93ef389f14c333e4684a53aea5d5ada",
   "branch": "main",
-  "data_commit": "2026-11-17T06:13:50-03:00",
+  "data_commit": "2026-11-17T07:07:57-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "d56cb122",
+    "data": "2026-11-17",
+    "assunto": "feat(crm): vendedor vê a carteira dele mais os clientes sem dono (somente leitura) (#3769)"
+   },
    {
     "sha": "e17c6c97",
     "data": "2026-11-17",
@@ -126,18 +131,13 @@
     "sha": "b71caed6",
     "data": "2026-11-17",
     "assunto": "fix(ci): lacra a allowlist do ledger de migrations, que era lida em try/catch silencioso (#3744)"
-   },
-   {
-    "sha": "244702aa",
-    "data": "2026-11-17",
-    "assunto": "fix(test): o teste do logo da sidebar contradizia o próprio componente (#3742)"
    }
   ],
-  "arquivos_mudados_7d": 1958,
+  "arquivos_mudados_7d": 1951,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
-    "mudancas": 639
+    "mudancas": 638
    },
    {
     "pasta": "src/components/products",
@@ -211,7 +211,7 @@
    },
    {
     "arquivo": "package.json",
-    "mudancas": 41
+    "mudancas": 42
    },
    {
     "arquivo": "package-lock.json",
@@ -301,7 +301,7 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 560
+    "commits": 559
    },
    {
     "autor": "Claude",
@@ -324,7 +324,7 @@
  "contagens": {
   "arquivos_total": 10841,
   "arquivos_codigo": 5367,
-  "linhas_codigo": 1022379,
+  "linhas_codigo": 1022556,
   "rotas": 138,
   "rotas_http_backend": 13,
   "vistas_por_id": 0,
@@ -1968,7 +1968,7 @@
   },
   "supabase/functions": {
    "arquivos": 278,
-   "linhas": 51764
+   "linhas": 51804
   },
   "tailwind.config.ts": {
    "arquivos": 1,
@@ -2156,7 +2156,7 @@
   },
   "tests/security": {
    "arquivos": 29,
-   "linhas": 2786
+   "linhas": 2923
   },
   "tests/setup-ref-warning-capture.ts": {
    "arquivos": 1,
@@ -2313,15 +2313,15 @@
    "linhas": 1107
   },
   {
+   "arquivo": "supabase/functions/crm-db-bridge/index.ts",
+   "linhas": 1091
+  },
+  {
    "arquivo": "src/hooks/quotes/useQuoteBuilderState.ts",
    "linhas": 1082
   },
   {
    "arquivo": "scripts/graphify-local.mjs",
-   "linhas": 1076
-  },
-  {
-   "arquivo": "supabase/functions/crm-db-bridge/index.ts",
    "linhas": 1076
   },
   {

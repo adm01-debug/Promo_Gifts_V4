@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "e17c6c97080fb26908030667e1e4996557d71d23",
+  "sha": "d56cb122f93ef389f14c333e4684a53aea5d5ada",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-17 09:15 UTC",
+  "generated_at": "2026-11-17 10:09 UTC",
   "files_total": 10769,
   "code_files": 8806,
-  "code_lines": 1243111
+  "code_lines": 1243288
  },
  "version": "1.3.2",
- "facts_hash": "4344b1ed94d0b322",
+ "facts_hash": "6684c84e285414cd",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -190,7 +190,7 @@
    "test:device-trust:postgres": "python3 tests/sql/device-trust/run-tests.py --output-dir work/device-trust-sql",
    "check:quote-rpc:canonical": "node scripts/check-quote-rpc-canonical-readiness.mjs",
    "test:quality": "TZ=America/Sao_Paulo vitest run --exclude 'tests/hooks/**'",
-   "test:ci-core": "TZ=America/Sao_Paulo STRICT_TEST_SIDE_EFFECTS=1 vitest run tests/contracts/migrated-endpoints.contract.test.ts src/lib/theme-presets.test.ts tests/components/products/ProductSparkline.labels.test.tsx src/pages/filters/__tests__/FiltersPage.sorting.test.tsx src/components/products/__tests__/ProductSortAccessibility.test.tsx tests/unit/supabase-schema-contract.test.ts tests/unit/favorites-migration.test.ts tests/unit/trending-score.test.ts tests/unit/variant-matching.test.ts tests/unit/text-utils.test.ts tests/unit/print-area-grouping.test.ts tests/unit/format.test.ts tests/unit/to-error-message.test.ts tests/unit/catalog-stock-status.test.ts tests/unit/masked-suffix.test.ts tests/unit/forecast.test.ts tests/unit/stock-chart-utils.test.ts tests/unit/novelty-dates.test.ts tests/unit/sensitive-masking.test.ts tests/unit/error-kind-inference.test.ts tests/unit/connection-error-copy.test.ts tests/unit/roles.test.ts tests/unit/supplier-colors.test.ts tests/unit/date-utils.test.ts tests/unit/format-utils.test.ts tests/unit/quote-status-config.test.ts tests/config/vitest-config-smoke.test.ts tests/config/e2e-http-status.test.ts tests/scripts/check-supabase-reference-catalog.test.mjs tests/scripts/check-migration-filename-contract.test.mjs tests/scripts/check-schema-reference-drift.test.mjs tests/scripts/check-result-contract.test.mjs tests/scripts/check-production-harnesses.test.mjs tests/scripts/check-dependency-audit.test.mjs tests/scripts/e2e-relevance.test.mjs tests/scripts/check-types-inventory-drift.test.mjs tests/scripts/check-pptx-image-parser-exposure.test.mjs tests/scripts/contexto-produtores.test.mjs tests/scripts/rpc-live-evidence-contract.test.mjs tests/scripts/strict-test-side-effects-contract.test.mjs tests/security/lint-0011-drift.test.ts tests/security/lint-0029-drift.test.ts tests/security/secdef-anon-drift.test.ts tests/security/security-definer-acl-gate.test.ts src/components/mockup/logo-editor/__tests__/LogoControls.test.tsx src/hooks/mockup/__tests__/mockupAreas.preserve.test.ts src/hooks/mockup/__tests__/mockupBatch.partial.test.ts src/hooks/mockup/__tests__/mockupDimensions.guard.test.ts src/hooks/mockup/__tests__/mockupEntry.params.test.ts src/hooks/mockup/__tests__/mockupGeneration.abort.test.ts src/hooks/mockup/__tests__/mockupRestore.selection.test.ts src/hooks/mockup/__tests__/useMockupGenerator.techniques.test.ts tests/components/mockup/acceptance/grupo1.acceptance.test.tsx tests/components/mockup/acceptance/grupo3.acceptance.test.tsx tests/components/mockup/acceptance/grupo6.acceptance.test.tsx src/hooks/simulation/__tests__/useLogoColorAnalysis.test.ts src/components/mockup/__tests__/mockupA11y.slice2.test.tsx src/hooks/mockup/__tests__/mockupSelectionSnapshot.test.ts src/components/mockup/__tests__/MockupResultCard.states.test.tsx src/components/mockup/__tests__/MockupResultCard.preserved.test.tsx src/hooks/mockup/__tests__/mockupProjectSaved.test.ts src/pages/mockups/mockup-generator/__tests__/fichaDaAreaDaImagem.test.ts src/hooks/mockup/__tests__/trocaDeProjeto.test.ts tests/edge-functions/mockup-assistant.test.ts",
+   "test:ci-core": "TZ=America/Sao_Paulo STRICT_TEST_SIDE_EFFECTS=1 vitest run tests/contracts/migrated-endpoints.contract.test.ts src/lib/theme-presets.test.ts tests/components/products/ProductSparkline.labels.test.tsx src/pages/filters/__tests__/FiltersPage.sorting.test.tsx src/components/products/__tests__/ProductSortAccessibility.test.tsx tests/unit/supabase-schema-contract.test.ts tests/unit/favorites-migration.test.ts tests/unit/trending-score.test.ts tests/unit/variant-matching.test.ts tests/unit/text-utils.test.ts tests/unit/print-area-grouping.test.ts tests/unit/format.test.ts tests/unit/to-error-message.test.ts tests/unit/catalog-stock-status.test.ts tests/unit/masked-suffix.test.ts tests/unit/forecast.test.ts tests/unit/stock-chart-utils.test.ts tests/unit/novelty-dates.test.ts tests/unit/sensitive-masking.test.ts tests/unit/error-kind-inference.test.ts tests/unit/connection-error-copy.test.ts tests/unit/roles.test.ts tests/unit/supplier-colors.test.ts tests/unit/date-utils.test.ts tests/unit/format-utils.test.ts tests/unit/quote-status-config.test.ts tests/config/vitest-config-smoke.test.ts tests/config/e2e-http-status.test.ts tests/scripts/check-supabase-reference-catalog.test.mjs tests/scripts/check-migration-filename-contract.test.mjs tests/scripts/check-schema-reference-drift.test.mjs tests/scripts/check-result-contract.test.mjs tests/scripts/check-production-harnesses.test.mjs tests/scripts/check-dependency-audit.test.mjs tests/scripts/e2e-relevance.test.mjs tests/scripts/check-types-inventory-drift.test.mjs tests/scripts/check-pptx-image-parser-exposure.test.mjs tests/scripts/contexto-produtores.test.mjs tests/scripts/rpc-live-evidence-contract.test.mjs tests/scripts/strict-test-side-effects-contract.test.mjs tests/security/lint-0011-drift.test.ts tests/security/lint-0029-drift.test.ts tests/security/secdef-anon-drift.test.ts tests/security/security-definer-acl-gate.test.ts src/components/mockup/logo-editor/__tests__/LogoControls.test.tsx src/hooks/mockup/__tests__/mockupAreas.preserve.test.ts src/hooks/mockup/__tests__/mockupBatch.partial.test.ts src/hooks/mockup/__tests__/mockupDimensions.guard.test.ts src/hooks/mockup/__tests__/mockupEntry.params.test.ts src/hooks/mockup/__tests__/mockupGeneration.abort.test.ts src/hooks/mockup/__tests__/mockupRestore.selection.test.ts src/hooks/mockup/__tests__/useMockupGenerator.techniques.test.ts tests/components/mockup/acceptance/grupo1.acceptance.test.tsx tests/components/mockup/acceptance/grupo3.acceptance.test.tsx tests/components/mockup/acceptance/grupo6.acceptance.test.tsx src/hooks/simulation/__tests__/useLogoColorAnalysis.test.ts src/components/mockup/__tests__/mockupA11y.slice2.test.tsx src/hooks/mockup/__tests__/mockupSelectionSnapshot.test.ts src/components/mockup/__tests__/MockupResultCard.states.test.tsx src/components/mockup/__tests__/MockupResultCard.preserved.test.tsx src/hooks/mockup/__tests__/mockupProjectSaved.test.ts src/pages/mockups/mockup-generator/__tests__/fichaDaAreaDaImagem.test.ts src/hooks/mockup/__tests__/trocaDeProjeto.test.ts tests/edge-functions/mockup-assistant.test.ts tests/security/crm-db-bridge-ownership.test.ts",
    "test:ci-core:coverage": "TZ=America/Sao_Paulo vitest run tests/contracts/migrated-endpoints.contract.test.ts src/lib/theme-presets.test.ts tests/components/products/ProductSparkline.labels.test.tsx --coverage --coverage.include=src/lib/theme-presets.ts --coverage.include=src/components/products/ProductSparkline.tsx --coverage.reporter=text --coverage.reporter=json --coverage.reporter=json-summary --coverage.thresholds.lines=50 --coverage.thresholds.functions=50 --coverage.thresholds.branches=30 --coverage.thresholds.statements=50",
    "ci:local": "node scripts/ci-local/index.mjs run",
    "ci:local:list": "node scripts/ci-local/index.mjs list",
@@ -151056,7 +151056,7 @@
   {
    "module": "supabase/functions",
    "files": 278,
-   "lines": 51764,
+   "lines": 51804,
    "tables": [
     "access_blocked_log",
     "access_security_settings",
@@ -151577,7 +151577,7 @@
   {
    "module": "tests",
    "files": 1055,
-   "lines": 162178,
+   "lines": 162315,
    "tables": [
     "bot_detection_log",
     "clients",
@@ -157957,6 +157957,10 @@
    {
     "file": "tests/scripts/check-supabase-reference-catalog.test.mjs",
     "count": 2
+   },
+   {
+    "file": "tests/security/crm-db-bridge-ownership.test.ts",
+    "count": 1
    }
   ],
   "cascade_chains": {
@@ -175382,6 +175386,10 @@
    },
    {
     "file": "supabase/functions/crm-db-bridge/index.ts",
+    "text": "negócio, não afrouxamento de portão."
+   },
+   {
+    "file": "supabase/functions/crm-db-bridge/index.ts",
     "text": "Default cap (500) para evitar statement timeout em SELECT sem limite explícito."
    },
    {
@@ -175410,7 +175418,11 @@
    },
    {
     "file": "supabase/functions/crm-db-bridge/query-policy.ts",
-    "text": "de cliente e não eram escopados antes (ownership.ts do main listava como PII apenas"
+    "text": "listava como PII apenas companies, contacts, contact_emails, contact_phones e customers)."
+   },
+   {
+    "file": "supabase/functions/crm-db-bridge/query-policy.ts",
+    "text": "\"restaurar\" para `.eq` achando que é regressão: é decisão de negócio, não afrouxamento."
    },
    {
     "file": "supabase/functions/crm-db-bridge/scope_integration_test.ts",
@@ -300683,7 +300695,7 @@
    },
    {
     "file": "tests/security/crm-db-bridge-ownership.test.ts",
-    "name": "crm-db-bridge — escopo estrito por vendedor dono (decisão do dono, 2026-11-14)"
+    "name": "crm-db-bridge — escopo por vendedor dono (2026-11-14, revisto em 2026-11-15)"
    },
    {
     "file": "tests/security/crm-db-bridge-ownership.test.ts",
@@ -300699,7 +300711,7 @@
    },
    {
     "file": "tests/security/crm-db-bridge-ownership.test.ts",
-    "name": "o handler aplica o escopo com .eq, não com .or"
+    "name": "o handler aplica o escopo do vendedor COM vínculo pelo .or (decisão de 2026-11-15)"
    },
    {
     "file": "tests/security/crm-db-bridge-ownership.test.ts",
@@ -300707,7 +300719,11 @@
    },
    {
     "file": "tests/security/crm-db-bridge-ownership.test.ts",
-    "name": "nenhum escopo "
+    "name": "o escopo do vendedor COM vínculo inclui o sem dono nas 4 formas de coluna"
+   },
+   {
+    "file": "tests/security/crm-db-bridge-ownership.test.ts",
+    "name": "a querystring enviada ao PostgREST leva o or prefixado pelo caminho do embed"
    },
    {
     "file": "tests/security/crm-db-bridge-ownership.test.ts",
@@ -300728,6 +300744,26 @@
    {
     "file": "tests/security/crm-db-bridge-ownership.test.ts",
     "name": "suppliers e carriers ficam sem escopo por vendedor"
+   },
+   {
+    "file": "tests/security/crm-db-bridge-ownership.test.ts",
+    "name": "crm-db-bridge — ver sim, editar e assumir NAO (decisao do dono, 2026-11-15)"
+   },
+   {
+    "file": "tests/security/crm-db-bridge-ownership.test.ts",
+    "name": "nenhuma tabela e gravavel por vendedor: VENDOR_WRITE_TABLES vazia"
+   },
+   {
+    "file": "tests/security/crm-db-bridge-ownership.test.ts",
+    "name": "insert, update e delete de papel restrito sao recusados com 403"
+   },
+   {
+    "file": "tests/security/crm-db-bridge-ownership.test.ts",
+    "name": "assumir o cliente passaria por update em customers, que esta barrado"
+   },
+   {
+    "file": "tests/security/crm-db-bridge-ownership.test.ts",
+    "name": "batch nao pode virar porta de escrita: so monta consulta de leitura"
    },
    {
     "file": "tests/security/crm-db-bridge-seller-scope.test.ts",
@@ -398690,6 +398726,13 @@
     ]
    },
    {
+    "kind": "dinâmico",
+    "msg": "1 chamada(s) `.from(variável)` — tabela só conhecida em runtime",
+    "where": [
+     "tests/security/crm-db-bridge-ownership.test.ts"
+    ]
+   },
+   {
     "kind": "segurança",
     "msg": "função `apply_high_confidence_suggestions` é SECURITY DEFINER sem `set search_path` (risco de escalação)",
     "where": [
@@ -495453,7 +495496,7 @@
   },
   "supabase/functions/crm-db-bridge/index.ts": {
    "path": "supabase/functions/crm-db-bridge/index.ts",
-   "lines": 1076,
+   "lines": 1091,
    "exports": [
     "function getCrmClient",
     "function __getClientBootStateForTests",
@@ -495579,6 +495622,7 @@
    ],
    "rule_comments": [
     "redeploy marker: fix 429 - auth-first + rate-limit por userId + admin singleton (2026-05-26)",
+    "negócio, não afrouxamento de portão.",
     "Default cap (500) para evitar statement timeout em SELECT sem limite explícito.",
     "Bot-protection roda DEPOIS do auth para usar userId como chave de rate limit,",
     "// BUG ANTERIOR: rate-limit por IP -> 1 usuario abrindo varias abas podia banir",
@@ -495645,7 +495689,7 @@
   },
   "supabase/functions/crm-db-bridge/query-policy.ts": {
    "path": "supabase/functions/crm-db-bridge/query-policy.ts",
-   "lines": 623,
+   "lines": 648,
    "exports": [
     "const CRM_TABLES",
     "type CrmTable",
@@ -495665,6 +495709,7 @@
     "function buildSellerScopedSelect",
     "function isTableSellerScoped",
     "function sellerScopeFilter",
+    "function sellerScopeOrFilter",
     "function splitCompanyAddressFilters",
     "function addCompanyAddressFilterSelect",
     "function stripInternalRelations",
@@ -495720,7 +495765,8 @@
     "vendedor"
    ],
    "rule_comments": [
-    "de cliente e não eram escopados antes (ownership.ts do main listava como PII apenas"
+    "listava como PII apenas companies, contacts, contact_emails, contact_phones e customers).",
+    "\"restaurar\" para `.eq` achando que é regressão: é decisão de negócio, não afrouxamento."
    ],
    "calc_fns": [
     {
@@ -538929,13 +538975,16 @@
   },
   "tests/security/crm-db-bridge-ownership.test.ts": {
    "path": "tests/security/crm-db-bridge-ownership.test.ts",
-   "lines": 155,
+   "lines": 292,
    "is_test": true,
+   "dyn_from": 1,
    "rule_comments": [
     "* Por isso as asserções sobre `crmOwnerScope` saíram: elas afirmavam a regra revogada, e o módulo",
-    "A regra antiga mostrava ao vendedor os registros sem dono. Reintroduzir qualquer uma",
+    "\"restaure\" o `.eq` — a mudança é decisão de negócio do dono, de 2026-11-15, registrada aqui",
     "O e-mail serve APENAS para criar o vínculo na primeira vez (bootstrap). Depois disso,",
-    "Sem o limit(2), dois usuários do CRM com o mesmo e-mail passariam silenciosamente."
+    "Sem o limit(2), dois usuários do CRM com o mesmo e-mail passariam silenciosamente.",
+    "A decisão de 2026-11-15 abriu o escopo APENAS para vendedor COM vínculo. Sem vínculo,",
+    "vendedor NAO pode editar nem ASSUMIR esse cliente. Hoje isso ja vale, e nao por"
    ],
    "tests": [
     "crm-db-bridge — resolução de role",
@@ -538943,18 +538992,24 @@
     "vendedor e agente têm escopo por carteira",
     "vendedor, agente e coordenador têm escrita restrita",
     "a role mais ampla vence quando o usuário tem várias (ROLE_ORDER no handler)",
-    "crm-db-bridge — escopo estrito por vendedor dono (decisão do dono, 2026-11-14)",
+    "crm-db-bridge — escopo por vendedor dono (2026-11-14, revisto em 2026-11-15)",
     "as 5 tabelas de dado de cliente são escopadas",
     "customers filtra pela coluna real vendedor_id",
     "as filhas seguem o dono pela relação, não por coluna própria",
-    "o handler aplica o escopo com .eq, não com .or",
+    "o handler aplica o escopo do vendedor COM vínculo pelo .or (decisão de 2026-11-15)",
     "crm-db-bridge — a regra revogada não pode voltar",
-    "nenhum escopo ",
+    "o escopo do vendedor COM vínculo inclui o sem dono nas 4 formas de coluna",
+    "a querystring enviada ao PostgREST leva o or prefixado pelo caminho do embed",
     "o vendedor não é mais descoberto pelo e-mail a cada requisição",
     "o bootstrap por e-mail grava o vínculo e detecta ambiguidade",
     "sem vendedor resolvido, o escopo não abre: cai em -1, que não casa com nenhum id",
     "crm-db-bridge — fornecedor e transportadora não são dado de cliente",
-    "suppliers e carriers ficam sem escopo por vendedor"
+    "suppliers e carriers ficam sem escopo por vendedor",
+    "crm-db-bridge — ver sim, editar e assumir NAO (decisao do dono, 2026-11-15)",
+    "nenhuma tabela e gravavel por vendedor: VENDOR_WRITE_TABLES vazia",
+    "insert, update e delete de papel restrito sao recusados com 403",
+    "assumir o cliente passaria por update em customers, que esta barrado",
+    "batch nao pode virar porta de escrita: so monta consulta de leitura"
    ]
   },
   "tests/security/crm-db-bridge-seller-scope.test.ts": {
@@ -541867,10 +541922,22 @@
   }
  },
  "git": {
-  "sha": "e17c6c97080fb26908030667e1e4996557d71d23",
+  "sha": "d56cb122f93ef389f14c333e4684a53aea5d5ada",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "d56cb12",
+    "date": "2026-11-17",
+    "author": "adm01-debug",
+    "subject": "feat(crm): vendedor vê a carteira dele mais os clientes sem dono (somente leitura) (#3769)",
+    "files": [
+     "package.json",
+     "supabase/functions/crm-db-bridge/index.ts",
+     "supabase/functions/crm-db-bridge/query-policy.ts",
+     "tests/security/crm-db-bridge-ownership.test.ts"
+    ]
+   },
    {
     "sha": "e17c6c9",
     "date": "2026-11-17",
@@ -542176,21 +542243,16 @@
      "src/components/quotes/QuoteAutoSave.tsx",
      "src/components/quotes/__tests__/QuoteAutoSave.failureVisible.test.tsx"
     ]
-   },
-   {
-    "sha": "0f7644a",
-    "date": "2026-11-16",
-    "author": "adm01-debug",
-    "subject": "test(mockup): resgata o contrato do handler REAL do generate-mockup (#3737)",
-    "files": [
-     "tests/edge-functions/integration/generate-mockup.handler.test.ts"
-    ]
    }
   ],
   "hot_files": [
    [
     ".github/workflows/deploy-gates.yml",
     5
+   ],
+   [
+    "package.json",
+    4
    ],
    [
     "supabase/MIGRATIONS_SYNC_LOG.md",
@@ -542201,12 +542263,20 @@
     3
    ],
    [
-    "package.json",
-    3
-   ],
-   [
     "tests/sql/device-trust/run-tests.py",
     2
+   ],
+   [
+    "supabase/functions/crm-db-bridge/index.ts",
+    1
+   ],
+   [
+    "supabase/functions/crm-db-bridge/query-policy.ts",
+    1
+   ],
+   [
+    "tests/security/crm-db-bridge-ownership.test.ts",
+    1
    ],
    [
     "supabase/migrations/20261108001500_reconcile_e2e_cleanup_audit.sql",
@@ -542254,18 +542324,6 @@
    ],
    [
     "docs/agentes/resgates/quote-comments/sql/20261110022404_rollback.sql",
-    1
-   ],
-   [
-    "docs/agentes/resgates/quote-comments/testes-sql/README-original.md",
-    1
-   ],
-   [
-    "docs/agentes/resgates/quote-comments/testes-sql/fixture.sql",
-    1
-   ],
-   [
-    "docs/agentes/resgates/quote-comments/testes-sql/run-tests.py",
     1
    ]
   ]
