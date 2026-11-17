@@ -43,6 +43,7 @@ import { CatalogBulkModals } from '@/components/catalog/CatalogBulkModals';
 import { FavoriteListsSidebar } from '@/components/favorites/FavoriteListsSidebar';
 import { FavoritesTrashView } from '@/components/favorites/FavoritesTrashView';
 import { FavoritesViewHeader } from '@/components/favorites/FavoritesViewHeader';
+import { FavoritePresentationLauncher } from '@/components/favorites/FavoritePresentationLauncher';
 import { ItemNoteEditor } from '@/components/favorites/ItemNoteEditor';
 import { PriceDropBadge } from '@/components/favorites/PriceDropBadge';
 import { FavoritesEmptyStateSmart } from '@/components/favorites/FavoritesEmptyStateSmart';
@@ -126,7 +127,8 @@ export default function FavoritesPage() {
   });
   const [showTrash, setShowTrash] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  
+  const [showPresentation, setShowPresentation] = useState(false);
+
   const [ariaAnnouncement, setAriaAnnouncement] = useState('');
 
   useEffect(() => {
@@ -585,6 +587,9 @@ export default function FavoritesPage() {
                   priceDropCount={priceDropCount}
                   products={productsWithVariant}
                   rawItems={isRemoteListView ? rawItems : undefined}
+                  onPresent={
+                    productsWithVariant.length > 0 ? () => setShowPresentation(true) : undefined
+                  }
                 />
 
                 {stats && (
@@ -889,6 +894,13 @@ export default function FavoritesPage() {
         {ariaAnnouncement}
       </div>
 
+      {showPresentation && productsWithVariant.length > 0 && (
+        <FavoritePresentationLauncher
+          products={productsWithVariant}
+          listName={activeList?.name ?? 'Favoritos'}
+          onClose={() => setShowPresentation(false)}
+        />
+      )}
     </>
   );
 }

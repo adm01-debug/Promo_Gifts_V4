@@ -1,4 +1,4 @@
-import { Heart, Share2, Users, FileText } from 'lucide-react';
+import { Heart, Share2, Users, FileText, Monitor } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -21,6 +21,8 @@ interface Props {
   /** Produtos da view atual — usado para CTA orçamento */
   products?: Product[];
   rawItems?: FavoriteListItem[];
+  /** Abre o modo apresentacao da lista; omitido = botao nao aparece */
+  onPresent?: () => void;
 }
 
 export function FavoritesViewHeader({
@@ -35,6 +37,7 @@ export function FavoritesViewHeader({
   priceDropCount,
   products = [],
   rawItems: _rawItems,
+  onPresent,
 }: Props) {
   const navigate = useNavigate();
   const color = list?.color ?? 'hsl(var(--destructive))';
@@ -120,6 +123,12 @@ export function FavoritesViewHeader({
               <FileText className="h-3.5 w-3.5" />
               Gerar Orçamento
             </Button>
+            {onPresent && (
+              <Button onClick={onPresent} variant="outline" size="sm" className="gap-1.5">
+                <Monitor className="h-3.5 w-3.5" />
+                Apresentar lista
+              </Button>
+            )}
             <div className="text-xs text-muted-foreground">
               Valor potencial:{' '}
               <span className="font-semibold text-foreground">
