@@ -125,3 +125,66 @@ git rev-list --parents -n 1 origin/salvo/261117-decisoes-finais-7   # os tips pr
 O commit de cada ref `salvo/*` tem arvore **igual a da main** (nao muda codigo) e um pai por
 branch preservada; a mensagem carrega o veredito e a medida de cada uma.
 
+
+---
+
+## Anexo: comparação POR BRANCH das duas fechadas sem tabela publicada
+
+As duas branches abaixo foram fechadas antes de eu publicar este relatório. A ordem foi essa, e
+registro o fato: apaguei primeiro e publiquei a prova depois. O conteúdo nunca ficou
+inalcançável — cada tip é pai de um commit em `salvo/*` — mas a tabela por branch só existe agora.
+
+### Como reproduzir, para cada uma
+
+```bash
+git merge-base --is-ancestor <tip> origin/<ref salvo>   # o tip é alcançável pelo ref?
+mb=$(git merge-base origin/main <tip>)
+git diff --name-only $mb <tip>                           # o trabalho próprio da branch
+git rev-parse <tip>:<arquivo>  vs  origin/main:<arquivo> # mesmo blob?
+```
+
+### `fix/e2e-url-state-defaults-20261030`
+
+tip `3de80569c`, alcançável por `origin/salvo/261117-decisoes-finais-7`
+(`--is-ancestor` → 0). merge-base com a main: `ec06a4572`.
+
+**10 arquivos, 0 ausentes da main, 10 em versão diferente:**
+
+| arquivo | adjudicação |
+|---|---|
+| `supabase/rollbacks/20261101140001_rollback.sql` | **resgatado** em #3756, com o aviso corrigido para tokens de sessão, não só PII |
+| `src/components/inventory/StockDashboard.tsx` | a main já tem a mesma correção, melhor fatorada em `src/components/inventory/stockTabDefault.ts`; aceitar o lado da branch reverteria o refactor |
+| `scripts/check-dependency-audit.mjs` | a main é **mais restritiva**: a validação vive dentro do ramo nomeado de `minimatch`; a versão da branch a tornaria genérica |
+| `tests/scripts/check-dependency-audit.test.mjs` | acompanha o item acima |
+| `docs/security/ALLOWLISTS_MEMORY.md` | a branch **duplica** entradas (`cleanup_expired_auth_sessions` 2×, `perf002` 2×) |
+| `supabase/MIGRATIONS_SYNC_LOG.md` | a branch está ~900 linhas atrás dos recibos de produção |
+| `.security/lint-0029-allowlist.json` | baseline que a main mantém atualizado |
+| `PENDENCIAS.md`, `RELATORIO_CI.md` | a main regenerou os dois depois do merge-base |
+| `analise-branches/dossies/devin-probe-e184-legacy-refs.md` | dossiê de análise, artefato |
+
+### `codex/fix-e2e-ci-pressure-261107-0238`
+
+tip `6746bd9cc`, alcançável por `origin/salvo/261117-e2e-ci-pressure`
+(`--is-ancestor` → 0). merge-base com a main: `6065eb7ad`.
+
+**15 arquivos, 0 ausentes da main, 15 em versão diferente:**
+
+| arquivo | adjudicação |
+|---|---|
+| `e2e/protected-routes.spec.ts` | **resgatado** em #3755 — a main estava errada, o teste não podia passar |
+| `e2e/flows/sidebar-tooltips.spec.ts` | **resgatado** em #3755 (helper anti-flake), sem a remoção do `requireAuth()` |
+| `playwright.config.ts` | recusado: o `testMatch` novo casa ~11 de 567 specs, e a main tem a mais o modo `E2E_SERVER_MODE=preview` |
+| `.github/workflows/e2e.yml` | recusado: reintroduz o gatilho `pull_request` removido de propósito, apaga 10 paths de infra e os fallbacks `E2E_SELLER_*` |
+| `.github/workflows/e2e-flows.yml`, `e2e-stock.yml` | a main já tem `min: '9'` e os secrets de admin |
+| `e2e/catalog/helpers/swatch-view.ts` | a main resolveu melhor: `scrollIntoViewIfNeeded + focus + Enter`, com comentário rejeitando `force` |
+| `e2e/helpers/swatch-catalog-mocks.ts` | o `options.force` instalaria auth mockada sobre sessão real |
+| `e2e/sidebar-logo.spec.ts` | contrato de 24px já está na main |
+| `src/components/products/list-item/ListItemActions.tsx` | único arquivo de `src/`; a mudança não é fix de produto |
+| os 5 specs restantes | reformatação prettier que a main já tem (`3b2deef1d`) |
+
+### O que essas duas tabelas provam
+
+**Zero arquivos ausentes em 25.** Não havia nada nessas branches que não exista na `main` — só
+versões diferentes, e cada uma recebeu veredito com a medida. Os 2 itens que a `main` não tinha
+foram resgatados (#3755, #3756) antes de o conteúdo sair do alcance, e não saiu: os dois tips
+seguem alcançáveis pelos refs `salvo/*`, verificado agora com `--is-ancestor`.
