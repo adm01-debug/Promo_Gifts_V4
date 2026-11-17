@@ -5,18 +5,18 @@
   "vitest",
   "playwright"
  ],
- "total": 2548,
+ "total": 2549,
  "por_tipo": {
   "contrato": 66,
   "e2e": 677,
   "pytest": 5,
   "qa": 17,
-  "unit": 1783
+  "unit": 1784
  },
  "onde_ficam": [
   {
    "padrao": "tests/",
-   "arquivos": 1044
+   "arquivos": 1045
   },
   {
    "padrao": "co-localizado (__tests__)",
@@ -17309,6 +17309,20 @@
    "casos": 4
   },
   {
+   "arquivo": "tests/hooks/useLegacyLintLifecycle.test.ts",
+   "tipo": "unit",
+   "linhas": 484,
+   "testa": [
+    "src/hooks/products/useAdvancedFilters.ts",
+    "src/hooks/products/useProductBounds.ts",
+    "src/hooks/products/useSuppliers.ts",
+    "src/hooks/simulation/useTechniquePricingOptions.ts",
+    "src/hooks/useDevGate.ts",
+    "src/lib/product-bounds-detector.ts"
+   ],
+   "casos": 18
+  },
+  {
    "arquivo": "tests/hooks/useLoginAttempts.test.ts",
    "tipo": "unit",
    "linhas": 95,
@@ -22045,7 +22059,7 @@
   "src/hooks/products/dailyCatalogDefaults.ts": 1,
   "src/hooks/products/index.ts": 28,
   "src/hooks/products/sellerCartToasts.ts": 4,
-  "src/hooks/products/useAdvancedFilters.ts": 2,
+  "src/hooks/products/useAdvancedFilters.ts": 3,
   "src/hooks/products/useCatalogFiltering.ts": 3,
   "src/hooks/products/useCatalogState.ts": 2,
   "src/hooks/products/useCategories.ts": 1,
@@ -22057,6 +22071,7 @@
   "src/hooks/products/useNovelties.ts": 10,
   "src/hooks/products/usePrefetchProduct.ts": 1,
   "src/hooks/products/useProductAnalytics.ts": 1,
+  "src/hooks/products/useProductBounds.ts": 1,
   "src/hooks/products/useProductCustomizationOptions.ts": 1,
   "src/hooks/products/useProductIntelligenceBadges.ts": 2,
   "src/hooks/products/useProductLeafCategories.tsx": 1,
@@ -22078,6 +22093,7 @@
   "src/hooks/products/useSupplierComparison.ts": 5,
   "src/hooks/products/useSupplierSalesRanking.ts": 2,
   "src/hooks/products/useSupplierTrust.ts": 1,
+  "src/hooks/products/useSuppliers.ts": 1,
   "src/hooks/products/useVariantStock.ts": 1,
   "src/hooks/products/useVariantSupplierSources.ts": 6,
   "src/hooks/products/useVideoVariantLinks.ts": 1,
@@ -22106,6 +22122,7 @@
   "src/hooks/simulation/useLogoColorAnalysisByArea.ts": 10,
   "src/hooks/simulation/usePrintAreas.ts": 2,
   "src/hooks/simulation/useTechniquePricing.ts": 2,
+  "src/hooks/simulation/useTechniquePricingOptions.ts": 1,
   "src/hooks/simulator/useUndoRedo.ts": 1,
   "src/hooks/simulator/wizardReducer.ts": 1,
   "src/hooks/stock/stockAlerts.ts": 2,
@@ -22122,7 +22139,7 @@
   "src/hooks/ui/useScrollLockFix.ts": 1,
   "src/hooks/ui/useWorkspaceNotifications.tsx": 9,
   "src/hooks/useBridgeStatusBanner.ts": 2,
-  "src/hooks/useDevGate.ts": 2,
+  "src/hooks/useDevGate.ts": 3,
   "src/hooks/useFutureStockPreference.ts": 2,
   "src/hooks/useProductColorSwatch.ts": 2,
   "src/hooks/voice/processTranscript.ts": 2,
@@ -22241,6 +22258,7 @@
   "src/lib/personalization/rpc-contracts.ts": 1,
   "src/lib/personalization/rpc-validator.ts": 1,
   "src/lib/print-area-grouping.ts": 2,
+  "src/lib/product-bounds-detector.ts": 1,
   "src/lib/products/kit-detection.ts": 1,
   "src/lib/products/novelty-days.ts": 1,
   "src/lib/products/stock-status.ts": 3,
@@ -22920,7 +22938,6 @@
    "src/hooks/products/useMaterialTypes.ts",
    "src/hooks/products/useNovelties.helpers.ts",
    "src/hooks/products/useNoveltiesSelectionMode.ts",
-   "src/hooks/products/useProductBounds.ts",
    "src/hooks/products/useProductEngravingOptions.ts",
    "src/hooks/products/useProductFreshnessOverride.ts",
    "src/hooks/products/useProductFuzzySearch.ts",
@@ -22936,7 +22953,6 @@
    "src/hooks/products/useSellerCarts.helpers.ts",
    "src/hooks/products/useSupplierFiscalData.ts",
    "src/hooks/products/useSupplierNames.ts",
-   "src/hooks/products/useSuppliers.ts",
    "src/hooks/quotes/useNextQuoteNumberPreview.ts",
    "src/hooks/quotes/useProdutoPersonalizacao.ts",
    "src/hooks/quotes/useQuoteClientLogos.ts",
@@ -22946,7 +22962,6 @@
    "src/hooks/simulation/usePositionHistory.ts",
    "src/hooks/simulation/useSimulation.ts",
    "src/hooks/simulation/useSimulatorPreferences.ts",
-   "src/hooks/simulation/useTechniquePricingOptions.ts",
    "src/hooks/simulation/useTechniqueRecommendations.ts",
    "src/hooks/simulation/useTecnicasUnificadas.ts",
    "src/hooks/simulator/useLivePricePreview.ts",

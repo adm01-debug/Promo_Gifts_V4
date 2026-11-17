@@ -5924,7 +5924,7 @@
     "components/mockup",
     "hooks/products"
    ],
-   "coberto_por_testes": 0,
+   "coberto_por_testes": 1,
    "orfao": false
   },
   {

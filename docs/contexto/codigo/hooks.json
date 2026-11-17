@@ -10440,7 +10440,7 @@
    "usado_por_arquivos": [
     "src/hooks/products/index.ts"
    ],
-   "coberto_por_testes": 2
+   "coberto_por_testes": 3
   },
   {
    "arquivo": "src/hooks/products/useCartTemplates.ts",
@@ -11018,7 +11018,7 @@
     "src/components/products/ProductCard.tsx",
     "src/hooks/products/index.ts"
    ],
-   "coberto_por_testes": 0
+   "coberto_por_testes": 1
   },
   {
    "arquivo": "src/hooks/products/useProductCustomizationOptions.ts",
@@ -11830,7 +11830,7 @@
    "usado_por_arquivos": [
     "src/hooks/products/index.ts"
    ],
-   "coberto_por_testes": 0
+   "coberto_por_testes": 1
   },
   {
    "arquivo": "src/hooks/products/useSupplierSalesRanking.ts",
@@ -12673,7 +12673,7 @@
     "src/hooks/simulation/index.ts",
     "src/hooks/simulation/useSimulation.ts"
    ],
-   "coberto_por_testes": 0
+   "coberto_por_testes": 1
   },
   {
    "arquivo": "src/hooks/simulation/useTechniqueRecommendations.ts",
@@ -13673,7 +13673,7 @@
    "usado_por_arquivos": [
     "src/components/BridgeStatusBanner.tsx"
    ],
-   "coberto_por_testes": 2
+   "coberto_por_testes": 3
   },
   {
    "arquivo": "src/hooks/useFutureStockPreference.ts",

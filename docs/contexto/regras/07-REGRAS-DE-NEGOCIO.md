@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.3.2 · commit `3077bc05cb` · branch `main` · 2026-11-17 17:15 UTC
+> Gerado automaticamente por AI Context Sync v1.3.2 · commit `4250cdea4e` · branch `main` · 2026-11-17 18:19 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -6560,7 +6560,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `admin` | `supabase/migrations/20261112120500_fix_optimization_queue_rpcs_dev_access.sql` |
 | `anon` | `tests/edge-functions/live/_live-client.ts` |
 
-## K. Testes como especificação (21983 testes em 2226 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (22006 testes em 2227 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -6746,6 +6746,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `tests/edge-functions/integration/generate-mockup.test.ts` | 23 | generate-mockup · happy path · returns 200 with mockupUrl/mockup_url and a mockup_id · mockupUrl points to a safe https CDN (no javascript:/data:) … |
 | `tests/edge-functions/integration/manage-users.test.ts` | 23 | manage-users · listar usuários (GET) · admin recebe 200 com array de usuários · lista não expõe password_hash ou tokens … |
 | `tests/edge-functions/integration/webhooks.test.ts` | 23 | webhook-inbound · payload válido · POST com envelope v2 → 200 · idempotência: segundo request com mesma idempotency_key → 200 sem duplicar … |
+| `tests/hooks/useLegacyLintLifecycle.test.ts` | 23 | legacy advanced filters mount lifecycle · loads all five sources with original predicates and limits once despite changing wrapper objects · keeps the original mount-only contract if a provider returns new fetch callbacks · keeps loading until every source settles and maps hierarchical source data … |
 | `tests/lib/catalog-stock-status.test.ts` | 23 | getCatalogStockStatus — fronteiras do limiar padrão (10) · stock=%s => %s · getCatalogStockStatus — entradas anômalas normalizam para out-of-stock · %s => out-of-stock … |
 | `tests/scripts/check-workflow-contracts-parser.test.mjs` | 23 | hasPullRequestTrigger · %j → %s · C2/C12/C22 agora valem para pull_request_target (gatilho mais perigoso) · comentários não aplicam restrições de PR a um workflow apenas push … |
 | `tests/security/crm-db-bridge-ownership.test.ts` | 23 | crm-db-bridge — resolução de role · papéis amplos não são tratados como vendedor · vendedor e agente têm escopo por carteira · vendedor, agente e coordenador têm escrita restrita … |
@@ -6863,8 +6864,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `src/hooks/products/__tests__/useProductsByColor.test.ts` | 18 | hasFilter OR entre 4 grupos · false quando todos arrays vazios · true quando qualquer grupo nao-vazio · sem filtro ativo … |
 | `src/hooks/products/__tests__/useProductsLightweight.test.ts` | 18 | mapLightweightToProduct · retorna id como string mesmo quando input é number · FIX BUG-D: prefere leaf_category_id sobre category_id sobre main_category_id · FIX BUG-D: usa category_id quando leaf_category_id nulo … |
 | `src/lib/carts/__tests__/shipping-deadline.edge.test.ts` | 18 | shipping-deadline · edge cases · borda +3 / +4 dias (soon vs ok) · +3 dias exatamente → soon com rótulo  · +4 dias exatamente → ok com rótulo  … |
-| `src/lib/inventory/__tests__/health-score.test.ts` | 18 | calcHealthScore · retorna 100 quando não há produtos · retorna 100 quando todos estão adequados · retorna 0 quando nenhum está adequado … |
-| … +1926 linhas — lista completa em `context.json` | | |
+| … +1927 linhas — lista completa em `context.json` | | |
 
 ## L. Eventos de webhook tratados (contratos com sistemas externos)
 
