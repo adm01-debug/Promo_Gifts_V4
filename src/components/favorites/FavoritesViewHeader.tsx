@@ -1,9 +1,11 @@
+import { useState } from 'react';
 import { Heart, Share2, Users, FileText, Monitor } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { FavoritesSortBar, type FavoritesSort } from './FavoritesSortBar';
 import { FavoritesHeatmap } from './FavoritesHeatmap';
+import { FavoritePresentationLauncher } from './FavoritePresentationLauncher';
 import { formatCurrency } from '@/lib/format';
 import type { FavoriteList, FavoriteListItem } from '@/hooks/favorites';
 import type { Product } from '@/types/product-catalog';
@@ -21,8 +23,6 @@ interface Props {
   /** Produtos da view atual — usado para CTA orçamento */
   products?: Product[];
   rawItems?: FavoriteListItem[];
-  /** Abre o modo apresentacao da lista; omitido = botao nao aparece */
-  onPresent?: () => void;
 }
 
 export function FavoritesViewHeader({
@@ -37,9 +37,12 @@ export function FavoritesViewHeader({
   priceDropCount,
   products = [],
   rawItems: _rawItems,
-  onPresent,
 }: Props) {
   const navigate = useNavigate();
+  // O modo apresentacao vive aqui (e nao na pagina) porque FavoritesPage ja esta
+  // acima do limite do gate de tamanho de arquivo; PresentationMode e um overlay
+  // fixed inset-0 z-[9999], entao a posicao na arvore nao muda o layout.
+  const [apresentando, setApresentando] = useState(false);
   const color = list?.color ?? 'hsl(var(--destructive))';
   const name = list?.name ?? fallbackTitle ?? 'Favoritos';
 
@@ -123,12 +126,15 @@ export function FavoritesViewHeader({
               <FileText className="h-3.5 w-3.5" />
               Gerar Orçamento
             </Button>
-            {onPresent && (
-              <Button onClick={onPresent} variant="outline" size="sm" className="gap-1.5">
-                <Monitor className="h-3.5 w-3.5" />
-                Apresentar lista
-              </Button>
-            )}
+            <Button
+              onClick={() => setApresentando(true)}
+              variant="outline"
+              size="sm"
+              className="gap-1.5"
+            >
+              <Monitor className="h-3.5 w-3.5" />
+              Apresentar lista
+            </Button>
             <div className="text-xs text-muted-foreground">
               Valor potencial:{' '}
               <span className="font-semibold text-foreground">
@@ -140,6 +146,14 @@ export function FavoritesViewHeader({
             <FavoritesHeatmap />
           </div>
         </div>
+      )}
+
+      {apresentando && products.length > 0 && (
+        <FavoritePresentationLauncher
+          products={products}
+          listName={name}
+          onClose={() => setApresentando(false)}
+        />
       )}
     </div>
   );

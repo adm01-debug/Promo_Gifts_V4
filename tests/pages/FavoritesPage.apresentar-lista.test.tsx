@@ -159,9 +159,10 @@ describe('FavoritesPage — apresentar lista', () => {
 
     fireEvent.click(botao);
 
-    // Slide de capa do PresentationMode traz o nome da lista.
+    // Slide de capa do PresentationMode traz o mesmo nome que o header exibe
+    // (sem lista remota selecionada, o fallbackTitle da página).
     await waitFor(() => {
-      expect(screen.getByText('Favoritos')).toBeInTheDocument();
+      expect(screen.getAllByText('Todos os favoritos').length).toBeGreaterThan(0);
     });
     // Contagem de slides = capa + 1 por produto.
     expect(screen.getByText(/1\s*\/\s*3/)).toBeInTheDocument();
