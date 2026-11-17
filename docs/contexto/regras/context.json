@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "b2048b0ee0efd00a930bd09f341556d0b48ca3fc",
+  "sha": "6a8cd1ffd274a0d1964652bc86b19c8e85af1f67",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-17 03:18 UTC",
-  "files_total": 10740,
-  "code_files": 8784,
-  "code_lines": 1239615
+  "generated_at": "2026-11-17 03:30 UTC",
+  "files_total": 10743,
+  "code_files": 8787,
+  "code_lines": 1239840
  },
  "version": "1.3.2",
- "facts_hash": "e4ed698738bf0a34",
+ "facts_hash": "27eba5eb09ead35b",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -1111,8 +1111,8 @@
   "package_manager": "npm",
   "languages": {
    ".sql": 3431,
-   ".ts": 2988,
-   ".tsx": 1903,
+   ".ts": 2990,
+   ".tsx": 1904,
    ".mjs": 449,
    ".py": 13,
    ".js": 7
@@ -144782,7 +144782,7 @@
     "file": ".github/workflows/wraparound-monitor-report.yml"
    }
   ],
-  "components_count": 1652,
+  "components_count": 1655,
   "hooks": [
    {
     "name": "useCommandBar",
@@ -149369,8 +149369,8 @@
   },
   {
    "module": "src/components",
-   "files": 1391,
-   "lines": 277291,
+   "files": 1392,
+   "lines": 277325,
    "tables": [
     "admin_audit_log",
     "art_file_attachments",
@@ -150227,7 +150227,7 @@
   {
    "module": "src/pages",
    "files": 361,
-   "lines": 83888,
+   "lines": 83889,
    "tables": [
     "ai_usage_events",
     "bot_detection_log",
@@ -151455,8 +151455,8 @@
   },
   {
    "module": "tests",
-   "files": 1049,
-   "lines": 161477,
+   "files": 1051,
+   "lines": 161667,
    "tables": [
     "bot_detection_log",
     "clients",
@@ -270157,6 +270157,22 @@
     "name": "nenhum texto do painel fica abaixo de 12px, na grade e na lista"
    },
    {
+    "file": "tests/components/mockup/MockupHistoryPanel.techniques.test.tsx",
+    "name": "MockupHistoryPanel — filtro de técnica inclui o catálogo"
+   },
+   {
+    "file": "tests/components/mockup/MockupHistoryPanel.techniques.test.tsx",
+    "name": "oferece técnica do catálogo que ainda não tem nenhum mockup"
+   },
+   {
+    "file": "tests/components/mockup/MockupHistoryPanel.techniques.test.tsx",
+    "name": "não duplica a técnica que está nos dois lugares"
+   },
+   {
+    "file": "tests/components/mockup/MockupHistoryPanel.techniques.test.tsx",
+    "name": "sem a prop, segue derivando só do histórico (comportamento anterior intacto)"
+   },
+   {
     "file": "tests/components/mockup/MockupHistoryPanel.test.tsx",
     "name": "MockupHistoryPanel"
    },
@@ -270311,6 +270327,34 @@
    {
     "file": "tests/components/mockup/MockupProductSelector.test.tsx",
     "name": "rótulo da ordenação diz o alcance (apenas itens carregados)"
+   },
+   {
+    "file": "tests/components/mockup/mockupTechniqueOptions.test.ts",
+    "name": "buildMockupTechniqueOptions"
+   },
+   {
+    "file": "tests/components/mockup/mockupTechniqueOptions.test.ts",
+    "name": "traz a técnica do catálogo que ainda não tem nenhum mockup"
+   },
+   {
+    "file": "tests/components/mockup/mockupTechniqueOptions.test.ts",
+    "name": "não repete a técnica que está nos dois lugares"
+   },
+   {
+    "file": "tests/components/mockup/mockupTechniqueOptions.test.ts",
+    "name": "sem catálogo, deriva só do histórico (comportamento anterior)"
+   },
+   {
+    "file": "tests/components/mockup/mockupTechniqueOptions.test.ts",
+    "name": "usa o nome como id, porque o filtro compara com technique_name"
+   },
+   {
+    "file": "tests/components/mockup/mockupTechniqueOptions.test.ts",
+    "name": "ignora nome vazio, nulo e ausente nas duas fontes"
+   },
+   {
+    "file": "tests/components/mockup/mockupTechniqueOptions.test.ts",
+    "name": "ordena por nome, independente da ordem de entrada"
    },
    {
     "file": "tests/components/mockup/acceptance/grupo1.acceptance.test.tsx",
@@ -442911,7 +442955,7 @@
   },
   "src/components/mockup/MockupHistoryPanel.tsx": {
    "path": "src/components/mockup/MockupHistoryPanel.tsx",
-   "lines": 831,
+   "lines": 829,
    "exports": [
     "function MockupHistoryPanel"
    ],
@@ -443104,6 +443148,15 @@
     "interface Technique"
    ],
    "doc": "Tipo da técnica de personalização usada pelo painel de configuração do mockup. Saiu de MockupConfigPanel.tsx (que está no teto do gate de tamanho de arquivo, 500 linhas) sem nenhuma mudança de forma: só mudou de arquivo."
+  },
+  "src/components/mockup/mockupTechniqueOptions.ts": {
+   "path": "src/components/mockup/mockupTechniqueOptions.ts",
+   "lines": 36,
+   "exports": [
+    "interface TechniqueOption",
+    "function buildMockupTechniqueOptions"
+   ],
+   "doc": "Opções do filtro de técnica no histórico de mockups. A chave de cada opção é o NOME da técnica, não o id: o filtro do painel compara com `mockup.technique_name`. Por isso o catálogo entra por nome também."
   },
   "src/components/mockup/mockupVariantPhotos.ts": {
    "path": "src/components/mockup/mockupVariantPhotos.ts",
@@ -482227,7 +482280,7 @@
   },
   "src/pages/mockups/MockupGenerator.tsx": {
    "path": "src/pages/mockups/MockupGenerator.tsx",
-   "lines": 630,
+   "lines": 631,
    "exports": [
     "function MockupGenerator"
    ],
@@ -521223,6 +521276,17 @@
     "nenhum texto do painel fica abaixo de 12px, na grade e na lista"
    ]
   },
+  "tests/components/mockup/MockupHistoryPanel.techniques.test.tsx": {
+   "path": "tests/components/mockup/MockupHistoryPanel.techniques.test.tsx",
+   "lines": 133,
+   "is_test": true,
+   "tests": [
+    "MockupHistoryPanel — filtro de técnica inclui o catálogo",
+    "oferece técnica do catálogo que ainda não tem nenhum mockup",
+    "não duplica a técnica que está nos dois lugares",
+    "sem a prop, segue derivando só do histórico (comportamento anterior intacto)"
+   ]
+  },
   "tests/components/mockup/MockupHistoryPanel.test.tsx": {
    "path": "tests/components/mockup/MockupHistoryPanel.test.tsx",
    "lines": 86,
@@ -521350,6 +521414,24 @@
     "mostra estoque e preço no card, sem esconder o item sem estoque",
     "item sem estoque continua selecionável (não impede avançar)",
     "rótulo da ordenação diz o alcance (apenas itens carregados)"
+   ]
+  },
+  "tests/components/mockup/mockupTechniqueOptions.test.ts": {
+   "path": "tests/components/mockup/mockupTechniqueOptions.test.ts",
+   "lines": 57,
+   "is_test": true,
+   "rule_comments": [
+    "de tamanho de arquivo (o componente já passa de 500 linhas e não pode crescer) e"
+   ],
+   "doc": "Fusão histórico + catálogo para o filtro de técnica do histórico de mockups. A lógica saiu de dentro do MockupHistoryPanel para cá por dois motivos: o gate de tamanho de arquivo (o componente já passa de 500 linhas e não pode crescer) e porque assim ela é testável sem subir o Select do Radix no jsdo …",
+   "tests": [
+    "buildMockupTechniqueOptions",
+    "traz a técnica do catálogo que ainda não tem nenhum mockup",
+    "não repete a técnica que está nos dois lugares",
+    "sem catálogo, deriva só do histórico (comportamento anterior)",
+    "usa o nome como id, porque o filtro compara com technique_name",
+    "ignora nome vazio, nulo e ausente nas duas fontes",
+    "ordena por nome, independente da ordem de entrada"
    ]
   },
   "tests/components/mockup/acceptance/grupo1.acceptance.test.tsx": {
@@ -541012,10 +541094,23 @@
   }
  },
  "git": {
-  "sha": "b2048b0ee0efd00a930bd09f341556d0b48ca3fc",
+  "sha": "6a8cd1ffd274a0d1964652bc86b19c8e85af1f67",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "6a8cd1f",
+    "date": "2026-11-17",
+    "author": "adm01-debug",
+    "subject": "feat(mockup): técnica nova do catálogo não aparecia no filtro do histórico (#3740)",
+    "files": [
+     "src/components/mockup/MockupHistoryPanel.tsx",
+     "src/components/mockup/mockupTechniqueOptions.ts",
+     "src/pages/mockups/MockupGenerator.tsx",
+     "tests/components/mockup/MockupHistoryPanel.techniques.test.tsx",
+     "tests/components/mockup/mockupTechniqueOptions.test.ts"
+    ]
+   },
    {
     "sha": "b2048b0",
     "date": "2026-11-17",
@@ -541316,18 +541411,6 @@
     "files": [
      "analise-branches/VEREDITO-52-TESTES-LEGACY-261116.md"
     ]
-   },
-   {
-    "sha": "f6335b1",
-    "date": "2026-11-16",
-    "author": "adm01-debug",
-    "subject": "fix(ci): Gate E23 e Gate Final aceitam fork/Dependabot sem secrets (#3707)",
-    "files": [
-     ".github/workflows/deploy-gates.yml",
-     "tests/hooks/useAIRecommendations.legacy-retry.test.ts",
-     "tests/hooks/useKitBuilderPageState.quantity.test.tsx",
-     "tests/scripts/p200-e007-dependabot-secrets.test.mjs"
-    ]
    }
   ],
   "hot_files": [
@@ -541360,6 +541443,26 @@
     2
    ],
    [
+    "src/components/mockup/MockupHistoryPanel.tsx",
+    1
+   ],
+   [
+    "src/components/mockup/mockupTechniqueOptions.ts",
+    1
+   ],
+   [
+    "src/pages/mockups/MockupGenerator.tsx",
+    1
+   ],
+   [
+    "tests/components/mockup/MockupHistoryPanel.techniques.test.tsx",
+    1
+   ],
+   [
+    "tests/components/mockup/mockupTechniqueOptions.test.ts",
+    1
+   ],
+   [
     "docs/arquivo/2026-09/POSMORTEM_COMMITS_LOCAIS_2026-09-17.md",
     1
    ],
@@ -541389,26 +541492,6 @@
    ],
    [
     "docs/FABRICA_VPS_FAQ.md",
-    1
-   ],
-   [
-    "docs/MAGIC_UP_AUDITORIA_2026-10-08.md",
-    1
-   ],
-   [
-    "docs/MOCKUP_RETENCAO.md",
-    1
-   ],
-   [
-    "docs/agentes/resgates/2026-10-08-proposta-snapshot-mockup-etapas-16-69.md",
-    1
-   ],
-   [
-    "src/components/mockup/MockupCatalogStates.tsx",
-    1
-   ],
-   [
-    "src/components/mockup/__tests__/KeyboardShortcuts.dead.test.tsx",
     1
    ]
   ]

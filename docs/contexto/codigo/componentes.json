@@ -11568,7 +11568,7 @@
     "MockupHistoryPanel"
    ],
    "export_default": null,
-   "linhas": 831,
+   "linhas": 829,
    "dominio": "components/mockup",
    "hooks_locais": [],
    "tabelas": [],
@@ -19188,7 +19188,7 @@
     "MockupGenerator"
    ],
    "export_default": "MockupGenerator",
-   "linhas": 630,
+   "linhas": 631,
    "dominio": "pages/mockups",
    "hooks_locais": [
     "useAuth",

@@ -5,18 +5,18 @@
   "vitest",
   "playwright"
  ],
- "total": 2535,
+ "total": 2537,
  "por_tipo": {
   "contrato": 66,
   "e2e": 677,
   "pytest": 4,
   "qa": 17,
-  "unit": 1771
+  "unit": 1773
  },
  "onde_ficam": [
   {
    "padrao": "tests/",
-   "arquivos": 1035
+   "arquivos": 1037
   },
   {
    "padrao": "co-localizado (__tests__)",
@@ -13891,6 +13891,15 @@
    "casos": 7
   },
   {
+   "arquivo": "tests/components/mockup/MockupHistoryPanel.techniques.test.tsx",
+   "tipo": "unit",
+   "linhas": 133,
+   "testa": [
+    "src/components/mockup/MockupHistoryPanel.tsx"
+   ],
+   "casos": 3
+  },
+  {
    "arquivo": "tests/components/mockup/MockupHistoryPanel.test.tsx",
    "tipo": "unit",
    "linhas": 86,
@@ -13937,6 +13946,15 @@
     "src/components/mockup/MockupProductSelector.tsx"
    ],
    "casos": 8
+  },
+  {
+   "arquivo": "tests/components/mockup/mockupTechniqueOptions.test.ts",
+   "tipo": "unit",
+   "linhas": 57,
+   "testa": [
+    "src/components/mockup/mockupTechniqueOptions.ts"
+   ],
+   "casos": 6
   },
   {
    "arquivo": "tests/components/NotificationDrawer-a11y.test.tsx",
@@ -21689,7 +21707,7 @@
   "src/components/mockup/MockupColorSelector.tsx": 2,
   "src/components/mockup/MockupCompareDialog.tsx": 1,
   "src/components/mockup/MockupConfigPanel.tsx": 8,
-  "src/components/mockup/MockupHistoryPanel.tsx": 4,
+  "src/components/mockup/MockupHistoryPanel.tsx": 5,
   "src/components/mockup/MockupLightbox.tsx": 1,
   "src/components/mockup/MockupProductSelector.tsx": 6,
   "src/components/mockup/MockupResultCard.tsx": 4,
@@ -21707,6 +21725,7 @@
   "src/components/mockup/logo-editor/logoTechniqueFilters.ts": 2,
   "src/components/mockup/logo-editor/useLogoDrag.ts": 1,
   "src/components/mockup/logo-editor/useLogoProcessing.ts": 1,
+  "src/components/mockup/mockupTechniqueOptions.ts": 1,
   "src/components/mockup/mockupWizardStep.ts": 1,
   "src/components/mockup/techniqueColorUtils.ts": 3,
   "src/components/notifications/NotificationDrawer.tsx": 7,

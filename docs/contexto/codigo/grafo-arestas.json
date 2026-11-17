@@ -7083,6 +7083,7 @@
    "src/components/mockup/MockupCompareDialog.tsx",
    "src/components/mockup/MockupLightbox.tsx",
    "src/components/mockup/ShareMenu.tsx",
+   "src/components/mockup/mockupTechniqueOptions.ts",
    "src/components/products/ColumnSelector.tsx",
    "src/components/products/LayoutPopover.tsx",
    "src/components/ui/badge.tsx",

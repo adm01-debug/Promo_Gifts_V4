@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "b2048b0ee0efd00a930bd09f341556d0b48ca3fc",
+  "commit": "6a8cd1ffd274a0d1964652bc86b19c8e85af1f67",
   "branch": "main",
-  "data_commit": "2026-11-17T00:13:08-03:00",
+  "data_commit": "2026-11-17T00:28:52-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "6a8cd1ff",
+    "data": "2026-11-17",
+    "assunto": "feat(mockup): técnica nova do catálogo não aparecia no filtro do histórico (#3740)"
+   },
    {
     "sha": "b2048b0e",
     "data": "2026-11-17",
@@ -126,14 +131,9 @@
     "sha": "26996059",
     "data": "2026-11-16",
     "assunto": "docs(audit): corrige a classificacao dos 52 testes — faltava a classe \"falha 100%\" (#3711)"
-   },
-   {
-    "sha": "36bbcaf9",
-    "data": "2026-11-16",
-    "assunto": "docs(audit): prova de incorporacao — 117 caminhos de residuo + as 5 PRs fechadas (#3710)"
    }
   ],
-  "arquivos_mudados_7d": 1924,
+  "arquivos_mudados_7d": 1927,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -157,7 +157,7 @@
    },
    {
     "pasta": "src/components/mockup",
-    "mudancas": 116
+    "mudancas": 118
    },
    {
     "pasta": "src/components/quotes",
@@ -211,11 +211,11 @@
    },
    {
     "arquivo": "package.json",
-    "mudancas": 43
+    "mudancas": 42
    },
    {
     "arquivo": "package-lock.json",
-    "mudancas": 27
+    "mudancas": 26
    },
    {
     "arquivo": "docs/coordenacao/conflitos-semanticos.md",
@@ -230,16 +230,16 @@
     "mudancas": 15
    },
    {
-    "arquivo": "CHANGELOG.md",
-    "mudancas": 15
-   },
-   {
     "arquivo": "analise-prs/progresso.json",
     "mudancas": 15
    },
    {
     "arquivo": "src/pages/kit-builder/KitBuilderPage.tsx",
     "mudancas": 15
+   },
+   {
+    "arquivo": "CHANGELOG.md",
+    "mudancas": 14
    },
    {
     "arquivo": "auditoria-supabase/RELATORIO_AUDITORIA_SUPABASE.md",
@@ -258,15 +258,15 @@
     "mudancas": 10
    },
    {
+    "arquivo": "src/pages/mockups/MockupGenerator.tsx",
+    "mudancas": 10
+   },
+   {
     "arquivo": "analise-prs/RELATORIO_PRS.md",
     "mudancas": 9
    },
    {
     "arquivo": "e2e/flows/magazine-publish-smoke.spec.ts",
-    "mudancas": 9
-   },
-   {
-    "arquivo": "src/pages/mockups/MockupGenerator.tsx",
     "mudancas": 9
    },
    {
@@ -322,9 +322,9 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 10812,
-  "arquivos_codigo": 5354,
-  "linhas_codigo": 1019802,
+  "arquivos_total": 10815,
+  "arquivos_codigo": 5357,
+  "linhas_codigo": 1020027,
   "rotas": 138,
   "rotas_http_backend": 13,
   "vistas_por_id": 0,
@@ -336,7 +336,7 @@
   "tabelas": 527,
   "migrations": 3097,
   "cron_jobs": 122,
-  "testes": 2535,
+  "testes": 2537,
   "workflows": 87,
   "scripts": 283,
   "docs_md": 1464
@@ -1887,8 +1887,8 @@
    "linhas": 130
   },
   "src/components": {
-   "arquivos": 1391,
-   "linhas": 277292
+   "arquivos": 1392,
+   "linhas": 277326
   },
   "src/config": {
    "arquivos": 1,
@@ -1932,7 +1932,7 @@
   },
   "src/pages": {
    "arquivos": 361,
-   "linhas": 83888
+   "linhas": 83889
   },
   "src/routes": {
    "arquivos": 14,
@@ -2039,8 +2039,8 @@
    "linhas": 141
   },
   "tests/components": {
-   "arquivos": 156,
-   "linhas": 34315
+   "arquivos": 158,
+   "linhas": 34505
   },
   "tests/config": {
    "arquivos": 6,
