@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "d1091fe14c20b1ac01086a89601c1fe28f1d6b0f",
+  "commit": "083510fb18758c9564ec000fc0f462385fa4b383",
   "branch": "main",
-  "data_commit": "2026-11-16T23:16:48-03:00",
+  "data_commit": "2026-11-16T23:32:11-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "083510fb",
+    "data": "2026-11-16",
+    "assunto": "fix(trust): resgata o contrato de \"dispositivo confiável\" e tapa o furo que ele achou (#3735)"
+   },
    {
     "sha": "d1091fe1",
     "data": "2026-11-16",
@@ -126,14 +131,9 @@
     "sha": "43fc3595",
     "data": "2026-11-16",
     "assunto": "feat(audit): resgata 267 arquivos de analise-prs que existiam só em branch de agente (#3705)"
-   },
-   {
-    "sha": "1f642122",
-    "data": "2026-11-16",
-    "assunto": "docs(audit): 12 recibos do ledger com sha256 que não bate com o arquivo (#3704)"
    }
   ],
-  "arquivos_mudados_7d": 1917,
+  "arquivos_mudados_7d": 1919,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -153,7 +153,7 @@
    },
    {
     "pasta": "src/hooks/products",
-    "mudancas": 126
+    "mudancas": 127
    },
    {
     "pasta": "src/components/mockup",
@@ -189,7 +189,7 @@
    },
    {
     "pasta": "RELATORIO_CI.md",
-    "mudancas": 71
+    "mudancas": 70
    },
    {
     "pasta": "src/pages/products",
@@ -199,7 +199,7 @@
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "RELATORIO_CI.md",
-    "mudancas": 71
+    "mudancas": 70
    },
    {
     "arquivo": "supabase/MIGRATIONS_SYNC_LOG.md",
@@ -207,7 +207,7 @@
    },
    {
     "arquivo": "PENDENCIAS.md",
-    "mudancas": 61
+    "mudancas": 60
    },
    {
     "arquivo": "package.json",
@@ -322,9 +322,9 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 10808,
-  "arquivos_codigo": 5351,
-  "linhas_codigo": 1019215,
+  "arquivos_total": 10809,
+  "arquivos_codigo": 5352,
+  "linhas_codigo": 1019436,
   "rotas": 138,
   "rotas_http_backend": 13,
   "vistas_por_id": 0,
@@ -336,7 +336,7 @@
   "tabelas": 527,
   "migrations": 3097,
   "cron_jobs": 122,
-  "testes": 2532,
+  "testes": 2533,
   "workflows": 87,
   "scripts": 283,
   "docs_md": 1463
@@ -1912,7 +1912,7 @@
   },
   "src/hooks": {
    "arquivos": 478,
-   "linhas": 90297
+   "linhas": 90300
   },
   "src/integrations": {
    "arquivos": 11,
@@ -2083,8 +2083,8 @@
    "linhas": 325
   },
   "tests/hooks": {
-   "arquivos": 138,
-   "linhas": 19123
+   "arquivos": 139,
+   "linhas": 19341
   },
   "tests/integration": {
    "arquivos": 11,

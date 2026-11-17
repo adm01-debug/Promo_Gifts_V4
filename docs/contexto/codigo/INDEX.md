@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e de hora em hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `d1091fe14c20b1ac01086a89601c1fe28f1d6b0f` (2026-11-16T23:16:48-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e de hora em hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `083510fb18758c9564ec000fc0f462385fa4b383` (2026-11-16T23:32:11-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -14,7 +14,7 @@ Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR
 Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua tarefa; não carregue tudo.
 
 ## Stack
-- linguagens: TypeScript (4887), SQL (3431), Markdown (1463), JavaScript (456), JSON (132), YAML (115), Shell (27), HTML (20)
+- linguagens: TypeScript (4888), SQL (3431), Markdown (1463), JavaScript (456), JSON (132), YAML (115), Shell (27), HTML (20)
 - linguagem_principal: TypeScript
 - framework: React
 - backend_http: n/d
@@ -34,9 +34,9 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 ## Números
 | item | qtd |
 |---|---|
-| arquivos_total | 10808 |
-| arquivos_codigo | 5351 |
-| linhas_codigo | 1019215 |
+| arquivos_total | 10809 |
+| arquivos_codigo | 5352 |
+| linhas_codigo | 1019436 |
 | rotas | 138 |
 | rotas_http_backend | 13 |
 | vistas_por_id | 0 |
@@ -48,7 +48,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 | tabelas | 527 |
 | migrations | 3097 |
 | cron_jobs | 122 |
-| testes | 2532 |
+| testes | 2533 |
 | workflows | 87 |
 | scripts | 283 |
 | docs_md | 1463 |
@@ -58,7 +58,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - componentes: src/components (940), src/pages (177), recovery/src-legacy (100)
 - hooks: src/hooks (298), recovery/src-legacy (196), src/components (77)
 - servicos_logica: src/lib (232), src/utils (30), src/services (10)
-- testes: tests/ (1033), co-localizado (__tests__) (674), e2e/ (625)
+- testes: tests/ (1034), co-localizado (__tests__) (674), e2e/ (625)
 - edge_functions: supabase/functions
 - migrations: supabase/migrations
 - scripts: scripts/ci-local (11), scripts/lib (7), scripts/graphify (4)
@@ -590,15 +590,15 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - possiveis_segredos_no_codigo: 7 — ex.: scripts/ai-context/cenarios.mjs:102, src/components/admin/connections/__tests__/ConnectionSecurity.unit.test.tsx:9, src/integrations/supabase/client.ts:27
 
 ## Grafo de código (graphify)
-- 48050 nós · 80727 arestas · 2738 comunidades · grafo do commit `d1091fe1`
-- comunidades maiores: ref_components (801), vitest (653), ref_integrations (642), ref_node_child_process (466), ref_hooks (437), @tanstack/react-query (434), sonner (413), @testing-library/react (368), ref_types (350), react (340), cors.ts (334), ref_node_fs (324)
+- 48058 nós · 80739 arestas · 2775 comunidades · grafo do commit `083510fb`
+- comunidades maiores: ref_components (812), ref_integrations (627), ref_hooks (546), vitest (512), ref_node_child_process (424), react (367), gotoAndSettle (359), react-router-dom (346), ref_types (345), @tanstack/react-query (335), ref_node_fs (315), scripts (309)
 - símbolos mais chamados: gotoAndSettle() (e2e/helpers/nav.ts), re (?), q() (scripts/supabase_snapshot/snapshot.py), analyze() (tests/scripts/test_personalization_artifact_diagnostics.py), outer() (tests/scripts/test_personalization_artifact_diagnostics.py), json (?), useExternalDatabase() (recovery/src-legacy/src/hooks/useExternalDatabase.ts), concludeCheck() (scripts/check-result-contract.mjs), querySupabaseReadOnly() (scripts/supabase-read-only-query.mjs), loginAs() (e2e/helpers/auth.ts), inner() (tests/scripts/test_personalization_artifact_diagnostics.py), excluded_sql() (scripts/supabase_snapshot/snapshot.py)
 - consulta local: `graphify query "<pergunta>"`, `graphify path "<A>" "<B>"`, `graphify explain "<X>"`
 
 ## Hotspots (arquivos mais alterados, 90 dias)
-- RELATORIO_CI.md (71)
+- RELATORIO_CI.md (70)
 - supabase/MIGRATIONS_SYNC_LOG.md (62)
-- PENDENCIAS.md (61)
+- PENDENCIAS.md (60)
 - package.json (43)
 - package-lock.json (27)
 - docs/coordenacao/conflitos-semanticos.md (22)
@@ -1184,6 +1184,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - CHANGELOG topo: [1.1.0](https://github.com/adm01-debug/Promo_Gifts_V4/compare/v1.0.0...v1.1.0) (2026-11-13)
 
 ## Últimos commits
+- 2026-11-16 `083510fb` fix(trust): resgata o contrato de "dispositivo confiável" e tapa o furo que ele achou (#3735)
 - 2026-11-16 `d1091fe1` docs(audit): rodada de 17/11 no ledger de auditoria de branches (#3734)
 - 2026-11-16 `79c56401` fix(docs): número errado de migration no doc resgatado deixou o Gate 1 vermelho na main (#3733)
 - 2026-11-16 `bf156d3f` docs(audit): resgata 4 documentos da fábrica VPS que não existiam na main (#3731)
@@ -1198,7 +1199,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-16 `9bd4a4bf` chore(docs): arquiva a passagem de sessão de 15/11 que a main não tinha (#3717)
 - 2026-11-16 `16cfec32` chore(deps): sobe jest-dom 7 e react-hooks 7; rejeita jsdom 31 com a evidência (#3715)
 - 2026-11-16 `cd67884f` docs(migrations): registra recibo oficial da CRON-005 aplicada em producao (#3716)
-- 2026-11-16 `7a7a5bc3` fix(quotes): valida o rascunho antes de restaurar na tela do orcamento (#3713)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

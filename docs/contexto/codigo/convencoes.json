@@ -23,7 +23,7 @@
    "src/services (10)"
   ],
   "testes": [
-   "tests/ (1033)",
+   "tests/ (1034)",
    "co-localizado (__tests__) (674)",
    "e2e/ (625)"
   ],
@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "fix(trust): resgata o contrato de \"dispositivo confiável\" e tapa o furo que ele achou (#3735)",
    "docs(audit): rodada de 17/11 no ledger de auditoria de branches (#3734)",
    "fix(docs): número errado de migration no doc resgatado deixou o Gate 1 vermelho na main (#3733)",
    "docs(audit): resgata 4 documentos da fábrica VPS que não existiam na main (#3731)",
-   "test(mockup): resgata as 4 guardas que faltavam das fatias da fábrica VPS (#3730)",
-   "fix(edge-fn): mockup baixava a imagem inteira na memória antes de recusar (#3729)"
+   "test(mockup): resgata as 4 guardas que faltavam das fatias da fábrica VPS (#3730)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",

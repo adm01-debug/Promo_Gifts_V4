@@ -6771,7 +6771,7 @@
     "src/hooks/admin/index.ts",
     "src/pages/auth/SSOCallbackPage.tsx"
    ],
-   "coberto_por_testes": 0
+   "coberto_por_testes": 1
   },
   {
    "arquivo": "src/hooks/admin/useGeoBlocking.ts",
@@ -11834,7 +11834,7 @@
    "hooks_exportados": [
     "useSupplierTrust"
    ],
-   "linhas": 110,
+   "linhas": 113,
    "dominio": "hooks/products",
    "tabelas": [],
    "rpcs": [],
@@ -11847,7 +11847,7 @@
    "usado_por_arquivos": [
     "src/hooks/products/index.ts"
    ],
-   "coberto_por_testes": 0
+   "coberto_por_testes": 1
   },
   {
    "arquivo": "src/hooks/products/useVariantStock.ts",

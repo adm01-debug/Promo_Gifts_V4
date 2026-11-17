@@ -5,9 +5,9 @@
   "vitest",
   "playwright"
  ],
- "total": 2532,
+ "total": 2533,
  "por_tipo": {
-  "contrato": 65,
+  "contrato": 66,
   "e2e": 677,
   "pytest": 4,
   "qa": 17,
@@ -16,7 +16,7 @@
  "onde_ficam": [
   {
    "padrao": "tests/",
-   "arquivos": 1033
+   "arquivos": 1034
   },
   {
    "padrao": "co-localizado (__tests__)",
@@ -16514,6 +16514,16 @@
    "casos": 0
   },
   {
+   "arquivo": "tests/hooks/device-and-supplier-trust.contract.test.ts",
+   "tipo": "contrato",
+   "linhas": 218,
+   "testa": [
+    "src/hooks/admin/useDeviceDetection.ts",
+    "src/hooks/products/useSupplierTrust.ts"
+   ],
+   "casos": 2
+  },
+  {
    "arquivo": "tests/hooks/hooks-audit-bugfix-08-14.test.ts",
    "tipo": "unit",
    "linhas": 376,
@@ -21810,6 +21820,7 @@
   "src/hooks/admin/index.ts": 7,
   "src/hooks/admin/useAllowedIPs.ts": 2,
   "src/hooks/admin/useDevGate.ts": 14,
+  "src/hooks/admin/useDeviceDetection.ts": 1,
   "src/hooks/admin/useGeoBlocking.ts": 1,
   "src/hooks/admin/useIPValidation.ts": 3,
   "src/hooks/admin/useIntelligenceBadgeSettings.ts": 3,
@@ -21927,6 +21938,7 @@
   "src/hooks/products/useStockNotifications.ts": 1,
   "src/hooks/products/useSupplierComparison.ts": 5,
   "src/hooks/products/useSupplierSalesRanking.ts": 2,
+  "src/hooks/products/useSupplierTrust.ts": 1,
   "src/hooks/products/useVariantSupplierSources.ts": 6,
   "src/hooks/products/useVideoVariantLinks.ts": 1,
   "src/hooks/quotes/index.ts": 19,
@@ -22679,7 +22691,6 @@
    "src/hooks/admin/useAdminSessions.ts",
    "src/hooks/admin/useAuditLog.ts",
    "src/hooks/admin/useDevAccessAudit.ts",
-   "src/hooks/admin/useDeviceDetection.ts",
    "src/hooks/admin/useKillSwitchObservability.ts",
    "src/hooks/admin/useMedallionHealth.ts",
    "src/hooks/admin/useRetestCooldownSetting.ts",
@@ -22786,7 +22797,6 @@
    "src/hooks/products/useSupplierFiscalData.ts",
    "src/hooks/products/useSupplierNames.ts",
    "src/hooks/products/useSuppliers.ts",
-   "src/hooks/products/useSupplierTrust.ts",
    "src/hooks/products/useVariantStock.ts",
    "src/hooks/quotes/useNextQuoteNumberPreview.ts",
    "src/hooks/quotes/useProdutoPersonalizacao.ts",
