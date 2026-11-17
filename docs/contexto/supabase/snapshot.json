@@ -161680,9 +161680,13 @@
             {
               "file": "supabase/migrations/20260717161653_fix_rls_exists_products_definer_v1.sql",
               "hits": 2
+            },
+            {
+              "file": "supabase/migrations/20261117073000_p06_security_invoker_v_product_properties_public.sql",
+              "hits": 3
             }
           ],
-          "code_total_files": 1,
+          "code_total_files": 2,
           "cron": [],
           "db": [],
           "triggers": [],
@@ -191630,9 +191634,13 @@
             {
               "file": "supabase/migrations/20261015120000_reconcilia_oob_incidente_2026_10_13.sql",
               "hits": 1
+            },
+            {
+              "file": "supabase/migrations/20261117073000_p06_security_invoker_v_product_properties_public.sql",
+              "hits": 2
             }
           ],
-          "code_total_files": 5,
+          "code_total_files": 6,
           "cron": [],
           "db": [],
           "triggers": [],

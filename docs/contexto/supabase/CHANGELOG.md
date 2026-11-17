@@ -2,6 +2,10 @@
 
 Diff semântico gerado a cada coleta em que algo mudou.
 
+## 2026-11-17 08:22 UTC
+
+- **functions** alterado (2): `public.fn_product_active_for_rls(p_id uuid)`, `public.user_belongs_to_org(org_id uuid)`
+
 ## 2026-11-17 07:19 UTC
 
 - **grants** alterado (1): `public.color_synonym_map:anon`
