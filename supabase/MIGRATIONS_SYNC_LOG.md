@@ -2442,3 +2442,23 @@ aplicado.
 | versão | arquivo | sha256 | status |
 |---|---|---|---|
 | `20261117073000` | `p06_security_invoker_v_product_properties_public` | `87b5a2646e3e05fb85515f463f1a31ad01562076a011756992f3a76ffffede10` | pendente — aplicar via `db-apply-migration.yml` (`version=20261117073000`) após merge. As outras 7 views do P06 ficam como estão: exigem decisão do dono (Git 7) sobre aposentar o desenho SECURITY DEFINER de `fix_version 20260717` |
+
+## 2026-11-17 — `ELEVENLABS_API_KEY` no catálogo de credenciais (rotação pela UI, não pelo painel)
+
+A chave existe hoje **apenas** como secret de edge function — o log da edge mostra
+`credential_resolved source=env has_value=true value_length=51`. Trocá-la exige o painel do
+Supabase. Como `resolveCredential` consulta `integration_credentials` **antes** do env
+(`supabase/functions/_shared/credentials.ts:437-467`), registrar o nome torna `/admin/conexoes` o
+lugar de rotacionar, com precedência sobre o secret antigo.
+
+Motivo da rotação: a ElevenLabs recusa a chave atual com **401**
+(`ElevenLabs scribe credential request failed: { status: 401 }`, em 10:47, 15:34 e 17:18 de 17/11),
+que `elevenlabs-scribe-token` devolve como 500 ao navegador. `elevenlabs-tts` usa a mesma chave.
+
+A migration cria **apenas o nome, com valor vazio** — e valor vazio é falsy em
+`credentials.ts:446`, então a linha fica **inerte** até ser preenchida: aplicar não muda o
+comportamento de produção. Nenhum segredo entra no repositório.
+
+| versão | arquivo | sha256 | status |
+|---|---|---|---|
+| `20261117172500` | `elevenlabs_credential` | `a238601525e8afc7def6948bc2cdb24667340bddd7d9a702c91211759e2520c3` | pendente — aplicar via `db-apply-migration.yml` (`version=20261117172500`) após merge |
