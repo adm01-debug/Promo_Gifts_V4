@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "9ae8ea15b5efb695720e0871a0026728343d5f7b",
+  "sha": "e86cca8a23955f35a34b2c25b8102d96cd13fcc1",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-17 23:14 UTC",
-  "files_total": 10807,
-  "code_files": 8843,
-  "code_lines": 1252223
+  "generated_at": "2026-11-17 23:44 UTC",
+  "files_total": 10811,
+  "code_files": 8847,
+  "code_lines": 1253259
  },
  "version": "1.3.2",
- "facts_hash": "9ec7206860b39cf4",
+ "facts_hash": "b3cce1c8bec0f302",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -1120,8 +1120,8 @@
   "package_manager": "npm",
   "languages": {
    ".sql": 3440,
-   ".ts": 3011,
-   ".tsx": 1927,
+   ".ts": 3014,
+   ".tsx": 1928,
    ".mjs": 450,
    ".py": 15,
    ".js": 7
@@ -149978,7 +149978,7 @@
   {
    "module": "src/hooks",
    "files": 481,
-   "lines": 90964,
+   "lines": 90980,
    "tables": [
     "admin_audit_log",
     "admin_settings",
@@ -151703,8 +151703,8 @@
   },
   {
    "module": "tests",
-   "files": 1082,
-   "lines": 169725,
+   "files": 1086,
+   "lines": 170745,
    "tables": [
     "bot_detection_log",
     "clients",
@@ -172525,6 +172525,10 @@
    {
     "file": "src/hooks/mockup/useMockupDraft.ts",
     "text": "A logo que não subiu não pode sumir do rascunho em silêncio."
+   },
+   {
+    "file": "src/hooks/mockup/useMockupDraft.ts",
+    "text": "validação de encaixe da logo somem ao reabrir o rascunho."
    },
    {
     "file": "src/hooks/mockup/useMockupGenerator.ts",
@@ -283040,6 +283044,54 @@
     "name": "retains genuine zero with historical/new flag %s"
    },
    {
+    "file": "tests/hooks/useCustomKitPersistence.legacy.test.tsx",
+    "name": "Original kit persistence retains public actions with factual nullable rows"
+   },
+   {
+    "file": "tests/hooks/useCustomKitPersistence.legacy.test.tsx",
+    "name": "reads every raw null, JSON extra, organization, type and revision without normalization or hiding drafts"
+   },
+   {
+    "file": "tests/hooks/useCustomKitPersistence.legacy.test.tsx",
+    "name": "pin=%s uses only existing atomic RPC and the real row confirmation"
+   },
+   {
+    "file": "tests/hooks/useCustomKitPersistence.legacy.test.tsx",
+    "name": "RPC error never claims success or falls back to update"
+   },
+   {
+    "file": "tests/hooks/useCustomKitPersistence.legacy.test.tsx",
+    "name": "stale first pin reply cannot announce an outdated final state"
+   },
+   {
+    "file": "tests/hooks/useCustomKitPersistence.legacy.test.tsx",
+    "name": "account switch has a separate cache and suppresses old RPC notifications"
+   },
+   {
+    "file": "tests/hooks/useCustomKitPersistence.legacy.test.tsx",
+    "name": "manual persistence serializes original payload extras and uses valid ready lifecycle status"
+   },
+   {
+    "file": "tests/hooks/useCustomKitPersistence.legacy.test.tsx",
+    "name": "RLS failed update rejects without a success message"
+   },
+   {
+    "file": "tests/hooks/useCustomKitPersistence.legacy.test.tsx",
+    "name": "Kit duplication source is structural and preserves nullable business data"
+   },
+   {
+    "file": "tests/hooks/useCustomKitPersistence.legacy.test.tsx",
+    "name": "does not require id/revision/timestamps and keeps JSON metadata/null prices untouched"
+   },
+   {
+    "file": "tests/hooks/useCustomKitPersistence.legacy.test.tsx",
+    "name": "explicit null clears nullable overrides rather than reviving old values"
+   },
+   {
+    "file": "tests/hooks/useCustomKitPersistence.legacy.test.tsx",
+    "name": "normalizes legitimate JSON via shared serializer without dropping unknown fields"
+   },
+   {
     "file": "tests/hooks/useCustomKitPersistence.pin-order.test.tsx",
     "name": "useCustomKitPersistence togglePinned — ordem das requisições"
    },
@@ -284516,6 +284568,42 @@
     "name": "does not query when no color filter is active"
    },
    {
+    "file": "tests/hooks/useLegacyLintFilters.test.ts",
+    "name": "legacy category filter lifecycle"
+   },
+   {
+    "file": "tests/hooks/useLegacyLintFilters.test.ts",
+    "name": "does not refetch after result size changes or an equal selection receives a new array"
+   },
+   {
+    "file": "tests/hooks/useLegacyLintFilters.test.ts",
+    "name": "fetches changed categories and clears a removed selection"
+   },
+   {
+    "file": "tests/hooks/useLegacyLintFilters.test.ts",
+    "name": "keeps a disabled query idle and preserves includeDescendants"
+   },
+   {
+    "file": "tests/hooks/useLegacyLintFilters.test.ts",
+    "name": "legacy color filter keyed lifecycle"
+   },
+   {
+    "file": "tests/hooks/useLegacyLintFilters.test.ts",
+    "name": "preserves same-content selections without duplicate requests"
+   },
+   {
+    "file": "tests/hooks/useLegacyLintFilters.test.ts",
+    "name": "reads current groups after a key change and never mixes red and blue products"
+   },
+   {
+    "file": "tests/hooks/useLegacyLintFilters.test.ts",
+    "name": "does not retry indefinitely when a request rejects and parents rebuild arrays"
+   },
+   {
+    "file": "tests/hooks/useLegacyLintFilters.test.ts",
+    "name": "still accepts legacy color names and clears the selected products"
+   },
+   {
     "file": "tests/hooks/useLegacyLintLifecycle.test.ts",
     "name": "legacy advanced filters mount lifecycle"
    },
@@ -284850,6 +284938,54 @@
    {
     "file": "tests/hooks/useMagicUpState.legacy.test.tsx",
     "name": "a late color/gallery response from the previous product cannot replace current assets"
+   },
+   {
+    "file": "tests/hooks/useMockupDraft.legacy.test.ts",
+    "name": "Mockup draft retains TEXT reference IDs and original save/load flow"
+   },
+   {
+    "file": "tests/hooks/useMockupDraft.legacy.test.ts",
+    "name": "saves local immediately and backend only after debounce"
+   },
+   {
+    "file": "tests/hooks/useMockupDraft.legacy.test.ts",
+    "name": "persists text references %j without nonexistent FK lookups"
+   },
+   {
+    "file": "tests/hooks/useMockupDraft.legacy.test.ts",
+    "name": "keeps local logo fingerprint marker but strips backend image body and metadata stays"
+   },
+   {
+    "file": "tests/hooks/useMockupDraft.legacy.test.ts",
+    "name": "keeps a URL logo reference in separate backend column"
+   },
+   {
+    "file": "tests/hooks/useMockupDraft.legacy.test.ts",
+    "name": "retains newest-draft precedence for local %s"
+   },
+   {
+    "file": "tests/hooks/useMockupDraft.legacy.test.ts",
+    "name": "keeps local fallback when backend fails"
+   },
+   {
+    "file": "tests/hooks/useMockupDraft.legacy.test.ts",
+    "name": "clears both existing local key and backend draft"
+   },
+   {
+    "file": "tests/hooks/useMockupDraft.legacy.test.ts",
+    "name": "skips backend for unauthenticated user while retaining local draft"
+   },
+   {
+    "file": "tests/hooks/useMockupDraft.legacy.test.ts",
+    "name": "cancels pending backend save on unmount"
+   },
+   {
+    "file": "tests/hooks/useMockupDraft.legacy.test.ts",
+    "name": "loads backend areas with dimensions, colors and curvature metadata preserved"
+   },
+   {
+    "file": "tests/hooks/useMockupDraft.legacy.test.ts",
+    "name": "normalizes malformed JSON entries without accessing null properties"
    },
    {
     "file": "tests/hooks/useMockupGenerator.test.ts",
@@ -285598,6 +285734,46 @@
    {
     "file": "tests/hooks/useQuoteItems.bugfix.test.ts",
     "name": "activeItemIndex deve ser null ao remover o próprio item ativo"
+   },
+   {
+    "file": "tests/hooks/useQuoteTemplates.copy-preservation.test.ts",
+    "name": "$label copy mutation contract"
+   },
+   {
+    "file": "tests/hooks/useQuoteTemplates.copy-preservation.test.ts",
+    "name": "duplicates raw $label without normalized data or lost fields"
+   },
+   {
+    "file": "tests/hooks/useQuoteTemplates.copy-preservation.test.ts",
+    "name": "admin-clones raw $label with current creator and selected seller"
+   },
+   {
+    "file": "tests/hooks/useQuoteTemplates.copy-preservation.test.ts",
+    "name": "does not create a copy invisible to the selected other seller: $active"
+   },
+   {
+    "file": "tests/hooks/useQuoteTemplates.copy-preservation.test.ts",
+    "name": "preserves an inactive private copy when the target is the current creator"
+   },
+   {
+    "file": "tests/hooks/useQuoteTemplates.copy-preservation.test.ts",
+    "name": "retains normal create defaults while satisfying the actual INSERT creator policy"
+   },
+   {
+    "file": "tests/hooks/useQuoteTemplates.copy-preservation.test.ts",
+    "name": "retains the administrator guard for cross-seller copying"
+   },
+   {
+    "file": "tests/hooks/useQuoteTemplates.copy-preservation.test.ts",
+    "name": "does not create without an authenticated author"
+   },
+   {
+    "file": "tests/hooks/useQuoteTemplates.copy-preservation.test.ts",
+    "name": "does not claim success when %s confirms zero rows"
+   },
+   {
+    "file": "tests/hooks/useQuoteTemplates.copy-preservation.test.ts",
+    "name": "surfaces copy persistence errors and leaves the original raw row untouched"
    },
    {
     "file": "tests/hooks/useQuoteTemplates.raw-fetch.test.ts",
@@ -462802,7 +462978,7 @@
   },
   "src/hooks/mockup/useMockupDraft.ts": {
    "path": "src/hooks/mockup/useMockupDraft.ts",
-   "lines": 473,
+   "lines": 489,
    "exports": [
     "interface MockupDraftData",
     "function useMockupDraft"
@@ -462845,7 +463021,8 @@
     "está congelado (REGRA #8), então o campo viaja só na cópia local do",
     "BUG-A FIX: removed 3 FK pre-validation queries (product, technique, client).",
     "BUG-A FIX: IDs used directly — no pre-validation queries.",
-    "A logo que não subiu não pode sumir do rascunho em silêncio."
+    "A logo que não subiu não pode sumir do rascunho em silêncio.",
+    "validação de encaixe da logo somem ao reabrir o rascunho."
    ],
    "hooks": [
     "useMockupDraft"
@@ -531135,6 +531312,25 @@
     "retains genuine zero with historical/new flag %s"
    ]
   },
+  "tests/hooks/useCustomKitPersistence.legacy.test.tsx": {
+   "path": "tests/hooks/useCustomKitPersistence.legacy.test.tsx",
+   "lines": 272,
+   "is_test": true,
+   "tests": [
+    "Original kit persistence retains public actions with factual nullable rows",
+    "reads every raw null, JSON extra, organization, type and revision without normalization or hiding drafts",
+    "pin=%s uses only existing atomic RPC and the real row confirmation",
+    "RPC error never claims success or falls back to update",
+    "stale first pin reply cannot announce an outdated final state",
+    "account switch has a separate cache and suppresses old RPC notifications",
+    "manual persistence serializes original payload extras and uses valid ready lifecycle status",
+    "RLS failed update rejects without a success message",
+    "Kit duplication source is structural and preserves nullable business data",
+    "does not require id/revision/timestamps and keeps JSON metadata/null prices untouched",
+    "explicit null clears nullable overrides rather than reviving old values",
+    "normalizes legitimate JSON via shared serializer without dropping unknown fields"
+   ]
+  },
   "tests/hooks/useCustomKitPersistence.pin-order.test.tsx": {
    "path": "tests/hooks/useCustomKitPersistence.pin-order.test.tsx",
    "lines": 93,
@@ -531844,6 +532040,28 @@
     "does not query when no color filter is active"
    ]
   },
+  "tests/hooks/useLegacyLintFilters.test.ts": {
+   "path": "tests/hooks/useLegacyLintFilters.test.ts",
+   "lines": 161,
+   "is_test": true,
+   "params": [
+    {
+     "name": "REF_QUERIES",
+     "value": "3"
+    }
+   ],
+   "tests": [
+    "legacy category filter lifecycle",
+    "does not refetch after result size changes or an equal selection receives a new array",
+    "fetches changed categories and clears a removed selection",
+    "keeps a disabled query idle and preserves includeDescendants",
+    "legacy color filter keyed lifecycle",
+    "preserves same-content selections without duplicate requests",
+    "reads current groups after a key change and never mixes red and blue products",
+    "does not retry indefinitely when a request rejects and parents rebuild arrays",
+    "still accepts legacy color names and clears the selected products"
+   ]
+  },
   "tests/hooks/useLegacyLintLifecycle.test.ts": {
    "path": "tests/hooks/useLegacyLintLifecycle.test.ts",
    "lines": 484,
@@ -532023,6 +532241,34 @@
     "MagicUp active Gold colors/images",
     "queries real product IDs/order/limits and preserves image/color behavior",
     "a late color/gallery response from the previous product cannot replace current assets"
+   ]
+  },
+  "tests/hooks/useMockupDraft.legacy.test.ts": {
+   "path": "tests/hooks/useMockupDraft.legacy.test.ts",
+   "lines": 254,
+   "is_test": true,
+   "errors": [
+    "Unexpected legacy table lookup "
+   ],
+   "params": [
+    {
+     "name": "PENDING",
+     "value": "'draft-logo-pending:'"
+    }
+   ],
+   "tests": [
+    "Mockup draft retains TEXT reference IDs and original save/load flow",
+    "saves local immediately and backend only after debounce",
+    "persists text references %j without nonexistent FK lookups",
+    "keeps local logo fingerprint marker but strips backend image body and metadata stays",
+    "keeps a URL logo reference in separate backend column",
+    "retains newest-draft precedence for local %s",
+    "keeps local fallback when backend fails",
+    "clears both existing local key and backend draft",
+    "skips backend for unauthenticated user while retaining local draft",
+    "cancels pending backend save on unmount",
+    "loads backend areas with dimensions, colors and curvature metadata preserved",
+    "normalizes malformed JSON entries without accessing null properties"
    ]
   },
   "tests/hooks/useMockupGenerator.test.ts": {
@@ -532376,6 +532622,23 @@
     "REGRESSÃO: sem o fix, remoção do meio deixaria expandedItems com índices stale",
     "activeItemIndex deve ser ajustado ao remover item antes do ativo",
     "activeItemIndex deve ser null ao remover o próprio item ativo"
+   ]
+  },
+  "tests/hooks/useQuoteTemplates.copy-preservation.test.ts": {
+   "path": "tests/hooks/useQuoteTemplates.copy-preservation.test.ts",
+   "lines": 333,
+   "is_test": true,
+   "tests": [
+    "$label copy mutation contract",
+    "duplicates raw $label without normalized data or lost fields",
+    "admin-clones raw $label with current creator and selected seller",
+    "does not create a copy invisible to the selected other seller: $active",
+    "preserves an inactive private copy when the target is the current creator",
+    "retains normal create defaults while satisfying the actual INSERT creator policy",
+    "retains the administrator guard for cross-seller copying",
+    "does not create without an authenticated author",
+    "does not claim success when %s confirms zero rows",
+    "surfaces copy persistence errors and leaves the original raw row untouched"
    ]
   },
   "tests/hooks/useQuoteTemplates.raw-fetch.test.ts": {
@@ -544347,10 +544610,47 @@
   }
  },
  "git": {
-  "sha": "9ae8ea15b5efb695720e0871a0026728343d5f7b",
+  "sha": "e86cca8a23955f35a34b2c25b8102d96cd13fcc1",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "e86cca8",
+    "date": "2026-11-17",
+    "author": "adm01-debug",
+    "subject": "fix(mockup): rascunho reaberto perdia os limites de gravacao da area (#3797)",
+    "files": [
+     "src/hooks/mockup/useMockupDraft.ts",
+     "tests/hooks/useMockupDraft.legacy.test.ts"
+    ]
+   },
+   {
+    "sha": "91a19f2",
+    "date": "2026-11-17",
+    "author": "adm01-debug",
+    "subject": "test(quotes): resgata a cobertura de copia de template de orcamento (#3794)",
+    "files": [
+     "tests/hooks/useQuoteTemplates.copy-preservation.test.ts"
+    ]
+   },
+   {
+    "sha": "5e4825f",
+    "date": "2026-11-17",
+    "author": "adm01-debug",
+    "subject": "test(kit): resgata a cobertura de persistencia e destaque de kit (#3793)",
+    "files": [
+     "tests/hooks/useCustomKitPersistence.legacy.test.tsx"
+    ]
+   },
+   {
+    "sha": "32de6af",
+    "date": "2026-11-17",
+    "author": "adm01-debug",
+    "subject": "test(products): resgata a cobertura de ciclo de vida dos filtros de cor e categoria (#3792)",
+    "files": [
+     "tests/hooks/useLegacyLintFilters.test.ts"
+    ]
+   },
    {
     "sha": "9ae8ea1",
     "date": "2026-11-17",
@@ -544630,58 +544930,9 @@
     "files": [
      "docs/agentes/resgates/2026-11-16-auditoria-branches.md"
     ]
-   },
-   {
-    "sha": "cfe603d",
-    "date": "2026-11-17",
-    "author": "adm01-debug",
-    "subject": "fix(deps): override basic-ftp para ^6.2.4 e fecha o GHSA-5pm8-86m8-9m6r (#3774)",
-    "files": [
-     "package-lock.json",
-     "package.json"
-    ]
-   },
-   {
-    "sha": "e85f935",
-    "date": "2026-11-17",
-    "author": "adm01-debug",
-    "subject": "docs: troca a classificação por data por identidade de blob no histórico (#3772)",
-    "files": [
-     "docs/agentes/resgates/2026-11-16-auditoria-branches.md"
-    ]
-   },
-   {
-    "sha": "68cc659",
-    "date": "2026-11-17",
-    "author": "adm01-debug",
-    "subject": "chore(hooks): reaproveita untypedRpc nos alertas de ruptura, sem as any (#3771)",
-    "files": [
-     "src/hooks/stock/useRuptureAlerts.ts"
-    ]
-   },
-   {
-    "sha": "a521c74",
-    "date": "2026-11-17",
-    "author": "adm01-debug",
-    "subject": "docs: adjudica os 32 refs salvo/* contra o main (0 arquivos ausentes) (#3770)",
-    "files": [
-     "docs/agentes/resgates/2026-11-16-auditoria-branches.md"
-    ]
    }
   ],
   "hot_files": [
-   [
-    "docs/agentes/resgates/2026-11-16-auditoria-branches.md",
-    4
-   ],
-   [
-    "package-lock.json",
-    3
-   ],
-   [
-    "package.json",
-    3
-   ],
    [
     "tests/pages/legacy-QuoteBuilder.partial-preservation.test.tsx",
     2
@@ -544695,12 +544946,44 @@
     2
    ],
    [
+    "package-lock.json",
+    2
+   ],
+   [
+    "package.json",
+    2
+   ],
+   [
     "scripts/check-dependency-audit.mjs",
     2
    ],
    [
     "analise-branches/dossies/claude__resgate-3390-261113.md",
     2
+   ],
+   [
+    "docs/agentes/resgates/2026-11-16-auditoria-branches.md",
+    2
+   ],
+   [
+    "src/hooks/mockup/useMockupDraft.ts",
+    1
+   ],
+   [
+    "tests/hooks/useMockupDraft.legacy.test.ts",
+    1
+   ],
+   [
+    "tests/hooks/useQuoteTemplates.copy-preservation.test.ts",
+    1
+   ],
+   [
+    "tests/hooks/useCustomKitPersistence.legacy.test.tsx",
+    1
+   ],
+   [
+    "tests/hooks/useLegacyLintFilters.test.ts",
+    1
    ],
    [
     "tests/pages/quote-view/root-quote-helpers.test.ts",
@@ -544728,26 +545011,6 @@
    ],
    [
     "src/lib/filters/voiceFilterPatch.ts",
-    1
-   ],
-   [
-    "src/pages/Index.tsx",
-    1
-   ],
-   [
-    "src/stores/voiceFilterBridge.ts",
-    1
-   ],
-   [
-    "tests/hooks/useCatalogState.voiceFilters.test.tsx",
-    1
-   ],
-   [
-    "tests/lib/voiceFilterPatch.legacy.test.ts",
-    1
-   ],
-   [
-    "src/components/favorites/FavoritePresentationLauncher.tsx",
     1
    ]
   ]

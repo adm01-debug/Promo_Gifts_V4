@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.3.2 · commit `9ae8ea15b5` · branch `main` · 2026-11-17 23:14 UTC
+> Gerado automaticamente por AI Context Sync v1.3.2 · commit `e86cca8a23` · branch `main` · 2026-11-17 23:44 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -6568,7 +6568,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `admin` | `supabase/migrations/20261112120500_fix_optimization_queue_rpcs_dev_access.sql` |
 | `anon` | `tests/edge-functions/live/_live-client.ts` |
 
-## K. Testes como especificação (22242 testes em 2250 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (22285 testes em 2254 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -6872,7 +6872,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `src/components/layout/sidebar/__tests__/SidebarNavGroup.history.test.tsx` | 18 | SidebarNavGroup — back/forward (histórico real) preservam paridade entre os 3 itens · back: /carrinhos -> /orcamentos/novo, voltar reativa Carrinhos e desativa Novo Orçamento · forward: depois de voltar, avançar restaura o destaque de Novo Orçamento · back/forward atravessando os 3 itens mantém destaque correto a cada salto … |
 | `src/components/products/customization/__tests__/ConfigurationPanelV6.collapse.test.tsx` | 18 | ConfigurationPanelV6 — contrato de colapso · Grupo A — wrapper externo (contrato visual) · expandido: contém flex/flex-col/gap-4/p-4/transition-[gap]/motion-reduce · colapsado: contém gap-0 e NÃO contém gap-4 nem space-y-4 … |
 | `src/components/search/__tests__/searchCache.test.ts` | 18 | searchCache.set / searchCache.get · returns null for an unknown key · returns results immediately after set · is case-insensitive (normalized key) … |
-| … +1950 linhas — lista completa em `context.json` | | |
+| … +1954 linhas — lista completa em `context.json` | | |
 
 ## L. Eventos de webhook tratados (contratos com sistemas externos)
 
@@ -7340,4 +7340,4 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | ArrowRight/Down no último e ArrowLeft/Up no primeiro param no limite (não ciclam); | `src/components/magic-up/MagicUpVariationComparator.tsx` |
 | Regra única do logo do mockup (SVG fora: a edge generate-mockup rejeita SVG). | `src/components/mockup/AreaCard.tsx` |
 | * Validação sem rede: extensão, tipo informado pelo navegador e tamanho. Retorna a mensagem de erro ou null. */ | `src/components/mockup/ArtFileUpload.tsx` |
-| … +1336 linhas — lista completa em `context.json` | |
+| … +1337 linhas — lista completa em `context.json` | |

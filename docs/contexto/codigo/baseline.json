@@ -2,11 +2,31 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "9ae8ea15b5efb695720e0871a0026728343d5f7b",
+  "commit": "e86cca8a23955f35a34b2c25b8102d96cd13fcc1",
   "branch": "main",
-  "data_commit": "2026-11-17T20:04:11-03:00",
+  "data_commit": "2026-11-17T20:42:43-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "e86cca8a",
+    "data": "2026-11-17",
+    "assunto": "fix(mockup): rascunho reaberto perdia os limites de gravacao da area (#3797)"
+   },
+   {
+    "sha": "91a19f20",
+    "data": "2026-11-17",
+    "assunto": "test(quotes): resgata a cobertura de copia de template de orcamento (#3794)"
+   },
+   {
+    "sha": "5e4825ff",
+    "data": "2026-11-17",
+    "assunto": "test(kit): resgata a cobertura de persistencia e destaque de kit (#3793)"
+   },
+   {
+    "sha": "32de6af1",
+    "data": "2026-11-17",
+    "assunto": "test(products): resgata a cobertura de ciclo de vida dos filtros de cor e categoria (#3792)"
+   },
    {
     "sha": "9ae8ea15",
     "data": "2026-11-17",
@@ -111,29 +131,9 @@
     "sha": "5ce8d792",
     "data": "2026-11-17",
     "assunto": "docs: retira o \"0 ausentes\" da auditoria — era defeito do instrumento (#3779)"
-   },
-   {
-    "sha": "378aeff5",
-    "data": "2026-11-17",
-    "assunto": "fix(ci): isenta do E188 o merge automático da base sem conflito (#3776)"
-   },
-   {
-    "sha": "86c10c8d",
-    "data": "2026-11-17",
-    "assunto": "fix(ci): separa \"runner sem Docker\" de \"contrato violado\" no Gate 2.5 (#3775)"
-   },
-   {
-    "sha": "f129270a",
-    "data": "2026-11-17",
-    "assunto": "chore(main): release gifts-store 1.9.1 (#3777)"
-   },
-   {
-    "sha": "c2629acd",
-    "data": "2026-11-17",
-    "assunto": "fix(test): acompanha o snapshot de cron vigente em vez de fixar o de 08/11 (#3773)"
    }
   ],
-  "arquivos_mudados_7d": 1977,
+  "arquivos_mudados_7d": 1981,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -322,9 +322,9 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 10879,
-  "arquivos_codigo": 5404,
-  "linhas_codigo": 1031491,
+  "arquivos_total": 10883,
+  "arquivos_codigo": 5408,
+  "linhas_codigo": 1032527,
   "rotas": 139,
   "rotas_http_backend": 13,
   "vistas_por_id": 0,
@@ -336,7 +336,7 @@
   "tabelas": 527,
   "migrations": 3099,
   "cron_jobs": 122,
-  "testes": 2572,
+  "testes": 2576,
   "workflows": 88,
   "scripts": 283,
   "docs_md": 1470
@@ -1920,7 +1920,7 @@
   },
   "src/hooks": {
    "arquivos": 481,
-   "linhas": 90964
+   "linhas": 90980
   },
   "src/integrations": {
    "arquivos": 11,
@@ -2091,8 +2091,8 @@
    "linhas": 325
   },
   "tests/hooks": {
-   "arquivos": 155,
-   "linhas": 24287
+   "arquivos": 159,
+   "linhas": 25307
   },
   "tests/integration": {
    "arquivos": 11,

@@ -3,7 +3,7 @@
  "format_version": 2,
  "stack": {
   "linguagens": [
-   "TypeScript (4937)",
+   "TypeScript (4941)",
    "SQL (3440)",
    "Markdown (1470)",
    "JavaScript (457)",
@@ -4666,12 +4666,12 @@
     "arquivos": 18
    },
    {
-    "host": "test.supabase.co",
+    "host": "cdn.test",
     "arquivos": 12
    },
    {
-    "host": "cdn.test",
-    "arquivos": 11
+    "host": "test.supabase.co",
+    "arquivos": 12
    },
    {
     "host": "fixture.invalid",
@@ -4698,15 +4698,15 @@
     "arquivos": 6
    },
    {
+    "host": "example.test",
+    "arquivos": 6
+   },
+   {
     "host": "api.resend.com",
     "arquivos": 5
    },
    {
     "host": "edge.local",
-    "arquivos": 5
-   },
-   {
-    "host": "example.test",
     "arquivos": 5
    },
    {
