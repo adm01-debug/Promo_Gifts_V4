@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e de hora em hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `f129270af74a6af7276f7b7ac2be7ceca6569ddd` (2026-11-17T10:45:25-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e de hora em hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `86c10c8d3b69e578a98c8f9433c64ec6f09783fb` (2026-11-17T11:02:58-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -36,7 +36,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 |---|---|
 | arquivos_total | 10841 |
 | arquivos_codigo | 5367 |
-| linhas_codigo | 1022569 |
+| linhas_codigo | 1022579 |
 | rotas | 138 |
 | rotas_http_backend | 13 |
 | vistas_por_id | 0 |
@@ -590,7 +590,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - possiveis_segredos_no_codigo: 7 — ex.: scripts/ai-context/cenarios.mjs:102, src/components/admin/connections/__tests__/ConnectionSecurity.unit.test.tsx:9, src/integrations/supabase/client.ts:27
 
 ## Grafo de código (graphify)
-- 48279 nós · 81094 arestas · 2753 comunidades · grafo do commit `f129270a`
+- 48279 nós · 81094 arestas · 2753 comunidades · grafo do commit `86c10c8d`
 - comunidades maiores: vitest (848), react (570), lucide-react (558), ref_node_child_process (495), @tanstack/react-query (414), ref_hooks (396), ref_integrations (388), ref_components (364), sonner (357), ref_node_fs (350), gotoAndSettle (345), ref_types (328)
 - símbolos mais chamados: gotoAndSettle() (e2e/helpers/nav.ts), re (?), q() (scripts/supabase_snapshot/snapshot.py), analyze() (tests/scripts/test_personalization_artifact_diagnostics.py), outer() (tests/scripts/test_personalization_artifact_diagnostics.py), json (?), useExternalDatabase() (recovery/src-legacy/src/hooks/useExternalDatabase.ts), concludeCheck() (scripts/check-result-contract.mjs), querySupabaseReadOnly() (scripts/supabase-read-only-query.mjs), loginAs() (e2e/helpers/auth.ts), inner() (tests/scripts/test_personalization_artifact_diagnostics.py), excluded_sql() (scripts/supabase_snapshot/snapshot.py)
 - consulta local: `graphify query "<pergunta>"`, `graphify path "<A>" "<B>"`, `graphify explain "<X>"`
@@ -602,7 +602,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - package.json (42)
 - package-lock.json (25)
 - docs/coordenacao/conflitos-semanticos.md (23)
-- .github/workflows/deploy-gates.yml (20)
+- .github/workflows/deploy-gates.yml (21)
 - supabase/EDGE_FUNCTIONS_DEPLOY_LOG.md (16)
 - analise-prs/progresso.json (15)
 - src/pages/kit-builder/KitBuilderPage.tsx (15)
@@ -1186,6 +1186,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - CHANGELOG topo: [1.9.1](https://github.com/adm01-debug/Promo_Gifts_V4/compare/gifts-store-v1.9.0...gifts-store-v1.9.1) (2026-11-17)
 
 ## Últimos commits
+- 2026-11-17 `86c10c8d` fix(ci): separa "runner sem Docker" de "contrato violado" no Gate 2.5 (#3775)
 - 2026-11-17 `f129270a` chore(main): release gifts-store 1.9.1 (#3777)
 - 2026-11-17 `c2629acd` fix(test): acompanha o snapshot de cron vigente em vez de fixar o de 08/11 (#3773)
 - 2026-11-17 `dfe9e705` docs: mede os 28 arquivos da branch do Codex, que estavam inferidos (#3778)
@@ -1200,7 +1201,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-17 `e17c6c97` chore(ci): reativa o contrato device-trust no Gate 2.5 (#3767)
 - 2026-11-17 `202a82d2` fix(db): corrige o comentario de rollback que mandava apagar auditoria em producao (#3765)
 - 2026-11-17 `dc82e4de` fix(test): corrige a corrida de inicializacao que reprovava 2 de 55 no device-trust (#3764)
-- 2026-11-17 `001d9708` feat(db): P06 na unica view onde security_invoker nao quebra nem re-expoe (#3762)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

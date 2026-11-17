@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "fix(ci): separa \"runner sem Docker\" de \"contrato violado\" no Gate 2.5 (#3775)",
    "chore(main): release gifts-store 1.9.1 (#3777)",
    "fix(test): acompanha o snapshot de cron vigente em vez de fixar o de 08/11 (#3773)",
    "docs: mede os 28 arquivos da branch do Codex, que estavam inferidos (#3778)",
-   "fix(deps): override basic-ftp para ^6.2.4 e fecha o GHSA-5pm8-86m8-9m6r (#3774)",
-   "docs: troca a classificação por data por identidade de blob no histórico (#3772)"
+   "fix(deps): override basic-ftp para ^6.2.4 e fecha o GHSA-5pm8-86m8-9m6r (#3774)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",

@@ -2507,7 +2507,7 @@
   {
    "arquivo": "scripts/lib/missing-prerequisite.mjs",
    "descricao": "* Contrato único para \"pré-requisito ausente\" (credencial, relatório, Docker, Deno…).",
-   "linhas": 54,
+   "linhas": 64,
    "env": [],
    "npm_scripts": [],
    "workflows": [],

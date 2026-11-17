@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "f129270af74a6af7276f7b7ac2be7ceca6569ddd",
+  "sha": "86c10c8d3b69e578a98c8f9433c64ec6f09783fb",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-17 13:46 UTC",
+  "generated_at": "2026-11-17 14:06 UTC",
   "files_total": 10769,
   "code_files": 8806,
-  "code_lines": 1243301
+  "code_lines": 1243311
  },
  "version": "1.3.2",
- "facts_hash": "d27754c6ceac65ed",
+ "facts_hash": "670dd9e95073792c",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -149251,7 +149251,7 @@
   {
    "module": "scripts",
    "files": 298,
-   "lines": 63937,
+   "lines": 63947,
    "tables": [
     "a",
     "b",
@@ -428031,7 +428031,7 @@
   },
   "scripts/lib/missing-prerequisite.mjs": {
    "path": "scripts/lib/missing-prerequisite.mjs",
-   "lines": 54,
+   "lines": 64,
    "exports": [
     "function isStrictRun",
     "function resolveMissingPrerequisite",
@@ -541922,10 +541922,20 @@
   }
  },
  "git": {
-  "sha": "f129270af74a6af7276f7b7ac2be7ceca6569ddd",
+  "sha": "86c10c8d3b69e578a98c8f9433c64ec6f09783fb",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "86c10c8",
+    "date": "2026-11-17",
+    "author": "adm01-debug",
+    "subject": "fix(ci): separa \"runner sem Docker\" de \"contrato violado\" no Gate 2.5 (#3775)",
+    "files": [
+     ".github/workflows/deploy-gates.yml",
+     "scripts/lib/missing-prerequisite.mjs"
+    ]
+   },
    {
     "sha": "f129270",
     "date": "2026-11-17",
@@ -542235,15 +542245,6 @@
     "files": [
      ".github/workflows/schema-snapshot-export.yml"
     ]
-   },
-   {
-    "sha": "cca81a8",
-    "date": "2026-11-17",
-    "author": "adm01-debug",
-    "subject": "fix(ci): dispara o gate de banco quando o ledger de migrations muda (#3747)",
-    "files": [
-     ".github/workflows/deploy-gates.yml"
-    ]
    }
   ],
   "hot_files": [
@@ -542252,15 +542253,15 @@
     7
    ],
    [
+    ".github/workflows/deploy-gates.yml",
+    5
+   ],
+   [
     "docs/agentes/resgates/2026-11-16-auditoria-branches.md",
     5
    ],
    [
     "supabase/MIGRATIONS_SYNC_LOG.md",
-    5
-   ],
-   [
-    ".github/workflows/deploy-gates.yml",
     5
    ],
    [
@@ -542282,6 +542283,10 @@
    [
     "tests/sql/device-trust/run-tests.py",
     2
+   ],
+   [
+    "scripts/lib/missing-prerequisite.mjs",
+    1
    ],
    [
     "tests/scripts/check-infrastructure-drift-snapshots.test.mjs",
@@ -542321,10 +542326,6 @@
    ],
    [
     "tests/pages/MagicUp.search-lifetime.test.tsx",
-    1
-   ],
-   [
-    ".security/policies-baseline.json",
     1
    ]
   ]
