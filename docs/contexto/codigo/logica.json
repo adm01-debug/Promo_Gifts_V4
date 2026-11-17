@@ -696,7 +696,7 @@
    "zod_schemas": 0,
    "flags": [],
    "papeis": [],
-   "usado_por": 405,
+   "usado_por": 406,
    "usado_por_modulos": [
     "components/admin",
     "components/ai",
@@ -937,7 +937,7 @@
    "zod_schemas": 0,
    "flags": [],
    "papeis": [],
-   "usado_por": 53,
+   "usado_por": 54,
    "usado_por_modulos": [
     "components/admin",
     "components/cart",
@@ -964,7 +964,7 @@
     "services",
     "stores"
    ],
-   "coberto_por_testes": 4,
+   "coberto_por_testes": 5,
    "orfao": false
   },
   {
@@ -2567,7 +2567,7 @@
    "zod_schemas": 0,
    "flags": [],
    "papeis": [],
-   "usado_por": 14,
+   "usado_por": 15,
    "usado_por_modulos": [
     "components/admin",
     "components/intelligence",
@@ -4789,7 +4789,7 @@
    "zod_schemas": 0,
    "flags": [],
    "papeis": [],
-   "usado_por": 301,
+   "usado_por": 302,
    "usado_por_modulos": [
     "components",
     "components/admin",

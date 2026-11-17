@@ -5,13 +5,13 @@
   "vitest",
   "playwright"
  ],
- "total": 2540,
+ "total": 2542,
  "por_tipo": {
   "contrato": 66,
   "e2e": 677,
   "pytest": 5,
   "qa": 17,
-  "unit": 1775
+  "unit": 1777
  },
  "onde_ficam": [
   {
@@ -28,7 +28,7 @@
   },
   {
    "padrao": "co-localizado (*.test)",
-   "arquivos": 150
+   "arquivos": 152
   },
   {
    "padrao": "outro",
@@ -36,6 +36,22 @@
   }
  ],
  "arquivos": [
+  {
+   "arquivo": "docs/agentes/resgates/quote-comments/testes/QuoteCommentsSection.test.tsx",
+   "tipo": "unit",
+   "linhas": 236,
+   "testa": [],
+   "casos": 15
+  },
+  {
+   "arquivo": "docs/agentes/resgates/quote-comments/testes/useQuoteComments.test.ts",
+   "tipo": "unit",
+   "linhas": 493,
+   "testa": [
+    "src/integrations/supabase/types.ts"
+   ],
+   "casos": 20
+  },
   {
    "arquivo": "e2e/actions-order.spec.ts",
    "tipo": "e2e",
@@ -22056,7 +22072,7 @@
   "src/integrations/supabase/client.ts": 52,
   "src/integrations/supabase/gold-relations.ts": 1,
   "src/integrations/supabase/gold.ts": 1,
-  "src/integrations/supabase/types.ts": 4,
+  "src/integrations/supabase/types.ts": 5,
   "src/lib/access/access-policy.ts": 1,
   "src/lib/access/dev-route-telemetry.ts": 1,
   "src/lib/analytics/cartAnalytics.ts": 1,
@@ -22497,6 +22513,7 @@
    "src/pages/tools/VisualSearchPage.tsx"
   ],
   "hooks": [
+   "docs/agentes/resgates/quote-comments/codigo/useQuoteComments.ts",
    "recovery/src-legacy/src/components/command/GlobalCommandBar.tsx",
    "recovery/src-legacy/src/hooks/gravacao/useFornecedoresGravacao.ts",
    "recovery/src-legacy/src/hooks/gravacao/useVariantesGravacao.ts",

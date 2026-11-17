@@ -49,7 +49,7 @@
  },
  "barrels_index": 46,
  "extensao_componentes": [
-  ".tsx (1236)"
+  ".tsx (1237)"
  ],
  "alias_imports": {
   "e2e/": {},
@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "fix(ci): destrava a main - suspende device-trust do Gate 2.5, atualiza baseline e recibo (#3761)",
+   "docs(resgate): preserva quote_comments integral e inerte, sem ligar nem destravar (#3763)",
    "chore(docs): registra a rodada de decisoes de 17/11 no ledger da auditoria (#3757)",
    "fix(db): versiona o rollback de SB-0001 (auth.users fora do Realtime) (#3756)",
-   "fix(test): corrige a guarda de rota protegida e estabiliza o tooltip da sidebar (#3755)",
-   "feat(test): resgata o contrato SQL de device-trust e o poe a rodar no Gate 2.5 (#3754)",
-   "ci: resgata o workflow semanal que mantem o inventario de estado vivo (#3722)"
+   "fix(test): corrige a guarda de rota protegida e estabiliza o tooltip da sidebar (#3755)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",

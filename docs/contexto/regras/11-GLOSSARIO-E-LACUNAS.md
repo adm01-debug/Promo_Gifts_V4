@@ -1,6 +1,6 @@
 # 11 · GLOSSÁRIO, DADOS DE REFERÊNCIA E LACUNAS
 
-> Gerado automaticamente por AI Context Sync v1.3.2 · commit `3510fbc451` · branch `main` · 2026-11-17 06:25 UTC
+> Gerado automaticamente por AI Context Sync v1.3.2 · commit `1404642802` · branch `main` · 2026-11-17 08:00 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## Glossário do domínio (entidades do sistema)
@@ -413,6 +413,9 @@
 | status | valor `orphaned` para `cf_sync_status` usado no código não existe em nenhum enum do banco/TS | `compara:src/pages/admin/AdminCloudflareImagesPage.tsx` |
 | status | valor `ready` para `cloudflare_status` usado no código não existe em nenhum enum do banco/TS | `compara:src/lib/external-db/products-detail.ts` |
 | status | valor `synced` para `sync_status` usado no código não existe em nenhum enum do banco/TS | `escreve:supabase/functions/product-webhook/index.ts` |
+| coluna | coluna `avatar_url` usada no código não existe no schema de `profiles` |  |
+| coluna | coluna `bitrix_id` usada no código não existe no schema de `profiles` |  |
+| coluna | coluna `count` usada no código não existe no schema de `profiles` |  |
 | coluna | coluna `admin_notes` usada no código não existe no schema de `discount_approval_requests` |  |
 | coluna | coluna `created_at` usada no código não existe no schema de `discount_approval_requests` |  |
 | coluna | coluna `max_allowed_percent` usada no código não existe no schema de `discount_approval_requests` |  |
@@ -455,9 +458,6 @@
 | coluna | coluna `filter_states` usada no código não existe no schema de `user_preferences` |  |
 | coluna | coluna `env_key` usada no código não existe no schema de `external_connections` |  |
 | coluna | coluna `is_pinned` usada no código não existe no schema de `custom_kits` |  |
-| coluna | coluna `avatar_url` usada no código não existe no schema de `profiles` |  |
-| coluna | coluna `bitrix_id` usada no código não existe no schema de `profiles` |  |
-| coluna | coluna `count` usada no código não existe no schema de `profiles` |  |
 | coluna | coluna `aspect_ratio` usada no código não existe no schema de `magic_up_generations` |  |
 | coluna | coluna `channel` usada no código não existe no schema de `magic_up_generations` |  |
 | coluna | coluna `copy_pack` usada no código não existe no schema de `magic_up_generations` |  |
@@ -581,7 +581,7 @@
 | tabela | tabela `pg_class` usada no código não existe nas migrations/types do repo | `tests/security/rls-validation.test.ts` |
 | tabela | tabela `product_endomarketing` usada no código não existe nas migrations/types do repo | `src/components/admin/products/productMarketingData.ts` |
 | tabela | tabela `produtos` usada no código não existe nas migrations/types do repo | `tests/scripts/audit-db-frontend-coverage.test.mjs`<br>`tests/scripts/inventario-banco.test.mjs` |
-| tabela | tabela `quote_comments` usada no código não existe nas migrations/types do repo | `recovery/src-legacy/src/hooks/useQuoteComments.ts` |
+| tabela | tabela `quote_comments` usada no código não existe nas migrations/types do repo | `docs/agentes/resgates/quote-comments/codigo/useQuoteComments.ts`<br>`recovery/src-legacy/src/hooks/useQuoteComments.ts` |
 | tabela | tabela `runtime_table` usada no código não existe nas migrations/types do repo | `scripts/ai-context/gerar.unit.mjs` |
 | tabela | tabela `so_teste` usada no código não existe nas migrations/types do repo | `scripts/ai-context/cenarios.mjs` |
 | tabela | tabela `some_table` usada no código não existe nas migrations/types do repo | `src/lib/intelligence/degradation.ts` |

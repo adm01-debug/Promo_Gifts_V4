@@ -1,8 +1,34 @@
 {
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
- "total": 626,
+ "total": 627,
  "hooks": [
+  {
+   "arquivo": "docs/agentes/resgates/quote-comments/codigo/useQuoteComments.ts",
+   "hooks_exportados": [
+    "useQuoteComments"
+   ],
+   "linhas": 269,
+   "dominio": null,
+   "tabelas": [
+    "profiles",
+    "quote_comments",
+    "workspace_notifications"
+   ],
+   "rpcs": [],
+   "edges": [],
+   "hooks_internos": [
+    "useAuth",
+    "useCallback",
+    "useEffect",
+    "useRef",
+    "useState"
+   ],
+   "canais_realtime": [],
+   "usado_por": 0,
+   "usado_por_arquivos": [],
+   "coberto_por_testes": 0
+  },
   {
    "arquivo": "recovery/src-legacy/src/components/command/GlobalCommandBar.tsx",
    "hooks_exportados": [
@@ -6273,8 +6299,10 @@
     "useRef"
    ],
    "canais_realtime": [],
-   "usado_por": 205,
+   "usado_por": 207,
    "usado_por_arquivos": [
+    "docs/agentes/resgates/quote-comments/codigo/QuoteCommentsSection.tsx",
+    "docs/agentes/resgates/quote-comments/codigo/useQuoteComments.ts",
     "recovery/src-legacy/src/components/command/GlobalCommandBar.tsx",
     "recovery/src-legacy/src/components/navigation/DynamicBreadcrumbs.tsx",
     "recovery/src-legacy/src/components/quotes/QuoteCommentsSection.tsx",
@@ -6302,9 +6330,7 @@
     "recovery/src-legacy/src/hooks/useKitTemplates.ts",
     "recovery/src-legacy/src/hooks/useMagicUpState.ts",
     "recovery/src-legacy/src/hooks/useMockupDraft.ts",
-    "recovery/src-legacy/src/hooks/useMockupGenerator.ts",
-    "recovery/src-legacy/src/hooks/useOnboarding.ts",
-    "recovery/src-legacy/src/hooks/useProductAnalytics.ts"
+    "recovery/src-legacy/src/hooks/useMockupGenerator.ts"
    ],
    "coberto_por_testes": 38
   },

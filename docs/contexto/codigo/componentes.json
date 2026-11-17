@@ -1,8 +1,8 @@
 {
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
- "total": 1236,
- "orfaos": 160,
+ "total": 1237,
+ "orfaos": 161,
  "nomes_duplicados": {
   "AdvancedPriceSearchPage": [
    "recovery/src-legacy/src/pages/AdvancedPriceSearchPage.tsx",
@@ -290,6 +290,10 @@
    "recovery/src-legacy/src/components/common/ContextualSkeleton.tsx",
    "src/components/loading/ModernSkeletons.tsx"
   ],
+  "QuoteCommentsSection": [
+   "docs/agentes/resgates/quote-comments/codigo/QuoteCommentsSection.tsx",
+   "recovery/src-legacy/src/components/quotes/QuoteCommentsSection.tsx"
+  ],
   "QuoteListSkeleton": [
    "recovery/src-legacy/src/components/common/ContextualSkeleton.tsx",
    "src/components/loading/ModernSkeletons.tsx"
@@ -435,6 +439,23 @@
   ]
  },
  "componentes": [
+  {
+   "arquivo": "docs/agentes/resgates/quote-comments/codigo/QuoteCommentsSection.tsx",
+   "exports": [
+    "QuoteCommentsSection"
+   ],
+   "export_default": null,
+   "linhas": 415,
+   "dominio": null,
+   "hooks_locais": [
+    "useAuth",
+    "useQuoteComments"
+   ],
+   "tabelas": [],
+   "edges": [],
+   "usado_por": 0,
+   "orfao": true
+  },
   {
    "arquivo": "recovery/RealtimeMessagesExample.tsx",
    "exports": [
@@ -15872,7 +15893,7 @@
    "hooks_locais": [],
    "tabelas": [],
    "edges": [],
-   "usado_por": 5,
+   "usado_por": 6,
    "orfao": false
   },
   {
@@ -15887,7 +15908,7 @@
    "hooks_locais": [],
    "tabelas": [],
    "edges": [],
-   "usado_por": 478,
+   "usado_por": 479,
    "orfao": false
   },
   {
@@ -15922,7 +15943,7 @@
    "hooks_locais": [],
    "tabelas": [],
    "edges": [],
-   "usado_por": 622,
+   "usado_por": 623,
    "orfao": false
   },
   {
@@ -15956,7 +15977,7 @@
    "hooks_locais": [],
    "tabelas": [],
    "edges": [],
-   "usado_por": 347,
+   "usado_por": 348,
    "orfao": false
   },
   {
@@ -16074,7 +16095,7 @@
    "hooks_locais": [],
    "tabelas": [],
    "edges": [],
-   "usado_por": 43,
+   "usado_por": 44,
    "orfao": false
   },
   {
@@ -16519,7 +16540,7 @@
    "hooks_locais": [],
    "tabelas": [],
    "edges": [],
-   "usado_por": 34,
+   "usado_por": 35,
    "orfao": false
   },
   {
@@ -16613,7 +16634,7 @@
    "hooks_locais": [],
    "tabelas": [],
    "edges": [],
-   "usado_por": 183,
+   "usado_por": 184,
    "orfao": false
   },
   {
@@ -16741,7 +16762,7 @@
    "hooks_locais": [],
    "tabelas": [],
    "edges": [],
-   "usado_por": 61,
+   "usado_por": 62,
    "orfao": false
   },
   {
@@ -16897,7 +16918,7 @@
    ],
    "tabelas": [],
    "edges": [],
-   "usado_por": 205,
+   "usado_por": 207,
    "orfao": false
   },
   {

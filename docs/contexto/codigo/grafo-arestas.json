@@ -2,6 +2,24 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "arestas": {
+  "docs/agentes/resgates/quote-comments/codigo/QuoteCommentsSection.tsx": [
+   "src/components/ui/ConfirmDialog.tsx",
+   "src/components/ui/avatar.tsx",
+   "src/components/ui/badge.tsx",
+   "src/components/ui/button.tsx",
+   "src/components/ui/card.tsx",
+   "src/components/ui/separator.tsx",
+   "src/components/ui/skeleton.tsx",
+   "src/components/ui/textarea.tsx",
+   "src/contexts/AuthContext.tsx"
+  ],
+  "docs/agentes/resgates/quote-comments/codigo/useQuoteComments.ts": [
+   "src/contexts/AuthContext.tsx",
+   "src/integrations/supabase/client.ts",
+   "src/integrations/supabase/types.ts",
+   "src/lib/db/fetch-all-pages.ts",
+   "src/lib/logger.ts"
+  ],
   "recovery/RealtimeMessagesExample.tsx": [
    "src/integrations/supabase/client.ts"
   ],

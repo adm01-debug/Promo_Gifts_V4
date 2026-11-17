@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "3510fbc451d568388c672cd0a7f81e15ec08b7ef",
+  "sha": "140464280224a116bc3eb10c550f0adeb867cfaf",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-17 06:25 UTC",
-  "files_total": 10754,
-  "code_files": 8795,
-  "code_lines": 1240651
+  "generated_at": "2026-11-17 08:00 UTC",
+  "files_total": 10765,
+  "code_files": 8803,
+  "code_lines": 1242441
  },
  "version": "1.3.2",
- "facts_hash": "be7497650d83b1d3",
+ "facts_hash": "a19e1438233f6335",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -1119,11 +1119,11 @@
   ],
   "package_manager": "npm",
   "languages": {
-   ".sql": 3435,
-   ".ts": 2990,
-   ".tsx": 1906,
+   ".sql": 3438,
+   ".ts": 2992,
+   ".tsx": 1908,
    ".mjs": 450,
-   ".py": 14,
+   ".py": 15,
    ".js": 7
   },
   "monorepo_packages": [],
@@ -144810,6 +144810,10 @@
   "components_count": 1657,
   "hooks": [
    {
+    "name": "useQuoteComments",
+    "file": "docs/agentes/resgates/quote-comments/codigo/useQuoteComments.ts"
+   },
+   {
     "name": "useCommandBar",
     "file": "recovery/src-legacy/src/components/command/GlobalCommandBar.tsx"
    },
@@ -148653,23 +148657,51 @@
   },
   {
    "module": "docs",
-   "files": 13,
-   "lines": 1520,
+   "files": 21,
+   "lines": 3310,
    "tables": [
+    "profiles",
+    "quote_comments",
     "quotes_inbound",
     "webhook_inbound_dedupe",
-    "webhook_inbound_log"
+    "webhook_inbound_log",
+    "workspace_notifications"
    ],
-   "exports": [],
+   "exports": [
+    "QuoteCommentsSection.tsx: QuoteCommentsSection",
+    "useQuoteComments.ts: QUOTE_COMMENT_MAX_LENGTH, QuoteComment, useQuoteComments",
+    "run-tests.py: docker, cleanup_owned_container, main, run_cases"
+   ],
    "docs": [
+    "run-tests.py: !/usr/bin/env python3",
     "receive-quote-sync.ts: supabase/functions/receive-quote-sync/index.ts (Promo Champions) Recebe webhook `quote.sent` do PromoGifts. - Valida HMAC-SHA256 (header x-webhook-signature) com timing-safe compare - Dedupe por correlation_key em public.webhook_inbound_dedupe - Upsert idempotente em public.quotes_inbound por quote_ …"
    ],
    "deps": [
-    "https:"
+    "@testing-library/react",
+    "date-fns",
+    "https:",
+    "lucide-react",
+    "react",
+    "sonner",
+    "vitest"
    ],
-   "imports_modules": [],
+   "imports_modules": [
+    "src/components",
+    "src/contexts",
+    "src/hooks",
+    "src/integrations",
+    "src/lib"
+   ],
    "file_list": [
     "docs/PRICE_FRESHNESS_THRESHOLD.sql",
+    "docs/agentes/resgates/quote-comments/codigo/QuoteCommentsSection.tsx",
+    "docs/agentes/resgates/quote-comments/codigo/useQuoteComments.ts",
+    "docs/agentes/resgates/quote-comments/sql/20261110022404_restore_quote_comments_scoped_threads.sql",
+    "docs/agentes/resgates/quote-comments/sql/20261110022404_rollback.sql",
+    "docs/agentes/resgates/quote-comments/testes/QuoteCommentsSection.test.tsx",
+    "docs/agentes/resgates/quote-comments/testes/useQuoteComments.test.ts",
+    "docs/agentes/resgates/quote-comments/testes-sql/fixture.sql",
+    "docs/agentes/resgates/quote-comments/testes-sql/run-tests.py",
     "docs/db/proposals/20260922170000_signup_identity_safe_default.sql",
     "docs/db/proposals/20260922210000_create_quote_lineage.sql",
     "docs/db/proposals/20260922210500_increment_quote_version_explicit_bump.sql",
@@ -153243,6 +153275,7 @@
    },
    "profiles": {
     "select": [
+     "docs/agentes/resgates/quote-comments/codigo/useQuoteComments.ts",
      "recovery/src-legacy/src/hooks/useDiscountApproval.ts",
      "recovery/src-legacy/src/hooks/useKitCollaboration.ts",
      "recovery/src-legacy/src/hooks/useQuoteComments.ts",
@@ -153321,15 +153354,19 @@
    },
    "quote_comments": {
     "select": [
+     "docs/agentes/resgates/quote-comments/codigo/useQuoteComments.ts",
      "recovery/src-legacy/src/hooks/useQuoteComments.ts"
     ],
     "insert": [
+     "docs/agentes/resgates/quote-comments/codigo/useQuoteComments.ts",
      "recovery/src-legacy/src/hooks/useQuoteComments.ts"
     ],
     "update": [
+     "docs/agentes/resgates/quote-comments/codigo/useQuoteComments.ts",
      "recovery/src-legacy/src/hooks/useQuoteComments.ts"
     ],
     "delete": [
+     "docs/agentes/resgates/quote-comments/codigo/useQuoteComments.ts",
      "recovery/src-legacy/src/hooks/useQuoteComments.ts"
     ]
    },
@@ -154102,6 +154139,7 @@
      "recovery/src-legacy/src/hooks/useDiscountApproval.ts"
     ],
     "insert": [
+     "docs/agentes/resgates/quote-comments/codigo/useQuoteComments.ts",
      "recovery/src-legacy/src/hooks/useDiscountApproval.ts",
      "recovery/src-legacy/src/hooks/useQuoteComments.ts",
      "src/hooks/bi/useSeasonalPeakNotifications.ts",
@@ -158583,6 +158621,18 @@
   ],
   "columns_unknown": [
    {
+    "table": "profiles",
+    "column": "avatar_url"
+   },
+   {
+    "table": "profiles",
+    "column": "bitrix_id"
+   },
+   {
+    "table": "profiles",
+    "column": "count"
+   },
+   {
     "table": "discount_approval_requests",
     "column": "admin_notes"
    },
@@ -158749,18 +158799,6 @@
    {
     "table": "custom_kits",
     "column": "is_pinned"
-   },
-   {
-    "table": "profiles",
-    "column": "avatar_url"
-   },
-   {
-    "table": "profiles",
-    "column": "bitrix_id"
-   },
-   {
-    "table": "profiles",
-    "column": "count"
    },
    {
     "table": "magic_up_generations",
@@ -162882,6 +162920,62 @@
    {
     "file": "test-magazine-fix.mjs",
     "msg": "Assertion failed: ${message}"
+   },
+   {
+    "file": "docs/agentes/resgates/quote-comments/codigo/QuoteCommentsSection.tsx",
+    "msg": "\n            className="
+   },
+   {
+    "file": "docs/agentes/resgates/quote-comments/codigo/useQuoteComments.ts",
+    "msg": "Comment insert returned no row"
+   },
+   {
+    "file": "docs/agentes/resgates/quote-comments/codigo/useQuoteComments.ts",
+    "msg": "Comment not found or delete not permitted"
+   },
+   {
+    "file": "docs/agentes/resgates/quote-comments/codigo/useQuoteComments.ts",
+    "msg": "Comment not found or update not permitted"
+   },
+   {
+    "file": "docs/agentes/resgates/quote-comments/testes-sql/run-tests.py",
+    "msg": "Cannot verify disposable-container ownership; no container was removed."
+   },
+   {
+    "file": "docs/agentes/resgates/quote-comments/testes-sql/run-tests.py",
+    "msg": "Could not start the disposable PostgreSQL 17 container: "
+   },
+   {
+    "file": "docs/agentes/resgates/quote-comments/testes-sql/run-tests.py",
+    "msg": "Disposable PostgreSQL did not become ready within 30 seconds."
+   },
+   {
+    "file": "docs/agentes/resgates/quote-comments/testes-sql/run-tests.py",
+    "msg": "Disposable-container label mismatch; no container was removed."
+   },
+   {
+    "file": "docs/agentes/resgates/quote-comments/testes-sql/run-tests.py",
+    "msg": "Failed to remove the owned disposable PostgreSQL container: "
+   },
+   {
+    "file": "docs/agentes/resgates/quote-comments/testes-sql/run-tests.py",
+    "msg": "Local Docker daemon is unavailable: "
+   },
+   {
+    "file": "docs/agentes/resgates/quote-comments/testes-sql/run-tests.py",
+    "msg": "concurrent delete did not reach synchronization marker"
+   },
+   {
+    "file": "docs/agentes/resgates/quote-comments/testes-sql/run-tests.py",
+    "msg": "concurrent delete failed: "
+   },
+   {
+    "file": "docs/agentes/resgates/quote-comments/testes-sql/run-tests.py",
+    "msg": "concurrent insert did not reach synchronization marker"
+   },
+   {
+    "file": "docs/agentes/resgates/quote-comments/testes-sql/run-tests.py",
+    "msg": "concurrent insert failed: "
    },
    {
     "file": "e2e/fixtures/auth.setup.ts",
@@ -219051,6 +219145,150 @@
    }
   ],
   "tests": [
+   {
+    "file": "docs/agentes/resgates/quote-comments/testes/QuoteCommentsSection.test.tsx",
+    "name": "quote comments interface"
+   },
+   {
+    "file": "docs/agentes/resgates/quote-comments/testes/QuoteCommentsSection.test.tsx",
+    "name": "shows a retryable error instead of an empty-state success"
+   },
+   {
+    "file": "docs/agentes/resgates/quote-comments/testes/QuoteCommentsSection.test.tsx",
+    "name": "does not show the empty state while loading and shows it only after success"
+   },
+   {
+    "file": "docs/agentes/resgates/quote-comments/testes/QuoteCommentsSection.test.tsx",
+    "name": "disables the main composer for unauthenticated users"
+   },
+   {
+    "file": "docs/agentes/resgates/quote-comments/testes/QuoteCommentsSection.test.tsx",
+    "name": "keeps whitespace-only submissions disabled and enforces the shared length limit"
+   },
+   {
+    "file": "docs/agentes/resgates/quote-comments/testes/QuoteCommentsSection.test.tsx",
+    "name": "trims and clears the composer only after successful creation"
+   },
+   {
+    "file": "docs/agentes/resgates/quote-comments/testes/QuoteCommentsSection.test.tsx",
+    "name": "preserves the full draft after a failed creation"
+   },
+   {
+    "file": "docs/agentes/resgates/quote-comments/testes/QuoteCommentsSection.test.tsx",
+    "name": "submits using %s + Enter"
+   },
+   {
+    "file": "docs/agentes/resgates/quote-comments/testes/QuoteCommentsSection.test.tsx",
+    "name": "does not submit plain Enter or IME composition"
+   },
+   {
+    "file": "docs/agentes/resgates/quote-comments/testes/QuoteCommentsSection.test.tsx",
+    "name": "prevents duplicate keyboard submissions while a mutation is pending"
+   },
+   {
+    "file": "docs/agentes/resgates/quote-comments/testes/QuoteCommentsSection.test.tsx",
+    "name": "allows discussion but hides edit/delete controls for non-authors"
+   },
+   {
+    "file": "docs/agentes/resgates/quote-comments/testes/QuoteCommentsSection.test.tsx",
+    "name": "keeps a failed reply draft and closes it after a successful retry to the root"
+   },
+   {
+    "file": "docs/agentes/resgates/quote-comments/testes/QuoteCommentsSection.test.tsx",
+    "name": "keeps failed edits open and closes the editor only on successful retry"
+   },
+   {
+    "file": "docs/agentes/resgates/quote-comments/testes/QuoteCommentsSection.test.tsx",
+    "name": "disables deleting a root with replies while keeping the thread visible"
+   },
+   {
+    "file": "docs/agentes/resgates/quote-comments/testes/QuoteCommentsSection.test.tsx",
+    "name": "requires confirmation and leaves a comment untouched when deletion is cancelled"
+   },
+   {
+    "file": "docs/agentes/resgates/quote-comments/testes/QuoteCommentsSection.test.tsx",
+    "name": "deletes an authored leaf only after explicit confirmation"
+   },
+   {
+    "file": "docs/agentes/resgates/quote-comments/testes/useQuoteComments.test.ts",
+    "name": "quote comments service boundary"
+   },
+   {
+    "file": "docs/agentes/resgates/quote-comments/testes/useQuoteComments.test.ts",
+    "name": "does not fetch or mutate without an authenticated user"
+   },
+   {
+    "file": "docs/agentes/resgates/quote-comments/testes/useQuoteComments.test.ts",
+    "name": "does not fetch or mutate without a quote id"
+   },
+   {
+    "file": "docs/agentes/resgates/quote-comments/testes/useQuoteComments.test.ts",
+    "name": "shows loading while the first page is unresolved"
+   },
+   {
+    "file": "docs/agentes/resgates/quote-comments/testes/useQuoteComments.test.ts",
+    "name": "uses quote filters, stable pagination order, author deduplication and one-level threads"
+   },
+   {
+    "file": "docs/agentes/resgates/quote-comments/testes/useQuoteComments.test.ts",
+    "name": "loads beyond the PostgREST 1000-row cap"
+   },
+   {
+    "file": "docs/agentes/resgates/quote-comments/testes/useQuoteComments.test.ts",
+    "name": "keeps comments readable when profile RLS denies author details"
+   },
+   {
+    "file": "docs/agentes/resgates/quote-comments/testes/useQuoteComments.test.ts",
+    "name": "surfaces fetch failure and clears it after an explicit successful retry"
+   },
+   {
+    "file": "docs/agentes/resgates/quote-comments/testes/useQuoteComments.test.ts",
+    "name": "clears the previous user comments on logout"
+   },
+   {
+    "file": "docs/agentes/resgates/quote-comments/testes/useQuoteComments.test.ts",
+    "name": "ignores a previous quote response after the quote changes"
+   },
+   {
+    "file": "docs/agentes/resgates/quote-comments/testes/useQuoteComments.test.ts",
+    "name": "ignores a pending response after unmount"
+   },
+   {
+    "file": "docs/agentes/resgates/quote-comments/testes/useQuoteComments.test.ts",
+    "name": "inserts trimmed content with server-owned fields omitted"
+   },
+   {
+    "file": "docs/agentes/resgates/quote-comments/testes/useQuoteComments.test.ts",
+    "name": "does not claim insert success for a failed/empty database response"
+   },
+   {
+    "file": "docs/agentes/resgates/quote-comments/testes/useQuoteComments.test.ts",
+    "name": "updates only content and scopes the mutation to id, quote and author"
+   },
+   {
+    "file": "docs/agentes/resgates/quote-comments/testes/useQuoteComments.test.ts",
+    "name": "treats zero affected rows in %s as failure"
+   },
+   {
+    "file": "docs/agentes/resgates/quote-comments/testes/useQuoteComments.test.ts",
+    "name": "confirms a successful authored leaf deletion and refreshes the visible list"
+   },
+   {
+    "file": "docs/agentes/resgates/quote-comments/testes/useQuoteComments.test.ts",
+    "name": "scopes deletion and maps the FK rejection of a root with replies"
+   },
+   {
+    "file": "docs/agentes/resgates/quote-comments/testes/useQuoteComments.test.ts",
+    "name": "notifies distinct participants except the author without leaking comment text"
+   },
+   {
+    "file": "docs/agentes/resgates/quote-comments/testes/useQuoteComments.test.ts",
+    "name": "keeps a committed comment successful when %s notifications fail"
+   },
+   {
+    "file": "docs/agentes/resgates/quote-comments/testes/useQuoteComments.test.ts",
+    "name": "does not emit a previous quote success after notification delivery resolves in a new context"
+   },
    {
     "file": "e2e/actions-order.spec.ts",
     "name": "Ações do Produto: Ordem, Tooltips e Acessibilidade Cross-Module"
@@ -396559,6 +396797,21 @@
    },
    {
     "kind": "coluna",
+    "msg": "coluna `avatar_url` usada no código não existe no schema de `profiles`",
+    "where": []
+   },
+   {
+    "kind": "coluna",
+    "msg": "coluna `bitrix_id` usada no código não existe no schema de `profiles`",
+    "where": []
+   },
+   {
+    "kind": "coluna",
+    "msg": "coluna `count` usada no código não existe no schema de `profiles`",
+    "where": []
+   },
+   {
+    "kind": "coluna",
     "msg": "coluna `admin_notes` usada no código não existe no schema de `discount_approval_requests`",
     "where": []
    },
@@ -396765,21 +397018,6 @@
    {
     "kind": "coluna",
     "msg": "coluna `is_pinned` usada no código não existe no schema de `custom_kits`",
-    "where": []
-   },
-   {
-    "kind": "coluna",
-    "msg": "coluna `avatar_url` usada no código não existe no schema de `profiles`",
-    "where": []
-   },
-   {
-    "kind": "coluna",
-    "msg": "coluna `bitrix_id` usada no código não existe no schema de `profiles`",
-    "where": []
-   },
-   {
-    "kind": "coluna",
-    "msg": "coluna `count` usada no código não existe no schema de `profiles`",
     "where": []
    },
    {
@@ -397450,6 +397688,7 @@
     "kind": "tabela",
     "msg": "tabela `quote_comments` usada no código não existe nas migrations/types do repo",
     "where": [
+     "docs/agentes/resgates/quote-comments/codigo/useQuoteComments.ts",
      "recovery/src-legacy/src/hooks/useQuoteComments.ts"
     ]
    },
@@ -400057,6 +400296,173 @@
   "docs/PRICE_FRESHNESS_THRESHOLD.sql": {
    "path": "docs/PRICE_FRESHNESS_THRESHOLD.sql",
    "lines": 32
+  },
+  "docs/agentes/resgates/quote-comments/codigo/QuoteCommentsSection.tsx": {
+   "path": "docs/agentes/resgates/quote-comments/codigo/QuoteCommentsSection.tsx",
+   "lines": 415,
+   "exports": [
+    "function QuoteCommentsSection"
+   ],
+   "errors": [
+    "\n            className="
+   ]
+  },
+  "docs/agentes/resgates/quote-comments/codigo/useQuoteComments.ts": {
+   "path": "docs/agentes/resgates/quote-comments/codigo/useQuoteComments.ts",
+   "lines": 269,
+   "exports": [
+    "const QUOTE_COMMENT_MAX_LENGTH",
+    "interface QuoteComment",
+    "function useQuoteComments"
+   ],
+   "tables": [
+    {
+     "table": "quote_comments",
+     "op": "select"
+    },
+    {
+     "table": "profiles",
+     "op": "select"
+    },
+    {
+     "table": "quote_comments",
+     "op": "insert,select"
+    },
+    {
+     "table": "quote_comments",
+     "op": "select,update"
+    },
+    {
+     "table": "quote_comments",
+     "op": "delete,select"
+    },
+    {
+     "table": "quote_comments",
+     "op": "select"
+    },
+    {
+     "table": "workspace_notifications",
+     "op": "insert"
+    }
+   ],
+   "table_cols": {
+    "quote_comments": [
+     "id",
+     "quote_id",
+     "user_id"
+    ],
+    "profiles": [
+     "avatar_url",
+     "full_name",
+     "user_id"
+    ]
+   },
+   "errors": [
+    "Comment insert returned no row",
+    "Comment not found or delete not permitted",
+    "Comment not found or update not permitted"
+   ],
+   "params": [
+    {
+     "name": "QUOTE_COMMENT_MAX_LENGTH",
+     "value": "5000"
+    }
+   ],
+   "hooks": [
+    "useQuoteComments"
+   ]
+  },
+  "docs/agentes/resgates/quote-comments/sql/20261110022404_restore_quote_comments_scoped_threads.sql": {
+   "path": "docs/agentes/resgates/quote-comments/sql/20261110022404_restore_quote_comments_scoped_threads.sql",
+   "lines": 130
+  },
+  "docs/agentes/resgates/quote-comments/sql/20261110022404_rollback.sql": {
+   "path": "docs/agentes/resgates/quote-comments/sql/20261110022404_rollback.sql",
+   "lines": 5
+  },
+  "docs/agentes/resgates/quote-comments/testes/QuoteCommentsSection.test.tsx": {
+   "path": "docs/agentes/resgates/quote-comments/testes/QuoteCommentsSection.test.tsx",
+   "lines": 236,
+   "is_test": true,
+   "errors": [
+    ")).toHaveTextContent(mock.error);\n    expect(screen.queryByText("
+   ],
+   "tests": [
+    "quote comments interface",
+    "shows a retryable error instead of an empty-state success",
+    "does not show the empty state while loading and shows it only after success",
+    "disables the main composer for unauthenticated users",
+    "keeps whitespace-only submissions disabled and enforces the shared length limit",
+    "trims and clears the composer only after successful creation",
+    "preserves the full draft after a failed creation",
+    "submits using %s + Enter",
+    "does not submit plain Enter or IME composition",
+    "prevents duplicate keyboard submissions while a mutation is pending",
+    "allows discussion but hides edit/delete controls for non-authors",
+    "keeps a failed reply draft and closes it after a successful retry to the root",
+    "keeps failed edits open and closes the editor only on successful retry",
+    "disables deleting a root with replies while keeping the thread visible",
+    "requires confirmation and leaves a comment untouched when deletion is cancelled",
+    "deletes an authored leaf only after explicit confirmation"
+   ]
+  },
+  "docs/agentes/resgates/quote-comments/testes/useQuoteComments.test.ts": {
+   "path": "docs/agentes/resgates/quote-comments/testes/useQuoteComments.test.ts",
+   "lines": 493,
+   "is_test": true,
+   "tests": [
+    "quote comments service boundary",
+    "does not fetch or mutate without an authenticated user",
+    "does not fetch or mutate without a quote id",
+    "shows loading while the first page is unresolved",
+    "uses quote filters, stable pagination order, author deduplication and one-level threads",
+    "loads beyond the PostgREST 1000-row cap",
+    "keeps comments readable when profile RLS denies author details",
+    "surfaces fetch failure and clears it after an explicit successful retry",
+    "clears the previous user comments on logout",
+    "ignores a previous quote response after the quote changes",
+    "ignores a pending response after unmount",
+    "inserts trimmed content with server-owned fields omitted",
+    "does not claim insert success for a failed/empty database response",
+    "updates only content and scopes the mutation to id, quote and author",
+    "treats zero affected rows in %s as failure",
+    "confirms a successful authored leaf deletion and refreshes the visible list",
+    "scopes deletion and maps the FK rejection of a root with replies",
+    "notifies distinct participants except the author without leaking comment text",
+    "keeps a committed comment successful when %s notifications fail",
+    "does not emit a previous quote success after notification delivery resolves in a new context"
+   ]
+  },
+  "docs/agentes/resgates/quote-comments/testes-sql/fixture.sql": {
+   "path": "docs/agentes/resgates/quote-comments/testes-sql/fixture.sql",
+   "lines": 42
+  },
+  "docs/agentes/resgates/quote-comments/testes-sql/run-tests.py": {
+   "path": "docs/agentes/resgates/quote-comments/testes-sql/run-tests.py",
+   "lines": 200,
+   "exports": [
+    "def docker",
+    "def cleanup_owned_container",
+    "def main",
+    "def run_cases"
+   ],
+   "errors": [
+    "Cannot verify disposable-container ownership; no container was removed.",
+    "Could not start the disposable PostgreSQL 17 container: ",
+    "Disposable PostgreSQL did not become ready within 30 seconds.",
+    "Disposable-container label mismatch; no container was removed.",
+    "Failed to remove the owned disposable PostgreSQL container: ",
+    "Local Docker daemon is unavailable: ",
+    "concurrent delete did not reach synchronization marker",
+    "concurrent delete failed: ",
+    "concurrent insert did not reach synchronization marker",
+    "concurrent insert failed: "
+   ],
+   "doc": "!/usr/bin/env python3",
+   "temporal": [
+    "pdel.stdin.close(); pdel.wait(timeout=10)",
+    "pins.stdin.close(); pins.wait(timeout=10)"
+   ]
   },
   "docs/db/proposals/20260922170000_signup_identity_safe_default.sql": {
    "path": "docs/db/proposals/20260922170000_signup_identity_safe_default.sql",
@@ -541355,10 +541761,40 @@
   }
  },
  "git": {
-  "sha": "3510fbc451d568388c672cd0a7f81e15ec08b7ef",
+  "sha": "140464280224a116bc3eb10c550f0adeb867cfaf",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "1404642",
+    "date": "2026-11-17",
+    "author": "adm01-debug",
+    "subject": "fix(ci): destrava a main - suspende device-trust do Gate 2.5, atualiza baseline e recibo (#3761)",
+    "files": [
+     ".github/workflows/deploy-gates.yml",
+     ".security/policies-baseline.json",
+     "supabase/MIGRATIONS_SYNC_LOG.md"
+    ]
+   },
+   {
+    "sha": "e59ffe3",
+    "date": "2026-11-17",
+    "author": "adm01-debug",
+    "subject": "docs(resgate): preserva quote_comments integral e inerte, sem ligar nem destravar (#3763)",
+    "files": [
+     "docs/agentes/resgates/quote-comments/README.md",
+     "docs/agentes/resgates/quote-comments/codigo/QuoteCommentsSection.tsx",
+     "docs/agentes/resgates/quote-comments/codigo/useQuoteComments.ts",
+     "docs/agentes/resgates/quote-comments/montagem-QuoteViewPage.patch",
+     "docs/agentes/resgates/quote-comments/sql/20261110022404_restore_quote_comments_scoped_threads.sql",
+     "docs/agentes/resgates/quote-comments/sql/20261110022404_rollback.sql",
+     "docs/agentes/resgates/quote-comments/testes-sql/README-original.md",
+     "docs/agentes/resgates/quote-comments/testes-sql/fixture.sql",
+     "docs/agentes/resgates/quote-comments/testes-sql/run-tests.py",
+     "docs/agentes/resgates/quote-comments/testes/QuoteCommentsSection.test.tsx",
+     "docs/agentes/resgates/quote-comments/testes/useQuoteComments.test.ts"
+    ]
+   },
    {
     "sha": "3510fbc",
     "date": "2026-11-17",
@@ -541645,48 +542081,76 @@
      "docs/MOCKUP_RETENCAO.md",
      "docs/agentes/resgates/2026-10-08-proposta-snapshot-mockup-etapas-16-69.md"
     ]
-   },
-   {
-    "sha": "bd18202",
-    "date": "2026-11-16",
-    "author": "adm01-debug",
-    "subject": "test(mockup): resgata as 4 guardas que faltavam das fatias da fábrica VPS (#3730)",
-    "files": [
-     "src/components/mockup/MockupCatalogStates.tsx",
-     "src/components/mockup/__tests__/KeyboardShortcuts.dead.test.tsx",
-     "tests/components/mockup/MockupCatalogStates.a11y.test.tsx",
-     "tests/edge-functions/integration/mockup-assistant.test.ts",
-     "tests/edge-functions/integration/rate-limit-headers.test.ts"
-    ]
-   },
-   {
-    "sha": "8ba1437",
-    "date": "2026-11-16",
-    "author": "adm01-debug",
-    "subject": "fix(edge-fn): mockup baixava a imagem inteira na memória antes de recusar (#3729)",
-    "files": [
-     "supabase/functions/generate-mockup/fetch-guard.cap.test.ts",
-     "supabase/functions/generate-mockup/fetch-guard.ts",
-     "vitest.config.ts"
-    ]
    }
   ],
   "hot_files": [
    [
-    "docs/agentes/resgates/2026-11-16-auditoria-branches.md",
+    ".github/workflows/deploy-gates.yml",
     4
    ],
    [
-    ".github/workflows/deploy-gates.yml",
-    3
+    "docs/agentes/resgates/2026-11-16-auditoria-branches.md",
+    4
    ],
    [
     "package.json",
     3
    ],
    [
+    "supabase/MIGRATIONS_SYNC_LOG.md",
+    2
+   ],
+   [
     "docs/MOCKUP_OPERACAO.md",
     2
+   ],
+   [
+    ".security/policies-baseline.json",
+    1
+   ],
+   [
+    "docs/agentes/resgates/quote-comments/README.md",
+    1
+   ],
+   [
+    "docs/agentes/resgates/quote-comments/codigo/QuoteCommentsSection.tsx",
+    1
+   ],
+   [
+    "docs/agentes/resgates/quote-comments/codigo/useQuoteComments.ts",
+    1
+   ],
+   [
+    "docs/agentes/resgates/quote-comments/montagem-QuoteViewPage.patch",
+    1
+   ],
+   [
+    "docs/agentes/resgates/quote-comments/sql/20261110022404_restore_quote_comments_scoped_threads.sql",
+    1
+   ],
+   [
+    "docs/agentes/resgates/quote-comments/sql/20261110022404_rollback.sql",
+    1
+   ],
+   [
+    "docs/agentes/resgates/quote-comments/testes-sql/README-original.md",
+    1
+   ],
+   [
+    "docs/agentes/resgates/quote-comments/testes-sql/fixture.sql",
+    1
+   ],
+   [
+    "docs/agentes/resgates/quote-comments/testes-sql/run-tests.py",
+    1
+   ],
+   [
+    "docs/agentes/resgates/quote-comments/testes/QuoteCommentsSection.test.tsx",
+    1
+   ],
+   [
+    "docs/agentes/resgates/quote-comments/testes/useQuoteComments.test.ts",
+    1
    ],
    [
     "supabase/rollbacks/20261101140001_rollback.sql",
@@ -541698,58 +542162,6 @@
    ],
    [
     "e2e/protected-routes.spec.ts",
-    1
-   ],
-   [
-    ".gitignore",
-    1
-   ],
-   [
-    "tests/sql/device-trust/README.md",
-    1
-   ],
-   [
-    "tests/sql/device-trust/fixture.sql",
-    1
-   ],
-   [
-    "tests/sql/device-trust/run-tests.py",
-    1
-   ],
-   [
-    ".github/workflows/codeql.yml",
-    1
-   ],
-   [
-    ".github/workflows/inventario-estado-semanal.yml",
-    1
-   ],
-   [
-    "docs/ci/SEGREDOS.md",
-    1
-   ],
-   [
-    "supabase/MIGRATIONS_SYNC_LOG.md",
-    1
-   ],
-   [
-    "supabase/migrations/20261101000002_revoke_anon_color_synonym_map_p15.sql",
-    1
-   ],
-   [
-    "supabase/rollbacks/20261101000002_rollback.sql",
-    1
-   ],
-   [
-    ".github/workflows/release-please.yml",
-    1
-   ],
-   [
-    ".release-please-manifest.json",
-    1
-   ],
-   [
-    "package-lock.json",
     1
    ]
   ]

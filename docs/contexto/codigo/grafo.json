@@ -1,8 +1,8 @@
 {
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
- "nos": 2821,
- "arestas": 11091,
+ "nos": 2824,
+ "arestas": 11105,
  "hubs": [
   {
    "arquivo": "src/lib/utils.ts",
@@ -10,23 +10,23 @@
   },
   {
    "arquivo": "src/components/ui/button.tsx",
-   "importado_por": 627
+   "importado_por": 628
   },
   {
    "arquivo": "src/components/ui/badge.tsx",
-   "importado_por": 478
+   "importado_por": 479
   },
   {
    "arquivo": "src/integrations/supabase/client.ts",
-   "importado_por": 457
+   "importado_por": 458
   },
   {
    "arquivo": "src/components/ui/card.tsx",
-   "importado_por": 347
+   "importado_por": 348
   },
   {
    "arquivo": "src/lib/logger.ts",
-   "importado_por": 315
+   "importado_por": 316
   },
   {
    "arquivo": "src/components/ui/tooltip.tsx",
@@ -38,11 +38,11 @@
   },
   {
    "arquivo": "src/contexts/AuthContext.tsx",
-   "importado_por": 243
+   "importado_por": 245
   },
   {
    "arquivo": "src/components/ui/skeleton.tsx",
-   "importado_por": 183
+   "importado_por": 184
   },
   {
    "arquivo": "src/components/ui/select.tsx",
@@ -93,16 +93,16 @@
    "importado_por": 71
   },
   {
+   "arquivo": "src/components/ui/textarea.tsx",
+   "importado_por": 62
+  },
+  {
    "arquivo": "src/types/magazine.ts",
    "importado_por": 62
   },
   {
    "arquivo": "src/types/stock.ts",
    "importado_por": 62
-  },
-  {
-   "arquivo": "src/components/ui/textarea.tsx",
-   "importado_por": 61
   },
   {
    "arquivo": "src/lib/supabase-untyped.ts",
@@ -114,7 +114,7 @@
   },
   {
    "arquivo": "src/integrations/supabase/types.ts",
-   "importado_por": 57
+   "importado_por": 59
   },
   {
    "arquivo": "src/utils/image-utils.ts",
@@ -149,12 +149,12 @@
    "importado_por": 48
   },
   {
-   "arquivo": "supabase/functions/_shared/request-id.ts",
+   "arquivo": "src/components/ui/ConfirmDialog.tsx",
    "importado_por": 47
   },
   {
-   "arquivo": "src/components/ui/ConfirmDialog.tsx",
-   "importado_por": 46
+   "arquivo": "supabase/functions/_shared/request-id.ts",
+   "importado_por": 47
   },
   {
    "arquivo": "src/lib/format.ts",
@@ -320,6 +320,9 @@
  "orfaos": [
   ".github/scripts/e2e-relevance.mjs",
   "cloudflare-workers/og-meta-bot.js",
+  "docs/agentes/resgates/quote-comments/codigo/QuoteCommentsSection.tsx",
+  "docs/agentes/resgates/quote-comments/codigo/useQuoteComments.ts",
+  "docs/agentes/resgates/quote-comments/testes-sql/run-tests.py",
   "docs/promo-champions/receive-quote-sync.ts",
   "public/sw.js",
   "recovery/RealtimeMessagesExample.tsx",
@@ -614,10 +617,7 @@
   "src/components/goals/SalesGoalsCard.tsx",
   "src/components/intelligence/SegmentAnalysis.tsx",
   "src/components/intelligence/TopClients.tsx",
-  "src/components/inventory/HealthScoreInfoDialog.tsx",
-  "src/components/inventory/StockCategoryTreeSelect.tsx",
-  "src/components/inventory/StockHeroRiskBanner.tsx",
-  "src/components/inventory/VariantStockRowActions.tsx"
+  "src/components/inventory/HealthScoreInfoDialog.tsx"
  ],
  "modulos_mais_acoplados": [
   {

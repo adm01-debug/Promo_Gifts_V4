@@ -3,9 +3,9 @@
  "format_version": 2,
  "stack": {
   "linguagens": [
-   "TypeScript (4895)",
-   "SQL (3435)",
-   "Markdown (1466)",
+   "TypeScript (4899)",
+   "SQL (3438)",
+   "Markdown (1468)",
    "JavaScript (457)",
    "JSON (132)",
    "YAML (116)",
@@ -4272,16 +4272,16 @@
    "arquivos_md": 11
   },
   {
+   "pasta": "docs/agentes",
+   "arquivos_md": 9
+  },
+  {
    "pasta": "docs/architecture",
    "arquivos_md": 9
   },
   {
    "pasta": "docs/runbooks",
    "arquivos_md": 8
-  },
-  {
-   "pasta": "docs/agentes",
-   "arquivos_md": 7
   },
   {
    "pasta": "docs/bugs",
@@ -5386,7 +5386,7 @@
    },
    {
     "papel": "alert",
-    "ocorrencias": 57
+    "ocorrencias": 58
    },
    {
     "papel": "dev",

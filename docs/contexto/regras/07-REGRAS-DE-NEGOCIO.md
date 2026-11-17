@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.3.2 · commit `3510fbc451` · branch `main` · 2026-11-17 06:25 UTC
+> Gerado automaticamente por AI Context Sync v1.3.2 · commit `1404642802` · branch `main` · 2026-11-17 08:00 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -6137,6 +6137,20 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 |---|---|
 | Assertion failed: ${message} | `test-hooks-safety.mjs` |
 | Assertion failed: ${message} | `test-magazine-fix.mjs` |
+|              className= | `docs/agentes/resgates/quote-comments/codigo/QuoteCommentsSection.tsx` |
+| Comment insert returned no row | `docs/agentes/resgates/quote-comments/codigo/useQuoteComments.ts` |
+| Comment not found or delete not permitted | `docs/agentes/resgates/quote-comments/codigo/useQuoteComments.ts` |
+| Comment not found or update not permitted | `docs/agentes/resgates/quote-comments/codigo/useQuoteComments.ts` |
+| Cannot verify disposable-container ownership; no container was removed. | `docs/agentes/resgates/quote-comments/testes-sql/run-tests.py` |
+| Could not start the disposable PostgreSQL 17 container:  | `docs/agentes/resgates/quote-comments/testes-sql/run-tests.py` |
+| Disposable PostgreSQL did not become ready within 30 seconds. | `docs/agentes/resgates/quote-comments/testes-sql/run-tests.py` |
+| Disposable-container label mismatch; no container was removed. | `docs/agentes/resgates/quote-comments/testes-sql/run-tests.py` |
+| Failed to remove the owned disposable PostgreSQL container:  | `docs/agentes/resgates/quote-comments/testes-sql/run-tests.py` |
+| Local Docker daemon is unavailable:  | `docs/agentes/resgates/quote-comments/testes-sql/run-tests.py` |
+| concurrent delete did not reach synchronization marker | `docs/agentes/resgates/quote-comments/testes-sql/run-tests.py` |
+| concurrent delete failed:  | `docs/agentes/resgates/quote-comments/testes-sql/run-tests.py` |
+| concurrent insert did not reach synchronization marker | `docs/agentes/resgates/quote-comments/testes-sql/run-tests.py` |
+| concurrent insert failed:  | `docs/agentes/resgates/quote-comments/testes-sql/run-tests.py` |
 | [auth.setup] E21 — login falhou em CI: ${reason} | `e2e/fixtures/auth.setup.ts` |
 | [auth.setup] E21 — modo estrito: E2E_USER_EMAIL/E2E_USER_PASSWORD ausentes em CI.\n | `e2e/fixtures/auth.setup.ts` |
 | Test failed due to console errors:\n${allErrors.join( | `e2e/fixtures/test-base.ts` |
@@ -6421,21 +6435,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | allowlist inválida: versions_sha256 divergente; calculado=${digest} | `scripts/check-supabase-migration-ledger.mjs` |
 | saída não é JSON nem tabela reconhecida de migration list | `scripts/check-supabase-migration-ledger.mjs` |
 | saída vazia do supabase migration list | `scripts/check-supabase-migration-ledger.mjs` |
-| --catalog exige um caminho. | `scripts/check-supabase-reference-catalog.mjs` |
-| Catálogo Supabase ausente: ${catalogPath} | `scripts/check-supabase-reference-catalog.mjs` |
-| ...${err.message}... | `scripts/check-toast-leaks.mjs` |
-| ${path} deve ser um array ou um objeto com a chave  | `scripts/check-types-inventory-drift.mjs` |
-| --base exige um ref git. | `scripts/check-types-inventory-drift.mjs` |
-| --generated exige um arquivo TypeScript. | `scripts/check-types-inventory-drift.mjs` |
-| Argumento desconhecido: ${arg} | `scripts/check-types-inventory-drift.mjs` |
-| Entrada #${index} da allowlist está incompleta (faltam: ${missing.join( | `scripts/check-types-inventory-drift.mjs` |
-| Entrada #${index} da allowlist tem category  | `scripts/check-types-inventory-drift.mjs` |
-| Entrada #${index}: member deve ser um array de nomes de propriedades. | `scripts/check-types-inventory-drift.mjs` |
-| check-workflow-contracts: falha ao ler ${f}: ${error.message} | `scripts/check-workflow-contracts.mjs` |
-| GET ${url} → ${r.status} ${r.statusText} | `scripts/ci-metrics.mjs` |
-| ${path}: esperado um array de resultados | `scripts/ci-performance-gate.ts` |
-| ACTION_ID_REJECTED | `scripts/diagnose-personalization-artifact.py` |
-| … +1283 linhas — lista completa em `context.json` | |
+| … +1297 linhas — lista completa em `context.json` | |
 
 ## J. Controle de acesso no código (checagens de perfil/permissão)
 
@@ -6559,7 +6559,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `admin` | `supabase/migrations/20261112120500_fix_optimization_queue_rpcs_dev_access.sql` |
 | `anon` | `tests/edge-functions/live/_live-client.ts` |
 
-## K. Testes como especificação (21905 testes em 2218 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (21941 testes em 2220 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -6795,6 +6795,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `tests/unit/format.test.ts` | 21 | formatCurrency · formats zero with two decimal places · formats a positive integer · formats decimal values with exactly 2 fractional digits … |
 | `tests/unit/quote-calculations.test.ts` | 21 | Quote Calculations — Edge Cases · Desconto · desconto 0% não altera o preço · desconto 100% resulta em total zero … |
 | `tests/utils/imageProxy.test.ts` | 21 | imageProxy · getProxiedImageUrl · retorna null para url null · retorna null para url undefined … |
+| `docs/agentes/resgates/quote-comments/testes/useQuoteComments.test.ts` | 20 | quote comments service boundary · does not fetch or mutate without an authenticated user · does not fetch or mutate without a quote id · shows loading while the first page is unresolved … |
 | `e2e/collections-module.spec.ts` | 20 | Collections Module - Public Access (No Auth) · should redirect to auth when accessing /colecoes unauthenticated · should redirect to auth when accessing /colecoes/:id unauthenticated · should display auth page when accessing /colecoes … |
 | `e2e/compare-module.spec.ts` | 20 | Compare Module - Public Access (No Auth) · should redirect to auth when accessing /comparar unauthenticated · should display auth page when accessing /comparar · should not expose comparison data to unauthenticated users … |
 | `e2e/favorites-module.spec.ts` | 20 | Favorites Module - Public Access (No Auth) · should redirect to auth when accessing /favoritos unauthenticated · should display auth page when accessing /favoritos · should not expose favorites data to unauthenticated users … |
@@ -6862,8 +6863,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `src/lib/carts/__tests__/shipping-deadline.edge.test.ts` | 18 | shipping-deadline · edge cases · borda +3 / +4 dias (soon vs ok) · +3 dias exatamente → soon com rótulo  · +4 dias exatamente → ok com rótulo  … |
 | `src/lib/inventory/__tests__/health-score.test.ts` | 18 | calcHealthScore · retorna 100 quando não há produtos · retorna 100 quando todos estão adequados · retorna 0 quando nenhum está adequado … |
 | `src/pages/magazine/templates-gallery/__tests__/gallery.test.tsx` | 18 | MagazineTemplatesGalleryPage · renderiza os 12 cards de template · filtro  · filtro  … |
-| `src/pages/quotes/__tests__/quote-builder-freight-block.rtl.test.tsx` | 18 | Bloco Frete — hierarquia + data-testid do grid · shippingType= · shippingType= · shippingType= … |
-| … +1918 linhas — lista completa em `context.json` | | |
+| … +1920 linhas — lista completa em `context.json` | | |
 
 ## L. Eventos de webhook tratados (contratos com sistemas externos)
 
