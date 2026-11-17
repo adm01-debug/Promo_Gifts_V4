@@ -11,7 +11,9 @@ const protectedRoutes = [
   '/orcamentos/novo',
   '/orcamentos/kanban',
   '/orcamentos/dashboard',
-  '/pedidos',
+  // '/pedidos' saiu: nao existe no router (nenhum path="/pedidos" em src/routes).
+  // Rota inexistente renderiza NotFound e nao redireciona, entao o waitForURL(/login/)
+  // estourava o timeout - vermelho garantido que nao dizia nada sobre a guarda.
   '/simulador',
   '/colecoes',
   '/carrinhos',
@@ -27,12 +29,18 @@ test.describe('Protected Routes — Auth Guards', () => {
   }
 });
 
+// As publicas sao as de src/routes/public-routes.tsx. As tres antigas
+// ('/proposta/test-token', '/approve/test-token', '/kit/test-token') NAO existem no
+// router: rota inexistente cai em NotFound, que tambem nao redireciona para /login,
+// entao o teste passava e certificava como "publica funcionando" uma rota que nao
+// existe. Falso verde. '/auth' e a rota canonica e nao era coberta.
 const publicRoutes = [
+  '/auth',
   '/login',
   '/reset-password',
-  '/proposta/test-token',
-  '/approve/test-token',
-  '/kit/test-token',
+  '/unauthorized',
+  '/termos',
+  '/privacidade',
 ];
 
 test.describe('Public Routes — No Auth Required', () => {
