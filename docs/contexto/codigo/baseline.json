@@ -2,11 +2,26 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "140464280224a116bc3eb10c550f0adeb867cfaf",
+  "commit": "001d97084ffdfc4324d68e199de97b1cdac284dc",
   "branch": "main",
-  "data_commit": "2026-11-17T04:59:21-03:00",
+  "data_commit": "2026-11-17T05:16:06-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "001d9708",
+    "data": "2026-11-17",
+    "assunto": "feat(db): P06 na unica view onde security_invoker nao quebra nem re-expoe (#3762)"
+   },
+   {
+    "sha": "7edc9f85",
+    "data": "2026-11-17",
+    "assunto": "test(magicup): resgata o teste do ciclo de vida da busca (#3759)"
+   },
+   {
+    "sha": "879cd72d",
+    "data": "2026-11-17",
+    "assunto": "chore(docs): publica a prova byte a byte das branches fechadas (#3760)"
+   },
    {
     "sha": "14046428",
     "data": "2026-11-17",
@@ -116,24 +131,9 @@
     "sha": "a5099c4c",
     "data": "2026-11-17",
     "assunto": "docs(audit): retira um achado que eu registrei errado e fecha o placar de 17/11 (#3739)"
-   },
-   {
-    "sha": "4963dcdf",
-    "data": "2026-11-16",
-    "assunto": "fix(quotes): erro ao salvar o rascunho do orçamento ficava invisível para o vendedor (#3732)"
-   },
-   {
-    "sha": "0f7644a2",
-    "data": "2026-11-16",
-    "assunto": "test(mockup): resgata o contrato do handler REAL do generate-mockup (#3737)"
-   },
-   {
-    "sha": "a4ac9034",
-    "data": "2026-11-16",
-    "assunto": "docs(audit): resgata as regras de negócio que só existiam em 2 branches, reconferidas no código (#3738)"
    }
   ],
-  "arquivos_mudados_7d": 1953,
+  "arquivos_mudados_7d": 1957,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -199,15 +199,15 @@
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "supabase/MIGRATIONS_SYNC_LOG.md",
-    "mudancas": 65
+    "mudancas": 66
    },
    {
     "arquivo": "RELATORIO_CI.md",
-    "mudancas": 64
+    "mudancas": 62
    },
    {
     "arquivo": "PENDENCIAS.md",
-    "mudancas": 55
+    "mudancas": 54
    },
    {
     "arquivo": "package.json",
@@ -301,7 +301,7 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 566
+    "commits": 563
    },
    {
     "autor": "Claude",
@@ -322,9 +322,9 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 10837,
-  "arquivos_codigo": 5366,
-  "linhas_codigo": 1022312,
+  "arquivos_total": 10841,
+  "arquivos_codigo": 5367,
+  "linhas_codigo": 1022367,
   "rotas": 138,
   "rotas_http_backend": 13,
   "vistas_por_id": 0,
@@ -334,12 +334,12 @@
   "hooks": 627,
   "edge_functions": 112,
   "tabelas": 527,
-  "migrations": 3098,
+  "migrations": 3099,
   "cron_jobs": 122,
-  "testes": 2542,
+  "testes": 2543,
   "workflows": 88,
   "scripts": 283,
-  "docs_md": 1468
+  "docs_md": 1469
  },
  "por_pasta": {
   ".github/scripts": {
@@ -2123,8 +2123,8 @@
    "linhas": 580
   },
   "tests/pages": {
-   "arquivos": 15,
-   "linhas": 3289
+   "arquivos": 16,
+   "linhas": 3344
   },
   "tests/product-form-improvements.test.ts": {
    "arquivos": 1,

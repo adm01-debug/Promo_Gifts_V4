@@ -3,9 +3,9 @@
  "format_version": 2,
  "stack": {
   "linguagens": [
-   "TypeScript (4899)",
-   "SQL (3438)",
-   "Markdown (1468)",
+   "TypeScript (4900)",
+   "SQL (3440)",
+   "Markdown (1469)",
    "JavaScript (457)",
    "JSON (132)",
    "YAML (116)",
@@ -4273,7 +4273,7 @@
   },
   {
    "pasta": "docs/agentes",
-   "arquivos_md": 9
+   "arquivos_md": 10
   },
   {
    "pasta": "docs/architecture",

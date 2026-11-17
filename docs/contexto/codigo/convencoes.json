@@ -23,7 +23,7 @@
    "src/services (10)"
   ],
   "testes": [
-   "tests/ (1039)",
+   "tests/ (1040)",
    "co-localizado (__tests__) (676)",
    "e2e/ (625)"
   ],
@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "feat(db): P06 na unica view onde security_invoker nao quebra nem re-expoe (#3762)",
+   "test(magicup): resgata o teste do ciclo de vida da busca (#3759)",
+   "chore(docs): publica a prova byte a byte das branches fechadas (#3760)",
    "fix(ci): destrava a main - suspende device-trust do Gate 2.5, atualiza baseline e recibo (#3761)",
-   "docs(resgate): preserva quote_comments integral e inerte, sem ligar nem destravar (#3763)",
-   "chore(docs): registra a rodada de decisoes de 17/11 no ledger da auditoria (#3757)",
-   "fix(db): versiona o rollback de SB-0001 (auth.users fora do Realtime) (#3756)",
-   "fix(test): corrige a guarda de rota protegida e estabiliza o tooltip da sidebar (#3755)"
+   "docs(resgate): preserva quote_comments integral e inerte, sem ligar nem destravar (#3763)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",

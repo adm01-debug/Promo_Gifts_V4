@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "140464280224a116bc3eb10c550f0adeb867cfaf",
+  "sha": "001d97084ffdfc4324d68e199de97b1cdac284dc",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-17 08:00 UTC",
-  "files_total": 10765,
-  "code_files": 8803,
-  "code_lines": 1242441
+  "generated_at": "2026-11-17 08:17 UTC",
+  "files_total": 10769,
+  "code_files": 8806,
+  "code_lines": 1243097
  },
  "version": "1.3.2",
- "facts_hash": "a19e1438233f6335",
+ "facts_hash": "ffeec7af3c625d46",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -1119,9 +1119,9 @@
   ],
   "package_manager": "npm",
   "languages": {
-   ".sql": 3438,
+   ".sql": 3440,
    ".ts": 2992,
-   ".tsx": 1908,
+   ".tsx": 1909,
    ".mjs": 450,
    ".py": 15,
    ".js": 7
@@ -42814,6 +42814,28 @@
     ],
     "src": "supabase/migrations/20260917160000_e33_ops_wraparound_monitor.sql",
     "comment": "PLANO_DBA E33 — snapshot diário de risco de wraparound de XID/multixact, ",
+    "origin": "migration"
+   },
+   "_p06_before": {
+    "columns": [
+     {
+      "name": "metric",
+      "type": "text PRIMARY KEY",
+      "fk": "",
+      "generated": "",
+      "src": "supabase/migrations/20261117073000_p06_security_invoker_v_product_properties_public.sql"
+     },
+     {
+      "name": "n",
+      "type": "bigint",
+      "fk": "",
+      "generated": "",
+      "src": "supabase/migrations/20261117073000_p06_security_invoker_v_product_properties_public.sql"
+     }
+    ],
+    "constraints": [],
+    "src": "supabase/migrations/20261117073000_p06_security_invoker_v_product_properties_public.sql",
+    "comment": "",
     "origin": "migration"
    },
    "webhook_configs": {
@@ -96155,6 +96177,7 @@
    "supabase/migrations/20261115130200_sec001_revoke_anon_execute_trigger_functions.sql",
    "supabase/migrations/20261115130300_fn_global_search_clamp_limit_hardened.sql",
    "supabase/migrations/20261115230000_ai_function_routing_mockup_assistant.sql",
+   "supabase/migrations/20261117073000_p06_security_invoker_v_product_properties_public.sql",
    "supabase/rollbacks/20260511235950_rollback.sql",
    "supabase/rollbacks/20260511235959_rollback.sql",
    "supabase/rollbacks/20260611014515_fn_dryrun_standardize_supplier_real_rollback.sql",
@@ -96260,6 +96283,7 @@
    "supabase/rollbacks/20261115130200_rollback.sql",
    "supabase/rollbacks/20261115130300_rollback.sql",
    "supabase/rollbacks/20261115230000_rollback.sql",
+   "supabase/rollbacks/20261117073000_rollback.sql",
    "supabase/rollbacks/rollback_20261025002500_analyze_tables_p03.sql",
    "supabase/sql-legacy/001_notification_system.sql",
    "supabase/sql-legacy/002_notification_preferences.sql",
@@ -138299,6 +138323,44 @@
    },
    {
     "path": "",
+    "file": "tests/pages/MagicUp.search-lifetime.test.tsx",
+    "component": "MagicUp.search-lifetime.test",
+    "tables_transitive": [
+     "...",
+     "ai_function_routing",
+     "ai_models",
+     "ai_providers",
+     "ai_usage_logs",
+     "ai_usage_quotas",
+     "expert_conversations",
+     "expert_messages",
+     "external_connections",
+     "magic_up_brand_kits",
+     "magic_up_campaigns",
+     "magic_up_generations",
+     "mv_stock_velocity",
+     "order_items",
+     "orders",
+     "profiles",
+     "quote_items",
+     "quotes",
+     "scheduled_reports",
+     "system_kill_switches",
+     "voice_command_logs"
+    ],
+    "invokes_transitive": [
+     "mcp-keys-issue"
+    ],
+    "rpc_transitive": [
+     "check_ai_quota",
+     "fn_my_rpc",
+     "fn_should_apply_kill_switch",
+     "get_promo_sales_ranking"
+    ],
+    "deps_count": 111
+   },
+   {
+    "path": "",
     "file": "tests/pages/MockupGenerator.a11y.test.tsx",
     "component": "MockupGenerator.a11y.test",
     "tables_transitive": [
@@ -151239,8 +151301,8 @@
   },
   {
    "module": "supabase/migrations",
-   "files": 3097,
-   "lines": 223262,
+   "files": 3098,
+   "lines": 223704,
    "tables": [
     "...",
     "admin_audit_log",
@@ -151338,8 +151400,8 @@
   },
   {
    "module": "supabase/rollbacks",
-   "files": 106,
-   "lines": 3080,
+   "files": 107,
+   "lines": 3239,
    "tables": [],
    "exports": [],
    "docs": [],
@@ -151514,8 +151576,8 @@
   },
   {
    "module": "tests",
-   "files": 1054,
-   "lines": 162111,
+   "files": 1055,
+   "lines": 162166,
    "tables": [
     "bot_detection_log",
     "clients",
@@ -158287,6 +158349,7 @@
    "_deprecated_silver_print_areas_20260606",
    "_deprecated_silver_products_20260606",
    "_deprecated_silver_variants_20260606",
+   "_p06_before",
    "_qa_pct_results",
    "achievements",
    "action_log",
@@ -196494,6 +196557,11 @@
     "table": "ops.wraparound_monitor_log",
     "column": "(tabela)",
     "rule": "CONSTRAINT wraparound_monitor_log_metric_check CHECK (metric IN ('xid_age', 'mxid_age', 'sequence_pct_used', 'replication_slot_retained_bytes', 'toast_pct_of_heap'))"
+   },
+   {
+    "table": "_p06_before",
+    "column": "metric",
+    "rule": "PK"
    },
    {
     "table": "webhook_configs",
@@ -292054,6 +292122,18 @@
     "name": "resultado: mantém a semântica do radiogroup de curadoria (radiogroup/radio/aria-checked)"
    },
    {
+    "file": "tests/pages/MagicUp.search-lifetime.test.tsx",
+    "name": "MagicUp — ciclo de vida da busca de produtos"
+   },
+   {
+    "file": "tests/pages/MagicUp.search-lifetime.test.tsx",
+    "name": "keeps the existing editor mounted while a subsequent product search is loading"
+   },
+   {
+    "file": "tests/pages/MagicUp.search-lifetime.test.tsx",
+    "name": "waits for the initial product request before mounting the editing panels"
+   },
+   {
     "file": "tests/pages/MockupGenerator.a11y.test.tsx",
     "name": "MockupGenerator — acessibilidade da página ($width px)"
    },
@@ -348824,6 +348904,13 @@
      "service_role: true"
     ]
    },
+   "_p06_before": {
+    "rls": "não encontrado",
+    "SELECT": [],
+    "INSERT": [],
+    "UPDATE": [],
+    "DELETE": []
+   },
    "_qa_pct_results": {
     "rls": "enabled",
     "SELECT": [],
@@ -395460,6 +395547,7 @@
    "ops.table_size_history": [],
    "ops.pgss_history": [],
    "ops.wraparound_monitor_log": [],
+   "_p06_before": [],
    "webhook_configs": [
     "created_at"
    ],
@@ -399824,7 +399912,7 @@
    "`quote_approval_tokens.status` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.",
    "`kit_share_tokens.status` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.",
    "`_deprecated_silver_images_queue_20260606.img_status` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.",
-   "267/494 tabelas sem `COMMENT ON TABLE` — o significado de negócio não está no schema: `optimization_queue`, `quotes`, `magazines`, `material_types`, `quotes_inbound`, `webhook_inbound_dedupe`, `webhook_inbound_log`, `magazine_items`, `magazine_reader_state`, `magazine_templates`, `admin_audit_log_y2025m12`, `admin_audit_log_y2026m01` …",
+   "268/495 tabelas sem `COMMENT ON TABLE` — o significado de negócio não está no schema: `optimization_queue`, `quotes`, `magazines`, `material_types`, `quotes_inbound`, `webhook_inbound_dedupe`, `webhook_inbound_log`, `magazine_items`, `magazine_reader_state`, `magazine_templates`, `admin_audit_log_y2025m12`, `admin_audit_log_y2026m01` …",
    "Há tabelas usadas no código sem migration no repo — o schema real pode ter sido alterado pelo painel."
   ]
  },
@@ -516988,6 +517076,10 @@
    "path": "supabase/migrations/20261115230000_ai_function_routing_mockup_assistant.sql",
    "lines": 45
   },
+  "supabase/migrations/20261117073000_p06_security_invoker_v_product_properties_public.sql": {
+   "path": "supabase/migrations/20261117073000_p06_security_invoker_v_product_properties_public.sql",
+   "lines": 442
+  },
   "supabase/rollbacks/20260511235950_rollback.sql": {
    "path": "supabase/rollbacks/20260511235950_rollback.sql",
    "lines": 5
@@ -517426,6 +517518,10 @@
   "supabase/rollbacks/20261115230000_rollback.sql": {
    "path": "supabase/rollbacks/20261115230000_rollback.sql",
    "lines": 18
+  },
+  "supabase/rollbacks/20261117073000_rollback.sql": {
+   "path": "supabase/rollbacks/20261117073000_rollback.sql",
+   "lines": 159
   },
   "supabase/rollbacks/rollback_20261025002500_analyze_tables_p03.sql": {
    "path": "supabase/rollbacks/rollback_20261025002500_analyze_tables_p03.sql",
@@ -533796,6 +533892,16 @@
     "resultado: mantém a semântica do radiogroup de curadoria (radiogroup/radio/aria-checked)"
    ]
   },
+  "tests/pages/MagicUp.search-lifetime.test.tsx": {
+   "path": "tests/pages/MagicUp.search-lifetime.test.tsx",
+   "lines": 55,
+   "is_test": true,
+   "tests": [
+    "MagicUp — ciclo de vida da busca de produtos",
+    "keeps the existing editor mounted while a subsequent product search is loading",
+    "waits for the initial product request before mounting the editing panels"
+   ]
+  },
   "tests/pages/MockupGenerator.a11y.test.tsx": {
    "path": "tests/pages/MockupGenerator.a11y.test.tsx",
    "lines": 362,
@@ -541761,10 +541867,39 @@
   }
  },
  "git": {
-  "sha": "140464280224a116bc3eb10c550f0adeb867cfaf",
+  "sha": "001d97084ffdfc4324d68e199de97b1cdac284dc",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "001d970",
+    "date": "2026-11-17",
+    "author": "adm01-debug",
+    "subject": "feat(db): P06 na unica view onde security_invoker nao quebra nem re-expoe (#3762)",
+    "files": [
+     "supabase/MIGRATIONS_SYNC_LOG.md",
+     "supabase/migrations/20261117073000_p06_security_invoker_v_product_properties_public.sql",
+     "supabase/rollbacks/20261117073000_rollback.sql"
+    ]
+   },
+   {
+    "sha": "7edc9f8",
+    "date": "2026-11-17",
+    "author": "adm01-debug",
+    "subject": "test(magicup): resgata o teste do ciclo de vida da busca (#3759)",
+    "files": [
+     "tests/pages/MagicUp.search-lifetime.test.tsx"
+    ]
+   },
+   {
+    "sha": "879cd72",
+    "date": "2026-11-17",
+    "author": "adm01-debug",
+    "subject": "chore(docs): publica a prova byte a byte das branches fechadas (#3760)",
+    "files": [
+     "docs/agentes/resgates/2026-11-17-prova-byte-a-byte.md"
+    ]
+   },
    {
     "sha": "1404642",
     "date": "2026-11-17",
@@ -542050,37 +542185,6 @@
      "src/hooks/products/useSupplierTrust.ts",
      "tests/hooks/device-and-supplier-trust.contract.test.ts"
     ]
-   },
-   {
-    "sha": "d1091fe",
-    "date": "2026-11-16",
-    "author": "adm01-debug",
-    "subject": "docs(audit): rodada de 17/11 no ledger de auditoria de branches (#3734)",
-    "files": [
-     "docs/agentes/resgates/2026-11-16-auditoria-branches.md"
-    ]
-   },
-   {
-    "sha": "79c5640",
-    "date": "2026-11-16",
-    "author": "adm01-debug",
-    "subject": "fix(docs): número errado de migration no doc resgatado deixou o Gate 1 vermelho na main (#3733)",
-    "files": [
-     "docs/MOCKUP_OPERACAO.md"
-    ]
-   },
-   {
-    "sha": "bf156d3",
-    "date": "2026-11-16",
-    "author": "adm01-debug",
-    "subject": "docs(audit): resgata 4 documentos da fábrica VPS que não existiam na main (#3731)",
-    "files": [
-     "docs/FABRICA_VPS_FAQ.md",
-     "docs/MAGIC_UP_AUDITORIA_2026-10-08.md",
-     "docs/MOCKUP_OPERACAO.md",
-     "docs/MOCKUP_RETENCAO.md",
-     "docs/agentes/resgates/2026-10-08-proposta-snapshot-mockup-etapas-16-69.md"
-    ]
    }
   ],
   "hot_files": [
@@ -542089,20 +542193,32 @@
     4
    ],
    [
+    "supabase/MIGRATIONS_SYNC_LOG.md",
+    3
+   ],
+   [
     "docs/agentes/resgates/2026-11-16-auditoria-branches.md",
-    4
+    3
    ],
    [
     "package.json",
     3
    ],
    [
-    "supabase/MIGRATIONS_SYNC_LOG.md",
-    2
+    "supabase/migrations/20261117073000_p06_security_invoker_v_product_properties_public.sql",
+    1
    ],
    [
-    "docs/MOCKUP_OPERACAO.md",
-    2
+    "supabase/rollbacks/20261117073000_rollback.sql",
+    1
+   ],
+   [
+    "tests/pages/MagicUp.search-lifetime.test.tsx",
+    1
+   ],
+   [
+    "docs/agentes/resgates/2026-11-17-prova-byte-a-byte.md",
+    1
    ],
    [
     ".security/policies-baseline.json",
@@ -542150,18 +542266,6 @@
    ],
    [
     "docs/agentes/resgates/quote-comments/testes/useQuoteComments.test.ts",
-    1
-   ],
-   [
-    "supabase/rollbacks/20261101140001_rollback.sql",
-    1
-   ],
-   [
-    "e2e/flows/sidebar-tooltips.spec.ts",
-    1
-   ],
-   [
-    "e2e/protected-routes.spec.ts",
     1
    ]
   ]

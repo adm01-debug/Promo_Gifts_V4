@@ -1,6 +1,6 @@
 # 10 · ACESSO E SEGURANÇA — quem pode o quê
 
-> Gerado automaticamente por AI Context Sync v1.3.2 · commit `1404642802` · branch `main` · 2026-11-17 08:00 UTC
+> Gerado automaticamente por AI Context Sync v1.3.2 · commit `001d97084f` · branch `main` · 2026-11-17 08:17 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## Perfis / roles identificados
@@ -29,6 +29,7 @@
 | `_deprecated_silver_print_areas_20260606` | enabled | service_role: true<br>authenticated: true | service_role: true | service_role: true | service_role: true |
 | `_deprecated_silver_products_20260606` | enabled | service_role: true<br>authenticated: true | service_role: true | service_role: true | service_role: true |
 | `_deprecated_silver_variants_20260606` | enabled | service_role: true<br>authenticated: true | service_role: true | service_role: true | service_role: true |
+| `_p06_before` | não encontrado | sem RLS | sem RLS | sem RLS | sem RLS |
 | `_qa_pct_results` | enabled | — | — | — | — |
 | `access_blocked_log` | enabled | authenticated: is_admin_or_above((SELECT auth.uid())) | authenticated: is_admin_or_above((SELECT auth.uid())) | — | — |
 | `access_security_settings` | enabled | authenticated: (public.has_role(auth.uid(), 'admin'::public.app_role) OR public.has_role(auth.uid(), 'dev'::public.app_role)) | — | authenticated: (public.has_role(auth.uid(), 'admin'::public.app_role) OR public.has_role(auth.uid(), 'dev'::public.app_role)) | — |
@@ -322,8 +323,7 @@
 | `product_price_freshness_overrides` | enabled | — | authenticated: has_role((SELECT auth.uid()), 'admin'::app_role) | authenticated: has_role((SELECT auth.uid()), 'admin'::app_role) | authenticated: has_role((SELECT auth.uid()), 'admin'::app_role) |
 | `product_print_positions` | enabled | public: true | — | — | — |
 | `product_properties` | enabled | anon: public.fn_product_active_for_rls(product_id) | — | — | — |
-| `product_qa_image_alerts` | enabled | authenticated: true<br>authenticated: is_admin_or_above((SELECT auth.uid())) | authenticated: is_admin_or_above((SELECT auth.uid())) | authenticated: is_admin_or_above((SELECT auth.uid())) | authenticated: is_admin_or_above((SELECT auth.uid())) |
-| … +194 linhas — lista completa em `context.json` | | | | | |
+| … +195 linhas — lista completa em `context.json` | | | | | |
 
 > `—` com RLS ligado = ninguém além de service_role. `sem RLS` = qualquer chave anon lê/escreve tudo.
 

@@ -5,18 +5,18 @@
   "vitest",
   "playwright"
  ],
- "total": 2542,
+ "total": 2543,
  "por_tipo": {
   "contrato": 66,
   "e2e": 677,
   "pytest": 5,
   "qa": 17,
-  "unit": 1777
+  "unit": 1778
  },
  "onde_ficam": [
   {
    "padrao": "tests/",
-   "arquivos": 1039
+   "arquivos": 1040
   },
   {
    "padrao": "co-localizado (__tests__)",
@@ -18914,6 +18914,15 @@
    "casos": 5
   },
   {
+   "arquivo": "tests/pages/MagicUp.search-lifetime.test.tsx",
+   "tipo": "unit",
+   "linhas": 55,
+   "testa": [
+    "src/pages/tools/MagicUp.tsx"
+   ],
+   "casos": 2
+  },
+  {
    "arquivo": "tests/pages/MockupGenerator.a11y.test.tsx",
    "tipo": "unit",
    "linhas": 362,
@@ -22324,7 +22333,7 @@
   "src/pages/quotes/quotes-dashboard/useQuotesDashboard.ts": 1,
   "src/pages/quotes/useQuotesListPage.ts": 12,
   "src/pages/tools/AdvancedPriceSearchPage.tsx": 1,
-  "src/pages/tools/MagicUp.tsx": 2,
+  "src/pages/tools/MagicUp.tsx": 3,
   "src/pages/trends/trends-mock.ts": 1,
   "src/routes/AppRoutes.tsx": 2,
   "src/routes/RoutePrefetcher.tsx": 1,
