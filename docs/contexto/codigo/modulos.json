@@ -8193,7 +8193,6 @@
     "check_ai_quota",
     "ensure_default_favorite_list",
     "fn_batch_update_cart_item_sort_order",
-    "fn_get_rupture_alerts",
     "fn_get_similar_products",
     "fn_get_supplier_reliability",
     "fn_rupture_quick_stats",
@@ -9463,7 +9462,6 @@
     "fn_batch_update_cart_item_sort_order",
     "fn_check_item_fits",
     "fn_get_color_swatches_batch",
-    "fn_get_rupture_alerts",
     "fn_get_similar_products",
     "fn_get_supplier_reliability",
     "fn_should_apply_kill_switch",
@@ -10710,7 +10708,6 @@
     "fn_batch_update_cart_item_sort_order",
     "fn_check_item_fits",
     "fn_get_color_swatches_batch",
-    "fn_get_rupture_alerts",
     "fn_get_similar_products",
     "fn_get_supplier_reliability",
     "fn_should_apply_kill_switch",
@@ -22222,7 +22219,7 @@
    "modulo": "hooks/stock",
    "arquivos": 13,
    "testes": 4,
-   "linhas": 1528,
+   "linhas": 1526,
    "itens_menu": [],
    "telas": [],
    "rotas_http": [],
@@ -22290,7 +22287,6 @@
     "workspace_notifications"
    ],
    "rpcs": [
-    "fn_get_rupture_alerts",
     "fn_rupture_quick_stats",
     "fn_should_apply_kill_switch",
     "get_profile_and_roles",
@@ -22330,7 +22326,6 @@
      "stock_notes"
     ],
     "rpcs": [
-     "fn_get_rupture_alerts",
      "fn_rupture_quick_stats"
     ]
    },
@@ -23457,7 +23452,6 @@
     "fn_batch_update_cart_item_sort_order",
     "fn_check_item_fits",
     "fn_get_color_swatches_batch",
-    "fn_get_rupture_alerts",
     "fn_get_similar_products",
     "fn_get_supplier_reliability",
     "fn_should_apply_kill_switch",
@@ -27362,7 +27356,6 @@
     "fn_admin_sync_external_connections",
     "fn_batch_update_cart_item_sort_order",
     "fn_check_item_fits",
-    "fn_get_rupture_alerts",
     "fn_get_similar_products",
     "fn_get_supplier_reliability",
     "fn_should_apply_kill_switch",
@@ -34241,7 +34234,6 @@
     "fn_check_item_fits",
     "fn_get_color_swatches_batch",
     "fn_get_reposicao_variants_summary",
-    "fn_get_rupture_alerts",
     "fn_get_similar_products",
     "fn_get_supplier_reliability",
     "fn_should_apply_kill_switch",

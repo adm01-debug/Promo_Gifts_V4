@@ -18,7 +18,7 @@
   },
   {
    "arquivo": "src/integrations/supabase/client.ts",
-   "importado_por": 458
+   "importado_por": 457
   },
   {
    "arquivo": "src/components/ui/card.tsx",
@@ -97,16 +97,16 @@
    "importado_por": 62
   },
   {
+   "arquivo": "src/lib/supabase-untyped.ts",
+   "importado_por": 62
+  },
+  {
    "arquivo": "src/types/magazine.ts",
    "importado_por": 62
   },
   {
    "arquivo": "src/types/stock.ts",
    "importado_por": 62
-  },
-  {
-   "arquivo": "src/lib/supabase-untyped.ts",
-   "importado_por": 61
   },
   {
    "arquivo": "src/components/ui/switch.tsx",

@@ -12951,12 +12951,10 @@
    "hooks_exportados": [
     "useRuptureAlerts"
    ],
-   "linhas": 99,
+   "linhas": 97,
    "dominio": "hooks/stock",
    "tabelas": [],
-   "rpcs": [
-    "fn_get_rupture_alerts"
-   ],
+   "rpcs": [],
    "edges": [],
    "hooks_internos": [
     "useQuery"

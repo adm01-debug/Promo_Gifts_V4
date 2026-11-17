@@ -18250,7 +18250,6 @@
     "check_ai_quota",
     "ensure_default_favorite_list",
     "fn_batch_update_cart_item_sort_order",
-    "fn_get_rupture_alerts",
     "fn_get_similar_products",
     "fn_get_supplier_reliability",
     "fn_should_apply_kill_switch",

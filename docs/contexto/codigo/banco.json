@@ -50743,11 +50743,6 @@
    "usada_em": 1
   },
   {
-   "nome": "fn_get_rupture_alerts",
-   "definida": true,
-   "usada_em": 1
-  },
-  {
    "nome": "fn_get_similar_products",
    "definida": true,
    "usada_em": 1

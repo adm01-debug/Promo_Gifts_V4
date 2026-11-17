@@ -11464,8 +11464,8 @@
    "src/integrations/supabase/client.ts"
   ],
   "src/hooks/stock/useRuptureAlerts.ts": [
-   "src/integrations/supabase/client.ts",
-   "src/lib/feature-flags.ts"
+   "src/lib/feature-flags.ts",
+   "src/lib/supabase-untyped.ts"
   ],
   "src/hooks/stock/useRuptureHorizon.ts": [
    "src/lib/inventory/rupture-risk.ts"

@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "chore(hooks): reaproveita untypedRpc nos alertas de ruptura, sem as any (#3771)",
+   "docs: adjudica os 32 refs salvo/* contra o main (0 arquivos ausentes) (#3770)",
    "chore(main): release gifts-store 1.9.0 (#3753)",
    "docs: anexo da prova byte-a-byte por branch + prova do filtro do CRM contra PostgREST real (#3766)",
-   "docs: recibo de aplicação — 20261117073000 (E15) (#3768)",
-   "feat(crm): vendedor vê a carteira dele mais os clientes sem dono (somente leitura) (#3769)",
-   "chore(ci): reativa o contrato device-trust no Gate 2.5 (#3767)"
+   "docs: recibo de aplicação — 20261117073000 (E15) (#3768)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",
