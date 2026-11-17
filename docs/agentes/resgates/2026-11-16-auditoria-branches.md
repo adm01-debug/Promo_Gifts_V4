@@ -969,3 +969,74 @@ um é a cópia de uma branch antes de ela ser removida. A regra do dono é ter c
 byte a byte ANTES de excluir e só excluir o que está incorporado; apagar as cópias
 destruiria justamente o que ela manda guardar, inclusive os blobs intermediários que
 só existem ali.
+
+## CORREÇÃO — o "0 ausentes" das Medidas 1 e 4 estava errado
+
+O número publicado nas Medidas 1 e 4 ("0 arquivos ausentes do `main` em 32/32 refs")
+era **artefato de um defeito no instrumento**, não medida. Retirado.
+
+**O defeito.** Os laços usavam `hm=$(git rev-parse "$MAIN:$arquivo" 2>/dev/null)` e
+tratavam `hm` vazio como "não existe no main". Mas `git rev-parse` com caminho
+inexistente **não devolve vazio**: devolve o próprio argumento.
+
+```
+$ git rev-parse c2629acd:nao/existe.txt
+c2629acd3dff99a29d56452579461d1509cef6b2:nao/existe.txt   # devia ser vazio
+$ git cat-file -e c2629acd:nao/existe.txt ; echo $?
+1                                                          # o teste correto
+```
+
+Com isso, arquivo ausente caía no ramo `else` e era rotulado "difere". A Medida 4,
+que contava só `[ -n "$hb" ] && [ -z "$hm" ]`, nunca podia ser verdadeira — o 0/32 era
+garantido por construção.
+
+**A medida refeita**, por pertencimento de caminho (`git ls-tree -r --name-only`, sem
+`rev-parse`), restrita ao que existe no tip do ref:
+
+| | |
+| --- | --- |
+| arquivos que existem num ref e **não** existem no `main` | **325** (não 0) |
+| destes, com basename em outro caminho do `main` (movidos/renomeados) | 208 |
+| **sem basename em lugar nenhum do `main`** | **117** |
+| dos 117: `recovery/src-legacy/**` (pasta de arquivo morto) | 43 |
+| dos 117: `src/` e `tests/` das duas branches de ratchet de lint/tipos | 66 |
+| dos 117: `supabase/` | 6 |
+| dos 117: `.md` de raiz (handoff) | 2 |
+
+Concentrados em 7 refs; 111 dos 117 vêm de `codex-fix-gate1-kit-pdf-types-261109-2252`
+(59) e `claude-fix-pr3517-gate1-baseline-261113-2336` (52).
+
+### O item grave dos 6 de `supabase/`, adjudicado
+
+A migration `20261110024530_restore_device_trust_contract.sql` (e seu rollback), que no
+ref vive em `supabase/migrations/` e está ausente do main, existe **só** em `salvo/codex-fix-gate1-kit-pdf-types-261109-2252`: não está no `main`
+e **não está aplicada** no banco canônico (`schema_migrations`, consultado). Ela
+adiciona `is_trusted boolean NOT NULL DEFAULT false` em `public.user_known_devices`.
+
+**Veredito: superseded, com o efeito já vivo em produção.** Medido no canônico:
+`user_known_devices.is_trusted` existe hoje como `boolean`, `NOT NULL`,
+`default false` — exatamente o contrato que ela declara. O `main` entrega isso por
+`supabase/migrations/20261114031000_fix_user_known_devices_is_trusted.sql`, de 14/11,
+**posterior** à órfã (10/11), e o contrato é coberto por `tests/sql/device-trust/`
+no Gate 2.5. A migration órfã é idempotente e sairia pelo `RETURN` antecipado se
+rodasse hoje. Nada a recuperar.
+
+Os outros 4 de `supabase/`: a P06 de 8 views + rollback (já adjudicada na Medida 2 —
+substituída pela `20261117073000`, aplicada) e o snapshot de cron `20261108000000_cron_jobs.json` (em `supabase/baseline/`, ausente do main)
+em 2 refs (gerado por workflow; o baseline vigente é o de 16/11, e foi
+justamente por isso que a PR #3773, de outro agente, consertou o teste que fixava o de
+08/11).
+
+### Os 4 refs de infra, que eu tinha excluído pelo nome
+
+Também corrigido: `bot/schema-snapshot`, `computador_local`, `contexto` e `gh-pages`
+tinham sido descartados por serem "infra", sem medida. Medidos:
+
+- `computador_local` — tip `e85f9352`, que é um commit do próprio `main`: **0 arquivos**
+  no diff. Ponteiro, não trabalho.
+- `bot/schema-snapshot` — 5 arquivos, todos artefatos gerados por
+  `schema-snapshot-export.yml` (`supabase/migrations-snapshot/`, `supabase/baseline/`).
+  O conteúdo da branch é de 07/11 e o `main` tem o seu; a forma correta de atualizar é
+  rodar o workflow, não portar snapshot de 10 dias.
+- `contexto` e `gh-pages` — históricos órfãos (sem merge-base): contexto gerado a cada
+  10 min, que o próprio AGENTS.md manda não editar, e o site publicado do relatório E2E.
