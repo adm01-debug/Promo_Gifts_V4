@@ -30,13 +30,13 @@ test.describe("/reset-password", () => {
   test("token inválido: sem access_token mostra mensagem ou redireciona", async ({ page }) => {
     await page.goto("/reset-password");
     await waitRouteReady(page);
-    const ok = await page
-      .getByText(/inválido|expirado|link.+inválido|redireciona/i)
-      .first()
-      .isVisible()
-      .catch(() => false);
-    const redirected = /\/login/.test(page.url());
-    expect(ok || redirected).toBeTruthy();
+    // A main renderiza o heading exato em src/pages/auth/ResetPassword.tsx:147.
+    // A assercao anterior era ok||redirected com um regex largo: passava se QUALQUER
+    // texto com "inválido/expirado/redireciona" estivesse visivel OU se houvesse
+    // redirect - inclusive se a tela correta nao aparecesse.
+    await expect(
+      page.getByRole("heading", { name: /link inválido ou expirado/i }),
+    ).toBeVisible();
   });
 
   test("payload inválido: senha fraca mostra erro de validação", async ({ page }) => {
