@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e de hora em hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `ac37480a8ca15271c62c484b6bf8a0f18a7c8dc2` (2026-11-17T18:49:26-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e de hora em hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `2d43e62910f1fe8291572e79d132d20083f25453` (2026-11-17T19:04:53-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -36,7 +36,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 |---|---|
 | arquivos_total | 10869 |
 | arquivos_codigo | 5394 |
-| linhas_codigo | 1030046 |
+| linhas_codigo | 1030050 |
 | rotas | 139 |
 | rotas_http_backend | 13 |
 | vistas_por_id | 0 |
@@ -591,7 +591,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - possiveis_segredos_no_codigo: 7 — ex.: scripts/ai-context/cenarios.mjs:102, src/components/admin/connections/__tests__/ConnectionSecurity.unit.test.tsx:9, src/integrations/supabase/client.ts:27
 
 ## Grafo de código (graphify)
-- 48511 nós · 81488 arestas · 2745 comunidades · grafo do commit `ac37480a`
+- 48511 nós · 81488 arestas · 2745 comunidades · grafo do commit `2d43e629`
 - comunidades maiores: ref_integrations (595), ref_components (554), react (487), ref_node_child_process (473), ref_types (458), lucide-react (440), sonner (432), ref_hooks (385), @testing-library/react (381), vitest (366), gotoAndSettle (331), ref_node_fs (329)
 - símbolos mais chamados: gotoAndSettle() (e2e/helpers/nav.ts), re (?), q() (scripts/supabase_snapshot/snapshot.py), analyze() (tests/scripts/test_personalization_artifact_diagnostics.py), outer() (tests/scripts/test_personalization_artifact_diagnostics.py), json (?), useExternalDatabase() (recovery/src-legacy/src/hooks/useExternalDatabase.ts), concludeCheck() (scripts/check-result-contract.mjs), querySupabaseReadOnly() (scripts/supabase-read-only-query.mjs), loginAs() (e2e/helpers/auth.ts), inner() (tests/scripts/test_personalization_artifact_diagnostics.py), excluded_sql() (scripts/supabase_snapshot/snapshot.py)
 - consulta local: `graphify query "<pergunta>"`, `graphify path "<A>" "<B>"`, `graphify explain "<X>"`
@@ -1187,6 +1187,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - CHANGELOG topo: [1.9.1](https://github.com/adm01-debug/Promo_Gifts_V4/compare/gifts-store-v1.9.0...gifts-store-v1.9.1) (2026-11-17)
 
 ## Últimos commits
+- 2026-11-17 `2d43e629` fix(tests): mock de QuoteAutoSave precisa exportar QuoteDraftRecovery (#3811)
 - 2026-11-17 `ac37480a` fix(quotes): histórico de versões não cai mais quando a data da versão é nula (#3810)
 - 2026-11-17 `92a5c9a0` fix(kit): autosave nao grava mais o rascunho de um kit em cima de outro (#3809)
 - 2026-11-17 `dd6464da` fix(hooks): restaura a guarda de matchTypes que a refatoracao de pasta derrubou (#3808)
@@ -1201,7 +1202,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-17 `4a982eb8` test(kit-builder): resgata o teste da guarda financeira de kit (#3786)
 - 2026-11-17 `3c578584` docs(resgate): conserta as 13 referencias quebradas do dossie da 3390 (#3783)
 - 2026-11-17 `92bec3ca` chore(deps): tira basic-ftp da lista de risco tolerado, ja que o override o eliminou (#3782)
-- 2026-11-17 `5ca60929` docs: marca como vivos na main os 3 itens que o dossiê pedia para completar (#3780)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

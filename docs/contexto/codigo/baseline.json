@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "ac37480a8ca15271c62c484b6bf8a0f18a7c8dc2",
+  "commit": "2d43e62910f1fe8291572e79d132d20083f25453",
   "branch": "main",
-  "data_commit": "2026-11-17T18:49:26-03:00",
+  "data_commit": "2026-11-17T19:04:53-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "2d43e629",
+    "data": "2026-11-17",
+    "assunto": "fix(tests): mock de QuoteAutoSave precisa exportar QuoteDraftRecovery (#3811)"
+   },
    {
     "sha": "ac37480a",
     "data": "2026-11-17",
@@ -126,11 +131,6 @@
     "sha": "68cc659c",
     "data": "2026-11-17",
     "assunto": "chore(hooks): reaproveita untypedRpc nos alertas de ruptura, sem as any (#3771)"
-   },
-   {
-    "sha": "a521c74f",
-    "data": "2026-11-17",
-    "assunto": "docs: adjudica os 32 refs salvo/* contra o main (0 arquivos ausentes) (#3770)"
    }
   ],
   "arquivos_mudados_7d": 1965,
@@ -145,7 +145,7 @@
    },
    {
     "pasta": "src/components/products",
-    "mudancas": 179
+    "mudancas": 177
    },
    {
     "pasta": "tests/edge-functions/live",
@@ -324,7 +324,7 @@
  "contagens": {
   "arquivos_total": 10869,
   "arquivos_codigo": 5394,
-  "linhas_codigo": 1030046,
+  "linhas_codigo": 1030050,
   "rotas": 139,
   "rotas_http_backend": 13,
   "vistas_por_id": 0,
@@ -2128,7 +2128,7 @@
   },
   "tests/pages": {
    "arquivos": 18,
-   "linhas": 4053
+   "linhas": 4057
   },
   "tests/product-form-improvements.test.ts": {
    "arquivos": 1,

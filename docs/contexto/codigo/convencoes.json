@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "fix(tests): mock de QuoteAutoSave precisa exportar QuoteDraftRecovery (#3811)",
    "fix(quotes): histórico de versões não cai mais quando a data da versão é nula (#3810)",
    "fix(kit): autosave nao grava mais o rascunho de um kit em cima de outro (#3809)",
    "fix(hooks): restaura a guarda de matchTypes que a refatoracao de pasta derrubou (#3808)",
-   "feat(quotes): recupera rascunho local ao reabrir orçamento existente (#3805)",
-   "test(resgate): 218 casos de teste de outro agente que nunca chegaram à main (#3807)"
+   "feat(quotes): recupera rascunho local ao reabrir orçamento existente (#3805)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",

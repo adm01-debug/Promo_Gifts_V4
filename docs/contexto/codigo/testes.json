@@ -19158,7 +19158,7 @@
   {
    "arquivo": "tests/pages/legacy-QuoteBuilder.partial-preservation.test.tsx",
    "tipo": "unit",
-   "linhas": 375,
+   "linhas": 379,
    "testa": [
     "src/components/quotes/QuoteAutoSave.tsx",
     "src/hooks/quotes/useQuoteBuilderState.ts",
