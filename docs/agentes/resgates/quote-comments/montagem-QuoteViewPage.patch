@@ -1,0 +1,35 @@
+Montagem da feature na pagina VIVA src/pages/quotes/QuoteViewPage.tsx
+=====================================================================
+
+ESTE PATCH NAO ESTA APLICADO. Ele existe como documentacao do passo 4 do
+roteiro em ../README.md (secao "Como ligar"). Nao aplique sem antes mover o
+codigo de codigo/ para src/ — senao o import nao resolve e o build quebra.
+
+Sao exatamente 2 linhas. A branch de origem tocava tambem a pagina morta
+src/pages/QuoteViewPage.tsx (+73 linhas); essa pagina nao existe mais na main
+e foi descartada deste resgate.
+
+A branch de origem trocava, no mesmo commit, QUOTE_STATUS_CONFIG por um
+modulo novo quote-view-status-config. Isso NAO tem relacao com comentarios e
+foi deliberadamente deixado fora deste resgate.
+
+Numeros de linha conferidos contra a main em 17/11/2026
+(commit ba52b45ad, antes de qualquer alteracao):
+  - linha 41  : import { QuoteHistoryPanel } from '@/components/quotes/QuoteHistoryPanel';
+  - linha 511 : {id && <QuoteVersionHistory quoteId={id} currentQuoteId={id} />}
+Confira os anchors antes de aplicar; a pagina muda com frequencia.
+
+--- 1) IMPORT: inserir logo DEPOIS da linha 41 -------------------------------
+
+ import { QuoteHistoryPanel } from '@/components/quotes/QuoteHistoryPanel';
++import { QuoteCommentsSection } from '@/components/quotes/QuoteCommentsSection';
+ import { ConfirmDialog } from '@/components/ui/ConfirmDialog';
+
+--- 2) RENDER: inserir logo ANTES da linha 511 -------------------------------
+
++        {id && <QuoteCommentsSection key={id} quoteId={id} />}
++
+         {id && <QuoteVersionHistory quoteId={id} currentQuoteId={id} />}
+
+O `key={id}` e intencional: remonta a secao ao trocar de orcamento, para a
+sessao anterior nao vazar comentarios na tela do orcamento seguinte.
