@@ -717,3 +717,217 @@ gera. C mostra o caminho sem prefixo respondendo 200.
 Para isso o host `doufsxqlfjyuvxuezpln.supabase.co` foi liberado na allowlist de rede do
 ambiente (era bloqueado: `CONNECT tunnel failed, response 403`). A sonda ficou no scratchpad
 da sessão, não no repo: é diagnóstico de uma vez, não um portão.
+
+## Adjudicação dos 32 refs `salvo/*` — 17/11, 11:45–11:55 UTC
+
+As branches `salvo/*` **são a camada de preservação**: cada uma é a cópia de uma
+branch antes de ela ser apagada. Nenhuma delas foi ou será apagada. O que faltava
+era a medida que prova que não sobrou trabalho **fora do `main`** dentro delas.
+
+### Medida 1 — arquivo ausente do `main` (a única forma de perda real)
+
+Para cada um dos 32 refs: `mb=$(git merge-base origin/main <ref>)`,
+`git diff --name-only $mb <ref>` e, por arquivo, `git rev-parse <ref>:<f>` contra
+`git rev-parse origin/main:<f>`; quando o caminho não existe no `main`, o teste de
+basename (`git ls-tree -r --name-only origin/main | grep "/<base>$"`) decide se o
+arquivo foi movido ou se desapareceu.
+
+**Resultado: 0 arquivos ausentes, em ≈48 mil comparações de blob nos 32 refs.**
+Todo arquivo que existe em qualquer ref preservado existe no `main`, no mesmo
+caminho ou em outro.
+
+`git cherry origin/main <ref>` **não** serve aqui e foi descartado: o repo usa
+squash-merge, então o patch-id nunca casa e todo commit aparece como "não
+incorporado" mesmo quando o conteúdo está no `main`.
+
+### Medida 2 — os 9 refs com conteúdo autoral (os outros 23 são snapshots de árvore)
+
+| ref | arquivos que diferem | veredito (medido hoje) |
+| --- | --- | --- |
+| `salvo/claude-feat-crm-vendedor-sem-dono-261115-1622` | `package.json` | `index.ts`, `query-policy.ts` e o teste de ownership são **byte-idênticos** ao `main` (resgatados na #3769). O `package.json` difere só na linha `test:ci-core`, reconstruída a partir do `main` de propósito. |
+| `salvo/claude-fix-mockup-geometria-wysiwyg-261115-0045` | `geometry.ts`, `index.geometry.test.ts`, `index.ts`, `vitest.config.ts` | `main` tem `cmParaPx`, `MIN_LOGO_PX=40`, `MAX_LOGO_PX`, `DEFAULT_PRODUCT_FRACTION=0.85` — os símbolos resgatados. O portão `422 missing_dimensions` ficou fora por decisão registrada (ledger 2026-11-15T14:45). |
+| `salvo/claude-fix-mockup-logo-tamanho-real-261114-2200` | os mesmos 4 | mesma geometria, mesmo veredito. |
+| `salvo/claude-fix-resgate-p06-p15-security-261116-2215` | `20261101000001_..._p06.sql`, `rollbacks/20261101000001`, sync log | Superseded com medida: o `main` tem `20261117073000_p06_security_invoker_v_product_properties_public.sql`, que aplica 1 view e documenta **BLOQUEIO medido para cada uma das outras 7**. O P15 (`20261101000002`) e seu rollback são byte-idênticos. |
+| `salvo/claude-perf-cron005-refresh-all-mvs-diario-261114-1002` | sync log | migration e rollback byte-idênticos; o log é append-only e o `main` tem mais linhas. |
+| `salvo/e15-receipt-20261114120100-43959381044-261116` | sync log | idem. |
+| `salvo/importado-vps-fabrica-v2-refazer-dc12be92-261116` | `e2e-cleanup/index.ts`, `index.mockups.test.ts` | `main` está à frente (+699/−118) e tem a limpeza de mockups (21 ocorrências). `comm -23` das funções da branch contra as do `main`: **vazio** — nenhuma função da branch falta. O teste virou `tests/edge-functions/e2e-cleanup.mockups.test.ts`, byte-idêntico. |
+| `salvo/261116-clever-lamport-zlmati` | `PASSAGEM-PARA-O-PROXIMO-CLAUDE.md` | movido para `docs/agentes/passagens/2026-11-15-passagem-sessao.md`; o `main` é **superconjunto estrito** (+6 linhas, 0 remoções — `git diff --no-index` entre os dois blobs). |
+| `salvo/261117-schema-snapshot-cancelled-skip` | `.github/workflows/schema-snapshot-export.yml` | o `main` é o lado novo e traz o conserto com procedência no próprio cabeçalho ("2026-11-16: export deixava de rodar (skipped) quando o drift-gate era cancelado… Resgatado de `claude/fix-schema-snapshot-export-cancelled-skip-261101-2344`"). |
+
+Os 23 refs restantes são snapshots de árvore inteira (de 1.049 a 10.401 arquivos no
+diff): para eles o teste decisivo é o de ausência, e ele deu 0.
+
+### Fechamento das PRs
+
+0 PRs abertas. As três últimas entraram hoje: #3768 (recibo E15, `f40d2618`),
+#3766 (prova por branch, `cda9cbfa`) e #3753 (release `gifts-store 1.9.0`,
+`10455e7a`) — as três com deploy de Production SUCCESS e a tag
+`gifts-store-v1.9.0` criada às 11:38:47Z.
+
+### Medida 3 — as migrations que os sync logs preservados declaravam "pendente"
+
+Os 3 refs de migration diferem do `main` em `supabase/MIGRATIONS_SYNC_LOG.md` (log
+append-only). As linhas que existem **só** na cópia preservada — 4, 11 e 3 linhas,
+por `comm -23` entre as duas versões — não são conteúdo perdido: são linhas de
+estado **"pendente"** que o `main` substituiu pelo estado final. Era preciso provar
+que cada pendência foi mesmo concluída, e não esquecida.
+
+Consultado o banco canônico (`doufsxqlfjyuvxuezpln`, `supabase_migrations.schema_migrations`,
+leitura):
+
+| version | aplicada em produção |
+| --- | --- |
+| `20261022100020` (dispatcher-failure-alert, P19) | **sim** |
+| `20261022100021` (hash-product-images, P19) | **sim** |
+| `20261022100022` (sync-is-stockout-universal, P19) | **sim** |
+| `20261031000000` (stock_notes deleted_at + índice) | **sim** |
+| `20261101000002` (P15 — `color_synonym_map`) | **sim** |
+| `20261108001500` (reconcile `e2e_cleanup_audit`) | **sim** |
+| `20261114120100` (CRON005 refresh_all_mvs diário) | **sim** |
+| `20261117073000` (P06 medida, 1 view) | **sim** |
+| `20261101000001` (P06 original, 8 views) | **não — e por decisão** |
+
+7 das 8 pendências estão aplicadas. A única que não está é a P06 de 8 views, que foi
+deliberadamente substituída pela `20261117073000` (aplicada hoje), cujo cabeçalho
+documenta o BLOQUEIO medido de cada uma das outras 7 views — e cujo rollback existe
+em `supabase/rollbacks/20261117073000_rollback.sql`.
+
+Efeito do P15 conferido no banco, não só no log: `anon` em
+`public.color_synonym_map` detém hoje apenas `REFERENCES`, `SELECT` e `TRIGGER` —
+`INSERT`, `UPDATE` e `DELETE` foram revogados, que era exatamente o que aquele
+agente tinha deixado pela metade (o corpo original só dava `DROP POLICY` e deixava
+os GRANTs de escrita vivos).
+
+**Conclusão da adjudicação:** nenhum trabalho de agente nas 32 cópias preservadas
+está ausente do `main` nem pendente de execução. O único item fora do `main` é uma
+migration superseded com medida publicada.
+
+### Medida 4 — correção do método, depois da revisão da #3770
+
+A revisão automática da #3770 (Devin, 2026-11-17) levantou duas objeções corretas:
+existência de caminho não prova preservação de conteúdo, e casar **basename** não
+prova que o arquivo foi movido. As duas foram atacadas com medida nova, não com
+texto.
+
+**(a) Teste estrito, sem basename.** Repetida a varredura dos 32 refs contando
+apenas: "o ref tem blob neste caminho exato e o `main` não tem nada neste caminho".
+**Resultado: 0 em todos os 32 refs.** A inferência por basename nunca foi
+determinante — ela não decidiu nenhum caso.
+
+**(b) O tip não é a única coisa preservada, e isso escondia um caso.** Medir
+`merge-base → tip` tem um ponto cego: um ref pode **apagar no tip** arquivos que o
+próprio histórico dele criou, e o par (não existia na base, não existe no tip) sai
+do diff sem aparecer. Isso acontece de fato em `salvo/261115-preservacao`
+(tip `e35634678`, "preserva no remoto o que existia so no container", 217 commits
+exclusivos): o tip **não** contém `src/components/mockup/MockupResultCard.tsx`, mas
+o commit `f43d22906` do próprio ref o cria.
+
+Esse ref carrega trabalho de feature real no gerador de mockup — "separa imagem,
+projeto salvo e ficha, e preserva o resultado quando a geração falha"
+(`f43d22906`), "resultado preservado por projeto, salvo/ficha exibido e alerta
+separado" (`f8a7eba67`), "ficha com as medidas da área da imagem salva"
+(`35ac8b9d5`). Veredito medido contra o `main` de hoje:
+
+| arquivo | no `main` |
+| --- | --- |
+| `src/components/mockup/MockupResultCard.tsx` | existe, 496 linhas |
+| `src/components/mockup/MockupCompletionStates.tsx` | existe, 155 linhas |
+| `src/components/mockup/usePreservedMockupResult.ts` | existe, 56 linhas |
+| `src/components/mockup/__tests__/MockupResultCard.preserved.test.tsx` | existe, 102 linhas — **byte-idêntico** ao commit `f8a7eba67` do ref |
+| `src/components/mockup/__tests__/MockupResultCard.states.test.tsx` | existe, 146 linhas |
+| `src/pages/mockups/mockup-generator/useMockupCompletionStatus.ts` | existe, 99 linhas |
+| `src/pages/mockups/mockup-generator/__tests__/fichaDaAreaDaImagem.test.ts` | existe, 116 linhas |
+
+No commit mais novo do ref (`35ac8b9d5`), 8 arquivos já são **byte-idênticos** ao
+`main`: `mockupGeneratorModel.ts`, `useMockupGenerator.ts`, `useSavedMockupProject.ts`,
+`useLayoutCaptureRequest.ts`, `trocaDeProjeto.test.ts`, `fichaDaAreaDaImagem.test.ts`,
+`MockupDeletion.test.tsx` e `MockupGenerator.a11y.test.tsx` — a feature foi mergeada.
+E o comportamento está vivo no código do `main`: `usePreservedMockupResult.ts` abre
+com "Uma tentativa que FALHA não apaga da tela o mockup que o vendedor já tinha", com
+as duas amarras (resultado pertence a um projeto; dispensar o alerta não descarta o
+resultado).
+
+**Limite declarado desta auditoria.** `git rev-list --objects <ref> --not origin/main`
+devolve blobs alcançáveis pelos refs e não pelo `main` — 40.210 somando os 32. Esse
+número **não** é trabalho perdido: ele enumera toda versão intermediária de cada
+commit exclusivo (um arquivo editado 10 vezes conta 10 blobs). Provar supersessão de
+cada blob intermediário não é factível e não é o que preservação exige: o conteúdo
+segue alcançável pelo ref, que não será apagado. O que foi provado é o que decide
+regressão: nenhum arquivo existe num ref sem existir no `main` (teste estrito, 0/32),
+e as features autorais dos refs estão no `main`, verificadas arquivo a arquivo.
+
+### Medida 5 — classificação do conteúdo divergente (resposta ao Codex P2 e ao Devin)
+
+A exigência era classificar as diferenças de conteúdo dos refs como **incorporada**,
+**substituída** ou **descartada por decisão** antes de declarar o resgate fechado.
+Feito, e no caminho apareceu de novo o mesmo ponto cego: a varredura anterior exigia
+blob só no lado do `main`, então **arquivo que não existe no tip do ref** era rotulado
+`DIFERE`. Isso só inflava o número. Corrigido para exigir blob nas **duas** pontas:
+
+- divergência real de conteúdo em área de comportamento (código, migrations,
+  workflows, testes): **277 pares (ref, arquivo)** — não os 9.407 de antes;
+- `salvo/261115-preservacao` sai inteiro da lista: o tip dele guarda só o que existia
+  apenas no container, e nenhum desses caminhos colide com o `main` em área de
+  comportamento. Os 3.107 "migrations divergentes" eram arquivos que **só o `main`
+  tem** (ex.: `supabase/migrations/20241231000000_saved_filters.sql`, 129 linhas no
+  `main`, ausente no tip do ref) — o oposto de perda.
+
+Dos 277: **267 substituídos** (o `main` tocou aquele caminho *depois* do tip do ref,
+logo o `main` é o estado posterior) e **10 candidatos** (o ref mudou depois do último
+toque do `main`). Os 10, adjudicados um por um:
+
+| ref · arquivo | veredito |
+| --- | --- |
+| `261117-residuos-medidos-2` · `.github/workflows/codeql.yml` | **substituído** — o `main` tem uma linha a mais (`inventario/estado/**` no filtro de paths); o ref não tem nada que o `main` não tenha. |
+| `claude-fix-pr3517-gate1-baseline` e `codex-fix-gate1-kit-pdf-types` · `SortableCartItem.tsx`, `SortableCartItemVariant.test.tsx`, `ModernSkeletons.tsx` (5 pares) | **descartado por decisão** — os refs extraem as interfaces de props para `*.types.ts`; esses arquivos não existem no `main` e o `main` passa o Gate 1 hoje. Refactor movido por lint cuja necessidade deixou de existir; nenhuma função ou comportamento envolvido. |
+| `codex-fix-gate1-kit-pdf-types` · `src/components/common/IntelligenceBadges.tsx` | **incorporado com renome** — o ref tinha a entrada `emergente` (do hook legado em `@/hooks/useProductIntelligenceBadges`, caminho que o `main` não tem mais). No `main` o hook vive em `src/hooks/products/useProductIntelligenceBadges.ts` e emite `'emerging'`, com a entrada `emerging` no mapa (linha 37, mapa com 9 entradas). Badge preservada, em inglês. |
+| `codex-fix-gate1-kit-pdf-types` · `src/components/dev/metrics/MetricUtils.ts` | **não incorporado, registrado** — o ref exporta `bridgeBadge(bridge: BridgeName)` (8 linhas de cor por bridge); o `main` não tem a função, embora tenha `src/lib/telemetry/bridgeCallMetrics.ts`. Helper de cor de uma tela de métricas de dev, sem efeito em produção. |
+| `261117-laughing-cori-o9w35e` · `src/hooks/stock/useRuptureAlerts.ts` | **melhoria real que o `main` não pegou — reaproveitada** (ver abaixo). |
+
+**A melhoria reaproveitada.** O `main` chama a RPC de alertas de ruptura com
+`(supabase as any).rpc('fn_get_rupture_alerts')` e uma linha
+`// eslint-disable-next-line @typescript-eslint/no-explicit-any`. O ref usa
+`untypedRpc('fn_get_rupture_alerts')` de `@/lib/supabase-untyped` — helper que **já
+existe no `main`** (`src/lib/supabase-untyped.ts`) justamente para eliminar `as any`
+em call site. Mesma chamada, sem `any` e sem supressão de lint. Portada em PR
+própria, porque é mudança de código e esta é docs-only.
+
+### Medida 6 — a classificação por data estava fraca; refeita por identidade de blob
+
+A revisão da #3770 (Devin, 2026-11-17) apontou, com razão, que a Medida 5 provava
+pouco: dizer "o `main` tocou este caminho **depois** do tip do ref" não demonstra que
+a alteração preservada entrou — uma edição posterior pode ter mexido em outro trecho.
+A classificação dos 267 por ordem temporal fica **retirada**. Substituída por duas
+medidas de conteúdo:
+
+**(a) Contenção linha a linha.** Dos 277 pares com divergência real,
+**86 estão contidos** no `main` (zero linhas presentes só no ref). Os outros 191 têm
+ao menos uma linha que o `main` não tem — mas esse teste é severo: uma linha
+reescrita pelo `main` conta como "só no ref".
+
+**(b) O blob do ref já existiu no histórico do `main` naquele caminho?** Este é o
+teste que decide, e não depende de data: percorre `git rev-list origin/main -- <path>`
+e compara o blob de cada commit com o blob do ref.
+
+- **139 dos 191: sim.** O `main` teve exatamente aquele conteúdo naquele caminho e
+  depois evoluiu. Incorporado e superado, provado por identidade de blob.
+- **52: não.** Conteúdo autoral que nunca existiu no `main`. Todos em 7 refs, com
+  veredito:
+
+| ref (nº de arquivos) | veredito |
+| --- | --- |
+| `codex-fix-gate1-kit-pdf-types-261109-2252` (28) e `claude-fix-pr3517-gate1-baseline-261113-2336` (8) | **descartado por decisão** — branches de 09/11 e 13/11 movidas por ratchet de lint/tipos (extração de props para `*.types.ts`, anotações). O `main` passa o Gate 1 hoje sem elas; nenhuma função ou comportamento envolvido. |
+| `261117-laughing-cori-o9w35e` (8) | 1 **melhoria reaproveitada** (`useRuptureAlerts.ts` → `untypedRpc`, PR própria) + seu teste; 6 workflows, detalhados abaixo. |
+| `claude-fix-mockup-geometria-wysiwyg-261115-0045` (3) e `claude-fix-mockup-logo-tamanho-real-261114-2200` (3) | **decidido e registrado** no ledger 2026-11-15T14:45 — a geometria ficou com a #3665 (resgate byte-idêntico) e o portão `422 missing_dimensions` ficou fora por trade-off de negócio do dono. |
+| `importado-vps-fabrica-v2-refazer-dc12be92-261116` (1) | `e2e-cleanup/index.ts`: o `main` está à frente (+699/−118) e `comm -23` das funções da branch contra as do `main` volta vazio. |
+| `261117-schema-snapshot-cancelled-skip` (1) | o `main` é o lado novo e cita a procedência do conserto no próprio cabeçalho. |
+
+**Os 6 workflows do `261117-laughing-cori-o9w35e`:**
+
+- `contract-tests.yml` → **substituído**: o ref instala a CLI do Supabase com `wget` (contorno de quando `supabase/setup-cli` estava bloqueada por policy); o `main` usa a action com SHA fixo (`supabase/setup-cli@689adcfb`, v2, versão 2.101.0).
+- `db-schema-drift-check.yml`, `edge-functions-drift-check.yml`, `deploy-gates.yml`, `schema-snapshot-export.yml` → **substituídos**: o `main` tem mais conteúdo em todos (85, 50, 1.039 e 61 linhas só no `main`, contra 21, 16, 907 e 50 só no ref).
+- `db-apply-migration.yml` → **descartado por decisão do dono, documentada no próprio `main`**. O ref tem o passo "Confirma reviewer obrigatório no environment Production", que checa via API se `production` tem de fato `required_reviewers` (o ref registra que em 2026-09-22 o environment existia com `protection_rules=[]`). O `main` não tem o passo, e explica por quê em `.github/workflows/db-apply-migration.yml:7-13`: *"gated SEM gate de aprovação desde 2026-11-14, por decisão explícita do dono (...) o `environment: production` e o step que exigia required reviewers foram removidos para que agentes possam aplicar migration sem clique humano"*. **Não restaurado**: reverteria uma decisão do dono e travaria o caminho de DDL. O que continua no lugar, pelo mesmo cabeçalho: preflight read-only, `validate-migration-target`, rollback obrigatório e recibo por PR.
+
+Com isso, cada um dos 277 pares de divergência real está classificado como
+**incorporado**, **substituído** ou **descartado por decisão** — e a única melhoria
+que faltava foi reaproveitada.
