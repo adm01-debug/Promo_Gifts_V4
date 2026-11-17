@@ -353,6 +353,8 @@
     "useVirtualizer",
     "useVoiceAgent",
     "useVoiceCommandHistory",
+    "useVoiceFilterApply",
+    "useVoiceFilterBridge",
     "useVoiceHistory",
     "useWordMagic",
     "useWordMagicStore",
@@ -666,6 +668,8 @@
     "useVideoVariantLinks",
     "useVoiceAgent",
     "useVoiceCommandHistory",
+    "useVoiceFilterApply",
+    "useVoiceFilterBridge",
     "useVoiceHistory",
     "useWordMagic",
     "useWordMagicStore",
@@ -781,7 +785,7 @@
     "tablist",
     "tooltip"
    ],
-   "arquivos_puxados": 544
+   "arquivos_puxados": 548
   },
   {
    "protegida": false,
@@ -21938,7 +21942,7 @@
     "tablist",
     "tooltip"
    ],
-   "arquivos_puxados": 538
+   "arquivos_puxados": 540
   },
   {
    "protegida": false,
@@ -33604,7 +33608,7 @@
     "tablist",
     "tooltip"
    ],
-   "arquivos_puxados": 538
+   "arquivos_puxados": 540
   },
   {
    "protegida": false,

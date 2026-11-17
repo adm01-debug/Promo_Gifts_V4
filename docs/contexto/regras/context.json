@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "1e9864f481d84e0236eb62a41de64825ff2f96b2",
+  "sha": "4700bff94c8dc9026aa3ed2f42594501e2e8d055",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-17 22:35 UTC",
-  "files_total": 10799,
-  "code_files": 8835,
-  "code_lines": 1251038
+  "generated_at": "2026-11-17 22:47 UTC",
+  "files_total": 10805,
+  "code_files": 8841,
+  "code_lines": 1251438
  },
  "version": "1.3.2",
- "facts_hash": "4f68e8a50977abbd",
+ "facts_hash": "15be57917692dd61",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -1120,8 +1120,8 @@
   "package_manager": "npm",
   "languages": {
    ".sql": 3440,
-   ".ts": 3005,
-   ".tsx": 1925,
+   ".ts": 3010,
+   ".tsx": 1926,
    ".mjs": 450,
    ".py": 15,
    ".js": 7
@@ -138677,7 +138677,7 @@
      "restore_seller_cart",
      "search_records_rerank"
     ],
-    "deps_count": 370
+    "deps_count": 373
    },
    {
     "path": "/admin/permissoes",
@@ -139540,7 +139540,7 @@
      "restore_seller_cart",
      "search_records_rerank"
     ],
-    "deps_count": 401
+    "deps_count": 402
    },
    {
     "path": "/inteligencia-comercial",
@@ -144982,7 +144982,7 @@
     "file": ".github/workflows/wraparound-monitor-report.yml"
    }
   ],
-  "components_count": 1662,
+  "components_count": 1663,
   "hooks": [
    {
     "name": "useQuoteComments",
@@ -147865,6 +147865,10 @@
     "file": "src/hooks/products/useVideoVariantLinks.ts"
    },
    {
+    "name": "useVoiceFilterApply",
+    "file": "src/hooks/products/useVoiceFilterApply.ts"
+   },
+   {
     "name": "useAutoSaveQuote",
     "file": "src/hooks/quotes/useAutoSaveQuote.ts"
    },
@@ -148471,6 +148475,10 @@
    {
     "name": "useWordMagicStore",
     "file": "src/stores/useWordMagicStore.ts"
+   },
+   {
+    "name": "useVoiceFilterBridge",
+    "file": "src/stores/voiceFilterBridge.ts"
    }
   ],
   "middleware_matchers": [],
@@ -149605,8 +149613,8 @@
   },
   {
    "module": "src/components",
-   "files": 1396,
-   "lines": 277717,
+   "files": 1397,
+   "lines": 277815,
    "tables": [
     "admin_audit_log",
     "art_file_attachments",
@@ -149969,8 +149977,8 @@
   },
   {
    "module": "src/hooks",
-   "files": 480,
-   "lines": 90940,
+   "files": 481,
+   "lines": 90964,
    "tables": [
     "admin_audit_log",
     "admin_settings",
@@ -150256,8 +150264,8 @@
   },
   {
    "module": "src/lib",
-   "files": 344,
-   "lines": 52957,
+   "files": 345,
+   "lines": 53002,
    "tables": [
     "...",
     "companies",
@@ -150463,7 +150471,7 @@
   {
    "module": "src/pages",
    "files": 361,
-   "lines": 83890,
+   "lines": 83893,
    "tables": [
     "ai_usage_events",
     "bot_detection_log",
@@ -150802,8 +150810,8 @@
   },
   {
    "module": "src/stores",
-   "files": 11,
-   "lines": 1127,
+   "files": 12,
+   "lines": 1156,
    "tables": [
     "profiles"
    ],
@@ -150815,17 +150823,20 @@
     "useProductSelectionStore.ts: useProductSelectionStore",
     "useRecentlyViewedStore.ts: RecentlyViewedItem, useRecentlyViewedStore",
     "useSearchStore.ts: useSearchStore",
-    "useWordMagicStore.ts: useWordMagicStore"
+    "useWordMagicStore.ts: useWordMagicStore",
+    "voiceFilterBridge.ts: VoiceFilters, useVoiceFilterBridge"
    ],
    "docs": [
     "oracleVoiceBridge.ts: Shared state between Voice Agent and Flow IA. Allows voice commands to open the Flow chat and send messages.",
-    "useWordMagicStore.ts: useWordMagicStore — toggle global Word Magic Um único estado booleano: isGlobalAIMode false = catálogo mostra textos NATIVOS do fornecedor (padrão) true = catálogo mostra textos melhorados por IA (quando disponíveis) Persiste em localStorage para manter preferência entre sessões."
+    "useWordMagicStore.ts: useWordMagicStore — toggle global Word Magic Um único estado booleano: isGlobalAIMode false = catálogo mostra textos NATIVOS do fornecedor (padrão) true = catálogo mostra textos melhorados por IA (quando disponíveis) Persiste em localStorage para manter preferência entre sessões.",
+    "voiceFilterBridge.ts: Ponte entre o agente de voz e o catálogo, no mesmo padrão de src/stores/oracleVoiceBridge.ts (voz -> Flow). O overlay de voz vive na busca global; o FilterState real vive no useCatalogState. Sem essa ponte, um comando \"filter\" não tem como aplicar preço, estoque, gênero e os outros critérios ditados …"
    ],
    "deps": [
     "vitest",
     "zustand"
    ],
    "imports_modules": [
+    "src/hooks",
     "src/integrations",
     "src/lib"
    ],
@@ -150839,6 +150850,7 @@
     "src/stores/useRecentlyViewedStore.ts",
     "src/stores/useSearchStore.ts",
     "src/stores/useWordMagicStore.ts",
+    "src/stores/voiceFilterBridge.ts",
     "src/stores/__tests__/useBadgeVisibilityStore.test.ts",
     "src/stores/__tests__/useComparisonStore.removeFromCompare.test.ts"
    ]
@@ -151691,8 +151703,8 @@
   },
   {
    "module": "tests",
-   "files": 1078,
-   "lines": 168739,
+   "files": 1080,
+   "lines": 168940,
    "tables": [
     "bot_detection_log",
     "clients",
@@ -171803,6 +171815,10 @@
     "text": "Release the in-flight lock only if this call still owns it (a newer"
    },
    {
+    "file": "src/components/search/voiceFilterDispatch.ts",
+    "text": "* Fica fora de useGlobalSearch.ts porque aquele arquivo está acima do limite do gate"
+   },
+   {
     "file": "src/components/security/IPRestrictionManager.tsx",
     "text": "Validação básica de IP"
    },
@@ -173769,6 +173785,10 @@
    {
     "file": "src/lib/external-db/tables.ts",
     "text": "Views e Materialized Views (somente leitura) — do bridge"
+   },
+   {
+    "file": "src/lib/filters/voiceFilterPatch.ts",
+    "text": "consumidor os aplicava: useGlobalSearch.ts e AdvancedSearch.tsx jogavam apenas"
    },
    {
     "file": "src/lib/intelligence/degradation.ts",
@@ -197698,6 +197718,11 @@
     "value": "6"
    },
    {
+    "file": "src/components/search/voiceFilterDispatch.ts",
+    "name": "ATRASO_MS",
+    "value": "500"
+   },
+   {
     "file": "src/components/search/voice/FloatingParticles.tsx",
     "name": "CONNECTION_DIST",
     "value": "120"
@@ -214707,6 +214732,12 @@
     "name": "isRestNativeWriteEligible",
     "params": "options: InvokeOptions",
     "body": "return REST_WRITE_OPS.has(options.operation) && REST_NATIVE_WRITE_TABLES.has(options.table);"
+   },
+   {
+    "file": "src/lib/filters/voiceFilterPatch.ts",
+    "name": "applyVoiceFilterPatch",
+    "params": "previous: FilterState, filters: VoiceFilters",
+    "body": "const next = { ...previous }; if (filters.color) next.colors = append(previous.colors, filters.color); if (filters.category) next.categories = append(previous.categories, filters.category); if (filters.material) next.materiais = append(previous.materiais, filters.material); if (filters.gender) next.gender = append(previous.gender, filters.gender); if (filters.publicoAlvo) next.publicoAlvo = append(previous.publicoAlvo, filters.publicoAlvo); if (filters.minPrice !== undefined || filters.maxPrice …"
    },
    {
     "file": "src/lib/inventory/future-stock-stats.ts",
@@ -240166,7 +240197,15 @@
    },
    {
     "file": "src/components/search/__tests__/useGlobalSearch.test.ts",
-    "name": "filter combina filtros em consulta e reabre a busca"
+    "name": "filter manda os critérios ditados para o catálogo em vez de virar busca textual"
+   },
+   {
+    "file": "src/components/search/__tests__/useGlobalSearch.test.ts",
+    "name": "search sem termo usa categoria/cor/material como consulta"
+   },
+   {
+    "file": "src/components/search/__tests__/useGlobalSearch.test.ts",
+    "name": "filter sem critérios estruturais cai na busca textual"
    },
    {
     "file": "src/components/search/__tests__/useGlobalSearch.test.ts",
@@ -282657,6 +282696,30 @@
     "name": "should clear selection"
    },
    {
+    "file": "tests/hooks/useCatalogState.voiceFilters.test.tsx",
+    "name": "ponte de filtros por voz"
+   },
+   {
+    "file": "tests/hooks/useCatalogState.voiceFilters.test.tsx",
+    "name": "guarda os filtros ditados e entrega uma única vez"
+   },
+   {
+    "file": "tests/hooks/useCatalogState.voiceFilters.test.tsx",
+    "name": "aplica no FilterState os critérios que a busca textual descartava"
+   },
+   {
+    "file": "tests/hooks/useCatalogState.voiceFilters.test.tsx",
+    "name": "aplicação no catálogo (useVoiceFilterApply)"
+   },
+   {
+    "file": "tests/hooks/useCatalogState.voiceFilters.test.tsx",
+    "name": "aplica os filtros ditados no FilterState e limpa a ponte"
+   },
+   {
+    "file": "tests/hooks/useCatalogState.voiceFilters.test.tsx",
+    "name": "não toca no FilterState quando não há comando de voz pendente"
+   },
+   {
     "file": "tests/hooks/useCategories.test.tsx",
     "name": "useCategories"
    },
@@ -291883,6 +291946,22 @@
    {
     "file": "tests/lib/validate.test.ts",
     "name": "returns false for zero/negative/NaN"
+   },
+   {
+    "file": "tests/lib/voiceFilterPatch.legacy.test.ts",
+    "name": "legacy voice product filters"
+   },
+   {
+    "file": "tests/lib/voiceFilterPatch.legacy.test.ts",
+    "name": "applies real price bounds together, including zero: %j"
+   },
+   {
+    "file": "tests/lib/voiceFilterPatch.legacy.test.ts",
+    "name": "preserves unrelated filters, does not duplicate repeated selections, and keeps the unbounded sentinel"
+   },
+   {
+    "file": "tests/lib/voiceFilterPatch.legacy.test.ts",
+    "name": "honors false and zero values instead of retaining an older true/minimum value"
    },
    {
     "file": "tests/lib/auth/apply-seller-scope.test.ts",
@@ -452915,7 +452994,7 @@
   },
   "src/components/search/useGlobalSearch.ts": {
    "path": "src/components/search/useGlobalSearch.ts",
-   "lines": 930,
+   "lines": 923,
    "exports": [
     "type SearchResultType",
     "interface SearchResult",
@@ -453218,6 +453297,25 @@
    "hooks": [
     "useQuickSuggestions"
    ]
+  },
+  "src/components/search/voiceFilterDispatch.ts": {
+   "path": "src/components/search/voiceFilterDispatch.ts",
+   "lines": 60,
+   "exports": [
+    "interface DespachoDeVoz",
+    "function despacharFiltroDeVoz",
+    "function despacharBuscaDeVoz"
+   ],
+   "params": [
+    {
+     "name": "ATRASO_MS",
+     "value": "500"
+    }
+   ],
+   "rule_comments": [
+    "* Fica fora de useGlobalSearch.ts porque aquele arquivo está acima do limite do gate"
+   ],
+   "doc": "Despacho dos comandos de voz 'filter' e 'search'. 'filter' manda os critérios ditados para o catálogo pela ponte voiceFilterBridge (preço, estoque, gênero, público-alvo, kit, destaque, novidade, personalização, promoção — tudo que o contrato em src/hooks/voice/types.ts:17-34 declara); antes só categ …"
   },
   "src/components/search/__tests__/AdvancedSearch.test.tsx": {
    "path": "src/components/search/__tests__/AdvancedSearch.test.tsx",
@@ -453586,7 +453684,7 @@
   },
   "src/components/search/__tests__/useGlobalSearch.test.ts": {
    "path": "src/components/search/__tests__/useGlobalSearch.test.ts",
-   "lines": 705,
+   "lines": 750,
    "is_test": true,
    "doc": "Testes de comportamento do hook useGlobalSearch. Rede (Supabase, edge functions, CRM, catálogo externo) e hooks externos são mockados.",
    "tests": [
@@ -453612,7 +453710,9 @@
     "Ctrl+Shift+V abre o overlay de voz e logout limpa o cache",
     "handleVoiceAction",
     "navigate registra comando e navega após 500ms",
-    "filter combina filtros em consulta e reabre a busca",
+    "filter manda os critérios ditados para o catálogo em vez de virar busca textual",
+    "search sem termo usa categoria/cor/material como consulta",
+    "filter sem critérios estruturais cai na busca textual",
     "search usa o termo falado; clear zera; sort navega; answer não faz nada",
     "open_oracle e open_cart disparam integrações",
     "timers pendentes são cancelados no unmount"
@@ -465456,6 +465556,17 @@
     "useVideoVariantLinks"
    ]
   },
+  "src/hooks/products/useVoiceFilterApply.ts": {
+   "path": "src/hooks/products/useVoiceFilterApply.ts",
+   "lines": 24,
+   "exports": [
+    "function useVoiceFilterApply"
+   ],
+   "doc": "Consome os filtros ditados por voz (ponte voiceFilterBridge) e aplica no FilterState do catálogo, uma única vez por comando. Fica fora de useCatalogState porque aquele hook não é montável em teste (src/hooks/__tests__/useCatalogState.unit.test.tsx está em describe.skip por OOM do worker); aqui o com …",
+   "hooks": [
+    "useVoiceFilterApply"
+   ]
+  },
   "src/hooks/products/__tests__/dailyCatalogDefaults.test.ts": {
    "path": "src/hooks/products/__tests__/dailyCatalogDefaults.test.ts",
    "lines": 63,
@@ -475121,6 +475232,23 @@
     "batch_insert envia array preservando colunas EN de personalization_techniques"
    ]
   },
+  "src/lib/filters/voiceFilterPatch.ts": {
+   "path": "src/lib/filters/voiceFilterPatch.ts",
+   "lines": 45,
+   "exports": [
+    "function applyVoiceFilterPatch"
+   ],
+   "rule_comments": [
+    "consumidor os aplicava: useGlobalSearch.ts e AdvancedSearch.tsx jogavam apenas"
+   ],
+   "calc_fns": [
+    {
+     "name": "applyVoiceFilterPatch",
+     "params": "previous: FilterState, filters: VoiceFilters",
+     "body": "const next = { ...previous }; if (filters.color) next.colors = append(previous.colors, filters.color); if (filters.category) next.categories = append(previous.categories, filters.category); if (filters.material) next.materiais = append(previous.materiais, filters.material); if (filters.gender) next.gender = append(previous.gender, filters.gender); if (filters.publicoAlvo) next.publicoAlvo = append(previous.publicoAlvo, filters.publicoAlvo); if (filters.minPrice !== undefined || filters.maxPrice …"
+    }
+   ]
+  },
   "src/lib/intelligence/degradation.ts": {
    "path": "src/lib/intelligence/degradation.ts",
    "lines": 100,
@@ -479441,7 +479569,7 @@
   },
   "src/pages/Index.tsx": {
    "path": "src/pages/Index.tsx",
-   "lines": 224,
+   "lines": 227,
    "exports": [
     "function Index"
    ],
@@ -489758,6 +489886,18 @@
    "doc": "useWordMagicStore — toggle global Word Magic Um único estado booleano: isGlobalAIMode false = catálogo mostra textos NATIVOS do fornecedor (padrão) true = catálogo mostra textos melhorados por IA (quando disponíveis) Persiste em localStorage para manter preferência entre sessões.",
    "hooks": [
     "useWordMagicStore"
+   ]
+  },
+  "src/stores/voiceFilterBridge.ts": {
+   "path": "src/stores/voiceFilterBridge.ts",
+   "lines": 29,
+   "exports": [
+    "type VoiceFilters",
+    "const useVoiceFilterBridge"
+   ],
+   "doc": "Ponte entre o agente de voz e o catálogo, no mesmo padrão de src/stores/oracleVoiceBridge.ts (voz -> Flow). O overlay de voz vive na busca global; o FilterState real vive no useCatalogState. Sem essa ponte, um comando \"filter\" não tem como aplicar preço, estoque, gênero e os outros critérios ditados …",
+   "hooks": [
+    "useVoiceFilterBridge"
    ]
   },
   "src/stores/__tests__/useBadgeVisibilityStore.test.ts": {
@@ -530622,6 +530762,23 @@
     "should clear selection"
    ]
   },
+  "tests/hooks/useCatalogState.voiceFilters.test.tsx": {
+   "path": "tests/hooks/useCatalogState.voiceFilters.test.tsx",
+   "lines": 117,
+   "is_test": true,
+   "rule_comments": [
+    "bloco e colava apenas categoria/cor/material numa string de busca, descartando"
+   ],
+   "doc": "Ponte voz -> catálogo: o comando de FILTRO aplica os critérios ditados no FilterState real, em vez de virar busca textual. Antes deste resgate, useGlobalSearch.ts tratava 'search' e 'filter' no mesmo bloco e colava apenas categoria/cor/material numa string de busca, descartando preço, estoque, gêner …",
+   "tests": [
+    "ponte de filtros por voz",
+    "guarda os filtros ditados e entrega uma única vez",
+    "aplica no FilterState os critérios que a busca textual descartava",
+    "aplicação no catálogo (useVoiceFilterApply)",
+    "aplica os filtros ditados no FilterState e limpa a ponte",
+    "não toca no FilterState quando não há comando de voz pendente"
+   ]
+  },
   "tests/hooks/useCategories.test.tsx": {
    "path": "tests/hooks/useCategories.test.tsx",
    "lines": 48,
@@ -535025,6 +535182,18 @@
     "isPositiveNumber",
     "returns true for positive numbers",
     "returns false for zero/negative/NaN"
+   ]
+  },
+  "tests/lib/voiceFilterPatch.legacy.test.ts": {
+   "path": "tests/lib/voiceFilterPatch.legacy.test.ts",
+   "lines": 84,
+   "is_test": true,
+   "doc": "RESGATE — teste escrito por outro agente de IA que nunca chegou a main. Fonte: origin/salvo/claude-fix-pr3517-gate1-baseline-261113-2336 tests/pages/legacy-filter-voice.test.ts Ficou fora porque o proprio src/lib/filters/voiceFilterPatch.ts nunca entrou na main — sem o modulo, o import nao resolvia. …",
+   "tests": [
+    "legacy voice product filters",
+    "applies real price bounds together, including zero: %j",
+    "preserves unrelated filters, does not duplicate repeated selections, and keeps the unbounded sentinel",
+    "honors false and zero values instead of retaining an older true/minimum value"
    ]
   },
   "tests/lib/auth/apply-seller-scope.test.ts": {
@@ -543931,10 +544100,27 @@
   }
  },
  "git": {
-  "sha": "1e9864f481d84e0236eb62a41de64825ff2f96b2",
+  "sha": "4700bff94c8dc9026aa3ed2f42594501e2e8d055",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "4700bff",
+    "date": "2026-11-17",
+    "author": "adm01-debug",
+    "subject": "feat(voz): comando de filtro aplica os critérios ditados no catálogo (#3813)",
+    "files": [
+     "src/components/search/__tests__/useGlobalSearch.test.ts",
+     "src/components/search/useGlobalSearch.ts",
+     "src/components/search/voiceFilterDispatch.ts",
+     "src/hooks/products/useVoiceFilterApply.ts",
+     "src/lib/filters/voiceFilterPatch.ts",
+     "src/pages/Index.tsx",
+     "src/stores/voiceFilterBridge.ts",
+     "tests/hooks/useCatalogState.voiceFilters.test.tsx",
+     "tests/lib/voiceFilterPatch.legacy.test.ts"
+    ]
+   },
    {
     "sha": "1e9864f",
     "date": "2026-11-17",
@@ -544238,16 +544424,6 @@
      "docs/agentes/resgates/2026-11-16-auditoria-branches.md",
      "docs/agentes/resgates/2026-11-17-prova-byte-a-byte.md"
     ]
-   },
-   {
-    "sha": "f40d261",
-    "date": "2026-11-17",
-    "author": "github-actions[bot]",
-    "subject": "docs: recibo de aplicação — 20261117073000 (E15) (#3768)",
-    "files": [
-     "docs/coordenacao/conflitos-semanticos.md",
-     "supabase/MIGRATIONS_SYNC_LOG.md"
-    ]
    }
   ],
   "hot_files": [
@@ -544292,43 +544468,43 @@
     2
    ],
    [
+    "src/components/search/__tests__/useGlobalSearch.test.ts",
+    1
+   ],
+   [
+    "src/components/search/useGlobalSearch.ts",
+    1
+   ],
+   [
+    "src/components/search/voiceFilterDispatch.ts",
+    1
+   ],
+   [
+    "src/hooks/products/useVoiceFilterApply.ts",
+    1
+   ],
+   [
+    "src/lib/filters/voiceFilterPatch.ts",
+    1
+   ],
+   [
+    "src/pages/Index.tsx",
+    1
+   ],
+   [
+    "src/stores/voiceFilterBridge.ts",
+    1
+   ],
+   [
+    "tests/hooks/useCatalogState.voiceFilters.test.tsx",
+    1
+   ],
+   [
+    "tests/lib/voiceFilterPatch.legacy.test.ts",
+    1
+   ],
+   [
     "src/components/favorites/FavoritePresentationLauncher.tsx",
-    1
-   ],
-   [
-    "src/components/favorites/FavoritesViewHeader.tsx",
-    1
-   ],
-   [
-    "src/pages/products/FavoritesPage.tsx",
-    1
-   ],
-   [
-    "tests/pages/FavoritesPage.apresentar-lista.test.tsx",
-    1
-   ],
-   [
-    "src/components/quotes/QuoteVersionCompare.tsx",
-    1
-   ],
-   [
-    "src/components/quotes/QuoteVersionHistory.tsx",
-    1
-   ],
-   [
-    "src/hooks/quotes/useQuoteVersions.ts",
-    1
-   ],
-   [
-    "tests/components/QuoteVersionHistory.nullDate.test.tsx",
-    1
-   ],
-   [
-    "src/hooks/kit-builder/useKitAutoSave.ts",
-    1
-   ],
-   [
-    "src/hooks/products/useProductMatch.ts",
     1
    ]
   ]

@@ -9121,6 +9121,7 @@
    "src/components/search/EmptySearchState.tsx",
    "src/components/search/searchCache.ts",
    "src/components/search/useQuickSuggestions.ts",
+   "src/components/search/voiceFilterDispatch.ts",
    "src/hooks/common/index.ts",
    "src/hooks/intelligence/index.ts",
    "src/hooks/ui/useSlashCommands.ts",
@@ -9163,6 +9164,10 @@
   ],
   "src/components/search/voice/usePhaseColors.ts": [
    "src/hooks/intelligence/index.ts"
+  ],
+  "src/components/search/voiceFilterDispatch.ts": [
+   "src/hooks/voice/types.ts",
+   "src/stores/voiceFilterBridge.ts"
   ],
   "src/components/security/GeoBlockingManager.tsx": [
    "src/components/ui/alert.tsx",
@@ -11170,6 +11175,11 @@
   "src/hooks/products/useVideoVariantLinks.ts": [
    "src/integrations/supabase/client.ts"
   ],
+  "src/hooks/products/useVoiceFilterApply.ts": [
+   "src/components/filters/FilterPanel.tsx",
+   "src/lib/filters/voiceFilterPatch.ts",
+   "src/stores/voiceFilterBridge.ts"
+  ],
   "src/hooks/quotes/discountApprovalResponder.ts": [
    "src/integrations/supabase/client.ts",
    "src/lib/discount-approval-status-config.ts",
@@ -11941,6 +11951,10 @@
    "src/lib/logger.ts",
    "src/lib/personalization/adapters/index.ts"
   ],
+  "src/lib/filters/voiceFilterPatch.ts": [
+   "src/components/filters/FilterPanel.tsx",
+   "src/hooks/voice/types.ts"
+  ],
   "src/lib/intelligence/degradation.ts": [
    "src/lib/intelligence/degradationRegistry.ts",
    "src/lib/intelligence/degradationSink.ts",
@@ -12334,7 +12348,8 @@
    "src/components/products/share/SharePreviewDialog.tsx",
    "src/components/seo/PageSEO.tsx",
    "src/hooks/products/useCatalogState.ts",
-   "src/hooks/products/useExternalVariantStock.ts"
+   "src/hooks/products/useExternalVariantStock.ts",
+   "src/hooks/products/useVoiceFilterApply.ts"
   ],
   "src/pages/NotFound.tsx": [
    "src/components/seo/PageSEO.tsx",
@@ -14708,6 +14723,9 @@
   ],
   "src/stores/useRecentlyViewedStore.ts": [
    "src/lib/logger.ts"
+  ],
+  "src/stores/voiceFilterBridge.ts": [
+   "src/hooks/voice/types.ts"
   ],
   "src/types/domain/index.ts": [
    "src/types/domain/personalization.ts",

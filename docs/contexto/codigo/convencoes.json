@@ -13,17 +13,17 @@
    "recovery/src-legacy (100)"
   ],
   "hooks": [
-   "src/hooks (298)",
+   "src/hooks (299)",
    "recovery/src-legacy (196)",
    "src/components (77)"
   ],
   "servicos_logica": [
-   "src/lib (232)",
+   "src/lib (233)",
    "src/utils (30)",
    "src/services (10)"
   ],
   "testes": [
-   "tests/ (1063)",
+   "tests/ (1065)",
    "co-localizado (__tests__) (678)",
    "e2e/ (625)"
   ],
@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "feat(voz): comando de filtro aplica os critérios ditados no catálogo (#3813)",
    "feat(favoritos): botão \"Apresentar lista\" abre o modo apresentação dos favoritos (#3812)",
    "fix(tests): mock de QuoteAutoSave precisa exportar QuoteDraftRecovery (#3811)",
    "fix(quotes): histórico de versões não cai mais quando a data da versão é nula (#3810)",
-   "fix(kit): autosave nao grava mais o rascunho de um kit em cima de outro (#3809)",
-   "fix(hooks): restaura a guarda de matchTypes que a refatoracao de pasta derrubou (#3808)"
+   "fix(kit): autosave nao grava mais o rascunho de um kit em cima de outro (#3809)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",

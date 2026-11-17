@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "1e9864f481d84e0236eb62a41de64825ff2f96b2",
+  "commit": "4700bff94c8dc9026aa3ed2f42594501e2e8d055",
   "branch": "main",
-  "data_commit": "2026-11-17T19:34:01-03:00",
+  "data_commit": "2026-11-17T19:46:24-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "4700bff9",
+    "data": "2026-11-17",
+    "assunto": "feat(voz): comando de filtro aplica os critérios ditados no catálogo (#3813)"
+   },
    {
     "sha": "1e9864f4",
     "data": "2026-11-17",
@@ -126,14 +131,9 @@
     "sha": "cfe603d5",
     "data": "2026-11-17",
     "assunto": "fix(deps): override basic-ftp para ^6.2.4 e fecha o GHSA-5pm8-86m8-9m6r (#3774)"
-   },
-   {
-    "sha": "e85f9352",
-    "data": "2026-11-17",
-    "assunto": "docs: troca a classificação por data por identidade de blob no histórico (#3772)"
    }
   ],
-  "arquivos_mudados_7d": 1968,
+  "arquivos_mudados_7d": 1975,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -145,7 +145,7 @@
    },
    {
     "pasta": "src/components/products",
-    "mudancas": 177
+    "mudancas": 175
    },
    {
     "pasta": "tests/edge-functions/live",
@@ -153,7 +153,7 @@
    },
    {
     "pasta": "src/hooks/products",
-    "mudancas": 128
+    "mudancas": 127
    },
    {
     "pasta": "src/components/mockup",
@@ -322,21 +322,21 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 10871,
-  "arquivos_codigo": 5396,
-  "linhas_codigo": 1030306,
+  "arquivos_total": 10877,
+  "arquivos_codigo": 5402,
+  "linhas_codigo": 1030706,
   "rotas": 139,
   "rotas_http_backend": 13,
   "vistas_por_id": 0,
   "itens_menu": 69,
-  "modulos": 161,
+  "modulos": 162,
   "componentes": 1239,
-  "hooks": 627,
+  "hooks": 629,
   "edge_functions": 112,
   "tabelas": 527,
   "migrations": 3099,
   "cron_jobs": 122,
-  "testes": 2568,
+  "testes": 2570,
   "workflows": 88,
   "scripts": 283,
   "docs_md": 1470
@@ -1895,8 +1895,8 @@
    "linhas": 130
   },
   "src/components": {
-   "arquivos": 1396,
-   "linhas": 277718
+   "arquivos": 1397,
+   "linhas": 277816
   },
   "src/config": {
    "arquivos": 1,
@@ -1919,16 +1919,16 @@
    "linhas": 7
   },
   "src/hooks": {
-   "arquivos": 480,
-   "linhas": 90940
+   "arquivos": 481,
+   "linhas": 90964
   },
   "src/integrations": {
    "arquivos": 11,
    "linhas": 66577
   },
   "src/lib": {
-   "arquivos": 343,
-   "linhas": 52947
+   "arquivos": 344,
+   "linhas": 52992
   },
   "src/logic": {
    "arquivos": 4,
@@ -1940,7 +1940,7 @@
   },
   "src/pages": {
    "arquivos": 361,
-   "linhas": 83890
+   "linhas": 83893
   },
   "src/routes": {
    "arquivos": 14,
@@ -1951,8 +1951,8 @@
    "linhas": 5588
   },
   "src/stores": {
-   "arquivos": 11,
-   "linhas": 1127
+   "arquivos": 12,
+   "linhas": 1156
   },
   "src/test": {
    "arquivos": 3,
@@ -2091,8 +2091,8 @@
    "linhas": 325
   },
   "tests/hooks": {
-   "arquivos": 153,
-   "linhas": 23674
+   "arquivos": 154,
+   "linhas": 23791
   },
   "tests/integration": {
    "arquivos": 11,
@@ -2103,8 +2103,8 @@
    "linhas": 42
   },
   "tests/lib": {
-   "arquivos": 67,
-   "linhas": 9660
+   "arquivos": 68,
+   "linhas": 9744
   },
   "tests/magazine": {
    "arquivos": 18,
@@ -2361,12 +2361,12 @@
    "linhas": 934
   },
   {
-   "arquivo": "src/components/search/useGlobalSearch.ts",
-   "linhas": 930
-  },
-  {
    "arquivo": "scripts/ai-context/gerar.mjs",
    "linhas": 924
+  },
+  {
+   "arquivo": "src/components/search/useGlobalSearch.ts",
+   "linhas": 923
   }
  ],
  "qualidade": {

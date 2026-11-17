@@ -8693,7 +8693,7 @@
    ],
    "tabelas": [],
    "edges": [],
-   "usado_por": 16,
+   "usado_por": 18,
    "orfao": false
   },
   {
@@ -18475,10 +18475,11 @@
     "Index"
    ],
    "export_default": "Index",
-   "linhas": 224,
+   "linhas": 227,
    "dominio": "pages",
    "hooks_locais": [
-    "useCatalogState"
+    "useCatalogState",
+    "useVoiceFilterApply"
    ],
    "tabelas": [],
    "edges": [],

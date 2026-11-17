@@ -1,7 +1,7 @@
 {
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
- "total": 627,
+ "total": 629,
  "hooks": [
   {
    "arquivo": "docs/agentes/resgates/quote-comments/codigo/useQuoteComments.ts",
@@ -6061,7 +6061,7 @@
    "hooks_exportados": [
     "useGlobalSearch"
    ],
-   "linhas": 930,
+   "linhas": 923,
    "dominio": "components/search",
    "tabelas": [
     "art_file_attachments",
@@ -11947,6 +11947,27 @@
    "coberto_por_testes": 1
   },
   {
+   "arquivo": "src/hooks/products/useVoiceFilterApply.ts",
+   "hooks_exportados": [
+    "useVoiceFilterApply"
+   ],
+   "linhas": 24,
+   "dominio": "hooks/products",
+   "tabelas": [],
+   "rpcs": [],
+   "edges": [],
+   "hooks_internos": [
+    "useEffect",
+    "useVoiceFilterBridge"
+   ],
+   "canais_realtime": [],
+   "usado_por": 1,
+   "usado_por_arquivos": [
+    "src/pages/Index.tsx"
+   ],
+   "coberto_por_testes": 1
+  },
+  {
    "arquivo": "src/hooks/quotes/useAutoSaveQuote.ts",
    "hooks_exportados": [
     "useAutoSaveQuote"
@@ -14929,6 +14950,25 @@
     "src/hooks/word-magic/useWordMagic.ts"
    ],
    "coberto_por_testes": 0
+  },
+  {
+   "arquivo": "src/stores/voiceFilterBridge.ts",
+   "hooks_exportados": [
+    "useVoiceFilterBridge"
+   ],
+   "linhas": 29,
+   "dominio": "stores",
+   "tabelas": [],
+   "rpcs": [],
+   "edges": [],
+   "hooks_internos": [],
+   "canais_realtime": [],
+   "usado_por": 2,
+   "usado_por_arquivos": [
+    "src/components/search/voiceFilterDispatch.ts",
+    "src/hooks/products/useVoiceFilterApply.ts"
+   ],
+   "coberto_por_testes": 2
   }
  ]
 }

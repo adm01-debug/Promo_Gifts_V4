@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.3.2 · commit `1e9864f481` · branch `main` · 2026-11-17 22:35 UTC
+> Gerado automaticamente por AI Context Sync v1.3.2 · commit `4700bff94c` · branch `main` · 2026-11-17 22:47 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -4399,6 +4399,10 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
   ```
   return REST_WRITE_OPS.has(options.operation) && REST_NATIVE_WRITE_TABLES.has(options.table);
   ```
+- **applyVoiceFilterPatch(previous: FilterState, filters: VoiceFilters)** — `src/lib/filters/voiceFilterPatch.ts`
+  ```
+  const next = { ...previous }; if (filters.color) next.colors = append(previous.colors, filters.color); if (filters.category) next.categories = append(previous.categories, filters.category); if (filters.material) next.materiais = append(previous.materiais, filters.material); if (filters.gender) next.gender = append(previous.gender, filters.gender); if (filters.publicoAlvo) next.publicoAlvo = append(previous.publicoAlvo, filters.publicoAlvo); if (filters.minPrice !== undefined || filters.maxPrice …
+  ```
 - **computeFutureStockStats(entries: FutureStockEntry[])** — `src/lib/inventory/future-stock-stats.ts`
   ```
   const unique = dedupeFutureEntries(entries); let totalUnits = 0; let confirmedUnits = 0; let inTransitUnits = 0; let pendingUnits = 0; let partialUnits = 0; let completedUnits = 0; let cancelledUnits = 0; let overdueCount = 0; let nextDate: string | null = null; const productIds = new Set<string>(); for (const e of unique) { const qty = safeQty(e.expectedQuantity); totalUnits += qty; switch (e.status) { case 'confirmed': confirmedUnits += qty; break; case 'in_transit': inTransitUnits += qty; bre …
@@ -5522,6 +5526,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `MAX_ENTRIES` | `50` | `src/components/search/searchCache.ts` |
 | `TTL_MS` | `60` | `src/components/search/searchCache.ts` |
 | `MAX_QUICK_SUGGESTIONS` | `6` | `src/components/search/useQuickSuggestions.ts` |
+| `ATRASO_MS` | `500` | `src/components/search/voiceFilterDispatch.ts` |
 | `CONNECTION_DIST` | `120` | `src/components/search/voice/FloatingParticles.tsx` |
 | `SIZE` | `220` | `src/components/search/voice/VoiceOrb.tsx` |
 | `ITEM_HEIGHT` | `100` | `src/components/simulator/wizard/StepProduct.tsx` |
@@ -5650,8 +5655,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `MAX_ITEMS` | `10` | `src/hooks/products/useRecentlyViewed.ts` |
 | `REPLENISHMENT_WINDOW_DAYS` | `30` | `src/hooks/products/useReplenishments.ts` |
 | `FETCH_ALL_LIMIT` | `2000` | `src/hooks/products/useReplenishments.ts` |
-| `MAX_SELLER_CARTS` | `50` | `src/hooks/products/useSellerCarts.helpers.ts` |
-| … +368 linhas — lista completa em `context.json` | | |
+| … +369 linhas — lista completa em `context.json` | | |
 
 ### H.2 Prazos, expirações e janelas de tempo
 
@@ -6564,7 +6568,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `admin` | `supabase/migrations/20261112120500_fix_optimization_queue_rpcs_dev_access.sql` |
 | `anon` | `tests/edge-functions/live/_live-client.ts` |
 
-## K. Testes como especificação (22184 testes em 2246 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (22196 testes em 2248 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -6693,6 +6697,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `tests/unit/sensitive-masking.test.ts` | 29 | maskSecretValue · masks null with ???? placeholder · masks undefined · masks empty string … |
 | `src/components/common/__tests__/IntelligenceBadges.adversarial.test.tsx` | 28 | [A] Toggle OFF — TODOS os 9 tipos desaparecem (data-testid) · OCULTA type= · [B] Toggle ON — TODOS os 9 tipos visíveis (data-testid) · EXIBE type= … |
 | `src/components/mockup/__tests__/techniqueColorUtils.test.ts` | 28 | classifyTechnique · detecta  · detecta  · detecta  … |
+| `src/components/search/__tests__/useGlobalSearch.test.ts` | 28 | useGlobalSearch · expõe estado inicial e sugestões rápidas · limpa resultados para consultas com menos de 3 caracteres sem chamar a IA · busca mista monta resultados de produtos, clientes, orçamentos e tabelas auxiliares … |
 | `src/components/ui/__tests__/currency-input.test.ts` | 28 | CurrencyInput · round2 · round2(%s) === %s · CurrencyInput · formatBR (pt-BR, 2 casas) · formata com vírgula decimal e ponto de milhar … |
 | `src/hooks/__tests__/bug-g7-regression.unit.test.ts` | 28 | BUG-G7 — TooltipTrigger asChild nao envolve Radix composto · nenhum bloco TooltipTrigger asChild contem <Select> · ordem correta dentro do Select: Tooltip -> span wrapper -> SelectTrigger; SelectContent fora do Tooltip · DEFAULT_SORT_VALUE deriva do SSOT (SORT_OPTIONS[0]) … |
 | `tests/components/KitComposition.test.tsx` | 28 | KitComposition · renders trigger card with component count · abre o diálogo pelo teclado (%s) · renders header with correct component and piece counts in dialog … |
@@ -6715,7 +6720,6 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `tests/unit/trending-score.test.ts` | 27 | calculateTrendingScore · classification boundaries · returns  · returns  … |
 | `tests/unit/variant-matching.test.ts` | 27 | normalizeColorName · returns empty string for null · returns empty string for undefined · returns empty string for empty string … |
 | `src/components/products/gallery/PromoFlixPlayer.test.tsx` | 26 | PromoFlixPlayer Automated Tests · should initialize volume from localStorage · should initialize playing state from localStorage · should show manual load button after 10s timeout if video is stuck … |
-| `src/components/search/__tests__/useGlobalSearch.test.ts` | 26 | useGlobalSearch · expõe estado inicial e sugestões rápidas · limpa resultados para consultas com menos de 3 caracteres sem chamar a IA · busca mista monta resultados de produtos, clientes, orçamentos e tabelas auxiliares … |
 | `src/hooks/quotes/__tests__/useQuoteItems.test.ts` | 26 | estado inicial · items, activeItemIndex e expandedItems iniciam vazios · aceita initialItems como seed · addProductWithColor … |
 | `src/lib/quotes/__tests__/expiration.test.ts` | 26 | computeExpiration — casos canônicos · valid_until=%s → diff=%i label=%s tone=%s · computeExpiration — fuso negativo NÃO causa off-by-one (regressão) · +1d em ISO date-only resolve para 1 dia, não 0 … |
 | `src/pages/products/__tests__/CartHeaderEdgeCases.test.ts` | 26 | shippingDeadlineSchema — inputs extremos · aceita null (limpar prazo) · trata string vazia como null · rejeita formato inválido (dd/mm/aaaa) … |
@@ -6868,7 +6872,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `src/components/search/__tests__/searchCache.test.ts` | 18 | searchCache.set / searchCache.get · returns null for an unknown key · returns results immediately after set · is case-insensitive (normalized key) … |
 | `src/hooks/auth/__tests__/login-flow.test.ts` | 18 | Login Flow & Role Loading — RPC get_profile_and_roles · 1. deve carregar perfil e roles com sucesso via RPC · 2. deve tratar erro RLS 42501 sem lançar exceção · 3. deve tratar erros genéricos de rede sem crash … |
 | `src/hooks/products/__tests__/useProductsByColor.test.ts` | 18 | hasFilter OR entre 4 grupos · false quando todos arrays vazios · true quando qualquer grupo nao-vazio · sem filtro ativo … |
-| … +1946 linhas — lista completa em `context.json` | | |
+| … +1948 linhas — lista completa em `context.json` | | |
 
 ## L. Eventos de webhook tratados (contratos com sistemas externos)
 
@@ -7336,4 +7340,4 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | ArrowRight/Down no último e ArrowLeft/Up no primeiro param no limite (não ciclam); | `src/components/magic-up/MagicUpVariationComparator.tsx` |
 | Regra única do logo do mockup (SVG fora: a edge generate-mockup rejeita SVG). | `src/components/mockup/AreaCard.tsx` |
 | * Validação sem rede: extensão, tipo informado pelo navegador e tamanho. Retorna a mensagem de erro ou null. */ | `src/components/mockup/ArtFileUpload.tsx` |
-| … +1334 linhas — lista completa em `context.json` | |
+| … +1336 linhas — lista completa em `context.json` | |
