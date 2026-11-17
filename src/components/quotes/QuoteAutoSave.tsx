@@ -37,6 +37,69 @@ interface QuoteAutoSaveProps {
    *  When it changes, the "unsaved changes" baseline is reset so the indicator
    *  clears without needing to navigate away and back. */
   serverSavedAt?: number;
+  /**
+   * Recuperação de rascunho sob decisão do vendedor. Quando informado, e só
+   * então, o componente oferece um botão "Restaurar rascunho" se houver no
+   * localStorage um envelope íntegro para este orçamento, diferente do que está
+   * na tela. Sem o callback nada muda: nenhum botão, nenhuma leitura oferecida.
+   *
+   * GUARD: este caminho é somente-leitura. Envelope inválido, JSON corrompido ou
+   * recuperação recusada pelo consumidor NÃO apagam nem reescrevem o storage — o
+   * rascunho do vendedor é a única cópia do trabalho dele e fica preservado para
+   * investigação. Pode devolver Promise; cliques repetidos não duplicam a chamada.
+   */
+  onRestore?: (data: unknown) => Promise<void> | void;
+}
+
+/**
+ * Mantém as chaves do rascunho restaurado que a tela atual não conhece. A tela
+ * manda em tudo que ela modela; o resto sobrevive. Sem base restaurada, devolve
+ * os dados da tela sem tocar em nada.
+ */
+function mergeRestoredBase(base: unknown, current: unknown): unknown {
+  const isPlain = (v: unknown) => typeof v === 'object' && v !== null && !Array.isArray(v);
+  if (!isPlain(base) || !isPlain(current)) return current;
+  return { ...(base as Record<string, unknown>), ...(current as Record<string, unknown>) };
+}
+
+/** Envelope íntegro e de fato recuperável, ou `null`. Nunca escreve no storage. */
+function readRecoverableDraft(
+  storageKey: string,
+  expectedId: string,
+  currentData: unknown,
+): unknown | null {
+  let stored: string | null = null;
+  try {
+    stored = localStorage.getItem(storageKey);
+  } catch {
+    return null; // storage bloqueado (modo privado, cota): não há oferta a fazer
+  }
+  if (!stored) return null;
+
+  let envelope: unknown;
+  try {
+    envelope = JSON.parse(stored);
+  } catch {
+    return null; // JSON corrompido fica como está, para ser investigado
+  }
+  if (typeof envelope !== 'object' || envelope === null || Array.isArray(envelope)) return null;
+
+  const { id, data, savedAt, version } = envelope as Partial<QuoteDraft>;
+  if (id !== expectedId) return null;
+  if (typeof data !== 'object' || data === null || Array.isArray(data)) return null;
+  if (typeof savedAt !== 'string' || !Number.isFinite(new Date(savedAt).getTime())) return null;
+  if (typeof version !== 'number' || !Number.isSafeInteger(version) || version <= 0) return null;
+
+  const parsed = quoteDraftRecoverySchema.safeParse(data);
+  if (!parsed.success) return null;
+
+  // Já restaurado (ou idêntico ao que está na tela): não há o que oferecer.
+  try {
+    if (JSON.stringify(parsed.data) === JSON.stringify(currentData)) return null;
+  } catch {
+    return null;
+  }
+  return parsed.data;
 }
 
 const STORAGE_KEY_PREFIX = 'quote_draft_';
@@ -49,10 +112,16 @@ export function QuoteAutoSave({
   debounceMs = 2000,
   className,
   serverSavedAt,
+  onRestore,
 }: QuoteAutoSaveProps) {
   const [status, setStatus] = useState<SaveStatus>('idle');
   const [lastSaved, setLastSaved] = useState<Date | null>(null);
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
+  const [recoverable, setRecoverable] = useState<unknown | null>(null);
+  const [restoring, setRestoring] = useState(false);
+  const [restoreError, setRestoreError] = useState<string | null>(null);
+  /** Rascunho restaurado nesta sessão, base do merge do próximo autosave. */
+  const restoredBaseRef = useRef<unknown>(null);
 
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
   const idleTimerRef = useRef<NodeJS.Timeout | null>(null);
@@ -157,7 +226,10 @@ export function QuoteAutoSave({
       // Criar nova versão
       const newDraft: QuoteDraft = {
         id: quoteId || 'new',
-        data: dataRef.current,
+        // Preserva o que o rascunho restaurado tinha e esta tela não modela
+        // (feature parcial de outro agente, campo de versão futura). Sem isto, a
+        // primeira gravação após restaurar apagaria essa parte do trabalho.
+        data: mergeRestoredBase(restoredBaseRef.current, dataRef.current),
         savedAt: new Date().toISOString(),
         version: Date.now(),
       };
@@ -296,12 +368,62 @@ export function QuoteAutoSave({
   // o vendedor precisa ver que o rascunho NÃO foi salvo. `not-sr-only` vence o
   // `sr-only` externo no twMerge; o texto também sai do `hidden` do mobile.
   const isFailure = status === 'error' || status === 'offline';
+
+  // Detecção da oferta de recuperação. Roda uma vez por orçamento, com a tela
+  // já montada: sem callback não há leitura nenhuma a oferecer.
+  const detectedRef = useRef<string | null>(null);
+  useEffect(() => {
+    if (!onRestore) {
+      setRecoverable(null);
+      return;
+    }
+    if (detectedRef.current === storageKey) return;
+    detectedRef.current = storageKey;
+    setRecoverable(readRecoverableDraft(storageKey, quoteId || 'new', dataRef.current));
+  }, [onRestore, storageKey, quoteId]);
+
+  const handleRestore = useCallback(async () => {
+    if (!onRestore || recoverable === null || restoring) return;
+    setRestoring(true);
+    setRestoreError(null);
+    try {
+      await onRestore(recoverable);
+      if (!mountedRef.current) return;
+      restoredBaseRef.current = recoverable;
+      setRecoverable(null);
+    } catch (err) {
+      // GUARD: recuperação recusada mantém a oferta e o storage intactos — o
+      // vendedor pode tentar de novo e o rascunho continua lá para investigação.
+      if (!mountedRef.current) return;
+      setRestoreError(err instanceof Error ? err.message : 'Não foi possível restaurar o rascunho');
+    } finally {
+      if (mountedRef.current) setRestoring(false);
+    }
+  }, [onRestore, recoverable, restoring]);
   // aria-live: 'polite' anuncia mudanças de status sem interromper o leitor.
   // 'off' quando não há texto, para evitar anúncios vazios.
   const ariaLive: 'off' | 'polite' = statusText ? 'polite' : 'off';
 
   return (
     <>
+      {/* Oferta de recuperação: só com onRestore e envelope íntegro diferente da tela */}
+      {onRestore && recoverable !== null && (
+        <button
+          type="button"
+          onClick={handleRestore}
+          disabled={restoring}
+          className="text-xs font-medium underline underline-offset-2 disabled:opacity-60"
+          data-testid="quote-autosave-restore"
+        >
+          Restaurar rascunho
+        </button>
+      )}
+      {restoreError && (
+        <span role="alert" className="text-xs text-destructive">
+          {restoreError}
+        </span>
+      )}
+
       {/* Indicador de status */}
       <Tooltip>
         <TooltipTrigger asChild>
