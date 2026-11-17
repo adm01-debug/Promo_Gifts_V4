@@ -127,7 +127,8 @@ Os três são o mesmo problema de fundo: **gates que davam vermelho por causa da
    `20260615210001:15` usou `gen_random_uuid()`, e o baseline é schema-only. Provado em PostgreSQL
    16 local: sem a semente, o mesmo erro de FK do CI; com ela, `INSERT 0 1`; idempotente.
 3. Com a #3721, o `Gate E40` passa do passo 13 e para no passo 15, `check-cron-drift.mjs` (E037):
-   o snapshot `supabase/baseline/20261108000000_cron_jobs.json` diz
+   o snapshot de então (`20261108000000_cron_jobs.json`, substituído pela #3721 por
+   `supabase/baseline/20261116000000_cron_jobs.json`) dizia
    `refresh-all-materialized-views` = `38 */2 * * *` e a produção está em `38 9 * * *`, mudança da
    CRON-005 aplicada em 14/11. Quem rotaciona o snapshot é o `schema-snapshot-export.yml` — ou seja,
    a #3718. **#3718 + #3721 são as duas metades do mesmo portão.**
@@ -187,3 +188,156 @@ a parte não aplicada — recusar com 422 sem dimensões — foi **rejeitada de 
 `tailwindcss` 3→4 e os outros 4 bumps major da #3695 · aplicar P06/P15 em produção (#3720) ·
 as 13 branches `recuperado/*` da §2 da passagem de 15/11 · PRs #3566, #3683, #3696, #3719 ·
 ressuscitar ou enterrar `quote_comments`.
+
+---
+
+# Rodada de 17/11 — continuação
+
+Convenção desta seção: versões de migration que **não existem na `main`** são citadas pelo número,
+sem o prefixo `supabase/migrations/`. Com o prefixo, `check-migration-path-references.mjs` conta
+referência nova quebrada e derruba o Gate 1 no push — foi exatamente o que aconteceu em `bf156d3ff`
+e foi corrigido pela #3733.
+
+## Fechamentos
+
+**47 branches** fechadas com prova nesta sessão (23 registradas acima + 24 depois). Somam-se às de
+cima: as 12 fatias VPS de mockup (ref `salvo/261117-vps-fabrica-mockup-12`, 12/12 conferidas
+alcançáveis no remoto antes de apagar), `claude/laughing-cori-o9w35e`, `computador_local`,
+`claude/fix-schema-snapshot-export-cancelled-skip-261101-2344` e as **9 de documento da fábrica
+VPS** (ref `salvo/261117-docs-fabrica-vps-9`, conteúdo na `main` pela #3731).
+
+Nas 9 de documento a prova foi linha a linha, não só por arquivo: `0` linhas da branch ausentes na
+`main` em `MOCKUP_OPERACAO.md`, `MAGIC_UP_AUDITORIA_2026-10-08.md`, `FABRICA_VPS_FAQ.md` e na
+proposta da `s69`. Nas duas de `MOCKUP_RETENCAO.md` as **2** únicas linhas não trazidas são a
+citação do commit-base da própria fábrica, que não tem sentido na `main` — decisão declarada na PR.
+
+## Veredito final da #3548 (linhagem #3390 → #3517)
+
+**Nada a resgatar.** Os 23 arquivos de código ativos: 6 SUPERADO, 8 VERSÃO_ANTIGA, 5 OBSOLETO,
+4 INCORPORADO, **0 RESGATAR**. Pior: em 5 pontos a linhagem **regride** a `main` —
+`QuoteAutoSave.tsx` remove o `safeParse` do rascunho que a `main` tem em `:386`;
+`MockupHistoryPanel.tsx` remove as duas reconciliações, o wrap responsivo A-33 e o alvo de toque de
+44px A-5 (12 testes passando cobrem isso); `read-draft.ts` remove os `.default(...)` que impedem a
+hidratação de falhar em 15 dos 21 kits de produção; `KitBuilderPage.tsx` remove
+`useKitItemReplaceTarget` e `data-testid=wizard-next` e apaga 82 linhas de cobertura de retry de IA;
+`mockupGenerationService.ts` perde o `limit` sanitizado. O conteúdo "novo" dela são props sem
+consumidor (`onRestore`, `onMarkApproved`, `companyAccentColor`, `techniques`), alimentadas só por
+páginas que não existem na `main`.
+
+Composição medida: 309 arquivos — 243 em `recovery/src-legacy/`, 47 em `src/`, 15 em `tests/`,
+3 baselines, 1 doc.
+
+**Ela trava o resgate de dois itens.** Os únicos dois itens vivos do dossiê da
+`codex/fix-gate1-kit-pdf-types-261109-2252` — ação "Aprovar" na lista de orçamentos e o filtro de
+técnicas no histórico de mockups — vivem em `src/components/quotes/QuotesConfigurableList.tsx` e
+`src/components/mockup/MockupHistoryPanel.tsx`, **os dois na #3548**. Enquanto ela estiver aberta,
+Git 2/7 impede trabalhar nesses arquivos. É decisão do dono.
+
+## `codex/fix-gate1-kit-pdf-types-261109-2252` — o que é real
+
+272 arquivos existem só nela, mas **203 são apenas movidos** (o mesmo basename está na `main` em
+outro caminho). Sobram 40 inéditos. Deles:
+
+- **Banco: nada a resgatar.** `20261110024530_restore_device_trust_contract` está **INCORPORADO** —
+  a `main` tem `supabase/migrations/20261114031000_fix_user_known_devices_is_trusted.sql` com efeito
+  idêntico, presente no ledger de produção, e `pg_attribute` confirma
+  `user_known_devices.is_trusted` como `boolean NOT NULL DEFAULT false`, o contrato exato que a
+  migration da branch exigiria. `20261110022404_restore_quote_comments_scoped_threads` é
+  **OBSOLETO por decisão**: a `main` apagou a tabela em 27/06 (as duas versões de DROP estão no
+  ledger de produção), tirou a UI, e instalou duas travas — `scripts/check-no-quote-comments.mjs`
+  (acionada por `ci-security-drift.yml:67`) e `e2e/routes/quotes/view-no-comments-network.spec.ts`.
+  Produção confirma: `to_regclass('public.quote_comments')` é `null`, 0 políticas, 0 funções.
+- **Único resgate de banco pendente: `tests/sql/device-trust/`** (fixture + runner, 77 asserções).
+  Cobre `user_known_devices.is_trusted` — defaults, RLS com role não-superusuário, negação anônima,
+  idempotência, atomicidade e o rollback que recusa apagar a decisão de confiança do usuário.
+  `git grep -ln user_known_devices origin/main -- tests scripts` é **vazio**: a `main` não testa isso
+  em lugar nenhum. Pendências do resgate: repontar o runner para a migration `20261114031000`, e
+  decidir onde ele roda — ver o achado do harness morto abaixo. **NÃO VERIFICADO:** não executei,
+  este container não tem Docker (`docker info` falha).
+- `tests/sql/quote-comments/` é **OBSOLETO e tóxico**: o gate varre `tests/`, então copiá-lo com os
+  nomes atuais derruba o CI.
+- O item 1 do dossiê (recuperação validada de rascunho) **já está na `main`** desde 16/11 21:31:
+  `src/lib/quotes/quoteDraftRecovery.ts` + `__tests__/quoteDraftRecovery.test.ts` + o `safeParse` em
+  `QuoteAutoSave.tsx:386`. O dossiê é de 13:36 do mesmo dia e está desatualizado nesse ponto — quem
+  ler só o dossiê vai resgatar de novo o que já existe.
+
+## Resíduo da #3390 — medido executando, não por leitura
+
+A branch `claude/fix-resgate-3390-residuo-261116-2250` guarda 55 arquivos do resíduo, nenhum deles
+na `main`, e **interseção zero** com a #3548. Aplicados sobre a `main` e executados:
+
+- **Typecheck: 7 erros.** Imports para caminhos que a `main` reorganizou (`@/hooks/useCartTemplates`
+  → `src/hooks/products/`, `@/hooks/useQuoteBuilderState` → `src/hooks/quotes/`,
+  `@/hooks/useMockupTechniques` → `src/hooks/mockup/`), mais `onRestore` que não existe em
+  `QuoteAutoSaveProps`, mais `voiceFilterPatch` que a `main` superou com
+  `src/pages/products/applyVoiceFilters.ts`.
+- **Dos 16 arquivos `src/` não-teste, 16 têm zero consumidor** na `main`. `LegacyCartInsights.tsx` só
+  é importado pelos próprios testes do pacote; `TrendsPage.types.ts` parecia ter 2 consumidores, mas
+  `routePrefetch.ts` e `lazy-pages.ts` importam a *página*, não os tipos. Entrariam como código morto.
+- **Testes: 33 de 34 arquivos falham** (322 falhas, 270 passagens). As causas são imports para
+  `@/hooks/useQuoteComments`, `@/components/quotes/QuoteCommentsSection` (feature cancelada),
+  `LegacyCartInsights`, `SmartSuggestions`, `QuoteTemplateForm`, `FavoritePresentationLauncher`,
+  `@/utils/templateExport` — nenhum existe na `main` fora de `recovery/src-legacy/`.
+
+Veredito: o resíduo é cobertura de uma versão anterior do sistema, não trabalho a finalizar. Fica
+preservado na branch e em `refs/pull/3390/head`; não há o que mergear.
+
+## Achados novos desta rodada (não são resgate)
+
+1. **Erro de salvamento de orçamento invisível ao vendedor.** `QuoteBuilderPage.tsx:198` passa
+   `sr-only pointer-events-none` ao indicador, e o container aplica esse className direto
+   (`QuoteAutoSave.tsx:304`). O estado `error` é o único retorno de uma falha de gravação do
+   rascunho, `QuotaExceededError` incluído (`QuoteAutoSave.tsx:190-197`), e não há toast
+   (`grep -n toast` no arquivo: 0). Só leitor de tela recebia o aviso. Corrigido na **#3732**, que
+   fica **aberta**: a #3548 também altera esse arquivo.
+2. **Harness SQL morto no CI.** `scripts/test-wave1-forward-only-migrations.sh` e
+   `tests/sql/wave1_forward_only_migrations_test.sql` não são invocados por nenhum workflow nem por
+   `package.json`. Os que rodam de fato são `scripts/test-approved-plan-database.sh`
+   (`deploy-gates.yml:558`) e `scripts/simulate-quote-rpc-proposals.mjs` (npm `test:quote-rpc:postgres`).
+   É aí que a cobertura de device-trust precisa entrar para não nascer morta.
+3. **`docker info` com timeout de 5s derruba o Gate 2.5 por flake.**
+   `scripts/simulate-quote-rpc-proposals.mjs:16` usa `timeout: 5000`; na #3729 o passo falhou em
+   exatamente 5s logo depois de o passo anterior martelar um container Postgres. O re-run passou sem
+   nenhuma mudança de código. Docker está no runner; o que faltou foi tempo.
+4. **Pipe mascara exit code.** `node script.mjs | tail -8` devolve o status do `tail`. Foi assim que
+   eu reportei como verde um gate que já falhava, e derrubei a `main` em `bf156d3ff`. Em qualquer
+   verificação de gate: rodar sem pipe, ou ler `PIPESTATUS`.
+
+## Cobertura que vale resgate na `codex/fix-gate1-kit-pdf-types-261109-2252`
+
+Dos 14 testes inéditos dela, **11 são descartáveis** (testam código que a `main` arquivou em
+`recovery/src-legacy/` ou feature que a branch inventou e nunca foi mergeada) e **3 valem**:
+
+1. **`device-and-supplier-trust.contract.test.ts`** (em `tests/hooks/` na branch) — prova que marcar um aparelho como
+   confiável só responde "salvo" se o UPDATE atingiu uma linha **do próprio usuário**, e que a
+   vitrine de fornecedor mostra dado real ou "desconhecido", nunca número inventado. As asserções
+   batem com a `main` letra por letra: `src/hooks/admin/useDeviceDetection.ts:176-181` faz
+   `.update({ is_trusted: true }).eq('id', deviceId).eq('user_id', effectiveUserId).select('id').maybeSingle()`;
+   `src/hooks/products/useSupplierTrust.ts:40,55,79` encadeia `product_variants` →
+   `variant_supplier_sources` → `suppliers` na ordem assertada. Cobertura na `main`: **zero** —
+   `grep -rln "trustDevice\|is_trusted"` em testes é vazio. Resgate exige corrigir 2 caminhos de
+   import (`@/hooks/useDeviceDetection` → `@/hooks/admin/`, `@/hooks/useSupplierTrust` →
+   `@/hooks/products/`) e apagar o bloco que depende do mock `supplier-trust-demo`.
+2. **`useCustomKitPersistence.financial.test.tsx`** (em `tests/hooks/` na branch) — kit com item de preço desconhecido
+   não pode chegar ao banco. A trava migrou do hook para `src/lib/kit-builder/persistence.ts:107`
+   (`if (!hasKnownKitPrices(kitState)) throw new Error(KIT_UNKNOWN_PRICE_MESSAGE)`), então o teste
+   precisa ser reescrito contra `buildKitPersistencePayload`. A `main` só cobre isso na UI
+   (`tests/components/kit-builder/financial-availability.test.tsx:142` desabilita botões via
+   `pricesKnown={false}`) e **nunca exercita o `throw`** — quem chamar o salvamento por fora da tela
+   não está coberto. **Bloqueado pela #3548**, que também altera `persistence.ts`.
+3. **bloco fiscal de `legacy-admin-utils-preservation.test.ts` (em `tests/hooks/` na branch)** —
+   `src/hooks/products/useSupplierFiscalData.ts` não tem **nenhum** teste na `main`. O comportamento
+   a guardar: override de CST/CFOP/ICMS escreve só na linha `variant_supplier_sources` do par
+   (variante, fornecedor) e invalida a chave `['supplier-fiscal-data', productId, supplierId]`.
+   Precisa trocar o mock de `invokeExternalDb` por `untypedFrom`.
+
+## Dois defeitos da `main` que essa cobertura revela
+
+- **`src/hooks/products/useSupplierTrust.ts:87`** — `isVerified = supplierResult.records[0].active;`
+  sem coerção. `SupplierRecord` declara `active: boolean` (`:23`), mas em produção
+  `suppliers.active` é `boolean` **nullable** com default `true` (conferido em
+  `information_schema.columns`). Um fornecedor com `active = null` faz `isVerified` virar `null` e
+  vazar para a tela em vez de "não verificado". **Latente hoje:** 5 fornecedores, 0 com `null`.
+- **`src/components/common/IntelligenceBadges.tsx:97-98`** — `const config = badgeConfig[badge.type];
+  const Icon = config.icon;` sem fallback. Um selo com `type` fora das 9 chaves derruba a tela com
+  `TypeError`. Nenhum teste da `main` cobre isso.
