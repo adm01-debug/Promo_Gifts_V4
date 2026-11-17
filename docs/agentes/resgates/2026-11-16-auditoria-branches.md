@@ -717,3 +717,49 @@ gera. C mostra o caminho sem prefixo respondendo 200.
 Para isso o host `doufsxqlfjyuvxuezpln.supabase.co` foi liberado na allowlist de rede do
 ambiente (era bloqueado: `CONNECT tunnel failed, response 403`). A sonda ficou no scratchpad
 da sessão, não no repo: é diagnóstico de uma vez, não um portão.
+
+## Adjudicação dos 32 refs `salvo/*` — 17/11, 11:45–11:55 UTC
+
+As branches `salvo/*` **são a camada de preservação**: cada uma é a cópia de uma
+branch antes de ela ser apagada. Nenhuma delas foi ou será apagada. O que faltava
+era a medida que prova que não sobrou trabalho **fora do `main`** dentro delas.
+
+### Medida 1 — arquivo ausente do `main` (a única forma de perda real)
+
+Para cada um dos 32 refs: `mb=$(git merge-base origin/main <ref>)`,
+`git diff --name-only $mb <ref>` e, por arquivo, `git rev-parse <ref>:<f>` contra
+`git rev-parse origin/main:<f>`; quando o caminho não existe no `main`, o teste de
+basename (`git ls-tree -r --name-only origin/main | grep "/<base>$"`) decide se o
+arquivo foi movido ou se desapareceu.
+
+**Resultado: 0 arquivos ausentes, em ≈48 mil comparações de blob nos 32 refs.**
+Todo arquivo que existe em qualquer ref preservado existe no `main`, no mesmo
+caminho ou em outro.
+
+`git cherry origin/main <ref>` **não** serve aqui e foi descartado: o repo usa
+squash-merge, então o patch-id nunca casa e todo commit aparece como "não
+incorporado" mesmo quando o conteúdo está no `main`.
+
+### Medida 2 — os 9 refs com conteúdo autoral (os outros 23 são snapshots de árvore)
+
+| ref | arquivos que diferem | veredito (medido hoje) |
+| --- | --- | --- |
+| `salvo/claude-feat-crm-vendedor-sem-dono-261115-1622` | `package.json` | `index.ts`, `query-policy.ts` e o teste de ownership são **byte-idênticos** ao `main` (resgatados na #3769). O `package.json` difere só na linha `test:ci-core`, reconstruída a partir do `main` de propósito. |
+| `salvo/claude-fix-mockup-geometria-wysiwyg-261115-0045` | `geometry.ts`, `index.geometry.test.ts`, `index.ts`, `vitest.config.ts` | `main` tem `cmParaPx`, `MIN_LOGO_PX=40`, `MAX_LOGO_PX`, `DEFAULT_PRODUCT_FRACTION=0.85` — os símbolos resgatados. O portão `422 missing_dimensions` ficou fora por decisão registrada (ledger 2026-11-15T14:45). |
+| `salvo/claude-fix-mockup-logo-tamanho-real-261114-2200` | os mesmos 4 | mesma geometria, mesmo veredito. |
+| `salvo/claude-fix-resgate-p06-p15-security-261116-2215` | `20261101000001_..._p06.sql`, `rollbacks/20261101000001`, sync log | Superseded com medida: o `main` tem `20261117073000_p06_security_invoker_v_product_properties_public.sql`, que aplica 1 view e documenta **BLOQUEIO medido para cada uma das outras 7**. O P15 (`20261101000002`) e seu rollback são byte-idênticos. |
+| `salvo/claude-perf-cron005-refresh-all-mvs-diario-261114-1002` | sync log | migration e rollback byte-idênticos; o log é append-only e o `main` tem mais linhas. |
+| `salvo/e15-receipt-20261114120100-43959381044-261116` | sync log | idem. |
+| `salvo/importado-vps-fabrica-v2-refazer-dc12be92-261116` | `e2e-cleanup/index.ts`, `index.mockups.test.ts` | `main` está à frente (+699/−118) e tem a limpeza de mockups (21 ocorrências). `comm -23` das funções da branch contra as do `main`: **vazio** — nenhuma função da branch falta. O teste virou `tests/edge-functions/e2e-cleanup.mockups.test.ts`, byte-idêntico. |
+| `salvo/261116-clever-lamport-zlmati` | `PASSAGEM-PARA-O-PROXIMO-CLAUDE.md` | movido para `docs/agentes/passagens/2026-11-15-passagem-sessao.md`; o `main` é **superconjunto estrito** (+6 linhas, 0 remoções — `git diff --no-index` entre os dois blobs). |
+| `salvo/261117-schema-snapshot-cancelled-skip` | `.github/workflows/schema-snapshot-export.yml` | o `main` é o lado novo e traz o conserto com procedência no próprio cabeçalho ("2026-11-16: export deixava de rodar (skipped) quando o drift-gate era cancelado… Resgatado de `claude/fix-schema-snapshot-export-cancelled-skip-261101-2344`"). |
+
+Os 23 refs restantes são snapshots de árvore inteira (de 1.049 a 10.401 arquivos no
+diff): para eles o teste decisivo é o de ausência, e ele deu 0.
+
+### Fechamento das PRs
+
+0 PRs abertas. As três últimas entraram hoje: #3768 (recibo E15, `f40d2618`),
+#3766 (prova por branch, `cda9cbfa`) e #3753 (release `gifts-store 1.9.0`,
+`10455e7a`) — as três com deploy de Production SUCCESS e a tag
+`gifts-store-v1.9.0` criada às 11:38:47Z.
