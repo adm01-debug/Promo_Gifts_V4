@@ -55,7 +55,9 @@ describe('e2e-relevance', () => {
 
   it.each([
     'supabase/functions/health-check/index.ts',
-    'supabase/migrations/20261107_example.sql',
+    // Precisa ser um arquivo que EXISTE: scripts/check-migration-path-references.mjs
+    // (Gate 1) reprova qualquer mencao a caminho inexistente sob supabase/migrations/.
+    'supabase/migrations/20261115230000_ai_function_routing_mockup_assistant.sql',
     'supabase/tests/database/rls.test.sql',
     'supabase/config.toml',
     'supabase/seed.sql',
