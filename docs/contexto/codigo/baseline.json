@@ -2,11 +2,21 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "4963dcdfdbc0388a090b560eb49a387d044e4aa6",
+  "commit": "b2048b0ee0efd00a930bd09f341556d0b48ca3fc",
   "branch": "main",
-  "data_commit": "2026-11-16T23:42:48-03:00",
+  "data_commit": "2026-11-17T00:13:08-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "b2048b0e",
+    "data": "2026-11-17",
+    "assunto": "docs(audit): restaura o pós-mortem dos 29 commits presos fora do GitHub (#3741)"
+   },
+   {
+    "sha": "a5099c4c",
+    "data": "2026-11-17",
+    "assunto": "docs(audit): retira um achado que eu registrei errado e fecha o placar de 17/11 (#3739)"
+   },
    {
     "sha": "4963dcdf",
     "data": "2026-11-16",
@@ -121,19 +131,9 @@
     "sha": "36bbcaf9",
     "data": "2026-11-16",
     "assunto": "docs(audit): prova de incorporacao — 117 caminhos de residuo + as 5 PRs fechadas (#3710)"
-   },
-   {
-    "sha": "656e9bc9",
-    "data": "2026-11-16",
-    "assunto": "feat(ci): resgata o executor de CI local — 15 commits que nunca viraram PR (#3709)"
-   },
-   {
-    "sha": "dc5f7b42",
-    "data": "2026-11-16",
-    "assunto": "chore(deps): bump production-minor-patch group — 12 atualizacoes (#3693)"
    }
   ],
-  "arquivos_mudados_7d": 1923,
+  "arquivos_mudados_7d": 1924,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -189,7 +189,7 @@
    },
    {
     "pasta": "RELATORIO_CI.md",
-    "mudancas": 69
+    "mudancas": 68
    },
    {
     "pasta": "src/pages/products",
@@ -199,7 +199,7 @@
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "RELATORIO_CI.md",
-    "mudancas": 69
+    "mudancas": 68
    },
    {
     "arquivo": "supabase/MIGRATIONS_SYNC_LOG.md",
@@ -207,7 +207,7 @@
    },
    {
     "arquivo": "PENDENCIAS.md",
-    "mudancas": 58
+    "mudancas": 57
    },
    {
     "arquivo": "package.json",
@@ -278,10 +278,6 @@
     "mudancas": 8
    },
    {
-    "arquivo": "docs/plans/PLANO_MELHORIAS_CORRECOES_200_ETAPAS_2026-10-18.md",
-    "mudancas": 8
-   },
-   {
     "arquivo": "e2e/flows/magazine-preview-sticky-smoke.spec.ts",
     "mudancas": 8
    },
@@ -296,6 +292,10 @@
    {
     "arquivo": "src/hooks/kit-builder/useKitAutoSave.ts",
     "mudancas": 8
+   },
+   {
+    "arquivo": ".github/workflows/db-schema-drift-check.yml",
+    "mudancas": 7
    }
   ],
   "autores_30d": [
@@ -322,7 +322,7 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 10811,
+  "arquivos_total": 10812,
   "arquivos_codigo": 5354,
   "linhas_codigo": 1019802,
   "rotas": 138,
@@ -339,7 +339,7 @@
   "testes": 2535,
   "workflows": 87,
   "scripts": 283,
-  "docs_md": 1463
+  "docs_md": 1464
  },
  "por_pasta": {
   ".github/scripts": {

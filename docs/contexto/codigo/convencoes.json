@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "docs(audit): restaura o pós-mortem dos 29 commits presos fora do GitHub (#3741)",
+   "docs(audit): retira um achado que eu registrei errado e fecha o placar de 17/11 (#3739)",
    "fix(quotes): erro ao salvar o rascunho do orçamento ficava invisível para o vendedor (#3732)",
    "test(mockup): resgata o contrato do handler REAL do generate-mockup (#3737)",
-   "docs(audit): resgata as regras de negócio que só existiam em 2 branches, reconferidas no código (#3738)",
-   "docs(audit): o plano C3 mandava apagar secret_value sem avisar que a edge lê essa coluna (#3736)",
-   "fix(trust): resgata o contrato de \"dispositivo confiável\" e tapa o furo que ele achou (#3735)"
+   "docs(audit): resgata as regras de negócio que só existiam em 2 branches, reconferidas no código (#3738)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",

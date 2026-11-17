@@ -5,7 +5,7 @@
   "linguagens": [
    "TypeScript (4890)",
    "SQL (3431)",
-   "Markdown (1463)",
+   "Markdown (1464)",
    "JavaScript (456)",
    "JSON (132)",
    "YAML (115)",
@@ -4193,7 +4193,7 @@
  "docs_em_subpastas": [
   {
    "pasta": "docs/arquivo",
-   "arquivos_md": 90
+   "arquivos_md": 91
   },
   {
    "pasta": "docs/redeploy",
