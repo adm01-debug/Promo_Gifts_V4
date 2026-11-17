@@ -1,4 +1,12 @@
-import { chmodSync, mkdtempSync, mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
+import {
+  chmodSync,
+  mkdtempSync,
+  mkdirSync,
+  readFileSync,
+  readdirSync,
+  rmSync,
+  writeFileSync,
+} from 'node:fs';
 import { spawnSync } from 'node:child_process';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
@@ -10,7 +18,14 @@ const ROOT = process.cwd();
 const EVENT_SCRIPT = join(ROOT, 'scripts/check-event-triggers-drift.mjs');
 const CRON_SCRIPT = join(ROOT, 'scripts/check-cron-drift.mjs');
 const EVENT_SNAPSHOT = join(ROOT, 'supabase/baseline/20261108000000_event_triggers.json');
-const CRON_SNAPSHOT = join(ROOT, 'supabase/baseline/20261108000000_cron_jobs.json');
+const BASELINE_DIR = join(ROOT, 'supabase/baseline');
+const CRON_SNAPSHOT = join(
+  BASELINE_DIR,
+  readdirSync(BASELINE_DIR)
+    .filter((file) => /^\d{14}_cron_jobs\.json$/.test(file))
+    .sort()
+    .at(-1),
+);
 const DRIFT_WORKFLOW = join(ROOT, '.github/workflows/db-schema-drift-check.yml');
 const DEPLOY_WORKFLOW = join(ROOT, '.github/workflows/deploy-gates.yml');
 const tempDirs = [];
