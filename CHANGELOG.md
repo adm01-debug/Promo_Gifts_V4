@@ -5,6 +5,14 @@ Todas as mudanças notáveis deste projeto são documentadas neste arquivo.
 O formato é baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/),
 e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR/).
 
+## [1.9.1](https://github.com/adm01-debug/Promo_Gifts_V4/compare/gifts-store-v1.9.0...gifts-store-v1.9.1) (2026-11-17)
+
+
+### Bug Fixes
+
+* **deps:** override basic-ftp para ^6.2.4 e fecha o GHSA-5pm8-86m8-9m6r ([#3774](https://github.com/adm01-debug/Promo_Gifts_V4/issues/3774)) ([cfe603d](https://github.com/adm01-debug/Promo_Gifts_V4/commit/cfe603d51f69e9c88c17958b82d32184ea55c7ee))
+* **test:** acompanha o snapshot de cron vigente em vez de fixar o de 08/11 ([#3773](https://github.com/adm01-debug/Promo_Gifts_V4/issues/3773)) ([c2629ac](https://github.com/adm01-debug/Promo_Gifts_V4/commit/c2629acd3dff99a29d56452579461d1509cef6b2))
+
 ## [1.9.0](https://github.com/adm01-debug/Promo_Gifts_V4/compare/gifts-store-v1.8.1...gifts-store-v1.9.0) (2026-11-17)
 
 
