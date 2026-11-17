@@ -820,10 +820,26 @@ jobs:
           path: dist/
           format: spdx-json
       - name: Attest build provenance (E99)
+        id: attest-provenance
         if: needs.changes.outputs.docs_only != 'true' && github.event_name == 'push' && github.ref == 'refs/heads/main'
+        # Sigstore/Rekor fora do ar nao deve derrubar o deploy: nada no repo consome
+        # esta attestation (so e gerada). continue-on-error e por STEP, nao por job.
+        continue-on-error: true
         uses: actions/attest-build-provenance@4d101475d8b20a2381f78447822ac1eab6504dd8 # v4
         with:
           subject-path: 'dist/**/*.js'
+
+      - name: Aviso - build sem attestation de proveniencia (E99)
+        if: steps.attest-provenance.outcome == 'failure'
+        run: |
+          echo "::warning title=Proveniencia ausente::Sigstore/Rekor falhou - o dist de ${{ github.sha }} ficou SEM attestation. O gate seguiu verde por continue-on-error."
+          {
+            echo "## Build provenance ausente (E99)"
+            echo ""
+            echo "Sigstore/Rekor indisponivel neste run: o \`dist\` do commit \`${{ github.sha }}\` foi publicado SEM attestation de proveniencia."
+            echo ""
+            echo "Nada no repositorio verifica esta assinatura hoje, por isso o gate nao bloqueia. Se a falha persistir em varios runs, investigue antes de passar a depender dela."
+          } >> "$GITHUB_STEP_SUMMARY"
 
   # E040: verifica se arquivos de migration/baseline mudaram para acionar drift-check
   check-schema-paths:
