@@ -1,7 +1,7 @@
 {
   "version": 1,
   "pending_seed": false,
-  "generated_at": "2026-11-14T22:40:00.000Z",
+  "generated_at": "2026-11-17T07:10:00Z",
   "project_ref": "doufsxqlfjyuvxuezpln",
   "schemas_checked": [
     "public",
@@ -13,7 +13,7 @@
     "prod_audit",
     "supplier_stricker"
   ],
-  "sha256": "5fb895243ac4b067dddffcb398eaee9d24145d502013a90eae06ad033e3c2850",
+  "sha256": "a2b7b36bfe2f08f1b47dd4177e49a50be76dbc51a3002c191cb33ef8f328da4f",
   "policies": [
     {
       "schemaname": "cf_recon",
@@ -1621,16 +1621,6 @@
       "policyname": "csm_read_authenticated",
       "permissive": "PERMISSIVE",
       "roles": "{authenticated}",
-      "cmd": "SELECT",
-      "qual": "true",
-      "with_check": ""
-    },
-    {
-      "schemaname": "public",
-      "tablename": "color_synonym_map",
-      "policyname": "rls_anon_read_color_synonym_map",
-      "permissive": "PERMISSIVE",
-      "roles": "{anon}",
       "cmd": "SELECT",
       "qual": "true",
       "with_check": ""
