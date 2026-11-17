@@ -158,18 +158,35 @@ export function applyDraftToBuilder(draft: RecoveredQuoteDraft, s: QuoteDraftApp
   if (draft.paymentMethod) s.setPaymentMethod(draft.paymentMethod);
   if (draft.paymentTerms) s.setPaymentTerms(draft.paymentTerms);
 
-  if (draft.deliveryTime) {
-    if (draft.deliveryTime.startsWith('date:')) {
-      // handleDeliveryModeChange limpa deliveryTime/deliveryDate, então vem primeiro.
-      s.handleDeliveryModeChange('data');
-      const parsedDate = new Date(`${draft.deliveryTime.slice(5)}T12:00:00`);
-      if (Number.isFinite(parsedDate.getTime())) {
+  // O rascunho pode trazer o modo de entrega explícito (`deliveryMode`/`deliveryDate`) ou só
+  // `deliveryTime`. Os campos explícitos vêm do QuoteBuilderDraftRecovery escrito por outro
+  // agente em salvo/codex-fix-gate1-kit-pdf-types-261109-2252
+  // (src/components/quotes/QuoteBuilderDraftRecovery.tsx): aquele componente dependia de uma
+  // prop `onRestore` que o QuoteAutoSave da main não tem, mas a cobertura de campos dele é
+  // maior que a minha e fica preservada aqui.
+  const modoExplicito = draft.deliveryMode === 'data' || draft.deliveryMode === 'prazo';
+  if (modoExplicito || draft.deliveryTime) {
+    const porData = modoExplicito
+      ? draft.deliveryMode === 'data'
+      : Boolean(draft.deliveryTime?.startsWith('date:'));
+    // handleDeliveryModeChange limpa deliveryTime/deliveryDate, então vem primeiro.
+    s.handleDeliveryModeChange(porData ? 'data' : 'prazo');
+    if (porData) {
+      const iso =
+        draft.deliveryDate ??
+        (draft.deliveryTime?.startsWith('date:')
+          ? `${draft.deliveryTime.slice(5)}T12:00:00`
+          : null);
+      const parsedDate = iso ? new Date(iso) : null;
+      if (parsedDate && Number.isFinite(parsedDate.getTime())) {
         s.handleDeliveryDateChange(parsedDate);
       } else {
-        logger.warn('Data de entrega do rascunho inválida', { deliveryTime: draft.deliveryTime });
+        logger.warn('Data de entrega do rascunho inválida', {
+          deliveryTime: draft.deliveryTime,
+          deliveryDate: draft.deliveryDate,
+        });
       }
-    } else {
-      s.handleDeliveryModeChange('prazo');
+    } else if (draft.deliveryTime) {
       s.setDeliveryTime(draft.deliveryTime);
     }
   }
@@ -179,8 +196,12 @@ export function applyDraftToBuilder(draft: RecoveredQuoteDraft, s: QuoteDraftApp
 
   if (draft.validUntil) {
     s.setValidUntil(draft.validUntil);
-    // QBP-12: manter o Select de validade em sincronia com a data restaurada.
-    s.setValidityDays(syncValidityDaysFromDate(draft.validUntil));
+    // QBP-12: manter o Select de validade em sincronia com a data restaurada. Se o rascunho
+    // trouxe o `validityDays` que o vendedor escolheu (campo que o QuoteBuilderDraftRecovery
+    // citado acima já gravava), respeita a escolha em vez de deduzir da data.
+    s.setValidityDays(draft.validityDays || syncValidityDaysFromDate(draft.validUntil));
+  } else if (draft.validityDays) {
+    s.setValidityDays(draft.validityDays);
   }
   if (draft.notes) s.setNotes(draft.notes);
 }

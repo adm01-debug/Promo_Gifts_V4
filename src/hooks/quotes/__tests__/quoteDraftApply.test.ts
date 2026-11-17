@@ -224,3 +224,65 @@ describe('discardStoredQuoteDraft', () => {
     expect(localStorage.getItem('quote_draft_outro')).toBe('{}');
   });
 });
+
+describe('applyDraftToBuilder — campos colhidos do QuoteBuilderDraftRecovery de outro agente', () => {
+  it('respeita deliveryMode explícito "prazo" mesmo sem prefixo date:', () => {
+    const { order, target } = makeTarget();
+    applyDraftToBuilder({ deliveryMode: 'prazo', deliveryTime: '20 dias' }, target);
+
+    expect(target.handleDeliveryModeChange).toHaveBeenCalledWith('prazo');
+    expect(target.setDeliveryTime).toHaveBeenCalledWith('20 dias');
+    expect(target.handleDeliveryDateChange).not.toHaveBeenCalled();
+    expect(order.indexOf('handleDeliveryModeChange')).toBeLessThan(order.indexOf('setDeliveryTime'));
+  });
+
+  it('respeita deliveryMode explícito "data" usando deliveryDate ISO', () => {
+    const { order, target } = makeTarget();
+    applyDraftToBuilder({ deliveryMode: 'data', deliveryDate: '2026-12-24T12:00:00.000Z' }, target);
+
+    expect(target.handleDeliveryModeChange).toHaveBeenCalledWith('data');
+    expect(target.handleDeliveryDateChange).toHaveBeenCalledTimes(1);
+    const [dataAplicada] = target.handleDeliveryDateChange.mock.calls[0];
+    expect(dataAplicada instanceof Date).toBe(true);
+    expect((dataAplicada as Date).toISOString()).toBe('2026-12-24T12:00:00.000Z');
+    expect(order.indexOf('handleDeliveryModeChange')).toBeLessThan(
+      order.indexOf('handleDeliveryDateChange'),
+    );
+  });
+
+  it('modo "data" sem data alguma não inventa data', () => {
+    const { target } = makeTarget();
+    applyDraftToBuilder({ deliveryMode: 'data' }, target);
+
+    expect(target.handleDeliveryModeChange).toHaveBeenCalledWith('data');
+    expect(target.handleDeliveryDateChange).not.toHaveBeenCalled();
+    expect(target.setDeliveryTime).not.toHaveBeenCalled();
+  });
+
+  it('deliveryDate explícito vence o prefixo date: do deliveryTime', () => {
+    const { target } = makeTarget();
+    applyDraftToBuilder(
+      { deliveryMode: 'data', deliveryTime: 'date:2026-01-01', deliveryDate: '2026-07-15T12:00:00.000Z' },
+      target,
+    );
+
+    const [dataAplicada] = target.handleDeliveryDateChange.mock.calls[0];
+    expect((dataAplicada as Date).toISOString()).toBe('2026-07-15T12:00:00.000Z');
+  });
+
+  it('usa o validityDays do rascunho em vez de deduzir da data', () => {
+    const { target } = makeTarget();
+    applyDraftToBuilder({ validUntil: '2026-12-01', validityDays: '45' }, target);
+
+    expect(target.setValidUntil).toHaveBeenCalledWith('2026-12-01');
+    expect(target.setValidityDays).toHaveBeenCalledWith('45');
+  });
+
+  it('aplica validityDays mesmo sem validUntil', () => {
+    const { target } = makeTarget();
+    applyDraftToBuilder({ validityDays: '15' }, target);
+
+    expect(target.setValidityDays).toHaveBeenCalledWith('15');
+    expect(target.setValidUntil).not.toHaveBeenCalled();
+  });
+});
