@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
-import monitoringHandler, { resolveUpstream } from '../../api/monitoring';
+import monitoringHandler, { config, readEnvelope, resolveUpstream } from '../../api/monitoring';
 
 interface MockResponse {
   headers: Record<string, string>;
@@ -106,6 +106,86 @@ describe('api/monitoring — túnel de envelopes', () => {
 
     expect(res.statusCode).toBe(502);
     expect(res.body).toEqual({ error: 'ingest_indisponivel' });
+  });
+
+  describe('corpo bruto — não pode ficar pendurado no parser da Vercel', () => {
+    it('desliga o bodyParser (sem isto o stream chega drenado e o túnel engole tudo)', () => {
+      expect(config).toEqual({ api: { bodyParser: false } });
+    });
+
+    it('usa req.body quando algum runtime já consumiu o stream (Buffer)', async () => {
+      const drenado = {
+        method: 'POST',
+        headers: {},
+        complete: true,
+        body: new TextEncoder().encode(ENVELOPE),
+        on() {
+          throw new Error('não deve tentar ler o stream já consumido');
+        },
+      };
+      const lido = await readEnvelope(drenado);
+      expect(new TextDecoder().decode(lido!)).toBe(ENVELOPE);
+    });
+
+    it('usa req.body quando ele chega como string', async () => {
+      const lido = await readEnvelope({
+        method: 'POST',
+        headers: {},
+        complete: true,
+        body: ENVELOPE,
+        on() {},
+      });
+      expect(new TextDecoder().decode(lido!)).toBe(ENVELOPE);
+    });
+
+    it('stream drenado e sem corpo devolve null em vez de esperar evento que não vem', async () => {
+      const lido = await readEnvelope({ method: 'POST', headers: {}, complete: true, on() {} });
+      expect(lido).toBeNull();
+    });
+
+    it('handler responde 400 em envelope vazio, sem chamar a ingestão', async () => {
+      const fetchSpy = vi.spyOn(globalThis, 'fetch');
+      const res = responseMock();
+
+      await monitoringHandler({ method: 'POST', headers: {}, complete: true, on() {} }, res);
+
+      expect(fetchSpy).not.toHaveBeenCalled();
+      expect(res.statusCode).toBe(400);
+      expect(res.body).toEqual({ error: 'envelope_vazio' });
+    });
+  });
+
+  describe('limite de ingestão — o SDK precisa do status e dos headers', () => {
+    it('repassa 429 com Retry-After e X-Sentry-Rate-Limits', async () => {
+      vi.spyOn(globalThis, 'fetch').mockResolvedValue(
+        new Response(null, {
+          status: 429,
+          headers: { 'Retry-After': '60', 'X-Sentry-Rate-Limits': '60:error:organization' },
+        }),
+      );
+      const res = responseMock();
+
+      await monitoringHandler(requestMock(ENVELOPE), res);
+
+      expect(res.statusCode).toBe(429);
+      expect(res.headers['retry-after']).toBe('60');
+      expect(res.headers['x-sentry-rate-limits']).toBe('60:error:organization');
+    });
+
+    it('repassa limite por categoria que vem junto com 200', async () => {
+      vi.spyOn(globalThis, 'fetch').mockResolvedValue(
+        new Response(null, {
+          status: 200,
+          headers: { 'X-Sentry-Rate-Limits': '30:replay:organization' },
+        }),
+      );
+      const res = responseMock();
+
+      await monitoringHandler(requestMock(ENVELOPE), res);
+
+      expect(res.statusCode).toBe(200);
+      expect(res.headers['x-sentry-rate-limits']).toBe('30:replay:organization');
+    });
   });
 
   describe('resolveUpstream — fecha fechado', () => {

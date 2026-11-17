@@ -21,9 +21,25 @@ const ALLOWED_HOSTS = ['erros.atomicabr.com.br'];
 /** Envelope maior que isto é recusado (replay de sessão grande, body hostil). */
 const MAX_BODY_BYTES = 20 * 1024 * 1024;
 
+/**
+ * GUARD: o parser de corpo da Vercel bufferiza a requisição ANTES de chamar o
+ * handler; se ele rodasse, `on('data')` nunca mais dispararia e a promessa de
+ * leitura ficaria pendurada até o timeout da função — o túnel engoliria todo
+ * envelope em silêncio. Desligar o parser é o padrão documentado pela Vercel
+ * para quem precisa do corpo bruto (ver docs de x-vercel-signature e de Drains).
+ * `readEnvelope` ainda tem o caminho alternativo, caso algum runtime ignore isto.
+ */
+export const config = { api: { bodyParser: false } };
+
+/** Headers que o transporte do SDK usa para pausar envio por categoria. */
+const RATE_LIMIT_HEADERS = ['retry-after', 'x-sentry-rate-limits'];
+
 interface TunnelRequest {
   method?: string;
   headers: Record<string, string | string[] | undefined>;
+  /** `true` quando o stream já foi lido até o fim (parser externo, por ex.). */
+  complete?: boolean;
+  body?: unknown;
   on(event: string, listener: (arg?: unknown) => void): void;
 }
 
@@ -59,6 +75,28 @@ function readRawBody(req: TunnelRequest): Promise<Uint8Array> {
     });
     req.on('error', (err) => reject(err instanceof Error ? err : new Error(String(err))));
   });
+}
+
+/**
+ * Entrega o envelope bruto sem nunca ficar pendurada.
+ *
+ * Caminho normal (bodyParser desligado): lê o stream.
+ * Caminho alternativo: se algo já consumiu o stream, usa o que deixou em
+ * `req.body`; e se o stream acabou sem corpo nenhum, devolve `null` em vez de
+ * esperar um evento que não vem mais.
+ *
+ * `ArrayBuffer.isView` em vez de `instanceof Uint8Array`: aceita `Buffer` (o que
+ * a Vercel entrega) sem depender dos tipos do Node e não quebra quando o valor
+ * vem de outro realm, onde `instanceof` dá falso e o corpo seria descartado.
+ */
+export async function readEnvelope(req: TunnelRequest): Promise<Uint8Array | null> {
+  const prelido = req.body;
+  if (ArrayBuffer.isView(prelido)) {
+    return new Uint8Array(prelido.buffer, prelido.byteOffset, prelido.byteLength);
+  }
+  if (typeof prelido === 'string') return new TextEncoder().encode(prelido);
+  if (req.complete === true) return null;
+  return readRawBody(req);
 }
 
 /**
@@ -98,12 +136,16 @@ export default async function handler(req: TunnelRequest, res: TunnelResponse): 
     return;
   }
 
-  let body: Uint8Array;
+  let body: Uint8Array | null;
   try {
-    body = await readRawBody(req);
+    body = await readEnvelope(req);
   } catch (err) {
     const tooLarge = err instanceof Error && err.message === 'envelope_too_large';
     res.status(tooLarge ? 413 : 400).json({ error: tooLarge ? 'envelope_too_large' : 'bad_request' });
+    return;
+  }
+  if (!body || body.byteLength === 0) {
+    res.status(400).json({ error: 'envelope_vazio' });
     return;
   }
 
@@ -121,8 +163,16 @@ export default async function handler(req: TunnelRequest, res: TunnelResponse): 
       headers: { 'Content-Type': 'application/x-sentry-envelope' },
       body,
     });
-    // O SDK só precisa saber se foi aceito; o corpo da ingestão não interessa.
-    res.status(forwarded.ok ? 200 : 502).json({ ok: forwarded.ok, upstreamStatus: forwarded.status });
+    // GUARD: devolver o status original e os headers de limite. O transporte do
+    // SDK decide pausar categoria por `429`/`Retry-After`/`X-Sentry-Rate-Limits`
+    // — que também vêm em resposta 2xx. Traduzir tudo para 200/502 apagava essa
+    // instrução e o navegador seguiria enviando durante a limitação, queimando
+    // invocação de função e saturando a ingestão.
+    for (const nome of RATE_LIMIT_HEADERS) {
+      const valor = forwarded.headers.get(nome);
+      if (valor) res.setHeader(nome, valor);
+    }
+    res.status(forwarded.status).json({ ok: forwarded.ok });
   } catch {
     res.status(502).json({ error: 'ingest_indisponivel' });
   }
