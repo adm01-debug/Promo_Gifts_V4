@@ -338,6 +338,43 @@ Dos 14 testes inéditos dela, **11 são descartáveis** (testam código que a `m
   `suppliers.active` é `boolean` **nullable** com default `true` (conferido em
   `information_schema.columns`). Um fornecedor com `active = null` faz `isVerified` virar `null` e
   vazar para a tela em vez de "não verificado". **Latente hoje:** 5 fornecedores, 0 com `null`.
-- **`src/components/common/IntelligenceBadges.tsx:97-98`** — `const config = badgeConfig[badge.type];
-  const Icon = config.icon;` sem fallback. Um selo com `type` fora das 9 chaves derruba a tela com
-  `TypeError`. Nenhum teste da `main` cobre isso.
+- ~~`src/components/common/IntelligenceBadges.tsx:97-98` — indexa `badgeConfig` sem fallback~~
+  **RETIRADO em 17/11, depois de reverificar.** O acesso existe (`const config =
+  badgeConfig[badge.type]; const Icon = config.icon;`), mas **não é alcançável**: os dois
+  consumidores de produção — `src/components/products/ProductCard.tsx:166` e
+  `src/pages/products/product-detail/ProductDetailHero.tsx:114` — recebem os selos do próprio
+  `useProductIntelligenceBadges`, que os constrói com tipo literal (`type: 'featured'`,
+  `'new-arrival'`, …) sobre o union fechado `BadgeType` de
+  `src/hooks/products/useProductIntelligenceBadges.ts:23-32`. Nenhum caminho passa string livre do
+  banco. É robustez teórica, não defeito — só chegaria lá um chamador que burlasse o tipo. Fica
+  registrado para o próximo agente não gastar tempo nisso.
+
+## Fechamentos da segunda leva de 17/11 — 12 branches
+
+Total da sessão: **59 branches fechadas com prova**. Refs de preservação no remoto:
+`salvo/261117-adjudicadas-10` (10 pais) e `salvo/261117-regras-negocio-2` (2 pais). Cada mensagem
+de commit do `salvo/*` carrega o veredito por branch com a evidência.
+
+**Resgatado antes de fechar** (nada foi apagado antes de o conteúdo estar na `main`):
+
+| de onde | o que | onde está |
+|---|---|---|
+| `codex/fix-gate1-kit-pdf-types` | contrato de "dispositivo confiável" + o furo do `active` nulo | #3735 |
+| `codex/fix-gate1-kit-pdf-types` | 4 documentos de operação e auditoria da fábrica | #3731 |
+| `claude_pink/peaceful-planck` | aviso de ordem antes do `DROP COLUMN secret_value` | #3736 |
+| `youthful-ride` + `sleepy-cannon` | as regras de negócio que a `main` não tinha, reconferidas | #3738 |
+| `importado/vps-fabrica/v2/n28` | harness do handler **real** do `generate-mockup` | #3737 |
+
+**Fechadas sem resgate, com o motivo provado:** as 5 fatias de mockup da fábrica (`s36`, `s44`,
+`s51`, `s75`, `fix-remover-atalhos`) — em três delas o que parecia melhoria é o que a `main`
+**rejeitou de propósito**, registrado em `supabase/functions/generate-mockup/limits.ts:8-12` e
+`supabase/functions/generate-mockup/geometry.ts:13-18`; e 5 sessões de triagem de PR
+(`optimistic-bohr`, `optimistic-lovelace`, `serene-clarke`, `lucid-franklin`, `peaceful-planck`),
+cujo trabalho próprio é dossiê de PR já encerrada e planilha de controle sobrescrita por rodada
+posterior.
+
+**Uma branch que nunca deve ser mergeada, só lida:** `claude_05/youthful-ride-vcdchy` apagava
+`src/components/layout/UserMenuShortcutItems.tsx`, que a `main` importa em
+`src/components/layout/Header.tsx:50` e usa em `:533`, além dos dois arquivos de rollback exigidos
+por `docs/agentes/banco-migrations.md`. Abrir PR dela pararia o build. O tip fica em
+`salvo/261117-regras-negocio-2`.
