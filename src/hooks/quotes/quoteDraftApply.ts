@@ -50,44 +50,65 @@ function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === 'object' && value !== null && !Array.isArray(value);
 }
 
+/** Por que um rascunho existente não pôde ser lido. */
+export type MotivoIlegivel =
+  'data-invalida' | 'envelope-invalido' | 'fora-de-forma' | 'inacessivel' | 'json-invalido';
+
+export type EstadoRascunho =
+  | { estado: 'ausente' }
+  | { estado: 'ilegivel'; motivo: MotivoIlegivel }
+  | { estado: 'ok'; draft: StoredQuoteDraft };
+
 /**
- * Lê e valida o rascunho de `storageKey`. Devolve null quando não existe, quando
- * o envelope está corrompido ou quando o conteúdo não passa pelo schema — nunca
- * lança, e nunca apaga nada: descartar é decisão do usuário, não do leitor.
+ * Inspeciona o rascunho de `storageKey` e diz em que estado ele está. Nunca lança
+ * e nunca apaga nada: descartar é decisão do usuário, não do leitor.
+ *
+ * Distinguir "ausente" de "ilegível" não é preciosismo. O
+ * tests/components/QuoteAutoSave.recovery.test.tsx escrito por outro agente
+ * (branch salvo/codex-fix-gate1-kit-pdf-types-261109-2252) especifica
+ * "keeps a rejected snapshot available and displays the real error": um rascunho
+ * que existe mas não pode ser lido tem de ser DITO ao vendedor, não só logado —
+ * senão ele acha que não havia nada para recuperar.
  */
-export function readStoredQuoteDraft(storageKey: string): StoredQuoteDraft | null {
+export function inspectStoredQuoteDraft(storageKey: string): EstadoRascunho {
   let raw: string | null = null;
   try {
     raw = localStorage.getItem(storageKey);
   } catch (err) {
     logger.warn('Rascunho local inacessível', err);
-    return null;
+    return { estado: 'ilegivel', motivo: 'inacessivel' };
   }
-  if (!raw) return null;
+  if (!raw) return { estado: 'ausente' };
 
   let envelope: unknown;
   try {
     envelope = JSON.parse(raw);
   } catch {
-    logger.warn('Envelope de rascunho corrompido — recuperação não oferecida', { storageKey });
-    return null;
+    logger.warn('Envelope de rascunho corrompido', { storageKey });
+    return { estado: 'ilegivel', motivo: 'json-invalido' };
   }
-  if (!isRecord(envelope)) return null;
+  if (!isRecord(envelope)) return { estado: 'ilegivel', motivo: 'envelope-invalido' };
 
   const savedAtRaw = envelope.savedAt;
   const savedAt = typeof savedAtRaw === 'string' ? new Date(savedAtRaw).getTime() : NaN;
-  if (!Number.isFinite(savedAt)) return null;
+  if (!Number.isFinite(savedAt)) return { estado: 'ilegivel', motivo: 'data-invalida' };
 
   const parsed = quoteDraftRecoverySchema.safeParse(envelope.data);
   if (!parsed.success) {
-    logger.warn('Rascunho local fora de forma — recuperação não oferecida', {
+    logger.warn('Rascunho local fora de forma', {
       storageKey,
       issues: parsed.error.issues.slice(0, 5).map((i) => ({ path: i.path.join('.'), code: i.code })),
     });
-    return null;
+    return { estado: 'ilegivel', motivo: 'fora-de-forma' };
   }
 
-  return { savedAt, data: parsed.data };
+  return { estado: 'ok', draft: { savedAt, data: parsed.data } };
+}
+
+/** Atalho para quem só quer o rascunho legível. */
+export function readStoredQuoteDraft(storageKey: string): StoredQuoteDraft | null {
+  const resultado = inspectStoredQuoteDraft(storageKey);
+  return resultado.estado === 'ok' ? resultado.draft : null;
 }
 
 /** Normaliza para os defaults do builder ('' e 0) para que nulo e vazio não contem como diferença. */

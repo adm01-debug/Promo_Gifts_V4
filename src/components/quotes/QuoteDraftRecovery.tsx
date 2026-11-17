@@ -7,13 +7,24 @@
  * alterações não salvas de um orçamento existente ficavam no localStorage,
  * invisíveis, até cleanOldQuoteDrafts apagá-las 7 dias depois.
  *
- * Decisões de comportamento:
- * - nunca restaura sozinho: sobrescrever dado do servidor sem perguntar é pior
- *   que não recuperar. O usuário decide;
+ * O contrato aqui vem do tests/components/QuoteAutoSave.recovery.test.tsx escrito
+ * por outro agente na branch salvo/codex-fix-gate1-kit-pdf-types-261109-2252.
+ * Aquele arquivo especifica a feature para um QuoteAutoSave que tinha botão
+ * "Restaurar rascunho" embutido — UI que a main nunca teve. A especificação dele
+ * é honrada aqui:
+ * - "does not restore automatically": nunca restaura sozinho. Sobrescrever dado
+ *   do servidor sem perguntar é pior que não recuperar;
+ * - "keeps a rejected snapshot available and displays the real error": rascunho
+ *   que existe mas não pode ser lido é DITO ao vendedor e NÃO é apagado;
+ * - "invokes an asynchronous recovery once even with duplicate clicks": clique
+ *   duplo em Restaurar aplica uma única vez;
+ * - "reads each quote independently": a chave é por quoteId e a checagem roda uma
+ *   vez por quoteId.
+ *
+ * Mais duas decisões próprias:
  * - só oferece rascunho gravado ANTES desta montagem (o que esta sessão grava
  *   agora não é recuperação);
- * - só oferece se o rascunho diferir do que está na tela (não incomoda à toa);
- * - "Agora não" fecha sem apagar nada; só "Descartar" remove de verdade.
+ * - "Agora não" fecha sem apagar; só "Descartar" remove, e aí remove o histórico.
  */
 import { useEffect, useRef, useState } from 'react';
 import { toast } from 'sonner';
@@ -34,8 +45,9 @@ import {
   applyDraftToBuilder,
   discardStoredQuoteDraft,
   draftDiffersFromCurrent,
+  inspectStoredQuoteDraft,
   quoteDraftKey,
-  readStoredQuoteDraft,
+  type MotivoIlegivel,
   type QuoteDraftApplyTarget,
   type QuoteDraftSnapshot,
   type StoredQuoteDraft,
@@ -45,13 +57,25 @@ interface QuoteDraftRecoveryProps {
   s: QuoteDraftApplyTarget & QuoteDraftSnapshot & { quoteId?: string; isEditMode: boolean };
 }
 
+type Oferta =
+  { tipo: 'ilegivel'; motivo: MotivoIlegivel } | { tipo: 'rascunho'; draft: StoredQuoteDraft };
+
+const TEXTO_ILEGIVEL: Record<MotivoIlegivel, string> = {
+  inacessivel: 'o navegador bloqueou o acesso ao armazenamento local',
+  'json-invalido': 'o arquivo do rascunho está corrompido',
+  'envelope-invalido': 'o arquivo do rascunho está em formato desconhecido',
+  'data-invalida': 'o rascunho não tem data de gravação válida',
+  'fora-de-forma': 'o rascunho tem campos incompatíveis com esta versão do sistema',
+};
+
 export function QuoteDraftRecovery({ s }: QuoteDraftRecoveryProps) {
   // `s` muda de identidade a cada render; o efeito só depende de quoteId/isEditMode.
   const sRef = useRef(s);
   sRef.current = s;
   const mountedAtRef = useRef(Date.now());
   const checkedForRef = useRef<string | null>(null);
-  const [draft, setDraft] = useState<StoredQuoteDraft | null>(null);
+  const restaurandoRef = useRef(false);
+  const [oferta, setOferta] = useState<Oferta | null>(null);
 
   const { isEditMode, quoteId } = s;
 
@@ -60,18 +84,26 @@ export function QuoteDraftRecovery({ s }: QuoteDraftRecoveryProps) {
     if (checkedForRef.current === quoteId) return;
     checkedForRef.current = quoteId;
 
-    const stored = readStoredQuoteDraft(quoteDraftKey(quoteId));
-    if (!stored) return;
-    if (stored.savedAt >= mountedAtRef.current) return;
-    if (!draftDiffersFromCurrent(stored.data, sRef.current)) return;
-    setDraft(stored);
+    const resultado = inspectStoredQuoteDraft(quoteDraftKey(quoteId));
+    if (resultado.estado === 'ausente') return;
+    if (resultado.estado === 'ilegivel') {
+      setOferta({ tipo: 'ilegivel', motivo: resultado.motivo });
+      return;
+    }
+    const { draft } = resultado;
+    if (draft.savedAt >= mountedAtRef.current) return;
+    if (!draftDiffersFromCurrent(draft.data, sRef.current)) return;
+    setOferta({ tipo: 'rascunho', draft });
   }, [isEditMode, quoteId]);
 
-  if (!draft || !quoteId) return null;
+  if (!oferta || !quoteId) return null;
 
   const handleRestore = () => {
-    applyDraftToBuilder(draft.data, sRef.current);
-    setDraft(null);
+    // Idempotência: aplicar duas vezes duplicaria itens do orçamento.
+    if (restaurandoRef.current || oferta.tipo !== 'rascunho') return;
+    restaurandoRef.current = true;
+    applyDraftToBuilder(oferta.draft.data, sRef.current);
+    setOferta(null);
     toast.success('Rascunho restaurado', {
       description: 'As alterações voltaram para a tela. Salve o orçamento para gravá-las.',
     });
@@ -79,26 +111,43 @@ export function QuoteDraftRecovery({ s }: QuoteDraftRecoveryProps) {
 
   const handleDiscard = () => {
     discardStoredQuoteDraft(quoteDraftKey(quoteId));
-    setDraft(null);
+    setOferta(null);
     toast.info('Rascunho descartado');
   };
 
-  const savedAtLabel = format(new Date(draft.savedAt), "dd/MM 'às' HH:mm", { locale: ptBR });
+  const ilegivel = oferta.tipo === 'ilegivel';
+  const savedAtLabel = ilegivel
+    ? ''
+    : format(new Date(oferta.draft.savedAt), "dd/MM 'às' HH:mm", { locale: ptBR });
 
   return (
     <AlertDialog
       open
       onOpenChange={(open) => {
         // Fechar sem escolher preserva o rascunho: nada é apagado por desistência.
-        if (!open) setDraft(null);
+        if (!open) setOferta(null);
       }}
     >
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>Alterações não salvas deste orçamento</AlertDialogTitle>
+          <AlertDialogTitle>
+            {ilegivel
+              ? 'Há um rascunho deste orçamento que não pôde ser lido'
+              : 'Alterações não salvas deste orçamento'}
+          </AlertDialogTitle>
           <AlertDialogDescription>
-            Encontramos alterações feitas em {savedAtLabel} que não chegaram a ser salvas no
-            servidor. Quer trazê-las de volta para a tela?
+            {ilegivel ? (
+              <>
+                Existe um rascunho gravado para este orçamento, mas{' '}
+                {TEXTO_ILEGIVEL[oferta.motivo]}. Ele não foi apagado: se precisar, a equipe técnica
+                ainda pode recuperá-lo.
+              </>
+            ) : (
+              <>
+                Encontramos alterações feitas em {savedAtLabel} que não chegaram a ser salvas no
+                servidor. Quer trazê-las de volta para a tela?
+              </>
+            )}
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
@@ -106,7 +155,9 @@ export function QuoteDraftRecovery({ s }: QuoteDraftRecoveryProps) {
             Descartar
           </Button>
           <AlertDialogCancel>Agora não</AlertDialogCancel>
-          <AlertDialogAction onClick={handleRestore}>Restaurar alterações</AlertDialogAction>
+          {!ilegivel && (
+            <AlertDialogAction onClick={handleRestore}>Restaurar alterações</AlertDialogAction>
+          )}
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>

@@ -15,6 +15,7 @@ import {
   applyDraftToBuilder,
   discardStoredQuoteDraft,
   draftDiffersFromCurrent,
+  inspectStoredQuoteDraft,
   quoteDraftKey,
   readStoredQuoteDraft,
 } from '../quoteDraftApply';
@@ -284,5 +285,54 @@ describe('applyDraftToBuilder — campos colhidos do QuoteBuilderDraftRecovery d
 
     expect(target.setValidityDays).toHaveBeenCalledWith('15');
     expect(target.setValidUntil).not.toHaveBeenCalled();
+  });
+});
+
+describe('inspectStoredQuoteDraft — distingue ausente de ilegível', () => {
+  it('ausente quando não há nada gravado', () => {
+    expect(inspectStoredQuoteDraft(KEY)).toEqual({ estado: 'ausente' });
+  });
+
+  it('ilegível/json-invalido quando o arquivo não é JSON', () => {
+    localStorage.setItem(KEY, '{nao-e-json');
+    expect(inspectStoredQuoteDraft(KEY)).toEqual({ estado: 'ilegivel', motivo: 'json-invalido' });
+  });
+
+  it('ilegível/envelope-invalido quando o JSON não é objeto', () => {
+    localStorage.setItem(KEY, '"so-uma-string"');
+    expect(inspectStoredQuoteDraft(KEY)).toEqual({
+      estado: 'ilegivel',
+      motivo: 'envelope-invalido',
+    });
+  });
+
+  it('ilegível/data-invalida quando savedAt não é data', () => {
+    storeDraft({ notes: 'x' }, 'ontem');
+    expect(inspectStoredQuoteDraft(KEY)).toEqual({ estado: 'ilegivel', motivo: 'data-invalida' });
+  });
+
+  it('ilegível/fora-de-forma quando o conteúdo não passa pelo schema', () => {
+    storeDraft({ items: [{ product_id: 'p1' }] });
+    expect(inspectStoredQuoteDraft(KEY)).toEqual({ estado: 'ilegivel', motivo: 'fora-de-forma' });
+  });
+
+  it('ok com o rascunho quando está íntegro', () => {
+    storeDraft({ notes: 'oi' });
+    const r = inspectStoredQuoteDraft(KEY);
+    expect(r.estado).toBe('ok');
+    if (r.estado === 'ok') expect(r.draft.data.notes).toBe('oi');
+  });
+
+  it('nenhum estado ilegível apaga o rascunho — descartar é do usuário', () => {
+    localStorage.setItem(KEY, '{nao-e-json');
+    inspectStoredQuoteDraft(KEY);
+    expect(localStorage.getItem(KEY)).toBe('{nao-e-json');
+  });
+
+  it('readStoredQuoteDraft devolve null em qualquer estado que não seja ok', () => {
+    localStorage.setItem(KEY, '{nao-e-json');
+    expect(readStoredQuoteDraft(KEY)).toBeNull();
+    localStorage.clear();
+    expect(readStoredQuoteDraft(KEY)).toBeNull();
   });
 });
