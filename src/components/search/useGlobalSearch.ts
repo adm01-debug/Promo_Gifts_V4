@@ -4,6 +4,7 @@
 import { useEffect, useMemo, useRef, useState, useCallback } from 'react';
 import { useSearchStore } from '@/stores/useSearchStore';
 import { useOracleVoiceBridge } from '@/stores/oracleVoiceBridge';
+import { useVoiceFilterBridge } from '@/stores/voiceFilterBridge';
 import Fuse from 'fuse.js';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
@@ -184,8 +185,33 @@ export function useGlobalSearch() {
             );
           }
           break;
-        case 'search':
         case 'filter':
+          // Comando de FILTRO (distinto de 'search'): aplica os critérios ditados no
+          // FilterState do catálogo via ponte, em vez de colar categoria/cor/material
+          // numa busca textual e descartar preço, estoque, gênero e o resto.
+          if (action.data?.filters) {
+            const filtros = action.data.filters;
+            const termo = action.data?.query ?? '';
+            voiceTimersRef.current.add(
+              setTimeout(() => {
+                setVoiceOverlayOpen(false);
+                useVoiceFilterBridge.getState().requestFilters(filtros);
+                navigate(termo ? `/?search=${encodeURIComponent(termo)}` : '/');
+              }, 500),
+            );
+          } else if (action.data?.query) {
+            // 'filter' sem critérios estruturais: nada a filtrar, cai na busca textual.
+            const finalQuery = action.data.query;
+            voiceTimersRef.current.add(
+              setTimeout(() => {
+                setVoiceOverlayOpen(false);
+                setQuery(finalQuery);
+                setOpen(true);
+              }, 500),
+            );
+          }
+          break;
+        case 'search':
           if (action.data?.query || action.data?.filters) {
             const searchTerm = action.data?.query ?? '';
             const filterParts: string[] = [];
