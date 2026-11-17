@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "8ba1437531cc15f2ae3e920ccbae736969358f9e",
+  "commit": "bd18202a0ce8d2d8b427f8279435ad85365d1a03",
   "branch": "main",
-  "data_commit": "2026-11-16T22:36:15-03:00",
+  "data_commit": "2026-11-16T22:36:25-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "bd18202a",
+    "data": "2026-11-16",
+    "assunto": "test(mockup): resgata as 4 guardas que faltavam das fatias da fábrica VPS (#3730)"
+   },
    {
     "sha": "8ba14375",
     "data": "2026-11-16",
@@ -126,11 +131,6 @@
     "sha": "8a13c888",
     "data": "2026-11-16",
     "assunto": "chore(ci): destrava os recibos do ledger e o baseline do ratchet (#3699)"
-   },
-   {
-    "sha": "a36e24d9",
-    "data": "2026-11-16",
-    "assunto": "fix(ci): Gate 1.3 para de varrer analise-branches e destrava todo PR de código (#3701)"
    }
   ],
   "arquivos_mudados_7d": 1912,
@@ -157,7 +157,7 @@
    },
    {
     "pasta": "src/components/mockup",
-    "mudancas": 114
+    "mudancas": 116
    },
    {
     "pasta": "src/components/quotes",
@@ -189,21 +189,21 @@
    },
    {
     "pasta": "RELATORIO_CI.md",
-    "mudancas": 73
+    "mudancas": 72
    },
    {
-    "pasta": "PENDENCIAS.md",
+    "pasta": "src/pages/products",
     "mudancas": 64
    }
   ],
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "RELATORIO_CI.md",
-    "mudancas": 73
+    "mudancas": 72
    },
    {
     "arquivo": "PENDENCIAS.md",
-    "mudancas": 64
+    "mudancas": 63
    },
    {
     "arquivo": "supabase/MIGRATIONS_SYNC_LOG.md",
@@ -322,9 +322,9 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 10802,
-  "arquivos_codigo": 5349,
-  "linhas_codigo": 1019003,
+  "arquivos_total": 10804,
+  "arquivos_codigo": 5351,
+  "linhas_codigo": 1019215,
   "rotas": 138,
   "rotas_http_backend": 13,
   "vistas_por_id": 0,
@@ -336,7 +336,7 @@
   "tabelas": 527,
   "migrations": 3097,
   "cron_jobs": 122,
-  "testes": 2530,
+  "testes": 2532,
   "workflows": 87,
   "scripts": 283,
   "docs_md": 1459
@@ -1888,7 +1888,7 @@
   },
   "src/components": {
    "arquivos": 1390,
-   "linhas": 277134
+   "linhas": 277175
   },
   "src/config": {
    "arquivos": 1,
@@ -2039,8 +2039,8 @@
    "linhas": 141
   },
   "tests/components": {
-   "arquivos": 155,
-   "linhas": 34274
+   "arquivos": 156,
+   "linhas": 34315
   },
   "tests/config": {
    "arquivos": 6,
@@ -2063,8 +2063,8 @@
    "linhas": 165
   },
   "tests/edge-functions": {
-   "arquivos": 177,
-   "linhas": 13500
+   "arquivos": 178,
+   "linhas": 13630
   },
   "tests/fixtures": {
    "arquivos": 3,

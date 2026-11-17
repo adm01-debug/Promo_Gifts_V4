@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "8ba1437531cc15f2ae3e920ccbae736969358f9e",
+  "sha": "bd18202a0ce8d2d8b427f8279435ad85365d1a03",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-17 01:37 UTC",
-  "files_total": 10730,
-  "code_files": 8779,
-  "code_lines": 1238816
+  "generated_at": "2026-11-17 01:39 UTC",
+  "files_total": 10732,
+  "code_files": 8781,
+  "code_lines": 1239028
  },
  "version": "1.3.2",
- "facts_hash": "fc981e52f8a67199",
+ "facts_hash": "4f4dd25f1b3a4213",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -1111,8 +1111,8 @@
   "package_manager": "npm",
   "languages": {
    ".sql": 3431,
-   ".ts": 2985,
-   ".tsx": 1901,
+   ".ts": 2986,
+   ".tsx": 1902,
    ".mjs": 449,
    ".py": 13,
    ".js": 7
@@ -144782,7 +144782,7 @@
     "file": ".github/workflows/wraparound-monitor-report.yml"
    }
   ],
-  "components_count": 1650,
+  "components_count": 1651,
   "hooks": [
    {
     "name": "useCommandBar",
@@ -149370,7 +149370,7 @@
   {
    "module": "src/components",
    "files": 1390,
-   "lines": 277133,
+   "lines": 277174,
    "tables": [
     "admin_audit_log",
     "art_file_attachments",
@@ -151455,8 +151455,8 @@
   },
   {
    "module": "tests",
-   "files": 1045,
-   "lines": 160839,
+   "files": 1047,
+   "lines": 161010,
    "tables": [
     "bot_detection_log",
     "clients",
@@ -233445,6 +233445,14 @@
     "name": "Ctrl+D não baixa nem sequestra o atalho do navegador"
    },
    {
+    "file": "src/components/mockup/__tests__/KeyboardShortcuts.dead.test.tsx",
+    "name": "tecla %s não troca o passo do wizard nem previne o evento"
+   },
+   {
+    "file": "src/components/mockup/__tests__/KeyboardShortcuts.dead.test.tsx",
+    "name": "1-6 com Ctrl ou Cmd também não trocam o passo"
+   },
+   {
     "file": "src/components/mockup/__tests__/MockupBeforeAfter.a11y.test.tsx",
     "name": "MockupBeforeAfter — teclado e leitor de tela"
    },
@@ -270013,6 +270021,18 @@
     "name": "renders the group aria-label without runtime errors"
    },
    {
+    "file": "tests/components/mockup/MockupCatalogStates.a11y.test.tsx",
+    "name": "CatalogGridSkeleton — anúncio de carregamento"
+   },
+   {
+    "file": "tests/components/mockup/MockupCatalogStates.a11y.test.tsx",
+    "name": "expõe role=status com aria-busy e o texto para leitor de tela"
+   },
+   {
+    "file": "tests/components/mockup/MockupCatalogStates.a11y.test.tsx",
+    "name": "os blocos visuais ficam fora da árvore de acessibilidade"
+   },
+   {
     "file": "tests/components/mockup/MockupConfigPanel.single.test.tsx",
     "name": "MockupConfigPanel — montagem única das seções (A-3/M29)"
    },
@@ -278830,6 +278850,14 @@
    },
    {
     "file": "tests/edge-functions/integration/mockup-assistant.test.ts",
+    "name": "o 422 diz QUAL campo esta errado, em fields[] com path/code/message"
+   },
+   {
+    "file": "tests/edge-functions/integration/mockup-assistant.test.ts",
+    "name": "corpo vazio e 400 EMPTY_BODY; JSON quebrado e 400 INVALID_JSON — nunca 500"
+   },
+   {
+    "file": "tests/edge-functions/integration/mockup-assistant.test.ts",
     "name": "o cliente não escolhe modelo nem custo: model/max_tokens/system do corpo são ignorados"
    },
    {
@@ -279315,6 +279343,22 @@
    {
     "file": "tests/edge-functions/integration/rate-limit-check.test.ts",
     "name": "OPTIONS retorna CORS headers"
+   },
+   {
+    "file": "tests/edge-functions/integration/rate-limit-headers.test.ts",
+    "name": "applyRateLimit — contrato do 429"
+   },
+   {
+    "file": "tests/edge-functions/integration/rate-limit-headers.test.ts",
+    "name": "estourado: 429 com X-RateLimit-Limit, -Remaining, -Reset e Retry-After"
+   },
+   {
+    "file": "tests/edge-functions/integration/rate-limit-headers.test.ts",
+    "name": "estourado: o corpo diz quanto sobrou e quando libera, sem vazar identificador"
+   },
+   {
+    "file": "tests/edge-functions/integration/rate-limit-headers.test.ts",
+    "name": "dentro do limite: devolve null e deixa a edge seguir"
    },
    {
     "file": "tests/edge-functions/integration/receive-crm-callback.duplicates-and-dispatcher.test.ts",
@@ -442641,7 +442685,7 @@
   },
   "src/components/mockup/MockupCatalogStates.tsx": {
    "path": "src/components/mockup/MockupCatalogStates.tsx",
-   "lines": 73,
+   "lines": 88,
    "exports": [
     "const CATALOG_LOAD_ERROR_FALLBACK",
     "interface CatalogLoadErrorProps",
@@ -443095,7 +443139,7 @@
   },
   "src/components/mockup/__tests__/KeyboardShortcuts.dead.test.tsx": {
    "path": "src/components/mockup/__tests__/KeyboardShortcuts.dead.test.tsx",
-   "lines": 124,
+   "lines": 150,
    "is_test": true,
    "tests": [
     "KeyboardShortcutsHint (componente morto)",
@@ -443108,7 +443152,9 @@
     "atalhos destrutivos removidos (Esc, Ctrl+R, Ctrl+D) continuam fora",
     "Escape não reseta o formulário nem previne o evento",
     "Ctrl+R e Cmd+R não resetam e deixam o navegador agir",
-    "Ctrl+D não baixa nem sequestra o atalho do navegador"
+    "Ctrl+D não baixa nem sequestra o atalho do navegador",
+    "tecla %s não troca o passo do wizard nem previne o evento",
+    "1-6 com Ctrl ou Cmd também não trocam o passo"
    ]
   },
   "src/components/mockup/__tests__/MockupBeforeAfter.a11y.test.tsx": {
@@ -521002,6 +521048,17 @@
     "renders the group aria-label without runtime errors"
    ]
   },
+  "tests/components/mockup/MockupCatalogStates.a11y.test.tsx": {
+   "path": "tests/components/mockup/MockupCatalogStates.a11y.test.tsx",
+   "lines": 41,
+   "is_test": true,
+   "doc": "Acessibilidade dos estados do catálogo de produtos do mockup. `CatalogGridSkeleton` era uma grade de `div`s sem `role` nem `aria-busy`: quem usa leitor de tela não recebia aviso nenhum enquanto o catálogo carregava e não sabia se a busca estava em andamento ou se não achou nada. O diálogo ficava em …",
+   "tests": [
+    "CatalogGridSkeleton — anúncio de carregamento",
+    "expõe role=status com aria-busy e o texto para leitor de tela",
+    "os blocos visuais ficam fora da árvore de acessibilidade"
+   ]
+  },
   "tests/components/mockup/MockupConfigPanel.single.test.tsx": {
    "path": "tests/components/mockup/MockupConfigPanel.single.test.tsx",
    "lines": 154,
@@ -525579,7 +525636,7 @@
   },
   "tests/edge-functions/integration/mockup-assistant.test.ts": {
    "path": "tests/edge-functions/integration/mockup-assistant.test.ts",
-   "lines": 174,
+   "lines": 217,
    "is_test": true,
    "errors": [
     "Too Many Requests"
@@ -525597,6 +525654,8 @@
     "mockup-assistant — entrada, custo e CORS (handler real)",
     "aceita exatamente os limites de tamanho (2000 / 20 turnos / 200) e a IA recebe o pedido",
     "um acima do limite ou tipo errado é 422 VALIDATION_FAILED e não gasta IA",
+    "o 422 diz QUAL campo esta errado, em fields[] com path/code/message",
+    "corpo vazio e 400 EMPTY_BODY; JSON quebrado e 400 INVALID_JSON — nunca 500",
     "o cliente não escolhe modelo nem custo: model/max_tokens/system do corpo são ignorados",
     "método diferente de POST é 405 e não chega à IA",
     "CORS: origin permitido é refletido em 200, 401, 422, 429, 502 e no preflight; origin estranho nunca",
@@ -525813,6 +525872,32 @@
     "retorna 401 sem token",
     "CORS",
     "OPTIONS retorna CORS headers"
+   ]
+  },
+  "tests/edge-functions/integration/rate-limit-headers.test.ts": {
+   "path": "tests/edge-functions/integration/rate-limit-headers.test.ts",
+   "lines": 87,
+   "is_test": true,
+   "params": [
+    {
+     "name": "MAX_REQUESTS",
+     "value": "20"
+    },
+    {
+     "name": "JANELA_MS",
+     "value": "60"
+    }
+   ],
+   "rule_comments": [
+    "`X-RateLimit-Limit`, `-Remaining`, `-Reset` e `Retry-After`. São esses headers que",
+    "`git grep -ln \"X-RateLimit-Limit\" -- tests` não devolvia nada: nada impedia que fossem",
+    "O IP/identificador do chamador não pode voltar na resposta."
+   ],
+   "tests": [
+    "applyRateLimit — contrato do 429",
+    "estourado: 429 com X-RateLimit-Limit, -Remaining, -Reset e Retry-After",
+    "estourado: o corpo diz quanto sobrou e quando libera, sem vazar identificador",
+    "dentro do limite: devolve null e deixa a edge seguir"
    ]
   },
   "tests/edge-functions/integration/receive-crm-callback.duplicates-and-dispatcher.test.ts": {
@@ -540772,10 +540857,23 @@
   }
  },
  "git": {
-  "sha": "8ba1437531cc15f2ae3e920ccbae736969358f9e",
+  "sha": "bd18202a0ce8d2d8b427f8279435ad85365d1a03",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "bd18202",
+    "date": "2026-11-16",
+    "author": "adm01-debug",
+    "subject": "test(mockup): resgata as 4 guardas que faltavam das fatias da fábrica VPS (#3730)",
+    "files": [
+     "src/components/mockup/MockupCatalogStates.tsx",
+     "src/components/mockup/__tests__/KeyboardShortcuts.dead.test.tsx",
+     "tests/components/mockup/MockupCatalogStates.a11y.test.tsx",
+     "tests/edge-functions/integration/mockup-assistant.test.ts",
+     "tests/edge-functions/integration/rate-limit-headers.test.ts"
+    ]
+   },
    {
     "sha": "8ba1437",
     "date": "2026-11-16",
@@ -541346,13 +541444,6 @@
      "analise-branches/MANUAL-DE-CONTINUIDADE.md",
      "analise-branches/RELATORIO-BRANCHES-COMPLETO.md"
     ]
-   },
-   {
-    "sha": "2d1d7ca",
-    "date": "2026-11-16",
-    "author": "adm01-debug",
-    "subject": "Merge pull request #3689 from adm01-debug/claude/chore-dossies-branches-261116-0154",
-    "files": []
    }
   ],
   "hot_files": [
@@ -541389,6 +541480,26 @@
     2
    ],
    [
+    "src/components/mockup/MockupCatalogStates.tsx",
+    1
+   ],
+   [
+    "src/components/mockup/__tests__/KeyboardShortcuts.dead.test.tsx",
+    1
+   ],
+   [
+    "tests/components/mockup/MockupCatalogStates.a11y.test.tsx",
+    1
+   ],
+   [
+    "tests/edge-functions/integration/mockup-assistant.test.ts",
+    1
+   ],
+   [
+    "tests/edge-functions/integration/rate-limit-headers.test.ts",
+    1
+   ],
+   [
     "supabase/functions/generate-mockup/fetch-guard.cap.test.ts",
     1
    ],
@@ -541414,26 +541525,6 @@
    ],
    [
     "e2e/auth-debug-removal.spec.ts",
-    1
-   ],
-   [
-    "docs/agentes/resgates/2026-11-16-auditoria-branches.md",
-    1
-   ],
-   [
-    "scripts/drift-baseline.mjs",
-    1
-   ],
-   [
-    "supabase/baseline/20261108000000_cron_jobs.json",
-    1
-   ],
-   [
-    "supabase/baseline/20261116000000_cron_jobs.json",
-    1
-   ],
-   [
-    ".github/workflows/schema-snapshot-export.yml",
     1
    ]
   ]

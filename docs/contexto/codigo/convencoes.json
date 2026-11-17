@@ -23,7 +23,7 @@
    "src/services (10)"
   ],
   "testes": [
-   "tests/ (1031)",
+   "tests/ (1033)",
    "co-localizado (__tests__) (674)",
    "e2e/ (625)"
   ],
@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "test(mockup): resgata as 4 guardas que faltavam das fatias da fábrica VPS (#3730)",
    "fix(edge-fn): mockup baixava a imagem inteira na memória antes de recusar (#3729)",
    "test(e2e): três specs que davam falso verde ou vermelho garantido (#3728)",
    "test(security): guarda de dado interno na tela de login nunca podia passar no CI (#3727)",
-   "docs(audit): laudo da auditoria das 82 branches antes de fechar (#3724)",
-   "fix(ci): destrava o Gate E40, que reprova toda PR com migration desde 15/11 (#3721)"
+   "docs(audit): laudo da auditoria das 82 branches antes de fechar (#3724)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",
