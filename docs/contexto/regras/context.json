@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "7d4212ead74b8814b9e5548cb0548c407db06de1",
+  "sha": "97bfe1833db436f0a8372c0748d3d0321eafeea6",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-18 17:22 UTC",
-  "files_total": 10856,
-  "code_files": 8884,
-  "code_lines": 1259462
+  "generated_at": "2026-11-18 17:38 UTC",
+  "files_total": 10857,
+  "code_files": 8885,
+  "code_lines": 1259539
  },
  "version": "1.3.2",
- "facts_hash": "4803f8cc3179d866",
+ "facts_hash": "81db26d39d5a2c2f",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -1121,7 +1121,7 @@
   "languages": {
    ".sql": 3440,
    ".ts": 3031,
-   ".tsx": 1948,
+   ".tsx": 1949,
    ".mjs": 450,
    ".py": 15,
    ".js": 7
@@ -144985,7 +144985,7 @@
     "file": ".github/workflows/wraparound-monitor-report.yml"
    }
   ],
-  "components_count": 1682,
+  "components_count": 1683,
   "hooks": [
    {
     "name": "useQuoteComments",
@@ -149616,8 +149616,8 @@
   },
   {
    "module": "src/components",
-   "files": 1409,
-   "lines": 280094,
+   "files": 1410,
+   "lines": 280160,
    "tables": [
     "admin_audit_log",
     "art_file_attachments",
@@ -150474,7 +150474,7 @@
   {
    "module": "src/pages",
    "files": 366,
-   "lines": 84435,
+   "lines": 84446,
    "tables": [
     "ai_usage_events",
     "bot_detection_log",
@@ -204236,6 +204236,12 @@
     "kind": "compara"
    },
    {
+    "file": "src/components/kit-library/KitLibraryStats.tsx",
+    "field": "status",
+    "value": "ready",
+    "kind": "compara"
+   },
+   {
     "file": "src/components/layout/SidebarReorganized.tsx",
     "field": "status",
     "value": "pending",
@@ -209207,6 +209213,12 @@
     "file": "src/pages/kit-builder/KitLibraryPage.tsx",
     "field": "status",
     "value": "draft",
+    "kind": "compara"
+   },
+   {
+    "file": "src/pages/kit-builder/KitLibraryPage.tsx",
+    "field": "status",
+    "value": "ready",
     "kind": "compara"
    },
    {
@@ -233754,6 +233766,26 @@
    {
     "file": "src/components/inventory/risk/__tests__/types.test.ts",
     "name": "returns ok when daysUntilFullStockout is undefined and product healthy"
+   },
+   {
+    "file": "src/components/kit-library/__tests__/KitLibraryStats.test.tsx",
+    "name": "KitLibraryStats"
+   },
+   {
+    "file": "src/components/kit-library/__tests__/KitLibraryStats.test.tsx",
+    "name": "conta kit terminado como Pronto — e não some com ele"
+   },
+   {
+    "file": "src/components/kit-library/__tests__/KitLibraryStats.test.tsx",
+    "name": "não existe mais card contando status que o app nunca grava"
+   },
+   {
+    "file": "src/components/kit-library/__tests__/KitLibraryStats.test.tsx",
+    "name": "total, rascunhos e favoritos seguem corretos"
+   },
+   {
+    "file": "src/components/kit-library/__tests__/KitLibraryStats.test.tsx",
+    "name": "lista vazia não quebra"
    },
    {
     "file": "src/components/kit-library/__tests__/kit-template-icons.test.ts",
@@ -350295,7 +350327,9 @@
       "escreve:api/ready.ts"
      ],
      "ready": [
+      "compara:src/components/kit-library/KitLibraryStats.tsx",
       "compara:src/lib/kit-builder/persistence.ts",
+      "compara:src/pages/kit-builder/KitLibraryPage.tsx",
       "escreve:api/ready.ts"
      ],
      "approved": [
@@ -399243,7 +399277,9 @@
     "kind": "status",
     "msg": "valor `ready` para `status` usado no código não existe em nenhum enum do banco/TS",
     "where": [
+     "compara:src/components/kit-library/KitLibraryStats.tsx",
      "compara:src/lib/kit-builder/persistence.ts",
+     "compara:src/pages/kit-builder/KitLibraryPage.tsx",
      "escreve:api/ready.ts"
     ]
    },
@@ -445392,7 +445428,7 @@
   },
   "src/components/kit-library/KitLibraryStats.tsx": {
    "path": "src/components/kit-library/KitLibraryStats.tsx",
-   "lines": 64,
+   "lines": 70,
    "exports": [
     "function KitLibraryStats"
    ],
@@ -445401,9 +445437,14 @@
      "field": "status",
      "value": "draft",
      "kind": "compara"
+    },
+    {
+     "field": "status",
+     "value": "ready",
+     "kind": "compara"
     }
    ],
-   "doc": "KitLibraryStats — cards de estatística da Biblioteca de Kits (KMM-075). \"Publicados\" usa o mesmo critério do filtro da página (status 'published' ou 'shared')."
+   "doc": "KitLibraryStats — cards de estatística da Biblioteca de Kits (KMM-075). O 4o card contava `['published', 'shared']`, status que o app NUNCA grava: `getPersistedKitStatus` (src/lib/kit-builder/persistence.ts:31) só devolve 'draft' ou 'ready'. Medido em 2026-11-18 em produção: custom_kits tem 21 'draf …"
   },
   "src/components/kit-library/KitTemplatePreviewDialog.tsx": {
    "path": "src/components/kit-library/KitTemplatePreviewDialog.tsx",
@@ -445428,6 +445469,26 @@
     "const KIT_TEMPLATE_ICONS",
     "const KIT_TEMPLATE_ICON_NAMES",
     "function getKitTemplateIcon"
+   ]
+  },
+  "src/components/kit-library/__tests__/KitLibraryStats.test.tsx": {
+   "path": "src/components/kit-library/__tests__/KitLibraryStats.test.tsx",
+   "lines": 60,
+   "is_test": true,
+   "doc": "Prova que os cards da Biblioteca de Kits contam o status que o app realmente grava. O card \"Publicados\" contava `['published', 'shared']` — status que `getPersistedKitStatus` (src/lib/kit-builder/persistence.ts:31) nunca produz — e por isso mostrava 0 mesmo com kits prontos na conta do vendedor.",
+   "calc_fns": [
+    {
+     "name": "valorDoCard",
+     "params": "label: string",
+     "body": "const rotulo = screen.getByText(label); const corpo = rotulo.parentElement; if (!corpo) throw new Error(`card \"${label}\" sem corpo`); const valor = corpo.querySelector('p.text-2xl'); if (!valor) throw new Error(`card \"${label}\" sem valor`); return valor.textContent ?? '';"
+    }
+   ],
+   "tests": [
+    "KitLibraryStats",
+    "conta kit terminado como Pronto — e não some com ele",
+    "não existe mais card contando status que o app nunca grava",
+    "total, rascunhos e favoritos seguem corretos",
+    "lista vazia não quebra"
    ]
   },
   "src/components/kit-library/__tests__/kit-template-icons.test.ts": {
@@ -484592,7 +484653,7 @@
   },
   "src/pages/kit-builder/KitLibraryPage.tsx": {
    "path": "src/pages/kit-builder/KitLibraryPage.tsx",
-   "lines": 705,
+   "lines": 716,
    "exports": [
     "function fetchOwnKits",
     "function deleteOwnKit",
@@ -484643,6 +484704,11 @@
     {
      "field": "status",
      "value": "draft",
+     "kind": "compara"
+    },
+    {
+     "field": "status",
+     "value": "ready",
      "kind": "compara"
     },
     {
@@ -546513,10 +546579,21 @@
   }
  },
  "git": {
-  "sha": "7d4212ead74b8814b9e5548cb0548c407db06de1",
+  "sha": "97bfe1833db436f0a8372c0748d3d0321eafeea6",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "97bfe18",
+    "date": "2026-11-18",
+    "author": "adm01-debug",
+    "subject": "fix(kit): filtro e card de status da biblioteca contam o status real do kit (#3833)",
+    "files": [
+     "src/components/kit-library/KitLibraryStats.tsx",
+     "src/components/kit-library/__tests__/KitLibraryStats.test.tsx",
+     "src/pages/kit-builder/KitLibraryPage.tsx"
+    ]
+   },
    {
     "sha": "7d4212e",
     "date": "2026-11-18",
@@ -546864,15 +546941,6 @@
     "files": [
      "tests/hooks/useLegacyLintFilters.test.ts"
     ]
-   },
-   {
-    "sha": "9ae8ea1",
-    "date": "2026-11-17",
-    "author": "adm01-debug",
-    "subject": "test(quotes): resgata 91 casos dos helpers da tela de orcamento (#3795)",
-    "files": [
-     "tests/pages/quote-view/root-quote-helpers.test.ts"
-    ]
    }
   ],
   "hot_files": [
@@ -546925,8 +546993,16 @@
     2
    ],
    [
-    "tests/pages/quote-view/root-quote-helpers.test.ts",
-    2
+    "src/components/kit-library/KitLibraryStats.tsx",
+    1
+   ],
+   [
+    "src/components/kit-library/__tests__/KitLibraryStats.test.tsx",
+    1
+   ],
+   [
+    "src/pages/kit-builder/KitLibraryPage.tsx",
+    1
    ],
    [
     "api/monitoring.ts",
@@ -546946,14 +547022,6 @@
    ],
    [
     "docs/agentes/resgates/2026-11-18-recibo-adjudicacao.md",
-    1
-   ],
-   [
-    "src/hooks/products/__tests__/useReposicaoVariantsSummary.test.ts",
-    1
-   ],
-   [
-    "src/hooks/products/useReposicaoVariantsSummary.ts",
     1
    ]
   ]

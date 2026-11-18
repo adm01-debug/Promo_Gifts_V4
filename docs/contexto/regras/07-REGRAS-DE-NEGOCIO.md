@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.3.2 · commit `7d4212ead7` · branch `main` · 2026-11-18 17:22 UTC
+> Gerado automaticamente por AI Context Sync v1.3.2 · commit `97bfe1833d` · branch `main` · 2026-11-18 17:38 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -1834,7 +1834,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `status` | `quote` | compara | `src/components/dashboard/MyClientsWidget.tsx` |
 | `status` | `quote_not_found` | escreve | `supabase/functions/crm-callback-reprocess/index.ts` |
 | `status` | `rate_limited` | escreve | `supabase/functions/e2e-cleanup/index.ts` |
-| `status` | `ready` | compara, escreve | `api/ready.ts`<br>`src/lib/kit-builder/persistence.ts` |
+| `status` | `ready` | compara, escreve | `api/ready.ts`<br>`src/components/kit-library/KitLibraryStats.tsx`<br>`src/lib/kit-builder/persistence.ts`<br>`src/pages/kit-builder/KitLibraryPage.tsx` |
 | `status` | `regression` | compara | `src/components/admin/telemetry/RegressionGuardrailBanner.tsx` |
 | `status` | `rejected` | compara, escreve | `recovery/src-legacy/src/components/quotes/QuoteRowQuickActions.tsx`<br>`recovery/src-legacy/src/hooks/usePasswordResetRequests.ts`<br>`recovery/src-legacy/src/pages/quotes-dashboard/useQuotesDashboard.ts`<br>`src/components/admin/DiscountManagementPanel.tsx`<br>`src/components/admin/PasswordResetApproval.tsx`<br>… +14 |
 | `status` | `reprocessed` | escreve | `supabase/functions/crm-callback-reprocess/index.ts` |
@@ -6615,7 +6615,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `admin` | `supabase/migrations/20261112120500_fix_optimization_queue_rpcs_dev_access.sql` |
 | `anon` | `tests/edge-functions/live/_live-client.ts` |
 
-## K. Testes como especificação (22511 testes em 2270 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (22516 testes em 2271 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -6919,7 +6919,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `e2e/dashboard-modules.spec.ts` | 18 | Dashboard Modules - Public Access (No Auth) · should redirect to auth when accessing ${route.path} unauthenticated · should display auth page for all dashboard routes · should not expose observability/metrics data to unauthenticated users … |
 | `e2e/stock-module.spec.ts` | 18 | Stock Module - Public Access (No Auth) · should redirect to auth when accessing /estoque unauthenticated · should display auth page when accessing /estoque · should not expose stock data to unauthenticated users … |
 | `e2e/magazine/magazine-viewer.spec.ts` | 18 | Magazine viewer — atalhos de teclado · → avança página, ← volta, Home/End extremos · T abre sumário, ? abre ajuda, B marca página · Space em botão focado NÃO avança página (C2) … |
-| … +1970 linhas — lista completa em `context.json` | | |
+| … +1971 linhas — lista completa em `context.json` | | |
 
 ## L. Eventos de webhook tratados (contratos com sistemas externos)
 

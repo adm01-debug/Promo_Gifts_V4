@@ -10637,7 +10637,7 @@
     "KitLibraryStats"
    ],
    "export_default": null,
-   "linhas": 64,
+   "linhas": 70,
    "dominio": "components/kit-library",
    "hooks_locais": [],
    "tabelas": [],
@@ -18705,7 +18705,7 @@
     "KitLibraryPage"
    ],
    "export_default": "KitLibraryPage",
-   "linhas": 705,
+   "linhas": 716,
    "dominio": "pages/kit-builder",
    "hooks_locais": [
     "useAuth",

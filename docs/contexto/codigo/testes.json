@@ -5,13 +5,13 @@
   "vitest",
   "playwright"
  ],
- "total": 2593,
+ "total": 2594,
  "por_tipo": {
   "contrato": 66,
   "e2e": 677,
   "pytest": 5,
   "qa": 17,
-  "unit": 1828
+  "unit": 1829
  },
  "onde_ficam": [
   {
@@ -20,7 +20,7 @@
   },
   {
    "padrao": "co-localizado (__tests__)",
-   "arquivos": 690
+   "arquivos": 691
   },
   {
    "padrao": "e2e/",
@@ -5737,6 +5737,16 @@
     "src/components/kit-library/kit-template-icons.ts"
    ],
    "casos": 3
+  },
+  {
+   "arquivo": "src/components/kit-library/__tests__/KitLibraryStats.test.tsx",
+   "tipo": "unit",
+   "linhas": 60,
+   "testa": [
+    "src/components/kit-library/KitLibraryStats.tsx",
+    "src/hooks/kit-builder/index.ts"
+   ],
+   "casos": 4
   },
   {
    "arquivo": "src/components/layout/__tests__/AppLogo.alignment.test.tsx",
@@ -22262,6 +22272,7 @@
   "src/components/kit-builder/kit-summary/KitPricingCard.tsx": 1,
   "src/components/kit-builder/kitMockupDimensions.ts": 1,
   "src/components/kit-library/KitCard.tsx": 1,
+  "src/components/kit-library/KitLibraryStats.tsx": 1,
   "src/components/kit-library/kit-template-icons.ts": 1,
   "src/components/layout/AdminRoute.tsx": 6,
   "src/components/layout/AppLogo.tsx": 2,
@@ -22512,7 +22523,7 @@
   "src/hooks/intelligence/useStockVelocityPrefetch.ts": 1,
   "src/hooks/intelligence/useVoiceAgent.ts": 2,
   "src/hooks/intelligence/useZeroResultSubstitutes.ts": 1,
-  "src/hooks/kit-builder/index.ts": 1,
+  "src/hooks/kit-builder/index.ts": 2,
   "src/hooks/kit-builder/useCustomKitPersistence.ts": 5,
   "src/hooks/kit-builder/useKitAutoSave.ts": 6,
   "src/hooks/kit-builder/useKitBuilder.ts": 2,

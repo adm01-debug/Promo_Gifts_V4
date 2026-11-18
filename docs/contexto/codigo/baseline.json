@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "7d4212ead74b8814b9e5548cb0548c407db06de1",
+  "commit": "97bfe1833db436f0a8372c0748d3d0321eafeea6",
   "branch": "main",
-  "data_commit": "2026-11-18T14:17:51-03:00",
+  "data_commit": "2026-11-18T14:37:36-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "97bfe183",
+    "data": "2026-11-18",
+    "assunto": "fix(kit): filtro e card de status da biblioteca contam o status real do kit (#3833)"
+   },
    {
     "sha": "7d4212ea",
     "data": "2026-11-18",
@@ -126,14 +131,9 @@
     "sha": "21e64d69",
     "data": "2026-11-17",
     "assunto": "fix(kit): Ctrl+S repetido criava dois kits iguais (#3798)"
-   },
-   {
-    "sha": "e694f6aa",
-    "data": "2026-11-17",
-    "assunto": "test(quotes): resgata a cobertura de aprovacao na lista de orcamentos (#3802)"
    }
   ],
-  "arquivos_mudados_7d": 1483,
+  "arquivos_mudados_7d": 1484,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -301,7 +301,7 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 532
+    "commits": 531
    },
    {
     "autor": "Claude",
@@ -322,9 +322,9 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 10928,
-  "arquivos_codigo": 5445,
-  "linhas_codigo": 1038730,
+  "arquivos_total": 10929,
+  "arquivos_codigo": 5446,
+  "linhas_codigo": 1038807,
   "rotas": 139,
   "rotas_http_backend": 13,
   "vistas_por_id": 0,
@@ -336,7 +336,7 @@
   "tabelas": 527,
   "migrations": 3099,
   "cron_jobs": 122,
-  "testes": 2593,
+  "testes": 2594,
   "workflows": 88,
   "scripts": 283,
   "docs_md": 1478
@@ -1895,8 +1895,8 @@
    "linhas": 130
   },
   "src/components": {
-   "arquivos": 1409,
-   "linhas": 280095
+   "arquivos": 1410,
+   "linhas": 280161
   },
   "src/config": {
    "arquivos": 1,
@@ -1940,7 +1940,7 @@
   },
   "src/pages": {
    "arquivos": 366,
-   "linhas": 84435
+   "linhas": 84446
   },
   "src/routes": {
    "arquivos": 15,
