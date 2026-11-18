@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e de hora em hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `99844ab8b22b48495d355ff62b5d68f62eba77ef` (2026-11-18T12:32:24-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e de hora em hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `13b8a73c5c6b7c9157a5cb0870e324b76d6d031e` (2026-11-18T13:54:36-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -36,7 +36,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 |---|---|
 | arquivos_total | 10922 |
 | arquivos_codigo | 5440 |
-| linhas_codigo | 1037689 |
+| linhas_codigo | 1037882 |
 | rotas | 139 |
 | rotas_http_backend | 13 |
 | vistas_por_id | 0 |
@@ -591,8 +591,8 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - possiveis_segredos_no_codigo: 7 — ex.: scripts/ai-context/cenarios.mjs:102, src/components/admin/connections/__tests__/ConnectionSecurity.unit.test.tsx:9, src/integrations/supabase/client.ts:27
 
 ## Grafo de código (graphify)
-- 48999 nós · 82199 arestas · 2740 comunidades · grafo do commit `99844ab8`
-- comunidades maiores: vitest (1088), ref_components (681), ref_hooks (430), ref_node_child_process (410), ref_contexts (388), react (384), ref_utils (356), react-router-dom (341), scripts (310), sonner (303), ref_node_fs (290), nav.ts (283)
+- 49006 nós · 82225 arestas · 2810 comunidades · grafo do commit `13b8a73c`
+- comunidades maiores: ref_integrations (684), vitest (599), lucide-react (596), ref_components (579), ref_hooks (507), ref_node_child_process (489), @tanstack/react-query (432), sonner (407), ref_types (360), react (353), scripts (310), gotoAndSettle (286)
 - símbolos mais chamados: gotoAndSettle() (e2e/helpers/nav.ts), re (?), q() (scripts/supabase_snapshot/snapshot.py), analyze() (tests/scripts/test_personalization_artifact_diagnostics.py), outer() (tests/scripts/test_personalization_artifact_diagnostics.py), json (?), useExternalDatabase() (recovery/src-legacy/src/hooks/useExternalDatabase.ts), concludeCheck() (scripts/check-result-contract.mjs), querySupabaseReadOnly() (scripts/supabase-read-only-query.mjs), loginAs() (e2e/helpers/auth.ts), inner() (tests/scripts/test_personalization_artifact_diagnostics.py), excluded_sql() (scripts/supabase_snapshot/snapshot.py)
 - consulta local: `graphify query "<pergunta>"`, `graphify path "<A>" "<B>"`, `graphify explain "<X>"`
 
@@ -600,9 +600,9 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - supabase/MIGRATIONS_SYNC_LOG.md (64)
 - RELATORIO_CI.md (51)
 - PENDENCIAS.md (46)
-- package.json (42)
-- package-lock.json (25)
+- package.json (41)
 - docs/coordenacao/conflitos-semanticos.md (24)
+- package-lock.json (24)
 - .github/workflows/deploy-gates.yml (21)
 - supabase/EDGE_FUNCTIONS_DEPLOY_LOG.md (17)
 - src/pages/kit-builder/KitBuilderPage.tsx (16)
@@ -1187,6 +1187,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - CHANGELOG topo: [1.9.1](https://github.com/adm01-debug/Promo_Gifts_V4/compare/gifts-store-v1.9.0...gifts-store-v1.9.1) (2026-11-17)
 
 ## Últimos commits
+- 2026-11-18 `13b8a73c` feat(mockup): edge recusa mockup sem medida real do produto (422) e kit-builder avisa antes (#3819)
 - 2026-11-18 `99844ab8` fix(security): resgata o endurecimento de sanitizeUrl contra SSRF e credencial embutida (#3825)
 - 2026-11-18 `f52a5d31` fix(resgate): corrige os defeitos de produção medidos no item 6 do resgate (#3820)
 - 2026-11-18 `1d8da359` docs(migrations-log): recibo E15 — aplicação de 20261115130300 (#3826)
@@ -1201,7 +1202,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-18 `3900fc1f` feat(kit-builder): previa de mockup passa a enviar as medidas reais do produto (#3818)
 - 2026-11-17 `54337b9e` docs(resgate): registra as 8 pendencias abertas do resgate com evidencia medida (#3816)
 - 2026-11-17 `2d265a98` test(resgate): lote 3 — cobertura de outro agente para autosave de orcamento e apresentacao de favoritos (#3815)
-- 2026-11-17 `b2cc12ea` fix(orcamentos): gravar rascunho nao apaga mais os campos que a tela nao modela (#3814)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

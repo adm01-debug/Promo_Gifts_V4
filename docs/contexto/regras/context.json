@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "99844ab8b22b48495d355ff62b5d68f62eba77ef",
+  "sha": "13b8a73c5c6b7c9157a5cb0870e324b76d6d031e",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-18 15:34 UTC",
+  "generated_at": "2026-11-18 16:55 UTC",
   "files_total": 10850,
   "code_files": 8879,
-  "code_lines": 1258421
+  "code_lines": 1258614
  },
  "version": "1.3.2",
- "facts_hash": "5132f87334a5f827",
+ "facts_hash": "cf470ead0081d982",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -137704,7 +137704,7 @@
      "save_custom_kit_atomic",
      "set_custom_kit_pinned"
     ],
-    "deps_count": 251
+    "deps_count": 252
    },
    {
     "path": "",
@@ -149617,7 +149617,7 @@
   {
    "module": "src/components",
    "files": 1407,
-   "lines": 279653,
+   "lines": 279690,
    "tables": [
     "admin_audit_log",
     "art_file_attachments",
@@ -151190,7 +151190,7 @@
   {
    "module": "supabase/functions",
    "files": 278,
-   "lines": 51804,
+   "lines": 51921,
    "tables": [
     "access_blocked_log",
     "access_security_settings",
@@ -151711,7 +151711,7 @@
   {
    "module": "tests",
    "files": 1091,
-   "lines": 171667,
+   "lines": 171706,
    "tables": [
     "bot_detection_log",
     "clients",
@@ -166494,6 +166494,10 @@
    },
    {
     "file": "src/components/kit-builder/PersonalizationConfig.tsx",
+    "msg": "Produto sem medidas cadastradas"
+   },
+   {
+    "file": "src/components/kit-builder/PersonalizationConfig.tsx",
     "msg": "Selecione a técnica e envie uma arte antes de gerar a prévia."
    },
    {
@@ -171189,6 +171193,10 @@
     "text": "* Devolve as medidas apenas quando são autoritativas, ou `undefined`."
    },
    {
+    "file": "src/components/kit-builder/kitMockupDimensions.ts",
+    "text": "* Aceita apenas número finito > 0 — mesma regra do `positiveOrNull` da edge. */"
+   },
+   {
     "file": "src/components/layout/AdminRoute.tsx",
     "text": "de AAL hidrata; tratar apenas `aal1` liberava painel admin por uma janela"
    },
@@ -175790,7 +175798,7 @@
    },
    {
     "file": "supabase/functions/generate-mockup/geometry.ts",
-    "text": "mudar regra de negócio para o usuário final — decisão registrada no commit.)"
+    "text": "apenas como último recurso interno, que o handler nunca alcança."
    },
    {
     "file": "supabase/functions/generate-mockup/geometry.ts",
@@ -175799,6 +175807,14 @@
    {
     "file": "supabase/functions/generate-mockup/geometry.ts",
     "text": "(CANVAS_PX = 1024 em index.ts). NÃO é regra de WYSIWYG — uma logo que"
+   },
+   {
+    "file": "supabase/functions/generate-mockup/geometry.ts",
+    "text": "O editor assume 8×20 cm nesse caso; o mockup entregue ao cliente não pode"
+   },
+   {
+    "file": "supabase/functions/generate-mockup/geometry.ts",
+    "text": "a regra que a UI já aplica."
    },
    {
     "file": "supabase/functions/generate-mockup/geometry.ts",
@@ -175839,6 +175855,10 @@
    {
     "file": "supabase/functions/generate-mockup/index.ts",
     "text": "isFetchableUrl unifies scheme validation + SSRF blocking + mandatory allowlist."
+   },
+   {
+    "file": "supabase/functions/generate-mockup/index.ts",
+    "text": "para desenhar na tela, mas o mockup entregue ao cliente não pode sair com medida"
    },
    {
     "file": "supabase/functions/generate-mockup/limits.ts",
@@ -200008,6 +200028,16 @@
     "value": "0.85"
    },
    {
+    "file": "supabase/functions/generate-mockup/geometry.ts",
+    "name": "MISSING_DIMENSIONS_ERROR_CODE",
+    "value": "\"missing_dimensions\""
+   },
+   {
+    "file": "supabase/functions/generate-mockup/geometry.ts",
+    "name": "MISSING_DIMENSIONS_STATUS",
+    "value": "422"
+   },
+   {
     "file": "supabase/functions/generate-mockup/index.ts",
     "name": "CANVAS_PX",
     "value": "1024"
@@ -213885,6 +213915,12 @@
     "body": "return itemCount > VIRTUALIZED_KIT_ITEM_THRESHOLD;"
    },
    {
+    "file": "src/components/kit-builder/kitMockupDimensions.ts",
+    "name": "medidaValida",
+    "params": "value: number | null | undefined",
+    "body": "return typeof value === 'number' && Number.isFinite(value) && value > 0;"
+   },
+   {
     "file": "src/components/layout/Header.tsx",
     "name": "apply",
     "params": "",
@@ -215821,12 +215857,6 @@
     "name": "computeBlurhash",
     "params": "img: ImgRow",
     "body": "id: string; blurhash: string"
-   },
-   {
-    "file": "supabase/functions/generate-mockup/index.ts",
-    "name": "validationError",
-    "params": "message: string, corsHeaders: Record<string, string>, errorCode?: string,",
-    "body": "return new Response( JSON.stringify({ error: \"validation_failed\", errorCode, message }), { status: 400, headers: { ...corsHeaders, \"Content-Type\": \"application/json\" } }, );"
    },
    {
     "file": "supabase/functions/market-intelligence-insights/index.ts",
@@ -263728,7 +263758,11 @@
    },
    {
     "file": "supabase/functions/generate-mockup/index.geometry.test.ts",
-    "name": "o handler não recusa payload sem dimensões (kit-builder depende disso)"
+    "name": "o handler recusa payload sem nenhuma dimensão real (422 missing_dimensions)"
+   },
+   {
+    "file": "supabase/functions/generate-mockup/index.geometry.test.ts",
+    "name": "o portão roda ANTES de qualquer download de imagem"
    },
    {
     "file": "supabase/functions/generate-mockup/index.geometry.test.ts",
@@ -263772,7 +263806,27 @@
    },
    {
     "file": "supabase/functions/generate-mockup/index.geometry.test.ts",
-    "name": "validationError segue com 400 fixo (nenhum status novo entrou no handler)"
+    "name": "validationError mantém 400 como default e 422 só no portão de medidas"
+   },
+   {
+    "file": "supabase/functions/generate-mockup/index.geometry.test.ts",
+    "name": "portão de medidas (generate-mockup) — a edge é pública, a regra não pode morar só na UI"
+   },
+   {
+    "file": "supabase/functions/generate-mockup/index.geometry.test.ts",
+    "name": "sem nenhuma medida: recusa com 422 missing_dimensions"
+   },
+   {
+    "file": "supabase/functions/generate-mockup/index.geometry.test.ts",
+    "name": "uma medida basta: a outra é inferida como no editor"
+   },
+   {
+    "file": "supabase/functions/generate-mockup/index.geometry.test.ts",
+    "name": "zero, negativo, NaN e string não contam como medida"
+   },
+   {
+    "file": "supabase/functions/generate-mockup/index.geometry.test.ts",
+    "name": "medida válida em um campo e lixo no outro ainda passa"
    },
    {
     "file": "supabase/functions/generate-mockup/index.size.test.ts",
@@ -271893,6 +271947,26 @@
    {
     "file": "tests/components/kit-builder/PersonalizationConfig.test.ts",
     "name": "nao inventa medida quando o chamador passa objeto vazio"
+   },
+   {
+    "file": "tests/components/kit-builder/PersonalizationConfig.test.ts",
+    "name": "recusaPorMedidasAusentes — o kit-builder recusa antes de chamar a edge"
+   },
+   {
+    "file": "tests/components/kit-builder/PersonalizationConfig.test.ts",
+    "name": "sem medida nenhuma: recusa com a mensagem do vendedor e status 422"
+   },
+   {
+    "file": "tests/components/kit-builder/PersonalizationConfig.test.ts",
+    "name": "zero, negativo e NaN nao contam como medida"
+   },
+   {
+    "file": "tests/components/kit-builder/PersonalizationConfig.test.ts",
+    "name": "uma medida valida basta para liberar a geracao"
+   },
+   {
+    "file": "tests/components/kit-builder/PersonalizationConfig.test.ts",
+    "name": "estimativa da UI nao libera: medidasAutoritativas devolve undefined e a recusa dispara"
    },
    {
     "file": "tests/components/kit-builder/VirtualizedKitItemList.test.tsx",
@@ -444852,7 +444926,7 @@
   },
   "src/components/kit-builder/PersonalizationConfig.tsx": {
    "path": "src/components/kit-builder/PersonalizationConfig.tsx",
-   "lines": 1391,
+   "lines": 1398,
    "exports": [
     "function reconcilePersonalizationForArea",
     "interface FlatTechnique",
@@ -444863,6 +444937,7 @@
    "errors": [
     "Não foi possível gerar a prévia",
     "O serviço não retornou uma imagem.",
+    "Produto sem medidas cadastradas",
     "Selecione a técnica e envie uma arte antes de gerar a prévia."
    ],
    "status_values": [
@@ -444989,15 +445064,24 @@
   },
   "src/components/kit-builder/kitMockupDimensions.ts": {
    "path": "src/components/kit-builder/kitMockupDimensions.ts",
-   "lines": 81,
+   "lines": 111,
    "exports": [
     "interface MedidasProdutoCm",
     "function medidasAutoritativas",
-    "function buildKitMockupRequest"
+    "function buildKitMockupRequest",
+    "function recusaPorMedidasAusentes"
    ],
    "rule_comments": [
     "* Fica em módulo próprio porque PersonalizationConfig.tsx já está acima do limite",
-    "* Devolve as medidas apenas quando são autoritativas, ou `undefined`."
+    "* Devolve as medidas apenas quando são autoritativas, ou `undefined`.",
+    "* Aceita apenas número finito > 0 — mesma regra do `positiveOrNull` da edge. */"
+   ],
+   "calc_fns": [
+    {
+     "name": "medidaValida",
+     "params": "value: number | null | undefined",
+     "body": "return typeof value === 'number' && Number.isFinite(value) && value > 0;"
+    }
    ]
   },
   "src/components/kit-builder/kit-summary/KitActionsBar.tsx": {
@@ -500986,11 +501070,16 @@
   },
   "supabase/functions/generate-mockup/geometry.ts": {
    "path": "supabase/functions/generate-mockup/geometry.ts",
-   "lines": 141,
+   "lines": 186,
    "exports": [
     "const MIN_LOGO_PX",
     "const MAX_LOGO_PX",
     "const DEFAULT_PRODUCT_FRACTION",
+    "const MISSING_DIMENSIONS_ERROR_CODE",
+    "const MISSING_DIMENSIONS_STATUS",
+    "function hasProductDimensions",
+    "type DimensionsGate",
+    "function checkProductDimensions",
     "interface CmParaPxInput",
     "interface CmParaPxResult",
     "function cmParaPx",
@@ -501008,12 +501097,22 @@
     {
      "name": "DEFAULT_PRODUCT_FRACTION",
      "value": "0.85"
+    },
+    {
+     "name": "MISSING_DIMENSIONS_ERROR_CODE",
+     "value": "\"missing_dimensions\""
+    },
+    {
+     "name": "MISSING_DIMENSIONS_STATUS",
+     "value": "422"
     }
    ],
    "rule_comments": [
-    "mudar regra de negócio para o usuário final — decisão registrada no commit.)",
+    "apenas como último recurso interno, que o handler nunca alcança.",
     "* Lado mínimo (px) abaixo do qual a logo é ampliada para continuar visível. */",
     "(CANVAS_PX = 1024 em index.ts). NÃO é regra de WYSIWYG — uma logo que",
+    "O editor assume 8×20 cm nesse caso; o mockup entregue ao cliente não pode",
+    "a regra que a UI já aplica.",
     "mínimo de 40 px (o servidor anterior usava 8 px e um produto-referência de",
     "* Tamanho final desenhado no canvas: a caixa de `cmParaPx` (já com o mínimo de"
    ],
@@ -501024,17 +501123,24 @@
   },
   "supabase/functions/generate-mockup/index.geometry.test.ts": {
    "path": "supabase/functions/generate-mockup/index.geometry.test.ts",
-   "lines": 156,
+   "lines": 211,
    "is_test": true,
+   "errors": [
+    "deveria ter recusado"
+   ],
    "rule_comments": [
     "mínimo de 8 px — a logo saía na imagem gerada num tamanho diferente do que o",
-    "(src/lib/mockup-geometry.ts): mesmos physW/physH, mínimo de 40 px e ordem"
+    "não tem medidas cadastradas. A estimativa 8×20 cm continua em `cmParaPx` apenas",
+    "(src/lib/mockup-geometry.ts): mesmos physW/physH, mínimo de 40 px e ordem",
+    "Uma edge pública não deve baixar nada para depois recusar por entrada.",
+    "precisa continuar verdade: o default é 400, então nenhuma outra validação"
    ],
    "tests": [
     "geometry (generate-mockup) — sem dimensões cadastradas, o fallback é a estimativa do editor",
     "sem dimensões a conta usa 8×20 cm (o que o editor mostra), não o produto-referência de 20 cm do canvas",
     "dimensões inválidas (0, negativa, string) valem como ausentes — mesmo fallback, nunca NaN",
-    "o handler não recusa payload sem dimensões (kit-builder depende disso)",
+    "o handler recusa payload sem nenhuma dimensão real (422 missing_dimensions)",
+    "o portão roda ANTES de qualquer download de imagem",
     "geometry (generate-mockup) — mesmos números da função compartilhada do cliente",
     "logo minúscula usa o mínimo de 40 px (o antigo mínimo de 8 px foi removido)",
     "fração ausente cai no default do cliente (0.85), não em 1",
@@ -501045,7 +501151,12 @@
     "cm da logo ≤ 0 cai nos defaults 5×3 em vez de virar caixa negativa",
     "index.ts está ligado à geometria compartilhada",
     "importa e usa o cálculo compartilhado, sem o produto-referência de 20 cm nem o mínimo de 8 px",
-    "validationError segue com 400 fixo (nenhum status novo entrou no handler)"
+    "validationError mantém 400 como default e 422 só no portão de medidas",
+    "portão de medidas (generate-mockup) — a edge é pública, a regra não pode morar só na UI",
+    "sem nenhuma medida: recusa com 422 missing_dimensions",
+    "uma medida basta: a outra é inferida como no editor",
+    "zero, negativo, NaN e string não contam como medida",
+    "medida válida em um campo e lixo no outro ainda passa"
    ]
   },
   "supabase/functions/generate-mockup/index.size.test.ts": {
@@ -501093,7 +501204,7 @@
   },
   "supabase/functions/generate-mockup/index.ts": {
    "path": "supabase/functions/generate-mockup/index.ts",
-   "lines": 557,
+   "lines": 574,
    "storage": [
     "mockup-assets"
    ],
@@ -501145,14 +501256,8 @@
     "mínimo de 8 px. A sanitização de cm ≤ 0 e o teto proporcional de absurdo",
     "heurísticas do portão (req.json/req.text), que audita a dívida de validação.",
     "validation error path fires cleanly instead of a 500.",
-    "isFetchableUrl unifies scheme validation + SSRF blocking + mandatory allowlist."
-   ],
-   "calc_fns": [
-    {
-     "name": "validationError",
-     "params": "message: string, corsHeaders: Record<string, string>, errorCode?: string,",
-     "body": "return new Response( JSON.stringify({ error: \"validation_failed\", errorCode, message }), { status: 400, headers: { ...corsHeaders, \"Content-Type\": \"application/json\" } }, );"
-    }
+    "isFetchableUrl unifies scheme validation + SSRF blocking + mandatory allowlist.",
+    "para desenhar na tela, mas o mockup entregue ao cliente não pode sair com medida"
    ],
    "uses_service_role": true
   },
@@ -525522,7 +525627,7 @@
   },
   "tests/components/kit-builder/PersonalizationConfig.test.ts": {
    "path": "tests/components/kit-builder/PersonalizationConfig.test.ts",
-   "lines": 181,
+   "lines": 220,
    "is_test": true,
    "tests": [
     "PersonalizationConfig price inputs",
@@ -525537,7 +525642,12 @@
     "uma dimensao sozinha e preservada (a outra a edge infere)",
     "estimativa da UI (dimensionsKnown false) NAO vira medida real",
     "medida autoritativa passa; dimensionsKnown ausente conta como autoritativa",
-    "nao inventa medida quando o chamador passa objeto vazio"
+    "nao inventa medida quando o chamador passa objeto vazio",
+    "recusaPorMedidasAusentes — o kit-builder recusa antes de chamar a edge",
+    "sem medida nenhuma: recusa com a mensagem do vendedor e status 422",
+    "zero, negativo e NaN nao contam como medida",
+    "uma medida valida basta para liberar a geracao",
+    "estimativa da UI nao libera: medidasAutoritativas devolve undefined e a recusa dispara"
    ]
   },
   "tests/components/kit-builder/VirtualizedKitItemList.test.tsx": {
@@ -546157,10 +546267,24 @@
   }
  },
  "git": {
-  "sha": "99844ab8b22b48495d355ff62b5d68f62eba77ef",
+  "sha": "13b8a73c5c6b7c9157a5cb0870e324b76d6d031e",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "13b8a73",
+    "date": "2026-11-18",
+    "author": "adm01-debug",
+    "subject": "feat(mockup): edge recusa mockup sem medida real do produto (422) e kit-builder avisa antes (#3819)",
+    "files": [
+     "src/components/kit-builder/PersonalizationConfig.tsx",
+     "src/components/kit-builder/kitMockupDimensions.ts",
+     "supabase/functions/generate-mockup/geometry.ts",
+     "supabase/functions/generate-mockup/index.geometry.test.ts",
+     "supabase/functions/generate-mockup/index.ts",
+     "tests/components/kit-builder/PersonalizationConfig.test.ts"
+    ]
+   },
    {
     "sha": "99844ab",
     "date": "2026-11-18",
@@ -546508,19 +546632,21 @@
      "tests/components/QuoteVersionHistory.nullDate.test.tsx",
      "tests/hooks/useQuoteVersions.legacy.test.ts"
     ]
-   },
-   {
-    "sha": "92a5c9a",
-    "date": "2026-11-17",
-    "author": "adm01-debug",
-    "subject": "fix(kit): autosave nao grava mais o rascunho de um kit em cima de outro (#3809)",
-    "files": [
-     "src/hooks/kit-builder/useKitAutoSave.ts",
-     "tests/hooks/useKitAutoSave.legacy.test.tsx"
-    ]
    }
   ],
   "hot_files": [
+   [
+    "src/components/kit-builder/PersonalizationConfig.tsx",
+    2
+   ],
+   [
+    "src/components/kit-builder/kitMockupDimensions.ts",
+    2
+   ],
+   [
+    "tests/components/kit-builder/PersonalizationConfig.test.ts",
+    2
+   ],
    [
     "src/components/quotes/AdminTemplatesManager.tsx",
     2
@@ -546574,31 +546700,19 @@
     2
    ],
    [
+    "supabase/functions/generate-mockup/geometry.ts",
+    1
+   ],
+   [
+    "supabase/functions/generate-mockup/index.geometry.test.ts",
+    1
+   ],
+   [
+    "supabase/functions/generate-mockup/index.ts",
+    1
+   ],
+   [
     "src/lib/security/__tests__/magazine-guard-adversarial.test.ts",
-    1
-   ],
-   [
-    "src/lib/security/__tests__/magazine-guard-edge.test.ts",
-    1
-   ],
-   [
-    "src/lib/security/__tests__/sanitize-adversarial.test.ts",
-    1
-   ],
-   [
-    "src/lib/security/__tests__/sanitize-ssrf.test.ts",
-    1
-   ],
-   [
-    "src/lib/security/magazine-guard.ts",
-    1
-   ],
-   [
-    "src/lib/security/sanitize.ts",
-    1
-   ],
-   [
-    "src/hooks/crm/useRamoAtividadeFilter.ts",
     1
    ]
   ]

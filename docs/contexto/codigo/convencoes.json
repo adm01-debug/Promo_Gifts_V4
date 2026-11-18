@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "feat(mockup): edge recusa mockup sem medida real do produto (422) e kit-builder avisa antes (#3819)",
    "fix(security): resgata o endurecimento de sanitizeUrl contra SSRF e credencial embutida (#3825)",
    "fix(resgate): corrige os defeitos de produção medidos no item 6 do resgate (#3820)",
    "docs(migrations-log): recibo E15 — aplicação de 20261115130300 (#3826)",
-   "feat(quotes): template de orcamento volta a poder ser aplicado a um orcamento (#3824)",
-   "docs(resgate): preserva o unico texto da branch laughing-cori ausente da main (#3822)"
+   "feat(quotes): template de orcamento volta a poder ser aplicado a um orcamento (#3824)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",

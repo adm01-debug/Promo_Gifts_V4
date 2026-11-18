@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "99844ab8b22b48495d355ff62b5d68f62eba77ef",
+  "commit": "13b8a73c5c6b7c9157a5cb0870e324b76d6d031e",
   "branch": "main",
-  "data_commit": "2026-11-18T12:32:24-03:00",
+  "data_commit": "2026-11-18T13:54:36-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "13b8a73c",
+    "data": "2026-11-18",
+    "assunto": "feat(mockup): edge recusa mockup sem medida real do produto (422) e kit-builder avisa antes (#3819)"
+   },
    {
     "sha": "99844ab8",
     "data": "2026-11-18",
@@ -126,14 +131,9 @@
     "sha": "9ae8ea15",
     "data": "2026-11-17",
     "assunto": "test(quotes): resgata 91 casos dos helpers da tela de orcamento (#3795)"
-   },
-   {
-    "sha": "bd48bc95",
-    "data": "2026-11-17",
-    "assunto": "test(kit): resgata a cobertura do montador de kit (#3796)"
    }
   ],
-  "arquivos_mudados_7d": 1488,
+  "arquivos_mudados_7d": 1476,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -185,7 +185,7 @@
    },
    {
     "pasta": "src/components/kit-builder",
-    "mudancas": 130
+    "mudancas": 132
    },
    {
     "pasta": "src/pages/quotes",
@@ -211,14 +211,14 @@
    },
    {
     "arquivo": "package.json",
-    "mudancas": 42
-   },
-   {
-    "arquivo": "package-lock.json",
-    "mudancas": 25
+    "mudancas": 41
    },
    {
     "arquivo": "docs/coordenacao/conflitos-semanticos.md",
+    "mudancas": 24
+   },
+   {
+    "arquivo": "package-lock.json",
     "mudancas": 24
    },
    {
@@ -301,7 +301,7 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 538
+    "commits": 537
    },
    {
     "autor": "Claude",
@@ -324,7 +324,7 @@
  "contagens": {
   "arquivos_total": 10922,
   "arquivos_codigo": 5440,
-  "linhas_codigo": 1037689,
+  "linhas_codigo": 1037882,
   "rotas": 139,
   "rotas_http_backend": 13,
   "vistas_por_id": 0,
@@ -1896,7 +1896,7 @@
   },
   "src/components": {
    "arquivos": 1407,
-   "linhas": 279654
+   "linhas": 279691
   },
   "src/config": {
    "arquivos": 1,
@@ -1972,7 +1972,7 @@
   },
   "supabase/functions": {
    "arquivos": 278,
-   "linhas": 51804
+   "linhas": 51921
   },
   "tailwind.config.ts": {
    "arquivos": 1,
@@ -2048,7 +2048,7 @@
   },
   "tests/components": {
    "arquivos": 165,
-   "linhas": 35794
+   "linhas": 35833
   },
   "tests/config": {
    "arquivos": 6,
@@ -2290,7 +2290,7 @@
   },
   {
    "arquivo": "src/components/kit-builder/PersonalizationConfig.tsx",
-   "linhas": 1391
+   "linhas": 1398
   },
   {
    "arquivo": "scripts/drift-baseline.mjs",

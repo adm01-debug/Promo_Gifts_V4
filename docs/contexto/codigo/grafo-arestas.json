@@ -6649,6 +6649,7 @@
   ],
   "src/components/kit-builder/kitMockupDimensions.ts": [
    "src/hooks/mockup/mockupGenerationService.ts",
+   "src/hooks/mockup/mockupGeneratorModel.ts",
    "src/lib/kit-builder/index.ts"
   ],
   "src/components/kit-library/KitCard.tsx": [

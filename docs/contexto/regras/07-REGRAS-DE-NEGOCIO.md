@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.3.2 · commit `99844ab8b2` · branch `main` · 2026-11-18 15:34 UTC
+> Gerado automaticamente por AI Context Sync v1.3.2 · commit `13b8a73c5c` · branch `main` · 2026-11-18 16:55 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -3778,6 +3778,10 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
   ```
   return itemCount > VIRTUALIZED_KIT_ITEM_THRESHOLD;
   ```
+- **medidaValida(value: number | null | undefined)** — `src/components/kit-builder/kitMockupDimensions.ts`
+  ```
+  return typeof value === 'number' && Number.isFinite(value) && value > 0;
+  ```
 - **apply()** — `src/components/layout/Header.tsx`
   ```
   const sidebarW = getComputedStyle(document.documentElement).getPropertyValue('--sidebar-w').trim() || '16rem'; document.documentElement.style.setProperty('--header-left', mq.matches ? sidebarW : '0px');
@@ -5070,10 +5074,6 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
   ```
   id: string; blurhash: string
   ```
-- **validationError(message: string, corsHeaders: Record<string, string>, errorCode?: string,)** — `supabase/functions/generate-mockup/index.ts`
-  ```
-  return new Response( JSON.stringify({ error: "validation_failed", errorCode, message }), { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }, );
-  ```
 - **calcMetrics(quotes: { data: any[] | null }, orders: { data: any[] | null })** — `supabase/functions/market-intelligence-insights/index.ts`
   ```
   const qData = quotes.data ?? []; const oData = orders.data ?? []; const revenue = oData.reduce((s, o) => s + (Number(o.total) || 0), 0); const orderCount = oData.length; const quoteCount = qData.length; const avg_ticket = orderCount > 0 ? revenue / orderCount : 0; const conversion_rate = quoteCount > 0 ? Number(((orderCount / quoteCount) * 100).toFixed(1)) : 0; return { revenue, orders: orderCount, quotes: quoteCount, avg_ticket, conversion_rate };
@@ -5700,7 +5700,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `MAX_RECENT_PRODUCTS` | `5` | `src/hooks/products/useRecentProducts.ts` |
 | `MAX_ITEMS` | `10` | `src/hooks/products/useRecentlyViewed.ts` |
 | `REPLENISHMENT_WINDOW_DAYS` | `30` | `src/hooks/products/useReplenishments.ts` |
-| … +370 linhas — lista completa em `context.json` | | |
+| … +372 linhas — lista completa em `context.json` | | |
 
 ### H.2 Prazos, expirações e janelas de tempo
 
@@ -6489,7 +6489,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | allowlist inválida: versions contém duplicatas | `scripts/check-supabase-migration-ledger.mjs` |
 | allowlist inválida: versions contém valor vazio/não textual | `scripts/check-supabase-migration-ledger.mjs` |
 | allowlist inválida: versions deve ser array não vazio | `scripts/check-supabase-migration-ledger.mjs` |
-| … +1302 linhas — lista completa em `context.json` | |
+| … +1303 linhas — lista completa em `context.json` | |
 
 ## J. Controle de acesso no código (checagens de perfil/permissão)
 
@@ -6613,7 +6613,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `admin` | `supabase/migrations/20261112120500_fix_optimization_queue_rpcs_dev_access.sql` |
 | `anon` | `tests/edge-functions/live/_live-client.ts` |
 
-## K. Testes como especificação (22473 testes em 2267 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (22484 testes em 2267 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -6843,6 +6843,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `src/hooks/quotes/__tests__/useQuoteConcurrencyGuard.test.ts` | 21 | estado inicial · baseline é null quando quote=null · retorna funções estáveis (useCallback) · checkForConflict — sem consulta ao DB … |
 | `src/lib/auth/auth-utils.test.ts` | 21 | auth-utils · getGreeting · returns  · returns  … |
 | `src/utils/cnpj-schema.test.ts` | 21 | cnpjOptionalSchema · normalizes masked CNPJ to 14-digit string on parse · accepts already-normalized 14-digit input · coerces empty / null / undefined to null … |
+| `supabase/functions/generate-mockup/index.geometry.test.ts` | 21 | geometry (generate-mockup) — sem dimensões cadastradas, o fallback é a estimativa do editor · sem dimensões a conta usa 8×20 cm (o que o editor mostra), não o produto-referência de 20 cm do canvas · dimensões inválidas (0, negativa, string) valem como ausentes — mesmo fallback, nunca NaN · o handler recusa payload sem nenhuma dimensão real (422 missing_dimensions) … |
 | `tests/components/PriceFreshnessBadge.a11y.test.tsx` | 21 | PriceFreshnessBadge — acessibilidade · aria-label rico por status · fresh: menciona  · aging: menciona  … |
 | `tests/edge-functions/integration/categories-api.test.ts` | 21 | categories-api · GET /categories-api — happy path · retorna 200 com array de categorias · cada categoria tem id, name e slug definidos … |
 | `tests/edge-functions/integration/rate-limit-check.test.ts` | 21 | rate-limit-check · within limit · retorna 200 com allowed=true quando dentro do limite · remaining decresce a cada chamada … |
@@ -6916,7 +6917,6 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `e2e/stock-module.spec.ts` | 18 | Stock Module - Public Access (No Auth) · should redirect to auth when accessing /estoque unauthenticated · should display auth page when accessing /estoque · should not expose stock data to unauthenticated users … |
 | `e2e/magazine/magazine-viewer.spec.ts` | 18 | Magazine viewer — atalhos de teclado · → avança página, ← volta, Home/End extremos · T abre sumário, ? abre ajuda, B marca página · Space em botão focado NÃO avança página (C2) … |
 | `e2e/quotes/quote-item-editor-sheet-header.spec.ts` | 18 | QuoteItemEditorSheet @ ${vp.name}px · DOM: botão Salvar presente e texto  · layout:  · a11y: foco entra no dialog e  … |
-| `src/components/inventory/__tests__/StockAlertsIndicator.test.tsx` | 18 | StockAlertsIndicator — trigger · mostra o sino com aria-label dedicado (distinto do sino de workspace) · exibe o total exato vindo dos contadores server-side · cap visual 99+ quando total > 99 … |
 | … +1967 linhas — lista completa em `context.json` | | |
 
 ## L. Eventos de webhook tratados (contratos com sistemas externos)
@@ -7376,6 +7376,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | * Below this limit the regular DOM is faster, simpler and keeps all results | `src/components/kit-builder/VirtualizedKitItemList.tsx` |
 | * Fica em módulo próprio porque PersonalizationConfig.tsx já está acima do limite | `src/components/kit-builder/kitMockupDimensions.ts` |
 | * Devolve as medidas apenas quando são autoritativas, ou `undefined`. | `src/components/kit-builder/kitMockupDimensions.ts` |
+| * Aceita apenas número finito > 0 — mesma regra do `positiveOrNull` da edge. */ | `src/components/kit-builder/kitMockupDimensions.ts` |
 | de AAL hidrata; tratar apenas `aal1` liberava painel admin por uma janela | `src/components/layout/AdminRoute.tsx` |
 | tardia de AAL, etc.) NÃO deve reabrir o challenge — redireciona para | `src/components/layout/AdminRoute.tsx` |
 | apenas se o usuário chegar em AAL2). | `src/components/layout/AdminRoute.tsx` |
@@ -7384,5 +7385,4 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | Mostra toast imediato de processamento se desejar, ou apenas aguarda | `src/components/layout/Header.tsx` |
 | Context providers must be imported synchronously (consumers render inside them) | `src/components/layout/MainLayout.tsx` |
 | para a qual não tem permissão. | `src/components/layout/sidebar/RestrictedRouteNotice.tsx` |
-| E-24: mesma regra dos dots/thumbnails do MagicUpResultPanel — modo NÃO-WRAP. | `src/components/magic-up/MagicUpVariationComparator.tsx` |
-| … +1346 linhas — lista completa em `context.json` | |
+| … +1350 linhas — lista completa em `context.json` | |

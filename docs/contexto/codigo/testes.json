@@ -12456,11 +12456,11 @@
   {
    "arquivo": "supabase/functions/generate-mockup/index.geometry.test.ts",
    "tipo": "unit",
-   "linhas": 156,
+   "linhas": 211,
    "testa": [
     "supabase/functions/generate-mockup/geometry.ts"
    ],
-   "casos": 12
+   "casos": 17
   },
   {
    "arquivo": "supabase/functions/generate-mockup/index.size.test.ts",
@@ -13697,12 +13697,13 @@
   {
    "arquivo": "tests/components/kit-builder/PersonalizationConfig.test.ts",
    "tipo": "unit",
-   "linhas": 181,
+   "linhas": 220,
    "testa": [
     "src/components/kit-builder/PersonalizationConfig.tsx",
-    "src/components/kit-builder/kitMockupDimensions.ts"
+    "src/components/kit-builder/kitMockupDimensions.ts",
+    "src/hooks/mockup/mockupGeneratorModel.ts"
    ],
-   "casos": 11
+   "casos": 15
   },
   {
    "arquivo": "tests/components/kit-builder/VirtualizedKitItemList.test.tsx",
@@ -22493,7 +22494,7 @@
   "src/hooks/kit-builder/useKitWizardShortcuts.ts": 1,
   "src/hooks/kit-builder/useTemplateSnapshot.ts": 1,
   "src/hooks/mockup/mockupGenerationService.ts": 10,
-  "src/hooks/mockup/mockupGeneratorModel.ts": 5,
+  "src/hooks/mockup/mockupGeneratorModel.ts": 6,
   "src/hooks/mockup/mockupHistoryAdapter.ts": 3,
   "src/hooks/mockup/mockupSelectionSnapshot.ts": 1,
   "src/hooks/mockup/useClientMockups.ts": 3,

@@ -1578,7 +1578,7 @@
    "nome": "generate-mockup",
    "entrada": "supabase/functions/generate-mockup/index.ts",
    "arquivos": 4,
-   "linhas": 953,
+   "linhas": 1015,
    "verify_jwt": true,
    "metodos": [
     "OPTIONS",
