@@ -185,28 +185,48 @@ existe (`src/types/quote.ts:57,110`) e os **templates** editam
 Medido em produção: **0 de 7** orçamentos com `internal_notes` preenchido.
 Lacuna real, impacto zero hoje.
 
-### 4.5 Ainda não adjudicados (dos 36 com export ausente)
+### 4.5 Adjudicados nesta rodada
 
-Sem equivalente encontrado na `main` por sondagem de palavra-chave — cada um
-precisa de leitura antes de qualquer descarte:
+**Resgatados** (PR da sessão):
 
-`CatalogQualityDashboard.tsx`, `ColdStartRetriesPanel.tsx`,
-`PlatformFailureAlertBanner.tsx`, `PlatformFailureCards.tsx`,
-`SupabaseConnectionDebug.tsx`, `ShareCollectionDialog.tsx`,
-`ShareComparisonDialog.tsx`, `ShareListDialog.tsx`, `CommandActionGroup.tsx`,
-`GlobalCommandBar.tsx`, `commandActions.tsx`, `ComparisonWeightsPopover.tsx`,
-`SkeletonShimmer.tsx`, `TemplateSelector.tsx` (mockup),
-`DynamicBreadcrumbs.tsx`, `PriceResultV51.tsx`, `QuantityAndResult.tsx`,
-`ProductCardSkeleton.tsx` (`ProductCardInlineSkeleton`),
-`QuoteRowQuickActions.tsx`, `SmartSuggestions.tsx` (busca),
-`useFornecedoresGravacao.ts`, `useVariantesGravacao.ts`,
-`useCatalogPrefetch.ts`, `bridge-telemetry-client.ts`,
-`cold-start-recorder.ts`, `kit-og-image.ts`, `technique.repository.ts`.
+| arquivo | por que entrou |
+|---|---|
+| `PlatformFailureCards.tsx` | `usePlatformFailureMetrics` (`usePlatformFailureMetrics.ts:32`) já existia na `main` e **nenhuma tela o consumia** |
+| `PlatformFailureAlertBanner.tsx` | idem para `usePlatformFailureAlert` (`usePlatformFailureAlert.ts:81`), com threshold, throttle e persistência — **zero consumidores** |
 
-`QuoteRowQuickActions` já tem veredicto anterior: **rejeitado** — a largura da
-coluna está travada em 6.8rem por dois e2e dedicados.
+**Superados** (a `main` faz o mesmo, com evidência):
 
----
+| legado | onde a `main` faz |
+|---|---|
+| `GlobalCommandBar.tsx`, `commandActions.tsx`, `CommandActionGroup.tsx` | `EnhancedSpotlight`, montado em `GlobalOverlay.tsx:38`, com 26 entradas em `SpotlightItems.ts`. Os únicos destinos extras do legado (`/ajuda`, `/datas-comemorativas`, `/relatorios`, `/tecnicas`) **não existem como rota na `main`** — portá-los criaria link morto. Os conceitos vivem dentro de outras telas (ex.: datas comemorativas em `CustomizableDashboard.tsx`) |
+| `ComparisonWeightsPopover.tsx` | `ComparisonScoreCard.tsx:39,101` — sliders de peso inline, sobre o mesmo `useComparisonWeights` |
+| `SkeletonShimmer.tsx` (`TextSkeleton`, `FormSkeleton`, `AvatarSkeleton`, `ListItemSkeleton`, `PageSkeleton`) | todos em `ModernSkeletons.tsx`, exportados por `components/loading/index.ts` |
+| `ProductCardSkeleton.tsx` (`ProductCardInlineSkeleton`) | `ReplenishmentCardSkeleton.tsx` e o skeleton do `CatalogContent.tsx` |
+| `DynamicBreadcrumbs.tsx` / `CompactBreadcrumbs` | breadcrumbs já presentes em `CatalogContent.tsx`, `ConnectionsPulseBar.tsx`, `CategorySelect.tsx` |
+| `PriceResultV51.tsx` | a regra v5.1 (setup como **piso**, não soma) está em `personalization.ts:174-176`, calculada em `useWizardPricing.ts:79` e exibida em `MultiEngravingResult.tsx:316` |
+| `ColdStartRetriesPanel.tsx` | cold start já visível por dois caminhos: `ColdVsWarmCrmCard.tsx` (poll de `?op=diag`) e os cards resgatados agora (`rateColdStartPct`, `lastColdStartAt`) |
+| `SupabaseConnectionDebug.tsx` | `SupabaseConnectionsTab.tsx` + `ConnectionDetailsDialog.tsx` em `/admin/conexoes` |
+| `TemplateSelector.tsx` / `SaveTemplateDialog.tsx` (mockup) | `QuoteTemplateSelector.tsx` e os diálogos em `cart-utils/CartDialogs.tsx` |
+
+**Obsoletos, com motivo técnico:**
+
+| legado | por que não volta |
+|---|---|
+| `technique.repository.ts` | chama `https://api.promobrindes.com.br/gravacao` **direto do browser** com `VITE_GRAVACAO_API_KEY`. A variável não existe na `main`, e tudo que é externo passa por `external-db-bridge`. Ressuscitar isso colocaria chave de API no bundle — não entra |
+| `useFornecedoresGravacao.ts`, `useVariantesGravacao.ts` | miram `fornecedores_gravacao` e `tecnicas_gravacao_variantes`, que **não estão na allowlist** do bridge (`src/lib/external-db/tables.ts:77-105`). O modelo consolidou em `tabela_preco_gravacao_oficial` (54 variantes) e `tabela_preco_fornecedores_gravacao`. Falhariam em runtime |
+| `QuoteCodeBadge` (dentro de `PriceResultV51.tsx`) | só **exibe** um código que recebe por prop; nada na `main` gera `quoteCode`, que existe apenas como campo de tipo em `personalization.ts:185`. Trazer o selo sem o gerador não mostra nada |
+| `QuoteRowQuickActions.tsx` | veredicto anterior mantido: a largura da coluna está travada em 6.8rem por dois e2e dedicados |
+
+### 4.6 O que continua sem leitura
+
+`CatalogQualityDashboard.tsx` (122 l — painel de métricas de qualidade do
+catálogo; **nada equivalente na `main`**), `ShareCollectionDialog.tsx`,
+`ShareComparisonDialog.tsx`, `ShareListDialog.tsx` (presos à decisão de 4.1),
+`SmartSuggestions.tsx` da **busca** com `InlineSuggestions` e `SmartFilters` (o
+arquivo que expôs a falha do filtro; tem teste irmão de 6 casos),
+`bridge-telemetry-client.ts`, `cold-start-recorder.ts` (exigem instrumentar o
+bridge — custo de runtime, decisão de arquitetura), `kit-og-image.ts`,
+`useCatalogPrefetch.ts`, `QuantityAndResult.tsx`.
 
 ## 5. Regra que continua valendo
 
