@@ -75,6 +75,20 @@ export default defineConfig({
       // Teto de download da imagem (fetchBytes corta o stream no limite; index.ts
       // não é importável sob Node). Sem esta entrada o arquivo não é coletado.
       'supabase/functions/generate-mockup/fetch-guard.cap.test.ts',
+      // Oito suítes Vitest de edge function que existiam e NUNCA eram coletadas.
+      // O padrão `supabase/functions/**` não entra no include (lá a maioria dos
+      // testes é Deno, com `assert` do std, e quebraria sob Node), então cada
+      // arquivo Vitest precisa ser listado — e estes ficaram de fora. Medido em
+      // 2026-11-18: 8 arquivos, 67 casos, todos verdes de primeira; o que
+      // faltava era só a linha no include.
+      'supabase/functions/generate-ad-image/index.imports.test.ts',
+      'supabase/functions/generate-ad-image/index.logo.test.ts',
+      'supabase/functions/generate-ad-image/index.sanitize.test.ts',
+      'supabase/functions/generate-ad-prompt/index.timeout.test.ts',
+      'supabase/functions/magic-up-score/index.limits.test.ts',
+      'supabase/functions/mockup-assistant/index.test.ts',
+      'supabase/functions/process-scheduled-reports/index.send-failure.test.ts',
+      'supabase/functions/word-magic/index.limits.test.ts',
       // T-FIX-5: descobre a suite vitest do script anti-órfão.
       // Ver docs/redeploy/T-FIX-5-CHECKLIST.md (Passo 3).
       'scripts/__tests__/**/*.{test,spec}.{ts,mts,cts}',
