@@ -1,4 +1,8 @@
 import type { GenerateMockupParams } from '@/hooks/mockup/mockupGenerationService';
+import {
+  MISSING_DIMENSIONS_MESSAGE,
+  MISSING_DIMENSIONS_STATUS,
+} from '@/hooks/mockup/mockupGeneratorModel';
 import type { KitItemPersonalization } from '@/lib/kit-builder';
 
 /**
@@ -31,7 +35,6 @@ export function medidasAutoritativas(
   if (fonte.dimensionsKnown === false) return undefined;
   return { widthCm, heightCm };
 }
-
 
 export function buildKitMockupRequest(
   displayName: string,
@@ -77,4 +80,26 @@ export function buildKitMockupRequest(
       },
     ],
   };
+}
+
+/** Aceita apenas número finito > 0 — mesma regra do `positiveOrNull` da edge. */
+function medidaValida(value: number | null | undefined): boolean {
+  return typeof value === 'number' && Number.isFinite(value) && value > 0;
+}
+
+/**
+ * Recusa a prévia quando o produto não tem NENHUMA medida real cadastrada.
+ *
+ * A edge `generate-mockup` recusa esse payload com 422 `missing_dimensions`
+ * (supabase/functions/generate-mockup/geometry.ts → checkProductDimensions), e a
+ * mensagem de lá é escrita para quem chama a API. Aqui a recusa acontece ANTES da
+ * chamada, com a mensagem que o resto do app já mostra ao vendedor
+ * (MISSING_DIMENSIONS_MESSAGE), para ele saber o que fazer: pedir ao catálogo que
+ * cadastre largura/altura. Devolve `null` quando pode gerar.
+ */
+export function recusaPorMedidasAusentes(
+  dimensoes?: MedidasProdutoCm,
+): { message: string; status: number } | null {
+  if (medidaValida(dimensoes?.widthCm) || medidaValida(dimensoes?.heightCm)) return null;
+  return { message: MISSING_DIMENSIONS_MESSAGE, status: MISSING_DIMENSIONS_STATUS };
 }
