@@ -10,11 +10,14 @@ export interface QuoteVersion {
   id: string;
   quote_number: string;
   version: number;
-  status: string;
-  total: number;
-  subtotal: number;
-  discount_amount: number;
-  discount_percent: number;
+  // Nullable no schema real (types.ts, bloco `quotes`): a coluna tem default, mas
+  // aceita NULL. Coagir `status` para 'draft' e `total` para 0 mostrava "rascunho"
+  // e "R$ 0,00" como se fossem o valor gravado — a tela passa a dizer "—".
+  status: string | null;
+  total: number | null;
+  subtotal: number | null;
+  discount_amount: number | null;
+  discount_percent: number | null;
   // Colunas nullable no schema real (src/integrations/supabase/types.ts, bloco `quotes`).
   // Coagir para '' fazia `new Date('')` => Invalid Date e `format()` derrubava o render.
   created_at: string | null;
@@ -84,13 +87,11 @@ export function useQuoteVersions(quoteId?: string) {
           countMap.set(item.quote_id, (countMap.get(item.quote_id) || 0) + 1);
         });
 
+        // Nenhum `?? 0` / `?? 'draft'` aqui: valor que o banco nao tem chega como
+        // null e a tela mostra "—". Inventar 0 fazia o vendedor ler "R$ 0,00" como
+        // se o orcamento tivesse esse valor.
         const versionsWithCounts: QuoteVersion[] = (data || []).map((v) => ({
           ...v,
-          status: v.status ?? 'draft',
-          total: v.total ?? 0,
-          subtotal: v.subtotal ?? 0,
-          discount_amount: v.discount_amount ?? 0,
-          discount_percent: v.discount_percent ?? 0,
           created_at: v.created_at ?? null,
           updated_at: v.updated_at ?? null,
           items_count: countMap.get(v.id) || 0,

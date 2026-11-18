@@ -318,7 +318,10 @@ export function QuoteTemplatesList({
 
                   <div className="border-t pt-2 text-xs text-muted-foreground">
                     Atualizado em{' '}
-                    {format(new Date(template.updated_at), 'dd/MM/yyyy', { locale: ptBR })}
+                    {/* `updated_at` e nullable no schema: sem data, nao invente uma. */}
+                    {template.updated_at
+                      ? format(new Date(template.updated_at), 'dd/MM/yyyy', { locale: ptBR })
+                      : '—'}
                   </div>
                 </div>
               </CardContent>
