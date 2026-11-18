@@ -17564,13 +17564,13 @@
   {
    "arquivo": "tests/hooks/useMagicUpState.legacy.test.tsx",
    "tipo": "unit",
-   "linhas": 507,
+   "linhas": 596,
    "testa": [
     "src/hooks/intelligence/useMagicUpState.ts",
     "src/pages/magic-up/magicUpStrategy.ts",
     "src/types/crm.ts"
    ],
-   "casos": 7
+   "casos": 9
   },
   {
    "arquivo": "tests/hooks/useMockupDraft.legacy.test.ts",

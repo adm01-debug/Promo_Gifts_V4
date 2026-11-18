@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "21e64d69ec622cf00f7df8df4c3c8052af89f5a2",
+  "commit": "96509703904937e5bb20911436b1aab6e68a801e",
   "branch": "main",
-  "data_commit": "2026-11-17T21:01:07-03:00",
+  "data_commit": "2026-11-17T21:12:32-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "96509703",
+    "data": "2026-11-17",
+    "assunto": "fix(hooks): solta o spinner preso ao sair do produto antes da resposta (#3787)"
+   },
    {
     "sha": "21e64d69",
     "data": "2026-11-17",
@@ -126,14 +131,9 @@
     "sha": "3c578584",
     "data": "2026-11-17",
     "assunto": "docs(resgate): conserta as 13 referencias quebradas do dossie da 3390 (#3783)"
-   },
-   {
-    "sha": "92bec3ca",
-    "data": "2026-11-17",
-    "assunto": "chore(deps): tira basic-ftp da lista de risco tolerado, ja que o override o eliminou (#3782)"
    }
   ],
-  "arquivos_mudados_7d": 1982,
+  "arquivos_mudados_7d": 1983,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -324,7 +324,7 @@
  "contagens": {
   "arquivos_total": 10884,
   "arquivos_codigo": 5409,
-  "linhas_codigo": 1032670,
+  "linhas_codigo": 1032760,
   "rotas": 139,
   "rotas_http_backend": 13,
   "vistas_por_id": 0,
@@ -1920,7 +1920,7 @@
   },
   "src/hooks": {
    "arquivos": 481,
-   "linhas": 90985
+   "linhas": 90986
   },
   "src/integrations": {
    "arquivos": 11,
@@ -2092,7 +2092,7 @@
   },
   "tests/hooks": {
    "arquivos": 159,
-   "linhas": 25307
+   "linhas": 25396
   },
   "tests/integration": {
    "arquivos": 11,

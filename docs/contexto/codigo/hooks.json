@@ -9270,7 +9270,7 @@
    "hooks_exportados": [
     "useMagicUpState"
    ],
-   "linhas": 852,
+   "linhas": 853,
    "dominio": "hooks/intelligence",
    "tabelas": [
     "magic_up_brand_kits"
