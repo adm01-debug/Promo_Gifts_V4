@@ -5,13 +5,13 @@
   "vitest",
   "playwright"
  ],
- "total": 2594,
+ "total": 2595,
  "por_tipo": {
   "contrato": 66,
   "e2e": 677,
   "pytest": 5,
   "qa": 17,
-  "unit": 1829
+  "unit": 1830
  },
  "onde_ficam": [
   {
@@ -20,7 +20,7 @@
   },
   {
    "padrao": "co-localizado (__tests__)",
-   "arquivos": 691
+   "arquivos": 692
   },
   {
    "padrao": "e2e/",
@@ -12051,6 +12051,15 @@
    "casos": 18
   },
   {
+   "arquivo": "src/utils/__tests__/color-matching.test.ts",
+   "tipo": "unit",
+   "linhas": 86,
+   "testa": [
+    "src/utils/color-matching.ts"
+   ],
+   "casos": 9
+  },
+  {
    "arquivo": "src/utils/__tests__/image-utils.blurhash.test.ts",
    "tipo": "unit",
    "linhas": 72,
@@ -22941,6 +22950,7 @@
   "src/utils/cnpj-schema.ts": 5,
   "src/utils/color-group-hex.ts": 1,
   "src/utils/color-image-resolver.ts": 2,
+  "src/utils/color-matching.ts": 1,
   "src/utils/color-variant-carousel.ts": 1,
   "src/utils/colorSorting.ts": 3,
   "src/utils/currency.ts": 1,

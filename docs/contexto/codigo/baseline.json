@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "97bfe1833db436f0a8372c0748d3d0321eafeea6",
+  "commit": "3f87aa94a02a6f9399c8263b5bb218b1b25bcd56",
   "branch": "main",
-  "data_commit": "2026-11-18T14:37:36-03:00",
+  "data_commit": "2026-11-18T15:15:19-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "3f87aa94",
+    "data": "2026-11-18",
+    "assunto": "test(utils): resgata a cobertura do casamento de cor Pantone (#3834)"
+   },
    {
     "sha": "97bfe183",
     "data": "2026-11-18",
@@ -126,14 +131,9 @@
     "sha": "96509703",
     "data": "2026-11-17",
     "assunto": "fix(hooks): solta o spinner preso ao sair do produto antes da resposta (#3787)"
-   },
-   {
-    "sha": "21e64d69",
-    "data": "2026-11-17",
-    "assunto": "fix(kit): Ctrl+S repetido criava dois kits iguais (#3798)"
    }
   ],
-  "arquivos_mudados_7d": 1484,
+  "arquivos_mudados_7d": 1485,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -199,7 +199,7 @@
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "supabase/MIGRATIONS_SYNC_LOG.md",
-    "mudancas": 63
+    "mudancas": 62
    },
    {
     "arquivo": "RELATORIO_CI.md",
@@ -226,11 +226,11 @@
     "mudancas": 21
    },
    {
-    "arquivo": "supabase/EDGE_FUNCTIONS_DEPLOY_LOG.md",
-    "mudancas": 17
+    "arquivo": "src/pages/kit-builder/KitBuilderPage.tsx",
+    "mudancas": 16
    },
    {
-    "arquivo": "src/pages/kit-builder/KitBuilderPage.tsx",
+    "arquivo": "supabase/EDGE_FUNCTIONS_DEPLOY_LOG.md",
     "mudancas": 16
    },
    {
@@ -301,7 +301,7 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 531
+    "commits": 530
    },
    {
     "autor": "Claude",
@@ -322,9 +322,9 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 10929,
-  "arquivos_codigo": 5446,
-  "linhas_codigo": 1038807,
+  "arquivos_total": 10930,
+  "arquivos_codigo": 5447,
+  "linhas_codigo": 1038893,
   "rotas": 139,
   "rotas_http_backend": 13,
   "vistas_por_id": 0,
@@ -336,7 +336,7 @@
   "tabelas": 527,
   "migrations": 3099,
   "cron_jobs": 122,
-  "testes": 2594,
+  "testes": 2595,
   "workflows": 88,
   "scripts": 283,
   "docs_md": 1478
@@ -1967,8 +1967,8 @@
    "linhas": 4437
   },
   "src/utils": {
-   "arquivos": 57,
-   "linhas": 8311
+   "arquivos": 58,
+   "linhas": 8397
   },
   "supabase/functions": {
    "arquivos": 278,

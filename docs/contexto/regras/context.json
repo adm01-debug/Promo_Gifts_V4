@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "97bfe1833db436f0a8372c0748d3d0321eafeea6",
+  "sha": "3f87aa94a02a6f9399c8263b5bb218b1b25bcd56",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-18 17:38 UTC",
-  "files_total": 10857,
-  "code_files": 8885,
-  "code_lines": 1259539
+  "generated_at": "2026-11-18 18:19 UTC",
+  "files_total": 10858,
+  "code_files": 8886,
+  "code_lines": 1259625
  },
  "version": "1.3.2",
- "facts_hash": "81db26d39d5a2c2f",
+ "facts_hash": "2e081cecc42c18ff",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -1120,7 +1120,7 @@
   "package_manager": "npm",
   "languages": {
    ".sql": 3440,
-   ".ts": 3031,
+   ".ts": 3032,
    ".tsx": 1949,
    ".mjs": 450,
    ".py": 15,
@@ -151046,8 +151046,8 @@
   },
   {
    "module": "src/utils",
-   "files": 57,
-   "lines": 8311,
+   "files": 58,
+   "lines": 8397,
    "tables": [],
    "exports": [
     "br-schemas.ts: cpfOptionalSchema, cepOptionalSchema, phoneBrOptionalSchema, assertPersistableCpf, assertPersistableCep, assertPersistablePhoneBr",
@@ -151160,6 +151160,7 @@
     "src/utils/__tests__/cnpj-exhaustive.test.ts",
     "src/utils/__tests__/cnpj-fuzz-helpers.ts",
     "src/utils/__tests__/cnpj-gap-hunt.test.ts",
+    "src/utils/__tests__/color-matching.test.ts",
     "src/utils/__tests__/image-utils.blurhash.test.ts",
     "src/utils/__tests__/image-utils.fuzz.test.ts",
     "src/utils/__tests__/product-sorting.test.ts",
@@ -262162,6 +262163,58 @@
    {
     "file": "src/utils/__tests__/cnpj-gap-hunt.test.ts",
     "name": "${N} amostras adversariais: entrada aleatória nunca vaza máscara na saída aceita"
+   },
+   {
+    "file": "src/utils/__tests__/color-matching.test.ts",
+    "name": "color-matching.ts"
+   },
+   {
+    "file": "src/utils/__tests__/color-matching.test.ts",
+    "name": "getBestPantoneMatch"
+   },
+   {
+    "file": "src/utils/__tests__/color-matching.test.ts",
+    "name": "should find the exact match for pure white"
+   },
+   {
+    "file": "src/utils/__tests__/color-matching.test.ts",
+    "name": "should find the exact match for pure black"
+   },
+   {
+    "file": "src/utils/__tests__/color-matching.test.ts",
+    "name": "should handle short hex codes if they were supported (not currently, but testing robustly)"
+   },
+   {
+    "file": "src/utils/__tests__/color-matching.test.ts",
+    "name": "should find a close match for a specific brand color (e.g. Coca-Cola Red #F40009)"
+   },
+   {
+    "file": "src/utils/__tests__/color-matching.test.ts",
+    "name": "findNearestPantone"
+   },
+   {
+    "file": "src/utils/__tests__/color-matching.test.ts",
+    "name": "should return exactly topN matches"
+   },
+   {
+    "file": "src/utils/__tests__/color-matching.test.ts",
+    "name": "should return matches sorted by deltaE ascending"
+   },
+   {
+    "file": "src/utils/__tests__/color-matching.test.ts",
+    "name": "should handle hex codes without the # prefix"
+   },
+   {
+    "file": "src/utils/__tests__/color-matching.test.ts",
+    "name": "Edge Cases"
+   },
+   {
+    "file": "src/utils/__tests__/color-matching.test.ts",
+    "name": "should handle invalid hex characters by returning some result (graceful failure)"
+   },
+   {
+    "file": "src/utils/__tests__/color-matching.test.ts",
+    "name": "should handle empty string"
    },
    {
     "file": "src/utils/__tests__/image-utils.blurhash.test.ts",
@@ -494805,6 +494858,26 @@
     "${N} amostras adversariais: entrada aleatória nunca vaza máscara na saída aceita"
    ]
   },
+  "src/utils/__tests__/color-matching.test.ts": {
+   "path": "src/utils/__tests__/color-matching.test.ts",
+   "lines": 86,
+   "is_test": true,
+   "tests": [
+    "color-matching.ts",
+    "getBestPantoneMatch",
+    "should find the exact match for pure white",
+    "should find the exact match for pure black",
+    "should handle short hex codes if they were supported (not currently, but testing robustly)",
+    "should find a close match for a specific brand color (e.g. Coca-Cola Red #F40009)",
+    "findNearestPantone",
+    "should return exactly topN matches",
+    "should return matches sorted by deltaE ascending",
+    "should handle hex codes without the # prefix",
+    "Edge Cases",
+    "should handle invalid hex characters by returning some result (graceful failure)",
+    "should handle empty string"
+   ]
+  },
   "src/utils/__tests__/image-utils.blurhash.test.ts": {
    "path": "src/utils/__tests__/image-utils.blurhash.test.ts",
    "lines": 72,
@@ -546579,10 +546652,19 @@
   }
  },
  "git": {
-  "sha": "97bfe1833db436f0a8372c0748d3d0321eafeea6",
+  "sha": "3f87aa94a02a6f9399c8263b5bb218b1b25bcd56",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "3f87aa9",
+    "date": "2026-11-18",
+    "author": "adm01-debug",
+    "subject": "test(utils): resgata a cobertura do casamento de cor Pantone (#3834)",
+    "files": [
+     "src/utils/__tests__/color-matching.test.ts"
+    ]
+   },
    {
     "sha": "97bfe18",
     "date": "2026-11-18",
@@ -546932,15 +547014,6 @@
     "files": [
      "tests/hooks/useCustomKitPersistence.legacy.test.tsx"
     ]
-   },
-   {
-    "sha": "32de6af",
-    "date": "2026-11-17",
-    "author": "adm01-debug",
-    "subject": "test(products): resgata a cobertura de ciclo de vida dos filtros de cor e categoria (#3792)",
-    "files": [
-     "tests/hooks/useLegacyLintFilters.test.ts"
-    ]
    }
   ],
   "hot_files": [
@@ -546993,6 +547066,10 @@
     2
    ],
    [
+    "src/utils/__tests__/color-matching.test.ts",
+    1
+   ],
+   [
     "src/components/kit-library/KitLibraryStats.tsx",
     1
    ],
@@ -547018,10 +547095,6 @@
    ],
    [
     "src/lib/quotes/templateTotal.ts",
-    1
-   ],
-   [
-    "docs/agentes/resgates/2026-11-18-recibo-adjudicacao.md",
     1
    ]
   ]
