@@ -1,8 +1,8 @@
 {
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
- "nos": 2850,
- "arestas": 11234,
+ "nos": 2851,
+ "arestas": 11241,
  "hubs": [
   {
    "arquivo": "src/lib/utils.ts",
@@ -10,7 +10,7 @@
   },
   {
    "arquivo": "src/components/ui/button.tsx",
-   "importado_por": 638
+   "importado_por": 639
   },
   {
    "arquivo": "src/components/ui/badge.tsx",
@@ -82,7 +82,7 @@
   },
   {
    "arquivo": "src/types/product-catalog.ts",
-   "importado_por": 90
+   "importado_por": 92
   },
   {
    "arquivo": "src/hooks/intelligence/index.ts",
@@ -117,15 +117,15 @@
    "importado_por": 61
   },
   {
+   "arquivo": "src/lib/security/sanitize-error.ts",
+   "importado_por": 55
+  },
+  {
    "arquivo": "src/utils/image-utils.ts",
    "importado_por": 55
   },
   {
    "arquivo": "src/components/ui/table.tsx",
-   "importado_por": 54
-  },
-  {
-   "arquivo": "src/lib/security/sanitize-error.ts",
    "importado_por": 54
   },
   {
@@ -153,16 +153,16 @@
    "importado_por": 47
   },
   {
+   "arquivo": "src/components/ui/dropdown-menu.tsx",
+   "importado_por": 47
+  },
+  {
    "arquivo": "supabase/functions/_shared/request-id.ts",
    "importado_por": 47
   },
   {
-   "arquivo": "src/components/ui/dropdown-menu.tsx",
-   "importado_por": 46
-  },
-  {
    "arquivo": "src/lib/format.ts",
-   "importado_por": 44
+   "importado_por": 45
   }
  ],
  "ciclos": {
@@ -687,6 +687,11 @@
    "importado_por": 26
   },
   {
+   "modulo": "lib/security",
+   "depende_de": 5,
+   "importado_por": 29
+  },
+  {
    "modulo": "pages/admin",
    "depende_de": 31,
    "importado_por": 3
@@ -700,11 +705,6 @@
    "modulo": "lib/edge",
    "depende_de": 3,
    "importado_por": 30
-  },
-  {
-   "modulo": "lib/security",
-   "depende_de": 5,
-   "importado_por": 28
   },
   {
    "modulo": "components/common",

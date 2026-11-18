@@ -5509,6 +5509,14 @@
    "src/hooks/favorites/index.ts",
    "src/lib/utils.ts"
   ],
+  "src/components/favorites/ExportFavoritesButton.tsx": [
+   "src/components/ui/button.tsx",
+   "src/components/ui/dropdown-menu.tsx",
+   "src/hooks/favorites/index.ts",
+   "src/lib/format.ts",
+   "src/lib/security/sanitize-error.ts",
+   "src/types/product-catalog.ts"
+  ],
   "src/components/favorites/FavoriteListsSidebar.tsx": [
    "src/components/favorites/CreateListDialog.tsx",
    "src/components/ui/ConfirmDialog.tsx",
@@ -5555,6 +5563,7 @@
    "src/hooks/favorites/index.ts"
   ],
   "src/components/favorites/FavoritesViewHeader.tsx": [
+   "src/components/favorites/ExportFavoritesButton.tsx",
    "src/components/favorites/FavoritePresentationLauncher.tsx",
    "src/components/favorites/FavoritesHeatmap.tsx",
    "src/components/favorites/FavoritesSortBar.tsx",

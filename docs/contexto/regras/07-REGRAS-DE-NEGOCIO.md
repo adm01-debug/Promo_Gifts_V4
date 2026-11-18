@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.3.2 · commit `13b8a73c5c` · branch `main` · 2026-11-18 16:55 UTC
+> Gerado automaticamente por AI Context Sync v1.3.2 · commit `5a8a84df82` · branch `main` · 2026-11-18 16:59 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -5197,6 +5197,12 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `delay: 0.5 + i * 0.05,` | `src/components/effects/SuccessCelebration.tsx` |
 | `delay: i * 0.3,` | `src/components/effects/SuccessCelebration.tsx` |
 | `delay: i * 0.2,` | `src/components/expert/chat/ChatMessageList.tsx` |
+| `const imgH = cellH * 0.55;` | `src/components/favorites/ExportFavoritesButton.tsx` |
+| `doc.text(formatCurrency(p.price ?? 0), x + 4, y + cellH * 0.6 + 22);` | `src/components/favorites/ExportFavoritesButton.tsx` |
+| `doc.text(name, x + 4, y + cellH * 0.6 + 4);` | `src/components/favorites/ExportFavoritesButton.tsx` |
+| `doc.text(noteLines, x + 4, y + cellH * 0.6 + 33);` | `src/components/favorites/ExportFavoritesButton.tsx` |
+| `doc.text(p.sku ?? '—', x + 4, y + cellH * 0.6 + 14);` | `src/components/favorites/ExportFavoritesButton.tsx` |
+| `if (variant) doc.text(`Cor: ${variant}`, x + 4, y + cellH * 0.6 + 28);` | `src/components/favorites/ExportFavoritesButton.tsx` |
 | `const getBarOpacity = (i: number) => Math.max(1 - i * 0.06, 0.35);` | `src/components/intelligence/CategoryRanking.tsx` |
 | `const getOpacity = (i: number) => Math.max(1 - i * 0.08, 0.4);` | `src/components/intelligence/SegmentAnalysis.tsx` |
 | `const getBarOpacity = (i: number) => Math.max(1 - i * 0.07, 0.4);` | `src/components/intelligence/SupplierSales.tsx` |
@@ -6489,7 +6495,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | allowlist inválida: versions contém duplicatas | `scripts/check-supabase-migration-ledger.mjs` |
 | allowlist inválida: versions contém valor vazio/não textual | `scripts/check-supabase-migration-ledger.mjs` |
 | allowlist inválida: versions deve ser array não vazio | `scripts/check-supabase-migration-ledger.mjs` |
-| … +1303 linhas — lista completa em `context.json` | |
+| … +1306 linhas — lista completa em `context.json` | |
 
 ## J. Controle de acesso no código (checagens de perfil/permissão)
 
@@ -6613,7 +6619,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `admin` | `supabase/migrations/20261112120500_fix_optimization_queue_rpcs_dev_access.sql` |
 | `anon` | `tests/edge-functions/live/_live-client.ts` |
 
-## K. Testes como especificação (22484 testes em 2267 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (22494 testes em 2269 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -6917,7 +6923,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `e2e/stock-module.spec.ts` | 18 | Stock Module - Public Access (No Auth) · should redirect to auth when accessing /estoque unauthenticated · should display auth page when accessing /estoque · should not expose stock data to unauthenticated users … |
 | `e2e/magazine/magazine-viewer.spec.ts` | 18 | Magazine viewer — atalhos de teclado · → avança página, ← volta, Home/End extremos · T abre sumário, ? abre ajuda, B marca página · Space em botão focado NÃO avança página (C2) … |
 | `e2e/quotes/quote-item-editor-sheet-header.spec.ts` | 18 | QuoteItemEditorSheet @ ${vp.name}px · DOM: botão Salvar presente e texto  · layout:  · a11y: foco entra no dialog e  … |
-| … +1967 linhas — lista completa em `context.json` | | |
+| … +1969 linhas — lista completa em `context.json` | | |
 
 ## L. Eventos de webhook tratados (contratos com sistemas externos)
 

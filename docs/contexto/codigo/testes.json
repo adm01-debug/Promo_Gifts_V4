@@ -5,13 +5,13 @@
   "vitest",
   "playwright"
  ],
- "total": 2590,
+ "total": 2592,
  "por_tipo": {
   "contrato": 66,
   "e2e": 677,
   "pytest": 5,
   "qa": 17,
-  "unit": 1825
+  "unit": 1827
  },
  "onde_ficam": [
   {
@@ -20,7 +20,7 @@
   },
   {
    "padrao": "co-localizado (__tests__)",
-   "arquivos": 687
+   "arquivos": 689
   },
   {
    "padrao": "e2e/",
@@ -5302,6 +5302,17 @@
    "casos": 5
   },
   {
+   "arquivo": "src/components/favorites/__tests__/ExportFavoritesButton.test.tsx",
+   "tipo": "unit",
+   "linhas": 164,
+   "testa": [
+    "src/components/favorites/ExportFavoritesButton.tsx",
+    "src/hooks/favorites/index.ts",
+    "src/types/product-catalog.ts"
+   ],
+   "casos": 4
+  },
+  {
    "arquivo": "src/components/filters/__tests__/PresetsBar.test.tsx",
    "tipo": "unit",
    "linhas": 104,
@@ -8627,6 +8638,15 @@
     "src/lib/supabase-untyped.ts"
    ],
    "casos": 2
+  },
+  {
+   "arquivo": "src/hooks/products/__tests__/useReposicaoVariantsSummary.test.ts",
+   "tipo": "unit",
+   "linhas": 128,
+   "testa": [
+    "src/hooks/products/useReposicaoVariantsSummary.ts"
+   ],
+   "casos": 4
   },
   {
    "arquivo": "src/hooks/products/__tests__/useSellerCarts.addItem-toast.test.tsx",
@@ -22169,6 +22189,7 @@
   "src/components/errors/SafeMessage.tsx": 1,
   "src/components/errors/SectionErrorBoundary.tsx": 1,
   "src/components/expert/ExpertChatDialog.tsx": 1,
+  "src/components/favorites/ExportFavoritesButton.tsx": 1,
   "src/components/favorites/FavoritePresentationLauncher.tsx": 1,
   "src/components/filters/FilterPanel.tsx": 12,
   "src/components/filters/PresetsBar.tsx": 1,
@@ -22455,6 +22476,7 @@
   "src/hooks/crm/useRamoAtividadeFilter.ts": 1,
   "src/hooks/customization/useCustomizationCollapsePrefs.ts": 1,
   "src/hooks/dev/useBridgeMetrics.ts": 10,
+  "src/hooks/favorites/index.ts": 1,
   "src/hooks/favorites/useFavoriteLists.ts": 1,
   "src/hooks/favorites/useFavorites.ts": 1,
   "src/hooks/intelligence/index.ts": 9,
@@ -22534,6 +22556,7 @@
   "src/hooks/products/usePublicoAlvoOptions.ts": 1,
   "src/hooks/products/useReplenishments.ts": 4,
   "src/hooks/products/useReplenishmentsSelectionMode.ts": 2,
+  "src/hooks/products/useReposicaoVariantsSummary.ts": 1,
   "src/hooks/products/useSellerCarts.ts": 11,
   "src/hooks/products/useSimilarProducts.ts": 1,
   "src/hooks/products/useStockAlerts.ts": 1,
@@ -22886,7 +22909,7 @@
   "src/types/gravacao.ts": 2,
   "src/types/magazine.ts": 29,
   "src/types/mockup-approval.ts": 3,
-  "src/types/product-catalog.ts": 27,
+  "src/types/product-catalog.ts": 28,
   "src/types/quote.ts": 8,
   "src/types/ramo-atividade.ts": 1,
   "src/types/simulation.ts": 3,
@@ -23409,7 +23432,6 @@
    "src/hooks/products/useProductSupplierSources.ts",
    "src/hooks/products/useRecentlyViewed.ts",
    "src/hooks/products/useRecentProducts.ts",
-   "src/hooks/products/useReposicaoVariantsSummary.ts",
    "src/hooks/products/useSellerCarts.helpers.ts",
    "src/hooks/products/useSupplierNames.ts",
    "src/hooks/quotes/useNextQuoteNumberPreview.ts",

@@ -1,7 +1,7 @@
 {
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
- "total": 1251,
+ "total": 1252,
  "orfaos": 161,
  "nomes_duplicados": {
   "AdminTemplatesManager": [
@@ -116,6 +116,10 @@
   "EngravingRegistrationContent": [
    "recovery/src-legacy/src/pages/EngravingRegistrationPage.tsx",
    "src/pages/tools/EngravingRegistrationPage.tsx"
+  ],
+  "ExportFavoritesButton": [
+   "recovery/src-legacy/src/components/favorites/ExportFavoritesButton.tsx",
+   "src/components/favorites/ExportFavoritesButton.tsx"
   ],
   "ExternalDatabaseTest": [
    "recovery/src-legacy/src/pages/ExternalDatabaseTest.tsx",
@@ -8403,6 +8407,20 @@
    "orfao": false
   },
   {
+   "arquivo": "src/components/favorites/ExportFavoritesButton.tsx",
+   "exports": [
+    "ExportFavoritesButton"
+   ],
+   "export_default": null,
+   "linhas": 280,
+   "dominio": "components/favorites",
+   "hooks_locais": [],
+   "tabelas": [],
+   "edges": [],
+   "usado_por": 1,
+   "orfao": false
+  },
+  {
    "arquivo": "src/components/favorites/FavoriteListsSidebar.tsx",
    "exports": [
     "FavoriteListsSidebar"
@@ -8514,7 +8532,7 @@
     "FavoritesViewHeader"
    ],
    "export_default": null,
-   "linhas": 161,
+   "linhas": 166,
    "dominio": "components/favorites",
    "hooks_locais": [],
    "tabelas": [],
@@ -16157,7 +16175,7 @@
    "hooks_locais": [],
    "tabelas": [],
    "edges": [],
-   "usado_por": 633,
+   "usado_por": 634,
    "orfao": false
   },
   {
@@ -16436,7 +16454,7 @@
    ],
    "tabelas": [],
    "edges": [],
-   "usado_por": 45,
+   "usado_por": 46,
    "orfao": false
   },
   {

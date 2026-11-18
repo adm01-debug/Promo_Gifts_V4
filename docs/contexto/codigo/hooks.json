@@ -11612,7 +11612,7 @@
    "hooks_exportados": [
     "useReposicaoVariantsSummary"
    ],
-   "linhas": 130,
+   "linhas": 141,
    "dominio": "hooks/products",
    "tabelas": [],
    "rpcs": [
@@ -11627,7 +11627,7 @@
    "usado_por_arquivos": [
     "src/components/replenishments/ReplenishmentProductGrid.tsx"
    ],
-   "coberto_por_testes": 0
+   "coberto_por_testes": 1
   },
   {
    "arquivo": "src/hooks/products/useSellerCarts.helpers.ts",

@@ -6099,13 +6099,13 @@
   },
   {
    "modulo": "components/favorites",
-   "arquivos": 12,
-   "testes": 0,
-   "linhas": 1500,
+   "arquivos": 13,
+   "testes": 1,
+   "linhas": 1785,
    "itens_menu": [],
    "telas": [],
    "rotas_http": [],
-   "componentes": 12,
+   "componentes": 13,
    "hooks_locais": [
     "useA11y",
     "useAIRecommendations",
@@ -6507,13 +6507,16 @@
     "hooks/favorites",
     "integrations/supabase",
     "lib",
+    "lib/security",
     "types"
    ],
    "pacotes_externos": [
     "@tanstack/react-query",
     "framer-motion",
+    "jspdf",
     "lucide-react",
-    "react-router-dom"
+    "react-router-dom",
+    "sonner"
    ]
   },
   {
@@ -20846,8 +20849,8 @@
   {
    "modulo": "hooks/products",
    "arquivos": 71,
-   "testes": 33,
-   "linhas": 14419,
+   "testes": 34,
+   "linhas": 14430,
    "itens_menu": [],
    "telas": [],
    "rotas_http": [],
@@ -26283,6 +26286,7 @@
     "components/audit",
     "components/catalog",
     "components/errors",
+    "components/favorites",
     "components/kit-builder",
     "components/layout",
     "components/magic-up",
