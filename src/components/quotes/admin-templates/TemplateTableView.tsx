@@ -73,7 +73,9 @@ export function TemplateTableView({
                 <TableCell>
                   <div className="flex items-center gap-2">
                     <User className="h-4 w-4 text-muted-foreground" />
-                    <span className="text-sm">{getSellerName(template.seller_id)}</span>
+                    <span className="text-sm">
+                      {template.seller_id ? getSellerName(template.seller_id) : 'Sistema'}
+                    </span>
                   </div>
                 </TableCell>
                 <TableCell className="text-center">
@@ -91,7 +93,10 @@ export function TemplateTableView({
                   )}
                 </TableCell>
                 <TableCell className="text-right text-sm text-muted-foreground">
-                  {format(new Date(template.updated_at), 'dd/MM/yy', { locale: ptBR })}
+                  {/* `updated_at` e nullable no schema. */}
+                  {template.updated_at
+                    ? format(new Date(template.updated_at), 'dd/MM/yy', { locale: ptBR })
+                    : '—'}
                 </TableCell>
                 <TableCell>
                   <DropdownMenu>

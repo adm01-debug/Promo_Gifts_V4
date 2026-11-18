@@ -177,7 +177,11 @@ describe('original lightweight catalog boundary', () => {
     const record = { id: 'partial', name: 'Incomplete product' };
     const product = mapLightweightToProduct(record);
     expect(product.id).toBe('partial');
-    expect(product.sku).toBeUndefined();
+    // `v_products_public.sku` e nullable, mas `Product.sku` e `string`: devolver
+    // undefined aqui era o buraco de tipo do item 6 do resgate. A linha parcial
+    // continua preservada (e o que este caso protege); o SKU ausente agora chega
+    // como string vazia em vez de furar o tipo.
+    expect(product.sku).toBe('');
     expect(product.shortDescription).toBe('');
     expect(product.images).toEqual(['/placeholder.svg']);
   });

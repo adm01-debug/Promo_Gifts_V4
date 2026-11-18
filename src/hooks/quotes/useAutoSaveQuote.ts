@@ -18,6 +18,14 @@ interface AutoSaveOptions<T> {
   onRestore?: (data: T) => void;
   debounceMs?: number;
   key?: string;
+  /**
+   * GUARD: valida o rascunho lido do localStorage ANTES de entregar a `onRestore`.
+   * Sem isto, um envelope corrompido ou adulterado (`quantity: 'bad'`, item sem
+   * `product_id`) ia direto para o estado do construtor e virava preço NaN na tela
+   * do vendedor. `false` descarta a restauração sem apagar o storage — o rascunho é
+   * a única cópia do trabalho dele e fica para investigação.
+   */
+  validate?: (data: unknown) => boolean;
 }
 
 /**
@@ -90,6 +98,7 @@ export function useAutoSaveQuote<T>({
   onRestore,
   debounceMs = 2000,
   key = 'quote_builder_autosave',
+  validate,
 }: AutoSaveOptions<T>) {
   const lastSavedRef = useRef<string>('');
   const hasRestoredRef = useRef(false);
@@ -99,6 +108,8 @@ export function useAutoSaveQuote<T>({
    */
   const onRestoreRef = useRef(onRestore);
   onRestoreRef.current = onRestore;
+  const validateRef = useRef(validate);
+  validateRef.current = validate;
 
   // Efeito de carregamento inicial (Restaurar)
   useEffect(() => {
@@ -112,6 +123,16 @@ export function useAutoSaveQuote<T>({
         const migrated = migratePayload<T>(payload);
 
         if (migrated && migrated.data && onRestoreRef.current) {
+          // GUARD: rascunho so entra no estado depois de validado (ver `validate`).
+          if (validateRef.current && !validateRef.current(migrated.data)) {
+            logger.warn('[AutoSave] Rascunho recusado pela validacao; estado nao foi alterado');
+            toast.warning('Rascunho anterior nao pode ser restaurado (conteudo invalido).', {
+              description:
+                'O formulario foi iniciado em branco. O rascunho foi mantido para investigacao.',
+              duration: 6000,
+            });
+            return;
+          }
           onRestoreRef.current(migrated.data);
           lastSavedRef.current = JSON.stringify(migrated.data);
         }
@@ -119,7 +140,11 @@ export function useAutoSaveQuote<T>({
         // BUG-AUTOSAVE-CORRUPT FIX: previously silent — user had no idea the draft
         // was lost. Now we notify and purge the corrupted entry so it isn't retried.
         logger.error('Failed to parse/migrate autosave data', e);
-        try { localStorage.removeItem(key); } catch { /* ignore */ }
+        try {
+          localStorage.removeItem(key);
+        } catch {
+          /* ignore */
+        }
         toast.warning('Rascunho anterior não pôde ser restaurado (dados corrompidos).', {
           description: 'O formulário foi iniciado em branco. Salve o orçamento assim que possível.',
           duration: 6000,
@@ -167,7 +192,10 @@ export function useAutoSaveQuote<T>({
           try {
             localStorage.setItem(key, serialized);
           } catch (retryErr) {
-            logger.error('[AutoSave] Quota exceeded even after cleanup — draft NOT saved', retryErr);
+            logger.error(
+              '[AutoSave] Quota exceeded even after cleanup — draft NOT saved',
+              retryErr,
+            );
             return;
           }
         } else {
