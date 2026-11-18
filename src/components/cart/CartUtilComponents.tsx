@@ -3,12 +3,18 @@
  *
  * Dialogs, export utils, and mobile sheet extracted to ./cart-utils/.
  *
- * NOTA (faxina pós-remoção CartHealthChecklist):
- *   - `SmartSuggestions` e `ActionHistoryPanel` foram removidos junto com os
- *     painéis "Saúde do carrinho" / "Inteligência de vendas" do CartSidebar.
- *   - Helpers `recordAction` / `getActionHistory` / `clearActionHistory` /
- *     `SuggestionSkeleton` / `CartAction` também foram excluídos por serem
- *     dead code após a remoção dos consumidores.
+ * NOTA (2026-11-18 — decisão do dono: volta parcial da PR #3361):
+ *   - `CartHealthChecklist` VOLTOU, em módulo próprio
+ *     (@/components/cart/CartHealthChecklist), montado pelo CartSidebar.
+ *     Ele NÃO é reexportado por este barrel — importe do módulo.
+ *   - `SmartSuggestions` continua fora: o arquivo recuperado era 100% mock
+ *     (lista de produtos e URLs hardcoded), sem consumidor em recovery/.
+ *   - `ActionHistoryPanel` / `SuggestionSkeleton` / `CartAction` e os helpers
+ *     `recordAction` / `getActionHistory` / `clearActionHistory` continuam
+ *     fora: não existem em recovery/src-legacy, logo não há o que restaurar.
+ *   - O painel "Inteligência de vendas" era markup inline do CartSidebar
+ *     legado e seu único texto cai no gate que bane o termo de retomada de
+ *     contato na UI (scripts/check-no-f*-frontend.mjs).
  */
 
 import { Skeleton } from '@/components/ui/skeleton';
