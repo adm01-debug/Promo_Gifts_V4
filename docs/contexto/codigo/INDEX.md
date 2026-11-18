@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e de hora em hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `ad0d7b138de433bb8cb2fde80d52f0388b2d562f` (2026-11-18T11:26:24-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e de hora em hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `1d8da35924aa1f29c6e3f8d22d6763a196b41f2e` (2026-11-18T12:02:04-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -591,26 +591,26 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - possiveis_segredos_no_codigo: 7 — ex.: scripts/ai-context/cenarios.mjs:102, src/components/admin/connections/__tests__/ConnectionSecurity.unit.test.tsx:9, src/integrations/supabase/client.ts:27
 
 ## Grafo de código (graphify)
-- 48984 nós · 82166 arestas · 2824 comunidades · grafo do commit `ad0d7b13`
+- 48984 nós · 82166 arestas · 2824 comunidades · grafo do commit `1d8da359`
 - comunidades maiores: ref_components (887), vitest (839), ref_integrations (577), ref_lib (542), ref_node_child_process (536), ref_hooks (440), gotoAndSettle (389), ref_contexts (366), @tanstack/react-query (360), ref_types (340), scripts (310), ref_node_fs (305)
 - símbolos mais chamados: gotoAndSettle() (e2e/helpers/nav.ts), re (?), q() (scripts/supabase_snapshot/snapshot.py), analyze() (tests/scripts/test_personalization_artifact_diagnostics.py), outer() (tests/scripts/test_personalization_artifact_diagnostics.py), json (?), useExternalDatabase() (recovery/src-legacy/src/hooks/useExternalDatabase.ts), concludeCheck() (scripts/check-result-contract.mjs), querySupabaseReadOnly() (scripts/supabase-read-only-query.mjs), loginAs() (e2e/helpers/auth.ts), inner() (tests/scripts/test_personalization_artifact_diagnostics.py), excluded_sql() (scripts/supabase_snapshot/snapshot.py)
 - consulta local: `graphify query "<pergunta>"`, `graphify path "<A>" "<B>"`, `graphify explain "<X>"`
 
 ## Hotspots (arquivos mais alterados, 90 dias)
-- supabase/MIGRATIONS_SYNC_LOG.md (63)
+- supabase/MIGRATIONS_SYNC_LOG.md (64)
 - RELATORIO_CI.md (53)
 - PENDENCIAS.md (47)
-- package.json (43)
-- package-lock.json (26)
+- package.json (42)
+- package-lock.json (25)
 - docs/coordenacao/conflitos-semanticos.md (24)
 - .github/workflows/deploy-gates.yml (21)
 - supabase/EDGE_FUNCTIONS_DEPLOY_LOG.md (17)
 - src/pages/kit-builder/KitBuilderPage.tsx (16)
 - analise-prs/progresso.json (15)
 - src/hooks/kit-builder/useKitBuilderPageState.ts (13)
-- CHANGELOG.md (12)
 - audit/supabase-reference-catalog.temporary.json (12)
 - auditoria-supabase/RELATORIO_AUDITORIA_SUPABASE.md (12)
+- CHANGELOG.md (11)
 - src/pages/mockups/MockupGenerator.tsx (11)
 
 ## Workflows
@@ -1187,6 +1187,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - CHANGELOG topo: [1.9.1](https://github.com/adm01-debug/Promo_Gifts_V4/compare/gifts-store-v1.9.0...gifts-store-v1.9.1) (2026-11-17)
 
 ## Últimos commits
+- 2026-11-18 `1d8da359` docs(migrations-log): recibo E15 — aplicação de 20261115130300 (#3826)
 - 2026-11-18 `ad0d7b13` feat(quotes): template de orcamento volta a poder ser aplicado a um orcamento (#3824)
 - 2026-11-18 `4c8f2cca` docs(resgate): preserva o unico texto da branch laughing-cori ausente da main (#3822)
 - 2026-11-18 `2e479e8b` test(quotes): resgata a cobertura de comportamento do QuoteDraftRecovery (#3821)
@@ -1201,7 +1202,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-17 `b2cc12ea` fix(orcamentos): gravar rascunho nao apaga mais os campos que a tela nao modela (#3814)
 - 2026-11-17 `c75e7f30` fix(quotes): id do Bitrix era gravado sem validacao e corrompia (#3799)
 - 2026-11-17 `96509703` fix(hooks): solta o spinner preso ao sair do produto antes da resposta (#3787)
-- 2026-11-17 `21e64d69` fix(kit): Ctrl+S repetido criava dois kits iguais (#3798)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

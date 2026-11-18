@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "ad0d7b138de433bb8cb2fde80d52f0388b2d562f",
+  "commit": "1d8da35924aa1f29c6e3f8d22d6763a196b41f2e",
   "branch": "main",
-  "data_commit": "2026-11-18T11:26:24-03:00",
+  "data_commit": "2026-11-18T12:02:04-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "1d8da359",
+    "data": "2026-11-18",
+    "assunto": "docs(migrations-log): recibo E15 — aplicação de 20261115130300 (#3826)"
+   },
    {
     "sha": "ad0d7b13",
     "data": "2026-11-18",
@@ -126,14 +131,9 @@
     "sha": "1e9864f4",
     "data": "2026-11-17",
     "assunto": "feat(favoritos): botão \"Apresentar lista\" abre o modo apresentação dos favoritos (#3812)"
-   },
-   {
-    "sha": "2d43e629",
-    "data": "2026-11-17",
-    "assunto": "fix(tests): mock de QuoteAutoSave precisa exportar QuoteDraftRecovery (#3811)"
    }
   ],
-  "arquivos_mudados_7d": 1480,
+  "arquivos_mudados_7d": 1478,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -199,7 +199,7 @@
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "supabase/MIGRATIONS_SYNC_LOG.md",
-    "mudancas": 63
+    "mudancas": 64
    },
    {
     "arquivo": "RELATORIO_CI.md",
@@ -211,11 +211,11 @@
    },
    {
     "arquivo": "package.json",
-    "mudancas": 43
+    "mudancas": 42
    },
    {
     "arquivo": "package-lock.json",
-    "mudancas": 26
+    "mudancas": 25
    },
    {
     "arquivo": "docs/coordenacao/conflitos-semanticos.md",
@@ -242,16 +242,16 @@
     "mudancas": 13
    },
    {
-    "arquivo": "CHANGELOG.md",
-    "mudancas": 12
-   },
-   {
     "arquivo": "audit/supabase-reference-catalog.temporary.json",
     "mudancas": 12
    },
    {
     "arquivo": "auditoria-supabase/RELATORIO_AUDITORIA_SUPABASE.md",
     "mudancas": 12
+   },
+   {
+    "arquivo": "CHANGELOG.md",
+    "mudancas": 11
    },
    {
     "arquivo": "src/pages/mockups/MockupGenerator.tsx",
@@ -301,7 +301,7 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 541
+    "commits": 539
    },
    {
     "autor": "Claude",
@@ -313,7 +313,7 @@
    },
    {
     "autor": "github-actions[bot]",
-    "commits": 28
+    "commits": 29
    },
    {
     "autor": "dependabot[bot]",

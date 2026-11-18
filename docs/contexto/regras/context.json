@@ -1,9 +1,9 @@
 {
  "meta": {
-  "sha": "ad0d7b138de433bb8cb2fde80d52f0388b2d562f",
+  "sha": "1d8da35924aa1f29c6e3f8d22d6763a196b41f2e",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-18 14:29 UTC",
+  "generated_at": "2026-11-18 15:04 UTC",
   "files_total": 10844,
   "code_files": 8873,
   "code_lines": 1257407
@@ -545446,10 +545446,19 @@
   }
  },
  "git": {
-  "sha": "ad0d7b138de433bb8cb2fde80d52f0388b2d562f",
+  "sha": "1d8da35924aa1f29c6e3f8d22d6763a196b41f2e",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "1d8da35",
+    "date": "2026-11-18",
+    "author": "github-actions[bot]",
+    "subject": "docs(migrations-log): recibo E15 — aplicação de 20261115130300 (#3826)",
+    "files": [
+     "supabase/MIGRATIONS_SYNC_LOG.md"
+    ]
+   },
    {
     "sha": "ad0d7b1",
     "date": "2026-11-18",
@@ -545779,29 +545788,6 @@
      "src/pages/__tests__/QuoteBuilderDeliveryTooltip.test.tsx",
      "src/pages/quotes/QuoteBuilderPage.tsx"
     ]
-   },
-   {
-    "sha": "216fad0",
-    "date": "2026-11-17",
-    "author": "adm01-debug",
-    "subject": "test(resgate): 218 casos de teste de outro agente que nunca chegaram à main (#3807)",
-    "files": [
-     "tests/components/IntelligenceBadges.legacy-compat.test.tsx",
-     "tests/components/QuoteAutoSave.recovery.test.tsx",
-     "tests/hooks/legacy-admin-utils-preservation.test.ts",
-     "tests/hooks/useKitAutoSave.financial.test.tsx",
-     "tests/hooks/useKitAutoSave.legacy.test.tsx",
-     "tests/hooks/useKitBuilderPageState.financial.test.tsx",
-     "tests/hooks/useKitBuilderQueries.legacy.test.tsx",
-     "tests/hooks/useLegacyCatalogContracts.test.ts",
-     "tests/hooks/useLegacyLintMemoContracts.test.tsx",
-     "tests/hooks/useMagicUpState.legacy.test.tsx",
-     "tests/hooks/useQuoteTemplates.raw-fetch.test.ts",
-     "tests/hooks/useQuoteVersions.legacy.test.ts",
-     "tests/lib/legacy-kit-price-source.test.ts",
-     "tests/pages/legacy-KitBuilder.partial-preservation.test.tsx",
-     "tests/pages/legacy-QuoteBuilder.partial-preservation.test.tsx"
-    ]
    }
   ],
   "hot_files": [
@@ -545826,24 +545812,12 @@
     2
    ],
    [
-    "tests/hooks/useMagicUpState.legacy.test.tsx",
-    2
-   ],
-   [
     "tests/hooks/useKitBuilderPageState.legacy.test.tsx",
     2
    ],
    [
-    "tests/pages/legacy-QuoteBuilder.partial-preservation.test.tsx",
-    2
-   ],
-   [
-    "tests/hooks/useQuoteVersions.legacy.test.ts",
-    2
-   ],
-   [
-    "tests/hooks/useKitAutoSave.legacy.test.tsx",
-    2
+    "supabase/MIGRATIONS_SYNC_LOG.md",
+    1
    ],
    [
     "src/components/quotes/QuoteTemplateSelector.tsx",
@@ -545883,6 +545857,18 @@
    ],
    [
     "src/pages/quotes/__tests__/quote-builder-page-parse.smoke.test.ts",
+    1
+   ],
+   [
+    "src/pages/quotes/__tests__/quote-builder-shipping-fob-pre-inline.contract.test.ts",
+    1
+   ],
+   [
+    "src/pages/quotes/__tests__/quote-builder-shipping-trigger-width.contract.test.ts",
+    1
+   ],
+   [
+    "e2e/quotes/no-templates.spec.ts",
     1
    ]
   ]
