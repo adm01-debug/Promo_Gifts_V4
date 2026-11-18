@@ -1,7 +1,13 @@
 /**
- * Seção "ao vivo" da página de telemetria: os três painéis que leem amostras
- * in-memory da sessão atual (invokeEdgeSafe, alertas de bridge e bridges por
- * endpoint).
+ * Seção "ao vivo" da página de telemetria: os painéis que o
+ * `AdminTelemetriaPage` não tem espaço para montar direto.
+ *
+ * Três leem amostras in-memory da sessão atual (invokeEdgeSafe, alertas de
+ * bridge e bridges por endpoint). Os dois últimos — banner e cards de falha de
+ * plataforma — leem a janela de métricas do `external-db-bridge` e vieram da
+ * branch `salvo/codex-fix-gate1-kit-pdf-types-261109-2252`: os hooks deles já
+ * estavam na main (`usePlatformFailureMetrics`, `usePlatformFailureAlert`) e
+ * nenhuma tela os consumia.
  *
  * Existe como componente próprio, e não inline na página, porque
  * `AdminTelemetriaPage.tsx` já está acima do limite de 500 linhas do
@@ -31,6 +37,16 @@ const BridgesLiveCard = lazy(() =>
     default: m.BridgesLiveCard,
   })),
 );
+const PlatformFailureAlertBanner = lazy(() =>
+  import('@/components/admin/telemetry/PlatformFailureAlertBanner').then((m) => ({
+    default: m.PlatformFailureAlertBanner,
+  })),
+);
+const PlatformFailureCards = lazy(() =>
+  import('@/components/admin/telemetry/PlatformFailureCards').then((m) => ({
+    default: m.PlatformFailureCards,
+  })),
+);
 
 export function LiveSurfacesSection() {
   return (
@@ -53,6 +69,23 @@ export function LiveSurfacesSection() {
       <SectionErrorBoundary section="telemetry.BridgesLiveCard" label="bridges ao vivo">
         <Suspense fallback={<CardSkeleton height={360} label="Carregando bridges ao vivo" />}>
           <BridgesLiveCard />
+        </Suspense>
+      </SectionErrorBoundary>
+
+      {/* Falhas de plataforma (503 / cold start) do external-db-bridge na janela:
+          banner com thresholds ajustáveis em runtime + KPIs da janela. */}
+      <SectionErrorBoundary
+        section="telemetry.PlatformFailureAlertBanner"
+        label="alerta de falhas de plataforma"
+      >
+        <Suspense fallback={<BannerSkeleton />}>
+          <PlatformFailureAlertBanner />
+        </Suspense>
+      </SectionErrorBoundary>
+
+      <SectionErrorBoundary section="telemetry.PlatformFailureCards" label="falhas de plataforma">
+        <Suspense fallback={<CardSkeleton height={140} label="Carregando falhas de plataforma" />}>
+          <PlatformFailureCards />
         </Suspense>
       </SectionErrorBoundary>
     </>
