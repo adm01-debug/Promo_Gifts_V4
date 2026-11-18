@@ -44,6 +44,13 @@ Para cada arquivo, cada `export` foi procurado em `src/`, `tests/`, `e2e/`,
 | binário / dado (`.png`, `.sql`, `.json`, `.xml`, `.md`, `.py`) | 10 |
 | **algum export ausente** | **36** |
 
+**Ressalva do método:** a varredura procura o nome em texto, então um símbolo
+citado apenas num **comentário** conta como presente. Medido: `SmartSuggestions`
+e `ActionHistoryPanel` deram "presente" por causa do bloco de decisão em
+`CartUtilComponents.tsx:11-18`, que justamente explica por que eles **não**
+voltaram. Os 28 "todos presentes" são, portanto, um teto; cada descarte exige
+leitura, e todo veredicto abaixo foi lido, não inferido da varredura.
+
 Nome ausente **não** é função perdida: a `main` renomeia muito. Exemplo medido:
 `QuoteTemplatePicker` aparece como ausente, mas a função está em
 `src/components/quotes/QuoteTemplateSelector.tsx:91`, montada em
@@ -85,7 +92,9 @@ consumidor. As três exceções aparentes também estão resolvidas:
 `LegacyCartInsights.test` e `legacy-CartSidebar.preservation` →
 `src/contexts/__tests__/SellerCartContext.test.tsx` e
 `src/pages/products/seller-carts/__tests__/CartSidebar.render.test.tsx`.
-**Exceção:** os dois citam `follow-up`, que a `main` não tem (seção 4).
+**Exceção aparente:** os dois citam `follow-up`, que a `main` não tem no
+front — de propósito (seção 4.2). Essas asserções estão **obsoletas**, não
+pendentes.
 
 ---
 
@@ -126,29 +135,45 @@ RLS para `anon`). Endpoint público é decisão de segurança, não de execuçã
 Alternativa barata: esconder a afordância de compartilhar até a decisão — mas
 isso descarta trabalho, contra a regra desta fila.
 
-### 4.2 `FollowUpTimer` — resgate pequeno e especificado
+### 4.2 `FollowUpTimer` — NÃO resgatar: o dono expurgou o termo do frontend
 
-`LegacyCartInsights.tsx:226-256`: selo no carrinho do vendedor com
-"X dias — Hora do follow-up!" a partir de 3 dias, "X dias desde a criação" a
-partir de 2, "Criado há Xh" abaixo disso; some quando `status ===
-'pronto_orcamento'`. Dois testes de outro agente já especificam o comportamento
-("hides follow-up when the cart is ready for a quote"; "renders real checklist,
-suggestions, action history and follow-up").
+`LegacyCartInsights.tsx:226-256` traz um selo com "X dias — Hora do
+follow-up!". **Não entra**, e a evidência é um guarda explícito:
 
-O resto do arquivo já foi resgatado para `src/components/cart/CartUtilComponents.tsx`.
-Faltam `FollowUpTimer` e o auxiliar `isSuggestionProduct`. **Sem banco, sem
-rota: é terminar o que o outro agente começou.**
+`scripts/check-no-followup-frontend.mjs` bloqueia a regex
+`/follow[-_ ]?up|needsFollowUp/i` em **todo** `src/`, incluindo comentários.
+O cabeçalho dele diz o porquê: *"A feature `quote-followup-reminders` continua
+viva no backend (edge function + tabela `follow_up_reminders`), mas o frontend
+foi expurgado dos termos ... Qualquer nova ocorrência aqui deve passar por
+revisão."* Script registrado em `package.json:215` e em
+`scripts/automation.config.json:805-806`.
 
-### 4.3 `follow_up_reminders` — tabela viva, código morto
+O mesmo motivo já está escrito em `CartUtilComponents.tsx:15-18`, de quando o
+painel "Inteligência de vendas" foi recusado.
 
-154 linhas em produção, 1 vendedor, todas `is_sent = true`, última de
-**2026-06-20**. **Zero** referências no código fora de
-`src/integrations/supabase/types.ts` e do baseline SQL. A tabela tem RLS
-(`Users can manage own reminders`) e trigger de dono.
+Renomear o componente para fugir do termo seria contornar o guarda: o que o
+dono tirou foi a **superfície** de cobrança no front, não só a palavra. Fica
+como decisão de produto, não de execução.
 
-Não é urgente (dado histórico, nada pendente). **Decisão do dono:** manter como
-histórico ou derrubar — `DROP TABLE` é DDL e só entra por
-`db-apply-migration.yml`.
+**Correção de rota:** cheguei a criar `src/components/cart/CartFollowUpTimer.tsx`
+nesta sessão e apaguei antes de qualquer commit, ao ler o guarda.
+
+### 4.3 `follow_up_reminders` — viva ponta a ponta, não é código morto
+
+Correção de uma leitura errada minha. A tabela tem 154 linhas, 1 vendedor,
+todas `is_sent = true`, última de 2026-06-20 — e **não** é órfã:
+
+- `supabase/functions/quote-followup-reminders/index.ts:61,93` lê e grava nela;
+- a função cria **notificação** para o vendedor cujo orçamento enviado há 2+
+  dias não foi visto pelo cliente (é idempotente por dia);
+- o cron está **ativo** em produção: `cron.job` `quote-followup-reminders`,
+  `17 9 * * *`, apontando para o projeto canônico;
+- a superfície no front é o painel de notificações, não um selo no carrinho —
+  por isso o guarda de 4.2 existe e não conflita com nada.
+
+A ausência de linhas novas desde junho é consequência do volume: são 7
+orçamentos em produção e nenhum satisfaz o critério. **Nada a fazer, nada a
+apagar.**
 
 ### 4.4 `internalNotes` fora do construtor
 
