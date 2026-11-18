@@ -5,9 +5,9 @@
   "vitest",
   "playwright"
  ],
- "total": 2602,
+ "total": 2603,
  "por_tipo": {
-  "contrato": 66,
+  "contrato": 67,
   "e2e": 677,
   "pytest": 5,
   "qa": 17,
@@ -20,7 +20,7 @@
   },
   {
    "padrao": "co-localizado (__tests__)",
-   "arquivos": 699
+   "arquivos": 700
   },
   {
    "padrao": "e2e/",
@@ -11043,6 +11043,13 @@
    "linhas": 76,
    "testa": [],
    "casos": 0
+  },
+  {
+   "arquivo": "src/pages/quotes/__tests__/quote-builder-autosave-fields.contract.test.ts",
+   "tipo": "contrato",
+   "linhas": 79,
+   "testa": [],
+   "casos": 2
   },
   {
    "arquivo": "src/pages/quotes/__tests__/quote-builder-calendar-popover.contract.test.ts",

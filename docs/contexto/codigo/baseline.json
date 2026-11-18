@@ -2,11 +2,21 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "74f6954d34eff0c5a659438c36f8f3daab553fb0",
+  "commit": "0929631268023c25de3929c025fd003df73b293c",
   "branch": "main",
-  "data_commit": "2026-11-18T16:26:48-03:00",
+  "data_commit": "2026-11-18T17:05:46-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "09296312",
+    "data": "2026-11-18",
+    "assunto": "fix(quotes): rascunho local volta a guardar empresa, contato, validade e entrega (#3844)"
+   },
+   {
+    "sha": "4d175330",
+    "data": "2026-11-18",
+    "assunto": "feat(components): Ctrl+K volta a alcançar Novidades, Filtros e Estoque (#3842)"
+   },
    {
     "sha": "74f6954d",
     "data": "2026-11-18",
@@ -121,19 +131,9 @@
     "sha": "c1b158ce",
     "data": "2026-11-18",
     "assunto": "fix(quotes): contratos de layout param de quebrar quando o prettier reordena classes (#3823)"
-   },
-   {
-    "sha": "b52dceae",
-    "data": "2026-11-18",
-    "assunto": "feat(revert-3361): devolve os painéis do carrinho e as telas de template de orçamento (#3817)"
-   },
-   {
-    "sha": "5470d5f4",
-    "data": "2026-11-18",
-    "assunto": "fix(ci): Gate 0 passa a barrar qualquer project-ref não canônico em migration (#3806)"
    }
   ],
-  "arquivos_mudados_7d": 1506,
+  "arquivos_mudados_7d": 1507,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -184,12 +184,12 @@
     "mudancas": 194
    },
    {
-    "pasta": "src/components/kit-builder",
-    "mudancas": 180
+    "pasta": "src/pages/quotes",
+    "mudancas": 181
    },
    {
-    "pasta": "src/pages/quotes",
-    "mudancas": 179
+    "pasta": "src/components/kit-builder",
+    "mudancas": 180
    },
    {
     "pasta": "src/pages/products",
@@ -223,7 +223,7 @@
    },
    {
     "arquivo": ".github/workflows/deploy-gates.yml",
-    "mudancas": 21
+    "mudancas": 20
    },
    {
     "arquivo": "src/pages/kit-builder/KitBuilderPage.tsx",
@@ -301,11 +301,11 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 523
+    "commits": 521
    },
    {
     "autor": "Claude",
-    "commits": 132
+    "commits": 130
    },
    {
     "autor": "Joaquim Ataides",
@@ -322,9 +322,9 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 10949,
-  "arquivos_codigo": 5465,
-  "linhas_codigo": 1041469,
+  "arquivos_total": 10950,
+  "arquivos_codigo": 5466,
+  "linhas_codigo": 1041603,
   "rotas": 139,
   "rotas_http_backend": 13,
   "vistas_por_id": 0,
@@ -336,7 +336,7 @@
   "tabelas": 527,
   "migrations": 3099,
   "cron_jobs": 122,
-  "testes": 2602,
+  "testes": 2603,
   "workflows": 88,
   "scripts": 283,
   "docs_md": 1479
@@ -1920,7 +1920,7 @@
   },
   "src/hooks": {
    "arquivos": 488,
-   "linhas": 91628
+   "linhas": 91675
   },
   "src/integrations": {
    "arquivos": 11,
@@ -1939,8 +1939,8 @@
    "linhas": 63
   },
   "src/pages": {
-   "arquivos": 366,
-   "linhas": 84440
+   "arquivos": 367,
+   "linhas": 84527
   },
   "src/routes": {
    "arquivos": 15,

@@ -21483,7 +21483,7 @@
    "modulo": "hooks/quotes",
    "arquivos": 25,
    "testes": 22,
-   "linhas": 5392,
+   "linhas": 5439,
    "itens_menu": [],
    "telas": [],
    "rotas_http": [],
@@ -33072,8 +33072,8 @@
   {
    "modulo": "pages/quotes",
    "arquivos": 16,
-   "testes": 41,
-   "linhas": 4583,
+   "testes": 42,
+   "linhas": 4591,
    "itens_menu": [
     "Gestão de Orçamentos",
     "Novo Orçamento",

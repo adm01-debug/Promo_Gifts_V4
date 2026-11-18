@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "74f6954d34eff0c5a659438c36f8f3daab553fb0",
+  "sha": "0929631268023c25de3929c025fd003df73b293c",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-18 19:29 UTC",
-  "files_total": 10877,
-  "code_files": 8904,
-  "code_lines": 1262201
+  "generated_at": "2026-11-18 20:09 UTC",
+  "files_total": 10878,
+  "code_files": 8905,
+  "code_lines": 1262335
  },
  "version": "1.3.2",
- "facts_hash": "e3686a1162e30b0b",
+ "facts_hash": "3ddde53b67f1d647",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -1120,7 +1120,7 @@
   "package_manager": "npm",
   "languages": {
    ".sql": 3440,
-   ".ts": 3038,
+   ".ts": 3039,
    ".tsx": 1961,
    ".mjs": 450,
    ".py": 15,
@@ -150001,7 +150001,7 @@
   {
    "module": "src/hooks",
    "files": 488,
-   "lines": 91628,
+   "lines": 91675,
    "tables": [
     "admin_audit_log",
     "admin_settings",
@@ -150494,8 +150494,8 @@
   },
   {
    "module": "src/pages",
-   "files": 366,
-   "lines": 84440,
+   "files": 367,
+   "lines": 84527,
    "tables": [
     "ai_usage_events",
     "bot_detection_log",
@@ -259078,6 +259078,18 @@
    {
     "file": "src/pages/quotes/__tests__/conditions-collapse-persistence.test.ts",
     "name": "limpar storage redefine todos para expandido"
+   },
+   {
+    "file": "src/pages/quotes/__tests__/quote-builder-autosave-fields.contract.test.ts",
+    "name": "rascunho do orçamento: gravação x restauração"
+   },
+   {
+    "file": "src/pages/quotes/__tests__/quote-builder-autosave-fields.contract.test.ts",
+    "name": "a página grava todo campo que a restauração sabe aplicar"
+   },
+   {
+    "file": "src/pages/quotes/__tests__/quote-builder-autosave-fields.contract.test.ts",
+    "name": "grava os cinco campos que faltavam: empresa, contato, validade e entrega"
    },
    {
     "file": "src/pages/quotes/__tests__/quote-builder-calendar-popover.contract.test.ts",
@@ -468651,7 +468663,7 @@
   },
   "src/hooks/quotes/quoteDraftApply.ts": {
    "path": "src/hooks/quotes/quoteDraftApply.ts",
-   "lines": 243,
+   "lines": 290,
    "exports": [
     "const QUOTE_DRAFT_KEY_PREFIX",
     "type QuoteDraftSnapshot",
@@ -488997,7 +489009,7 @@
   },
   "src/pages/quotes/QuoteBuilderPage.tsx": {
    "path": "src/pages/quotes/QuoteBuilderPage.tsx",
-   "lines": 811,
+   "lines": 819,
    "exports": [
     "function QuoteBuilderPage"
    ],
@@ -489459,6 +489471,16 @@
     "localStorage lançando erro nunca quebra leitura/escrita",
     "UUIDs reais não colidem (100 amostras)",
     "limpar storage redefine todos para expandido"
+   ]
+  },
+  "src/pages/quotes/__tests__/quote-builder-autosave-fields.contract.test.ts": {
+   "path": "src/pages/quotes/__tests__/quote-builder-autosave-fields.contract.test.ts",
+   "lines": 79,
+   "is_test": true,
+   "tests": [
+    "rascunho do orçamento: gravação x restauração",
+    "a página grava todo campo que a restauração sabe aplicar",
+    "grava os cinco campos que faltavam: empresa, contato, validade e entrega"
    ]
   },
   "src/pages/quotes/__tests__/quote-builder-calendar-popover.contract.test.ts": {
@@ -547210,10 +547232,28 @@
   }
  },
  "git": {
-  "sha": "74f6954d34eff0c5a659438c36f8f3daab553fb0",
+  "sha": "0929631268023c25de3929c025fd003df73b293c",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "0929631",
+    "date": "2026-11-18",
+    "author": "adm01-debug",
+    "subject": "fix(quotes): rascunho local volta a guardar empresa, contato, validade e entrega (#3844)",
+    "files": [
+     "src/hooks/quotes/quoteDraftApply.ts",
+     "src/pages/quotes/QuoteBuilderPage.tsx",
+     "src/pages/quotes/__tests__/quote-builder-autosave-fields.contract.test.ts"
+    ]
+   },
+   {
+    "sha": "4d17533",
+    "date": "2026-11-18",
+    "author": "adm01-debug",
+    "subject": "feat(components): Ctrl+K volta a alcançar Novidades, Filtros e Estoque (#3842)",
+    "files": []
+   },
    {
     "sha": "74f6954",
     "date": "2026-11-18",
@@ -547578,28 +547618,13 @@
      "src/components/kit-builder/kitMockupDimensions.ts",
      "tests/components/kit-builder/PersonalizationConfig.test.ts"
     ]
-   },
-   {
-    "sha": "54337b9",
-    "date": "2026-11-17",
-    "author": "adm01-debug",
-    "subject": "docs(resgate): registra as 8 pendencias abertas do resgate com evidencia medida (#3816)",
-    "files": [
-     "docs/agentes/resgates/2026-11-18-pendencias-abertas.md"
-    ]
-   },
-   {
-    "sha": "2d265a9",
-    "date": "2026-11-17",
-    "author": "adm01-debug",
-    "subject": "test(resgate): lote 3 — cobertura de outro agente para autosave de orcamento e apresentacao de favoritos (#3815)",
-    "files": [
-     "src/hooks/__tests__/useAutoSaveQuote.legacy.test.ts",
-     "tests/components/FavoritePresentationLauncher.legacy-compat.test.tsx"
-    ]
    }
   ],
   "hot_files": [
+   [
+    "src/pages/quotes/QuoteBuilderPage.tsx",
+    3
+   ],
    [
     "src/components/kit-builder/PersonalizationConfig.tsx",
     3
@@ -547649,12 +547674,16 @@
     2
    ],
    [
-    "src/pages/quotes/QuoteBuilderPage.tsx",
+    "src/pages/quotes/components/QuoteBuilderNotesCard.tsx",
     2
    ],
    [
-    "src/pages/quotes/components/QuoteBuilderNotesCard.tsx",
-    2
+    "src/hooks/quotes/quoteDraftApply.ts",
+    1
+   ],
+   [
+    "src/pages/quotes/__tests__/quote-builder-autosave-fields.contract.test.ts",
+    1
    ],
    [
     "e2e/carrinhos/sidebar-no-legacy-labels.spec.ts",
@@ -547670,14 +547699,6 @@
    ],
    [
     "tests/pages/legacy-KitBuilder.partial-preservation.test.tsx",
-    1
-   ],
-   [
-    "docs/agentes/resgates/2026-11-18-recibo-sessao-2.md",
-    1
-   ],
-   [
-    "package.json",
     1
    ]
   ]

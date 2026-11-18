@@ -19988,7 +19988,7 @@
     "QuoteBuilderPage"
    ],
    "export_default": "QuoteBuilderPage",
-   "linhas": 811,
+   "linhas": 819,
    "dominio": "pages/quotes",
    "hooks_locais": [
     "useNextQuoteNumberPreview",
