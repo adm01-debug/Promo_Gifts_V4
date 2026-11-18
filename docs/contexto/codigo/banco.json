@@ -8,7 +8,7 @@
   "supabase/migrations",
   "typeorm"
  ],
- "migrations": 3099,
+ "migrations": 3100,
  "seeds": [],
  "avisos": [
   "322 bloco(s) com DDL dinâmico (EXECUTE format/...) não modelado — policies/colunas criadas dinamicamente podem faltar; confira no banco vivo"
@@ -911,6 +911,7 @@
   "fn_standardize_variant",
   "fn_super_filtro",
   "fn_super_filtro_product_ids",
+  "fn_supplier_risk_breakdown",
   "fn_sync_ai_usage_logs_total_tokens",
   "fn_sync_all_is_new",
   "fn_sync_all_product_colors",
