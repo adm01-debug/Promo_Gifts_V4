@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e de hora em hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `c75e7f308c74b9ef63614a9185982c4715634f1c` (2026-11-17T21:27:22-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e de hora em hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `b2cc12eaeac4ea445f871647e9e8b20d06bf819a` (2026-11-17T21:38:32-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -14,7 +14,7 @@ Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR
 Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua tarefa; não carregue tudo.
 
 ## Stack
-- linguagens: TypeScript (4942), SQL (3440), Markdown (1470), JavaScript (457), JSON (132), YAML (116), Shell (27), HTML (20)
+- linguagens: TypeScript (4945), SQL (3440), Markdown (1470), JavaScript (457), JSON (132), YAML (116), Shell (27), HTML (20)
 - linguagem_principal: TypeScript
 - framework: React
 - backend_http: n/d
@@ -34,9 +34,9 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 ## Números
 | item | qtd |
 |---|---|
-| arquivos_total | 10884 |
-| arquivos_codigo | 5409 |
-| linhas_codigo | 1032793 |
+| arquivos_total | 10887 |
+| arquivos_codigo | 5412 |
+| linhas_codigo | 1033049 |
 | rotas | 139 |
 | rotas_http_backend | 13 |
 | vistas_por_id | 0 |
@@ -48,7 +48,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 | tabelas | 527 |
 | migrations | 3099 |
 | cron_jobs | 122 |
-| testes | 2577 |
+| testes | 2579 |
 | workflows | 88 |
 | scripts | 283 |
 | docs_md | 1470 |
@@ -58,7 +58,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - componentes: src/components (943), src/pages (177), recovery/src-legacy (100)
 - hooks: src/hooks (299), recovery/src-legacy (196), src/components (77)
 - servicos_logica: src/lib (233), src/utils (30), src/services (10)
-- testes: tests/ (1072), co-localizado (__tests__) (678), e2e/ (625)
+- testes: tests/ (1074), co-localizado (__tests__) (678), e2e/ (625)
 - edge_functions: supabase/functions
 - migrations: supabase/migrations
 - scripts: scripts/ci-local (11), scripts/lib (7), scripts/graphify (4)
@@ -118,7 +118,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 | hooks/kit-builder | 0 | 0 | 23 | 25 | 0 | 9 |
 | hooks/mockup | 0 | 0 | 14 | 270 | 4 | 41 |
 | hooks/products | 0 | 0 | 71 | 281 | 4 | 41 |
-| hooks/quotes | 0 | 0 | 22 | 303 | 4 | 52 |
+| hooks/quotes | 0 | 0 | 23 | 303 | 4 | 52 |
 | hooks/simulation | 0 | 0 | 17 | 45 | 0 | 5 |
 | hooks/simulator | 0 | 0 | 8 | 51 | 0 | 6 |
 | hooks/stock | 0 | 0 | 13 | 37 | 0 | 8 |
@@ -591,8 +591,8 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - possiveis_segredos_no_codigo: 7 — ex.: scripts/ai-context/cenarios.mjs:102, src/components/admin/connections/__tests__/ConnectionSecurity.unit.test.tsx:9, src/integrations/supabase/client.ts:27
 
 ## Grafo de código (graphify)
-- 48587 nós · 81620 arestas · 2743 comunidades · grafo do commit `c75e7f30`
-- comunidades maiores: react (563), ref_lib (518), lucide-react (427), ref_components (420), ref_node_child_process (392), vitest (382), @testing-library/react (358), ref_node_url (343), gotoAndSettle (331), ref_hooks (327), ref_integrations (319), cors.ts (314)
+- 48600 nós · 81641 arestas · 2765 comunidades · grafo do commit `b2cc12ea`
+- comunidades maiores: ref_components (878), vitest (875), ref_integrations (567), ref_node_child_process (471), ref_hooks (457), ref_lib (446), @tanstack/react-query (412), ref_node_fs (371), nav.ts (356), ref_types (325), react (322), gotoAndSettle (311)
 - símbolos mais chamados: gotoAndSettle() (e2e/helpers/nav.ts), re (?), q() (scripts/supabase_snapshot/snapshot.py), analyze() (tests/scripts/test_personalization_artifact_diagnostics.py), outer() (tests/scripts/test_personalization_artifact_diagnostics.py), json (?), useExternalDatabase() (recovery/src-legacy/src/hooks/useExternalDatabase.ts), concludeCheck() (scripts/check-result-contract.mjs), querySupabaseReadOnly() (scripts/supabase-read-only-query.mjs), loginAs() (e2e/helpers/auth.ts), inner() (tests/scripts/test_personalization_artifact_diagnostics.py), excluded_sql() (scripts/supabase_snapshot/snapshot.py)
 - consulta local: `graphify query "<pergunta>"`, `graphify path "<A>" "<B>"`, `graphify explain "<X>"`
 
@@ -1187,6 +1187,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - CHANGELOG topo: [1.9.1](https://github.com/adm01-debug/Promo_Gifts_V4/compare/gifts-store-v1.9.0...gifts-store-v1.9.1) (2026-11-17)
 
 ## Últimos commits
+- 2026-11-17 `b2cc12ea` fix(orcamentos): gravar rascunho nao apaga mais os campos que a tela nao modela (#3814)
 - 2026-11-17 `c75e7f30` fix(quotes): id do Bitrix era gravado sem validacao e corrompia (#3799)
 - 2026-11-17 `96509703` fix(hooks): solta o spinner preso ao sair do produto antes da resposta (#3787)
 - 2026-11-17 `21e64d69` fix(kit): Ctrl+S repetido criava dois kits iguais (#3798)
@@ -1201,7 +1202,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-17 `1e9864f4` feat(favoritos): botão "Apresentar lista" abre o modo apresentação dos favoritos (#3812)
 - 2026-11-17 `2d43e629` fix(tests): mock de QuoteAutoSave precisa exportar QuoteDraftRecovery (#3811)
 - 2026-11-17 `ac37480a` fix(quotes): histórico de versões não cai mais quando a data da versão é nula (#3810)
-- 2026-11-17 `92a5c9a0` fix(kit): autosave nao grava mais o rascunho de um kit em cima de outro (#3809)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "c75e7f308c74b9ef63614a9185982c4715634f1c",
+  "commit": "b2cc12eaeac4ea445f871647e9e8b20d06bf819a",
   "branch": "main",
-  "data_commit": "2026-11-17T21:27:22-03:00",
+  "data_commit": "2026-11-17T21:38:32-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "b2cc12ea",
+    "data": "2026-11-17",
+    "assunto": "fix(orcamentos): gravar rascunho nao apaga mais os campos que a tela nao modela (#3814)"
+   },
    {
     "sha": "c75e7f30",
     "data": "2026-11-17",
@@ -126,14 +131,9 @@
     "sha": "353c2a8d",
     "data": "2026-11-17",
     "assunto": "docs(resgate): adjudica byte-a-byte os 219 arquivos ausentes do main (#3785)"
-   },
-   {
-    "sha": "4a982eb8",
-    "data": "2026-11-17",
-    "assunto": "test(kit-builder): resgata o teste da guarda financeira de kit (#3786)"
    }
   ],
-  "arquivos_mudados_7d": 1983,
+  "arquivos_mudados_7d": 1986,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -161,7 +161,7 @@
    },
    {
     "pasta": "src/components/quotes",
-    "mudancas": 116
+    "mudancas": 118
    },
    {
     "pasta": "supabase/functions/_shared",
@@ -322,9 +322,9 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 10884,
-  "arquivos_codigo": 5409,
-  "linhas_codigo": 1032793,
+  "arquivos_total": 10887,
+  "arquivos_codigo": 5412,
+  "linhas_codigo": 1033049,
   "rotas": 139,
   "rotas_http_backend": 13,
   "vistas_por_id": 0,
@@ -336,7 +336,7 @@
   "tabelas": 527,
   "migrations": 3099,
   "cron_jobs": 122,
-  "testes": 2577,
+  "testes": 2579,
   "workflows": 88,
   "scripts": 283,
   "docs_md": 1470
@@ -1896,7 +1896,7 @@
   },
   "src/components": {
    "arquivos": 1397,
-   "linhas": 277816
+   "linhas": 277823
   },
   "src/config": {
    "arquivos": 1,
@@ -1919,8 +1919,8 @@
    "linhas": 7
   },
   "src/hooks": {
-   "arquivos": 481,
-   "linhas": 90986
+   "arquivos": 482,
+   "linhas": 91043
   },
   "src/integrations": {
    "arquivos": 11,
@@ -2047,8 +2047,8 @@
    "linhas": 141
   },
   "tests/components": {
-   "arquivos": 162,
-   "linhas": 35210
+   "arquivos": 163,
+   "linhas": 35300
   },
   "tests/config": {
    "arquivos": 6,
@@ -2091,8 +2091,8 @@
    "linhas": 325
   },
   "tests/hooks": {
-   "arquivos": 159,
-   "linhas": 25396
+   "arquivos": 160,
+   "linhas": 25498
   },
   "tests/integration": {
    "arquivos": 11,

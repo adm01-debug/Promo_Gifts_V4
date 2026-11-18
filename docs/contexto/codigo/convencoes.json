@@ -23,7 +23,7 @@
    "src/services (10)"
   ],
   "testes": [
-   "tests/ (1072)",
+   "tests/ (1074)",
    "co-localizado (__tests__) (678)",
    "e2e/ (625)"
   ],
@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "fix(orcamentos): gravar rascunho nao apaga mais os campos que a tela nao modela (#3814)",
    "fix(quotes): id do Bitrix era gravado sem validacao e corrompia (#3799)",
    "fix(hooks): solta o spinner preso ao sair do produto antes da resposta (#3787)",
    "fix(kit): Ctrl+S repetido criava dois kits iguais (#3798)",
-   "test(quotes): resgata a cobertura de aprovacao na lista de orcamentos (#3802)",
-   "fix(mockup): rascunho reaberto perdia os limites de gravacao da area (#3797)"
+   "test(quotes): resgata a cobertura de aprovacao na lista de orcamentos (#3802)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",

@@ -8615,6 +8615,7 @@
    "src/components/quotes/quoteAutoSaveStatus.ts",
    "src/components/ui/badge.tsx",
    "src/components/ui/tooltip.tsx",
+   "src/hooks/quotes/restoredDraftBase.ts",
    "src/lib/logger.ts",
    "src/lib/quotes/quoteDraftRecovery.ts",
    "src/lib/utils.ts"
@@ -8702,7 +8703,8 @@
   "src/components/quotes/QuoteDraftRecovery.tsx": [
    "src/components/ui/alert-dialog.tsx",
    "src/components/ui/button.tsx",
-   "src/hooks/quotes/quoteDraftApply.ts"
+   "src/hooks/quotes/quoteDraftApply.ts",
+   "src/hooks/quotes/restoredDraftBase.ts"
   ],
   "src/components/quotes/QuoteFilters.tsx": [
    "src/components/ui/input.tsx",
@@ -11216,6 +11218,9 @@
   "src/hooks/quotes/quoteTypes.ts": [
    "src/integrations/supabase/types.ts",
    "src/types/quote.ts"
+  ],
+  "src/hooks/quotes/restoredDraftBase.ts": [
+   "src/hooks/quotes/quoteDraftApply.ts"
   ],
   "src/hooks/quotes/useAutoSaveQuote.ts": [
    "src/lib/logger.ts"

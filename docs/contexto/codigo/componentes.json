@@ -14192,7 +14192,7 @@
     "QuoteDraftRecovery"
    ],
    "export_default": null,
-   "linhas": 428,
+   "linhas": 432,
    "dominio": "components/quotes",
    "hooks_locais": [
     "useQuoteAutoSave"
@@ -14366,7 +14366,7 @@
     "QuoteDraftRecovery"
    ],
    "export_default": null,
-   "linhas": 166,
+   "linhas": 169,
    "dominio": "components/quotes",
    "hooks_locais": [],
    "tabelas": [],

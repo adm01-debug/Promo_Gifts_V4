@@ -5989,7 +5989,7 @@
    "hooks_exportados": [
     "useQuoteAutoSave"
    ],
-   "linhas": 428,
+   "linhas": 432,
    "dominio": "components/quotes",
    "tabelas": [],
    "rpcs": [],
@@ -6006,7 +6006,7 @@
     "recovery/src-legacy/src/pages/QuoteBuilderPage.tsx",
     "src/pages/quotes/QuoteBuilderPage.tsx"
    ],
-   "coberto_por_testes": 4
+   "coberto_por_testes": 5
   },
   {
    "arquivo": "src/components/quotes/useQuoteSummaryState.ts",
