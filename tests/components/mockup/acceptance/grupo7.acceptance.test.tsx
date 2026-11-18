@@ -85,7 +85,12 @@ vi.mock('@/integrations/supabase/client', () => ({
       insert: (payload: Record<string, unknown>) => ({
         select: () => ({
           single: async () => ({
-            data: { id: 'fixture-att-1', notes: null, created_at: '2026-10-01T12:00:00.000Z', ...payload },
+            data: {
+              id: 'fixture-att-1',
+              notes: null,
+              created_at: '2026-10-01T12:00:00.000Z',
+              ...payload,
+            },
             error: null,
           }),
         }),
@@ -170,9 +175,7 @@ describe('A18 — baixar imagem e ficha com mesma revisão, data e referência',
 
     // Baixar a ficha: o PDF sai nomeado pela MESMA referência exibida.
     fireEvent.click(screen.getByRole('button', { name: /Baixar PDF/ }));
-    await waitFor(() =>
-      expect(jsPdfSave).toHaveBeenCalledWith(`mockup-aprovacao-${ref}.pdf`),
-    );
+    await waitFor(() => expect(jsPdfSave).toHaveBeenCalledWith(`mockup-aprovacao-${ref}.pdf`));
     expect(jsPdfAddImage).toHaveBeenCalled();
   });
 
@@ -259,7 +262,11 @@ describe('A20 — raster 10 MB e arte original 25 MB', () => {
     await waitFor(() => expect(supa.upload).toHaveBeenCalledTimes(1));
     await waitFor(() => expect(onAttachmentsChange).toHaveBeenCalledTimes(1));
     expect(onAttachmentsChange).toHaveBeenCalledWith([
-      expect.objectContaining({ original_name: 'arte.ai', file_extension: '.ai', file_size_bytes: 25 * MB }),
+      expect.objectContaining({
+        original_name: 'arte.ai',
+        file_extension: '.ai',
+        file_size_bytes: 25 * MB,
+      }),
     ]);
 
     // Um envio por vez (trava do ArtFileUpload): espera o anterior liberar.
@@ -272,5 +279,12 @@ describe('A20 — raster 10 MB e arte original 25 MB', () => {
       'malicioso.exe: formato não suportado (.ai, .eps, .pdf, .svg, .cdr)',
     );
     expect(supa.upload).toHaveBeenCalledTimes(1);
+
+    // Deixa o ArtFileUpload assentar antes de sair: o ultimo fireEvent dispara
+    // trabalho assincrono dentro do componente, e terminar o teste no meio dele
+    // fazia o React avisar "update not wrapped in act(...)" via console.error —
+    // o que reprova no guarda STRICT_TEST_SIDE_EFFECTS do test:ci-core.
+    await waitFor(() => expect(arte.container.querySelector('[aria-busy="true"]')).toBeNull());
+    arte.unmount();
   });
 });
