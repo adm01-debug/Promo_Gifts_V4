@@ -29,13 +29,13 @@
  * caso continua provando a mesma coisa (catalogo completo ligado ao botao de IA), com
  * os nomes atuais.
  *
- * 4) Export de PDF trocado de biblioteca para impressao do navegador: `downloadKitPDF`
- * de `@/utils/kitPdfGenerator` nao existe mais no repo (grep `downloadKitPDF` em src/
- * = 0 ocorrencias; src/utils/ tem apenas productPdfExport.ts e
- * proposalPdfReactGenerator.ts). Hoje `handleExportPDF = () => window.print()`
- * (KitBuilderPage.tsx:54-56). Adaptado: o caso agora espiona `window.print` e exige 1
- * chamada ao clicar em "Exportar PDF real" — mesma cobertura (callback de export
- * realmente ligado), contrato atual.
+ * 4) Export de PDF: o modulo voltou. A PR #3835 criou `src/utils/kitPdfGenerator.ts`
+ * (jsPDF + autotable) e `handleExportPDF` passou a chamar `exportKitPdf`
+ * (KitBuilderPage.tsx:55-57); `window.print()` saiu do caminho. Este caso espiona
+ * `exportKitPdf` e exige 1 chamada com o kit e a quantidade da tela — mesma cobertura
+ * (callback de export realmente ligado ao estado), contrato atual.
+ * ATENCAO: ate 2026-11-18 este bloco ainda afirmava que o modulo "nao existe" e o
+ * caso espiava `window.print`, o que deixou `npm run test:quality` vermelho.
  *
  * 5) Assinatura de `handleAddToQuote` mudou de 2 para 4 argumentos: `(kitState,
  * kitQuantity, quoteClient, currentKitId)` (KitBuilderPage.tsx:419-424). Assercao
@@ -57,7 +57,7 @@
  * `KitShortcutsDialog`, `KitOnboardingTour`, `KitMakerGuideDialog`,
  * `KitMobileSummaryBar` (todos novos na pagina). Mock de
  * `@/components/layout/MainLayout` removido: a pagina nao usa mais MainLayout. Mock de
- * `@/utils/kitPdfGenerator` removido: o modulo nao existe.
+ * `@/utils/kitPdfGenerator` de volta: o modulo existe outra vez desde a PR #3835.
  *
  * Observacao de escopo: tests/ nao entra em tsconfig.json nem tsconfig.app.json (`tsc
  * --listFiles` nao lista o arquivo), entao a validacao possivel e vitest + eslint —
@@ -81,7 +81,7 @@
  * `role="alert"` da pagina sao o de erro de hidratacao (KitBuilderPage.tsx:256-270) e
  * o de quantidade (KitBuilderPage.tsx:271-289).
  * - (b) O export nao e mais guardado na pagina: `handleExportPDF` chama
- * `window.print()` sem condicao (KitBuilderPage.tsx:54-56). A guarda de preco desceu
+ * `exportKitPdf` sem condicao (KitBuilderPage.tsx:55-57). A guarda de preco desceu
  * para os componentes: KitSummary calcula `pricesKnown = hasKnownKitPrices(kitState)`
  * (src/components/kit-builder/KitSummary.tsx:82) e repassa para KitActionsBar
  * (KitSummary.tsx:302-304), que desabilita o botao de PDF com
@@ -104,6 +104,7 @@ import { type ComponentProps, type PropsWithChildren } from 'react';
 import { MemoryRouter } from 'react-router-dom';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import KitBuilderPage from '@/pages/kit-builder/KitBuilderPage';
+import { exportKitPdf } from '@/utils/kitPdfGenerator';
 import type { KitItem } from '@/lib/kit-builder';
 import type { KitBuilderHeader } from '@/components/kit-builder/KitBuilderHeader';
 import type { KitHeroPricingCard } from '@/components/kit-builder/KitHeroPricingCard';
@@ -200,6 +201,7 @@ const fixture = vi.hoisted(() => ({
 }));
 vi.mock('@/hooks/kit-builder', () => ({ useKitBuilderPageState: () => fixture }));
 vi.mock('@/components/seo/PageSEO', () => ({ PageSEO: () => null }));
+vi.mock('@/utils/kitPdfGenerator', () => ({ exportKitPdf: vi.fn() }));
 vi.mock('@/components/kit-builder/KitBuilderHeader', () => ({
   KitBuilderHeader: (props: ComponentProps<typeof KitBuilderHeader>) => {
     fixture.header = props;
@@ -293,13 +295,16 @@ describe('legacy KitBuilder preserves saved snapshots and functional actions', (
     expect(fixture.actions.setKitQuantity).toHaveBeenCalledExactlyOnceWith(4);
   });
   it('keeps the full Gold catalogs, AI action, PDF export and quote action connected to real state', () => {
-    const print = vi.spyOn(window, 'print').mockImplementation(() => undefined);
+    vi.mocked(exportKitPdf).mockClear();
     view();
     expect(fixture.header?.aiCatalogItems).toBe(fixture.state.allAvailableItems);
     expect(fixture.header?.aiCatalogBoxes).toBe(fixture.state.allAvailableBoxes);
     expect(fixture.header?.onAIApply).toBe(fixture.actions.applyAISuggestion);
     fireEvent.click(screen.getByRole('button', { name: 'Exportar PDF real' }));
-    expect(print).toHaveBeenCalledTimes(1);
+    expect(exportKitPdf).toHaveBeenCalledExactlyOnceWith({
+      kitState: fixture.state.kitState,
+      kitQuantity: fixture.state.kitQuantity,
+    });
     fireEvent.click(screen.getByRole('button', { name: 'Adicionar ao orçamento' }));
     expect(fixture.actions.handleAddToQuote).toHaveBeenCalledExactlyOnceWith(
       fixture.state.kitState,
@@ -307,7 +312,6 @@ describe('legacy KitBuilder preserves saved snapshots and functional actions', (
       fixture.state.quoteClient,
       'kit-original',
     );
-    print.mockRestore();
   });
   it('propagates the unknown price of a selected item to the pricing surfaces', () => {
     fixture.state.wizardState.currentStep = 'box';

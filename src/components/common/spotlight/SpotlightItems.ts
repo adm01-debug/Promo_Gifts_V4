@@ -27,6 +27,9 @@ import {
   ShieldCheck,
   Workflow,
   PlayCircle,
+  SlidersHorizontal,
+  Boxes,
+  Star,
 } from 'lucide-react';
 
 export interface SpotlightItem {
@@ -196,6 +199,38 @@ export function buildSpotlightItems(
       icon: React.createElement(BarChart3, { className: 'h-4 w-4' }),
       action: nav('/inteligencia-comercial'),
       path: '/inteligencia-comercial',
+      category: 'Ferramentas',
+    },
+    // Rotas que existiam no Ctrl+K legado (recovery/src-legacy/src/components/command/
+    // commandActions.tsx:105,143,152) e ficaram de fora quando a paleta virou
+    // Spotlight. As tres rotas estao vivas: product-routes.tsx:34-35 e
+    // tools-routes.tsx:75. Sem elas o vendedor nao alcanca Novidades, Filtros nem
+    // Estoque pela paleta.
+    {
+      id: 'novelties',
+      title: 'Novidades',
+      description: 'Produtos que entraram no catálogo',
+      icon: React.createElement(Star, { className: 'h-4 w-4' }),
+      action: nav('/novidades'),
+      path: '/novidades',
+      category: 'Navegação',
+    },
+    {
+      id: 'filters',
+      title: 'Filtros Avançados',
+      description: 'Buscar no catálogo por vários critérios',
+      icon: React.createElement(SlidersHorizontal, { className: 'h-4 w-4' }),
+      action: nav('/filtros'),
+      path: '/filtros',
+      category: 'Navegação',
+    },
+    {
+      id: 'stock',
+      title: 'Estoque',
+      description: 'Painel de estoque e risco de ruptura',
+      icon: React.createElement(Boxes, { className: 'h-4 w-4' }),
+      action: nav('/estoque'),
+      path: '/estoque',
       category: 'Ferramentas',
     },
     // Analytics

@@ -1,17 +1,27 @@
 /**
  * E2E smoke: CartSidebar pós-faxina não renderiza painéis legados.
  *
- * Trava qualquer regressão visual que reintroduza "Saúde do carrinho" /
- * "Inteligência de vendas" / "Histórico de ações" / "Sugestões inteligentes"
- * no sidebar. Roda no workflow `cart-quality.yml` sempre que
- * `src/pages/products/seller-carts/**` ou `src/components/cart/**` mudam.
+ * Trava qualquer regressão visual que reintroduza "Inteligência de vendas" /
+ * "Histórico de ações" / "Sugestões inteligentes" no sidebar. Roda no workflow
+ * `cart-quality.yml` sempre que `src/pages/products/seller-carts/**` ou
+ * `src/components/cart/**` mudam.
+ *
+ * 2026-11-18: "Saúde do carrinho" saiu desta lista. A #3817 devolveu o painel à
+ * sidebar por decisão do dono — está documentado no próprio código
+ * (src/pages/products/seller-carts/CartSidebar.tsx:9-11) e montado em
+ * CartSidebar.tsx:102-108 quando o carrinho tem itens; o título "Saúde do
+ * Carrinho" sai de src/components/cart/CartHealthChecklist.tsx:80. O teste
+ * unitário irmão já havia sido atualizado para EXIGIR o rótulo
+ * (src/pages/products/seller-carts/__tests__/CartSidebar.render.test.tsx:119-123)
+ * e este e2e ficou para trás, proibindo o mesmo rótulo. Como o spec semeia 3
+ * itens por carrinho, o painel renderiza e a falha era garantida — só não
+ * aparecia nas PRs porque o arquivo não tem a tag @smoke.
  */
 import { test, expect } from '@playwright/test';
 import { setupAuthedWithCarts } from '../helpers/cart-setup';
 import { gotoAndSettle } from '../helpers/nav';
 
 const FORBIDDEN_LABELS = [
-  /Saúde do carrinho/i,
   /Inteligência de vendas/i,
   /Histórico de ações/i,
   /Sugestões inteligentes/i,
