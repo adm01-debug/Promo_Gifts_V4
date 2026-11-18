@@ -48,6 +48,12 @@ Deno.test("createEdge cron auth: secret ausente => 401 e handler NÃO executa", 
 
   const res = await edge(req);
   assertEquals(res.status, 401);
+  // O corpo e o que separa este ramo do "secret invalido", que tambem da 401:
+  // secret nao configurado => "service_misconfigured" (dispatcher-auth.ts:292);
+  // secret errado => "unauthorized" (dispatcher-auth.ts:315). Sem esta linha os
+  // dois casos ficariam indistinguiveis e um bug que confundisse os caminhos
+  // passaria batido.
+  assertEquals((await res.json()).error, "service_misconfigured");
   assertEquals(called, false);
 });
 
@@ -70,6 +76,7 @@ Deno.test("createEdge cron auth: secret inválido => 401 e handler NÃO executa"
 
   const res = await edge(req);
   assertEquals(res.status, 401);
+  assertEquals((await res.json()).error, "unauthorized"); // dispatcher-auth.ts:315
   assertEquals(called, false);
 
   Deno.env.delete("TEST_CREATE_EDGE_CRON_SECRET_INVALID");
