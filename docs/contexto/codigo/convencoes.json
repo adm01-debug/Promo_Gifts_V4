@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "fix(ci): Gate 0 passa a barrar qualquer project-ref não canônico em migration (#3806)",
+   "docs(resgate): preserva as 2 notas de sessao que so existiam em branch (#3803)",
+   "docs(resgate): prova byte a byte das 32 branches `salvo`, com recibo por branch — e a fila que ainda falta (#3801)",
    "feat(kit-builder): previa de mockup passa a enviar as medidas reais do produto (#3818)",
-   "docs(resgate): registra as 8 pendencias abertas do resgate com evidencia medida (#3816)",
-   "test(resgate): lote 3 — cobertura de outro agente para autosave de orcamento e apresentacao de favoritos (#3815)",
-   "fix(orcamentos): gravar rascunho nao apaga mais os campos que a tela nao modela (#3814)",
-   "fix(quotes): id do Bitrix era gravado sem validacao e corrompia (#3799)"
+   "docs(resgate): registra as 8 pendencias abertas do resgate com evidencia medida (#3816)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",

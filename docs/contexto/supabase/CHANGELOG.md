@@ -2,6 +2,10 @@
 
 Diff semântico gerado a cada coleta em que algo mudou.
 
+## 2026-11-18 12:23 UTC
+
+- **functions** alterado (1): `public.get_edge_functions_base_url()`
+
 ## 2026-11-18 04:20 UTC
 
 - **realtime** removido (1): `supabase_realtime_messages_publication:realtime.messages_2026_11_14`

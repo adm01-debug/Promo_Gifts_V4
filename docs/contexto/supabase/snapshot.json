@@ -176966,6 +176966,10 @@
         "callers": {
           "code": [
             {
+              "file": "scripts/validate-supabase-config.mjs",
+              "hits": 2
+            },
+            {
               "file": "supabase/migrations/20260525113000_runtime_edge_function_base_url.sql",
               "hits": 5
             },
@@ -177018,7 +177022,7 @@
               "hits": 2
             }
           ],
-          "code_total_files": 13,
+          "code_total_files": 14,
           "cron": [
             "222:backfill-image-dimensions",
             "235:image-dimensions-backfill",

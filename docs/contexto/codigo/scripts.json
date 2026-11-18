@@ -3381,7 +3381,7 @@
   {
    "arquivo": "scripts/validate-supabase-config.mjs",
    "descricao": "SSOT: projeto Gold/Medallion de produ\\u00E7\\u00E3o (doufsxqlfjyuvxuezpln). pqpdolkaeqlyzpdpbizo \\u00E9 o projeto Lovable Cloud sem cat\\u00E1logo \\u2014 proibido em produ\\u00E7\\u00E3o.",
-   "linhas": 198,
+   "linhas": 237,
    "env": [],
    "npm_scripts": [
     "build",
