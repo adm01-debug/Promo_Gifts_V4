@@ -5,13 +5,13 @@
   "vitest",
   "playwright"
  ],
- "total": 2592,
+ "total": 2593,
  "por_tipo": {
   "contrato": 66,
   "e2e": 677,
   "pytest": 5,
   "qa": 17,
-  "unit": 1827
+  "unit": 1828
  },
  "onde_ficam": [
   {
@@ -20,7 +20,7 @@
   },
   {
    "padrao": "co-localizado (__tests__)",
-   "arquivos": 689
+   "arquivos": 690
   },
   {
    "padrao": "e2e/",
@@ -9933,6 +9933,16 @@
     "src/lib/quotes/quoteDraftRecovery.ts"
    ],
    "casos": 8
+  },
+  {
+   "arquivo": "src/lib/quotes/__tests__/templateTotal.test.ts",
+   "tipo": "unit",
+   "linhas": 127,
+   "testa": [
+    "src/hooks/quotes/useQuoteTemplates.ts",
+    "src/lib/quotes/templateTotal.ts"
+   ],
+   "casos": 12
   },
   {
    "arquivo": "src/lib/security/__tests__/file-validation.test.ts",
@@ -22584,7 +22594,7 @@
   "src/hooks/quotes/useQuoteFunnel.ts": 1,
   "src/hooks/quotes/useQuoteHistory.ts": 1,
   "src/hooks/quotes/useQuoteItems.ts": 5,
-  "src/hooks/quotes/useQuoteTemplates.ts": 4,
+  "src/hooks/quotes/useQuoteTemplates.ts": 5,
   "src/hooks/quotes/useQuoteVersions.ts": 3,
   "src/hooks/quotes/useQuotes.ts": 2,
   "src/hooks/quotes/useSellerDiscountLimits.ts": 2,
@@ -22748,6 +22758,7 @@
   "src/lib/quotes/exportDiscountAuditPdf.ts": 1,
   "src/lib/quotes/personalizationSummary.ts": 2,
   "src/lib/quotes/quoteDraftRecovery.ts": 2,
+  "src/lib/quotes/templateTotal.ts": 1,
   "src/lib/roles.ts": 1,
   "src/lib/security/file-validation.ts": 1,
   "src/lib/security/lastInternalRoute.ts": 1,

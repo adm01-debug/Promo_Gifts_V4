@@ -2,11 +2,21 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "5a8a84df825a8dbd7a42a9f5c1676d923a174ed6",
+  "commit": "1d4ba079d54b7d44aae667dc1a1960fbaa76eaa6",
   "branch": "main",
-  "data_commit": "2026-11-18T13:54:49-03:00",
+  "data_commit": "2026-11-18T14:12:30-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "1d4ba079",
+    "data": "2026-11-18",
+    "assunto": "fix(quotes): nunca mostrar R$ NaN no total de template (#3830)"
+   },
+   {
+    "sha": "b7e0b644",
+    "data": "2026-11-18",
+    "assunto": "docs(resgate): recibo da adjudicacao de 2026-11-18, com prova por branch e por PR (#3829)"
+   },
    {
     "sha": "5a8a84df",
     "data": "2026-11-18",
@@ -121,19 +131,9 @@
     "sha": "e86cca8a",
     "data": "2026-11-17",
     "assunto": "fix(mockup): rascunho reaberto perdia os limites de gravacao da area (#3797)"
-   },
-   {
-    "sha": "91a19f20",
-    "data": "2026-11-17",
-    "assunto": "test(quotes): resgata a cobertura de copia de template de orcamento (#3794)"
-   },
-   {
-    "sha": "5e4825ff",
-    "data": "2026-11-17",
-    "assunto": "test(kit): resgata a cobertura de persistencia e destaque de kit (#3793)"
    }
   ],
-  "arquivos_mudados_7d": 1480,
+  "arquivos_mudados_7d": 1483,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -157,7 +157,7 @@
    },
    {
     "pasta": "src/components/quotes",
-    "mudancas": 218
+    "mudancas": 223
    },
    {
     "pasta": "src/pages/magazine",
@@ -172,12 +172,12 @@
     "mudancas": 173
    },
    {
-    "pasta": "supabase/functions/_shared",
-    "mudancas": 169
-   },
-   {
     "pasta": "src/components/ui",
     "mudancas": 151
+   },
+   {
+    "pasta": "supabase/functions/_shared",
+    "mudancas": 149
    },
    {
     "pasta": "src/pages/admin",
@@ -203,11 +203,11 @@
    },
    {
     "arquivo": "RELATORIO_CI.md",
-    "mudancas": 49
+    "mudancas": 48
    },
    {
     "arquivo": "PENDENCIAS.md",
-    "mudancas": 45
+    "mudancas": 44
    },
    {
     "arquivo": "package.json",
@@ -246,11 +246,11 @@
     "mudancas": 12
    },
    {
-    "arquivo": "auditoria-supabase/RELATORIO_AUDITORIA_SUPABASE.md",
-    "mudancas": 12
+    "arquivo": "CHANGELOG.md",
+    "mudancas": 11
    },
    {
-    "arquivo": "CHANGELOG.md",
+    "arquivo": "auditoria-supabase/RELATORIO_AUDITORIA_SUPABASE.md",
     "mudancas": 11
    },
    {
@@ -301,7 +301,7 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 535
+    "commits": 533
    },
    {
     "autor": "Claude",
@@ -322,9 +322,9 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 10925,
-  "arquivos_codigo": 5443,
-  "linhas_codigo": 1038470,
+  "arquivos_total": 10928,
+  "arquivos_codigo": 5445,
+  "linhas_codigo": 1038651,
   "rotas": 139,
   "rotas_http_backend": 13,
   "vistas_por_id": 0,
@@ -336,10 +336,10 @@
   "tabelas": 527,
   "migrations": 3099,
   "cron_jobs": 122,
-  "testes": 2592,
+  "testes": 2593,
   "workflows": 88,
   "scripts": 283,
-  "docs_md": 1477
+  "docs_md": 1478
  },
  "por_pasta": {
   ".github/scripts": {
@@ -1896,7 +1896,7 @@
   },
   "src/components": {
    "arquivos": 1409,
-   "linhas": 280140
+   "linhas": 280095
   },
   "src/config": {
    "arquivos": 1,
@@ -1927,8 +1927,8 @@
    "linhas": 66577
   },
   "src/lib": {
-   "arquivos": 351,
-   "linhas": 54304
+   "arquivos": 353,
+   "linhas": 54530
   },
   "src/logic": {
    "arquivos": 4,

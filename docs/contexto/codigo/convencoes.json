@@ -18,13 +18,13 @@
    "src/components (77)"
   ],
   "servicos_logica": [
-   "src/lib (235)",
+   "src/lib (236)",
    "src/utils (31)",
    "src/services (10)"
   ],
   "testes": [
    "tests/ (1076)",
-   "co-localizado (__tests__) (689)",
+   "co-localizado (__tests__) (690)",
    "e2e/ (625)"
   ],
   "edge_functions": "supabase/functions",
@@ -43,7 +43,7 @@
  "nomenclatura": {
   "componentes": "PascalCase (96%)",
   "hooks": "use + PascalCase",
-  "servicos": "kebab-case (51%)",
+  "servicos": "kebab-case (50%)",
   "edge_functions": "kebab-case (99%)",
   "tabelas": "snake_case (86%)"
  },
@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "fix(quotes): nunca mostrar R$ NaN no total de template (#3830)",
+   "docs(resgate): recibo da adjudicacao de 2026-11-18, com prova por branch e por PR (#3829)",
    "fix(stock): um aviso agregado no lugar de um por variante sem nome de cor (#3828)",
    "feat(favorites): resgata a exportacao da lista de favoritos em CSV, JSON e PDF (#3827)",
-   "feat(mockup): edge recusa mockup sem medida real do produto (422) e kit-builder avisa antes (#3819)",
-   "fix(security): resgata o endurecimento de sanitizeUrl contra SSRF e credencial embutida (#3825)",
-   "fix(resgate): corrige os defeitos de produção medidos no item 6 do resgate (#3820)"
+   "feat(mockup): edge recusa mockup sem medida real do produto (422) e kit-builder avisa antes (#3819)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",

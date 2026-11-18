@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.3.2 · commit `5a8a84df82` · branch `main` · 2026-11-18 16:59 UTC
+> Gerado automaticamente por AI Context Sync v1.3.2 · commit `1d4ba079d5` · branch `main` · 2026-11-18 17:13 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -3938,9 +3938,9 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
   ```
   
   ```
-- **calculateTotal(template: QuoteTemplate)** — `src/components/quotes/AdminTemplatesManager.tsx`
+- **totalFormatado(template: QuoteTemplate)** — `src/components/quotes/AdminTemplatesManager.tsx`
   ```
-  const itemsTotal = template.items.reduce((sum, item) => { const personalizationCost = item.personalizations?.reduce( (pSum, p) => pSum + (p.unitCost || 0) * item.quantity + (p.setupCost || 0), 0, ) || 0; return sum + item.quantity * item.unitPrice + personalizationCost; }, 0); const discountValue = template.discount_percent > 0 ? itemsTotal * (template.discount_percent / 100) : template.discount_amount; return itemsTotal - discountValue;
+  textoDoTotal(template, formatCurrency);
   ```
 - **round2(n: number)** — `src/components/quotes/QuoteItemsTable.tsx`
   ```
@@ -3954,10 +3954,6 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
   ```
   return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', }).format(value);
   ```
-- **calculateTotal()** — `src/components/quotes/QuoteTemplateForm.tsx`
-  ```
-  const itemsTotal = (formData.items || []).reduce((sum, item) => { const itemBase = item.quantity * item.unitPrice; const personalizationCost = item.personalizations?.reduce((pSum, p) => { return pSum + (p.unitCost || 0) * item.quantity + (p.setupCost || 0); }, 0) || 0; return sum + itemBase + personalizationCost; }, 0); const discountValue = formData.discount_percent && formData.discount_percent > 0 ? itemsTotal * (formData.discount_percent / 100) : formData.discount_amount || 0; return itemsTot …
-  ```
 - **aplicar(template: QuoteTemplate)** — `src/components/quotes/QuoteTemplateSelector.tsx`
   ```
   const r = applyTemplateToQuote(template, s); setListaAberta(false); setAConfirmar(null); if (r.itensAplicados === 0 && r.camposAplicados.length === 0) { toast.warning('Nada foi aplicado', { description: r.itensIgnorados > 0 ? `Os ${r.itensIgnorados} itens deste template não têm produto vinculado, então não podem entrar no orçamento.` : 'Este template está vazio.', }); return; } const partes = [ `${r.itensAplicados} item(ns)`, ...r.camposAplicados.filter((c) => c !== 'itens'), ]; toast.success('T …
@@ -3965,10 +3961,6 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 - **formatCurrency(value: number)** — `src/components/quotes/QuoteTemplatesList.tsx`
   ```
   return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', }).format(value);
-  ```
-- **calculateTemplateTotal(template: QuoteTemplate)** — `src/components/quotes/QuoteTemplatesList.tsx`
-  ```
-  const itemsTotal = template.items.reduce((sum, item) => { const itemBase = item.quantity * item.unitPrice; const personalizationCost = item.personalizations?.reduce((pSum, p) => { return pSum + (p.unitCost || 0) * item.quantity + (p.setupCost || 0); }, 0) || 0; return sum + itemBase + personalizationCost; }, 0); const discountValue = template.discount_percent > 0 ? itemsTotal * (template.discount_percent / 100) : template.discount_amount; return itemsTotal - discountValue;
   ```
 - **hasDiscountWorkflow(q: Quote)** — `src/components/quotes/QuotesStatusChips.tsx`
   ```
@@ -4657,6 +4649,10 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 - **exportDiscountAuditPdf(ctx: DiscountAuditPdfContext)** — `src/lib/quotes/exportDiscountAuditPdf.ts`
   ```
   const plan = buildDiscountAuditPdfPlan(ctx); const { jsPDF } = await import('jspdf'); const doc = new jsPDF({ unit: 'pt', format: 'a4' }); const pageWidth = doc.internal.pageSize.getWidth(); const marginX = 40; let y = 50; doc.setFont('helvetica', 'bold'); doc.setFontSize(16); doc.text(plan.title, marginX, y); y += 22; doc.setFont('helvetica', 'normal'); doc.setFontSize(10); doc.setTextColor(90); plan.header.forEach((line) => { doc.text(line, marginX, y); y += 14; }); y += 8; doc.setDrawColor(22 …
+  ```
+- **totalDoTemplate(template: EntradaDeTotal)** — `src/lib/quotes/templateTotal.ts`
+  ```
+  const itens = Array.isArray(template.items) ? template.items : []; if (itens.some((item) => !itemTemplateEhCalculavel(item))) return null; const itemsTotal = itens.reduce((sum, item) => { const personalizationCost = item.personalizations?.reduce( (pSum, p) => pSum + (numeroUsavel(p.unitCost) ? p.unitCost : 0) * item.quantity + (numeroUsavel(p.setupCost) ? p.setupCost : 0), 0, ) ?? 0; return sum + item.quantity * item.unitPrice + personalizationCost; }, 0); const percentual = numeroUsavel(templat …
   ```
 - **validateFile(file: File, options: ValidationOptions = {},)** — `src/lib/security/file-validation.ts`
   ```
@@ -5706,7 +5702,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `MAX_RECENT_PRODUCTS` | `5` | `src/hooks/products/useRecentProducts.ts` |
 | `MAX_ITEMS` | `10` | `src/hooks/products/useRecentlyViewed.ts` |
 | `REPLENISHMENT_WINDOW_DAYS` | `30` | `src/hooks/products/useReplenishments.ts` |
-| … +372 linhas — lista completa em `context.json` | | |
+| … +373 linhas — lista completa em `context.json` | | |
 
 ### H.2 Prazos, expirações e janelas de tempo
 
@@ -6619,7 +6615,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `admin` | `supabase/migrations/20261112120500_fix_optimization_queue_rpcs_dev_access.sql` |
 | `anon` | `tests/edge-functions/live/_live-client.ts` |
 
-## K. Testes como especificação (22494 testes em 2269 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (22508 testes em 2270 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -6923,7 +6919,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `e2e/stock-module.spec.ts` | 18 | Stock Module - Public Access (No Auth) · should redirect to auth when accessing /estoque unauthenticated · should display auth page when accessing /estoque · should not expose stock data to unauthenticated users … |
 | `e2e/magazine/magazine-viewer.spec.ts` | 18 | Magazine viewer — atalhos de teclado · → avança página, ← volta, Home/End extremos · T abre sumário, ? abre ajuda, B marca página · Space em botão focado NÃO avança página (C2) … |
 | `e2e/quotes/quote-item-editor-sheet-header.spec.ts` | 18 | QuoteItemEditorSheet @ ${vp.name}px · DOM: botão Salvar presente e texto  · layout:  · a11y: foco entra no dialog e  … |
-| … +1969 linhas — lista completa em `context.json` | | |
+| … +1970 linhas — lista completa em `context.json` | | |
 
 ## L. Eventos de webhook tratados (contratos com sistemas externos)
 
@@ -7391,4 +7387,4 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | Mostra toast imediato de processamento se desejar, ou apenas aguarda | `src/components/layout/Header.tsx` |
 | Context providers must be imported synchronously (consumers render inside them) | `src/components/layout/MainLayout.tsx` |
 | para a qual não tem permissão. | `src/components/layout/sidebar/RestrictedRouteNotice.tsx` |
-| … +1350 linhas — lista completa em `context.json` | |
+| … +1352 linhas — lista completa em `context.json` | |

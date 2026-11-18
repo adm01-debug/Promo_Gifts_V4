@@ -1,13 +1,13 @@
 {
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
- "total": 310,
+ "total": 311,
  "por_camada": {
   "api": 4,
   "config": 1,
   "data": 3,
   "integrations": 8,
-  "lib": 235,
+  "lib": 236,
   "python": 9,
   "services": 10,
   "stores": 9,
@@ -6363,6 +6363,34 @@
     "components/quotes"
    ],
    "coberto_por_testes": 0,
+   "orfao": false
+  },
+  {
+   "arquivo": "src/lib/quotes/templateTotal.ts",
+   "camada": "lib",
+   "exports": [
+    "EntradaDeTotal",
+    "VALOR_INDISPONIVEL",
+    "itemTemplateEhCalculavel",
+    "textoDoSubtotalDoItem",
+    "textoDoTotal",
+    "totalDoTemplate"
+   ],
+   "export_default": null,
+   "linhas": 99,
+   "tabelas": [],
+   "rpcs": [],
+   "edges": [],
+   "env": [],
+   "externos": [],
+   "zod_schemas": 0,
+   "flags": [],
+   "papeis": [],
+   "usado_por": 3,
+   "usado_por_modulos": [
+    "components/quotes"
+   ],
+   "coberto_por_testes": 1,
    "orfao": false
   },
   {

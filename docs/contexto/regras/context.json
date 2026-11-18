@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "5a8a84df825a8dbd7a42a9f5c1676d923a174ed6",
+  "sha": "1d4ba079d54b7d44aae667dc1a1960fbaa76eaa6",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-18 16:59 UTC",
-  "files_total": 10853,
-  "code_files": 8882,
-  "code_lines": 1259202
+  "generated_at": "2026-11-18 17:13 UTC",
+  "files_total": 10856,
+  "code_files": 8884,
+  "code_lines": 1259383
  },
  "version": "1.3.2",
- "facts_hash": "1c0da909fb553b51",
+ "facts_hash": "f5315e5707f9b1e4",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -1120,7 +1120,7 @@
   "package_manager": "npm",
   "languages": {
    ".sql": 3440,
-   ".ts": 3029,
+   ".ts": 3031,
    ".tsx": 1948,
    ".mjs": 450,
    ".py": 15,
@@ -138558,7 +138558,7 @@
      "request_discount_approval_transactional",
      "respond_discount_approval_transactional"
     ],
-    "deps_count": 204
+    "deps_count": 205
    },
    {
     "path": "*",
@@ -139954,7 +139954,7 @@
      "respond_discount_approval_transactional",
      "restore_seller_cart"
     ],
-    "deps_count": 293
+    "deps_count": 294
    },
    {
     "path": "/orcamentos/templates",
@@ -139993,7 +139993,7 @@
      "get_profile_and_roles",
      "log_user_logout"
     ],
-    "deps_count": 141
+    "deps_count": 142
    },
    {
     "path": "/promoflix-playground",
@@ -149617,7 +149617,7 @@
   {
    "module": "src/components",
    "files": 1409,
-   "lines": 280139,
+   "lines": 280094,
    "tables": [
     "admin_audit_log",
     "art_file_attachments",
@@ -150267,8 +150267,8 @@
   },
   {
    "module": "src/lib",
-   "files": 352,
-   "lines": 54314,
+   "files": 354,
+   "lines": 54540,
    "tables": [
     "...",
     "companies",
@@ -174139,6 +174139,14 @@
    {
     "file": "src/lib/quotes/exportDiscountAuditPdf.ts",
     "text": "solicitação de aprovação de desconto. Consumido pelo painel do gestor"
+   },
+   {
+    "file": "src/lib/quotes/templateTotal.ts",
+    "text": "* Total do template (itens + personalização − desconto), ou `null` quando"
+   },
+   {
+    "file": "src/lib/quotes/templateTotal.ts",
+    "text": "* Texto que a tela mostra quando o total não pode ser calculado. */"
    },
    {
     "file": "src/lib/rbac/route-matrix.ts",
@@ -199240,6 +199248,11 @@
     "value": "5"
    },
    {
+    "file": "src/lib/quotes/templateTotal.ts",
+    "name": "VALOR_INDISPONIVEL",
+    "value": "'Valor indisponível'"
+   },
+   {
     "file": "src/lib/security/safeToast.ts",
     "name": "PUBLIC_FALLBACK_TITLE",
     "value": "'Não foi possível concluir esta ação. Tente novamente.'"
@@ -214168,9 +214181,9 @@
    },
    {
     "file": "src/components/quotes/AdminTemplatesManager.tsx",
-    "name": "calculateTotal",
+    "name": "totalFormatado",
     "params": "template: QuoteTemplate",
-    "body": "const itemsTotal = template.items.reduce((sum, item) => { const personalizationCost = item.personalizations?.reduce( (pSum, p) => pSum + (p.unitCost || 0) * item.quantity + (p.setupCost || 0), 0, ) || 0; return sum + item.quantity * item.unitPrice + personalizationCost; }, 0); const discountValue = template.discount_percent > 0 ? itemsTotal * (template.discount_percent / 100) : template.discount_amount; return itemsTotal - discountValue;"
+    "body": "textoDoTotal(template, formatCurrency);"
    },
    {
     "file": "src/components/quotes/QuoteItemsTable.tsx",
@@ -214191,12 +214204,6 @@
     "body": "return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', }).format(value);"
    },
    {
-    "file": "src/components/quotes/QuoteTemplateForm.tsx",
-    "name": "calculateTotal",
-    "params": "",
-    "body": "const itemsTotal = (formData.items || []).reduce((sum, item) => { const itemBase = item.quantity * item.unitPrice; const personalizationCost = item.personalizations?.reduce((pSum, p) => { return pSum + (p.unitCost || 0) * item.quantity + (p.setupCost || 0); }, 0) || 0; return sum + itemBase + personalizationCost; }, 0); const discountValue = formData.discount_percent && formData.discount_percent > 0 ? itemsTotal * (formData.discount_percent / 100) : formData.discount_amount || 0; return itemsTot …"
-   },
-   {
     "file": "src/components/quotes/QuoteTemplateSelector.tsx",
     "name": "aplicar",
     "params": "template: QuoteTemplate",
@@ -214207,12 +214214,6 @@
     "name": "formatCurrency",
     "params": "value: number",
     "body": "return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', }).format(value);"
-   },
-   {
-    "file": "src/components/quotes/QuoteTemplatesList.tsx",
-    "name": "calculateTemplateTotal",
-    "params": "template: QuoteTemplate",
-    "body": "const itemsTotal = template.items.reduce((sum, item) => { const itemBase = item.quantity * item.unitPrice; const personalizationCost = item.personalizations?.reduce((pSum, p) => { return pSum + (p.unitCost || 0) * item.quantity + (p.setupCost || 0); }, 0) || 0; return sum + itemBase + personalizationCost; }, 0); const discountValue = template.discount_percent > 0 ? itemsTotal * (template.discount_percent / 100) : template.discount_amount; return itemsTotal - discountValue;"
    },
    {
     "file": "src/components/quotes/QuotesStatusChips.tsx",
@@ -215245,6 +215246,12 @@
     "name": "exportDiscountAuditPdf",
     "params": "ctx: DiscountAuditPdfContext",
     "body": "const plan = buildDiscountAuditPdfPlan(ctx); const { jsPDF } = await import('jspdf'); const doc = new jsPDF({ unit: 'pt', format: 'a4' }); const pageWidth = doc.internal.pageSize.getWidth(); const marginX = 40; let y = 50; doc.setFont('helvetica', 'bold'); doc.setFontSize(16); doc.text(plan.title, marginX, y); y += 22; doc.setFont('helvetica', 'normal'); doc.setFontSize(10); doc.setTextColor(90); plan.header.forEach((line) => { doc.text(line, marginX, y); y += 14; }); y += 8; doc.setDrawColor(22 …"
+   },
+   {
+    "file": "src/lib/quotes/templateTotal.ts",
+    "name": "totalDoTemplate",
+    "params": "template: EntradaDeTotal",
+    "body": "const itens = Array.isArray(template.items) ? template.items : []; if (itens.some((item) => !itemTemplateEhCalculavel(item))) return null; const itemsTotal = itens.reduce((sum, item) => { const personalizationCost = item.personalizations?.reduce( (pSum, p) => pSum + (numeroUsavel(p.unitCost) ? p.unitCost : 0) * item.quantity + (numeroUsavel(p.setupCost) ? p.setupCost : 0), 0, ) ?? 0; return sum + item.quantity * item.unitPrice + personalizationCost; }, 0); const percentual = numeroUsavel(templat …"
    },
    {
     "file": "src/lib/security/file-validation.ts",
@@ -252967,6 +252974,62 @@
    {
     "file": "src/lib/quotes/__tests__/quoteDraftRecovery.test.ts",
     "name": "recusa modo de entrega fora do par aceito pela tela"
+   },
+   {
+    "file": "src/lib/quotes/__tests__/templateTotal.test.ts",
+    "name": "totalDoTemplate"
+   },
+   {
+    "file": "src/lib/quotes/__tests__/templateTotal.test.ts",
+    "name": "soma itens, personalização e aplica desconto percentual"
+   },
+   {
+    "file": "src/lib/quotes/__tests__/templateTotal.test.ts",
+    "name": "aplica desconto em valor quando o percentual é zero"
+   },
+   {
+    "file": "src/lib/quotes/__tests__/templateTotal.test.ts",
+    "name": "template sem itens vale zero (e não é "
+   },
+   {
+    "file": "src/lib/quotes/__tests__/templateTotal.test.ts",
+    "name": "items ausente ou não-array não derruba o cálculo"
+   },
+   {
+    "file": "src/lib/quotes/__tests__/templateTotal.test.ts",
+    "name": "devolve null — nunca NaN — quando um item não tem quantity"
+   },
+   {
+    "file": "src/lib/quotes/__tests__/templateTotal.test.ts",
+    "name": "devolve null quando um item não tem unitPrice"
+   },
+   {
+    "file": "src/lib/quotes/__tests__/templateTotal.test.ts",
+    "name": "um item ilegível invalida o total mesmo com outros itens válidos"
+   },
+   {
+    "file": "src/lib/quotes/__tests__/templateTotal.test.ts",
+    "name": "recusa quantity/unitPrice que não são número finito"
+   },
+   {
+    "file": "src/lib/quotes/__tests__/templateTotal.test.ts",
+    "name": "desconto corrompido não contamina o total"
+   },
+   {
+    "file": "src/lib/quotes/__tests__/templateTotal.test.ts",
+    "name": "textoDoTotal / textoDoSubtotalDoItem"
+   },
+   {
+    "file": "src/lib/quotes/__tests__/templateTotal.test.ts",
+    "name": "a tela mostra "
+   },
+   {
+    "file": "src/lib/quotes/__tests__/templateTotal.test.ts",
+    "name": "a tela nunca imprime NaN no subtotal de um item"
+   },
+   {
+    "file": "src/lib/quotes/__tests__/templateTotal.test.ts",
+    "name": "itemTemplateEhCalculavel separa item usável de item quebrado"
    },
    {
     "file": "src/lib/security/sanitize-error.test.ts",
@@ -451991,7 +452054,7 @@
   },
   "src/components/quotes/AdminTemplatesManager.tsx": {
    "path": "src/components/quotes/AdminTemplatesManager.tsx",
-   "lines": 260,
+   "lines": 245,
    "exports": [
     "function AdminTemplatesManager"
    ],
@@ -452009,9 +452072,9 @@
      "body": ""
     },
     {
-     "name": "calculateTotal",
+     "name": "totalFormatado",
      "params": "template: QuoteTemplate",
-     "body": "const itemsTotal = template.items.reduce((sum, item) => { const personalizationCost = item.personalizations?.reduce( (pSum, p) => pSum + (p.unitCost || 0) * item.quantity + (p.setupCost || 0), 0, ) || 0; return sum + item.quantity * item.unitPrice + personalizationCost; }, 0); const discountValue = template.discount_percent > 0 ? itemsTotal * (template.discount_percent / 100) : template.discount_amount; return itemsTotal - discountValue;"
+     "body": "textoDoTotal(template, formatCurrency);"
     }
    ]
   },
@@ -452726,7 +452789,7 @@
   },
   "src/components/quotes/QuoteTemplateForm.tsx": {
    "path": "src/components/quotes/QuoteTemplateForm.tsx",
-   "lines": 304,
+   "lines": 287,
    "exports": [
     "function QuoteTemplateForm"
    ],
@@ -452749,11 +452812,6 @@
      "name": "formatCurrency",
      "params": "value: number",
      "body": "return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', }).format(value);"
-    },
-    {
-     "name": "calculateTotal",
-     "params": "",
-     "body": "const itemsTotal = (formData.items || []).reduce((sum, item) => { const itemBase = item.quantity * item.unitPrice; const personalizationCost = item.personalizations?.reduce((pSum, p) => { return pSum + (p.unitCost || 0) * item.quantity + (p.setupCost || 0); }, 0) || 0; return sum + itemBase + personalizationCost; }, 0); const discountValue = formData.discount_percent && formData.discount_percent > 0 ? itemsTotal * (formData.discount_percent / 100) : formData.discount_amount || 0; return itemsTot …"
     }
    ]
   },
@@ -452776,7 +452834,7 @@
   },
   "src/components/quotes/QuoteTemplatesList.tsx": {
    "path": "src/components/quotes/QuoteTemplatesList.tsx",
-   "lines": 411,
+   "lines": 394,
    "exports": [
     "function QuoteTemplatesList"
    ],
@@ -452785,11 +452843,6 @@
      "name": "formatCurrency",
      "params": "value: number",
      "body": "return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', }).format(value);"
-    },
-    {
-     "name": "calculateTemplateTotal",
-     "params": "template: QuoteTemplate",
-     "body": "const itemsTotal = template.items.reduce((sum, item) => { const itemBase = item.quantity * item.unitPrice; const personalizationCost = item.personalizations?.reduce((pSum, p) => { return pSum + (p.unitCost || 0) * item.quantity + (p.setupCost || 0); }, 0) || 0; return sum + itemBase + personalizationCost; }, 0); const discountValue = template.discount_percent > 0 ? itemsTotal * (template.discount_percent / 100) : template.discount_amount; return itemsTotal - discountValue;"
     }
    ]
   },
@@ -453908,14 +453961,14 @@
   },
   "src/components/quotes/admin-templates/TemplateGridView.tsx": {
    "path": "src/components/quotes/admin-templates/TemplateGridView.tsx",
-   "lines": 133,
+   "lines": 136,
    "exports": [
     "function TemplateGridView"
    ]
   },
   "src/components/quotes/admin-templates/TemplateTableView.tsx": {
    "path": "src/components/quotes/admin-templates/TemplateTableView.tsx",
-   "lines": 147,
+   "lines": 148,
    "exports": [
     "function TemplateTableView"
    ]
@@ -479236,6 +479289,35 @@
    ],
    "doc": "SSOT do layout responsivo da lista de orçamentos. Esses valores são consumidos por: - `QuotesConfigurableList` (vars CSS `--quotes-row-h` e `--quotes-chrome-h`) - specs E2E (`e2e/helpers/quotes-layout.ts` reflete os mesmos números) `chromeHeight(viewportWidth)` retorna o espaço (px) reservado pelo h …"
   },
+  "src/lib/quotes/templateTotal.ts": {
+   "path": "src/lib/quotes/templateTotal.ts",
+   "lines": 99,
+   "exports": [
+    "interface EntradaDeTotal",
+    "function itemTemplateEhCalculavel",
+    "function totalDoTemplate",
+    "const VALOR_INDISPONIVEL",
+    "function textoDoSubtotalDoItem",
+    "function textoDoTotal"
+   ],
+   "params": [
+    {
+     "name": "VALOR_INDISPONIVEL",
+     "value": "'Valor indisponível'"
+    }
+   ],
+   "rule_comments": [
+    "* Total do template (itens + personalização − desconto), ou `null` quando",
+    "* Texto que a tela mostra quando o total não pode ser calculado. */"
+   ],
+   "calc_fns": [
+    {
+     "name": "totalDoTemplate",
+     "params": "template: EntradaDeTotal",
+     "body": "const itens = Array.isArray(template.items) ? template.items : []; if (itens.some((item) => !itemTemplateEhCalculavel(item))) return null; const itemsTotal = itens.reduce((sum, item) => { const personalizationCost = item.personalizations?.reduce( (pSum, p) => pSum + (numeroUsavel(p.unitCost) ? p.unitCost : 0) * item.quantity + (numeroUsavel(p.setupCost) ? p.setupCost : 0), 0, ) ?? 0; return sum + item.quantity * item.unitPrice + personalizationCost; }, 0); const percentual = numeroUsavel(templat …"
+    }
+   ]
+  },
   "src/lib/quotes/__tests__/applyTemplateToQuote.test.ts": {
    "path": "src/lib/quotes/__tests__/applyTemplateToQuote.test.ts",
    "lines": 247,
@@ -479461,6 +479543,30 @@
     "recusa data de validade que não é uma data de calendário",
     "recusa item sem os campos que a tela usa para calcular o total",
     "recusa modo de entrega fora do par aceito pela tela"
+   ]
+  },
+  "src/lib/quotes/__tests__/templateTotal.test.ts": {
+   "path": "src/lib/quotes/__tests__/templateTotal.test.ts",
+   "lines": 127,
+   "is_test": true,
+   "rule_comments": [
+    "pode virar `R$ 0,00` nem `R$ NaN` na tela do vendedor. Essa regra passou a"
+   ],
+   "tests": [
+    "totalDoTemplate",
+    "soma itens, personalização e aplica desconto percentual",
+    "aplica desconto em valor quando o percentual é zero",
+    "template sem itens vale zero (e não é ",
+    "items ausente ou não-array não derruba o cálculo",
+    "devolve null — nunca NaN — quando um item não tem quantity",
+    "devolve null quando um item não tem unitPrice",
+    "um item ilegível invalida o total mesmo com outros itens válidos",
+    "recusa quantity/unitPrice que não são número finito",
+    "desconto corrompido não contamina o total",
+    "textoDoTotal / textoDoSubtotalDoItem",
+    "a tela mostra ",
+    "a tela nunca imprime NaN no subtotal de um item",
+    "itemTemplateEhCalculavel separa item usável de item quebrado"
    ]
   },
   "src/lib/rbac/route-matrix.ts": {
@@ -546392,10 +546498,34 @@
   }
  },
  "git": {
-  "sha": "5a8a84df825a8dbd7a42a9f5c1676d923a174ed6",
+  "sha": "1d4ba079d54b7d44aae667dc1a1960fbaa76eaa6",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "1d4ba07",
+    "date": "2026-11-18",
+    "author": "adm01-debug",
+    "subject": "fix(quotes): nunca mostrar R$ NaN no total de template (#3830)",
+    "files": [
+     "src/components/quotes/AdminTemplatesManager.tsx",
+     "src/components/quotes/QuoteTemplateForm.tsx",
+     "src/components/quotes/QuoteTemplatesList.tsx",
+     "src/components/quotes/admin-templates/TemplateGridView.tsx",
+     "src/components/quotes/admin-templates/TemplateTableView.tsx",
+     "src/lib/quotes/__tests__/templateTotal.test.ts",
+     "src/lib/quotes/templateTotal.ts"
+    ]
+   },
+   {
+    "sha": "b7e0b64",
+    "date": "2026-11-18",
+    "author": "adm01-debug",
+    "subject": "docs(resgate): recibo da adjudicacao de 2026-11-18, com prova por branch e por PR (#3829)",
+    "files": [
+     "docs/agentes/resgates/2026-11-18-recibo-adjudicacao.md"
+    ]
+   },
    {
     "sha": "5a8a84d",
     "date": "2026-11-18",
@@ -546727,40 +546857,27 @@
     "files": [
      "tests/hooks/useKitBuilderPageState.legacy.test.tsx"
     ]
-   },
-   {
-    "sha": "4700bff",
-    "date": "2026-11-17",
-    "author": "adm01-debug",
-    "subject": "feat(voz): comando de filtro aplica os critérios ditados no catálogo (#3813)",
-    "files": [
-     "src/components/search/__tests__/useGlobalSearch.test.ts",
-     "src/components/search/useGlobalSearch.ts",
-     "src/components/search/voiceFilterDispatch.ts",
-     "src/hooks/products/useVoiceFilterApply.ts",
-     "src/lib/filters/voiceFilterPatch.ts",
-     "src/pages/Index.tsx",
-     "src/stores/voiceFilterBridge.ts",
-     "tests/hooks/useCatalogState.voiceFilters.test.tsx",
-     "tests/lib/voiceFilterPatch.legacy.test.ts"
-    ]
-   },
-   {
-    "sha": "1e9864f",
-    "date": "2026-11-17",
-    "author": "adm01-debug",
-    "subject": "feat(favoritos): botão \"Apresentar lista\" abre o modo apresentação dos favoritos (#3812)",
-    "files": [
-     "src/components/favorites/FavoritePresentationLauncher.tsx",
-     "src/components/favorites/FavoritesViewHeader.tsx",
-     "src/pages/products/FavoritesPage.tsx",
-     "tests/pages/FavoritesPage.apresentar-lista.test.tsx"
-    ]
    }
   ],
   "hot_files": [
    [
-    "src/components/favorites/FavoritesViewHeader.tsx",
+    "src/components/quotes/AdminTemplatesManager.tsx",
+    3
+   ],
+   [
+    "src/components/quotes/QuoteTemplatesList.tsx",
+    3
+   ],
+   [
+    "src/components/quotes/admin-templates/TemplateGridView.tsx",
+    3
+   ],
+   [
+    "src/components/quotes/admin-templates/TemplateTableView.tsx",
+    3
+   ],
+   [
+    "src/components/quotes/QuoteTemplateForm.tsx",
     2
    ],
    [
@@ -546773,22 +546890,6 @@
    ],
    [
     "tests/components/kit-builder/PersonalizationConfig.test.ts",
-    2
-   ],
-   [
-    "src/components/quotes/AdminTemplatesManager.tsx",
-    2
-   ],
-   [
-    "src/components/quotes/QuoteTemplatesList.tsx",
-    2
-   ],
-   [
-    "src/components/quotes/admin-templates/TemplateGridView.tsx",
-    2
-   ],
-   [
-    "src/components/quotes/admin-templates/TemplateTableView.tsx",
     2
    ],
    [
@@ -546816,6 +546917,18 @@
     2
    ],
    [
+    "src/lib/quotes/__tests__/templateTotal.test.ts",
+    1
+   ],
+   [
+    "src/lib/quotes/templateTotal.ts",
+    1
+   ],
+   [
+    "docs/agentes/resgates/2026-11-18-recibo-adjudicacao.md",
+    1
+   ],
+   [
     "src/hooks/products/__tests__/useReposicaoVariantsSummary.test.ts",
     1
    ],
@@ -546825,18 +546938,6 @@
    ],
    [
     "src/components/favorites/ExportFavoritesButton.tsx",
-    1
-   ],
-   [
-    "src/components/favorites/__tests__/ExportFavoritesButton.test.tsx",
-    1
-   ],
-   [
-    "supabase/functions/generate-mockup/geometry.ts",
-    1
-   ],
-   [
-    "supabase/functions/generate-mockup/index.geometry.test.ts",
     1
    ]
   ]

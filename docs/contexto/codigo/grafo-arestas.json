@@ -8584,6 +8584,7 @@
    "src/components/ui/separator.tsx",
    "src/components/ui/skeleton.tsx",
    "src/hooks/quotes/useQuoteTemplates.ts",
+   "src/lib/quotes/templateTotal.ts",
    "src/utils/templateExport.ts"
   ],
   "src/components/quotes/ClientPicker.tsx": [
@@ -8869,7 +8870,8 @@
    "src/components/ui/separator.tsx",
    "src/components/ui/switch.tsx",
    "src/components/ui/textarea.tsx",
-   "src/hooks/quotes/useQuoteTemplates.ts"
+   "src/hooks/quotes/useQuoteTemplates.ts",
+   "src/lib/quotes/templateTotal.ts"
   ],
   "src/components/quotes/QuoteTemplateSelector.tsx": [
    "src/components/quotes/QuoteTemplatesList.tsx",
@@ -8890,6 +8892,7 @@
    "src/components/ui/select.tsx",
    "src/components/ui/skeleton.tsx",
    "src/hooks/quotes/useQuoteTemplates.ts",
+   "src/lib/quotes/templateTotal.ts",
    "src/utils/templateExport.ts"
   ],
   "src/components/quotes/QuoteTotalsSummary.tsx": [
@@ -12297,6 +12300,9 @@
   ],
   "src/lib/quotes/quoteDraftRecovery.ts": [
    "src/hooks/quotes/quoteTypes.ts"
+  ],
+  "src/lib/quotes/templateTotal.ts": [
+   "src/hooks/quotes/useQuoteTemplates.ts"
   ],
   "src/lib/routePrefetch.ts": [
    "src/pages/CustomizableDashboard.tsx",
