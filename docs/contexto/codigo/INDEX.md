@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e de hora em hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `1d4ba079d54b7d44aae667dc1a1960fbaa76eaa6` (2026-11-18T14:12:30-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e de hora em hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `7d4212ead74b8814b9e5548cb0548c407db06de1` (2026-11-18T14:17:51-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -36,7 +36,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 |---|---|
 | arquivos_total | 10928 |
 | arquivos_codigo | 5445 |
-| linhas_codigo | 1038651 |
+| linhas_codigo | 1038730 |
 | rotas | 139 |
 | rotas_http_backend | 13 |
 | vistas_por_id | 0 |
@@ -591,8 +591,8 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - possiveis_segredos_no_codigo: 7 — ex.: scripts/ai-context/cenarios.mjs:102, src/components/admin/connections/__tests__/ConnectionSecurity.unit.test.tsx:9, src/integrations/supabase/client.ts:27
 
 ## Grafo de código (graphify)
-- 49045 nós · 82310 arestas · 2769 comunidades · grafo do commit `1d4ba079`
-- comunidades maiores: ref_integrations (635), react (570), ref_components (518), ref_node_child_process (479), @tanstack/react-query (412), vitest (397), lucide-react (377), ref_hooks (371), sonner (322), ref_node_fs (315), ref_lib (310), scripts (310)
+- 49047 nós · 82312 arestas · 2755 comunidades · grafo do commit `7d4212ea`
+- comunidades maiores: ref_integrations (673), vitest (578), ref_components (528), lucide-react (523), ref_node_child_process (499), ref_hooks (466), @tanstack/react-query (387), ref_node_fs (378), react-router-dom (365), react (365), scripts (310), ref_types (307)
 - símbolos mais chamados: gotoAndSettle() (e2e/helpers/nav.ts), re (?), q() (scripts/supabase_snapshot/snapshot.py), analyze() (tests/scripts/test_personalization_artifact_diagnostics.py), outer() (tests/scripts/test_personalization_artifact_diagnostics.py), json (?), useExternalDatabase() (recovery/src-legacy/src/hooks/useExternalDatabase.ts), concludeCheck() (scripts/check-result-contract.mjs), querySupabaseReadOnly() (scripts/supabase-read-only-query.mjs), loginAs() (e2e/helpers/auth.ts), inner() (tests/scripts/test_personalization_artifact_diagnostics.py), excluded_sql() (scripts/supabase_snapshot/snapshot.py)
 - consulta local: `graphify query "<pergunta>"`, `graphify path "<A>" "<B>"`, `graphify explain "<X>"`
 
@@ -1187,6 +1187,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - CHANGELOG topo: [1.9.1](https://github.com/adm01-debug/Promo_Gifts_V4/compare/gifts-store-v1.9.0...gifts-store-v1.9.1) (2026-11-17)
 
 ## Últimos commits
+- 2026-11-18 `7d4212ea` fix(monitoring): tunel para de repassar 404 da ingestao ao navegador (#3831)
 - 2026-11-18 `1d4ba079` fix(quotes): nunca mostrar R$ NaN no total de template (#3830)
 - 2026-11-18 `b7e0b644` docs(resgate): recibo da adjudicacao de 2026-11-18, com prova por branch e por PR (#3829)
 - 2026-11-18 `5a8a84df` fix(stock): um aviso agregado no lugar de um por variante sem nome de cor (#3828)
@@ -1201,7 +1202,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-18 `c1b158ce` fix(quotes): contratos de layout param de quebrar quando o prettier reordena classes (#3823)
 - 2026-11-18 `b52dceae` feat(revert-3361): devolve os painéis do carrinho e as telas de template de orçamento (#3817)
 - 2026-11-18 `5470d5f4` fix(ci): Gate 0 passa a barrar qualquer project-ref não canônico em migration (#3806)
-- 2026-11-18 `646bbdbf` docs(resgate): preserva as 2 notas de sessao que so existiam em branch (#3803)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

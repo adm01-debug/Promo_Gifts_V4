@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "fix(monitoring): tunel para de repassar 404 da ingestao ao navegador (#3831)",
    "fix(quotes): nunca mostrar R$ NaN no total de template (#3830)",
    "docs(resgate): recibo da adjudicacao de 2026-11-18, com prova por branch e por PR (#3829)",
    "fix(stock): um aviso agregado no lugar de um por variante sem nome de cor (#3828)",
-   "feat(favorites): resgata a exportacao da lista de favoritos em CSV, JSON e PDF (#3827)",
-   "feat(mockup): edge recusa mockup sem medida real do produto (422) e kit-builder avisa antes (#3819)"
+   "feat(favorites): resgata a exportacao da lista de favoritos em CSV, JSON e PDF (#3827)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",

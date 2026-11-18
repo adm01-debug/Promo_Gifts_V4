@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.3.2 · commit `1d4ba079d5` · branch `main` · 2026-11-18 17:13 UTC
+> Gerado automaticamente por AI Context Sync v1.3.2 · commit `7d4212ead7` · branch `main` · 2026-11-18 17:22 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -6615,7 +6615,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `admin` | `supabase/migrations/20261112120500_fix_optimization_queue_rpcs_dev_access.sql` |
 | `anon` | `tests/edge-functions/live/_live-client.ts` |
 
-## K. Testes como especificação (22508 testes em 2270 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (22511 testes em 2270 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -6882,6 +6882,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `src/tests/ProductSortingRelevance.test.ts` | 20 | SORT_OPTIONS — contrato do seletor · expõe exatamente as 7 opções esperadas, na ordem da UI · todas as opções têm label não vazia · sortProducts — Nome (A-Z) … |
 | `src/utils/__tests__/quote-number.exhaustive.test.ts` | 20 | quote-number · normalização e validação exaustivas · idempotência · normalizar(%s) é idempotente · saneamento de espaços … |
 | `supabase/functions/external-db-bridge/applyFiltersAndSwap.integration.test.ts` | 20 | applyFilters: nunca chama .select() (filtro vazio) · applyFilters: nunca chama .select() (filtros simples eq) · applyFilters: nunca chama .select() (operadores PostgREST string) · applyFilters: nunca chama .select() (sufixos _gte/_lte/_isnull/_notnull) … |
+| `tests/api/vercel-monitoring-tunnel.test.ts` | 20 | api/monitoring — túnel de envelopes · repassa o envelope para o endpoint derivado do DSN do próprio envelope · não é proxy aberto: DSN de host não liberado é recusado SEM fazer requisição · recusa método diferente de POST … |
 | `tests/components/products/ProductCard.test.tsx` | 20 | ProductCard · renders product name and price · renders with favorite state · calls onClick when clicked … |
 | `tests/edge-functions/integration/cnpj-lookup.test.ts` | 20 | cnpj-lookup · happy path · retorna 200 com dados da empresa para CNPJ válido formatado · aceita CNPJ sem formatação (somente dígitos) … |
 | `tests/edge-functions/integration/step-up-verify.test.ts` | 20 | step-up-verify · verificação bem-sucedida · retorna 200 com step_up_token quando OTP correto · step_up_token expira em tempo razoável (15min) … |
@@ -6918,7 +6919,6 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `e2e/dashboard-modules.spec.ts` | 18 | Dashboard Modules - Public Access (No Auth) · should redirect to auth when accessing ${route.path} unauthenticated · should display auth page for all dashboard routes · should not expose observability/metrics data to unauthenticated users … |
 | `e2e/stock-module.spec.ts` | 18 | Stock Module - Public Access (No Auth) · should redirect to auth when accessing /estoque unauthenticated · should display auth page when accessing /estoque · should not expose stock data to unauthenticated users … |
 | `e2e/magazine/magazine-viewer.spec.ts` | 18 | Magazine viewer — atalhos de teclado · → avança página, ← volta, Home/End extremos · T abre sumário, ? abre ajuda, B marca página · Space em botão focado NÃO avança página (C2) … |
-| `e2e/quotes/quote-item-editor-sheet-header.spec.ts` | 18 | QuoteItemEditorSheet @ ${vp.name}px · DOM: botão Salvar presente e texto  · layout:  · a11y: foco entra no dialog e  … |
 | … +1970 linhas — lista completa em `context.json` | | |
 
 ## L. Eventos de webhook tratados (contratos com sistemas externos)

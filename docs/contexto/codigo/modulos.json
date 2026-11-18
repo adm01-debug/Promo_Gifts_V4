@@ -7,7 +7,7 @@
    "modulo": "api",
    "arquivos": 4,
    "testes": 0,
-   "linhas": 612,
+   "linhas": 651,
    "itens_menu": [],
    "telas": [
     "/api/health",
