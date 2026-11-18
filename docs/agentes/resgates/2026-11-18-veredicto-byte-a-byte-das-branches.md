@@ -25,21 +25,57 @@ branch tem e a main não tem em lugar nenhum.
 
 ## Resultado medido
 
-| branch | arquivos mudados | idênticos | divergentes | **ausentes da main** |
-|---|---|---|---|---|
-| `claude/feat-restauracao-rascunho-orcamento-261117-1620` | 3 | 0 | 3 | **0** |
-| `salvo/claude-fix-mockup-geometria-wysiwyg-261115-0045` | 4 | 0 | 4 | **0** |
-| `salvo/claude-fix-mockup-logo-tamanho-real-261114-2200` | 4 | 0 | 4 | **0** |
-| `salvo/claude-fix-pr3517-gate1-baseline-261113-2336` | 309 | 37 | 272 | **0** |
-| `salvo/claude-fix-resgate-p06-p15-security-261116-2215` | 5 | 2 | 3 | **0** |
-| `salvo/codex-fix-gate1-kit-pdf-types-261109-2252` | 368 | 52 | 316 | **0** |
-| `salvo/importado-vps-fabrica-v2-refazer-dc12be92-261116` | 3 | 1 | 2 | **0** |
-| `salvo/261117-laughing-cori-o9w35e` | 24 | 5 | 19 | **0** |
-| `salvo/261117-schema-snapshot-cancelled-skip` | 1 | 0 | 1 | **0** |
+### Correção de uma medição minha, feita horas depois
 
-**Nenhum arquivo de nenhuma branch está ausente da `main`.** Nenhum arquivo foi
-perdido por inteiro. O risco que restava era de *trecho* perdido — e é isso que
-o passo 4 fecha, branch a branch, abaixo.
+A primeira versão deste arquivo afirmava **"nenhum arquivo de nenhuma branch está
+ausente da `main`"**. Era **falso**, e o erro é instrutivo: eu só havia olhado os
+arquivos que a *branch* mudou (`git diff main...branch`). Um arquivo que a branch
+**não tocou** e que a **`main` apagou** não aparece nesse diff — e é exatamente o
+caso mais perigoso, porque é trabalho que sumiu sem ninguém mexer nele.
+
+A medição correta é comparar as **árvores inteiras** (`git ls-tree -r`):
+
+| branch | arquivos que existem na branch e **não** na main | dos quais código |
+|---|---|---|
+| `claude/feat-restauracao-rascunho-orcamento-261117-1620` | 1 | 1 |
+| `salvo/claude-fix-mockup-geometria-wysiwyg-261115-0045` | 17 | 4 |
+| `salvo/claude-fix-mockup-logo-tamanho-real-261114-2200` | 17 | 4 |
+| `salvo/claude-fix-pr3517-gate1-baseline-261113-2336` | 77 | 15 |
+| `salvo/claude-fix-resgate-p06-p15-security-261116-2215` | 3 | 2 |
+| `salvo/codex-fix-gate1-kit-pdf-types-261109-2252` | 362 | **346** |
+| `salvo/importado-vps-fabrica-v2-refazer-dc12be92-261116` | 281 | 135 |
+| `salvo/261117-laughing-cori-o9w35e` | 34 | 8 |
+| `salvo/261117-schema-snapshot-cancelled-skip` | 34 | 8 |
+
+União, sem repetição: **573 arquivos de código** que a `main` não tem.
+
+### Mas arquivo ausente não é trabalho perdido
+
+A `main` reorganizou muito: o símbolo vive em outro caminho. O que decide é
+procurar **cada símbolo exportado** da branch em **todo** o conteúdo da `main`,
+não no mesmo caminho.
+
+Índice construído com `git grep -oE '[A-Za-z_][A-Za-z0-9_]{3,}' origin/main`:
+**108.238 identificadores distintos**. Dos 573 arquivos, 175 já estavam julgados
+nos documentos de resgate anteriores; os outros **398** foram varridos agora,
+símbolo a símbolo, contra esse índice.
+
+**Resultado: 24 símbolos exportados, em 6 arquivos, não existem em lugar nenhum
+da `main`.** Todo o resto foi re-hospedado.
+
+### Os 6 arquivos, um a um
+
+| arquivo (e branch) | símbolos | veredicto |
+|---|---|---|
+| `supabase/functions/crm-db-bridge/ownership.ts` (pr3517) | `CRM_PII_TABLES`, `CRM_OWNER_COLUMN`, `CRM_OWNER_VIA`, `CRM_BROAD_READ_ROLES`, `CrmOwnerScope`, `resolveCrmRole` | **superado** — `query-policy.ts` reimplementou com 11 regras de ownership contra as 5 tabelas PII da branch, e **cita o arquivo antigo pelo nome** em `query-policy.ts:341`: *"ownership.ts do main listava como PII apenas companies, contacts, contact_emails, contact_phones e customers"* |
+| `src/hooks/useExternalDatabase.ts` (codex) | 11 hooks | **parte superada, parte código morto.** `useExternalBusinessSectors` → `useExternalRamosAtividade`; `useExternalSupplierColors` → `useExternalColorGroups`/`useExternalColorVariations`; `useExternalSupplierMaterials` → `useExternalMaterialGroups`/`useExternalMaterialTypes`, todos em `src/hooks/intelligence/useExternalDatabase.ts`. Os 7 restantes (`PriceTables`, `ProductImages`, `ProductVariants`, `ProductSuppliers`, `SupplierAttributeDefinitions`, `SupplierProductAttributes`, `Tags`) têm **zero consumidores na própria branch** — nunca foram ligados a tela nenhuma |
+| `src/services/notificationService.ts` (importado-vps) | `getNotifications`, `getUnreadCount`, `subscribeToNotifications`, `deleteNotification`, `GetNotificationsOptions` | **superado** — virou hook: `src/hooks/ui/useNotifications.ts` devolve `unreadCount` e filtro `unreadOnly`, com módulo completo em volta (`NotificationDrawer`, `NotificationPreferences`, `NotificationsBadgeStatsPanel`, e2e próprios) |
+| `src/hooks/useAccessSecurity.ts` (codex) | `CityWhitelistEntry` | **superado** — a funcionalidade está em `src/components/admin/access-security/CityWhitelistTab.tsx`; o tipo foi absorvido na prop `cities` |
+| `src/components/products/SmartRecommendationsMock.tsx` (importado-vps) | `SmartRecommendationsMock` | **obsoleto por desenho** — a `main` tem `SmartRecommendations.tsx`, a versão real. O AGENTS.md proíbe mock em produção |
+| `src/lib/auth/auth-audit.ts` (importado-vps) | `runAuthAudit` | **obsoleto** — vem do snapshot do VPS de 2026-10-13, não é trabalho novo; o nome só aparece em documentos de análise, nunca em código da `main` |
+
+**Conclusão: nenhum trabalho vivo foi perdido.** O que sumiu da `main` ou foi
+re-hospedado com outro nome, ou era código que nunca chegou a ser ligado.
 
 ---
 
@@ -186,8 +222,8 @@ O inventário dos 102 arquivos e as decisões pendentes estão em
 
 ## Nota de método, para o próximo agente
 
-Duas armadilhas que eu caí e que custam um "resgate" de trabalho que já estava
-salvo:
+Três armadilhas que eu caí. As duas primeiras custam um "resgate" de trabalho que
+já estava salvo; a terceira é a perigosa, porque esconde trabalho de verdade:
 
 1. **Comparar arquivo com arquivo de mesmo caminho.** A main move símbolo de
    lugar o tempo todo. `ProductCardSkeleton` "sumir" de `ContextualSkeleton.tsx`
@@ -195,3 +231,9 @@ salvo:
 2. **Casar nome de teste por regex colada.** `it('...` e `it(\n  '...` são o
    mesmo teste. O segundo escapa de `it\(['"]`, e aí 6 casos que estavam na main
    apareceram como "só na branch".
+3. **Usar `git diff main...branch` para procurar arquivo perdido.** Esse diff só
+   mostra o que a *branch* mudou. Arquivo que a branch não tocou e que a `main`
+   **apagou** não aparece — e é justamente o caso em que trabalho some sem
+   ninguém mexer nele. Eu publiquei "0 arquivos ausentes" por causa disso; a
+   medida certa é comparar as árvores (`git ls-tree -r`), que devolveu 573.
+   Depois disso, o que decide é varrer os símbolos contra a `main` inteira.
