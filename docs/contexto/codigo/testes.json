@@ -5,13 +5,13 @@
   "vitest",
   "playwright"
  ],
- "total": 2605,
+ "total": 2606,
  "por_tipo": {
   "contrato": 67,
   "e2e": 677,
   "pytest": 5,
   "qa": 17,
-  "unit": 1839
+  "unit": 1840
  },
  "onde_ficam": [
   {
@@ -28,7 +28,7 @@
   },
   {
    "padrao": "co-localizado (*.test)",
-   "arquivos": 153
+   "arquivos": 154
   },
   {
    "padrao": "outro",
@@ -83,21 +83,21 @@
   {
    "arquivo": "e2e/admin/stock-dashboard-empty.spec.ts",
    "tipo": "e2e",
-   "linhas": 52,
+   "linhas": 82,
    "testa": [],
    "casos": 3
   },
   {
    "arquivo": "e2e/admin/stock-dashboard-layout.spec.ts",
    "tipo": "e2e",
-   "linhas": 69,
+   "linhas": 99,
    "testa": [],
    "casos": 3
   },
   {
    "arquivo": "e2e/admin/stock-dashboard-visual.spec.ts",
    "tipo": "e2e",
-   "linhas": 97,
+   "linhas": 127,
    "testa": [],
    "casos": 3
   },
@@ -139,7 +139,7 @@
   {
    "arquivo": "e2e/admin/stock-health-badges.spec.ts",
    "tipo": "e2e",
-   "linhas": 62,
+   "linhas": 92,
    "testa": [],
    "casos": 3
   },
@@ -11830,6 +11830,13 @@
     "src/contexts/ThemeContext.tsx"
    ],
    "casos": 2
+  },
+  {
+   "arquivo": "src/tests/estoque-guardas-contraditorias.test.ts",
+   "tipo": "unit",
+   "linhas": 71,
+   "testa": [],
+   "casos": 3
   },
   {
    "arquivo": "src/tests/IntelligenceAuthorization.test.ts",

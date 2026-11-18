@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "d3174f9755d87eb0cd0883cd8622104d0dec1533",
+  "commit": "cee29744389b72e176a5f1b0a8c621930c470d87",
   "branch": "main",
-  "data_commit": "2026-11-18T18:18:13-03:00",
+  "data_commit": "2026-11-18T18:29:14-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "cee29744",
+    "data": "2026-11-18",
+    "assunto": "fix(test): 4 specs do /estoque exigiam o cabecalho que o dono mandou remover (#3851)"
+   },
    {
     "sha": "d3174f97",
     "data": "2026-11-18",
@@ -126,14 +131,9 @@
     "sha": "13b8a73c",
     "data": "2026-11-18",
     "assunto": "feat(mockup): edge recusa mockup sem medida real do produto (422) e kit-builder avisa antes (#3819)"
-   },
-   {
-    "sha": "99844ab8",
-    "data": "2026-11-18",
-    "assunto": "fix(security): resgata o endurecimento de sanitizeUrl contra SSRF e credencial embutida (#3825)"
    }
   ],
-  "arquivos_mudados_7d": 1499,
+  "arquivos_mudados_7d": 1504,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -199,7 +199,7 @@
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "supabase/MIGRATIONS_SYNC_LOG.md",
-    "mudancas": 63
+    "mudancas": 62
    },
    {
     "arquivo": "RELATORIO_CI.md",
@@ -262,10 +262,6 @@
     "mudancas": 12
    },
    {
-    "arquivo": "docs/ci/SEGREDOS.md",
-    "mudancas": 12
-   },
-   {
     "arquivo": "e2e/flows/magazine-preview-sticky-smoke.spec.ts",
     "mudancas": 12
    },
@@ -296,20 +292,24 @@
    {
     "arquivo": "analise-prs/RELATORIO_PRS.md",
     "mudancas": 11
+   },
+   {
+    "arquivo": "analise-prs/prs.json",
+    "mudancas": 11
    }
   ],
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 515
+    "commits": 514
    },
    {
     "autor": "Claude",
-    "commits": 121
+    "commits": 119
    },
    {
     "autor": "Joaquim Ataides",
-    "commits": 91
+    "commits": 90
    },
    {
     "autor": "github-actions[bot]",
@@ -322,9 +322,9 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 10956,
-  "arquivos_codigo": 5470,
-  "linhas_codigo": 1042166,
+  "arquivos_total": 10957,
+  "arquivos_codigo": 5471,
+  "linhas_codigo": 1042357,
   "rotas": 139,
   "rotas_http_backend": 13,
   "vistas_por_id": 0,
@@ -336,7 +336,7 @@
   "tabelas": 527,
   "migrations": 3099,
   "cron_jobs": 122,
-  "testes": 2605,
+  "testes": 2606,
   "workflows": 88,
   "scripts": 283,
   "docs_md": 1481
@@ -384,7 +384,7 @@
   },
   "e2e/admin": {
    "arquivos": 14,
-   "linhas": 1230
+   "linhas": 1350
   },
   "e2e/admin-conexoes-credentials-active-products.spec.ts": {
    "arquivos": 1,
@@ -1959,8 +1959,8 @@
    "linhas": 366
   },
   "src/tests": {
-   "arquivos": 34,
-   "linhas": 5196
+   "arquivos": 35,
+   "linhas": 5267
   },
   "src/types": {
    "arquivos": 26,
