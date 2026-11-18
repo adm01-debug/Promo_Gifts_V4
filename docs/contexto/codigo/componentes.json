@@ -1,7 +1,7 @@
 {
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
- "total": 1257,
+ "total": 1259,
  "orfaos": 161,
  "nomes_duplicados": {
   "AdminTemplatesManager": [
@@ -10529,11 +10529,12 @@
     "PersonalizationConfig"
    ],
    "export_default": null,
-   "linhas": 1398,
+   "linhas": 1403,
    "dominio": "components/kit-builder",
    "hooks_locais": [
     "useCustomizationPriceReactive",
     "useKitComponentPrintAreas",
+    "useMockupKillSwitch",
     "useProductCustomizationOptions"
    ],
    "tabelas": [],
@@ -11440,7 +11441,7 @@
     "MockupLayoutButtons"
    ],
    "export_default": null,
-   "linhas": 423,
+   "linhas": 432,
    "dominio": "components/mockup",
    "hooks_locais": [],
    "tabelas": [],
@@ -11842,6 +11843,24 @@
    "dominio": "components/mockup",
    "hooks_locais": [
     "useReducedMotion"
+   ],
+   "tabelas": [],
+   "edges": [],
+   "usado_por": 2,
+   "orfao": false
+  },
+  {
+   "arquivo": "src/components/mockup/MockupSwitchNotice.tsx",
+   "exports": [
+    "MOCKUP_KILL_SWITCHES",
+    "MockupSwitchNotice"
+   ],
+   "export_default": null,
+   "linhas": 26,
+   "dominio": "components/mockup",
+   "hooks_locais": [
+    "useKillSwitchNotice",
+    "useMockupKillSwitch"
    ],
    "tabelas": [],
    "edges": [],
@@ -16110,6 +16129,22 @@
    "orfao": false
   },
   {
+   "arquivo": "src/components/system/KillSwitchNotice.tsx",
+   "exports": [
+    "KillSwitchNotice"
+   ],
+   "export_default": null,
+   "linhas": 40,
+   "dominio": "components/system",
+   "hooks_locais": [
+    "useKillSwitchNotice"
+   ],
+   "tabelas": [],
+   "edges": [],
+   "usado_por": 1,
+   "orfao": false
+  },
+  {
    "arquivo": "src/components/system/MedallionPipelineCard.tsx",
    "exports": [
     "MedallionPipelineCard"
@@ -16195,7 +16230,7 @@
    "hooks_locais": [],
    "tabelas": [],
    "edges": [],
-   "usado_por": 29,
+   "usado_por": 30,
    "orfao": false
   },
   {
@@ -19542,7 +19577,7 @@
     "MockupGenerator"
    ],
    "export_default": "MockupGenerator",
-   "linhas": 631,
+   "linhas": 636,
    "dominio": "pages/mockups",
    "hooks_locais": [
     "useAuth",
@@ -19550,6 +19585,7 @@
     "useLayoutCaptureRequest",
     "useMockupCompletionStatus",
     "useMockupGenerator",
+    "useMockupKillSwitch",
     "useTechniqueHandlers",
     "useWizardNavigation"
    ],

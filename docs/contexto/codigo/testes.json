@@ -5,13 +5,13 @@
   "vitest",
   "playwright"
  ],
- "total": 2599,
+ "total": 2601,
  "por_tipo": {
   "contrato": 66,
   "e2e": 677,
   "pytest": 5,
   "qa": 17,
-  "unit": 1834
+  "unit": 1836
  },
  "onde_ficam": [
   {
@@ -20,7 +20,7 @@
   },
   {
    "padrao": "co-localizado (__tests__)",
-   "arquivos": 696
+   "arquivos": 698
   },
   {
    "padrao": "e2e/",
@@ -6112,6 +6112,18 @@
    "casos": 5
   },
   {
+   "arquivo": "src/components/mockup/__tests__/MockupSwitchNotice.test.tsx",
+   "tipo": "unit",
+   "linhas": 135,
+   "testa": [
+    "src/components/mockup/MockupSwitchNotice.tsx",
+    "src/components/mockup/approval/MockupLayoutButtons.tsx",
+    "src/components/ui/tooltip.tsx",
+    "src/lib/external-db/kill-switch-client.ts"
+   ],
+   "casos": 4
+  },
+  {
    "arquivo": "src/components/mockup/__tests__/MockupWizard.navegacao.test.tsx",
    "tipo": "unit",
    "linhas": 58,
@@ -9063,6 +9075,16 @@
     "src/lib/feature-flags.ts"
    ],
    "casos": 3
+  },
+  {
+   "arquivo": "src/hooks/system/__tests__/useKillSwitchNotice.test.tsx",
+   "tipo": "unit",
+   "linhas": 84,
+   "testa": [
+    "src/hooks/system/useKillSwitchNotice.ts",
+    "src/lib/external-db/kill-switch-client.ts"
+   ],
+   "casos": 4
   },
   {
    "arquivo": "src/hooks/ui/__tests__/useOnboarding.test.tsx",
@@ -22365,13 +22387,14 @@
   "src/components/mockup/MockupProductSelector.tsx": 6,
   "src/components/mockup/MockupResultCard.tsx": 4,
   "src/components/mockup/MockupSuccessToast.tsx": 2,
+  "src/components/mockup/MockupSwitchNotice.tsx": 1,
   "src/components/mockup/MockupWizard.tsx": 4,
   "src/components/mockup/MultiAreaManager.tsx": 13,
   "src/components/mockup/ProductSearchCombobox.tsx": 2,
   "src/components/mockup/TechniqueTooltip.tsx": 1,
   "src/components/mockup/approval/MockupApprovalPreview.tsx": 2,
   "src/components/mockup/approval/MockupApprovalTemplate.tsx": 2,
-  "src/components/mockup/approval/MockupLayoutButtons.tsx": 3,
+  "src/components/mockup/approval/MockupLayoutButtons.tsx": 4,
   "src/components/mockup/logo-editor/LogoPreviewCanvas.tsx": 2,
   "src/components/mockup/logo-editor/LogoQuickActions.tsx": 2,
   "src/components/mockup/logo-editor/LogoSizeControls.tsx": 2,
@@ -22500,7 +22523,7 @@
   "src/components/ui/label.tsx": 3,
   "src/components/ui/popover.tsx": 2,
   "src/components/ui/select.tsx": 6,
-  "src/components/ui/tooltip.tsx": 126,
+  "src/components/ui/tooltip.tsx": 127,
   "src/components/ui/truncated-tooltip.tsx": 1,
   "src/components/workflows/WorkflowEditDialog.tsx": 1,
   "src/constants/filters.ts": 8,
@@ -22681,6 +22704,7 @@
   "src/hooks/stock/useEmaPipelineHealth.ts": 1,
   "src/hooks/stock/useEmaRiskSummary.ts": 1,
   "src/hooks/stock/useRuptureAlerts.ts": 3,
+  "src/hooks/system/useKillSwitchNotice.ts": 1,
   "src/hooks/tecnicas/useTecnicasList.ts": 2,
   "src/hooks/ui/index.ts": 1,
   "src/hooks/ui/useErrorHandler.ts": 1,
@@ -22749,7 +22773,7 @@
   "src/lib/external-db/immutableCache.ts": 1,
   "src/lib/external-db/index.ts": 3,
   "src/lib/external-db/invoke.ts": 1,
-  "src/lib/external-db/kill-switch-client.ts": 2,
+  "src/lib/external-db/kill-switch-client.ts": 4,
   "src/lib/external-db/kill-switch-telemetry.ts": 1,
   "src/lib/external-db/kit-coverage.ts": 2,
   "src/lib/external-db/price-tables.ts": 1,

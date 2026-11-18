@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "44f077e426660847940c74d222096bb010e1ec79",
+  "commit": "90862a5f42826f5ebe3759c55cd6b0a0e9bf12c1",
   "branch": "main",
-  "data_commit": "2026-11-18T15:28:38-03:00",
+  "data_commit": "2026-11-18T15:39:10-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "90862a5f",
+    "data": "2026-11-18",
+    "assunto": "feat(mockup): avisa o vendedor quando o kill-switch de mockup estiver desligado (#3839)"
+   },
    {
     "sha": "44f077e4",
     "data": "2026-11-18",
@@ -126,14 +131,9 @@
     "sha": "54337b9e",
     "data": "2026-11-17",
     "assunto": "docs(resgate): registra as 8 pendencias abertas do resgate com evidencia medida (#3816)"
-   },
-   {
-    "sha": "2d265a98",
-    "data": "2026-11-17",
-    "assunto": "test(resgate): lote 3 — cobertura de outro agente para autosave de orcamento e apresentacao de favoritos (#3815)"
    }
   ],
-  "arquivos_mudados_7d": 1502,
+  "arquivos_mudados_7d": 1508,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -141,7 +141,7 @@
    },
    {
     "pasta": "src/components/products",
-    "mudancas": 321
+    "mudancas": 320
    },
    {
     "pasta": "recovery/src-legacy/src",
@@ -165,7 +165,7 @@
    },
    {
     "pasta": "src/components/mockup",
-    "mudancas": 178
+    "mudancas": 181
    },
    {
     "pasta": "src/components/inventory",
@@ -185,7 +185,7 @@
    },
    {
     "pasta": "src/components/kit-builder",
-    "mudancas": 132
+    "mudancas": 133
    },
    {
     "pasta": "src/pages/quotes",
@@ -246,11 +246,11 @@
     "mudancas": 13
    },
    {
-    "arquivo": "CHANGELOG.md",
-    "mudancas": 11
+    "arquivo": "src/pages/mockups/MockupGenerator.tsx",
+    "mudancas": 12
    },
    {
-    "arquivo": "src/pages/mockups/MockupGenerator.tsx",
+    "arquivo": "CHANGELOG.md",
     "mudancas": 11
    },
    {
@@ -286,22 +286,22 @@
     "mudancas": 9
    },
    {
-    "arquivo": "e2e/helpers/auth.ts",
-    "mudancas": 9
-   },
-   {
     "arquivo": "scripts/drift-baseline.mjs",
     "mudancas": 9
    },
    {
     "arquivo": "supabase/functions/crm-db-bridge/index.ts",
     "mudancas": 9
+   },
+   {
+    "arquivo": "tests/components/pages/KitBuilderPage.test.tsx",
+    "mudancas": 9
    }
   ],
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 528
+    "commits": 527
    },
    {
     "autor": "Claude",
@@ -322,21 +322,21 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 10942,
-  "arquivos_codigo": 5459,
-  "linhas_codigo": 1040891,
+  "arquivos_total": 10947,
+  "arquivos_codigo": 5464,
+  "linhas_codigo": 1041280,
   "rotas": 139,
   "rotas_http_backend": 13,
   "vistas_por_id": 0,
   "itens_menu": 69,
-  "modulos": 163,
-  "componentes": 1257,
-  "hooks": 630,
+  "modulos": 164,
+  "componentes": 1259,
+  "hooks": 632,
   "edge_functions": 112,
   "tabelas": 527,
   "migrations": 3099,
   "cron_jobs": 122,
-  "testes": 2599,
+  "testes": 2601,
   "workflows": 88,
   "scripts": 283,
   "docs_md": 1478
@@ -1895,8 +1895,8 @@
    "linhas": 130
   },
   "src/components": {
-   "arquivos": 1418,
-   "linhas": 281293
+   "arquivos": 1421,
+   "linhas": 281508
   },
   "src/config": {
    "arquivos": 1,
@@ -1919,8 +1919,8 @@
    "linhas": 7
   },
   "src/hooks": {
-   "arquivos": 486,
-   "linhas": 91459
+   "arquivos": 488,
+   "linhas": 91628
   },
   "src/integrations": {
    "arquivos": 11,
@@ -1940,7 +1940,7 @@
   },
   "src/pages": {
    "arquivos": 366,
-   "linhas": 84423
+   "linhas": 84428
   },
   "src/routes": {
    "arquivos": 15,
@@ -2290,7 +2290,7 @@
   },
   {
    "arquivo": "src/components/kit-builder/PersonalizationConfig.tsx",
-   "linhas": 1398
+   "linhas": 1403
   },
   {
    "arquivo": "scripts/drift-baseline.mjs",

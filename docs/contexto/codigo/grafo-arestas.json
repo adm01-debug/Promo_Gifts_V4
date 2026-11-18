@@ -6586,6 +6586,7 @@
    "src/components/admin/ImageUploadButton.tsx",
    "src/components/kit-builder/SwapItemBanner.tsx",
    "src/components/kit-builder/kitMockupDimensions.ts",
+   "src/components/mockup/MockupSwitchNotice.tsx",
    "src/components/ui/badge.tsx",
    "src/components/ui/button.tsx",
    "src/components/ui/card.tsx",
@@ -7224,6 +7225,10 @@
    "src/components/ui/button.tsx",
    "src/hooks/ui/useReducedMotion.ts",
    "src/lib/utils.ts"
+  ],
+  "src/components/mockup/MockupSwitchNotice.tsx": [
+   "src/components/system/KillSwitchNotice.tsx",
+   "src/hooks/system/useKillSwitchNotice.ts"
   ],
   "src/components/mockup/MockupWizard.tsx": [
    "src/components/ui/button.tsx",
@@ -9642,6 +9647,11 @@
    "src/contexts/CloudStatusContext.tsx",
    "src/lib/utils.ts"
   ],
+  "src/components/system/KillSwitchNotice.tsx": [
+   "src/components/ui/alert.tsx",
+   "src/hooks/system/useKillSwitchNotice.ts",
+   "src/lib/utils.ts"
+  ],
   "src/components/system/MedallionPipelineCard.tsx": [
    "src/components/ui/badge.tsx",
    "src/components/ui/button.tsx",
@@ -11677,6 +11687,10 @@
   ],
   "src/hooks/stock/useWhatIfScenario.ts": [
    "src/integrations/supabase/client.ts"
+  ],
+  "src/hooks/system/useKillSwitchNotice.ts": [
+   "src/lib/external-db/kill-switch-client.ts",
+   "src/lib/query-config.ts"
   ],
   "src/hooks/tecnicas/index.ts": [
    "src/hooks/tecnicas/keys.ts",
@@ -14004,6 +14018,7 @@
    "src/components/mockup/MockupConfigPanel.tsx",
    "src/components/mockup/MockupHistoryPanel.tsx",
    "src/components/mockup/MockupResultCard.tsx",
+   "src/components/mockup/MockupSwitchNotice.tsx",
    "src/components/mockup/MockupWizard.tsx",
    "src/components/mockup/TechniqueColorConfigDialog.tsx",
    "src/components/mockup/approval/MockupLayoutButtons.tsx",

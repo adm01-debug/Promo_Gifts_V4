@@ -1,12 +1,12 @@
 {
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
- "nos": 2860,
- "arestas": 11282,
+ "nos": 2863,
+ "arestas": 11291,
  "hubs": [
   {
    "arquivo": "src/lib/utils.ts",
-   "importado_por": 661
+   "importado_por": 662
   },
   {
    "arquivo": "src/components/ui/button.tsx",
@@ -30,7 +30,7 @@
   },
   {
    "arquivo": "src/components/ui/tooltip.tsx",
-   "importado_por": 304
+   "importado_por": 305
   },
   {
    "arquivo": "src/components/ui/input.tsx",
@@ -624,7 +624,7 @@
   {
    "modulo": "lib",
    "depende_de": 20,
-   "importado_por": 107
+   "importado_por": 108
   },
   {
    "modulo": "contexts",

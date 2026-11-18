@@ -1,7 +1,7 @@
 {
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
- "total": 630,
+ "total": 632,
  "hooks": [
   {
    "arquivo": "docs/agentes/resgates/quote-comments/codigo/useQuoteComments.ts",
@@ -5797,6 +5797,27 @@
    "usado_por": 1,
    "usado_por_arquivos": [
     "src/components/mockup/LogoPositionEditor.tsx"
+   ],
+   "coberto_por_testes": 1
+  },
+  {
+   "arquivo": "src/components/mockup/MockupSwitchNotice.tsx",
+   "hooks_exportados": [
+    "useMockupKillSwitch"
+   ],
+   "linhas": 26,
+   "dominio": "components/mockup",
+   "tabelas": [],
+   "rpcs": [],
+   "edges": [],
+   "hooks_internos": [
+    "useKillSwitchNotice"
+   ],
+   "canais_realtime": [],
+   "usado_por": 2,
+   "usado_por_arquivos": [
+    "src/components/kit-builder/PersonalizationConfig.tsx",
+    "src/pages/mockups/MockupGenerator.tsx"
    ],
    "coberto_por_testes": 1
   },
@@ -13156,6 +13177,28 @@
     "src/components/inventory/risk/WhatIfPanel.tsx"
    ],
    "coberto_por_testes": 0
+  },
+  {
+   "arquivo": "src/hooks/system/useKillSwitchNotice.ts",
+   "hooks_exportados": [
+    "useKillSwitchNotice"
+   ],
+   "linhas": 85,
+   "dominio": "hooks/system",
+   "tabelas": [],
+   "rpcs": [],
+   "edges": [],
+   "hooks_internos": [
+    "useMemo",
+    "useQuery"
+   ],
+   "canais_realtime": [],
+   "usado_por": 2,
+   "usado_por_arquivos": [
+    "src/components/mockup/MockupSwitchNotice.tsx",
+    "src/components/system/KillSwitchNotice.tsx"
+   ],
+   "coberto_por_testes": 1
   },
   {
    "arquivo": "src/hooks/tecnicas/usePrecoCalculation.ts",

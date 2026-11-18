@@ -3264,13 +3264,14 @@
    "zod_schemas": 0,
    "flags": [],
    "papeis": [],
-   "usado_por": 4,
+   "usado_por": 5,
    "usado_por_modulos": [
     "hooks/intelligence",
+    "hooks/system",
     "lib",
     "lib/external-db"
    ],
-   "coberto_por_testes": 2,
+   "coberto_por_testes": 4,
    "orfao": false
   },
   {
@@ -6069,9 +6070,10 @@
    "zod_schemas": 0,
    "flags": [],
    "papeis": [],
-   "usado_por": 6,
+   "usado_por": 7,
    "usado_por_modulos": [
     "hooks/products",
+    "hooks/system",
     "hooks/tecnicas"
    ],
    "coberto_por_testes": 2,
@@ -7809,7 +7811,7 @@
    "zod_schemas": 0,
    "flags": [],
    "papeis": [],
-   "usado_por": 655,
+   "usado_por": 656,
    "usado_por_modulos": [
     "components",
     "components/admin",

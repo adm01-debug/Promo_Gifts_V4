@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "44f077e426660847940c74d222096bb010e1ec79",
+  "sha": "90862a5f42826f5ebe3759c55cd6b0a0e9bf12c1",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-18 18:39 UTC",
-  "files_total": 10870,
-  "code_files": 8898,
-  "code_lines": 1261623
+  "generated_at": "2026-11-18 18:46 UTC",
+  "files_total": 10875,
+  "code_files": 8903,
+  "code_lines": 1262012
  },
  "version": "1.3.2",
- "facts_hash": "0c06f1698fb4a8a3",
+ "facts_hash": "3cc3635aa4dfb50b",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -1120,8 +1120,8 @@
   "package_manager": "npm",
   "languages": {
    ".sql": 3440,
-   ".ts": 3036,
-   ".tsx": 1957,
+   ".ts": 3037,
+   ".tsx": 1961,
    ".mjs": 450,
    ".py": 15,
    ".js": 7
@@ -137704,7 +137704,7 @@
      "save_custom_kit_atomic",
      "set_custom_kit_pinned"
     ],
-    "deps_count": 252
+    "deps_count": 255
    },
    {
     "path": "",
@@ -138365,6 +138365,7 @@
      "generated_mockups",
      "mockup_drafts",
      "profiles",
+     "system_kill_switches",
      "user_roles"
     ],
     "invokes_transitive": [
@@ -138373,10 +138374,11 @@
     ],
     "rpc_transitive": [
      "fn_my_rpc",
+     "fn_should_apply_kill_switch",
      "get_profile_and_roles",
      "log_user_logout"
     ],
-    "deps_count": 89
+    "deps_count": 94
    },
    {
     "path": "",
@@ -138512,7 +138514,7 @@
      "save_custom_kit_atomic",
      "set_custom_kit_pinned"
     ],
-    "deps_count": 135
+    "deps_count": 136
    },
    {
     "path": "",
@@ -144991,7 +144993,7 @@
     "file": ".github/workflows/wraparound-monitor-report.yml"
    }
   ],
-  "components_count": 1691,
+  "components_count": 1694,
   "hooks": [
    {
     "name": "useQuoteComments",
@@ -146460,6 +146462,10 @@
    {
     "name": "useKeyboardShortcuts",
     "file": "src/components/mockup/KeyboardShortcuts.tsx"
+   },
+   {
+    "name": "useMockupKillSwitch",
+    "file": "src/components/mockup/MockupSwitchNotice.tsx"
    },
    {
     "name": "useElementSize",
@@ -148130,6 +148136,10 @@
     "file": "src/hooks/stock/useWhatIfScenario.ts"
    },
    {
+    "name": "useKillSwitchNotice",
+    "file": "src/hooks/system/useKillSwitchNotice.ts"
+   },
+   {
     "name": "usePrecoCalculation",
     "file": "src/hooks/tecnicas/usePrecoCalculation.ts"
    },
@@ -149626,8 +149636,8 @@
   },
   {
    "module": "src/components",
-   "files": 1418,
-   "lines": 281292,
+   "files": 1421,
+   "lines": 281507,
    "tables": [
     "admin_audit_log",
     "art_file_attachments",
@@ -149990,8 +150000,8 @@
   },
   {
    "module": "src/hooks",
-   "files": 486,
-   "lines": 91459,
+   "files": 488,
+   "lines": 91628,
    "tables": [
     "admin_audit_log",
     "admin_settings",
@@ -150485,7 +150495,7 @@
   {
    "module": "src/pages",
    "files": 366,
-   "lines": 84423,
+   "lines": 84428,
    "tables": [
     "ai_usage_events",
     "bot_detection_log",
@@ -162105,6 +162115,11 @@
     "values": "done | error | idle | running"
    },
    {
+    "file": "src/components/mockup/MockupSwitchNotice.tsx",
+    "name": "MOCKUP_KILL_SWITCHES",
+    "values": "'edge_generate_mockup'"
+   },
+   {
     "file": "src/components/mockup/techniqueColorUtils.ts",
     "name": "TechniqueCategory",
     "values": "digital | laser | other | serigrafia"
@@ -166887,6 +166902,10 @@
    {
     "file": "src/components/simulator/wizard/StepComparison.tsx",
     "msg": "Recalculando o preço da gravação para a nova tiragem. Tente gerar em seguida."
+   },
+   {
+    "file": "src/components/system/KillSwitchNotice.tsx",
+    "msg": ";\nimport { useKillSwitchNotice } from "
    },
    {
     "file": "src/components/ui/LabeledField.tsx",
@@ -173239,6 +173258,14 @@
    {
     "file": "src/hooks/stock/useRuptureAlerts.ts",
     "text": "quando o LIMIT era 2000. Com neq OK + limit 5000, cobrimos os 4.773 itens não-OK."
+   },
+   {
+    "file": "src/hooks/system/useKillSwitchNotice.ts",
+    "text": "`public.system_kill_switches` no aviso que o USUÁRIO FINAL deve ver."
+   },
+   {
+    "file": "src/hooks/system/useKillSwitchNotice.ts",
+    "text": "nada bloqueado). Telemetria não pode travar venda."
    },
    {
     "file": "src/hooks/tecnicas/useTecnicasList.ts",
@@ -234973,6 +235000,26 @@
     "name": "agenda o toast custom com duração finita (some sozinho)"
    },
    {
+    "file": "src/components/mockup/__tests__/MockupSwitchNotice.test.tsx",
+    "name": "MockupSwitchNotice + botão Gerar Mockup"
+   },
+   {
+    "file": "src/components/mockup/__tests__/MockupSwitchNotice.test.tsx",
+    "name": "switch ligado: nenhum aviso e botão habilitado"
+   },
+   {
+    "file": "src/components/mockup/__tests__/MockupSwitchNotice.test.tsx",
+    "name": "switch desligado com mensagem: aviso com o texto do banco e botão inativo"
+   },
+   {
+    "file": "src/components/mockup/__tests__/MockupSwitchNotice.test.tsx",
+    "name": "switch desligado SEM mensagem: nada a mostrar, botão segue habilitado"
+   },
+   {
+    "file": "src/components/mockup/__tests__/MockupSwitchNotice.test.tsx",
+    "name": "falha ao ler o switch: tela não quebra e botão continua habilitado"
+   },
+   {
     "file": "src/components/mockup/__tests__/MockupWizard.navegacao.test.tsx",
     "name": "MockupWizard — etapa em foco x etapa alcançável"
    },
@@ -248267,6 +248314,26 @@
    {
     "file": "src/hooks/stock/__tests__/useRuptureAlerts.test.tsx",
     "name": "lista vazia em caso de erro, sem crash"
+   },
+   {
+    "file": "src/hooks/system/__tests__/useKillSwitchNotice.test.tsx",
+    "name": "useKillSwitchNotice"
+   },
+   {
+    "file": "src/hooks/system/__tests__/useKillSwitchNotice.test.tsx",
+    "name": "avisa só pelos switches desligados com mensagem, na lista recebida"
+   },
+   {
+    "file": "src/hooks/system/__tests__/useKillSwitchNotice.test.tsx",
+    "name": "nomes repetidos são consultados uma única vez"
+   },
+   {
+    "file": "src/hooks/system/__tests__/useKillSwitchNotice.test.tsx",
+    "name": "lista vazia não consulta o banco"
+   },
+   {
+    "file": "src/hooks/system/__tests__/useKillSwitchNotice.test.tsx",
+    "name": "leitura que falha devolve fail-open (nada bloqueado)"
    },
    {
     "file": "src/hooks/ui/__tests__/useOnboarding.test.tsx",
@@ -445454,7 +445521,7 @@
   },
   "src/components/kit-builder/PersonalizationConfig.tsx": {
    "path": "src/components/kit-builder/PersonalizationConfig.tsx",
-   "lines": 1398,
+   "lines": 1403,
    "exports": [
     "function reconcilePersonalizationForArea",
     "interface FlatTechnique",
@@ -447094,6 +447161,25 @@
     "function showMockupSuccessToast"
    ]
   },
+  "src/components/mockup/MockupSwitchNotice.tsx": {
+   "path": "src/components/mockup/MockupSwitchNotice.tsx",
+   "lines": 26,
+   "exports": [
+    "const MOCKUP_KILL_SWITCHES",
+    "function useMockupKillSwitch",
+    "function MockupSwitchNotice"
+   ],
+   "enums": [
+    {
+     "name": "MOCKUP_KILL_SWITCHES",
+     "values": "'edge_generate_mockup'"
+    }
+   ],
+   "doc": "Aviso de manutenção da geração de mockup + estado do switch que o governa. O dono controla a linha `edge_generate_mockup` em `public.system_kill_switches`: `enabled = false` + `legacy_message` faz o vendedor ver a mensagem aqui, em vez de um erro cru da edge.",
+   "hooks": [
+    "useMockupKillSwitch"
+   ]
+  },
   "src/components/mockup/MockupWizard.tsx": {
    "path": "src/components/mockup/MockupWizard.tsx",
    "lines": 288,
@@ -447584,6 +447670,28 @@
     "agenda o toast custom com duração finita (some sozinho)"
    ]
   },
+  "src/components/mockup/__tests__/MockupSwitchNotice.test.tsx": {
+   "path": "src/components/mockup/__tests__/MockupSwitchNotice.test.tsx",
+   "lines": 135,
+   "is_test": true,
+   "rule_comments": [
+    "habilitado (telemetria não pode travar venda — fail-open)."
+   ],
+   "calc_fns": [
+    {
+     "name": "generateButton",
+     "params": "",
+     "body": "screen.getByRole('button', { name: /Gerar Mockup/i });"
+    }
+   ],
+   "tests": [
+    "MockupSwitchNotice + botão Gerar Mockup",
+    "switch ligado: nenhum aviso e botão habilitado",
+    "switch desligado com mensagem: aviso com o texto do banco e botão inativo",
+    "switch desligado SEM mensagem: nada a mostrar, botão segue habilitado",
+    "falha ao ler o switch: tela não quebra e botão continua habilitado"
+   ]
+  },
   "src/components/mockup/__tests__/MockupWizard.navegacao.test.tsx": {
    "path": "src/components/mockup/__tests__/MockupWizard.navegacao.test.tsx",
    "lines": 58,
@@ -447774,7 +447882,7 @@
   },
   "src/components/mockup/approval/MockupLayoutButtons.tsx": {
    "path": "src/components/mockup/approval/MockupLayoutButtons.tsx",
-   "lines": 423,
+   "lines": 432,
    "exports": [
     "function MockupLayoutButtons"
    ],
@@ -456864,6 +456972,17 @@
     "Mostra apenas em estados saudáveis — banner já cobre os demais."
    ],
    "doc": "CloudStatusDot — Indicador discreto de saúde do Cloud (dev only). Substitui o banner sticky quando o status é healthy/unknown. Pequeno ponto flutuante no canto inferior direito com tooltip."
+  },
+  "src/components/system/KillSwitchNotice.tsx": {
+   "path": "src/components/system/KillSwitchNotice.tsx",
+   "lines": 40,
+   "exports": [
+    "function KillSwitchNotice"
+   ],
+   "errors": [
+    ";\nimport { useKillSwitchNotice } from "
+   ],
+   "doc": "KillSwitchNotice — aviso visível ao usuário final quando um kill-switch está DESLIGADO e o banco traz uma `legacy_message`. O texto é sempre o do banco; aqui só existe a moldura (título e cor de atenção). Não renderiza nada quando os switches estão operando."
   },
   "src/components/system/MedallionPipelineCard.tsx": {
    "path": "src/components/system/MedallionPipelineCard.tsx",
@@ -471474,6 +471593,35 @@
     "não dispara query quando feature flag está desligada",
     "dedupe por variant_id mantendo a menor cobertura (cenário 2 preferidos)",
     "lista vazia em caso de erro, sem crash"
+   ]
+  },
+  "src/hooks/system/useKillSwitchNotice.ts": {
+   "path": "src/hooks/system/useKillSwitchNotice.ts",
+   "lines": 85,
+   "exports": [
+    "interface KillSwitchNoticeItem",
+    "interface KillSwitchNoticeResult",
+    "function useKillSwitchNotice"
+   ],
+   "rule_comments": [
+    "`public.system_kill_switches` no aviso que o USUÁRIO FINAL deve ver.",
+    "nada bloqueado). Telemetria não pode travar venda."
+   ],
+   "hooks": [
+    "useKillSwitchNotice"
+   ]
+  },
+  "src/hooks/system/__tests__/useKillSwitchNotice.test.tsx": {
+   "path": "src/hooks/system/__tests__/useKillSwitchNotice.test.tsx",
+   "lines": 84,
+   "is_test": true,
+   "doc": "useKillSwitchNotice — contrato do hook genérico. O hook não conhece switch nenhum: recebe a lista de `switch_name` de quem chama. Cobre a semântica medida em `public.system_kill_switches` (enabled=false + legacy_message ⇒ aviso) e o fail-open.",
+   "tests": [
+    "useKillSwitchNotice",
+    "avisa só pelos switches desligados com mensagem, na lista recebida",
+    "nomes repetidos são consultados uma única vez",
+    "lista vazia não consulta o banco",
+    "leitura que falha devolve fail-open (nada bloqueado)"
    ]
   },
   "src/hooks/tecnicas/index.ts": {
@@ -487177,7 +487325,7 @@
   },
   "src/pages/mockups/MockupGenerator.tsx": {
    "path": "src/pages/mockups/MockupGenerator.tsx",
-   "lines": 631,
+   "lines": 636,
    "exports": [
     "function MockupGenerator"
    ],
@@ -547023,10 +547171,26 @@
   }
  },
  "git": {
-  "sha": "44f077e426660847940c74d222096bb010e1ec79",
+  "sha": "90862a5f42826f5ebe3759c55cd6b0a0e9bf12c1",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "90862a5",
+    "date": "2026-11-18",
+    "author": "adm01-debug",
+    "subject": "feat(mockup): avisa o vendedor quando o kill-switch de mockup estiver desligado (#3839)",
+    "files": [
+     "src/components/kit-builder/PersonalizationConfig.tsx",
+     "src/components/mockup/MockupSwitchNotice.tsx",
+     "src/components/mockup/__tests__/MockupSwitchNotice.test.tsx",
+     "src/components/mockup/approval/MockupLayoutButtons.tsx",
+     "src/components/system/KillSwitchNotice.tsx",
+     "src/hooks/system/__tests__/useKillSwitchNotice.test.tsx",
+     "src/hooks/system/useKillSwitchNotice.ts",
+     "src/pages/mockups/MockupGenerator.tsx"
+    ]
+   },
    {
     "sha": "44f077e",
     "date": "2026-11-18",
@@ -547395,18 +547559,13 @@
      "src/hooks/kit-builder/useKitBuilderPageState.ts",
      "tests/hooks/useKitBuilderPageState.legacy.test.tsx"
     ]
-   },
-   {
-    "sha": "e694f6a",
-    "date": "2026-11-17",
-    "author": "adm01-debug",
-    "subject": "test(quotes): resgata a cobertura de aprovacao na lista de orcamentos (#3802)",
-    "files": [
-     "tests/components/QuotesConfigurableList.approval.test.tsx"
-    ]
    }
   ],
   "hot_files": [
+   [
+    "src/components/kit-builder/PersonalizationConfig.tsx",
+    3
+   ],
    [
     "src/components/quotes/AdminTemplatesManager.tsx",
     3
@@ -547425,10 +547584,6 @@
    ],
    [
     "src/components/quotes/QuoteTemplateForm.tsx",
-    2
-   ],
-   [
-    "src/components/kit-builder/PersonalizationConfig.tsx",
     2
    ],
    [
@@ -547456,35 +547611,35 @@
     2
    ],
    [
+    "src/components/mockup/MockupSwitchNotice.tsx",
+    1
+   ],
+   [
+    "src/components/mockup/__tests__/MockupSwitchNotice.test.tsx",
+    1
+   ],
+   [
+    "src/components/mockup/approval/MockupLayoutButtons.tsx",
+    1
+   ],
+   [
+    "src/components/system/KillSwitchNotice.tsx",
+    1
+   ],
+   [
+    "src/hooks/system/__tests__/useKillSwitchNotice.test.tsx",
+    1
+   ],
+   [
+    "src/hooks/system/useKillSwitchNotice.ts",
+    1
+   ],
+   [
+    "src/pages/mockups/MockupGenerator.tsx",
+    1
+   ],
+   [
     "audit/supabase-reference-catalog.temporary.json",
-    1
-   ],
-   [
-    "src/components/quotes/QuotesFunnelChart.tsx",
-    1
-   ],
-   [
-    "src/components/quotes/__tests__/QuotesFunnelChart.test.tsx",
-    1
-   ],
-   [
-    "src/hooks/quotes/__tests__/useQuoteFunnel.test.ts",
-    1
-   ],
-   [
-    "src/hooks/quotes/index.ts",
-    1
-   ],
-   [
-    "src/hooks/quotes/useQuoteFunnel.ts",
-    1
-   ],
-   [
-    "src/hooks/quotes/useQuoteViewedMap.ts",
-    1
-   ],
-   [
-    "src/pages/quotes/QuotesDashboardPage.tsx",
     1
    ]
   ]

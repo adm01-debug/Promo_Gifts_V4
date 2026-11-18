@@ -24955,6 +24955,7 @@
     "useIsProductNovelty",
     "useKeyboardShortcut",
     "useKeyboardShortcuts",
+    "useKillSwitchNotice",
     "useLayoutCaptureRequest",
     "useLayoutEffect",
     "useLegacyFavoritesMigration",
@@ -24979,6 +24980,7 @@
     "useMockupDraft",
     "useMockupEntryParams",
     "useMockupGenerator",
+    "useMockupKillSwitch",
     "useMockupTechniquesLoad",
     "useMultipleTechniquePricing",
     "useMutation",
@@ -25251,6 +25253,7 @@
     "useIsProductNovelty",
     "useKeyboardShortcut",
     "useKeyboardShortcuts",
+    "useKillSwitchNotice",
     "useLayoutCaptureRequest",
     "useLegacyFavoritesMigration",
     "useLogoColorAnalysis",
@@ -25272,6 +25275,7 @@
     "useMockupDraft",
     "useMockupEntryParams",
     "useMockupGenerator",
+    "useMockupKillSwitch",
     "useMockupTechniquesLoad",
     "useMultipleTechniquePricing",
     "useNetworkStatus",
@@ -25507,7 +25511,7 @@
     "supervisor",
     "user"
    ],
-   "arquivos_puxados": 466
+   "arquivos_puxados": 469
   },
   {
    "protegida": false,

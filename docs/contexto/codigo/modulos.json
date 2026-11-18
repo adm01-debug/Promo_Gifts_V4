@@ -8324,7 +8324,7 @@
    "modulo": "components/kit-builder",
    "arquivos": 50,
    "testes": 0,
-   "linhas": 10635,
+   "linhas": 10640,
    "itens_menu": [],
    "telas": [],
    "rotas_http": [],
@@ -8451,6 +8451,7 @@
     "useInvalidateTecnicas",
     "useIsProductNovelty",
     "useKeyboardShortcut",
+    "useKillSwitchNotice",
     "useKitAutoSave",
     "useKitBuilder",
     "useKitBuilderPageState",
@@ -8486,6 +8487,7 @@
     "useMockupDraft",
     "useMockupEntryParams",
     "useMockupGenerator",
+    "useMockupKillSwitch",
     "useMockupTechniquesLoad",
     "useMultipleTechniquePricing",
     "useNetworkStatus",
@@ -8773,6 +8775,7 @@
    "depende_de_modulos": [
     "components/admin",
     "components/common",
+    "components/mockup",
     "components/quotes",
     "components/ui",
     "contexts",
@@ -9097,6 +9100,7 @@
     "useIsScrolled",
     "useKeyboardShortcut",
     "useKeyboardShortcuts",
+    "useKillSwitchNotice",
     "useKitAutoSave",
     "useKitBuilder",
     "useKitBuilderPageState",
@@ -9142,6 +9146,7 @@
     "useMockupDraft",
     "useMockupEntryParams",
     "useMockupGenerator",
+    "useMockupKillSwitch",
     "useMockupTechniquesLoad",
     "useMultipleTechniquePricing",
     "useNavigationAnalytics",
@@ -10358,6 +10363,7 @@
     "useIsScrolled",
     "useKeyboardShortcut",
     "useKeyboardShortcuts",
+    "useKillSwitchNotice",
     "useKitAutoSave",
     "useKitBuilder",
     "useKitBuilderPageState",
@@ -10401,6 +10407,7 @@
     "useMockupDraft",
     "useMockupEntryParams",
     "useMockupGenerator",
+    "useMockupKillSwitch",
     "useMockupTechniquesLoad",
     "useMultipleTechniquePricing",
     "useNetworkStatus",
@@ -10866,13 +10873,13 @@
   },
   {
    "modulo": "components/mockup",
-   "arquivos": 47,
-   "testes": 29,
-   "linhas": 10402,
+   "arquivos": 48,
+   "testes": 30,
+   "linhas": 10437,
    "itens_menu": [],
    "telas": [],
    "rotas_http": [],
-   "componentes": 35,
+   "componentes": 36,
    "hooks_locais": [
     "useA11y",
     "useAIRecommendations",
@@ -10992,6 +10999,7 @@
     "useIsProductNovelty",
     "useKeyboardShortcut",
     "useKeyboardShortcuts",
+    "useKillSwitchNotice",
     "useLegacyFavoritesMigration",
     "useLogoColorAnalysis",
     "useLogoColorAnalysisByArea",
@@ -11011,6 +11019,7 @@
     "useMockupDraft",
     "useMockupEntryParams",
     "useMockupGenerator",
+    "useMockupKillSwitch",
     "useMockupTechniquesLoad",
     "useMultipleTechniquePricing",
     "useNetworkStatus",
@@ -11153,6 +11162,7 @@
     "useElementSize",
     "useLogoDrag",
     "useLogoProcessing",
+    "useMockupKillSwitch",
     "usePreservedMockupResult"
    ],
    "edges": [
@@ -11273,6 +11283,7 @@
     "rpcs": []
    },
    "importado_por_outros_modulos": [
+    "components/kit-builder",
     "hooks/mockup",
     "pages/magic-up",
     "pages/mockups",
@@ -11283,6 +11294,7 @@
     "components/pdf",
     "components/products",
     "components/shared",
+    "components/system",
     "components/ui",
     "data",
     "hooks/common",
@@ -11290,6 +11302,7 @@
     "hooks/mockup",
     "hooks/products",
     "hooks/simulation",
+    "hooks/system",
     "hooks/ui",
     "integrations/supabase",
     "lib",
@@ -16002,19 +16015,20 @@
   },
   {
    "modulo": "components/system",
-   "arquivos": 4,
+   "arquivos": 5,
    "testes": 1,
-   "linhas": 678,
+   "linhas": 718,
    "itens_menu": [],
    "telas": [],
    "rotas_http": [],
-   "componentes": 4,
+   "componentes": 5,
    "hooks_locais": [
     "useAuth",
     "useAuthMFA",
     "useCloudStatus",
     "useCloudStatusContext",
     "useDevGate",
+    "useKillSwitchNotice",
     "useMedallionHealth",
     "useProductsColorsBatch",
     "useProfileRoles",
@@ -16051,6 +16065,7 @@
    ],
    "flags": [],
    "papeis": [
+    "alert",
     "alertdialog",
     "dialog",
     "listbox",
@@ -16063,6 +16078,7 @@
     "rpcs": []
    },
    "importado_por_outros_modulos": [
+    "components/mockup",
     "pages/system"
    ],
    "depende_de_modulos": [
@@ -16070,6 +16086,7 @@
     "components/ui",
     "contexts",
     "hooks/admin",
+    "hooks/system",
     "lib",
     "lib/dom"
    ],
@@ -22411,6 +22428,60 @@
    ]
   },
   {
+   "modulo": "hooks/system",
+   "arquivos": 1,
+   "testes": 1,
+   "linhas": 85,
+   "itens_menu": [],
+   "telas": [],
+   "rotas_http": [],
+   "componentes": 0,
+   "hooks_locais": [
+    "useKillSwitchNotice"
+   ],
+   "hooks_definidos": [
+    "useKillSwitchNotice"
+   ],
+   "edges": [],
+   "tabelas": [
+    "system_kill_switches"
+   ],
+   "rpcs": [
+    "fn_should_apply_kill_switch"
+   ],
+   "buckets": [],
+   "canais_realtime": [],
+   "env": [
+    "DEV",
+    "MODE",
+    "PROD",
+    "VITE_SENTRY_DSN",
+    "VITE_SENTRY_ENVIRONMENT",
+    "VITE_SUPABASE_ANON_KEY",
+    "VITE_SUPABASE_PUBLISHABLE_KEY",
+    "VITE_SUPABASE_URL",
+    "VITE_VERCEL_GIT_COMMIT_SHA"
+   ],
+   "flags": [],
+   "papeis": [],
+   "diretos": {
+    "edges": [],
+    "tabelas": [],
+    "rpcs": []
+   },
+   "importado_por_outros_modulos": [
+    "components/mockup",
+    "components/system"
+   ],
+   "depende_de_modulos": [
+    "lib",
+    "lib/external-db"
+   ],
+   "pacotes_externos": [
+    "@tanstack/react-query"
+   ]
+  },
+  {
    "modulo": "hooks/tecnicas",
    "arquivos": 6,
    "testes": 0,
@@ -23148,6 +23219,7 @@
     "useIsScrolled",
     "useKeyboardShortcut",
     "useKeyboardShortcuts",
+    "useKillSwitchNotice",
     "useKitAutoSave",
     "useKitBuilder",
     "useKitBuilderPageState",
@@ -23191,6 +23263,7 @@
     "useMockupDraft",
     "useMockupEntryParams",
     "useMockupGenerator",
+    "useMockupKillSwitch",
     "useMockupTechniquesLoad",
     "useMultipleTechniquePricing",
     "useNetworkStatus",
@@ -23713,6 +23786,7 @@
     "hooks/simulation",
     "hooks/simulator",
     "hooks/stock",
+    "hooks/system",
     "hooks/tecnicas",
     "hooks/ui",
     "hooks/voice",
@@ -24866,6 +24940,7 @@
     "hooks/quotes",
     "hooks/simulation",
     "hooks/stock",
+    "hooks/system",
     "lib",
     "lib/db",
     "pages/admin",
@@ -30974,6 +31049,7 @@
     "useInvalidateTecnicas",
     "useIsProductNovelty",
     "useKeyboardShortcut",
+    "useKillSwitchNotice",
     "useKitAutoSave",
     "useKitBuilder",
     "useKitBuilderPageState",
@@ -31009,6 +31085,7 @@
     "useMockupDraft",
     "useMockupEntryParams",
     "useMockupGenerator",
+    "useMockupKillSwitch",
     "useMockupTechniquesLoad",
     "useMultipleTechniquePricing",
     "useNetworkStatus",
@@ -31963,7 +32040,7 @@
    "modulo": "pages/mockups",
    "arquivos": 10,
    "testes": 9,
-   "linhas": 1907,
+   "linhas": 1912,
    "itens_menu": [
     "Gerador de Mockups",
     "Gerar Mockup",
@@ -32095,6 +32172,7 @@
     "useIsProductNovelty",
     "useKeyboardShortcut",
     "useKeyboardShortcuts",
+    "useKillSwitchNotice",
     "useLayoutCaptureRequest",
     "useLegacyFavoritesMigration",
     "useLogoColorAnalysis",
@@ -32116,6 +32194,7 @@
     "useMockupDraft",
     "useMockupEntryParams",
     "useMockupGenerator",
+    "useMockupKillSwitch",
     "useMockupTechniquesLoad",
     "useMultipleTechniquePricing",
     "useNetworkStatus",
@@ -34698,6 +34777,7 @@
     "useIsScrolled",
     "useKeyboardShortcut",
     "useKeyboardShortcuts",
+    "useKillSwitchNotice",
     "useKillSwitchObservability",
     "useKitAutoSave",
     "useKitBuilder",
@@ -34752,6 +34832,7 @@
     "useMockupDraft",
     "useMockupEntryParams",
     "useMockupGenerator",
+    "useMockupKillSwitch",
     "useMockupTechniquesLoad",
     "useMultipleTechniquePricing",
     "useNavigationAnalytics",
