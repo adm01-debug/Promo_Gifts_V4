@@ -1,0 +1,69 @@
+name: Edge Functions — Deno Tests
+
+# Dos 89 arquivos de teste em supabase/functions (13.102 linhas), 77 são Deno e
+# o CI rodava `deno test` em exatamente 2 deles: log-login-attempt (em
+# edge-integration-all.yml e log-login-fuzz-weekly.yml) e magazine-import-local
+# (em magazine-unit-tests.yml). Os outros 75 nunca foram executados por runner
+# nenhum — foram escritos, revisados e esquecidos.
+#
+# Os 12 arquivos que importam `vitest` são do Vitest e estão listados no
+# include do vitest.config.ts; aqui eles são ignorados.
+#
+# O import map de supabase/functions/deno.json já redireciona esm.sh e
+# deno.land para npm:/jsr: justamente "para evitar falhas de TLS/rede no CI", e
+# o `deno check` de ci.yml:518 já roda sobre todas as funções com ele — então a
+# infraestrutura para isto já existia; faltava o job.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'supabase/functions/**'
+      - '.github/workflows/edge-functions-deno-tests.yml'
+  pull_request:
+    paths:
+      - 'supabase/functions/**'
+      - '.github/workflows/edge-functions-deno-tests.yml'
+  workflow_dispatch:
+
+concurrency:
+  group: edge-deno-tests-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+permissions:
+  contents: read
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  deno-tests:
+    name: Deno Tests (edge functions)
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false  # E32
+
+      - uses: denoland/setup-deno@22d081ff2d3a40755e97629de92e3bcbfa7cf2ed # v2
+        with:
+          deno-version: v2.x
+
+      - name: Inventário antes de rodar
+        run: |
+          echo "arquivos de teste em supabase/functions: $(find supabase/functions -name '*test*.ts' | wc -l)"
+          echo "dos quais Vitest (ignorados aqui): $(grep -rl \"from 'vitest'\" supabase/functions --include='*test*.ts' | wc -l)"
+
+      # --allow-all: estes testes leem fixtures, checam env e alguns sobem
+      # servidor local. Sem rede externa real — o import map resolve tudo para
+      # npm:/jsr:, baixados no passo de cache do próprio setup-deno.
+      - name: deno test
+        run: |
+          deno test \
+            --config supabase/functions/deno.json \
+            --allow-all \
+            --no-check \
+            --ignore=supabase/functions/e2e-cleanup/index.mockups.test.ts,supabase/functions/generate-ad-image/index.imports.test.ts,supabase/functions/generate-ad-image/index.logo.test.ts,supabase/functions/generate-ad-image/index.sanitize.test.ts,supabase/functions/generate-ad-prompt/index.timeout.test.ts,supabase/functions/generate-mockup/fetch-guard.cap.test.ts,supabase/functions/generate-mockup/index.geometry.test.ts,supabase/functions/generate-mockup/index.size.test.ts,supabase/functions/magic-up-score/index.limits.test.ts,supabase/functions/mockup-assistant/index.test.ts,supabase/functions/process-scheduled-reports/index.send-failure.test.ts,supabase/functions/word-magic/index.limits.test.ts \
+            supabase/functions/
