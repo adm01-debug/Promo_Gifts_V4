@@ -13,6 +13,7 @@ import {
   useQuoteTemplates,
 } from '@/hooks/quotes/useQuoteTemplates';
 import { Save, X } from 'lucide-react';
+import { textoDoSubtotalDoItem, textoDoTotal } from '@/lib/quotes/templateTotal';
 
 interface QuoteTemplateFormProps {
   template?: QuoteTemplate | null;
@@ -82,24 +83,6 @@ export function QuoteTemplateForm({
       style: 'currency',
       currency: 'BRL',
     }).format(value);
-  };
-
-  const calculateTotal = () => {
-    const itemsTotal = (formData.items || []).reduce((sum, item) => {
-      const itemBase = item.quantity * item.unitPrice;
-      const personalizationCost =
-        item.personalizations?.reduce((pSum, p) => {
-          return pSum + (p.unitCost || 0) * item.quantity + (p.setupCost || 0);
-        }, 0) || 0;
-      return sum + itemBase + personalizationCost;
-    }, 0);
-
-    const discountValue =
-      formData.discount_percent && formData.discount_percent > 0
-        ? itemsTotal * (formData.discount_percent / 100)
-        : formData.discount_amount || 0;
-
-    return itemsTotal - discountValue;
   };
 
   return (
@@ -270,14 +253,14 @@ export function QuoteTemplateForm({
                         {item.quantity}x {item.productName}
                       </span>
                       <span className="ml-4 font-medium">
-                        {formatCurrency(item.quantity * item.unitPrice)}
+                        {textoDoSubtotalDoItem(item, formatCurrency)}
                       </span>
                     </div>
                   ))}
                   <Separator className="my-2" />
                   <div className="flex items-center justify-between font-medium">
                     <span>Total Estimado</span>
-                    <span className="text-lg">{formatCurrency(calculateTotal())}</span>
+                    <span className="text-lg">{textoDoTotal(formData, formatCurrency)}</span>
                   </div>
                 </div>
               </div>

@@ -26,8 +26,12 @@ import { exportSingleTemplate } from '@/utils/templateExport';
 interface TemplateTableViewProps {
   templates: QuoteTemplate[];
   getSellerName: (sellerId: string) => string;
-  formatCurrency: (value: number) => string;
-  calculateTotal: (template: QuoteTemplate) => number;
+  /**
+   * Total JA formatado. String (e nao numero) porque um template cujos itens
+   * nao podem ser lidos nao tem total: quem calcula devolve o aviso em vez de
+   * um numero inventado. Ver `src/lib/quotes/templateTotal.ts`.
+   */
+  totalFormatado: (template: QuoteTemplate) => string;
   onEdit?: (template: QuoteTemplate) => void;
   onClone: (templateId: string) => void;
   onDelete: (templateId: string) => void;
@@ -36,8 +40,7 @@ interface TemplateTableViewProps {
 export function TemplateTableView({
   templates,
   getSellerName,
-  formatCurrency,
-  calculateTotal,
+  totalFormatado,
   onEdit,
   onClone,
   onDelete,
@@ -81,9 +84,7 @@ export function TemplateTableView({
                 <TableCell className="text-center">
                   <Badge variant="secondary">{template.items.length}</Badge>
                 </TableCell>
-                <TableCell className="text-right font-medium">
-                  {formatCurrency(calculateTotal(template))}
-                </TableCell>
+                <TableCell className="text-right font-medium">{totalFormatado(template)}</TableCell>
                 <TableCell className="text-center">
                   {template.is_default && (
                     <Badge variant="outline" className="gap-1">

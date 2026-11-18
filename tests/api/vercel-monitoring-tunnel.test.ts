@@ -154,7 +154,12 @@ describe('api/monitoring — túnel de envelopes', () => {
     });
 
     it('stream drenado e sem corpo devolve null em vez de esperar evento que não vem', async () => {
-      const lido = await readEnvelope({ method: 'POST', headers: {}, readableEnded: true, on() {} });
+      const lido = await readEnvelope({
+        method: 'POST',
+        headers: {},
+        readableEnded: true,
+        on() {},
+      });
       expect(lido).toBeNull();
     });
 
@@ -185,6 +190,41 @@ describe('api/monitoring — túnel de envelopes', () => {
       expect(res.statusCode).toBe(429);
       expect(res.headers['retry-after']).toBe('60');
       expect(res.headers['x-sentry-rate-limits']).toBe('60:error:organization');
+    });
+
+    it('NAO repassa 404 da ingestao: devolve 202 para o console do vendedor ficar limpo', async () => {
+      // O DSN em producao aponta para um projeto que o GlitchTip nao tem; o
+      // handler devolvia 404 cru e o navegador registrava falha a cada erro.
+      vi.spyOn(globalThis, 'fetch').mockResolvedValue(new Response(null, { status: 404 }));
+      vi.spyOn(console, 'error').mockImplementation(() => {});
+      const res = responseMock();
+
+      await monitoringHandler(requestMock(ENVELOPE), res);
+
+      expect(res.statusCode).toBe(202);
+      expect(res.body).toEqual({ ok: false, descartado: 'dsn_recusado_pela_ingestao' });
+      // O status real nao some: vai no header, para quem inspeciona.
+      expect(res.headers['x-tunnel-upstream-status']).toBe('404');
+    });
+
+    it('trata 401 e 403 como recusa permanente tambem', async () => {
+      vi.spyOn(console, 'error').mockImplementation(() => {});
+      for (const status of [401, 403]) {
+        vi.spyOn(globalThis, 'fetch').mockResolvedValue(new Response(null, { status }));
+        const res = responseMock();
+        await monitoringHandler(requestMock(ENVELOPE), res);
+        expect(res.statusCode).toBe(202);
+        expect(res.headers['x-tunnel-upstream-status']).toBe(String(status));
+      }
+    });
+
+    it('500 da ingestao continua sendo repassado (falha transitoria, o SDK reenvia)', async () => {
+      vi.spyOn(globalThis, 'fetch').mockResolvedValue(new Response(null, { status: 500 }));
+      const res = responseMock();
+
+      await monitoringHandler(requestMock(ENVELOPE), res);
+
+      expect(res.statusCode).toBe(500);
     });
 
     it('repassa limite por categoria que vem junto com 200', async () => {
