@@ -30,11 +30,25 @@ export interface QuoteTemplateItem {
   }[];
 }
 
-export interface QuoteTemplate {
-  id: string;
-  seller_id: string;
-  name: string;
-  description?: string;
+/**
+ * Template de orcamento como a UI consome.
+ *
+ * Estende a LINHA da tabela de proposito: `transformTemplates` faz `...item`, logo
+ * toda coluna de `quote_templates` chega aqui (`category`, `payment_method`,
+ * `usage_count`...) e consumidor que le uma delas continua funcionando — protegido
+ * por tests/hooks/useQuoteTemplates.raw-fetch.test.ts. Antes isso exigia
+ * `as unknown as QuoteTemplate[]`, que escondia QUALQUER divergencia de tipo da
+ * linha; com `extends` + `Omit`, o compilador volta a cobrir o resto.
+ */
+export interface QuoteTemplate extends Omit<
+  QuoteTemplateRow,
+  | 'discount_amount'
+  | 'discount_percent'
+  | 'is_default'
+  | 'items'
+  | 'template_data'
+  | 'validity_days'
+> {
   is_default: boolean;
   template_data: Record<string, unknown>;
   items: QuoteTemplateItem[];
@@ -42,13 +56,7 @@ export interface QuoteTemplate {
   raw_template_data?: QuoteTemplateRow['template_data'];
   discount_percent: number;
   discount_amount: number;
-  notes?: string;
-  internal_notes?: string;
-  payment_terms?: string;
-  delivery_time?: string;
   validity_days: number;
-  created_at: string;
-  updated_at: string;
 }
 
 export interface CreateTemplateInput {
@@ -68,7 +76,10 @@ export interface CreateTemplateInput {
 const templateSourceRows = new WeakMap<QuoteTemplate, QuoteTemplateRow>();
 
 function transformTemplates(data: QuoteTemplateRow[]): QuoteTemplate[] {
-  const templates = (data || []).map((item) => ({
+  // Sem `as unknown as` no objeto inteiro: o unico cast que resta e no campo
+  // `items`, que e `jsonb` e preserva de proposito o que esta gravado (inclusive
+  // entrada incompleta), com o original intacto em `raw_items`.
+  const templates: QuoteTemplate[] = (data || []).map((item) => ({
     ...item,
     raw_items: item.items,
     raw_template_data: item.template_data,
@@ -81,7 +92,7 @@ function transformTemplates(data: QuoteTemplateRow[]): QuoteTemplate[] {
     discount_percent: item.discount_percent ?? 0,
     discount_amount: item.discount_amount ?? 0,
     validity_days: item.validity_days ?? 30,
-  })) as unknown as QuoteTemplate[];
+  }));
   templates.forEach((template, index) => {
     const source = data[index];
     if (source) templateSourceRows.set(template, source);

@@ -338,8 +338,12 @@ describe('category rows retain partial database values', () => {
   it.each([
     { name: null, rows: [], expected: '📦' },
     { name: 'Caneca', rows: [{ id: null, category_name: null, icon: null }], expected: 'Coffee' },
-    { name: 'Caneca', rows: [{ id: 'one', category_name: 'caneca', icon: null }], expected: null },
-    { name: 'Caneca', rows: [{ id: 'one', category_name: 'caneca', icon: '' }], expected: '' },
+    // `category_icons.icon` e nullable. Estes dois casos cravavam o DEFEITO: a
+    // funcao devolvia null/'' com assinatura `string`, e CategoryIcon.tsx nao tinha
+    // o que renderizar. Hoje linha cadastrada sem icone nao conta como match e a
+    // busca segue para o mapa de palavras-chave ('caneca' -> 'Coffee').
+    { name: 'Caneca', rows: [{ id: 'one', category_name: 'caneca', icon: null }], expected: 'Coffee' },
+    { name: 'Caneca', rows: [{ id: 'one', category_name: 'caneca', icon: '' }], expected: 'Coffee' },
     { name: 'Caneca azul', rows: [{ id: 'one', category_name: 'caneca', icon: 'C' }], expected: 'C' },
     { name: 'Especial', rows: [{ id: 'one', category_name: 'especial', icon: 'E' }], expected: 'E' },
   ] satisfies { name: string | null; rows: PartialIconRow[]; expected: string | null }[])('handles $name with $expected', ({ name, rows, expected }) => {

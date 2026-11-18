@@ -20,7 +20,7 @@ const KEYWORD_ICONS: Record<string, string> = {
   taça: 'Wine',
   caneca: 'Coffee',
   xícara: 'Coffee',
-  squeeze: 'Droplets',  // fix: before 'garrafa' — 'Garrafa squeeze' deve dar Droplets
+  squeeze: 'Droplets', // fix: before 'garrafa' — 'Garrafa squeeze' deve dar Droplets
   garrafa: 'Wine',
   térmica: 'Thermometer',
   térm: 'Thermometer',
@@ -163,7 +163,7 @@ const KEYWORD_ICONS: Record<string, string> = {
   esporte: 'Dumbbell',
   corrida: 'Dumbbell',
   'guarda-chuva': 'Umbrella', // fix: before 'praia' (Sun) — guarda-sol de praia deve dar Umbrella
-  'guarda-sol': 'Umbrella',   // fix: before 'praia' (Sun)
+  'guarda-sol': 'Umbrella', // fix: before 'praia' (Sun)
   guarda: 'Umbrella',
   chuva: 'Umbrella',
   praia: 'Sun',
@@ -222,7 +222,7 @@ const KEYWORD_ICONS: Record<string, string> = {
   ração: 'PawPrint',
   cama: 'PawPrint',
   casinha: 'PawPrint',
-  brinquedo: 'Star',          // fix: movido para cá — depois de 'brinquedo pet'
+  brinquedo: 'Star', // fix: movido para cá — depois de 'brinquedo pet'
 
   // ── EMBALAGENS / CAIXAS ─────────────────────────────
   embalagem: 'Package',
@@ -260,7 +260,7 @@ const KEYWORD_ICONS: Record<string, string> = {
   castanha: 'Leaf',
 
   // ── ECO / SUSTENTÁVEL / AGRO ────────────────────────
-  bambu: 'TreePine',   // fix: before 'eco' — produto de bambu deve dar TreePine
+  bambu: 'TreePine', // fix: before 'eco' — produto de bambu deve dar TreePine
   eco: 'Leaf',
   ecológico: 'Leaf',
   reciclado: 'Recycle',
@@ -323,12 +323,17 @@ export function getCategoryIcon(
 
   const nameLower = categoryName.toLowerCase();
 
+  // `category_icons.icon` é nullable: uma linha cadastrada sem ícone não é um
+  // match útil. Ignorá-la deixa a busca seguir para o próximo passo, em vez de
+  // devolver `null` com assinatura `string` (o que quebrava CategoryIcon.tsx).
+  const comIcone = icons.filter((i): i is CategoryIcon & { icon: string } => !!i.icon);
+
   // 1. Busca exata no banco
-  const exact = icons.find((i) => i.category_name?.toLowerCase() === nameLower);
+  const exact = comIcone.find((i) => i.category_name?.toLowerCase() === nameLower);
   if (exact) return exact.icon;
 
   // 2. Busca parcial (contém) no banco
-  const partial = icons.find((i) => {
+  const partial = comIcone.find((i) => {
     const n = i.category_name?.toLowerCase();
     return n && (nameLower.includes(n) || n.includes(nameLower));
   });
@@ -344,7 +349,7 @@ export function getCategoryIcon(
   // 4. Busca por primeira palavra significativa no banco
   const firstWord = nameLower.split(/[\s|]/)[0];
   if (firstWord.length > 2) {
-    const firstWordMatch = icons.find((i) => i.category_name?.toLowerCase().includes(firstWord));
+    const firstWordMatch = comIcone.find((i) => i.category_name?.toLowerCase().includes(firstWord));
     if (firstWordMatch) return firstWordMatch.icon;
   }
 

@@ -20,7 +20,13 @@ const LIGHTWEIGHT_INITIAL_BURST = 4;
 export interface LightweightProduct {
   id: string;
   name: string;
-  sku: string;
+  /**
+   * `v_products_public.sku` e nullable no schema gerado
+   * (src/integrations/supabase/types.ts, bloco `v_products_public`). Declarar
+   * `string` aqui era um buraco de tipo: produto sem SKU chegava como `null` onde
+   * o consumidor garantia `string`. Os mapeadores coagem para '' na fronteira.
+   */
+  sku: string | null;
   supplier_reference?: string | null;
   sale_price?: number | null;
   cost_price?: number | null;

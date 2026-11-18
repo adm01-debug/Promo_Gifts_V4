@@ -120,8 +120,10 @@ export function QuoteVersionHistory({
             <div className="space-y-2">
               {versions.map((version, idx) => {
                 const isCurrent = version.id === currentQuoteId;
-                const statusCfg =
-                  QUOTE_STATUS_CONFIG[version.status as keyof typeof QUOTE_STATUS_CONFIG];
+                // `status` e nullable no banco: so indexa a config quando ha valor.
+                const statusCfg = version.status
+                  ? QUOTE_STATUS_CONFIG[version.status as keyof typeof QUOTE_STATUS_CONFIG]
+                  : undefined;
 
                 return (
                   <div key={version.id}>
@@ -151,13 +153,12 @@ export function QuoteVersionHistory({
                           {isCurrent && <Eye className="h-3 w-3 flex-shrink-0 text-primary" />}
                         </div>
                         <Badge
-                          variant={
-                            (statusCfg?.badgeVariant as
-                              'default' | 'destructive' | 'outline' | 'secondary') || 'secondary'
-                          }
+                          // `badgeVariant` ja e a uniao exata em QuoteStatusConfig:
+                          // sem status conhecido, cai em 'secondary'.
+                          variant={statusCfg?.badgeVariant ?? 'secondary'}
                           className="h-4 flex-shrink-0 px-1 text-[10px]"
                         >
-                          {statusCfg?.label || version.status}
+                          {statusCfg?.label || version.status || '—'}
                         </Badge>
                       </div>
                       <div className="mt-1 flex items-center justify-between">
@@ -175,7 +176,9 @@ export function QuoteVersionHistory({
                             {version.items_count || 0} itens
                           </span>
                           <span className="text-xs font-medium">
-                            {formatCurrency(version.total)}
+                            {/* total nulo = o banco nao tem esse valor; "R$ 0,00"
+                                seria uma afirmacao falsa sobre o orcamento. */}
+                            {version.total === null ? '—' : formatCurrency(version.total)}
                           </span>
                         </div>
                       </div>
