@@ -1,13 +1,13 @@
 {
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
- "total": 308,
+ "total": 309,
  "por_camada": {
   "api": 4,
   "config": 1,
   "data": 3,
   "integrations": 8,
-  "lib": 233,
+  "lib": 234,
   "python": 9,
   "services": 10,
   "stores": 9,
@@ -6103,6 +6103,32 @@
     "services"
    ],
    "coberto_por_testes": 3,
+   "orfao": false
+  },
+  {
+   "arquivo": "src/lib/quotes/applyTemplateToQuote.ts",
+   "camada": "lib",
+   "exports": [
+    "ApplyTemplateResult",
+    "ApplyTemplateTarget",
+    "applyTemplateToQuote",
+    "fromTemplateItems"
+   ],
+   "export_default": null,
+   "linhas": 173,
+   "tabelas": [],
+   "rpcs": [],
+   "edges": [],
+   "env": [],
+   "externos": [],
+   "zod_schemas": 0,
+   "flags": [],
+   "papeis": [],
+   "usado_por": 1,
+   "usado_por_modulos": [
+    "components/quotes"
+   ],
+   "coberto_por_testes": 1,
    "orfao": false
   },
   {

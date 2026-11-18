@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.3.2 · commit `c1b158ceeb` · branch `main` · 2026-11-18 14:27 UTC
+> Gerado automaticamente por AI Context Sync v1.3.2 · commit `ad0d7b138d` · branch `main` · 2026-11-18 14:29 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -1863,7 +1863,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `status` | `unhealthy` | compara, escreve | `supabase/functions/health-check/index.ts` |
 | `status` | `unknown` | compara, escreve | `src/components/products/PriceFreshnessBadge.tsx`<br>`src/components/simulator/StockAlert.tsx`<br>`src/components/system/CloudStatusDot.tsx`<br>`src/pages/kit-builder/useKitBuilderQuote.ts`<br>`src/utils/price-freshness.ts` |
 | `status` | `valid` | compara, escreve | `src/components/admin/connections/MaskedSuffixBadge.tsx`<br>`src/lib/masked-suffix.ts` |
-| … +120 linhas — lista completa em `context.json` | | | |
+| … +121 linhas — lista completa em `context.json` | | | |
 
 ### E.4 Enums e listas de valores
 
@@ -3954,6 +3954,10 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
   ```
   const itemsTotal = (formData.items || []).reduce((sum, item) => { const itemBase = item.quantity * item.unitPrice; const personalizationCost = item.personalizations?.reduce((pSum, p) => { return pSum + (p.unitCost || 0) * item.quantity + (p.setupCost || 0); }, 0) || 0; return sum + itemBase + personalizationCost; }, 0); const discountValue = formData.discount_percent && formData.discount_percent > 0 ? itemsTotal * (formData.discount_percent / 100) : formData.discount_amount || 0; return itemsTot …
   ```
+- **aplicar(template: QuoteTemplate)** — `src/components/quotes/QuoteTemplateSelector.tsx`
+  ```
+  const r = applyTemplateToQuote(template, s); setListaAberta(false); setAConfirmar(null); if (r.itensAplicados === 0 && r.camposAplicados.length === 0) { toast.warning('Nada foi aplicado', { description: r.itensIgnorados > 0 ? `Os ${r.itensIgnorados} itens deste template não têm produto vinculado, então não podem entrar no orçamento.` : 'Este template está vazio.', }); return; } const partes = [ `${r.itensAplicados} item(ns)`, ...r.camposAplicados.filter((c) => c !== 'itens'), ]; toast.success('T …
+  ```
 - **formatCurrency(value: number)** — `src/components/quotes/QuoteTemplatesList.tsx`
   ```
   return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', }).format(value);
@@ -4629,6 +4633,10 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 - **calculatePriceFromTable(table: TabelaPrecoTecnica, params: PriceCalculationParams,)** — `src/lib/personalization/services/pricing.service.ts`
   ```
   const { quantity, colors } = params; // Encontrar faixa adequada let tierUsed = table.faixas[0]; for (const faixa of table.faixas) { if (quantity >= faixa.quantidadeMinima) { tierUsed = faixa; } else { break; } } let unitPrice = tierUsed.precoUnitario; // Ajustar por cores se aplicável if (table.precoPorCor && colors && table.maxCores) { if (colors > table.maxCores) { const fatorCor = colors / table.maxCores; unitPrice *= fatorCor; } } const subtotal = unitPrice * quantity; const grandTotal = su …
+  ```
+- **applyTemplateToQuote(template: QuoteTemplate, s: ApplyTemplateTarget,)** — `src/lib/quotes/applyTemplateToQuote.ts`
+  ```
+  const doTemplate = Array.isArray(template.items) ? template.items : []; const itens = fromTemplateItems(doTemplate); s.setItems(itens); const camposAplicados: string[] = []; if (itens.length > 0) camposAplicados.push('itens'); // Decisão 4: percentual tem precedência quando os dois vêm preenchidos, // porque é a forma que o limite do vendedor usa. const percentual = numeroFinitoPositivo(template.discount_percent); const valor = numeroFinitoPositivo(template.discount_amount); if (percentual !== n …
   ```
 - **parseValidUntil(raw: string)** — `src/lib/quotes/expiration.ts`
   ```
@@ -6477,7 +6485,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | allowlist inválida: versions contém duplicatas | `scripts/check-supabase-migration-ledger.mjs` |
 | allowlist inválida: versions contém valor vazio/não textual | `scripts/check-supabase-migration-ledger.mjs` |
 | allowlist inválida: versions deve ser array não vazio | `scripts/check-supabase-migration-ledger.mjs` |
-| … +1300 linhas — lista completa em `context.json` | |
+| … +1301 linhas — lista completa em `context.json` | |
 
 ## J. Controle de acesso no código (checagens de perfil/permissão)
 
@@ -6601,7 +6609,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `admin` | `supabase/migrations/20261112120500_fix_optimization_queue_rpcs_dev_access.sql` |
 | `anon` | `tests/edge-functions/live/_live-client.ts` |
 
-## K. Testes como especificação (22325 testes em 2261 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (22357 testes em 2263 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -6905,7 +6913,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `src/components/layout/sidebar/__tests__/SidebarNavGroup.history.test.tsx` | 18 | SidebarNavGroup — back/forward (histórico real) preservam paridade entre os 3 itens · back: /carrinhos -> /orcamentos/novo, voltar reativa Carrinhos e desativa Novo Orçamento · forward: depois de voltar, avançar restaura o destaque de Novo Orçamento · back/forward atravessando os 3 itens mantém destaque correto a cada salto … |
 | `src/components/products/customization/__tests__/ConfigurationPanelV6.collapse.test.tsx` | 18 | ConfigurationPanelV6 — contrato de colapso · Grupo A — wrapper externo (contrato visual) · expandido: contém flex/flex-col/gap-4/p-4/transition-[gap]/motion-reduce · colapsado: contém gap-0 e NÃO contém gap-4 nem space-y-4 … |
 | `src/components/search/__tests__/searchCache.test.ts` | 18 | searchCache.set / searchCache.get · returns null for an unknown key · returns results immediately after set · is case-insensitive (normalized key) … |
-| … +1961 linhas — lista completa em `context.json` | | |
+| … +1963 linhas — lista completa em `context.json` | | |
 
 ## L. Eventos de webhook tratados (contratos com sistemas externos)
 
@@ -7373,4 +7381,4 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | Context providers must be imported synchronously (consumers render inside them) | `src/components/layout/MainLayout.tsx` |
 | para a qual não tem permissão. | `src/components/layout/sidebar/RestrictedRouteNotice.tsx` |
 | E-24: mesma regra dos dots/thumbnails do MagicUpResultPanel — modo NÃO-WRAP. | `src/components/magic-up/MagicUpVariationComparator.tsx` |
-| … +1340 linhas — lista completa em `context.json` | |
+| … +1343 linhas — lista completa em `context.json` | |

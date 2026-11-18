@@ -1,7 +1,7 @@
 {
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
- "total": 1250,
+ "total": 1251,
  "orfaos": 161,
  "nomes_duplicados": {
   "AdminTemplatesManager": [
@@ -317,6 +317,10 @@
   "QuoteTemplateForm": [
    "recovery/src-legacy/src/components/quotes/QuoteTemplateForm.tsx",
    "src/components/quotes/QuoteTemplateForm.tsx"
+  ],
+  "QuoteTemplateSelector": [
+   "recovery/src-legacy/src/components/quotes/QuoteTemplateSelector.tsx",
+   "src/components/quotes/QuoteTemplateSelector.tsx"
   ],
   "QuoteTemplatesList": [
    "recovery/src-legacy/src/components/quotes/QuoteTemplatesList.tsx",
@@ -14738,6 +14742,20 @@
    "orfao": false
   },
   {
+   "arquivo": "src/components/quotes/QuoteTemplateSelector.tsx",
+   "exports": [
+    "QuoteTemplateSelector"
+   ],
+   "export_default": null,
+   "linhas": 130,
+   "dominio": "components/quotes",
+   "hooks_locais": [],
+   "tabelas": [],
+   "edges": [],
+   "usado_por": 2,
+   "orfao": false
+  },
+  {
    "arquivo": "src/components/quotes/QuoteTemplatesList.tsx",
    "exports": [
     "QuoteTemplatesList"
@@ -14750,7 +14768,7 @@
    ],
    "tabelas": [],
    "edges": [],
-   "usado_por": 2,
+   "usado_por": 3,
    "orfao": false
   },
   {
@@ -16057,7 +16075,7 @@
    ],
    "tabelas": [],
    "edges": [],
-   "usado_por": 34,
+   "usado_por": 35,
    "orfao": false
   },
   {
@@ -16139,7 +16157,7 @@
    "hooks_locais": [],
    "tabelas": [],
    "edges": [],
-   "usado_por": 632,
+   "usado_por": 633,
    "orfao": false
   },
   {
@@ -16363,7 +16381,7 @@
    ],
    "tabelas": [],
    "edges": [],
-   "usado_por": 138,
+   "usado_por": 139,
    "orfao": false
   },
   {
@@ -19788,7 +19806,7 @@
     "QuoteBuilderNotesCard"
    ],
    "export_default": null,
-   "linhas": 87,
+   "linhas": 99,
    "dominio": "pages/quotes",
    "hooks_locais": [],
    "tabelas": [],
@@ -19830,7 +19848,7 @@
     "QuoteBuilderPage"
    ],
    "export_default": "QuoteBuilderPage",
-   "linhas": 809,
+   "linhas": 811,
    "dominio": "pages/quotes",
    "hooks_locais": [
     "useNextQuoteNumberPreview",

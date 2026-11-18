@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "c1b158ceeb3c3b6063835786f99a2efc7d176f1a",
+  "sha": "ad0d7b138de433bb8cb2fde80d52f0388b2d562f",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-18 14:27 UTC",
-  "files_total": 10837,
-  "code_files": 8869,
-  "code_lines": 1256580
+  "generated_at": "2026-11-18 14:29 UTC",
+  "files_total": 10844,
+  "code_files": 8873,
+  "code_lines": 1257407
  },
  "version": "1.3.2",
- "facts_hash": "202e3c79382bdd08",
+ "facts_hash": "2edcc9a7eaddbb0b",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -1120,8 +1120,8 @@
   "package_manager": "npm",
   "languages": {
    ".sql": 3440,
-   ".ts": 3020,
-   ".tsx": 1944,
+   ".ts": 3022,
+   ".tsx": 1946,
    ".mjs": 450,
    ".py": 15,
    ".js": 7
@@ -138558,7 +138558,7 @@
      "request_discount_approval_transactional",
      "respond_discount_approval_transactional"
     ],
-    "deps_count": 198
+    "deps_count": 202
    },
    {
     "path": "*",
@@ -139954,7 +139954,7 @@
      "respond_discount_approval_transactional",
      "restore_seller_cart"
     ],
-    "deps_count": 287
+    "deps_count": 291
    },
    {
     "path": "/orcamentos/templates",
@@ -144985,7 +144985,7 @@
     "file": ".github/workflows/wraparound-monitor-report.yml"
    }
   ],
-  "components_count": 1678,
+  "components_count": 1680,
   "hooks": [
    {
     "name": "useQuoteComments",
@@ -149616,8 +149616,8 @@
   },
   {
    "module": "src/components",
-   "files": 1406,
-   "lines": 279503,
+   "files": 1407,
+   "lines": 279633,
    "tables": [
     "admin_audit_log",
     "art_file_attachments",
@@ -150267,8 +150267,8 @@
   },
   {
    "module": "src/lib",
-   "files": 345,
-   "lines": 53002,
+   "files": 347,
+   "lines": 53422,
    "tables": [
     "...",
     "companies",
@@ -150474,7 +150474,7 @@
   {
    "module": "src/pages",
    "files": 366,
-   "lines": 84421,
+   "lines": 84435,
    "tables": [
     "ai_usage_events",
     "bot_detection_log",
@@ -151710,8 +151710,8 @@
   },
   {
    "module": "tests",
-   "files": 1090,
-   "lines": 171402,
+   "files": 1091,
+   "lines": 171665,
    "tables": [
     "bot_detection_log",
     "clients",
@@ -166757,6 +166757,10 @@
     "msg": "Transição inválida"
    },
    {
+    "file": "src/components/quotes/QuoteTemplateSelector.tsx",
+    "msg": "Nada foi aplicado"
+   },
+   {
     "file": "src/components/quotes/QuoteVersionCompare.tsx",
     "msg": "Erro ao comparar versões"
    },
@@ -174039,6 +174043,18 @@
    {
     "file": "src/lib/products/novelty-days.ts",
     "text": "- Senao, deriva de created_at (somente se newArrival e a data for parseavel)."
+   },
+   {
+    "file": "src/lib/quotes/applyTemplateToQuote.ts",
+    "text": "* DECISÕES DE NEGÓCIO, explícitas porque mudam o que o vendedor vê:"
+   },
+   {
+    "file": "src/lib/quotes/applyTemplateToQuote.ts",
+    "text": "4. O desconto é aplicado e passa pela validação de limite do vendedor que já"
+   },
+   {
+    "file": "src/lib/quotes/applyTemplateToQuote.ts",
+    "text": "porque é a forma que o limite do vendedor usa."
    },
    {
     "file": "src/lib/quotes/collapsedItemsStorage.ts",
@@ -208200,6 +208216,12 @@
     "kind": "compara"
    },
    {
+    "file": "src/lib/quotes/applyTemplateToQuote.ts",
+    "field": "tipo",
+    "value": "amount",
+    "kind": "escreve"
+   },
+   {
     "file": "src/lib/rbac/route-matrix.ts",
     "field": "role",
     "value": "public",
@@ -214106,6 +214128,12 @@
     "body": "const itemsTotal = (formData.items || []).reduce((sum, item) => { const itemBase = item.quantity * item.unitPrice; const personalizationCost = item.personalizations?.reduce((pSum, p) => { return pSum + (p.unitCost || 0) * item.quantity + (p.setupCost || 0); }, 0) || 0; return sum + itemBase + personalizationCost; }, 0); const discountValue = formData.discount_percent && formData.discount_percent > 0 ? itemsTotal * (formData.discount_percent / 100) : formData.discount_amount || 0; return itemsTot …"
    },
    {
+    "file": "src/components/quotes/QuoteTemplateSelector.tsx",
+    "name": "aplicar",
+    "params": "template: QuoteTemplate",
+    "body": "const r = applyTemplateToQuote(template, s); setListaAberta(false); setAConfirmar(null); if (r.itensAplicados === 0 && r.camposAplicados.length === 0) { toast.warning('Nada foi aplicado', { description: r.itensIgnorados > 0 ? `Os ${r.itensIgnorados} itens deste template não têm produto vinculado, então não podem entrar no orçamento.` : 'Este template está vazio.', }); return; } const partes = [ `${r.itensAplicados} item(ns)`, ...r.camposAplicados.filter((c) => c !== 'itens'), ]; toast.success('T …"
+   },
+   {
     "file": "src/components/quotes/QuoteTemplatesList.tsx",
     "name": "formatCurrency",
     "params": "value: number",
@@ -215118,6 +215146,12 @@
     "name": "calculatePriceFromTable",
     "params": "table: TabelaPrecoTecnica, params: PriceCalculationParams,",
     "body": "const { quantity, colors } = params; // Encontrar faixa adequada let tierUsed = table.faixas[0]; for (const faixa of table.faixas) { if (quantity >= faixa.quantidadeMinima) { tierUsed = faixa; } else { break; } } let unitPrice = tierUsed.precoUnitario; // Ajustar por cores se aplicável if (table.precoPorCor && colors && table.maxCores) { if (colors > table.maxCores) { const fatorCor = colors / table.maxCores; unitPrice *= fatorCor; } } const subtotal = unitPrice * quantity; const grandTotal = su …"
+   },
+   {
+    "file": "src/lib/quotes/applyTemplateToQuote.ts",
+    "name": "applyTemplateToQuote",
+    "params": "template: QuoteTemplate, s: ApplyTemplateTarget,",
+    "body": "const doTemplate = Array.isArray(template.items) ? template.items : []; const itens = fromTemplateItems(doTemplate); s.setItems(itens); const camposAplicados: string[] = []; if (itens.length > 0) camposAplicados.push('itens'); // Decisão 4: percentual tem precedência quando os dois vêm preenchidos, // porque é a forma que o limite do vendedor usa. const percentual = numeroFinitoPositivo(template.discount_percent); const valor = numeroFinitoPositivo(template.discount_amount); if (percentual !== n …"
    },
    {
     "file": "src/lib/quotes/expiration.ts",
@@ -252218,6 +252252,74 @@
     "name": "200 produtos: sort estável — nenhum out-of-stock antes de in-stock"
    },
    {
+    "file": "src/lib/quotes/__tests__/applyTemplateToQuote.test.ts",
+    "name": "fromTemplateItems — item sem produto vinculado não entra"
+   },
+   {
+    "file": "src/lib/quotes/__tests__/applyTemplateToQuote.test.ts",
+    "name": "descarta item sem productId e NÃO inventa id"
+   },
+   {
+    "file": "src/lib/quotes/__tests__/applyTemplateToQuote.test.ts",
+    "name": "productId em branco também não vale"
+   },
+   {
+    "file": "src/lib/quotes/__tests__/applyTemplateToQuote.test.ts",
+    "name": "não define price_updated_at: o preço do template não é o do fornecedor"
+   },
+   {
+    "file": "src/lib/quotes/__tests__/applyTemplateToQuote.test.ts",
+    "name": "calcula subtotal e ordena pelo índice aplicado"
+   },
+   {
+    "file": "src/lib/quotes/__tests__/applyTemplateToQuote.test.ts",
+    "name": "quantidade e preço inválidos caem em defaults seguros, nunca NaN"
+   },
+   {
+    "file": "src/lib/quotes/__tests__/applyTemplateToQuote.test.ts",
+    "name": "personalização sem techniqueId é descartada; com id vira personalizations"
+   },
+   {
+    "file": "src/lib/quotes/__tests__/applyTemplateToQuote.test.ts",
+    "name": "é o inverso de toTemplateItems (ida e volta preserva o essencial)"
+   },
+   {
+    "file": "src/lib/quotes/__tests__/applyTemplateToQuote.test.ts",
+    "name": "applyTemplateToQuote — campos comerciais"
+   },
+   {
+    "file": "src/lib/quotes/__tests__/applyTemplateToQuote.test.ts",
+    "name": "percentual tem precedência sobre valor quando os dois vêm preenchidos"
+   },
+   {
+    "file": "src/lib/quotes/__tests__/applyTemplateToQuote.test.ts",
+    "name": "só valor em reais aplica como amount"
+   },
+   {
+    "file": "src/lib/quotes/__tests__/applyTemplateToQuote.test.ts",
+    "name": "template sem desconto não toca no desconto da tela"
+   },
+   {
+    "file": "src/lib/quotes/__tests__/applyTemplateToQuote.test.ts",
+    "name": "campo vazio no template NÃO apaga o que o vendedor já escreveu"
+   },
+   {
+    "file": "src/lib/quotes/__tests__/applyTemplateToQuote.test.ts",
+    "name": "campos preenchidos são aplicados e relatados"
+   },
+   {
+    "file": "src/lib/quotes/__tests__/applyTemplateToQuote.test.ts",
+    "name": "conta os itens ignorados para a tela poder dizer quantos e por quê"
+   },
+   {
+    "file": "src/lib/quotes/__tests__/applyTemplateToQuote.test.ts",
+    "name": "template vazio aplica itens vazios e nada mais"
+   },
+   {
+    "file": "src/lib/quotes/__tests__/applyTemplateToQuote.test.ts",
+    "name": "items não-array no banco não derruba a aplicação"
+   },
+   {
     "file": "src/lib/quotes/__tests__/collapsedItemsStorage.fuzz.test.ts",
     "name": "collapsedItemsStorage — fuzz/simulation suite"
    },
@@ -268408,6 +268510,66 @@
    {
     "file": "tests/components/QuoteBuilderSummaryColumn.staleReactivity.test.tsx",
     "name": "filtro "
+   },
+   {
+    "file": "tests/components/QuoteDraftRecovery.test.tsx",
+    "name": "QuoteDraftRecovery — não restaura por conta própria"
+   },
+   {
+    "file": "tests/components/QuoteDraftRecovery.test.tsx",
+    "name": "oferece, mas não aplica nada antes do clique do vendedor"
+   },
+   {
+    "file": "tests/components/QuoteDraftRecovery.test.tsx",
+    "name": "não oferece nada fora do modo de edição"
+   },
+   {
+    "file": "tests/components/QuoteDraftRecovery.test.tsx",
+    "name": "QuoteDraftRecovery — rascunho ilegível é DITO e NÃO apagado"
+   },
+   {
+    "file": "tests/components/QuoteDraftRecovery.test.tsx",
+    "name": "mostra o motivo real e preserva o arquivo para investigação"
+   },
+   {
+    "file": "tests/components/QuoteDraftRecovery.test.tsx",
+    "name": "envelope em formato desconhecido também é dito, com outro motivo"
+   },
+   {
+    "file": "tests/components/QuoteDraftRecovery.test.tsx",
+    "name": "QuoteDraftRecovery — idempotência do clique"
+   },
+   {
+    "file": "tests/components/QuoteDraftRecovery.test.tsx",
+    "name": "clique duplo em Restaurar aplica uma única vez"
+   },
+   {
+    "file": "tests/components/QuoteDraftRecovery.test.tsx",
+    "name": "QuoteDraftRecovery — um rascunho por orçamento"
+   },
+   {
+    "file": "tests/components/QuoteDraftRecovery.test.tsx",
+    "name": "não reaproveita o rascunho de outro orçamento"
+   },
+   {
+    "file": "tests/components/QuoteDraftRecovery.test.tsx",
+    "name": "QuoteDraftRecovery — montagem dupla (StrictMode)"
+   },
+   {
+    "file": "tests/components/QuoteDraftRecovery.test.tsx",
+    "name": "oferece uma única vez e não aplica nada sozinho"
+   },
+   {
+    "file": "tests/components/QuoteDraftRecovery.test.tsx",
+    "name": "QuoteDraftRecovery — desmontar não dispara ação"
+   },
+   {
+    "file": "tests/components/QuoteDraftRecovery.test.tsx",
+    "name": "desmontar com a oferta aberta não aplica nem apaga nada"
+   },
+   {
+    "file": "tests/components/QuoteDraftRecovery.test.tsx",
+    "name": "QuoteDraftRecovery — decisões próprias da main"
    },
    {
     "file": "tests/components/QuoteVersionHistory.nullDate.test.tsx",
@@ -350623,6 +350785,9 @@
      "rascunho": [
       "compara:src/components/quotes/QuoteDraftRecovery.tsx",
       "escreve:src/components/quotes/QuoteDraftRecovery.tsx"
+     ],
+     "amount": [
+      "escreve:src/lib/quotes/applyTemplateToQuote.ts"
      ],
      "fosco": [
       "escreve:src/types/infrastructure/promobrind.ts"
@@ -451899,6 +452064,23 @@
     }
    ]
   },
+  "src/components/quotes/QuoteTemplateSelector.tsx": {
+   "path": "src/components/quotes/QuoteTemplateSelector.tsx",
+   "lines": 130,
+   "exports": [
+    "function QuoteTemplateSelector"
+   ],
+   "errors": [
+    "Nada foi aplicado"
+   ],
+   "calc_fns": [
+    {
+     "name": "aplicar",
+     "params": "template: QuoteTemplate",
+     "body": "const r = applyTemplateToQuote(template, s); setListaAberta(false); setAConfirmar(null); if (r.itensAplicados === 0 && r.camposAplicados.length === 0) { toast.warning('Nada foi aplicado', { description: r.itensIgnorados > 0 ? `Os ${r.itensIgnorados} itens deste template não têm produto vinculado, então não podem entrar no orçamento.` : 'Este template está vazio.', }); return; } const partes = [ `${r.itensAplicados} item(ns)`, ...r.camposAplicados.filter((c) => c !== 'itens'), ]; toast.success('T …"
+    }
+   ]
+  },
   "src/components/quotes/QuoteTemplatesList.tsx": {
    "path": "src/components/quotes/QuoteTemplatesList.tsx",
    "lines": 408,
@@ -478040,6 +478222,35 @@
     "200 produtos: sort estável — nenhum out-of-stock antes de in-stock"
    ]
   },
+  "src/lib/quotes/applyTemplateToQuote.ts": {
+   "path": "src/lib/quotes/applyTemplateToQuote.ts",
+   "lines": 173,
+   "exports": [
+    "interface ApplyTemplateTarget",
+    "interface ApplyTemplateResult",
+    "function fromTemplateItems",
+    "function applyTemplateToQuote"
+   ],
+   "status_values": [
+    {
+     "field": "tipo",
+     "value": "amount",
+     "kind": "escreve"
+    }
+   ],
+   "rule_comments": [
+    "* DECISÕES DE NEGÓCIO, explícitas porque mudam o que o vendedor vê:",
+    "4. O desconto é aplicado e passa pela validação de limite do vendedor que já",
+    "porque é a forma que o limite do vendedor usa."
+   ],
+   "calc_fns": [
+    {
+     "name": "applyTemplateToQuote",
+     "params": "template: QuoteTemplate, s: ApplyTemplateTarget,",
+     "body": "const doTemplate = Array.isArray(template.items) ? template.items : []; const itens = fromTemplateItems(doTemplate); s.setItems(itens); const camposAplicados: string[] = []; if (itens.length > 0) camposAplicados.push('itens'); // Decisão 4: percentual tem precedência quando os dois vêm preenchidos, // porque é a forma que o limite do vendedor usa. const percentual = numeroFinitoPositivo(template.discount_percent); const valor = numeroFinitoPositivo(template.discount_amount); if (percentual !== n …"
+    }
+   ]
+  },
   "src/lib/quotes/collapsedItemsStorage.ts": {
    "path": "src/lib/quotes/collapsedItemsStorage.ts",
    "lines": 110,
@@ -478285,6 +478496,34 @@
     }
    ],
    "doc": "SSOT do layout responsivo da lista de orçamentos. Esses valores são consumidos por: - `QuotesConfigurableList` (vars CSS `--quotes-row-h` e `--quotes-chrome-h`) - specs E2E (`e2e/helpers/quotes-layout.ts` reflete os mesmos números) `chromeHeight(viewportWidth)` retorna o espaço (px) reservado pelo h …"
+  },
+  "src/lib/quotes/__tests__/applyTemplateToQuote.test.ts": {
+   "path": "src/lib/quotes/__tests__/applyTemplateToQuote.test.ts",
+   "lines": 247,
+   "is_test": true,
+   "rule_comments": [
+    "item de template SEM `productId` não pode entrar no orçamento, porque"
+   ],
+   "doc": "Testes — applyTemplateToQuote (RESGATE: \"aplicar template ao orçamento\") O que estes casos travam, e por quê, está em src/lib/quotes/applyTemplateToQuote.ts (decisões 1 a 5). O mais importante: item de template SEM `productId` não pode entrar no orçamento, porque `QuoteItem.product_id` é obrigatório …",
+   "tests": [
+    "fromTemplateItems — item sem produto vinculado não entra",
+    "descarta item sem productId e NÃO inventa id",
+    "productId em branco também não vale",
+    "não define price_updated_at: o preço do template não é o do fornecedor",
+    "calcula subtotal e ordena pelo índice aplicado",
+    "quantidade e preço inválidos caem em defaults seguros, nunca NaN",
+    "personalização sem techniqueId é descartada; com id vira personalizations",
+    "é o inverso de toTemplateItems (ida e volta preserva o essencial)",
+    "applyTemplateToQuote — campos comerciais",
+    "percentual tem precedência sobre valor quando os dois vêm preenchidos",
+    "só valor em reais aplica como amount",
+    "template sem desconto não toca no desconto da tela",
+    "campo vazio no template NÃO apaga o que o vendedor já escreveu",
+    "campos preenchidos são aplicados e relatados",
+    "conta os itens ignorados para a tela poder dizer quantos e por quê",
+    "template vazio aplica itens vazios e nada mais",
+    "items não-array no banco não derruba a aplicação"
+   ]
   },
   "src/lib/quotes/__tests__/collapsedItemsStorage.fuzz.test.ts": {
    "path": "src/lib/quotes/__tests__/collapsedItemsStorage.fuzz.test.ts",
@@ -487087,7 +487326,7 @@
   },
   "src/pages/quotes/QuoteBuilderPage.tsx": {
    "path": "src/pages/quotes/QuoteBuilderPage.tsx",
-   "lines": 809,
+   "lines": 811,
    "exports": [
     "function QuoteBuilderPage"
    ],
@@ -487905,7 +488144,7 @@
   },
   "src/pages/quotes/components/QuoteBuilderNotesCard.tsx": {
    "path": "src/pages/quotes/components/QuoteBuilderNotesCard.tsx",
-   "lines": 87,
+   "lines": 99,
    "exports": [
     "function toTemplateItems",
     "function QuoteBuilderNotesCard"
@@ -523221,6 +523460,31 @@
     "filtro "
    ]
   },
+  "tests/components/QuoteDraftRecovery.test.tsx": {
+   "path": "tests/components/QuoteDraftRecovery.test.tsx",
+   "lines": 263,
+   "is_test": true,
+   "rule_comments": [
+    "* Item mínimo que passa pelo schema de recuperação (product_id + nome + números). */"
+   ],
+   "tests": [
+    "QuoteDraftRecovery — não restaura por conta própria",
+    "oferece, mas não aplica nada antes do clique do vendedor",
+    "não oferece nada fora do modo de edição",
+    "QuoteDraftRecovery — rascunho ilegível é DITO e NÃO apagado",
+    "mostra o motivo real e preserva o arquivo para investigação",
+    "envelope em formato desconhecido também é dito, com outro motivo",
+    "QuoteDraftRecovery — idempotência do clique",
+    "clique duplo em Restaurar aplica uma única vez",
+    "QuoteDraftRecovery — um rascunho por orçamento",
+    "não reaproveita o rascunho de outro orçamento",
+    "QuoteDraftRecovery — montagem dupla (StrictMode)",
+    "oferece uma única vez e não aplica nada sozinho",
+    "QuoteDraftRecovery — desmontar não dispara ação",
+    "desmontar com a oferta aberta não aplica nem apaga nada",
+    "QuoteDraftRecovery — decisões próprias da main"
+   ]
+  },
   "tests/components/QuoteVersionHistory.nullDate.test.tsx": {
    "path": "tests/components/QuoteVersionHistory.nullDate.test.tsx",
    "lines": 98,
@@ -545182,10 +545446,43 @@
   }
  },
  "git": {
-  "sha": "c1b158ceeb3c3b6063835786f99a2efc7d176f1a",
+  "sha": "ad0d7b138de433bb8cb2fde80d52f0388b2d562f",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "ad0d7b1",
+    "date": "2026-11-18",
+    "author": "adm01-debug",
+    "subject": "feat(quotes): template de orcamento volta a poder ser aplicado a um orcamento (#3824)",
+    "files": [
+     "src/components/quotes/QuoteTemplateSelector.tsx",
+     "src/lib/quotes/__tests__/applyTemplateToQuote.test.ts",
+     "src/lib/quotes/applyTemplateToQuote.ts",
+     "src/pages/quotes/QuoteBuilderPage.tsx",
+     "src/pages/quotes/components/QuoteBuilderNotesCard.tsx"
+    ]
+   },
+   {
+    "sha": "4c8f2cc",
+    "date": "2026-11-18",
+    "author": "adm01-debug",
+    "subject": "docs(resgate): preserva o unico texto da branch laughing-cori ausente da main (#3822)",
+    "files": [
+     "docs/agentes/resgates/sessao-261102/PENDENCIAS-261102.md",
+     "docs/agentes/resgates/sessao-261102/README.md",
+     "docs/agentes/resgates/sessao-261102/RELATORIO_CI-261102.md"
+    ]
+   },
+   {
+    "sha": "2e479e8",
+    "date": "2026-11-18",
+    "author": "adm01-debug",
+    "subject": "test(quotes): resgata a cobertura de comportamento do QuoteDraftRecovery (#3821)",
+    "files": [
+     "tests/components/QuoteDraftRecovery.test.tsx"
+    ]
+   },
    {
     "sha": "c1b158c",
     "date": "2026-11-18",
@@ -545505,39 +545802,15 @@
      "tests/pages/legacy-KitBuilder.partial-preservation.test.tsx",
      "tests/pages/legacy-QuoteBuilder.partial-preservation.test.tsx"
     ]
-   },
-   {
-    "sha": "d1a098a",
-    "date": "2026-11-17",
-    "author": "adm01-debug",
-    "subject": "fix(deps): move ferramentas de build para devDependencies (#3804)",
-    "files": [
-     "package-lock.json",
-     "package.json"
-    ]
-   },
-   {
-    "sha": "58c24f8",
-    "date": "2026-11-17",
-    "author": "adm01-debug",
-    "subject": "fix(ci): tolera o ReDoS do picomatch, que travava toda PR do repositorio (#3800)",
-    "files": [
-     "scripts/check-dependency-audit.mjs"
-    ]
-   },
-   {
-    "sha": "4250cde",
-    "date": "2026-11-17",
-    "author": "adm01-debug",
-    "subject": "test(products): resgata a cobertura de ciclo de vida de filtros e fornecedores (#3790)",
-    "files": [
-     "tests/hooks/useLegacyLintLifecycle.test.ts"
-    ]
    }
   ],
   "hot_files": [
    [
     "src/pages/quotes/QuoteBuilderPage.tsx",
+    3
+   ],
+   [
+    "src/pages/quotes/components/QuoteBuilderNotesCard.tsx",
     2
    ],
    [
@@ -545573,6 +545846,34 @@
     2
    ],
    [
+    "src/components/quotes/QuoteTemplateSelector.tsx",
+    1
+   ],
+   [
+    "src/lib/quotes/__tests__/applyTemplateToQuote.test.ts",
+    1
+   ],
+   [
+    "src/lib/quotes/applyTemplateToQuote.ts",
+    1
+   ],
+   [
+    "docs/agentes/resgates/sessao-261102/PENDENCIAS-261102.md",
+    1
+   ],
+   [
+    "docs/agentes/resgates/sessao-261102/README.md",
+    1
+   ],
+   [
+    "docs/agentes/resgates/sessao-261102/RELATORIO_CI-261102.md",
+    1
+   ],
+   [
+    "tests/components/QuoteDraftRecovery.test.tsx",
+    1
+   ],
+   [
     "src/pages/quotes/__tests__/helpers/jsxLayoutContract.ts",
     1
    ],
@@ -545582,38 +545883,6 @@
    ],
    [
     "src/pages/quotes/__tests__/quote-builder-page-parse.smoke.test.ts",
-    1
-   ],
-   [
-    "src/pages/quotes/__tests__/quote-builder-shipping-fob-pre-inline.contract.test.ts",
-    1
-   ],
-   [
-    "src/pages/quotes/__tests__/quote-builder-shipping-trigger-width.contract.test.ts",
-    1
-   ],
-   [
-    "e2e/quotes/no-templates.spec.ts",
-    1
-   ],
-   [
-    "e2e/quotes/templates.spec.ts",
-    1
-   ],
-   [
-    "src/components/cart/CartHealthChecklist.tsx",
-    1
-   ],
-   [
-    "src/components/cart/CartUtilComponents.tsx",
-    1
-   ],
-   [
-    "src/components/quotes/AdminTemplateDialogs.tsx",
-    1
-   ],
-   [
-    "src/components/quotes/AdminTemplatesManager.tsx",
     1
    ]
   ]

@@ -8,7 +8,7 @@
    "api/health.ts (1)"
   ],
   "componentes": [
-   "src/components (951)",
+   "src/components (952)",
    "src/pages (180)",
    "recovery/src-legacy (100)"
   ],
@@ -18,13 +18,13 @@
    "src/components (77)"
   ],
   "servicos_logica": [
-   "src/lib (233)",
+   "src/lib (234)",
    "src/utils (31)",
    "src/services (10)"
   ],
   "testes": [
-   "tests/ (1075)",
-   "co-localizado (__tests__) (682)",
+   "tests/ (1076)",
+   "co-localizado (__tests__) (683)",
    "e2e/ (625)"
   ],
   "edge_functions": "supabase/functions",
@@ -49,7 +49,7 @@
  },
  "barrels_index": 46,
  "extensao_componentes": [
-  ".tsx (1250)"
+  ".tsx (1251)"
  ],
  "alias_imports": {
   "e2e/": {},
@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "feat(quotes): template de orcamento volta a poder ser aplicado a um orcamento (#3824)",
+   "docs(resgate): preserva o unico texto da branch laughing-cori ausente da main (#3822)",
+   "test(quotes): resgata a cobertura de comportamento do QuoteDraftRecovery (#3821)",
    "fix(quotes): contratos de layout param de quebrar quando o prettier reordena classes (#3823)",
-   "feat(revert-3361): devolve os painéis do carrinho e as telas de template de orçamento (#3817)",
-   "fix(ci): Gate 0 passa a barrar qualquer project-ref não canônico em migration (#3806)",
-   "docs(resgate): preserva as 2 notas de sessao que so existiam em branch (#3803)",
-   "docs(resgate): prova byte a byte das 32 branches `salvo`, com recibo por branch — e a fila que ainda falta (#3801)"
+   "feat(revert-3361): devolve os painéis do carrinho e as telas de template de orçamento (#3817)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",

@@ -1411,6 +1411,7 @@
    "src/components/quotes/QuoteBuilderStepper.tsx",
    "src/components/quotes/QuoteBuilderSummaryColumn.tsx",
    "src/components/quotes/QuoteProductCustomization.tsx",
+   "src/components/quotes/QuoteTemplateSelector.tsx",
    "src/components/quotes/SaveAsTemplateButton.tsx",
    "src/components/seo/PageSEO.tsx",
    "src/components/ui/badge.tsx",
@@ -8860,6 +8861,14 @@
    "src/components/ui/textarea.tsx",
    "src/hooks/quotes/useQuoteTemplates.ts"
   ],
+  "src/components/quotes/QuoteTemplateSelector.tsx": [
+   "src/components/quotes/QuoteTemplatesList.tsx",
+   "src/components/ui/alert-dialog.tsx",
+   "src/components/ui/button.tsx",
+   "src/components/ui/dialog.tsx",
+   "src/hooks/quotes/useQuoteTemplates.ts",
+   "src/lib/quotes/applyTemplateToQuote.ts"
+  ],
   "src/components/quotes/QuoteTemplatesList.tsx": [
    "src/components/ui/alert-dialog.tsx",
    "src/components/ui/badge.tsx",
@@ -12258,6 +12267,10 @@
   "src/lib/quote-status-config.ts": [
    "src/types/quote.ts"
   ],
+  "src/lib/quotes/applyTemplateToQuote.ts": [
+   "src/hooks/quotes/quoteTypes.ts",
+   "src/hooks/quotes/useQuoteTemplates.ts"
+  ],
   "src/lib/quotes/personalizationSummary.ts": [
    "src/lib/customization/format-engraving-title.ts"
   ],
@@ -14295,6 +14308,7 @@
    "src/components/quotes/QuoteBuilderSummaryColumn.tsx",
    "src/components/quotes/QuoteConcurrencyAlert.tsx",
    "src/components/quotes/QuoteItemEditorSheet.tsx",
+   "src/components/quotes/QuoteTemplateSelector.tsx",
    "src/components/seo/PageSEO.tsx",
    "src/components/ui/button.tsx",
    "src/components/ui/calendar.tsx",

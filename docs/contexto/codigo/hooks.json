@@ -12304,19 +12304,21 @@
     "useToast"
    ],
    "canais_realtime": [],
-   "usado_por": 9,
+   "usado_por": 11,
    "usado_por_arquivos": [
     "src/components/quotes/AdminTemplatesManager.tsx",
     "src/components/quotes/QuoteTemplateForm.tsx",
+    "src/components/quotes/QuoteTemplateSelector.tsx",
     "src/components/quotes/QuoteTemplatesList.tsx",
     "src/components/quotes/SaveAsTemplateButton.tsx",
     "src/components/quotes/admin-templates/TemplateGridView.tsx",
     "src/components/quotes/admin-templates/TemplateTableView.tsx",
+    "src/lib/quotes/applyTemplateToQuote.ts",
     "src/pages/quotes/QuoteTemplatesPage.tsx",
     "src/pages/quotes/components/QuoteBuilderNotesCard.tsx",
     "src/utils/templateExport.ts"
    ],
-   "coberto_por_testes": 3
+   "coberto_por_testes": 4
   },
   {
    "arquivo": "src/hooks/quotes/useQuoteVersions.ts",
