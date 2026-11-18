@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { FavoritesSortBar, type FavoritesSort } from './FavoritesSortBar';
 import { FavoritesHeatmap } from './FavoritesHeatmap';
 import { FavoritePresentationLauncher } from './FavoritePresentationLauncher';
+import { ExportFavoritesButton } from './ExportFavoritesButton';
 import { formatCurrency } from '@/lib/format';
 import type { FavoriteList, FavoriteListItem } from '@/hooks/favorites';
 import type { Product } from '@/types/product-catalog';
@@ -36,7 +37,7 @@ export function FavoritesViewHeader({
   onTogglePriceDrops,
   priceDropCount,
   products = [],
-  rawItems: _rawItems,
+  rawItems,
 }: Props) {
   const navigate = useNavigate();
   // O modo apresentacao vive aqui (e nao na pagina) porque FavoritesPage ja esta
@@ -135,6 +136,10 @@ export function FavoritesViewHeader({
               <Monitor className="h-3.5 w-3.5" />
               Apresentar lista
             </Button>
+            {/* RESGATE: exportar a lista em CSV/JSON/PDF. O botao existia aqui e foi
+                removido pelo bot do Lovable sem substituto; `rawItems` continuava
+                chegando nesta tela e sendo descartado. */}
+            <ExportFavoritesButton products={products} rawItems={rawItems} listName={name} />
             <div className="text-xs text-muted-foreground">
               Valor potencial:{' '}
               <span className="font-semibold text-foreground">
