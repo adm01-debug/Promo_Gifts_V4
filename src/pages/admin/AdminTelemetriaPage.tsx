@@ -95,9 +95,9 @@ const AppHealthDashboard = lazy(() =>
     default: m.AppHealthDashboard,
   })),
 );
-const EdgeInvokeLivePanel = lazy(() =>
-  import('@/components/admin/telemetry/EdgeInvokeLivePanel').then((m) => ({
-    default: m.EdgeInvokeLivePanel,
+const LiveSurfacesSection = lazy(() =>
+  import('@/components/admin/telemetry/LiveSurfacesSection').then((m) => ({
+    default: m.LiveSurfacesSection,
   })),
 );
 const QuoteBuilderHandoffCard = lazy(() =>
@@ -236,12 +236,10 @@ export default function AdminTelemetriaPage() {
           </Suspense>
         </SectionErrorBoundary>
 
-        {/* Onda 21 — Painel live in-memory da superfície invokeEdgeSafe (sessão atual) */}
-        <SectionErrorBoundary section="telemetry.EdgeInvokeLivePanel" label="edge invokes ao vivo">
-          <Suspense fallback={<CardSkeleton height={360} label="Carregando edge invokes live" />}>
-            <EdgeInvokeLivePanel />
-          </Suspense>
-        </SectionErrorBoundary>
+        {/* Painéis ao vivo (invokeEdgeSafe + bridges) — ver LiveSurfacesSection */}
+        <Suspense fallback={<CardSkeleton height={360} label="Carregando painéis ao vivo" />}>
+          <LiveSurfacesSection />
+        </Suspense>
 
         {/* Guardrail automático: interrompe regressões antes que afetem usuários */}
         <SectionErrorBoundary
