@@ -38,7 +38,7 @@ const item: QuoteItem = {
   ],
 };
 
-function renderCard(items: QuoteItem[]) {
+function renderCard(items: QuoteItem[], usarTemplate?: React.ReactNode) {
   return render(
     <QuoteBuilderNotesCard
       notes=""
@@ -46,11 +46,23 @@ function renderCard(items: QuoteItem[]) {
       items={items}
       discountType="percent"
       discountValue={5}
+      usarTemplate={usarTemplate}
     />,
   );
 }
 
 describe('QuoteBuilderNotesCard', () => {
+  // A acao "Usar template" (QuoteTemplateSelector) entra por slot: o card e o
+  // unico ponto do construtor que a monta (QuoteBuilderPage.tsx:693). Sem este
+  // caso, remover o slot passaria despercebido — foi exatamente o que aconteceu
+  // com o guarda e2e que ainda afirmava que o botao nao existia.
+  it('monta a acao "Usar template" mesmo com o orcamento vazio', () => {
+    renderCard([], <button data-testid="quote-use-template">Usar template</button>);
+    expect(screen.getByTestId('quote-use-template')).toBeInTheDocument();
+    // Com zero itens nao ha o que salvar: so a acao de usar aparece.
+    expect(screen.queryByRole('button', { name: /salvar como template/i })).toBeNull();
+  });
+
   it('oferece "Salvar como Template" quando o orçamento tem itens', () => {
     renderCard([item]);
     expect(screen.getByTestId('quote-notes-input')).toBeInTheDocument();
