@@ -45,7 +45,8 @@ Deno.test("inspectInsertResult: primitive payload", () => {
 Deno.test("inspectInsertResult: preview is truncated for huge payloads", () => {
   const big = Array.from({ length: 1000 }, (_, i) => ({ id: i, big: "x".repeat(50) }));
   const d = inspectInsertResult(big);
-  assert(d.preview.endsWith("…"), "preview should be truncated with ellipsis");
+  // Contrato real: sufixo de truncagem é "..." ASCII (index.ts:259), não "…" U+2026.
+  assert(d.preview.endsWith("..."), "preview should be truncated with ellipsis");
 });
 
 Deno.test("logInsertResultIfAnomalous: returns false for rows", () => {
