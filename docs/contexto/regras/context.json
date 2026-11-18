@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "48c1e5d9522243256e5573f478dd1bc3e23727de",
+  "sha": "d3174f9755d87eb0cd0883cd8622104d0dec1533",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-18 21:01 UTC",
-  "files_total": 10883,
-  "code_files": 8908,
-  "code_lines": 1262825
+  "generated_at": "2026-11-18 21:19 UTC",
+  "files_total": 10884,
+  "code_files": 8909,
+  "code_lines": 1262898
  },
  "version": "1.3.2",
- "facts_hash": "473c0492ec395575",
+ "facts_hash": "6d77cf0bf9b1bfc6",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -1120,7 +1120,7 @@
   "package_manager": "npm",
   "languages": {
    ".sql": 3440,
-   ".ts": 3039,
+   ".ts": 3040,
    ".tsx": 1964,
    ".mjs": 450,
    ".py": 15,
@@ -150495,7 +150495,7 @@
   {
    "module": "src/pages",
    "files": 367,
-   "lines": 84527,
+   "lines": 84547,
    "tables": [
     "ai_usage_events",
     "bot_detection_log",
@@ -150910,8 +150910,8 @@
   },
   {
    "module": "src/tests",
-   "files": 33,
-   "lines": 5143,
+   "files": 34,
+   "lines": 5196,
    "tables": [
     "products",
     "v_products_public",
@@ -150930,6 +150930,7 @@
     "@testing-library/react",
     "@testing-library/user-event",
     "fs",
+    "node:fs",
     "path",
     "react",
     "react-helmet-async",
@@ -150976,6 +150977,7 @@
     "src/tests/ScenarioSimulation.test.ts",
     "src/tests/SidebarReorganized.test.tsx",
     "src/tests/ThemeRuntime.test.tsx",
+    "src/tests/orphan-mounts.test.ts",
     "src/tests/quotePersistence.test.ts",
     "src/tests/resolveColorStock.colorFallback.test.ts",
     "src/tests/skeleton-coverage.test.ts",
@@ -261508,6 +261510,26 @@
    {
     "file": "src/tests/ThemeRuntime.test.tsx",
     "name": "should return correct fallback shape when context is missing"
+   },
+   {
+    "file": "src/tests/orphan-mounts.test.ts",
+    "name": "componentes prontos continuam montados"
+   },
+   {
+    "file": "src/tests/orphan-mounts.test.ts",
+    "name": "a página de BI monta o botão de dossiê em PDF ao lado do resumo executivo"
+   },
+   {
+    "file": "src/tests/orphan-mounts.test.ts",
+    "name": "/estoque monta o painel preditivo de ruptura"
+   },
+   {
+    "file": "src/tests/orphan-mounts.test.ts",
+    "name": "a flag que promete o painel de ruptura continua ligada"
+   },
+   {
+    "file": "src/tests/orphan-mounts.test.ts",
+    "name": "o invalidateQueries de ruptura e o painel moram na mesma página"
    },
    {
     "file": "src/tests/quotePersistence.test.ts",
@@ -483757,7 +483779,7 @@
   },
   "src/pages/admin/StockDashboardPage.tsx": {
    "path": "src/pages/admin/StockDashboardPage.tsx",
-   "lines": 36,
+   "lines": 45,
    "exports": [
     "function StockDashboardPage"
    ]
@@ -484858,7 +484880,7 @@
   },
   "src/pages/bi/BusinessIntelligencePage.tsx": {
    "path": "src/pages/bi/BusinessIntelligencePage.tsx",
-   "lines": 390,
+   "lines": 401,
    "exports": [
     "function BusinessIntelligencePage"
    ],
@@ -493402,6 +493424,18 @@
     "should not crash when useTheme is used outside of ThemeProvider",
     "should return isFallback: true when context is missing",
     "should return correct fallback shape when context is missing"
+   ]
+  },
+  "src/tests/orphan-mounts.test.ts": {
+   "path": "src/tests/orphan-mounts.test.ts",
+   "lines": 53,
+   "is_test": true,
+   "tests": [
+    "componentes prontos continuam montados",
+    "a página de BI monta o botão de dossiê em PDF ao lado do resumo executivo",
+    "/estoque monta o painel preditivo de ruptura",
+    "a flag que promete o painel de ruptura continua ligada",
+    "o invalidateQueries de ruptura e o painel moram na mesma página"
    ]
   },
   "src/tests/quotePersistence.test.ts": {
@@ -547352,10 +547386,21 @@
   }
  },
  "git": {
-  "sha": "48c1e5d9522243256e5573f478dd1bc3e23727de",
+  "sha": "d3174f9755d87eb0cd0883cd8622104d0dec1533",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "d3174f9",
+    "date": "2026-11-18",
+    "author": "adm01-debug",
+    "subject": "feat(pages): monta o dossie BI e o painel de ruptura, prontos e nunca exibidos (#3850)",
+    "files": [
+     "src/pages/admin/StockDashboardPage.tsx",
+     "src/pages/bi/BusinessIntelligencePage.tsx",
+     "src/tests/orphan-mounts.test.ts"
+    ]
+   },
    {
     "sha": "48c1e5d",
     "date": "2026-11-18",
@@ -547704,19 +547749,6 @@
     "files": [
      "tests/components/QuoteDraftRecovery.test.tsx"
     ]
-   },
-   {
-    "sha": "c1b158c",
-    "date": "2026-11-18",
-    "author": "adm01-debug",
-    "subject": "fix(quotes): contratos de layout param de quebrar quando o prettier reordena classes (#3823)",
-    "files": [
-     "src/pages/quotes/__tests__/helpers/jsxLayoutContract.ts",
-     "src/pages/quotes/__tests__/quote-builder-delivery-trigger-width.contract.test.ts",
-     "src/pages/quotes/__tests__/quote-builder-page-parse.smoke.test.ts",
-     "src/pages/quotes/__tests__/quote-builder-shipping-fob-pre-inline.contract.test.ts",
-     "src/pages/quotes/__tests__/quote-builder-shipping-trigger-width.contract.test.ts"
-    ]
    }
   ],
   "hot_files": [
@@ -547753,6 +547785,18 @@
     2
    ],
    [
+    "src/pages/admin/StockDashboardPage.tsx",
+    1
+   ],
+   [
+    "src/pages/bi/BusinessIntelligencePage.tsx",
+    1
+   ],
+   [
+    "src/tests/orphan-mounts.test.ts",
+    1
+   ],
+   [
     "src/components/admin/telemetry/PlatformFailureAlertBanner.tsx",
     1
    ],
@@ -547786,18 +547830,6 @@
    ],
    [
     "src/hooks/quotes/quoteDraftApply.ts",
-    1
-   ],
-   [
-    "src/pages/quotes/__tests__/quote-builder-autosave-fields.contract.test.ts",
-    1
-   ],
-   [
-    "e2e/carrinhos/sidebar-no-legacy-labels.spec.ts",
-    1
-   ],
-   [
-    "src/components/common/spotlight/SpotlightItems.ts",
     1
    ]
   ]

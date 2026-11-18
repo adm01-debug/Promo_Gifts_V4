@@ -3611,7 +3611,7 @@
    "chamada_por_edges": [],
    "chamada_por_sql_ou_cron": false,
    "orfa": true,
-   "testes": 65
+   "testes": 66
   },
   {
    "nome": "trends-insights",

@@ -5,13 +5,13 @@
   "vitest",
   "playwright"
  ],
- "total": 2604,
+ "total": 2605,
  "por_tipo": {
   "contrato": 67,
   "e2e": 677,
   "pytest": 5,
   "qa": 17,
-  "unit": 1838
+  "unit": 1839
  },
  "onde_ficam": [
   {
@@ -28,7 +28,7 @@
   },
   {
    "padrao": "co-localizado (*.test)",
-   "arquivos": 152
+   "arquivos": 153
   },
   {
    "padrao": "outro",
@@ -11895,6 +11895,13 @@
     "src/contexts/ThemeContext.tsx"
    ],
    "casos": 1
+  },
+  {
+   "arquivo": "src/tests/orphan-mounts.test.ts",
+   "tipo": "unit",
+   "linhas": 53,
+   "testa": [],
+   "casos": 4
   },
   {
    "arquivo": "src/tests/PR1318.exhaustive.test.ts",

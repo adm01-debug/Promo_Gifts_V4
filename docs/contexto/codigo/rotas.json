@@ -17840,6 +17840,7 @@
     "useReplenishmentsWithDetails",
     "useRuptureAlerts",
     "useRuptureHorizon",
+    "useRuptureKpiSummary",
     "useSalesGoals",
     "useSalesHistory",
     "useSalesHistoryMacro",
@@ -17884,6 +17885,7 @@
     "useSupplierReliabilityClientSide",
     "useSupplierReliabilityHistory",
     "useSupplierReliabilityServer",
+    "useSupplierRiskBreakdown",
     "useSupplierSales",
     "useSupplierSalesRanking",
     "useSupplierTrust",
@@ -18157,6 +18159,7 @@
     "useReplenishmentsWithDetails",
     "useRuptureAlerts",
     "useRuptureHorizon",
+    "useRuptureKpiSummary",
     "useSalesGoals",
     "useSalesHistory",
     "useSalesHistoryMacro",
@@ -18197,6 +18200,7 @@
     "useSupplierReliability",
     "useSupplierReliabilityHistory",
     "useSupplierReliabilityServer",
+    "useSupplierRiskBreakdown",
     "useSupplierSales",
     "useSupplierSalesRanking",
     "useSupplierTrust",
@@ -18344,7 +18348,7 @@
     "supervisor",
     "table"
    ],
-   "arquivos_puxados": 507
+   "arquivos_puxados": 515
   },
   {
    "protegida": false,
@@ -19800,6 +19804,7 @@
     "useAuthMFA",
     "useAvailableSizes",
     "useBICategoryFocus",
+    "useBIDossierExport",
     "useBadgeVisibilityStore",
     "useCallback",
     "useCartTemplates",
@@ -20106,6 +20111,7 @@
     "useAuthMFA",
     "useAvailableSizes",
     "useBICategoryFocus",
+    "useBIDossierExport",
     "useBadgeVisibilityStore",
     "useCartTemplates",
     "useCatalogFiltering",
@@ -20465,7 +20471,7 @@
     "supervisor",
     "user"
    ],
-   "arquivos_puxados": 458
+   "arquivos_puxados": 461
   },
   {
    "protegida": false,

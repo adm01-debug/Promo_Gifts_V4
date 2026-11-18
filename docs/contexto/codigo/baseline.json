@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "48c1e5d9522243256e5573f478dd1bc3e23727de",
+  "commit": "d3174f9755d87eb0cd0883cd8622104d0dec1533",
   "branch": "main",
-  "data_commit": "2026-11-18T18:00:14-03:00",
+  "data_commit": "2026-11-18T18:18:13-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "d3174f97",
+    "data": "2026-11-18",
+    "assunto": "feat(pages): monta o dossie BI e o painel de ruptura, prontos e nunca exibidos (#3850)"
+   },
    {
     "sha": "48c1e5d9",
     "data": "2026-11-18",
@@ -126,14 +131,9 @@
     "sha": "99844ab8",
     "data": "2026-11-18",
     "assunto": "fix(security): resgata o endurecimento de sanitizeUrl contra SSRF e credencial embutida (#3825)"
-   },
-   {
-    "sha": "f52a5d31",
-    "data": "2026-11-18",
-    "assunto": "fix(resgate): corrige os defeitos de produção medidos no item 6 do resgate (#3820)"
    }
   ],
-  "arquivos_mudados_7d": 1497,
+  "arquivos_mudados_7d": 1499,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -181,7 +181,7 @@
    },
    {
     "pasta": "src/pages/admin",
-    "mudancas": 312
+    "mudancas": 313
    },
    {
     "pasta": "src/pages/quotes",
@@ -258,10 +258,6 @@
     "mudancas": 13
    },
    {
-    "arquivo": ".github/workflows/replenishment-quality.yml",
-    "mudancas": 12
-   },
-   {
     "arquivo": "auditoria-supabase/RELATORIO_AUDITORIA_SUPABASE.md",
     "mudancas": 12
    },
@@ -286,6 +282,10 @@
     "mudancas": 11
    },
    {
+    "arquivo": ".github/workflows/replenishment-quality.yml",
+    "mudancas": 11
+   },
+   {
     "arquivo": ".github/workflows/schema-snapshot-export.yml",
     "mudancas": 11
    },
@@ -301,19 +301,19 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 516
+    "commits": 515
    },
    {
     "autor": "Claude",
-    "commits": 122
+    "commits": 121
    },
    {
     "autor": "Joaquim Ataides",
-    "commits": 92
+    "commits": 91
    },
    {
     "autor": "github-actions[bot]",
-    "commits": 25
+    "commits": 24
    },
    {
     "autor": "dependabot[bot]",
@@ -322,9 +322,9 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 10955,
-  "arquivos_codigo": 5469,
-  "linhas_codigo": 1042093,
+  "arquivos_total": 10956,
+  "arquivos_codigo": 5470,
+  "linhas_codigo": 1042166,
   "rotas": 139,
   "rotas_http_backend": 13,
   "vistas_por_id": 0,
@@ -336,7 +336,7 @@
   "tabelas": 527,
   "migrations": 3099,
   "cron_jobs": 122,
-  "testes": 2604,
+  "testes": 2605,
   "workflows": 88,
   "scripts": 283,
   "docs_md": 1481
@@ -1940,7 +1940,7 @@
   },
   "src/pages": {
    "arquivos": 367,
-   "linhas": 84527
+   "linhas": 84547
   },
   "src/routes": {
    "arquivos": 15,
@@ -1959,8 +1959,8 @@
    "linhas": 366
   },
   "src/tests": {
-   "arquivos": 33,
-   "linhas": 5143
+   "arquivos": 34,
+   "linhas": 5196
   },
   "src/types": {
    "arquivos": 26,
@@ -3272,7 +3272,6 @@
    "src/components/admin/ProductPersonalizationManager.tsx",
    "src/components/admin/products/CategorySelect.tsx",
    "src/components/admin/SellerDiscountLimitsPanel.tsx",
-   "src/components/bi/ExportDossierButton.tsx",
    "src/components/BridgeStatusBanner.tsx",
    "src/components/cart/BundleSuggestionCard.tsx",
    "src/components/common/BulkActionsBar.tsx",
@@ -3294,7 +3293,6 @@
    "src/components/intelligence/SegmentAnalysis.tsx",
    "src/components/intelligence/TopClients.tsx",
    "src/components/inventory/HealthScoreInfoDialog.tsx",
-   "src/components/inventory/risk/RupturePanelEma.tsx",
    "src/components/inventory/risk/WhatIfPanel.tsx",
    "src/components/inventory/StockCategoryTreeSelect.tsx",
    "src/components/inventory/StockHeroRiskBanner.tsx",

@@ -2,7 +2,7 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "nos": 2865,
- "arestas": 11305,
+ "arestas": 11307,
  "hubs": [
   {
    "arquivo": "src/lib/utils.ts",
@@ -594,7 +594,6 @@
   "src/components/admin/products/CategorySelect.tsx",
   "src/components/admin/products/kit-components/index.ts",
   "src/components/audit/index.ts",
-  "src/components/bi/ExportDossierButton.tsx",
   "src/components/cart/BundleSuggestionCard.tsx",
   "src/components/categories/index.ts",
   "src/components/common/BulkActionsBar.tsx",
@@ -618,7 +617,8 @@
   "src/components/goals/SalesGoalsCard.tsx",
   "src/components/intelligence/SegmentAnalysis.tsx",
   "src/components/intelligence/TopClients.tsx",
-  "src/components/inventory/HealthScoreInfoDialog.tsx"
+  "src/components/inventory/HealthScoreInfoDialog.tsx",
+  "src/components/inventory/StockCategoryTreeSelect.tsx"
  ],
  "modulos_mais_acoplados": [
   {

@@ -13132,6 +13132,7 @@
   ],
   "src/pages/admin/StockDashboardPage.tsx": [
    "src/components/inventory/StockDashboard.tsx",
+   "src/components/inventory/risk/RupturePanelEma.tsx",
    "src/components/seo/PageSEO.tsx"
   ],
   "src/pages/admin/StorageTestPage.tsx": [
@@ -13348,6 +13349,7 @@
    "src/components/bi/EmpiricalRecommendations.tsx",
    "src/components/bi/EnrichedOrdersTimeline.tsx",
    "src/components/bi/ExecutiveSummaryButton.tsx",
+   "src/components/bi/ExportDossierButton.tsx",
    "src/components/bi/IndustryTrendingProducts.tsx",
    "src/components/errors/SectionErrorBoundary.tsx",
    "src/components/seo/PageSEO.tsx",

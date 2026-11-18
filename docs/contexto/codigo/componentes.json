@@ -2,7 +2,7 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "total": 1261,
- "orfaos": 161,
+ "orfaos": 159,
  "nomes_duplicados": {
   "AdminTemplatesManager": [
    "recovery/src-legacy/src/components/quotes/AdminTemplatesManager.tsx",
@@ -6625,8 +6625,8 @@
    ],
    "tabelas": [],
    "edges": [],
-   "usado_por": 0,
-   "orfao": true
+   "usado_por": 1,
+   "orfao": false
   },
   {
    "arquivo": "src/components/bi/IndustryTrendingProducts.tsx",
@@ -9576,8 +9576,8 @@
    ],
    "tabelas": [],
    "edges": [],
-   "usado_por": 0,
-   "orfao": true
+   "usado_por": 1,
+   "orfao": false
   },
   {
    "arquivo": "src/components/inventory/risk/RuptureSparkline.tsx",
@@ -18353,7 +18353,7 @@
     "StockDashboardPage"
    ],
    "export_default": "StockDashboardPage",
-   "linhas": 36,
+   "linhas": 45,
    "dominio": "pages/admin",
    "hooks_locais": [],
    "tabelas": [],
@@ -18558,7 +18558,7 @@
     "BusinessIntelligencePage"
    ],
    "export_default": "BusinessIntelligencePage",
-   "linhas": 390,
+   "linhas": 401,
    "dominio": "pages/bi",
    "hooks_locais": [
     "useBICategoryFocus",
