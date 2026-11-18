@@ -67,7 +67,10 @@ describe('Deploy Gates E007/E008 — credenciais e auditoria live', () => {
 
     const forkPr = runGateFinal({ eventName: 'pull_request', isFork: true, e2eResult: 'skipped' });
     expect(forkPr.status).toBe(0);
-    expect(forkPr.stdout).toContain('PR de fork sem secrets E2E');
+    // O #3700 ampliou o aviso para cobrir tambem o Dependabot, que o GitHub
+    // nunca entrega segredos (E59). O texto do workflow e a fonte da verdade:
+    // .github/workflows/deploy-gates.yml:1043.
+    expect(forkPr.stdout).toContain('PR de fork ou Dependabot sem secrets E2E');
   });
 
   it('mantém o E23 fora da agregação bloqueante do Gate Final', () => {
