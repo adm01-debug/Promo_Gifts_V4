@@ -94,10 +94,17 @@ describe('Integridade do Sistema de Skeletons', () => {
       'src/pages/tools/DropboxBrowserPage.tsx',
       'src/pages/kit-builder/KitLibraryPage.tsx',
       'src/components/common/LoadingOverlay.tsx',
-      // Delega ao composite centralizado QuoteBuilderSkeleton (que importa @/components/ui/skeleton);
-      // o heurístico de substring casa o NOME do componente, não um uso de Skeleton cru.
-      'src/pages/quotes/QuoteBuilderPage.tsx',
     ];
+
+    // Delegação: o arquivo não desenha skeleton nenhum, só MONTA um composite
+    // importado de outro módulo (<QuoteBuilderSkeleton />, <CatalogGridSkeleton />,
+    // <SalesAssistantSkeleton />, <CardSkeleton />…). O heurístico de substring
+    // casa o NOME do componente, não um uso de Skeleton cru — e quem importa
+    // @/components/ui/skeleton é o módulo de origem, que esta mesma varredura
+    // confere. Sem esta regra, todo composite novo vira uma linha a mais na
+    // lista de exceções acima e o guarda se esvazia sozinho.
+    const DELEGA_PARA_COMPOSITE =
+      /import\s+(?:type\s+)?(?:\{[^}]*Skeleton[^}]*\}|\w*Skeleton\w*)\s+from\s+['"](?:\.{1,2}\/|@\/)/;
 
     const filesToCheck = findFiles('src', ['.tsx'], excludeDirs)
       .filter((f) => !excludeFiles.some((ex) => f.endsWith(ex)))
@@ -119,7 +126,8 @@ describe('Integridade do Sistema de Skeletons', () => {
       }
       const hasValidImport =
         content.includes('@/components/ui/skeleton') ||
-        content.includes('@/components/loading/ModernSkeletons');
+        content.includes('@/components/loading/ModernSkeletons') ||
+        DELEGA_PARA_COMPOSITE.test(content);
       expect(hasValidImport, `O arquivo ${file} usa Skeletons sem importação centralizada.`).toBe(
         true,
       );
