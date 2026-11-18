@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "f52a5d31fe005af919d13fbe97fe950d9b605093",
+  "commit": "99844ab8b22b48495d355ff62b5d68f62eba77ef",
   "branch": "main",
-  "data_commit": "2026-11-18T12:16:58-03:00",
+  "data_commit": "2026-11-18T12:32:24-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "99844ab8",
+    "data": "2026-11-18",
+    "assunto": "fix(security): resgata o endurecimento de sanitizeUrl contra SSRF e credencial embutida (#3825)"
+   },
    {
     "sha": "f52a5d31",
     "data": "2026-11-18",
@@ -126,14 +131,9 @@
     "sha": "bd48bc95",
     "data": "2026-11-17",
     "assunto": "test(kit): resgata a cobertura do montador de kit (#3796)"
-   },
-   {
-    "sha": "4700bff9",
-    "data": "2026-11-17",
-    "assunto": "feat(voz): comando de filtro aplica os critérios ditados no catálogo (#3813)"
    }
   ],
-  "arquivos_mudados_7d": 1482,
+  "arquivos_mudados_7d": 1488,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -203,7 +203,7 @@
    },
    {
     "arquivo": "RELATORIO_CI.md",
-    "mudancas": 52
+    "mudancas": 51
    },
    {
     "arquivo": "PENDENCIAS.md",
@@ -301,7 +301,7 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 539
+    "commits": 538
    },
    {
     "autor": "Claude",
@@ -322,9 +322,9 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 10918,
-  "arquivos_codigo": 5436,
-  "linhas_codigo": 1036918,
+  "arquivos_total": 10922,
+  "arquivos_codigo": 5440,
+  "linhas_codigo": 1037689,
   "rotas": 139,
   "rotas_http_backend": 13,
   "vistas_por_id": 0,
@@ -336,7 +336,7 @@
   "tabelas": 527,
   "migrations": 3099,
   "cron_jobs": 122,
-  "testes": 2586,
+  "testes": 2590,
   "workflows": 88,
   "scripts": 283,
   "docs_md": 1477
@@ -1927,8 +1927,8 @@
    "linhas": 66577
   },
   "src/lib": {
-   "arquivos": 347,
-   "linhas": 53533
+   "arquivos": 351,
+   "linhas": 54304
   },
   "src/logic": {
    "arquivos": 4,

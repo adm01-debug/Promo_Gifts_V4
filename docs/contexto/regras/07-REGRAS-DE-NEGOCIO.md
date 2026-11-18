@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.3.2 · commit `f52a5d31fe` · branch `main` · 2026-11-18 15:22 UTC
+> Gerado automaticamente por AI Context Sync v1.3.2 · commit `99844ab8b2` · branch `main` · 2026-11-18 15:34 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -4660,7 +4660,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
   ```
 - **validateBranding(branding: Partial<MagazineClientBranding> | null | undefined,)** — `src/lib/security/magazine-guard.ts`
   ```
-  if (!branding || typeof branding !== 'object') { return { isValid: false, errors: ['Configuração de branding inválida'], sanitized: {} }; } const errors: string[] = []; const sanitized: Partial<MagazineClientBranding> = {}; // clientLogoUrl: must be https:// URL or null if (branding.clientLogoUrl !== undefined) { const safe = sanitizeUrl(branding.clientLogoUrl, { httpsOnly: true }); if (branding.clientLogoUrl && !safe) { errors.push('URL do logo deve ser https://'); sanitized.clientLogoUrl = nul …
+  // RESGATE (PR #1726, F-005): array passa pelo teste `typeof x === 'object'`. if (!branding || typeof branding !== 'object' || Array.isArray(branding)) { return { isValid: false, errors: ['Configuração de branding inválida'], sanitized: {} }; } const errors: string[] = []; const sanitized: Partial<MagazineClientBranding> = {}; // clientLogoUrl: must be https:// URL or null if (branding.clientLogoUrl !== undefined) { const safe = sanitizeUrl(branding.clientLogoUrl, { httpsOnly: true }); if (brand …
   ```
 - **validateTitle(title: string | null | undefined)** — `src/lib/security/magazine-guard.ts`
   ```
@@ -6613,7 +6613,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `admin` | `supabase/migrations/20261112120500_fix_optimization_queue_rpcs_dev_access.sql` |
 | `anon` | `tests/edge-functions/live/_live-client.ts` |
 
-## K. Testes como especificação (22356 testes em 2263 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (22473 testes em 2267 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -6665,6 +6665,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `tests/components/search/VoiceSearchOverlay.test.tsx` | 52 | VoiceSearchOverlay · Rendering · renders when open · does not render when closed … |
 | `tests/e2e/tools-simulator.test.ts` | 51 | E2E Tools — Simulator Wizard · has 4 steps · starts at product · ends at summary … |
 | `tests/e2e/kit-builder-flow.test.ts` | 50 | Kit Builder E2E Flow - Box Selection · validates box selection is required before adding items · allows item addition after box selection · prevents proceeding to items step without box … |
+| `src/lib/security/__tests__/sanitize-ssrf.test.ts` | 47 | sanitizeUrl — CRIT-2 typeof guard · returns null for a number (truthy non-string) · returns null for an object · returns null for an array … |
 | `tests/components/TelemetryCharts.test.tsx` | 46 | TelemetryCharts - Rendering · returns null when no rows · renders chart titles when rows exist · renders bar chart for table distribution … |
 | `tests/unit/stock-chart-utils.test.ts` | 46 | seededRandom · returns a value in [0, 1) · is deterministic: same seed produces same result · different seeds produce different results (most of the time) … |
 | `tests/edge-functions/integration/freight-quest-webhook-simulation.test.ts` | 45 | webhook-inbound — happy path (v2 envelope) · aceita evento  · webhook-inbound — múltiplas fontes · aceita source= … |
@@ -6707,6 +6708,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `src/components/search/__tests__/searchStates.test.ts` | 34 | GlobalSearchPalette search-state conditions (BUG-GS-02 regression) · empty query (length 0) · shows idle state · does NOT show short-query hint … |
 | `src/lib/assistant/__tests__/buildReason.test.ts` | 34 | buildReason · com todos os sinais ligados, cita os sete na ordem do mais forte ao mais fraco · a ordem dos trechos acompanha ORDEM_DOS_SINAIS · só um sinal … |
 | `src/pages/magazine/__tests__/stepValidation.test.ts` | 34 | validateStep identity · bloqueia se título vazio · bloqueia se título apenas espaços · NÃO bloqueia se título preenchido … |
+| `src/lib/security/__tests__/sanitize-adversarial.test.ts` | 33 | sanitizeUrl — G1 WHATWG decimal IP normalisation · blocks http://2130706433 (decimal 127.0.0.1) · blocks http://2886729729 (decimal 172.16.0.1 — RFC1918) · blocks http://167772161 (decimal 10.0.0.1 — RFC1918) … |
 | `tests/components/kit-builder/FreightEstimator.test.tsx` | 33 | FreightEstimator — tabela transportadora (default) · peso zero → alerta de peso não informado visível · 0g → exibe peso 0.0kg · 1000g (1kg) → faixa ≤5kg = R$ 18,00 … |
 | `tests/edge-functions/integration/data-ops.test.ts` | 33 | external-db-bridge · SELECT com tabela válida → 200 + rows · SELECT com filtro WHERE → 200 · INSERT → 200 + inserted_id … |
 | `tests/scripts/check-conflict-ledger.test.mjs` | 33 | check-conflict-ledger: comportamento básico (sem bug) · sem GITHUB_BASE_REF/GITHUB_HEAD_REF, pula a verificação com exit 0 · sem commits de merge semântico, passa com exit 0 · commit merge(pr-N): sem atualizar o ledger + --gate => exit 1 … |
@@ -6787,6 +6789,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `src/lib/auth/__tests__/resolve-redirect-target.test.ts` | 24 | resolveRedirectTarget — precedência pós-login · 1️⃣ location.state.from vence todas as outras fontes · Google: state.from sobrescreve ?redirect e sessionStorage · E-mail/senha: state.from idem … |
 | `src/lib/customization/__tests__/format-engraving-title.test.ts` | 24 | formatEngravingTitle · prioriza nome_tabela quando disponível · usa techniqueName como fallback quando nome_tabela vazio · usa groupName como último fallback antes do default … |
 | `src/lib/edge/__tests__/invokeEdge-contracts.integration.test.ts` | 24 | invokeEdge contract — secrets-manager · cache_metrics: sucesso devolve envelope { ok, metrics } · reset_cache_metrics: 403 → error credential, data=null · erro embutido em envelope (200) é preservado para o caller … |
+| `src/lib/security/__tests__/magazine-guard-adversarial.test.ts` | 24 | validateBranding — G6 color key whitelist · drops unknown key  · drops unknown key  · drops unknown key  … |
 | `tests/fuzz/freight-quest-fuzzer.test.ts` | 24 | fuzz: injeções no campo event · SQL injection em event= · XSS em event= · fuzz: path traversal em campos de texto … |
 | `tests/hooks/useSupplierComparison.test.ts` | 24 | useSupplierComparison · should return null when no product is provided · should query by category name when the product has no category id · should pass undefined filters when the product has no category at all … |
 | `tests/lib/query-config-extended.test.ts` | 24 | CACHE_TIMES constants · VERY_STABLE is 24 hours · STABLE is 1 hour · TECNICAS is 30 min … |
@@ -6914,10 +6917,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `e2e/magazine/magazine-viewer.spec.ts` | 18 | Magazine viewer — atalhos de teclado · → avança página, ← volta, Home/End extremos · T abre sumário, ? abre ajuda, B marca página · Space em botão focado NÃO avança página (C2) … |
 | `e2e/quotes/quote-item-editor-sheet-header.spec.ts` | 18 | QuoteItemEditorSheet @ ${vp.name}px · DOM: botão Salvar presente e texto  · layout:  · a11y: foco entra no dialog e  … |
 | `src/components/inventory/__tests__/StockAlertsIndicator.test.tsx` | 18 | StockAlertsIndicator — trigger · mostra o sino com aria-label dedicado (distinto do sino de workspace) · exibe o total exato vindo dos contadores server-side · cap visual 99+ quando total > 99 … |
-| `src/components/layout/sidebar/__tests__/SidebarNavGroup.history.test.tsx` | 18 | SidebarNavGroup — back/forward (histórico real) preservam paridade entre os 3 itens · back: /carrinhos -> /orcamentos/novo, voltar reativa Carrinhos e desativa Novo Orçamento · forward: depois de voltar, avançar restaura o destaque de Novo Orçamento · back/forward atravessando os 3 itens mantém destaque correto a cada salto … |
-| `src/components/products/customization/__tests__/ConfigurationPanelV6.collapse.test.tsx` | 18 | ConfigurationPanelV6 — contrato de colapso · Grupo A — wrapper externo (contrato visual) · expandido: contém flex/flex-col/gap-4/p-4/transition-[gap]/motion-reduce · colapsado: contém gap-0 e NÃO contém gap-4 nem space-y-4 … |
-| `src/components/search/__tests__/searchCache.test.ts` | 18 | searchCache.set / searchCache.get · returns null for an unknown key · returns results immediately after set · is case-insensitive (normalized key) … |
-| … +1963 linhas — lista completa em `context.json` | | |
+| … +1967 linhas — lista completa em `context.json` | | |
 
 ## L. Eventos de webhook tratados (contratos com sistemas externos)
 
@@ -7385,4 +7385,4 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | Context providers must be imported synchronously (consumers render inside them) | `src/components/layout/MainLayout.tsx` |
 | para a qual não tem permissão. | `src/components/layout/sidebar/RestrictedRouteNotice.tsx` |
 | E-24: mesma regra dos dots/thumbnails do MagicUpResultPanel — modo NÃO-WRAP. | `src/components/magic-up/MagicUpVariationComparator.tsx` |
-| … +1345 linhas — lista completa em `context.json` | |
+| … +1346 linhas — lista completa em `context.json` | |

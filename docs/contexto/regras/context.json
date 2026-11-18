@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "f52a5d31fe005af919d13fbe97fe950d9b605093",
+  "sha": "99844ab8b22b48495d355ff62b5d68f62eba77ef",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-18 15:22 UTC",
-  "files_total": 10846,
-  "code_files": 8875,
-  "code_lines": 1257650
+  "generated_at": "2026-11-18 15:34 UTC",
+  "files_total": 10850,
+  "code_files": 8879,
+  "code_lines": 1258421
  },
  "version": "1.3.2",
- "facts_hash": "cc95d10bc3af07ce",
+ "facts_hash": "5132f87334a5f827",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -1120,7 +1120,7 @@
   "package_manager": "npm",
   "languages": {
    ".sql": 3440,
-   ".ts": 3024,
+   ".ts": 3028,
    ".tsx": 1946,
    ".mjs": 450,
    ".py": 15,
@@ -150267,8 +150267,8 @@
   },
   {
    "module": "src/lib",
-   "files": 348,
-   "lines": 53543,
+   "files": 352,
+   "lines": 54314,
    "tables": [
     "...",
     "companies",
@@ -174155,6 +174155,10 @@
    {
     "file": "src/lib/security/magazine-guard.ts",
     "text": "colors: each must be a valid CSS hex color"
+   },
+   {
+    "file": "src/lib/security/magazine-guard.ts",
+    "text": "RESGATE (PR #1726, MED-3): array ou primitivo em `colors` nao pode ser"
    },
    {
     "file": "src/lib/security/mfaChallengeDismissal.ts",
@@ -215204,7 +215208,7 @@
     "file": "src/lib/security/magazine-guard.ts",
     "name": "validateBranding",
     "params": "branding: Partial<MagazineClientBranding> | null | undefined,",
-    "body": "if (!branding || typeof branding !== 'object') { return { isValid: false, errors: ['Configuração de branding inválida'], sanitized: {} }; } const errors: string[] = []; const sanitized: Partial<MagazineClientBranding> = {}; // clientLogoUrl: must be https:// URL or null if (branding.clientLogoUrl !== undefined) { const safe = sanitizeUrl(branding.clientLogoUrl, { httpsOnly: true }); if (branding.clientLogoUrl && !safe) { errors.push('URL do logo deve ser https://'); sanitized.clientLogoUrl = nul …"
+    "body": "// RESGATE (PR #1726, F-005): array passa pelo teste `typeof x === 'object'`. if (!branding || typeof branding !== 'object' || Array.isArray(branding)) { return { isValid: false, errors: ['Configuração de branding inválida'], sanitized: {} }; } const errors: string[] = []; const sanitized: Partial<MagazineClientBranding> = {}; // clientLogoUrl: must be https:// URL or null if (branding.clientLogoUrl !== undefined) { const safe = sanitizeUrl(branding.clientLogoUrl, { httpsOnly: true }); if (brand …"
    },
    {
     "file": "src/lib/security/magazine-guard.ts",
@@ -252991,6 +252995,154 @@
     "name": "destino resolvido é sempre seguro em 500 combinações aleatórias"
    },
    {
+    "file": "src/lib/security/__tests__/magazine-guard-adversarial.test.ts",
+    "name": "validateBranding — G6 color key whitelist"
+   },
+   {
+    "file": "src/lib/security/__tests__/magazine-guard-adversarial.test.ts",
+    "name": "drops unknown key "
+   },
+   {
+    "file": "src/lib/security/__tests__/magazine-guard-adversarial.test.ts",
+    "name": "drops unknown key "
+   },
+   {
+    "file": "src/lib/security/__tests__/magazine-guard-adversarial.test.ts",
+    "name": "drops unknown key "
+   },
+   {
+    "file": "src/lib/security/__tests__/magazine-guard-adversarial.test.ts",
+    "name": "drops unknown key "
+   },
+   {
+    "file": "src/lib/security/__tests__/magazine-guard-adversarial.test.ts",
+    "name": "sanitized.colors has exactly the three expected keys"
+   },
+   {
+    "file": "src/lib/security/__tests__/magazine-guard-adversarial.test.ts",
+    "name": "sanitized.colors key count is exactly 3 even when input has 10 keys"
+   },
+   {
+    "file": "src/lib/security/__tests__/magazine-guard-adversarial.test.ts",
+    "name": "valid keys still have correct values after whitelist filter"
+   },
+   {
+    "file": "src/lib/security/__tests__/magazine-guard-adversarial.test.ts",
+    "name": "validateBranding — G7 colors null is isValid=true"
+   },
+   {
+    "file": "src/lib/security/__tests__/magazine-guard-adversarial.test.ts",
+    "name": "returns isValid=true when colors is null"
+   },
+   {
+    "file": "src/lib/security/__tests__/magazine-guard-adversarial.test.ts",
+    "name": "returns empty errors array when colors is null"
+   },
+   {
+    "file": "src/lib/security/__tests__/magazine-guard-adversarial.test.ts",
+    "name": "validateBranding — G8 SSRF in clientLogoUrl"
+   },
+   {
+    "file": "src/lib/security/__tests__/magazine-guard-adversarial.test.ts",
+    "name": "sanitizes clientLogoUrl with AWS metadata endpoint to null"
+   },
+   {
+    "file": "src/lib/security/__tests__/magazine-guard-adversarial.test.ts",
+    "name": "sanitizes clientLogoUrl with localhost to null"
+   },
+   {
+    "file": "src/lib/security/__tests__/magazine-guard-adversarial.test.ts",
+    "name": "sanitizes clientLogoUrl with 127.0.0.1 to null"
+   },
+   {
+    "file": "src/lib/security/__tests__/magazine-guard-adversarial.test.ts",
+    "name": "sanitizes clientLogoUrl with RFC1918 address to null"
+   },
+   {
+    "file": "src/lib/security/__tests__/magazine-guard-adversarial.test.ts",
+    "name": "sanitizes clientLogoUrl with IPv4-mapped IPv6 SSRF to null"
+   },
+   {
+    "file": "src/lib/security/__tests__/magazine-guard-adversarial.test.ts",
+    "name": "sanitizes http:// clientLogoUrl to null (httpsOnly enforced)"
+   },
+   {
+    "file": "src/lib/security/__tests__/magazine-guard-adversarial.test.ts",
+    "name": "allows https:// clientLogoUrl with public CDN host"
+   },
+   {
+    "file": "src/lib/security/__tests__/magazine-guard-adversarial.test.ts",
+    "name": "validateBranding — G9 XSS schemes in clientLogoUrl"
+   },
+   {
+    "file": "src/lib/security/__tests__/magazine-guard-adversarial.test.ts",
+    "name": "sanitizes javascript:alert(1) to null"
+   },
+   {
+    "file": "src/lib/security/__tests__/magazine-guard-adversarial.test.ts",
+    "name": "sanitizes data:image/png;base64,... to null"
+   },
+   {
+    "file": "src/lib/security/__tests__/magazine-guard-adversarial.test.ts",
+    "name": "sanitizes vbscript:msgbox to null"
+   },
+   {
+    "file": "src/lib/security/__tests__/magazine-guard-adversarial.test.ts",
+    "name": "sanitizes URL with embedded credentials to null"
+   },
+   {
+    "file": "src/lib/security/__tests__/magazine-guard-edge.test.ts",
+    "name": "validateBranding — F-005 array input"
+   },
+   {
+    "file": "src/lib/security/__tests__/magazine-guard-edge.test.ts",
+    "name": "returns isValid=false for []"
+   },
+   {
+    "file": "src/lib/security/__tests__/magazine-guard-edge.test.ts",
+    "name": "returns isValid=false for [{colors:{primary:"
+   },
+   {
+    "file": "src/lib/security/__tests__/magazine-guard-edge.test.ts",
+    "name": "validateBranding — MED-2 null colors"
+   },
+   {
+    "file": "src/lib/security/__tests__/magazine-guard-edge.test.ts",
+    "name": "does not crash when colors is null"
+   },
+   {
+    "file": "src/lib/security/__tests__/magazine-guard-edge.test.ts",
+    "name": "returns isValid=true when colors is null (treated as absent)"
+   },
+   {
+    "file": "src/lib/security/__tests__/magazine-guard-edge.test.ts",
+    "name": "validateBranding — MED-3 non-object colors"
+   },
+   {
+    "file": "src/lib/security/__tests__/magazine-guard-edge.test.ts",
+    "name": "returns isValid=false when colors is a number"
+   },
+   {
+    "file": "src/lib/security/__tests__/magazine-guard-edge.test.ts",
+    "name": "returns isValid=false when colors is a string"
+   },
+   {
+    "file": "src/lib/security/__tests__/magazine-guard-edge.test.ts",
+    "name": "returns isValid=false when colors is an array"
+   },
+   {
+    "file": "src/lib/security/__tests__/magazine-guard-edge.test.ts",
+    "name": "validateBranding — valid branding"
+   },
+   {
+    "file": "src/lib/security/__tests__/magazine-guard-edge.test.ts",
+    "name": "accepts full valid branding"
+   },
+   {
+    "file": "src/lib/security/__tests__/magazine-guard-edge.test.ts",
+    "name": "accepts branding with no colors key (partial patch)"
+   },
+   {
     "file": "src/lib/security/__tests__/magazine-guard.test.ts",
     "name": "validateBranding — clientLogoUrl"
    },
@@ -253331,6 +253483,138 @@
     "name": "é idempotente — segunda chamada não dupla-patcha"
    },
    {
+    "file": "src/lib/security/__tests__/sanitize-adversarial.test.ts",
+    "name": "sanitizeUrl — G1 WHATWG decimal IP normalisation"
+   },
+   {
+    "file": "src/lib/security/__tests__/sanitize-adversarial.test.ts",
+    "name": "blocks http://2130706433 (decimal 127.0.0.1)"
+   },
+   {
+    "file": "src/lib/security/__tests__/sanitize-adversarial.test.ts",
+    "name": "blocks http://2886729729 (decimal 172.16.0.1 — RFC1918)"
+   },
+   {
+    "file": "src/lib/security/__tests__/sanitize-adversarial.test.ts",
+    "name": "blocks http://167772161 (decimal 10.0.0.1 — RFC1918)"
+   },
+   {
+    "file": "src/lib/security/__tests__/sanitize-adversarial.test.ts",
+    "name": "blocks http://3232235521 (decimal 192.168.0.1 — RFC1918)"
+   },
+   {
+    "file": "src/lib/security/__tests__/sanitize-adversarial.test.ts",
+    "name": "blocks http://2851995753 (decimal 169.254.169.169 — AWS metadata-like)"
+   },
+   {
+    "file": "src/lib/security/__tests__/sanitize-adversarial.test.ts",
+    "name": "sanitizeUrl — G2 WHATWG octal IP normalisation"
+   },
+   {
+    "file": "src/lib/security/__tests__/sanitize-adversarial.test.ts",
+    "name": "blocks http://0177.0.0.1 (octal 127.0.0.1)"
+   },
+   {
+    "file": "src/lib/security/__tests__/sanitize-adversarial.test.ts",
+    "name": "blocks http://010.0.0.1 (octal 8.0.0.1 — non-private, sanity check should NOT block)"
+   },
+   {
+    "file": "src/lib/security/__tests__/sanitize-adversarial.test.ts",
+    "name": "blocks http://0300.0250.0.1 (octal 192.168.0.1)"
+   },
+   {
+    "file": "src/lib/security/__tests__/sanitize-adversarial.test.ts",
+    "name": "sanitizeUrl — G3 WHATWG hex IP normalisation"
+   },
+   {
+    "file": "src/lib/security/__tests__/sanitize-adversarial.test.ts",
+    "name": "blocks http://0x7f000001 (hex 127.0.0.1)"
+   },
+   {
+    "file": "src/lib/security/__tests__/sanitize-adversarial.test.ts",
+    "name": "blocks http://0xac100001 (hex 172.16.0.1 — RFC1918)"
+   },
+   {
+    "file": "src/lib/security/__tests__/sanitize-adversarial.test.ts",
+    "name": "blocks http://0xa9fea9fe (hex 169.254.169.254 — AWS metadata)"
+   },
+   {
+    "file": "src/lib/security/__tests__/sanitize-adversarial.test.ts",
+    "name": "blocks http://0xc0a80001 (hex 192.168.0.1)"
+   },
+   {
+    "file": "src/lib/security/__tests__/sanitize-adversarial.test.ts",
+    "name": "sanitizeUrl — G4 allowEmpty option"
+   },
+   {
+    "file": "src/lib/security/__tests__/sanitize-adversarial.test.ts",
+    "name": "returns "
+   },
+   {
+    "file": "src/lib/security/__tests__/sanitize-adversarial.test.ts",
+    "name": "returns null for empty string when allowEmpty: false (default)"
+   },
+   {
+    "file": "src/lib/security/__tests__/sanitize-adversarial.test.ts",
+    "name": "returns "
+   },
+   {
+    "file": "src/lib/security/__tests__/sanitize-adversarial.test.ts",
+    "name": "returns "
+   },
+   {
+    "file": "src/lib/security/__tests__/sanitize-adversarial.test.ts",
+    "name": "returns null for null when allowEmpty: false"
+   },
+   {
+    "file": "src/lib/security/__tests__/sanitize-adversarial.test.ts",
+    "name": "does not affect non-empty URLs — valid URL still passes"
+   },
+   {
+    "file": "src/lib/security/__tests__/sanitize-adversarial.test.ts",
+    "name": "does not affect non-empty URLs — SSRF still blocked even with allowEmpty"
+   },
+   {
+    "file": "src/lib/security/__tests__/sanitize-adversarial.test.ts",
+    "name": "sanitizeUrl — G5 dangerous URI schemes"
+   },
+   {
+    "file": "src/lib/security/__tests__/sanitize-adversarial.test.ts",
+    "name": "blocks data:text/html,<script>alert(1)</script>"
+   },
+   {
+    "file": "src/lib/security/__tests__/sanitize-adversarial.test.ts",
+    "name": "blocks data:text/html;base64,PHNjcmlwdD4="
+   },
+   {
+    "file": "src/lib/security/__tests__/sanitize-adversarial.test.ts",
+    "name": "blocks vbscript:msgbox(1)"
+   },
+   {
+    "file": "src/lib/security/__tests__/sanitize-adversarial.test.ts",
+    "name": "blocks file:///etc/passwd"
+   },
+   {
+    "file": "src/lib/security/__tests__/sanitize-adversarial.test.ts",
+    "name": "blocks file:///C:/Windows/System32/"
+   },
+   {
+    "file": "src/lib/security/__tests__/sanitize-adversarial.test.ts",
+    "name": "blocks blob:https://example.com/uuid"
+   },
+   {
+    "file": "src/lib/security/__tests__/sanitize-adversarial.test.ts",
+    "name": "blocks ftp:// (non-http/https scheme)"
+   },
+   {
+    "file": "src/lib/security/__tests__/sanitize-adversarial.test.ts",
+    "name": "blocks javascript:alert(1) (original protocol)"
+   },
+   {
+    "file": "src/lib/security/__tests__/sanitize-adversarial.test.ts",
+    "name": "blocks JAVASCRIPT:alert(1) (case-insensitive)"
+   },
+   {
     "file": "src/lib/security/__tests__/sanitize-message.test.ts",
     "name": "sanitize-message (SSOT)"
    },
@@ -253409,6 +253693,194 @@
    {
     "file": "src/lib/security/__tests__/sanitize-message.test.ts",
     "name": "dev sem mensagem → fallback"
+   },
+   {
+    "file": "src/lib/security/__tests__/sanitize-ssrf.test.ts",
+    "name": "sanitizeUrl — CRIT-2 typeof guard"
+   },
+   {
+    "file": "src/lib/security/__tests__/sanitize-ssrf.test.ts",
+    "name": "returns null for a number (truthy non-string)"
+   },
+   {
+    "file": "src/lib/security/__tests__/sanitize-ssrf.test.ts",
+    "name": "returns null for an object"
+   },
+   {
+    "file": "src/lib/security/__tests__/sanitize-ssrf.test.ts",
+    "name": "returns null for an array"
+   },
+   {
+    "file": "src/lib/security/__tests__/sanitize-ssrf.test.ts",
+    "name": "still handles null and undefined gracefully"
+   },
+   {
+    "file": "src/lib/security/__tests__/sanitize-ssrf.test.ts",
+    "name": "sanitizeUrl — CRIT-1 SSRF blocklist (loopback)"
+   },
+   {
+    "file": "src/lib/security/__tests__/sanitize-ssrf.test.ts",
+    "name": "blocks http://localhost"
+   },
+   {
+    "file": "src/lib/security/__tests__/sanitize-ssrf.test.ts",
+    "name": "blocks http://localhost/path"
+   },
+   {
+    "file": "src/lib/security/__tests__/sanitize-ssrf.test.ts",
+    "name": "blocks http://127.0.0.1"
+   },
+   {
+    "file": "src/lib/security/__tests__/sanitize-ssrf.test.ts",
+    "name": "blocks http://127.1.2.3 (loopback range)"
+   },
+   {
+    "file": "src/lib/security/__tests__/sanitize-ssrf.test.ts",
+    "name": "blocks http://0.0.0.0"
+   },
+   {
+    "file": "src/lib/security/__tests__/sanitize-ssrf.test.ts",
+    "name": "blocks http://[::1] (IPv6 loopback)"
+   },
+   {
+    "file": "src/lib/security/__tests__/sanitize-ssrf.test.ts",
+    "name": "sanitizeUrl — CRIT-1 SSRF blocklist (private ranges)"
+   },
+   {
+    "file": "src/lib/security/__tests__/sanitize-ssrf.test.ts",
+    "name": "blocks 10.0.0.1"
+   },
+   {
+    "file": "src/lib/security/__tests__/sanitize-ssrf.test.ts",
+    "name": "blocks 10.255.255.255"
+   },
+   {
+    "file": "src/lib/security/__tests__/sanitize-ssrf.test.ts",
+    "name": "blocks 192.168.1.1"
+   },
+   {
+    "file": "src/lib/security/__tests__/sanitize-ssrf.test.ts",
+    "name": "blocks 192.168.0.0"
+   },
+   {
+    "file": "src/lib/security/__tests__/sanitize-ssrf.test.ts",
+    "name": "blocks 172.16.0.1 (RFC1918)"
+   },
+   {
+    "file": "src/lib/security/__tests__/sanitize-ssrf.test.ts",
+    "name": "blocks 172.31.255.255 (RFC1918 end)"
+   },
+   {
+    "file": "src/lib/security/__tests__/sanitize-ssrf.test.ts",
+    "name": "allows 172.15.0.1 (just outside RFC1918)"
+   },
+   {
+    "file": "src/lib/security/__tests__/sanitize-ssrf.test.ts",
+    "name": "allows 172.32.0.1 (just outside RFC1918)"
+   },
+   {
+    "file": "src/lib/security/__tests__/sanitize-ssrf.test.ts",
+    "name": "sanitizeUrl — CRIT-1 SSRF blocklist (link-local)"
+   },
+   {
+    "file": "src/lib/security/__tests__/sanitize-ssrf.test.ts",
+    "name": "blocks 169.254.1.1 (link-local)"
+   },
+   {
+    "file": "src/lib/security/__tests__/sanitize-ssrf.test.ts",
+    "name": "blocks 169.254.169.254 (AWS metadata)"
+   },
+   {
+    "file": "src/lib/security/__tests__/sanitize-ssrf.test.ts",
+    "name": "blocks IPv6 link-local fe80::1"
+   },
+   {
+    "file": "src/lib/security/__tests__/sanitize-ssrf.test.ts",
+    "name": "blocks IPv6 link-local fe80::1%eth0"
+   },
+   {
+    "file": "src/lib/security/__tests__/sanitize-ssrf.test.ts",
+    "name": "sanitizeUrl — CRIT-1 SSRF blocklist (IPv4-mapped IPv6)"
+   },
+   {
+    "file": "src/lib/security/__tests__/sanitize-ssrf.test.ts",
+    "name": "blocks ::ffff:127.0.0.1 (loopback via IPv4-mapped)"
+   },
+   {
+    "file": "src/lib/security/__tests__/sanitize-ssrf.test.ts",
+    "name": "blocks ::ffff:7f00:1 (loopback, already in hex-group form)"
+   },
+   {
+    "file": "src/lib/security/__tests__/sanitize-ssrf.test.ts",
+    "name": "blocks ::ffff:169.254.169.254 (AWS metadata via IPv4-mapped)"
+   },
+   {
+    "file": "src/lib/security/__tests__/sanitize-ssrf.test.ts",
+    "name": "blocks ::ffff:a9fe:a9fe (AWS metadata in hex-group form)"
+   },
+   {
+    "file": "src/lib/security/__tests__/sanitize-ssrf.test.ts",
+    "name": "blocks ::ffff:10.0.0.1 (private 10.x via IPv4-mapped)"
+   },
+   {
+    "file": "src/lib/security/__tests__/sanitize-ssrf.test.ts",
+    "name": "blocks ::ffff:192.168.0.1 (private 192.168.x via IPv4-mapped)"
+   },
+   {
+    "file": "src/lib/security/__tests__/sanitize-ssrf.test.ts",
+    "name": "blocks ::ffff:172.16.0.1 (private 172.16.x via IPv4-mapped)"
+   },
+   {
+    "file": "src/lib/security/__tests__/sanitize-ssrf.test.ts",
+    "name": "allows ::ffff:93.184.216.34 (example.com via IPv4-mapped)"
+   },
+   {
+    "file": "src/lib/security/__tests__/sanitize-ssrf.test.ts",
+    "name": "sanitizeUrl — CRIT-1 SSRF blocklist (internal TLDs)"
+   },
+   {
+    "file": "src/lib/security/__tests__/sanitize-ssrf.test.ts",
+    "name": "blocks host.local"
+   },
+   {
+    "file": "src/lib/security/__tests__/sanitize-ssrf.test.ts",
+    "name": "blocks service.internal"
+   },
+   {
+    "file": "src/lib/security/__tests__/sanitize-ssrf.test.ts",
+    "name": "blocks corp.corp"
+   },
+   {
+    "file": "src/lib/security/__tests__/sanitize-ssrf.test.ts",
+    "name": "sanitizeUrl — CRIT-1 credential exfil"
+   },
+   {
+    "file": "src/lib/security/__tests__/sanitize-ssrf.test.ts",
+    "name": "blocks URL with embedded user:pass"
+   },
+   {
+    "file": "src/lib/security/__tests__/sanitize-ssrf.test.ts",
+    "name": "blocks URL with embedded username only"
+   },
+   {
+    "file": "src/lib/security/__tests__/sanitize-ssrf.test.ts",
+    "name": "sanitizeUrl — legitimate URLs pass through"
+   },
+   {
+    "file": "src/lib/security/__tests__/sanitize-ssrf.test.ts",
+    "name": "allows https://cdn.example.com/logo.png"
+   },
+   {
+    "file": "src/lib/security/__tests__/sanitize-ssrf.test.ts",
+    "name": "allows http://example.com"
+   },
+   {
+    "file": "src/lib/security/__tests__/sanitize-ssrf.test.ts",
+    "name": "blocks http:// when httpsOnly=true"
+   },
+   {
+    "file": "src/lib/security/__tests__/sanitize-ssrf.test.ts",
+    "name": "allows https:// when httpsOnly=true"
    },
    {
     "file": "src/lib/security/__tests__/security-integration.test.ts",
@@ -479096,7 +479568,7 @@
   },
   "src/lib/security/magazine-guard.ts": {
    "path": "src/lib/security/magazine-guard.ts",
-   "lines": 117,
+   "lines": 124,
    "exports": [
     "interface ValidationResult",
     "function validateBranding",
@@ -479112,13 +479584,14 @@
    ],
    "rule_comments": [
     "* Magazine Field Guards — Input Validation",
-    "colors: each must be a valid CSS hex color"
+    "colors: each must be a valid CSS hex color",
+    "RESGATE (PR #1726, MED-3): array ou primitivo em `colors` nao pode ser"
    ],
    "calc_fns": [
     {
      "name": "validateBranding",
      "params": "branding: Partial<MagazineClientBranding> | null | undefined,",
-     "body": "if (!branding || typeof branding !== 'object') { return { isValid: false, errors: ['Configuração de branding inválida'], sanitized: {} }; } const errors: string[] = []; const sanitized: Partial<MagazineClientBranding> = {}; // clientLogoUrl: must be https:// URL or null if (branding.clientLogoUrl !== undefined) { const safe = sanitizeUrl(branding.clientLogoUrl, { httpsOnly: true }); if (branding.clientLogoUrl && !safe) { errors.push('URL do logo deve ser https://'); sanitized.clientLogoUrl = nul …"
+     "body": "// RESGATE (PR #1726, F-005): array passa pelo teste `typeof x === 'object'`. if (!branding || typeof branding !== 'object' || Array.isArray(branding)) { return { isValid: false, errors: ['Configuração de branding inválida'], sanitized: {} }; } const errors: string[] = []; const sanitized: Partial<MagazineClientBranding> = {}; // clientLogoUrl: must be https:// URL or null if (branding.clientLogoUrl !== undefined) { const safe = sanitizeUrl(branding.clientLogoUrl, { httpsOnly: true }); if (brand …"
     },
     {
      "name": "validateTitle",
@@ -479250,7 +479723,7 @@
   },
   "src/lib/security/sanitize.ts": {
    "path": "src/lib/security/sanitize.ts",
-   "lines": 102,
+   "lines": 162,
    "exports": [
     "function sanitizeUrl",
     "function sanitizeText",
@@ -479371,6 +479844,75 @@
     "destino resolvido é sempre seguro em 500 combinações aleatórias"
    ]
   },
+  "src/lib/security/__tests__/magazine-guard-adversarial.test.ts": {
+   "path": "src/lib/security/__tests__/magazine-guard-adversarial.test.ts",
+   "lines": 208,
+   "is_test": true,
+   "rule_comments": [
+    "* G6: sanitized.colors must contain ONLY {primary, secondary, text} — no extra keys",
+    "G7: validateBranding({colors: null}) must set isValid: true (absent ≠ error)",
+    "G8: clientLogoUrl with SSRF payload must be sanitized to null",
+    "G9: clientLogoUrl with XSS scheme must be sanitized to null",
+    "The sanitize step must emit EXACTLY {primary, secondary, text} and drop all",
+    "Magazine branding accepts a logo URL — must never allow private/loopback hosts.",
+    "The validation error should be reported",
+    "javascript: and data: in the logo URL must be blocked."
+   ],
+   "doc": "magazine-guard.ts — adversarial regression suite G6: sanitized.colors must contain ONLY {primary, secondary, text} — no extra keys (prototype pollution attempt via __proto__, constructor, xss keys) G7: validateBranding({colors: null}) must set isValid: true (absent ≠ error) G8: clientLogoUrl with SS …",
+   "tests": [
+    "validateBranding — G6 color key whitelist",
+    "drops unknown key ",
+    "drops unknown key ",
+    "drops unknown key ",
+    "drops unknown key ",
+    "sanitized.colors has exactly the three expected keys",
+    "sanitized.colors key count is exactly 3 even when input has 10 keys",
+    "valid keys still have correct values after whitelist filter",
+    "validateBranding — G7 colors null is isValid=true",
+    "returns isValid=true when colors is null",
+    "returns empty errors array when colors is null",
+    "validateBranding — G8 SSRF in clientLogoUrl",
+    "sanitizes clientLogoUrl with AWS metadata endpoint to null",
+    "sanitizes clientLogoUrl with localhost to null",
+    "sanitizes clientLogoUrl with 127.0.0.1 to null",
+    "sanitizes clientLogoUrl with RFC1918 address to null",
+    "sanitizes clientLogoUrl with IPv4-mapped IPv6 SSRF to null",
+    "sanitizes http:// clientLogoUrl to null (httpsOnly enforced)",
+    "allows https:// clientLogoUrl with public CDN host",
+    "validateBranding — G9 XSS schemes in clientLogoUrl",
+    "sanitizes javascript:alert(1) to null",
+    "sanitizes data:image/png;base64,... to null",
+    "sanitizes vbscript:msgbox to null",
+    "sanitizes URL with embedded credentials to null"
+   ]
+  },
+  "src/lib/security/__tests__/magazine-guard-edge.test.ts": {
+   "path": "src/lib/security/__tests__/magazine-guard-edge.test.ts",
+   "lines": 96,
+   "is_test": true,
+   "rule_comments": [
+    "* F-005: validateBranding([] ) must return isValid=false (array is typeof 'object').",
+    "MED-2: validateBranding({colors: null}) must not crash.",
+    "MED-3: validateBranding({colors: 42}) must return isValid=false.",
+    "G7 explicit assertion: null colors must not invalidate the branding object."
+   ],
+   "doc": "magazine-guard.ts — edge-case regression tests F-005: validateBranding([] ) must return isValid=false (array is typeof 'object'). MED-2: validateBranding({colors: null}) must not crash. MED-3: validateBranding({colors: 42}) must return isValid=false.",
+   "tests": [
+    "validateBranding — F-005 array input",
+    "returns isValid=false for []",
+    "returns isValid=false for [{colors:{primary:",
+    "validateBranding — MED-2 null colors",
+    "does not crash when colors is null",
+    "returns isValid=true when colors is null (treated as absent)",
+    "validateBranding — MED-3 non-object colors",
+    "returns isValid=false when colors is a number",
+    "returns isValid=false when colors is a string",
+    "returns isValid=false when colors is an array",
+    "validateBranding — valid branding",
+    "accepts full valid branding",
+    "accepts branding with no colors key (partial patch)"
+   ]
+  },
   "src/lib/security/__tests__/magazine-guard.test.ts": {
    "path": "src/lib/security/__tests__/magazine-guard.test.ts",
    "lines": 521,
@@ -479485,6 +480027,55 @@
     "é idempotente — segunda chamada não dupla-patcha"
    ]
   },
+  "src/lib/security/__tests__/sanitize-adversarial.test.ts": {
+   "path": "src/lib/security/__tests__/sanitize-adversarial.test.ts",
+   "lines": 187,
+   "is_test": true,
+   "rule_comments": [
+    "010 = 8 in octal. 8.0.0.1 is a public IP — must NOT be blocked.",
+    "Either way, it must not be confused with 10.x (RFC1918).",
+    "sanitizeUrl('', { allowEmpty: true }) must return '' (not null)",
+    "sanitizeUrl('', { allowEmpty: false }) must return null",
+    "sanitizeUrl(null, { allowEmpty: true }) must return '' (not null)",
+    "Each must be individually blocked (belt-and-suspenders: SAFE_URL_PROTOCOLS"
+   ],
+   "doc": "sanitize.ts — adversarial regression suite G1: WHATWG normalization of decimal-encoded IPs (e.g. 2130706433 → 127.0.0.1) G2: WHATWG normalization of octal-encoded IPs (e.g. 0177.0.0.1 → 127.0.0.1) G3: WHATWG normalization of hex-encoded IPs (e.g. 0x7f000001 → 127.0.0.1) G4: allowEmpty option contrac …",
+   "tests": [
+    "sanitizeUrl — G1 WHATWG decimal IP normalisation",
+    "blocks http://2130706433 (decimal 127.0.0.1)",
+    "blocks http://2886729729 (decimal 172.16.0.1 — RFC1918)",
+    "blocks http://167772161 (decimal 10.0.0.1 — RFC1918)",
+    "blocks http://3232235521 (decimal 192.168.0.1 — RFC1918)",
+    "blocks http://2851995753 (decimal 169.254.169.169 — AWS metadata-like)",
+    "sanitizeUrl — G2 WHATWG octal IP normalisation",
+    "blocks http://0177.0.0.1 (octal 127.0.0.1)",
+    "blocks http://010.0.0.1 (octal 8.0.0.1 — non-private, sanity check should NOT block)",
+    "blocks http://0300.0250.0.1 (octal 192.168.0.1)",
+    "sanitizeUrl — G3 WHATWG hex IP normalisation",
+    "blocks http://0x7f000001 (hex 127.0.0.1)",
+    "blocks http://0xac100001 (hex 172.16.0.1 — RFC1918)",
+    "blocks http://0xa9fea9fe (hex 169.254.169.254 — AWS metadata)",
+    "blocks http://0xc0a80001 (hex 192.168.0.1)",
+    "sanitizeUrl — G4 allowEmpty option",
+    "returns ",
+    "returns null for empty string when allowEmpty: false (default)",
+    "returns ",
+    "returns ",
+    "returns null for null when allowEmpty: false",
+    "does not affect non-empty URLs — valid URL still passes",
+    "does not affect non-empty URLs — SSRF still blocked even with allowEmpty",
+    "sanitizeUrl — G5 dangerous URI schemes",
+    "blocks data:text/html,<script>alert(1)</script>",
+    "blocks data:text/html;base64,PHNjcmlwdD4=",
+    "blocks vbscript:msgbox(1)",
+    "blocks file:///etc/passwd",
+    "blocks file:///C:/Windows/System32/",
+    "blocks blob:https://example.com/uuid",
+    "blocks ftp:// (non-http/https scheme)",
+    "blocks javascript:alert(1) (original protocol)",
+    "blocks JAVASCRIPT:alert(1) (case-insensitive)"
+   ]
+  },
   "src/lib/security/__tests__/sanitize-message.test.ts": {
    "path": "src/lib/security/__tests__/sanitize-message.test.ts",
    "lines": 92,
@@ -479510,6 +480101,68 @@
     "sanitizeMessage (dev)",
     "preserva texto cru técnico para dev",
     "dev sem mensagem → fallback"
+   ]
+  },
+  "src/lib/security/__tests__/sanitize-ssrf.test.ts": {
+   "path": "src/lib/security/__tests__/sanitize-ssrf.test.ts",
+   "lines": 213,
+   "is_test": true,
+   "rule_comments": [
+    "* CRIT-1: sanitizeUrl must block private/loopback/link-local hosts",
+    "CRIT-2: sanitizeUrl must not throw on truthy non-string inputs.",
+    "None of the IPv4 regex patterns match the hex groups — must decode explicitly.",
+    "93.184.216.34 = example.com — public IP, must not be blocked",
+    "Sanity — legitimate URLs must still pass"
+   ],
+   "doc": "sanitize.ts — SSRF & type-safety regression tests CRIT-1: sanitizeUrl must block private/loopback/link-local hosts (WHATWG parser normalises octal/hex/decimal before our check). CRIT-2: sanitizeUrl must not throw on truthy non-string inputs.",
+   "tests": [
+    "sanitizeUrl — CRIT-2 typeof guard",
+    "returns null for a number (truthy non-string)",
+    "returns null for an object",
+    "returns null for an array",
+    "still handles null and undefined gracefully",
+    "sanitizeUrl — CRIT-1 SSRF blocklist (loopback)",
+    "blocks http://localhost",
+    "blocks http://localhost/path",
+    "blocks http://127.0.0.1",
+    "blocks http://127.1.2.3 (loopback range)",
+    "blocks http://0.0.0.0",
+    "blocks http://[::1] (IPv6 loopback)",
+    "sanitizeUrl — CRIT-1 SSRF blocklist (private ranges)",
+    "blocks 10.0.0.1",
+    "blocks 10.255.255.255",
+    "blocks 192.168.1.1",
+    "blocks 192.168.0.0",
+    "blocks 172.16.0.1 (RFC1918)",
+    "blocks 172.31.255.255 (RFC1918 end)",
+    "allows 172.15.0.1 (just outside RFC1918)",
+    "allows 172.32.0.1 (just outside RFC1918)",
+    "sanitizeUrl — CRIT-1 SSRF blocklist (link-local)",
+    "blocks 169.254.1.1 (link-local)",
+    "blocks 169.254.169.254 (AWS metadata)",
+    "blocks IPv6 link-local fe80::1",
+    "blocks IPv6 link-local fe80::1%eth0",
+    "sanitizeUrl — CRIT-1 SSRF blocklist (IPv4-mapped IPv6)",
+    "blocks ::ffff:127.0.0.1 (loopback via IPv4-mapped)",
+    "blocks ::ffff:7f00:1 (loopback, already in hex-group form)",
+    "blocks ::ffff:169.254.169.254 (AWS metadata via IPv4-mapped)",
+    "blocks ::ffff:a9fe:a9fe (AWS metadata in hex-group form)",
+    "blocks ::ffff:10.0.0.1 (private 10.x via IPv4-mapped)",
+    "blocks ::ffff:192.168.0.1 (private 192.168.x via IPv4-mapped)",
+    "blocks ::ffff:172.16.0.1 (private 172.16.x via IPv4-mapped)",
+    "allows ::ffff:93.184.216.34 (example.com via IPv4-mapped)",
+    "sanitizeUrl — CRIT-1 SSRF blocklist (internal TLDs)",
+    "blocks host.local",
+    "blocks service.internal",
+    "blocks corp.corp",
+    "sanitizeUrl — CRIT-1 credential exfil",
+    "blocks URL with embedded user:pass",
+    "blocks URL with embedded username only",
+    "sanitizeUrl — legitimate URLs pass through",
+    "allows https://cdn.example.com/logo.png",
+    "allows http://example.com",
+    "blocks http:// when httpsOnly=true",
+    "allows https:// when httpsOnly=true"
    ]
   },
   "src/lib/security/__tests__/security-integration.test.ts": {
@@ -545504,10 +546157,24 @@
   }
  },
  "git": {
-  "sha": "f52a5d31fe005af919d13fbe97fe950d9b605093",
+  "sha": "99844ab8b22b48495d355ff62b5d68f62eba77ef",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "99844ab",
+    "date": "2026-11-18",
+    "author": "adm01-debug",
+    "subject": "fix(security): resgata o endurecimento de sanitizeUrl contra SSRF e credencial embutida (#3825)",
+    "files": [
+     "src/lib/security/__tests__/magazine-guard-adversarial.test.ts",
+     "src/lib/security/__tests__/magazine-guard-edge.test.ts",
+     "src/lib/security/__tests__/sanitize-adversarial.test.ts",
+     "src/lib/security/__tests__/sanitize-ssrf.test.ts",
+     "src/lib/security/magazine-guard.ts",
+     "src/lib/security/sanitize.ts"
+    ]
+   },
    {
     "sha": "f52a5d3",
     "date": "2026-11-18",
@@ -545851,16 +546518,6 @@
      "src/hooks/kit-builder/useKitAutoSave.ts",
      "tests/hooks/useKitAutoSave.legacy.test.tsx"
     ]
-   },
-   {
-    "sha": "dd6464d",
-    "date": "2026-11-17",
-    "author": "adm01-debug",
-    "subject": "fix(hooks): restaura a guarda de matchTypes que a refatoracao de pasta derrubou (#3808)",
-    "files": [
-     "src/hooks/products/useProductMatch.ts",
-     "tests/hooks/useProductMatch.matchTypes-guard.test.ts"
-    ]
    }
   ],
   "hot_files": [
@@ -545917,31 +546574,31 @@
     2
    ],
    [
+    "src/lib/security/__tests__/magazine-guard-adversarial.test.ts",
+    1
+   ],
+   [
+    "src/lib/security/__tests__/magazine-guard-edge.test.ts",
+    1
+   ],
+   [
+    "src/lib/security/__tests__/sanitize-adversarial.test.ts",
+    1
+   ],
+   [
+    "src/lib/security/__tests__/sanitize-ssrf.test.ts",
+    1
+   ],
+   [
+    "src/lib/security/magazine-guard.ts",
+    1
+   ],
+   [
+    "src/lib/security/sanitize.ts",
+    1
+   ],
+   [
     "src/hooks/crm/useRamoAtividadeFilter.ts",
-    1
-   ],
-   [
-    "src/hooks/products/getCategoryIcon.ts",
-    1
-   ],
-   [
-    "src/hooks/products/useCategoryIcons.ts",
-    1
-   ],
-   [
-    "src/hooks/products/useProductsLightweight.ts",
-    1
-   ],
-   [
-    "src/hooks/quotes/quoteTemplateTypes.ts",
-    1
-   ],
-   [
-    "src/hooks/quotes/useAutoSaveQuote.ts",
-    1
-   ],
-   [
-    "src/hooks/quotes/useQuoteBuilderState.ts",
     1
    ]
   ]

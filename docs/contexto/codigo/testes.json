@@ -5,13 +5,13 @@
   "vitest",
   "playwright"
  ],
- "total": 2586,
+ "total": 2590,
  "por_tipo": {
   "contrato": 66,
   "e2e": 677,
   "pytest": 5,
   "qa": 17,
-  "unit": 1821
+  "unit": 1825
  },
  "onde_ficam": [
   {
@@ -20,7 +20,7 @@
   },
   {
    "padrao": "co-localizado (__tests__)",
-   "arquivos": 683
+   "arquivos": 687
   },
   {
    "padrao": "e2e/",
@@ -9933,6 +9933,24 @@
    "casos": 19
   },
   {
+   "arquivo": "src/lib/security/__tests__/magazine-guard-adversarial.test.ts",
+   "tipo": "unit",
+   "linhas": 208,
+   "testa": [
+    "src/lib/security/magazine-guard.ts"
+   ],
+   "casos": 20
+  },
+  {
+   "arquivo": "src/lib/security/__tests__/magazine-guard-edge.test.ts",
+   "tipo": "unit",
+   "linhas": 96,
+   "testa": [
+    "src/lib/security/magazine-guard.ts"
+   ],
+   "casos": 9
+  },
+  {
    "arquivo": "src/lib/security/__tests__/magazine-guard.test.ts",
    "tipo": "unit",
    "linhas": 521,
@@ -9952,6 +9970,15 @@
    "casos": 10
   },
   {
+   "arquivo": "src/lib/security/__tests__/sanitize-adversarial.test.ts",
+   "tipo": "unit",
+   "linhas": 187,
+   "testa": [
+    "src/lib/security/sanitize.ts"
+   ],
+   "casos": 28
+  },
+  {
    "arquivo": "src/lib/security/__tests__/sanitize-message.test.ts",
    "tipo": "unit",
    "linhas": 92,
@@ -9959,6 +9986,15 @@
     "src/lib/security/sanitize-message.ts"
    ],
    "casos": 15
+  },
+  {
+   "arquivo": "src/lib/security/__tests__/sanitize-ssrf.test.ts",
+   "tipo": "unit",
+   "linhas": 213,
+   "testa": [
+    "src/lib/security/sanitize.ts"
+   ],
+   "casos": 39
   },
   {
    "arquivo": "src/lib/security/__tests__/security-integration.test.ts",
@@ -22691,10 +22727,11 @@
   "src/lib/roles.ts": 1,
   "src/lib/security/file-validation.ts": 1,
   "src/lib/security/lastInternalRoute.ts": 1,
-  "src/lib/security/magazine-guard.ts": 1,
+  "src/lib/security/magazine-guard.ts": 3,
   "src/lib/security/safeToast.ts": 1,
   "src/lib/security/sanitize-error.ts": 1,
   "src/lib/security/sanitize-message.ts": 1,
+  "src/lib/security/sanitize.ts": 2,
   "src/lib/security/validation.ts": 3,
   "src/lib/sensitive-masking.ts": 1,
   "src/lib/sentry.ts": 4,

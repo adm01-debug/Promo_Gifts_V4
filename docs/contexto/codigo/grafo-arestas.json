@@ -12335,6 +12335,9 @@
   "src/lib/security/sanitize-message.ts": [
    "src/lib/security/sanitize-error.ts"
   ],
+  "src/lib/security/sanitize.ts": [
+   "src/lib/logger.ts"
+  ],
   "src/lib/sentry.ts": [
    "src/lib/logger.ts"
   ],

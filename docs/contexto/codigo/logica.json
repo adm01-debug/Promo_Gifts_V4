@@ -4836,7 +4836,7 @@
    "zod_schemas": 0,
    "flags": [],
    "papeis": [],
-   "usado_por": 304,
+   "usado_por": 305,
    "usado_por_modulos": [
     "components",
     "components/admin",
@@ -6516,7 +6516,7 @@
     "validateTitle"
    ],
    "export_default": null,
-   "linhas": 117,
+   "linhas": 124,
    "tabelas": [],
    "rpcs": [],
    "edges": [],
@@ -6530,7 +6530,7 @@
     "pages/magazine",
     "services"
    ],
-   "coberto_por_testes": 1,
+   "coberto_por_testes": 3,
    "orfao": false
   },
   {
@@ -6705,7 +6705,7 @@
     "sanitizeUrl"
    ],
    "export_default": null,
-   "linhas": 102,
+   "linhas": 162,
    "tabelas": [],
    "rpcs": [],
    "edges": [],
@@ -6718,7 +6718,7 @@
    "usado_por_modulos": [
     "lib/security"
    ],
-   "coberto_por_testes": 0,
+   "coberto_por_testes": 2,
    "orfao": false
   },
   {

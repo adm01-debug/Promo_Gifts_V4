@@ -3,7 +3,7 @@
  "format_version": 2,
  "stack": {
   "linguagens": [
-   "TypeScript (4969)",
+   "TypeScript (4973)",
    "SQL (3440)",
    "Markdown (1477)",
    "JavaScript (457)",
@@ -4998,6 +4998,10 @@
     "arquivos": 1
    },
    {
+    "host": "corp.corp",
+    "arquivos": 1
+   },
+   {
     "host": "crm.supabase.co",
     "arquivos": 1
    },
@@ -5063,6 +5067,10 @@
    },
    {
     "host": "hooks.zapier.com",
+    "arquivos": 1
+   },
+   {
+    "host": "host.local",
     "arquivos": 1
    },
    {
@@ -5211,6 +5219,10 @@
    },
    {
     "host": "scrub.invalid",
+    "arquivos": 1
+   },
+   {
+    "host": "service.internal",
     "arquivos": 1
    },
    {

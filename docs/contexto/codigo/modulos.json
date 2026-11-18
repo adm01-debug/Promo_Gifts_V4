@@ -26232,8 +26232,8 @@
   {
    "modulo": "lib/security",
    "arquivos": 10,
-   "testes": 8,
-   "linhas": 967,
+   "testes": 12,
+   "linhas": 1034,
    "itens_menu": [],
    "telas": [],
    "rotas_http": [],
