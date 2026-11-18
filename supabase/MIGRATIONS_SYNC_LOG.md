@@ -2443,3 +2443,4 @@ aplicado.
 | versão | arquivo | sha256 | status |
 |---|---|---|---|
 | `20261117073000` | `p06_security_invoker_v_product_properties_public` | `87b5a2646e3e05fb85515f463f1a31ad01562076a011756992f3a76ffffede10` | pendente — aplicar via `db-apply-migration.yml` (`version=20261117073000`) após merge. As outras 7 views do P06 ficam como estão: exigem decisão do dono (Git 7) sobre aposentar o desenho SECURITY DEFINER de `fix_version 20260717` |
+| `20261118223000` | `fn_supplier_risk_breakdown` | `23502ee1ae9538948c2828422a7ed868ec93cc506a64bc5506f7fb6884de1b30` | pendente — aplicar via `db-apply-migration.yml` (`version=20261118223000`) após merge |

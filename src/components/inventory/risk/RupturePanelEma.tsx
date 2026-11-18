@@ -316,7 +316,7 @@ function RupturePanelEmaInner({ focusedLevel }: Props) {
                     </Badge>
                     {supplierData?.find((s) => s.supplier_name === grp.name) && (
                       <span className="text-xs text-muted-foreground">
-                        {supplierData.find((s) => s.supplier_name === grp.name)?.pct_risco}% crítico
+                        {supplierData.find((s) => s.supplier_name === grp.name)?.pct_risco}% em risco
                       </span>
                     )}
                   </div>
