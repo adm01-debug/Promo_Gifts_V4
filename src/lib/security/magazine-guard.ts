@@ -34,7 +34,8 @@ export interface ValidationResult {
 export function validateBranding(
   branding: Partial<MagazineClientBranding> | null | undefined,
 ): ValidationResult {
-  if (!branding || typeof branding !== 'object') {
+  // RESGATE (PR #1726, F-005): array passa pelo teste `typeof x === 'object'`.
+  if (!branding || typeof branding !== 'object' || Array.isArray(branding)) {
     return { isValid: false, errors: ['Configuração de branding inválida'], sanitized: {} };
   }
 
@@ -53,25 +54,31 @@ export function validateBranding(
   }
 
   // colors: each must be a valid CSS hex color
-  if (branding.colors !== undefined) {
-    const hexPattern = /^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/;
-    const defaults = { primary: '#000000', secondary: '#000000', text: '#000000' };
-    const validatedColors = { ...defaults, ...branding.colors };
+  if (branding.colors !== undefined && branding.colors !== null) {
+    // RESGATE (PR #1726, MED-3): array ou primitivo em `colors` nao pode ser
+    // espalhado com `...` — recusa explicita em vez de objeto deformado.
+    if (typeof branding.colors !== 'object' || Array.isArray(branding.colors)) {
+      errors.push('Campo colors deve ser um objeto');
+    } else {
+      const hexPattern = /^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/;
+      const defaults = { primary: '#000000', secondary: '#000000', text: '#000000' };
+      const validatedColors = { ...defaults, ...branding.colors };
 
-    for (const key of ['primary', 'secondary', 'text'] as const) {
-      const value = validatedColors[key];
-      if (!value || !hexPattern.test(value)) {
-        errors.push(`Cor '${key}' deve ser um hex válido (ex: #FF0000)`);
-        validatedColors[key] = '#000000';
+      for (const key of ['primary', 'secondary', 'text'] as const) {
+        const value = validatedColors[key];
+        if (!value || !hexPattern.test(value)) {
+          errors.push(`Cor '${key}' deve ser um hex válido (ex: #FF0000)`);
+          validatedColors[key] = '#000000';
+        }
       }
-    }
 
-    // Only emit known keys — prevents prototype pollution via extra color fields.
-    sanitized.colors = {
-      primary: validatedColors.primary,
-      secondary: validatedColors.secondary,
-      text: validatedColors.text,
-    };
+      // Only emit known keys — prevents prototype pollution via extra color fields.
+      sanitized.colors = {
+        primary: validatedColors.primary,
+        secondary: validatedColors.secondary,
+        text: validatedColors.text,
+      };
+    }
   }
 
   return {

@@ -2,73 +2,25 @@ import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/hooks/ui';
-import type { Tables, TablesInsert, TablesUpdate, Json } from '@/integrations/supabase/types';
+import type { TablesInsert, TablesUpdate, Json } from '@/integrations/supabase/types';
 
 import { logger } from '@/lib/logger';
-// ============================================
-// Types
-// ============================================
+// Tipos publicos moram em ./quoteTemplateTypes.ts (ratchet de tamanho de arquivo).
+import type {
+  CreateTemplateInput,
+  QuoteTemplate,
+  QuoteTemplateItem,
+  QuoteTemplateRow,
+} from './quoteTemplateTypes';
 
-type QuoteTemplateRow = Tables<'quote_templates'>;
-
-export interface QuoteTemplateItem {
-  productId?: string;
-  productSku?: string;
-  productName: string;
-  productImageUrl?: string;
-  quantity: number;
-  unitPrice: number;
-  colorName?: string;
-  colorHex?: string;
-  personalizations?: {
-    techniqueId: string;
-    techniqueName: string;
-    colorsCount?: number;
-    positionsCount?: number;
-    unitCost?: number;
-    setupCost?: number;
-  }[];
-}
-
-export interface QuoteTemplate {
-  id: string;
-  seller_id: string;
-  name: string;
-  description?: string;
-  is_default: boolean;
-  template_data: Record<string, unknown>;
-  items: QuoteTemplateItem[];
-  raw_items?: QuoteTemplateRow['items'];
-  raw_template_data?: QuoteTemplateRow['template_data'];
-  discount_percent: number;
-  discount_amount: number;
-  notes?: string;
-  internal_notes?: string;
-  payment_terms?: string;
-  delivery_time?: string;
-  validity_days: number;
-  created_at: string;
-  updated_at: string;
-}
-
-export interface CreateTemplateInput {
-  name: string;
-  description?: string;
-  is_default?: boolean;
-  items?: QuoteTemplateItem[];
-  discount_percent?: number;
-  discount_amount?: number;
-  notes?: string;
-  internal_notes?: string;
-  payment_terms?: string;
-  delivery_time?: string;
-  validity_days?: number;
-}
+export type { CreateTemplateInput, QuoteTemplate, QuoteTemplateItem, QuoteTemplateRow };
 
 const templateSourceRows = new WeakMap<QuoteTemplate, QuoteTemplateRow>();
 
 function transformTemplates(data: QuoteTemplateRow[]): QuoteTemplate[] {
-  const templates = (data || []).map((item) => ({
+  // Sem `as unknown as` no objeto inteiro: o unico cast que resta e em `items`
+  // (jsonb), que preserva o gravado, com o original em `raw_items`.
+  const templates: QuoteTemplate[] = (data || []).map((item) => ({
     ...item,
     raw_items: item.items,
     raw_template_data: item.template_data,
@@ -81,7 +33,7 @@ function transformTemplates(data: QuoteTemplateRow[]): QuoteTemplate[] {
     discount_percent: item.discount_percent ?? 0,
     discount_amount: item.discount_amount ?? 0,
     validity_days: item.validity_days ?? 30,
-  })) as unknown as QuoteTemplate[];
+  }));
   templates.forEach((template, index) => {
     const source = data[index];
     if (source) templateSourceRows.set(template, source);

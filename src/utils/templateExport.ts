@@ -1,9 +1,34 @@
 import { type QuoteTemplate } from '@/hooks/quotes/useQuoteTemplates';
 
+/**
+ * Campos de um template no arquivo exportado.
+ *
+ * Declarado por extenso, e nao como `Omit<QuoteTemplate, ...>`: o formato do
+ * arquivo e um CONTRATO com quem vai importa-lo depois, enquanto `QuoteTemplate`
+ * acompanha a tabela. Amarrar um ao outro fazia toda coluna nova de
+ * `quote_templates` virar campo obrigatorio do arquivo — e o `Pick` abaixo e
+ * exatamente o que `exportTemplatesToJson` escreve.
+ */
+export type ExportedTemplateItem = Pick<
+  QuoteTemplate,
+  | 'delivery_time'
+  | 'description'
+  | 'discount_amount'
+  | 'discount_percent'
+  | 'internal_notes'
+  | 'is_default'
+  | 'items'
+  | 'name'
+  | 'notes'
+  | 'payment_terms'
+  | 'template_data'
+  | 'validity_days'
+>;
+
 export interface ExportedTemplate {
   version: string;
   exportedAt: string;
-  templates: Omit<QuoteTemplate, 'created_at' | 'id' | 'seller_id' | 'updated_at'>[];
+  templates: ExportedTemplateItem[];
 }
 
 /**

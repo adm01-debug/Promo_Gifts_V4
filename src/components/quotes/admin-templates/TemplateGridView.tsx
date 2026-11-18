@@ -115,8 +115,10 @@ export function TemplateGridView({
                       </span>
                     </div>
                     <div className="border-t pt-2 text-xs text-muted-foreground">
-                      Atualizado em{' '}
-                      {format(new Date(template.updated_at), 'dd/MM/yyyy', { locale: ptBR })}
+                      Atualizado em {/* `updated_at` e nullable no schema. */}
+                      {template.updated_at
+                        ? format(new Date(template.updated_at), 'dd/MM/yyyy', { locale: ptBR })
+                        : '—'}
                     </div>
                   </div>
                 </CardContent>

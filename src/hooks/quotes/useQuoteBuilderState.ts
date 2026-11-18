@@ -21,6 +21,8 @@ import { toast } from 'sonner';
 import { sanitizeError } from '@/lib/security/sanitize-error';
 import { formatCurrency as fmtCurrency } from '@/lib/format';
 import { validateQuoteForm, QUOTE_FIELD_LABELS } from '@/lib/validations';
+import { rascunhoRestauradoEValido } from '@/lib/quotes/quoteDraftRecovery';
+import { applyRestoredDraft } from '@/lib/quotes/applyRestoredDraft';
 import { useAuth } from '@/contexts/AuthContext';
 import type { ExternalVariantStock } from '@/hooks/products';
 import { useDebounce } from '@/hooks/common';
@@ -272,47 +274,36 @@ export function useQuoteBuilderState() {
       notes,
       validUntil,
     },
-
+    // GUARD: rascunho do localStorage e validado antes de virar estado (ver
+    // validarRascunhoRestaurado em src/lib/quotes/quoteDraftRecovery.ts).
+    validate: (raw) =>
+      rascunhoRestauradoEValido(raw, (m) =>
+        logger.warn('[QuoteBuilder] rascunho invalido recusado', m),
+      ),
     onRestore: (saved) => {
-      if (!isEditMode) {
-        if (saved.clientId) setClientId(saved.clientId);
-        if (saved.contactId) setContactId(saved.contactId);
-        if (saved.companyInfo) setCompanyInfo(saved.companyInfo);
-        if (saved.contactInfo) setContactInfo(saved.contactInfo);
-        if (saved.items) setItems(saved.items);
-        if (saved.discountType) setDiscountType(saved.discountType);
-        if (typeof saved.discountValue === 'number') setDiscountValue(saved.discountValue);
-        if (typeof saved.negotiationMarkup === 'number' && saved.negotiationMarkup > 0)
-          setNegotiationMarkup(saved.negotiationMarkup);
-        if (saved.paymentMethod) setPaymentMethod(saved.paymentMethod);
-        if (saved.paymentTerms) setPaymentTerms(saved.paymentTerms);
-        if (saved.deliveryTime) {
-          setDeliveryTime(saved.deliveryTime);
-          if (saved.deliveryTime.startsWith('date:')) {
-            setDeliveryMode('data');
-            try {
-              setDeliveryDate(new Date(`${saved.deliveryTime.slice(5)}T12:00:00`));
-            } catch (e) {
-              logger.warn('Failed to restore delivery date', e);
-            }
-          } else {
-            setDeliveryMode('prazo');
-          }
-        }
-        if (saved.shippingType) {
-          // QBP-07 FIX: usar state pendente + useEffect com cleanup (evita setState em desmontado)
-          setPendingShippingTypeRestore(saved.shippingType);
-        }
-        if (saved.shippingCost) setShippingCost(saved.shippingCost);
-        if (saved.validUntil) {
-          setValidUntil(saved.validUntil);
-          // QBP-12 FIX: sincronizar validityDays Select ao restaurar AutoSave
-          // Antes: o Select ficava em "Selecione" mesmo com data válida restaurada
-          setValidityDays(syncValidityDaysFromDate(saved.validUntil));
-        }
-        if (saved.notes) setNotes(saved.notes);
-        if (!saved.shippingType) setDraftRestoredAt(Date.now());
-      }
+      if (isEditMode) return;
+      applyRestoredDraft(saved, {
+        setClientId,
+        setContactId,
+        setCompanyInfo,
+        setContactInfo,
+        setItems,
+        setDiscountType,
+        setDiscountValue,
+        setNegotiationMarkup,
+        setPaymentMethod,
+        setPaymentTerms,
+        setDeliveryTime,
+        setDeliveryMode,
+        setDeliveryDate,
+        setPendingShippingTypeRestore,
+        setShippingCost,
+        setValidUntil,
+        setValidityDays,
+        setNotes,
+        setDraftRestoredAt,
+        syncValidityDaysFromDate,
+      });
     },
   });
 
