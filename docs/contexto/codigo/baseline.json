@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "a839f6be9c7b8a508eabce707515faeef60f4a11",
+  "commit": "44f077e426660847940c74d222096bb010e1ec79",
   "branch": "main",
-  "data_commit": "2026-11-18T15:15:35-03:00",
+  "data_commit": "2026-11-18T15:28:38-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "44f077e4",
+    "data": "2026-11-18",
+    "assunto": "feat(quotes): liga o funil de orçamentos à tela e para de chamar expirado de rascunho (#3836)"
+   },
    {
     "sha": "a839f6be",
     "data": "2026-11-18",
@@ -126,14 +131,9 @@
     "sha": "2d265a98",
     "data": "2026-11-17",
     "assunto": "test(resgate): lote 3 — cobertura de outro agente para autosave de orcamento e apresentacao de favoritos (#3815)"
-   },
-   {
-    "sha": "b2cc12ea",
-    "data": "2026-11-17",
-    "assunto": "fix(orcamentos): gravar rascunho nao apaga mais os campos que a tela nao modela (#3814)"
    }
   ],
-  "arquivos_mudados_7d": 1495,
+  "arquivos_mudados_7d": 1502,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -157,7 +157,7 @@
    },
    {
     "pasta": "src/components/quotes",
-    "mudancas": 223
+    "mudancas": 225
    },
    {
     "pasta": "src/pages/magazine",
@@ -189,10 +189,10 @@
    },
    {
     "pasta": "src/pages/quotes",
-    "mudancas": 127
+    "mudancas": 130
    },
    {
-    "pasta": "src/pages/products",
+    "pasta": "src/hooks/quotes",
     "mudancas": 104
    }
   ],
@@ -203,15 +203,15 @@
    },
    {
     "arquivo": "RELATORIO_CI.md",
-    "mudancas": 47
+    "mudancas": 45
    },
    {
     "arquivo": "PENDENCIAS.md",
-    "mudancas": 44
+    "mudancas": 42
    },
    {
     "arquivo": "package.json",
-    "mudancas": 41
+    "mudancas": 40
    },
    {
     "arquivo": "docs/coordenacao/conflitos-semanticos.md",
@@ -238,12 +238,12 @@
     "mudancas": 15
    },
    {
-    "arquivo": "src/hooks/kit-builder/useKitBuilderPageState.ts",
+    "arquivo": "audit/supabase-reference-catalog.temporary.json",
     "mudancas": 13
    },
    {
-    "arquivo": "audit/supabase-reference-catalog.temporary.json",
-    "mudancas": 12
+    "arquivo": "src/hooks/kit-builder/useKitBuilderPageState.ts",
+    "mudancas": 13
    },
    {
     "arquivo": "CHANGELOG.md",
@@ -301,7 +301,7 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 529
+    "commits": 528
    },
    {
     "autor": "Claude",
@@ -322,21 +322,21 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 10939,
-  "arquivos_codigo": 5456,
-  "linhas_codigo": 1040603,
+  "arquivos_total": 10942,
+  "arquivos_codigo": 5459,
+  "linhas_codigo": 1040891,
   "rotas": 139,
   "rotas_http_backend": 13,
   "vistas_por_id": 0,
   "itens_menu": 69,
   "modulos": 163,
-  "componentes": 1256,
-  "hooks": 629,
+  "componentes": 1257,
+  "hooks": 630,
   "edge_functions": 112,
   "tabelas": 527,
   "migrations": 3099,
   "cron_jobs": 122,
-  "testes": 2598,
+  "testes": 2599,
   "workflows": 88,
   "scripts": 283,
   "docs_md": 1478
@@ -1895,8 +1895,8 @@
    "linhas": 130
   },
   "src/components": {
-   "arquivos": 1416,
-   "linhas": 281111
+   "arquivos": 1418,
+   "linhas": 281293
   },
   "src/config": {
    "arquivos": 1,
@@ -1919,8 +1919,8 @@
    "linhas": 7
   },
   "src/hooks": {
-   "arquivos": 485,
-   "linhas": 91344
+   "arquivos": 486,
+   "linhas": 91459
   },
   "src/integrations": {
    "arquivos": 11,
@@ -1940,7 +1940,7 @@
   },
   "src/pages": {
    "arquivos": 366,
-   "linhas": 84445
+   "linhas": 84423
   },
   "src/routes": {
    "arquivos": 15,
@@ -2092,7 +2092,7 @@
   },
   "tests/hooks": {
    "arquivos": 160,
-   "linhas": 25500
+   "linhas": 25513
   },
   "tests/integration": {
    "arquivos": 11,
@@ -3429,6 +3429,7 @@
    "QuoteTemplatesPage",
    "QuoteViewPage",
    "QuotesDashboardPage",
+   "QuotesFunnelChart",
    "QuotesKanbanPage",
    "QuotesListPage",
    "RankBadge",

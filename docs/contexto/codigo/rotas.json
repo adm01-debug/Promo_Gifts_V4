@@ -2075,6 +2075,7 @@
     "useQuoteHistory",
     "useQuoteItems",
     "useQuoteVersions",
+    "useQuoteViewedMap",
     "useQuotes",
     "useRamoAtividade",
     "useRamoAtividadeFilter",
@@ -2366,6 +2367,7 @@
     "useQuoteHistory",
     "useQuoteItems",
     "useQuoteVersions",
+    "useQuoteViewedMap",
     "useQuotes",
     "useRamoAtividade",
     "useRamoAtividadeFilter",
@@ -2484,6 +2486,7 @@
     "product_views",
     "products",
     "profiles",
+    "quote_approval_tokens",
     "quote_history",
     "quote_item_personalizations",
     "quote_items",
@@ -2549,7 +2552,7 @@
     "status",
     "supervisor"
    ],
-   "arquivos_puxados": 461
+   "arquivos_puxados": 462
   },
   {
    "protegida": false,
@@ -8904,6 +8907,7 @@
     "useQuoteHistory",
     "useQuoteItems",
     "useQuoteVersions",
+    "useQuoteViewedMap",
     "useQuotes",
     "useRBAC",
     "useRamoAtividade",
@@ -9215,6 +9219,7 @@
     "useQuoteHistory",
     "useQuoteItems",
     "useQuoteVersions",
+    "useQuoteViewedMap",
     "useQuotes",
     "useRBAC",
     "useRamoAtividade",
@@ -9343,6 +9348,7 @@
     "product_views",
     "products",
     "profiles",
+    "quote_approval_tokens",
     "quote_history",
     "quote_item_personalizations",
     "quote_items",
@@ -9416,7 +9422,7 @@
     "supervisor",
     "vendedor"
    ],
-   "arquivos_puxados": 509
+   "arquivos_puxados": 510
   },
   {
    "protegida": true,
@@ -16354,6 +16360,7 @@
     "useQuoteHistory",
     "useQuoteItems",
     "useQuoteVersions",
+    "useQuoteViewedMap",
     "useQuotes",
     "useRamoAtividade",
     "useRamoAtividadeFilter",
@@ -16646,6 +16653,7 @@
     "useQuoteHistory",
     "useQuoteItems",
     "useQuoteVersions",
+    "useQuoteViewedMap",
     "useQuotes",
     "useRamoAtividade",
     "useRamoAtividadeFilter",
@@ -16765,6 +16773,7 @@
     "product_views",
     "products",
     "profiles",
+    "quote_approval_tokens",
     "quote_history",
     "quote_item_personalizations",
     "quote_items",
@@ -16831,7 +16840,7 @@
     "status",
     "supervisor"
    ],
-   "arquivos_puxados": 476
+   "arquivos_puxados": 477
   },
   {
    "protegida": false,
@@ -27194,6 +27203,7 @@
     "useQuoteTemplates",
     "useQuoteVersions",
     "useQuoteViewData",
+    "useQuoteViewedMap",
     "useQuotes",
     "useQuotesListPage",
     "useRamoAtividade",
@@ -27519,6 +27529,7 @@
     "useQuoteTemplates",
     "useQuoteVersions",
     "useQuoteViewData",
+    "useQuoteViewedMap",
     "useQuotes",
     "useQuotesListPage",
     "useRamoAtividade",
@@ -27644,6 +27655,7 @@
     "product_views",
     "products",
     "profiles",
+    "quote_approval_tokens",
     "quote_history",
     "quote_item_personalizations",
     "quote_items",
@@ -27720,7 +27732,7 @@
     "tablist",
     "toolbar"
    ],
-   "arquivos_puxados": 578
+   "arquivos_puxados": 579
   },
   {
    "protegida": false,
@@ -27956,6 +27968,7 @@
     "useQuoteItems",
     "useQuoteVersions",
     "useQuoteViewData",
+    "useQuoteViewedMap",
     "useQuotes",
     "useRamoAtividade",
     "useRamoAtividadeFilter",
@@ -28246,6 +28259,7 @@
     "useQuoteItems",
     "useQuoteVersions",
     "useQuoteViewData",
+    "useQuoteViewedMap",
     "useQuotes",
     "useRamoAtividade",
     "useRamoAtividadeFilter",
@@ -28363,6 +28377,7 @@
     "product_views",
     "products",
     "profiles",
+    "quote_approval_tokens",
     "quote_history",
     "quote_item_personalizations",
     "quote_items",
@@ -28427,7 +28442,7 @@
     "status",
     "supervisor"
    ],
-   "arquivos_puxados": 491
+   "arquivos_puxados": 492
   },
   {
    "protegida": false,
@@ -28681,6 +28696,7 @@
     "useQuoteSummaryState",
     "useQuoteTemplates",
     "useQuoteVersions",
+    "useQuoteViewedMap",
     "useQuotes",
     "useRamoAtividade",
     "useRamoAtividadeFilter",
@@ -28998,6 +29014,7 @@
     "useQuoteSummaryState",
     "useQuoteTemplates",
     "useQuoteVersions",
+    "useQuoteViewedMap",
     "useQuotes",
     "useRamoAtividade",
     "useRamoAtividadeFilter",
@@ -29122,6 +29139,7 @@
     "product_views",
     "products",
     "profiles",
+    "quote_approval_tokens",
     "quote_history",
     "quote_item_personalizations",
     "quote_items",
@@ -29195,7 +29213,7 @@
     "tab",
     "tablist"
    ],
-   "arquivos_puxados": 519
+   "arquivos_puxados": 520
   },
   {
    "protegida": false,
@@ -29429,6 +29447,7 @@
     "useQuoteHistory",
     "useQuoteItems",
     "useQuoteVersions",
+    "useQuoteViewedMap",
     "useQuotes",
     "useQuotesDashboard",
     "useRamoAtividade",
@@ -29719,6 +29738,7 @@
     "useQuoteHistory",
     "useQuoteItems",
     "useQuoteVersions",
+    "useQuoteViewedMap",
     "useQuotes",
     "useQuotesDashboard",
     "useRamoAtividade",
@@ -29837,6 +29857,7 @@
     "product_views",
     "products",
     "profiles",
+    "quote_approval_tokens",
     "quote_history",
     "quote_item_personalizations",
     "quote_items",
@@ -29900,7 +29921,7 @@
     "status",
     "supervisor"
    ],
-   "arquivos_puxados": 454
+   "arquivos_puxados": 456
   },
   {
    "protegida": false,
@@ -30133,6 +30154,7 @@
     "useQuoteHistory",
     "useQuoteItems",
     "useQuoteVersions",
+    "useQuoteViewedMap",
     "useQuotes",
     "useRamoAtividade",
     "useRamoAtividadeFilter",
@@ -30425,6 +30447,7 @@
     "useQuoteHistory",
     "useQuoteItems",
     "useQuoteVersions",
+    "useQuoteViewedMap",
     "useQuotes",
     "useRamoAtividade",
     "useRamoAtividadeFilter",
@@ -30542,6 +30565,7 @@
     "product_views",
     "products",
     "profiles",
+    "quote_approval_tokens",
     "quote_history",
     "quote_item_personalizations",
     "quote_items",
@@ -30605,7 +30629,7 @@
     "status",
     "supervisor"
    ],
-   "arquivos_puxados": 451
+   "arquivos_puxados": 452
   },
   {
    "protegida": false,
@@ -30864,6 +30888,7 @@
     "useQuoteTemplates",
     "useQuoteVersions",
     "useQuoteViewData",
+    "useQuoteViewedMap",
     "useQuotes",
     "useQuotesListPage",
     "useRamoAtividade",
@@ -31189,6 +31214,7 @@
     "useQuoteTemplates",
     "useQuoteVersions",
     "useQuoteViewData",
+    "useQuoteViewedMap",
     "useQuotes",
     "useQuotesListPage",
     "useRamoAtividade",
@@ -31314,6 +31340,7 @@
     "product_views",
     "products",
     "profiles",
+    "quote_approval_tokens",
     "quote_history",
     "quote_item_personalizations",
     "quote_items",
@@ -31390,7 +31417,7 @@
     "tablist",
     "toolbar"
    ],
-   "arquivos_puxados": 578
+   "arquivos_puxados": 579
   },
   {
    "protegida": false,
@@ -31642,6 +31669,7 @@
     "useQuoteSummaryState",
     "useQuoteTemplates",
     "useQuoteVersions",
+    "useQuoteViewedMap",
     "useQuotes",
     "useRamoAtividade",
     "useRamoAtividadeFilter",
@@ -31959,6 +31987,7 @@
     "useQuoteSummaryState",
     "useQuoteTemplates",
     "useQuoteVersions",
+    "useQuoteViewedMap",
     "useQuotes",
     "useRamoAtividade",
     "useRamoAtividadeFilter",
@@ -32083,6 +32112,7 @@
     "product_views",
     "products",
     "profiles",
+    "quote_approval_tokens",
     "quote_history",
     "quote_item_personalizations",
     "quote_items",
@@ -32156,7 +32186,7 @@
     "tab",
     "tablist"
    ],
-   "arquivos_puxados": 519
+   "arquivos_puxados": 520
   },
   {
    "protegida": false,

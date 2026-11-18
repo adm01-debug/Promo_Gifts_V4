@@ -1,7 +1,7 @@
 {
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
- "total": 629,
+ "total": 630,
  "hooks": [
   {
    "arquivo": "docs/agentes/resgates/quote-comments/codigo/useQuoteComments.ts",
@@ -12177,7 +12177,7 @@
    "hooks_exportados": [
     "useQuoteFunnel"
    ],
-   "linhas": 95,
+   "linhas": 104,
    "dominio": "hooks/quotes",
    "tabelas": [],
    "rpcs": [],
@@ -12346,6 +12346,29 @@
     "src/hooks/quotes/index.ts"
    ],
    "coberto_por_testes": 3
+  },
+  {
+   "arquivo": "src/hooks/quotes/useQuoteViewedMap.ts",
+   "hooks_exportados": [
+    "useQuoteViewedMap"
+   ],
+   "linhas": 55,
+   "dominio": "hooks/quotes",
+   "tabelas": [
+    "quote_approval_tokens"
+   ],
+   "rpcs": [],
+   "edges": [],
+   "hooks_internos": [
+    "useQuery"
+   ],
+   "canais_realtime": [],
+   "usado_por": 2,
+   "usado_por_arquivos": [
+    "src/hooks/quotes/index.ts",
+    "src/hooks/quotes/useQuoteFunnel.ts"
+   ],
+   "coberto_por_testes": 0
   },
   {
    "arquivo": "src/hooks/quotes/useSellerDiscountLimits.ts",
@@ -14697,7 +14720,7 @@
    "hooks_exportados": [
     "useQuotesDashboard"
    ],
-   "linhas": 316,
+   "linhas": 318,
    "dominio": "pages/quotes",
    "tabelas": [],
    "rpcs": [],
@@ -14706,6 +14729,8 @@
     "useCallback",
     "useEffect",
     "useMemo",
+    "useQuoteFunnel",
+    "useQuoteViewedMap",
     "useQuotes",
     "useState"
    ],

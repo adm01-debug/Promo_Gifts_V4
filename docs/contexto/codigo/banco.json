@@ -37585,7 +37585,7 @@
     "seller_id->auth"
    ],
    "criada_em": "20260522113314_lote_a_04_quote_approval_tokens.sql",
-   "usada_no_front": 0,
+   "usada_no_front": 1,
    "usada_em_edges": [],
    "triggers": [
     "trg_generate_secure_approval_token",
@@ -37597,7 +37597,7 @@
     "trigger_invalidate_token"
    ],
    "sem_rls": false,
-   "nao_usada": true
+   "nao_usada": false
   },
   "quote_drafts": {
    "colunas": {},

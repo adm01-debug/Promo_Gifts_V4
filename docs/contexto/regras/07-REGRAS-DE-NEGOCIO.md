@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.3.2 · commit `a839f6be9c` · branch `main` · 2026-11-18 18:29 UTC
+> Gerado automaticamente por AI Context Sync v1.3.2 · commit `44f077e426` · branch `main` · 2026-11-18 18:39 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -2020,6 +2020,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | StockNotificationKind | low \| new \| restocked \| stockout | `src/hooks/products/useStockNotifications.ts` |
 | SupplierComparisonSort | commonColors \| leadTime \| price \| score \| stock | `src/hooks/products/useSupplierComparison.ts` |
 | MotivoIlegivel | data-invalida \| envelope-invalido \| fora-de-forma \| inacessivel \| json-invalido | `src/hooks/quotes/quoteDraftApply.ts` |
+| QUOTE_VIEWED_MAP_QUERY_KEY | 'quotes', 'viewed-map' | `src/hooks/quotes/useQuoteViewedMap.ts` |
 | SortOption | popularity \| price_asc \| price_desc \| recommended \| time_asc \| time_desc | `src/hooks/simulation/useTechniqueRecommendations.ts` |
 | EtlStatus | ERROR \| OK \| WARN | `src/hooks/stock/useEmaRiskSummary.ts` |
 | RuptureLevel | ALERTA \| ATENÇÃO \| CRÍTICO \| OK \| RUPTURA | `src/hooks/stock/useRuptureAlerts.ts` |
@@ -2168,8 +2169,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | ContractErrorCode | missing_body \| invalid_json \| validation_failed \| unsupported_version \| version_negotiation_failed | `supabase/functions/_shared/contracts/errors.ts` |
 | InsertResultShape | rows \| empty-array \| null \| generic-string-error \| single-object \| primitive \| unknown | `supabase/functions/crm-db-bridge/index.ts` |
 | CRM_TABLES | 'companies', 'contacts', 'company_addresses', 'company_social_media', 'contact_emails', 'contact_phones', 'customers', 'suppliers', 'carriers', | `supabase/functions/crm-db-bridge/query-policy.ts` |
-| EmaHealthStatus | OK \| WARN \| ERROR \| UNKNOWN | `supabase/functions/ema-pipeline-health/handler.ts` |
-| … +4 linhas — lista completa em `context.json` | | |
+| … +5 linhas — lista completa em `context.json` | | |
 
 ## F. Validações de entrada
 
@@ -6623,7 +6623,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `admin` | `supabase/migrations/20261112120500_fix_optimization_queue_rpcs_dev_access.sql` |
 | `anon` | `tests/edge-functions/live/_live-client.ts` |
 
-## K. Testes como especificação (22542 testes em 2275 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (22553 testes em 2276 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -6927,7 +6927,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `e2e/dashboard-modules.spec.ts` | 18 | Dashboard Modules - Public Access (No Auth) · should redirect to auth when accessing ${route.path} unauthenticated · should display auth page for all dashboard routes · should not expose observability/metrics data to unauthenticated users … |
 | `e2e/stock-module.spec.ts` | 18 | Stock Module - Public Access (No Auth) · should redirect to auth when accessing /estoque unauthenticated · should display auth page when accessing /estoque · should not expose stock data to unauthenticated users … |
 | `e2e/magazine/magazine-viewer.spec.ts` | 18 | Magazine viewer — atalhos de teclado · → avança página, ← volta, Home/End extremos · T abre sumário, ? abre ajuda, B marca página · Space em botão focado NÃO avança página (C2) … |
-| … +1975 linhas — lista completa em `context.json` | | |
+| … +1976 linhas — lista completa em `context.json` | | |
 
 ## L. Eventos de webhook tratados (contratos com sistemas externos)
 

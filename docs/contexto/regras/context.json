@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "a839f6be9c7b8a508eabce707515faeef60f4a11",
+  "sha": "44f077e426660847940c74d222096bb010e1ec79",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-18 18:29 UTC",
-  "files_total": 10867,
-  "code_files": 8895,
-  "code_lines": 1261335
+  "generated_at": "2026-11-18 18:39 UTC",
+  "files_total": 10870,
+  "code_files": 8898,
+  "code_lines": 1261623
  },
  "version": "1.3.2",
- "facts_hash": "7fff9afc1db002f7",
+ "facts_hash": "0c06f1698fb4a8a3",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -1120,8 +1120,8 @@
   "package_manager": "npm",
   "languages": {
    ".sql": 3440,
-   ".ts": 3035,
-   ".tsx": 1955,
+   ".ts": 3036,
+   ".tsx": 1957,
    ".mjs": 450,
    ".py": 15,
    ".js": 7
@@ -137817,6 +137817,7 @@
      "product_views",
      "products",
      "profiles",
+     "quote_approval_tokens",
      "quote_history",
      "quote_item_personalizations",
      "quote_items",
@@ -137847,7 +137848,7 @@
      "request_discount_approval_transactional",
      "respond_discount_approval_transactional"
     ],
-    "deps_count": 211
+    "deps_count": 212
    },
    {
     "path": "",
@@ -138533,6 +138534,7 @@
      "product_views",
      "products",
      "profiles",
+     "quote_approval_tokens",
      "quote_history",
      "quote_item_personalizations",
      "quote_items",
@@ -138558,7 +138560,7 @@
      "request_discount_approval_transactional",
      "respond_discount_approval_transactional"
     ],
-    "deps_count": 205
+    "deps_count": 206
    },
    {
     "path": "*",
@@ -139140,6 +139142,7 @@
      "product_views",
      "products",
      "profiles",
+     "quote_approval_tokens",
      "quote_history",
      "quote_item_personalizations",
      "quote_items",
@@ -139174,7 +139177,7 @@
      "respond_discount_approval_transactional",
      "save_custom_kit_atomic"
     ],
-    "deps_count": 249
+    "deps_count": 250
    },
    {
     "path": "/dropbox",
@@ -139777,6 +139780,7 @@
      "product_views",
      "products",
      "profiles",
+     "quote_approval_tokens",
      "quote_history",
      "quote_item_personalizations",
      "quote_items",
@@ -139806,7 +139810,7 @@
      "request_discount_approval_transactional",
      "respond_discount_approval_transactional"
     ],
-    "deps_count": 208
+    "deps_count": 210
    },
    {
     "path": "/orcamentos/dashboard",
@@ -139866,6 +139870,7 @@
      "product_views",
      "products",
      "profiles",
+     "quote_approval_tokens",
      "quote_history",
      "quote_item_personalizations",
      "quote_items",
@@ -139895,7 +139900,7 @@
      "request_discount_approval_transactional",
      "respond_discount_approval_transactional"
     ],
-    "deps_count": 157
+    "deps_count": 158
    },
    {
     "path": "/orcamentos/novo",
@@ -139919,6 +139924,7 @@
      "product_views",
      "products",
      "profiles",
+     "quote_approval_tokens",
      "quote_history",
      "quote_item_personalizations",
      "quote_items",
@@ -139954,7 +139960,7 @@
      "respond_discount_approval_transactional",
      "restore_seller_cart"
     ],
-    "deps_count": 294
+    "deps_count": 295
    },
    {
     "path": "/orcamentos/templates",
@@ -144985,7 +144991,7 @@
     "file": ".github/workflows/wraparound-monitor-report.yml"
    }
   ],
-  "components_count": 1689,
+  "components_count": 1691,
   "hooks": [
    {
     "name": "useQuoteComments",
@@ -147928,6 +147934,10 @@
     "file": "src/hooks/quotes/useQuoteVersions.ts"
    },
    {
+    "name": "useQuoteViewedMap",
+    "file": "src/hooks/quotes/useQuoteViewedMap.ts"
+   },
+   {
     "name": "useQuotes",
     "file": "src/hooks/quotes/useQuotes.ts"
    },
@@ -149616,8 +149626,8 @@
   },
   {
    "module": "src/components",
-   "files": 1416,
-   "lines": 281110,
+   "files": 1418,
+   "lines": 281292,
    "tables": [
     "admin_audit_log",
     "art_file_attachments",
@@ -149980,8 +149990,8 @@
   },
   {
    "module": "src/hooks",
-   "files": 485,
-   "lines": 91344,
+   "files": 486,
+   "lines": 91459,
    "tables": [
     "admin_audit_log",
     "admin_settings",
@@ -150025,6 +150035,7 @@
     "product_variants",
     "product_views",
     "profiles",
+    "quote_approval_tokens",
     "quote_history",
     "quote_items",
     "quote_templates",
@@ -150474,7 +150485,7 @@
   {
    "module": "src/pages",
    "files": 366,
-   "lines": 84445,
+   "lines": 84423,
    "tables": [
     "ai_usage_events",
     "bot_detection_log",
@@ -151719,7 +151730,7 @@
   {
    "module": "tests",
    "files": 1091,
-   "lines": 171753,
+   "lines": 171766,
    "tables": [
     "bot_detection_log",
     "clients",
@@ -153559,6 +153570,11 @@
      "supabase/functions/_shared/external-db-telemetry.ts"
     ]
    },
+   "quote_approval_tokens": {
+    "select": [
+     "src/hooks/quotes/useQuoteViewedMap.ts"
+    ]
+   },
    "quote_comments": {
     "select": [
      "docs/agentes/resgates/quote-comments/codigo/useQuoteComments.ts",
@@ -155245,6 +155261,10 @@
     "retry_count",
     "severity",
     "table_name"
+   ],
+   "quote_approval_tokens": [
+    "quote_id",
+    "viewed_at"
    ],
    "quote_comments": [
     "id",
@@ -158717,7 +158737,6 @@
    "property_definitions",
    "push_subscriptions",
    "qa_image_coverage_log",
-   "quote_approval_tokens",
    "quote_drafts",
    "quote_number_counters",
    "quote_versions",
@@ -162384,6 +162403,11 @@
     "file": "src/hooks/quotes/quoteDraftApply.ts",
     "name": "MotivoIlegivel",
     "values": "data-invalida | envelope-invalido | fora-de-forma | inacessivel | json-invalido"
+   },
+   {
+    "file": "src/hooks/quotes/useQuoteViewedMap.ts",
+    "name": "QUOTE_VIEWED_MAP_QUERY_KEY",
+    "values": "'quotes', 'viewed-map'"
    },
    {
     "file": "src/hooks/simulation/useTechniqueRecommendations.ts",
@@ -207207,6 +207231,24 @@
     "kind": "compara"
    },
    {
+    "file": "src/hooks/quotes/useQuoteFunnel.ts",
+    "field": "status",
+    "value": "viewed",
+    "kind": "compara"
+   },
+   {
+    "file": "src/hooks/quotes/useQuoteFunnel.ts",
+    "field": "status",
+    "value": "approved",
+    "kind": "compara"
+   },
+   {
+    "file": "src/hooks/quotes/useQuoteFunnel.ts",
+    "field": "status",
+    "value": "converted",
+    "kind": "compara"
+   },
+   {
     "file": "src/hooks/quotes/useQuoteVersions.ts",
     "field": "status",
     "value": "draft",
@@ -209887,30 +209929,6 @@
     "field": "status",
     "value": "rejected",
     "kind": "compara"
-   },
-   {
-    "file": "src/pages/quotes/quotes-dashboard/useQuotesDashboard.ts",
-    "field": "stage",
-    "value": "Criados",
-    "kind": "escreve"
-   },
-   {
-    "file": "src/pages/quotes/quotes-dashboard/useQuotesDashboard.ts",
-    "field": "stage",
-    "value": "Enviados",
-    "kind": "escreve"
-   },
-   {
-    "file": "src/pages/quotes/quotes-dashboard/useQuotesDashboard.ts",
-    "field": "stage",
-    "value": "Respondidos",
-    "kind": "escreve"
-   },
-   {
-    "file": "src/pages/quotes/quotes-dashboard/useQuotesDashboard.ts",
-    "field": "stage",
-    "value": "Aprovados",
-    "kind": "escreve"
    },
    {
     "file": "src/pages/quotes/quotes-dashboard/useQuotesDashboard.ts",
@@ -239279,6 +239297,30 @@
     "name": "exibe erro com botão "
    },
    {
+    "file": "src/components/quotes/__tests__/QuotesFunnelChart.test.tsx",
+    "name": "QuotesFunnelChart"
+   },
+   {
+    "file": "src/components/quotes/__tests__/QuotesFunnelChart.test.tsx",
+    "name": "renderiza as 5 etapas com rótulo e contagem"
+   },
+   {
+    "file": "src/components/quotes/__tests__/QuotesFunnelChart.test.tsx",
+    "name": "mostra a taxa entre etapas e omite na primeira (sem etapa anterior)"
+   },
+   {
+    "file": "src/components/quotes/__tests__/QuotesFunnelChart.test.tsx",
+    "name": "estado vazio: total=0 mostra aviso e nenhuma barra"
+   },
+   {
+    "file": "src/components/quotes/__tests__/QuotesFunnelChart.test.tsx",
+    "name": "estado vazio tambem quando ha etapas zeradas (total=0)"
+   },
+   {
+    "file": "src/components/quotes/__tests__/QuotesFunnelChart.test.tsx",
+    "name": "ciclo medio: exibido quando ha valor, omitido quando null"
+   },
+   {
     "file": "src/components/quotes/__tests__/QuotesSelectToggleButton.test.tsx",
     "name": "Botão "
    },
@@ -247484,7 +247526,7 @@
    },
    {
     "file": "src/hooks/quotes/__tests__/useQuoteFunnel.test.ts",
-    "name": "draft rateFromPrev = null (primeira etapa)"
+    "name": "created rateFromPrev = null (primeira etapa)"
    },
    {
     "file": "src/hooks/quotes/__tests__/useQuoteFunnel.test.ts",
@@ -247529,6 +247571,22 @@
    {
     "file": "src/hooks/quotes/__tests__/useQuoteFunnel.test.ts",
     "name": "retorna exatamente 5 etapas na ordem correta"
+   },
+   {
+    "file": "src/hooks/quotes/__tests__/useQuoteFunnel.test.ts",
+    "name": "1a etapa rotula "
+   },
+   {
+    "file": "src/hooks/quotes/__tests__/useQuoteFunnel.test.ts",
+    "name": "expired/cancelled/rejected nao sao contados como rascunho em nenhuma etapa viva"
+   },
+   {
+    "file": "src/hooks/quotes/__tests__/useQuoteFunnel.test.ts",
+    "name": "status viewed conta em enviado e em visualizado mesmo sem token"
+   },
+   {
+    "file": "src/hooks/quotes/__tests__/useQuoteFunnel.test.ts",
+    "name": "aprovado com token de visualizacao conta 1 vez em visualizado"
    },
    {
     "file": "src/hooks/quotes/__tests__/useQuoteItems.test.ts",
@@ -286992,7 +287050,7 @@
    },
    {
     "file": "tests/hooks/useQuoteFunnel.test.ts",
-    "name": "rateFromPrev=null para draft, % para demais"
+    "name": "rateFromPrev=null para a 1a etapa, % para demais"
    },
    {
     "file": "tests/hooks/useQuoteFunnel.test.ts",
@@ -287005,6 +287063,10 @@
    {
     "file": "tests/hooks/useQuoteFunnel.test.ts",
     "name": "viewed conta apenas com viewedMap"
+   },
+   {
+    "file": "tests/hooks/useQuoteFunnel.test.ts",
+    "name": "1a etapa e "
    },
    {
     "file": "tests/hooks/useQuoteHistory.test.ts",
@@ -351091,6 +351153,7 @@
      ],
      "viewed": [
       "compara:src/components/quotes/QuotesStatusChips.tsx",
+      "compara:src/hooks/quotes/useQuoteFunnel.ts",
       "compara:supabase/functions/quote-followup-reminders/index.ts"
      ],
      "verified": [
@@ -351551,20 +351614,16 @@
     },
     "stage": {
      "Criados": [
-      "escreve:recovery/src-legacy/src/pages/quotes-dashboard/useQuotesDashboard.ts",
-      "escreve:src/pages/quotes/quotes-dashboard/useQuotesDashboard.ts"
+      "escreve:recovery/src-legacy/src/pages/quotes-dashboard/useQuotesDashboard.ts"
      ],
      "Enviados": [
-      "escreve:recovery/src-legacy/src/pages/quotes-dashboard/useQuotesDashboard.ts",
-      "escreve:src/pages/quotes/quotes-dashboard/useQuotesDashboard.ts"
+      "escreve:recovery/src-legacy/src/pages/quotes-dashboard/useQuotesDashboard.ts"
      ],
      "Respondidos": [
-      "escreve:recovery/src-legacy/src/pages/quotes-dashboard/useQuotesDashboard.ts",
-      "escreve:src/pages/quotes/quotes-dashboard/useQuotesDashboard.ts"
+      "escreve:recovery/src-legacy/src/pages/quotes-dashboard/useQuotesDashboard.ts"
      ],
      "Aprovados": [
-      "escreve:recovery/src-legacy/src/pages/quotes-dashboard/useQuotesDashboard.ts",
-      "escreve:src/pages/quotes/quotes-dashboard/useQuotesDashboard.ts"
+      "escreve:recovery/src-legacy/src/pages/quotes-dashboard/useQuotesDashboard.ts"
      ],
      "generating": [
       "compara:src/components/quotes/PdfGenerationDialog.tsx"
@@ -399788,32 +399847,28 @@
     "kind": "status",
     "msg": "valor `Criados` para `stage` usado no código não existe em nenhum enum do banco/TS",
     "where": [
-     "escreve:recovery/src-legacy/src/pages/quotes-dashboard/useQuotesDashboard.ts",
-     "escreve:src/pages/quotes/quotes-dashboard/useQuotesDashboard.ts"
+     "escreve:recovery/src-legacy/src/pages/quotes-dashboard/useQuotesDashboard.ts"
     ]
    },
    {
     "kind": "status",
     "msg": "valor `Enviados` para `stage` usado no código não existe em nenhum enum do banco/TS",
     "where": [
-     "escreve:recovery/src-legacy/src/pages/quotes-dashboard/useQuotesDashboard.ts",
-     "escreve:src/pages/quotes/quotes-dashboard/useQuotesDashboard.ts"
+     "escreve:recovery/src-legacy/src/pages/quotes-dashboard/useQuotesDashboard.ts"
     ]
    },
    {
     "kind": "status",
     "msg": "valor `Respondidos` para `stage` usado no código não existe em nenhum enum do banco/TS",
     "where": [
-     "escreve:recovery/src-legacy/src/pages/quotes-dashboard/useQuotesDashboard.ts",
-     "escreve:src/pages/quotes/quotes-dashboard/useQuotesDashboard.ts"
+     "escreve:recovery/src-legacy/src/pages/quotes-dashboard/useQuotesDashboard.ts"
     ]
    },
    {
     "kind": "status",
     "msg": "valor `Aprovados` para `stage` usado no código não existe em nenhum enum do banco/TS",
     "where": [
-     "escreve:recovery/src-legacy/src/pages/quotes-dashboard/useQuotesDashboard.ts",
-     "escreve:src/pages/quotes/quotes-dashboard/useQuotesDashboard.ts"
+     "escreve:recovery/src-legacy/src/pages/quotes-dashboard/useQuotesDashboard.ts"
     ]
    },
    {
@@ -453285,6 +453340,14 @@
    ],
    "doc": "QuotesConfigurableList - Lista de orçamentos com colunas fixas, paginação e seleção em massa."
   },
+  "src/components/quotes/QuotesFunnelChart.tsx": {
+   "path": "src/components/quotes/QuotesFunnelChart.tsx",
+   "lines": 103,
+   "exports": [
+    "function QuotesFunnelChart"
+   ],
+   "doc": "QuotesFunnelChart — visualização horizontal do funil de orçamentos com taxas de conversão entre etapas e KPI de ciclo médio."
+  },
   "src/components/quotes/QuotesStatusChips.tsx": {
    "path": "src/components/quotes/QuotesStatusChips.tsx",
    "lines": 439,
@@ -454151,6 +454214,20 @@
     "reseta para 25 ao alterar filtro/busca/ordenação sem repetir resultados",
     "exibe indicador de ",
     "exibe erro com botão "
+   ]
+  },
+  "src/components/quotes/__tests__/QuotesFunnelChart.test.tsx": {
+   "path": "src/components/quotes/__tests__/QuotesFunnelChart.test.tsx",
+   "lines": 79,
+   "is_test": true,
+   "doc": "QuotesFunnelChart — render do funil de orçamentos. Cobre: 1) as 5 etapas aparecem com rótulo e contagem; 2) a taxa entre etapas é exibida (e omitida na 1ª etapa, que não tem anterior); 3) estado vazio (total=0) mostra \"Nenhum dado disponível\", não barras zeradas; 4) KPI de ciclo médio só aparece qua …",
+   "tests": [
+    "QuotesFunnelChart",
+    "renderiza as 5 etapas com rótulo e contagem",
+    "mostra a taxa entre etapas e omite na primeira (sem etapa anterior)",
+    "estado vazio: total=0 mostra aviso e nenhuma barra",
+    "estado vazio tambem quando ha etapas zeradas (total=0)",
+    "ciclo medio: exibido quando ha valor, omitido quando null"
    ]
   },
   "src/components/quotes/__tests__/QuotesSelectToggleButton.test.tsx": {
@@ -468412,7 +468489,7 @@
   },
   "src/hooks/quotes/index.ts": {
    "path": "src/hooks/quotes/index.ts",
-   "lines": 15,
+   "lines": 16,
    "doc": "Exporting all hooks from quotes"
   },
   "src/hooks/quotes/quoteDraftApply.ts": {
@@ -469099,7 +469176,7 @@
   },
   "src/hooks/quotes/useQuoteFunnel.ts": {
    "path": "src/hooks/quotes/useQuoteFunnel.ts",
-   "lines": 95,
+   "lines": 104,
    "exports": [
     "interface FunnelStage",
     "interface QuoteFunnelData",
@@ -469115,9 +469192,24 @@
      "field": "status",
      "value": "converted",
      "kind": "compara"
+    },
+    {
+     "field": "status",
+     "value": "viewed",
+     "kind": "compara"
+    },
+    {
+     "field": "status",
+     "value": "approved",
+     "kind": "compara"
+    },
+    {
+     "field": "status",
+     "value": "converted",
+     "kind": "compara"
     }
    ],
-   "doc": "useQuoteFunnel — calcula contagens por etapa do funil e ciclo médio de venda. Etapas: draft → sent → viewed → approved → converted. \"viewed\" é inferido: status sent/approved/converted COM viewed_at via tokens.",
+   "doc": "useQuoteFunnel — calcula contagens por etapa do funil e ciclo médio de venda. Etapas: criados → enviado → visualizado → aprovado → convertido. \"viewed\" é inferido: status 'viewed' OU token de aprovação com viewed_at.",
    "hooks": [
     "useQuoteFunnel"
    ],
@@ -469352,6 +469444,38 @@
    ],
    "pagination": [
     "1"
+   ]
+  },
+  "src/hooks/quotes/useQuoteViewedMap.ts": {
+   "path": "src/hooks/quotes/useQuoteViewedMap.ts",
+   "lines": 55,
+   "exports": [
+    "interface QuoteViewedEntry",
+    "type QuoteViewedMap",
+    "const QUOTE_VIEWED_MAP_QUERY_KEY",
+    "function useQuoteViewedMap"
+   ],
+   "tables": [
+    {
+     "table": "quote_approval_tokens",
+     "op": "select"
+    }
+   ],
+   "table_cols": {
+    "quote_approval_tokens": [
+     "quote_id",
+     "viewed_at"
+    ]
+   },
+   "enums": [
+    {
+     "name": "QUOTE_VIEWED_MAP_QUERY_KEY",
+     "values": "'quotes', 'viewed-map'"
+    }
+   ],
+   "doc": "useQuoteViewedMap — mapa `quote_id` → data da primeira visualização do cliente. Fonte: `quote_approval_tokens.viewed_at`, gravado quando o cliente abre o link público de aprovação. A RLS `qatokens_select_scope` já recorta as linhas por vendedor/escopo, então a consulta não precisa de filtro extra ne …",
+   "hooks": [
+    "useQuoteViewedMap"
    ]
   },
   "src/hooks/quotes/useQuotes.ts": {
@@ -469782,12 +469906,15 @@
   },
   "src/hooks/quotes/__tests__/useQuoteFunnel.test.ts": {
    "path": "src/hooks/quotes/__tests__/useQuoteFunnel.test.ts",
-   "lines": 144,
+   "lines": 194,
    "is_test": true,
+   "rule_comments": [
+    "Dupla contagem: aprovado COM token não pode valer 2 na etapa \"Visualizado\""
+   ],
    "tests": [
     "useQuoteFunnel — funil de orçamentos",
     "quotes vazio: todos counts=0, avgCycleDays=null, total=0",
-    "draft rateFromPrev = null (primeira etapa)",
+    "created rateFromPrev = null (primeira etapa)",
     "total = quotes.length (inclui todos os status)",
     "sentTotal inclui sent + pending + approved + converted",
     "approvedTotal = approved + converted",
@@ -469798,7 +469925,11 @@
     "rateFromPrev = 0 quando etapa anterior tem 0 items",
     "avgCycleDays: media de dias entre created_at e updated_at para aprovados",
     "avgCycleDays = null quando nao ha quotes aprovadas/convertidas",
-    "retorna exatamente 5 etapas na ordem correta"
+    "retorna exatamente 5 etapas na ordem correta",
+    "1a etapa rotula ",
+    "expired/cancelled/rejected nao sao contados como rascunho em nenhuma etapa viva",
+    "status viewed conta em enviado e em visualizado mesmo sem token",
+    "aprovado com token de visualizacao conta 1 vez em visualizado"
    ]
   },
   "src/hooks/quotes/__tests__/useQuoteItems.test.ts": {
@@ -488781,7 +488912,7 @@
   },
   "src/pages/quotes/QuotesDashboardPage.tsx": {
    "path": "src/pages/quotes/QuotesDashboardPage.tsx",
-   "lines": 444,
+   "lines": 415,
    "exports": [
     "function QuotesDashboardPage"
    ],
@@ -489023,7 +489154,7 @@
   },
   "src/pages/quotes/__tests__/QuotesDashboardPage.pdfDisabled.test.tsx": {
    "path": "src/pages/quotes/__tests__/QuotesDashboardPage.pdfDisabled.test.tsx",
-   "lines": 113,
+   "lines": 118,
    "is_test": true,
    "doc": "QuotesDashboardPage — botão PDF bloqueado enquanto o painel não tem dados. O header (com o botão PDF) é renderizado também nos estados de loading e de erro. Sem guarda, clicar em \"PDF\" nesses estados gera um PDF com métricas zeradas/vazias — arquivo que o usuário acha que é o relatório real. Cobre: …",
    "tests": [
@@ -489791,33 +489922,13 @@
   },
   "src/pages/quotes/quotes-dashboard/useQuotesDashboard.ts": {
    "path": "src/pages/quotes/quotes-dashboard/useQuotesDashboard.ts",
-   "lines": 316,
+   "lines": 318,
    "exports": [
     "function formatCurrency",
     "function formatResponseTime",
     "function useQuotesDashboard"
    ],
    "status_values": [
-    {
-     "field": "stage",
-     "value": "Criados",
-     "kind": "escreve"
-    },
-    {
-     "field": "stage",
-     "value": "Enviados",
-     "kind": "escreve"
-    },
-    {
-     "field": "stage",
-     "value": "Respondidos",
-     "kind": "escreve"
-    },
-    {
-     "field": "stage",
-     "value": "Aprovados",
-     "kind": "escreve"
-    },
     {
      "field": "status",
      "value": "approved",
@@ -534877,17 +534988,18 @@
   },
   "tests/hooks/useQuoteFunnel.test.ts": {
    "path": "tests/hooks/useQuoteFunnel.test.ts",
-   "lines": 64,
+   "lines": 77,
    "is_test": true,
    "doc": "useQuoteFunnel — função pura de cálculo do funil.",
    "tests": [
     "useQuoteFunnel",
     "retorna 5 estágios",
     "contagem cumulativa: aprovado conta em sent/viewed",
-    "rateFromPrev=null para draft, % para demais",
+    "rateFromPrev=null para a 1a etapa, % para demais",
     "avgCycleDays = null sem fechados",
     "avgCycleDays calculado para approved/converted",
-    "viewed conta apenas com viewedMap"
+    "viewed conta apenas com viewedMap",
+    "1a etapa e "
    ]
   },
   "tests/hooks/useQuoteHistory.test.ts": {
@@ -546911,10 +547023,29 @@
   }
  },
  "git": {
-  "sha": "a839f6be9c7b8a508eabce707515faeef60f4a11",
+  "sha": "44f077e426660847940c74d222096bb010e1ec79",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "44f077e",
+    "date": "2026-11-18",
+    "author": "adm01-debug",
+    "subject": "feat(quotes): liga o funil de orçamentos à tela e para de chamar expirado de rascunho (#3836)",
+    "files": [
+     "audit/supabase-reference-catalog.temporary.json",
+     "src/components/quotes/QuotesFunnelChart.tsx",
+     "src/components/quotes/__tests__/QuotesFunnelChart.test.tsx",
+     "src/hooks/quotes/__tests__/useQuoteFunnel.test.ts",
+     "src/hooks/quotes/index.ts",
+     "src/hooks/quotes/useQuoteFunnel.ts",
+     "src/hooks/quotes/useQuoteViewedMap.ts",
+     "src/pages/quotes/QuotesDashboardPage.tsx",
+     "src/pages/quotes/__tests__/QuotesDashboardPage.pdfDisabled.test.tsx",
+     "src/pages/quotes/quotes-dashboard/useQuotesDashboard.ts",
+     "tests/hooks/useQuoteFunnel.test.ts"
+    ]
+   },
    {
     "sha": "a839f6b",
     "date": "2026-11-18",
@@ -547273,16 +547404,6 @@
     "files": [
      "tests/components/QuotesConfigurableList.approval.test.tsx"
     ]
-   },
-   {
-    "sha": "e86cca8",
-    "date": "2026-11-17",
-    "author": "adm01-debug",
-    "subject": "fix(mockup): rascunho reaberto perdia os limites de gravacao da area (#3797)",
-    "files": [
-     "src/hooks/mockup/useMockupDraft.ts",
-     "tests/hooks/useMockupDraft.legacy.test.ts"
-    ]
    }
   ],
   "hot_files": [
@@ -547335,35 +547456,35 @@
     2
    ],
    [
-    "src/components/admin/telemetry/BridgeAlertsCard.tsx",
+    "audit/supabase-reference-catalog.temporary.json",
     1
    ],
    [
-    "src/components/admin/telemetry/BridgeCallDetailDrawer.tsx",
+    "src/components/quotes/QuotesFunnelChart.tsx",
     1
    ],
    [
-    "src/components/admin/telemetry/BridgesLiveCard.tsx",
+    "src/components/quotes/__tests__/QuotesFunnelChart.test.tsx",
     1
    ],
    [
-    "src/components/admin/telemetry/LiveSurfacesSection.tsx",
+    "src/hooks/quotes/__tests__/useQuoteFunnel.test.ts",
     1
    ],
    [
-    "src/components/admin/telemetry/__tests__/BridgeAlertsCard.test.tsx",
+    "src/hooks/quotes/index.ts",
     1
    ],
    [
-    "src/components/admin/telemetry/__tests__/BridgeCallDetailDrawer.test.tsx",
+    "src/hooks/quotes/useQuoteFunnel.ts",
     1
    ],
    [
-    "src/pages/admin/AdminTelemetriaPage.tsx",
+    "src/hooks/quotes/useQuoteViewedMap.ts",
     1
    ],
    [
-    "src/pages/kit-builder/KitBuilderPage.tsx",
+    "src/pages/quotes/QuotesDashboardPage.tsx",
     1
    ]
   ]

@@ -1,6 +1,6 @@
 # 11 · GLOSSÁRIO, DADOS DE REFERÊNCIA E LACUNAS
 
-> Gerado automaticamente por AI Context Sync v1.3.2 · commit `a839f6be9c` · branch `main` · 2026-11-18 18:29 UTC
+> Gerado automaticamente por AI Context Sync v1.3.2 · commit `44f077e426` · branch `main` · 2026-11-18 18:39 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## Glossário do domínio (entidades do sistema)
@@ -307,7 +307,7 @@
 | `product_price_freshness_overrides` | Override local da janela de validade de preço por produto (30/60/90 dias). Sobrescreve o valor padrão de 60 dias e tem precedência sobre qualquer valor que venha a ser exposto pelo BD externo no futuro. | 6 colunas | migration |
 | `product_print_positions` | _(sem COMMENT ON TABLE — significado não documentado)_ | 18 colunas | migration |
 | `product_properties` | Relacionamento entre produtos e suas propriedades | 9 colunas | migration |
-| … +499 linhas — lista completa em `context.json` | | | |
+| … +500 linhas — lista completa em `context.json` | | | |
 
 ## Dados de referência (seed — planos, categorias, perfis fixos)
 
@@ -391,10 +391,10 @@
 | status | valor `qr` para `step` usado no código não existe em nenhum enum do banco/TS | `compara:src/components/security/MfaEnrollmentDialog.tsx` |
 | status | valor `verify` para `step` usado no código não existe em nenhum enum do banco/TS | `compara:src/components/security/MfaEnrollmentDialog.tsx` |
 | status | valor `specs` para `step` usado no código não existe em nenhum enum do banco/TS | `compara:src/types/domain/simulator-wizard.ts`<br>`escreve:src/types/domain/simulator-wizard.ts` |
-| status | valor `Criados` para `stage` usado no código não existe em nenhum enum do banco/TS | `escreve:recovery/src-legacy/src/pages/quotes-dashboard/useQuotesDashboard.ts`<br>`escreve:src/pages/quotes/quotes-dashboard/useQuotesDashboard.ts` |
-| status | valor `Enviados` para `stage` usado no código não existe em nenhum enum do banco/TS | `escreve:recovery/src-legacy/src/pages/quotes-dashboard/useQuotesDashboard.ts`<br>`escreve:src/pages/quotes/quotes-dashboard/useQuotesDashboard.ts` |
-| status | valor `Respondidos` para `stage` usado no código não existe em nenhum enum do banco/TS | `escreve:recovery/src-legacy/src/pages/quotes-dashboard/useQuotesDashboard.ts`<br>`escreve:src/pages/quotes/quotes-dashboard/useQuotesDashboard.ts` |
-| status | valor `Aprovados` para `stage` usado no código não existe em nenhum enum do banco/TS | `escreve:recovery/src-legacy/src/pages/quotes-dashboard/useQuotesDashboard.ts`<br>`escreve:src/pages/quotes/quotes-dashboard/useQuotesDashboard.ts` |
+| status | valor `Criados` para `stage` usado no código não existe em nenhum enum do banco/TS | `escreve:recovery/src-legacy/src/pages/quotes-dashboard/useQuotesDashboard.ts` |
+| status | valor `Enviados` para `stage` usado no código não existe em nenhum enum do banco/TS | `escreve:recovery/src-legacy/src/pages/quotes-dashboard/useQuotesDashboard.ts` |
+| status | valor `Respondidos` para `stage` usado no código não existe em nenhum enum do banco/TS | `escreve:recovery/src-legacy/src/pages/quotes-dashboard/useQuotesDashboard.ts` |
+| status | valor `Aprovados` para `stage` usado no código não existe em nenhum enum do banco/TS | `escreve:recovery/src-legacy/src/pages/quotes-dashboard/useQuotesDashboard.ts` |
 | status | valor `generating` para `stage` usado no código não existe em nenhum enum do banco/TS | `compara:src/components/quotes/PdfGenerationDialog.tsx` |
 | status | valor `ready` para `stage` usado no código não existe em nenhum enum do banco/TS | `compara:src/components/quotes/PdfGenerationDialog.tsx` |
 | status | valor `mixed` para `state` usado no código não existe em nenhum enum do banco/TS | `escreve:src/components/admin/connections/ConnectionRowSourceBadge.tsx` |

@@ -1,7 +1,7 @@
 {
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
- "total": 1256,
+ "total": 1257,
  "orfaos": 161,
  "nomes_duplicados": {
   "AdminTemplatesManager": [
@@ -353,6 +353,10 @@
   "QuotesDashboardPage": [
    "recovery/src-legacy/src/pages/QuotesDashboardPage.tsx",
    "src/pages/quotes/QuotesDashboardPage.tsx"
+  ],
+  "QuotesFunnelChart": [
+   "recovery/src-legacy/src/components/quotes/QuotesFunnelChart.tsx",
+   "src/components/quotes/QuotesFunnelChart.tsx"
   ],
   "QuotesKanbanPage": [
    "recovery/src-legacy/src/pages/QuotesKanbanPage.tsx",
@@ -14761,6 +14765,20 @@
    "orfao": false
   },
   {
+   "arquivo": "src/components/quotes/QuotesFunnelChart.tsx",
+   "exports": [
+    "QuotesFunnelChart"
+   ],
+   "export_default": null,
+   "linhas": 103,
+   "dominio": "components/quotes",
+   "hooks_locais": [],
+   "tabelas": [],
+   "edges": [],
+   "usado_por": 2,
+   "orfao": false
+  },
+  {
    "arquivo": "src/components/quotes/QuoteSignaturePad.tsx",
    "exports": [
     "QuoteSignaturePad"
@@ -16277,7 +16295,7 @@
    "hooks_locais": [],
    "tabelas": [],
    "edges": [],
-   "usado_por": 356,
+   "usado_por": 357,
    "orfao": false
   },
   {
@@ -17126,7 +17144,7 @@
    ],
    "tabelas": [],
    "edges": [],
-   "usado_por": 177,
+   "usado_por": 178,
    "orfao": false
   },
   {
@@ -19952,7 +19970,7 @@
     "QuotesDashboardPage"
    ],
    "export_default": "QuotesDashboardPage",
-   "linhas": 444,
+   "linhas": 415,
    "dominio": "pages/quotes",
    "hooks_locais": [
     "useQuotesDashboard"
