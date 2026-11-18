@@ -27,6 +27,35 @@ interface SyncBitrixParams {
   onBitrixCompanyIdFound?: (id: string) => void;
 }
 
+/**
+ * Normaliza o `quote_id` que o Bitrix devolve antes de persistir em
+ * `quotes.bitrix_quote_id`.
+ *
+ * O valor vem de terceiro e a coluna é texto, então `Number()` direto corrompia
+ * o dado: id acima de 2^53 perdia precisão (9007199254740993 virava
+ * ...992), 100 dígitos viravam notação científica, e `Infinity`, `-1`, `1.25` e
+ * `true` eram gravados como texto. Aqui:
+ *
+ * - string só de dígitos passa inteira, sem `Number()`, para preservar
+ *   precisão arbitrária; zeros à esquerda caem ('0042' -> '42');
+ * - qualquer outra forma numérica ('+12', '1e3', '0x10', '1.0', número) só é
+ *   aceita se virar inteiro seguro e positivo;
+ * - o resto (0, vazio, 'abc', 'Infinity', NaN, negativo, fracionário,
+ *   booleano, array) devolve null e nada é gravado.
+ */
+export function normalizeBitrixQuoteId(raw: unknown): string | null {
+  if (typeof raw !== 'string' && typeof raw !== 'number') return null;
+  if (typeof raw === 'string') {
+    const trimmed = raw.trim();
+    if (/^\d+$/.test(trimmed)) {
+      const semZerosAEsquerda = trimmed.replace(/^0+/, '');
+      return semZerosAEsquerda.length > 0 ? semZerosAEsquerda : null;
+    }
+  }
+  const asNumber = Number(typeof raw === 'string' ? raw.trim() : raw);
+  return Number.isSafeInteger(asNumber) && asNumber > 0 ? String(asNumber) : null;
+}
+
 export async function syncQuoteToBitrix({
   quote,
   proposalData,
@@ -141,9 +170,7 @@ export async function syncQuoteToBitrix({
   }
 
   const result = data.result;
-  const parsedBitrixId = result?.quote_id ? Number(result.quote_id) : null;
-  const bitrixQuoteIdFromResponse =
-    parsedBitrixId && !isNaN(parsedBitrixId) ? String(parsedBitrixId) : null;
+  const bitrixQuoteIdFromResponse = normalizeBitrixQuoteId(result?.quote_id);
 
   const canTransitionToSent =
     isQuoteStatus(quote.status) && isValidQuoteTransition(quote.status, 'sent');
