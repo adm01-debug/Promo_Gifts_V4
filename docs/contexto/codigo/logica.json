@@ -1,13 +1,13 @@
 {
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
- "total": 309,
+ "total": 310,
  "por_camada": {
   "api": 4,
   "config": 1,
   "data": 3,
   "integrations": 8,
-  "lib": 234,
+  "lib": 235,
   "python": 9,
   "services": 10,
   "stores": 9,
@@ -961,7 +961,7 @@
    "zod_schemas": 0,
    "flags": [],
    "papeis": [],
-   "usado_por": 54,
+   "usado_por": 55,
    "usado_por_modulos": [
     "components/admin",
     "components/cart",
@@ -3448,7 +3448,7 @@
     "fetchPromobrindProductsLightweight"
    ],
    "export_default": null,
-   "linhas": 238,
+   "linhas": 244,
    "tabelas": [],
    "rpcs": [],
    "edges": [],
@@ -4836,7 +4836,7 @@
    "zod_schemas": 0,
    "flags": [],
    "papeis": [],
-   "usado_por": 303,
+   "usado_por": 304,
    "usado_por_modulos": [
     "components",
     "components/admin",
@@ -4894,6 +4894,7 @@
     "lib/external-db",
     "lib/intelligence",
     "lib/personalization",
+    "lib/quotes",
     "lib/security",
     "lib/telemetry",
     "pages",
@@ -6106,6 +6107,31 @@
    "orfao": false
   },
   {
+   "arquivo": "src/lib/quotes/applyRestoredDraft.ts",
+   "camada": "lib",
+   "exports": [
+    "RestoredDraftSetters",
+    "RestoredQuoteDraft",
+    "applyRestoredDraft"
+   ],
+   "export_default": null,
+   "linhas": 97,
+   "tabelas": [],
+   "rpcs": [],
+   "edges": [],
+   "env": [],
+   "externos": [],
+   "zod_schemas": 0,
+   "flags": [],
+   "papeis": [],
+   "usado_por": 1,
+   "usado_por_modulos": [
+    "hooks/quotes"
+   ],
+   "coberto_por_testes": 0,
+   "orfao": false
+  },
+  {
    "arquivo": "src/lib/quotes/applyTemplateToQuote.ts",
    "camada": "lib",
    "exports": [
@@ -6286,10 +6312,11 @@
    "arquivo": "src/lib/quotes/quoteDraftRecovery.ts",
    "camada": "lib",
    "exports": [
-    "quoteDraftRecoverySchema"
+    "quoteDraftRecoverySchema",
+    "rascunhoRestauradoEValido"
    ],
    "export_default": null,
-   "linhas": 118,
+   "linhas": 136,
    "tabelas": [],
    "rpcs": [],
    "edges": [],
@@ -6300,7 +6327,7 @@
    "zod_schemas": 0,
    "flags": [],
    "papeis": [],
-   "usado_por": 2,
+   "usado_por": 3,
    "usado_por_modulos": [
     "components/quotes",
     "hooks/quotes"
@@ -9475,13 +9502,14 @@
    "camada": "utils",
    "exports": [
     "ExportedTemplate",
+    "ExportedTemplateItem",
     "exportSingleTemplate",
     "exportTemplatesToJson",
     "readTemplateFile",
     "validateImportedTemplates"
    ],
    "export_default": null,
-   "linhas": 112,
+   "linhas": 137,
    "tabelas": [],
    "rpcs": [],
    "edges": [],

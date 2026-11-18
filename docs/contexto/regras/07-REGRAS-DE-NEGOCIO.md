@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.3.2 · commit `1d8da35924` · branch `main` · 2026-11-18 15:04 UTC
+> Gerado automaticamente por AI Context Sync v1.3.2 · commit `f52a5d31fe` · branch `main` · 2026-11-18 15:22 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -4634,6 +4634,10 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
   ```
   const { quantity, colors } = params; // Encontrar faixa adequada let tierUsed = table.faixas[0]; for (const faixa of table.faixas) { if (quantity >= faixa.quantidadeMinima) { tierUsed = faixa; } else { break; } } let unitPrice = tierUsed.precoUnitario; // Ajustar por cores se aplicável if (table.precoPorCor && colors && table.maxCores) { if (colors > table.maxCores) { const fatorCor = colors / table.maxCores; unitPrice *= fatorCor; } } const subtotal = unitPrice * quantity; const grandTotal = su …
   ```
+- **applyRestoredDraft(saved: RestoredQuoteDraft, s: RestoredDraftSetters)** — `src/lib/quotes/applyRestoredDraft.ts`
+  ```
+  if (saved.clientId) s.setClientId(saved.clientId); if (saved.contactId) s.setContactId(saved.contactId); if (saved.companyInfo) s.setCompanyInfo(saved.companyInfo); if (saved.contactInfo) s.setContactInfo(saved.contactInfo); if (saved.items) s.setItems(saved.items); if (saved.discountType) s.setDiscountType(saved.discountType); if (typeof saved.discountValue === 'number') s.setDiscountValue(saved.discountValue); if (typeof saved.negotiationMarkup === 'number' && saved.negotiationMarkup > 0) s.se …
+  ```
 - **applyTemplateToQuote(template: QuoteTemplate, s: ApplyTemplateTarget,)** — `src/lib/quotes/applyTemplateToQuote.ts`
   ```
   const doTemplate = Array.isArray(template.items) ? template.items : []; const itens = fromTemplateItems(doTemplate); s.setItems(itens); const camposAplicados: string[] = []; if (itens.length > 0) camposAplicados.push('itens'); // Decisão 4: percentual tem precedência quando os dois vêm preenchidos, // porque é a forma que o limite do vendedor usa. const percentual = numeroFinitoPositivo(template.discount_percent); const valor = numeroFinitoPositivo(template.discount_amount); if (percentual !== n …
@@ -5558,6 +5562,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `DRAFT_TTL_MS` | `1000` | `src/components/products/customization/LocationPanel.tsx` |
 | `MANUAL_PHONE_PLACEHOLDER` | `'(11) 91234-5678'` | `src/components/products/gallery/VideoShareWhatsAppDialog.tsx` |
 | `BRAZIL_COUNTRY_CODE` | `'55'` | `src/components/products/share/whatsapp.ts` |
+| `TEMPLATE_SEM_VENDEDOR` | `'__sistema__'` | `src/components/quotes/AdminTemplatesManager.tsx` |
 | `MAX_MARKUP` | `50` | `src/components/quotes/NegotiationMarkupCard.tsx` |
 | `MAX_VERSIONS` | `5` | `src/components/quotes/QuoteAutoSave.tsx` |
 | `PAGE_SIZE` | `25` | `src/components/quotes/QuotesConfigurableList.tsx` |
@@ -5695,8 +5700,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `MAX_RECENT_PRODUCTS` | `5` | `src/hooks/products/useRecentProducts.ts` |
 | `MAX_ITEMS` | `10` | `src/hooks/products/useRecentlyViewed.ts` |
 | `REPLENISHMENT_WINDOW_DAYS` | `30` | `src/hooks/products/useReplenishments.ts` |
-| `FETCH_ALL_LIMIT` | `2000` | `src/hooks/products/useReplenishments.ts` |
-| … +369 linhas — lista completa em `context.json` | | |
+| … +370 linhas — lista completa em `context.json` | | |
 
 ### H.2 Prazos, expirações e janelas de tempo
 
@@ -6485,7 +6489,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | allowlist inválida: versions contém duplicatas | `scripts/check-supabase-migration-ledger.mjs` |
 | allowlist inválida: versions contém valor vazio/não textual | `scripts/check-supabase-migration-ledger.mjs` |
 | allowlist inválida: versions deve ser array não vazio | `scripts/check-supabase-migration-ledger.mjs` |
-| … +1301 linhas — lista completa em `context.json` | |
+| … +1302 linhas — lista completa em `context.json` | |
 
 ## J. Controle de acesso no código (checagens de perfil/permissão)
 
@@ -6609,7 +6613,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `admin` | `supabase/migrations/20261112120500_fix_optimization_queue_rpcs_dev_access.sql` |
 | `anon` | `tests/edge-functions/live/_live-client.ts` |
 
-## K. Testes como especificação (22357 testes em 2263 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (22356 testes em 2263 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -7381,4 +7385,4 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | Context providers must be imported synchronously (consumers render inside them) | `src/components/layout/MainLayout.tsx` |
 | para a qual não tem permissão. | `src/components/layout/sidebar/RestrictedRouteNotice.tsx` |
 | E-24: mesma regra dos dots/thumbnails do MagicUpResultPanel — modo NÃO-WRAP. | `src/components/magic-up/MagicUpVariationComparator.tsx` |
-| … +1343 linhas — lista completa em `context.json` | |
+| … +1345 linhas — lista completa em `context.json` | |

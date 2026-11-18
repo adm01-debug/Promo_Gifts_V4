@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "1d8da35924aa1f29c6e3f8d22d6763a196b41f2e",
+  "commit": "f52a5d31fe005af919d13fbe97fe950d9b605093",
   "branch": "main",
-  "data_commit": "2026-11-18T12:02:04-03:00",
+  "data_commit": "2026-11-18T12:16:58-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "f52a5d31",
+    "data": "2026-11-18",
+    "assunto": "fix(resgate): corrige os defeitos de produção medidos no item 6 do resgate (#3820)"
+   },
    {
     "sha": "1d8da359",
     "data": "2026-11-18",
@@ -126,14 +131,9 @@
     "sha": "4700bff9",
     "data": "2026-11-17",
     "assunto": "feat(voz): comando de filtro aplica os critérios ditados no catálogo (#3813)"
-   },
-   {
-    "sha": "1e9864f4",
-    "data": "2026-11-17",
-    "assunto": "feat(favoritos): botão \"Apresentar lista\" abre o modo apresentação dos favoritos (#3812)"
    }
   ],
-  "arquivos_mudados_7d": 1478,
+  "arquivos_mudados_7d": 1482,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -153,11 +153,11 @@
    },
    {
     "pasta": "src/hooks/products",
-    "mudancas": 232
+    "mudancas": 235
    },
    {
     "pasta": "src/components/quotes",
-    "mudancas": 213
+    "mudancas": 218
    },
    {
     "pasta": "src/pages/magazine",
@@ -193,7 +193,7 @@
    },
    {
     "pasta": "src/pages/products",
-    "mudancas": 108
+    "mudancas": 104
    }
   ],
   "arquivos_mais_mudados_90d": [
@@ -203,11 +203,11 @@
    },
    {
     "arquivo": "RELATORIO_CI.md",
-    "mudancas": 53
+    "mudancas": 52
    },
    {
     "arquivo": "PENDENCIAS.md",
-    "mudancas": 47
+    "mudancas": 46
    },
    {
     "arquivo": "package.json",
@@ -313,7 +313,7 @@
    },
    {
     "autor": "github-actions[bot]",
-    "commits": 29
+    "commits": 28
    },
    {
     "autor": "dependabot[bot]",
@@ -322,9 +322,9 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 10916,
-  "arquivos_codigo": 5434,
-  "linhas_codigo": 1036675,
+  "arquivos_total": 10918,
+  "arquivos_codigo": 5436,
+  "linhas_codigo": 1036918,
   "rotas": 139,
   "rotas_http_backend": 13,
   "vistas_por_id": 0,
@@ -1896,7 +1896,7 @@
   },
   "src/components": {
    "arquivos": 1407,
-   "linhas": 279634
+   "linhas": 279654
   },
   "src/config": {
    "arquivos": 1,
@@ -1919,16 +1919,16 @@
    "linhas": 7
   },
   "src/hooks": {
-   "arquivos": 483,
-   "linhas": 91130
+   "arquivos": 484,
+   "linhas": 91205
   },
   "src/integrations": {
    "arquivos": 11,
    "linhas": 66577
   },
   "src/lib": {
-   "arquivos": 346,
-   "linhas": 53412
+   "arquivos": 347,
+   "linhas": 53533
   },
   "src/logic": {
    "arquivos": 4,
@@ -1968,7 +1968,7 @@
   },
   "src/utils": {
    "arquivos": 57,
-   "linhas": 8286
+   "linhas": 8311
   },
   "supabase/functions": {
    "arquivos": 278,
@@ -2092,7 +2092,7 @@
   },
   "tests/hooks": {
    "arquivos": 160,
-   "linhas": 25498
+   "linhas": 25500
   },
   "tests/integration": {
    "arquivos": 11,
@@ -2321,12 +2321,12 @@
    "linhas": 1091
   },
   {
-   "arquivo": "src/hooks/quotes/useQuoteBuilderState.ts",
-   "linhas": 1082
-  },
-  {
    "arquivo": "scripts/graphify-local.mjs",
    "linhas": 1076
+  },
+  {
+   "arquivo": "src/hooks/quotes/useQuoteBuilderState.ts",
+   "linhas": 1073
   },
   {
    "arquivo": "src/pages/products/CartsListPage.tsx",

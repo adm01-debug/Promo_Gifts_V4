@@ -16781,7 +16781,7 @@
   {
    "arquivo": "tests/hooks/legacy-admin-utils-preservation.test.ts",
    "tipo": "unit",
-   "linhas": 349,
+   "linhas": 353,
    "testa": [
     "src/hooks/crm/useRamoAtividadeFilter.ts",
     "src/hooks/products/getCategoryIcon.ts",
@@ -17530,7 +17530,7 @@
   {
    "arquivo": "tests/hooks/useLegacyCatalogContracts.test.ts",
    "tipo": "unit",
-   "linhas": 289,
+   "linhas": 293,
    "testa": [
     "src/components/filters/filter-panel/types.ts",
     "src/constants/filters.ts",
@@ -17880,7 +17880,7 @@
   {
    "arquivo": "tests/hooks/useQuoteVersions.legacy.test.ts",
    "tipo": "unit",
-   "linhas": 238,
+   "linhas": 232,
    "testa": [
     "src/hooks/quotes/useQuoteVersions.ts"
    ],

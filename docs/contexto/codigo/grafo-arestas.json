@@ -11309,6 +11309,9 @@
    "src/hooks/quotes/quoteHelpers.ts",
    "src/hooks/quotes/quoteTypes.ts"
   ],
+  "src/hooks/quotes/quoteTemplateTypes.ts": [
+   "src/integrations/supabase/types.ts"
+  ],
   "src/hooks/quotes/quoteTypes.ts": [
    "src/integrations/supabase/types.ts",
    "src/types/quote.ts"
@@ -11356,6 +11359,8 @@
    "src/lib/format.ts",
    "src/lib/logger.ts",
    "src/lib/quote-status-config.ts",
+   "src/lib/quotes/applyRestoredDraft.ts",
+   "src/lib/quotes/quoteDraftRecovery.ts",
    "src/lib/security/sanitize-error.ts",
    "src/lib/telemetry/quoteHandoffTelemetry.ts",
    "src/lib/validations/index.ts",
@@ -11389,6 +11394,7 @@
   ],
   "src/hooks/quotes/useQuoteTemplates.ts": [
    "src/contexts/AuthContext.tsx",
+   "src/hooks/quotes/quoteTemplateTypes.ts",
    "src/hooks/ui/index.ts",
    "src/integrations/supabase/client.ts",
    "src/integrations/supabase/types.ts",
@@ -12266,6 +12272,11 @@
   ],
   "src/lib/quote-status-config.ts": [
    "src/types/quote.ts"
+  ],
+  "src/lib/quotes/applyRestoredDraft.ts": [
+   "src/components/quotes/CompanyContactSelector.tsx",
+   "src/hooks/quotes/index.ts",
+   "src/lib/logger.ts"
   ],
   "src/lib/quotes/applyTemplateToQuote.ts": [
    "src/hooks/quotes/quoteTypes.ts",

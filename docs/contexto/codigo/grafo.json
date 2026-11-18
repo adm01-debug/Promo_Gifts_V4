@@ -1,8 +1,8 @@
 {
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
- "nos": 2848,
- "arestas": 11225,
+ "nos": 2850,
+ "arestas": 11232,
  "hubs": [
   {
    "arquivo": "src/lib/utils.ts",
@@ -26,7 +26,7 @@
   },
   {
    "arquivo": "src/lib/logger.ts",
-   "importado_por": 317
+   "importado_por": 318
   },
   {
    "arquivo": "src/components/ui/tooltip.tsx",
@@ -97,6 +97,10 @@
    "importado_por": 63
   },
   {
+   "arquivo": "src/integrations/supabase/types.ts",
+   "importado_por": 62
+  },
+  {
    "arquivo": "src/lib/supabase-untyped.ts",
    "importado_por": 62
   },
@@ -110,10 +114,6 @@
   },
   {
    "arquivo": "src/components/ui/switch.tsx",
-   "importado_por": 61
-  },
-  {
-   "arquivo": "src/integrations/supabase/types.ts",
    "importado_por": 61
   },
   {
@@ -146,7 +146,7 @@
   },
   {
    "arquivo": "src/hooks/quotes/index.ts",
-   "importado_por": 49
+   "importado_por": 50
   },
   {
    "arquivo": "src/components/ui/ConfirmDialog.tsx",
@@ -220,6 +220,17 @@
     ]
    },
    {
+    "tamanho": 6,
+    "arquivos": [
+     "src/hooks/quotes/index.ts",
+     "src/hooks/quotes/useQuoteBuilderState.helpers.ts",
+     "src/hooks/quotes/useQuoteBuilderState.ts",
+     "src/hooks/quotes/useQuoteFunnel.ts",
+     "src/hooks/quotes/useQuoteItems.ts",
+     "src/lib/quotes/applyRestoredDraft.ts"
+    ]
+   },
+   {
     "tamanho": 5,
     "arquivos": [
      "src/contexts/AuthContext.tsx",
@@ -227,16 +238,6 @@
      "src/lib/auth/auth-utils.ts",
      "src/lib/security/safeToast.ts",
      "src/lib/system/dev-gate/DevInfraGate.ts"
-    ]
-   },
-   {
-    "tamanho": 5,
-    "arquivos": [
-     "src/hooks/quotes/index.ts",
-     "src/hooks/quotes/useQuoteBuilderState.helpers.ts",
-     "src/hooks/quotes/useQuoteBuilderState.ts",
-     "src/hooks/quotes/useQuoteFunnel.ts",
-     "src/hooks/quotes/useQuoteItems.ts"
     ]
    },
    {
@@ -623,7 +624,7 @@
   {
    "modulo": "lib",
    "depende_de": 20,
-   "importado_por": 106
+   "importado_por": 107
   },
   {
    "modulo": "contexts",

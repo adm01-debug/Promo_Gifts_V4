@@ -14032,7 +14032,7 @@
     "TemplateGridView"
    ],
    "export_default": null,
-   "linhas": 131,
+   "linhas": 133,
    "dominio": "components/quotes",
    "hooks_locais": [],
    "tabelas": [],
@@ -14046,7 +14046,7 @@
     "TemplateTableView"
    ],
    "export_default": null,
-   "linhas": 142,
+   "linhas": 147,
    "dominio": "components/quotes",
    "hooks_locais": [],
    "tabelas": [],
@@ -14075,7 +14075,7 @@
     "AdminTemplatesManager"
    ],
    "export_default": null,
-   "linhas": 253,
+   "linhas": 260,
    "dominio": "components/quotes",
    "hooks_locais": [
     "useQuoteTemplates"
@@ -14160,7 +14160,7 @@
    "hooks_locais": [],
    "tabelas": [],
    "edges": [],
-   "usado_por": 6,
+   "usado_por": 7,
    "orfao": false
   },
   {
@@ -14761,7 +14761,7 @@
     "QuoteTemplatesList"
    ],
    "export_default": null,
-   "linhas": 408,
+   "linhas": 411,
    "dominio": "components/quotes",
    "hooks_locais": [
     "useQuoteTemplates"
@@ -14822,7 +14822,7 @@
     "QuoteVersionHistory"
    ],
    "export_default": null,
-   "linhas": 200,
+   "linhas": 203,
    "dominio": "components/quotes",
    "hooks_locais": [
     "useQuoteVersions"

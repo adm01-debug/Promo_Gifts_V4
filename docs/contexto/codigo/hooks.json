@@ -8520,7 +8520,7 @@
    "hooks_exportados": [
     "useRamoAtividadeFilter"
    ],
-   "linhas": 193,
+   "linhas": 215,
    "dominio": "hooks/crm",
    "tabelas": [],
    "rpcs": [],
@@ -10653,7 +10653,7 @@
    "hooks_exportados": [
     "useCategoryIcons"
    ],
-   "linhas": 25,
+   "linhas": 31,
    "dominio": "hooks/products",
    "tabelas": [
     "category_icons"
@@ -11973,7 +11973,7 @@
    "hooks_exportados": [
     "useAutoSaveQuote"
    ],
-   "linhas": 199,
+   "linhas": 227,
    "dominio": "hooks/quotes",
    "tabelas": [],
    "rpcs": [],
@@ -12094,7 +12094,7 @@
    "hooks_exportados": [
     "useQuoteBuilderState"
    ],
-   "linhas": 1082,
+   "linhas": 1073,
    "dominio": "hooks/quotes",
    "tabelas": [
     "quotes"
@@ -12288,7 +12288,7 @@
    "hooks_exportados": [
     "useQuoteTemplates"
    ],
-   "linhas": 496,
+   "linhas": 448,
    "dominio": "hooks/quotes",
    "tabelas": [
     "profiles",
@@ -12325,7 +12325,7 @@
    "hooks_exportados": [
     "useQuoteVersions"
    ],
-   "linhas": 273,
+   "linhas": 274,
    "dominio": "hooks/quotes",
    "tabelas": [
     "quote_items",
