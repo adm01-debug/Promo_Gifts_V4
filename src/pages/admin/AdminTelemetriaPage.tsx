@@ -100,6 +100,16 @@ const EdgeInvokeLivePanel = lazy(() =>
     default: m.EdgeInvokeLivePanel,
   })),
 );
+const BridgeAlertsCard = lazy(() =>
+  import('@/components/admin/telemetry/BridgeAlertsCard').then((m) => ({
+    default: m.BridgeAlertsCard,
+  })),
+);
+const BridgesLiveCard = lazy(() =>
+  import('@/components/admin/telemetry/BridgesLiveCard').then((m) => ({
+    default: m.BridgesLiveCard,
+  })),
+);
 const QuoteBuilderHandoffCard = lazy(() =>
   import('@/components/admin/telemetry/QuoteBuilderHandoffCard').then((m) => ({
     default: m.QuoteBuilderHandoffCard,
@@ -240,6 +250,20 @@ export default function AdminTelemetriaPage() {
         <SectionErrorBoundary section="telemetry.EdgeInvokeLivePanel" label="edge invokes ao vivo">
           <Suspense fallback={<CardSkeleton height={360} label="Carregando edge invokes live" />}>
             <EdgeInvokeLivePanel />
+          </Suspense>
+        </SectionErrorBoundary>
+
+        {/* Alertas configuráveis das bridges (p95 / payload) sobre as amostras da sessão */}
+        <SectionErrorBoundary section="telemetry.BridgeAlertsCard" label="alertas das bridges">
+          <Suspense fallback={<BannerSkeleton />}>
+            <BridgeAlertsCard />
+          </Suspense>
+        </SectionErrorBoundary>
+
+        {/* Bridges ao vivo — por endpoint+operação, bytes de payload e drill-down por request-id */}
+        <SectionErrorBoundary section="telemetry.BridgesLiveCard" label="bridges ao vivo">
+          <Suspense fallback={<CardSkeleton height={360} label="Carregando bridges ao vivo" />}>
+            <BridgesLiveCard />
           </Suspense>
         </SectionErrorBoundary>
 
