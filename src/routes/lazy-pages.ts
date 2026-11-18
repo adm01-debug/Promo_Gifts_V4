@@ -59,6 +59,7 @@ export const QuotesDashboardPage = lazyWithRetry(
 export const QuoteBuilderPage = lazyWithRetry(() => import('@/pages/quotes/QuoteBuilderPage'));
 export const QuoteViewPage = lazyWithRetry(() => import('@/pages/quotes/QuoteViewPage'));
 export const QuotesKanbanPage = lazyWithRetry(() => import('@/pages/quotes/QuotesKanbanPage'));
+export const QuoteTemplatesPage = lazyWithRetry(() => import('@/pages/quotes/QuoteTemplatesPage'));
 
 // ─────────────────────────────────────────────────────────────────
 // Admin (supervisor + dev)

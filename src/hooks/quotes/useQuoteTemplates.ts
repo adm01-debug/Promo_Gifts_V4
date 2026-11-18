@@ -273,7 +273,10 @@ export function useQuoteTemplates() {
           description: `Template "${input.name}" salvo com sucesso`,
         });
         await fetchTemplates();
-        return inserted?.[0] || null;
+        // Normaliza igual ao updateTemplate: sem isto o mesmo hook devolvia a row
+        // crua do banco aqui e o QuoteTemplate normalizado la, entao `items` saia
+        // em duas formas e `seller_id` vinha como string|null.
+        return inserted?.[0] ? transformTemplates([inserted[0]])[0] : null;
       } catch (err) {
         logger.error('Error creating template:', err);
         toast({

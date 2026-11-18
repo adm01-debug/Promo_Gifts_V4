@@ -1,13 +1,22 @@
 /**
  * SellerCartContext — contrato pós-faxina de action history
  *
+ * 2026-11-18 (decisão do dono): a aposentadoria da PR #3361 foi revertida
+ * para o `CartHealthChecklist`. Ele voltou — mas como componente de UI
+ * montado pelo `CartSidebar`, não pelo contexto. Por isso ele saiu da lista
+ * de símbolos "removidos" e passou a ter asserção própria: o contexto segue
+ * sendo camada de dados e não importa painel nenhum.
+ * Os helpers de action history e o `ActionHistoryPanel` NÃO voltaram (não
+ * existem em recovery/src-legacy) e o `SmartSuggestions` recuperado é 100%
+ * mock — todos continuam proibidos.
+ *
  * Garante que:
- *  1) O módulo NÃO importa mais nenhum helper de action history
+ *  1) O módulo NÃO importa nenhum helper de action history
  *     (`clearActionHistory` / `recordAction` / `getActionHistory`)
- *     nem nenhum painel removido (`SmartSuggestions`, `ActionHistoryPanel`,
- *     `CartHealthChecklist`). Se algum for reintroduzido por engano —
- *     ex.: regen do Lovable ou merge ruim — este teste quebra antes do
- *     CartSidebar voltar a renderizar UI morta.
+ *     nem os painéis que seguem fora (`SmartSuggestions`,
+ *     `ActionHistoryPanel`, `SuggestionSkeleton`). Se algum for
+ *     reintroduzido por engano — ex.: regen do Lovable ou merge ruim —
+ *     este teste quebra antes do CartSidebar voltar a renderizar UI morta.
  *
  *  2) O `SellerCartProvider` monta e expõe o contexto SEM expor handlers
  *     de histórico de ações no shape público — assim o CartSidebar
@@ -54,10 +63,7 @@ vi.mock('@/contexts/AuthContext', () => ({
 }));
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
-const SOURCE = readFileSync(
-  resolve(__dirname, '../SellerCartContext.tsx'),
-  'utf-8',
-);
+const SOURCE = readFileSync(resolve(__dirname, '../SellerCartContext.tsx'), 'utf-8');
 
 describe('SellerCartContext — contrato sem action history', () => {
   it('NÃO importa nem chama nenhum helper de action history removido', () => {
@@ -67,7 +73,6 @@ describe('SellerCartContext — contrato sem action history', () => {
       'getActionHistory',
       'SmartSuggestions',
       'ActionHistoryPanel',
-      'CartHealthChecklist',
       'SuggestionSkeleton',
     ];
     for (const sym of forbidden) {
@@ -75,10 +80,14 @@ describe('SellerCartContext — contrato sem action history', () => {
     }
   });
 
+  it('o contexto segue sendo camada de dados: não importa o CartHealthChecklist que voltou', () => {
+    // 2026-11-18: o painel voltou à UI (montado pelo CartSidebar). O contexto
+    // não deve conhecê-lo — se aparecer aqui, a camada de dados virou UI.
+    expect(SOURCE).not.toMatch(/\bCartHealthChecklist\b/);
+  });
+
   it('expõe o contrato esperado SEM membros de action history', async () => {
-    const { SellerCartProvider, useSellerCartContext } = await import(
-      '../SellerCartContext'
-    );
+    const { SellerCartProvider, useSellerCartContext } = await import('../SellerCartContext');
 
     const qc = new QueryClient({ defaultOptions: { queries: { retry: false } } });
     const { result } = renderHook(() => useSellerCartContext(), {
