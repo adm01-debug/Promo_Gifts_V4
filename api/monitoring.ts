@@ -34,6 +34,27 @@ export const config = { api: { bodyParser: false } };
 /** Headers que o transporte do SDK usa para pausar envio por categoria. */
 const RATE_LIMIT_HEADERS = ['retry-after', 'x-sentry-rate-limits'];
 
+/**
+ * Status em que a ingestão recusa o envelope PARA SEMPRE: o projeto do DSN não
+ * existe (404) ou a chave foi desativada (401/403). Reenviar não muda nada.
+ *
+ * Por que não repassar: medido em 18/11/2026 na produção, o DSN embutido no
+ * bundle aponta para o projeto `4` do GlitchTip, que responde 404. Como o
+ * handler devolvia `forwarded.status` cru, cada erro capturado virava um
+ * `GET/POST /api/monitoring 404` no console do vendedor — o bug que o dono
+ * reportou. O 404 não é do túnel (ele está no ar e repassa normalmente); é a
+ * ingestão dizendo que o projeto não existe.
+ *
+ * Decisão: para esses status o túnel responde 202 (aceitei e descartei), para
+ * o navegador parar de registrar falha a cada erro, e grava UMA linha no log da
+ * função dizendo exatamente qual projeto foi recusado — a má configuração
+ * continua visível para quem opera, em vez de virar ruído na tela de quem vende.
+ */
+const RECUSA_PERMANENTE = new Set([401, 403, 404]);
+
+/** Evita repetir a mesma linha de log a cada envelope na mesma instância. */
+const jaAvisado = new Set<string>();
+
 interface TunnelRequest {
   method?: string;
   headers: Record<string, string | string[] | undefined>;
@@ -148,7 +169,9 @@ export default async function handler(req: TunnelRequest, res: TunnelResponse): 
     body = await readEnvelope(req);
   } catch (err) {
     const tooLarge = err instanceof Error && err.message === 'envelope_too_large';
-    res.status(tooLarge ? 413 : 400).json({ error: tooLarge ? 'envelope_too_large' : 'bad_request' });
+    res
+      .status(tooLarge ? 413 : 400)
+      .json({ error: tooLarge ? 'envelope_too_large' : 'bad_request' });
     return;
   }
   if (!body || body.byteLength === 0) {
@@ -179,6 +202,22 @@ export default async function handler(req: TunnelRequest, res: TunnelResponse): 
       const valor = forwarded.headers.get(nome);
       if (valor) res.setHeader(nome, valor);
     }
+
+    if (RECUSA_PERMANENTE.has(forwarded.status)) {
+      if (!jaAvisado.has(upstream)) {
+        jaAvisado.add(upstream);
+        console.error('[monitoring] ingestao recusou o DSN de forma permanente', {
+          upstream,
+          status: forwarded.status,
+        });
+      }
+      // GUARD: 202 é "aceitei e descartei", não "deu certo". O status real vai
+      // no corpo e no header abaixo, para quem inspeciona a resposta.
+      res.setHeader('X-Tunnel-Upstream-Status', String(forwarded.status));
+      res.status(202).json({ ok: false, descartado: 'dsn_recusado_pela_ingestao' });
+      return;
+    }
+
     res.status(forwarded.status).json({ ok: forwarded.ok });
   } catch {
     res.status(502).json({ error: 'ingest_indisponivel' });
