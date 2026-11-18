@@ -1,13 +1,19 @@
 /**
- * CartSidebar — painel lateral com peso/volume do carrinho e os atalhos de
- * template ("Salvar como Template" / "Usar Template").
+ * CartSidebar — painel lateral com peso/volume do carrinho, a checklist de
+ * saúde do carrinho e os atalhos de template ("Salvar como Template" /
+ * "Usar Template").
  * A ação "Gerar Orçamento" vive no header do carrinho ativo
  * (ver CartActionsMenu). Os antigos menus "Gerenciar Carrinho"
  * e o atalho "Ver Orçamentos" foram removidos.
+ *
+ * 2026-11-18 (decisão do dono): a "Saúde do Carrinho" voltou à sidebar —
+ * ver CartHealthChecklist. Ela é calculada do próprio carrinho (empresa,
+ * mix de SKUs, valor, observações, variantes, status), sem mock.
  */
 import { type CartTemplateItem, type SellerCart } from '@/hooks/products';
 import { Card } from '@/components/ui/card';
 import { Weight, Box } from 'lucide-react';
+import { CartHealthChecklist } from '@/components/cart/CartHealthChecklist';
 import { LoadTemplateDialog, SaveTemplateDialog } from '@/components/cart/cart-utils/CartDialogs';
 import type { UseMutationResult } from '@tanstack/react-query';
 
@@ -39,11 +45,14 @@ interface CartSidebarProps {
 
 export function CartSidebar({
   cart,
+  cartSubtotal,
   weightVolume,
   templates,
   onSaveTemplate,
   onLoadTemplate,
   onDeleteTemplate,
+  onNavigate,
+  onFocusNotes,
 }: CartSidebarProps) {
   const hasWeightVolume =
     !!weightVolume && (weightVolume.weightKg > 0 || weightVolume.volumeCm3 > 0);
@@ -89,6 +98,14 @@ export function CartSidebar({
             </div>
           </Card>
         </div>
+      )}
+      {canSaveTemplate && (
+        <CartHealthChecklist
+          cart={cart}
+          cartSubtotal={cartSubtotal}
+          onFocusNotes={onFocusNotes}
+          onAddProducts={() => onNavigate('/produtos')}
+        />
       )}
       <Card data-testid="cart-sidebar-templates" className="space-y-2 p-3">
         {canSaveTemplate && <SaveTemplateDialog cart={cart} onSave={onSaveTemplate} />}
