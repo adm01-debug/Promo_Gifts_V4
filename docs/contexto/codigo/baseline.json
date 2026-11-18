@@ -2,11 +2,21 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "e86cca8a23955f35a34b2c25b8102d96cd13fcc1",
+  "commit": "21e64d69ec622cf00f7df8df4c3c8052af89f5a2",
   "branch": "main",
-  "data_commit": "2026-11-17T20:42:43-03:00",
+  "data_commit": "2026-11-17T21:01:07-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "21e64d69",
+    "data": "2026-11-17",
+    "assunto": "fix(kit): Ctrl+S repetido criava dois kits iguais (#3798)"
+   },
+   {
+    "sha": "e694f6aa",
+    "data": "2026-11-17",
+    "assunto": "test(quotes): resgata a cobertura de aprovacao na lista de orcamentos (#3802)"
+   },
    {
     "sha": "e86cca8a",
     "data": "2026-11-17",
@@ -121,19 +131,9 @@
     "sha": "92bec3ca",
     "data": "2026-11-17",
     "assunto": "chore(deps): tira basic-ftp da lista de risco tolerado, ja que o override o eliminou (#3782)"
-   },
-   {
-    "sha": "5ca60929",
-    "data": "2026-11-17",
-    "assunto": "docs: marca como vivos na main os 3 itens que o dossiê pedia para completar (#3780)"
-   },
-   {
-    "sha": "5ce8d792",
-    "data": "2026-11-17",
-    "assunto": "docs: retira o \"0 ausentes\" da auditoria — era defeito do instrumento (#3779)"
    }
   ],
-  "arquivos_mudados_7d": 1981,
+  "arquivos_mudados_7d": 1982,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -242,15 +242,15 @@
     "mudancas": 13
    },
    {
+    "arquivo": "src/hooks/kit-builder/useKitBuilderPageState.ts",
+    "mudancas": 12
+   },
+   {
     "arquivo": "CHANGELOG.md",
     "mudancas": 11
    },
    {
     "arquivo": "audit/supabase-reference-catalog.temporary.json",
-    "mudancas": 11
-   },
-   {
-    "arquivo": "src/hooks/kit-builder/useKitBuilderPageState.ts",
     "mudancas": 11
    },
    {
@@ -322,9 +322,9 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 10883,
-  "arquivos_codigo": 5408,
-  "linhas_codigo": 1032527,
+  "arquivos_total": 10884,
+  "arquivos_codigo": 5409,
+  "linhas_codigo": 1032670,
   "rotas": 139,
   "rotas_http_backend": 13,
   "vistas_por_id": 0,
@@ -336,7 +336,7 @@
   "tabelas": 527,
   "migrations": 3099,
   "cron_jobs": 122,
-  "testes": 2576,
+  "testes": 2577,
   "workflows": 88,
   "scripts": 283,
   "docs_md": 1470
@@ -1920,7 +1920,7 @@
   },
   "src/hooks": {
    "arquivos": 481,
-   "linhas": 90980
+   "linhas": 90985
   },
   "src/integrations": {
    "arquivos": 11,
@@ -2047,8 +2047,8 @@
    "linhas": 141
   },
   "tests/components": {
-   "arquivos": 161,
-   "linhas": 35072
+   "arquivos": 162,
+   "linhas": 35210
   },
   "tests/config": {
    "arquivos": 6,

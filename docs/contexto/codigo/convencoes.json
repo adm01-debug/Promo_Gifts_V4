@@ -23,7 +23,7 @@
    "src/services (10)"
   ],
   "testes": [
-   "tests/ (1071)",
+   "tests/ (1072)",
    "co-localizado (__tests__) (678)",
    "e2e/ (625)"
   ],
@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "fix(kit): Ctrl+S repetido criava dois kits iguais (#3798)",
+   "test(quotes): resgata a cobertura de aprovacao na lista de orcamentos (#3802)",
    "fix(mockup): rascunho reaberto perdia os limites de gravacao da area (#3797)",
    "test(quotes): resgata a cobertura de copia de template de orcamento (#3794)",
-   "test(kit): resgata a cobertura de persistencia e destaque de kit (#3793)",
-   "test(products): resgata a cobertura de ciclo de vida dos filtros de cor e categoria (#3792)",
-   "test(quotes): resgata 91 casos dos helpers da tela de orcamento (#3795)"
+   "test(kit): resgata a cobertura de persistencia e destaque de kit (#3793)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",
