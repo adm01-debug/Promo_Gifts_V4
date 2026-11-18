@@ -11,6 +11,17 @@ import { type QuoteTemplate, useQuoteTemplates } from '@/hooks/quotes/useQuoteTe
 
 type ViewMode = 'create' | 'edit' | 'list';
 
+/** Abas da visão de admin. */
+type TemplatesTab = 'all-templates' | 'my-templates';
+
+/**
+ * GUARD: `Tabs.onValueChange` entrega `string`. Narrowing em vez de asserção —
+ * valor fora do par conhecido é ignorado e a aba atual permanece.
+ */
+function isTemplatesTab(value: string): value is TemplatesTab {
+  return value === 'all-templates' || value === 'my-templates';
+}
+
 /**
  * Templates (modelos) de orçamento — lista do vendedor, gestão admin
  * (todos os templates) e formulário de criação/edição.
@@ -22,7 +33,7 @@ export default function QuoteTemplatesPage() {
   const navigate = useNavigate();
   const [viewMode, setViewMode] = useState<ViewMode>('list');
   const [editingTemplate, setEditingTemplate] = useState<QuoteTemplate | null>(null);
-  const [activeTab, setActiveTab] = useState<'all-templates' | 'my-templates'>('my-templates');
+  const [activeTab, setActiveTab] = useState<TemplatesTab>('my-templates');
   const { isAdmin } = useQuoteTemplates();
 
   const handleCreateTemplate = () => {
@@ -87,7 +98,12 @@ export default function QuoteTemplatesPage() {
 
         {viewMode === 'list' &&
           (isAdmin ? (
-            <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as typeof activeTab)}>
+            <Tabs
+              value={activeTab}
+              onValueChange={(v) => {
+                if (isTemplatesTab(v)) setActiveTab(v);
+              }}
+            >
               <TabsList>
                 <TabsTrigger value="my-templates" className="gap-2">
                   <FileText className="h-4 w-4" />

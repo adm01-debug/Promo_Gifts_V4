@@ -60,23 +60,26 @@ export function exportSingleTemplate(template: QuoteTemplate): void {
 /**
  * Validates imported template data
  */
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === 'object' && value !== null && !Array.isArray(value);
+}
+
+/**
+ * GUARD: type predicate em vez de asserção. O arquivo importado vem do disco do
+ * vendedor, então cada campo exigido é checado de verdade antes de o tipo valer.
+ */
+function isExportedTemplate(value: unknown): value is ExportedTemplate {
+  if (!isRecord(value)) return false;
+  if (typeof value.version !== 'string' || value.version.length === 0) return false;
+  if (!Array.isArray(value.templates)) return false;
+  return value.templates.every(
+    (template) =>
+      isRecord(template) && typeof template.name === 'string' && template.name.length > 0,
+  );
+}
+
 export function validateImportedTemplates(data: unknown): ExportedTemplate | null {
-  if (!data || typeof data !== 'object') return null;
-
-  const obj = data as Record<string, unknown>;
-
-  if (!obj.version || !obj.templates || !Array.isArray(obj.templates)) {
-    return null;
-  }
-
-  // Validate each template has required fields
-  for (const template of obj.templates) {
-    if (typeof template !== 'object' || !template) return null;
-    const t = template as Record<string, unknown>;
-    if (!t.name || typeof t.name !== 'string') return null;
-  }
-
-  return data as ExportedTemplate;
+  return isExportedTemplate(data) ? data : null;
 }
 
 /**
@@ -88,10 +91,15 @@ export function readTemplateFile(file: File): Promise<ExportedTemplate | null> {
 
     reader.onload = (e) => {
       try {
-        const content = e.target?.result as string;
-        const data = JSON.parse(content);
-        const validated = validateImportedTemplates(data);
-        resolve(validated);
+        // FileReader.readAsText sempre devolve string; ArrayBuffer/null aqui é
+        // leitura falha — recusa em vez de asserção de tipo.
+        const content = e.target?.result;
+        if (typeof content !== 'string') {
+          resolve(null);
+          return;
+        }
+        const data: unknown = JSON.parse(content);
+        resolve(validateImportedTemplates(data));
       } catch {
         resolve(null);
       }
