@@ -14035,7 +14035,7 @@
   {
    "arquivo": "tests/components/mockup/acceptance/grupo4.acceptance.test.tsx",
    "tipo": "unit",
-   "linhas": 294,
+   "linhas": 320,
    "testa": [
     "src/components/mockup/LogoPositionEditor.tsx",
     "src/components/mockup/approval/MockupLayoutButtons.tsx",
@@ -14106,7 +14106,7 @@
   {
    "arquivo": "tests/components/mockup/acceptance/grupo7.acceptance.test.tsx",
    "tipo": "unit",
-   "linhas": 277,
+   "linhas": 291,
    "testa": [
     "src/components/mockup/ArtFileUpload.tsx",
     "src/components/mockup/MultiAreaManager.tsx",

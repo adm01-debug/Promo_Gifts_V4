@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.3.2 · commit `90862a5f42` · branch `main` · 2026-11-18 18:46 UTC
+> Gerado automaticamente por AI Context Sync v1.3.2 · commit `8187a4a272` · branch `main` · 2026-11-18 18:56 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -7395,4 +7395,4 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | apenas se o usuário chegar em AAL2). | `src/components/layout/AdminRoute.tsx` |
 | rate-limit, login-attempts, external-db, status do sistema. | `src/components/layout/DevRoute.tsx` |
 | * Hierarquia: dev > supervisor > agente. Apenas `dev` passa. | `src/components/layout/DevRoute.tsx` |
-| … +1358 linhas — lista completa em `context.json` | |
+| … +1359 linhas — lista completa em `context.json` | |

@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "fix(mockup): vínculo de proporção para de distorcer a logo a cada ajuste (#3838)",
    "feat(mockup): avisa o vendedor quando o kill-switch de mockup estiver desligado (#3839)",
    "feat(quotes): liga o funil de orçamentos à tela e para de chamar expirado de rascunho (#3836)",
    "feat(components): resgata os cards de observabilidade das bridges em /admin/telemetria (#3837)",
-   "feat(kit): gera PDF real do kit no lugar de window.print() (#3835)",
-   "test(utils): resgata a cobertura do casamento de cor Pantone (#3834)"
+   "feat(kit): gera PDF real do kit no lugar de window.print() (#3835)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",
