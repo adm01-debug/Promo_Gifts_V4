@@ -2461,4 +2461,4 @@ comportamento de produção. Nenhum segredo entra no repositório.
 
 | versão | arquivo | sha256 | status |
 |---|---|---|---|
-| `20261117172500` | `elevenlabs_credential` | `a238601525e8afc7def6948bc2cdb24667340bddd7d9a702c91211759e2520c3` | pendente — aplicar via `db-apply-migration.yml` (`version=20261117172500`) após merge |
+| `20261117172500` | `elevenlabs_credential` | `fdbc26e30ab2fbe2c8b5b30f13905a27ab480d21fd3d04cf934cb57eeef9c03a` | pendente — aplicar via `db-apply-migration.yml` (`version=20261117172500`) após merge |

@@ -13,14 +13,23 @@
 --          (secret_value vazio e falsy, segue caindo no env). Segredo nunca entra
 --          em migration.
 
-INSERT INTO integration_credentials (secret_name, secret_value, description, created_at, updated_at)
+-- `provider` e NOT NULL SEM default e `credential_type` e NOT NULL com default
+-- 'api_key' (conferido em information_schema): a versao anterior omitia `provider`
+-- e o INSERT falhava com 23502, o que derrubava o Supabase Preview da PR.
+INSERT INTO integration_credentials (
+  provider, secret_name, credential_type, secret_value, description, created_at, updated_at
+)
 VALUES (
+  'elevenlabs',
   'ELEVENLABS_API_KEY',
+  'api_key',
   '', -- valor preenchido em /admin/conexoes; nunca versionado
   'Chave da API ElevenLabs usada pela transcricao por voz (elevenlabs-scribe-token) e pela leitura em voz alta (elevenlabs-tts)',
   NOW(),
   NOW()
 )
 ON CONFLICT (secret_name) DO UPDATE SET
+  provider = EXCLUDED.provider,
+  credential_type = EXCLUDED.credential_type,
   description = EXCLUDED.description,
   updated_at = NOW();
