@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "cee29744389b72e176a5f1b0a8c621930c470d87",
+  "sha": "0c507b86f9fda487db841c7f8ba8d920ac780da3",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-18 21:30 UTC",
-  "files_total": 10885,
-  "code_files": 8910,
-  "code_lines": 1263089
+  "generated_at": "2026-11-18 22:15 UTC",
+  "files_total": 10886,
+  "code_files": 8911,
+  "code_lines": 1263196
  },
  "version": "1.3.2",
- "facts_hash": "d0288e05e3fcc48c",
+ "facts_hash": "fa8d28b9a25ada3f",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -1120,7 +1120,7 @@
   "package_manager": "npm",
   "languages": {
    ".sql": 3440,
-   ".ts": 3041,
+   ".ts": 3042,
    ".tsx": 1964,
    ".mjs": 450,
    ".py": 15,
@@ -148727,8 +148727,8 @@
  "modules": [
   {
    "module": "(raiz)",
-   "files": 9,
-   "lines": 3406,
+   "files": 10,
+   "lines": 3469,
    "tables": [],
    "exports": [
     "playwright.config.ts: defineConfig",
@@ -148770,7 +148770,8 @@
     "test-hooks-safety.mjs",
     "test-magazine-fix.mjs",
     "vite.config.ts",
-    "vitest.config.ts"
+    "vitest.config.ts",
+    "vitest.e2e-probe.config.ts"
    ]
   },
   {
@@ -151744,7 +151745,7 @@
   {
    "module": "tests",
    "files": 1091,
-   "lines": 171837,
+   "lines": 171881,
    "tables": [
     "bot_detection_log",
     "clients",
@@ -403478,7 +403479,7 @@
   },
   "vitest.config.ts": {
    "path": "vitest.config.ts",
-   "lines": 177,
+   "lines": 226,
    "exports": [
     "default defineConfig"
    ],
@@ -403491,6 +403492,10 @@
     "Deve rodar apenas em ambientes com VITE_SUPABASE_URL/KEY reais configurados.",
     "Roda apenas via `node tests/scripts/check-file-size-baseline.test.mjs`."
    ]
+  },
+  "vitest.e2e-probe.config.ts": {
+   "path": "vitest.e2e-probe.config.ts",
+   "lines": 14
   },
   ".github/scripts/e2e-relevance.mjs": {
    "path": ".github/scripts/e2e-relevance.mjs",
@@ -529526,7 +529531,7 @@
   },
   "tests/e2e/new-quote-advanced.test.tsx": {
    "path": "tests/e2e/new-quote-advanced.test.tsx",
-   "lines": 117,
+   "lines": 128,
    "is_test": true,
    "tests": [
     "Módulo Novo Orçamento - Avançado Final",
@@ -529537,7 +529542,7 @@
   },
   "tests/e2e/new-quote-cycle.test.tsx": {
    "path": "tests/e2e/new-quote-cycle.test.tsx",
-   "lines": 104,
+   "lines": 115,
    "is_test": true,
    "tests": [
     "Módulo Novo Orçamento - Ciclo Final",
@@ -529566,7 +529571,7 @@
   },
   "tests/e2e/new-quote-exhaustive.test.tsx": {
    "path": "tests/e2e/new-quote-exhaustive.test.tsx",
-   "lines": 162,
+   "lines": 173,
    "is_test": true,
    "rule_comments": [
     "Tenta encontrar o seletor de desconto"
@@ -529582,7 +529587,7 @@
   },
   "tests/e2e/new-quote-full-audit.test.tsx": {
    "path": "tests/e2e/new-quote-full-audit.test.tsx",
-   "lines": 113,
+   "lines": 124,
    "is_test": true,
    "tests": [
     "Novo Orçamento - Auditoria de Regressão e Resiliência Final",
@@ -547410,10 +547415,29 @@
   }
  },
  "git": {
-  "sha": "cee29744389b72e176a5f1b0a8c621930c470d87",
+  "sha": "0c507b86f9fda487db841c7f8ba8d920ac780da3",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "0c507b8",
+    "date": "2026-11-18",
+    "author": "adm01-debug",
+    "subject": "fix(test): liga 832 testes que existiam no repo e runner nenhum executava (#3852)",
+    "files": [
+     "tests/e2e/artifacts/compare/viewer/audit-snapshot.html",
+     "tests/e2e/compare-exhaustive.test.tsx",
+     "tests/e2e/compare-module.test.tsx",
+     "tests/e2e/compare-ultra.test.tsx",
+     "tests/e2e/compare-visual.test.tsx",
+     "tests/e2e/new-quote-advanced.test.tsx",
+     "tests/e2e/new-quote-cycle.test.tsx",
+     "tests/e2e/new-quote-exhaustive.test.tsx",
+     "tests/e2e/new-quote-full-audit.test.tsx",
+     "vitest.config.ts",
+     "vitest.e2e-probe.config.ts"
+    ]
+   },
    {
     "sha": "cee2974",
     "date": "2026-11-18",
@@ -547766,17 +547790,6 @@
      "src/pages/quotes/QuoteBuilderPage.tsx",
      "src/pages/quotes/components/QuoteBuilderNotesCard.tsx"
     ]
-   },
-   {
-    "sha": "4c8f2cc",
-    "date": "2026-11-18",
-    "author": "adm01-debug",
-    "subject": "docs(resgate): preserva o unico texto da branch laughing-cori ausente da main (#3822)",
-    "files": [
-     "docs/agentes/resgates/sessao-261102/PENDENCIAS-261102.md",
-     "docs/agentes/resgates/sessao-261102/README.md",
-     "docs/agentes/resgates/sessao-261102/RELATORIO_CI-261102.md"
-    ]
    }
   ],
   "hot_files": [
@@ -547813,51 +547826,51 @@
     2
    ],
    [
+    "tests/e2e/artifacts/compare/viewer/audit-snapshot.html",
+    1
+   ],
+   [
+    "tests/e2e/compare-exhaustive.test.tsx",
+    1
+   ],
+   [
+    "tests/e2e/compare-module.test.tsx",
+    1
+   ],
+   [
+    "tests/e2e/compare-ultra.test.tsx",
+    1
+   ],
+   [
+    "tests/e2e/compare-visual.test.tsx",
+    1
+   ],
+   [
+    "tests/e2e/new-quote-advanced.test.tsx",
+    1
+   ],
+   [
+    "tests/e2e/new-quote-cycle.test.tsx",
+    1
+   ],
+   [
+    "tests/e2e/new-quote-exhaustive.test.tsx",
+    1
+   ],
+   [
+    "tests/e2e/new-quote-full-audit.test.tsx",
+    1
+   ],
+   [
+    "vitest.config.ts",
+    1
+   ],
+   [
+    "vitest.e2e-probe.config.ts",
+    1
+   ],
+   [
     "e2e/admin/stock-dashboard-empty.spec.ts",
-    1
-   ],
-   [
-    "e2e/admin/stock-dashboard-layout.spec.ts",
-    1
-   ],
-   [
-    "e2e/admin/stock-dashboard-visual.spec.ts",
-    1
-   ],
-   [
-    "e2e/admin/stock-health-badges.spec.ts",
-    1
-   ],
-   [
-    "src/tests/estoque-guardas-contraditorias.test.ts",
-    1
-   ],
-   [
-    "src/pages/admin/StockDashboardPage.tsx",
-    1
-   ],
-   [
-    "src/pages/bi/BusinessIntelligencePage.tsx",
-    1
-   ],
-   [
-    "src/tests/orphan-mounts.test.ts",
-    1
-   ],
-   [
-    "src/components/admin/telemetry/PlatformFailureAlertBanner.tsx",
-    1
-   ],
-   [
-    "src/components/admin/telemetry/PlatformFailureCards.tsx",
-    1
-   ],
-   [
-    "src/components/admin/telemetry/__tests__/PlatformFailureSurfaces.test.tsx",
-    1
-   ],
-   [
-    "docs/agentes/resgates/2026-11-18-correcao-do-inventario.md",
     1
    ]
   ]

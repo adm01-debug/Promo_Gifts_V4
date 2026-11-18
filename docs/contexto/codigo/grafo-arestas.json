@@ -15914,6 +15914,9 @@
    "supabase/functions/_shared/dispatcher-auth.ts",
    "supabase/functions/_shared/request-id.ts",
    "supabase/functions/_shared/structured-logger.ts"
+  ],
+  "vitest.e2e-probe.config.ts": [
+   "vitest.config.ts"
   ]
  }
 }

@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "cee29744389b72e176a5f1b0a8c621930c470d87",
+  "commit": "0c507b86f9fda487db841c7f8ba8d920ac780da3",
   "branch": "main",
-  "data_commit": "2026-11-18T18:29:14-03:00",
+  "data_commit": "2026-11-18T18:54:17-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "0c507b86",
+    "data": "2026-11-18",
+    "assunto": "fix(test): liga 832 testes que existiam no repo e runner nenhum executava (#3852)"
+   },
    {
     "sha": "cee29744",
     "data": "2026-11-18",
@@ -126,80 +131,75 @@
     "sha": "1d1d36e6",
     "data": "2026-11-18",
     "assunto": "feat(favorites): resgata a exportacao da lista de favoritos em CSV, JSON e PDF (#3827)"
-   },
-   {
-    "sha": "13b8a73c",
-    "data": "2026-11-18",
-    "assunto": "feat(mockup): edge recusa mockup sem medida real do produto (422) e kit-builder avisa antes (#3819)"
    }
   ],
-  "arquivos_mudados_7d": 1504,
+  "arquivos_mudados_7d": 1510,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
-    "mudancas": 1556
+    "mudancas": 1862
    },
    {
     "pasta": "src/components/products",
-    "mudancas": 779
+    "mudancas": 933
+   },
+   {
+    "pasta": "tests/edge-functions/live",
+    "mudancas": 708
+   },
+   {
+    "pasta": "src/hooks/products",
+    "mudancas": 657
    },
    {
     "pasta": "recovery/src-legacy/src",
     "mudancas": 633
    },
    {
-    "pasta": "tests/edge-functions/live",
-    "mudancas": 593
-   },
-   {
-    "pasta": "src/hooks/products",
-    "mudancas": 552
-   },
-   {
     "pasta": "src/components/quotes",
-    "mudancas": 512
+    "mudancas": 612
    },
    {
     "pasta": "src/pages/magazine",
-    "mudancas": 462
+    "mudancas": 554
    },
    {
     "pasta": "src/components/inventory",
-    "mudancas": 413
+    "mudancas": 493
    },
    {
     "pasta": "supabase/functions/_shared",
-    "mudancas": 374
+    "mudancas": 449
    },
    {
     "pasta": "src/components/ui",
-    "mudancas": 371
+    "mudancas": 446
    },
    {
     "pasta": "src/components/mockup",
-    "mudancas": 357
+    "mudancas": 421
    },
    {
     "pasta": "src/pages/admin",
-    "mudancas": 313
+    "mudancas": 372
    },
    {
     "pasta": "src/pages/quotes",
-    "mudancas": 281
+    "mudancas": 331
    },
    {
     "pasta": "src/components/kit-builder",
-    "mudancas": 272
+    "mudancas": 319
    },
    {
     "pasta": "src/pages/products",
-    "mudancas": 248
+    "mudancas": 296
    }
   ],
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "supabase/MIGRATIONS_SYNC_LOG.md",
-    "mudancas": 62
+    "mudancas": 61
    },
    {
     "arquivo": "RELATORIO_CI.md",
@@ -207,109 +207,109 @@
    },
    {
     "arquivo": "PENDENCIAS.md",
-    "mudancas": 43
+    "mudancas": 44
    },
    {
     "arquivo": "package.json",
-    "mudancas": 40
+    "mudancas": 41
    },
    {
     "arquivo": "docs/coordenacao/conflitos-semanticos.md",
-    "mudancas": 27
+    "mudancas": 28
    },
    {
     "arquivo": "package-lock.json",
-    "mudancas": 23
+    "mudancas": 24
    },
    {
     "arquivo": ".github/workflows/deploy-gates.yml",
-    "mudancas": 22
+    "mudancas": 23
    },
    {
     "arquivo": "src/pages/kit-builder/KitBuilderPage.tsx",
-    "mudancas": 20
+    "mudancas": 21
    },
    {
     "arquivo": "analise-prs/progresso.json",
-    "mudancas": 18
+    "mudancas": 19
    },
    {
     "arquivo": "supabase/EDGE_FUNCTIONS_DEPLOY_LOG.md",
-    "mudancas": 18
+    "mudancas": 19
    },
    {
     "arquivo": "audit/supabase-reference-catalog.temporary.json",
-    "mudancas": 16
+    "mudancas": 17
    },
    {
     "arquivo": "src/hooks/kit-builder/useKitBuilderPageState.ts",
-    "mudancas": 16
+    "mudancas": 17
    },
    {
     "arquivo": "src/pages/mockups/MockupGenerator.tsx",
-    "mudancas": 14
+    "mudancas": 15
    },
    {
     "arquivo": "analise-branches/RELATORIO_BRANCHES.md",
-    "mudancas": 13
+    "mudancas": 14
    },
    {
     "arquivo": "src/hooks/kit-builder/useKitAutoSave.ts",
-    "mudancas": 13
+    "mudancas": 14
    },
    {
     "arquivo": "auditoria-supabase/RELATORIO_AUDITORIA_SUPABASE.md",
-    "mudancas": 12
+    "mudancas": 13
    },
    {
     "arquivo": "e2e/flows/magazine-preview-sticky-smoke.spec.ts",
-    "mudancas": 12
+    "mudancas": 13
    },
    {
     "arquivo": "e2e/flows/magazine-publish-smoke.spec.ts",
-    "mudancas": 12
+    "mudancas": 13
    },
    {
     "arquivo": "tests/components/pages/KitBuilderPage.test.tsx",
-    "mudancas": 12
+    "mudancas": 13
    },
    {
     "arquivo": ".github/SENTINEL_SHA_ALLOWLIST.txt",
-    "mudancas": 11
+    "mudancas": 12
    },
    {
     "arquivo": ".github/workflows/replenishment-quality.yml",
-    "mudancas": 11
+    "mudancas": 12
    },
    {
     "arquivo": ".github/workflows/schema-snapshot-export.yml",
-    "mudancas": 11
+    "mudancas": 12
    },
    {
     "arquivo": "CHANGELOG.md",
-    "mudancas": 11
+    "mudancas": 12
    },
    {
     "arquivo": "analise-prs/RELATORIO_PRS.md",
-    "mudancas": 11
+    "mudancas": 12
    },
    {
     "arquivo": "analise-prs/prs.json",
-    "mudancas": 11
+    "mudancas": 12
    }
   ],
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 514
+    "commits": 513
    },
    {
     "autor": "Claude",
-    "commits": 119
+    "commits": 117
    },
    {
     "autor": "Joaquim Ataides",
-    "commits": 90
+    "commits": 89
    },
    {
     "autor": "github-actions[bot]",
@@ -322,9 +322,9 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 10957,
-  "arquivos_codigo": 5471,
-  "linhas_codigo": 1042357,
+  "arquivos_total": 10958,
+  "arquivos_codigo": 5472,
+  "linhas_codigo": 1042464,
   "rotas": 139,
   "rotas_http_backend": 13,
   "vistas_por_id": 0,
@@ -2064,7 +2064,7 @@
   },
   "tests/e2e": {
    "arquivos": 48,
-   "linhas": 7736
+   "linhas": 7780
   },
   "tests/e2e-customization": {
    "arquivos": 1,
@@ -2264,7 +2264,11 @@
   },
   "vitest.config.ts": {
    "arquivos": 1,
-   "linhas": 177
+   "linhas": 226
+  },
+  "vitest.e2e-probe.config.ts": {
+   "arquivos": 1,
+   "linhas": 14
   }
  },
  "maiores_arquivos": [

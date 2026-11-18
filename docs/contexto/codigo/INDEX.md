@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e de hora em hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `cee29744389b72e176a5f1b0a8c621930c470d87` (2026-11-18T18:29:14-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e de hora em hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `0c507b86f9fda487db841c7f8ba8d920ac780da3` (2026-11-18T18:54:17-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -14,7 +14,7 @@ Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR
 Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua tarefa; não carregue tudo.
 
 ## Stack
-- linguagens: TypeScript (5004), SQL (3440), Markdown (1481), JavaScript (457), JSON (132), YAML (116), Shell (27), HTML (20)
+- linguagens: TypeScript (5005), SQL (3440), Markdown (1481), JavaScript (457), JSON (132), YAML (116), Shell (27), HTML (20)
 - linguagem_principal: TypeScript
 - framework: React
 - backend_http: n/d
@@ -34,9 +34,9 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 ## Números
 | item | qtd |
 |---|---|
-| arquivos_total | 10957 |
-| arquivos_codigo | 5471 |
-| linhas_codigo | 1042357 |
+| arquivos_total | 10958 |
+| arquivos_codigo | 5472 |
+| linhas_codigo | 1042464 |
 | rotas | 139 |
 | rotas_http_backend | 13 |
 | vistas_por_id | 0 |
@@ -592,27 +592,27 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - possiveis_segredos_no_codigo: 7 — ex.: scripts/ai-context/cenarios.mjs:102, src/components/admin/connections/__tests__/ConnectionSecurity.unit.test.tsx:9, src/integrations/supabase/client.ts:27
 
 ## Grafo de código (graphify)
-- 49214 nós · 82670 arestas · 2758 comunidades · grafo do commit `cee29744`
-- comunidades maiores: ref_components (753), ref_integrations (698), vitest (646), ref_node_child_process (565), @tanstack/react-query (484), ref_hooks (450), gotoAndSettle (441), @testing-library/react (404), react (380), ref_node_fs (365), sonner (356), concludeCheck (342)
+- 49216 nós · 82665 arestas · 2812 comunidades · grafo do commit `0c507b86`
+- comunidades maiores: vitest (773), lucide-react (645), ref_integrations (641), react (587), ref_hooks (457), ref_node_child_process (448), @tanstack/react-query (391), ref_lib (391), ref_utils (340), ref_types (340), ref_components (335), ref_node_fs (318)
 - símbolos mais chamados: gotoAndSettle() (e2e/helpers/nav.ts), re (?), q() (scripts/supabase_snapshot/snapshot.py), analyze() (tests/scripts/test_personalization_artifact_diagnostics.py), outer() (tests/scripts/test_personalization_artifact_diagnostics.py), json (?), useExternalDatabase() (recovery/src-legacy/src/hooks/useExternalDatabase.ts), concludeCheck() (scripts/check-result-contract.mjs), querySupabaseReadOnly() (scripts/supabase-read-only-query.mjs), loginAs() (e2e/helpers/auth.ts), inner() (tests/scripts/test_personalization_artifact_diagnostics.py), excluded_sql() (scripts/supabase_snapshot/snapshot.py)
 - consulta local: `graphify query "<pergunta>"`, `graphify path "<A>" "<B>"`, `graphify explain "<X>"`
 
 ## Hotspots (arquivos mais alterados, 90 dias)
-- supabase/MIGRATIONS_SYNC_LOG.md (62)
+- supabase/MIGRATIONS_SYNC_LOG.md (61)
 - RELATORIO_CI.md (46)
-- PENDENCIAS.md (43)
-- package.json (40)
-- docs/coordenacao/conflitos-semanticos.md (27)
-- package-lock.json (23)
-- .github/workflows/deploy-gates.yml (22)
-- src/pages/kit-builder/KitBuilderPage.tsx (20)
-- analise-prs/progresso.json (18)
-- supabase/EDGE_FUNCTIONS_DEPLOY_LOG.md (18)
-- audit/supabase-reference-catalog.temporary.json (16)
-- src/hooks/kit-builder/useKitBuilderPageState.ts (16)
-- src/pages/mockups/MockupGenerator.tsx (14)
-- analise-branches/RELATORIO_BRANCHES.md (13)
-- src/hooks/kit-builder/useKitAutoSave.ts (13)
+- PENDENCIAS.md (44)
+- package.json (41)
+- docs/coordenacao/conflitos-semanticos.md (28)
+- package-lock.json (24)
+- .github/workflows/deploy-gates.yml (23)
+- src/pages/kit-builder/KitBuilderPage.tsx (21)
+- analise-prs/progresso.json (19)
+- supabase/EDGE_FUNCTIONS_DEPLOY_LOG.md (19)
+- audit/supabase-reference-catalog.temporary.json (17)
+- src/hooks/kit-builder/useKitBuilderPageState.ts (17)
+- src/pages/mockups/MockupGenerator.tsx (15)
+- analise-branches/RELATORIO_BRANCHES.md (14)
+- src/hooks/kit-builder/useKitAutoSave.ts (14)
 
 ## Workflows
 - `_e2e-relevance.yml` — Reusable — E2E Runtime Relevance (workflow_call)
@@ -1188,6 +1188,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - CHANGELOG topo: [1.9.1](https://github.com/adm01-debug/Promo_Gifts_V4/compare/gifts-store-v1.9.0...gifts-store-v1.9.1) (2026-11-17)
 
 ## Últimos commits
+- 2026-11-18 `0c507b86` fix(test): liga 832 testes que existiam no repo e runner nenhum executava (#3852)
 - 2026-11-18 `cee29744` fix(test): 4 specs do /estoque exigiam o cabecalho que o dono mandou remover (#3851)
 - 2026-11-18 `d3174f97` feat(pages): monta o dossie BI e o painel de ruptura, prontos e nunca exibidos (#3850)
 - 2026-11-18 `48c1e5d9` feat(components): /admin/telemetria volta a mostrar falhas 503 e cold start (#3848)
@@ -1202,7 +1203,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-18 `a53b303e` docs(resgate): recibo da sessão 2 — PRs fechadas sem merge e os 51 arquivos do legado (#3840)
 - 2026-11-18 `8187a4a2` fix(mockup): vínculo de proporção para de distorcer a logo a cada ajuste (#3838)
 - 2026-11-18 `90862a5f` feat(mockup): avisa o vendedor quando o kill-switch de mockup estiver desligado (#3839)
-- 2026-11-18 `44f077e4` feat(quotes): liga o funil de orçamentos à tela e para de chamar expirado de rascunho (#3836)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

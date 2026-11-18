@@ -15247,6 +15247,7 @@
    "linhas": 143,
    "testa": [
     "src/components/ui/tooltip.tsx",
+    "src/pages/products/ComparePage.tsx",
     "src/stores/useComparisonStore.ts"
    ],
    "casos": 2
@@ -15264,6 +15265,7 @@
    "linhas": 330,
    "testa": [
     "src/components/ui/tooltip.tsx",
+    "src/pages/products/ComparePage.tsx",
     "src/stores/useComparisonStore.ts"
    ],
    "casos": 7
@@ -15281,6 +15283,7 @@
    "linhas": 130,
    "testa": [
     "src/components/ui/tooltip.tsx",
+    "src/pages/products/ComparePage.tsx",
     "src/stores/useComparisonStore.ts"
    ],
    "casos": 3
@@ -15309,6 +15312,7 @@
    "linhas": 134,
    "testa": [
     "src/components/ui/tooltip.tsx",
+    "src/pages/products/ComparePage.tsx",
     "src/stores/useComparisonStore.ts"
    ],
    "casos": 4
@@ -15379,7 +15383,7 @@
   {
    "arquivo": "tests/e2e/new-quote-advanced.test.tsx",
    "tipo": "e2e",
-   "linhas": 117,
+   "linhas": 128,
    "testa": [
     "src/components/ui/tooltip.tsx",
     "src/pages/quotes/QuoteBuilderPage.tsx",
@@ -15390,7 +15394,7 @@
   {
    "arquivo": "tests/e2e/new-quote-cycle.test.tsx",
    "tipo": "e2e",
-   "linhas": 104,
+   "linhas": 115,
    "testa": [
     "src/components/ui/tooltip.tsx",
     "src/pages/quotes/QuoteBuilderPage.tsx",
@@ -15408,7 +15412,7 @@
   {
    "arquivo": "tests/e2e/new-quote-exhaustive.test.tsx",
    "tipo": "e2e",
-   "linhas": 162,
+   "linhas": 173,
    "testa": [
     "src/components/ui/tooltip.tsx",
     "src/pages/quotes/QuoteBuilderPage.tsx"
@@ -15418,7 +15422,7 @@
   {
    "arquivo": "tests/e2e/new-quote-full-audit.test.tsx",
    "tipo": "e2e",
-   "linhas": 113,
+   "linhas": 124,
    "testa": [
     "src/components/ui/tooltip.tsx",
     "src/pages/quotes/QuoteBuilderPage.tsx"
@@ -23003,7 +23007,7 @@
   "src/pages/mockups/mockup-generator/useLayoutCaptureRequest.ts": 1,
   "src/pages/mockups/mockup-generator/useMockupCompletionStatus.ts": 1,
   "src/pages/mockups/mockup-generator/useWizardNavigation.ts": 1,
-  "src/pages/products/ComparePage.tsx": 1,
+  "src/pages/products/ComparePage.tsx": 5,
   "src/pages/products/FavoritesPage.tsx": 3,
   "src/pages/products/FiltersPage.tsx": 1,
   "src/pages/products/SellerCartsPage.tsx": 5,
