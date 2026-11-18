@@ -50,9 +50,13 @@ Precisam de reescrita de import (hooks migraram para `src/hooks/<domínio>/`).
 
 ### Fora de branch, só em `refs/pull`
 - `scripts/check-zod-pinning.mjs` (PR #343) — ausente da main.
-- `supabase/migrations/20260526_fix_cadastro_produtos_fornecedores.sql` e
-  `20260526_data_migration_contacts_pix_carrier.sql` (PR #504) — hoje PIX e
-  transportadora vivem serializados em `suppliers.notes`.
+- Duas migrations da PR #504, `20260526_fix_cadastro_produtos_fornecedores` e
+  `20260526_data_migration_contacts_pix_carrier` — hoje PIX e transportadora
+  vivem serializados em `suppliers.notes`. (Os nomes vão sem o caminho e sem a
+  extensão de propósito: `check-migration-path-references.mjs` proíbe citar em
+  doc um caminho sob `supabase/migrations/` que não exista na árvore, e estes
+  só existem em `refs/pull`. Foi assim que este documento deixou a `main`
+  vermelha ao ser mergeado.)
 
 ---
 
