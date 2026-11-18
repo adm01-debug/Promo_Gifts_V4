@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "b2cc12eaeac4ea445f871647e9e8b20d06bf819a",
+  "commit": "2d265a9867bcf6b8e582c9cd829998f96b984461",
   "branch": "main",
-  "data_commit": "2026-11-17T21:38:32-03:00",
+  "data_commit": "2026-11-17T21:51:04-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "2d265a98",
+    "data": "2026-11-17",
+    "assunto": "test(resgate): lote 3 — cobertura de outro agente para autosave de orcamento e apresentacao de favoritos (#3815)"
+   },
    {
     "sha": "b2cc12ea",
     "data": "2026-11-17",
@@ -126,14 +131,9 @@
     "sha": "87ffb0ee",
     "data": "2026-11-17",
     "assunto": "fix(observabilidade): tunela envelopes do Sentry pela própria origem (CORS matava 100% dos relatórios) (#3784)"
-   },
-   {
-    "sha": "353c2a8d",
-    "data": "2026-11-17",
-    "assunto": "docs(resgate): adjudica byte-a-byte os 219 arquivos ausentes do main (#3785)"
    }
   ],
-  "arquivos_mudados_7d": 1986,
+  "arquivos_mudados_7d": 1987,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -322,9 +322,9 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 10887,
-  "arquivos_codigo": 5412,
-  "linhas_codigo": 1033049,
+  "arquivos_total": 10889,
+  "arquivos_codigo": 5414,
+  "linhas_codigo": 1033307,
   "rotas": 139,
   "rotas_http_backend": 13,
   "vistas_por_id": 0,
@@ -336,7 +336,7 @@
   "tabelas": 527,
   "migrations": 3099,
   "cron_jobs": 122,
-  "testes": 2579,
+  "testes": 2581,
   "workflows": 88,
   "scripts": 283,
   "docs_md": 1470
@@ -1919,8 +1919,8 @@
    "linhas": 7
   },
   "src/hooks": {
-   "arquivos": 482,
-   "linhas": 91043
+   "arquivos": 483,
+   "linhas": 91127
   },
   "src/integrations": {
    "arquivos": 11,
@@ -2047,8 +2047,8 @@
    "linhas": 141
   },
   "tests/components": {
-   "arquivos": 163,
-   "linhas": 35300
+   "arquivos": 164,
+   "linhas": 35474
   },
   "tests/config": {
    "arquivos": 6,

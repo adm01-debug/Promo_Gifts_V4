@@ -11987,7 +11987,7 @@
    "usado_por_arquivos": [
     "src/hooks/quotes/index.ts"
    ],
-   "coberto_por_testes": 7
+   "coberto_por_testes": 8
   },
   {
    "arquivo": "src/hooks/quotes/useDiscountApproval.ts",
