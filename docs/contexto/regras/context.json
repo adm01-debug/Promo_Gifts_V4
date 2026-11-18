@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "96509703904937e5bb20911436b1aab6e68a801e",
+  "sha": "c75e7f308c74b9ef63614a9185982c4715634f1c",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-18 00:13 UTC",
+  "generated_at": "2026-11-18 00:28 UTC",
   "files_total": 10812,
   "code_files": 8848,
-  "code_lines": 1253492
+  "code_lines": 1253525
  },
  "version": "1.3.2",
- "facts_hash": "1f309fc7b62e1821",
+ "facts_hash": "5d156b96cf377e62",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -150471,7 +150471,7 @@
   {
    "module": "src/pages",
    "files": 361,
-   "lines": 83893,
+   "lines": 83919,
    "tables": [
     "ai_usage_events",
     "bot_detection_log",
@@ -151704,7 +151704,7 @@
   {
    "module": "tests",
    "files": 1087,
-   "lines": 170972,
+   "lines": 170979,
    "tables": [
     "bot_detection_log",
     "clients",
@@ -487523,7 +487523,7 @@
   },
   "src/pages/quotes/quote-view/QuoteActionHandlers.ts": {
    "path": "src/pages/quotes/quote-view/QuoteActionHandlers.ts",
-   "lines": 225,
+   "lines": 224,
    "exports": [
     "function formatCurrency",
     "function calcPersTotal",
@@ -487576,8 +487576,9 @@
   },
   "src/pages/quotes/quote-view/QuoteBitrixSync.ts": {
    "path": "src/pages/quotes/quote-view/QuoteBitrixSync.ts",
-   "lines": 195,
+   "lines": 222,
    "exports": [
+    "function normalizeBitrixQuoteId",
     "function syncQuoteToBitrix"
    ],
    "tables": [
@@ -536875,7 +536876,7 @@
   },
   "tests/pages/quote-view/root-quote-helpers.test.ts": {
    "path": "tests/pages/quote-view/root-quote-helpers.test.ts",
-   "lines": 289,
+   "lines": 296,
    "is_test": true,
    "tests": [
     "%s root quote synchronization",
@@ -544663,10 +544664,21 @@
   }
  },
  "git": {
-  "sha": "96509703904937e5bb20911436b1aab6e68a801e",
+  "sha": "c75e7f308c74b9ef63614a9185982c4715634f1c",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "c75e7f3",
+    "date": "2026-11-17",
+    "author": "adm01-debug",
+    "subject": "fix(quotes): id do Bitrix era gravado sem validacao e corrompia (#3799)",
+    "files": [
+     "src/pages/quotes/quote-view/QuoteActionHandlers.ts",
+     "src/pages/quotes/quote-view/QuoteBitrixSync.ts",
+     "tests/pages/quote-view/root-quote-helpers.test.ts"
+    ]
+   },
    {
     "sha": "9650970",
     "date": "2026-11-17",
@@ -544972,19 +544984,13 @@
      "scripts/check-conflict-ledger.mjs",
      "tests/scripts/check-conflict-ledger.test.mjs"
     ]
-   },
-   {
-    "sha": "86c10c8",
-    "date": "2026-11-17",
-    "author": "adm01-debug",
-    "subject": "fix(ci): separa \"runner sem Docker\" de \"contrato violado\" no Gate 2.5 (#3775)",
-    "files": [
-     ".github/workflows/deploy-gates.yml",
-     "scripts/lib/missing-prerequisite.mjs"
-    ]
    }
   ],
   "hot_files": [
+   [
+    "tests/pages/quote-view/root-quote-helpers.test.ts",
+    2
+   ],
    [
     "tests/hooks/useMagicUpState.legacy.test.tsx",
     2
@@ -545012,6 +545018,14 @@
    [
     "analise-branches/dossies/claude__resgate-3390-261113.md",
     2
+   ],
+   [
+    "src/pages/quotes/quote-view/QuoteActionHandlers.ts",
+    1
+   ],
+   [
+    "src/pages/quotes/quote-view/QuoteBitrixSync.ts",
+    1
    ],
    [
     "src/hooks/intelligence/useMagicUpState.ts",
@@ -545046,23 +545060,11 @@
     1
    ],
    [
-    "tests/pages/quote-view/root-quote-helpers.test.ts",
-    1
-   ],
-   [
     "src/components/search/__tests__/useGlobalSearch.test.ts",
     1
    ],
    [
     "src/components/search/useGlobalSearch.ts",
-    1
-   ],
-   [
-    "src/components/search/voiceFilterDispatch.ts",
-    1
-   ],
-   [
-    "src/hooks/products/useVoiceFilterApply.ts",
     1
    ]
   ]

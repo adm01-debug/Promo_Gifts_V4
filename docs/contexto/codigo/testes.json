@@ -19345,7 +19345,7 @@
   {
    "arquivo": "tests/pages/quote-view/root-quote-helpers.test.ts",
    "tipo": "unit",
-   "linhas": 289,
+   "linhas": 296,
    "testa": [
     "src/components/pdf/ProposalHtmlTemplate.tsx",
     "src/hooks/quotes/quoteTypes.ts",

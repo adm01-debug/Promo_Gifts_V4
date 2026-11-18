@@ -14301,6 +14301,7 @@
    "src/lib/edge/safeInvokeCall.ts",
    "src/lib/logger.ts",
    "src/lib/quote-status-config.ts",
+   "src/pages/quotes/quote-view/QuoteBitrixSync.ts",
    "src/types/quote.ts",
    "src/utils/proposalPdfReactGenerator.ts"
   ],

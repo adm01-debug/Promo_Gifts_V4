@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "96509703904937e5bb20911436b1aab6e68a801e",
+  "commit": "c75e7f308c74b9ef63614a9185982c4715634f1c",
   "branch": "main",
-  "data_commit": "2026-11-17T21:12:32-03:00",
+  "data_commit": "2026-11-17T21:27:22-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "c75e7f30",
+    "data": "2026-11-17",
+    "assunto": "fix(quotes): id do Bitrix era gravado sem validacao e corrompia (#3799)"
+   },
    {
     "sha": "96509703",
     "data": "2026-11-17",
@@ -126,11 +131,6 @@
     "sha": "4a982eb8",
     "data": "2026-11-17",
     "assunto": "test(kit-builder): resgata o teste da guarda financeira de kit (#3786)"
-   },
-   {
-    "sha": "3c578584",
-    "data": "2026-11-17",
-    "assunto": "docs(resgate): conserta as 13 referencias quebradas do dossie da 3390 (#3783)"
    }
   ],
   "arquivos_mudados_7d": 1983,
@@ -188,12 +188,12 @@
     "mudancas": 75
    },
    {
-    "pasta": "supabase/MIGRATIONS_SYNC_LOG.md",
+    "pasta": "src/pages/quotes",
     "mudancas": 67
    },
    {
-    "pasta": "src/pages/quotes",
-    "mudancas": 65
+    "pasta": "supabase/MIGRATIONS_SYNC_LOG.md",
+    "mudancas": 67
    }
   ],
   "arquivos_mais_mudados_90d": [
@@ -324,7 +324,7 @@
  "contagens": {
   "arquivos_total": 10884,
   "arquivos_codigo": 5409,
-  "linhas_codigo": 1032760,
+  "linhas_codigo": 1032793,
   "rotas": 139,
   "rotas_http_backend": 13,
   "vistas_por_id": 0,
@@ -1940,7 +1940,7 @@
   },
   "src/pages": {
    "arquivos": 361,
-   "linhas": 83893
+   "linhas": 83919
   },
   "src/routes": {
    "arquivos": 14,
@@ -2128,7 +2128,7 @@
   },
   "tests/pages": {
    "arquivos": 20,
-   "linhas": 4532
+   "linhas": 4539
   },
   "tests/product-form-improvements.test.ts": {
    "arquivos": 1,
