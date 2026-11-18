@@ -217,21 +217,74 @@ Lacuna real, impacto zero hoje.
 | `QuoteCodeBadge` (dentro de `PriceResultV51.tsx`) | só **exibe** um código que recebe por prop; nada na `main` gera `quoteCode`, que existe apenas como campo de tipo em `personalization.ts:185`. Trazer o selo sem o gerador não mostra nada |
 | `QuoteRowQuickActions.tsx` | veredicto anterior mantido: a largura da coluna está travada em 6.8rem por dois e2e dedicados |
 
-### 4.6 O que continua sem leitura
+### 4.6 Os 10 últimos — fila zerada
 
-`CatalogQualityDashboard.tsx` (122 l — painel de métricas de qualidade do
-catálogo; **nada equivalente na `main`**), `ShareCollectionDialog.tsx`,
-`ShareComparisonDialog.tsx`, `ShareListDialog.tsx` (presos à decisão de 4.1),
-`SmartSuggestions.tsx` da **busca** com `InlineSuggestions` e `SmartFilters` (o
-arquivo que expôs a falha do filtro; tem teste irmão de 6 casos),
-`bridge-telemetry-client.ts`, `cold-start-recorder.ts` (exigem instrumentar o
-bridge — custo de runtime, decisão de arquitetura), `kit-og-image.ts`,
-`useCatalogPrefetch.ts`, `QuantityAndResult.tsx`.
+**Obsoletos, medidos:**
+
+| legado | por quê |
+|---|---|
+| `CatalogQualityDashboard.tsx` | o bloco de doc promete "produtos sem imagem, sem categoria, SKU duplicado", mas o código lê `product_sync_logs` e mostra métricas de execução de sync. Essa tabela tem **0 linhas** em produção e **nada na `main` escreve nela**: o painel renderizaria zero em todos os cards. O pipeline que ele monitorava não existe mais |
+| `SmartSuggestions.tsx` da busca (+ `InlineSuggestions`, `SmartFilters`) | 337 linhas e **zero consumidores — inclusive na própria branch de origem**: nunca foi montado em lugar nenhum. A forma `Suggestion` espera promoção, trending e contagem de views, que nenhuma fonte da `main` produz. A `main` resolve busca com `SearchWithSuggestions.tsx`, `useQuickSuggestions.ts` (categorias) e `useProductFuzzySearch`. O teste irmão de 6 casos especifica um componente que nunca entrou no ar |
+| `QuantityAndResult.tsx` | usa `fn_get_customization_price`, que a `main` já chama em três lugares: `useWizardPricing.ts:69,183` e `useLivePricePreview.ts:103` |
+| `useCatalogPrefetch.ts` | `CATALOG_BATCH_PAGES` e `PRODUCT_SELECT_LIGHTWEIGHT` moram em `useProductsLightweight.ts:149,162` e o lote já é aplicado lá (`:220,:322`). Um prefetch separado seria consulta extra no login — decisão de custo, não de resgate |
+
+**Presos à decisão 4.1 (link público):**
+
+`ShareCollectionDialog.tsx`, `ShareComparisonDialog.tsx`, `ShareListDialog.tsx`
+e `kit-og-image.ts` (gera a imagem OG 1200×630 do link público do kit — e não
+há link público de kit na `main`). Os quatro entram **junto** com a rota
+pública, ou não entram.
+
+**Presos a decisão de arquitetura:**
+
+`bridge-telemetry-client.ts` e `cold-start-recorder.ts` exigem instrumentar o
+`external-db-bridge` em runtime. Cold start já é visível por dois caminhos sem
+esse custo (`ColdVsWarmCrmCard.tsx` e os cards resgatados nesta sessão), então
+o terceiro mecanismo só se paga se o dono quiser o drill-down por retry.
+
+---
+
+## 4.7 Onde param os 102 — e o que ainda repousa na varredura
+
+**Lidos arquivo a arquivo nesta sessão: os 36 com export ausente.**
+
+| veredicto | arquivos | base |
+|---|---|---|
+| superados (a `main` faz o mesmo) | 19 | leitura + evidência `arquivo:linha` |
+| obsoletos com motivo técnico | 9 | leitura + medição (banco, allowlist, variável de ambiente) |
+| **resgatados** | **2** | `PlatformFailureCards`, `PlatformFailureAlertBanner` |
+| presos a decisão do dono | 6 | 4 do link público, 2 de instrumentação |
+
+**Não lidos um a um: os 66 restantes.**
+
+- 28 em que a varredura achou **todos** os exports na `main`;
+- 28 sem export nenhum (barril, config, asset);
+- 10 binários e dados (`.png`, `.sql`, `.json`, `.xml`, `.md`, `.py`).
+
+Esses 66 repousam na varredura automática, e a varredura tem o viés declarado
+na seção 2: ela casa o nome em **texto**, então um símbolo citado só em
+comentário conta como presente. Medido duas vezes nesta sessão
+(`SmartSuggestions` e `ActionHistoryPanel`, via `CartUtilComponents.tsx:11-18`).
+
+**Portanto:** os 36 estão fechados; os 66 estão *provavelmente* cobertos, não
+*comprovadamente*. Antes de apagar `recovery/src-legacy/` ou as branches
+`salvo/*`, os 28 do primeiro grupo precisam da mesma leitura — é o grupo onde
+um falso positivo de comentário esconderia perda real. Os outros 38 (sem export
+e binários) são de baixo risco por natureza.
 
 ## 5. Regra que continua valendo
 
 Nenhuma branch, PR ou arquivo é apagado sem linha neste documento ou no recibo,
-com veredicto e evidência `arquivo:linha`. Enquanto a seção 4.5 tiver itens,
+com veredicto e evidência `arquivo:linha`.
+
+Duas condições ainda barram o descarte de
 `origin/salvo/codex-fix-gate1-kit-pdf-types-261109-2252` e
-`origin/salvo/claude-fix-pr3517-gate1-baseline-261113-2336` **não podem ser
-apagadas**.
+`origin/salvo/claude-fix-pr3517-gate1-baseline-261113-2336`:
+
+1. os **6 arquivos presos a decisão** da seção 4.6 (link público e
+   instrumentação do bridge);
+2. os **28 arquivos** da seção 4.7 que a varredura deu como presentes e que
+   ninguém leu — é ali que um falso positivo de comentário esconderia perda
+   real.
+
+Resolvidas as duas, as branches podem ir.
