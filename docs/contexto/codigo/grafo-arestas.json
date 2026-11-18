@@ -6529,6 +6529,7 @@
   "src/components/kit-builder/PersonalizationConfig.tsx": [
    "src/components/admin/ImageUploadButton.tsx",
    "src/components/kit-builder/SwapItemBanner.tsx",
+   "src/components/kit-builder/kitMockupDimensions.ts",
    "src/components/ui/badge.tsx",
    "src/components/ui/button.tsx",
    "src/components/ui/card.tsx",
@@ -6630,6 +6631,10 @@
    "src/hooks/kit-builder/useKitStockValidation.ts",
    "src/lib/kit-builder/index.ts",
    "src/lib/utils.ts"
+  ],
+  "src/components/kit-builder/kitMockupDimensions.ts": [
+   "src/hooks/mockup/mockupGenerationService.ts",
+   "src/lib/kit-builder/index.ts"
   ],
   "src/components/kit-library/KitCard.tsx": [
    "src/components/kit-library/kit-template-icons.ts",

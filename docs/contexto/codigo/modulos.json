@@ -8312,9 +8312,9 @@
   },
   {
    "modulo": "components/kit-builder",
-   "arquivos": 49,
+   "arquivos": 50,
    "testes": 0,
-   "linhas": 10534,
+   "linhas": 10598,
    "itens_menu": [],
    "telas": [],
    "rotas_http": [],

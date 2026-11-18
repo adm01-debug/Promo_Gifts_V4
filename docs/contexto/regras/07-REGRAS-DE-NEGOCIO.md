@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.3.2 · commit `54337b9e59` · branch `main` · 2026-11-18 02:21 UTC
+> Gerado automaticamente por AI Context Sync v1.3.2 · commit `3900fc1ff5` · branch `main` · 2026-11-18 11:56 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -6568,7 +6568,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `admin` | `supabase/migrations/20261112120500_fix_optimization_queue_rpcs_dev_access.sql` |
 | `anon` | `tests/edge-functions/live/_live-client.ts` |
 
-## K. Testes como especificação (22310 testes em 2259 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (22317 testes em 2259 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -7328,6 +7328,8 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | match the currently selected technique's area, the stale technique/price must | `src/components/kit-builder/PersonalizationConfig.tsx` |
 | Dimensões — somente se técnica usa dimensão */} | `src/components/kit-builder/PersonalizationConfig.tsx` |
 | * Below this limit the regular DOM is faster, simpler and keeps all results | `src/components/kit-builder/VirtualizedKitItemList.tsx` |
+| * Fica em módulo próprio porque PersonalizationConfig.tsx já está acima do limite | `src/components/kit-builder/kitMockupDimensions.ts` |
+| * Devolve as medidas apenas quando são autoritativas, ou `undefined`. | `src/components/kit-builder/kitMockupDimensions.ts` |
 | de AAL hidrata; tratar apenas `aal1` liberava painel admin por uma janela | `src/components/layout/AdminRoute.tsx` |
 | tardia de AAL, etc.) NÃO deve reabrir o challenge — redireciona para | `src/components/layout/AdminRoute.tsx` |
 | apenas se o usuário chegar em AAL2). | `src/components/layout/AdminRoute.tsx` |
@@ -7338,6 +7340,4 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | para a qual não tem permissão. | `src/components/layout/sidebar/RestrictedRouteNotice.tsx` |
 | E-24: mesma regra dos dots/thumbnails do MagicUpResultPanel — modo NÃO-WRAP. | `src/components/magic-up/MagicUpVariationComparator.tsx` |
 | ArrowRight/Down no último e ArrowLeft/Up no primeiro param no limite (não ciclam); | `src/components/magic-up/MagicUpVariationComparator.tsx` |
-| Regra única do logo do mockup (SVG fora: a edge generate-mockup rejeita SVG). | `src/components/mockup/AreaCard.tsx` |
-| * Validação sem rede: extensão, tipo informado pelo navegador e tamanho. Retorna a mensagem de erro ou null. */ | `src/components/mockup/ArtFileUpload.tsx` |
-| … +1337 linhas — lista completa em `context.json` | |
+| … +1339 linhas — lista completa em `context.json` | |

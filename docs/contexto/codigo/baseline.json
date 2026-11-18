@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "54337b9e591d76737ef4466a932e8bb3ce5e829d",
+  "commit": "3900fc1ff583a03966531a1b6543aa3d1365342d",
   "branch": "main",
-  "data_commit": "2026-11-17T22:33:18-03:00",
+  "data_commit": "2026-11-18T08:54:54-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "3900fc1f",
+    "data": "2026-11-18",
+    "assunto": "feat(kit-builder): previa de mockup passa a enviar as medidas reais do produto (#3818)"
+   },
    {
     "sha": "54337b9e",
     "data": "2026-11-17",
@@ -126,14 +131,9 @@
     "sha": "4250cdea",
     "data": "2026-11-17",
     "assunto": "test(products): resgata a cobertura de ciclo de vida de filtros e fornecedores (#3790)"
-   },
-   {
-    "sha": "3077bc05",
-    "data": "2026-11-17",
-    "assunto": "test(products): resgata a cobertura de enriquecimento de cor (#3789)"
    }
   ],
-  "arquivos_mudados_7d": 1984,
+  "arquivos_mudados_7d": 1794,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -177,7 +177,7 @@
    },
    {
     "pasta": "src/components/kit-builder",
-    "mudancas": 81
+    "mudancas": 83
    },
    {
     "pasta": "src/components/ui",
@@ -193,13 +193,13 @@
    },
    {
     "pasta": "supabase/MIGRATIONS_SYNC_LOG.md",
-    "mudancas": 66
+    "mudancas": 65
    }
   ],
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "supabase/MIGRATIONS_SYNC_LOG.md",
-    "mudancas": 66
+    "mudancas": 65
    },
    {
     "arquivo": "RELATORIO_CI.md",
@@ -322,9 +322,9 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 10890,
-  "arquivos_codigo": 5414,
-  "linhas_codigo": 1033307,
+  "arquivos_total": 10891,
+  "arquivos_codigo": 5415,
+  "linhas_codigo": 1033428,
   "rotas": 139,
   "rotas_http_backend": 13,
   "vistas_por_id": 0,
@@ -1895,8 +1895,8 @@
    "linhas": 130
   },
   "src/components": {
-   "arquivos": 1397,
-   "linhas": 277823
+   "arquivos": 1398,
+   "linhas": 277887
   },
   "src/config": {
    "arquivos": 1,
@@ -2048,7 +2048,7 @@
   },
   "tests/components": {
    "arquivos": 164,
-   "linhas": 35474
+   "linhas": 35531
   },
   "tests/config": {
    "arquivos": 6,
@@ -2290,7 +2290,7 @@
   },
   {
    "arquivo": "src/components/kit-builder/PersonalizationConfig.tsx",
-   "linhas": 1408
+   "linhas": 1391
   },
   {
    "arquivo": "scripts/drift-baseline.mjs",

@@ -10381,7 +10381,7 @@
     "PersonalizationConfig"
    ],
    "export_default": null,
-   "linhas": 1408,
+   "linhas": 1391,
    "dominio": "components/kit-builder",
    "hooks_locais": [
     "useCustomizationPriceReactive",
