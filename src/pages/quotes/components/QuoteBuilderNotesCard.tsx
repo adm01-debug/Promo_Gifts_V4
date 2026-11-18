@@ -36,6 +36,12 @@ interface QuoteBuilderNotesCardProps {
   items: QuoteItem[];
   discountType: 'amount' | 'percent';
   discountValue: number;
+  /**
+   * Ação "Usar template" (QuoteTemplateSelector). Entra por prop para o card
+   * seguir sem conhecer o estado do construtor — e para o gate de tamanho de
+   * arquivo do QuoteBuilderPage não piorar.
+   */
+  usarTemplate?: React.ReactNode;
 }
 
 /**
@@ -49,6 +55,7 @@ export function QuoteBuilderNotesCard({
   items,
   discountType,
   discountValue,
+  usarTemplate,
 }: QuoteBuilderNotesCardProps) {
   return (
     <div className="space-y-3 rounded-2xl border border-border/50 bg-card p-4">
@@ -71,14 +78,19 @@ export function QuoteBuilderNotesCard({
           <p className="text-right text-[10px] text-muted-foreground">{notes.length}/2000</p>
         )}
       </div>
-      {items.length > 0 && (
-        <div className="flex justify-end border-t border-border/50 pt-3">
-          <SaveAsTemplateButton
-            items={toTemplateItems(items)}
-            discountPercent={discountType === 'percent' ? discountValue : 0}
-            discountAmount={discountType === 'amount' ? discountValue : 0}
-            notes={notes || ''}
-          />
+      {(items.length > 0 || usarTemplate) && (
+        <div className="flex flex-wrap items-center justify-end gap-2 border-t border-border/50 pt-3">
+          {/* "Usar template" aparece mesmo com o orçamento vazio: é justamente aí
+              que aplicar um template poupa mais trabalho do vendedor. */}
+          {usarTemplate}
+          {items.length > 0 && (
+            <SaveAsTemplateButton
+              items={toTemplateItems(items)}
+              discountPercent={discountType === 'percent' ? discountValue : 0}
+              discountAmount={discountType === 'amount' ? discountValue : 0}
+              notes={notes || ''}
+            />
+          )}
         </div>
       )}
     </div>

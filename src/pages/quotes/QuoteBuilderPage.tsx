@@ -22,6 +22,7 @@ import { Calendar } from '@/components/ui/calendar';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { DeliveryModeToggle } from '@/pages/quotes/components/DeliveryModeToggle';
 import { QuoteBuilderNotesCard } from '@/pages/quotes/components/QuoteBuilderNotesCard';
+import { QuoteTemplateSelector } from '@/components/quotes/QuoteTemplateSelector';
 
 import {
   FileText,
@@ -689,6 +690,7 @@ export default function QuoteBuilderPage() {
                 items={s.items}
                 discountType={s.discountType}
                 discountValue={s.discountValue}
+                usarTemplate={<QuoteTemplateSelector itemCount={s.items.length} s={s} />}
               />
             </div>
           </div>
