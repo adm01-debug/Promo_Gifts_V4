@@ -1,10 +1,10 @@
 {
  "meta": {
-  "sha": "2d265a9867bcf6b8e582c9cd829998f96b984461",
+  "sha": "54337b9e591d76737ef4466a932e8bb3ce5e829d",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-18 00:52 UTC",
-  "files_total": 10817,
+  "generated_at": "2026-11-18 02:21 UTC",
+  "files_total": 10818,
   "code_files": 8853,
   "code_lines": 1254039
  },
@@ -544791,10 +544791,19 @@
   }
  },
  "git": {
-  "sha": "2d265a9867bcf6b8e582c9cd829998f96b984461",
+  "sha": "54337b9e591d76737ef4466a932e8bb3ce5e829d",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "54337b9",
+    "date": "2026-11-17",
+    "author": "adm01-debug",
+    "subject": "docs(resgate): registra as 8 pendencias abertas do resgate com evidencia medida (#3816)",
+    "files": [
+     "docs/agentes/resgates/2026-11-18-pendencias-abertas.md"
+    ]
+   },
    {
     "sha": "2d265a9",
     "date": "2026-11-17",
@@ -545106,15 +545115,6 @@
     "files": [
      "scripts/check-dependency-audit.mjs"
     ]
-   },
-   {
-    "sha": "5ca6092",
-    "date": "2026-11-17",
-    "author": "adm01-debug",
-    "subject": "docs: marca como vivos na main os 3 itens que o dossiê pedia para completar (#3780)",
-    "files": [
-     "analise-branches/dossies/claude__resgate-3390-261113.md"
-    ]
    }
   ],
   "hot_files": [
@@ -545155,8 +545155,8 @@
     2
    ],
    [
-    "analise-branches/dossies/claude__resgate-3390-261113.md",
-    2
+    "docs/agentes/resgates/2026-11-18-pendencias-abertas.md",
+    1
    ],
    [
     "src/hooks/__tests__/useAutoSaveQuote.legacy.test.ts",

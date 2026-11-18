@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "2d265a9867bcf6b8e582c9cd829998f96b984461",
+  "commit": "54337b9e591d76737ef4466a932e8bb3ce5e829d",
   "branch": "main",
-  "data_commit": "2026-11-17T21:51:04-03:00",
+  "data_commit": "2026-11-17T22:33:18-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "54337b9e",
+    "data": "2026-11-17",
+    "assunto": "docs(resgate): registra as 8 pendencias abertas do resgate com evidencia medida (#3816)"
+   },
    {
     "sha": "2d265a98",
     "data": "2026-11-17",
@@ -126,14 +131,9 @@
     "sha": "3077bc05",
     "data": "2026-11-17",
     "assunto": "test(products): resgata a cobertura de enriquecimento de cor (#3789)"
-   },
-   {
-    "sha": "87ffb0ee",
-    "data": "2026-11-17",
-    "assunto": "fix(observabilidade): tunela envelopes do Sentry pela própria origem (CORS matava 100% dos relatórios) (#3784)"
    }
   ],
-  "arquivos_mudados_7d": 1987,
+  "arquivos_mudados_7d": 1984,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -193,13 +193,13 @@
    },
    {
     "pasta": "supabase/MIGRATIONS_SYNC_LOG.md",
-    "mudancas": 67
+    "mudancas": 66
    }
   ],
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "supabase/MIGRATIONS_SYNC_LOG.md",
-    "mudancas": 67
+    "mudancas": 66
    },
    {
     "arquivo": "RELATORIO_CI.md",
@@ -239,7 +239,7 @@
    },
    {
     "arquivo": "auditoria-supabase/RELATORIO_AUDITORIA_SUPABASE.md",
-    "mudancas": 13
+    "mudancas": 12
    },
    {
     "arquivo": "src/hooks/kit-builder/useKitBuilderPageState.ts",
@@ -322,7 +322,7 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 10889,
+  "arquivos_total": 10890,
   "arquivos_codigo": 5414,
   "linhas_codigo": 1033307,
   "rotas": 139,
@@ -339,7 +339,7 @@
   "testes": 2581,
   "workflows": 88,
   "scripts": 283,
-  "docs_md": 1470
+  "docs_md": 1471
  },
  "por_pasta": {
   ".github/scripts": {

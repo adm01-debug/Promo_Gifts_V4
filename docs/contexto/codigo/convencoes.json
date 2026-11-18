@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "docs(resgate): registra as 8 pendencias abertas do resgate com evidencia medida (#3816)",
    "test(resgate): lote 3 — cobertura de outro agente para autosave de orcamento e apresentacao de favoritos (#3815)",
    "fix(orcamentos): gravar rascunho nao apaga mais os campos que a tela nao modela (#3814)",
    "fix(quotes): id do Bitrix era gravado sem validacao e corrompia (#3799)",
-   "fix(hooks): solta o spinner preso ao sair do produto antes da resposta (#3787)",
-   "fix(kit): Ctrl+S repetido criava dois kits iguais (#3798)"
+   "fix(hooks): solta o spinner preso ao sair do produto antes da resposta (#3787)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",
