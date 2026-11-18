@@ -5,10 +5,13 @@
  * mínimo de 8 px — a logo saía na imagem gerada num tamanho diferente do que o
  * vendedor posicionou na tela, e um teto de 98% do quadro encolhia logo grande.
  * Depois: a fórmula é a do `cmParaPx` do cliente (src/lib/mockup-geometry.ts),
- * inclusive a estimativa 8×20 cm quando o produto não tem medidas — o mesmo
- * fallback que o editor desenha na tela. A edge NÃO recusa payload sem dimensões
- * (o kit-builder gera prévia sem productWidthCm/HeightCm); o 422 da branch de
- * origem ficou de fora de propósito.
+ * inclusive a inferência de uma dimensão a partir da outra.
+ *
+ * Desde #3818 + o portão de medidas: a edge RECUSA payload sem nenhuma dimensão
+ * real (422 `missing_dimensions`), porque o kit-builder passou a enviar as medidas
+ * do produto (kitMockupDimensions.ts) e a recusar antes da chamada quando o produto
+ * não tem medidas cadastradas. A estimativa 8×20 cm continua em `cmParaPx` apenas
+ * como último recurso interno, inalcançável pelo handler.
  *
  * Runner: Vitest (a fórmula é pura; index.ts não é importável sob Node).
  */
@@ -19,9 +22,13 @@ import { describe, expect, it } from "vitest";
 import {
   DEFAULT_PRODUCT_FRACTION,
   MAX_LOGO_PX,
+  MISSING_DIMENSIONS_ERROR_CODE,
+  MISSING_DIMENSIONS_STATUS,
   MIN_LOGO_PX,
   type CmParaPxInput,
+  checkProductDimensions,
   cmParaPx,
+  hasProductDimensions,
   logoSizePx,
 } from "./geometry.ts";
 
@@ -72,9 +79,22 @@ describe("geometry (generate-mockup) — sem dimensões cadastradas, o fallback 
     }
   });
 
-  it("o handler não recusa payload sem dimensões (kit-builder depende disso)", () => {
-    expect(INDEX_SRC).not.toContain("checkProductDimensions");
-    expect(INDEX_SRC).not.toContain("missing_dimensions");
+  it("o handler recusa payload sem nenhuma dimensão real (422 missing_dimensions)", () => {
+    // Prova no fonte: o portão é chamado com os dois campos do body e a recusa
+    // devolve o errorCode/status do próprio portão, não um 400 genérico.
+    expect(INDEX_SRC).toContain(
+      "checkProductDimensions(body.productWidthCm, body.productHeightCm)",
+    );
+    expect(INDEX_SRC).toContain("dimensionsGate.errorCode");
+    expect(INDEX_SRC).toContain("dimensionsGate.status");
+  });
+
+  it("o portão roda ANTES de qualquer download de imagem", () => {
+    // Uma edge pública não deve baixar nada para depois recusar por entrada.
+    expect(INDEX_SRC.indexOf("checkProductDimensions(body.")).toBeGreaterThan(-1);
+    expect(INDEX_SRC.indexOf("checkProductDimensions(body.")).toBeLessThan(
+      INDEX_SRC.indexOf("fetchBytes(body.productImageUrl"),
+    );
   });
 });
 
@@ -148,8 +168,43 @@ describe("index.ts está ligado à geometria compartilhada", () => {
     expect(INDEX_SRC).not.toMatch(/MIN_LOGO_PX\s*=\s*8\b/);
   });
 
-  it("validationError segue com 400 fixo (nenhum status novo entrou no handler)", () => {
-    expect(INDEX_SRC).toContain('{ status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }');
-    expect(INDEX_SRC).not.toContain("status = 400,");
+  it("validationError mantém 400 como default e 422 só no portão de medidas", () => {
+    // O status virou parametrizável de propósito (portão de medidas = 422). O que
+    // precisa continuar verdade: o default é 400, então nenhuma outra validação
+    // mudou de status, e 422 aparece uma única vez — vindo do portão.
+    expect(INDEX_SRC).toContain("status = 400,");
+    expect(INDEX_SRC).toContain('{ status, headers: { ...corsHeaders, "Content-Type": "application/json" } }');
+    const chamadasComStatus = INDEX_SRC.match(/dimensionsGate\.status/g) ?? [];
+    expect(chamadasComStatus).toHaveLength(1);
+    expect(INDEX_SRC).not.toMatch(/validationError\([^)]*,\s*4\d\d\s*\)/);
+  });
+});
+
+describe("portão de medidas (generate-mockup) — a edge é pública, a regra não pode morar só na UI", () => {
+  it("sem nenhuma medida: recusa com 422 missing_dimensions", () => {
+    const gate = checkProductDimensions(undefined, undefined);
+    expect(gate.ok).toBe(false);
+    if (gate.ok) throw new Error("deveria ter recusado");
+    expect(gate.status).toBe(422);
+    expect(gate.status).toBe(MISSING_DIMENSIONS_STATUS);
+    expect(gate.errorCode).toBe(MISSING_DIMENSIONS_ERROR_CODE);
+    expect(gate.message).toMatch(/obrigatórias/i);
+  });
+
+  it("uma medida basta: a outra é inferida como no editor", () => {
+    expect(checkProductDimensions(12, undefined).ok).toBe(true);
+    expect(checkProductDimensions(undefined, 30).ok).toBe(true);
+  });
+
+  it("zero, negativo, NaN e string não contam como medida", () => {
+    for (const ruim of [0, -1, Number.NaN, Number.POSITIVE_INFINITY, "20", null, {}]) {
+      expect(hasProductDimensions(ruim, ruim)).toBe(false);
+      expect(checkProductDimensions(ruim, ruim).ok).toBe(false);
+    }
+  });
+
+  it("medida válida em um campo e lixo no outro ainda passa", () => {
+    expect(hasProductDimensions("abc", 15)).toBe(true);
+    expect(checkProductDimensions(Number.NaN, 15).ok).toBe(true);
   });
 });
