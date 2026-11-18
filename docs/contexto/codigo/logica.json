@@ -1,7 +1,7 @@
 {
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
- "total": 311,
+ "total": 313,
  "por_camada": {
   "api": 4,
   "config": 1,
@@ -11,7 +11,7 @@
   "python": 9,
   "services": 10,
   "stores": 9,
-  "utils": 31
+  "utils": 33
  },
  "arquivos": [
   {
@@ -4457,16 +4457,17 @@
    "zod_schemas": 0,
    "flags": [],
    "papeis": [],
-   "usado_por": 73,
+   "usado_por": 75,
    "usado_por_modulos": [
     "components/dashboard",
     "components/kit-builder",
     "components/kit-library",
     "hooks/kit-builder",
     "pages/admin",
-    "pages/kit-builder"
+    "pages/kit-builder",
+    "utils"
    ],
-   "coberto_por_testes": 39,
+   "coberto_por_testes": 40,
    "orfao": false
   },
   {
@@ -4578,11 +4579,12 @@
    "zod_schemas": 0,
    "flags": [],
    "papeis": [],
-   "usado_por": 12,
+   "usado_por": 13,
    "usado_por_modulos": [
     "components/kit-builder",
     "lib/kit-builder",
-    "pages/kit-builder"
+    "pages/kit-builder",
+    "utils"
    ],
    "coberto_por_testes": 1,
    "orfao": false
@@ -7214,9 +7216,11 @@
    "zod_schemas": 0,
    "flags": [],
    "papeis": [],
-   "usado_por": 1,
-   "usado_por_modulos": [],
-   "coberto_por_testes": 0,
+   "usado_por": 2,
+   "usado_por_modulos": [
+    "components/admin"
+   ],
+   "coberto_por_testes": 1,
    "orfao": false
   },
   {
@@ -7244,14 +7248,15 @@
    "zod_schemas": 0,
    "flags": [],
    "papeis": [],
-   "usado_por": 12,
+   "usado_por": 15,
    "usado_por_modulos": [
+    "components/admin",
     "hooks/dev",
     "lib",
     "lib/external-db",
     "lib/telemetry"
    ],
-   "coberto_por_testes": 9,
+   "coberto_por_testes": 11,
    "orfao": false
   },
   {
@@ -7304,7 +7309,7 @@
     "components/admin",
     "lib/telemetry"
    ],
-   "coberto_por_testes": 1,
+   "coberto_por_testes": 2,
    "orfao": false
   },
   {
@@ -7472,7 +7477,7 @@
    "zod_schemas": 0,
    "flags": [],
    "papeis": [],
-   "usado_por": 17,
+   "usado_por": 18,
    "usado_por_modulos": [
     "components/admin",
     "hooks/admin",
@@ -9092,6 +9097,69 @@
     "pages/admin"
    ],
    "coberto_por_testes": 1,
+   "orfao": false
+  },
+  {
+   "arquivo": "src/utils/kitPdfGenerator.ts",
+   "camada": "utils",
+   "exports": [
+    "downloadKitPDF",
+    "exportKitPdf",
+    "generateKitPDF"
+   ],
+   "export_default": null,
+   "linhas": 468,
+   "tabelas": [],
+   "rpcs": [],
+   "edges": [],
+   "env": [],
+   "externos": [
+    "jspdf",
+    "jspdf-autotable",
+    "sonner"
+   ],
+   "zod_schemas": 0,
+   "flags": [],
+   "papeis": [],
+   "usado_por": 1,
+   "usado_por_modulos": [
+    "pages/kit-builder"
+   ],
+   "coberto_por_testes": 1,
+   "orfao": false
+  },
+  {
+   "arquivo": "src/utils/kitPdfPrimitives.ts",
+   "camada": "utils",
+   "exports": [
+    "GRAY_500",
+    "GRAY_800",
+    "PERSONALIZATION",
+    "PRIMARY",
+    "RgbColor",
+    "WHITE",
+    "hexToRgb",
+    "resolveItemPersonalization",
+    "setFill",
+    "setText"
+   ],
+   "export_default": null,
+   "linhas": 56,
+   "tabelas": [],
+   "rpcs": [],
+   "edges": [],
+   "env": [],
+   "externos": [
+    "jspdf"
+   ],
+   "zod_schemas": 0,
+   "flags": [],
+   "papeis": [],
+   "usado_por": 1,
+   "usado_por_modulos": [
+    "utils"
+   ],
+   "coberto_por_testes": 0,
    "orfao": false
   },
   {

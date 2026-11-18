@@ -2,11 +2,21 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "3f87aa94a02a6f9399c8263b5bb218b1b25bcd56",
+  "commit": "a839f6be9c7b8a508eabce707515faeef60f4a11",
   "branch": "main",
-  "data_commit": "2026-11-18T15:15:19-03:00",
+  "data_commit": "2026-11-18T15:15:35-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "a839f6be",
+    "data": "2026-11-18",
+    "assunto": "feat(components): resgata os cards de observabilidade das bridges em /admin/telemetria (#3837)"
+   },
+   {
+    "sha": "c003142f",
+    "data": "2026-11-18",
+    "assunto": "feat(kit): gera PDF real do kit no lugar de window.print() (#3835)"
+   },
    {
     "sha": "3f87aa94",
     "data": "2026-11-18",
@@ -121,23 +131,13 @@
     "sha": "b2cc12ea",
     "data": "2026-11-17",
     "assunto": "fix(orcamentos): gravar rascunho nao apaga mais os campos que a tela nao modela (#3814)"
-   },
-   {
-    "sha": "c75e7f30",
-    "data": "2026-11-17",
-    "assunto": "fix(quotes): id do Bitrix era gravado sem validacao e corrompia (#3799)"
-   },
-   {
-    "sha": "96509703",
-    "data": "2026-11-17",
-    "assunto": "fix(hooks): solta o spinner preso ao sair do produto antes da resposta (#3787)"
    }
   ],
-  "arquivos_mudados_7d": 1485,
+  "arquivos_mudados_7d": 1495,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
-    "mudancas": 638
+    "mudancas": 644
    },
    {
     "pasta": "src/components/products",
@@ -181,7 +181,7 @@
    },
    {
     "pasta": "src/pages/admin",
-    "mudancas": 134
+    "mudancas": 135
    },
    {
     "pasta": "src/components/kit-builder",
@@ -203,7 +203,7 @@
    },
    {
     "arquivo": "RELATORIO_CI.md",
-    "mudancas": 48
+    "mudancas": 47
    },
    {
     "arquivo": "PENDENCIAS.md",
@@ -227,14 +227,14 @@
    },
    {
     "arquivo": "src/pages/kit-builder/KitBuilderPage.tsx",
-    "mudancas": 16
-   },
-   {
-    "arquivo": "supabase/EDGE_FUNCTIONS_DEPLOY_LOG.md",
-    "mudancas": 16
+    "mudancas": 17
    },
    {
     "arquivo": "analise-prs/progresso.json",
+    "mudancas": 15
+   },
+   {
+    "arquivo": "supabase/EDGE_FUNCTIONS_DEPLOY_LOG.md",
     "mudancas": 15
    },
    {
@@ -250,15 +250,15 @@
     "mudancas": 11
    },
    {
-    "arquivo": "auditoria-supabase/RELATORIO_AUDITORIA_SUPABASE.md",
-    "mudancas": 11
-   },
-   {
     "arquivo": "src/pages/mockups/MockupGenerator.tsx",
     "mudancas": 11
    },
    {
     "arquivo": "analise-branches/RELATORIO_BRANCHES.md",
+    "mudancas": 10
+   },
+   {
+    "arquivo": "auditoria-supabase/RELATORIO_AUDITORIA_SUPABASE.md",
     "mudancas": 10
    },
    {
@@ -301,7 +301,7 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 530
+    "commits": 529
    },
    {
     "autor": "Claude",
@@ -313,7 +313,7 @@
    },
    {
     "autor": "github-actions[bot]",
-    "commits": 28
+    "commits": 27
    },
    {
     "autor": "dependabot[bot]",
@@ -322,21 +322,21 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 10930,
-  "arquivos_codigo": 5447,
-  "linhas_codigo": 1038893,
+  "arquivos_total": 10939,
+  "arquivos_codigo": 5456,
+  "linhas_codigo": 1040603,
   "rotas": 139,
   "rotas_http_backend": 13,
   "vistas_por_id": 0,
   "itens_menu": 69,
   "modulos": 163,
-  "componentes": 1252,
+  "componentes": 1256,
   "hooks": 629,
   "edge_functions": 112,
   "tabelas": 527,
   "migrations": 3099,
   "cron_jobs": 122,
-  "testes": 2595,
+  "testes": 2598,
   "workflows": 88,
   "scripts": 283,
   "docs_md": 1478
@@ -1895,8 +1895,8 @@
    "linhas": 130
   },
   "src/components": {
-   "arquivos": 1410,
-   "linhas": 280161
+   "arquivos": 1416,
+   "linhas": 281111
   },
   "src/config": {
    "arquivos": 1,
@@ -1940,7 +1940,7 @@
   },
   "src/pages": {
    "arquivos": 366,
-   "linhas": 84446
+   "linhas": 84445
   },
   "src/routes": {
    "arquivos": 15,
@@ -1967,8 +1967,8 @@
    "linhas": 4437
   },
   "src/utils": {
-   "arquivos": 58,
-   "linhas": 8397
+   "arquivos": 61,
+   "linhas": 9151
   },
   "supabase/functions": {
    "arquivos": 278,
@@ -2048,7 +2048,7 @@
   },
   "tests/components": {
    "arquivos": 165,
-   "linhas": 35833
+   "linhas": 35840
   },
   "tests/config": {
    "arquivos": 6,
@@ -3347,6 +3347,9 @@
    "AdvancedPriceSearchPage",
    "Auth",
    "BreadcrumbItem",
+   "BridgeAlertsCard",
+   "BridgeCallDetailDrawer",
+   "BridgesLiveCard",
    "BulkAction",
    "BusinessIntelligencePage",
    "CardSkeleton",

@@ -5,13 +5,13 @@
   "vitest",
   "playwright"
  ],
- "total": 2595,
+ "total": 2598,
  "por_tipo": {
   "contrato": 66,
   "e2e": 677,
   "pytest": 5,
   "qa": 17,
-  "unit": 1830
+  "unit": 1833
  },
  "onde_ficam": [
   {
@@ -20,7 +20,7 @@
   },
   {
    "padrao": "co-localizado (__tests__)",
-   "arquivos": 692
+   "arquivos": 695
   },
   {
    "padrao": "e2e/",
@@ -4937,6 +4937,28 @@
     "src/components/admin/products/productMarketingData.ts"
    ],
    "casos": 5
+  },
+  {
+   "arquivo": "src/components/admin/telemetry/__tests__/BridgeAlertsCard.test.tsx",
+   "tipo": "unit",
+   "linhas": 98,
+   "testa": [
+    "src/components/admin/telemetry/BridgeAlertsCard.tsx",
+    "src/lib/telemetry/bridgeAlertThresholds.ts",
+    "src/lib/telemetry/bridgeCallMetrics.ts",
+    "src/lib/telemetry/instrumentationControl.ts"
+   ],
+   "casos": 3
+  },
+  {
+   "arquivo": "src/components/admin/telemetry/__tests__/BridgeCallDetailDrawer.test.tsx",
+   "tipo": "unit",
+   "linhas": 47,
+   "testa": [
+    "src/components/admin/telemetry/BridgeCallDetailDrawer.tsx",
+    "src/lib/telemetry/bridgeCallMetrics.ts"
+   ],
+   "casos": 2
   },
   {
    "arquivo": "src/components/ai/__tests__/AIMockupAssistant.test.tsx",
@@ -12078,6 +12100,16 @@
    "casos": 18
   },
   {
+   "arquivo": "src/utils/__tests__/kitPdfGenerator.test.ts",
+   "tipo": "unit",
+   "linhas": 230,
+   "testa": [
+    "src/lib/kit-builder/index.ts",
+    "src/utils/kitPdfGenerator.ts"
+   ],
+   "casos": 5
+  },
+  {
    "arquivo": "src/utils/__tests__/product-sorting.test.ts",
    "tipo": "unit",
    "linhas": 87,
@@ -14287,7 +14319,7 @@
   {
    "arquivo": "tests/components/pages/KitBuilderPage.test.tsx",
    "tipo": "unit",
-   "linhas": 465,
+   "linhas": 472,
    "testa": [
     "src/pages/kit-builder/KitBuilderPage.tsx"
    ],
@@ -22186,6 +22218,8 @@
   "src/components/admin/products/ProductFormSchema.ts": 2,
   "src/components/admin/products/ProductMarketingSection.tsx": 1,
   "src/components/admin/products/productMarketingData.ts": 2,
+  "src/components/admin/telemetry/BridgeAlertsCard.tsx": 1,
+  "src/components/admin/telemetry/BridgeCallDetailDrawer.tsx": 1,
   "src/components/admin/telemetry/TelemetryCharts.tsx": 1,
   "src/components/ai/AIMockupAssistant.tsx": 1,
   "src/components/ai/AIRecommendationsPanel.tsx": 1,
@@ -22736,7 +22770,7 @@
   "src/lib/inventory/supplier-reliability/types.ts": 4,
   "src/lib/json-value.ts": 1,
   "src/lib/kit-builder/ai-composition.ts": 2,
-  "src/lib/kit-builder/index.ts": 39,
+  "src/lib/kit-builder/index.ts": 40,
   "src/lib/kit-builder/item-sort.ts": 1,
   "src/lib/kit-builder/persistence.ts": 5,
   "src/lib/kit-builder/price-calculator.ts": 2,
@@ -22798,9 +22832,10 @@
   "src/lib/system/dev-gate/DevInfraGate.ts": 5,
   "src/lib/system/dev-gate/providers.ts": 1,
   "src/lib/system/dev-gate/types.ts": 2,
-  "src/lib/telemetry/bridgeCallMetrics.ts": 9,
+  "src/lib/telemetry/bridgeAlertThresholds.ts": 1,
+  "src/lib/telemetry/bridgeCallMetrics.ts": 11,
   "src/lib/telemetry/correlationId.ts": 3,
-  "src/lib/telemetry/instrumentationControl.ts": 1,
+  "src/lib/telemetry/instrumentationControl.ts": 2,
   "src/lib/telemetry/longTaskWatchdog.ts": 2,
   "src/lib/telemetry/navigationMetrics.ts": 1,
   "src/lib/telemetry/requestId.ts": 2,
@@ -22956,6 +22991,7 @@
   "src/utils/currency.ts": 1,
   "src/utils/image-utils.ts": 4,
   "src/utils/imageProxy.ts": 1,
+  "src/utils/kitPdfGenerator.ts": 1,
   "src/utils/laser-logo-processor.ts": 1,
   "src/utils/masks.ts": 10,
   "src/utils/price-freshness.ts": 7,

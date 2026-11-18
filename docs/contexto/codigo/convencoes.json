@@ -8,7 +8,7 @@
    "api/health.ts (1)"
   ],
   "componentes": [
-   "src/components (953)",
+   "src/components (957)",
    "src/pages (180)",
    "recovery/src-legacy (100)"
   ],
@@ -19,12 +19,12 @@
   ],
   "servicos_logica": [
    "src/lib (236)",
-   "src/utils (31)",
+   "src/utils (33)",
    "src/services (10)"
   ],
   "testes": [
    "tests/ (1076)",
-   "co-localizado (__tests__) (692)",
+   "co-localizado (__tests__) (695)",
    "e2e/ (625)"
   ],
   "edge_functions": "supabase/functions",
@@ -49,7 +49,7 @@
  },
  "barrels_index": 46,
  "extensao_componentes": [
-  ".tsx (1252)"
+  ".tsx (1256)"
  ],
  "alias_imports": {
   "e2e/": {},
@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "feat(components): resgata os cards de observabilidade das bridges em /admin/telemetria (#3837)",
+   "feat(kit): gera PDF real do kit no lugar de window.print() (#3835)",
    "test(utils): resgata a cobertura do casamento de cor Pantone (#3834)",
    "fix(kit): filtro e card de status da biblioteca contam o status real do kit (#3833)",
-   "fix(monitoring): tunel para de repassar 404 da ingestao ao navegador (#3831)",
-   "fix(quotes): nunca mostrar R$ NaN no total de template (#3830)",
-   "docs(resgate): recibo da adjudicacao de 2026-11-18, com prova por branch e por PR (#3829)"
+   "fix(monitoring): tunel para de repassar 404 da ingestao ao navegador (#3831)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",

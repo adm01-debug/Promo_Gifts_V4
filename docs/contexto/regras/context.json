@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "3f87aa94a02a6f9399c8263b5bb218b1b25bcd56",
+  "sha": "a839f6be9c7b8a508eabce707515faeef60f4a11",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-18 18:19 UTC",
-  "files_total": 10858,
-  "code_files": 8886,
-  "code_lines": 1259625
+  "generated_at": "2026-11-18 18:29 UTC",
+  "files_total": 10867,
+  "code_files": 8895,
+  "code_lines": 1261335
  },
  "version": "1.3.2",
- "facts_hash": "2e081cecc42c18ff",
+ "facts_hash": "7fff9afc1db002f7",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -1120,8 +1120,8 @@
   "package_manager": "npm",
   "languages": {
    ".sql": 3440,
-   ".ts": 3032,
-   ".tsx": 1949,
+   ".ts": 3035,
+   ".tsx": 1955,
    ".mjs": 450,
    ".py": 15,
    ".js": 7
@@ -138511,7 +138511,7 @@
      "save_custom_kit_atomic",
      "set_custom_kit_pinned"
     ],
-    "deps_count": 133
+    "deps_count": 135
    },
    {
     "path": "",
@@ -144985,7 +144985,7 @@
     "file": ".github/workflows/wraparound-monitor-report.yml"
    }
   ],
-  "components_count": 1683,
+  "components_count": 1689,
   "hooks": [
    {
     "name": "useQuoteComments",
@@ -149616,8 +149616,8 @@
   },
   {
    "module": "src/components",
-   "files": 1410,
-   "lines": 280160,
+   "files": 1416,
+   "lines": 281110,
    "tables": [
     "admin_audit_log",
     "art_file_attachments",
@@ -150474,7 +150474,7 @@
   {
    "module": "src/pages",
    "files": 366,
-   "lines": 84446,
+   "lines": 84445,
    "tables": [
     "ai_usage_events",
     "bot_detection_log",
@@ -151046,8 +151046,8 @@
   },
   {
    "module": "src/utils",
-   "files": 58,
-   "lines": 8397,
+   "files": 61,
+   "lines": 9151,
    "tables": [],
    "exports": [
     "br-schemas.ts: cpfOptionalSchema, cepOptionalSchema, phoneBrOptionalSchema, assertPersistableCpf, assertPersistableCep, assertPersistablePhoneBr",
@@ -151064,6 +151064,8 @@
     "excelExport.ts: ExcelExportConfig, ExcelColumn, exportToExcel, exportMultipleSheets, formatPercentage, formatStatus",
     "image-utils.ts: ImageTypeCode, ProductImageMeta, GroupedImages, CdnVariant, isImageDeliveryUrl, getCdnUrl",
     "imageProxy.ts: getProxiedImageUrl, needsProxy, deriveOriginalUrl, deriveSpotOriginalUrlFromWorker",
+    "kitPdfGenerator.ts: generateKitPDF, downloadKitPDF, exportKitPdf",
+    "kitPdfPrimitives.ts: RgbColor, PRIMARY, GRAY_800, GRAY_500, WHITE, PERSONALIZATION",
     "laser-logo-processor.ts: LaserToneConfig, processLogoForLaser, processLogoForSerigrafia",
     "masks.ts: normalizeCnpj, isNormalizedCnpj, maskCnpj, maskPhone, validateCnpj, maskCep",
     "performance-budget.ts: initPerformanceBudget",
@@ -151096,6 +151098,8 @@
     "@testing-library/react",
     "fast-check",
     "fuse.js",
+    "jspdf",
+    "jspdf-autotable",
     "lucide-react",
     "node:fs",
     "node:path",
@@ -151131,6 +151135,8 @@
     "src/utils/excelExport.ts",
     "src/utils/image-utils.ts",
     "src/utils/imageProxy.ts",
+    "src/utils/kitPdfGenerator.ts",
+    "src/utils/kitPdfPrimitives.ts",
     "src/utils/laser-logo-processor.ts",
     "src/utils/masks.test.ts",
     "src/utils/masks.ts",
@@ -151163,6 +151169,7 @@
     "src/utils/__tests__/color-matching.test.ts",
     "src/utils/__tests__/image-utils.blurhash.test.ts",
     "src/utils/__tests__/image-utils.fuzz.test.ts",
+    "src/utils/__tests__/kitPdfGenerator.test.ts",
     "src/utils/__tests__/product-sorting.test.ts",
     "src/utils/__tests__/quote-number.adversarial.test.ts",
     "src/utils/__tests__/quote-number.exhaustive.test.ts",
@@ -151712,7 +151719,7 @@
   {
    "module": "tests",
    "files": 1091,
-   "lines": 171746,
+   "lines": 171753,
    "tables": [
     "bot_detection_log",
     "clients",
@@ -166066,6 +166073,10 @@
     "msg": "HTTP ${res.status}"
    },
    {
+    "file": "src/components/admin/telemetry/BridgeCallDetailDrawer.tsx",
+    "msg": "Não foi possível copiar"
+   },
+   {
     "file": "src/components/admin/telemetry/ColdVsWarmCrmCard.tsx",
     "msg": "HTTP ${res.status}"
    },
@@ -168982,6 +168993,10 @@
     "msg": "Falha ao exportar arquivo Excel"
    },
    {
+    "file": "src/utils/kitPdfGenerator.ts",
+    "msg": "Não foi possível gerar o PDF do kit"
+   },
+   {
     "file": "src/utils/proposalPdfReactGenerator.ts",
     "msg": "Failed to render proposal template"
    },
@@ -170846,8 +170861,20 @@
     "text": "apenas colunas reais e não os retorna."
    },
    {
+    "file": "src/components/admin/telemetry/BridgesLiveCard.tsx",
+    "text": "* Sem persistência (memória apenas). Atualiza em tempo real via subscribe."
+   },
+   {
     "file": "src/components/admin/telemetry/EdgeInvokeLivePanel.tsx",
     "text": "* Não depende da RPC `get_edge_invoke_summary` (draft, REGRA #1). Assim"
+   },
+   {
+    "file": "src/components/admin/telemetry/LiveSurfacesSection.tsx",
+    "text": "`AdminTelemetriaPage.tsx` já está acima do limite de 500 linhas do"
+   },
+   {
+    "file": "src/components/admin/telemetry/LiveSurfacesSection.tsx",
+    "text": "`check-file-size-baseline` e não pode crescer: montar os dois cards novos de"
    },
    {
     "file": "src/components/admin/users/PromotionDialog.tsx",
@@ -175248,6 +175275,10 @@
    {
     "file": "src/utils/image-utils.ts",
     "text": "Retorna array de supplier_codes únicos (apenas numéricos)."
+   },
+   {
+    "file": "src/utils/kitPdfPrimitives.ts",
+    "text": "* Mora em arquivo próprio porque `kitPdfGenerator.ts` encostou no limite de 500"
    },
    {
     "file": "src/utils/masks.ts",
@@ -197319,6 +197350,11 @@
     "value": "15"
    },
    {
+    "file": "src/components/admin/telemetry/BridgesLiveCard.tsx",
+    "name": "RECENT_LIMIT",
+    "value": "20"
+   },
+   {
     "file": "src/components/admin/telemetry/ColdVsWarmCrmCard.tsx",
     "name": "POLL_MS",
     "value": "30"
@@ -203178,6 +203214,12 @@
     "file": "src/components/admin/telemetry/BreakerStatusCard.tsx",
     "field": "state",
     "value": "HALF_OPEN",
+    "kind": "compara"
+   },
+   {
+    "file": "src/components/admin/telemetry/BridgeCallDetailDrawer.tsx",
+    "field": "status",
+    "value": "number",
     "kind": "compara"
    },
    {
@@ -215621,6 +215663,18 @@
     "body": "const targetIndex = getStepIndex(targetStep); const currentIndex = getStepIndex(state.currentStep); // Sempre pode voltar if (targetIndex <= currentIndex) return true; // Se já tem personalizações, pode ir direto ao comparativo (resumo) if (targetStep === 'comparison' && state.personalizations.length > 0) return true; for (let i = 0; i < targetIndex; i++) { if (!isStepComplete(WIZARD_STEPS[i], state)) { return false; } } return true;"
    },
    {
+    "file": "src/utils/kitPdfGenerator.ts",
+    "name": "drawPriceBreakdown",
+    "params": "doc: jsPDF, kitState: KitState, kitQuantity: number, y: number,",
+    "body": "const { box, items, personalization } = kitState; y = drawSectionTitle(doc, 'Detalhamento de Preços', y); // A single unavailable catalog price makes every total below it fiction — // the screen hides the numbers (KitPricingCard) and so does the PDF. if (!hasKnownKitPrices(kitState)) { doc.setFontSize(8); doc.setFont('helvetica', 'normal'); setText(doc, GRAY_500); const lines: string[] = doc.splitTextToSize(KIT_UNKNOWN_PRICE_MESSAGE, 182); doc.text(lines, 14, y); return y + lines.length * 4 + 6; …"
+   },
+   {
+    "file": "src/utils/kitPdfGenerator.ts",
+    "name": "generateKitPDF",
+    "params": "options: KitPdfOptions",
+    "body": "const { kitState, kitQuantity } = options; const kitName = options.kitName?.trim() || kitState.name.trim() || 'Kit Personalizado'; const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' }); let y = drawHeader(doc, kitName, options.orgName, kitState.identity); // KPI cards y = drawKpiCards(doc, kitState, kitQuantity, y); // Composition section y = drawSectionTitle(doc, 'Composição do Kit', y); y = drawCompositionTable(doc, kitState, y); // Box info line if (kitState.box) { doc. …"
+   },
+   {
     "file": "src/utils/masks.ts",
     "name": "validateCnpj",
     "params": "value: string",
@@ -216875,6 +216929,10 @@
    {
     "file": "src/components/admin/security/keys/UpdateMcpKeyDialog.tsx",
     "line": "const maxMs = FULL_SCOPE_MAX_TTL_DAYS * 24 * 60 * 60 * 1000;"
+   },
+   {
+    "file": "src/components/admin/telemetry/BridgeCallDetailDrawer.tsx",
+    "line": "setTimeout(() => setCopied(null), 1500);"
    },
    {
     "file": "src/components/admin/telemetry/QuoteBuilderHandoffCard.tsx",
@@ -230223,6 +230281,34 @@
    {
     "file": "src/components/admin/products/__tests__/productMarketingData.test.ts",
     "name": "nenhuma operação toca products, v_products_public ou a coluna tags"
+   },
+   {
+    "file": "src/components/admin/telemetry/__tests__/BridgeAlertsCard.test.tsx",
+    "name": "BridgeAlertsCard"
+   },
+   {
+    "file": "src/components/admin/telemetry/__tests__/BridgeAlertsCard.test.tsx",
+    "name": "não alerta enquanto a contagem fica abaixo de minSamples"
+   },
+   {
+    "file": "src/components/admin/telemetry/__tests__/BridgeAlertsCard.test.tsx",
+    "name": "marca alerta crítico quando p95 atinge p95CritMs"
+   },
+   {
+    "file": "src/components/admin/telemetry/__tests__/BridgeAlertsCard.test.tsx",
+    "name": "dispara o toast uma única vez por chave de alerta"
+   },
+   {
+    "file": "src/components/admin/telemetry/__tests__/BridgeCallDetailDrawer.test.tsx",
+    "name": "BridgeCallDetailDrawer"
+   },
+   {
+    "file": "src/components/admin/telemetry/__tests__/BridgeCallDetailDrawer.test.tsx",
+    "name": "exibe o badge "
+   },
+   {
+    "file": "src/components/admin/telemetry/__tests__/BridgeCallDetailDrawer.test.tsx",
+    "name": "exibe "
    },
    {
     "file": "src/components/ai/__tests__/AIMockupAssistant.test.tsx",
@@ -262383,6 +262469,30 @@
    {
     "file": "src/utils/__tests__/image-utils.fuzz.test.ts",
     "name": "cores = supplier_codes numéricos únicos ordenados; thumbnail/hero priorizam main>gallery"
+   },
+   {
+    "file": "src/utils/__tests__/kitPdfGenerator.test.ts",
+    "name": "generateKitPDF"
+   },
+   {
+    "file": "src/utils/__tests__/kitPdfGenerator.test.ts",
+    "name": "usa a personalização da linha certa quando o mesmo produto aparece em duas variantes"
+   },
+   {
+    "file": "src/utils/__tests__/kitPdfGenerator.test.ts",
+    "name": "cai para a chave legada pelo id do produto quando não há entrada por lineId"
+   },
+   {
+    "file": "src/utils/__tests__/kitPdfGenerator.test.ts",
+    "name": "não imprime R$ 0,00 para item com priceKnown false"
+   },
+   {
+    "file": "src/utils/__tests__/kitPdfGenerator.test.ts",
+    "name": "imprime o piso/setup da personalização no detalhamento de preços"
+   },
+   {
+    "file": "src/utils/__tests__/kitPdfGenerator.test.ts",
+    "name": "não lança com kit mínimo (sem caixa, sem itens) e devolve um Blob"
    },
    {
     "file": "src/utils/__tests__/product-sorting.test.ts",
@@ -350434,6 +350544,7 @@
       "compara:recovery/src-legacy/src/components/admin/telemetry/BridgeCallDetailDrawer.tsx",
       "compara:src/components/admin/connections/SecretsManagerHealthPanel.tsx",
       "compara:src/components/admin/connections/TestAllConnectionsButton.tsx",
+      "compara:src/components/admin/telemetry/BridgeCallDetailDrawer.tsx",
       "compara:src/contexts/SellerCartContext.tsx",
       "compara:src/lib/crm-db.ts",
       "compara:src/lib/db-retry.ts",
@@ -399343,7 +399454,7 @@
      "compara:recovery/src-legacy/src/components/admin/telemetry/BridgeCallDetailDrawer.tsx",
      "compara:src/components/admin/connections/SecretsManagerHealthPanel.tsx",
      "compara:src/components/admin/connections/TestAllConnectionsButton.tsx",
-     "compara:src/contexts/SellerCartContext.tsx"
+     "compara:src/components/admin/telemetry/BridgeCallDetailDrawer.tsx"
     ]
    },
    {
@@ -438254,6 +438365,52 @@
    ],
    "doc": "Card \"Circuit Breaker — crm-db-bridge\" Faz poll do endpoint `?op=breaker_status` a cada 15s e mostra: - state (CLOSED/OPEN/HALF_OPEN) com cor semântica - failures (na janela móvel) vs failureThreshold - openedAt (quando abriu) + countdown até willResetAt - configuração do breaker (window/openDuratio …"
   },
+  "src/components/admin/telemetry/BridgeAlertsCard.tsx": {
+   "path": "src/components/admin/telemetry/BridgeAlertsCard.tsx",
+   "lines": 256,
+   "exports": [
+    "function BridgeAlertsCard"
+   ],
+   "doc": "Card de alertas configuráveis por bridge no /admin/telemetria. - Lista alertas ativos (warn/crit) calculados a partir das amostras client-side já coletadas em bridgeCallMetrics. - Permite o admin editar limiares de p95 (ms) e tamanho médio de resposta (KB) por bridge — persistidos em localStorage. - …"
+  },
+  "src/components/admin/telemetry/BridgeCallDetailDrawer.tsx": {
+   "path": "src/components/admin/telemetry/BridgeCallDetailDrawer.tsx",
+   "lines": 202,
+   "exports": [
+    "function BridgeCallDetailDrawer"
+   ],
+   "errors": [
+    "Não foi possível copiar"
+   ],
+   "status_values": [
+    {
+     "field": "status",
+     "value": "number",
+     "kind": "compara"
+    }
+   ],
+   "doc": "Drawer lateral com detalhes de uma chamada de bridge específica, acessada via request_id na lista de \"Últimas chamadas\". Usa o request_id (correlation-id) propagado entre client e edge function para permitir buscar logs do servidor com o mesmo identificador.",
+   "temporal": [
+    "setTimeout(() => setCopied(null), 1500);"
+   ]
+  },
+  "src/components/admin/telemetry/BridgesLiveCard.tsx": {
+   "path": "src/components/admin/telemetry/BridgesLiveCard.tsx",
+   "lines": 286,
+   "exports": [
+    "function BridgesLiveCard"
+   ],
+   "params": [
+    {
+     "name": "RECENT_LIMIT",
+     "value": "20"
+    }
+   ],
+   "rule_comments": [
+    "* Sem persistência (memória apenas). Atualiza em tempo real via subscribe."
+   ],
+   "doc": "Card \"Bridges (ao vivo)\" — agrega métricas das chamadas client-side para external-db-bridge e crm-db-bridge durante a sessão atual. Sem persistência (memória apenas). Atualiza em tempo real via subscribe."
+  },
   "src/components/admin/telemetry/ColdVsWarmCrmCard.tsx": {
    "path": "src/components/admin/telemetry/ColdVsWarmCrmCard.tsx",
    "lines": 251,
@@ -438309,6 +438466,17 @@
     "function InstrumentationToggleButton"
    ],
    "doc": "Botão global para pausar/retomar a instrumentação client-side (bridge metrics + long task watchdog + estimativa de payload). Uso: permite ao operador isolar — sem F5 — se a lentidão percebida durante a navegação vem da própria coleta de métricas. Quando pausado, `recordBridgeCall` e `estimatePayload …"
+  },
+  "src/components/admin/telemetry/LiveSurfacesSection.tsx": {
+   "path": "src/components/admin/telemetry/LiveSurfacesSection.tsx",
+   "lines": 61,
+   "exports": [
+    "function LiveSurfacesSection"
+   ],
+   "rule_comments": [
+    "`AdminTelemetriaPage.tsx` já está acima do limite de 500 linhas do",
+    "`check-file-size-baseline` e não pode crescer: montar os dois cards novos de"
+   ]
   },
   "src/components/admin/telemetry/OptimizationMetricsCards.tsx": {
    "path": "src/components/admin/telemetry/OptimizationMetricsCards.tsx",
@@ -438414,6 +438582,35 @@
     "'24h': 60 * 60 * 1000,",
     "'6h': 30 * 60 * 1000,",
     "'7d': 6 * 60 * 60 * 1000,"
+   ]
+  },
+  "src/components/admin/telemetry/__tests__/BridgeAlertsCard.test.tsx": {
+   "path": "src/components/admin/telemetry/__tests__/BridgeAlertsCard.test.tsx",
+   "lines": 98,
+   "is_test": true,
+   "params": [
+    {
+     "name": "BRIDGE",
+     "value": "'crm-db-bridge'"
+    }
+   ],
+   "doc": "Cobertura do card de alertas das bridges (/admin/telemetria): - amostras abaixo de `minSamples` não produzem alerta; - p95 >= `p95CritMs` produz alerta crítico; - o toast dispara UMA única vez por chave de alerta (seenRef).",
+   "tests": [
+    "BridgeAlertsCard",
+    "não alerta enquanto a contagem fica abaixo de minSamples",
+    "marca alerta crítico quando p95 atinge p95CritMs",
+    "dispara o toast uma única vez por chave de alerta"
+   ]
+  },
+  "src/components/admin/telemetry/__tests__/BridgeCallDetailDrawer.test.tsx": {
+   "path": "src/components/admin/telemetry/__tests__/BridgeCallDetailDrawer.test.tsx",
+   "lines": 47,
+   "is_test": true,
+   "doc": "Cobertura do drawer de detalhe de chamada de bridge: o eco do request-id devolvido pelo servidor precisa ser confrontado com o id enviado pelo client — divergência vira badge \"divergente\".",
+   "tests": [
+    "BridgeCallDetailDrawer",
+    "exibe o badge ",
+    "exibe "
    ]
   },
   "src/components/admin/users/CreateUserDialog.tsx": {
@@ -482488,7 +482685,7 @@
   },
   "src/pages/admin/AdminTelemetriaPage.tsx": {
    "path": "src/pages/admin/AdminTelemetriaPage.tsx",
-   "lines": 645,
+   "lines": 643,
    "exports": [
     "function AdminTelemetriaPage"
    ],
@@ -484686,7 +484883,7 @@
   },
   "src/pages/kit-builder/KitBuilderPage.tsx": {
    "path": "src/pages/kit-builder/KitBuilderPage.tsx",
-   "lines": 499,
+   "lines": 500,
    "exports": [
     "function KitBuilderPage"
    ],
@@ -494069,6 +494266,51 @@
     "// XBZ Brindes — 67.96% (maior supplier) — CDN de imagens"
    ]
   },
+  "src/utils/kitPdfGenerator.ts": {
+   "path": "src/utils/kitPdfGenerator.ts",
+   "lines": 468,
+   "exports": [
+    "function generateKitPDF",
+    "function downloadKitPDF",
+    "function exportKitPdf"
+   ],
+   "errors": [
+    "Não foi possível gerar o PDF do kit"
+   ],
+   "doc": "Kit PDF Generator Generates a professional PDF for an assembled kit with composition, price breakdown, and personalization details.",
+   "calc_fns": [
+    {
+     "name": "drawPriceBreakdown",
+     "params": "doc: jsPDF, kitState: KitState, kitQuantity: number, y: number,",
+     "body": "const { box, items, personalization } = kitState; y = drawSectionTitle(doc, 'Detalhamento de Preços', y); // A single unavailable catalog price makes every total below it fiction — // the screen hides the numbers (KitPricingCard) and so does the PDF. if (!hasKnownKitPrices(kitState)) { doc.setFontSize(8); doc.setFont('helvetica', 'normal'); setText(doc, GRAY_500); const lines: string[] = doc.splitTextToSize(KIT_UNKNOWN_PRICE_MESSAGE, 182); doc.text(lines, 14, y); return y + lines.length * 4 + 6; …"
+    },
+    {
+     "name": "generateKitPDF",
+     "params": "options: KitPdfOptions",
+     "body": "const { kitState, kitQuantity } = options; const kitName = options.kitName?.trim() || kitState.name.trim() || 'Kit Personalizado'; const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' }); let y = drawHeader(doc, kitName, options.orgName, kitState.identity); // KPI cards y = drawKpiCards(doc, kitState, kitQuantity, y); // Composition section y = drawSectionTitle(doc, 'Composição do Kit', y); y = drawCompositionTable(doc, kitState, y); // Box info line if (kitState.box) { doc. …"
+    }
+   ]
+  },
+  "src/utils/kitPdfPrimitives.ts": {
+   "path": "src/utils/kitPdfPrimitives.ts",
+   "lines": 56,
+   "exports": [
+    "type RgbColor",
+    "const PRIMARY",
+    "const GRAY_800",
+    "const GRAY_500",
+    "const WHITE",
+    "const PERSONALIZATION",
+    "function setFill",
+    "function setText",
+    "function hexToRgb",
+    "function resolveItemPersonalization"
+   ],
+   "rule_comments": [
+    "* Mora em arquivo próprio porque `kitPdfGenerator.ts` encostou no limite de 500"
+   ],
+   "doc": "Primitivas de desenho do PDF de kit: paleta, aplicação de cor no jsPDF e as duas resoluções que o gerador faz antes de escrever qualquer coisa. Mora em arquivo próprio porque `kitPdfGenerator.ts` encostou no limite de 500 linhas do `check-file-size-baseline`; sem esta separação, a próxima linha acre …"
+  },
   "src/utils/laser-logo-processor.ts": {
    "path": "src/utils/laser-logo-processor.ts",
    "lines": 234,
@@ -494942,6 +495184,23 @@
     "sem técnicos; sem duplicatas; hero (main) sempre primeiro quando existe",
     "getAvailableColors / getColorThumbnail / getColorHeroImage — 100 conjuntos",
     "cores = supplier_codes numéricos únicos ordenados; thumbnail/hero priorizam main>gallery"
+   ]
+  },
+  "src/utils/__tests__/kitPdfGenerator.test.ts": {
+   "path": "src/utils/__tests__/kitPdfGenerator.test.ts",
+   "lines": 230,
+   "is_test": true,
+   "rule_comments": [
+    "(c) kit mínimo não lança."
+   ],
+   "doc": "kitPdfGenerator — cobertura dos drifts corrigidos no resgate do gerador: (a) personalização chaveada por `lineId` (mesmo produto em duas variantes); (b) `priceKnown: false` nunca imprime R$ 0,00 como preço real; (c) kit mínimo não lança. jspdf e jspdf-autotable são mockados: o teste verifica o CONTE …",
+   "tests": [
+    "generateKitPDF",
+    "usa a personalização da linha certa quando o mesmo produto aparece em duas variantes",
+    "cai para a chave legada pelo id do produto quando não há entrada por lineId",
+    "não imprime R$ 0,00 para item com priceKnown false",
+    "imprime o piso/setup da personalização no detalhamento de preços",
+    "não lança com kit mínimo (sem caixa, sem itens) e devolve um Blob"
    ]
   },
   "src/utils/__tests__/product-sorting.test.ts": {
@@ -526683,7 +526942,7 @@
   },
   "tests/components/pages/KitBuilderPage.test.tsx": {
    "path": "tests/components/pages/KitBuilderPage.test.tsx",
-   "lines": 465,
+   "lines": 472,
    "is_test": true,
    "errors": [
     "${name}.${prop} não foi passado",
@@ -546652,10 +546911,38 @@
   }
  },
  "git": {
-  "sha": "3f87aa94a02a6f9399c8263b5bb218b1b25bcd56",
+  "sha": "a839f6be9c7b8a508eabce707515faeef60f4a11",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "a839f6b",
+    "date": "2026-11-18",
+    "author": "adm01-debug",
+    "subject": "feat(components): resgata os cards de observabilidade das bridges em /admin/telemetria (#3837)",
+    "files": [
+     "src/components/admin/telemetry/BridgeAlertsCard.tsx",
+     "src/components/admin/telemetry/BridgeCallDetailDrawer.tsx",
+     "src/components/admin/telemetry/BridgesLiveCard.tsx",
+     "src/components/admin/telemetry/LiveSurfacesSection.tsx",
+     "src/components/admin/telemetry/__tests__/BridgeAlertsCard.test.tsx",
+     "src/components/admin/telemetry/__tests__/BridgeCallDetailDrawer.test.tsx",
+     "src/pages/admin/AdminTelemetriaPage.tsx"
+    ]
+   },
+   {
+    "sha": "c003142",
+    "date": "2026-11-18",
+    "author": "adm01-debug",
+    "subject": "feat(kit): gera PDF real do kit no lugar de window.print() (#3835)",
+    "files": [
+     "src/pages/kit-builder/KitBuilderPage.tsx",
+     "src/utils/__tests__/kitPdfGenerator.test.ts",
+     "src/utils/kitPdfGenerator.ts",
+     "src/utils/kitPdfPrimitives.ts",
+     "tests/components/pages/KitBuilderPage.test.tsx"
+    ]
+   },
    {
     "sha": "3f87aa9",
     "date": "2026-11-18",
@@ -546996,24 +547283,6 @@
      "src/hooks/mockup/useMockupDraft.ts",
      "tests/hooks/useMockupDraft.legacy.test.ts"
     ]
-   },
-   {
-    "sha": "91a19f2",
-    "date": "2026-11-17",
-    "author": "adm01-debug",
-    "subject": "test(quotes): resgata a cobertura de copia de template de orcamento (#3794)",
-    "files": [
-     "tests/hooks/useQuoteTemplates.copy-preservation.test.ts"
-    ]
-   },
-   {
-    "sha": "5e4825f",
-    "date": "2026-11-17",
-    "author": "adm01-debug",
-    "subject": "test(kit): resgata a cobertura de persistencia e destaque de kit (#3793)",
-    "files": [
-     "tests/hooks/useCustomKitPersistence.legacy.test.tsx"
-    ]
    }
   ],
   "hot_files": [
@@ -547066,35 +547335,35 @@
     2
    ],
    [
-    "src/utils/__tests__/color-matching.test.ts",
+    "src/components/admin/telemetry/BridgeAlertsCard.tsx",
     1
    ],
    [
-    "src/components/kit-library/KitLibraryStats.tsx",
+    "src/components/admin/telemetry/BridgeCallDetailDrawer.tsx",
     1
    ],
    [
-    "src/components/kit-library/__tests__/KitLibraryStats.test.tsx",
+    "src/components/admin/telemetry/BridgesLiveCard.tsx",
     1
    ],
    [
-    "src/pages/kit-builder/KitLibraryPage.tsx",
+    "src/components/admin/telemetry/LiveSurfacesSection.tsx",
     1
    ],
    [
-    "api/monitoring.ts",
+    "src/components/admin/telemetry/__tests__/BridgeAlertsCard.test.tsx",
     1
    ],
    [
-    "tests/api/vercel-monitoring-tunnel.test.ts",
+    "src/components/admin/telemetry/__tests__/BridgeCallDetailDrawer.test.tsx",
     1
    ],
    [
-    "src/lib/quotes/__tests__/templateTotal.test.ts",
+    "src/pages/admin/AdminTelemetriaPage.tsx",
     1
    ],
    [
-    "src/lib/quotes/templateTotal.ts",
+    "src/pages/kit-builder/KitBuilderPage.tsx",
     1
    ]
   ]

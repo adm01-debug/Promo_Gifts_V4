@@ -257,13 +257,13 @@
   },
   {
    "modulo": "components/admin",
-   "arquivos": 298,
-   "testes": 10,
-   "linhas": 69528,
+   "arquivos": 302,
+   "testes": 12,
+   "linhas": 70333,
    "itens_menu": [],
    "telas": [],
    "rotas_http": [],
-   "componentes": 237,
+   "componentes": 241,
    "hooks_locais": [
     "useA11y",
     "useAIRecommendations",
@@ -856,6 +856,7 @@
     "progressbar",
     "radio",
     "radiogroup",
+    "region",
     "status",
     "supervisor",
     "switch",
@@ -935,6 +936,7 @@
    "depende_de_modulos": [
     "components",
     "components/auth",
+    "components/errors",
     "components/materials",
     "components/products",
     "components/ui",
@@ -5650,6 +5652,7 @@
     "rpcs": []
    },
    "importado_por_outros_modulos": [
+    "components/admin",
     "components/inventory",
     "components/layout",
     "components/shared",
@@ -25407,7 +25410,8 @@
     "components/kit-library",
     "hooks/kit-builder",
     "pages/admin",
-    "pages/kit-builder"
+    "pages/kit-builder",
+    "utils"
    ],
    "depende_de_modulos": [
     "integrations/supabase",
@@ -27597,7 +27601,7 @@
    "modulo": "pages/admin",
    "arquivos": 59,
    "testes": 1,
-   "linhas": 15412,
+   "linhas": 15410,
    "itens_menu": [
     "Acesso & Bots",
     "Auditoria RBAC",
@@ -30817,7 +30821,7 @@
    "modulo": "pages/kit-builder",
    "arquivos": 3,
    "testes": 1,
-   "linhas": 1691,
+   "linhas": 1692,
    "itens_menu": [],
    "telas": [
     "/meus-kits"
@@ -31284,7 +31288,8 @@
     "lib/kit-builder",
     "lib/kit-library",
     "lib/security",
-    "lib/telemetry"
+    "lib/telemetry",
+    "utils"
    ],
    "pacotes_externos": [
     "@tanstack/react-query",
@@ -35971,9 +35976,9 @@
   },
   {
    "modulo": "utils",
-   "arquivos": 32,
+   "arquivos": 34,
    "testes": 3,
-   "linhas": 5139,
+   "linhas": 5663,
    "itens_menu": [],
    "telas": [],
    "rotas_http": [],
@@ -36337,7 +36342,8 @@
     "log_user_logout",
     "repair_ownership_orphans",
     "restore_favorite_from_trash",
-    "restore_seller_cart"
+    "restore_seller_cart",
+    "save_custom_kit_atomic"
    ],
    "buckets": [
     "mockup-art-files",
@@ -36428,6 +36434,7 @@
     "pages/collections",
     "pages/dev",
     "pages/filters",
+    "pages/kit-builder",
     "pages/products",
     "pages/quotes",
     "pages/tools",
@@ -36444,6 +36451,7 @@
     "lib",
     "lib/edge",
     "lib/external-db",
+    "lib/kit-builder",
     "services",
     "types"
    ],
@@ -36461,7 +36469,7 @@
   {
    "modulo": "utils/__tests__",
    "arquivos": 0,
-   "testes": 23,
+   "testes": 24,
    "linhas": 0,
    "itens_menu": [],
    "telas": [],

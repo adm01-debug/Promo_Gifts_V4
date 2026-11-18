@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.3.2 · commit `3f87aa94a0` · branch `main` · 2026-11-18 18:19 UTC
+> Gerado automaticamente por AI Context Sync v1.3.2 · commit `a839f6be9c` · branch `main` · 2026-11-18 18:29 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -1815,7 +1815,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `status` | `not_found` | escreve | `supabase/functions/e2e-cleanup/index.ts` |
 | `status` | `not_ready` | escreve | `api/ready.ts` |
 | `status` | `novo` | escreve | `recovery/src-legacy/src/hooks/useSellerCarts.ts` |
-| `status` | `number` | compara | `recovery/src-legacy/src/components/admin/telemetry/BridgeCallDetailDrawer.tsx`<br>`src/components/admin/connections/SecretsManagerHealthPanel.tsx`<br>`src/components/admin/connections/TestAllConnectionsButton.tsx`<br>`src/contexts/SellerCartContext.tsx`<br>`src/lib/crm-db.ts`<br>… +8 |
+| `status` | `number` | compara | `recovery/src-legacy/src/components/admin/telemetry/BridgeCallDetailDrawer.tsx`<br>`src/components/admin/connections/SecretsManagerHealthPanel.tsx`<br>`src/components/admin/connections/TestAllConnectionsButton.tsx`<br>`src/components/admin/telemetry/BridgeCallDetailDrawer.tsx`<br>`src/contexts/SellerCartContext.tsx`<br>… +9 |
 | `status` | `offline` | compara | `src/components/quotes/QuoteAutoSave.tsx` |
 | `status` | `ok` | compara, escreve | `api/health.ts`<br>`api/ready.ts`<br>`recovery/src-legacy/src/components/admin/telemetry/PlatformFailureCards.tsx`<br>`recovery/src-legacy/src/hooks/useConnectionsOverviewFilters.ts`<br>`recovery/src-legacy/src/pages/SystemStatusPage.tsx`<br>… +15 |
 | `status` | `order` | compara | `src/components/dashboard/MyClientsWidget.tsx` |
@@ -4890,6 +4890,14 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
   ```
   const targetIndex = getStepIndex(targetStep); const currentIndex = getStepIndex(state.currentStep); // Sempre pode voltar if (targetIndex <= currentIndex) return true; // Se já tem personalizações, pode ir direto ao comparativo (resumo) if (targetStep === 'comparison' && state.personalizations.length > 0) return true; for (let i = 0; i < targetIndex; i++) { if (!isStepComplete(WIZARD_STEPS[i], state)) { return false; } } return true;
   ```
+- **drawPriceBreakdown(doc: jsPDF, kitState: KitState, kitQuantity: number, y: number,)** — `src/utils/kitPdfGenerator.ts`
+  ```
+  const { box, items, personalization } = kitState; y = drawSectionTitle(doc, 'Detalhamento de Preços', y); // A single unavailable catalog price makes every total below it fiction — // the screen hides the numbers (KitPricingCard) and so does the PDF. if (!hasKnownKitPrices(kitState)) { doc.setFontSize(8); doc.setFont('helvetica', 'normal'); setText(doc, GRAY_500); const lines: string[] = doc.splitTextToSize(KIT_UNKNOWN_PRICE_MESSAGE, 182); doc.text(lines, 14, y); return y + lines.length * 4 + 6; …
+  ```
+- **generateKitPDF(options: KitPdfOptions)** — `src/utils/kitPdfGenerator.ts`
+  ```
+  const { kitState, kitQuantity } = options; const kitName = options.kitName?.trim() || kitState.name.trim() || 'Kit Personalizado'; const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' }); let y = drawHeader(doc, kitName, options.orgName, kitState.identity); // KPI cards y = drawKpiCards(doc, kitState, kitQuantity, y); // Composition section y = drawSectionTitle(doc, 'Composição do Kit', y); y = drawCompositionTable(doc, kitState, y); // Box info line if (kitState.box) { doc. …
+  ```
 - **validateCnpj(value: string)** — `src/utils/masks.ts`
   ```
   const digits = value.replace(/\D/g, ''); if (digits.length !== 14) return false; if (/^(\d)\1{13}$/.test(digits)) return false; const calc = (slice: string, weights: number[]) => weights.reduce((sum, w, i) => sum + parseInt(slice[i]) * w, 0); const w1 = [5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2]; const w2 = [6, 5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2]; let remainder = calc(digits, w1) % 11; const d1 = remainder < 2 ? 0 : 11 - remainder; if (parseInt(digits[12]) !== d1) return false; remainder = calc(digits …
@@ -5471,6 +5479,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `ALL_CREATORS` | `'__all__'` | `src/components/admin/security/keys/McpKeysFilters.tsx` |
 | `PAGE_SIZE` | `50` | `src/components/admin/security/keys/audit/useMcpAuditFeed.ts` |
 | `POLL_MS` | `15` | `src/components/admin/telemetry/BreakerStatusCard.tsx` |
+| `RECENT_LIMIT` | `20` | `src/components/admin/telemetry/BridgesLiveCard.tsx` |
 | `POLL_MS` | `30` | `src/components/admin/telemetry/ColdVsWarmCrmCard.tsx` |
 | `TITULO_DO_CARD` | `'Encaixe do Cliente'` | `src/components/assistant/SalesAssistantCard.tsx` |
 | `ID_DO_TITULO` | `'encaixe-do-cliente-titulo'` | `src/components/assistant/SalesAssistantCard.tsx` |
@@ -5701,8 +5710,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `PRODUCT_SELECT_LIGHTWEIGHT` | `'id, name, sku, supplier_reference, short_description, '` | `src/hooks/products/useProductsLightweight.ts` |
 | `MAX_RECENT_PRODUCTS` | `5` | `src/hooks/products/useRecentProducts.ts` |
 | `MAX_ITEMS` | `10` | `src/hooks/products/useRecentlyViewed.ts` |
-| `REPLENISHMENT_WINDOW_DAYS` | `30` | `src/hooks/products/useReplenishments.ts` |
-| … +373 linhas — lista completa em `context.json` | | |
+| … +374 linhas — lista completa em `context.json` | | |
 
 ### H.2 Prazos, expirações e janelas de tempo
 
@@ -5933,6 +5941,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `const since = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();` | `src/components/admin/security/TopOffenderIpsCard.tsx` |
 | `const days = Math.floor(ms / (24 * 60 * 60 * 1000));` | `src/components/admin/security/keys/McpKeyRow.tsx` |
 | `const maxMs = FULL_SCOPE_MAX_TTL_DAYS * 24 * 60 * 60 * 1000;` | `src/components/admin/security/keys/UpdateMcpKeyDialog.tsx` |
+| `setTimeout(() => setCopied(null), 1500);` | `src/components/admin/telemetry/BridgeCallDetailDrawer.tsx` |
 | `c1h: countInWindow(rows, source, 60 * 60 * 1000),` | `src/components/admin/telemetry/QuoteBuilderHandoffCard.tsx` |
 | `c24h: countInWindow(rows, source, 24 * 60 * 60 * 1000),` | `src/components/admin/telemetry/QuoteBuilderHandoffCard.tsx` |
 | `c7d: countInWindow(rows, source, 7 * 24 * 60 * 60 * 1000),` | `src/components/admin/telemetry/QuoteBuilderHandoffCard.tsx` |
@@ -6007,8 +6016,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `staleTime: 5 * 60 * 1000,` | `src/hooks/auth/useRBAC.tsx` |
 | `staleTime: 5 * 60 * 1000,` | `src/hooks/bi/useClientAffinity.ts` |
 | `const NINETY_DAYS = 90 * 24 * 60 * 60 * 1000;` | `src/hooks/bi/useClientCategoryAffinity.ts` |
-| `staleTime: 5 * 60 * 1000,` | `src/hooks/bi/useClientCategoryAffinity.ts` |
-| … +390 linhas — lista completa em `context.json` | |
+| … +391 linhas — lista completa em `context.json` | |
 
 ### H.3 Limites de paginação
 
@@ -6491,7 +6499,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | allowlist inválida: versions contém duplicatas | `scripts/check-supabase-migration-ledger.mjs` |
 | allowlist inválida: versions contém valor vazio/não textual | `scripts/check-supabase-migration-ledger.mjs` |
 | allowlist inválida: versions deve ser array não vazio | `scripts/check-supabase-migration-ledger.mjs` |
-| … +1306 linhas — lista completa em `context.json` | |
+| … +1308 linhas — lista completa em `context.json` | |
 
 ## J. Controle de acesso no código (checagens de perfil/permissão)
 
@@ -6615,7 +6623,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `admin` | `supabase/migrations/20261112120500_fix_optimization_queue_rpcs_dev_access.sql` |
 | `anon` | `tests/edge-functions/live/_live-client.ts` |
 
-## K. Testes como especificação (22529 testes em 2272 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (22542 testes em 2275 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -6919,7 +6927,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `e2e/dashboard-modules.spec.ts` | 18 | Dashboard Modules - Public Access (No Auth) · should redirect to auth when accessing ${route.path} unauthenticated · should display auth page for all dashboard routes · should not expose observability/metrics data to unauthenticated users … |
 | `e2e/stock-module.spec.ts` | 18 | Stock Module - Public Access (No Auth) · should redirect to auth when accessing /estoque unauthenticated · should display auth page when accessing /estoque · should not expose stock data to unauthenticated users … |
 | `e2e/magazine/magazine-viewer.spec.ts` | 18 | Magazine viewer — atalhos de teclado · → avança página, ← volta, Home/End extremos · T abre sumário, ? abre ajuda, B marca página · Space em botão focado NÃO avança página (C2) … |
-| … +1972 linhas — lista completa em `context.json` | | |
+| … +1975 linhas — lista completa em `context.json` | | |
 
 ## L. Eventos de webhook tratados (contratos com sistemas externos)
 
@@ -7288,7 +7296,10 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | - Somente FULL (chaves com escopo *) | `src/components/admin/security/keys/McpKeysFilters.tsx` |
 | gateamos por `useUserRole` para evitar mostrar a UI a quem não pode usar. | `src/components/admin/security/role-migration/RoleMigrationPanel.tsx` |
 | apenas colunas reais e não os retorna. | `src/components/admin/suppliers-manager/types.ts` |
+| * Sem persistência (memória apenas). Atualiza em tempo real via subscribe. | `src/components/admin/telemetry/BridgesLiveCard.tsx` |
 | * Não depende da RPC `get_edge_invoke_summary` (draft, REGRA #1). Assim | `src/components/admin/telemetry/EdgeInvokeLivePanel.tsx` |
+| `AdminTelemetriaPage.tsx` já está acima do limite de 500 linhas do | `src/components/admin/telemetry/LiveSurfacesSection.tsx` |
+| `check-file-size-baseline` e não pode crescer: montar os dois cards novos de | `src/components/admin/telemetry/LiveSurfacesSection.tsx` |
 | - obriga justificativa (mínimo 10 caracteres) | `src/components/admin/users/PromotionDialog.tsx` |
 | R4: exibida apenas quando o usuário digita texto livre (não é uma ação rápida conhecida) | `src/components/ai/AIMockupAssistant.tsx` |
 | Mesma regra do motivo por produto: com mais de um grupo de cor casado, não | `src/components/assistant/SalesAssistantCard.tsx` |
@@ -7384,7 +7395,4 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | apenas se o usuário chegar em AAL2). | `src/components/layout/AdminRoute.tsx` |
 | rate-limit, login-attempts, external-db, status do sistema. | `src/components/layout/DevRoute.tsx` |
 | * Hierarquia: dev > supervisor > agente. Apenas `dev` passa. | `src/components/layout/DevRoute.tsx` |
-| Mostra toast imediato de processamento se desejar, ou apenas aguarda | `src/components/layout/Header.tsx` |
-| Context providers must be imported synchronously (consumers render inside them) | `src/components/layout/MainLayout.tsx` |
-| para a qual não tem permissão. | `src/components/layout/sidebar/RestrictedRouteNotice.tsx` |
-| … +1352 linhas — lista completa em `context.json` | |
+| … +1356 linhas — lista completa em `context.json` | |

@@ -1,6 +1,6 @@
 # 11 · GLOSSÁRIO, DADOS DE REFERÊNCIA E LACUNAS
 
-> Gerado automaticamente por AI Context Sync v1.3.2 · commit `3f87aa94a0` · branch `main` · 2026-11-18 18:19 UTC
+> Gerado automaticamente por AI Context Sync v1.3.2 · commit `a839f6be9c` · branch `main` · 2026-11-18 18:29 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## Glossário do domínio (entidades do sistema)
@@ -348,7 +348,7 @@
 |---|---|---|
 | status | valor `not_ready` para `status` usado no código não existe em nenhum enum do banco/TS | `escreve:api/ready.ts` |
 | status | valor `ready` para `status` usado no código não existe em nenhum enum do banco/TS | `compara:src/components/kit-library/KitLibraryStats.tsx`<br>`compara:src/lib/kit-builder/persistence.ts`<br>`compara:src/pages/kit-builder/KitLibraryPage.tsx`<br>`escreve:api/ready.ts` |
-| status | valor `number` para `status` usado no código não existe em nenhum enum do banco/TS | `compara:recovery/src-legacy/src/components/admin/telemetry/BridgeCallDetailDrawer.tsx`<br>`compara:src/components/admin/connections/SecretsManagerHealthPanel.tsx`<br>`compara:src/components/admin/connections/TestAllConnectionsButton.tsx`<br>`compara:src/contexts/SellerCartContext.tsx` |
+| status | valor `number` para `status` usado no código não existe em nenhum enum do banco/TS | `compara:recovery/src-legacy/src/components/admin/telemetry/BridgeCallDetailDrawer.tsx`<br>`compara:src/components/admin/connections/SecretsManagerHealthPanel.tsx`<br>`compara:src/components/admin/connections/TestAllConnectionsButton.tsx`<br>`compara:src/components/admin/telemetry/BridgeCallDetailDrawer.tsx` |
 | status | valor `fulfilled` para `status` usado no código não existe em nenhum enum do banco/TS | `compara:src/components/admin/connections/CredentialsChangedBanner.tsx`<br>`compara:src/components/admin/connections/GlobalRefreshFromDbButton.tsx`<br>`compara:src/hooks/mockup/mockupGenerationService.ts`<br>`compara:src/hooks/mockup/mockupGeneratorModel.ts` |
 | status | valor `step_up_error` para `status` usado no código não existe em nenhum enum do banco/TS | `compara:src/components/admin/connections/IssueMcpKeyForm.tsx`<br>`compara:src/components/admin/security/keys/RotateMcpKeyDialog.tsx`<br>`compara:src/components/admin/security/keys/UpdateMcpKeyDialog.tsx`<br>`compara:src/pages/admin/DevChallengeExamplesPage.tsx` |
 | status | valor `Status` para `status` usado no código não existe em nenhum enum do banco/TS | `escreve:src/components/audit/AuditHistory.tsx` |

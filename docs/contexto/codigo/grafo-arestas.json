@@ -4197,6 +4197,30 @@
    "src/lib/to-error-message.ts",
    "src/lib/utils.ts"
   ],
+  "src/components/admin/telemetry/BridgeAlertsCard.tsx": [
+   "src/components/ui/badge.tsx",
+   "src/components/ui/button.tsx",
+   "src/components/ui/card.tsx",
+   "src/components/ui/input.tsx",
+   "src/components/ui/label.tsx",
+   "src/components/ui/switch.tsx",
+   "src/lib/telemetry/bridgeAlertThresholds.ts",
+   "src/lib/telemetry/bridgeCallMetrics.ts"
+  ],
+  "src/components/admin/telemetry/BridgeCallDetailDrawer.tsx": [
+   "src/components/ui/badge.tsx",
+   "src/components/ui/button.tsx",
+   "src/components/ui/sheet.tsx",
+   "src/lib/telemetry/bridgeCallMetrics.ts"
+  ],
+  "src/components/admin/telemetry/BridgesLiveCard.tsx": [
+   "src/components/admin/telemetry/BridgeCallDetailDrawer.tsx",
+   "src/components/ui/badge.tsx",
+   "src/components/ui/button.tsx",
+   "src/components/ui/card.tsx",
+   "src/lib/telemetry/bridgeCallMetrics.ts",
+   "src/lib/telemetry/requestId.ts"
+  ],
   "src/components/admin/telemetry/ColdVsWarmCrmCard.tsx": [
    "src/components/ui/badge.tsx",
    "src/components/ui/button.tsx",
@@ -4234,6 +4258,13 @@
    "src/components/ui/button.tsx",
    "src/components/ui/tooltip.tsx",
    "src/lib/telemetry/instrumentationControl.ts"
+  ],
+  "src/components/admin/telemetry/LiveSurfacesSection.tsx": [
+   "src/components/admin/telemetry/BridgeAlertsCard.tsx",
+   "src/components/admin/telemetry/BridgesLiveCard.tsx",
+   "src/components/admin/telemetry/EdgeInvokeLivePanel.tsx",
+   "src/components/errors/SectionErrorBoundary.tsx",
+   "src/pages/admin/telemetry/TelemetrySkeletons.tsx"
   ],
   "src/components/admin/telemetry/OptimizationMetricsCards.tsx": [
    "src/components/ui/card.tsx",
@@ -12800,9 +12831,9 @@
    "src/components/admin/telemetry/BreakerStatusCard.tsx",
    "src/components/admin/telemetry/ColdVsWarmCrmCard.tsx",
    "src/components/admin/telemetry/DegradedBlocksCard.tsx",
-   "src/components/admin/telemetry/EdgeInvokeLivePanel.tsx",
    "src/components/admin/telemetry/HighLimitTelemetryCard.tsx",
    "src/components/admin/telemetry/InstrumentationToggleButton.tsx",
+   "src/components/admin/telemetry/LiveSurfacesSection.tsx",
    "src/components/admin/telemetry/OptimizationMetricsCards.tsx",
    "src/components/admin/telemetry/OptimizationQueuePanel.tsx",
    "src/components/admin/telemetry/ProductsListingLatencyAlert.tsx",
@@ -13492,7 +13523,8 @@
    "src/hooks/kit-builder/useKitItemReplaceTarget.ts",
    "src/hooks/kit-builder/useKitWizardShortcuts.ts",
    "src/lib/kit-builder/index.ts",
-   "src/lib/kit-builder/pricing-availability.ts"
+   "src/lib/kit-builder/pricing-availability.ts",
+   "src/utils/kitPdfGenerator.ts"
   ],
   "src/pages/kit-builder/KitLibraryPage.tsx": [
    "src/components/kit-library/KitCard.tsx",
@@ -14944,6 +14976,14 @@
   ],
   "src/utils/excelExport.ts": [
    "src/lib/date-utils.ts"
+  ],
+  "src/utils/kitPdfGenerator.ts": [
+   "src/lib/kit-builder/index.ts",
+   "src/lib/kit-builder/pricing-availability.ts",
+   "src/utils/kitPdfPrimitives.ts"
+  ],
+  "src/utils/kitPdfPrimitives.ts": [
+   "src/lib/kit-builder/index.ts"
   ],
   "src/utils/performance.ts": [
    "src/lib/logger.ts",

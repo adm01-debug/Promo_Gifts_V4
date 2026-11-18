@@ -1,8 +1,8 @@
 {
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
- "nos": 2852,
- "arestas": 11245,
+ "nos": 2858,
+ "arestas": 11273,
  "hubs": [
   {
    "arquivo": "src/lib/utils.ts",
@@ -10,11 +10,11 @@
   },
   {
    "arquivo": "src/components/ui/button.tsx",
-   "importado_por": 639
+   "importado_por": 642
   },
   {
    "arquivo": "src/components/ui/badge.tsx",
-   "importado_por": 482
+   "importado_por": 485
   },
   {
    "arquivo": "src/integrations/supabase/client.ts",
@@ -22,7 +22,7 @@
   },
   {
    "arquivo": "src/components/ui/card.tsx",
-   "importado_por": 354
+   "importado_por": 356
   },
   {
    "arquivo": "src/lib/logger.ts",
@@ -34,7 +34,7 @@
   },
   {
    "arquivo": "src/components/ui/input.tsx",
-   "importado_por": 260
+   "importado_por": 261
   },
   {
    "arquivo": "src/contexts/AuthContext.tsx",
@@ -50,7 +50,7 @@
   },
   {
    "arquivo": "src/components/ui/label.tsx",
-   "importado_por": 146
+   "importado_por": 147
   },
   {
    "arquivo": "src/hooks/products/index.ts",
@@ -66,7 +66,7 @@
   },
   {
    "arquivo": "src/lib/kit-builder/index.ts",
-   "importado_por": 112
+   "importado_por": 115
   },
   {
    "arquivo": "supabase/functions/_shared/cors.ts",
@@ -97,6 +97,10 @@
    "importado_por": 63
   },
   {
+   "arquivo": "src/components/ui/switch.tsx",
+   "importado_por": 62
+  },
+  {
    "arquivo": "src/integrations/supabase/types.ts",
    "importado_por": 62
   },
@@ -111,10 +115,6 @@
   {
    "arquivo": "src/types/stock.ts",
    "importado_por": 62
-  },
-  {
-   "arquivo": "src/components/ui/switch.tsx",
-   "importado_por": 61
   },
   {
    "arquivo": "src/lib/security/sanitize-error.ts",
@@ -653,8 +653,8 @@
   },
   {
    "modulo": "utils",
-   "depende_de": 11,
-   "importado_por": 39
+   "depende_de": 12,
+   "importado_por": 40
   },
   {
    "modulo": "components/products",
@@ -678,7 +678,7 @@
   },
   {
    "modulo": "components/admin",
-   "depende_de": 30,
+   "depende_de": 31,
    "importado_por": 7
   },
   {

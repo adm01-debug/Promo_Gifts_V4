@@ -1,7 +1,7 @@
 {
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
- "total": 1252,
+ "total": 1256,
  "orfaos": 161,
  "nomes_duplicados": {
   "AdminTemplatesManager": [
@@ -19,6 +19,18 @@
   "BreadcrumbItem": [
    "src/components/navigation/Breadcrumbs.tsx",
    "src/components/ui/breadcrumb.tsx"
+  ],
+  "BridgeAlertsCard": [
+   "recovery/src-legacy/src/components/admin/telemetry/BridgeAlertsCard.tsx",
+   "src/components/admin/telemetry/BridgeAlertsCard.tsx"
+  ],
+  "BridgeCallDetailDrawer": [
+   "recovery/src-legacy/src/components/admin/telemetry/BridgeCallDetailDrawer.tsx",
+   "src/components/admin/telemetry/BridgeCallDetailDrawer.tsx"
+  ],
+  "BridgesLiveCard": [
+   "recovery/src-legacy/src/components/admin/telemetry/BridgesLiveCard.tsx",
+   "src/components/admin/telemetry/BridgesLiveCard.tsx"
   ],
   "BulkAction": [
    "src/components/common/BulkActionsBar.tsx",
@@ -5608,6 +5620,48 @@
    "orfao": false
   },
   {
+   "arquivo": "src/components/admin/telemetry/BridgeAlertsCard.tsx",
+   "exports": [
+    "BridgeAlertsCard"
+   ],
+   "export_default": "BridgeAlertsCard",
+   "linhas": 256,
+   "dominio": "components/admin",
+   "hooks_locais": [],
+   "tabelas": [],
+   "edges": [],
+   "usado_por": 1,
+   "orfao": false
+  },
+  {
+   "arquivo": "src/components/admin/telemetry/BridgeCallDetailDrawer.tsx",
+   "exports": [
+    "BridgeCallDetailDrawer"
+   ],
+   "export_default": "BridgeCallDetailDrawer",
+   "linhas": 202,
+   "dominio": "components/admin",
+   "hooks_locais": [],
+   "tabelas": [],
+   "edges": [],
+   "usado_por": 1,
+   "orfao": false
+  },
+  {
+   "arquivo": "src/components/admin/telemetry/BridgesLiveCard.tsx",
+   "exports": [
+    "BridgesLiveCard"
+   ],
+   "export_default": "BridgesLiveCard",
+   "linhas": 286,
+   "dominio": "components/admin",
+   "hooks_locais": [],
+   "tabelas": [],
+   "edges": [],
+   "usado_por": 1,
+   "orfao": false
+  },
+  {
    "arquivo": "src/components/admin/telemetry/ColdVsWarmCrmCard.tsx",
    "exports": [
     "ColdVsWarmCrmCard"
@@ -5674,6 +5728,20 @@
    ],
    "export_default": null,
    "linhas": 63,
+   "dominio": "components/admin",
+   "hooks_locais": [],
+   "tabelas": [],
+   "edges": [],
+   "usado_por": 1,
+   "orfao": false
+  },
+  {
+   "arquivo": "src/components/admin/telemetry/LiveSurfacesSection.tsx",
+   "exports": [
+    "LiveSurfacesSection"
+   ],
+   "export_default": null,
+   "linhas": 61,
    "dominio": "components/admin",
    "hooks_locais": [],
    "tabelas": [],
@@ -8226,7 +8294,7 @@
    "hooks_locais": [],
    "tabelas": [],
    "edges": [],
-   "usado_por": 5,
+   "usado_por": 6,
    "orfao": false
   },
   {
@@ -16140,7 +16208,7 @@
    "hooks_locais": [],
    "tabelas": [],
    "edges": [],
-   "usado_por": 482,
+   "usado_por": 485,
    "orfao": false
   },
   {
@@ -16175,7 +16243,7 @@
    "hooks_locais": [],
    "tabelas": [],
    "edges": [],
-   "usado_por": 634,
+   "usado_por": 637,
    "orfao": false
   },
   {
@@ -16209,7 +16277,7 @@
    "hooks_locais": [],
    "tabelas": [],
    "edges": [],
-   "usado_por": 354,
+   "usado_por": 356,
    "orfao": false
   },
   {
@@ -16558,7 +16626,7 @@
    "hooks_locais": [],
    "tabelas": [],
    "edges": [],
-   "usado_por": 260,
+   "usado_por": 261,
    "orfao": false
   },
   {
@@ -16586,7 +16654,7 @@
    "hooks_locais": [],
    "tabelas": [],
    "edges": [],
-   "usado_por": 143,
+   "usado_por": 144,
    "orfao": false
   },
   {
@@ -16797,7 +16865,7 @@
    ],
    "tabelas": [],
    "edges": [],
-   "usado_por": 25,
+   "usado_por": 26,
    "orfao": false
   },
   {
@@ -16940,7 +17008,7 @@
    "hooks_locais": [],
    "tabelas": [],
    "edges": [],
-   "usado_por": 61,
+   "usado_por": 62,
    "orfao": false
   },
   {
@@ -17768,7 +17836,7 @@
     "AdminTelemetriaPage"
    ],
    "export_default": "AdminTelemetriaPage",
-   "linhas": 645,
+   "linhas": 643,
    "dominio": "pages/admin",
    "hooks_locais": [
     "useErrorCounters",
@@ -18230,7 +18298,7 @@
    "hooks_locais": [],
    "tabelas": [],
    "edges": [],
-   "usado_por": 1,
+   "usado_por": 2,
    "orfao": false
   },
   {
@@ -18687,7 +18755,7 @@
     "KitBuilderPage"
    ],
    "export_default": "KitBuilderPage",
-   "linhas": 499,
+   "linhas": 500,
    "dominio": "pages/kit-builder",
    "hooks_locais": [
     "useKitBuilderPageState",

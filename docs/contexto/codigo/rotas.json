@@ -6,7 +6,7 @@
   "rotas_http_backend": 13,
   "vistas_por_id": 0,
   "itens_menu": 69,
-  "lazy": 165
+  "lazy": 168
  },
  "urls": [
   {
@@ -8617,7 +8617,7 @@
     "menu",
     "region"
    ],
-   "arquivos_puxados": 88
+   "arquivos_puxados": 97
   },
   {
    "protegida": true,
@@ -38134,7 +38134,9 @@
   "Auth": "src/pages/auth/Auth.tsx",
   "BadgesManager": "src/components/admin/badges-manager/index.ts",
   "BreakerStatusCard": "src/components/admin/telemetry/BreakerStatusCard.tsx",
+  "BridgeAlertsCard": "src/components/admin/telemetry/BridgeAlertsCard.tsx",
   "BridgeMetricsOverlay": "src/components/dev/BridgeMetricsOverlay.tsx",
+  "BridgesLiveCard": "src/components/admin/telemetry/BridgesLiveCard.tsx",
   "BusinessIntelligencePage": "src/pages/bi/BusinessIntelligencePage.tsx",
   "CartCompanyPickerDialog": "src/components/cart/CartCompanyPickerDialog.tsx",
   "CartSelectorDialog": "src/components/cart/CartSelectorDialog.tsx",
@@ -38175,6 +38177,7 @@
   "KitTemplatesMetricsPage": "src/pages/admin/KitTemplatesMetricsPage.tsx",
   "LazyFilterPanel": "src/components/filters/FilterPanel.tsx",
   "LazyVoiceOverlay": "src/components/search/VoiceSearchOverlayConnected.tsx",
+  "LiveSurfacesSection": "src/components/admin/telemetry/LiveSurfacesSection.tsx",
   "LogoPositionEditor": "src/components/mockup/LogoPositionEditor.tsx",
   "MagazineEditorPage": "src/pages/magazine/MagazineEditorPage.tsx",
   "MagazineListPage": "src/pages/magazine/MagazineListPage.tsx",
