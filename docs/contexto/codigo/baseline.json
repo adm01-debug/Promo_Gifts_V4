@@ -2,11 +2,21 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "0c507b86f9fda487db841c7f8ba8d920ac780da3",
+  "commit": "61ceaa9637b18d92a23d0a57e0d6e5eadb0366e8",
   "branch": "main",
-  "data_commit": "2026-11-18T18:54:17-03:00",
+  "data_commit": "2026-11-18T20:35:59-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "61ceaa96",
+    "data": "2026-11-18",
+    "assunto": "chore(ci): job deno test — 48 arquivos de teste de edge que nenhum runner executava (#3853)"
+   },
+   {
+    "sha": "ec7ecdc8",
+    "data": "2026-11-18",
+    "assunto": "docs(resgate): veredicto byte a byte das 9 branches abertas (#3855)"
+   },
    {
     "sha": "0c507b86",
     "data": "2026-11-18",
@@ -121,27 +131,17 @@
     "sha": "b7e0b644",
     "data": "2026-11-18",
     "assunto": "docs(resgate): recibo da adjudicacao de 2026-11-18, com prova por branch e por PR (#3829)"
-   },
-   {
-    "sha": "5a8a84df",
-    "data": "2026-11-18",
-    "assunto": "fix(stock): um aviso agregado no lugar de um por variante sem nome de cor (#3828)"
-   },
-   {
-    "sha": "1d1d36e6",
-    "data": "2026-11-18",
-    "assunto": "feat(favorites): resgata a exportacao da lista de favoritos em CSV, JSON e PDF (#3827)"
    }
   ],
-  "arquivos_mudados_7d": 1510,
+  "arquivos_mudados_7d": 1513,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
-    "mudancas": 1862
+    "mudancas": 1854
    },
    {
     "pasta": "src/components/products",
-    "mudancas": 933
+    "mudancas": 929
    },
    {
     "pasta": "tests/edge-functions/live",
@@ -157,7 +157,7 @@
    },
    {
     "pasta": "src/components/quotes",
-    "mudancas": 612
+    "mudancas": 599
    },
    {
     "pasta": "src/pages/magazine",
@@ -169,15 +169,15 @@
    },
    {
     "pasta": "supabase/functions/_shared",
-    "mudancas": 449
+    "mudancas": 445
    },
    {
     "pasta": "src/components/ui",
-    "mudancas": 446
+    "mudancas": 444
    },
    {
     "pasta": "src/components/mockup",
-    "mudancas": 421
+    "mudancas": 417
    },
    {
     "pasta": "src/pages/admin",
@@ -199,7 +199,7 @@
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "supabase/MIGRATIONS_SYNC_LOG.md",
-    "mudancas": 61
+    "mudancas": 60
    },
    {
     "arquivo": "RELATORIO_CI.md",
@@ -207,7 +207,7 @@
    },
    {
     "arquivo": "PENDENCIAS.md",
-    "mudancas": 44
+    "mudancas": 43
    },
    {
     "arquivo": "package.json",
@@ -223,7 +223,7 @@
    },
    {
     "arquivo": ".github/workflows/deploy-gates.yml",
-    "mudancas": 23
+    "mudancas": 21
    },
    {
     "arquivo": "src/pages/kit-builder/KitBuilderPage.tsx",
@@ -301,19 +301,19 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 513
+    "commits": 511
    },
    {
     "autor": "Claude",
-    "commits": 117
+    "commits": 113
    },
    {
     "autor": "Joaquim Ataides",
-    "commits": 89
+    "commits": 87
    },
    {
     "autor": "github-actions[bot]",
-    "commits": 24
+    "commits": 23
    },
    {
     "autor": "dependabot[bot]",
@@ -322,9 +322,9 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 10958,
+  "arquivos_total": 10960,
   "arquivos_codigo": 5472,
-  "linhas_codigo": 1042464,
+  "linhas_codigo": 1042526,
   "rotas": 139,
   "rotas_http_backend": 13,
   "vistas_por_id": 0,
@@ -337,9 +337,9 @@
   "migrations": 3099,
   "cron_jobs": 122,
   "testes": 2606,
-  "workflows": 88,
+  "workflows": 89,
   "scripts": 283,
-  "docs_md": 1481
+  "docs_md": 1482
  },
  "por_pasta": {
   ".github/scripts": {
@@ -1972,7 +1972,7 @@
   },
   "supabase/functions": {
    "arquivos": 278,
-   "linhas": 51921
+   "linhas": 51983
   },
   "tailwind.config.ts": {
    "arquivos": 1,

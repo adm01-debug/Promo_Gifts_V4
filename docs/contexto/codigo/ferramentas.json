@@ -5,10 +5,10 @@
   "linguagens": [
    "TypeScript (5005)",
    "SQL (3440)",
-   "Markdown (1481)",
+   "Markdown (1482)",
    "JavaScript (457)",
    "JSON (132)",
-   "YAML (116)",
+   "YAML (117)",
    "Shell (27)",
    "HTML (20)"
   ],
@@ -1962,6 +1962,32 @@
     "actions/checkout",
     "actions/download-artifact",
     "actions/upload-artifact"
+   ]
+  },
+  {
+   "arquivo": ".github/workflows/edge-functions-deno-tests.yml",
+   "nome": "Edge Functions — Deno Tests",
+   "gatilhos": [
+    "pull_request",
+    "push",
+    "workflow_dispatch"
+   ],
+   "crons": [],
+   "branches": [
+    "main"
+   ],
+   "jobs": [
+    "deno-tests"
+   ],
+   "permissoes": [
+    "contents: read"
+   ],
+   "scripts_usados": [],
+   "npm_scripts": [],
+   "secrets": [],
+   "actions": [
+    "actions/checkout",
+    "denoland/setup-deno"
    ]
   },
   {
@@ -4245,7 +4271,7 @@
   },
   {
    "pasta": "docs/agentes",
-   "arquivos_md": 22
+   "arquivos_md": 23
   },
   {
    "pasta": "docs/db",

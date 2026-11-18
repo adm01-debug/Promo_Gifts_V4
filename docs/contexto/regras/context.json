@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "0c507b86f9fda487db841c7f8ba8d920ac780da3",
+  "sha": "61ceaa9637b18d92a23d0a57e0d6e5eadb0366e8",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-18 22:15 UTC",
-  "files_total": 10886,
+  "generated_at": "2026-11-18 23:37 UTC",
+  "files_total": 10888,
   "code_files": 8911,
-  "code_lines": 1263196
+  "code_lines": 1263258
  },
  "version": "1.3.2",
- "facts_hash": "fa8d28b9a25ada3f",
+ "facts_hash": "f3b32a3283d9e768",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -758,6 +758,15 @@
     "file": ".github/workflows/e2e.yml",
     "name": "E2E (Playwright)",
     "triggers": [
+     "push",
+     "workflow_dispatch"
+    ]
+   },
+   {
+    "file": ".github/workflows/edge-functions-deno-tests.yml",
+    "name": "Edge Functions — Deno Tests",
+    "triggers": [
+     "pull_request",
      "push",
      "workflow_dispatch"
     ]
@@ -151224,7 +151233,7 @@
   {
    "module": "supabase/functions",
    "files": 278,
-   "lines": 51921,
+   "lines": 51983,
    "tables": [
     "access_blocked_log",
     "access_security_settings",
@@ -175818,7 +175827,11 @@
    },
    {
     "file": "supabase/functions/e2e-cleanup/handler_characterization_test.ts",
-    "text": "legado em que um erro do RPC de rate-limit nao interrompe o fluxo."
+    "text": "que um erro do RPC de rate-limit interrompe o fluxo com 503"
+   },
+   {
+    "file": "supabase/functions/e2e-cleanup/handler_characterization_test.ts",
+    "text": "'auth_failed' sobrevive apenas no CHECK de"
    },
    {
     "file": "supabase/functions/e2e-cleanup/index.ts",
@@ -211375,7 +211388,13 @@
    {
     "file": "supabase/functions/e2e-cleanup/handler_characterization_test.ts",
     "field": "status",
-    "value": "auth_failed",
+    "value": "unauthorized",
+    "kind": "escreve"
+   },
+   {
+    "file": "supabase/functions/e2e-cleanup/handler_characterization_test.ts",
+    "field": "status",
+    "value": "error",
     "kind": "escreve"
    },
    {
@@ -263248,7 +263267,7 @@
    },
    {
     "file": "supabase/functions/_shared/createEdge.test.ts",
-    "name": "createEdge cron auth: secret ausente => 503 e handler NÃO executa"
+    "name": "createEdge cron auth: secret ausente => 401 e handler NÃO executa"
    },
    {
     "file": "supabase/functions/_shared/createEdge.test.ts",
@@ -350704,6 +350723,7 @@
       "escreve:src/pages/system/SystemStatusPage.tsx",
       "escreve:supabase/functions/_shared/ai-router/index.ts",
       "escreve:supabase/functions/_shared/ai-usage.ts",
+      "escreve:supabase/functions/e2e-cleanup/handler_characterization_test.ts",
       "escreve:supabase/functions/e2e-cleanup/index.ts",
       "escreve:supabase/functions/full-op-diagnostics/index.ts",
       "escreve:supabase/functions/kit-ai-builder/index.ts",
@@ -351463,14 +351483,12 @@
      "reprocessed": [
       "escreve:supabase/functions/crm-callback-reprocess/index.ts"
      ],
-     "auth_failed": [
-      "escreve:supabase/functions/e2e-cleanup/handler_characterization_test.ts"
-     ],
-     "forbidden": [
+     "unauthorized": [
       "escreve:supabase/functions/e2e-cleanup/handler_characterization_test.ts",
       "escreve:supabase/functions/e2e-cleanup/index.ts"
      ],
-     "unauthorized": [
+     "forbidden": [
+      "escreve:supabase/functions/e2e-cleanup/handler_characterization_test.ts",
       "escreve:supabase/functions/e2e-cleanup/index.ts"
      ],
      "invalid": [
@@ -496466,11 +496484,11 @@
   },
   "supabase/functions/_shared/createEdge.test.ts": {
    "path": "supabase/functions/_shared/createEdge.test.ts",
-   "lines": 73,
+   "lines": 84,
    "is_test": true,
    "tests": [
     "createEdge cron auth: secret válido => 200 e handler executa",
-    "createEdge cron auth: secret ausente => 503 e handler NÃO executa",
+    "createEdge cron auth: secret ausente => 401 e handler NÃO executa",
     "createEdge cron auth: secret inválido => 401 e handler NÃO executa"
    ]
   },
@@ -496509,7 +496527,7 @@
   },
   "supabase/functions/_shared/credentials.test.ts": {
    "path": "supabase/functions/_shared/credentials.test.ts",
-   "lines": 529,
+   "lines": 538,
    "is_test": true,
    "errors": [
     "simulated DB outage"
@@ -498704,7 +498722,7 @@
   },
   "supabase/functions/asia-ingestion/credential-client.test.ts": {
    "path": "supabase/functions/asia-ingestion/credential-client.test.ts",
-   "lines": 102,
+   "lines": 104,
    "is_test": true,
    "errors": [
     "Unexpected isolated fetch: ${request.method} ${url.origin}${url.pathname}"
@@ -500371,7 +500389,7 @@
   },
   "supabase/functions/crm-db-bridge/inspectInsertResult.test.ts": {
    "path": "supabase/functions/crm-db-bridge/inspectInsertResult.test.ts",
-   "lines": 105,
+   "lines": 106,
    "is_test": true,
    "tests": [
     "inspectInsertResult: normal rows array → shape=rows",
@@ -500639,11 +500657,16 @@
   },
   "supabase/functions/e2e-cleanup/handler_characterization_test.ts": {
    "path": "supabase/functions/e2e-cleanup/handler_characterization_test.ts",
-   "lines": 280,
+   "lines": 305,
    "status_values": [
     {
      "field": "status",
-     "value": "auth_failed",
+     "value": "unauthorized",
+     "kind": "escreve"
+    },
+    {
+     "field": "status",
+     "value": "error",
      "kind": "escreve"
     },
     {
@@ -500653,9 +500676,10 @@
     }
    ],
    "rule_comments": [
-    "legado em que um erro do RPC de rate-limit nao interrompe o fluxo."
+    "que um erro do RPC de rate-limit interrompe o fluxo com 503",
+    "'auth_failed' sobrevive apenas no CHECK de"
    ],
-   "doc": "Caracterizacao local do handler real de e2e-cleanup. O teste intercepta Deno.serve e o fetch usado por supabase-js. Portanto nao faz chamadas de rede, nao usa credenciais reais e nao grava no Supabase. Ele documenta o contrato atualmente observavel, inclusive o comportamento legado em que um erro do …",
+   "doc": "Caracterizacao local do handler real de e2e-cleanup. O teste intercepta Deno.serve e o fetch usado por supabase-js. Portanto nao faz chamadas de rede, nao usa credenciais reais e nao grava no Supabase. Ele documenta o contrato atualmente observavel, inclusive o fail-closed em que um erro do RPC de r …",
    "uses_service_role": true
   },
   "supabase/functions/e2e-cleanup/index.mockups.test.ts": {
@@ -505251,7 +505275,7 @@
   },
   "supabase/functions/quote-sync-promo-champions/index.test.ts": {
    "path": "supabase/functions/quote-sync-promo-champions/index.test.ts",
-   "lines": 717,
+   "lines": 726,
    "is_test": true,
    "env": [
     "PROMO_CHAMPIONS_WEBHOOK_SECRET"
@@ -507777,7 +507801,7 @@
   },
   "supabase/functions/webhook-inbound/handler_characterization_test.ts": {
    "path": "supabase/functions/webhook-inbound/handler_characterization_test.ts",
-   "lines": 532,
+   "lines": 537,
    "doc": "Contract test for the real webhook-inbound handler. Deno.serve and fetch are intercepted in-process. The suite does not use real credentials, network services, or database writes.",
    "side_effects": [
     "invoke("
@@ -547415,10 +547439,35 @@
   }
  },
  "git": {
-  "sha": "0c507b86f9fda487db841c7f8ba8d920ac780da3",
+  "sha": "61ceaa9637b18d92a23d0a57e0d6e5eadb0366e8",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "61ceaa9",
+    "date": "2026-11-18",
+    "author": "adm01-debug",
+    "subject": "chore(ci): job deno test — 48 arquivos de teste de edge que nenhum runner executava (#3853)",
+    "files": [
+     ".github/workflows/edge-functions-deno-tests.yml",
+     "supabase/functions/_shared/createEdge.test.ts",
+     "supabase/functions/_shared/credentials.test.ts",
+     "supabase/functions/asia-ingestion/credential-client.test.ts",
+     "supabase/functions/crm-db-bridge/inspectInsertResult.test.ts",
+     "supabase/functions/e2e-cleanup/handler_characterization_test.ts",
+     "supabase/functions/quote-sync-promo-champions/index.test.ts",
+     "supabase/functions/webhook-inbound/handler_characterization_test.ts"
+    ]
+   },
+   {
+    "sha": "ec7ecdc",
+    "date": "2026-11-18",
+    "author": "adm01-debug",
+    "subject": "docs(resgate): veredicto byte a byte das 9 branches abertas (#3855)",
+    "files": [
+     "docs/agentes/resgates/2026-11-18-veredicto-byte-a-byte-das-branches.md"
+    ]
+   },
    {
     "sha": "0c507b8",
     "date": "2026-11-18",
@@ -547768,28 +547817,6 @@
      "tests/hooks/useLegacyCatalogContracts.test.ts",
      "tests/hooks/useQuoteVersions.legacy.test.ts"
     ]
-   },
-   {
-    "sha": "1d8da35",
-    "date": "2026-11-18",
-    "author": "github-actions[bot]",
-    "subject": "docs(migrations-log): recibo E15 — aplicação de 20261115130300 (#3826)",
-    "files": [
-     "supabase/MIGRATIONS_SYNC_LOG.md"
-    ]
-   },
-   {
-    "sha": "ad0d7b1",
-    "date": "2026-11-18",
-    "author": "adm01-debug",
-    "subject": "feat(quotes): template de orcamento volta a poder ser aplicado a um orcamento (#3824)",
-    "files": [
-     "src/components/quotes/QuoteTemplateSelector.tsx",
-     "src/lib/quotes/__tests__/applyTemplateToQuote.test.ts",
-     "src/lib/quotes/applyTemplateToQuote.ts",
-     "src/pages/quotes/QuoteBuilderPage.tsx",
-     "src/pages/quotes/components/QuoteBuilderNotesCard.tsx"
-    ]
    }
   ],
   "hot_files": [
@@ -547799,10 +547826,6 @@
    ],
    [
     "docs/agentes/resgates/2026-11-18-inventario-trabalho-nao-ligado.md",
-    2
-   ],
-   [
-    "src/pages/quotes/QuoteBuilderPage.tsx",
     2
    ],
    [
@@ -547826,6 +547849,42 @@
     2
    ],
    [
+    ".github/workflows/edge-functions-deno-tests.yml",
+    1
+   ],
+   [
+    "supabase/functions/_shared/createEdge.test.ts",
+    1
+   ],
+   [
+    "supabase/functions/_shared/credentials.test.ts",
+    1
+   ],
+   [
+    "supabase/functions/asia-ingestion/credential-client.test.ts",
+    1
+   ],
+   [
+    "supabase/functions/crm-db-bridge/inspectInsertResult.test.ts",
+    1
+   ],
+   [
+    "supabase/functions/e2e-cleanup/handler_characterization_test.ts",
+    1
+   ],
+   [
+    "supabase/functions/quote-sync-promo-champions/index.test.ts",
+    1
+   ],
+   [
+    "supabase/functions/webhook-inbound/handler_characterization_test.ts",
+    1
+   ],
+   [
+    "docs/agentes/resgates/2026-11-18-veredicto-byte-a-byte-das-branches.md",
+    1
+   ],
+   [
     "tests/e2e/artifacts/compare/viewer/audit-snapshot.html",
     1
    ],
@@ -547839,38 +547898,6 @@
    ],
    [
     "tests/e2e/compare-ultra.test.tsx",
-    1
-   ],
-   [
-    "tests/e2e/compare-visual.test.tsx",
-    1
-   ],
-   [
-    "tests/e2e/new-quote-advanced.test.tsx",
-    1
-   ],
-   [
-    "tests/e2e/new-quote-cycle.test.tsx",
-    1
-   ],
-   [
-    "tests/e2e/new-quote-exhaustive.test.tsx",
-    1
-   ],
-   [
-    "tests/e2e/new-quote-full-audit.test.tsx",
-    1
-   ],
-   [
-    "vitest.config.ts",
-    1
-   ],
-   [
-    "vitest.e2e-probe.config.ts",
-    1
-   ],
-   [
-    "e2e/admin/stock-dashboard-empty.spec.ts",
     1
    ]
   ]

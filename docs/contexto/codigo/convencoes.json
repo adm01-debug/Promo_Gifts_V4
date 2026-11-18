@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "chore(ci): job deno test — 48 arquivos de teste de edge que nenhum runner executava (#3853)",
+   "docs(resgate): veredicto byte a byte das 9 branches abertas (#3855)",
    "fix(test): liga 832 testes que existiam no repo e runner nenhum executava (#3852)",
    "fix(test): 4 specs do /estoque exigiam o cabecalho que o dono mandou remover (#3851)",
-   "feat(pages): monta o dossie BI e o painel de ruptura, prontos e nunca exibidos (#3850)",
-   "feat(components): /admin/telemetria volta a mostrar falhas 503 e cold start (#3848)",
-   "fix(docs): tira do inventario o caminho de migration que deixou a main vermelha (#3849)"
+   "feat(pages): monta o dossie BI e o painel de ruptura, prontos e nunca exibidos (#3850)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",

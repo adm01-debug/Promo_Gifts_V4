@@ -1125,7 +1125,7 @@
    "nome": "e2e-cleanup",
    "entrada": "supabase/functions/e2e-cleanup/index.ts",
    "arquivos": 2,
-   "linhas": 831,
+   "linhas": 856,
    "verify_jwt": false,
    "metodos": [
     "GET",
@@ -3860,7 +3860,7 @@
    "nome": "webhook-inbound",
    "entrada": "supabase/functions/webhook-inbound/index.ts",
    "arquivos": 3,
-   "linhas": 1162,
+   "linhas": 1167,
    "verify_jwt": false,
    "metodos": [
     "GET",

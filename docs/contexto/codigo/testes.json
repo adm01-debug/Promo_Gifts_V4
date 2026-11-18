@@ -12332,7 +12332,7 @@
   {
    "arquivo": "supabase/functions/_shared/createEdge.test.ts",
    "tipo": "unit",
-   "linhas": 73,
+   "linhas": 84,
    "testa": [
     "supabase/functions/_shared/createEdge.ts"
    ],
@@ -12341,7 +12341,7 @@
   {
    "arquivo": "supabase/functions/_shared/credentials.test.ts",
    "tipo": "unit",
-   "linhas": 529,
+   "linhas": 538,
    "testa": [
     "supabase/functions/_shared/credentials.ts"
    ],
@@ -12404,7 +12404,7 @@
   {
    "arquivo": "supabase/functions/asia-ingestion/credential-client.test.ts",
    "tipo": "unit",
-   "linhas": 102,
+   "linhas": 104,
    "testa": [
     "supabase/functions/_shared/credentials.ts",
     "supabase/functions/asia-ingestion/index.ts"
@@ -12467,7 +12467,7 @@
   {
    "arquivo": "supabase/functions/crm-db-bridge/inspectInsertResult.test.ts",
    "tipo": "unit",
-   "linhas": 105,
+   "linhas": 106,
    "testa": [
     "supabase/functions/crm-db-bridge/index.ts"
    ],
@@ -12685,8 +12685,9 @@
   {
    "arquivo": "supabase/functions/quote-sync-promo-champions/index.test.ts",
    "tipo": "unit",
-   "linhas": 717,
+   "linhas": 726,
    "testa": [
+    "supabase/functions/_shared/credentials.ts",
     "supabase/functions/quote-sync-promo-champions/index.ts"
    ],
    "casos": 23
@@ -23112,7 +23113,7 @@
   "supabase/functions/_shared/contracts/versioning.ts": 1,
   "supabase/functions/_shared/cors.ts": 1,
   "supabase/functions/_shared/createEdge.ts": 1,
-  "supabase/functions/_shared/credentials.ts": 3,
+  "supabase/functions/_shared/credentials.ts": 4,
   "supabase/functions/_shared/dispatcher-auth.ts": 1,
   "supabase/functions/_shared/edge-authz-manifest.ts": 4,
   "supabase/functions/_shared/external-db-telemetry.ts": 1,
