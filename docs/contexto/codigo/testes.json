@@ -11990,9 +11990,9 @@
   {
    "arquivo": "src/tests/skeleton-integrity.test.ts",
    "tipo": "unit",
-   "linhas": 135,
+   "linhas": 143,
    "testa": [],
-   "casos": 3
+   "casos": 4
   },
   {
    "arquivo": "src/tests/stockStatus.unification.test.ts",
@@ -15688,9 +15688,9 @@
   {
    "arquivo": "tests/edge-functions/integration/generate-mockup.handler.test.ts",
    "tipo": "unit",
-   "linhas": 249,
+   "linhas": 273,
    "testa": [],
-   "casos": 7
+   "casos": 8
   },
   {
    "arquivo": "tests/edge-functions/integration/generate-mockup.test.ts",
@@ -20504,7 +20504,7 @@
   {
    "arquivo": "tests/scripts/deploy-gates-live-audit.test.mjs",
    "tipo": "unit",
-   "linhas": 108,
+   "linhas": 111,
    "testa": [],
    "casos": 5
   },

@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "0929631268023c25de3929c025fd003df73b293c",
+  "sha": "6f8146b484680ce1b3c271bae9706e14ef9d94a7",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-18 20:09 UTC",
-  "files_total": 10878,
+  "generated_at": "2026-11-18 20:16 UTC",
+  "files_total": 10879,
   "code_files": 8905,
-  "code_lines": 1262335
+  "code_lines": 1262370
  },
  "version": "1.3.2",
- "facts_hash": "3ddde53b67f1d647",
+ "facts_hash": "6b45eb86ef5b1bf8",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -150911,7 +150911,7 @@
   {
    "module": "src/tests",
    "files": 33,
-   "lines": 5135,
+   "lines": 5143,
    "tables": [
     "products",
     "v_products_public",
@@ -151740,7 +151740,7 @@
   {
    "module": "tests",
    "files": 1091,
-   "lines": 171810,
+   "lines": 171837,
    "tables": [
     "bot_detection_log",
     "clients",
@@ -280830,6 +280830,10 @@
    {
     "file": "tests/edge-functions/integration/generate-mockup.handler.test.ts",
     "name": "sem JWT → 401 sem payload de sucesso; JWT inválido/revogado → 401"
+   },
+   {
+    "file": "tests/edge-functions/integration/generate-mockup.handler.test.ts",
+    "name": "sem medidas reais do produto → 422 missing_dimensions antes de qualquer fetch"
    },
    {
     "file": "tests/edge-functions/integration/generate-mockup.handler.test.ts",
@@ -493336,10 +493340,13 @@
   },
   "src/tests/skeleton-integrity.test.ts": {
    "path": "src/tests/skeleton-integrity.test.ts",
-   "lines": 135,
+   "lines": 143,
    "is_test": true,
    "errors": [
     "Importação legada encontrada (${pattern}):\\n${matches.join("
+   ],
+   "rule_comments": [
+    "confere. Sem esta regra, todo composite novo vira uma linha a mais na"
    ],
    "tests": [
     "Integridade do Sistema de Skeletons",
@@ -530940,7 +530947,7 @@
   },
   "tests/edge-functions/integration/generate-mockup.handler.test.ts": {
    "path": "tests/edge-functions/integration/generate-mockup.handler.test.ts",
-   "lines": 249,
+   "lines": 273,
    "is_test": true,
    "errors": [
     "esbuild não produziu bundle para generate-mockup",
@@ -530961,12 +530968,13 @@
     {
      "name": "validBody",
      "params": "extra: Record<string, unknown> = {}",
-     "body": "return { productImageUrl: PRODUCT_URL, logoUrl: LOGO_URL, techniqueName: \"Serigrafia\", positionX: 50, positionY: 50, logoWidthCm: 5, logoHeightCm: 3, logoRotation: 0, logoScale: 100, ...extra, };"
+     "body": "return { productImageUrl: PRODUCT_URL, logoUrl: LOGO_URL, techniqueName: \"Serigrafia\", positionX: 50, positionY: 50, logoWidthCm: 5, logoHeightCm: 3, logoRotation: 0, logoScale: 100, // Medidas REAIS do produto: sem elas o handler recusa com 422 // missing_dimensions antes de qualquer fetch (index.ts:394 -> // geometry.ts:89 checkProductDimensions). Um \"corpo valido\" tem de passar // por esse portao, senao todo caso abaixo mede o portao, nao o que pretende. productWidthCm: 20, productHeightCm: 8 …"
     }
    ],
    "tests": [
     "generate-mockup — contrato do handler REAL",
     "sem JWT → 401 sem payload de sucesso; JWT inválido/revogado → 401",
+    "sem medidas reais do produto → 422 missing_dimensions antes de qualquer fetch",
     "host recusado → 422 product_image_unavailable / logo_unavailable",
     "200 com PNG sintético em memória: payload canônico (e logo base64)",
     "falhas 500 → composition_failed / storage_upload_failed / url_resolution_failed",
@@ -542465,7 +542473,7 @@
   },
   "tests/scripts/deploy-gates-live-audit.test.mjs": {
    "path": "tests/scripts/deploy-gates-live-audit.test.mjs",
-   "lines": 108,
+   "lines": 111,
    "is_test": true,
    "temporal": [
     "timeout: 10_000,"
@@ -547232,10 +547240,31 @@
   }
  },
  "git": {
-  "sha": "0929631268023c25de3929c025fd003df73b293c",
+  "sha": "6f8146b484680ce1b3c271bae9706e14ef9d94a7",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "6f8146b",
+    "date": "2026-11-18",
+    "author": "adm01-debug",
+    "subject": "fix(test): main volta ao verde nos 4 arquivos vermelhos do test:quality (#3846)",
+    "files": [
+     "src/components/products/__snapshots__/PriceFreshnessBadge.snapshots.test.tsx.snap",
+     "src/tests/skeleton-integrity.test.ts",
+     "tests/edge-functions/integration/generate-mockup.handler.test.ts",
+     "tests/scripts/deploy-gates-live-audit.test.mjs"
+    ]
+   },
+   {
+    "sha": "6fd7601",
+    "date": "2026-11-18",
+    "author": "adm01-debug",
+    "subject": "docs(resgate): inventario do trabalho de outro agente que existe e nao esta ligado (#3845)",
+    "files": [
+     "docs/agentes/resgates/2026-11-18-inventario-trabalho-nao-ligado.md"
+    ]
+   },
    {
     "sha": "0929631",
     "date": "2026-11-18",
@@ -547598,35 +547627,11 @@
      "docs/agentes/resgates/notas-de-sessao/2026-11-15-passagem-de-sessao.md",
      "docs/agentes/resgates/notas-de-sessao/2026-11-15-preservacao-container.md"
     ]
-   },
-   {
-    "sha": "03c08db",
-    "date": "2026-11-18",
-    "author": "adm01-debug",
-    "subject": "docs(resgate): prova byte a byte das 32 branches `salvo`, com recibo por branch — e a fila que ainda falta (#3801)",
-    "files": [
-     "docs/agentes/resgates/2026-11-17-prova-byte-32-branches-salvo.md"
-    ]
-   },
-   {
-    "sha": "3900fc1",
-    "date": "2026-11-18",
-    "author": "adm01-debug",
-    "subject": "feat(kit-builder): previa de mockup passa a enviar as medidas reais do produto (#3818)",
-    "files": [
-     "src/components/kit-builder/PersonalizationConfig.tsx",
-     "src/components/kit-builder/kitMockupDimensions.ts",
-     "tests/components/kit-builder/PersonalizationConfig.test.ts"
-    ]
    }
   ],
   "hot_files": [
    [
     "src/pages/quotes/QuoteBuilderPage.tsx",
-    3
-   ],
-   [
-    "src/components/kit-builder/PersonalizationConfig.tsx",
     3
    ],
    [
@@ -547654,15 +547659,11 @@
     2
    ],
    [
+    "src/components/kit-builder/PersonalizationConfig.tsx",
+    2
+   ],
+   [
     "src/components/quotes/QuoteTemplateForm.tsx",
-    2
-   ],
-   [
-    "src/components/kit-builder/kitMockupDimensions.ts",
-    2
-   ],
-   [
-    "tests/components/kit-builder/PersonalizationConfig.test.ts",
     2
    ],
    [
@@ -547678,6 +547679,26 @@
     2
    ],
    [
+    "src/components/products/__snapshots__/PriceFreshnessBadge.snapshots.test.tsx.snap",
+    1
+   ],
+   [
+    "src/tests/skeleton-integrity.test.ts",
+    1
+   ],
+   [
+    "tests/edge-functions/integration/generate-mockup.handler.test.ts",
+    1
+   ],
+   [
+    "tests/scripts/deploy-gates-live-audit.test.mjs",
+    1
+   ],
+   [
+    "docs/agentes/resgates/2026-11-18-inventario-trabalho-nao-ligado.md",
+    1
+   ],
+   [
     "src/hooks/quotes/quoteDraftApply.ts",
     1
    ],
@@ -547687,18 +547708,6 @@
    ],
    [
     "e2e/carrinhos/sidebar-no-legacy-labels.spec.ts",
-    1
-   ],
-   [
-    "src/components/common/spotlight/SpotlightItems.ts",
-    1
-   ],
-   [
-    "src/components/common/spotlight/__tests__/SpotlightItems.test.ts",
-    1
-   ],
-   [
-    "tests/pages/legacy-KitBuilder.partial-preservation.test.tsx",
     1
    ]
   ]

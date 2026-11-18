@@ -5,7 +5,7 @@
   "linguagens": [
    "TypeScript (4999)",
    "SQL (3440)",
-   "Markdown (1479)",
+   "Markdown (1480)",
    "JavaScript (457)",
    "JSON (132)",
    "YAML (116)",
@@ -4245,7 +4245,7 @@
   },
   {
    "pasta": "docs/agentes",
-   "arquivos_md": 20
+   "arquivos_md": 21
   },
   {
    "pasta": "docs/db",

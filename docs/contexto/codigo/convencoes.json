@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "fix(test): main volta ao verde nos 4 arquivos vermelhos do test:quality (#3846)",
+   "docs(resgate): inventario do trabalho de outro agente que existe e nao esta ligado (#3845)",
    "fix(quotes): rascunho local volta a guardar empresa, contato, validade e entrega (#3844)",
    "feat(components): Ctrl+K volta a alcançar Novidades, Filtros e Estoque (#3842)",
-   "fix(test): dois guardas afirmavam o contrário do que a main faz hoje (#3843)",
-   "fix(test): e2e ainda exigia que \"Usar template\" não existisse no construtor (#3841)",
-   "docs(resgate): recibo da sessão 2 — PRs fechadas sem merge e os 51 arquivos do legado (#3840)"
+   "fix(test): dois guardas afirmavam o contrário do que a main faz hoje (#3843)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",
