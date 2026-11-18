@@ -3388,7 +3388,7 @@
   {
    "arquivo": "e2e/quotes/templates.spec.ts",
    "tipo": "e2e",
-   "linhas": 49,
+   "linhas": 56,
    "testa": [],
    "casos": 5
   },
@@ -11330,12 +11330,12 @@
   {
    "arquivo": "src/pages/quotes/components/__tests__/QuoteBuilderNotesCard.test.tsx",
    "tipo": "unit",
-   "linhas": 91,
+   "linhas": 103,
    "testa": [
     "src/hooks/quotes/quoteTypes.ts",
     "src/pages/quotes/components/QuoteBuilderNotesCard.tsx"
    ],
-   "casos": 3
+   "casos": 4
   },
   {
    "arquivo": "src/pages/quotes/quote-view/__tests__/QuoteActionHandlers.fuzz.test.ts",

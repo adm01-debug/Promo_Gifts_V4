@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "fix(test): e2e ainda exigia que \"Usar template\" não existisse no construtor (#3841)",
+   "docs(resgate): recibo da sessão 2 — PRs fechadas sem merge e os 51 arquivos do legado (#3840)",
    "fix(mockup): vínculo de proporção para de distorcer a logo a cada ajuste (#3838)",
    "feat(mockup): avisa o vendedor quando o kill-switch de mockup estiver desligado (#3839)",
-   "feat(quotes): liga o funil de orçamentos à tela e para de chamar expirado de rascunho (#3836)",
-   "feat(components): resgata os cards de observabilidade das bridges em /admin/telemetria (#3837)",
-   "feat(kit): gera PDF real do kit no lugar de window.print() (#3835)"
+   "feat(quotes): liga o funil de orçamentos à tela e para de chamar expirado de rascunho (#3836)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",

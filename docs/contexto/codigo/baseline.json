@@ -2,11 +2,21 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "8187a4a27282780fd5a76cde6dc716ff689a5c90",
+  "commit": "91ffe71a865b2d21391e2e86dea7cc55316b33ff",
   "branch": "main",
-  "data_commit": "2026-11-18T15:54:25-03:00",
+  "data_commit": "2026-11-18T16:10:12-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "91ffe71a",
+    "data": "2026-11-18",
+    "assunto": "fix(test): e2e ainda exigia que \"Usar template\" não existisse no construtor (#3841)"
+   },
+   {
+    "sha": "a53b303e",
+    "data": "2026-11-18",
+    "assunto": "docs(resgate): recibo da sessão 2 — PRs fechadas sem merge e os 51 arquivos do legado (#3840)"
+   },
    {
     "sha": "8187a4a2",
     "data": "2026-11-18",
@@ -121,19 +131,9 @@
     "sha": "646bbdbf",
     "data": "2026-11-18",
     "assunto": "docs(resgate): preserva as 2 notas de sessao que so existiam em branch (#3803)"
-   },
-   {
-    "sha": "03c08db0",
-    "data": "2026-11-18",
-    "assunto": "docs(resgate): prova byte a byte das 32 branches `salvo`, com recibo por branch — e a fila que ainda falta (#3801)"
-   },
-   {
-    "sha": "3900fc1f",
-    "data": "2026-11-18",
-    "assunto": "feat(kit-builder): previa de mockup passa a enviar as medidas reais do produto (#3818)"
    }
   ],
-  "arquivos_mudados_7d": 1510,
+  "arquivos_mudados_7d": 1503,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -189,7 +189,7 @@
    },
    {
     "pasta": "src/pages/quotes",
-    "mudancas": 128
+    "mudancas": 129
    },
    {
     "pasta": "src/hooks/quotes",
@@ -258,10 +258,6 @@
     "mudancas": 10
    },
    {
-    "arquivo": "auditoria-supabase/RELATORIO_AUDITORIA_SUPABASE.md",
-    "mudancas": 10
-   },
-   {
     "arquivo": "docs/agentes/resgates/2026-11-16-auditoria-branches.md",
     "mudancas": 10
    },
@@ -271,6 +267,10 @@
    },
    {
     "arquivo": ".github/workflows/replenishment-quality.yml",
+    "mudancas": 9
+   },
+   {
+    "arquivo": "auditoria-supabase/RELATORIO_AUDITORIA_SUPABASE.md",
     "mudancas": 9
    },
    {
@@ -301,7 +301,7 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 526
+    "commits": 524
    },
    {
     "autor": "Claude",
@@ -322,9 +322,9 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 10947,
+  "arquivos_total": 10948,
   "arquivos_codigo": 5464,
-  "linhas_codigo": 1041346,
+  "linhas_codigo": 1041365,
   "rotas": 139,
   "rotas_http_backend": 13,
   "vistas_por_id": 0,
@@ -339,7 +339,7 @@
   "testes": 2601,
   "workflows": 88,
   "scripts": 283,
-  "docs_md": 1478
+  "docs_md": 1479
  },
  "por_pasta": {
   ".github/scripts": {
@@ -768,7 +768,7 @@
   },
   "e2e/quotes": {
    "arquivos": 60,
-   "linhas": 6933
+   "linhas": 6940
   },
   "e2e/raio-x.spec.ts": {
    "arquivos": 1,
@@ -1940,7 +1940,7 @@
   },
   "src/pages": {
    "arquivos": 366,
-   "linhas": 84428
+   "linhas": 84440
   },
   "src/routes": {
    "arquivos": 15,
