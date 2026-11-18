@@ -25,7 +25,11 @@ Deno.test("createEdge cron auth: secret válido => 200 e handler executa", async
   Deno.env.delete("TEST_CREATE_EDGE_CRON_SECRET_OK");
 });
 
-Deno.test("createEdge cron auth: secret ausente => 503 e handler NÃO executa", async () => {
+// Contrato: secret não configurado (nem vault, nem env) => 401, não 503.
+// Fonte: supabase/functions/_shared/dispatcher-auth.ts:278-295 (auditoria SEC-003)
+// — ausência de credencial configurada é falha de autorização, não
+// indisponibilidade de serviço. Fail-closed mantido (handler não executa).
+Deno.test("createEdge cron auth: secret ausente => 401 e handler NÃO executa", async () => {
   Deno.env.delete("TEST_CREATE_EDGE_CRON_SECRET_MISSING");
   let called = false;
 
@@ -43,7 +47,7 @@ Deno.test("createEdge cron auth: secret ausente => 503 e handler NÃO executa", 
   });
 
   const res = await edge(req);
-  assertEquals(res.status, 503);
+  assertEquals(res.status, 401);
   assertEquals(called, false);
 });
 

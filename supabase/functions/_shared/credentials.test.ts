@@ -28,10 +28,19 @@ function mockServiceClient(table: Record<string, string | null>) {
   // deno-lint-ignore no-explicit-any
   const builder: any = {
     _name: null as string | null,
+    _active: null as unknown,
     select() { return builder; },
-    eq(_col: string, val: string) { builder._name = val; return builder; },
+    // Contrato real: credentials.ts:442-447 encadeia DOIS .eq() —
+    // .eq("secret_name", name).eq("is_active", true) (GAP-FUNC, commit 9ef07bf6).
+    // O mock precisa distinguir as colunas: antes o 2o .eq() sobrescrevia
+    // _name com `true` e nenhuma leitura de DB acertava a tabela.
+    eq(col: string, val: unknown) {
+      if (col === "secret_name") builder._name = val as string;
+      if (col === "is_active") builder._active = val;
+      return builder;
+    },
     async maybeSingle() {
-      const v = table[builder._name ?? ""] ?? null;
+      const v = builder._active === true ? (table[builder._name ?? ""] ?? null) : null;
       return v
         ? { data: { secret_value: v }, error: null }
         : { data: null, error: null };

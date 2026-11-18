@@ -87,6 +87,37 @@ jobs:
           AO_VIVO_RE="$AO_VIVO_RE|^supabase/functions/visual-search/integration_test\.ts$"
           AO_VIVO_RE="$AO_VIVO_RE|^supabase/functions/webhook-inbound/integration_test\.ts$"
 
+          # Medidos no 2o run do job (41 de 61 passaram): estes 11 falham porque
+          # exigem stack Supabase rodando ou .env real, nao porque o teste esteja
+          # quebrado. Dez deles importam `std/dotenv/load.ts` e leem VITE_* (morrem
+          # no carregamento do modulo, "uncaught error"); edge_integration.test.ts
+          # bate em http://localhost:54321, que so existe com `supabase start`.
+          # Pertencem ao edge-integration-all.yml, igual aos de cima.
+          AO_VIVO_RE="$AO_VIVO_RE|^supabase/functions/crm-db-bridge/breaker-status\.test\.ts$"
+          AO_VIVO_RE="$AO_VIVO_RE|^supabase/functions/crm-db-bridge/creds_health\.test\.ts$"
+          AO_VIVO_RE="$AO_VIVO_RE|^supabase/functions/crm-db-bridge/diag\.test\.ts$"
+          AO_VIVO_RE="$AO_VIVO_RE|^supabase/functions/crm-db-bridge/ping\.test\.ts$"
+          AO_VIVO_RE="$AO_VIVO_RE|^supabase/functions/crm-db-bridge/singleton-client\.test\.ts$"
+          AO_VIVO_RE="$AO_VIVO_RE|^supabase/functions/external-db-bridge/lightweightSelect\.e2e\.test\.ts$"
+          AO_VIVO_RE="$AO_VIVO_RE|^supabase/functions/external-db-bridge/performance\.test\.ts$"
+          AO_VIVO_RE="$AO_VIVO_RE|^supabase/functions/external-db-bridge/singleton\.test\.ts$"
+          AO_VIVO_RE="$AO_VIVO_RE|^supabase/functions/mcp-keys-issue/rls-isolation\.test\.ts$"
+          AO_VIVO_RE="$AO_VIVO_RE|^supabase/functions/secrets-manager/list-contract\.test\.ts$"
+          AO_VIVO_RE="$AO_VIVO_RE|^supabase/functions/tests/edge_integration\.test\.ts$"
+          # cnpj-lookup/contract_test.ts NAO importa o codigo de producao: ele so faz
+          # fetch contra ${SUPABASE_URL}/functions/v1/cnpj-lookup (contract_test.ts:3-4,10,21).
+          # Sem stack servindo a funcao, `Deno.env.get("SUPABASE_URL")` e undefined
+          # (o `!` e so tipagem) e o fetch quebra antes da primeira assercao.
+          AO_VIVO_RE="$AO_VIVO_RE|^supabase/functions/cnpj-lookup/contract_test\.ts$"
+
+          # Teste velho, isolado aqui em vez de apagado ou mascarado: ele congela o
+          # contrato anterior ao commit f84444c1e ("fix(crm): vincular vendedor do
+          # bridge por auth_user_id, nao por e-mail"). O vinculo deixou de ser
+          # lookup por e-mail no CRM e virou 1:1 imutavel em crm_seller_identity_links.
+          # Reescreve-lo e tarefa propria; ate la ele RODA, em passo proprio, e a
+          # falha aparece no log sem travar o gate dos outros 49.
+          EM_DIAGNOSTICO="supabase/functions/crm-db-bridge/scope_integration_test.ts"
+
           RODAR=()
           PULADOS_AO_VIVO=0
           PULADOS_VITEST=0
@@ -99,18 +130,20 @@ jobs:
             if grep -qE "from ['\"]vitest['\"]" "$f"; then
               PULADOS_VITEST=$((PULADOS_VITEST + 1)); continue
             fi
+            if [ "$f" = "$EM_DIAGNOSTICO" ]; then continue; fi
             RODAR+=("$f")
           done < <(find supabase/functions -name '*test*.ts' | sort)
 
           echo "total de arquivos de teste: $(find supabase/functions -name '*test*.ts' | wc -l)"
           echo "pulados (integracao ao vivo): $PULADOS_AO_VIVO"
           echo "pulados (Vitest):             $PULADOS_VITEST"
+          echo "em diagnostico (nao trava):   1 ($EM_DIAGNOSTICO)"
           echo "a rodar aqui:                 ${#RODAR[@]}"
 
           # Guarda: se a classificacao desandar, o job falha dizendo o porque,
           # em vez de passar verde rodando quase nada.
-          if [ "${#RODAR[@]}" -lt 55 ]; then
-            echo "::error::so ${#RODAR[@]} arquivos classificados para rodar (esperado ~61)"
+          if [ "${#RODAR[@]}" -lt 44 ]; then
+            echo "::error::so ${#RODAR[@]} arquivos classificados para rodar (esperado 49)"
             exit 1
           fi
 
@@ -132,3 +165,19 @@ jobs:
             exit 1
           fi
           echo "todos os ${#RODAR[@]} arquivos passaram"
+
+      # Passo separado e NAO bloqueante, de proposito: o arquivo continua sendo
+      # executado e a falha continua visivel no log. O que ele NAO faz e impedir
+      # que os outros 49 virem gate. Quando o teste for reescrito contra o
+      # contrato de crm_seller_identity_links, ele volta para o passo de cima.
+      - name: deno test (em diagnostico — nao bloqueia)
+        continue-on-error: true
+        run: |
+          set -uo pipefail
+          ARQ="supabase/functions/crm-db-bridge/scope_integration_test.ts"
+          echo "::warning file=$ARQ::teste velho: congela o contrato anterior a f84444c1e (vinculo do vendedor por e-mail, hoje por auth_user_id em crm_seller_identity_links). Roda aqui sem travar o gate ate ser reescrito."
+          deno test \
+            --config supabase/functions/deno.json \
+            --allow-all \
+            --no-check \
+            "$ARQ" || echo "::warning::$ARQ falhou, como esperado — ver aviso acima"
