@@ -2,13 +2,19 @@
  * CartSidebar — render smoke + isolamento do carrinho ativo
  *
  * Após a repaginação, o subtotal/SKUs/Qtd. total saíram da sidebar
- * e passaram a viver no header da página. A sidebar mantém
- * EXCLUSIVAMENTE o card hero de peso/volume.
+ * e passaram a viver no header da página. A sidebar mantém o card hero de
+ * peso/volume, a checklist "Saúde do Carrinho" e os atalhos de template.
  * O CTA "Gerar Orçamento" vive no CartActionsMenu do header da página.
+ *
+ * 2026-11-18 (decisão do dono): a aposentadoria da PR #3361 foi revertida
+ * para o CartHealthChecklist — o caso que exigia a AUSÊNCIA de "Saúde do
+ * carrinho" agora exige a PRESENÇA dela. Os outros três painéis continuam
+ * fora (ver o caso convertido abaixo).
  *
  * Estes testes garantem:
  *   1) Render mínimo (hero card com peso/volume quando presentes)
- *   2) NÃO reintroduziu painéis legados nem os labels Subtotal/SKUs/Qtd
+ *   2) A checklist de saúde está montada; os painéis que NÃO voltaram
+ *      seguem ausentes, e os labels Subtotal/SKUs/Qtd continuam no header
  *   3) Peso/Volume aparecem quando `weightVolume` os traz
  *   4) A sidebar consome APENAS o `weightVolume` recebido — nunca agrega
  *      dados de outros carrinhos.
@@ -110,9 +116,15 @@ describe('CartSidebar — render smoke pós-repaginação', () => {
     expect(screen.queryByText(/12\.345/)).not.toBeInTheDocument();
   });
 
-  it('NÃO renderiza painéis legados', () => {
+  it('renderiza a "Saúde do carrinho" e segue sem os painéis que não voltaram', () => {
     renderSidebar();
-    expect(screen.queryByText(/Saúde do carrinho/i)).not.toBeInTheDocument();
+    // Voltou em 2026-11-18 (decisão do dono): checklist calculada do próprio
+    // carrinho, sem mock. Caso antes exigia ausência — agora exige presença.
+    expect(screen.getByText(/Saúde do carrinho/i)).toBeInTheDocument();
+    // Continuam fora: "Inteligência de vendas" (markup inline da sidebar
+    // legada cujo único texto é bloqueado pelo gate de termo de retomada),
+    // "Histórico de ações" (ActionHistoryPanel não existe em recovery/) e
+    // "Sugestões inteligentes" (SmartSuggestions é 100% mock hardcoded).
     expect(screen.queryByText(/Inteligência de vendas/i)).not.toBeInTheDocument();
     expect(screen.queryByText(/Histórico de ações/i)).not.toBeInTheDocument();
     expect(screen.queryByText(/Sugestões inteligentes/i)).not.toBeInTheDocument();
@@ -131,6 +143,9 @@ describe('CartSidebar — render smoke pós-repaginação', () => {
   });
 
   it('CartUtilComponents NÃO expõe mais SmartSuggestions/ActionHistoryPanel', () => {
+    // `CartHealthChecklist` voltou, mas no módulo próprio
+    // (@/components/cart/CartHealthChecklist) — o barrel de utilitários
+    // continua sem ele, e é isso que este caso protege.
     const exported = CartUtilComponents as Record<string, unknown>;
     expect(exported.SmartSuggestions).toBeUndefined();
     expect(exported.ActionHistoryPanel).toBeUndefined();
