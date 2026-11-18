@@ -41,6 +41,7 @@ import {
 } from 'lucide-react';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
+import { QuotesFunnelChart } from '@/components/quotes/QuotesFunnelChart';
 import {
   useQuotesDashboard,
   statusConfig,
@@ -318,37 +319,7 @@ export default function QuotesDashboardPage() {
             </CardContent>
           </Card>
 
-          <Card className="border-border/50 bg-card/50 backdrop-blur-sm">
-            <CardHeader>
-              <CardTitle className="text-lg">Funil de Conversão</CardTitle>
-            </CardHeader>
-            <CardContent>
-              {s.metrics.conversionFunnel.length > 0 ? (
-                <div className="h-64">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <BarChart
-                      data={s.metrics.conversionFunnel}
-                      layout="vertical"
-                      margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
-                    >
-                      <XAxis type="number" />
-                      <YAxis dataKey="stage" type="category" width={100} />
-                      <ChartTooltip content={<ChartTooltipContent />} />
-                      <Bar dataKey="count" radius={[0, 4, 4, 0]}>
-                        {s.metrics.conversionFunnel.map((e, i) => (
-                          <Cell key={i} fill={e.fill} />
-                        ))}
-                      </Bar>
-                    </BarChart>
-                  </ResponsiveContainer>
-                </div>
-              ) : (
-                <div className="flex h-64 items-center justify-center text-muted-foreground">
-                  Nenhum dado disponível
-                </div>
-              )}
-            </CardContent>
-          </Card>
+          <QuotesFunnelChart data={s.funnel} />
 
           {s.metrics.monthlyData.length > 0 && (
             <Card className="border-border/50 bg-card/50 backdrop-blur-sm lg:col-span-2">
