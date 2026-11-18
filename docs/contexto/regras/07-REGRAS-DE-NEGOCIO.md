@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.3.2 · commit `5470d5f4a7` · branch `main` · 2026-11-18 12:21 UTC
+> Gerado automaticamente por AI Context Sync v1.3.2 · commit `b52dceaeb9` · branch `main` · 2026-11-18 13:15 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -1829,7 +1829,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `status` | `pending` | compara, escreve, filtra | `recovery/src-legacy/src/hooks/useDiscountApproval.ts`<br>`recovery/src-legacy/src/hooks/usePasswordResetRequests.ts`<br>`recovery/src-legacy/src/pages/QuoteViewPage.tsx`<br>`src/components/admin/DiscountApprovalFilterBar.tsx`<br>`src/components/admin/DiscountApprovalHeaderBadge.tsx`<br>… +22 |
 | `status` | `pending_approval` | compara, escreve | `recovery/src-legacy/src/hooks/useDiscountApproval.ts`<br>`recovery/src-legacy/src/hooks/useQuoteBuilderState.ts`<br>`recovery/src-legacy/src/pages/QuoteViewPage.tsx`<br>`src/components/quotes/QuoteKanbanBoard.tsx`<br>`src/components/quotes/QuoteStatusTimeline.tsx`<br>… +5 |
 | `status` | `processing` | compara, escreve | `src/components/ui/StatusBadge.tsx`<br>`supabase/functions/product-webhook/index.ts`<br>`supabase/functions/word-magic/index.ts`<br>`supabase/migrations/20250103090000_mockup_ai_complete.sql` |
-| `status` | `pronto_orcamento` | compara | `recovery/src-legacy/src/components/cart/CartHealthChecklist.tsx` |
+| `status` | `pronto_orcamento` | compara | `recovery/src-legacy/src/components/cart/CartHealthChecklist.tsx`<br>`src/components/cart/CartHealthChecklist.tsx` |
 | `status` | `published` | compara, escreve, filtra | `src/lib/security/magazine-guard.ts`<br>`src/pages/magazine/MagazineEditorPage.tsx`<br>`src/pages/magazine/MagazineListPage.tsx`<br>`src/pages/magazine/PublicMagazineView.tsx`<br>`src/pages/magazine/hooks/useMagazineGoldImport.ts`<br>… +8 |
 | `status` | `quote` | compara | `src/components/dashboard/MyClientsWidget.tsx` |
 | `status` | `quote_not_found` | escreve | `supabase/functions/crm-callback-reprocess/index.ts` |
@@ -3172,6 +3172,9 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `custom-qty` | type=number, min=minQuantity | `src/components/products/inline-price/QuantityCalculator.tsx` |
 | `custom-qty-col` | type=number, min=minQuantity | `src/components/products/inline-price/QuantityCalculator.tsx` |
 | `quote-client-email` | type=email | `src/components/quotes/ClientPicker.tsx` |
+| `validity` | type=number, min=1, max=365 | `src/components/quotes/QuoteTemplateForm.tsx` |
+| `discount_percent` | type=number, min=0, max=100, step=0.1 | `src/components/quotes/QuoteTemplateForm.tsx` |
+| `discount_amount` | type=number, min=0, step=0.01 | `src/components/quotes/QuoteTemplateForm.tsx` |
 | `visual-search-input` | accept=image/*, disabled=isLoading | `src/components/search/VisualSearchButton.tsx` |
 | `fieldId` | required=required | `src/components/ui/LabeledField.tsx` |
 | `fieldId` | required=required | `src/components/ui/LabeledField.tsx` |
@@ -3927,6 +3930,14 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
   ```
   return `📦 *ITEM DO KIT* 📦 *${item.productName}* Parte do Kit: ${product.name} ${item.description || ''} ${item.material ? `🧵 Material: ${item.material}` : ''} ${item.weightG ? `⚖️ Peso: ${item.weightG}g` : ''} 💰 Kit completo a partir de ${new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(product.price)}/un 📦 Qtd mínima: ${product.minQuantity} kits Promo Brindes - Brindes com Excelência!`;
   ```
+- **formatCurrency(value: number)** — `src/components/quotes/AdminTemplatesManager.tsx`
+  ```
+  
+  ```
+- **calculateTotal(template: QuoteTemplate)** — `src/components/quotes/AdminTemplatesManager.tsx`
+  ```
+  const itemsTotal = template.items.reduce((sum, item) => { const personalizationCost = item.personalizations?.reduce( (pSum, p) => pSum + (p.unitCost || 0) * item.quantity + (p.setupCost || 0), 0, ) || 0; return sum + item.quantity * item.unitPrice + personalizationCost; }, 0); const discountValue = template.discount_percent > 0 ? itemsTotal * (template.discount_percent / 100) : template.discount_amount; return itemsTotal - discountValue;
+  ```
 - **round2(n: number)** — `src/components/quotes/QuoteItemsTable.tsx`
   ```
   Math.round((n + Number.EPSILON) * 100) / 100;
@@ -3934,6 +3945,22 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 - **formatCurrency(value: number)** — `src/components/quotes/QuoteListCellRenderer.tsx`
   ```
   
+  ```
+- **formatCurrency(value: number)** — `src/components/quotes/QuoteTemplateForm.tsx`
+  ```
+  return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', }).format(value);
+  ```
+- **calculateTotal()** — `src/components/quotes/QuoteTemplateForm.tsx`
+  ```
+  const itemsTotal = (formData.items || []).reduce((sum, item) => { const itemBase = item.quantity * item.unitPrice; const personalizationCost = item.personalizations?.reduce((pSum, p) => { return pSum + (p.unitCost || 0) * item.quantity + (p.setupCost || 0); }, 0) || 0; return sum + itemBase + personalizationCost; }, 0); const discountValue = formData.discount_percent && formData.discount_percent > 0 ? itemsTotal * (formData.discount_percent / 100) : formData.discount_amount || 0; return itemsTot …
+  ```
+- **formatCurrency(value: number)** — `src/components/quotes/QuoteTemplatesList.tsx`
+  ```
+  return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', }).format(value);
+  ```
+- **calculateTemplateTotal(template: QuoteTemplate)** — `src/components/quotes/QuoteTemplatesList.tsx`
+  ```
+  const itemsTotal = template.items.reduce((sum, item) => { const itemBase = item.quantity * item.unitPrice; const personalizationCost = item.personalizations?.reduce((pSum, p) => { return pSum + (p.unitCost || 0) * item.quantity + (p.setupCost || 0); }, 0) || 0; return sum + itemBase + personalizationCost; }, 0); const discountValue = template.discount_percent > 0 ? itemsTotal * (template.discount_percent / 100) : template.discount_amount; return itemsTotal - discountValue;
   ```
 - **hasDiscountWorkflow(q: Quote)** — `src/components/quotes/QuotesStatusChips.tsx`
   ```
@@ -4907,6 +4934,10 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
   ```
   const [jsPDF, html2canvas] = await Promise.all([getJsPDF(), getHtml2Canvas()]); const container = document.createElement('div'); container.style.position = 'fixed'; container.style.top = '-10000px'; container.style.left = '-10000px'; container.style.zIndex = '-9999'; container.style.pointerEvents = 'none'; document.body.appendChild(container); // FIX #1: declarar root fora do try para garantir unmount no finally externo let root: ReturnType<typeof ReactDOM.createRoot> | null = null; try { root = …
   ```
+- **validateImportedTemplates(data: unknown)** — `src/utils/templateExport.ts`
+  ```
+  return isExportedTemplate(data) ? data : null;
+  ```
 - **rankOf(r: AppRole | string | null,)** — `supabase/functions/_shared/authorize.ts`
   ```
   (r != null && r in ROLE_RANK ? ROLE_RANK[r as AppRole] : 0);
@@ -5131,6 +5162,8 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `priceFrom: Math.round(t.avgPrice * 0.9),` | `src/components/bi/ClientHealthHero.tsx` |
 | `* Heurística: empresas do mesmo ramo + (LTV agregado de quotes ±30% do cliente atual)` | `src/components/bi/ClientLookalikes.tsx` |
 | `// Heurística: cliente / (cliente + 1.5 × média setor) — capped 5..95%` | `src/components/bi/ClientVsIndustryComparison.tsx` |
+| `transition={{ delay: idx * 0.05 }}` | `src/components/cart/CartHealthChecklist.tsx` |
+| `* - `SmartSuggestions` continua fora: o arquivo recuperado era 100% mock` | `src/components/cart/CartUtilComponents.tsx` |
 | `* Evita a imagem gigante quando a coluna ocupa 100% da largura da página.` | `src/components/cart/SortableCartItem.tsx` |
 | `transition={{ delay: index * 0.03 }}` | `src/components/cart/SortableCartItem.tsx` |
 | `delay: idx * 0.03,` | `src/components/collections/AddToCollectionModal.tsx` |
@@ -5299,7 +5332,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `radial-gradient(ellipse 80% 50% at 50% -20%, hsl(var(--primary) / 0.08), transparent),` | `src/pages/kit-builder/KitBuilderPage.tsx` |
 | `// templateId só conta se a revista já tem título — evita 20% para revista vazia` | `src/pages/magazine/utils/stepValidation.ts` |
 | `{/* Cabeçalho — 15% menor que o original */}` | `src/pages/products/NoveltiesPage.tsx` |
-| `<SelectItem value="50_50">50/50 \| 50% entrada / 50% após entrega</SelectItem>` | `src/pages/quotes/QuoteBuilderPage.tsx` |
+| `50/50 \| 50% entrada / 50% após entrega` | `src/pages/quotes/QuoteBuilderPage.tsx` |
 | `Pistas extras aumentam em até 40% a precisão` | `src/pages/tools/VisualSearchPage.tsx` |
 | `transition={{ delay: 0.2 + i * 0.05 }}` | `src/pages/tools/VisualSearchPage.tsx` |
 | `transition={{ delay: 0.5 + idx * 0.1 }}` | `src/pages/tools/VisualSearchPage.tsx` |
@@ -6568,7 +6601,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `admin` | `supabase/migrations/20261112120500_fix_optimization_queue_rpcs_dev_access.sql` |
 | `anon` | `tests/edge-functions/live/_live-client.ts` |
 
-## K. Testes como especificação (22317 testes em 2259 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (22325 testes em 2261 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -6872,7 +6905,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `src/components/layout/sidebar/__tests__/SidebarNavGroup.history.test.tsx` | 18 | SidebarNavGroup — back/forward (histórico real) preservam paridade entre os 3 itens · back: /carrinhos -> /orcamentos/novo, voltar reativa Carrinhos e desativa Novo Orçamento · forward: depois de voltar, avançar restaura o destaque de Novo Orçamento · back/forward atravessando os 3 itens mantém destaque correto a cada salto … |
 | `src/components/products/customization/__tests__/ConfigurationPanelV6.collapse.test.tsx` | 18 | ConfigurationPanelV6 — contrato de colapso · Grupo A — wrapper externo (contrato visual) · expandido: contém flex/flex-col/gap-4/p-4/transition-[gap]/motion-reduce · colapsado: contém gap-0 e NÃO contém gap-4 nem space-y-4 … |
 | `src/components/search/__tests__/searchCache.test.ts` | 18 | searchCache.set / searchCache.get · returns null for an unknown key · returns results immediately after set · is case-insensitive (normalized key) … |
-| … +1959 linhas — lista completa em `context.json` | | |
+| … +1961 linhas — lista completa em `context.json` | | |
 
 ## L. Eventos de webhook tratados (contratos com sistemas externos)
 
@@ -7254,6 +7287,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | INSERTs e cria dois carrinhos, queimando o limite de 3. | `src/components/cart/CartCompanyPicker.tsx` |
 | Roda ANTES do guard de limite: abrir o existente deve funcionar mesmo com 3. | `src/components/cart/CartCompanyPicker.tsx` |
 | de limite: abrir o existente deve funcionar mesmo no limite máximo de carrinhos. | `src/components/cart/CartCompanyPickerDialog.tsx` |
+| Improved variant detection: if SKU is composite (contains '-'), it MUST have color_name or notes | `src/components/cart/CartHealthChecklist.tsx` |
 | usuário possa apenas apertar Enter para tentar de novo (a11y). | `src/components/cart/CartItemErrorAlert.tsx` |
 | - Sanitiza a entrada: aceita apenas dígitos (vírgula, ponto, espaço, letras | `src/components/cart/PopoverQtyInput.tsx` |
 | - Valores vazios / inválidos / abaixo do mínimo revertem ao valor externo | `src/components/cart/PopoverQtyInput.tsx` |
@@ -7339,5 +7373,4 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | Context providers must be imported synchronously (consumers render inside them) | `src/components/layout/MainLayout.tsx` |
 | para a qual não tem permissão. | `src/components/layout/sidebar/RestrictedRouteNotice.tsx` |
 | E-24: mesma regra dos dots/thumbnails do MagicUpResultPanel — modo NÃO-WRAP. | `src/components/magic-up/MagicUpVariationComparator.tsx` |
-| ArrowRight/Down no último e ArrowLeft/Up no primeiro param no limite (não ciclam); | `src/components/magic-up/MagicUpVariationComparator.tsx` |
-| … +1339 linhas — lista completa em `context.json` | |
+| … +1340 linhas — lista completa em `context.json` | |

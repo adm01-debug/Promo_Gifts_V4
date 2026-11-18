@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "5470d5f4a7c3a2a397e5607f306cacff42e6ebab",
+  "sha": "b52dceaeb9cf012304e0c0392ebeaff68fd27011",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-18 12:21 UTC",
-  "files_total": 10822,
-  "code_files": 8854,
-  "code_lines": 1254199
+  "generated_at": "2026-11-18 13:15 UTC",
+  "files_total": 10836,
+  "code_files": 8868,
+  "code_lines": 1256465
  },
  "version": "1.3.2",
- "facts_hash": "ec6f78e6cfeb698e",
+ "facts_hash": "ff544f49f023a4b5",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -1120,8 +1120,8 @@
   "package_manager": "npm",
   "languages": {
    ".sql": 3440,
-   ".ts": 3018,
-   ".tsx": 1931,
+   ".ts": 3019,
+   ".tsx": 1944,
    ".mjs": 450,
    ".py": 15,
    ".js": 7
@@ -137798,44 +137798,6 @@
    },
    {
     "path": "",
-    "file": "recovery/src-legacy/src/pages/QuoteTemplatesPage.tsx",
-    "component": "QuoteTemplatesPage",
-    "tables_transitive": [
-     "cart_templates",
-     "catalog_analytics",
-     "category_icons",
-     "frontend_telemetry",
-     "order_items",
-     "orders",
-     "product_price_freshness_overrides",
-     "product_variants",
-     "product_views",
-     "profiles",
-     "quote_items",
-     "search_analytics",
-     "seller_cart_items",
-     "seller_carts",
-     "user_onboarding",
-     "user_roles",
-     "video_variant_links",
-     "workspace_notifications"
-    ],
-    "invokes_transitive": [
-     "crm-db-bridge",
-     "external-db-bridge",
-     "mcp-keys-issue"
-    ],
-    "rpc_transitive": [
-     "fn_batch_update_cart_item_sort_order",
-     "fn_get_similar_products",
-     "get_catalog_bestseller_page",
-     "get_profile_and_roles",
-     "log_user_logout"
-    ],
-    "deps_count": 120
-   },
-   {
-    "path": "",
     "file": "recovery/src-legacy/src/pages/QuoteViewPage.tsx",
     "component": "QuoteViewPage",
     "tables_transitive": [
@@ -138574,6 +138536,7 @@
      "quote_history",
      "quote_item_personalizations",
      "quote_items",
+     "quote_templates",
      "quotes",
      "search_analytics",
      "seller_cart_items",
@@ -138595,7 +138558,7 @@
      "request_discount_approval_transactional",
      "respond_discount_approval_transactional"
     ],
-    "deps_count": 193
+    "deps_count": 198
    },
    {
     "path": "*",
@@ -138902,7 +138865,7 @@
      "log_user_logout",
      "restore_seller_cart"
     ],
-    "deps_count": 211
+    "deps_count": 212
    },
    {
     "path": "/clientes",
@@ -139959,6 +139922,7 @@
      "quote_history",
      "quote_item_personalizations",
      "quote_items",
+     "quote_templates",
      "quotes",
      "search_analytics",
      "seller_cart_items",
@@ -139990,7 +139954,46 @@
      "respond_discount_approval_transactional",
      "restore_seller_cart"
     ],
-    "deps_count": 283
+    "deps_count": 287
+   },
+   {
+    "path": "/orcamentos/templates",
+    "file": "recovery/src-legacy/src/pages/QuoteTemplatesPage.tsx",
+    "component": "QuoteTemplatesPage",
+    "tables_transitive": [
+     "cart_templates",
+     "catalog_analytics",
+     "category_icons",
+     "frontend_telemetry",
+     "order_items",
+     "orders",
+     "product_price_freshness_overrides",
+     "product_variants",
+     "product_views",
+     "profiles",
+     "quote_items",
+     "quote_templates",
+     "search_analytics",
+     "seller_cart_items",
+     "seller_carts",
+     "user_onboarding",
+     "user_roles",
+     "video_variant_links",
+     "workspace_notifications"
+    ],
+    "invokes_transitive": [
+     "crm-db-bridge",
+     "external-db-bridge",
+     "mcp-keys-issue"
+    ],
+    "rpc_transitive": [
+     "fn_batch_update_cart_item_sort_order",
+     "fn_get_similar_products",
+     "get_catalog_bestseller_page",
+     "get_profile_and_roles",
+     "log_user_logout"
+    ],
+    "deps_count": 140
    },
    {
     "path": "/promoflix-playground",
@@ -144466,7 +144469,7 @@
    },
    {
     "path": "/orcamentos/templates",
-    "component": "Navigate",
+    "component": "QuoteTemplatesPage",
     "guard": "",
     "roles": [],
     "file": "src/routes/quote-routes.tsx"
@@ -144982,7 +144985,7 @@
     "file": ".github/workflows/wraparound-monitor-report.yml"
    }
   ],
-  "components_count": 1667,
+  "components_count": 1678,
   "hooks": [
    {
     "name": "useQuoteComments",
@@ -148904,7 +148907,7 @@
   {
    "module": "e2e",
    "files": 626,
-   "lines": 75845,
+   "lines": 75840,
    "tables": [
     "discount_approval_requests",
     "quote_items"
@@ -149613,8 +149616,8 @@
   },
   {
    "module": "src/components",
-   "files": 1398,
-   "lines": 277886,
+   "files": 1406,
+   "lines": 279503,
    "tables": [
     "admin_audit_log",
     "art_file_attachments",
@@ -149886,7 +149889,7 @@
   {
    "module": "src/contexts",
    "files": 20,
-   "lines": 5322,
+   "lines": 5331,
    "tables": [],
    "exports": [
     "AuthContext.tsx: AppRole, Profile, AuthContext, AuthProvider, useAuth",
@@ -149978,7 +149981,7 @@
   {
    "module": "src/hooks",
    "files": 483,
-   "lines": 91127,
+   "lines": 91130,
    "tables": [
     "admin_audit_log",
     "admin_settings",
@@ -150470,8 +150473,8 @@
   },
   {
    "module": "src/pages",
-   "files": 361,
-   "lines": 83919,
+   "files": 365,
+   "lines": 84306,
    "tables": [
     "ai_usage_events",
     "bot_detection_log",
@@ -150676,8 +150679,8 @@
   },
   {
    "module": "src/routes",
-   "files": 14,
-   "lines": 1260,
+   "files": 15,
+   "lines": 1403,
    "tables": [],
    "exports": [
     "AppRoutes.tsx: AppRoutes",
@@ -150693,7 +150696,8 @@
     "ValidQuoteIdRoute.tsx: ValidQuoteIdRoute"
    ],
    "docs": [
-    "lazy-pages.ts: Centralized lazy-loaded page imports. All page components are loaded via lazyWithRetry for code-splitting and resilient fetch retry on network failures. Organized by area for navigability."
+    "lazy-pages.ts: Centralized lazy-loaded page imports. All page components are loaded via lazyWithRetry for code-splitting and resilient fetch retry on network failures. Organized by area for navigability.",
+    "quote-templates-route.integration.test.tsx: Integração da rota `/orcamentos/templates`. Prova que: 1. a rota monta a PÁGINA real de templates (não mais o `<Navigate>` de aposentadoria que apontava para `/orcamentos`); 2. o usuário CHEGA lá pela UI: o botão \"Templates\" do header da lista de orçamentos navega para a rota e a página renderiza. R …"
    ],
    "deps": [
     "@testing-library/react",
@@ -150722,6 +150726,7 @@
     "src/routes/public-routes.tsx",
     "src/routes/quote-routes.tsx",
     "src/routes/tools-routes.tsx",
+    "src/routes/__tests__/quote-templates-route.integration.test.tsx",
     "src/routes/guards/ValidProductIdRoute.test.tsx",
     "src/routes/guards/ValidProductIdRoute.tsx",
     "src/routes/guards/ValidQuoteIdRoute.tsx"
@@ -151041,8 +151046,8 @@
   },
   {
    "module": "src/utils",
-   "files": 56,
-   "lines": 8174,
+   "files": 57,
+   "lines": 8286,
    "tables": [],
    "exports": [
     "br-schemas.ts: cpfOptionalSchema, cepOptionalSchema, phoneBrOptionalSchema, assertPersistableCpf, assertPersistableCep, assertPersistablePhoneBr",
@@ -151074,6 +151079,7 @@
     "proposalPdfReactGenerator.ts: generateProposalPDFv2, downloadPDF",
     "quote-number.ts: QUOTE_NUMBER_REGEX, formatQuoteNumberLabel, computeNextQuoteNumberPreview",
     "security-audit.ts: checkSecurityDefinerAccess",
+    "templateExport.ts: ExportedTemplate, exportTemplatesToJson, exportSingleTemplate, validateImportedTemplates, readTemplateFile",
     "undoToast.tsx: UndoToastContent, showUndoToast, showSuccessToast, showErrorToast, showWarningToast, showInfoToast",
     "viacep.ts: ViaCepResult, fetchAddressByCep",
     "cnpj-fuzz-helpers.ts: mulberry32, generateValidCnpj, MutationKind, mutate, randomMask"
@@ -151141,6 +151147,7 @@
     "src/utils/proposalPdfReactGenerator.ts",
     "src/utils/quote-number.ts",
     "src/utils/security-audit.ts",
+    "src/utils/templateExport.ts",
     "src/utils/undoToast.tsx",
     "src/utils/viacep.ts",
     "src/utils/__tests__/br-schemas.test.ts",
@@ -161664,6 +161671,21 @@
     "rules": "type=email"
    },
    {
+    "file": "src/components/quotes/QuoteTemplateForm.tsx",
+    "field": "validity",
+    "rules": "type=number, min=1, max=365"
+   },
+   {
+    "file": "src/components/quotes/QuoteTemplateForm.tsx",
+    "field": "discount_percent",
+    "rules": "type=number, min=0, max=100, step=0.1"
+   },
+   {
+    "file": "src/components/quotes/QuoteTemplateForm.tsx",
+    "field": "discount_amount",
+    "rules": "type=number, min=0, step=0.01"
+   },
+   {
     "file": "src/components/search/VisualSearchButton.tsx",
     "field": "visual-search-input",
     "rules": "accept=image/*, disabled=isLoading"
@@ -170849,6 +170871,10 @@
    {
     "file": "src/components/cart/CartCompanyPickerDialog.tsx",
     "text": "de limite: abrir o existente deve funcionar mesmo no limite máximo de carrinhos."
+   },
+   {
+    "file": "src/components/cart/CartHealthChecklist.tsx",
+    "text": "Improved variant detection: if SKU is composite (contains '-'), it MUST have color_name or notes"
    },
    {
     "file": "src/components/cart/CartItemErrorAlert.tsx",
@@ -203368,6 +203394,12 @@
     "kind": "escreve"
    },
    {
+    "file": "src/components/cart/CartHealthChecklist.tsx",
+    "field": "status",
+    "value": "pronto_orcamento",
+    "kind": "compara"
+   },
+   {
     "file": "src/components/catalog/CatalogHeader.tsx",
     "field": "type",
     "value": "history",
@@ -214038,6 +214070,18 @@
     "body": "return `📦 *ITEM DO KIT* 📦 *${item.productName}* Parte do Kit: ${product.name} ${item.description || ''} ${item.material ? `🧵 Material: ${item.material}` : ''} ${item.weightG ? `⚖️ Peso: ${item.weightG}g` : ''} 💰 Kit completo a partir de ${new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(product.price)}/un 📦 Qtd mínima: ${product.minQuantity} kits Promo Brindes - Brindes com Excelência!`;"
    },
    {
+    "file": "src/components/quotes/AdminTemplatesManager.tsx",
+    "name": "formatCurrency",
+    "params": "value: number",
+    "body": ""
+   },
+   {
+    "file": "src/components/quotes/AdminTemplatesManager.tsx",
+    "name": "calculateTotal",
+    "params": "template: QuoteTemplate",
+    "body": "const itemsTotal = template.items.reduce((sum, item) => { const personalizationCost = item.personalizations?.reduce( (pSum, p) => pSum + (p.unitCost || 0) * item.quantity + (p.setupCost || 0), 0, ) || 0; return sum + item.quantity * item.unitPrice + personalizationCost; }, 0); const discountValue = template.discount_percent > 0 ? itemsTotal * (template.discount_percent / 100) : template.discount_amount; return itemsTotal - discountValue;"
+   },
+   {
     "file": "src/components/quotes/QuoteItemsTable.tsx",
     "name": "round2",
     "params": "n: number",
@@ -214048,6 +214092,30 @@
     "name": "formatCurrency",
     "params": "value: number",
     "body": ""
+   },
+   {
+    "file": "src/components/quotes/QuoteTemplateForm.tsx",
+    "name": "formatCurrency",
+    "params": "value: number",
+    "body": "return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', }).format(value);"
+   },
+   {
+    "file": "src/components/quotes/QuoteTemplateForm.tsx",
+    "name": "calculateTotal",
+    "params": "",
+    "body": "const itemsTotal = (formData.items || []).reduce((sum, item) => { const itemBase = item.quantity * item.unitPrice; const personalizationCost = item.personalizations?.reduce((pSum, p) => { return pSum + (p.unitCost || 0) * item.quantity + (p.setupCost || 0); }, 0) || 0; return sum + itemBase + personalizationCost; }, 0); const discountValue = formData.discount_percent && formData.discount_percent > 0 ? itemsTotal * (formData.discount_percent / 100) : formData.discount_amount || 0; return itemsTot …"
+   },
+   {
+    "file": "src/components/quotes/QuoteTemplatesList.tsx",
+    "name": "formatCurrency",
+    "params": "value: number",
+    "body": "return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', }).format(value);"
+   },
+   {
+    "file": "src/components/quotes/QuoteTemplatesList.tsx",
+    "name": "calculateTemplateTotal",
+    "params": "template: QuoteTemplate",
+    "body": "const itemsTotal = template.items.reduce((sum, item) => { const itemBase = item.quantity * item.unitPrice; const personalizationCost = item.personalizations?.reduce((pSum, p) => { return pSum + (p.unitCost || 0) * item.quantity + (p.setupCost || 0); }, 0) || 0; return sum + itemBase + personalizationCost; }, 0); const discountValue = template.discount_percent > 0 ? itemsTotal * (template.discount_percent / 100) : template.discount_amount; return itemsTotal - discountValue;"
    },
    {
     "file": "src/components/quotes/QuotesStatusChips.tsx",
@@ -215506,6 +215574,12 @@
     "name": "generateProposalPDFv2",
     "params": "data: ProposalTemplateData, options?: { isDraft?: boolean },",
     "body": "const [jsPDF, html2canvas] = await Promise.all([getJsPDF(), getHtml2Canvas()]); const container = document.createElement('div'); container.style.position = 'fixed'; container.style.top = '-10000px'; container.style.left = '-10000px'; container.style.zIndex = '-9999'; container.style.pointerEvents = 'none'; document.body.appendChild(container); // FIX #1: declarar root fora do try para garantir unmount no finally externo let root: ReturnType<typeof ReactDOM.createRoot> | null = null; try { root = …"
+   },
+   {
+    "file": "src/utils/templateExport.ts",
+    "name": "validateImportedTemplates",
+    "params": "data: unknown",
+    "body": "return isExportedTemplate(data) ? data : null;"
    },
    {
     "file": "supabase/functions/_shared/authorize.ts",
@@ -218698,6 +218772,14 @@
     "line": "// Heurística: cliente / (cliente + 1.5 × média setor) — capped 5..95%"
    },
    {
+    "file": "src/components/cart/CartHealthChecklist.tsx",
+    "line": "transition={{ delay: idx * 0.05 }}"
+   },
+   {
+    "file": "src/components/cart/CartUtilComponents.tsx",
+    "line": "* - `SmartSuggestions` continua fora: o arquivo recuperado era 100% mock"
+   },
+   {
     "file": "src/components/cart/SortableCartItem.tsx",
     "line": "* Evita a imagem gigante quando a coluna ocupa 100% da largura da página."
    },
@@ -219371,7 +219453,7 @@
    },
    {
     "file": "src/pages/quotes/QuoteBuilderPage.tsx",
-    "line": "<SelectItem value=\"50_50\">50/50 | 50% entrada / 50% após entrega</SelectItem>"
+    "line": "50/50 | 50% entrada / 50% após entrega"
    },
    {
     "file": "src/pages/tools/VisualSearchPage.tsx",
@@ -227076,30 +227158,6 @@
     "name": "UI não mostra "
    },
    {
-    "file": "e2e/quotes/no-templates.spec.ts",
-    "name": "Quotes — templates removidos"
-   },
-   {
-    "file": "e2e/quotes/no-templates.spec.ts",
-    "name": "/orcamentos não exibe botão de Templates"
-   },
-   {
-    "file": "e2e/quotes/no-templates.spec.ts",
-    "name": "/orcamentos/novo não exibe Usar/Salvar Template"
-   },
-   {
-    "file": "e2e/quotes/no-templates.spec.ts",
-    "name": "/orcamentos/templates redireciona para /orcamentos"
-   },
-   {
-    "file": "e2e/quotes/no-templates.spec.ts",
-    "name": "nenhum href= aponta para /orcamentos/templates"
-   },
-   {
-    "file": "e2e/quotes/no-templates.spec.ts",
-    "name": "navegação para páginas existentes continua funcionando"
-   },
-   {
     "file": "e2e/quotes/personalizacao-tecnicas.spec.ts",
     "name": "Orçamentos — passo Personalização: carregamento de técnicas"
    },
@@ -227774,6 +227832,30 @@
    {
     "file": "e2e/quotes/quote-view-timeline-order.spec.ts",
     "name": "axe-core WCAG 2.1 AA — contraste em fundo preto"
+   },
+   {
+    "file": "e2e/quotes/templates.spec.ts",
+    "name": "Quotes — templates restaurados"
+   },
+   {
+    "file": "e2e/quotes/templates.spec.ts",
+    "name": "/orcamentos exibe a entrada para Templates"
+   },
+   {
+    "file": "e2e/quotes/templates.spec.ts",
+    "name": "/orcamentos/templates monta a página de templates"
+   },
+   {
+    "file": "e2e/quotes/templates.spec.ts",
+    "name": "a entrada da lista navega para a página de templates"
+   },
+   {
+    "file": "e2e/quotes/templates.spec.ts",
+    "name": "/orcamentos/novo não expõe "
+   },
+   {
+    "file": "e2e/quotes/templates.spec.ts",
+    "name": "navegação para páginas existentes continua funcionando"
    },
    {
     "file": "e2e/replenishment/uploads.spec.ts",
@@ -241478,6 +241560,10 @@
    {
     "file": "src/contexts/__tests__/SellerCartContext.test.tsx",
     "name": "NÃO importa nem chama nenhum helper de action history removido"
+   },
+   {
+    "file": "src/contexts/__tests__/SellerCartContext.test.tsx",
+    "name": "o contexto segue sendo camada de dados: não importa o CartHealthChecklist que voltou"
    },
    {
     "file": "src/contexts/__tests__/SellerCartContext.test.tsx",
@@ -256889,7 +256975,7 @@
    },
    {
     "file": "src/pages/products/seller-carts/__tests__/CartSidebar.render.test.tsx",
-    "name": "NÃO renderiza painéis legados"
+    "name": "renderiza a "
    },
    {
     "file": "src/pages/products/seller-carts/__tests__/CartSidebar.render.test.tsx",
@@ -258544,6 +258630,22 @@
     "name": "permanece alinhado (inline-flex) em diferentes larguras de container"
    },
    {
+    "file": "src/pages/quotes/components/__tests__/QuoteBuilderNotesCard.test.tsx",
+    "name": "QuoteBuilderNotesCard"
+   },
+   {
+    "file": "src/pages/quotes/components/__tests__/QuoteBuilderNotesCard.test.tsx",
+    "name": "oferece "
+   },
+   {
+    "file": "src/pages/quotes/components/__tests__/QuoteBuilderNotesCard.test.tsx",
+    "name": "não oferece a ação com orçamento vazio (nada a salvar)"
+   },
+   {
+    "file": "src/pages/quotes/components/__tests__/QuoteBuilderNotesCard.test.tsx",
+    "name": "converte itens do construtor para o formato persistido em quote_templates"
+   },
+   {
     "file": "src/pages/quotes/quote-view/QuoteUnavailableState.test.tsx",
     "name": "QuoteUnavailableState"
    },
@@ -258662,6 +258764,18 @@
    {
     "file": "src/routes/RoutePrefetcher.test.tsx",
     "name": "does not throw when navigator is unavailable"
+   },
+   {
+    "file": "src/routes/__tests__/quote-templates-route.integration.test.tsx",
+    "name": "rota /orcamentos/templates"
+   },
+   {
+    "file": "src/routes/__tests__/quote-templates-route.integration.test.tsx",
+    "name": "monta a página de templates (não redireciona para /orcamentos)"
+   },
+   {
+    "file": "src/routes/__tests__/quote-templates-route.integration.test.tsx",
+    "name": "o botão "
    },
    {
     "file": "src/routes/guards/ValidProductIdRoute.test.tsx",
@@ -349373,7 +349487,8 @@
       "compara:recovery/src-legacy/src/components/admin/telemetry/PlatformFailureCards.tsx"
      ],
      "pronto_orcamento": [
-      "compara:recovery/src-legacy/src/components/cart/CartHealthChecklist.tsx"
+      "compara:recovery/src-legacy/src/components/cart/CartHealthChecklist.tsx",
+      "compara:src/components/cart/CartHealthChecklist.tsx"
      ],
      "converted": [
       "compara:recovery/src-legacy/src/components/quotes/QuoteRowQuickActions.tsx",
@@ -412089,20 +412204,6 @@
     "UI não mostra "
    ]
   },
-  "e2e/quotes/no-templates.spec.ts": {
-   "path": "e2e/quotes/no-templates.spec.ts",
-   "lines": 54,
-   "is_test": true,
-   "doc": "Garante que a funcionalidade de \"Templates de Orçamento\" foi removida: - rota /orcamentos/templates redireciona para /orcamentos - nenhum link/botão de menu, sidebar ou catálogo aponta para a rota legada - nenhum botão Usar/Salvar Template aparece no wizard - navegação para páginas existentes contin …",
-   "tests": [
-    "Quotes — templates removidos",
-    "/orcamentos não exibe botão de Templates",
-    "/orcamentos/novo não exibe Usar/Salvar Template",
-    "/orcamentos/templates redireciona para /orcamentos",
-    "nenhum href= aponta para /orcamentos/templates",
-    "navegação para páginas existentes continua funcionando"
-   ]
-  },
   "e2e/quotes/personalizacao-tecnicas.spec.ts": {
    "path": "e2e/quotes/personalizacao-tecnicas.spec.ts",
    "lines": 70,
@@ -413069,6 +413170,23 @@
     "snapshot visual — ${theme}",
     "QuoteStatusTimeline · acessibilidade (dark)",
     "axe-core WCAG 2.1 AA — contraste em fundo preto"
+   ]
+  },
+  "e2e/quotes/templates.spec.ts": {
+   "path": "e2e/quotes/templates.spec.ts",
+   "lines": 49,
+   "is_test": true,
+   "rule_comments": [
+    "não foi integrado — sobrescrever itens/desconto do builder é decisão do dono."
+   ],
+   "doc": "Garante que \"Templates de Orçamento\" está DE VOLTA e alcançável: - /orcamentos exibe a entrada para a rota de templates - /orcamentos/templates monta a página (não redireciona mais) - navegação para páginas existentes continua funcionando Substitui o guarda `no-templates.spec.ts`, que travava a remo …",
+   "tests": [
+    "Quotes — templates restaurados",
+    "/orcamentos exibe a entrada para Templates",
+    "/orcamentos/templates monta a página de templates",
+    "a entrada da lista navega para a página de templates",
+    "/orcamentos/novo não expõe ",
+    "navegação para páginas existentes continua funcionando"
    ]
   },
   "e2e/quotes/_helpers/quote-scenarios.ts": {
@@ -438451,6 +438569,27 @@
     "/produto/"
    ]
   },
+  "src/components/cart/CartHealthChecklist.tsx": {
+   "path": "src/components/cart/CartHealthChecklist.tsx",
+   "lines": 174,
+   "exports": [
+    "function CartHealthChecklist"
+   ],
+   "status_values": [
+    {
+     "field": "status",
+     "value": "pronto_orcamento",
+     "kind": "compara"
+    }
+   ],
+   "rule_comments": [
+    "Improved variant detection: if SKU is composite (contains '-'), it MUST have color_name or notes"
+   ],
+   "doc": "CartHealthChecklist - Painel de saúde do carrinho. Substitui o \"Score\" abstrato por uma checklist acionável.",
+   "percents": [
+    "transition={{ delay: idx * 0.05 }}"
+   ]
+  },
   "src/components/cart/CartItemErrorAlert.tsx": {
    "path": "src/components/cart/CartItemErrorAlert.tsx",
    "lines": 73,
@@ -438492,7 +438631,7 @@
   },
   "src/components/cart/CartUtilComponents.tsx": {
    "path": "src/components/cart/CartUtilComponents.tsx",
-   "lines": 115,
+   "lines": 121,
    "exports": [
     "function formatCurrency",
     "const STATUS_CONFIG",
@@ -438500,7 +438639,6 @@
     "function PriceLabel",
     "function CartListSkeleton"
    ],
-   "doc": "Cart utility components: Skeleton, PriceLabel, formatters, status config. Dialogs, export utils, and mobile sheet extracted to ./cart-utils/. NOTA (faxina pós-remoção CartHealthChecklist): - `SmartSuggestions` e `ActionHistoryPanel` foram removidos junto com os painéis \"Saúde do carrinho\" / \"Intelig …",
    "calc_fns": [
     {
      "name": "formatCurrency",
@@ -438512,6 +438650,9 @@
      "params": "{ label, value, testId, className, isPrimary }: PriceLabelProps",
      "body": "return ( <div className={cn('flex flex-col space-y-0.5', className)}> <span className={cn( 'font-medium tracking-tight text-muted-foreground opacity-70 transition-opacity group-hover:opacity-100', className?.includes('flex-row') ? 'text-[8px]' : 'text-[10px]', )} > {label} </span> <span data-testid={testId} className={cn( 'font-bold tabular-nums', className?.includes('flex-row') ? 'text-[11px]' : 'text-sm', isPrimary ? 'text-primary' : 'text-foreground', )} > {formatCurrency(value)} </span> </di …"
     }
+   ],
+   "percents": [
+    "* - `SmartSuggestions` continua fora: o arquivo recuperado era 100% mock"
    ]
   },
   "src/components/cart/PopoverQtyInput.tsx": {
@@ -450987,6 +451128,35 @@
     "* qualquer uso do componente pesado lança erro, mantendo a migração 100%."
    ]
   },
+  "src/components/quotes/AdminTemplateDialogs.tsx": {
+   "path": "src/components/quotes/AdminTemplateDialogs.tsx",
+   "lines": 128,
+   "exports": [
+    "function TemplateDeleteDialog",
+    "function TemplateCloneDialog"
+   ],
+   "doc": "Dialogs extracted from AdminTemplatesManager"
+  },
+  "src/components/quotes/AdminTemplatesManager.tsx": {
+   "path": "src/components/quotes/AdminTemplatesManager.tsx",
+   "lines": 253,
+   "exports": [
+    "function AdminTemplatesManager"
+   ],
+   "doc": "AdminTemplatesManager — Refactored orchestrator Table/Grid views extracted to ./admin-templates/",
+   "calc_fns": [
+    {
+     "name": "formatCurrency",
+     "params": "value: number",
+     "body": ""
+    },
+    {
+     "name": "calculateTotal",
+     "params": "template: QuoteTemplate",
+     "body": "const itemsTotal = template.items.reduce((sum, item) => { const personalizationCost = item.personalizations?.reduce( (pSum, p) => pSum + (p.unitCost || 0) * item.quantity + (p.setupCost || 0), 0, ) || 0; return sum + item.quantity * item.unitPrice + personalizationCost; }, 0); const discountValue = template.discount_percent > 0 ? itemsTotal * (template.discount_percent / 100) : template.discount_amount; return itemsTotal - discountValue;"
+    }
+   ]
+  },
   "src/components/quotes/ClientPicker.tsx": {
    "path": "src/components/quotes/ClientPicker.tsx",
    "lines": 132,
@@ -451696,6 +451866,58 @@
     }
    ]
   },
+  "src/components/quotes/QuoteTemplateForm.tsx": {
+   "path": "src/components/quotes/QuoteTemplateForm.tsx",
+   "lines": 304,
+   "exports": [
+    "function QuoteTemplateForm"
+   ],
+   "html_constraints": [
+    {
+     "field": "validity",
+     "rules": "type=number, min=1, max=365"
+    },
+    {
+     "field": "discount_percent",
+     "rules": "type=number, min=0, max=100, step=0.1"
+    },
+    {
+     "field": "discount_amount",
+     "rules": "type=number, min=0, step=0.01"
+    }
+   ],
+   "calc_fns": [
+    {
+     "name": "formatCurrency",
+     "params": "value: number",
+     "body": "return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', }).format(value);"
+    },
+    {
+     "name": "calculateTotal",
+     "params": "",
+     "body": "const itemsTotal = (formData.items || []).reduce((sum, item) => { const itemBase = item.quantity * item.unitPrice; const personalizationCost = item.personalizations?.reduce((pSum, p) => { return pSum + (p.unitCost || 0) * item.quantity + (p.setupCost || 0); }, 0) || 0; return sum + itemBase + personalizationCost; }, 0); const discountValue = formData.discount_percent && formData.discount_percent > 0 ? itemsTotal * (formData.discount_percent / 100) : formData.discount_amount || 0; return itemsTot …"
+    }
+   ]
+  },
+  "src/components/quotes/QuoteTemplatesList.tsx": {
+   "path": "src/components/quotes/QuoteTemplatesList.tsx",
+   "lines": 408,
+   "exports": [
+    "function QuoteTemplatesList"
+   ],
+   "calc_fns": [
+    {
+     "name": "formatCurrency",
+     "params": "value: number",
+     "body": "return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', }).format(value);"
+    },
+    {
+     "name": "calculateTemplateTotal",
+     "params": "template: QuoteTemplate",
+     "body": "const itemsTotal = template.items.reduce((sum, item) => { const itemBase = item.quantity * item.unitPrice; const personalizationCost = item.personalizations?.reduce((pSum, p) => { return pSum + (p.unitCost || 0) * item.quantity + (p.setupCost || 0); }, 0) || 0; return sum + itemBase + personalizationCost; }, 0); const discountValue = template.discount_percent > 0 ? itemsTotal * (template.discount_percent / 100) : template.discount_amount; return itemsTotal - discountValue;"
+    }
+   ]
+  },
   "src/components/quotes/QuoteTotalsSummary.tsx": {
    "path": "src/components/quotes/QuoteTotalsSummary.tsx",
    "lines": 86,
@@ -451968,6 +452190,13 @@
      "params": "q: Quote",
      "body": ""
     }
+   ]
+  },
+  "src/components/quotes/SaveAsTemplateButton.tsx": {
+   "path": "src/components/quotes/SaveAsTemplateButton.tsx",
+   "lines": 71,
+   "exports": [
+    "function SaveAsTemplateButton"
    ]
   },
   "src/components/quotes/SectionEyebrow.tsx": {
@@ -452800,6 +453029,20 @@
     "QUOTE_BADGE_LEGEND",
     "contém entradas para os 14 estados visuais (inclui expired_discount)",
     "toda entrada tem label, className e description não-vazios"
+   ]
+  },
+  "src/components/quotes/admin-templates/TemplateGridView.tsx": {
+   "path": "src/components/quotes/admin-templates/TemplateGridView.tsx",
+   "lines": 131,
+   "exports": [
+    "function TemplateGridView"
+   ]
+  },
+  "src/components/quotes/admin-templates/TemplateTableView.tsx": {
+   "path": "src/components/quotes/admin-templates/TemplateTableView.tsx",
+   "lines": 142,
+   "exports": [
+    "function TemplateTableView"
    ]
   },
   "src/components/quotes/company-contact/CompanySearchDropdown.tsx": {
@@ -456631,11 +456874,15 @@
   },
   "src/contexts/__tests__/SellerCartContext.test.tsx": {
    "path": "src/contexts/__tests__/SellerCartContext.test.tsx",
-   "lines": 127,
+   "lines": 136,
    "is_test": true,
+   "rule_comments": [
+    "não deve conhecê-lo — se aparecer aqui, a camada de dados virou UI."
+   ],
    "tests": [
     "SellerCartContext — contrato sem action history",
     "NÃO importa nem chama nenhum helper de action history removido",
+    "o contexto segue sendo camada de dados: não importa o CartHealthChecklist que voltou",
     "expõe o contrato esperado SEM membros de action history",
     "useSellerCartContextSafe() retorna null fora do provider"
    ]
@@ -467670,7 +467917,7 @@
   },
   "src/hooks/quotes/useQuoteTemplates.ts": {
    "path": "src/hooks/quotes/useQuoteTemplates.ts",
-   "lines": 493,
+   "lines": 496,
    "exports": [
     "interface QuoteTemplateItem",
     "interface QuoteTemplate",
@@ -486082,11 +486329,11 @@
   },
   "src/pages/products/seller-carts/CartSidebar.tsx": {
    "path": "src/pages/products/seller-carts/CartSidebar.tsx",
-   "lines": 109,
+   "lines": 126,
    "exports": [
     "function CartSidebar"
    ],
-   "doc": "CartSidebar — painel lateral com peso/volume do carrinho e os atalhos de template (\"Salvar como Template\" / \"Usar Template\"). A ação \"Gerar Orçamento\" vive no header do carrinho ativo (ver CartActionsMenu). Os antigos menus \"Gerenciar Carrinho\" e o atalho \"Ver Orçamentos\" foram removidos."
+   "doc": "CartSidebar — painel lateral com peso/volume do carrinho, a checklist de saúde do carrinho e os atalhos de template (\"Salvar como Template\" / \"Usar Template\"). A ação \"Gerar Orçamento\" vive no header do carrinho ativo (ver CartActionsMenu). Os antigos menus \"Gerenciar Carrinho\" e o atalho \"Ver Orçam …"
   },
   "src/pages/products/seller-carts/bulkRestoreSummary.ts": {
    "path": "src/pages/products/seller-carts/bulkRestoreSummary.ts",
@@ -486457,7 +486704,7 @@
   },
   "src/pages/products/seller-carts/__tests__/CartSidebar.render.test.tsx": {
    "path": "src/pages/products/seller-carts/__tests__/CartSidebar.render.test.tsx",
-   "lines": 263,
+   "lines": 278,
    "is_test": true,
    "rule_comments": [
     "1) Render mínimo (hero card com peso/volume quando presentes)",
@@ -486468,7 +486715,7 @@
     "CartSidebar — render smoke pós-repaginação",
     "monta card hero com data-loaded=true quando há peso/volume (CTA vive no CartActionsMenu)",
     "NÃO renderiza mais Subtotal/SKUs/Qtd. total (vivem no header agora)",
-    "NÃO renderiza painéis legados",
+    "renderiza a ",
     "NÃO renderiza mais o botão ",
     "NÃO renderiza mais o atalho ",
     "CartUtilComponents NÃO expõe mais SmartSuggestions/ActionHistoryPanel",
@@ -486840,7 +487087,7 @@
   },
   "src/pages/quotes/QuoteBuilderPage.tsx": {
    "path": "src/pages/quotes/QuoteBuilderPage.tsx",
-   "lines": 832,
+   "lines": 809,
    "exports": [
     "function QuoteBuilderPage"
    ],
@@ -486850,7 +487097,17 @@
    ],
    "doc": "QuoteBuilderPage — Módulo de criação/edição de orçamentos Refatorado: lógica em useQuoteBuilderState, UI em sub-componentes.",
    "percents": [
-    "<SelectItem value=\"50_50\">50/50 | 50% entrada / 50% após entrega</SelectItem>"
+    "50/50 | 50% entrada / 50% após entrega"
+   ]
+  },
+  "src/pages/quotes/QuoteTemplatesPage.tsx": {
+   "path": "src/pages/quotes/QuoteTemplatesPage.tsx",
+   "lines": 147,
+   "exports": [
+    "function QuoteTemplatesPage"
+   ],
+   "navigates": [
+    "/orcamentos"
    ]
   },
   "src/pages/quotes/QuoteViewPage.tsx": {
@@ -486969,12 +487226,13 @@
   },
   "src/pages/quotes/QuotesListPage.tsx": {
    "path": "src/pages/quotes/QuotesListPage.tsx",
-   "lines": 503,
+   "lines": 392,
    "exports": [
     "function QuotesListPage"
    ],
    "navigates": [
-    "/orcamentos/novo"
+    "/orcamentos/novo",
+    "/orcamentos/templates"
    ],
    "errors": [
     ";\nimport { PageSEO } from ",
@@ -487626,6 +487884,21 @@
     "* Toggle \"Contar dias | Data fixa\" do bloco Prazo | Entrega no QuoteBuilder."
    ]
   },
+  "src/pages/quotes/components/QuoteBuilderNotesCard.tsx": {
+   "path": "src/pages/quotes/components/QuoteBuilderNotesCard.tsx",
+   "lines": 87,
+   "exports": [
+    "function toTemplateItems",
+    "function QuoteBuilderNotesCard"
+   ]
+  },
+  "src/pages/quotes/components/QuotesBulkDeleteDialog.tsx": {
+   "path": "src/pages/quotes/components/QuotesBulkDeleteDialog.tsx",
+   "lines": 164,
+   "exports": [
+    "function QuotesBulkDeleteDialog"
+   ]
+  },
   "src/pages/quotes/components/__tests__/DeliveryLabelWithToggle.contract.test.tsx": {
    "path": "src/pages/quotes/components/__tests__/DeliveryLabelWithToggle.contract.test.tsx",
    "lines": 52,
@@ -487658,6 +487931,18 @@
     "alterna aria-selected quando o pai atualiza o value após onChange",
     "não altera o layout inline-flex ao trocar de valor",
     "permanece alinhado (inline-flex) em diferentes larguras de container"
+   ]
+  },
+  "src/pages/quotes/components/__tests__/QuoteBuilderNotesCard.test.tsx": {
+   "path": "src/pages/quotes/components/__tests__/QuoteBuilderNotesCard.test.tsx",
+   "lines": 91,
+   "is_test": true,
+   "doc": "Integração do \"Salvar como Template\" dentro do construtor de orçamento. O card de Observações do QuoteBuilderPage é este componente — ele é o ponto em que `SaveAsTemplateButton` passou a ser consumido de verdade.",
+   "tests": [
+    "QuoteBuilderNotesCard",
+    "oferece ",
+    "não oferece a ação com orçamento vazio (nada a salvar)",
+    "converte itens do construtor para o formato persistido em quote_templates"
    ]
   },
   "src/pages/quotes/quote-view/QuoteActionHandlers.ts": {
@@ -488888,7 +489173,7 @@
   },
   "src/routes/lazy-pages.ts": {
    "path": "src/routes/lazy-pages.ts",
-   "lines": 228,
+   "lines": 229,
    "exports": [
     "const Auth",
     "const Unauthorized",
@@ -488915,6 +489200,7 @@
     "const QuoteBuilderPage",
     "const QuoteViewPage",
     "const QuotesKanbanPage",
+    "const QuoteTemplatesPage",
     "const AdminUsuariosPage",
     "const DiscountRequestDetailPage",
     "const AdminPromoverUsuarioPage",
@@ -488948,8 +489234,7 @@
     "const AdminRbacRoutesPage",
     "const SellerDiscountLimitsAdminPage",
     "const RlsDenialsAdminPage",
-    "const OwnershipAuditAdminPage",
-    "const StorageTestPage"
+    "const OwnershipAuditAdminPage"
    ],
    "doc": "Centralized lazy-loaded page imports. All page components are loaded via lazyWithRetry for code-splitting and resilient fetch retry on network failures. Organized by area for navigability."
   },
@@ -489150,7 +489435,7 @@
   },
   "src/routes/quote-routes.tsx": {
    "path": "src/routes/quote-routes.tsx",
-   "lines": 48,
+   "lines": 47,
    "exports": [
     "const quoteRoutes"
    ],
@@ -489181,7 +489466,7 @@
     },
     {
      "path": "/orcamentos/templates",
-     "component": "Navigate",
+     "component": "QuoteTemplatesPage",
      "guard": "",
      "roles": []
     },
@@ -489375,6 +489660,20 @@
    "rule_comments": [
     "?kit=A -> /montar-kit -> ?kit=B must not reuse A's autosave id/history.",
     "An account switch on the same URL must not keep the previous user's draft."
+   ]
+  },
+  "src/routes/__tests__/quote-templates-route.integration.test.tsx": {
+   "path": "src/routes/__tests__/quote-templates-route.integration.test.tsx",
+   "lines": 143,
+   "is_test": true,
+   "rule_comments": [
+    "* Renderiza `quoteRoutes` de verdade (lazy incluído), com apenas os hooks de"
+   ],
+   "doc": "Integração da rota `/orcamentos/templates`. Prova que: 1. a rota monta a PÁGINA real de templates (não mais o `<Navigate>` de aposentadoria que apontava para `/orcamentos`); 2. o usuário CHEGA lá pela UI: o botão \"Templates\" do header da lista de orçamentos navega para a rota e a página renderiza. R …",
+   "tests": [
+    "rota /orcamentos/templates",
+    "monta a página de templates (não redireciona para /orcamentos)",
+    "o botão "
    ]
   },
   "src/routes/guards/ValidProductIdRoute.test.tsx": {
@@ -492802,6 +493101,24 @@
     "repair_ownership_orphans"
    ],
    "uses_service_role": true
+  },
+  "src/utils/templateExport.ts": {
+   "path": "src/utils/templateExport.ts",
+   "lines": 112,
+   "exports": [
+    "interface ExportedTemplate",
+    "function exportTemplatesToJson",
+    "function exportSingleTemplate",
+    "function validateImportedTemplates",
+    "function readTemplateFile"
+   ],
+   "calc_fns": [
+    {
+     "name": "validateImportedTemplates",
+     "params": "data: unknown",
+     "body": "return isExportedTemplate(data) ? data : null;"
+    }
+   ]
   },
   "src/utils/undoToast.tsx": {
    "path": "src/utils/undoToast.tsx",
@@ -544846,10 +545163,43 @@
   }
  },
  "git": {
-  "sha": "5470d5f4a7c3a2a397e5607f306cacff42e6ebab",
+  "sha": "b52dceaeb9cf012304e0c0392ebeaff68fd27011",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "b52dcea",
+    "date": "2026-11-18",
+    "author": "adm01-debug",
+    "subject": "feat(revert-3361): devolve os painéis do carrinho e as telas de template de orçamento (#3817)",
+    "files": [
+     "e2e/quotes/no-templates.spec.ts",
+     "e2e/quotes/templates.spec.ts",
+     "src/components/cart/CartHealthChecklist.tsx",
+     "src/components/cart/CartUtilComponents.tsx",
+     "src/components/quotes/AdminTemplateDialogs.tsx",
+     "src/components/quotes/AdminTemplatesManager.tsx",
+     "src/components/quotes/QuoteTemplateForm.tsx",
+     "src/components/quotes/QuoteTemplatesList.tsx",
+     "src/components/quotes/SaveAsTemplateButton.tsx",
+     "src/components/quotes/admin-templates/TemplateGridView.tsx",
+     "src/components/quotes/admin-templates/TemplateTableView.tsx",
+     "src/contexts/__tests__/SellerCartContext.test.tsx",
+     "src/hooks/quotes/useQuoteTemplates.ts",
+     "src/pages/products/seller-carts/CartSidebar.tsx",
+     "src/pages/products/seller-carts/__tests__/CartSidebar.render.test.tsx",
+     "src/pages/quotes/QuoteBuilderPage.tsx",
+     "src/pages/quotes/QuoteTemplatesPage.tsx",
+     "src/pages/quotes/QuotesListPage.tsx",
+     "src/pages/quotes/components/QuoteBuilderNotesCard.tsx",
+     "src/pages/quotes/components/QuotesBulkDeleteDialog.tsx",
+     "src/pages/quotes/components/__tests__/QuoteBuilderNotesCard.test.tsx",
+     "src/routes/__tests__/quote-templates-route.integration.test.tsx",
+     "src/routes/lazy-pages.ts",
+     "src/routes/quote-routes.tsx",
+     "src/utils/templateExport.ts"
+    ]
+   },
    {
     "sha": "5470d5f",
     "date": "2026-11-18",
@@ -545160,22 +545510,13 @@
     "files": [
      "tests/hooks/useLegacyLintDerived.test.tsx"
     ]
-   },
-   {
-    "sha": "87ffb0e",
-    "date": "2026-11-17",
-    "author": "adm01-debug",
-    "subject": "fix(observabilidade): tunela envelopes do Sentry pela própria origem (CORS matava 100% dos relatórios) (#3784)",
-    "files": [
-     "api/monitoring.ts",
-     "src/lib/__tests__/sentry.tunnel.test.ts",
-     "src/lib/sentry.ts",
-     "tests/api/vercel-monitoring-tunnel.http.test.ts",
-     "tests/api/vercel-monitoring-tunnel.test.ts"
-    ]
    }
   ],
   "hot_files": [
+   [
+    "src/pages/quotes/QuoteBuilderPage.tsx",
+    2
+   ],
    [
     "src/components/quotes/QuoteAutoSave.tsx",
     2
@@ -545209,51 +545550,47 @@
     2
    ],
    [
-    "scripts/validate-supabase-config.mjs",
+    "e2e/quotes/no-templates.spec.ts",
     1
    ],
    [
-    "docs/agentes/resgates/notas-de-sessao/2026-11-15-passagem-de-sessao.md",
+    "e2e/quotes/templates.spec.ts",
     1
    ],
    [
-    "docs/agentes/resgates/notas-de-sessao/2026-11-15-preservacao-container.md",
+    "src/components/cart/CartHealthChecklist.tsx",
     1
    ],
    [
-    "docs/agentes/resgates/2026-11-17-prova-byte-32-branches-salvo.md",
+    "src/components/cart/CartUtilComponents.tsx",
     1
    ],
    [
-    "src/components/kit-builder/PersonalizationConfig.tsx",
+    "src/components/quotes/AdminTemplateDialogs.tsx",
     1
    ],
    [
-    "src/components/kit-builder/kitMockupDimensions.ts",
+    "src/components/quotes/AdminTemplatesManager.tsx",
     1
    ],
    [
-    "tests/components/kit-builder/PersonalizationConfig.test.ts",
+    "src/components/quotes/QuoteTemplateForm.tsx",
     1
    ],
    [
-    "docs/agentes/resgates/2026-11-18-pendencias-abertas.md",
+    "src/components/quotes/QuoteTemplatesList.tsx",
     1
    ],
    [
-    "src/hooks/__tests__/useAutoSaveQuote.legacy.test.ts",
+    "src/components/quotes/SaveAsTemplateButton.tsx",
     1
    ],
    [
-    "tests/components/FavoritePresentationLauncher.legacy-compat.test.tsx",
+    "src/components/quotes/admin-templates/TemplateGridView.tsx",
     1
    ],
    [
-    "src/hooks/quotes/restoredDraftBase.ts",
-    1
-   ],
-   [
-    "tests/components/QuoteAutoSave.preservaBase.test.tsx",
+    "src/components/quotes/admin-templates/TemplateTableView.tsx",
     1
    ]
   ]

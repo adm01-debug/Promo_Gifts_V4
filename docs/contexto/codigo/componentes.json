@@ -1,9 +1,13 @@
 {
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
- "total": 1239,
+ "total": 1250,
  "orfaos": 161,
  "nomes_duplicados": {
+  "AdminTemplatesManager": [
+   "recovery/src-legacy/src/components/quotes/AdminTemplatesManager.tsx",
+   "src/components/quotes/AdminTemplatesManager.tsx"
+  ],
   "AdvancedPriceSearchPage": [
    "recovery/src-legacy/src/pages/AdvancedPriceSearchPage.tsx",
    "src/pages/tools/AdvancedPriceSearchPage.tsx"
@@ -31,6 +35,10 @@
   "CartActionsMenu": [
    "recovery/src-legacy/src/components/cart/CartActionsMenu.tsx",
    "src/pages/products/seller-carts/CartActionsMenu.tsx"
+  ],
+  "CartHealthChecklist": [
+   "recovery/src-legacy/src/components/cart/CartHealthChecklist.tsx",
+   "src/components/cart/CartHealthChecklist.tsx"
   ],
   "CartItemSkeleton": [
    "src/components/cart/CartItemSkeleton.tsx",
@@ -306,6 +314,18 @@
    "recovery/src-legacy/src/components/common/ContextualSkeleton.tsx",
    "src/components/loading/ModernSkeletons.tsx"
   ],
+  "QuoteTemplateForm": [
+   "recovery/src-legacy/src/components/quotes/QuoteTemplateForm.tsx",
+   "src/components/quotes/QuoteTemplateForm.tsx"
+  ],
+  "QuoteTemplatesList": [
+   "recovery/src-legacy/src/components/quotes/QuoteTemplatesList.tsx",
+   "src/components/quotes/QuoteTemplatesList.tsx"
+  ],
+  "QuoteTemplatesPage": [
+   "recovery/src-legacy/src/pages/QuoteTemplatesPage.tsx",
+   "src/pages/quotes/QuoteTemplatesPage.tsx"
+  ],
   "QuoteViewPage": [
    "recovery/src-legacy/src/pages/QuoteViewPage.tsx",
    "src/pages/quotes/QuoteViewPage.tsx"
@@ -349,6 +369,10 @@
   "SSOCallbackPage": [
    "recovery/src-legacy/src/pages/SSOCallbackPage.tsx",
    "src/pages/auth/SSOCallbackPage.tsx"
+  ],
+  "SaveAsTemplateButton": [
+   "recovery/src-legacy/src/components/quotes/SaveAsTemplateButton.tsx",
+   "src/components/quotes/SaveAsTemplateButton.tsx"
   ],
   "SaveTemplateDialog": [
    "recovery/src-legacy/src/components/mockup/SaveTemplateDialog.tsx",
@@ -432,6 +456,22 @@
   "TechniqueSelector": [
    "src/components/personalization/TechniqueSelector.tsx",
    "src/components/pricing/simulator/TechniqueSelector.tsx"
+  ],
+  "TemplateCloneDialog": [
+   "recovery/src-legacy/src/components/quotes/AdminTemplateDialogs.tsx",
+   "src/components/quotes/AdminTemplateDialogs.tsx"
+  ],
+  "TemplateDeleteDialog": [
+   "recovery/src-legacy/src/components/quotes/AdminTemplateDialogs.tsx",
+   "src/components/quotes/AdminTemplateDialogs.tsx"
+  ],
+  "TemplateGridView": [
+   "recovery/src-legacy/src/components/quotes/admin-templates/TemplateGridView.tsx",
+   "src/components/quotes/admin-templates/TemplateGridView.tsx"
+  ],
+  "TemplateTableView": [
+   "recovery/src-legacy/src/components/quotes/admin-templates/TemplateTableView.tsx",
+   "src/components/quotes/admin-templates/TemplateTableView.tsx"
   ],
   "Toaster": [
    "recovery/src-legacy/src/components/ui/toaster.tsx",
@@ -6613,6 +6653,20 @@
    "orfao": false
   },
   {
+   "arquivo": "src/components/cart/CartHealthChecklist.tsx",
+   "exports": [
+    "CartHealthChecklist"
+   ],
+   "export_default": null,
+   "linhas": 174,
+   "dominio": "components/cart",
+   "hooks_locais": [],
+   "tabelas": [],
+   "edges": [],
+   "usado_por": 2,
+   "orfao": false
+  },
+  {
    "arquivo": "src/components/cart/CartItemErrorAlert.tsx",
    "exports": [
     "CartItemErrorAlert",
@@ -6682,7 +6736,7 @@
     "STATUS_CONFIG"
    ],
    "export_default": null,
-   "linhas": 115,
+   "linhas": 121,
    "dominio": "components/cart",
    "hooks_locais": [],
    "tabelas": [],
@@ -13969,6 +14023,65 @@
    "orfao": false
   },
   {
+   "arquivo": "src/components/quotes/admin-templates/TemplateGridView.tsx",
+   "exports": [
+    "TemplateGridView"
+   ],
+   "export_default": null,
+   "linhas": 131,
+   "dominio": "components/quotes",
+   "hooks_locais": [],
+   "tabelas": [],
+   "edges": [],
+   "usado_por": 1,
+   "orfao": false
+  },
+  {
+   "arquivo": "src/components/quotes/admin-templates/TemplateTableView.tsx",
+   "exports": [
+    "TemplateTableView"
+   ],
+   "export_default": null,
+   "linhas": 142,
+   "dominio": "components/quotes",
+   "hooks_locais": [],
+   "tabelas": [],
+   "edges": [],
+   "usado_por": 1,
+   "orfao": false
+  },
+  {
+   "arquivo": "src/components/quotes/AdminTemplateDialogs.tsx",
+   "exports": [
+    "TemplateCloneDialog",
+    "TemplateDeleteDialog"
+   ],
+   "export_default": null,
+   "linhas": 128,
+   "dominio": "components/quotes",
+   "hooks_locais": [],
+   "tabelas": [],
+   "edges": [],
+   "usado_por": 1,
+   "orfao": false
+  },
+  {
+   "arquivo": "src/components/quotes/AdminTemplatesManager.tsx",
+   "exports": [
+    "AdminTemplatesManager"
+   ],
+   "export_default": null,
+   "linhas": 253,
+   "dominio": "components/quotes",
+   "hooks_locais": [
+    "useQuoteTemplates"
+   ],
+   "tabelas": [],
+   "edges": [],
+   "usado_por": 2,
+   "orfao": false
+  },
+  {
    "arquivo": "src/components/quotes/ClientPicker.tsx",
    "exports": [
     "ClientData",
@@ -14609,6 +14722,38 @@
    "orfao": false
   },
   {
+   "arquivo": "src/components/quotes/QuoteTemplateForm.tsx",
+   "exports": [
+    "QuoteTemplateForm"
+   ],
+   "export_default": null,
+   "linhas": 304,
+   "dominio": "components/quotes",
+   "hooks_locais": [
+    "useQuoteTemplates"
+   ],
+   "tabelas": [],
+   "edges": [],
+   "usado_por": 3,
+   "orfao": false
+  },
+  {
+   "arquivo": "src/components/quotes/QuoteTemplatesList.tsx",
+   "exports": [
+    "QuoteTemplatesList"
+   ],
+   "export_default": null,
+   "linhas": 408,
+   "dominio": "components/quotes",
+   "hooks_locais": [
+    "useQuoteTemplates"
+   ],
+   "tabelas": [],
+   "edges": [],
+   "usado_por": 2,
+   "orfao": false
+  },
+  {
    "arquivo": "src/components/quotes/QuoteTotalsSummary.tsx",
    "exports": [
     "QuoteTotalsSummary"
@@ -14664,6 +14809,20 @@
    "hooks_locais": [
     "useQuoteVersions"
    ],
+   "tabelas": [],
+   "edges": [],
+   "usado_por": 2,
+   "orfao": false
+  },
+  {
+   "arquivo": "src/components/quotes/SaveAsTemplateButton.tsx",
+   "exports": [
+    "SaveAsTemplateButton"
+   ],
+   "export_default": null,
+   "linhas": 71,
+   "dominio": "components/quotes",
+   "hooks_locais": [],
    "tabelas": [],
    "edges": [],
    "usado_por": 2,
@@ -15341,7 +15500,7 @@
    "hooks_locais": [],
    "tabelas": [],
    "edges": [],
-   "usado_por": 131,
+   "usado_por": 132,
    "orfao": false
   },
   {
@@ -15898,7 +16057,7 @@
    ],
    "tabelas": [],
    "edges": [],
-   "usado_por": 32,
+   "usado_por": 34,
    "orfao": false
   },
   {
@@ -15945,7 +16104,7 @@
    "hooks_locais": [],
    "tabelas": [],
    "edges": [],
-   "usado_por": 479,
+   "usado_por": 482,
    "orfao": false
   },
   {
@@ -15980,7 +16139,7 @@
    "hooks_locais": [],
    "tabelas": [],
    "edges": [],
-   "usado_por": 624,
+   "usado_por": 632,
    "orfao": false
   },
   {
@@ -16014,7 +16173,7 @@
    "hooks_locais": [],
    "tabelas": [],
    "edges": [],
-   "usado_por": 348,
+   "usado_por": 354,
    "orfao": false
   },
   {
@@ -16204,7 +16363,7 @@
    ],
    "tabelas": [],
    "edges": [],
-   "usado_por": 135,
+   "usado_por": 138,
    "orfao": false
   },
   {
@@ -16259,7 +16418,7 @@
    ],
    "tabelas": [],
    "edges": [],
-   "usado_por": 42,
+   "usado_por": 45,
    "orfao": false
   },
   {
@@ -16363,7 +16522,7 @@
    "hooks_locais": [],
    "tabelas": [],
    "edges": [],
-   "usado_por": 257,
+   "usado_por": 260,
    "orfao": false
   },
   {
@@ -16391,7 +16550,7 @@
    "hooks_locais": [],
    "tabelas": [],
    "edges": [],
-   "usado_por": 141,
+   "usado_por": 143,
    "orfao": false
   },
   {
@@ -16538,7 +16697,7 @@
    "hooks_locais": [],
    "tabelas": [],
    "edges": [],
-   "usado_por": 93,
+   "usado_por": 94,
    "orfao": false
   },
   {
@@ -16563,7 +16722,7 @@
    ],
    "tabelas": [],
    "edges": [],
-   "usado_por": 140,
+   "usado_por": 143,
    "orfao": false
   },
   {
@@ -16577,7 +16736,7 @@
    "hooks_locais": [],
    "tabelas": [],
    "edges": [],
-   "usado_por": 35,
+   "usado_por": 37,
    "orfao": false
   },
   {
@@ -16671,7 +16830,7 @@
    "hooks_locais": [],
    "tabelas": [],
    "edges": [],
-   "usado_por": 184,
+   "usado_por": 186,
    "orfao": false
   },
   {
@@ -16745,7 +16904,7 @@
    "hooks_locais": [],
    "tabelas": [],
    "edges": [],
-   "usado_por": 60,
+   "usado_por": 61,
    "orfao": false
   },
   {
@@ -16767,7 +16926,7 @@
    "hooks_locais": [],
    "tabelas": [],
    "edges": [],
-   "usado_por": 53,
+   "usado_por": 54,
    "orfao": false
   },
   {
@@ -16784,7 +16943,7 @@
    "hooks_locais": [],
    "tabelas": [],
    "edges": [],
-   "usado_por": 52,
+   "usado_por": 53,
    "orfao": false
   },
   {
@@ -16799,7 +16958,7 @@
    "hooks_locais": [],
    "tabelas": [],
    "edges": [],
-   "usado_por": 62,
+   "usado_por": 63,
    "orfao": false
   },
   {
@@ -19549,7 +19708,7 @@
     "CartSidebar"
    ],
    "export_default": null,
-   "linhas": 109,
+   "linhas": 126,
    "dominio": "pages/products",
    "hooks_locais": [],
    "tabelas": [],
@@ -19624,6 +19783,34 @@
    "orfao": false
   },
   {
+   "arquivo": "src/pages/quotes/components/QuoteBuilderNotesCard.tsx",
+   "exports": [
+    "QuoteBuilderNotesCard"
+   ],
+   "export_default": null,
+   "linhas": 87,
+   "dominio": "pages/quotes",
+   "hooks_locais": [],
+   "tabelas": [],
+   "edges": [],
+   "usado_por": 1,
+   "orfao": false
+  },
+  {
+   "arquivo": "src/pages/quotes/components/QuotesBulkDeleteDialog.tsx",
+   "exports": [
+    "QuotesBulkDeleteDialog"
+   ],
+   "export_default": null,
+   "linhas": 164,
+   "dominio": "pages/quotes",
+   "hooks_locais": [],
+   "tabelas": [],
+   "edges": [],
+   "usado_por": 1,
+   "orfao": false
+  },
+  {
    "arquivo": "src/pages/quotes/quote-view/QuoteUnavailableState.tsx",
    "exports": [
     "QuoteUnavailableState"
@@ -19643,7 +19830,7 @@
     "QuoteBuilderPage"
    ],
    "export_default": "QuoteBuilderPage",
-   "linhas": 832,
+   "linhas": 809,
    "dominio": "pages/quotes",
    "hooks_locais": [
     "useNextQuoteNumberPreview",
@@ -19693,7 +19880,7 @@
     "QuotesListPage"
    ],
    "export_default": "QuotesListPage",
-   "linhas": 503,
+   "linhas": 392,
    "dominio": "pages/quotes",
    "hooks_locais": [
     "useQuotesListPage"
@@ -19701,6 +19888,22 @@
    "tabelas": [],
    "edges": [],
    "usado_por": 3,
+   "orfao": false
+  },
+  {
+   "arquivo": "src/pages/quotes/QuoteTemplatesPage.tsx",
+   "exports": [
+    "QuoteTemplatesPage"
+   ],
+   "export_default": "QuoteTemplatesPage",
+   "linhas": 147,
+   "dominio": "pages/quotes",
+   "hooks_locais": [
+    "useQuoteTemplates"
+   ],
+   "tabelas": [],
+   "edges": [],
+   "usado_por": 1,
    "orfao": false
   },
   {

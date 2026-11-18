@@ -238,7 +238,8 @@
    "src/components/ui/input.tsx",
    "src/components/ui/select.tsx",
    "src/components/ui/separator.tsx",
-   "src/components/ui/skeleton.tsx"
+   "src/components/ui/skeleton.tsx",
+   "src/utils/templateExport.ts"
   ],
   "recovery/src-legacy/src/components/quotes/DraggableQuoteItems.tsx": [
    "src/components/products/PriceFreshnessBadge.tsx",
@@ -290,7 +291,8 @@
    "src/components/ui/dropdown-menu.tsx",
    "src/components/ui/input.tsx",
    "src/components/ui/select.tsx",
-   "src/components/ui/skeleton.tsx"
+   "src/components/ui/skeleton.tsx",
+   "src/utils/templateExport.ts"
   ],
   "recovery/src-legacy/src/components/quotes/QuotesFunnelChart.tsx": [
    "src/components/ui/card.tsx",
@@ -305,7 +307,8 @@
    "src/components/ui/badge.tsx",
    "src/components/ui/button.tsx",
    "src/components/ui/card.tsx",
-   "src/components/ui/dropdown-menu.tsx"
+   "src/components/ui/dropdown-menu.tsx",
+   "src/utils/templateExport.ts"
   ],
   "recovery/src-legacy/src/components/quotes/admin-templates/TemplateTableView.tsx": [
    "src/components/ui/badge.tsx",
@@ -313,7 +316,8 @@
    "src/components/ui/card.tsx",
    "src/components/ui/dropdown-menu.tsx",
    "src/components/ui/scroll-area.tsx",
-   "src/components/ui/table.tsx"
+   "src/components/ui/table.tsx",
+   "src/utils/templateExport.ts"
   ],
   "recovery/src-legacy/src/components/search/SmartSuggestions.tsx": [
    "src/components/ui/badge.tsx",
@@ -1407,6 +1411,7 @@
    "src/components/quotes/QuoteBuilderStepper.tsx",
    "src/components/quotes/QuoteBuilderSummaryColumn.tsx",
    "src/components/quotes/QuoteProductCustomization.tsx",
+   "src/components/quotes/SaveAsTemplateButton.tsx",
    "src/components/seo/PageSEO.tsx",
    "src/components/ui/badge.tsx",
    "src/components/ui/button.tsx",
@@ -1420,6 +1425,9 @@
   ],
   "recovery/src-legacy/src/pages/QuoteTemplatesPage.tsx": [
    "src/components/layout/MainLayout.tsx",
+   "src/components/quotes/AdminTemplatesManager.tsx",
+   "src/components/quotes/QuoteTemplateForm.tsx",
+   "src/components/quotes/QuoteTemplatesList.tsx",
    "src/components/seo/PageSEO.tsx",
    "src/components/ui/button.tsx",
    "src/components/ui/tabs.tsx"
@@ -1697,6 +1705,7 @@
    "src/lib/quote-status-config.ts"
   ],
   "recovery/src-legacy/src/pages/seller-carts/CartSidebar.tsx": [
+   "src/components/cart/CartHealthChecklist.tsx",
    "src/components/cart/CartUtilComponents.tsx",
    "src/components/ui/badge.tsx",
    "src/components/ui/button.tsx",
@@ -4718,6 +4727,11 @@
    "src/lib/utils.ts",
    "src/pages/products/seller-carts/undoCopy.ts",
    "src/utils/undoToast.tsx"
+  ],
+  "src/components/cart/CartHealthChecklist.tsx": [
+   "src/components/ui/card.tsx",
+   "src/hooks/products/useSellerCarts.ts",
+   "src/lib/utils.ts"
   ],
   "src/components/cart/CartItemSkeleton.tsx": [
    "src/components/ui/card.tsx",
@@ -8542,6 +8556,25 @@
    "src/contexts/OrganizationContext.tsx",
    "src/contexts/ProductsContext.tsx"
   ],
+  "src/components/quotes/AdminTemplateDialogs.tsx": [
+   "src/components/ui/alert-dialog.tsx",
+   "src/components/ui/button.tsx",
+   "src/components/ui/dialog.tsx",
+   "src/components/ui/select.tsx"
+  ],
+  "src/components/quotes/AdminTemplatesManager.tsx": [
+   "src/components/quotes/AdminTemplateDialogs.tsx",
+   "src/components/quotes/admin-templates/TemplateGridView.tsx",
+   "src/components/quotes/admin-templates/TemplateTableView.tsx",
+   "src/components/ui/button.tsx",
+   "src/components/ui/card.tsx",
+   "src/components/ui/input.tsx",
+   "src/components/ui/select.tsx",
+   "src/components/ui/separator.tsx",
+   "src/components/ui/skeleton.tsx",
+   "src/hooks/quotes/useQuoteTemplates.ts",
+   "src/utils/templateExport.ts"
+  ],
   "src/components/quotes/ClientPicker.tsx": [
    "src/components/favorites/FavoritesClientPicker.tsx",
    "src/components/ui/card.tsx",
@@ -8817,6 +8850,29 @@
   "src/components/quotes/QuoteStatusTimeline.tsx": [
    "src/lib/utils.ts"
   ],
+  "src/components/quotes/QuoteTemplateForm.tsx": [
+   "src/components/ui/button.tsx",
+   "src/components/ui/card.tsx",
+   "src/components/ui/input.tsx",
+   "src/components/ui/label.tsx",
+   "src/components/ui/separator.tsx",
+   "src/components/ui/switch.tsx",
+   "src/components/ui/textarea.tsx",
+   "src/hooks/quotes/useQuoteTemplates.ts"
+  ],
+  "src/components/quotes/QuoteTemplatesList.tsx": [
+   "src/components/ui/alert-dialog.tsx",
+   "src/components/ui/badge.tsx",
+   "src/components/ui/button.tsx",
+   "src/components/ui/card.tsx",
+   "src/components/ui/dialog.tsx",
+   "src/components/ui/dropdown-menu.tsx",
+   "src/components/ui/input.tsx",
+   "src/components/ui/select.tsx",
+   "src/components/ui/skeleton.tsx",
+   "src/hooks/quotes/useQuoteTemplates.ts",
+   "src/utils/templateExport.ts"
+  ],
   "src/components/quotes/QuoteTotalsSummary.tsx": [
    "src/components/quotes/QuoteItemsTable.tsx",
    "src/components/quotes/quote-view-typography.ts",
@@ -8869,9 +8925,33 @@
    "src/lib/telemetry/structuredLogger.ts",
    "src/lib/utils.ts"
   ],
+  "src/components/quotes/SaveAsTemplateButton.tsx": [
+   "src/components/quotes/QuoteTemplateForm.tsx",
+   "src/components/ui/button.tsx",
+   "src/components/ui/dialog.tsx",
+   "src/hooks/quotes/useQuoteTemplates.ts"
+  ],
   "src/components/quotes/SectionEyebrow.tsx": [
    "src/components/quotes/quote-view-typography.ts",
    "src/lib/utils.ts"
+  ],
+  "src/components/quotes/admin-templates/TemplateGridView.tsx": [
+   "src/components/ui/badge.tsx",
+   "src/components/ui/button.tsx",
+   "src/components/ui/card.tsx",
+   "src/components/ui/dropdown-menu.tsx",
+   "src/hooks/quotes/useQuoteTemplates.ts",
+   "src/utils/templateExport.ts"
+  ],
+  "src/components/quotes/admin-templates/TemplateTableView.tsx": [
+   "src/components/ui/badge.tsx",
+   "src/components/ui/button.tsx",
+   "src/components/ui/card.tsx",
+   "src/components/ui/dropdown-menu.tsx",
+   "src/components/ui/scroll-area.tsx",
+   "src/components/ui/table.tsx",
+   "src/hooks/quotes/useQuoteTemplates.ts",
+   "src/utils/templateExport.ts"
   ],
   "src/components/quotes/company-contact/CompanySearchDropdown.tsx": [
    "src/components/quotes/company-contact/shared-types.tsx",
@@ -14174,6 +14254,7 @@
    "src/components/ui/dropdown-menu.tsx"
   ],
   "src/pages/products/seller-carts/CartSidebar.tsx": [
+   "src/components/cart/CartHealthChecklist.tsx",
    "src/components/cart/cart-utils/CartDialogs.tsx",
    "src/components/ui/card.tsx",
    "src/hooks/products/index.ts"
@@ -14221,7 +14302,6 @@
    "src/components/ui/label.tsx",
    "src/components/ui/popover.tsx",
    "src/components/ui/select.tsx",
-   "src/components/ui/textarea.tsx",
    "src/components/ui/tooltip.tsx",
    "src/hooks/common/index.ts",
    "src/hooks/quotes/index.ts",
@@ -14229,7 +14309,17 @@
    "src/lib/quote-status-config.ts",
    "src/lib/utils.ts",
    "src/pages/quotes/components/DeliveryModeToggle.tsx",
+   "src/pages/quotes/components/QuoteBuilderNotesCard.tsx",
    "src/utils/quote-number.ts"
+  ],
+  "src/pages/quotes/QuoteTemplatesPage.tsx": [
+   "src/components/quotes/AdminTemplatesManager.tsx",
+   "src/components/quotes/QuoteTemplateForm.tsx",
+   "src/components/quotes/QuoteTemplatesList.tsx",
+   "src/components/seo/PageSEO.tsx",
+   "src/components/ui/button.tsx",
+   "src/components/ui/tabs.tsx",
+   "src/hooks/quotes/useQuoteTemplates.ts"
   ],
   "src/pages/quotes/QuoteViewPage.tsx": [
    "src/components/pdf/ProposalHtmlTemplate.tsx",
@@ -14290,18 +14380,29 @@
    "src/components/quotes/QuotesStatusChips.tsx",
    "src/components/seo/PageSEO.tsx",
    "src/components/ui/ConfirmDialog.tsx",
-   "src/components/ui/alert-dialog.tsx",
    "src/components/ui/alert.tsx",
    "src/components/ui/button.tsx",
    "src/components/ui/input.tsx",
    "src/components/ui/select.tsx",
    "src/components/ui/tooltip.tsx",
+   "src/pages/quotes/components/QuotesBulkDeleteDialog.tsx",
    "src/pages/quotes/useQuotesListPage.ts",
    "src/types/quote.ts",
    "src/utils/excelExport.ts"
   ],
   "src/pages/quotes/components/DeliveryModeToggle.tsx": [
    "src/lib/utils.ts"
+  ],
+  "src/pages/quotes/components/QuoteBuilderNotesCard.tsx": [
+   "src/components/quotes/SaveAsTemplateButton.tsx",
+   "src/components/ui/label.tsx",
+   "src/components/ui/textarea.tsx",
+   "src/hooks/quotes/quoteTypes.ts",
+   "src/hooks/quotes/useQuoteTemplates.ts"
+  ],
+  "src/pages/quotes/components/QuotesBulkDeleteDialog.tsx": [
+   "src/components/ui/alert-dialog.tsx",
+   "src/hooks/quotes/quoteTypes.ts"
   ],
   "src/pages/quotes/quote-view/QuoteActionHandlers.ts": [
    "src/components/pdf/ProposalHtmlTemplate.tsx",
@@ -14624,6 +14725,7 @@
    "src/pages/products/ReplenishmentsPage.tsx",
    "src/pages/products/SellerCartsPage.tsx",
    "src/pages/quotes/QuoteBuilderPage.tsx",
+   "src/pages/quotes/QuoteTemplatesPage.tsx",
    "src/pages/quotes/QuoteViewPage.tsx",
    "src/pages/quotes/QuotesDashboardPage.tsx",
    "src/pages/quotes/QuotesKanbanPage.tsx",
@@ -14825,6 +14927,9 @@
   "src/utils/security-audit.ts": [
    "src/integrations/supabase/client.ts",
    "src/lib/logger.ts"
+  ],
+  "src/utils/templateExport.ts": [
+   "src/hooks/quotes/useQuoteTemplates.ts"
   ],
   "src/utils/undoToast.tsx": [
    "src/lib/utils.ts"

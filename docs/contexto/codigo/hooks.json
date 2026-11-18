@@ -11672,9 +11672,10 @@
     "useQueryClient"
    ],
    "canais_realtime": [],
-   "usado_por": 5,
+   "usado_por": 6,
    "usado_por_arquivos": [
     "src/components/cart/CartHeaderButton.tsx",
+    "src/components/cart/CartHealthChecklist.tsx",
     "src/components/cart/CartTabsRich.tsx",
     "src/hooks/products/index.ts",
     "src/hooks/products/useDebouncedCartItemActions.ts",
@@ -12287,7 +12288,7 @@
    "hooks_exportados": [
     "useQuoteTemplates"
    ],
-   "linhas": 493,
+   "linhas": 496,
    "dominio": "hooks/quotes",
    "tabelas": [
     "profiles",
@@ -12303,8 +12304,18 @@
     "useToast"
    ],
    "canais_realtime": [],
-   "usado_por": 0,
-   "usado_por_arquivos": [],
+   "usado_por": 9,
+   "usado_por_arquivos": [
+    "src/components/quotes/AdminTemplatesManager.tsx",
+    "src/components/quotes/QuoteTemplateForm.tsx",
+    "src/components/quotes/QuoteTemplatesList.tsx",
+    "src/components/quotes/SaveAsTemplateButton.tsx",
+    "src/components/quotes/admin-templates/TemplateGridView.tsx",
+    "src/components/quotes/admin-templates/TemplateTableView.tsx",
+    "src/pages/quotes/QuoteTemplatesPage.tsx",
+    "src/pages/quotes/components/QuoteBuilderNotesCard.tsx",
+    "src/utils/templateExport.ts"
+   ],
    "coberto_por_testes": 3
   },
   {
@@ -14726,7 +14737,7 @@
    "usado_por_arquivos": [
     "src/pages/quotes/QuotesListPage.tsx"
    ],
-   "coberto_por_testes": 12
+   "coberto_por_testes": 13
   },
   {
    "arquivo": "src/stores/oracleVoiceBridge.ts",

@@ -1,7 +1,7 @@
 {
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
- "total": 307,
+ "total": 308,
  "por_camada": {
   "api": 4,
   "config": 1,
@@ -11,7 +11,7 @@
   "python": 9,
   "services": 10,
   "stores": 9,
-  "utils": 30
+  "utils": 31
  },
  "arquivos": [
   {
@@ -7722,7 +7722,7 @@
    "zod_schemas": 0,
    "flags": [],
    "papeis": [],
-   "usado_por": 654,
+   "usado_por": 655,
    "usado_por_modulos": [
     "components",
     "components/admin",
@@ -9443,6 +9443,33 @@
    "usado_por_modulos": [],
    "coberto_por_testes": 0,
    "orfao": true
+  },
+  {
+   "arquivo": "src/utils/templateExport.ts",
+   "camada": "utils",
+   "exports": [
+    "ExportedTemplate",
+    "exportSingleTemplate",
+    "exportTemplatesToJson",
+    "readTemplateFile",
+    "validateImportedTemplates"
+   ],
+   "export_default": null,
+   "linhas": 112,
+   "tabelas": [],
+   "rpcs": [],
+   "edges": [],
+   "env": [],
+   "externos": [],
+   "zod_schemas": 0,
+   "flags": [],
+   "papeis": [],
+   "usado_por": 8,
+   "usado_por_modulos": [
+    "components/quotes"
+   ],
+   "coberto_por_testes": 0,
+   "orfao": false
   },
   {
    "arquivo": "src/utils/viacep.ts",

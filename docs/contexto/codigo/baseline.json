@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "5470d5f4a7c3a2a397e5607f306cacff42e6ebab",
+  "commit": "b52dceaeb9cf012304e0c0392ebeaff68fd27011",
   "branch": "main",
-  "data_commit": "2026-11-18T09:09:59-03:00",
+  "data_commit": "2026-11-18T10:13:46-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "b52dceae",
+    "data": "2026-11-18",
+    "assunto": "feat(revert-3361): devolve os painéis do carrinho e as telas de template de orçamento (#3817)"
+   },
    {
     "sha": "5470d5f4",
     "data": "2026-11-18",
@@ -126,14 +131,9 @@
     "sha": "ef8a595f",
     "data": "2026-11-17",
     "assunto": "feat(quotes): recupera rascunho local ao reabrir orçamento existente (#3805)"
-   },
-   {
-    "sha": "216fad0f",
-    "data": "2026-11-17",
-    "assunto": "test(resgate): 218 casos de teste de outro agente que nunca chegaram à main (#3807)"
    }
   ],
-  "arquivos_mudados_7d": 1798,
+  "arquivos_mudados_7d": 1820,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -156,11 +156,11 @@
     "mudancas": 127
    },
    {
-    "pasta": "src/components/mockup",
-    "mudancas": 118
+    "pasta": "src/components/quotes",
+    "mudancas": 125
    },
    {
-    "pasta": "src/components/quotes",
+    "pasta": "src/components/mockup",
     "mudancas": 118
    },
    {
@@ -189,7 +189,7 @@
    },
    {
     "pasta": "src/pages/quotes",
-    "mudancas": 67
+    "mudancas": 73
    },
    {
     "pasta": "src/hooks/mockup",
@@ -254,16 +254,16 @@
     "mudancas": 11
    },
    {
-    "arquivo": "analise-branches/RELATORIO_BRANCHES.md",
-    "mudancas": 10
-   },
-   {
     "arquivo": "docs/agentes/resgates/2026-11-16-auditoria-branches.md",
     "mudancas": 10
    },
    {
     "arquivo": "src/pages/mockups/MockupGenerator.tsx",
     "mudancas": 10
+   },
+   {
+    "arquivo": "analise-branches/RELATORIO_BRANCHES.md",
+    "mudancas": 9
    },
    {
     "arquivo": "docs/ci/SEGREDOS.md",
@@ -301,7 +301,7 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 542
+    "commits": 543
    },
    {
     "autor": "Claude",
@@ -313,7 +313,7 @@
    },
    {
     "autor": "github-actions[bot]",
-    "commits": 29
+    "commits": 28
    },
    {
     "autor": "dependabot[bot]",
@@ -322,21 +322,21 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 10894,
-  "arquivos_codigo": 5415,
-  "linhas_codigo": 1033467,
+  "arquivos_total": 10908,
+  "arquivos_codigo": 5429,
+  "linhas_codigo": 1035733,
   "rotas": 139,
   "rotas_http_backend": 13,
   "vistas_por_id": 0,
   "itens_menu": 69,
-  "modulos": 162,
-  "componentes": 1239,
+  "modulos": 163,
+  "componentes": 1250,
   "hooks": 629,
   "edge_functions": 112,
   "tabelas": 527,
   "migrations": 3099,
   "cron_jobs": 122,
-  "testes": 2581,
+  "testes": 2583,
   "workflows": 88,
   "scripts": 283,
   "docs_md": 1474
@@ -768,7 +768,7 @@
   },
   "e2e/quotes": {
    "arquivos": 60,
-   "linhas": 6938
+   "linhas": 6933
   },
   "e2e/raio-x.spec.ts": {
    "arquivos": 1,
@@ -1895,8 +1895,8 @@
    "linhas": 130
   },
   "src/components": {
-   "arquivos": 1398,
-   "linhas": 277887
+   "arquivos": 1406,
+   "linhas": 279504
   },
   "src/config": {
    "arquivos": 1,
@@ -1908,7 +1908,7 @@
   },
   "src/contexts": {
    "arquivos": 20,
-   "linhas": 5322
+   "linhas": 5331
   },
   "src/data": {
    "arquivos": 3,
@@ -1920,7 +1920,7 @@
   },
   "src/hooks": {
    "arquivos": 483,
-   "linhas": 91127
+   "linhas": 91130
   },
   "src/integrations": {
    "arquivos": 11,
@@ -1939,12 +1939,12 @@
    "linhas": 63
   },
   "src/pages": {
-   "arquivos": 361,
-   "linhas": 83919
+   "arquivos": 365,
+   "linhas": 84306
   },
   "src/routes": {
-   "arquivos": 14,
-   "linhas": 1260
+   "arquivos": 15,
+   "linhas": 1403
   },
   "src/services": {
    "arquivos": 29,
@@ -1967,8 +1967,8 @@
    "linhas": 4437
   },
   "src/utils": {
-   "arquivos": 56,
-   "linhas": 8174
+   "arquivos": 57,
+   "linhas": 8286
   },
   "supabase/functions": {
    "arquivos": 278,
@@ -2375,7 +2375,7 @@
   "ts_ignore": 0,
   "eslint_disable": 24,
   "todos": 111,
-  "arquivos_acima_500_linhas": 185
+  "arquivos_acima_500_linhas": 184
  },
  "todos": [
   {
@@ -3343,6 +3343,7 @@
    "src/components/ui/StatusBadge.tsx"
   ],
   "componentes_com_nome_duplicado": [
+   "AdminTemplatesManager",
    "AdvancedPriceSearchPage",
    "Auth",
    "BreadcrumbItem",
@@ -3350,6 +3351,7 @@
    "BusinessIntelligencePage",
    "CardSkeleton",
    "CartActionsMenu",
+   "CartHealthChecklist",
    "CartItemSkeleton",
    "CartSidebar",
    "CategoryIcon",
@@ -3417,6 +3419,9 @@
    "QuoteCommentsSection",
    "QuoteDraftRecovery",
    "QuoteListSkeleton",
+   "QuoteTemplateForm",
+   "QuoteTemplatesList",
+   "QuoteTemplatesPage",
    "QuoteViewPage",
    "QuotesDashboardPage",
    "QuotesKanbanPage",
@@ -3428,6 +3433,7 @@
    "RolePermissionsPage",
    "RolesPage",
    "SSOCallbackPage",
+   "SaveAsTemplateButton",
    "SaveTemplateDialog",
    "SelectedProductCard",
    "SellerCartsPage",
@@ -3448,6 +3454,10 @@
    "TechniqueCard",
    "TechniqueChangeDialog",
    "TechniqueSelector",
+   "TemplateCloneDialog",
+   "TemplateDeleteDialog",
+   "TemplateGridView",
+   "TemplateTableView",
    "Toaster",
    "TrendsPage",
    "UnsavedChangesDialog"

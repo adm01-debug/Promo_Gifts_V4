@@ -3,13 +3,13 @@
  "format_version": 2,
  "onde_ficam": {
   "telas": [
-   "src/pages (111)",
+   "src/pages (112)",
    "src/components (3)",
    "api/health.ts (1)"
   ],
   "componentes": [
-   "src/components (943)",
-   "src/pages (177)",
+   "src/components (951)",
+   "src/pages (180)",
    "recovery/src-legacy (100)"
   ],
   "hooks": [
@@ -19,12 +19,12 @@
   ],
   "servicos_logica": [
    "src/lib (233)",
-   "src/utils (30)",
+   "src/utils (31)",
    "src/services (10)"
   ],
   "testes": [
    "tests/ (1075)",
-   "co-localizado (__tests__) (679)",
+   "co-localizado (__tests__) (681)",
    "e2e/ (625)"
   ],
   "edge_functions": "supabase/functions",
@@ -41,7 +41,7 @@
   ]
  },
  "nomenclatura": {
-  "componentes": "PascalCase (95%)",
+  "componentes": "PascalCase (96%)",
   "hooks": "use + PascalCase",
   "servicos": "kebab-case (51%)",
   "edge_functions": "kebab-case (99%)",
@@ -49,7 +49,7 @@
  },
  "barrels_index": 46,
  "extensao_componentes": [
-  ".tsx (1239)"
+  ".tsx (1250)"
  ],
  "alias_imports": {
   "e2e/": {},
@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "feat(revert-3361): devolve os painéis do carrinho e as telas de template de orçamento (#3817)",
    "fix(ci): Gate 0 passa a barrar qualquer project-ref não canônico em migration (#3806)",
    "docs(resgate): preserva as 2 notas de sessao que so existiam em branch (#3803)",
    "docs(resgate): prova byte a byte das 32 branches `salvo`, com recibo por branch — e a fila que ainda falta (#3801)",
-   "feat(kit-builder): previa de mockup passa a enviar as medidas reais do produto (#3818)",
-   "docs(resgate): registra as 8 pendencias abertas do resgate com evidencia medida (#3816)"
+   "feat(kit-builder): previa de mockup passa a enviar as medidas reais do produto (#3818)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",

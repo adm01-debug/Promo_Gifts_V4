@@ -3,7 +3,7 @@
  "format_version": 2,
  "stack": {
   "linguagens": [
-   "TypeScript (4948)",
+   "TypeScript (4962)",
    "SQL (3440)",
    "Markdown (1474)",
    "JavaScript (457)",
@@ -5815,6 +5815,7 @@
    "/orcamentos/kanban",
    "/orcamentos/lista",
    "/orcamentos/novo",
+   "/orcamentos/templates",
    "/privacidade",
    "/produto/:id",
    "/produtos",
