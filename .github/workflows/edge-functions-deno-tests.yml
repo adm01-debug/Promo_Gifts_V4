@@ -56,47 +56,79 @@ jobs:
           echo "arquivos de teste em supabase/functions: $(find supabase/functions -name '*test*.ts' | wc -l)"
           echo "dos quais Vitest (ignorados aqui): $(grep -rl \"from 'vitest'\" supabase/functions --include='*test*.ts' | wc -l)"
 
-      # --allow-all: estes testes leem fixtures, checam env e alguns sobem
-      # servidor local. Sem rede externa real — o import map resolve tudo para
-      # npm:/jsr:, baixados no passo de cache do próprio setup-deno.
-      # Primeira execucao desta PR mediu: 323 passaram, 99 falharam, 8 ignorados.
-      # As falhas NAO sao testes quebrados: sao testes de integracao AO VIVO que
-      # batem em fake-project.supabase.co / test.supabase.co e morrem em
-      # "dns error: failed to lookup address information". Eles pertencem ao
-      # edge-integration-all.yml, que roda com segredos e funcao publicada —
-      # nao a um job unitario sem rede.
+      # Por que um processo POR ARQUIVO, e nao um `deno test` so:
+      # 12 arquivos fazem `globalThis.fetch = ...` e 16 fazem `Deno.env.set`
+      # no topo do modulo. O `deno test` padrao avalia TODOS os modulos no
+      # MESMO isolate antes de rodar qualquer caso, entao o ultimo stub de
+      # fetch e o ultimo SUPABASE_URL vencem para todo mundo. Foi isso que
+      # produziu as 71 falhas da execucao anterior: quote-sync recebia
+      # 503 "PROMO_CHAMPIONS_WEBHOOK_SECRET ausente" e crm-db-bridge recebia
+      # "Mapeamento de vendedor ambiguo" — nenhum dos dois e bug do teste,
+      # e contaminacao entre arquivos. Um processo por arquivo isola os dois.
       #
-      # Por isso o --ignore abaixo lista: (a) os 12 arquivos Vitest, que o
-      # vitest.config ja coleta; (b) os de integracao ao vivo, por caminho.
-      - name: deno test (unitarios, sem rede)
+      # Por que lista explicita, e nao --ignore:
+      # com --config apontando para supabase/functions/deno.json, os caminhos
+      # relativos de --ignore nao casaram nem o diretorio de integracao ao
+      # vivo nem os 12 arquivos Vitest (eles apareceram como "uncaught error"
+      # no log). Montar a lista do que RODA e deterministico e verificavel.
+      - name: deno test (unitarios, um processo por arquivo)
         run: |
-          set -euo pipefail
+          set -uo pipefail
 
-          # Integracao AO VIVO: pertencem ao edge-integration-all.yml, que roda
-          # com segredos e funcao publicada.
-          # Sem barra final: o --ignore do Deno nao casa diretorio terminado em "/".
-          AO_VIVO="supabase/functions/tests/integration"
-          AO_VIVO="$AO_VIVO,supabase/functions/tests/production-readiness.test.ts"
-          AO_VIVO="$AO_VIVO,supabase/functions/tests/security-integration_test.ts"
-          AO_VIVO="$AO_VIVO,supabase/functions/tests/external_db_test.ts"
-          AO_VIVO="$AO_VIVO,supabase/functions/tests/mcp-keys-step-up_test.ts"
-          AO_VIVO="$AO_VIVO,supabase/functions/tests/rls-policies_test.ts"
-          AO_VIVO="$AO_VIVO,supabase/functions/tests/step-up-role-revocation_test.ts"
-          AO_VIVO="$AO_VIVO,supabase/functions/visual-search/integration_test.ts"
-          AO_VIVO="$AO_VIVO,supabase/functions/webhook-inbound/integration_test.ts"
+          # Integracao AO VIVO: batem em fake-project.supabase.co / test.supabase.co.
+          # Pertencem ao edge-integration-all.yml, que roda com segredos e funcao publicada.
+          AO_VIVO_RE='^supabase/functions/tests/integration/'
+          AO_VIVO_RE="$AO_VIVO_RE|^supabase/functions/tests/production-readiness\.test\.ts$"
+          AO_VIVO_RE="$AO_VIVO_RE|^supabase/functions/tests/security-integration_test\.ts$"
+          AO_VIVO_RE="$AO_VIVO_RE|^supabase/functions/tests/external_db_test\.ts$"
+          AO_VIVO_RE="$AO_VIVO_RE|^supabase/functions/tests/mcp-keys-step-up_test\.ts$"
+          AO_VIVO_RE="$AO_VIVO_RE|^supabase/functions/tests/rls-policies_test\.ts$"
+          AO_VIVO_RE="$AO_VIVO_RE|^supabase/functions/tests/step-up-role-revocation_test\.ts$"
+          AO_VIVO_RE="$AO_VIVO_RE|^supabase/functions/visual-search/integration_test\.ts$"
+          AO_VIVO_RE="$AO_VIVO_RE|^supabase/functions/webhook-inbound/integration_test\.ts$"
 
-          # Vitest: ja coletados pelo vitest.config.ts. A regex cobre aspas
-          # simples E duplas — com so um dos dois, 8 dos 12 arquivos escapavam.
-          VITEST=$(grep -rlE "from ['\"]vitest['\"]" supabase/functions --include='*test*.ts' | sort | paste -sd, -)
-          test -n "$VITEST" || { echo "::error::grep de vitest voltou vazio"; exit 1; }
-          echo "arquivos vitest encontrados: $(echo "$VITEST" | tr ',' '\n' | wc -l) (esperado 12)"
+          RODAR=()
+          PULADOS_AO_VIVO=0
+          PULADOS_VITEST=0
+          while IFS= read -r f; do
+            if printf '%s\n' "$f" | grep -qE "$AO_VIVO_RE"; then
+              PULADOS_AO_VIVO=$((PULADOS_AO_VIVO + 1)); continue
+            fi
+            # Vitest: ja coletados pelo vitest.config.ts (include). A regex
+            # cobre aspas simples E duplas — com so um dos dois, 8 dos 12 escapavam.
+            if grep -qE "from ['\"]vitest['\"]" "$f"; then
+              PULADOS_VITEST=$((PULADOS_VITEST + 1)); continue
+            fi
+            RODAR+=("$f")
+          done < <(find supabase/functions -name '*test*.ts' | sort)
 
-          echo "ignorando ao vivo: $AO_VIVO"
-          echo "ignorando vitest:  $VITEST"
+          echo "total de arquivos de teste: $(find supabase/functions -name '*test*.ts' | wc -l)"
+          echo "pulados (integracao ao vivo): $PULADOS_AO_VIVO"
+          echo "pulados (Vitest):             $PULADOS_VITEST"
+          echo "a rodar aqui:                 ${#RODAR[@]}"
 
-          deno test \
-            --config supabase/functions/deno.json \
-            --allow-all \
-            --no-check \
-            --ignore="$AO_VIVO,$VITEST" \
-            supabase/functions/
+          # Guarda: se a classificacao desandar, o job falha dizendo o porque,
+          # em vez de passar verde rodando quase nada.
+          if [ "${#RODAR[@]}" -lt 55 ]; then
+            echo "::error::so ${#RODAR[@]} arquivos classificados para rodar (esperado ~61)"
+            exit 1
+          fi
+
+          FALHOU=()
+          for f in "${RODAR[@]}"; do
+            if ! deno test \
+                  --config supabase/functions/deno.json \
+                  --allow-all \
+                  --no-check \
+                  --quiet \
+                  "$f"; then
+              FALHOU+=("$f")
+            fi
+          done
+
+          if [ "${#FALHOU[@]}" -gt 0 ]; then
+            echo "::error::${#FALHOU[@]} de ${#RODAR[@]} arquivos falharam:"
+            printf '  %s\n' "${FALHOU[@]}"
+            exit 1
+          fi
+          echo "todos os ${#RODAR[@]} arquivos passaram"
