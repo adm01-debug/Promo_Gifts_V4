@@ -2,83 +2,24 @@ import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/hooks/ui';
-import type { Tables, TablesInsert, TablesUpdate, Json } from '@/integrations/supabase/types';
+import type { TablesInsert, TablesUpdate, Json } from '@/integrations/supabase/types';
 
 import { logger } from '@/lib/logger';
-// ============================================
-// Types
-// ============================================
-
-type QuoteTemplateRow = Tables<'quote_templates'>;
-
-export interface QuoteTemplateItem {
-  productId?: string;
-  productSku?: string;
-  productName: string;
-  productImageUrl?: string;
-  quantity: number;
-  unitPrice: number;
-  colorName?: string;
-  colorHex?: string;
-  personalizations?: {
-    techniqueId: string;
-    techniqueName: string;
-    colorsCount?: number;
-    positionsCount?: number;
-    unitCost?: number;
-    setupCost?: number;
-  }[];
-}
-
-/**
- * Template de orcamento como a UI consome.
- *
- * Estende a LINHA da tabela de proposito: `transformTemplates` faz `...item`, logo
- * toda coluna de `quote_templates` chega aqui (`category`, `payment_method`,
- * `usage_count`...) e consumidor que le uma delas continua funcionando — protegido
- * por tests/hooks/useQuoteTemplates.raw-fetch.test.ts. Antes isso exigia
- * `as unknown as QuoteTemplate[]`, que escondia QUALQUER divergencia de tipo da
- * linha; com `extends` + `Omit`, o compilador volta a cobrir o resto.
- */
-export interface QuoteTemplate extends Omit<
+// Tipos publicos moram em ./quoteTemplateTypes.ts (ratchet de tamanho de arquivo).
+import type {
+  CreateTemplateInput,
+  QuoteTemplate,
+  QuoteTemplateItem,
   QuoteTemplateRow,
-  | 'discount_amount'
-  | 'discount_percent'
-  | 'is_default'
-  | 'items'
-  | 'template_data'
-  | 'validity_days'
-> {
-  is_default: boolean;
-  template_data: Record<string, unknown>;
-  items: QuoteTemplateItem[];
-  raw_items?: QuoteTemplateRow['items'];
-  raw_template_data?: QuoteTemplateRow['template_data'];
-  discount_percent: number;
-  discount_amount: number;
-  validity_days: number;
-}
+} from './quoteTemplateTypes';
 
-export interface CreateTemplateInput {
-  name: string;
-  description?: string;
-  is_default?: boolean;
-  items?: QuoteTemplateItem[];
-  discount_percent?: number;
-  discount_amount?: number;
-  notes?: string;
-  internal_notes?: string;
-  payment_terms?: string;
-  delivery_time?: string;
-  validity_days?: number;
-}
+export type { CreateTemplateInput, QuoteTemplate, QuoteTemplateItem, QuoteTemplateRow };
 
 const templateSourceRows = new WeakMap<QuoteTemplate, QuoteTemplateRow>();
 
 function transformTemplates(data: QuoteTemplateRow[]): QuoteTemplate[] {
-  // Sem `as unknown as` no objeto inteiro: o unico cast que resta e no campo
-  // `items`, que e `jsonb` e preserva de proposito o que esta gravado (inclusive
-  // entrada incompleta), com o original intacto em `raw_items`.
+  // Sem `as unknown as` no objeto inteiro: o unico cast que resta e em `items`
+  // (jsonb), que preserva o gravado, com o original em `raw_items`.
   const templates: QuoteTemplate[] = (data || []).map((item) => ({
     ...item,
     raw_items: item.items,

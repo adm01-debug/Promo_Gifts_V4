@@ -22,6 +22,9 @@ import { exportTemplatesToJson } from '@/utils/templateExport';
 import { TemplateTableView } from './admin-templates/TemplateTableView';
 import { TemplateGridView } from './admin-templates/TemplateGridView';
 
+/** Chave de agrupamento para template sem `seller_id` (template de sistema). */
+const TEMPLATE_SEM_VENDEDOR = '__sistema__';
+
 interface AdminTemplatesManagerProps {
   onEditTemplate?: (template: QuoteTemplate) => void;
 }
@@ -38,6 +41,7 @@ export function AdminTemplatesManager({ onEditTemplate }: AdminTemplatesManagerP
   const [targetSellerId, setTargetSellerId] = useState<string>('');
 
   const getSellerName = (sellerId: string) => {
+    if (sellerId === TEMPLATE_SEM_VENDEDOR) return 'Templates do sistema';
     const seller = sellers.find((s) => s.id === sellerId);
     return seller?.full_name || seller?.email || 'Vendedor desconhecido';
   };
@@ -57,8 +61,11 @@ export function AdminTemplatesManager({ onEditTemplate }: AdminTemplatesManagerP
   const templatesBySeller = useMemo(() => {
     const grouped: Record<string, QuoteTemplate[]> = {};
     filteredTemplates.forEach((t) => {
-      if (!grouped[t.seller_id]) grouped[t.seller_id] = [];
-      grouped[t.seller_id].push(t);
+      // `seller_id` e nullable no schema: template sem vendedor e template de
+      // sistema. Agrupa sob chave propria em vez de ser descartado do painel.
+      const chave = t.seller_id ?? TEMPLATE_SEM_VENDEDOR;
+      if (!grouped[chave]) grouped[chave] = [];
+      grouped[chave].push(t);
     });
     return grouped;
   }, [filteredTemplates]);
