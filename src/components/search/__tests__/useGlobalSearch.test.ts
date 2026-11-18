@@ -154,6 +154,7 @@ vi.mock('@/lib/edge/safeInvokeCall', () => ({ invokeEdge: h.invokeEdge }));
 vi.mock('@/lib/external-db', () => ({ fetchPromobrindProducts: h.fetchPromobrindProducts }));
 vi.mock('@/lib/crm-db', () => ({ searchCrm: h.searchCrm, selectCrm: h.selectCrm }));
 
+import { useVoiceFilterBridge } from '@/stores/voiceFilterBridge';
 import { useGlobalSearch } from '../useGlobalSearch';
 import { searchCache } from '../searchCache';
 import { supabase } from '@/integrations/supabase/client';
@@ -621,17 +622,61 @@ describe('useGlobalSearch', () => {
       expect(h.setVoiceOverlayOpen).toHaveBeenCalledWith(false);
     });
 
-    it('filter combina filtros em consulta e reabre a busca', () => {
+    // CONTRATO MUDADO (resgate do applyVoiceFilterPatch): 'filter' com critérios
+    // estruturais não vira mais busca textual — ele aplica os filtros no FilterState
+    // do catálogo pela ponte. O caso antigo esperava `query === 'canecas azul vidro'`,
+    // que descartava preço, estoque, gênero e outros 7 campos que o contrato de voz
+    // declara em src/hooks/voice/types.ts:17-34.
+    it('filter manda os critérios ditados para o catálogo em vez de virar busca textual', () => {
       const { result } = renderHook(() => useGlobalSearch());
       act(() =>
         result.current.handleVoiceAction({
           action: 'filter',
+          response: 'r',
+          data: {
+            filters: { category: 'canecas', color: 'azul', material: 'vidro', maxPrice: 50 },
+          },
+        }),
+      );
+      act(() => vi.advanceTimersByTime(500));
+      expect(useVoiceFilterBridge.getState().pendingFilters).toEqual({
+        category: 'canecas',
+        color: 'azul',
+        material: 'vidro',
+        maxPrice: 50,
+      });
+      expect(h.navigate).toHaveBeenCalledWith('/');
+      expect(result.current.query).toBe('');
+      expect(h.setOpen).not.toHaveBeenCalledWith(true);
+    });
+
+    // Comportamento do main preservado na extração para voiceFilterDispatch: 'search'
+    // sem termo falado monta a consulta com categoria/cor/material.
+    it('search sem termo usa categoria/cor/material como consulta', () => {
+      const { result } = renderHook(() => useGlobalSearch());
+      act(() =>
+        result.current.handleVoiceAction({
+          action: 'search',
           response: 'r',
           data: { filters: { category: 'canecas', color: 'azul', material: 'vidro' } },
         }),
       );
       act(() => vi.advanceTimersByTime(500));
       expect(result.current.query).toBe('canecas azul vidro');
+      expect(h.setOpen).toHaveBeenCalledWith(true);
+    });
+
+    it('filter sem critérios estruturais cai na busca textual', () => {
+      const { result } = renderHook(() => useGlobalSearch());
+      act(() =>
+        result.current.handleVoiceAction({
+          action: 'filter',
+          response: 'r',
+          data: { query: 'caneca térmica' },
+        }),
+      );
+      act(() => vi.advanceTimersByTime(500));
+      expect(result.current.query).toBe('caneca térmica');
       expect(h.setOpen).toHaveBeenCalledWith(true);
     });
 

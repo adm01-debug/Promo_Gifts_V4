@@ -5,6 +5,7 @@ import {
   buildKitMockupRequest,
   type FlatTechnique,
 } from '@/components/kit-builder/PersonalizationConfig';
+import { medidasAutoritativas } from '@/components/kit-builder/kitMockupDimensions';
 
 const limitedTechnique: FlatTechnique = {
   technique_id: 'tech-laser',
@@ -118,6 +119,62 @@ describe('PersonalizationConfig price inputs', () => {
           logoPreview: 'https://cdn.test/logo.png',
         },
       ],
+    });
+  });
+
+  describe('medidas reais do produto no payload do mockup', () => {
+    const completo = {
+        enabled: true,
+        techniqueId: 'laser',
+        techniqueName: 'Laser',
+        techniqueCode: 'LASER',
+        positionName: 'Frente',
+        width: 4,
+        height: 2,
+        artworkUrl: 'https://cdn.test/logo.png',
+    };
+
+    it('leva as medidas do produto para a edge, em cm', () => {
+      const req = buildKitMockupRequest('Caneca', 'https://cdn.test/caneca.jpg', completo, {
+        widthCm: 8.5,
+        heightCm: 9.5,
+      });
+      expect(req).toMatchObject({ productWidthCm: 8.5, productHeightCm: 9.5 });
+    });
+
+    it('sem medidas, manda null explicito em vez de omitir o campo', () => {
+      // A edge distingue "nao informado" de "informado como zero/invalido"; o cliente
+      // ja recusa antes de chamar (mockupGeneratorModel.ts MISSING_DIMENSIONS_REFUSAL).
+      const req = buildKitMockupRequest('Caneca', 'https://cdn.test/caneca.jpg', completo);
+      expect(req).toMatchObject({ productWidthCm: null, productHeightCm: null });
+    });
+
+    it('uma dimensao sozinha e preservada (a outra a edge infere)', () => {
+      const soLargura = buildKitMockupRequest(
+        'Caneca',
+        'https://cdn.test/caneca.jpg',
+        completo,
+        { widthCm: 8.5 },
+      );
+      expect(soLargura).toMatchObject({ productWidthCm: 8.5, productHeightCm: null });
+    });
+
+    it('estimativa da UI (dimensionsKnown false) NAO vira medida real', () => {
+      // O mockup sairia em escala errada com cara de certo — pior que nao sair.
+      expect(medidasAutoritativas({ dimensionsKnown: false }, 8.5, 9.5)).toBeUndefined();
+    });
+
+    it('medida autoritativa passa; dimensionsKnown ausente conta como autoritativa', () => {
+      expect(medidasAutoritativas({ dimensionsKnown: true }, 8.5, 9.5)).toEqual({
+        widthCm: 8.5,
+        heightCm: 9.5,
+      });
+      expect(medidasAutoritativas({}, 8.5, 9.5)).toEqual({ widthCm: 8.5, heightCm: 9.5 });
+    });
+
+    it('nao inventa medida quando o chamador passa objeto vazio', () => {
+      const req = buildKitMockupRequest('Caneca', 'https://cdn.test/caneca.jpg', completo, {});
+      expect(req).toMatchObject({ productWidthCm: null, productHeightCm: null });
     });
   });
 });

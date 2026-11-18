@@ -104,6 +104,7 @@ vi.mock('@/components/seo/PageSEO', () => ({
 
 vi.mock('@/components/quotes/QuoteAutoSave', () => ({
   QuoteAutoSave: () => <div data-testid="quote-autosave" />,
+  QuoteDraftRecovery: () => null,
 }));
 
 vi.mock('@/components/quotes/CompanyContactSelector', () => ({

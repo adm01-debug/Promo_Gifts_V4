@@ -286,7 +286,22 @@ export function useProductMatch(
   filters: Partial<MatchFilters> = {},
 ): { matches: MatchResult[]; isProcessing: boolean } {
   const mergedFilters: MatchFilters = { ...DEFAULT_FILTERS, ...filters };
-  const matchTypesKey = (mergedFilters.matchTypes || []).join(',');
+  // `Partial<MatchFilters>` aceita `{ matchTypes: undefined }`, e o spread com a chave
+  // presente SOBRESCREVE o default — então `mergedFilters.matchTypes` pode não ser array
+  // mesmo vindo de código tipado. Sem esta normalização, o `.includes` abaixo lança
+  // TypeError dentro do useMemo e derruba a árvore React do componente que usa o hook.
+  // A guarda existia em salvo/codex-fix-gate1-kit-pdf-types-261109-2252:
+  // src/hooks/useProductMatch.ts:144-158 e foi perdida na mudança de pasta; a linha do
+  // matchTypesKey já antecipava o valor falsy, mas a proteção não chegou ao uso real.
+  // `undefined` cai nos defaults (omitir o campo e passá-lo vazio são a mesma intenção);
+  // qualquer outro não-array vira conjunto vazio, que não casa com nada.
+  const selectedMatchTypes: MatchResult['matchType'][] =
+    mergedFilters.matchTypes === undefined
+      ? DEFAULT_FILTERS.matchTypes
+      : Array.isArray(mergedFilters.matchTypes)
+        ? mergedFilters.matchTypes
+        : [];
+  const matchTypesKey = selectedMatchTypes.join(',');
 
   const matches = useMemo(() => {
     if (!sourceProduct || allProducts.length === 0) return [];
@@ -312,7 +327,7 @@ export function useProductMatch(
       const sharedTokens = intersectionSize(sourceTokens, candTokens);
       const matchType = getMatchType({ hasComplementary, nameSim, sharedTokens });
 
-      if (!mergedFilters.matchTypes.includes(matchType)) continue;
+      if (!selectedMatchTypes.includes(matchType)) continue;
 
       results.push({ product: candidate, score, reasons, matchType, nameSim });
     }

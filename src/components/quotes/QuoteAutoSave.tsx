@@ -39,7 +39,8 @@ interface QuoteAutoSaveProps {
   serverSavedAt?: number;
 }
 
-const STORAGE_KEY_PREFIX = 'quote_draft_';
+import { chaveDoRascunho, mesclarComBaseRestaurada } from '@/hooks/quotes/restoredDraftBase';
+
 const MAX_VERSIONS = 5;
 
 export function QuoteAutoSave({
@@ -65,7 +66,7 @@ export function QuoteAutoSave({
   }, [onChange]);
 
   // Storage key único para este orçamento
-  const storageKey = `${STORAGE_KEY_PREFIX}${quoteId || 'new'}`;
+  const storageKey = chaveDoRascunho(quoteId);
 
   // Cleanup timers on unmount
   // BUG-H FIX: clear edit-mode localStorage entries on unmount to prevent orphan accumulation
@@ -157,7 +158,10 @@ export function QuoteAutoSave({
       // Criar nova versão
       const newDraft: QuoteDraft = {
         id: quoteId || 'new',
-        data: dataRef.current,
+        // GUARD: preserva as chaves que vieram de um rascunho restaurado e que esta
+        // tela nao modela (ver src/lib/quotes/restoredDraftBase.ts). Sem isto, a
+        // primeira gravacao apos restaurar apagava essa parte do rascunho.
+        data: mesclarComBaseRestaurada(storageKey, dataRef.current),
         savedAt: new Date().toISOString(),
         version: Date.now(),
       };
@@ -368,7 +372,7 @@ export function QuoteAutoSave({
 
 // Hook para usar o auto-save de forma imperativa
 export function useQuoteAutoSave(quoteId?: string) {
-  const storageKey = `${STORAGE_KEY_PREFIX}${quoteId || 'new'}`;
+  const storageKey = chaveDoRascunho(quoteId);
 
   const saveDraft = useCallback(
     (data: unknown) => {
@@ -422,3 +426,6 @@ export function useQuoteAutoSave(quoteId?: string) {
 
   return { saveDraft, loadDraft, clearDraft };
 }
+
+// Reexport para que o QuoteBuilderPage importe ambos do mesmo módulo (mesmas chaves de rascunho).
+export { QuoteDraftRecovery } from './QuoteDraftRecovery';
