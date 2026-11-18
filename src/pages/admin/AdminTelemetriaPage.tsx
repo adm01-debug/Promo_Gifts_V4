@@ -95,19 +95,9 @@ const AppHealthDashboard = lazy(() =>
     default: m.AppHealthDashboard,
   })),
 );
-const EdgeInvokeLivePanel = lazy(() =>
-  import('@/components/admin/telemetry/EdgeInvokeLivePanel').then((m) => ({
-    default: m.EdgeInvokeLivePanel,
-  })),
-);
-const BridgeAlertsCard = lazy(() =>
-  import('@/components/admin/telemetry/BridgeAlertsCard').then((m) => ({
-    default: m.BridgeAlertsCard,
-  })),
-);
-const BridgesLiveCard = lazy(() =>
-  import('@/components/admin/telemetry/BridgesLiveCard').then((m) => ({
-    default: m.BridgesLiveCard,
+const LiveSurfacesSection = lazy(() =>
+  import('@/components/admin/telemetry/LiveSurfacesSection').then((m) => ({
+    default: m.LiveSurfacesSection,
   })),
 );
 const QuoteBuilderHandoffCard = lazy(() =>
@@ -246,26 +236,10 @@ export default function AdminTelemetriaPage() {
           </Suspense>
         </SectionErrorBoundary>
 
-        {/* Onda 21 — Painel live in-memory da superfície invokeEdgeSafe (sessão atual) */}
-        <SectionErrorBoundary section="telemetry.EdgeInvokeLivePanel" label="edge invokes ao vivo">
-          <Suspense fallback={<CardSkeleton height={360} label="Carregando edge invokes live" />}>
-            <EdgeInvokeLivePanel />
-          </Suspense>
-        </SectionErrorBoundary>
-
-        {/* Alertas configuráveis das bridges (p95 / payload) sobre as amostras da sessão */}
-        <SectionErrorBoundary section="telemetry.BridgeAlertsCard" label="alertas das bridges">
-          <Suspense fallback={<BannerSkeleton />}>
-            <BridgeAlertsCard />
-          </Suspense>
-        </SectionErrorBoundary>
-
-        {/* Bridges ao vivo — por endpoint+operação, bytes de payload e drill-down por request-id */}
-        <SectionErrorBoundary section="telemetry.BridgesLiveCard" label="bridges ao vivo">
-          <Suspense fallback={<CardSkeleton height={360} label="Carregando bridges ao vivo" />}>
-            <BridgesLiveCard />
-          </Suspense>
-        </SectionErrorBoundary>
+        {/* Painéis ao vivo (invokeEdgeSafe + bridges) — ver LiveSurfacesSection */}
+        <Suspense fallback={<CardSkeleton height={360} label="Carregando painéis ao vivo" />}>
+          <LiveSurfacesSection />
+        </Suspense>
 
         {/* Guardrail automático: interrompe regressões antes que afetem usuários */}
         <SectionErrorBoundary
