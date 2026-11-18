@@ -8,6 +8,8 @@
  * https://owasp.org/www-community/attacks/xss/
  */
 
+import { logger } from '@/lib/logger';
+
 const SAFE_URL_PROTOCOLS = new Set(['https:', 'http:']);
 const DANGEROUS_PROTOCOLS = /^(javascript|data|vbscript|file|blob):/i;
 
@@ -99,13 +101,13 @@ export function sanitizeUrl(
     // RESGATE (PR #1726): credencial embutida (user:pass@host) e vetor de
     // exfiltracao — a URL carrega segredo para onde ela for renderizada ou logada.
     if (parsed.username || parsed.password) {
-      console.warn('[SecurityGuard] Blocked URL with embedded credentials');
+      logger.warn('[SecurityGuard] Blocked URL with embedded credentials');
       return null;
     }
 
     // RESGATE (PR #1726): host privado/loopback/link-local — prevencao de SSRF.
     if (SSRF_BLOCKED_HOSTNAME(parsed.hostname)) {
-      console.warn('[SecurityGuard] Blocked SSRF-risk hostname:', parsed.hostname);
+      logger.warn('[SecurityGuard] Blocked SSRF-risk hostname:', parsed.hostname);
       return null;
     }
 
