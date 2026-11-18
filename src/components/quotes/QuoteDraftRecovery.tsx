@@ -52,6 +52,7 @@ import {
   type QuoteDraftSnapshot,
   type StoredQuoteDraft,
 } from '@/hooks/quotes/quoteDraftApply';
+import { chaveDoRascunho, registrarBaseRestaurada } from '@/hooks/quotes/restoredDraftBase';
 
 interface QuoteDraftRecoveryProps {
   s: QuoteDraftApplyTarget & QuoteDraftSnapshot & { quoteId?: string; isEditMode: boolean };
@@ -102,6 +103,9 @@ export function QuoteDraftRecovery({ s }: QuoteDraftRecoveryProps) {
     // Idempotência: aplicar duas vezes duplicaria itens do orçamento.
     if (restaurandoRef.current || oferta.tipo !== 'rascunho') return;
     restaurandoRef.current = true;
+    // Registra a base antes de aplicar: o autosave seguinte precisa dela para nao
+    // apagar do rascunho as chaves que esta tela nao modela.
+    registrarBaseRestaurada(chaveDoRascunho(quoteId), oferta.draft.data);
     applyDraftToBuilder(oferta.draft.data, sRef.current);
     setOferta(null);
     toast.success('Rascunho restaurado', {
@@ -138,9 +142,8 @@ export function QuoteDraftRecovery({ s }: QuoteDraftRecoveryProps) {
           <AlertDialogDescription>
             {ilegivel ? (
               <>
-                Existe um rascunho gravado para este orçamento, mas{' '}
-                {TEXTO_ILEGIVEL[oferta.motivo]}. Ele não foi apagado: se precisar, a equipe técnica
-                ainda pode recuperá-lo.
+                Existe um rascunho gravado para este orçamento, mas {TEXTO_ILEGIVEL[oferta.motivo]}.
+                Ele não foi apagado: se precisar, a equipe técnica ainda pode recuperá-lo.
               </>
             ) : (
               <>
