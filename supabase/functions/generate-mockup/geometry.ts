@@ -10,12 +10,14 @@
  * a prova exige um teste que importe a fórmula pura. Mesmo padrão de fetch-guard.ts.
  *
  * Diferenças DELIBERADAS em relação ao cliente:
- *  - sem dimensões reais cadastradas, o cliente ESTIMA 8×20 cm (ou a partir dos limites da
- *    técnica); aqui a MESMA estimativa 8×20 é o fallback — o mockup sai do tamanho que o editor
- *    mostrou. A edge NÃO recusa payload sem dimensões: o kit-builder (buildKitMockupRequest em
- *    PersonalizationConfig.tsx) gera prévia sem productWidthCm/HeightCm e continua gerando.
- *    (A branch de origem recusava com 422 missing_dimensions; essa parte não foi aplicada por
- *    mudar regra de negócio para o usuário final — decisão registrada no commit.)
+ *  - o cliente ESTIMA 8×20 cm sem medidas cadastradas; aqui, sem dimensões reais, o
+ *    handler RECUSA (422 missing_dimensions), espelhando o portão que o cliente já
+ *    aplica antes de invocar (MISSING_DIMENSIONS_REFUSAL em
+ *    src/hooks/mockup/mockupGeneratorModel.ts). A estimativa segue em `cmParaPx`
+ *    apenas como último recurso interno, que o handler nunca alcança.
+ *    Destravado por #3818: `buildKitMockupRequest` (kitMockupDimensions.ts) passou a
+ *    enviar as medidas reais do produto, e o próprio kit-builder recusa antes da
+ *    chamada quando o produto não tem medidas cadastradas.
  *  - o cliente não sanitiza logoWidthCm/logoHeightCm (a entrada dele é local); aqui
  *    valor ≤ 0 cai nos mesmos defaults (5×3 cm) que o `computeLogoPx` anterior usava,
  *    porque a edge é pública e um cm negativo viraria caixa negativa no canvas.
@@ -46,6 +48,10 @@ export const MAX_LOGO_PX = 8 * 1024;
  */
 export const DEFAULT_PRODUCT_FRACTION = 0.85;
 
+/** Código/status do erro de entrada quando faltam as dimensões reais. */
+export const MISSING_DIMENSIONS_ERROR_CODE = "missing_dimensions";
+export const MISSING_DIMENSIONS_STATUS = 422;
+
 const positiveOrNull = (v: unknown): number | null =>
   (typeof v === "number" && Number.isFinite(v) && v > 0) ? v : null;
 
@@ -56,6 +62,44 @@ const fractionOr = (v: unknown): number => {
   const n = typeof v === "number" && Number.isFinite(v) ? v : NaN;
   return (n > 0 && n <= 1) ? n : DEFAULT_PRODUCT_FRACTION;
 };
+
+/** true quando o payload trouxe pelo menos uma dimensão real (cm) > 0. */
+export function hasProductDimensions(
+  productWidthCm: unknown,
+  productHeightCm: unknown,
+): boolean {
+  return positiveOrNull(productWidthCm) !== null || positiveOrNull(productHeightCm) !== null;
+}
+
+export type DimensionsGate =
+  | { ok: true }
+  | {
+    ok: false;
+    status: typeof MISSING_DIMENSIONS_STATUS;
+    errorCode: typeof MISSING_DIMENSIONS_ERROR_CODE;
+    message: string;
+  };
+
+/**
+ * Portão de entrada: sem dimensões reais do produto o servidor RECUSA (422).
+ * O editor assume 8×20 cm nesse caso; o mockup entregue ao cliente não pode
+ * (medida inventada). A edge é pública: sem este portão um chamador direto pula
+ * a regra que a UI já aplica.
+ */
+export function checkProductDimensions(
+  productWidthCm: unknown,
+  productHeightCm: unknown,
+): DimensionsGate {
+  if (hasProductDimensions(productWidthCm, productHeightCm)) return { ok: true };
+  return {
+    ok: false,
+    status: MISSING_DIMENSIONS_STATUS,
+    errorCode: MISSING_DIMENSIONS_ERROR_CODE,
+    message:
+      "Dimensões reais do produto são obrigatórias para gerar o mockup. " +
+      "Envie productWidthCm e/ou productHeightCm (cm) do produto cadastrado.",
+  };
+}
 
 export interface CmParaPxInput {
   /** Largura/altura (px) da imagem do produto já renderizada (object-contain). */
@@ -91,8 +135,9 @@ export function cmParaPx(input: CmParaPxInput): CmParaPxResult {
   const prodW = positiveOrNull(input.productWidthCm);
   const prodH = positiveOrNull(input.productHeightCm);
 
-  // Inferência: uma dimensão conhecida estima a outra (mesma razão do editor); sem nenhuma,
-  // a estimativa 8×20 cm do editor (fallback — ver cabeçalho).
+  // Inferência: uma dimensão conhecida estima a outra (mesma razão do editor).
+  // O caso "nenhuma das duas" é inalcançável pelo handler desde o portão 422
+  // (checkProductDimensions); o 8×20 fica só como último recurso interno.
   const physW = prodW ?? (prodH ? prodH * 0.4 : 8);
   const physH = prodH ?? (prodW ? prodW * 2.5 : 20);
 
