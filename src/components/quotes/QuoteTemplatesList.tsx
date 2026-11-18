@@ -37,6 +37,7 @@ import {
 } from 'lucide-react';
 import { type QuoteTemplate, useQuoteTemplates } from '@/hooks/quotes/useQuoteTemplates';
 import { exportTemplatesToJson, exportSingleTemplate } from '@/utils/templateExport';
+import { textoDoTotal } from '@/lib/quotes/templateTotal';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -96,24 +97,6 @@ export function QuoteTemplatesList({
       style: 'currency',
       currency: 'BRL',
     }).format(value);
-  };
-
-  const calculateTemplateTotal = (template: QuoteTemplate) => {
-    const itemsTotal = template.items.reduce((sum, item) => {
-      const itemBase = item.quantity * item.unitPrice;
-      const personalizationCost =
-        item.personalizations?.reduce((pSum, p) => {
-          return pSum + (p.unitCost || 0) * item.quantity + (p.setupCost || 0);
-        }, 0) || 0;
-      return sum + itemBase + personalizationCost;
-    }, 0);
-
-    const discountValue =
-      template.discount_percent > 0
-        ? itemsTotal * (template.discount_percent / 100)
-        : template.discount_amount;
-
-    return itemsTotal - discountValue;
   };
 
   const handleDelete = async () => {
@@ -303,7 +286,7 @@ export function QuoteTemplatesList({
                       {template.items.length} {template.items.length === 1 ? 'item' : 'itens'}
                     </span>
                     <span className="font-medium text-foreground">
-                      {formatCurrency(calculateTemplateTotal(template))}
+                      {textoDoTotal(template, formatCurrency)}
                     </span>
                   </div>
 
