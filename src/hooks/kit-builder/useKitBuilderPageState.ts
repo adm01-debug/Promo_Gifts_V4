@@ -323,7 +323,11 @@ export function useKitBuilderPageState() {
       toast.error('Adicione uma caixa ou item antes de salvar o kit.');
       return;
     }
-    if (isAutoSaving) {
+    // `isSaving` entra junto porque o atalho Ctrl+S (KitBuilderPage.tsx:186-189)
+    // chama este handler sem olhar estado nenhum — o botão é `disabled`, o atalho
+    // não. Num kit ainda não salvo, `kitId` é undefined nas duas chamadas e o RPC
+    // insere duas vezes: dois kits iguais na lista do vendedor.
+    if (isAutoSaving || isSaving) {
       toast.info(
         'O salvamento automático está em andamento. Aguarde a confirmação antes de salvar novamente.',
       );
@@ -356,6 +360,7 @@ export function useKitBuilderPageState() {
     currentKitId,
     currentRevision,
     isAutoSaving,
+    isSaving,
     kitQuantity,
     kitState,
     quoteClient,

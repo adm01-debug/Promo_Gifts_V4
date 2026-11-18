@@ -46,13 +46,53 @@ import {
   type KitItemPersonalization,
 } from '@/lib/kit-builder';
 import { useProductCustomizationOptions } from '@/hooks/products';
+import {
+  buildKitMockupRequest,
+  medidasAutoritativas,
+  type MedidasProdutoCm,
+} from '@/components/kit-builder/kitMockupDimensions';
+
+/**
+ * Switching the print area is independent of the technique grid, but a technique
+ * only applies to the area it was priced for — if the newly chosen area doesn't
+ * match the currently selected technique's area, the stale technique/price must
+ * be cleared rather than silently kept against a mismatched area.
+ */
+export function reconcilePersonalizationForArea(
+  personalization: KitItemPersonalization,
+  area: FlatArea,
+  currentTechniqueLocationCode?: string,
+): KitItemPersonalization {
+  const techniqueMatchesArea = currentTechniqueLocationCode === area.code;
+  return {
+    ...personalization,
+    positionCode: area.code,
+    positionName: area.name,
+    position: area.name,
+    ...(techniqueMatchesArea
+      ? {}
+      : {
+          techniqueId: undefined,
+          techniqueName: undefined,
+          techniqueCode: undefined,
+          estimatedPrice: undefined,
+          pricedQuantity: undefined,
+          setupCost: undefined,
+          totalPrice: undefined,
+          generatedMockupUrl: undefined,
+        }),
+  };
+}
+
+// Reexport: o payload do mockup mora em kitMockupDimensions.ts (gate de tamanho),
+// mas os consumidores historicos importam daqui — e este arquivo tambem o usa.
+export { buildKitMockupRequest };
 import { SwapItemBanner } from '@/components/kit-builder/SwapItemBanner';
 import { useKitComponentPrintAreas } from '@/hooks/kit-builder/useKitBuilderQueries';
 import { useCustomizationPriceReactive } from '@/hooks/simulation';
 import type { GravacaoLocation } from '@/types/customization';
 import {
   generateMockupApi,
-  type GenerateMockupParams,
 } from '@/hooks/mockup/mockupGenerationService';
 import { toast } from 'sonner';
 import { sanitizeError } from '@/lib/security/sanitize-error';
@@ -132,73 +172,6 @@ export interface FlatArea {
   name: string;
 }
 
-/**
- * Switching the print area is independent of the technique grid, but a technique
- * only applies to the area it was priced for — if the newly chosen area doesn't
- * match the currently selected technique's area, the stale technique/price must
- * be cleared rather than silently kept against a mismatched area.
- */
-export function reconcilePersonalizationForArea(
-  personalization: KitItemPersonalization,
-  area: FlatArea,
-  currentTechniqueLocationCode?: string,
-): KitItemPersonalization {
-  const techniqueMatchesArea = currentTechniqueLocationCode === area.code;
-  return {
-    ...personalization,
-    positionCode: area.code,
-    positionName: area.name,
-    position: area.name,
-    ...(techniqueMatchesArea
-      ? {}
-      : {
-          techniqueId: undefined,
-          techniqueName: undefined,
-          techniqueCode: undefined,
-          estimatedPrice: undefined,
-          pricedQuantity: undefined,
-          setupCost: undefined,
-          totalPrice: undefined,
-          generatedMockupUrl: undefined,
-        }),
-  };
-}
-
-export function buildKitMockupRequest(
-  displayName: string,
-  imageUrl: string | null,
-  personalization: KitItemPersonalization,
-): GenerateMockupParams | null {
-  if (
-    !imageUrl ||
-    !personalization.enabled ||
-    !personalization.techniqueName ||
-    !personalization.artworkUrl
-  ) {
-    return null;
-  }
-
-  return {
-    productImage: imageUrl,
-    productName: displayName,
-    technique: {
-      id: personalization.techniqueId || personalization.techniqueName,
-      name: personalization.techniqueName,
-      code: personalization.techniqueCode || null,
-    },
-    areas: [
-      {
-        id: globalThis.crypto.randomUUID(),
-        name: personalization.positionName || personalization.position || 'Frente',
-        positionX: 50,
-        positionY: 50,
-        logoWidth: personalization.width || 5,
-        logoHeight: personalization.height || 5,
-        logoPreview: personalization.artworkUrl,
-      },
-    ],
-  };
-}
 
 function kitMockupInputFingerprint(
   displayName: string,
@@ -256,6 +229,7 @@ interface ItemPersonalizationCardProps {
   isBox?: boolean;
   kitQuantity: number;
   showInlinePreview?: boolean;
+  dimensoes?: MedidasProdutoCm;
 }
 
 function ItemPersonalizationCard({
@@ -267,6 +241,7 @@ function ItemPersonalizationCard({
   isBox = false,
   kitQuantity,
   showInlinePreview = true,
+  dimensoes,
 }: ItemPersonalizationCardProps) {
   const [isOpen, setIsOpen] = useState(personalization.enabled);
 
@@ -739,6 +714,7 @@ function ItemPersonalizationCard({
                 <PersonalizationPreview
                   displayName={displayName}
                   imageUrl={imageUrl}
+                  dimensoes={dimensoes}
                   personalization={personalization}
                   onChange={onChange}
                 />
@@ -816,6 +792,8 @@ function PersonalizationPriceSynchronizer({
 interface PersonalizationPreviewProps {
   displayName: string;
   imageUrl: string | null;
+  /** Medidas reais do produto (cm); ausentes quando o cadastro nao as tem. */
+  dimensoes?: MedidasProdutoCm;
   personalization: KitItemPersonalization;
   onChange: (config: KitItemPersonalization) => void;
   savedArtworkUrls?: string[];
@@ -824,6 +802,7 @@ interface PersonalizationPreviewProps {
 function PersonalizationPreview({
   displayName,
   imageUrl,
+  dimensoes,
   personalization,
   onChange,
   savedArtworkUrls = [],
@@ -840,7 +819,7 @@ function PersonalizationPreview({
   }, [personalization]);
 
   const handleGenerateMockup = async () => {
-    const request = buildKitMockupRequest(displayName, imageUrl, personalization);
+    const request = buildKitMockupRequest(displayName, imageUrl, personalization, dimensoes);
     if (!request) {
       toast.error('Selecione a técnica e envie uma arte antes de gerar a prévia.');
       return;
@@ -1183,6 +1162,7 @@ export function PersonalizationConfig({
             productId: box.id,
             displayName: box.name,
             imageUrl: box.imageUrl,
+            dimensoes: medidasAutoritativas(box, box.internalWidth, box.internalHeight),
             personalization: boxPersonalization,
             onChange: onBoxPersonalizationChange,
             isBox: true,
@@ -1197,6 +1177,7 @@ export function PersonalizationConfig({
         productId: item.id,
         displayName: item.name,
         imageUrl: item.imageUrl,
+        dimensoes: medidasAutoritativas(item, item.width, item.height),
         personalization: itemPersonalizations[lineId] ??
           itemPersonalizations[item.id] ?? { enabled: false },
         onChange: (config: KitItemPersonalization) => onItemPersonalizationChange(lineId, config),
@@ -1380,6 +1361,7 @@ export function PersonalizationConfig({
                 isBox={activeTarget.isBox}
                 kitQuantity={activeTarget.quantity}
                 showInlinePreview={false}
+                dimensoes={activeTarget.dimensoes}
               />
             </div>
 
@@ -1387,6 +1369,7 @@ export function PersonalizationConfig({
               key={activeTarget.key}
               displayName={activeTarget.displayName}
               imageUrl={activeTarget.imageUrl}
+              dimensoes={activeTarget.dimensoes}
               personalization={activeTarget.personalization}
               onChange={activeTarget.onChange}
               savedArtworkUrls={savedArtworkUrls}
