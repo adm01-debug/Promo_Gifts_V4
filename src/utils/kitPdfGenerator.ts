@@ -13,11 +13,7 @@ import {
   formatDimensions,
   formatVolume,
   generatePriceBreakdown,
-  getKitItemLineId,
   type KitIdentity,
-  type KitItem,
-  type KitItemPersonalization,
-  type KitPersonalization,
   type KitState,
 } from '@/lib/kit-builder';
 import {
@@ -25,6 +21,17 @@ import {
   hasKnownKitPrices,
   KIT_UNKNOWN_PRICE_MESSAGE,
 } from '@/lib/kit-builder/pricing-availability';
+import {
+  GRAY_500,
+  GRAY_800,
+  hexToRgb,
+  PERSONALIZATION,
+  PRIMARY,
+  resolveItemPersonalization,
+  setFill,
+  setText,
+  WHITE,
+} from './kitPdfPrimitives';
 
 interface KitPdfOptions {
   kitState: KitState;
@@ -32,46 +39,6 @@ interface KitPdfOptions {
   /** Defaults to `kitState.name` when omitted. */
   kitName?: string;
   orgName?: string;
-}
-
-// Brand colors. Mutable RGB tuples (não `as const`): é exatamente o tipo
-// `Color` que jspdf-autotable 5.x aceita em `fillColor`/`textColor`, o que
-// dispensa qualquer asserção `as` na passagem para a tabela.
-type RgbColor = [number, number, number];
-
-const PRIMARY: RgbColor = [30, 64, 175]; // blue-700
-const GRAY_800: RgbColor = [31, 41, 55];
-const GRAY_500: RgbColor = [107, 114, 128];
-const WHITE: RgbColor = [255, 255, 255];
-const PERSONALIZATION: RgbColor = [99, 102, 241]; // indigo-500
-
-function setFill(doc: jsPDF, color: RgbColor): void {
-  doc.setFillColor(color[0], color[1], color[2]);
-}
-
-function setText(doc: jsPDF, color: RgbColor): void {
-  doc.setTextColor(color[0], color[1], color[2]);
-}
-
-function hexToRgb(hex?: string): RgbColor | null {
-  if (!hex) return null;
-  const m = /^#?([0-9a-f]{6})$/i.exec(hex.trim());
-  if (!m) return null;
-  const n = parseInt(m[1], 16);
-  return [(n >> 16) & 255, (n >> 8) & 255, n & 255];
-}
-
-/**
- * Personalization is keyed by `KitItem.lineId`; the product id is only a
- * fallback for snapshots persisted before line ids existed. Reading `item.id`
- * first would print the wrong personalization whenever the same product is in
- * the kit twice with different variants.
- */
-function resolveItemPersonalization(
-  personalization: KitPersonalization,
-  item: KitItem,
-): KitItemPersonalization | undefined {
-  return personalization.items[getKitItemLineId(item)] ?? personalization.items[item.id];
 }
 
 function drawHeader(doc: jsPDF, kitName: string, orgName?: string, identity?: KitIdentity): number {
