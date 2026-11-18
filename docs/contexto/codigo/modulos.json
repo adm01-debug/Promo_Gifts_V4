@@ -32541,7 +32541,7 @@
   {
    "modulo": "pages/quotes",
    "arquivos": 16,
-   "testes": 40,
+   "testes": 41,
    "linhas": 4596,
    "itens_menu": [
     "Gestão de Orçamentos",

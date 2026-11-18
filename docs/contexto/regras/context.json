@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "b52dceaeb9cf012304e0c0392ebeaff68fd27011",
+  "sha": "c1b158ceeb3c3b6063835786f99a2efc7d176f1a",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-18 13:15 UTC",
-  "files_total": 10836,
-  "code_files": 8868,
-  "code_lines": 1256465
+  "generated_at": "2026-11-18 14:27 UTC",
+  "files_total": 10837,
+  "code_files": 8869,
+  "code_lines": 1256580
  },
  "version": "1.3.2",
- "facts_hash": "ff544f49f023a4b5",
+ "facts_hash": "202e3c79382bdd08",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -1120,7 +1120,7 @@
   "package_manager": "npm",
   "languages": {
    ".sql": 3440,
-   ".ts": 3019,
+   ".ts": 3020,
    ".tsx": 1944,
    ".mjs": 450,
    ".py": 15,
@@ -150473,8 +150473,8 @@
   },
   {
    "module": "src/pages",
-   "files": 365,
-   "lines": 84306,
+   "files": 366,
+   "lines": 84421,
    "tables": [
     "ai_usage_events",
     "bot_detection_log",
@@ -258199,7 +258199,7 @@
    },
    {
     "file": "src/pages/quotes/__tests__/quote-builder-page-parse.smoke.test.ts",
-    "name": "usa grid grid-cols-1 md:grid-cols-3 gap-3 items-end (empilha em mobile, 3 col em md+)"
+    "name": "usa o grid de 3 colunas com items-end (empilha em mobile, 3 col em md+)"
    },
    {
     "file": "src/pages/quotes/__tests__/quote-builder-page-parse.smoke.test.ts",
@@ -487581,11 +487581,11 @@
   },
   "src/pages/quotes/__tests__/quote-builder-delivery-trigger-width.contract.test.ts": {
    "path": "src/pages/quotes/__tests__/quote-builder-delivery-trigger-width.contract.test.ts",
-   "lines": 22,
+   "lines": 28,
    "is_test": true,
    "rule_comments": [
     "* Guarda: trigger de \"Prazo | Entrega\" deve usar o mesmo grid do card",
-    "<div>\\s*\\{s\\.deliveryMode === 'prazo' \\? \\(/,"
+    "O trigger de Prazo|Entrega tem de viver no grid de 3 colunas. O grid nao"
    ],
    "doc": "Guarda: trigger de \"Prazo | Entrega\" deve usar o mesmo grid do card \"Validade | Proposta\" para ter largura exatamente igual à primeira coluna.",
    "tests": [
@@ -487667,12 +487667,12 @@
   },
   "src/pages/quotes/__tests__/quote-builder-page-parse.smoke.test.ts": {
    "path": "src/pages/quotes/__tests__/quote-builder-page-parse.smoke.test.ts",
-   "lines": 58,
+   "lines": 76,
    "is_test": true,
    "doc": "Smoke estrutural: garante invariantes do bloco Frete no QuoteBuilderPage que previnem regressões de layout em diferentes larguras de tela (mobile empilhado / md+ em 3 colunas) e evitam regressões de JSX mal-balanceado como as que já causaram \"Unexpected token\" no build. Nota: a verificação de compil …",
    "tests": [
     "QuoteBuilderPage — bloco Frete: layout responsivo",
-    "usa grid grid-cols-1 md:grid-cols-3 gap-3 items-end (empilha em mobile, 3 col em md+)",
+    "usa o grid de 3 colunas com items-end (empilha em mobile, 3 col em md+)",
     "labels Frete e Valor R$ vivem dentro das células do grid para não aumentar o container só no fob_pre",
     "input ",
     "não existe bloco full-width legado envolvendo o Valor R$ (mt-1.5 + shipping-cost)",
@@ -487681,7 +487681,7 @@
   },
   "src/pages/quotes/__tests__/quote-builder-shipping-fob-pre-inline.contract.test.ts": {
    "path": "src/pages/quotes/__tests__/quote-builder-shipping-fob-pre-inline.contract.test.ts",
-   "lines": 43,
+   "lines": 51,
    "is_test": true,
    "doc": "Guarda: quando shippingType === 'fob_pre', o campo \"Valor R$\" é renderizado DENTRO do mesmo grid do trigger de Frete (grid grid-cols-1 md:grid-cols-3 gap-3), como 2ª célula — não em bloco full-width abaixo.",
    "tests": [
@@ -487694,7 +487694,7 @@
   },
   "src/pages/quotes/__tests__/quote-builder-shipping-trigger-width.contract.test.ts": {
    "path": "src/pages/quotes/__tests__/quote-builder-shipping-trigger-width.contract.test.ts",
-   "lines": 23,
+   "lines": 30,
    "is_test": true,
    "rule_comments": [
     "* Guarda: trigger do \"Frete\" deve usar o mesmo grid do \"Prazo | Entrega\""
@@ -487864,6 +487864,25 @@
     "handleClearFilters remove status, sort e q da URL",
     "após handleClearFilters, remontar (reload) mantém URL limpa",
     "handleClearFilters é no-op quando URL já está limpa"
+   ]
+  },
+  "src/pages/quotes/__tests__/helpers/jsxLayoutContract.ts": {
+   "path": "src/pages/quotes/__tests__/helpers/jsxLayoutContract.ts",
+   "lines": 76,
+   "is_test": true,
+   "exports": [
+    "function indiceDoTestId",
+    "function classesDaTag",
+    "function classesPorTestId",
+    "function classesFaltando",
+    "function classesDoGridQueEnvolve",
+    "const GRID_3_COLUNAS"
+   ],
+   "enums": [
+    {
+     "name": "GRID_3_COLUNAS",
+     "values": "'grid', 'grid-cols-1', 'md:grid-cols-3', 'gap-3'"
+    }
    ]
   },
   "src/pages/quotes/components/DeliveryModeToggle.tsx": {
@@ -545163,10 +545182,23 @@
   }
  },
  "git": {
-  "sha": "b52dceaeb9cf012304e0c0392ebeaff68fd27011",
+  "sha": "c1b158ceeb3c3b6063835786f99a2efc7d176f1a",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "c1b158c",
+    "date": "2026-11-18",
+    "author": "adm01-debug",
+    "subject": "fix(quotes): contratos de layout param de quebrar quando o prettier reordena classes (#3823)",
+    "files": [
+     "src/pages/quotes/__tests__/helpers/jsxLayoutContract.ts",
+     "src/pages/quotes/__tests__/quote-builder-delivery-trigger-width.contract.test.ts",
+     "src/pages/quotes/__tests__/quote-builder-page-parse.smoke.test.ts",
+     "src/pages/quotes/__tests__/quote-builder-shipping-fob-pre-inline.contract.test.ts",
+     "src/pages/quotes/__tests__/quote-builder-shipping-trigger-width.contract.test.ts"
+    ]
+   },
    {
     "sha": "b52dcea",
     "date": "2026-11-18",
@@ -545501,15 +545533,6 @@
     "files": [
      "tests/hooks/useLegacyLintLifecycle.test.ts"
     ]
-   },
-   {
-    "sha": "3077bc0",
-    "date": "2026-11-17",
-    "author": "adm01-debug",
-    "subject": "test(products): resgata a cobertura de enriquecimento de cor (#3789)",
-    "files": [
-     "tests/hooks/useLegacyLintDerived.test.tsx"
-    ]
    }
   ],
   "hot_files": [
@@ -545550,6 +545573,26 @@
     2
    ],
    [
+    "src/pages/quotes/__tests__/helpers/jsxLayoutContract.ts",
+    1
+   ],
+   [
+    "src/pages/quotes/__tests__/quote-builder-delivery-trigger-width.contract.test.ts",
+    1
+   ],
+   [
+    "src/pages/quotes/__tests__/quote-builder-page-parse.smoke.test.ts",
+    1
+   ],
+   [
+    "src/pages/quotes/__tests__/quote-builder-shipping-fob-pre-inline.contract.test.ts",
+    1
+   ],
+   [
+    "src/pages/quotes/__tests__/quote-builder-shipping-trigger-width.contract.test.ts",
+    1
+   ],
+   [
     "e2e/quotes/no-templates.spec.ts",
     1
    ],
@@ -545571,26 +545614,6 @@
    ],
    [
     "src/components/quotes/AdminTemplatesManager.tsx",
-    1
-   ],
-   [
-    "src/components/quotes/QuoteTemplateForm.tsx",
-    1
-   ],
-   [
-    "src/components/quotes/QuoteTemplatesList.tsx",
-    1
-   ],
-   [
-    "src/components/quotes/SaveAsTemplateButton.tsx",
-    1
-   ],
-   [
-    "src/components/quotes/admin-templates/TemplateGridView.tsx",
-    1
-   ],
-   [
-    "src/components/quotes/admin-templates/TemplateTableView.tsx",
     1
    ]
   ]

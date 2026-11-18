@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "b52dceaeb9cf012304e0c0392ebeaff68fd27011",
+  "commit": "c1b158ceeb3c3b6063835786f99a2efc7d176f1a",
   "branch": "main",
-  "data_commit": "2026-11-18T10:13:46-03:00",
+  "data_commit": "2026-11-18T11:26:00-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "c1b158ce",
+    "data": "2026-11-18",
+    "assunto": "fix(quotes): contratos de layout param de quebrar quando o prettier reordena classes (#3823)"
+   },
    {
     "sha": "b52dceae",
     "data": "2026-11-18",
@@ -126,14 +131,9 @@
     "sha": "dd6464da",
     "data": "2026-11-17",
     "assunto": "fix(hooks): restaura a guarda de matchTypes que a refatoracao de pasta derrubou (#3808)"
-   },
-   {
-    "sha": "ef8a595f",
-    "data": "2026-11-17",
-    "assunto": "feat(quotes): recupera rascunho local ao reabrir orçamento existente (#3805)"
    }
   ],
-  "arquivos_mudados_7d": 1820,
+  "arquivos_mudados_7d": 1473,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -184,12 +184,12 @@
     "mudancas": 78
    },
    {
-    "pasta": "src/pages/admin",
-    "mudancas": 75
+    "pasta": "src/pages/quotes",
+    "mudancas": 78
    },
    {
-    "pasta": "src/pages/quotes",
-    "mudancas": 73
+    "pasta": "src/pages/admin",
+    "mudancas": 75
    },
    {
     "pasta": "src/hooks/mockup",
@@ -322,9 +322,9 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 10908,
-  "arquivos_codigo": 5429,
-  "linhas_codigo": 1035733,
+  "arquivos_total": 10909,
+  "arquivos_codigo": 5430,
+  "linhas_codigo": 1035848,
   "rotas": 139,
   "rotas_http_backend": 13,
   "vistas_por_id": 0,
@@ -336,7 +336,7 @@
   "tabelas": 527,
   "migrations": 3099,
   "cron_jobs": 122,
-  "testes": 2583,
+  "testes": 2584,
   "workflows": 88,
   "scripts": 283,
   "docs_md": 1474
@@ -1939,8 +1939,8 @@
    "linhas": 63
   },
   "src/pages": {
-   "arquivos": 365,
-   "linhas": 84306
+   "arquivos": 366,
+   "linhas": 84421
   },
   "src/routes": {
    "arquivos": 15,

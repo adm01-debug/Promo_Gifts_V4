@@ -24,7 +24,7 @@
   ],
   "testes": [
    "tests/ (1075)",
-   "co-localizado (__tests__) (681)",
+   "co-localizado (__tests__) (682)",
    "e2e/ (625)"
   ],
   "edge_functions": "supabase/functions",
@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "fix(quotes): contratos de layout param de quebrar quando o prettier reordena classes (#3823)",
    "feat(revert-3361): devolve os painéis do carrinho e as telas de template de orçamento (#3817)",
    "fix(ci): Gate 0 passa a barrar qualquer project-ref não canônico em migration (#3806)",
    "docs(resgate): preserva as 2 notas de sessao que so existiam em branch (#3803)",
-   "docs(resgate): prova byte a byte das 32 branches `salvo`, com recibo por branch — e a fila que ainda falta (#3801)",
-   "feat(kit-builder): previa de mockup passa a enviar as medidas reais do produto (#3818)"
+   "docs(resgate): prova byte a byte das 32 branches `salvo`, com recibo por branch — e a fila que ainda falta (#3801)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",

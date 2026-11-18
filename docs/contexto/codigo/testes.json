@@ -5,13 +5,13 @@
   "vitest",
   "playwright"
  ],
- "total": 2583,
+ "total": 2584,
  "por_tipo": {
   "contrato": 66,
   "e2e": 677,
   "pytest": 5,
   "qa": 17,
-  "unit": 1818
+  "unit": 1819
  },
  "onde_ficam": [
   {
@@ -20,7 +20,7 @@
   },
   {
    "padrao": "co-localizado (__tests__)",
-   "arquivos": 681
+   "arquivos": 682
   },
   {
    "padrao": "e2e/",
@@ -10886,6 +10886,13 @@
    "casos": 8
   },
   {
+   "arquivo": "src/pages/quotes/__tests__/helpers/jsxLayoutContract.ts",
+   "tipo": "unit",
+   "linhas": 76,
+   "testa": [],
+   "casos": 0
+  },
+  {
    "arquivo": "src/pages/quotes/__tests__/quote-builder-calendar-popover.contract.test.ts",
    "tipo": "contrato",
    "linhas": 26,
@@ -10902,7 +10909,7 @@
   {
    "arquivo": "src/pages/quotes/__tests__/quote-builder-delivery-trigger-width.contract.test.ts",
    "tipo": "contrato",
-   "linhas": 22,
+   "linhas": 28,
    "testa": [],
    "casos": 1
   },
@@ -10952,21 +10959,21 @@
   {
    "arquivo": "src/pages/quotes/__tests__/quote-builder-page-parse.smoke.test.ts",
    "tipo": "unit",
-   "linhas": 58,
+   "linhas": 76,
    "testa": [],
    "casos": 5
   },
   {
    "arquivo": "src/pages/quotes/__tests__/quote-builder-shipping-fob-pre-inline.contract.test.ts",
    "tipo": "contrato",
-   "linhas": 43,
+   "linhas": 51,
    "testa": [],
    "casos": 4
   },
   {
    "arquivo": "src/pages/quotes/__tests__/quote-builder-shipping-trigger-width.contract.test.ts",
    "tipo": "contrato",
-   "linhas": 23,
+   "linhas": 30,
    "testa": [],
    "casos": 2
   },
