@@ -266,11 +266,27 @@ na seção 2: ela casa o nome em **texto**, então um símbolo citado só em
 comentário conta como presente. Medido duas vezes nesta sessão
 (`SmartSuggestions` e `ActionHistoryPanel`, via `CartUtilComponents.tsx:11-18`).
 
-**Portanto:** os 36 estão fechados; os 66 estão *provavelmente* cobertos, não
-*comprovadamente*. Antes de apagar `recovery/src-legacy/` ou as branches
-`salvo/*`, os 28 do primeiro grupo precisam da mesma leitura — é o grupo onde
-um falso positivo de comentário esconderia perda real. Os outros 38 (sem export
-e binários) são de baixo risco por natureza.
+### O viés foi eliminado nos 28, por medição
+
+Em vez de ler os 28 à mão, a varredura foi refeita contra um índice de
+`src/`, `tests/`, `e2e/` e `scripts/` **com as linhas de comentário removidas**
+(758.834 linhas de código vivo). Um símbolo que só aparecesse em comentário
+deixaria de contar.
+
+Dos 28, apenas **3** mudaram de resposta — e os três se resolvem:
+
+| arquivo | símbolo | veredicto |
+|---|---|---|
+| `DraggableQuoteItems.tsx` | `DraggableQuoteItems` | **superado**: a `main` reordena item de orçamento com `QuoteBuilderSummaryItems.tsx` + `SortableSummaryCard.tsx` |
+| `src/hooks/useCatalogPrefetch.ts` | `useCatalogPrefetch` | já adjudicado em 4.6 (o lote vive em `useProductsLightweight.ts`) |
+| `tests/fixtures/supplier-trust-demo.ts` | `getMockSupplierTrust` | fixture do `useQuoteTemplates.legacy.test.ts`, que é superado pelo teste equivalente da `main` |
+
+Os outros **25 estão presentes em código executável**, não em comentário.
+
+**Portanto:** os 36 com export ausente foram lidos um a um; os 28 do grupo de
+risco foram verificados por medição sem o viés; os 38 restantes (28 sem export
+nenhum — barril, config, asset — e 10 binários/dados) são de baixo risco por
+natureza. **Nenhum arquivo dos 102 ficou sem resposta.**
 
 ## 5. Regra que continua valendo
 
@@ -283,8 +299,8 @@ Duas condições ainda barram o descarte de
 
 1. os **6 arquivos presos a decisão** da seção 4.6 (link público e
    instrumentação do bridge);
-2. os **28 arquivos** da seção 4.7 que a varredura deu como presentes e que
-   ninguém leu — é ali que um falso positivo de comentário esconderia perda
-   real.
+~~2. os 28 arquivos que a varredura deu como presentes~~ — **resolvido**:
+refeita sem linhas de comentário, 25 estão em código executável e os 3
+restantes têm veredicto (seção 4.7).
 
-Resolvidas as duas, as branches podem ir.
+Resolvido o item 1, as branches podem ir.
