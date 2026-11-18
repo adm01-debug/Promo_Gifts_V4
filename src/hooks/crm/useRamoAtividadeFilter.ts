@@ -19,6 +19,12 @@ export interface UseRamoAtividadeFilterReturn {
   error: Error | null;
   toggleRamo: (ramoSlug: string) => void;
   toggleSegmento: (segmentoSlug: string) => void;
+  /**
+   * Busca textual por nome/slug de segmento. `filterState.searchTerm` existia no
+   * estado desde a criacao do hook, mas nada o escrevia e nada o lia: o filtro era
+   * morto. Agora filtra `segmentos` e conta em `hasActiveFilters`.
+   */
+  setSearchTerm: (term: string) => void;
   clearAll: () => void;
   hasActiveFilters: boolean;
   selectedCount: number;
@@ -107,12 +113,19 @@ export function useRamoAtividadeFilter(): UseRamoAtividadeFilterReturn {
     });
   }, []);
 
+  const setSearchTerm = useCallback((term: string) => {
+    setFilterState((prev) => (prev.searchTerm === term ? prev : { ...prev, searchTerm: term }));
+  }, []);
+
   const clearAll = useCallback(() => {
     setFilterState({ selectedRamos: [], selectedSegmentos: [], searchTerm: '' });
   }, []);
 
+  const termoBusca = filterState.searchTerm.trim().toLowerCase();
   const hasActiveFilters =
-    filterState.selectedRamos.length > 0 || filterState.selectedSegmentos.length > 0;
+    filterState.selectedRamos.length > 0 ||
+    filterState.selectedSegmentos.length > 0 ||
+    termoBusca.length > 0;
   const selectedCount = filterState.selectedRamos.length + filterState.selectedSegmentos.length;
 
   const selectedRamosSet = useMemo(
@@ -141,11 +154,19 @@ export function useRamoAtividadeFilter(): UseRamoAtividadeFilterReturn {
     [byRamo, selectedSegmentosSet],
   );
 
-  // Segmentos filtrados
+  // Segmentos filtrados: ramo selecionado E, se houver, o termo de busca.
   const filteredSegmentos = useMemo(() => {
-    if (selectedRamosSet.size === 0) return segmentos;
-    return segmentos.filter((s) => selectedRamosSet.has(s.ramo_slug));
-  }, [segmentos, selectedRamosSet]);
+    const porRamo =
+      selectedRamosSet.size === 0
+        ? segmentos
+        : segmentos.filter((s) => selectedRamosSet.has(s.ramo_slug));
+    if (termoBusca.length === 0) return porRamo;
+    return porRamo.filter((s) => {
+      const nome = s.segmento_name?.toLowerCase() ?? '';
+      const slug = s.segmento_slug?.toLowerCase() ?? '';
+      return nome.includes(termoBusca) || slug.includes(termoBusca);
+    });
+  }, [segmentos, selectedRamosSet, termoBusca]);
 
   const isRamoSelected = useCallback(
     (ramoSlug: string) => selectedRamosSet.has(ramoSlug),
@@ -180,6 +201,7 @@ export function useRamoAtividadeFilter(): UseRamoAtividadeFilterReturn {
     error,
     toggleRamo,
     toggleSegmento,
+    setSearchTerm,
     clearAll,
     hasActiveFilters,
     selectedCount,

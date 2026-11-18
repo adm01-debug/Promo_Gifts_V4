@@ -115,3 +115,21 @@ export const quoteDraftRecoverySchema = z
     items: z.array(item).nullish(),
   })
   .passthrough();
+
+/**
+ * Valida o rascunho lido do localStorage antes de ele virar estado do construtor.
+ *
+ * GUARD: o envelope e do disco do vendedor e pode estar corrompido ou editado a
+ * mao. Sem isto, um `quantity: 'bad'` ou um item sem `product_id` entrava direto
+ * no estado e o construtor mostrava preco NaN. Recusar NAO apaga o storage — o
+ * rascunho e a unica copia do trabalho do vendedor e fica para investigacao.
+ */
+export function rascunhoRestauradoEValido(
+  raw: unknown,
+  aoRecusar: (motivo: unknown) => void,
+): boolean {
+  const parsed = quoteDraftRecoverySchema.safeParse(raw);
+  if (parsed.success) return true;
+  aoRecusar(parsed.error.issues);
+  return false;
+}
