@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Slider } from '@/components/ui/slider';
 import { Badge } from '@/components/ui/badge';
@@ -37,8 +37,24 @@ export function LogoSizeControls({
   // Vínculo de proporções: ligado, cada lado arrasta o outro mantendo a razão
   // largura:altura da área, para o logo inteiro ser exibido sem distorção.
   const [aspectLinked, setAspectLinked] = useState(true);
-  const ratio = logoWidth > 0 && logoHeight > 0 ? logoWidth / logoHeight : 1;
   const round2 = (n: number) => Math.round(n * 100) / 100;
+
+  /**
+   * GUARD: a razão vem de uma referência estável, não das medidas exibidas.
+   *
+   * As medidas são arredondadas em 2 casas a cada ajuste (`round2`). Recalcular
+   * `logoWidth / logoHeight` a partir delas fazia a razão escorregar um pouco a
+   * cada clique — exatamente a distorção que o vínculo promete evitar — e
+   * deixava "Máxima" parar antes do limite da área (medido: 7×3 cm viravam
+   * 6,99×3 depois de quatro ajustes, com a razão caindo de 2,3333 para 2,3298).
+   * Guardando a razão do primeiro tamanho conhecido, o arredondamento afeta só
+   * o que é exibido, nunca a proporção usada na conta seguinte.
+   */
+  const razaoRef = useRef<number | null>(null);
+  if (logoWidth > 0 && logoHeight > 0 && razaoRef.current === null) {
+    razaoRef.current = logoWidth / logoHeight;
+  }
+  const ratio = razaoRef.current ?? 1;
 
   // Com o vínculo ligado, o intervalo da dimensão editada já embute os limites
   // da dimensão vinculada: o corte vira um fator comum aos dois eixos, então a
@@ -233,7 +249,17 @@ export function LogoSizeControls({
             className="h-7 gap-1.5 px-2 text-[10px]"
             aria-pressed={aspectLinked}
             aria-label={`Vínculo de proporções (${aspectLinked ? 'ligado' : 'desligado'})`}
-            onClick={() => setAspectLinked((v) => !v)}
+            onClick={() =>
+              setAspectLinked((ligado) => {
+                // Religar o vínculo adota a proporção ATUAL: com ele desligado o
+                // vendedor pode ter mudado um lado de propósito, e a razão antiga
+                // desfaria essa escolha no ajuste seguinte.
+                if (!ligado && logoWidth > 0 && logoHeight > 0) {
+                  razaoRef.current = logoWidth / logoHeight;
+                }
+                return !ligado;
+              })
+            }
           >
             {aspectLinked ? (
               <Lock aria-hidden="true" className="h-3 w-3 text-primary" />
