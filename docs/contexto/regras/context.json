@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "91ffe71a865b2d21391e2e86dea7cc55316b33ff",
+  "sha": "74f6954d34eff0c5a659438c36f8f3daab553fb0",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-18 19:11 UTC",
-  "files_total": 10876,
-  "code_files": 8903,
-  "code_lines": 1262097
+  "generated_at": "2026-11-18 19:29 UTC",
+  "files_total": 10877,
+  "code_files": 8904,
+  "code_lines": 1262201
  },
  "version": "1.3.2",
- "facts_hash": "81b927ba267866b8",
+ "facts_hash": "e3686a1162e30b0b",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -1120,7 +1120,7 @@
   "package_manager": "npm",
   "languages": {
    ".sql": 3440,
-   ".ts": 3037,
+   ".ts": 3038,
    ".tsx": 1961,
    ".mjs": 450,
    ".py": 15,
@@ -144993,7 +144993,7 @@
     "file": ".github/workflows/wraparound-monitor-report.yml"
    }
   ],
-  "components_count": 1694,
+  "components_count": 1695,
   "hooks": [
    {
     "name": "useQuoteComments",
@@ -148927,7 +148927,7 @@
   {
    "module": "e2e",
    "files": 626,
-   "lines": 75847,
+   "lines": 75857,
    "tables": [
     "discount_approval_requests",
     "quote_items"
@@ -149636,8 +149636,8 @@
   },
   {
    "module": "src/components",
-   "files": 1421,
-   "lines": 281533,
+   "files": 1422,
+   "lines": 281623,
    "tables": [
     "admin_audit_log",
     "art_file_attachments",
@@ -151740,7 +151740,7 @@
   {
    "module": "tests",
    "files": 1091,
-   "lines": 171806,
+   "lines": 171810,
    "tables": [
     "bot_detection_log",
     "clients",
@@ -231530,6 +231530,26 @@
    {
     "file": "src/components/common/__tests__/IntelligenceBadges.adversarial.test.tsx",
     "name": "[REGRESSÃO] best-seller ainda visível quando toggle ON"
+   },
+   {
+    "file": "src/components/common/spotlight/__tests__/SpotlightItems.test.ts",
+    "name": "buildSpotlightItems"
+   },
+   {
+    "file": "src/components/common/spotlight/__tests__/SpotlightItems.test.ts",
+    "name": "leva às três rotas que o Ctrl+K legado tinha e o Spotlight havia perdido"
+   },
+   {
+    "file": "src/components/common/spotlight/__tests__/SpotlightItems.test.ts",
+    "name": "navega para o path declarado — action e path não podem divergir"
+   },
+   {
+    "file": "src/components/common/spotlight/__tests__/SpotlightItems.test.ts",
+    "name": "não repete id, nem destino dentro da navegação"
+   },
+   {
+    "file": "src/components/common/spotlight/__tests__/SpotlightItems.test.ts",
+    "name": "todo item tem título e categoria para a paleta agrupar"
    },
    {
     "file": "src/components/compare/__tests__/SupplierComparisonModal.test.tsx",
@@ -407168,9 +407188,8 @@
   },
   "e2e/carrinhos/sidebar-no-legacy-labels.spec.ts": {
    "path": "e2e/carrinhos/sidebar-no-legacy-labels.spec.ts",
-   "lines": 73,
+   "lines": 83,
    "is_test": true,
-   "doc": "E2E smoke: CartSidebar pós-faxina não renderiza painéis legados. Trava qualquer regressão visual que reintroduza \"Saúde do carrinho\" / \"Inteligência de vendas\" / \"Histórico de ações\" / \"Sugestões inteligentes\" no sidebar. Roda no workflow `cart-quality.yml` sempre que `src/pages/products/seller-cart …",
    "temporal": [
     "await expect(actionsMenu).toBeVisible({ timeout: 60_000 });"
    ],
@@ -441229,7 +441248,7 @@
   },
   "src/components/common/spotlight/SpotlightItems.ts": {
    "path": "src/components/common/spotlight/SpotlightItems.ts",
-   "lines": 278,
+   "lines": 313,
    "exports": [
     "interface SpotlightItem",
     "function buildSpotlightItems"
@@ -441240,6 +441259,19 @@
     "Dev / Técnico (visível apenas a dev — filtrado em runtime)"
    ],
    "doc": "Spotlight navigation items definition — extracted from EnhancedSpotlight Cada item declara `path` quando aponta para uma rota; isso permite que `filterByRoutePermission` esconda itens restritos para usuários sem o papel exigido (defesa em profundidade — DevRoute/AdminRoute também bloqueiam o acesso …"
+  },
+  "src/components/common/spotlight/__tests__/SpotlightItems.test.ts": {
+   "path": "src/components/common/spotlight/__tests__/SpotlightItems.test.ts",
+   "lines": 55,
+   "is_test": true,
+   "doc": "Contrato do Ctrl+K: toda rota declarada por um item precisa existir de verdade, e os destinos não podem se repetir. Motivo: a paleta legada (recovery/src-legacy/src/components/command/ commandActions.tsx) tinha 22 ações; ao virar Spotlight, /novidades, /filtros e /estoque ficaram para trás sem regis …",
+   "tests": [
+    "buildSpotlightItems",
+    "leva às três rotas que o Ctrl+K legado tinha e o Spotlight havia perdido",
+    "navega para o path declarado — action e path não podem divergir",
+    "não repete id, nem destino dentro da navegação",
+    "todo item tem título e categoria para a paleta agrupar"
+   ]
   },
   "src/components/compare/AIComparisonAdvisor.tsx": {
    "path": "src/components/compare/AIComparisonAdvisor.tsx",
@@ -539307,13 +539339,12 @@
   },
   "tests/pages/legacy-KitBuilder.partial-preservation.test.tsx": {
    "path": "tests/pages/legacy-KitBuilder.partial-preservation.test.tsx",
-   "lines": 334,
+   "lines": 338,
    "is_test": true,
    "errors": [
     ")).toHaveTextContent("
    ],
    "rule_comments": [
-    "= 0 ocorrencias; src/utils/ tem apenas productPdfExport.ts e",
     "--listFiles` nao lista o arquivo), entao a validacao possivel e vitest + eslint —"
    ],
    "tests": [
@@ -547179,10 +547210,22 @@
   }
  },
  "git": {
-  "sha": "91ffe71a865b2d21391e2e86dea7cc55316b33ff",
+  "sha": "74f6954d34eff0c5a659438c36f8f3daab553fb0",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "74f6954",
+    "date": "2026-11-18",
+    "author": "adm01-debug",
+    "subject": "fix(test): dois guardas afirmavam o contrário do que a main faz hoje (#3843)",
+    "files": [
+     "e2e/carrinhos/sidebar-no-legacy-labels.spec.ts",
+     "src/components/common/spotlight/SpotlightItems.ts",
+     "src/components/common/spotlight/__tests__/SpotlightItems.test.ts",
+     "tests/pages/legacy-KitBuilder.partial-preservation.test.tsx"
+    ]
+   },
    {
     "sha": "91ffe71",
     "date": "2026-11-18",
@@ -547554,19 +547597,6 @@
      "src/hooks/__tests__/useAutoSaveQuote.legacy.test.ts",
      "tests/components/FavoritePresentationLauncher.legacy-compat.test.tsx"
     ]
-   },
-   {
-    "sha": "b2cc12e",
-    "date": "2026-11-17",
-    "author": "adm01-debug",
-    "subject": "fix(orcamentos): gravar rascunho nao apaga mais os campos que a tela nao modela (#3814)",
-    "files": [
-     "src/components/quotes/QuoteAutoSave.tsx",
-     "src/components/quotes/QuoteDraftRecovery.tsx",
-     "src/hooks/quotes/restoredDraftBase.ts",
-     "tests/components/QuoteAutoSave.preservaBase.test.tsx",
-     "tests/hooks/restoredDraftBase.test.ts"
-    ]
    }
   ],
   "hot_files": [
@@ -547627,27 +547657,27 @@
     2
    ],
    [
+    "e2e/carrinhos/sidebar-no-legacy-labels.spec.ts",
+    1
+   ],
+   [
+    "src/components/common/spotlight/SpotlightItems.ts",
+    1
+   ],
+   [
+    "src/components/common/spotlight/__tests__/SpotlightItems.test.ts",
+    1
+   ],
+   [
+    "tests/pages/legacy-KitBuilder.partial-preservation.test.tsx",
+    1
+   ],
+   [
     "docs/agentes/resgates/2026-11-18-recibo-sessao-2.md",
     1
    ],
    [
     "package.json",
-    1
-   ],
-   [
-    "src/components/mockup/logo-editor/LogoSizeControls.tsx",
-    1
-   ],
-   [
-    "tests/components/mockup/acceptance/grupo4.acceptance.test.tsx",
-    1
-   ],
-   [
-    "tests/components/mockup/acceptance/grupo7.acceptance.test.tsx",
-    1
-   ],
-   [
-    "src/components/mockup/MockupSwitchNotice.tsx",
     1
    ]
   ]

@@ -24,7 +24,7 @@
   ],
   "testes": [
    "tests/ (1076)",
-   "co-localizado (__tests__) (698)",
+   "co-localizado (__tests__) (699)",
    "e2e/ (625)"
   ],
   "edge_functions": "supabase/functions",
@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "fix(test): dois guardas afirmavam o contrário do que a main faz hoje (#3843)",
    "fix(test): e2e ainda exigia que \"Usar template\" não existisse no construtor (#3841)",
    "docs(resgate): recibo da sessão 2 — PRs fechadas sem merge e os 51 arquivos do legado (#3840)",
    "fix(mockup): vínculo de proporção para de distorcer a logo a cada ajuste (#3838)",
-   "feat(mockup): avisa o vendedor quando o kill-switch de mockup estiver desligado (#3839)",
-   "feat(quotes): liga o funil de orçamentos à tela e para de chamar expirado de rascunho (#3836)"
+   "feat(mockup): avisa o vendedor quando o kill-switch de mockup estiver desligado (#3839)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",

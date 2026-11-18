@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.3.2 · commit `91ffe71a86` · branch `main` · 2026-11-18 19:11 UTC
+> Gerado automaticamente por AI Context Sync v1.3.2 · commit `74f6954d34` · branch `main` · 2026-11-18 19:29 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -6623,7 +6623,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `admin` | `supabase/migrations/20261112120500_fix_optimization_queue_rpcs_dev_access.sql` |
 | `anon` | `tests/edge-functions/live/_live-client.ts` |
 
-## K. Testes como especificação (22564 testes em 2278 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (22569 testes em 2279 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -6927,7 +6927,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `e2e/dashboard-modules.spec.ts` | 18 | Dashboard Modules - Public Access (No Auth) · should redirect to auth when accessing ${route.path} unauthenticated · should display auth page for all dashboard routes · should not expose observability/metrics data to unauthenticated users … |
 | `e2e/stock-module.spec.ts` | 18 | Stock Module - Public Access (No Auth) · should redirect to auth when accessing /estoque unauthenticated · should display auth page when accessing /estoque · should not expose stock data to unauthenticated users … |
 | `e2e/magazine/magazine-viewer.spec.ts` | 18 | Magazine viewer — atalhos de teclado · → avança página, ← volta, Home/End extremos · T abre sumário, ? abre ajuda, B marca página · Space em botão focado NÃO avança página (C2) … |
-| … +1978 linhas — lista completa em `context.json` | | |
+| … +1979 linhas — lista completa em `context.json` | | |
 
 ## L. Eventos de webhook tratados (contratos com sistemas externos)
 
