@@ -1,6 +1,12 @@
 /**
  * KitLibraryStats — cards de estatística da Biblioteca de Kits (KMM-075).
- * "Publicados" usa o mesmo critério do filtro da página (status 'published' ou 'shared').
+ *
+ * O 4o card contava `['published', 'shared']`, status que o app NUNCA grava:
+ * `getPersistedKitStatus` (src/lib/kit-builder/persistence.ts:31) só devolve
+ * 'draft' ou 'ready'. Medido em 2026-11-18 em produção: custom_kits tem 21
+ * 'draft' e 1 'ready', zero 'published'/'shared'. O card mostrava 0 sempre.
+ * Agora conta 'ready', que é o status real de kit terminado — o mesmo critério
+ * do filtro "Prontos" da página.
  */
 import { FileText, Library, Sparkles, Star } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
@@ -29,9 +35,9 @@ export function KitLibraryStats({ kits }: { kits: CustomKitRow[] }) {
       />
       <LibraryStat
         icon={<Sparkles className="h-5 w-5" />}
-        label="Publicados"
-        value={kits.filter((kit) => ['published', 'shared'].includes(kit.status)).length}
-        detail="Compartilhados com clientes"
+        label="Prontos"
+        value={kits.filter((kit) => kit.status === 'ready').length}
+        detail="Fechados e prontos para enviar"
       />
     </div>
   );

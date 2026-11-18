@@ -43,7 +43,12 @@ import { buildCustomKitInsert } from '@/lib/kit-library/buildCustomKitInsert';
 import { sanitizeError } from '@/lib/security/sanitize-error';
 import { cn } from '@/lib/utils';
 
-type KitStatusFilter = 'all' | 'archived' | 'draft' | 'published';
+// 'ready' e não 'published'/'shared': getPersistedKitStatus
+// (src/lib/kit-builder/persistence.ts:31) só grava 'draft' ou 'ready'. O filtro
+// "Publicados" casava com status que nunca existem e vinha sempre vazio, enquanto
+// um kit pronto não aparecia em filtro nenhum. 'archived' fica: persistence.ts:38
+// ainda rotula esse estado e ele é alcançável fora do fluxo de salvar.
+type KitStatusFilter = 'all' | 'archived' | 'draft' | 'ready';
 type LibraryView = 'grid' | 'list';
 
 function getItemsCount(items: unknown): number {
@@ -262,7 +267,7 @@ export default function KitLibraryPage() {
     if (selectedTag && k.tag !== selectedTag) return false;
     if (selectedColor && k.color !== selectedColor) return false;
     if (statusFilter === 'draft' && k.status !== 'draft') return false;
-    if (statusFilter === 'published' && !['published', 'shared'].includes(k.status)) return false;
+    if (statusFilter === 'ready' && k.status !== 'ready') return false;
     if (statusFilter === 'archived' && k.status !== 'archived') return false;
     return true;
   };
@@ -415,7 +420,7 @@ export default function KitLibraryPage() {
               [
                 ['all', 'Todos'],
                 ['draft', 'Rascunhos'],
-                ['published', 'Publicados'],
+                ['ready', 'Prontos'],
                 ['archived', 'Arquivados'],
               ] as const
             ).map(([value, label]) => (
@@ -603,8 +608,14 @@ export default function KitLibraryPage() {
           ) : filteredFavs.length === 0 ? (
             <EmptyState
               icon={<Star className="h-10 w-10" />}
-              title={statusFilter !== 'all' ? 'Nenhum favorito neste filtro' : 'Sem favoritos ainda'}
-              description={statusFilter !== 'all' ? 'Tente outro status ou volte para "Todos".' : 'Marque seus kits favoritos com a estrela para acessá-los rapidamente.'}
+              title={
+                statusFilter !== 'all' ? 'Nenhum favorito neste filtro' : 'Sem favoritos ainda'
+              }
+              description={
+                statusFilter !== 'all'
+                  ? 'Tente outro status ou volte para "Todos".'
+                  : 'Marque seus kits favoritos com a estrela para acessá-los rapidamente.'
+              }
             />
           ) : (
             <div
