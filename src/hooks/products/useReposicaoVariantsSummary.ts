@@ -97,15 +97,19 @@ export function useReposicaoVariantsSummary(productIds: readonly string[]) {
         }
         const rows = ((data ?? []) as unknown[]).filter(isRpcRow);
         const out = new Map<string, Map<string, VariantSummaryEntry>>();
+        // Variante sem nome de cor e lacuna de CADASTRO, nao erro de execucao: ha
+        // produto de variante unica sem dimensao de cor (caixa, conjunto, copo).
+        // Antes saia um `warn` POR VARIANTE a cada refetch — com 46 variantes nesse
+        // estado no catalogo, o console do vendedor enchia de linha repetida a cada
+        // 60s (staleTime). Agora sai UMA linha por busca, com a contagem e uma
+        // amostra, que e o que serve para o catalogo corrigir.
+        const semNomeDeCor: { variant_id: string; product_id: string }[] = [];
         for (const row of rows) {
           const inner = new Map<string, VariantSummaryEntry>();
           for (const v of row.variants_summary ?? []) {
             const k = normalizeColorKey(v.nome);
             if (!k) {
-              log.warn('variant_sem_nome_de_cor', {
-                variant_id: v.variant_id,
-                product_id: row.product_id,
-              });
+              semNomeDeCor.push({ variant_id: v.variant_id, product_id: row.product_id });
               continue;
             }
             inner.set(k, {
@@ -116,6 +120,13 @@ export function useReposicaoVariantsSummary(productIds: readonly string[]) {
             });
           }
           if (inner.size > 0) out.set(row.product_id, inner);
+        }
+        if (semNomeDeCor.length > 0) {
+          log.warn('variantes_sem_nome_de_cor', {
+            total: semNomeDeCor.length,
+            produtos_afetados: new Set(semNomeDeCor.map((x) => x.product_id)).size,
+            amostra: semNomeDeCor.slice(0, 5),
+          });
         }
         return out;
       } catch (err) {
