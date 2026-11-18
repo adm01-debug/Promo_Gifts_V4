@@ -165,8 +165,30 @@ function walkSql(dir) {
 // qualquer ref novo em posição executável é flagrado.
 const LEGACY_GENERATED_SNAPSHOT = 'supabase/migrations-snapshot/ALL_IN_ONE.sql';
 
+// E064b: além do ref proibido nomeado acima, nenhuma migration pode apontar
+// para um projeto que não seja o canônico. A checagem do FORBIDDEN_ID cobre um
+// ref específico; esta é genérica e pega também ref que ninguém catalogou —
+// como nmojwpihnslkssljowjh (projeto Lovable original), que até aqui passava
+// por todos os gates.
+//
+// As duas migrations abaixo são HISTÓRICAS e já aplicadas: cravaram a URL do
+// projeto Lovable em abril/2026 e foram substituídas por
+// supabase/migrations/20260525113000_runtime_edge_function_base_url.sql, que
+// trocou a URL cravada pela resolução em runtime de
+// public.get_edge_functions_base_url(). Verificado no banco canônico: nenhuma
+// função carrega o ref e validate_edge_functions_base_url('prod') devolve
+// ok=true para o canônico. Editá-las não mudaria produção — migration aplicada
+// não é reexecutada — então ficam isentas por nome, e só elas.
+const LEGACY_HARDCODED_REF_FILES = new Set([
+  'supabase/migrations/20260419130037_5f01e5dd-e3d5-4d26-8a08-328d432a05aa.sql',
+  'supabase/migrations/20260419132122_f0173d5d-9d5c-4974-bf22-bfb2f22f7000.sql',
+]);
+// Project ref do Supabase: 20 caracteres [a-z0-9].
+const PROJECT_REF_URL_RE = /https:\/\/([a-z0-9]{20})\.supabase\.co/g;
+
 const migrationFiles = MIGRATIONS_DIRS.flatMap(walkSql);
 const migrationViolations = [];
+const nonCanonicalRefViolations = [];
 
 if (unreadable.length > 0 || migrationFiles.length === 0) {
   console.error(
@@ -183,6 +205,13 @@ for (const f of migrationFiles) {
   if (code.includes(FORBIDDEN_ID) || code.includes(FORBIDDEN_FRAGMENT)) {
     migrationViolations.push(rel);
   }
+  if (!LEGACY_HARDCODED_REF_FILES.has(rel)) {
+    const refsVistos = new Set();
+    for (const match of code.matchAll(PROJECT_REF_URL_RE)) {
+      if (match[1] !== CANONICAL_PROJECT_ID) refsVistos.add(match[1]);
+    }
+    for (const ref of refsVistos) nonCanonicalRefViolations.push(`${rel} \u2192 ${ref}`);
+  }
 }
 
 if (migrationViolations.length > 0) {
@@ -194,4 +223,14 @@ if (migrationViolations.length > 0) {
   process.exit(1);
 }
 
+if (nonCanonicalRefViolations.length > 0) {
+  console.error(
+    `\u274C E064b: project-ref n\u00E3o can\u00F4nico em SQL execut\u00E1vel em ${nonCanonicalRefViolations.length} ocorr\u00EAncia(s):\n` +
+    nonCanonicalRefViolations.map((f) => `   - ${f}`).join('\n') +
+    `\nUse ${CANONICAL_PROJECT_ID}, ou resolva em runtime com public.get_edge_functions_base_url().`,
+  );
+  process.exit(1);
+}
+
 console.log(`\u2705 E064: ${migrationFiles.length} arquivo(s) de migration sem refer\u00EAncia execut\u00E1vel ao project-ref proibido.`);
+console.log(`\u2705 E064b: nenhum project-ref n\u00E3o can\u00F4nico em SQL execut\u00E1vel (${LEGACY_HARDCODED_REF_FILES.size} arquivo(s) hist\u00F3rico(s) isento(s) por nome).`);
