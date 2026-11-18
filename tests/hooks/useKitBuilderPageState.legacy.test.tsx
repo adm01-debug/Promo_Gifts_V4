@@ -182,7 +182,7 @@ describe('Original PageState operational integration preserves its state/actions
     expect(result.current.state.currentKitId).toBe('saved-new');
     expect(result.current.state.currentRevision).toBe(1);
   });
-  it.each(['auto'])('does not race with %s save', async (kind) => {
+  it.each(['auto', 'manual'])('does not race with %s save', async (kind) => {
     m.autoSaving = kind === 'auto';
     m.saving = kind === 'manual';
     const { result } = renderHook(useKitBuilderPageState);
