@@ -297,19 +297,35 @@ export function useMockupDraft(options: UseMockupDraftOptions = {}) {
       }
 
       if (data) {
+        const isAreaRecord = (item: unknown): item is Record<string, unknown> =>
+          typeof item === 'object' && item !== null && !Array.isArray(item);
+        const numberOrNull = (value: unknown): number | null =>
+          typeof value === 'number' && Number.isFinite(value) ? value : null;
+        // jsonb aceita qualquer forma: um campo numerico pode voltar como texto
+        // de uma linha antiga. Sem isto, 'bad' chega a geometria da logo.
+        const numberOr = (value: unknown, fallback: number): number =>
+          typeof value === 'number' && Number.isFinite(value) ? value : fallback;
         const areas = Array.isArray(data.personalization_areas)
-          ? (data.personalization_areas as unknown[]).map((item) => {
-              const a = item as Record<string, unknown>;
+          ? (data.personalization_areas as unknown[]).filter(isAreaRecord).map((a) => {
               return {
                 id: (a.id as string | undefined) || crypto.randomUUID(),
                 name: (a.name as string | undefined) || 'Frente',
-                positionX: (a.positionX as number | undefined) ?? 50,
-                positionY: (a.positionY as number | undefined) ?? 50,
-                logoWidth: (a.logoWidth as number | undefined) ?? 5,
-                logoHeight: (a.logoHeight as number | undefined) ?? 3,
-                logoRotation: (a.logoRotation as number | undefined) ?? 0,
-                logoScale: (a.logoScale as number | undefined) ?? 100,
+                positionX: numberOr(a.positionX, 50),
+                positionY: numberOr(a.positionY, 50),
+                logoWidth: numberOr(a.logoWidth, 5),
+                logoHeight: numberOr(a.logoHeight, 3),
+                logoRotation: numberOr(a.logoRotation, 0),
+                logoScale: numberOr(a.logoScale, 100),
                 logoPreview: (a.logoPreview as string | undefined) || null,
+                // O save grava a área inteira (spread `...a`); a leitura precisa
+                // devolver os limites de gravação, ou o rodapé do AreaCard e a
+                // validação de encaixe da logo somem ao reabrir o rascunho.
+                maxWidthCm: numberOrNull(a.maxWidthCm),
+                maxHeightCm: numberOrNull(a.maxHeightCm),
+                maxColors: numberOrNull(a.maxColors),
+                isCurved: a.isCurved === true,
+                // PersonalizationArea declara techniquesAvailable?: number (sem null)
+                techniquesAvailable: numberOrNull(a.techniquesAvailable) ?? undefined,
               };
             })
           : [];
