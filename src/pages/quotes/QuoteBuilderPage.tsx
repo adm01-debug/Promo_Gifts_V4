@@ -42,7 +42,7 @@ import { format, addDays, startOfDay } from 'date-fns';
 
 import { QuoteItemEditorSheet } from '@/components/quotes/QuoteItemEditorSheet';
 import { CompanyContactSelector } from '@/components/quotes/CompanyContactSelector';
-import { QuoteAutoSave } from '@/components/quotes/QuoteAutoSave';
+import { QuoteAutoSave, QuoteDraftRecovery } from '@/components/quotes/QuoteAutoSave';
 import { QuoteConcurrencyAlert } from '@/components/quotes/QuoteConcurrencyAlert';
 import { QuoteBuilderStepper } from '@/components/quotes/QuoteBuilderStepper';
 import { QuoteBuilderSummaryColumn } from '@/components/quotes/QuoteBuilderSummaryColumn';
@@ -197,6 +197,7 @@ export default function QuoteBuilderPage() {
         serverSavedAt={serverSavedAt}
         className="sr-only pointer-events-none"
       />
+      <QuoteDraftRecovery s={s} />
 
       {conflictInfo && (
         <div className="px-4 pt-4 lg:px-6 xl:px-8">

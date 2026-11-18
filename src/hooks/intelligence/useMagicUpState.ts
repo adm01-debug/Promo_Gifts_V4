@@ -212,6 +212,7 @@ export function useMagicUpState() {
       setSelectedColor(null);
       setSelectedLocationId(null);
       setSelectedTechnique(null);
+      setLoadingColors(false);
       return;
     }
     // Guarda contra resposta fora-de-ordem: ao trocar de produto rapidamente, a
