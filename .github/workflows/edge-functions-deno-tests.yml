@@ -59,11 +59,40 @@ jobs:
       # --allow-all: estes testes leem fixtures, checam env e alguns sobem
       # servidor local. Sem rede externa real — o import map resolve tudo para
       # npm:/jsr:, baixados no passo de cache do próprio setup-deno.
-      - name: deno test
+      # Primeira execucao desta PR mediu: 323 passaram, 99 falharam, 8 ignorados.
+      # As falhas NAO sao testes quebrados: sao testes de integracao AO VIVO que
+      # batem em fake-project.supabase.co / test.supabase.co e morrem em
+      # "dns error: failed to lookup address information". Eles pertencem ao
+      # edge-integration-all.yml, que roda com segredos e funcao publicada —
+      # nao a um job unitario sem rede.
+      #
+      # Por isso o --ignore abaixo lista: (a) os 12 arquivos Vitest, que o
+      # vitest.config ja coleta; (b) os de integracao ao vivo, por caminho.
+      - name: deno test (unitarios, sem rede)
         run: |
+          set -euo pipefail
+
+          # Integracao AO VIVO: pertencem ao edge-integration-all.yml, que roda
+          # com segredos e funcao publicada.
+          AO_VIVO="supabase/functions/tests/integration/"
+          AO_VIVO="$AO_VIVO,supabase/functions/tests/production-readiness.test.ts"
+          AO_VIVO="$AO_VIVO,supabase/functions/tests/security-integration_test.ts"
+          AO_VIVO="$AO_VIVO,supabase/functions/tests/external_db_test.ts"
+          AO_VIVO="$AO_VIVO,supabase/functions/tests/mcp-keys-step-up_test.ts"
+          AO_VIVO="$AO_VIVO,supabase/functions/tests/rls-policies_test.ts"
+          AO_VIVO="$AO_VIVO,supabase/functions/tests/step-up-role-revocation_test.ts"
+          AO_VIVO="$AO_VIVO,supabase/functions/visual-search/integration_test.ts"
+          AO_VIVO="$AO_VIVO,supabase/functions/webhook-inbound/integration_test.ts"
+
+          # Vitest: ja coletados pelo vitest.config.ts.
+          VITEST=$(grep -rl "from 'vitest'" supabase/functions --include='*test*.ts' | sort | paste -sd, -)
+
+          echo "ignorando ao vivo: $AO_VIVO"
+          echo "ignorando vitest:  $VITEST"
+
           deno test \
             --config supabase/functions/deno.json \
             --allow-all \
             --no-check \
-            --ignore=supabase/functions/e2e-cleanup/index.mockups.test.ts,supabase/functions/generate-ad-image/index.imports.test.ts,supabase/functions/generate-ad-image/index.logo.test.ts,supabase/functions/generate-ad-image/index.sanitize.test.ts,supabase/functions/generate-ad-prompt/index.timeout.test.ts,supabase/functions/generate-mockup/fetch-guard.cap.test.ts,supabase/functions/generate-mockup/index.geometry.test.ts,supabase/functions/generate-mockup/index.size.test.ts,supabase/functions/magic-up-score/index.limits.test.ts,supabase/functions/mockup-assistant/index.test.ts,supabase/functions/process-scheduled-reports/index.send-failure.test.ts,supabase/functions/word-magic/index.limits.test.ts \
+            --ignore="$AO_VIVO,$VITEST" \
             supabase/functions/
