@@ -56,7 +56,18 @@ vi.mock('../../src/integrations/supabase/client', () => {
         getSession: vi.fn().mockResolvedValue({ data: { session: { user: { id: 'u1' } } }, error: null })
       },
       from: vi.fn().mockReturnValue(chain), rpc: vi.fn().mockResolvedValue({ data: [] }),
-      functions: { invoke: vi.fn().mockResolvedValue({ data: {}, error: null }) }
+      functions: { invoke: vi.fn().mockResolvedValue({ data: {}, error: null }) },
+      // Realtime: useQuotes.ts:72-90 abre um canal e o encerra no cleanup.
+      // O mock original e anterior a esse codigo e nao tinha `channel`, entao
+      // o render morria em "supabase.channel is not a function".
+      channel: vi.fn(() => {
+        const ch: Record<string, unknown> = {};
+        ch.on = vi.fn(() => ch);
+        ch.subscribe = vi.fn(() => ch);
+        ch.unsubscribe = vi.fn().mockResolvedValue('ok');
+        return ch;
+      }),
+      removeChannel: vi.fn().mockResolvedValue('ok'),
     },
   };
 });
