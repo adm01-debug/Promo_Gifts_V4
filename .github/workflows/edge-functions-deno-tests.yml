@@ -74,7 +74,8 @@ jobs:
 
           # Integracao AO VIVO: pertencem ao edge-integration-all.yml, que roda
           # com segredos e funcao publicada.
-          AO_VIVO="supabase/functions/tests/integration/"
+          # Sem barra final: o --ignore do Deno nao casa diretorio terminado em "/".
+          AO_VIVO="supabase/functions/tests/integration"
           AO_VIVO="$AO_VIVO,supabase/functions/tests/production-readiness.test.ts"
           AO_VIVO="$AO_VIVO,supabase/functions/tests/security-integration_test.ts"
           AO_VIVO="$AO_VIVO,supabase/functions/tests/external_db_test.ts"
@@ -84,8 +85,11 @@ jobs:
           AO_VIVO="$AO_VIVO,supabase/functions/visual-search/integration_test.ts"
           AO_VIVO="$AO_VIVO,supabase/functions/webhook-inbound/integration_test.ts"
 
-          # Vitest: ja coletados pelo vitest.config.ts.
-          VITEST=$(grep -rl "from 'vitest'" supabase/functions --include='*test*.ts' | sort | paste -sd, -)
+          # Vitest: ja coletados pelo vitest.config.ts. A regex cobre aspas
+          # simples E duplas — com so um dos dois, 8 dos 12 arquivos escapavam.
+          VITEST=$(grep -rlE "from ['\"]vitest['\"]" supabase/functions --include='*test*.ts' | sort | paste -sd, -)
+          test -n "$VITEST" || { echo "::error::grep de vitest voltou vazio"; exit 1; }
+          echo "arquivos vitest encontrados: $(echo "$VITEST" | tr ',' '\n' | wc -l) (esperado 12)"
 
           echo "ignorando ao vivo: $AO_VIVO"
           echo "ignorando vitest:  $VITEST"
