@@ -37,9 +37,10 @@
  * Adaptação (sem perder cobertura, 0 casos removidos): adicionei o helper
  * `coerced(raw, items_count)` que aplica exatamente a normalização de produção e
  * reescrevi as 2 asserções para o contrato atual, mantendo a intenção de cada caso:
- * - caso 1 passou a afirmar explicitamente a normalização (`toMatchObject` com
- * draft/0/''), cobrindo os 7 ramos `??` de useQuoteVersions.ts:84-91 — é a MESMA linha
- * de código que o caso original exercia, só com o valor medido;
+ * - caso 1 afirma o contrato de linha crua que o autor original escreveu: a coerção
+ * `status ?? 'draft'` / `total ?? 0` foi REMOVIDA da produção em 2026-11-18 (era o
+ * defeito 1 de docs/agentes/resgates/2026-11-18-pendencias-abertas.md), então a
+ * asserção voltou a ser a do autor, com nulls preservados;
  * - caso 3 mantém sua asserção real (preserva todas as versões + mapeia items_count
  * pelo ID correto), com uma asserção extra `[id, items_count]` para deixar o alvo do
  * caso explícito.
@@ -123,21 +124,14 @@ function version(overrides: Partial<QuoteVersion> = {}): QuoteVersion {
     ...overrides,
   };
 }
-// Contrato de useQuoteVersions.fetchVersions: os valores financeiros e o status seguem
-// normalizados, mas os TIMESTAMPS preservam o null do banco desde o fix do crash de
-// render (coagir para '' fazia `format(new Date(''))` lançar em QuoteVersionHistory).
+// Contrato ATUAL de useQuoteVersions.fetchVersions: a linha do banco passa inteira,
+// sem coercao. Isto restaura a intencao ORIGINAL deste teste (o autor o escreveu
+// contra "linha crua, nulls preservados"); a adaptacao anterior o ajustou a coercao
+// de producao, que era o defeito: `total ?? 0` fazia a tela de historico afirmar
+// "R$ 0,00" e `status ?? 'draft'` afirmar "rascunho" para valores que o banco nao
+// tem. Hoje QuoteVersionHistory mostra "—" nesses casos.
 function coerced(raw: QuoteVersion, items_count: number): QuoteVersion {
-  return {
-    ...raw,
-    status: raw.status ?? 'draft',
-    total: raw.total ?? 0,
-    subtotal: raw.subtotal ?? 0,
-    discount_amount: raw.discount_amount ?? 0,
-    discount_percent: raw.discount_percent ?? 0,
-    created_at: raw.created_at,
-    updated_at: raw.updated_at,
-    items_count,
-  };
+  return { ...raw, created_at: raw.created_at, updated_at: raw.updated_at, items_count };
 }
 function responses(rows: QuoteVersion[], items = [{ quote_id: 'q' }, { quote_id: 'q' }]) {
   mocks.responses.push(
@@ -171,7 +165,7 @@ beforeEach(() => {
 });
 
 describe('legacy quote version raw financial contract', () => {
-  it('normalizes nullable financial values, status and timestamps to the non-null QuoteVersion contract', async () => {
+  it('preserves the row nulls instead of inventing status/total (contrato original do autor)', async () => {
     const raw = version();
     responses([raw]);
     const { result } = renderHook(() => useQuoteVersions('q'));
@@ -180,11 +174,11 @@ describe('legacy quote version raw financial contract', () => {
     });
     expect(result.current.versions).toEqual([coerced(raw, 2)]);
     expect(result.current.versions[0]).toMatchObject({
-      status: 'draft',
-      total: 0,
-      subtotal: 0,
-      discount_amount: 0,
-      discount_percent: 0,
+      status: null,
+      total: null,
+      subtotal: null,
+      discount_amount: null,
+      discount_percent: null,
       created_at: null,
       updated_at: null,
     });
