@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.3.2 · commit `6f8146b484` · branch `main` · 2026-11-18 20:16 UTC
+> Gerado automaticamente por AI Context Sync v1.3.2 · commit `48c1e5d952` · branch `main` · 2026-11-18 21:01 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -1775,7 +1775,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `status` | `confirmed` | compara, escreve | `src/hooks/stock/stockFetcher.ts`<br>`src/lib/inventory/future-stock-stats.ts`<br>`src/pages/auth/SSOCallbackPage.tsx` |
 | `status` | `confirming` | compara | `src/pages/auth/SSOCallbackPage.tsx` |
 | `status` | `converted` | compara, filtra | `recovery/src-legacy/src/components/quotes/QuoteRowQuickActions.tsx`<br>`recovery/src-legacy/src/hooks/useQuoteFunnel.ts`<br>`src/components/quotes/MarginInsightBadge.tsx`<br>`src/components/quotes/QuotesStatusChips.tsx`<br>`src/hooks/quotes/useQuoteFunnel.ts`<br>… +3 |
-| `status` | `crit` | compara | `recovery/src-legacy/src/components/admin/telemetry/PlatformFailureCards.tsx` |
+| `status` | `crit` | compara, escreve | `recovery/src-legacy/src/components/admin/telemetry/PlatformFailureCards.tsx`<br>`src/components/admin/telemetry/PlatformFailureCards.tsx` |
 | `status` | `critical` | compara | `recovery/src-legacy/src/hooks/useVariantStock.ts`<br>`src/components/inventory/StockDashboard.tsx`<br>`src/hooks/products/useVariantStock.ts`<br>`src/hooks/stock/stockAlerts.ts`<br>`src/lib/inventory/stock-filter.ts`<br>… +1 |
 | `status` | `degraded` | compara, escreve | `api/ready.ts`<br>`src/components/system/CloudStatusBanner.tsx`<br>`src/lib/external-db/invoke.ts` |
 | `status` | `delivered` | compara, escreve | `src/components/common/StatusTimeline.tsx`<br>`supabase/functions/semantic-search/index.ts` |
@@ -5173,6 +5173,8 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `* ou sucesso 24h entre 70% e 95%,` | `src/components/admin/connections/usePulseBarStatus.ts` |
 | `A chave será exibida apenas uma vez. Geração 100% server-side com validação de` | `src/components/admin/security/keys/McpKeysList.tsx` |
 | `return values[Math.floor(values.length * 0.5)] ?? null;` | `src/components/admin/telemetry/EdgeInvokeLivePanel.tsx` |
+| `* - Amarelo (warning): falhas dentro do esperado (<2% taxa).` | `src/components/admin/telemetry/PlatformFailureCards.tsx` |
+| `* - Vermelho (destructive): pico de falhas (>2% taxa) ou delta crescente.` | `src/components/admin/telemetry/PlatformFailureCards.tsx` |
 | `transition={{ delay: idx * 0.05 }}` | `src/components/ai/AIMockupAssistant.tsx` |
 | `mas representa &lt;5% das compras do cliente — oportunidade clara.` | `src/components/bi/ClientCategoryRadar.tsx` |
 | `priceFrom: Math.round(t.avgPrice * 0.9),` | `src/components/bi/ClientHealthHero.tsx` |
@@ -6499,7 +6501,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | allowlist inválida: versions contém duplicatas | `scripts/check-supabase-migration-ledger.mjs` |
 | allowlist inválida: versions contém valor vazio/não textual | `scripts/check-supabase-migration-ledger.mjs` |
 | allowlist inválida: versions deve ser array não vazio | `scripts/check-supabase-migration-ledger.mjs` |
-| … +1309 linhas — lista completa em `context.json` | |
+| … +1310 linhas — lista completa em `context.json` | |
 
 ## J. Controle de acesso no código (checagens de perfil/permissão)
 
@@ -6623,7 +6625,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `admin` | `supabase/migrations/20261112120500_fix_optimization_queue_rpcs_dev_access.sql` |
 | `anon` | `tests/edge-functions/live/_live-client.ts` |
 
-## K. Testes como especificação (22573 testes em 2280 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (22578 testes em 2281 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -6927,7 +6929,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `e2e/dashboard-modules.spec.ts` | 18 | Dashboard Modules - Public Access (No Auth) · should redirect to auth when accessing ${route.path} unauthenticated · should display auth page for all dashboard routes · should not expose observability/metrics data to unauthenticated users … |
 | `e2e/stock-module.spec.ts` | 18 | Stock Module - Public Access (No Auth) · should redirect to auth when accessing /estoque unauthenticated · should display auth page when accessing /estoque · should not expose stock data to unauthenticated users … |
 | `e2e/magazine/magazine-viewer.spec.ts` | 18 | Magazine viewer — atalhos de teclado · → avança página, ← volta, Home/End extremos · T abre sumário, ? abre ajuda, B marca página · Space em botão focado NÃO avança página (C2) … |
-| … +1980 linhas — lista completa em `context.json` | | |
+| … +1981 linhas — lista completa em `context.json` | | |
 
 ## L. Eventos de webhook tratados (contratos com sistemas externos)
 
@@ -7300,6 +7302,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | * Não depende da RPC `get_edge_invoke_summary` (draft, REGRA #1). Assim | `src/components/admin/telemetry/EdgeInvokeLivePanel.tsx` |
 | `AdminTelemetriaPage.tsx` já está acima do limite de 500 linhas do | `src/components/admin/telemetry/LiveSurfacesSection.tsx` |
 | `check-file-size-baseline` e não pode crescer: montar os dois cards novos de | `src/components/admin/telemetry/LiveSurfacesSection.tsx` |
+| ultrapassa o limite configurado, mostra um alerta destacado com | `src/components/admin/telemetry/PlatformFailureAlertBanner.tsx` |
 | - obriga justificativa (mínimo 10 caracteres) | `src/components/admin/users/PromotionDialog.tsx` |
 | R4: exibida apenas quando o usuário digita texto livre (não é uma ação rápida conhecida) | `src/components/ai/AIMockupAssistant.tsx` |
 | Mesma regra do motivo por produto: com mais de um grupo de cor casado, não | `src/components/assistant/SalesAssistantCard.tsx` |
@@ -7394,5 +7397,4 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | tardia de AAL, etc.) NÃO deve reabrir o challenge — redireciona para | `src/components/layout/AdminRoute.tsx` |
 | apenas se o usuário chegar em AAL2). | `src/components/layout/AdminRoute.tsx` |
 | rate-limit, login-attempts, external-db, status do sistema. | `src/components/layout/DevRoute.tsx` |
-| * Hierarquia: dev > supervisor > agente. Apenas `dev` passa. | `src/components/layout/DevRoute.tsx` |
-| … +1359 linhas — lista completa em `context.json` | |
+| … +1360 linhas — lista completa em `context.json` | |

@@ -1,7 +1,7 @@
 {
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
- "total": 1259,
+ "total": 1261,
  "orfaos": 161,
  "nomes_duplicados": {
   "AdminTemplatesManager": [
@@ -252,6 +252,14 @@
   "PermissionsPage": [
    "recovery/src-legacy/src/pages/PermissionsPage.tsx",
    "src/pages/admin/PermissionsPage.tsx"
+  ],
+  "PlatformFailureAlertBanner": [
+   "recovery/src-legacy/src/components/admin/telemetry/PlatformFailureAlertBanner.tsx",
+   "src/components/admin/telemetry/PlatformFailureAlertBanner.tsx"
+  ],
+  "PlatformFailureCards": [
+   "recovery/src-legacy/src/components/admin/telemetry/PlatformFailureCards.tsx",
+   "src/components/admin/telemetry/PlatformFailureCards.tsx"
   ],
   "PriceSimulatorPage": [
    "recovery/src-legacy/src/pages/PriceSimulatorPage.tsx",
@@ -5745,7 +5753,7 @@
     "LiveSurfacesSection"
    ],
    "export_default": null,
-   "linhas": 61,
+   "linhas": 94,
    "dominio": "components/admin",
    "hooks_locais": [],
    "tabelas": [],
@@ -5779,6 +5787,38 @@
    "dominio": "components/admin",
    "hooks_locais": [
     "useOptimizationQueue"
+   ],
+   "tabelas": [],
+   "edges": [],
+   "usado_por": 1,
+   "orfao": false
+  },
+  {
+   "arquivo": "src/components/admin/telemetry/PlatformFailureAlertBanner.tsx",
+   "exports": [
+    "PlatformFailureAlertBanner"
+   ],
+   "export_default": null,
+   "linhas": 189,
+   "dominio": "components/admin",
+   "hooks_locais": [
+    "usePlatformFailureAlert"
+   ],
+   "tabelas": [],
+   "edges": [],
+   "usado_por": 1,
+   "orfao": false
+  },
+  {
+   "arquivo": "src/components/admin/telemetry/PlatformFailureCards.tsx",
+   "exports": [
+    "PlatformFailureCards"
+   ],
+   "export_default": null,
+   "linhas": 143,
+   "dominio": "components/admin",
+   "hooks_locais": [
+    "usePlatformFailureMetrics"
    ],
    "tabelas": [],
    "edges": [],
@@ -16230,7 +16270,7 @@
    "hooks_locais": [],
    "tabelas": [],
    "edges": [],
-   "usado_por": 30,
+   "usado_por": 31,
    "orfao": false
   },
   {
@@ -16261,7 +16301,7 @@
    "hooks_locais": [],
    "tabelas": [],
    "edges": [],
-   "usado_por": 485,
+   "usado_por": 487,
    "orfao": false
   },
   {
@@ -16296,7 +16336,7 @@
    "hooks_locais": [],
    "tabelas": [],
    "edges": [],
-   "usado_por": 637,
+   "usado_por": 638,
    "orfao": false
   },
   {
@@ -16330,7 +16370,7 @@
    "hooks_locais": [],
    "tabelas": [],
    "edges": [],
-   "usado_por": 357,
+   "usado_por": 358,
    "orfao": false
   },
   {
@@ -16679,7 +16719,7 @@
    "hooks_locais": [],
    "tabelas": [],
    "edges": [],
-   "usado_por": 261,
+   "usado_por": 262,
    "orfao": false
   },
   {
@@ -16707,7 +16747,7 @@
    "hooks_locais": [],
    "tabelas": [],
    "edges": [],
-   "usado_por": 144,
+   "usado_por": 145,
    "orfao": false
   },
   {
@@ -16810,7 +16850,7 @@
    ],
    "tabelas": [],
    "edges": [],
-   "usado_por": 51,
+   "usado_por": 52,
    "orfao": false
   },
   {
@@ -17061,7 +17101,7 @@
    "hooks_locais": [],
    "tabelas": [],
    "edges": [],
-   "usado_por": 62,
+   "usado_por": 63,
    "orfao": false
   },
   {

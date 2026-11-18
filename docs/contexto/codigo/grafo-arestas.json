@@ -4264,6 +4264,8 @@
    "src/components/admin/telemetry/BridgeAlertsCard.tsx",
    "src/components/admin/telemetry/BridgesLiveCard.tsx",
    "src/components/admin/telemetry/EdgeInvokeLivePanel.tsx",
+   "src/components/admin/telemetry/PlatformFailureAlertBanner.tsx",
+   "src/components/admin/telemetry/PlatformFailureCards.tsx",
    "src/components/errors/SectionErrorBoundary.tsx",
    "src/pages/admin/telemetry/TelemetrySkeletons.tsx"
   ],
@@ -4281,6 +4283,22 @@
    "src/components/ui/textarea.tsx",
    "src/lib/utils.ts",
    "src/pages/admin/telemetry/useOptimizationQueue.ts"
+  ],
+  "src/components/admin/telemetry/PlatformFailureAlertBanner.tsx": [
+   "src/components/ui/alert.tsx",
+   "src/components/ui/badge.tsx",
+   "src/components/ui/button.tsx",
+   "src/components/ui/input.tsx",
+   "src/components/ui/label.tsx",
+   "src/components/ui/popover.tsx",
+   "src/components/ui/switch.tsx",
+   "src/lib/utils.ts",
+   "src/pages/admin/telemetry/usePlatformFailureAlert.ts"
+  ],
+  "src/components/admin/telemetry/PlatformFailureCards.tsx": [
+   "src/components/ui/badge.tsx",
+   "src/components/ui/card.tsx",
+   "src/pages/admin/telemetry/usePlatformFailureMetrics.ts"
   ],
   "src/components/admin/telemetry/ProductsListingLatencyAlert.tsx": [
    "src/components/ui/badge.tsx",

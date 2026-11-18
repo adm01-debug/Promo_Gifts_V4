@@ -6,7 +6,7 @@
   "rotas_http_backend": 13,
   "vistas_por_id": 0,
   "itens_menu": 69,
-  "lazy": 168
+  "lazy": 170
  },
  "urls": [
   {
@@ -8559,6 +8559,8 @@
     "useOptimizationMetrics",
     "useOptimizationQueue",
     "useOverlayInteractivity",
+    "usePlatformFailureAlert",
+    "usePlatformFailureMetrics",
     "useProductsColorsBatch",
     "useProductsListingLatencyAlert",
     "useProfileRoles",
@@ -8582,6 +8584,8 @@
     "useOptimizationMetrics",
     "useOptimizationQueue",
     "useOverlayInteractivity",
+    "usePlatformFailureAlert",
+    "usePlatformFailureMetrics",
     "useProductsColorsBatch",
     "useProductsListingLatencyAlert",
     "useProfileRoles",
@@ -8603,6 +8607,7 @@
     "complete_optimization",
     "enqueue_optimization",
     "get_app_health_summary",
+    "get_platform_failure_metrics",
     "get_profile_and_roles",
     "log_user_logout",
     "lookup_request_id",
@@ -8614,13 +8619,14 @@
    "canais_realtime": [],
    "flags": [],
    "papeis": [
+    "alert",
     "alertdialog",
     "dialog",
     "listbox",
     "menu",
     "region"
    ],
-   "arquivos_puxados": 97
+   "arquivos_puxados": 102
   },
   {
    "protegida": true,
@@ -38240,6 +38246,8 @@
   "PackagingModal": "src/components/products/PackagingModal.tsx",
   "PermissionsPage": "src/pages/admin/PermissionsPage.tsx",
   "PersistentBreadcrumbs": "src/components/common/PersistentBreadcrumbs.tsx",
+  "PlatformFailureAlertBanner": "src/components/admin/telemetry/PlatformFailureAlertBanner.tsx",
+  "PlatformFailureCards": "src/components/admin/telemetry/PlatformFailureCards.tsx",
   "PriceFreshnessSettingsPage": "src/pages/admin/PriceFreshnessSettings.tsx",
   "PriceSimulatorPage": "src/pages/tools/PriceSimulatorPage.tsx",
   "PrivacyPage": "src/pages/auth/PrivacyPage.tsx",

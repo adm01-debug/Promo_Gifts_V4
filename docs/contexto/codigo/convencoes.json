@@ -8,7 +8,7 @@
    "api/health.ts (1)"
   ],
   "componentes": [
-   "src/components (960)",
+   "src/components (962)",
    "src/pages (180)",
    "recovery/src-legacy (100)"
   ],
@@ -24,7 +24,7 @@
   ],
   "testes": [
    "tests/ (1076)",
-   "co-localizado (__tests__) (700)",
+   "co-localizado (__tests__) (701)",
    "e2e/ (625)"
   ],
   "edge_functions": "supabase/functions",
@@ -49,7 +49,7 @@
  },
  "barrels_index": 46,
  "extensao_componentes": [
-  ".tsx (1259)"
+  ".tsx (1261)"
  ],
  "alias_imports": {
   "e2e/": {},
@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "feat(components): /admin/telemetria volta a mostrar falhas 503 e cold start (#3848)",
+   "fix(docs): tira do inventario o caminho de migration que deixou a main vermelha (#3849)",
+   "docs(resgate): o inventário contava a quarentena como main — 102 arquivos, não 22 (#3847)",
    "fix(test): main volta ao verde nos 4 arquivos vermelhos do test:quality (#3846)",
-   "docs(resgate): inventario do trabalho de outro agente que existe e nao esta ligado (#3845)",
-   "fix(quotes): rascunho local volta a guardar empresa, contato, validade e entrega (#3844)",
-   "feat(components): Ctrl+K volta a alcançar Novidades, Filtros e Estoque (#3842)",
-   "fix(test): dois guardas afirmavam o contrário do que a main faz hoje (#3843)"
+   "docs(resgate): inventario do trabalho de outro agente que existe e nao esta ligado (#3845)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",

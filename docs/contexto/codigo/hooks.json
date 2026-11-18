@@ -14111,9 +14111,10 @@
     "usePlatformFailureMetrics"
    ],
    "canais_realtime": [],
-   "usado_por": 1,
+   "usado_por": 2,
    "usado_por_arquivos": [
-    "recovery/src-legacy/src/components/admin/telemetry/PlatformFailureAlertBanner.tsx"
+    "recovery/src-legacy/src/components/admin/telemetry/PlatformFailureAlertBanner.tsx",
+    "src/components/admin/telemetry/PlatformFailureAlertBanner.tsx"
    ],
    "coberto_por_testes": 0
   },
@@ -14134,12 +14135,13 @@
     "useQuery"
    ],
    "canais_realtime": [],
-   "usado_por": 2,
+   "usado_por": 3,
    "usado_por_arquivos": [
     "recovery/src-legacy/src/components/admin/telemetry/PlatformFailureCards.tsx",
+    "src/components/admin/telemetry/PlatformFailureCards.tsx",
     "src/pages/admin/telemetry/usePlatformFailureAlert.ts"
    ],
-   "coberto_por_testes": 0
+   "coberto_por_testes": 1
   },
   {
    "arquivo": "src/pages/admin/telemetry/useProductsListingLatencyAlert.ts",

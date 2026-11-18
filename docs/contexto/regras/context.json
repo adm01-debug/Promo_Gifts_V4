@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "6f8146b484680ce1b3c271bae9706e14ef9d94a7",
+  "sha": "48c1e5d9522243256e5573f478dd1bc3e23727de",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-18 20:16 UTC",
-  "files_total": 10879,
-  "code_files": 8905,
-  "code_lines": 1262370
+  "generated_at": "2026-11-18 21:01 UTC",
+  "files_total": 10883,
+  "code_files": 8908,
+  "code_lines": 1262825
  },
  "version": "1.3.2",
- "facts_hash": "6b45eb86ef5b1bf8",
+ "facts_hash": "473c0492ec395575",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -1121,7 +1121,7 @@
   "languages": {
    ".sql": 3440,
    ".ts": 3039,
-   ".tsx": 1961,
+   ".tsx": 1964,
    ".mjs": 450,
    ".py": 15,
    ".js": 7
@@ -144993,7 +144993,7 @@
     "file": ".github/workflows/wraparound-monitor-report.yml"
    }
   ],
-  "components_count": 1695,
+  "components_count": 1698,
   "hooks": [
    {
     "name": "useQuoteComments",
@@ -149636,8 +149636,8 @@
   },
   {
    "module": "src/components",
-   "files": 1422,
-   "lines": 281623,
+   "files": 1425,
+   "lines": 282078,
    "tables": [
     "admin_audit_log",
     "art_file_attachments",
@@ -166124,6 +166124,10 @@
     "msg": "Falha ao copiar"
    },
    {
+    "file": "src/components/admin/telemetry/PlatformFailureAlertBanner.tsx",
+    "msg": ";\nimport { Badge } from "
+   },
+   {
     "file": "src/components/admin/telemetry/RegressionGuardrailBanner.tsx",
     "msg": "Regressão crítica de performance"
    },
@@ -170918,6 +170922,10 @@
    {
     "file": "src/components/admin/telemetry/LiveSurfacesSection.tsx",
     "text": "`check-file-size-baseline` e não pode crescer: montar os dois cards novos de"
+   },
+   {
+    "file": "src/components/admin/telemetry/PlatformFailureAlertBanner.tsx",
+    "text": "ultrapassa o limite configurado, mostra um alerta destacado com"
    },
    {
     "file": "src/components/admin/users/PromotionDialog.tsx",
@@ -203290,6 +203298,24 @@
     "kind": "compara"
    },
    {
+    "file": "src/components/admin/telemetry/PlatformFailureCards.tsx",
+    "field": "status",
+    "value": "crit",
+    "kind": "escreve"
+   },
+   {
+    "file": "src/components/admin/telemetry/PlatformFailureCards.tsx",
+    "field": "status",
+    "value": "crit",
+    "kind": "compara"
+   },
+   {
+    "file": "src/components/admin/telemetry/PlatformFailureCards.tsx",
+    "field": "status",
+    "value": "warn",
+    "kind": "compara"
+   },
+   {
     "file": "src/components/admin/telemetry/RegressionGuardrailBanner.tsx",
     "field": "status",
     "value": "regression",
@@ -218982,6 +219008,14 @@
     "line": "return values[Math.floor(values.length * 0.5)] ?? null;"
    },
    {
+    "file": "src/components/admin/telemetry/PlatformFailureCards.tsx",
+    "line": "* - Amarelo (warning): falhas dentro do esperado (<2% taxa)."
+   },
+   {
+    "file": "src/components/admin/telemetry/PlatformFailureCards.tsx",
+    "line": "* - Vermelho (destructive): pico de falhas (>2% taxa) ou delta crescente."
+   },
+   {
     "file": "src/components/ai/AIMockupAssistant.tsx",
     "line": "transition={{ delay: idx * 0.05 }}"
    },
@@ -230358,6 +230392,26 @@
    {
     "file": "src/components/admin/telemetry/__tests__/BridgeCallDetailDrawer.test.tsx",
     "name": "exibe "
+   },
+   {
+    "file": "src/components/admin/telemetry/__tests__/PlatformFailureSurfaces.test.tsx",
+    "name": "painéis de falha de plataforma"
+   },
+   {
+    "file": "src/components/admin/telemetry/__tests__/PlatformFailureSurfaces.test.tsx",
+    "name": "os cards mostram os três KPIs da janela com os números do hook"
+   },
+   {
+    "file": "src/components/admin/telemetry/__tests__/PlatformFailureSurfaces.test.tsx",
+    "name": "o banner acusa a quebra e diz o motivo que o hook devolveu"
+   },
+   {
+    "file": "src/components/admin/telemetry/__tests__/PlatformFailureSurfaces.test.tsx",
+    "name": "a LiveSurfacesSection monta os dois — é o que faltava antes do resgate"
+   },
+   {
+    "file": "src/components/admin/telemetry/__tests__/PlatformFailureSurfaces.test.tsx",
+    "name": "a página de telemetria monta a seção"
    },
    {
     "file": "src/components/ai/__tests__/AIMockupAssistant.test.tsx",
@@ -350730,10 +350784,13 @@
       "compara:supabase/functions/visual-search/index.ts"
      ],
      "crit": [
-      "compara:recovery/src-legacy/src/components/admin/telemetry/PlatformFailureCards.tsx"
+      "compara:recovery/src-legacy/src/components/admin/telemetry/PlatformFailureCards.tsx",
+      "compara:src/components/admin/telemetry/PlatformFailureCards.tsx",
+      "escreve:src/components/admin/telemetry/PlatformFailureCards.tsx"
      ],
      "warn": [
-      "compara:recovery/src-legacy/src/components/admin/telemetry/PlatformFailureCards.tsx"
+      "compara:recovery/src-legacy/src/components/admin/telemetry/PlatformFailureCards.tsx",
+      "compara:src/components/admin/telemetry/PlatformFailureCards.tsx"
      ],
      "pronto_orcamento": [
       "compara:recovery/src-legacy/src/components/cart/CartHealthChecklist.tsx",
@@ -438631,7 +438688,7 @@
   },
   "src/components/admin/telemetry/LiveSurfacesSection.tsx": {
    "path": "src/components/admin/telemetry/LiveSurfacesSection.tsx",
-   "lines": 61,
+   "lines": 94,
    "exports": [
     "function LiveSurfacesSection"
    ],
@@ -438669,6 +438726,49 @@
    "doc": "OptimizationQueuePanel -------------------------------------------------------------- Card para o /admin/telemetria que mostra a fila automática de otimizações. - Botão \"Executar tudo\" roda os itens pendentes em sequência sem pausas. - Cada execução checa o guardrail; regressão pausa a fila e marca …",
    "side_effects": [
     "enqueue("
+   ]
+  },
+  "src/components/admin/telemetry/PlatformFailureAlertBanner.tsx": {
+   "path": "src/components/admin/telemetry/PlatformFailureAlertBanner.tsx",
+   "lines": 189,
+   "exports": [
+    "function PlatformFailureAlertBanner"
+   ],
+   "errors": [
+    ";\nimport { Badge } from "
+   ],
+   "rule_comments": [
+    "ultrapassa o limite configurado, mostra um alerta destacado com"
+   ],
+   "doc": "Resgatado de `salvo/codex-fix-gate1-kit-pdf-types-261109-2252` (PR #3390, fechada sem merge). Mesmo caso dos cards: `usePlatformFailureAlert` (src/pages/admin/telemetry/usePlatformFailureAlert.ts:81) existia na main com thresholds, throttle de toast e persistência em localStorage — e NENHUM consumid …"
+  },
+  "src/components/admin/telemetry/PlatformFailureCards.tsx": {
+   "path": "src/components/admin/telemetry/PlatformFailureCards.tsx",
+   "lines": 143,
+   "exports": [
+    "function PlatformFailureCards"
+   ],
+   "status_values": [
+    {
+     "field": "status",
+     "value": "crit",
+     "kind": "escreve"
+    },
+    {
+     "field": "status",
+     "value": "crit",
+     "kind": "compara"
+    },
+    {
+     "field": "status",
+     "value": "warn",
+     "kind": "compara"
+    }
+   ],
+   "doc": "Resgatado de `salvo/codex-fix-gate1-kit-pdf-types-261109-2252` (PR #3390, fechada sem merge). O hook que ele consome, `usePlatformFailureMetrics` (src/pages/admin/telemetry/usePlatformFailureMetrics.ts:32), JÁ existia na main e não era montado por ninguém: métrica calculada e invisível. A forma de ` …",
+   "percents": [
+    "* - Amarelo (warning): falhas dentro do esperado (<2% taxa).",
+    "* - Vermelho (destructive): pico de falhas (>2% taxa) ou delta crescente."
    ]
   },
   "src/components/admin/telemetry/ProductsListingLatencyAlert.tsx": {
@@ -438773,6 +438873,18 @@
     "BridgeCallDetailDrawer",
     "exibe o badge ",
     "exibe "
+   ]
+  },
+  "src/components/admin/telemetry/__tests__/PlatformFailureSurfaces.test.tsx": {
+   "path": "src/components/admin/telemetry/__tests__/PlatformFailureSurfaces.test.tsx",
+   "lines": 90,
+   "is_test": true,
+   "tests": [
+    "painéis de falha de plataforma",
+    "os cards mostram os três KPIs da janela com os números do hook",
+    "o banner acusa a quebra e diz o motivo que o hook devolveu",
+    "a LiveSurfacesSection monta os dois — é o que faltava antes do resgate",
+    "a página de telemetria monta a seção"
    ]
   },
   "src/components/admin/users/CreateUserDialog.tsx": {
@@ -547240,10 +547352,40 @@
   }
  },
  "git": {
-  "sha": "6f8146b484680ce1b3c271bae9706e14ef9d94a7",
+  "sha": "48c1e5d9522243256e5573f478dd1bc3e23727de",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "48c1e5d",
+    "date": "2026-11-18",
+    "author": "adm01-debug",
+    "subject": "feat(components): /admin/telemetria volta a mostrar falhas 503 e cold start (#3848)",
+    "files": [
+     "src/components/admin/telemetry/LiveSurfacesSection.tsx",
+     "src/components/admin/telemetry/PlatformFailureAlertBanner.tsx",
+     "src/components/admin/telemetry/PlatformFailureCards.tsx",
+     "src/components/admin/telemetry/__tests__/PlatformFailureSurfaces.test.tsx"
+    ]
+   },
+   {
+    "sha": "9e11e2f",
+    "date": "2026-11-18",
+    "author": "adm01-debug",
+    "subject": "fix(docs): tira do inventario o caminho de migration que deixou a main vermelha (#3849)",
+    "files": [
+     "docs/agentes/resgates/2026-11-18-inventario-trabalho-nao-ligado.md"
+    ]
+   },
+   {
+    "sha": "3be3249",
+    "date": "2026-11-18",
+    "author": "adm01-debug",
+    "subject": "docs(resgate): o inventário contava a quarentena como main — 102 arquivos, não 22 (#3847)",
+    "files": [
+     "docs/agentes/resgates/2026-11-18-correcao-do-inventario.md"
+    ]
+   },
    {
     "sha": "6f8146b",
     "date": "2026-11-18",
@@ -547575,87 +547717,19 @@
      "src/pages/quotes/__tests__/quote-builder-shipping-fob-pre-inline.contract.test.ts",
      "src/pages/quotes/__tests__/quote-builder-shipping-trigger-width.contract.test.ts"
     ]
-   },
-   {
-    "sha": "b52dcea",
-    "date": "2026-11-18",
-    "author": "adm01-debug",
-    "subject": "feat(revert-3361): devolve os painéis do carrinho e as telas de template de orçamento (#3817)",
-    "files": [
-     "e2e/quotes/no-templates.spec.ts",
-     "e2e/quotes/templates.spec.ts",
-     "src/components/cart/CartHealthChecklist.tsx",
-     "src/components/cart/CartUtilComponents.tsx",
-     "src/components/quotes/AdminTemplateDialogs.tsx",
-     "src/components/quotes/AdminTemplatesManager.tsx",
-     "src/components/quotes/QuoteTemplateForm.tsx",
-     "src/components/quotes/QuoteTemplatesList.tsx",
-     "src/components/quotes/SaveAsTemplateButton.tsx",
-     "src/components/quotes/admin-templates/TemplateGridView.tsx",
-     "src/components/quotes/admin-templates/TemplateTableView.tsx",
-     "src/contexts/__tests__/SellerCartContext.test.tsx",
-     "src/hooks/quotes/useQuoteTemplates.ts",
-     "src/pages/products/seller-carts/CartSidebar.tsx",
-     "src/pages/products/seller-carts/__tests__/CartSidebar.render.test.tsx",
-     "src/pages/quotes/QuoteBuilderPage.tsx",
-     "src/pages/quotes/QuoteTemplatesPage.tsx",
-     "src/pages/quotes/QuotesListPage.tsx",
-     "src/pages/quotes/components/QuoteBuilderNotesCard.tsx",
-     "src/pages/quotes/components/QuotesBulkDeleteDialog.tsx",
-     "src/pages/quotes/components/__tests__/QuoteBuilderNotesCard.test.tsx",
-     "src/routes/__tests__/quote-templates-route.integration.test.tsx",
-     "src/routes/lazy-pages.ts",
-     "src/routes/quote-routes.tsx",
-     "src/utils/templateExport.ts"
-    ]
-   },
-   {
-    "sha": "5470d5f",
-    "date": "2026-11-18",
-    "author": "adm01-debug",
-    "subject": "fix(ci): Gate 0 passa a barrar qualquer project-ref não canônico em migration (#3806)",
-    "files": [
-     "scripts/validate-supabase-config.mjs"
-    ]
-   },
-   {
-    "sha": "646bbdb",
-    "date": "2026-11-18",
-    "author": "adm01-debug",
-    "subject": "docs(resgate): preserva as 2 notas de sessao que so existiam em branch (#3803)",
-    "files": [
-     "docs/agentes/resgates/notas-de-sessao/2026-11-15-passagem-de-sessao.md",
-     "docs/agentes/resgates/notas-de-sessao/2026-11-15-preservacao-container.md"
-    ]
    }
   ],
   "hot_files": [
    [
-    "src/pages/quotes/QuoteBuilderPage.tsx",
-    3
-   ],
-   [
-    "src/components/quotes/AdminTemplatesManager.tsx",
-    3
-   ],
-   [
-    "src/components/quotes/QuoteTemplatesList.tsx",
-    3
-   ],
-   [
-    "src/components/quotes/admin-templates/TemplateGridView.tsx",
-    3
-   ],
-   [
-    "src/components/quotes/admin-templates/TemplateTableView.tsx",
-    3
-   ],
-   [
-    "e2e/quotes/templates.spec.ts",
+    "src/components/admin/telemetry/LiveSurfacesSection.tsx",
     2
    ],
    [
-    "src/pages/quotes/components/__tests__/QuoteBuilderNotesCard.test.tsx",
+    "docs/agentes/resgates/2026-11-18-inventario-trabalho-nao-ligado.md",
+    2
+   ],
+   [
+    "src/pages/quotes/QuoteBuilderPage.tsx",
     2
    ],
    [
@@ -547663,20 +547737,36 @@
     2
    ],
    [
-    "src/components/quotes/QuoteTemplateForm.tsx",
+    "src/components/quotes/AdminTemplatesManager.tsx",
     2
    ],
    [
-    "src/hooks/quotes/useQuoteTemplates.ts",
+    "src/components/quotes/QuoteTemplatesList.tsx",
     2
    ],
    [
-    "src/utils/templateExport.ts",
+    "src/components/quotes/admin-templates/TemplateGridView.tsx",
     2
    ],
    [
-    "src/pages/quotes/components/QuoteBuilderNotesCard.tsx",
+    "src/components/quotes/admin-templates/TemplateTableView.tsx",
     2
+   ],
+   [
+    "src/components/admin/telemetry/PlatformFailureAlertBanner.tsx",
+    1
+   ],
+   [
+    "src/components/admin/telemetry/PlatformFailureCards.tsx",
+    1
+   ],
+   [
+    "src/components/admin/telemetry/__tests__/PlatformFailureSurfaces.test.tsx",
+    1
+   ],
+   [
+    "docs/agentes/resgates/2026-11-18-correcao-do-inventario.md",
+    1
    ],
    [
     "src/components/products/__snapshots__/PriceFreshnessBadge.snapshots.test.tsx.snap",
@@ -547695,10 +547785,6 @@
     1
    ],
    [
-    "docs/agentes/resgates/2026-11-18-inventario-trabalho-nao-ligado.md",
-    1
-   ],
-   [
     "src/hooks/quotes/quoteDraftApply.ts",
     1
    ],
@@ -547708,6 +547794,10 @@
    ],
    [
     "e2e/carrinhos/sidebar-no-legacy-labels.spec.ts",
+    1
+   ],
+   [
+    "src/components/common/spotlight/SpotlightItems.ts",
     1
    ]
   ]
