@@ -22,6 +22,12 @@ vi.mock("@/components/seo/PageSEO", () => ({
   PageSEO: () => null,
 }));
 
+const mockExportKitPdf = vi.hoisted(() => vi.fn());
+
+vi.mock("@/utils/kitPdfGenerator", () => ({
+  exportKitPdf: mockExportKitPdf,
+}));
+
 const mockUseKitBuilderPageState = vi.fn();
 
 vi.mock("@/hooks/kit-builder", () => ({
@@ -292,7 +298,6 @@ describe("KitBuilderPage", () => {
     it("summary: adicionar ao orçamento, editar caixa, salvar rascunho e exportar PDF", async () => {
       const s = makeState("summary", { currentKitId: "kit-1", quoteClient: { id: "c1" } });
       mockUseKitBuilderPageState.mockReturnValue(s);
-      const print = vi.spyOn(window, "print").mockImplementation(() => undefined);
       render(<KitBuilderPage />);
 
       await call("KitSummary", "onAddToQuote");
@@ -307,8 +312,10 @@ describe("KitBuilderPage", () => {
       await call("KitSummary", "onSaveDraft");
       expect(s.actions.handleSaveKit).toHaveBeenCalledTimes(1);
       await call("KitSummary", "onExportPDF");
-      expect(print).toHaveBeenCalledTimes(1);
-      print.mockRestore();
+      expect(mockExportKitPdf).toHaveBeenCalledWith({
+        kitState: s.state.kitState,
+        kitQuantity: 1,
+      });
     });
 
     it("header: tentar autosave de novo chama retryAutoSave", async () => {

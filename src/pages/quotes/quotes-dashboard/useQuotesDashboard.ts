@@ -4,7 +4,7 @@
  */
 import { useState, useEffect, useMemo, useCallback } from 'react';
 import { selectCrm } from '@/lib/crm-db';
-import { useQuotes } from '@/hooks/quotes';
+import { useQuotes, useQuoteFunnel, useQuoteViewedMap, type Quote } from '@/hooks/quotes';
 import { format, differenceInHours, startOfMonth, subMonths } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 // jsPDF + jspdf-autotable são carregados sob demanda (dynamic import) dentro de
@@ -23,6 +23,9 @@ const statusConfig = Object.fromEntries(
 ) as Record<string, { label: string; color: string }>;
 
 export { statusConfig };
+
+/** Referência estável para o estado sem orçamentos (evita recalcular o funil). */
+const EMPTY_QUOTES: Quote[] = [];
 
 export function formatCurrency(value: number) {
   return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value);
@@ -97,7 +100,7 @@ export function useQuotesDashboard() {
           rejected: number;
           value: number;
         }[],
-        conversionFunnel: [] as { stage: string; count: number; fill: string }[],
+        filteredQuotes: EMPTY_QUOTES,
       };
 
     const now = new Date();
@@ -168,19 +171,6 @@ export function useQuotesDashboard() {
       return a;
     }, {});
 
-    const conversionFunnel = [
-      { stage: 'Criados', count: totalQuotes, fill: 'hsl(var(--primary))' },
-      {
-        stage: 'Enviados',
-        count: filtered.filter((q) =>
-          ['sent', 'viewed', 'approved', 'rejected', 'converted'].includes(q.status),
-        ).length,
-        fill: 'hsl(var(--info))',
-      },
-      { stage: 'Respondidos', count: responded.length, fill: 'hsl(var(--warning))' },
-      { stage: 'Aprovados', count: approved.length, fill: 'hsl(var(--success))' },
-    ];
-
     return {
       totalQuotes,
       totalValue,
@@ -192,9 +182,16 @@ export function useQuotesDashboard() {
       pendingQuotes: pending.length,
       statusDistribution,
       monthlyData: Object.values(monthlyGroups),
-      conversionFunnel,
+      // Mesma lista recortada por período + cliente que alimenta as métricas:
+      // o funil tem de respeitar exatamente os filtros do header.
+      filteredQuotes: filtered,
     };
   }, [quotes, selectedPeriod, selectedClientId]);
+
+  // Funil (tela + PDF) a partir de uma única fonte: useQuoteFunnel sobre as
+  // quotes já filtradas, com evidência real de visualização via tokens.
+  const viewedMap = useQuoteViewedMap();
+  const funnel = useQuoteFunnel(metrics.filteredQuotes, viewedMap);
 
   const exportToPdf = useCallback(async () => {
     const [{ default: jsPDF }, { default: autoTable }] = await Promise.all([
@@ -250,14 +247,18 @@ export function useQuotesDashboard() {
       });
     }
 
-    if (metrics.conversionFunnel.length > 0) {
+    if (funnel.total > 0) {
       const y = doc.lastAutoTable?.finalY || 120;
       doc.setFontSize(13);
       doc.text('Funil de Conversão', 14, y + 12);
       autoTable(doc, {
         startY: y + 16,
-        head: [['Etapa', 'Quantidade']],
-        body: metrics.conversionFunnel.map((f) => [f.stage, f.count.toString()]),
+        head: [['Etapa', 'Quantidade', 'Taxa da etapa anterior']],
+        body: funnel.stages.map((f) => [
+          f.label,
+          f.count.toString(),
+          f.rateFromPrev === null ? '-' : `${f.rateFromPrev.toFixed(1)}%`,
+        ]),
         theme: 'grid',
         headStyles: { fillColor: [245, 158, 11] },
         styles: { fontSize: 10 },
@@ -295,7 +296,7 @@ export function useQuotesDashboard() {
     }
 
     doc.save(`dashboard-orcamentos-${format(now, 'yyyy-MM-dd')}.pdf`);
-  }, [metrics, quotes, selectedPeriod, selectedClientName]);
+  }, [funnel, metrics, quotes, selectedPeriod, selectedClientName]);
 
   return {
     quotes,
@@ -310,6 +311,7 @@ export function useQuotesDashboard() {
     loadingClients,
     selectedClientName,
     metrics,
+    funnel,
     exportToPdf,
   };
 }
