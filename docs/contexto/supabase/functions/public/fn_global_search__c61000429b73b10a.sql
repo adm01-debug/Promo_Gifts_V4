@@ -2,7 +2,7 @@ CREATE OR REPLACE FUNCTION public.fn_global_search(p_term text, p_limit integer 
  RETURNS TABLE(result_id text, result_type text, result_title text, result_description text, result_url text, result_image_url text, result_metadata jsonb, result_relevance numeric)
  LANGUAGE plpgsql
  STABLE SECURITY DEFINER
- SET search_path TO 'public', 'extensions'
+ SET search_path TO 'pg_catalog', 'public', 'extensions', 'pg_temp'
 AS $function$
 DECLARE
   v_term_norm text;
@@ -12,7 +12,7 @@ BEGIN
   IF p_term IS NULL OR length(trim(p_term)) < 2 THEN RETURN; END IF;
   IF p_limit IS NULL OR p_limit <= 0 THEN RETURN; END IF;
   v_term_norm := lower(unaccent(trim(p_term)));
-  v_lim_each  := GREATEST(1, p_limit / GREATEST(array_length(p_types, 1), 1));
+  v_lim_each  := GREATEST(1, LEAST(p_limit, 100) / GREATEST(array_length(p_types, 1), 1));
   BEGIN
     v_tsquery := websearch_to_tsquery('portuguese', unaccent(trim(p_term)));
   EXCEPTION WHEN OTHERS THEN v_tsquery := NULL;

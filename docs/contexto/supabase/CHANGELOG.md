@@ -2,6 +2,12 @@
 
 Diff semântico gerado a cada coleta em que algo mudou.
 
+## 2026-11-18 15:17 UTC
+
+- **functions** alterado (1): `public.fn_global_search(p_term text, p_limit integer, p_types text[])`
+- **lints** removido (1): `rpc_anon_executable:public.fn_global_search(p_term text, p_limit integer, p_types text[])`
+- **migrations** adicionado (1): `20261115130300_fn_global_search_clamp_limit_hardened`
+
 ## 2026-11-18 12:23 UTC
 
 - **functions** alterado (1): `public.get_edge_functions_base_url()`

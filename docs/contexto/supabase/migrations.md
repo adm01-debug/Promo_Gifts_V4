@@ -2979,5 +2979,6 @@ SQL em `migrations/<versao>_<nome>.sql`. Mudanças feitas pelo Dashboard/SQL Edi
 | 20261114170845 | [fix_workspace_notifications_insert_policy_reapply](migrations/20261114170845_fix_workspace_notifications_insert_policy_reapply.sql) | 3 |
 | 20261114170921 | [fix_rls_orders_order_items_seller_scope](migrations/20261114170921_fix_rls_orders_order_items_seller_scope.sql) | 12 |
 | 20261115130200 | [sec001_revoke_anon_execute_trigger_functions](migrations/20261115130200_sec001_revoke_anon_execute_trigger_functions.sql) | 106 |
+| 20261115130300 | [fn_global_search_clamp_limit_hardened](migrations/20261115130300_fn_global_search_clamp_limit_hardened.sql) | 1 |
 | 20261115230000 | [ai_function_routing_mockup_assistant](migrations/20261115230000_ai_function_routing_mockup_assistant.sql) | 1 |
 | 20261117073000 | [p06_security_invoker_v_product_properties_public](migrations/20261117073000_p06_security_invoker_v_product_properties_public.sql) | 8 |

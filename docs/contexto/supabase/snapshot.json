@@ -156487,11 +156487,11 @@
         },
         "comment": "Busca global. anon EXECUTE OK (quotes gated por auth.uid() IS NOT NULL). fix_version 20260717_grant_anon_catalog_rpcs_v1. ANTI-REGRESSAO: nao revogar anon.",
         "config": [
-          "search_path=public, extensions"
+          "search_path=pg_catalog, public, extensions, pg_temp"
         ],
         "definition": null,
-        "definition_sha": "535b50083b5a7c5d",
-        "execute_api_roles": "anon, authenticated, service_role",
+        "definition_sha": "9e29f312adfb3642",
+        "execute_api_roles": "authenticated, service_role",
         "execute_public": false,
         "is_trigger_fn": false,
         "kind": "function",
@@ -221588,12 +221588,6 @@
       {
         "code": "rpc_anon_executable",
         "detail": "SECURITY DEFINER chamável via RPC por anon (sem login): roda com privilégios do owner. Confirme que é intencional (Supabase dá EXECUTE a anon por padrão; revogue se não for API pública).",
-        "object": "public.fn_global_search(p_term text, p_limit integer, p_types text[])",
-        "severity": "INFO"
-      },
-      {
-        "code": "rpc_anon_executable",
-        "detail": "SECURITY DEFINER chamável via RPC por anon (sem login): roda com privilégios do owner. Confirme que é intencional (Supabase dá EXECUTE a anon por padrão; revogue se não for API pública).",
         "object": "public.fn_product_active_for_rls(p_id uuid)",
         "severity": "INFO"
       },
@@ -238653,6 +238647,12 @@
         "statements": 106,
         "statements_sha": "92c22e66b8ffcc42",
         "version": "20261115130200"
+      },
+      {
+        "name": "fn_global_search_clamp_limit_hardened",
+        "statements": 1,
+        "statements_sha": "4777f0654db1fa07",
+        "version": "20261115130300"
       },
       {
         "name": "ai_function_routing_mockup_assistant",
