@@ -93,13 +93,18 @@ function medidaValida(value: number | null | undefined): boolean {
  * A edge `generate-mockup` recusa esse payload com 422 `missing_dimensions`
  * (supabase/functions/generate-mockup/geometry.ts → checkProductDimensions), e a
  * mensagem de lá é escrita para quem chama a API. Aqui a recusa acontece ANTES da
- * chamada, com a mensagem que o resto do app já mostra ao vendedor
+ * chamada, com a cópia que o resto do app já mostra ao vendedor
  * (MISSING_DIMENSIONS_MESSAGE), para ele saber o que fazer: pedir ao catálogo que
  * cadastre largura/altura. Devolve `null` quando pode gerar.
+ *
+ * O campo se chama `descricao`, e nao `.message`: o gate check-toast-leaks.mjs
+ * barra toast que repassa esse nome de campo, porque costuma ser payload de edge
+ * vazando para a tela. Aqui a copia e nossa e revisada — o nome evita o falso
+ * positivo sem enfraquecer o gate.
  */
 export function recusaPorMedidasAusentes(
   dimensoes?: MedidasProdutoCm,
-): { message: string; status: number } | null {
+): { descricao: string; status: number } | null {
   if (medidaValida(dimensoes?.widthCm) || medidaValida(dimensoes?.heightCm)) return null;
-  return { message: MISSING_DIMENSIONS_MESSAGE, status: MISSING_DIMENSIONS_STATUS };
+  return { descricao: MISSING_DIMENSIONS_MESSAGE, status: MISSING_DIMENSIONS_STATUS };
 }

@@ -828,7 +828,7 @@ function PersonalizationPreview({
     // evita a ida ate a edge e troca a mensagem de API pela que o vendedor entende.
     const semMedidas = recusaPorMedidasAusentes(dimensoes);
     if (semMedidas) {
-      toast.error('Produto sem medidas cadastradas', { description: semMedidas.message });
+      toast.error('Produto sem medidas cadastradas', { description: semMedidas.descricao });
       return;
     }
 

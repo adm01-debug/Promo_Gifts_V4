@@ -195,7 +195,7 @@ describe('recusaPorMedidasAusentes — o kit-builder recusa antes de chamar a ed
       expect(recusa).not.toBeNull();
       expect(recusa?.status).toBe(MISSING_DIMENSIONS_STATUS);
       expect(recusa?.status).toBe(422);
-      expect(recusa?.message).toBe(MISSING_DIMENSIONS_MESSAGE);
+      expect(recusa?.descricao).toBe(MISSING_DIMENSIONS_MESSAGE);
     }
   });
 
