@@ -1,10 +1,10 @@
 {
  "meta": {
-  "sha": "7d01b06cf91a66e99ea7ea09ea079227ffd31313",
+  "sha": "2b1629605badf1050c626992b09428b2f67cd00e",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-19 10:54 UTC",
-  "files_total": 10912,
+  "generated_at": "2026-11-19 11:05 UTC",
+  "files_total": 10913,
   "code_files": 8933,
   "code_lines": 1265560
  },
@@ -548234,10 +548234,28 @@
   }
  },
  "git": {
-  "sha": "7d01b06cf91a66e99ea7ea09ea079227ffd31313",
+  "sha": "2b1629605badf1050c626992b09428b2f67cd00e",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "2b16296",
+    "date": "2026-11-19",
+    "author": "github-actions[bot]",
+    "subject": "docs: recibo de aplicação — 20261114120000 (E15)",
+    "files": [
+     "supabase/MIGRATIONS_SYNC_LOG.md"
+    ]
+   },
+   {
+    "sha": "ad8ba97",
+    "date": "2026-11-19",
+    "author": "adm01-debug",
+    "subject": "docs(resgates): adjudica os 124 arquivos nunca aplicados e registra as contas de teste em produção (#3890)",
+    "files": [
+     "docs/agentes/resgates/2026-11-19-triggers-ausentes-e-contas-de-teste-em-producao.md"
+    ]
+   },
    {
     "sha": "7d01b06",
     "date": "2026-11-19",
@@ -548524,31 +548542,12 @@
      "src/hooks/quotes/useQuoteTemplates.ts",
      "tests/hooks/quoteTemplateItemGuard.test.ts"
     ]
-   },
-   {
-    "sha": "21b5c9c",
-    "date": "2026-11-18",
-    "author": "adm01-debug",
-    "subject": "fix(orcamentos): template que falha ao salvar nao pode apagar o que o vendedor digitou (#3858)",
-    "files": [
-     "src/components/quotes/QuoteTemplateForm.tsx",
-     "tests/components/QuoteTemplatePreservation.test.tsx"
-    ]
-   },
-   {
-    "sha": "c4353df",
-    "date": "2026-11-18",
-    "author": "adm01-debug",
-    "subject": "docs(resgate): corrige medição falsa que entrou na main pela #3855 (#3856)",
-    "files": [
-     "docs/agentes/resgates/2026-11-18-veredicto-byte-a-byte-das-branches.md"
-    ]
    }
   ],
   "hot_files": [
    [
     "supabase/MIGRATIONS_SYNC_LOG.md",
-    13
+    14
    ],
    [
     "docs/agentes/resgates/2026-11-19-migrations-orfas-e-o-portao-retroativo.md",
@@ -548565,6 +548564,10 @@
    [
     ".security/policies-baseline.json",
     2
+   ],
+   [
+    "docs/agentes/resgates/2026-11-19-triggers-ausentes-e-contas-de-teste-em-producao.md",
+    1
    ],
    [
     "supabase/migrations/20261119094500_reafirma_revogacoes_anteriores_ao_baseline.sql",
@@ -548620,10 +548623,6 @@
    ],
    [
     "src/components/kit-builder/KitSummary.tsx",
-    1
-   ],
-   [
-    "src/components/kit-builder/kit-summary/KitPricingCard.tsx",
     1
    ]
   ]
