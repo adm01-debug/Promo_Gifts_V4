@@ -2472,3 +2472,4 @@ comportamento de produção. Nenhum segredo entra no repositório.
 | versão | arquivo | sha256 | status |
 |---|---|---|---|
 | `20261117172500` | `elevenlabs_credential` | `fdbc26e30ab2fbe2c8b5b30f13905a27ab480d21fd3d04cf934cb57eeef9c03a` | pendente — aplicar via `db-apply-migration.yml` (`version=20261117172500`) após merge |
+| `20261119081500` | `elevenlabs_credential_reemissao` | `f201f4ecc837eee77a39c399b2eef324a0cdc99895bf9b9d2a300baa1e6087a7` | pendente — reemissao byte a byte de `20261117172500`, reprovada pelo preflight E063 (run 44484611975) por nao ter cabecalho `-- Rollback:` nem arquivo de rollback. Aplicar via `db-apply-migration.yml` (`version=20261119081500`) apos merge |
