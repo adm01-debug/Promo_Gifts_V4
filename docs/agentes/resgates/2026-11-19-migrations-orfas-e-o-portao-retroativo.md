@@ -173,3 +173,50 @@ Três coisas que custaram tempo aqui:
 3. **Contar versão do ledger não é contar DDL.** Versão ausente do ledger pode ter
    sido aplicada por outro caminho (19 casos aqui). A pergunta que decide é se os
    **objetos** existem no banco.
+
+## Adendo — os detectores estão ligados e os regeneradores, desligados
+
+Descoberto ao aplicar as migrations acima, e é a causa comum por trás do custo de
+cada uma. O repositório tem pares de workflows: um que **detecta** divergência
+entre o banco e um snapshot commitado, e outro que **regenera** esse snapshot.
+Hoje, em 2026-11-19:
+
+| workflow | papel | estado |
+|---|---|---|
+| `ddl-out-of-band-detector.yml` | detecta DDL fora do fluxo de migrations | **ativo** |
+| `db-schema-drift-check.yml` | detecta drift de schema | **ativo** |
+| `policies-baseline.yml` | **regenera** `.security/policies-baseline.json` | **disabled_manually** |
+| `schema-snapshot-export.yml` | **regenera** o snapshot de cron/schema em `supabase/baseline/` | **disabled_manually** |
+
+O efeito prático: toda mudança legítima no banco aciona um detector, e **não há
+caminho sancionado para atualizar o baseline correspondente**. Ele precisa ser
+regenerado à mão.
+
+Aconteceu nesta sessão: aplicar `20261119073000` (17 policies `deny_all`) deixou a
+`main` vermelha no `Gate 1`, porque o snapshot assinado de policies era de 17/11.
+O dispatch que resolveria isso respondeu `Cannot trigger a 'workflow_dispatch' on
+a disabled workflow`. A saída foi regenerar o arquivo pelo próprio script
+(`--from-file` + `--update-baseline`), provando a equivalência com o banco por
+hash canônico dos dois lados — e abrir uma PR só para isso (#3876).
+
+**Consequência para a fila de órfãs:** as migrations de cron que sobraram
+(`e38_unschedule_dead_cron_jobs`, `e47_fix_schema_drift_cron_split`,
+`e37_split_genuine_multistatement_cron`, `cron002`, `cron004`,
+`remove_broken_cron_image_dimensions_backfill`) esbarram no mesmo muro. Duas
+delas têm o problema agravado:
+
+- `20260917090000` (`e47`): aplicar isolado **quebra o replay da shadow DB** do
+  `db-schema-drift-check.yml`. Só entra num lote que inclua a rotação de baseline.
+- `20261108230000` (remove o cron `image-dimensions-backfill`, hoje inativo e
+  apontando para uma edge inexistente): remover o job derruba dois gates que ainda
+  o listam — `supabase/baseline/cron-jobs-baseline.json` (lido por
+  `check-ddl-out-of-band.mjs:51`) e `supabase/baseline/20261116000000_cron_jobs.json`
+  (lido por `check-cron-drift.mjs`, que pega o snapshot mais recente do diretório).
+  O caminho limpo é aplicar e então regenerar o snapshot — que é justamente o
+  workflow desligado. Existe substituto ativo para esse job:
+  `backfill-image-dimensions` (jobid 222).
+
+**A decisão é do dono (Git 7), e é de um clique:** reativar os dois workflows em
+Settings → Actions. Enquanto não for feito, cada migration que mexa em policy ou
+em cron exige um conserto manual de baseline, com PR própria — e o detector fica
+vermelho no intervalo, bloqueando todas as outras PRs.
