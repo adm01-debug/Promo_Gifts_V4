@@ -1,6 +1,6 @@
 # 10 · ACESSO E SEGURANÇA — quem pode o quê
 
-> Gerado automaticamente por AI Context Sync v1.3.2 · commit `f346446929` · branch `main` · 2026-11-19 09:17 UTC
+> Gerado automaticamente por AI Context Sync v1.3.2 · commit `9f72f0f2e6` · branch `main` · 2026-11-19 10:31 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## Perfis / roles identificados
@@ -1215,9 +1215,10 @@ Middleware matcher (Next.js): nenhum
 |---|---|---|---|
 | grant | PUBLIC | execute | `claim_webhook_delivery`, `release_webhook_delivery_lock`, `cleanup_stale_webhook_locks`, `fn_cron_guard` |
 | grant | PUBLIC, anon | execute | `fn_audit_role_changes`, `fn_auto_classify_kit_product`, `fn_auto_classify_packing`, `fn_auto_classify_product_image`, `fn_auto_criar_equivalencia_spot`, `fn_auto_link_eco_material`, `fn_auto_link_feminine_color`, `fn_auto_set_same_supplier`, `fn_auto_vincular_cor_variante`, `fn_block_unauthorized_product_deactivation`, `fn_category_copywriting_updated`, `fn_color_equiv_clear_primary_on_inactive`, `fn_color_equiv_ensure_primary`, `fn_color_equiv_ensure_primary_stmt`, `fn_cor_generate_slug` … +91 |
-| grant | anon | execute | `get_quote_token_by_value`, `submit_quote_response`, `fn_should_apply_kill_switch`, `fn_log_search_analytics`, `is_org_owner_or_admin`, `is_org_owner_or_admin`, `mcp_kv_get`, `mcp_kv_set`, `mcp_kv_try_lock`, `fn_get_reposicao_listing`, `fn_get_reposicao_metrics`, `fn_get_replenishment_stats`, `fn_xbz_enqueue_videos`, `get_favorite_list_counts`, `get_favorite_list_counts` … +53 |
+| grant | anon | execute | `get_quote_token_by_value`, `submit_quote_response`, `fn_should_apply_kill_switch`, `fn_log_search_analytics`, `is_org_owner_or_admin`, `is_org_owner_or_admin`, `mcp_kv_get`, `mcp_kv_set`, `mcp_kv_try_lock`, `fn_get_reposicao_listing`, `fn_get_reposicao_metrics`, `fn_get_replenishment_stats`, `fn_xbz_enqueue_videos`, `get_favorite_list_counts`, `get_favorite_list_counts` … +54 |
 | grant | anon | insert | `kill_switch_hits` |
 | grant | anon | insert, update, delete, references, trigger | `external_connections` |
+| grant | anon | maintain | `external_connections` |
 | grant | anon | select | `system_kill_switches`, `products`, `products`, `products`, `public`, `somarcas_catalogo_publico`, `somarcas_catalogo_publico`, `analytics.mv_product_compositions`, `discount_approval_requests`, `discount_approval_requests`, `category_icons`, `discount_approval_requests`, `workspace_notifications`, `discount_approval_requests`, `workspace_notifications` … +70 |
 | grant | anon | select, insert, update | `magazine_reader_state` |
 | grant | anon | select, insert, update, delete, references, trigger | `mockup_approval_links` |
@@ -1230,7 +1231,7 @@ Middleware matcher (Next.js): nenhum
 | grant | anon, service_role | execute | `fn_dequeue_ai_enrichment`, `fn_save_ai_enrichment_results`, `fn_enqueue_ai_enrichment`, `fn_enqueue_ai_enrichment`, `fn_dequeue_ai_enrichment`, `fn_dequeue_ai_enrichment`, `fn_save_ai_enrichment_results`, `fn_dequeue_ai_enrichment` |
 | grant | anon, service_role | select | `vw_ai_enrichment_status` |
 | grant | authenticated | all | `user_preferences` |
-| grant | authenticated | execute | `seed_discount_test_users`, `cleanup_discount_test_data`, `get_bundle_suggestions`, `get_client_top_products`, `get_industry_top_products`, `get_industry_benchmark_stats`, `get_web_vitals_summary`, `check_hardening_status`, `get_top_favorited_products`, `get_favorites_weekly_count`, `set_connections_auto_test_interval`, `get_connections_auto_test_interval`, `set_connection_failure_window_minutes`, `get_connection_failure_window_minutes`, `get_auto_test_job_status` … +130 |
+| grant | authenticated | execute | `seed_discount_test_users`, `cleanup_discount_test_data`, `get_bundle_suggestions`, `get_client_top_products`, `get_industry_top_products`, `get_industry_benchmark_stats`, `get_web_vitals_summary`, `check_hardening_status`, `get_top_favorited_products`, `get_favorites_weekly_count`, `set_connections_auto_test_interval`, `get_connections_auto_test_interval`, `set_connection_failure_window_minutes`, `get_connection_failure_window_minutes`, `get_auto_test_job_status` … +134 |
 | grant | authenticated | insert | `kill_switch_hits`, `system_error_logs`, `navigation_analytics`, `navigation_analytics`, `navigation_analytics`, `frontend_telemetry` |
 | grant | authenticated | insert, update, delete | `collection_products` |
 | grant | authenticated | select | `quotes_inbound`, `webhook_inbound_dedupe`, `webhook_inbound_log`, `crm_callback_events`, `user_token_revocations`, `collection_products`, `system_kill_switches`, `v_kill_switch_hits_summary`, `v_kill_switch_hits_summary`, `smoke_tests_runs`, `v_smoke_tests_latest_run`, `v_smoke_tests_trend`, `v_smoke_tests_latest_run`, `v_smoke_tests_trend`, `system_error_logs` … +63 |
@@ -1280,13 +1281,14 @@ Middleware matcher (Next.js): nenhum
 | revoke | anon | delete, insert, update, trigger, references | `anon_catalog_grant_audit_log` |
 | revoke | anon | delete, trigger, truncate | `supplier_products_raw` |
 | revoke | anon | delete, update, trigger, references | `frontend_telemetry`, `frontend_telemetry` |
-| revoke | anon | execute | `fn_magazine_public_token`, `public`, `can_access_quote`, `org_has_any_members`, `org_has_any_members`, `create_organization_with_owner`, `get_quote_token_by_value`, `public`, `fn_purge_spr_history`, `fn_process_raw_v2`, `fn_dryrun_raw_v2`, `fn_purge_spr_history`, `reconcile_cf_image_status`, `fn_get_reposicao_listing`, `fn_get_replenishment_stats` … +24 |
+| revoke | anon | execute | `fn_magazine_public_token`, `public`, `can_access_quote`, `org_has_any_members`, `org_has_any_members`, `create_organization_with_owner`, `get_quote_token_by_value`, `public`, `fn_purge_spr_history`, `fn_process_raw_v2`, `fn_dryrun_raw_v2`, `fn_purge_spr_history`, `reconcile_cf_image_status`, `fn_get_reposicao_listing`, `fn_get_replenishment_stats` … +25 |
 | revoke | anon | insert, update, delete | `workspace_notifications`, `workspace_notifications`, `product_badge_definitions`, `color_synonym_map` |
 | revoke | anon | insert, update, delete, references, trigger | `external_connections` |
 | revoke | anon | insert, update, delete, truncate | `products` |
 | revoke | anon | insert, update, delete, truncate, references, trigger | `system_kill_switches` |
 | revoke | anon | insert, update, delete, truncate, trigger, references, select | `suppliers` |
 | revoke | anon | insert, update, references | `supplier_products_raw`, `supplier_products_raw`, `import_staging_images`, `color_analysis_staging`, `xbz_gallery_staging`, `scraper_images_staging`, `sm_images_staging`, `_asia_api_staging` |
+| revoke | anon | maintain | `external_connections` |
 | revoke | anon | select | `v_kill_switch_hits_summary`, `v_smoke_tests_latest_run`, `v_smoke_tests_trend`, `v_smoke_tests_latest_run`, `v_smoke_tests_trend`, `products`, `products`, `products`, `products`, `_asia_api_staging`, `_backup_produtos_padronizacao_20260604`, `ai_function_routing`, `ai_provider_quotas`, `ai_providers`, `ai_routing_decisions` … +71 |
 | revoke | anon, PUBLIC | execute | `fn_rupture_quick_stats`, `fn_ema_kpi_by_level`, `fn_rupture_anomalia_report`, `fn_rupture_by_level`, `fn_rupture_health_check` |
 | revoke | anon, authenticated | all | `slow_queries_view`, `get_edge_function_secret`, `webhook_request_nonces`, `get_edge_functions_base_url`, `mcp_sessions`, `supplier_customization_raw`, `fn_resync_product_media`, `fn_resync_product_media`, `fn_resync_product_media`, `fn_resync_product_media`, `mv_product_images_audit`, `v_product_images_quality_gap`, `vw_image_type_dropblockers`, `mv_product_images_audit`, `mcp_kv` … +28 |
@@ -1304,7 +1306,7 @@ Middleware matcher (Next.js): nenhum
 | revoke | authenticated | delete, insert, update, trigger, references | `anon_catalog_grant_audit_log` |
 | revoke | authenticated | delete, trigger, truncate | `supplier_products_raw` |
 | revoke | authenticated | delete, truncate, trigger, references, insert, update | `supplier_products_raw` |
-| revoke | authenticated | execute | `fn_magazine_public_token`, `get_quote_token_by_value`, `submit_quote_response`, `public`, `fn_purge_spr_history`, `fn_process_raw_v2`, `fn_dryrun_raw_v2`, `fn_purge_spr_history`, `process_pending_batches`, `reconcile_cf_image_status`, `get_edge_anon_key`, `fn_ensure_seller_discount_limit`, `fn_process_raw_v2`, `fn_sm_to_silver`, `process_supplier_product` … +16 |
+| revoke | authenticated | execute | `fn_magazine_public_token`, `get_quote_token_by_value`, `submit_quote_response`, `public`, `fn_purge_spr_history`, `fn_process_raw_v2`, `fn_dryrun_raw_v2`, `fn_purge_spr_history`, `process_pending_batches`, `reconcile_cf_image_status`, `get_edge_anon_key`, `fn_ensure_seller_discount_limit`, `fn_process_raw_v2`, `fn_sm_to_silver`, `process_supplier_product` … +20 |
 | revoke | authenticated | insert, update, delete | `admin_audit_log`, `mcp_api_keys`, `secret_rotation_log`, `login_attempts`, `ai_usage_logs` |
 | revoke | authenticated | insert, update, delete, references, trigger | `discount_approval_audit` |
 | revoke | authenticated | insert, update, delete, truncate, references | `supplier_products_raw_history` |

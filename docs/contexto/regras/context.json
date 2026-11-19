@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "f3464469292a9e397aa369f0e929de812711d511",
+  "sha": "9f72f0f2e6325e46008588d64d29132191aa6d1c",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-19 09:17 UTC",
-  "files_total": 10910,
-  "code_files": 8931,
-  "code_lines": 1265468
+  "generated_at": "2026-11-19 10:31 UTC",
+  "files_total": 10912,
+  "code_files": 8933,
+  "code_lines": 1265560
  },
  "version": "1.3.2",
- "facts_hash": "ce831b996f291807",
+ "facts_hash": "8fbd90e88966d4e8",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -1128,7 +1128,7 @@
   ],
   "package_manager": "npm",
   "languages": {
-   ".sql": 3449,
+   ".sql": 3451,
    ".ts": 3048,
    ".tsx": 1969,
    ".mjs": 450,
@@ -96192,6 +96192,7 @@
    "supabase/migrations/20261119051500_fix_get_quote_token_public_expiracao_pg_temp.sql",
    "supabase/migrations/20261119073000_supplier_stricker_rls_deny_all_reemissao.sql",
    "supabase/migrations/20261119081500_elevenlabs_credential_reemissao.sql",
+   "supabase/migrations/20261119094500_reafirma_revogacoes_anteriores_ao_baseline.sql",
    "supabase/rollbacks/20260511235950_rollback.sql",
    "supabase/rollbacks/20260511235959_rollback.sql",
    "supabase/rollbacks/20260611014515_fn_dryrun_standardize_supplier_real_rollback.sql",
@@ -96302,6 +96303,7 @@
    "supabase/rollbacks/20261119051500_rollback.sql",
    "supabase/rollbacks/20261119073000_rollback.sql",
    "supabase/rollbacks/20261119081500_rollback.sql",
+   "supabase/rollbacks/20261119094500_rollback.sql",
    "supabase/rollbacks/rollback_20261025002500_analyze_tables_p03.sql",
    "supabase/sql-legacy/001_notification_system.sql",
    "supabase/sql-legacy/002_notification_preferences.sql",
@@ -132773,6 +132775,54 @@
    },
    {
     "kind": "revoke",
+    "privs": "execute",
+    "object": "confirm_notifications_dispatched",
+    "objkind": "function",
+    "roles": "authenticated",
+    "src": "supabase/migrations/20261119094500_reafirma_revogacoes_anteriores_ao_baseline.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "fn_notify_user",
+    "objkind": "function",
+    "roles": "authenticated",
+    "src": "supabase/migrations/20261119094500_reafirma_revogacoes_anteriores_ao_baseline.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "registrar_entrada_estoque",
+    "objkind": "function",
+    "roles": "authenticated",
+    "src": "supabase/migrations/20261119094500_reafirma_revogacoes_anteriores_ao_baseline.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "registrar_saida_estoque",
+    "objkind": "function",
+    "roles": "authenticated",
+    "src": "supabase/migrations/20261119094500_reafirma_revogacoes_anteriores_ao_baseline.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "fn_global_search",
+    "objkind": "function",
+    "roles": "anon",
+    "src": "supabase/migrations/20261119094500_reafirma_revogacoes_anteriores_ao_baseline.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "maintain",
+    "object": "external_connections",
+    "objkind": "table",
+    "roles": "anon",
+    "src": "supabase/migrations/20261119094500_reafirma_revogacoes_anteriores_ao_baseline.sql"
+   },
+   {
+    "kind": "revoke",
     "privs": "all",
     "object": "fn_dryrun_standardize_supplier",
     "objkind": "function",
@@ -133994,6 +134044,54 @@
     "objkind": "function",
     "roles": "PUBLIC, anon",
     "src": "supabase/rollbacks/20261115130200_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "confirm_notifications_dispatched",
+    "objkind": "function",
+    "roles": "authenticated",
+    "src": "supabase/rollbacks/20261119094500_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_notify_user",
+    "objkind": "function",
+    "roles": "authenticated",
+    "src": "supabase/rollbacks/20261119094500_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "registrar_entrada_estoque",
+    "objkind": "function",
+    "roles": "authenticated",
+    "src": "supabase/rollbacks/20261119094500_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "registrar_saida_estoque",
+    "objkind": "function",
+    "roles": "authenticated",
+    "src": "supabase/rollbacks/20261119094500_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_global_search",
+    "objkind": "function",
+    "roles": "anon",
+    "src": "supabase/rollbacks/20261119094500_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "maintain",
+    "object": "external_connections",
+    "objkind": "table",
+    "roles": "anon",
+    "src": "supabase/rollbacks/20261119094500_rollback.sql"
    },
    {
     "kind": "grant",
@@ -151514,8 +151612,8 @@
   },
   {
    "module": "supabase/migrations",
-   "files": 3103,
-   "lines": 224126,
+   "files": 3104,
+   "lines": 224189,
    "tables": [
     "...",
     "admin_audit_log",
@@ -151613,8 +151711,8 @@
   },
   {
    "module": "supabase/rollbacks",
-   "files": 111,
-   "lines": 3337,
+   "files": 112,
+   "lines": 3366,
    "tables": [],
    "exports": [],
    "docs": [],
@@ -395541,6 +395639,54 @@
    },
    {
     "kind": "revoke",
+    "privs": "execute",
+    "object": "confirm_notifications_dispatched",
+    "objkind": "function",
+    "roles": "authenticated",
+    "src": "supabase/migrations/20261119094500_reafirma_revogacoes_anteriores_ao_baseline.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "fn_notify_user",
+    "objkind": "function",
+    "roles": "authenticated",
+    "src": "supabase/migrations/20261119094500_reafirma_revogacoes_anteriores_ao_baseline.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "registrar_entrada_estoque",
+    "objkind": "function",
+    "roles": "authenticated",
+    "src": "supabase/migrations/20261119094500_reafirma_revogacoes_anteriores_ao_baseline.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "registrar_saida_estoque",
+    "objkind": "function",
+    "roles": "authenticated",
+    "src": "supabase/migrations/20261119094500_reafirma_revogacoes_anteriores_ao_baseline.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "fn_global_search",
+    "objkind": "function",
+    "roles": "anon",
+    "src": "supabase/migrations/20261119094500_reafirma_revogacoes_anteriores_ao_baseline.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "maintain",
+    "object": "external_connections",
+    "objkind": "table",
+    "roles": "anon",
+    "src": "supabase/migrations/20261119094500_reafirma_revogacoes_anteriores_ao_baseline.sql"
+   },
+   {
+    "kind": "revoke",
     "privs": "all",
     "object": "fn_dryrun_standardize_supplier",
     "objkind": "function",
@@ -396762,6 +396908,54 @@
     "objkind": "function",
     "roles": "PUBLIC, anon",
     "src": "supabase/rollbacks/20261115130200_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "confirm_notifications_dispatched",
+    "objkind": "function",
+    "roles": "authenticated",
+    "src": "supabase/rollbacks/20261119094500_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_notify_user",
+    "objkind": "function",
+    "roles": "authenticated",
+    "src": "supabase/rollbacks/20261119094500_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "registrar_entrada_estoque",
+    "objkind": "function",
+    "roles": "authenticated",
+    "src": "supabase/rollbacks/20261119094500_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "registrar_saida_estoque",
+    "objkind": "function",
+    "roles": "authenticated",
+    "src": "supabase/rollbacks/20261119094500_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_global_search",
+    "objkind": "function",
+    "roles": "anon",
+    "src": "supabase/rollbacks/20261119094500_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "maintain",
+    "object": "external_connections",
+    "objkind": "table",
+    "roles": "anon",
+    "src": "supabase/rollbacks/20261119094500_rollback.sql"
    },
    {
     "kind": "grant",
@@ -522342,6 +522536,10 @@
    "path": "supabase/migrations/20261119081500_elevenlabs_credential_reemissao.sql",
    "lines": 54
   },
+  "supabase/migrations/20261119094500_reafirma_revogacoes_anteriores_ao_baseline.sql": {
+   "path": "supabase/migrations/20261119094500_reafirma_revogacoes_anteriores_ao_baseline.sql",
+   "lines": 63
+  },
   "supabase/rollbacks/20260511235950_rollback.sql": {
    "path": "supabase/rollbacks/20260511235950_rollback.sql",
    "lines": 5
@@ -522800,6 +522998,10 @@
   "supabase/rollbacks/20261119081500_rollback.sql": {
    "path": "supabase/rollbacks/20261119081500_rollback.sql",
    "lines": 11
+  },
+  "supabase/rollbacks/20261119094500_rollback.sql": {
+   "path": "supabase/rollbacks/20261119094500_rollback.sql",
+   "lines": 29
   },
   "supabase/rollbacks/rollback_20261025002500_analyze_tables_p03.sql": {
    "path": "supabase/rollbacks/rollback_20261025002500_analyze_tables_p03.sql",
@@ -548032,10 +548234,21 @@
   }
  },
  "git": {
-  "sha": "f3464469292a9e397aa369f0e929de812711d511",
+  "sha": "9f72f0f2e6325e46008588d64d29132191aa6d1c",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "9f72f0f",
+    "date": "2026-11-19",
+    "author": "adm01-debug",
+    "subject": "fix(db): reafirma 7 revogações que o baseline ressuscita na reconstrução (#3883)",
+    "files": [
+     "supabase/MIGRATIONS_SYNC_LOG.md",
+     "supabase/migrations/20261119094500_reafirma_revogacoes_anteriores_ao_baseline.sql",
+     "supabase/rollbacks/20261119094500_rollback.sql"
+    ]
+   },
    {
     "sha": "f346446",
     "date": "2026-11-19",
@@ -548339,21 +548552,12 @@
      "supabase/functions/quote-sync-promo-champions/index.test.ts",
      "supabase/functions/webhook-inbound/handler_characterization_test.ts"
     ]
-   },
-   {
-    "sha": "ec7ecdc",
-    "date": "2026-11-18",
-    "author": "adm01-debug",
-    "subject": "docs(resgate): veredicto byte a byte das 9 branches abertas (#3855)",
-    "files": [
-     "docs/agentes/resgates/2026-11-18-veredicto-byte-a-byte-das-branches.md"
-    ]
    }
   ],
   "hot_files": [
    [
     "supabase/MIGRATIONS_SYNC_LOG.md",
-    11
+    12
    ],
    [
     "docs/agentes/resgates/2026-11-19-migrations-orfas-e-o-portao-retroativo.md",
@@ -548372,8 +548576,12 @@
     2
    ],
    [
-    "docs/agentes/resgates/2026-11-18-veredicto-byte-a-byte-das-branches.md",
-    2
+    "supabase/migrations/20261119094500_reafirma_revogacoes_anteriores_ao_baseline.sql",
+    1
+   ],
+   [
+    "supabase/rollbacks/20261119094500_rollback.sql",
+    1
    ],
    [
     "supabase/migrations/20261119081500_elevenlabs_credential_reemissao.sql",
@@ -548425,10 +548633,6 @@
    ],
    [
     "src/components/kit-builder/KitSummary.tsx",
-    1
-   ],
-   [
-    "src/components/kit-builder/kit-summary/KitPricingCard.tsx",
     1
    ]
   ]

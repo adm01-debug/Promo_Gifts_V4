@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "f3464469292a9e397aa369f0e929de812711d511",
+  "commit": "9f72f0f2e6325e46008588d64d29132191aa6d1c",
   "branch": "main",
-  "data_commit": "2026-11-19T06:03:06-03:00",
+  "data_commit": "2026-11-19T07:30:11-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "9f72f0f2",
+    "data": "2026-11-19",
+    "assunto": "fix(db): reafirma 7 revogações que o baseline ressuscita na reconstrução (#3883)"
+   },
    {
     "sha": "f3464469",
     "data": "2026-11-19",
@@ -126,74 +131,69 @@
     "sha": "ee54b645",
     "data": "2026-11-18",
     "assunto": "docs: recibo de aplicacao — 20261118223000 (E15) (#3857)"
-   },
-   {
-    "sha": "a6a0bdeb",
-    "data": "2026-11-18",
-    "assunto": "fix(orcamentos): recusa item invalido antes de gravar template (#3859)"
    }
   ],
-  "arquivos_mudados_7d": 1484,
+  "arquivos_mudados_7d": 1486,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
-    "mudancas": 2159
+    "mudancas": 1861
    },
    {
     "pasta": "src/components/products",
-    "mudancas": 1081
+    "mudancas": 931
    },
    {
     "pasta": "tests/edge-functions/live",
-    "mudancas": 823
+    "mudancas": 708
    },
    {
     "pasta": "src/hooks/products",
-    "mudancas": 763
-   },
-   {
-    "pasta": "src/components/quotes",
-    "mudancas": 701
-   },
-   {
-    "pasta": "src/pages/magazine",
-    "mudancas": 644
+    "mudancas": 658
    },
    {
     "pasta": "recovery/src-legacy/src",
     "mudancas": 633
    },
    {
-    "pasta": "src/components/inventory",
-    "mudancas": 577
+    "pasta": "src/components/quotes",
+    "mudancas": 614
    },
    {
-    "pasta": "src/components/ui",
-    "mudancas": 519
+    "pasta": "src/pages/magazine",
+    "mudancas": 552
+   },
+   {
+    "pasta": "src/components/inventory",
+    "mudancas": 497
    },
    {
     "pasta": "supabase/functions/_shared",
-    "mudancas": 519
+    "mudancas": 450
+   },
+   {
+    "pasta": "src/components/ui",
+    "mudancas": 446
    },
    {
     "pasta": "src/components/mockup",
-    "mudancas": 481
+    "mudancas": 421
    },
    {
     "pasta": "src/pages/admin",
-    "mudancas": 431
+    "mudancas": 372
    },
    {
     "pasta": "src/pages/quotes",
-    "mudancas": 380
+    "mudancas": 330
    },
    {
     "pasta": "src/components/kit-builder",
-    "mudancas": 365
+    "mudancas": 318
    },
    {
     "pasta": "src/pages/products",
-    "mudancas": 344
+    "mudancas": 296
    }
   ],
   "arquivos_mais_mudados_90d": [
@@ -203,113 +203,113 @@
    },
    {
     "arquivo": "package.json",
-    "mudancas": 40
+    "mudancas": 39
    },
    {
     "arquivo": "docs/coordenacao/conflitos-semanticos.md",
-    "mudancas": 30
+    "mudancas": 29
    },
    {
     "arquivo": "RELATORIO_CI.md",
-    "mudancas": 24
-   },
-   {
-    "arquivo": "package-lock.json",
-    "mudancas": 24
-   },
-   {
-    "arquivo": "PENDENCIAS.md",
     "mudancas": 23
    },
    {
-    "arquivo": ".github/workflows/deploy-gates.yml",
+    "arquivo": "package-lock.json",
+    "mudancas": 23
+   },
+   {
+    "arquivo": "PENDENCIAS.md",
     "mudancas": 22
    },
    {
+    "arquivo": ".github/workflows/deploy-gates.yml",
+    "mudancas": 21
+   },
+   {
     "arquivo": "audit/supabase-reference-catalog.temporary.json",
-    "mudancas": 18
+    "mudancas": 17
    },
    {
     "arquivo": "src/pages/kit-builder/KitBuilderPage.tsx",
-    "mudancas": 18
+    "mudancas": 17
    },
    {
     "arquivo": "supabase/EDGE_FUNCTIONS_DEPLOY_LOG.md",
-    "mudancas": 18
+    "mudancas": 17
    },
    {
     "arquivo": "src/hooks/kit-builder/useKitBuilderPageState.ts",
-    "mudancas": 15
-   },
-   {
-    "arquivo": "src/pages/mockups/MockupGenerator.tsx",
-    "mudancas": 15
-   },
-   {
-    "arquivo": "e2e/flows/magazine-preview-sticky-smoke.spec.ts",
     "mudancas": 14
    },
    {
-    "arquivo": ".github/workflows/schema-snapshot-export.yml",
+    "arquivo": "src/pages/mockups/MockupGenerator.tsx",
+    "mudancas": 14
+   },
+   {
+    "arquivo": "e2e/flows/magazine-preview-sticky-smoke.spec.ts",
     "mudancas": 13
+   },
+   {
+    "arquivo": ".github/workflows/schema-snapshot-export.yml",
+    "mudancas": 12
    },
    {
     "arquivo": "src/components/kit-builder/PersonalizationConfig.tsx",
-    "mudancas": 13
+    "mudancas": 12
    },
    {
     "arquivo": "supabase/functions/crm-db-bridge/index.ts",
-    "mudancas": 13
+    "mudancas": 12
    },
    {
     "arquivo": "tests/components/pages/KitBuilderPage.test.tsx",
-    "mudancas": 13
+    "mudancas": 12
    },
    {
     "arquivo": "tests/edge-functions/live/_live-client.ts",
-    "mudancas": 13
+    "mudancas": 12
    },
    {
     "arquivo": ".github/workflows/db-schema-drift-check.yml",
-    "mudancas": 12
+    "mudancas": 11
    },
    {
     "arquivo": ".github/workflows/e2e-swatch-quickview.yml",
-    "mudancas": 12
+    "mudancas": 11
    },
    {
     "arquivo": ".github/workflows/e2e.yml",
-    "mudancas": 12
+    "mudancas": 11
    },
    {
     "arquivo": ".github/workflows/replenishment-quality.yml",
-    "mudancas": 12
+    "mudancas": 11
    },
    {
     "arquivo": "CHANGELOG.md",
-    "mudancas": 12
+    "mudancas": 11
    },
    {
     "arquivo": "analise-branches/RELATORIO_BRANCHES.md",
-    "mudancas": 12
+    "mudancas": 11
    },
    {
     "arquivo": "docs/ci/SEGREDOS.md",
-    "mudancas": 12
+    "mudancas": 11
    }
   ],
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 394
+    "commits": 391
    },
    {
     "autor": "Claude",
-    "commits": 69
+    "commits": 67
    },
    {
     "autor": "Joaquim Ataides",
-    "commits": 59
+    "commits": 58
    },
    {
     "autor": "github-actions[bot]",
@@ -322,7 +322,7 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 10982,
+  "arquivos_total": 10984,
   "arquivos_codigo": 5483,
   "linhas_codigo": 1044218,
   "rotas": 139,
@@ -334,7 +334,7 @@
   "hooks": 633,
   "edge_functions": 112,
   "tabelas": 527,
-  "migrations": 3104,
+  "migrations": 3105,
   "cron_jobs": 122,
   "testes": 2614,
   "workflows": 89,
