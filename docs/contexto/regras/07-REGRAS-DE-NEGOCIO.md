@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.3.2 · commit `f653a19d45` · branch `main` · 2026-11-19 23:11 UTC
+> Gerado automaticamente por AI Context Sync v1.3.2 · commit `00502c7a4b` · branch `main` · 2026-11-19 23:19 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -4442,6 +4442,10 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
   ```
   const { box, contents } = draft; const pesoItensG = contents.reduce( (total, { item, quantity }) => total + item.weightG * quantity, 0, ); const grossWeightG = roundDecimal(box.emptyWeightG + pesoItensG, 2); const outerVolumeCm3 = volumeCm3(box.outer); const cubicWeightG: CubicWeightG = { correios: cubicWeight(outerVolumeCm3, settings.cubicDivisorCorreios), rodoviario: cubicWeight(outerVolumeCm3, settings.cubicDivisorRodoviario), }; const fator = isKnownMeasure(box.fillFactor) && box.fillFactor …
   ```
+- **totaisVazios()** — `src/lib/freight/planFreight.ts`
+  ```
+  return { boxesByCode: {}, grossWeightG: 0, volumeM3: 0, cubicWeightG: { correios: 0, rodoviario: 0 }, };
+  ```
 - **computeItemsHash(items: ReadonlyArray<{ productId: string; quantity: number }>,)** — `src/lib/freight/planFreight.ts`
   ```
   const canonico = [...items] .map(({ productId, quantity }) => `${productId}:${quantity}`) .sort() .join('|'); let hash = 0x811c9dc5; for (let i = 0; i < canonico.length; i += 1) { hash ^= canonico.charCodeAt(i); hash = Math.imul(hash, 0x01000193) >>> 0; } return hash.toString(16).padStart(8, '0');
@@ -5351,6 +5355,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `// invisíveis na PDP. Max real observado no catálogo = 100. Margem 20% = 120.` | `src/lib/external-db/products-detail.ts` |
 | `// 7.153 produtos / 16.631 swatches / 97,4% CF CDN. Consumido por ColorSwatchPicker.` | `src/lib/external-db/products-lightweight.ts` |
 | `* `shipping_length_cm` — 100% vazias nos 7.951 produtos ativos.` | `src/lib/freight/columns.ts` |
+| `// por ocupar mais de 90% dela.` | `src/lib/freight/fitCount.ts` |
 | `* despachar uma GG com 10% de ocupação.` | `src/lib/freight/packSingleProduct.ts` |
 | `* - baixo: min * 0.25 < current ≤ min` | `src/lib/inventory/health-score.ts` |
 | `* - crítico: current ≤ min * 0.25` | `src/lib/inventory/health-score.ts` |
@@ -6655,7 +6660,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `admin` | `supabase/migrations/20261112120500_fix_optimization_queue_rpcs_dev_access.sql` |
 | `anon` | `tests/edge-functions/live/_live-client.ts` |
 
-## K. Testes como especificação (22806 testes em 2305 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (22819 testes em 2305 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -6762,6 +6767,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `tests/integration/freight-quest/webhook-matrix-1000.test.ts` | 32 | matriz 1: todos eventos × todas fontes (v2 envelope) · event=$event source=$source → 200 · matriz 2: todos eventos com envelope v1 · evento  … |
 | `tests/unit/freight-quest/quote-shipping-validation.test.ts` | 32 | quoteFormSchema — valid cases · CIF com shippingCost=0 → válido · FOB com shippingCost=0 → válido · FOB_PRE com shippingCost=50 → válido … |
 | `src/lib/assistant/__tests__/logoColorToGroups.test.ts` | 31 | logoColorToGroups — azul institucional · põe Azul na frente, com a distância medida e folga sobre o 2º lugar · devolve o hex do grupo e o hex da logo normalizados em minúsculo · trata a logo que usa literalmente o hex do grupo como cor exata … |
+| `src/lib/freight/__tests__/planFreight.test.ts` | 31 | planFreight — status ok · 460 cadernetas sem a GG: 3× G + 1× P, com os totais fechados à mão · kitQuantity multiplica a quantidade de cada linha · linha com quantidade zero sai do plano sem virar erro … |
 | `tests/ai-usage.test.ts` | 31 | AI Usage - Cost Estimation · calculates Gemini 2.5 Flash cost correctly · calculates Gemini 3 Flash Preview cost correctly · calculates GPT-5 cost correctly … |
 | `tests/e2e/performance.test.ts` | 31 | E2E Performance — Lazy Loading · MainLayout lazy loads 12+ components · E2E Performance — Query Limits · app page size < supabase limit … |
 | `tests/edge-functions/integration/ai-features.test.ts` | 31 | ai-recommendations · product_id válido → 200 + recomendações · contexto de orçamento → 200 + recomendações contextuais · produto inexistente → 404 … |
@@ -6859,7 +6865,6 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `src/hooks/assistant/__tests__/useClientBrandSignals.test.ts` | 22 | sem cliente · não consulta o CRM e devolve os sinais zerados · cliente sem ramo · deixa ramoPaiId nulo e confiança baixa, sem inventar ramo … |
 | `src/hooks/quotes/__tests__/quoteHelpers.validation.test.ts` | 22 | quoteHelpers validation logic · throws error when percent is > 100 · throws error when amount is > subtotal · throws error when discount is negative … |
 | `src/lib/edge/__tests__/invokeExport.test.ts` | 22 | invokeEventsToCSV · gera header + linhas com ISO · escapa vírgula, aspas e quebra de linha · lida com campos ausentes (latencyMs/errorKind/attempts) … |
-| `src/lib/freight/__tests__/planFreight.test.ts` | 22 | planFreight — status ok · 460 cadernetas sem a GG: 3× G + 1× P, com os totais fechados à mão · kitQuantity multiplica a quantidade de cada linha · linha com quantidade zero sai do plano sem virar erro … |
 | `tests/components/PriceFreshnessBadge.colorMatrix.test.tsx` | 22 | PriceFreshnessBadge — matriz cromática + conteúdo pt-BR (status × variant) · variant=inline (PDP / Quick View) · fresh: emerald-700 +  · aging: amber-700 + ainda usa label  … |
 | `tests/components/PriceFreshnessBadge.copyAssertions.test.tsx` | 22 | PriceFreshnessBadge — cópia pt-BR exata por variant · variant=inline (PDP / Quick View) · fresh:  · aging:  … |
 | `tests/components/kit-builder/KitBuilderComponents.test.tsx` | 22 | KitVisualPreview · renders null when no box · renders box preview with items · shows correct fill color for normal usage … |

@@ -9744,11 +9744,11 @@
   {
    "arquivo": "src/lib/freight/__tests__/buildGroups.test.ts",
    "tipo": "unit",
-   "linhas": 77,
+   "linhas": 125,
    "testa": [
     "src/lib/freight/buildGroups.ts"
    ],
-   "casos": 7
+   "casos": 11
   },
   {
    "arquivo": "src/lib/freight/__tests__/columns.test.ts",
@@ -9781,11 +9781,11 @@
   {
    "arquivo": "src/lib/freight/__tests__/fitCount.test.ts",
    "tipo": "unit",
-   "linhas": 214,
+   "linhas": 236,
    "testa": [
     "src/lib/freight/fitCount.ts"
    ],
-   "casos": 13
+   "casos": 15
   },
   {
    "arquivo": "src/lib/freight/__tests__/fixtures/boxes.ts",
@@ -9828,7 +9828,7 @@
   {
    "arquivo": "src/lib/freight/__tests__/fuzz.test.ts",
    "tipo": "unit",
-   "linhas": 199,
+   "linhas": 206,
    "testa": [
     "src/lib/freight/columns.ts",
     "src/lib/freight/planFreight.ts",
@@ -9858,11 +9858,11 @@
   {
    "arquivo": "src/lib/freight/__tests__/planFreight.test.ts",
    "tipo": "unit",
-   "linhas": 298,
+   "linhas": 427,
    "testa": [
     "src/lib/freight/planFreight.ts"
    ],
-   "casos": 18
+   "casos": 27
   },
   {
    "arquivo": "src/lib/freight/__tests__/resolveItemDimensions.test.ts",

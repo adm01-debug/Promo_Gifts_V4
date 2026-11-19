@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "f653a19d45c08f93261401793496caee12c22d60",
+  "commit": "00502c7a4bfd2f9a7efac767943bac21ac74a351",
   "branch": "main",
-  "data_commit": "2026-11-19T23:10:30Z",
+  "data_commit": "2026-11-19T23:18:25Z",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "00502c7a",
+    "data": "2026-11-19",
+    "assunto": "fix(frete): motor agrupa por produto e corrige bordas (#3910)"
+   },
    {
     "sha": "f653a19d",
     "data": "2026-11-19",
@@ -126,11 +131,6 @@
     "sha": "f3464469",
     "data": "2026-11-19",
     "assunto": "fix(docs): referência a migration inexistente na main quebrava o Gate 1 (#3882)"
-   },
-   {
-    "sha": "4331742c",
-    "data": "2026-11-19",
-    "assunto": "chore(resgates): fecha a fila das 16 orfas com o estado final de cada uma (#3881)"
    }
   ],
   "arquivos_mudados_7d": 1395,
@@ -199,7 +199,7 @@
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "supabase/MIGRATIONS_SYNC_LOG.md",
-    "mudancas": 69
+    "mudancas": 68
    },
    {
     "arquivo": "package.json",
@@ -227,14 +227,14 @@
    },
    {
     "arquivo": "audit/supabase-reference-catalog.temporary.json",
-    "mudancas": 13
-   },
-   {
-    "arquivo": "supabase/EDGE_FUNCTIONS_DEPLOY_LOG.md",
     "mudancas": 12
    },
    {
     "arquivo": "src/pages/mockups/MockupGenerator.tsx",
+    "mudancas": 11
+   },
+   {
+    "arquivo": "supabase/EDGE_FUNCTIONS_DEPLOY_LOG.md",
     "mudancas": 11
    },
    {
@@ -301,7 +301,7 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 351
+    "commits": 350
    },
    {
     "autor": "Claude",
@@ -309,7 +309,7 @@
    },
    {
     "autor": "Joaquim Ataides",
-    "commits": 34
+    "commits": 33
    },
    {
     "autor": "github-actions[bot]",
@@ -324,7 +324,7 @@
  "contagens": {
   "arquivos_total": 11029,
   "arquivos_codigo": 5516,
-  "linhas_codigo": 1048340,
+  "linhas_codigo": 1048615,
   "rotas": 139,
   "rotas_http_backend": 13,
   "vistas_por_id": 0,
@@ -1936,7 +1936,7 @@
   },
   "src/lib": {
    "arquivos": 383,
-   "linhas": 58065
+   "linhas": 58340
   },
   "src/logic": {
    "arquivos": 4,

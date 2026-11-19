@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "f653a19d45c08f93261401793496caee12c22d60",
+  "sha": "00502c7a4bfd2f9a7efac767943bac21ac74a351",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-19 23:11 UTC",
+  "generated_at": "2026-11-19 23:19 UTC",
   "files_total": 10957,
   "code_files": 8976,
-  "code_lines": 1270320
+  "code_lines": 1270595
  },
  "version": "1.3.2",
- "facts_hash": "ed9942a4c56fbb84",
+ "facts_hash": "c970a2d01d2a48f1",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -150665,7 +150665,7 @@
   {
    "module": "src/lib",
    "files": 384,
-   "lines": 58075,
+   "lines": 58350,
    "tables": [
     "...",
     "companies",
@@ -208933,6 +208933,12 @@
    {
     "file": "src/lib/freight/planFreight.ts",
     "field": "status",
+    "value": "dados_insuficientes",
+    "kind": "escreve"
+   },
+   {
+    "file": "src/lib/freight/planFreight.ts",
+    "field": "status",
     "value": "nao_cabe",
     "kind": "escreve"
    },
@@ -215744,6 +215750,12 @@
    },
    {
     "file": "src/lib/freight/planFreight.ts",
+    "name": "totaisVazios",
+    "params": "",
+    "body": "return { boxesByCode: {}, grossWeightG: 0, volumeM3: 0, cubicWeightG: { correios: 0, rodoviario: 0 }, };"
+   },
+   {
+    "file": "src/lib/freight/planFreight.ts",
     "name": "computeItemsHash",
     "params": "items: ReadonlyArray<{ productId: string; quantity: number }>,",
     "body": "const canonico = [...items] .map(({ productId, quantity }) => `${productId}:${quantity}`) .sort() .join('|'); let hash = 0x811c9dc5; for (let i = 0; i < canonico.length; i += 1) { hash ^= canonico.charCodeAt(i); hash = Math.imul(hash, 0x01000193) >>> 0; } return hash.toString(16).padStart(8, '0');"
@@ -220325,6 +220337,10 @@
    {
     "file": "src/lib/freight/columns.ts",
     "line": "* `shipping_length_cm` — 100% vazias nos 7.951 produtos ativos."
+   },
+   {
+    "file": "src/lib/freight/fitCount.ts",
+    "line": "// por ocupar mais de 90% dela."
    },
    {
     "file": "src/lib/freight/packSingleProduct.ts",
@@ -252406,7 +252422,15 @@
    },
    {
     "file": "src/lib/freight/__tests__/buildGroups.test.ts",
-    "name": "duas linhas do mesmo produto não desestabilizam a ordem"
+    "name": "separar: linhas do mesmo produto viram um grupo só, com a quantidade somada"
+   },
+   {
+    "file": "src/lib/freight/__tests__/buildGroups.test.ts",
+    "name": "misturar: linhas do mesmo produto entram como uma peça só no grupo"
+   },
+   {
+    "file": "src/lib/freight/__tests__/buildGroups.test.ts",
+    "name": "somar as linhas não altera a lista recebida"
    },
    {
     "file": "src/lib/freight/__tests__/buildGroups.test.ts",
@@ -252563,6 +252587,14 @@
    {
     "file": "src/lib/freight/__tests__/fitCount.test.ts",
     "name": "caixa sem peso útil zera por peso"
+   },
+   {
+    "file": "src/lib/freight/__tests__/fitCount.test.ts",
+    "name": "peça única que entra na caixa não é recusada pelo fator de aproveitamento"
+   },
+   {
+    "file": "src/lib/freight/__tests__/fitCount.test.ts",
+    "name": "o piso de 1 não vale para peça que não entra na caixa"
    },
    {
     "file": "src/lib/freight/__tests__/fitCount.test.ts",
@@ -252730,6 +252762,18 @@
    },
    {
     "file": "src/lib/freight/__tests__/planFreight.test.ts",
+    "name": "separar: o mesmo produto em 3 linhas divide a mesma caixa"
+   },
+   {
+    "file": "src/lib/freight/__tests__/planFreight.test.ts",
+    "name": "separar: 5 linhas de 20 dão o mesmo plano de 1 linha de 100"
+   },
+   {
+    "file": "src/lib/freight/__tests__/planFreight.test.ts",
+    "name": "peça única quase do tamanho da GG vai numa GG"
+   },
+   {
+    "file": "src/lib/freight/__tests__/planFreight.test.ts",
     "name": "planFreight — status dados_insuficientes"
    },
    {
@@ -252742,11 +252786,35 @@
    },
    {
     "file": "src/lib/freight/__tests__/planFreight.test.ts",
+    "name": "planFreight — nada para despachar"
+   },
+   {
+    "file": "src/lib/freight/__tests__/planFreight.test.ts",
+    "name": "lista vazia não vira plano ok de 0 kg"
+   },
+   {
+    "file": "src/lib/freight/__tests__/planFreight.test.ts",
+    "name": "todas as linhas com quantidade zero é o mesmo que lista vazia"
+   },
+   {
+    "file": "src/lib/freight/__tests__/planFreight.test.ts",
+    "name": "planos bloqueados não dividem o mesmo objeto de totais"
+   },
+   {
+    "file": "src/lib/freight/__tests__/planFreight.test.ts",
     "name": "planFreight — status nao_cabe"
    },
    {
     "file": "src/lib/freight/__tests__/planFreight.test.ts",
     "name": "peça maior que a maior caixa nomeia a peça e a caixa"
+   },
+   {
+    "file": "src/lib/freight/__tests__/planFreight.test.ts",
+    "name": "peça pesada demais para qualquer caixa: o aviso culpa o peso, não o tamanho"
+   },
+   {
+    "file": "src/lib/freight/__tests__/planFreight.test.ts",
+    "name": "peça que passa do peso só das caixas menores vai na que aguenta"
    },
    {
     "file": "src/lib/freight/__tests__/planFreight.test.ts",
@@ -479874,7 +479942,7 @@
   },
   "src/lib/freight/buildGroups.ts": {
    "path": "src/lib/freight/buildGroups.ts",
-   "lines": 55,
+   "lines": 82,
    "exports": [
     "type GroupReason",
     "interface PackGroup",
@@ -479971,7 +480039,7 @@
   },
   "src/lib/freight/fitCount.ts": {
    "path": "src/lib/freight/fitCount.ts",
-   "lines": 142,
+   "lines": 158,
    "exports": [
     "interface FittableItem",
     "type FitLimit",
@@ -479994,7 +480062,9 @@
     "aproveitável e por peso máximo. O menor dos três manda.",
     "* O mínimo que `fitCount` precisa saber de uma peça. `PackItem` satisfaz. */"
    ],
-   "doc": "Quantas peças iguais cabem numa caixa — por encaixe real, por volume aproveitável e por peso máximo. O menor dos três manda. Os três tetos existem porque cada um sozinho mente: - só geometria ignora que o empacotador real não consegue um arranjo perfeito, e por isso existe o `fillFactor`; - só volum …"
+   "percents": [
+    "// por ocupar mais de 90% dela."
+   ]
   },
   "src/lib/freight/formatPlanSummary.ts": {
    "path": "src/lib/freight/formatPlanSummary.ts",
@@ -480094,7 +480164,7 @@
   },
   "src/lib/freight/planFreight.ts": {
    "path": "src/lib/freight/planFreight.ts",
-   "lines": 266,
+   "lines": 288,
    "exports": [
     "interface PlanInput",
     "interface PlanOptions",
@@ -480108,6 +480178,11 @@
     }
    ],
    "status_values": [
+    {
+     "field": "status",
+     "value": "dados_insuficientes",
+     "kind": "escreve"
+    },
     {
      "field": "status",
      "value": "dados_insuficientes",
@@ -480150,6 +480225,11 @@
    "doc": "Orquestra o plano de frete: medidas → bloqueio → quantidades → grupos → empacotamento → totais → avisos. Não lê relógio nem sorteia nada: `computedAt` e `itemsHash` entram por parâmetro. É o que faz o plano ser reproduzível em teste e comparável com o que está salvo no orçamento.",
    "calc_fns": [
     {
+     "name": "totaisVazios",
+     "params": "",
+     "body": "return { boxesByCode: {}, grossWeightG: 0, volumeM3: 0, cubicWeightG: { correios: 0, rodoviario: 0 }, };"
+    },
+    {
      "name": "computeItemsHash",
      "params": "items: ReadonlyArray<{ productId: string; quantity: number }>,",
      "body": "const canonico = [...items] .map(({ productId, quantity }) => `${productId}:${quantity}`) .sort() .join('|'); let hash = 0x811c9dc5; for (let i = 0; i < canonico.length; i += 1) { hash ^= canonico.charCodeAt(i); hash = Math.imul(hash, 0x01000193) >>> 0; } return hash.toString(16).padStart(8, '0');"
@@ -480189,7 +480269,7 @@
   },
   "src/lib/freight/types.ts": {
    "path": "src/lib/freight/types.ts",
-   "lines": 162,
+   "lines": 166,
    "exports": [
     "interface Dimensions",
     "type MeasureSource",
@@ -480276,7 +480356,7 @@
   },
   "src/lib/freight/__tests__/buildGroups.test.ts": {
    "path": "src/lib/freight/__tests__/buildGroups.test.ts",
-   "lines": 77,
+   "lines": 125,
    "is_test": true,
    "doc": "buildGroups.test.ts — quem divide caixa com quem.",
    "tests": [
@@ -480285,7 +480365,9 @@
     "separar: dois produtos viram dois grupos",
     "dois produtos ",
     "ordem é estável por productId, não pela ordem de entrada",
-    "duas linhas do mesmo produto não desestabilizam a ordem",
+    "separar: linhas do mesmo produto viram um grupo só, com a quantidade somada",
+    "misturar: linhas do mesmo produto entram como uma peça só no grupo",
+    "somar as linhas não altera a lista recebida",
     "lista vazia não gera grupo"
    ]
   },
@@ -480341,7 +480423,7 @@
   },
   "src/lib/freight/__tests__/fitCount.test.ts": {
    "path": "src/lib/freight/__tests__/fitCount.test.ts",
-   "lines": 214,
+   "lines": 236,
    "is_test": true,
    "rule_comments": [
     "teto que vale é o físico — inventar um limite de peso seria pior."
@@ -480363,6 +480445,8 @@
     "lado desconhecido zera a capacidade",
     "peso não cadastrado não cria teto de peso",
     "caixa sem peso útil zera por peso",
+    "peça única que entra na caixa não é recusada pelo fator de aproveitamento",
+    "o piso de 1 não vale para peça que não entra na caixa",
     "fator da caixa fora do intervalo cai no padrão global"
    ]
   },
@@ -480381,7 +480465,7 @@
   },
   "src/lib/freight/__tests__/fuzz.test.ts": {
    "path": "src/lib/freight/__tests__/fuzz.test.ts",
-   "lines": 199,
+   "lines": 206,
    "is_test": true,
    "params": [
     {
@@ -480398,7 +480482,7 @@
     {
      "name": "gerarCasos",
      "params": "",
-     "body": "const random = criarRandom(20261119); const inteiro = (min: number, max: number) => min + Math.floor(random() * (max - min + 1)); const casos: Caso[] = []; for (let i = 0; i < COMBINACOES; i += 1) { const quantosProdutos = inteiro(1, 4); const inputs: Caso['inputs'] = []; for (let p = 0; p < quantosProdutos; p += 1) { // lados de 1 a 30 cm: entram nas caixas padrão na maioria dos sorteios, // e de vez em quando um lado grande força o caminho \"não cabe\" const lado = () => inteiro(1, 30); inputs.p …"
+     "body": "const random = criarRandom(20261119); const inteiro = (min: number, max: number) => min + Math.floor(random() * (max - min + 1)); const casos: Caso[] = []; for (let i = 0; i < COMBINACOES; i += 1) { const quantosProdutos = inteiro(1, 4); const inputs: Caso['inputs'] = []; for (let p = 0; p < quantosProdutos; p += 1) { // lados de 1 a 30 cm entram sempre nas caixas padrão. A cada 10 casos a // primeira peça ganha 70 cm de comprimento (o maior lado interno é o da // GG, 59,4 cm) para a amostra pas …"
     }
    ],
    "tests": [
@@ -480463,9 +480547,10 @@
   },
   "src/lib/freight/__tests__/planFreight.test.ts": {
    "path": "src/lib/freight/__tests__/planFreight.test.ts",
-   "lines": 298,
+   "lines": 427,
    "is_test": true,
    "rule_comments": [
+    "cubo de 10 cm cabe em todas as caixas, mas 30.001 g passa do máximo da",
     "250 cadernetas na GG = 30.000 g, exatamente o máximo: não cabe mais uma"
    ],
    "doc": "planFreight.test.ts — a orquestração ponta a ponta do motor.",
@@ -480474,11 +480559,20 @@
     "460 cadernetas sem a GG: 3× G + 1× P, com os totais fechados à mão",
     "kitQuantity multiplica a quantidade de cada linha",
     "linha com quantidade zero sai do plano sem virar erro",
+    "separar: o mesmo produto em 3 linhas divide a mesma caixa",
+    "separar: 5 linhas de 20 dão o mesmo plano de 1 linha de 100",
+    "peça única quase do tamanho da GG vai numa GG",
     "planFreight — status dados_insuficientes",
     "produto sem peso bloqueia o plano inteiro, sem estimativa parcial",
     "quantidade fracionária bloqueia e o aviso nomeia a linha",
+    "planFreight — nada para despachar",
+    "lista vazia não vira plano ok de 0 kg",
+    "todas as linhas com quantidade zero é o mesmo que lista vazia",
+    "planos bloqueados não dividem o mesmo objeto de totais",
     "planFreight — status nao_cabe",
     "peça maior que a maior caixa nomeia a peça e a caixa",
+    "peça pesada demais para qualquer caixa: o aviso culpa o peso, não o tamanho",
+    "peça que passa do peso só das caixas menores vai na que aguenta",
     "sem caixa ativa cadastrada o aviso diz isso",
     "planFreight — avisos",
     "avisa quando uma caixa vai com menos de metade do espaço ocupado",
@@ -550475,10 +550569,27 @@
   }
  },
  "git": {
-  "sha": "f653a19d45c08f93261401793496caee12c22d60",
+  "sha": "00502c7a4bfd2f9a7efac767943bac21ac74a351",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "00502c7",
+    "date": "2026-11-19",
+    "author": "adm01-debug",
+    "subject": "fix(frete): motor agrupa por produto e corrige bordas (#3910)",
+    "files": [
+     "src/lib/freight/README.md",
+     "src/lib/freight/__tests__/buildGroups.test.ts",
+     "src/lib/freight/__tests__/fitCount.test.ts",
+     "src/lib/freight/__tests__/fuzz.test.ts",
+     "src/lib/freight/__tests__/planFreight.test.ts",
+     "src/lib/freight/buildGroups.ts",
+     "src/lib/freight/fitCount.ts",
+     "src/lib/freight/planFreight.ts",
+     "src/lib/freight/types.ts"
+    ]
+   },
    {
     "sha": "f653a19",
     "date": "2026-11-19",
@@ -550814,23 +550925,20 @@
      "supabase/migrations/20261119081500_elevenlabs_credential_reemissao.sql",
      "supabase/rollbacks/20261119081500_rollback.sql"
     ]
-   },
-   {
-    "sha": "76b764c",
-    "date": "2026-11-19",
-    "author": "adm01-debug",
-    "subject": "feat(supabase): registra ELEVENLABS_API_KEY no catalogo de integracoes (#3791)",
-    "files": [
-     "docs/coordenacao/conflitos-semanticos.md",
-     "supabase/MIGRATIONS_SYNC_LOG.md",
-     "supabase/migrations/20261117172500_elevenlabs_credential.sql"
-    ]
    }
   ],
   "hot_files": [
    [
     "supabase/MIGRATIONS_SYNC_LOG.md",
-    16
+    15
+   ],
+   [
+    "src/lib/freight/README.md",
+    4
+   ],
+   [
+    "src/lib/freight/types.ts",
+    3
    ],
    [
     ".release-please-manifest.json",
@@ -550849,8 +550957,32 @@
     3
    ],
    [
-    "src/lib/freight/README.md",
-    3
+    "src/lib/freight/__tests__/buildGroups.test.ts",
+    2
+   ],
+   [
+    "src/lib/freight/__tests__/fitCount.test.ts",
+    2
+   ],
+   [
+    "src/lib/freight/__tests__/fuzz.test.ts",
+    2
+   ],
+   [
+    "src/lib/freight/__tests__/planFreight.test.ts",
+    2
+   ],
+   [
+    "src/lib/freight/buildGroups.ts",
+    2
+   ],
+   [
+    "src/lib/freight/fitCount.ts",
+    2
+   ],
+   [
+    "src/lib/freight/planFreight.ts",
+    2
    ],
    [
     ".security/policies-baseline.json",
@@ -550875,38 +551007,6 @@
    [
     "src/lib/freight/__tests__/resolveItemDimensions.test.ts",
     2
-   ],
-   [
-    "src/lib/freight/columns.ts",
-    2
-   ],
-   [
-    "src/lib/freight/resolveItemDimensions.ts",
-    2
-   ],
-   [
-    "src/lib/freight/types.ts",
-    2
-   ],
-   [
-    ".migration-refs-baseline.json",
-    2
-   ],
-   [
-    "docs/agentes/resgates/2026-11-19-triggers-ausentes-e-contas-de-teste-em-producao.md",
-    2
-   ],
-   [
-    "docs/agentes/resgates/2026-11-19-fechamento-da-reconciliacao.md",
-    2
-   ],
-   [
-    "docs/agentes/resgates/2026-11-19-migrations-orfas-e-o-portao-retroativo.md",
-    2
-   ],
-   [
-    "src/pages/admin/StockDashboardPage.tsx",
-    1
    ]
   ]
  }

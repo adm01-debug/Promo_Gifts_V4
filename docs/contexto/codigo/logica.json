@@ -3955,7 +3955,7 @@
     "buildGroups"
    ],
    "export_default": null,
-   "linhas": 55,
+   "linhas": 82,
    "tabelas": [],
    "rpcs": [],
    "edges": [],
@@ -4055,7 +4055,7 @@
     "fitCount"
    ],
    "export_default": null,
-   "linhas": 142,
+   "linhas": 158,
    "tabelas": [],
    "rpcs": [],
    "edges": [],
@@ -4194,7 +4194,7 @@
     "planFreight"
    ],
    "export_default": null,
-   "linhas": 266,
+   "linhas": 288,
    "tabelas": [],
    "rpcs": [],
    "edges": [],
@@ -4255,7 +4255,7 @@
     "ValidationError"
    ],
    "export_default": null,
-   "linhas": 162,
+   "linhas": 166,
    "tabelas": [],
    "rpcs": [],
    "edges": [],
