@@ -134,6 +134,42 @@ describe('Financial availability is visible without inventing zero prices', () =
     assertNoFakeZero();
     expect(screen.getAllByText(/Não informado/).length).toBeGreaterThan(1);
   });
+  it('offers the catalog refresh action only while prices are unknown', () => {
+    const refresh = vi.fn();
+    const view = render(
+      <KitPricingCard
+        kitState={kit}
+        kitQuantity={2}
+        onKitQuantityChange={vi.fn()}
+        priceRefresh={{ refresh, isRefreshing: false }}
+      />,
+    );
+    fireEvent.click(screen.getByRole('button', { name: /Atualizar preços do catálogo/i }));
+    expect(refresh).toHaveBeenCalledOnce();
+    view.rerender(
+      <KitPricingCard
+        kitState={kit}
+        kitQuantity={2}
+        onKitQuantityChange={vi.fn()}
+        priceRefresh={{ refresh, isRefreshing: true }}
+      />,
+    );
+    expect(screen.getByRole('button', { name: /Consultando catálogo/i })).toBeDisabled();
+    const known: KitState = {
+      ...kit,
+      box: { ...box, priceKnown: true },
+      items: [{ ...item, priceKnown: true }],
+    };
+    view.rerender(
+      <KitPricingCard
+        kitState={known}
+        kitQuantity={2}
+        onKitQuantityChange={vi.fn()}
+        priceRefresh={{ refresh, isRefreshing: false }}
+      />,
+    );
+    expect(screen.queryByRole('button', { name: /catálogo/i })).not.toBeInTheDocument();
+  });
   it('uses the same honest values in the printable presentation', () => {
     render(<KitPresentablePreview kitState={kit} kitQuantity={2} kitName="Kit" />);
     expect(screen.getAllByText('Não informado')).toHaveLength(2);

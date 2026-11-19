@@ -437,6 +437,7 @@ export default function KitBuilderPage() {
                           void actions.handleSaveKit();
                         }}
                         isSavingDraft={meta.isSaving}
+                        priceRefresh={meta.priceRefresh}
                       />
                     )}
 

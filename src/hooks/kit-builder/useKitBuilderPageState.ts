@@ -25,6 +25,7 @@ import {
   type KitAIComposition,
 } from '@/lib/kit-builder';
 import type { KitOrigin } from '@/lib/kit-builder/types';
+import { useKitCatalogPriceRefresh } from '@/hooks/kit-builder/useKitCatalogPriceRefresh';
 import { logger } from '@/lib/logger';
 import { OCCASIONS, type Occasion } from '@/components/kit-builder/KitOccasionSelector';
 
@@ -306,6 +307,12 @@ export function useKitBuilderPageState() {
     kitQuantity,
   );
 
+  const priceRefresh = useKitCatalogPriceRefresh(
+    `${user?.id ?? 'anonymous'}:${kitIdParam ?? ''}:${currentKitId ?? ''}`,
+    { refetchBoxes, refetchItems, loadKit, goToStep },
+    { kitState, kitQuantity, flow: wizardState.flow, step: wizardState.currentStep },
+  );
+
   const handleSaveKit = useCallback(async () => {
     if (quantityNeedsConfirmation) {
       toast.error('Defina a quantidade do rascunho antes de salvar ou criar um orçamento.');
@@ -536,6 +543,7 @@ export function useKitBuilderPageState() {
       consumeUnloadBackup,
       persistUnloadBackup,
       restoreFromBackup,
+      refreshCatalogPrices: priceRefresh.refresh,
     },
     meta: {
       isSaving,
@@ -545,6 +553,7 @@ export function useKitBuilderPageState() {
       autoSaveError,
       isConflictError,
       pricing,
+      priceRefresh,
     },
   };
 }
