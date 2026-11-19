@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "86ac19c8e73b1a93d6ec391e00295a6b36f2a3ac",
+  "commit": "892f9c63693a917103e7c549c7ec7cc9093d2f3b",
   "branch": "main",
-  "data_commit": "2026-11-19T02:50:52-03:00",
+  "data_commit": "2026-11-19T03:05:23-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "892f9c63",
+    "data": "2026-11-19",
+    "assunto": "fix(seguranca): link expirado de orcamento deixa de devolver dados do cliente (#3869)"
+   },
    {
     "sha": "86ac19c8",
     "data": "2026-11-19",
@@ -126,14 +131,9 @@
     "sha": "6f8146b4",
     "data": "2026-11-18",
     "assunto": "fix(test): main volta ao verde nos 4 arquivos vermelhos do test:quality (#3846)"
-   },
-   {
-    "sha": "6fd76017",
-    "data": "2026-11-18",
-    "assunto": "docs(resgate): inventario do trabalho de outro agente que existe e nao esta ligado (#3845)"
    }
   ],
-  "arquivos_mudados_7d": 1490,
+  "arquivos_mudados_7d": 1492,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -199,7 +199,7 @@
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "supabase/MIGRATIONS_SYNC_LOG.md",
-    "mudancas": 62
+    "mudancas": 63
    },
    {
     "arquivo": "package.json",
@@ -207,11 +207,11 @@
    },
    {
     "arquivo": "PENDENCIAS.md",
-    "mudancas": 29
+    "mudancas": 28
    },
    {
     "arquivo": "RELATORIO_CI.md",
-    "mudancas": 28
+    "mudancas": 27
    },
    {
     "arquivo": "docs/coordenacao/conflitos-semanticos.md",
@@ -301,15 +301,15 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 453
+    "commits": 451
    },
    {
     "autor": "Claude",
-    "commits": 89
+    "commits": 87
    },
    {
     "autor": "Joaquim Ataides",
-    "commits": 72
+    "commits": 71
    },
    {
     "autor": "github-actions[bot]",
@@ -322,7 +322,7 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 10975,
+  "arquivos_total": 10977,
   "arquivos_codigo": 5483,
   "linhas_codigo": 1044218,
   "rotas": 139,
@@ -334,7 +334,7 @@
   "hooks": 633,
   "edge_functions": 112,
   "tabelas": 527,
-  "migrations": 3100,
+  "migrations": 3101,
   "cron_jobs": 122,
   "testes": 2614,
   "workflows": 89,

@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "86ac19c8e73b1a93d6ec391e00295a6b36f2a3ac",
+  "sha": "892f9c63693a917103e7c549c7ec7cc9093d2f3b",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-19 05:52 UTC",
-  "files_total": 10903,
-  "code_files": 8924,
-  "code_lines": 1265115
+  "generated_at": "2026-11-19 06:06 UTC",
+  "files_total": 10905,
+  "code_files": 8926,
+  "code_lines": 1265221
  },
  "version": "1.3.2",
- "facts_hash": "7c0dc73fea93f28f",
+ "facts_hash": "157b3cae35a37318",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -1128,7 +1128,7 @@
   ],
   "package_manager": "npm",
   "languages": {
-   ".sql": 3442,
+   ".sql": 3444,
    ".ts": 3048,
    ".tsx": 1969,
    ".mjs": 450,
@@ -69996,7 +69996,7 @@
     "args": "_token text",
     "returns": "jsonb",
     "lang": "sql",
-    "src": "supabase/rollbacks/20261115013000_rollback.sql",
+    "src": "supabase/rollbacks/20261119051500_rollback.sql",
     "security_definer": true,
     "search_path": true,
     "body": "SELECT jsonb_build_object( 'id', qat.id, 'quote_id', qat.quote_id, 'token', qat.token, 'status', qat.status, 'expires_at', qat.expires_at, 'client_name', qat.client_name, 'viewed_at', qat.viewed_at, 'responded_at', qat.responded_at, 'response', qat.response, 'response_notes', qat.response_notes, 'created_at', qat.created_at, 'signer_name', qat.signer_name, 'signed_at', qat.signed_at ) FROM public.quote_approval_tokens qat WHERE qat.token = _token LIMIT 1;",
@@ -96188,6 +96188,7 @@
    "supabase/migrations/20261115230000_ai_function_routing_mockup_assistant.sql",
    "supabase/migrations/20261117073000_p06_security_invoker_v_product_properties_public.sql",
    "supabase/migrations/20261118223000_fn_supplier_risk_breakdown.sql",
+   "supabase/migrations/20261119051500_fix_get_quote_token_public_expiracao_pg_temp.sql",
    "supabase/rollbacks/20260511235950_rollback.sql",
    "supabase/rollbacks/20260511235959_rollback.sql",
    "supabase/rollbacks/20260611014515_fn_dryrun_standardize_supplier_real_rollback.sql",
@@ -96295,6 +96296,7 @@
    "supabase/rollbacks/20261115230000_rollback.sql",
    "supabase/rollbacks/20261117073000_rollback.sql",
    "supabase/rollbacks/20261118223000_rollback.sql",
+   "supabase/rollbacks/20261119051500_rollback.sql",
    "supabase/rollbacks/rollback_20261025002500_analyze_tables_p03.sql",
    "supabase/sql-legacy/001_notification_system.sql",
    "supabase/sql-legacy/002_notification_preferences.sql",
@@ -151507,8 +151509,8 @@
   },
   {
    "module": "supabase/migrations",
-   "files": 3099,
-   "lines": 223857,
+   "files": 3100,
+   "lines": 223932,
    "tables": [
     "...",
     "admin_audit_log",
@@ -151606,8 +151608,8 @@
   },
   {
    "module": "supabase/rollbacks",
-   "files": 108,
-   "lines": 3253,
+   "files": 109,
+   "lines": 3284,
    "tables": [],
    "exports": [],
    "docs": [],
@@ -338180,7 +338182,7 @@
     "args": "_token text",
     "returns": "jsonb",
     "lang": "sql",
-    "src": "supabase/rollbacks/20261115013000_rollback.sql",
+    "src": "supabase/rollbacks/20261119051500_rollback.sql",
     "security_definer": true,
     "search_path": true,
     "body": "SELECT jsonb_build_object( 'id', qat.id, 'quote_id', qat.quote_id, 'token', qat.token, 'status', qat.status, 'expires_at', qat.expires_at, 'client_name', qat.client_name, 'viewed_at', qat.viewed_at, 'responded_at', qat.responded_at, 'response', qat.response, 'response_notes', qat.response_notes, 'created_at', qat.created_at, 'signer_name', qat.signer_name, 'signed_at', qat.signed_at ) FROM public.quote_approval_tokens qat WHERE qat.token = _token LIMIT 1;",
@@ -522319,6 +522321,10 @@
    ],
    "uses_service_role": true
   },
+  "supabase/migrations/20261119051500_fix_get_quote_token_public_expiracao_pg_temp.sql": {
+   "path": "supabase/migrations/20261119051500_fix_get_quote_token_public_expiracao_pg_temp.sql",
+   "lines": 75
+  },
   "supabase/rollbacks/20260511235950_rollback.sql": {
    "path": "supabase/rollbacks/20260511235950_rollback.sql",
    "lines": 5
@@ -522765,6 +522771,10 @@
   "supabase/rollbacks/20261118223000_rollback.sql": {
    "path": "supabase/rollbacks/20261118223000_rollback.sql",
    "lines": 14
+  },
+  "supabase/rollbacks/20261119051500_rollback.sql": {
+   "path": "supabase/rollbacks/20261119051500_rollback.sql",
+   "lines": 31
   },
   "supabase/rollbacks/rollback_20261025002500_analyze_tables_p03.sql": {
    "path": "supabase/rollbacks/rollback_20261025002500_analyze_tables_p03.sql",
@@ -547997,10 +548007,21 @@
   }
  },
  "git": {
-  "sha": "86ac19c8e73b1a93d6ec391e00295a6b36f2a3ac",
+  "sha": "892f9c63693a917103e7c549c7ec7cc9093d2f3b",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "892f9c6",
+    "date": "2026-11-19",
+    "author": "adm01-debug",
+    "subject": "fix(seguranca): link expirado de orcamento deixa de devolver dados do cliente (#3869)",
+    "files": [
+     "supabase/MIGRATIONS_SYNC_LOG.md",
+     "supabase/migrations/20261119051500_fix_get_quote_token_public_expiracao_pg_temp.sql",
+     "supabase/rollbacks/20261119051500_rollback.sql"
+    ]
+   },
    {
     "sha": "86ac19c",
     "date": "2026-11-19",
@@ -548319,21 +548340,12 @@
      "e2e/quotes/templates.spec.ts",
      "src/pages/quotes/components/__tests__/QuoteBuilderNotesCard.test.tsx"
     ]
-   },
-   {
-    "sha": "a53b303",
-    "date": "2026-11-18",
-    "author": "adm01-debug",
-    "subject": "docs(resgate): recibo da sessão 2 — PRs fechadas sem merge e os 51 arquivos do legado (#3840)",
-    "files": [
-     "docs/agentes/resgates/2026-11-18-recibo-sessao-2.md"
-    ]
    }
   ],
   "hot_files": [
    [
     "supabase/MIGRATIONS_SYNC_LOG.md",
-    3
+    4
    ],
    [
     ".github/workflows/edge-functions-deno-tests.yml",
@@ -548346,6 +548358,14 @@
    [
     "docs/agentes/resgates/2026-11-18-inventario-trabalho-nao-ligado.md",
     2
+   ],
+   [
+    "supabase/migrations/20261119051500_fix_get_quote_token_public_expiracao_pg_temp.sql",
+    1
+   ],
+   [
+    "supabase/rollbacks/20261119051500_rollback.sql",
+    1
    ],
    [
     "docs/agentes/resgates/2026-11-19-migrations-orfas-e-o-portao-retroativo.md",
@@ -548401,14 +548421,6 @@
    ],
    [
     "tests/hooks/useKitCatalogPriceRefresh.race.test.ts",
-    1
-   ],
-   [
-    "src/components/inventory/StockDashboard.tsx",
-    1
-   ],
-   [
-    "src/components/inventory/StockHealthDrawerEntry.tsx",
     1
    ]
   ]

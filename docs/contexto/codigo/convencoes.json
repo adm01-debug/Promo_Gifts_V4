@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "fix(seguranca): link expirado de orcamento deixa de devolver dados do cliente (#3869)",
    "docs(migrations-log): recibo E15 da aplicacao de 20261108235500 (#3868)",
    "chore(resgates): registra as 127 migrations orfas e o portao que as barra (#3870)",
    "chore(resgates): fecha a reconciliacao byte a byte dos 98 arquivos restantes (#3867)",
-   "fix(magic-up): valida o shape vindo do banco e poe prazo nas consultas (#3866)",
-   "feat(kit): destrava o kit cujo catalogo ainda nao informou preco (#3865)"
+   "fix(magic-up): valida o shape vindo do banco e poe prazo nas consultas (#3866)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",
