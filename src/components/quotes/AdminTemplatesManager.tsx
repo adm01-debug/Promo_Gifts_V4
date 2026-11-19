@@ -76,15 +76,19 @@ export function AdminTemplatesManager({ onEditTemplate }: AdminTemplatesManagerP
 
   const totalFormatado = (template: QuoteTemplate) => textoDoTotal(template, formatCurrency);
 
+  // GUARD: mesma regra da tela do vendedor (QuoteTemplatesList) — o diálogo só
+  // fecha com a ação confirmada. Descartar o retorno fazia o admin achar que
+  // tinha excluído ou clonado quando o banco recusou.
   const handleDelete = async () => {
     if (deleteConfirmId) {
-      await deleteTemplate(deleteConfirmId);
-      setDeleteConfirmId(null);
+      const excluiu = await deleteTemplate(deleteConfirmId);
+      if (excluiu) setDeleteConfirmId(null);
     }
   };
   const handleClone = async () => {
     if (cloneTemplateId && targetSellerId) {
-      await cloneTemplateToSeller(cloneTemplateId, targetSellerId);
+      const clonado = await cloneTemplateToSeller(cloneTemplateId, targetSellerId);
+      if (!clonado) return;
       setCloneDialogOpen(false);
       setCloneTemplateId(null);
       setTargetSellerId('');
