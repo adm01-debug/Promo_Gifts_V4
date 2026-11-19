@@ -5,18 +5,18 @@
   "vitest",
   "playwright"
  ],
- "total": 2619,
+ "total": 2620,
  "por_tipo": {
   "contrato": 67,
   "e2e": 677,
   "pytest": 5,
   "qa": 17,
-  "unit": 1853
+  "unit": 1854
  },
  "onde_ficam": [
   {
    "padrao": "tests/",
-   "arquivos": 1083
+   "arquivos": 1084
   },
   {
    "padrao": "co-localizado (__tests__)",
@@ -20682,6 +20682,13 @@
     "scripts/drift-baseline.mjs"
    ],
    "casos": 94
+  },
+  {
+   "arquivo": "tests/scripts/e2e-cart-artifact-safety.test.mjs",
+   "tipo": "unit",
+   "linhas": 41,
+   "testa": [],
+   "casos": 2
   },
   {
    "arquivo": "tests/scripts/e2e-mock-auth-setup.test.mjs",

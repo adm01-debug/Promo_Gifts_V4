@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "6319e099e75d81db4bc3301624d6fc7a0796b9da",
+  "sha": "6f0bd2fc52c0f63d16ec73029b14e3109acd39a3",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-19 17:27 UTC",
-  "files_total": 10927,
-  "code_files": 8946,
-  "code_lines": 1266867
+  "generated_at": "2026-11-19 18:13 UTC",
+  "files_total": 10928,
+  "code_files": 8947,
+  "code_lines": 1266908
  },
  "version": "1.3.2",
- "facts_hash": "958df1d4632884b9",
+ "facts_hash": "d7d6ed40f00a3661",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -1131,7 +1131,7 @@
    ".sql": 3453,
    ".ts": 3059,
    ".tsx": 1969,
-   ".mjs": 450,
+   ".mjs": 451,
    ".py": 15,
    ".js": 7
   },
@@ -151875,8 +151875,8 @@
   },
   {
    "module": "tests",
-   "files": 1098,
-   "lines": 172902,
+   "files": 1099,
+   "lines": 172943,
    "tables": [
     "bot_detection_log",
     "clients",
@@ -302202,6 +302202,18 @@
    {
     "file": "tests/scripts/drift-baseline.test.mjs",
     "name": "DEFAULT com caixa diferente é diferença real e fica no resíduo"
+   },
+   {
+    "file": "tests/scripts/e2e-cart-artifact-safety.test.mjs",
+    "name": "E2E Cart artifact policy"
+   },
+   {
+    "file": "tests/scripts/e2e-cart-artifact-safety.test.mjs",
+    "name": "writes a machine-readable result without creating an HTML report"
+   },
+   {
+    "file": "tests/scripts/e2e-cart-artifact-safety.test.mjs",
+    "name": "uploads only the JSON result and failure screenshots, never traces or videos"
    },
    {
     "file": "tests/scripts/e2e-mock-auth-setup.test.mjs",
@@ -544231,6 +544243,16 @@
    ],
    "uses_service_role": true
   },
+  "tests/scripts/e2e-cart-artifact-safety.test.mjs": {
+   "path": "tests/scripts/e2e-cart-artifact-safety.test.mjs",
+   "lines": 41,
+   "is_test": true,
+   "tests": [
+    "E2E Cart artifact policy",
+    "writes a machine-readable result without creating an HTML report",
+    "uploads only the JSON result and failure screenshots, never traces or videos"
+   ]
+  },
   "tests/scripts/e2e-mock-auth-setup.test.mjs": {
    "path": "tests/scripts/e2e-mock-auth-setup.test.mjs",
    "lines": 133,
@@ -548873,10 +548895,20 @@
   }
  },
  "git": {
-  "sha": "6319e099e75d81db4bc3301624d6fc7a0796b9da",
+  "sha": "6f0bd2fc52c0f63d16ec73029b14e3109acd39a3",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "6f0bd2f",
+    "date": "2026-11-19",
+    "author": "adm01-debug",
+    "subject": "chore(ci): resgata mitigacao de artifact do e2e-cart (#3897)",
+    "files": [
+     ".github/workflows/e2e-cart.yml",
+     "tests/scripts/e2e-cart-artifact-safety.test.mjs"
+    ]
+   },
    {
     "sha": "6319e09",
     "date": "2026-11-19",
@@ -549183,17 +549215,6 @@
     "files": [
      ".github/workflows/edge-functions-deno-tests.yml"
     ]
-   },
-   {
-    "sha": "6d94646",
-    "date": "2026-11-18",
-    "author": "adm01-debug",
-    "subject": "feat(estoque): da porta de entrada ao drawer de detalhamento, que estava inalcancavel (#3863)",
-    "files": [
-     "src/components/inventory/StockDashboard.tsx",
-     "src/components/inventory/StockHealthDrawerEntry.tsx",
-     "src/components/inventory/__tests__/StockHealthDrawerEntry.test.tsx"
-    ]
    }
   ],
   "hot_files": [
@@ -549224,6 +549245,14 @@
    [
     ".security/policies-baseline.json",
     2
+   ],
+   [
+    ".github/workflows/e2e-cart.yml",
+    1
+   ],
+   [
+    "tests/scripts/e2e-cart-artifact-safety.test.mjs",
+    1
    ],
    [
     "src/lib/freight/README.md",
@@ -549267,14 +549296,6 @@
    ],
    [
     "src/lib/freight/types.ts",
-    1
-   ],
-   [
-    "src/lib/freight/units.ts",
-    1
-   ],
-   [
-    "src/lib/kit-builder/weight.ts",
     1
    ]
   ]
