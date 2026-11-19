@@ -5,6 +5,19 @@ Todas as mudanças notáveis deste projeto são documentadas neste arquivo.
 O formato é baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/),
 e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR/).
 
+## [1.12.0](https://github.com/adm01-debug/Promo_Gifts_V4/compare/gifts-store-v1.11.0...gifts-store-v1.12.0) (2026-11-19)
+
+
+### Features
+
+* **frete:** motor de empacotamento (Bloco B) ([#3900](https://github.com/adm01-debug/Promo_Gifts_V4/issues/3900)) ([41166fc](https://github.com/adm01-debug/Promo_Gifts_V4/commit/41166fc89d164c3c3d758e3e0ec3015e10f88ce5))
+* **scripts:** gate do Vercel no pre-push (resgate de trabalho de agente) ([#3901](https://github.com/adm01-debug/Promo_Gifts_V4/issues/3901)) ([eebe767](https://github.com/adm01-debug/Promo_Gifts_V4/commit/eebe7678e74a047b145cb49dd99c60a4ad31f745))
+
+
+### Bug Fixes
+
+* **frete:** motor ignora as colunas box_* do catálogo (caixa master, não embalagem) ([#3898](https://github.com/adm01-debug/Promo_Gifts_V4/issues/3898)) ([2080226](https://github.com/adm01-debug/Promo_Gifts_V4/commit/2080226fab7fc958254fa29db25c7554ec9b891f))
+
 ## [1.11.0](https://github.com/adm01-debug/Promo_Gifts_V4/compare/gifts-store-v1.10.0...gifts-store-v1.11.0) (2026-11-19)
 
 
