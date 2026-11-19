@@ -138,7 +138,7 @@ Ela tem **3 arquivos ausentes da `main`** (`git ls-tree -r`, não `git diff`):
 
 | arquivo | veredicto |
 |---|---|
-| `supabase/migrations/20261101000001_security_invoker_views_p06.sql` | **superado** — é a P06 em escopo completo, da PR #3720 fechada sem merge. A sucessora de escopo reduzido (`20261118172500`, PR #3832) existe justamente porque o escopo completo derrubaria o catálogo: ele inclui `v_products_public`, que lê `internal.mv_product_leaf_category`, sem grant para anon. E a medição de 19/11 mostrou que **mesmo o escopo reduzido** é inseguro hoje — as 5 views restantes também leem bases que `anon` não alcança. Aplicar o escopo completo seria pior. |
+| `20261101000001_security_invoker_views_p06.sql` (existe só naquela branch, não na `main`) | **superado** — é a P06 em escopo completo, da PR #3720 fechada sem merge. A sucessora de escopo reduzido (`20261118172500`, PR #3832) existe justamente porque o escopo completo derrubaria o catálogo: ele inclui `v_products_public`, que lê `internal.mv_product_leaf_category`, sem grant para anon. E a medição de 19/11 mostrou que **mesmo o escopo reduzido** é inseguro hoje — as 5 views restantes também leem bases que `anon` não alcança. Aplicar o escopo completo seria pior. |
 | `supabase/rollbacks/20261101000001_rollback.sql` | **superado** — rollback do arquivo acima |
 | `e2e/quotes/no-templates.spec.ts` | **obsoleto por decisão de produto** — ver abaixo |
 
