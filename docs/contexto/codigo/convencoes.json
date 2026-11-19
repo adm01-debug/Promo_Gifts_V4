@@ -23,7 +23,7 @@
    "src/services (10)"
   ],
   "testes": [
-   "tests/ (1082)",
+   "tests/ (1083)",
    "co-localizado (__tests__) (702)",
    "e2e/ (625)"
   ],
@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "fix(magic-up): valida o shape vindo do banco e poe prazo nas consultas (#3866)",
    "feat(kit): destrava o kit cujo catalogo ainda nao informou preco (#3865)",
    "fix(ci): corrige tres afirmacoes falsas minhas no job Deno e o teto de timeout (#3864)",
    "feat(estoque): da porta de entrada ao drawer de detalhamento, que estava inalcancavel (#3863)",
-   "fix(catalogo): comando de voz 'limpar' zera os filtros, nao so o texto (#3861)",
-   "test(orcamentos): trava o contrato de privacidade do export de template (#3862)"
+   "fix(catalogo): comando de voz 'limpar' zera os filtros, nao so o texto (#3861)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",

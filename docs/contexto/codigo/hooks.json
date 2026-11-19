@@ -9269,7 +9269,7 @@
   {
    "arquivo": "src/hooks/intelligence/useMagicUpState.helpers.ts",
    "hooks_exportados": [],
-   "linhas": 266,
+   "linhas": 336,
    "dominio": "hooks/intelligence",
    "tabelas": [
     "magic_up_brand_kits",
@@ -9284,14 +9284,14 @@
    "usado_por_arquivos": [
     "src/hooks/intelligence/useMagicUpState.ts"
    ],
-   "coberto_por_testes": 1
+   "coberto_por_testes": 2
   },
   {
    "arquivo": "src/hooks/intelligence/useMagicUpState.ts",
    "hooks_exportados": [
     "useMagicUpState"
    ],
-   "linhas": 853,
+   "linhas": 840,
    "dominio": "hooks/intelligence",
    "tabelas": [
     "magic_up_brand_kits"
@@ -10412,8 +10412,9 @@
     "useQuery"
    ],
    "canais_realtime": [],
-   "usado_por": 2,
+   "usado_por": 3,
    "usado_por_arquivos": [
+    "src/hooks/intelligence/useMagicUpState.helpers.ts",
     "src/hooks/mockup/index.ts",
     "src/hooks/mockup/useMockupGenerator.ts"
    ],

@@ -5,18 +5,18 @@
   "vitest",
   "playwright"
  ],
- "total": 2613,
+ "total": 2614,
  "por_tipo": {
   "contrato": 67,
   "e2e": 677,
   "pytest": 5,
   "qa": 17,
-  "unit": 1847
+  "unit": 1848
  },
  "onde_ficam": [
   {
    "padrao": "tests/",
-   "arquivos": 1082
+   "arquivos": 1083
   },
   {
    "padrao": "co-localizado (__tests__)",
@@ -17020,6 +17020,16 @@
    "casos": 5
   },
   {
+   "arquivo": "tests/hooks/magicUpHelpers.guards.test.ts",
+   "tipo": "unit",
+   "linhas": 138,
+   "testa": [
+    "src/hooks/intelligence/useMagicUpState.helpers.ts",
+    "src/types/gravacao.ts"
+   ],
+   "casos": 9
+  },
+  {
    "arquivo": "tests/hooks/mockupGenerationService.download.test.ts",
    "tipo": "unit",
    "linhas": 33,
@@ -22715,7 +22725,7 @@
   "src/hooks/intelligence/useExpertConversations.tsx": 1,
   "src/hooks/intelligence/useExternalDatabase.ts": 1,
   "src/hooks/intelligence/useMagicUpGeneration.ts": 2,
-  "src/hooks/intelligence/useMagicUpState.helpers.ts": 1,
+  "src/hooks/intelligence/useMagicUpState.helpers.ts": 2,
   "src/hooks/intelligence/useMagicUpState.ts": 4,
   "src/hooks/intelligence/useMarketIntelligenceMacro.ts": 2,
   "src/hooks/intelligence/useSalesGoals.ts": 1,
@@ -23136,7 +23146,7 @@
   "src/types/customization.ts": 6,
   "src/types/domain/simulator-wizard.ts": 2,
   "src/types/external-db.ts": 2,
-  "src/types/gravacao.ts": 2,
+  "src/types/gravacao.ts": 3,
   "src/types/magazine.ts": 29,
   "src/types/mockup-approval.ts": 3,
   "src/types/product-catalog.ts": 28,

@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.3.2 · commit `7da0d49164` · branch `main` · 2026-11-19 02:24 UTC
+> Gerado automaticamente por AI Context Sync v1.3.2 · commit `074fa4f2fa` · branch `main` · 2026-11-19 02:53 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -6633,7 +6633,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `admin` | `supabase/migrations/20261112120500_fix_optimization_queue_rpcs_dev_access.sql` |
 | `anon` | `tests/edge-functions/live/_live-client.ts` |
 
-## K. Testes como especificação (22637 testes em 2290 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (22649 testes em 2291 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -6937,7 +6937,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `e2e/dashboard-modules.spec.ts` | 18 | Dashboard Modules - Public Access (No Auth) · should redirect to auth when accessing ${route.path} unauthenticated · should display auth page for all dashboard routes · should not expose observability/metrics data to unauthenticated users … |
 | `e2e/stock-module.spec.ts` | 18 | Stock Module - Public Access (No Auth) · should redirect to auth when accessing /estoque unauthenticated · should display auth page when accessing /estoque · should not expose stock data to unauthenticated users … |
 | `e2e/magazine/magazine-viewer.spec.ts` | 18 | Magazine viewer — atalhos de teclado · → avança página, ← volta, Home/End extremos · T abre sumário, ? abre ajuda, B marca página · Space em botão focado NÃO avança página (C2) … |
-| … +1990 linhas — lista completa em `context.json` | | |
+| … +1991 linhas — lista completa em `context.json` | | |
 
 ## L. Eventos de webhook tratados (contratos com sistemas externos)
 
@@ -7405,4 +7405,4 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | tardia de AAL, etc.) NÃO deve reabrir o challenge — redireciona para | `src/components/layout/AdminRoute.tsx` |
 | apenas se o usuário chegar em AAL2). | `src/components/layout/AdminRoute.tsx` |
 | rate-limit, login-attempts, external-db, status do sistema. | `src/components/layout/DevRoute.tsx` |
-| … +1364 linhas — lista completa em `context.json` | |
+| … +1365 linhas — lista completa em `context.json` | |

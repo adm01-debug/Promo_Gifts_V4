@@ -10603,12 +10603,14 @@
   ],
   "src/hooks/intelligence/useMagicUpState.helpers.ts": [
    "src/components/magic-up/AdImageResult.tsx",
+   "src/hooks/mockup/useMockupTechniques.ts",
    "src/integrations/supabase/client.ts",
    "src/integrations/supabase/types.ts",
    "src/lib/crm-db.ts",
    "src/lib/external-db/index.ts",
    "src/pages/magic-up/magicUpStrategy.ts",
    "src/types/crm.ts",
+   "src/types/gravacao.ts",
    "src/utils/product-search.ts"
   ],
   "src/hooks/intelligence/useMagicUpState.ts": [
@@ -10624,8 +10626,7 @@
    "src/integrations/supabase/types.ts",
    "src/lib/db/postgrest.ts",
    "src/pages/magic-up/magicUpStrategy.ts",
-   "src/types/crm.ts",
-   "src/types/gravacao.ts"
+   "src/types/crm.ts"
   ],
   "src/hooks/intelligence/useMarketIntelligenceMacro.ts": [
    "src/hooks/intelligence/useStockHistory.ts",
