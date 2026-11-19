@@ -1,8 +1,8 @@
 {
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
- "nos": 2867,
- "arestas": 11311,
+ "nos": 2868,
+ "arestas": 11315,
  "hubs": [
   {
    "arquivo": "src/lib/utils.ts",
@@ -10,7 +10,7 @@
   },
   {
    "arquivo": "src/components/ui/button.tsx",
-   "importado_por": 643
+   "importado_por": 644
   },
   {
    "arquivo": "src/components/ui/badge.tsx",
@@ -93,6 +93,10 @@
    "importado_por": 71
   },
   {
+   "arquivo": "src/types/stock.ts",
+   "importado_por": 64
+  },
+  {
    "arquivo": "src/components/ui/switch.tsx",
    "importado_por": 63
   },
@@ -110,10 +114,6 @@
   },
   {
    "arquivo": "src/types/magazine.ts",
-   "importado_por": 62
-  },
-  {
-   "arquivo": "src/types/stock.ts",
    "importado_por": 62
   },
   {

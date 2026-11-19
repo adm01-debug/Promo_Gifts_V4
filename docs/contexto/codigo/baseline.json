@@ -2,11 +2,26 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "027388390bc46481209b2f2ba3b2cb53dcd25ab0",
+  "commit": "cf61cb6dfafa367e71dda795629d68149839ad2e",
   "branch": "main",
-  "data_commit": "2026-11-18T22:11:37-03:00",
+  "data_commit": "2026-11-18T22:23:51-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "cf61cb6d",
+    "data": "2026-11-18",
+    "assunto": "fix(ci): corrige tres afirmacoes falsas minhas no job Deno e o teto de timeout (#3864)"
+   },
+   {
+    "sha": "6d946467",
+    "data": "2026-11-18",
+    "assunto": "feat(estoque): da porta de entrada ao drawer de detalhamento, que estava inalcancavel (#3863)"
+   },
+   {
+    "sha": "4073048f",
+    "data": "2026-11-18",
+    "assunto": "fix(catalogo): comando de voz 'limpar' zera os filtros, nao so o texto (#3861)"
+   },
    {
     "sha": "02738839",
     "data": "2026-11-18",
@@ -116,204 +131,189 @@
     "sha": "a53b303e",
     "data": "2026-11-18",
     "assunto": "docs(resgate): recibo da sessão 2 — PRs fechadas sem merge e os 51 arquivos do legado (#3840)"
-   },
-   {
-    "sha": "8187a4a2",
-    "data": "2026-11-18",
-    "assunto": "fix(mockup): vínculo de proporção para de distorcer a logo a cada ajuste (#3838)"
-   },
-   {
-    "sha": "90862a5f",
-    "data": "2026-11-18",
-    "assunto": "feat(mockup): avisa o vendedor quando o kill-switch de mockup estiver desligado (#3839)"
-   },
-   {
-    "sha": "44f077e4",
-    "data": "2026-11-18",
-    "assunto": "feat(quotes): liga o funil de orçamentos à tela e para de chamar expirado de rascunho (#3836)"
    }
   ],
-  "arquivos_mudados_7d": 1517,
+  "arquivos_mudados_7d": 1520,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
-    "mudancas": 2458
+    "mudancas": 2152
    },
    {
     "pasta": "src/components/products",
-    "mudancas": 1233
+    "mudancas": 1079
    },
    {
     "pasta": "tests/edge-functions/live",
-    "mudancas": 938
+    "mudancas": 823
    },
    {
     "pasta": "src/hooks/products",
-    "mudancas": 867
+    "mudancas": 763
    },
    {
     "pasta": "src/components/quotes",
-    "mudancas": 790
+    "mudancas": 689
    },
    {
     "pasta": "src/pages/magazine",
-    "mudancas": 736
-   },
-   {
-    "pasta": "src/components/inventory",
-    "mudancas": 654
+    "mudancas": 644
    },
    {
     "pasta": "recovery/src-legacy/src",
     "mudancas": 633
    },
    {
+    "pasta": "src/components/inventory",
+    "mudancas": 577
+   },
+   {
     "pasta": "src/components/ui",
-    "mudancas": 592
+    "mudancas": 517
    },
    {
     "pasta": "supabase/functions/_shared",
-    "mudancas": 588
+    "mudancas": 513
    },
    {
     "pasta": "src/components/mockup",
-    "mudancas": 541
+    "mudancas": 477
    },
    {
     "pasta": "src/pages/admin",
-    "mudancas": 490
+    "mudancas": 431
    },
    {
     "pasta": "src/pages/quotes",
-    "mudancas": 427
+    "mudancas": 377
    },
    {
     "pasta": "src/components/kit-builder",
-    "mudancas": 413
+    "mudancas": 365
    },
    {
     "pasta": "src/pages/products",
-    "mudancas": 392
+    "mudancas": 344
    }
   ],
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "supabase/MIGRATIONS_SYNC_LOG.md",
-    "mudancas": 64
+    "mudancas": 62
    },
    {
     "arquivo": "package.json",
-    "mudancas": 43
+    "mudancas": 42
    },
    {
     "arquivo": "PENDENCIAS.md",
-    "mudancas": 37
+    "mudancas": 34
    },
    {
     "arquivo": "RELATORIO_CI.md",
-    "mudancas": 36
+    "mudancas": 31
    },
    {
     "arquivo": "docs/coordenacao/conflitos-semanticos.md",
-    "mudancas": 28
+    "mudancas": 27
    },
    {
     "arquivo": "package-lock.json",
-    "mudancas": 26
+    "mudancas": 25
    },
    {
     "arquivo": ".github/workflows/deploy-gates.yml",
-    "mudancas": 23
+    "mudancas": 22
    },
    {
     "arquivo": "src/pages/kit-builder/KitBuilderPage.tsx",
-    "mudancas": 23
+    "mudancas": 21
    },
    {
     "arquivo": "supabase/EDGE_FUNCTIONS_DEPLOY_LOG.md",
-    "mudancas": 20
+    "mudancas": 19
    },
    {
     "arquivo": "analise-prs/progresso.json",
-    "mudancas": 19
+    "mudancas": 18
    },
    {
     "arquivo": "audit/supabase-reference-catalog.temporary.json",
-    "mudancas": 19
+    "mudancas": 18
    },
    {
     "arquivo": "src/hooks/kit-builder/useKitBuilderPageState.ts",
-    "mudancas": 19
+    "mudancas": 17
    },
    {
     "arquivo": "analise-branches/RELATORIO_BRANCHES.md",
-    "mudancas": 16
-   },
-   {
-    "arquivo": "src/hooks/kit-builder/useKitAutoSave.ts",
-    "mudancas": 16
-   },
-   {
-    "arquivo": "src/pages/mockups/MockupGenerator.tsx",
-    "mudancas": 16
-   },
-   {
-    "arquivo": "e2e/flows/magazine-preview-sticky-smoke.spec.ts",
     "mudancas": 15
    },
    {
-    "arquivo": ".github/workflows/schema-snapshot-export.yml",
+    "arquivo": "src/hooks/kit-builder/useKitAutoSave.ts",
+    "mudancas": 15
+   },
+   {
+    "arquivo": "src/pages/mockups/MockupGenerator.tsx",
+    "mudancas": 15
+   },
+   {
+    "arquivo": "e2e/flows/magazine-preview-sticky-smoke.spec.ts",
     "mudancas": 14
+   },
+   {
+    "arquivo": ".github/workflows/schema-snapshot-export.yml",
+    "mudancas": 13
    },
    {
     "arquivo": "CHANGELOG.md",
-    "mudancas": 14
+    "mudancas": 13
    },
    {
     "arquivo": "analise-prs/prs.json",
-    "mudancas": 14
+    "mudancas": 13
    },
    {
     "arquivo": "src/components/kit-builder/PersonalizationConfig.tsx",
-    "mudancas": 14
+    "mudancas": 13
    },
    {
     "arquivo": "supabase/functions/crm-db-bridge/index.ts",
-    "mudancas": 14
+    "mudancas": 13
    },
    {
     "arquivo": "tests/components/pages/KitBuilderPage.test.tsx",
-    "mudancas": 14
+    "mudancas": 13
    },
    {
     "arquivo": "tests/edge-functions/live/_live-client.ts",
-    "mudancas": 14
+    "mudancas": 13
    },
    {
     "arquivo": ".github/workflows/db-schema-drift-check.yml",
-    "mudancas": 13
+    "mudancas": 12
    },
    {
     "arquivo": ".github/workflows/e2e-swatch-quickview.yml",
-    "mudancas": 13
+    "mudancas": 12
    }
   ],
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 477
+    "commits": 468
    },
    {
     "autor": "Claude",
-    "commits": 101
+    "commits": 95
    },
    {
     "autor": "Joaquim Ataides",
-    "commits": 80
+    "commits": 77
    },
    {
     "autor": "github-actions[bot]",
-    "commits": 24
+    "commits": 23
    },
    {
     "autor": "dependabot[bot]",
@@ -322,21 +322,21 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 10967,
-  "arquivos_codigo": 5477,
-  "linhas_codigo": 1043275,
+  "arquivos_total": 10970,
+  "arquivos_codigo": 5480,
+  "linhas_codigo": 1043519,
   "rotas": 139,
   "rotas_http_backend": 13,
   "vistas_por_id": 0,
   "itens_menu": 69,
   "modulos": 164,
-  "componentes": 1261,
+  "componentes": 1262,
   "hooks": 632,
   "edge_functions": 112,
   "tabelas": 527,
   "migrations": 3100,
   "cron_jobs": 122,
-  "testes": 2610,
+  "testes": 2612,
   "workflows": 89,
   "scripts": 283,
   "docs_md": 1482
@@ -1895,8 +1895,8 @@
    "linhas": 130
   },
   "src/components": {
-   "arquivos": 1425,
-   "linhas": 282143
+   "arquivos": 1427,
+   "linhas": 282284
   },
   "src/config": {
    "arquivos": 1,
@@ -1920,7 +1920,7 @@
   },
   "src/hooks": {
    "arquivos": 489,
-   "linhas": 91821
+   "linhas": 91833
   },
   "src/integrations": {
    "arquivos": 11,
@@ -1952,7 +1952,7 @@
   },
   "src/stores": {
    "arquivos": 12,
-   "linhas": 1156
+   "linhas": 1171
   },
   "src/test": {
    "arquivos": 3,
@@ -2091,8 +2091,8 @@
    "linhas": 325
   },
   "tests/hooks": {
-   "arquivos": 161,
-   "linhas": 25625
+   "arquivos": 162,
+   "linhas": 25701
   },
   "tests/integration": {
    "arquivos": 11,
@@ -2370,7 +2370,7 @@
   },
   {
    "arquivo": "src/components/search/useGlobalSearch.ts",
-   "linhas": 923
+   "linhas": 924
   }
  ],
  "qualidade": {

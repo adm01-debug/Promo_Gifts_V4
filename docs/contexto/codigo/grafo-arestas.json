@@ -6111,7 +6111,7 @@
    "src/components/inventory/StockAlertDialogs.tsx",
    "src/components/inventory/StockEmptyFiltersHint.tsx",
    "src/components/inventory/StockFilterToolbar.tsx",
-   "src/components/inventory/StockHealthBreakdownDrawer.tsx",
+   "src/components/inventory/StockHealthDrawerEntry.tsx",
    "src/components/inventory/StockStatCard.tsx",
    "src/components/inventory/SupplierRiskPanel.tsx",
    "src/components/inventory/VariantStockTable.tsx",
@@ -6163,6 +6163,12 @@
    "src/components/ui/tabs.tsx",
    "src/lib/inventory/health-score.ts",
    "src/lib/utils.ts",
+   "src/types/stock.ts"
+  ],
+  "src/components/inventory/StockHealthDrawerEntry.tsx": [
+   "src/components/inventory/StockHealthBreakdownDrawer.tsx",
+   "src/components/ui/button.tsx",
+   "src/lib/lazyWithRetry.ts",
    "src/types/stock.ts"
   ],
   "src/components/inventory/StockHelpTooltip.tsx": [

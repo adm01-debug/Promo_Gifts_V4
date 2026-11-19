@@ -8,7 +8,7 @@
    "api/health.ts (1)"
   ],
   "componentes": [
-   "src/components (962)",
+   "src/components (963)",
    "src/pages (180)",
    "recovery/src-legacy (100)"
   ],
@@ -23,8 +23,8 @@
    "src/services (10)"
   ],
   "testes": [
-   "tests/ (1080)",
-   "co-localizado (__tests__) (701)",
+   "tests/ (1081)",
+   "co-localizado (__tests__) (702)",
    "e2e/ (625)"
   ],
   "edge_functions": "supabase/functions",
@@ -49,7 +49,7 @@
  },
  "barrels_index": 46,
  "extensao_componentes": [
-  ".tsx (1261)"
+  ".tsx (1262)"
  ],
  "alias_imports": {
   "e2e/": {},
@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "fix(ci): corrige tres afirmacoes falsas minhas no job Deno e o teto de timeout (#3864)",
+   "feat(estoque): da porta de entrada ao drawer de detalhamento, que estava inalcancavel (#3863)",
+   "fix(catalogo): comando de voz 'limpar' zera os filtros, nao so o texto (#3861)",
    "test(orcamentos): trava o contrato de privacidade do export de template (#3862)",
-   "fix(orcamentos): telas de template nao podem mentir sobre o que aconteceu (#3860)",
-   "docs: recibo de aplicacao — 20261118223000 (E15) (#3857)",
-   "fix(orcamentos): recusa item invalido antes de gravar template (#3859)",
-   "fix(orcamentos): template que falha ao salvar nao pode apagar o que o vendedor digitou (#3858)"
+   "fix(orcamentos): telas de template nao podem mentir sobre o que aconteceu (#3860)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",

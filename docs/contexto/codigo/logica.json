@@ -4808,7 +4808,7 @@
    "zod_schemas": 0,
    "flags": [],
    "papeis": [],
-   "usado_por": 17,
+   "usado_por": 18,
    "usado_por_modulos": [
     "components/admin",
     "components/catalog",
@@ -8657,7 +8657,7 @@
     "useVoiceFilterBridge"
    ],
    "export_default": null,
-   "linhas": 29,
+   "linhas": 44,
    "tabelas": [],
    "rpcs": [],
    "edges": [],
@@ -8673,7 +8673,7 @@
     "components/search",
     "hooks/products"
    ],
-   "coberto_por_testes": 2,
+   "coberto_por_testes": 3,
    "orfao": false
   },
   {

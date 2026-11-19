@@ -6082,7 +6082,7 @@
    "hooks_exportados": [
     "useGlobalSearch"
    ],
-   "linhas": 923,
+   "linhas": 924,
    "dominio": "components/search",
    "tabelas": [
     "art_file_attachments",
@@ -11973,7 +11973,7 @@
    "hooks_exportados": [
     "useVoiceFilterApply"
    ],
-   "linhas": 24,
+   "linhas": 36,
    "dominio": "hooks/products",
    "tabelas": [],
    "rpcs": [],
@@ -11987,7 +11987,7 @@
    "usado_por_arquivos": [
     "src/pages/Index.tsx"
    ],
-   "coberto_por_testes": 1
+   "coberto_por_testes": 2
   },
   {
    "arquivo": "src/hooks/quotes/useAutoSaveQuote.ts",
@@ -15040,7 +15040,7 @@
    "hooks_exportados": [
     "useVoiceFilterBridge"
    ],
-   "linhas": 29,
+   "linhas": 44,
    "dominio": "stores",
    "tabelas": [],
    "rpcs": [],
@@ -15052,7 +15052,7 @@
     "src/components/search/voiceFilterDispatch.ts",
     "src/hooks/products/useVoiceFilterApply.ts"
    ],
-   "coberto_por_testes": 2
+   "coberto_por_testes": 3
   }
  ]
 }

@@ -1,7 +1,7 @@
 {
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
- "total": 1261,
+ "total": 1262,
  "orfaos": 159,
  "nomes_duplicados": {
   "AdminTemplatesManager": [
@@ -9710,7 +9710,7 @@
     "StockDashboard"
    ],
    "export_default": "StockDashboard",
-   "linhas": 781,
+   "linhas": 769,
    "dominio": "components/inventory",
    "hooks_locais": [
     "useListUrlState",
@@ -9762,6 +9762,20 @@
    ],
    "export_default": null,
    "linhas": 171,
+   "dominio": "components/inventory",
+   "hooks_locais": [],
+   "tabelas": [],
+   "edges": [],
+   "usado_por": 1,
+   "orfao": false
+  },
+  {
+   "arquivo": "src/components/inventory/StockHealthDrawerEntry.tsx",
+   "exports": [
+    "StockHealthDrawerEntry"
+   ],
+   "export_default": null,
+   "linhas": 61,
    "dominio": "components/inventory",
    "hooks_locais": [],
    "tabelas": [],
@@ -16337,7 +16351,7 @@
    "hooks_locais": [],
    "tabelas": [],
    "edges": [],
-   "usado_por": 638,
+   "usado_por": 639,
    "orfao": false
   },
   {
