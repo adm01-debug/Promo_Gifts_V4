@@ -161,3 +161,28 @@ Caminhos possíveis, em ordem de preferência:
 | baseline de policies | regravada para 1021, PR #3885 |
 | índice + RPC de mercado | esperando `-- approved-by:` do dono |
 | os outros 9 triggers | sem ação: nenhum tem consequência prática no volume atual |
+
+## 8. Trabalho que existe SÓ em branch — com o SHA para recriar
+
+Duas PRs foram fechadas sem merge em 19/11 (às 10:51 e 10:46, pela conta `adm01-debug`, nenhuma das
+duas por esta sessão). O conteúdo delas **não está na `main`** e vive apenas nas branches abaixo,
+que **não** têm a proteção de ruleset das `salvo/*`. Se alguém apagar a branch, o arquivo some.
+
+Os SHAs estão aqui exatamente para isso: mesmo apagada, a branch volta com
+`git branch <nome> <sha>` enquanto o objeto existir no repositório.
+
+| branch | SHA | o que só existe lá | veredicto |
+|---|---|---|---|
+| `claude/fix-resgate-p06-security-invoker-261118-1725` | `6cf924b65` | `supabase/migrations/20261118172500_security_invoker_views_p06_parcial.sql` + rollback | **não aplicar como está** — medido em 19/11: `anon` não tem `SELECT` em 4 das 6 tabelas-base, então ligar `security_invoker` nas 5 views as quebraria para o visitante anônimo. A decisão de fundo (o que o anônimo pode ler) continua aberta |
+| `claude/fix-onboarding-vinculo-organizacao-261119-1035` | `c3f3b62c4` | `supabase/migrations/20261119103000_onboarding_auto_assign_org_reemissao.sql` + rollback | **não aplicar enquanto houver conta de teste em produção** — ver §4 e §6. O arquivo está pronto e revisado; vira aplicável assim que o item 1 ou 2 da §6 estiver resolvido |
+
+Nenhuma das duas é trabalho perdido: as duas estão adjudicadas aqui, com o motivo de não terem
+entrado e a condição que as tornaria aplicáveis. O que **não** pode acontecer é apagar a branch sem
+ler esta tabela.
+
+### As cinco `salvo/*`, para referência
+
+Continuam intactas. Quatro são protegidas pelo ruleset 27365809 (`deletion` e `non_fast_forward`
+bloqueados, `bypass_actors: []`); a quinta,
+`salvo/claude-fix-resgate-p06-p15-security-261116-2215`, está fora do ruleset e foi adjudicada em
+`2026-11-19-fechamento-da-reconciliacao.md` — nada dela precisa ser resgatado.
