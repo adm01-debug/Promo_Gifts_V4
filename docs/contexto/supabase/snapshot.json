@@ -188956,9 +188956,13 @@
             {
               "file": "supabase/migrations/20261113140000_marketing_tab_links_rls_and_endomarketing.sql",
               "hits": 2
+            },
+            {
+              "file": "supabase/migrations/20261119110500_crm_callback_events_updated_at.sql",
+              "hits": 3
             }
           ],
-          "code_total_files": 9,
+          "code_total_files": 10,
           "cron": [],
           "db": [],
           "triggers": [

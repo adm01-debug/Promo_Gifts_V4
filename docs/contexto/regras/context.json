@@ -1,9 +1,9 @@
 {
  "meta": {
-  "sha": "df0eda1d4abd8edf6732f14acc9bf5ac64663c6e",
+  "sha": "6ef73b8a18c295fe13b651f36517f1afe003686c",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-19 15:20 UTC",
+  "generated_at": "2026-11-19 16:17 UTC",
   "files_total": 10915,
   "code_files": 8935,
   "code_lines": 1265627
@@ -548214,10 +548214,19 @@
   }
  },
  "git": {
-  "sha": "df0eda1d4abd8edf6732f14acc9bf5ac64663c6e",
+  "sha": "6ef73b8a18c295fe13b651f36517f1afe003686c",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "6ef73b8",
+    "date": "2026-11-19",
+    "author": "github-actions[bot]",
+    "subject": "docs(migrations-log): recibo E15 — aplicação de 20261119094500 (#3894)",
+    "files": [
+     "supabase/MIGRATIONS_SYNC_LOG.md"
+    ]
+   },
    {
     "sha": "df0eda1",
     "date": "2026-11-19",
@@ -548518,21 +548527,12 @@
      "src/stores/voiceFilterBridge.ts",
      "tests/hooks/useVoiceFilterApply.reset.test.tsx"
     ]
-   },
-   {
-    "sha": "0273883",
-    "date": "2026-11-18",
-    "author": "adm01-debug",
-    "subject": "test(orcamentos): trava o contrato de privacidade do export de template (#3862)",
-    "files": [
-     "tests/lib/templateExport.test.ts"
-    ]
    }
   ],
   "hot_files": [
    [
     "supabase/MIGRATIONS_SYNC_LOG.md",
-    15
+    16
    ],
    [
     "docs/agentes/resgates/2026-11-19-migrations-orfas-e-o-portao-retroativo.md",

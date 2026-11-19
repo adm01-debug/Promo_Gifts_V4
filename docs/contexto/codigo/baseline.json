@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "df0eda1d4abd8edf6732f14acc9bf5ac64663c6e",
+  "commit": "6ef73b8a18c295fe13b651f36517f1afe003686c",
   "branch": "main",
-  "data_commit": "2026-11-19T12:19:33-03:00",
+  "data_commit": "2026-11-19T12:35:30-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "6ef73b8a",
+    "data": "2026-11-19",
+    "assunto": "docs(migrations-log): recibo E15 — aplicação de 20261119094500 (#3894)"
+   },
    {
     "sha": "df0eda1d",
     "data": "2026-11-19",
@@ -126,11 +131,6 @@
     "sha": "96d0391e",
     "data": "2026-11-19",
     "assunto": "chore(resgates): fecha a reconciliacao byte a byte dos 98 arquivos restantes (#3867)"
-   },
-   {
-    "sha": "074fa4f2",
-    "data": "2026-11-18",
-    "assunto": "fix(magic-up): valida o shape vindo do banco e poe prazo nas consultas (#3866)"
    }
   ],
   "arquivos_mudados_7d": 1417,
@@ -189,7 +189,7 @@
    },
    {
     "pasta": "src/components/kit-builder",
-    "mudancas": 271
+    "mudancas": 269
    },
    {
     "pasta": "src/pages/products",
@@ -199,7 +199,7 @@
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "supabase/MIGRATIONS_SYNC_LOG.md",
-    "mudancas": 66
+    "mudancas": 67
    },
    {
     "arquivo": "package.json",
@@ -235,7 +235,7 @@
    },
    {
     "arquivo": "src/pages/kit-builder/KitBuilderPage.tsx",
-    "mudancas": 14
+    "mudancas": 13
    },
    {
     "arquivo": "src/pages/mockups/MockupGenerator.tsx",
@@ -243,10 +243,6 @@
    },
    {
     "arquivo": "e2e/flows/magazine-preview-sticky-smoke.spec.ts",
-    "mudancas": 12
-   },
-   {
-    "arquivo": "src/hooks/kit-builder/useKitBuilderPageState.ts",
     "mudancas": 12
    },
    {
@@ -259,6 +255,10 @@
    },
    {
     "arquivo": "src/components/kit-builder/PersonalizationConfig.tsx",
+    "mudancas": 11
+   },
+   {
+    "arquivo": "src/hooks/kit-builder/useKitBuilderPageState.ts",
     "mudancas": 11
    },
    {
@@ -301,7 +301,7 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 375
+    "commits": 373
    },
    {
     "autor": "Claude",
@@ -309,7 +309,7 @@
    },
    {
     "autor": "Joaquim Ataides",
-    "commits": 49
+    "commits": 48
    },
    {
     "autor": "github-actions[bot]",
@@ -317,7 +317,7 @@
    },
    {
     "autor": "dependabot[bot]",
-    "commits": 9
+    "commits": 8
    }
   ]
  },

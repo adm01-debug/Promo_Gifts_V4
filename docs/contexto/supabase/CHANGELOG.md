@@ -2,6 +2,10 @@
 
 Diff semântico gerado a cada coleta em que algo mudou.
 
+## 2026-11-19 16:19 UTC
+
+- **functions** alterado (1): `public.set_updated_at()`
+
 ## 2026-11-19 15:18 UTC
 
 - **migrations** adicionado (1): `20261119094500_reafirma_revogacoes_anteriores_ao_baseline`
