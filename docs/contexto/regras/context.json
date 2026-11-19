@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "af5f0ed438397cabeb3fcaf7fe32ec7f6a631a41",
+  "sha": "719c8f0fce77e07246226e52bac9c8188060cb5e",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-19 22:21 UTC",
-  "files_total": 10955,
-  "code_files": 8974,
-  "code_lines": 1270041
+  "generated_at": "2026-11-19 22:59 UTC",
+  "files_total": 10957,
+  "code_files": 8976,
+  "code_lines": 1270320
  },
  "version": "1.3.2",
- "facts_hash": "984bbc8b7f71707c",
+ "facts_hash": "ed9942a4c56fbb84",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -1128,7 +1128,7 @@
   ],
   "package_manager": "npm",
   "languages": {
-   ".sql": 3459,
+   ".sql": 3461,
    ".ts": 3078,
    ".tsx": 1969,
    ".mjs": 453,
@@ -96275,6 +96275,7 @@
    "supabase/migrations/20261119212000_fix_f12_sparkline_ema_kpi.sql",
    "supabase/migrations/20261119213000_create_shipping_boxes.sql",
    "supabase/migrations/20261119213100_create_freight_settings.sql",
+   "supabase/migrations/20261119220000_create_ema_sister_functions.sql",
    "supabase/rollbacks/20260511235950_rollback.sql",
    "supabase/rollbacks/20260511235959_rollback.sql",
    "supabase/rollbacks/20260611014515_fn_dryrun_standardize_supplier_real_rollback.sql",
@@ -96390,6 +96391,7 @@
    "supabase/rollbacks/20261119212000_rollback.sql",
    "supabase/rollbacks/20261119213000_rollback.sql",
    "supabase/rollbacks/20261119213100_rollback.sql",
+   "supabase/rollbacks/20261119220000_rollback.sql",
    "supabase/rollbacks/rollback_20261025002500_analyze_tables_p03.sql",
    "supabase/sql-legacy/001_notification_system.sql",
    "supabase/sql-legacy/002_notification_preferences.sql",
@@ -132968,6 +132970,54 @@
    {
     "kind": "revoke",
     "privs": "all",
+    "object": "fn_ema_coverage_stats",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261119220000_create_ema_sister_functions.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_ema_coverage_stats",
+    "objkind": "function",
+    "roles": "authenticated, service_role",
+    "src": "supabase/migrations/20261119220000_create_ema_sister_functions.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "all",
+    "object": "fn_ruptura_forecast_7_15_30",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261119220000_create_ema_sister_functions.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_ruptura_forecast_7_15_30",
+    "objkind": "function",
+    "roles": "authenticated, service_role",
+    "src": "supabase/migrations/20261119220000_create_ema_sister_functions.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "all",
+    "object": "fn_whatif_scenario",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261119220000_create_ema_sister_functions.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_whatif_scenario",
+    "objkind": "function",
+    "roles": "authenticated, service_role",
+    "src": "supabase/migrations/20261119220000_create_ema_sister_functions.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "all",
     "object": "fn_dryrun_standardize_supplier",
     "objkind": "function",
     "roles": "PUBLIC",
@@ -150822,7 +150872,7 @@
   {
    "module": "src/pages",
    "files": 367,
-   "lines": 84546,
+   "lines": 84615,
    "tables": [
     "ai_usage_events",
     "bot_detection_log",
@@ -151795,8 +151845,8 @@
   },
   {
    "module": "supabase/migrations",
-   "files": 3108,
-   "lines": 224519,
+   "files": 3109,
+   "lines": 224721,
    "tables": [
     "...",
     "admin_audit_log",
@@ -151894,8 +151944,8 @@
   },
   {
    "module": "supabase/rollbacks",
-   "files": 116,
-   "lines": 3464,
+   "files": 117,
+   "lines": 3472,
    "tables": [],
    "exports": [],
    "docs": [],
@@ -157675,6 +157725,9 @@
    "fn_check_login_allowed": [
     "supabase/functions/check-login/index.ts"
    ],
+   "fn_ema_coverage_stats": [
+    "supabase/migrations/20261119220000_create_ema_sister_functions.sql"
+   ],
    "fn_extract_dimensions_from_text": [
     "scripts/kit-ai-enrichment.js"
    ],
@@ -157709,6 +157762,9 @@
    "fn_run_and_persist_smoke_tests": [
     "qa/migrations-draft/2026-06-20_revoke_secdef_from_authenticated.sql"
    ],
+   "fn_ruptura_forecast_7_15_30": [
+    "supabase/migrations/20261119220000_create_ema_sister_functions.sql"
+   ],
    "fn_rupture_health_check": [
     "supabase/functions/ema-pipeline-health/index.ts"
    ],
@@ -157733,6 +157789,9 @@
    ],
    "fn_total": [
     "tests/scripts/inventario-rotas.test.mjs"
+   ],
+   "fn_whatif_scenario": [
+    "supabase/migrations/20261119220000_create_ema_sister_functions.sql"
    ],
    "foreign_sync_quote": [
     "tests/scripts/check-supabase-reference-catalog.test.mjs"
@@ -360140,6 +360199,7 @@
    "supabase/migrations/20261115130100_fn_market_intelligence_macro.sql",
    "supabase/migrations/20261118223000_fn_supplier_risk_breakdown.sql",
    "supabase/migrations/20261119212000_fix_f12_sparkline_ema_kpi.sql",
+   "supabase/migrations/20261119220000_create_ema_sister_functions.sql",
    "supabase/rollbacks/20260611014515_fn_dryrun_standardize_supplier_real_rollback.sql",
    "supabase/rollbacks/20260611124000_fn_dryrun_standardize_supplier_real_rollback.sql",
    "supabase/rollbacks/20260917061500_rollback.sql",
@@ -396934,6 +396994,54 @@
    {
     "kind": "revoke",
     "privs": "all",
+    "object": "fn_ema_coverage_stats",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261119220000_create_ema_sister_functions.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_ema_coverage_stats",
+    "objkind": "function",
+    "roles": "authenticated, service_role",
+    "src": "supabase/migrations/20261119220000_create_ema_sister_functions.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "all",
+    "object": "fn_ruptura_forecast_7_15_30",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261119220000_create_ema_sister_functions.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_ruptura_forecast_7_15_30",
+    "objkind": "function",
+    "roles": "authenticated, service_role",
+    "src": "supabase/migrations/20261119220000_create_ema_sister_functions.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "all",
+    "object": "fn_whatif_scenario",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261119220000_create_ema_sister_functions.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_whatif_scenario",
+    "objkind": "function",
+    "roles": "authenticated, service_role",
+    "src": "supabase/migrations/20261119220000_create_ema_sister_functions.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "all",
     "object": "fn_dryrun_standardize_supplier",
     "objkind": "function",
     "roles": "PUBLIC",
@@ -403569,6 +403677,13 @@
    },
    {
     "kind": "rpc",
+    "msg": "RPC `fn_ema_coverage_stats` chamada mas não definida nas migrations/types",
+    "where": [
+     "supabase/migrations/20261119220000_create_ema_sister_functions.sql"
+    ]
+   },
+   {
+    "kind": "rpc",
     "msg": "RPC `fn_get_rupture_alerts` chamada mas não definida nas migrations/types",
     "where": [
      "src/hooks/stock/useRuptureAlerts.ts"
@@ -403591,6 +403706,13 @@
    },
    {
     "kind": "rpc",
+    "msg": "RPC `fn_ruptura_forecast_7_15_30` chamada mas não definida nas migrations/types",
+    "where": [
+     "supabase/migrations/20261119220000_create_ema_sister_functions.sql"
+    ]
+   },
+   {
+    "kind": "rpc",
     "msg": "RPC `fn_supplier_risk_breakdown` chamada mas não definida nas migrations/types",
     "where": [
      "supabase/migrations/20261118223000_fn_supplier_risk_breakdown.sql"
@@ -403601,6 +403723,13 @@
     "msg": "RPC `fn_total` chamada mas não definida nas migrations/types",
     "where": [
      "tests/scripts/inventario-rotas.test.mjs"
+    ]
+   },
+   {
+    "kind": "rpc",
+    "msg": "RPC `fn_whatif_scenario` chamada mas não definida nas migrations/types",
+    "where": [
+     "supabase/migrations/20261119220000_create_ema_sister_functions.sql"
     ]
    },
    {
@@ -486494,7 +486623,7 @@
   },
   "src/pages/admin/StockDashboardPage.tsx": {
    "path": "src/pages/admin/StockDashboardPage.tsx",
-   "lines": 45,
+   "lines": 114,
    "exports": [
     "function StockDashboardPage"
    ]
@@ -524612,6 +524741,16 @@
    "path": "supabase/migrations/20261119213100_create_freight_settings.sql",
    "lines": 75
   },
+  "supabase/migrations/20261119220000_create_ema_sister_functions.sql": {
+   "path": "supabase/migrations/20261119220000_create_ema_sister_functions.sql",
+   "lines": 202,
+   "rpc": [
+    "fn_ema_coverage_stats",
+    "fn_ruptura_forecast_7_15_30",
+    "fn_whatif_scenario"
+   ],
+   "uses_service_role": true
+  },
   "supabase/rollbacks/20260511235950_rollback.sql": {
    "path": "supabase/rollbacks/20260511235950_rollback.sql",
    "lines": 5
@@ -525090,6 +525229,10 @@
   "supabase/rollbacks/20261119213100_rollback.sql": {
    "path": "supabase/rollbacks/20261119213100_rollback.sql",
    "lines": 37
+  },
+  "supabase/rollbacks/20261119220000_rollback.sql": {
+   "path": "supabase/rollbacks/20261119220000_rollback.sql",
+   "lines": 8
   },
   "supabase/rollbacks/rollback_20261025002500_analyze_tables_p03.sql": {
    "path": "supabase/rollbacks/rollback_20261025002500_analyze_tables_p03.sql",
@@ -550332,10 +550475,31 @@
   }
  },
  "git": {
-  "sha": "af5f0ed438397cabeb3fcaf7fe32ec7f6a631a41",
+  "sha": "719c8f0fce77e07246226e52bac9c8188060cb5e",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "719c8f0",
+    "date": "2026-11-19",
+    "author": "adm01-debug",
+    "subject": "feat: funções irmãs do painel EMA + remonta Onda 3 no /estoque (#3907)",
+    "files": [
+     "src/pages/admin/StockDashboardPage.tsx",
+     "supabase/MIGRATIONS_SYNC_LOG.md",
+     "supabase/migrations/20261119220000_create_ema_sister_functions.sql",
+     "supabase/rollbacks/20261119220000_rollback.sql"
+    ]
+   },
+   {
+    "sha": "809bd84",
+    "date": "2026-11-19",
+    "author": "github-actions[bot]",
+    "subject": "chore(security): atualiza baseline assinado de RLS policies (#3912)",
+    "files": [
+     ".security/policies-baseline.json"
+    ]
+   },
    {
     "sha": "af5f0ed",
     "date": "2026-11-19",
@@ -550661,35 +550825,16 @@
     "files": [
      ".security/policies-baseline.json"
     ]
-   },
-   {
-    "sha": "1e385e9",
-    "date": "2026-11-19",
-    "author": "adm01-debug",
-    "subject": "fix(migrations): reemite supplier_stricker_rls_deny_all e corrige 18 para 16 (#3874)",
-    "files": [
-     "docs/agentes/resgates/2026-11-19-migrations-orfas-e-o-portao-retroativo.md",
-     "docs/coordenacao/conflitos-semanticos.md",
-     "supabase/MIGRATIONS_SYNC_LOG.md",
-     "supabase/migrations/20261119073000_supplier_stricker_rls_deny_all_reemissao.sql",
-     "supabase/rollbacks/20261119073000_rollback.sql"
-    ]
-   },
-   {
-    "sha": "a4d8355",
-    "date": "2026-11-19",
-    "author": "github-actions[bot]",
-    "subject": "docs(migrations-log): recibos E15 de 20260916202000 e 20261115034500 (#3872)",
-    "files": [
-     "docs/coordenacao/conflitos-semanticos.md",
-     "supabase/MIGRATIONS_SYNC_LOG.md"
-    ]
    }
   ],
   "hot_files": [
    [
     "supabase/MIGRATIONS_SYNC_LOG.md",
-    16
+    15
+   ],
+   [
+    ".security/policies-baseline.json",
+    3
    ],
    [
     ".release-please-manifest.json",
@@ -550709,14 +550854,6 @@
    ],
    [
     "src/lib/freight/README.md",
-    3
-   ],
-   [
-    "docs/agentes/resgates/2026-11-19-migrations-orfas-e-o-portao-retroativo.md",
-    3
-   ],
-   [
-    "docs/coordenacao/conflitos-semanticos.md",
     3
    ],
    [
@@ -550760,12 +550897,16 @@
     2
    ],
    [
-    ".security/policies-baseline.json",
+    "docs/agentes/resgates/2026-11-19-fechamento-da-reconciliacao.md",
     2
    ],
    [
-    "docs/agentes/resgates/2026-11-19-fechamento-da-reconciliacao.md",
+    "docs/agentes/resgates/2026-11-19-migrations-orfas-e-o-portao-retroativo.md",
     2
+   ],
+   [
+    "src/pages/admin/StockDashboardPage.tsx",
+    1
    ]
   ]
  }

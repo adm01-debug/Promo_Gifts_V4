@@ -13224,9 +13224,16 @@
    "src/lib/security/sanitize-error.ts"
   ],
   "src/pages/admin/StockDashboardPage.tsx": [
+   "src/components/a11y/index.ts",
    "src/components/inventory/StockDashboard.tsx",
+   "src/components/inventory/StockHeroRiskBanner.tsx",
    "src/components/inventory/risk/RupturePanelEma.tsx",
-   "src/components/seo/PageSEO.tsx"
+   "src/components/inventory/risk/WhatIfPanel.tsx",
+   "src/components/seo/PageSEO.tsx",
+   "src/components/ui/badge.tsx",
+   "src/components/ui/skeleton.tsx",
+   "src/hooks/ui/use-toast.ts",
+   "src/lib/lazyWithRetry.ts"
   ],
   "src/pages/admin/StorageTestPage.tsx": [
    "src/components/seo/PageSEO.tsx",

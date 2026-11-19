@@ -8,7 +8,7 @@
   "supabase/migrations",
   "typeorm"
  ],
- "migrations": 3109,
+ "migrations": 3110,
  "seeds": [],
  "avisos": [
   "323 bloco(s) com DDL dinâmico (EXECUTE format/...) não modelado — policies/colunas criadas dinamicamente podem faltar; confira no banco vivo"
@@ -588,6 +588,7 @@
   "fn_distribute_percentage",
   "fn_dryrun_raw_v2",
   "fn_dryrun_standardize_supplier",
+  "fn_ema_coverage_stats",
   "fn_ema_kpi_by_level",
   "fn_enforce_inactive_variant_zero_stock",
   "fn_enqueue_ai_enrichment",
@@ -836,6 +837,7 @@
   "fn_run_pipeline_health_check",
   "fn_run_schema_drift_check",
   "fn_run_smoke_tests",
+  "fn_ruptura_forecast_7_15_30",
   "fn_safe_bool",
   "fn_safe_int",
   "fn_safe_jsonb_arr",
@@ -1010,6 +1012,7 @@
   "fn_video_sim_export",
   "fn_video_sim_upsert",
   "fn_vss_sync_warehouse_from_qty",
+  "fn_whatif_scenario",
   "fn_xbz_derivar_campos_editoriais",
   "fn_xbz_dispatch_image_batch",
   "fn_xbz_enrich_stock_batch",

@@ -6,7 +6,7 @@
   "rotas_http_backend": 13,
   "vistas_por_id": 0,
   "itens_menu": 69,
-  "lazy": 170
+  "lazy": 172
  },
  "urls": [
   {
@@ -17652,6 +17652,7 @@
     "useContext",
     "useContextualSuggestions",
     "useCountUp",
+    "useCoverageStats",
     "useCreateRamoAtividade",
     "useCreateSegmento",
     "useCrmCompanies",
@@ -17675,6 +17676,7 @@
     "useDevGate",
     "useDropboxFiles",
     "useEffect",
+    "useEmaRiskSummary",
     "useEnrichedFavoriteItems",
     "useErrorHandler",
     "useExpertConversations",
@@ -17840,6 +17842,7 @@
     "useReplenishmentStats",
     "useReplenishmentsSelectionMode",
     "useReplenishmentsWithDetails",
+    "useRupturaForecast",
     "useRuptureAlerts",
     "useRuptureHorizon",
     "useRuptureKpiSummary",
@@ -17927,6 +17930,7 @@
     "useVideoVariantLinks",
     "useVirtualizer",
     "useVoiceAgent",
+    "useWhatIfScenario",
     "useWordMagic",
     "useWordMagicStore",
     "useWorkspaceNotifications"
@@ -18010,6 +18014,7 @@
     "useDeleteSegmento",
     "useDevGate",
     "useDropboxFiles",
+    "useEmaRiskSummary",
     "useEnrichedFavoriteItems",
     "useErrorHandler",
     "useExpertConversations",
@@ -18159,6 +18164,7 @@
     "useReplenishmentStats",
     "useReplenishmentsSelectionMode",
     "useReplenishmentsWithDetails",
+    "useRupturaForecast",
     "useRuptureAlerts",
     "useRuptureHorizon",
     "useRuptureKpiSummary",
@@ -18240,6 +18246,7 @@
     "useVariantStock",
     "useVideoVariantLinks",
     "useVoiceAgent",
+    "useWhatIfScenario",
     "useWordMagic",
     "useWordMagicStore",
     "useWorkspaceNotifications"
@@ -18298,6 +18305,7 @@
     "fn_batch_update_cart_item_sort_order",
     "fn_get_similar_products",
     "fn_get_supplier_reliability",
+    "fn_rupture_quick_stats",
     "fn_should_apply_kill_switch",
     "fn_super_filtro_product_ids",
     "get_catalog_bestseller_page",
@@ -18350,7 +18358,7 @@
     "supervisor",
     "table"
    ],
-   "arquivos_puxados": 516
+   "arquivos_puxados": 523
   },
   {
    "protegida": false,
@@ -38289,6 +38297,7 @@
   "RlsDenialsAdminPage": "src/pages/admin/RlsDenialsAdminPage.tsx",
   "RolePermissionsPage": "src/pages/admin/RolePermissionsPage.tsx",
   "RolesPage": "src/pages/admin/RolesPage.tsx",
+  "RupturePanelEma": "src/components/inventory/risk/RupturePanelEma.tsx",
   "SSOCallbackPage": "src/pages/auth/SSOCallbackPage.tsx",
   "SalesHistoryChart": "src/components/products/SalesHistoryChart.tsx",
   "ScrollProgressIndicator": "src/components/common/ScrollProgress.tsx",
@@ -38319,6 +38328,7 @@
   "TrendsPage": "src/pages/bi/TrendsPage.tsx",
   "Unauthorized": "src/components/access/UnauthorizedPage.tsx",
   "VariantPickerDialog": "src/components/products/VariantPickerDialog.tsx",
-  "VisualSearchPage": "src/pages/tools/VisualSearchPage.tsx"
+  "VisualSearchPage": "src/pages/tools/VisualSearchPage.tsx",
+  "WhatIfPanel": "src/components/inventory/risk/WhatIfPanel.tsx"
  }
 }

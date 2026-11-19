@@ -2,7 +2,7 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "total": 1262,
- "orfaos": 159,
+ "orfaos": 157,
  "nomes_duplicados": {
   "AdminTemplatesManager": [
    "recovery/src-legacy/src/components/quotes/AdminTemplatesManager.tsx",
@@ -9606,8 +9606,8 @@
    ],
    "tabelas": [],
    "edges": [],
-   "usado_por": 0,
-   "orfao": true
+   "usado_por": 1,
+   "orfao": false
   },
   {
    "arquivo": "src/components/inventory/StockAlertCard.tsx",
@@ -9811,8 +9811,8 @@
    ],
    "tabelas": [],
    "edges": [],
-   "usado_por": 0,
-   "orfao": true
+   "usado_por": 1,
+   "orfao": false
   },
   {
    "arquivo": "src/components/inventory/StockStatCard.tsx",
@@ -16316,7 +16316,7 @@
    "hooks_locais": [],
    "tabelas": [],
    "edges": [],
-   "usado_por": 487,
+   "usado_por": 488,
    "orfao": false
   },
   {
@@ -17042,7 +17042,7 @@
    "hooks_locais": [],
    "tabelas": [],
    "edges": [],
-   "usado_por": 186,
+   "usado_por": 187,
    "orfao": false
   },
   {
@@ -18368,9 +18368,12 @@
     "StockDashboardPage"
    ],
    "export_default": "StockDashboardPage",
-   "linhas": 45,
+   "linhas": 114,
    "dominio": "pages/admin",
-   "hooks_locais": [],
+   "hooks_locais": [
+    "useKeyboardShortcut",
+    "useToast"
+   ],
    "tabelas": [],
    "edges": [],
    "usado_por": 2,

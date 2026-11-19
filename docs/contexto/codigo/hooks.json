@@ -4470,13 +4470,14 @@
    "edges": [],
    "hooks_internos": [],
    "canais_realtime": [],
-   "usado_por": 5,
+   "usado_por": 6,
    "usado_por_arquivos": [
     "recovery/src-legacy/src/hooks/useMagicUpState.ts",
     "src/App.tsx",
     "src/components/common/ScrollToTopButton.tsx",
     "src/components/loading/LoadingOverlay.tsx",
-    "src/hooks/intelligence/useMagicUpState.ts"
+    "src/hooks/intelligence/useMagicUpState.ts",
+    "src/pages/admin/StockDashboardPage.tsx"
    ],
    "coberto_por_testes": 2
   },
@@ -13358,7 +13359,7 @@
     "useMemo"
    ],
    "canais_realtime": [],
-   "usado_por": 11,
+   "usado_por": 12,
    "usado_por_arquivos": [
     "src/components/auth/ForgotPasswordForm.tsx",
     "src/components/auth/KnownDevicesManager.tsx",
@@ -13368,6 +13369,7 @@
     "src/hooks/products/useCatalogPreferences.ts",
     "src/hooks/products/useCatalogState.ts",
     "src/hooks/ui/index.ts",
+    "src/pages/admin/StockDashboardPage.tsx",
     "src/pages/auth/Auth.tsx",
     "src/pages/auth/ResetPassword.tsx",
     "src/pages/auth/postLoginGuards.ts"

@@ -2,7 +2,7 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "nos": 2884,
- "arestas": 11369,
+ "arestas": 11376,
  "hubs": [
   {
    "arquivo": "src/lib/utils.ts",
@@ -14,7 +14,7 @@
   },
   {
    "arquivo": "src/components/ui/badge.tsx",
-   "importado_por": 487
+   "importado_por": 488
   },
   {
    "arquivo": "src/integrations/supabase/client.ts",
@@ -42,7 +42,7 @@
   },
   {
    "arquivo": "src/components/ui/skeleton.tsx",
-   "importado_por": 186
+   "importado_por": 187
   },
   {
    "arquivo": "src/components/ui/select.tsx",
@@ -687,14 +687,14 @@
    "importado_por": 27
   },
   {
+   "modulo": "pages/admin",
+   "depende_de": 32,
+   "importado_por": 3
+  },
+  {
    "modulo": "lib/security",
    "depende_de": 5,
    "importado_por": 29
-  },
-  {
-   "modulo": "pages/admin",
-   "depende_de": 31,
-   "importado_por": 3
   },
   {
    "modulo": "hooks/common",
