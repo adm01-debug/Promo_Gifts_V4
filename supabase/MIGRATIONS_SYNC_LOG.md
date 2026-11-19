@@ -2550,3 +2550,23 @@ com outros nomes.
 | versão | arquivo | sha256 | status |
 |---|---|---|---|
 | `20261119110500` | `crm_callback_events_updated_at` | `627c73cfc852719099293953e231bc3c9df63a98c640db6f1e152ad801b5c687` | pendente — aplicar via `db-apply-migration.yml` (`version=20261119110500`) após merge |
+
+### 2026-11-19 — bugs F12 do painel de risco (/estoque)
+
+Corrige duas regressões que quebram os gráficos de ruptura em `/estoque`:
+
+1. `fn_variant_sparkline(uuid, integer)` **nunca foi migrada**: o front
+   `RuptureSparkline.tsx:33` chama a RPC desde `037d9a161`, mas a função não
+   existe no banco (PGRST202 reproduzido com service key). A migration cria a
+   função (SECURITY DEFINER, lê `stock_daily_summary` que já tem policy
+   `auth_read_stock_daily_summary` para authenticated).
+2. `fn_ema_kpi_by_level(boolean)` perdeu EXECUTE para authenticated nas
+   revogações `20260626184039` + `20260716000029` (403 com anon key, 200 só
+   com service key). Re-concede EXECUTE a authenticated + service_role.
+
+Anti-regressão: anon segue SEM EXECUTE nas duas (REVOKE explícito). Decisão sem
+guarda de papel — `/estoque` atende authenticated (vendedores incluídos).
+
+| versão | arquivo | sha256 | status |
+|---|---|---|---|
+| `20261119202852` | `fix_f12_sparkline_ema_kpi` | `75d79ffc4a219db873af8854758ef644c428119015d7bff3e48a907f9a36017e` | pendente — aplicar via `db-apply-migration.yml` (`version=20261119202852`) após merge |
