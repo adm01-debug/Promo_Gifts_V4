@@ -1,9 +1,9 @@
 {
  "meta": {
-  "sha": "1e385e96dc87b0b007a154eab912c2e58b6642e6",
+  "sha": "72455580e8bcac8660d56aa89c36a6c69f34968d",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-19 07:31 UTC",
+  "generated_at": "2026-11-19 08:06 UTC",
   "files_total": 10907,
   "code_files": 8928,
   "code_lines": 1265367
@@ -548017,10 +548017,28 @@
   }
  },
  "git": {
-  "sha": "1e385e96dc87b0b007a154eab912c2e58b6642e6",
+  "sha": "72455580e8bcac8660d56aa89c36a6c69f34968d",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "7245558",
+    "date": "2026-11-19",
+    "author": "github-actions[bot]",
+    "subject": "docs(migrations-log): recibo E15 da aplicacao de 20261119073000 (#3875)",
+    "files": [
+     "supabase/MIGRATIONS_SYNC_LOG.md"
+    ]
+   },
+   {
+    "sha": "13333e0",
+    "date": "2026-11-19",
+    "author": "adm01-debug",
+    "subject": "fix(ci): regenera o baseline de policies com os 17 deny_all de supplier_stricker (#3876)",
+    "files": [
+     ".security/policies-baseline.json"
+    ]
+   },
    {
     "sha": "1e385e9",
     "date": "2026-11-19",
@@ -548333,32 +548351,12 @@
      "tests/edge-functions/integration/generate-mockup.handler.test.ts",
      "tests/scripts/deploy-gates-live-audit.test.mjs"
     ]
-   },
-   {
-    "sha": "6fd7601",
-    "date": "2026-11-18",
-    "author": "adm01-debug",
-    "subject": "docs(resgate): inventario do trabalho de outro agente que existe e nao esta ligado (#3845)",
-    "files": [
-     "docs/agentes/resgates/2026-11-18-inventario-trabalho-nao-ligado.md"
-    ]
-   },
-   {
-    "sha": "0929631",
-    "date": "2026-11-18",
-    "author": "adm01-debug",
-    "subject": "fix(quotes): rascunho local volta a guardar empresa, contato, validade e entrega (#3844)",
-    "files": [
-     "src/hooks/quotes/quoteDraftApply.ts",
-     "src/pages/quotes/QuoteBuilderPage.tsx",
-     "src/pages/quotes/__tests__/quote-builder-autosave-fields.contract.test.ts"
-    ]
    }
   ],
   "hot_files": [
    [
     "supabase/MIGRATIONS_SYNC_LOG.md",
-    7
+    8
    ],
    [
     "docs/agentes/resgates/2026-11-19-migrations-orfas-e-o-portao-retroativo.md",
@@ -548377,8 +548375,8 @@
     2
    ],
    [
-    "docs/agentes/resgates/2026-11-18-inventario-trabalho-nao-ligado.md",
-    2
+    ".security/policies-baseline.json",
+    1
    ],
    [
     "supabase/migrations/20261119073000_supplier_stricker_rls_deny_all_reemissao.sql",
