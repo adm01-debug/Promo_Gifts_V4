@@ -1,6 +1,6 @@
 # 10 · ACESSO E SEGURANÇA — quem pode o quê
 
-> Gerado automaticamente por AI Context Sync v1.3.2 · commit `76d1a70dd4` · branch `main` · 2026-11-19 15:01 UTC
+> Gerado automaticamente por AI Context Sync v1.3.2 · commit `df0eda1d4a` · branch `main` · 2026-11-19 15:20 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## Perfis / roles identificados
@@ -1517,7 +1517,7 @@ Middleware matcher (Next.js): nenhum
 | `material_types` | `created_at`, `updated_at` |
 | `product_materials` | `created_at`, `created_by`, `updated_at`, `updated_by` |
 | `quotes_inbound` | `updated_at` |
-| `crm_callback_events` | `created_at`, `updated_at` |
+| `crm_callback_events` | `created_at` |
 | `magazine_items` | `created_at`, `updated_at` |
 | `magazine_reader_state` | `created_at`, `updated_at` |
 | `magazine_templates` | `created_at`, `updated_at` |

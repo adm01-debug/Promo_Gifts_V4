@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.3.2 · commit `76d1a70dd4` · branch `main` · 2026-11-19 15:01 UTC
+> Gerado automaticamente por AI Context Sync v1.3.2 · commit `df0eda1d4a` · branch `main` · 2026-11-19 15:20 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -646,7 +646,6 @@ Fornecedor Asia → supplier_products_raw (Bronze) → normalização (Silver) �
 | `crm_callback_events` | `result` | default 'applied' |
 | `crm_callback_events` | `payload` | default '{}' |
 | `crm_callback_events` | `created_at` | default NOW() |
-| `crm_callback_events` | `updated_at` | default NOW() |
 | `crm_callback_events` | `(tabela)` | constraint chk_crm_callback_events_event_type CHECK (event_type IN ('approved','rejected','order_created','sent_to_client','expired')) |
 | `crm_callback_events` | `(tabela)` | constraint chk_crm_callback_events_result CHECK (result IN ('applied', 'error', 'duplicate_ignored')) |
 | `magazine_items` | `id` | PK; default gen_random_uuid() |
@@ -809,7 +808,8 @@ Fornecedor Asia → supplier_products_raw (Bronze) → normalização (Silver) �
 | `cart_templates` | `user_id` | obrigatório; FK → users.id ON DELETE CASCADE |
 | `cart_templates` | `name` | obrigatório |
 | `cart_templates` | `items` | default '[]'::jsonb |
-| … +3764 linhas — lista completa em `context.json` | | |
+| `cart_templates` | `created_at` | default now() |
+| … +3763 linhas — lista completa em `context.json` | | |
 
 ## D. Automações no banco (triggers e funções — regras que rodam sozinhas)
 
@@ -1115,7 +1115,7 @@ Fornecedor Asia → supplier_products_raw (Bronze) → normalização (Silver) �
 | trg_validate_approval_token_status | BEFORE INSERT OR UPDATE | `quote_approval_tokens` | `validate_status_fields` |  |
 | update_seller_discount_limits_updated_at | BEFORE UPDATE | `seller_discount_limits` | `update_updated_at_column` |  |
 | update_discount_approval_requests_updated_at | BEFORE UPDATE | `discount_approval_requests` | `update_updated_at_column` |  |
-| … +180 linhas — lista completa em `context.json` | | | | |
+| … +179 linhas — lista completa em `context.json` | | | | |
 
 Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banco):
 

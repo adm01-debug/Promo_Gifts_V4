@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "fix(db): termina a intenção da 20260706223316 sem aplicá-la — updated_at em crm_callback_events (#3892)",
    "chore(main): release gifts-store 1.10.0 (#3781)",
    "chore: baseline de refs de migration p06/onboarding no doc de triggers (#3893)",
    "docs: recibo de aplicação — 20261114120000 (E15)",
-   "docs(resgates): adjudica os 124 arquivos nunca aplicados e registra as contas de teste em produção (#3890)",
-   "docs: recibo de aplicação — 20261022000000 (E15)"
+   "docs(resgates): adjudica os 124 arquivos nunca aplicados e registra as contas de teste em produção (#3890)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",

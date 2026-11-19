@@ -1,6 +1,6 @@
 # 11 · GLOSSÁRIO, DADOS DE REFERÊNCIA E LACUNAS
 
-> Gerado automaticamente por AI Context Sync v1.3.2 · commit `76d1a70dd4` · branch `main` · 2026-11-19 15:01 UTC
+> Gerado automaticamente por AI Context Sync v1.3.2 · commit `df0eda1d4a` · branch `main` · 2026-11-19 15:20 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## Glossário do domínio (entidades do sistema)
@@ -120,7 +120,7 @@
 | `cover_finishes` | _(sem COMMENT ON TABLE — significado não documentado)_ | 8 colunas | migration |
 | `cover_materials` | _(sem COMMENT ON TABLE — significado não documentado)_ | 9 colunas | migration |
 | `cover_types` | _(sem COMMENT ON TABLE — significado não documentado)_ | 8 colunas | migration |
-| `crm_callback_events` | Auditoria + chave de idempotência dos callbacks recebidos do CRM Promo Champions V2 via edge function receive-crm-callback. | 10 colunas | migration |
+| `crm_callback_events` | Auditoria + chave de idempotência dos callbacks recebidos do CRM Promo Champions V2 via edge function receive-crm-callback. | 9 colunas | migration |
 | `cron_job_timeout_map` | _(sem COMMENT ON TABLE — significado não documentado)_ | 3 colunas | migration |
 | `cron_watchdog_log` | _(sem COMMENT ON TABLE — significado não documentado)_ | 7 colunas | migration |
 | `custom_kits` | Wave 3.3.A 2026-05-22: removidos 19 campos legacy. Schema consolidado. | 19 colunas | migration |

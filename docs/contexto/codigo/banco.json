@@ -8,7 +8,7 @@
   "supabase/migrations",
   "typeorm"
  ],
- "migrations": 3105,
+ "migrations": 3106,
  "seeds": [],
  "avisos": [
   "323 bloco(s) com DDL dinâmico (EXECUTE format/...) não modelado — policies/colunas criadas dinamicamente podem faltar; confira no banco vivo"
@@ -1684,7 +1684,7 @@
    "quando": "before",
    "evento": "update",
    "tabela": "crm_callback_events",
-   "funcao": "set_crm_callback_events_updated_at"
+   "funcao": "set_updated_at"
   },
   {
    "nome": "trg_validate_kit_status",
@@ -14591,9 +14591,9 @@
     },
     "updated_at": {
      "tipo": "timestamptz",
-     "nn": true,
+     "nn": false,
      "pk": false,
-     "default": "NOW()",
+     "default": "now()",
      "ref": null
     }
    },

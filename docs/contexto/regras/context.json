@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "76d1a70dd4c8b67c8dea0c541b983a23f140d215",
+  "sha": "df0eda1d4abd8edf6732f14acc9bf5ac64663c6e",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-19 15:01 UTC",
-  "files_total": 10913,
-  "code_files": 8933,
-  "code_lines": 1265560
+  "generated_at": "2026-11-19 15:20 UTC",
+  "files_total": 10915,
+  "code_files": 8935,
+  "code_lines": 1265627
  },
  "version": "1.3.2",
- "facts_hash": "8fbd90e88966d4e8",
+ "facts_hash": "8bc7fa51f9b75089",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -1128,7 +1128,7 @@
   ],
   "package_manager": "npm",
   "languages": {
-   ".sql": 3451,
+   ".sql": 3453,
    ".ts": 3048,
    ".tsx": 1969,
    ".mjs": 450,
@@ -2590,13 +2590,6 @@
      },
      {
       "name": "created_at",
-      "type": "TIMESTAMPTZ NOT NULL DEFAULT NOW()",
-      "fk": "",
-      "generated": "",
-      "src": "supabase/migrations/20260706223316_3cc4c8a9-76b3-4c02-922a-bbcde6031622.sql"
-     },
-     {
-      "name": "updated_at",
       "type": "TIMESTAMPTZ NOT NULL DEFAULT NOW()",
       "fk": "",
       "generated": "",
@@ -55173,15 +55166,6 @@
     "src": "supabase/migrations/20260703163913_fix_orphan_variants_cascade_product_inactive_2026_07_03.sql"
    },
    {
-    "name": "trg_crm_callback_events_updated_at",
-    "when": "BEFORE UPDATE",
-    "table": "crm_callback_events",
-    "function": "set_crm_callback_events_updated_at",
-    "condition": "",
-    "each": "row",
-    "src": "supabase/migrations/20260706223316_3cc4c8a9-76b3-4c02-922a-bbcde6031622.sql"
-   },
-   {
     "name": "trg_quotes_notify_champions",
     "when": "AFTER UPDATE OF STATUS",
     "table": "quotes",
@@ -96193,6 +96177,7 @@
    "supabase/migrations/20261119073000_supplier_stricker_rls_deny_all_reemissao.sql",
    "supabase/migrations/20261119081500_elevenlabs_credential_reemissao.sql",
    "supabase/migrations/20261119094500_reafirma_revogacoes_anteriores_ao_baseline.sql",
+   "supabase/migrations/20261119110500_crm_callback_events_updated_at.sql",
    "supabase/rollbacks/20260511235950_rollback.sql",
    "supabase/rollbacks/20260511235959_rollback.sql",
    "supabase/rollbacks/20260611014515_fn_dryrun_standardize_supplier_real_rollback.sql",
@@ -96304,6 +96289,7 @@
    "supabase/rollbacks/20261119073000_rollback.sql",
    "supabase/rollbacks/20261119081500_rollback.sql",
    "supabase/rollbacks/20261119094500_rollback.sql",
+   "supabase/rollbacks/20261119110500_rollback.sql",
    "supabase/rollbacks/rollback_20261025002500_analyze_tables_p03.sql",
    "supabase/sql-legacy/001_notification_system.sql",
    "supabase/sql-legacy/002_notification_preferences.sql",
@@ -137736,6 +137722,7 @@
    "table:e2e_cleanup_audit": "created_by=20261108001500_reconcile_e2e_cleanup_audit; append-only Edge cleanup audit",
    "table:endomarketing_themes": "Temas de endomarketing (comunicação interna) para classificar produtos. Separado de datas comemorativas/público-alvo.",
    "table:product_endomarketing": "Vincula produtos a temas de endomarketing. source: manual (aba Marketing) ou category (herdado).",
+   "column:crm_callback_events.updated_at": "Ultima alteracao da linha, mantida por trg_crm_callback_events_updated_at. ",
    "table:frontend_telemetry": "ATENCAO: Auditoria 20260602 - user_id = NULL em 100% dos registros. Bug de instrumentacao no frontend."
   },
   "types_file": ""
@@ -151612,8 +151599,8 @@
   },
   {
    "module": "supabase/migrations",
-   "files": 3104,
-   "lines": 224189,
+   "files": 3105,
+   "lines": 224243,
    "tables": [
     "...",
     "admin_audit_log",
@@ -151711,8 +151698,8 @@
   },
   {
    "module": "supabase/rollbacks",
-   "files": 112,
-   "lines": 3366,
+   "files": 113,
+   "lines": 3379,
    "tables": [],
    "exports": [],
    "docs": [],
@@ -177607,11 +177594,6 @@
    {
     "table": "crm_callback_events",
     "column": "created_at",
-    "rule": "default NOW()"
-   },
-   {
-    "table": "crm_callback_events",
-    "column": "updated_at",
     "rule": "default NOW()"
    },
    {
@@ -323462,15 +323444,6 @@
     "src": "supabase/migrations/20260703163913_fix_orphan_variants_cascade_product_inactive_2026_07_03.sql"
    },
    {
-    "name": "trg_crm_callback_events_updated_at",
-    "when": "BEFORE UPDATE",
-    "table": "crm_callback_events",
-    "function": "set_crm_callback_events_updated_at",
-    "condition": "",
-    "each": "row",
-    "src": "supabase/migrations/20260706223316_3cc4c8a9-76b3-4c02-922a-bbcde6031622.sql"
-   },
-   {
     "name": "trg_quotes_notify_champions",
     "when": "AFTER UPDATE OF STATUS",
     "table": "quotes",
@@ -398032,8 +398005,7 @@
    "webhook_inbound_dedupe": [],
    "webhook_inbound_log": [],
    "crm_callback_events": [
-    "created_at",
-    "updated_at"
+    "created_at"
    ],
    "magazine_items": [
     "created_at",
@@ -522540,6 +522512,10 @@
    "path": "supabase/migrations/20261119094500_reafirma_revogacoes_anteriores_ao_baseline.sql",
    "lines": 63
   },
+  "supabase/migrations/20261119110500_crm_callback_events_updated_at.sql": {
+   "path": "supabase/migrations/20261119110500_crm_callback_events_updated_at.sql",
+   "lines": 54
+  },
   "supabase/rollbacks/20260511235950_rollback.sql": {
    "path": "supabase/rollbacks/20260511235950_rollback.sql",
    "lines": 5
@@ -523002,6 +522978,10 @@
   "supabase/rollbacks/20261119094500_rollback.sql": {
    "path": "supabase/rollbacks/20261119094500_rollback.sql",
    "lines": 29
+  },
+  "supabase/rollbacks/20261119110500_rollback.sql": {
+   "path": "supabase/rollbacks/20261119110500_rollback.sql",
+   "lines": 13
   },
   "supabase/rollbacks/rollback_20261025002500_analyze_tables_p03.sql": {
    "path": "supabase/rollbacks/rollback_20261025002500_analyze_tables_p03.sql",
@@ -548234,10 +548214,25 @@
   }
  },
  "git": {
-  "sha": "76d1a70dd4c8b67c8dea0c541b983a23f140d215",
+  "sha": "df0eda1d4abd8edf6732f14acc9bf5ac64663c6e",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "df0eda1",
+    "date": "2026-11-19",
+    "author": "adm01-debug",
+    "subject": "fix(db): termina a intenção da 20260706223316 sem aplicá-la — updated_at em crm_callback_events (#3892)",
+    "files": [
+     ".migration-refs-baseline.json",
+     "docs/agentes/resgates/2026-11-19-triggers-ausentes-e-contas-de-teste-em-producao.md",
+     "supabase/MIGRATIONS_SYNC_LOG.md",
+     "supabase/baseline/20261116000000_cron_jobs.json",
+     "supabase/baseline/20261119111500_cron_jobs.json",
+     "supabase/migrations/20261119110500_crm_callback_events_updated_at.sql",
+     "supabase/rollbacks/20261119110500_rollback.sql"
+    ]
+   },
    {
     "sha": "76d1a70",
     "date": "2026-11-19",
@@ -548532,24 +548527,12 @@
     "files": [
      "tests/lib/templateExport.test.ts"
     ]
-   },
-   {
-    "sha": "1c0f023",
-    "date": "2026-11-18",
-    "author": "adm01-debug",
-    "subject": "fix(orcamentos): telas de template nao podem mentir sobre o que aconteceu (#3860)",
-    "files": [
-     "src/components/quotes/AdminTemplateDialogs.tsx",
-     "src/components/quotes/AdminTemplatesManager.tsx",
-     "src/components/quotes/QuoteTemplatesList.tsx",
-     "tests/components/QuoteTemplatesList.guards.test.tsx"
-    ]
    }
   ],
   "hot_files": [
    [
     "supabase/MIGRATIONS_SYNC_LOG.md",
-    14
+    15
    ],
    [
     "docs/agentes/resgates/2026-11-19-migrations-orfas-e-o-portao-retroativo.md",
@@ -548564,8 +548547,32 @@
     3
    ],
    [
+    ".migration-refs-baseline.json",
+    2
+   ],
+   [
+    "docs/agentes/resgates/2026-11-19-triggers-ausentes-e-contas-de-teste-em-producao.md",
+    2
+   ],
+   [
     ".security/policies-baseline.json",
     2
+   ],
+   [
+    "supabase/baseline/20261116000000_cron_jobs.json",
+    1
+   ],
+   [
+    "supabase/baseline/20261119111500_cron_jobs.json",
+    1
+   ],
+   [
+    "supabase/migrations/20261119110500_crm_callback_events_updated_at.sql",
+    1
+   ],
+   [
+    "supabase/rollbacks/20261119110500_rollback.sql",
+    1
    ],
    [
     ".release-please-manifest.json",
@@ -548581,14 +548588,6 @@
    ],
    [
     "package.json",
-    1
-   ],
-   [
-    ".migration-refs-baseline.json",
-    1
-   ],
-   [
-    "docs/agentes/resgates/2026-11-19-triggers-ausentes-e-contas-de-teste-em-producao.md",
     1
    ],
    [
@@ -548609,22 +548608,6 @@
    ],
    [
     "supabase/migrations/20261117172500_elevenlabs_credential.sql",
-    1
-   ],
-   [
-    "supabase/migrations/20261119073000_supplier_stricker_rls_deny_all_reemissao.sql",
-    1
-   ],
-   [
-    "supabase/rollbacks/20261119073000_rollback.sql",
-    1
-   ],
-   [
-    "supabase/migrations/20261119051500_fix_get_quote_token_public_expiracao_pg_temp.sql",
-    1
-   ],
-   [
-    "supabase/rollbacks/20261119051500_rollback.sql",
     1
    ]
   ]
