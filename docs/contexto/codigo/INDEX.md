@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e de hora em hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `76b764cc70618a8556812faf1e13f6fc7c771839` (2026-11-19T05:04:47-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e de hora em hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `ace227e821b2078a3e29166f81ea79209ce7e62f` (2026-11-19T05:21:04-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -14,7 +14,7 @@ Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR
 Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua tarefa; não carregue tudo.
 
 ## Stack
-- linguagens: TypeScript (5016), SQL (3447), Markdown (1484), JavaScript (457), JSON (132), YAML (117), Shell (27), HTML (20)
+- linguagens: TypeScript (5016), SQL (3449), Markdown (1484), JavaScript (457), JSON (132), YAML (117), Shell (27), HTML (20)
 - linguagem_principal: TypeScript
 - framework: React
 - backend_http: n/d
@@ -34,7 +34,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 ## Números
 | item | qtd |
 |---|---|
-| arquivos_total | 10980 |
+| arquivos_total | 10982 |
 | arquivos_codigo | 5483 |
 | linhas_codigo | 1044218 |
 | rotas | 139 |
@@ -46,7 +46,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 | hooks | 633 |
 | edge_functions | 112 |
 | tabelas | 527 |
-| migrations | 3103 |
+| migrations | 3104 |
 | cron_jobs | 122 |
 | testes | 2614 |
 | workflows | 89 |
@@ -592,27 +592,27 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - possiveis_segredos_no_codigo: 7 — ex.: scripts/ai-context/cenarios.mjs:102, src/components/admin/connections/__tests__/ConnectionSecurity.unit.test.tsx:9, src/integrations/supabase/client.ts:27
 
 ## Grafo de código (graphify)
-- 49298 nós · 82805 arestas · 2855 comunidades · grafo do commit `76b764cc`
+- 49298 nós · 82805 arestas · 2855 comunidades · grafo do commit `ace227e8`
 - comunidades maiores: ref_components (820), ref_hooks (711), ref_integrations (641), vitest (621), @tanstack/react-query (529), ref_node_child_process (406), ref_utils (390), react (378), cors.ts (377), ref_types (360), sonner (325), scripts (310)
 - símbolos mais chamados: gotoAndSettle() (e2e/helpers/nav.ts), re (?), q() (scripts/supabase_snapshot/snapshot.py), analyze() (tests/scripts/test_personalization_artifact_diagnostics.py), outer() (tests/scripts/test_personalization_artifact_diagnostics.py), json (?), useExternalDatabase() (recovery/src-legacy/src/hooks/useExternalDatabase.ts), concludeCheck() (scripts/check-result-contract.mjs), querySupabaseReadOnly() (scripts/supabase-read-only-query.mjs), loginAs() (e2e/helpers/auth.ts), inner() (tests/scripts/test_personalization_artifact_diagnostics.py), excluded_sql() (scripts/supabase_snapshot/snapshot.py)
 - consulta local: `graphify query "<pergunta>"`, `graphify path "<A>" "<B>"`, `graphify explain "<X>"`
 
 ## Hotspots (arquivos mais alterados, 90 dias)
-- supabase/MIGRATIONS_SYNC_LOG.md (65)
-- package.json (43)
-- docs/coordenacao/conflitos-semanticos.md (31)
-- PENDENCIAS.md (28)
-- RELATORIO_CI.md (28)
-- package-lock.json (26)
-- .github/workflows/deploy-gates.yml (23)
-- src/pages/kit-builder/KitBuilderPage.tsx (23)
-- audit/supabase-reference-catalog.temporary.json (19)
-- supabase/EDGE_FUNCTIONS_DEPLOY_LOG.md (19)
-- src/hooks/kit-builder/useKitBuilderPageState.ts (18)
-- analise-prs/progresso.json (16)
-- src/hooks/kit-builder/useKitAutoSave.ts (16)
-- src/pages/mockups/MockupGenerator.tsx (16)
-- e2e/flows/magazine-preview-sticky-smoke.spec.ts (15)
+- supabase/MIGRATIONS_SYNC_LOG.md (66)
+- package.json (45)
+- docs/coordenacao/conflitos-semanticos.md (33)
+- PENDENCIAS.md (30)
+- RELATORIO_CI.md (29)
+- package-lock.json (28)
+- .github/workflows/deploy-gates.yml (25)
+- src/pages/kit-builder/KitBuilderPage.tsx (25)
+- audit/supabase-reference-catalog.temporary.json (21)
+- supabase/EDGE_FUNCTIONS_DEPLOY_LOG.md (21)
+- src/hooks/kit-builder/useKitBuilderPageState.ts (20)
+- analise-prs/progresso.json (18)
+- src/hooks/kit-builder/useKitAutoSave.ts (18)
+- src/pages/mockups/MockupGenerator.tsx (18)
+- e2e/flows/magazine-preview-sticky-smoke.spec.ts (17)
 
 ## Workflows
 - `_e2e-relevance.yml` — Reusable — E2E Runtime Relevance (workflow_call)
@@ -1189,6 +1189,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - CHANGELOG topo: [1.9.1](https://github.com/adm01-debug/Promo_Gifts_V4/compare/gifts-store-v1.9.0...gifts-store-v1.9.1) (2026-11-17)
 
 ## Últimos commits
+- 2026-11-19 `ace227e8` fix(migrations): reemite a credencial ElevenLabs com cabecalho e rollback (#3877)
 - 2026-11-19 `76b764cc` feat(supabase): registra ELEVENLABS_API_KEY no catalogo de integracoes (#3791)
 - 2026-11-19 `72455580` docs(migrations-log): recibo E15 da aplicacao de 20261119073000 (#3875)
 - 2026-11-19 `13333e09` fix(ci): regenera o baseline de policies com os 17 deny_all de supplier_stricker (#3876)
@@ -1203,7 +1204,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-18 `7da0d491` feat(kit): destrava o kit cujo catalogo ainda nao informou preco (#3865)
 - 2026-11-18 `cf61cb6d` fix(ci): corrige tres afirmacoes falsas minhas no job Deno e o teto de timeout (#3864)
 - 2026-11-18 `6d946467` feat(estoque): da porta de entrada ao drawer de detalhamento, que estava inalcancavel (#3863)
-- 2026-11-18 `4073048f` fix(catalogo): comando de voz 'limpar' zera os filtros, nao so o texto (#3861)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

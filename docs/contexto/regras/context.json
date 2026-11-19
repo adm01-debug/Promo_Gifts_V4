@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "76b764cc70618a8556812faf1e13f6fc7c771839",
+  "sha": "ace227e821b2078a3e29166f81ea79209ce7e62f",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-19 08:08 UTC",
-  "files_total": 10908,
-  "code_files": 8929,
-  "code_lines": 1265403
+  "generated_at": "2026-11-19 08:23 UTC",
+  "files_total": 10910,
+  "code_files": 8931,
+  "code_lines": 1265468
  },
  "version": "1.3.2",
- "facts_hash": "b7d6e50593ab708d",
+ "facts_hash": "ce831b996f291807",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -1128,7 +1128,7 @@
   ],
   "package_manager": "npm",
   "languages": {
-   ".sql": 3447,
+   ".sql": 3449,
    ".ts": 3048,
    ".tsx": 1969,
    ".mjs": 450,
@@ -96191,6 +96191,7 @@
    "supabase/migrations/20261118223000_fn_supplier_risk_breakdown.sql",
    "supabase/migrations/20261119051500_fix_get_quote_token_public_expiracao_pg_temp.sql",
    "supabase/migrations/20261119073000_supplier_stricker_rls_deny_all_reemissao.sql",
+   "supabase/migrations/20261119081500_elevenlabs_credential_reemissao.sql",
    "supabase/rollbacks/20260511235950_rollback.sql",
    "supabase/rollbacks/20260511235959_rollback.sql",
    "supabase/rollbacks/20260611014515_fn_dryrun_standardize_supplier_real_rollback.sql",
@@ -96300,6 +96301,7 @@
    "supabase/rollbacks/20261118223000_rollback.sql",
    "supabase/rollbacks/20261119051500_rollback.sql",
    "supabase/rollbacks/20261119073000_rollback.sql",
+   "supabase/rollbacks/20261119081500_rollback.sql",
    "supabase/rollbacks/rollback_20261025002500_analyze_tables_p03.sql",
    "supabase/sql-legacy/001_notification_system.sql",
    "supabase/sql-legacy/002_notification_preferences.sql",
@@ -151512,8 +151514,8 @@
   },
   {
    "module": "supabase/migrations",
-   "files": 3102,
-   "lines": 224072,
+   "files": 3103,
+   "lines": 224126,
    "tables": [
     "...",
     "admin_audit_log",
@@ -151611,8 +151613,8 @@
   },
   {
    "module": "supabase/rollbacks",
-   "files": 110,
-   "lines": 3326,
+   "files": 111,
+   "lines": 3337,
    "tables": [],
    "exports": [],
    "docs": [],
@@ -522336,6 +522338,10 @@
    "path": "supabase/migrations/20261119073000_supplier_stricker_rls_deny_all_reemissao.sql",
    "lines": 104
   },
+  "supabase/migrations/20261119081500_elevenlabs_credential_reemissao.sql": {
+   "path": "supabase/migrations/20261119081500_elevenlabs_credential_reemissao.sql",
+   "lines": 54
+  },
   "supabase/rollbacks/20260511235950_rollback.sql": {
    "path": "supabase/rollbacks/20260511235950_rollback.sql",
    "lines": 5
@@ -522790,6 +522796,10 @@
   "supabase/rollbacks/20261119073000_rollback.sql": {
    "path": "supabase/rollbacks/20261119073000_rollback.sql",
    "lines": 42
+  },
+  "supabase/rollbacks/20261119081500_rollback.sql": {
+   "path": "supabase/rollbacks/20261119081500_rollback.sql",
+   "lines": 11
   },
   "supabase/rollbacks/rollback_20261025002500_analyze_tables_p03.sql": {
    "path": "supabase/rollbacks/rollback_20261025002500_analyze_tables_p03.sql",
@@ -548022,10 +548032,21 @@
   }
  },
  "git": {
-  "sha": "76b764cc70618a8556812faf1e13f6fc7c771839",
+  "sha": "ace227e821b2078a3e29166f81ea79209ce7e62f",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "ace227e",
+    "date": "2026-11-19",
+    "author": "adm01-debug",
+    "subject": "fix(migrations): reemite a credencial ElevenLabs com cabecalho e rollback (#3877)",
+    "files": [
+     "supabase/MIGRATIONS_SYNC_LOG.md",
+     "supabase/migrations/20261119081500_elevenlabs_credential_reemissao.sql",
+     "supabase/rollbacks/20261119081500_rollback.sql"
+    ]
+   },
    {
     "sha": "76b764c",
     "date": "2026-11-19",
@@ -548346,21 +548367,12 @@
     "files": [
      "docs/agentes/resgates/2026-11-18-inventario-trabalho-nao-ligado.md"
     ]
-   },
-   {
-    "sha": "3be3249",
-    "date": "2026-11-18",
-    "author": "adm01-debug",
-    "subject": "docs(resgate): o inventário contava a quarentena como main — 102 arquivos, não 22 (#3847)",
-    "files": [
-     "docs/agentes/resgates/2026-11-18-correcao-do-inventario.md"
-    ]
    }
   ],
   "hot_files": [
    [
     "supabase/MIGRATIONS_SYNC_LOG.md",
-    9
+    10
    ],
    [
     "docs/coordenacao/conflitos-semanticos.md",
@@ -548377,6 +548389,14 @@
    [
     "docs/agentes/resgates/2026-11-18-veredicto-byte-a-byte-das-branches.md",
     2
+   ],
+   [
+    "supabase/migrations/20261119081500_elevenlabs_credential_reemissao.sql",
+    1
+   ],
+   [
+    "supabase/rollbacks/20261119081500_rollback.sql",
+    1
    ],
    [
     "supabase/migrations/20261117172500_elevenlabs_credential.sql",
@@ -548428,14 +548448,6 @@
    ],
    [
     "src/components/kit-builder/kit-summary/KitPricingCard.tsx",
-    1
-   ],
-   [
-    "src/hooks/kit-builder/useKitBuilderPageState.ts",
-    1
-   ],
-   [
-    "src/hooks/kit-builder/useKitCatalogPriceRefresh.ts",
     1
    ]
   ]
