@@ -17968,6 +17968,97 @@
         "nullable": false,
         "position": 1,
         "schema": "public",
+        "table": "endomarketing_themes",
+        "type": "uuid"
+      },
+      {
+        "comment": null,
+        "default": null,
+        "generated": null,
+        "identity": null,
+        "is_enum": false,
+        "name": "name",
+        "nullable": false,
+        "position": 2,
+        "schema": "public",
+        "table": "endomarketing_themes",
+        "type": "text"
+      },
+      {
+        "comment": null,
+        "default": null,
+        "generated": null,
+        "identity": null,
+        "is_enum": false,
+        "name": "slug",
+        "nullable": false,
+        "position": 3,
+        "schema": "public",
+        "table": "endomarketing_themes",
+        "type": "text"
+      },
+      {
+        "comment": null,
+        "default": "true",
+        "generated": null,
+        "identity": null,
+        "is_enum": false,
+        "name": "is_active",
+        "nullable": false,
+        "position": 4,
+        "schema": "public",
+        "table": "endomarketing_themes",
+        "type": "boolean"
+      },
+      {
+        "comment": null,
+        "default": "0",
+        "generated": null,
+        "identity": null,
+        "is_enum": false,
+        "name": "display_order",
+        "nullable": false,
+        "position": 5,
+        "schema": "public",
+        "table": "endomarketing_themes",
+        "type": "integer"
+      },
+      {
+        "comment": null,
+        "default": "now()",
+        "generated": null,
+        "identity": null,
+        "is_enum": false,
+        "name": "created_at",
+        "nullable": false,
+        "position": 6,
+        "schema": "public",
+        "table": "endomarketing_themes",
+        "type": "timestamp with time zone"
+      },
+      {
+        "comment": null,
+        "default": "now()",
+        "generated": null,
+        "identity": null,
+        "is_enum": false,
+        "name": "updated_at",
+        "nullable": false,
+        "position": 7,
+        "schema": "public",
+        "table": "endomarketing_themes",
+        "type": "timestamp with time zone"
+      },
+      {
+        "comment": null,
+        "default": "gen_random_uuid()",
+        "generated": null,
+        "identity": null,
+        "is_enum": false,
+        "name": "id",
+        "nullable": false,
+        "position": 1,
+        "schema": "public",
         "table": "enriched_contacts",
         "type": "uuid"
       },
@@ -41734,6 +41825,97 @@
         "schema": "public",
         "table": "product_deactivation_tokens",
         "type": "boolean"
+      },
+      {
+        "comment": null,
+        "default": "gen_random_uuid()",
+        "generated": null,
+        "identity": null,
+        "is_enum": false,
+        "name": "id",
+        "nullable": false,
+        "position": 1,
+        "schema": "public",
+        "table": "product_endomarketing",
+        "type": "uuid"
+      },
+      {
+        "comment": null,
+        "default": null,
+        "generated": null,
+        "identity": null,
+        "is_enum": false,
+        "name": "product_id",
+        "nullable": false,
+        "position": 2,
+        "schema": "public",
+        "table": "product_endomarketing",
+        "type": "uuid"
+      },
+      {
+        "comment": null,
+        "default": null,
+        "generated": null,
+        "identity": null,
+        "is_enum": false,
+        "name": "theme_id",
+        "nullable": false,
+        "position": 3,
+        "schema": "public",
+        "table": "product_endomarketing",
+        "type": "uuid"
+      },
+      {
+        "comment": null,
+        "default": "'manual'::character varying",
+        "generated": null,
+        "identity": null,
+        "is_enum": false,
+        "name": "source",
+        "nullable": false,
+        "position": 4,
+        "schema": "public",
+        "table": "product_endomarketing",
+        "type": "character varying(20)"
+      },
+      {
+        "comment": null,
+        "default": "true",
+        "generated": null,
+        "identity": null,
+        "is_enum": false,
+        "name": "is_active",
+        "nullable": false,
+        "position": 5,
+        "schema": "public",
+        "table": "product_endomarketing",
+        "type": "boolean"
+      },
+      {
+        "comment": null,
+        "default": "now()",
+        "generated": null,
+        "identity": null,
+        "is_enum": false,
+        "name": "created_at",
+        "nullable": false,
+        "position": 6,
+        "schema": "public",
+        "table": "product_endomarketing",
+        "type": "timestamp with time zone"
+      },
+      {
+        "comment": null,
+        "default": "now()",
+        "generated": null,
+        "identity": null,
+        "is_enum": false,
+        "name": "updated_at",
+        "nullable": false,
+        "position": 7,
+        "schema": "public",
+        "table": "product_endomarketing",
+        "type": "timestamp with time zone"
       },
       {
         "comment": null,
@@ -117078,6 +117260,57 @@
       },
       {
         "columns": [
+          "name"
+        ],
+        "deferrable": false,
+        "definition": "UNIQUE (name)",
+        "name": "endomarketing_themes_name_key",
+        "on_delete": null,
+        "on_update": null,
+        "ref_columns": [],
+        "ref_schema": null,
+        "ref_table": null,
+        "schema": "public",
+        "table": "endomarketing_themes",
+        "type": "UNIQUE",
+        "validated": true
+      },
+      {
+        "columns": [
+          "id"
+        ],
+        "deferrable": false,
+        "definition": "PRIMARY KEY (id)",
+        "name": "endomarketing_themes_pkey",
+        "on_delete": null,
+        "on_update": null,
+        "ref_columns": [],
+        "ref_schema": null,
+        "ref_table": null,
+        "schema": "public",
+        "table": "endomarketing_themes",
+        "type": "PRIMARY KEY",
+        "validated": true
+      },
+      {
+        "columns": [
+          "slug"
+        ],
+        "deferrable": false,
+        "definition": "UNIQUE (slug)",
+        "name": "endomarketing_themes_slug_key",
+        "on_delete": null,
+        "on_update": null,
+        "ref_columns": [],
+        "ref_schema": null,
+        "ref_table": null,
+        "schema": "public",
+        "table": "endomarketing_themes",
+        "type": "UNIQUE",
+        "validated": true
+      },
+      {
+        "columns": [
           "enrichment_status"
         ],
         "deferrable": false,
@@ -125228,6 +125461,96 @@
         "schema": "public",
         "table": "product_deactivation_tokens",
         "type": "FOREIGN KEY",
+        "validated": true
+      },
+      {
+        "columns": [
+          "id"
+        ],
+        "deferrable": false,
+        "definition": "PRIMARY KEY (id)",
+        "name": "product_endomarketing_pkey",
+        "on_delete": null,
+        "on_update": null,
+        "ref_columns": [],
+        "ref_schema": null,
+        "ref_table": null,
+        "schema": "public",
+        "table": "product_endomarketing",
+        "type": "PRIMARY KEY",
+        "validated": true
+      },
+      {
+        "columns": [
+          "product_id"
+        ],
+        "deferrable": false,
+        "definition": "FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE CASCADE",
+        "name": "product_endomarketing_product_id_fkey",
+        "on_delete": "CASCADE",
+        "on_update": "NO ACTION",
+        "ref_columns": [
+          "id"
+        ],
+        "ref_schema": "public",
+        "ref_table": "products",
+        "schema": "public",
+        "table": "product_endomarketing",
+        "type": "FOREIGN KEY",
+        "validated": true
+      },
+      {
+        "columns": [
+          "source"
+        ],
+        "deferrable": false,
+        "definition": "CHECK (source::text = ANY (ARRAY['category'::character varying, 'manual'::character varying]::text[]))",
+        "name": "product_endomarketing_source_check",
+        "on_delete": null,
+        "on_update": null,
+        "ref_columns": [],
+        "ref_schema": null,
+        "ref_table": null,
+        "schema": "public",
+        "table": "product_endomarketing",
+        "type": "CHECK",
+        "validated": true
+      },
+      {
+        "columns": [
+          "theme_id"
+        ],
+        "deferrable": false,
+        "definition": "FOREIGN KEY (theme_id) REFERENCES endomarketing_themes(id) ON DELETE CASCADE",
+        "name": "product_endomarketing_theme_id_fkey",
+        "on_delete": "CASCADE",
+        "on_update": "NO ACTION",
+        "ref_columns": [
+          "id"
+        ],
+        "ref_schema": "public",
+        "ref_table": "endomarketing_themes",
+        "schema": "public",
+        "table": "product_endomarketing",
+        "type": "FOREIGN KEY",
+        "validated": true
+      },
+      {
+        "columns": [
+          "product_id",
+          "theme_id"
+        ],
+        "deferrable": false,
+        "definition": "UNIQUE (product_id, theme_id)",
+        "name": "uq_product_endomarketing",
+        "on_delete": null,
+        "on_update": null,
+        "ref_columns": [],
+        "ref_schema": null,
+        "ref_table": null,
+        "schema": "public",
+        "table": "product_endomarketing",
+        "type": "UNIQUE",
         "validated": true
       },
       {
@@ -188628,6 +188951,7 @@
             "public.color_variations.set_updated_at_trigger",
             "public.commemorative_dates.set_updated_at_trigger",
             "public.custom_kits.set_updated_at_trigger",
+            "public.endomarketing_themes.set_updated_at_trigger",
             "public.included_packaging_print_areas.set_updated_at_trigger",
             "public.included_packaging_techniques.set_updated_at_trigger",
             "public.kit_component_enrichment_raw.trg_kcer_updated_at",
@@ -188642,6 +188966,7 @@
             "public.packaging_types.set_updated_at_trigger",
             "public.packagings.set_updated_at_trigger",
             "public.print_area_techniques.set_updated_at_trigger",
+            "public.product_endomarketing.set_updated_at_trigger",
             "public.product_included_packagings.set_updated_at_trigger",
             "public.product_packaging_compatibility.set_updated_at_trigger",
             "public.product_packagings.set_updated_at_trigger",
@@ -195503,6 +195828,18 @@
           "table": "edge_rate_limits"
         },
         {
+          "grantee": "authenticated",
+          "privileges": "SELECT",
+          "schema": "public",
+          "table": "endomarketing_themes"
+        },
+        {
+          "grantee": "service_role",
+          "privileges": "DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE",
+          "schema": "public",
+          "table": "endomarketing_themes"
+        },
+        {
           "grantee": "anon",
           "privileges": "DELETE, INSERT, REFERENCES, TRIGGER, UPDATE",
           "schema": "public",
@@ -197709,6 +198046,18 @@
           "privileges": "DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE",
           "schema": "public",
           "table": "product_deactivation_tokens"
+        },
+        {
+          "grantee": "authenticated",
+          "privileges": "DELETE, INSERT, SELECT, UPDATE",
+          "schema": "public",
+          "table": "product_endomarketing"
+        },
+        {
+          "grantee": "service_role",
+          "privileges": "DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE",
+          "schema": "public",
+          "table": "product_endomarketing"
         },
         {
           "grantee": "anon",
@@ -206634,6 +206983,48 @@
       },
       {
         "columns": [
+          "name"
+        ],
+        "definition": "CREATE UNIQUE INDEX endomarketing_themes_name_key ON public.endomarketing_themes USING btree (name)",
+        "is_primary": false,
+        "is_unique": true,
+        "is_valid": true,
+        "method": "btree",
+        "name": "endomarketing_themes_name_key",
+        "predicate": null,
+        "schema": "public",
+        "table": "endomarketing_themes"
+      },
+      {
+        "columns": [
+          "id"
+        ],
+        "definition": "CREATE UNIQUE INDEX endomarketing_themes_pkey ON public.endomarketing_themes USING btree (id)",
+        "is_primary": true,
+        "is_unique": true,
+        "is_valid": true,
+        "method": "btree",
+        "name": "endomarketing_themes_pkey",
+        "predicate": null,
+        "schema": "public",
+        "table": "endomarketing_themes"
+      },
+      {
+        "columns": [
+          "slug"
+        ],
+        "definition": "CREATE UNIQUE INDEX endomarketing_themes_slug_key ON public.endomarketing_themes USING btree (slug)",
+        "is_primary": false,
+        "is_unique": true,
+        "is_valid": true,
+        "method": "btree",
+        "name": "endomarketing_themes_slug_key",
+        "predicate": null,
+        "schema": "public",
+        "table": "endomarketing_themes"
+      },
+      {
+        "columns": [
           "linkedin_url"
         ],
         "definition": "CREATE UNIQUE INDEX enriched_contacts_linkedin_url_key ON public.enriched_contacts USING btree (linkedin_url)",
@@ -212213,6 +212604,49 @@
         "predicate": null,
         "schema": "public",
         "table": "product_deactivation_tokens"
+      },
+      {
+        "columns": [
+          "theme_id"
+        ],
+        "definition": "CREATE INDEX idx_product_endomarketing_theme_id ON public.product_endomarketing USING btree (theme_id)",
+        "is_primary": false,
+        "is_unique": false,
+        "is_valid": true,
+        "method": "btree",
+        "name": "idx_product_endomarketing_theme_id",
+        "predicate": null,
+        "schema": "public",
+        "table": "product_endomarketing"
+      },
+      {
+        "columns": [
+          "id"
+        ],
+        "definition": "CREATE UNIQUE INDEX product_endomarketing_pkey ON public.product_endomarketing USING btree (id)",
+        "is_primary": true,
+        "is_unique": true,
+        "is_valid": true,
+        "method": "btree",
+        "name": "product_endomarketing_pkey",
+        "predicate": null,
+        "schema": "public",
+        "table": "product_endomarketing"
+      },
+      {
+        "columns": [
+          "product_id",
+          "theme_id"
+        ],
+        "definition": "CREATE UNIQUE INDEX uq_product_endomarketing ON public.product_endomarketing USING btree (product_id, theme_id)",
+        "is_primary": false,
+        "is_unique": true,
+        "is_valid": true,
+        "method": "btree",
+        "name": "uq_product_endomarketing",
+        "predicate": null,
+        "schema": "public",
+        "table": "product_endomarketing"
       },
       {
         "columns": [
@@ -238657,6 +239091,12 @@
         "version": "20261112140000"
       },
       {
+        "name": "marketing_tab_links_rls_and_endomarketing",
+        "statements": 45,
+        "statements_sha": "741d30f08ff903ac",
+        "version": "20261113140000"
+      },
+      {
         "name": "sec_revoke_anon_authenticated_net_supabase_functions",
         "statements": 2,
         "statements_sha": "a2f20bae6da8ad85",
@@ -241653,6 +242093,18 @@
         "table": "edge_rate_limits",
         "using": "(( SELECT ( SELECT auth.role() AS role) AS role) = 'service_role'::text)",
         "with_check": "(( SELECT ( SELECT auth.role() AS role) AS role) = 'service_role'::text)"
+      },
+      {
+        "cmd": "SELECT",
+        "name": "endomarketing_themes_auth_read",
+        "permissive": "PERMISSIVE",
+        "roles": [
+          "authenticated"
+        ],
+        "schema": "public",
+        "table": "endomarketing_themes",
+        "using": "true",
+        "with_check": null
       },
       {
         "cmd": "ALL",
@@ -245260,6 +245712,54 @@
         "with_check": null
       },
       {
+        "cmd": "DELETE",
+        "name": "pcd_oa_del",
+        "permissive": "PERMISSIVE",
+        "roles": [
+          "authenticated"
+        ],
+        "schema": "public",
+        "table": "product_commemorative_dates",
+        "using": "(EXISTS ( SELECT 1\n   FROM products p\n  WHERE ((p.id = product_commemorative_dates.product_id) AND (p.organization_id IN ( SELECT uo.organization_id\n           FROM user_organizations uo\n          WHERE ((uo.user_id = ( SELECT auth.uid() AS uid)) AND (uo.role = ANY (ARRAY['owner'::org_role, 'admin'::org_role]))))))))",
+        "with_check": null
+      },
+      {
+        "cmd": "INSERT",
+        "name": "pcd_oa_ins",
+        "permissive": "PERMISSIVE",
+        "roles": [
+          "authenticated"
+        ],
+        "schema": "public",
+        "table": "product_commemorative_dates",
+        "using": null,
+        "with_check": "(EXISTS ( SELECT 1\n   FROM products p\n  WHERE ((p.id = product_commemorative_dates.product_id) AND (p.organization_id IN ( SELECT uo.organization_id\n           FROM user_organizations uo\n          WHERE ((uo.user_id = ( SELECT auth.uid() AS uid)) AND (uo.role = ANY (ARRAY['owner'::org_role, 'admin'::org_role]))))))))"
+      },
+      {
+        "cmd": "SELECT",
+        "name": "pcd_oa_read_all",
+        "permissive": "PERMISSIVE",
+        "roles": [
+          "authenticated"
+        ],
+        "schema": "public",
+        "table": "product_commemorative_dates",
+        "using": "(EXISTS ( SELECT 1\n   FROM products p\n  WHERE ((p.id = product_commemorative_dates.product_id) AND (p.organization_id IN ( SELECT uo.organization_id\n           FROM user_organizations uo\n          WHERE ((uo.user_id = ( SELECT auth.uid() AS uid)) AND (uo.role = ANY (ARRAY['owner'::org_role, 'admin'::org_role]))))))))",
+        "with_check": null
+      },
+      {
+        "cmd": "UPDATE",
+        "name": "pcd_oa_upd",
+        "permissive": "PERMISSIVE",
+        "roles": [
+          "authenticated"
+        ],
+        "schema": "public",
+        "table": "product_commemorative_dates",
+        "using": "(EXISTS ( SELECT 1\n   FROM products p\n  WHERE ((p.id = product_commemorative_dates.product_id) AND (p.organization_id IN ( SELECT uo.organization_id\n           FROM user_organizations uo\n          WHERE ((uo.user_id = ( SELECT auth.uid() AS uid)) AND (uo.role = ANY (ARRAY['owner'::org_role, 'admin'::org_role]))))))))",
+        "with_check": "(EXISTS ( SELECT 1\n   FROM products p\n  WHERE ((p.id = product_commemorative_dates.product_id) AND (p.organization_id IN ( SELECT uo.organization_id\n           FROM user_organizations uo\n          WHERE ((uo.user_id = ( SELECT auth.uid() AS uid)) AND (uo.role = ANY (ARRAY['owner'::org_role, 'admin'::org_role]))))))))"
+      },
+      {
         "cmd": "SELECT",
         "name": "pcd_read_public",
         "permissive": "PERMISSIVE",
@@ -245463,6 +245963,54 @@
         "table": "product_deactivation_tokens",
         "using": "true",
         "with_check": "true"
+      },
+      {
+        "cmd": "SELECT",
+        "name": "product_endomarketing_auth_read",
+        "permissive": "PERMISSIVE",
+        "roles": [
+          "authenticated"
+        ],
+        "schema": "public",
+        "table": "product_endomarketing",
+        "using": "true",
+        "with_check": null
+      },
+      {
+        "cmd": "DELETE",
+        "name": "product_endomarketing_oa_del",
+        "permissive": "PERMISSIVE",
+        "roles": [
+          "authenticated"
+        ],
+        "schema": "public",
+        "table": "product_endomarketing",
+        "using": "(EXISTS ( SELECT 1\n   FROM products p\n  WHERE ((p.id = product_endomarketing.product_id) AND (p.organization_id IN ( SELECT uo.organization_id\n           FROM user_organizations uo\n          WHERE ((uo.user_id = ( SELECT auth.uid() AS uid)) AND (uo.role = ANY (ARRAY['owner'::org_role, 'admin'::org_role]))))))))",
+        "with_check": null
+      },
+      {
+        "cmd": "INSERT",
+        "name": "product_endomarketing_oa_ins",
+        "permissive": "PERMISSIVE",
+        "roles": [
+          "authenticated"
+        ],
+        "schema": "public",
+        "table": "product_endomarketing",
+        "using": null,
+        "with_check": "(EXISTS ( SELECT 1\n   FROM products p\n  WHERE ((p.id = product_endomarketing.product_id) AND (p.organization_id IN ( SELECT uo.organization_id\n           FROM user_organizations uo\n          WHERE ((uo.user_id = ( SELECT auth.uid() AS uid)) AND (uo.role = ANY (ARRAY['owner'::org_role, 'admin'::org_role]))))))))"
+      },
+      {
+        "cmd": "UPDATE",
+        "name": "product_endomarketing_oa_upd",
+        "permissive": "PERMISSIVE",
+        "roles": [
+          "authenticated"
+        ],
+        "schema": "public",
+        "table": "product_endomarketing",
+        "using": "(EXISTS ( SELECT 1\n   FROM products p\n  WHERE ((p.id = product_endomarketing.product_id) AND (p.organization_id IN ( SELECT uo.organization_id\n           FROM user_organizations uo\n          WHERE ((uo.user_id = ( SELECT auth.uid() AS uid)) AND (uo.role = ANY (ARRAY['owner'::org_role, 'admin'::org_role]))))))))",
+        "with_check": "(EXISTS ( SELECT 1\n   FROM products p\n  WHERE ((p.id = product_endomarketing.product_id) AND (p.organization_id IN ( SELECT uo.organization_id\n           FROM user_organizations uo\n          WHERE ((uo.user_id = ( SELECT auth.uid() AS uid)) AND (uo.role = ANY (ARRAY['owner'::org_role, 'admin'::org_role]))))))))"
       },
       {
         "cmd": "SELECT",
@@ -246452,6 +247000,42 @@
         "table": "product_target_audiences",
         "using": "true",
         "with_check": null
+      },
+      {
+        "cmd": "DELETE",
+        "name": "pta_oa_del",
+        "permissive": "PERMISSIVE",
+        "roles": [
+          "authenticated"
+        ],
+        "schema": "public",
+        "table": "product_target_audiences",
+        "using": "(EXISTS ( SELECT 1\n   FROM products p\n  WHERE ((p.id = product_target_audiences.product_id) AND (p.organization_id IN ( SELECT uo.organization_id\n           FROM user_organizations uo\n          WHERE ((uo.user_id = ( SELECT auth.uid() AS uid)) AND (uo.role = ANY (ARRAY['owner'::org_role, 'admin'::org_role]))))))))",
+        "with_check": null
+      },
+      {
+        "cmd": "INSERT",
+        "name": "pta_oa_ins",
+        "permissive": "PERMISSIVE",
+        "roles": [
+          "authenticated"
+        ],
+        "schema": "public",
+        "table": "product_target_audiences",
+        "using": null,
+        "with_check": "(EXISTS ( SELECT 1\n   FROM products p\n  WHERE ((p.id = product_target_audiences.product_id) AND (p.organization_id IN ( SELECT uo.organization_id\n           FROM user_organizations uo\n          WHERE ((uo.user_id = ( SELECT auth.uid() AS uid)) AND (uo.role = ANY (ARRAY['owner'::org_role, 'admin'::org_role]))))))))"
+      },
+      {
+        "cmd": "UPDATE",
+        "name": "pta_oa_upd",
+        "permissive": "PERMISSIVE",
+        "roles": [
+          "authenticated"
+        ],
+        "schema": "public",
+        "table": "product_target_audiences",
+        "using": "(EXISTS ( SELECT 1\n   FROM products p\n  WHERE ((p.id = product_target_audiences.product_id) AND (p.organization_id IN ( SELECT uo.organization_id\n           FROM user_organizations uo\n          WHERE ((uo.user_id = ( SELECT auth.uid() AS uid)) AND (uo.role = ANY (ARRAY['owner'::org_role, 'admin'::org_role]))))))))",
+        "with_check": "(EXISTS ( SELECT 1\n   FROM products p\n  WHERE ((p.id = product_target_audiences.product_id) AND (p.organization_id IN ( SELECT uo.organization_id\n           FROM user_organizations uo\n          WHERE ((uo.user_id = ( SELECT auth.uid() AS uid)) AND (uo.role = ANY (ARRAY['owner'::org_role, 'admin'::org_role]))))))))"
       },
       {
         "cmd": "SELECT",
@@ -254130,6 +254714,21 @@
         "schema": "public"
       },
       {
+        "comment": "Temas de endomarketing (comunicação interna) para classificar produtos. Separado de datas comemorativas/público-alvo.",
+        "from_extension": false,
+        "is_partition": false,
+        "kind": "table",
+        "name": "endomarketing_themes",
+        "owner": "postgres",
+        "parent": null,
+        "partition_bound": null,
+        "partition_key": null,
+        "replica_identity": "default",
+        "rls_enabled": true,
+        "rls_forced": false,
+        "schema": "public"
+      },
+      {
         "comment": null,
         "from_extension": false,
         "is_partition": false,
@@ -256175,6 +256774,21 @@
         "is_partition": false,
         "kind": "table",
         "name": "product_deactivation_tokens",
+        "owner": "postgres",
+        "parent": null,
+        "partition_bound": null,
+        "partition_key": null,
+        "replica_identity": "default",
+        "rls_enabled": true,
+        "rls_forced": false,
+        "schema": "public"
+      },
+      {
+        "comment": "Vincula produtos a temas de endomarketing. source: manual (aba Marketing) ou category (herdado).",
+        "from_extension": false,
+        "is_partition": false,
+        "kind": "table",
+        "name": "product_endomarketing",
         "owner": "postgres",
         "parent": null,
         "partition_bound": null,
@@ -259863,6 +260477,17 @@
         "timing": "AFTER"
       },
       {
+        "definition": "CREATE TRIGGER set_updated_at_trigger BEFORE UPDATE ON endomarketing_themes FOR EACH ROW EXECUTE FUNCTION set_updated_at()",
+        "events": "UPDATE",
+        "function": "public.set_updated_at",
+        "level": "ROW",
+        "name": "set_updated_at_trigger",
+        "schema": "public",
+        "status": "enabled",
+        "table": "endomarketing_themes",
+        "timing": "BEFORE"
+      },
+      {
         "definition": "CREATE TRIGGER trg_ec_updated_at BEFORE UPDATE ON enriched_contacts FOR EACH ROW EXECUTE FUNCTION li_update_updated_at()",
         "events": "UPDATE",
         "function": "public.li_update_updated_at",
@@ -260850,6 +261475,17 @@
         "schema": "public",
         "status": "enabled",
         "table": "product_components",
+        "timing": "BEFORE"
+      },
+      {
+        "definition": "CREATE TRIGGER set_updated_at_trigger BEFORE UPDATE ON product_endomarketing FOR EACH ROW EXECUTE FUNCTION set_updated_at()",
+        "events": "UPDATE",
+        "function": "public.set_updated_at",
+        "level": "ROW",
+        "name": "set_updated_at_trigger",
+        "schema": "public",
+        "status": "enabled",
+        "table": "product_endomarketing",
         "timing": "BEFORE"
       },
       {

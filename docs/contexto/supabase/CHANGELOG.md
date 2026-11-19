@@ -2,6 +2,18 @@
 
 Diff semântico gerado a cada coleta em que algo mudou.
 
+## 2026-11-19 10:18 UTC
+
+- **colunas** adicionado (14): `public.endomarketing_themes.created_at`, `public.endomarketing_themes.display_order`, `public.endomarketing_themes.id`, `public.endomarketing_themes.is_active`, `public.endomarketing_themes.name`, `public.endomarketing_themes.slug`, `public.endomarketing_themes.updated_at`, `public.product_endomarketing.created_at`, `public.product_endomarketing.id`, `public.product_endomarketing.is_active`, `public.product_endomarketing.product_id`, `public.product_endomarketing.source`, `public.product_endomarketing.theme_id`, `public.product_endomarketing.updated_at`
+- **constraints** adicionado (8): `public.endomarketing_themes.endomarketing_themes_name_key`, `public.endomarketing_themes.endomarketing_themes_pkey`, `public.endomarketing_themes.endomarketing_themes_slug_key`, `public.product_endomarketing.product_endomarketing_pkey`, `public.product_endomarketing.product_endomarketing_product_id_fkey`, `public.product_endomarketing.product_endomarketing_source_check`, `public.product_endomarketing.product_endomarketing_theme_id_fkey`, `public.product_endomarketing.uq_product_endomarketing`
+- **functions** alterado (1): `public.set_updated_at()`
+- **grants** adicionado (4): `public.endomarketing_themes:authenticated`, `public.endomarketing_themes:service_role`, `public.product_endomarketing:authenticated`, `public.product_endomarketing:service_role`
+- **indexes** adicionado (6): `public.endomarketing_themes_name_key`, `public.endomarketing_themes_pkey`, `public.endomarketing_themes_slug_key`, `public.idx_product_endomarketing_theme_id`, `public.product_endomarketing_pkey`, `public.uq_product_endomarketing`
+- **migrations** adicionado (1): `20261113140000_marketing_tab_links_rls_and_endomarketing`
+- **policies (RLS)** adicionado (12): `public.endomarketing_themes.endomarketing_themes_auth_read`, `public.product_commemorative_dates.pcd_oa_del`, `public.product_commemorative_dates.pcd_oa_ins`, `public.product_commemorative_dates.pcd_oa_read_all`, `public.product_commemorative_dates.pcd_oa_upd`, `public.product_endomarketing.product_endomarketing_auth_read`, `public.product_endomarketing.product_endomarketing_oa_del`, `public.product_endomarketing.product_endomarketing_oa_ins`, `public.product_endomarketing.product_endomarketing_oa_upd`, `public.product_target_audiences.pta_oa_del`, `public.product_target_audiences.pta_oa_ins`, `public.product_target_audiences.pta_oa_upd`
+- **tabelas** adicionado (2): `public.endomarketing_themes`, `public.product_endomarketing`
+- **triggers** adicionado (2): `public.endomarketing_themes.set_updated_at_trigger`, `public.product_endomarketing.set_updated_at_trigger`
+
 ## 2026-11-19 09:19 UTC
 
 - **migrations** adicionado (1): `20261119081500_elevenlabs_credential_reemissao`

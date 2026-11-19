@@ -300,6 +300,9 @@ Uso e tamanho em `stats.md`.
 | public.edge_function_invocations | idx_efi_function_slug | btree | function_slug, invoked_at | não | sim |  |
 | public.edge_rate_limits | edge_rate_limits_pkey | btree | key | sim | sim |  |
 | public.edge_rate_limits | idx_edge_rate_limits_reset_at | btree | reset_at | não | sim |  |
+| public.endomarketing_themes | endomarketing_themes_name_key | btree | name | sim | sim |  |
+| public.endomarketing_themes | endomarketing_themes_pkey | btree | id | sim | sim |  |
+| public.endomarketing_themes | endomarketing_themes_slug_key | btree | slug | sim | sim |  |
 | public.enriched_contacts | enriched_contacts_linkedin_url_key | btree | linkedin_url | sim | sim |  |
 | public.enriched_contacts | enriched_contacts_pkey | btree | id | sim | sim |  |
 | public.enrichment_log | enrichment_log_pkey | btree | id | sim | sim |  |
@@ -692,6 +695,9 @@ Uso e tamanho em `stats.md`.
 | public.product_deactivation_tokens | _deactivation_auth_pkey | btree | id | sim | sim |  |
 | public.product_deactivation_tokens | idx_product_deactivation_tokens_product_id | btree | product_id | não | sim |  |
 | public.product_deactivation_tokens | idx_product_deactivation_tokens_request_id | btree | request_id | não | sim |  |
+| public.product_endomarketing | idx_product_endomarketing_theme_id | btree | theme_id | não | sim |  |
+| public.product_endomarketing | product_endomarketing_pkey | btree | id | sim | sim |  |
+| public.product_endomarketing | uq_product_endomarketing | btree | product_id, theme_id | sim | sim |  |
 | public.product_faqs | idx_product_faqs_category_id | btree | category_id | não | sim |  |
 | public.product_faqs | idx_product_faqs_product_id | btree | product_id | não | sim |  |
 | public.product_faqs | product_faqs_pkey | btree | id | sim | sim |  |

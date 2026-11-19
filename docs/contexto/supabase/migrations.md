@@ -2969,6 +2969,7 @@ SQL em `migrations/<versao>_<nome>.sql`. Mudanças feitas pelo Dashboard/SQL Edi
 | 20261112120900 | [fix_password_reset_request_rpc_anon](migrations/20261112120900_fix_password_reset_request_rpc_anon.sql) | 8 |
 | 20261112130000 | [fix_get_sitemap_public_anon_grant](migrations/20261112130000_fix_get_sitemap_public_anon_grant.sql) | 2 |
 | 20261112140000 | [fix_rls_supplier_products_raw_history_p2027](migrations/20261112140000_fix_rls_supplier_products_raw_history_p2027.sql) | 51 |
+| 20261113140000 | [marketing_tab_links_rls_and_endomarketing](migrations/20261113140000_marketing_tab_links_rls_and_endomarketing.sql) | 45 |
 | 20261113225000 | [sec_revoke_anon_authenticated_net_supabase_functions](migrations/20261113225000_sec_revoke_anon_authenticated_net_supabase_functions.sql) | 2 |
 | 20261113235000 | [perf_idx_products_active_created_at_desc](migrations/20261113235000_perf_idx_products_active_created_at_desc.sql) | 3 |
 | 20261113235800 | [cron003_reagendamento_noturno_fornecedores](migrations/20261113235800_cron003_reagendamento_noturno_fornecedores.sql) | 1 |

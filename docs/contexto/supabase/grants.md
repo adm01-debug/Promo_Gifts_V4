@@ -269,6 +269,8 @@ Roles da API: `anon` (sem login), `authenticated` (logado), `service_role` (bypa
 | public.edge_rate_limits | anon | DELETE, INSERT, REFERENCES, TRIGGER, UPDATE |
 | public.edge_rate_limits | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | public.edge_rate_limits | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
+| public.endomarketing_themes | authenticated | SELECT |
+| public.endomarketing_themes | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
 | public.enriched_contacts | anon | DELETE, INSERT, REFERENCES, TRIGGER, UPDATE |
 | public.enriched_contacts | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | public.enriched_contacts | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
@@ -637,6 +639,8 @@ Roles da API: `anon` (sem login), `authenticated` (logado), `service_role` (bypa
 | public.product_deactivation_requests | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | public.product_deactivation_requests | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
 | public.product_deactivation_tokens | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
+| public.product_endomarketing | authenticated | DELETE, INSERT, SELECT, UPDATE |
+| public.product_endomarketing | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
 | public.product_faqs | anon | DELETE, INSERT, REFERENCES, TRIGGER, UPDATE |
 | public.product_faqs | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | public.product_faqs | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |

@@ -224,6 +224,8 @@
 | public.product_deactivation_requests | supplier_id | public.suppliers | id | NO ACTION | NO ACTION |
 | public.product_deactivation_tokens | request_id | public.product_deactivation_requests | id | NO ACTION | NO ACTION |
 | public.product_deactivation_tokens | product_id | public.products | id | CASCADE | NO ACTION |
+| public.product_endomarketing | product_id | public.products | id | CASCADE | NO ACTION |
+| public.product_endomarketing | theme_id | public.endomarketing_themes | id | CASCADE | NO ACTION |
 | public.product_faqs | category_id | public.categories | id | CASCADE | NO ACTION |
 | public.product_faqs | product_id | public.products | id | CASCADE | NO ACTION |
 | public.product_fiscal | ncm_id | public.ncm_codes | id | SET NULL | NO ACTION |

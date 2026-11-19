@@ -296,6 +296,7 @@ BACKLOG:
 | public.product_customization_prices | product_customization_prices_product_id_fkey | product_id | CASCADE |
 | public.product_deactivation_requests | product_deactivation_requests_product_id_fkey | product_id | CASCADE |
 | public.product_deactivation_tokens | fk_auth_product_cascade | product_id | CASCADE |
+| public.product_endomarketing | product_endomarketing_product_id_fkey | product_id | CASCADE |
 | public.product_faqs | product_faqs_product_id_fkey | product_id | CASCADE |
 | public.product_fiscal | product_fiscal_product_id_fkey | product_id | CASCADE |
 | public.product_images | product_images_product_id_fkey | product_id | CASCADE |
