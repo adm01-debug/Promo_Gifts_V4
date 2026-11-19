@@ -1,7 +1,7 @@
 {
   "version": 1,
   "pending_seed": false,
-  "generated_at": "2026-11-19T10:14:34.153Z",
+  "generated_at": "2026-11-19T22:44:56.850Z",
   "project_ref": "doufsxqlfjyuvxuezpln",
   "schemas_checked": [
     "public",
@@ -13,7 +13,7 @@
     "prod_audit",
     "supplier_stricker"
   ],
-  "sha256": "44b075bf47ccefb85bf0e4f448e6332e7b3baef96a780ffc578b70b4b069a3f4",
+  "sha256": "d81c9d707514e70e4edadc86fc1b39fd050f49af583b4b2c439955009fbc2d5c",
   "policies": [
     {
       "schemaname": "cf_recon",
@@ -2664,6 +2664,26 @@
       "cmd": "ALL",
       "qual": "(seller_id = ( SELECT ( SELECT auth.uid() AS uid) AS uid))",
       "with_check": "(seller_id = ( SELECT ( SELECT auth.uid() AS uid) AS uid))"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "freight_settings",
+      "policyname": "freight_settings_select_authenticated",
+      "permissive": "PERMISSIVE",
+      "roles": "{authenticated}",
+      "cmd": "SELECT",
+      "qual": "true",
+      "with_check": ""
+    },
+    {
+      "schemaname": "public",
+      "tablename": "freight_settings",
+      "policyname": "freight_settings_update_admin",
+      "permissive": "PERMISSIVE",
+      "roles": "{authenticated}",
+      "cmd": "UPDATE",
+      "qual": "is_admin()",
+      "with_check": "is_admin()"
     },
     {
       "schemaname": "public",
@@ -7824,6 +7844,46 @@
       "cmd": "SELECT",
       "qual": "true",
       "with_check": ""
+    },
+    {
+      "schemaname": "public",
+      "tablename": "shipping_boxes",
+      "policyname": "shipping_boxes_delete_admin",
+      "permissive": "PERMISSIVE",
+      "roles": "{authenticated}",
+      "cmd": "DELETE",
+      "qual": "is_admin()",
+      "with_check": ""
+    },
+    {
+      "schemaname": "public",
+      "tablename": "shipping_boxes",
+      "policyname": "shipping_boxes_insert_admin",
+      "permissive": "PERMISSIVE",
+      "roles": "{authenticated}",
+      "cmd": "INSERT",
+      "qual": "",
+      "with_check": "is_admin()"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "shipping_boxes",
+      "policyname": "shipping_boxes_select_authenticated",
+      "permissive": "PERMISSIVE",
+      "roles": "{authenticated}",
+      "cmd": "SELECT",
+      "qual": "((deleted_at IS NULL) OR is_admin())",
+      "with_check": ""
+    },
+    {
+      "schemaname": "public",
+      "tablename": "shipping_boxes",
+      "policyname": "shipping_boxes_update_admin",
+      "permissive": "PERMISSIVE",
+      "roles": "{authenticated}",
+      "cmd": "UPDATE",
+      "qual": "is_admin()",
+      "with_check": "is_admin()"
     },
     {
       "schemaname": "public",
