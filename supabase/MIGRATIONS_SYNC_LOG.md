@@ -1638,6 +1638,7 @@ Após VACUUM ANALYZE executado pelos jobs temporários `vacuum-snapshots-now` e
 | `20261113140000` | `9b8c6f1f28df01eebaec6c9ee2e456409a9df7ad45cd49b2730a824349c91135` | — | GitHub Actions (db-apply-migration.yml, disparado por adm01-debug, aprovado por agente Claude Code (sessao automatizada) — corrige a aba Marketing do admin, quebrada em producao desde 13/11) | E15 | 2026-11-19 09:58:25 UTC | job post-check da run 44500999531 confirmou a version no ledger | aplicada |
 | `20261114120000` | `e1371c31840255c9a9bc071cea76efc543ec02637dba7961f622c10a314c6a18` | — | GitHub Actions (db-apply-migration.yml, disparado por adm01-debug, aprovado por dono (gate removido 2026-11-14)) | E15 | 2026-11-19 10:52:34 UTC | job post-check da run 44509371512 confirmou a version no ledger | aplicada |
 | `20261119094500` | `d2ff81bdf920973719be728dcdd9360ab8c89dec9849205682602334c75b9fee` | — | GitHub Actions (db-apply-migration.yml, disparado por adm01-debug, aprovado por @adm01-debug) | E15 | 2026-11-19 14:44:21 UTC | job post-check da run 44546766485 confirmou a version no ledger | aplicada |
+| `20261119213000` | `0863f0915908977d964098549b7b284dff37210091d7da9936ee6f0ed4f312ba` | — | GitHub Actions (db-apply-migration.yml, disparado por adm01-debug, aprovado por @adm01-debug) | E15 | 2026-11-19 22:21:38 UTC | job post-check da run 44627641478 confirmou a version no ledger | aplicada |
 
 ## 2026-11-08 — Reconciliação de `e2e_cleanup_audit`
 
