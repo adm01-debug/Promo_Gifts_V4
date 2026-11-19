@@ -14,9 +14,18 @@
 -- faz o gate de recibos (E75) recusar recibo pendente. Mesmo caminho ja usado nas
 -- reemissoes 20261119073000 e 20261119081500.
 --   E066 — a funcao e SECURITY DEFINER com SET search_path TO 'public', sem pg_temp.
---          Corrigido abaixo para 'public', 'pg_temp'. E a UNICA diferenca de SQL
---          em relacao ao original.
+--          Corrigido abaixo para 'public', 'pg_temp'.
 --   E063 — faltava o cabecalho "-- Rollback:" e o arquivo em supabase/rollbacks/.
+--
+-- ACRESCENTADO alem do original, a pedido de revisao: o REVOKE EXECUTE no fim.
+-- Medido em producao, pg_default_acl das funcoes de public criadas por postgres e
+-- {=X/postgres, postgres=X/postgres, authenticated=X/postgres, service_role=X/postgres},
+-- e o event trigger evt_auto_revoke_secdef_public_execute revoga apenas de PUBLIC e
+-- anon (20260619115656:85-105) — authenticated ficaria com EXECUTE.
+-- Na pratica isso nao e exploravel: a funcao retorna `trigger`, o Postgres recusa
+-- chamada direta a funcao desse tipo e o PostgREST nao a expoe como RPC. Mas o
+-- REVOKE custa uma linha e alinha com o menor privilegio. Revogar NAO afeta o
+-- trigger: o privilegio e checado ao criar o trigger, nao a cada disparo.
 --
 -- O QUE FICOU DE FORA, de proposito: o bloco de higiene no fim do original, que
 -- apaga de user_organizations e organization_members os vinculos de usuarios que
@@ -76,3 +85,7 @@ DROP TRIGGER IF EXISTS trg_auto_assign_org ON public.profiles;
 CREATE TRIGGER trg_auto_assign_org
   AFTER INSERT ON public.profiles
   FOR EACH ROW EXECUTE FUNCTION public.fn_auto_assign_org_on_profile();
+
+-- Menor privilegio: nenhum papel de aplicacao precisa de EXECUTE numa funcao de
+-- trigger. O trigger continua disparando normalmente.
+REVOKE EXECUTE ON FUNCTION public.fn_auto_assign_org_on_profile() FROM PUBLIC, anon, authenticated;

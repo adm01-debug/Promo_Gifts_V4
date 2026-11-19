@@ -2543,7 +2543,7 @@ existem, e a versão não consta no ledger. Nenhuma migration posterior os derru
 
 Reemitida aqui porque o preflight reprova o arquivo original por **E066** (`SECURITY DEFINER` sem
 `pg_temp`) e **E063** (sem cabeçalho e sem arquivo de rollback), e editar o histórico faria o E75
-recusar o recibo. A única diferença de SQL é `SET search_path TO 'public', 'pg_temp'`.
+recusar o recibo. A única diferença de SQL em relação ao original é `SET search_path TO 'public', 'pg_temp'`. **Acrescentado além do original**, a pedido de revisão: um `REVOKE EXECUTE ... FROM PUBLIC, anon, authenticated` no fim — o `pg_default_acl` de produção concede `EXECUTE` a `authenticated` em função nova de `public`, e o event trigger `evt_auto_revoke_secdef_public_execute` só revoga de `PUBLIC` e `anon`. Não é explorável (a função retorna `trigger`, que o Postgres recusa chamar direto), mas o `REVOKE` custa uma linha e não afeta o disparo do trigger.
 
 **Ficou de fora de propósito** o bloco de higiene do original, que apaga vínculos de usuários
 inexistentes: medido hoje, apagaria **4 linhas**. Deleção de dado em produção é decisão do dono
@@ -2554,4 +2554,4 @@ orçamentos da empresa a 72 pessoas é decisão do dono.
 
 | versão | arquivo | sha256 | status |
 |---|---|---|---|
-| `20261119103000` | `onboarding_auto_assign_org_reemissao` | `a0aa3e3f69daff370d574b39738333b6bff3c916f52fdaca25d03cb6d0d1aaa9` | pendente — aplicar via `db-apply-migration.yml` (`version=20261119103000`) após merge |
+| `20261119103000` | `onboarding_auto_assign_org_reemissao` | `826fb238b0cd1a8079481d4a21b275834c5402e1c8865d681179bbec8ad4c57d` | pendente — aplicar via `db-apply-migration.yml` (`version=20261119103000`) após merge |
