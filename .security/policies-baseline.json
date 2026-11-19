@@ -1,7 +1,7 @@
 {
   "version": 1,
   "pending_seed": false,
-  "generated_at": "2026-11-17T07:10:00Z",
+  "generated_at": "2026-11-19T07:45:39.568Z",
   "project_ref": "doufsxqlfjyuvxuezpln",
   "schemas_checked": [
     "public",
@@ -13,7 +13,7 @@
     "prod_audit",
     "supplier_stricker"
   ],
-  "sha256": "a2b7b36bfe2f08f1b47dd4177e49a50be76dbc51a3002c191cb33ef8f328da4f",
+  "sha256": "0709b63b8691ca3ca9fc055e511a65df86394b13545133271edd3473eef990e1",
   "policies": [
     {
       "schemaname": "cf_recon",
@@ -9933,6 +9933,176 @@
       "roles": "{authenticated}",
       "cmd": "SELECT",
       "qual": "true",
+      "with_check": ""
+    },
+    {
+      "schemaname": "supplier_stricker",
+      "tablename": "canceled_products",
+      "policyname": "deny_all",
+      "permissive": "RESTRICTIVE",
+      "roles": "{public}",
+      "cmd": "ALL",
+      "qual": "false",
+      "with_check": ""
+    },
+    {
+      "schemaname": "supplier_stricker",
+      "tablename": "category_mappings",
+      "policyname": "deny_all",
+      "permissive": "RESTRICTIVE",
+      "roles": "{public}",
+      "cmd": "ALL",
+      "qual": "false",
+      "with_check": ""
+    },
+    {
+      "schemaname": "supplier_stricker",
+      "tablename": "colors",
+      "policyname": "deny_all",
+      "permissive": "RESTRICTIVE",
+      "roles": "{public}",
+      "cmd": "ALL",
+      "qual": "false",
+      "with_check": ""
+    },
+    {
+      "schemaname": "supplier_stricker",
+      "tablename": "customization_options",
+      "policyname": "deny_all",
+      "permissive": "RESTRICTIVE",
+      "roles": "{public}",
+      "cmd": "ALL",
+      "qual": "false",
+      "with_check": ""
+    },
+    {
+      "schemaname": "supplier_stricker",
+      "tablename": "customization_tables",
+      "policyname": "deny_all",
+      "permissive": "RESTRICTIVE",
+      "roles": "{public}",
+      "cmd": "ALL",
+      "qual": "false",
+      "with_check": ""
+    },
+    {
+      "schemaname": "supplier_stricker",
+      "tablename": "optionals",
+      "policyname": "deny_all",
+      "permissive": "RESTRICTIVE",
+      "roles": "{public}",
+      "cmd": "ALL",
+      "qual": "false",
+      "with_check": ""
+    },
+    {
+      "schemaname": "supplier_stricker",
+      "tablename": "product_types",
+      "policyname": "deny_all",
+      "permissive": "RESTRICTIVE",
+      "roles": "{public}",
+      "cmd": "ALL",
+      "qual": "false",
+      "with_check": ""
+    },
+    {
+      "schemaname": "supplier_stricker",
+      "tablename": "products",
+      "policyname": "deny_all",
+      "permissive": "RESTRICTIVE",
+      "roles": "{public}",
+      "cmd": "ALL",
+      "qual": "false",
+      "with_check": ""
+    },
+    {
+      "schemaname": "supplier_stricker",
+      "tablename": "stg_colors",
+      "policyname": "deny_all",
+      "permissive": "RESTRICTIVE",
+      "roles": "{public}",
+      "cmd": "ALL",
+      "qual": "false",
+      "with_check": ""
+    },
+    {
+      "schemaname": "supplier_stricker",
+      "tablename": "stg_customizations",
+      "policyname": "deny_all",
+      "permissive": "RESTRICTIVE",
+      "roles": "{public}",
+      "cmd": "ALL",
+      "qual": "false",
+      "with_check": ""
+    },
+    {
+      "schemaname": "supplier_stricker",
+      "tablename": "stg_images",
+      "policyname": "deny_all",
+      "permissive": "RESTRICTIVE",
+      "roles": "{public}",
+      "cmd": "ALL",
+      "qual": "false",
+      "with_check": ""
+    },
+    {
+      "schemaname": "supplier_stricker",
+      "tablename": "stg_optionals",
+      "policyname": "deny_all",
+      "permissive": "RESTRICTIVE",
+      "roles": "{public}",
+      "cmd": "ALL",
+      "qual": "false",
+      "with_check": ""
+    },
+    {
+      "schemaname": "supplier_stricker",
+      "tablename": "stg_product_types",
+      "policyname": "deny_all",
+      "permissive": "RESTRICTIVE",
+      "roles": "{public}",
+      "cmd": "ALL",
+      "qual": "false",
+      "with_check": ""
+    },
+    {
+      "schemaname": "supplier_stricker",
+      "tablename": "stg_products",
+      "policyname": "deny_all",
+      "permissive": "RESTRICTIVE",
+      "roles": "{public}",
+      "cmd": "ALL",
+      "qual": "false",
+      "with_check": ""
+    },
+    {
+      "schemaname": "supplier_stricker",
+      "tablename": "stg_stock",
+      "policyname": "deny_all",
+      "permissive": "RESTRICTIVE",
+      "roles": "{public}",
+      "cmd": "ALL",
+      "qual": "false",
+      "with_check": ""
+    },
+    {
+      "schemaname": "supplier_stricker",
+      "tablename": "stocks",
+      "policyname": "deny_all",
+      "permissive": "RESTRICTIVE",
+      "roles": "{public}",
+      "cmd": "ALL",
+      "qual": "false",
+      "with_check": ""
+    },
+    {
+      "schemaname": "supplier_stricker",
+      "tablename": "sync_log",
+      "policyname": "deny_all",
+      "permissive": "RESTRICTIVE",
+      "roles": "{public}",
+      "cmd": "ALL",
+      "qual": "false",
       "with_check": ""
     }
   ]
