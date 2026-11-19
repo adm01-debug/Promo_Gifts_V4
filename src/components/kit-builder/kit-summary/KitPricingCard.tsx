@@ -3,7 +3,9 @@ import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { TrendingUp } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { RefreshCw, TrendingUp } from 'lucide-react';
+import type { KitPriceRefresh } from '@/hooks/kit-builder/useKitCatalogPriceRefresh';
 import { cn } from '@/lib/utils';
 import {
   formatCurrency,
@@ -16,12 +18,15 @@ interface KitPricingCardProps {
   kitState: KitState;
   kitQuantity: number;
   onKitQuantityChange: (quantity: number) => void;
+  /** Única saída do kit travado por preço desconhecido, sem recarregar a página. */
+  priceRefresh?: KitPriceRefresh;
 }
 
 export function KitPricingCard({
   kitState,
   kitQuantity,
   onKitQuantityChange,
+  priceRefresh,
 }: KitPricingCardProps) {
   const { box, items, personalization } = kitState;
   const pricing = calculateTotalKitPrice(box, items, personalization, kitQuantity);
@@ -51,9 +56,29 @@ export function KitPricingCard({
         <CardContent>
           <div className="space-y-2">
             {!pricesKnown && (
-              <p role="status" className="text-sm text-muted-foreground">
-                Não informado — aguarde preços válidos do catálogo.
-              </p>
+              <div className="space-y-2">
+                <p role="status" className="text-sm text-muted-foreground">
+                  Não informado — aguarde preços válidos do catálogo.
+                </p>
+                {priceRefresh && (
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    disabled={priceRefresh.isRefreshing}
+                    onClick={() => {
+                      priceRefresh.refresh();
+                    }}
+                  >
+                    <RefreshCw
+                      className={cn('mr-2 h-4 w-4', priceRefresh.isRefreshing && 'animate-spin')}
+                    />
+                    {priceRefresh.isRefreshing
+                      ? 'Consultando catálogo…'
+                      : 'Atualizar preços do catálogo'}
+                  </Button>
+                )}
+              </div>
             )}
             {(pricesKnown ? breakdown : []).map((item, index) => (
               <div
