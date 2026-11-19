@@ -1,3 +1,6 @@
+-- Rollback: supabase/rollbacks/20261027195959_rollback.sql
+-- (o arquivo de rollback ja existia; faltava este cabecalho, que o preflight E063
+--  exige nas primeiras 40 linhas — por isso o apply reprovava antes de tocar o banco)
 -- Migration: 20261027195959_supplier_stricker_rls_deny_all.sql
 -- CONTEXTO: schema supplier_stricker contém tabelas com grants já concedidos,
 -- mas sem RLS. A falta atual de USAGE no schema não é uma barreira permanente.

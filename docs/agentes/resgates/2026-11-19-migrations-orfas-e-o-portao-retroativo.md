@@ -35,12 +35,13 @@ Resultado, medido arquivo por arquivo contra as 101:
 
 | regra | o que exige | órfãs barradas |
 |---|---|---|
-| **E063** | rollback como arquivo em `supabase/rollbacks/`, não como comentário | **78** |
+| **E063** (duas exigências) | cabeçalho `-- Rollback:` nas 40 primeiras linhas do arquivo | **70** |
+| | **e** rollback como arquivo em `supabase/rollbacks/` | **78** |
 | **E066** | `pg_temp` explícito no `SET search_path` de `SECURITY DEFINER` | 26 — das quais **22 escritas antes da regra existir** |
 | **E062** | `CREATE INDEX` com `CONCURRENTLY` | 20 |
 | **E067** | `CREATE EXTENSION ... WITH SCHEMA extensions` | 0 |
-| | **com pelo menos um impedimento** | **83** |
-| | **passariam hoje, sem ajuste** | **18** |
+| | **com pelo menos um impedimento** | **85** |
+| | **passariam hoje, sem ajuste** | **16** |
 
 Migration escrita em maio ou junho de 2026 não teria como trazer rollback em
 arquivo nem `pg_temp`: o contrato não existia. O portão passou a **rejeitá-las
@@ -78,10 +79,19 @@ Esta é a que o preflight reprovou (run 44461492894, regra E066): **nasceu
 barrada**. Superada por `20261119051500`. Risco medido: `quote_approval_tokens`
 tem **0 linhas**, então nada vaza hoje; começaria no primeiro token emitido.
 
-## As 18 que passam no preflight hoje
+## As 16 que passam no preflight hoje
 
-Uma já foi aplicada (a primeira da lista abaixo é a `20261108235500`). As outras 17
-são resgate direto, sem reescrever nada:
+> **Correção de 2026-11-19, depois de aplicar de verdade.** A primeira versão deste
+> arquivo dizia **18**, porque eu medi a E063 só pela existência do arquivo de
+> rollback. A regra tem **duas** exigências, e a segunda é um cabeçalho
+> `-- Rollback:` nas 40 primeiras linhas da própria migration
+> (`scripts/preflight-migration-apply.mjs:304-305`). O número certo é **16**.
+> Descobri isso ao despachar `20261027195959`: o preflight reprovou com
+> *"arquivo não tem cabeçalho de rollback lógico"* (run 44473368574), **sem tocar
+> o banco**. Saem da lista `20261027195959` e `20261027234500`.
+
+Três já foram aplicadas nesta sessão: `20261108235500`, `20260916202000` e
+`20261115034500`. O resto é resgate direto, sem reescrever nada:
 
 | versão | arquivo | o que faz |
 |---|---|---|
@@ -91,9 +101,7 @@ são resgate direto, sem reescrever nada:
 | `20260917100000` | `e37_split_genuine_multistatement_cron.sql` | divide o command de 5 jobs multi-statement |
 | `20261022195616` | `fix_update_company_fields_security_definer_search_path.sql` | `search_path` de `update_company_fields` |
 | `20261022203935` | `update_company_fields_security_fix.sql` | idem, correção de segurança da mesma função |
-| `20261027195959` | `supplier_stricker_rls_deny_all.sql` | deny-all em 17 tabelas do schema `supplier_stricker` |
 | `20261027220000` | `deactivate_xbz_image_uploader_cron.sql` | desativa o job `xbz-image-uploader` |
-| `20261027234500` | `reactivate_xbz_image_uploader_cron.sql` | reativa o mesmo job — **par com a anterior; aplicadas juntas se anulam** |
 | `20261108223000` | `add_stock_daily_summary_date_index.sql` | índice em `stock_daily_summary (summary_date)` |
 | `20261108230000` | `remove_broken_cron_image_dimensions_backfill.sql` | remove job de cron quebrado |
 | `20261108230100` | `cron002_fix_residual_collisions.sql` | desconflita horário de 4 jobs |
