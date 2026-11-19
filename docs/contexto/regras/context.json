@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "e3fcdc939771ec3cfabd085000797c48bce5008c",
+  "sha": "21b5c9cc7832f5de78bd88ac7fdcec2b25fed6fe",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-18 23:40 UTC",
-  "files_total": 10890,
-  "code_files": 8913,
-  "code_lines": 1263423
+  "generated_at": "2026-11-19 00:45 UTC",
+  "files_total": 10891,
+  "code_files": 8914,
+  "code_lines": 1263590
  },
  "version": "1.3.2",
- "facts_hash": "fc8b6a9466f56cc2",
+ "facts_hash": "08a07ae3ab724b41",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -1130,7 +1130,7 @@
   "languages": {
    ".sql": 3442,
    ".ts": 3042,
-   ".tsx": 1964,
+   ".tsx": 1965,
    ".mjs": 450,
    ".py": 15,
    ".js": 7
@@ -145020,7 +145020,7 @@
     "file": ".github/workflows/wraparound-monitor-report.yml"
    }
   ],
-  "components_count": 1698,
+  "components_count": 1699,
   "hooks": [
    {
     "name": "useQuoteComments",
@@ -149669,7 +149669,7 @@
   {
    "module": "src/components",
    "files": 1425,
-   "lines": 282078,
+   "lines": 282092,
    "tables": [
     "admin_audit_log",
     "art_file_attachments",
@@ -151775,8 +151775,8 @@
   },
   {
    "module": "tests",
-   "files": 1091,
-   "lines": 171881,
+   "files": 1092,
+   "lines": 172034,
    "tables": [
     "bot_detection_log",
     "clients",
@@ -269765,6 +269765,18 @@
    {
     "file": "tests/components/QuoteDraftRecovery.test.tsx",
     "name": "QuoteDraftRecovery — decisões próprias da main"
+   },
+   {
+    "file": "tests/components/QuoteTemplatePreservation.test.tsx",
+    "name": "QuoteTemplateForm preserva o trabalho digitado quando a gravação falha"
+   },
+   {
+    "file": "tests/components/QuoteTemplatePreservation.test.tsx",
+    "name": "mantém nome e observações na tela quando o %s devolve null"
+   },
+   {
+    "file": "tests/components/QuoteTemplatePreservation.test.tsx",
+    "name": "chama onSave com o template salvo quando a gravação dá certo"
    },
    {
     "file": "tests/components/QuoteVersionHistory.nullDate.test.tsx",
@@ -453553,7 +453565,7 @@
   },
   "src/components/quotes/QuoteTemplateForm.tsx": {
    "path": "src/components/quotes/QuoteTemplateForm.tsx",
-   "lines": 287,
+   "lines": 301,
    "exports": [
     "function QuoteTemplateForm"
    ],
@@ -525540,6 +525552,21 @@
     "QuoteDraftRecovery — decisões próprias da main"
    ]
   },
+  "tests/components/QuoteTemplatePreservation.test.tsx": {
+   "path": "tests/components/QuoteTemplatePreservation.test.tsx",
+   "lines": 153,
+   "is_test": true,
+   "rule_comments": [
+    "adaptador de validação que existe só naquela branch e que a main nunca teve.",
+    "o vendedor NÃO pode perder o que digitou.",
+    "O ponto do teste: a falha NÃO pode fechar a tela."
+   ],
+   "tests": [
+    "QuoteTemplateForm preserva o trabalho digitado quando a gravação falha",
+    "mantém nome e observações na tela quando o %s devolve null",
+    "chama onSave com o template salvo quando a gravação dá certo"
+   ]
+  },
   "tests/components/QuoteVersionHistory.nullDate.test.tsx": {
    "path": "tests/components/QuoteVersionHistory.nullDate.test.tsx",
    "lines": 98,
@@ -547507,10 +547534,29 @@
   }
  },
  "git": {
-  "sha": "e3fcdc939771ec3cfabd085000797c48bce5008c",
+  "sha": "21b5c9cc7832f5de78bd88ac7fdcec2b25fed6fe",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "21b5c9c",
+    "date": "2026-11-18",
+    "author": "adm01-debug",
+    "subject": "fix(orcamentos): template que falha ao salvar nao pode apagar o que o vendedor digitou (#3858)",
+    "files": [
+     "src/components/quotes/QuoteTemplateForm.tsx",
+     "tests/components/QuoteTemplatePreservation.test.tsx"
+    ]
+   },
+   {
+    "sha": "c4353df",
+    "date": "2026-11-18",
+    "author": "adm01-debug",
+    "subject": "docs(resgate): corrige medição falsa que entrou na main pela #3855 (#3856)",
+    "files": [
+     "docs/agentes/resgates/2026-11-18-veredicto-byte-a-byte-das-branches.md"
+    ]
+   },
    {
     "sha": "e3fcdc9",
     "date": "2026-11-18",
@@ -547840,37 +547886,17 @@
      "src/components/favorites/FavoritesViewHeader.tsx",
      "src/components/favorites/__tests__/ExportFavoritesButton.test.tsx"
     ]
-   },
-   {
-    "sha": "13b8a73",
-    "date": "2026-11-18",
-    "author": "adm01-debug",
-    "subject": "feat(mockup): edge recusa mockup sem medida real do produto (422) e kit-builder avisa antes (#3819)",
-    "files": [
-     "src/components/kit-builder/PersonalizationConfig.tsx",
-     "src/components/kit-builder/kitMockupDimensions.ts",
-     "supabase/functions/generate-mockup/geometry.ts",
-     "supabase/functions/generate-mockup/index.geometry.test.ts",
-     "supabase/functions/generate-mockup/index.ts",
-     "tests/components/kit-builder/PersonalizationConfig.test.ts"
-    ]
-   },
-   {
-    "sha": "99844ab",
-    "date": "2026-11-18",
-    "author": "adm01-debug",
-    "subject": "fix(security): resgata o endurecimento de sanitizeUrl contra SSRF e credencial embutida (#3825)",
-    "files": [
-     "src/lib/security/__tests__/magazine-guard-adversarial.test.ts",
-     "src/lib/security/__tests__/magazine-guard-edge.test.ts",
-     "src/lib/security/__tests__/sanitize-adversarial.test.ts",
-     "src/lib/security/__tests__/sanitize-ssrf.test.ts",
-     "src/lib/security/magazine-guard.ts",
-     "src/lib/security/sanitize.ts"
-    ]
    }
   ],
   "hot_files": [
+   [
+    "src/components/quotes/QuoteTemplateForm.tsx",
+    2
+   ],
+   [
+    "docs/agentes/resgates/2026-11-18-veredicto-byte-a-byte-das-branches.md",
+    2
+   ],
    [
     "src/components/admin/telemetry/LiveSurfacesSection.tsx",
     2
@@ -547880,8 +547906,8 @@
     2
    ],
    [
-    "src/components/kit-builder/PersonalizationConfig.tsx",
-    2
+    "tests/components/QuoteTemplatePreservation.test.tsx",
+    1
    ],
    [
     "src/components/inventory/risk/RupturePanelEma.tsx",
@@ -547932,10 +547958,6 @@
     1
    ],
    [
-    "docs/agentes/resgates/2026-11-18-veredicto-byte-a-byte-das-branches.md",
-    1
-   ],
-   [
     "tests/e2e/artifacts/compare/viewer/audit-snapshot.html",
     1
    ],
@@ -547945,10 +547967,6 @@
    ],
    [
     "tests/e2e/compare-module.test.tsx",
-    1
-   ],
-   [
-    "tests/e2e/compare-ultra.test.tsx",
     1
    ]
   ]

@@ -12340,7 +12340,7 @@
     "src/pages/quotes/components/QuoteBuilderNotesCard.tsx",
     "src/utils/templateExport.ts"
    ],
-   "coberto_por_testes": 5
+   "coberto_por_testes": 6
   },
   {
    "arquivo": "src/hooks/quotes/useQuoteVersions.ts",

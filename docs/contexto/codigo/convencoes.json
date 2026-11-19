@@ -23,7 +23,7 @@
    "src/services (10)"
   ],
   "testes": [
-   "tests/ (1076)",
+   "tests/ (1077)",
    "co-localizado (__tests__) (701)",
    "e2e/ (625)"
   ],
@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "fix(orcamentos): template que falha ao salvar nao pode apagar o que o vendedor digitou (#3858)",
+   "docs(resgate): corrige medição falsa que entrou na main pela #3855 (#3856)",
    "feat(estoque): cria fn_supplier_risk_breakdown por migration e corrige o rotulo do selo (#3854)",
    "chore(ci): job deno test — 48 arquivos de teste de edge que nenhum runner executava (#3853)",
-   "docs(resgate): veredicto byte a byte das 9 branches abertas (#3855)",
-   "fix(test): liga 832 testes que existiam no repo e runner nenhum executava (#3852)",
-   "fix(test): 4 specs do /estoque exigiam o cabecalho que o dono mandou remover (#3851)"
+   "docs(resgate): veredicto byte a byte das 9 branches abertas (#3855)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",

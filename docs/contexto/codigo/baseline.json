@@ -2,11 +2,21 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "e3fcdc939771ec3cfabd085000797c48bce5008c",
+  "commit": "21b5c9cc7832f5de78bd88ac7fdcec2b25fed6fe",
   "branch": "main",
-  "data_commit": "2026-11-18T20:36:50-03:00",
+  "data_commit": "2026-11-18T21:25:53-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "21b5c9cc",
+    "data": "2026-11-18",
+    "assunto": "fix(orcamentos): template que falha ao salvar nao pode apagar o que o vendedor digitou (#3858)"
+   },
+   {
+    "sha": "c4353dfd",
+    "data": "2026-11-18",
+    "assunto": "docs(resgate): corrige medição falsa que entrou na main pela #3855 (#3856)"
+   },
    {
     "sha": "e3fcdc93",
     "data": "2026-11-18",
@@ -121,195 +131,185 @@
     "sha": "97bfe183",
     "data": "2026-11-18",
     "assunto": "fix(kit): filtro e card de status da biblioteca contam o status real do kit (#3833)"
-   },
-   {
-    "sha": "7d4212ea",
-    "data": "2026-11-18",
-    "assunto": "fix(monitoring): tunel para de repassar 404 da ingestao ao navegador (#3831)"
-   },
-   {
-    "sha": "1d4ba079",
-    "data": "2026-11-18",
-    "assunto": "fix(quotes): nunca mostrar R$ NaN no total de template (#3830)"
    }
   ],
-  "arquivos_mudados_7d": 1516,
+  "arquivos_mudados_7d": 1513,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
-    "mudancas": 2152
+    "mudancas": 3046
    },
    {
     "pasta": "src/components/products",
-    "mudancas": 1079
+    "mudancas": 1529
    },
    {
     "pasta": "tests/edge-functions/live",
-    "mudancas": 823
+    "mudancas": 1168
    },
    {
     "pasta": "src/hooks/products",
-    "mudancas": 762
+    "mudancas": 1077
    },
    {
     "pasta": "src/components/quotes",
-    "mudancas": 686
+    "mudancas": 948
    },
    {
     "pasta": "src/pages/magazine",
-    "mudancas": 646
+    "mudancas": 920
+   },
+   {
+    "pasta": "src/components/inventory",
+    "mudancas": 814
+   },
+   {
+    "pasta": "src/components/ui",
+    "mudancas": 736
+   },
+   {
+    "pasta": "supabase/functions/_shared",
+    "mudancas": 720
+   },
+   {
+    "pasta": "src/components/mockup",
+    "mudancas": 657
    },
    {
     "pasta": "recovery/src-legacy/src",
     "mudancas": 633
    },
    {
-    "pasta": "src/components/inventory",
-    "mudancas": 574
-   },
-   {
-    "pasta": "src/components/ui",
-    "mudancas": 517
-   },
-   {
-    "pasta": "supabase/functions/_shared",
-    "mudancas": 513
-   },
-   {
-    "pasta": "src/components/mockup",
-    "mudancas": 477
-   },
-   {
     "pasta": "src/pages/admin",
-    "mudancas": 431
+    "mudancas": 608
    },
    {
     "pasta": "src/pages/quotes",
-    "mudancas": 378
+    "mudancas": 518
    },
    {
     "pasta": "src/components/kit-builder",
-    "mudancas": 366
+    "mudancas": 507
    },
    {
     "pasta": "src/pages/products",
-    "mudancas": 344
+    "mudancas": 488
    }
   ],
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "supabase/MIGRATIONS_SYNC_LOG.md",
-    "mudancas": 62
+    "mudancas": 65
    },
    {
     "arquivo": "RELATORIO_CI.md",
-    "mudancas": 46
-   },
-   {
-    "arquivo": "PENDENCIAS.md",
-    "mudancas": 44
+    "mudancas": 45
    },
    {
     "arquivo": "package.json",
-    "mudancas": 42
+    "mudancas": 45
+   },
+   {
+    "arquivo": "PENDENCIAS.md",
+    "mudancas": 43
    },
    {
     "arquivo": "docs/coordenacao/conflitos-semanticos.md",
-    "mudancas": 29
+    "mudancas": 32
    },
    {
     "arquivo": "package-lock.json",
-    "mudancas": 25
+    "mudancas": 28
    },
    {
     "arquivo": ".github/workflows/deploy-gates.yml",
-    "mudancas": 22
+    "mudancas": 25
    },
    {
     "arquivo": "src/pages/kit-builder/KitBuilderPage.tsx",
-    "mudancas": 22
-   },
-   {
-    "arquivo": "analise-prs/progresso.json",
-    "mudancas": 20
+    "mudancas": 25
    },
    {
     "arquivo": "supabase/EDGE_FUNCTIONS_DEPLOY_LOG.md",
-    "mudancas": 20
+    "mudancas": 23
+   },
+   {
+    "arquivo": "analise-prs/progresso.json",
+    "mudancas": 22
    },
    {
     "arquivo": "audit/supabase-reference-catalog.temporary.json",
-    "mudancas": 18
+    "mudancas": 21
    },
    {
     "arquivo": "src/hooks/kit-builder/useKitBuilderPageState.ts",
-    "mudancas": 18
+    "mudancas": 21
    },
    {
     "arquivo": "src/pages/mockups/MockupGenerator.tsx",
-    "mudancas": 16
+    "mudancas": 19
    },
    {
     "arquivo": "analise-branches/RELATORIO_BRANCHES.md",
-    "mudancas": 15
+    "mudancas": 18
    },
    {
     "arquivo": "src/hooks/kit-builder/useKitAutoSave.ts",
-    "mudancas": 15
+    "mudancas": 18
    },
    {
     "arquivo": "e2e/flows/magazine-preview-sticky-smoke.spec.ts",
-    "mudancas": 14
-   },
-   {
-    "arquivo": "e2e/flows/magazine-publish-smoke.spec.ts",
-    "mudancas": 14
+    "mudancas": 17
    },
    {
     "arquivo": ".github/SENTINEL_SHA_ALLOWLIST.txt",
-    "mudancas": 13
-   },
-   {
-    "arquivo": ".github/workflows/replenishment-quality.yml",
-    "mudancas": 13
+    "mudancas": 16
    },
    {
     "arquivo": ".github/workflows/schema-snapshot-export.yml",
-    "mudancas": 13
+    "mudancas": 16
    },
    {
     "arquivo": "CHANGELOG.md",
-    "mudancas": 13
+    "mudancas": 16
    },
    {
     "arquivo": "analise-prs/prs.json",
-    "mudancas": 13
-   },
-   {
-    "arquivo": "auditoria-supabase/RELATORIO_AUDITORIA_SUPABASE.md",
-    "mudancas": 13
-   },
-   {
-    "arquivo": "docs/ci/SEGREDOS.md",
-    "mudancas": 13
+    "mudancas": 16
    },
    {
     "arquivo": "e2e/helpers/auth.ts",
-    "mudancas": 13
+    "mudancas": 16
+   },
+   {
+    "arquivo": "scripts/validate-quotes-list.mjs",
+    "mudancas": 16
+   },
+   {
+    "arquivo": "src/components/kit-builder/PersonalizationConfig.tsx",
+    "mudancas": 16
+   },
+   {
+    "arquivo": "supabase/functions/crm-db-bridge/index.ts",
+    "mudancas": 16
+   },
+   {
+    "arquivo": "tests/components/pages/KitBuilderPage.test.tsx",
+    "mudancas": 16
    }
   ],
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 509
+    "commits": 501
    },
    {
     "autor": "Claude",
-    "commits": 111
+    "commits": 107
    },
    {
     "autor": "Joaquim Ataides",
-    "commits": 86
+    "commits": 84
    },
    {
     "autor": "github-actions[bot]",
@@ -322,9 +322,9 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 10962,
-  "arquivos_codigo": 5472,
-  "linhas_codigo": 1042526,
+  "arquivos_total": 10963,
+  "arquivos_codigo": 5473,
+  "linhas_codigo": 1042693,
   "rotas": 139,
   "rotas_http_backend": 13,
   "vistas_por_id": 0,
@@ -336,7 +336,7 @@
   "tabelas": 527,
   "migrations": 3100,
   "cron_jobs": 122,
-  "testes": 2606,
+  "testes": 2607,
   "workflows": 89,
   "scripts": 283,
   "docs_md": 1482
@@ -1896,7 +1896,7 @@
   },
   "src/components": {
    "arquivos": 1425,
-   "linhas": 282079
+   "linhas": 282093
   },
   "src/config": {
    "arquivos": 1,
@@ -2047,8 +2047,8 @@
    "linhas": 141
   },
   "tests/components": {
-   "arquivos": 165,
-   "linhas": 35880
+   "arquivos": 166,
+   "linhas": 36033
   },
   "tests/config": {
    "arquivos": 6,

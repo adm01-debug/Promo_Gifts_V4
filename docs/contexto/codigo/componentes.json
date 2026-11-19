@@ -14894,7 +14894,7 @@
     "QuoteTemplateForm"
    ],
    "export_default": null,
-   "linhas": 287,
+   "linhas": 301,
    "dominio": "components/quotes",
    "hooks_locais": [
     "useQuoteTemplates"
