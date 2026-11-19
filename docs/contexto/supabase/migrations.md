@@ -2866,6 +2866,7 @@ SQL em `migrations/<versao>_<nome>.sql`. Mudanças feitas pelo Dashboard/SQL Edi
 | 20260912205759 | [catalog_e24_zapp_catalog_stats](migrations/20260912205759_catalog_e24_zapp_catalog_stats.sql) | 1 |
 | 20260915113458 | [](migrations/20260915113458.sql) | 0 |
 | 20260916155725 | [catalog_stats_price_range_top_colors_materials](migrations/20260916155725_catalog_stats_price_range_top_colors_materials.sql) | 1 |
+| 20260916202000 | [e23_force_rls_secret_tables](migrations/20260916202000_e23_force_rls_secret_tables.sql) | 12 |
 | 20260917061500 | [e18_revoke_authenticated_authz_gaps](migrations/20260917061500_e18_revoke_authenticated_authz_gaps.sql) | 6 |
 | 20260922170000 | [signup_identity_safe_default](migrations/20260922170000_signup_identity_safe_default.sql) | 3 |
 | 20260923114500 | [quote_rpc_lineage_atomicity](migrations/20260923114500_quote_rpc_lineage_atomicity.sql) | 1 |
@@ -2979,6 +2980,7 @@ SQL em `migrations/<versao>_<nome>.sql`. Mudanças feitas pelo Dashboard/SQL Edi
 | 20261114120100 | [cron005_refresh_all_mvs_diario_timeout_real](migrations/20261114120100_cron005_refresh_all_mvs_diario_timeout_real.sql) | 1 |
 | 20261114170845 | [fix_workspace_notifications_insert_policy_reapply](migrations/20261114170845_fix_workspace_notifications_insert_policy_reapply.sql) | 3 |
 | 20261114170921 | [fix_rls_orders_order_items_seller_scope](migrations/20261114170921_fix_rls_orders_order_items_seller_scope.sql) | 12 |
+| 20261115034500 | [rpc_sales_assistant_candidates](migrations/20261115034500_rpc_sales_assistant_candidates.sql) | 5 |
 | 20261115130200 | [sec001_revoke_anon_execute_trigger_functions](migrations/20261115130200_sec001_revoke_anon_execute_trigger_functions.sql) | 106 |
 | 20261115130300 | [fn_global_search_clamp_limit_hardened](migrations/20261115130300_fn_global_search_clamp_limit_hardened.sql) | 1 |
 | 20261115230000 | [ai_function_routing_mockup_assistant](migrations/20261115230000_ai_function_routing_mockup_assistant.sql) | 1 |

@@ -7,7 +7,7 @@
 | tipo | table |
 | owner | postgres |
 | RLS habilitado | sim |
-| RLS forçado (owner) | não |
+| RLS forçado (owner) | sim |
 | policies | 2 |
 | realtime (publication) | não |
 | replica identity | default |

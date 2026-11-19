@@ -187900,6 +187900,36 @@
         "volatility": "volatile"
       },
       {
+        "args": "p_ramo_pai_id uuid, p_color_group_ids uuid[], p_price_min numeric, p_price_max numeric, p_limit integer, p_max_per_category integer, p_min_score integer",
+        "callers": {
+          "code": [],
+          "code_total_files": 0,
+          "cron": [],
+          "db": [],
+          "triggers": [],
+          "views": []
+        },
+        "comment": "Encaixe do Cliente (fase 1): pontua o catálogo ativo para um cliente e devolve os melhores candidatos com a nota e um booleano por sinal. Filtros duros: apenas is_active e NOT is_deleted. Pesos: ramo 30, cor 25, giro classe A 15, novidade 12, gravação 10, faixa de preço 10, estoque 8 (máximo 110). SECURITY INVOKER: lê só o que o vendedor já pode ler.",
+        "config": [
+          "search_path=\"\""
+        ],
+        "definition": null,
+        "definition_sha": "8daea5a7aaa19c6f",
+        "execute_api_roles": "authenticated, service_role",
+        "execute_public": false,
+        "is_trigger_fn": false,
+        "kind": "function",
+        "language": "sql",
+        "leakproof": false,
+        "name": "rpc_sales_assistant_candidates",
+        "owner": "postgres",
+        "returns": "TABLE(product_id uuid, name text, sale_price numeric, primary_image_url text, category_id uuid, score integer, sinal_ramo boolean, sinal_cor boolean, sinal_giro boolean, sinal_novidade boolean, sinal_gravacao boolean, sinal_preco boolean, sinal_estoque boolean, classe_giro text)",
+        "schema": "public",
+        "security_definer": false,
+        "strict": false,
+        "volatility": "stable"
+      },
+      {
         "args": "p_request_id uuid, p_kit_id uuid, p_expected_revision integer, p_payload jsonb",
         "callers": {
           "code": [
@@ -238013,6 +238043,12 @@
         "version": "20260916155725"
       },
       {
+        "name": "e23_force_rls_secret_tables",
+        "statements": 12,
+        "statements_sha": "29c9ed66fe41ec10",
+        "version": "20260916202000"
+      },
+      {
         "name": "e18_revoke_authenticated_authz_gaps",
         "statements": 6,
         "statements_sha": "055f2ec97200821c",
@@ -238685,6 +238721,12 @@
         "statements": 12,
         "statements_sha": "d56a64997fb72d9b",
         "version": "20261114170921"
+      },
+      {
+        "name": "rpc_sales_assistant_candidates",
+        "statements": 5,
+        "statements_sha": "4aa7faec18c85a99",
+        "version": "20261115034500"
       },
       {
         "name": "sec001_revoke_anon_execute_trigger_functions",
@@ -253943,7 +253985,7 @@
         "partition_key": null,
         "replica_identity": "default",
         "rls_enabled": true,
-        "rls_forced": false,
+        "rls_forced": true,
         "schema": "public"
       },
       {
@@ -254258,7 +254300,7 @@
         "partition_key": null,
         "replica_identity": "default",
         "rls_enabled": true,
-        "rls_forced": false,
+        "rls_forced": true,
         "schema": "public"
       },
       {
@@ -257033,7 +257075,7 @@
         "partition_key": null,
         "replica_identity": "default",
         "rls_enabled": true,
-        "rls_forced": false,
+        "rls_forced": true,
         "schema": "public"
       },
       {
@@ -257273,7 +257315,7 @@
         "partition_key": null,
         "replica_identity": "default",
         "rls_enabled": true,
-        "rls_forced": false,
+        "rls_forced": true,
         "schema": "public"
       },
       {
@@ -258263,7 +258305,7 @@
         "partition_key": null,
         "replica_identity": "default",
         "rls_enabled": true,
-        "rls_forced": false,
+        "rls_forced": true,
         "schema": "public"
       },
       {

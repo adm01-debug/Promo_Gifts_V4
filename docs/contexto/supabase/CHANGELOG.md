@@ -2,6 +2,12 @@
 
 Diff semântico gerado a cada coleta em que algo mudou.
 
+## 2026-11-19 07:19 UTC
+
+- **functions** adicionado (1): `public.rpc_sales_assistant_candidates(p_ramo_pai_id uuid, p_color_group_ids uuid[], p_price_min numeric, p_price_max numeric, p_limit integer, p_max_per_category integer, p_min_score integer)`
+- **migrations** adicionado (2): `20260916202000_e23_force_rls_secret_tables`, `20261115034500_rpc_sales_assistant_candidates`
+- **tabelas** alterado (5): `public.external_connections`, `public.integration_credentials`, `public.secret_rotation_log`, `public.step_up_tokens`, `public.user_token_revocations`
+
 ## 2026-11-19 06:28 UTC
 
 - **functions** alterado (1): `public.get_quote_token_public(_token text)`
