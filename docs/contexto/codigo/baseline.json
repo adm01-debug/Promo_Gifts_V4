@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "cf61cb6dfafa367e71dda795629d68149839ad2e",
+  "commit": "7da0d491643c3e1f298528f40b51031b2e3e674a",
   "branch": "main",
-  "data_commit": "2026-11-18T22:23:51-03:00",
+  "data_commit": "2026-11-18T23:23:17-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "7da0d491",
+    "data": "2026-11-18",
+    "assunto": "feat(kit): destrava o kit cujo catalogo ainda nao informou preco (#3865)"
+   },
    {
     "sha": "cf61cb6d",
     "data": "2026-11-18",
@@ -126,14 +131,9 @@
     "sha": "91ffe71a",
     "data": "2026-11-18",
     "assunto": "fix(test): e2e ainda exigia que \"Usar template\" não existisse no construtor (#3841)"
-   },
-   {
-    "sha": "a53b303e",
-    "data": "2026-11-18",
-    "assunto": "docs(resgate): recibo da sessão 2 — PRs fechadas sem merge e os 51 arquivos do legado (#3840)"
    }
   ],
-  "arquivos_mudados_7d": 1520,
+  "arquivos_mudados_7d": 1515,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -185,11 +185,11 @@
    },
    {
     "pasta": "src/pages/quotes",
-    "mudancas": 377
+    "mudancas": 380
    },
    {
     "pasta": "src/components/kit-builder",
-    "mudancas": 365
+    "mudancas": 366
    },
    {
     "pasta": "src/pages/products",
@@ -207,7 +207,7 @@
    },
    {
     "arquivo": "PENDENCIAS.md",
-    "mudancas": 34
+    "mudancas": 33
    },
    {
     "arquivo": "RELATORIO_CI.md",
@@ -227,7 +227,7 @@
    },
    {
     "arquivo": "src/pages/kit-builder/KitBuilderPage.tsx",
-    "mudancas": 21
+    "mudancas": 22
    },
    {
     "arquivo": "supabase/EDGE_FUNCTIONS_DEPLOY_LOG.md",
@@ -301,15 +301,15 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 468
+    "commits": 465
    },
    {
     "autor": "Claude",
-    "commits": 95
+    "commits": 93
    },
    {
     "autor": "Joaquim Ataides",
-    "commits": 77
+    "commits": 76
    },
    {
     "autor": "github-actions[bot]",
@@ -322,21 +322,21 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 10970,
-  "arquivos_codigo": 5480,
-  "linhas_codigo": 1043519,
+  "arquivos_total": 10972,
+  "arquivos_codigo": 5482,
+  "linhas_codigo": 1043996,
   "rotas": 139,
   "rotas_http_backend": 13,
   "vistas_por_id": 0,
   "itens_menu": 69,
   "modulos": 164,
   "componentes": 1262,
-  "hooks": 632,
+  "hooks": 633,
   "edge_functions": 112,
   "tabelas": 527,
   "migrations": 3100,
   "cron_jobs": 122,
-  "testes": 2612,
+  "testes": 2613,
   "workflows": 89,
   "scripts": 283,
   "docs_md": 1482
@@ -1896,7 +1896,7 @@
   },
   "src/components": {
    "arquivos": 1427,
-   "linhas": 282284
+   "linhas": 282313
   },
   "src/config": {
    "arquivos": 1,
@@ -1919,8 +1919,8 @@
    "linhas": 7
   },
   "src/hooks": {
-   "arquivos": 489,
-   "linhas": 91833
+   "arquivos": 490,
+   "linhas": 92014
   },
   "src/integrations": {
    "arquivos": 11,
@@ -1940,7 +1940,7 @@
   },
   "src/pages": {
    "arquivos": 367,
-   "linhas": 84547
+   "linhas": 84546
   },
   "src/routes": {
    "arquivos": 15,
@@ -2048,7 +2048,7 @@
   },
   "tests/components": {
    "arquivos": 167,
-   "linhas": 36170
+   "linhas": 36206
   },
   "tests/config": {
    "arquivos": 6,
@@ -2091,8 +2091,8 @@
    "linhas": 325
   },
   "tests/hooks": {
-   "arquivos": 162,
-   "linhas": 25701
+   "arquivos": 163,
+   "linhas": 25933
   },
   "tests/integration": {
    "arquivos": 11,

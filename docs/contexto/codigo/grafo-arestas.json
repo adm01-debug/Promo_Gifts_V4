@@ -6584,6 +6584,7 @@
    "src/components/ui/card.tsx",
    "src/components/ui/textarea.tsx",
    "src/hooks/kit-builder/index.ts",
+   "src/hooks/kit-builder/useKitCatalogPriceRefresh.ts",
    "src/lib/kit-builder/index.ts",
    "src/lib/kit-builder/pricing-availability.ts"
   ],
@@ -6696,9 +6697,11 @@
    "src/lib/kit-builder/index.ts"
   ],
   "src/components/kit-builder/kit-summary/KitPricingCard.tsx": [
+   "src/components/ui/button.tsx",
    "src/components/ui/card.tsx",
    "src/components/ui/separator.tsx",
    "src/components/ui/tabs.tsx",
+   "src/hooks/kit-builder/useKitCatalogPriceRefresh.ts",
    "src/lib/kit-builder/index.ts",
    "src/lib/kit-builder/pricing-availability.ts",
    "src/lib/utils.ts"
@@ -10768,6 +10771,7 @@
    "src/components/kit-builder/KitOccasionSelector.tsx",
    "src/contexts/AuthContext.tsx",
    "src/hooks/kit-builder/index.ts",
+   "src/hooks/kit-builder/useKitCatalogPriceRefresh.ts",
    "src/lib/db/postgrest.ts",
    "src/lib/kit-builder/index.ts",
    "src/lib/kit-builder/snapshot/read-draft.ts",
@@ -10784,6 +10788,10 @@
   ],
   "src/hooks/kit-builder/useKitBuilderTransformers.ts": [
    "src/lib/kit-builder/index.ts"
+  ],
+  "src/hooks/kit-builder/useKitCatalogPriceRefresh.ts": [
+   "src/lib/kit-builder/index.ts",
+   "src/lib/kit-builder/pricing-availability.ts"
   ],
   "src/hooks/kit-builder/useKitCollaboration.ts": [
    "src/contexts/AuthContext.tsx",

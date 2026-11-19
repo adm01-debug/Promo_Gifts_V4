@@ -5,18 +5,18 @@
   "vitest",
   "playwright"
  ],
- "total": 2612,
+ "total": 2613,
  "por_tipo": {
   "contrato": 67,
   "e2e": 677,
   "pytest": 5,
   "qa": 17,
-  "unit": 1846
+  "unit": 1847
  },
  "onde_ficam": [
   {
    "padrao": "tests/",
-   "arquivos": 1081
+   "arquivos": 1082
   },
   {
    "padrao": "co-localizado (__tests__)",
@@ -13685,7 +13685,7 @@
   {
    "arquivo": "tests/components/kit-builder/financial-availability.test.tsx",
    "tipo": "unit",
-   "linhas": 181,
+   "linhas": 217,
    "testa": [
     "src/components/kit-builder/BoxSelector.tsx",
     "src/components/kit-builder/ItemCard.tsx",
@@ -13697,7 +13697,7 @@
     "src/components/ui/tooltip.tsx",
     "src/lib/kit-builder/index.ts"
    ],
-   "casos": 8
+   "casos": 9
   },
   {
    "arquivo": "tests/components/kit-builder/FreightEstimator.test.tsx",
@@ -17649,13 +17649,14 @@
   {
    "arquivo": "tests/hooks/useKitBuilderPageState.financial.test.tsx",
    "tipo": "unit",
-   "linhas": 390,
+   "linhas": 493,
    "testa": [
     "src/hooks/kit-builder/useKitBuilderPageState.ts",
     "src/lib/external-db/product-types.ts",
-    "src/lib/kit-builder/index.ts"
+    "src/lib/kit-builder/index.ts",
+    "src/lib/kit-builder/pricing-availability.ts"
    ],
-   "casos": 5
+   "casos": 9
   },
   {
    "arquivo": "tests/hooks/useKitBuilderPageState.legacy.test.tsx",
@@ -17743,6 +17744,15 @@
     "src/lib/kit-builder/index.ts"
    ],
    "casos": 5
+  },
+  {
+   "arquivo": "tests/hooks/useKitCatalogPriceRefresh.race.test.ts",
+   "tipo": "unit",
+   "linhas": 129,
+   "testa": [
+    "src/hooks/kit-builder/useKitCatalogPriceRefresh.ts"
+   ],
+   "casos": 3
   },
   {
    "arquivo": "tests/hooks/useKitStockValidation.test.ts",
@@ -22723,6 +22733,7 @@
   "src/hooks/kit-builder/useKitBuilderPageState.ts": 5,
   "src/hooks/kit-builder/useKitBuilderQueries.ts": 3,
   "src/hooks/kit-builder/useKitBuilderTransformers.ts": 3,
+  "src/hooks/kit-builder/useKitCatalogPriceRefresh.ts": 1,
   "src/hooks/kit-builder/useKitFitsValidation.ts": 1,
   "src/hooks/kit-builder/useKitPriceValidation.ts": 1,
   "src/hooks/kit-builder/useKitStockValidation.ts": 2,
@@ -22926,7 +22937,7 @@
   "src/lib/kit-builder/item-sort.ts": 1,
   "src/lib/kit-builder/persistence.ts": 5,
   "src/lib/kit-builder/price-calculator.ts": 2,
-  "src/lib/kit-builder/pricing-availability.ts": 1,
+  "src/lib/kit-builder/pricing-availability.ts": 2,
   "src/lib/kit-builder/snapshot/read-draft.ts": 1,
   "src/lib/kit-builder/types.ts": 6,
   "src/lib/kit-builder/volume-calculator.ts": 1,

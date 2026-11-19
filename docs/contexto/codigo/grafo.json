@@ -1,8 +1,8 @@
 {
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
- "nos": 2868,
- "arestas": 11315,
+ "nos": 2869,
+ "arestas": 11321,
  "hubs": [
   {
    "arquivo": "src/lib/utils.ts",
@@ -10,7 +10,7 @@
   },
   {
    "arquivo": "src/components/ui/button.tsx",
-   "importado_por": 644
+   "importado_por": 645
   },
   {
    "arquivo": "src/components/ui/badge.tsx",
@@ -66,7 +66,7 @@
   },
   {
    "arquivo": "src/lib/kit-builder/index.ts",
-   "importado_por": 115
+   "importado_por": 116
   },
   {
    "arquivo": "supabase/functions/_shared/cors.ts",

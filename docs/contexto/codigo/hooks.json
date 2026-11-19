@@ -1,7 +1,7 @@
 {
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
- "total": 632,
+ "total": 633,
  "hooks": [
   {
    "arquivo": "docs/agentes/resgates/quote-comments/codigo/useQuoteComments.ts",
@@ -9861,7 +9861,7 @@
    "hooks_exportados": [
     "useKitBuilderPageState"
    ],
-   "linhas": 551,
+   "linhas": 560,
    "dominio": "hooks/kit-builder",
    "tabelas": [],
    "rpcs": [],
@@ -9876,6 +9876,7 @@
     "useKitAutoSave",
     "useKitBuilder",
     "useKitBuilderQuote",
+    "useKitCatalogPriceRefresh",
     "useKitUndoRedo",
     "useSearchParams",
     "useState",
@@ -9931,6 +9932,32 @@
     "src/hooks/kit-builder/useKitBuilderQueries.ts"
    ],
    "coberto_por_testes": 3
+  },
+  {
+   "arquivo": "src/hooks/kit-builder/useKitCatalogPriceRefresh.ts",
+   "hooks_exportados": [
+    "useKitCatalogPriceRefresh"
+   ],
+   "linhas": 172,
+   "dominio": "hooks/kit-builder",
+   "tabelas": [],
+   "rpcs": [],
+   "edges": [],
+   "hooks_internos": [
+    "useCallback",
+    "useEffect",
+    "useMemo",
+    "useRef",
+    "useState"
+   ],
+   "canais_realtime": [],
+   "usado_por": 3,
+   "usado_por_arquivos": [
+    "src/components/kit-builder/KitSummary.tsx",
+    "src/components/kit-builder/kit-summary/KitPricingCard.tsx",
+    "src/hooks/kit-builder/useKitBuilderPageState.ts"
+   ],
+   "coberto_por_testes": 1
   },
   {
    "arquivo": "src/hooks/kit-builder/useKitCollaboration.ts",

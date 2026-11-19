@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "cf61cb6dfafa367e71dda795629d68149839ad2e",
+  "sha": "7da0d491643c3e1f298528f40b51031b2e3e674a",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-19 01:26 UTC",
-  "files_total": 10898,
-  "code_files": 8921,
-  "code_lines": 1264416
+  "generated_at": "2026-11-19 02:24 UTC",
+  "files_total": 10900,
+  "code_files": 8923,
+  "code_lines": 1264893
  },
  "version": "1.3.2",
- "facts_hash": "3337f94352da137b",
+ "facts_hash": "c8126475a97d52a8",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -1129,7 +1129,7 @@
   "package_manager": "npm",
   "languages": {
    ".sql": 3442,
-   ".ts": 3045,
+   ".ts": 3047,
    ".tsx": 1969,
    ".mjs": 450,
    ".py": 15,
@@ -137731,7 +137731,7 @@
      "save_custom_kit_atomic",
      "set_custom_kit_pinned"
     ],
-    "deps_count": 255
+    "deps_count": 256
    },
    {
     "path": "",
@@ -137760,7 +137760,7 @@
      "save_custom_kit_atomic",
      "set_custom_kit_pinned"
     ],
-    "deps_count": 91
+    "deps_count": 92
    },
    {
     "path": "",
@@ -138541,7 +138541,7 @@
      "save_custom_kit_atomic",
      "set_custom_kit_pinned"
     ],
-    "deps_count": 136
+    "deps_count": 137
    },
    {
     "path": "",
@@ -147458,6 +147458,10 @@
     "file": "src/hooks/kit-builder/useKitBuilderQueries.ts"
    },
    {
+    "name": "useKitCatalogPriceRefresh",
+    "file": "src/hooks/kit-builder/useKitCatalogPriceRefresh.ts"
+   },
+   {
     "name": "useKitCollaborators",
     "file": "src/hooks/kit-builder/useKitCollaboration.ts"
    },
@@ -149672,7 +149676,7 @@
   {
    "module": "src/components",
    "files": 1427,
-   "lines": 282283,
+   "lines": 282312,
    "tables": [
     "admin_audit_log",
     "art_file_attachments",
@@ -150035,8 +150039,8 @@
   },
   {
    "module": "src/hooks",
-   "files": 489,
-   "lines": 91833,
+   "files": 490,
+   "lines": 92014,
    "tables": [
     "admin_audit_log",
     "admin_settings",
@@ -150530,7 +150534,7 @@
   {
    "module": "src/pages",
    "files": 367,
-   "lines": 84547,
+   "lines": 84546,
    "tables": [
     "ai_usage_events",
     "bot_detection_log",
@@ -151778,8 +151782,8 @@
   },
   {
    "module": "tests",
-   "files": 1096,
-   "lines": 172496,
+   "files": 1097,
+   "lines": 172764,
    "tables": [
     "bot_detection_log",
     "clients",
@@ -167462,6 +167466,10 @@
     "msg": "O rascunho do kit está em um formato inválido."
    },
    {
+    "file": "src/hooks/kit-builder/useKitCatalogPriceRefresh.ts",
+    "msg": "Não foi possível consultar os preços do catálogo. Tente novamente."
+   },
+   {
     "file": "src/hooks/kit-builder/useKitCollaboration.ts",
     "msg": "Kit não definido"
    },
@@ -172608,6 +172616,14 @@
    {
     "file": "src/hooks/kit-builder/useKitBuilderTransformers.ts",
     "text": "Missing catalog metadata must not be interpreted as permission to print."
+   },
+   {
+    "file": "src/hooks/kit-builder/useKitCatalogPriceRefresh.ts",
+    "text": "- e o `finally` da consulta velha nao pode liberar a consulta NOVA, senao"
+   },
+   {
+    "file": "src/hooks/kit-builder/useKitCatalogPriceRefresh.ts",
+    "text": "descartada nao pode soltar a consulta que a substituiu."
    },
    {
     "file": "src/hooks/kit-builder/useKitStockValidation.ts",
@@ -272735,6 +272751,10 @@
    },
    {
     "file": "tests/components/kit-builder/financial-availability.test.tsx",
+    "name": "offers the catalog refresh action only while prices are unknown"
+   },
+   {
+    "file": "tests/components/kit-builder/financial-availability.test.tsx",
     "name": "uses the same honest values in the printable presentation"
    },
    {
@@ -285834,6 +285854,22 @@
     "name": "a variant callback cannot relabel an unknown price as known or normalize a negative value"
    },
    {
+    "file": "tests/hooks/useKitBuilderPageState.financial.test.tsx",
+    "name": "confirmed catalog refresh repairs only unknown prices and preserves the complete selected snapshot"
+   },
+   {
+    "file": "tests/hooks/useKitBuilderPageState.financial.test.tsx",
+    "name": "a failed catalog refresh never promotes stale cached facts to a known price"
+   },
+   {
+    "file": "tests/hooks/useKitBuilderPageState.financial.test.tsx",
+    "name": "a catalog reply for a previous account cannot update the current snapshot"
+   },
+   {
+    "file": "tests/hooks/useKitBuilderPageState.financial.test.tsx",
+    "name": "a catalog reply that arrives after unmount writes nothing"
+   },
+   {
     "file": "tests/hooks/useKitBuilderPageState.legacy.test.tsx",
     "name": "Original PageState operational integration preserves its state/actions"
    },
@@ -286160,6 +286196,22 @@
    {
     "file": "tests/hooks/useKitBuilderTransformers.test.ts",
     "name": "preserva um peso positivo medido"
+   },
+   {
+    "file": "tests/hooks/useKitCatalogPriceRefresh.race.test.ts",
+    "name": "useKitCatalogPriceRefresh — corridas"
+   },
+   {
+    "file": "tests/hooks/useKitCatalogPriceRefresh.race.test.ts",
+    "name": "trocar de kit com consulta em voo LIBERA o botão de verdade"
+   },
+   {
+    "file": "tests/hooks/useKitCatalogPriceRefresh.race.test.ts",
+    "name": "dois cliques seguidos no mesmo kit disparam uma consulta só"
+   },
+   {
+    "file": "tests/hooks/useKitCatalogPriceRefresh.race.test.ts",
+    "name": "depois que a consulta termina, o botão volta a funcionar"
    },
    {
     "file": "tests/hooks/useKitStockValidation.test.ts",
@@ -445950,7 +446002,7 @@
   },
   "src/components/kit-builder/KitSummary.tsx": {
    "path": "src/components/kit-builder/KitSummary.tsx",
-   "lines": 323,
+   "lines": 327,
    "exports": [
     "function shouldRenderKitStockForecast",
     "function KitSummary"
@@ -446201,7 +446253,7 @@
   },
   "src/components/kit-builder/kit-summary/KitPricingCard.tsx": {
    "path": "src/components/kit-builder/kit-summary/KitPricingCard.tsx",
-   "lines": 163,
+   "lines": 188,
    "exports": [
     "function KitPricingCard"
    ]
@@ -464450,7 +464502,7 @@
   },
   "src/hooks/kit-builder/useKitBuilderPageState.ts": {
    "path": "src/hooks/kit-builder/useKitBuilderPageState.ts",
-   "lines": 551,
+   "lines": 560,
    "exports": [
     "function isKitMakerLandingRoute",
     "function useKitBuilderPageState"
@@ -464517,6 +464569,25 @@
     "Missing catalog metadata must not be interpreted as permission to print."
    ],
    "doc": "Kit Builder Transformers Pure functions to transform external DB products into Kit types."
+  },
+  "src/hooks/kit-builder/useKitCatalogPriceRefresh.ts": {
+   "path": "src/hooks/kit-builder/useKitCatalogPriceRefresh.ts",
+   "lines": 172,
+   "exports": [
+    "interface KitPriceRefresh",
+    "function useKitCatalogPriceRefresh"
+   ],
+   "errors": [
+    "Não foi possível consultar os preços do catálogo. Tente novamente."
+   ],
+   "rule_comments": [
+    "- e o `finally` da consulta velha nao pode liberar a consulta NOVA, senao",
+    "descartada nao pode soltar a consulta que a substituiu."
+   ],
+   "doc": "Destrava o kit cujo catálogo ainda não informou preço: consulta o catálogo de novo e substitui `price`/`priceKnown` SÓ nas linhas desconhecidas, preservando o restante do snapshot (quantidade, variante, personalização) e o passo do wizard. Vive em módulo próprio porque `useKitBuilderPageState.ts` já …",
+   "hooks": [
+    "useKitCatalogPriceRefresh"
+   ]
   },
   "src/hooks/kit-builder/useKitCollaboration.ts": {
    "path": "src/hooks/kit-builder/useKitCollaboration.ts",
@@ -485681,7 +485752,7 @@
   },
   "src/pages/kit-builder/KitBuilderPage.tsx": {
    "path": "src/pages/kit-builder/KitBuilderPage.tsx",
-   "lines": 500,
+   "lines": 499,
    "exports": [
     "function KitBuilderPage"
    ],
@@ -527168,7 +527239,7 @@
   },
   "tests/components/kit-builder/financial-availability.test.tsx": {
    "path": "tests/components/kit-builder/financial-availability.test.tsx",
-   "lines": 181,
+   "lines": 217,
    "is_test": true,
    "tests": [
     "Financial availability is visible without inventing zero prices",
@@ -527177,6 +527248,7 @@
     "does not show a ready badge or partial money total in the hero",
     "keeps composition metadata while showing unknown per-line and total prices",
     "does not generate a money breakdown or quantity discount from unknown prices",
+    "offers the catalog refresh action only while prices are unknown",
     "uses the same honest values in the printable presentation",
     "blocks PDF, quote, draft persistence and WhatsApp while prices are unknown",
     "keeps existing markup and actions for a genuine known zero"
@@ -534978,7 +535050,7 @@
   },
   "tests/hooks/useKitBuilderPageState.financial.test.tsx": {
    "path": "tests/hooks/useKitBuilderPageState.financial.test.tsx",
-   "lines": 390,
+   "lines": 493,
    "is_test": true,
    "rule_comments": [
     "expõe apenas `isSaving, isAutoSaving, isCreatingQuote, lastSavedAt, autoSaveError,",
@@ -534991,7 +535063,11 @@
     "rejects malformed priceKnown=%s rather than treating it as known",
     "keeps unknown items selected and invalidates the composition",
     "honors a genuine zero price and the historical undefined flag",
-    "a variant callback cannot relabel an unknown price as known or normalize a negative value"
+    "a variant callback cannot relabel an unknown price as known or normalize a negative value",
+    "confirmed catalog refresh repairs only unknown prices and preserves the complete selected snapshot",
+    "a failed catalog refresh never promotes stale cached facts to a known price",
+    "a catalog reply for a previous account cannot update the current snapshot",
+    "a catalog reply that arrives after unmount writes nothing"
    ]
   },
   "tests/hooks/useKitBuilderPageState.legacy.test.tsx": {
@@ -535150,6 +535226,18 @@
     "does not convert an absent sale price into a free kit item",
     "trata peso inválido (%s) como desconhecido",
     "preserva um peso positivo medido"
+   ]
+  },
+  "tests/hooks/useKitCatalogPriceRefresh.race.test.ts": {
+   "path": "tests/hooks/useKitCatalogPriceRefresh.race.test.ts",
+   "lines": 129,
+   "is_test": true,
+   "doc": "Corridas de `useKitCatalogPriceRefresh`, o resgate que tira o kit do beco sem saída quando o catálogo ainda não informou preço. O caso central aqui foi achado por revisão adversarial, não por mim: com o controle de \"em voo\" guardado como booleano, trocar de kit no meio de uma consulta deixava `isRef …",
+   "tests": [
+    "useKitCatalogPriceRefresh — corridas",
+    "trocar de kit com consulta em voo LIBERA o botão de verdade",
+    "dois cliques seguidos no mesmo kit disparam uma consulta só",
+    "depois que a consulta termina, o botão volta a funcionar"
    ]
   },
   "tests/hooks/useKitStockValidation.test.ts": {
@@ -547829,10 +547917,26 @@
   }
  },
  "git": {
-  "sha": "cf61cb6dfafa367e71dda795629d68149839ad2e",
+  "sha": "7da0d491643c3e1f298528f40b51031b2e3e674a",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "7da0d49",
+    "date": "2026-11-18",
+    "author": "adm01-debug",
+    "subject": "feat(kit): destrava o kit cujo catalogo ainda nao informou preco (#3865)",
+    "files": [
+     "src/components/kit-builder/KitSummary.tsx",
+     "src/components/kit-builder/kit-summary/KitPricingCard.tsx",
+     "src/hooks/kit-builder/useKitBuilderPageState.ts",
+     "src/hooks/kit-builder/useKitCatalogPriceRefresh.ts",
+     "src/pages/kit-builder/KitBuilderPage.tsx",
+     "tests/components/kit-builder/financial-availability.test.tsx",
+     "tests/hooks/useKitBuilderPageState.financial.test.tsx",
+     "tests/hooks/useKitCatalogPriceRefresh.race.test.ts"
+    ]
+   },
    {
     "sha": "cf61cb6",
     "date": "2026-11-18",
@@ -548167,19 +548271,6 @@
      "src/components/admin/telemetry/__tests__/BridgeCallDetailDrawer.test.tsx",
      "src/pages/admin/AdminTelemetriaPage.tsx"
     ]
-   },
-   {
-    "sha": "c003142",
-    "date": "2026-11-18",
-    "author": "adm01-debug",
-    "subject": "feat(kit): gera PDF real do kit no lugar de window.print() (#3835)",
-    "files": [
-     "src/pages/kit-builder/KitBuilderPage.tsx",
-     "src/utils/__tests__/kitPdfGenerator.test.ts",
-     "src/utils/kitPdfGenerator.ts",
-     "src/utils/kitPdfPrimitives.ts",
-     "tests/components/pages/KitBuilderPage.test.tsx"
-    ]
    }
   ],
   "hot_files": [
@@ -548202,6 +548293,38 @@
    [
     "docs/agentes/resgates/2026-11-18-inventario-trabalho-nao-ligado.md",
     2
+   ],
+   [
+    "src/components/kit-builder/KitSummary.tsx",
+    1
+   ],
+   [
+    "src/components/kit-builder/kit-summary/KitPricingCard.tsx",
+    1
+   ],
+   [
+    "src/hooks/kit-builder/useKitBuilderPageState.ts",
+    1
+   ],
+   [
+    "src/hooks/kit-builder/useKitCatalogPriceRefresh.ts",
+    1
+   ],
+   [
+    "src/pages/kit-builder/KitBuilderPage.tsx",
+    1
+   ],
+   [
+    "tests/components/kit-builder/financial-availability.test.tsx",
+    1
+   ],
+   [
+    "tests/hooks/useKitBuilderPageState.financial.test.tsx",
+    1
+   ],
+   [
+    "tests/hooks/useKitCatalogPriceRefresh.race.test.ts",
+    1
    ],
    [
     "src/components/inventory/StockDashboard.tsx",
@@ -548229,38 +548352,6 @@
    ],
    [
     "src/stores/voiceFilterBridge.ts",
-    1
-   ],
-   [
-    "tests/hooks/useVoiceFilterApply.reset.test.tsx",
-    1
-   ],
-   [
-    "tests/lib/templateExport.test.ts",
-    1
-   ],
-   [
-    "src/components/quotes/AdminTemplateDialogs.tsx",
-    1
-   ],
-   [
-    "src/components/quotes/AdminTemplatesManager.tsx",
-    1
-   ],
-   [
-    "src/components/quotes/QuoteTemplatesList.tsx",
-    1
-   ],
-   [
-    "tests/components/QuoteTemplatesList.guards.test.tsx",
-    1
-   ],
-   [
-    "src/hooks/quotes/quoteTemplateItemGuard.ts",
-    1
-   ],
-   [
-    "src/hooks/quotes/useQuoteTemplates.ts",
     1
    ]
   ]

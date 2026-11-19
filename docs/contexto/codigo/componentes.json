@@ -10181,7 +10181,7 @@
     "KitPricingCard"
    ],
    "export_default": null,
-   "linhas": 163,
+   "linhas": 188,
    "dominio": "components/kit-builder",
    "hooks_locais": [],
    "tabelas": [],
@@ -10521,7 +10521,7 @@
     "KitSummary"
    ],
    "export_default": null,
-   "linhas": 323,
+   "linhas": 327,
    "dominio": "components/kit-builder",
    "hooks_locais": [
     "useKitStockValidation"
@@ -16351,7 +16351,7 @@
    "hooks_locais": [],
    "tabelas": [],
    "edges": [],
-   "usado_por": 639,
+   "usado_por": 640,
    "orfao": false
   },
   {
@@ -18863,7 +18863,7 @@
     "KitBuilderPage"
    ],
    "export_default": "KitBuilderPage",
-   "linhas": 500,
+   "linhas": 499,
    "dominio": "pages/kit-builder",
    "hooks_locais": [
     "useKitBuilderPageState",

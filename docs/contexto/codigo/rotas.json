@@ -6633,6 +6633,7 @@
     "useKitBuilderPageState",
     "useKitBuilderQueries",
     "useKitBuilderQuote",
+    "useKitCatalogPriceRefresh",
     "useKitCollaborators",
     "useKitComments",
     "useKitComponentPrintAreas",
@@ -6683,6 +6684,7 @@
     "useKitBuilderPageState",
     "useKitBuilderQueries",
     "useKitBuilderQuote",
+    "useKitCatalogPriceRefresh",
     "useKitCollaborators",
     "useKitComments",
     "useKitComponentPrintAreas",
@@ -6738,7 +6740,7 @@
     "listbox",
     "menu"
    ],
-   "arquivos_puxados": 101
+   "arquivos_puxados": 102
   },
   {
    "protegida": false,
@@ -24711,6 +24713,7 @@
     "useKitBuilderPageState",
     "useKitBuilderQueries",
     "useKitBuilderQuote",
+    "useKitCatalogPriceRefresh",
     "useKitCollaborators",
     "useKitComments",
     "useKitComponentPrintAreas",
@@ -24749,6 +24752,7 @@
     "useKitBuilderPageState",
     "useKitBuilderQueries",
     "useKitBuilderQuote",
+    "useKitCatalogPriceRefresh",
     "useKitCollaborators",
     "useKitComments",
     "useKitComponentPrintAreas",
@@ -24800,7 +24804,7 @@
     "listbox",
     "menu"
    ],
-   "arquivos_puxados": 100
+   "arquivos_puxados": 101
   },
   {
    "protegida": false,
