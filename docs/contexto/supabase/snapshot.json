@@ -164756,9 +164756,13 @@
             {
               "file": "supabase/migrations/20260626184039_revoke_anon_internal_analytics_rupture_kpi_20260626.sql",
               "hits": 1
+            },
+            {
+              "file": "supabase/migrations/20261118223000_fn_supplier_risk_breakdown.sql",
+              "hits": 1
             }
           ],
-          "code_total_files": 1,
+          "code_total_files": 2,
           "cron": [],
           "db": [],
           "triggers": [],
@@ -169159,6 +169163,41 @@
         "name": "fn_super_filtro_product_ids",
         "owner": "postgres",
         "returns": "TABLE(product_id uuid)",
+        "schema": "public",
+        "security_definer": true,
+        "strict": false,
+        "volatility": "stable"
+      },
+      {
+        "args": "p_preferred_only boolean",
+        "callers": {
+          "code": [
+            {
+              "file": "supabase/migrations/20261118223000_fn_supplier_risk_breakdown.sql",
+              "hits": 1
+            }
+          ],
+          "code_total_files": 1,
+          "cron": [],
+          "db": [],
+          "triggers": [],
+          "views": []
+        },
+        "comment": "Breakdown de risco de ruptura por fornecedor a partir de public.mv_stock_rupture_alert (refresh horario). Devolve as 14 colunas do tipo TS SupplierRiskRow. pct_risco = linhas nao-OK (ruptura+critico+alerta+atencao) / base completa do fornecedor (inclui OK), escala 0-100 ja arredondada, porque o front imprime o valor cru + \"%\"; NAO e taxa de CRITICO — o selo em RupturePanelEma le este campo rotulado \"% em risco\". sem_sinal = linhas OK com estoque e EMA no piso (<= 0,01): nao existe nivel \"SEM SINAL\" na fonte; buckets sao mutuamente exclusivos e somam total. valor_risco_reais NAO e perda potencial: e capital parado em itens sob risco que AINDA TEM ESTOQUE — o balde RUPTURA entra com 0,00 por construcao, porque na MV ruptura exige stock_live = 0 e valor_estoque_reais = stock_live * unit_cost. Para exposicao fisica de ruptura use gap_total_un. SECURITY DEFINER (a MV nao concede SELECT a authenticated) com guarda is_supervisor_or_above no WHERE: sem papel, zero linhas e o selo nao renderiza. Consumida por useSupplierRiskBreakdown / RupturePanelEma.",
+        "config": [
+          "search_path=public, pg_catalog, pg_temp"
+        ],
+        "definition": null,
+        "definition_sha": "d94e4e4fcbe0894b",
+        "execute_api_roles": "authenticated, service_role",
+        "execute_public": false,
+        "is_trigger_fn": false,
+        "kind": "function",
+        "language": "sql",
+        "leakproof": false,
+        "name": "fn_supplier_risk_breakdown",
+        "owner": "postgres",
+        "returns": "TABLE(supplier_id uuid, supplier_name text, total bigint, ruptura bigint, critico bigint, alerta bigint, atencao bigint, sem_sinal bigint, ok bigint, pct_risco numeric, score_medio numeric, gap_total_un bigint, spikes bigint, valor_risco_reais numeric)",
         "schema": "public",
         "security_definer": true,
         "strict": false,
@@ -181971,7 +182010,7 @@
               "hits": 1
             }
           ],
-          "code_total_files": 44,
+          "code_total_files": 45,
           "cron": [],
           "db": [
             "public.assert_quote_discount_integrity",
@@ -181984,6 +182023,7 @@
             "public.fn_get_rupture_alerts",
             "public.fn_get_supplier_reliability",
             "public.fn_quotes_validate_discount",
+            "public.fn_supplier_risk_breakdown",
             "public.force_user_logout",
             "public.get_step_up_audit",
             "public.is_admin",
@@ -238665,6 +238705,12 @@
         "statements": 8,
         "statements_sha": "981bb1b24ba04913",
         "version": "20261117073000"
+      },
+      {
+        "name": "fn_supplier_risk_breakdown",
+        "statements": 4,
+        "statements_sha": "cebcb6a595f8e1c8",
+        "version": "20261118223000"
       }
     ],
     "policies": [
@@ -251315,11 +251361,6 @@
         {
           "publication": "supabase_realtime_messages_publication",
           "schema": "realtime",
-          "table": "messages_2026_11_15"
-        },
-        {
-          "publication": "supabase_realtime_messages_publication",
-          "schema": "realtime",
           "table": "messages_2026_11_16"
         },
         {
@@ -251346,6 +251387,11 @@
           "publication": "supabase_realtime_messages_publication",
           "schema": "realtime",
           "table": "messages_2026_11_21"
+        },
+        {
+          "publication": "supabase_realtime_messages_publication",
+          "schema": "realtime",
+          "table": "messages_2026_11_22"
         }
       ]
     },

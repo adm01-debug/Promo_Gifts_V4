@@ -2,6 +2,14 @@
 
 Diff semântico gerado a cada coleta em que algo mudou.
 
+## 2026-11-19 01:23 UTC
+
+- **functions** adicionado (1): `public.fn_supplier_risk_breakdown(p_preferred_only boolean)`
+- **functions** alterado (2): `public.fn_rupture_by_level(p_nivel text, p_limit integer, p_offset integer, p_preferred boolean)`, `public.is_supervisor_or_above(_user_id uuid)`
+- **migrations** adicionado (1): `20261118223000_fn_supplier_risk_breakdown`
+- **realtime** adicionado (1): `supabase_realtime_messages_publication:realtime.messages_2026_11_22`
+- **realtime** removido (1): `supabase_realtime_messages_publication:realtime.messages_2026_11_15`
+
 ## 2026-11-18 15:17 UTC
 
 - **functions** alterado (1): `public.fn_global_search(p_term text, p_limit integer, p_types text[])`

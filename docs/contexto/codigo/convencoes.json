@@ -23,7 +23,7 @@
    "src/services (10)"
   ],
   "testes": [
-   "tests/ (1079)",
+   "tests/ (1080)",
    "co-localizado (__tests__) (701)",
    "e2e/ (625)"
   ],
@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "test(orcamentos): trava o contrato de privacidade do export de template (#3862)",
    "fix(orcamentos): telas de template nao podem mentir sobre o que aconteceu (#3860)",
    "docs: recibo de aplicacao — 20261118223000 (E15) (#3857)",
    "fix(orcamentos): recusa item invalido antes de gravar template (#3859)",
-   "fix(orcamentos): template que falha ao salvar nao pode apagar o que o vendedor digitou (#3858)",
-   "docs(resgate): corrige medição falsa que entrou na main pela #3855 (#3856)"
+   "fix(orcamentos): template que falha ao salvar nao pode apagar o que o vendedor digitou (#3858)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",

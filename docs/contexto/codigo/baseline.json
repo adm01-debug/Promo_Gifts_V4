@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "1c0f023aae69eeaeed5cc9dfb7619aca9d1637a2",
+  "commit": "027388390bc46481209b2f2ba3b2cb53dcd25ab0",
   "branch": "main",
-  "data_commit": "2026-11-18T22:11:33-03:00",
+  "data_commit": "2026-11-18T22:11:37-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "02738839",
+    "data": "2026-11-18",
+    "assunto": "test(orcamentos): trava o contrato de privacidade do export de template (#3862)"
+   },
    {
     "sha": "1c0f023a",
     "data": "2026-11-18",
@@ -126,22 +131,17 @@
     "sha": "44f077e4",
     "data": "2026-11-18",
     "assunto": "feat(quotes): liga o funil de orçamentos à tela e para de chamar expirado de rascunho (#3836)"
-   },
-   {
-    "sha": "a839f6be",
-    "data": "2026-11-18",
-    "assunto": "feat(components): resgata os cards de observabilidade das bridges em /admin/telemetria (#3837)"
    }
   ],
-  "arquivos_mudados_7d": 1516,
+  "arquivos_mudados_7d": 1517,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
-    "mudancas": 2450
+    "mudancas": 2458
    },
    {
     "pasta": "src/components/products",
-    "mudancas": 1229
+    "mudancas": 1233
    },
    {
     "pasta": "tests/edge-functions/live",
@@ -153,7 +153,7 @@
    },
    {
     "pasta": "src/components/quotes",
-    "mudancas": 777
+    "mudancas": 790
    },
    {
     "pasta": "src/pages/magazine",
@@ -169,15 +169,15 @@
    },
    {
     "pasta": "src/components/ui",
-    "mudancas": 590
+    "mudancas": 592
    },
    {
     "pasta": "supabase/functions/_shared",
-    "mudancas": 582
+    "mudancas": 588
    },
    {
     "pasta": "src/components/mockup",
-    "mudancas": 537
+    "mudancas": 541
    },
    {
     "pasta": "src/pages/admin",
@@ -185,7 +185,7 @@
    },
    {
     "pasta": "src/pages/quotes",
-    "mudancas": 424
+    "mudancas": 427
    },
    {
     "pasta": "src/components/kit-builder",
@@ -206,12 +206,12 @@
     "mudancas": 43
    },
    {
-    "arquivo": "RELATORIO_CI.md",
-    "mudancas": 38
-   },
-   {
     "arquivo": "PENDENCIAS.md",
     "mudancas": 37
+   },
+   {
+    "arquivo": "RELATORIO_CI.md",
+    "mudancas": 36
    },
    {
     "arquivo": "docs/coordenacao/conflitos-semanticos.md",
@@ -231,7 +231,7 @@
    },
    {
     "arquivo": "supabase/EDGE_FUNCTIONS_DEPLOY_LOG.md",
-    "mudancas": 21
+    "mudancas": 20
    },
    {
     "arquivo": "analise-prs/progresso.json",
@@ -246,15 +246,15 @@
     "mudancas": 19
    },
    {
-    "arquivo": "src/pages/mockups/MockupGenerator.tsx",
-    "mudancas": 17
-   },
-   {
     "arquivo": "analise-branches/RELATORIO_BRANCHES.md",
     "mudancas": 16
    },
    {
     "arquivo": "src/hooks/kit-builder/useKitAutoSave.ts",
+    "mudancas": 16
+   },
+   {
+    "arquivo": "src/pages/mockups/MockupGenerator.tsx",
     "mudancas": 16
    },
    {
@@ -274,10 +274,6 @@
     "mudancas": 14
    },
    {
-    "arquivo": "scripts/validate-quotes-list.mjs",
-    "mudancas": 14
-   },
-   {
     "arquivo": "src/components/kit-builder/PersonalizationConfig.tsx",
     "mudancas": 14
    },
@@ -294,22 +290,26 @@
     "mudancas": 14
    },
    {
-    "arquivo": ".github/SENTINEL_SHA_ALLOWLIST.txt",
+    "arquivo": ".github/workflows/db-schema-drift-check.yml",
+    "mudancas": 13
+   },
+   {
+    "arquivo": ".github/workflows/e2e-swatch-quickview.yml",
     "mudancas": 13
    }
   ],
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 482
+    "commits": 477
    },
    {
     "autor": "Claude",
-    "commits": 102
+    "commits": 101
    },
    {
     "autor": "Joaquim Ataides",
-    "commits": 81
+    "commits": 80
    },
    {
     "autor": "github-actions[bot]",
@@ -322,9 +322,9 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 10966,
-  "arquivos_codigo": 5476,
-  "linhas_codigo": 1043138,
+  "arquivos_total": 10967,
+  "arquivos_codigo": 5477,
+  "linhas_codigo": 1043275,
   "rotas": 139,
   "rotas_http_backend": 13,
   "vistas_por_id": 0,
@@ -336,7 +336,7 @@
   "tabelas": 527,
   "migrations": 3100,
   "cron_jobs": 122,
-  "testes": 2609,
+  "testes": 2610,
   "workflows": 89,
   "scripts": 283,
   "docs_md": 1482
@@ -2103,8 +2103,8 @@
    "linhas": 42
   },
   "tests/lib": {
-   "arquivos": 68,
-   "linhas": 9744
+   "arquivos": 69,
+   "linhas": 9881
   },
   "tests/magazine": {
    "arquivos": 18,

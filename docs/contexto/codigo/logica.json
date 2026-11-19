@@ -9621,7 +9621,7 @@
    "usado_por_modulos": [
     "components/quotes"
    ],
-   "coberto_por_testes": 0,
+   "coberto_por_testes": 1,
    "orfao": false
   },
   {
