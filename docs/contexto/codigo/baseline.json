@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "6f0bd2fc52c0f63d16ec73029b14e3109acd39a3",
+  "commit": "fa3463ca03cef99a1b8bc4d93f381980939c1b30",
   "branch": "main",
-  "data_commit": "2026-11-19T15:12:12-03:00",
+  "data_commit": "2026-11-19T15:13:54-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "fa3463ca",
+    "data": "2026-11-19",
+    "assunto": "chore(main): release gifts-store 1.11.0 (#3895)"
+   },
    {
     "sha": "6f0bd2fc",
     "data": "2026-11-19",
@@ -126,22 +131,17 @@
     "sha": "892f9c63",
     "data": "2026-11-19",
     "assunto": "fix(seguranca): link expirado de orcamento deixa de devolver dados do cliente (#3869)"
-   },
-   {
-    "sha": "86ac19c8",
-    "data": "2026-11-19",
-    "assunto": "docs(migrations-log): recibo E15 da aplicacao de 20261108235500 (#3868)"
    }
   ],
   "arquivos_mudados_7d": 1429,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
-    "mudancas": 1547
+    "mudancas": 1539
    },
    {
     "pasta": "src/components/products",
-    "mudancas": 772
+    "mudancas": 768
    },
    {
     "pasta": "recovery/src-legacy/src",
@@ -157,7 +157,7 @@
    },
    {
     "pasta": "src/components/quotes",
-    "mudancas": 501
+    "mudancas": 488
    },
    {
     "pasta": "src/pages/magazine",
@@ -169,15 +169,15 @@
    },
    {
     "pasta": "src/components/ui",
-    "mudancas": 369
+    "mudancas": 367
    },
    {
     "pasta": "supabase/functions/_shared",
-    "mudancas": 369
+    "mudancas": 363
    },
    {
     "pasta": "src/components/mockup",
-    "mudancas": 353
+    "mudancas": 349
    },
    {
     "pasta": "src/pages/admin",
@@ -189,7 +189,7 @@
    },
    {
     "pasta": "src/components/kit-builder",
-    "mudancas": 269
+    "mudancas": 268
    },
    {
     "pasta": "src/pages/products",
@@ -203,26 +203,26 @@
    },
    {
     "arquivo": "package.json",
-    "mudancas": 38
+    "mudancas": 37
    },
    {
     "arquivo": "docs/coordenacao/conflitos-semanticos.md",
     "mudancas": 28
    },
    {
-    "arquivo": "package-lock.json",
-    "mudancas": 23
-   },
-   {
     "arquivo": "RELATORIO_CI.md",
     "mudancas": 22
    },
    {
-    "arquivo": "PENDENCIAS.md",
-    "mudancas": 21
+    "arquivo": "package-lock.json",
+    "mudancas": 22
    },
    {
     "arquivo": ".github/workflows/deploy-gates.yml",
+    "mudancas": 20
+   },
+   {
+    "arquivo": "PENDENCIAS.md",
     "mudancas": 20
    },
    {
@@ -243,7 +243,7 @@
    },
    {
     "arquivo": "CHANGELOG.md",
-    "mudancas": 11
+    "mudancas": 12
    },
    {
     "arquivo": "e2e/flows/magazine-preview-sticky-smoke.spec.ts",
@@ -301,7 +301,7 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 371
+    "commits": 369
    },
    {
     "autor": "Claude",
@@ -309,7 +309,7 @@
    },
    {
     "autor": "Joaquim Ataides",
-    "commits": 46
+    "commits": 45
    },
    {
     "autor": "github-actions[bot]",
@@ -317,7 +317,7 @@
    },
    {
     "autor": "dependabot[bot]",
-    "commits": 6
+    "commits": 5
    }
   ]
  },

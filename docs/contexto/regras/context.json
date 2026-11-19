@@ -1,9 +1,9 @@
 {
  "meta": {
-  "sha": "6f0bd2fc52c0f63d16ec73029b14e3109acd39a3",
+  "sha": "fa3463ca03cef99a1b8bc4d93f381980939c1b30",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-19 18:13 UTC",
+  "generated_at": "2026-11-19 18:16 UTC",
   "files_total": 10928,
   "code_files": 8947,
   "code_lines": 1266908
@@ -548895,10 +548895,22 @@
   }
  },
  "git": {
-  "sha": "6f0bd2fc52c0f63d16ec73029b14e3109acd39a3",
+  "sha": "fa3463ca03cef99a1b8bc4d93f381980939c1b30",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "fa3463c",
+    "date": "2026-11-19",
+    "author": "github-actions[bot]",
+    "subject": "chore(main): release gifts-store 1.11.0 (#3895)",
+    "files": [
+     ".release-please-manifest.json",
+     "CHANGELOG.md",
+     "package-lock.json",
+     "package.json"
+    ]
+   },
    {
     "sha": "6f0bd2f",
     "date": "2026-11-19",
@@ -549206,15 +549218,6 @@
      "tests/hooks/useKitBuilderPageState.financial.test.tsx",
      "tests/hooks/useKitCatalogPriceRefresh.race.test.ts"
     ]
-   },
-   {
-    "sha": "cf61cb6",
-    "date": "2026-11-18",
-    "author": "adm01-debug",
-    "subject": "fix(ci): corrige tres afirmacoes falsas minhas no job Deno e o teto de timeout (#3864)",
-    "files": [
-     ".github/workflows/edge-functions-deno-tests.yml"
-    ]
    }
   ],
   "hot_files": [
@@ -549233,6 +549236,22 @@
    [
     "docs/coordenacao/conflitos-semanticos.md",
     3
+   ],
+   [
+    ".release-please-manifest.json",
+    2
+   ],
+   [
+    "CHANGELOG.md",
+    2
+   ],
+   [
+    "package-lock.json",
+    2
+   ],
+   [
+    "package.json",
+    2
    ],
    [
     ".migration-refs-baseline.json",
@@ -549280,22 +549299,6 @@
    ],
    [
     "src/lib/freight/columns.ts",
-    1
-   ],
-   [
-    "src/lib/freight/expandQuantities.ts",
-    1
-   ],
-   [
-    "src/lib/freight/index.ts",
-    1
-   ],
-   [
-    "src/lib/freight/resolveItemDimensions.ts",
-    1
-   ],
-   [
-    "src/lib/freight/types.ts",
     1
    ]
   ]

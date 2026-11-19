@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "chore(main): release gifts-store 1.11.0 (#3895)",
    "chore(ci): resgata mitigacao de artifact do e2e-cart (#3897)",
    "feat(frete): base do motor — tipos, unidades e medidas (Bloco A) (#3896)",
    "docs(migrations-log): recibo E15 — aplicação de 20261119094500 (#3894)",
-   "fix(db): termina a intenção da 20260706223316 sem aplicá-la — updated_at em crm_callback_events (#3892)",
-   "chore(main): release gifts-store 1.10.0 (#3781)"
+   "fix(db): termina a intenção da 20260706223316 sem aplicá-la — updated_at em crm_callback_events (#3892)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",

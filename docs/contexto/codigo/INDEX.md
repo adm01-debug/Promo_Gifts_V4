@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e de hora em hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `6f0bd2fc52c0f63d16ec73029b14e3109acd39a3` (2026-11-19T15:12:12-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e de hora em hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `fa3463ca03cef99a1b8bc4d93f381980939c1b30` (2026-11-19T15:13:54-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -593,24 +593,24 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - possiveis_segredos_no_codigo: 7 — ex.: scripts/ai-context/cenarios.mjs:102, src/components/admin/connections/__tests__/ConnectionSecurity.unit.test.tsx:9, src/integrations/supabase/client.ts:27
 
 ## Grafo de código (graphify)
-- 49391 nós · 83002 arestas · 2805 comunidades · grafo do commit `6f0bd2fc`
-- comunidades maiores: vitest (975), ref_components (890), ref_integrations (578), ref_node_child_process (499), @tanstack/react-query (429), ref_hooks (423), gotoAndSettle (414), react (357), ref_types (340), scripts (310), cors.ts (303), sonner (299)
+- 49394 nós · 83005 arestas · 2815 comunidades · grafo do commit `fa3463ca`
+- comunidades maiores: ref_components (884), vitest (870), ref_integrations (555), ref_lib (483), ref_node_child_process (479), ref_hooks (390), @tanstack/react-query (360), ref_types (352), ref_node_fs (342), react-router-dom (322), scripts (310), nav.ts (296)
 - símbolos mais chamados: gotoAndSettle() (e2e/helpers/nav.ts), re (?), q() (scripts/supabase_snapshot/snapshot.py), analyze() (tests/scripts/test_personalization_artifact_diagnostics.py), outer() (tests/scripts/test_personalization_artifact_diagnostics.py), json (?), useExternalDatabase() (recovery/src-legacy/src/hooks/useExternalDatabase.ts), concludeCheck() (scripts/check-result-contract.mjs), querySupabaseReadOnly() (scripts/supabase-read-only-query.mjs), loginAs() (e2e/helpers/auth.ts), inner() (tests/scripts/test_personalization_artifact_diagnostics.py), excluded_sql() (scripts/supabase_snapshot/snapshot.py)
 - consulta local: `graphify query "<pergunta>"`, `graphify path "<A>" "<B>"`, `graphify explain "<X>"`
 
 ## Hotspots (arquivos mais alterados, 90 dias)
 - supabase/MIGRATIONS_SYNC_LOG.md (67)
-- package.json (38)
+- package.json (37)
 - docs/coordenacao/conflitos-semanticos.md (28)
-- package-lock.json (23)
 - RELATORIO_CI.md (22)
-- PENDENCIAS.md (21)
+- package-lock.json (22)
 - .github/workflows/deploy-gates.yml (20)
+- PENDENCIAS.md (20)
 - audit/supabase-reference-catalog.temporary.json (15)
 - supabase/EDGE_FUNCTIONS_DEPLOY_LOG.md (15)
 - src/pages/kit-builder/KitBuilderPage.tsx (13)
 - src/pages/mockups/MockupGenerator.tsx (13)
-- CHANGELOG.md (11)
+- CHANGELOG.md (12)
 - e2e/flows/magazine-preview-sticky-smoke.spec.ts (11)
 - src/components/kit-builder/PersonalizationConfig.tsx (11)
 - src/hooks/kit-builder/useKitBuilderPageState.ts (11)
@@ -1023,7 +1023,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - `.github/PULL_REQUEST_TEMPLATE.md` (112 linhas)
 - `.github/SENTINEL_CHANGELOG.md` — Sentinel Changelog (188 linhas)
 - `AGENTS.md` — AGENTS.md — Promo Gifts V4 (111 linhas)
-- `CHANGELOG.md` — Changelog (2405 linhas)
+- `CHANGELOG.md` — Changelog (2417 linhas)
 - `CI_PROVA_P33.md` — CI_PROVA_P33.md — Prova Final de Conclusão CI (Sessão P33, 2026-10-30) (97 linhas)
 - `CLAUDE.md` (2 linhas)
 - `CONTRIBUTING.md` — Guia de Contribuição (299 linhas)
@@ -1187,9 +1187,10 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - `docs/notifications-module-audit.md` — Auditoria — Módulo "Notificações de Estoque" (sino do header) (110 linhas)
 - `docs/prod-readiness.md` — Prontidão para produção — inventário e prova (1148 linhas)
 - subpastas de docs/: docs/arquivo (92), docs/redeploy (27), docs/agentes (26), docs/estado (26), docs/plans (24), docs/db (14), docs/audits (12), docs/ci (12), docs/adr (11), docs/auditoria-planejado-nao-executado-2026-10-11 (11), docs/hardening (11), docs/validation (11), docs/architecture (9), docs/runbooks (8), docs/bugs (6), docs/security (6), docs/sessoes (5), docs/suppliers (5), docs/arquitetura (4), docs/audit (4), docs/operations (4), docs/testing (4), docs/RUNBOOKS (3), docs/contexto (3), docs/design (3), docs/fabrica-vps (3), docs/faxina-261114 (3), docs/observability (3), docs/qa (3), docs/reports (3), docs/INCIDENTS (2), docs/contracts (2), docs/coordenacao (2), docs/edge-functions (2), docs/historico (2), docs/incidente-2026-10-13 (2), docs/prompts (2), docs/e2e (1), docs/graphify (1), docs/incidents (1), docs/migrations (1), docs/pipelines (1), docs/postmortems (1), docs/promo-champions (1), docs/storage (1), docs/workflows (1)
-- CHANGELOG topo: [1.10.0](https://github.com/adm01-debug/Promo_Gifts_V4/compare/gifts-store-v1.9.1...gifts-store-v1.10.0) (2026-11-19)
+- CHANGELOG topo: [1.11.0](https://github.com/adm01-debug/Promo_Gifts_V4/compare/gifts-store-v1.10.0...gifts-store-v1.11.0) (2026-11-19)
 
 ## Últimos commits
+- 2026-11-19 `fa3463ca` chore(main): release gifts-store 1.11.0 (#3895)
 - 2026-11-19 `6f0bd2fc` chore(ci): resgata mitigacao de artifact do e2e-cart (#3897)
 - 2026-11-19 `6319e099` feat(frete): base do motor — tipos, unidades e medidas (Bloco A) (#3896)
 - 2026-11-19 `6ef73b8a` docs(migrations-log): recibo E15 — aplicação de 20261119094500 (#3894)
@@ -1204,7 +1205,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-19 `f3464469` fix(docs): referência a migration inexistente na main quebrava o Gate 1 (#3882)
 - 2026-11-19 `4331742c` chore(resgates): fecha a fila das 16 orfas com o estado final de cada uma (#3881)
 - 2026-11-19 `a6ad441c` chore(resgates): adjudica a quinta branch salvo, que estava fora do ruleset (#3880)
-- 2026-11-19 `9241db03` chore(resgates): registra que os detectores estao ligados e os regeneradores nao (#3879)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`
