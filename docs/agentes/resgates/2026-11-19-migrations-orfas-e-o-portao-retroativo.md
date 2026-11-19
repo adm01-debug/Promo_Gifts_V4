@@ -220,3 +220,68 @@ delas têm o problema agravado:
 Settings → Actions. Enquanto não for feito, cada migration que mexa em policy ou
 em cron exige um conserto manual de baseline, com PR própria — e o detector fica
 vermelho no intervalo, bloqueando todas as outras PRs.
+
+## Situação final das 16, em 2026-11-19 (fecha a fila)
+
+Depois de trabalhar a lista inteira, este é o estado de cada uma. **Nada aqui
+está esperando um agente**: o que não foi aplicado depende de um ato do dono, ou
+não deve ser aplicado.
+
+### Aplicadas e verificadas no banco (4)
+
+| versão | o que mudou em produção |
+|---|---|
+| `20261108235500` | `art_files_public_read` removida; arte de cliente deixou de ser legível por anônimo |
+| `20260916202000` | `FORCE RLS` + zero grants a `anon` em 5 tabelas de segredo |
+| `20261027195959` (reemitida como `20261119073000`) | 17/17 tabelas de `supplier_stricker` com policy `RESTRICTIVE deny_all` |
+| `20261115034500` | `rpc_sales_assistant_candidates` criada, `SECURITY INVOKER`, sem PUBLIC |
+
+Mais duas fora desta lista, pela mesma via: `20261115013000` (reemitida como
+`20261119051500`, expiração do link de orçamento) e `20261117172500` (reemitida
+como `20261119081500`, credencial ElevenLabs).
+
+### Não devem ser aplicadas (4)
+
+| versão | por quê |
+|---|---|
+| `20261022195616` e `20261022203935` | `public.companies` **não tem** as colunas `user_id` nem `nome_fantasia` que a função usa. Criariam uma função `SECURITY DEFINER` nova, concedida a todo `authenticated`, **quebrada em runtime** — e a primeira monta `UPDATE` dinâmico filtrando só por `id`, sem checar dono |
+| `20261027220000` | o job `xbz-image-uploader` foi **removido** de `cron.job` pela migration posterior `20261114003000`, já aplicada; a pré-condição levantaria exceção |
+| `20261108230100` | imporia `* * * * *` a dois scrapers de fornecedor que a `cron003` (posterior, já aplicada) moveu para janela noturna `1-8h`; aplicar triplicaria as execuções |
+
+### Dependem de um ato do dono (8)
+
+**(a) Exigem a sua assinatura no arquivo — 3.** Os próprios arquivos declaram que
+`-- approved-by: <dono>` *"é a aprovação humana e entra só no momento da
+aplicação"*. É o portão humano do repo para `CREATE INDEX CONCURRENTLY` sobre
+tabelas de ~1 GB. Nenhum agente pode escrever essa linha.
+
+| versão | efeito |
+|---|---|
+| `20261115130000` | índice de cobertura `(summary_date, supplier_id)` em `stock_daily_summary` |
+| `20261114160000` | índice parcial de reposição; hoje o planner varre 1 GB |
+| `20261108223000` | índice em `(summary_date)`; hoje o DELETE de `fn_aggregate_stock_daily` faz Index Scan completo |
+
+**(b) Depende do índice acima — 1.** `20261115130100` (`fn_market_intelligence_macro`).
+A própria migration manda aplicá-la **depois** de `20261115130000`. Consequência
+hoje, medida: `src/hooks/intelligence/useMarketIntelligenceMacro.ts:101` trata
+`PGRST202` devolvendo `SEM_AGREGACAO` — **o gráfico de inteligência de mercado
+aparece vazio em produção, sem erro na tela**. Aplicar a RPC sem o índice faria
+cada abertura do gráfico varrer 3,2 M linhas em `Parallel Seq Scan`.
+
+**(c) Dependem dos workflows regeneradores, hoje desativados — 2.**
+`20260917090000` (quebra o replay da shadow DB se aplicada isolada) e
+`20261108230000` (remover o cron derruba dois gates que ainda o listam).
+
+**(d) Política de cron, decisão de negócio — 2.** `20260917070000` (apaga dois
+jobs que `docs/edge-functions/CRON_INACTIVE_DECISION_LOG.md` marca como
+"requer decisão do PO: reativar ou documentar como legado") e `20261114120000`
+(reduz a frequência de 7 jobs).
+
+### O caminho mais curto para destravar
+
+1. Escrever `-- approved-by: <seu nome>` em `20261115130000` → aplicar fora do
+   pico → aplicar `20261115130100`. **Isso acende o gráfico de inteligência de
+   mercado**, que hoje está vazio.
+2. Reativar `policies-baseline.yml` e `schema-snapshot-export.yml` em
+   Settings → Actions. Destrava (c) e para de encarecer toda migration futura.
+3. Decidir (d) pelo log de decisão de cron.
