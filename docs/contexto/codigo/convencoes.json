@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "docs(migrations-log): recibo E15 da aplicacao de 20261108235500 (#3868)",
+   "chore(resgates): registra as 127 migrations orfas e o portao que as barra (#3870)",
    "chore(resgates): fecha a reconciliacao byte a byte dos 98 arquivos restantes (#3867)",
    "fix(magic-up): valida o shape vindo do banco e poe prazo nas consultas (#3866)",
-   "feat(kit): destrava o kit cujo catalogo ainda nao informou preco (#3865)",
-   "fix(ci): corrige tres afirmacoes falsas minhas no job Deno e o teto de timeout (#3864)",
-   "feat(estoque): da porta de entrada ao drawer de detalhamento, que estava inalcancavel (#3863)"
+   "feat(kit): destrava o kit cujo catalogo ainda nao informou preco (#3865)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",

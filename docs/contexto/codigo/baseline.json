@@ -2,11 +2,21 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "96d0391edc3be7dedb565148d5b115285d5645c6",
+  "commit": "86ac19c8e73b1a93d6ec391e00295a6b36f2a3ac",
   "branch": "main",
-  "data_commit": "2026-11-19T00:05:19-03:00",
+  "data_commit": "2026-11-19T02:50:52-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "86ac19c8",
+    "data": "2026-11-19",
+    "assunto": "docs(migrations-log): recibo E15 da aplicacao de 20261108235500 (#3868)"
+   },
+   {
+    "sha": "7661d395",
+    "data": "2026-11-19",
+    "assunto": "chore(resgates): registra as 127 migrations orfas e o portao que as barra (#3870)"
+   },
    {
     "sha": "96d0391e",
     "data": "2026-11-19",
@@ -121,89 +131,79 @@
     "sha": "6fd76017",
     "data": "2026-11-18",
     "assunto": "docs(resgate): inventario do trabalho de outro agente que existe e nao esta ligado (#3845)"
-   },
-   {
-    "sha": "09296312",
-    "data": "2026-11-18",
-    "assunto": "fix(quotes): rascunho local volta a guardar empresa, contato, validade e entrega (#3844)"
-   },
-   {
-    "sha": "4d175330",
-    "data": "2026-11-18",
-    "assunto": "feat(components): Ctrl+K volta a alcançar Novidades, Filtros e Estoque (#3842)"
    }
   ],
-  "arquivos_mudados_7d": 1514,
+  "arquivos_mudados_7d": 1490,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
-    "mudancas": 1548
+    "mudancas": 1854
    },
    {
     "pasta": "src/components/products",
-    "mudancas": 774
+    "mudancas": 928
+   },
+   {
+    "pasta": "tests/edge-functions/live",
+    "mudancas": 708
+   },
+   {
+    "pasta": "src/hooks/products",
+    "mudancas": 658
    },
    {
     "pasta": "recovery/src-legacy/src",
     "mudancas": 633
    },
    {
-    "pasta": "tests/edge-functions/live",
-    "mudancas": 593
-   },
-   {
-    "pasta": "src/hooks/products",
-    "mudancas": 553
-   },
-   {
     "pasta": "src/components/quotes",
-    "mudancas": 502
+    "mudancas": 602
    },
    {
     "pasta": "src/pages/magazine",
-    "mudancas": 460
+    "mudancas": 552
    },
    {
     "pasta": "src/components/inventory",
-    "mudancas": 417
+    "mudancas": 497
    },
    {
     "pasta": "src/components/ui",
-    "mudancas": 369
+    "mudancas": 444
    },
    {
     "pasta": "supabase/functions/_shared",
-    "mudancas": 369
+    "mudancas": 444
    },
    {
     "pasta": "src/components/mockup",
-    "mudancas": 353
+    "mudancas": 417
    },
    {
     "pasta": "src/pages/admin",
-    "mudancas": 313
+    "mudancas": 372
    },
    {
     "pasta": "src/pages/quotes",
-    "mudancas": 280
+    "mudancas": 330
    },
    {
     "pasta": "src/components/kit-builder",
-    "mudancas": 272
+    "mudancas": 319
    },
    {
     "pasta": "src/pages/products",
-    "mudancas": 248
+    "mudancas": 296
    }
   ],
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "supabase/MIGRATIONS_SYNC_LOG.md",
-    "mudancas": 60
+    "mudancas": 62
    },
    {
     "arquivo": "package.json",
-    "mudancas": 40
+    "mudancas": 41
    },
    {
     "arquivo": "PENDENCIAS.md",
@@ -211,105 +211,105 @@
    },
    {
     "arquivo": "RELATORIO_CI.md",
-    "mudancas": 27
+    "mudancas": 28
    },
    {
     "arquivo": "docs/coordenacao/conflitos-semanticos.md",
-    "mudancas": 25
+    "mudancas": 26
    },
    {
     "arquivo": "package-lock.json",
-    "mudancas": 23
+    "mudancas": 24
    },
    {
     "arquivo": ".github/workflows/deploy-gates.yml",
-    "mudancas": 20
+    "mudancas": 21
    },
    {
     "arquivo": "src/pages/kit-builder/KitBuilderPage.tsx",
-    "mudancas": 20
+    "mudancas": 21
+   },
+   {
+    "arquivo": "analise-prs/progresso.json",
+    "mudancas": 17
+   },
+   {
+    "arquivo": "audit/supabase-reference-catalog.temporary.json",
+    "mudancas": 17
    },
    {
     "arquivo": "supabase/EDGE_FUNCTIONS_DEPLOY_LOG.md",
     "mudancas": 17
    },
    {
-    "arquivo": "analise-prs/progresso.json",
-    "mudancas": 16
-   },
-   {
-    "arquivo": "audit/supabase-reference-catalog.temporary.json",
-    "mudancas": 16
-   },
-   {
     "arquivo": "src/hooks/kit-builder/useKitBuilderPageState.ts",
-    "mudancas": 15
+    "mudancas": 16
+   },
+   {
+    "arquivo": "src/hooks/kit-builder/useKitAutoSave.ts",
+    "mudancas": 14
+   },
+   {
+    "arquivo": "src/pages/mockups/MockupGenerator.tsx",
+    "mudancas": 14
    },
    {
     "arquivo": "analise-branches/RELATORIO_BRANCHES.md",
     "mudancas": 13
    },
    {
-    "arquivo": "src/hooks/kit-builder/useKitAutoSave.ts",
-    "mudancas": 13
-   },
-   {
-    "arquivo": "src/pages/mockups/MockupGenerator.tsx",
-    "mudancas": 13
-   },
-   {
     "arquivo": "e2e/flows/magazine-preview-sticky-smoke.spec.ts",
-    "mudancas": 12
+    "mudancas": 13
    },
    {
     "arquivo": ".github/workflows/schema-snapshot-export.yml",
-    "mudancas": 11
+    "mudancas": 12
    },
    {
     "arquivo": "CHANGELOG.md",
-    "mudancas": 11
-   },
-   {
-    "arquivo": "analise-prs/prs.json",
-    "mudancas": 11
+    "mudancas": 12
    },
    {
     "arquivo": "src/components/kit-builder/PersonalizationConfig.tsx",
-    "mudancas": 11
+    "mudancas": 12
    },
    {
     "arquivo": "supabase/functions/crm-db-bridge/index.ts",
-    "mudancas": 11
+    "mudancas": 12
    },
    {
     "arquivo": "tests/components/pages/KitBuilderPage.test.tsx",
-    "mudancas": 11
+    "mudancas": 12
    },
    {
     "arquivo": "tests/edge-functions/live/_live-client.ts",
-    "mudancas": 11
+    "mudancas": 12
    },
    {
     "arquivo": ".github/workflows/db-schema-drift-check.yml",
-    "mudancas": 10
+    "mudancas": 11
    },
    {
     "arquivo": ".github/workflows/e2e-swatch-quickview.yml",
-    "mudancas": 10
+    "mudancas": 11
+   },
+   {
+    "arquivo": ".github/workflows/e2e.yml",
+    "mudancas": 11
    }
   ],
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 458
+    "commits": 453
    },
    {
     "autor": "Claude",
-    "commits": 91
+    "commits": 89
    },
    {
     "autor": "Joaquim Ataides",
-    "commits": 74
+    "commits": 72
    },
    {
     "autor": "github-actions[bot]",
@@ -322,7 +322,7 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 10974,
+  "arquivos_total": 10975,
   "arquivos_codigo": 5483,
   "linhas_codigo": 1044218,
   "rotas": 139,
@@ -339,7 +339,7 @@
   "testes": 2614,
   "workflows": 89,
   "scripts": 283,
-  "docs_md": 1483
+  "docs_md": 1484
  },
  "por_pasta": {
   ".github/scripts": {

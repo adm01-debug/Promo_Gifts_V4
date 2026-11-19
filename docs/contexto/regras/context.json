@@ -1,10 +1,10 @@
 {
  "meta": {
-  "sha": "96d0391edc3be7dedb565148d5b115285d5645c6",
+  "sha": "86ac19c8e73b1a93d6ec391e00295a6b36f2a3ac",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-19 03:18 UTC",
-  "files_total": 10902,
+  "generated_at": "2026-11-19 05:52 UTC",
+  "files_total": 10903,
   "code_files": 8924,
   "code_lines": 1265115
  },
@@ -547997,10 +547997,28 @@
   }
  },
  "git": {
-  "sha": "96d0391edc3be7dedb565148d5b115285d5645c6",
+  "sha": "86ac19c8e73b1a93d6ec391e00295a6b36f2a3ac",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "86ac19c",
+    "date": "2026-11-19",
+    "author": "github-actions[bot]",
+    "subject": "docs(migrations-log): recibo E15 da aplicacao de 20261108235500 (#3868)",
+    "files": [
+     "supabase/MIGRATIONS_SYNC_LOG.md"
+    ]
+   },
+   {
+    "sha": "7661d39",
+    "date": "2026-11-19",
+    "author": "adm01-debug",
+    "subject": "chore(resgates): registra as 127 migrations orfas e o portao que as barra (#3870)",
+    "files": [
+     "docs/agentes/resgates/2026-11-19-migrations-orfas-e-o-portao-retroativo.md"
+    ]
+   },
    {
     "sha": "96d0391",
     "date": "2026-11-19",
@@ -548310,43 +548328,15 @@
     "files": [
      "docs/agentes/resgates/2026-11-18-recibo-sessao-2.md"
     ]
-   },
-   {
-    "sha": "8187a4a",
-    "date": "2026-11-18",
-    "author": "adm01-debug",
-    "subject": "fix(mockup): vínculo de proporção para de distorcer a logo a cada ajuste (#3838)",
-    "files": [
-     "package.json",
-     "src/components/mockup/logo-editor/LogoSizeControls.tsx",
-     "tests/components/mockup/acceptance/grupo4.acceptance.test.tsx",
-     "tests/components/mockup/acceptance/grupo7.acceptance.test.tsx"
-    ]
-   },
-   {
-    "sha": "90862a5",
-    "date": "2026-11-18",
-    "author": "adm01-debug",
-    "subject": "feat(mockup): avisa o vendedor quando o kill-switch de mockup estiver desligado (#3839)",
-    "files": [
-     "src/components/kit-builder/PersonalizationConfig.tsx",
-     "src/components/mockup/MockupSwitchNotice.tsx",
-     "src/components/mockup/__tests__/MockupSwitchNotice.test.tsx",
-     "src/components/mockup/approval/MockupLayoutButtons.tsx",
-     "src/components/system/KillSwitchNotice.tsx",
-     "src/hooks/system/__tests__/useKillSwitchNotice.test.tsx",
-     "src/hooks/system/useKillSwitchNotice.ts",
-     "src/pages/mockups/MockupGenerator.tsx"
-    ]
    }
   ],
   "hot_files": [
    [
-    ".github/workflows/edge-functions-deno-tests.yml",
-    2
+    "supabase/MIGRATIONS_SYNC_LOG.md",
+    3
    ],
    [
-    "supabase/MIGRATIONS_SYNC_LOG.md",
+    ".github/workflows/edge-functions-deno-tests.yml",
     2
    ],
    [
@@ -548356,6 +548346,10 @@
    [
     "docs/agentes/resgates/2026-11-18-inventario-trabalho-nao-ligado.md",
     2
+   ],
+   [
+    "docs/agentes/resgates/2026-11-19-migrations-orfas-e-o-portao-retroativo.md",
+    1
    ],
    [
     "docs/agentes/resgates/2026-11-19-fechamento-da-reconciliacao.md",
@@ -548415,10 +548409,6 @@
    ],
    [
     "src/components/inventory/StockHealthDrawerEntry.tsx",
-    1
-   ],
-   [
-    "src/components/inventory/__tests__/StockHealthDrawerEntry.test.tsx",
     1
    ]
   ]
