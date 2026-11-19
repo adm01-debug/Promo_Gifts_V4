@@ -239257,6 +239257,12 @@
         "statements": 1,
         "statements_sha": "3dffeb21484a2b90",
         "version": "20261119081500"
+      },
+      {
+        "name": "reafirma_revogacoes_anteriores_ao_baseline",
+        "statements": 6,
+        "statements_sha": "aaec7aabb8ade4d4",
+        "version": "20261119094500"
       }
     ],
     "policies": [

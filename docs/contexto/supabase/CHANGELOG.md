@@ -2,6 +2,10 @@
 
 Diff semântico gerado a cada coleta em que algo mudou.
 
+## 2026-11-19 15:18 UTC
+
+- **migrations** adicionado (1): `20261119094500_reafirma_revogacoes_anteriores_ao_baseline`
+
 ## 2026-11-19 11:17 UTC
 
 - **cron jobs** alterado (7): `209:connections-health-check`, `211:connections-auto-test`, `212:refresh-mv-supplier-reliability`, `222:backfill-image-dimensions`, `242:generate-blurhashes`, `243:hash-product-images`, `281:pgrst-schema-reload`
