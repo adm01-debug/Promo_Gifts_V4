@@ -1,9 +1,9 @@
 {
  "meta": {
-  "sha": "892f9c63693a917103e7c549c7ec7cc9093d2f3b",
+  "sha": "14befb818b43bd82187983a740533694242eb23a",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-19 06:06 UTC",
+  "generated_at": "2026-11-19 06:47 UTC",
   "files_total": 10905,
   "code_files": 8926,
   "code_lines": 1265221
@@ -548007,10 +548007,19 @@
   }
  },
  "git": {
-  "sha": "892f9c63693a917103e7c549c7ec7cc9093d2f3b",
+  "sha": "14befb818b43bd82187983a740533694242eb23a",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "14befb8",
+    "date": "2026-11-19",
+    "author": "github-actions[bot]",
+    "subject": "docs(migrations-log): recibo E15 da aplicacao de 20261119051500 (#3871)",
+    "files": [
+     "supabase/MIGRATIONS_SYNC_LOG.md"
+    ]
+   },
    {
     "sha": "892f9c6",
     "date": "2026-11-19",
@@ -548330,22 +548339,12 @@
      "src/components/common/spotlight/__tests__/SpotlightItems.test.ts",
      "tests/pages/legacy-KitBuilder.partial-preservation.test.tsx"
     ]
-   },
-   {
-    "sha": "91ffe71",
-    "date": "2026-11-18",
-    "author": "adm01-debug",
-    "subject": "fix(test): e2e ainda exigia que \"Usar template\" não existisse no construtor (#3841)",
-    "files": [
-     "e2e/quotes/templates.spec.ts",
-     "src/pages/quotes/components/__tests__/QuoteBuilderNotesCard.test.tsx"
-    ]
    }
   ],
   "hot_files": [
    [
     "supabase/MIGRATIONS_SYNC_LOG.md",
-    4
+    5
    ],
    [
     ".github/workflows/edge-functions-deno-tests.yml",

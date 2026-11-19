@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "892f9c63693a917103e7c549c7ec7cc9093d2f3b",
+  "commit": "14befb818b43bd82187983a740533694242eb23a",
   "branch": "main",
-  "data_commit": "2026-11-19T03:05:23-03:00",
+  "data_commit": "2026-11-19T03:46:23-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "14befb81",
+    "data": "2026-11-19",
+    "assunto": "docs(migrations-log): recibo E15 da aplicacao de 20261119051500 (#3871)"
+   },
    {
     "sha": "892f9c63",
     "data": "2026-11-19",
@@ -126,14 +131,9 @@
     "sha": "3be3249a",
     "data": "2026-11-18",
     "assunto": "docs(resgate): o inventário contava a quarentena como main — 102 arquivos, não 22 (#3847)"
-   },
-   {
-    "sha": "6f8146b4",
-    "data": "2026-11-18",
-    "assunto": "fix(test): main volta ao verde nos 4 arquivos vermelhos do test:quality (#3846)"
    }
   ],
-  "arquivos_mudados_7d": 1492,
+  "arquivos_mudados_7d": 1479,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -301,19 +301,19 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 451
+    "commits": 448
    },
    {
     "autor": "Claude",
-    "commits": 87
+    "commits": 85
    },
    {
     "autor": "Joaquim Ataides",
-    "commits": 71
+    "commits": 70
    },
    {
     "autor": "github-actions[bot]",
-    "commits": 23
+    "commits": 24
    },
    {
     "autor": "dependabot[bot]",
