@@ -2,6 +2,10 @@
 
 Diff semântico gerado a cada coleta em que algo mudou.
 
+## 2026-11-19 09:19 UTC
+
+- **migrations** adicionado (1): `20261119081500_elevenlabs_credential_reemissao`
+
 ## 2026-11-19 08:22 UTC
 
 - **migrations** adicionado (1): `20261119073000_supplier_stricker_rls_deny_all_reemissao`

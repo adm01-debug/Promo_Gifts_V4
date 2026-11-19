@@ -238769,6 +238769,12 @@
         "statements": 1,
         "statements_sha": "b8397467423385e4",
         "version": "20261119073000"
+      },
+      {
+        "name": "elevenlabs_credential_reemissao",
+        "statements": 1,
+        "statements_sha": "3dffeb21484a2b90",
+        "version": "20261119081500"
       }
     ],
     "policies": [

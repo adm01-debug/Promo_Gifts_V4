@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e de hora em hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `c653e3aa916c7c04827628cf0c7d487f24770908` (2026-11-19T05:33:22-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e de hora em hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `f3464469292a9e397aa369f0e929de812711d511` (2026-11-19T06:03:06-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -592,27 +592,27 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - possiveis_segredos_no_codigo: 7 — ex.: scripts/ai-context/cenarios.mjs:102, src/components/admin/connections/__tests__/ConnectionSecurity.unit.test.tsx:9, src/integrations/supabase/client.ts:27
 
 ## Grafo de código (graphify)
-- 49298 nós · 82805 arestas · 2855 comunidades · grafo do commit `c653e3aa`
-- comunidades maiores: ref_components (820), ref_hooks (711), ref_integrations (641), vitest (621), @tanstack/react-query (529), ref_node_child_process (406), ref_utils (390), react (378), cors.ts (377), ref_types (360), sonner (325), scripts (310)
+- 49306 nós · 82814 arestas · 2798 comunidades · grafo do commit `f3464469`
+- comunidades maiores: ref_components (527), ref_node_child_process (525), vitest (508), ref_lib (471), react (447), react-router-dom (428), ref_node_fs (367), ref_hooks (357), ref_integrations (310), scripts (310), ref_types (299), concludeCheck (294)
 - símbolos mais chamados: gotoAndSettle() (e2e/helpers/nav.ts), re (?), q() (scripts/supabase_snapshot/snapshot.py), analyze() (tests/scripts/test_personalization_artifact_diagnostics.py), outer() (tests/scripts/test_personalization_artifact_diagnostics.py), json (?), useExternalDatabase() (recovery/src-legacy/src/hooks/useExternalDatabase.ts), concludeCheck() (scripts/check-result-contract.mjs), querySupabaseReadOnly() (scripts/supabase-read-only-query.mjs), loginAs() (e2e/helpers/auth.ts), inner() (tests/scripts/test_personalization_artifact_diagnostics.py), excluded_sql() (scripts/supabase_snapshot/snapshot.py)
 - consulta local: `graphify query "<pergunta>"`, `graphify path "<A>" "<B>"`, `graphify explain "<X>"`
 
 ## Hotspots (arquivos mais alterados, 90 dias)
-- supabase/MIGRATIONS_SYNC_LOG.md (68)
-- package.json (46)
-- docs/coordenacao/conflitos-semanticos.md (34)
-- PENDENCIAS.md (30)
-- RELATORIO_CI.md (30)
-- package-lock.json (29)
-- .github/workflows/deploy-gates.yml (26)
-- src/pages/kit-builder/KitBuilderPage.tsx (26)
-- audit/supabase-reference-catalog.temporary.json (22)
-- supabase/EDGE_FUNCTIONS_DEPLOY_LOG.md (22)
-- src/hooks/kit-builder/useKitBuilderPageState.ts (21)
-- src/hooks/kit-builder/useKitAutoSave.ts (19)
-- src/pages/mockups/MockupGenerator.tsx (19)
-- e2e/flows/magazine-preview-sticky-smoke.spec.ts (18)
-- .github/workflows/schema-snapshot-export.yml (17)
+- supabase/MIGRATIONS_SYNC_LOG.md (63)
+- package.json (40)
+- docs/coordenacao/conflitos-semanticos.md (30)
+- RELATORIO_CI.md (24)
+- package-lock.json (24)
+- PENDENCIAS.md (23)
+- .github/workflows/deploy-gates.yml (22)
+- audit/supabase-reference-catalog.temporary.json (18)
+- src/pages/kit-builder/KitBuilderPage.tsx (18)
+- supabase/EDGE_FUNCTIONS_DEPLOY_LOG.md (18)
+- src/hooks/kit-builder/useKitBuilderPageState.ts (15)
+- src/pages/mockups/MockupGenerator.tsx (15)
+- e2e/flows/magazine-preview-sticky-smoke.spec.ts (14)
+- .github/workflows/schema-snapshot-export.yml (13)
+- src/components/kit-builder/PersonalizationConfig.tsx (13)
 
 ## Workflows
 - `_e2e-relevance.yml` — Reusable — E2E Runtime Relevance (workflow_call)
@@ -1189,6 +1189,10 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - CHANGELOG topo: [1.9.1](https://github.com/adm01-debug/Promo_Gifts_V4/compare/gifts-store-v1.9.0...gifts-store-v1.9.1) (2026-11-17)
 
 ## Últimos commits
+- 2026-11-19 `f3464469` fix(docs): referência a migration inexistente na main quebrava o Gate 1 (#3882)
+- 2026-11-19 `4331742c` chore(resgates): fecha a fila das 16 orfas com o estado final de cada uma (#3881)
+- 2026-11-19 `a6ad441c` chore(resgates): adjudica a quinta branch salvo, que estava fora do ruleset (#3880)
+- 2026-11-19 `9241db03` chore(resgates): registra que os detectores estao ligados e os regeneradores nao (#3879)
 - 2026-11-19 `c653e3aa` docs(migrations-log): recibo E15 da aplicacao de 20261119081500 (#3878)
 - 2026-11-19 `ace227e8` fix(migrations): reemite a credencial ElevenLabs com cabecalho e rollback (#3877)
 - 2026-11-19 `76b764cc` feat(supabase): registra ELEVENLABS_API_KEY no catalogo de integracoes (#3791)
@@ -1200,10 +1204,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-19 `892f9c63` fix(seguranca): link expirado de orcamento deixa de devolver dados do cliente (#3869)
 - 2026-11-19 `86ac19c8` docs(migrations-log): recibo E15 da aplicacao de 20261108235500 (#3868)
 - 2026-11-19 `7661d395` chore(resgates): registra as 127 migrations orfas e o portao que as barra (#3870)
-- 2026-11-19 `96d0391e` chore(resgates): fecha a reconciliacao byte a byte dos 98 arquivos restantes (#3867)
-- 2026-11-18 `074fa4f2` fix(magic-up): valida o shape vindo do banco e poe prazo nas consultas (#3866)
-- 2026-11-18 `7da0d491` feat(kit): destrava o kit cujo catalogo ainda nao informou preco (#3865)
-- 2026-11-18 `cf61cb6d` fix(ci): corrige tres afirmacoes falsas minhas no job Deno e o teto de timeout (#3864)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

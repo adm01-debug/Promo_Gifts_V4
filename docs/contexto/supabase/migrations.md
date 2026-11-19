@@ -2988,3 +2988,4 @@ SQL em `migrations/<versao>_<nome>.sql`. Mudanças feitas pelo Dashboard/SQL Edi
 | 20261118223000 | [fn_supplier_risk_breakdown](migrations/20261118223000_fn_supplier_risk_breakdown.sql) | 4 |
 | 20261119051500 | [fix_get_quote_token_public_expiracao_pg_temp](migrations/20261119051500_fix_get_quote_token_public_expiracao_pg_temp.sql) | 1 |
 | 20261119073000 | [supplier_stricker_rls_deny_all_reemissao](migrations/20261119073000_supplier_stricker_rls_deny_all_reemissao.sql) | 1 |
+| 20261119081500 | [elevenlabs_credential_reemissao](migrations/20261119081500_elevenlabs_credential_reemissao.sql) | 1 |

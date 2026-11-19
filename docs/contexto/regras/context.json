@@ -1,9 +1,9 @@
 {
  "meta": {
-  "sha": "c653e3aa916c7c04827628cf0c7d487f24770908",
+  "sha": "f3464469292a9e397aa369f0e929de812711d511",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-19 08:34 UTC",
+  "generated_at": "2026-11-19 09:17 UTC",
   "files_total": 10910,
   "code_files": 8931,
   "code_lines": 1265468
@@ -548032,10 +548032,46 @@
   }
  },
  "git": {
-  "sha": "c653e3aa916c7c04827628cf0c7d487f24770908",
+  "sha": "f3464469292a9e397aa369f0e929de812711d511",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "f346446",
+    "date": "2026-11-19",
+    "author": "adm01-debug",
+    "subject": "fix(docs): referência a migration inexistente na main quebrava o Gate 1 (#3882)",
+    "files": [
+     "docs/agentes/resgates/2026-11-19-fechamento-da-reconciliacao.md"
+    ]
+   },
+   {
+    "sha": "4331742",
+    "date": "2026-11-19",
+    "author": "adm01-debug",
+    "subject": "chore(resgates): fecha a fila das 16 orfas com o estado final de cada uma (#3881)",
+    "files": [
+     "docs/agentes/resgates/2026-11-19-migrations-orfas-e-o-portao-retroativo.md"
+    ]
+   },
+   {
+    "sha": "a6ad441",
+    "date": "2026-11-19",
+    "author": "adm01-debug",
+    "subject": "chore(resgates): adjudica a quinta branch salvo, que estava fora do ruleset (#3880)",
+    "files": [
+     "docs/agentes/resgates/2026-11-19-fechamento-da-reconciliacao.md"
+    ]
+   },
+   {
+    "sha": "9241db0",
+    "date": "2026-11-19",
+    "author": "adm01-debug",
+    "subject": "chore(resgates): registra que os detectores estao ligados e os regeneradores nao (#3879)",
+    "files": [
+     "docs/agentes/resgates/2026-11-19-migrations-orfas-e-o-portao-retroativo.md"
+    ]
+   },
    {
     "sha": "c653e3a",
     "date": "2026-11-19",
@@ -548312,61 +548348,6 @@
     "files": [
      "docs/agentes/resgates/2026-11-18-veredicto-byte-a-byte-das-branches.md"
     ]
-   },
-   {
-    "sha": "0c507b8",
-    "date": "2026-11-18",
-    "author": "adm01-debug",
-    "subject": "fix(test): liga 832 testes que existiam no repo e runner nenhum executava (#3852)",
-    "files": [
-     "tests/e2e/artifacts/compare/viewer/audit-snapshot.html",
-     "tests/e2e/compare-exhaustive.test.tsx",
-     "tests/e2e/compare-module.test.tsx",
-     "tests/e2e/compare-ultra.test.tsx",
-     "tests/e2e/compare-visual.test.tsx",
-     "tests/e2e/new-quote-advanced.test.tsx",
-     "tests/e2e/new-quote-cycle.test.tsx",
-     "tests/e2e/new-quote-exhaustive.test.tsx",
-     "tests/e2e/new-quote-full-audit.test.tsx",
-     "vitest.config.ts",
-     "vitest.e2e-probe.config.ts"
-    ]
-   },
-   {
-    "sha": "cee2974",
-    "date": "2026-11-18",
-    "author": "adm01-debug",
-    "subject": "fix(test): 4 specs do /estoque exigiam o cabecalho que o dono mandou remover (#3851)",
-    "files": [
-     "e2e/admin/stock-dashboard-empty.spec.ts",
-     "e2e/admin/stock-dashboard-layout.spec.ts",
-     "e2e/admin/stock-dashboard-visual.spec.ts",
-     "e2e/admin/stock-health-badges.spec.ts",
-     "src/tests/estoque-guardas-contraditorias.test.ts"
-    ]
-   },
-   {
-    "sha": "d3174f9",
-    "date": "2026-11-18",
-    "author": "adm01-debug",
-    "subject": "feat(pages): monta o dossie BI e o painel de ruptura, prontos e nunca exibidos (#3850)",
-    "files": [
-     "src/pages/admin/StockDashboardPage.tsx",
-     "src/pages/bi/BusinessIntelligencePage.tsx",
-     "src/tests/orphan-mounts.test.ts"
-    ]
-   },
-   {
-    "sha": "48c1e5d",
-    "date": "2026-11-18",
-    "author": "adm01-debug",
-    "subject": "feat(components): /admin/telemetria volta a mostrar falhas 503 e cold start (#3848)",
-    "files": [
-     "src/components/admin/telemetry/LiveSurfacesSection.tsx",
-     "src/components/admin/telemetry/PlatformFailureAlertBanner.tsx",
-     "src/components/admin/telemetry/PlatformFailureCards.tsx",
-     "src/components/admin/telemetry/__tests__/PlatformFailureSurfaces.test.tsx"
-    ]
    }
   ],
   "hot_files": [
@@ -548375,12 +548356,16 @@
     11
    ],
    [
-    "docs/coordenacao/conflitos-semanticos.md",
+    "docs/agentes/resgates/2026-11-19-migrations-orfas-e-o-portao-retroativo.md",
+    4
+   ],
+   [
+    "docs/agentes/resgates/2026-11-19-fechamento-da-reconciliacao.md",
     3
    ],
    [
-    "docs/agentes/resgates/2026-11-19-migrations-orfas-e-o-portao-retroativo.md",
-    2
+    "docs/coordenacao/conflitos-semanticos.md",
+    3
    ],
    [
     ".github/workflows/edge-functions-deno-tests.yml",
@@ -548420,10 +548405,6 @@
    ],
    [
     "supabase/rollbacks/20261119051500_rollback.sql",
-    1
-   ],
-   [
-    "docs/agentes/resgates/2026-11-19-fechamento-da-reconciliacao.md",
     1
    ],
    [
