@@ -2569,4 +2569,5 @@ guarda de papel — `/estoque` atende authenticated (vendedores incluídos).
 
 | versão | arquivo | sha256 | status |
 |---|---|---|---|
-| `20261119202852` | `fix_f12_sparkline_ema_kpi` | `75d79ffc4a219db873af8854758ef644c428119015d7bff3e48a907f9a36017e` | pendente — aplicar via `db-apply-migration.yml` (`version=20261119202852`) após merge |
+| `20261119202852` | `fix_f12_sparkline_ema_kpi` | `75d79ffc4a219db873af8854758ef644c428119015d7bff3e48a907f9a36017e` | **removida da pilha antes do merge da #3903 (preflight E15)** — a migration 20261119202852 foi mergeada SEM header `-- Rollback:` e com `SET search_path` sem `pg_temp` (E066) e portanto reprovava o preflight E063 do `db-apply-migration.yml`. Nunca aplicada (não existia credencial de aplicação vagando; ledger vazio). Substituída pela `20261119212000_fix_f12_sparkline_ema_kpi`, de efeito idêntico (mesmo corpo com sufixo `, pg_catalog, pg_temp` no `SET search_path` e header `-- Rollback:` apontando para `supabase/rollbacks/20261119212000_rollback.sql`). |
+| `20261119212000` | `fix_f12_sparkline_ema_kpi` | `2dd8cede49cbe8a70ba623ab5e59a1b5f60fe5245b06bf386bd21f36bde9b101` | pendente — aplicar via `db-apply-migration.yml` (`version=20261119212000`) após merge da PR de substituição (E063/E066) |
