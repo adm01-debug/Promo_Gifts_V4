@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "fa3463ca03cef99a1b8bc4d93f381980939c1b30",
+  "commit": "2080226fab7fc958254fa29db25c7554ec9b891f",
   "branch": "main",
-  "data_commit": "2026-11-19T15:13:54-03:00",
+  "data_commit": "2026-11-19T16:10:48-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "2080226f",
+    "data": "2026-11-19",
+    "assunto": "fix(frete): motor ignora as colunas box_* do catálogo (caixa master, não embalagem) (#3898)"
+   },
    {
     "sha": "fa3463ca",
     "data": "2026-11-19",
@@ -126,11 +131,6 @@
     "sha": "14befb81",
     "data": "2026-11-19",
     "assunto": "docs(migrations-log): recibo E15 da aplicacao de 20261119051500 (#3871)"
-   },
-   {
-    "sha": "892f9c63",
-    "data": "2026-11-19",
-    "assunto": "fix(seguranca): link expirado de orcamento deixa de devolver dados do cliente (#3869)"
    }
   ],
   "arquivos_mudados_7d": 1429,
@@ -177,7 +177,7 @@
    },
    {
     "pasta": "src/components/mockup",
-    "mudancas": 349
+    "mudancas": 348
    },
    {
     "pasta": "src/pages/admin",
@@ -189,7 +189,7 @@
    },
    {
     "pasta": "src/components/kit-builder",
-    "mudancas": 268
+    "mudancas": 265
    },
    {
     "pasta": "src/pages/products",
@@ -203,7 +203,7 @@
    },
    {
     "arquivo": "package.json",
-    "mudancas": 37
+    "mudancas": 36
    },
    {
     "arquivo": "docs/coordenacao/conflitos-semanticos.md",
@@ -215,7 +215,7 @@
    },
    {
     "arquivo": "package-lock.json",
-    "mudancas": 22
+    "mudancas": 21
    },
    {
     "arquivo": ".github/workflows/deploy-gates.yml",
@@ -247,10 +247,6 @@
    },
    {
     "arquivo": "e2e/flows/magazine-preview-sticky-smoke.spec.ts",
-    "mudancas": 11
-   },
-   {
-    "arquivo": "src/components/kit-builder/PersonalizationConfig.tsx",
     "mudancas": 11
    },
    {
@@ -294,6 +290,10 @@
     "mudancas": 10
    },
    {
+    "arquivo": "src/components/kit-builder/PersonalizationConfig.tsx",
+    "mudancas": 10
+   },
+   {
     "arquivo": "src/pages/quotes/QuoteBuilderPage.tsx",
     "mudancas": 10
    }
@@ -301,7 +301,7 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 369
+    "commits": 368
    },
    {
     "autor": "Claude",
@@ -309,7 +309,7 @@
    },
    {
     "autor": "Joaquim Ataides",
-    "commits": 45
+    "commits": 44
    },
    {
     "autor": "github-actions[bot]",
@@ -317,14 +317,14 @@
    },
    {
     "autor": "dependabot[bot]",
-    "commits": 5
+    "commits": 3
    }
   ]
  },
  "contagens": {
   "arquivos_total": 11000,
   "arquivos_codigo": 5495,
-  "linhas_codigo": 1045499,
+  "linhas_codigo": 1045486,
   "rotas": 139,
   "rotas_http_backend": 13,
   "vistas_por_id": 0,
@@ -1928,7 +1928,7 @@
   },
   "src/lib": {
    "arquivos": 364,
-   "linhas": 55770
+   "linhas": 55757
   },
   "src/logic": {
    "arquivos": 4,

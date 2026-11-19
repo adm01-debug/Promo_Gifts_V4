@@ -9726,7 +9726,7 @@
   {
    "arquivo": "src/lib/freight/__tests__/columns.test.ts",
    "tipo": "unit",
-   "linhas": 59,
+   "linhas": 68,
    "testa": [
     "src/lib/freight/columns.ts"
    ],
@@ -9745,7 +9745,7 @@
   {
    "arquivo": "src/lib/freight/__tests__/fixtures/products.ts",
    "tipo": "unit",
-   "linhas": 187,
+   "linhas": 180,
    "testa": [
     "src/lib/freight/columns.ts"
    ],
@@ -9754,11 +9754,12 @@
   {
    "arquivo": "src/lib/freight/__tests__/resolveItemDimensions.test.ts",
    "tipo": "unit",
-   "linhas": 205,
+   "linhas": 202,
    "testa": [
+    "src/lib/freight/columns.ts",
     "src/lib/freight/resolveItemDimensions.ts"
    ],
-   "casos": 12
+   "casos": 13
   },
   {
    "arquivo": "src/lib/freight/__tests__/units.test.ts",
@@ -22980,7 +22981,7 @@
   "src/lib/forecast.ts": 1,
   "src/lib/format-utils.ts": 2,
   "src/lib/format.ts": 4,
-  "src/lib/freight/columns.ts": 2,
+  "src/lib/freight/columns.ts": 3,
   "src/lib/freight/expandQuantities.ts": 1,
   "src/lib/freight/resolveItemDimensions.ts": 1,
   "src/lib/freight/types.ts": 1,

@@ -3929,7 +3929,7 @@
     "ProductMeasureRow"
    ],
    "export_default": null,
-   "linhas": 57,
+   "linhas": 62,
    "tabelas": [],
    "rpcs": [],
    "edges": [],
@@ -3942,7 +3942,7 @@
    "usado_por_modulos": [
     "lib/freight"
    ],
-   "coberto_por_testes": 2,
+   "coberto_por_testes": 3,
    "orfao": false
   },
   {
@@ -4008,7 +4008,7 @@
     "resolveItemDimensions"
    ],
    "export_default": null,
-   "linhas": 124,
+   "linhas": 104,
    "tabelas": [],
    "rpcs": [],
    "edges": [],
@@ -4044,7 +4044,7 @@
     "ValidationError"
    ],
    "export_default": null,
-   "linhas": 159,
+   "linhas": 162,
    "tabelas": [],
    "rpcs": [],
    "edges": [],

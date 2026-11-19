@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "fa3463ca03cef99a1b8bc4d93f381980939c1b30",
+  "sha": "2080226fab7fc958254fa29db25c7554ec9b891f",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-19 18:16 UTC",
+  "generated_at": "2026-11-19 19:11 UTC",
   "files_total": 10928,
   "code_files": 8947,
-  "code_lines": 1266908
+  "code_lines": 1266895
  },
  "version": "1.3.2",
- "facts_hash": "d7d6ed40f00a3661",
+ "facts_hash": "df9c4b8b12cceec5",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -150420,7 +150420,7 @@
   {
    "module": "src/lib",
    "files": 365,
-   "lines": 55780,
+   "lines": 55767,
    "tables": [
     "...",
     "companies",
@@ -162807,12 +162807,12 @@
    {
     "file": "src/lib/freight/columns.ts",
     "name": "PRODUCT_MEASURE_COLUMNS",
-    "values": "'id', 'name', 'sku', 'height_cm', 'width_cm', 'length_cm', 'diameter_cm', 'weight_g', 'box_height_mm', 'box_width_mm', 'box_length_mm', 'box_weight_kg',"
+    "values": "'id', 'name', 'sku', 'height_cm', 'width_cm', 'length_cm', 'diameter_cm', 'weight_g',"
    },
    {
     "file": "src/lib/freight/types.ts",
     "name": "MeasureSource",
-    "values": "cylinder | packaging | product"
+    "values": "cylinder | product"
    },
    {
     "file": "src/lib/freight/types.ts",
@@ -174142,7 +174142,11 @@
    },
    {
     "file": "src/lib/freight/columns.ts",
-    "text": "ativos) e `cubic_weight` (preenchida sem regra conhecida). O motor calcula o"
+    "text": "- `cubic_weight` — preenchida sem regra conhecida. O motor calcula o peso"
+   },
+   {
+    "file": "src/lib/freight/columns.ts",
+    "text": "têm `box_quantity > 1` (média 228,6 peças por caixa, máximo 5.000), e a"
    },
    {
     "file": "src/lib/freight/types.ts",
@@ -219898,6 +219902,10 @@
     "line": "// 7.153 produtos / 16.631 swatches / 97,4% CF CDN. Consumido por ColorSwatchPicker."
    },
    {
+    "file": "src/lib/freight/columns.ts",
+    "line": "* `shipping_length_cm` — 100% vazias nos 7.951 produtos ativos."
+   },
+   {
     "file": "src/lib/inventory/health-score.ts",
     "line": "* - baixo: min * 0.25 < current ≤ min"
    },
@@ -251933,11 +251941,11 @@
    },
    {
     "file": "src/lib/freight/__tests__/columns.test.ts",
-    "name": "é exatamente a lista do bloco A"
+    "name": "é exatamente a lista do motor"
    },
    {
     "file": "src/lib/freight/__tests__/columns.test.ts",
-    "name": "não lê nenhuma coluna legada de frete"
+    "name": "não lê nenhuma coluna ignorada por decisão"
    },
    {
     "file": "src/lib/freight/__tests__/columns.test.ts",
@@ -251993,27 +252001,23 @@
    },
    {
     "file": "src/lib/freight/__tests__/resolveItemDimensions.test.ts",
-    "name": "resolveItemDimensions — caminho da embalagem"
+    "name": "resolveItemDimensions — medidas da peça"
    },
    {
     "file": "src/lib/freight/__tests__/resolveItemDimensions.test.ts",
-    "name": "1. embalagem completa vence a peça e usa box_weight_kg"
+    "name": "1. peça com as três dimensões resolve como product"
    },
    {
     "file": "src/lib/freight/__tests__/resolveItemDimensions.test.ts",
-    "name": "2. embalagem com peso zero mantém a fonte e cai no weight_g da peça"
+    "name": "2. a caixa master do fornecedor é ignorada: vale a peça"
    },
    {
     "file": "src/lib/freight/__tests__/resolveItemDimensions.test.ts",
-    "name": "3. embalagem incompleta cai nas medidas da peça, com weight_g"
+    "name": "3. peça fina e larga mantém os lados como estão, sem normalizar"
    },
    {
     "file": "src/lib/freight/__tests__/resolveItemDimensions.test.ts",
-    "name": "resolveItemDimensions — caminho da peça e do cilíndrico"
-   },
-   {
-    "file": "src/lib/freight/__tests__/resolveItemDimensions.test.ts",
-    "name": "4. peça com as três dimensões resolve como product"
+    "name": "4. peso da peça vence, mesmo quando o catálogo tem peso de embalagem"
    },
    {
     "file": "src/lib/freight/__tests__/resolveItemDimensions.test.ts",
@@ -252021,19 +252025,19 @@
    },
    {
     "file": "src/lib/freight/__tests__/resolveItemDimensions.test.ts",
+    "name": "6. com os três lados da peça, o diâmetro não muda nada"
+   },
+   {
+    "file": "src/lib/freight/__tests__/resolveItemDimensions.test.ts",
     "name": "resolveItemDimensions — bloqueio por cadastro incompleto"
    },
    {
     "file": "src/lib/freight/__tests__/resolveItemDimensions.test.ts",
-    "name": "6. sem altura, reporta só o campo que falta"
+    "name": "7. sem altura, reporta só o campo que falta"
    },
    {
     "file": "src/lib/freight/__tests__/resolveItemDimensions.test.ts",
-    "name": "7. sem peso bloqueia mesmo com as três dimensões (decisão 7)"
-   },
-   {
-    "file": "src/lib/freight/__tests__/resolveItemDimensions.test.ts",
-    "name": "8. zeros em tudo são tratados como ausência, não como medida"
+    "name": "8. altura presente e comprimento ausente reporta só o comprimento"
    },
    {
     "file": "src/lib/freight/__tests__/resolveItemDimensions.test.ts",
@@ -252041,19 +252045,23 @@
    },
    {
     "file": "src/lib/freight/__tests__/resolveItemDimensions.test.ts",
-    "name": "10. produto sem nenhuma medida lista os quatro campos"
+    "name": "10. sem peso bloqueia mesmo com as três dimensões (decisão 7)"
    },
    {
     "file": "src/lib/freight/__tests__/resolveItemDimensions.test.ts",
-    "name": "11. altura presente e comprimento ausente reporta só o comprimento"
+    "name": "11. zeros em tudo são tratados como ausência, não como medida"
    },
    {
     "file": "src/lib/freight/__tests__/resolveItemDimensions.test.ts",
-    "name": "resolveItemDimensions — fonte esperada por fixture (etapa 9)"
+    "name": "12. produto sem nenhuma medida lista os quatro campos"
    },
    {
     "file": "src/lib/freight/__tests__/resolveItemDimensions.test.ts",
-    "name": "$fixture.sku resolve como $source"
+    "name": "resolveItemDimensions — contrato de leitura"
+   },
+   {
+    "file": "src/lib/freight/__tests__/resolveItemDimensions.test.ts",
+    "name": "nenhuma coluna box_* é lida: o motor não tem como vê-las"
    },
    {
     "file": "src/lib/freight/__tests__/units.test.ts",
@@ -478785,7 +478793,7 @@
   },
   "src/lib/freight/columns.ts": {
    "path": "src/lib/freight/columns.ts",
-   "lines": 57,
+   "lines": 62,
    "exports": [
     "const PRODUCT_MEASURE_COLUMNS",
     "const PRODUCT_MEASURE_SELECT",
@@ -478801,11 +478809,15 @@
    "enums": [
     {
      "name": "PRODUCT_MEASURE_COLUMNS",
-     "values": "'id', 'name', 'sku', 'height_cm', 'width_cm', 'length_cm', 'diameter_cm', 'weight_g', 'box_height_mm', 'box_width_mm', 'box_length_mm', 'box_weight_kg',"
+     "values": "'id', 'name', 'sku', 'height_cm', 'width_cm', 'length_cm', 'diameter_cm', 'weight_g',"
     }
    ],
    "rule_comments": [
-    "ativos) e `cubic_weight` (preenchida sem regra conhecida). O motor calcula o"
+    "- `cubic_weight` — preenchida sem regra conhecida. O motor calcula o peso",
+    "têm `box_quantity > 1` (média 228,6 peças por caixa, máximo 5.000), e a"
+   ],
+   "percents": [
+    "* `shipping_length_cm` — 100% vazias nos 7.951 produtos ativos."
    ]
   },
   "src/lib/freight/expandQuantities.ts": {
@@ -478851,7 +478863,7 @@
   },
   "src/lib/freight/resolveItemDimensions.ts": {
    "path": "src/lib/freight/resolveItemDimensions.ts",
-   "lines": 124,
+   "lines": 104,
    "exports": [
     "interface ResolvedMeasures",
     "type ResolveResult",
@@ -478882,7 +478894,7 @@
   },
   "src/lib/freight/types.ts": {
    "path": "src/lib/freight/types.ts",
-   "lines": 159,
+   "lines": 162,
    "exports": [
     "interface Dimensions",
     "type MeasureSource",
@@ -478902,7 +478914,7 @@
    "enums": [
     {
      "name": "MeasureSource",
-     "values": "cylinder | packaging | product"
+     "values": "cylinder | product"
     },
     {
      "name": "MissingMeasure",
@@ -478954,13 +478966,13 @@
   },
   "src/lib/freight/__tests__/columns.test.ts": {
    "path": "src/lib/freight/__tests__/columns.test.ts",
-   "lines": 59,
+   "lines": 68,
    "is_test": true,
    "doc": "columns.test.ts — contrato das colunas que o motor lê de `products`. A existência de cada coluna em `products` é garantida em tempo de compilação pelo `Pick<ProductsRow, ProductMeasureColumn>` de `columns.ts` (`npm run qa:typecheck`). Aqui o que se trava é a **lista**: nenhuma coluna legada entra de …",
    "tests": [
     "PRODUCT_MEASURE_COLUMNS",
-    "é exatamente a lista do bloco A",
-    "não lê nenhuma coluna legada de frete",
+    "é exatamente a lista do motor",
+    "não lê nenhuma coluna ignorada por decisão",
     "não tem repetição",
     "PRODUCT_MEASURE_SELECT",
     "é a lista separada por vírgula, pronta para o select"
@@ -478989,29 +479001,26 @@
   },
   "src/lib/freight/__tests__/resolveItemDimensions.test.ts": {
    "path": "src/lib/freight/__tests__/resolveItemDimensions.test.ts",
-   "lines": 205,
+   "lines": 202,
    "is_test": true,
-   "rule_comments": [
-    "a altura está lá, então o cadastro só deve o comprimento"
-   ],
    "doc": "resolveItemDimensions.test.ts — precedência de medidas e bloqueio por cadastro incompleto. Todos os produtos vêm de produção (ver fixtures).",
    "tests": [
-    "resolveItemDimensions — caminho da embalagem",
-    "1. embalagem completa vence a peça e usa box_weight_kg",
-    "2. embalagem com peso zero mantém a fonte e cai no weight_g da peça",
-    "3. embalagem incompleta cai nas medidas da peça, com weight_g",
-    "resolveItemDimensions — caminho da peça e do cilíndrico",
-    "4. peça com as três dimensões resolve como product",
+    "resolveItemDimensions — medidas da peça",
+    "1. peça com as três dimensões resolve como product",
+    "2. a caixa master do fornecedor é ignorada: vale a peça",
+    "3. peça fina e larga mantém os lados como estão, sem normalizar",
+    "4. peso da peça vence, mesmo quando o catálogo tem peso de embalagem",
     "5. cilíndrico usa o diâmetro nos dois lados quando falta largura e comprimento",
+    "6. com os três lados da peça, o diâmetro não muda nada",
     "resolveItemDimensions — bloqueio por cadastro incompleto",
-    "6. sem altura, reporta só o campo que falta",
-    "7. sem peso bloqueia mesmo com as três dimensões (decisão 7)",
-    "8. zeros em tudo são tratados como ausência, não como medida",
+    "7. sem altura, reporta só o campo que falta",
+    "8. altura presente e comprimento ausente reporta só o comprimento",
     "9. diâmetro conhecido cobre largura e comprimento: falta só a altura",
-    "10. produto sem nenhuma medida lista os quatro campos",
-    "11. altura presente e comprimento ausente reporta só o comprimento",
-    "resolveItemDimensions — fonte esperada por fixture (etapa 9)",
-    "$fixture.sku resolve como $source"
+    "10. sem peso bloqueia mesmo com as três dimensões (decisão 7)",
+    "11. zeros em tudo são tratados como ausência, não como medida",
+    "12. produto sem nenhuma medida lista os quatro campos",
+    "resolveItemDimensions — contrato de leitura",
+    "nenhuma coluna box_* é lida: o motor não tem como vê-las"
    ]
   },
   "src/lib/freight/__tests__/units.test.ts": {
@@ -479055,24 +479064,25 @@
   },
   "src/lib/freight/__tests__/fixtures/products.ts": {
    "path": "src/lib/freight/__tests__/fixtures/products.ts",
-   "lines": 187,
+   "lines": 180,
    "is_test": true,
    "exports": [
-    "const GARRAFA_COM_EMBALAGEM",
-    "const SUPORTE_EMBALAGEM_SEM_PESO",
-    "const KIT_SQUEEZE_EMBALAGEM_INCOMPLETA",
+    "const GARRAFA_ESPORTIVA",
+    "const SUPORTE_PARA_GARRAFAS",
+    "const KIT_SQUEEZE",
     "const CADERNETA",
     "const CANETA",
     "const GARRAFA_TERMICA_SEM_PESO",
     "const ENFEITE_SEM_NADA",
     "const ZEROS",
     "const CADERNETA_SEM_ALTURA",
+    "const CANETA_CILINDRICA",
     "const ALL_PRODUCT_FIXTURES"
    ],
    "rule_comments": [
-    "* ATENÇÃO (evidência de negócio): 38 × 36 × 36 cm e 5,5 kg para uma garrafa de"
+    "conjunto (34,2 cm): estoura o peso máximo da caixa P antes do volume."
    ],
-   "doc": "Produtos reais de `doufsxqlfjyuvxuezpln` (produção), lidos por `execute_sql` em 2026-11-19. Cobrem os quatro caminhos de `resolveItemDimensions` e os dois motivos de bloqueio. Não são inventados de propósito: a heurística precisa falhar nos dados que existem, não nos que seriam convenientes. `34702` …"
+   "doc": "Produtos reais de `doufsxqlfjyuvxuezpln` (produção), lidos por `execute_sql` em 2026-11-19. Cobrem os dois caminhos de `resolveItemDimensions` e os dois motivos de bloqueio. Não são inventados de propósito: a heurística precisa falhar nos dados que existem, não nos que seriam convenientes. Cada fixt …"
   },
   "src/lib/intelligence/degradation.ts": {
    "path": "src/lib/intelligence/degradation.ts",
@@ -548895,10 +548905,25 @@
   }
  },
  "git": {
-  "sha": "fa3463ca03cef99a1b8bc4d93f381980939c1b30",
+  "sha": "2080226fab7fc958254fa29db25c7554ec9b891f",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "2080226",
+    "date": "2026-11-19",
+    "author": "adm01-debug",
+    "subject": "fix(frete): motor ignora as colunas box_* do catálogo (caixa master, não embalagem) (#3898)",
+    "files": [
+     "src/lib/freight/README.md",
+     "src/lib/freight/__tests__/columns.test.ts",
+     "src/lib/freight/__tests__/fixtures/products.ts",
+     "src/lib/freight/__tests__/resolveItemDimensions.test.ts",
+     "src/lib/freight/columns.ts",
+     "src/lib/freight/resolveItemDimensions.ts",
+     "src/lib/freight/types.ts"
+    ]
+   },
    {
     "sha": "fa3463c",
     "date": "2026-11-19",
@@ -549202,22 +549227,6 @@
      "src/types/gravacao.ts",
      "tests/hooks/magicUpHelpers.guards.test.ts"
     ]
-   },
-   {
-    "sha": "7da0d49",
-    "date": "2026-11-18",
-    "author": "adm01-debug",
-    "subject": "feat(kit): destrava o kit cujo catalogo ainda nao informou preco (#3865)",
-    "files": [
-     "src/components/kit-builder/KitSummary.tsx",
-     "src/components/kit-builder/kit-summary/KitPricingCard.tsx",
-     "src/hooks/kit-builder/useKitBuilderPageState.ts",
-     "src/hooks/kit-builder/useKitCatalogPriceRefresh.ts",
-     "src/pages/kit-builder/KitBuilderPage.tsx",
-     "tests/components/kit-builder/financial-availability.test.tsx",
-     "tests/hooks/useKitBuilderPageState.financial.test.tsx",
-     "tests/hooks/useKitCatalogPriceRefresh.race.test.ts"
-    ]
    }
   ],
   "hot_files": [
@@ -549236,6 +549245,34 @@
    [
     "docs/coordenacao/conflitos-semanticos.md",
     3
+   ],
+   [
+    "src/lib/freight/README.md",
+    2
+   ],
+   [
+    "src/lib/freight/__tests__/columns.test.ts",
+    2
+   ],
+   [
+    "src/lib/freight/__tests__/fixtures/products.ts",
+    2
+   ],
+   [
+    "src/lib/freight/__tests__/resolveItemDimensions.test.ts",
+    2
+   ],
+   [
+    "src/lib/freight/columns.ts",
+    2
+   ],
+   [
+    "src/lib/freight/resolveItemDimensions.ts",
+    2
+   ],
+   [
+    "src/lib/freight/types.ts",
+    2
    ],
    [
     ".release-please-manifest.json",
@@ -549271,34 +549308,6 @@
    ],
    [
     "tests/scripts/e2e-cart-artifact-safety.test.mjs",
-    1
-   ],
-   [
-    "src/lib/freight/README.md",
-    1
-   ],
-   [
-    "src/lib/freight/__tests__/columns.test.ts",
-    1
-   ],
-   [
-    "src/lib/freight/__tests__/expandQuantities.test.ts",
-    1
-   ],
-   [
-    "src/lib/freight/__tests__/fixtures/products.ts",
-    1
-   ],
-   [
-    "src/lib/freight/__tests__/resolveItemDimensions.test.ts",
-    1
-   ],
-   [
-    "src/lib/freight/__tests__/units.test.ts",
-    1
-   ],
-   [
-    "src/lib/freight/columns.ts",
     1
    ]
   ]

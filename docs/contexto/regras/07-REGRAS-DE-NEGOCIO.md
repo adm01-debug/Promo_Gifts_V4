@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.3.2 · commit `fa3463ca03` · branch `main` · 2026-11-19 18:16 UTC
+> Gerado automaticamente por AI Context Sync v1.3.2 · commit `2080226fab` · branch `main` · 2026-11-19 19:11 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -2070,8 +2070,8 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | KIT_AUDITED_FIELDS | 'component_name', 'material', 'color', 'height_mm', 'width_mm', 'length_mm', 'diameter_mm', 'circumference_mm', 'weight_g', // 'capacity_ml', // FIX 2026-06-27: coluna não existe em product_kit_components (PostgREST 400/42703) 'component_type_code', 'personalization_notes', | `src/lib/external-db/kit-coverage.ts` |
 | BRIDGE_ALIASES | 'tecnica_gravacao', // → tabela_preco_gravacao_oficial 'personalization_techniques', // real table (uuid PK, EN cols) — NOT aliased; see rest-native.ts "BUG A" 'customization_price_tables', // → tabela_preco_fornecedores_gravacao (via bridge alias) 'customization_price_tiers', // → tabela_preco_grav … | `src/lib/external-db/tables.ts` |
 | COMPANY_TABLES | 'client_contacts', 'organizations', 'companies' | `src/lib/external-db/tables.ts` |
-| PRODUCT_MEASURE_COLUMNS | 'id', 'name', 'sku', 'height_cm', 'width_cm', 'length_cm', 'diameter_cm', 'weight_g', 'box_height_mm', 'box_width_mm', 'box_length_mm', 'box_weight_kg', | `src/lib/freight/columns.ts` |
-| MeasureSource | cylinder \| packaging \| product | `src/lib/freight/types.ts` |
+| PRODUCT_MEASURE_COLUMNS | 'id', 'name', 'sku', 'height_cm', 'width_cm', 'length_cm', 'diameter_cm', 'weight_g', | `src/lib/freight/columns.ts` |
+| MeasureSource | cylinder \| product | `src/lib/freight/types.ts` |
 | MissingMeasure | height \| length \| weight \| width | `src/lib/freight/types.ts` |
 | MixMode | misturar \| separar | `src/lib/freight/types.ts` |
 | FreightPlanStatus | dados_insuficientes \| nao_cabe \| ok | `src/lib/freight/types.ts` |
@@ -5342,6 +5342,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `// Se shouldApply não foi calculado (cache antigo pré-rollout), assume 100% (= aplica)` | `src/lib/external-db/kill-switch-client.ts` |
 | `// invisíveis na PDP. Max real observado no catálogo = 100. Margem 20% = 120.` | `src/lib/external-db/products-detail.ts` |
 | `// 7.153 produtos / 16.631 swatches / 97,4% CF CDN. Consumido por ColorSwatchPicker.` | `src/lib/external-db/products-lightweight.ts` |
+| `* `shipping_length_cm` — 100% vazias nos 7.951 produtos ativos.` | `src/lib/freight/columns.ts` |
 | `* - baixo: min * 0.25 < current ≤ min` | `src/lib/inventory/health-score.ts` |
 | `* - crítico: current ≤ min * 0.25` | `src/lib/inventory/health-score.ts` |
 | `* o hit ratio é ~100%, eliminando .toLowerCase()+NFD+replace+trim redundantes).` | `src/lib/inventory/stock-filter.ts` |
@@ -7417,4 +7418,4 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | tardia de AAL, etc.) NÃO deve reabrir o challenge — redireciona para | `src/components/layout/AdminRoute.tsx` |
 | apenas se o usuário chegar em AAL2). | `src/components/layout/AdminRoute.tsx` |
 | rate-limit, login-attempts, external-db, status do sistema. | `src/components/layout/DevRoute.tsx` |
-| … +1369 linhas — lista completa em `context.json` | |
+| … +1370 linhas — lista completa em `context.json` | |
