@@ -1,4 +1,7 @@
 -- =====================================================================
+-- Rollback: supabase/rollbacks/20261119212000_rollback.sql
+-- =====================================================================
+-- =====================================================================
 -- MIGRATION: fix F12 — fn_variant_sparkline + re-grant fn_ema_kpi_by_level
 -- 2026-11-19 — F12 (bugs de painel no /estoque)
 -- =====================================================================
@@ -36,7 +39,7 @@ RETURNS TABLE (
 )
 LANGUAGE sql
 STABLE SECURITY DEFINER
-SET search_path = public
+SET search_path = public, pg_catalog, pg_temp
 AS $$
   SELECT s.summary_date::date AS day,
          s.units_depleted,
