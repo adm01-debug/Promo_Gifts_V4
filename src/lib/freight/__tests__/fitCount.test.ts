@@ -201,6 +201,28 @@ describe('fitCount — entradas degeneradas', () => {
     expect(r).toMatchObject({ capacity: 0, limitedBy: 'weight', byWeight: 0 });
   });
 
+  it('peça única que entra na caixa não é recusada pelo fator de aproveitamento', () => {
+    // 39 × 49 × 59 cm na GG (39,4 × 49,4 × 59,4): ⌊39,4/39⌋ · ⌊49,4/49⌋ · ⌊59,4/59⌋ = 1
+    // volume: 104.052,4056 ÷ 112.749 = 0,92 → 0, mas uma peça sozinha não
+    //         perde espaço entre peças: o piso é 1
+    // peso:   30.000 ÷ 5.000 = 6
+    const r = fitCount(peca(39, 49, 59, 5000), CAIXA_GG, SETTINGS_PADRAO);
+    expect(r).toMatchObject({
+      capacity: 1,
+      limitedBy: 'geometry',
+      byGeometry: 1,
+      byVolume: 1,
+      byWeight: 6,
+    });
+  });
+
+  it('o piso de 1 não vale para peça que não entra na caixa', () => {
+    // a mesma peça na G (35,4 × 35,4 × 53,4): 59 > 53,4, nenhuma orientação cabe
+    // volume: 60.226,8696 ÷ 112.749 = 0,53 → 0, e continua 0
+    const r = fitCount(peca(39, 49, 59, 5000), CAIXA_G, SETTINGS_PADRAO);
+    expect(r).toMatchObject({ capacity: 0, byGeometry: 0, byVolume: 0 });
+  });
+
   it('fator da caixa fora do intervalo cai no padrão global', () => {
     // fillFactor 0 não é "sem aproveitamento": é ausência de cadastro, e o
     // padrão global (0,9) assume o lugar.

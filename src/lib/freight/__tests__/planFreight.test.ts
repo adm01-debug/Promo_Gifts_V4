@@ -12,7 +12,13 @@ import {
   CAIXA_P,
   SETTINGS_PADRAO,
 } from './fixtures/boxes';
-import { LINHA_BARRA_61, LINHA_CADERNETA, LINHA_SEM_PESO, LINHA_SQUEEZE } from './fixtures/items';
+import {
+  LINHA_BARRA_61,
+  LINHA_CADERNETA,
+  LINHA_SEM_PESO,
+  LINHA_SQUEEZE,
+  linhaDeTeste,
+} from './fixtures/items';
 
 const OPCOES: PlanOptions = {
   mixMode: 'misturar',
@@ -86,6 +92,73 @@ describe('planFreight — status ok', () => {
     expect(plan.volumes[0].items).toEqual([{ productId: 'caderneta', quantity: 10 }]);
   });
 
+  it('separar: o mesmo produto em 3 linhas divide a mesma caixa', () => {
+    // 3 linhas de 20 = 60 cadernetas; a P leva 64 → 1× P, não 3× P
+    // peso bruto: 60 × 120 = 7.200 g
+    // cubado Correios: 27 × 33 × 33 = 29.403 cm³ ÷ 6.000 = 4,9005 kg
+    const linha = { row: LINHA_CADERNETA, quantity: 20 };
+    const plan = planFreight(
+      [linha, linha, linha],
+      CAIXAS_PADRAO,
+      { ...OPCOES, mixMode: 'separar' },
+      SETTINGS_PADRAO,
+    );
+
+    expect(plan.status).toBe('ok');
+    expect(plan.totals.boxesByCode).toEqual({ P: 1 });
+    expect(plan.totals.grossWeightG).toBe(7_200);
+    expect(plan.totals.cubicWeightG.correios).toBe(4_900.5);
+    expect(plan.volumes[0].items).toEqual([{ productId: 'caderneta', quantity: 60 }]);
+    expect(plan.warnings).toEqual([]);
+  });
+
+  it('separar: 5 linhas de 20 dão o mesmo plano de 1 linha de 100', () => {
+    // 100 cadernetas: P leva 64, M leva 128 → 1× M
+    // cubado Correios: 33 × 33 × 47 = 51.183 cm³ ÷ 6.000 = 8,5305 kg
+    const opcoes: PlanOptions = { ...OPCOES, mixMode: 'separar' };
+    const linha = { row: LINHA_CADERNETA, quantity: 20 };
+    const emCinco = planFreight(
+      [linha, linha, linha, linha, linha],
+      CAIXAS_PADRAO,
+      opcoes,
+      SETTINGS_PADRAO,
+    );
+    const emUma = planFreight(
+      [{ row: LINHA_CADERNETA, quantity: 100 }],
+      CAIXAS_PADRAO,
+      opcoes,
+      SETTINGS_PADRAO,
+    );
+
+    expect(emCinco.totals.boxesByCode).toEqual({ M: 1 });
+    expect(emCinco.totals.cubicWeightG.correios).toBe(8_530.5);
+    expect(emCinco.volumes).toEqual(emUma.volumes);
+    expect(emCinco.totals).toEqual(emUma.totals);
+  });
+
+  it('"não mistura": o mesmo produto em 2 linhas não abre 2 caixas', () => {
+    // 30 + 30 = 60 cadernetas marcadas como "não mistura": 1× P (leva 64)
+    const linha = { row: LINHA_CADERNETA, quantity: 30, shipsSeparately: true };
+    const plan = planFreight([linha, linha], CAIXAS_PADRAO, OPCOES, SETTINGS_PADRAO);
+
+    expect(plan.totals.boxesByCode).toEqual({ P: 1 });
+    expect(plan.totals.cubicWeightG.correios).toBe(4_900.5);
+  });
+
+  it('peça única quase do tamanho da GG vai numa GG', () => {
+    // 39 × 49 × 59 cm, 5 kg: entra na GG (39,4 × 49,4 × 59,4) e em nenhuma outra
+    // ocupação: 112.749 ÷ 104.052,4056 = 1,0836 — passa de 100% do espaço
+    // "aproveitável" porque o fator 0,9 não se aplica a uma peça sozinha
+    const row = linhaDeTeste('bau', [39, 49, 59], 5000, 'Baú');
+    const uma = planFreight([{ row, quantity: 1 }], CAIXAS_PADRAO, OPCOES, SETTINGS_PADRAO);
+    const duas = planFreight([{ row, quantity: 2 }], CAIXAS_PADRAO, OPCOES, SETTINGS_PADRAO);
+
+    expect(uma.status).toBe('ok');
+    expect(uma.totals.boxesByCode).toEqual({ GG: 1 });
+    expect(uma.volumes[0].fillRatio).toBeCloseTo(112_749 / 104_052.4056, 6);
+    expect(duas.totals.boxesByCode).toEqual({ GG: 2 });
+  });
+
   it('"não mistura" do cadastro vence o "misturar" do vendedor', () => {
     const misturado = planFreight(
       [
@@ -151,6 +224,41 @@ describe('planFreight — status dados_insuficientes', () => {
   });
 });
 
+describe('planFreight — nada para despachar', () => {
+  it('lista vazia não vira plano ok de 0 kg', () => {
+    const plan = planFreight([], CAIXAS_PADRAO, OPCOES, SETTINGS_PADRAO);
+
+    expect(plan.status).toBe('dados_insuficientes');
+    expect(plan.volumes).toEqual([]);
+    expect(plan.missing).toEqual([]);
+    expect(plan.warnings).toEqual(['Nenhum item com quantidade para calcular o frete.']);
+  });
+
+  it('todas as linhas com quantidade zero é o mesmo que lista vazia', () => {
+    const plan = planFreight(
+      [
+        { row: LINHA_CADERNETA, quantity: 0 },
+        { row: LINHA_SEM_PESO, quantity: 0 },
+      ],
+      CAIXAS_PADRAO,
+      OPCOES,
+      SETTINGS_PADRAO,
+    );
+
+    expect(plan.status).toBe('dados_insuficientes');
+    expect(plan.warnings).toEqual(['Nenhum item com quantidade para calcular o frete.']);
+  });
+
+  it('planos bloqueados não dividem o mesmo objeto de totais', () => {
+    const a = planFreight([], CAIXAS_PADRAO, OPCOES, SETTINGS_PADRAO);
+    const b = planFreight([], CAIXAS_PADRAO, OPCOES, SETTINGS_PADRAO);
+
+    expect(a.totals).toEqual(b.totals);
+    expect(a.totals).not.toBe(b.totals);
+    expect(a.totals.cubicWeightG).not.toBe(b.totals.cubicWeightG);
+  });
+});
+
 describe('planFreight — status nao_cabe', () => {
   it('peça maior que a maior caixa nomeia a peça e a caixa', () => {
     const plan = planFreight(
@@ -164,6 +272,27 @@ describe('planFreight — status nao_cabe', () => {
     expect(plan.volumes).toEqual([]);
     expect(plan.warnings[0]).toContain('Barra de 61 cm');
     expect(plan.warnings[0]).toContain('GG');
+  });
+
+  it('peça pesada demais para qualquer caixa: o aviso culpa o peso, não o tamanho', () => {
+    // cubo de 10 cm cabe em todas as caixas, mas 30.001 g passa do máximo da
+    // GG (30.000 g), a que mais aguenta
+    const row = linhaDeTeste('bigorna', [10, 10, 10], 30_001, 'Bigorna');
+    const plan = planFreight([{ row, quantity: 1 }], CAIXAS_PADRAO, OPCOES, SETTINGS_PADRAO);
+
+    expect(plan.status).toBe('nao_cabe');
+    expect(plan.warnings).toEqual([
+      'Bigorna (SKU-bigorna) pesa mais do que o peso máximo de qualquer caixa ativa.',
+    ]);
+  });
+
+  it('peça que passa do peso só das caixas menores vai na que aguenta', () => {
+    // cubo de 10 cm com 15 kg: P aguenta 10 kg (não), M aguenta 20 kg (sim)
+    const row = linhaDeTeste('haltere', [10, 10, 10], 15_000, 'Haltere');
+    const plan = planFreight([{ row, quantity: 1 }], CAIXAS_PADRAO, OPCOES, SETTINGS_PADRAO);
+
+    expect(plan.status).toBe('ok');
+    expect(plan.totals.boxesByCode).toEqual({ M: 1 });
   });
 
   it('sem caixa ativa cadastrada o aviso diz isso', () => {

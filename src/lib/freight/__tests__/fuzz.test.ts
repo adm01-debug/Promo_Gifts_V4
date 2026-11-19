@@ -49,9 +49,12 @@ function gerarCasos(): Caso[] {
     const inputs: Caso['inputs'] = [];
 
     for (let p = 0; p < quantosProdutos; p += 1) {
-      // lados de 1 a 30 cm: entram nas caixas padrão na maioria dos sorteios,
-      // e de vez em quando um lado grande força o caminho "não cabe"
+      // lados de 1 a 30 cm entram sempre nas caixas padrão. A cada 10 casos a
+      // primeira peça ganha 70 cm de comprimento (o maior lado interno é o da
+      // GG, 59,4 cm) para a amostra passar também pelo caminho "não cabe". O
+      // sorteio é feito de qualquer jeito, para não deslocar a sequência.
       const lado = () => inteiro(1, 30);
+      const comprimentoSorteado = lado();
       inputs.push({
         row: {
           id: `fuzz-${i}-${p}`,
@@ -59,7 +62,7 @@ function gerarCasos(): Caso[] {
           sku: `SKU-${i}-${p}`,
           height_cm: lado(),
           width_cm: lado(),
-          length_cm: lado(),
+          length_cm: i % 10 === 9 && p === 0 ? 70 : comprimentoSorteado,
           diameter_cm: null,
           weight_g: inteiro(1, 3000),
         },
@@ -136,12 +139,15 @@ describe('fuzz — invariantes do plano', () => {
         ).toBeLessThanOrEqual(volume.box.maxWeightG);
       }
 
-      // 3. a ocupação nunca promete mais de 100% do espaço aproveitável
+      // 3. a ocupação nunca promete mais de 100% do espaço aproveitável — a
+      //    não ser a peça que vai sozinha, que pode ocupar até a caixa inteira
+      //    (1 ÷ 0,9 do aproveitável)
       for (const volume of plan.volumes) {
+        const unidades = volume.items.reduce((soma, item) => soma + item.quantity, 0);
         expect(
           volume.fillRatio,
           `${onde}: ocupação na caixa ${volume.box.code}`,
-        ).toBeLessThanOrEqual(1.0001);
+        ).toBeLessThanOrEqual(unidades === 1 ? 1 / 0.9 + 0.0001 : 1.0001);
         expect(volume.fillRatio, `${onde}: ocupação negativa`).toBeGreaterThanOrEqual(0);
       }
 
@@ -166,6 +172,7 @@ describe('fuzz — invariantes do plano', () => {
 
     // a amostra tem de exercitar os dois caminhos, senão não está testando nada
     expect(planosOk, 'planos ok').toBeGreaterThan(0);
+    expect(planosNaoCabe, 'planos que não cabem').toBe(20);
     expect(planosOk + planosNaoCabe, 'cobertura da amostra').toBe(COMBINACOES);
   });
 

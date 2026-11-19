@@ -97,7 +97,11 @@ export interface PackVolume {
   grossWeightG: number;
   cubicWeightG: CubicWeightG;
   volumeM3: number;
-  /** Fração do volume interno aproveitável que foi ocupada (0–1). */
+  /**
+   * Fração do volume interno aproveitável que foi ocupada. Fica entre 0 e 1,
+   * menos no volume de uma peça só: ela pode ocupar a caixa inteira, e aí
+   * passa de 1 (até 1 ÷ fator de aproveitamento).
+   */
   fillRatio: number;
 }
 

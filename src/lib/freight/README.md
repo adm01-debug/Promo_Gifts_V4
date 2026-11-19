@@ -21,8 +21,8 @@ com `status: 'ok' | 'dados_insuficientes' | 'nao_cabe'`, `volumes[]`, `totals`,
 | `resolveItemDimensions.ts` | linha de `products` → medidas, ou qual campo falta |
 | `expandQuantities.ts` | quantidades × nº de kits, com validação retornada |
 | `boxOrder.ts` | volume interno e as ordens maior↔menor, usadas por todo o resto |
-| `fitCount.ts` | quantas peças iguais cabem numa caixa: encaixe, volume e peso |
-| `buildGroups.ts` | quem divide caixa com quem (`ships_separately` vence o vendedor) |
+| `fitCount.ts` | quantas peças iguais cabem numa caixa: encaixe em grade (piso, sem girar sobras), volume e peso |
+| `buildGroups.ts` | quem divide caixa com quem, por produto e não por linha (`ships_separately` vence o vendedor) |
 | `packSingleProduct.ts` | um produto, N unidades, nas caixas padrão |
 | `packMixed.ts` | produtos diferentes na mesma caixa |
 | `computeVolumeTotals.ts` | peso bruto, cubado (dois divisores), m³ e ocupação de um volume |

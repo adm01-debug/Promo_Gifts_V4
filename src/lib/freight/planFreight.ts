@@ -45,12 +45,15 @@ export interface PlanOptions {
   itemsHash: string;
 }
 
-const TOTAIS_VAZIOS: FreightPlanTotals = {
-  boxesByCode: {},
-  grossWeightG: 0,
-  volumeM3: 0,
-  cubicWeightG: { correios: 0, rodoviario: 0 },
-};
+/** Objeto novo a cada plano: um plano bloqueado não divide totais com outro. */
+function totaisVazios(): FreightPlanTotals {
+  return {
+    boxesByCode: {},
+    grossWeightG: 0,
+    volumeM3: 0,
+    cubicWeightG: { correios: 0, rodoviario: 0 },
+  };
+}
 
 /**
  * Impressão digital determinística de ids + quantidades, para detectar plano
@@ -173,6 +176,19 @@ export function planFreight(
   // Linha com quantidade zerada é linha que saiu do orçamento, não erro.
   const relevantes = inputs.filter((input) => input.quantity !== 0);
 
+  // Sem nada para despachar não existe plano: `ok` com zero volume passaria
+  // adiante como frete de 0 kg.
+  if (relevantes.length === 0) {
+    return {
+      ...base,
+      status: 'dados_insuficientes',
+      volumes: [],
+      totals: totaisVazios(),
+      warnings: ['Nenhum item com quantidade para calcular o frete.'],
+      missing: [],
+    };
+  }
+
   const missing: IncompleteItem[] = [];
   const itens: PackItem[] = [];
 
@@ -200,7 +216,7 @@ export function planFreight(
       ...base,
       status: 'dados_insuficientes',
       volumes: [],
-      totals: TOTAIS_VAZIOS,
+      totals: totaisVazios(),
       warnings: [],
       missing,
     };
@@ -215,7 +231,7 @@ export function planFreight(
       ...base,
       status: 'dados_insuficientes',
       volumes: [],
-      totals: TOTAIS_VAZIOS,
+      totals: totaisVazios(),
       warnings: [expandido.error.message],
       missing: [],
     };
@@ -231,15 +247,21 @@ export function planFreight(
         : packMixed(grupo.items, boxes, settings);
 
     if (resultado.status === 'nao_cabe') {
+      const peca = `${resultado.item.name} (${resultado.item.sku})`;
       const maior = maiorCaixa(boxes);
-      const aviso = maior
-        ? `${resultado.item.name} (${resultado.item.sku}) não cabe nem na maior caixa ativa (${maior.code}).`
-        : `${resultado.item.name} (${resultado.item.sku}) não cabe: nenhuma caixa ativa cadastrada.`;
+      let aviso: string;
+      if (!maior) {
+        aviso = `${peca} não cabe: nenhuma caixa ativa cadastrada.`;
+      } else if (boxes.every((box) => resultado.item.weightG > box.maxWeightG - box.emptyWeightG)) {
+        aviso = `${peca} pesa mais do que o peso máximo de qualquer caixa ativa.`;
+      } else {
+        aviso = `${peca} não cabe nem na maior caixa ativa (${maior.code}).`;
+      }
       return {
         ...base,
         status: 'nao_cabe',
         volumes: [],
-        totals: TOTAIS_VAZIOS,
+        totals: totaisVazios(),
         warnings: [aviso],
         missing: [],
       };

@@ -60,13 +60,61 @@ describe('buildGroups', () => {
     expect(a).toEqual(['caderneta', 'squeeze']);
   });
 
-  it('duas linhas do mesmo produto não desestabilizam a ordem', () => {
+  it('separar: linhas do mesmo produto viram um grupo só, com a quantidade somada', () => {
     // acontece de verdade: o mesmo produto em duas cores é duas linhas com o
-    // mesmo productId. O comparador tem de devolver 0 e manter a ordem.
-    const grupos = buildGroups([caderneta(5), caderneta(3), squeeze(1)], 'separar');
+    // mesmo productId. 5 + 3 = 8 cadernetas num grupo, não dois grupos.
+    const grupos = buildGroups([caderneta(5), squeeze(1), caderneta(3)], 'separar');
 
-    expect(grupos.map((g) => g.items[0].productId)).toEqual(['caderneta', 'caderneta', 'squeeze']);
-    expect(grupos.map((g) => g.items[0].quantity)).toEqual([5, 3, 1]);
+    expect(grupos.map((g) => g.items.length)).toEqual([1, 1]);
+    expect(grupos.map((g) => g.items[0].productId)).toEqual(['caderneta', 'squeeze']);
+    expect(grupos.map((g) => g.items[0].quantity)).toEqual([8, 1]);
+  });
+
+  it('misturar: linhas do mesmo produto entram como uma peça só no grupo', () => {
+    // 5 + 3 = 8 cadernetas e 1 squeeze: duas peças no grupo, não três
+    const grupos = buildGroups([caderneta(5), squeeze(1), caderneta(3)], 'misturar');
+
+    expect(grupos).toHaveLength(1);
+    expect(grupos[0].items.map((i) => [i.productId, i.quantity])).toEqual([
+      ['caderneta', 8],
+      ['squeeze', 1],
+    ]);
+  });
+
+  it('"não mistura": linhas do mesmo produto dividem a mesma caixa própria', () => {
+    // 30 + 30 = 60 unidades do mesmo produto frágil: um grupo, não dois
+    const a1 = pecaDeTeste('a', [10, 10, 10], 100, 30, { shipsSeparately: true });
+    const a2 = pecaDeTeste('a', [10, 10, 10], 100, 30, { shipsSeparately: true });
+
+    const grupos = buildGroups([a1, a2], 'misturar');
+
+    expect(grupos).toHaveLength(1);
+    expect(grupos[0]).toMatchObject({ reason: 'ships_separately' });
+    expect(grupos[0].items[0].quantity).toBe(60);
+  });
+
+  it('"não mistura" em uma das linhas vale para o produto inteiro', () => {
+    // o controle é do cadastro do produto: se uma linha chegou marcada, as
+    // 2 + 4 = 6 unidades vão separadas — em qualquer ordem de entrada
+    const comum = pecaDeTeste('a', [10, 10, 10], 100, 2);
+    const marcada = pecaDeTeste('a', [10, 10, 10], 100, 4, { shipsSeparately: true });
+
+    for (const entrada of [
+      [comum, marcada],
+      [marcada, comum],
+    ]) {
+      const grupos = buildGroups(entrada, 'misturar');
+      expect(grupos).toHaveLength(1);
+      expect(grupos[0]).toMatchObject({ reason: 'ships_separately' });
+      expect(grupos[0].items[0].quantity).toBe(6);
+    }
+  });
+
+  it('somar as linhas não altera a lista recebida', () => {
+    const entrada = [caderneta(5), caderneta(3)];
+    buildGroups(entrada, 'separar');
+
+    expect(entrada.map((i) => i.quantity)).toEqual([5, 3]);
   });
 
   it('lista vazia não gera grupo', () => {
