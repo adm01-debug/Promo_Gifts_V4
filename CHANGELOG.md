@@ -5,6 +5,18 @@ Todas as mudanças notáveis deste projeto são documentadas neste arquivo.
 O formato é baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/),
 e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR/).
 
+## [1.11.0](https://github.com/adm01-debug/Promo_Gifts_V4/compare/gifts-store-v1.10.0...gifts-store-v1.11.0) (2026-11-19)
+
+
+### Features
+
+* **frete:** base do motor — tipos, unidades e medidas (Bloco A) ([#3896](https://github.com/adm01-debug/Promo_Gifts_V4/issues/3896)) ([6319e09](https://github.com/adm01-debug/Promo_Gifts_V4/commit/6319e099e75d81db4bc3301624d6fc7a0796b9da))
+
+
+### Bug Fixes
+
+* **db:** termina a intenção da 20260706223316 sem aplicá-la — updated_at em crm_callback_events ([#3892](https://github.com/adm01-debug/Promo_Gifts_V4/issues/3892)) ([df0eda1](https://github.com/adm01-debug/Promo_Gifts_V4/commit/df0eda1d4abd8edf6732f14acc9bf5ac64663c6e))
+
 ## [1.10.0](https://github.com/adm01-debug/Promo_Gifts_V4/compare/gifts-store-v1.9.1...gifts-store-v1.10.0) (2026-11-19)
 
 
