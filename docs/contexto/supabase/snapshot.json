@@ -238763,6 +238763,12 @@
         "statements": 1,
         "statements_sha": "537bbd5803ef142f",
         "version": "20261119051500"
+      },
+      {
+        "name": "supplier_stricker_rls_deny_all_reemissao",
+        "statements": 1,
+        "statements_sha": "b8397467423385e4",
+        "version": "20261119073000"
       }
     ],
     "policies": [
@@ -251351,6 +251357,210 @@
         "table": "objects",
         "using": null,
         "with_check": "(bucket_id = 'recibos-entrega'::text)"
+      },
+      {
+        "cmd": "ALL",
+        "name": "deny_all",
+        "permissive": "RESTRICTIVE",
+        "roles": [
+          "public"
+        ],
+        "schema": "supplier_stricker",
+        "table": "canceled_products",
+        "using": "false",
+        "with_check": null
+      },
+      {
+        "cmd": "ALL",
+        "name": "deny_all",
+        "permissive": "RESTRICTIVE",
+        "roles": [
+          "public"
+        ],
+        "schema": "supplier_stricker",
+        "table": "category_mappings",
+        "using": "false",
+        "with_check": null
+      },
+      {
+        "cmd": "ALL",
+        "name": "deny_all",
+        "permissive": "RESTRICTIVE",
+        "roles": [
+          "public"
+        ],
+        "schema": "supplier_stricker",
+        "table": "colors",
+        "using": "false",
+        "with_check": null
+      },
+      {
+        "cmd": "ALL",
+        "name": "deny_all",
+        "permissive": "RESTRICTIVE",
+        "roles": [
+          "public"
+        ],
+        "schema": "supplier_stricker",
+        "table": "customization_options",
+        "using": "false",
+        "with_check": null
+      },
+      {
+        "cmd": "ALL",
+        "name": "deny_all",
+        "permissive": "RESTRICTIVE",
+        "roles": [
+          "public"
+        ],
+        "schema": "supplier_stricker",
+        "table": "customization_tables",
+        "using": "false",
+        "with_check": null
+      },
+      {
+        "cmd": "ALL",
+        "name": "deny_all",
+        "permissive": "RESTRICTIVE",
+        "roles": [
+          "public"
+        ],
+        "schema": "supplier_stricker",
+        "table": "optionals",
+        "using": "false",
+        "with_check": null
+      },
+      {
+        "cmd": "ALL",
+        "name": "deny_all",
+        "permissive": "RESTRICTIVE",
+        "roles": [
+          "public"
+        ],
+        "schema": "supplier_stricker",
+        "table": "product_types",
+        "using": "false",
+        "with_check": null
+      },
+      {
+        "cmd": "ALL",
+        "name": "deny_all",
+        "permissive": "RESTRICTIVE",
+        "roles": [
+          "public"
+        ],
+        "schema": "supplier_stricker",
+        "table": "products",
+        "using": "false",
+        "with_check": null
+      },
+      {
+        "cmd": "ALL",
+        "name": "deny_all",
+        "permissive": "RESTRICTIVE",
+        "roles": [
+          "public"
+        ],
+        "schema": "supplier_stricker",
+        "table": "stg_colors",
+        "using": "false",
+        "with_check": null
+      },
+      {
+        "cmd": "ALL",
+        "name": "deny_all",
+        "permissive": "RESTRICTIVE",
+        "roles": [
+          "public"
+        ],
+        "schema": "supplier_stricker",
+        "table": "stg_customizations",
+        "using": "false",
+        "with_check": null
+      },
+      {
+        "cmd": "ALL",
+        "name": "deny_all",
+        "permissive": "RESTRICTIVE",
+        "roles": [
+          "public"
+        ],
+        "schema": "supplier_stricker",
+        "table": "stg_images",
+        "using": "false",
+        "with_check": null
+      },
+      {
+        "cmd": "ALL",
+        "name": "deny_all",
+        "permissive": "RESTRICTIVE",
+        "roles": [
+          "public"
+        ],
+        "schema": "supplier_stricker",
+        "table": "stg_optionals",
+        "using": "false",
+        "with_check": null
+      },
+      {
+        "cmd": "ALL",
+        "name": "deny_all",
+        "permissive": "RESTRICTIVE",
+        "roles": [
+          "public"
+        ],
+        "schema": "supplier_stricker",
+        "table": "stg_product_types",
+        "using": "false",
+        "with_check": null
+      },
+      {
+        "cmd": "ALL",
+        "name": "deny_all",
+        "permissive": "RESTRICTIVE",
+        "roles": [
+          "public"
+        ],
+        "schema": "supplier_stricker",
+        "table": "stg_products",
+        "using": "false",
+        "with_check": null
+      },
+      {
+        "cmd": "ALL",
+        "name": "deny_all",
+        "permissive": "RESTRICTIVE",
+        "roles": [
+          "public"
+        ],
+        "schema": "supplier_stricker",
+        "table": "stg_stock",
+        "using": "false",
+        "with_check": null
+      },
+      {
+        "cmd": "ALL",
+        "name": "deny_all",
+        "permissive": "RESTRICTIVE",
+        "roles": [
+          "public"
+        ],
+        "schema": "supplier_stricker",
+        "table": "stocks",
+        "using": "false",
+        "with_check": null
+      },
+      {
+        "cmd": "ALL",
+        "name": "deny_all",
+        "permissive": "RESTRICTIVE",
+        "roles": [
+          "public"
+        ],
+        "schema": "supplier_stricker",
+        "table": "sync_log",
+        "using": "false",
+        "with_check": null
       }
     ],
     "queues": {
@@ -258619,7 +258829,7 @@
         "partition_bound": null,
         "partition_key": null,
         "replica_identity": "default",
-        "rls_enabled": false,
+        "rls_enabled": true,
         "rls_forced": false,
         "schema": "supplier_stricker"
       },
@@ -258634,7 +258844,7 @@
         "partition_bound": null,
         "partition_key": null,
         "replica_identity": "default",
-        "rls_enabled": false,
+        "rls_enabled": true,
         "rls_forced": false,
         "schema": "supplier_stricker"
       },
@@ -258649,7 +258859,7 @@
         "partition_bound": null,
         "partition_key": null,
         "replica_identity": "default",
-        "rls_enabled": false,
+        "rls_enabled": true,
         "rls_forced": false,
         "schema": "supplier_stricker"
       },
@@ -258664,7 +258874,7 @@
         "partition_bound": null,
         "partition_key": null,
         "replica_identity": "default",
-        "rls_enabled": false,
+        "rls_enabled": true,
         "rls_forced": false,
         "schema": "supplier_stricker"
       },
@@ -258679,7 +258889,7 @@
         "partition_bound": null,
         "partition_key": null,
         "replica_identity": "default",
-        "rls_enabled": false,
+        "rls_enabled": true,
         "rls_forced": false,
         "schema": "supplier_stricker"
       },
@@ -258694,7 +258904,7 @@
         "partition_bound": null,
         "partition_key": null,
         "replica_identity": "default",
-        "rls_enabled": false,
+        "rls_enabled": true,
         "rls_forced": false,
         "schema": "supplier_stricker"
       },
@@ -258709,7 +258919,7 @@
         "partition_bound": null,
         "partition_key": null,
         "replica_identity": "default",
-        "rls_enabled": false,
+        "rls_enabled": true,
         "rls_forced": false,
         "schema": "supplier_stricker"
       },
@@ -258724,7 +258934,7 @@
         "partition_bound": null,
         "partition_key": null,
         "replica_identity": "default",
-        "rls_enabled": false,
+        "rls_enabled": true,
         "rls_forced": false,
         "schema": "supplier_stricker"
       },
@@ -258739,7 +258949,7 @@
         "partition_bound": null,
         "partition_key": null,
         "replica_identity": "default",
-        "rls_enabled": false,
+        "rls_enabled": true,
         "rls_forced": false,
         "schema": "supplier_stricker"
       },
@@ -258754,7 +258964,7 @@
         "partition_bound": null,
         "partition_key": null,
         "replica_identity": "default",
-        "rls_enabled": false,
+        "rls_enabled": true,
         "rls_forced": false,
         "schema": "supplier_stricker"
       },
@@ -258769,7 +258979,7 @@
         "partition_bound": null,
         "partition_key": null,
         "replica_identity": "default",
-        "rls_enabled": false,
+        "rls_enabled": true,
         "rls_forced": false,
         "schema": "supplier_stricker"
       },
@@ -258784,7 +258994,7 @@
         "partition_bound": null,
         "partition_key": null,
         "replica_identity": "default",
-        "rls_enabled": false,
+        "rls_enabled": true,
         "rls_forced": false,
         "schema": "supplier_stricker"
       },
@@ -258799,7 +259009,7 @@
         "partition_bound": null,
         "partition_key": null,
         "replica_identity": "default",
-        "rls_enabled": false,
+        "rls_enabled": true,
         "rls_forced": false,
         "schema": "supplier_stricker"
       },
@@ -258814,7 +259024,7 @@
         "partition_bound": null,
         "partition_key": null,
         "replica_identity": "default",
-        "rls_enabled": false,
+        "rls_enabled": true,
         "rls_forced": false,
         "schema": "supplier_stricker"
       },
@@ -258829,7 +259039,7 @@
         "partition_bound": null,
         "partition_key": null,
         "replica_identity": "default",
-        "rls_enabled": false,
+        "rls_enabled": true,
         "rls_forced": false,
         "schema": "supplier_stricker"
       },
@@ -258844,7 +259054,7 @@
         "partition_bound": null,
         "partition_key": null,
         "replica_identity": "default",
-        "rls_enabled": false,
+        "rls_enabled": true,
         "rls_forced": false,
         "schema": "supplier_stricker"
       },
@@ -258859,7 +259069,7 @@
         "partition_bound": null,
         "partition_key": null,
         "replica_identity": "default",
-        "rls_enabled": false,
+        "rls_enabled": true,
         "rls_forced": false,
         "schema": "supplier_stricker"
       }

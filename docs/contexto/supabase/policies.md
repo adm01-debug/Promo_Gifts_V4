@@ -1050,3 +1050,20 @@ Visão consolidada (inclui `storage.objects` e `realtime.messages`); detalhes po
 | storage.objects | quarantine_select_admin_or_service | SELECT | PERMISSIVE | authenticated | `((bucket_id = 'quarantine'::text) AND is_supervisor_or_above(( SELECT auth.uid() AS uid)))` |  |
 | storage.objects | recibos_authenticated_update | UPDATE | PERMISSIVE | authenticated, service_role | `(bucket_id = 'recibos-entrega'::text)` | `(bucket_id = 'recibos-entrega'::text)` |
 | storage.objects | recibos_authenticated_write | INSERT | PERMISSIVE | authenticated, service_role |  | `(bucket_id = 'recibos-entrega'::text)` |
+| supplier_stricker.canceled_products | deny_all | ALL | RESTRICTIVE | public | `false` |  |
+| supplier_stricker.category_mappings | deny_all | ALL | RESTRICTIVE | public | `false` |  |
+| supplier_stricker.colors | deny_all | ALL | RESTRICTIVE | public | `false` |  |
+| supplier_stricker.customization_options | deny_all | ALL | RESTRICTIVE | public | `false` |  |
+| supplier_stricker.customization_tables | deny_all | ALL | RESTRICTIVE | public | `false` |  |
+| supplier_stricker.optionals | deny_all | ALL | RESTRICTIVE | public | `false` |  |
+| supplier_stricker.product_types | deny_all | ALL | RESTRICTIVE | public | `false` |  |
+| supplier_stricker.products | deny_all | ALL | RESTRICTIVE | public | `false` |  |
+| supplier_stricker.stg_colors | deny_all | ALL | RESTRICTIVE | public | `false` |  |
+| supplier_stricker.stg_customizations | deny_all | ALL | RESTRICTIVE | public | `false` |  |
+| supplier_stricker.stg_images | deny_all | ALL | RESTRICTIVE | public | `false` |  |
+| supplier_stricker.stg_optionals | deny_all | ALL | RESTRICTIVE | public | `false` |  |
+| supplier_stricker.stg_product_types | deny_all | ALL | RESTRICTIVE | public | `false` |  |
+| supplier_stricker.stg_products | deny_all | ALL | RESTRICTIVE | public | `false` |  |
+| supplier_stricker.stg_stock | deny_all | ALL | RESTRICTIVE | public | `false` |  |
+| supplier_stricker.stocks | deny_all | ALL | RESTRICTIVE | public | `false` |  |
+| supplier_stricker.sync_log | deny_all | ALL | RESTRICTIVE | public | `false` |  |

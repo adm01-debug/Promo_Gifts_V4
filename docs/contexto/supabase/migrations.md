@@ -2987,3 +2987,4 @@ SQL em `migrations/<versao>_<nome>.sql`. Mudanças feitas pelo Dashboard/SQL Edi
 | 20261117073000 | [p06_security_invoker_v_product_properties_public](migrations/20261117073000_p06_security_invoker_v_product_properties_public.sql) | 8 |
 | 20261118223000 | [fn_supplier_risk_breakdown](migrations/20261118223000_fn_supplier_risk_breakdown.sql) | 4 |
 | 20261119051500 | [fix_get_quote_token_public_expiracao_pg_temp](migrations/20261119051500_fix_get_quote_token_public_expiracao_pg_temp.sql) | 1 |
+| 20261119073000 | [supplier_stricker_rls_deny_all_reemissao](migrations/20261119073000_supplier_stricker_rls_deny_all_reemissao.sql) | 1 |

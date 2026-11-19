@@ -6,9 +6,9 @@
 |---|---|
 | tipo | table |
 | owner | postgres |
-| RLS habilitado | não |
+| RLS habilitado | sim |
 | RLS forçado (owner) | não |
-| policies | 0 |
+| policies | 1 |
 | realtime (publication) | não |
 | replica identity | default |
 | vem de extensão | não |
@@ -52,8 +52,15 @@
 
 ## Policies (RLS)
 
-> ⚠️ RLS **desabilitado** nesta tabela.
+### `deny_all`
 
+| campo | valor |
+|---|---|
+| comando | ALL |
+| tipo | RESTRICTIVE |
+| roles | public |
+| USING | `false` |
+| WITH CHECK |  |
 
 
 ## Triggers

@@ -2,6 +2,12 @@
 
 Diff semântico gerado a cada coleta em que algo mudou.
 
+## 2026-11-19 08:22 UTC
+
+- **migrations** adicionado (1): `20261119073000_supplier_stricker_rls_deny_all_reemissao`
+- **policies (RLS)** adicionado (17): `supplier_stricker.canceled_products.deny_all`, `supplier_stricker.category_mappings.deny_all`, `supplier_stricker.colors.deny_all`, `supplier_stricker.customization_options.deny_all`, `supplier_stricker.customization_tables.deny_all`, `supplier_stricker.optionals.deny_all`, `supplier_stricker.product_types.deny_all`, `supplier_stricker.products.deny_all`, `supplier_stricker.stg_colors.deny_all`, `supplier_stricker.stg_customizations.deny_all`, `supplier_stricker.stg_images.deny_all`, `supplier_stricker.stg_optionals.deny_all`, `supplier_stricker.stg_product_types.deny_all`, `supplier_stricker.stg_products.deny_all`, `supplier_stricker.stg_stock.deny_all`, `supplier_stricker.stocks.deny_all`, `supplier_stricker.sync_log.deny_all`
+- **tabelas** alterado (17): `supplier_stricker.canceled_products`, `supplier_stricker.category_mappings`, `supplier_stricker.colors`, `supplier_stricker.customization_options`, `supplier_stricker.customization_tables`, `supplier_stricker.optionals`, `supplier_stricker.product_types`, `supplier_stricker.products`, `supplier_stricker.stg_colors`, `supplier_stricker.stg_customizations`, `supplier_stricker.stg_images`, `supplier_stricker.stg_optionals`, `supplier_stricker.stg_product_types`, `supplier_stricker.stg_products`, `supplier_stricker.stg_stock`, `supplier_stricker.stocks`, `supplier_stricker.sync_log`
+
 ## 2026-11-19 07:19 UTC
 
 - **functions** adicionado (1): `public.rpc_sales_assistant_candidates(p_ramo_pai_id uuid, p_color_group_ids uuid[], p_price_min numeric, p_price_max numeric, p_limit integer, p_max_per_category integer, p_min_score integer)`

@@ -427,20 +427,20 @@ Um arquivo por tabela em `tables/<schema>/<tabela>.md` (colunas, constraints, í
 | [public.workspace_notifications](tables/public/workspace_notifications.md) | table | sim | 4 | 12 | sim |  |
 | [public.xbz_gallery_staging](tables/public/xbz_gallery_staging.md) | table | sim | 1 | 28 | não | Staging para pipeline N8N de extração de imagens gallery D1-D10 do site XBZ. Criada em 27/02/2026. |
 | [public.xbz_upload_mapping](tables/public/xbz_upload_mapping.md) | table | sim | 1 | 8 | não | Rastreia requisições pg_net para upload de imagens XBZ ao Cloudflare Images |
-| [supplier_stricker.canceled_products](tables/supplier_stricker/canceled_products.md) | table | não | 0 | 5 | não | Produtos descontinuados do portfólio Stricker |
-| [supplier_stricker.category_mappings](tables/supplier_stricker/category_mappings.md) | table | não | 0 | 9 | não |  |
-| [supplier_stricker.colors](tables/supplier_stricker/colors.md) | table | não | 0 | 6 | não | Catálogo de cores disponíveis nos produtos Stricker |
-| [supplier_stricker.customization_options](tables/supplier_stricker/customization_options.md) | table | não | 0 | 22 | não | Opções de personalização/gravação por produto |
-| [supplier_stricker.customization_tables](tables/supplier_stricker/customization_tables.md) | table | não | 0 | 57 | não | Tabelas de preços de personalização por técnica e área |
-| [supplier_stricker.optionals](tables/supplier_stricker/optionals.md) | table | não | 0 | 57 | não | Variantes de produtos Stricker (40k+ SKUs) |
-| [supplier_stricker.product_types](tables/supplier_stricker/product_types.md) | table | não | 0 | 10 | não | Categorias e subcategorias dos produtos Stricker |
-| [supplier_stricker.products](tables/supplier_stricker/products.md) | table | não | 0 | 34 | não | Produtos principais da Stricker (8k+ produtos) |
-| [supplier_stricker.stg_colors](tables/supplier_stricker/stg_colors.md) | table | não | 0 | 9 | não | Staging de cores da API Stricker |
-| [supplier_stricker.stg_customizations](tables/supplier_stricker/stg_customizations.md) | table | não | 0 | 12 | não | Staging de técnicas de personalização da API Stricker |
-| [supplier_stricker.stg_images](tables/supplier_stricker/stg_images.md) | table | não | 0 | 12 | não | Staging de imagens da API Stricker |
-| [supplier_stricker.stg_optionals](tables/supplier_stricker/stg_optionals.md) | table | não | 0 | 32 | não | Staging de variantes/opcionais da API Stricker |
-| [supplier_stricker.stg_product_types](tables/supplier_stricker/stg_product_types.md) | table | não | 0 | 9 | não | Staging de categorias da API Stricker |
-| [supplier_stricker.stg_products](tables/supplier_stricker/stg_products.md) | table | não | 0 | 32 | não | Staging de produtos da API Stricker |
-| [supplier_stricker.stg_stock](tables/supplier_stricker/stg_stock.md) | table | não | 0 | 13 | não |  |
-| [supplier_stricker.stocks](tables/supplier_stricker/stocks.md) | table | não | 0 | 12 | não | Estoque em tempo real dos SKUs Stricker |
-| [supplier_stricker.sync_log](tables/supplier_stricker/sync_log.md) | table | não | 0 | 13 | não | Log de sincronizações com a API Stricker |
+| [supplier_stricker.canceled_products](tables/supplier_stricker/canceled_products.md) | table | sim | 1 | 5 | não | Produtos descontinuados do portfólio Stricker |
+| [supplier_stricker.category_mappings](tables/supplier_stricker/category_mappings.md) | table | sim | 1 | 9 | não |  |
+| [supplier_stricker.colors](tables/supplier_stricker/colors.md) | table | sim | 1 | 6 | não | Catálogo de cores disponíveis nos produtos Stricker |
+| [supplier_stricker.customization_options](tables/supplier_stricker/customization_options.md) | table | sim | 1 | 22 | não | Opções de personalização/gravação por produto |
+| [supplier_stricker.customization_tables](tables/supplier_stricker/customization_tables.md) | table | sim | 1 | 57 | não | Tabelas de preços de personalização por técnica e área |
+| [supplier_stricker.optionals](tables/supplier_stricker/optionals.md) | table | sim | 1 | 57 | não | Variantes de produtos Stricker (40k+ SKUs) |
+| [supplier_stricker.product_types](tables/supplier_stricker/product_types.md) | table | sim | 1 | 10 | não | Categorias e subcategorias dos produtos Stricker |
+| [supplier_stricker.products](tables/supplier_stricker/products.md) | table | sim | 1 | 34 | não | Produtos principais da Stricker (8k+ produtos) |
+| [supplier_stricker.stg_colors](tables/supplier_stricker/stg_colors.md) | table | sim | 1 | 9 | não | Staging de cores da API Stricker |
+| [supplier_stricker.stg_customizations](tables/supplier_stricker/stg_customizations.md) | table | sim | 1 | 12 | não | Staging de técnicas de personalização da API Stricker |
+| [supplier_stricker.stg_images](tables/supplier_stricker/stg_images.md) | table | sim | 1 | 12 | não | Staging de imagens da API Stricker |
+| [supplier_stricker.stg_optionals](tables/supplier_stricker/stg_optionals.md) | table | sim | 1 | 32 | não | Staging de variantes/opcionais da API Stricker |
+| [supplier_stricker.stg_product_types](tables/supplier_stricker/stg_product_types.md) | table | sim | 1 | 9 | não | Staging de categorias da API Stricker |
+| [supplier_stricker.stg_products](tables/supplier_stricker/stg_products.md) | table | sim | 1 | 32 | não | Staging de produtos da API Stricker |
+| [supplier_stricker.stg_stock](tables/supplier_stricker/stg_stock.md) | table | sim | 1 | 13 | não |  |
+| [supplier_stricker.stocks](tables/supplier_stricker/stocks.md) | table | sim | 1 | 12 | não | Estoque em tempo real dos SKUs Stricker |
+| [supplier_stricker.sync_log](tables/supplier_stricker/sync_log.md) | table | sim | 1 | 13 | não | Log de sincronizações com a API Stricker |
