@@ -74,17 +74,19 @@ export function packMixed(
 
   const volumes: VolumeDraft[] = [];
 
-  for (let pendentes = faltando(); pendentes.length > 0; pendentes = faltando()) {
-    const primeiro = pendentes[0].item;
+  for (;;) {
+    const pendentes = faltando();
+    const [proxima] = pendentes;
+    if (!proxima) break;
+    const primeiro = proxima.item;
 
     // Só caixas que levam ao menos uma unidade da maior peça pendente: garante
     // que cada passagem coloca algo e o laço termina.
     const candidatas = daMenorParaMaior.filter((box) => capacityOf(primeiro, box) > 0);
-    if (candidatas.length === 0) return { status: 'nao_cabe', item: primeiro };
+    const maiorCandidata = candidatas.at(-1);
+    if (!maiorCandidata) return { status: 'nao_cabe', item: primeiro };
 
-    const box =
-      candidatas.find((candidata) => seguraTudo(candidata, pendentes)) ??
-      candidatas[candidatas.length - 1];
+    const box = candidatas.find((candidata) => seguraTudo(candidata, pendentes)) ?? maiorCandidata;
 
     const disponivelG = box.maxWeightG - box.emptyWeightG;
     const contents: VolumeDraft['contents'] = [];

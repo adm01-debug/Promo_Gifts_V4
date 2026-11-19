@@ -106,6 +106,12 @@ function somarTotais(volumes: PackVolume[]): FreightPlanTotals {
 
 const OCUPACAO_BAIXA = 0.5;
 
+/** Um volume com as contas fechadas, ao lado do rascunho de onde saiu. */
+interface VolumeFechado {
+  rascunho: VolumeDraft;
+  volume: PackVolume;
+}
+
 /**
  * Avisos que mudam a leitura do número.
  *
@@ -120,20 +126,20 @@ const OCUPACAO_BAIXA = 0.5;
  * as quatro caixas têm peso vazio 0 e os dois cálculos coincidem — o erro só
  * apareceria quando alguém preenchesse `shipping_boxes.empty_weight_g`.
  */
-function montarAvisos(volumes: PackVolume[], rascunhos: VolumeDraft[]): string[] {
+function montarAvisos(fechados: VolumeFechado[]): string[] {
   const avisos: string[] = [];
 
   const ociosas = new Map<string, number>();
   const noTeto = new Set<string>();
 
-  for (const [indice, volume] of volumes.entries()) {
+  for (const { rascunho, volume } of fechados) {
     if (volume.fillRatio < OCUPACAO_BAIXA) {
       ociosas.set(volume.box.code, (ociosas.get(volume.box.code) ?? 0) + 1);
     }
 
-    // O rascunho na mesma posição é a origem deste volume e carrega as peças
-    // com peso — não há o que procurar nem valor ausente para tratar.
-    const pesos = rascunhos[indice].contents.map(({ item }) => item.weightG);
+    // O rascunho é a origem deste volume e carrega as peças com peso — não há
+    // o que procurar nem valor ausente para tratar.
+    const pesos = rascunho.contents.map(({ item }) => item.weightG);
     const maisLeve = Math.min(...pesos);
     if (volume.grossWeightG + maisLeve > volume.box.maxWeightG) noTeto.add(volume.box.code);
   }
@@ -242,14 +248,18 @@ export function planFreight(
     rascunhos.push(...resultado.volumes);
   }
 
-  const volumes = rascunhos.map((rascunho) => computeVolumeTotals(rascunho, settings));
+  const fechados: VolumeFechado[] = rascunhos.map((rascunho) => ({
+    rascunho,
+    volume: computeVolumeTotals(rascunho, settings),
+  }));
+  const volumes = fechados.map(({ volume }) => volume);
 
   return {
     ...base,
     status: 'ok',
     volumes,
     totals: somarTotais(volumes),
-    warnings: montarAvisos(volumes, rascunhos),
+    warnings: montarAvisos(fechados),
     missing: [],
   };
 }

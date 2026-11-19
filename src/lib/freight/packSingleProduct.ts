@@ -33,9 +33,9 @@ export function packSingleProduct(
     .map((box) => ({ box, capacity: fitCount(item, box, settings).capacity }))
     .filter(({ capacity }) => capacity > 0);
 
-  if (cabem.length === 0) return { status: 'nao_cabe', item };
+  const [maior] = cabem;
+  if (!maior) return { status: 'nao_cabe', item };
 
-  const maior = cabem[0];
   const daMenorParaMaior = [...cabem].reverse();
 
   const volumes: VolumeDraft[] = [];

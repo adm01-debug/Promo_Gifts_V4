@@ -14,7 +14,8 @@ import type { MixMode, PackItem } from './types';
 export type GroupReason = 'mixed' | 'ships_separately' | 'single_product';
 
 export interface PackGroup {
-  items: PackItem[];
+  /** Nunca vazio, e o tipo garante: quem consome lê `items[0]` sem checar. */
+  items: [PackItem, ...PackItem[]];
   reason: GroupReason;
 }
 
@@ -38,9 +39,10 @@ export function buildGroups(items: readonly PackItem[], mixMode: MixMode): PackG
     reason: 'ships_separately',
   }));
 
-  if (restantes.length > 0) {
+  const [primeiro, ...demais] = restantes;
+  if (primeiro) {
     if (mixMode === 'misturar') {
-      grupos.push({ items: restantes, reason: 'mixed' });
+      grupos.push({ items: [primeiro, ...demais], reason: 'mixed' });
     } else {
       for (const item of restantes) {
         grupos.push({ items: [item], reason: 'single_product' });
