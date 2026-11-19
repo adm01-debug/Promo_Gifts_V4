@@ -1,9 +1,9 @@
 {
  "meta": {
-  "sha": "4b1f6e1cc05e108bb639c6b82301e40e6dc3dde0",
+  "sha": "7d01b06cf91a66e99ea7ea09ea079227ffd31313",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-19 10:37 UTC",
+  "generated_at": "2026-11-19 10:54 UTC",
   "files_total": 10912,
   "code_files": 8933,
   "code_lines": 1265560
@@ -548234,10 +548234,19 @@
   }
  },
  "git": {
-  "sha": "4b1f6e1cc05e108bb639c6b82301e40e6dc3dde0",
+  "sha": "7d01b06cf91a66e99ea7ea09ea079227ffd31313",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "7d01b06",
+    "date": "2026-11-19",
+    "author": "github-actions[bot]",
+    "subject": "docs: recibo de aplicação — 20261022000000 (E15)",
+    "files": [
+     "supabase/MIGRATIONS_SYNC_LOG.md"
+    ]
+   },
    {
     "sha": "4b1f6e1",
     "date": "2026-11-19",
@@ -548533,18 +548542,6 @@
     "subject": "docs(resgate): corrige medição falsa que entrou na main pela #3855 (#3856)",
     "files": [
      "docs/agentes/resgates/2026-11-18-veredicto-byte-a-byte-das-branches.md"
-    ]
-   },
-   {
-    "sha": "e3fcdc9",
-    "date": "2026-11-18",
-    "author": "adm01-debug",
-    "subject": "feat(estoque): cria fn_supplier_risk_breakdown por migration e corrige o rotulo do selo (#3854)",
-    "files": [
-     "src/components/inventory/risk/RupturePanelEma.tsx",
-     "supabase/MIGRATIONS_SYNC_LOG.md",
-     "supabase/migrations/20261118223000_fn_supplier_risk_breakdown.sql",
-     "supabase/rollbacks/20261118223000_rollback.sql"
     ]
    }
   ],

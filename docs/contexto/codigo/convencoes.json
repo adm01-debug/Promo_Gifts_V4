@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "docs: recibo de aplicação — 20261022000000 (E15)",
    "chore(security): regrava baseline de policies e recibo E15 da 20261113140000 (#3885)",
    "fix(db): reafirma 7 revogações que o baseline ressuscita na reconstrução (#3883)",
    "fix(docs): referência a migration inexistente na main quebrava o Gate 1 (#3882)",
-   "chore(resgates): fecha a fila das 16 orfas com o estado final de cada uma (#3881)",
-   "chore(resgates): adjudica a quinta branch salvo, que estava fora do ruleset (#3880)"
+   "chore(resgates): fecha a fila das 16 orfas com o estado final de cada uma (#3881)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",

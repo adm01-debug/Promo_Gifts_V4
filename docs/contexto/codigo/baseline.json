@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "4b1f6e1cc05e108bb639c6b82301e40e6dc3dde0",
+  "commit": "7d01b06cf91a66e99ea7ea09ea079227ffd31313",
   "branch": "main",
-  "data_commit": "2026-11-19T07:35:52-03:00",
+  "data_commit": "2026-11-19T07:53:03-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "7d01b06c",
+    "data": "2026-11-19",
+    "assunto": "docs: recibo de aplicação — 20261022000000 (E15)"
+   },
    {
     "sha": "4b1f6e1c",
     "data": "2026-11-19",
@@ -126,11 +131,6 @@
     "sha": "02738839",
     "data": "2026-11-18",
     "assunto": "test(orcamentos): trava o contrato de privacidade do export de template (#3862)"
-   },
-   {
-    "sha": "1c0f023a",
-    "data": "2026-11-18",
-    "assunto": "fix(orcamentos): telas de template nao podem mentir sobre o que aconteceu (#3860)"
    }
   ],
   "arquivos_mudados_7d": 1486,
@@ -199,7 +199,7 @@
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "supabase/MIGRATIONS_SYNC_LOG.md",
-    "mudancas": 63
+    "mudancas": 64
    },
    {
     "arquivo": "package.json",
@@ -235,7 +235,7 @@
    },
    {
     "arquivo": "src/pages/kit-builder/KitBuilderPage.tsx",
-    "mudancas": 16
+    "mudancas": 15
    },
    {
     "arquivo": "src/pages/mockups/MockupGenerator.tsx",
@@ -290,30 +290,30 @@
     "mudancas": 11
    },
    {
-    "arquivo": "analise-branches/RELATORIO_BRANCHES.md",
+    "arquivo": "docs/ci/SEGREDOS.md",
     "mudancas": 11
    },
    {
-    "arquivo": "docs/ci/SEGREDOS.md",
+    "arquivo": "e2e/helpers/auth.ts",
     "mudancas": 11
    }
   ],
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 388
+    "commits": 384
    },
    {
     "autor": "Claude",
-    "commits": 66
+    "commits": 65
    },
    {
     "autor": "Joaquim Ataides",
-    "commits": 57
+    "commits": 56
    },
    {
     "autor": "github-actions[bot]",
-    "commits": 26
+    "commits": 27
    },
    {
     "autor": "dependabot[bot]",
