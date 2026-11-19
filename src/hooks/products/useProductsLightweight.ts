@@ -35,7 +35,7 @@ function mapLightweight(p: LightweightProduct): ProductLightweight {
   return {
     id: String(p.id),
     name: p.name,
-    sku: p.sku,
+    sku: p.sku ?? '',
     supplier_reference: p.supplier_reference ?? null,
     price: typeof price === 'number' ? price : 0,
     image_url: imageUrl,
@@ -89,7 +89,7 @@ export function mapLightweightToProduct(
     image_url: imageUrl,
     set_image_url: setImageUrl,
     images: [imageUrl],
-    sku: p.sku,
+    sku: p.sku ?? '',
     stock,
     created_at: p.created_at ?? undefined,
     colors: [],

@@ -23,6 +23,7 @@ import { KitOnboardingTour } from '@/components/kit-builder/KitOnboardingTour';
 import { KitMakerGuideDialog } from '@/components/kit-builder/KitMakerGuideDialog';
 import { useKitWizardShortcuts } from '@/hooks/kit-builder/useKitWizardShortcuts';
 import { toast } from 'sonner';
+import { exportKitPdf } from '@/utils/kitPdfGenerator';
 import type { KitMakerGuideChapterId } from '@/lib/kit-builder';
 
 const KitIsometricPreview = lazy(() =>
@@ -52,7 +53,7 @@ export default function KitBuilderPage() {
   );
 
   const handleExportPDF = () => {
-    window.print();
+    exportKitPdf({ kitState: state.kitState, kitQuantity: state.kitQuantity });
   };
 
   // Restore unsaved edits from beforeunload backup once hydration finishes.
@@ -432,10 +433,9 @@ export default function KitBuilderPage() {
                         notes={state.kitState.notes}
                         onNotesChange={actions.setNotes}
                         onEditBox={() => actions.goToStep('box')}
-                        onSaveDraft={() => {
-                          void actions.handleSaveKit();
-                        }}
+                        onSaveDraft={actions.handleSaveKit}
                         isSavingDraft={meta.isSaving}
+                        priceRefresh={meta.priceRefresh}
                       />
                     )}
 

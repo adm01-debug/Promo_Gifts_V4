@@ -29,6 +29,7 @@ import { KitPresentablePreview } from './KitPresentablePreview';
 import { KitPersonalizationPreview } from './KitPersonalizationPreview';
 import { KitStockForecastCard } from './KitStockForecastCard';
 import { ClientPicker, type ClientData } from '@/components/quotes/ClientPicker';
+import type { KitPriceRefresh } from '@/hooks/kit-builder/useKitCatalogPriceRefresh';
 
 const NOTES_MAX_LENGTH = 500;
 
@@ -52,6 +53,7 @@ interface KitSummaryProps {
   onEditBox?: () => void;
   onSaveDraft?: () => void;
   isSavingDraft?: boolean;
+  priceRefresh?: KitPriceRefresh;
 }
 
 export function shouldRenderKitStockForecast(status: KitStockStatus): boolean {
@@ -77,6 +79,7 @@ export function KitSummary({
   onEditBox,
   onSaveDraft,
   isSavingDraft,
+  priceRefresh,
 }: KitSummaryProps) {
   const { box, items, personalization } = kitState;
   const pricesKnown = hasKnownKitPrices(kitState);
@@ -237,6 +240,7 @@ export function KitSummary({
             kitState={kitState}
             kitQuantity={kitQuantity}
             onKitQuantityChange={onKitQuantityChange}
+            priceRefresh={priceRefresh}
           />
           {pricesKnown && (
             <KitMarginSimulator

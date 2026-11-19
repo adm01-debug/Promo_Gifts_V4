@@ -147,6 +147,12 @@ function validBody(extra: Record<string, unknown> = {}) {
     logoHeightCm: 3,
     logoRotation: 0,
     logoScale: 100,
+    // Medidas REAIS do produto: sem elas o handler recusa com 422
+    // missing_dimensions antes de qualquer fetch (index.ts:394 ->
+    // geometry.ts:89 checkProductDimensions). Um "corpo valido" tem de passar
+    // por esse portao, senao todo caso abaixo mede o portao, nao o que pretende.
+    productWidthCm: 20,
+    productHeightCm: 8,
     ...extra,
   };
 }
@@ -169,7 +175,7 @@ describe("generate-mockup — contrato do handler REAL", () => {
     ["corpo vazio", {}, "PRODUCT_URL_UNFETCHABLE"],
     ["productImageUrl não-URL", validBody({ productImageUrl: "not-a-url" }), "PRODUCT_URL_UNFETCHABLE"],
     ["host SSRF (metadata)", validBody({ productImageUrl: "https://169.254.169.254/latest" }), "PRODUCT_URL_UNFETCHABLE"],
-    ["sem logo", { productImageUrl: PRODUCT_URL }, null],
+    ["sem logo", { productImageUrl: PRODUCT_URL, productWidthCm: 20, productHeightCm: 8 }, null],
     ["logo SVG", validBody({ logoUrl: undefined, logoBase64: "data:image/svg+xml;base64,PHN2Zz4=" }), "SVG_NOT_SUPPORTED"],
   ] as Array<[string, unknown, string | null]>)("corpo inválido → 400 validation_failed (%s)", async (_l, b, code) => {
     const r = await call({ body: b });
@@ -177,6 +183,24 @@ describe("generate-mockup — contrato do handler REAL", () => {
     const d = await json(r);
     expect(d.error).toBe("validation_failed");
     if (code) expect(d.errorCode).toBe(code);
+  });
+
+  it("sem medidas reais do produto → 422 missing_dimensions antes de qualquer fetch", async () => {
+    for (const faltando of [
+      { productWidthCm: undefined, productHeightCm: undefined },
+      { productWidthCm: 0, productHeightCm: 0 },
+      { productWidthCm: -5, productHeightCm: -2 },
+    ]) {
+      const r = await call({ body: validBody(faltando) });
+      expect(r.status).toBe(422);
+      const d = await json(r);
+      expect(d.error).toBe("validation_failed");
+      expect(d.errorCode).toBe("missing_dimensions");
+      expect(String(d.message)).toContain("productWidthCm");
+    }
+    // Uma das duas medidas basta: o portao so recusa quando nao ha nenhuma.
+    expect((await call({ body: validBody({ productHeightCm: undefined }) })).status).toBe(200);
+    expect((await call({ body: validBody({ productWidthCm: undefined }) })).status).toBe(200);
   });
 
   it("host recusado → 422 product_image_unavailable / logo_unavailable", async () => {

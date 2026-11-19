@@ -48,11 +48,9 @@ import { AlertCard } from './StockAlertCard';
 import { OutOfStockDialog, LowStockDialog } from './StockAlertDialogs';
 import { StockFilterToolbar } from './StockFilterToolbar';
 import { FutureStockDialog } from './FutureStockDialog';
-const StockHealthBreakdownDrawer = lazyWithRetry(() =>
-  import('./StockHealthBreakdownDrawer').then((m) => ({ default: m.StockHealthBreakdownDrawer })),
-);
 import { StockEmptyFiltersHint } from './StockEmptyFiltersHint';
 import { initialStockTab } from './stockTabDefault';
+import { StockHealthDrawerEntry } from './StockHealthDrawerEntry';
 
 const RISK_PANEL_STORAGE_KEY = 'stock-dashboard:risk-panel-open:v1';
 const ACTIVE_TAB_STORAGE_KEY = 'stock-dashboard:active-tab:v1';
@@ -122,7 +120,6 @@ export function StockDashboard() {
   const [outOfStockDialogOpen, setOutOfStockDialogOpen] = useState(false);
   const [lowStockDialogOpen, setLowStockDialogOpen] = useState(false);
   const [futureStockDialogOpen, setFutureStockDialogOpen] = useState(false);
-  const [healthDrawerOpen, setHealthDrawerOpen] = useState(false);
   // #14 — persiste preferência do painel de risco entre sessões.
   const [riskPanelOpen, setRiskPanelOpen] = useState<boolean>(readRiskPanelPref);
   const reliabilityFlag = isFeatureEnabled('supplierReliability');
@@ -435,16 +432,6 @@ export function StockDashboard() {
         onOpenChange={setFutureStockDialogOpen}
         entries={futureStock}
       />
-      {healthDrawerOpen && (
-        <Suspense fallback={null}>
-          <StockHealthBreakdownDrawer
-            open={healthDrawerOpen}
-            onOpenChange={setHealthDrawerOpen}
-            products={allProductStocks ?? productStocks}
-          />
-        </Suspense>
-      )}
-
       {/* Título "Estoque" + Toolbar de filtros na mesma linha (padrão Super Filtro) */}
       <Card>
         <CardContent className="p-4">
@@ -677,6 +664,7 @@ export function StockDashboard() {
                     Visualização detalhada do estoque segmentado por cores e variações
                   </CardDescription>
                 </div>
+                <StockHealthDrawerEntry products={allProductStocks ?? productStocks} />
               </div>
             </CardHeader>
             <CardContent className="pt-0">

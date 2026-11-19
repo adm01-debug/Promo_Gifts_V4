@@ -49,6 +49,7 @@ import { useProductCustomizationOptions } from '@/hooks/products';
 import {
   buildKitMockupRequest,
   medidasAutoritativas,
+  recusaPorMedidasAusentes,
   type MedidasProdutoCm,
 } from '@/components/kit-builder/kitMockupDimensions';
 
@@ -91,9 +92,8 @@ import { SwapItemBanner } from '@/components/kit-builder/SwapItemBanner';
 import { useKitComponentPrintAreas } from '@/hooks/kit-builder/useKitBuilderQueries';
 import { useCustomizationPriceReactive } from '@/hooks/simulation';
 import type { GravacaoLocation } from '@/types/customization';
-import {
-  generateMockupApi,
-} from '@/hooks/mockup/mockupGenerationService';
+import { generateMockupApi } from '@/hooks/mockup/mockupGenerationService';
+import { MockupSwitchNotice, useMockupKillSwitch } from '@/components/mockup/MockupSwitchNotice';
 import { toast } from 'sonner';
 import { sanitizeError } from '@/lib/security/sanitize-error';
 
@@ -171,7 +171,6 @@ export interface FlatArea {
   code: string;
   name: string;
 }
-
 
 function kitMockupInputFingerprint(
   displayName: string,
@@ -811,6 +810,7 @@ function PersonalizationPreview({
   const [zoom, setZoom] = useState(1);
   const [fullscreen, setFullscreen] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
+  const { isBlocked: mockupBlocked } = useMockupKillSwitch();
   const generationRef = useRef(0);
   const personalizationRef = useRef(personalization);
 
@@ -822,6 +822,15 @@ function PersonalizationPreview({
     const request = buildKitMockupRequest(displayName, imageUrl, personalization, dimensoes);
     if (!request) {
       toast.error('Selecione a técnica e envie uma arte antes de gerar a prévia.');
+      return;
+    }
+
+    // GUARD: a edge recusa com 422 missing_dimensions quando o produto nao tem
+    // medida real cadastrada (geometry.ts -> checkProductDimensions). Recusar aqui
+    // evita a ida ate a edge e troca a mensagem de API pela que o vendedor entende.
+    const semMedidas = recusaPorMedidasAusentes(dimensoes);
+    if (semMedidas) {
+      toast.error('Produto sem medidas cadastradas', { description: semMedidas.descricao });
       return;
     }
 
@@ -973,10 +982,13 @@ function PersonalizationPreview({
         </div>
       </div>
 
+      <MockupSwitchNotice />
+
       <Button
         type="button"
         className="w-full"
         disabled={
+          mockupBlocked ||
           isGenerating ||
           !personalization.enabled ||
           !personalization.techniqueName ||

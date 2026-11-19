@@ -5,7 +5,14 @@ import {
   buildKitMockupRequest,
   type FlatTechnique,
 } from '@/components/kit-builder/PersonalizationConfig';
-import { medidasAutoritativas } from '@/components/kit-builder/kitMockupDimensions';
+import {
+  medidasAutoritativas,
+  recusaPorMedidasAusentes,
+} from '@/components/kit-builder/kitMockupDimensions';
+import {
+  MISSING_DIMENSIONS_MESSAGE,
+  MISSING_DIMENSIONS_STATUS,
+} from '@/hooks/mockup/mockupGeneratorModel';
 
 const limitedTechnique: FlatTechnique = {
   technique_id: 'tech-laser',
@@ -176,5 +183,37 @@ describe('PersonalizationConfig price inputs', () => {
       const req = buildKitMockupRequest('Caneca', 'https://cdn.test/caneca.jpg', completo, {});
       expect(req).toMatchObject({ productWidthCm: null, productHeightCm: null });
     });
+  });
+});
+
+describe('recusaPorMedidasAusentes — o kit-builder recusa antes de chamar a edge', () => {
+  it('sem medida nenhuma: recusa com a mensagem do vendedor e status 422', () => {
+    // A edge devolveria 422 missing_dimensions com texto de API
+    // (geometry.ts -> checkProductDimensions). Aqui o vendedor recebe a instrucao.
+    for (const entrada of [undefined, {}, { widthCm: null, heightCm: null }]) {
+      const recusa = recusaPorMedidasAusentes(entrada);
+      expect(recusa).not.toBeNull();
+      expect(recusa?.status).toBe(MISSING_DIMENSIONS_STATUS);
+      expect(recusa?.status).toBe(422);
+      expect(recusa?.descricao).toBe(MISSING_DIMENSIONS_MESSAGE);
+    }
+  });
+
+  it('zero, negativo e NaN nao contam como medida', () => {
+    expect(recusaPorMedidasAusentes({ widthCm: 0, heightCm: 0 })).not.toBeNull();
+    expect(recusaPorMedidasAusentes({ widthCm: -5, heightCm: -1 })).not.toBeNull();
+    expect(recusaPorMedidasAusentes({ widthCm: Number.NaN, heightCm: Number.NaN })).not.toBeNull();
+  });
+
+  it('uma medida valida basta para liberar a geracao', () => {
+    expect(recusaPorMedidasAusentes({ widthCm: 8.5, heightCm: null })).toBeNull();
+    expect(recusaPorMedidasAusentes({ widthCm: null, heightCm: 9.5 })).toBeNull();
+    expect(recusaPorMedidasAusentes({ widthCm: 8.5, heightCm: 9.5 })).toBeNull();
+  });
+
+  it('estimativa da UI nao libera: medidasAutoritativas devolve undefined e a recusa dispara', () => {
+    const dimensoes = medidasAutoritativas({ dimensionsKnown: false }, 8.5, 9.5);
+    expect(dimensoes).toBeUndefined();
+    expect(recusaPorMedidasAusentes(dimensoes)).not.toBeNull();
   });
 });

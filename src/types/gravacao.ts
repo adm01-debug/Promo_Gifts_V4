@@ -54,6 +54,33 @@ export interface TecnicaSimples {
 export type AreaShape = 'circle' | 'custom' | 'oval' | 'rectangle' | 'triangle';
 
 /**
+ * Mapa, e nao array, de proposito: `Record<AreaShape, true>` e exaustivo — se
+ * alguem acrescentar um formato ao tipo, o TypeScript obriga a listar aqui
+ * tambem. E dispensa asserção de tipo, que o ratchet de `as <Tipo>` cobra.
+ */
+const AREA_SHAPES: Record<AreaShape, true> = {
+  circle: true,
+  custom: true,
+  oval: true,
+  rectangle: true,
+  triangle: true,
+};
+
+/**
+ * GUARD: o `shape` vem do banco (product_print_areas / customization data) e
+ * nao tem CHECK que o prenda a estes cinco valores. Sem esta checagem em
+ * runtime, quem monta PrintAreaWithTechniques faz cast cego e um shape
+ * desconhecido entra no tipo sem ser barrado — o renderizador da area de
+ * gravacao recebe algo que ele nao sabe desenhar.
+ *
+ * Resgatado de salvo/codex-fix-gate1-kit-pdf-types-261109-2252:src/hooks/useMagicUpState.ts:61-63,
+ * que a main nunca recebeu (`git grep isAreaShape origin/main` = zero).
+ */
+export function isAreaShape(shape: unknown): shape is AreaShape {
+  return typeof shape === 'string' && Object.hasOwn(AREA_SHAPES, shape);
+}
+
+/**
  * Área de gravação do produto (tabela product_print_areas)
  */
 export interface ProductPrintArea {

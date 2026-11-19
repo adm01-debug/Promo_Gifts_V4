@@ -78,7 +78,9 @@ Deno.test('asia-ingestion: SSOT credential client preserves authorization and su
       assert(credential.client.includes('2.49.4'), 'The SSOT must use its own pinned SDK');
       const write = recorded.find(entry => entry.url.pathname === '/rest/v1/supplier_products_raw');
       assert(write, 'The real ingestion must write its scoped rows');
-      assert(write.client.includes('2.119.0'), 'The ingestion SDK must not be downgraded');
+      // Contrato real: a edge pina npm:@supabase/supabase-js@2.49.4 em index.ts:1 (mesmo pin do SSOT em _shared/credentials.ts:11).
+      // 2.119.0 e a dependencia npm do frontend (package.json:363), nunca o pin desta edge.
+      assert(write.client.includes('2.49.4'), 'The ingestion SDK must not be downgraded');
       const rows = JSON.parse(write.body);
       assert(rows.length === 1 && rows[0].supplier_id === 'supplier-contract-id' && rows[0].supplier_sku === 'CONTRACT-SKU', 'The supplied row must retain the resolved supplier and SKU');
     });

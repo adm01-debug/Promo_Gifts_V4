@@ -37,6 +37,8 @@ import {
 } from 'lucide-react';
 import { type QuoteTemplate, useQuoteTemplates } from '@/hooks/quotes/useQuoteTemplates';
 import { exportTemplatesToJson, exportSingleTemplate } from '@/utils/templateExport';
+import { textoDoTotal, totalDoTemplate } from '@/lib/quotes/templateTotal';
+import { useToast } from '@/hooks/ui';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -79,6 +81,7 @@ export function QuoteTemplatesList({
     cloneTemplateToSeller,
     isAdmin,
   } = useQuoteTemplates();
+  const { toast } = useToast();
   const [searchTerm, setSearchTerm] = useState('');
   const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
   const [cloneDialogOpen, setCloneDialogOpen] = useState(false);
@@ -98,38 +101,48 @@ export function QuoteTemplatesList({
     }).format(value);
   };
 
-  const calculateTemplateTotal = (template: QuoteTemplate) => {
-    const itemsTotal = template.items.reduce((sum, item) => {
-      const itemBase = item.quantity * item.unitPrice;
-      const personalizationCost =
-        item.personalizations?.reduce((pSum, p) => {
-          return pSum + (p.unitCost || 0) * item.quantity + (p.setupCost || 0);
-        }, 0) || 0;
-      return sum + itemBase + personalizationCost;
-    }, 0);
-
-    const discountValue =
-      template.discount_percent > 0
-        ? itemsTotal * (template.discount_percent / 100)
-        : template.discount_amount;
-
-    return itemsTotal - discountValue;
-  };
-
+  // GUARD: o diálogo só fecha quando a ação DEU CERTO.
+  //
+  // `deleteTemplate` devolve boolean e `cloneTemplateToSeller` devolve a linha
+  // ou null (useQuoteTemplates.ts). Antes o retorno era descartado e o diálogo
+  // fechava de qualquer jeito — numa falha de rede ou de RLS, o usuário via a
+  // confirmação sumir e ia embora achando que tinha excluído ou clonado.
+  // Agora a falha mantém o diálogo aberto, com o que ele escolheu, para
+  // tentar de novo. O toast de erro quem dá é o hook.
   const handleDelete = async () => {
     if (deleteConfirmId) {
-      await deleteTemplate(deleteConfirmId);
-      setDeleteConfirmId(null);
+      const excluiu = await deleteTemplate(deleteConfirmId);
+      if (excluiu) setDeleteConfirmId(null);
     }
   };
 
   const handleClone = async () => {
     if (cloneTemplateId && targetSellerId) {
-      await cloneTemplateToSeller(cloneTemplateId, targetSellerId);
+      const clonado = await cloneTemplateToSeller(cloneTemplateId, targetSellerId);
+      if (!clonado) return;
       setCloneDialogOpen(false);
       setCloneTemplateId(null);
       setTargetSellerId('');
     }
+  };
+
+  // GUARD: template com item ilegível não é aplicado no orçamento.
+  //
+  // `totalDoTemplate` devolve null quando algum item não tem quantidade/preço
+  // legíveis (templateTotal.ts:40-50) — é o mesmo sinal que a tela já usa para
+  // não mostrar um total inventado. Antes o clique aplicava qualquer template,
+  // e o item quebrado entrava no orçamento do cliente.
+  const aplicarTemplate = (template: QuoteTemplate) => {
+    if (totalDoTemplate(template) === null) {
+      toast({
+        title: 'Template incompleto',
+        description:
+          'Este template tem item com quantidade ou preço ilegível e não pode ser aplicado. Edite o template antes de usá-lo.',
+        variant: 'destructive',
+      });
+      return;
+    }
+    onApplyTemplate?.(template);
   };
 
   const openCloneDialog = (templateId: string) => {
@@ -203,7 +216,7 @@ export function QuoteTemplatesList({
               className={`group transition-shadow hover:shadow-md ${
                 selectionMode ? 'cursor-pointer hover:border-primary' : ''
               }`}
-              onClick={() => selectionMode && onApplyTemplate?.(template)}
+              onClick={() => selectionMode && aplicarTemplate(template)}
             >
               <CardHeader className="pb-2">
                 <div className="flex items-start justify-between">
@@ -303,7 +316,7 @@ export function QuoteTemplatesList({
                       {template.items.length} {template.items.length === 1 ? 'item' : 'itens'}
                     </span>
                     <span className="font-medium text-foreground">
-                      {formatCurrency(calculateTemplateTotal(template))}
+                      {textoDoTotal(template, formatCurrency)}
                     </span>
                   </div>
 
@@ -318,7 +331,10 @@ export function QuoteTemplatesList({
 
                   <div className="border-t pt-2 text-xs text-muted-foreground">
                     Atualizado em{' '}
-                    {format(new Date(template.updated_at), 'dd/MM/yyyy', { locale: ptBR })}
+                    {/* `updated_at` e nullable no schema: sem data, nao invente uma. */}
+                    {template.updated_at
+                      ? format(new Date(template.updated_at), 'dd/MM/yyyy', { locale: ptBR })
+                      : '—'}
                   </div>
                 </div>
               </CardContent>
@@ -338,7 +354,15 @@ export function QuoteTemplatesList({
           <AlertDialogFooter>
             <AlertDialogCancel>Cancelar</AlertDialogCancel>
             <AlertDialogAction
-              onClick={handleDelete}
+              // preventDefault: o AlertDialogAction do Radix fecha o diálogo
+              // sozinho no clique. Sem isto, a guarda de `handleDelete` não
+              // adiantaria nada — o `open` é controlado por `deleteConfirmId`,
+              // mas o fechamento interno dispara `onOpenChange` e zera o estado
+              // de qualquer jeito. Agora quem decide fechar é só o sucesso.
+              onClick={(e) => {
+                e.preventDefault();
+                void handleDelete();
+              }}
               className="bg-destructive text-destructive-foreground"
             >
               Excluir

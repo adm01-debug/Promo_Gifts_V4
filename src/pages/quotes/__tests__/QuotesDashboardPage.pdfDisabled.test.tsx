@@ -31,8 +31,12 @@ const emptyMetrics = {
   pendingQuotes: 0,
   statusDistribution: [],
   monthlyData: [],
-  conversionFunnel: [],
+  filteredQuotes: [],
 };
+
+// O funil agora vem do hook (useQuoteFunnel sobre as quotes filtradas) e é
+// renderizado por QuotesFunnelChart: sem ele o mock quebraria o render.
+const emptyFunnel = { stages: [], avgCycleDays: null, total: 0 };
 
 const baseHook = {
   quotes: [],
@@ -47,6 +51,7 @@ const baseHook = {
   loadingClients: false,
   selectedClientName: null,
   metrics: emptyMetrics,
+  funnel: emptyFunnel,
   exportToPdf,
 } as unknown as HookReturn;
 

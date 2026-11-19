@@ -23,6 +23,7 @@ import {
 import { MockupEmptyState } from '@/pages/mockups/mockup-generator/MockupEmptyState';
 import { useKeyboardShortcuts } from '@/components/mockup/KeyboardShortcuts';
 import { GeneratingOverlay } from '@/components/mockup/GeneratingOverlay';
+import { MockupSwitchNotice, useMockupKillSwitch } from '@/components/mockup/MockupSwitchNotice';
 import { useMockupGenerator } from '@/hooks/mockup';
 import { useAuth } from '@/contexts/AuthContext';
 import { useTechniqueHandlers } from '@/pages/mockups/mockup-generator/MockupTechniqueHandlers';
@@ -106,6 +107,7 @@ function scrollToStep(step: number, highlight = false): void {
 
 export default function MockupGenerator() {
   const mg = useMockupGenerator();
+  const { isBlocked: mockupBlocked, blockedMessage } = useMockupKillSwitch();
   const { profile } = useAuth();
   const user = mg.user;
 
@@ -130,7 +132,7 @@ export default function MockupGenerator() {
     onGenerate: mg.generateMockup,
     onReset: mg.resetForm,
     onDownload: () => mg.downloadMockup(),
-    canGenerate: !!(mg.selectedProduct && mg.selectedTechnique && mg.hasLogo),
+    canGenerate: !mockupBlocked && !!(mg.selectedProduct && mg.selectedTechnique && mg.hasLogo),
     canDownload: !!mg.generatedMockup,
     isLoading: mg.isLoading,
     onStepChange: (step) => {
@@ -227,6 +229,8 @@ export default function MockupGenerator() {
             </Suspense>
           </div>
         )}
+
+        <MockupSwitchNotice />
 
         {mg.showDraftRestoredNotice && (
           <Alert className="border-success/50 bg-success/10">
@@ -489,6 +493,7 @@ export default function MockupGenerator() {
                           }}
                           onGenerateMockup={mg.generateMockup}
                           isGeneratingMockup={mg.isLoading}
+                          generationBlockedReason={blockedMessage}
                         />
                       }
                     />

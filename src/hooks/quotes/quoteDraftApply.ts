@@ -22,16 +22,61 @@ export const QUOTE_DRAFT_KEY_PREFIX = 'quote_draft_';
 
 type BuilderState = ReturnType<typeof useQuoteBuilderState>;
 
-/** Os campos que o QuoteBuilderPage entrega ao QuoteAutoSave (QuoteBuilderPage.tsx:179-199). */
+/**
+ * Os campos que o QuoteBuilderPage entrega ao QuoteAutoSave.
+ *
+ * `companyInfo`, `contactInfo`, `validityDays`, `deliveryMode` e `deliveryDate`
+ * entraram em 2026-11-18. `applyDraftToBuilder` já os lia (linhas 171-172 e
+ * 188-215) porque a cobertura veio do QuoteBuilderDraftRecovery escrito por
+ * outro agente, mas a página nunca os gravava — o rascunho local não tinha esses
+ * campos, então aquele trecho de restauração nunca podia rodar. Efeito para o
+ * vendedor: empresa, contato, validade escolhida e data de entrega sumiam ao
+ * recuperar o rascunho, e mexer só nesses campos não acendia "alterações não
+ * salvas".
+ */
 export type QuoteDraftSnapshot = Pick<
   BuilderState,
-  'clientId' | 'contactId' | 'deliveryTime' | 'discountType' | 'discountValue' | 'items' | 'negotiationMarkup' | 'notes' | 'paymentMethod' | 'paymentTerms' | 'shippingCost' | 'shippingType' | 'validUntil'
+  | 'clientId'
+  | 'companyInfo'
+  | 'contactId'
+  | 'contactInfo'
+  | 'deliveryDate'
+  | 'deliveryMode'
+  | 'deliveryTime'
+  | 'discountType'
+  | 'discountValue'
+  | 'items'
+  | 'negotiationMarkup'
+  | 'notes'
+  | 'paymentMethod'
+  | 'paymentTerms'
+  | 'shippingCost'
+  | 'shippingType'
+  | 'validityDays'
+  | 'validUntil'
 >;
 
 /** Setters já expostos pelo useQuoteBuilderState; nenhum setter novo é necessário. */
 export type QuoteDraftApplyTarget = Pick<
   BuilderState,
-  'handleDeliveryDateChange' | 'handleDeliveryModeChange' | 'setClientId' | 'setCompanyInfo' | 'setContactId' | 'setContactInfo' | 'setDeliveryTime' | 'setDiscountType' | 'setDiscountValue' | 'setItems' | 'setNegotiationMarkup' | 'setNotes' | 'setPaymentMethod' | 'setPaymentTerms' | 'setShippingCost' | 'setShippingType' | 'setValidityDays' | 'setValidUntil'
+  | 'handleDeliveryDateChange'
+  | 'handleDeliveryModeChange'
+  | 'setClientId'
+  | 'setCompanyInfo'
+  | 'setContactId'
+  | 'setContactInfo'
+  | 'setDeliveryTime'
+  | 'setDiscountType'
+  | 'setDiscountValue'
+  | 'setItems'
+  | 'setNegotiationMarkup'
+  | 'setNotes'
+  | 'setPaymentMethod'
+  | 'setPaymentTerms'
+  | 'setShippingCost'
+  | 'setShippingType'
+  | 'setValidityDays'
+  | 'setValidUntil'
 >;
 
 export type RecoveredQuoteDraft = ReturnType<typeof quoteDraftRecoverySchema.parse>;
@@ -97,7 +142,9 @@ export function inspectStoredQuoteDraft(storageKey: string): EstadoRascunho {
   if (!parsed.success) {
     logger.warn('Rascunho local fora de forma', {
       storageKey,
-      issues: parsed.error.issues.slice(0, 5).map((i) => ({ path: i.path.join('.'), code: i.code })),
+      issues: parsed.error.issues
+        .slice(0, 5)
+        .map((i) => ({ path: i.path.join('.'), code: i.code })),
     });
     return { estado: 'ilegivel', motivo: 'fora-de-forma' };
   }

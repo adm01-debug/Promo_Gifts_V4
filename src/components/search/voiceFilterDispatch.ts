@@ -47,6 +47,20 @@ export function despacharFiltroDeVoz(data: VoiceAgentAction['data'], d: Despacho
   );
 }
 
+/**
+ * Comando 'clear': além de fechar o overlay e limpar o texto (o que a main já
+ * fazia), zera o FilterState do catálogo pela mesma ponte do 'filter'.
+ */
+export function despacharLimpezaDeVoz(d: DespachoDeVoz) {
+  d.timers.add(
+    setTimeout(() => {
+      d.fecharOverlay();
+      d.setQuery('');
+      useVoiceFilterBridge.getState().requestReset();
+    }, ATRASO_MS),
+  );
+}
+
 /** Comando 'search': busca textual, comportamento preservado. */
 export function despacharBuscaDeVoz(data: VoiceAgentAction['data'], d: DespachoDeVoz) {
   if (!data?.query && !data?.filters) return;

@@ -8,6 +8,8 @@
  * https://owasp.org/www-community/attacks/xss/
  */
 
+import { logger } from '@/lib/logger';
+
 const SAFE_URL_PROTOCOLS = new Set(['https:', 'http:']);
 const DANGEROUS_PROTOCOLS = /^(javascript|data|vbscript|file|blob):/i;
 
@@ -18,6 +20,47 @@ const DANGEROUS_PROTOCOLS = /^(javascript|data|vbscript|file|blob):/i;
  * @param options - Strictness options
  * @returns Safe URL string, or null if dangerous
  */
+/**
+ * Hostnames privados/loopback/link-local barrados para prevenir SSRF.
+ *
+ * RESGATE: veio da PR #1726 (fechada sem merge) junto com 39 casos em
+ * `__tests__/sanitize-ssrf.test.ts`. Sem isto, `sanitizeUrl` aceitava
+ * `http://169.254.169.254/` (endpoint de metadados de nuvem) e
+ * `http://localhost:5432/` — e a URL volta para quem chamou como se fosse segura.
+ *
+ * O parser de URL do WHATWG normaliza octal (`0177.0.0.1`), hex (`0x7f000001`) e
+ * decimal (`2130706433`) ANTES de chegarmos aqui, então comparar `hostname` basta
+ * contra esses truques de codificação.
+ */
+const SSRF_BLOCKED_HOSTNAME = (hostname: string): boolean => {
+  // Tira colchetes de IPv6: [::1] -> ::1
+  const h = hostname.replace(/^\[|\]$/g, '').toLowerCase();
+
+  // IPv6 com IPv4 embutido: o parser normaliza toda forma mista
+  // (::ffff:127.0.0.1, 0:0:0:0:0:ffff:7f00:1) para ::ffff:hi:lo, onde os dois
+  // ultimos grupos de 16 bits sao o IPv4. Ex.: ::ffff:a9fe:a9fe -> 169.254.169.254
+  const ipv4Mapped = /^::ffff:([0-9a-f]{1,4}):([0-9a-f]{1,4})$/.exec(h);
+  if (ipv4Mapped) {
+    const hi = parseInt(ipv4Mapped[1], 16);
+    const lo = parseInt(ipv4Mapped[2], 16);
+    const derivedIpv4 = `${hi >> 8}.${hi & 0xff}.${lo >> 8}.${lo & 0xff}`;
+    if (SSRF_BLOCKED_HOSTNAME(derivedIpv4)) return true;
+  }
+
+  return (
+    h === 'localhost' ||
+    h === '0.0.0.0' ||
+    h === '::1' ||
+    h.startsWith('127.') || // 127.0.0.0/8 loopback
+    h.startsWith('10.') || // 10.0.0.0/8 privada
+    h.startsWith('192.168.') || // 192.168.0.0/16 privada
+    /^172\.(1[6-9]|2\d|3[01])\./.test(h) || // 172.16-31.x privada
+    h.startsWith('169.254.') || // 169.254.0.0/16 link-local (metadados de nuvem)
+    /^fe[89ab][0-9a-f]:/i.test(h) || // IPv6 link-local fe80::/10
+    /\.(local|internal|corp|intranet|lan)$/i.test(h) // TLDs internos comuns
+  );
+};
+
 export function sanitizeUrl(
   url: string | null | undefined,
   options: { httpsOnly?: boolean; allowEmpty?: boolean } = {},
@@ -25,6 +68,10 @@ export function sanitizeUrl(
   if (!url) {
     return options.allowEmpty ? '' : null;
   }
+
+  // RESGATE (PR #1726): valor truthy que nao e string (numero, objeto) fazia
+  // `.trim()` lancar TypeError fora de qualquer try/catch.
+  if (typeof url !== 'string') return null;
 
   const trimmed = url.trim();
   if (!trimmed) return null;
@@ -48,6 +95,19 @@ export function sanitizeUrl(
     // General mode: allow http and https only
     if (!SAFE_URL_PROTOCOLS.has(protocol)) {
       console.warn('[SecurityGuard] Blocked non-http(s) URL scheme:', protocol);
+      return null;
+    }
+
+    // RESGATE (PR #1726): credencial embutida (user:pass@host) e vetor de
+    // exfiltracao — a URL carrega segredo para onde ela for renderizada ou logada.
+    if (parsed.username || parsed.password) {
+      logger.warn('[SecurityGuard] Blocked URL with embedded credentials');
+      return null;
+    }
+
+    // RESGATE (PR #1726): host privado/loopback/link-local — prevencao de SSRF.
+    if (SSRF_BLOCKED_HOSTNAME(parsed.hostname)) {
+      logger.warn('[SecurityGuard] Blocked SSRF-risk hostname:', parsed.hostname);
       return null;
     }
 

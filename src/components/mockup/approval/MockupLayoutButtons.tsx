@@ -80,6 +80,12 @@ interface MockupLayoutButtonsProps {
   onGenerateMockup?: () => Promise<unknown>;
   /** Whether AI mockup is currently being generated */
   isGeneratingMockup?: boolean;
+  /**
+   * Mensagem de manutenção vinda de `system_kill_switches.legacy_message`
+   * (via useMockupKillSwitch). Quando presente, a geração está desligada:
+   * o botão fica inativo e a tooltip mostra o motivo do banco.
+   */
+  generationBlockedReason?: string | null;
 }
 
 export function MockupLayoutButtons({
@@ -97,6 +103,7 @@ export function MockupLayoutButtons({
   onLayoutCaptured,
   onGenerateMockup,
   isGeneratingMockup,
+  generationBlockedReason,
 }: MockupLayoutButtonsProps) {
   const [previewOpen, setPreviewOpen] = useState(false);
   const [approvalData, setApprovalData] = useState<MockupApprovalData | null>(null);
@@ -310,7 +317,9 @@ export function MockupLayoutButtons({
               <Button
                 size="sm"
                 onClick={handleGenerateMockup}
-                disabled={!activeArea?.logoPreview || !!isGeneratingMockup}
+                disabled={
+                  !activeArea?.logoPreview || !!isGeneratingMockup || !!generationBlockedReason
+                }
                 className="w-full gap-1.5 !bg-primary font-semibold !text-primary-foreground shadow-md shadow-primary/30 transition-all hover:!bg-primary/80 hover:shadow-lg hover:shadow-primary/40 disabled:cursor-not-allowed disabled:!opacity-40"
               >
                 {isGeneratingMockup ? (
@@ -322,9 +331,9 @@ export function MockupLayoutButtons({
               </Button>
             </span>
           </TooltipTrigger>
-          {!activeArea?.logoPreview && (
+          {(generationBlockedReason || !activeArea?.logoPreview) && (
             <TooltipContent side="bottom">
-              <p>Faça upload do logo primeiro</p>
+              <p>{generationBlockedReason || 'Faça upload do logo primeiro'}</p>
             </TooltipContent>
           )}
         </Tooltip>

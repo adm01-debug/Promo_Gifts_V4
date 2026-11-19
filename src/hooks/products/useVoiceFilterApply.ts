@@ -7,17 +7,29 @@
  * OOM do worker); aqui o comportamento é coberto de verdade.
  */
 import { useEffect, type Dispatch, type SetStateAction } from 'react';
-import type { FilterState } from '@/components/filters/FilterPanel';
+import { defaultFilters, type FilterState } from '@/components/filters/FilterPanel';
 import { applyVoiceFilterPatch } from '@/lib/filters/voiceFilterPatch';
 import { useVoiceFilterBridge } from '@/stores/voiceFilterBridge';
 
 export function useVoiceFilterApply(setFilters: Dispatch<SetStateAction<FilterState>>) {
   const pendingFilters = useVoiceFilterBridge((s) => s.pendingFilters);
   const consumeFilters = useVoiceFilterBridge((s) => s.consumeFilters);
+  const pendingReset = useVoiceFilterBridge((s) => s.pendingReset);
+  const consumeReset = useVoiceFilterBridge((s) => s.consumeReset);
 
   useEffect(() => {
     if (!pendingFilters) return;
     setFilters((prev) => applyVoiceFilterPatch(prev, pendingFilters));
     consumeFilters();
   }, [pendingFilters, consumeFilters, setFilters]);
+
+  // "Limpar" zera o FilterState inteiro — cor, categoria, material, faixa de
+  // preço, estoque, kit, gênero, público-alvo. O handler de 'clear' em
+  // useGlobalSearch.ts limpava só o TEXTO da busca, então quem ditava "limpar
+  // os filtros" via o catálogo continuar filtrado.
+  useEffect(() => {
+    if (!pendingReset) return;
+    setFilters(defaultFilters);
+    consumeReset();
+  }, [pendingReset, consumeReset, setFilters]);
 }

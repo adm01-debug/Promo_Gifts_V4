@@ -22,6 +22,7 @@ import { Calendar } from '@/components/ui/calendar';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { DeliveryModeToggle } from '@/pages/quotes/components/DeliveryModeToggle';
 import { QuoteBuilderNotesCard } from '@/pages/quotes/components/QuoteBuilderNotesCard';
+import { QuoteTemplateSelector } from '@/components/quotes/QuoteTemplateSelector';
 
 import {
   FileText,
@@ -173,6 +174,14 @@ export default function QuoteBuilderPage() {
         data={{
           clientId: s.clientId,
           contactId: s.contactId,
+          // Empresa, contato, validade escolhida e entrega: applyDraftToBuilder
+          // (quoteDraftApply.ts:171-172,188-225) já sabe restaurar os cinco, mas
+          // eles nunca eram gravados — o rascunho local ia sem esses campos.
+          companyInfo: s.companyInfo,
+          contactInfo: s.contactInfo,
+          validityDays: s.validityDays,
+          deliveryMode: s.deliveryMode,
+          deliveryDate: s.deliveryDate,
           validUntil: s.validUntil,
           discountType: s.discountType,
           discountValue: s.discountValue,
@@ -689,6 +698,7 @@ export default function QuoteBuilderPage() {
                 items={s.items}
                 discountType={s.discountType}
                 discountValue={s.discountValue}
+                usarTemplate={<QuoteTemplateSelector itemCount={s.items.length} s={s} />}
               />
             </div>
           </div>

@@ -6,7 +6,7 @@ import { assertSwitchEnabled } from "../_shared/kill_switch.ts";
 import {
   allowedFetchHosts, fetchBytes as guardedFetchBytes, ImageFetchError, isAllowedFetchHost, MAX_IMAGE_BYTES,
 } from "./fetch-guard.ts";
-import { logoSizePx } from "./geometry.ts";
+import { checkProductDimensions, logoSizePx } from "./geometry.ts";
 // Tetos de ENTRADA (corpo e lote) em módulo testável — ver limits.ts. O teto de
 // TAMANHO DE IMAGEM não vem de lá: já é o MAX_IMAGE_BYTES do fetch-guard acima.
 import {
@@ -42,9 +42,10 @@ interface GenerateMockupBody {
   productName?: string;
   // AUDIT 2026-06-17 / 2026-11-15 — WYSIWYG: a edge usa a MESMA geometria do editor
   // (src/lib/mockup-geometry.ts, replicada em ./geometry.ts). productWidthCm/HeightCm
-  // são as dimensões REAIS do produto (cm); com uma só, a outra é inferida como no editor;
-  // sem nenhuma, vale a estimativa 8×20 cm do editor (fallback — o kit-builder gera prévia
-  // sem dimensões). productFractionX/Y é a fração da imagem ocupada pelo produto (0..1);
+  // são as dimensões REAIS do produto (cm) e são OBRIGATÓRIAS: com uma só, a outra é
+  // inferida como no editor; sem nenhuma, o handler recusa (422 missing_dimensions) em
+  // vez de supor um produto de 8×20 cm — o cliente aplica o mesmo portão antes de
+  // invocar. productFractionX/Y é a fração da imagem ocupada pelo produto (0..1);
   // ausente ⇒ default do cliente (0.85, ver DEFAULT_PRODUCT_FRACTION em ./geometry.ts).
   productWidthCm?: number;
   productHeightCm?: number;
@@ -86,10 +87,12 @@ function validationError(
   message: string,
   corsHeaders: Record<string, string>,
   errorCode?: string,
+  /** 400 por padrão; o portão de medidas usa 422 (mesmo status do cliente). */
+  status = 400,
 ): Response {
   return new Response(
     JSON.stringify({ error: "validation_failed", errorCode, message }),
-    { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } },
+    { status, headers: { ...corsHeaders, "Content-Type": "application/json" } },
   );
 }
 
@@ -381,6 +384,20 @@ Deno.serve(async (req) => {
       "productImageUrl é obrigatória, deve ser http(s) e não pode apontar para um host interno/bloqueado.",
       corsHeaders,
       "PRODUCT_URL_UNFETCHABLE",
+    );
+
+  // Sem dimensões REAIS do produto o servidor recusa: o editor estima 8×20 cm só
+  // para desenhar na tela, mas o mockup entregue ao cliente não pode sair com medida
+  // inventada. 422 antes de qualquer fetch/download — mesmo código/status que o
+  // cliente já usa para recusar na UI (MISSING_DIMENSIONS_REFUSAL em
+  // src/hooks/mockup/mockupGeneratorModel.ts).
+  const dimensionsGate = checkProductDimensions(body.productWidthCm, body.productHeightCm);
+  if (!dimensionsGate.ok)
+    return validationError(
+      dimensionsGate.message,
+      corsHeaders,
+      dimensionsGate.errorCode,
+      dimensionsGate.status,
     );
 
   // A logo arrives either as inline base64 OR as a fetchable URL (same egress gate).

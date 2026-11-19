@@ -17,8 +17,12 @@ import { exportSingleTemplate } from '@/utils/templateExport';
 interface TemplateGridViewProps {
   templatesBySeller: Record<string, QuoteTemplate[]>;
   getSellerName: (sellerId: string) => string;
-  formatCurrency: (value: number) => string;
-  calculateTotal: (template: QuoteTemplate) => number;
+  /**
+   * Total JA formatado. String (e nao numero) porque um template cujos itens
+   * nao podem ser lidos nao tem total: quem calcula devolve o aviso em vez de
+   * um numero inventado. Ver `src/lib/quotes/templateTotal.ts`.
+   */
+  totalFormatado: (template: QuoteTemplate) => string;
   onEdit?: (template: QuoteTemplate) => void;
   onClone: (templateId: string) => void;
   onDelete: (templateId: string) => void;
@@ -27,8 +31,7 @@ interface TemplateGridViewProps {
 export function TemplateGridView({
   templatesBySeller,
   getSellerName,
-  formatCurrency,
-  calculateTotal,
+  totalFormatado,
   onEdit,
   onClone,
   onDelete,
@@ -111,12 +114,14 @@ export function TemplateGridView({
                         {template.items.length} {template.items.length === 1 ? 'item' : 'itens'}
                       </span>
                       <span className="font-medium text-foreground">
-                        {formatCurrency(calculateTotal(template))}
+                        {totalFormatado(template)}
                       </span>
                     </div>
                     <div className="border-t pt-2 text-xs text-muted-foreground">
-                      Atualizado em{' '}
-                      {format(new Date(template.updated_at), 'dd/MM/yyyy', { locale: ptBR })}
+                      Atualizado em {/* `updated_at` e nullable no schema. */}
+                      {template.updated_at
+                        ? format(new Date(template.updated_at), 'dd/MM/yyyy', { locale: ptBR })
+                        : '—'}
                     </div>
                   </div>
                 </CardContent>

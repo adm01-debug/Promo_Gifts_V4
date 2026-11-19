@@ -3,8 +3,9 @@
  *
  * O teste intercepta Deno.serve e o fetch usado por supabase-js. Portanto nao
  * faz chamadas de rede, nao usa credenciais reais e nao grava no Supabase.
- * Ele documenta o contrato atualmente observavel, inclusive o comportamento
- * legado em que um erro do RPC de rate-limit nao interrompe o fluxo.
+ * Ele documenta o contrato atualmente observavel, inclusive o fail-closed em
+ * que um erro do RPC de rate-limit interrompe o fluxo com 503
+ * (index.ts:202-213, introduzido em 51519ef5a).
  */
 
 function assert(condition: unknown, message: string): asserts condition {
@@ -167,11 +168,20 @@ Deno.test({
         }),
       );
       assertEquals(preflight.status, 200);
+      // Contrato real: o preflight devolve a lista restrita compartilhada
+      // (_shared/cors.ts:56-68, usada por index.ts:131-132). x-e2e-cleanup-token
+      // nao entra nela porque todo chamador e server-side
+      // (e2e/helpers/cleanup-client.ts:148, .github/workflows/e2e-quotes.yml:204).
+      const allowHeaders = preflight.headers.get("access-control-allow-headers") ?? "";
       assert(
-        preflight.headers.get("access-control-allow-headers")?.includes(
-          "x-e2e-cleanup-token",
-        ),
-        "o contrato CORS deve anunciar o header de assinatura atual",
+        allowHeaders.includes("authorization") &&
+          allowHeaders.includes("content-type") &&
+          allowHeaders.includes("x-request-id"),
+        "o preflight deve anunciar a allowlist de headers de _shared/cors.ts",
+      );
+      assert(
+        !allowHeaders.includes("x-e2e-cleanup-token"),
+        "o header de assinatura nao e anunciado: nao existe chamador de browser",
       );
       assertEquals(captured.length, 0);
 
@@ -199,7 +209,10 @@ Deno.test({
         dry_run: invalidTokenAudit.dry_run,
       }, {
         ip: "192.0.2.45",
-        status: "auth_failed",
+        // Status canonico atual: index.ts:156 grava 'unauthorized' (o legado
+        // 'auth_failed' sobrevive apenas no CHECK de
+        // supabase/migrations/20261108001500_reconcile_e2e_cleanup_audit.sql:111-114).
+        status: "unauthorized",
         reason: "invalid_token",
         dry_run: true,
       });
@@ -208,18 +221,18 @@ Deno.test({
         "a auditoria de token invalido deve carregar total_ms numerico",
       );
 
-      // Um erro HTTP do RPC se torna { data: null, error } no SDK. O handler
-      // atual ignora esse error e continua ate a consulta de usuarios.
+      // Um erro HTTP do RPC se torna { data: null, error } no SDK. Contrato
+      // real (fail-closed): index.ts:202-213 audita rate_limit_unavailable e
+      // devolve 503 sem seguir para a resolucao de usuario.
       rateLimitMode = "error";
       captured.length = 0;
       const rateLimitRpcError = await handler!(
         cleanupRequest({ email: "allowed@example.test" }),
       );
-      assertEquals(rateLimitRpcError.status, 404);
+      assertEquals(rateLimitRpcError.status, 503);
       assertJsonEquals(await rateLimitRpcError.json(), {
         ok: false,
-        error: "User not found",
-        email: "allowed@example.test",
+        error: "Rate limit unavailable",
       });
       assert(
         captured.some(({ pathname }) => (
@@ -227,9 +240,21 @@ Deno.test({
         )),
         "o handler deve chamar o RPC de rate-limit",
       );
+      assertEquals(auditWrites().length, 1);
+      const rateLimitAudit = JSON.parse(auditWrites()[0].body) as Record<
+        string,
+        unknown
+      >;
+      assertJsonEquals({
+        status: rateLimitAudit.status,
+        reason: rateLimitAudit.reason,
+      }, {
+        status: "error",
+        reason: "rate_limit_unavailable",
+      });
       assert(
-        captured.some(({ pathname }) => pathname === "/auth/v1/admin/users"),
-        "contrato observado: erro do RPC nao bloqueia a consulta de usuarios",
+        !captured.some(({ pathname }) => pathname === "/auth/v1/admin/users"),
+        "erro do RPC deve bloquear a consulta de usuarios (fail-closed)",
       );
 
       // Com o RPC permitindo a chamada, o email fora da allowlist recebe 403

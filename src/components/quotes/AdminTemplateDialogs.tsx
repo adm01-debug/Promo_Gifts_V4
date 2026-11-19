@@ -54,7 +54,15 @@ export function TemplateDeleteDialog({ open, onClose, onConfirm }: DeleteDialogP
         <AlertDialogFooter>
           <AlertDialogCancel>Cancelar</AlertDialogCancel>
           <AlertDialogAction
-            onClick={onConfirm}
+            // preventDefault: o AlertDialogAction do Radix fecha o diálogo
+            // sozinho no clique, disparando `onOpenChange` → `onClose`. Sem
+            // isto, uma exclusão recusada pelo banco ainda assim sumia da tela
+            // e o admin ia embora achando que tinha excluído. Agora quem fecha
+            // é só o sucesso, decidido em AdminTemplatesManager.handleDelete.
+            onClick={(e) => {
+              e.preventDefault();
+              onConfirm();
+            }}
             className="bg-destructive text-destructive-foreground"
           >
             Excluir
