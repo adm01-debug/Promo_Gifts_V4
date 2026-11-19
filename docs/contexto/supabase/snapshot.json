@@ -137756,7 +137756,7 @@
           "database": "postgres",
           "jobid": 209,
           "jobname": "connections-health-check",
-          "schedule": "4,19,34,49 * * * *",
+          "schedule": "19 * * * *",
           "username": "postgres"
         },
         {
@@ -137774,7 +137774,7 @@
           "database": "postgres",
           "jobid": 211,
           "jobname": "connections-auto-test",
-          "schedule": "9,24,39,54 * * * *",
+          "schedule": "24 * * * *",
           "username": "postgres"
         },
         {
@@ -137783,7 +137783,7 @@
           "database": "postgres",
           "jobid": 212,
           "jobname": "refresh-mv-supplier-reliability",
-          "schedule": "8,23,38,53 * * * *",
+          "schedule": "23 * * * *",
           "username": "postgres"
         },
         {
@@ -137855,7 +137855,7 @@
           "database": "postgres",
           "jobid": 222,
           "jobname": "backfill-image-dimensions",
-          "schedule": "7,22,37,52 * * * *",
+          "schedule": "52 9-23/2 * * *",
           "username": "postgres"
         },
         {
@@ -138017,7 +138017,7 @@
           "database": "postgres",
           "jobid": 242,
           "jobname": "generate-blurhashes",
-          "schedule": "*/10 * * * *",
+          "schedule": "40 9-23/2 * * *",
           "username": "postgres"
         },
         {
@@ -138026,7 +138026,7 @@
           "database": "postgres",
           "jobid": 243,
           "jobname": "hash-product-images",
-          "schedule": "11,26,41,56 * * * *",
+          "schedule": "26 9-23/2 * * *",
           "username": "postgres"
         },
         {
@@ -138341,7 +138341,7 @@
           "database": "postgres",
           "jobid": 281,
           "jobname": "pgrst-schema-reload",
-          "schedule": "7 * * * *",
+          "schedule": "7 9 * * *",
           "username": "postgres"
         },
         {
@@ -144374,9 +144374,13 @@
             {
               "file": "supabase/migrations/20260917061500_e18_revoke_authenticated_authz_gaps.sql",
               "hits": 7
+            },
+            {
+              "file": "supabase/migrations/20261119094500_reafirma_revogacoes_anteriores_ao_baseline.sql",
+              "hits": 1
             }
           ],
-          "code_total_files": 3,
+          "code_total_files": 4,
           "cron": [],
           "db": [],
           "triggers": [],
@@ -149569,7 +149573,7 @@
         ],
         "definition": null,
         "definition_sha": "2e6a2228a6fd62b8",
-        "execute_api_roles": "authenticated, service_role",
+        "execute_api_roles": "service_role",
         "execute_public": false,
         "is_trigger_fn": false,
         "kind": "function",
@@ -152778,7 +152782,7 @@
         ],
         "definition": null,
         "definition_sha": "ad040958d49a9f29",
-        "execute_api_roles": "authenticated, service_role",
+        "execute_api_roles": "service_role",
         "execute_public": false,
         "is_trigger_fn": false,
         "kind": "function",
@@ -156800,9 +156804,13 @@
             {
               "file": "supabase/migrations/20261115130300_fn_global_search_clamp_limit_hardened.sql",
               "hits": 1
+            },
+            {
+              "file": "supabase/migrations/20261119094500_reafirma_revogacoes_anteriores_ao_baseline.sql",
+              "hits": 1
             }
           ],
-          "code_total_files": 7,
+          "code_total_files": 8,
           "cron": [],
           "db": [],
           "triggers": [],
@@ -159761,9 +159769,13 @@
             {
               "file": "supabase/migrations/20261114170845_fix_workspace_notifications_insert_policy_reapply.sql",
               "hits": 1
+            },
+            {
+              "file": "supabase/migrations/20261119094500_reafirma_revogacoes_anteriores_ao_baseline.sql",
+              "hits": 1
             }
           ],
-          "code_total_files": 2,
+          "code_total_files": 3,
           "cron": [],
           "db": [],
           "triggers": [],
@@ -178831,9 +178843,13 @@
             {
               "file": "supabase/migrations/20261119051500_fix_get_quote_token_public_expiracao_pg_temp.sql",
               "hits": 1
+            },
+            {
+              "file": "supabase/migrations/20261119094500_reafirma_revogacoes_anteriores_ao_baseline.sql",
+              "hits": 1
             }
           ],
-          "code_total_files": 5,
+          "code_total_files": 6,
           "cron": [],
           "db": [],
           "triggers": [],
@@ -187199,9 +187215,13 @@
             {
               "file": "supabase/migrations/20260917061500_e18_revoke_authenticated_authz_gaps.sql",
               "hits": 5
+            },
+            {
+              "file": "supabase/migrations/20261119094500_reafirma_revogacoes_anteriores_ao_baseline.sql",
+              "hits": 1
             }
           ],
-          "code_total_files": 4,
+          "code_total_files": 5,
           "cron": [],
           "db": [],
           "triggers": [],
@@ -187281,9 +187301,13 @@
             {
               "file": "supabase/migrations/20260917061500_e18_revoke_authenticated_authz_gaps.sql",
               "hits": 5
+            },
+            {
+              "file": "supabase/migrations/20261119094500_reafirma_revogacoes_anteriores_ao_baseline.sql",
+              "hits": 1
             }
           ],
-          "code_total_files": 4,
+          "code_total_files": 5,
           "cron": [],
           "db": [],
           "triggers": [],
@@ -238687,6 +238711,18 @@
         "version": "20261019000000"
       },
       {
+        "name": "revoke_fn_backfill_queue_reap_stuck_public_grant",
+        "statements": 1,
+        "statements_sha": "dee97a2606b08202",
+        "version": "20261022000000"
+      },
+      {
+        "name": "revoke_fn_detect_recurring_errors_public_grant",
+        "statements": 1,
+        "statements_sha": "751bba96d82dc5a6",
+        "version": "20261022000100"
+      },
+      {
         "name": "security_fn_cron_guard_revoke_anon",
         "statements": 3,
         "statements_sha": "c3268c4a69fcf004",
@@ -239143,6 +239179,12 @@
         "statements": 1,
         "statements_sha": "fdc507d1eb24e555",
         "version": "20261114040000"
+      },
+      {
+        "name": "cron004_reduz_frequencia_jobs_ociosos",
+        "statements": 1,
+        "statements_sha": "3dbcd1565f0ac39d",
+        "version": "20261114120000"
       },
       {
         "name": "cron005_refresh_all_mvs_diario_timeout_real",

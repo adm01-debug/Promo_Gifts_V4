@@ -2,6 +2,12 @@
 
 Diff semântico gerado a cada coleta em que algo mudou.
 
+## 2026-11-19 11:17 UTC
+
+- **cron jobs** alterado (7): `209:connections-health-check`, `211:connections-auto-test`, `212:refresh-mv-supplier-reliability`, `222:backfill-image-dimensions`, `242:generate-blurhashes`, `243:hash-product-images`, `281:pgrst-schema-reload`
+- **functions** alterado (8): `public.confirm_notifications_dispatched(p_ids uuid[])`, `public.fn_backfill_queue_reap_stuck(p_stuck_minutes integer, p_max_attempts integer)`, `public.fn_detect_recurring_errors_last_hour(_min_occurrences integer)`, `public.fn_global_search(p_term text, p_limit integer, p_types text[])`, `public.fn_notify_user(_target_user_id uuid, _title text, _message text, _type text, _category text, _action_url text, _metadata jsonb)`, `public.get_quote_token_public(_token text)`, `public.registrar_entrada_estoque(p_variant_sku character varying, p_quantity integer, p_unit_cost numeric, p_supplier_name character varying, p_document_number character varying, p_notes text, p_user_id uuid)`, `public.registrar_saida_estoque(p_variant_sku character varying, p_quantity integer, p_movement_type character varying, p_document_number character varying, p_notes text, p_user_id uuid, p_allow_negative boolean)`
+- **migrations** adicionado (3): `20261022000000_revoke_fn_backfill_queue_reap_stuck_public_grant`, `20261022000100_revoke_fn_detect_recurring_errors_public_grant`, `20261114120000_cron004_reduz_frequencia_jobs_ociosos`
+
 ## 2026-11-19 10:18 UTC
 
 - **colunas** adicionado (14): `public.endomarketing_themes.created_at`, `public.endomarketing_themes.display_order`, `public.endomarketing_themes.id`, `public.endomarketing_themes.is_active`, `public.endomarketing_themes.name`, `public.endomarketing_themes.slug`, `public.endomarketing_themes.updated_at`, `public.product_endomarketing.created_at`, `public.product_endomarketing.id`, `public.product_endomarketing.is_active`, `public.product_endomarketing.product_id`, `public.product_endomarketing.source`, `public.product_endomarketing.theme_id`, `public.product_endomarketing.updated_at`

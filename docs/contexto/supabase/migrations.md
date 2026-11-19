@@ -2901,6 +2901,8 @@ SQL em `migrations/<versao>_<nome>.sql`. Mudanças feitas pelo Dashboard/SQL Edi
 | 20261018170000 | [e069_drop_redundant_prefix_index](migrations/20261018170000_e069_drop_redundant_prefix_index.sql) | 1 |
 | 20261018170100 | [e070_purge_idempotency_ledgers](migrations/20261018170100_e070_purge_idempotency_ledgers.sql) | 3 |
 | 20261019000000 | [mirror_oob_frontend_telemetry_v_system_health_dashboard](migrations/20261019000000_mirror_oob_frontend_telemetry_v_system_health_dashboard.sql) | 5 |
+| 20261022000000 | [revoke_fn_backfill_queue_reap_stuck_public_grant](migrations/20261022000000_revoke_fn_backfill_queue_reap_stuck_public_grant.sql) | 1 |
+| 20261022000100 | [revoke_fn_detect_recurring_errors_public_grant](migrations/20261022000100_revoke_fn_detect_recurring_errors_public_grant.sql) | 1 |
 | 20261022100001 | [security_fn_cron_guard_revoke_anon](migrations/20261022100001_security_fn_cron_guard_revoke_anon.sql) | 3 |
 | 20261022100020 | [](migrations/20261022100020.sql) | 0 |
 | 20261022100021 | [](migrations/20261022100021.sql) | 0 |
@@ -2978,6 +2980,7 @@ SQL em `migrations/<versao>_<nome>.sql`. Mudanças feitas pelo Dashboard/SQL Edi
 | 20261114014500 | [p09_reconcile_ledger_schema_migrations](migrations/20261114014500_p09_reconcile_ledger_schema_migrations.sql) | 1 |
 | 20261114031000 | [fix_user_known_devices_is_trusted](migrations/20261114031000_fix_user_known_devices_is_trusted.sql) | 1 |
 | 20261114040000 | [fix_authenticator_idle_session_timeout_pgrst_listener](migrations/20261114040000_fix_authenticator_idle_session_timeout_pgrst_listener.sql) | 1 |
+| 20261114120000 | [cron004_reduz_frequencia_jobs_ociosos](migrations/20261114120000_cron004_reduz_frequencia_jobs_ociosos.sql) | 1 |
 | 20261114120100 | [cron005_refresh_all_mvs_diario_timeout_real](migrations/20261114120100_cron005_refresh_all_mvs_diario_timeout_real.sql) | 1 |
 | 20261114170845 | [fix_workspace_notifications_insert_policy_reapply](migrations/20261114170845_fix_workspace_notifications_insert_policy_reapply.sql) | 3 |
 | 20261114170921 | [fix_rls_orders_order_items_seller_scope](migrations/20261114170921_fix_rls_orders_order_items_seller_scope.sql) | 12 |
