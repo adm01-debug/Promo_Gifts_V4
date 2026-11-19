@@ -1,9 +1,9 @@
 {
  "meta": {
-  "sha": "719c8f0fce77e07246226e52bac9c8188060cb5e",
+  "sha": "16f7dd7b4a93d8185ff688bf1e52cffd043a782d",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-19 22:59 UTC",
+  "generated_at": "2026-11-19 23:04 UTC",
   "files_total": 10957,
   "code_files": 8976,
   "code_lines": 1270320
@@ -550475,10 +550475,19 @@
   }
  },
  "git": {
-  "sha": "719c8f0fce77e07246226e52bac9c8188060cb5e",
+  "sha": "16f7dd7b4a93d8185ff688bf1e52cffd043a782d",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "16f7dd7",
+    "date": "2026-11-19",
+    "author": "github-actions[bot]",
+    "subject": "docs(migrations-log): recibo E15 — aplicação de 20261119220000 (#3913)",
+    "files": [
+     "supabase/MIGRATIONS_SYNC_LOG.md"
+    ]
+   },
    {
     "sha": "719c8f0",
     "date": "2026-11-19",
@@ -550816,25 +550825,12 @@
     "files": [
      "supabase/MIGRATIONS_SYNC_LOG.md"
     ]
-   },
-   {
-    "sha": "13333e0",
-    "date": "2026-11-19",
-    "author": "adm01-debug",
-    "subject": "fix(ci): regenera o baseline de policies com os 17 deny_all de supplier_stricker (#3876)",
-    "files": [
-     ".security/policies-baseline.json"
-    ]
    }
   ],
   "hot_files": [
    [
     "supabase/MIGRATIONS_SYNC_LOG.md",
-    15
-   ],
-   [
-    ".security/policies-baseline.json",
-    3
+    16
    ],
    [
     ".release-please-manifest.json",
@@ -550855,6 +550851,10 @@
    [
     "src/lib/freight/README.md",
     3
+   ],
+   [
+    ".security/policies-baseline.json",
+    2
    ],
    [
     "src/lib/freight/index.ts",

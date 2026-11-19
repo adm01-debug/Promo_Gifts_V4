@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "719c8f0fce77e07246226e52bac9c8188060cb5e",
+  "commit": "16f7dd7b4a93d8185ff688bf1e52cffd043a782d",
   "branch": "main",
-  "data_commit": "2026-11-19T19:58:04-03:00",
+  "data_commit": "2026-11-19T20:01:42-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "16f7dd7b",
+    "data": "2026-11-19",
+    "assunto": "docs(migrations-log): recibo E15 — aplicação de 20261119220000 (#3913)"
+   },
    {
     "sha": "719c8f0f",
     "data": "2026-11-19",
@@ -126,11 +131,6 @@
     "sha": "a6ad441c",
     "data": "2026-11-19",
     "assunto": "chore(resgates): adjudica a quinta branch salvo, que estava fora do ruleset (#3880)"
-   },
-   {
-    "sha": "9241db03",
-    "data": "2026-11-19",
-    "assunto": "chore(resgates): registra que os detectores estao ligados e os regeneradores nao (#3879)"
    }
   ],
   "arquivos_mudados_7d": 1395,
@@ -199,7 +199,7 @@
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "supabase/MIGRATIONS_SYNC_LOG.md",
-    "mudancas": 68
+    "mudancas": 69
    },
    {
     "arquivo": "package.json",
@@ -231,7 +231,7 @@
    },
    {
     "arquivo": "supabase/EDGE_FUNCTIONS_DEPLOY_LOG.md",
-    "mudancas": 13
+    "mudancas": 12
    },
    {
     "arquivo": "src/pages/mockups/MockupGenerator.tsx",
@@ -301,7 +301,7 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 353
+    "commits": 351
    },
    {
     "autor": "Claude",
@@ -309,11 +309,11 @@
    },
    {
     "autor": "Joaquim Ataides",
-    "commits": 36
+    "commits": 35
    },
    {
     "autor": "github-actions[bot]",
-    "commits": 27
+    "commits": 28
    },
    {
     "autor": "dependabot[bot]",

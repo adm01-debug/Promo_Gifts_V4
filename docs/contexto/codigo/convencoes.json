@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "docs(migrations-log): recibo E15 — aplicação de 20261119220000 (#3913)",
    "feat: funções irmãs do painel EMA + remonta Onda 3 no /estoque (#3907)",
    "chore(security): atualiza baseline assinado de RLS policies (#3912)",
    "feat(frete): tabelas shipping_boxes e freight_settings (Bloco C — DDL) (#3902)",
-   "fix: substitui migration F12 por 20261119212000 (desbloqueia preflight E063/E066)",
-   "fix: corrige bugs F12 (sparkline PGRST202 + KPI EMA 403) (#3903)"
+   "fix: substitui migration F12 por 20261119212000 (desbloqueia preflight E063/E066)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",
