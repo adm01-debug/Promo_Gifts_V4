@@ -2,6 +2,12 @@
 
 Diff semântico gerado a cada coleta em que algo mudou.
 
+## 2026-11-19 05:18 UTC
+
+- **migrations** adicionado (1): `20261108235500_restrict_art_files_public_read_to_quotes`
+- **policies (RLS)** adicionado (2): `storage.objects.art_files_auth_read`, `storage.objects.art_files_quotes_public_read`
+- **policies (RLS)** removido (1): `storage.objects.art_files_public_read`
+
 ## 2026-11-19 01:23 UTC
 
 - **functions** adicionado (1): `public.fn_supplier_risk_breakdown(p_preferred_only boolean)`

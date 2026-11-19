@@ -1038,8 +1038,9 @@ Visão consolidada (inclui `storage.objects` e `realtime.messages`); detalhes po
 | storage.objects | Users view own art files in storage | SELECT | PERMISSIVE | public | `((bucket_id = 'mockup-art-files'::text) AND ((( SELECT auth.uid() AS uid))::text = (storage.foldername(name))[1]))` |  |
 | storage.objects | art_files_auth_delete | DELETE | PERMISSIVE | authenticated | `((bucket_id = 'art-files'::text) AND (owner = ( SELECT auth.uid() AS uid)))` |  |
 | storage.objects | art_files_auth_insert | INSERT | PERMISSIVE | authenticated |  | `((bucket_id = 'art-files'::text) AND (owner = ( SELECT auth.uid() AS uid)))` |
+| storage.objects | art_files_auth_read | SELECT | PERMISSIVE | authenticated | `(bucket_id = 'art-files'::text)` |  |
 | storage.objects | art_files_auth_update | UPDATE | PERMISSIVE | authenticated | `((bucket_id = 'art-files'::text) AND (owner = ( SELECT auth.uid() AS uid)))` | `((bucket_id = 'art-files'::text) AND (owner = ( SELECT auth.uid() AS uid)))` |
-| storage.objects | art_files_public_read | SELECT | PERMISSIVE | public | `((bucket_id = 'art-files'::text) AND (name IS NOT NULL) AND (length(name) > 0))` |  |
+| storage.objects | art_files_quotes_public_read | SELECT | PERMISSIVE | public | `((bucket_id = 'art-files'::text) AND (name ~~ 'quotes/%'::text))` |  |
 | storage.objects | avatars_auth_delete | DELETE | PERMISSIVE | authenticated | `((bucket_id = 'avatars'::text) AND (owner = ( SELECT auth.uid() AS uid)))` |  |
 | storage.objects | avatars_auth_insert | INSERT | PERMISSIVE | authenticated |  | `(bucket_id = 'avatars'::text)` |
 | storage.objects | avatars_auth_update | UPDATE | PERMISSIVE | authenticated | `((bucket_id = 'avatars'::text) AND (owner = ( SELECT auth.uid() AS uid)))` | `((bucket_id = 'avatars'::text) AND (owner = ( SELECT auth.uid() AS uid)))` |

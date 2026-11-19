@@ -238533,6 +238533,12 @@
         "version": "20261108223100"
       },
       {
+        "name": "restrict_art_files_public_read_to_quotes",
+        "statements": 5,
+        "statements_sha": "cf89fd37280c3c07",
+        "version": "20261108235500"
+      },
+      {
         "name": "restore_get_sitemap_public_anon_execute",
         "statements": 2,
         "statements_sha": "4bec1c238482ac76",
@@ -251155,6 +251161,18 @@
         "with_check": "((bucket_id = 'art-files'::text) AND (owner = ( SELECT auth.uid() AS uid)))"
       },
       {
+        "cmd": "SELECT",
+        "name": "art_files_auth_read",
+        "permissive": "PERMISSIVE",
+        "roles": [
+          "authenticated"
+        ],
+        "schema": "storage",
+        "table": "objects",
+        "using": "(bucket_id = 'art-files'::text)",
+        "with_check": null
+      },
+      {
         "cmd": "UPDATE",
         "name": "art_files_auth_update",
         "permissive": "PERMISSIVE",
@@ -251168,14 +251186,14 @@
       },
       {
         "cmd": "SELECT",
-        "name": "art_files_public_read",
+        "name": "art_files_quotes_public_read",
         "permissive": "PERMISSIVE",
         "roles": [
           "public"
         ],
         "schema": "storage",
         "table": "objects",
-        "using": "((bucket_id = 'art-files'::text) AND (name IS NOT NULL) AND (length(name) > 0))",
+        "using": "((bucket_id = 'art-files'::text) AND (name ~~ 'quotes/%'::text))",
         "with_check": null
       },
       {
