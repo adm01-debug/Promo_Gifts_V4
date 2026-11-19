@@ -37,3 +37,24 @@ export {
 } from './resolveItemDimensions';
 
 export { expandQuantities, type ExpandResult } from './expandQuantities';
+
+export {
+  daMaiorParaMenor,
+  daMenorParaMaior,
+  maiorCaixa,
+  volumeCm3,
+  volumeInternoCm3,
+} from './boxOrder';
+
+export { fitCount, type FitLimit, type FitResult, type FittableItem } from './fitCount';
+
+export { buildGroups, type GroupReason, type PackGroup } from './buildGroups';
+
+export { packSingleProduct, type PackResult } from './packSingleProduct';
+export { packMixed } from './packMixed';
+
+export { computeVolumeTotals, type VolumeDraft } from './computeVolumeTotals';
+
+export { computeItemsHash, planFreight, type PlanInput, type PlanOptions } from './planFreight';
+
+export { formatPlanSummary } from './formatPlanSummary';
