@@ -153082,7 +153082,7 @@
         ],
         "definition": null,
         "definition_sha": "4ebcfc0792dd9686",
-        "execute_api_roles": "service_role",
+        "execute_api_roles": "authenticated, service_role",
         "execute_public": false,
         "is_trigger_fn": false,
         "kind": "function",
@@ -173422,6 +173422,41 @@
         "security_definer": false,
         "strict": false,
         "volatility": "volatile"
+      },
+      {
+        "args": "p_variant_id uuid, p_days integer",
+        "callers": {
+          "code": [
+            {
+              "file": "supabase/migrations/20261119212000_fix_f12_sparkline_ema_kpi.sql",
+              "hits": 1
+            }
+          ],
+          "code_total_files": 1,
+          "cron": [],
+          "db": [],
+          "triggers": [],
+          "views": []
+        },
+        "comment": null,
+        "config": [
+          "search_path=public, pg_catalog, pg_temp"
+        ],
+        "definition": null,
+        "definition_sha": "957a3f5371f71ca8",
+        "execute_api_roles": "authenticated, service_role",
+        "execute_public": false,
+        "is_trigger_fn": false,
+        "kind": "function",
+        "language": "sql",
+        "leakproof": false,
+        "name": "fn_variant_sparkline",
+        "owner": "postgres",
+        "returns": "TABLE(day date, units_depleted integer, stock_close integer)",
+        "schema": "public",
+        "security_definer": true,
+        "strict": false,
+        "volatility": "stable"
       },
       {
         "args": "",
@@ -239267,6 +239302,12 @@
         "statements": 6,
         "statements_sha": "aaec7aabb8ade4d4",
         "version": "20261119094500"
+      },
+      {
+        "name": "fix_f12_sparkline_ema_kpi",
+        "statements": 7,
+        "statements_sha": "8fbc4a2e6ea3aff8",
+        "version": "20261119212000"
       }
     ],
     "policies": [

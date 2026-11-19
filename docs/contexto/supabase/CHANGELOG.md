@@ -2,6 +2,12 @@
 
 Diff semântico gerado a cada coleta em que algo mudou.
 
+## 2026-11-19 22:16 UTC
+
+- **functions** adicionado (1): `public.fn_variant_sparkline(p_variant_id uuid, p_days integer)`
+- **functions** alterado (1): `public.fn_ema_kpi_by_level(p_preferred_only boolean)`
+- **migrations** adicionado (1): `20261119212000_fix_f12_sparkline_ema_kpi`
+
 ## 2026-11-19 16:19 UTC
 
 - **functions** alterado (1): `public.set_updated_at()`
