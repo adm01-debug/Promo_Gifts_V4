@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "a4d8355b29d1042544703c30475c1c4c075e0c2a",
+  "commit": "1e385e96dc87b0b007a154eab912c2e58b6642e6",
   "branch": "main",
-  "data_commit": "2026-11-19T04:12:21-03:00",
+  "data_commit": "2026-11-19T04:29:53-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "1e385e96",
+    "data": "2026-11-19",
+    "assunto": "fix(migrations): reemite supplier_stricker_rls_deny_all e corrige 18 para 16 (#3874)"
+   },
    {
     "sha": "a4d8355b",
     "data": "2026-11-19",
@@ -126,22 +131,17 @@
     "sha": "48c1e5d9",
     "data": "2026-11-18",
     "assunto": "feat(components): /admin/telemetria volta a mostrar falhas 503 e cold start (#3848)"
-   },
-   {
-    "sha": "9e11e2f7",
-    "data": "2026-11-18",
-    "assunto": "fix(docs): tira do inventario o caminho de migration que deixou a main vermelha (#3849)"
    }
   ],
-  "arquivos_mudados_7d": 1479,
+  "arquivos_mudados_7d": 1481,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
-    "mudancas": 1854
+    "mudancas": 1845
    },
    {
     "pasta": "src/components/products",
-    "mudancas": 928
+    "mudancas": 924
    },
    {
     "pasta": "tests/edge-functions/live",
@@ -157,7 +157,7 @@
    },
    {
     "pasta": "src/components/quotes",
-    "mudancas": 602
+    "mudancas": 589
    },
    {
     "pasta": "src/pages/magazine",
@@ -169,15 +169,15 @@
    },
    {
     "pasta": "src/components/ui",
-    "mudancas": 444
+    "mudancas": 442
    },
    {
     "pasta": "supabase/functions/_shared",
-    "mudancas": 444
+    "mudancas": 438
    },
    {
     "pasta": "src/components/mockup",
-    "mudancas": 417
+    "mudancas": 413
    },
    {
     "pasta": "src/pages/admin",
@@ -210,11 +210,11 @@
     "mudancas": 28
    },
    {
-    "arquivo": "RELATORIO_CI.md",
-    "mudancas": 27
+    "arquivo": "docs/coordenacao/conflitos-semanticos.md",
+    "mudancas": 28
    },
    {
-    "arquivo": "docs/coordenacao/conflitos-semanticos.md",
+    "arquivo": "RELATORIO_CI.md",
     "mudancas": 27
    },
    {
@@ -301,15 +301,15 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 445
+    "commits": 442
    },
    {
     "autor": "Claude",
-    "commits": 83
+    "commits": 82
    },
    {
     "autor": "Joaquim Ataides",
-    "commits": 69
+    "commits": 68
    },
    {
     "autor": "github-actions[bot]",
@@ -322,7 +322,7 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 10977,
+  "arquivos_total": 10979,
   "arquivos_codigo": 5483,
   "linhas_codigo": 1044218,
   "rotas": 139,
@@ -334,7 +334,7 @@
   "hooks": 633,
   "edge_functions": 112,
   "tabelas": 527,
-  "migrations": 3101,
+  "migrations": 3102,
   "cron_jobs": 122,
   "testes": 2614,
   "workflows": 89,

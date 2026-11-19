@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "fix(migrations): reemite supplier_stricker_rls_deny_all e corrige 18 para 16 (#3874)",
    "docs(migrations-log): recibos E15 de 20260916202000 e 20261115034500 (#3872)",
    "docs(migrations-log): recibo E15 da aplicacao de 20261119051500 (#3871)",
    "fix(seguranca): link expirado de orcamento deixa de devolver dados do cliente (#3869)",
-   "docs(migrations-log): recibo E15 da aplicacao de 20261108235500 (#3868)",
-   "chore(resgates): registra as 127 migrations orfas e o portao que as barra (#3870)"
+   "docs(migrations-log): recibo E15 da aplicacao de 20261108235500 (#3868)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",

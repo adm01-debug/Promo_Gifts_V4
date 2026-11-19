@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "a4d8355b29d1042544703c30475c1c4c075e0c2a",
+  "sha": "1e385e96dc87b0b007a154eab912c2e58b6642e6",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-19 07:13 UTC",
-  "files_total": 10905,
-  "code_files": 8926,
-  "code_lines": 1265221
+  "generated_at": "2026-11-19 07:31 UTC",
+  "files_total": 10907,
+  "code_files": 8928,
+  "code_lines": 1265367
  },
  "version": "1.3.2",
- "facts_hash": "157b3cae35a37318",
+ "facts_hash": "0db81b0f4ac61b3a",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -1128,7 +1128,7 @@
   ],
   "package_manager": "npm",
   "languages": {
-   ".sql": 3444,
+   ".sql": 3446,
    ".ts": 3048,
    ".tsx": 1969,
    ".mjs": 450,
@@ -96189,6 +96189,7 @@
    "supabase/migrations/20261117073000_p06_security_invoker_v_product_properties_public.sql",
    "supabase/migrations/20261118223000_fn_supplier_risk_breakdown.sql",
    "supabase/migrations/20261119051500_fix_get_quote_token_public_expiracao_pg_temp.sql",
+   "supabase/migrations/20261119073000_supplier_stricker_rls_deny_all_reemissao.sql",
    "supabase/rollbacks/20260511235950_rollback.sql",
    "supabase/rollbacks/20260511235959_rollback.sql",
    "supabase/rollbacks/20260611014515_fn_dryrun_standardize_supplier_real_rollback.sql",
@@ -96297,6 +96298,7 @@
    "supabase/rollbacks/20261117073000_rollback.sql",
    "supabase/rollbacks/20261118223000_rollback.sql",
    "supabase/rollbacks/20261119051500_rollback.sql",
+   "supabase/rollbacks/20261119073000_rollback.sql",
    "supabase/rollbacks/rollback_20261025002500_analyze_tables_p03.sql",
    "supabase/sql-legacy/001_notification_system.sql",
    "supabase/sql-legacy/002_notification_preferences.sql",
@@ -151509,8 +151511,8 @@
   },
   {
    "module": "supabase/migrations",
-   "files": 3100,
-   "lines": 223932,
+   "files": 3101,
+   "lines": 224036,
    "tables": [
     "...",
     "admin_audit_log",
@@ -151608,8 +151610,8 @@
   },
   {
    "module": "supabase/rollbacks",
-   "files": 109,
-   "lines": 3284,
+   "files": 110,
+   "lines": 3326,
    "tables": [],
    "exports": [],
    "docs": [],
@@ -522325,6 +522327,10 @@
    "path": "supabase/migrations/20261119051500_fix_get_quote_token_public_expiracao_pg_temp.sql",
    "lines": 75
   },
+  "supabase/migrations/20261119073000_supplier_stricker_rls_deny_all_reemissao.sql": {
+   "path": "supabase/migrations/20261119073000_supplier_stricker_rls_deny_all_reemissao.sql",
+   "lines": 104
+  },
   "supabase/rollbacks/20260511235950_rollback.sql": {
    "path": "supabase/rollbacks/20260511235950_rollback.sql",
    "lines": 5
@@ -522775,6 +522781,10 @@
   "supabase/rollbacks/20261119051500_rollback.sql": {
    "path": "supabase/rollbacks/20261119051500_rollback.sql",
    "lines": 31
+  },
+  "supabase/rollbacks/20261119073000_rollback.sql": {
+   "path": "supabase/rollbacks/20261119073000_rollback.sql",
+   "lines": 42
   },
   "supabase/rollbacks/rollback_20261025002500_analyze_tables_p03.sql": {
    "path": "supabase/rollbacks/rollback_20261025002500_analyze_tables_p03.sql",
@@ -548007,10 +548017,23 @@
   }
  },
  "git": {
-  "sha": "a4d8355b29d1042544703c30475c1c4c075e0c2a",
+  "sha": "1e385e96dc87b0b007a154eab912c2e58b6642e6",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "1e385e9",
+    "date": "2026-11-19",
+    "author": "adm01-debug",
+    "subject": "fix(migrations): reemite supplier_stricker_rls_deny_all e corrige 18 para 16 (#3874)",
+    "files": [
+     "docs/agentes/resgates/2026-11-19-migrations-orfas-e-o-portao-retroativo.md",
+     "docs/coordenacao/conflitos-semanticos.md",
+     "supabase/MIGRATIONS_SYNC_LOG.md",
+     "supabase/migrations/20261119073000_supplier_stricker_rls_deny_all_reemissao.sql",
+     "supabase/rollbacks/20261119073000_rollback.sql"
+    ]
+   },
    {
     "sha": "a4d8355",
     "date": "2026-11-19",
@@ -548330,19 +548353,20 @@
      "src/pages/quotes/QuoteBuilderPage.tsx",
      "src/pages/quotes/__tests__/quote-builder-autosave-fields.contract.test.ts"
     ]
-   },
-   {
-    "sha": "4d17533",
-    "date": "2026-11-18",
-    "author": "adm01-debug",
-    "subject": "feat(components): Ctrl+K volta a alcançar Novidades, Filtros e Estoque (#3842)",
-    "files": []
    }
   ],
   "hot_files": [
    [
     "supabase/MIGRATIONS_SYNC_LOG.md",
-    6
+    7
+   ],
+   [
+    "docs/agentes/resgates/2026-11-19-migrations-orfas-e-o-portao-retroativo.md",
+    2
+   ],
+   [
+    "docs/coordenacao/conflitos-semanticos.md",
+    2
    ],
    [
     ".github/workflows/edge-functions-deno-tests.yml",
@@ -548357,7 +548381,11 @@
     2
    ],
    [
-    "docs/coordenacao/conflitos-semanticos.md",
+    "supabase/migrations/20261119073000_supplier_stricker_rls_deny_all_reemissao.sql",
+    1
+   ],
+   [
+    "supabase/rollbacks/20261119073000_rollback.sql",
     1
    ],
    [
@@ -548366,10 +548394,6 @@
    ],
    [
     "supabase/rollbacks/20261119051500_rollback.sql",
-    1
-   ],
-   [
-    "docs/agentes/resgates/2026-11-19-migrations-orfas-e-o-portao-retroativo.md",
     1
    ],
    [
@@ -548410,14 +548434,6 @@
    ],
    [
     "src/pages/kit-builder/KitBuilderPage.tsx",
-    1
-   ],
-   [
-    "tests/components/kit-builder/financial-availability.test.tsx",
-    1
-   ],
-   [
-    "tests/hooks/useKitBuilderPageState.financial.test.tsx",
     1
    ]
   ]
