@@ -41,7 +41,10 @@ jobs:
   deno-tests:
     name: Deno Tests (edge functions)
     runs-on: ubuntu-24.04
-    timeout-minutes: 20
+    # E24 (docs/ci/PADRAO_WORKFLOW.md:50-57): job unitario tem teto de 10 min.
+    # Estava em 20, que e o teto da classe E2E — regra violada por descuido meu.
+    # A execucao real leva ~10s para os 45 arquivos.
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -75,8 +78,15 @@ jobs:
         run: |
           set -uo pipefail
 
-          # Integracao AO VIVO: batem em fake-project.supabase.co / test.supabase.co.
-          # Pertencem ao edge-integration-all.yml, que roda com segredos e funcao publicada.
+          # Integracao AO VIVO: batem em fake-project.supabase.co / test.supabase.co
+          # ou exigem .env/stack. Sao EXCLUIDOS deste job por nao ter credencial.
+          #
+          # CORRECAO DE UMA AFIRMACAO MINHA (achado do Devin na #3853): eu disse
+          # que estes arquivos estavam "roteados para o edge-integration-all.yml".
+          # Nao estavam. Aquele workflow roda UM unico arquivo Deno
+          # (edge-integration-all.yml:72, log-login-attempt/index_test.ts). Os
+          # 28 daqui seguem SEM runner — e isso e pendencia registrada, nao
+          # encaminhamento feito.
           AO_VIVO_RE='^supabase/functions/tests/integration/'
           AO_VIVO_RE="$AO_VIVO_RE|^supabase/functions/tests/production-readiness\.test\.ts$"
           AO_VIVO_RE="$AO_VIVO_RE|^supabase/functions/tests/security-integration_test\.ts$"
@@ -118,9 +128,18 @@ jobs:
           # falha aparece no log sem travar o gate dos outros 49.
           EM_DIAGNOSTICO="supabase/functions/crm-db-bridge/scope_integration_test.ts"
 
+          # Arquivos que casam '*test*.ts' mas NAO registram nenhum Deno.test:
+          # utilitario compartilhado e dois scripts de carga. Contavam como
+          # "suite" na guarda sem ter uma assercao sequer — a contagem dizia 48
+          # e so 45 eram teste de verdade.
+          SEM_CASOS_RE='^supabase/functions/_shared/connection-test-runner\.ts$'
+          SEM_CASOS_RE="$SEM_CASOS_RE|^supabase/functions/tests/load-test\.ts$"
+          SEM_CASOS_RE="$SEM_CASOS_RE|^supabase/functions/tests/shockwave-load-test\.ts$"
+
           RODAR=()
           PULADOS_AO_VIVO=0
           PULADOS_VITEST=0
+          PULADOS_SEM_CASOS=0
           while IFS= read -r f; do
             if printf '%s\n' "$f" | grep -qE "$AO_VIVO_RE"; then
               PULADOS_AO_VIVO=$((PULADOS_AO_VIVO + 1)); continue
@@ -131,19 +150,23 @@ jobs:
               PULADOS_VITEST=$((PULADOS_VITEST + 1)); continue
             fi
             if [ "$f" = "$EM_DIAGNOSTICO" ]; then continue; fi
+            if printf '%s\n' "$f" | grep -qE "$SEM_CASOS_RE"; then
+              PULADOS_SEM_CASOS=$((PULADOS_SEM_CASOS + 1)); continue
+            fi
             RODAR+=("$f")
           done < <(find supabase/functions -name '*test*.ts' | sort)
 
           echo "total de arquivos de teste: $(find supabase/functions -name '*test*.ts' | wc -l)"
           echo "pulados (integracao ao vivo): $PULADOS_AO_VIVO"
           echo "pulados (Vitest):             $PULADOS_VITEST"
+          echo "pulados (sem nenhum Deno.test): $PULADOS_SEM_CASOS"
           echo "em diagnostico (nao trava):   1 ($EM_DIAGNOSTICO)"
           echo "a rodar aqui:                 ${#RODAR[@]}"
 
           # Guarda: se a classificacao desandar, o job falha dizendo o porque,
           # em vez de passar verde rodando quase nada.
-          if [ "${#RODAR[@]}" -lt 44 ]; then
-            echo "::error::so ${#RODAR[@]} arquivos classificados para rodar (esperado 49)"
+          if [ "${#RODAR[@]}" -lt 41 ]; then
+            echo "::error::so ${#RODAR[@]} arquivos classificados para rodar (esperado 45)"
             exit 1
           fi
 
