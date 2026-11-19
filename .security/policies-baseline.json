@@ -1,7 +1,7 @@
 {
   "version": 1,
   "pending_seed": false,
-  "generated_at": "2026-11-19T07:45:39.568Z",
+  "generated_at": "2026-11-19T10:14:34.153Z",
   "project_ref": "doufsxqlfjyuvxuezpln",
   "schemas_checked": [
     "public",
@@ -13,7 +13,7 @@
     "prod_audit",
     "supplier_stricker"
   ],
-  "sha256": "0709b63b8691ca3ca9fc055e511a65df86394b13545133271edd3473eef990e1",
+  "sha256": "44b075bf47ccefb85bf0e4f448e6332e7b3baef96a780ffc578b70b4b069a3f4",
   "policies": [
     {
       "schemaname": "cf_recon",
@@ -2404,6 +2404,16 @@
       "cmd": "ALL",
       "qual": "(( SELECT ( SELECT auth.role() AS role) AS role) = 'service_role'::text)",
       "with_check": "(( SELECT ( SELECT auth.role() AS role) AS role) = 'service_role'::text)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "endomarketing_themes",
+      "policyname": "endomarketing_themes_auth_read",
+      "permissive": "PERMISSIVE",
+      "roles": "{authenticated}",
+      "cmd": "SELECT",
+      "qual": "true",
+      "with_check": ""
     },
     {
       "schemaname": "public",
@@ -5398,6 +5408,46 @@
     {
       "schemaname": "public",
       "tablename": "product_commemorative_dates",
+      "policyname": "pcd_oa_del",
+      "permissive": "PERMISSIVE",
+      "roles": "{authenticated}",
+      "cmd": "DELETE",
+      "qual": "(EXISTS ( SELECT 1\n   FROM products p\n  WHERE ((p.id = product_commemorative_dates.product_id) AND (p.organization_id IN ( SELECT uo.organization_id\n           FROM user_organizations uo\n          WHERE ((uo.user_id = ( SELECT auth.uid() AS uid)) AND (uo.role = ANY (ARRAY['owner'::org_role, 'admin'::org_role]))))))))",
+      "with_check": ""
+    },
+    {
+      "schemaname": "public",
+      "tablename": "product_commemorative_dates",
+      "policyname": "pcd_oa_ins",
+      "permissive": "PERMISSIVE",
+      "roles": "{authenticated}",
+      "cmd": "INSERT",
+      "qual": "",
+      "with_check": "(EXISTS ( SELECT 1\n   FROM products p\n  WHERE ((p.id = product_commemorative_dates.product_id) AND (p.organization_id IN ( SELECT uo.organization_id\n           FROM user_organizations uo\n          WHERE ((uo.user_id = ( SELECT auth.uid() AS uid)) AND (uo.role = ANY (ARRAY['owner'::org_role, 'admin'::org_role]))))))))"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "product_commemorative_dates",
+      "policyname": "pcd_oa_read_all",
+      "permissive": "PERMISSIVE",
+      "roles": "{authenticated}",
+      "cmd": "SELECT",
+      "qual": "(EXISTS ( SELECT 1\n   FROM products p\n  WHERE ((p.id = product_commemorative_dates.product_id) AND (p.organization_id IN ( SELECT uo.organization_id\n           FROM user_organizations uo\n          WHERE ((uo.user_id = ( SELECT auth.uid() AS uid)) AND (uo.role = ANY (ARRAY['owner'::org_role, 'admin'::org_role]))))))))",
+      "with_check": ""
+    },
+    {
+      "schemaname": "public",
+      "tablename": "product_commemorative_dates",
+      "policyname": "pcd_oa_upd",
+      "permissive": "PERMISSIVE",
+      "roles": "{authenticated}",
+      "cmd": "UPDATE",
+      "qual": "(EXISTS ( SELECT 1\n   FROM products p\n  WHERE ((p.id = product_commemorative_dates.product_id) AND (p.organization_id IN ( SELECT uo.organization_id\n           FROM user_organizations uo\n          WHERE ((uo.user_id = ( SELECT auth.uid() AS uid)) AND (uo.role = ANY (ARRAY['owner'::org_role, 'admin'::org_role]))))))))",
+      "with_check": "(EXISTS ( SELECT 1\n   FROM products p\n  WHERE ((p.id = product_commemorative_dates.product_id) AND (p.organization_id IN ( SELECT uo.organization_id\n           FROM user_organizations uo\n          WHERE ((uo.user_id = ( SELECT auth.uid() AS uid)) AND (uo.role = ANY (ARRAY['owner'::org_role, 'admin'::org_role]))))))))"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "product_commemorative_dates",
       "policyname": "pcd_read_public",
       "permissive": "PERMISSIVE",
       "roles": "{anon,authenticated}",
@@ -5564,6 +5614,46 @@
       "cmd": "ALL",
       "qual": "true",
       "with_check": "true"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "product_endomarketing",
+      "policyname": "product_endomarketing_auth_read",
+      "permissive": "PERMISSIVE",
+      "roles": "{authenticated}",
+      "cmd": "SELECT",
+      "qual": "true",
+      "with_check": ""
+    },
+    {
+      "schemaname": "public",
+      "tablename": "product_endomarketing",
+      "policyname": "product_endomarketing_oa_del",
+      "permissive": "PERMISSIVE",
+      "roles": "{authenticated}",
+      "cmd": "DELETE",
+      "qual": "(EXISTS ( SELECT 1\n   FROM products p\n  WHERE ((p.id = product_endomarketing.product_id) AND (p.organization_id IN ( SELECT uo.organization_id\n           FROM user_organizations uo\n          WHERE ((uo.user_id = ( SELECT auth.uid() AS uid)) AND (uo.role = ANY (ARRAY['owner'::org_role, 'admin'::org_role]))))))))",
+      "with_check": ""
+    },
+    {
+      "schemaname": "public",
+      "tablename": "product_endomarketing",
+      "policyname": "product_endomarketing_oa_ins",
+      "permissive": "PERMISSIVE",
+      "roles": "{authenticated}",
+      "cmd": "INSERT",
+      "qual": "",
+      "with_check": "(EXISTS ( SELECT 1\n   FROM products p\n  WHERE ((p.id = product_endomarketing.product_id) AND (p.organization_id IN ( SELECT uo.organization_id\n           FROM user_organizations uo\n          WHERE ((uo.user_id = ( SELECT auth.uid() AS uid)) AND (uo.role = ANY (ARRAY['owner'::org_role, 'admin'::org_role]))))))))"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "product_endomarketing",
+      "policyname": "product_endomarketing_oa_upd",
+      "permissive": "PERMISSIVE",
+      "roles": "{authenticated}",
+      "cmd": "UPDATE",
+      "qual": "(EXISTS ( SELECT 1\n   FROM products p\n  WHERE ((p.id = product_endomarketing.product_id) AND (p.organization_id IN ( SELECT uo.organization_id\n           FROM user_organizations uo\n          WHERE ((uo.user_id = ( SELECT auth.uid() AS uid)) AND (uo.role = ANY (ARRAY['owner'::org_role, 'admin'::org_role]))))))))",
+      "with_check": "(EXISTS ( SELECT 1\n   FROM products p\n  WHERE ((p.id = product_endomarketing.product_id) AND (p.organization_id IN ( SELECT uo.organization_id\n           FROM user_organizations uo\n          WHERE ((uo.user_id = ( SELECT auth.uid() AS uid)) AND (uo.role = ANY (ARRAY['owner'::org_role, 'admin'::org_role]))))))))"
     },
     {
       "schemaname": "public",
@@ -6384,6 +6474,36 @@
       "cmd": "SELECT",
       "qual": "true",
       "with_check": ""
+    },
+    {
+      "schemaname": "public",
+      "tablename": "product_target_audiences",
+      "policyname": "pta_oa_del",
+      "permissive": "PERMISSIVE",
+      "roles": "{authenticated}",
+      "cmd": "DELETE",
+      "qual": "(EXISTS ( SELECT 1\n   FROM products p\n  WHERE ((p.id = product_target_audiences.product_id) AND (p.organization_id IN ( SELECT uo.organization_id\n           FROM user_organizations uo\n          WHERE ((uo.user_id = ( SELECT auth.uid() AS uid)) AND (uo.role = ANY (ARRAY['owner'::org_role, 'admin'::org_role]))))))))",
+      "with_check": ""
+    },
+    {
+      "schemaname": "public",
+      "tablename": "product_target_audiences",
+      "policyname": "pta_oa_ins",
+      "permissive": "PERMISSIVE",
+      "roles": "{authenticated}",
+      "cmd": "INSERT",
+      "qual": "",
+      "with_check": "(EXISTS ( SELECT 1\n   FROM products p\n  WHERE ((p.id = product_target_audiences.product_id) AND (p.organization_id IN ( SELECT uo.organization_id\n           FROM user_organizations uo\n          WHERE ((uo.user_id = ( SELECT auth.uid() AS uid)) AND (uo.role = ANY (ARRAY['owner'::org_role, 'admin'::org_role]))))))))"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "product_target_audiences",
+      "policyname": "pta_oa_upd",
+      "permissive": "PERMISSIVE",
+      "roles": "{authenticated}",
+      "cmd": "UPDATE",
+      "qual": "(EXISTS ( SELECT 1\n   FROM products p\n  WHERE ((p.id = product_target_audiences.product_id) AND (p.organization_id IN ( SELECT uo.organization_id\n           FROM user_organizations uo\n          WHERE ((uo.user_id = ( SELECT auth.uid() AS uid)) AND (uo.role = ANY (ARRAY['owner'::org_role, 'admin'::org_role]))))))))",
+      "with_check": "(EXISTS ( SELECT 1\n   FROM products p\n  WHERE ((p.id = product_target_audiences.product_id) AND (p.organization_id IN ( SELECT uo.organization_id\n           FROM user_organizations uo\n          WHERE ((uo.user_id = ( SELECT auth.uid() AS uid)) AND (uo.role = ANY (ARRAY['owner'::org_role, 'admin'::org_role]))))))))"
     },
     {
       "schemaname": "public",
