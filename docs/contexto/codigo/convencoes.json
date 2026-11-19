@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "chore(main): release gifts-store 1.12.0 (#3899)",
    "feat(frete): motor de empacotamento (Bloco B) (#3900)",
    "feat(scripts): gate do Vercel no pre-push (resgate de trabalho de agente) (#3901)",
    "fix(frete): motor ignora as colunas box_* do catálogo (caixa master, não embalagem) (#3898)",
-   "chore(main): release gifts-store 1.11.0 (#3895)",
-   "chore(ci): resgata mitigacao de artifact do e2e-cart (#3897)"
+   "chore(main): release gifts-store 1.11.0 (#3895)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",

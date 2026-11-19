@@ -1,9 +1,9 @@
 {
  "meta": {
-  "sha": "41166fc89d164c3c3d758e3e0ec3015e10f88ce5",
+  "sha": "a78f9c896a9ce0a63071c90560dcfb4fd1a76a13",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-19 20:04 UTC",
+  "generated_at": "2026-11-19 20:21 UTC",
   "files_total": 10949,
   "code_files": 8968,
   "code_lines": 1269680
@@ -549969,10 +549969,22 @@
   }
  },
  "git": {
-  "sha": "41166fc89d164c3c3d758e3e0ec3015e10f88ce5",
+  "sha": "a78f9c896a9ce0a63071c90560dcfb4fd1a76a13",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "a78f9c8",
+    "date": "2026-11-19",
+    "author": "github-actions[bot]",
+    "subject": "chore(main): release gifts-store 1.12.0 (#3899)",
+    "files": [
+     ".release-please-manifest.json",
+     "CHANGELOG.md",
+     "package-lock.json",
+     "package.json"
+    ]
+   },
    {
     "sha": "41166fc",
     "date": "2026-11-19",
@@ -550303,15 +550315,6 @@
     "files": [
      "supabase/MIGRATIONS_SYNC_LOG.md"
     ]
-   },
-   {
-    "sha": "7661d39",
-    "date": "2026-11-19",
-    "author": "adm01-debug",
-    "subject": "chore(resgates): registra as 127 migrations orfas e o portao que as barra (#3870)",
-    "files": [
-     "docs/agentes/resgates/2026-11-19-migrations-orfas-e-o-portao-retroativo.md"
-    ]
    }
   ],
   "hot_files": [
@@ -550320,11 +550323,27 @@
     16
    ],
    [
-    "docs/agentes/resgates/2026-11-19-migrations-orfas-e-o-portao-retroativo.md",
-    4
+    ".release-please-manifest.json",
+    3
+   ],
+   [
+    "CHANGELOG.md",
+    3
+   ],
+   [
+    "package-lock.json",
+    3
+   ],
+   [
+    "package.json",
+    3
    ],
    [
     "src/lib/freight/README.md",
+    3
+   ],
+   [
+    "docs/agentes/resgates/2026-11-19-migrations-orfas-e-o-portao-retroativo.md",
     3
    ],
    [
@@ -550361,22 +550380,6 @@
    ],
    [
     "src/lib/freight/types.ts",
-    2
-   ],
-   [
-    ".release-please-manifest.json",
-    2
-   ],
-   [
-    "CHANGELOG.md",
-    2
-   ],
-   [
-    "package-lock.json",
-    2
-   ],
-   [
-    "package.json",
     2
    ],
    [
