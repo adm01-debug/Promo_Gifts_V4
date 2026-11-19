@@ -1,3 +1,5 @@
+-- Rollback: supabase/rollbacks/20261119213000_rollback.sql
+--
 -- Migration: cria public.shipping_boxes — as caixas de transporte da empresa
 --
 -- Bloco C, etapas 21 e 22 do plano de frete de 19/11/2026. É a tabela que o

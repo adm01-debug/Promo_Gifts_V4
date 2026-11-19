@@ -1,3 +1,5 @@
+-- Rollback: supabase/rollbacks/20261119213100_rollback.sql
+--
 -- Migration: cria public.freight_settings — parâmetros globais do cálculo de frete
 --
 -- Bloco C, etapa 23 do plano de frete de 19/11/2026. Linha única: os fatores do
