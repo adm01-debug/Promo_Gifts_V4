@@ -35,10 +35,18 @@ export function packMixed(
 
   const daMenorParaMaior = ordenarDaMenor(boxes);
 
-  /** Capacidade de cada (produto, caixa), calculada uma vez. */
+  /**
+   * Capacidade de cada (peça, caixa), calculada uma vez.
+   *
+   * A chave inclui as medidas, não só o `productId`: duas linhas do mesmo
+   * produto são legítimas (o mesmo item em duas cores) e hoje têm as mesmas
+   * medidas, mas no dia em que a variante tiver medida própria uma chave só de
+   * id devolveria a capacidade da outra linha — número errado, sem erro.
+   */
   const capacidade = new Map<string, number>();
   const capacityOf = (item: PackItem, box: ShippingBox): number => {
-    const chave = `${item.productId}|${box.id}`;
+    const { heightCm, widthCm, lengthCm } = item.dims;
+    const chave = `${item.productId}|${heightCm}x${widthCm}x${lengthCm}|${item.weightG}|${box.id}`;
     const cacheado = capacidade.get(chave);
     if (cacheado !== undefined) return cacheado;
     const valor = fitCount(item, box, settings).capacity;

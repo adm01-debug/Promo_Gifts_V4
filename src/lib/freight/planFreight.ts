@@ -93,7 +93,10 @@ function somarTotais(volumes: PackVolume[]): FreightPlanTotals {
   return {
     boxesByCode,
     grossWeightG: roundDecimal(grossWeightG, 2),
-    volumeM3: roundDecimal(volumeM3, 2),
+    // 6 casas, igual ao volume individual: 2 casas zerariam uma encomenda
+    // pequena (caixa de 10 × 10 × 10 cm = 0,001 m³ → 0) e perderiam 0,0006 m³
+    // numa caixa P. A tela formata em 2 casas; a cotação precisa do número cheio.
+    volumeM3: roundDecimal(volumeM3, 6),
     cubicWeightG: {
       correios: roundDecimal(cubicWeightG.correios, 2),
       rodoviario: roundDecimal(cubicWeightG.rodoviario, 2),
@@ -110,6 +113,12 @@ const OCUPACAO_BAIXA = 0.5;
  * do volume sem passar do máximo. É a mesma coisa que `limitedBy: 'weight'`,
  * medida no volume fechado, o que também funciona em caixa com produtos
  * misturados.
+ *
+ * A comparação é contra `maxWeightG`, não contra `maxWeightG - emptyWeightG`:
+ * `grossWeightG` **já inclui** o peso da caixa vazia. Descontar de novo faria
+ * uma GG de 250 g com 245 cadernetas acusar teto com 230 g ainda livres. Hoje
+ * as quatro caixas têm peso vazio 0 e os dois cálculos coincidem — o erro só
+ * apareceria quando alguém preenchesse `shipping_boxes.empty_weight_g`.
  */
 function montarAvisos(volumes: PackVolume[], rascunhos: VolumeDraft[]): string[] {
   const avisos: string[] = [];
@@ -126,8 +135,7 @@ function montarAvisos(volumes: PackVolume[], rascunhos: VolumeDraft[]): string[]
     // com peso — não há o que procurar nem valor ausente para tratar.
     const pesos = rascunhos[indice].contents.map(({ item }) => item.weightG);
     const maisLeve = Math.min(...pesos);
-    const disponivelG = volume.box.maxWeightG - volume.box.emptyWeightG;
-    if (volume.grossWeightG + maisLeve > disponivelG) noTeto.add(volume.box.code);
+    if (volume.grossWeightG + maisLeve > volume.box.maxWeightG) noTeto.add(volume.box.code);
   }
 
   for (const [code, quantas] of ociosas) {

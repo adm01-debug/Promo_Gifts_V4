@@ -4,7 +4,14 @@
 import { describe, expect, it } from 'vitest';
 
 import { computeItemsHash, planFreight, type PlanOptions } from '../planFreight';
-import { CAIXAS_PADRAO, CAIXA_G, CAIXA_M, CAIXA_P, SETTINGS_PADRAO } from './fixtures/boxes';
+import {
+  CAIXAS_PADRAO,
+  CAIXA_G,
+  CAIXA_GG,
+  CAIXA_M,
+  CAIXA_P,
+  SETTINGS_PADRAO,
+} from './fixtures/boxes';
 import { LINHA_BARRA_61, LINHA_CADERNETA, LINHA_SEM_PESO, LINHA_SQUEEZE } from './fixtures/items';
 
 const OPCOES: PlanOptions = {
@@ -28,8 +35,10 @@ describe('planFreight — status ok', () => {
     // peso bruto: 3 × (140 × 120) + 40 × 120 = 50.400 + 4.800 = 55.200 g
     expect(plan.totals.grossWeightG).toBe(55_200);
 
-    // volume: 3 × 69.984 + 29.403 = 239.355 cm³ = 0,239355 m³ → 0,24
-    expect(plan.totals.volumeM3).toBe(0.24);
+    // volume: 3 × 69.984 + 29.403 = 239.355 cm³ = 0,239355 m³
+    // (6 casas no total, igual ao volume individual: 2 casas zerariam uma
+    // encomenda pequena e perderiam 0,0006 m³ só na caixa P)
+    expect(plan.totals.volumeM3).toBe(0.239355);
 
     // cubado Correios: 3 × 11.664 + 4.900,50 = 39.892,50 g
     expect(plan.totals.cubicWeightG.correios).toBe(39_892.5);
@@ -191,6 +200,42 @@ describe('planFreight — avisos', () => {
     );
 
     expect(plan.totals.boxesByCode).toEqual({ GG: 1 });
+    expect(plan.warnings).toContain('A caixa GG fechou no peso máximo, não no espaço.');
+  });
+
+  it('caixa com peso próprio não é descontada duas vezes no aviso de peso', () => {
+    // GG de 250 g com 245 cadernetas: bruto = 250 + 245 × 120 = 29.650 g.
+    // Cabe mais uma caderneta? 29.650 + 120 = 29.770 ≤ 30.000 → cabe, não avisa.
+    // Comparar contra (30.000 − 250) daria 29.770 > 29.750 e avisaria teto com
+    // 230 g ainda livres.
+    const ggComPesoProprio = { ...CAIXA_GG, emptyWeightG: 250 };
+    const plan = planFreight(
+      [{ row: LINHA_CADERNETA, quantity: 245 }],
+      [ggComPesoProprio],
+      OPCOES,
+      SETTINGS_PADRAO,
+    );
+
+    expect(plan.status).toBe('ok');
+    expect(plan.totals.boxesByCode).toEqual({ GG: 1 });
+    expect(plan.totals.grossWeightG).toBe(29_650);
+    expect(plan.warnings).not.toContain('A caixa GG fechou no peso máximo, não no espaço.');
+  });
+
+  it('caixa com peso próprio ainda avisa quando realmente fecha no peso', () => {
+    // a mesma GG de 250 g, agora com 248 cadernetas: 250 + 248 × 120 = 30.010 g.
+    // O empacotador para em 247 (⌊(30.000 − 250) ÷ 120⌋ = 247): bruto 29.890 g,
+    // e mais uma daria 30.010 > 30.000 → avisa.
+    const ggComPesoProprio = { ...CAIXA_GG, emptyWeightG: 250 };
+    const plan = planFreight(
+      [{ row: LINHA_CADERNETA, quantity: 247 }],
+      [ggComPesoProprio],
+      OPCOES,
+      SETTINGS_PADRAO,
+    );
+
+    expect(plan.status).toBe('ok');
+    expect(plan.totals.grossWeightG).toBe(29_890);
     expect(plan.warnings).toContain('A caixa GG fechou no peso máximo, não no espaço.');
   });
 
