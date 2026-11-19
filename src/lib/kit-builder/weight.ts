@@ -1,10 +1,16 @@
+import { isKnownMeasure } from '@/lib/freight/units';
+
 /**
  * Peso zero, negativo ou não numérico não é uma medição útil para estimar frete.
  * O catálogo usa zero como ausência de informação, então o kit deve manter essa
  * incerteza visível em vez de tratar o item como se não tivesse peso.
+ *
+ * Mesma regra que `isKnownMeasure` (`src/lib/freight/units.ts`), que é a SSOT
+ * de "medida conhecida" para peso e dimensão. Mantido como nome próprio porque
+ * é o que `useKitBuilderTransformers` e o barril do kit-builder já importam.
  */
 export function isKnownItemWeight(weight: number | null | undefined): weight is number {
-  return typeof weight === 'number' && Number.isFinite(weight) && weight > 0;
+  return isKnownMeasure(weight);
 }
 
 type WeightedItem = { weight?: number | null; quantity: number };
