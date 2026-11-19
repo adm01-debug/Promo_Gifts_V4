@@ -23,7 +23,7 @@
    "src/services (10)"
   ],
   "testes": [
-   "tests/ (1077)",
+   "tests/ (1078)",
    "co-localizado (__tests__) (701)",
    "e2e/ (625)"
   ],
@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "docs: recibo de aplicacao — 20261118223000 (E15) (#3857)",
+   "fix(orcamentos): recusa item invalido antes de gravar template (#3859)",
    "fix(orcamentos): template que falha ao salvar nao pode apagar o que o vendedor digitou (#3858)",
    "docs(resgate): corrige medição falsa que entrou na main pela #3855 (#3856)",
-   "feat(estoque): cria fn_supplier_risk_breakdown por migration e corrige o rotulo do selo (#3854)",
-   "chore(ci): job deno test — 48 arquivos de teste de edge que nenhum runner executava (#3853)",
-   "docs(resgate): veredicto byte a byte das 9 branches abertas (#3855)"
+   "feat(estoque): cria fn_supplier_risk_breakdown por migration e corrige o rotulo do selo (#3854)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",

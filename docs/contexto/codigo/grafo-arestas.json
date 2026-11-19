@@ -11388,6 +11388,9 @@
    "src/hooks/quotes/quoteHelpers.ts",
    "src/hooks/quotes/quoteTypes.ts"
   ],
+  "src/hooks/quotes/quoteTemplateItemGuard.ts": [
+   "src/hooks/quotes/quoteTemplateTypes.ts"
+  ],
   "src/hooks/quotes/quoteTemplateTypes.ts": [
    "src/integrations/supabase/types.ts"
   ],
@@ -11475,6 +11478,7 @@
   ],
   "src/hooks/quotes/useQuoteTemplates.ts": [
    "src/contexts/AuthContext.tsx",
+   "src/hooks/quotes/quoteTemplateItemGuard.ts",
    "src/hooks/quotes/quoteTemplateTypes.ts",
    "src/hooks/ui/index.ts",
    "src/integrations/supabase/client.ts",

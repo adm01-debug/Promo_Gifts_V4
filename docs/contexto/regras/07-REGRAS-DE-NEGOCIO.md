@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.3.2 · commit `21b5c9cc78` · branch `main` · 2026-11-19 00:45 UTC
+> Gerado automaticamente por AI Context Sync v1.3.2 · commit `ee54b645bd` · branch `main` · 2026-11-19 01:06 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -4154,6 +4154,10 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
   ```
   const factor = negotiationMarkupFactor(markupPercent); if (factor === 1) return items; return items.map((item) => ({ ...item, unit_price: round2((item.unit_price || 0) * factor), subtotal: typeof item.subtotal === 'number' ? round2(item.subtotal * factor) : item.subtotal, personalizations: item.personalizations?.map((p) => ({ ...p, setup_cost: typeof p.setup_cost === 'number' ? round2(p.setup_cost * factor) : p.setup_cost, unit_cost: typeof p.unit_cost === 'number' ? round2(p.unit_cost * factor) …
   ```
+- **validateTemplateItems(value: unknown)** — `src/hooks/quotes/quoteTemplateItemGuard.ts`
+  ```
+  if (!Array.isArray(value)) { return { items_data: null, items_error: 'Os itens deste template precisam de revisão. Os dados originais foram preservados.', }; } const items: QuoteTemplateItem[] = []; for (const [index, entry] of value.entries()) { if (!isQuoteTemplateItem(entry)) { return { items_data: null, items_error: `O item ${index + 1} contém dados incompletos ou inválidos. Os dados originais foram preservados.`, }; } items.push(entry); } return { items_data: items, items_error: null };
+  ```
 - **syncValidityDaysFromDate(dateStr: string)** — `src/hooks/quotes/useQuoteBuilderState.helpers.ts`
   ```
   try { const daysFromNow = Math.round( (new Date(dateStr).getTime() - startOfDay(new Date()).getTime()) / (1000 * 60 * 60 * 24), ); return VALIDITY_PRESETS.find((p) => parseInt(p, 10) === daysFromNow) ?? ''; } catch { return ''; }
@@ -6625,7 +6629,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `admin` | `supabase/migrations/20261112120500_fix_optimization_queue_rpcs_dev_access.sql` |
 | `anon` | `tests/edge-functions/live/_live-client.ts` |
 
-## K. Testes como especificação (22589 testes em 2284 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (22600 testes em 2285 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -6929,7 +6933,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `e2e/dashboard-modules.spec.ts` | 18 | Dashboard Modules - Public Access (No Auth) · should redirect to auth when accessing ${route.path} unauthenticated · should display auth page for all dashboard routes · should not expose observability/metrics data to unauthenticated users … |
 | `e2e/stock-module.spec.ts` | 18 | Stock Module - Public Access (No Auth) · should redirect to auth when accessing /estoque unauthenticated · should display auth page when accessing /estoque · should not expose stock data to unauthenticated users … |
 | `e2e/magazine/magazine-viewer.spec.ts` | 18 | Magazine viewer — atalhos de teclado · → avança página, ← volta, Home/End extremos · T abre sumário, ? abre ajuda, B marca página · Space em botão focado NÃO avança página (C2) … |
-| … +1984 linhas — lista completa em `context.json` | | |
+| … +1985 linhas — lista completa em `context.json` | | |
 
 ## L. Eventos de webhook tratados (contratos com sistemas externos)
 

@@ -21494,9 +21494,9 @@
   },
   {
    "modulo": "hooks/quotes",
-   "arquivos": 25,
+   "arquivos": 26,
    "testes": 22,
-   "linhas": 5439,
+   "linhas": 5585,
    "itens_menu": [],
    "telas": [],
    "rotas_http": [],

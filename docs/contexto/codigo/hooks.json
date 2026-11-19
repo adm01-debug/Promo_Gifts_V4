@@ -12309,7 +12309,7 @@
    "hooks_exportados": [
     "useQuoteTemplates"
    ],
-   "linhas": 448,
+   "linhas": 482,
    "dominio": "hooks/quotes",
    "tabelas": [
     "profiles",

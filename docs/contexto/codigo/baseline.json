@@ -2,11 +2,21 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "21b5c9cc7832f5de78bd88ac7fdcec2b25fed6fe",
+  "commit": "ee54b645bdfdeb5cd14ee8881895dd44d7b72084",
   "branch": "main",
-  "data_commit": "2026-11-18T21:25:53-03:00",
+  "data_commit": "2026-11-18T21:39:29-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "ee54b645",
+    "data": "2026-11-18",
+    "assunto": "docs: recibo de aplicacao — 20261118223000 (E15) (#3857)"
+   },
+   {
+    "sha": "a6a0bdeb",
+    "data": "2026-11-18",
+    "assunto": "fix(orcamentos): recusa item invalido antes de gravar template (#3859)"
+   },
    {
     "sha": "21b5c9cc",
     "data": "2026-11-18",
@@ -121,58 +131,44 @@
     "sha": "c003142f",
     "data": "2026-11-18",
     "assunto": "feat(kit): gera PDF real do kit no lugar de window.print() (#3835)"
-   },
-   {
-    "sha": "3f87aa94",
-    "data": "2026-11-18",
-    "assunto": "test(utils): resgata a cobertura do casamento de cor Pantone (#3834)"
-   },
-   {
-    "sha": "97bfe183",
-    "data": "2026-11-18",
-    "assunto": "fix(kit): filtro e card de status da biblioteca contam o status real do kit (#3833)"
    }
   ],
-  "arquivos_mudados_7d": 1513,
+  "arquivos_mudados_7d": 1515,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
-    "mudancas": 3046
+    "mudancas": 2756
    },
    {
     "pasta": "src/components/products",
-    "mudancas": 1529
+    "mudancas": 1383
    },
    {
     "pasta": "tests/edge-functions/live",
-    "mudancas": 1168
+    "mudancas": 1053
    },
    {
     "pasta": "src/hooks/products",
-    "mudancas": 1077
+    "mudancas": 972
    },
    {
     "pasta": "src/components/quotes",
-    "mudancas": 948
+    "mudancas": 874
    },
    {
     "pasta": "src/pages/magazine",
-    "mudancas": 920
+    "mudancas": 828
    },
    {
     "pasta": "src/components/inventory",
-    "mudancas": 814
+    "mudancas": 734
    },
    {
     "pasta": "src/components/ui",
-    "mudancas": 736
+    "mudancas": 665
    },
    {
     "pasta": "supabase/functions/_shared",
-    "mudancas": 720
-   },
-   {
-    "pasta": "src/components/mockup",
     "mudancas": 657
    },
    {
@@ -180,20 +176,24 @@
     "mudancas": 633
    },
    {
+    "pasta": "src/components/mockup",
+    "mudancas": 601
+   },
+   {
     "pasta": "src/pages/admin",
-    "mudancas": 608
+    "mudancas": 549
    },
    {
     "pasta": "src/pages/quotes",
-    "mudancas": 518
+    "mudancas": 474
    },
    {
     "pasta": "src/components/kit-builder",
-    "mudancas": 507
+    "mudancas": 460
    },
    {
     "pasta": "src/pages/products",
-    "mudancas": 488
+    "mudancas": 440
    }
   ],
   "arquivos_mais_mudados_90d": [
@@ -202,118 +202,118 @@
     "mudancas": 65
    },
    {
-    "arquivo": "RELATORIO_CI.md",
-    "mudancas": 45
-   },
-   {
     "arquivo": "package.json",
-    "mudancas": 45
+    "mudancas": 44
    },
    {
     "arquivo": "PENDENCIAS.md",
-    "mudancas": 43
+    "mudancas": 40
+   },
+   {
+    "arquivo": "RELATORIO_CI.md",
+    "mudancas": 40
    },
    {
     "arquivo": "docs/coordenacao/conflitos-semanticos.md",
-    "mudancas": 32
+    "mudancas": 30
    },
    {
     "arquivo": "package-lock.json",
-    "mudancas": 28
+    "mudancas": 27
    },
    {
     "arquivo": ".github/workflows/deploy-gates.yml",
-    "mudancas": 25
+    "mudancas": 24
    },
    {
     "arquivo": "src/pages/kit-builder/KitBuilderPage.tsx",
-    "mudancas": 25
+    "mudancas": 24
    },
    {
     "arquivo": "supabase/EDGE_FUNCTIONS_DEPLOY_LOG.md",
-    "mudancas": 23
-   },
-   {
-    "arquivo": "analise-prs/progresso.json",
     "mudancas": 22
    },
    {
+    "arquivo": "analise-prs/progresso.json",
+    "mudancas": 20
+   },
+   {
     "arquivo": "audit/supabase-reference-catalog.temporary.json",
-    "mudancas": 21
+    "mudancas": 20
    },
    {
     "arquivo": "src/hooks/kit-builder/useKitBuilderPageState.ts",
-    "mudancas": 21
+    "mudancas": 20
    },
    {
     "arquivo": "src/pages/mockups/MockupGenerator.tsx",
-    "mudancas": 19
+    "mudancas": 18
    },
    {
     "arquivo": "analise-branches/RELATORIO_BRANCHES.md",
-    "mudancas": 18
-   },
-   {
-    "arquivo": "src/hooks/kit-builder/useKitAutoSave.ts",
-    "mudancas": 18
-   },
-   {
-    "arquivo": "e2e/flows/magazine-preview-sticky-smoke.spec.ts",
     "mudancas": 17
    },
    {
-    "arquivo": ".github/SENTINEL_SHA_ALLOWLIST.txt",
+    "arquivo": "src/hooks/kit-builder/useKitAutoSave.ts",
+    "mudancas": 17
+   },
+   {
+    "arquivo": "e2e/flows/magazine-preview-sticky-smoke.spec.ts",
     "mudancas": 16
+   },
+   {
+    "arquivo": ".github/SENTINEL_SHA_ALLOWLIST.txt",
+    "mudancas": 15
    },
    {
     "arquivo": ".github/workflows/schema-snapshot-export.yml",
-    "mudancas": 16
+    "mudancas": 15
    },
    {
     "arquivo": "CHANGELOG.md",
-    "mudancas": 16
+    "mudancas": 15
    },
    {
     "arquivo": "analise-prs/prs.json",
-    "mudancas": 16
-   },
-   {
-    "arquivo": "e2e/helpers/auth.ts",
-    "mudancas": 16
+    "mudancas": 15
    },
    {
     "arquivo": "scripts/validate-quotes-list.mjs",
-    "mudancas": 16
+    "mudancas": 15
    },
    {
     "arquivo": "src/components/kit-builder/PersonalizationConfig.tsx",
-    "mudancas": 16
+    "mudancas": 15
    },
    {
     "arquivo": "supabase/functions/crm-db-bridge/index.ts",
-    "mudancas": 16
+    "mudancas": 15
    },
    {
     "arquivo": "tests/components/pages/KitBuilderPage.test.tsx",
-    "mudancas": 16
+    "mudancas": 15
+   },
+   {
+    "arquivo": "tests/edge-functions/live/_live-client.ts",
+    "mudancas": 15
    }
   ],
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 501
+    "commits": 488
    },
    {
     "autor": "Claude",
-    "commits": 107
+    "commits": 103
    },
    {
     "autor": "Joaquim Ataides",
-    "commits": 84
+    "commits": 82
    },
    {
     "autor": "github-actions[bot]",
-    "commits": 23
+    "commits": 24
    },
    {
     "autor": "dependabot[bot]",
@@ -322,9 +322,9 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 10963,
-  "arquivos_codigo": 5473,
-  "linhas_codigo": 1042693,
+  "arquivos_total": 10965,
+  "arquivos_codigo": 5475,
+  "linhas_codigo": 1042951,
   "rotas": 139,
   "rotas_http_backend": 13,
   "vistas_por_id": 0,
@@ -336,7 +336,7 @@
   "tabelas": 527,
   "migrations": 3100,
   "cron_jobs": 122,
-  "testes": 2607,
+  "testes": 2608,
   "workflows": 89,
   "scripts": 283,
   "docs_md": 1482
@@ -1919,8 +1919,8 @@
    "linhas": 7
   },
   "src/hooks": {
-   "arquivos": 488,
-   "linhas": 91675
+   "arquivos": 489,
+   "linhas": 91821
   },
   "src/integrations": {
    "arquivos": 11,
@@ -2091,8 +2091,8 @@
    "linhas": 325
   },
   "tests/hooks": {
-   "arquivos": 160,
-   "linhas": 25513
+   "arquivos": 161,
+   "linhas": 25625
   },
   "tests/integration": {
    "arquivos": 11,
