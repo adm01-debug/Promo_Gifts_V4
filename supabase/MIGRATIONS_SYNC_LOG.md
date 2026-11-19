@@ -2571,3 +2571,35 @@ guarda de papel — `/estoque` atende authenticated (vendedores incluídos).
 |---|---|---|---|
 | `20261119202852` | `fix_f12_sparkline_ema_kpi` | `75d79ffc4a219db873af8854758ef644c428119015d7bff3e48a907f9a36017e` | **removida da pilha antes do merge da #3903 (preflight E15)** — a migration 20261119202852 foi mergeada SEM header `-- Rollback:` e com `SET search_path` sem `pg_temp` (E066) e portanto reprovava o preflight E063 do `db-apply-migration.yml`. Nunca aplicada (não existia credencial de aplicação vagando; ledger vazio). Substituída pela `20261119212000_fix_f12_sparkline_ema_kpi`, de efeito idêntico (mesmo corpo com sufixo `, pg_catalog, pg_temp` no `SET search_path` e header `-- Rollback:` apontando para `supabase/rollbacks/20261119212000_rollback.sql`). |
 | `20261119212000` | `fix_f12_sparkline_ema_kpi` | `2dd8cede49cbe8a70ba623ab5e59a1b5f60fe5245b06bf386bd21f36bde9b101` | pendente — aplicar via `db-apply-migration.yml` (`version=20261119212000`) após merge da PR de substituição (E063/E066) |
+
+### 2026-11-19 — frete: caixas de transporte e parâmetros globais (bloco C)
+
+Duas tabelas novas para o motor de frete (`src/lib/freight`). Nenhuma tabela
+existente é alterada.
+
+1. `public.shipping_boxes`: as caixas padrão da empresa. O admin cadastra a
+   medida externa e a interna é **coluna gerada** (externa − 2 × espessura da
+   parede) — é dela que sai o cálculo de encaixe, e gerada o banco não deixa um
+   formulário gravar uma interna incoerente. `code` é único só entre as caixas
+   não excluídas (índice parcial). RLS: leitura para `authenticated` (o
+   vendedor precisa do plano no orçamento), escrita só para `public.is_admin()`.
+   A policy de leitura é `deleted_at IS NULL OR public.is_admin()`: com só
+   `deleted_at IS NULL`, o UPDATE da exclusão lógica falha com "new row
+   violates row-level security policy" e o admin não enxerga a caixa excluída
+   para restaurar (reproduzido em PostgreSQL local antes desta migration).
+2. `public.freight_settings`: linha única (PK booleana travada em TRUE) com o
+   CEP de origem, os divisores de cubagem, o fator de aproveitamento, a folga
+   interna e a regra de personalização. RLS: leitura para `authenticated`,
+   UPDATE só para admin, sem INSERT nem DELETE pela aplicação.
+
+Anti-regressão: `anon` não recebe GRANT em nenhuma das duas ("permission
+denied" conferido). Validação prévia em cluster PostgreSQL 16.15 local, com
+`psql -1` como o workflow: aplica → rollback (0 tabelas) → reaplica, exit 0.
+
+Ordem de aplicação: `20261119213000` antes de `20261119213100` (não há
+dependência entre as tabelas; a ordem é só a das versões).
+
+| versão | arquivo | sha256 | status |
+|---|---|---|---|
+| `20261119213000` | `create_shipping_boxes` | `0863f0915908977d964098549b7b284dff37210091d7da9936ee6f0ed4f312ba` | pendente — aplicar via `db-apply-migration.yml` (`version=20261119213000`) após merge |
+| `20261119213100` | `create_freight_settings` | `a47a4b359bdf1bed8da503831ae1a6dc1a372804186a9a4fb599b6f49765b8d6` | pendente — aplicar via `db-apply-migration.yml` (`version=20261119213100`) após merge |
