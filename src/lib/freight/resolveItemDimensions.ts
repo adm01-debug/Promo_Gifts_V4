@@ -2,25 +2,32 @@
  * Borda de entrada do motor: traduz uma linha de `products` em medidas de
  * frete, ou diz exatamente qual campo falta no cadastro.
  *
- * Precedência (decisão 2 do projeto):
- *   1. `box_*_mm` com os **três** lados preenchidos → embalagem (`packaging`).
- *      Peso: `box_weight_kg` quando conhecido, senão `weight_g`.
- *   2. `height_cm`/`width_cm`/`length_cm` com os três preenchidos → peça nua
+ * Precedência:
+ *   1. `height_cm`/`width_cm`/`length_cm` com os três preenchidos → peça nua
  *      (`product`). Peso: `weight_g`.
- *   3. `diameter_cm` + `height_cm` → caixa envolvente do cilíndrico
+ *   2. `diameter_cm` + `height_cm` → caixa envolvente do cilíndrico
  *      (`cylinder`), lados `{h: altura, w: diâmetro, l: diâmetro}`.
- *   4. Nada disso → `incomplete`, nomeando os campos ausentes.
+ *   3. Nada disso → `incomplete`, nomeando os campos ausentes.
+ *
+ * **As colunas `box_*` do catálogo não entram aqui.** O plano original mandava
+ * usá-las como embalagem individual quando os três lados estivessem
+ * preenchidos; os dados refutam isso. Medido em 19/11/2026 em
+ * `doufsxqlfjyuvxuezpln`: dos 1.197 produtos ativos com os três lados de
+ * `box_*`, 1.153 têm `box_quantity > 1` (média 228,6 peças por caixa), e a
+ * mediana do volume dessa caixa é 71× o volume da peça. É a caixa master do
+ * fornecedor, que a decisão 3 do projeto manda ignorar para frete. Ler essas
+ * colunas faria a garrafa `54601` (400 ml, 67 g) viajar como um volume de
+ * 38 × 36 × 36 cm e 5,5 kg.
  *
  * Zero é ausência, não medida (ver `isKnownMeasure`): um produto com
- * `box_weight_kg = 0` cai no `weight_g`, e um com `height_cm = 0` não tem
- * altura. Isso não é teoria — `34702` tem `box_weight_kg = 0.000` em produção.
+ * `height_cm = 0` não tem altura.
  *
  * Peso desconhecido bloqueia junto com a dimensão: a decisão 7 não admite
  * estimativa parcial.
  */
 import type { ProductMeasureRow } from './columns';
 import type { Dimensions, IncompleteItem, MeasureSource, MissingMeasure } from './types';
-import { isKnownMeasure, kgToG, mmToCm } from './units';
+import { isKnownMeasure } from './units';
 
 /** Medidas resolvidas de uma peça, sem quantidade. */
 export interface ResolvedMeasures {
@@ -32,17 +39,6 @@ export interface ResolvedMeasures {
 export type ResolveResult =
   | { status: 'incomplete'; incomplete: IncompleteItem }
   | { status: 'ok'; measures: ResolvedMeasures };
-
-/** Lados da embalagem individual em cm, ou `null` se algum lado falta. */
-function packagingDims(row: ProductMeasureRow): Dimensions | null {
-  const heightCm = mmToCm(row.box_height_mm);
-  const widthCm = mmToCm(row.box_width_mm);
-  const lengthCm = mmToCm(row.box_length_mm);
-  if (!isKnownMeasure(heightCm) || !isKnownMeasure(widthCm) || !isKnownMeasure(lengthCm)) {
-    return null;
-  }
-  return { heightCm, widthCm, lengthCm };
-}
 
 /** Lados da peça nua, ou `null` se algum lado falta. */
 function productDims(row: ProductMeasureRow): Dimensions | null {
@@ -63,9 +59,8 @@ function cylinderDims(row: ProductMeasureRow): Dimensions | null {
 }
 
 /**
- * Campos de dimensão que o cadastro precisa receber. Reporta sempre no nível
- * da peça, porque é lá que o admin digita. O diâmetro cobre largura e
- * comprimento: quem tem diâmetro só precisa da altura.
+ * Campos de dimensão que o cadastro precisa receber. O diâmetro cobre largura
+ * e comprimento: quem tem diâmetro só precisa da altura.
  */
 function missingDimensionFields(row: ProductMeasureRow): MissingMeasure[] {
   const hasDiameter = isKnownMeasure(row.diameter_cm);
@@ -76,23 +71,8 @@ function missingDimensionFields(row: ProductMeasureRow): MissingMeasure[] {
   return missing;
 }
 
-/**
- * Peso em gramas pela fonte das dimensões. Na embalagem, `box_weight_kg` já
- * inclui o papelão da embalagem individual e por isso vence; zero não vence.
- */
-function resolveWeightG(row: ProductMeasureRow, source: MeasureSource): number | null {
-  if (source === 'packaging') {
-    const fromBox = kgToG(row.box_weight_kg);
-    if (isKnownMeasure(fromBox)) return fromBox;
-  }
-  return isKnownMeasure(row.weight_g) ? row.weight_g : null;
-}
-
 /** Aplica a precedência e devolve a primeira fonte que fecha os três lados. */
 function resolveDims(row: ProductMeasureRow): { dims: Dimensions; source: MeasureSource } | null {
-  const packaging = packagingDims(row);
-  if (packaging) return { dims: packaging, source: 'packaging' };
-
   const product = productDims(row);
   if (product) return { dims: product, source: 'product' };
 
@@ -106,7 +86,7 @@ export function resolveItemDimensions(row: ProductMeasureRow): ResolveResult {
   const resolved = resolveDims(row);
 
   const missing: MissingMeasure[] = resolved ? [] : missingDimensionFields(row);
-  const weightG = resolveWeightG(row, resolved?.source ?? 'product');
+  const weightG = isKnownMeasure(row.weight_g) ? row.weight_g : null;
   if (weightG === null) missing.push('weight');
 
   if (!resolved || weightG === null) {

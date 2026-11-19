@@ -21,10 +21,13 @@ export interface Dimensions {
 
 /**
  * De onde saíram as medidas de uma peça. Mantido no plano porque muda a
- * confiança do número: `packaging` vem do cadastro de embalagem, `product` da
- * peça nua e `cylinder` é a caixa envolvente de um cilíndrico (diâmetro × altura).
+ * confiança do número: `product` é a peça nua e `cylinder` é a caixa
+ * envolvente de um cilíndrico (diâmetro × diâmetro × altura).
+ *
+ * Não existe fonte "embalagem": os campos `box_*` do catálogo são a caixa
+ * master do fornecedor, não a embalagem individual — ver o README do módulo.
  */
-export type MeasureSource = 'cylinder' | 'packaging' | 'product';
+export type MeasureSource = 'cylinder' | 'product';
 
 /** Campo de medida que faltou no cadastro e por isso bloqueou o cálculo. */
 export type MissingMeasure = 'height' | 'length' | 'weight' | 'width';
