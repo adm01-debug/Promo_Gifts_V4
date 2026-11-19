@@ -89,6 +89,13 @@ tem **0 linhas**, então nada vaza hoje; começaria no primeiro token emitido.
 > Descobri isso ao despachar `20261027195959`: o preflight reprovou com
 > *"arquivo não tem cabeçalho de rollback lógico"* (run 44473368574), **sem tocar
 > o banco**. Saem da lista `20261027195959` e `20261027234500`.
+>
+> E o conserto da `20261027195959` revelou uma segunda regra: acrescentar o cabeçalho
+> ao arquivo histórico o torna um arquivo **modificado**, e aí o gate de recibos recusa
+> recibo "pendente" para arquivo modificado (E75, `check-migrations-sync-log-gate.mjs:196-203`)
+> — regra correta, porque arquivo já existente pode estar aplicado. A saída foi
+> **reemitir** como `20261119073000`, com o corpo copiado byte a byte (provado por `diff`), deixando
+> a história de 27/10 intacta.
 
 Três já foram aplicadas nesta sessão: `20261108235500`, `20260916202000` e
 `20261115034500`. O resto é resgate direto, sem reescrever nada:
