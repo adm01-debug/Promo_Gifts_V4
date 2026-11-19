@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "72455580e8bcac8660d56aa89c36a6c69f34968d",
+  "sha": "76b764cc70618a8556812faf1e13f6fc7c771839",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-19 08:06 UTC",
-  "files_total": 10907,
-  "code_files": 8928,
-  "code_lines": 1265367
+  "generated_at": "2026-11-19 08:08 UTC",
+  "files_total": 10908,
+  "code_files": 8929,
+  "code_lines": 1265403
  },
  "version": "1.3.2",
- "facts_hash": "0db81b0f4ac61b3a",
+ "facts_hash": "b7d6e50593ab708d",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -1128,7 +1128,7 @@
   ],
   "package_manager": "npm",
   "languages": {
-   ".sql": 3446,
+   ".sql": 3447,
    ".ts": 3048,
    ".tsx": 1969,
    ".mjs": 450,
@@ -96187,6 +96187,7 @@
    "supabase/migrations/20261115130300_fn_global_search_clamp_limit_hardened.sql",
    "supabase/migrations/20261115230000_ai_function_routing_mockup_assistant.sql",
    "supabase/migrations/20261117073000_p06_security_invoker_v_product_properties_public.sql",
+   "supabase/migrations/20261117172500_elevenlabs_credential.sql",
    "supabase/migrations/20261118223000_fn_supplier_risk_breakdown.sql",
    "supabase/migrations/20261119051500_fix_get_quote_token_public_expiracao_pg_temp.sql",
    "supabase/migrations/20261119073000_supplier_stricker_rls_deny_all_reemissao.sql",
@@ -151511,8 +151512,8 @@
   },
   {
    "module": "supabase/migrations",
-   "files": 3101,
-   "lines": 224036,
+   "files": 3102,
+   "lines": 224072,
    "tables": [
     "...",
     "admin_audit_log",
@@ -522312,6 +522313,10 @@
    "path": "supabase/migrations/20261117073000_p06_security_invoker_v_product_properties_public.sql",
    "lines": 442
   },
+  "supabase/migrations/20261117172500_elevenlabs_credential.sql": {
+   "path": "supabase/migrations/20261117172500_elevenlabs_credential.sql",
+   "lines": 36
+  },
   "supabase/migrations/20261118223000_fn_supplier_risk_breakdown.sql": {
    "path": "supabase/migrations/20261118223000_fn_supplier_risk_breakdown.sql",
    "lines": 151,
@@ -548017,10 +548022,21 @@
   }
  },
  "git": {
-  "sha": "72455580e8bcac8660d56aa89c36a6c69f34968d",
+  "sha": "76b764cc70618a8556812faf1e13f6fc7c771839",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "76b764c",
+    "date": "2026-11-19",
+    "author": "adm01-debug",
+    "subject": "feat(supabase): registra ELEVENLABS_API_KEY no catalogo de integracoes (#3791)",
+    "files": [
+     "docs/coordenacao/conflitos-semanticos.md",
+     "supabase/MIGRATIONS_SYNC_LOG.md",
+     "supabase/migrations/20261117172500_elevenlabs_credential.sql"
+    ]
+   },
    {
     "sha": "7245558",
     "date": "2026-11-19",
@@ -548339,31 +548355,19 @@
     "files": [
      "docs/agentes/resgates/2026-11-18-correcao-do-inventario.md"
     ]
-   },
-   {
-    "sha": "6f8146b",
-    "date": "2026-11-18",
-    "author": "adm01-debug",
-    "subject": "fix(test): main volta ao verde nos 4 arquivos vermelhos do test:quality (#3846)",
-    "files": [
-     "src/components/products/__snapshots__/PriceFreshnessBadge.snapshots.test.tsx.snap",
-     "src/tests/skeleton-integrity.test.ts",
-     "tests/edge-functions/integration/generate-mockup.handler.test.ts",
-     "tests/scripts/deploy-gates-live-audit.test.mjs"
-    ]
    }
   ],
   "hot_files": [
    [
     "supabase/MIGRATIONS_SYNC_LOG.md",
-    8
-   ],
-   [
-    "docs/agentes/resgates/2026-11-19-migrations-orfas-e-o-portao-retroativo.md",
-    2
+    9
    ],
    [
     "docs/coordenacao/conflitos-semanticos.md",
+    3
+   ],
+   [
+    "docs/agentes/resgates/2026-11-19-migrations-orfas-e-o-portao-retroativo.md",
     2
    ],
    [
@@ -548373,6 +548377,10 @@
    [
     "docs/agentes/resgates/2026-11-18-veredicto-byte-a-byte-das-branches.md",
     2
+   ],
+   [
+    "supabase/migrations/20261117172500_elevenlabs_credential.sql",
+    1
    ],
    [
     ".security/policies-baseline.json",
@@ -548428,10 +548436,6 @@
    ],
    [
     "src/hooks/kit-builder/useKitCatalogPriceRefresh.ts",
-    1
-   ],
-   [
-    "src/pages/kit-builder/KitBuilderPage.tsx",
     1
    ]
   ]
