@@ -17,20 +17,43 @@ com `status: 'ok' | 'dados_insuficientes' | 'nao_cabe'`, `volumes[]`, `totals`,
 |---|---|
 | `types.ts` | contrato de dados do motor |
 | `units.ts` | `mmToCm`, `kgToG`, `cm3ToM3`, `round1`, `round2`, `isKnownMeasure` |
-| `columns.ts` | `PRODUCT_MEASURE_COLUMNS` — as únicas colunas de `products` que o motor lê |
+| `columns.ts` | `PRODUCT_MEASURE_COLUMNS` — as 8 únicas colunas de `products` que o motor lê |
 | `resolveItemDimensions.ts` | linha de `products` → medidas, ou qual campo falta |
 | `expandQuantities.ts` | quantidades × nº de kits, com validação retornada |
 
-**Precedência de medidas:** embalagem (`box_*_mm`, 3 lados) → peça
-(`height/width/length_cm`) → cilíndrico (`diameter_cm` + `height_cm`) →
-`incomplete`. Sem peso **ou** sem dimensão não há estimativa parcial
-(decisão 7): o plano para e aponta o cadastro.
+**Precedência de medidas:** peça (`height/width/length_cm`) → cilíndrico
+(`diameter_cm` + `height_cm`) → `incomplete`. Sem peso **ou** sem dimensão não
+há estimativa parcial (decisão 7): o plano para e aponta o cadastro.
+
+**As colunas `box_*` não são lidas.** O plano original mandava usá-las como
+embalagem individual; os dados refutam. Medido em 19/11/2026 em
+`doufsxqlfjyuvxuezpln`, entre os produtos ativos com os três lados de `box_*`:
+
+| Métrica | Valor |
+|---|---|
+| Com `box_quantity > 1` | 1.153 de 1.197 |
+| Média de peças por caixa | 228,6 (máximo 5.000) |
+| Mediana de volume da caixa ÷ volume da peça | 71,3× |
+| Com `box_weight_kg` > 3× `weight_g` | 931 de 943 |
+
+É a caixa master do fornecedor, que a decisão 3 manda ignorar para frete.
+Custo da escolha: 254 produtos que têm os três lados de `box_*` mas não os da
+peça passam a bloquear em vez de produzir número errado (6.275 → 6.021 com
+dimensão utilizável, de 7.951 ativos). Dividir `box_*` por `box_quantity` foi
+descartado: daria um volume por unidade, não três lados, e o encaixe precisa
+dos três — derivar lado por raiz cúbica inventaria geometria.
 
 **Nada de relógio nem de aleatório aqui:** `computedAt` e `itemsHash` entram
 por parâmetro, para o plano ser reproduzível em teste e comparável no banco.
 
 **Parâmetros nunca no código:** divisores de cubagem, fator de aproveitamento e
 CEP de origem vêm de `freight_settings` (bloco C) e viajam em `FreightSettings`.
+
+**Sem consumidor de produção ainda:** `mmToCm` e `kgToG` não são chamados por
+nenhum arquivo fora dos testes depois que `box_*` saiu da leitura. Ficam porque
+o bloco C os consome: `shipping_boxes.wall_thickness_mm` (externa − 2 × espessura
+→ interna) e o peso máximo da caixa, que o admin digita em kg e a coluna guarda
+em `max_weight_g`. Se o bloco C não usar nenhum dos dois, apague os dois.
 
 **Dívida conhecida:** `mmToCm` existe também em `src/lib/kit-builder/types.ts`
 (mesma regra, mesmo resultado). A unificação cabe no bloco F, que já edita o

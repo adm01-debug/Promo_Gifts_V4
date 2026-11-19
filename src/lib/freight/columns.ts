@@ -6,10 +6,19 @@
  * `select` causando 400 em produção, ver `scripts/check-select-columns.mjs`)
  * não se repetir aqui.
  *
- * Deliberadamente fora da lista: `shipping_weight_kg`, `shipping_height_cm`,
- * `shipping_width_cm`, `shipping_length_cm` (100% vazias nos 7.951 produtos
- * ativos) e `cubic_weight` (preenchida sem regra conhecida). O motor calcula o
- * peso cubado a partir da caixa real; não confia em coluna pré-calculada.
+ * Deliberadamente fora da lista:
+ *
+ * - `shipping_weight_kg`, `shipping_height_cm`, `shipping_width_cm`,
+ *   `shipping_length_cm` — 100% vazias nos 7.951 produtos ativos.
+ * - `cubic_weight` — preenchida sem regra conhecida. O motor calcula o peso
+ *   cubado a partir da caixa real; não confia em coluna pré-calculada.
+ * - `box_height_mm`, `box_width_mm`, `box_length_mm`, `box_weight_kg` — são a
+ *   caixa master do fornecedor, não a embalagem individual. Medido em
+ *   19/11/2026: dos 1.197 produtos ativos com os três lados preenchidos, 1.153
+ *   têm `box_quantity > 1` (média 228,6 peças por caixa, máximo 5.000), e a
+ *   mediana do volume dessa caixa é 71× o volume da peça. Ler essas colunas
+ *   infla o frete em ordens de magnitude, e a decisão 3 do projeto já manda
+ *   ignorar a caixa master. Ver o README do módulo.
  */
 import type { Database } from '@/integrations/supabase/types';
 
@@ -29,10 +38,6 @@ export const PRODUCT_MEASURE_COLUMNS = [
   'length_cm',
   'diameter_cm',
   'weight_g',
-  'box_height_mm',
-  'box_width_mm',
-  'box_length_mm',
-  'box_weight_kg',
 ] as const;
 
 /** Lista pronta para `supabase.from('products').select(...)`. */

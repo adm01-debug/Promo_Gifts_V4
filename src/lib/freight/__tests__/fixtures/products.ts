@@ -1,23 +1,25 @@
 /**
  * Produtos reais de `doufsxqlfjyuvxuezpln` (produção), lidos por `execute_sql`
- * em 2026-11-19. Cobrem os quatro caminhos de `resolveItemDimensions` e os dois
+ * em 2026-11-19. Cobrem os dois caminhos de `resolveItemDimensions` e os dois
  * motivos de bloqueio.
  *
  * Não são inventados de propósito: a heurística precisa falhar nos dados que
- * existem, não nos que seriam convenientes. `34702` tem `box_weight_kg = 0.000`
- * e `KT-9059K` tem peso de embalagem sem lados de embalagem — dois casos que um
- * fixture sintético não teria produzido.
+ * existem, não nos que seriam convenientes.
+ *
+ * Cada fixture registra, no comentário, o que o banco tem nas colunas `box_*`
+ * **que o motor não lê** (ver `columns.ts`). É a evidência de por que a
+ * precedência mudou: a "embalagem" do catálogo é a caixa master do fornecedor.
  */
 import type { ProductMeasureRow } from '../../columns';
 
 /**
- * Garrafa esportiva 400 ml. Três lados de embalagem preenchidos → `packaging`.
+ * Garrafa esportiva 400 ml, 67 g. Três dimensões da peça → `product`.
  *
- * ATENÇÃO (evidência de negócio): 38 × 36 × 36 cm e 5,5 kg para uma garrafa de
- * 67 g é a **caixa master do fornecedor**, não a embalagem individual. Mantido
- * como está porque é o dado real; ver a nota de divergência na PR.
+ * No banco: `box` 380 × 360 × 360 mm e `box_weight_kg` 5,500, com
+ * `box_quantity` 24. Isto é, 38 × 36 × 36 cm e 5,5 kg de caixa master para uma
+ * garrafa de 67 g. É o caso que torna a leitura de `box_*` indefensável.
  */
-export const GARRAFA_COM_EMBALAGEM: ProductMeasureRow = {
+export const GARRAFA_ESPORTIVA: ProductMeasureRow = {
   id: '82e20777-032d-4721-8afe-27e1f99c0750',
   sku: '54601',
   name: 'Garrafa esportiva em alumínio e acabamento metálico com mosquetão 400 ml',
@@ -26,18 +28,16 @@ export const GARRAFA_COM_EMBALAGEM: ProductMeasureRow = {
   length_cm: 6.6,
   diameter_cm: 6.6,
   weight_g: 67,
-  box_height_mm: 380,
-  box_width_mm: 360,
-  box_length_mm: 360,
-  box_weight_kg: 5.5,
 };
 
 /**
- * Suporte para garrafas. Embalagem 10 × 10 × 10 cm com `box_weight_kg = 0.000`:
- * a fonte é `packaging`, mas o peso tem de cair em `weight_g` porque zero é
- * ausência de dado, não um peso.
+ * Suporte para garrafas, 1 g. Peça fina e larga (12 × 31,6 × 1,2 cm): o pior
+ * caso de aproveitamento de volume, útil nos testes de encaixe do bloco B.
+ *
+ * No banco: `box` 100 × 100 × 100 mm com `box_weight_kg` 0,000 — a embalagem
+ * sem peso que o motor antigo tinha de tratar como ausência de dado.
  */
-export const SUPORTE_EMBALAGEM_SEM_PESO: ProductMeasureRow = {
+export const SUPORTE_PARA_GARRAFAS: ProductMeasureRow = {
   id: '83da3c36-c1eb-47f7-969a-c07a94343d59',
   sku: '34702',
   name: 'Suporte para garrafas',
@@ -46,17 +46,15 @@ export const SUPORTE_EMBALAGEM_SEM_PESO: ProductMeasureRow = {
   length_cm: 1.2,
   diameter_cm: null,
   weight_g: 1,
-  box_height_mm: 100,
-  box_width_mm: 100,
-  box_length_mm: 100,
-  box_weight_kg: 0,
 };
 
 /**
- * Kit squeeze. Tem `box_weight_kg` (1,183 kg) e **nenhum** lado de embalagem —
- * a embalagem incompleta precisa cair nas medidas da peça, com `weight_g`.
+ * Kit squeeze com 4 peças, 1.184 g. O item mais pesado e mais comprido do
+ * conjunto (34,2 cm): estoura o peso máximo da caixa P antes do volume.
+ *
+ * No banco: `box_weight_kg` 1,183 e **nenhum** lado de embalagem.
  */
-export const KIT_SQUEEZE_EMBALAGEM_INCOMPLETA: ProductMeasureRow = {
+export const KIT_SQUEEZE: ProductMeasureRow = {
   id: '7038affc-2ffa-4e5b-8331-885045ca28c2',
   sku: 'KT-9059K',
   name: 'Kit squeeze e acessórios - 4 pçs',
@@ -65,13 +63,9 @@ export const KIT_SQUEEZE_EMBALAGEM_INCOMPLETA: ProductMeasureRow = {
   length_cm: 34.2,
   diameter_cm: null,
   weight_g: 1184,
-  box_height_mm: null,
-  box_width_mm: null,
-  box_length_mm: null,
-  box_weight_kg: 1.183,
 };
 
-/** Caderneta B6. Três dimensões da peça e peso → `product`. */
+/** Caderneta B6, 162 g. O caso médio: peça pequena, peso conhecido. */
 export const CADERNETA: ProductMeasureRow = {
   id: '8e3ff0f1-bba8-4413-8e44-b337c6b077ea',
   sku: '02601',
@@ -81,13 +75,9 @@ export const CADERNETA: ProductMeasureRow = {
   length_cm: 13.5,
   diameter_cm: 13.5,
   weight_g: 162,
-  box_height_mm: null,
-  box_width_mm: null,
-  box_length_mm: null,
-  box_weight_kg: null,
 };
 
-/** Caneta reciclável. O item mais leve do catálogo útil para testes de teto. */
+/** Caneta reciclável, 6 g. A peça mais leve: testa o teto por volume, não por peso. */
 export const CANETA: ProductMeasureRow = {
   id: '37e92529-695f-48e8-923a-d42237c90915',
   sku: '00001',
@@ -97,10 +87,6 @@ export const CANETA: ProductMeasureRow = {
   length_cm: 3,
   diameter_cm: 3,
   weight_g: 6,
-  box_height_mm: null,
-  box_width_mm: null,
-  box_length_mm: null,
-  box_weight_kg: null,
 };
 
 /**
@@ -117,10 +103,6 @@ export const GARRAFA_TERMICA_SEM_PESO: ProductMeasureRow = {
   length_cm: 8,
   diameter_cm: 8,
   weight_g: null,
-  box_height_mm: null,
-  box_width_mm: null,
-  box_length_mm: null,
-  box_weight_kg: null,
 };
 
 /** Enfeite de porcelana. Nenhuma medida e nenhum peso — bloqueia por tudo. */
@@ -133,10 +115,6 @@ export const ENFEITE_SEM_NADA: ProductMeasureRow = {
   length_cm: null,
   diameter_cm: null,
   weight_g: null,
-  box_height_mm: null,
-  box_width_mm: null,
-  box_length_mm: null,
-  box_weight_kg: null,
 };
 
 /**
@@ -153,10 +131,6 @@ export const ZEROS: ProductMeasureRow = {
   length_cm: 0,
   diameter_cm: 0,
   weight_g: 0,
-  box_height_mm: 0,
-  box_width_mm: 0,
-  box_length_mm: 0,
-  box_weight_kg: 0,
 };
 
 /**
@@ -172,15 +146,34 @@ export const CADERNETA_SEM_ALTURA: ProductMeasureRow = {
   height_cm: null,
 };
 
+/**
+ * `CANETA` sem largura e sem comprimento, só com diâmetro e altura: o único
+ * caminho para a fonte `cylinder`.
+ *
+ * Nenhum produto ativo está nesse estado hoje (`so_cilindro = 0` em
+ * 19/11/2026; dos 1.709 com diâmetro, 1.523 já têm o diâmetro copiado em
+ * largura e comprimento), então o ramo é defensivo — e é por isso que precisa
+ * de um fixture explícito.
+ */
+export const CANETA_CILINDRICA: ProductMeasureRow = {
+  ...CANETA,
+  id: '22222222-2222-4222-8222-222222222222',
+  sku: '00001-CILINDRO',
+  name: 'Caneta reciclavel (só diâmetro e altura)',
+  width_cm: null,
+  length_cm: null,
+};
+
 /** Todos os fixtures, para percorrer em teste de tabela. */
 export const ALL_PRODUCT_FIXTURES: ProductMeasureRow[] = [
-  GARRAFA_COM_EMBALAGEM,
-  SUPORTE_EMBALAGEM_SEM_PESO,
-  KIT_SQUEEZE_EMBALAGEM_INCOMPLETA,
+  GARRAFA_ESPORTIVA,
+  SUPORTE_PARA_GARRAFAS,
+  KIT_SQUEEZE,
   CADERNETA,
   CANETA,
   GARRAFA_TERMICA_SEM_PESO,
   ENFEITE_SEM_NADA,
   ZEROS,
   CADERNETA_SEM_ALTURA,
+  CANETA_CILINDRICA,
 ];
