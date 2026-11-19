@@ -4,7 +4,11 @@
 import { useEffect, useMemo, useRef, useState, useCallback } from 'react';
 import { useSearchStore } from '@/stores/useSearchStore';
 import { useOracleVoiceBridge } from '@/stores/oracleVoiceBridge';
-import { despacharBuscaDeVoz, despacharFiltroDeVoz } from '@/components/search/voiceFilterDispatch';
+import {
+  despacharBuscaDeVoz,
+  despacharFiltroDeVoz,
+  despacharLimpezaDeVoz,
+} from '@/components/search/voiceFilterDispatch';
 import Fuse from 'fuse.js';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
@@ -199,13 +203,10 @@ export function useGlobalSearch() {
           despacharBuscaDeVoz(action.data, despachoDeVoz);
           break;
         case 'clear':
-          voiceTimersRef.current.add(
-            setTimeout(() => {
-              setVoiceOverlayOpen(false);
-              setQuery('');
-              setResults([]);
-            }, 500),
-          );
+          // Limpa o texto E os filtros do catalogo. Antes so o texto saia, e
+          // quem ditava "limpar os filtros" via o catalogo seguir filtrado.
+          setResults([]);
+          despacharLimpezaDeVoz(despachoDeVoz);
           break;
         case 'sort':
           voiceTimersRef.current.add(
