@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "9f72f0f2e6325e46008588d64d29132191aa6d1c",
+  "commit": "4b1f6e1cc05e108bb639c6b82301e40e6dc3dde0",
   "branch": "main",
-  "data_commit": "2026-11-19T07:30:11-03:00",
+  "data_commit": "2026-11-19T07:35:52-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "4b1f6e1c",
+    "data": "2026-11-19",
+    "assunto": "chore(security): regrava baseline de policies e recibo E15 da 20261113140000 (#3885)"
+   },
    {
     "sha": "9f72f0f2",
     "data": "2026-11-19",
@@ -126,11 +131,6 @@
     "sha": "1c0f023a",
     "data": "2026-11-18",
     "assunto": "fix(orcamentos): telas de template nao podem mentir sobre o que aconteceu (#3860)"
-   },
-   {
-    "sha": "ee54b645",
-    "data": "2026-11-18",
-    "assunto": "docs: recibo de aplicacao — 20261118223000 (E15) (#3857)"
    }
   ],
   "arquivos_mudados_7d": 1486,
@@ -203,7 +203,7 @@
    },
    {
     "arquivo": "package.json",
-    "mudancas": 39
+    "mudancas": 38
    },
    {
     "arquivo": "docs/coordenacao/conflitos-semanticos.md",
@@ -230,16 +230,12 @@
     "mudancas": 17
    },
    {
-    "arquivo": "src/pages/kit-builder/KitBuilderPage.tsx",
-    "mudancas": 17
-   },
-   {
     "arquivo": "supabase/EDGE_FUNCTIONS_DEPLOY_LOG.md",
     "mudancas": 17
    },
    {
-    "arquivo": "src/hooks/kit-builder/useKitBuilderPageState.ts",
-    "mudancas": 14
+    "arquivo": "src/pages/kit-builder/KitBuilderPage.tsx",
+    "mudancas": 16
    },
    {
     "arquivo": "src/pages/mockups/MockupGenerator.tsx",
@@ -247,6 +243,10 @@
    },
    {
     "arquivo": "e2e/flows/magazine-preview-sticky-smoke.spec.ts",
+    "mudancas": 13
+   },
+   {
+    "arquivo": "src/hooks/kit-builder/useKitBuilderPageState.ts",
     "mudancas": 13
    },
    {
@@ -301,15 +301,15 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 391
+    "commits": 388
    },
    {
     "autor": "Claude",
-    "commits": 67
+    "commits": 66
    },
    {
     "autor": "Joaquim Ataides",
-    "commits": 58
+    "commits": 57
    },
    {
     "autor": "github-actions[bot]",

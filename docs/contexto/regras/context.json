@@ -1,9 +1,9 @@
 {
  "meta": {
-  "sha": "9f72f0f2e6325e46008588d64d29132191aa6d1c",
+  "sha": "4b1f6e1cc05e108bb639c6b82301e40e6dc3dde0",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-19 10:31 UTC",
+  "generated_at": "2026-11-19 10:37 UTC",
   "files_total": 10912,
   "code_files": 8933,
   "code_lines": 1265560
@@ -548234,10 +548234,20 @@
   }
  },
  "git": {
-  "sha": "9f72f0f2e6325e46008588d64d29132191aa6d1c",
+  "sha": "4b1f6e1cc05e108bb639c6b82301e40e6dc3dde0",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "4b1f6e1",
+    "date": "2026-11-19",
+    "author": "adm01-debug",
+    "subject": "chore(security): regrava baseline de policies e recibo E15 da 20261113140000 (#3885)",
+    "files": [
+     ".security/policies-baseline.json",
+     "supabase/MIGRATIONS_SYNC_LOG.md"
+    ]
+   },
    {
     "sha": "9f72f0f",
     "date": "2026-11-19",
@@ -548536,28 +548546,12 @@
      "supabase/migrations/20261118223000_fn_supplier_risk_breakdown.sql",
      "supabase/rollbacks/20261118223000_rollback.sql"
     ]
-   },
-   {
-    "sha": "61ceaa9",
-    "date": "2026-11-18",
-    "author": "adm01-debug",
-    "subject": "chore(ci): job deno test — 48 arquivos de teste de edge que nenhum runner executava (#3853)",
-    "files": [
-     ".github/workflows/edge-functions-deno-tests.yml",
-     "supabase/functions/_shared/createEdge.test.ts",
-     "supabase/functions/_shared/credentials.test.ts",
-     "supabase/functions/asia-ingestion/credential-client.test.ts",
-     "supabase/functions/crm-db-bridge/inspectInsertResult.test.ts",
-     "supabase/functions/e2e-cleanup/handler_characterization_test.ts",
-     "supabase/functions/quote-sync-promo-champions/index.test.ts",
-     "supabase/functions/webhook-inbound/handler_characterization_test.ts"
-    ]
    }
   ],
   "hot_files": [
    [
     "supabase/MIGRATIONS_SYNC_LOG.md",
-    12
+    13
    ],
    [
     "docs/agentes/resgates/2026-11-19-migrations-orfas-e-o-portao-retroativo.md",
@@ -548572,7 +548566,7 @@
     3
    ],
    [
-    ".github/workflows/edge-functions-deno-tests.yml",
+    ".security/policies-baseline.json",
     2
    ],
    [
@@ -548593,10 +548587,6 @@
    ],
    [
     "supabase/migrations/20261117172500_elevenlabs_credential.sql",
-    1
-   ],
-   [
-    ".security/policies-baseline.json",
     1
    ],
    [
@@ -548633,6 +548623,10 @@
    ],
    [
     "src/components/kit-builder/KitSummary.tsx",
+    1
+   ],
+   [
+    "src/components/kit-builder/kit-summary/KitPricingCard.tsx",
     1
    ]
   ]
