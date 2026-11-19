@@ -1,6 +1,6 @@
 # 10 · ACESSO E SEGURANÇA — quem pode o quê
 
-> Gerado automaticamente por AI Context Sync v1.3.2 · commit `2f37587a97` · branch `main` · 2026-11-19 21:46 UTC
+> Gerado automaticamente por AI Context Sync v1.3.2 · commit `af5f0ed438` · branch `main` · 2026-11-19 22:21 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## Perfis / roles identificados
@@ -1233,12 +1233,13 @@ Middleware matcher (Next.js): nenhum
 | grant | authenticated | all | `user_preferences` |
 | grant | authenticated | execute | `seed_discount_test_users`, `cleanup_discount_test_data`, `get_bundle_suggestions`, `get_client_top_products`, `get_industry_top_products`, `get_industry_benchmark_stats`, `get_web_vitals_summary`, `check_hardening_status`, `get_top_favorited_products`, `get_favorites_weekly_count`, `set_connections_auto_test_interval`, `get_connections_auto_test_interval`, `set_connection_failure_window_minutes`, `get_connection_failure_window_minutes`, `get_auto_test_job_status` … +134 |
 | grant | authenticated | insert | `kill_switch_hits`, `system_error_logs`, `navigation_analytics`, `navigation_analytics`, `navigation_analytics`, `frontend_telemetry` |
-| grant | authenticated | insert, update, delete | `collection_products` |
-| grant | authenticated | select | `quotes_inbound`, `webhook_inbound_dedupe`, `webhook_inbound_log`, `crm_callback_events`, `user_token_revocations`, `collection_products`, `system_kill_switches`, `v_kill_switch_hits_summary`, `v_kill_switch_hits_summary`, `smoke_tests_runs`, `v_smoke_tests_latest_run`, `v_smoke_tests_trend`, `v_smoke_tests_latest_run`, `v_smoke_tests_trend`, `system_error_logs` … +63 |
+| grant | authenticated | insert, update, delete | `collection_products`, `shipping_boxes` |
+| grant | authenticated | select | `quotes_inbound`, `webhook_inbound_dedupe`, `webhook_inbound_log`, `crm_callback_events`, `user_token_revocations`, `collection_products`, `system_kill_switches`, `v_kill_switch_hits_summary`, `v_kill_switch_hits_summary`, `smoke_tests_runs`, `v_smoke_tests_latest_run`, `v_smoke_tests_trend`, `v_smoke_tests_latest_run`, `v_smoke_tests_trend`, `system_error_logs` … +64 |
 | grant | authenticated | select, delete | `kill_switch_hits` |
 | grant | authenticated | select, insert | `access_blocked_log`, `smoke_test_runs`, `admin_audit_log`, `admin_audit_log`, `catalog_analytics`, `audit_log`, `kit_quote_requests` |
 | grant | authenticated | select, insert, update | `visual_search_feedback` |
 | grant | authenticated | select, insert, update, delete | `magazine_reader_state`, `magazines`, `magazine_items`, `magazine_templates`, `user_2fa_settings`, `bitrix_clients`, `personalization_simulations`, `roles`, `ip_whitelist`, `city_whitelist`, `user_allowed_ips`, `companies`, `sales_goals`, `product_group_components`, `product_group_locations` … +11 |
+| grant | authenticated | select, update | `freight_settings` |
 | grant | authenticated | usage, select | `smoke_tests_runs_id_seq` |
 | grant | authenticated, anon | execute | `search_products_semantic`, `can_view_audit_logs`, `can_view_telemetry`, `can_view_connections`, `can_manage_connections`, `fn_get_product_customization_options`, `fn_get_product_customization_options`, `fn_get_product_customization_options`, `fn_get_product_customization_options` |
 | grant | authenticated, anon | select | `archive.color_analysis_staging`, `archive.import_staging_images`, `archive.scraper_images_staging`, `archive.sm_images_staging`, `archive.xbz_gallery_staging`, `color_analysis_staging`, `import_staging_images`, `scraper_images_staging`, `sm_images_staging`, `xbz_gallery_staging`, `analytics.mv_product_intelligence`, `mv_product_intelligence`, `analytics.mv_product_intelligence`, `mv_product_intelligence`, `analytics.mv_product_intelligence` … +4 |

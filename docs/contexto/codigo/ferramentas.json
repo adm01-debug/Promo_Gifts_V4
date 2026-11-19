@@ -4,7 +4,7 @@
  "stack": {
   "linguagens": [
    "TypeScript (5046)",
-   "SQL (3455)",
+   "SQL (3459)",
    "Markdown (1486)",
    "JavaScript (460)",
    "JSON (132)",
@@ -5952,6 +5952,7 @@
    "admin_settings",
    "archive.supplier_settings",
    "feature_flags",
+   "freight_settings",
    "notebook_features",
    "product_notebook_features",
    "security_settings",

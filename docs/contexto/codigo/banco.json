@@ -8,7 +8,7 @@
   "supabase/migrations",
   "typeorm"
  ],
- "migrations": 3107,
+ "migrations": 3109,
  "seeds": [],
  "avisos": [
   "323 bloco(s) com DDL dinâmico (EXECUTE format/...) não modelado — policies/colunas criadas dinamicamente podem faltar; confira no banco vivo"
@@ -1856,6 +1856,13 @@
    "funcao": "update_updated_at_column"
   },
   {
+   "nome": "set_freight_settings_updated_at",
+   "quando": "before",
+   "evento": "update",
+   "tabela": "freight_settings",
+   "funcao": "update_updated_at_column"
+  },
+  {
    "nome": "trg_anon_rate_guard",
    "quando": "before",
    "evento": "insert",
@@ -3057,6 +3064,13 @@
    "quando": "before",
    "evento": "update",
    "tabela": "seller_gamification",
+   "funcao": "update_updated_at_column"
+  },
+  {
+   "nome": "set_shipping_boxes_updated_at",
+   "quando": "before",
+   "evento": "update",
+   "tabela": "shipping_boxes",
    "funcao": "update_updated_at_column"
   },
   {
@@ -17576,6 +17590,100 @@
    ],
    "sem_rls": false,
    "nao_usada": false
+  },
+  "freight_settings": {
+   "colunas": {
+    "cubic_divisor_correios": {
+     "tipo": "integer",
+     "nn": true,
+     "pk": false,
+     "default": "6000",
+     "ref": null
+    },
+    "cubic_divisor_rodoviario": {
+     "tipo": "integer",
+     "nn": true,
+     "pk": false,
+     "default": "3333",
+     "ref": null
+    },
+    "default_fill_factor": {
+     "tipo": "numeric(3,2)",
+     "nn": true,
+     "pk": false,
+     "default": "0.90",
+     "ref": null
+    },
+    "id": {
+     "tipo": "boolean",
+     "nn": false,
+     "pk": true,
+     "default": "true",
+     "ref": null
+    },
+    "internal_buffer_days": {
+     "tipo": "integer",
+     "nn": true,
+     "pk": false,
+     "default": "0",
+     "ref": null
+    },
+    "multi_personalization_rule": {
+     "tipo": "text",
+     "nn": true,
+     "pk": false,
+     "default": "'max'",
+     "ref": null
+    },
+    "origin_cep": {
+     "tipo": "text",
+     "nn": true,
+     "pk": false,
+     "default": "'03377-000'",
+     "ref": null
+    },
+    "updated_at": {
+     "tipo": "timestamptz",
+     "nn": true,
+     "pk": false,
+     "default": "now()",
+     "ref": null
+    },
+    "updated_by": {
+     "tipo": "uuid",
+     "nn": false,
+     "pk": false,
+     "default": null,
+     "ref": "auth"
+    }
+   },
+   "rls": true,
+   "policies": [
+    {
+     "nome": "freight_settings_select_authenticated",
+     "comando": "select",
+     "para": "authenticated",
+     "tipo": "permissive"
+    },
+    {
+     "nome": "freight_settings_update_admin",
+     "comando": "update",
+     "para": "authenticated",
+     "tipo": "permissive"
+    }
+   ],
+   "indices": [],
+   "fks": [
+    "updated_by->auth"
+   ],
+   "criada_em": "20261119213100_create_freight_settings.sql",
+   "usada_no_front": 0,
+   "usada_em_edges": [],
+   "triggers": [
+    "set_freight_settings_updated_at"
+   ],
+   "sem_rls": false,
+   "nao_usada": true
   },
   "frontend_telemetry": {
    "colunas": {
@@ -42487,6 +42595,184 @@
    "usada_no_front": 0,
    "usada_em_edges": [],
    "triggers": [],
+   "sem_rls": false,
+   "nao_usada": true
+  },
+  "shipping_boxes": {
+   "colunas": {
+    "code": {
+     "tipo": "text",
+     "nn": true,
+     "pk": false,
+     "default": null,
+     "ref": null
+    },
+    "created_at": {
+     "tipo": "timestamptz",
+     "nn": true,
+     "pk": false,
+     "default": "now()",
+     "ref": null
+    },
+    "deleted_at": {
+     "tipo": "timestamptz",
+     "nn": false,
+     "pk": false,
+     "default": "NULL",
+     "ref": null
+    },
+    "empty_weight_g": {
+     "tipo": "integer",
+     "nn": true,
+     "pk": false,
+     "default": "0",
+     "ref": null
+    },
+    "fill_factor": {
+     "tipo": "numeric(3,2)",
+     "nn": true,
+     "pk": false,
+     "default": "0.90",
+     "ref": null
+    },
+    "id": {
+     "tipo": "uuid",
+     "nn": false,
+     "pk": true,
+     "default": "gen_random_uuid()",
+     "ref": null
+    },
+    "inner_height_cm": {
+     "tipo": "numeric(8,2)",
+     "nn": false,
+     "pk": false,
+     "default": null,
+     "ref": null
+    },
+    "inner_length_cm": {
+     "tipo": "numeric(8,2)",
+     "nn": false,
+     "pk": false,
+     "default": null,
+     "ref": null
+    },
+    "inner_width_cm": {
+     "tipo": "numeric(8,2)",
+     "nn": false,
+     "pk": false,
+     "default": null,
+     "ref": null
+    },
+    "is_active": {
+     "tipo": "boolean",
+     "nn": true,
+     "pk": false,
+     "default": "true",
+     "ref": null
+    },
+    "max_weight_g": {
+     "tipo": "integer",
+     "nn": true,
+     "pk": false,
+     "default": null,
+     "ref": null
+    },
+    "name": {
+     "tipo": "text",
+     "nn": true,
+     "pk": false,
+     "default": null,
+     "ref": null
+    },
+    "outer_height_cm": {
+     "tipo": "numeric(8,2)",
+     "nn": true,
+     "pk": false,
+     "default": null,
+     "ref": null
+    },
+    "outer_length_cm": {
+     "tipo": "numeric(8,2)",
+     "nn": true,
+     "pk": false,
+     "default": null,
+     "ref": null
+    },
+    "outer_width_cm": {
+     "tipo": "numeric(8,2)",
+     "nn": true,
+     "pk": false,
+     "default": null,
+     "ref": null
+    },
+    "sort_order": {
+     "tipo": "integer",
+     "nn": true,
+     "pk": false,
+     "default": "0",
+     "ref": null
+    },
+    "updated_at": {
+     "tipo": "timestamptz",
+     "nn": true,
+     "pk": false,
+     "default": "now()",
+     "ref": null
+    },
+    "wall_thickness_mm": {
+     "tipo": "integer",
+     "nn": true,
+     "pk": false,
+     "default": "3",
+     "ref": null
+    }
+   },
+   "rls": true,
+   "policies": [
+    {
+     "nome": "shipping_boxes_delete_admin",
+     "comando": "delete",
+     "para": "authenticated",
+     "tipo": "permissive"
+    },
+    {
+     "nome": "shipping_boxes_insert_admin",
+     "comando": "insert",
+     "para": "authenticated",
+     "tipo": "permissive"
+    },
+    {
+     "nome": "shipping_boxes_select_authenticated",
+     "comando": "select",
+     "para": "authenticated",
+     "tipo": "permissive"
+    },
+    {
+     "nome": "shipping_boxes_update_admin",
+     "comando": "update",
+     "para": "authenticated",
+     "tipo": "permissive"
+    }
+   ],
+   "indices": [
+    {
+     "nome": "shipping_boxes_active_sort_idx",
+     "colunas": "sort_order, code",
+     "unico": false
+    },
+    {
+     "nome": "shipping_boxes_code_unique_active",
+     "colunas": "code",
+     "unico": true
+    }
+   ],
+   "fks": [],
+   "criada_em": "20261119213000_create_shipping_boxes.sql",
+   "usada_no_front": 0,
+   "usada_em_edges": [],
+   "triggers": [
+    "set_shipping_boxes_updated_at"
+   ],
    "sem_rls": false,
    "nao_usada": true
   },

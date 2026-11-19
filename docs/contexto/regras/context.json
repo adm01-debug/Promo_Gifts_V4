@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "2f37587a9743b13ee5c39170d120a3957766b46f",
+  "sha": "af5f0ed438397cabeb3fcaf7fe32ec7f6a631a41",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-19 21:46 UTC",
-  "files_total": 10951,
-  "code_files": 8970,
-  "code_lines": 1269758
+  "generated_at": "2026-11-19 22:21 UTC",
+  "files_total": 10955,
+  "code_files": 8974,
+  "code_lines": 1270041
  },
  "version": "1.3.2",
- "facts_hash": "b3676219c99c7242",
+ "facts_hash": "984bbc8b7f71707c",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -1128,7 +1128,7 @@
   ],
   "package_manager": "npm",
   "languages": {
-   ".sql": 3455,
+   ".sql": 3459,
    ".ts": 3078,
    ".tsx": 1969,
    ".mjs": 453,
@@ -50239,6 +50239,66 @@
     "src": "supabase/migrations/20261113140000_marketing_tab_links_rls_and_endomarketing.sql"
    },
    {
+    "name": "shipping_boxes_select_authenticated",
+    "table": "shipping_boxes",
+    "cmd": "SELECT",
+    "roles": "authenticated",
+    "mode": "permissive",
+    "using": "deleted_at IS NULL OR public.is_admin()",
+    "check": "",
+    "src": "supabase/migrations/20261119213000_create_shipping_boxes.sql"
+   },
+   {
+    "name": "shipping_boxes_insert_admin",
+    "table": "shipping_boxes",
+    "cmd": "INSERT",
+    "roles": "authenticated",
+    "mode": "permissive",
+    "using": "",
+    "check": "public.is_admin()",
+    "src": "supabase/migrations/20261119213000_create_shipping_boxes.sql"
+   },
+   {
+    "name": "shipping_boxes_update_admin",
+    "table": "shipping_boxes",
+    "cmd": "UPDATE",
+    "roles": "authenticated",
+    "mode": "permissive",
+    "using": "public.is_admin()",
+    "check": "public.is_admin()",
+    "src": "supabase/migrations/20261119213000_create_shipping_boxes.sql"
+   },
+   {
+    "name": "shipping_boxes_delete_admin",
+    "table": "shipping_boxes",
+    "cmd": "DELETE",
+    "roles": "authenticated",
+    "mode": "permissive",
+    "using": "public.is_admin()",
+    "check": "",
+    "src": "supabase/migrations/20261119213000_create_shipping_boxes.sql"
+   },
+   {
+    "name": "freight_settings_select_authenticated",
+    "table": "freight_settings",
+    "cmd": "SELECT",
+    "roles": "authenticated",
+    "mode": "permissive",
+    "using": "true",
+    "check": "",
+    "src": "supabase/migrations/20261119213100_create_freight_settings.sql"
+   },
+   {
+    "name": "freight_settings_update_admin",
+    "table": "freight_settings",
+    "cmd": "UPDATE",
+    "roles": "authenticated",
+    "mode": "permissive",
+    "using": "public.is_admin()",
+    "check": "public.is_admin()",
+    "src": "supabase/migrations/20261119213100_create_freight_settings.sql"
+   },
+   {
     "name": "product_ai_anon_select",
     "table": "product_ai_content",
     "cmd": "SELECT",
@@ -55290,6 +55350,24 @@
     "condition": "",
     "each": "row",
     "src": "supabase/migrations/20261113140000_marketing_tab_links_rls_and_endomarketing.sql"
+   },
+   {
+    "name": "set_shipping_boxes_updated_at",
+    "when": "BEFORE UPDATE",
+    "table": "shipping_boxes",
+    "function": "update_updated_at_column",
+    "condition": "",
+    "each": "row",
+    "src": "supabase/migrations/20261119213000_create_shipping_boxes.sql"
+   },
+   {
+    "name": "set_freight_settings_updated_at",
+    "when": "BEFORE UPDATE",
+    "table": "freight_settings",
+    "function": "update_updated_at_column",
+    "condition": "",
+    "each": "row",
+    "src": "supabase/migrations/20261119213100_create_freight_settings.sql"
    },
    {
     "name": "trigger_update_notification_updated_at",
@@ -90610,6 +90688,22 @@
     "src": "supabase/migrations/20261115130000_idx_sds_summary_date_supplier_include.sql"
    },
    {
+    "name": "shipping_boxes_code_unique_active",
+    "table": "shipping_boxes",
+    "columns": "code",
+    "unique": true,
+    "where": "WHERE deleted_at IS NULL",
+    "src": "supabase/migrations/20261119213000_create_shipping_boxes.sql"
+   },
+   {
+    "name": "shipping_boxes_active_sort_idx",
+    "table": "shipping_boxes",
+    "columns": "sort_order, code",
+    "unique": false,
+    "where": "WHERE deleted_at IS NULL AND is_active = true",
+    "src": "supabase/migrations/20261119213000_create_shipping_boxes.sql"
+   },
+   {
     "name": "idx_user_organizations_user",
     "table": "user_organizations",
     "columns": "user_id",
@@ -96179,6 +96273,8 @@
    "supabase/migrations/20261119094500_reafirma_revogacoes_anteriores_ao_baseline.sql",
    "supabase/migrations/20261119110500_crm_callback_events_updated_at.sql",
    "supabase/migrations/20261119212000_fix_f12_sparkline_ema_kpi.sql",
+   "supabase/migrations/20261119213000_create_shipping_boxes.sql",
+   "supabase/migrations/20261119213100_create_freight_settings.sql",
    "supabase/rollbacks/20260511235950_rollback.sql",
    "supabase/rollbacks/20260511235959_rollback.sql",
    "supabase/rollbacks/20260611014515_fn_dryrun_standardize_supplier_real_rollback.sql",
@@ -96292,6 +96388,8 @@
    "supabase/rollbacks/20261119094500_rollback.sql",
    "supabase/rollbacks/20261119110500_rollback.sql",
    "supabase/rollbacks/20261119212000_rollback.sql",
+   "supabase/rollbacks/20261119213000_rollback.sql",
+   "supabase/rollbacks/20261119213100_rollback.sql",
    "supabase/rollbacks/rollback_20261025002500_analyze_tables_p03.sql",
    "supabase/sql-legacy/001_notification_system.sql",
    "supabase/sql-legacy/002_notification_preferences.sql",
@@ -96862,7 +96960,9 @@
    "supplier_products_raw_history_p2027_11": "disabled",
    "supplier_products_raw_history_p2027_12": "disabled",
    "endomarketing_themes": "enabled",
-   "product_endomarketing": "enabled"
+   "product_endomarketing": "enabled",
+   "shipping_boxes": "enabled",
+   "freight_settings": "enabled"
   },
   "grants": [
    {
@@ -132842,6 +132942,30 @@
     "src": "supabase/migrations/20261119212000_fix_f12_sparkline_ema_kpi.sql"
    },
    {
+    "kind": "grant",
+    "privs": "select",
+    "object": "shipping_boxes",
+    "objkind": "table",
+    "roles": "authenticated",
+    "src": "supabase/migrations/20261119213000_create_shipping_boxes.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "insert, update, delete",
+    "object": "shipping_boxes",
+    "objkind": "table",
+    "roles": "authenticated",
+    "src": "supabase/migrations/20261119213000_create_shipping_boxes.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "select, update",
+    "object": "freight_settings",
+    "objkind": "table",
+    "roles": "authenticated",
+    "src": "supabase/migrations/20261119213100_create_freight_settings.sql"
+   },
+   {
     "kind": "revoke",
     "privs": "all",
     "object": "fn_dryrun_standardize_supplier",
@@ -137765,6 +137889,35 @@
    "table:endomarketing_themes": "Temas de endomarketing (comunicação interna) para classificar produtos. Separado de datas comemorativas/público-alvo.",
    "table:product_endomarketing": "Vincula produtos a temas de endomarketing. source: manual (aba Marketing) ou category (herdado).",
    "column:crm_callback_events.updated_at": "Ultima alteracao da linha, mantida por trg_crm_callback_events_updated_at. ",
+   "table:shipping_boxes": "Caixas de transporte padrão da empresa. O motor de frete (src/lib/freight) empacota as peças nestas caixas; a caixa master do fornecedor é ignorada para frete.",
+   "column:shipping_boxes.id": "Identificador da caixa.",
+   "column:shipping_boxes.code": "Código curto como a expedição chama a caixa (P, M, G, GG). Único entre as caixas não excluídas.",
+   "column:shipping_boxes.name": "Nome da caixa para exibição no admin.",
+   "column:shipping_boxes.outer_height_cm": "Altura EXTERNA em cm. É a medida que o admin digita e a que a transportadora cuba.",
+   "column:shipping_boxes.outer_width_cm": "Largura EXTERNA em cm.",
+   "column:shipping_boxes.outer_length_cm": "Comprimento EXTERNO em cm.",
+   "column:shipping_boxes.wall_thickness_mm": "Espessura de UMA parede de papelão, em mm. Padrão 3. A medida interna desconta duas por eixo.",
+   "column:shipping_boxes.inner_height_cm": "Altura INTERNA em cm, gerada: externa − 2 × espessura. Somente leitura — é a medida que recebe carga.",
+   "column:shipping_boxes.inner_width_cm": "Largura INTERNA em cm, gerada: externa − 2 × espessura. Somente leitura.",
+   "column:shipping_boxes.inner_length_cm": "Comprimento INTERNO em cm, gerado: externo − 2 × espessura. Somente leitura.",
+   "column:shipping_boxes.empty_weight_g": "Peso da caixa vazia em gramas. Conta contra max_weight_g. Zero por decisão do dono nas quatro caixas atuais.",
+   "column:shipping_boxes.max_weight_g": "Peso máximo TOTAL do volume em gramas (caixa + carga). A carga útil é max_weight_g − empty_weight_g.",
+   "column:shipping_boxes.fill_factor": "Fração do volume interno considerada aproveitável (0,50 a 1,00). Padrão 0,90: nenhum empacotamento real preenche 100%.",
+   "column:shipping_boxes.is_active": "Caixa disponível para o cálculo. Falso tira a caixa do plano sem apagar o histórico.",
+   "column:shipping_boxes.sort_order": "Ordem de exibição no admin. Não afeta o cálculo, que ordena por volume interno.",
+   "column:shipping_boxes.created_at": "Criação do registro.",
+   "column:shipping_boxes.updated_at": "Última alteração, mantida pelo trigger set_shipping_boxes_updated_at.",
+   "column:shipping_boxes.deleted_at": "Exclusão lógica. Nulo = caixa viva.",
+   "table:freight_settings": "Parâmetros globais do cálculo de frete (linha única). Lidos pelo motor em src/lib/freight; alterados só por admin em /admin/frete.",
+   "column:freight_settings.id": "Sempre TRUE. A PK booleana com CHECK garante que a tabela tem no máximo uma linha.",
+   "column:freight_settings.origin_cep": "CEP de origem das remessas, formato 00000-000. Padrão: 03377-000 (Av. Renata, 249 – Vila Formosa, São Paulo/SP).",
+   "column:freight_settings.cubic_divisor_correios": "Divisor de cubagem dos Correios em cm³/kg. Padrão 6000.",
+   "column:freight_settings.cubic_divisor_rodoviario": "Divisor de cubagem do transporte rodoviário em cm³/kg. Padrão 3333.",
+   "column:freight_settings.default_fill_factor": "Fator de aproveitamento usado quando a caixa não tem o próprio (0,50 a 1,00). Padrão 0,90.",
+   "column:freight_settings.internal_buffer_days": "Folga interna em dias úteis somada ao prazo de produção. Padrão 0.",
+   "column:freight_settings.multi_personalization_rule": "Como combinar os prazos de várias personalizações no mesmo item: max (a mais demorada) ou sum (soma). Padrão max.",
+   "column:freight_settings.updated_at": "Última alteração, mantida pelo trigger set_freight_settings_updated_at.",
+   "column:freight_settings.updated_by": "Usuário admin que fez a última alteração.",
    "table:frontend_telemetry": "ATENCAO: Auditoria 20260602 - user_id = NULL em 100% dos registros. Bug de instrumentacao no frontend."
   },
   "types_file": ""
@@ -151642,8 +151795,8 @@
   },
   {
    "module": "supabase/migrations",
-   "files": 3106,
-   "lines": 224310,
+   "files": 3108,
+   "lines": 224519,
    "tables": [
     "...",
     "admin_audit_log",
@@ -151741,8 +151894,8 @@
   },
   {
    "module": "supabase/rollbacks",
-   "files": 114,
-   "lines": 3390,
+   "files": 116,
+   "lines": 3464,
    "tables": [],
    "exports": [],
    "docs": [],
@@ -319481,6 +319634,66 @@
     "src": "supabase/migrations/20261113140000_marketing_tab_links_rls_and_endomarketing.sql"
    },
    {
+    "name": "shipping_boxes_select_authenticated",
+    "table": "shipping_boxes",
+    "cmd": "SELECT",
+    "roles": "authenticated",
+    "mode": "permissive",
+    "using": "deleted_at IS NULL OR public.is_admin()",
+    "check": "",
+    "src": "supabase/migrations/20261119213000_create_shipping_boxes.sql"
+   },
+   {
+    "name": "shipping_boxes_insert_admin",
+    "table": "shipping_boxes",
+    "cmd": "INSERT",
+    "roles": "authenticated",
+    "mode": "permissive",
+    "using": "",
+    "check": "public.is_admin()",
+    "src": "supabase/migrations/20261119213000_create_shipping_boxes.sql"
+   },
+   {
+    "name": "shipping_boxes_update_admin",
+    "table": "shipping_boxes",
+    "cmd": "UPDATE",
+    "roles": "authenticated",
+    "mode": "permissive",
+    "using": "public.is_admin()",
+    "check": "public.is_admin()",
+    "src": "supabase/migrations/20261119213000_create_shipping_boxes.sql"
+   },
+   {
+    "name": "shipping_boxes_delete_admin",
+    "table": "shipping_boxes",
+    "cmd": "DELETE",
+    "roles": "authenticated",
+    "mode": "permissive",
+    "using": "public.is_admin()",
+    "check": "",
+    "src": "supabase/migrations/20261119213000_create_shipping_boxes.sql"
+   },
+   {
+    "name": "freight_settings_select_authenticated",
+    "table": "freight_settings",
+    "cmd": "SELECT",
+    "roles": "authenticated",
+    "mode": "permissive",
+    "using": "true",
+    "check": "",
+    "src": "supabase/migrations/20261119213100_create_freight_settings.sql"
+   },
+   {
+    "name": "freight_settings_update_admin",
+    "table": "freight_settings",
+    "cmd": "UPDATE",
+    "roles": "authenticated",
+    "mode": "permissive",
+    "using": "public.is_admin()",
+    "check": "public.is_admin()",
+    "src": "supabase/migrations/20261119213100_create_freight_settings.sql"
+   },
+   {
     "name": "product_ai_anon_select",
     "table": "product_ai_content",
     "cmd": "SELECT",
@@ -324532,6 +324745,24 @@
     "condition": "",
     "each": "row",
     "src": "supabase/migrations/20261113140000_marketing_tab_links_rls_and_endomarketing.sql"
+   },
+   {
+    "name": "set_shipping_boxes_updated_at",
+    "when": "BEFORE UPDATE",
+    "table": "shipping_boxes",
+    "function": "update_updated_at_column",
+    "condition": "",
+    "each": "row",
+    "src": "supabase/migrations/20261119213000_create_shipping_boxes.sql"
+   },
+   {
+    "name": "set_freight_settings_updated_at",
+    "when": "BEFORE UPDATE",
+    "table": "freight_settings",
+    "function": "update_updated_at_column",
+    "condition": "",
+    "each": "row",
+    "src": "supabase/migrations/20261119213100_create_freight_settings.sql"
    },
    {
     "name": "trigger_update_notification_updated_at",
@@ -396675,6 +396906,30 @@
     "objkind": "function",
     "roles": "authenticated, service_role",
     "src": "supabase/migrations/20261119212000_fix_f12_sparkline_ema_kpi.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "select",
+    "object": "shipping_boxes",
+    "objkind": "table",
+    "roles": "authenticated",
+    "src": "supabase/migrations/20261119213000_create_shipping_boxes.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "insert, update, delete",
+    "object": "shipping_boxes",
+    "objkind": "table",
+    "roles": "authenticated",
+    "src": "supabase/migrations/20261119213000_create_shipping_boxes.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "select, update",
+    "object": "freight_settings",
+    "objkind": "table",
+    "roles": "authenticated",
+    "src": "supabase/migrations/20261119213100_create_freight_settings.sql"
    },
    {
     "kind": "revoke",
@@ -524349,6 +524604,14 @@
    "lines": 67,
    "uses_service_role": true
   },
+  "supabase/migrations/20261119213000_create_shipping_boxes.sql": {
+   "path": "supabase/migrations/20261119213000_create_shipping_boxes.sql",
+   "lines": 134
+  },
+  "supabase/migrations/20261119213100_create_freight_settings.sql": {
+   "path": "supabase/migrations/20261119213100_create_freight_settings.sql",
+   "lines": 75
+  },
   "supabase/rollbacks/20260511235950_rollback.sql": {
    "path": "supabase/rollbacks/20260511235950_rollback.sql",
    "lines": 5
@@ -524819,6 +525082,14 @@
   "supabase/rollbacks/20261119212000_rollback.sql": {
    "path": "supabase/rollbacks/20261119212000_rollback.sql",
    "lines": 11
+  },
+  "supabase/rollbacks/20261119213000_rollback.sql": {
+   "path": "supabase/rollbacks/20261119213000_rollback.sql",
+   "lines": 37
+  },
+  "supabase/rollbacks/20261119213100_rollback.sql": {
+   "path": "supabase/rollbacks/20261119213100_rollback.sql",
+   "lines": 37
   },
   "supabase/rollbacks/rollback_20261025002500_analyze_tables_p03.sql": {
    "path": "supabase/rollbacks/rollback_20261025002500_analyze_tables_p03.sql",
@@ -550061,10 +550332,23 @@
   }
  },
  "git": {
-  "sha": "2f37587a9743b13ee5c39170d120a3957766b46f",
+  "sha": "af5f0ed438397cabeb3fcaf7fe32ec7f6a631a41",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "af5f0ed",
+    "date": "2026-11-19",
+    "author": "adm01-debug",
+    "subject": "feat(frete): tabelas shipping_boxes e freight_settings (Bloco C — DDL) (#3902)",
+    "files": [
+     "supabase/MIGRATIONS_SYNC_LOG.md",
+     "supabase/migrations/20261119213000_create_shipping_boxes.sql",
+     "supabase/migrations/20261119213100_create_freight_settings.sql",
+     "supabase/rollbacks/20261119213000_rollback.sql",
+     "supabase/rollbacks/20261119213100_rollback.sql"
+    ]
+   },
    {
     "sha": "2f37587",
     "date": "2026-11-19",
@@ -550398,15 +550682,6 @@
     "subject": "docs(migrations-log): recibos E15 de 20260916202000 e 20261115034500 (#3872)",
     "files": [
      "docs/coordenacao/conflitos-semanticos.md",
-     "supabase/MIGRATIONS_SYNC_LOG.md"
-    ]
-   },
-   {
-    "sha": "14befb8",
-    "date": "2026-11-19",
-    "author": "github-actions[bot]",
-    "subject": "docs(migrations-log): recibo E15 da aplicacao de 20261119051500 (#3871)",
-    "files": [
      "supabase/MIGRATIONS_SYNC_LOG.md"
     ]
    }

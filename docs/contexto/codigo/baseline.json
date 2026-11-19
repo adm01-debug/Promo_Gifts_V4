@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "2f37587a9743b13ee5c39170d120a3957766b46f",
+  "commit": "af5f0ed438397cabeb3fcaf7fe32ec7f6a631a41",
   "branch": "main",
-  "data_commit": "2026-11-19T18:45:31-03:00",
+  "data_commit": "2026-11-19T19:20:06-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "af5f0ed4",
+    "data": "2026-11-19",
+    "assunto": "feat(frete): tabelas shipping_boxes e freight_settings (Bloco C — DDL) (#3902)"
+   },
    {
     "sha": "2f37587a",
     "data": "2026-11-19",
@@ -126,14 +131,9 @@
     "sha": "ace227e8",
     "data": "2026-11-19",
     "assunto": "fix(migrations): reemite a credencial ElevenLabs com cabecalho e rollback (#3877)"
-   },
-   {
-    "sha": "76b764cc",
-    "data": "2026-11-19",
-    "assunto": "feat(supabase): registra ELEVENLABS_API_KEY no catalogo de integracoes (#3791)"
    }
   ],
-  "arquivos_mudados_7d": 1455,
+  "arquivos_mudados_7d": 1394,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -199,7 +199,7 @@
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "supabase/MIGRATIONS_SYNC_LOG.md",
-    "mudancas": 68
+    "mudancas": 69
    },
    {
     "arquivo": "package.json",
@@ -301,7 +301,7 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 359
+    "commits": 357
    },
    {
     "autor": "Claude",
@@ -309,7 +309,7 @@
    },
    {
     "autor": "Joaquim Ataides",
-    "commits": 39
+    "commits": 38
    },
    {
     "autor": "github-actions[bot]",
@@ -322,7 +322,7 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 11023,
+  "arquivos_total": 11027,
   "arquivos_codigo": 5516,
   "linhas_codigo": 1048271,
   "rotas": 139,
@@ -333,8 +333,8 @@
   "componentes": 1262,
   "hooks": 633,
   "edge_functions": 112,
-  "tabelas": 527,
-  "migrations": 3107,
+  "tabelas": 529,
+  "migrations": 3109,
   "cron_jobs": 122,
   "testes": 2632,
   "workflows": 89,
