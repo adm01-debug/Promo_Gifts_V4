@@ -1,9 +1,9 @@
 {
  "meta": {
-  "sha": "ace227e821b2078a3e29166f81ea79209ce7e62f",
+  "sha": "c653e3aa916c7c04827628cf0c7d487f24770908",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-19 08:23 UTC",
+  "generated_at": "2026-11-19 08:34 UTC",
   "files_total": 10910,
   "code_files": 8931,
   "code_lines": 1265468
@@ -548032,10 +548032,19 @@
   }
  },
  "git": {
-  "sha": "ace227e821b2078a3e29166f81ea79209ce7e62f",
+  "sha": "c653e3aa916c7c04827628cf0c7d487f24770908",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "c653e3a",
+    "date": "2026-11-19",
+    "author": "github-actions[bot]",
+    "subject": "docs(migrations-log): recibo E15 da aplicacao de 20261119081500 (#3878)",
+    "files": [
+     "supabase/MIGRATIONS_SYNC_LOG.md"
+    ]
+   },
    {
     "sha": "ace227e",
     "date": "2026-11-19",
@@ -548358,21 +548367,12 @@
      "src/components/admin/telemetry/PlatformFailureCards.tsx",
      "src/components/admin/telemetry/__tests__/PlatformFailureSurfaces.test.tsx"
     ]
-   },
-   {
-    "sha": "9e11e2f",
-    "date": "2026-11-18",
-    "author": "adm01-debug",
-    "subject": "fix(docs): tira do inventario o caminho de migration que deixou a main vermelha (#3849)",
-    "files": [
-     "docs/agentes/resgates/2026-11-18-inventario-trabalho-nao-ligado.md"
-    ]
    }
   ],
   "hot_files": [
    [
     "supabase/MIGRATIONS_SYNC_LOG.md",
-    10
+    11
    ],
    [
     "docs/coordenacao/conflitos-semanticos.md",

@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "docs(migrations-log): recibo E15 da aplicacao de 20261119081500 (#3878)",
    "fix(migrations): reemite a credencial ElevenLabs com cabecalho e rollback (#3877)",
    "feat(supabase): registra ELEVENLABS_API_KEY no catalogo de integracoes (#3791)",
    "docs(migrations-log): recibo E15 da aplicacao de 20261119073000 (#3875)",
-   "fix(ci): regenera o baseline de policies com os 17 deny_all de supplier_stricker (#3876)",
-   "fix(migrations): reemite supplier_stricker_rls_deny_all e corrige 18 para 16 (#3874)"
+   "fix(ci): regenera o baseline de policies com os 17 deny_all de supplier_stricker (#3876)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",
