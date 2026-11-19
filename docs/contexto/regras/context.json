@@ -1,9 +1,9 @@
 {
  "meta": {
-  "sha": "16f7dd7b4a93d8185ff688bf1e52cffd043a782d",
+  "sha": "f653a19d45c08f93261401793496caee12c22d60",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-19 23:04 UTC",
+  "generated_at": "2026-11-19 23:11 UTC",
   "files_total": 10957,
   "code_files": 8976,
   "code_lines": 1270320
@@ -550475,10 +550475,19 @@
   }
  },
  "git": {
-  "sha": "16f7dd7b4a93d8185ff688bf1e52cffd043a782d",
+  "sha": "f653a19d45c08f93261401793496caee12c22d60",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "f653a19",
+    "date": "2026-11-19",
+    "author": "adm01-debug",
+    "subject": "docs(migrations): recibos E15 das tabelas de frete (#3911)",
+    "files": [
+     "supabase/MIGRATIONS_SYNC_LOG.md"
+    ]
+   },
    {
     "sha": "16f7dd7",
     "date": "2026-11-19",
@@ -550815,15 +550824,6 @@
      "docs/coordenacao/conflitos-semanticos.md",
      "supabase/MIGRATIONS_SYNC_LOG.md",
      "supabase/migrations/20261117172500_elevenlabs_credential.sql"
-    ]
-   },
-   {
-    "sha": "7245558",
-    "date": "2026-11-19",
-    "author": "github-actions[bot]",
-    "subject": "docs(migrations-log): recibo E15 da aplicacao de 20261119073000 (#3875)",
-    "files": [
-     "supabase/MIGRATIONS_SYNC_LOG.md"
     ]
    }
   ],

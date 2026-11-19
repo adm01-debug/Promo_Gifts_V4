@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "16f7dd7b4a93d8185ff688bf1e52cffd043a782d",
+  "commit": "f653a19d45c08f93261401793496caee12c22d60",
   "branch": "main",
-  "data_commit": "2026-11-19T20:01:42-03:00",
+  "data_commit": "2026-11-19T23:10:30Z",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "f653a19d",
+    "data": "2026-11-19",
+    "assunto": "docs(migrations): recibos E15 das tabelas de frete (#3911)"
+   },
    {
     "sha": "16f7dd7b",
     "data": "2026-11-19",
@@ -126,11 +131,6 @@
     "sha": "4331742c",
     "data": "2026-11-19",
     "assunto": "chore(resgates): fecha a fila das 16 orfas com o estado final de cada uma (#3881)"
-   },
-   {
-    "sha": "a6ad441c",
-    "data": "2026-11-19",
-    "assunto": "chore(resgates): adjudica a quinta branch salvo, que estava fora do ruleset (#3880)"
    }
   ],
   "arquivos_mudados_7d": 1395,
@@ -309,11 +309,11 @@
    },
    {
     "autor": "Joaquim Ataides",
-    "commits": 35
+    "commits": 34
    },
    {
     "autor": "github-actions[bot]",
-    "commits": 28
+    "commits": 27
    },
    {
     "autor": "dependabot[bot]",
