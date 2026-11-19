@@ -42,6 +42,7 @@ import { ClientLookalikes } from '@/components/bi/ClientLookalikes';
 import { ClientCategoryRadar } from '@/components/bi/ClientCategoryRadar';
 import { BundleSuggestions } from '@/components/bi/BundleSuggestions';
 import { ExecutiveSummaryButton } from '@/components/bi/ExecutiveSummaryButton';
+import { ExportDossierButton } from '@/components/bi/ExportDossierButton';
 import { BITourGuide } from '@/components/bi/BITourGuide';
 import { useSeasonalPeakNotifications } from '@/hooks/bi/useSeasonalPeakNotifications';
 import { useClientSeasonality } from '@/hooks/bi/useClientSeasonality';
@@ -163,6 +164,10 @@ export default function BusinessIntelligencePage() {
                 clientName={clientName}
                 ramoAtividade={ramoAtividade}
               />
+              {/* Dossiê completo em PDF (4 páginas). O botão e o
+                  useBIDossierExport estavam prontos e nunca foram montados —
+                  o resumo executivo ao lado era a única exportação alcançável. */}
+              <ExportDossierButton clientId={clientId} />
             </div>
           )}
         </div>
@@ -184,7 +189,7 @@ export default function BusinessIntelligencePage() {
                 {company.cnpj && (
                   <div className="flex items-center gap-1.5 text-muted-foreground">
                     <FileText className="h-3.5 w-3.5" />
-                    <span className="text-xs font-mono">{maskCnpj(company.cnpj)}</span>
+                    <span className="font-mono text-xs">{maskCnpj(company.cnpj)}</span>
                   </div>
                 )}
                 {ramoAtividade && (
@@ -299,13 +304,19 @@ export default function BusinessIntelligencePage() {
                 <ClientOverview360 clientId={clientId} />
               </SectionErrorBoundary>
 
-              <SectionErrorBoundary section="bi.orders_timeline" label="a linha do tempo de pedidos">
+              <SectionErrorBoundary
+                section="bi.orders_timeline"
+                label="a linha do tempo de pedidos"
+              >
                 <div data-tour="orders-timeline">
                   <EnrichedOrdersTimeline clientId={clientId} />
                 </div>
               </SectionErrorBoundary>
 
-              <SectionErrorBoundary section="bi.client_vs_industry" label="o comparativo com o setor">
+              <SectionErrorBoundary
+                section="bi.client_vs_industry"
+                label="o comparativo com o setor"
+              >
                 <ClientVsIndustryComparison clientId={clientId} ramoAtividade={ramoAtividade} />
               </SectionErrorBoundary>
 

@@ -1,13 +1,15 @@
 /**
  * useQuoteFunnel — calcula contagens por etapa do funil e ciclo médio de venda.
- * Etapas: draft → sent → viewed → approved → converted.
- * "viewed" é inferido: status sent/approved/converted COM viewed_at via tokens.
+ * Etapas: criados → enviado → visualizado → aprovado → convertido.
+ * "viewed" é inferido: status 'viewed' OU token de aprovação com viewed_at.
  */
 import { useMemo } from 'react';
 import type { Quote } from '@/hooks/quotes';
+import type { QuoteViewedMap } from '@/hooks/quotes/useQuoteViewedMap';
+import type { QuoteStatus } from '@/types/quote';
 
 export interface FunnelStage {
-  id: 'approved' | 'converted' | 'draft' | 'sent' | 'viewed';
+  id: 'approved' | 'converted' | 'created' | 'sent' | 'viewed';
   label: string;
   count: number;
   /** Taxa relativa à etapa anterior (0–100) */
@@ -22,24 +24,27 @@ export interface QuoteFunnelData {
   total: number;
 }
 
-export function useQuoteFunnel(
-  quotes: Quote[],
-  viewedMap: Record<string, { viewedAt: string }>,
-): QuoteFunnelData {
+/**
+ * Status em que o orçamento já saiu para o cliente e ainda está vivo no funil.
+ * 'viewed' entra aqui porque visualizar pressupõe ter sido enviado (mesmo
+ * conjunto usado em useQuotesDashboard.ts para a etapa "Enviados").
+ */
+const SENT_STATUSES: readonly QuoteStatus[] = ['sent', 'pending', 'pending_approval', 'viewed'];
+
+export function useQuoteFunnel(quotes: Quote[], viewedMap: QuoteViewedMap): QuoteFunnelData {
   return useMemo(() => {
     const total = quotes.length;
-    const sent = quotes.filter((q) =>
-      ['sent', 'pending', 'pending_approval'].includes(q.status as string),
-    ).length;
+    const sent = quotes.filter((q) => SENT_STATUSES.includes(q.status)).length;
     const approved = quotes.filter((q) => q.status === 'approved').length;
     const converted = quotes.filter((q) => q.status === 'converted').length;
 
-    // viewed = sent OU adiante COM evidência de visualização
+    // viewed = enviado COM evidência de visualização (status 'viewed' ou token).
+    // approved/converted NÃO entram aqui: eles já são somados abaixo, e contá-los
+    // nos dois lugares inflava a etapa (um aprovado com token valia 2).
     const viewedQualifying = quotes.filter(
       (q) =>
-        ['sent', 'pending', 'approved', 'converted'].includes(q.status as string) &&
-        q.id &&
-        viewedMap[q.id],
+        SENT_STATUSES.includes(q.status) &&
+        (q.status === 'viewed' || Boolean(q.id && viewedMap[q.id])),
     ).length;
 
     // Funil cumulativo (cada etapa inclui as posteriores)
@@ -48,7 +53,11 @@ export function useQuoteFunnel(
     const approvedTotal = approved + converted;
 
     const stages: FunnelStage[] = [
-      { id: 'draft', label: 'Rascunho', count: total, rateFromPrev: null },
+      // "Criados" e não "Rascunho": a etapa é a base do funil (todo orçamento do
+      // período, inclusive expirado/cancelado/rejeitado), não a contagem de
+      // status 'draft'. Rotulá-la "Rascunho" mentia — em produção, 2 draft + 5
+      // expired apareciam como "Rascunho: 7".
+      { id: 'created', label: 'Criados', count: total, rateFromPrev: null },
       {
         id: 'sent',
         label: 'Enviado',
@@ -77,7 +86,7 @@ export function useQuoteFunnel(
 
     // Ciclo médio: created_at → updated_at de quotes aprovadas/convertidas
     const closed = quotes.filter(
-      (q) => ['approved', 'converted'].includes(q.status as string) && q.created_at && q.updated_at,
+      (q) => (q.status === 'approved' || q.status === 'converted') && q.created_at && q.updated_at,
     );
     const avgCycleDays =
       closed.length > 0

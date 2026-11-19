@@ -1,0 +1,206 @@
+name: Edge Functions — Deno Tests
+
+# Dos 89 arquivos de teste em supabase/functions (13.102 linhas), 77 são Deno e
+# o CI rodava `deno test` em exatamente 2 deles: log-login-attempt (em
+# edge-integration-all.yml e log-login-fuzz-weekly.yml) e magazine-import-local
+# (em magazine-unit-tests.yml). Os outros 75 nunca foram executados por runner
+# nenhum — foram escritos, revisados e esquecidos.
+#
+# Os 12 arquivos que importam `vitest` são do Vitest e estão listados no
+# include do vitest.config.ts; aqui eles são ignorados.
+#
+# O import map de supabase/functions/deno.json já redireciona esm.sh e
+# deno.land para npm:/jsr: justamente "para evitar falhas de TLS/rede no CI", e
+# o `deno check` de ci.yml:518 já roda sobre todas as funções com ele — então a
+# infraestrutura para isto já existia; faltava o job.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'supabase/functions/**'
+      - '.github/workflows/edge-functions-deno-tests.yml'
+  pull_request:
+    paths:
+      - 'supabase/functions/**'
+      - '.github/workflows/edge-functions-deno-tests.yml'
+  workflow_dispatch:
+
+concurrency:
+  group: edge-deno-tests-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+permissions:
+  contents: read
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  deno-tests:
+    name: Deno Tests (edge functions)
+    runs-on: ubuntu-24.04
+    # E24 (docs/ci/PADRAO_WORKFLOW.md:50-57): job unitario tem teto de 10 min.
+    # Estava em 20, que e o teto da classe E2E — regra violada por descuido meu.
+    # A execucao real leva ~10s para os 45 arquivos.
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false  # E32
+
+      - uses: denoland/setup-deno@22d081ff2d3a40755e97629de92e3bcbfa7cf2ed # v2
+        with:
+          deno-version: v2.x
+
+      - name: Inventário antes de rodar
+        run: |
+          echo "arquivos de teste em supabase/functions: $(find supabase/functions -name '*test*.ts' | wc -l)"
+          echo "dos quais Vitest (ignorados aqui): $(grep -rl \"from 'vitest'\" supabase/functions --include='*test*.ts' | wc -l)"
+
+      # Por que um processo POR ARQUIVO, e nao um `deno test` so:
+      # 12 arquivos fazem `globalThis.fetch = ...` e 16 fazem `Deno.env.set`
+      # no topo do modulo. O `deno test` padrao avalia TODOS os modulos no
+      # MESMO isolate antes de rodar qualquer caso, entao o ultimo stub de
+      # fetch e o ultimo SUPABASE_URL vencem para todo mundo. Foi isso que
+      # produziu as 71 falhas da execucao anterior: quote-sync recebia
+      # 503 "PROMO_CHAMPIONS_WEBHOOK_SECRET ausente" e crm-db-bridge recebia
+      # "Mapeamento de vendedor ambiguo" — nenhum dos dois e bug do teste,
+      # e contaminacao entre arquivos. Um processo por arquivo isola os dois.
+      #
+      # Por que lista explicita, e nao --ignore:
+      # com --config apontando para supabase/functions/deno.json, os caminhos
+      # relativos de --ignore nao casaram nem o diretorio de integracao ao
+      # vivo nem os 12 arquivos Vitest (eles apareceram como "uncaught error"
+      # no log). Montar a lista do que RODA e deterministico e verificavel.
+      - name: deno test (unitarios, um processo por arquivo)
+        run: |
+          set -uo pipefail
+
+          # Integracao AO VIVO: batem em fake-project.supabase.co / test.supabase.co
+          # ou exigem .env/stack. Sao EXCLUIDOS deste job por nao ter credencial.
+          #
+          # CORRECAO DE UMA AFIRMACAO MINHA (achado do Devin na #3853): eu disse
+          # que estes arquivos estavam "roteados para o edge-integration-all.yml".
+          # Nao estavam. Aquele workflow roda UM unico arquivo Deno
+          # (edge-integration-all.yml:72, log-login-attempt/index_test.ts). Os
+          # 28 daqui seguem SEM runner — e isso e pendencia registrada, nao
+          # encaminhamento feito.
+          AO_VIVO_RE='^supabase/functions/tests/integration/'
+          AO_VIVO_RE="$AO_VIVO_RE|^supabase/functions/tests/production-readiness\.test\.ts$"
+          AO_VIVO_RE="$AO_VIVO_RE|^supabase/functions/tests/security-integration_test\.ts$"
+          AO_VIVO_RE="$AO_VIVO_RE|^supabase/functions/tests/external_db_test\.ts$"
+          AO_VIVO_RE="$AO_VIVO_RE|^supabase/functions/tests/mcp-keys-step-up_test\.ts$"
+          AO_VIVO_RE="$AO_VIVO_RE|^supabase/functions/tests/rls-policies_test\.ts$"
+          AO_VIVO_RE="$AO_VIVO_RE|^supabase/functions/tests/step-up-role-revocation_test\.ts$"
+          AO_VIVO_RE="$AO_VIVO_RE|^supabase/functions/visual-search/integration_test\.ts$"
+          AO_VIVO_RE="$AO_VIVO_RE|^supabase/functions/webhook-inbound/integration_test\.ts$"
+
+          # Medidos no 2o run do job (41 de 61 passaram): estes 11 falham porque
+          # exigem stack Supabase rodando ou .env real, nao porque o teste esteja
+          # quebrado. Dez deles importam `std/dotenv/load.ts` e leem VITE_* (morrem
+          # no carregamento do modulo, "uncaught error"); edge_integration.test.ts
+          # bate em http://localhost:54321, que so existe com `supabase start`.
+          # Pertencem ao edge-integration-all.yml, igual aos de cima.
+          AO_VIVO_RE="$AO_VIVO_RE|^supabase/functions/crm-db-bridge/breaker-status\.test\.ts$"
+          AO_VIVO_RE="$AO_VIVO_RE|^supabase/functions/crm-db-bridge/creds_health\.test\.ts$"
+          AO_VIVO_RE="$AO_VIVO_RE|^supabase/functions/crm-db-bridge/diag\.test\.ts$"
+          AO_VIVO_RE="$AO_VIVO_RE|^supabase/functions/crm-db-bridge/ping\.test\.ts$"
+          AO_VIVO_RE="$AO_VIVO_RE|^supabase/functions/crm-db-bridge/singleton-client\.test\.ts$"
+          AO_VIVO_RE="$AO_VIVO_RE|^supabase/functions/external-db-bridge/lightweightSelect\.e2e\.test\.ts$"
+          AO_VIVO_RE="$AO_VIVO_RE|^supabase/functions/external-db-bridge/performance\.test\.ts$"
+          AO_VIVO_RE="$AO_VIVO_RE|^supabase/functions/external-db-bridge/singleton\.test\.ts$"
+          AO_VIVO_RE="$AO_VIVO_RE|^supabase/functions/mcp-keys-issue/rls-isolation\.test\.ts$"
+          AO_VIVO_RE="$AO_VIVO_RE|^supabase/functions/secrets-manager/list-contract\.test\.ts$"
+          AO_VIVO_RE="$AO_VIVO_RE|^supabase/functions/tests/edge_integration\.test\.ts$"
+          # cnpj-lookup/contract_test.ts NAO importa o codigo de producao: ele so faz
+          # fetch contra ${SUPABASE_URL}/functions/v1/cnpj-lookup (contract_test.ts:3-4,10,21).
+          # Sem stack servindo a funcao, `Deno.env.get("SUPABASE_URL")` e undefined
+          # (o `!` e so tipagem) e o fetch quebra antes da primeira assercao.
+          AO_VIVO_RE="$AO_VIVO_RE|^supabase/functions/cnpj-lookup/contract_test\.ts$"
+
+          # Teste velho, isolado aqui em vez de apagado ou mascarado: ele congela o
+          # contrato anterior ao commit f84444c1e ("fix(crm): vincular vendedor do
+          # bridge por auth_user_id, nao por e-mail"). O vinculo deixou de ser
+          # lookup por e-mail no CRM e virou 1:1 imutavel em crm_seller_identity_links.
+          # Reescreve-lo e tarefa propria; ate la ele RODA, em passo proprio, e a
+          # falha aparece no log sem travar o gate dos outros 49.
+          EM_DIAGNOSTICO="supabase/functions/crm-db-bridge/scope_integration_test.ts"
+
+          # Arquivos que casam '*test*.ts' mas NAO registram nenhum Deno.test:
+          # utilitario compartilhado e dois scripts de carga. Contavam como
+          # "suite" na guarda sem ter uma assercao sequer — a contagem dizia 48
+          # e so 45 eram teste de verdade.
+          SEM_CASOS_RE='^supabase/functions/_shared/connection-test-runner\.ts$'
+          SEM_CASOS_RE="$SEM_CASOS_RE|^supabase/functions/tests/load-test\.ts$"
+          SEM_CASOS_RE="$SEM_CASOS_RE|^supabase/functions/tests/shockwave-load-test\.ts$"
+
+          RODAR=()
+          PULADOS_AO_VIVO=0
+          PULADOS_VITEST=0
+          PULADOS_SEM_CASOS=0
+          while IFS= read -r f; do
+            if printf '%s\n' "$f" | grep -qE "$AO_VIVO_RE"; then
+              PULADOS_AO_VIVO=$((PULADOS_AO_VIVO + 1)); continue
+            fi
+            # Vitest: ja coletados pelo vitest.config.ts (include). A regex
+            # cobre aspas simples E duplas — com so um dos dois, 8 dos 12 escapavam.
+            if grep -qE "from ['\"]vitest['\"]" "$f"; then
+              PULADOS_VITEST=$((PULADOS_VITEST + 1)); continue
+            fi
+            if [ "$f" = "$EM_DIAGNOSTICO" ]; then continue; fi
+            if printf '%s\n' "$f" | grep -qE "$SEM_CASOS_RE"; then
+              PULADOS_SEM_CASOS=$((PULADOS_SEM_CASOS + 1)); continue
+            fi
+            RODAR+=("$f")
+          done < <(find supabase/functions -name '*test*.ts' | sort)
+
+          echo "total de arquivos de teste: $(find supabase/functions -name '*test*.ts' | wc -l)"
+          echo "pulados (integracao ao vivo): $PULADOS_AO_VIVO"
+          echo "pulados (Vitest):             $PULADOS_VITEST"
+          echo "pulados (sem nenhum Deno.test): $PULADOS_SEM_CASOS"
+          echo "em diagnostico (nao trava):   1 ($EM_DIAGNOSTICO)"
+          echo "a rodar aqui:                 ${#RODAR[@]}"
+
+          # Guarda: se a classificacao desandar, o job falha dizendo o porque,
+          # em vez de passar verde rodando quase nada.
+          if [ "${#RODAR[@]}" -lt 41 ]; then
+            echo "::error::so ${#RODAR[@]} arquivos classificados para rodar (esperado 45)"
+            exit 1
+          fi
+
+          FALHOU=()
+          for f in "${RODAR[@]}"; do
+            if ! deno test \
+                  --config supabase/functions/deno.json \
+                  --allow-all \
+                  --no-check \
+                  --quiet \
+                  "$f"; then
+              FALHOU+=("$f")
+            fi
+          done
+
+          if [ "${#FALHOU[@]}" -gt 0 ]; then
+            echo "::error::${#FALHOU[@]} de ${#RODAR[@]} arquivos falharam:"
+            printf '  %s\n' "${FALHOU[@]}"
+            exit 1
+          fi
+          echo "todos os ${#RODAR[@]} arquivos passaram"
+
+      # Passo separado e NAO bloqueante, de proposito: o arquivo continua sendo
+      # executado e a falha continua visivel no log. O que ele NAO faz e impedir
+      # que os outros 49 virem gate. Quando o teste for reescrito contra o
+      # contrato de crm_seller_identity_links, ele volta para o passo de cima.
+      - name: deno test (em diagnostico — nao bloqueia)
+        continue-on-error: true
+        run: |
+          set -uo pipefail
+          ARQ="supabase/functions/crm-db-bridge/scope_integration_test.ts"
+          echo "::warning file=$ARQ::teste velho: congela o contrato anterior a f84444c1e (vinculo do vendedor por e-mail, hoje por auth_user_id em crm_seller_identity_links). Roda aqui sem travar o gate ate ser reescrito."
+          deno test \
+            --config supabase/functions/deno.json \
+            --allow-all \
+            --no-check \
+            "$ARQ" || echo "::warning::$ARQ falhou, como esperado — ver aviso acima"

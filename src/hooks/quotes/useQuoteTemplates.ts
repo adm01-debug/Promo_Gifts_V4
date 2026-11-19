@@ -12,6 +12,7 @@ import type {
   QuoteTemplateItem,
   QuoteTemplateRow,
 } from './quoteTemplateTypes';
+import { validateTemplateItems } from './quoteTemplateItemGuard';
 
 export type { CreateTemplateInput, QuoteTemplate, QuoteTemplateItem, QuoteTemplateRow };
 
@@ -174,6 +175,24 @@ export function useQuoteTemplates() {
         return null;
       }
 
+      // GUARD: item invalido nao entra no banco. `items` e jsonb sem contrato, e
+      // antes daqui o payload ia com `as unknown as Json`, sem olhar o conteudo
+      // — um `unitPrice` string ou `quantity` ausente so aparecia depois, no
+      // total do orcamento. Resgatado de
+      // salvo/codex-fix-gate1-kit-pdf-types-261109-2252. Aborta ANTES do reset
+      // de is_default, para uma gravacao recusada nao deixar o vendedor sem
+      // template padrao.
+      const validacao = validateTemplateItems(input.items ?? []);
+      if (validacao.items_error) {
+        setError(validacao.items_error);
+        toast({
+          title: 'Template não salvo',
+          description: validacao.items_error,
+          variant: 'destructive',
+        });
+        return null;
+      }
+
       try {
         if (input.is_default) {
           const resetPayload: TablesUpdate<'quote_templates'> = { is_default: false };
@@ -234,6 +253,21 @@ export function useQuoteTemplates() {
   const updateTemplate = useCallback(
     async (id: string, updates: Partial<CreateTemplateInput>) => {
       if (!user) return null;
+
+      // Mesma guarda do create. So valida quando `items` veio no update: um
+      // update que mexe so no nome nao precisa revalidar o que ja esta gravado.
+      if (updates.items !== undefined) {
+        const validacao = validateTemplateItems(updates.items);
+        if (validacao.items_error) {
+          setError(validacao.items_error);
+          toast({
+            title: 'Template não salvo',
+            description: validacao.items_error,
+            variant: 'destructive',
+          });
+          return null;
+        }
+      }
 
       try {
         if (updates.is_default) {

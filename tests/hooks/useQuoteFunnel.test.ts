@@ -13,7 +13,7 @@ describe("useQuoteFunnel", () => {
   it("retorna 5 estágios", () => {
     const { result } = renderHook(() => useQuoteFunnel([], {}));
     expect(result.current.stages).toHaveLength(5);
-    expect(result.current.stages.map(s => s.id)).toEqual(["draft", "sent", "viewed", "approved", "converted"]);
+    expect(result.current.stages.map(s => s.id)).toEqual(["created", "sent", "viewed", "approved", "converted"]);
   });
 
   it("contagem cumulativa: aprovado conta em sent/viewed", () => {
@@ -25,13 +25,13 @@ describe("useQuoteFunnel", () => {
     ];
     const { result } = renderHook(() => useQuoteFunnel(quotes, {}));
     const stages = result.current.stages;
-    expect(stages.find(s => s.id === "draft")!.count).toBe(4); // total
+    expect(stages.find(s => s.id === "created")!.count).toBe(4); // total criado no periodo
     expect(stages.find(s => s.id === "sent")!.count).toBe(3); // sent+approved+converted
     expect(stages.find(s => s.id === "approved")!.count).toBe(2);
     expect(stages.find(s => s.id === "converted")!.count).toBe(1);
   });
 
-  it("rateFromPrev=null para draft, % para demais", () => {
+  it("rateFromPrev=null para a 1a etapa, % para demais", () => {
     const quotes: Quote[] = [mkQuote({ status: "sent" }), mkQuote({ status: "draft" })];
     const { result } = renderHook(() => useQuoteFunnel(quotes, {}));
     expect(result.current.stages[0].rateFromPrev).toBeNull();
@@ -59,5 +59,18 @@ describe("useQuoteFunnel", () => {
     ];
     const { result } = renderHook(() => useQuoteFunnel(quotes, { q1: { viewedAt: "2025-01-02" } }));
     expect(result.current.stages.find(s => s.id === "viewed")!.count).toBe(1);
+  });
+
+  it("1a etapa e 'Criados': nao conta expired como rascunho", () => {
+    const quotes: Quote[] = [
+      mkQuote({ id: "d1", status: "draft" }),
+      mkQuote({ id: "e1", status: "expired" }),
+      mkQuote({ id: "e2", status: "expired" }),
+    ];
+    const { result } = renderHook(() => useQuoteFunnel(quotes, {}));
+    const first = result.current.stages[0];
+    expect(first.label).toBe("Criados");
+    expect(first.count).toBe(3);
+    expect(result.current.stages.find(s => s.id === "sent")!.count).toBe(0);
   });
 });

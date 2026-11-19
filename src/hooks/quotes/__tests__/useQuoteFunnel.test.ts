@@ -2,15 +2,16 @@
  * Testes — useQuoteFunnel
  *
  * Hook puramente funcional (useMemo) que calcula contagens por etapa
- * do funil de orçamentos: draft → sent → viewed → approved → converted.
+ * do funil de orçamentos: created → sent → viewed → approved → converted.
  *
  * Invariantes:
  *   - quotes=[] → todos counts 0, avgCycleDays=null
  *   - total = quotes.length
- *   - sentTotal = sent + pending + pending_approval + approved + converted
- *   - viewedTotal = viewed qualifying + approved + converted
+ *   - etapa 1 é "Criados" (base do funil), NÃO a contagem de status 'draft'
+ *   - sentTotal = sent + pending + pending_approval + viewed + approved + converted
+ *   - viewedTotal = viewed qualifying + approved + converted (sem dupla contagem)
  *   - approvedTotal = approved + converted
- *   - rateFromPrev: % relativa à etapa anterior, null para draft
+ *   - rateFromPrev: % relativa à etapa anterior, null para a 1ª etapa
  *   - funil cumulativo (etapas incluem as posteriores)
  *   - avgCycleDays: média de dias created_at → updated_at para aprovados/convertidos
  *   - viewedMap sem entrada → viewed = 0 (exceto approved + converted)
@@ -37,10 +38,10 @@ describe('useQuoteFunnel — funil de orçamentos', () => {
     for (const s of stages) expect(s.count).toBe(0);
   });
 
-  it('draft rateFromPrev = null (primeira etapa)', () => {
+  it('created rateFromPrev = null (primeira etapa)', () => {
     const { result } = renderHook(() => useQuoteFunnel([q('1', 'draft')], {}));
-    const draft = result.current.stages.find((s) => s.id === 'draft');
-    expect(draft?.rateFromPrev).toBeNull();
+    const created = result.current.stages.find((s) => s.id === 'created');
+    expect(created?.rateFromPrev).toBeNull();
   });
 
   // Total
@@ -138,6 +139,55 @@ describe('useQuoteFunnel — funil de orçamentos', () => {
   it('retorna exatamente 5 etapas na ordem correta', () => {
     const { result } = renderHook(() => useQuoteFunnel([], {}));
     const ids = result.current.stages.map((s) => s.id);
-    expect(ids).toEqual(['draft', 'sent', 'viewed', 'approved', 'converted']);
+    expect(ids).toEqual(['created', 'sent', 'viewed', 'approved', 'converted']);
+  });
+
+  // Semântica da 1ª etapa: base do funil, não "Rascunho"
+  it('1a etapa rotula "Criados" e nao "Rascunho"', () => {
+    const { result } = renderHook(() => useQuoteFunnel([q('1', 'draft')], {}));
+    expect(result.current.stages[0].label).toBe('Criados');
+  });
+
+  it('expired/cancelled/rejected nao sao contados como rascunho em nenhuma etapa viva', () => {
+    // Cenário real de produção (2026-11-18): 2 draft + 5 expired.
+    const quotes = [
+      q('1', 'draft'),
+      q('2', 'draft'),
+      q('3', 'expired'),
+      q('4', 'expired'),
+      q('5', 'expired'),
+      q('6', 'cancelled'),
+      q('7', 'rejected'),
+    ];
+    const { result } = renderHook(() => useQuoteFunnel(quotes, {}));
+    const byId = Object.fromEntries(result.current.stages.map((s) => [s.id, s.count]));
+    // "Criados" é a base do funil: todos os 7 foram criados no período.
+    expect(byId.created).toBe(7);
+    // Nenhum deles está vivo adiante — nada de inflar enviado/visualizado.
+    expect(byId.sent).toBe(0);
+    expect(byId.viewed).toBe(0);
+    expect(byId.approved).toBe(0);
+    expect(byId.converted).toBe(0);
+  });
+
+  // Status 'viewed' é evidência própria de visualização
+  it('status viewed conta em enviado e em visualizado mesmo sem token', () => {
+    const { result } = renderHook(() => useQuoteFunnel([q('1', 'viewed')], {}));
+    const byId = Object.fromEntries(result.current.stages.map((s) => [s.id, s.count]));
+    expect(byId.sent).toBe(1);
+    expect(byId.viewed).toBe(1);
+  });
+
+  // Dupla contagem: aprovado COM token não pode valer 2 na etapa "Visualizado"
+  it('aprovado com token de visualizacao conta 1 vez em visualizado', () => {
+    const quotes = [q('1', 'approved')];
+    const { result } = renderHook(() =>
+      useQuoteFunnel(quotes, { '1': { viewedAt: '2026-01-01' } }),
+    );
+    const viewed = result.current.stages.find((s) => s.id === 'viewed');
+    expect(viewed?.count).toBe(1);
+    // E jamais pode superar a etapa anterior num funil cumulativo.
+    const sent = result.current.stages.find((s) => s.id === 'sent');
+    expect(viewed!.count).toBeLessThanOrEqual(sent!.count);
   });
 });

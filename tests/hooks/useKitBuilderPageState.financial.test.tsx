@@ -64,7 +64,9 @@
  * `kitState.validationErrors`, que é a superfície que a UI consome
  * (src/components/kit-builder/kit-summary/KitActionsBar.tsx:44-79).
  *
- * OMISSOES, COM EVIDENCIA MEDIDA:
+ * OMISSOES, COM EVIDENCIA MEDIDA (A, B e C foram RESTAURADOS depois, junto com o
+ * resgate de `refreshCatalogPrices` para `src/hooks/kit-builder/useKitCatalogPriceRefresh.ts`
+ * — ver os três últimos casos deste arquivo):
  * 3 casos removidos (sem skip/todo/comentário — removidos do arquivo):
  *
  * A) 'confirmed catalog refresh repairs only unknown prices and preserves the complete
@@ -140,7 +142,8 @@
  */
 import type { KitBox, KitItem } from '@/lib/kit-builder';
 import { afterEach, beforeEach, describe, it, expect, vi } from 'vitest';
-import { renderHook, act, cleanup } from '@testing-library/react';
+import { renderHook, act, cleanup, waitFor } from '@testing-library/react';
+import { hasKnownKitPrices } from '@/lib/kit-builder/pricing-availability';
 const m = vi.hoisted(() => ({
   user: { id: 'u1' },
   search: '',
@@ -385,5 +388,105 @@ describe('Legacy financial availability reaches UI state and every action bounda
       priceKnown: false,
       selectedVariantId: 'variant-2',
     });
+  });
+  it('confirmed catalog refresh repairs only unknown prices and preserves the complete selected snapshot', async () => {
+    const source = saved();
+    const selected = {
+      ...item,
+      price: 0,
+      priceKnown: false,
+      quantity: 4,
+      selectedVariantId: 'variant-1',
+      selectedColor: { name: 'Azul', hex: '#00f' },
+      personalizationNotes: 'Keep notes',
+      future: { keep: true },
+    };
+    source.items_data = [selected];
+    m.saved = [source];
+    m.search = 'kit=saved-1';
+    const before = structuredClone(source);
+    const { result } = renderHook(useKitBuilderPageState);
+    await waitFor(() => expect(result.current.state.isHydrating).toBe(false));
+    const personalization = structuredClone(result.current.state.kitState.personalization);
+    m.refetchItems.mockResolvedValue({
+      data: [{ ...item, price: 0, priceKnown: true }],
+      error: null,
+    });
+    await act(async () => result.current.actions.refreshCatalogPrices());
+    expect(result.current.state.kitState.items[0]).toMatchObject({
+      price: 0,
+      priceKnown: true,
+      quantity: 4,
+      selectedVariantId: 'variant-1',
+      selectedColor: { name: 'Azul', hex: '#00f' },
+      personalizationNotes: 'Keep notes',
+      future: { keep: true },
+    });
+    expect(result.current.state.kitState.personalization).toEqual(personalization);
+    expect(result.current.state.kitQuantity).toBe(12);
+    expect(source).toEqual(before);
+    expect(hasKnownKitPrices(result.current.state.kitState)).toBe(true);
+    expect(m.save).not.toHaveBeenCalled();
+  });
+  it('a failed catalog refresh never promotes stale cached facts to a known price', async () => {
+    item.price = 0;
+    item.priceKnown = false;
+    const { result } = renderHook(useKitBuilderPageState);
+    await fill(result);
+    m.refetchItems.mockResolvedValue({
+      data: [{ ...item, price: 99, priceKnown: true }],
+      error: new Error('offline'),
+    });
+    await act(async () => result.current.actions.refreshCatalogPrices());
+    expect(result.current.state.kitState.items[0].priceKnown).toBe(false);
+    expect(result.current.state.kitState.items[0].price).toBe(0);
+    expect(hasKnownKitPrices(result.current.state.kitState)).toBe(false);
+  });
+  it('a catalog reply for a previous account cannot update the current snapshot', async () => {
+    item.price = 0;
+    item.priceKnown = false;
+    let resolve: ((value: { data: KitItem[]; error: null }) => void) | undefined;
+    m.refetchItems.mockImplementation(
+      () =>
+        new Promise((done) => {
+          resolve = done;
+        }),
+    );
+    const { result, rerender } = renderHook(useKitBuilderPageState);
+    await fill(result);
+    let pending: Promise<void> | undefined;
+    act(() => {
+      pending = result.current.actions.refreshCatalogPrices();
+    });
+    m.user = { id: 'another-account' };
+    rerender();
+    await act(async () => {
+      resolve?.({ data: [{ ...item, price: 12, priceKnown: true }], error: null });
+      await pending;
+    });
+    expect(result.current.state.kitState.items[0].priceKnown).toBe(false);
+    expect(m.toast.success).not.toHaveBeenCalled();
+  });
+  it('a catalog reply that arrives after unmount writes nothing', async () => {
+    item.price = 0;
+    item.priceKnown = false;
+    let resolve: ((value: { data: KitItem[]; error: null }) => void) | undefined;
+    m.refetchItems.mockImplementation(
+      () =>
+        new Promise((done) => {
+          resolve = done;
+        }),
+    );
+    const { result, unmount } = renderHook(useKitBuilderPageState);
+    await fill(result);
+    let pending: Promise<void> | undefined;
+    act(() => {
+      pending = result.current.actions.refreshCatalogPrices();
+    });
+    unmount();
+    resolve?.({ data: [{ ...item, price: 12, priceKnown: true }], error: null });
+    await pending;
+    expect(m.toast.success).not.toHaveBeenCalled();
+    expect(m.toast.info).not.toHaveBeenCalled();
   });
 });

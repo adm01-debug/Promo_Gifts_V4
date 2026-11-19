@@ -27,6 +27,11 @@ Deno.env.set("SUPABASE_SERVICE_ROLE_KEY", "fake-service-role-key");
 Deno.env.set("PROMO_CHAMPIONS_WEBHOOK_SECRET", SECRET);
 
 const mod = await import("./index.ts");
+// Contrato real: index.ts:61 resolve o secret por resolveCredential(), que cacheia
+// a resolucao por 60s no isolate — inclusive a NEGATIVA (credentials.ts:521 + :30).
+// Logo, Deno.env.delete/set nao basta; e preciso invalidar o cache, como ja faz
+// asia-ingestion/credential-client.test.ts:46,69,88.
+const { invalidateCredentialCache } = await import("../_shared/credentials.ts");
 const { handler, hmacSha256Hex, normalizeTs } = mod as {
   handler: (req: Request) => Promise<Response>;
   hmacSha256Hex: (s: string, m: string) => Promise<string>;
@@ -359,6 +364,7 @@ Deno.test({ name: "POST sem PROMO_CHAMPIONS_WEBHOOK_SECRET: 503 service_misconfi
   const stub = installFetchStub({ championsResponse: { status: 200, body: { ok: true } } });
   const prev = Deno.env.get("PROMO_CHAMPIONS_WEBHOOK_SECRET");
   Deno.env.delete("PROMO_CHAMPIONS_WEBHOOK_SECRET");
+  invalidateCredentialCache("PROMO_CHAMPIONS_WEBHOOK_SECRET");
   try {
     const res = await handler(
       buildRequest(baseBody(), { auth: `Bearer ${makeFakeJwt()}` }),
@@ -369,6 +375,9 @@ Deno.test({ name: "POST sem PROMO_CHAMPIONS_WEBHOOK_SECRET: 503 service_misconfi
     assertStringIncludes(j.hint, "PROMO_CHAMPIONS_WEBHOOK_SECRET");
   } finally {
     if (prev) Deno.env.set("PROMO_CHAMPIONS_WEBHOOK_SECRET", prev);
+    // Sem isto, o null cacheado aqui vazaria para TODOS os testes seguintes
+    // (503 em vez de 200/404/403/429) ate expirar o TTL de 60s.
+    invalidateCredentialCache("PROMO_CHAMPIONS_WEBHOOK_SECRET");
     stub.restore();
   }
 });

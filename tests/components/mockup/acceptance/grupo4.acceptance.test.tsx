@@ -231,6 +231,32 @@ describe('A10 — editar após gerar marca o resultado antigo e a ficha não mis
   });
 
   it('regerar depois de editar: a ficha da nova geração traz só cliente, produto, medida e imagem dela, sem resíduo da anterior', async () => {
+    // MockupLayoutButtons busca a imagem do mockup (`fetch(src)`) para montar a
+    // ficha. Sem este mock o teste faz requisição de rede de verdade e o guarda
+    // STRICT_TEST_SIDE_EFFECTS (ligado no test:ci-core) reprova — foi o que
+    // escondeu este arquivo do CI até 2026-11-18.
+    // Só `.blob()` é consumido (LogoWithTransparentBg.processLogoTransparent),
+    // então o stub devolve o mínimo — `new Response(blob)` não funciona neste
+    // jsdom ("object.stream is not a function").
+    const fetchOriginal = globalThis.fetch;
+    globalThis.fetch = vi.fn(() =>
+      Promise.resolve({
+        ok: true,
+        status: 200,
+        blob: () => Promise.resolve(new Blob(['x'], { type: 'image/png' })),
+      }),
+    ) as unknown as typeof globalThis.fetch;
+
+    try {
+      await fichaSemResiduo();
+    } finally {
+      globalThis.fetch = fetchOriginal;
+    }
+  }, 60_000);
+});
+
+async function fichaSemResiduo() {
+  {
     const tecnica = {
       name: TECNICA_SERIGRAFIA.name ?? '',
       code: TECNICA_SERIGRAFIA.code,
@@ -289,5 +315,5 @@ describe('A10 — editar após gerar marca o resultado antigo e a ficha não mis
     expect(screen.queryByText(CLIENTE_A.name)).toBeNull();
     expect(screen.queryByText(PRODUTO_A.name)).toBeNull();
     expect(screen.queryByText(`${AREA_A.logoWidth} × ${AREA_A.logoHeight} cm`)).toBeNull();
-  }, 60_000);
-});
+  }
+}

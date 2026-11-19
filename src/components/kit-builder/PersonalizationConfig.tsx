@@ -93,6 +93,7 @@ import { useKitComponentPrintAreas } from '@/hooks/kit-builder/useKitBuilderQuer
 import { useCustomizationPriceReactive } from '@/hooks/simulation';
 import type { GravacaoLocation } from '@/types/customization';
 import { generateMockupApi } from '@/hooks/mockup/mockupGenerationService';
+import { MockupSwitchNotice, useMockupKillSwitch } from '@/components/mockup/MockupSwitchNotice';
 import { toast } from 'sonner';
 import { sanitizeError } from '@/lib/security/sanitize-error';
 
@@ -809,6 +810,7 @@ function PersonalizationPreview({
   const [zoom, setZoom] = useState(1);
   const [fullscreen, setFullscreen] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
+  const { isBlocked: mockupBlocked } = useMockupKillSwitch();
   const generationRef = useRef(0);
   const personalizationRef = useRef(personalization);
 
@@ -980,10 +982,13 @@ function PersonalizationPreview({
         </div>
       </div>
 
+      <MockupSwitchNotice />
+
       <Button
         type="button"
         className="w-full"
         disabled={
+          mockupBlocked ||
           isGenerating ||
           !personalization.enabled ||
           !personalization.techniqueName ||

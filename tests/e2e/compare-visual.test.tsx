@@ -2,9 +2,9 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
-import ComparePage from '../../src/pages/ComparePage';
-import { useComparisonStore } from '../../src/stores/useComparisonStore';
-import { TooltipProvider } from '../../src/components/ui/tooltip';
+import ComparePage from '@/pages/products/ComparePage';
+import { useComparisonStore } from '@/stores/useComparisonStore';
+import { TooltipProvider } from '@/components/ui/tooltip';
 import { HelmetProvider } from 'react-helmet-async';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 

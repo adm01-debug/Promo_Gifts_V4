@@ -28,8 +28,8 @@ const ENDPOINT_ID = "11111111-1111-4111-8111-111111111111";
 const ENV_NAMES = [
   "SUPABASE_URL",
   "SUPABASE_SERVICE_ROLE_KEY",
-  "WEBHOOK_ENDPOINT_SECRET",
-  "WEBHOOK_SECOND_ENDPOINT_SECRET",
+  "WEBHOOK_HMAC_ENDPOINT_SECRET",
+  "WEBHOOK_HMAC_SECOND_ENDPOINT_SECRET",
   "WEBHOOK_INBOUND_V1_COMPAT_ENABLED",
   "WEBHOOK_INBOUND_V1_ALLOWLIST",
 ] as const;
@@ -39,8 +39,8 @@ const originalEnv = new Map(
 
 Deno.env.set("SUPABASE_URL", SUPABASE_URL);
 Deno.env.set("SUPABASE_SERVICE_ROLE_KEY", SERVICE_ROLE_KEY);
-Deno.env.set("WEBHOOK_ENDPOINT_SECRET", ENDPOINT_SECRET);
-Deno.env.set("WEBHOOK_SECOND_ENDPOINT_SECRET", SECOND_ENDPOINT_SECRET);
+Deno.env.set("WEBHOOK_HMAC_ENDPOINT_SECRET", ENDPOINT_SECRET);
+Deno.env.set("WEBHOOK_HMAC_SECOND_ENDPOINT_SECRET", SECOND_ENDPOINT_SECRET);
 Deno.env.delete("WEBHOOK_INBOUND_V1_COMPAT_ENABLED");
 Deno.env.delete("WEBHOOK_INBOUND_V1_ALLOWLIST");
 
@@ -105,13 +105,15 @@ async function localFetch(
   if (url.pathname.endsWith("/rpc/increment_webhook_stats")) return json(null);
 
   if (url.pathname.endsWith("/inbound_webhook_endpoints")) {
+    // E088 (index.ts:337-348): hmac_secret_ref sem o prefixo WEBHOOK_HMAC_
+    // é rejeitado com 503 webhook_misconfigured antes da verificação HMAC.
     const slug = url.searchParams.get("slug");
     if (slug === "eq.my-hook") {
       return json([{
         id: ENDPOINT_ID,
         slug: "my-hook",
         source_system: "contract-source",
-        hmac_secret_ref: "WEBHOOK_ENDPOINT_SECRET",
+        hmac_secret_ref: "WEBHOOK_HMAC_ENDPOINT_SECRET",
         allowed_events: ["order.created", "legacy.event"],
         allowed_ips: ["192.0.2.10"],
       }]);
@@ -121,7 +123,7 @@ async function localFetch(
         id: "22222222-2222-4222-8222-222222222222",
         slug: "second-hook",
         source_system: "second-contract-source",
-        hmac_secret_ref: "WEBHOOK_SECOND_ENDPOINT_SECRET",
+        hmac_secret_ref: "WEBHOOK_HMAC_SECOND_ENDPOINT_SECRET",
         allowed_events: ["order.created"],
         allowed_ips: ["192.0.2.10"],
       }]);
@@ -427,14 +429,17 @@ Deno.test({
         data: { order_id: "ORDER-002" },
         idempotency_key: "550e8400-e29b-41d4-a716-446655440001",
       });
+      // E087 (index.ts:203-204): o bypass de chamada interna foi removido —
+      // service_role + x-internal-call NÃO dispensa HMAC (index.ts:359-365).
       const internal = await invoke(requestFor(internalPayload, {
         headers: {
           authorization: `Bearer ${SERVICE_ROLE_KEY}`,
           "x-internal-call": "true",
         },
       }));
-      assertEquals(internal.status, 200);
-      assertEquals(storedEvents.length, 3);
+      assertEquals(internal.status, 401);
+      assertEquals(internal.body.code, "invalid_signature");
+      assertEquals(storedEvents.length, 2);
 
       const forgedInternal = await invoke(requestFor(internalPayload, {
         headers: {
@@ -443,7 +448,7 @@ Deno.test({
         },
       }));
       assertEquals(forgedInternal.status, 401);
-      assertEquals(storedEvents.length, 3);
+      assertEquals(storedEvents.length, 2);
 
       duplicateRace = true;
       const racePayload = JSON.stringify({
@@ -457,7 +462,7 @@ Deno.test({
       }));
       assertEquals(raceResolved.status, 200);
       assertEquals(raceResolved.body.duplicate, true);
-      assertEquals(storedEvents.length, 3);
+      assertEquals(storedEvents.length, 2);
       duplicateRace = false;
 
       persistenceFails = true;
@@ -472,7 +477,7 @@ Deno.test({
       }));
       assertEquals(failedPersistence.status, 500);
       assertEquals(failedPersistence.body.code, "persistence_failed");
-      assertEquals(storedEvents.length, 3);
+      assertEquals(storedEvents.length, 2);
     } finally {
       globalThis.fetch = originalFetch;
       persistenceFails = false;
@@ -494,8 +499,8 @@ Deno.test({
   fn: async () => {
     Deno.env.set("SUPABASE_URL", SUPABASE_URL);
     Deno.env.set("SUPABASE_SERVICE_ROLE_KEY", SERVICE_ROLE_KEY);
-    Deno.env.set("WEBHOOK_ENDPOINT_SECRET", ENDPOINT_SECRET);
-    Deno.env.set("WEBHOOK_SECOND_ENDPOINT_SECRET", SECOND_ENDPOINT_SECRET);
+    Deno.env.set("WEBHOOK_HMAC_ENDPOINT_SECRET", ENDPOINT_SECRET);
+    Deno.env.set("WEBHOOK_HMAC_SECOND_ENDPOINT_SECRET", SECOND_ENDPOINT_SECRET);
     globalThis.fetch = localFetch as typeof fetch;
     storedEvents.length = 0;
     try {

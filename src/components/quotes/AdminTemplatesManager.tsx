@@ -19,6 +19,7 @@ import { TemplateDeleteDialog, TemplateCloneDialog } from './AdminTemplateDialog
 import { FileText, Search, Users, User, Filter, LayoutGrid, List, Download } from 'lucide-react';
 import { type QuoteTemplate, useQuoteTemplates } from '@/hooks/quotes/useQuoteTemplates';
 import { exportTemplatesToJson } from '@/utils/templateExport';
+import { textoDoTotal } from '@/lib/quotes/templateTotal';
 import { TemplateTableView } from './admin-templates/TemplateTableView';
 import { TemplateGridView } from './admin-templates/TemplateGridView';
 
@@ -73,31 +74,21 @@ export function AdminTemplatesManager({ onEditTemplate }: AdminTemplatesManagerP
   const formatCurrency = (value: number) =>
     new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value);
 
-  const calculateTotal = (template: QuoteTemplate) => {
-    const itemsTotal = template.items.reduce((sum, item) => {
-      const personalizationCost =
-        item.personalizations?.reduce(
-          (pSum, p) => pSum + (p.unitCost || 0) * item.quantity + (p.setupCost || 0),
-          0,
-        ) || 0;
-      return sum + item.quantity * item.unitPrice + personalizationCost;
-    }, 0);
-    const discountValue =
-      template.discount_percent > 0
-        ? itemsTotal * (template.discount_percent / 100)
-        : template.discount_amount;
-    return itemsTotal - discountValue;
-  };
+  const totalFormatado = (template: QuoteTemplate) => textoDoTotal(template, formatCurrency);
 
+  // GUARD: mesma regra da tela do vendedor (QuoteTemplatesList) — o diálogo só
+  // fecha com a ação confirmada. Descartar o retorno fazia o admin achar que
+  // tinha excluído ou clonado quando o banco recusou.
   const handleDelete = async () => {
     if (deleteConfirmId) {
-      await deleteTemplate(deleteConfirmId);
-      setDeleteConfirmId(null);
+      const excluiu = await deleteTemplate(deleteConfirmId);
+      if (excluiu) setDeleteConfirmId(null);
     }
   };
   const handleClone = async () => {
     if (cloneTemplateId && targetSellerId) {
-      await cloneTemplateToSeller(cloneTemplateId, targetSellerId);
+      const clonado = await cloneTemplateToSeller(cloneTemplateId, targetSellerId);
+      if (!clonado) return;
       setCloneDialogOpen(false);
       setCloneTemplateId(null);
       setTargetSellerId('');
@@ -213,8 +204,7 @@ export function AdminTemplatesManager({ onEditTemplate }: AdminTemplatesManagerP
         <TemplateTableView
           templates={filteredTemplates}
           getSellerName={getSellerName}
-          formatCurrency={formatCurrency}
-          calculateTotal={calculateTotal}
+          totalFormatado={totalFormatado}
           onEdit={onEditTemplate}
           onClone={(id) => {
             setCloneTemplateId(id);
@@ -226,8 +216,7 @@ export function AdminTemplatesManager({ onEditTemplate }: AdminTemplatesManagerP
         <TemplateGridView
           templatesBySeller={templatesBySeller}
           getSellerName={getSellerName}
-          formatCurrency={formatCurrency}
-          calculateTotal={calculateTotal}
+          totalFormatado={totalFormatado}
           onEdit={onEditTemplate}
           onClone={(id) => {
             setCloneTemplateId(id);
