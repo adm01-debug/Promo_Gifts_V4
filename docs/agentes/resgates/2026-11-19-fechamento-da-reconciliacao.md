@@ -126,3 +126,41 @@ recibo anterior e repetidas aqui porque são fáceis de cair de novo:
    onda 2 pediu para recriar a tabela `quote_comments` como trabalho perdido. Ela
    foi **cancelada pelo dono** e está arquivada na `main`. Antes de resgatar,
    procure em `docs/agentes/resgates/`.
+
+## Adendo — a quinta branch `salvo/*`, fora do ruleset
+
+O ruleset 27365809 nomeia **quatro** branches `salvo/*`. Existe uma quinta,
+`salvo/claude-fix-resgate-p06-p15-security-261116-2215`, criada em 16/11 e **não
+coberta** pela proteção (o ruleset foi atualizado em 17/11 sem incluí-la).
+Adjudicada aqui, byte a byte, para que não fique em aberto.
+
+Ela tem **3 arquivos ausentes da `main`** (`git ls-tree -r`, não `git diff`):
+
+| arquivo | veredicto |
+|---|---|
+| `supabase/migrations/20261101000001_security_invoker_views_p06.sql` | **superado** — é a P06 em escopo completo, da PR #3720 fechada sem merge. A sucessora de escopo reduzido (`20261118172500`, PR #3832) existe justamente porque o escopo completo derrubaria o catálogo: ele inclui `v_products_public`, que lê `internal.mv_product_leaf_category`, sem grant para anon. E a medição de 19/11 mostrou que **mesmo o escopo reduzido** é inseguro hoje — as 5 views restantes também leem bases que `anon` não alcança. Aplicar o escopo completo seria pior. |
+| `supabase/rollbacks/20261101000001_rollback.sql` | **superado** — rollback do arquivo acima |
+| `e2e/quotes/no-templates.spec.ts` | **obsoleto por decisão de produto** — ver abaixo |
+
+### Por que o teste `no-templates.spec.ts` não deve ser adotado
+
+As cinco asserções dele garantem que **Templates de Orçamento foi removido**:
+rota `/orcamentos/templates` redirecionando, nenhum botão "Usar/Salvar template",
+nenhum `href` para a rota.
+
+A `main` diz o contrário, e de propósito:
+
+- `src/pages/quotes/QuoteTemplatesPage.tsx:68` — a rota existe
+- `src/pages/quotes/QuotesListPage.tsx:167` — o botão navega para ela
+- `src/routes/__tests__/quote-templates-route.integration.test.tsx` — há teste de integração da rota
+- `src/lib/quotes/applyTemplateToQuote.ts:4` registra: *"a #3817 devolveu a tela de templates"*
+
+A branch partiu da premissa de que a funcionalidade fora removida; o dono decidiu
+devolvê-la. Nesta mesma sessão, quatro defeitos **dessa funcionalidade** foram
+resgatados e mergeados (#3858, #3859, #3860, #3862). Adotar o teste faria as cinco
+asserções falharem na CI — é trabalho que o próprio projeto já superou, não
+trabalho perdido.
+
+**Conclusão:** nenhum conteúdo desta branch precisa ser resgatado. Ela pode ser
+apagada ou incluída no ruleset, indiferentemente — fica a critério do dono. O
+veredicto está aqui para que ninguém precise refazer a medição.
