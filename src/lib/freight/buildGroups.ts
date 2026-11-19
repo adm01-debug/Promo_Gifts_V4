@@ -7,6 +7,10 @@
  *    sempre ganha caixa própria.
  * 2. a escolha do vendedor no orçamento: `misturar` junta o resto num grupo,
  *    `separar` dá um grupo por produto.
+ *
+ * "Por produto" é por `productId`, não por linha: o mesmo produto em três
+ * cores chega como três linhas e vai junto na mesma caixa. Agrupar por linha
+ * abriria três caixas P para 60 cadernetas que cabem em uma (64).
  */
 import type { MixMode, PackItem } from './types';
 
@@ -25,11 +29,34 @@ export interface PackGroup {
  * ter mudado.
  */
 function porProductId(a: PackItem, b: PackItem): number {
-  return a.productId < b.productId ? -1 : a.productId > b.productId ? 1 : 0;
+  return a.productId < b.productId ? -1 : 1;
+}
+
+/**
+ * Soma as linhas do mesmo produto numa peça só. As medidas são do cadastro do
+ * produto, então a primeira linha vale por todas; "não mistura" em qualquer
+ * linha vale para o produto.
+ */
+function somarPorProduto(items: readonly PackItem[]): PackItem[] {
+  const porId = new Map<string, PackItem>();
+  for (const item of items) {
+    const anterior = porId.get(item.productId);
+    porId.set(
+      item.productId,
+      anterior
+        ? {
+            ...anterior,
+            quantity: anterior.quantity + item.quantity,
+            shipsSeparately: anterior.shipsSeparately || item.shipsSeparately,
+          }
+        : item,
+    );
+  }
+  return [...porId.values()];
 }
 
 export function buildGroups(items: readonly PackItem[], mixMode: MixMode): PackGroup[] {
-  const ordenados = [...items].sort(porProductId);
+  const ordenados = somarPorProduto(items).sort(porProductId);
 
   const separados = ordenados.filter((item) => item.shipsSeparately);
   const restantes = ordenados.filter((item) => !item.shipsSeparately);
