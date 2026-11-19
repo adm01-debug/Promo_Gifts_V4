@@ -21,6 +21,11 @@ describe('mmToCm', () => {
     expect(mmToCm(383)).toBe(38.3);
   });
 
+  it('não perde o empate por imprecisão binária', () => {
+    // 10.05 mm → 1.005 cm, o caso que o Math.round ingênuo derrubava para 1
+    expect(mmToCm(10.05)).toBe(1.01);
+  });
+
   it('zero converte para zero: quem decide que zero é ausência é isKnownMeasure', () => {
     expect(mmToCm(0)).toBe(0);
   });
@@ -42,6 +47,11 @@ describe('kgToG', () => {
     expect(kgToG(5.5)).toBe(5500);
     // 1,183 kg × 1000 = 1183 g (box_weight_kg do kit KT-9059K)
     expect(kgToG(1.183)).toBe(1183);
+  });
+
+  it('não perde o empate por imprecisão binária', () => {
+    // 0.001005 kg → 1.005 g
+    expect(kgToG(0.001005)).toBe(1.01);
   });
 
   it('zero converte para zero', () => {
@@ -86,6 +96,13 @@ describe('round1', () => {
     expect(round1(0)).toBe(0);
   });
 
+  it('não perde o empate por imprecisão binária', () => {
+    // 1.05 * 10 em float é 10.499999999999998: o Math.round ingênuo daria 1.0
+    expect(round1(1.05)).toBe(1.1);
+    // 8.05 * 10 = 80.49999999999999 → daria 8.0
+    expect(round1(8.05)).toBe(8.1);
+  });
+
   it('recusa negativo e não-finito', () => {
     expect(round1(-1.2)).toBeNull();
     expect(round1(Number.NaN)).toBeNull();
@@ -101,6 +118,24 @@ describe('round2', () => {
     expect(round2(0.214)).toBe(0.21);
     expect(round2(3)).toBe(3);
     expect(round2(0)).toBe(0);
+  });
+
+  it('não perde o empate por imprecisão binária', () => {
+    // 1.005 * 100 em float é 100.49999999999999: o Math.round ingênuo daria 1
+    expect(round2(1.005)).toBe(1.01);
+    // 1.255 * 100 = 125.49999999999999 → daria 1.25
+    expect(round2(1.255)).toBe(1.26);
+    // 2.675 já cai do lado certo; serve de controle
+    expect(round2(2.675)).toBe(2.68);
+    // valor grande: a correção não pode depender da escala (somar EPSILON falharia)
+    expect(round2(12_345.675)).toBe(12_345.68);
+  });
+
+  it('aceita valor que o JS imprime em notação exponencial', () => {
+    // String(1e-7) é '1e-7': o deslocamento por texto daria '1e-7e2' (inválido),
+    // então a função cai no toFixed, que é exato nessa faixa
+    expect(round2(1e-7)).toBe(0);
+    expect(round2(1e-21)).toBe(0);
   });
 
   it('recusa negativo e não-finito', () => {
