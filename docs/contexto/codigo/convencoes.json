@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "fix: substitui migration F12 por 20261119212000 (desbloqueia preflight E063/E066)",
    "fix: corrige bugs F12 (sparkline PGRST202 + KPI EMA 403) (#3903)",
    "chore(main): release gifts-store 1.12.0 (#3899)",
    "feat(frete): motor de empacotamento (Bloco B) (#3900)",
-   "feat(scripts): gate do Vercel no pre-push (resgate de trabalho de agente) (#3901)",
-   "fix(frete): motor ignora as colunas box_* do catálogo (caixa master, não embalagem) (#3898)"
+   "feat(scripts): gate do Vercel no pre-push (resgate de trabalho de agente) (#3901)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",

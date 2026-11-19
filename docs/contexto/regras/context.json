@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "b6a8d7eb9f40d67a38ffaf634f179297b8406e0a",
+  "sha": "2f37587a9743b13ee5c39170d120a3957766b46f",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-19 21:26 UTC",
+  "generated_at": "2026-11-19 21:46 UTC",
   "files_total": 10951,
   "code_files": 8970,
-  "code_lines": 1269755
+  "code_lines": 1269758
  },
  "version": "1.3.2",
- "facts_hash": "e80e38a50a396c89",
+ "facts_hash": "b3676219c99c7242",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -96178,7 +96178,7 @@
    "supabase/migrations/20261119081500_elevenlabs_credential_reemissao.sql",
    "supabase/migrations/20261119094500_reafirma_revogacoes_anteriores_ao_baseline.sql",
    "supabase/migrations/20261119110500_crm_callback_events_updated_at.sql",
-   "supabase/migrations/20261119202852_fix_f12_sparkline_ema_kpi.sql",
+   "supabase/migrations/20261119212000_fix_f12_sparkline_ema_kpi.sql",
    "supabase/rollbacks/20260511235950_rollback.sql",
    "supabase/rollbacks/20260511235959_rollback.sql",
    "supabase/rollbacks/20260611014515_fn_dryrun_standardize_supplier_real_rollback.sql",
@@ -96291,7 +96291,7 @@
    "supabase/rollbacks/20261119081500_rollback.sql",
    "supabase/rollbacks/20261119094500_rollback.sql",
    "supabase/rollbacks/20261119110500_rollback.sql",
-   "supabase/rollbacks/20261119202852_rollback.sql",
+   "supabase/rollbacks/20261119212000_rollback.sql",
    "supabase/rollbacks/rollback_20261025002500_analyze_tables_p03.sql",
    "supabase/sql-legacy/001_notification_system.sql",
    "supabase/sql-legacy/002_notification_preferences.sql",
@@ -132815,7 +132815,7 @@
     "object": "fn_variant_sparkline",
     "objkind": "function",
     "roles": "PUBLIC, anon",
-    "src": "supabase/migrations/20261119202852_fix_f12_sparkline_ema_kpi.sql"
+    "src": "supabase/migrations/20261119212000_fix_f12_sparkline_ema_kpi.sql"
    },
    {
     "kind": "grant",
@@ -132823,7 +132823,7 @@
     "object": "fn_variant_sparkline",
     "objkind": "function",
     "roles": "authenticated, service_role",
-    "src": "supabase/migrations/20261119202852_fix_f12_sparkline_ema_kpi.sql"
+    "src": "supabase/migrations/20261119212000_fix_f12_sparkline_ema_kpi.sql"
    },
    {
     "kind": "revoke",
@@ -132831,7 +132831,7 @@
     "object": "fn_ema_kpi_by_level",
     "objkind": "function",
     "roles": "PUBLIC, anon",
-    "src": "supabase/migrations/20261119202852_fix_f12_sparkline_ema_kpi.sql"
+    "src": "supabase/migrations/20261119212000_fix_f12_sparkline_ema_kpi.sql"
    },
    {
     "kind": "grant",
@@ -132839,7 +132839,7 @@
     "object": "fn_ema_kpi_by_level",
     "objkind": "function",
     "roles": "authenticated, service_role",
-    "src": "supabase/migrations/20261119202852_fix_f12_sparkline_ema_kpi.sql"
+    "src": "supabase/migrations/20261119212000_fix_f12_sparkline_ema_kpi.sql"
    },
    {
     "kind": "revoke",
@@ -134119,7 +134119,7 @@
     "object": "fn_ema_kpi_by_level",
     "objkind": "function",
     "roles": "authenticated",
-    "src": "supabase/rollbacks/20261119202852_rollback.sql"
+    "src": "supabase/rollbacks/20261119212000_rollback.sql"
    },
    {
     "kind": "grant",
@@ -151643,7 +151643,7 @@
   {
    "module": "supabase/migrations",
    "files": 3106,
-   "lines": 224307,
+   "lines": 224310,
    "tables": [
     "...",
     "admin_audit_log",
@@ -359908,7 +359908,7 @@
    "supabase/migrations/20261115034500_rpc_sales_assistant_candidates.sql",
    "supabase/migrations/20261115130100_fn_market_intelligence_macro.sql",
    "supabase/migrations/20261118223000_fn_supplier_risk_breakdown.sql",
-   "supabase/migrations/20261119202852_fix_f12_sparkline_ema_kpi.sql",
+   "supabase/migrations/20261119212000_fix_f12_sparkline_ema_kpi.sql",
    "supabase/rollbacks/20260611014515_fn_dryrun_standardize_supplier_real_rollback.sql",
    "supabase/rollbacks/20260611124000_fn_dryrun_standardize_supplier_real_rollback.sql",
    "supabase/rollbacks/20260917061500_rollback.sql",
@@ -396650,7 +396650,7 @@
     "object": "fn_variant_sparkline",
     "objkind": "function",
     "roles": "PUBLIC, anon",
-    "src": "supabase/migrations/20261119202852_fix_f12_sparkline_ema_kpi.sql"
+    "src": "supabase/migrations/20261119212000_fix_f12_sparkline_ema_kpi.sql"
    },
    {
     "kind": "grant",
@@ -396658,7 +396658,7 @@
     "object": "fn_variant_sparkline",
     "objkind": "function",
     "roles": "authenticated, service_role",
-    "src": "supabase/migrations/20261119202852_fix_f12_sparkline_ema_kpi.sql"
+    "src": "supabase/migrations/20261119212000_fix_f12_sparkline_ema_kpi.sql"
    },
    {
     "kind": "revoke",
@@ -396666,7 +396666,7 @@
     "object": "fn_ema_kpi_by_level",
     "objkind": "function",
     "roles": "PUBLIC, anon",
-    "src": "supabase/migrations/20261119202852_fix_f12_sparkline_ema_kpi.sql"
+    "src": "supabase/migrations/20261119212000_fix_f12_sparkline_ema_kpi.sql"
    },
    {
     "kind": "grant",
@@ -396674,7 +396674,7 @@
     "object": "fn_ema_kpi_by_level",
     "objkind": "function",
     "roles": "authenticated, service_role",
-    "src": "supabase/migrations/20261119202852_fix_f12_sparkline_ema_kpi.sql"
+    "src": "supabase/migrations/20261119212000_fix_f12_sparkline_ema_kpi.sql"
    },
    {
     "kind": "revoke",
@@ -397954,7 +397954,7 @@
     "object": "fn_ema_kpi_by_level",
     "objkind": "function",
     "roles": "authenticated",
-    "src": "supabase/rollbacks/20261119202852_rollback.sql"
+    "src": "supabase/rollbacks/20261119212000_rollback.sql"
    },
    {
     "kind": "grant",
@@ -524344,9 +524344,9 @@
    "path": "supabase/migrations/20261119110500_crm_callback_events_updated_at.sql",
    "lines": 54
   },
-  "supabase/migrations/20261119202852_fix_f12_sparkline_ema_kpi.sql": {
-   "path": "supabase/migrations/20261119202852_fix_f12_sparkline_ema_kpi.sql",
-   "lines": 64,
+  "supabase/migrations/20261119212000_fix_f12_sparkline_ema_kpi.sql": {
+   "path": "supabase/migrations/20261119212000_fix_f12_sparkline_ema_kpi.sql",
+   "lines": 67,
    "uses_service_role": true
   },
   "supabase/rollbacks/20260511235950_rollback.sql": {
@@ -524816,8 +524816,8 @@
    "path": "supabase/rollbacks/20261119110500_rollback.sql",
    "lines": 13
   },
-  "supabase/rollbacks/20261119202852_rollback.sql": {
-   "path": "supabase/rollbacks/20261119202852_rollback.sql",
+  "supabase/rollbacks/20261119212000_rollback.sql": {
+   "path": "supabase/rollbacks/20261119212000_rollback.sql",
    "lines": 11
   },
   "supabase/rollbacks/rollback_20261025002500_analyze_tables_p03.sql": {
@@ -550061,10 +550061,21 @@
   }
  },
  "git": {
-  "sha": "b6a8d7eb9f40d67a38ffaf634f179297b8406e0a",
+  "sha": "2f37587a9743b13ee5c39170d120a3957766b46f",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "2f37587",
+    "date": "2026-11-19",
+    "author": "adm01-debug",
+    "subject": "fix: substitui migration F12 por 20261119212000 (desbloqueia preflight E063/E066)",
+    "files": [
+     "supabase/MIGRATIONS_SYNC_LOG.md",
+     "supabase/migrations/20261119212000_fix_f12_sparkline_ema_kpi.sql",
+     "supabase/rollbacks/20261119212000_rollback.sql"
+    ]
+   },
    {
     "sha": "b6a8d7e",
     "date": "2026-11-19",
@@ -550397,17 +550408,6 @@
     "subject": "docs(migrations-log): recibo E15 da aplicacao de 20261119051500 (#3871)",
     "files": [
      "supabase/MIGRATIONS_SYNC_LOG.md"
-    ]
-   },
-   {
-    "sha": "892f9c6",
-    "date": "2026-11-19",
-    "author": "adm01-debug",
-    "subject": "fix(seguranca): link expirado de orcamento deixa de devolver dados do cliente (#3869)",
-    "files": [
-     "supabase/MIGRATIONS_SYNC_LOG.md",
-     "supabase/migrations/20261119051500_fix_get_quote_token_public_expiracao_pg_temp.sql",
-     "supabase/rollbacks/20261119051500_rollback.sql"
     ]
    }
   ],

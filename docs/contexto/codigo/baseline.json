@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "b6a8d7eb9f40d67a38ffaf634f179297b8406e0a",
+  "commit": "2f37587a9743b13ee5c39170d120a3957766b46f",
   "branch": "main",
-  "data_commit": "2026-11-19T18:25:06-03:00",
+  "data_commit": "2026-11-19T18:45:31-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "2f37587a",
+    "data": "2026-11-19",
+    "assunto": "fix: substitui migration F12 por 20261119212000 (desbloqueia preflight E063/E066)"
+   },
    {
     "sha": "b6a8d7eb",
     "data": "2026-11-19",
@@ -126,14 +131,9 @@
     "sha": "76b764cc",
     "data": "2026-11-19",
     "assunto": "feat(supabase): registra ELEVENLABS_API_KEY no catalogo de integracoes (#3791)"
-   },
-   {
-    "sha": "72455580",
-    "data": "2026-11-19",
-    "assunto": "docs(migrations-log): recibo E15 da aplicacao de 20261119073000 (#3875)"
    }
   ],
-  "arquivos_mudados_7d": 1453,
+  "arquivos_mudados_7d": 1455,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -199,7 +199,7 @@
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "supabase/MIGRATIONS_SYNC_LOG.md",
-    "mudancas": 67
+    "mudancas": 68
    },
    {
     "arquivo": "package.json",
@@ -301,7 +301,7 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 361
+    "commits": 359
    },
    {
     "autor": "Claude",
@@ -309,7 +309,7 @@
    },
    {
     "autor": "Joaquim Ataides",
-    "commits": 40
+    "commits": 39
    },
    {
     "autor": "github-actions[bot]",
