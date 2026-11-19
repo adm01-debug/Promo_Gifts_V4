@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.3.2 · commit `2080226fab` · branch `main` · 2026-11-19 19:11 UTC
+> Gerado automaticamente por AI Context Sync v1.3.2 · commit `41166fc89d` · branch `main` · 2026-11-19 20:04 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -1776,6 +1776,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `status` | `converted` | compara, filtra | `recovery/src-legacy/src/components/quotes/QuoteRowQuickActions.tsx`<br>`recovery/src-legacy/src/hooks/useQuoteFunnel.ts`<br>`src/components/quotes/MarginInsightBadge.tsx`<br>`src/components/quotes/QuotesStatusChips.tsx`<br>`src/hooks/quotes/useQuoteFunnel.ts`<br>… +3 |
 | `status` | `crit` | compara, escreve | `recovery/src-legacy/src/components/admin/telemetry/PlatformFailureCards.tsx`<br>`src/components/admin/telemetry/PlatformFailureCards.tsx` |
 | `status` | `critical` | compara | `recovery/src-legacy/src/hooks/useVariantStock.ts`<br>`src/components/inventory/StockDashboard.tsx`<br>`src/hooks/products/useVariantStock.ts`<br>`src/hooks/stock/stockAlerts.ts`<br>`src/lib/inventory/stock-filter.ts`<br>… +1 |
+| `status` | `dados_insuficientes` | escreve | `src/lib/freight/planFreight.ts` |
 | `status` | `degraded` | compara, escreve | `api/ready.ts`<br>`src/components/system/CloudStatusBanner.tsx`<br>`src/lib/external-db/invoke.ts` |
 | `status` | `delivered` | compara, escreve | `src/components/common/StatusTimeline.tsx`<br>`supabase/functions/semantic-search/index.ts` |
 | `status` | `denied` | compara, escreve, filtra | `src/components/admin/security/keys/audit/McpAuditRow.tsx`<br>`src/components/admin/security/keys/audit/useStepUpAttempts.ts`<br>`supabase/functions/connections-hub-audit/index.ts`<br>`supabase/functions/mcp-keys-issue/index.ts`<br>`supabase/functions/mcp-keys-revoke/index.ts`<br>… +4 |
@@ -1787,7 +1788,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `status` | `duplicate_ignored` | escreve | `supabase/functions/receive-crm-callback/index.ts` |
 | `status` | `em_separacao` | escreve | `src/hooks/products/useSellerCarts.ts` |
 | `status` | `empty` | escreve | `src/components/admin/connections/KeysValidationTab.tsx` |
-| `status` | `error` | compara, escreve | `api/health.ts`<br>`api/ready.ts`<br>`recovery/src-legacy/src/pages/SystemStatusPage.tsx`<br>`src/components/admin/connections/IssueMcpKeyForm.tsx`<br>`src/components/admin/security/keys/RotateMcpKeyDialog.tsx`<br>… +26 |
+| `status` | `error` | compara, escreve | `api/health.ts`<br>`api/ready.ts`<br>`recovery/src-legacy/src/pages/SystemStatusPage.tsx`<br>`src/components/admin/connections/IssueMcpKeyForm.tsx`<br>`src/components/admin/security/keys/RotateMcpKeyDialog.tsx`<br>… +27 |
 | `status` | `expired` | compara | `src/components/admin/security/keys/McpKeyDetailsDrawer.tsx`<br>`src/components/admin/security/keys/McpKeyRow.tsx`<br>`src/components/admin/security/keys/useMcpKeys.ts`<br>`src/components/quotes/QuoteStatusTimeline.tsx`<br>`src/components/quotes/QuoteValidityBanner.tsx`<br>… +4 |
 | `status` | `expiring_soon` | compara | `src/components/novelties/NoveltyCards.tsx` |
 | `status` | `fail` | compara, escreve | `recovery/src-legacy/src/hooks/useConnectionsOverviewFilters.ts`<br>`src/components/admin/connections/ConnectionTestHistoryPanel.tsx`<br>`src/hooks/intelligence/useConnectionsOverviewFilters.ts`<br>`supabase/functions/full-op-diagnostics/index.ts` |
@@ -1803,7 +1804,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `status` | `in_transit` | compara | `src/lib/inventory/future-stock-stats.ts` |
 | `status` | `incoming` | compara | `recovery/src-legacy/src/hooks/useVariantStock.ts`<br>`src/components/inventory/StockDashboard.tsx`<br>`src/hooks/products/useVariantStock.ts`<br>`src/lib/inventory/stock-filter.ts`<br>`src/types/stock.ts` |
 | `status` | `incompatible` | compara, escreve | `src/components/kit-builder/BoxComparisonDialog.tsx`<br>`src/components/kit-builder/BoxSelector.tsx`<br>`src/lib/kit-builder/ai-composition.ts`<br>`src/lib/kit-builder/box-recommendations.ts` |
-| `status` | `incomplete` | escreve | `src/lib/freight/resolveItemDimensions.ts` |
+| `status` | `incomplete` | compara, escreve | `src/lib/freight/planFreight.ts`<br>`src/lib/freight/resolveItemDimensions.ts` |
 | `status` | `inconclusive` | compara, escreve | `src/components/kit-builder/BoxComparisonDialog.tsx`<br>`src/components/kit-builder/BoxSelector.tsx`<br>`src/lib/kit-builder/box-recommendations.ts` |
 | `status` | `insufficient_data` | escreve | `src/pages/admin/telemetry/useRegressionGuardrail.ts` |
 | `status` | `invalid` | escreve | `supabase/functions/e2e-cleanup/index.ts` |
@@ -1811,13 +1812,14 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `status` | `low-stock` | compara | `recovery/src-legacy/src/pages/ComparePage.tsx`<br>`recovery/src-legacy/src/pages/product-detail/ProductDetailHero.tsx`<br>`src/components/compare/ComparisonRadarChart.tsx`<br>`src/components/compare/StockRiskBadge.tsx`<br>`src/components/inventory/StockBadge.tsx`<br>… +5 |
 | `status` | `low_stock` | compara | `recovery/src-legacy/src/hooks/useVariantStock.ts`<br>`src/components/inventory/StockDashboard.tsx`<br>`src/components/simulator/StockAlert.tsx`<br>`src/hooks/products/useVariantStock.ts`<br>`src/hooks/stock/stockAlerts.ts`<br>… +2 |
 | `status` | `missing` | compara, escreve | `src/components/admin/connections/MaskedSuffixBadge.tsx`<br>`src/lib/masked-suffix.ts` |
+| `status` | `nao_cabe` | compara, escreve | `src/lib/freight/packMixed.ts`<br>`src/lib/freight/packSingleProduct.ts`<br>`src/lib/freight/planFreight.ts` |
 | `status` | `none` | compara | `src/lib/carts/shipping-deadline.ts`<br>`src/pages/products/seller-carts/useSellerCartsPage.ts` |
 | `status` | `not_found` | escreve | `supabase/functions/e2e-cleanup/index.ts` |
 | `status` | `not_ready` | escreve | `api/ready.ts` |
 | `status` | `novo` | escreve | `recovery/src-legacy/src/hooks/useSellerCarts.ts` |
 | `status` | `number` | compara | `recovery/src-legacy/src/components/admin/telemetry/BridgeCallDetailDrawer.tsx`<br>`src/components/admin/connections/SecretsManagerHealthPanel.tsx`<br>`src/components/admin/connections/TestAllConnectionsButton.tsx`<br>`src/components/admin/telemetry/BridgeCallDetailDrawer.tsx`<br>`src/contexts/SellerCartContext.tsx`<br>… +9 |
 | `status` | `offline` | compara | `src/components/quotes/QuoteAutoSave.tsx` |
-| `status` | `ok` | compara, escreve | `api/health.ts`<br>`api/ready.ts`<br>`recovery/src-legacy/src/components/admin/telemetry/PlatformFailureCards.tsx`<br>`recovery/src-legacy/src/hooks/useConnectionsOverviewFilters.ts`<br>`recovery/src-legacy/src/pages/SystemStatusPage.tsx`<br>… +17 |
+| `status` | `ok` | compara, escreve | `api/health.ts`<br>`api/ready.ts`<br>`recovery/src-legacy/src/components/admin/telemetry/PlatformFailureCards.tsx`<br>`recovery/src-legacy/src/hooks/useConnectionsOverviewFilters.ts`<br>`recovery/src-legacy/src/pages/SystemStatusPage.tsx`<br>… +21 |
 | `status` | `order` | compara | `src/components/dashboard/MyClientsWidget.tsx` |
 | `status` | `out-of-stock` | compara, escreve | `recovery/src-legacy/src/pages/ComparePage.tsx`<br>`recovery/src-legacy/src/pages/product-detail/ProductDetailHero.tsx`<br>`src/components/compare/ComparisonRadarChart.tsx`<br>`src/components/compare/StockRiskBadge.tsx`<br>`src/components/products/ProductListItem.tsx`<br>… +4 |
 | `status` | `out_of_stock` | compara | `recovery/src-legacy/src/hooks/useVariantStock.ts`<br>`src/components/inventory/StockDashboard.tsx`<br>`src/components/inventory/VariantStockTable.tsx`<br>`src/components/simulator/StockAlert.tsx`<br>`src/hooks/products/useVariantStock.ts`<br>… +2 |
@@ -1861,9 +1863,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `status` | `unconfigured` | compara | `src/components/admin/connections/DataSourceDebugTab.tsx` |
 | `status` | `underindex` | compara | `src/components/bi/ClientCategoryRadar.tsx` |
 | `status` | `unhealthy` | compara, escreve | `supabase/functions/health-check/index.ts` |
-| `status` | `unknown` | compara, escreve | `src/components/products/PriceFreshnessBadge.tsx`<br>`src/components/simulator/StockAlert.tsx`<br>`src/components/system/CloudStatusDot.tsx`<br>`src/pages/kit-builder/useKitBuilderQuote.ts`<br>`src/utils/price-freshness.ts` |
-| `status` | `valid` | compara, escreve | `src/components/admin/connections/MaskedSuffixBadge.tsx`<br>`src/lib/masked-suffix.ts` |
-| … +121 linhas — lista completa em `context.json` | | | |
+| … +123 linhas — lista completa em `context.json` | | | |
 
 ### E.4 Enums e listas de valores
 
@@ -2070,7 +2070,9 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | KIT_AUDITED_FIELDS | 'component_name', 'material', 'color', 'height_mm', 'width_mm', 'length_mm', 'diameter_mm', 'circumference_mm', 'weight_g', // 'capacity_ml', // FIX 2026-06-27: coluna não existe em product_kit_components (PostgREST 400/42703) 'component_type_code', 'personalization_notes', | `src/lib/external-db/kit-coverage.ts` |
 | BRIDGE_ALIASES | 'tecnica_gravacao', // → tabela_preco_gravacao_oficial 'personalization_techniques', // real table (uuid PK, EN cols) — NOT aliased; see rest-native.ts "BUG A" 'customization_price_tables', // → tabela_preco_fornecedores_gravacao (via bridge alias) 'customization_price_tiers', // → tabela_preco_grav … | `src/lib/external-db/tables.ts` |
 | COMPANY_TABLES | 'client_contacts', 'organizations', 'companies' | `src/lib/external-db/tables.ts` |
+| GroupReason | mixed \| ships_separately \| single_product | `src/lib/freight/buildGroups.ts` |
 | PRODUCT_MEASURE_COLUMNS | 'id', 'name', 'sku', 'height_cm', 'width_cm', 'length_cm', 'diameter_cm', 'weight_g', | `src/lib/freight/columns.ts` |
+| FitLimit | geometry \| volume \| weight | `src/lib/freight/fitCount.ts` |
 | MeasureSource | cylinder \| product | `src/lib/freight/types.ts` |
 | MissingMeasure | height \| length \| weight \| width | `src/lib/freight/types.ts` |
 | MixMode | misturar \| separar | `src/lib/freight/types.ts` |
@@ -2167,9 +2169,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | ALLOWED_RPCS | 'fn_get_product_print_areas', 'fn_get_product_print_areas_v2', 'fn_get_product_customization_options', 'fn_link_product_print_areas', 'fn_backfill_product_print_areas', 'fn_get_customization_price', 'fn_get_customization_price_v2', 'fn_find_fornecedor_price_table', 'get_category_descendants', | `supabase/functions/_shared/external-db-config.ts` |
 | COMPANY_TABLES | 'bitrix_clients', 'client_contacts', 'client_notes', 'organizations', 'user_organizations', 'business_sectors', | `supabase/functions/_shared/external-db-config.ts` |
 | ErrorKind | timeout \| postgrest_error \| validation \| network \| rate_limit \| auth \| unknown | `supabase/functions/_shared/external-db-telemetry.ts` |
-| KNOWN_SCOPES | "quotes:read", "orders:read", "crm:read", "products:read", "code:read", "code:write", "*", | `supabase/functions/_shared/mcp-scopes.ts` |
-| McpViolationReason | missing_jwt \| invalid_jwt \| not_admin \| stepup_missing \| stepup_invalid \| stepup_consume_failed \| rate_limited \| validation_failed \| unauthorized_direct_write \| other | `supabase/functions/_shared/mcp-violations.ts` |
-| … +11 linhas — lista completa em `context.json` | | |
+| … +13 linhas — lista completa em `context.json` | | |
 
 ## F. Validações de entrada
 
@@ -4438,6 +4438,14 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
   ```
   const next = { ...previous }; if (filters.color) next.colors = append(previous.colors, filters.color); if (filters.category) next.categories = append(previous.categories, filters.category); if (filters.material) next.materiais = append(previous.materiais, filters.material); if (filters.gender) next.gender = append(previous.gender, filters.gender); if (filters.publicoAlvo) next.publicoAlvo = append(previous.publicoAlvo, filters.publicoAlvo); if (filters.minPrice !== undefined || filters.maxPrice …
   ```
+- **computeVolumeTotals(draft: VolumeDraft, settings: FreightSettings)** — `src/lib/freight/computeVolumeTotals.ts`
+  ```
+  const { box, contents } = draft; const pesoItensG = contents.reduce( (total, { item, quantity }) => total + item.weightG * quantity, 0, ); const grossWeightG = roundDecimal(box.emptyWeightG + pesoItensG, 2); const outerVolumeCm3 = volumeCm3(box.outer); const cubicWeightG: CubicWeightG = { correios: cubicWeight(outerVolumeCm3, settings.cubicDivisorCorreios), rodoviario: cubicWeight(outerVolumeCm3, settings.cubicDivisorRodoviario), }; const fator = isKnownMeasure(box.fillFactor) && box.fillFactor …
+  ```
+- **computeItemsHash(items: ReadonlyArray<{ productId: string; quantity: number }>,)** — `src/lib/freight/planFreight.ts`
+  ```
+  const canonico = [...items] .map(({ productId, quantity }) => `${productId}:${quantity}`) .sort() .join('|'); let hash = 0x811c9dc5; for (let i = 0; i < canonico.length; i += 1) { hash ^= canonico.charCodeAt(i); hash = Math.imul(hash, 0x01000193) >>> 0; } return hash.toString(16).padStart(8, '0');
+  ```
 - **roundDecimal(value: number, decimals: number)** — `src/lib/freight/units.ts`
   ```
   const shifted = Number(`${value}e${decimals}`); if (!Number.isFinite(shifted)) return Number(value.toFixed(decimals)); return Number(`${Math.round(shifted)}e-${decimals}`);
@@ -5343,6 +5351,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `// invisíveis na PDP. Max real observado no catálogo = 100. Margem 20% = 120.` | `src/lib/external-db/products-detail.ts` |
 | `// 7.153 produtos / 16.631 swatches / 97,4% CF CDN. Consumido por ColorSwatchPicker.` | `src/lib/external-db/products-lightweight.ts` |
 | `* `shipping_length_cm` — 100% vazias nos 7.951 produtos ativos.` | `src/lib/freight/columns.ts` |
+| `* despachar uma GG com 10% de ocupação.` | `src/lib/freight/packSingleProduct.ts` |
 | `* - baixo: min * 0.25 < current ≤ min` | `src/lib/inventory/health-score.ts` |
 | `* - crítico: current ≤ min * 0.25` | `src/lib/inventory/health-score.ts` |
 | `* o hit ratio é ~100%, eliminando .toLowerCase()+NFD+replace+trim redundantes).` | `src/lib/inventory/stock-filter.ts` |
@@ -5733,7 +5742,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `PRODUCT_SELECT_LIGHTWEIGHT` | `'id, name, sku, supplier_reference, short_description, '` | `src/hooks/products/useProductsLightweight.ts` |
 | `MAX_RECENT_PRODUCTS` | `5` | `src/hooks/products/useRecentProducts.ts` |
 | `MAX_ITEMS` | `10` | `src/hooks/products/useRecentlyViewed.ts` |
-| … +374 linhas — lista completa em `context.json` | | |
+| … +377 linhas — lista completa em `context.json` | | |
 
 ### H.2 Prazos, expirações e janelas de tempo
 
@@ -6646,7 +6655,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `admin` | `supabase/migrations/20261112120500_fix_optimization_queue_rpcs_dev_access.sql` |
 | `anon` | `tests/edge-functions/live/_live-client.ts` |
 
-## K. Testes como especificação (22712 testes em 2296 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (22806 testes em 2305 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -6850,6 +6859,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `src/hooks/assistant/__tests__/useClientBrandSignals.test.ts` | 22 | sem cliente · não consulta o CRM e devolve os sinais zerados · cliente sem ramo · deixa ramoPaiId nulo e confiança baixa, sem inventar ramo … |
 | `src/hooks/quotes/__tests__/quoteHelpers.validation.test.ts` | 22 | quoteHelpers validation logic · throws error when percent is > 100 · throws error when amount is > subtotal · throws error when discount is negative … |
 | `src/lib/edge/__tests__/invokeExport.test.ts` | 22 | invokeEventsToCSV · gera header + linhas com ISO · escapa vírgula, aspas e quebra de linha · lida com campos ausentes (latencyMs/errorKind/attempts) … |
+| `src/lib/freight/__tests__/planFreight.test.ts` | 22 | planFreight — status ok · 460 cadernetas sem a GG: 3× G + 1× P, com os totais fechados à mão · kitQuantity multiplica a quantidade de cada linha · linha com quantidade zero sai do plano sem virar erro … |
 | `tests/components/PriceFreshnessBadge.colorMatrix.test.tsx` | 22 | PriceFreshnessBadge — matriz cromática + conteúdo pt-BR (status × variant) · variant=inline (PDP / Quick View) · fresh: emerald-700 +  · aging: amber-700 + ainda usa label  … |
 | `tests/components/PriceFreshnessBadge.copyAssertions.test.tsx` | 22 | PriceFreshnessBadge — cópia pt-BR exata por variant · variant=inline (PDP / Quick View) · fresh:  · aging:  … |
 | `tests/components/kit-builder/KitBuilderComponents.test.tsx` | 22 | KitVisualPreview · renders null when no box · renders box preview with items · shows correct fill color for normal usage … |
@@ -6949,8 +6959,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `tests/utils/product-colors.test.ts` | 19 | product-colors · findKnownHex · returns exact match hex · is case-insensitive … |
 | `tests/utils/product-mapper.test.ts` | 19 | product-mapper · mapPromobrindToProduct · maps basic fields · maps category … |
 | `e2e/dashboard-modules.spec.ts` | 18 | Dashboard Modules - Public Access (No Auth) · should redirect to auth when accessing ${route.path} unauthenticated · should display auth page for all dashboard routes · should not expose observability/metrics data to unauthenticated users … |
-| `e2e/stock-module.spec.ts` | 18 | Stock Module - Public Access (No Auth) · should redirect to auth when accessing /estoque unauthenticated · should display auth page when accessing /estoque · should not expose stock data to unauthenticated users … |
-| … +1996 linhas — lista completa em `context.json` | | |
+| … +2005 linhas — lista completa em `context.json` | | |
 
 ## L. Eventos de webhook tratados (contratos com sistemas externos)
 
@@ -7418,4 +7427,4 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | tardia de AAL, etc.) NÃO deve reabrir o challenge — redireciona para | `src/components/layout/AdminRoute.tsx` |
 | apenas se o usuário chegar em AAL2). | `src/components/layout/AdminRoute.tsx` |
 | rate-limit, login-attempts, external-db, status do sistema. | `src/components/layout/DevRoute.tsx` |
-| … +1370 linhas — lista completa em `context.json` | |
+| … +1376 linhas — lista completa em `context.json` | |

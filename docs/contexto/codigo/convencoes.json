@@ -18,13 +18,13 @@
    "src/components (78)"
   ],
   "servicos_logica": [
-   "src/lib (242)",
+   "src/lib (250)",
    "src/utils (33)",
    "src/services (10)"
   ],
   "testes": [
    "tests/ (1084)",
-   "co-localizado (__tests__) (707)",
+   "co-localizado (__tests__) (718)",
    "e2e/ (625)"
   ],
   "edge_functions": "supabase/functions",
@@ -43,7 +43,7 @@
  "nomenclatura": {
   "componentes": "PascalCase (96%)",
   "hooks": "use + PascalCase",
-  "servicos": "kebab-case (49%)",
+  "servicos": "camelCase (49%)",
   "edge_functions": "kebab-case (99%)",
   "tabelas": "snake_case (86%)"
  },
@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "feat(frete): motor de empacotamento (Bloco B) (#3900)",
+   "feat(scripts): gate do Vercel no pre-push (resgate de trabalho de agente) (#3901)",
    "fix(frete): motor ignora as colunas box_* do catálogo (caixa master, não embalagem) (#3898)",
    "chore(main): release gifts-store 1.11.0 (#3895)",
-   "chore(ci): resgata mitigacao de artifact do e2e-cart (#3897)",
-   "feat(frete): base do motor — tipos, unidades e medidas (Bloco A) (#3896)",
-   "docs(migrations-log): recibo E15 — aplicação de 20261119094500 (#3894)"
+   "chore(ci): resgata mitigacao de artifact do e2e-cart (#3897)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",

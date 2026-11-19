@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "2080226fab7fc958254fa29db25c7554ec9b891f",
+  "sha": "41166fc89d164c3c3d758e3e0ec3015e10f88ce5",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-19 19:11 UTC",
-  "files_total": 10928,
-  "code_files": 8947,
-  "code_lines": 1266895
+  "generated_at": "2026-11-19 20:04 UTC",
+  "files_total": 10949,
+  "code_files": 8968,
+  "code_lines": 1269680
  },
  "version": "1.3.2",
- "facts_hash": "df9c4b8b12cceec5",
+ "facts_hash": "bc150e149c7f5cd8",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -1129,9 +1129,9 @@
   "package_manager": "npm",
   "languages": {
    ".sql": 3453,
-   ".ts": 3059,
+   ".ts": 3078,
    ".tsx": 1969,
-   ".mjs": 451,
+   ".mjs": 453,
    ".py": 15,
    ".js": 7
   },
@@ -149527,8 +149527,8 @@
   },
   {
    "module": "scripts",
-   "files": 298,
-   "lines": 64156,
+   "files": 300,
+   "lines": 64633,
    "tables": [
     "a",
     "b",
@@ -149554,7 +149554,7 @@
    "exports": [
     "append-edge-deploy-receipt.mjs: DEFAULT_LOG_PATH, SECTION_HEADING, formatReceiptRow, appendReceiptRow, parseCliOptions, runCli",
     "append-migration-receipt.mjs: DEFAULT_LOG_PATH, SECTION_HEADING, formatReceiptRow, appendReceiptRow, upsertReceiptRow, parseCliOptions",
-    "automation.mjs: parseArgs, validateConfig, execute, appendExclude, removeExclude, main",
+    "automation.mjs: parseArgs, validateConfig, execute, appendExclude, removeExclude, pushTargets",
     "build-drafts-pr-comment.mjs: MARKER",
     "bundle-size-report.mjs: buildReport",
     "capacity-growth-projection.mjs: computeProjections",
@@ -150419,8 +150419,8 @@
   },
   {
    "module": "src/lib",
-   "files": 365,
-   "lines": 55767,
+   "files": 384,
+   "lines": 58075,
    "tables": [
     "...",
     "companies",
@@ -156355,6 +156355,12 @@
    "GITHUB_WORKSPACE": [
     "scripts/ci-local/shims/artifact-store.mjs"
    ],
+   "GIT_DIR": [
+    "scripts/vercel-gate.unit.mjs"
+   ],
+   "GIT_INDEX_FILE": [
+    "scripts/vercel-gate.unit.mjs"
+   ],
    "GRAPHIFY_FIXTURE_": [
     "scripts/graphify-local.unit.mjs"
    ],
@@ -157129,6 +157135,10 @@
    ],
    "V4_CALLBACK_URL": [
     "scripts/qa/inject-crm-dead-letters.mjs"
+   ],
+   "VERCEL_GATE": [
+    "scripts/vercel-gate.mjs",
+    "scripts/vercel-gate.unit.mjs"
    ],
    "VERCEL_GIT_COMMIT_SHA": [
     "api/health.ts"
@@ -162805,9 +162815,19 @@
     "values": "'client_contacts', 'organizations', 'companies'"
    },
    {
+    "file": "src/lib/freight/buildGroups.ts",
+    "name": "GroupReason",
+    "values": "mixed | ships_separately | single_product"
+   },
+   {
     "file": "src/lib/freight/columns.ts",
     "name": "PRODUCT_MEASURE_COLUMNS",
     "values": "'id', 'name', 'sku', 'height_cm', 'width_cm', 'length_cm', 'diameter_cm', 'weight_g',"
+   },
+   {
+    "file": "src/lib/freight/fitCount.ts",
+    "name": "FitLimit",
+    "values": "geometry | volume | weight"
    },
    {
     "file": "src/lib/freight/types.ts",
@@ -174141,12 +174161,36 @@
     "text": "consumidor os aplicava: useGlobalSearch.ts e AdvancedSearch.tsx jogavam apenas"
    },
    {
+    "file": "src/lib/freight/boxOrder.ts",
+    "text": "máximo nem pela ordem de cadastro: é o espaço que decide o encaixe."
+   },
+   {
     "file": "src/lib/freight/columns.ts",
     "text": "- `cubic_weight` — preenchida sem regra conhecida. O motor calcula o peso"
    },
    {
     "file": "src/lib/freight/columns.ts",
     "text": "têm `box_quantity > 1` (média 228,6 peças por caixa, máximo 5.000), e a"
+   },
+   {
+    "file": "src/lib/freight/fitCount.ts",
+    "text": "aproveitável e por peso máximo. O menor dos três manda."
+   },
+   {
+    "file": "src/lib/freight/fitCount.ts",
+    "text": "* O mínimo que `fitCount` precisa saber de uma peça. `PackItem` satisfaz. */"
+   },
+   {
+    "file": "src/lib/freight/packMixed.ts",
+    "text": "máximo): vai na próxima aberta."
+   },
+   {
+    "file": "src/lib/freight/packSingleProduct.ts",
+    "text": "que importam (quantidade preservada, nenhum volume acima do peso máximo)"
+   },
+   {
+    "file": "src/lib/freight/planFreight.ts",
+    "text": "do volume sem passar do máximo. É a mesma coisa que `limitedBy: 'weight'`,"
    },
    {
     "file": "src/lib/freight/types.ts",
@@ -199416,6 +199460,21 @@
     "value": "'*'"
    },
    {
+    "file": "src/lib/freight/fitCount.ts",
+    "name": "EPSILON",
+    "value": "1"
+   },
+   {
+    "file": "src/lib/freight/packMixed.ts",
+    "name": "EPSILON",
+    "value": "1"
+   },
+   {
+    "file": "src/lib/freight/planFreight.ts",
+    "name": "OCUPACAO_BAIXA",
+    "value": "0.5"
+   },
+   {
     "file": "src/lib/intelligence/degradationRegistry.ts",
     "name": "DEGRADATION_LOG_CAP",
     "value": "200"
@@ -208552,6 +208611,102 @@
     "kind": "escreve"
    },
    {
+    "file": "src/lib/freight/formatPlanSummary.ts",
+    "field": "status",
+    "value": "ok",
+    "kind": "compara"
+   },
+   {
+    "file": "src/lib/freight/packMixed.ts",
+    "field": "status",
+    "value": "ok",
+    "kind": "escreve"
+   },
+   {
+    "file": "src/lib/freight/packMixed.ts",
+    "field": "status",
+    "value": "nao_cabe",
+    "kind": "escreve"
+   },
+   {
+    "file": "src/lib/freight/packMixed.ts",
+    "field": "status",
+    "value": "ok",
+    "kind": "escreve"
+   },
+   {
+    "file": "src/lib/freight/packSingleProduct.ts",
+    "field": "status",
+    "value": "nao_cabe",
+    "kind": "escreve"
+   },
+   {
+    "file": "src/lib/freight/packSingleProduct.ts",
+    "field": "status",
+    "value": "ok",
+    "kind": "escreve"
+   },
+   {
+    "file": "src/lib/freight/packSingleProduct.ts",
+    "field": "status",
+    "value": "ok",
+    "kind": "escreve"
+   },
+   {
+    "file": "src/lib/freight/packSingleProduct.ts",
+    "field": "status",
+    "value": "nao_cabe",
+    "kind": "escreve"
+   },
+   {
+    "file": "src/lib/freight/packSingleProduct.ts",
+    "field": "status",
+    "value": "ok",
+    "kind": "escreve"
+   },
+   {
+    "file": "src/lib/freight/planFreight.ts",
+    "field": "status",
+    "value": "dados_insuficientes",
+    "kind": "escreve"
+   },
+   {
+    "file": "src/lib/freight/planFreight.ts",
+    "field": "status",
+    "value": "dados_insuficientes",
+    "kind": "escreve"
+   },
+   {
+    "file": "src/lib/freight/planFreight.ts",
+    "field": "status",
+    "value": "nao_cabe",
+    "kind": "escreve"
+   },
+   {
+    "file": "src/lib/freight/planFreight.ts",
+    "field": "status",
+    "value": "ok",
+    "kind": "escreve"
+   },
+   {
+    "file": "src/lib/freight/planFreight.ts",
+    "field": "status",
+    "value": "incomplete",
+    "kind": "compara"
+   },
+   {
+    "file": "src/lib/freight/planFreight.ts",
+    "field": "status",
+    "value": "error",
+    "kind": "compara"
+   },
+   {
+    "file": "src/lib/freight/planFreight.ts",
+    "field": "status",
+    "value": "nao_cabe",
+    "kind": "compara"
+   },
+   {
     "file": "src/lib/freight/resolveItemDimensions.ts",
     "field": "status",
     "value": "incomplete",
@@ -215328,6 +215483,18 @@
     "body": "const next = { ...previous }; if (filters.color) next.colors = append(previous.colors, filters.color); if (filters.category) next.categories = append(previous.categories, filters.category); if (filters.material) next.materiais = append(previous.materiais, filters.material); if (filters.gender) next.gender = append(previous.gender, filters.gender); if (filters.publicoAlvo) next.publicoAlvo = append(previous.publicoAlvo, filters.publicoAlvo); if (filters.minPrice !== undefined || filters.maxPrice …"
    },
    {
+    "file": "src/lib/freight/computeVolumeTotals.ts",
+    "name": "computeVolumeTotals",
+    "params": "draft: VolumeDraft, settings: FreightSettings",
+    "body": "const { box, contents } = draft; const pesoItensG = contents.reduce( (total, { item, quantity }) => total + item.weightG * quantity, 0, ); const grossWeightG = roundDecimal(box.emptyWeightG + pesoItensG, 2); const outerVolumeCm3 = volumeCm3(box.outer); const cubicWeightG: CubicWeightG = { correios: cubicWeight(outerVolumeCm3, settings.cubicDivisorCorreios), rodoviario: cubicWeight(outerVolumeCm3, settings.cubicDivisorRodoviario), }; const fator = isKnownMeasure(box.fillFactor) && box.fillFactor …"
+   },
+   {
+    "file": "src/lib/freight/planFreight.ts",
+    "name": "computeItemsHash",
+    "params": "items: ReadonlyArray<{ productId: string; quantity: number }>,",
+    "body": "const canonico = [...items] .map(({ productId, quantity }) => `${productId}:${quantity}`) .sort() .join('|'); let hash = 0x811c9dc5; for (let i = 0; i < canonico.length; i += 1) { hash ^= canonico.charCodeAt(i); hash = Math.imul(hash, 0x01000193) >>> 0; } return hash.toString(16).padStart(8, '0');"
+   },
+   {
     "file": "src/lib/freight/units.ts",
     "name": "roundDecimal",
     "params": "value: number, decimals: number",
@@ -219904,6 +220071,10 @@
    {
     "file": "src/lib/freight/columns.ts",
     "line": "* `shipping_length_cm` — 100% vazias nos 7.951 produtos ativos."
+   },
+   {
+    "file": "src/lib/freight/packSingleProduct.ts",
+    "line": "* despachar uma GG com 10% de ocupação."
    },
    {
     "file": "src/lib/inventory/health-score.ts",
@@ -251936,6 +252107,58 @@
     "name": "batch_insert envia array preservando colunas EN de personalization_techniques"
    },
    {
+    "file": "src/lib/freight/__tests__/boxOrder.test.ts",
+    "name": "boxOrder"
+   },
+   {
+    "file": "src/lib/freight/__tests__/boxOrder.test.ts",
+    "name": "volume interno das quatro caixas padrão"
+   },
+   {
+    "file": "src/lib/freight/__tests__/boxOrder.test.ts",
+    "name": "ordena da maior para a menor e o inverso"
+   },
+   {
+    "file": "src/lib/freight/__tests__/boxOrder.test.ts",
+    "name": "não altera a lista recebida"
+   },
+   {
+    "file": "src/lib/freight/__tests__/boxOrder.test.ts",
+    "name": "empate de volume desempata pelo código, para a ordem ser estável"
+   },
+   {
+    "file": "src/lib/freight/__tests__/boxOrder.test.ts",
+    "name": "maiorCaixa devolve a GG, e null quando não há caixa"
+   },
+   {
+    "file": "src/lib/freight/__tests__/buildGroups.test.ts",
+    "name": "buildGroups"
+   },
+   {
+    "file": "src/lib/freight/__tests__/buildGroups.test.ts",
+    "name": "misturar: dois produtos viram um grupo"
+   },
+   {
+    "file": "src/lib/freight/__tests__/buildGroups.test.ts",
+    "name": "separar: dois produtos viram dois grupos"
+   },
+   {
+    "file": "src/lib/freight/__tests__/buildGroups.test.ts",
+    "name": "dois produtos "
+   },
+   {
+    "file": "src/lib/freight/__tests__/buildGroups.test.ts",
+    "name": "ordem é estável por productId, não pela ordem de entrada"
+   },
+   {
+    "file": "src/lib/freight/__tests__/buildGroups.test.ts",
+    "name": "duas linhas do mesmo produto não desestabilizam a ordem"
+   },
+   {
+    "file": "src/lib/freight/__tests__/buildGroups.test.ts",
+    "name": "lista vazia não gera grupo"
+   },
+   {
     "file": "src/lib/freight/__tests__/columns.test.ts",
     "name": "PRODUCT_MEASURE_COLUMNS"
    },
@@ -251958,6 +252181,34 @@
    {
     "file": "src/lib/freight/__tests__/columns.test.ts",
     "name": "é a lista separada por vírgula, pronta para o select"
+   },
+   {
+    "file": "src/lib/freight/__tests__/computeVolumeTotals.test.ts",
+    "name": "computeVolumeTotals"
+   },
+   {
+    "file": "src/lib/freight/__tests__/computeVolumeTotals.test.ts",
+    "name": "100 cadernetas de 120 g na caixa G"
+   },
+   {
+    "file": "src/lib/freight/__tests__/computeVolumeTotals.test.ts",
+    "name": "caixa vazia tem ocupação zero e peso só da própria caixa"
+   },
+   {
+    "file": "src/lib/freight/__tests__/computeVolumeTotals.test.ts",
+    "name": "soma produtos diferentes no mesmo volume"
+   },
+   {
+    "file": "src/lib/freight/__tests__/computeVolumeTotals.test.ts",
+    "name": "divisor zerado não divide por zero: devolve cubado zero"
+   },
+   {
+    "file": "src/lib/freight/__tests__/computeVolumeTotals.test.ts",
+    "name": "caixa com lado interno zerado não divide por zero: ocupação zero"
+   },
+   {
+    "file": "src/lib/freight/__tests__/computeVolumeTotals.test.ts",
+    "name": "fator da caixa fora do intervalo cai no padrão global"
    },
    {
     "file": "src/lib/freight/__tests__/expandQuantities.test.ts",
@@ -251998,6 +252249,302 @@
    {
     "file": "src/lib/freight/__tests__/expandQuantities.test.ts",
     "name": "lista vazia é válida: zero volumes, não erro"
+   },
+   {
+    "file": "src/lib/freight/__tests__/fitCount.test.ts",
+    "name": "fitCount — caderneta 21 × 14 × 1 cm, 120 g"
+   },
+   {
+    "file": "src/lib/freight/__tests__/fitCount.test.ts",
+    "name": "P: geometria manda, 64 unidades"
+   },
+   {
+    "file": "src/lib/freight/__tests__/fitCount.test.ts",
+    "name": "M: geometria manda, 128 unidades"
+   },
+   {
+    "file": "src/lib/freight/__tests__/fitCount.test.ts",
+    "name": "G: geometria manda, 140 unidades"
+   },
+   {
+    "file": "src/lib/freight/__tests__/fitCount.test.ts",
+    "name": "GG: o peso máximo manda antes da geometria, 250 unidades"
+   },
+   {
+    "file": "src/lib/freight/__tests__/fitCount.test.ts",
+    "name": "fitCount — outras peças"
+   },
+   {
+    "file": "src/lib/freight/__tests__/fitCount.test.ts",
+    "name": "squeeze 25 × 7 × 7 na P: 16 unidades por geometria"
+   },
+   {
+    "file": "src/lib/freight/__tests__/fitCount.test.ts",
+    "name": "cubo de 1 kg na P: o peso corta em 10 antes da geometria"
+   },
+   {
+    "file": "src/lib/freight/__tests__/fitCount.test.ts",
+    "name": "barra de 50 cm não entra na P nem na M, e entra deitada na G e na GG"
+   },
+   {
+    "file": "src/lib/freight/__tests__/fitCount.test.ts",
+    "name": "barra de 61 cm não entra em nenhuma caixa ativa"
+   },
+   {
+    "file": "src/lib/freight/__tests__/fitCount.test.ts",
+    "name": "peça de 1,2 cm não perde fileira por erro de ponto flutuante"
+   },
+   {
+    "file": "src/lib/freight/__tests__/fitCount.test.ts",
+    "name": "fitCount — entradas degeneradas"
+   },
+   {
+    "file": "src/lib/freight/__tests__/fitCount.test.ts",
+    "name": "lado desconhecido zera a capacidade"
+   },
+   {
+    "file": "src/lib/freight/__tests__/fitCount.test.ts",
+    "name": "peso não cadastrado não cria teto de peso"
+   },
+   {
+    "file": "src/lib/freight/__tests__/fitCount.test.ts",
+    "name": "caixa sem peso útil zera por peso"
+   },
+   {
+    "file": "src/lib/freight/__tests__/fitCount.test.ts",
+    "name": "fator da caixa fora do intervalo cai no padrão global"
+   },
+   {
+    "file": "src/lib/freight/__tests__/formatPlanSummary.test.ts",
+    "name": "formatPlanSummary"
+   },
+   {
+    "file": "src/lib/freight/__tests__/formatPlanSummary.test.ts",
+    "name": "460 cadernetas em P/M/G: caixas da maior para a menor, números em pt-BR"
+   },
+   {
+    "file": "src/lib/freight/__tests__/formatPlanSummary.test.ts",
+    "name": "250 cadernetas nas quatro caixas: uma GG só"
+   },
+   {
+    "file": "src/lib/freight/__tests__/formatPlanSummary.test.ts",
+    "name": "caixas de mesmo volume saem em ordem de código"
+   },
+   {
+    "file": "src/lib/freight/__tests__/formatPlanSummary.test.ts",
+    "name": "plano bloqueado não tem resumo"
+   },
+   {
+    "file": "src/lib/freight/__tests__/fuzz.test.ts",
+    "name": "fuzz — invariantes do plano"
+   },
+   {
+    "file": "src/lib/freight/__tests__/fuzz.test.ts",
+    "name": "gera ${COMBINACOES} casos determinísticos"
+   },
+   {
+    "file": "src/lib/freight/__tests__/fuzz.test.ts",
+    "name": "nenhuma invariante quebra em 200 combinações"
+   },
+   {
+    "file": "src/lib/freight/__tests__/fuzz.test.ts",
+    "name": "200 combinações rodam em tempo de ordem de grandeza aceitável"
+   },
+   {
+    "file": "src/lib/freight/__tests__/packMixed.test.ts",
+    "name": "packMixed"
+   },
+   {
+    "file": "src/lib/freight/__tests__/packMixed.test.ts",
+    "name": "50 cadernetas + 50 squeezes cabem numa GG só"
+   },
+   {
+    "file": "src/lib/freight/__tests__/packMixed.test.ts",
+    "name": "misturar nunca usa mais caixas que separar"
+   },
+   {
+    "file": "src/lib/freight/__tests__/packMixed.test.ts",
+    "name": "preserva a quantidade de cada produto quando precisa de várias caixas"
+   },
+   {
+    "file": "src/lib/freight/__tests__/packMixed.test.ts",
+    "name": "nenhum volume passa do peso máximo da própria caixa"
+   },
+   {
+    "file": "src/lib/freight/__tests__/packMixed.test.ts",
+    "name": "peças maiores entram primeiro"
+   },
+   {
+    "file": "src/lib/freight/__tests__/packMixed.test.ts",
+    "name": "peça que não cabe em nenhuma caixa interrompe o grupo"
+   },
+   {
+    "file": "src/lib/freight/__tests__/packMixed.test.ts",
+    "name": "catálogo restrito: usa a maior disponível e enche em sequência"
+   },
+   {
+    "file": "src/lib/freight/__tests__/packMixed.test.ts",
+    "name": "peça comprida e fina: a caixa escolhida a ignora e o grupo termina em nao_cabe"
+   },
+   {
+    "file": "src/lib/freight/__tests__/packMixed.test.ts",
+    "name": "caixa tomada pela primeira peça manda o resto para outra caixa"
+   },
+   {
+    "file": "src/lib/freight/__tests__/packMixed.test.ts",
+    "name": "lista vazia e quantidades zeradas não abrem caixa"
+   },
+   {
+    "file": "src/lib/freight/__tests__/packMixed.test.ts",
+    "name": "produto leve e volumoso junto com denso e pequeno: os dois tetos valem"
+   },
+   {
+    "file": "src/lib/freight/__tests__/packSingleProduct.test.ts",
+    "name": "packSingleProduct — caderneta"
+   },
+   {
+    "file": "src/lib/freight/__tests__/packSingleProduct.test.ts",
+    "name": "7 unidades: a menor caixa que fecha é a P (cabem 64)"
+   },
+   {
+    "file": "src/lib/freight/__tests__/packSingleProduct.test.ts",
+    "name": "100 unidades: a P não fecha (64), a M fecha (128)"
+   },
+   {
+    "file": "src/lib/freight/__tests__/packSingleProduct.test.ts",
+    "name": "250 unidades: a GG fecha exatamente no peso máximo"
+   },
+   {
+    "file": "src/lib/freight/__tests__/packSingleProduct.test.ts",
+    "name": "600 unidades: duas GG cheias e o resto na menor que fecha"
+   },
+   {
+    "file": "src/lib/freight/__tests__/packSingleProduct.test.ts",
+    "name": "460 unidades sem a GG no catálogo: 3 G cheias e uma P"
+   },
+   {
+    "file": "src/lib/freight/__tests__/packSingleProduct.test.ts",
+    "name": "packSingleProduct — squeeze"
+   },
+   {
+    "file": "src/lib/freight/__tests__/packSingleProduct.test.ts",
+    "name": "7 unidades: 1× P (cabem 16)"
+   },
+   {
+    "file": "src/lib/freight/__tests__/packSingleProduct.test.ts",
+    "name": "100 unidades: nenhuma caixa fecha sozinha, abre GG cheia e fecha na G"
+   },
+   {
+    "file": "src/lib/freight/__tests__/packSingleProduct.test.ts",
+    "name": "250 unidades: três GG cheias e uma G"
+   },
+   {
+    "file": "src/lib/freight/__tests__/packSingleProduct.test.ts",
+    "name": "packSingleProduct — limites"
+   },
+   {
+    "file": "src/lib/freight/__tests__/packSingleProduct.test.ts",
+    "name": "peça maior que a maior caixa devolve nao_cabe"
+   },
+   {
+    "file": "src/lib/freight/__tests__/packSingleProduct.test.ts",
+    "name": "sem caixa ativa devolve nao_cabe"
+   },
+   {
+    "file": "src/lib/freight/__tests__/packSingleProduct.test.ts",
+    "name": "quantidade zero não abre caixa"
+   },
+   {
+    "file": "src/lib/freight/__tests__/packSingleProduct.test.ts",
+    "name": "nenhum volume passa do peso máximo da própria caixa"
+   },
+   {
+    "file": "src/lib/freight/__tests__/planFreight.test.ts",
+    "name": "planFreight — status ok"
+   },
+   {
+    "file": "src/lib/freight/__tests__/planFreight.test.ts",
+    "name": "460 cadernetas sem a GG: 3× G + 1× P, com os totais fechados à mão"
+   },
+   {
+    "file": "src/lib/freight/__tests__/planFreight.test.ts",
+    "name": "kitQuantity multiplica a quantidade de cada linha"
+   },
+   {
+    "file": "src/lib/freight/__tests__/planFreight.test.ts",
+    "name": "linha com quantidade zero sai do plano sem virar erro"
+   },
+   {
+    "file": "src/lib/freight/__tests__/planFreight.test.ts",
+    "name": "planFreight — status dados_insuficientes"
+   },
+   {
+    "file": "src/lib/freight/__tests__/planFreight.test.ts",
+    "name": "produto sem peso bloqueia o plano inteiro, sem estimativa parcial"
+   },
+   {
+    "file": "src/lib/freight/__tests__/planFreight.test.ts",
+    "name": "quantidade fracionária bloqueia e o aviso nomeia a linha"
+   },
+   {
+    "file": "src/lib/freight/__tests__/planFreight.test.ts",
+    "name": "planFreight — status nao_cabe"
+   },
+   {
+    "file": "src/lib/freight/__tests__/planFreight.test.ts",
+    "name": "peça maior que a maior caixa nomeia a peça e a caixa"
+   },
+   {
+    "file": "src/lib/freight/__tests__/planFreight.test.ts",
+    "name": "sem caixa ativa cadastrada o aviso diz isso"
+   },
+   {
+    "file": "src/lib/freight/__tests__/planFreight.test.ts",
+    "name": "planFreight — avisos"
+   },
+   {
+    "file": "src/lib/freight/__tests__/planFreight.test.ts",
+    "name": "avisa quando uma caixa vai com menos de metade do espaço ocupado"
+   },
+   {
+    "file": "src/lib/freight/__tests__/planFreight.test.ts",
+    "name": "avisa quando a caixa fechou no peso e não no espaço"
+   },
+   {
+    "file": "src/lib/freight/__tests__/planFreight.test.ts",
+    "name": "caixa com peso próprio não é descontada duas vezes no aviso de peso"
+   },
+   {
+    "file": "src/lib/freight/__tests__/planFreight.test.ts",
+    "name": "caixa com peso próprio ainda avisa quando realmente fecha no peso"
+   },
+   {
+    "file": "src/lib/freight/__tests__/planFreight.test.ts",
+    "name": "plano confortável não gera aviso"
+   },
+   {
+    "file": "src/lib/freight/__tests__/planFreight.test.ts",
+    "name": "computeItemsHash"
+   },
+   {
+    "file": "src/lib/freight/__tests__/planFreight.test.ts",
+    "name": "não depende da ordem da lista"
+   },
+   {
+    "file": "src/lib/freight/__tests__/planFreight.test.ts",
+    "name": "muda quando a quantidade muda"
+   },
+   {
+    "file": "src/lib/freight/__tests__/planFreight.test.ts",
+    "name": "muda quando um produto entra"
+   },
+   {
+    "file": "src/lib/freight/__tests__/planFreight.test.ts",
+    "name": "é estável entre execuções: o mesmo conteúdo dá o mesmo hash"
+   },
+   {
+    "file": "src/lib/freight/__tests__/planFreight.test.ts",
+    "name": "lista vazia tem hash próprio e estável"
    },
    {
     "file": "src/lib/freight/__tests__/resolveItemDimensions.test.ts",
@@ -351478,6 +352025,7 @@
       "compara:src/components/mockup/MockupCompletionStates.tsx",
       "compara:src/components/pricing/calculator/QuantityComparisonTable.tsx",
       "compara:src/components/quotes/QuoteAutoSave.tsx",
+      "compara:src/lib/freight/planFreight.ts",
       "compara:src/pages/system/SystemStatusPage.tsx",
       "compara:supabase/functions/_shared/ai-router/index.ts",
       "compara:supabase/functions/_shared/ai-usage.ts",
@@ -351521,6 +352069,7 @@
       "compara:src/components/pricing/calculator/QuantityComparisonTable.tsx",
       "compara:src/hooks/intelligence/useConnectionsOverviewFilters.ts",
       "compara:src/lib/auth/invoke-full-scope.ts",
+      "compara:src/lib/freight/formatPlanSummary.ts",
       "compara:src/pages/admin/DevChallengeExamplesPage.tsx",
       "compara:src/pages/products/CartsListPage.tsx",
       "compara:src/pages/products/seller-carts/useSellerCartsPage.ts",
@@ -351535,6 +352084,9 @@
       "escreve:src/hooks/kit-builder/useKitMinQuantityValidation.ts",
       "escreve:src/lib/auth/invoke-full-scope.ts",
       "escreve:src/lib/freight/expandQuantities.ts",
+      "escreve:src/lib/freight/packMixed.ts",
+      "escreve:src/lib/freight/packSingleProduct.ts",
+      "escreve:src/lib/freight/planFreight.ts",
       "escreve:src/lib/freight/resolveItemDimensions.ts",
       "escreve:src/pages/admin/DevChallengeExamplesPage.tsx",
       "escreve:src/pages/system/SystemStatusPage.tsx",
@@ -352209,7 +352761,17 @@
       "compara:src/lib/carts/shipping-deadline.ts",
       "compara:src/pages/products/CartsListPage.tsx"
      ],
+     "nao_cabe": [
+      "compara:src/lib/freight/planFreight.ts",
+      "escreve:src/lib/freight/packMixed.ts",
+      "escreve:src/lib/freight/packSingleProduct.ts",
+      "escreve:src/lib/freight/planFreight.ts"
+     ],
+     "dados_insuficientes": [
+      "escreve:src/lib/freight/planFreight.ts"
+     ],
      "incomplete": [
+      "compara:src/lib/freight/planFreight.ts",
       "escreve:src/lib/freight/resolveItemDimensions.ts"
      ],
      "in_transit": [
@@ -400811,6 +401373,7 @@
     "kind": "status",
     "msg": "valor `incomplete` para `status` usado no código não existe em nenhum enum do banco/TS",
     "where": [
+     "compara:src/lib/freight/planFreight.ts",
      "escreve:src/lib/freight/resolveItemDimensions.ts"
     ]
    },
@@ -401008,13 +401571,6 @@
     "msg": "valor `ready` para `stage` usado no código não existe em nenhum enum do banco/TS",
     "where": [
      "compara:src/components/quotes/PdfGenerationDialog.tsx"
-    ]
-   },
-   {
-    "kind": "status",
-    "msg": "valor `mixed` para `state` usado no código não existe em nenhum enum do banco/TS",
-    "where": [
-     "escreve:src/components/admin/connections/ConnectionRowSourceBadge.tsx"
     ]
    },
    {
@@ -427176,13 +427732,14 @@
   },
   "scripts/automation.mjs": {
    "path": "scripts/automation.mjs",
-   "lines": 992,
+   "lines": 1022,
    "exports": [
     "function parseArgs",
     "function validateConfig",
     "function execute",
     "function appendExclude",
     "function removeExclude",
+    "function pushTargets",
     "function main"
    ],
    "env": [
@@ -427201,6 +427758,7 @@
     }
    ],
    "temporal": [
+    "const r = await execute([process.execPath, gate, '--root', ctx.root, ...(t ? ['--ref', t.sha, t.prod ? '--prod' : '--preview'] : [])], { cwd: ctx.root, timeout: …",
     "timeout: 15000,",
     "{ cwd, timeout = 300000, capture = false, env = process.env } = {},"
    ]
@@ -431143,6 +431701,47 @@
     "2. Check for boot validation logic",
     "de literal é uso executável e DEVE flagrar). Substituir sequencialmente",
     "GUARD: entrada ilegível (symlink quebrado, permissão) ou diretório ausente nunca pode"
+   ]
+  },
+  "scripts/vercel-gate.mjs": {
+   "path": "scripts/vercel-gate.mjs",
+   "lines": 255,
+   "exports": [
+    "function classify",
+    "const VERCEL_MAJORS",
+    "function majorParaFaixa",
+    "function nodeMajorFor",
+    "function nodeBinFor",
+    "function main"
+   ],
+   "env": [
+    "VERCEL_GATE"
+   ],
+   "params": [
+    {
+     "name": "MAX_AGE",
+     "value": "3600"
+    }
+   ],
+   "doc": "!/usr/bin/env node Gate do Vercel antes do push (11/11/2026, revisado após QA): reproduz localmente o build que o Vercel fará. node vercel-gate.mjs [--root <worktree>] [--ref <commit>] [--prod|--preview] VERCEL_GATE=0 desliga (sai 75). Isolamento: worktree TEMPORÁRIO do commit enviado (resolvido no …",
+   "temporal": [
+    "const b = await runAsync([options.vercel || 'vercel', 'build', '--yes', ...(prod ? ['--prod'] : [])], tmp, buildEnv, options.timeoutMs || 20 * 60 * 1000, (pgid) …",
+    "const onSignal = () => { kill('SIGTERM'); setTimeout(() => kill('SIGKILL'), 3000).unref(); };",
+    "const r = spawnSync('git', argv, { cwd, env: plain ? env : gitEnv, encoding: 'utf8', timeout: 120000 });",
+    "const timer = setTimeout(() => { timedOut = true; kill('SIGTERM'); setTimeout(() => kill('SIGKILL'), 5000).unref(); }, timeoutMs);"
+   ]
+  },
+  "scripts/vercel-gate.unit.mjs": {
+   "path": "scripts/vercel-gate.unit.mjs",
+   "lines": 192,
+   "env": [
+    "GIT_DIR",
+    "GIT_INDEX_FILE",
+    "VERCEL_GATE"
+   ],
+   "doc": "Testes do gate do Vercel (vercel-gate.mjs) com um `vercel` falso.",
+   "temporal": [
+    "await new Promise((res) => setTimeout(res, 1500)); assert.equal(existsSync(path.join(f.dir, 'neto-vivo')), false);"
    ]
   },
   "scripts/verify-build-integrity.mjs": {
@@ -478791,6 +479390,37 @@
     }
    ]
   },
+  "src/lib/freight/boxOrder.ts": {
+   "path": "src/lib/freight/boxOrder.ts",
+   "lines": 38,
+   "exports": [
+    "function volumeCm3",
+    "function volumeInternoCm3",
+    "function daMaiorParaMenor",
+    "function daMenorParaMaior",
+    "function maiorCaixa"
+   ],
+   "rule_comments": [
+    "máximo nem pela ordem de cadastro: é o espaço que decide o encaixe."
+   ],
+   "doc": "Volume interno de uma caixa e as ordens derivadas dele. Existe porque quatro lugares precisavam do mesmo número — os dois empacotadores, o resumo de uma linha e a escolha da maior caixa no `planFreight` — e cada cópia era uma chance de duas delas discordarem. \"Maior\" e \"menor\" no motor são sempre po …"
+  },
+  "src/lib/freight/buildGroups.ts": {
+   "path": "src/lib/freight/buildGroups.ts",
+   "lines": 55,
+   "exports": [
+    "type GroupReason",
+    "interface PackGroup",
+    "function buildGroups"
+   ],
+   "enums": [
+    {
+     "name": "GroupReason",
+     "values": "mixed | ships_separately | single_product"
+    }
+   ],
+   "doc": "Divide as peças em grupos que não compartilham caixa. Dois controles decidem, e o do cadastro vence o do vendedor: 1. `shipsSeparately` no produto (\"não mistura\": frágil, líquido, volumoso) sempre ganha caixa própria. 2. a escolha do vendedor no orçamento: `misturar` junta o resto num grupo, `separa …"
+  },
   "src/lib/freight/columns.ts": {
    "path": "src/lib/freight/columns.ts",
    "lines": 62,
@@ -478818,6 +479448,22 @@
    ],
    "percents": [
     "* `shipping_length_cm` — 100% vazias nos 7.951 produtos ativos."
+   ]
+  },
+  "src/lib/freight/computeVolumeTotals.ts": {
+   "path": "src/lib/freight/computeVolumeTotals.ts",
+   "lines": 63,
+   "exports": [
+    "interface VolumeDraft",
+    "function computeVolumeTotals"
+   ],
+   "doc": "Fecha os números de **um** volume: peso bruto, peso cubado, metros cúbicos e ocupação. O peso cubado usa a medida **externa** da caixa, porque é o que a transportadora mede, e os dois divisores de mercado convivem: 6.000 cm³/kg nos Correios e 3.333 cm³/kg no rodoviário. Qual dos dois vale é decisão …",
+   "calc_fns": [
+    {
+     "name": "computeVolumeTotals",
+     "params": "draft: VolumeDraft, settings: FreightSettings",
+     "body": "const { box, contents } = draft; const pesoItensG = contents.reduce( (total, { item, quantity }) => total + item.weightG * quantity, 0, ); const grossWeightG = roundDecimal(box.emptyWeightG + pesoItensG, 2); const outerVolumeCm3 = volumeCm3(box.outer); const cubicWeightG: CubicWeightG = { correios: cubicWeight(outerVolumeCm3, settings.cubicDivisorCorreios), rodoviario: cubicWeight(outerVolumeCm3, settings.cubicDivisorRodoviario), }; const fator = isKnownMeasure(box.fillFactor) && box.fillFactor …"
+    }
    ]
   },
   "src/lib/freight/expandQuantities.ts": {
@@ -478856,10 +479502,192 @@
    ],
    "doc": "Multiplica as quantidades das peças pelo número de kits/conjuntos pedidos. O orçamento e o simulador falam em \"N kits\"; o empacotador só entende peças. Esta é a única tradução entre os dois, e ela valida a entrada em vez de confiar nela: meio kit ou zero kit não é um plano de frete, é erro de tela. …"
   },
+  "src/lib/freight/fitCount.ts": {
+   "path": "src/lib/freight/fitCount.ts",
+   "lines": 142,
+   "exports": [
+    "interface FittableItem",
+    "type FitLimit",
+    "interface FitResult",
+    "function fitCount"
+   ],
+   "enums": [
+    {
+     "name": "FitLimit",
+     "values": "geometry | volume | weight"
+    }
+   ],
+   "params": [
+    {
+     "name": "EPSILON",
+     "value": "1"
+    }
+   ],
+   "rule_comments": [
+    "aproveitável e por peso máximo. O menor dos três manda.",
+    "* O mínimo que `fitCount` precisa saber de uma peça. `PackItem` satisfaz. */"
+   ],
+   "doc": "Quantas peças iguais cabem numa caixa — por encaixe real, por volume aproveitável e por peso máximo. O menor dos três manda. Os três tetos existem porque cada um sozinho mente: - só geometria ignora que o empacotador real não consegue um arranjo perfeito, e por isso existe o `fillFactor`; - só volum …"
+  },
+  "src/lib/freight/formatPlanSummary.ts": {
+   "path": "src/lib/freight/formatPlanSummary.ts",
+   "lines": 46,
+   "exports": [
+    "function formatPlanSummary"
+   ],
+   "status_values": [
+    {
+     "field": "status",
+     "value": "ok",
+     "kind": "compara"
+    }
+   ],
+   "doc": "Resumo do plano em uma linha, para cabeçalho de card e barra de resumo. Formato: `3× G + 1× P · 18,4 kg · 0,21 m³ · cubado 35,0 kg`. O peso cubado mostrado é o dos **Correios** (divisor 6.000 cm³/kg). Qual divisor vale é decisão da cotação (bloco I); para um resumo de tela o dos Correios é o de leit …"
+  },
   "src/lib/freight/index.ts": {
    "path": "src/lib/freight/index.ts",
-   "lines": 40,
+   "lines": 61,
    "doc": "Motor de frete — barril público. Contrato, unidades e limites em `./README.md`."
+  },
+  "src/lib/freight/packMixed.ts": {
+   "path": "src/lib/freight/packMixed.ts",
+   "lines": 121,
+   "exports": [
+    "function packMixed"
+   ],
+   "params": [
+    {
+     "name": "EPSILON",
+     "value": "1"
+    }
+   ],
+   "status_values": [
+    {
+     "field": "status",
+     "value": "ok",
+     "kind": "escreve"
+    },
+    {
+     "field": "status",
+     "value": "nao_cabe",
+     "kind": "escreve"
+    },
+    {
+     "field": "status",
+     "value": "ok",
+     "kind": "escreve"
+    }
+   ],
+   "rule_comments": [
+    "máximo): vai na próxima aberta."
+   ],
+   "doc": "Empacota produtos **diferentes** na mesma caixa. Cada unidade do produto `i` consome `1 / capacity_i(caixa)` da caixa. A soma dessas frações é o quanto a caixa está tomada — um proxy linear que respeita os três tetos do `fitCount` (encaixe, volume aproveitável e peso) sem precisar resolver um empaco …"
+  },
+  "src/lib/freight/packSingleProduct.ts": {
+   "path": "src/lib/freight/packSingleProduct.ts",
+   "lines": 62,
+   "exports": [
+    "type PackResult",
+    "function packSingleProduct"
+   ],
+   "status_values": [
+    {
+     "field": "status",
+     "value": "nao_cabe",
+     "kind": "escreve"
+    },
+    {
+     "field": "status",
+     "value": "ok",
+     "kind": "escreve"
+    },
+    {
+     "field": "status",
+     "value": "ok",
+     "kind": "escreve"
+    },
+    {
+     "field": "status",
+     "value": "nao_cabe",
+     "kind": "escreve"
+    },
+    {
+     "field": "status",
+     "value": "ok",
+     "kind": "escreve"
+    }
+   ],
+   "rule_comments": [
+    "que importam (quantidade preservada, nenhum volume acima do peso máximo)"
+   ],
+   "doc": "Empacota **um** produto, em quantidade qualquer, nas caixas padrão. A heurística é a que um expedidor usa na prática: 1. enquanto sobra mais do que uma caixa grande leva, fecha caixas grandes cheias — é o que minimiza o número de volumes; 2. o resto vai na **menor** caixa que ainda o segura — é o qu …",
+   "percents": [
+    "* despachar uma GG com 10% de ocupação."
+   ]
+  },
+  "src/lib/freight/planFreight.ts": {
+   "path": "src/lib/freight/planFreight.ts",
+   "lines": 266,
+   "exports": [
+    "interface PlanInput",
+    "interface PlanOptions",
+    "function computeItemsHash",
+    "function planFreight"
+   ],
+   "params": [
+    {
+     "name": "OCUPACAO_BAIXA",
+     "value": "0.5"
+    }
+   ],
+   "status_values": [
+    {
+     "field": "status",
+     "value": "dados_insuficientes",
+     "kind": "escreve"
+    },
+    {
+     "field": "status",
+     "value": "dados_insuficientes",
+     "kind": "escreve"
+    },
+    {
+     "field": "status",
+     "value": "nao_cabe",
+     "kind": "escreve"
+    },
+    {
+     "field": "status",
+     "value": "ok",
+     "kind": "escreve"
+    },
+    {
+     "field": "status",
+     "value": "incomplete",
+     "kind": "compara"
+    },
+    {
+     "field": "status",
+     "value": "error",
+     "kind": "compara"
+    },
+    {
+     "field": "status",
+     "value": "nao_cabe",
+     "kind": "compara"
+    }
+   ],
+   "rule_comments": [
+    "do volume sem passar do máximo. É a mesma coisa que `limitedBy: 'weight'`,"
+   ],
+   "doc": "Orquestra o plano de frete: medidas → bloqueio → quantidades → grupos → empacotamento → totais → avisos. Não lê relógio nem sorteia nada: `computedAt` e `itemsHash` entram por parâmetro. É o que faz o plano ser reproduzível em teste e comparável com o que está salvo no orçamento.",
+   "calc_fns": [
+    {
+     "name": "computeItemsHash",
+     "params": "items: ReadonlyArray<{ productId: string; quantity: number }>,",
+     "body": "const canonico = [...items] .map(({ productId, quantity }) => `${productId}:${quantity}`) .sort() .join('|'); let hash = 0x811c9dc5; for (let i = 0; i < canonico.length; i += 1) { hash ^= canonico.charCodeAt(i); hash = Math.imul(hash, 0x01000193) >>> 0; } return hash.toString(16).padStart(8, '0');"
+    }
+   ]
   },
   "src/lib/freight/resolveItemDimensions.ts": {
    "path": "src/lib/freight/resolveItemDimensions.ts",
@@ -478937,8 +479765,9 @@
   },
   "src/lib/freight/units.ts": {
    "path": "src/lib/freight/units.ts",
-   "lines": 84,
+   "lines": 89,
    "exports": [
+    "function roundDecimal",
     "function round1",
     "function round2",
     "function mmToCm",
@@ -478964,6 +479793,35 @@
     }
    ]
   },
+  "src/lib/freight/__tests__/boxOrder.test.ts": {
+   "path": "src/lib/freight/__tests__/boxOrder.test.ts",
+   "lines": 46,
+   "is_test": true,
+   "doc": "boxOrder.test.ts — volume interno e as ordens derivadas dele.",
+   "tests": [
+    "boxOrder",
+    "volume interno das quatro caixas padrão",
+    "ordena da maior para a menor e o inverso",
+    "não altera a lista recebida",
+    "empate de volume desempata pelo código, para a ordem ser estável",
+    "maiorCaixa devolve a GG, e null quando não há caixa"
+   ]
+  },
+  "src/lib/freight/__tests__/buildGroups.test.ts": {
+   "path": "src/lib/freight/__tests__/buildGroups.test.ts",
+   "lines": 77,
+   "is_test": true,
+   "doc": "buildGroups.test.ts — quem divide caixa com quem.",
+   "tests": [
+    "buildGroups",
+    "misturar: dois produtos viram um grupo",
+    "separar: dois produtos viram dois grupos",
+    "dois produtos ",
+    "ordem é estável por productId, não pela ordem de entrada",
+    "duas linhas do mesmo produto não desestabilizam a ordem",
+    "lista vazia não gera grupo"
+   ]
+  },
   "src/lib/freight/__tests__/columns.test.ts": {
    "path": "src/lib/freight/__tests__/columns.test.ts",
    "lines": 68,
@@ -478976,6 +479834,21 @@
     "não tem repetição",
     "PRODUCT_MEASURE_SELECT",
     "é a lista separada por vírgula, pronta para o select"
+   ]
+  },
+  "src/lib/freight/__tests__/computeVolumeTotals.test.ts": {
+   "path": "src/lib/freight/__tests__/computeVolumeTotals.test.ts",
+   "lines": 99,
+   "is_test": true,
+   "doc": "computeVolumeTotals.test.ts — os números de um volume fechado. Externas usadas: P 27 × 33 × 33 = 29.403 cm³ · G 36 × 36 × 54 = 69.984 cm³. Divisores: Correios 6.000 cm³/kg, rodoviário 3.333 cm³/kg.",
+   "tests": [
+    "computeVolumeTotals",
+    "100 cadernetas de 120 g na caixa G",
+    "caixa vazia tem ocupação zero e peso só da própria caixa",
+    "soma produtos diferentes no mesmo volume",
+    "divisor zerado não divide por zero: devolve cubado zero",
+    "caixa com lado interno zerado não divide por zero: ocupação zero",
+    "fator da caixa fora do intervalo cai no padrão global"
    ]
   },
   "src/lib/freight/__tests__/expandQuantities.test.ts": {
@@ -478997,6 +479870,161 @@
     "quantidade de item inválida nomeia o produto",
     "quantidade de item fracionária é recusada",
     "lista vazia é válida: zero volumes, não erro"
+   ]
+  },
+  "src/lib/freight/__tests__/fitCount.test.ts": {
+   "path": "src/lib/freight/__tests__/fitCount.test.ts",
+   "lines": 214,
+   "is_test": true,
+   "rule_comments": [
+    "teto que vale é o físico — inventar um limite de peso seria pior."
+   ],
+   "doc": "fitCount.test.ts — capacidade de uma caixa para uma peça. Todo valor esperado está calculado à mão no comentário do caso, com as caixas reais da empresa (ver `fixtures/boxes.ts`). Internas: P 26,4 × 32,4 × 32,4 · M 32,4 × 32,4 × 46,4 · G 35,4 × 35,4 × 53,4 · GG 39,4 × 49,4 × 59,4. Fator 0,9 em todas …",
+   "tests": [
+    "fitCount — caderneta 21 × 14 × 1 cm, 120 g",
+    "P: geometria manda, 64 unidades",
+    "M: geometria manda, 128 unidades",
+    "G: geometria manda, 140 unidades",
+    "GG: o peso máximo manda antes da geometria, 250 unidades",
+    "fitCount — outras peças",
+    "squeeze 25 × 7 × 7 na P: 16 unidades por geometria",
+    "cubo de 1 kg na P: o peso corta em 10 antes da geometria",
+    "barra de 50 cm não entra na P nem na M, e entra deitada na G e na GG",
+    "barra de 61 cm não entra em nenhuma caixa ativa",
+    "peça de 1,2 cm não perde fileira por erro de ponto flutuante",
+    "fitCount — entradas degeneradas",
+    "lado desconhecido zera a capacidade",
+    "peso não cadastrado não cria teto de peso",
+    "caixa sem peso útil zera por peso",
+    "fator da caixa fora do intervalo cai no padrão global"
+   ]
+  },
+  "src/lib/freight/__tests__/formatPlanSummary.test.ts": {
+   "path": "src/lib/freight/__tests__/formatPlanSummary.test.ts",
+   "lines": 82,
+   "is_test": true,
+   "doc": "formatPlanSummary.test.ts — o resumo de uma linha.",
+   "tests": [
+    "formatPlanSummary",
+    "460 cadernetas em P/M/G: caixas da maior para a menor, números em pt-BR",
+    "250 cadernetas nas quatro caixas: uma GG só",
+    "caixas de mesmo volume saem em ordem de código",
+    "plano bloqueado não tem resumo"
+   ]
+  },
+  "src/lib/freight/__tests__/fuzz.test.ts": {
+   "path": "src/lib/freight/__tests__/fuzz.test.ts",
+   "lines": 199,
+   "is_test": true,
+   "params": [
+    {
+     "name": "COMBINACOES",
+     "value": "200"
+    }
+   ],
+   "rule_comments": [
+    "estes testes; o que ela não pode é perder peça, estourar peso ou prometer",
+    "2. nenhum volume passa do peso máximo da própria caixa"
+   ],
+   "doc": "fuzz.test.ts — 200 combinações com semente fixa. Não verifica números: verifica o que nunca pode deixar de ser verdade, em qualquer entrada. A heurística de empacotamento pode melhorar sem quebrar estes testes; o que ela não pode é perder peça, estourar peso ou prometer uma ocupação acima de 100%. S …",
+   "calc_fns": [
+    {
+     "name": "gerarCasos",
+     "params": "",
+     "body": "const random = criarRandom(20261119); const inteiro = (min: number, max: number) => min + Math.floor(random() * (max - min + 1)); const casos: Caso[] = []; for (let i = 0; i < COMBINACOES; i += 1) { const quantosProdutos = inteiro(1, 4); const inputs: Caso['inputs'] = []; for (let p = 0; p < quantosProdutos; p += 1) { // lados de 1 a 30 cm: entram nas caixas padrão na maioria dos sorteios, // e de vez em quando um lado grande força o caminho \"não cabe\" const lado = () => inteiro(1, 30); inputs.p …"
+    }
+   ],
+   "tests": [
+    "fuzz — invariantes do plano",
+    "gera ${COMBINACOES} casos determinísticos",
+    "nenhuma invariante quebra em 200 combinações",
+    "200 combinações rodam em tempo de ordem de grandeza aceitável"
+   ]
+  },
+  "src/lib/freight/__tests__/packMixed.test.ts": {
+   "path": "src/lib/freight/__tests__/packMixed.test.ts",
+   "lines": 194,
+   "is_test": true,
+   "rule_comments": [
+    "a primeira caixa fecha com o squeeze no limite e sem agulha"
+   ],
+   "doc": "packMixed.test.ts — produtos diferentes na mesma caixa. Capacidades: caderneta → P 64 · M 128 · G 140 · GG 250 squeeze → P 16 · M 24 · G 49 · GG 70",
+   "tests": [
+    "packMixed",
+    "50 cadernetas + 50 squeezes cabem numa GG só",
+    "misturar nunca usa mais caixas que separar",
+    "preserva a quantidade de cada produto quando precisa de várias caixas",
+    "nenhum volume passa do peso máximo da própria caixa",
+    "peças maiores entram primeiro",
+    "peça que não cabe em nenhuma caixa interrompe o grupo",
+    "catálogo restrito: usa a maior disponível e enche em sequência",
+    "peça comprida e fina: a caixa escolhida a ignora e o grupo termina em nao_cabe",
+    "caixa tomada pela primeira peça manda o resto para outra caixa",
+    "lista vazia e quantidades zeradas não abrem caixa",
+    "produto leve e volumoso junto com denso e pequeno: os dois tetos valem"
+   ]
+  },
+  "src/lib/freight/__tests__/packSingleProduct.test.ts": {
+   "path": "src/lib/freight/__tests__/packSingleProduct.test.ts",
+   "lines": 143,
+   "is_test": true,
+   "doc": "packSingleProduct.test.ts — um produto, N unidades, nas 4 caixas padrão. Capacidades (de `fitCount.test.ts`): caderneta → P 64 · M 128 · G 140 · GG 250 squeeze → P 16 · M 24 · G 49 · GG 70",
+   "calc_fns": [
+    {
+     "name": "total",
+     "params": "volumes: Array<{ contents: Array<{ quantity: number }> }>",
+     "body": "return volumes.reduce((soma, v) => soma + v.contents.reduce((s, c) => s + c.quantity, 0), 0);"
+    }
+   ],
+   "tests": [
+    "packSingleProduct — caderneta",
+    "7 unidades: a menor caixa que fecha é a P (cabem 64)",
+    "100 unidades: a P não fecha (64), a M fecha (128)",
+    "250 unidades: a GG fecha exatamente no peso máximo",
+    "600 unidades: duas GG cheias e o resto na menor que fecha",
+    "460 unidades sem a GG no catálogo: 3 G cheias e uma P",
+    "packSingleProduct — squeeze",
+    "7 unidades: 1× P (cabem 16)",
+    "100 unidades: nenhuma caixa fecha sozinha, abre GG cheia e fecha na G",
+    "250 unidades: três GG cheias e uma G",
+    "packSingleProduct — limites",
+    "peça maior que a maior caixa devolve nao_cabe",
+    "sem caixa ativa devolve nao_cabe",
+    "quantidade zero não abre caixa",
+    "nenhum volume passa do peso máximo da própria caixa"
+   ]
+  },
+  "src/lib/freight/__tests__/planFreight.test.ts": {
+   "path": "src/lib/freight/__tests__/planFreight.test.ts",
+   "lines": 298,
+   "is_test": true,
+   "rule_comments": [
+    "250 cadernetas na GG = 30.000 g, exatamente o máximo: não cabe mais uma"
+   ],
+   "doc": "planFreight.test.ts — a orquestração ponta a ponta do motor.",
+   "tests": [
+    "planFreight — status ok",
+    "460 cadernetas sem a GG: 3× G + 1× P, com os totais fechados à mão",
+    "kitQuantity multiplica a quantidade de cada linha",
+    "linha com quantidade zero sai do plano sem virar erro",
+    "planFreight — status dados_insuficientes",
+    "produto sem peso bloqueia o plano inteiro, sem estimativa parcial",
+    "quantidade fracionária bloqueia e o aviso nomeia a linha",
+    "planFreight — status nao_cabe",
+    "peça maior que a maior caixa nomeia a peça e a caixa",
+    "sem caixa ativa cadastrada o aviso diz isso",
+    "planFreight — avisos",
+    "avisa quando uma caixa vai com menos de metade do espaço ocupado",
+    "avisa quando a caixa fechou no peso e não no espaço",
+    "caixa com peso próprio não é descontada duas vezes no aviso de peso",
+    "caixa com peso próprio ainda avisa quando realmente fecha no peso",
+    "plano confortável não gera aviso",
+    "computeItemsHash",
+    "não depende da ordem da lista",
+    "muda quando a quantidade muda",
+    "muda quando um produto entra",
+    "é estável entre execuções: o mesmo conteúdo dá o mesmo hash",
+    "lista vazia tem hash próprio e estável"
    ]
   },
   "src/lib/freight/__tests__/resolveItemDimensions.test.ts": {
@@ -479061,6 +480089,42 @@
     "rejeita zero — o catálogo usa zero como ausência de dado",
     "rejeita null, undefined, negativo e não-finito"
    ]
+  },
+  "src/lib/freight/__tests__/fixtures/boxes.ts": {
+   "path": "src/lib/freight/__tests__/fixtures/boxes.ts",
+   "lines": 62,
+   "is_test": true,
+   "exports": [
+    "const CAIXA_P",
+    "const CAIXA_M",
+    "const CAIXA_G",
+    "const CAIXA_GG",
+    "const CAIXAS_PADRAO",
+    "const SETTINGS_PADRAO"
+   ],
+   "params": [
+    {
+     "name": "PAREDE_CM",
+     "value": "0.3"
+    }
+   ]
+  },
+  "src/lib/freight/__tests__/fixtures/items.ts": {
+   "path": "src/lib/freight/__tests__/fixtures/items.ts",
+   "lines": 75,
+   "is_test": true,
+   "exports": [
+    "function pecaDeTeste",
+    "const caderneta",
+    "const squeeze",
+    "const barraGigante",
+    "function linhaDeTeste",
+    "const LINHA_CADERNETA",
+    "const LINHA_SQUEEZE",
+    "const LINHA_BARRA_61",
+    "const LINHA_SEM_PESO"
+   ],
+   "doc": "Peças de teste do bloco B, em medidas redondas, para os valores esperados poderem ser conferidos à mão no comentário de cada caso. Capacidades nas quatro caixas padrão (calculadas em `fitCount.test.ts`): | Peça | P | M | G | GG | |---|---|---|---|---| | caderneta 21 × 14 × 1, 120 g | 64 | 128 | 140 …"
   },
   "src/lib/freight/__tests__/fixtures/products.ts": {
    "path": "src/lib/freight/__tests__/fixtures/products.ts",
@@ -548905,10 +549969,52 @@
   }
  },
  "git": {
-  "sha": "2080226fab7fc958254fa29db25c7554ec9b891f",
+  "sha": "41166fc89d164c3c3d758e3e0ec3015e10f88ce5",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "41166fc",
+    "date": "2026-11-19",
+    "author": "adm01-debug",
+    "subject": "feat(frete): motor de empacotamento (Bloco B) (#3900)",
+    "files": [
+     "src/lib/freight/README.md",
+     "src/lib/freight/__tests__/boxOrder.test.ts",
+     "src/lib/freight/__tests__/buildGroups.test.ts",
+     "src/lib/freight/__tests__/computeVolumeTotals.test.ts",
+     "src/lib/freight/__tests__/fitCount.test.ts",
+     "src/lib/freight/__tests__/fixtures/boxes.ts",
+     "src/lib/freight/__tests__/fixtures/items.ts",
+     "src/lib/freight/__tests__/formatPlanSummary.test.ts",
+     "src/lib/freight/__tests__/fuzz.test.ts",
+     "src/lib/freight/__tests__/packMixed.test.ts",
+     "src/lib/freight/__tests__/packSingleProduct.test.ts",
+     "src/lib/freight/__tests__/planFreight.test.ts",
+     "src/lib/freight/boxOrder.ts",
+     "src/lib/freight/buildGroups.ts",
+     "src/lib/freight/computeVolumeTotals.ts",
+     "src/lib/freight/fitCount.ts",
+     "src/lib/freight/formatPlanSummary.ts",
+     "src/lib/freight/index.ts",
+     "src/lib/freight/packMixed.ts",
+     "src/lib/freight/packSingleProduct.ts",
+     "src/lib/freight/planFreight.ts",
+     "src/lib/freight/units.ts"
+    ]
+   },
+   {
+    "sha": "eebe767",
+    "date": "2026-11-19",
+    "author": "adm01-debug",
+    "subject": "feat(scripts): gate do Vercel no pre-push (resgate de trabalho de agente) (#3901)",
+    "files": [
+     "scripts/automation.config.json",
+     "scripts/automation.mjs",
+     "scripts/vercel-gate.mjs",
+     "scripts/vercel-gate.unit.mjs"
+    ]
+   },
    {
     "sha": "2080226",
     "date": "2026-11-19",
@@ -549206,27 +550312,6 @@
     "files": [
      "docs/agentes/resgates/2026-11-19-migrations-orfas-e-o-portao-retroativo.md"
     ]
-   },
-   {
-    "sha": "96d0391",
-    "date": "2026-11-19",
-    "author": "adm01-debug",
-    "subject": "chore(resgates): fecha a reconciliacao byte a byte dos 98 arquivos restantes (#3867)",
-    "files": [
-     "docs/agentes/resgates/2026-11-19-fechamento-da-reconciliacao.md"
-    ]
-   },
-   {
-    "sha": "074fa4f",
-    "date": "2026-11-18",
-    "author": "adm01-debug",
-    "subject": "fix(magic-up): valida o shape vindo do banco e poe prazo nas consultas (#3866)",
-    "files": [
-     "src/hooks/intelligence/useMagicUpState.helpers.ts",
-     "src/hooks/intelligence/useMagicUpState.ts",
-     "src/types/gravacao.ts",
-     "tests/hooks/magicUpHelpers.guards.test.ts"
-    ]
    }
   ],
   "hot_files": [
@@ -549239,7 +550324,7 @@
     4
    ],
    [
-    "docs/agentes/resgates/2026-11-19-fechamento-da-reconciliacao.md",
+    "src/lib/freight/README.md",
     3
    ],
    [
@@ -549247,7 +550332,11 @@
     3
    ],
    [
-    "src/lib/freight/README.md",
+    "src/lib/freight/index.ts",
+    2
+   ],
+   [
+    "src/lib/freight/units.ts",
     2
    ],
    [
@@ -549303,12 +550392,8 @@
     2
    ],
    [
-    ".github/workflows/e2e-cart.yml",
-    1
-   ],
-   [
-    "tests/scripts/e2e-cart-artifact-safety.test.mjs",
-    1
+    "docs/agentes/resgates/2026-11-19-fechamento-da-reconciliacao.md",
+    2
    ]
   ]
  }

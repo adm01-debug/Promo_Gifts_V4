@@ -1,7 +1,7 @@
 {
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
- "total": 283,
+ "total": 284,
  "scripts": [
   {
    "arquivo": ".github/scripts/e2e-relevance.mjs",
@@ -135,7 +135,7 @@
   {
    "arquivo": "scripts/automation.mjs",
    "descricao": null,
-   "linhas": 992,
+   "linhas": 1022,
    "env": [
     "REPO_AUTOMATION_CHAINING"
    ],
@@ -3391,6 +3391,17 @@
     "deploy-gates.yml",
     "prod-health.yml"
    ],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/vercel-gate.mjs",
+   "descricao": "Gate do Vercel antes do push (11/11/2026, revisado após QA): reproduz localmente o build que o Vercel fará.   node vercel-gate.mjs [--root <worktree>] [--ref <commit>] [--prod|--preview]",
+   "linhas": 255,
+   "env": [
+    "VERCEL_GATE"
+   ],
+   "npm_scripts": [],
+   "workflows": [],
    "orfao": false
   },
   {
