@@ -1,9 +1,9 @@
 {
  "meta": {
-  "sha": "14befb818b43bd82187983a740533694242eb23a",
+  "sha": "a4d8355b29d1042544703c30475c1c4c075e0c2a",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-19 06:47 UTC",
+  "generated_at": "2026-11-19 07:13 UTC",
   "files_total": 10905,
   "code_files": 8926,
   "code_lines": 1265221
@@ -548007,10 +548007,20 @@
   }
  },
  "git": {
-  "sha": "14befb818b43bd82187983a740533694242eb23a",
+  "sha": "a4d8355b29d1042544703c30475c1c4c075e0c2a",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "a4d8355",
+    "date": "2026-11-19",
+    "author": "github-actions[bot]",
+    "subject": "docs(migrations-log): recibos E15 de 20260916202000 e 20261115034500 (#3872)",
+    "files": [
+     "docs/coordenacao/conflitos-semanticos.md",
+     "supabase/MIGRATIONS_SYNC_LOG.md"
+    ]
+   },
    {
     "sha": "14befb8",
     "date": "2026-11-19",
@@ -548327,24 +548337,12 @@
     "author": "adm01-debug",
     "subject": "feat(components): Ctrl+K volta a alcançar Novidades, Filtros e Estoque (#3842)",
     "files": []
-   },
-   {
-    "sha": "74f6954",
-    "date": "2026-11-18",
-    "author": "adm01-debug",
-    "subject": "fix(test): dois guardas afirmavam o contrário do que a main faz hoje (#3843)",
-    "files": [
-     "e2e/carrinhos/sidebar-no-legacy-labels.spec.ts",
-     "src/components/common/spotlight/SpotlightItems.ts",
-     "src/components/common/spotlight/__tests__/SpotlightItems.test.ts",
-     "tests/pages/legacy-KitBuilder.partial-preservation.test.tsx"
-    ]
    }
   ],
   "hot_files": [
    [
     "supabase/MIGRATIONS_SYNC_LOG.md",
-    5
+    6
    ],
    [
     ".github/workflows/edge-functions-deno-tests.yml",
@@ -548357,6 +548355,10 @@
    [
     "docs/agentes/resgates/2026-11-18-inventario-trabalho-nao-ligado.md",
     2
+   ],
+   [
+    "docs/coordenacao/conflitos-semanticos.md",
+    1
    ],
    [
     "supabase/migrations/20261119051500_fix_get_quote_token_public_expiracao_pg_temp.sql",
@@ -548416,10 +548418,6 @@
    ],
    [
     "tests/hooks/useKitBuilderPageState.financial.test.tsx",
-    1
-   ],
-   [
-    "tests/hooks/useKitCatalogPriceRefresh.race.test.ts",
     1
    ]
   ]

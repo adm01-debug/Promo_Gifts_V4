@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "14befb818b43bd82187983a740533694242eb23a",
+  "commit": "a4d8355b29d1042544703c30475c1c4c075e0c2a",
   "branch": "main",
-  "data_commit": "2026-11-19T03:46:23-03:00",
+  "data_commit": "2026-11-19T04:12:21-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "a4d8355b",
+    "data": "2026-11-19",
+    "assunto": "docs(migrations-log): recibos E15 de 20260916202000 e 20261115034500 (#3872)"
+   },
    {
     "sha": "14befb81",
     "data": "2026-11-19",
@@ -126,11 +131,6 @@
     "sha": "9e11e2f7",
     "data": "2026-11-18",
     "assunto": "fix(docs): tira do inventario o caminho de migration que deixou a main vermelha (#3849)"
-   },
-   {
-    "sha": "3be3249a",
-    "data": "2026-11-18",
-    "assunto": "docs(resgate): o inventário contava a quarentena como main — 102 arquivos, não 22 (#3847)"
    }
   ],
   "arquivos_mudados_7d": 1479,
@@ -199,7 +199,7 @@
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "supabase/MIGRATIONS_SYNC_LOG.md",
-    "mudancas": 63
+    "mudancas": 64
    },
    {
     "arquivo": "package.json",
@@ -215,7 +215,7 @@
    },
    {
     "arquivo": "docs/coordenacao/conflitos-semanticos.md",
-    "mudancas": 26
+    "mudancas": 27
    },
    {
     "arquivo": "package-lock.json",
@@ -230,10 +230,6 @@
     "mudancas": 21
    },
    {
-    "arquivo": "analise-prs/progresso.json",
-    "mudancas": 17
-   },
-   {
     "arquivo": "audit/supabase-reference-catalog.temporary.json",
     "mudancas": 17
    },
@@ -244,6 +240,10 @@
    {
     "arquivo": "src/hooks/kit-builder/useKitBuilderPageState.ts",
     "mudancas": 16
+   },
+   {
+    "arquivo": "analise-prs/progresso.json",
+    "mudancas": 15
    },
    {
     "arquivo": "src/hooks/kit-builder/useKitAutoSave.ts",
@@ -301,19 +301,19 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 448
+    "commits": 445
    },
    {
     "autor": "Claude",
-    "commits": 85
+    "commits": 83
    },
    {
     "autor": "Joaquim Ataides",
-    "commits": 70
+    "commits": 69
    },
    {
     "autor": "github-actions[bot]",
-    "commits": 24
+    "commits": 25
    },
    {
     "autor": "dependabot[bot]",
