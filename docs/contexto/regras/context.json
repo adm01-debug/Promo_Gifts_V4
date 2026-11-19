@@ -1,9 +1,9 @@
 {
  "meta": {
-  "sha": "2b1629605badf1050c626992b09428b2f67cd00e",
+  "sha": "db0bd46e8a1d000c5a2790f340e93df5cfa53973",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-19 11:05 UTC",
+  "generated_at": "2026-11-19 11:34 UTC",
   "files_total": 10913,
   "code_files": 8933,
   "code_lines": 1265560
@@ -548234,10 +548234,20 @@
   }
  },
  "git": {
-  "sha": "2b1629605badf1050c626992b09428b2f67cd00e",
+  "sha": "db0bd46e8a1d000c5a2790f340e93df5cfa53973",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "db0bd46",
+    "date": "2026-11-19",
+    "author": "adm01-debug",
+    "subject": "chore: baseline de refs de migration p06/onboarding no doc de triggers (#3893)",
+    "files": [
+     ".migration-refs-baseline.json",
+     "supabase/MIGRATIONS_SYNC_LOG.md"
+    ]
+   },
    {
     "sha": "2b16296",
     "date": "2026-11-19",
@@ -548531,23 +548541,12 @@
     "files": [
      "supabase/MIGRATIONS_SYNC_LOG.md"
     ]
-   },
-   {
-    "sha": "a6a0bde",
-    "date": "2026-11-18",
-    "author": "adm01-debug",
-    "subject": "fix(orcamentos): recusa item invalido antes de gravar template (#3859)",
-    "files": [
-     "src/hooks/quotes/quoteTemplateItemGuard.ts",
-     "src/hooks/quotes/useQuoteTemplates.ts",
-     "tests/hooks/quoteTemplateItemGuard.test.ts"
-    ]
    }
   ],
   "hot_files": [
    [
     "supabase/MIGRATIONS_SYNC_LOG.md",
-    14
+    15
    ],
    [
     "docs/agentes/resgates/2026-11-19-migrations-orfas-e-o-portao-retroativo.md",
@@ -548564,6 +548563,10 @@
    [
     ".security/policies-baseline.json",
     2
+   ],
+   [
+    ".migration-refs-baseline.json",
+    1
    ],
    [
     "docs/agentes/resgates/2026-11-19-triggers-ausentes-e-contas-de-teste-em-producao.md",
@@ -548619,10 +548622,6 @@
    ],
    [
     "tests/hooks/magicUpHelpers.guards.test.ts",
-    1
-   ],
-   [
-    "src/components/kit-builder/KitSummary.tsx",
     1
    ]
   ]
