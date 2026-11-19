@@ -178504,9 +178504,13 @@
             {
               "file": "supabase/migrations/20261115013000_fix_get_quote_token_public_respeita_expiracao.sql",
               "hits": 1
+            },
+            {
+              "file": "supabase/migrations/20261119051500_fix_get_quote_token_public_expiracao_pg_temp.sql",
+              "hits": 1
             }
           ],
-          "code_total_files": 4,
+          "code_total_files": 5,
           "cron": [],
           "db": [],
           "triggers": [],
@@ -178514,11 +178518,11 @@
         },
         "comment": "Portal de aprovação (anon-safe): retorna campos não-sensíveis do token de cotação. Redacta: client_email, signer_document, signer_ip, signer_user_agent, signature_hash, ip_address, user_agent, seller_id. Substituto de get_quote_token_by_value para callers anon (SEC-009, 2026-09-04).",
         "config": [
-          "search_path=\"\""
+          "search_path=pg_catalog, pg_temp"
         ],
         "definition": null,
-        "definition_sha": "2a95f19705e8b91e",
-        "execute_api_roles": "anon, service_role",
+        "definition_sha": "aa778c60a382d972",
+        "execute_api_roles": "service_role",
         "execute_public": false,
         "is_trigger_fn": false,
         "kind": "function",
@@ -221658,12 +221662,6 @@
       {
         "code": "rpc_anon_executable",
         "detail": "SECURITY DEFINER chamável via RPC por anon (sem login): roda com privilégios do owner. Confirme que é intencional (Supabase dá EXECUTE a anon por padrão; revogue se não for API pública).",
-        "object": "public.get_quote_token_public(_token text)",
-        "severity": "INFO"
-      },
-      {
-        "code": "rpc_anon_executable",
-        "detail": "SECURITY DEFINER chamável via RPC por anon (sem login): roda com privilégios do owner. Confirme que é intencional (Supabase dá EXECUTE a anon por padrão; revogue se não for API pública).",
         "object": "public.get_sitemap_public(p_limit integer, p_offset integer)",
         "severity": "INFO"
       },
@@ -238717,6 +238715,12 @@
         "statements": 4,
         "statements_sha": "cebcb6a595f8e1c8",
         "version": "20261118223000"
+      },
+      {
+        "name": "fix_get_quote_token_public_expiracao_pg_temp",
+        "statements": 1,
+        "statements_sha": "537bbd5803ef142f",
+        "version": "20261119051500"
       }
     ],
     "policies": [

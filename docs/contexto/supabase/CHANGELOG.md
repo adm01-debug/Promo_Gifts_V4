@@ -2,6 +2,12 @@
 
 Diff semântico gerado a cada coleta em que algo mudou.
 
+## 2026-11-19 06:28 UTC
+
+- **functions** alterado (1): `public.get_quote_token_public(_token text)`
+- **lints** removido (1): `rpc_anon_executable:public.get_quote_token_public(_token text)`
+- **migrations** adicionado (1): `20261119051500_fix_get_quote_token_public_expiracao_pg_temp`
+
 ## 2026-11-19 05:18 UTC
 
 - **migrations** adicionado (1): `20261108235500_restrict_art_files_public_read_to_quotes`

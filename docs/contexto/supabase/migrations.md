@@ -2984,3 +2984,4 @@ SQL em `migrations/<versao>_<nome>.sql`. Mudanças feitas pelo Dashboard/SQL Edi
 | 20261115230000 | [ai_function_routing_mockup_assistant](migrations/20261115230000_ai_function_routing_mockup_assistant.sql) | 1 |
 | 20261117073000 | [p06_security_invoker_v_product_properties_public](migrations/20261117073000_p06_security_invoker_v_product_properties_public.sql) | 8 |
 | 20261118223000 | [fn_supplier_risk_breakdown](migrations/20261118223000_fn_supplier_risk_breakdown.sql) | 4 |
+| 20261119051500 | [fix_get_quote_token_public_expiracao_pg_temp](migrations/20261119051500_fix_get_quote_token_public_expiracao_pg_temp.sql) | 1 |

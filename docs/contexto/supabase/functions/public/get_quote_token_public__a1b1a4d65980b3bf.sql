@@ -2,7 +2,7 @@ CREATE OR REPLACE FUNCTION public.get_quote_token_public(_token text)
  RETURNS jsonb
  LANGUAGE sql
  STABLE SECURITY DEFINER
- SET search_path TO ''
+ SET search_path TO 'pg_catalog', 'pg_temp'
 AS $function$
   SELECT jsonb_build_object(
     'id',             qat.id,
@@ -21,5 +21,9 @@ AS $function$
   )
   FROM public.quote_approval_tokens qat
   WHERE qat.token = _token
+    -- GUARD: link expirado deixa de devolver dados. Espelha a condição que
+    -- public.submit_quote_response já aplica. `expires_at IS NULL` segue aceito porque a
+    -- coluna é nullable e o default (now() + 30 days) só vale para linhas novas.
+    AND (qat.expires_at IS NULL OR qat.expires_at > pg_catalog.now())
   LIMIT 1;
 $function$
