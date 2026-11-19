@@ -2,6 +2,8 @@
  * useMagicUpState.helpers — tipos e data-fetchers extraídos de useMagicUpState.ts
  * (refatoração pura, sem mudança de comportamento).
  */
+import { isAreaShape, type PrintAreaWithTechniques } from '@/types/gravacao';
+import type { CustomizationOption } from '@/hooks/mockup/useMockupTechniques';
 import { supabase } from '@/integrations/supabase/client';
 import { normalizeProductSearch } from '@/utils/product-search';
 import type { Tables, TablesInsert, TablesUpdate } from '@/integrations/supabase/types';
@@ -262,4 +264,72 @@ export async function saveMagicUpCampaignRow(args: {
     client_id: basePayload.client_id || null,
     client_name: basePayload.client_name || null,
   };
+}
+
+/**
+ * Prazo para uma consulta ao banco, com aborto de verdade.
+ *
+ * A flag `cancelled` que o hook usa descarta a resposta mas NAO aborta a
+ * requisicao: consulta que nunca responde prendia o spinner para sempre.
+ * `dbInvoke` repassa o signal ao `abortSignal` da query
+ * (src/lib/db/postgrest.ts:40-41,563-565).
+ *
+ * Resgatado de salvo/codex-fix-gate1-kit-pdf-types-261109-2252:src/hooks/useMagicUpState.ts:278-279,
+ * que a main nunca recebeu — `git grep AbortController` no hook dava zero.
+ */
+export function prazoDeConsulta(ms = 30_000): { signal: AbortSignal; encerrar: () => void } {
+  const controller = new AbortController();
+  const deadline = setTimeout(() => controller.abort(), ms);
+  return {
+    signal: controller.signal,
+    encerrar: () => {
+      clearTimeout(deadline);
+      controller.abort();
+    },
+  };
+}
+
+interface LocalizacaoDeCustomizacao {
+  location_code: string;
+  location_name: string;
+  location_order: number;
+  options: CustomizationOption[];
+}
+
+/**
+ * customizationData -> PrintAreaWithTechniques[]. Transformacao pura, extraida
+ * do hook para o modulo de helpers: `useMagicUpState.ts` tem teto no
+ * .file-size-baseline.json e somar linhas la e a direcao errada num arquivo que
+ * ja esta muito acima do alvo de 500.
+ *
+ * `shape` passa por isAreaShape em vez de cast cego: o valor vem do banco, que
+ * nao tem CHECK prendendo-o aos cinco formatos, e um shape desconhecido entrava
+ * no tipo sem ser barrado. Resgatado de
+ * salvo/codex-fix-gate1-kit-pdf-types-261109-2252:src/hooks/useMagicUpState.ts:61-63,347.
+ */
+export function montarAreasDeGravacao(
+  // `CustomizationLocation` nao e exportado por useMockupTechniques.ts; a forma
+  // e declarada aqui em vez de eu alterar aquele arquivo so para exportar.
+  locations: readonly LocalizacaoDeCustomizacao[] | undefined,
+): PrintAreaWithTechniques[] {
+  if (!locations) return [];
+  return locations.map((loc, idx) => ({
+    area_id: loc.location_code,
+    area_code: loc.location_code,
+    area_name: loc.location_name,
+    component_name: null,
+    location_name: loc.location_name,
+    max_width: Math.max(...loc.options.map((o) => o.efetiva_largura_max || 0), 0),
+    max_height: Math.max(...loc.options.map((o) => o.efetiva_altura_max || 0), 0),
+    unit: 'cm',
+    shape: isAreaShape(loc.options[0]?.shape) ? loc.options[0].shape : 'rectangle',
+    is_curved: loc.options.some((o) => o.is_curved),
+    is_primary: idx === 0,
+    display_order: loc.location_order,
+    techniques: loc.options.map((o) => ({
+      id: o.technique_id,
+      nome: o.tecnica_nome,
+      codigo: o.codigo_tabela,
+    })),
+  }));
 }
