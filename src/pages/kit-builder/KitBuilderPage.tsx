@@ -433,9 +433,7 @@ export default function KitBuilderPage() {
                         notes={state.kitState.notes}
                         onNotesChange={actions.setNotes}
                         onEditBox={() => actions.goToStep('box')}
-                        onSaveDraft={() => {
-                          void actions.handleSaveKit();
-                        }}
+                        onSaveDraft={actions.handleSaveKit}
                         isSavingDraft={meta.isSaving}
                         priceRefresh={meta.priceRefresh}
                       />
