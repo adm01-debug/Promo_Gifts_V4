@@ -2474,3 +2474,39 @@ comportamento de produção. Nenhum segredo entra no repositório.
 |---|---|---|---|
 | `20261117172500` | `elevenlabs_credential` | `fdbc26e30ab2fbe2c8b5b30f13905a27ab480d21fd3d04cf934cb57eeef9c03a` | pendente — aplicar via `db-apply-migration.yml` (`version=20261117172500`) após merge |
 | `20261119081500` | `elevenlabs_credential_reemissao` | `f201f4ecc837eee77a39c399b2eef324a0cdc99895bf9b9d2a300baa1e6087a7` | pendente — reemissao byte a byte de `20261117172500`, reprovada pelo preflight E063 (run 44484611975) por nao ter cabecalho `-- Rollback:` nem arquivo de rollback. Aplicar via `db-apply-migration.yml` (`version=20261119081500`) apos merge |
+
+### 2026-11-19 — grants fantasma: o baseline ressuscita 7 revogações anteriores a ele
+
+O caminho de reconstrução do banco declarado em `.github/workflows/db-apply-migration.yml:89` é
+**replay do baseline + migrations subsequentes**. Só migrations com versão > `20261015140000`
+rodam depois do baseline. Sete revogações moram em migrations **anteriores** ao baseline, e o
+arquivo `supabase/baseline/20261015140000_baseline_schema.sql` ainda carrega o `GRANT`
+correspondente — então a reconstrução devolve privilégio que a produção já tirou. Seis deles são
+`EXECUTE` em função `SECURITY DEFINER`.
+
+Medido em 19/11/2026 contra `doufsxqlfjyuvxuezpln` com `has_function_privilege` /
+`has_table_privilege`: `anon` e `authenticated` **não têm** nenhum dos sete hoje. Logo a
+migration é **no-op em produção** — `REVOKE` de privilégio ausente não é erro. O ganho é fazer a
+reconstrução terminar igual à produção.
+
+| objeto | papel | GRANT no baseline | revogação original |
+|---|---|---|---|
+| `confirm_notifications_dispatched(uuid[])` | authenticated | linha 110103 | `20260917061500:86` |
+| `fn_notify_user(...)` | authenticated | linha 112312 | `20260917061500:88` |
+| `registrar_entrada_estoque(...)` | authenticated | linha 116260 | `20260917061500:92` |
+| `registrar_saida_estoque(...)` | authenticated | linha 116272 | `20260917061500:96` |
+| `fn_global_search(text,integer,text[])` | anon | linha 111894 | `20260716000047` |
+| `get_quote_token_public(text)` | anon | linha 115170 | `20260904102000:65-66` |
+| `external_connections` → `MAINTAIN` | anon | linha 117979 | `20261022194000:19` (parcial) |
+
+O `external_connections` é o caso diferente: a revogação é posterior ao baseline, mas lista
+`INSERT, UPDATE, DELETE, REFERENCES, TRIGGER` e esquece `MAINTAIN`, privilégio novo do PG17 que
+o baseline concede na mesma linha.
+
+Correção de fundo (fora do escopo desta migration): rotacionar o baseline a partir da produção
+atual, via `schema-snapshot-export.yml` com `force_rotate: true` — hoje o workflow está
+`disabled_manually`.
+
+| versão | arquivo | sha256 | status |
+|---|---|---|---|
+| `20261119094500` | `reafirma_revogacoes_anteriores_ao_baseline` | `ff39120b546241197e53705bb9ff315145cdfa32515cf1bc248f1cfe18c5e9f9` | pendente — no-op em produção (privilégios já ausentes); aplicar via `db-apply-migration.yml` (`version=20261119094500`) após merge |
