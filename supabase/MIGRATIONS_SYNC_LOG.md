@@ -2517,3 +2517,41 @@ atual, via `schema-snapshot-export.yml` com `force_rotate: true` — hoje o work
 | versão | arquivo | sha256 | status |
 |---|---|---|---|
 | `20261119094500` | `reafirma_revogacoes_anteriores_ao_baseline` | `d2ff81bdf920973719be728dcdd9360ab8c89dec9849205682602334c75b9fee` | pendente — no-op em produção (privilégios já ausentes); aplicar via `db-apply-migration.yml` (`version=20261119094500`) após merge |
+
+### 2026-11-19 — onboarding: usuário novo nasce sem organização e não cria orçamento
+
+Medido no banco canônico em 19/11/2026: **86 perfis, 18 com vínculo em
+`user_organizations`, 72 sem**. Nos últimos 30 dias, **71 perfis criados e 71 sem organização** —
+nenhuma exceção. Último vínculo criado: 15/10. Perfil mais recente: 16/11. Dos 72, todos existem em
+`auth.users`, todos têm papel em `user_roles`, **40 logaram nos últimos 30 dias** e **nenhum criou
+orçamento**.
+
+A causa é a RLS de `public.quotes`, que exige o vínculo:
+
+| policy | cmd | regra |
+|---|---|---|
+| `org_members_create_quotes` | INSERT | `WITH CHECK user_is_org_member(organization_id) AND …` |
+| `quotes_select_scope` | SELECT | `USING user_is_org_member(organization_id) AND …` |
+
+e `user_is_org_member` lê exatamente `public.user_organizations`. Nada mais cria o vínculo:
+`handle_new_user` só insere em `profiles`, e `fn_grant_default_role_on_profile` só insere em
+`user_roles` (conferido com `pg_get_functiondef` nas duas).
+
+A correção existe desde 21/06 em `20260621210001_onboarding_auto_assign_org_canonica.sql`, cujo
+cabeçalho afirma "APLICADO 2026-06-21" — **mas nunca chegou à produção**: nem o trigger nem a função
+existem, e a versão não consta no ledger. Nenhuma migration posterior os derruba.
+
+Reemitida aqui porque o preflight reprova o arquivo original por **E066** (`SECURITY DEFINER` sem
+`pg_temp`) e **E063** (sem cabeçalho e sem arquivo de rollback), e editar o histórico faria o E75
+recusar o recibo. A única diferença de SQL é `SET search_path TO 'public', 'pg_temp'`.
+
+**Ficou de fora de propósito** o bloco de higiene do original, que apaga vínculos de usuários
+inexistentes: medido hoje, apagaria **4 linhas**. Deleção de dado em produção é decisão do dono
+(Git 7) e não entra junto com correção de bug.
+
+**Escopo:** conserta usuários futuros. Os 72 existentes precisam de backfill — dar acesso aos
+orçamentos da empresa a 72 pessoas é decisão do dono.
+
+| versão | arquivo | sha256 | status |
+|---|---|---|---|
+| `20261119103000` | `onboarding_auto_assign_org_reemissao` | `a0aa3e3f69daff370d574b39738333b6bff3c916f52fdaca25d03cb6d0d1aaa9` | pendente — aplicar via `db-apply-migration.yml` (`version=20261119103000`) após merge |
