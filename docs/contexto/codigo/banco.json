@@ -8,7 +8,7 @@
   "supabase/migrations",
   "typeorm"
  ],
- "migrations": 3106,
+ "migrations": 3107,
  "seeds": [],
  "avisos": [
   "323 bloco(s) com DDL dinâmico (EXECUTE format/...) não modelado — policies/colunas criadas dinamicamente podem faltar; confira no banco vivo"
@@ -998,6 +998,7 @@
   "fn_validate_role_change",
   "fn_validate_selected_packaging",
   "fn_validate_video_on_change",
+  "fn_variant_sparkline",
   "fn_verify_anon_catalog_grants",
   "fn_video_link_to_products",
   "fn_video_queue_next",

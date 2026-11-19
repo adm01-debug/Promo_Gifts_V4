@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "a78f9c896a9ce0a63071c90560dcfb4fd1a76a13",
+  "commit": "b6a8d7eb9f40d67a38ffaf634f179297b8406e0a",
   "branch": "main",
-  "data_commit": "2026-11-19T17:17:39-03:00",
+  "data_commit": "2026-11-19T18:25:06-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "b6a8d7eb",
+    "data": "2026-11-19",
+    "assunto": "fix: corrige bugs F12 (sparkline PGRST202 + KPI EMA 403) (#3903)"
+   },
    {
     "sha": "a78f9c89",
     "data": "2026-11-19",
@@ -126,14 +131,9 @@
     "sha": "72455580",
     "data": "2026-11-19",
     "assunto": "docs(migrations-log): recibo E15 da aplicacao de 20261119073000 (#3875)"
-   },
-   {
-    "sha": "13333e09",
-    "data": "2026-11-19",
-    "assunto": "fix(ci): regenera o baseline de policies com os 17 deny_all de supplier_stricker (#3876)"
    }
   ],
-  "arquivos_mudados_7d": 1451,
+  "arquivos_mudados_7d": 1453,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -157,7 +157,7 @@
    },
    {
     "pasta": "src/components/quotes",
-    "mudancas": 414
+    "mudancas": 413
    },
    {
     "pasta": "src/pages/magazine",
@@ -177,7 +177,7 @@
    },
    {
     "pasta": "src/components/mockup",
-    "mudancas": 292
+    "mudancas": 291
    },
    {
     "pasta": "src/pages/admin",
@@ -189,7 +189,7 @@
    },
    {
     "pasta": "src/components/kit-builder",
-    "mudancas": 218
+    "mudancas": 215
    },
    {
     "pasta": "src/pages/products",
@@ -199,11 +199,11 @@
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "supabase/MIGRATIONS_SYNC_LOG.md",
-    "mudancas": 66
+    "mudancas": 67
    },
    {
     "arquivo": "package.json",
-    "mudancas": 33
+    "mudancas": 32
    },
    {
     "arquivo": "docs/coordenacao/conflitos-semanticos.md",
@@ -223,7 +223,7 @@
    },
    {
     "arquivo": "package-lock.json",
-    "mudancas": 19
+    "mudancas": 18
    },
    {
     "arquivo": "audit/supabase-reference-catalog.temporary.json",
@@ -234,10 +234,6 @@
     "mudancas": 14
    },
    {
-    "arquivo": "src/pages/kit-builder/KitBuilderPage.tsx",
-    "mudancas": 12
-   },
-   {
     "arquivo": "src/pages/mockups/MockupGenerator.tsx",
     "mudancas": 12
    },
@@ -246,15 +242,15 @@
     "mudancas": 11
    },
    {
+    "arquivo": "src/pages/kit-builder/KitBuilderPage.tsx",
+    "mudancas": 11
+   },
+   {
     "arquivo": "docs/agentes/resgates/2026-11-16-auditoria-branches.md",
     "mudancas": 10
    },
    {
     "arquivo": "e2e/flows/magazine-preview-sticky-smoke.spec.ts",
-    "mudancas": 10
-   },
-   {
-    "arquivo": "src/hooks/kit-builder/useKitBuilderPageState.ts",
     "mudancas": 10
    },
    {
@@ -282,10 +278,6 @@
     "mudancas": 9
    },
    {
-    "arquivo": "e2e/helpers/auth.ts",
-    "mudancas": 9
-   },
-   {
     "arquivo": "scripts/drift-baseline.mjs",
     "mudancas": 9
    },
@@ -294,14 +286,22 @@
     "mudancas": 9
    },
    {
+    "arquivo": "src/hooks/kit-builder/useKitBuilderPageState.ts",
+    "mudancas": 9
+   },
+   {
     "arquivo": "src/pages/quotes/QuoteBuilderPage.tsx",
+    "mudancas": 9
+   },
+   {
+    "arquivo": "tests/edge-functions/live/_live-suite.ts",
     "mudancas": 9
    }
   ],
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 362
+    "commits": 361
    },
    {
     "autor": "Claude",
@@ -309,11 +309,11 @@
    },
    {
     "autor": "Joaquim Ataides",
-    "commits": 41
+    "commits": 40
    },
    {
     "autor": "github-actions[bot]",
-    "commits": 27
+    "commits": 26
    },
    {
     "autor": "dependabot[bot]",
@@ -322,7 +322,7 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 11021,
+  "arquivos_total": 11023,
   "arquivos_codigo": 5516,
   "linhas_codigo": 1048271,
   "rotas": 139,
@@ -334,7 +334,7 @@
   "hooks": 633,
   "edge_functions": 112,
   "tabelas": 527,
-  "migrations": 3106,
+  "migrations": 3107,
   "cron_jobs": 122,
   "testes": 2632,
   "workflows": 89,
