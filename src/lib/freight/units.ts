@@ -33,8 +33,13 @@ function isUsable(value: MaybeNumber): value is number {
  * Um valor que o próprio JavaScript já imprime em notação exponencial
  * (`1e-7`) produziria texto inválido (`'1e-7e2'`), então aí cai no `toFixed`,
  * que é exato para essa faixa.
+ *
+ * Exportada porque é a versão **sem contrato nulo**: o motor arredonda números
+ * que ele mesmo acabou de somar ou multiplicar, e ali o `?? 0` que o `round2`
+ * obriga a escrever seria um ramo que teste nenhum alcança. `round1` e
+ * `round2` seguem sendo a porta de entrada que valida.
  */
-function roundDecimal(value: number, decimals: number): number {
+export function roundDecimal(value: number, decimals: number): number {
   const shifted = Number(`${value}e${decimals}`);
   if (!Number.isFinite(shifted)) return Number(value.toFixed(decimals));
   return Number(`${Math.round(shifted)}e-${decimals}`);

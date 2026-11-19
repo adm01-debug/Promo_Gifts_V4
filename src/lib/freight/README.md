@@ -11,7 +11,7 @@ catálogo são convertidos na entrada (`units.ts`). Volume em cm³, exceto
 com `status: 'ok' | 'dados_insuficientes' | 'nao_cabe'`, `volumes[]`, `totals`,
 `warnings[]`, `missing[]`.
 
-**Pronto neste bloco (A):**
+**Pronto:**
 
 | Arquivo | O que faz |
 |---|---|
@@ -20,6 +20,22 @@ com `status: 'ok' | 'dados_insuficientes' | 'nao_cabe'`, `volumes[]`, `totals`,
 | `columns.ts` | `PRODUCT_MEASURE_COLUMNS` — as 8 únicas colunas de `products` que o motor lê |
 | `resolveItemDimensions.ts` | linha de `products` → medidas, ou qual campo falta |
 | `expandQuantities.ts` | quantidades × nº de kits, com validação retornada |
+| `boxOrder.ts` | volume interno e as ordens maior↔menor, usadas por todo o resto |
+| `fitCount.ts` | quantas peças iguais cabem numa caixa: encaixe, volume e peso |
+| `buildGroups.ts` | quem divide caixa com quem (`ships_separately` vence o vendedor) |
+| `packSingleProduct.ts` | um produto, N unidades, nas caixas padrão |
+| `packMixed.ts` | produtos diferentes na mesma caixa |
+| `computeVolumeTotals.ts` | peso bruto, cubado (dois divisores), m³ e ocupação de um volume |
+| `planFreight.ts` | orquestra tudo e devolve o `FreightPlan` |
+| `formatPlanSummary.ts` | `3× G + 1× P · 55,2 kg · 0,24 m³ · cubado 39,9 kg` |
+
+**A heurística de empacotamento é estimativa, não ótimo.** Um produto: fecha
+caixas da maior enquanto sobra mais do que uma leva, e o resto vai na menor que
+ainda o segura. Misturado: cada unidade do produto `i` consome `1/capacity_i` da
+caixa, peças maiores entram primeiro, e a caixa escolhida é a menor em que todo
+o restante cabe. O que o fuzz com semente fixa garante em 200 combinações:
+nenhuma peça desaparece, nenhum volume passa do peso máximo, a ocupação nunca
+promete mais de 100% e `ships_separately` nunca divide caixa.
 
 **Precedência de medidas:** peça (`height/width/length_cm`) → cilíndrico
 (`diameter_cm` + `height_cm`) → `incomplete`. Sem peso **ou** sem dimensão não
@@ -54,6 +70,11 @@ nenhum arquivo fora dos testes depois que `box_*` saiu da leitura. Ficam porque
 o bloco C os consome: `shipping_boxes.wall_thickness_mm` (externa − 2 × espessura
 → interna) e o peso máximo da caixa, que o admin digita em kg e a coluna guarda
 em `max_weight_g`. Se o bloco C não usar nenhum dos dois, apague os dois.
+
+**O peso cubado sai nos dois divisores** (Correios 6.000 e rodoviário 3.333
+cm³/kg) porque qual deles vale é decisão da cotação, no bloco I. O
+`formatPlanSummary` mostra o dos Correios; o rodoviário fica em
+`totals.cubicWeightG.rodoviario`.
 
 **Dívida conhecida:** `mmToCm` existe também em `src/lib/kit-builder/types.ts`
 (mesma regra, mesmo resultado). A unificação cabe no bloco F, que já edita o
