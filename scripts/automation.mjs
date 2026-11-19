@@ -870,6 +870,32 @@ async function uninstall(ctx) {
   rmSync(stateFile);
   return { ok: true, status: 'uninstalled' };
 }
+
+// pre-push: o git informa no stdin uma linha "<ref local> <sha local> <ref remota> <sha remoto>" por ref enviada.
+export function pushTargets(stdin) {
+  const out = [], seen = new Set();
+  for (const line of String(stdin || '').split('\n')) {
+    const [, lsha, rref] = line.trim().split(/\s+/);
+    if (!/^[0-9a-f]{40}$/.test(lsha || '') || /^0+$/.test(lsha)) continue;
+    if (rref && !rref.startsWith('refs/heads/')) continue;
+    const prod = rref === 'refs/heads/main', key = `${lsha}:${prod}`;
+    if (!seen.has(key)) { seen.add(key); out.push({ sha: lsha, prod, ref: rref }); }
+  }
+  return out;
+}
+// Gate do Vercel no pre-push (11/11/2026, trabalho de agente resgatado): reproduz o build do Vercel num worktree
+// temporário do commit enviado. Build quebrado bloqueia; sem vínculo/CLI/rede/login (75) só avisa. VERCEL_GATE=0 desliga.
+async function vercelGate(ctx, targets = null) {
+  const gate = resolve(dirname(SELF), 'vercel-gate.mjs');
+  if (!existsSync(gate)) return { code: 0, status: 'vercel_gate_ausente' };
+  if (targets && !targets.length) return { code: 0, status: 'vercel_sem_alvo' };
+  for (const t of targets || [null]) {
+    const r = await execute([process.execPath, gate, '--root', ctx.root, ...(t ? ['--ref', t.sha, t.prod ? '--prod' : '--preview'] : [])], { cwd: ctx.root, timeout: 25 * 60 * 1000 });
+    if (r.code !== 0 && r.code !== 75) return { code: 1, status: 'vercel_build_failed' };
+  }
+  return { code: 0, status: 'vercel_ok' };
+}
+
 async function hook(ctx, args) {
   const event = args[0];
   if (!EVENTS.includes(event)) throw fail('evento Git desconhecido');
@@ -903,12 +929,16 @@ async function hook(ctx, args) {
     if (r.code !== 0) return { ...r, status: 'original_hook_failed' };
   }
   if (event === 'pre-push') {
+    let pushStdin = null;
+    try { pushStdin = readFileSync(0, 'utf8'); } catch { /* sem stdin */ }
     const health = await doctor(ctx, false);
     if (!health.ok) {
       console.error(JSON.stringify(health));
       return { code: 1, status: 'doctor_failed' };
     }
-    return runTests(ctx);
+    const tests = await runTests(ctx);
+    if (tests.code !== 0) return tests;
+    return vercelGate(ctx, pushStdin === null ? null : pushTargets(pushStdin));
   }
   if (event === 'pre-commit') {
     const files = (
