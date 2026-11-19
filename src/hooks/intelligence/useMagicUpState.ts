@@ -12,7 +12,6 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useAriaLive } from '@/components/a11y';
 import { useProductCustomizationOptionsForMockup } from '@/hooks/mockup';
 import { getCompanyDisplayName, type CrmCompany } from '@/types/crm';
-import type { PrintAreaWithTechniques, AreaShape } from '@/types/gravacao';
 import type { ScenePrompt } from '@/components/magic-up/PromptBank';
 import type { GenerationHistoryItem } from '@/components/magic-up/AdImageResult';
 import { useMagicUpGeneration } from '@/hooks/intelligence/useMagicUpGeneration';
@@ -54,6 +53,8 @@ import {
   type ProductImage,
   type SelectedClient,
   type VariationItem,
+  prazoDeConsulta,
+  montarAreasDeGravacao,
 } from './useMagicUpState.helpers';
 export type {
   MagicUpProduct,
@@ -218,6 +219,7 @@ export function useMagicUpState() {
     // Guarda contra resposta fora-de-ordem: ao trocar de produto rapidamente, a
     // resposta mais lenta (produto antigo) não pode sobrescrever o estado atual.
     let cancelled = false;
+    const prazo = prazoDeConsulta();
     (async () => {
       setLoadingColors(true);
       try {
@@ -229,6 +231,7 @@ export function useMagicUpState() {
             filters: { product_id: selectedProduct.id },
             orderBy: { column: 'color_name', ascending: true },
             limit: 100,
+            signal: prazo.signal,
           }),
           dbInvoke<Record<string, unknown>>({
             table: 'product_images',
@@ -236,6 +239,7 @@ export function useMagicUpState() {
             filters: { product_id: selectedProduct.id },
             orderBy: { column: 'display_order', ascending: true },
             limit: 100,
+            signal: prazo.signal,
           }),
         ]);
         if (cancelled) return;
@@ -271,33 +275,16 @@ export function useMagicUpState() {
     })();
     return () => {
       cancelled = true;
+      prazo.encerrar();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedProduct?.id]);
 
   // ─── Print Areas from customization data ───────────────────────
-  const printAreas = useMemo((): PrintAreaWithTechniques[] => {
-    if (!customizationData?.locations) return [];
-    return customizationData.locations.map((loc, idx) => ({
-      area_id: loc.location_code,
-      area_code: loc.location_code,
-      area_name: loc.location_name,
-      component_name: null,
-      location_name: loc.location_name,
-      max_width: Math.max(...loc.options.map((o) => o.efetiva_largura_max || 0), 0),
-      max_height: Math.max(...loc.options.map((o) => o.efetiva_altura_max || 0), 0),
-      unit: 'cm',
-      shape: (loc.options[0]?.shape || 'rectangle') as AreaShape,
-      is_curved: loc.options.some((o) => o.is_curved),
-      is_primary: idx === 0,
-      display_order: loc.location_order,
-      techniques: loc.options.map((o) => ({
-        id: o.technique_id,
-        nome: o.tecnica_nome,
-        codigo: o.codigo_tabela,
-      })),
-    }));
-  }, [customizationData]);
+  const printAreas = useMemo(
+    () => montarAreasDeGravacao(customizationData?.locations),
+    [customizationData],
+  );
 
   const loadingPrintAreas = loadingCustomization;
 
