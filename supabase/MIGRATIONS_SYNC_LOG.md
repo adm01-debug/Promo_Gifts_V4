@@ -2452,3 +2452,23 @@ aplicado.
 | `20261119051500` | `fix_get_quote_token_public_expiracao_pg_temp` | `d2aa4d8351b9b9d9fe5cff9215c145c395253ecd865499d6ef384023d3c26de2` | pendente — aplicar via `db-apply-migration.yml` (`version=20261119051500`) após merge. SUPERA `20261115013000`, que o preflight E066 reprovou (run 44461492894) por `SET search_path TO ''` sem `pg_temp` e por isso nunca entrou no ledger |
 | `20261115034500` | `e8cb3bf9a77607728af8ee8cdd59b4927de1e9b58bc0c5383ce418728314c79a` | — | GitHub Actions (db-apply-migration.yml, disparado por adm01-debug, aprovado por sessao Claude Code (drift E12: orfa de 15/11 que passa no preflight; cria rpc_sales_assistant_candidates, SECURITY INVOKER, com REVOKE de PUBLIC; triagem com 2 ceticos confirmou PENDENTE_E_FAZ_DIFERENCA)) | E15 | 2026-11-19 06:43:09 UTC | job post-check da run 44473987379 confirmou a version no ledger | aplicada |
 | `20261119073000` | `supplier_stricker_rls_deny_all_reemissao` | `9f3e222a64311df7539cb1c08af34308e3a43e51ec369296fc484cd6baa31297` | pendente — reemissao byte a byte de `20261027195959`, que o preflight E063 reprovava por nao ter o cabecalho `-- Rollback:` (run 44473368574). Aplicar via `db-apply-migration.yml` (`version=20261119073000`) apos merge |
+
+## 2026-11-17 — `ELEVENLABS_API_KEY` no catálogo de credenciais (rotação pela UI, não pelo painel)
+
+A chave existe hoje **apenas** como secret de edge function — o log da edge mostra
+`credential_resolved source=env has_value=true value_length=51`. Trocá-la exige o painel do
+Supabase. Como `resolveCredential` consulta `integration_credentials` **antes** do env
+(`supabase/functions/_shared/credentials.ts:437-467`), registrar o nome torna `/admin/conexoes` o
+lugar de rotacionar, com precedência sobre o secret antigo.
+
+Motivo da rotação: a ElevenLabs recusa a chave atual com **401**
+(`ElevenLabs scribe credential request failed: { status: 401 }`, em 10:47, 15:34 e 17:18 de 17/11),
+que `elevenlabs-scribe-token` devolve como 500 ao navegador. `elevenlabs-tts` usa a mesma chave.
+
+A migration cria **apenas o nome, com valor vazio** — e valor vazio é falsy em
+`credentials.ts:446`, então a linha fica **inerte** até ser preenchida: aplicar não muda o
+comportamento de produção. Nenhum segredo entra no repositório.
+
+| versão | arquivo | sha256 | status |
+|---|---|---|---|
+| `20261117172500` | `elevenlabs_credential` | `fdbc26e30ab2fbe2c8b5b30f13905a27ab480d21fd3d04cf934cb57eeef9c03a` | pendente — aplicar via `db-apply-migration.yml` (`version=20261117172500`) após merge |
