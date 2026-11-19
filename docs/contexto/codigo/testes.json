@@ -5,13 +5,13 @@
   "vitest",
   "playwright"
  ],
- "total": 2614,
+ "total": 2619,
  "por_tipo": {
   "contrato": 67,
   "e2e": 677,
   "pytest": 5,
   "qa": 17,
-  "unit": 1848
+  "unit": 1853
  },
  "onde_ficam": [
   {
@@ -20,7 +20,7 @@
   },
   {
    "padrao": "co-localizado (__tests__)",
-   "arquivos": 702
+   "arquivos": 707
   },
   {
    "padrao": "e2e/",
@@ -9722,6 +9722,52 @@
     "src/lib/external-db/rest-native.ts"
    ],
    "casos": 15
+  },
+  {
+   "arquivo": "src/lib/freight/__tests__/columns.test.ts",
+   "tipo": "unit",
+   "linhas": 59,
+   "testa": [
+    "src/lib/freight/columns.ts"
+   ],
+   "casos": 4
+  },
+  {
+   "arquivo": "src/lib/freight/__tests__/expandQuantities.test.ts",
+   "tipo": "unit",
+   "linhas": 103,
+   "testa": [
+    "src/lib/freight/expandQuantities.ts",
+    "src/lib/freight/types.ts"
+   ],
+   "casos": 9
+  },
+  {
+   "arquivo": "src/lib/freight/__tests__/fixtures/products.ts",
+   "tipo": "unit",
+   "linhas": 187,
+   "testa": [
+    "src/lib/freight/columns.ts"
+   ],
+   "casos": 0
+  },
+  {
+   "arquivo": "src/lib/freight/__tests__/resolveItemDimensions.test.ts",
+   "tipo": "unit",
+   "linhas": 205,
+   "testa": [
+    "src/lib/freight/resolveItemDimensions.ts"
+   ],
+   "casos": 12
+  },
+  {
+   "arquivo": "src/lib/freight/__tests__/units.test.ts",
+   "tipo": "unit",
+   "linhas": 167,
+   "testa": [
+    "src/lib/freight/units.ts"
+   ],
+   "casos": 22
   },
   {
    "arquivo": "src/lib/intelligence/__tests__/degradation.test.ts",
@@ -22927,6 +22973,11 @@
   "src/lib/forecast.ts": 1,
   "src/lib/format-utils.ts": 2,
   "src/lib/format.ts": 4,
+  "src/lib/freight/columns.ts": 2,
+  "src/lib/freight/expandQuantities.ts": 1,
+  "src/lib/freight/resolveItemDimensions.ts": 1,
+  "src/lib/freight/types.ts": 1,
+  "src/lib/freight/units.ts": 1,
   "src/lib/image-converter.ts": 2,
   "src/lib/intelligence/degradation.ts": 2,
   "src/lib/intelligence/degradationRegistry.ts": 1,

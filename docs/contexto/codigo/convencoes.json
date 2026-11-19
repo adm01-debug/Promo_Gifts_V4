@@ -18,13 +18,13 @@
    "src/components (78)"
   ],
   "servicos_logica": [
-   "src/lib (236)",
+   "src/lib (242)",
    "src/utils (33)",
    "src/services (10)"
   ],
   "testes": [
    "tests/ (1083)",
-   "co-localizado (__tests__) (702)",
+   "co-localizado (__tests__) (707)",
    "e2e/ (625)"
   ],
   "edge_functions": "supabase/functions",
@@ -43,11 +43,11 @@
  "nomenclatura": {
   "componentes": "PascalCase (96%)",
   "hooks": "use + PascalCase",
-  "servicos": "kebab-case (50%)",
+  "servicos": "kebab-case (49%)",
   "edge_functions": "kebab-case (99%)",
   "tabelas": "snake_case (86%)"
  },
- "barrels_index": 46,
+ "barrels_index": 47,
  "extensao_componentes": [
   ".tsx (1262)"
  ],
@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "feat(frete): base do motor — tipos, unidades e medidas (Bloco A) (#3896)",
    "docs(migrations-log): recibo E15 — aplicação de 20261119094500 (#3894)",
    "fix(db): termina a intenção da 20260706223316 sem aplicá-la — updated_at em crm_callback_events (#3892)",
    "chore(main): release gifts-store 1.10.0 (#3781)",
-   "chore: baseline de refs de migration p06/onboarding no doc de triggers (#3893)",
-   "docs: recibo de aplicação — 20261114120000 (E15)"
+   "chore: baseline de refs de migration p06/onboarding no doc de triggers (#3893)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",

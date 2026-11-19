@@ -1,8 +1,8 @@
 {
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
- "nos": 2869,
- "arestas": 11322,
+ "nos": 2875,
+ "arestas": 11333,
  "hubs": [
   {
    "arquivo": "src/lib/utils.ts",
@@ -106,7 +106,7 @@
   },
   {
    "arquivo": "src/integrations/supabase/types.ts",
-   "importado_por": 62
+   "importado_por": 63
   },
   {
    "arquivo": "src/lib/supabase-untyped.ts",
@@ -639,7 +639,7 @@
   {
    "modulo": "integrations/supabase",
    "depende_de": 3,
-   "importado_por": 70
+   "importado_por": 71
   },
   {
    "modulo": "hooks/products",

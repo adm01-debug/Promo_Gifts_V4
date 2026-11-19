@@ -12168,6 +12168,24 @@
    "src/components/filters/FilterPanel.tsx",
    "src/hooks/voice/types.ts"
   ],
+  "src/lib/freight/columns.ts": [
+   "src/integrations/supabase/types.ts"
+  ],
+  "src/lib/freight/expandQuantities.ts": [
+   "src/lib/freight/types.ts"
+  ],
+  "src/lib/freight/index.ts": [
+   "src/lib/freight/columns.ts",
+   "src/lib/freight/expandQuantities.ts",
+   "src/lib/freight/resolveItemDimensions.ts",
+   "src/lib/freight/types.ts",
+   "src/lib/freight/units.ts"
+  ],
+  "src/lib/freight/resolveItemDimensions.ts": [
+   "src/lib/freight/columns.ts",
+   "src/lib/freight/types.ts",
+   "src/lib/freight/units.ts"
+  ],
   "src/lib/intelligence/degradation.ts": [
    "src/lib/intelligence/degradationRegistry.ts",
    "src/lib/intelligence/degradationSink.ts",
@@ -12263,6 +12281,9 @@
   ],
   "src/lib/kit-builder/volume-calculator.ts": [
    "src/lib/kit-builder/types.ts"
+  ],
+  "src/lib/kit-builder/weight.ts": [
+   "src/lib/freight/units.ts"
   ],
   "src/lib/kit-library/buildCustomKitInsert.ts": [
    "src/integrations/supabase/types.ts",

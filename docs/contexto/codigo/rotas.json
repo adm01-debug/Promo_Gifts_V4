@@ -3577,7 +3577,7 @@
     "status",
     "supervisor"
    ],
-   "arquivos_puxados": 509
+   "arquivos_puxados": 510
   },
   {
    "protegida": true,
@@ -4305,7 +4305,7 @@
     "tab",
     "tablist"
    ],
-   "arquivos_puxados": 533
+   "arquivos_puxados": 534
   },
   {
    "protegida": true,
@@ -5176,7 +5176,7 @@
     "switch",
     "toolbar"
    ],
-   "arquivos_puxados": 564
+   "arquivos_puxados": 565
   },
   {
    "protegida": true,
@@ -6740,7 +6740,7 @@
     "listbox",
     "menu"
    ],
-   "arquivos_puxados": 102
+   "arquivos_puxados": 103
   },
   {
    "protegida": false,
@@ -6778,7 +6778,7 @@
    "canais_realtime": [],
    "flags": [],
    "papeis": [],
-   "arquivos_puxados": 29
+   "arquivos_puxados": 30
   },
   {
    "protegida": true,
@@ -7277,7 +7277,7 @@
     "listbox",
     "menu"
    ],
-   "arquivos_puxados": 69
+   "arquivos_puxados": 70
   },
   {
    "protegida": false,
@@ -7922,7 +7922,7 @@
     "separator",
     "supervisor"
    ],
-   "arquivos_puxados": 124
+   "arquivos_puxados": 125
   },
   {
    "protegida": true,
@@ -8307,7 +8307,7 @@
     "listbox",
     "menu"
    ],
-   "arquivos_puxados": 74
+   "arquivos_puxados": 75
   },
   {
    "protegida": true,
@@ -9430,7 +9430,7 @@
     "supervisor",
     "vendedor"
    ],
-   "arquivos_puxados": 510
+   "arquivos_puxados": 511
   },
   {
    "protegida": true,
@@ -16848,7 +16848,7 @@
     "status",
     "supervisor"
    ],
-   "arquivos_puxados": 477
+   "arquivos_puxados": 478
   },
   {
    "protegida": false,
@@ -17577,7 +17577,7 @@
     "status",
     "supervisor"
    ],
-   "arquivos_puxados": 440
+   "arquivos_puxados": 441
   },
   {
    "protegida": false,
@@ -24804,7 +24804,7 @@
     "listbox",
     "menu"
    ],
-   "arquivos_puxados": 101
+   "arquivos_puxados": 102
   },
   {
    "protegida": false,

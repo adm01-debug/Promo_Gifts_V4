@@ -23029,6 +23029,7 @@
     "lib/db",
     "lib/edge",
     "lib/external-db",
+    "lib/freight",
     "lib/kit-builder",
     "lib/kit-library",
     "lib/pdf",
@@ -25386,6 +25387,38 @@
    "pacotes_externos": []
   },
   {
+   "modulo": "lib/freight",
+   "arquivos": 6,
+   "testes": 5,
+   "linhas": 513,
+   "itens_menu": [],
+   "telas": [],
+   "rotas_http": [],
+   "componentes": 0,
+   "hooks_locais": [],
+   "hooks_definidos": [],
+   "edges": [],
+   "tabelas": [],
+   "rpcs": [],
+   "buckets": [],
+   "canais_realtime": [],
+   "env": [],
+   "flags": [],
+   "papeis": [],
+   "diretos": {
+    "edges": [],
+    "tabelas": [],
+    "rpcs": []
+   },
+   "importado_por_outros_modulos": [
+    "lib/kit-builder"
+   ],
+   "depende_de_modulos": [
+    "integrations/supabase"
+   ],
+   "pacotes_externos": []
+  },
+  {
    "modulo": "lib/intelligence",
    "arquivos": 3,
    "testes": 3,
@@ -25470,7 +25503,7 @@
    "modulo": "lib/kit-builder",
    "arquivos": 13,
    "testes": 1,
-   "linhas": 2078,
+   "linhas": 2084,
    "itens_menu": [],
    "telas": [],
    "rotas_http": [],
@@ -25534,6 +25567,7 @@
    "depende_de_modulos": [
     "integrations/supabase",
     "lib",
+    "lib/freight",
     "pages/kit-builder"
    ],
    "pacotes_externos": [

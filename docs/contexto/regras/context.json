@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "6ef73b8a18c295fe13b651f36517f1afe003686c",
+  "sha": "6319e099e75d81db4bc3301624d6fc7a0796b9da",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-19 16:17 UTC",
-  "files_total": 10915,
-  "code_files": 8935,
-  "code_lines": 1265627
+  "generated_at": "2026-11-19 17:27 UTC",
+  "files_total": 10927,
+  "code_files": 8946,
+  "code_lines": 1266867
  },
  "version": "1.3.2",
- "facts_hash": "8bc7fa51f9b75089",
+ "facts_hash": "958df1d4632884b9",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -1129,7 +1129,7 @@
   "package_manager": "npm",
   "languages": {
    ".sql": 3453,
-   ".ts": 3048,
+   ".ts": 3059,
    ".tsx": 1969,
    ".mjs": 450,
    ".py": 15,
@@ -137823,7 +137823,7 @@
      "save_custom_kit_atomic",
      "set_custom_kit_pinned"
     ],
-    "deps_count": 256
+    "deps_count": 257
    },
    {
     "path": "",
@@ -137852,7 +137852,7 @@
      "save_custom_kit_atomic",
      "set_custom_kit_pinned"
     ],
-    "deps_count": 92
+    "deps_count": 93
    },
    {
     "path": "",
@@ -138633,7 +138633,7 @@
      "save_custom_kit_atomic",
      "set_custom_kit_pinned"
     ],
-    "deps_count": 137
+    "deps_count": 138
    },
    {
     "path": "",
@@ -139298,7 +139298,7 @@
      "respond_discount_approval_transactional",
      "save_custom_kit_atomic"
     ],
-    "deps_count": 249
+    "deps_count": 250
    },
    {
     "path": "/dropbox",
@@ -150419,13 +150419,14 @@
   },
   {
    "module": "src/lib",
-   "files": 354,
-   "lines": 54540,
+   "files": 365,
+   "lines": 55780,
    "tables": [
     "...",
     "companies",
     "frontend_telemetry",
     "kill_switch_hits",
+    "products",
     "quotes",
     "some_table",
     "system_kill_switches",
@@ -153599,6 +153600,7 @@
      "recovery/src-legacy/src/hooks/useMockupDraft.ts",
      "src/components/admin/connections/DataSourceDebugTab.tsx",
      "src/integrations/supabase/__tests__/edge-request-id.test.ts",
+     "src/lib/freight/columns.ts",
      "src/pages/products/ProductDetail.tsx",
      "src/pages/products/seller-carts/useSellerCartsPage.ts",
      "src/services/quoteService.ts",
@@ -162801,6 +162803,31 @@
     "file": "src/lib/external-db/tables.ts",
     "name": "COMPANY_TABLES",
     "values": "'client_contacts', 'organizations', 'companies'"
+   },
+   {
+    "file": "src/lib/freight/columns.ts",
+    "name": "PRODUCT_MEASURE_COLUMNS",
+    "values": "'id', 'name', 'sku', 'height_cm', 'width_cm', 'length_cm', 'diameter_cm', 'weight_g', 'box_height_mm', 'box_width_mm', 'box_length_mm', 'box_weight_kg',"
+   },
+   {
+    "file": "src/lib/freight/types.ts",
+    "name": "MeasureSource",
+    "values": "cylinder | packaging | product"
+   },
+   {
+    "file": "src/lib/freight/types.ts",
+    "name": "MissingMeasure",
+    "values": "height | length | weight | width"
+   },
+   {
+    "file": "src/lib/freight/types.ts",
+    "name": "MixMode",
+    "values": "misturar | separar"
+   },
+   {
+    "file": "src/lib/freight/types.ts",
+    "name": "FreightPlanStatus",
+    "values": "dados_insuficientes | nao_cabe | ok"
    },
    {
     "file": "src/lib/intelligence/degradation.ts",
@@ -174114,6 +174141,18 @@
     "text": "consumidor os aplicava: useGlobalSearch.ts e AdvancedSearch.tsx jogavam apenas"
    },
    {
+    "file": "src/lib/freight/columns.ts",
+    "text": "ativos) e `cubic_weight` (preenchida sem regra conhecida). O motor calcula o"
+   },
+   {
+    "file": "src/lib/freight/types.ts",
+    "text": "* Produto que não pode entrar no cálculo. A decisão 7 do projeto é explícita:"
+   },
+   {
+    "file": "src/lib/freight/types.ts",
+    "text": "ERRO DE VALIDAÇÃO"
+   },
+   {
     "file": "src/lib/intelligence/degradation.ts",
     "text": "* Regra: erros ESTRUTURAIS e esperados (permissão negada, relação inexistente,"
    },
@@ -174232,6 +174271,10 @@
    {
     "file": "src/lib/kit-builder/weight.ts",
     "text": "O catálogo usa zero como ausência de informação, então o kit deve manter essa"
+   },
+   {
+    "file": "src/lib/kit-builder/weight.ts",
+    "text": "* Mesma regra que `isKnownMeasure` (`src/lib/freight/units.ts`), que é a SSOT"
    },
    {
     "file": "src/lib/kit-library/buildCustomKitInsert.ts",
@@ -208475,6 +208518,60 @@
     "kind": "escreve"
    },
    {
+    "file": "src/lib/freight/expandQuantities.ts",
+    "field": "status",
+    "value": "error",
+    "kind": "escreve"
+   },
+   {
+    "file": "src/lib/freight/expandQuantities.ts",
+    "field": "status",
+    "value": "ok",
+    "kind": "escreve"
+   },
+   {
+    "file": "src/lib/freight/expandQuantities.ts",
+    "field": "status",
+    "value": "error",
+    "kind": "escreve"
+   },
+   {
+    "file": "src/lib/freight/expandQuantities.ts",
+    "field": "status",
+    "value": "error",
+    "kind": "escreve"
+   },
+   {
+    "file": "src/lib/freight/expandQuantities.ts",
+    "field": "status",
+    "value": "ok",
+    "kind": "escreve"
+   },
+   {
+    "file": "src/lib/freight/resolveItemDimensions.ts",
+    "field": "status",
+    "value": "incomplete",
+    "kind": "escreve"
+   },
+   {
+    "file": "src/lib/freight/resolveItemDimensions.ts",
+    "field": "status",
+    "value": "ok",
+    "kind": "escreve"
+   },
+   {
+    "file": "src/lib/freight/resolveItemDimensions.ts",
+    "field": "status",
+    "value": "incomplete",
+    "kind": "escreve"
+   },
+   {
+    "file": "src/lib/freight/resolveItemDimensions.ts",
+    "field": "status",
+    "value": "ok",
+    "kind": "escreve"
+   },
+   {
     "file": "src/lib/inventory/future-stock-stats.ts",
     "field": "status",
     "value": "confirmed",
@@ -215225,6 +215322,24 @@
     "name": "applyVoiceFilterPatch",
     "params": "previous: FilterState, filters: VoiceFilters",
     "body": "const next = { ...previous }; if (filters.color) next.colors = append(previous.colors, filters.color); if (filters.category) next.categories = append(previous.categories, filters.category); if (filters.material) next.materiais = append(previous.materiais, filters.material); if (filters.gender) next.gender = append(previous.gender, filters.gender); if (filters.publicoAlvo) next.publicoAlvo = append(previous.publicoAlvo, filters.publicoAlvo); if (filters.minPrice !== undefined || filters.maxPrice …"
+   },
+   {
+    "file": "src/lib/freight/units.ts",
+    "name": "roundDecimal",
+    "params": "value: number, decimals: number",
+    "body": "const shifted = Number(`${value}e${decimals}`); if (!Number.isFinite(shifted)) return Number(value.toFixed(decimals)); return Number(`${Math.round(shifted)}e-${decimals}`);"
+   },
+   {
+    "file": "src/lib/freight/units.ts",
+    "name": "round1",
+    "params": "value: MaybeNumber",
+    "body": "if (!isUsable(value)) return null; return roundDecimal(value, 1);"
+   },
+   {
+    "file": "src/lib/freight/units.ts",
+    "name": "round2",
+    "params": "value: MaybeNumber",
+    "body": "if (!isUsable(value)) return null; return roundDecimal(value, 2);"
    },
    {
     "file": "src/lib/inventory/future-stock-stats.ts",
@@ -251811,6 +251926,246 @@
    {
     "file": "src/lib/external-db/__tests__/rest-native-write.test.ts",
     "name": "batch_insert envia array preservando colunas EN de personalization_techniques"
+   },
+   {
+    "file": "src/lib/freight/__tests__/columns.test.ts",
+    "name": "PRODUCT_MEASURE_COLUMNS"
+   },
+   {
+    "file": "src/lib/freight/__tests__/columns.test.ts",
+    "name": "é exatamente a lista do bloco A"
+   },
+   {
+    "file": "src/lib/freight/__tests__/columns.test.ts",
+    "name": "não lê nenhuma coluna legada de frete"
+   },
+   {
+    "file": "src/lib/freight/__tests__/columns.test.ts",
+    "name": "não tem repetição"
+   },
+   {
+    "file": "src/lib/freight/__tests__/columns.test.ts",
+    "name": "PRODUCT_MEASURE_SELECT"
+   },
+   {
+    "file": "src/lib/freight/__tests__/columns.test.ts",
+    "name": "é a lista separada por vírgula, pronta para o select"
+   },
+   {
+    "file": "src/lib/freight/__tests__/expandQuantities.test.ts",
+    "name": "expandQuantities"
+   },
+   {
+    "file": "src/lib/freight/__tests__/expandQuantities.test.ts",
+    "name": "1 kit mantém as quantidades"
+   },
+   {
+    "file": "src/lib/freight/__tests__/expandQuantities.test.ts",
+    "name": "50 kits multiplicam cada linha"
+   },
+   {
+    "file": "src/lib/freight/__tests__/expandQuantities.test.ts",
+    "name": "kitQuantity padrão é 1"
+   },
+   {
+    "file": "src/lib/freight/__tests__/expandQuantities.test.ts",
+    "name": "não muta a entrada"
+   },
+   {
+    "file": "src/lib/freight/__tests__/expandQuantities.test.ts",
+    "name": "zero kits devolve ValidationError, sem lançar"
+   },
+   {
+    "file": "src/lib/freight/__tests__/expandQuantities.test.ts",
+    "name": "2,5 kits devolve ValidationError, sem lançar"
+   },
+   {
+    "file": "src/lib/freight/__tests__/expandQuantities.test.ts",
+    "name": "quantidade de item inválida nomeia o produto"
+   },
+   {
+    "file": "src/lib/freight/__tests__/expandQuantities.test.ts",
+    "name": "quantidade de item fracionária é recusada"
+   },
+   {
+    "file": "src/lib/freight/__tests__/expandQuantities.test.ts",
+    "name": "lista vazia é válida: zero volumes, não erro"
+   },
+   {
+    "file": "src/lib/freight/__tests__/resolveItemDimensions.test.ts",
+    "name": "resolveItemDimensions — caminho da embalagem"
+   },
+   {
+    "file": "src/lib/freight/__tests__/resolveItemDimensions.test.ts",
+    "name": "1. embalagem completa vence a peça e usa box_weight_kg"
+   },
+   {
+    "file": "src/lib/freight/__tests__/resolveItemDimensions.test.ts",
+    "name": "2. embalagem com peso zero mantém a fonte e cai no weight_g da peça"
+   },
+   {
+    "file": "src/lib/freight/__tests__/resolveItemDimensions.test.ts",
+    "name": "3. embalagem incompleta cai nas medidas da peça, com weight_g"
+   },
+   {
+    "file": "src/lib/freight/__tests__/resolveItemDimensions.test.ts",
+    "name": "resolveItemDimensions — caminho da peça e do cilíndrico"
+   },
+   {
+    "file": "src/lib/freight/__tests__/resolveItemDimensions.test.ts",
+    "name": "4. peça com as três dimensões resolve como product"
+   },
+   {
+    "file": "src/lib/freight/__tests__/resolveItemDimensions.test.ts",
+    "name": "5. cilíndrico usa o diâmetro nos dois lados quando falta largura e comprimento"
+   },
+   {
+    "file": "src/lib/freight/__tests__/resolveItemDimensions.test.ts",
+    "name": "resolveItemDimensions — bloqueio por cadastro incompleto"
+   },
+   {
+    "file": "src/lib/freight/__tests__/resolveItemDimensions.test.ts",
+    "name": "6. sem altura, reporta só o campo que falta"
+   },
+   {
+    "file": "src/lib/freight/__tests__/resolveItemDimensions.test.ts",
+    "name": "7. sem peso bloqueia mesmo com as três dimensões (decisão 7)"
+   },
+   {
+    "file": "src/lib/freight/__tests__/resolveItemDimensions.test.ts",
+    "name": "8. zeros em tudo são tratados como ausência, não como medida"
+   },
+   {
+    "file": "src/lib/freight/__tests__/resolveItemDimensions.test.ts",
+    "name": "9. diâmetro conhecido cobre largura e comprimento: falta só a altura"
+   },
+   {
+    "file": "src/lib/freight/__tests__/resolveItemDimensions.test.ts",
+    "name": "10. produto sem nenhuma medida lista os quatro campos"
+   },
+   {
+    "file": "src/lib/freight/__tests__/resolveItemDimensions.test.ts",
+    "name": "11. altura presente e comprimento ausente reporta só o comprimento"
+   },
+   {
+    "file": "src/lib/freight/__tests__/resolveItemDimensions.test.ts",
+    "name": "resolveItemDimensions — fonte esperada por fixture (etapa 9)"
+   },
+   {
+    "file": "src/lib/freight/__tests__/resolveItemDimensions.test.ts",
+    "name": "$fixture.sku resolve como $source"
+   },
+   {
+    "file": "src/lib/freight/__tests__/units.test.ts",
+    "name": "mmToCm"
+   },
+   {
+    "file": "src/lib/freight/__tests__/units.test.ts",
+    "name": "converte milímetro em centímetro"
+   },
+   {
+    "file": "src/lib/freight/__tests__/units.test.ts",
+    "name": "não arrasta erro de ponto flutuante"
+   },
+   {
+    "file": "src/lib/freight/__tests__/units.test.ts",
+    "name": "não perde o empate por imprecisão binária"
+   },
+   {
+    "file": "src/lib/freight/__tests__/units.test.ts",
+    "name": "zero converte para zero: quem decide que zero é ausência é isKnownMeasure"
+   },
+   {
+    "file": "src/lib/freight/__tests__/units.test.ts",
+    "name": "recusa negativo e não-finito"
+   },
+   {
+    "file": "src/lib/freight/__tests__/units.test.ts",
+    "name": "kgToG"
+   },
+   {
+    "file": "src/lib/freight/__tests__/units.test.ts",
+    "name": "converte quilograma em grama"
+   },
+   {
+    "file": "src/lib/freight/__tests__/units.test.ts",
+    "name": "não perde o empate por imprecisão binária"
+   },
+   {
+    "file": "src/lib/freight/__tests__/units.test.ts",
+    "name": "zero converte para zero"
+   },
+   {
+    "file": "src/lib/freight/__tests__/units.test.ts",
+    "name": "recusa negativo e não-finito"
+   },
+   {
+    "file": "src/lib/freight/__tests__/units.test.ts",
+    "name": "cm3ToM3"
+   },
+   {
+    "file": "src/lib/freight/__tests__/units.test.ts",
+    "name": "converte centímetro cúbico em metro cúbico"
+   },
+   {
+    "file": "src/lib/freight/__tests__/units.test.ts",
+    "name": "zero converte para zero"
+   },
+   {
+    "file": "src/lib/freight/__tests__/units.test.ts",
+    "name": "recusa negativo e não-finito"
+   },
+   {
+    "file": "src/lib/freight/__tests__/units.test.ts",
+    "name": "round1"
+   },
+   {
+    "file": "src/lib/freight/__tests__/units.test.ts",
+    "name": "arredonda para uma casa decimal"
+   },
+   {
+    "file": "src/lib/freight/__tests__/units.test.ts",
+    "name": "não perde o empate por imprecisão binária"
+   },
+   {
+    "file": "src/lib/freight/__tests__/units.test.ts",
+    "name": "recusa negativo e não-finito"
+   },
+   {
+    "file": "src/lib/freight/__tests__/units.test.ts",
+    "name": "round2"
+   },
+   {
+    "file": "src/lib/freight/__tests__/units.test.ts",
+    "name": "arredonda para duas casas decimais"
+   },
+   {
+    "file": "src/lib/freight/__tests__/units.test.ts",
+    "name": "não perde o empate por imprecisão binária"
+   },
+   {
+    "file": "src/lib/freight/__tests__/units.test.ts",
+    "name": "aceita valor que o JS imprime em notação exponencial"
+   },
+   {
+    "file": "src/lib/freight/__tests__/units.test.ts",
+    "name": "recusa negativo e não-finito"
+   },
+   {
+    "file": "src/lib/freight/__tests__/units.test.ts",
+    "name": "isKnownMeasure"
+   },
+   {
+    "file": "src/lib/freight/__tests__/units.test.ts",
+    "name": "aceita medida finita maior que zero"
+   },
+   {
+    "file": "src/lib/freight/__tests__/units.test.ts",
+    "name": "rejeita zero — o catálogo usa zero como ausência de dado"
+   },
+   {
+    "file": "src/lib/freight/__tests__/units.test.ts",
+    "name": "rejeita null, undefined, negativo e não-finito"
    },
    {
     "file": "src/lib/intelligence/__tests__/degradation.test.ts",
@@ -351116,6 +351471,7 @@
       "escreve:recovery/src-legacy/src/pages/SystemStatusPage.tsx",
       "escreve:src/components/pricing/calculator/QuantityComparisonTable.tsx",
       "escreve:src/lib/auth/invoke-full-scope.ts",
+      "escreve:src/lib/freight/expandQuantities.ts",
       "escreve:src/pages/admin/DevChallengeExamplesPage.tsx",
       "escreve:src/pages/admin/telemetry/useRegressionGuardrail.ts",
       "escreve:src/pages/system/SystemStatusPage.tsx",
@@ -351158,6 +351514,8 @@
       "escreve:src/hooks/kit-builder/useKitFitsValidation.ts",
       "escreve:src/hooks/kit-builder/useKitMinQuantityValidation.ts",
       "escreve:src/lib/auth/invoke-full-scope.ts",
+      "escreve:src/lib/freight/expandQuantities.ts",
+      "escreve:src/lib/freight/resolveItemDimensions.ts",
       "escreve:src/pages/admin/DevChallengeExamplesPage.tsx",
       "escreve:src/pages/system/SystemStatusPage.tsx",
       "escreve:supabase/functions/_shared/external-db-telemetry.ts",
@@ -351830,6 +352188,9 @@
      "soon": [
       "compara:src/lib/carts/shipping-deadline.ts",
       "compara:src/pages/products/CartsListPage.tsx"
+     ],
+     "incomplete": [
+      "escreve:src/lib/freight/resolveItemDimensions.ts"
      ],
      "in_transit": [
       "compara:src/lib/inventory/future-stock-stats.ts"
@@ -400424,6 +400785,13 @@
     "msg": "valor `APPLIED` para `status` usado no código não existe em nenhum enum do banco/TS",
     "where": [
      "escreve:src/lib/theme-presets-css-vars-patch.ts"
+    ]
+   },
+   {
+    "kind": "status",
+    "msg": "valor `incomplete` para `status` usado no código não existe em nenhum enum do banco/TS",
+    "where": [
+     "escreve:src/lib/freight/resolveItemDimensions.ts"
     ]
    },
    {
@@ -478403,6 +478771,297 @@
     }
    ]
   },
+  "src/lib/freight/columns.ts": {
+   "path": "src/lib/freight/columns.ts",
+   "lines": 57,
+   "exports": [
+    "const PRODUCT_MEASURE_COLUMNS",
+    "const PRODUCT_MEASURE_SELECT",
+    "type ProductMeasureColumn",
+    "type ProductMeasureRow"
+   ],
+   "tables": [
+    {
+     "table": "products",
+     "op": "select"
+    }
+   ],
+   "enums": [
+    {
+     "name": "PRODUCT_MEASURE_COLUMNS",
+     "values": "'id', 'name', 'sku', 'height_cm', 'width_cm', 'length_cm', 'diameter_cm', 'weight_g', 'box_height_mm', 'box_width_mm', 'box_length_mm', 'box_weight_kg',"
+    }
+   ],
+   "rule_comments": [
+    "ativos) e `cubic_weight` (preenchida sem regra conhecida). O motor calcula o"
+   ]
+  },
+  "src/lib/freight/expandQuantities.ts": {
+   "path": "src/lib/freight/expandQuantities.ts",
+   "lines": 49,
+   "exports": [
+    "type ExpandResult",
+    "function expandQuantities"
+   ],
+   "status_values": [
+    {
+     "field": "status",
+     "value": "error",
+     "kind": "escreve"
+    },
+    {
+     "field": "status",
+     "value": "ok",
+     "kind": "escreve"
+    },
+    {
+     "field": "status",
+     "value": "error",
+     "kind": "escreve"
+    },
+    {
+     "field": "status",
+     "value": "error",
+     "kind": "escreve"
+    },
+    {
+     "field": "status",
+     "value": "ok",
+     "kind": "escreve"
+    }
+   ],
+   "doc": "Multiplica as quantidades das peças pelo número de kits/conjuntos pedidos. O orçamento e o simulador falam em \"N kits\"; o empacotador só entende peças. Esta é a única tradução entre os dois, e ela valida a entrada em vez de confiar nela: meio kit ou zero kit não é um plano de frete, é erro de tela. …"
+  },
+  "src/lib/freight/index.ts": {
+   "path": "src/lib/freight/index.ts",
+   "lines": 40,
+   "doc": "Motor de frete — barril público. Contrato, unidades e limites em `./README.md`."
+  },
+  "src/lib/freight/resolveItemDimensions.ts": {
+   "path": "src/lib/freight/resolveItemDimensions.ts",
+   "lines": 124,
+   "exports": [
+    "interface ResolvedMeasures",
+    "type ResolveResult",
+    "function resolveItemDimensions"
+   ],
+   "status_values": [
+    {
+     "field": "status",
+     "value": "incomplete",
+     "kind": "escreve"
+    },
+    {
+     "field": "status",
+     "value": "ok",
+     "kind": "escreve"
+    },
+    {
+     "field": "status",
+     "value": "incomplete",
+     "kind": "escreve"
+    },
+    {
+     "field": "status",
+     "value": "ok",
+     "kind": "escreve"
+    }
+   ]
+  },
+  "src/lib/freight/types.ts": {
+   "path": "src/lib/freight/types.ts",
+   "lines": 159,
+   "exports": [
+    "interface Dimensions",
+    "type MeasureSource",
+    "type MissingMeasure",
+    "interface PackItem",
+    "interface IncompleteItem",
+    "interface ShippingBox",
+    "interface CubicWeightG",
+    "interface PackVolume",
+    "type MixMode",
+    "type FreightPlanStatus",
+    "interface FreightPlanTotals",
+    "interface FreightPlan",
+    "interface FreightSettings",
+    "interface ValidationError"
+   ],
+   "enums": [
+    {
+     "name": "MeasureSource",
+     "values": "cylinder | packaging | product"
+    },
+    {
+     "name": "MissingMeasure",
+     "values": "height | length | weight | width"
+    },
+    {
+     "name": "MixMode",
+     "values": "misturar | separar"
+    },
+    {
+     "name": "FreightPlanStatus",
+     "values": "dados_insuficientes | nao_cabe | ok"
+    }
+   ],
+   "rule_comments": [
+    "* Produto que não pode entrar no cálculo. A decisão 7 do projeto é explícita:",
+    "ERRO DE VALIDAÇÃO"
+   ],
+   "doc": "Contrato do motor de frete. Unidades canônicas do módulo: **centímetro** e **grama**. Nada aqui lê mm ou kg: a conversão acontece na borda de entrada (`resolveItemDimensions`), que traduz `box_*_mm` e `box_weight_kg` do catálogo. Volume em cm³, exceto `volumeM3`. Nenhum tipo deste arquivo conhece Re …"
+  },
+  "src/lib/freight/units.ts": {
+   "path": "src/lib/freight/units.ts",
+   "lines": 84,
+   "exports": [
+    "function round1",
+    "function round2",
+    "function mmToCm",
+    "function kgToG",
+    "function cm3ToM3",
+    "function isKnownMeasure"
+   ],
+   "calc_fns": [
+    {
+     "name": "roundDecimal",
+     "params": "value: number, decimals: number",
+     "body": "const shifted = Number(`${value}e${decimals}`); if (!Number.isFinite(shifted)) return Number(value.toFixed(decimals)); return Number(`${Math.round(shifted)}e-${decimals}`);"
+    },
+    {
+     "name": "round1",
+     "params": "value: MaybeNumber",
+     "body": "if (!isUsable(value)) return null; return roundDecimal(value, 1);"
+    },
+    {
+     "name": "round2",
+     "params": "value: MaybeNumber",
+     "body": "if (!isUsable(value)) return null; return roundDecimal(value, 2);"
+    }
+   ]
+  },
+  "src/lib/freight/__tests__/columns.test.ts": {
+   "path": "src/lib/freight/__tests__/columns.test.ts",
+   "lines": 59,
+   "is_test": true,
+   "doc": "columns.test.ts — contrato das colunas que o motor lê de `products`. A existência de cada coluna em `products` é garantida em tempo de compilação pelo `Pick<ProductsRow, ProductMeasureColumn>` de `columns.ts` (`npm run qa:typecheck`). Aqui o que se trava é a **lista**: nenhuma coluna legada entra de …",
+   "tests": [
+    "PRODUCT_MEASURE_COLUMNS",
+    "é exatamente a lista do bloco A",
+    "não lê nenhuma coluna legada de frete",
+    "não tem repetição",
+    "PRODUCT_MEASURE_SELECT",
+    "é a lista separada por vírgula, pronta para o select"
+   ]
+  },
+  "src/lib/freight/__tests__/expandQuantities.test.ts": {
+   "path": "src/lib/freight/__tests__/expandQuantities.test.ts",
+   "lines": 103,
+   "is_test": true,
+   "rule_comments": [
+    "* expandQuantities.test.ts — multiplicação por número de kits e validação de"
+   ],
+   "doc": "expandQuantities.test.ts — multiplicação por número de kits e validação de quantidade. O erro é retornado, nunca lançado.",
+   "tests": [
+    "expandQuantities",
+    "1 kit mantém as quantidades",
+    "50 kits multiplicam cada linha",
+    "kitQuantity padrão é 1",
+    "não muta a entrada",
+    "zero kits devolve ValidationError, sem lançar",
+    "2,5 kits devolve ValidationError, sem lançar",
+    "quantidade de item inválida nomeia o produto",
+    "quantidade de item fracionária é recusada",
+    "lista vazia é válida: zero volumes, não erro"
+   ]
+  },
+  "src/lib/freight/__tests__/resolveItemDimensions.test.ts": {
+   "path": "src/lib/freight/__tests__/resolveItemDimensions.test.ts",
+   "lines": 205,
+   "is_test": true,
+   "rule_comments": [
+    "a altura está lá, então o cadastro só deve o comprimento"
+   ],
+   "doc": "resolveItemDimensions.test.ts — precedência de medidas e bloqueio por cadastro incompleto. Todos os produtos vêm de produção (ver fixtures).",
+   "tests": [
+    "resolveItemDimensions — caminho da embalagem",
+    "1. embalagem completa vence a peça e usa box_weight_kg",
+    "2. embalagem com peso zero mantém a fonte e cai no weight_g da peça",
+    "3. embalagem incompleta cai nas medidas da peça, com weight_g",
+    "resolveItemDimensions — caminho da peça e do cilíndrico",
+    "4. peça com as três dimensões resolve como product",
+    "5. cilíndrico usa o diâmetro nos dois lados quando falta largura e comprimento",
+    "resolveItemDimensions — bloqueio por cadastro incompleto",
+    "6. sem altura, reporta só o campo que falta",
+    "7. sem peso bloqueia mesmo com as três dimensões (decisão 7)",
+    "8. zeros em tudo são tratados como ausência, não como medida",
+    "9. diâmetro conhecido cobre largura e comprimento: falta só a altura",
+    "10. produto sem nenhuma medida lista os quatro campos",
+    "11. altura presente e comprimento ausente reporta só o comprimento",
+    "resolveItemDimensions — fonte esperada por fixture (etapa 9)",
+    "$fixture.sku resolve como $source"
+   ]
+  },
+  "src/lib/freight/__tests__/units.test.ts": {
+   "path": "src/lib/freight/__tests__/units.test.ts",
+   "lines": 167,
+   "is_test": true,
+   "rule_comments": [
+    "valor grande: a correção não pode depender da escala (somar EPSILON falharia)"
+   ],
+   "doc": "units.test.ts — conversão de unidades do motor de frete. Cobertura alvo: 100% das linhas de `units.ts`. Cada conversor é exercitado no caminho válido, no zero, no negativo e no não-finito.",
+   "tests": [
+    "mmToCm",
+    "converte milímetro em centímetro",
+    "não arrasta erro de ponto flutuante",
+    "não perde o empate por imprecisão binária",
+    "zero converte para zero: quem decide que zero é ausência é isKnownMeasure",
+    "recusa negativo e não-finito",
+    "kgToG",
+    "converte quilograma em grama",
+    "não perde o empate por imprecisão binária",
+    "zero converte para zero",
+    "recusa negativo e não-finito",
+    "cm3ToM3",
+    "converte centímetro cúbico em metro cúbico",
+    "zero converte para zero",
+    "recusa negativo e não-finito",
+    "round1",
+    "arredonda para uma casa decimal",
+    "não perde o empate por imprecisão binária",
+    "recusa negativo e não-finito",
+    "round2",
+    "arredonda para duas casas decimais",
+    "não perde o empate por imprecisão binária",
+    "aceita valor que o JS imprime em notação exponencial",
+    "recusa negativo e não-finito",
+    "isKnownMeasure",
+    "aceita medida finita maior que zero",
+    "rejeita zero — o catálogo usa zero como ausência de dado",
+    "rejeita null, undefined, negativo e não-finito"
+   ]
+  },
+  "src/lib/freight/__tests__/fixtures/products.ts": {
+   "path": "src/lib/freight/__tests__/fixtures/products.ts",
+   "lines": 187,
+   "is_test": true,
+   "exports": [
+    "const GARRAFA_COM_EMBALAGEM",
+    "const SUPORTE_EMBALAGEM_SEM_PESO",
+    "const KIT_SQUEEZE_EMBALAGEM_INCOMPLETA",
+    "const CADERNETA",
+    "const CANETA",
+    "const GARRAFA_TERMICA_SEM_PESO",
+    "const ENFEITE_SEM_NADA",
+    "const ZEROS",
+    "const CADERNETA_SEM_ALTURA",
+    "const ALL_PRODUCT_FIXTURES"
+   ],
+   "rule_comments": [
+    "* ATENÇÃO (evidência de negócio): 38 × 36 × 36 cm e 5,5 kg para uma garrafa de"
+   ],
+   "doc": "Produtos reais de `doufsxqlfjyuvxuezpln` (produção), lidos por `execute_sql` em 2026-11-19. Cobrem os quatro caminhos de `resolveItemDimensions` e os dois motivos de bloqueio. Não são inventados de propósito: a heurística precisa falhar nos dados que existem, não nos que seriam convenientes. `34702` …"
+  },
   "src/lib/intelligence/degradation.ts": {
    "path": "src/lib/intelligence/degradation.ts",
    "lines": 100,
@@ -479475,15 +480134,15 @@
   },
   "src/lib/kit-builder/weight.ts": {
    "path": "src/lib/kit-builder/weight.ts",
-   "lines": 31,
+   "lines": 37,
    "exports": [
     "function isKnownItemWeight",
     "function summarizeKitWeight"
    ],
    "rule_comments": [
-    "O catálogo usa zero como ausência de informação, então o kit deve manter essa"
-   ],
-   "doc": "Peso zero, negativo ou não numérico não é uma medição útil para estimar frete. O catálogo usa zero como ausência de informação, então o kit deve manter essa incerteza visível em vez de tratar o item como se não tivesse peso."
+    "O catálogo usa zero como ausência de informação, então o kit deve manter essa",
+    "* Mesma regra que `isKnownMeasure` (`src/lib/freight/units.ts`), que é a SSOT"
+   ]
   },
   "src/lib/kit-builder/__tests__/dead-code.test.ts": {
    "path": "src/lib/kit-builder/__tests__/dead-code.test.ts",
@@ -548214,10 +548873,31 @@
   }
  },
  "git": {
-  "sha": "6ef73b8a18c295fe13b651f36517f1afe003686c",
+  "sha": "6319e099e75d81db4bc3301624d6fc7a0796b9da",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "6319e09",
+    "date": "2026-11-19",
+    "author": "adm01-debug",
+    "subject": "feat(frete): base do motor — tipos, unidades e medidas (Bloco A) (#3896)",
+    "files": [
+     "src/lib/freight/README.md",
+     "src/lib/freight/__tests__/columns.test.ts",
+     "src/lib/freight/__tests__/expandQuantities.test.ts",
+     "src/lib/freight/__tests__/fixtures/products.ts",
+     "src/lib/freight/__tests__/resolveItemDimensions.test.ts",
+     "src/lib/freight/__tests__/units.test.ts",
+     "src/lib/freight/columns.ts",
+     "src/lib/freight/expandQuantities.ts",
+     "src/lib/freight/index.ts",
+     "src/lib/freight/resolveItemDimensions.ts",
+     "src/lib/freight/types.ts",
+     "src/lib/freight/units.ts",
+     "src/lib/kit-builder/weight.ts"
+    ]
+   },
    {
     "sha": "6ef73b8",
     "date": "2026-11-19",
@@ -548514,19 +549194,6 @@
      "src/components/inventory/StockHealthDrawerEntry.tsx",
      "src/components/inventory/__tests__/StockHealthDrawerEntry.test.tsx"
     ]
-   },
-   {
-    "sha": "4073048",
-    "date": "2026-11-18",
-    "author": "adm01-debug",
-    "subject": "fix(catalogo): comando de voz 'limpar' zera os filtros, nao so o texto (#3861)",
-    "files": [
-     "src/components/search/useGlobalSearch.ts",
-     "src/components/search/voiceFilterDispatch.ts",
-     "src/hooks/products/useVoiceFilterApply.ts",
-     "src/stores/voiceFilterBridge.ts",
-     "tests/hooks/useVoiceFilterApply.reset.test.tsx"
-    ]
    }
   ],
   "hot_files": [
@@ -548559,55 +549226,55 @@
     2
    ],
    [
-    "supabase/baseline/20261116000000_cron_jobs.json",
+    "src/lib/freight/README.md",
     1
    ],
    [
-    "supabase/baseline/20261119111500_cron_jobs.json",
+    "src/lib/freight/__tests__/columns.test.ts",
     1
    ],
    [
-    "supabase/migrations/20261119110500_crm_callback_events_updated_at.sql",
+    "src/lib/freight/__tests__/expandQuantities.test.ts",
     1
    ],
    [
-    "supabase/rollbacks/20261119110500_rollback.sql",
+    "src/lib/freight/__tests__/fixtures/products.ts",
     1
    ],
    [
-    ".release-please-manifest.json",
+    "src/lib/freight/__tests__/resolveItemDimensions.test.ts",
     1
    ],
    [
-    "CHANGELOG.md",
+    "src/lib/freight/__tests__/units.test.ts",
     1
    ],
    [
-    "package-lock.json",
+    "src/lib/freight/columns.ts",
     1
    ],
    [
-    "package.json",
+    "src/lib/freight/expandQuantities.ts",
     1
    ],
    [
-    "supabase/migrations/20261119094500_reafirma_revogacoes_anteriores_ao_baseline.sql",
+    "src/lib/freight/index.ts",
     1
    ],
    [
-    "supabase/rollbacks/20261119094500_rollback.sql",
+    "src/lib/freight/resolveItemDimensions.ts",
     1
    ],
    [
-    "supabase/migrations/20261119081500_elevenlabs_credential_reemissao.sql",
+    "src/lib/freight/types.ts",
     1
    ],
    [
-    "supabase/rollbacks/20261119081500_rollback.sql",
+    "src/lib/freight/units.ts",
     1
    ],
    [
-    "supabase/migrations/20261117172500_elevenlabs_credential.sql",
+    "src/lib/kit-builder/weight.ts",
     1
    ]
   ]

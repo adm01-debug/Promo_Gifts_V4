@@ -1,13 +1,13 @@
 {
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
- "total": 313,
+ "total": 319,
  "por_camada": {
   "api": 4,
   "config": 1,
   "data": 3,
   "integrations": 8,
-  "lib": 236,
+  "lib": 242,
   "python": 9,
   "services": 10,
   "stores": 9,
@@ -961,7 +961,7 @@
    "zod_schemas": 0,
    "flags": [],
    "papeis": [],
-   "usado_por": 55,
+   "usado_por": 56,
    "usado_por_modulos": [
     "components/admin",
     "components/cart",
@@ -980,6 +980,7 @@
     "hooks/simulator",
     "integrations/supabase",
     "lib",
+    "lib/freight",
     "lib/kit-builder",
     "lib/kit-library",
     "pages/admin",
@@ -3919,6 +3920,176 @@
    "orfao": false
   },
   {
+   "arquivo": "src/lib/freight/columns.ts",
+   "camada": "lib",
+   "exports": [
+    "PRODUCT_MEASURE_COLUMNS",
+    "PRODUCT_MEASURE_SELECT",
+    "ProductMeasureColumn",
+    "ProductMeasureRow"
+   ],
+   "export_default": null,
+   "linhas": 57,
+   "tabelas": [],
+   "rpcs": [],
+   "edges": [],
+   "env": [],
+   "externos": [],
+   "zod_schemas": 0,
+   "flags": [],
+   "papeis": [],
+   "usado_por": 2,
+   "usado_por_modulos": [
+    "lib/freight"
+   ],
+   "coberto_por_testes": 2,
+   "orfao": false
+  },
+  {
+   "arquivo": "src/lib/freight/expandQuantities.ts",
+   "camada": "lib",
+   "exports": [
+    "ExpandResult",
+    "expandQuantities"
+   ],
+   "export_default": null,
+   "linhas": 49,
+   "tabelas": [],
+   "rpcs": [],
+   "edges": [],
+   "env": [],
+   "externos": [],
+   "zod_schemas": 0,
+   "flags": [],
+   "papeis": [],
+   "usado_por": 1,
+   "usado_por_modulos": [
+    "lib/freight"
+   ],
+   "coberto_por_testes": 1,
+   "orfao": false
+  },
+  {
+   "arquivo": "src/lib/freight/index.ts",
+   "camada": "lib",
+   "exports": [
+    "PRODUCT_MEASURE_COLUMNS",
+    "PRODUCT_MEASURE_SELECT",
+    "cm3ToM3",
+    "expandQuantities",
+    "isKnownMeasure",
+    "kgToG",
+    "mmToCm",
+    "resolveItemDimensions",
+    "round1",
+    "round2"
+   ],
+   "export_default": null,
+   "linhas": 40,
+   "tabelas": [],
+   "rpcs": [],
+   "edges": [],
+   "env": [],
+   "externos": [],
+   "zod_schemas": 0,
+   "flags": [],
+   "papeis": [],
+   "usado_por": 0,
+   "usado_por_modulos": [],
+   "coberto_por_testes": 0,
+   "orfao": false
+  },
+  {
+   "arquivo": "src/lib/freight/resolveItemDimensions.ts",
+   "camada": "lib",
+   "exports": [
+    "ResolveResult",
+    "ResolvedMeasures",
+    "resolveItemDimensions"
+   ],
+   "export_default": null,
+   "linhas": 124,
+   "tabelas": [],
+   "rpcs": [],
+   "edges": [],
+   "env": [],
+   "externos": [],
+   "zod_schemas": 0,
+   "flags": [],
+   "papeis": [],
+   "usado_por": 1,
+   "usado_por_modulos": [
+    "lib/freight"
+   ],
+   "coberto_por_testes": 1,
+   "orfao": false
+  },
+  {
+   "arquivo": "src/lib/freight/types.ts",
+   "camada": "lib",
+   "exports": [
+    "CubicWeightG",
+    "Dimensions",
+    "FreightPlan",
+    "FreightPlanStatus",
+    "FreightPlanTotals",
+    "FreightSettings",
+    "IncompleteItem",
+    "MeasureSource",
+    "MissingMeasure",
+    "MixMode",
+    "PackItem",
+    "PackVolume",
+    "ShippingBox",
+    "ValidationError"
+   ],
+   "export_default": null,
+   "linhas": 159,
+   "tabelas": [],
+   "rpcs": [],
+   "edges": [],
+   "env": [],
+   "externos": [],
+   "zod_schemas": 0,
+   "flags": [],
+   "papeis": [],
+   "usado_por": 3,
+   "usado_por_modulos": [
+    "lib/freight"
+   ],
+   "coberto_por_testes": 1,
+   "orfao": false
+  },
+  {
+   "arquivo": "src/lib/freight/units.ts",
+   "camada": "lib",
+   "exports": [
+    "cm3ToM3",
+    "isKnownMeasure",
+    "kgToG",
+    "mmToCm",
+    "round1",
+    "round2"
+   ],
+   "export_default": null,
+   "linhas": 84,
+   "tabelas": [],
+   "rpcs": [],
+   "edges": [],
+   "env": [],
+   "externos": [],
+   "zod_schemas": 0,
+   "flags": [],
+   "papeis": [],
+   "usado_por": 3,
+   "usado_por_modulos": [
+    "lib/freight",
+    "lib/kit-builder"
+   ],
+   "coberto_por_testes": 1,
+   "orfao": false
+  },
+  {
    "arquivo": "src/lib/image-converter.ts",
    "camada": "lib",
    "exports": [
@@ -4727,7 +4898,7 @@
     "summarizeKitWeight"
    ],
    "export_default": null,
-   "linhas": 31,
+   "linhas": 37,
    "tabelas": [],
    "rpcs": [],
    "edges": [],
