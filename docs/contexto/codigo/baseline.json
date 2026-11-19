@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "074fa4f2fa0edd3b405dadfcddde569a0df14090",
+  "commit": "96d0391edc3be7dedb565148d5b115285d5645c6",
   "branch": "main",
-  "data_commit": "2026-11-18T23:52:00-03:00",
+  "data_commit": "2026-11-19T00:05:19-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "96d0391e",
+    "data": "2026-11-19",
+    "assunto": "chore(resgates): fecha a reconciliacao byte a byte dos 98 arquivos restantes (#3867)"
+   },
    {
     "sha": "074fa4f2",
     "data": "2026-11-18",
@@ -126,190 +131,185 @@
     "sha": "4d175330",
     "data": "2026-11-18",
     "assunto": "feat(components): Ctrl+K volta a alcançar Novidades, Filtros e Estoque (#3842)"
-   },
-   {
-    "sha": "74f6954d",
-    "data": "2026-11-18",
-    "assunto": "fix(test): dois guardas afirmavam o contrário do que a main faz hoje (#3843)"
    }
   ],
-  "arquivos_mudados_7d": 1517,
+  "arquivos_mudados_7d": 1514,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
-    "mudancas": 1846
+    "mudancas": 1548
    },
    {
     "pasta": "src/components/products",
-    "mudancas": 924
-   },
-   {
-    "pasta": "tests/edge-functions/live",
-    "mudancas": 708
-   },
-   {
-    "pasta": "src/hooks/products",
-    "mudancas": 658
+    "mudancas": 774
    },
    {
     "pasta": "recovery/src-legacy/src",
     "mudancas": 633
    },
    {
+    "pasta": "tests/edge-functions/live",
+    "mudancas": 593
+   },
+   {
+    "pasta": "src/hooks/products",
+    "mudancas": 553
+   },
+   {
     "pasta": "src/components/quotes",
-    "mudancas": 589
+    "mudancas": 502
    },
    {
     "pasta": "src/pages/magazine",
-    "mudancas": 552
+    "mudancas": 460
    },
    {
     "pasta": "src/components/inventory",
-    "mudancas": 497
+    "mudancas": 417
    },
    {
     "pasta": "src/components/ui",
-    "mudancas": 442
+    "mudancas": 369
    },
    {
     "pasta": "supabase/functions/_shared",
-    "mudancas": 438
+    "mudancas": 369
    },
    {
     "pasta": "src/components/mockup",
-    "mudancas": 413
+    "mudancas": 353
    },
    {
     "pasta": "src/pages/admin",
-    "mudancas": 372
+    "mudancas": 313
    },
    {
     "pasta": "src/pages/quotes",
-    "mudancas": 330
+    "mudancas": 280
    },
    {
     "pasta": "src/components/kit-builder",
-    "mudancas": 319
+    "mudancas": 272
    },
    {
     "pasta": "src/pages/products",
-    "mudancas": 296
+    "mudancas": 248
    }
   ],
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "supabase/MIGRATIONS_SYNC_LOG.md",
-    "mudancas": 61
+    "mudancas": 60
    },
    {
     "arquivo": "package.json",
-    "mudancas": 41
+    "mudancas": 40
    },
    {
     "arquivo": "PENDENCIAS.md",
-    "mudancas": 31
-   },
-   {
-    "arquivo": "RELATORIO_CI.md",
     "mudancas": 29
    },
    {
+    "arquivo": "RELATORIO_CI.md",
+    "mudancas": 27
+   },
+   {
     "arquivo": "docs/coordenacao/conflitos-semanticos.md",
-    "mudancas": 26
+    "mudancas": 25
    },
    {
     "arquivo": "package-lock.json",
-    "mudancas": 24
+    "mudancas": 23
    },
    {
     "arquivo": ".github/workflows/deploy-gates.yml",
-    "mudancas": 21
+    "mudancas": 20
    },
    {
     "arquivo": "src/pages/kit-builder/KitBuilderPage.tsx",
-    "mudancas": 21
+    "mudancas": 20
    },
    {
     "arquivo": "supabase/EDGE_FUNCTIONS_DEPLOY_LOG.md",
-    "mudancas": 18
+    "mudancas": 17
    },
    {
     "arquivo": "analise-prs/progresso.json",
-    "mudancas": 17
-   },
-   {
-    "arquivo": "audit/supabase-reference-catalog.temporary.json",
-    "mudancas": 17
-   },
-   {
-    "arquivo": "src/hooks/kit-builder/useKitBuilderPageState.ts",
     "mudancas": 16
    },
    {
+    "arquivo": "audit/supabase-reference-catalog.temporary.json",
+    "mudancas": 16
+   },
+   {
+    "arquivo": "src/hooks/kit-builder/useKitBuilderPageState.ts",
+    "mudancas": 15
+   },
+   {
     "arquivo": "analise-branches/RELATORIO_BRANCHES.md",
-    "mudancas": 14
-   },
-   {
-    "arquivo": "src/hooks/kit-builder/useKitAutoSave.ts",
-    "mudancas": 14
-   },
-   {
-    "arquivo": "src/pages/mockups/MockupGenerator.tsx",
-    "mudancas": 14
-   },
-   {
-    "arquivo": "e2e/flows/magazine-preview-sticky-smoke.spec.ts",
     "mudancas": 13
    },
    {
-    "arquivo": ".github/workflows/schema-snapshot-export.yml",
+    "arquivo": "src/hooks/kit-builder/useKitAutoSave.ts",
+    "mudancas": 13
+   },
+   {
+    "arquivo": "src/pages/mockups/MockupGenerator.tsx",
+    "mudancas": 13
+   },
+   {
+    "arquivo": "e2e/flows/magazine-preview-sticky-smoke.spec.ts",
     "mudancas": 12
+   },
+   {
+    "arquivo": ".github/workflows/schema-snapshot-export.yml",
+    "mudancas": 11
    },
    {
     "arquivo": "CHANGELOG.md",
-    "mudancas": 12
+    "mudancas": 11
    },
    {
     "arquivo": "analise-prs/prs.json",
-    "mudancas": 12
+    "mudancas": 11
    },
    {
     "arquivo": "src/components/kit-builder/PersonalizationConfig.tsx",
-    "mudancas": 12
+    "mudancas": 11
    },
    {
     "arquivo": "supabase/functions/crm-db-bridge/index.ts",
-    "mudancas": 12
+    "mudancas": 11
    },
    {
     "arquivo": "tests/components/pages/KitBuilderPage.test.tsx",
-    "mudancas": 12
+    "mudancas": 11
    },
    {
     "arquivo": "tests/edge-functions/live/_live-client.ts",
-    "mudancas": 12
+    "mudancas": 11
    },
    {
     "arquivo": ".github/workflows/db-schema-drift-check.yml",
-    "mudancas": 11
+    "mudancas": 10
    },
    {
     "arquivo": ".github/workflows/e2e-swatch-quickview.yml",
-    "mudancas": 11
+    "mudancas": 10
    }
   ],
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 461
+    "commits": 458
    },
    {
     "autor": "Claude",
-    "commits": 92
+    "commits": 91
    },
    {
     "autor": "Joaquim Ataides",
-    "commits": 75
+    "commits": 74
    },
    {
     "autor": "github-actions[bot]",
@@ -322,7 +322,7 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 10973,
+  "arquivos_total": 10974,
   "arquivos_codigo": 5483,
   "linhas_codigo": 1044218,
   "rotas": 139,
@@ -339,7 +339,7 @@
   "testes": 2614,
   "workflows": 89,
   "scripts": 283,
-  "docs_md": 1482
+  "docs_md": 1483
  },
  "por_pasta": {
   ".github/scripts": {

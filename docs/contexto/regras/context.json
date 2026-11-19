@@ -1,10 +1,10 @@
 {
  "meta": {
-  "sha": "074fa4f2fa0edd3b405dadfcddde569a0df14090",
+  "sha": "96d0391edc3be7dedb565148d5b115285d5645c6",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-19 02:53 UTC",
-  "files_total": 10901,
+  "generated_at": "2026-11-19 03:18 UTC",
+  "files_total": 10902,
   "code_files": 8924,
   "code_lines": 1265115
  },
@@ -547997,10 +547997,19 @@
   }
  },
  "git": {
-  "sha": "074fa4f2fa0edd3b405dadfcddde569a0df14090",
+  "sha": "96d0391edc3be7dedb565148d5b115285d5645c6",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "96d0391",
+    "date": "2026-11-19",
+    "author": "adm01-debug",
+    "subject": "chore(resgates): fecha a reconciliacao byte a byte dos 98 arquivos restantes (#3867)",
+    "files": [
+     "docs/agentes/resgates/2026-11-19-fechamento-da-reconciliacao.md"
+    ]
+   },
    {
     "sha": "074fa4f",
     "date": "2026-11-18",
@@ -548329,25 +548338,6 @@
      "src/hooks/system/useKillSwitchNotice.ts",
      "src/pages/mockups/MockupGenerator.tsx"
     ]
-   },
-   {
-    "sha": "44f077e",
-    "date": "2026-11-18",
-    "author": "adm01-debug",
-    "subject": "feat(quotes): liga o funil de orçamentos à tela e para de chamar expirado de rascunho (#3836)",
-    "files": [
-     "audit/supabase-reference-catalog.temporary.json",
-     "src/components/quotes/QuotesFunnelChart.tsx",
-     "src/components/quotes/__tests__/QuotesFunnelChart.test.tsx",
-     "src/hooks/quotes/__tests__/useQuoteFunnel.test.ts",
-     "src/hooks/quotes/index.ts",
-     "src/hooks/quotes/useQuoteFunnel.ts",
-     "src/hooks/quotes/useQuoteViewedMap.ts",
-     "src/pages/quotes/QuotesDashboardPage.tsx",
-     "src/pages/quotes/__tests__/QuotesDashboardPage.pdfDisabled.test.tsx",
-     "src/pages/quotes/quotes-dashboard/useQuotesDashboard.ts",
-     "tests/hooks/useQuoteFunnel.test.ts"
-    ]
    }
   ],
   "hot_files": [
@@ -548366,6 +548356,10 @@
    [
     "docs/agentes/resgates/2026-11-18-inventario-trabalho-nao-ligado.md",
     2
+   ],
+   [
+    "docs/agentes/resgates/2026-11-19-fechamento-da-reconciliacao.md",
+    1
    ],
    [
     "src/hooks/intelligence/useMagicUpState.helpers.ts",
@@ -548425,10 +548419,6 @@
    ],
    [
     "src/components/inventory/__tests__/StockHealthDrawerEntry.test.tsx",
-    1
-   ],
-   [
-    "src/components/search/useGlobalSearch.ts",
     1
    ]
   ]

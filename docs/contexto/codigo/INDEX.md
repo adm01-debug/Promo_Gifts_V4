@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e de hora em hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `074fa4f2fa0edd3b405dadfcddde569a0df14090` (2026-11-18T23:52:00-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e de hora em hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `96d0391edc3be7dedb565148d5b115285d5645c6` (2026-11-19T00:05:19-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -14,7 +14,7 @@ Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR
 Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua tarefa; não carregue tudo.
 
 ## Stack
-- linguagens: TypeScript (5016), SQL (3442), Markdown (1482), JavaScript (457), JSON (132), YAML (117), Shell (27), HTML (20)
+- linguagens: TypeScript (5016), SQL (3442), Markdown (1483), JavaScript (457), JSON (132), YAML (117), Shell (27), HTML (20)
 - linguagem_principal: TypeScript
 - framework: React
 - backend_http: n/d
@@ -34,7 +34,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 ## Números
 | item | qtd |
 |---|---|
-| arquivos_total | 10973 |
+| arquivos_total | 10974 |
 | arquivos_codigo | 5483 |
 | linhas_codigo | 1044218 |
 | rotas | 139 |
@@ -51,7 +51,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 | testes | 2614 |
 | workflows | 89 |
 | scripts | 283 |
-| docs_md | 1482 |
+| docs_md | 1483 |
 
 ## Onde ficam as coisas
 - telas: src/pages (112), src/components (3), api/health.ts (1)
@@ -592,27 +592,27 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - possiveis_segredos_no_codigo: 7 — ex.: scripts/ai-context/cenarios.mjs:102, src/components/admin/connections/__tests__/ConnectionSecurity.unit.test.tsx:9, src/integrations/supabase/client.ts:27
 
 ## Grafo de código (graphify)
-- 49278 nós · 82782 arestas · 2836 comunidades · grafo do commit `074fa4f2`
-- comunidades maiores: ref_components (750), ref_integrations (625), vitest (607), ref_node_child_process (549), ref_hooks (408), @testing-library/react (393), @tanstack/react-query (392), ref_types (381), react-router-dom (362), react (345), sonner (329), ref_node_fs (321)
+- 49286 nós · 82791 arestas · 2851 comunidades · grafo do commit `96d0391e`
+- comunidades maiores: ref_integrations (648), ref_components (560), react (522), ref_node_child_process (489), @tanstack/react-query (438), vitest (389), ref_hooks (380), lucide-react (373), ref_types (320), scripts (310), nav.ts (305), ref_utils (297)
 - símbolos mais chamados: gotoAndSettle() (e2e/helpers/nav.ts), re (?), q() (scripts/supabase_snapshot/snapshot.py), analyze() (tests/scripts/test_personalization_artifact_diagnostics.py), outer() (tests/scripts/test_personalization_artifact_diagnostics.py), json (?), useExternalDatabase() (recovery/src-legacy/src/hooks/useExternalDatabase.ts), concludeCheck() (scripts/check-result-contract.mjs), querySupabaseReadOnly() (scripts/supabase-read-only-query.mjs), loginAs() (e2e/helpers/auth.ts), inner() (tests/scripts/test_personalization_artifact_diagnostics.py), excluded_sql() (scripts/supabase_snapshot/snapshot.py)
 - consulta local: `graphify query "<pergunta>"`, `graphify path "<A>" "<B>"`, `graphify explain "<X>"`
 
 ## Hotspots (arquivos mais alterados, 90 dias)
-- supabase/MIGRATIONS_SYNC_LOG.md (61)
-- package.json (41)
-- PENDENCIAS.md (31)
-- RELATORIO_CI.md (29)
-- docs/coordenacao/conflitos-semanticos.md (26)
-- package-lock.json (24)
-- .github/workflows/deploy-gates.yml (21)
-- src/pages/kit-builder/KitBuilderPage.tsx (21)
-- supabase/EDGE_FUNCTIONS_DEPLOY_LOG.md (18)
-- analise-prs/progresso.json (17)
-- audit/supabase-reference-catalog.temporary.json (17)
-- src/hooks/kit-builder/useKitBuilderPageState.ts (16)
-- analise-branches/RELATORIO_BRANCHES.md (14)
-- src/hooks/kit-builder/useKitAutoSave.ts (14)
-- src/pages/mockups/MockupGenerator.tsx (14)
+- supabase/MIGRATIONS_SYNC_LOG.md (60)
+- package.json (40)
+- PENDENCIAS.md (29)
+- RELATORIO_CI.md (27)
+- docs/coordenacao/conflitos-semanticos.md (25)
+- package-lock.json (23)
+- .github/workflows/deploy-gates.yml (20)
+- src/pages/kit-builder/KitBuilderPage.tsx (20)
+- supabase/EDGE_FUNCTIONS_DEPLOY_LOG.md (17)
+- analise-prs/progresso.json (16)
+- audit/supabase-reference-catalog.temporary.json (16)
+- src/hooks/kit-builder/useKitBuilderPageState.ts (15)
+- analise-branches/RELATORIO_BRANCHES.md (13)
+- src/hooks/kit-builder/useKitAutoSave.ts (13)
+- src/pages/mockups/MockupGenerator.tsx (13)
 
 ## Workflows
 - `_e2e-relevance.yml` — Reusable — E2E Runtime Relevance (workflow_call)
@@ -1185,10 +1185,11 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - `docs/motor-v2-test-report.md` — 🧪 Relatório Exaustivo de Testes — Motor V2 (Bronze Layer) (401 linhas)
 - `docs/notifications-module-audit.md` — Auditoria — Módulo "Notificações de Estoque" (sino do header) (110 linhas)
 - `docs/prod-readiness.md` — Prontidão para produção — inventário e prova (1148 linhas)
-- subpastas de docs/: docs/arquivo (92), docs/redeploy (27), docs/estado (26), docs/plans (24), docs/agentes (23), docs/db (14), docs/audits (12), docs/ci (12), docs/adr (11), docs/auditoria-planejado-nao-executado-2026-10-11 (11), docs/hardening (11), docs/validation (11), docs/architecture (9), docs/runbooks (8), docs/bugs (6), docs/security (6), docs/sessoes (5), docs/suppliers (5), docs/arquitetura (4), docs/audit (4), docs/operations (4), docs/testing (4), docs/RUNBOOKS (3), docs/contexto (3), docs/design (3), docs/fabrica-vps (3), docs/faxina-261114 (3), docs/observability (3), docs/qa (3), docs/reports (3), docs/INCIDENTS (2), docs/contracts (2), docs/coordenacao (2), docs/edge-functions (2), docs/historico (2), docs/incidente-2026-10-13 (2), docs/prompts (2), docs/e2e (1), docs/graphify (1), docs/incidents (1), docs/migrations (1), docs/pipelines (1), docs/postmortems (1), docs/promo-champions (1), docs/storage (1), docs/workflows (1)
+- subpastas de docs/: docs/arquivo (92), docs/redeploy (27), docs/estado (26), docs/agentes (24), docs/plans (24), docs/db (14), docs/audits (12), docs/ci (12), docs/adr (11), docs/auditoria-planejado-nao-executado-2026-10-11 (11), docs/hardening (11), docs/validation (11), docs/architecture (9), docs/runbooks (8), docs/bugs (6), docs/security (6), docs/sessoes (5), docs/suppliers (5), docs/arquitetura (4), docs/audit (4), docs/operations (4), docs/testing (4), docs/RUNBOOKS (3), docs/contexto (3), docs/design (3), docs/fabrica-vps (3), docs/faxina-261114 (3), docs/observability (3), docs/qa (3), docs/reports (3), docs/INCIDENTS (2), docs/contracts (2), docs/coordenacao (2), docs/edge-functions (2), docs/historico (2), docs/incidente-2026-10-13 (2), docs/prompts (2), docs/e2e (1), docs/graphify (1), docs/incidents (1), docs/migrations (1), docs/pipelines (1), docs/postmortems (1), docs/promo-champions (1), docs/storage (1), docs/workflows (1)
 - CHANGELOG topo: [1.9.1](https://github.com/adm01-debug/Promo_Gifts_V4/compare/gifts-store-v1.9.0...gifts-store-v1.9.1) (2026-11-17)
 
 ## Últimos commits
+- 2026-11-19 `96d0391e` chore(resgates): fecha a reconciliacao byte a byte dos 98 arquivos restantes (#3867)
 - 2026-11-18 `074fa4f2` fix(magic-up): valida o shape vindo do banco e poe prazo nas consultas (#3866)
 - 2026-11-18 `7da0d491` feat(kit): destrava o kit cujo catalogo ainda nao informou preco (#3865)
 - 2026-11-18 `cf61cb6d` fix(ci): corrige tres afirmacoes falsas minhas no job Deno e o teto de timeout (#3864)
@@ -1203,7 +1204,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-18 `e3fcdc93` feat(estoque): cria fn_supplier_risk_breakdown por migration e corrige o rotulo do selo (#3854)
 - 2026-11-18 `61ceaa96` chore(ci): job deno test — 48 arquivos de teste de edge que nenhum runner executava (#3853)
 - 2026-11-18 `ec7ecdc8` docs(resgate): veredicto byte a byte das 9 branches abertas (#3855)
-- 2026-11-18 `0c507b86` fix(test): liga 832 testes que existiam no repo e runner nenhum executava (#3852)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`
