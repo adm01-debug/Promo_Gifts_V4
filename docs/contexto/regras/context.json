@@ -1,9 +1,9 @@
 {
  "meta": {
-  "sha": "db0bd46e8a1d000c5a2790f340e93df5cfa53973",
+  "sha": "76d1a70dd4c8b67c8dea0c541b983a23f140d215",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-19 11:34 UTC",
+  "generated_at": "2026-11-19 15:01 UTC",
   "files_total": 10913,
   "code_files": 8933,
   "code_lines": 1265560
@@ -548234,10 +548234,22 @@
   }
  },
  "git": {
-  "sha": "db0bd46e8a1d000c5a2790f340e93df5cfa53973",
+  "sha": "76d1a70dd4c8b67c8dea0c541b983a23f140d215",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "76d1a70",
+    "date": "2026-11-19",
+    "author": "github-actions[bot]",
+    "subject": "chore(main): release gifts-store 1.10.0 (#3781)",
+    "files": [
+     ".release-please-manifest.json",
+     "CHANGELOG.md",
+     "package-lock.json",
+     "package.json"
+    ]
+   },
    {
     "sha": "db0bd46",
     "date": "2026-11-19",
@@ -548532,21 +548544,12 @@
      "src/components/quotes/QuoteTemplatesList.tsx",
      "tests/components/QuoteTemplatesList.guards.test.tsx"
     ]
-   },
-   {
-    "sha": "ee54b64",
-    "date": "2026-11-18",
-    "author": "github-actions[bot]",
-    "subject": "docs: recibo de aplicacao — 20261118223000 (E15) (#3857)",
-    "files": [
-     "supabase/MIGRATIONS_SYNC_LOG.md"
-    ]
    }
   ],
   "hot_files": [
    [
     "supabase/MIGRATIONS_SYNC_LOG.md",
-    15
+    14
    ],
    [
     "docs/agentes/resgates/2026-11-19-migrations-orfas-e-o-portao-retroativo.md",
@@ -548563,6 +548566,22 @@
    [
     ".security/policies-baseline.json",
     2
+   ],
+   [
+    ".release-please-manifest.json",
+    1
+   ],
+   [
+    "CHANGELOG.md",
+    1
+   ],
+   [
+    "package-lock.json",
+    1
+   ],
+   [
+    "package.json",
+    1
    ],
    [
     ".migration-refs-baseline.json",
@@ -548606,22 +548625,6 @@
    ],
    [
     "supabase/rollbacks/20261119051500_rollback.sql",
-    1
-   ],
-   [
-    "src/hooks/intelligence/useMagicUpState.helpers.ts",
-    1
-   ],
-   [
-    "src/hooks/intelligence/useMagicUpState.ts",
-    1
-   ],
-   [
-    "src/types/gravacao.ts",
-    1
-   ],
-   [
-    "tests/hooks/magicUpHelpers.guards.test.ts",
     1
    ]
   ]

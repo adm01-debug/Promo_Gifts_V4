@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e de hora em hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `db0bd46e8a1d000c5a2790f340e93df5cfa53973` (2026-11-19T08:32:51-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e de hora em hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `76d1a70dd4c8b67c8dea0c541b983a23f140d215` (2026-11-19T12:00:16-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -592,27 +592,27 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - possiveis_segredos_no_codigo: 7 — ex.: scripts/ai-context/cenarios.mjs:102, src/components/admin/connections/__tests__/ConnectionSecurity.unit.test.tsx:9, src/integrations/supabase/client.ts:27
 
 ## Grafo de código (graphify)
-- 49319 nós · 82827 arestas · 2796 comunidades · grafo do commit `db0bd46e`
-- comunidades maiores: vitest (822), ref_components (709), ref_integrations (612), ref_lib (467), ref_node_child_process (464), ref_hooks (415), @tanstack/react-query (409), react-router-dom (384), gotoAndSettle (353), ref_types (346), ref_node_fs (334), concludeCheck (321)
+- 49322 nós · 82830 arestas · 2812 comunidades · grafo do commit `76d1a70d`
+- comunidades maiores: ref_components (880), ref_hooks (777), vitest (644), ref_integrations (619), ref_node_child_process (477), react-router-dom (429), @tanstack/react-query (415), react (391), ref_types (382), gotoAndSettle (342), sonner (321), scripts (310)
 - símbolos mais chamados: gotoAndSettle() (e2e/helpers/nav.ts), re (?), q() (scripts/supabase_snapshot/snapshot.py), analyze() (tests/scripts/test_personalization_artifact_diagnostics.py), outer() (tests/scripts/test_personalization_artifact_diagnostics.py), json (?), useExternalDatabase() (recovery/src-legacy/src/hooks/useExternalDatabase.ts), concludeCheck() (scripts/check-result-contract.mjs), querySupabaseReadOnly() (scripts/supabase-read-only-query.mjs), loginAs() (e2e/helpers/auth.ts), inner() (tests/scripts/test_personalization_artifact_diagnostics.py), excluded_sql() (scripts/supabase_snapshot/snapshot.py)
 - consulta local: `graphify query "<pergunta>"`, `graphify path "<A>" "<B>"`, `graphify explain "<X>"`
 
 ## Hotspots (arquivos mais alterados, 90 dias)
-- supabase/MIGRATIONS_SYNC_LOG.md (63)
-- package.json (35)
-- docs/coordenacao/conflitos-semanticos.md (26)
-- RELATORIO_CI.md (20)
-- package-lock.json (20)
-- PENDENCIAS.md (19)
-- .github/workflows/deploy-gates.yml (18)
-- supabase/EDGE_FUNCTIONS_DEPLOY_LOG.md (14)
-- audit/supabase-reference-catalog.temporary.json (13)
-- src/pages/kit-builder/KitBuilderPage.tsx (12)
-- src/pages/mockups/MockupGenerator.tsx (11)
-- docs/agentes/resgates/2026-11-16-auditoria-branches.md (10)
-- e2e/flows/magazine-preview-sticky-smoke.spec.ts (10)
-- src/hooks/kit-builder/useKitBuilderPageState.ts (10)
-- .github/workflows/schema-snapshot-export.yml (9)
+- supabase/MIGRATIONS_SYNC_LOG.md (64)
+- package.json (37)
+- docs/coordenacao/conflitos-semanticos.md (27)
+- package-lock.json (22)
+- RELATORIO_CI.md (21)
+- PENDENCIAS.md (20)
+- .github/workflows/deploy-gates.yml (19)
+- supabase/EDGE_FUNCTIONS_DEPLOY_LOG.md (15)
+- audit/supabase-reference-catalog.temporary.json (14)
+- src/pages/kit-builder/KitBuilderPage.tsx (13)
+- src/pages/mockups/MockupGenerator.tsx (12)
+- e2e/flows/magazine-preview-sticky-smoke.spec.ts (11)
+- src/hooks/kit-builder/useKitBuilderPageState.ts (11)
+- .github/workflows/schema-snapshot-export.yml (10)
+- CHANGELOG.md (10)
 
 ## Workflows
 - `_e2e-relevance.yml` — Reusable — E2E Runtime Relevance (workflow_call)
@@ -1022,7 +1022,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - `.github/PULL_REQUEST_TEMPLATE.md` (112 linhas)
 - `.github/SENTINEL_CHANGELOG.md` — Sentinel Changelog (188 linhas)
 - `AGENTS.md` — AGENTS.md — Promo Gifts V4 (111 linhas)
-- `CHANGELOG.md` — Changelog (2334 linhas)
+- `CHANGELOG.md` — Changelog (2405 linhas)
 - `CI_PROVA_P33.md` — CI_PROVA_P33.md — Prova Final de Conclusão CI (Sessão P33, 2026-10-30) (97 linhas)
 - `CLAUDE.md` (2 linhas)
 - `CONTRIBUTING.md` — Guia de Contribuição (299 linhas)
@@ -1186,9 +1186,10 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - `docs/notifications-module-audit.md` — Auditoria — Módulo "Notificações de Estoque" (sino do header) (110 linhas)
 - `docs/prod-readiness.md` — Prontidão para produção — inventário e prova (1148 linhas)
 - subpastas de docs/: docs/arquivo (92), docs/redeploy (27), docs/agentes (26), docs/estado (26), docs/plans (24), docs/db (14), docs/audits (12), docs/ci (12), docs/adr (11), docs/auditoria-planejado-nao-executado-2026-10-11 (11), docs/hardening (11), docs/validation (11), docs/architecture (9), docs/runbooks (8), docs/bugs (6), docs/security (6), docs/sessoes (5), docs/suppliers (5), docs/arquitetura (4), docs/audit (4), docs/operations (4), docs/testing (4), docs/RUNBOOKS (3), docs/contexto (3), docs/design (3), docs/fabrica-vps (3), docs/faxina-261114 (3), docs/observability (3), docs/qa (3), docs/reports (3), docs/INCIDENTS (2), docs/contracts (2), docs/coordenacao (2), docs/edge-functions (2), docs/historico (2), docs/incidente-2026-10-13 (2), docs/prompts (2), docs/e2e (1), docs/graphify (1), docs/incidents (1), docs/migrations (1), docs/pipelines (1), docs/postmortems (1), docs/promo-champions (1), docs/storage (1), docs/workflows (1)
-- CHANGELOG topo: [1.9.1](https://github.com/adm01-debug/Promo_Gifts_V4/compare/gifts-store-v1.9.0...gifts-store-v1.9.1) (2026-11-17)
+- CHANGELOG topo: [1.10.0](https://github.com/adm01-debug/Promo_Gifts_V4/compare/gifts-store-v1.9.1...gifts-store-v1.10.0) (2026-11-19)
 
 ## Últimos commits
+- 2026-11-19 `76d1a70d` chore(main): release gifts-store 1.10.0 (#3781)
 - 2026-11-19 `db0bd46e` chore: baseline de refs de migration p06/onboarding no doc de triggers (#3893)
 - 2026-11-19 `2b162960` docs: recibo de aplicação — 20261114120000 (E15)
 - 2026-11-19 `ad8ba97e` docs(resgates): adjudica os 124 arquivos nunca aplicados e registra as contas de teste em produção (#3890)
@@ -1203,7 +1204,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-19 `ace227e8` fix(migrations): reemite a credencial ElevenLabs com cabecalho e rollback (#3877)
 - 2026-11-19 `76b764cc` feat(supabase): registra ELEVENLABS_API_KEY no catalogo de integracoes (#3791)
 - 2026-11-19 `72455580` docs(migrations-log): recibo E15 da aplicacao de 20261119073000 (#3875)
-- 2026-11-19 `13333e09` fix(ci): regenera o baseline de policies com os 17 deny_all de supplier_stricker (#3876)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`
