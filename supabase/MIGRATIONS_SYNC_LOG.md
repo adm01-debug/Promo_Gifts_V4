@@ -2519,3 +2519,33 @@ atual, via `schema-snapshot-export.yml` com `force_rotate: true` — hoje o work
 | versão | arquivo | sha256 | status |
 |---|---|---|---|
 | `20261119094500` | `reafirma_revogacoes_anteriores_ao_baseline` | `d2ff81bdf920973719be728dcdd9360ab8c89dec9849205682602334c75b9fee` | pendente — no-op em produção (privilégios já ausentes); aplicar via `db-apply-migration.yml` (`version=20261119094500`) após merge |
+
+### 2026-11-19 — termina a intenção da 20260706223316 sem aplicá-la
+
+A migration `20260706223316` (06/07, nunca aplicada) queria que cada evento de callback do CRM
+registrasse sozinho sua última alteração, para datar o reprocessamento `error` → `applied`.
+
+**Ela não pode ser aplicada, e nunca deve.** A tabela `public.crm_callback_events` já existe em
+produção, criada por outro caminho e com outro desenho: tem `received_at` e **não** tem
+`created_at` nem `updated_at`. Naquele arquivo o `CREATE TABLE IF NOT EXISTS` vira no-op e o
+`CREATE TRIGGER` seguinte passa a gravar numa coluna inexistente — **todo `UPDATE` na tabela
+falharia**, inclusive os 62 registros em `result='error'` que a edge `crm-callback-reprocess`
+atualiza.
+
+Colunas vivas medidas em 19/11: `id`, `external_quote_id`, `crm_quote_id`, `event_type`,
+`occurred_at`, `result`, `error_message`, `payload`, `received_at` — 111 linhas.
+
+Esta migration entrega a **intenção** do autor contra a tabela real: acrescenta `updated_at` e liga
+o trigger. Duas divergências deliberadas em relação ao original:
+
+1. coluna **nullable**, não `NOT NULL` — o original obrigaria a inventar valor para as 111 linhas
+   existentes; `NULL` diz a verdade ("nunca alterada desde que a coluna existe");
+2. reusa `public.set_updated_at()` em vez de criar função nova idêntica — já existe, faz
+   `NEW.updated_at = now()` e **não** é `SECURITY DEFINER`.
+
+Nada mais do arquivo de 06/07 é reaproveitado: os índices e a policy dele já têm equivalentes vivos
+com outros nomes.
+
+| versão | arquivo | sha256 | status |
+|---|---|---|---|
+| `20261119110500` | `crm_callback_events_updated_at` | `627c73cfc852719099293953e231bc3c9df63a98c640db6f1e152ad801b5c687` | pendente — aplicar via `db-apply-migration.yml` (`version=20261119110500`) após merge |

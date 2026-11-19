@@ -30,14 +30,6 @@
       "ref": "supabase/migrations/README.md"
     },
     {
-      "file": "docs/agentes/resgates/2026-11-19-triggers-ausentes-e-contas-de-teste-em-producao.md",
-      "ref": "supabase/migrations/20261118172500_security_invoker_views_p06_parcial.sql"
-    },
-    {
-      "file": "docs/agentes/resgates/2026-11-19-triggers-ausentes-e-contas-de-teste-em-producao.md",
-      "ref": "supabase/migrations/20261119103000_onboarding_auto_assign_org_reemissao.sql"
-    },
-    {
       "file": "docs/arquitetura/products-padronizacao-recomendacoes.md",
       "ref": "supabase/migrations/20260602120000_"
     },

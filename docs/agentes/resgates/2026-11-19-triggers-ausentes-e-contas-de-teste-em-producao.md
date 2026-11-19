@@ -171,10 +171,15 @@ que **não** têm a proteção de ruleset das `salvo/*`. Se alguém apagar a bra
 Os SHAs estão aqui exatamente para isso: mesmo apagada, a branch volta com
 `git branch <nome> <sha>` enquanto o objeto existir no repositório.
 
+Os nomes de arquivo abaixo aparecem **sem o prefixo `supabase/migrations/`** de propósito: o Gate 1.3
+(`check-migration-path-references`) recusa referência a caminho inexistente na `main`, e estes
+arquivos existem só nas branches. Escrever o caminho completo aqui derrubaria a CI da `main` — foi
+exatamente o que aconteceu antes desta correção.
+
 | branch | SHA | o que só existe lá | veredicto |
 |---|---|---|---|
-| `claude/fix-resgate-p06-security-invoker-261118-1725` | `6cf924b65` | `supabase/migrations/20261118172500_security_invoker_views_p06_parcial.sql` + rollback | **não aplicar como está** — medido em 19/11: `anon` não tem `SELECT` em 4 das 6 tabelas-base, então ligar `security_invoker` nas 5 views as quebraria para o visitante anônimo. A decisão de fundo (o que o anônimo pode ler) continua aberta |
-| `claude/fix-onboarding-vinculo-organizacao-261119-1035` | `c3f3b62c4` | `supabase/migrations/20261119103000_onboarding_auto_assign_org_reemissao.sql` + rollback | **não aplicar enquanto houver conta de teste em produção** — ver §4 e §6. O arquivo está pronto e revisado; vira aplicável assim que o item 1 ou 2 da §6 estiver resolvido |
+| `claude/fix-resgate-p06-security-invoker-261118-1725` | `6cf924b65` | `20261118172500_security_invoker_views_p06_parcial.sql` + rollback (só nessa branch, não na `main`) | **não aplicar como está** — medido em 19/11: `anon` não tem `SELECT` em 4 das 6 tabelas-base, então ligar `security_invoker` nas 5 views as quebraria para o visitante anônimo. A decisão de fundo (o que o anônimo pode ler) continua aberta |
+| `claude/fix-onboarding-vinculo-organizacao-261119-1035` | `c3f3b62c4` | `20261119103000_onboarding_auto_assign_org_reemissao.sql` + rollback (só nessa branch, não na `main`) | **não aplicar enquanto houver conta de teste em produção** — ver §4 e §6. O arquivo está pronto e revisado; vira aplicável assim que o item 1 ou 2 da §6 estiver resolvido |
 
 Nenhuma das duas é trabalho perdido: as duas estão adjudicadas aqui, com o motivo de não terem
 entrado e a condição que as tornaria aplicáveis. O que **não** pode acontecer é apagar a branch sem
