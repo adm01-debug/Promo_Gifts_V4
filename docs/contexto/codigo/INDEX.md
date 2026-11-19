@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e de hora em hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `ee54b645bdfdeb5cd14ee8881895dd44d7b72084` (2026-11-18T21:39:29-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e de hora em hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `1c0f023aae69eeaeed5cc9dfb7619aca9d1637a2` (2026-11-18T22:11:33-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -14,7 +14,7 @@ Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR
 Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua tarefa; não carregue tudo.
 
 ## Stack
-- linguagens: TypeScript (5008), SQL (3442), Markdown (1482), JavaScript (457), JSON (132), YAML (117), Shell (27), HTML (20)
+- linguagens: TypeScript (5009), SQL (3442), Markdown (1482), JavaScript (457), JSON (132), YAML (117), Shell (27), HTML (20)
 - linguagem_principal: TypeScript
 - framework: React
 - backend_http: n/d
@@ -34,9 +34,9 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 ## Números
 | item | qtd |
 |---|---|
-| arquivos_total | 10965 |
-| arquivos_codigo | 5475 |
-| linhas_codigo | 1042951 |
+| arquivos_total | 10966 |
+| arquivos_codigo | 5476 |
+| linhas_codigo | 1043138 |
 | rotas | 139 |
 | rotas_http_backend | 13 |
 | vistas_por_id | 0 |
@@ -48,7 +48,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 | tabelas | 527 |
 | migrations | 3100 |
 | cron_jobs | 122 |
-| testes | 2608 |
+| testes | 2609 |
 | workflows | 89 |
 | scripts | 283 |
 | docs_md | 1482 |
@@ -58,7 +58,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - componentes: src/components (962), src/pages (180), recovery/src-legacy (100)
 - hooks: src/hooks (301), recovery/src-legacy (196), src/components (78)
 - servicos_logica: src/lib (236), src/utils (33), src/services (10)
-- testes: tests/ (1078), co-localizado (__tests__) (701), e2e/ (625)
+- testes: tests/ (1079), co-localizado (__tests__) (701), e2e/ (625)
 - edge_functions: supabase/functions
 - migrations: supabase/migrations
 - scripts: scripts/ci-local (11), scripts/lib (7), scripts/graphify (4)
@@ -592,27 +592,27 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - possiveis_segredos_no_codigo: 7 — ex.: scripts/ai-context/cenarios.mjs:102, src/components/admin/connections/__tests__/ConnectionSecurity.unit.test.tsx:9, src/integrations/supabase/client.ts:27
 
 ## Grafo de código (graphify)
-- 49244 nós · 82715 arestas · 2797 comunidades · grafo do commit `ee54b645`
-- comunidades maiores: ref_components (888), vitest (816), ref_integrations (554), ref_node_child_process (464), @tanstack/react-query (454), ref_lib (441), ref_hooks (391), ref_utils (345), react-router-dom (329), ref_node_fs (327), concludeCheck (326), react (314)
+- 49248 nós · 82721 arestas · 2782 comunidades · grafo do commit `1c0f023a`
+- comunidades maiores: ref_components (839), ref_hooks (644), vitest (610), ref_integrations (559), react-router-dom (442), ref_node_child_process (430), ref_types (383), ref_node_fs (369), react (365), @tanstack/react-query (365), nav.ts (363), sonner (314)
 - símbolos mais chamados: gotoAndSettle() (e2e/helpers/nav.ts), re (?), q() (scripts/supabase_snapshot/snapshot.py), analyze() (tests/scripts/test_personalization_artifact_diagnostics.py), outer() (tests/scripts/test_personalization_artifact_diagnostics.py), json (?), useExternalDatabase() (recovery/src-legacy/src/hooks/useExternalDatabase.ts), concludeCheck() (scripts/check-result-contract.mjs), querySupabaseReadOnly() (scripts/supabase-read-only-query.mjs), loginAs() (e2e/helpers/auth.ts), inner() (tests/scripts/test_personalization_artifact_diagnostics.py), excluded_sql() (scripts/supabase_snapshot/snapshot.py)
 - consulta local: `graphify query "<pergunta>"`, `graphify path "<A>" "<B>"`, `graphify explain "<X>"`
 
 ## Hotspots (arquivos mais alterados, 90 dias)
-- supabase/MIGRATIONS_SYNC_LOG.md (65)
-- package.json (44)
-- PENDENCIAS.md (40)
-- RELATORIO_CI.md (40)
-- docs/coordenacao/conflitos-semanticos.md (30)
-- package-lock.json (27)
-- .github/workflows/deploy-gates.yml (24)
-- src/pages/kit-builder/KitBuilderPage.tsx (24)
-- supabase/EDGE_FUNCTIONS_DEPLOY_LOG.md (22)
-- analise-prs/progresso.json (20)
-- audit/supabase-reference-catalog.temporary.json (20)
-- src/hooks/kit-builder/useKitBuilderPageState.ts (20)
-- src/pages/mockups/MockupGenerator.tsx (18)
-- analise-branches/RELATORIO_BRANCHES.md (17)
-- src/hooks/kit-builder/useKitAutoSave.ts (17)
+- supabase/MIGRATIONS_SYNC_LOG.md (64)
+- package.json (43)
+- RELATORIO_CI.md (38)
+- PENDENCIAS.md (37)
+- docs/coordenacao/conflitos-semanticos.md (28)
+- package-lock.json (26)
+- .github/workflows/deploy-gates.yml (23)
+- src/pages/kit-builder/KitBuilderPage.tsx (23)
+- supabase/EDGE_FUNCTIONS_DEPLOY_LOG.md (21)
+- analise-prs/progresso.json (19)
+- audit/supabase-reference-catalog.temporary.json (19)
+- src/hooks/kit-builder/useKitBuilderPageState.ts (19)
+- src/pages/mockups/MockupGenerator.tsx (17)
+- analise-branches/RELATORIO_BRANCHES.md (16)
+- src/hooks/kit-builder/useKitAutoSave.ts (16)
 
 ## Workflows
 - `_e2e-relevance.yml` — Reusable — E2E Runtime Relevance (workflow_call)
@@ -1189,6 +1189,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - CHANGELOG topo: [1.9.1](https://github.com/adm01-debug/Promo_Gifts_V4/compare/gifts-store-v1.9.0...gifts-store-v1.9.1) (2026-11-17)
 
 ## Últimos commits
+- 2026-11-18 `1c0f023a` fix(orcamentos): telas de template nao podem mentir sobre o que aconteceu (#3860)
 - 2026-11-18 `ee54b645` docs: recibo de aplicacao — 20261118223000 (E15) (#3857)
 - 2026-11-18 `a6a0bdeb` fix(orcamentos): recusa item invalido antes de gravar template (#3859)
 - 2026-11-18 `21b5c9cc` fix(orcamentos): template que falha ao salvar nao pode apagar o que o vendedor digitou (#3858)
@@ -1203,7 +1204,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-18 `9e11e2f7` fix(docs): tira do inventario o caminho de migration que deixou a main vermelha (#3849)
 - 2026-11-18 `3be3249a` docs(resgate): o inventário contava a quarentena como main — 102 arquivos, não 22 (#3847)
 - 2026-11-18 `6f8146b4` fix(test): main volta ao verde nos 4 arquivos vermelhos do test:quality (#3846)
-- 2026-11-18 `6fd76017` docs(resgate): inventario do trabalho de outro agente que existe e nao esta ligado (#3845)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

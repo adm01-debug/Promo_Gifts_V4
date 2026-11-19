@@ -2,7 +2,7 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "nos": 2867,
- "arestas": 11310,
+ "arestas": 11311,
  "hubs": [
   {
    "arquivo": "src/lib/utils.ts",
@@ -684,7 +684,7 @@
   {
    "modulo": "hooks/ui",
    "depende_de": 8,
-   "importado_por": 26
+   "importado_por": 27
   },
   {
    "modulo": "lib/security",
@@ -717,9 +717,9 @@
    "importado_por": 28
   },
   {
-   "modulo": "components/catalog",
-   "depende_de": 19,
-   "importado_por": 9
+   "modulo": "components/quotes",
+   "depende_de": 23,
+   "importado_por": 6
   }
  ],
  "arestas_em": "docs/contexto/codigo/grafo-arestas.json"

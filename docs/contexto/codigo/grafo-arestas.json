@@ -8947,6 +8947,7 @@
    "src/components/ui/select.tsx",
    "src/components/ui/skeleton.tsx",
    "src/hooks/quotes/useQuoteTemplates.ts",
+   "src/hooks/ui/index.ts",
    "src/lib/quotes/templateTotal.ts",
    "src/utils/templateExport.ts"
   ],

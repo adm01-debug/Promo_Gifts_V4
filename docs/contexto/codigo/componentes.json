@@ -14210,7 +14210,7 @@
     "TemplateDeleteDialog"
    ],
    "export_default": null,
-   "linhas": 128,
+   "linhas": 136,
    "dominio": "components/quotes",
    "hooks_locais": [],
    "tabelas": [],
@@ -14224,7 +14224,7 @@
     "AdminTemplatesManager"
    ],
    "export_default": null,
-   "linhas": 245,
+   "linhas": 249,
    "dominio": "components/quotes",
    "hooks_locais": [
     "useQuoteTemplates"
@@ -14924,10 +14924,11 @@
     "QuoteTemplatesList"
    ],
    "export_default": null,
-   "linhas": 394,
+   "linhas": 432,
    "dominio": "components/quotes",
    "hooks_locais": [
-    "useQuoteTemplates"
+    "useQuoteTemplates",
+    "useToast"
    ],
    "tabelas": [],
    "edges": [],

@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "ee54b645bdfdeb5cd14ee8881895dd44d7b72084",
+  "sha": "1c0f023aae69eeaeed5cc9dfb7619aca9d1637a2",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-19 01:06 UTC",
-  "files_total": 10893,
-  "code_files": 8916,
-  "code_lines": 1263848
+  "generated_at": "2026-11-19 01:15 UTC",
+  "files_total": 10894,
+  "code_files": 8917,
+  "code_lines": 1264035
  },
  "version": "1.3.2",
- "facts_hash": "04ae226585996a8a",
+ "facts_hash": "1f8020a99953654c",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -1130,7 +1130,7 @@
   "languages": {
    ".sql": 3442,
    ".ts": 3044,
-   ".tsx": 1965,
+   ".tsx": 1966,
    ".mjs": 450,
    ".py": 15,
    ".js": 7
@@ -139996,6 +139996,7 @@
     "file": "recovery/src-legacy/src/pages/QuoteTemplatesPage.tsx",
     "component": "QuoteTemplatesPage",
     "tables_transitive": [
+     "...",
      "cart_templates",
      "catalog_analytics",
      "category_icons",
@@ -140011,6 +140012,7 @@
      "search_analytics",
      "seller_cart_items",
      "seller_carts",
+     "system_settings",
      "user_onboarding",
      "user_roles",
      "video_variant_links",
@@ -140024,11 +140026,12 @@
     "rpc_transitive": [
      "fn_batch_update_cart_item_sort_order",
      "fn_get_similar_products",
+     "fn_my_rpc",
      "get_catalog_bestseller_page",
      "get_profile_and_roles",
      "log_user_logout"
     ],
-    "deps_count": 143
+    "deps_count": 146
    },
    {
     "path": "/promoflix-playground",
@@ -145020,7 +145023,7 @@
     "file": ".github/workflows/wraparound-monitor-report.yml"
    }
   ],
-  "components_count": 1699,
+  "components_count": 1700,
   "hooks": [
    {
     "name": "useQuoteComments",
@@ -149669,7 +149672,7 @@
   {
    "module": "src/components",
    "files": 1425,
-   "lines": 282092,
+   "lines": 282142,
    "tables": [
     "admin_audit_log",
     "art_file_attachments",
@@ -151775,8 +151778,8 @@
   },
   {
    "module": "tests",
-   "files": 1093,
-   "lines": 172146,
+   "files": 1094,
+   "lines": 172283,
    "tables": [
     "bot_detection_log",
     "clients",
@@ -166871,6 +166874,10 @@
     "msg": "Nada foi aplicado"
    },
    {
+    "file": "src/components/quotes/QuoteTemplatesList.tsx",
+    "msg": "Template incompleto"
+   },
+   {
     "file": "src/components/quotes/QuoteVersionCompare.tsx",
     "msg": "Erro ao comparar versões"
    },
@@ -171837,6 +171844,10 @@
    {
     "file": "src/components/providers/MotionProvider.tsx",
     "text": "mantendo apenas o runtime mínimo de LazyMotion no caminho crítico e"
+   },
+   {
+    "file": "src/components/quotes/AdminTemplatesManager.tsx",
+    "text": "GUARD: mesma regra da tela do vendedor (QuoteTemplatesList) — o diálogo só"
    },
    {
     "file": "src/components/quotes/EngravingBadge.tsx",
@@ -214393,6 +214404,12 @@
     "name": "formatCurrency",
     "params": "value: number",
     "body": "return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', }).format(value);"
+   },
+   {
+    "file": "src/components/quotes/QuoteTemplatesList.tsx",
+    "name": "aplicarTemplate",
+    "params": "template: QuoteTemplate",
+    "body": "if (totalDoTemplate(template) === null) { toast({ title: 'Template incompleto', description: 'Este template tem item com quantidade ou preço ilegível e não pode ser aplicado. Edite o template antes de usá-lo.', variant: 'destructive', }); return; } onApplyTemplate?.(template);"
    },
    {
     "file": "src/components/quotes/QuotesStatusChips.tsx",
@@ -269783,6 +269800,30 @@
    {
     "file": "tests/components/QuoteTemplatePreservation.test.tsx",
     "name": "chama onSave com o template salvo quando a gravação dá certo"
+   },
+   {
+    "file": "tests/components/QuoteTemplatesList.guards.test.tsx",
+    "name": "QuoteTemplatesList não aplica template incompleto"
+   },
+   {
+    "file": "tests/components/QuoteTemplatesList.guards.test.tsx",
+    "name": "template com item ilegível não é aplicado e o vendedor é avisado"
+   },
+   {
+    "file": "tests/components/QuoteTemplatesList.guards.test.tsx",
+    "name": "template íntegro continua sendo aplicado no clique"
+   },
+   {
+    "file": "tests/components/QuoteTemplatesList.guards.test.tsx",
+    "name": "TemplateDeleteDialog deixa quem chamou decidir se fecha"
+   },
+   {
+    "file": "tests/components/QuoteTemplatesList.guards.test.tsx",
+    "name": "confirmar dispara a exclusão e NÃO fecha o diálogo por conta própria"
+   },
+   {
+    "file": "tests/components/QuoteTemplatesList.guards.test.tsx",
+    "name": "cancelar continua fechando normalmente"
    },
    {
     "file": "tests/components/QuoteVersionHistory.nullDate.test.tsx",
@@ -452871,7 +452912,7 @@
   },
   "src/components/quotes/AdminTemplateDialogs.tsx": {
    "path": "src/components/quotes/AdminTemplateDialogs.tsx",
-   "lines": 128,
+   "lines": 136,
    "exports": [
     "function TemplateDeleteDialog",
     "function TemplateCloneDialog"
@@ -452880,7 +452921,7 @@
   },
   "src/components/quotes/AdminTemplatesManager.tsx": {
    "path": "src/components/quotes/AdminTemplatesManager.tsx",
-   "lines": 245,
+   "lines": 249,
    "exports": [
     "function AdminTemplatesManager"
    ],
@@ -452889,6 +452930,9 @@
      "name": "TEMPLATE_SEM_VENDEDOR",
      "value": "'__sistema__'"
     }
+   ],
+   "rule_comments": [
+    "GUARD: mesma regra da tela do vendedor (QuoteTemplatesList) — o diálogo só"
    ],
    "doc": "AdminTemplatesManager — Refactored orchestrator Table/Grid views extracted to ./admin-templates/",
    "calc_fns": [
@@ -453660,15 +453704,23 @@
   },
   "src/components/quotes/QuoteTemplatesList.tsx": {
    "path": "src/components/quotes/QuoteTemplatesList.tsx",
-   "lines": 394,
+   "lines": 432,
    "exports": [
     "function QuoteTemplatesList"
+   ],
+   "errors": [
+    "Template incompleto"
    ],
    "calc_fns": [
     {
      "name": "formatCurrency",
      "params": "value: number",
      "body": "return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', }).format(value);"
+    },
+    {
+     "name": "aplicarTemplate",
+     "params": "template: QuoteTemplate",
+     "body": "if (totalDoTemplate(template) === null) { toast({ title: 'Template incompleto', description: 'Este template tem item com quantidade ou preço ilegível e não pode ser aplicado. Edite o template antes de usá-lo.', variant: 'destructive', }); return; } onApplyTemplate?.(template);"
     }
    ]
   },
@@ -525633,6 +525685,19 @@
     "chama onSave com o template salvo quando a gravação dá certo"
    ]
   },
+  "tests/components/QuoteTemplatesList.guards.test.tsx": {
+   "path": "tests/components/QuoteTemplatesList.guards.test.tsx",
+   "lines": 137,
+   "is_test": true,
+   "tests": [
+    "QuoteTemplatesList não aplica template incompleto",
+    "template com item ilegível não é aplicado e o vendedor é avisado",
+    "template íntegro continua sendo aplicado no clique",
+    "TemplateDeleteDialog deixa quem chamou decidir se fecha",
+    "confirmar dispara a exclusão e NÃO fecha o diálogo por conta própria",
+    "cancelar continua fechando normalmente"
+   ]
+  },
   "tests/components/QuoteVersionHistory.nullDate.test.tsx": {
    "path": "tests/components/QuoteVersionHistory.nullDate.test.tsx",
    "lines": 98,
@@ -547619,10 +547684,22 @@
   }
  },
  "git": {
-  "sha": "ee54b645bdfdeb5cd14ee8881895dd44d7b72084",
+  "sha": "1c0f023aae69eeaeed5cc9dfb7619aca9d1637a2",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "1c0f023",
+    "date": "2026-11-18",
+    "author": "adm01-debug",
+    "subject": "fix(orcamentos): telas de template nao podem mentir sobre o que aconteceu (#3860)",
+    "files": [
+     "src/components/quotes/AdminTemplateDialogs.tsx",
+     "src/components/quotes/AdminTemplatesManager.tsx",
+     "src/components/quotes/QuoteTemplatesList.tsx",
+     "tests/components/QuoteTemplatesList.guards.test.tsx"
+    ]
+   },
    {
     "sha": "ee54b64",
     "date": "2026-11-18",
@@ -547961,18 +548038,17 @@
      "src/lib/quotes/__tests__/templateTotal.test.ts",
      "src/lib/quotes/templateTotal.ts"
     ]
-   },
-   {
-    "sha": "b7e0b64",
-    "date": "2026-11-18",
-    "author": "adm01-debug",
-    "subject": "docs(resgate): recibo da adjudicacao de 2026-11-18, com prova por branch e por PR (#3829)",
-    "files": [
-     "docs/agentes/resgates/2026-11-18-recibo-adjudicacao.md"
-    ]
    }
   ],
   "hot_files": [
+   [
+    "src/components/quotes/AdminTemplatesManager.tsx",
+    2
+   ],
+   [
+    "src/components/quotes/QuoteTemplatesList.tsx",
+    2
+   ],
    [
     "supabase/MIGRATIONS_SYNC_LOG.md",
     2
@@ -547992,6 +548068,14 @@
    [
     "docs/agentes/resgates/2026-11-18-inventario-trabalho-nao-ligado.md",
     2
+   ],
+   [
+    "src/components/quotes/AdminTemplateDialogs.tsx",
+    1
+   ],
+   [
+    "tests/components/QuoteTemplatesList.guards.test.tsx",
+    1
    ],
    [
     "src/hooks/quotes/quoteTemplateItemGuard.ts",
@@ -548035,22 +548119,6 @@
    ],
    [
     "supabase/functions/asia-ingestion/credential-client.test.ts",
-    1
-   ],
-   [
-    "supabase/functions/crm-db-bridge/inspectInsertResult.test.ts",
-    1
-   ],
-   [
-    "supabase/functions/e2e-cleanup/handler_characterization_test.ts",
-    1
-   ],
-   [
-    "supabase/functions/quote-sync-promo-champions/index.test.ts",
-    1
-   ],
-   [
-    "supabase/functions/webhook-inbound/handler_characterization_test.ts",
     1
    ]
   ]
