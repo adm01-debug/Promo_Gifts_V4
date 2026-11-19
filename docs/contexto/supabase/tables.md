@@ -128,6 +128,7 @@ Um arquivo por tabela em `tables/<schema>/<tabela>.md` (colunas, constraints, í
 | [public.feminine_color_config](tables/public/feminine_color_config.md) | table | sim | 1 | 5 | não | Lista de grupos de cores consideradas femininas para auto-link com target_audience e datas comemorativas |
 | [public.file_scan_logs](tables/public/file_scan_logs.md) | table | sim | 1 | 11 | não | Auditoria de scans VirusTotal em uploads. user_id obrigatório (manifest edge secure-upload). |
 | [public.follow_up_reminders](tables/public/follow_up_reminders.md) | table | sim | 1 | 12 | não |  |
+| [public.freight_settings](tables/public/freight_settings.md) | table | sim | 2 | 9 | não | Parâmetros globais do cálculo de frete (linha única). Lidos pelo motor em src/lib/freight; alterados só por admin em /admin/frete. |
 | [public.frontend_telemetry](tables/public/frontend_telemetry.md) | table | sim | 2 | 10 | não |  |
 | [public.generated_mockups](tables/public/generated_mockups.md) | table | sim | 4 | 38 | não |  |
 | [public.geo_allowed_countries](tables/public/geo_allowed_countries.md) | table | sim | 1 | 6 | não |  |
@@ -333,6 +334,7 @@ Um arquivo por tabela em `tables/<schema>/<tabela>.md` (colunas, constraints, í
 | [public.seller_discount_limits](tables/public/seller_discount_limits.md) | table | sim | 4 | 8 | não | Alçada de desconto por vendedor. max_discount_percent: limite hard (rejeita acima). approval_required_above: opcional, pra abrir discount_approval_request automaticamente. Defaults: 5% / 10%. |
 | [public.seo_audit_log](tables/public/seo_audit_log.md) | table | sim | 1 | 12 | não | Histórico de auditorias SEO para tracking de melhorias ao longo do tempo. |
 | [public.seo_redirects](tables/public/seo_redirects.md) | table | sim | 1 | 12 | não | Redirects 301/302 para manter link equity e evitar 404. |
+| [public.shipping_boxes](tables/public/shipping_boxes.md) | table | sim | 4 | 18 | não | Caixas de transporte padrão da empresa. O motor de frete (src/lib/freight) empacota as peças nestas caixas; a caixa master do fornecedor é ignorada para frete. |
 | [public.simulator_wizard_drafts](tables/public/simulator_wizard_drafts.md) | table | sim | 4 | 9 | não |  |
 | [public.sm_category_pages](tables/public/sm_category_pages.md) | table | sim | 2 | 15 | não | Páginas de categoria do site Só Marcas a serem scrapeadas para descoberta de site_ids. Cada categoria tem múltiplos produtos — scraping em batch via Jina Reader. |
 | [public.sm_site_url_map](tables/public/sm_site_url_map.md) | table | sim | 2 | 18 | não | Mapa codigo SM → URL canônica (site_id + slug). 1230+ mapeamentos descobertos via bronze_seed, produtos_similares, related_products e category_scrape. Alimenta o SM Jina Scraping Pipeline. |

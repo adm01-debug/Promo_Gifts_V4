@@ -334,6 +334,7 @@ Uso e tamanho em `stats.md`.
 | public.file_scan_logs | file_scan_logs_pkey | btree | id | sim | sim |  |
 | public.file_scan_logs | idx_file_scan_logs_user_id | btree | user_id | não | sim |  |
 | public.follow_up_reminders | follow_up_reminders_pkey | btree | id | sim | sim |  |
+| public.freight_settings | freight_settings_pkey | btree | id | sim | sim |  |
 | public.frontend_telemetry | frontend_telemetry_pkey | btree | id | sim | sim |  |
 | public.frontend_telemetry | idx_frontend_telemetry_user_id | btree | user_id | não | sim |  |
 | public.generated_mockups | generated_mockups_pkey | btree | id | sim | sim |  |
@@ -1025,6 +1026,9 @@ Uso e tamanho em `stats.md`.
 | public.seo_audit_log | seo_audit_log_pkey | btree | id | sim | sim |  |
 | public.seo_redirects | seo_redirects_pkey | btree | id | sim | sim |  |
 | public.seo_redirects | uq_seo_redirects_source_active | btree | source_path | sim | sim | `(is_active = true)` |
+| public.shipping_boxes | shipping_boxes_active_sort_idx | btree | sort_order, code | não | sim | `((deleted_at IS NULL) AND (is_active = true))` |
+| public.shipping_boxes | shipping_boxes_code_unique_active | btree | code | sim | sim | `(deleted_at IS NULL)` |
+| public.shipping_boxes | shipping_boxes_pkey | btree | id | sim | sim |  |
 | public.simulator_wizard_drafts | simulator_wizard_drafts_pkey | btree | id | sim | sim |  |
 | public.sm_category_pages | sm_category_pages_pkey | btree | id | sim | sim |  |
 | public.sm_category_pages | sm_category_pages_slug_uq | btree | slug | sim | sim |  |

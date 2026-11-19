@@ -270,6 +270,8 @@ Visão consolidada (inclui `storage.objects` e `realtime.messages`); detalhes po
 | public.feminine_color_config | auth_read_feminine_color_config | SELECT | PERMISSIVE | authenticated | `true` |  |
 | public.file_scan_logs | Users read own file_scan_logs | SELECT | PERMISSIVE | authenticated | `(is_admin_or_above(( SELECT ( SELECT auth.uid() AS uid) AS uid)) OR (( SELECT ( SELECT auth.uid() AS uid) AS uid) = user_id))` |  |
 | public.follow_up_reminders | Users can manage own reminders | ALL | PERMISSIVE | authenticated | `(seller_id = ( SELECT ( SELECT auth.uid() AS uid) AS uid))` | `(seller_id = ( SELECT ( SELECT auth.uid() AS uid) AS uid))` |
+| public.freight_settings | freight_settings_select_authenticated | SELECT | PERMISSIVE | authenticated | `true` |  |
+| public.freight_settings | freight_settings_update_admin | UPDATE | PERMISSIVE | authenticated | `is_admin()` | `is_admin()` |
 | public.frontend_telemetry | frontend_telemetry_insert_anon | INSERT | PERMISSIVE | anon |  | `((user_id IS NULL) AND ((length(COALESCE(event_type, ''::text)) >= 1) AND (length(COALESCE(event_type, ''::text)) <= 64)) AND ((length(COALESCE(name, ''::text)) >= 1) AND (length(COALESCE(name, ''::text)) <= 256)) AND (length(COALESCE(url, ''::text)) <= 2048) AND (length(COALESCE(user_agent, ''::text)) <= 1024) AND (length(COALESCE(session_id, ''::text)) <= 128) AND (length(COALESCE((metadata)::text, ''::text)) <= 8192))` |
 | public.frontend_telemetry | frontend_telemetry_insert_authenticated | INSERT | PERMISSIVE | authenticated |  | `(((user_id IS NULL) OR (user_id = ( SELECT ( SELECT auth.uid() AS uid) AS uid))) AND ((length(COALESCE(event_type, ''::text)) >= 1) AND (length(COALESCE(event_type, ''::text)) <= 64)) AND ((length(COALESCE(name, ''::text)) >= 1) AND (length(COALESCE(name, ''::text)) <= 256)) AND (length(COALESCE(url, ''::text)) <= 2048) AND (length(COALESCE(user_agent, ''::text)) <= 1024) AND (length(COALESCE(session_id, ''::text)) <= 128) AND (length(COALESCE((metadata)::text, ''::text)) <= 8192))` |
 | public.generated_mockups | gm_delete_own_or_admin | DELETE | PERMISSIVE | authenticated | `((( SELECT ( SELECT auth.uid() AS uid) AS uid) = user_id) OR is_admin_or_above(( SELECT ( SELECT auth.uid() AS uid) AS uid)))` |  |
@@ -786,6 +788,10 @@ Visão consolidada (inclui `storage.objects` e `realtime.messages`); detalhes po
 | public.seller_discount_limits | sdl_select_own_or_coord | SELECT | PERMISSIVE | authenticated | `((user_id = ( SELECT ( SELECT auth.uid() AS uid) AS uid)) OR is_coord_or_above(( SELECT ( SELECT auth.uid() AS uid) AS uid)))` |  |
 | public.seo_audit_log | seo_audit_log_select_supervisor_or_above | SELECT | PERMISSIVE | authenticated | `is_supervisor_or_above(( SELECT ( SELECT auth.uid() AS uid) AS uid))` |  |
 | public.seo_redirects | auth_read_seo_redirects | SELECT | PERMISSIVE | authenticated | `true` |  |
+| public.shipping_boxes | shipping_boxes_delete_admin | DELETE | PERMISSIVE | authenticated | `is_admin()` |  |
+| public.shipping_boxes | shipping_boxes_insert_admin | INSERT | PERMISSIVE | authenticated |  | `is_admin()` |
+| public.shipping_boxes | shipping_boxes_select_authenticated | SELECT | PERMISSIVE | authenticated | `((deleted_at IS NULL) OR is_admin())` |  |
+| public.shipping_boxes | shipping_boxes_update_admin | UPDATE | PERMISSIVE | authenticated | `is_admin()` | `is_admin()` |
 | public.simulator_wizard_drafts | Users can delete own drafts | DELETE | PERMISSIVE | authenticated | `(user_id = ( SELECT ( SELECT auth.uid() AS uid) AS uid))` |  |
 | public.simulator_wizard_drafts | Users can insert own drafts | INSERT | PERMISSIVE | authenticated |  | `(user_id = ( SELECT ( SELECT auth.uid() AS uid) AS uid))` |
 | public.simulator_wizard_drafts | Users can update own drafts | UPDATE | PERMISSIVE | authenticated | `(user_id = ( SELECT ( SELECT auth.uid() AS uid) AS uid))` | `(user_id = ( SELECT ( SELECT auth.uid() AS uid) AS uid))` |

@@ -85,6 +85,7 @@
 | public.favorite_lists | user_id | auth.users | id | CASCADE | NO ACTION |
 | public.feminine_color_config | color_group_id | public.color_groups | id | CASCADE | NO ACTION |
 | public.file_scan_logs | user_id | auth.users | id | CASCADE | NO ACTION |
+| public.freight_settings | updated_by | auth.users | id | SET NULL | NO ACTION |
 | public.frontend_telemetry | user_id | auth.users | id | SET NULL | NO ACTION |
 | public.generated_mockups | approved_by_user_id | auth.users | id | SET NULL | NO ACTION |
 | public.generated_mockups | job_id | public.mockup_generation_jobs | id | CASCADE | NO ACTION |
