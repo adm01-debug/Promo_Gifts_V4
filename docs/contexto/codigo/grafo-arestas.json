@@ -5866,6 +5866,28 @@
   "src/components/filters/preset-utils.ts": [
    "src/components/filters/FilterPanel.tsx"
   ],
+  "src/components/freight-plan/FreightMissingActions.tsx": [
+   "src/components/ui/button.tsx",
+   "src/contexts/AuthContext.tsx",
+   "src/lib/freight/index.ts"
+  ],
+  "src/components/freight-plan/FreightPlanPanel.tsx": [
+   "src/components/freight-plan/FreightMissingActions.tsx",
+   "src/components/ui/collapsible.tsx",
+   "src/components/ui/skeleton.tsx",
+   "src/lib/freight/index.ts",
+   "src/lib/utils.ts"
+  ],
+  "src/components/freight-plan/MixModeSelector.tsx": [
+   "src/components/ui/label.tsx",
+   "src/components/ui/radio-group.tsx",
+   "src/lib/freight/index.ts"
+  ],
+  "src/components/freight-plan/index.ts": [
+   "src/components/freight-plan/FreightMissingActions.tsx",
+   "src/components/freight-plan/FreightPlanPanel.tsx",
+   "src/components/freight-plan/MixModeSelector.tsx"
+  ],
   "src/components/goals/SalesGoalsCard.tsx": [
    "src/components/ui/badge.tsx",
    "src/components/ui/button.tsx",
@@ -10520,14 +10542,27 @@
   ],
   "src/hooks/freight/index.ts": [
    "src/hooks/freight/keys.ts",
+   "src/hooks/freight/useFreightPlan.ts",
    "src/hooks/freight/useFreightSettings.ts",
+   "src/hooks/freight/useProductMeasures.ts",
    "src/hooks/freight/useShippingBoxes.ts"
+  ],
+  "src/hooks/freight/useFreightPlan.ts": [
+   "src/hooks/freight/useFreightSettings.ts",
+   "src/hooks/freight/useProductMeasures.ts",
+   "src/hooks/freight/useShippingBoxes.ts",
+   "src/lib/freight/index.ts"
   ],
   "src/hooks/freight/useFreightSettings.ts": [
    "src/contexts/AuthContext.tsx",
    "src/hooks/freight/keys.ts",
    "src/lib/freight/index.ts",
    "src/services/freightSettingsService.ts"
+  ],
+  "src/hooks/freight/useProductMeasures.ts": [
+   "src/hooks/freight/keys.ts",
+   "src/integrations/supabase/client.ts",
+   "src/lib/freight/index.ts"
   ],
   "src/hooks/freight/useShippingBoxes.ts": [
    "src/hooks/freight/keys.ts",
@@ -12262,6 +12297,9 @@
    "src/lib/freight/types.ts",
    "src/lib/freight/units.ts"
   ],
+  "src/lib/freight/format.ts": [
+   "src/lib/freight/types.ts"
+  ],
   "src/lib/freight/formatPlanSummary.ts": [
    "src/lib/freight/boxOrder.ts",
    "src/lib/freight/types.ts"
@@ -12278,6 +12316,7 @@
    "src/lib/freight/computeVolumeTotals.ts",
    "src/lib/freight/expandQuantities.ts",
    "src/lib/freight/fitCount.ts",
+   "src/lib/freight/format.ts",
    "src/lib/freight/formatPlanSummary.ts",
    "src/lib/freight/fromDatabase.ts",
    "src/lib/freight/packMixed.ts",

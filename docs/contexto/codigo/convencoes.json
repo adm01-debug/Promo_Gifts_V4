@@ -8,23 +8,23 @@
    "api/health.ts (1)"
   ],
   "componentes": [
-   "src/components (968)",
+   "src/components (971)",
    "src/pages (181)",
    "recovery/src-legacy (100)"
   ],
   "hooks": [
-   "src/hooks (304)",
+   "src/hooks (306)",
    "recovery/src-legacy (196)",
    "src/components (78)"
   ],
   "servicos_logica": [
-   "src/lib (257)",
+   "src/lib (258)",
    "src/utils (33)",
    "src/services (12)"
   ],
   "testes": [
-   "tests/ (1087)",
-   "co-localizado (__tests__) (730)",
+   "tests/ (1089)",
+   "co-localizado (__tests__) (734)",
    "e2e/ (627)"
   ],
   "edge_functions": "supabase/functions",
@@ -47,9 +47,9 @@
   "edge_functions": "kebab-case (99%)",
   "tabelas": "snake_case (86%)"
  },
- "barrels_index": 49,
+ "barrels_index": 50,
  "extensao_componentes": [
-  ".tsx (1268)"
+  ".tsx (1271)"
  ],
  "alias_imports": {
   "e2e/": {},
@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "feat(frete): hooks e painel do plano de volumes (Bloco E, etapas 41–45 e 48) (#3920)",
    "feat(frete): biblioteca de prazo de produção em dias úteis (Bloco H, etapas 72–75) (#3919)",
    "feat(db): coluna products.ships_separately (frete, Bloco D — DDL) (#3918)",
    "fix(frete): formulário de caixa volta a rolar e correções da revisão do admin (#3917)",
-   "feat(frete): admin de caixas de transporte e parâmetros de frete (Bloco C/D) (#3915)",
-   "chore(main): release gifts-store 1.13.0 (#3904)"
+   "feat(frete): admin de caixas de transporte e parâmetros de frete (Bloco C/D) (#3915)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",

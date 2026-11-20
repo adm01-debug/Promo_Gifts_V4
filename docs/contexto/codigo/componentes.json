@@ -1,7 +1,7 @@
 {
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
- "total": 1268,
+ "total": 1271,
  "orfaos": 157,
  "nomes_duplicados": {
   "AdminTemplatesManager": [
@@ -9059,6 +9059,52 @@
    "orfao": false
   },
   {
+   "arquivo": "src/components/freight-plan/FreightMissingActions.tsx",
+   "exports": [
+    "FreightMissingActions",
+    "FreightProductLabels"
+   ],
+   "export_default": null,
+   "linhas": 116,
+   "dominio": "components/freight-plan",
+   "hooks_locais": [
+    "useAuth"
+   ],
+   "tabelas": [],
+   "edges": [],
+   "usado_por": 2,
+   "orfao": false
+  },
+  {
+   "arquivo": "src/components/freight-plan/FreightPlanPanel.tsx",
+   "exports": [
+    "FreightPlanPanel"
+   ],
+   "export_default": null,
+   "linhas": 222,
+   "dominio": "components/freight-plan",
+   "hooks_locais": [],
+   "tabelas": [],
+   "edges": [],
+   "usado_por": 1,
+   "orfao": false
+  },
+  {
+   "arquivo": "src/components/freight-plan/MixModeSelector.tsx",
+   "exports": [
+    "MixModeProduct",
+    "MixModeSelector"
+   ],
+   "export_default": null,
+   "linhas": 73,
+   "dominio": "components/freight-plan",
+   "hooks_locais": [],
+   "tabelas": [],
+   "edges": [],
+   "usado_por": 1,
+   "orfao": false
+  },
+  {
    "arquivo": "src/components/goals/SalesGoalsCard.tsx",
    "exports": [
     "SalesGoalsCard"
@@ -16428,7 +16474,7 @@
    "hooks_locais": [],
    "tabelas": [],
    "edges": [],
-   "usado_por": 646,
+   "usado_por": 647,
    "orfao": false
   },
   {
@@ -16839,7 +16885,7 @@
    "hooks_locais": [],
    "tabelas": [],
    "edges": [],
-   "usado_por": 147,
+   "usado_por": 148,
    "orfao": false
   },
   {
@@ -16971,7 +17017,7 @@
    "hooks_locais": [],
    "tabelas": [],
    "edges": [],
-   "usado_por": 5,
+   "usado_por": 6,
    "orfao": false
   },
   {
@@ -17119,7 +17165,7 @@
    "hooks_locais": [],
    "tabelas": [],
    "edges": [],
-   "usado_por": 187,
+   "usado_por": 188,
    "orfao": false
   },
   {
@@ -17403,7 +17449,7 @@
    ],
    "tabelas": [],
    "edges": [],
-   "usado_por": 208,
+   "usado_por": 209,
    "orfao": false
   },
   {

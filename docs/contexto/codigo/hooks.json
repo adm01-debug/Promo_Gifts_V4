@@ -1,7 +1,7 @@
 {
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
- "total": 635,
+ "total": 637,
  "hooks": [
   {
    "arquivo": "docs/agentes/resgates/quote-comments/codigo/useQuoteComments.ts",
@@ -6321,7 +6321,7 @@
     "useRef"
    ],
    "canais_realtime": [],
-   "usado_por": 208,
+   "usado_por": 209,
    "usado_por_arquivos": [
     "docs/agentes/resgates/quote-comments/codigo/QuoteCommentsSection.tsx",
     "docs/agentes/resgates/quote-comments/codigo/useQuoteComments.ts",
@@ -8792,6 +8792,29 @@
    "coberto_por_testes": 0
   },
   {
+   "arquivo": "src/hooks/freight/useFreightPlan.ts",
+   "hooks_exportados": [
+    "useFreightPlan"
+   ],
+   "linhas": 226,
+   "dominio": "hooks/freight",
+   "tabelas": [],
+   "rpcs": [],
+   "edges": [],
+   "hooks_internos": [
+    "useFreightSettings",
+    "useMemo",
+    "useProductMeasures",
+    "useShippingBoxes"
+   ],
+   "canais_realtime": [],
+   "usado_por": 1,
+   "usado_por_arquivos": [
+    "src/hooks/freight/index.ts"
+   ],
+   "coberto_por_testes": 0
+  },
+  {
    "arquivo": "src/hooks/freight/useFreightSettings.ts",
    "hooks_exportados": [
     "useFreightSettings",
@@ -8810,9 +8833,34 @@
     "useQueryClient"
    ],
    "canais_realtime": [],
-   "usado_por": 1,
+   "usado_por": 2,
    "usado_por_arquivos": [
-    "src/hooks/freight/index.ts"
+    "src/hooks/freight/index.ts",
+    "src/hooks/freight/useFreightPlan.ts"
+   ],
+   "coberto_por_testes": 0
+  },
+  {
+   "arquivo": "src/hooks/freight/useProductMeasures.ts",
+   "hooks_exportados": [
+    "useProductMeasures"
+   ],
+   "linhas": 83,
+   "dominio": "hooks/freight",
+   "tabelas": [
+    "products"
+   ],
+   "rpcs": [],
+   "edges": [],
+   "hooks_internos": [
+    "useMemo",
+    "useQuery"
+   ],
+   "canais_realtime": [],
+   "usado_por": 2,
+   "usado_por_arquivos": [
+    "src/hooks/freight/index.ts",
+    "src/hooks/freight/useFreightPlan.ts"
    ],
    "coberto_por_testes": 0
   },
@@ -8835,9 +8883,10 @@
     "useQueryClient"
    ],
    "canais_realtime": [],
-   "usado_por": 1,
+   "usado_por": 2,
    "usado_por_arquivos": [
-    "src/hooks/freight/index.ts"
+    "src/hooks/freight/index.ts",
+    "src/hooks/freight/useFreightPlan.ts"
    ],
    "coberto_por_testes": 0
   },

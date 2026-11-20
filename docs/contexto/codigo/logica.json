@@ -1,13 +1,13 @@
 {
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
- "total": 336,
+ "total": 337,
  "por_camada": {
   "api": 4,
   "config": 1,
   "data": 3,
   "integrations": 8,
-  "lib": 257,
+  "lib": 258,
   "python": 9,
   "services": 12,
   "stores": 9,
@@ -720,7 +720,7 @@
    "zod_schemas": 0,
    "flags": [],
    "papeis": [],
-   "usado_por": 408,
+   "usado_por": 409,
    "usado_por_modulos": [
     "components/admin",
     "components/ai",
@@ -755,6 +755,7 @@
     "hooks/crm",
     "hooks/customization",
     "hooks/favorites",
+    "hooks/freight",
     "hooks/intelligence",
     "hooks/inventory",
     "hooks/kit-builder",
@@ -4072,6 +4073,29 @@
    "orfao": false
   },
   {
+   "arquivo": "src/lib/freight/format.ts",
+   "camada": "lib",
+   "exports": [
+    "formatPlanForClient"
+   ],
+   "export_default": null,
+   "linhas": 31,
+   "tabelas": [],
+   "rpcs": [],
+   "edges": [],
+   "env": [],
+   "externos": [],
+   "zod_schemas": 0,
+   "flags": [],
+   "papeis": [],
+   "usado_por": 1,
+   "usado_por_modulos": [
+    "lib/freight"
+   ],
+   "coberto_por_testes": 1,
+   "orfao": false
+  },
+  {
    "arquivo": "src/lib/freight/formatPlanSummary.ts",
    "camada": "lib",
    "exports": [
@@ -4134,6 +4158,7 @@
     "daMenorParaMaior",
     "expandQuantities",
     "fitCount",
+    "formatPlanForClient",
     "formatPlanSummary",
     "isKnownMeasure",
     "kgToG",
@@ -4151,7 +4176,7 @@
     "volumeInternoCm3"
    ],
    "export_default": null,
-   "linhas": 68,
+   "linhas": 70,
    "tabelas": [],
    "rpcs": [],
    "edges": [],
@@ -4160,12 +4185,13 @@
    "zod_schemas": 0,
    "flags": [],
    "papeis": [],
-   "usado_por": 3,
+   "usado_por": 8,
    "usado_por_modulos": [
     "components/admin",
+    "components/freight-plan",
     "hooks/freight"
    ],
-   "coberto_por_testes": 0,
+   "coberto_por_testes": 4,
    "orfao": false
   },
   {
@@ -4238,7 +4264,7 @@
    "usado_por_modulos": [
     "lib/freight"
    ],
-   "coberto_por_testes": 3,
+   "coberto_por_testes": 4,
    "orfao": false
   },
   {
@@ -4295,7 +4321,7 @@
    "zod_schemas": 0,
    "flags": [],
    "papeis": [],
-   "usado_por": 12,
+   "usado_por": 13,
    "usado_por_modulos": [
     "lib/freight"
    ],
@@ -8393,7 +8419,7 @@
    "zod_schemas": 0,
    "flags": [],
    "papeis": [],
-   "usado_por": 659,
+   "usado_por": 660,
    "usado_por_modulos": [
     "components",
     "components/admin",
@@ -8414,6 +8440,7 @@
     "components/expert",
     "components/favorites",
     "components/filters",
+    "components/freight-plan",
     "components/goals",
     "components/intelligence",
     "components/inventory",
@@ -8756,7 +8783,7 @@
     "components/admin",
     "hooks/freight"
    ],
-   "coberto_por_testes": 4,
+   "coberto_por_testes": 5,
    "orfao": false
   },
   {
@@ -9021,7 +9048,7 @@
     "components/admin",
     "hooks/freight"
    ],
-   "coberto_por_testes": 4,
+   "coberto_por_testes": 5,
    "orfao": false
   },
   {

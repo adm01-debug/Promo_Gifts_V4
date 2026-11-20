@@ -35740,7 +35740,7 @@
     "supplier_id->suppliers"
    ],
    "criada_em": "20250102000000_gifts_production.sql",
-   "usada_no_front": 5,
+   "usada_no_front": 6,
    "usada_em_edges": [
     "categories-api",
     "cleanup-novelties",

@@ -397,6 +397,7 @@
     "useFilteredTechniques",
     "useFocusContext",
     "useFocusTrap",
+    "useFreightPlan",
     "useFreightSettings",
     "useGenericFuzzySearch",
     "useGeoBlocking",
@@ -490,6 +491,7 @@
     "useProductIntelligenceBadges",
     "useProductIntelligenceData",
     "useProductMatch",
+    "useProductMeasures",
     "useProductPrintAreas",
     "useProductPrintAreasV2",
     "useProductRecommendations",
@@ -6972,6 +6974,69 @@
    ]
   },
   {
+   "modulo": "components/freight-plan",
+   "arquivos": 4,
+   "testes": 3,
+   "linhas": 415,
+   "itens_menu": [],
+   "telas": [],
+   "rotas_http": [],
+   "componentes": 3,
+   "hooks_locais": [
+    "useAuth",
+    "useAuthMFA",
+    "useProductsColorsBatch",
+    "useProfileRoles"
+   ],
+   "hooks_definidos": [],
+   "edges": [],
+   "tabelas": [
+    "profiles",
+    "user_roles"
+   ],
+   "rpcs": [
+    "get_profile_and_roles",
+    "log_user_logout"
+   ],
+   "buckets": [],
+   "canais_realtime": [],
+   "env": [
+    "DEV",
+    "MODE",
+    "PROD",
+    "VITE_GOTRUE_CAPTCHA",
+    "VITE_SENTRY_DSN",
+    "VITE_SENTRY_ENVIRONMENT",
+    "VITE_SHOW_DEV_INFRA_MESSAGES",
+    "VITE_SUPABASE_ANON_KEY",
+    "VITE_SUPABASE_PUBLISHABLE_KEY",
+    "VITE_SUPABASE_URL",
+    "VITE_VERCEL_GIT_COMMIT_SHA"
+   ],
+   "flags": [],
+   "papeis": [
+    "alert",
+    "status"
+   ],
+   "diretos": {
+    "edges": [],
+    "tabelas": [],
+    "rpcs": []
+   },
+   "importado_por_outros_modulos": [],
+   "depende_de_modulos": [
+    "components/ui",
+    "contexts",
+    "lib",
+    "lib/freight"
+   ],
+   "pacotes_externos": [
+    "lucide-react",
+    "react-router-dom",
+    "sonner"
+   ]
+  },
+  {
    "modulo": "components/goals",
    "arquivos": 1,
    "testes": 0,
@@ -9095,6 +9160,7 @@
     "useFiltersPageState",
     "useFiltersSelectionMode",
     "useFocusTrap",
+    "useFreightPlan",
     "useFreightSettings",
     "useFutureStockPreference",
     "useFutureStockShortcut",
@@ -9221,6 +9287,7 @@
     "useProductIntelligenceData",
     "useProductLeafCategories",
     "useProductMatch",
+    "useProductMeasures",
     "useProductPrintAreas",
     "useProductPrintAreasV2",
     "useProductRecommendations",
@@ -10375,6 +10442,7 @@
     "useFiltersPageState",
     "useFiltersSelectionMode",
     "useFocusTrap",
+    "useFreightPlan",
     "useFreightSettings",
     "useFutureStockPreference",
     "useFutureStockShortcut",
@@ -10496,6 +10564,7 @@
     "useProductIntelligenceData",
     "useProductLeafCategories",
     "useProductMatch",
+    "useProductMeasures",
     "useProductPrintAreas",
     "useProductPrintAreasV2",
     "useProductRecommendations",
@@ -16275,6 +16344,7 @@
     "components/expert",
     "components/favorites",
     "components/filters",
+    "components/freight-plan",
     "components/goals",
     "components/intelligence",
     "components/inventory",
@@ -16984,6 +17054,7 @@
     "components/expert",
     "components/favorites",
     "components/filters",
+    "components/freight-plan",
     "components/intelligence",
     "components/inventory",
     "components/kit-builder",
@@ -19686,9 +19757,9 @@
   },
   {
    "modulo": "hooks/freight",
-   "arquivos": 4,
+   "arquivos": 6,
    "testes": 0,
-   "linhas": 328,
+   "linhas": 644,
    "itens_menu": [],
    "telas": [],
    "rotas_http": [],
@@ -19697,7 +19768,9 @@
     "useAuth",
     "useAuthMFA",
     "useDeletedShippingBoxes",
+    "useFreightPlan",
     "useFreightSettings",
+    "useProductMeasures",
     "useProductsColorsBatch",
     "useProfileRoles",
     "useShippingBoxMutations",
@@ -19705,8 +19778,10 @@
     "useUpdateFreightSettings"
    ],
    "hooks_definidos": [
+    "useFreightPlan",
     "useFreightSettings",
     "useUpdateFreightSettings",
+    "useProductMeasures",
     "useDeletedShippingBoxes",
     "useShippingBoxMutations",
     "useShippingBoxes"
@@ -19714,6 +19789,7 @@
    "edges": [],
    "tabelas": [
     "freight_settings",
+    "products",
     "profiles",
     "shipping_boxes",
     "user_roles"
@@ -19742,7 +19818,9 @@
    "papeis": [],
    "diretos": {
     "edges": [],
-    "tabelas": [],
+    "tabelas": [
+     "products"
+    ],
     "rpcs": []
    },
    "importado_por_outros_modulos": [
@@ -19751,6 +19829,7 @@
    ],
    "depende_de_modulos": [
     "contexts",
+    "integrations/supabase",
     "lib/freight",
     "services"
    ],
@@ -23119,6 +23198,7 @@
     "hooks/crm",
     "hooks/customization",
     "hooks/favorites",
+    "hooks/freight",
     "hooks/intelligence",
     "hooks/inventory",
     "hooks/kit-builder",
@@ -23329,6 +23409,7 @@
     "useFiltersPageState",
     "useFiltersSelectionMode",
     "useFocusTrap",
+    "useFreightPlan",
     "useFreightSettings",
     "useFutureStockPreference",
     "useFutureStockShortcut",
@@ -23450,6 +23531,7 @@
     "useProductIntelligenceData",
     "useProductLeafCategories",
     "useProductMatch",
+    "useProductMeasures",
     "useProductPrintAreas",
     "useProductPrintAreasV2",
     "useProductRecommendations",
@@ -23881,6 +23963,7 @@
     "components/expert",
     "components/favorites",
     "components/filters",
+    "components/freight-plan",
     "components/goals",
     "components/intelligence",
     "components/inventory",
@@ -25507,9 +25590,9 @@
   },
   {
    "modulo": "lib/freight",
-   "arquivos": 15,
-   "testes": 17,
-   "linhas": 1492,
+   "arquivos": 16,
+   "testes": 18,
+   "linhas": 1525,
    "itens_menu": [],
    "telas": [],
    "rotas_http": [],
@@ -25531,6 +25614,7 @@
    },
    "importado_por_outros_modulos": [
     "components/admin",
+    "components/freight-plan",
     "hooks/freight",
     "lib/kit-builder"
    ],
@@ -28123,6 +28207,7 @@
     "useFilteredTechniques",
     "useFocusContext",
     "useFocusTrap",
+    "useFreightPlan",
     "useFreightSettings",
     "useFutureStockPreference",
     "useFutureStockShortcut",
@@ -28235,6 +28320,7 @@
     "useProductIntelligenceBadges",
     "useProductIntelligenceData",
     "useProductMatch",
+    "useProductMeasures",
     "useProductPrintAreas",
     "useProductPrintAreasV2",
     "useProductRecommendations",
@@ -34985,6 +35071,7 @@
     "useFiltersSelectionMode",
     "useFocusContext",
     "useFocusTrap",
+    "useFreightPlan",
     "useFreightSettings",
     "useFutureStockPreference",
     "useFutureStockShortcut",
@@ -35133,6 +35220,7 @@
     "useProductIntelligenceData",
     "useProductLeafCategories",
     "useProductMatch",
+    "useProductMeasures",
     "useProductPrintAreas",
     "useProductPrintAreasV2",
     "useProductRecommendations",

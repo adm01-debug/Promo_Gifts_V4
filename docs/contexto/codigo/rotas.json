@@ -2996,6 +2996,7 @@
     "useFilteredProductIds",
     "useFilteredTechniques",
     "useFocusTrap",
+    "useFreightPlan",
     "useFreightSettings",
     "useGenericFuzzySearch",
     "useGeoBlocking",
@@ -3071,6 +3072,7 @@
     "useProductIntelligenceBadges",
     "useProductIntelligenceData",
     "useProductMatch",
+    "useProductMeasures",
     "useProductPrintAreas",
     "useProductPrintAreasV2",
     "useProductRecommendations",
@@ -3312,6 +3314,7 @@
     "useFilterPanelState",
     "useFilteredTechniques",
     "useFocusTrap",
+    "useFreightPlan",
     "useFreightSettings",
     "useGenericFuzzySearch",
     "useGeoBlocking",
@@ -3378,6 +3381,7 @@
     "useProductIntelligenceBadges",
     "useProductIntelligenceData",
     "useProductMatch",
+    "useProductMeasures",
     "useProductPrintAreas",
     "useProductPrintAreasV2",
     "useProductRecommendations",
@@ -3525,6 +3529,7 @@
     "product_price_freshness_overrides",
     "product_variants",
     "product_views",
+    "products",
     "profiles",
     "quote_items",
     "quotes",
@@ -3590,7 +3595,7 @@
     "status",
     "supervisor"
    ],
-   "arquivos_puxados": 538
+   "arquivos_puxados": 541
   },
   {
    "protegida": true,
@@ -6628,10 +6633,12 @@
     "useContext",
     "useDeletedShippingBoxes",
     "useEffect",
+    "useFreightPlan",
     "useFreightSettings",
     "useId",
     "useMemo",
     "useMutation",
+    "useProductMeasures",
     "useProductsColorsBatch",
     "useProfileRoles",
     "useQuery",
@@ -6646,7 +6653,9 @@
     "useAuth",
     "useAuthMFA",
     "useDeletedShippingBoxes",
+    "useFreightPlan",
     "useFreightSettings",
+    "useProductMeasures",
     "useProductsColorsBatch",
     "useProfileRoles",
     "useShippingBoxMutations",
@@ -6655,6 +6664,7 @@
    ],
    "tabelas": [
     "freight_settings",
+    "products",
     "profiles",
     "shipping_boxes",
     "user_roles"
@@ -6671,7 +6681,7 @@
     "alert",
     "status"
    ],
-   "arquivos_puxados": 60
+   "arquivos_puxados": 63
   },
   {
    "protegida": true,

@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "23c5aed4d2ee91f9fc935d8f68b58e0051215d77",
+  "commit": "5ac27dbcfa3a0059ec4ada7ebbda31d06f58731d",
   "branch": "main",
-  "data_commit": "2026-11-20T02:28:42Z",
+  "data_commit": "2026-11-20T02:35:38Z",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "5ac27dbc",
+    "data": "2026-11-20",
+    "assunto": "feat(frete): hooks e painel do plano de volumes (Bloco E, etapas 41–45 e 48) (#3920)"
+   },
    {
     "sha": "23c5aed4",
     "data": "2026-11-20",
@@ -126,182 +131,177 @@
     "sha": "76d1a70d",
     "data": "2026-11-19",
     "assunto": "chore(main): release gifts-store 1.10.0 (#3781)"
-   },
-   {
-    "sha": "db0bd46e",
-    "data": "2026-11-19",
-    "assunto": "chore: baseline de refs de migration p06/onboarding no doc de triggers (#3893)"
    }
   ],
-  "arquivos_mudados_7d": 1437,
+  "arquivos_mudados_7d": 1450,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
-    "mudancas": 1858
+    "mudancas": 1254
    },
    {
     "pasta": "recovery/src-legacy/src",
-    "mudancas": 1265
+    "mudancas": 949
    },
    {
     "pasta": "src/components/products",
-    "mudancas": 917
+    "mudancas": 613
    },
    {
     "pasta": "tests/edge-functions/live",
-    "mudancas": 705
+    "mudancas": 472
    },
    {
     "pasta": "src/hooks/products",
-    "mudancas": 658
+    "mudancas": 448
    },
    {
     "pasta": "src/components/quotes",
-    "mudancas": 573
+    "mudancas": 386
    },
    {
     "pasta": "src/pages/magazine",
-    "mudancas": 552
+    "mudancas": 368
    },
    {
     "pasta": "src/components/inventory",
-    "mudancas": 497
+    "mudancas": 337
    },
    {
     "pasta": "supabase/functions/_shared",
-    "mudancas": 450
+    "mudancas": 300
    },
    {
     "pasta": "src/components/ui",
-    "mudancas": 440
+    "mudancas": 292
    },
    {
     "pasta": "src/components/mockup",
-    "mudancas": 407
+    "mudancas": 283
    },
    {
     "pasta": "src/pages/admin",
-    "mudancas": 376
+    "mudancas": 258
    },
    {
     "pasta": "src/pages/quotes",
-    "mudancas": 330
+    "mudancas": 230
    },
    {
     "pasta": "src/components/kit-builder",
-    "mudancas": 308
+    "mudancas": 214
    },
    {
     "pasta": "src/pages/products",
-    "mudancas": 296
+    "mudancas": 200
    }
   ],
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "supabase/MIGRATIONS_SYNC_LOG.md",
-    "mudancas": 70
+    "mudancas": 67
    },
    {
     "arquivo": "package.json",
-    "mudancas": 33
+    "mudancas": 31
    },
    {
     "arquivo": "docs/coordenacao/conflitos-semanticos.md",
-    "mudancas": 29
+    "mudancas": 27
    },
    {
     "arquivo": "RELATORIO_CI.md",
-    "mudancas": 22
-   },
-   {
-    "arquivo": ".github/workflows/deploy-gates.yml",
-    "mudancas": 21
-   },
-   {
-    "arquivo": "package-lock.json",
-    "mudancas": 21
-   },
-   {
-    "arquivo": "PENDENCIAS.md",
     "mudancas": 20
    },
    {
+    "arquivo": ".github/workflows/deploy-gates.yml",
+    "mudancas": 19
+   },
+   {
+    "arquivo": "package-lock.json",
+    "mudancas": 19
+   },
+   {
+    "arquivo": "PENDENCIAS.md",
+    "mudancas": 18
+   },
+   {
     "arquivo": "audit/supabase-reference-catalog.temporary.json",
-    "mudancas": 15
-   },
-   {
-    "arquivo": "CHANGELOG.md",
-    "mudancas": 14
-   },
-   {
-    "arquivo": "src/pages/mockups/MockupGenerator.tsx",
-    "mudancas": 14
-   },
-   {
-    "arquivo": "supabase/EDGE_FUNCTIONS_DEPLOY_LOG.md",
     "mudancas": 13
    },
    {
-    "arquivo": "e2e/flows/magazine-preview-sticky-smoke.spec.ts",
+    "arquivo": "CHANGELOG.md",
     "mudancas": 12
    },
    {
-    "arquivo": "src/pages/kit-builder/KitBuilderPage.tsx",
+    "arquivo": "src/pages/mockups/MockupGenerator.tsx",
     "mudancas": 12
    },
    {
-    "arquivo": "supabase/functions/crm-db-bridge/index.ts",
-    "mudancas": 12
-   },
-   {
-    "arquivo": "tests/edge-functions/live/_live-client.ts",
-    "mudancas": 12
-   },
-   {
-    "arquivo": ".github/workflows/replenishment-quality.yml",
+    "arquivo": "supabase/EDGE_FUNCTIONS_DEPLOY_LOG.md",
     "mudancas": 11
-   },
-   {
-    "arquivo": ".github/workflows/schema-snapshot-export.yml",
-    "mudancas": 11
-   },
-   {
-    "arquivo": "scripts/drift-baseline.mjs",
-    "mudancas": 11
-   },
-   {
-    "arquivo": "src/components/kit-builder/PersonalizationConfig.tsx",
-    "mudancas": 11
-   },
-   {
-    "arquivo": "src/pages/quotes/QuoteBuilderPage.tsx",
-    "mudancas": 11
-   },
-   {
-    "arquivo": ".github/workflows/e2e-swatch-quickview.yml",
-    "mudancas": 10
-   },
-   {
-    "arquivo": ".github/workflows/e2e.yml",
-    "mudancas": 10
    },
    {
     "arquivo": "docs/agentes/resgates/2026-11-16-auditoria-branches.md",
     "mudancas": 10
    },
    {
-    "arquivo": "docs/ci/SEGREDOS.md",
+    "arquivo": "e2e/flows/magazine-preview-sticky-smoke.spec.ts",
     "mudancas": 10
    },
    {
-    "arquivo": "e2e/flows/magazine-publish-smoke.spec.ts",
+    "arquivo": "src/pages/kit-builder/KitBuilderPage.tsx",
     "mudancas": 10
+   },
+   {
+    "arquivo": "supabase/functions/crm-db-bridge/index.ts",
+    "mudancas": 10
+   },
+   {
+    "arquivo": ".github/workflows/replenishment-quality.yml",
+    "mudancas": 9
+   },
+   {
+    "arquivo": ".github/workflows/schema-snapshot-export.yml",
+    "mudancas": 9
+   },
+   {
+    "arquivo": "scripts/drift-baseline.mjs",
+    "mudancas": 9
+   },
+   {
+    "arquivo": "src/components/kit-builder/PersonalizationConfig.tsx",
+    "mudancas": 9
+   },
+   {
+    "arquivo": "src/pages/quotes/QuoteBuilderPage.tsx",
+    "mudancas": 9
+   },
+   {
+    "arquivo": "tests/edge-functions/live/_live-client.ts",
+    "mudancas": 9
+   },
+   {
+    "arquivo": ".github/workflows/e2e-swatch-quickview.yml",
+    "mudancas": 8
+   },
+   {
+    "arquivo": ".github/workflows/e2e.yml",
+    "mudancas": 8
+   },
+   {
+    "arquivo": "docs/ci/SEGREDOS.md",
+    "mudancas": 8
+   },
+   {
+    "arquivo": "e2e/flows/magazine-publish-smoke.spec.ts",
+    "mudancas": 8
    }
   ],
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 344
+    "commits": 343
    },
    {
     "autor": "Claude",
@@ -313,7 +313,7 @@
    },
    {
     "autor": "Joaquim Ataides",
-    "commits": 23
+    "commits": 19
    },
    {
     "autor": "dependabot[bot]",
@@ -322,21 +322,21 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 11075,
-  "arquivos_codigo": 5557,
-  "linhas_codigo": 1057032,
+  "arquivos_total": 11088,
+  "arquivos_codigo": 5570,
+  "linhas_codigo": 1058696,
   "rotas": 140,
   "rotas_http_backend": 13,
   "vistas_por_id": 0,
   "itens_menu": 71,
-  "modulos": 167,
-  "componentes": 1268,
-  "hooks": 635,
+  "modulos": 168,
+  "componentes": 1271,
+  "hooks": 637,
   "edge_functions": 112,
   "tabelas": 529,
   "migrations": 3111,
   "cron_jobs": 122,
-  "testes": 2649,
+  "testes": 2655,
   "workflows": 89,
   "scripts": 285,
   "docs_md": 1488
@@ -1907,8 +1907,8 @@
    "linhas": 130
   },
   "src/components": {
-   "arquivos": 1440,
-   "linhas": 285255
+   "arquivos": 1447,
+   "linhas": 285984
   },
   "src/config": {
    "arquivos": 1,
@@ -1931,16 +1931,16 @@
    "linhas": 7
   },
   "src/hooks": {
-   "arquivos": 494,
-   "linhas": 92399
+   "arquivos": 496,
+   "linhas": 92715
   },
   "src/integrations": {
    "arquivos": 11,
    "linhas": 66676
   },
   "src/lib": {
-   "arquivos": 395,
-   "linhas": 60164
+   "arquivos": 397,
+   "linhas": 60282
   },
   "src/logic": {
    "arquivos": 4,
@@ -2103,8 +2103,8 @@
    "linhas": 325
   },
   "tests/hooks": {
-   "arquivos": 166,
-   "linhas": 26641
+   "arquivos": 168,
+   "linhas": 27142
   },
   "tests/integration": {
    "arquivos": 11,

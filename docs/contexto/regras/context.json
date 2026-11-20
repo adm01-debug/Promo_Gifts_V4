@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "23c5aed4d2ee91f9fc935d8f68b58e0051215d77",
+  "sha": "5ac27dbcfa3a0059ec4ada7ebbda31d06f58731d",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-20 02:30 UTC",
-  "files_total": 11003,
-  "code_files": 9019,
-  "code_lines": 1278995
+  "generated_at": "2026-11-20 02:37 UTC",
+  "files_total": 11016,
+  "code_files": 9032,
+  "code_lines": 1280659
  },
  "version": "1.3.2",
- "facts_hash": "648ca9ed0210e411",
+ "facts_hash": "219121833a3be8b1",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -1129,8 +1129,8 @@
   "package_manager": "npm",
   "languages": {
    ".sql": 3463,
-   ".ts": 3108,
-   ".tsx": 1978,
+   ".ts": 3115,
+   ".tsx": 1984,
    ".mjs": 455,
    ".py": 15,
    ".js": 7
@@ -145370,7 +145370,7 @@
     "file": ".github/workflows/wraparound-monitor-report.yml"
    }
   ],
-  "components_count": 1715,
+  "components_count": 1722,
   "hooks": [
    {
     "name": "useQuoteComments",
@@ -147477,12 +147477,20 @@
     "file": "src/hooks/favorites/useFavoritesPageState.ts"
    },
    {
+    "name": "useFreightPlan",
+    "file": "src/hooks/freight/useFreightPlan.ts"
+   },
+   {
     "name": "useFreightSettings",
     "file": "src/hooks/freight/useFreightSettings.ts"
    },
    {
     "name": "useUpdateFreightSettings",
     "file": "src/hooks/freight/useFreightSettings.ts"
+   },
+   {
+    "name": "useProductMeasures",
+    "file": "src/hooks/freight/useProductMeasures.ts"
    },
    {
     "name": "useShippingBoxes",
@@ -150042,8 +150050,8 @@
   },
   {
    "module": "src/components",
-   "files": 1440,
-   "lines": 285254,
+   "files": 1447,
+   "lines": 285983,
    "tables": [
     "admin_audit_log",
     "art_file_attachments",
@@ -150406,8 +150414,8 @@
   },
   {
    "module": "src/hooks",
-   "files": 494,
-   "lines": 92399,
+   "files": 496,
+   "lines": 92715,
    "tables": [
     "admin_audit_log",
     "admin_settings",
@@ -150450,6 +150458,7 @@
     "product_price_freshness_overrides",
     "product_variants",
     "product_views",
+    "products",
     "profiles",
     "quote_approval_tokens",
     "quote_history",
@@ -150694,8 +150703,8 @@
   },
   {
    "module": "src/lib",
-   "files": 396,
-   "lines": 60174,
+   "files": 398,
+   "lines": 60292,
    "tables": [
     "...",
     "companies",
@@ -152161,8 +152170,8 @@
   },
   {
    "module": "tests",
-   "files": 1102,
-   "lines": 174012,
+   "files": 1104,
+   "lines": 174513,
    "tables": [
     "bot_detection_log",
     "clients",
@@ -153893,6 +153902,7 @@
     "select": [
      "recovery/src-legacy/src/hooks/useMockupDraft.ts",
      "src/components/admin/connections/DataSourceDebugTab.tsx",
+     "src/hooks/freight/useProductMeasures.ts",
      "src/integrations/supabase/__tests__/edge-request-id.test.ts",
      "src/lib/freight/columns.ts",
      "src/pages/products/ProductDetail.tsx",
@@ -167074,6 +167084,14 @@
     "msg": "Digite um nome para o filtro"
    },
    {
+    "file": "src/components/freight-plan/FreightMissingActions.tsx",
+    "msg": "Não foi possível copiar a lista."
+   },
+   {
+    "file": "src/components/freight-plan/FreightPlanPanel.tsx",
+    "msg": " className="
+   },
+   {
     "file": "src/components/intelligence/MarketIntelligenceInsightsCard.tsx",
     "msg": "Limite de IA atingido"
    },
@@ -167852,6 +167870,10 @@
    {
     "file": "src/hooks/freight/useFreightSettings.ts",
     "msg": "permission"
+   },
+   {
+    "file": "src/hooks/freight/useProductMeasures.ts",
+    "msg": "Não foi possível ler as medidas dos produtos."
    },
    {
     "file": "src/hooks/gravacao/useTecnicasGravacao.ts",
@@ -171898,6 +171920,10 @@
     "text": "aviso \"+X mais\" quando o total filtrado excede o limite."
    },
    {
+    "file": "src/components/freight-plan/FreightPlanPanel.tsx",
+    "text": "`div`, não `p`: a regra global `.dark p/span/li` pinta de branco e esconderia a cor do erro."
+   },
+   {
     "file": "src/components/intelligence/MarketIntelligenceChart.tsx",
     "text": "FIX 2026-08-15: Badge (renderiza <div>) não pode ficar dentro de"
    },
@@ -173100,6 +173126,10 @@
    {
     "file": "src/hooks/favorites/useFavoriteQuickAdd.ts",
     "text": "Múltiplas listas e sem shift → o caller deve mostrar picker"
+   },
+   {
+    "file": "src/hooks/freight/useProductMeasures.ts",
+    "text": "na URL do PostgREST; um orçamento grande estouraria o limite). A chave de"
    },
    {
     "file": "src/hooks/gravacao/gravacao-types.ts",
@@ -199059,6 +199089,16 @@
     "value": "10"
    },
    {
+    "file": "src/hooks/freight/keys.ts",
+    "name": "PRODUCT_MEASURES_STALE_TIME_MS",
+    "value": "5"
+   },
+   {
+    "file": "src/hooks/freight/useProductMeasures.ts",
+    "name": "PRODUCT_MEASURES_BATCH_SIZE",
+    "value": "100"
+   },
+   {
     "file": "src/hooks/intelligence/magicUpShare.ts",
     "name": "MAGIC_UP_SHARE_NO_IMAGE_REASON",
     "value": "'Gere uma imagem antes de compartilhar no WhatsApp'"
@@ -204918,6 +204958,18 @@
     "kind": "compara"
    },
    {
+    "file": "src/components/freight-plan/FreightPlanPanel.tsx",
+    "field": "status",
+    "value": "dados_insuficientes",
+    "kind": "compara"
+   },
+   {
+    "file": "src/components/freight-plan/FreightPlanPanel.tsx",
+    "field": "status",
+    "value": "nao_cabe",
+    "kind": "compara"
+   },
+   {
     "file": "src/components/intelligence/GoldSyncBadge.tsx",
     "field": "state",
     "value": "empty",
@@ -207546,6 +207598,12 @@
     "kind": "escreve"
    },
    {
+    "file": "src/hooks/freight/useFreightPlan.ts",
+    "field": "status",
+    "value": "dados_insuficientes",
+    "kind": "escreve"
+   },
+   {
     "file": "src/hooks/intelligence/useAiUsage.ts",
     "field": "status",
     "value": "success",
@@ -209278,6 +209336,12 @@
     "field": "status",
     "value": "ok",
     "kind": "escreve"
+   },
+   {
+    "file": "src/lib/freight/format.ts",
+    "field": "status",
+    "value": "ok",
+    "kind": "compara"
    },
    {
     "file": "src/lib/freight/formatPlanSummary.ts",
@@ -218630,6 +218694,10 @@
     "line": "export const FREIGHT_STALE_TIME_MS = 10 * 60 * 1000;"
    },
    {
+    "file": "src/hooks/freight/keys.ts",
+    "line": "export const PRODUCT_MEASURES_STALE_TIME_MS = 5 * 60 * 1000;"
+   },
+   {
     "file": "src/hooks/gravacao/useTecnicasGravacao.ts",
     "line": "staleTime: 5 * 60 * 1000,"
    },
@@ -220406,6 +220474,10 @@
    {
     "file": "src/components/favorites/ExportFavoritesButton.tsx",
     "line": "if (variant) doc.text(`Cor: ${variant}`, x + 4, y + cellH * 0.6 + 28);"
+   },
+   {
+    "file": "src/components/freight-plan/FreightPlanPanel.tsx",
+    "line": "/** Em volume de uma peça só a ocupação pode passar de 100% (ver `PackVolume.fillRatio`); a tela trava em 100%. */"
    },
    {
     "file": "src/components/intelligence/CategoryRanking.tsx",
@@ -233360,6 +233432,94 @@
    {
     "file": "src/components/filters/__tests__/PresetsBar.test.tsx",
     "name": "limpa preset ativo por clique, Enter e Espaço, tal como o mouse"
+   },
+   {
+    "file": "src/components/freight-plan/__tests__/FreightMissingActions.test.tsx",
+    "name": "FreightMissingActions"
+   },
+   {
+    "file": "src/components/freight-plan/__tests__/FreightMissingActions.test.tsx",
+    "name": "admin: link "
+   },
+   {
+    "file": "src/components/freight-plan/__tests__/FreightMissingActions.test.tsx",
+    "name": "vendedor: pede ao admin e copia a lista com SKU e campos"
+   },
+   {
+    "file": "src/components/freight-plan/__tests__/FreightMissingActions.test.tsx",
+    "name": "item avulso: texto próprio e fora da lista copiada e da frase "
+   },
+   {
+    "file": "src/components/freight-plan/__tests__/FreightMissingActions.test.tsx",
+    "name": "produto indisponível: texto próprio, sem campos, sem link e sem "
+   },
+   {
+    "file": "src/components/freight-plan/__tests__/FreightPlanPanel.test.tsx",
+    "name": "FreightPlanPanel"
+   },
+   {
+    "file": "src/components/freight-plan/__tests__/FreightPlanPanel.test.tsx",
+    "name": "plano ok: resumo, volume com conteúdo e detalhes ao expandir"
+   },
+   {
+    "file": "src/components/freight-plan/__tests__/FreightPlanPanel.test.tsx",
+    "name": "carregando: esqueleto, sem volumes"
+   },
+   {
+    "file": "src/components/freight-plan/__tests__/FreightPlanPanel.test.tsx",
+    "name": "dados insuficientes: lista o produto e o que falta"
+   },
+   {
+    "file": "src/components/freight-plan/__tests__/FreightPlanPanel.test.tsx",
+    "name": "não cabe: nomeia o produto e a maior caixa"
+   },
+   {
+    "file": "src/components/freight-plan/__tests__/FreightPlanPanel.test.tsx",
+    "name": "erro e "
+   },
+   {
+    "file": "src/components/freight-plan/__tests__/FreightPlanPanel.test.tsx",
+    "name": "o ícone de "
+   },
+   {
+    "file": "src/components/freight-plan/__tests__/FreightPlanPanel.test.tsx",
+    "name": "plano ok com carregando ou erro: sem resumo de totais no cabeçalho"
+   },
+   {
+    "file": "src/components/freight-plan/__tests__/FreightPlanPanel.test.tsx",
+    "name": "produto indisponível: texto próprio, sem lista de campos"
+   },
+   {
+    "file": "src/components/freight-plan/__tests__/FreightPlanPanel.test.tsx",
+    "name": "vazio: pede para adicionar produtos"
+   },
+   {
+    "file": "src/components/freight-plan/__tests__/FreightPlanPanel.test.tsx",
+    "name": "erro: mostra a mensagem recebida"
+   },
+   {
+    "file": "src/components/freight-plan/__tests__/MixModeSelector.test.tsx",
+    "name": "MixModeSelector"
+   },
+   {
+    "file": "src/components/freight-plan/__tests__/MixModeSelector.test.tsx",
+    "name": "2 produtos que aceitam dividir caixa: mostra as duas opções e troca o modo"
+   },
+   {
+    "file": "src/components/freight-plan/__tests__/MixModeSelector.test.tsx",
+    "name": "menos de 2 produtos que aceitam dividir caixa: sem seletor, mas com a nota de caixa própria"
+   },
+   {
+    "file": "src/components/freight-plan/__tests__/MixModeSelector.test.tsx",
+    "name": "sem seletor e sem produto de caixa própria: não renderiza nada"
+   },
+   {
+    "file": "src/components/freight-plan/__tests__/MixModeSelector.test.tsx",
+    "name": "a mesma linha de produto repetida conta como 1 produto, não 2"
+   },
+   {
+    "file": "src/components/freight-plan/__tests__/MixModeSelector.test.tsx",
+    "name": "produto de caixa própria ganha a nota do cadastro"
    },
    {
     "file": "src/components/intelligence/__tests__/MarketIntelligenceChart.test.tsx",
@@ -253420,6 +253580,30 @@
    {
     "file": "src/lib/freight/__tests__/fitCount.test.ts",
     "name": "fator da caixa fora do intervalo cai no padrão global"
+   },
+   {
+    "file": "src/lib/freight/__tests__/format.test.ts",
+    "name": "formatPlanForClient"
+   },
+   {
+    "file": "src/lib/freight/__tests__/format.test.ts",
+    "name": "460 cadernetas em P/M/G: 4 volumes, peso bruto e m³ em pt-BR"
+   },
+   {
+    "file": "src/lib/freight/__tests__/format.test.ts",
+    "name": "um volume só: singular"
+   },
+   {
+    "file": "src/lib/freight/__tests__/format.test.ts",
+    "name": "peso total abaixo de 1 kg sai em gramas"
+   },
+   {
+    "file": "src/lib/freight/__tests__/format.test.ts",
+    "name": "não vaza conversa interna: sem ocupação, fator, cubado, código de caixa nem aviso"
+   },
+   {
+    "file": "src/lib/freight/__tests__/format.test.ts",
+    "name": "plano %s: texto vazio"
    },
    {
     "file": "src/lib/freight/__tests__/formatPlanSummary.test.ts",
@@ -291670,6 +291854,66 @@
     "name": "aplica o preço quando a tiragem da resposta é a atual"
    },
    {
+    "file": "tests/hooks/freight/useFreightPlan.test.ts",
+    "name": "useFreightPlan"
+   },
+   {
+    "file": "tests/hooks/freight/useFreightPlan.test.ts",
+    "name": "começa carregando, sem plano, e depois entrega o plano com hash e data injetados"
+   },
+   {
+    "file": "tests/hooks/freight/useFreightPlan.test.ts",
+    "name": "mudar a quantidade recalcula; re-render com o mesmo conteúdo não"
+   },
+   {
+    "file": "tests/hooks/freight/useFreightPlan.test.ts",
+    "name": "número de kits multiplica as quantidades e recalcula"
+   },
+   {
+    "file": "tests/hooks/freight/useFreightPlan.test.ts",
+    "name": "a mesma linha repetida soma as quantidades antes de calcular"
+   },
+   {
+    "file": "tests/hooks/freight/useFreightPlan.test.ts",
+    "name": "item avulso vira faltante com o nome e bloqueia o plano"
+   },
+   {
+    "file": "tests/hooks/freight/useFreightPlan.test.ts",
+    "name": "produto que o banco não devolve é caso próprio: bloqueia o plano, sem lista de medidas"
+   },
+   {
+    "file": "tests/hooks/freight/useFreightPlan.test.ts",
+    "name": "erro de leitura dos produtos vira Error em PT-BR com a causa"
+   },
+   {
+    "file": "tests/hooks/freight/useFreightPlan.test.ts",
+    "name": "refetch das medidas com dados iguais mantém o mesmo plano e o mesmo computedAt"
+   },
+   {
+    "file": "tests/hooks/freight/useFreightPlan.test.ts",
+    "name": "falha em refetch de fundo das caixas não apaga o plano válido"
+   },
+   {
+    "file": "tests/hooks/freight/useFreightPlan.test.ts",
+    "name": "itemsHash usa a quantidade efetiva: kits diferentes geram hash diferente"
+   },
+   {
+    "file": "tests/hooks/freight/useFreightPlan.test.ts",
+    "name": "nome de item avulso com "
+   },
+   {
+    "file": "tests/hooks/freight/useFreightPlan.test.ts",
+    "name": "sem linhas com quantidade: sem plano e sem carregar"
+   },
+   {
+    "file": "tests/hooks/freight/useFreightPlan.test.ts",
+    "name": "parâmetros de frete ausentes viram erro, sem plano"
+   },
+   {
+    "file": "tests/hooks/freight/useFreightPlan.test.ts",
+    "name": "falha ao ler as caixas vira erro, sem plano"
+   },
+   {
     "file": "tests/hooks/freight/useFreightSettings.test.ts",
     "name": "useFreightSettings"
    },
@@ -291712,6 +291956,38 @@
    {
     "file": "tests/hooks/freight/useFreightSettings.test.ts",
     "name": "erro que não é do serviço mostra o texto padrão, nunca o técnico"
+   },
+   {
+    "file": "tests/hooks/freight/useProductMeasures.test.ts",
+    "name": "useProductMeasures"
+   },
+   {
+    "file": "tests/hooks/freight/useProductMeasures.test.ts",
+    "name": "lê products só com as colunas do motor e devolve um Map por id"
+   },
+   {
+    "file": "tests/hooks/freight/useProductMeasures.test.ts",
+    "name": "150 ids: 2 consultas, de 100 e de 50, e o Map junta as duas"
+   },
+   {
+    "file": "tests/hooks/freight/useProductMeasures.test.ts",
+    "name": "mesma lista em outra ordem e com repetição reaproveita o cache"
+   },
+   {
+    "file": "tests/hooks/freight/useProductMeasures.test.ts",
+    "name": "sem ids: não consulta e devolve Map vazio"
+   },
+   {
+    "file": "tests/hooks/freight/useProductMeasures.test.ts",
+    "name": "erro do banco vira isError"
+   },
+   {
+    "file": "tests/hooks/freight/useProductMeasures.test.ts",
+    "name": "erro do banco vira Error em PT-BR com a causa original"
+   },
+   {
+    "file": "tests/hooks/freight/useProductMeasures.test.ts",
+    "name": "refetch com dados iguais mantém a mesma referência do Map"
    },
    {
     "file": "tests/hooks/freight/useShippingBoxes.test.ts",
@@ -353990,6 +354266,7 @@
       "compara:src/components/pricing/calculator/QuantityComparisonTable.tsx",
       "compara:src/hooks/intelligence/useConnectionsOverviewFilters.ts",
       "compara:src/lib/auth/invoke-full-scope.ts",
+      "compara:src/lib/freight/format.ts",
       "compara:src/lib/freight/formatPlanSummary.ts",
       "compara:src/pages/admin/DevChallengeExamplesPage.tsx",
       "compara:src/pages/products/CartsListPage.tsx",
@@ -354541,6 +354818,19 @@
       "compara:src/hooks/ui/usePushNotifications.tsx",
       "compara:src/hooks/ui/useWorkspaceNotifications.tsx"
      ],
+     "dados_insuficientes": [
+      "compara:src/components/freight-plan/FreightPlanPanel.tsx",
+      "escreve:src/hooks/freight/useFreightPlan.ts",
+      "escreve:src/lib/freight/planFreight.ts",
+      "escreve:src/lib/lead-time/productionLeadTime.ts"
+     ],
+     "nao_cabe": [
+      "compara:src/components/freight-plan/FreightPlanPanel.tsx",
+      "compara:src/lib/freight/planFreight.ts",
+      "escreve:src/lib/freight/packMixed.ts",
+      "escreve:src/lib/freight/packSingleProduct.ts",
+      "escreve:src/lib/freight/planFreight.ts"
+     ],
      "overstocked": [
       "compara:src/components/inventory/StockDashboard.tsx",
       "compara:src/hooks/products/useVariantStock.ts",
@@ -354682,16 +354972,6 @@
      "soon": [
       "compara:src/lib/carts/shipping-deadline.ts",
       "compara:src/pages/products/CartsListPage.tsx"
-     ],
-     "nao_cabe": [
-      "compara:src/lib/freight/planFreight.ts",
-      "escreve:src/lib/freight/packMixed.ts",
-      "escreve:src/lib/freight/packSingleProduct.ts",
-      "escreve:src/lib/freight/planFreight.ts"
-     ],
-     "dados_insuficientes": [
-      "escreve:src/lib/freight/planFreight.ts",
-      "escreve:src/lib/lead-time/productionLeadTime.ts"
      ],
      "incomplete": [
       "compara:src/lib/freight/planFreight.ts",
@@ -447326,6 +447606,108 @@
     "function SuppliersFilter"
    ]
   },
+  "src/components/freight-plan/FreightMissingActions.tsx": {
+   "path": "src/components/freight-plan/FreightMissingActions.tsx",
+   "lines": 116,
+   "exports": [
+    "type FreightProductLabels",
+    "function FreightMissingActions"
+   ],
+   "errors": [
+    "Não foi possível copiar a lista."
+   ],
+   "doc": "Produtos sem medida ou peso, e o que cada papel pode fazer a respeito. - Admin: link \"Completar cadastro\" para o formulário do produto. - Vendedor: não edita cadastro; pede ao admin e leva a lista pronta (SKU + campos que faltam) para colar na conversa. Item avulso (`productId` vazio) não tem cadast …"
+  },
+  "src/components/freight-plan/FreightPlanPanel.tsx": {
+   "path": "src/components/freight-plan/FreightPlanPanel.tsx",
+   "lines": 222,
+   "exports": [
+    "function FreightPlanPanel"
+   ],
+   "errors": [
+    " className="
+   ],
+   "status_values": [
+    {
+     "field": "status",
+     "value": "dados_insuficientes",
+     "kind": "compara"
+    },
+    {
+     "field": "status",
+     "value": "nao_cabe",
+     "kind": "compara"
+    }
+   ],
+   "rule_comments": [
+    "`div`, não `p`: a regra global `.dark p/span/li` pinta de branco e esconderia a cor do erro."
+   ],
+   "doc": "Painel do plano de volumes. Puro: recebe o plano por props e não busca dado nenhum (o hook `useFreightPlan` fica com quem monta a tela). Estados: carregando, sem itens, erro, plano calculado, dados insuficientes (lista o que falta no cadastro) e \"não cabe\" (o aviso do motor nomeia o produto e a maio …",
+   "percents": [
+    "/** Em volume de uma peça só a ocupação pode passar de 100% (ver `PackVolume.fillRatio`); a tela trava em 100%. */"
+   ]
+  },
+  "src/components/freight-plan/MixModeSelector.tsx": {
+   "path": "src/components/freight-plan/MixModeSelector.tsx",
+   "lines": 73,
+   "exports": [
+    "interface MixModeProduct",
+    "function MixModeSelector"
+   ],
+   "doc": "Como produtos diferentes se distribuem nas caixas: misturados na mesma caixa ou uma caixa (ou mais) por produto. O seletor só aparece quando a escolha muda alguma coisa: com menos de 2 produtos distintos que aceitam dividir caixa, não há o que decidir. Produto marcado para ir sempre em caixa própria …"
+  },
+  "src/components/freight-plan/index.ts": {
+   "path": "src/components/freight-plan/index.ts",
+   "lines": 4
+  },
+  "src/components/freight-plan/__tests__/FreightMissingActions.test.tsx": {
+   "path": "src/components/freight-plan/__tests__/FreightMissingActions.test.tsx",
+   "lines": 103,
+   "is_test": true,
+   "tests": [
+    "FreightMissingActions",
+    "admin: link ",
+    "vendedor: pede ao admin e copia a lista com SKU e campos",
+    "item avulso: texto próprio e fora da lista copiada e da frase ",
+    "produto indisponível: texto próprio, sem campos, sem link e sem "
+   ]
+  },
+  "src/components/freight-plan/__tests__/FreightPlanPanel.test.tsx": {
+   "path": "src/components/freight-plan/__tests__/FreightPlanPanel.test.tsx",
+   "lines": 146,
+   "is_test": true,
+   "errors": [
+    ")).toHaveTextContent(\n      ",
+    ");\n    expect(erro.tagName).toBe(",
+    ");\n    expect(naoCabe.tagName).toBe("
+   ],
+   "tests": [
+    "FreightPlanPanel",
+    "plano ok: resumo, volume com conteúdo e detalhes ao expandir",
+    "carregando: esqueleto, sem volumes",
+    "dados insuficientes: lista o produto e o que falta",
+    "não cabe: nomeia o produto e a maior caixa",
+    "erro e ",
+    "o ícone de ",
+    "plano ok com carregando ou erro: sem resumo de totais no cabeçalho",
+    "produto indisponível: texto próprio, sem lista de campos",
+    "vazio: pede para adicionar produtos",
+    "erro: mostra a mensagem recebida"
+   ]
+  },
+  "src/components/freight-plan/__tests__/MixModeSelector.test.tsx": {
+   "path": "src/components/freight-plan/__tests__/MixModeSelector.test.tsx",
+   "lines": 65,
+   "is_test": true,
+   "tests": [
+    "MixModeSelector",
+    "2 produtos que aceitam dividir caixa: mostra as duas opções e troca o modo",
+    "menos de 2 produtos que aceitam dividir caixa: sem seletor, mas com a nota de caixa própria",
+    "sem seletor e sem produto de caixa própria: não renderiza nada",
+    "a mesma linha de produto repetida conta como 1 produto, não 2",
+    "produto de caixa própria ganha a nota do cadastro"
+   ]
+  },
   "src/components/goals/SalesGoalsCard.tsx": {
    "path": "src/components/goals/SalesGoalsCard.tsx",
    "lines": 301,
@@ -466270,25 +466652,52 @@
   },
   "src/hooks/freight/index.ts": {
    "path": "src/hooks/freight/index.ts",
-   "lines": 5,
+   "lines": 7,
    "doc": "Hooks do domínio de frete: caixas de transporte e parâmetros globais."
   },
   "src/hooks/freight/keys.ts": {
    "path": "src/hooks/freight/keys.ts",
-   "lines": 19,
+   "lines": 24,
    "exports": [
     "const FREIGHT_QUERY_KEYS",
-    "const FREIGHT_STALE_TIME_MS"
+    "const FREIGHT_STALE_TIME_MS",
+    "const PRODUCT_MEASURES_STALE_TIME_MS"
    ],
    "params": [
     {
      "name": "FREIGHT_STALE_TIME_MS",
      "value": "10"
+    },
+    {
+     "name": "PRODUCT_MEASURES_STALE_TIME_MS",
+     "value": "5"
     }
    ],
    "doc": "Query keys do domínio de frete (caixas de transporte e parâmetros). Toda chave de caixa começa por `shippingBoxes.all`, então invalidar esse prefixo atualiza a lista do motor, a tabela do cadastro e a lixeira de uma vez.",
    "temporal": [
-    "export const FREIGHT_STALE_TIME_MS = 10 * 60 * 1000;"
+    "export const FREIGHT_STALE_TIME_MS = 10 * 60 * 1000;",
+    "export const PRODUCT_MEASURES_STALE_TIME_MS = 5 * 60 * 1000;"
+   ]
+  },
+  "src/hooks/freight/useFreightPlan.ts": {
+   "path": "src/hooks/freight/useFreightPlan.ts",
+   "lines": 226,
+   "exports": [
+    "interface FreightPlanLine",
+    "interface UseFreightPlanInput",
+    "interface UnavailableProduct",
+    "interface UseFreightPlanResult",
+    "function useFreightPlan"
+   ],
+   "status_values": [
+    {
+     "field": "status",
+     "value": "dados_insuficientes",
+     "kind": "escreve"
+    }
+   ],
+   "hooks": [
+    "useFreightPlan"
    ]
   },
   "src/hooks/freight/useFreightSettings.ts": {
@@ -466306,6 +466715,42 @@
    "hooks": [
     "useFreightSettings",
     "useUpdateFreightSettings"
+   ]
+  },
+  "src/hooks/freight/useProductMeasures.ts": {
+   "path": "src/hooks/freight/useProductMeasures.ts",
+   "lines": 83,
+   "exports": [
+    "const PRODUCT_MEASURES_BATCH_SIZE",
+    "interface UseProductMeasuresResult",
+    "function useProductMeasures"
+   ],
+   "tables": [
+    {
+     "table": "products",
+     "op": "select"
+    }
+   ],
+   "table_cols": {
+    "products": [
+     "id"
+    ]
+   },
+   "errors": [
+    "Não foi possível ler as medidas dos produtos."
+   ],
+   "params": [
+    {
+     "name": "PRODUCT_MEASURES_BATCH_SIZE",
+     "value": "100"
+    }
+   ],
+   "rule_comments": [
+    "na URL do PostgREST; um orçamento grande estouraria o limite). A chave de"
+   ],
+   "doc": "`useProductMeasures` — medidas e peso dos produtos que o motor de frete lê. Lê só as colunas de `PRODUCT_MEASURE_SELECT` em lotes de 100 ids (a lista vai na URL do PostgREST; um orçamento grande estouraria o limite). A chave de cache usa os ids ordenados e sem repetição, então a mesma lista em outra …",
+   "hooks": [
+    "useProductMeasures"
    ]
   },
   "src/hooks/freight/useShippingBoxes.ts": {
@@ -482187,6 +482632,21 @@
     "// por ocupar mais de 90% dela."
    ]
   },
+  "src/lib/freight/format.ts": {
+   "path": "src/lib/freight/format.ts",
+   "lines": 31,
+   "exports": [
+    "function formatPlanForClient"
+   ],
+   "status_values": [
+    {
+     "field": "status",
+     "value": "ok",
+     "kind": "compara"
+    }
+   ],
+   "doc": "Texto do plano para o CLIENTE: só os totais. Formato: `4 volumes · 18,4 kg · 0,21 m³`. Sem código de caixa, ocupação, fator de aproveitamento, peso cubado nem avisos: isso é conversa interna do vendedor (para ela, `formatPlanSummary`). O peso é o bruto, o que o cliente vai ver na balança."
+  },
   "src/lib/freight/formatPlanSummary.ts": {
    "path": "src/lib/freight/formatPlanSummary.ts",
    "lines": 46,
@@ -482224,7 +482684,7 @@
   },
   "src/lib/freight/index.ts": {
    "path": "src/lib/freight/index.ts",
-   "lines": 68,
+   "lines": 70,
    "doc": "Motor de frete — barril público. Contrato, unidades e limites em `./README.md`."
   },
   "src/lib/freight/packMixed.ts": {
@@ -482589,6 +483049,23 @@
     "peça única que entra na caixa não é recusada pelo fator de aproveitamento",
     "o piso de 1 não vale para peça que não entra na caixa",
     "fator da caixa fora do intervalo cai no padrão global"
+   ]
+  },
+  "src/lib/freight/__tests__/format.test.ts": {
+   "path": "src/lib/freight/__tests__/format.test.ts",
+   "lines": 85,
+   "is_test": true,
+   "rule_comments": [
+    "O plano de 250 cadernetas na GG tem aviso (\"fechou no peso máximo\") e cubado."
+   ],
+   "doc": "format.test.ts — o texto do plano para o cliente: só totais.",
+   "tests": [
+    "formatPlanForClient",
+    "460 cadernetas em P/M/G: 4 volumes, peso bruto e m³ em pt-BR",
+    "um volume só: singular",
+    "peso total abaixo de 1 kg sai em gramas",
+    "não vaza conversa interna: sem ocupação, fator, cubado, código de caixa nem aviso",
+    "plano %s: texto vazio"
    ]
   },
   "src/lib/freight/__tests__/formatPlanSummary.test.ts": {
@@ -542107,6 +542584,29 @@
    ],
    "doc": "Smoke test template — helpers para gerar testes mínimos que apenas garantem que o hook não crasha ao montar com providers padrão. Uso: import { smokeHook } from \"../_helpers/smoke-template\"; import { useAlgumaCoisa } from \"@/hooks/useAlgumaCoisa\"; smokeHook(\"useAlgumaCoisa\", () => useAlgumaCoisa());"
   },
+  "tests/hooks/freight/useFreightPlan.test.ts": {
+   "path": "tests/hooks/freight/useFreightPlan.test.ts",
+   "lines": 368,
+   "is_test": true,
+   "doc": "`useFreightPlan`. Mocka o cliente (produtos) e os serviços (caixas e parâmetros); o motor roda de verdade. Trava: estados, recálculo só quando a chave muda, `computedAt`/`itemsHash` injetados, item avulso e produto não encontrado como faltantes.",
+   "tests": [
+    "useFreightPlan",
+    "começa carregando, sem plano, e depois entrega o plano com hash e data injetados",
+    "mudar a quantidade recalcula; re-render com o mesmo conteúdo não",
+    "número de kits multiplica as quantidades e recalcula",
+    "a mesma linha repetida soma as quantidades antes de calcular",
+    "item avulso vira faltante com o nome e bloqueia o plano",
+    "produto que o banco não devolve é caso próprio: bloqueia o plano, sem lista de medidas",
+    "erro de leitura dos produtos vira Error em PT-BR com a causa",
+    "refetch das medidas com dados iguais mantém o mesmo plano e o mesmo computedAt",
+    "falha em refetch de fundo das caixas não apaga o plano válido",
+    "itemsHash usa a quantidade efetiva: kits diferentes geram hash diferente",
+    "nome de item avulso com ",
+    "sem linhas com quantidade: sem plano e sem carregar",
+    "parâmetros de frete ausentes viram erro, sem plano",
+    "falha ao ler as caixas vira erro, sem plano"
+   ]
+  },
   "tests/hooks/freight/useFreightSettings.test.ts": {
    "path": "tests/hooks/freight/useFreightSettings.test.ts",
    "lines": 187,
@@ -542124,6 +542624,22 @@
     "sem usuário logado: não chama o serviço e avisa que a sessão expirou",
     "a mensagem do serviço vai no TÍTULO do toast, sem description",
     "erro que não é do serviço mostra o texto padrão, nunca o técnico"
+   ]
+  },
+  "tests/hooks/freight/useProductMeasures.test.ts": {
+   "path": "tests/hooks/freight/useProductMeasures.test.ts",
+   "lines": 133,
+   "is_test": true,
+   "doc": "`useProductMeasures`. O cliente do Supabase é mockado: aqui o que se trava é a tabela e as colunas lidas, o lote de 100 ids, a chave de cache (ids ordenados, sem repetição) e o `Map` devolvido.",
+   "tests": [
+    "useProductMeasures",
+    "lê products só com as colunas do motor e devolve um Map por id",
+    "150 ids: 2 consultas, de 100 e de 50, e o Map junta as duas",
+    "mesma lista em outra ordem e com repetição reaproveita o cache",
+    "sem ids: não consulta e devolve Map vazio",
+    "erro do banco vira isError",
+    "erro do banco vira Error em PT-BR com a causa original",
+    "refetch com dados iguais mantém a mesma referência do Map"
    ]
   },
   "tests/hooks/freight/useShippingBoxes.test.ts": {
@@ -553317,10 +553833,34 @@
   }
  },
  "git": {
-  "sha": "23c5aed4d2ee91f9fc935d8f68b58e0051215d77",
+  "sha": "5ac27dbcfa3a0059ec4ada7ebbda31d06f58731d",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "5ac27db",
+    "date": "2026-11-19",
+    "author": "adm01-debug",
+    "subject": "feat(frete): hooks e painel do plano de volumes (Bloco E, etapas 41–45 e 48) (#3920)",
+    "files": [
+     "src/components/freight-plan/FreightMissingActions.tsx",
+     "src/components/freight-plan/FreightPlanPanel.tsx",
+     "src/components/freight-plan/MixModeSelector.tsx",
+     "src/components/freight-plan/__tests__/FreightMissingActions.test.tsx",
+     "src/components/freight-plan/__tests__/FreightPlanPanel.test.tsx",
+     "src/components/freight-plan/__tests__/MixModeSelector.test.tsx",
+     "src/components/freight-plan/index.ts",
+     "src/hooks/freight/index.ts",
+     "src/hooks/freight/keys.ts",
+     "src/hooks/freight/useFreightPlan.ts",
+     "src/hooks/freight/useProductMeasures.ts",
+     "src/lib/freight/__tests__/format.test.ts",
+     "src/lib/freight/format.ts",
+     "src/lib/freight/index.ts",
+     "tests/hooks/freight/useFreightPlan.test.ts",
+     "tests/hooks/freight/useProductMeasures.test.ts"
+    ]
+   },
    {
     "sha": "23c5aed",
     "date": "2026-11-19",
@@ -553735,27 +554275,20 @@
      ".security/policies-baseline.json",
      "supabase/MIGRATIONS_SYNC_LOG.md"
     ]
-   },
-   {
-    "sha": "9f72f0f",
-    "date": "2026-11-19",
-    "author": "adm01-debug",
-    "subject": "fix(db): reafirma 7 revogações que o baseline ressuscita na reconstrução (#3883)",
-    "files": [
-     "supabase/MIGRATIONS_SYNC_LOG.md",
-     "supabase/migrations/20261119094500_reafirma_revogacoes_anteriores_ao_baseline.sql",
-     "supabase/rollbacks/20261119094500_rollback.sql"
-    ]
    }
   ],
   "hot_files": [
    [
     "supabase/MIGRATIONS_SYNC_LOG.md",
-    15
+    14
    ],
    [
     "src/lib/freight/README.md",
     6
+   ],
+   [
+    "src/lib/freight/index.ts",
+    4
    ],
    [
     ".release-please-manifest.json",
@@ -553774,12 +554307,16 @@
     4
    ],
    [
-    "src/lib/freight/index.ts",
+    "src/lib/freight/types.ts",
     3
    ],
    [
-    "src/lib/freight/types.ts",
-    3
+    "src/hooks/freight/index.ts",
+    2
+   ],
+   [
+    "src/hooks/freight/keys.ts",
+    2
    ],
    [
     "scripts/freight/README.md",
@@ -553819,14 +554356,6 @@
    ],
    [
     "src/hooks/freight/useShippingBoxes.ts",
-    2
-   ],
-   [
-    "src/pages/admin/__tests__/AdminFreteSettingsPage.test.tsx",
-    2
-   ],
-   [
-    "src/services/__tests__/shippingBoxService.test.ts",
     2
    ]
   ]

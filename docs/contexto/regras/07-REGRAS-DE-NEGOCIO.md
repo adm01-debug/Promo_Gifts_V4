@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.3.2 · commit `23c5aed4d2` · branch `main` · 2026-11-20 02:30 UTC
+> Gerado automaticamente por AI Context Sync v1.3.2 · commit `5ac27dbcfa` · branch `main` · 2026-11-20 02:37 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -1776,7 +1776,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `status` | `converted` | compara, filtra | `recovery/src-legacy/src/components/quotes/QuoteRowQuickActions.tsx`<br>`recovery/src-legacy/src/hooks/useQuoteFunnel.ts`<br>`src/components/quotes/MarginInsightBadge.tsx`<br>`src/components/quotes/QuotesStatusChips.tsx`<br>`src/hooks/quotes/useQuoteFunnel.ts`<br>… +3 |
 | `status` | `crit` | compara, escreve | `recovery/src-legacy/src/components/admin/telemetry/PlatformFailureCards.tsx`<br>`src/components/admin/telemetry/PlatformFailureCards.tsx` |
 | `status` | `critical` | compara | `recovery/src-legacy/src/hooks/useVariantStock.ts`<br>`src/components/inventory/StockDashboard.tsx`<br>`src/hooks/products/useVariantStock.ts`<br>`src/hooks/stock/stockAlerts.ts`<br>`src/lib/inventory/stock-filter.ts`<br>… +1 |
-| `status` | `dados_insuficientes` | escreve | `src/lib/freight/planFreight.ts`<br>`src/lib/lead-time/productionLeadTime.ts` |
+| `status` | `dados_insuficientes` | compara, escreve | `src/components/freight-plan/FreightPlanPanel.tsx`<br>`src/hooks/freight/useFreightPlan.ts`<br>`src/lib/freight/planFreight.ts`<br>`src/lib/lead-time/productionLeadTime.ts` |
 | `status` | `degraded` | compara, escreve | `api/ready.ts`<br>`src/components/system/CloudStatusBanner.tsx`<br>`src/lib/external-db/invoke.ts` |
 | `status` | `delivered` | compara, escreve | `src/components/common/StatusTimeline.tsx`<br>`supabase/functions/semantic-search/index.ts` |
 | `status` | `denied` | compara, escreve, filtra | `src/components/admin/security/keys/audit/McpAuditRow.tsx`<br>`src/components/admin/security/keys/audit/useStepUpAttempts.ts`<br>`supabase/functions/connections-hub-audit/index.ts`<br>`supabase/functions/mcp-keys-issue/index.ts`<br>`supabase/functions/mcp-keys-revoke/index.ts`<br>… +4 |
@@ -1812,14 +1812,14 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `status` | `low-stock` | compara | `recovery/src-legacy/src/pages/ComparePage.tsx`<br>`recovery/src-legacy/src/pages/product-detail/ProductDetailHero.tsx`<br>`src/components/compare/ComparisonRadarChart.tsx`<br>`src/components/compare/StockRiskBadge.tsx`<br>`src/components/inventory/StockBadge.tsx`<br>… +5 |
 | `status` | `low_stock` | compara | `recovery/src-legacy/src/hooks/useVariantStock.ts`<br>`src/components/inventory/StockDashboard.tsx`<br>`src/components/simulator/StockAlert.tsx`<br>`src/hooks/products/useVariantStock.ts`<br>`src/hooks/stock/stockAlerts.ts`<br>… +2 |
 | `status` | `missing` | compara, escreve | `src/components/admin/connections/MaskedSuffixBadge.tsx`<br>`src/lib/masked-suffix.ts` |
-| `status` | `nao_cabe` | compara, escreve | `src/lib/freight/packMixed.ts`<br>`src/lib/freight/packSingleProduct.ts`<br>`src/lib/freight/planFreight.ts` |
+| `status` | `nao_cabe` | compara, escreve | `src/components/freight-plan/FreightPlanPanel.tsx`<br>`src/lib/freight/packMixed.ts`<br>`src/lib/freight/packSingleProduct.ts`<br>`src/lib/freight/planFreight.ts` |
 | `status` | `none` | compara | `src/lib/carts/shipping-deadline.ts`<br>`src/pages/products/seller-carts/useSellerCartsPage.ts` |
 | `status` | `not_found` | escreve | `supabase/functions/e2e-cleanup/index.ts` |
 | `status` | `not_ready` | escreve | `api/ready.ts` |
 | `status` | `novo` | escreve | `recovery/src-legacy/src/hooks/useSellerCarts.ts` |
 | `status` | `number` | compara | `recovery/src-legacy/src/components/admin/telemetry/BridgeCallDetailDrawer.tsx`<br>`src/components/admin/connections/SecretsManagerHealthPanel.tsx`<br>`src/components/admin/connections/TestAllConnectionsButton.tsx`<br>`src/components/admin/telemetry/BridgeCallDetailDrawer.tsx`<br>`src/contexts/SellerCartContext.tsx`<br>… +9 |
 | `status` | `offline` | compara | `src/components/quotes/QuoteAutoSave.tsx` |
-| `status` | `ok` | compara, escreve | `api/health.ts`<br>`api/ready.ts`<br>`recovery/src-legacy/src/components/admin/telemetry/PlatformFailureCards.tsx`<br>`recovery/src-legacy/src/hooks/useConnectionsOverviewFilters.ts`<br>`recovery/src-legacy/src/pages/SystemStatusPage.tsx`<br>… +22 |
+| `status` | `ok` | compara, escreve | `api/health.ts`<br>`api/ready.ts`<br>`recovery/src-legacy/src/components/admin/telemetry/PlatformFailureCards.tsx`<br>`recovery/src-legacy/src/hooks/useConnectionsOverviewFilters.ts`<br>`recovery/src-legacy/src/pages/SystemStatusPage.tsx`<br>… +23 |
 | `status` | `order` | compara | `src/components/dashboard/MyClientsWidget.tsx` |
 | `status` | `out-of-stock` | compara, escreve | `recovery/src-legacy/src/pages/ComparePage.tsx`<br>`recovery/src-legacy/src/pages/product-detail/ProductDetailHero.tsx`<br>`src/components/compare/ComparisonRadarChart.tsx`<br>`src/components/compare/StockRiskBadge.tsx`<br>`src/components/products/ProductListItem.tsx`<br>… +4 |
 | `status` | `out_of_stock` | compara | `recovery/src-legacy/src/hooks/useVariantStock.ts`<br>`src/components/inventory/StockDashboard.tsx`<br>`src/components/inventory/VariantStockTable.tsx`<br>`src/components/simulator/StockAlert.tsx`<br>`src/hooks/products/useVariantStock.ts`<br>… +2 |
@@ -5313,6 +5313,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `doc.text(noteLines, x + 4, y + cellH * 0.6 + 33);` | `src/components/favorites/ExportFavoritesButton.tsx` |
 | `doc.text(p.sku ?? '—', x + 4, y + cellH * 0.6 + 14);` | `src/components/favorites/ExportFavoritesButton.tsx` |
 | `if (variant) doc.text(`Cor: ${variant}`, x + 4, y + cellH * 0.6 + 28);` | `src/components/favorites/ExportFavoritesButton.tsx` |
+| `/** Em volume de uma peça só a ocupação pode passar de 100% (ver `PackVolume.fillRatio`); a tela trava em 100%. */` | `src/components/freight-plan/FreightPlanPanel.tsx` |
 | `const getBarOpacity = (i: number) => Math.max(1 - i * 0.06, 0.35);` | `src/components/intelligence/CategoryRanking.tsx` |
 | `const getOpacity = (i: number) => Math.max(1 - i * 0.08, 0.4);` | `src/components/intelligence/SegmentAnalysis.tsx` |
 | `const getBarOpacity = (i: number) => Math.max(1 - i * 0.07, 0.4);` | `src/components/intelligence/SupplierSales.tsx` |
@@ -5745,6 +5746,8 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `MAX_COMPARE_ITEMS` | `4` | `src/hooks/comparison/useComparison.ts` |
 | `REMOTE_DEBOUNCE_MS` | `800` | `src/hooks/customization/useCustomizationCollapsePrefs.ts` |
 | `FREIGHT_STALE_TIME_MS` | `10` | `src/hooks/freight/keys.ts` |
+| `PRODUCT_MEASURES_STALE_TIME_MS` | `5` | `src/hooks/freight/keys.ts` |
+| `PRODUCT_MEASURES_BATCH_SIZE` | `100` | `src/hooks/freight/useProductMeasures.ts` |
 | `MAGIC_UP_SHARE_NO_IMAGE_REASON` | `'Gere uma imagem antes de compartilhar no WhatsApp'` | `src/hooks/intelligence/magicUpShare.ts` |
 | `MAX_RETRIES` | `2` | `src/hooks/intelligence/useAIRecommendations.ts` |
 | `INITIAL_BACKOFF_MS` | `500` | `src/hooks/intelligence/useAIRecommendations.ts` |
@@ -5817,9 +5820,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `MATERIAL_POINTS` | `6` | `src/hooks/products/useProductMatch.ts` |
 | `COMPLEMENTARY_POINTS` | `20` | `src/hooks/products/useProductMatch.ts` |
 | `PRODUCT_DETAIL_TIMEOUT_MS` | `15` | `src/hooks/products/useProducts.ts` |
-| `CHUNK` | `50` | `src/hooks/products/useProductsByColor.ts` |
-| `PAGE` | `1000` | `src/hooks/products/useProductsByColor.ts` |
-| … +389 linhas — lista completa em `context.json` | | |
+| … +391 linhas — lista completa em `context.json` | | |
 
 ### H.2 Prazos, expirações e janelas de tempo
 
@@ -6125,7 +6126,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `staleTime: 5 * 60 * 1000,` | `src/hooks/auth/useRBAC.tsx` |
 | `staleTime: 5 * 60 * 1000,` | `src/hooks/bi/useClientAffinity.ts` |
 | `const NINETY_DAYS = 90 * 24 * 60 * 60 * 1000;` | `src/hooks/bi/useClientCategoryAffinity.ts` |
-| … +393 linhas — lista completa em `context.json` | |
+| … +394 linhas — lista completa em `context.json` | |
 
 ### H.3 Limites de paginação
 
@@ -6608,7 +6609,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | allowlist inválida: versions contém duplicatas | `scripts/check-supabase-migration-ledger.mjs` |
 | allowlist inválida: versions contém valor vazio/não textual | `scripts/check-supabase-migration-ledger.mjs` |
 | allowlist inválida: versions deve ser array não vazio | `scripts/check-supabase-migration-ledger.mjs` |
-| … +1330 linhas — lista completa em `context.json` | |
+| … +1333 linhas — lista completa em `context.json` | |
 
 ## J. Controle de acesso no código (checagens de perfil/permissão)
 
@@ -6732,7 +6733,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `admin` | `supabase/migrations/20261112120500_fix_optimization_queue_rpcs_dev_access.sql` |
 | `anon` | `tests/edge-functions/live/_live-client.ts` |
 
-## K. Testes como especificação (23068 testes em 2322 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (23119 testes em 2328 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -7036,7 +7037,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `tests/edge-functions/voice-agent.test.ts` | 19 | Voice Agent Response Contract · action types · should have valid action enum values · response structure … |
 | `tests/edge-functions/integration/secure-upload.test.ts` | 19 | secure-upload · happy path — upload válido · retorna 200 com path, bucket e hash · hash retornado é string hexadecimal de 64 chars (SHA-256) … |
 | `tests/lib/query-config.test.ts` | 19 | CACHE_TIMES · should have increasing cache durations · getStaleTimeForKey · should return TECNICAS time for tecnicas keys … |
-| … +2022 linhas — lista completa em `context.json` | | |
+| … +2028 linhas — lista completa em `context.json` | | |
 
 ## L. Eventos de webhook tratados (contratos com sistemas externos)
 
@@ -7483,6 +7484,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | COMERCIAL — Filtros por vendas (somente Super Filtro) — janela padronizada 90d | `src/components/filters/filter-panel/types.ts` |
 | BUG-SF-12 FIX: limite era 30 sem indicador — aumentado para 50 e adicionado | `src/components/filters/filter-panel/sections/SimpleFilters.tsx` |
 | aviso "+X mais" quando o total filtrado excede o limite. | `src/components/filters/filter-panel/sections/SimpleFilters.tsx` |
+| `div`, não `p`: a regra global `.dark p/span/li` pinta de branco e esconderia a cor do erro. | `src/components/freight-plan/FreightPlanPanel.tsx` |
 | FIX 2026-08-15: Badge (renderiza <div>) não pode ficar dentro de | `src/components/intelligence/MarketIntelligenceChart.tsx` |
 | Limit selector */} | `src/components/intelligence/RankingFilterToolbar.tsx` |
 | * Callout inteligente exibido apenas quando o painel retorna zero E há filtros | `src/components/intelligence/ZeroResultDiagnosisCallout.tsx` |
@@ -7503,5 +7505,4 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | * Etapa 18: 3 erros de negócio distintos em vez do genérico "Erro ao gerar | `src/components/kit-builder/KitAIPromptDialog.tsx` |
 | O servidor já devolve mensagens de negócio (sem chave/quota/timeout); | `src/components/kit-builder/KitAIPromptDialog.tsx` |
 | Reabrir o guia num passo diferente deve pular direto para o capítulo | `src/components/kit-builder/KitMakerGuideDialog.tsx` |
-| O componente apenas dispara o callback; a página decide se aplica filtros | `src/components/kit-builder/KitOccasionSelector.tsx` |
-| … +1407 linhas — lista completa em `context.json` | |
+| … +1409 linhas — lista completa em `context.json` | |
