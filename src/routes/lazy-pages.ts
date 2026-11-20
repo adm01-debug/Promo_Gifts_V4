@@ -74,6 +74,9 @@ export const AdminPromoverUsuarioPage = lazyWithRetry(
 );
 export const AdminSegurancaPage = lazyWithRetry(() => import('@/pages/admin/AdminSegurancaPage'));
 export const AdminCadastrosPage = lazyWithRetry(() => import('@/pages/admin/AdminCadastrosPage'));
+export const AdminFreteSettingsPage = lazyWithRetry(
+  () => import('@/pages/admin/AdminFreteSettingsPage'),
+);
 export const AdminPromptsIAPage = lazyWithRetry(() => import('@/pages/admin/AdminPromptsIAPage'));
 export const AdminProductFormPage = lazyWithRetry(
   () => import('@/pages/admin/AdminProductFormPage'),

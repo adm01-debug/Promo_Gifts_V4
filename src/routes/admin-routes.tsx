@@ -10,6 +10,7 @@ import {
   AdminConexoesStatusPage,
   AdminDesignTokensPage,
   AdminExternalDbPage,
+  AdminFreteSettingsPage,
   AdminLoginAttemptsPage,
   AdminSessionsPage,
   AdminMigracaoPapeisPage,
@@ -71,6 +72,7 @@ export const adminRoutes = (
       <Route path="/admin/auditoria-propriedade" element={<OwnershipAuditAdminPage />} />
       <Route path="/admin/cadastros" element={<AdminCadastrosPage />} />
       <Route path="/admin/cadastros/produto/:id" element={<AdminProductFormPage />} />
+      <Route path="/admin/frete" element={<AdminFreteSettingsPage />} />
       <Route path="/admin/permissoes" element={<PermissionsPage />} />
       <Route path="/admin/roles" element={<RolesPage />} />
       <Route path="/admin/role-permissoes" element={<RolePermissionsPage />} />

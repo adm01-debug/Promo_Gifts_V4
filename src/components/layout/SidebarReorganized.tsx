@@ -307,7 +307,20 @@ const navGroups: NavGroup[] = [
             href: '/admin/cadastros?tab=personalizacao',
             tooltip: 'Configure técnicas e cores de gravação para precificar a personalização.',
           },
+          {
+            icon: Boxes,
+            label: 'Caixas de transporte',
+            href: '/admin/cadastros?tab=caixas',
+            tooltip: 'Cadastre as caixas de envio para o sistema calcular volumes e frete.',
+          },
         ],
+      },
+      {
+        icon: Truck,
+        label: 'Frete',
+        href: '/admin/frete',
+        adminOnly: true,
+        tooltip: 'Defina o CEP de origem e as regras usadas no cálculo de frete.',
       },
       {
         icon: Sparkles,

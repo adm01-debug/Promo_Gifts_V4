@@ -18,6 +18,7 @@ com `status: 'ok' | 'dados_insuficientes' | 'nao_cabe'`, `volumes[]`, `totals`,
 | `types.ts` | contrato de dados do motor |
 | `units.ts` | `mmToCm`, `kgToG`, `cm3ToM3`, `round1`, `round2`, `isKnownMeasure` |
 | `columns.ts` | `PRODUCT_MEASURE_COLUMNS` — as 8 únicas colunas de `products` que o motor lê |
+| `fromDatabase.ts` | `toShippingBox`, `toFreightSettings` — linha de `shipping_boxes`/`freight_settings` → tipos do motor |
 | `resolveItemDimensions.ts` | linha de `products` → medidas, ou qual campo falta |
 | `expandQuantities.ts` | quantidades × nº de kits, com validação retornada |
 | `boxOrder.ts` | volume interno e as ordens maior↔menor, usadas por todo o resto |

@@ -19,7 +19,7 @@ const routeImportMap: Record<string, () => Promise<unknown>> = {
   '/orcamentos/novo': () => import('@/pages/quotes/QuoteBuilderPage'),
   '/orcamentos/kanban': () => import('@/pages/quotes/QuotesKanbanPage'),
   '/orcamentos/dashboard': () => import('@/pages/quotes/QuotesDashboardPage'),
-  
+
   '/simulador': () => import('@/pages/tools/SimuladorWizard'),
   '/simulador-precos': () => import('@/pages/tools/PriceSimulatorPage'),
   '/estoque': () => import('@/pages/admin/StockDashboardPage'),
@@ -34,6 +34,7 @@ const routeImportMap: Record<string, () => Promise<unknown>> = {
   '/admin/usuarios': () => import('@/pages/admin/AdminUsuariosPage'),
   '/admin/telemetria': () => import('@/pages/admin/AdminTelemetriaPage'),
   '/admin/cadastros': () => import('@/pages/admin/AdminCadastrosPage'),
+  '/admin/frete': () => import('@/pages/admin/AdminFreteSettingsPage'),
   '/admin/conexoes': () => import('@/pages/admin/AdminConexoesStatusPage'),
 };
 
