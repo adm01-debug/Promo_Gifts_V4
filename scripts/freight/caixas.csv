@@ -1,0 +1,5 @@
+code,name,outer_height_cm,outer_width_cm,outer_length_cm,wall_thickness_mm,empty_weight_g,max_weight_g,fill_factor,is_active,sort_order
+P,Caixa P,27,33,33,3,0,10000,0.90,true,1
+M,Caixa M,33,33,47,3,0,20000,0.90,true,2
+G,Caixa G,36,36,54,3,0,25000,0.90,true,3
+GG,Caixa GG,40,50,60,3,0,30000,0.90,true,4
