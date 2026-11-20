@@ -5,13 +5,13 @@
   "vitest",
   "playwright"
  ],
- "total": 2674,
+ "total": 2677,
  "por_tipo": {
   "contrato": 68,
   "e2e": 679,
   "pytest": 5,
   "qa": 17,
-  "unit": 1905
+  "unit": 1908
  },
  "onde_ficam": [
   {
@@ -20,7 +20,7 @@
   },
   {
    "padrao": "co-localizado (__tests__)",
-   "arquivos": 750
+   "arquivos": 753
   },
   {
    "padrao": "e2e/",
@@ -5492,14 +5492,34 @@
    "casos": 4
   },
   {
+   "arquivo": "src/components/freight-plan/__tests__/freightPlanCard.harness.tsx",
+   "tipo": "unit",
+   "linhas": 150,
+   "testa": [
+    "src/components/freight-plan/FreightPlanCard.tsx",
+    "src/lib/freight/index.ts"
+   ],
+   "casos": 0
+  },
+  {
+   "arquivo": "src/components/freight-plan/__tests__/FreightPlanCard.test.tsx",
+   "tipo": "unit",
+   "linhas": 224,
+   "testa": [
+    "src/components/freight-plan/FreightPlanCard.tsx",
+    "src/components/freight-plan/FreightPlanPanel.tsx"
+   ],
+   "casos": 15
+  },
+  {
    "arquivo": "src/components/freight-plan/__tests__/FreightPlanPanel.test.tsx",
    "tipo": "unit",
-   "linhas": 146,
+   "linhas": 185,
    "testa": [
     "src/components/freight-plan/FreightPlanPanel.tsx",
     "src/lib/freight/index.ts"
    ],
-   "casos": 10
+   "casos": 12
   },
   {
    "arquivo": "src/components/freight-plan/__tests__/MixModeSelector.test.tsx",
@@ -8205,11 +8225,13 @@
   {
    "arquivo": "src/hooks/__tests__/useQuoteBuilderState.shipping.test.tsx",
    "tipo": "unit",
-   "linhas": 136,
+   "linhas": 223,
    "testa": [
-    "src/hooks/quotes/useQuoteBuilderState.ts"
+    "src/hooks/quotes/quoteDraftApply.ts",
+    "src/hooks/quotes/useQuoteBuilderState.ts",
+    "src/lib/quotes/applyRestoredDraft.ts"
    ],
-   "casos": 3
+   "casos": 7
   },
   {
    "arquivo": "src/hooks/__tests__/useQuoteBuilderState.unit.test.tsx",
@@ -9029,11 +9051,11 @@
   {
    "arquivo": "src/hooks/quotes/__tests__/quoteDraftApply.test.ts",
    "tipo": "unit",
-   "linhas": 339,
+   "linhas": 392,
    "testa": [
     "src/hooks/quotes/quoteDraftApply.ts"
    ],
-   "casos": 33
+   "casos": 39
   },
   {
    "arquivo": "src/hooks/quotes/__tests__/quoteHelpers.validation.test.ts",
@@ -9899,7 +9921,7 @@
   {
    "arquivo": "src/lib/freight/__tests__/columns.test.ts",
    "tipo": "unit",
-   "linhas": 68,
+   "linhas": 69,
    "testa": [
     "src/lib/freight/columns.ts"
    ],
@@ -9945,7 +9967,7 @@
   {
    "arquivo": "src/lib/freight/__tests__/fixtures/items.ts",
    "tipo": "unit",
-   "linhas": 75,
+   "linhas": 76,
    "testa": [
     "src/lib/freight/columns.ts",
     "src/lib/freight/types.ts"
@@ -9955,7 +9977,7 @@
   {
    "arquivo": "src/lib/freight/__tests__/fixtures/products.ts",
    "tipo": "unit",
-   "linhas": 180,
+   "linhas": 188,
    "testa": [
     "src/lib/freight/columns.ts"
    ],
@@ -10794,11 +10816,12 @@
   {
    "arquivo": "src/pages/admin/__tests__/AdminProductFormPage.shipsSeparately.test.tsx",
    "tipo": "unit",
-   "linhas": 101,
+   "linhas": 144,
    "testa": [
+    "src/hooks/freight/keys.ts",
     "src/pages/admin/AdminProductFormPage.tsx"
    ],
-   "casos": 1
+   "casos": 3
   },
   {
    "arquivo": "src/pages/admin/__tests__/RolePermissionsPage.save.test.tsx",
@@ -11612,6 +11635,17 @@
    "linhas": 30,
    "testa": [],
    "casos": 2
+  },
+  {
+   "arquivo": "src/pages/quotes/__tests__/QuoteBuilder.freightPlan.test.tsx",
+   "tipo": "unit",
+   "linhas": 179,
+   "testa": [
+    "src/components/freight-plan/FreightPlanCard.tsx",
+    "src/hooks/quotes/quoteTypes.ts",
+    "src/hooks/quotes/useQuoteBuilderState.ts"
+   ],
+   "casos": 6
   },
   {
    "arquivo": "src/pages/quotes/__tests__/QuoteConditions.delivery-freight-left-align.test.tsx",
@@ -17508,12 +17542,12 @@
   {
    "arquivo": "tests/hooks/freight/useProductMeasures.test.ts",
    "tipo": "unit",
-   "linhas": 133,
+   "linhas": 170,
    "testa": [
     "src/hooks/freight/index.ts",
     "src/lib/freight/index.ts"
    ],
-   "casos": 7
+   "casos": 9
   },
   {
    "arquivo": "tests/hooks/freight/useShippingBoxes.test.ts",
@@ -23015,7 +23049,8 @@
   "src/components/filters/StickyFilterBar.tsx": 2,
   "src/components/filters/filter-panel/types.ts": 3,
   "src/components/freight-plan/FreightMissingActions.tsx": 1,
-  "src/components/freight-plan/FreightPlanPanel.tsx": 1,
+  "src/components/freight-plan/FreightPlanCard.tsx": 3,
+  "src/components/freight-plan/FreightPlanPanel.tsx": 2,
   "src/components/freight-plan/MixModeSelector.tsx": 1,
   "src/components/intelligence/MarketIntelligenceChart.tsx": 1,
   "src/components/intelligence/SalesOverviewChart.tsx": 1,
@@ -23309,6 +23344,7 @@
   "src/hooks/favorites/useFavoriteLists.ts": 1,
   "src/hooks/favorites/useFavorites.ts": 1,
   "src/hooks/freight/index.ts": 4,
+  "src/hooks/freight/keys.ts": 1,
   "src/hooks/freight/useFreightReadinessReport.ts": 1,
   "src/hooks/intelligence/index.ts": 9,
   "src/hooks/intelligence/intelligenceHelpers.ts": 1,
@@ -23403,16 +23439,16 @@
   "src/hooks/products/useVideoVariantLinks.ts": 1,
   "src/hooks/products/useVoiceFilterApply.ts": 2,
   "src/hooks/quotes/index.ts": 22,
-  "src/hooks/quotes/quoteDraftApply.ts": 2,
+  "src/hooks/quotes/quoteDraftApply.ts": 3,
   "src/hooks/quotes/quoteHelpers.ts": 8,
   "src/hooks/quotes/quoteMarkup.ts": 1,
   "src/hooks/quotes/quoteTemplateItemGuard.ts": 1,
-  "src/hooks/quotes/quoteTypes.ts": 15,
+  "src/hooks/quotes/quoteTypes.ts": 16,
   "src/hooks/quotes/restoredDraftBase.ts": 2,
   "src/hooks/quotes/useAutoSaveQuote.ts": 8,
   "src/hooks/quotes/useDiscountApproval.ts": 3,
   "src/hooks/quotes/useQuoteBuilderState.helpers.ts": 1,
-  "src/hooks/quotes/useQuoteBuilderState.ts": 9,
+  "src/hooks/quotes/useQuoteBuilderState.ts": 10,
   "src/hooks/quotes/useQuoteConcurrencyGuard.ts": 1,
   "src/hooks/quotes/useQuoteFunnel.ts": 1,
   "src/hooks/quotes/useQuoteHistory.ts": 1,
@@ -23534,7 +23570,7 @@
   "src/lib/freight/formatPlanSummary.ts": 1,
   "src/lib/freight/fromDatabase.ts": 1,
   "src/lib/freight/fromKit.ts": 1,
-  "src/lib/freight/index.ts": 6,
+  "src/lib/freight/index.ts": 7,
   "src/lib/freight/limits.ts": 1,
   "src/lib/freight/packMixed.ts": 1,
   "src/lib/freight/packSingleProduct.ts": 2,
@@ -23603,6 +23639,7 @@
   "src/lib/products/stock-status.ts": 3,
   "src/lib/query-config.ts": 2,
   "src/lib/quote-status-config.ts": 3,
+  "src/lib/quotes/applyRestoredDraft.ts": 1,
   "src/lib/quotes/applyTemplateToQuote.ts": 1,
   "src/lib/quotes/collapsedItemsStorage.ts": 3,
   "src/lib/quotes/discount-validation-messages.ts": 1,
@@ -24312,6 +24349,7 @@
    "src/hooks/products/useSellerCarts.helpers.ts",
    "src/hooks/products/useSupplierDefaultLeadTime.ts",
    "src/hooks/products/useSupplierNames.ts",
+   "src/hooks/quotes/useFreightPlanOptions.ts",
    "src/hooks/quotes/useNextQuoteNumberPreview.ts",
    "src/hooks/quotes/useProdutoPersonalizacao.ts",
    "src/hooks/quotes/useQuoteClientLogos.ts",

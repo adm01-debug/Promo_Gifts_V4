@@ -1,7 +1,7 @@
 {
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
- "total": 1274,
+ "total": 1275,
  "orfaos": 157,
  "nomes_duplicados": {
   "AdminTemplatesManager": [
@@ -9122,17 +9122,37 @@
    "orfao": false
   },
   {
-   "arquivo": "src/components/freight-plan/FreightPlanPanel.tsx",
+   "arquivo": "src/components/freight-plan/FreightPlanCard.tsx",
    "exports": [
-    "FreightPlanPanel"
+    "FreightPlanCard",
+    "FreightPlanCardItem",
+    "FreightPlanCardProps"
    ],
    "export_default": null,
-   "linhas": 222,
+   "linhas": 140,
+   "dominio": "components/freight-plan",
+   "hooks_locais": [
+    "useFreightPlan",
+    "useShippingBoxes"
+   ],
+   "tabelas": [],
+   "edges": [],
+   "usado_por": 2,
+   "orfao": false
+  },
+  {
+   "arquivo": "src/components/freight-plan/FreightPlanPanel.tsx",
+   "exports": [
+    "FreightPlanPanel",
+    "VOLUMES_COLLAPSE_THRESHOLD"
+   ],
+   "export_default": null,
+   "linhas": 260,
    "dominio": "components/freight-plan",
    "hooks_locais": [],
    "tabelas": [],
    "edges": [],
-   "usado_por": 1,
+   "usado_por": 2,
    "orfao": false
   },
   {
@@ -9147,7 +9167,7 @@
    "hooks_locais": [],
    "tabelas": [],
    "edges": [],
-   "usado_por": 1,
+   "usado_por": 2,
    "orfao": false
   },
   {
@@ -16520,7 +16540,7 @@
    "hooks_locais": [],
    "tabelas": [],
    "edges": [],
-   "usado_por": 648,
+   "usado_por": 649,
    "orfao": false
   },
   {
@@ -16931,7 +16951,7 @@
    "hooks_locais": [],
    "tabelas": [],
    "edges": [],
-   "usado_por": 148,
+   "usado_por": 149,
    "orfao": false
   },
   {
@@ -17285,7 +17305,7 @@
    "hooks_locais": [],
    "tabelas": [],
    "edges": [],
-   "usado_por": 65,
+   "usado_por": 66,
    "orfao": false
   },
   {
@@ -18001,7 +18021,7 @@
     "AdminProductFormPage"
    ],
    "export_default": "AdminProductFormPage",
-   "linhas": 700,
+   "linhas": 706,
    "dominio": "pages/admin",
    "hooks_locais": [
     "useAuditLog"
@@ -20232,7 +20252,7 @@
     "QuoteBuilderPage"
    ],
    "export_default": "QuoteBuilderPage",
-   "linhas": 819,
+   "linhas": 830,
    "dominio": "pages/quotes",
    "hooks_locais": [
     "useNextQuoteNumberPreview",

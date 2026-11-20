@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.3.2 · commit `df4e1f2684` · branch `main` · 2026-11-20 15:13 UTC
+> Gerado automaticamente por AI Context Sync v1.3.2 · commit `96508a5f22` · branch `main` · 2026-11-20 15:25 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -2073,7 +2073,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | BRIDGE_ALIASES | 'tecnica_gravacao', // → tabela_preco_gravacao_oficial 'personalization_techniques', // real table (uuid PK, EN cols) — NOT aliased; see rest-native.ts "BUG A" 'customization_price_tables', // → tabela_preco_fornecedores_gravacao (via bridge alias) 'customization_price_tiers', // → tabela_preco_grav … | `src/lib/external-db/tables.ts` |
 | COMPANY_TABLES | 'client_contacts', 'organizations', 'companies' | `src/lib/external-db/tables.ts` |
 | GroupReason | mixed \| ships_separately \| single_product | `src/lib/freight/buildGroups.ts` |
-| PRODUCT_MEASURE_COLUMNS | 'id', 'name', 'sku', 'height_cm', 'width_cm', 'length_cm', 'diameter_cm', 'weight_g', | `src/lib/freight/columns.ts` |
+| PRODUCT_MEASURE_COLUMNS | 'id', 'name', 'sku', 'height_cm', 'width_cm', 'length_cm', 'diameter_cm', 'weight_g', 'ships_separately', | `src/lib/freight/columns.ts` |
 | FitLimit | geometry \| volume \| weight | `src/lib/freight/fitCount.ts` |
 | MeasureSource | cylinder \| product | `src/lib/freight/types.ts` |
 | MissingMeasure | height \| length \| weight \| width | `src/lib/freight/types.ts` |
@@ -5696,6 +5696,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `AUTO_RECOVERY_WATCHDOG_MS` | `10` | `src/components/errors/EnhancedErrorBoundary.tsx` |
 | `PRICE_PRESETS_COUNT` | `4` | `src/components/expert/FlowFilterPanel.tsx` |
 | `TAG_DISPLAY_LIMIT` | `50` | `src/components/filters/filter-panel/sections/SimpleFilters.tsx` |
+| `VOLUMES_COLLAPSE_THRESHOLD` | `5` | `src/components/freight-plan/FreightPlanPanel.tsx` |
 | `WINDOW_MS` | `5` | `src/components/intelligence/RealtimeBadge.tsx` |
 | `FUTURE_STOCK_WINDOW_DAYS` | `30` | `src/components/inventory/StockDashboard.tsx` |
 | `ECONOMY_FREIGHT_LIMIT_G` | `5000` | `src/components/kit-builder/KitConflictAlerts.tsx` |
@@ -5890,8 +5891,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `CATEGORY_POINTS` | `30` | `src/hooks/products/useProductMatch.ts` |
 | `TAG_POINTS` | `10` | `src/hooks/products/useProductMatch.ts` |
 | `NICHE_POINTS` | `15` | `src/hooks/products/useProductMatch.ts` |
-| `SUPPLIER_POINTS` | `5` | `src/hooks/products/useProductMatch.ts` |
-| … +400 linhas — lista completa em `context.json` | | |
+| … +402 linhas — lista completa em `context.json` | | |
 
 ### H.2 Prazos, expirações e janelas de tempo
 
@@ -6804,7 +6804,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `admin` | `supabase/migrations/20261112120500_fix_optimization_queue_rpcs_dev_access.sql` |
 | `anon` | `tests/edge-functions/live/_live-client.ts` |
 
-## K. Testes como especificação (23414 testes em 2347 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (23453 testes em 2349 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -6858,6 +6858,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `src/lib/freight/__tests__/planFreight.test.ts` | 50 | planFreight — status ok · 460 cadernetas sem a GG: 3× G + 1× P, com os totais fechados à mão · kitQuantity multiplica a quantidade de cada linha · linha com quantidade zero sai do plano sem virar erro … |
 | `tests/e2e/kit-builder-flow.test.ts` | 50 | Kit Builder E2E Flow - Box Selection · validates box selection is required before adding items · allows item addition after box selection · prevents proceeding to items step without box … |
 | `src/lib/security/__tests__/sanitize-ssrf.test.ts` | 47 | sanitizeUrl — CRIT-2 typeof guard · returns null for a number (truthy non-string) · returns null for an object · returns null for an array … |
+| `src/hooks/quotes/__tests__/quoteDraftApply.test.ts` | 46 | quoteDraftKey · usa o prefixo que o QuoteAutoSave grava · readStoredQuoteDraft · devolve null quando não há rascunho … |
 | `tests/components/TelemetryCharts.test.tsx` | 46 | TelemetryCharts - Rendering · returns null when no rows · renders chart titles when rows exist · renders bar chart for table distribution … |
 | `tests/unit/stock-chart-utils.test.ts` | 46 | seededRandom · returns a value in [0, 1) · is deterministic: same seed produces same result · different seeds produce different results (most of the time) … |
 | `tests/edge-functions/integration/freight-quest-webhook-simulation.test.ts` | 45 | webhook-inbound — happy path (v2 envelope) · aceita evento  · webhook-inbound — múltiplas fontes · aceita source= … |
@@ -6872,7 +6873,6 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `src/components/inventory/__tests__/useStockSelection.test.ts` | 42 | rowKey · gera chave  · chaves diferentes para IDs diferentes · é determinístico … |
 | `src/lib/freight/__tests__/validateConfig.test.ts` | 41 | validateConfig — entrada válida · as quatro caixas e os parâmetros padrão passam · lista de caixas vazia não é problema daqui: o plano responde  · fator padrão exatamente 1 passa: o intervalo é (0, 1] … |
 | `src/components/cart/__tests__/PopoverQtyInput.test.tsx` | 40 | normalizeQty (regra pura) · aceita inteiros dentro do intervalo · faz clamp acima do máximo · rejeita valores abaixo do mínimo … |
-| `src/hooks/quotes/__tests__/quoteDraftApply.test.ts` | 40 | quoteDraftKey · usa o prefixo que o QuoteAutoSave grava · readStoredQuoteDraft · devolve null quando não há rascunho … |
 | `src/lib/carts/__tests__/shipping-deadline.test.ts` | 39 | shipping-deadline · daysUntilDeadline · retorna 0 para hoje · retorna 3 para +3 dias … |
 | `src/pages/magazine/__tests__/pagination.test.ts` | 39 | paginateMagazine — null/undefined safety · handles null magazine → returns [cover, back-cover] · handles undefined magazine → returns [cover, back-cover] · handles magazine.content = undefined → no crash, no grouping … |
 | `tests/e2e/auth-flow.test.tsx` | 39 | E2E Auth — Login Validation · rejects empty email · rejects invalid email format · rejects email without domain … |
@@ -7108,7 +7108,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `src/lib/inventory/__tests__/stock-filter.test.ts` | 19 | stock-filter — pipeline de seleção/agregação/montagem · normalize remove acentos e diferencia caixa · selectMatchingVariants retorna todas as variações quando não há filtro de cor · cor  … |
 | `src/lib/lead-time/__tests__/personalizationLeadTime.test.ts` | 19 | resolvePersonalizationLeadTime · prazo registrado vence a tabela: frente = 4 (a faixa 100..499 diria 5) · registrado sem production_days cai na tabela: verso com 100 un = faixa 100..499 = 5 · sem linha cadastrada para o local usa a tabela pela técnica: lateral com 100 un = 5 … |
 | `src/lib/telemetry/__tests__/restoreTelemetry.fuzz.test.ts` | 19 | fuzz — normalizeCorrelationId · para QUALQUER entrada inválida, retorno é UUID v4 canônico · para QUALQUER string não-vazia após trim, retorno === entrada (verbatim) · output SEMPRE passa em isValidCorrelationId … |
-| … +2047 linhas — lista completa em `context.json` | | |
+| … +2049 linhas — lista completa em `context.json` | | |
 
 ## L. Eventos de webhook tratados (contratos com sistemas externos)
 
@@ -7576,4 +7576,4 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | * Dados da projeção preditiva (apenas quando status foi reavaliado por Risco de Ruptura). */ | `src/components/inventory/VariantStockVisuals.tsx` |
 | deve passar por aqui para não dar drift entre bulk e single-row. | `src/components/inventory/useStockSelection.ts` |
 | Peso desconhecido nunca deve ser lido como zero: um kit com 1 item sem | `src/components/kit-builder/FreightEstimator.tsx` |
-| … +1435 linhas — lista completa em `context.json` | |
+| … +1437 linhas — lista completa em `context.json` | |

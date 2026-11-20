@@ -3978,11 +3978,12 @@
    "exports": [
     "PRODUCT_MEASURE_COLUMNS",
     "PRODUCT_MEASURE_SELECT",
+    "ProductDimensionRow",
     "ProductMeasureColumn",
     "ProductMeasureRow"
    ],
    "export_default": null,
-   "linhas": 63,
+   "linhas": 70,
    "tabelas": [],
    "rpcs": [],
    "edges": [],
@@ -4211,7 +4212,7 @@
     "volumeInternoCm3"
    ],
    "export_default": null,
-   "linhas": 77,
+   "linhas": 78,
    "tabelas": [],
    "rpcs": [],
    "edges": [],
@@ -4220,13 +4221,15 @@
    "zod_schemas": 0,
    "flags": [],
    "papeis": [],
-   "usado_por": 11,
+   "usado_por": 14,
    "usado_por_modulos": [
     "components/admin",
     "components/freight-plan",
-    "hooks/freight"
+    "hooks/freight",
+    "hooks/quotes",
+    "lib/quotes"
    ],
-   "coberto_por_testes": 6,
+   "coberto_por_testes": 7,
    "orfao": false
   },
   {
@@ -6935,7 +6938,7 @@
     "applyRestoredDraft"
    ],
    "export_default": null,
-   "linhas": 97,
+   "linhas": 109,
    "tabelas": [],
    "rpcs": [],
    "edges": [],
@@ -6948,7 +6951,7 @@
    "usado_por_modulos": [
     "hooks/quotes"
    ],
-   "coberto_por_testes": 0,
+   "coberto_por_testes": 1,
    "orfao": false
   },
   {

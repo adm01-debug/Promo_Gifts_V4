@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "df4e1f2684cfa34ddb4726ea3f2adbb74280e489",
+  "sha": "96508a5f223ab222f76477ebed2100961606cbe1",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-20 15:13 UTC",
-  "files_total": 11064,
-  "code_files": 9078,
-  "code_lines": 1287211
+  "generated_at": "2026-11-20 15:25 UTC",
+  "files_total": 11070,
+  "code_files": 9083,
+  "code_lines": 1288326
  },
  "version": "1.3.2",
- "facts_hash": "0bd85318acd0b1eb",
+ "facts_hash": "e20e3fdf053b33a1",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -1129,8 +1129,8 @@
   "package_manager": "npm",
   "languages": {
    ".sql": 3471,
-   ".ts": 3143,
-   ".tsx": 1993,
+   ".ts": 3144,
+   ".tsx": 1997,
    ".mjs": 456,
    ".py": 15,
    ".js": 7
@@ -138458,7 +138458,7 @@
      "request_discount_approval_transactional",
      "respond_discount_approval_transactional"
     ],
-    "deps_count": 212
+    "deps_count": 213
    },
    {
     "path": "",
@@ -139156,6 +139156,7 @@
      "seller_cart_items",
      "seller_carts",
      "seller_discount_limits",
+     "shipping_boxes",
      "t",
      "video_variant_links"
     ],
@@ -139172,7 +139173,7 @@
      "request_discount_approval_transactional",
      "respond_discount_approval_transactional"
     ],
-    "deps_count": 207
+    "deps_count": 242
    },
    {
     "path": "*",
@@ -139789,7 +139790,7 @@
      "respond_discount_approval_transactional",
      "save_custom_kit_atomic"
     ],
-    "deps_count": 250
+    "deps_count": 251
    },
    {
     "path": "/dropbox",
@@ -140422,7 +140423,7 @@
      "request_discount_approval_transactional",
      "respond_discount_approval_transactional"
     ],
-    "deps_count": 210
+    "deps_count": 211
    },
    {
     "path": "/orcamentos/dashboard",
@@ -140512,7 +140513,7 @@
      "request_discount_approval_transactional",
      "respond_discount_approval_transactional"
     ],
-    "deps_count": 158
+    "deps_count": 159
    },
    {
     "path": "/orcamentos/novo",
@@ -140572,7 +140573,7 @@
      "respond_discount_approval_transactional",
      "restore_seller_cart"
     ],
-    "deps_count": 296
+    "deps_count": 297
    },
    {
     "path": "/orcamentos/templates",
@@ -144089,6 +144090,13 @@
    },
    {
     "path": "/admin/cadastros",
+    "component": "div",
+    "guard": "",
+    "roles": [],
+    "file": "src/pages/admin/__tests__/AdminProductFormPage.shipsSeparately.test.tsx"
+   },
+   {
+    "path": "/admin/cadastros",
     "component": "AdminCadastrosPage",
     "guard": "",
     "roles": [],
@@ -144107,6 +144115,13 @@
     "guard": "",
     "roles": [],
     "file": "src/routes/admin-routes.tsx"
+   },
+   {
+    "path": "/admin/cadastros/produto/novo",
+    "component": "AdminProductFormPage",
+    "guard": "",
+    "roles": [],
+    "file": "src/pages/admin/__tests__/AdminProductFormPage.shipsSeparately.test.tsx"
    },
    {
     "path": "/admin/client-performance",
@@ -145620,7 +145635,7 @@
     "file": ".github/workflows/wraparound-monitor-report.yml"
    }
   ],
-  "components_count": 1736,
+  "components_count": 1740,
   "hooks": [
    {
     "name": "useQuoteComments",
@@ -148559,6 +148574,10 @@
     "file": "src/hooks/quotes/useDiscountApproval.ts"
    },
    {
+    "name": "useFreightPlanOptions",
+    "file": "src/hooks/quotes/useFreightPlanOptions.ts"
+   },
+   {
     "name": "useNextQuoteNumberPreview",
     "file": "src/hooks/quotes/useNextQuoteNumberPreview.ts"
    },
@@ -150308,8 +150327,8 @@
   },
   {
    "module": "src/components",
-   "files": 1461,
-   "lines": 286996,
+   "files": 1464,
+   "lines": 287592,
    "tables": [
     "admin_audit_log",
     "art_file_attachments",
@@ -150672,8 +150691,8 @@
   },
   {
    "module": "src/hooks",
-   "files": 498,
-   "lines": 92782,
+   "files": 499,
+   "lines": 92995,
    "tables": [
     "admin_audit_log",
     "admin_settings",
@@ -150963,7 +150982,7 @@
   {
    "module": "src/lib",
    "files": 412,
-   "lines": 64275,
+   "lines": 64305,
    "tables": [
     "...",
     "companies",
@@ -151170,8 +151189,8 @@
   },
   {
    "module": "src/pages",
-   "files": 370,
-   "lines": 85182,
+   "files": 371,
+   "lines": 85421,
    "tables": [
     "ai_usage_events",
     "bot_detection_log",
@@ -152438,7 +152457,7 @@
   {
    "module": "tests",
    "files": 1107,
-   "lines": 174923,
+   "lines": 174960,
    "tables": [
     "bot_detection_log",
     "clients",
@@ -158804,6 +158823,10 @@
     "count": 1
    },
    {
+    "file": "src/components/freight-plan/__tests__/freightPlanCard.harness.tsx",
+    "count": 1
+   },
+   {
     "file": "src/hooks/intelligence/useSalesHistory.ts",
     "count": 1
    },
@@ -163608,7 +163631,7 @@
    {
     "file": "src/lib/freight/columns.ts",
     "name": "PRODUCT_MEASURE_COLUMNS",
-    "values": "'id', 'name', 'sku', 'height_cm', 'width_cm', 'length_cm', 'diameter_cm', 'weight_g',"
+    "values": "'id', 'name', 'sku', 'height_cm', 'width_cm', 'length_cm', 'diameter_cm', 'weight_g', 'ships_separately',"
    },
    {
     "file": "src/lib/freight/fitCount.ts",
@@ -173567,6 +173590,10 @@
     "text": "na URL do PostgREST; um orçamento grande estouraria o limite). A chave de"
    },
    {
+    "file": "src/hooks/freight/useProductMeasures.ts",
+    "text": "(produto novo no orçamento); remover um produto não pode piscar o esqueleto."
+   },
+   {
     "file": "src/hooks/gravacao/gravacao-types.ts",
     "text": "* Preço mínimo unitário de venda em R$. A cotação nunca fica abaixo disso. */"
    },
@@ -174369,6 +174396,10 @@
    {
     "file": "src/hooks/quotes/useDiscountApproval.ts",
     "text": "forma), apenas com warn explícito para diagnóstico."
+   },
+   {
+    "file": "src/hooks/quotes/useFreightPlanOptions.ts",
+    "text": "* Vive fora de `useQuoteBuilderState` (arquivo acima do limite do gate de"
    },
    {
     "file": "src/hooks/quotes/useNextQuoteNumberPreview.ts",
@@ -199142,6 +199173,11 @@
     "value": "50"
    },
    {
+    "file": "src/components/freight-plan/FreightPlanPanel.tsx",
+    "name": "VOLUMES_COLLAPSE_THRESHOLD",
+    "value": "5"
+   },
+   {
     "file": "src/components/intelligence/RealtimeBadge.tsx",
     "name": "WINDOW_MS",
     "value": "5"
@@ -200255,6 +200291,11 @@
     "file": "src/hooks/quotes/useAutoSaveQuote.ts",
     "name": "STALE_DRAFT_DAYS",
     "value": "7"
+   },
+   {
+    "file": "src/hooks/quotes/useFreightPlanOptions.ts",
+    "name": "DEFAULT_FREIGHT_MIX_MODE",
+    "value": "'misturar'"
    },
    {
     "file": "src/hooks/quotes/useQuoteClientLogos.ts",
@@ -234533,8 +234574,80 @@
     "name": "produto indisponível: texto próprio, sem campos, sem link e sem "
    },
    {
+    "file": "src/components/freight-plan/__tests__/FreightPlanCard.test.tsx",
+    "name": "FreightPlanCard"
+   },
+   {
+    "file": "src/components/freight-plan/__tests__/FreightPlanCard.test.tsx",
+    "name": "produto marcado "
+   },
+   {
+    "file": "src/components/freight-plan/__tests__/FreightPlanCard.test.tsx",
+    "name": "sem nenhuma caixa cadastrada (e sem erro de rede) o card não aparece"
+   },
+   {
+    "file": "src/components/freight-plan/__tests__/FreightPlanCard.test.tsx",
+    "name": "digitar em outro campo da página não redesenha o card (React.memo)"
+   },
+   {
+    "file": "src/components/freight-plan/__tests__/FreightPlanCard.test.tsx",
+    "name": "2 produtos: mostra o seletor de mistura e o plano calculado com os hooks reais"
+   },
+   {
+    "file": "src/components/freight-plan/__tests__/FreightPlanCard.test.tsx",
+    "name": "trocar para caixas separadas recalcula o plano"
+   },
+   {
+    "file": "src/components/freight-plan/__tests__/FreightPlanCard.test.tsx",
+    "name": "switch "
+   },
+   {
+    "file": "src/components/freight-plan/__tests__/FreightPlanCard.test.tsx",
+    "name": "item avulso sem product_id entra pelo nome e deixa o plano sem dados suficientes"
+   },
+   {
+    "file": "src/components/freight-plan/__tests__/FreightPlanCard.test.tsx",
+    "name": "prévia ligada sem plano calculado explica que o resumo ainda não existe"
+   },
+   {
+    "file": "src/components/freight-plan/__tests__/FreightPlanCard.test.tsx",
+    "name": "%s: não renderiza o card"
+   },
+   {
+    "file": "src/components/freight-plan/__tests__/FreightPlanCard.test.tsx",
+    "name": "1 produto só: sem seletor de mistura (não há o que decidir)"
+   },
+   {
+    "file": "src/components/freight-plan/__tests__/FreightPlanCard.test.tsx",
+    "name": "trocar a quantidade atualiza o painel em menos de 300 ms"
+   },
+   {
+    "file": "src/components/freight-plan/__tests__/FreightPlanCard.test.tsx",
+    "name": "teclado: o volume abre e fecha com Enter e o switch liga com Espaço"
+   },
+   {
+    "file": "src/components/freight-plan/__tests__/FreightPlanCard.test.tsx",
+    "name": "acessibilidade (axe): sem violações com a prévia ligada"
+   },
+   {
+    "file": "src/components/freight-plan/__tests__/FreightPlanCard.test.tsx",
+    "name": "1 coluna em celular e linha a partir de sm: no rodapé do card"
+   },
+   {
+    "file": "src/components/freight-plan/__tests__/FreightPlanCard.test.tsx",
+    "name": "snapshot do card com 2 produtos e a prévia ligada"
+   },
+   {
     "file": "src/components/freight-plan/__tests__/FreightPlanPanel.test.tsx",
     "name": "FreightPlanPanel"
+   },
+   {
+    "file": "src/components/freight-plan/__tests__/FreightPlanPanel.test.tsx",
+    "name": "mais de 5 volumes: lista recolhida, resumo e aviso à vista, botão abre e fecha"
+   },
+   {
+    "file": "src/components/freight-plan/__tests__/FreightPlanPanel.test.tsx",
+    "name": "até 5 volumes: lista aberta e sem botão de recolher"
    },
    {
     "file": "src/components/freight-plan/__tests__/FreightPlanPanel.test.tsx",
@@ -245573,6 +245686,22 @@
     "name": "should reset shipping cost when switching from fob_pre to cif"
    },
    {
+    "file": "src/hooks/__tests__/useQuoteBuilderState.shipping.test.tsx",
+    "name": "should start with mixed boxes and the plan hidden from the client, and accept changes"
+   },
+   {
+    "file": "src/hooks/__tests__/useQuoteBuilderState.shipping.test.tsx",
+    "name": "should bring the freight plan options back to default on resetQuote"
+   },
+   {
+    "file": "src/hooks/__tests__/useQuoteBuilderState.shipping.test.tsx",
+    "name": "round trip do rascunho: o que o autosave grava volta ao restaurar (recuperação)"
+   },
+   {
+    "file": "src/hooks/__tests__/useQuoteBuilderState.shipping.test.tsx",
+    "name": "round trip do rascunho: restauração automática aplica os dois campos"
+   },
+   {
     "file": "src/hooks/__tests__/useQuoteBuilderState.unit.test.tsx",
     "name": "useQuoteBuilderState Navigation and Validation"
    },
@@ -249886,11 +250015,35 @@
    },
    {
     "file": "src/hooks/quotes/__tests__/quoteDraftApply.test.ts",
+    "name": "detecta só o modo de mistura diferente (achado do Devin na #3933)"
+   },
+   {
+    "file": "src/hooks/quotes/__tests__/quoteDraftApply.test.ts",
+    "name": "detecta só o switch "
+   },
+   {
+    "file": "src/hooks/quotes/__tests__/quoteDraftApply.test.ts",
+    "name": "rascunho antigo sem os dois campos não difere da tela nos padrões"
+   },
+   {
+    "file": "src/hooks/quotes/__tests__/quoteDraftApply.test.ts",
     "name": "não acusa diferença quando o rascunho repete a tela"
    },
    {
     "file": "src/hooks/quotes/__tests__/quoteDraftApply.test.ts",
     "name": "applyDraftToBuilder"
+   },
+   {
+    "file": "src/hooks/quotes/__tests__/quoteDraftApply.test.ts",
+    "name": "restaura o modo de mistura e o switch do plano de volumes"
+   },
+   {
+    "file": "src/hooks/quotes/__tests__/quoteDraftApply.test.ts",
+    "name": "valor estranho no rascunho vira o padrão (misturar, desligado)"
+   },
+   {
+    "file": "src/hooks/quotes/__tests__/quoteDraftApply.test.ts",
+    "name": "rascunho antigo, sem os dois campos, não mexe no plano"
    },
    {
     "file": "src/hooks/quotes/__tests__/quoteDraftApply.test.ts",
@@ -259969,6 +260122,14 @@
     "name": "carrega marcado -> salva -> continua marcado ao voltar para a aba Editar"
    },
    {
+    "file": "src/pages/admin/__tests__/AdminProductFormPage.shipsSeparately.test.tsx",
+    "name": "salvar produto editado invalida o cache de medidas do plano de volumes"
+   },
+   {
+    "file": "src/pages/admin/__tests__/AdminProductFormPage.shipsSeparately.test.tsx",
+    "name": "criar produto (e duplicar, que cria um novo) invalida o cache de medidas"
+   },
+   {
     "file": "src/pages/admin/__tests__/RolePermissionsPage.save.test.tsx",
     "name": "RolePermissionsPage — salvar com falha parcial e concorrência"
    },
@@ -263479,6 +263640,34 @@
    {
     "file": "src/pages/quotes/QuoteBuilder.e2e.test.tsx",
     "name": "should complete the full wizard flow logically"
+   },
+   {
+    "file": "src/pages/quotes/__tests__/QuoteBuilder.freightPlan.test.tsx",
+    "name": "Construtor de orçamento: plano de volumes"
+   },
+   {
+    "file": "src/pages/quotes/__tests__/QuoteBuilder.freightPlan.test.tsx",
+    "name": "sem itens o card não aparece; com 2 produtos mostra o plano e a prévia do cliente"
+   },
+   {
+    "file": "src/pages/quotes/__tests__/QuoteBuilder.freightPlan.test.tsx",
+    "name": "o estado do builder guarda o modo de mistura e o switch; limpar o orçamento devolve o padrão"
+   },
+   {
+    "file": "src/pages/quotes/__tests__/QuoteBuilder.freightPlan.test.tsx",
+    "name": "Página do orçamento: posição do card de volumes"
+   },
+   {
+    "file": "src/pages/quotes/__tests__/QuoteBuilder.freightPlan.test.tsx",
+    "name": "o card vem logo depois do bloco de frete e antes do próximo irmão"
+   },
+   {
+    "file": "src/pages/quotes/__tests__/QuoteBuilder.freightPlan.test.tsx",
+    "name": "o card fica fora do bloco de frete: os divs do bloco fecham antes dele"
+   },
+   {
+    "file": "src/pages/quotes/__tests__/QuoteBuilder.freightPlan.test.tsx",
+    "name": "o data-testid "
    },
    {
     "file": "src/pages/quotes/__tests__/QuoteConditions.delivery-freight-left-align.test.tsx",
@@ -294063,6 +294252,14 @@
    {
     "file": "tests/hooks/freight/useProductMeasures.test.ts",
     "name": "mesma lista em outra ordem e com repetição reaproveita o cache"
+   },
+   {
+    "file": "tests/hooks/freight/useProductMeasures.test.ts",
+    "name": "remover um produto da lista não volta a "
+   },
+   {
+    "file": "tests/hooks/freight/useProductMeasures.test.ts",
+    "name": "produto novo na lista continua "
    },
    {
     "file": "tests/hooks/freight/useProductMeasures.test.ts",
@@ -407958,6 +408155,13 @@
     "kind": "dinâmico",
     "msg": "1 chamada(s) `.from(variável)` — tabela só conhecida em runtime",
     "where": [
+     "src/components/freight-plan/__tests__/freightPlanCard.harness.tsx"
+    ]
+   },
+   {
+    "kind": "dinâmico",
+    "msg": "1 chamada(s) `.from(variável)` — tabela só conhecida em runtime",
+    "where": [
      "src/hooks/intelligence/useSalesHistory.ts"
     ]
    },
@@ -450081,14 +450285,31 @@
    ],
    "doc": "Produtos sem medida ou peso, e o que cada papel pode fazer a respeito. - Admin: link \"Completar cadastro\" para o formulário do produto. - Vendedor: não edita cadastro; pede ao admin e leva a lista pronta (SKU + campos que faltam) para colar na conversa. Item avulso (`productId` vazio) não tem cadast …"
   },
+  "src/components/freight-plan/FreightPlanCard.tsx": {
+   "path": "src/components/freight-plan/FreightPlanCard.tsx",
+   "lines": 140,
+   "exports": [
+    "interface FreightPlanCardItem",
+    "interface FreightPlanCardProps",
+    "const FreightPlanCard"
+   ],
+   "doc": "Card do plano de volumes dentro do orçamento. Monta as linhas do plano a partir dos itens do orçamento (produto + quantidade). Item avulso, digitado à mão e sem `product_id`, entra pelo nome e deixa o plano em \"dados insuficientes\". O cálculo é do `useFreightPlan`; aqui só se escolhe como misturar o …"
+  },
   "src/components/freight-plan/FreightPlanPanel.tsx": {
    "path": "src/components/freight-plan/FreightPlanPanel.tsx",
-   "lines": 222,
+   "lines": 260,
    "exports": [
+    "const VOLUMES_COLLAPSE_THRESHOLD",
     "function FreightPlanPanel"
    ],
    "errors": [
     " className="
+   ],
+   "params": [
+    {
+     "name": "VOLUMES_COLLAPSE_THRESHOLD",
+     "value": "5"
+    }
    ],
    "status_values": [
     {
@@ -450121,7 +450342,7 @@
   },
   "src/components/freight-plan/index.ts": {
    "path": "src/components/freight-plan/index.ts",
-   "lines": 4
+   "lines": 9
   },
   "src/components/freight-plan/__tests__/FreightMissingActions.test.tsx": {
    "path": "src/components/freight-plan/__tests__/FreightMissingActions.test.tsx",
@@ -450135,9 +450356,45 @@
     "produto indisponível: texto próprio, sem campos, sem link e sem "
    ]
   },
+  "src/components/freight-plan/__tests__/FreightPlanCard.test.tsx": {
+   "path": "src/components/freight-plan/__tests__/FreightPlanCard.test.tsx",
+   "lines": 224,
+   "is_test": true,
+   "errors": [
+    ")).not.toBeInTheDocument();\n  });\n\n  it("
+   ],
+   "params": [
+    {
+     "name": "RESUMO_MISTURADO",
+     "value": "'1× M · 708 g · 0,05 m³ · cubado 8,5 kg'"
+    },
+    {
+     "name": "RESUMO_SEPARADO",
+     "value": "'2× P · 708 g · 0,06 m³ · cubado 9,8 kg'"
+    }
+   ],
+   "tests": [
+    "FreightPlanCard",
+    "produto marcado ",
+    "sem nenhuma caixa cadastrada (e sem erro de rede) o card não aparece",
+    "digitar em outro campo da página não redesenha o card (React.memo)",
+    "2 produtos: mostra o seletor de mistura e o plano calculado com os hooks reais",
+    "trocar para caixas separadas recalcula o plano",
+    "switch ",
+    "item avulso sem product_id entra pelo nome e deixa o plano sem dados suficientes",
+    "prévia ligada sem plano calculado explica que o resumo ainda não existe",
+    "%s: não renderiza o card",
+    "1 produto só: sem seletor de mistura (não há o que decidir)",
+    "trocar a quantidade atualiza o painel em menos de 300 ms",
+    "teclado: o volume abre e fecha com Enter e o switch liga com Espaço",
+    "acessibilidade (axe): sem violações com a prévia ligada",
+    "1 coluna em celular e linha a partir de sm: no rodapé do card",
+    "snapshot do card com 2 produtos e a prévia ligada"
+   ]
+  },
   "src/components/freight-plan/__tests__/FreightPlanPanel.test.tsx": {
    "path": "src/components/freight-plan/__tests__/FreightPlanPanel.test.tsx",
-   "lines": 146,
+   "lines": 185,
    "is_test": true,
    "errors": [
     ")).toHaveTextContent(\n      ",
@@ -450146,6 +450403,8 @@
    ],
    "tests": [
     "FreightPlanPanel",
+    "mais de 5 volumes: lista recolhida, resumo e aviso à vista, botão abre e fecha",
+    "até 5 volumes: lista aberta e sem botão de recolher",
     "plano ok: resumo, volume com conteúdo e detalhes ao expandir",
     "carregando: esqueleto, sem volumes",
     "dados insuficientes: lista o produto e o que falta",
@@ -450169,6 +450428,29 @@
     "sem seletor e sem produto de caixa própria: não renderiza nada",
     "a mesma linha de produto repetida conta como 1 produto, não 2",
     "produto de caixa própria ganha a nota do cadastro"
+   ]
+  },
+  "src/components/freight-plan/__tests__/freightPlanCard.harness.tsx": {
+   "path": "src/components/freight-plan/__tests__/freightPlanCard.harness.tsx",
+   "lines": 150,
+   "is_test": true,
+   "exports": [
+    "function shippingBoxRows",
+    "const FREIGHT_SETTINGS_ROW",
+    "const simulacao",
+    "function reiniciarSimulacao",
+    "function fromSimulado",
+    "function Providers",
+    "function CardHost"
+   ],
+   "dyn_from": 1,
+   "doc": "Apoio dos testes do card do plano de volumes: cliente Supabase simulado com as caixas padrão, os parâmetros de frete e os produtos reais da fixture, e um hospedeiro que guarda o estado do orçamento como a página faz.",
+   "calc_fns": [
+    {
+     "name": "shippingBoxRows",
+     "params": "",
+     "body": "return CAIXAS_PADRAO.map((box, index) => ({ id: box.id, code: box.code, name: box.name, inner_height_cm: box.inner.heightCm, inner_width_cm: box.inner.widthCm, inner_length_cm: box.inner.lengthCm, outer_height_cm: box.outer.heightCm, outer_width_cm: box.outer.widthCm, outer_length_cm: box.outer.lengthCm, empty_weight_g: box.emptyWeightG, max_weight_g: box.maxWeightG, fill_factor: box.fillFactor, is_active: true, sort_order: index, deleted_at: null, }));"
+    }
    ]
   },
   "src/components/goals/SalesGoalsCard.tsx": {
@@ -466185,13 +466467,17 @@
   },
   "src/hooks/__tests__/useQuoteBuilderState.shipping.test.tsx": {
    "path": "src/hooks/__tests__/useQuoteBuilderState.shipping.test.tsx",
-   "lines": 136,
+   "lines": 223,
    "is_test": true,
    "tests": [
     "useQuoteBuilderState - Shipping Logic",
     "should validate shipping requirement in conditions step",
     "should require shipping cost for fob_pre mode",
-    "should reset shipping cost when switching from fob_pre to cif"
+    "should reset shipping cost when switching from fob_pre to cif",
+    "should start with mixed boxes and the plan hidden from the client, and accept changes",
+    "should bring the freight plan options back to default on resetQuote",
+    "round trip do rascunho: o que o autosave grava volta ao restaurar (recuperação)",
+    "round trip do rascunho: restauração automática aplica os dois campos"
    ]
   },
   "src/hooks/__tests__/useQuoteBuilderState.unit.test.tsx": {
@@ -469129,7 +469415,7 @@
   },
   "src/hooks/freight/keys.ts": {
    "path": "src/hooks/freight/keys.ts",
-   "lines": 24,
+   "lines": 27,
    "exports": [
     "const FREIGHT_QUERY_KEYS",
     "const FREIGHT_STALE_TIME_MS",
@@ -469206,7 +469492,7 @@
   },
   "src/hooks/freight/useProductMeasures.ts": {
    "path": "src/hooks/freight/useProductMeasures.ts",
-   "lines": 83,
+   "lines": 89,
    "exports": [
     "const PRODUCT_MEASURES_BATCH_SIZE",
     "interface UseProductMeasuresResult",
@@ -469233,7 +469519,8 @@
     }
    ],
    "rule_comments": [
-    "na URL do PostgREST; um orçamento grande estouraria o limite). A chave de"
+    "na URL do PostgREST; um orçamento grande estouraria o limite). A chave de",
+    "(produto novo no orçamento); remover um produto não pode piscar o esqueleto."
    ],
    "doc": "`useProductMeasures` — medidas e peso dos produtos que o motor de frete lê. Lê só as colunas de `PRODUCT_MEASURE_SELECT` em lotes de 100 ids (a lista vai na URL do PostgREST; um orçamento grande estouraria o limite). A chave de cache usa os ids ordenados e sem repetição, então a mesma lista em outra …",
    "hooks": [
@@ -476028,7 +476315,7 @@
   },
   "src/hooks/quotes/quoteDraftApply.ts": {
    "path": "src/hooks/quotes/quoteDraftApply.ts",
-   "lines": 290,
+   "lines": 307,
    "exports": [
     "const QUOTE_DRAFT_KEY_PREFIX",
     "type QuoteDraftSnapshot",
@@ -476415,6 +476702,29 @@
     "1"
    ]
   },
+  "src/hooks/quotes/useFreightPlanOptions.ts": {
+   "path": "src/hooks/quotes/useFreightPlanOptions.ts",
+   "lines": 37,
+   "exports": [
+    "const DEFAULT_FREIGHT_MIX_MODE",
+    "function parseFreightMixMode",
+    "function parseShowFreightPlan",
+    "function useFreightPlanOptions"
+   ],
+   "params": [
+    {
+     "name": "DEFAULT_FREIGHT_MIX_MODE",
+     "value": "'misturar'"
+    }
+   ],
+   "rule_comments": [
+    "* Vive fora de `useQuoteBuilderState` (arquivo acima do limite do gate de"
+   ],
+   "doc": "Escolhas do plano de volumes dentro do orçamento: como misturar os produtos nas caixas e se o cliente vê o resumo dos volumes. Vive fora de `useQuoteBuilderState` (arquivo acima do limite do gate de tamanho). O rascunho local grava os dois campos e a restauração lê de volta com `parseFreightMixMode` …",
+   "hooks": [
+    "useFreightPlanOptions"
+   ]
+  },
   "src/hooks/quotes/useNextQuoteNumberPreview.ts": {
    "path": "src/hooks/quotes/useNextQuoteNumberPreview.ts",
    "lines": 48,
@@ -476580,7 +476890,7 @@
   },
   "src/hooks/quotes/useQuoteBuilderState.ts": {
    "path": "src/hooks/quotes/useQuoteBuilderState.ts",
-   "lines": 1073,
+   "lines": 1083,
    "exports": [
     "function useQuoteBuilderState"
    ],
@@ -477198,7 +477508,7 @@
   },
   "src/hooks/quotes/__tests__/quoteDraftApply.test.ts": {
    "path": "src/hooks/quotes/__tests__/quoteDraftApply.test.ts",
-   "lines": 339,
+   "lines": 392,
    "is_test": true,
    "doc": "Testes — quoteDraftApply Cobre o contrato que faltava: ler o rascunho que o QuoteAutoSave grava em `quote_draft_<quoteId>` e aplicá-lo de volta ao builder. O teste mais importante aqui é a ORDEM do frete. O `setShippingType` exposto pelo useQuoteBuilderState é o handleShippingTypeChange (:155-170), …",
    "tests": [
@@ -477215,8 +477525,14 @@
     "nulo no rascunho e vazio na tela não contam como diferença",
     "detecta item a mais no rascunho",
     "detecta desconto diferente",
+    "detecta só o modo de mistura diferente (achado do Devin na #3933)",
+    "detecta só o switch ",
+    "rascunho antigo sem os dois campos não difere da tela nos padrões",
     "não acusa diferença quando o rascunho repete a tela",
     "applyDraftToBuilder",
+    "restaura o modo de mistura e o switch do plano de volumes",
+    "valor estranho no rascunho vira o padrão (misturar, desligado)",
+    "rascunho antigo, sem os dois campos, não mexe no plano",
     "preserva o frete: setShippingType vem antes de setShippingCost",
     "entrega por data: muda o modo antes de aplicar a data (o handler limpa o campo)",
     "entrega por prazo: muda o modo antes de gravar o texto",
@@ -485051,12 +485367,13 @@
   },
   "src/lib/freight/columns.ts": {
    "path": "src/lib/freight/columns.ts",
-   "lines": 63,
+   "lines": 70,
    "exports": [
     "const PRODUCT_MEASURE_COLUMNS",
     "const PRODUCT_MEASURE_SELECT",
     "type ProductMeasureColumn",
-    "type ProductMeasureRow"
+    "type ProductMeasureRow",
+    "type ProductDimensionRow"
    ],
    "tables": [
     {
@@ -485067,7 +485384,7 @@
    "enums": [
     {
      "name": "PRODUCT_MEASURE_COLUMNS",
-     "values": "'id', 'name', 'sku', 'height_cm', 'width_cm', 'length_cm', 'diameter_cm', 'weight_g',"
+     "values": "'id', 'name', 'sku', 'height_cm', 'width_cm', 'length_cm', 'diameter_cm', 'weight_g', 'ships_separately',"
     }
    ],
    "rule_comments": [
@@ -485272,7 +485589,7 @@
   },
   "src/lib/freight/index.ts": {
    "path": "src/lib/freight/index.ts",
-   "lines": 77,
+   "lines": 78,
    "doc": "Motor de frete — barril público. Contrato, unidades e limites em `./README.md`."
   },
   "src/lib/freight/limits.ts": {
@@ -485929,7 +486246,7 @@
   },
   "src/lib/freight/__tests__/columns.test.ts": {
    "path": "src/lib/freight/__tests__/columns.test.ts",
-   "lines": 68,
+   "lines": 69,
    "is_test": true,
    "doc": "columns.test.ts — contrato das colunas que o motor lê de `products`. A existência de cada coluna em `products` é garantida em tempo de compilação pelo `Pick<ProductsRow, ProductMeasureColumn>` de `columns.ts` (`npm run qa:typecheck`). Aqui o que se trava é a **lista**: nenhuma coluna legada entra de …",
    "tests": [
@@ -486549,7 +486866,7 @@
   },
   "src/lib/freight/__tests__/fixtures/items.ts": {
    "path": "src/lib/freight/__tests__/fixtures/items.ts",
-   "lines": 75,
+   "lines": 76,
    "is_test": true,
    "exports": [
     "function pecaDeTeste",
@@ -486566,7 +486883,7 @@
   },
   "src/lib/freight/__tests__/fixtures/products.ts": {
    "path": "src/lib/freight/__tests__/fixtures/products.ts",
-   "lines": 180,
+   "lines": 188,
    "is_test": true,
    "exports": [
     "const GARRAFA_ESPORTIVA",
@@ -488861,7 +489178,7 @@
   },
   "src/lib/quotes/applyRestoredDraft.ts": {
    "path": "src/lib/quotes/applyRestoredDraft.ts",
-   "lines": 97,
+   "lines": 109,
    "exports": [
     "interface RestoredQuoteDraft",
     "interface RestoredDraftSetters",
@@ -492055,7 +492372,7 @@
   },
   "src/pages/admin/AdminProductFormPage.tsx": {
    "path": "src/pages/admin/AdminProductFormPage.tsx",
-   "lines": 700,
+   "lines": 706,
    "exports": [
     "function AdminProductFormPage"
    ],
@@ -492927,12 +493244,24 @@
   },
   "src/pages/admin/__tests__/AdminProductFormPage.shipsSeparately.test.tsx": {
    "path": "src/pages/admin/__tests__/AdminProductFormPage.shipsSeparately.test.tsx",
-   "lines": 101,
+   "lines": 144,
    "is_test": true,
    "routes": [
     {
      "path": "/admin/cadastros/produto/:id",
      "component": "AdminProductFormPage",
+     "guard": "",
+     "roles": []
+    },
+    {
+     "path": "/admin/cadastros/produto/novo",
+     "component": "AdminProductFormPage",
+     "guard": "",
+     "roles": []
+    },
+    {
+     "path": "/admin/cadastros",
+     "component": "div",
      "guard": "",
      "roles": []
     }
@@ -492943,7 +493272,9 @@
    "doc": "Página de edição de produto: o flag \"Não mistura\" tem de sobreviver ao salvar. A releitura pós-save vem de `v_products_public`, que não traz `ships_separately`; sem manter o valor salvo, voltar para a aba \"Editar\" remontava o formulário desligado e o salvar seguinte apagava a marcação.",
    "tests": [
     "AdminProductFormPage — Não mistura",
-    "carrega marcado -> salva -> continua marcado ao voltar para a aba Editar"
+    "carrega marcado -> salva -> continua marcado ao voltar para a aba Editar",
+    "salvar produto editado invalida o cache de medidas do plano de volumes",
+    "criar produto (e duplicar, que cria um novo) invalida o cache de medidas"
    ]
   },
   "src/pages/admin/__tests__/RolePermissionsPage.save.test.tsx": {
@@ -498277,7 +498608,7 @@
   },
   "src/pages/quotes/QuoteBuilderPage.tsx": {
    "path": "src/pages/quotes/QuoteBuilderPage.tsx",
-   "lines": 819,
+   "lines": 830,
    "exports": [
     "function QuoteBuilderPage"
    ],
@@ -498484,6 +498815,27 @@
    ],
    "hooks": [
     "useQuotesListPage"
+   ]
+  },
+  "src/pages/quotes/__tests__/QuoteBuilder.freightPlan.test.tsx": {
+   "path": "src/pages/quotes/__tests__/QuoteBuilder.freightPlan.test.tsx",
+   "lines": 179,
+   "is_test": true,
+   "params": [
+    {
+     "name": "TOTAL_CLIENTE",
+     "value": "'1 volume · 708 g · 0,05 m³'"
+    }
+   ],
+   "doc": "Plano de volumes no construtor de orçamento: estado real (`useQuoteBuilderState`) ligado ao `FreightPlanCard` do mesmo jeito que a página liga, com 2 produtos da fixture e o Supabase simulado. Mais um contrato de posição: o card é irmão do bloco de frete e não entra no elemento que os guardas de lay …",
+   "tests": [
+    "Construtor de orçamento: plano de volumes",
+    "sem itens o card não aparece; com 2 produtos mostra o plano e a prévia do cliente",
+    "o estado do builder guarda o modo de mistura e o switch; limpar o orçamento devolve o padrão",
+    "Página do orçamento: posição do card de volumes",
+    "o card vem logo depois do bloco de frete e antes do próximo irmão",
+    "o card fica fora do bloco de frete: os divs do bloco fecham antes dele",
+    "o data-testid "
    ]
   },
   "src/pages/quotes/__tests__/QuoteConditions.delivery-freight-left-align.test.tsx": {
@@ -546045,14 +546397,19 @@
   },
   "tests/hooks/freight/useProductMeasures.test.ts": {
    "path": "tests/hooks/freight/useProductMeasures.test.ts",
-   "lines": 133,
+   "lines": 170,
    "is_test": true,
+   "rule_comments": [
+    "p002 ainda não tem medida: o plano não pode ser calculado com a linha faltando."
+   ],
    "doc": "`useProductMeasures`. O cliente do Supabase é mockado: aqui o que se trava é a tabela e as colunas lidas, o lote de 100 ids, a chave de cache (ids ordenados, sem repetição) e o `Map` devolvido.",
    "tests": [
     "useProductMeasures",
     "lê products só com as colunas do motor e devolve um Map por id",
     "150 ids: 2 consultas, de 100 e de 50, e o Map junta as duas",
     "mesma lista em outra ordem e com repetição reaproveita o cache",
+    "remover um produto da lista não volta a ",
+    "produto novo na lista continua ",
     "sem ids: não consulta e devolve Map vazio",
     "erro do banco vira isError",
     "erro do banco vira Error em PT-BR com a causa original",
@@ -557275,10 +557632,49 @@
   }
  },
  "git": {
-  "sha": "df4e1f2684cfa34ddb4726ea3f2adbb74280e489",
+  "sha": "96508a5f223ab222f76477ebed2100961606cbe1",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "96508a5",
+    "date": "2026-11-20",
+    "author": "adm01-debug",
+    "subject": "feat(frete): plano de volumes no orçamento, cache ao salvar produto e ships_separately (Bloco E, etapas 46, 47, 49) (#3933)",
+    "files": [
+     "src/components/admin/products/FreightReadinessIndicator.tsx",
+     "src/components/admin/products/ProductSkuTag.tsx",
+     "src/components/freight-plan/FreightPlanCard.tsx",
+     "src/components/freight-plan/FreightPlanPanel.tsx",
+     "src/components/freight-plan/__tests__/FreightPlanCard.test.tsx",
+     "src/components/freight-plan/__tests__/FreightPlanPanel.test.tsx",
+     "src/components/freight-plan/__tests__/__snapshots__/FreightPlanCard.test.tsx.snap",
+     "src/components/freight-plan/__tests__/freightPlanCard.harness.tsx",
+     "src/components/freight-plan/index.ts",
+     "src/hooks/__tests__/useQuoteBuilderState.shipping.test.tsx",
+     "src/hooks/freight/keys.ts",
+     "src/hooks/freight/useFreightPlan.ts",
+     "src/hooks/freight/useProductMeasures.ts",
+     "src/hooks/quotes/__tests__/quoteDraftApply.test.ts",
+     "src/hooks/quotes/quoteDraftApply.ts",
+     "src/hooks/quotes/useFreightPlanOptions.ts",
+     "src/hooks/quotes/useQuoteBuilderState.ts",
+     "src/lib/freight/__tests__/columns.test.ts",
+     "src/lib/freight/__tests__/fixtures/items.ts",
+     "src/lib/freight/__tests__/fixtures/products.ts",
+     "src/lib/freight/columns.ts",
+     "src/lib/freight/index.ts",
+     "src/lib/freight/readiness.ts",
+     "src/lib/freight/resolveItemDimensions.ts",
+     "src/lib/quotes/applyRestoredDraft.ts",
+     "src/pages/admin/AdminProductFormPage.tsx",
+     "src/pages/admin/__tests__/AdminProductFormPage.shipsSeparately.test.tsx",
+     "src/pages/quotes/QuoteBuilderPage.tsx",
+     "src/pages/quotes/__tests__/QuoteBuilder.freightPlan.test.tsx",
+     "src/services/freightReadinessService.ts",
+     "tests/hooks/freight/useProductMeasures.test.ts"
+    ]
+   },
    {
     "sha": "df4e1f2",
     "date": "2026-11-20",
@@ -557772,18 +558168,6 @@
      "src/lib/freight/resolveItemDimensions.ts",
      "src/lib/freight/types.ts"
     ]
-   },
-   {
-    "sha": "fa3463c",
-    "date": "2026-11-19",
-    "author": "github-actions[bot]",
-    "subject": "chore(main): release gifts-store 1.11.0 (#3895)",
-    "files": [
-     ".release-please-manifest.json",
-     "CHANGELOG.md",
-     "package-lock.json",
-     "package.json"
-    ]
    }
   ],
   "hot_files": [
@@ -557793,27 +558177,35 @@
    ],
    [
     "src/lib/freight/index.ts",
-    5
+    6
    ],
    [
     "src/lib/freight/README.md",
     5
    ],
    [
+    "src/hooks/freight/keys.ts",
+    3
+   ],
+   [
+    "src/lib/freight/columns.ts",
+    3
+   ],
+   [
     ".release-please-manifest.json",
-    4
+    3
    ],
    [
     "CHANGELOG.md",
-    4
+    3
    ],
    [
     "package-lock.json",
-    4
+    3
    ],
    [
     "package.json",
-    4
+    3
    ],
    [
     "scripts/freight/README.md",
@@ -557852,19 +558244,11 @@
     3
    ],
    [
-    "src/lib/freight/fromKit.ts",
+    "src/components/admin/products/FreightReadinessIndicator.tsx",
     2
    ],
    [
-    ".security/policies-baseline.json",
-    2
-   ],
-   [
-    "scripts/freight/seed-shipping-boxes.mjs",
-    2
-   ],
-   [
-    "supabase/rollbacks/20261119213000_rollback.sql",
+    "src/components/admin/products/ProductSkuTag.tsx",
     2
    ]
   ]

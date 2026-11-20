@@ -8,12 +8,12 @@
    "api/health.ts (1)"
   ],
   "componentes": [
-   "src/components (974)",
+   "src/components (975)",
    "src/pages (181)",
    "recovery/src-legacy (100)"
   ],
   "hooks": [
-   "src/hooks (308)",
+   "src/hooks (309)",
    "recovery/src-legacy (196)",
    "src/components (78)"
   ],
@@ -24,7 +24,7 @@
   ],
   "testes": [
    "tests/ (1092)",
-   "co-localizado (__tests__) (750)",
+   "co-localizado (__tests__) (753)",
    "e2e/ (627)"
   ],
   "edge_functions": "supabase/functions",
@@ -49,7 +49,7 @@
  },
  "barrels_index": 50,
  "extensao_componentes": [
-  ".tsx (1274)"
+  ".tsx (1275)"
  ],
  "alias_imports": {
   "e2e/": {},
@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "feat(frete): plano de volumes no orçamento, cache ao salvar produto e ships_separately (Bloco E, etapas 46, 47, 49) (#3933)",
    "fix(frete): comparação de ships_separately sem violar lint do tipo expandido (#3939)",
    "feat(frete): bibliotecas do kit, schema do plano, contrato de cotação e ranking (etapas 51, 62, 81, 85) (#3928)",
    "chore(main): release gifts-store 1.14.0 (#3916)",
-   "fix: crash appendChild ao digitar na busca global (CommandItem soltos) (#3937)",
-   "docs(migrations): recibos E15 das 20261120030000/030100 (baseline já em #3931) (#3932)"
+   "fix: crash appendChild ao digitar na busca global (CommandItem soltos) (#3937)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",

@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "df4e1f2684cfa34ddb4726ea3f2adbb74280e489",
+  "commit": "96508a5f223ab222f76477ebed2100961606cbe1",
   "branch": "main",
-  "data_commit": "2026-11-20T12:12:11-03:00",
+  "data_commit": "2026-11-20T12:24:41-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "96508a5f",
+    "data": "2026-11-20",
+    "assunto": "feat(frete): plano de volumes no orçamento, cache ao salvar produto e ships_separately (Bloco E, etapas 46, 47, 49) (#39"
+   },
    {
     "sha": "df4e1f26",
     "data": "2026-11-20",
@@ -126,18 +131,13 @@
     "sha": "2f37587a",
     "data": "2026-11-19",
     "assunto": "fix: substitui migration F12 por 20261119212000 (desbloqueia preflight E063/E066)"
-   },
-   {
-    "sha": "b6a8d7eb",
-    "data": "2026-11-19",
-    "assunto": "fix: corrige bugs F12 (sparkline PGRST202 + KPI EMA 403) (#3903)"
    }
   ],
-  "arquivos_mudados_7d": 1446,
+  "arquivos_mudados_7d": 1453,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
-    "mudancas": 959
+    "mudancas": 961
    },
    {
     "pasta": "recovery/src-legacy/src",
@@ -181,11 +181,11 @@
    },
    {
     "pasta": "src/pages/admin",
-    "mudancas": 192
+    "mudancas": 194
    },
    {
     "pasta": "src/pages/quotes",
-    "mudancas": 173
+    "mudancas": 175
    },
    {
     "pasta": "src/components/kit-builder",
@@ -262,11 +262,11 @@
     "mudancas": 8
    },
    {
-    "arquivo": "e2e/flows/magazine-preview-sticky-smoke.spec.ts",
+    "arquivo": "scripts/drift-baseline.mjs",
     "mudancas": 8
    },
    {
-    "arquivo": "scripts/drift-baseline.mjs",
+    "arquivo": "src/pages/quotes/QuoteBuilderPage.tsx",
     "mudancas": 8
    },
    {
@@ -282,7 +282,7 @@
     "mudancas": 7
    },
    {
-    "arquivo": "e2e/flows/magazine-publish-smoke.spec.ts",
+    "arquivo": "e2e/flows/magazine-preview-sticky-smoke.spec.ts",
     "mudancas": 7
    },
    {
@@ -301,7 +301,7 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 332
+    "commits": 331
    },
    {
     "autor": "Claude",
@@ -313,7 +313,7 @@
    },
    {
     "autor": "Joaquim Ataides",
-    "commits": 8
+    "commits": 7
    },
    {
     "autor": "dependabot[bot]",
@@ -322,21 +322,21 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 11136,
-  "arquivos_codigo": 5608,
-  "linhas_codigo": 1064611,
+  "arquivos_total": 11142,
+  "arquivos_codigo": 5613,
+  "linhas_codigo": 1065726,
   "rotas": 140,
   "rotas_http_backend": 13,
   "vistas_por_id": 0,
   "itens_menu": 71,
   "modulos": 168,
-  "componentes": 1274,
-  "hooks": 639,
+  "componentes": 1275,
+  "hooks": 640,
   "edge_functions": 112,
   "tabelas": 529,
   "migrations": 3115,
   "cron_jobs": 122,
-  "testes": 2674,
+  "testes": 2677,
   "workflows": 89,
   "scripts": 285,
   "docs_md": 1490
@@ -1907,8 +1907,8 @@
    "linhas": 130
   },
   "src/components": {
-   "arquivos": 1461,
-   "linhas": 286997
+   "arquivos": 1464,
+   "linhas": 287593
   },
   "src/config": {
    "arquivos": 1,
@@ -1931,8 +1931,8 @@
    "linhas": 7
   },
   "src/hooks": {
-   "arquivos": 498,
-   "linhas": 92782
+   "arquivos": 499,
+   "linhas": 92995
   },
   "src/integrations": {
    "arquivos": 11,
@@ -1940,7 +1940,7 @@
   },
   "src/lib": {
    "arquivos": 411,
-   "linhas": 64265
+   "linhas": 64295
   },
   "src/logic": {
    "arquivos": 4,
@@ -1951,8 +1951,8 @@
    "linhas": 63
   },
   "src/pages": {
-   "arquivos": 370,
-   "linhas": 85182
+   "arquivos": 371,
+   "linhas": 85421
   },
   "src/routes": {
    "arquivos": 15,
@@ -2104,7 +2104,7 @@
   },
   "tests/hooks": {
    "arquivos": 169,
-   "linhas": 27204
+   "linhas": 27241
   },
   "tests/integration": {
    "arquivos": 11,
@@ -2337,12 +2337,12 @@
    "linhas": 1091
   },
   {
-   "arquivo": "scripts/graphify-local.mjs",
-   "linhas": 1076
+   "arquivo": "src/hooks/quotes/useQuoteBuilderState.ts",
+   "linhas": 1083
   },
   {
-   "arquivo": "src/hooks/quotes/useQuoteBuilderState.ts",
-   "linhas": 1073
+   "arquivo": "scripts/graphify-local.mjs",
+   "linhas": 1076
   },
   {
    "arquivo": "src/pages/products/CartsListPage.tsx",
