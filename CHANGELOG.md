@@ -5,6 +5,24 @@ Todas as mudanças notáveis deste projeto são documentadas neste arquivo.
 O formato é baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/),
 e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR/).
 
+## [1.15.0](https://github.com/adm01-debug/Promo_Gifts_V4/compare/gifts-store-v1.14.0...gifts-store-v1.15.0) (2026-11-20)
+
+
+### Features
+
+* **db:** colunas do plano de volumes em quotes (frete, Bloco G — DDL, etapa 61) ([#3926](https://github.com/adm01-debug/Promo_Gifts_V4/issues/3926)) ([e54228a](https://github.com/adm01-debug/Promo_Gifts_V4/commit/e54228abcce9e491bf335c04f61428342ec0d9f4))
+* **frete:** bibliotecas do kit, schema do plano, contrato de cotação e ranking (etapas 51, 62, 81, 85) ([#3928](https://github.com/adm01-debug/Promo_Gifts_V4/issues/3928)) ([9c386c0](https://github.com/adm01-debug/Promo_Gifts_V4/commit/9c386c0b226b0f1b02927a77809fa093f3769700))
+* **frete:** plano de volumes no orçamento, cache ao salvar produto e ships_separately (Bloco E, etapas 46, 47, 49) ([#3933](https://github.com/adm01-debug/Promo_Gifts_V4/issues/3933)) ([96508a5](https://github.com/adm01-debug/Promo_Gifts_V4/commit/96508a5f223ab222f76477ebed2100961606cbe1))
+* **frete:** prazo de produção no admin — card, aba Feriados e exceção por produto (Bloco H-UI) ([#3936](https://github.com/adm01-debug/Promo_Gifts_V4/issues/3936)) ([a499d84](https://github.com/adm01-debug/Promo_Gifts_V4/commit/a499d841939b19749b4db766ceda04c76f39591a))
+
+
+### Bug Fixes
+
+* contrato de orphan-mounts alinha com montagem lazy do RupturePanelEma ([#3941](https://github.com/adm01-debug/Promo_Gifts_V4/issues/3941)) ([0ec2fc5](https://github.com/adm01-debug/Promo_Gifts_V4/commit/0ec2fc565883b642880927f1d557457b546f9891))
+* **frete:** admin de caixas e parâmetros — 2ª rodada (duplo clique, rolagem, limites do banco) ([#3924](https://github.com/adm01-debug/Promo_Gifts_V4/issues/3924)) ([3471317](https://github.com/adm01-debug/Promo_Gifts_V4/commit/347131701f8dda31639d5231319df768e6a58ea5))
+* **frete:** comparação de ships_separately sem violar lint do tipo expandido ([#3939](https://github.com/adm01-debug/Promo_Gifts_V4/issues/3939)) ([df4e1f2](https://github.com/adm01-debug/Promo_Gifts_V4/commit/df4e1f2684cfa34ddb4726ea3f2adbb74280e489))
+* **stock:** banner de risco EMA não derruba para usuário não-dev (403 da edge) ([#3940](https://github.com/adm01-debug/Promo_Gifts_V4/issues/3940)) ([0436920](https://github.com/adm01-debug/Promo_Gifts_V4/commit/04369208fbea9d5f298114d677e2670da2628265))
+
 ## [1.14.0](https://github.com/adm01-debug/Promo_Gifts_V4/compare/gifts-store-v1.13.0...gifts-store-v1.14.0) (2026-11-20)
 
 
