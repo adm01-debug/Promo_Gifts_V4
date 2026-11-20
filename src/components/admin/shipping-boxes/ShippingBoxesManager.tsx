@@ -70,10 +70,14 @@ export function ShippingBoxesManager() {
         setDialogOpen(false);
         return;
       }
-      update.mutate({ id: editingBox.id, patch }, callbacks);
-    } else {
-      create.mutate(values, callbacks);
+      // A promessa devolvida libera a trava de envio do formulário mesmo quando
+      // a gravação falha antes de `isPending` chegar à tela; o erro já foi
+      // tratado nos callbacks e no hook.
+      return Promise.resolve(update.mutateAsync({ id: editingBox.id, patch }, callbacks)).catch(
+        () => undefined,
+      );
     }
+    return Promise.resolve(create.mutateAsync(values, callbacks)).catch(() => undefined);
   };
 
   const confirmDelete = () => {

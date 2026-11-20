@@ -58,7 +58,7 @@ function listState(rows: ShippingBoxRow[]) {
 }
 
 function mutation() {
-  return { mutate: vi.fn(), isPending: false };
+  return { mutate: vi.fn(), mutateAsync: vi.fn(), isPending: false };
 }
 
 let mutations: Record<'create' | 'restore' | 'softDelete' | 'update', ReturnType<typeof mutation>>;
@@ -159,14 +159,15 @@ describe('ShippingBoxesManager — edição recusada por lista velha', () => {
   }
 
   it('not_applied fecha o formulário: a lista já foi recarregada', async () => {
-    mutations.update.mutate.mockImplementation((_variables: unknown, options?: MutateOptions) =>
-      options?.onError?.(new mocks.ShippingBoxError('not_applied', NADA_ALTERADO)),
+    mutations.update.mutateAsync.mockImplementation(
+      (_variables: unknown, options?: MutateOptions) =>
+        options?.onError?.(new mocks.ShippingBoxError('not_applied', NADA_ALTERADO)),
     );
     const user = userEvent.setup();
     render(<ShippingBoxesManager />);
     await openEditAndSave(user);
 
-    expect(mutations.update.mutate).toHaveBeenCalledTimes(1);
+    expect(mutations.update.mutateAsync).toHaveBeenCalledTimes(1);
     await waitFor(() => expect(screen.queryByRole('dialog')).not.toBeInTheDocument());
   });
 
@@ -175,14 +176,15 @@ describe('ShippingBoxesManager — edição recusada por lista velha', () => {
     { reason: 'unknown', mensagem: 'Não foi possível salvar a caixa de transporte.' },
     { reason: 'invalid', mensagem: 'Dados da caixa fora do permitido.' },
   ])('$reason mantém o formulário aberto para tentar de novo', async ({ reason, mensagem }) => {
-    mutations.update.mutate.mockImplementation((_variables: unknown, options?: MutateOptions) =>
-      options?.onError?.(new mocks.ShippingBoxError(reason, mensagem)),
+    mutations.update.mutateAsync.mockImplementation(
+      (_variables: unknown, options?: MutateOptions) =>
+        options?.onError?.(new mocks.ShippingBoxError(reason, mensagem)),
     );
     const user = userEvent.setup();
     render(<ShippingBoxesManager />);
     await openEditAndSave(user);
 
-    expect(mutations.update.mutate).toHaveBeenCalledTimes(1);
+    expect(mutations.update.mutateAsync).toHaveBeenCalledTimes(1);
     expect(screen.getByRole('dialog', { name: 'Editar caixa de transporte' })).toBeInTheDocument();
   });
 });

@@ -56,7 +56,7 @@ interface ShippingBoxFormDialogProps {
   saving: boolean;
   /** Mostrado no campo Código enquanto o código digitado for o recusado. */
   rejectedCode?: RejectedShippingBoxCode | null;
-  onSave: (values: ShippingBoxWrite) => void;
+  onSave: (values: ShippingBoxWrite) => unknown;
 }
 
 interface TextFieldProps {
@@ -189,7 +189,14 @@ export function ShippingBoxFormDialog({
       return;
     }
     submittingRef.current = true;
-    onSave(result.values);
+    // Se a gravação falhar antes de `saving` chegar a true na tela (recusa
+    // imediata), o efeito acima não roda: a promessa devolvida libera a trava.
+    const resultado = onSave(result.values);
+    if (resultado instanceof Promise) {
+      void resultado.finally(() => {
+        submittingRef.current = false;
+      });
+    }
   };
 
   const preview = computeInnerPreview(draft);

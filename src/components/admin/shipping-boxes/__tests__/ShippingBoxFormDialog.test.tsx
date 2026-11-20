@@ -196,6 +196,22 @@ describe('ShippingBoxFormDialog — envio único', () => {
     expect(onSave).toHaveBeenCalledTimes(2);
   });
 
+  it('gravação recusada na hora, sem `saving` chegar à tela, libera o próximo envio', async () => {
+    // Antes da correção a trava só soltava quando `saving` passava por true e
+    // voltava a false; uma recusa imediata deixava o botão habilitado e mudo.
+    onSave.mockRejectedValue(new Error('rede'));
+    const user = userEvent.setup();
+    const dialog = renderDialog();
+    await fillBoxP(user, dialog);
+    await user.click(within(dialog).getByTestId('admin-save-btn'));
+    expect(onSave).toHaveBeenCalledTimes(1);
+
+    await user.click(within(dialog).getByTestId('admin-save-btn'));
+
+    expect(onSave).toHaveBeenCalledTimes(2);
+    onSave.mockReset();
+  });
+
   it('fechar e abrir de novo zera o envio em andamento', async () => {
     const user = userEvent.setup();
     const { rerender } = render(dialogElement());
