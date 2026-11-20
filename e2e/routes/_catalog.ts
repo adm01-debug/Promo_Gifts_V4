@@ -111,6 +111,7 @@ export const ADMIN_ROUTES: RouteEntry[] = [
   { path: "/admin/v4-callbacks", area: "admin", requiresAdmin: true, titleSlug: "v4-callbacks", feature: "admin-v4-callbacks" },
   { path: "/admin/limites-desconto", area: "admin", requiresAdmin: true, feature: "admin-discount-limits" },
   { path: "/admin/cadastros", area: "admin", requiresAdmin: true, feature: "admin-registrations" },
+  { path: "/admin/frete", area: "admin", requiresAdmin: true, titleSlug: "frete", feature: "admin-freight-settings" },
   { path: "/admin/permissoes", area: "admin", requiresAdmin: true, feature: "admin-permissions" },
   { path: "/admin/roles", area: "admin", requiresAdmin: true, feature: "admin-roles" },
   { path: "/admin/role-permissoes", area: "admin", requiresAdmin: true, feature: "admin-role-permissions" },

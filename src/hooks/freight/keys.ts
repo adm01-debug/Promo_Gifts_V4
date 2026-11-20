@@ -1,0 +1,18 @@
+/**
+ * Query keys do domínio de frete (caixas de transporte e parâmetros).
+ *
+ * Toda chave de caixa começa por `shippingBoxes.all`, então invalidar esse
+ * prefixo atualiza a lista do motor, a tabela do cadastro e a lixeira de uma vez.
+ */
+export const FREIGHT_QUERY_KEYS = {
+  shippingBoxes: {
+    all: ['shipping-boxes'] as const,
+    list: (includeInactive: boolean) =>
+      [...FREIGHT_QUERY_KEYS.shippingBoxes.all, { includeInactive }] as const,
+    deleted: () => [...FREIGHT_QUERY_KEYS.shippingBoxes.all, 'deleted'] as const,
+  },
+  settings: ['freight-settings'] as const,
+};
+
+/** Caixas e parâmetros mudam raramente: 10 minutos sem refazer a consulta. */
+export const FREIGHT_STALE_TIME_MS = 10 * 60 * 1000;

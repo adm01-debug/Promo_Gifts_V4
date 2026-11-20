@@ -2,7 +2,7 @@ import { Suspense } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { PageSEO } from '@/components/seo/PageSEO';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Package, Palette, FolderOpen, FolderTree, Truck, Tags } from 'lucide-react';
+import { Boxes, Package, Palette, FolderOpen, FolderTree, Truck, Tags } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
 import { lazyWithRetry } from '@/lib/lazyWithRetry';
 
@@ -11,6 +11,9 @@ const ProductsManager = lazyWithRetry(() =>
 );
 const SuppliersManager = lazyWithRetry(() =>
   import('@/components/admin/suppliers-manager').then((m) => ({ default: m.SuppliersManager })),
+);
+const ShippingBoxesManager = lazyWithRetry(() =>
+  import('@/components/admin/shipping-boxes').then((m) => ({ default: m.ShippingBoxesManager })),
 );
 const EngravingRegistrationContent = lazyWithRetry(() =>
   import('@/pages/tools/EngravingRegistrationPage').then((m) => ({
@@ -35,7 +38,14 @@ function TabFallback() {
   );
 }
 
-const VALID_TABS = ['products', 'suppliers', 'categorias', 'personalizacao', 'badges'] as const;
+const VALID_TABS = [
+  'products',
+  'suppliers',
+  'caixas',
+  'categorias',
+  'personalizacao',
+  'badges',
+] as const;
 
 export default function AdminCadastrosPage() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -84,6 +94,10 @@ export default function AdminCadastrosPage() {
               <Truck className="h-4 w-4" />
               Fornecedores
             </TabsTrigger>
+            <TabsTrigger value="caixas" className="gap-2">
+              <Boxes className="h-4 w-4" />
+              Caixas de transporte
+            </TabsTrigger>
             <TabsTrigger value="categorias" className="gap-2">
               <FolderTree className="h-4 w-4" />
               Categorias
@@ -107,6 +121,12 @@ export default function AdminCadastrosPage() {
           <TabsContent value="suppliers">
             <Suspense fallback={<TabFallback />}>
               <SuppliersManager />
+            </Suspense>
+          </TabsContent>
+
+          <TabsContent value="caixas">
+            <Suspense fallback={<TabFallback />}>
+              <ShippingBoxesManager />
             </Suspense>
           </TabsContent>
 

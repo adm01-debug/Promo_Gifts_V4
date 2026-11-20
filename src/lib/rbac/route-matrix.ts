@@ -223,6 +223,15 @@ export const RBAC_ROUTES: RbacRouteEntry[] = [
     category: 'admin',
   },
   {
+    path: '/admin/frete',
+    label: 'Parâmetros de frete',
+    guard: 'AdminRoute',
+    role: 'admin',
+    mfaAal2: true,
+    rlsHelper: 'is_admin',
+    category: 'admin',
+  },
+  {
     path: '/admin/permissoes',
     label: 'Permissões',
     guard: 'AdminRoute',

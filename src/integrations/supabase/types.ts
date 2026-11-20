@@ -7934,6 +7934,42 @@ export type Database = {
         }
         Relationships: []
       }
+      freight_settings: {
+        Row: {
+          cubic_divisor_correios: number
+          cubic_divisor_rodoviario: number
+          default_fill_factor: number
+          id: boolean
+          internal_buffer_days: number
+          multi_personalization_rule: string
+          origin_cep: string
+          updated_at: string
+          updated_by: string | null
+        }
+        Insert: {
+          cubic_divisor_correios?: number
+          cubic_divisor_rodoviario?: number
+          default_fill_factor?: number
+          id?: boolean
+          internal_buffer_days?: number
+          multi_personalization_rule?: string
+          origin_cep?: string
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Update: {
+          cubic_divisor_correios?: number
+          cubic_divisor_rodoviario?: number
+          default_fill_factor?: number
+          id?: boolean
+          internal_buffer_days?: number
+          multi_personalization_rule?: string
+          origin_cep?: string
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Relationships: []
+      }
       frontend_telemetry: {
         Row: {
           created_at: string
@@ -37595,6 +37631,69 @@ export type Database = {
           redirect_type?: number
           source_path?: string
           target_path?: string
+        }
+        Relationships: []
+      }
+      shipping_boxes: {
+        Row: {
+          code: string
+          created_at: string
+          deleted_at: string | null
+          empty_weight_g: number
+          fill_factor: number
+          id: string
+          inner_height_cm: number | null
+          inner_length_cm: number | null
+          inner_width_cm: number | null
+          is_active: boolean
+          max_weight_g: number
+          name: string
+          outer_height_cm: number
+          outer_length_cm: number
+          outer_width_cm: number
+          sort_order: number
+          updated_at: string
+          wall_thickness_mm: number
+        }
+        Insert: {
+          code: string
+          created_at?: string
+          deleted_at?: string | null
+          empty_weight_g?: number
+          fill_factor?: number
+          id?: string
+          inner_height_cm?: number | null
+          inner_length_cm?: number | null
+          inner_width_cm?: number | null
+          is_active?: boolean
+          max_weight_g: number
+          name: string
+          outer_height_cm: number
+          outer_length_cm: number
+          outer_width_cm: number
+          sort_order?: number
+          updated_at?: string
+          wall_thickness_mm?: number
+        }
+        Update: {
+          code?: string
+          created_at?: string
+          deleted_at?: string | null
+          empty_weight_g?: number
+          fill_factor?: number
+          id?: string
+          inner_height_cm?: number | null
+          inner_length_cm?: number | null
+          inner_width_cm?: number | null
+          is_active?: boolean
+          max_weight_g?: number
+          name?: string
+          outer_height_cm?: number
+          outer_length_cm?: number
+          outer_width_cm?: number
+          sort_order?: number
+          updated_at?: string
+          wall_thickness_mm?: number
         }
         Relationships: []
       }

@@ -31,6 +31,13 @@ export {
 export { cm3ToM3, isKnownMeasure, kgToG, mmToCm, round1, round2 } from './units';
 
 export {
+  toFreightSettings,
+  toShippingBox,
+  type FreightSettingsSource,
+  type ShippingBoxSource,
+} from './fromDatabase';
+
+export {
   resolveItemDimensions,
   type ResolvedMeasures,
   type ResolveResult,

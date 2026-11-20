@@ -4697,6 +4697,22 @@
       "callers": [
         "scripts/automation.mjs"
       ]
+    },
+    {
+      "id": "freight-seed-shipping-boxes",
+      "kind": "legacy",
+      "files": [
+        "scripts/freight/seed-shipping-boxes.mjs"
+      ],
+      "manual": [
+        "node",
+        "scripts/freight/seed-shipping-boxes.mjs",
+        "--help"
+      ],
+      "triggers": [
+        "manual"
+      ],
+      "reason": "Gerador manual do seed das caixas de transporte: le scripts/freight/caixas.csv e escreve o SQL de uma migration de dados e do rollback. Nao grava no banco e nao roda em CI; a migration gerada vai por PR e db-apply-migration.yml. O dispatcher nao executa esta operacao."
     }
   ],
   "ci": [
