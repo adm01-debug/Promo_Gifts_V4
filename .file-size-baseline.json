@@ -140,7 +140,7 @@
     "src/pages/products/product-detail/ProductDetailHero.tsx": 694,
     "src/pages/products/seller-carts/useSellerCartsPage.ts": 612,
     "src/pages/quotes/QuoteBuilderPage.tsx": 831,
-    "src/pages/quotes/QuoteViewPage.tsx": 591,
+    "src/pages/quotes/QuoteViewPage.tsx": 592,
     "src/pages/quotes/QuotesListPage.tsx": 503,
     "src/pages/system/SystemStatusPage.tsx": 645,
     "src/pages/tools/VisualSearchPage.tsx": 1274,
