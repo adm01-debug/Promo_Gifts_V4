@@ -2598,8 +2598,13 @@ existente é alterada.
    interna e a regra de personalização. RLS: leitura para `authenticated`,
    UPDATE só para admin, sem INSERT nem DELETE pela aplicação.
 
-Anti-regressão: `anon` não recebe GRANT em nenhuma das duas ("permission
-denied" conferido). Validação prévia em cluster PostgreSQL 16.15 local, com
+Anti-regressão: `anon` não lê nem escreve em nenhuma das duas ("permission
+denied" conferido em SELECT, INSERT, UPDATE e DELETE). Correção de 20/11: a
+frase original dizia que `anon` não recebia GRANT; as migrations de fato não
+dão nenhum, mas em produção as duas tabelas nasceram com `anon=xtm`
+(REFERENCES, TRIGGER, MAINTAIN) e `authenticated=arwdxtm`, herdados dos
+privilégios padrão do schema `public`. Quem revoga é a `20261120030000`.
+Validação prévia em cluster PostgreSQL 16.15 local, com
 `psql -1` como o workflow: aplica → rollback (0 tabelas) → reaplica, exit 0.
 
 Ordem de aplicação: `20261119213000` antes de `20261119213100` (não há
@@ -2607,8 +2612,8 @@ dependência entre as tabelas; a ordem é só a das versões).
 
 | versão | arquivo | sha256 | status |
 |---|---|---|---|
-| `20261119213000` | `create_shipping_boxes` | `0863f0915908977d964098549b7b284dff37210091d7da9936ee6f0ed4f312ba` | pendente — aplicar via `db-apply-migration.yml` (`version=20261119213000`) após merge |
-| `20261119213100` | `create_freight_settings` | `a47a4b359bdf1bed8da503831ae1a6dc1a372804186a9a4fb599b6f49765b8d6` | pendente — aplicar via `db-apply-migration.yml` (`version=20261119213100`) após merge |
+| `20261119213000` | `create_shipping_boxes` | `0863f0915908977d964098549b7b284dff37210091d7da9936ee6f0ed4f312ba` | aplicada — recibo na tabela E15 (runs 44627641478 / 44628516008) |
+| `20261119213100` | `create_freight_settings` | `a47a4b359bdf1bed8da503831ae1a6dc1a372804186a9a4fb599b6f49765b8d6` | aplicada — recibo na tabela E15 (runs 44627641478 / 44628516008) |
 
 ### 2026-11-19 — funções irmãs do painel EMA (/estoque) — restauração Onda 3
 
@@ -2647,3 +2652,75 @@ coluna existir em produção; sem a coluna, o select/insert que a cita devolve 4
 | versão | arquivo | sha256 | status |
 |---|---|---|---|
 | `20261120013000` | `add_products_ships_separately` | `7d0ba2f172b092e7151107f857b1db28a9788a797f0d324fc078035e19619622` | aplicada — recibo na tabela E15 (run 44660270776) |
+
+### 2026-11-20 — frete: endurece as tabelas de caixas e parâmetros + seed das 4 caixas
+
+Fecha os achados da validação de banco de 19/11 sobre `public.shipping_boxes`
+e `public.freight_settings`. Nenhuma coluna ou índice muda.
+
+1. `20261120030000_harden_freight_tables`:
+   - `shipping_boxes.code` só no formato canônico (maiúsculo, sem espaço nas
+     pontas, 1 a 10 caracteres de A-Z, 0-9, `_` e `-`) e `name` não vazio, até
+     80 caracteres, sem espaço, TAB, quebra de linha ou espaço inseparável
+     (NBSP) nas pontas. Antes, `'p'`, `'P '` e `' P'` conviviam com `'P'`.
+   - Tetos contra erro de digitação (não são regra de negócio): lado da caixa
+     de 0,01 a 300 cm (recusa também `NaN`, que passava em `> 0`), peso máximo
+     até 100 kg, divisores de cubagem de 1000 a 10000, folga interna até 60 dias.
+   - Exclusão de caixa só lógica: sai a policy `shipping_boxes_delete_admin` e
+     o privilégio de DELETE de `authenticated`.
+   - Privilégios mínimos: `REVOKE ALL` de `PUBLIC`, `anon` e `authenticated`
+     nas duas tabelas e `GRANT` só de SELECT/INSERT/UPDATE (`shipping_boxes`) e
+     SELECT/UPDATE (`freight_settings`) a `authenticated`. `service_role` não muda.
+   - Dois triggers: `guard_freight_settings_row` (BEFORE UPDATE) grava
+     `updated_by` com `auth.uid()` (o cliente não forja) e mantém `id`. Ele só
+     carimba o autor quando o UPDATE vem direto de um comando
+     (`pg_trigger_depth() = 1`): o `ON DELETE SET NULL` da FK com `auth.users`
+     chega como UPDATE de trigger interno e precisa passar, senão apagar o
+     usuário deixaria `updated_by` apontando para ninguém.
+     `guard_shipping_boxes_row` (BEFORE INSERT OR UPDATE) mantém `id` e
+     `created_at` no UPDATE e, no INSERT feito por usuário logado, gera `id`,
+     `created_at` e `updated_at` no banco; sem usuário (migration,
+     `service_role`, restauração de backup) vale o que foi enviado.
+   - Comentários de `freight_settings.default_fill_factor` (valor sugerido ao
+     cadastrar caixa nova) e de `updated_by` (preenchido pelo banco).
+2. `20261120030100_seed_shipping_boxes`: migration só de dados, gerada por
+   `scripts/freight/seed-shipping-boxes.mjs` a partir de
+   `scripts/freight/caixas.csv` — cadastra P, M, G e GG com
+   `ON CONFLICT (code) WHERE deleted_at IS NULL DO NOTHING`.
+
+Os rollbacks `20261119213000_rollback.sql` e `20261119213100_rollback.sql`
+também mudam nesta PR: quando o backup do dia já existe, gravam a cópia no
+primeiro nome livre (`_YYYYMMDD_2`, `_3`, ...) em vez de pular o backup e
+apagar a tabela, e só fazem o DROP depois do backup conferido. Assim desfazer
+as quatro versões no mesmo dia (`20261120030100` → `20261120030000` →
+`20261119213100` → `20261119213000`) termina sem intervenção manual. O
+rollback `20261120030100_rollback.sql` tem uma diferença feita à mão para o
+texto do gerador (confere se a tabela existe antes do DELETE); ela precisa
+entrar em `scripts/freight/seed-shipping-boxes.mjs` antes de o arquivo ser
+gerado de novo.
+
+Anti-regressão: `anon` segue sem nenhum privilégio nas duas tabelas e vendedor
+só lê. Conferido por SELECT em produção antes de escrever os CHECKs:
+`shipping_boxes` com 0 linhas e `freight_settings` com a linha única dentro
+das faixas novas. Validação prévia em cluster PostgreSQL 16.15 local, com
+`psql -1` como o workflow: aplica (a `20261120030000` duas vezes) → rollback
+das quatro versões em ordem, duas vezes no mesmo dia → catálogo idêntico ao
+anterior, exit 0. Apagar em `auth.users` o admin que salvou os parâmetros
+deixa `updated_by` nulo, sem linha órfã, e `pg_dump` + restore passam.
+O que a migration não fecha: `authenticated` continua podendo `LOCK TABLE`
+nas duas tabelas por SQL direto, porque esse direito vem do privilégio de
+UPDATE que a tela do admin usa (o PostgREST não executa LOCK).
+
+O `.security/policies-baseline.json` já vai nesta PR sem a policy
+`shipping_boxes_delete_admin` (1027 → 1026). Enquanto a `20261120030000` não é
+aplicada, o Gate 1.13 tolera a diferença porque a migration pendente é a fonte
+da mudança (versão maior que a última do ledger); depois da aplicação o banco
+passa a coincidir com o baseline e a `main` não fica vermelha.
+
+Ordem de aplicação: `20261120030000` antes de `20261120030100` (assim as 4
+caixas já entram validadas pelos CHECKs novos).
+
+| versão | arquivo | sha256 | status |
+|---|---|---|---|
+| `20261120030000` | `harden_freight_tables` | `fe42c3a8488c9ba53206e3c19ad900c324af8880a7bd1ff634d2ce584a0cb8c8` | pendente — aplicar via `db-apply-migration.yml` (`version=20261120030000`) após merge |
+| `20261120030100` | `seed_shipping_boxes` | `358ffc5e1b518b23ec7aac1556f8ec7e393ad505979676562da3bc834aab89f6` | pendente — aplicar via `db-apply-migration.yml` (`version=20261120030100`) após merge |
