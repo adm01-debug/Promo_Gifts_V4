@@ -2989,11 +2989,13 @@ SQL em `migrations/<versao>_<nome>.sql`. Mudanças feitas pelo Dashboard/SQL Edi
 | 20261115130300 | [fn_global_search_clamp_limit_hardened](migrations/20261115130300_fn_global_search_clamp_limit_hardened.sql) | 1 |
 | 20261115230000 | [ai_function_routing_mockup_assistant](migrations/20261115230000_ai_function_routing_mockup_assistant.sql) | 1 |
 | 20261117073000 | [p06_security_invoker_v_product_properties_public](migrations/20261117073000_p06_security_invoker_v_product_properties_public.sql) | 8 |
+| 20261118172500 | [security_invoker_views_p06_parcial](migrations/20261118172500_security_invoker_views_p06_parcial.sql) | 5 |
 | 20261118223000 | [fn_supplier_risk_breakdown](migrations/20261118223000_fn_supplier_risk_breakdown.sql) | 4 |
 | 20261119051500 | [fix_get_quote_token_public_expiracao_pg_temp](migrations/20261119051500_fix_get_quote_token_public_expiracao_pg_temp.sql) | 1 |
 | 20261119073000 | [supplier_stricker_rls_deny_all_reemissao](migrations/20261119073000_supplier_stricker_rls_deny_all_reemissao.sql) | 1 |
 | 20261119081500 | [elevenlabs_credential_reemissao](migrations/20261119081500_elevenlabs_credential_reemissao.sql) | 1 |
 | 20261119094500 | [reafirma_revogacoes_anteriores_ao_baseline](migrations/20261119094500_reafirma_revogacoes_anteriores_ao_baseline.sql) | 6 |
+| 20261119103000 | [onboarding_auto_assign_org_reemissao](migrations/20261119103000_onboarding_auto_assign_org_reemissao.sql) | 4 |
 | 20261119212000 | [fix_f12_sparkline_ema_kpi](migrations/20261119212000_fix_f12_sparkline_ema_kpi.sql) | 7 |
 | 20261119213000 | [create_shipping_boxes](migrations/20261119213000_create_shipping_boxes.sql) | 34 |
 | 20261119213100 | [create_freight_settings](migrations/20261119213100_create_freight_settings.sql) | 19 |

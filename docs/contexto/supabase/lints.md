@@ -4,13 +4,8 @@ Verificações objetivas feitas no catálogo. Um agente deve ler isto antes de p
 
 | severidade | código | objeto | detalhe |
 |---|---|---|---|
-| ALTA | view_security_definer | public.v_kit_component_media_public | View em public sem security_invoker: executa como owner e ignora RLS das tabelas base. |
-| ALTA | view_security_definer | public.v_product_compositions_public | View em public sem security_invoker: executa como owner e ignora RLS das tabelas base. |
-| ALTA | view_security_definer | public.v_product_tags_public | View em public sem security_invoker: executa como owner e ignora RLS das tabelas base. |
 | ALTA | view_security_definer | public.v_products_public | View em public sem security_invoker: executa como owner e ignora RLS das tabelas base. |
-| ALTA | view_security_definer | public.v_suppliers_public | View em public sem security_invoker: executa como owner e ignora RLS das tabelas base. |
 | ALTA | view_security_definer | public.v_system_health_dashboard | View em public sem security_invoker: executa como owner e ignora RLS das tabelas base. |
-| ALTA | view_security_definer | public.v_tabela_preco_gravacao_oficial_public | View em public sem security_invoker: executa como owner e ignora RLS das tabelas base. |
 | ALTA | view_security_definer | public.v_variant_sale_prices_public | View em public sem security_invoker: executa como owner e ignora RLS das tabelas base. |
 | ALTA | view_security_definer | public.vw_system_health_quick | View em public sem security_invoker: executa como owner e ignora RLS das tabelas base. |
 | MÉDIA | rls_no_policies | public.crm_seller_identity_links | RLS ligado sem policies: inacessível via API (só service_role). |

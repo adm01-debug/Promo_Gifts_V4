@@ -149387,6 +149387,47 @@
       {
         "args": "",
         "callers": {
+          "code": [
+            {
+              "file": "supabase/migrations/20260621210001_onboarding_auto_assign_org_canonica.sql",
+              "hits": 1
+            },
+            {
+              "file": "supabase/migrations/20261119103000_onboarding_auto_assign_org_reemissao.sql",
+              "hits": 1
+            }
+          ],
+          "code_total_files": 2,
+          "cron": [],
+          "db": [],
+          "triggers": [
+            "public.profiles.trg_auto_assign_org"
+          ],
+          "views": []
+        },
+        "comment": null,
+        "config": [
+          "search_path=public, pg_temp"
+        ],
+        "definition": null,
+        "definition_sha": "ecb3c7ab3caf117f",
+        "execute_api_roles": "service_role",
+        "execute_public": false,
+        "is_trigger_fn": true,
+        "kind": "function",
+        "language": "plpgsql",
+        "leakproof": false,
+        "name": "fn_auto_assign_org_on_profile",
+        "owner": "postgres",
+        "returns": "trigger",
+        "schema": "public",
+        "security_definer": true,
+        "strict": false,
+        "volatility": "volatile"
+      },
+      {
+        "args": "",
+        "callers": {
           "code": [],
           "code_total_files": 0,
           "cron": [],
@@ -157746,9 +157787,13 @@
             {
               "file": "supabase/migrations/20260922170000_signup_identity_safe_default.sql",
               "hits": 1
+            },
+            {
+              "file": "supabase/migrations/20261119103000_onboarding_auto_assign_org_reemissao.sql",
+              "hits": 1
             }
           ],
-          "code_total_files": 3,
+          "code_total_files": 4,
           "cron": [],
           "db": [],
           "triggers": [
@@ -193337,9 +193382,13 @@
             {
               "file": "supabase/migrations/20261114170921_fix_rls_orders_order_items_seller_scope.sql",
               "hits": 2
+            },
+            {
+              "file": "supabase/migrations/20261119103000_onboarding_auto_assign_org_reemissao.sql",
+              "hits": 2
             }
           ],
-          "code_total_files": 27,
+          "code_total_files": 28,
           "cron": [],
           "db": [
             "public.can_access_quote",
@@ -223177,43 +223226,13 @@
       {
         "code": "view_security_definer",
         "detail": "View em public sem security_invoker: executa como owner e ignora RLS das tabelas base.",
-        "object": "public.v_kit_component_media_public",
-        "severity": "ALTA"
-      },
-      {
-        "code": "view_security_definer",
-        "detail": "View em public sem security_invoker: executa como owner e ignora RLS das tabelas base.",
-        "object": "public.v_product_compositions_public",
-        "severity": "ALTA"
-      },
-      {
-        "code": "view_security_definer",
-        "detail": "View em public sem security_invoker: executa como owner e ignora RLS das tabelas base.",
-        "object": "public.v_product_tags_public",
-        "severity": "ALTA"
-      },
-      {
-        "code": "view_security_definer",
-        "detail": "View em public sem security_invoker: executa como owner e ignora RLS das tabelas base.",
         "object": "public.v_products_public",
         "severity": "ALTA"
       },
       {
         "code": "view_security_definer",
         "detail": "View em public sem security_invoker: executa como owner e ignora RLS das tabelas base.",
-        "object": "public.v_suppliers_public",
-        "severity": "ALTA"
-      },
-      {
-        "code": "view_security_definer",
-        "detail": "View em public sem security_invoker: executa como owner e ignora RLS das tabelas base.",
         "object": "public.v_system_health_dashboard",
-        "severity": "ALTA"
-      },
-      {
-        "code": "view_security_definer",
-        "detail": "View em public sem security_invoker: executa como owner e ignora RLS das tabelas base.",
-        "object": "public.v_tabela_preco_gravacao_oficial_public",
         "severity": "ALTA"
       },
       {
@@ -240418,6 +240437,12 @@
         "version": "20261117073000"
       },
       {
+        "name": "security_invoker_views_p06_parcial",
+        "statements": 5,
+        "statements_sha": "880db94267e28591",
+        "version": "20261118172500"
+      },
+      {
         "name": "fn_supplier_risk_breakdown",
         "statements": 4,
         "statements_sha": "cebcb6a595f8e1c8",
@@ -240446,6 +240471,12 @@
         "statements": 6,
         "statements_sha": "aaec7aabb8ade4d4",
         "version": "20261119094500"
+      },
+      {
+        "name": "onboarding_auto_assign_org_reemissao",
+        "statements": 4,
+        "statements_sha": "39887f1a733de7c5",
+        "version": "20261119103000"
       },
       {
         "name": "fix_f12_sparkline_ema_kpi",
@@ -264348,6 +264379,17 @@
         "timing": "AFTER"
       },
       {
+        "definition": "CREATE TRIGGER trg_auto_assign_org AFTER INSERT ON profiles FOR EACH ROW EXECUTE FUNCTION fn_auto_assign_org_on_profile()",
+        "events": "INSERT",
+        "function": "public.fn_auto_assign_org_on_profile",
+        "level": "ROW",
+        "name": "trg_auto_assign_org",
+        "schema": "public",
+        "status": "enabled",
+        "table": "profiles",
+        "timing": "AFTER"
+      },
+      {
         "definition": "CREATE TRIGGER trg_grant_default_role AFTER INSERT ON profiles FOR EACH ROW EXECUTE FUNCTION fn_grant_default_role_on_profile()",
         "events": "INSERT",
         "function": "public.fn_grant_default_role_on_profile",
@@ -267086,12 +267128,12 @@
         "kind": "view",
         "name": "v_kit_component_media_public",
         "options": [
-          "security_invoker=false"
+          "security_invoker=true"
         ],
         "owner": "postgres",
         "populated": null,
         "schema": "public",
-        "security_invoker": false
+        "security_invoker": true
       },
       {
         "comment": "security_invoker=true: respeita RLS/grants de kit_component_print_areas, product_kit_components e products.",
@@ -267437,12 +267479,12 @@
         "kind": "view",
         "name": "v_product_compositions_public",
         "options": [
-          "security_invoker=false"
+          "security_invoker=true"
         ],
         "owner": "postgres",
         "populated": null,
         "schema": "public",
-        "security_invoker": false
+        "security_invoker": true
       },
       {
         "comment": "Images with identical SHA-256 content_hash stored under different cloudflare_image_ids. Populated once hash-product-images cron has run. Use for deduplication audits.",
@@ -267523,12 +267565,12 @@
         "kind": "view",
         "name": "v_product_tags_public",
         "options": [
-          "security_invoker=false"
+          "security_invoker=true"
         ],
         "owner": "postgres",
         "populated": null,
         "schema": "public",
-        "security_invoker": false
+        "security_invoker": true
       },
       {
         "comment": null,
@@ -267942,12 +267984,12 @@
         "kind": "view",
         "name": "v_suppliers_public",
         "options": [
-          "security_invoker=false"
+          "security_invoker=true"
         ],
         "owner": "postgres",
         "populated": null,
         "schema": "public",
-        "security_invoker": false
+        "security_invoker": true
       },
       {
         "comment": "Alertas do sistema. Correções 2026-06-23: CRON_FAIL_RECENT só conta jobs existentes; AI_QUEUE_STALE exclui worker ativo; locked_by_residual alert threshold >100.",
@@ -268018,12 +268060,12 @@
         "kind": "view",
         "name": "v_tabela_preco_gravacao_oficial_public",
         "options": [
-          "security_invoker=false"
+          "security_invoker=true"
         ],
         "owner": "postgres",
         "populated": null,
         "schema": "public",
-        "security_invoker": false
+        "security_invoker": true
       },
       {
         "comment": null,

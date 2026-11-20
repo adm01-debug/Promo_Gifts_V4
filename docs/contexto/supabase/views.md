@@ -2691,8 +2691,8 @@ SELECT s.name AS supplier,
 | campo | valor |
 |---|---|
 | owner | postgres |
-| security_invoker | não |
-| opções | security_invoker=false |
+| security_invoker | sim |
+| opções | security_invoker=true |
 | depende de | public.product_kit_components, public.products |
 | populada | n/a |
 | comentário | SECURITY DEFINER intencional (fix_version 20260717). Depende de products para filtro is_active. Colunas de output: kit_component_id, component_code/name, primary_image_url. |
@@ -3522,8 +3522,8 @@ SELECT p.id AS product_id,
 | campo | valor |
 |---|---|
 | owner | postgres |
-| security_invoker | não |
-| opções | security_invoker=false |
+| security_invoker | sim |
+| opções | security_invoker=true |
 | depende de | public.mv_product_compositions, public.products |
 | populada | n/a |
 | comentário | SECURITY DEFINER intencional (fix_version 20260717). Depende de products e analytics.mv_product_compositions. |
@@ -3678,8 +3678,8 @@ SELECT pp.id,
 | campo | valor |
 |---|---|
 | owner | postgres |
-| security_invoker | não |
-| opções | security_invoker=false |
+| security_invoker | sim |
+| opções | security_invoker=true |
 | depende de | public.product_tags, public.products, public.tags |
 | populada | n/a |
 | comentário | SECURITY DEFINER intencional (fix_version 20260717). Colunas: product_id, tag_id. |
@@ -4926,8 +4926,8 @@ UNION ALL
 | campo | valor |
 |---|---|
 | owner | postgres |
-| security_invoker | não |
-| opções | security_invoker=false |
+| security_invoker | sim |
+| opções | security_invoker=true |
 | depende de | public.suppliers |
 | populada | n/a |
 | comentário | PUBLIC SUPPLIER PROJECTION (SECURITY DEFINER intencional / fix_version 20260717_v1). Expoe apenas: id, name, code, trading_name, logo_url, website, active, flags, state_uf. Mascara: api_credentials, api_base_url, default_markup_percent, cnpj, email, phone, etc. NAO alterar para security_invoker=true (expoeria api_credentials ao anon via REST). |
@@ -5422,8 +5422,8 @@ WITH metrics AS (
 | campo | valor |
 |---|---|
 | owner | postgres |
-| security_invoker | não |
-| opções | security_invoker=false |
+| security_invoker | sim |
+| opções | security_invoker=true |
 | depende de | public.tabela_preco_gravacao_oficial |
 | populada | n/a |
 | comentário | PUBLIC ENGRAVING TABLE PROJECTION (SECURITY DEFINER / fix_version 20260717). Expõe apenas colunas de cobrança e preços de venda. EXCLUÍDOS: custo_setup (R$325 max), markup_percent (115% max), custo_aplicacao, custo_termo_transferencia, custo_queima_forno, faturamento_minimo. NAO reverter para security_invoker=true nem re-expor a tabela base ao anon. |

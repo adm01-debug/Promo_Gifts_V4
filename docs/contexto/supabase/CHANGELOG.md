@@ -2,6 +2,15 @@
 
 Diff semântico gerado a cada coleta em que algo mudou.
 
+## 2026-11-20 12:24 UTC
+
+- **functions** adicionado (1): `public.fn_auto_assign_org_on_profile()`
+- **functions** alterado (2): `public.fn_grant_default_role_on_profile()`, `public.user_is_org_member(org_id uuid)`
+- **lints** removido (5): `view_security_definer:public.v_kit_component_media_public`, `view_security_definer:public.v_product_compositions_public`, `view_security_definer:public.v_product_tags_public`, `view_security_definer:public.v_suppliers_public`, `view_security_definer:public.v_tabela_preco_gravacao_oficial_public`
+- **migrations** adicionado (2): `20261118172500_security_invoker_views_p06_parcial`, `20261119103000_onboarding_auto_assign_org_reemissao`
+- **triggers** adicionado (1): `public.profiles.trg_auto_assign_org`
+- **views** alterado (5): `public.v_kit_component_media_public`, `public.v_product_compositions_public`, `public.v_product_tags_public`, `public.v_suppliers_public`, `public.v_tabela_preco_gravacao_oficial_public`
+
 ## 2026-11-20 11:18 UTC
 
 - **colunas** alterado (2): `public.freight_settings.default_fill_factor`, `public.freight_settings.updated_by`

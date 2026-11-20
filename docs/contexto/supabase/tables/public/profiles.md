@@ -113,6 +113,7 @@
 |---|---|---|---|---|---|
 | set_updated_at_trigger | BEFORE | UPDATE | ROW | enabled | public.set_updated_at |
 | trg_audit_profiles | AFTER | INSERT OR DELETE OR UPDATE | ROW | enabled | public.fn_audit_row_change |
+| trg_auto_assign_org | AFTER | INSERT | ROW | enabled | public.fn_auto_assign_org_on_profile |
 | trg_grant_default_role | AFTER | INSERT | ROW | enabled | public.fn_grant_default_role_on_profile |
 
 
