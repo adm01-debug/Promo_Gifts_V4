@@ -5,6 +5,14 @@ Todas as mudanças notáveis deste projeto são documentadas neste arquivo.
 O formato é baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/),
 e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR/).
 
+## [1.16.0](https://github.com/adm01-debug/Promo_Gifts_V4/compare/gifts-store-v1.15.0...gifts-store-v1.16.0) (2026-11-20)
+
+
+### Features
+
+* **db:** restaura comentários em orçamento (quote_comments) após decisão do dono ([#3942](https://github.com/adm01-debug/Promo_Gifts_V4/issues/3942)) ([36e7b1c](https://github.com/adm01-debug/Promo_Gifts_V4/commit/36e7b1c255dd79d5b822ba02355f18115f8beef2))
+* reativa comentários em orçamento (quote_comments) — UI + testes + trava ([#3944](https://github.com/adm01-debug/Promo_Gifts_V4/issues/3944)) ([cfd7f83](https://github.com/adm01-debug/Promo_Gifts_V4/commit/cfd7f833bb03a1c175460bbc8d60bdc84aef46e4))
+
 ## [1.15.0](https://github.com/adm01-debug/Promo_Gifts_V4/compare/gifts-store-v1.14.0...gifts-store-v1.15.0) (2026-11-20)
 
 
