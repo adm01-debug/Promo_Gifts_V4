@@ -1645,6 +1645,7 @@ Após VACUUM ANALYZE executado pelos jobs temporários `vacuum-snapshots-now` e
 | `20261120013000` | `7d0ba2f172b092e7151107f857b1db28a9788a797f0d324fc078035e19619622` | — | GitHub Actions (db-apply-migration.yml, disparado por adm01-debug, aprovado por @adm01-debug) | E15 | 2026-11-20 02:23:16 UTC | job post-check da run 44660270776 confirmou a version no ledger | aplicada |
 | `20261120030000` | `fe42c3a8488c9ba53206e3c19ad900c324af8880a7bd1ff634d2ce584a0cb8c8` | — | GitHub Actions (db-apply-migration.yml, disparado por adm01-debug, aprovado por @adm01-debug) | E15 | 2026-11-20 10:47:18 UTC | job post-check da run 44722018776 confirmou a version no ledger | aplicada |
 | `20261120030100` | `bcd08d0663b68ddb6853c48aff9163f57fee2327c47d6eea8873b6075fd7bf25` | — | GitHub Actions (db-apply-migration.yml, disparado por adm01-debug, aprovado por @adm01-debug) | E15 | 2026-11-20 10:50:10 UTC | job post-check da run 44722386500 confirmou a version no ledger | aplicada |
+| `20261120180000` | `aec27e3458b5d54992901ca205415ed05fb711893e5b0a8ec783982672327514` | — | GitHub Actions (db-apply-migration.yml, disparado por adm01-debug, aprovado por @adm01-debug) | E15 | 2026-11-20 18:29:07 UTC | job post-check da run 44793019185 confirmou a version no ledger | aplicada |
 
 ## 2026-11-08 — Reconciliação de `e2e_cleanup_audit`
 
@@ -2830,3 +2831,4 @@ As policies novas entram em `.security/policies-baseline.json` depois de aplicad
 | versão | arquivo | sha256 | status |
 |---|---|---|---|
 | `20261120041000` | `production_lead_time_calendar` | `ded27deffa89754ea8fd9ab3825008c0e76aad872e0fda66df45b9f71569ab3c` | pendente — aplicar via `db-apply-migration.yml` (`version=20261120041000`) após merge da PR H-DDL |
+| `20261120180000` | `restore_quote_comments_scoped_threads` | `aec27e3458b5d54992901ca205415ed05fb711893e5b0a8ec783982672327514` | pendente — aplicar via `db-apply-migration.yml` (`version=20261120180000`) após merge e decisão do dono (comentários em orçamento) |

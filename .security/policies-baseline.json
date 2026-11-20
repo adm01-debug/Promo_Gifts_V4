@@ -1,7 +1,7 @@
 {
   "version": 1,
   "pending_seed": false,
-  "generated_at": "2026-11-20T10:57:52.764Z",
+  "generated_at": "2026-11-20T19:45:40.723Z",
   "project_ref": "doufsxqlfjyuvxuezpln",
   "schemas_checked": [
     "public",
@@ -13,7 +13,7 @@
     "prod_audit",
     "supplier_stricker"
   ],
-  "sha256": "06d1b4406a53a240bb4859c136d9a597594d0bfb0d30782363cccfc3a1d2f577",
+  "sha256": "6363a6598c1a6ad702cbe11723769cc172165638a80eb749e7078cdbdb54fffb",
   "policies": [
     {
       "schemaname": "cf_recon",
@@ -7004,6 +7004,46 @@
       "cmd": "UPDATE",
       "qual": "(can_view_all_sales() OR (seller_id = ( SELECT ( SELECT auth.uid() AS uid) AS uid)))",
       "with_check": "(can_view_all_sales() OR (seller_id = ( SELECT ( SELECT auth.uid() AS uid) AS uid)))"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "quote_comments",
+      "policyname": "quote_comments_delete_own_visible_quote",
+      "permissive": "PERMISSIVE",
+      "roles": "{authenticated}",
+      "cmd": "DELETE",
+      "qual": "((user_id = ( SELECT auth.uid() AS uid)) AND (EXISTS ( SELECT 1\n   FROM quotes q\n  WHERE (q.id = quote_comments.quote_id))))",
+      "with_check": ""
+    },
+    {
+      "schemaname": "public",
+      "tablename": "quote_comments",
+      "policyname": "quote_comments_insert_own_visible_quote",
+      "permissive": "PERMISSIVE",
+      "roles": "{authenticated}",
+      "cmd": "INSERT",
+      "qual": "",
+      "with_check": "((user_id = ( SELECT auth.uid() AS uid)) AND (EXISTS ( SELECT 1\n   FROM quotes q\n  WHERE (q.id = quote_comments.quote_id))))"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "quote_comments",
+      "policyname": "quote_comments_select_visible_quote",
+      "permissive": "PERMISSIVE",
+      "roles": "{authenticated}",
+      "cmd": "SELECT",
+      "qual": "((( SELECT auth.uid() AS uid) IS NOT NULL) AND (EXISTS ( SELECT 1\n   FROM quotes q\n  WHERE (q.id = quote_comments.quote_id))))",
+      "with_check": ""
+    },
+    {
+      "schemaname": "public",
+      "tablename": "quote_comments",
+      "policyname": "quote_comments_update_own_visible_quote",
+      "permissive": "PERMISSIVE",
+      "roles": "{authenticated}",
+      "cmd": "UPDATE",
+      "qual": "((user_id = ( SELECT auth.uid() AS uid)) AND (EXISTS ( SELECT 1\n   FROM quotes q\n  WHERE (q.id = quote_comments.quote_id))))",
+      "with_check": "((user_id = ( SELECT auth.uid() AS uid)) AND (EXISTS ( SELECT 1\n   FROM quotes q\n  WHERE (q.id = quote_comments.quote_id))))"
     },
     {
       "schemaname": "public",
