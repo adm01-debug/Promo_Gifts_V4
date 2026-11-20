@@ -2,6 +2,18 @@
 
 Diff semântico gerado a cada coleta em que algo mudou.
 
+## 2026-11-20 11:18 UTC
+
+- **colunas** alterado (2): `public.freight_settings.default_fill_factor`, `public.freight_settings.updated_by`
+- **constraints** adicionado (9): `public.freight_settings.freight_settings_cubic_divisor_correios_range`, `public.freight_settings.freight_settings_cubic_divisor_rodoviario_range`, `public.freight_settings.freight_settings_internal_buffer_days_ceiling`, `public.shipping_boxes.shipping_boxes_code_format`, `public.shipping_boxes.shipping_boxes_max_weight_g_ceiling`, `public.shipping_boxes.shipping_boxes_name_format`, `public.shipping_boxes.shipping_boxes_outer_height_cm_range`, `public.shipping_boxes.shipping_boxes_outer_length_cm_range`, `public.shipping_boxes.shipping_boxes_outer_width_cm_range`
+- **functions** adicionado (2): `public.guard_freight_settings_row()`, `public.guard_shipping_boxes_row()`
+- **functions** alterado (1): `public.update_updated_at_column()`
+- **grants** removido (2): `public.freight_settings:anon`, `public.shipping_boxes:anon`
+- **grants** alterado (2): `public.freight_settings:authenticated`, `public.shipping_boxes:authenticated`
+- **migrations** adicionado (2): `20261120030000_harden_freight_tables`, `20261120030100_seed_shipping_boxes`
+- **policies (RLS)** removido (1): `public.shipping_boxes.shipping_boxes_delete_admin`
+- **triggers** adicionado (2): `public.freight_settings.guard_freight_settings_row`, `public.shipping_boxes.guard_shipping_boxes_row`
+
 ## 2026-11-20 03:20 UTC
 
 - **colunas** adicionado (1): `public.products.ships_separately`

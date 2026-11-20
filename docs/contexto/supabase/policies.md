@@ -788,7 +788,6 @@ Visão consolidada (inclui `storage.objects` e `realtime.messages`); detalhes po
 | public.seller_discount_limits | sdl_select_own_or_coord | SELECT | PERMISSIVE | authenticated | `((user_id = ( SELECT ( SELECT auth.uid() AS uid) AS uid)) OR is_coord_or_above(( SELECT ( SELECT auth.uid() AS uid) AS uid)))` |  |
 | public.seo_audit_log | seo_audit_log_select_supervisor_or_above | SELECT | PERMISSIVE | authenticated | `is_supervisor_or_above(( SELECT ( SELECT auth.uid() AS uid) AS uid))` |  |
 | public.seo_redirects | auth_read_seo_redirects | SELECT | PERMISSIVE | authenticated | `true` |  |
-| public.shipping_boxes | shipping_boxes_delete_admin | DELETE | PERMISSIVE | authenticated | `is_admin()` |  |
 | public.shipping_boxes | shipping_boxes_insert_admin | INSERT | PERMISSIVE | authenticated |  | `is_admin()` |
 | public.shipping_boxes | shipping_boxes_select_authenticated | SELECT | PERMISSIVE | authenticated | `((deleted_at IS NULL) OR is_admin())` |  |
 | public.shipping_boxes | shipping_boxes_update_admin | UPDATE | PERMISSIVE | authenticated | `is_admin()` | `is_admin()` |

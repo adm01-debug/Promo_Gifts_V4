@@ -20208,7 +20208,7 @@
         "type": "integer"
       },
       {
-        "comment": "Fator de aproveitamento usado quando a caixa não tem o próprio (0,50 a 1,00). Padrão 0,90.",
+        "comment": "Fator de aproveitamento SUGERIDO ao cadastrar uma caixa nova (0,50 a 1,00). Padrão 0,90. Não entra no cálculo: o motor usa o fill_factor gravado em cada caixa.",
         "default": "0.90",
         "generated": null,
         "identity": null,
@@ -20260,7 +20260,7 @@
         "type": "timestamp with time zone"
       },
       {
-        "comment": "Usuário admin que fez a última alteração.",
+        "comment": "Usuário que fez a última alteração. Preenchido pelo banco (trigger guard_freight_settings_row) com auth.uid(); o valor enviado pelo cliente é ignorado. Fica NULL quando esse usuário é apagado (ON DELETE SET NULL).",
         "default": null,
         "generated": null,
         "identity": null,
@@ -118310,11 +118310,45 @@
       },
       {
         "columns": [
+          "cubic_divisor_correios"
+        ],
+        "deferrable": false,
+        "definition": "CHECK (cubic_divisor_correios >= 1000 AND cubic_divisor_correios <= 10000)",
+        "name": "freight_settings_cubic_divisor_correios_range",
+        "on_delete": null,
+        "on_update": null,
+        "ref_columns": [],
+        "ref_schema": null,
+        "ref_table": null,
+        "schema": "public",
+        "table": "freight_settings",
+        "type": "CHECK",
+        "validated": true
+      },
+      {
+        "columns": [
           "cubic_divisor_rodoviario"
         ],
         "deferrable": false,
         "definition": "CHECK (cubic_divisor_rodoviario > 0)",
         "name": "freight_settings_cubic_divisor_rodoviario_check",
+        "on_delete": null,
+        "on_update": null,
+        "ref_columns": [],
+        "ref_schema": null,
+        "ref_table": null,
+        "schema": "public",
+        "table": "freight_settings",
+        "type": "CHECK",
+        "validated": true
+      },
+      {
+        "columns": [
+          "cubic_divisor_rodoviario"
+        ],
+        "deferrable": false,
+        "definition": "CHECK (cubic_divisor_rodoviario >= 1000 AND cubic_divisor_rodoviario <= 10000)",
+        "name": "freight_settings_cubic_divisor_rodoviario_range",
         "on_delete": null,
         "on_update": null,
         "ref_columns": [],
@@ -118349,6 +118383,23 @@
         "deferrable": false,
         "definition": "CHECK (id)",
         "name": "freight_settings_id_check",
+        "on_delete": null,
+        "on_update": null,
+        "ref_columns": [],
+        "ref_schema": null,
+        "ref_table": null,
+        "schema": "public",
+        "table": "freight_settings",
+        "type": "CHECK",
+        "validated": true
+      },
+      {
+        "columns": [
+          "internal_buffer_days"
+        ],
+        "deferrable": false,
+        "definition": "CHECK (internal_buffer_days <= 60)",
+        "name": "freight_settings_internal_buffer_days_ceiling",
         "on_delete": null,
         "on_update": null,
         "ref_columns": [],
@@ -132804,6 +132855,23 @@
       },
       {
         "columns": [
+          "code"
+        ],
+        "deferrable": false,
+        "definition": "CHECK (code = upper(btrim(code)) AND code ~ '^[A-Z0-9][A-Z0-9_-]{0,9}$'::text)",
+        "name": "shipping_boxes_code_format",
+        "on_delete": null,
+        "on_update": null,
+        "ref_columns": [],
+        "ref_schema": null,
+        "ref_table": null,
+        "schema": "public",
+        "table": "shipping_boxes",
+        "type": "CHECK",
+        "validated": true
+      },
+      {
+        "columns": [
           "empty_weight_g"
         ],
         "deferrable": false,
@@ -132889,11 +132957,62 @@
       },
       {
         "columns": [
+          "max_weight_g"
+        ],
+        "deferrable": false,
+        "definition": "CHECK (max_weight_g <= 100000)",
+        "name": "shipping_boxes_max_weight_g_ceiling",
+        "on_delete": null,
+        "on_update": null,
+        "ref_columns": [],
+        "ref_schema": null,
+        "ref_table": null,
+        "schema": "public",
+        "table": "shipping_boxes",
+        "type": "CHECK",
+        "validated": true
+      },
+      {
+        "columns": [
+          "name"
+        ],
+        "deferrable": false,
+        "definition": "CHECK (name = btrim(name, ' \t\n\r'::text || chr(160)) AND name <> ''::text AND char_length(name) <= 80)",
+        "name": "shipping_boxes_name_format",
+        "on_delete": null,
+        "on_update": null,
+        "ref_columns": [],
+        "ref_schema": null,
+        "ref_table": null,
+        "schema": "public",
+        "table": "shipping_boxes",
+        "type": "CHECK",
+        "validated": true
+      },
+      {
+        "columns": [
           "outer_height_cm"
         ],
         "deferrable": false,
         "definition": "CHECK (outer_height_cm > 0::numeric)",
         "name": "shipping_boxes_outer_height_cm_check",
+        "on_delete": null,
+        "on_update": null,
+        "ref_columns": [],
+        "ref_schema": null,
+        "ref_table": null,
+        "schema": "public",
+        "table": "shipping_boxes",
+        "type": "CHECK",
+        "validated": true
+      },
+      {
+        "columns": [
+          "outer_height_cm"
+        ],
+        "deferrable": false,
+        "definition": "CHECK (outer_height_cm >= 0.01 AND outer_height_cm <= 300::numeric)",
+        "name": "shipping_boxes_outer_height_cm_range",
         "on_delete": null,
         "on_update": null,
         "ref_columns": [],
@@ -132923,11 +133042,45 @@
       },
       {
         "columns": [
+          "outer_length_cm"
+        ],
+        "deferrable": false,
+        "definition": "CHECK (outer_length_cm >= 0.01 AND outer_length_cm <= 300::numeric)",
+        "name": "shipping_boxes_outer_length_cm_range",
+        "on_delete": null,
+        "on_update": null,
+        "ref_columns": [],
+        "ref_schema": null,
+        "ref_table": null,
+        "schema": "public",
+        "table": "shipping_boxes",
+        "type": "CHECK",
+        "validated": true
+      },
+      {
+        "columns": [
           "outer_width_cm"
         ],
         "deferrable": false,
         "definition": "CHECK (outer_width_cm > 0::numeric)",
         "name": "shipping_boxes_outer_width_cm_check",
+        "on_delete": null,
+        "on_update": null,
+        "ref_columns": [],
+        "ref_schema": null,
+        "ref_table": null,
+        "schema": "public",
+        "table": "shipping_boxes",
+        "type": "CHECK",
+        "validated": true
+      },
+      {
+        "columns": [
+          "outer_width_cm"
+        ],
+        "deferrable": false,
+        "definition": "CHECK (outer_width_cm >= 0.01 AND outer_width_cm <= 300::numeric)",
+        "name": "shipping_boxes_outer_width_cm_range",
         "on_delete": null,
         "on_update": null,
         "ref_columns": [],
@@ -180700,6 +180853,43 @@
         "callers": {
           "code": [
             {
+              "file": "supabase/migrations/20261120030000_harden_freight_tables.sql",
+              "hits": 1
+            }
+          ],
+          "code_total_files": 1,
+          "cron": [],
+          "db": [],
+          "triggers": [
+            "public.freight_settings.guard_freight_settings_row"
+          ],
+          "views": []
+        },
+        "comment": "Trigger BEFORE UPDATE de freight_settings: mantém id e grava updated_by com auth.uid(), ignorando o valor enviado pelo cliente. Sem usuário autenticado (service_role), mantém o autor anterior. Não mexe em updated_by quando o UPDATE vem de outro trigger (pg_trigger_depth() > 1), para o ON DELETE SET NULL da FK com auth.users funcionar.",
+        "config": [
+          "search_path=pg_catalog, pg_temp"
+        ],
+        "definition": null,
+        "definition_sha": "b06ace90d7852d88",
+        "execute_api_roles": "service_role",
+        "execute_public": false,
+        "is_trigger_fn": true,
+        "kind": "function",
+        "language": "plpgsql",
+        "leakproof": false,
+        "name": "guard_freight_settings_row",
+        "owner": "postgres",
+        "returns": "trigger",
+        "schema": "public",
+        "security_definer": false,
+        "strict": false,
+        "volatility": "volatile"
+      },
+      {
+        "args": "",
+        "callers": {
+          "code": [
+            {
               "file": "supabase/migrations/20260425214848_66d5769e-6e89-4d0d-b49b-c44d1dd2285b.sql",
               "hits": 1
             },
@@ -180731,6 +180921,43 @@
         "returns": "trigger",
         "schema": "public",
         "security_definer": true,
+        "strict": false,
+        "volatility": "volatile"
+      },
+      {
+        "args": "",
+        "callers": {
+          "code": [
+            {
+              "file": "supabase/migrations/20261120030000_harden_freight_tables.sql",
+              "hits": 1
+            }
+          ],
+          "code_total_files": 1,
+          "cron": [],
+          "db": [],
+          "triggers": [
+            "public.shipping_boxes.guard_shipping_boxes_row"
+          ],
+          "views": []
+        },
+        "comment": "Trigger BEFORE INSERT OR UPDATE de shipping_boxes. No UPDATE mantém id e created_at, que não mudam depois que a caixa é criada. No INSERT feito por usuário logado gera id, created_at e updated_at no banco, ignorando o valor enviado pelo cliente; sem usuário (migration, service_role) mantém o que foi enviado.",
+        "config": [
+          "search_path=pg_catalog, pg_temp"
+        ],
+        "definition": null,
+        "definition_sha": "155664fa88635b86",
+        "execute_api_roles": "service_role",
+        "execute_public": false,
+        "is_trigger_fn": true,
+        "kind": "function",
+        "language": "plpgsql",
+        "leakproof": false,
+        "name": "guard_shipping_boxes_row",
+        "owner": "postgres",
+        "returns": "trigger",
+        "schema": "public",
+        "security_definer": false,
         "strict": false,
         "volatility": "volatile"
       },
@@ -192735,7 +192962,7 @@
               "hits": 1
             }
           ],
-          "code_total_files": 54,
+          "code_total_files": 55,
           "cron": [],
           "db": [],
           "triggers": [
@@ -196961,14 +197188,8 @@
           "table": "follow_up_reminders"
         },
         {
-          "grantee": "anon",
-          "privileges": "REFERENCES, TRIGGER",
-          "schema": "public",
-          "table": "freight_settings"
-        },
-        {
           "grantee": "authenticated",
-          "privileges": "DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE",
+          "privileges": "SELECT, UPDATE",
           "schema": "public",
           "table": "freight_settings"
         },
@@ -200261,14 +200482,8 @@
           "table": "seo_redirects"
         },
         {
-          "grantee": "anon",
-          "privileges": "REFERENCES, TRIGGER",
-          "schema": "public",
-          "table": "shipping_boxes"
-        },
-        {
           "grantee": "authenticated",
-          "privileges": "DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE",
+          "privileges": "INSERT, SELECT, UPDATE",
           "schema": "public",
           "table": "shipping_boxes"
         },
@@ -240261,6 +240476,18 @@
         "statements": 2,
         "statements_sha": "1c87d2d3091b9744",
         "version": "20261120013000"
+      },
+      {
+        "name": "harden_freight_tables",
+        "statements": 16,
+        "statements_sha": "ec155d147faf3792",
+        "version": "20261120030000"
+      },
+      {
+        "name": "seed_shipping_boxes",
+        "statements": 1,
+        "statements_sha": "c795444c3e221ce6",
+        "version": "20261120030100"
       }
     ],
     "policies": [
@@ -249694,18 +249921,6 @@
         "schema": "public",
         "table": "seo_redirects",
         "using": "true",
-        "with_check": null
-      },
-      {
-        "cmd": "DELETE",
-        "name": "shipping_boxes_delete_admin",
-        "permissive": "PERMISSIVE",
-        "roles": [
-          "authenticated"
-        ],
-        "schema": "public",
-        "table": "shipping_boxes",
-        "using": "is_admin()",
         "with_check": null
       },
       {
@@ -261702,6 +261917,17 @@
         "timing": "BEFORE"
       },
       {
+        "definition": "CREATE TRIGGER guard_freight_settings_row BEFORE UPDATE ON freight_settings FOR EACH ROW EXECUTE FUNCTION guard_freight_settings_row()",
+        "events": "UPDATE",
+        "function": "public.guard_freight_settings_row",
+        "level": "ROW",
+        "name": "guard_freight_settings_row",
+        "schema": "public",
+        "status": "enabled",
+        "table": "freight_settings",
+        "timing": "BEFORE"
+      },
+      {
         "definition": "CREATE TRIGGER set_freight_settings_updated_at BEFORE UPDATE ON freight_settings FOR EACH ROW EXECUTE FUNCTION update_updated_at_column()",
         "events": "UPDATE",
         "function": "public.update_updated_at_column",
@@ -264669,6 +264895,17 @@
         "schema": "public",
         "status": "enabled",
         "table": "seller_discount_limits",
+        "timing": "BEFORE"
+      },
+      {
+        "definition": "CREATE TRIGGER guard_shipping_boxes_row BEFORE INSERT OR UPDATE ON shipping_boxes FOR EACH ROW EXECUTE FUNCTION guard_shipping_boxes_row()",
+        "events": "INSERT OR UPDATE",
+        "function": "public.guard_shipping_boxes_row",
+        "level": "ROW",
+        "name": "guard_shipping_boxes_row",
+        "schema": "public",
+        "status": "enabled",
+        "table": "shipping_boxes",
         "timing": "BEFORE"
       },
       {

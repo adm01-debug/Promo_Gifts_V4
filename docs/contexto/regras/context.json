@@ -1,9 +1,9 @@
 {
  "meta": {
-  "sha": "dc4a2dfc0cb4d0ba20c7ad031c61bcf78a162db3",
+  "sha": "dd42ddfeca75ec49f470b8d18e4b41182940e26b",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-20 10:43 UTC",
+  "generated_at": "2026-11-20 11:16 UTC",
   "files_total": 11050,
   "code_files": 9065,
   "code_lines": 1285419
@@ -556155,10 +556155,19 @@
   }
  },
  "git": {
-  "sha": "dc4a2dfc0cb4d0ba20c7ad031c61bcf78a162db3",
+  "sha": "dd42ddfeca75ec49f470b8d18e4b41182940e26b",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "dd42ddf",
+    "date": "2026-11-20",
+    "author": "github-actions[bot]",
+    "subject": "chore(security): atualiza baseline assinado de RLS policies (#3931)",
+    "files": [
+     ".security/policies-baseline.json"
+    ]
+   },
    {
     "sha": "dc4a2df",
     "date": "2026-11-20",
@@ -556661,21 +556670,12 @@
      ".migration-refs-baseline.json",
      "supabase/MIGRATIONS_SYNC_LOG.md"
     ]
-   },
-   {
-    "sha": "2b16296",
-    "date": "2026-11-19",
-    "author": "github-actions[bot]",
-    "subject": "docs: recibo de aplicação — 20261114120000 (E15)",
-    "files": [
-     "supabase/MIGRATIONS_SYNC_LOG.md"
-    ]
    }
   ],
   "hot_files": [
    [
     "supabase/MIGRATIONS_SYNC_LOG.md",
-    14
+    13
    ],
    [
     "src/lib/freight/README.md",
@@ -556750,7 +556750,7 @@
     3
    ],
    [
-    "scripts/freight/seed-shipping-boxes.mjs",
+    ".security/policies-baseline.json",
     2
    ]
   ]

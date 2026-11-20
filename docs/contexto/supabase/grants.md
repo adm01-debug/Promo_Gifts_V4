@@ -309,8 +309,7 @@ Roles da API: `anon` (sem login), `authenticated` (logado), `service_role` (bypa
 | public.follow_up_reminders | anon | DELETE, INSERT, REFERENCES, TRIGGER, UPDATE |
 | public.follow_up_reminders | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | public.follow_up_reminders | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
-| public.freight_settings | anon | REFERENCES, TRIGGER |
-| public.freight_settings | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
+| public.freight_settings | authenticated | SELECT, UPDATE |
 | public.freight_settings | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
 | public.frontend_telemetry | anon | INSERT |
 | public.frontend_telemetry | authenticated | INSERT, SELECT |
@@ -859,8 +858,7 @@ Roles da API: `anon` (sem login), `authenticated` (logado), `service_role` (bypa
 | public.seo_redirects | anon | DELETE, INSERT, REFERENCES, TRIGGER, UPDATE |
 | public.seo_redirects | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | public.seo_redirects | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
-| public.shipping_boxes | anon | REFERENCES, TRIGGER |
-| public.shipping_boxes | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
+| public.shipping_boxes | authenticated | INSERT, SELECT, UPDATE |
 | public.shipping_boxes | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
 | public.simulator_wizard_drafts | anon | DELETE, INSERT, REFERENCES, TRIGGER, UPDATE |
 | public.simulator_wizard_drafts | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
