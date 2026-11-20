@@ -1,9 +1,9 @@
 {
  "meta": {
-  "sha": "04369208fbea9d5f298114d677e2670da2628265",
+  "sha": "0ec2fc565883b642880927f1d557457b546f9891",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-20 16:59 UTC",
+  "generated_at": "2026-11-20 17:44 UTC",
   "files_total": 11099,
   "code_files": 9112,
   "code_lines": 1292357
@@ -559544,10 +559544,19 @@
   }
  },
  "git": {
-  "sha": "04369208fbea9d5f298114d677e2670da2628265",
+  "sha": "0ec2fc565883b642880927f1d557457b546f9891",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "0ec2fc5",
+    "date": "2026-11-20",
+    "author": "adm01-debug",
+    "subject": "fix: contrato de orphan-mounts alinha com montagem lazy do RupturePanelEma (#3941)",
+    "files": [
+     "src/tests/orphan-mounts.test.ts"
+    ]
+   },
    {
     "sha": "0436920",
     "date": "2026-11-20",
@@ -560098,23 +560107,12 @@
      "supabase/migrations/20261119212000_fix_f12_sparkline_ema_kpi.sql",
      "supabase/rollbacks/20261119212000_rollback.sql"
     ]
-   },
-   {
-    "sha": "b6a8d7e",
-    "date": "2026-11-19",
-    "author": "adm01-debug",
-    "subject": "fix: corrige bugs F12 (sparkline PGRST202 + KPI EMA 403) (#3903)",
-    "files": [
-     "supabase/MIGRATIONS_SYNC_LOG.md",
-     "supabase/migrations/20261119202852_fix_f12_sparkline_ema_kpi.sql",
-     "supabase/rollbacks/20261119202852_rollback.sql"
-    ]
    }
   ],
   "hot_files": [
    [
     "supabase/MIGRATIONS_SYNC_LOG.md",
-    14
+    13
    ],
    [
     "src/lib/freight/index.ts",

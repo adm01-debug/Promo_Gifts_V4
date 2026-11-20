@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "fix: contrato de orphan-mounts alinha com montagem lazy do RupturePanelEma (#3941)",
    "fix(stock): banner de risco EMA não derruba para usuário não-dev (403 da edge) (#3940)",
    "feat(db): colunas do plano de volumes em quotes (frete, Bloco G — DDL, etapa 61) (#3926)",
    "feat(frete): prazo de produção no admin — card, aba Feriados e exceção por produto (Bloco H-UI) (#3936)",
-   "fix(frete): admin de caixas e parâmetros — 2ª rodada (duplo clique, rolagem, limites do banco) (#3924)",
-   "feat(frete): plano de volumes no orçamento, cache ao salvar produto e ships_separately (Bloco E, etapas 46, 47, 49) (#3933)"
+   "fix(frete): admin de caixas e parâmetros — 2ª rodada (duplo clique, rolagem, limites do banco) (#3924)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",
