@@ -1,15 +1,15 @@
 {
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
- "total": 346,
+ "total": 349,
  "por_camada": {
   "api": 4,
   "config": 1,
   "data": 3,
   "integrations": 8,
-  "lib": 265,
+  "lib": 266,
   "python": 9,
-  "services": 14,
+  "services": 16,
   "stores": 9,
   "utils": 33
  },
@@ -720,7 +720,7 @@
    "zod_schemas": 0,
    "flags": [],
    "papeis": [],
-   "usado_por": 412,
+   "usado_por": 414,
    "usado_por_modulos": [
     "components/admin",
     "components/ai",
@@ -953,7 +953,7 @@
     "TablesUpdate"
    ],
    "export_default": null,
-   "linhas": 65334,
+   "linhas": 65358,
    "tabelas": [],
    "rpcs": [],
    "edges": [],
@@ -962,7 +962,7 @@
    "zod_schemas": 0,
    "flags": [],
    "papeis": [],
-   "usado_por": 59,
+   "usado_por": 60,
    "usado_por_modulos": [
     "components/admin",
     "components/cart",
@@ -5501,6 +5501,34 @@
    "orfao": false
   },
   {
+   "arquivo": "src/lib/lead-time/formatDate.ts",
+   "camada": "lib",
+   "exports": [
+    "formatIsoDate",
+    "formatIsoDayMonth",
+    "todayInSaoPaulo",
+    "weekdayNamePt"
+   ],
+   "export_default": null,
+   "linhas": 50,
+   "tabelas": [],
+   "rpcs": [],
+   "edges": [],
+   "env": [],
+   "externos": [],
+   "zod_schemas": 0,
+   "flags": [],
+   "papeis": [],
+   "usado_por": 3,
+   "usado_por_modulos": [
+    "components/admin",
+    "components/freight-plan",
+    "hooks/freight"
+   ],
+   "coberto_por_testes": 1,
+   "orfao": false
+  },
+  {
    "arquivo": "src/lib/lead-time/index.ts",
    "camada": "lib",
    "exports": [
@@ -5520,11 +5548,15 @@
    "zod_schemas": 0,
    "flags": [],
    "papeis": [],
-   "usado_por": 1,
+   "usado_por": 6,
    "usado_por_modulos": [
-    "lib/freight"
+    "components/admin",
+    "components/freight-plan",
+    "hooks/freight",
+    "lib/freight",
+    "services"
    ],
-   "coberto_por_testes": 0,
+   "coberto_por_testes": 2,
    "orfao": false
   },
   {
@@ -5635,7 +5667,7 @@
    "zod_schemas": 0,
    "flags": [],
    "papeis": [],
-   "usado_por": 5,
+   "usado_por": 6,
    "usado_por_modulos": [
     "lib/lead-time"
    ],
@@ -5658,7 +5690,7 @@
    "zod_schemas": 0,
    "flags": [],
    "papeis": [],
-   "usado_por": 309,
+   "usado_por": 310,
    "usado_por_modulos": [
     "components",
     "components/admin",
@@ -7435,7 +7467,7 @@
    "zod_schemas": 0,
    "flags": [],
    "papeis": [],
-   "usado_por": 6,
+   "usado_por": 7,
    "usado_por_modulos": [
     "components/admin",
     "hooks/quotes",
@@ -8631,7 +8663,7 @@
    "zod_schemas": 0,
    "flags": [],
    "papeis": [],
-   "usado_por": 660,
+   "usado_por": 661,
    "usado_por_modulos": [
     "components",
     "components/admin",
@@ -8965,6 +8997,38 @@
    "orfao": false
   },
   {
+   "arquivo": "src/services/businessCalendarService.ts",
+   "camada": "services",
+   "exports": [
+    "BusinessCalendarError",
+    "BusinessCalendarErrorReason",
+    "BusinessCalendarRow",
+    "BusinessCalendarWrite",
+    "businessCalendarService"
+   ],
+   "export_default": null,
+   "linhas": 138,
+   "tabelas": [
+    "business_calendar"
+   ],
+   "rpcs": [],
+   "edges": [],
+   "env": [],
+   "externos": [
+    "@supabase/supabase-js"
+   ],
+   "zod_schemas": 0,
+   "flags": [],
+   "papeis": [],
+   "usado_por": 3,
+   "usado_por_modulos": [
+    "components/admin",
+    "hooks/freight"
+   ],
+   "coberto_por_testes": 3,
+   "orfao": false
+  },
+  {
    "arquivo": "src/services/freightReadinessService.ts",
    "camada": "services",
    "exports": [
@@ -9158,6 +9222,38 @@
    "usado_por_modulos": [],
    "coberto_por_testes": 1,
    "orfao": true
+  },
+  {
+   "arquivo": "src/services/productionLeadTimeService.ts",
+   "camada": "services",
+   "exports": [
+    "LEAD_TIME_BATCH_SIZE",
+    "PersonalizationLeadTimeData",
+    "ProductSupplierLeadTime",
+    "TechniqueRegistration",
+    "productionLeadTimeService"
+   ],
+   "export_default": null,
+   "linhas": 139,
+   "tabelas": [
+    "print_area_techniques",
+    "products",
+    "supplier_settings",
+    "tabela_preco_gravacao_oficial_faixa"
+   ],
+   "rpcs": [],
+   "edges": [],
+   "env": [],
+   "externos": [],
+   "zod_schemas": 0,
+   "flags": [],
+   "papeis": [],
+   "usado_por": 2,
+   "usado_por_modulos": [
+    "hooks/freight"
+   ],
+   "coberto_por_testes": 0,
+   "orfao": false
   },
   {
    "arquivo": "src/services/productService.ts",

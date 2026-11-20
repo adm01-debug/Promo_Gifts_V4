@@ -1,7 +1,7 @@
 {
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
- "total": 640,
+ "total": 643,
  "hooks": [
   {
    "arquivo": "docs/agentes/resgates/quote-comments/codigo/useQuoteComments.ts",
@@ -5087,7 +5087,7 @@
    "hooks_exportados": [
     "useEngravingWizard"
    ],
-   "linhas": 368,
+   "linhas": 398,
    "dominio": "components/admin",
    "tabelas": [],
    "rpcs": [],
@@ -5102,11 +5102,12 @@
     "useState"
    ],
    "canais_realtime": [],
-   "usado_por": 1,
+   "usado_por": 2,
    "usado_por_arquivos": [
-    "src/components/admin/products/sections/ProductEngravingSection.tsx"
+    "src/components/admin/products/sections/ProductEngravingSection.tsx",
+    "src/components/admin/products/sections/engraving/NewAreaProductionDays.tsx"
    ],
-   "coberto_por_testes": 0
+   "coberto_por_testes": 1
   },
   {
    "arquivo": "src/components/admin/products/useProductsManager.ts",
@@ -8792,6 +8793,29 @@
    "coberto_por_testes": 0
   },
   {
+   "arquivo": "src/hooks/freight/useBusinessCalendar.ts",
+   "hooks_exportados": [
+    "useBusinessCalendarMutations",
+    "useBusinessCalendarYear"
+   ],
+   "linhas": 98,
+   "dominio": "hooks/freight",
+   "tabelas": [],
+   "rpcs": [],
+   "edges": [],
+   "hooks_internos": [
+    "useMutation",
+    "useQuery",
+    "useQueryClient"
+   ],
+   "canais_realtime": [],
+   "usado_por": 1,
+   "usado_por_arquivos": [
+    "src/hooks/freight/index.ts"
+   ],
+   "coberto_por_testes": 1
+  },
+  {
    "arquivo": "src/hooks/freight/useFreightPlan.ts",
    "hooks_exportados": [
     "useFreightPlan"
@@ -8854,12 +8878,55 @@
     "useQueryClient"
    ],
    "canais_realtime": [],
-   "usado_por": 2,
+   "usado_por": 3,
    "usado_por_arquivos": [
     "src/hooks/freight/index.ts",
-    "src/hooks/freight/useFreightPlan.ts"
+    "src/hooks/freight/useFreightPlan.ts",
+    "src/hooks/freight/useProductionLeadTime.ts"
    ],
    "coberto_por_testes": 0
+  },
+  {
+   "arquivo": "src/hooks/freight/usePriceTableBands.ts",
+   "hooks_exportados": [
+    "usePriceTableBands"
+   ],
+   "linhas": 23,
+   "dominio": "hooks/freight",
+   "tabelas": [],
+   "rpcs": [],
+   "edges": [],
+   "hooks_internos": [
+    "useQuery"
+   ],
+   "canais_realtime": [],
+   "usado_por": 1,
+   "usado_por_arquivos": [
+    "src/hooks/freight/index.ts"
+   ],
+   "coberto_por_testes": 0
+  },
+  {
+   "arquivo": "src/hooks/freight/useProductionLeadTime.ts",
+   "hooks_exportados": [
+    "useProductionLeadTime"
+   ],
+   "linhas": 163,
+   "dominio": "hooks/freight",
+   "tabelas": [],
+   "rpcs": [],
+   "edges": [],
+   "hooks_internos": [
+    "useFreightSettings",
+    "useMemo",
+    "useQuery"
+   ],
+   "canais_realtime": [],
+   "usado_por": 1,
+   "usado_por_arquivos": [
+    "src/hooks/freight/index.ts"
+   ],
+   "coberto_por_testes": 1
   },
   {
    "arquivo": "src/hooks/freight/useProductMeasures.ts",

@@ -1,6 +1,6 @@
 # 10 · ACESSO E SEGURANÇA — quem pode o quê
 
-> Gerado automaticamente por AI Context Sync v1.3.2 · commit `347131701f` · branch `main` · 2026-11-20 15:34 UTC
+> Gerado automaticamente por AI Context Sync v1.3.2 · commit `a499d84193` · branch `main` · 2026-11-20 16:04 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## Perfis / roles identificados
@@ -78,6 +78,7 @@
 | `bitrix_deals` | enabled | — | — | — | — |
 | `bitrix_sync_logs` | enabled | — | — | — | — |
 | `bot_detection_log` | enabled | authenticated: public.is_dev(auth.uid()) | service_role: (auth.jwt() ->> 'role') = 'service_role' | — | — |
+| `business_calendar` | enabled | authenticated: true | authenticated: public.is_admin() | authenticated: public.is_admin() | authenticated: public.is_admin() |
 | `cache_entries` | enabled | public: true | — | — | — |
 | `cart_templates` | enabled | authenticated: (user_id = auth.uid()) | authenticated: (user_id = auth.uid()) | authenticated: (user_id = auth.uid()) | authenticated: (user_id = auth.uid()) |
 | `catalog_analytics` | enabled | authenticated: is_manager_or_admin() OR (SELECT auth.uid()) = user_id | authenticated: (SELECT auth.uid()) = user_id | — | — |
@@ -322,12 +323,11 @@
 | `product_packagings` | enabled | — | — | — | — |
 | `product_physical` | enabled | authenticated: true<br>service_role: true | service_role: true | service_role: true | service_role: true |
 | `product_price_freshness_overrides` | enabled | — | authenticated: has_role((SELECT auth.uid()), 'admin'::app_role) | authenticated: has_role((SELECT auth.uid()), 'admin'::app_role) | authenticated: has_role((SELECT auth.uid()), 'admin'::app_role) |
-| `product_print_positions` | enabled | public: true | — | — | — |
-| … +197 linhas — lista completa em `context.json` | | | | | |
+| … +198 linhas — lista completa em `context.json` | | | | | |
 
 > `—` com RLS ligado = ninguém além de service_role. `sem RLS` = qualquer chave anon lê/escreve tudo.
 
-## Onde o RLS é IGNORADO (service_role) — 836 arquivo(s)
+## Onde o RLS é IGNORADO (service_role) — 838 arquivo(s)
 
 - `auditoria-supabase/propostas/P01_rls_restrictive_correcao.sql`
 - `auditoria-supabase/propostas/P10_func_new_001_fn_cron_guard_revoke.sql`
@@ -479,7 +479,7 @@
 - `supabase/functions/hash-product-images/index.ts`
 - `supabase/functions/health-check/index.ts`
 - `supabase/functions/load-test/index.ts`
-- … +686 (lista completa em `context.json`)
+- … +688 (lista completa em `context.json`)
 
 ## Funções SQL `SECURITY DEFINER` (rodam com privilégio do dono, ignoram RLS)
 
@@ -1237,7 +1237,7 @@ Middleware matcher (Next.js): nenhum
 | grant | authenticated | select, delete | `kill_switch_hits` |
 | grant | authenticated | select, insert | `access_blocked_log`, `smoke_test_runs`, `admin_audit_log`, `admin_audit_log`, `catalog_analytics`, `audit_log`, `kit_quote_requests` |
 | grant | authenticated | select, insert, update | `visual_search_feedback`, `shipping_boxes` |
-| grant | authenticated | select, insert, update, delete | `magazine_reader_state`, `magazines`, `magazine_items`, `magazine_templates`, `user_2fa_settings`, `bitrix_clients`, `personalization_simulations`, `roles`, `ip_whitelist`, `city_whitelist`, `user_allowed_ips`, `companies`, `sales_goals`, `product_group_components`, `product_group_locations` … +11 |
+| grant | authenticated | select, insert, update, delete | `magazine_reader_state`, `magazines`, `magazine_items`, `magazine_templates`, `user_2fa_settings`, `bitrix_clients`, `personalization_simulations`, `roles`, `ip_whitelist`, `city_whitelist`, `user_allowed_ips`, `companies`, `sales_goals`, `product_group_components`, `product_group_locations` … +12 |
 | grant | authenticated | select, update | `freight_settings`, `freight_settings` |
 | grant | authenticated | usage, select | `smoke_tests_runs_id_seq` |
 | grant | authenticated, anon | execute | `search_products_semantic`, `can_view_audit_logs`, `can_view_telemetry`, `can_view_connections`, `can_manage_connections`, `fn_get_product_customization_options`, `fn_get_product_customization_options`, `fn_get_product_customization_options`, `fn_get_product_customization_options` |
@@ -1262,7 +1262,7 @@ Middleware matcher (Next.js): nenhum
 | grant | service_role | select, insert | `crm_seller_identity_links` |
 | grant | service_role | select, insert, delete | `webhook_request_nonces` |
 | grant | service_role | select, insert, update | `image_backfill_queue`, `e2e_cleanup_audit` |
-| grant | service_role | select, insert, update, delete | `product_novelties`, `_cf_images_audit`, `_img_divergence_audit`, `cf_recon.cf_image`, `cf_recon.cf_ghost_check_queue`, `cf_recon.action_log`, `cf_recon.crawl_run`, `cf_recon.metric_snapshot`, `cf_recon.remediation`, `ai_insights_cache`, `ai_usage_logs`, `products`, `product_sync_logs` |
+| grant | service_role | select, insert, update, delete | `product_novelties`, `_cf_images_audit`, `_img_divergence_audit`, `cf_recon.cf_image`, `cf_recon.cf_ghost_check_queue`, `cf_recon.action_log`, `cf_recon.crawl_run`, `cf_recon.metric_snapshot`, `cf_recon.remediation`, `business_calendar`, `ai_insights_cache`, `ai_usage_logs`, `products`, `product_sync_logs` |
 | grant | service_role | select, insert, update, delete, references, trigger, truncate | `v_products_public` |
 | grant | service_role, authenticated | execute | `record_mcp_access_violation`, `fn_sm_pipeline_health`, `fn_expire_novelties`, `fn_check_schema_signature_drift` |
 | grant | service_role, postgres | execute | `increment_webhook_stats` |
@@ -1272,7 +1272,7 @@ Middleware matcher (Next.js): nenhum
 | revoke | PUBLIC | select | `vw_product_availability`, `extensions.pg_stat_statements`, `extensions.pg_stat_statements_info` |
 | revoke | PUBLIC, anon | all | `fn_get_reposicao_variants_summary`, `check_hardening_status`, `record_mcp_access_violation`, `fn_reconcile_stock_gold`, `fn_pipeline_health`, `fn_generate_market_insights_cache`, `request_discount_approval_transactional`, `respond_discount_approval_transactional`, `request_discount_approval_transactional`, `request_discount_approval_transactional`, `create_quote_with_discount_approval_transactional`, `update_quote_with_discount_approval_transactional`, `request_discount_approval_transactional`, `request_discount_approval_transactional`, `magazine_add_items_atomic` … +22 |
 | revoke | PUBLIC, anon | execute | `cleanup_rate_limits`, `acquire_ai_quota`, `complete_optimization`, `reset_optimization_queue`, `is_org_member`, `start_step_up_challenge`, `verify_step_up_password`, `fn_handle_canonical_root_soft_delete`, `fn_reset_is_shared_on_canonical_null`, `fn_auto_revoke_secdef_public_execute`, `fn_revoke_view_write_grants_on_create`, `get_supplier_reliability_history`, `get_supplier_reliability_history`, `fn_run_smoke_tests`, `fn_run_smoke_tests` … +125 |
-| revoke | PUBLIC, anon, authenticated | all | `increment_webhook_dedupe_hit`, `purge_expired_step_up_artifacts`, `cleanup_security_logs`, `check_mcp_abuse_threshold`, `vault.decrypted_secrets`, `vault.secrets`, `increment_webhook_stats`, `fn_spot_direct_stock_gold`, `fn_spot_direct_prices_gold`, `fn_ingest_asia_api_batch`, `fn_ingest_asia_hg_batch`, `fn_sync_asia_colors`, `fn_parity_standardize_variant`, `fn_purge_spr_history`, `fn_expire_novelties` … +37 |
+| revoke | PUBLIC, anon, authenticated | all | `increment_webhook_dedupe_hit`, `purge_expired_step_up_artifacts`, `cleanup_security_logs`, `check_mcp_abuse_threshold`, `vault.decrypted_secrets`, `vault.secrets`, `increment_webhook_stats`, `fn_spot_direct_stock_gold`, `fn_spot_direct_prices_gold`, `fn_ingest_asia_api_batch`, `fn_ingest_asia_hg_batch`, `fn_sync_asia_colors`, `fn_parity_standardize_variant`, `fn_purge_spr_history`, `fn_expire_novelties` … +38 |
 | revoke | PUBLIC, anon, authenticated | execute | `check_seller_cart_limit`, `handle_password_reset_request`, `check_auth_config_status`, `refresh_product_popularity`, `audit_rls_coverage`, `audit_security_definer_acl`, `fn_pipeline_health`, `fn_product_images_health_check`, `fn_run_schema_drift_check`, `fn_trigger_schema_drift_fetch`, `fn_compute_and_record_drift`, `fn_snapshot_medallion_coverage`, `fn_deploy_readiness_check`, `fn_check_coverage_regression`, `refresh_product_popularity` … +194 |
 | revoke | PUBLIC, anon, authenticated, service_role | all | `magazine_add_items_atomic`, `magazine_remove_items_atomic`, `magazine_reorder_items_atomic`, `magazine_duplicate_atomic`, `magazine_update_metadata_atomic`, `magazine_publish_atomic`, `magazine_validate_page_order_v2`, `magazine_page_order_remove_items_v2`, `magazine_guard_and_version_v2`, `magazine_items_guard_v2`, `magazine_lock_v2` |
 | revoke | PUBLIC,anon | all | `magazine_create_v2`, `magazine_update_metadata_v2`, `magazine_add_items_v2`, `magazine_remove_items_v2`, `magazine_reorder_items_v2`, `magazine_update_item_v2`, `magazine_publish_v2`, `magazine_unpublish_v2`, `magazine_archive_v2`, `magazine_reactivate_v2`, `magazine_soft_delete_v2`, `magazine_restore_v2`, `magazine_duplicate_v2`, `magazine_import_local_v2` |
@@ -1353,6 +1353,7 @@ Middleware matcher (Next.js): nenhum
 | `integration_credentials` | RLS ligado sem nenhuma política → só service_role acessa |  |
 | `magic_up_generations` | RLS ligado sem nenhuma política → só service_role acessa | `recovery/src-legacy/src/hooks/useMagicUpGeneration.ts`<br>`recovery/src-legacy/src/hooks/useMagicUpState.ts`<br>`src/components/search/useGlobalSearch.ts`<br>`src/hooks/intelligence/useMagicUpGeneration.ts`<br>… +1 |
 | `mockup_drafts` | RLS ligado sem nenhuma política → só service_role acessa | `recovery/src-legacy/src/hooks/useMockupDraft.ts`<br>`src/hooks/mockup/useMockupDraft.ts` |
+| `print_area_techniques` | RLS ligado sem nenhuma política → só service_role acessa | `src/services/productionLeadTimeService.ts` |
 | `product_commemorative_dates` | RLS ligado sem nenhuma política → só service_role acessa | `src/components/admin/products/productMarketingData.ts` |
 | `product_materials` | RLS ligado sem nenhuma política → só service_role acessa |  |
 | `product_price_freshness_overrides` | front faz SELECT mas nenhuma política RLS permite SELECT → vai falhar/retornar vazio para usuários | `recovery/src-legacy/src/hooks/useProductFreshnessOverride.ts`<br>`src/hooks/products/useProductFreshnessOverride.ts` |
@@ -1363,9 +1364,10 @@ Middleware matcher (Next.js): nenhum
 | `seller_cart_items` | RLS ligado sem nenhuma política → só service_role acessa | `recovery/src-legacy/src/hooks/useSellerCarts.ts`<br>`src/hooks/products/useSellerCarts.helpers.ts`<br>`src/hooks/products/useSellerCarts.ts` |
 | `seller_carts` | RLS ligado sem nenhuma política → só service_role acessa | `recovery/src-legacy/src/hooks/useSellerCarts.ts`<br>`src/hooks/products/useSellerCarts.helpers.ts`<br>`src/hooks/products/useSellerCarts.ts` |
 | `supplier_products_raw` | RLS ligado sem nenhuma política → só service_role acessa |  |
-| `supplier_settings` | RLS ligado sem nenhuma política → só service_role acessa | `src/hooks/products/useSupplierDefaultLeadTime.ts` |
+| `supplier_settings` | RLS ligado sem nenhuma política → só service_role acessa | `src/hooks/products/useSupplierDefaultLeadTime.ts`<br>`src/services/productionLeadTimeService.ts` |
 | `suppliers` | front faz SELECT mas nenhuma política RLS permite SELECT → vai falhar/retornar vazio para usuários | `src/services/freightReadinessService.ts` |
 | `tabela_preco_gravacao_oficial` | RLS ligado sem nenhuma política → só service_role acessa | `src/lib/external-db/rpc-native.ts` |
+| `tabela_preco_gravacao_oficial_faixa` | RLS ligado sem nenhuma política → só service_role acessa | `src/services/productionLeadTimeService.ts` |
 | `target_audiences` | RLS ligado sem nenhuma política → só service_role acessa | `src/components/admin/products/productMarketingData.ts` |
 | `user_comparisons` | RLS ligado sem nenhuma política → só service_role acessa | `recovery/src-legacy/src/components/compare/ShareComparisonDialog.tsx`<br>`recovery/src-legacy/src/hooks/useComparisonSync.ts`<br>`src/hooks/comparison/useComparisonSync.ts` |
 | `user_onboarding` | front faz SELECT mas nenhuma política RLS permite SELECT → vai falhar/retornar vazio para usuários | `recovery/src-legacy/src/hooks/useOnboarding.ts`<br>`src/hooks/ui/useOnboarding.ts` |
@@ -1811,7 +1813,7 @@ Middleware matcher (Next.js): nenhum
 | `system_kill_switches` | `created_at`, `updated_at` |
 | `user_2fa_settings` | `created_at` |
 | `user_allowed_ips` | `created_at`, `created_by` |
-| … +57 linhas — lista completa em `context.json` | |
+| … +58 linhas — lista completa em `context.json` | |
 
 ## Dados pessoais / sensíveis (LGPD — cuidado em logs, exports, prompts de IA)
 

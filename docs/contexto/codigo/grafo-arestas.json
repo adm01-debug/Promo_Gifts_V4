@@ -2352,6 +2352,18 @@
    "src/lib/security/sanitize-error.ts",
    "src/lib/supabase-untyped.ts"
   ],
+  "src/components/admin/business-calendar/BusinessCalendarManager.tsx": [
+   "src/components/ui/ConfirmDialog.tsx",
+   "src/components/ui/button.tsx",
+   "src/components/ui/input.tsx",
+   "src/components/ui/label.tsx",
+   "src/hooks/freight/index.ts",
+   "src/lib/lead-time/formatDate.ts",
+   "src/services/businessCalendarService.ts"
+  ],
+  "src/components/admin/business-calendar/index.ts": [
+   "src/components/admin/business-calendar/BusinessCalendarManager.tsx"
+  ],
   "src/components/admin/categories-manager/CategoriesManager.tsx": [
    "src/components/admin/categories-manager/categoryMutations.ts",
    "src/components/ui/ConfirmDialog.tsx",
@@ -3737,6 +3749,7 @@
   "src/components/admin/products/sections/ProductEngravingSection.tsx": [
    "src/components/admin/products/ProductFormHelpers.tsx",
    "src/components/admin/products/sections/engraving/EngravingAreaCard.tsx",
+   "src/components/admin/products/sections/engraving/NewAreaProductionDays.tsx",
    "src/components/admin/products/sections/engraving/types.ts",
    "src/components/admin/products/sections/engraving/useEngravingWizard.ts",
    "src/components/ui/ConfirmDialog.tsx",
@@ -3765,6 +3778,7 @@
    "src/components/admin/products/ProductFormHelpers.tsx",
    "src/components/admin/products/leadTimeSource.ts",
    "src/components/ui/badge.tsx",
+   "src/components/ui/button.tsx",
    "src/components/ui/input.tsx",
    "src/components/ui/select.tsx",
    "src/components/ui/textarea.tsx",
@@ -3819,15 +3833,34 @@
    "src/lib/utils.ts"
   ],
   "src/components/admin/products/sections/engraving/EngravingAreaCard.tsx": [
+   "src/components/admin/products/sections/engraving/ProductionDaysInput.tsx",
+   "src/components/admin/products/sections/engraving/productionDays.ts",
    "src/components/admin/products/sections/engraving/types.ts",
    "src/components/ui/badge.tsx",
+   "src/components/ui/button.tsx",
    "src/components/ui/switch.tsx",
+   "src/hooks/freight/index.ts",
    "src/lib/utils.ts"
+  ],
+  "src/components/admin/products/sections/engraving/NewAreaProductionDays.tsx": [
+   "src/components/admin/products/sections/engraving/ProductionDaysInput.tsx",
+   "src/components/admin/products/sections/engraving/productionDays.ts",
+   "src/components/admin/products/sections/engraving/useEngravingWizard.ts",
+   "src/hooks/freight/index.ts"
+  ],
+  "src/components/admin/products/sections/engraving/ProductionDaysInput.tsx": [
+   "src/components/admin/products/sections/engraving/productionDays.ts",
+   "src/components/ui/input.tsx",
+   "src/components/ui/label.tsx"
+  ],
+  "src/components/admin/products/sections/engraving/productionDays.ts": [
+   "src/lib/lead-time/index.ts"
   ],
   "src/components/admin/products/sections/engraving/types.ts": [
    "src/types/gravacao.ts"
   ],
   "src/components/admin/products/sections/engraving/useEngravingWizard.ts": [
+   "src/components/admin/products/sections/engraving/productionDays.ts",
    "src/components/admin/products/sections/engraving/types.ts",
    "src/lib/db/postgrest.ts",
    "src/lib/logger.ts",
@@ -5921,11 +5954,21 @@
    "src/components/ui/radio-group.tsx",
    "src/lib/freight/index.ts"
   ],
+  "src/components/freight-plan/ProductionLeadTimeCard.tsx": [
+   "src/components/ui/button.tsx",
+   "src/components/ui/input.tsx",
+   "src/components/ui/label.tsx",
+   "src/hooks/freight/index.ts",
+   "src/lib/lead-time/formatDate.ts",
+   "src/lib/lead-time/index.ts",
+   "src/lib/utils.ts"
+  ],
   "src/components/freight-plan/index.ts": [
    "src/components/freight-plan/FreightMissingActions.tsx",
    "src/components/freight-plan/FreightPlanCard.tsx",
    "src/components/freight-plan/FreightPlanPanel.tsx",
-   "src/components/freight-plan/MixModeSelector.tsx"
+   "src/components/freight-plan/MixModeSelector.tsx",
+   "src/components/freight-plan/ProductionLeadTimeCard.tsx"
   ],
   "src/components/goals/SalesGoalsCard.tsx": [
    "src/components/ui/badge.tsx",
@@ -10581,10 +10624,17 @@
   ],
   "src/hooks/freight/index.ts": [
    "src/hooks/freight/keys.ts",
+   "src/hooks/freight/useBusinessCalendar.ts",
    "src/hooks/freight/useFreightPlan.ts",
    "src/hooks/freight/useFreightSettings.ts",
+   "src/hooks/freight/usePriceTableBands.ts",
    "src/hooks/freight/useProductMeasures.ts",
+   "src/hooks/freight/useProductionLeadTime.ts",
    "src/hooks/freight/useShippingBoxes.ts"
+  ],
+  "src/hooks/freight/useBusinessCalendar.ts": [
+   "src/hooks/freight/keys.ts",
+   "src/services/businessCalendarService.ts"
   ],
   "src/hooks/freight/useFreightPlan.ts": [
    "src/hooks/freight/useFreightSettings.ts",
@@ -10602,10 +10652,23 @@
    "src/lib/freight/index.ts",
    "src/services/freightSettingsService.ts"
   ],
+  "src/hooks/freight/usePriceTableBands.ts": [
+   "src/hooks/freight/keys.ts",
+   "src/lib/lead-time/index.ts",
+   "src/services/productionLeadTimeService.ts"
+  ],
   "src/hooks/freight/useProductMeasures.ts": [
    "src/hooks/freight/keys.ts",
    "src/integrations/supabase/client.ts",
    "src/lib/freight/index.ts"
+  ],
+  "src/hooks/freight/useProductionLeadTime.ts": [
+   "src/hooks/freight/keys.ts",
+   "src/hooks/freight/useFreightSettings.ts",
+   "src/lib/lead-time/formatDate.ts",
+   "src/lib/lead-time/index.ts",
+   "src/services/businessCalendarService.ts",
+   "src/services/productionLeadTimeService.ts"
   ],
   "src/hooks/freight/useShippingBoxes.ts": [
    "src/hooks/freight/keys.ts",
@@ -12550,6 +12613,9 @@
   "src/lib/lead-time/businessDays.ts": [
    "src/lib/lead-time/types.ts"
   ],
+  "src/lib/lead-time/formatDate.ts": [
+   "src/lib/lead-time/types.ts"
+  ],
   "src/lib/lead-time/index.ts": [
    "src/lib/lead-time/businessDays.ts",
    "src/lib/lead-time/personalizationLeadTime.ts",
@@ -13082,9 +13148,11 @@
    "src/pages/admin/engraving-schema-diff.ts"
   ],
   "src/pages/admin/AdminFreteSettingsPage.tsx": [
+   "src/components/admin/business-calendar/index.ts",
    "src/components/admin/freight-settings/FreightSettingsForm.tsx",
    "src/components/seo/PageSEO.tsx",
    "src/components/ui/button.tsx",
+   "src/components/ui/tabs.tsx",
    "src/hooks/freight/index.ts"
   ],
   "src/pages/admin/AdminLoginAttemptsPage.tsx": [
@@ -15236,6 +15304,12 @@
    "src/lib/auth/safeAuthCall.ts",
    "src/lib/logger.ts"
   ],
+  "src/services/businessCalendarService.ts": [
+   "src/integrations/supabase/client.ts",
+   "src/integrations/supabase/types.ts",
+   "src/lib/logger.ts",
+   "src/lib/security/rls-denial-logger.ts"
+  ],
   "src/services/freightReadinessService.ts": [
    "src/integrations/supabase/client.ts",
    "src/lib/logger.ts"
@@ -15274,6 +15348,10 @@
   "src/services/productShipsSeparatelyService.ts": [
    "src/integrations/supabase/client.ts",
    "src/lib/logger.ts"
+  ],
+  "src/services/productionLeadTimeService.ts": [
+   "src/integrations/supabase/client.ts",
+   "src/lib/lead-time/index.ts"
   ],
   "src/services/quoteItemsReorder.ts": [
    "src/integrations/supabase/client.ts",

@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "347131701f8dda31639d5231319df768e6a58ea5",
+  "sha": "a499d841939b19749b4db766ceda04c76f39591a",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-20 15:34 UTC",
-  "files_total": 11072,
-  "code_files": 9085,
-  "code_lines": 1288986
+  "generated_at": "2026-11-20 16:04 UTC",
+  "files_total": 11096,
+  "code_files": 9109,
+  "code_lines": 1292039
  },
  "version": "1.3.2",
- "facts_hash": "a2c41603e55f0261",
+ "facts_hash": "5fc3509c4785fdac",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -1128,9 +1128,9 @@
   ],
   "package_manager": "npm",
   "languages": {
-   ".sql": 3471,
-   ".ts": 3145,
-   ".tsx": 1998,
+   ".sql": 3473,
+   ".ts": 3157,
+   ".tsx": 2008,
    ".mjs": 456,
    ".py": 15,
    ".js": 7
@@ -25926,6 +25926,13 @@
       "fk": "",
       "generated": "",
       "src": "supabase/migrations-snapshot/SCHEMA_LIVE.sql"
+     },
+     {
+      "name": "production_days",
+      "type": "integer",
+      "fk": "",
+      "generated": "",
+      "src": "supabase/migrations/20261120041000_production_lead_time_calendar.sql"
      }
     ],
     "constraints": [
@@ -43045,6 +43052,42 @@
     "comment": "Parâmetros globais do cálculo de frete (linha única). Lidos pelo motor em src/lib/freight; alterados só por admin em /admin/frete.",
     "origin": "migration"
    },
+   "business_calendar": {
+    "columns": [
+     {
+      "name": "day",
+      "type": "date PRIMARY KEY",
+      "fk": "",
+      "generated": "",
+      "src": "supabase/migrations/20261120041000_production_lead_time_calendar.sql"
+     },
+     {
+      "name": "description",
+      "type": "text NOT NULL CONSTRAINT business_calendar_description_check CHECK (description ~ '\\S' AND length(description) <= 120)",
+      "fk": "",
+      "generated": "",
+      "src": "supabase/migrations/20261120041000_production_lead_time_calendar.sql"
+     },
+     {
+      "name": "created_at",
+      "type": "timestamptz NOT NULL DEFAULT now()",
+      "fk": "",
+      "generated": "",
+      "src": "supabase/migrations/20261120041000_production_lead_time_calendar.sql"
+     },
+     {
+      "name": "created_by",
+      "type": "uuid NULL DEFAULT auth.uid() REFERENCES auth.users(id) ON DELETE SET NULL",
+      "fk": "users.id ON DELETE SET NULL",
+      "generated": "",
+      "src": "supabase/migrations/20261120041000_production_lead_time_calendar.sql"
+     }
+    ],
+    "constraints": [],
+    "src": "supabase/migrations/20261120041000_production_lead_time_calendar.sql",
+    "comment": "Feriados em que não se conta dia útil no prazo de produção (src/lib/lead-time). Uma linha por data. Sábado e domingo não entram: a biblioteca já os pula.",
+    "origin": "migration"
+   },
    "webhook_configs": {
     "columns": [
      {
@@ -50492,6 +50535,46 @@
     "using": "public.is_admin()",
     "check": "public.is_admin()",
     "src": "supabase/migrations/20261119213100_create_freight_settings.sql"
+   },
+   {
+    "name": "business_calendar_select_authenticated",
+    "table": "business_calendar",
+    "cmd": "SELECT",
+    "roles": "authenticated",
+    "mode": "permissive",
+    "using": "true",
+    "check": "",
+    "src": "supabase/migrations/20261120041000_production_lead_time_calendar.sql"
+   },
+   {
+    "name": "business_calendar_insert_admin",
+    "table": "business_calendar",
+    "cmd": "INSERT",
+    "roles": "authenticated",
+    "mode": "permissive",
+    "using": "",
+    "check": "public.is_admin()",
+    "src": "supabase/migrations/20261120041000_production_lead_time_calendar.sql"
+   },
+   {
+    "name": "business_calendar_update_admin",
+    "table": "business_calendar",
+    "cmd": "UPDATE",
+    "roles": "authenticated",
+    "mode": "permissive",
+    "using": "public.is_admin()",
+    "check": "public.is_admin()",
+    "src": "supabase/migrations/20261120041000_production_lead_time_calendar.sql"
+   },
+   {
+    "name": "business_calendar_delete_admin",
+    "table": "business_calendar",
+    "cmd": "DELETE",
+    "roles": "authenticated",
+    "mode": "permissive",
+    "using": "public.is_admin()",
+    "check": "",
+    "src": "supabase/migrations/20261120041000_production_lead_time_calendar.sql"
    },
    {
     "name": "product_ai_anon_select",
@@ -96470,6 +96553,7 @@
    "supabase/migrations/20261120013000_add_products_ships_separately.sql",
    "supabase/migrations/20261120030000_harden_freight_tables.sql",
    "supabase/migrations/20261120030100_seed_shipping_boxes.sql",
+   "supabase/migrations/20261120041000_production_lead_time_calendar.sql",
    "supabase/rollbacks/20260511235950_rollback.sql",
    "supabase/rollbacks/20260511235959_rollback.sql",
    "supabase/rollbacks/20260611014515_fn_dryrun_standardize_supplier_real_rollback.sql",
@@ -96591,6 +96675,7 @@
    "supabase/rollbacks/20261120013000_rollback.sql",
    "supabase/rollbacks/20261120030000_rollback.sql",
    "supabase/rollbacks/20261120030100_rollback.sql",
+   "supabase/rollbacks/20261120041000_rollback.sql",
    "supabase/rollbacks/rollback_20261025002500_analyze_tables_p03.sql",
    "supabase/sql-legacy/001_notification_system.sql",
    "supabase/sql-legacy/002_notification_preferences.sql",
@@ -97163,7 +97248,8 @@
    "endomarketing_themes": "enabled",
    "product_endomarketing": "enabled",
    "shipping_boxes": "enabled",
-   "freight_settings": "enabled"
+   "freight_settings": "enabled",
+   "business_calendar": "enabled"
   },
   "grants": [
    {
@@ -133257,6 +133343,30 @@
    {
     "kind": "revoke",
     "privs": "all",
+    "object": "business_calendar",
+    "objkind": "table",
+    "roles": "PUBLIC, anon, authenticated",
+    "src": "supabase/migrations/20261120041000_production_lead_time_calendar.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "select, insert, update, delete",
+    "object": "business_calendar",
+    "objkind": "table",
+    "roles": "authenticated",
+    "src": "supabase/migrations/20261120041000_production_lead_time_calendar.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "select, insert, update, delete",
+    "object": "business_calendar",
+    "objkind": "table",
+    "roles": "service_role",
+    "src": "supabase/migrations/20261120041000_production_lead_time_calendar.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "all",
     "object": "fn_dryrun_standardize_supplier",
     "objkind": "function",
     "roles": "PUBLIC",
@@ -138214,6 +138324,12 @@
    "column:freight_settings.updated_at": "Última alteração, mantida pelo trigger set_freight_settings_updated_at.",
    "column:freight_settings.updated_by": "Usuário admin que fez a última alteração.",
    "column:products.ships_separately": "Vai sempre em caixa própria no frete: frágil, líquido, volumoso. Vence a escolha do vendedor.",
+   "column:print_area_techniques.production_days": "Dias úteis de personalização para este produto × local × técnica. NULL = usa prazo_dias da faixa da tabela de preço",
+   "table:business_calendar": "Feriados em que não se conta dia útil no prazo de produção (src/lib/lead-time). Uma linha por data. Sábado e domingo não entram: a biblioteca já os pula.",
+   "column:business_calendar.day": "Data do feriado (AAAA-MM-DD). Chave primária: uma linha por dia.",
+   "column:business_calendar.description": "Nome do feriado em português, até 120 caracteres.",
+   "column:business_calendar.created_at": "Criação do registro.",
+   "column:business_calendar.created_by": "Usuário que cadastrou. Nulo no seed e quando o usuário é removido.",
    "table:frontend_telemetry": "ATENCAO: Auditoria 20260602 - user_id = NULL em 100% dos registros. Bug de instrumentacao no frontend."
   },
   "types_file": ""
@@ -145635,7 +145751,7 @@
     "file": ".github/workflows/wraparound-monitor-report.yml"
    }
   ],
-  "components_count": 1742,
+  "components_count": 1753,
   "hooks": [
    {
     "name": "useQuoteComments",
@@ -147742,6 +147858,14 @@
     "file": "src/hooks/favorites/useFavoritesPageState.ts"
    },
    {
+    "name": "useBusinessCalendarYear",
+    "file": "src/hooks/freight/useBusinessCalendar.ts"
+   },
+   {
+    "name": "useBusinessCalendarMutations",
+    "file": "src/hooks/freight/useBusinessCalendar.ts"
+   },
+   {
     "name": "useFreightPlan",
     "file": "src/hooks/freight/useFreightPlan.ts"
    },
@@ -147758,8 +147882,16 @@
     "file": "src/hooks/freight/useFreightSettings.ts"
    },
    {
+    "name": "usePriceTableBands",
+    "file": "src/hooks/freight/usePriceTableBands.ts"
+   },
+   {
     "name": "useProductMeasures",
     "file": "src/hooks/freight/useProductMeasures.ts"
+   },
+   {
+    "name": "useProductionLeadTime",
+    "file": "src/hooks/freight/useProductionLeadTime.ts"
    },
    {
     "name": "useShippingBoxes",
@@ -150327,8 +150459,8 @@
   },
   {
    "module": "src/components",
-   "files": 1466,
-   "lines": 288131,
+   "files": 1477,
+   "lines": 289607,
    "tables": [
     "admin_audit_log",
     "art_file_attachments",
@@ -150526,6 +150658,9 @@
     "src/components/admin/badges-manager/index.ts",
     "src/components/admin/badges-manager/types.ts",
     "src/components/admin/badges-manager/useBadgesManager.ts",
+    "src/components/admin/business-calendar/BusinessCalendarManager.tsx",
+    "src/components/admin/business-calendar/index.ts",
+    "src/components/admin/business-calendar/__tests__/BusinessCalendarManager.test.tsx",
     "src/components/admin/categories-manager/CategoriesManager.tsx",
     "src/components/admin/categories-manager/categoryMutations.ts",
     "src/components/admin/categories-manager/index.ts",
@@ -150557,10 +150692,7 @@
     "src/components/admin/connections/CredentialsSourceFilterContext.tsx",
     "src/components/admin/connections/CredentialsSourceIndicator.tsx",
     "src/components/admin/connections/DataSourceDebugTab.tsx",
-    "src/components/admin/connections/ErrorDetailsDialog.tsx",
-    "src/components/admin/connections/EventsMultiSelect.tsx",
-    "src/components/admin/connections/ExpectedKeysMatchPanel.tsx",
-    "src/components/admin/connections/ExplainModeContext.tsx"
+    "src/components/admin/connections/ErrorDetailsDialog.tsx"
    ]
   },
   {
@@ -150691,8 +150823,8 @@
   },
   {
    "module": "src/hooks",
-   "files": 499,
-   "lines": 92995,
+   "files": 504,
+   "lines": 93604,
    "tables": [
     "admin_audit_log",
     "admin_settings",
@@ -150981,8 +151113,8 @@
   },
   {
    "module": "src/lib",
-   "files": 412,
-   "lines": 64305,
+   "files": 414,
+   "lines": 64404,
    "tables": [
     "...",
     "companies",
@@ -151190,7 +151322,7 @@
   {
    "module": "src/pages",
    "files": 371,
-   "lines": 85524,
+   "lines": 85563,
    "tables": [
     "ai_usage_events",
     "bot_detection_log",
@@ -151450,15 +151582,17 @@
   },
   {
    "module": "src/services",
-   "files": 37,
-   "lines": 6907,
+   "files": 40,
+   "lines": 7335,
    "tables": [
+    "business_calendar",
     "freight_settings",
     "frontend_telemetry",
     "magazine_items",
     "magazines",
     "order_items",
     "orders",
+    "print_area_techniques",
     "product_variants",
     "products",
     "profiles",
@@ -151467,12 +151601,15 @@
     "quote_items",
     "quotes",
     "shipping_boxes",
+    "supplier_settings",
     "suppliers",
+    "tabela_preco_gravacao_oficial_faixa",
     "user_notification_preferences",
     "user_roles"
    ],
    "exports": [
     "authService.ts: authService",
+    "businessCalendarService.ts: BusinessCalendarRow, BusinessCalendarWrite, BusinessCalendarErrorReason, BusinessCalendarError, businessCalendarService",
     "freightReadinessService.ts: FreightReadinessError, FREIGHT_READINESS_SELECT, FreightReadinessProduct, fetchActiveProductsForFreight, fetchSupplierNames",
     "freightSettingsService.ts: FreightSettingsRow, MultiPersonalizationRule, FreightSettingsWrite, FreightSettingsPatch, FreightSettingsErrorReason, FreightSettingsError",
     "magazineService.ts: MagazineMetadataPatch, MagazineMutationError, productToSnapshot, magazineService",
@@ -151481,6 +151618,7 @@
     "orderService.ts: OrderLookupItem, OrderLookup, orderService",
     "productService.ts: productService",
     "productShipsSeparatelyService.ts: fetchShipsSeparately",
+    "productionLeadTimeService.ts: LEAD_TIME_BATCH_SIZE, ProductSupplierLeadTime, TechniqueRegistration, PersonalizationLeadTimeData, productionLeadTimeService",
     "quoteItemsReorder.ts: ReorderRow, persistItemsOrder",
     "quoteService.ts: quoteService",
     "ramoAtividadeService.ts: ramoAtividadeService",
@@ -151488,12 +151626,12 @@
     "telemetryService.ts: TelemetryEventType, TelemetryPayload, telemetryService"
    ],
    "docs": [
+    "businessCalendarService.ts: Feriados do prazo de produção (`public.business_calendar`). Regras do banco (migration 20261120041000): - `day` é a chave primária: a mesma data não entra duas vezes (23505). - Leitura para qualquer autenticado; escrita só para admin. A RLS nega INSERT com erro e UPDATE/DELETE em silêncio (0 linhas) …",
     "freightSettingsService.ts: Parâmetros globais do frete (`public.freight_settings`) — linha única. A tabela é um singleton com chave booleana travada em `true` (migration 20261119213100_create_freight_settings.sql) e só tem policy de SELECT e de UPDATE. Por isso salvar é sempre `update(...).eq('id', true)`: `upsert` e `insert` …",
     "productShipsSeparatelyService.ts: Lê `products.ships_separately` direto da tabela-base. O formulário de produto carrega o cadastro por `v_products_public`, que não expõe esta coluna. Sem esta leitura, o formulário abriria sempre com \"Não mistura\" desligado e, ao salvar, apagaria a marcação em silêncio. Em erro lança: assumir `false` …",
+    "productionLeadTimeService.ts: Leituras do prazo de produção. Converte as linhas do banco nos objetos simples de `src/lib/lead-time` (a biblioteca não conhece linhas cruas). Como as tabelas se ligam (conferido em produção, 2026-11-20): - `products.supplier_id` -> `supplier_settings.supplier_id` (prazo padrão do fornecedor); - `pr …",
     "authService.oauth.test.ts: Onda 16 — Contrato dos wrappers OAuth Safe. signInWithOAuthSafe + exchangeCodeForSessionSafe: nunca lançam, classificam errorKind.",
-    "freightReadinessService.test.ts: freightReadinessService e productShipsSeparatelyService — o que é enviado ao PostgREST e como as páginas de 1.000 linhas são juntadas.",
-    "freightSettingsService.test.ts: freightSettingsService — contrato com `public.freight_settings` (linha única). O cliente Supabase é trocado por um builder que grava cada chamada (`ops`), então o teste confere o que seria enviado ao PostgREST. O detector de RLS (`isRlsDenialError`) é o real.",
-    "magazineEdgeContract.test.ts: magazineService.getPublicByToken — contract tests contra a edge magazine-public-view. 60+ cenários (HTTP status, timeout, headers, tokens). Objetivo: garantir que a leitura pública: - JAMAIS envia Authorization header (não é o mesmo que apikey) - propaga X-Request-Id - retorna null em qualquer erro …"
+    "businessCalendarService.test.ts: businessCalendarService — contrato com `public.business_calendar`. O cliente Supabase vira um builder que grava cada chamada; o teste confere filtros, ordem e payload enviados ao PostgREST."
    ],
    "deps": [
     "@supabase/supabase-js",
@@ -151509,6 +151647,7 @@
    ],
    "file_list": [
     "src/services/authService.ts",
+    "src/services/businessCalendarService.ts",
     "src/services/freightReadinessService.ts",
     "src/services/freightSettingsService.ts",
     "src/services/magazineService.ts",
@@ -151517,12 +151656,14 @@
     "src/services/orderService.ts",
     "src/services/productService.ts",
     "src/services/productShipsSeparatelyService.ts",
+    "src/services/productionLeadTimeService.ts",
     "src/services/quoteItemsReorder.ts",
     "src/services/quoteService.ts",
     "src/services/ramoAtividadeService.ts",
     "src/services/shippingBoxService.ts",
     "src/services/telemetryService.ts",
     "src/services/__tests__/authService.oauth.test.ts",
+    "src/services/__tests__/businessCalendarService.test.ts",
     "src/services/__tests__/freightReadinessService.test.ts",
     "src/services/__tests__/freightSettingsService.test.ts",
     "src/services/__tests__/magazineAddProductsUnique.test.ts",
@@ -152181,8 +152322,8 @@
   },
   {
    "module": "supabase/migrations",
-   "files": 3114,
-   "lines": 225097,
+   "files": 3115,
+   "lines": 225235,
    "tables": [
     "...",
     "admin_audit_log",
@@ -152280,8 +152421,8 @@
   },
   {
    "module": "supabase/rollbacks",
-   "files": 122,
-   "lines": 3818,
+   "files": 123,
+   "lines": 3926,
    "tables": [],
    "exports": [],
    "docs": [],
@@ -152456,8 +152597,8 @@
   },
   {
    "module": "tests",
-   "files": 1107,
-   "lines": 174967,
+   "files": 1108,
+   "lines": 175123,
    "tables": [
     "bot_detection_log",
     "clients",
@@ -152899,6 +153040,20 @@
      "src/components/admin/security/TopOffenderIpsCard.tsx",
      "src/pages/admin/AdminSegurancaAcessoPage.tsx",
      "tests/rls/personas.test.ts"
+    ]
+   },
+   "business_calendar": {
+    "select": [
+     "src/services/businessCalendarService.ts"
+    ],
+    "insert": [
+     "src/services/businessCalendarService.ts"
+    ],
+    "update": [
+     "src/services/businessCalendarService.ts"
+    ],
+    "delete": [
+     "src/services/businessCalendarService.ts"
     ]
    },
    "cart_templates": {
@@ -153983,6 +154138,11 @@
      "supabase/functions/comparison-price-watcher/index.ts"
     ]
    },
+   "print_area_techniques": {
+    "select": [
+     "src/services/productionLeadTimeService.ts"
+    ]
+   },
    "product_category_assignments": {
     "select": [
      "supabase/functions/categories-api/index.ts",
@@ -154195,6 +154355,7 @@
      "src/pages/products/seller-carts/useSellerCartsPage.ts",
      "src/services/freightReadinessService.ts",
      "src/services/productShipsSeparatelyService.ts",
+     "src/services/productionLeadTimeService.ts",
      "src/services/quoteService.ts",
      "src/tests/ProductFetch.test.ts",
      "supabase/functions/categories-api/index.ts",
@@ -154799,7 +154960,8 @@
    },
    "supplier_settings": {
     "select": [
-     "src/hooks/products/useSupplierDefaultLeadTime.ts"
+     "src/hooks/products/useSupplierDefaultLeadTime.ts",
+     "src/services/productionLeadTimeService.ts"
     ]
    },
    "suppliers": {
@@ -154859,6 +155021,11 @@
    "tabela_preco_gravacao_oficial": {
     "select": [
      "src/lib/external-db/rpc-native.ts"
+    ]
+   },
+   "tabela_preco_gravacao_oficial_faixa": {
+    "select": [
+     "src/services/productionLeadTimeService.ts"
     ]
    },
    "target_audiences": {
@@ -155274,6 +155441,12 @@
     "created_at",
     "id",
     "ip_address"
+   ],
+   "business_calendar": [
+    "created_at",
+    "created_by",
+    "day",
+    "description"
    ],
    "cart_templates": [
     "description",
@@ -155855,6 +156028,14 @@
     "new_values",
     "variant_id"
    ],
+   "print_area_techniques": [
+    "id",
+    "is_active",
+    "location_code",
+    "product_id",
+    "production_days",
+    "tabela_preco_id"
+   ],
    "product_category_assignments": [
     "category_id",
     "product_id"
@@ -155979,6 +156160,7 @@
     "images",
     "is_active",
     "is_deleted",
+    "lead_time_days",
     "locked_fields",
     "name",
     "nome",
@@ -156286,6 +156468,12 @@
     "codigo_tabela",
     "id",
     "max_cores"
+   ],
+   "tabela_preco_gravacao_oficial_faixa": [
+    "prazo_dias",
+    "quantidade_maxima",
+    "quantidade_minima",
+    "tabela_preco_gravacao_id"
    ],
    "target_audiences": [
     "id",
@@ -159489,7 +159677,6 @@
    "pipeline_known_issues",
    "pipeline_run_log",
    "point_transactions",
-   "print_area_techniques",
    "product_ai_content",
    "product_ai_history",
    "product_attributes",
@@ -159614,7 +159801,6 @@
    "system_changelog",
    "system_documentation",
    "system_error_logs",
-   "tabela_preco_gravacao_oficial_faixa",
    "table_size_history",
    "tags",
    "tecnicas_gravacao",
@@ -159896,6 +160082,10 @@
    {
     "table": "products",
     "column": "is_deleted"
+   },
+   {
+    "table": "products",
+    "column": "lead_time_days"
    },
    {
     "table": "products",
@@ -160216,6 +160406,22 @@
    {
     "table": "query_telemetry",
     "column": "cache_hit"
+   },
+   {
+    "table": "tabela_preco_gravacao_oficial_faixa",
+    "column": "prazo_dias"
+   },
+   {
+    "table": "tabela_preco_gravacao_oficial_faixa",
+    "column": "quantidade_maxima"
+   },
+   {
+    "table": "tabela_preco_gravacao_oficial_faixa",
+    "column": "quantidade_minima"
+   },
+   {
+    "table": "tabela_preco_gravacao_oficial_faixa",
+    "column": "tabela_preco_gravacao_id"
    },
    {
     "table": "product_images",
@@ -162370,6 +162576,21 @@
     "rules": "type=number"
    },
    {
+    "file": "src/components/admin/business-calendar/BusinessCalendarManager.tsx",
+    "field": "feriados-ano",
+    "rules": "type=number, min=FIRST_YEAR, max=LAST_YEAR"
+   },
+   {
+    "file": "src/components/admin/business-calendar/BusinessCalendarManager.tsx",
+    "field": "feriado-data",
+    "rules": "type=date"
+   },
+   {
+    "file": "src/components/admin/business-calendar/BusinessCalendarManager.tsx",
+    "field": "feriado-nome",
+    "rules": "max"
+   },
+   {
     "file": "src/components/admin/connections/AiModelsTab.tsx",
     "field": "mod-ci",
     "rules": "type=number, step=0.01"
@@ -162618,6 +162839,11 @@
     "file": "src/components/auth/StepUpAuthDialog.tsx",
     "field": "su-otp",
     "rules": "pattern=[0-9]{6, max"
+   },
+   {
+    "file": "src/components/freight-plan/ProductionLeadTimeCard.tsx",
+    "field": "estimated-delivery-days",
+    "rules": "type=number, min=0"
    },
    {
     "file": "src/components/inventory/PurchaseOrderModal.tsx",
@@ -163950,6 +164176,11 @@
     "file": "src/pages/quotes/components/DeliveryModeToggle.tsx",
     "name": "DeliveryMode",
     "values": "data | prazo"
+   },
+   {
+    "file": "src/services/businessCalendarService.ts",
+    "name": "BusinessCalendarErrorReason",
+    "values": "duplicate_day | invalid | not_applied | permission | unknown"
    },
    {
     "file": "src/services/freightSettingsService.ts",
@@ -166256,6 +166487,14 @@
     "msg": "Falha ao remover badge"
    },
    {
+    "file": "src/components/admin/business-calendar/BusinessCalendarManager.tsx",
+    "msg": "\n          className="
+   },
+   {
+    "file": "src/components/admin/business-calendar/BusinessCalendarManager.tsx",
+    "msg": " className="
+   },
+   {
     "file": "src/components/admin/categories-manager/CategoriesManager.tsx",
     "msg": "Esta categoria tem subcategorias ativas. Mova ou desative cada uma antes."
    },
@@ -166904,8 +167143,16 @@
     "msg": "Selecione uma imagem"
    },
    {
+    "file": "src/components/admin/products/sections/engraving/ProductionDaysInput.tsx",
+    "msg": " : undefined}\n        className={\n          invalid ? "
+   },
+   {
     "file": "src/components/admin/products/sections/engraving/useEngravingWizard.ts",
     "msg": "${failed} área(s) de gravação não foram salvas"
+   },
+   {
+    "file": "src/components/admin/products/sections/engraving/useEngravingWizard.ts",
+    "msg": "Sem permissão para alterar esta área de gravação. Apenas administradores podem salvar."
    },
    {
     "file": "src/components/admin/products/video-gallery/useProductVideoGallery.ts",
@@ -167521,6 +167768,14 @@
    },
    {
     "file": "src/components/freight-plan/FreightPlanPanel.tsx",
+    "msg": " className="
+   },
+   {
+    "file": "src/components/freight-plan/ProductionLeadTimeCard.tsx",
+    "msg": "\n              className="
+   },
+   {
+    "file": "src/components/freight-plan/ProductionLeadTimeCard.tsx",
     "msg": " className="
    },
    {
@@ -170056,6 +170311,14 @@
     "msg": "Seu navegador não suporta comandos de voz."
    },
    {
+    "file": "src/services/businessCalendarService.ts",
+    "msg": "not_applied"
+   },
+   {
+    "file": "src/services/businessCalendarService.ts",
+    "msg": "permission"
+   },
+   {
     "file": "src/services/freightReadinessService.ts",
     "msg": "Não foi possível carregar os fornecedores."
    },
@@ -171844,6 +172107,10 @@
     "text": "onde/como são usadas, regra de negócio, prioridade e configuração."
    },
    {
+    "file": "src/components/admin/business-calendar/BusinessCalendarManager.tsx",
+    "text": "* Aba \"Feriados\" de `/admin/frete`: dias em que o prazo de produção não conta"
+   },
+   {
     "file": "src/components/admin/connections/BridgeProductsPreviewPanel.tsx",
     "text": "ativos/inativos, faixa de preço e estoque mínimo, com paginação server-side"
    },
@@ -172072,8 +172339,48 @@
     "text": "Marca + País + Prazo + Modo */}"
    },
    {
+    "file": "src/components/admin/products/sections/engraving/EngravingAreaCard.tsx",
+    "text": "* Grava o prazo de personalização (null = usa a tabela). */"
+   },
+   {
+    "file": "src/components/admin/products/sections/engraving/NewAreaProductionDays.tsx",
+    "text": "* Campo \"Prazo (dias úteis)\" do passo Detalhes do assistente de gravação: a"
+   },
+   {
+    "file": "src/components/admin/products/sections/engraving/ProductionDaysInput.tsx",
+    "text": "* Campo \"Prazo (dias úteis)\" de uma técnica do produto. Texto livre com"
+   },
+   {
+    "file": "src/components/admin/products/sections/engraving/ProductionDaysInput.tsx",
+    "text": "validação: vazio = usa a tabela de preço (grava `null`)."
+   },
+   {
+    "file": "src/components/admin/products/sections/engraving/productionDays.ts",
+    "text": "* Prazo de personalização por técnica (`print_area_techniques.production_days`),"
+   },
+   {
+    "file": "src/components/admin/products/sections/engraving/productionDays.ts",
+    "text": "em dias úteis. Vazio grava `null` (usa o prazo da faixa da tabela de preço)."
+   },
+   {
+    "file": "src/components/admin/products/sections/engraving/productionDays.ts",
+    "text": "* Sugestão do campo vazio: o prazo das faixas da tabela de preço da técnica."
+   },
+   {
+    "file": "src/components/admin/products/sections/engraving/types.ts",
+    "text": "* Dias úteis de personalização; null = usa o prazo da faixa da tabela de preço */"
+   },
+   {
+    "file": "src/components/admin/products/sections/engraving/types.ts",
+    "text": "* Texto digitado em \"Prazo (dias úteis)\"; vazio = null */"
+   },
+   {
     "file": "src/components/admin/products/sections/engraving/useEngravingWizard.ts",
     "text": "* useEngravingWizard — Business logic for the engraving wizard"
+   },
+   {
+    "file": "src/components/admin/products/sections/engraving/useEngravingWizard.ts",
+    "text": "* Grava o prazo da técnica (null = usa a tabela). Área ainda não salva só muda na memória. */"
    },
    {
     "file": "src/components/admin/security/keys/McpKeysFilters.tsx",
@@ -172382,6 +172689,22 @@
    {
     "file": "src/components/freight-plan/FreightPlanPanel.tsx",
     "text": "`div`, não `p`: a regra global `.dark p/span/li` pinta de branco e esconderia a cor do erro."
+   },
+   {
+    "file": "src/components/freight-plan/ProductionLeadTimeCard.tsx",
+    "text": "* Card \"Prazo de produção\" do orçamento: em quantos dias úteis o pedido fica"
+   },
+   {
+    "file": "src/components/freight-plan/ProductionLeadTimeCard.tsx",
+    "text": "pronto para envio, qual item define esse prazo e de onde vem cada número."
+   },
+   {
+    "file": "src/components/freight-plan/ProductionLeadTimeCard.tsx",
+    "text": "deliveryMode={deliveryMode}            // 'data' | 'prazo' do orçamento"
+   },
+   {
+    "file": "src/components/freight-plan/ProductionLeadTimeCard.tsx",
+    "text": "* Dia da aprovação (AAAA-MM-DD); null = o prazo começa hoje. */"
    },
    {
     "file": "src/components/intelligence/MarketIntelligenceChart.tsx",
@@ -173588,8 +173911,32 @@
     "text": "Múltiplas listas e sem shift → o caller deve mostrar picker"
    },
    {
+    "file": "src/hooks/freight/keys.ts",
+    "text": "* Feriados: a lista por ano da tela e a lista inteira do cálculo do prazo saem do mesmo prefixo. */"
+   },
+   {
+    "file": "src/hooks/freight/keys.ts",
+    "text": "* Prazo de produção: ids de produto ordenados e sem duplicata. */"
+   },
+   {
+    "file": "src/hooks/freight/keys.ts",
+    "text": "* Padrão de prazo do fornecedor: 1 hora. */"
+   },
+   {
+    "file": "src/hooks/freight/useBusinessCalendar.ts",
+    "text": "Mudou um feriado: a lista do ano e o cálculo do prazo precisam reler."
+   },
+   {
     "file": "src/hooks/freight/useFreightReadinessReport.ts",
     "text": "a regra do motor (`getFreightReadiness`), aplicada no navegador."
+   },
+   {
+    "file": "src/hooks/freight/usePriceTableBands.ts",
+    "text": "* Faixas (quantidade e prazo) das tabelas de preço de gravação. A tela de"
+   },
+   {
+    "file": "src/hooks/freight/usePriceTableBands.ts",
+    "text": "técnicas do produto usa o prazo da faixa como sugestão (\"tabela: N\")."
    },
    {
     "file": "src/hooks/freight/useProductMeasures.ts",
@@ -173598,6 +173945,22 @@
    {
     "file": "src/hooks/freight/useProductMeasures.ts",
     "text": "(produto novo no orçamento); remover um produto não pode piscar o esqueleto."
+   },
+   {
+    "file": "src/hooks/freight/useProductionLeadTime.ts",
+    "text": "* `useProductionLeadTime` — prazo de produção de um orçamento (dias úteis e data"
+   },
+   {
+    "file": "src/hooks/freight/useProductionLeadTime.ts",
+    "text": "de \"pronto para envio\"). Só carrega dados; a regra está em `src/lib/lead-time`."
+   },
+   {
+    "file": "src/hooks/freight/useProductionLeadTime.ts",
+    "text": "- folga interna e regra de várias personalizações (`freight_settings`): como os demais parâmetros."
+   },
+   {
+    "file": "src/hooks/freight/useProductionLeadTime.ts",
+    "text": "* Dia civil da aprovação (America/Sao_Paulo); null = o prazo começa hoje. */"
    },
    {
     "file": "src/hooks/gravacao/gravacao-types.ts",
@@ -176544,6 +176907,22 @@
     "text": "data é opcional pois métodos como signOut retornam apenas { error }."
    },
    {
+    "file": "src/services/businessCalendarService.ts",
+    "text": "* Feriados do prazo de produção (`public.business_calendar`)."
+   },
+   {
+    "file": "src/services/businessCalendarService.ts",
+    "text": "`.select('day')` e 0 linhas vira erro de permissão."
+   },
+   {
+    "file": "src/services/businessCalendarService.ts",
+    "text": "- `description` não pode ser vazia nem passar de 120 caracteres (23514)."
+   },
+   {
+    "file": "src/services/businessCalendarService.ts",
+    "text": "* Todos os feriados, por data. É o que o cálculo do prazo consome. */"
+   },
+   {
     "file": "src/services/freightReadinessService.ts",
     "text": "menor que 1.000, a página curta não pode ser tomada como a última."
    },
@@ -176570,6 +176949,22 @@
    {
     "file": "src/services/orderService.ts",
     "text": "* Total que o pedido deveria ter: itens − desconto + frete + imposto. */"
+   },
+   {
+    "file": "src/services/productionLeadTimeService.ts",
+    "text": "* Leituras do prazo de produção. Converte as linhas do banco nos objetos"
+   },
+   {
+    "file": "src/services/productionLeadTimeService.ts",
+    "text": "- `products.supplier_id` -> `supplier_settings.supplier_id` (prazo padrão do fornecedor);"
+   },
+   {
+    "file": "src/services/productionLeadTimeService.ts",
+    "text": "* Prazo do produto e padrão do fornecedor, um registro por produto encontrado. */"
+   },
+   {
+    "file": "src/services/productionLeadTimeService.ts",
+    "text": "* Faixas (quantidade, prazo) das tabelas de preço de gravação informadas. */"
    },
    {
     "file": "src/services/quoteItemsReorder.ts",
@@ -198557,6 +198952,26 @@
     "rule": "FK → users.id ON DELETE SET NULL"
    },
    {
+    "table": "business_calendar",
+    "column": "day",
+    "rule": "PK"
+   },
+   {
+    "table": "business_calendar",
+    "column": "description",
+    "rule": "obrigatório; CHECK description ~ '\\S' AND length(description) <= 120"
+   },
+   {
+    "table": "business_calendar",
+    "column": "created_at",
+    "rule": "default now()"
+   },
+   {
+    "table": "business_calendar",
+    "column": "created_by",
+    "rule": "default auth.uid(); FK → users.id ON DELETE SET NULL"
+   },
+   {
     "table": "webhook_configs",
     "column": "id",
     "rule": "PK; default gen_random_uuid()"
@@ -198919,6 +199334,21 @@
     "value": "50"
    },
    {
+    "file": "src/components/admin/business-calendar/BusinessCalendarManager.tsx",
+    "name": "DESCRIPTION_MAX",
+    "value": "120"
+   },
+   {
+    "file": "src/components/admin/business-calendar/BusinessCalendarManager.tsx",
+    "name": "FIRST_YEAR",
+    "value": "2020"
+   },
+   {
+    "file": "src/components/admin/business-calendar/BusinessCalendarManager.tsx",
+    "name": "LAST_YEAR",
+    "value": "2100"
+   },
+   {
     "file": "src/components/admin/categories-manager/CategoriesManager.tsx",
     "name": "ROOT",
     "value": "'__none__'"
@@ -199037,6 +199467,11 @@
     "file": "src/components/admin/products/bulk-import/types.ts",
     "name": "MAX_ROWS",
     "value": "10"
+   },
+   {
+    "file": "src/components/admin/products/sections/engraving/productionDays.ts",
+    "name": "PRODUCTION_DAYS_MAX",
+    "value": "365"
    },
    {
     "file": "src/components/admin/products/video-gallery/types.ts",
@@ -199842,6 +200277,16 @@
     "file": "src/hooks/freight/keys.ts",
     "name": "PRODUCT_MEASURES_STALE_TIME_MS",
     "value": "5"
+   },
+   {
+    "file": "src/hooks/freight/keys.ts",
+    "name": "LEAD_TIME_STALE_TIME_MS",
+    "value": "24"
+   },
+   {
+    "file": "src/hooks/freight/keys.ts",
+    "name": "SUPPLIER_LEAD_TIME_STALE_TIME_MS",
+    "value": "60"
    },
    {
     "file": "src/hooks/freight/useProductMeasures.ts",
@@ -201484,6 +201929,11 @@
     "value": "5"
    },
    {
+    "file": "src/services/businessCalendarService.ts",
+    "name": "INVALID_MESSAGE",
+    "value": "'Informe o nome do feriado, com até 120 caracteres.'"
+   },
+   {
     "file": "src/services/freightReadinessService.ts",
     "name": "PAGE_SIZE",
     "value": "1000"
@@ -201501,6 +201951,11 @@
    {
     "file": "src/services/magazineService.ts",
     "name": "MAGAZINE_IDS_BATCH_SIZE",
+    "value": "100"
+   },
+   {
+    "file": "src/services/productionLeadTimeService.ts",
+    "name": "LEAD_TIME_BATCH_SIZE",
     "value": "100"
    },
    {
@@ -205742,6 +206197,24 @@
     "file": "src/components/freight-plan/FreightPlanPanel.tsx",
     "field": "status",
     "value": "nao_cabe",
+    "kind": "compara"
+   },
+   {
+    "file": "src/components/freight-plan/ProductionLeadTimeCard.tsx",
+    "field": "status",
+    "value": "ok",
+    "kind": "compara"
+   },
+   {
+    "file": "src/components/freight-plan/ProductionLeadTimeCard.tsx",
+    "field": "status",
+    "value": "ok",
+    "kind": "compara"
+   },
+   {
+    "file": "src/components/freight-plan/ProductionLeadTimeCard.tsx",
+    "field": "status",
+    "value": "dados_insuficientes",
     "kind": "compara"
    },
    {
@@ -216673,6 +217146,12 @@
     "body": "return { price: s.price, stock: s.stock, minQty: s.minQuantity, colors: s.colorVariety, verified: s.verifiedSupplier, leadTime: s.leadTime, };"
    },
    {
+    "file": "src/hooks/freight/usePriceTableBands.ts",
+    "name": "usePriceTableBands",
+    "params": "tableIds: readonly string[]",
+    "body": "const ids = [...new Set(tableIds)].sort(); const query = useQuery({ queryKey: FREIGHT_QUERY_KEYS.productionLeadTime.priceBands(ids), queryFn: () => productionLeadTimeService.listPriceBands(ids), staleTime: LEAD_TIME_STALE_TIME_MS, enabled: ids.length > 0, }); return query.data ?? NO_BANDS;"
+   },
+   {
     "file": "src/hooks/freight/useShippingBoxes.ts",
     "name": "invalidate",
     "params": "",
@@ -219704,7 +220183,15 @@
    },
    {
     "file": "src/hooks/freight/keys.ts",
+    "line": "export const LEAD_TIME_STALE_TIME_MS = 24 * 60 * 60 * 1000;"
+   },
+   {
+    "file": "src/hooks/freight/keys.ts",
     "line": "export const PRODUCT_MEASURES_STALE_TIME_MS = 5 * 60 * 1000;"
+   },
+   {
+    "file": "src/hooks/freight/keys.ts",
+    "line": "export const SUPPLIER_LEAD_TIME_STALE_TIME_MS = 60 * 60 * 1000;"
    },
    {
     "file": "src/hooks/gravacao/useTecnicasGravacao.ts",
@@ -232491,6 +232978,70 @@
     "name": "exibe tooltip ao focar o badge"
    },
    {
+    "file": "src/components/admin/business-calendar/__tests__/BusinessCalendarManager.test.tsx",
+    "name": "estados"
+   },
+   {
+    "file": "src/components/admin/business-calendar/__tests__/BusinessCalendarManager.test.tsx",
+    "name": "lista os feriados com data dd/mm/aaaa e dia da semana"
+   },
+   {
+    "file": "src/components/admin/business-calendar/__tests__/BusinessCalendarManager.test.tsx",
+    "name": "mostra carregando"
+   },
+   {
+    "file": "src/components/admin/business-calendar/__tests__/BusinessCalendarManager.test.tsx",
+    "name": "mostra vazio com o ano consultado"
+   },
+   {
+    "file": "src/components/admin/business-calendar/__tests__/BusinessCalendarManager.test.tsx",
+    "name": "mostra erro e tenta de novo"
+   },
+   {
+    "file": "src/components/admin/business-calendar/__tests__/BusinessCalendarManager.test.tsx",
+    "name": "campo Ano"
+   },
+   {
+    "file": "src/components/admin/business-calendar/__tests__/BusinessCalendarManager.test.tsx",
+    "name": "digitar 3 dígitos mostra o que foi digitado, sem reverter para o ano atual"
+   },
+   {
+    "file": "src/components/admin/business-calendar/__tests__/BusinessCalendarManager.test.tsx",
+    "name": "completar 4 dígitos válidos troca o ano consultado"
+   },
+   {
+    "file": "src/components/admin/business-calendar/__tests__/BusinessCalendarManager.test.tsx",
+    "name": "sair do campo com texto inválido volta para o último ano válido"
+   },
+   {
+    "file": "src/components/admin/business-calendar/__tests__/BusinessCalendarManager.test.tsx",
+    "name": "adicionar"
+   },
+   {
+    "file": "src/components/admin/business-calendar/__tests__/BusinessCalendarManager.test.tsx",
+    "name": "sem data ou sem nome não grava e explica"
+   },
+   {
+    "file": "src/components/admin/business-calendar/__tests__/BusinessCalendarManager.test.tsx",
+    "name": "com data e nome entrega a mutação (nome aparado)"
+   },
+   {
+    "file": "src/components/admin/business-calendar/__tests__/BusinessCalendarManager.test.tsx",
+    "name": "mostra no formulário o erro que o banco devolveu (permissão)"
+   },
+   {
+    "file": "src/components/admin/business-calendar/__tests__/BusinessCalendarManager.test.tsx",
+    "name": "editar e excluir"
+   },
+   {
+    "file": "src/components/admin/business-calendar/__tests__/BusinessCalendarManager.test.tsx",
+    "name": "edita só o nome"
+   },
+   {
+    "file": "src/components/admin/business-calendar/__tests__/BusinessCalendarManager.test.tsx",
+    "name": "excluir pede confirmação e só então apaga"
+   },
+   {
     "file": "src/components/admin/categories-manager/__tests__/CategoriesManager.test.tsx",
     "name": "CategoriesManager"
    },
@@ -232816,6 +233367,10 @@
    },
    {
     "file": "src/components/admin/products/__tests__/ProductFormFreightFields.test.tsx",
+    "name": "na exceção, "
+   },
+   {
+    "file": "src/components/admin/products/__tests__/ProductFormFreightFields.test.tsx",
     "name": "não mostra a linha do padrão quando o fornecedor não tem prazo cadastrado"
    },
    {
@@ -232941,6 +233496,54 @@
    {
     "file": "src/components/admin/products/bulk-import/__tests__/parseBooleanCell.test.ts",
     "name": "o rótulo de "
+   },
+   {
+    "file": "src/components/admin/products/sections/engraving/__tests__/EngravingAreaCard.test.tsx",
+    "name": "prazo de personalização no cartão da técnica"
+   },
+   {
+    "file": "src/components/admin/products/sections/engraving/__tests__/EngravingAreaCard.test.tsx",
+    "name": "vazio mostra a sugestão da tabela e o botão fica desligado"
+   },
+   {
+    "file": "src/components/admin/products/sections/engraving/__tests__/EngravingAreaCard.test.tsx",
+    "name": "digitar 6 e salvar grava 6"
+   },
+   {
+    "file": "src/components/admin/products/sections/engraving/__tests__/EngravingAreaCard.test.tsx",
+    "name": "apagar o valor salvo e salvar grava null (volta a usar a tabela)"
+   },
+   {
+    "file": "src/components/admin/products/sections/engraving/__tests__/EngravingAreaCard.test.tsx",
+    "name": "valor inválido avisa e não deixa salvar"
+   },
+   {
+    "file": "src/components/admin/products/sections/engraving/__tests__/productionDays.test.ts",
+    "name": "parseProductionDays"
+   },
+   {
+    "file": "src/components/admin/products/sections/engraving/__tests__/productionDays.test.ts",
+    "name": "tableLeadTimePlaceholder"
+   },
+   {
+    "file": "src/components/admin/products/sections/engraving/__tests__/useEngravingWizard.productionDays.test.tsx",
+    "name": "prazo de personalização ao adicionar uma área"
+   },
+   {
+    "file": "src/components/admin/products/sections/engraving/__tests__/useEngravingWizard.productionDays.test.tsx",
+    "name": "prazo digitado "
+   },
+   {
+    "file": "src/components/admin/products/sections/engraving/__tests__/useEngravingWizard.productionDays.test.tsx",
+    "name": "prazo inválido não grava nada"
+   },
+   {
+    "file": "src/components/admin/products/sections/engraving/__tests__/useEngravingWizard.productionDays.test.tsx",
+    "name": "editar o prazo de uma área salva envia só production_days"
+   },
+   {
+    "file": "src/components/admin/products/sections/engraving/__tests__/useEngravingWizard.productionDays.test.tsx",
+    "name": "RLS nega o update em silêncio (0 linhas, sem erro do Postgres): mostra erro, não sucesso"
    },
    {
     "file": "src/components/admin/shipping-boxes/__tests__/ShippingBoxFormDialog.test.tsx",
@@ -234861,6 +235464,66 @@
    {
     "file": "src/components/freight-plan/__tests__/MixModeSelector.test.tsx",
     "name": "produto de caixa própria ganha a nota do cadastro"
+   },
+   {
+    "file": "src/components/freight-plan/__tests__/ProductionLeadTimeCard.test.tsx",
+    "name": "resumo e lista por item"
+   },
+   {
+    "file": "src/components/freight-plan/__tests__/ProductionLeadTimeCard.test.tsx",
+    "name": "diz em quantos dias e quando fica pronto, e quem define o prazo"
+   },
+   {
+    "file": "src/components/freight-plan/__tests__/ProductionLeadTimeCard.test.tsx",
+    "name": "lista cada item com a origem de cada prazo"
+   },
+   {
+    "file": "src/components/freight-plan/__tests__/ProductionLeadTimeCard.test.tsx",
+    "name": "alerta de data pedida"
+   },
+   {
+    "file": "src/components/freight-plan/__tests__/ProductionLeadTimeCard.test.tsx",
+    "name": "prazo de entrega estimado"
+   },
+   {
+    "file": "src/components/freight-plan/__tests__/ProductionLeadTimeCard.test.tsx",
+    "name": "vazio é preenchido com o calculado, sem marca de ajuste"
+   },
+   {
+    "file": "src/components/freight-plan/__tests__/ProductionLeadTimeCard.test.tsx",
+    "name": "digitar outro valor marca "
+   },
+   {
+    "file": "src/components/freight-plan/__tests__/ProductionLeadTimeCard.test.tsx",
+    "name": "valor salvo diferente do calculado já abre como ajustado e não é sobrescrito"
+   },
+   {
+    "file": "src/components/freight-plan/__tests__/ProductionLeadTimeCard.test.tsx",
+    "name": "apagar o campo não mostra "
+   },
+   {
+    "file": "src/components/freight-plan/__tests__/ProductionLeadTimeCard.test.tsx",
+    "name": "outros estados"
+   },
+   {
+    "file": "src/components/freight-plan/__tests__/ProductionLeadTimeCard.test.tsx",
+    "name": "dados insuficientes lista o que falta, com o nome do produto"
+   },
+   {
+    "file": "src/components/freight-plan/__tests__/ProductionLeadTimeCard.test.tsx",
+    "name": "carregando"
+   },
+   {
+    "file": "src/components/freight-plan/__tests__/ProductionLeadTimeCard.test.tsx",
+    "name": "erro com nova tentativa"
+   },
+   {
+    "file": "src/components/freight-plan/__tests__/ProductionLeadTimeCard.test.tsx",
+    "name": "sem produtos vinculados pede para adicionar itens"
+   },
+   {
+    "file": "src/components/freight-plan/__tests__/ProductionLeadTimeCard.test.tsx",
+    "name": "%s item(ns) sem produto avisa"
    },
    {
     "file": "src/components/intelligence/__tests__/MarketIntelligenceChart.test.tsx",
@@ -246979,6 +247642,58 @@
     "name": "emite analytics imediatamente em cada toggle (independente do debounce)"
    },
    {
+    "file": "src/hooks/freight/__tests__/useBusinessCalendar.test.tsx",
+    "name": "useBusinessCalendarYear"
+   },
+   {
+    "file": "src/hooks/freight/__tests__/useBusinessCalendar.test.tsx",
+    "name": "lê o ano pedido"
+   },
+   {
+    "file": "src/hooks/freight/__tests__/useBusinessCalendar.test.tsx",
+    "name": "erro de leitura aparece em isError"
+   },
+   {
+    "file": "src/hooks/freight/__tests__/useBusinessCalendar.test.tsx",
+    "name": "useBusinessCalendarMutations"
+   },
+   {
+    "file": "src/hooks/freight/__tests__/useBusinessCalendar.test.tsx",
+    "name": "adicionar com sucesso avisa e invalida a lista e o cálculo do prazo"
+   },
+   {
+    "file": "src/hooks/freight/__tests__/useBusinessCalendar.test.tsx",
+    "name": "erro do serviço vai no título do aviso (a mensagem é PT-BR e segura)"
+   },
+   {
+    "file": "src/hooks/freight/__tests__/useBusinessCalendar.test.tsx",
+    "name": "erro desconhecido usa o texto padrão da ação"
+   },
+   {
+    "file": "src/hooks/freight/__tests__/useProductionLeadTime.test.tsx",
+    "name": "useProductionLeadTime"
+   },
+   {
+    "file": "src/hooks/freight/__tests__/useProductionLeadTime.test.tsx",
+    "name": "2 itens: o mais demorado define o prazo e a data pula o feriado"
+   },
+   {
+    "file": "src/hooks/freight/__tests__/useProductionLeadTime.test.tsx",
+    "name": "personalização sem faixa para a quantidade bloqueia com pendência (quantidade 600 > 499)"
+   },
+   {
+    "file": "src/hooks/freight/__tests__/useProductionLeadTime.test.tsx",
+    "name": "item sem produto vinculado fica fora e é contado"
+   },
+   {
+    "file": "src/hooks/freight/__tests__/useProductionLeadTime.test.tsx",
+    "name": "sem nenhum produto vinculado não consulta o banco"
+   },
+   {
+    "file": "src/hooks/freight/__tests__/useProductionLeadTime.test.tsx",
+    "name": "falha de leitura vira isError, sem prazo"
+   },
+   {
     "file": "src/hooks/intelligence/__tests__/fetchCategoryRanking.marketDepleted.test.ts",
     "name": "fetchCategoryRanking — marketDepleted"
    },
@@ -257043,6 +257758,30 @@
     "name": "feriados nulos ou indefinidos são invalid_input, não exceção"
    },
    {
+    "file": "src/lib/lead-time/__tests__/formatDate.test.ts",
+    "name": "formatIsoDate / formatIsoDayMonth"
+   },
+   {
+    "file": "src/lib/lead-time/__tests__/formatDate.test.ts",
+    "name": "inverte a ordem dos campos"
+   },
+   {
+    "file": "src/lib/lead-time/__tests__/formatDate.test.ts",
+    "name": "devolve "
+   },
+   {
+    "file": "src/lib/lead-time/__tests__/formatDate.test.ts",
+    "name": "weekdayNamePt"
+   },
+   {
+    "file": "src/lib/lead-time/__tests__/formatDate.test.ts",
+    "name": "%s é inválida"
+   },
+   {
+    "file": "src/lib/lead-time/__tests__/formatDate.test.ts",
+    "name": "todayInSaoPaulo"
+   },
+   {
     "file": "src/lib/lead-time/__tests__/personalizationLeadTime.test.ts",
     "name": "resolvePersonalizationLeadTime"
    },
@@ -260261,6 +261000,10 @@
    {
     "file": "src/pages/admin/__tests__/AdminFreteSettingsPage.test.tsx",
     "name": "recarrega os campos quando a linha salva muda"
+   },
+   {
+    "file": "src/pages/admin/__tests__/AdminFreteSettingsPage.test.tsx",
+    "name": "a aba Feriados abre o cadastro de feriados"
    },
    {
     "file": "src/pages/admin/__tests__/AdminFreteSettingsPage.test.tsx",
@@ -264981,6 +265724,54 @@
    {
     "file": "src/services/__tests__/authService.oauth.test.ts",
     "name": "throw AbortError → err"
+   },
+   {
+    "file": "src/services/__tests__/businessCalendarService.test.ts",
+    "name": "leitura"
+   },
+   {
+    "file": "src/services/__tests__/businessCalendarService.test.ts",
+    "name": "listByYear filtra de 01/01 a 31/12 do ano e ordena por data"
+   },
+   {
+    "file": "src/services/__tests__/businessCalendarService.test.ts",
+    "name": "listAll não filtra por data"
+   },
+   {
+    "file": "src/services/__tests__/businessCalendarService.test.ts",
+    "name": "erro de leitura vira mensagem PT-BR sem vazar a do banco"
+   },
+   {
+    "file": "src/services/__tests__/businessCalendarService.test.ts",
+    "name": "escrita"
+   },
+   {
+    "file": "src/services/__tests__/businessCalendarService.test.ts",
+    "name": "create envia só data e nome (sem espaços nas pontas)"
+   },
+   {
+    "file": "src/services/__tests__/businessCalendarService.test.ts",
+    "name": "create com data repetida (23505) diz a data em dd/mm/aaaa"
+   },
+   {
+    "file": "src/services/__tests__/businessCalendarService.test.ts",
+    "name": "create sem linha devolvida (RLS negou em silêncio) vira erro de permissão"
+   },
+   {
+    "file": "src/services/__tests__/businessCalendarService.test.ts",
+    "name": "nome fora do CHECK (23514) vira invalid"
+   },
+   {
+    "file": "src/services/__tests__/businessCalendarService.test.ts",
+    "name": "updateDescription filtra pela data e grava o nome aparado"
+   },
+   {
+    "file": "src/services/__tests__/businessCalendarService.test.ts",
+    "name": "remove apaga pela data"
+   },
+   {
+    "file": "src/services/__tests__/businessCalendarService.test.ts",
+    "name": "erro de permissão do banco (42501) vira permission"
    },
    {
     "file": "src/services/__tests__/freightReadinessService.test.ts",
@@ -280541,6 +281332,66 @@
    {
     "file": "tests/contracts/product-webhook.contract.test.ts",
     "name": "versão inexistente → 406 unsupported_version"
+   },
+   {
+    "file": "tests/contracts/production-lead-time-calendar-migration.test.ts",
+    "name": "migration do calendário de prazo de produção"
+   },
+   {
+    "file": "tests/contracts/production-lead-time-calendar-migration.test.ts",
+    "name": "começa apontando para o rollback"
+   },
+   {
+    "file": "tests/contracts/production-lead-time-calendar-migration.test.ts",
+    "name": "semeia 26 feriados: 2 anos x (9 fixos + 4 móveis)"
+   },
+   {
+    "file": "tests/contracts/production-lead-time-calendar-migration.test.ts",
+    "name": "semeia %s (%s)"
+   },
+   {
+    "file": "tests/contracts/production-lead-time-calendar-migration.test.ts",
+    "name": "o seed é idempotente"
+   },
+   {
+    "file": "tests/contracts/production-lead-time-calendar-migration.test.ts",
+    "name": "cria a coluna production_days com CHECK nomeado de 0 a 365"
+   },
+   {
+    "file": "tests/contracts/production-lead-time-calendar-migration.test.ts",
+    "name": "valida a descrição do feriado: não vazia e até 120 caracteres"
+   },
+   {
+    "file": "tests/contracts/production-lead-time-calendar-migration.test.ts",
+    "name": "declara as tabelas sem soft delete com a justificativa do gate"
+   },
+   {
+    "file": "tests/contracts/production-lead-time-calendar-migration.test.ts",
+    "name": "liga RLS e cria as quatro policies no padrão de shipping_boxes"
+   },
+   {
+    "file": "tests/contracts/production-lead-time-calendar-migration.test.ts",
+    "name": "tira o acesso de PUBLIC e anon e concede o mínimo"
+   },
+   {
+    "file": "tests/contracts/production-lead-time-calendar-migration.test.ts",
+    "name": "comenta products.lead_time_days como prazo do fornecedor"
+   },
+   {
+    "file": "tests/contracts/production-lead-time-calendar-migration.test.ts",
+    "name": "rollback do calendário de prazo de produção"
+   },
+   {
+    "file": "tests/contracts/production-lead-time-calendar-migration.test.ts",
+    "name": "guarda as duas tabelas em backup com RLS e sem acesso, antes de remover"
+   },
+   {
+    "file": "tests/contracts/production-lead-time-calendar-migration.test.ts",
+    "name": "usa o primeiro nome de backup livre e confere a contagem antes do DROP"
+   },
+   {
+    "file": "tests/contracts/production-lead-time-calendar-migration.test.ts",
+    "name": "remove tabela, constraint e coluna e devolve o comentário anterior"
    },
    {
     "file": "tests/contracts/quote-conditions-spec-contract.test.ts",
@@ -324093,6 +324944,46 @@
     "src": "supabase/migrations/20261119213100_create_freight_settings.sql"
    },
    {
+    "name": "business_calendar_select_authenticated",
+    "table": "business_calendar",
+    "cmd": "SELECT",
+    "roles": "authenticated",
+    "mode": "permissive",
+    "using": "true",
+    "check": "",
+    "src": "supabase/migrations/20261120041000_production_lead_time_calendar.sql"
+   },
+   {
+    "name": "business_calendar_insert_admin",
+    "table": "business_calendar",
+    "cmd": "INSERT",
+    "roles": "authenticated",
+    "mode": "permissive",
+    "using": "",
+    "check": "public.is_admin()",
+    "src": "supabase/migrations/20261120041000_production_lead_time_calendar.sql"
+   },
+   {
+    "name": "business_calendar_update_admin",
+    "table": "business_calendar",
+    "cmd": "UPDATE",
+    "roles": "authenticated",
+    "mode": "permissive",
+    "using": "public.is_admin()",
+    "check": "public.is_admin()",
+    "src": "supabase/migrations/20261120041000_production_lead_time_calendar.sql"
+   },
+   {
+    "name": "business_calendar_delete_admin",
+    "table": "business_calendar",
+    "cmd": "DELETE",
+    "roles": "authenticated",
+    "mode": "permissive",
+    "using": "public.is_admin()",
+    "check": "",
+    "src": "supabase/migrations/20261120041000_production_lead_time_calendar.sql"
+   },
+   {
     "name": "product_ai_anon_select",
     "table": "product_ai_content",
     "cmd": "SELECT",
@@ -356750,6 +357641,7 @@
       "compara:src/components/admin/connections/ExternalConnectionsSyncLogPanel.tsx",
       "compara:src/components/admin/connections/KeysValidationTab.tsx",
       "compara:src/components/admin/connections/LastSyncRunPanel.tsx",
+      "compara:src/components/freight-plan/ProductionLeadTimeCard.tsx",
       "compara:src/components/pricing/calculator/QuantityComparisonTable.tsx",
       "compara:src/hooks/intelligence/useConnectionsOverviewFilters.ts",
       "compara:src/lib/auth/invoke-full-scope.ts",
@@ -357313,6 +358205,7 @@
      ],
      "dados_insuficientes": [
       "compara:src/components/freight-plan/FreightPlanPanel.tsx",
+      "compara:src/components/freight-plan/ProductionLeadTimeCard.tsx",
       "escreve:src/hooks/freight/useFreightPlan.ts",
       "escreve:src/lib/freight/planFreight.ts",
       "escreve:src/lib/lead-time/productionLeadTime.ts"
@@ -358805,6 +359698,21 @@
     ],
     "UPDATE": [],
     "DELETE": []
+   },
+   "business_calendar": {
+    "rls": "enabled",
+    "SELECT": [
+     "authenticated: true"
+    ],
+    "INSERT": [
+     "authenticated: public.is_admin()"
+    ],
+    "UPDATE": [
+     "authenticated: public.is_admin()"
+    ],
+    "DELETE": [
+     "authenticated: public.is_admin()"
+    ]
    },
    "cache_entries": {
     "rls": "enabled",
@@ -363712,6 +364620,13 @@
     ]
    },
    {
+    "table": "print_area_techniques",
+    "issue": "RLS ligado sem nenhuma política → só service_role acessa",
+    "files": [
+     "src/services/productionLeadTimeService.ts"
+    ]
+   },
+   {
     "table": "product_commemorative_dates",
     "issue": "RLS ligado sem nenhuma política → só service_role acessa",
     "files": [
@@ -363786,7 +364701,8 @@
     "table": "supplier_settings",
     "issue": "RLS ligado sem nenhuma política → só service_role acessa",
     "files": [
-     "src/hooks/products/useSupplierDefaultLeadTime.ts"
+     "src/hooks/products/useSupplierDefaultLeadTime.ts",
+     "src/services/productionLeadTimeService.ts"
     ]
    },
    {
@@ -363801,6 +364717,13 @@
     "issue": "RLS ligado sem nenhuma política → só service_role acessa",
     "files": [
      "src/lib/external-db/rpc-native.ts"
+    ]
+   },
+   {
+    "table": "tabela_preco_gravacao_oficial_faixa",
+    "issue": "RLS ligado sem nenhuma política → só service_role acessa",
+    "files": [
+     "src/services/productionLeadTimeService.ts"
     ]
    },
    {
@@ -364612,6 +365535,7 @@
    "supabase/migrations/20261119212000_fix_f12_sparkline_ema_kpi.sql",
    "supabase/migrations/20261119220000_create_ema_sister_functions.sql",
    "supabase/migrations/20261120030000_harden_freight_tables.sql",
+   "supabase/migrations/20261120041000_production_lead_time_calendar.sql",
    "supabase/rollbacks/20260611014515_fn_dryrun_standardize_supplier_real_rollback.sql",
    "supabase/rollbacks/20260611124000_fn_dryrun_standardize_supplier_real_rollback.sql",
    "supabase/rollbacks/20260917061500_rollback.sql",
@@ -364635,6 +365559,7 @@
    "supabase/sql-legacy/20260713_001_secdef_revoke_webhook_locks.sql",
    "supabase/sql-legacy/create_process_notifications_queue_rpcs_20260623.sql",
    "tests/components/admin/connections/connectionStatus.test.ts",
+   "tests/contracts/production-lead-time-calendar-migration.test.ts",
    "tests/edge-functions/catalog-integration.test.ts",
    "tests/edge-functions/integration/freight-quest-webhook-simulation.test.ts",
    "tests/edge-functions/integration/generate-mockup.handler.test.ts",
@@ -401493,6 +402418,30 @@
    {
     "kind": "revoke",
     "privs": "all",
+    "object": "business_calendar",
+    "objkind": "table",
+    "roles": "PUBLIC, anon, authenticated",
+    "src": "supabase/migrations/20261120041000_production_lead_time_calendar.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "select, insert, update, delete",
+    "object": "business_calendar",
+    "objkind": "table",
+    "roles": "authenticated",
+    "src": "supabase/migrations/20261120041000_production_lead_time_calendar.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "select, insert, update, delete",
+    "object": "business_calendar",
+    "objkind": "table",
+    "roles": "service_role",
+    "src": "supabase/migrations/20261120041000_production_lead_time_calendar.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "all",
     "object": "fn_dryrun_standardize_supplier",
     "objkind": "function",
     "roles": "PUBLIC",
@@ -405260,6 +406209,10 @@
     "updated_at",
     "updated_by"
    ],
+   "business_calendar": [
+    "created_at",
+    "created_by"
+   ],
    "webhook_configs": [
     "created_at"
    ],
@@ -406927,6 +407880,11 @@
    },
    {
     "kind": "coluna",
+    "msg": "coluna `lead_time_days` usada no código não existe no schema de `products`",
+    "where": []
+   },
+   {
+    "kind": "coluna",
     "msg": "coluna `locked_fields` usada no código não existe no schema de `products`",
     "where": []
    },
@@ -407323,6 +408281,26 @@
    {
     "kind": "coluna",
     "msg": "coluna `cache_hit` usada no código não existe no schema de `query_telemetry`",
+    "where": []
+   },
+   {
+    "kind": "coluna",
+    "msg": "coluna `prazo_dias` usada no código não existe no schema de `tabela_preco_gravacao_oficial_faixa`",
+    "where": []
+   },
+   {
+    "kind": "coluna",
+    "msg": "coluna `quantidade_maxima` usada no código não existe no schema de `tabela_preco_gravacao_oficial_faixa`",
+    "where": []
+   },
+   {
+    "kind": "coluna",
+    "msg": "coluna `quantidade_minima` usada no código não existe no schema de `tabela_preco_gravacao_oficial_faixa`",
+    "where": []
+   },
+   {
+    "kind": "coluna",
+    "msg": "coluna `tabela_preco_gravacao_id` usada no código não existe no schema de `tabela_preco_gravacao_oficial_faixa`",
     "where": []
    },
    {
@@ -407796,6 +408774,13 @@
    },
    {
     "kind": "rls",
+    "msg": "`print_area_techniques`: RLS ligado sem nenhuma política → só service_role acessa",
+    "where": [
+     "src/services/productionLeadTimeService.ts"
+    ]
+   },
+   {
+    "kind": "rls",
     "msg": "`product_commemorative_dates`: RLS ligado sem nenhuma política → só service_role acessa",
     "where": [
      "src/components/admin/products/productMarketingData.ts"
@@ -407869,7 +408854,8 @@
     "kind": "rls",
     "msg": "`supplier_settings`: RLS ligado sem nenhuma política → só service_role acessa",
     "where": [
-     "src/hooks/products/useSupplierDefaultLeadTime.ts"
+     "src/hooks/products/useSupplierDefaultLeadTime.ts",
+     "src/services/productionLeadTimeService.ts"
     ]
    },
    {
@@ -407884,6 +408870,13 @@
     "msg": "`tabela_preco_gravacao_oficial`: RLS ligado sem nenhuma política → só service_role acessa",
     "where": [
      "src/lib/external-db/rpc-native.ts"
+    ]
+   },
+   {
+    "kind": "rls",
+    "msg": "`tabela_preco_gravacao_oficial_faixa`: RLS ligado sem nenhuma política → só service_role acessa",
+    "where": [
+     "src/services/productionLeadTimeService.ts"
     ]
    },
    {
@@ -409732,7 +410725,7 @@
    "`quote_approval_tokens.status` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.",
    "`kit_share_tokens.status` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.",
    "`_deprecated_silver_images_queue_20260606.img_status` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.",
-   "268/497 tabelas sem `COMMENT ON TABLE` — o significado de negócio não está no schema: `optimization_queue`, `quotes`, `magazines`, `material_types`, `quotes_inbound`, `webhook_inbound_dedupe`, `webhook_inbound_log`, `magazine_items`, `magazine_reader_state`, `magazine_templates`, `admin_audit_log_y2025m12`, `admin_audit_log_y2026m01` …",
+   "268/498 tabelas sem `COMMENT ON TABLE` — o significado de negócio não está no schema: `optimization_queue`, `quotes`, `magazines`, `material_types`, `quotes_inbound`, `webhook_inbound_dedupe`, `webhook_inbound_log`, `magazine_items`, `magazine_reader_state`, `magazine_templates`, `admin_audit_log_y2025m12`, `admin_audit_log_y2026m01` …",
    "Há tabelas usadas no código sem migration no repo — o schema real pode ter sido alterado pelo painel."
   ]
  },
@@ -439807,6 +440800,82 @@
     }
    ]
   },
+  "src/components/admin/business-calendar/BusinessCalendarManager.tsx": {
+   "path": "src/components/admin/business-calendar/BusinessCalendarManager.tsx",
+   "lines": 304,
+   "exports": [
+    "function BusinessCalendarManager"
+   ],
+   "errors": [
+    "\n          className=",
+    " className="
+   ],
+   "html_constraints": [
+    {
+     "field": "feriados-ano",
+     "rules": "type=number, min=FIRST_YEAR, max=LAST_YEAR"
+    },
+    {
+     "field": "feriado-data",
+     "rules": "type=date"
+    },
+    {
+     "field": "feriado-nome",
+     "rules": "max"
+    }
+   ],
+   "params": [
+    {
+     "name": "DESCRIPTION_MAX",
+     "value": "120"
+    },
+    {
+     "name": "FIRST_YEAR",
+     "value": "2020"
+    },
+    {
+     "name": "LAST_YEAR",
+     "value": "2100"
+    }
+   ],
+   "rule_comments": [
+    "* Aba \"Feriados\" de `/admin/frete`: dias em que o prazo de produção não conta"
+   ],
+   "doc": "Aba \"Feriados\" de `/admin/frete`: dias em que o prazo de produção não conta (`business_calendar`). Lista por ano, adiciona data + nome, edita o nome e exclui com confirmação. Sábado e domingo não entram: o cálculo já os pula. Só admin escreve (RLS). Quando o banco recusa, a mensagem do serviço apare …"
+  },
+  "src/components/admin/business-calendar/index.ts": {
+   "path": "src/components/admin/business-calendar/index.ts",
+   "lines": 2
+  },
+  "src/components/admin/business-calendar/__tests__/BusinessCalendarManager.test.tsx": {
+   "path": "src/components/admin/business-calendar/__tests__/BusinessCalendarManager.test.tsx",
+   "lines": 174,
+   "is_test": true,
+   "errors": [
+    ")).textContent).toContain(",
+    ").textContent).toBe(",
+    ").textContent).toContain("
+   ],
+   "doc": "Aba Feriados: os hooks de `@/hooks/freight` são mockados; aqui se trava o que a tela mostra em cada estado e o que ela entrega às mutações.",
+   "tests": [
+    "estados",
+    "lista os feriados com data dd/mm/aaaa e dia da semana",
+    "mostra carregando",
+    "mostra vazio com o ano consultado",
+    "mostra erro e tenta de novo",
+    "campo Ano",
+    "digitar 3 dígitos mostra o que foi digitado, sem reverter para o ano atual",
+    "completar 4 dígitos válidos troca o ano consultado",
+    "sair do campo com texto inválido volta para o último ano válido",
+    "adicionar",
+    "sem data ou sem nome não grava e explica",
+    "com data e nome entrega a mutação (nome aparado)",
+    "mostra no formulário o erro que o banco devolveu (permissão)",
+    "editar e excluir",
+    "edita só o nome",
+    "excluir pede confirmação e só então apaga"
+   ]
+  },
   "src/components/admin/categories-manager/CategoriesManager.tsx": {
    "path": "src/components/admin/categories-manager/CategoriesManager.tsx",
    "lines": 281,
@@ -443571,7 +444640,7 @@
   },
   "src/components/admin/products/__tests__/ProductFormFreightFields.test.tsx": {
    "path": "src/components/admin/products/__tests__/ProductFormFreightFields.test.tsx",
-   "lines": 96,
+   "lines": 130,
    "is_test": true,
    "errors": [
     "chave "
@@ -443580,6 +444649,7 @@
     "Prazo de liberação do fornecedor (etapa 38)",
     "mostra o rótulo novo, o padrão do fornecedor e o selo ",
     "mostra o selo ",
+    "na exceção, ",
     "não mostra a linha do padrão quando o fornecedor não tem prazo cadastrado",
     "Switch ",
     "com ships_separately=$atual, clicar grava $esperado"
@@ -444137,7 +445207,7 @@
   },
   "src/components/admin/products/sections/ProductEngravingSection.tsx": {
    "path": "src/components/admin/products/sections/ProductEngravingSection.tsx",
-   "lines": 575,
+   "lines": 578,
    "exports": [
     "function ProductEngravingSection"
    ],
@@ -444170,7 +445240,7 @@
   },
   "src/components/admin/products/sections/ProductInfoSection.tsx": {
    "path": "src/components/admin/products/sections/ProductInfoSection.tsx",
-   "lines": 266,
+   "lines": 280,
    "exports": [
     "function ProductInfoSection"
    ],
@@ -444322,15 +445392,66 @@
   },
   "src/components/admin/products/sections/engraving/EngravingAreaCard.tsx": {
    "path": "src/components/admin/products/sections/engraving/EngravingAreaCard.tsx",
-   "lines": 165,
+   "lines": 198,
    "exports": [
     "function EngravingAreaCard"
    ],
+   "rule_comments": [
+    "* Grava o prazo de personalização (null = usa a tabela). */"
+   ],
    "doc": "EngravingAreaCard — Renders a single engraving area in the list"
+  },
+  "src/components/admin/products/sections/engraving/NewAreaProductionDays.tsx": {
+   "path": "src/components/admin/products/sections/engraving/NewAreaProductionDays.tsx",
+   "lines": 31,
+   "exports": [
+    "function NewAreaProductionDays"
+   ],
+   "rule_comments": [
+    "* Campo \"Prazo (dias úteis)\" do passo Detalhes do assistente de gravação: a"
+   ],
+   "doc": "Campo \"Prazo (dias úteis)\" do passo Detalhes do assistente de gravação: a sugestão do campo vazio vem das faixas da tabela de preço da técnica escolhida."
+  },
+  "src/components/admin/products/sections/engraving/ProductionDaysInput.tsx": {
+   "path": "src/components/admin/products/sections/engraving/ProductionDaysInput.tsx",
+   "lines": 55,
+   "exports": [
+    "function ProductionDaysInput"
+   ],
+   "errors": [
+    " : undefined}\n        className={\n          invalid ? "
+   ],
+   "rule_comments": [
+    "* Campo \"Prazo (dias úteis)\" de uma técnica do produto. Texto livre com",
+    "validação: vazio = usa a tabela de preço (grava `null`)."
+   ],
+   "doc": "Campo \"Prazo (dias úteis)\" de uma técnica do produto. Texto livre com validação: vazio = usa a tabela de preço (grava `null`)."
+  },
+  "src/components/admin/products/sections/engraving/productionDays.ts": {
+   "path": "src/components/admin/products/sections/engraving/productionDays.ts",
+   "lines": 38,
+   "exports": [
+    "const PRODUCTION_DAYS_MAX",
+    "type ProductionDaysParse",
+    "function parseProductionDays",
+    "function tableLeadTimePlaceholder"
+   ],
+   "params": [
+    {
+     "name": "PRODUCTION_DAYS_MAX",
+     "value": "365"
+    }
+   ],
+   "rule_comments": [
+    "* Prazo de personalização por técnica (`print_area_techniques.production_days`),",
+    "em dias úteis. Vazio grava `null` (usa o prazo da faixa da tabela de preço).",
+    "* Sugestão do campo vazio: o prazo das faixas da tabela de preço da técnica."
+   ],
+   "doc": "Prazo de personalização por técnica (`print_area_techniques.production_days`), em dias úteis. Vazio grava `null` (usa o prazo da faixa da tabela de preço)."
   },
   "src/components/admin/products/sections/engraving/types.ts": {
    "path": "src/components/admin/products/sections/engraving/types.ts",
-   "lines": 162,
+   "lines": 167,
    "exports": [
     "interface ExternalTechnique",
     "interface PrintAreaTechnique",
@@ -444350,19 +445471,25 @@
      "values": "component | details | list | location | technique"
     }
    ],
+   "rule_comments": [
+    "* Dias úteis de personalização; null = usa o prazo da faixa da tabela de preço */",
+    "* Texto digitado em \"Prazo (dias úteis)\"; vazio = null */"
+   ],
    "doc": "Types and constants for ProductEngravingSection"
   },
   "src/components/admin/products/sections/engraving/useEngravingWizard.ts": {
    "path": "src/components/admin/products/sections/engraving/useEngravingWizard.ts",
-   "lines": 368,
+   "lines": 398,
    "exports": [
     "function useEngravingWizard"
    ],
    "errors": [
-    "${failed} área(s) de gravação não foram salvas"
+    "${failed} área(s) de gravação não foram salvas",
+    "Sem permissão para alterar esta área de gravação. Apenas administradores podem salvar."
    ],
    "rule_comments": [
-    "* useEngravingWizard — Business logic for the engraving wizard"
+    "* useEngravingWizard — Business logic for the engraving wizard",
+    "* Grava o prazo da técnica (null = usa a tabela). Área ainda não salva só muda na memória. */"
    ],
    "doc": "useEngravingWizard — Business logic for the engraving wizard Fixes applied: FIX-2026-06-23: catálogo de técnicas corrigido para tabela_preco_gravacao_oficial (FK real) BUG-05: handleDeleteArea uses state instead of confirm() — exposes deleteAreaConfirm/confirmDeleteArea/cancelDeleteArea BUG-03 NOTE: …",
    "hooks": [
@@ -444377,6 +445504,49 @@
    ],
    "temporal": [
     "staleTime: 10 * 60 * 1000,"
+   ]
+  },
+  "src/components/admin/products/sections/engraving/__tests__/EngravingAreaCard.test.tsx": {
+   "path": "src/components/admin/products/sections/engraving/__tests__/EngravingAreaCard.test.tsx",
+   "lines": 88,
+   "is_test": true,
+   "errors": [
+    ").textContent).toBe("
+   ],
+   "tests": [
+    "prazo de personalização no cartão da técnica",
+    "vazio mostra a sugestão da tabela e o botão fica desligado",
+    "digitar 6 e salvar grava 6",
+    "apagar o valor salvo e salvar grava null (volta a usar a tabela)",
+    "valor inválido avisa e não deixa salvar"
+   ]
+  },
+  "src/components/admin/products/sections/engraving/__tests__/productionDays.test.ts": {
+   "path": "src/components/admin/products/sections/engraving/__tests__/productionDays.test.ts",
+   "lines": 44,
+   "is_test": true,
+   "rule_comments": [
+    "faixa sem prazo não conta"
+   ],
+   "tests": [
+    "parseProductionDays",
+    "tableLeadTimePlaceholder"
+   ]
+  },
+  "src/components/admin/products/sections/engraving/__tests__/useEngravingWizard.productionDays.test.tsx": {
+   "path": "src/components/admin/products/sections/engraving/__tests__/useEngravingWizard.productionDays.test.tsx",
+   "lines": 121,
+   "is_test": true,
+   "rule_comments": [
+    "* Assistente de gravação: o prazo digitado vai (ou não) no INSERT de print_area_techniques. */"
+   ],
+   "doc": "Assistente de gravação: o prazo digitado vai (ou não) no INSERT de print_area_techniques.",
+   "tests": [
+    "prazo de personalização ao adicionar uma área",
+    "prazo digitado ",
+    "prazo inválido não grava nada",
+    "editar o prazo de uma área salva envia só production_days",
+    "RLS nega o update em silêncio (0 linhas, sem erro do Postgres): mostra erro, não sucesso"
    ]
   },
   "src/components/admin/products/video-gallery/VideoGrid.tsx": {
@@ -450593,9 +451763,49 @@
    ],
    "doc": "Como produtos diferentes se distribuem nas caixas: misturados na mesma caixa ou uma caixa (ou mais) por produto. O seletor só aparece quando a escolha muda alguma coisa: com menos de 2 produtos distintos que aceitam dividir caixa, não há o que decidir. Produto marcado para ir sempre em caixa própria …"
   },
+  "src/components/freight-plan/ProductionLeadTimeCard.tsx": {
+   "path": "src/components/freight-plan/ProductionLeadTimeCard.tsx",
+   "lines": 284,
+   "exports": [
+    "function ProductionLeadTimeCard"
+   ],
+   "errors": [
+    "\n              className=",
+    " className="
+   ],
+   "html_constraints": [
+    {
+     "field": "estimated-delivery-days",
+     "rules": "type=number, min=0"
+    }
+   ],
+   "status_values": [
+    {
+     "field": "status",
+     "value": "ok",
+     "kind": "compara"
+    },
+    {
+     "field": "status",
+     "value": "ok",
+     "kind": "compara"
+    },
+    {
+     "field": "status",
+     "value": "dados_insuficientes",
+     "kind": "compara"
+    }
+   ],
+   "rule_comments": [
+    "* Card \"Prazo de produção\" do orçamento: em quantos dias úteis o pedido fica",
+    "pronto para envio, qual item define esse prazo e de onde vem cada número.",
+    "deliveryMode={deliveryMode}            // 'data' | 'prazo' do orçamento",
+    "* Dia da aprovação (AAAA-MM-DD); null = o prazo começa hoje. */"
+   ]
+  },
   "src/components/freight-plan/index.ts": {
    "path": "src/components/freight-plan/index.ts",
-   "lines": 9
+   "lines": 10
   },
   "src/components/freight-plan/__tests__/FreightMissingActions.test.tsx": {
    "path": "src/components/freight-plan/__tests__/FreightMissingActions.test.tsx",
@@ -450681,6 +451891,36 @@
     "sem seletor e sem produto de caixa própria: não renderiza nada",
     "a mesma linha de produto repetida conta como 1 produto, não 2",
     "produto de caixa própria ganha a nota do cadastro"
+   ]
+  },
+  "src/components/freight-plan/__tests__/ProductionLeadTimeCard.test.tsx": {
+   "path": "src/components/freight-plan/__tests__/ProductionLeadTimeCard.test.tsx",
+   "lines": 215,
+   "is_test": true,
+   "errors": [
+    ").textContent).toContain(",
+    ").textContent).toContain(\n      ",
+    ");\n    expect(aviso !== null).toBe(alerta);\n    if (alerta) expect(aviso?.textContent).toContain("
+   ],
+   "rule_comments": [
+    "modo por prazo ignora a data"
+   ],
+   "tests": [
+    "resumo e lista por item",
+    "diz em quantos dias e quando fica pronto, e quem define o prazo",
+    "lista cada item com a origem de cada prazo",
+    "alerta de data pedida",
+    "prazo de entrega estimado",
+    "vazio é preenchido com o calculado, sem marca de ajuste",
+    "digitar outro valor marca ",
+    "valor salvo diferente do calculado já abre como ajustado e não é sobrescrito",
+    "apagar o campo não mostra ",
+    "outros estados",
+    "dados insuficientes lista o que falta, com o nome do produto",
+    "carregando",
+    "erro com nova tentativa",
+    "sem produtos vinculados pede para adicionar itens",
+    "%s item(ns) sem produto avisa"
    ]
   },
   "src/components/freight-plan/__tests__/freightPlanCard.harness.tsx": {
@@ -469663,16 +470903,18 @@
   },
   "src/hooks/freight/index.ts": {
    "path": "src/hooks/freight/index.ts",
-   "lines": 7,
+   "lines": 10,
    "doc": "Hooks do domínio de frete: caixas de transporte e parâmetros globais."
   },
   "src/hooks/freight/keys.ts": {
    "path": "src/hooks/freight/keys.ts",
-   "lines": 27,
+   "lines": 49,
    "exports": [
     "const FREIGHT_QUERY_KEYS",
     "const FREIGHT_STALE_TIME_MS",
-    "const PRODUCT_MEASURES_STALE_TIME_MS"
+    "const PRODUCT_MEASURES_STALE_TIME_MS",
+    "const LEAD_TIME_STALE_TIME_MS",
+    "const SUPPLIER_LEAD_TIME_STALE_TIME_MS"
    ],
    "params": [
     {
@@ -469682,12 +470924,45 @@
     {
      "name": "PRODUCT_MEASURES_STALE_TIME_MS",
      "value": "5"
+    },
+    {
+     "name": "LEAD_TIME_STALE_TIME_MS",
+     "value": "24"
+    },
+    {
+     "name": "SUPPLIER_LEAD_TIME_STALE_TIME_MS",
+     "value": "60"
     }
+   ],
+   "rule_comments": [
+    "* Feriados: a lista por ano da tela e a lista inteira do cálculo do prazo saem do mesmo prefixo. */",
+    "* Prazo de produção: ids de produto ordenados e sem duplicata. */",
+    "* Padrão de prazo do fornecedor: 1 hora. */"
    ],
    "doc": "Query keys do domínio de frete (caixas de transporte e parâmetros). Toda chave de caixa começa por `shippingBoxes.all`, então invalidar esse prefixo atualiza a lista do motor, a tabela do cadastro e a lixeira de uma vez.",
    "temporal": [
     "export const FREIGHT_STALE_TIME_MS = 10 * 60 * 1000;",
-    "export const PRODUCT_MEASURES_STALE_TIME_MS = 5 * 60 * 1000;"
+    "export const LEAD_TIME_STALE_TIME_MS = 24 * 60 * 60 * 1000;",
+    "export const PRODUCT_MEASURES_STALE_TIME_MS = 5 * 60 * 1000;",
+    "export const SUPPLIER_LEAD_TIME_STALE_TIME_MS = 60 * 60 * 1000;"
+   ]
+  },
+  "src/hooks/freight/useBusinessCalendar.ts": {
+   "path": "src/hooks/freight/useBusinessCalendar.ts",
+   "lines": 98,
+   "exports": [
+    "interface UseBusinessCalendarYearResult",
+    "function useBusinessCalendarYear",
+    "interface UseBusinessCalendarMutationsResult",
+    "function useBusinessCalendarMutations"
+   ],
+   "rule_comments": [
+    "Mudou um feriado: a lista do ano e o cálculo do prazo precisam reler."
+   ],
+   "doc": "Hooks dos feriados (`business_calendar`). - `useBusinessCalendarYear` — lista de um ano, para a aba Feriados. - `useBusinessCalendarMutations` — adicionar, editar o nome e excluir. O toast de erro leva a mensagem do serviço no TÍTULO, porque `sanitizeError` troca qualquer `Error` comum por texto gen …",
+   "hooks": [
+    "useBusinessCalendarYear",
+    "useBusinessCalendarMutations"
    ]
   },
   "src/hooks/freight/useFreightPlan.ts": {
@@ -469743,6 +471018,28 @@
     "useUpdateFreightSettings"
    ]
   },
+  "src/hooks/freight/usePriceTableBands.ts": {
+   "path": "src/hooks/freight/usePriceTableBands.ts",
+   "lines": 23,
+   "exports": [
+    "function usePriceTableBands"
+   ],
+   "rule_comments": [
+    "* Faixas (quantidade e prazo) das tabelas de preço de gravação. A tela de",
+    "técnicas do produto usa o prazo da faixa como sugestão (\"tabela: N\")."
+   ],
+   "doc": "Faixas (quantidade e prazo) das tabelas de preço de gravação. A tela de técnicas do produto usa o prazo da faixa como sugestão (\"tabela: N\"). Ids ordenados e sem repetição na chave: a mesma lista em outra ordem reaproveita o cache.",
+   "hooks": [
+    "usePriceTableBands"
+   ],
+   "calc_fns": [
+    {
+     "name": "usePriceTableBands",
+     "params": "tableIds: readonly string[]",
+     "body": "const ids = [...new Set(tableIds)].sort(); const query = useQuery({ queryKey: FREIGHT_QUERY_KEYS.productionLeadTime.priceBands(ids), queryFn: () => productionLeadTimeService.listPriceBands(ids), staleTime: LEAD_TIME_STALE_TIME_MS, enabled: ids.length > 0, }); return query.data ?? NO_BANDS;"
+    }
+   ]
+  },
   "src/hooks/freight/useProductMeasures.ts": {
    "path": "src/hooks/freight/useProductMeasures.ts",
    "lines": 89,
@@ -469780,6 +471077,26 @@
     "useProductMeasures"
    ]
   },
+  "src/hooks/freight/useProductionLeadTime.ts": {
+   "path": "src/hooks/freight/useProductionLeadTime.ts",
+   "lines": 163,
+   "exports": [
+    "interface LeadTimePersonalizationInput",
+    "interface LeadTimeQuoteItemInput",
+    "interface UseProductionLeadTimeInput",
+    "interface UseProductionLeadTimeResult",
+    "function useProductionLeadTime"
+   ],
+   "rule_comments": [
+    "* `useProductionLeadTime` — prazo de produção de um orçamento (dias úteis e data",
+    "de \"pronto para envio\"). Só carrega dados; a regra está em `src/lib/lead-time`.",
+    "- folga interna e regra de várias personalizações (`freight_settings`): como os demais parâmetros.",
+    "* Dia civil da aprovação (America/Sao_Paulo); null = o prazo começa hoje. */"
+   ],
+   "hooks": [
+    "useProductionLeadTime"
+   ]
+  },
   "src/hooks/freight/useShippingBoxes.ts": {
    "path": "src/hooks/freight/useShippingBoxes.ts",
    "lines": 209,
@@ -469807,6 +471124,68 @@
      "params": "",
      "body": "void queryClient.invalidateQueries({ queryKey: FREIGHT_QUERY_KEYS.shippingBoxes.all });"
     }
+   ]
+  },
+  "src/hooks/freight/__tests__/useBusinessCalendar.test.tsx": {
+   "path": "src/hooks/freight/__tests__/useBusinessCalendar.test.tsx",
+   "lines": 89,
+   "is_test": true,
+   "doc": "Hooks dos feriados: leitura por ano, aviso de sucesso/erro e invalidação do cache.",
+   "tests": [
+    "useBusinessCalendarYear",
+    "lê o ano pedido",
+    "erro de leitura aparece em isError",
+    "useBusinessCalendarMutations",
+    "adicionar com sucesso avisa e invalida a lista e o cálculo do prazo",
+    "erro do serviço vai no título do aviso (a mensagem é PT-BR e segura)",
+    "erro desconhecido usa o texto padrão da ação"
+   ]
+  },
+  "src/hooks/freight/__tests__/useProductionLeadTime.test.tsx": {
+   "path": "src/hooks/freight/__tests__/useProductionLeadTime.test.tsx",
+   "lines": 211,
+   "is_test": true,
+   "params": [
+    {
+     "name": "PROD_A",
+     "value": "'prod-a'"
+    },
+    {
+     "name": "PROD_B",
+     "value": "'prod-b'"
+    },
+    {
+     "name": "SUPPLIER",
+     "value": "'sup-1'"
+    },
+    {
+     "name": "PAT_A",
+     "value": "'pat-a'"
+    },
+    {
+     "name": "PAT_B",
+     "value": "'pat-b'"
+    },
+    {
+     "name": "TABELA_A",
+     "value": "'tab-a'"
+    },
+    {
+     "name": "TABELA_B",
+     "value": "'tab-b'"
+    }
+   ],
+   "rule_comments": [
+    "tabela; a regra de cálculo (src/lib/lead-time) é a real."
+   ],
+   "doc": "useProductionLeadTime — o cliente Supabase é trocado por um responder por tabela; a regra de cálculo (src/lib/lead-time) é a real.",
+   "tests": [
+    "useProductionLeadTime",
+    "2 itens: o mais demorado define o prazo e a data pula o feriado",
+    "personalização sem faixa para a quantidade bloqueia com pendência (quantidade 600 > 499)",
+    "item sem produto vinculado fica fora e é contado",
+    "sem nenhum produto vinculado não consulta o banco",
+    "falha de leitura vira isError, sem prazo"
    ]
   },
   "src/hooks/gravacao/gravacao-constants.ts": {
@@ -488346,6 +489725,17 @@
     }
    ]
   },
+  "src/lib/lead-time/formatDate.ts": {
+   "path": "src/lib/lead-time/formatDate.ts",
+   "lines": 50,
+   "exports": [
+    "function formatIsoDate",
+    "function formatIsoDayMonth",
+    "function weekdayNamePt",
+    "function todayInSaoPaulo"
+   ],
+   "doc": "Formatação de dia civil `AAAA-MM-DD` para a tela. Só texto: sem `Date`, então o fuso da máquina não muda o dia mostrado."
+  },
   "src/lib/lead-time/index.ts": {
    "path": "src/lib/lead-time/index.ts",
    "lines": 38,
@@ -488493,6 +489883,19 @@
     "businessDaysBetween: 3650 úteis passa; 3651 (segunda 12/11/2040) vira invalid_input",
     "resultado que sai do ano de 4 dígitos é invalid_input: 31/12/9999 (sexta) + 1 útil",
     "feriados nulos ou indefinidos são invalid_input, não exceção"
+   ]
+  },
+  "src/lib/lead-time/__tests__/formatDate.test.ts": {
+   "path": "src/lib/lead-time/__tests__/formatDate.test.ts",
+   "lines": 49,
+   "is_test": true,
+   "tests": [
+    "formatIsoDate / formatIsoDayMonth",
+    "inverte a ordem dos campos",
+    "devolve ",
+    "weekdayNamePt",
+    "%s é inválida",
+    "todayInSaoPaulo"
    ]
   },
   "src/lib/lead-time/__tests__/personalizationLeadTime.test.ts": {
@@ -492600,7 +494003,7 @@
   },
   "src/pages/admin/AdminFreteSettingsPage.tsx": {
    "path": "src/pages/admin/AdminFreteSettingsPage.tsx",
-   "lines": 124,
+   "lines": 137,
    "exports": [
     "function AdminFreteSettingsPage"
    ],
@@ -493462,7 +494865,7 @@
   },
   "src/pages/admin/__tests__/AdminFreteSettingsPage.test.tsx": {
    "path": "src/pages/admin/__tests__/AdminFreteSettingsPage.test.tsx",
-   "lines": 415,
+   "lines": 441,
    "is_test": true,
    "errors": [
     ")).toHaveTextContent(\n      ",
@@ -493493,6 +494896,7 @@
     "terminada a releitura, os campos voltam a aceitar digitação",
     "a dica do fator padrão diz para que ele serve: sugestão na caixa nova",
     "recarrega os campos quando a linha salva muda",
+    "a aba Feriados abre o cadastro de feriados",
     "AdminFreteSettingsPage — foco",
     "salvar recusado pela validação rola e foca o primeiro campo inválido",
     "salvar válido não rola nem tira o foco do botão",
@@ -501598,6 +503002,70 @@
     "setTimeout(() => reject(new Error('Timeout RPC')), 2000);"
    ]
   },
+  "src/services/businessCalendarService.ts": {
+   "path": "src/services/businessCalendarService.ts",
+   "lines": 138,
+   "exports": [
+    "type BusinessCalendarRow",
+    "interface BusinessCalendarWrite",
+    "type BusinessCalendarErrorReason",
+    "class BusinessCalendarError",
+    "const businessCalendarService"
+   ],
+   "tables": [
+    {
+     "table": "business_calendar",
+     "op": "select"
+    },
+    {
+     "table": "business_calendar",
+     "op": "select"
+    },
+    {
+     "table": "business_calendar",
+     "op": "insert,select"
+    },
+    {
+     "table": "business_calendar",
+     "op": "select,update"
+    },
+    {
+     "table": "business_calendar",
+     "op": "delete,select"
+    }
+   ],
+   "table_cols": {
+    "business_calendar": [
+     "created_at",
+     "created_by",
+     "day",
+     "description"
+    ]
+   },
+   "errors": [
+    "not_applied",
+    "permission"
+   ],
+   "enums": [
+    {
+     "name": "BusinessCalendarErrorReason",
+     "values": "duplicate_day | invalid | not_applied | permission | unknown"
+    }
+   ],
+   "params": [
+    {
+     "name": "INVALID_MESSAGE",
+     "value": "'Informe o nome do feriado, com até 120 caracteres.'"
+    }
+   ],
+   "rule_comments": [
+    "* Feriados do prazo de produção (`public.business_calendar`).",
+    "`.select('day')` e 0 linhas vira erro de permissão.",
+    "- `description` não pode ser vazia nem passar de 120 caracteres (23514).",
+    "* Todos os feriados, por data. É o que o cálculo do prazo consome. */"
+   ],
+   "doc": "Feriados do prazo de produção (`public.business_calendar`). Regras do banco (migration 20261120041000): - `day` é a chave primária: a mesma data não entra duas vezes (23505). - Leitura para qualquer autenticado; escrita só para admin. A RLS nega INSERT com erro e UPDATE/DELETE em silêncio (0 linhas) …"
+  },
   "src/services/freightReadinessService.ts": {
    "path": "src/services/freightReadinessService.ts",
    "lines": 72,
@@ -501909,6 +503377,73 @@
     ]
    },
    "doc": "Lê `products.ships_separately` direto da tabela-base. O formulário de produto carrega o cadastro por `v_products_public`, que não expõe esta coluna. Sem esta leitura, o formulário abriria sempre com \"Não mistura\" desligado e, ao salvar, apagaria a marcação em silêncio. Em erro lança: assumir `false` …"
+  },
+  "src/services/productionLeadTimeService.ts": {
+   "path": "src/services/productionLeadTimeService.ts",
+   "lines": 139,
+   "exports": [
+    "const LEAD_TIME_BATCH_SIZE",
+    "interface ProductSupplierLeadTime",
+    "interface TechniqueRegistration",
+    "interface PersonalizationLeadTimeData",
+    "const productionLeadTimeService"
+   ],
+   "tables": [
+    {
+     "table": "products",
+     "op": "select"
+    },
+    {
+     "table": "supplier_settings",
+     "op": "select"
+    },
+    {
+     "table": "tabela_preco_gravacao_oficial_faixa",
+     "op": "select"
+    },
+    {
+     "table": "print_area_techniques",
+     "op": "select"
+    }
+   ],
+   "table_cols": {
+    "products": [
+     "id",
+     "lead_time_days",
+     "supplier_id"
+    ],
+    "supplier_settings": [
+     "default_lead_time_days",
+     "supplier_id"
+    ],
+    "tabela_preco_gravacao_oficial_faixa": [
+     "prazo_dias",
+     "quantidade_maxima",
+     "quantidade_minima",
+     "tabela_preco_gravacao_id"
+    ],
+    "print_area_techniques": [
+     "id",
+     "is_active",
+     "location_code",
+     "product_id",
+     "production_days",
+     "tabela_preco_id"
+    ]
+   },
+   "params": [
+    {
+     "name": "LEAD_TIME_BATCH_SIZE",
+     "value": "100"
+    }
+   ],
+   "rule_comments": [
+    "* Leituras do prazo de produção. Converte as linhas do banco nos objetos",
+    "- `products.supplier_id` -> `supplier_settings.supplier_id` (prazo padrão do fornecedor);",
+    "* Prazo do produto e padrão do fornecedor, um registro por produto encontrado. */",
+    "* Faixas (quantidade, prazo) das tabelas de preço de gravação informadas. */"
+   ],
+   "doc": "Leituras do prazo de produção. Converte as linhas do banco nos objetos simples de `src/lib/lead-time` (a biblioteca não conhece linhas cruas). Como as tabelas se ligam (conferido em produção, 2026-11-20): - `products.supplier_id` -> `supplier_settings.supplier_id` (prazo padrão do fornecedor); - `pr …"
   },
   "src/services/quoteItemsReorder.ts": {
    "path": "src/services/quoteItemsReorder.ts",
@@ -502295,6 +503830,26 @@
     "exchangeCodeForSessionSafe",
     "server 500 → err/server",
     "throw AbortError → err"
+   ]
+  },
+  "src/services/__tests__/businessCalendarService.test.ts": {
+   "path": "src/services/__tests__/businessCalendarService.test.ts",
+   "lines": 151,
+   "is_test": true,
+   "doc": "businessCalendarService — contrato com `public.business_calendar`. O cliente Supabase vira um builder que grava cada chamada; o teste confere filtros, ordem e payload enviados ao PostgREST.",
+   "tests": [
+    "leitura",
+    "listByYear filtra de 01/01 a 31/12 do ano e ordena por data",
+    "listAll não filtra por data",
+    "erro de leitura vira mensagem PT-BR sem vazar a do banco",
+    "escrita",
+    "create envia só data e nome (sem espaços nas pontas)",
+    "create com data repetida (23505) diz a data em dd/mm/aaaa",
+    "create sem linha devolvida (RLS negou em silêncio) vira erro de permissão",
+    "nome fora do CHECK (23514) vira invalid",
+    "updateDescription filtra pela data e grava o nome aparado",
+    "remove apaga pela data",
+    "erro de permissão do banco (42501) vira permission"
    ]
   },
   "src/services/__tests__/freightReadinessService.test.ts": {
@@ -531941,6 +533496,11 @@
    "path": "supabase/migrations/20261120030100_seed_shipping_boxes.sql",
    "lines": 35
   },
+  "supabase/migrations/20261120041000_production_lead_time_calendar.sql": {
+   "path": "supabase/migrations/20261120041000_production_lead_time_calendar.sql",
+   "lines": 138,
+   "uses_service_role": true
+  },
   "supabase/rollbacks/20260511235950_rollback.sql": {
    "path": "supabase/rollbacks/20260511235950_rollback.sql",
    "lines": 5
@@ -532443,6 +534003,10 @@
   "supabase/rollbacks/20261120030100_rollback.sql": {
    "path": "supabase/rollbacks/20261120030100_rollback.sql",
    "lines": 86
+  },
+  "supabase/rollbacks/20261120041000_rollback.sql": {
+   "path": "supabase/rollbacks/20261120041000_rollback.sql",
+   "lines": 108
   },
   "supabase/rollbacks/rollback_20261025002500_analyze_tables_p03.sql": {
    "path": "supabase/rollbacks/rollback_20261025002500_analyze_tables_p03.sql",
@@ -538534,6 +540098,35 @@
     "v2 não aceita action=",
     "versão inexistente → 406 unsupported_version"
    ]
+  },
+  "tests/contracts/production-lead-time-calendar-migration.test.ts": {
+   "path": "tests/contracts/production-lead-time-calendar-migration.test.ts",
+   "lines": 156,
+   "is_test": true,
+   "params": [
+    {
+     "name": "VERSION",
+     "value": "'20261120041000'"
+    }
+   ],
+   "tests": [
+    "migration do calendário de prazo de produção",
+    "começa apontando para o rollback",
+    "semeia 26 feriados: 2 anos x (9 fixos + 4 móveis)",
+    "semeia %s (%s)",
+    "o seed é idempotente",
+    "cria a coluna production_days com CHECK nomeado de 0 a 365",
+    "valida a descrição do feriado: não vazia e até 120 caracteres",
+    "declara as tabelas sem soft delete com a justificativa do gate",
+    "liga RLS e cria as quatro policies no padrão de shipping_boxes",
+    "tira o acesso de PUBLIC e anon e concede o mínimo",
+    "comenta products.lead_time_days como prazo do fornecedor",
+    "rollback do calendário de prazo de produção",
+    "guarda as duas tabelas em backup com RLS e sem acesso, antes de remover",
+    "usa o primeiro nome de backup livre e confere a contagem antes do DROP",
+    "remove tabela, constraint e coluna e devolve o comentário anterior"
+   ],
+   "uses_service_role": true
   },
   "tests/contracts/quote-conditions-spec-contract.test.ts": {
    "path": "tests/contracts/quote-conditions-spec-contract.test.ts",
@@ -557899,10 +559492,58 @@
   }
  },
  "git": {
-  "sha": "347131701f8dda31639d5231319df768e6a58ea5",
+  "sha": "a499d841939b19749b4db766ceda04c76f39591a",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "a499d84",
+    "date": "2026-11-20",
+    "author": "adm01-debug",
+    "subject": "feat(frete): prazo de produção no admin — card, aba Feriados e exceção por produto (Bloco H-UI) (#3936)",
+    "files": [
+     ".file-size-baseline.json",
+     "audit/supabase-reference-catalog.temporary.json",
+     "docs/coordenacao/conflitos-semanticos.md",
+     "src/components/admin/business-calendar/BusinessCalendarManager.tsx",
+     "src/components/admin/business-calendar/__tests__/BusinessCalendarManager.test.tsx",
+     "src/components/admin/business-calendar/index.ts",
+     "src/components/admin/products/__tests__/ProductFormFreightFields.test.tsx",
+     "src/components/admin/products/sections/ProductEngravingSection.tsx",
+     "src/components/admin/products/sections/ProductInfoSection.tsx",
+     "src/components/admin/products/sections/engraving/EngravingAreaCard.tsx",
+     "src/components/admin/products/sections/engraving/NewAreaProductionDays.tsx",
+     "src/components/admin/products/sections/engraving/ProductionDaysInput.tsx",
+     "src/components/admin/products/sections/engraving/__tests__/EngravingAreaCard.test.tsx",
+     "src/components/admin/products/sections/engraving/__tests__/productionDays.test.ts",
+     "src/components/admin/products/sections/engraving/__tests__/useEngravingWizard.productionDays.test.tsx",
+     "src/components/admin/products/sections/engraving/productionDays.ts",
+     "src/components/admin/products/sections/engraving/types.ts",
+     "src/components/admin/products/sections/engraving/useEngravingWizard.ts",
+     "src/components/freight-plan/ProductionLeadTimeCard.tsx",
+     "src/components/freight-plan/__tests__/ProductionLeadTimeCard.test.tsx",
+     "src/components/freight-plan/index.ts",
+     "src/hooks/freight/__tests__/useBusinessCalendar.test.tsx",
+     "src/hooks/freight/__tests__/useProductionLeadTime.test.tsx",
+     "src/hooks/freight/index.ts",
+     "src/hooks/freight/keys.ts",
+     "src/hooks/freight/useBusinessCalendar.ts",
+     "src/hooks/freight/usePriceTableBands.ts",
+     "src/hooks/freight/useProductionLeadTime.ts",
+     "src/integrations/supabase/types.ts",
+     "src/lib/lead-time/__tests__/formatDate.test.ts",
+     "src/lib/lead-time/formatDate.ts",
+     "src/pages/admin/AdminFreteSettingsPage.tsx",
+     "src/pages/admin/__tests__/AdminFreteSettingsPage.test.tsx",
+     "src/services/__tests__/businessCalendarService.test.ts",
+     "src/services/businessCalendarService.ts",
+     "src/services/productionLeadTimeService.ts",
+     "supabase/MIGRATIONS_SYNC_LOG.md",
+     "supabase/migrations/20261120041000_production_lead_time_calendar.sql",
+     "supabase/rollbacks/20261120041000_rollback.sql",
+     "tests/contracts/production-lead-time-calendar-migration.test.ts"
+    ]
+   },
    {
     "sha": "3471317",
     "date": "2026-11-20",
@@ -558434,28 +560075,24 @@
      "src/lib/freight/planFreight.ts",
      "src/lib/freight/units.ts"
     ]
-   },
-   {
-    "sha": "eebe767",
-    "date": "2026-11-19",
-    "author": "adm01-debug",
-    "subject": "feat(scripts): gate do Vercel no pre-push (resgate de trabalho de agente) (#3901)",
-    "files": [
-     "scripts/automation.config.json",
-     "scripts/automation.mjs",
-     "scripts/vercel-gate.mjs",
-     "scripts/vercel-gate.unit.mjs"
-    ]
    }
   ],
   "hot_files": [
    [
     "supabase/MIGRATIONS_SYNC_LOG.md",
-    12
+    13
    ],
    [
     "src/lib/freight/index.ts",
     6
+   ],
+   [
+    "src/hooks/freight/keys.ts",
+    4
+   ],
+   [
+    "src/pages/admin/__tests__/AdminFreteSettingsPage.test.tsx",
+    4
    ],
    [
     "src/components/admin/shipping-boxes/__tests__/ShippingBoxesManager.test.tsx",
@@ -558464,6 +560101,26 @@
    [
     "src/lib/freight/README.md",
     4
+   ],
+   [
+    "audit/supabase-reference-catalog.temporary.json",
+    3
+   ],
+   [
+    "src/components/freight-plan/index.ts",
+    3
+   ],
+   [
+    "src/hooks/freight/index.ts",
+    3
+   ],
+   [
+    "src/integrations/supabase/types.ts",
+    3
+   ],
+   [
+    "src/pages/admin/AdminFreteSettingsPage.tsx",
+    3
    ],
    [
     "src/components/admin/freight-settings/FreightSettingsForm.tsx",
@@ -558486,10 +560143,6 @@
     3
    ],
    [
-    "src/pages/admin/__tests__/AdminFreteSettingsPage.test.tsx",
-    3
-   ],
-   [
     "src/services/__tests__/shippingBoxService.test.ts",
     3
    ],
@@ -558498,35 +560151,11 @@
     3
    ],
    [
-    "src/hooks/freight/keys.ts",
-    3
-   ],
-   [
     ".release-please-manifest.json",
     3
    ],
    [
     "CHANGELOG.md",
-    3
-   ],
-   [
-    "package-lock.json",
-    3
-   ],
-   [
-    "package.json",
-    3
-   ],
-   [
-    "scripts/freight/README.md",
-    3
-   ],
-   [
-    "src/lib/freight/__tests__/fitCount.test.ts",
-    3
-   ],
-   [
-    "src/lib/freight/__tests__/fuzz.test.ts",
     3
    ]
   ]

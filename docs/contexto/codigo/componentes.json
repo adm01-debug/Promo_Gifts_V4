@@ -1,7 +1,7 @@
 {
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
- "total": 1275,
+ "total": 1279,
  "orfaos": 157,
  "nomes_duplicados": {
   "AdminTemplatesManager": [
@@ -2416,6 +2416,23 @@
    "orfao": false
   },
   {
+   "arquivo": "src/components/admin/business-calendar/BusinessCalendarManager.tsx",
+   "exports": [
+    "BusinessCalendarManager"
+   ],
+   "export_default": null,
+   "linhas": 304,
+   "dominio": "components/admin",
+   "hooks_locais": [
+    "useBusinessCalendarMutations",
+    "useBusinessCalendarYear"
+   ],
+   "tabelas": [],
+   "edges": [],
+   "usado_por": 1,
+   "orfao": false
+  },
+  {
    "arquivo": "src/components/admin/categories-manager/CategoriesManager.tsx",
    "exports": [
     "CategoriesManager"
@@ -4795,12 +4812,44 @@
     "EngravingAreaCard"
    ],
    "export_default": null,
-   "linhas": 165,
+   "linhas": 198,
+   "dominio": "components/admin",
+   "hooks_locais": [
+    "usePriceTableBands"
+   ],
+   "tabelas": [],
+   "edges": [],
+   "usado_por": 1,
+   "orfao": false
+  },
+  {
+   "arquivo": "src/components/admin/products/sections/engraving/NewAreaProductionDays.tsx",
+   "exports": [
+    "NewAreaProductionDays"
+   ],
+   "export_default": null,
+   "linhas": 31,
+   "dominio": "components/admin",
+   "hooks_locais": [
+    "usePriceTableBands"
+   ],
+   "tabelas": [],
+   "edges": [],
+   "usado_por": 1,
+   "orfao": false
+  },
+  {
+   "arquivo": "src/components/admin/products/sections/engraving/ProductionDaysInput.tsx",
+   "exports": [
+    "ProductionDaysInput"
+   ],
+   "export_default": null,
+   "linhas": 55,
    "dominio": "components/admin",
    "hooks_locais": [],
    "tabelas": [],
    "edges": [],
-   "usado_por": 1,
+   "usado_por": 2,
    "orfao": false
   },
   {
@@ -4837,7 +4886,7 @@
     "ProductEngravingSection"
    ],
    "export_default": "ProductEngravingSection",
-   "linhas": 575,
+   "linhas": 578,
    "dominio": "components/admin",
    "hooks_locais": [
     "useEngravingWizard"
@@ -4881,7 +4930,7 @@
     "ProductInfoSection"
    ],
    "export_default": null,
-   "linhas": 266,
+   "linhas": 280,
    "dominio": "components/admin",
    "hooks_locais": [
     "useSupplierDefaultLeadTime"
@@ -9168,6 +9217,22 @@
    "tabelas": [],
    "edges": [],
    "usado_por": 2,
+   "orfao": false
+  },
+  {
+   "arquivo": "src/components/freight-plan/ProductionLeadTimeCard.tsx",
+   "exports": [
+    "ProductionLeadTimeCard"
+   ],
+   "export_default": null,
+   "linhas": 284,
+   "dominio": "components/freight-plan",
+   "hooks_locais": [
+    "useProductionLeadTime"
+   ],
+   "tabelas": [],
+   "edges": [],
+   "usado_por": 1,
    "orfao": false
   },
   {
@@ -16540,7 +16605,7 @@
    "hooks_locais": [],
    "tabelas": [],
    "edges": [],
-   "usado_por": 649,
+   "usado_por": 653,
    "orfao": false
   },
   {
@@ -16692,7 +16757,7 @@
    "hooks_locais": [],
    "tabelas": [],
    "edges": [],
-   "usado_por": 45,
+   "usado_por": 46,
    "orfao": false
   },
   {
@@ -16923,7 +16988,7 @@
    "hooks_locais": [],
    "tabelas": [],
    "edges": [],
-   "usado_por": 264,
+   "usado_por": 267,
    "orfao": false
   },
   {
@@ -16951,7 +17016,7 @@
    "hooks_locais": [],
    "tabelas": [],
    "edges": [],
-   "usado_por": 149,
+   "usado_por": 152,
    "orfao": false
   },
   {
@@ -17344,7 +17409,7 @@
    "hooks_locais": [],
    "tabelas": [],
    "edges": [],
-   "usado_por": 53,
+   "usado_por": 54,
    "orfao": false
   },
   {
@@ -17973,7 +18038,7 @@
     "AdminFreteSettingsPage"
    ],
    "export_default": "AdminFreteSettingsPage",
-   "linhas": 124,
+   "linhas": 137,
    "dominio": "pages/admin",
    "hooks_locais": [
     "useFreightSettings",

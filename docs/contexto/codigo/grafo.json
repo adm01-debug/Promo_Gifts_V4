@@ -1,16 +1,16 @@
 {
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
- "nos": 2936,
- "arestas": 11549,
+ "nos": 2948,
+ "arestas": 11603,
  "hubs": [
   {
    "arquivo": "src/lib/utils.ts",
-   "importado_por": 666
+   "importado_por": 667
   },
   {
    "arquivo": "src/components/ui/button.tsx",
-   "importado_por": 654
+   "importado_por": 658
   },
   {
    "arquivo": "src/components/ui/badge.tsx",
@@ -18,7 +18,7 @@
   },
   {
    "arquivo": "src/integrations/supabase/client.ts",
-   "importado_por": 464
+   "importado_por": 466
   },
   {
    "arquivo": "src/components/ui/card.tsx",
@@ -26,7 +26,7 @@
   },
   {
    "arquivo": "src/lib/logger.ts",
-   "importado_por": 323
+   "importado_por": 324
   },
   {
    "arquivo": "src/components/ui/tooltip.tsx",
@@ -34,7 +34,7 @@
   },
   {
    "arquivo": "src/components/ui/input.tsx",
-   "importado_por": 264
+   "importado_por": 267
   },
   {
    "arquivo": "src/contexts/AuthContext.tsx",
@@ -46,7 +46,7 @@
   },
   {
    "arquivo": "src/components/ui/label.tsx",
-   "importado_por": 152
+   "importado_por": 155
   },
   {
    "arquivo": "src/components/ui/select.tsx",
@@ -94,7 +94,7 @@
   },
   {
    "arquivo": "src/integrations/supabase/types.ts",
-   "importado_por": 67
+   "importado_por": 68
   },
   {
    "arquivo": "src/components/ui/switch.tsx",
@@ -134,7 +134,7 @@
   },
   {
    "arquivo": "src/components/ui/tabs.tsx",
-   "importado_por": 53
+   "importado_por": 54
   },
   {
    "arquivo": "src/lib/external-db/index.ts",
@@ -150,7 +150,7 @@
   },
   {
    "arquivo": "src/components/ui/ConfirmDialog.tsx",
-   "importado_por": 48
+   "importado_por": 49
   },
   {
    "arquivo": "src/components/ui/dropdown-menu.tsx",
@@ -673,7 +673,7 @@
   },
   {
    "modulo": "components/admin",
-   "depende_de": 33,
+   "depende_de": 34,
    "importado_por": 8
   },
   {
@@ -717,9 +717,9 @@
    "importado_por": 28
   },
   {
-   "modulo": "components/quotes",
-   "depende_de": 23,
-   "importado_por": 6
+   "modulo": "services",
+   "depende_de": 12,
+   "importado_por": 18
   }
  ],
  "arestas_em": "docs/contexto/codigo/grafo-arestas.json"

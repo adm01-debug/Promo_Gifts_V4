@@ -8,7 +8,7 @@
   "supabase/migrations",
   "typeorm"
  ],
- "migrations": 3115,
+ "migrations": 3116,
  "seeds": [],
  "avisos": [
   "323 bloco(s) com DDL dinâmico (EXECUTE format/...) não modelado — policies/colunas criadas dinamicamente podem faltar; confira no banco vivo"
@@ -9496,6 +9496,75 @@
    "fks": [],
    "criada_em": "20260416183342_786cf75e-5ec6-4c53-a314-9b622e8b7027.sql",
    "usada_no_front": 3,
+   "usada_em_edges": [],
+   "triggers": [],
+   "sem_rls": false,
+   "nao_usada": false
+  },
+  "business_calendar": {
+   "colunas": {
+    "created_at": {
+     "tipo": "timestamptz",
+     "nn": true,
+     "pk": false,
+     "default": "now()",
+     "ref": null
+    },
+    "created_by": {
+     "tipo": "uuid",
+     "nn": false,
+     "pk": false,
+     "default": "auth.uid()",
+     "ref": "auth"
+    },
+    "day": {
+     "tipo": "date",
+     "nn": false,
+     "pk": true,
+     "default": null,
+     "ref": null
+    },
+    "description": {
+     "tipo": "text",
+     "nn": true,
+     "pk": false,
+     "default": null,
+     "ref": null
+    }
+   },
+   "rls": true,
+   "policies": [
+    {
+     "nome": "business_calendar_delete_admin",
+     "comando": "delete",
+     "para": "authenticated",
+     "tipo": "permissive"
+    },
+    {
+     "nome": "business_calendar_insert_admin",
+     "comando": "insert",
+     "para": "authenticated",
+     "tipo": "permissive"
+    },
+    {
+     "nome": "business_calendar_select_authenticated",
+     "comando": "select",
+     "para": "authenticated",
+     "tipo": "permissive"
+    },
+    {
+     "nome": "business_calendar_update_admin",
+     "comando": "update",
+     "para": "authenticated",
+     "tipo": "permissive"
+    }
+   ],
+   "indices": [],
+   "fks": [
+    "created_by->auth"
+   ],
+   "criada_em": "20261120041000_production_lead_time_calendar.sql",
+   "usada_no_front": 1,
    "usada_em_edges": [],
    "triggers": [],
    "sem_rls": false,
@@ -29201,7 +29270,15 @@
    "nao_usada": false
   },
   "print_area_techniques": {
-   "colunas": {},
+   "colunas": {
+    "production_days": {
+     "tipo": "integer",
+     "nn": false,
+     "pk": false,
+     "default": null,
+     "ref": null
+    }
+   },
    "rls": false,
    "policies": [],
    "indices": [
@@ -29213,11 +29290,11 @@
    ],
    "fks": [],
    "criada_em": null,
-   "usada_no_front": 0,
+   "usada_no_front": 1,
    "usada_em_edges": [],
    "triggers": [],
    "sem_rls": false,
-   "nao_usada": true
+   "nao_usada": false
   },
   "product_ai_content": {
    "colunas": {
@@ -35757,7 +35834,7 @@
     "supplier_id->suppliers"
    ],
    "criada_em": "20250102000000_gifts_production.sql",
-   "usada_no_front": 8,
+   "usada_no_front": 9,
    "usada_em_edges": [
     "categories-api",
     "cleanup-novelties",
@@ -46224,7 +46301,7 @@
    "indices": [],
    "fks": [],
    "criada_em": null,
-   "usada_no_front": 1,
+   "usada_no_front": 2,
    "usada_em_edges": [],
    "triggers": [],
    "sem_rls": false,
@@ -47353,11 +47430,11 @@
    "indices": [],
    "fks": [],
    "criada_em": null,
-   "usada_no_front": 0,
+   "usada_no_front": 1,
    "usada_em_edges": [],
    "triggers": [],
    "sem_rls": false,
-   "nao_usada": true
+   "nao_usada": false
   },
   "tags": {
    "colunas": {},

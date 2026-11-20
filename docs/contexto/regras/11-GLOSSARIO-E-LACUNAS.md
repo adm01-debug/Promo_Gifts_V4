@@ -1,6 +1,6 @@
 # 11 · GLOSSÁRIO, DADOS DE REFERÊNCIA E LACUNAS
 
-> Gerado automaticamente por AI Context Sync v1.3.2 · commit `347131701f` · branch `main` · 2026-11-20 15:34 UTC
+> Gerado automaticamente por AI Context Sync v1.3.2 · commit `a499d84193` · branch `main` · 2026-11-20 16:04 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## Glossário do domínio (entidades do sistema)
@@ -62,6 +62,7 @@
 | `bitrix_deals` | _(sem COMMENT ON TABLE — significado não documentado)_ | 11 colunas | migration |
 | `bitrix_sync_logs` | _(sem COMMENT ON TABLE — significado não documentado)_ | 8 colunas | migration |
 | `bot_detection_log` | _(sem COMMENT ON TABLE — significado não documentado)_ | 9 colunas | migration |
+| `business_calendar` | Feriados em que não se conta dia útil no prazo de produção (src/lib/lead-time). Uma linha por data. Sábado e domingo não entram: a biblioteca já os pula. | 4 colunas | migration |
 | `cache_entries` | _(sem COMMENT ON TABLE — significado não documentado)_ | 3 colunas | migration |
 | `cart_templates` | _(sem COMMENT ON TABLE — significado não documentado)_ | 7 colunas | migration |
 | `catalog_analytics` | Analytics de eventos do catálogo. event_type válidos: sort, search, click, filter, view, add_to_quote. Expandido 2026-06-12. | 5 colunas | migration |
@@ -268,7 +269,7 @@
 | `pipeline_run_log` | _(sem COMMENT ON TABLE — significado não documentado)_ | 9 colunas | migration |
 | `point_transactions` | _(sem COMMENT ON TABLE — significado não documentado)_ | 8 colunas | migration |
 | `price_history` | Histórico de todas as alterações de preço/custo para auditoria | 5 colunas | migration |
-| `print_area_techniques` | FONTE UNICA de verdade para áreas de gravação por produto. Dados da técnica (nome, código, max_cores, custo_setup) vêm via JOIN com tabela_preco_gravacao_oficial usando tabela_preco_id. Campos como technique_name e setup_cost NÃO são armazenados aqui - são resolvidos via FK. | 16 colunas | migration |
+| `print_area_techniques` | FONTE UNICA de verdade para áreas de gravação por produto. Dados da técnica (nome, código, max_cores, custo_setup) vêm via JOIN com tabela_preco_gravacao_oficial usando tabela_preco_id. Campos como technique_name e setup_cost NÃO são armazenados aqui - são resolvidos via FK. | 17 colunas | migration |
 | `prod_audit.category_keywords` | _(sem COMMENT ON TABLE — significado não documentado)_ | 13 colunas | migration |
 | `prod_audit.category_suggestions` | _(sem COMMENT ON TABLE — significado não documentado)_ | 13 colunas | migration |
 | `prod_audit.classification_rules` | _(sem COMMENT ON TABLE — significado não documentado)_ | 10 colunas | migration |
@@ -306,8 +307,7 @@
 | `product_packagings` | Relação entre produtos e embalagens disponíveis | 11 colunas | migration |
 | `product_physical` | [ARQ 2026-06-26] Satélite physical (buffer WRITE-ONLY; não lido por view/função/FK).  | 21 colunas | migration |
 | `product_price_freshness_overrides` | Override local da janela de validade de preço por produto (30/60/90 dias). Sobrescreve o valor padrão de 60 dias e tem precedência sobre qualquer valor que venha a ser exposto pelo BD externo no futuro. | 6 colunas | migration |
-| `product_print_positions` | _(sem COMMENT ON TABLE — significado não documentado)_ | 18 colunas | migration |
-| … +520 linhas — lista completa em `context.json` | | | |
+| … +522 linhas — lista completa em `context.json` | | | |
 
 ## Dados de referência (seed — planos, categorias, perfis fixos)
 
@@ -478,6 +478,7 @@
 | coluna | coluna `deleted_at` usada no código não existe no schema de `products` |  |
 | coluna | coluna `images` usada no código não existe no schema de `products` |  |
 | coluna | coluna `is_deleted` usada no código não existe no schema de `products` |  |
+| coluna | coluna `lead_time_days` usada no código não existe no schema de `products` |  |
 | coluna | coluna `locked_fields` usada no código não existe no schema de `products` |  |
 | coluna | coluna `nome` usada no código não existe no schema de `products` |  |
 | coluna | coluna `primary_image_url` usada no código não existe no schema de `products` |  |
@@ -558,6 +559,10 @@
 | coluna | coluna `website` usada no código não existe no schema de `companies` |  |
 | coluna | coluna `is_active` usada no código não existe no schema de `integration_credentials` |  |
 | coluna | coluna `cache_hit` usada no código não existe no schema de `query_telemetry` |  |
+| coluna | coluna `prazo_dias` usada no código não existe no schema de `tabela_preco_gravacao_oficial_faixa` |  |
+| coluna | coluna `quantidade_maxima` usada no código não existe no schema de `tabela_preco_gravacao_oficial_faixa` |  |
+| coluna | coluna `quantidade_minima` usada no código não existe no schema de `tabela_preco_gravacao_oficial_faixa` |  |
+| coluna | coluna `tabela_preco_gravacao_id` usada no código não existe no schema de `tabela_preco_gravacao_oficial_faixa` |  |
 | coluna | coluna `deleted_at` usada no código não existe no schema de `product_images` |  |
 | coluna | coluna `format` usada no código não existe no schema de `product_images` |  |
 | coluna | coluna `id` usada no código não existe no schema de `product_images` |  |
@@ -625,6 +630,7 @@
 | rls | `integration_credentials`: RLS ligado sem nenhuma política → só service_role acessa |  |
 | rls | `magic_up_generations`: RLS ligado sem nenhuma política → só service_role acessa | `recovery/src-legacy/src/hooks/useMagicUpGeneration.ts`<br>`recovery/src-legacy/src/hooks/useMagicUpState.ts`<br>`src/components/search/useGlobalSearch.ts`<br>`src/hooks/intelligence/useMagicUpGeneration.ts` |
 | rls | `mockup_drafts`: RLS ligado sem nenhuma política → só service_role acessa | `recovery/src-legacy/src/hooks/useMockupDraft.ts`<br>`src/hooks/mockup/useMockupDraft.ts` |
+| rls | `print_area_techniques`: RLS ligado sem nenhuma política → só service_role acessa | `src/services/productionLeadTimeService.ts` |
 | rls | `product_commemorative_dates`: RLS ligado sem nenhuma política → só service_role acessa | `src/components/admin/products/productMarketingData.ts` |
 | rls | `product_materials`: RLS ligado sem nenhuma política → só service_role acessa |  |
 | rls | `product_price_freshness_overrides`: front faz SELECT mas nenhuma política RLS permite SELECT → vai falhar/retornar vazio para usuários | `recovery/src-legacy/src/hooks/useProductFreshnessOverride.ts`<br>`src/hooks/products/useProductFreshnessOverride.ts` |
@@ -635,19 +641,13 @@
 | rls | `seller_cart_items`: RLS ligado sem nenhuma política → só service_role acessa | `recovery/src-legacy/src/hooks/useSellerCarts.ts`<br>`src/hooks/products/useSellerCarts.helpers.ts`<br>`src/hooks/products/useSellerCarts.ts` |
 | rls | `seller_carts`: RLS ligado sem nenhuma política → só service_role acessa | `recovery/src-legacy/src/hooks/useSellerCarts.ts`<br>`src/hooks/products/useSellerCarts.helpers.ts`<br>`src/hooks/products/useSellerCarts.ts` |
 | rls | `supplier_products_raw`: RLS ligado sem nenhuma política → só service_role acessa |  |
-| rls | `supplier_settings`: RLS ligado sem nenhuma política → só service_role acessa | `src/hooks/products/useSupplierDefaultLeadTime.ts` |
+| rls | `supplier_settings`: RLS ligado sem nenhuma política → só service_role acessa | `src/hooks/products/useSupplierDefaultLeadTime.ts`<br>`src/services/productionLeadTimeService.ts` |
 | rls | `suppliers`: front faz SELECT mas nenhuma política RLS permite SELECT → vai falhar/retornar vazio para usuários | `src/services/freightReadinessService.ts` |
 | rls | `tabela_preco_gravacao_oficial`: RLS ligado sem nenhuma política → só service_role acessa | `src/lib/external-db/rpc-native.ts` |
+| rls | `tabela_preco_gravacao_oficial_faixa`: RLS ligado sem nenhuma política → só service_role acessa | `src/services/productionLeadTimeService.ts` |
 | rls | `target_audiences`: RLS ligado sem nenhuma política → só service_role acessa | `src/components/admin/products/productMarketingData.ts` |
 | rls | `user_comparisons`: RLS ligado sem nenhuma política → só service_role acessa | `recovery/src-legacy/src/components/compare/ShareComparisonDialog.tsx`<br>`recovery/src-legacy/src/hooks/useComparisonSync.ts`<br>`src/hooks/comparison/useComparisonSync.ts` |
-| rls | `user_onboarding`: front faz SELECT mas nenhuma política RLS permite SELECT → vai falhar/retornar vazio para usuários | `recovery/src-legacy/src/hooks/useOnboarding.ts`<br>`src/hooks/ui/useOnboarding.ts` |
-| rls | `user_onboarding`: front faz INSERT mas nenhuma política RLS permite INSERT → vai falhar/retornar vazio para usuários | `recovery/src-legacy/src/hooks/useOnboarding.ts`<br>`src/hooks/ui/useOnboarding.ts` |
-| rls | `user_onboarding`: front faz UPDATE mas nenhuma política RLS permite UPDATE → vai falhar/retornar vazio para usuários | `recovery/src-legacy/src/hooks/useOnboarding.ts`<br>`src/hooks/ui/useOnboarding.ts` |
-| dinheiro | `ops.pgss_history.total_exec_time` guarda dinheiro em `double precision NOT NULL` (ponto flutuante) — arredondamento imprevisível; padrão é numeric |  |
-| edge | edge function `a` invocada mas não existe em supabase/functions/ | `scripts/__tests__/check-invoke-direct-calls.test.mjs` |
-| edge | edge function `b` invocada mas não existe em supabase/functions/ | `scripts/__tests__/check-invoke-direct-calls.test.mjs` |
-| edge | edge function `chamada-literal` invocada mas não existe em supabase/functions/ | `tests/scripts/inventario-repo.test.mjs` |
-| … +244 linhas — lista completa em `context.json` | | |
+| … +251 linhas — lista completa em `context.json` | | |
 
 ## Lacunas — o que este contexto NÃO consegue responder (perguntas para o dono do negócio)
 
@@ -717,7 +717,7 @@
 - `quote_approval_tokens.status` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.
 - `kit_share_tokens.status` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.
 - `_deprecated_silver_images_queue_20260606.img_status` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.
-- 268/497 tabelas sem `COMMENT ON TABLE` — o significado de negócio não está no schema: `optimization_queue`, `quotes`, `magazines`, `material_types`, `quotes_inbound`, `webhook_inbound_dedupe`, `webhook_inbound_log`, `magazine_items`, `magazine_reader_state`, `magazine_templates`, `admin_audit_log_y2025m12`, `admin_audit_log_y2026m01` …
+- 268/498 tabelas sem `COMMENT ON TABLE` — o significado de negócio não está no schema: `optimization_queue`, `quotes`, `magazines`, `material_types`, `quotes_inbound`, `webhook_inbound_dedupe`, `webhook_inbound_log`, `magazine_items`, `magazine_reader_state`, `magazine_templates`, `admin_audit_log_y2025m12`, `admin_audit_log_y2026m01` …
 - Há tabelas usadas no código sem migration no repo — o schema real pode ter sido alterado pelo painel.
 
 ## Regras manuais presentes

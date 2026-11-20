@@ -8,23 +8,23 @@
    "api/health.ts (1)"
   ],
   "componentes": [
-   "src/components (975)",
+   "src/components (979)",
    "src/pages (181)",
    "recovery/src-legacy (100)"
   ],
   "hooks": [
-   "src/hooks (309)",
+   "src/hooks (312)",
    "recovery/src-legacy (196)",
    "src/components (78)"
   ],
   "servicos_logica": [
-   "src/lib (265)",
+   "src/lib (266)",
    "src/utils (33)",
-   "src/services (14)"
+   "src/services (16)"
   ],
   "testes": [
-   "tests/ (1092)",
-   "co-localizado (__tests__) (755)",
+   "tests/ (1093)",
+   "co-localizado (__tests__) (764)",
    "e2e/ (627)"
   ],
   "edge_functions": "supabase/functions",
@@ -49,7 +49,7 @@
  },
  "barrels_index": 50,
  "extensao_componentes": [
-  ".tsx (1275)"
+  ".tsx (1279)"
  ],
  "alias_imports": {
   "e2e/": {},
@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "feat(frete): prazo de produção no admin — card, aba Feriados e exceção por produto (Bloco H-UI) (#3936)",
    "fix(frete): admin de caixas e parâmetros — 2ª rodada (duplo clique, rolagem, limites do banco) (#3924)",
    "feat(frete): plano de volumes no orçamento, cache ao salvar produto e ships_separately (Bloco E, etapas 46, 47, 49) (#3933)",
    "fix(frete): comparação de ships_separately sem violar lint do tipo expandido (#3939)",
-   "feat(frete): bibliotecas do kit, schema do plano, contrato de cotação e ranking (etapas 51, 62, 81, 85) (#3928)",
-   "chore(main): release gifts-store 1.14.0 (#3916)"
+   "feat(frete): bibliotecas do kit, schema do plano, contrato de cotação e ranking (etapas 51, 62, 81, 85) (#3928)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",
