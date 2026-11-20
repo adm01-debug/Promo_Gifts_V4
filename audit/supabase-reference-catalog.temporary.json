@@ -32,6 +32,7 @@
     "art_file_attachments",
     "audit_log",
     "bot_detection_log",
+    "business_calendar",
     "cart_templates",
     "catalog_analytics",
     "categories",

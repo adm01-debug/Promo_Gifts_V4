@@ -1,7 +1,10 @@
 /**
  * EngravingAreaCard — Renders a single engraving area in the list
  */
+import { useState } from 'react';
+import { usePriceTableBands } from '@/hooks/freight';
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import { Switch } from '@/components/ui/switch';
 import {
   GripVertical,
@@ -14,6 +17,8 @@ import {
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { type EnrichedArea, getTechniqueIcon, getTechniqueColor } from './types';
+import { ProductionDaysInput } from './ProductionDaysInput';
+import { parseProductionDays, tableLeadTimePlaceholder } from './productionDays';
 
 interface EngravingAreaCardProps {
   area: EnrichedArea;
@@ -21,6 +26,8 @@ interface EngravingAreaCardProps {
   onToggleExpand: () => void;
   onToggleActive: () => void;
   onDelete: () => void;
+  /** Grava o prazo de personalização (null = usa a tabela). */
+  onSaveProductionDays: (area: EnrichedArea, days: number | null) => void;
 }
 
 export function EngravingAreaCard({
@@ -29,7 +36,13 @@ export function EngravingAreaCard({
   onToggleExpand,
   onToggleActive,
   onDelete,
+  onSaveProductionDays,
 }: EngravingAreaCardProps) {
+  const priceBands = usePriceTableBands([area.tabela_preco_id]);
+  const savedDays = area.production_days ?? null;
+  const [daysText, setDaysText] = useState(savedDays === null ? '' : String(savedDays));
+  const parsedDays = parseProductionDays(daysText);
+  const daysChanged = parsedDays.ok && parsedDays.value !== savedDays;
   const areaDisplayName = `${area.location_name || area.location_code} — ${area.technique_name}`;
   const techCode = area.technique_code || area.technique_group || '';
 
@@ -155,6 +168,26 @@ export function EngravingAreaCard({
                 {area.is_curved ? ' (curva)' : ''}
               </p>
             </div>
+          </div>
+          <div className="mt-3 flex flex-col gap-2 sm:flex-row sm:items-start">
+            <div className="sm:max-w-[14rem] sm:flex-1">
+              <ProductionDaysInput
+                id={`production-days-${area.id}`}
+                value={daysText}
+                onChange={setDaysText}
+                placeholder={tableLeadTimePlaceholder(priceBands, area.tabela_preco_id)}
+              />
+            </div>
+            <Button
+              type="button"
+              size="sm"
+              variant="outline"
+              className="h-8 sm:mt-[18px]"
+              disabled={!daysChanged}
+              onClick={() => parsedDays.ok && onSaveProductionDays(area, parsedDays.value)}
+            >
+              Salvar prazo
+            </Button>
           </div>
           {area.notes && <p className="mt-2 text-xs italic text-muted-foreground">{area.notes}</p>}
         </div>

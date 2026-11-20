@@ -44,6 +44,7 @@ import {
 } from './engraving/types';
 import { useEngravingWizard } from './engraving/useEngravingWizard';
 import { EngravingAreaCard } from './engraving/EngravingAreaCard';
+import { NewAreaProductionDays } from './engraving/NewAreaProductionDays';
 
 interface Props {
   productId?: string;
@@ -402,6 +403,7 @@ export default function ProductEngravingSection({ productId, isEdit, engravingFl
             </div>
           </div>
         </div>
+        <NewAreaProductionDays wizard={w} />
         <div>
           <label className="mb-1 block text-[11px] font-medium text-muted-foreground">
             Observações
@@ -434,7 +436,7 @@ export default function ProductEngravingSection({ productId, isEdit, engravingFl
             type="button"
             size="sm"
             onClick={w.handleSaveArea}
-            disabled={w.isBusy}
+            disabled={w.isBusy || !w.canSaveArea}
             className="gap-1.5"
           >
             <Save className="h-3.5 w-3.5" />
@@ -522,6 +524,7 @@ export default function ProductEngravingSection({ productId, isEdit, engravingFl
                         }
                         onToggleActive={() => w.handleToggleActive(area)}
                         onDelete={() => w.handleDeleteArea(area)}
+                        onSaveProductionDays={w.handleChangeProductionDays}
                       />
                     ))}
                   </div>

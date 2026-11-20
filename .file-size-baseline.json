@@ -24,7 +24,7 @@
     "src/components/admin/products/ProductFormFullscreen.tsx": 656,
     "src/components/admin/products/image-gallery/useProductImageGallery.ts": 843,
     "src/components/admin/products/new-supplier/useNewSupplierForm.ts": 730,
-    "src/components/admin/products/sections/ProductEngravingSection.tsx": 575,
+    "src/components/admin/products/sections/ProductEngravingSection.tsx": 577,
     "src/components/admin/products/useProductsManager.ts": 509,
     "src/components/admin/products/video-gallery/useProductVideoGallery.ts": 654,
     "src/components/admin/security/role-migration/RoleMigrationPanel.tsx": 538,
