@@ -2,6 +2,10 @@
 
 Diff semântico gerado a cada coleta em que algo mudou.
 
+## 2026-11-20 16:18 UTC
+
+- **functions** alterado (2): `public.is_admin()`, `public.is_admin(_user_id uuid)`
+
 ## 2026-11-20 12:24 UTC
 
 - **functions** adicionado (1): `public.fn_auto_assign_org_on_profile()`

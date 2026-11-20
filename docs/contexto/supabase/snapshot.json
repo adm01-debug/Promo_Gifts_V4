@@ -182023,9 +182023,13 @@
             {
               "file": "supabase/migrations/20261119213100_create_freight_settings.sql",
               "hits": 2
+            },
+            {
+              "file": "supabase/migrations/20261120041000_production_lead_time_calendar.sql",
+              "hits": 5
             }
           ],
-          "code_total_files": 27,
+          "code_total_files": 28,
           "cron": [],
           "db": [
             "public.can_grant_mcp_full_to_user",
@@ -182173,9 +182177,13 @@
             {
               "file": "supabase/migrations/20261119213100_create_freight_settings.sql",
               "hits": 2
+            },
+            {
+              "file": "supabase/migrations/20261120041000_production_lead_time_calendar.sql",
+              "hits": 5
             }
           ],
-          "code_total_files": 27,
+          "code_total_files": 28,
           "cron": [],
           "db": [
             "public.can_grant_mcp_full_to_user",
