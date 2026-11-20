@@ -9,8 +9,8 @@
  * Zero é um valor legítimo na conversão (0 mm = 0 cm); quem decide que zero
  * significa "não cadastrado" é `isKnownMeasure`.
  *
- * Toda conversão arredonda: `0.35 * 1000` em ponto flutuante é
- * `350.00000000000006`, e um peso que não fecha vaza para o total do volume.
+ * Toda conversão arredonda: `16.1 * 1000` em ponto flutuante é
+ * `16100.000000000002`, e um peso que não fecha vaza para o total do volume.
  */
 
 /** Entrada aceitável para um conversor: número, nulo ou ausente. */
@@ -21,7 +21,7 @@ function isUsable(value: MaybeNumber): value is number {
 }
 
 /**
- * Arredondamento decimal que não perde o empate.
+ * Arredondamento decimal que não perde o empate **de um literal decimal**.
  *
  * `Math.round(value * 10 ** decimals)` erra para baixo quando a multiplicação
  * binária cai do lado errado do meio: `1.005 * 100` é `100.49999999999999`, e o
@@ -29,6 +29,12 @@ function isUsable(value: MaybeNumber): value is number {
  * exponencial **do texto** do número (`Number('1.005e2') === 100.5`) preserva o
  * empate e não depende da escala do valor — ao contrário de somar
  * `Number.EPSILON`, que é absoluto e só salva valores perto de 1.
+ *
+ * A garantia vale para o número como foi digitado ou lido do banco (`1.005`).
+ * Um valor que já é resultado de multiplicação ou divisão pode chegar aqui do
+ * lado de baixo do meio — `19.7 * 30.3 * 33 / 6000 * 1000` é
+ * `3283.0049999999997`, não `3283.005` — e aí arredonda para baixo. O desvio
+ * é de no máximo uma unidade da última casa (0,01 g no peso cubado).
  *
  * Um valor que o próprio JavaScript já imprime em notação exponencial
  * (`1e-7`) produziria texto inválido (`'1e-7e2'`), então aí cai no `toFixed`,
@@ -42,7 +48,15 @@ function isUsable(value: MaybeNumber): value is number {
 export function roundDecimal(value: number, decimals: number): number {
   const shifted = Number(`${value}e${decimals}`);
   if (!Number.isFinite(shifted)) return Number(value.toFixed(decimals));
-  return Number(`${Math.round(shifted)}e-${decimals}`);
+  const rounded = Math.round(shifted);
+  // A partir de 1e21 o JavaScript imprime o inteiro em notação exponencial
+  // (`'1e+21'`), e `'1e+21e-2'` não é número: sairia `NaN`. Nessa escala o
+  // valor já não tem casa além das pedidas — com 2 casas o limite é 1e19, onde
+  // os números representáveis andam de 2.048 em 2.048; com 6 casas é 1e15,
+  // onde andam de 0,125 em 0,125 (3 casas) —, então o próprio valor é a
+  // resposta.
+  if (Math.abs(rounded) >= 1e21) return value;
+  return Number(`${rounded}e-${decimals}`);
 }
 
 /** Arredonda para 1 casa decimal. */

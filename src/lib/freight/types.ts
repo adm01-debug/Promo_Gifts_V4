@@ -2,8 +2,9 @@
  * Contrato do motor de frete.
  *
  * Unidades canônicas do módulo: **centímetro** e **grama**. Nada aqui lê mm ou kg:
- * a conversão acontece na borda de entrada (`resolveItemDimensions`), que traduz
- * `box_*_mm` e `box_weight_kg` do catálogo. Volume em cm³, exceto `volumeM3`.
+ * a borda de entrada (`resolveItemDimensions`) recebe a peça já em cm e g
+ * (`height_cm`, `width_cm`, `length_cm`, `diameter_cm`, `weight_g`) e não lê
+ * `box_*_mm` nem `box_weight_kg` do catálogo. Volume em cm³, exceto `volumeM3`.
  *
  * Nenhum tipo deste arquivo conhece React, Supabase ou formatação de tela.
  */
@@ -109,8 +110,11 @@ export interface PackVolume {
 export type MixMode = 'misturar' | 'separar';
 
 /**
- * `ok` = plano calculado. `dados_insuficientes` = algum produto sem medida
- * (ver `missing`). `nao_cabe` = a peça não entra nem na maior caixa ativa.
+ * `ok` = plano calculado. `dados_insuficientes` = o plano não pôde ser
+ * calculado com o que chegou: produto sem medida (ver `missing`) ou entrada
+ * recusada — quantidade, caixa, parâmetro, o mesmo produto com medidas
+ * diferentes, pedido acima do teto de volumes (ver `warnings`). `nao_cabe` = a
+ * peça não entra nem na maior caixa ativa.
  */
 export type FreightPlanStatus = 'dados_insuficientes' | 'nao_cabe' | 'ok';
 

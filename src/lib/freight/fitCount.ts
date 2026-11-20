@@ -12,8 +12,9 @@
  *
  * - só geometria ignora que o empacotador real não repete a grade perfeita
  *   em toda caixa, e por isso existe o `fillFactor`;
- * - só volume diz que 27 cubos de 10 cm cabem numa caixa de 30 cm de lado
- *   quando nenhuma orientação permite isso;
+ * - só volume diz que 22 cubos de 10 cm cabem numa caixa de 29,4 cm de lado
+ *   por dentro (25.412,184 cm³ × 0,9 ÷ 1.000 = 22,87), quando a grade só
+ *   encaixa 2 × 2 × 2 = 8;
  * - só peso deixa a caixa G aceitar 25 kg de caderneta que não entra nela.
  */
 import type { Dimensions, FreightSettings, ShippingBox } from './types';
@@ -51,9 +52,10 @@ export interface FitResult {
 }
 
 /**
- * Tolerância do piso de uma divisão. `32.4 / 1.2` em ponto flutuante é
- * `26.999999999999996`: sem isso o suporte de 1,2 cm perderia uma fileira
- * inteira por erro de representação, não por geometria.
+ * Tolerância do piso de uma divisão. `26.4 / 4.4` em ponto flutuante é
+ * `5.999999999999999`: sem isso uma peça de 4,4 cm perderia uma camada inteira
+ * na caixa P (26,4 cm de altura interna) por erro de representação, não por
+ * geometria.
  */
 const EPSILON = 1e-9;
 
