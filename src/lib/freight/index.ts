@@ -65,3 +65,5 @@ export { computeVolumeTotals, type VolumeDraft } from './computeVolumeTotals';
 export { computeItemsHash, planFreight, type PlanInput, type PlanOptions } from './planFreight';
 
 export { formatPlanSummary } from './formatPlanSummary';
+
+export { formatPlanForClient } from './format';
