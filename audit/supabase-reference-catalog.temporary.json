@@ -141,6 +141,7 @@
     "public_token_failures",
     "query_telemetry",
     "quote_approval_tokens",
+    "quote_comments",
     "quote_history",
     "quote_item_personalizations",
     "quote_items",

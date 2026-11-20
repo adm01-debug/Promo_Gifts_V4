@@ -39,6 +39,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { QuoteHistoryPanel } from '@/components/quotes/QuoteHistoryPanel';
+import { QuoteCommentsSection } from '@/components/quotes/QuoteCommentsSection';
 import { ConfirmDialog } from '@/components/ui/ConfirmDialog';
 import { toast } from 'sonner';
 import { showUndoToast } from '@/utils/undoToast';
@@ -508,6 +509,7 @@ export default function QuoteViewPage() {
           </CardContent>
         </Card>
 
+        {id && <QuoteCommentsSection key={id} quoteId={id} />}
         {id && <QuoteVersionHistory quoteId={id} currentQuoteId={id} />}
 
         {proposalData && (
