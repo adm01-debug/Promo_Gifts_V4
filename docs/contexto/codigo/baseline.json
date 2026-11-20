@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "e50717437bb9f6cfd67d201ce6de02953d45734a",
+  "commit": "36e7b1c255dd79d5b822ba02355f18115f8beef2",
   "branch": "main",
-  "data_commit": "2026-11-20T14:46:48-03:00",
+  "data_commit": "2026-11-20T15:27:51-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "36e7b1c2",
+    "data": "2026-11-20",
+    "assunto": "feat(db): restaura comentários em orçamento (quote_comments) após decisão do dono (#3942)"
+   },
    {
     "sha": "e5071743",
     "data": "2026-11-20",
@@ -126,14 +131,9 @@
     "sha": "4e503286",
     "data": "2026-11-19",
     "assunto": "docs(migrations-log): recibo E15 — aplicação de 20261119212000 (#3906)"
-   },
-   {
-    "sha": "00502c7a",
-    "data": "2026-11-19",
-    "assunto": "fix(frete): motor agrupa por produto e corrige bordas (#3910)"
    }
   ],
-  "arquivos_mudados_7d": 1486,
+  "arquivos_mudados_7d": 1488,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -199,11 +199,11 @@
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "supabase/MIGRATIONS_SYNC_LOG.md",
-    "mudancas": 69
+    "mudancas": 70
    },
    {
     "arquivo": "package.json",
-    "mudancas": 29
+    "mudancas": 28
    },
    {
     "arquivo": "docs/coordenacao/conflitos-semanticos.md",
@@ -211,7 +211,7 @@
    },
    {
     "arquivo": "package-lock.json",
-    "mudancas": 19
+    "mudancas": 18
    },
    {
     "arquivo": ".github/workflows/deploy-gates.yml",
@@ -219,10 +219,6 @@
    },
    {
     "arquivo": "RELATORIO_CI.md",
-    "mudancas": 13
-   },
-   {
-    "arquivo": "CHANGELOG.md",
     "mudancas": 12
    },
    {
@@ -230,8 +226,12 @@
     "mudancas": 12
    },
    {
-    "arquivo": "PENDENCIAS.md",
+    "arquivo": "CHANGELOG.md",
     "mudancas": 11
+   },
+   {
+    "arquivo": "PENDENCIAS.md",
+    "mudancas": 10
    },
    {
     "arquivo": "docs/agentes/resgates/2026-11-16-auditoria-branches.md",
@@ -309,7 +309,7 @@
    },
    {
     "autor": "github-actions[bot]",
-    "commits": 29
+    "commits": 28
    },
    {
     "autor": "Joaquim Ataides",
@@ -322,7 +322,7 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 11171,
+  "arquivos_total": 11173,
   "arquivos_codigo": 5638,
   "linhas_codigo": 1069393,
   "rotas": 140,
@@ -333,8 +333,8 @@
   "componentes": 1279,
   "hooks": 643,
   "edge_functions": 112,
-  "tabelas": 530,
-  "migrations": 3117,
+  "tabelas": 531,
+  "migrations": 3118,
   "cron_jobs": 122,
   "testes": 2690,
   "workflows": 89,
@@ -3182,7 +3182,6 @@
    "customers",
    "messages",
    "mv_material_group_stats",
-   "quote_comments",
    "sync_logs",
    "v_commemorative_dates_with_colors",
    "xbz_image_import_staging"

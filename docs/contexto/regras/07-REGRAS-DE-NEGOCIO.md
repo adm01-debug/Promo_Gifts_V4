@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.3.2 · commit `e50717437b` · branch `main` · 2026-11-20 17:48 UTC
+> Gerado automaticamente por AI Context Sync v1.3.2 · commit `36e7b1c255` · branch `main` · 2026-11-20 18:29 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -503,7 +503,7 @@ Fornecedor Asia → supplier_products_raw (Bronze) → normalização (Silver) �
 | `user_token_revocations` | revocations_supervisor_delete | DELETE | public | permissive | `"public"."is_supervisor_or_above"(( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid"))` |  |
 | `user_token_revocations` | revocations_supervisor_insert | INSERT | public | permissive |  | `"public"."is_supervisor_or_above"(( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid"))` |
 | `saved_filters` | saved_filters_delete | DELETE | public | permissive | `(( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid") = "user_id")` |  |
-| … +511 linhas — lista completa em `context.json` | | | | | | |
+| … +515 linhas — lista completa em `context.json` | | | | | | |
 
 ## C. Restrições de dados (obrigatório / único / default / CHECK / FK / calculada)
 
@@ -1115,7 +1115,7 @@ Fornecedor Asia → supplier_products_raw (Bronze) → normalização (Silver) �
 | trg_validate_approval_token_status | BEFORE INSERT OR UPDATE | `quote_approval_tokens` | `validate_status_fields` |  |
 | update_seller_discount_limits_updated_at | BEFORE UPDATE | `seller_discount_limits` | `update_updated_at_column` |  |
 | update_discount_approval_requests_updated_at | BEFORE UPDATE | `discount_approval_requests` | `update_updated_at_column` |  |
-| … +182 linhas — lista completa em `context.json` | | | | |
+| … +183 linhas — lista completa em `context.json` | | | | |
 
 Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banco):
 
@@ -1421,7 +1421,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `magazine_update_metadata_atomic` | magazine_not_editable | `supabase/migrations/20260909190400_magazine_page_order_numeric_version.sql` |
 | `magazine_guard_and_version_v2` | magazine_publish_requires_rpc | `supabase/migrations/20260909200000_magazine_hardening_v2.sql` |
 | `magazine_guard_and_version_v2` | magazine_import_marker_forbidden | `supabase/migrations/20260909200000_magazine_hardening_v2.sql` |
-| … +124 linhas — lista completa em `context.json` | | |
+| … +127 linhas — lista completa em `context.json` | | |
 
 ## E. Estados, máquinas de estado e transições
 

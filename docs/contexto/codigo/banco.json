@@ -8,7 +8,7 @@
   "supabase/migrations",
   "typeorm"
  ],
- "migrations": 3117,
+ "migrations": 3118,
  "seeds": [],
  "avisos": [
   "323 bloco(s) com DDL dinâmico (EXECUTE format/...) não modelado — policies/colunas criadas dinamicamente podem faltar; confira no banco vivo"
@@ -432,6 +432,7 @@
   "enable_step_up_for_user",
   "enforce_created_by_owner",
   "enforce_password_reset_rate_limit",
+  "enforce_quote_comment_mutation",
   "enforce_seller_cart_ready_requires_items",
   "enforce_seller_id_owner",
   "enforce_user_id_owner",
@@ -2832,6 +2833,13 @@
    "evento": "update of approved",
    "tabela": "quote_approval_tokens",
    "funcao": "invalidate_approval_token"
+  },
+  {
+   "nome": "quote_comments_enforce_mutation",
+   "quando": "before",
+   "evento": "insert or update",
+   "tabela": "quote_comments",
+   "funcao": "enforce_quote_comment_mutation"
   },
   {
    "nome": "trg_prevent_non_admin_quote_item_price_change",
@@ -37813,6 +37821,122 @@
    "sem_rls": false,
    "nao_usada": false
   },
+  "quote_comments": {
+   "colunas": {
+    "content": {
+     "tipo": "text",
+     "nn": true,
+     "pk": false,
+     "default": null,
+     "ref": null
+    },
+    "created_at": {
+     "tipo": "timestamp with time zone",
+     "nn": true,
+     "pk": false,
+     "default": "pg_catalog.now()",
+     "ref": null
+    },
+    "id": {
+     "tipo": "uuid",
+     "nn": true,
+     "pk": false,
+     "default": "pg_catalog.gen_random_uuid()",
+     "ref": null
+    },
+    "is_edited": {
+     "tipo": "boolean",
+     "nn": true,
+     "pk": false,
+     "default": "false",
+     "ref": null
+    },
+    "parent_id": {
+     "tipo": "uuid",
+     "nn": false,
+     "pk": false,
+     "default": null,
+     "ref": null
+    },
+    "quote_id": {
+     "tipo": "uuid",
+     "nn": true,
+     "pk": false,
+     "default": null,
+     "ref": null
+    },
+    "updated_at": {
+     "tipo": "timestamp with time zone",
+     "nn": true,
+     "pk": false,
+     "default": "pg_catalog.now()",
+     "ref": null
+    },
+    "user_id": {
+     "tipo": "uuid",
+     "nn": true,
+     "pk": false,
+     "default": null,
+     "ref": null
+    }
+   },
+   "rls": true,
+   "policies": [
+    {
+     "nome": "quote_comments_delete_own_visible_quote",
+     "comando": "delete",
+     "para": "authenticated",
+     "tipo": "permissive"
+    },
+    {
+     "nome": "quote_comments_insert_own_visible_quote",
+     "comando": "insert",
+     "para": "authenticated",
+     "tipo": "permissive"
+    },
+    {
+     "nome": "quote_comments_select_visible_quote",
+     "comando": "select",
+     "para": "authenticated",
+     "tipo": "permissive"
+    },
+    {
+     "nome": "quote_comments_update_own_visible_quote",
+     "comando": "update",
+     "para": "authenticated",
+     "tipo": "permissive"
+    }
+   ],
+   "indices": [
+    {
+     "nome": "quote_comments_parent_quote_idx",
+     "colunas": "parent_id, quote_id",
+     "unico": false
+    },
+    {
+     "nome": "quote_comments_quote_created_id_idx",
+     "colunas": "quote_id, created_at, id",
+     "unico": false
+    },
+    {
+     "nome": "quote_comments_user_id_idx",
+     "colunas": "user_id",
+     "unico": false
+    }
+   ],
+   "fks": [
+    "quote_id->quotes",
+    "user_id->auth"
+   ],
+   "criada_em": "20261120180000_restore_quote_comments_scoped_threads.sql",
+   "usada_no_front": 1,
+   "usada_em_edges": [],
+   "triggers": [
+    "quote_comments_enforce_mutation"
+   ],
+   "sem_rls": false,
+   "nao_usada": false
+  },
   "quote_drafts": {
    "colunas": {},
    "rls": false,
@@ -50974,7 +51098,6 @@
   "customers",
   "messages",
   "mv_material_group_stats",
-  "quote_comments",
   "sync_logs",
   "v_commemorative_dates_with_colors",
   "xbz_image_import_staging"

@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e de hora em hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `e50717437bb9f6cfd67d201ce6de02953d45734a` (2026-11-20T14:46:48-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e de hora em hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `36e7b1c255dd79d5b822ba02355f18115f8beef2` (2026-11-20T15:27:51-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -14,7 +14,7 @@ Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR
 Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua tarefa; não carregue tudo.
 
 ## Stack
-- linguagens: TypeScript (5165), SQL (3475), Markdown (1490), JavaScript (463), JSON (132), YAML (117), Shell (27), HTML (20)
+- linguagens: TypeScript (5165), SQL (3477), Markdown (1490), JavaScript (463), JSON (132), YAML (117), Shell (27), HTML (20)
 - linguagem_principal: TypeScript
 - framework: React
 - backend_http: n/d
@@ -34,7 +34,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 ## Números
 | item | qtd |
 |---|---|
-| arquivos_total | 11171 |
+| arquivos_total | 11173 |
 | arquivos_codigo | 5638 |
 | linhas_codigo | 1069393 |
 | rotas | 140 |
@@ -45,8 +45,8 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 | componentes | 1279 |
 | hooks | 643 |
 | edge_functions | 112 |
-| tabelas | 530 |
-| migrations | 3117 |
+| tabelas | 531 |
+| migrations | 3118 |
 | cron_jobs | 122 |
 | testes | 2690 |
 | workflows | 89 |
@@ -586,7 +586,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - edges_orfas: 50 — ex.: anonymize-user, audit-suite, bi-copilot
 - edges_chamadas_sem_pasta: 1 — ex.: receive-quote-sync
 - tabelas_sem_rls: 30 — ex.: _backup_quotes_orgid_null_20260614, _bkp_asia_raw_pre_fix_referencia, binding_colors
-- tabelas_usadas_sem_definicao: 11 — ex.: ai_models, avatars, categories_tree_visual
+- tabelas_usadas_sem_definicao: 10 — ex.: ai_models, avatars, categories_tree_visual
 - tabelas_com_drift_migration_vs_types: 0
 - rpcs_sem_definicao: 5 — ex.: fn_get_color_swatches_batch, fn_get_reposicao_variants_summary, fn_rupture_health_check
 - componentes_orfaos: 157 — ex.: docs/agentes/resgates/quote-comments/codigo/QuoteCommentsSection.tsx, recovery/RealtimeMessagesExample.tsx, recovery/src-legacy/src/components/admin/CatalogQualityDashboard.tsx
@@ -597,21 +597,21 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - possiveis_segredos_no_codigo: 7 — ex.: scripts/ai-context/cenarios.mjs:102, src/components/admin/connections/__tests__/ConnectionSecurity.unit.test.tsx:9, src/integrations/supabase/client.ts:27
 
 ## Grafo de código (graphify)
-- 50351 nós · 85381 arestas · 2798 comunidades · grafo do commit `e5071743`
+- 50351 nós · 85381 arestas · 2798 comunidades · grafo do commit `36e7b1c2`
 - comunidades maiores: vitest (1215), ref_components (895), ref_integrations (589), ref_node_child_process (522), ref_lib (454), @tanstack/react-query (394), ref_types (383), react-router-dom (363), ref_utils (339), react (331), scripts (310), ref_node_fs (298)
 - símbolos mais chamados: gotoAndSettle() (e2e/helpers/nav.ts), re (?), q() (scripts/supabase_snapshot/snapshot.py), analyze() (tests/scripts/test_personalization_artifact_diagnostics.py), outer() (tests/scripts/test_personalization_artifact_diagnostics.py), json (?), useExternalDatabase() (recovery/src-legacy/src/hooks/useExternalDatabase.ts), concludeCheck() (scripts/check-result-contract.mjs), querySupabaseReadOnly() (scripts/supabase-read-only-query.mjs), loginAs() (e2e/helpers/auth.ts), inner() (tests/scripts/test_personalization_artifact_diagnostics.py), excluded_sql() (scripts/supabase_snapshot/snapshot.py)
 - consulta local: `graphify query "<pergunta>"`, `graphify path "<A>" "<B>"`, `graphify explain "<X>"`
 
 ## Hotspots (arquivos mais alterados, 90 dias)
-- supabase/MIGRATIONS_SYNC_LOG.md (69)
-- package.json (29)
+- supabase/MIGRATIONS_SYNC_LOG.md (70)
+- package.json (28)
 - docs/coordenacao/conflitos-semanticos.md (27)
-- package-lock.json (19)
+- package-lock.json (18)
 - .github/workflows/deploy-gates.yml (13)
-- RELATORIO_CI.md (13)
-- CHANGELOG.md (12)
+- RELATORIO_CI.md (12)
 - audit/supabase-reference-catalog.temporary.json (12)
-- PENDENCIAS.md (11)
+- CHANGELOG.md (11)
+- PENDENCIAS.md (10)
 - docs/agentes/resgates/2026-11-16-auditoria-branches.md (10)
 - src/pages/mockups/MockupGenerator.tsx (10)
 - src/pages/kit-builder/KitBuilderPage.tsx (8)
@@ -1194,6 +1194,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - CHANGELOG topo: [1.15.0](https://github.com/adm01-debug/Promo_Gifts_V4/compare/gifts-store-v1.14.0...gifts-store-v1.15.0) (2026-11-20)
 
 ## Últimos commits
+- 2026-11-20 `36e7b1c2` feat(db): restaura comentários em orçamento (quote_comments) após decisão do dono (#3942)
 - 2026-11-20 `e5071743` test
 - 2026-11-20 `0ec2fc56` fix: contrato de orphan-mounts alinha com montagem lazy do RupturePanelEma (#3941)
 - 2026-11-20 `04369208` fix(stock): banner de risco EMA não derruba para usuário não-dev (403 da edge) (#3940)
@@ -1208,7 +1209,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-20 `51ab7fb3` docs(migrations): recibos E15 das 20261120030000/030100 (baseline já em #3931) (#3932)
 - 2026-11-20 `c2e99f6e` feat(db): resgata migrations órfãs de branches fechadas (P06 + onboarding) (#3914)
 - 2026-11-20 `dd42ddfe` chore(security): atualiza baseline assinado de RLS policies (#3931)
-- 2026-11-20 `dc4a2dfc` feat(db): endurece as tabelas de frete e cadastra as 4 caixas (P, M, G, GG) (#3923)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`
