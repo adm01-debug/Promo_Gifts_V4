@@ -1643,6 +1643,8 @@ Após VACUUM ANALYZE executado pelos jobs temporários `vacuum-snapshots-now` e
 | `20261119213100` | `a47a4b359bdf1bed8da503831ae1a6dc1a372804186a9a4fb599b6f49765b8d6` | — | GitHub Actions (db-apply-migration.yml, disparado por adm01-debug, aprovado por @adm01-debug) | E15 | 2026-11-19 22:26:25 UTC | job post-check da run 44628516008 confirmou a version no ledger | aplicada |
 | `20261119220000` | `86b737e483c230339864d45e00dce01ebfe639dd4d972c8b971c8b5ffc9bb126` | — | GitHub Actions (db-apply-migration.yml, disparado por adm01-debug, aprovado por adm01-debug) | E15 | 2026-11-19 22:59:14 UTC | job post-check da run 44633481796 confirmou a version no ledger | aplicada |
 | `20261120013000` | `7d0ba2f172b092e7151107f857b1db28a9788a797f0d324fc078035e19619622` | — | GitHub Actions (db-apply-migration.yml, disparado por adm01-debug, aprovado por @adm01-debug) | E15 | 2026-11-20 02:23:16 UTC | job post-check da run 44660270776 confirmou a version no ledger | aplicada |
+| `20261120030000` | `fe42c3a8488c9ba53206e3c19ad900c324af8880a7bd1ff634d2ce584a0cb8c8` | — | GitHub Actions (db-apply-migration.yml, disparado por adm01-debug, aprovado por @adm01-debug) | E15 | 2026-11-20 10:47:18 UTC | job post-check da run 44722018776 confirmou a version no ledger | aplicada |
+| `20261120030100` | `bcd08d0663b68ddb6853c48aff9163f57fee2327c47d6eea8873b6075fd7bf25` | — | GitHub Actions (db-apply-migration.yml, disparado por adm01-debug, aprovado por @adm01-debug) | E15 | 2026-11-20 10:50:10 UTC | job post-check da run 44722386500 confirmou a version no ledger | aplicada |
 
 ## 2026-11-08 — Reconciliação de `e2e_cleanup_audit`
 
@@ -2737,8 +2739,8 @@ caixas já entram validadas pelos CHECKs novos).
 
 | versão | arquivo | sha256 | status |
 |---|---|---|---|
-| `20261120030000` | `harden_freight_tables` | `fe42c3a8488c9ba53206e3c19ad900c324af8880a7bd1ff634d2ce584a0cb8c8` | pendente — aplicar via `db-apply-migration.yml` (`version=20261120030000`) após merge |
-| `20261120030100` | `seed_shipping_boxes` | `bcd08d0663b68ddb6853c48aff9163f57fee2327c47d6eea8873b6075fd7bf25` | pendente — aplicar via `db-apply-migration.yml` (`version=20261120030100`) após merge |
+| `20261120030000` | `harden_freight_tables` | `fe42c3a8488c9ba53206e3c19ad900c324af8880a7bd1ff634d2ce584a0cb8c8` | aplicada — recibo na tabela E15 (run 44722018776) |
+| `20261120030100` | `seed_shipping_boxes` | `bcd08d0663b68ddb6853c48aff9163f57fee2327c47d6eea8873b6075fd7bf25` | aplicada — recibo na tabela E15 (run 44722386500) |
 
 ### 2026-11-20 — resgate de migrations órfãs de branches fechadas (P06 + onboarding)
 
