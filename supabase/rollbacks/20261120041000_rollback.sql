@@ -46,6 +46,9 @@ BEGIN
       alvo := base || '_' || n;
     END LOOP;
 
+    -- Trava total: nenhuma gravação entra entre a cópia e o DROP (igual ao
+    -- rollback 20261119213000). A leitura também espera, só durante o rollback.
+    LOCK TABLE public.business_calendar IN ACCESS EXCLUSIVE MODE;
     EXECUTE format('CREATE TABLE public.%I AS TABLE public.business_calendar', alvo);
     EXECUTE format('ALTER TABLE public.%I ENABLE ROW LEVEL SECURITY', alvo);
     EXECUTE format('REVOKE ALL ON public.%I FROM PUBLIC, anon, authenticated', alvo);
@@ -77,6 +80,7 @@ BEGIN
       alvo := base || '_' || n;
     END LOOP;
 
+    LOCK TABLE public.print_area_techniques IN ACCESS EXCLUSIVE MODE;
     EXECUTE format(
       'CREATE TABLE public.%I AS SELECT id, production_days FROM public.print_area_techniques WHERE production_days IS NOT NULL',
       alvo

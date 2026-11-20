@@ -35,7 +35,9 @@ const MOVABLE = [
 ] as const;
 
 const EXPECTED: ReadonlyArray<readonly [string, string]> = [
-  ...[2026, 2027].flatMap((year) => FIXED_2026_2027.map(([md, name]) => [`${year}-${md}`, name] as const)),
+  ...[2026, 2027].flatMap((year) =>
+    FIXED_2026_2027.map(([md, name]) => [`${year}-${md}`, name] as const),
+  ),
   ...MOVABLE,
 ];
 
@@ -45,7 +47,9 @@ const seedRows = [...migration.matchAll(/^\s+\('(\d{4}-\d{2}-\d{2})', '([^']+)'\
 
 describe('migration do calendário de prazo de produção', () => {
   it('começa apontando para o rollback', () => {
-    expect(migration.split('\n')[0]).toBe(`-- Rollback: supabase/rollbacks/${VERSION}_rollback.sql`);
+    expect(migration.split('\n')[0]).toBe(
+      `-- Rollback: supabase/rollbacks/${VERSION}_rollback.sql`,
+    );
   });
 
   it('semeia 26 feriados: 2 anos x (9 fixos + 4 móveis)', () => {
@@ -74,23 +78,35 @@ describe('migration do calendário de prazo de produção', () => {
   });
 
   it('declara as tabelas sem soft delete com a justificativa do gate', () => {
-    expect(migration).toMatch(/-- soft-delete-exempt: .+\nCREATE TABLE IF NOT EXISTS public\.business_calendar/);
+    expect(migration).toMatch(
+      /-- soft-delete-exempt: .+\nCREATE TABLE IF NOT EXISTS public\.business_calendar/,
+    );
   });
 
   it('liga RLS e cria as quatro policies no padrão de shipping_boxes', () => {
     expect(migration).toContain('ALTER TABLE public.business_calendar ENABLE ROW LEVEL SECURITY');
     expect(migration).toMatch(/business_calendar_select_authenticated[\s\S]*?USING \(true\)/);
-    expect(migration).toMatch(/business_calendar_insert_admin[\s\S]*?WITH CHECK \(public\.is_admin\(\)\)/);
+    expect(migration).toMatch(
+      /business_calendar_insert_admin[\s\S]*?WITH CHECK \(public\.is_admin\(\)\)/,
+    );
     expect(migration).toMatch(
       /business_calendar_update_admin[\s\S]*?USING \(public\.is_admin\(\)\)\s+WITH CHECK \(public\.is_admin\(\)\)/,
     );
-    expect(migration).toMatch(/business_calendar_delete_admin[\s\S]*?USING \(public\.is_admin\(\)\)/);
+    expect(migration).toMatch(
+      /business_calendar_delete_admin[\s\S]*?USING \(public\.is_admin\(\)\)/,
+    );
   });
 
   it('tira o acesso de PUBLIC e anon e concede o mínimo', () => {
-    expect(migration).toContain('REVOKE ALL ON public.business_calendar FROM PUBLIC, anon;');
-    expect(migration).toContain('GRANT SELECT, INSERT, UPDATE, DELETE ON public.business_calendar TO authenticated;');
-    expect(migration).toContain('GRANT SELECT, INSERT, UPDATE, DELETE ON public.business_calendar TO service_role;');
+    expect(migration).toContain(
+      'REVOKE ALL ON public.business_calendar FROM PUBLIC, anon, authenticated;',
+    );
+    expect(migration).toContain(
+      'GRANT SELECT, INSERT, UPDATE, DELETE ON public.business_calendar TO authenticated;',
+    );
+    expect(migration).toContain(
+      'GRANT SELECT, INSERT, UPDATE, DELETE ON public.business_calendar TO service_role;',
+    );
     expect(migration).not.toMatch(/GRANT[^;]*business_calendar[^;]*\b(anon|PUBLIC)\b/);
   });
 
@@ -106,7 +122,15 @@ describe('rollback do calendário de prazo de produção', () => {
     expect(rollback).toContain("'_backup_print_area_techniques_production_days_'");
     expect(rollback).toContain('ENABLE ROW LEVEL SECURITY');
     expect(rollback).toContain('REVOKE ALL ON public.%I FROM PUBLIC, anon, authenticated');
-    expect(rollback.indexOf('CREATE TABLE public.%I AS')).toBeLessThan(rollback.indexOf('DROP TABLE public.business_calendar'));
+    // Trava total antes de cada cópia: UPDATE concorrente não fica fora do backup.
+    expect(rollback).toContain('LOCK TABLE public.business_calendar IN ACCESS EXCLUSIVE MODE;');
+    expect(rollback).toContain('LOCK TABLE public.print_area_techniques IN ACCESS EXCLUSIVE MODE;');
+    expect(rollback.indexOf('LOCK TABLE public.business_calendar')).toBeLessThan(
+      rollback.indexOf('AS TABLE public.business_calendar'),
+    );
+    expect(rollback.indexOf('CREATE TABLE public.%I AS')).toBeLessThan(
+      rollback.indexOf('DROP TABLE public.business_calendar'),
+    );
   });
 
   it('usa o primeiro nome de backup livre e confere a contagem antes do DROP', () => {
@@ -120,8 +144,12 @@ describe('rollback do calendário de prazo de produção', () => {
 
   it('remove tabela, constraint e coluna e devolve o comentário anterior', () => {
     expect(rollback).toContain('DROP TABLE public.business_calendar');
-    expect(rollback).toContain('DROP CONSTRAINT IF EXISTS print_area_techniques_production_days_check');
+    expect(rollback).toContain(
+      'DROP CONSTRAINT IF EXISTS print_area_techniques_production_days_check',
+    );
     expect(rollback).toContain('DROP COLUMN production_days');
-    expect(rollback).toContain('Prazo de produção em dias úteis. 82% preenchido (NULL=herda fornecedor). Valores: 2 ou 3.');
+    expect(rollback).toContain(
+      'Prazo de produção em dias úteis. 82% preenchido (NULL=herda fornecedor). Valores: 2 ou 3.',
+    );
   });
 });
