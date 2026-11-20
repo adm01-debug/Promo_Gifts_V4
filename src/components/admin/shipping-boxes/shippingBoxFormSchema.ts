@@ -16,7 +16,11 @@
  */
 import { z } from 'zod';
 import { kgToG, mmToCm, round2 } from '@/lib/freight';
-import type { ShippingBoxRow, ShippingBoxWrite } from '@/services/shippingBoxService';
+import type {
+  ShippingBoxPatch,
+  ShippingBoxRow,
+  ShippingBoxWrite,
+} from '@/services/shippingBoxService';
 
 export const SHIPPING_BOX_FORM_FIELDS = [
   'code',
@@ -66,6 +70,22 @@ export const EMPTY_SHIPPING_BOX_DRAFT: ShippingBoxFormDraft = {
   sortOrder: '0',
   isActive: true,
 };
+
+/** DEFAULT da coluna `fill_factor` no banco. */
+export const SHIPPING_BOX_COLUMN_FILL_FACTOR = 0.9;
+
+function toFactorText(factor: number): string {
+  return factor.toFixed(2).replace('.', ',');
+}
+
+/**
+ * Formulário de caixa NOVA. O fator vem do "fator de aproveitamento padrão" de
+ * `/admin/frete` (`freight_settings.default_fill_factor`); é só uma sugestão, o
+ * admin pode trocar antes de salvar.
+ */
+export function newShippingBoxDraft(defaultFillFactor: number): ShippingBoxFormDraft {
+  return { ...EMPTY_SHIPPING_BOX_DRAFT, fillFactor: toFactorText(defaultFillFactor) };
+}
 
 export const SHIPPING_BOX_CODE_MAX_LENGTH = 6;
 export const SHIPPING_BOX_NAME_MAX_LENGTH = 80;
@@ -285,8 +305,53 @@ export function toShippingBoxDraft(row: ShippingBoxRow): ShippingBoxFormDraft {
     wallThicknessMm: String(row.wall_thickness_mm),
     maxWeightKg: toInputText(row.max_weight_g / 1000),
     emptyWeightG: String(row.empty_weight_g),
-    fillFactor: row.fill_factor.toFixed(2).replace('.', ','),
+    fillFactor: toFactorText(row.fill_factor),
     sortOrder: String(row.sort_order),
     isActive: row.is_active,
   };
+}
+
+/** `undefined` (campo não enviado) nunca conta como alteração. */
+function changed<T>(value: T | undefined, saved: T): value is T {
+  return value !== undefined && value !== saved;
+}
+
+/**
+ * Só os campos que o admin mudou em relação à caixa aberta na edição. Vazio =
+ * nada a salvar. Mandar o formulário inteiro regravaria, a partir de uma lista
+ * que pode estar velha, o que outro admin alterou nesse meio-tempo.
+ */
+export function buildShippingBoxPatch(
+  row: ShippingBoxRow,
+  values: ShippingBoxWrite,
+): ShippingBoxPatch {
+  const patch: ShippingBoxPatch = {};
+  if (changed(values.code, row.code)) patch.code = values.code;
+  if (changed(values.name, row.name)) patch.name = values.name;
+  if (changed(values.outer_height_cm, row.outer_height_cm)) {
+    patch.outer_height_cm = values.outer_height_cm;
+  }
+  if (changed(values.outer_width_cm, row.outer_width_cm)) {
+    patch.outer_width_cm = values.outer_width_cm;
+  }
+  if (changed(values.outer_length_cm, row.outer_length_cm)) {
+    patch.outer_length_cm = values.outer_length_cm;
+  }
+  if (changed(values.wall_thickness_mm, row.wall_thickness_mm)) {
+    patch.wall_thickness_mm = values.wall_thickness_mm;
+  }
+  if (changed(values.empty_weight_g, row.empty_weight_g)) {
+    patch.empty_weight_g = values.empty_weight_g;
+  }
+  if (changed(values.max_weight_g, row.max_weight_g)) patch.max_weight_g = values.max_weight_g;
+  // Em centésimos, para 0,9 e 0,90 contarem como o mesmo fator.
+  if (
+    values.fill_factor !== undefined &&
+    Math.round(values.fill_factor * 100) !== Math.round(row.fill_factor * 100)
+  ) {
+    patch.fill_factor = values.fill_factor;
+  }
+  if (changed(values.is_active, row.is_active)) patch.is_active = values.is_active;
+  if (changed(values.sort_order, row.sort_order)) patch.sort_order = values.sort_order;
+  return patch;
 }

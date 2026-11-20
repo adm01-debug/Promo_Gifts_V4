@@ -2,8 +2,11 @@ import { describe, expect, it } from 'vitest';
 import type { ShippingBoxRow } from '@/services/shippingBoxService';
 import {
   EMPTY_SHIPPING_BOX_DRAFT,
+  SHIPPING_BOX_COLUMN_FILL_FACTOR,
+  buildShippingBoxPatch,
   computeInnerPreview,
   innerDimensionCm,
+  newShippingBoxDraft,
   parseShippingBoxForm,
   toShippingBoxDraft,
   type ShippingBoxFormDraft,
@@ -294,28 +297,29 @@ describe('medidas internas', () => {
   });
 });
 
-describe('toShippingBoxDraft', () => {
-  const ROW: ShippingBoxRow = {
-    id: 'box-x',
-    code: 'GG',
-    name: 'Caixa GG',
-    outer_height_cm: 40.5,
-    outer_width_cm: 50,
-    outer_length_cm: 60,
-    wall_thickness_mm: 5,
-    inner_height_cm: 39.5,
-    inner_width_cm: 49,
-    inner_length_cm: 59,
-    empty_weight_g: 350,
-    max_weight_g: 12500,
-    fill_factor: 0.9,
-    is_active: false,
-    sort_order: 4,
-    created_at: '2026-11-19T12:00:00Z',
-    updated_at: '2026-11-19T12:00:00Z',
-    deleted_at: null,
-  };
+/** Caixa GG já salva, com tudo fora do padrão: parede 5 mm, 350 g vazia, inativa, ordem 4. */
+const ROW: ShippingBoxRow = {
+  id: 'box-x',
+  code: 'GG',
+  name: 'Caixa GG',
+  outer_height_cm: 40.5,
+  outer_width_cm: 50,
+  outer_length_cm: 60,
+  wall_thickness_mm: 5,
+  inner_height_cm: 39.5,
+  inner_width_cm: 49,
+  inner_length_cm: 59,
+  empty_weight_g: 350,
+  max_weight_g: 12500,
+  fill_factor: 0.9,
+  is_active: false,
+  sort_order: 4,
+  created_at: '2026-11-19T12:00:00Z',
+  updated_at: '2026-11-19T12:00:00Z',
+  deleted_at: null,
+};
 
+describe('toShippingBoxDraft', () => {
   it('preenche o formulário com vírgula decimal e peso máximo em kg', () => {
     // 12500 g ÷ 1000 = 12,5 kg; fator 0.9 exibido com duas casas
     expect(toShippingBoxDraft(ROW)).toEqual({
@@ -347,5 +351,65 @@ describe('toShippingBoxDraft', () => {
       is_active: false,
       sort_order: 4,
     });
+  });
+});
+
+describe('buildShippingBoxPatch — edição grava só o que mudou', () => {
+  function patchOf(overrides: Partial<ShippingBoxFormDraft>) {
+    const result = parseShippingBoxForm({ ...toShippingBoxDraft(ROW), ...overrides });
+    if (!result.ok) throw new Error('rascunho inválido no teste');
+    return buildShippingBoxPatch(ROW, result.values);
+  }
+
+  it('sem mexer em nada: patch vazio, nada a salvar', () => {
+    expect(patchOf({})).toEqual({});
+  });
+
+  it.each<{ campo: string; digitado: Partial<ShippingBoxFormDraft>; patch: object }>([
+    {
+      campo: 'nome',
+      digitado: { name: 'Caixa GG reforçada' },
+      patch: { name: 'Caixa GG reforçada' },
+    },
+    { campo: 'código', digitado: { code: 'g2' }, patch: { code: 'G2' } },
+    { campo: 'altura', digitado: { outerHeightCm: '41' }, patch: { outer_height_cm: 41 } },
+    { campo: 'largura', digitado: { outerWidthCm: '50,5' }, patch: { outer_width_cm: 50.5 } },
+    { campo: 'comprimento', digitado: { outerLengthCm: '61' }, patch: { outer_length_cm: 61 } },
+    { campo: 'parede', digitado: { wallThicknessMm: '3' }, patch: { wall_thickness_mm: 3 } },
+    // 30 kg × 1000 = 30000 g
+    { campo: 'peso máximo', digitado: { maxWeightKg: '30' }, patch: { max_weight_g: 30000 } },
+    { campo: 'peso vazio', digitado: { emptyWeightG: '400' }, patch: { empty_weight_g: 400 } },
+    { campo: 'fator', digitado: { fillFactor: '0,85' }, patch: { fill_factor: 0.85 } },
+    { campo: 'ordem', digitado: { sortOrder: '5' }, patch: { sort_order: 5 } },
+    { campo: 'ativa', digitado: { isActive: true }, patch: { is_active: true } },
+  ])('só $campo alterado: o patch leva só esse campo', ({ digitado, patch }) => {
+    expect(patchOf(digitado)).toEqual(patch);
+  });
+
+  it('dois campos alterados: o patch leva os dois e mais nenhum', () => {
+    // 12,5 kg → 15 kg = 15000 g
+    expect(patchOf({ name: 'Caixa GG 2', maxWeightKg: '15' })).toEqual({
+      name: 'Caixa GG 2',
+      max_weight_g: 15000,
+    });
+  });
+
+  it('o mesmo valor escrito de outro jeito não conta como alteração', () => {
+    // 0.9 = 0,90 ; 40.50 = 40,5 ; 12.500 kg = 12,5 kg = 12500 g
+    expect(patchOf({ fillFactor: '0.9', outerHeightCm: '40.50', maxWeightKg: '12.500' })).toEqual(
+      {},
+    );
+  });
+});
+
+describe('newShippingBoxDraft — caixa nova', () => {
+  it('usa o fator padrão de /admin/frete, com vírgula e duas casas', () => {
+    expect(newShippingBoxDraft(0.8)).toEqual({ ...EMPTY_SHIPPING_BOX_DRAFT, fillFactor: '0,80' });
+    expect(newShippingBoxDraft(1).fillFactor).toBe('1,00');
+  });
+
+  it('com o DEFAULT da coluna (0,90) é o formulário em branco de sempre', () => {
+    expect(SHIPPING_BOX_COLUMN_FILL_FACTOR).toBe(0.9);
+    expect(newShippingBoxDraft(SHIPPING_BOX_COLUMN_FILL_FACTOR)).toEqual(EMPTY_SHIPPING_BOX_DRAFT);
   });
 });

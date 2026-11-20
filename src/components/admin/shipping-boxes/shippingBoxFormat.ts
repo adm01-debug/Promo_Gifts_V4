@@ -13,7 +13,11 @@ const FACTOR = new Intl.NumberFormat('pt-BR', {
   minimumFractionDigits: 2,
   maximumFractionDigits: 2,
 });
-const DAY = new Intl.DateTimeFormat('pt-BR', { dateStyle: 'short' });
+/** A empresa opera em São Paulo: a data não pode depender do fuso da máquina. */
+const DAY = new Intl.DateTimeFormat('pt-BR', {
+  dateStyle: 'short',
+  timeZone: 'America/Sao_Paulo',
+});
 
 /** Mostrado no lugar de um valor que ainda não dá para calcular. */
 export const NO_VALUE = '—';
@@ -46,7 +50,7 @@ export function formatFillFactor(factor: number): string {
   return FACTOR.format(factor);
 }
 
-/** Dia da exclusão, no fuso de quem está olhando: "19/11/2026". */
+/** Dia da exclusão, no fuso de São Paulo: "19/11/2026". */
 export function formatDeletedDay(deletedAt: string | null): string {
   if (deletedAt === null) return NO_VALUE;
   const date = new Date(deletedAt);

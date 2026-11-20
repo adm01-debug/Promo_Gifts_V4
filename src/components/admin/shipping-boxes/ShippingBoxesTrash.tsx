@@ -3,7 +3,8 @@
  *
  * A exclusão do cadastro é lógica: a caixa some das listas e libera o código.
  * A consulta só roda quando a seção é aberta. Restaurar falha se o código já
- * estiver em uso por outra caixa — o aviso vem do hook, com o código no texto.
+ * estiver em uso por outra caixa. O aviso vem do hook e cita o código porque
+ * quem restaura o informa ao serviço: sob RLS o banco não diz qual colidiu.
  */
 import { useState } from 'react';
 import { ChevronDown, Loader2, RotateCcw, Trash2 } from 'lucide-react';

@@ -247,20 +247,31 @@ describe('useShippingBoxMutations — sucesso', () => {
     expect(invalidate).toHaveBeenCalledWith({ queryKey: ['shipping-boxes'] });
   });
 
-  it.each([
-    ['softDelete', 'Caixa excluída'],
-    ['restore', 'Caixa restaurada'],
-  ] as const)('%s: chama o serviço com o id, avisa "%s" e invalida', async (operacao, aviso) => {
+  it('softDelete: chama o serviço com o id, avisa "Caixa excluída" e invalida', async () => {
     const queryClient = createTestQueryClient();
     const invalidate = vi.spyOn(queryClient, 'invalidateQueries');
     const { result } = renderHookWithProviders(() => useShippingBoxMutations(), { queryClient });
 
     await act(async () => {
-      await result.current[operacao].mutateAsync('box-p');
+      await result.current.softDelete.mutateAsync('box-p');
     });
 
-    expect(h.service[operacao]).toHaveBeenCalledWith('box-p');
-    expect(h.toast.success).toHaveBeenCalledWith(aviso);
+    expect(h.service.softDelete).toHaveBeenCalledWith('box-p');
+    expect(h.toast.success).toHaveBeenCalledWith('Caixa excluída');
+    expect(invalidate).toHaveBeenCalledWith({ queryKey: ['shipping-boxes'] });
+  });
+
+  it('restore: passa o id E o código ao serviço, avisa "Caixa restaurada" e invalida', async () => {
+    const queryClient = createTestQueryClient();
+    const invalidate = vi.spyOn(queryClient, 'invalidateQueries');
+    const { result } = renderHookWithProviders(() => useShippingBoxMutations(), { queryClient });
+
+    await act(async () => {
+      await result.current.restore.mutateAsync({ id: 'box-p', code: 'P' });
+    });
+
+    expect(h.service.restore).toHaveBeenCalledWith('box-p', 'P');
+    expect(h.toast.success).toHaveBeenCalledWith('Caixa restaurada');
     expect(invalidate).toHaveBeenCalledWith({ queryKey: ['shipping-boxes'] });
   });
 
@@ -296,7 +307,8 @@ describe('useShippingBoxMutations — erro', () => {
   function disparar(hook: Hook, operacao: (typeof OPERACOES)[number][0]): Promise<unknown> {
     if (operacao === 'create') return hook.create.mutateAsync(NOVA_CAIXA);
     if (operacao === 'update') return hook.update.mutateAsync({ id: 'box-p', patch: { code: 'P' } });
-    return hook[operacao].mutateAsync('box-p');
+    if (operacao === 'restore') return hook.restore.mutateAsync({ id: 'box-p', code: 'P' });
+    return hook.softDelete.mutateAsync('box-p');
   }
 
   it.each(OPERACOES)(
@@ -333,16 +345,38 @@ describe('useShippingBoxMutations — erro', () => {
     },
   );
 
-  it('erro não invalida as listas', async () => {
-    h.service.create.mockRejectedValue(new ShippingBoxError('duplicate_code', DUPLICADO));
+  it.each(OPERACOES)('%s: erro também invalida todas as listas de caixas', async (operacao) => {
+    h.service[operacao].mockRejectedValue(new ShippingBoxError('duplicate_code', DUPLICADO));
     const queryClient = createTestQueryClient();
     const invalidate = vi.spyOn(queryClient, 'invalidateQueries');
     const { result } = renderHookWithProviders(() => useShippingBoxMutations(), { queryClient });
 
     await act(async () => {
-      await result.current.create.mutateAsync(NOVA_CAIXA).catch(() => undefined);
+      await disparar(result.current, operacao).catch(() => undefined);
     });
 
-    expect(invalidate).not.toHaveBeenCalled();
+    expect(invalidate).toHaveBeenCalledWith({ queryKey: ['shipping-boxes'] });
+  });
+
+  it('salvar recusado por lista velha: a lista montada na tela é buscada de novo', async () => {
+    h.service.update.mockRejectedValue(
+      new ShippingBoxError('not_applied', 'Nada foi alterado: a caixa foi modificada.'),
+    );
+    const { result } = renderHookWithProviders(() => ({
+      lista: useShippingBoxes({ includeInactive: true }),
+      escrita: useShippingBoxMutations(),
+    }));
+    await waitFor(() => expect(result.current.lista.isLoading).toBe(false));
+    expect(h.service.listAll).toHaveBeenCalledTimes(1);
+
+    await act(async () => {
+      await result.current.escrita.update
+        .mutateAsync({ id: 'box-p', patch: { name: 'Caixa P nova' } })
+        .catch(() => undefined);
+    });
+
+    // 1 leitura ao montar + 1 depois da recusa = 2
+    await waitFor(() => expect(h.service.listAll).toHaveBeenCalledTimes(2));
+    expect(h.toast.error).toHaveBeenCalledWith('Nada foi alterado: a caixa foi modificada.');
   });
 });

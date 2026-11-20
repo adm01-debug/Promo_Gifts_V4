@@ -13,7 +13,7 @@ import { useState } from 'react';
 import { Boxes, Loader2, Plus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { ConfirmDialog } from '@/components/ui/ConfirmDialog';
-import { useShippingBoxes, useShippingBoxMutations } from '@/hooks/freight';
+import { useFreightSettings, useShippingBoxes, useShippingBoxMutations } from '@/hooks/freight';
 import {
   ShippingBoxError,
   type ShippingBoxRow,
@@ -22,19 +22,25 @@ import {
 import { ShippingBoxFormDialog, type RejectedShippingBoxCode } from './ShippingBoxFormDialog';
 import { ShippingBoxesTable } from './ShippingBoxesTable';
 import { ShippingBoxesTrash } from './ShippingBoxesTrash';
+import { SHIPPING_BOX_COLUMN_FILL_FACTOR, buildShippingBoxPatch } from './shippingBoxFormSchema';
 
 export function ShippingBoxesManager() {
   const { rows, isLoading, isError, refetch } = useShippingBoxes({ includeInactive: true });
   const { create, update, softDelete, restore } = useShippingBoxMutations();
+  const { row: freightSettings } = useFreightSettings();
 
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingBox, setEditingBox] = useState<ShippingBoxRow | null>(null);
   const [deleteTarget, setDeleteTarget] = useState<ShippingBoxRow | null>(null);
   const [rejectedCode, setRejectedCode] = useState<RejectedShippingBoxCode | null>(null);
+  const [newBoxFillFactor, setNewBoxFillFactor] = useState(SHIPPING_BOX_COLUMN_FILL_FACTOR);
 
   const openForm = (box: ShippingBoxRow | null) => {
     setEditingBox(box);
     setRejectedCode(null);
+    // Fixado na abertura: parâmetros que chegam depois não apagam o que já foi
+    // digitado. Enquanto não carregaram, vale o DEFAULT da coluna no banco.
+    setNewBoxFillFactor(freightSettings?.default_fill_factor ?? SHIPPING_BOX_COLUMN_FILL_FACTOR);
     setDialogOpen(true);
   };
 
@@ -49,7 +55,12 @@ export function ShippingBoxesManager() {
     };
     setRejectedCode(null);
     if (editingBox) {
-      update.mutate({ id: editingBox.id, patch: values }, callbacks);
+      const patch = buildShippingBoxPatch(editingBox, values);
+      if (Object.keys(patch).length === 0) {
+        setDialogOpen(false);
+        return;
+      }
+      update.mutate({ id: editingBox.id, patch }, callbacks);
     } else {
       create.mutate(values, callbacks);
     }
@@ -126,13 +137,17 @@ export function ShippingBoxesManager() {
       )}
 
       {isLoading || isError ? null : (
-        <ShippingBoxesTrash onRestore={(box) => restore.mutate(box.id)} busy={busy} />
+        <ShippingBoxesTrash
+          onRestore={(box) => restore.mutate({ id: box.id, code: box.code })}
+          busy={busy}
+        />
       )}
 
       <ShippingBoxFormDialog
         open={dialogOpen}
         onOpenChange={setDialogOpen}
         box={editingBox}
+        newBoxFillFactor={newBoxFillFactor}
         saving={saving}
         rejectedCode={rejectedCode}
         onSave={handleSave}

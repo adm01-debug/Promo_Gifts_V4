@@ -6,7 +6,7 @@
  * nunca vão no payload. O peso máximo é digitado em kg e gravado em gramas.
  * A validação está em `shippingBoxFormSchema.ts`.
  */
-import { useEffect, useState, type FormEvent } from 'react';
+import { useEffect, useRef, useState, type FormEvent } from 'react';
 import { ChevronDown } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
@@ -20,7 +20,6 @@ import {
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { ScrollArea } from '@/components/ui/scroll-area';
 import { Switch } from '@/components/ui/switch';
 import { cn } from '@/lib/utils';
 import type { ShippingBoxRow, ShippingBoxWrite } from '@/services/shippingBoxService';
@@ -30,6 +29,7 @@ import {
   SHIPPING_BOX_CODE_MAX_LENGTH,
   SHIPPING_BOX_NAME_MAX_LENGTH,
   computeInnerPreview,
+  newShippingBoxDraft,
   normalizeShippingBoxCode,
   parseShippingBoxForm,
   toShippingBoxDraft,
@@ -49,6 +49,8 @@ interface ShippingBoxFormDialogProps {
   onOpenChange: (open: boolean) => void;
   /** Caixa em edição; null = criação. */
   box: ShippingBoxRow | null;
+  /** Fator sugerido na caixa nova: o padrão de `/admin/frete`. Na edição não é usado. */
+  newBoxFillFactor: number;
   saving: boolean;
   /** Mostrado no campo Código enquanto o código digitado for o recusado. */
   rejectedCode?: RejectedShippingBoxCode | null;
@@ -116,6 +118,7 @@ export function ShippingBoxFormDialog({
   open,
   onOpenChange,
   box,
+  newBoxFillFactor,
   saving,
   rejectedCode = null,
   onSave,
@@ -124,13 +127,24 @@ export function ShippingBoxFormDialog({
   const [draft, setDraft] = useState<ShippingBoxFormDraft>(EMPTY_SHIPPING_BOX_DRAFT);
   const [errors, setErrors] = useState<ShippingBoxFormErrors>({});
   const [advancedOpen, setAdvancedOpen] = useState(false);
+  const [failedSubmits, setFailedSubmits] = useState(0);
+  const formRef = useRef<HTMLFormElement>(null);
 
   useEffect(() => {
     if (!open) return;
-    setDraft(box ? toShippingBoxDraft(box) : EMPTY_SHIPPING_BOX_DRAFT);
+    setDraft(box ? toShippingBoxDraft(box) : newShippingBoxDraft(newBoxFillFactor));
     setErrors({});
     setAdvancedOpen(box !== null && box.empty_weight_g > 0);
-  }, [open, box]);
+  }, [open, box, newBoxFillFactor]);
+
+  // A área do formulário rola: depois de uma validação recusada, traz para a
+  // vista o primeiro campo com erro (rótulo, campo e mensagem).
+  useEffect(() => {
+    if (failedSubmits === 0) return;
+    formRef.current
+      ?.querySelector('[aria-invalid="true"]')
+      ?.parentElement?.scrollIntoView({ block: 'center' });
+  }, [failedSubmits]);
 
   const setField = (field: ShippingBoxFormField, value: string) => {
     setDraft((current) => ({ ...current, [field]: value }));
@@ -143,6 +157,7 @@ export function ShippingBoxFormDialog({
     if (!result.ok) {
       setErrors(result.errors);
       if (result.errors.emptyWeightG) setAdvancedOpen(true);
+      setFailedSubmits((count) => count + 1);
       return;
     }
     onSave(result.values);
@@ -153,12 +168,20 @@ export function ShippingBoxFormDialog({
     rejectedCode?.code === normalizeShippingBoxCode(draft.code) ? rejectedCode.message : undefined;
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
+    <Dialog
+      open={open}
+      onOpenChange={(nextOpen) => {
+        // Esc ou clique fora durante o salvar não fecha: a resposta ainda vai
+        // chegar e fecharia (ou apagaria) o formulário que estivesse aberto.
+        if (saving && !nextOpen) return;
+        onOpenChange(nextOpen);
+      }}
+    >
       <DialogContent
         className="max-h-[90vh] max-w-2xl overflow-hidden p-0"
         data-testid="admin-form"
       >
-        <form onSubmit={handleSubmit} noValidate>
+        <form ref={formRef} onSubmit={handleSubmit} noValidate>
           <DialogHeader className="border-b px-6 py-4">
             <DialogTitle>
               {isEdit ? 'Editar caixa de transporte' : 'Nova caixa de transporte'}
@@ -168,7 +191,7 @@ export function ShippingBoxFormDialog({
             </DialogDescription>
           </DialogHeader>
 
-          <ScrollArea className="max-h-[64vh]">
+          <div className="max-h-[64vh] overflow-y-auto">
             <div className="space-y-5 px-6 py-5">
               <div className="grid gap-4 sm:grid-cols-[minmax(0,1fr)_minmax(0,2fr)]">
                 <TextField
@@ -327,7 +350,7 @@ export function ShippingBoxFormDialog({
                 </CollapsibleContent>
               </Collapsible>
             </div>
-          </ScrollArea>
+          </div>
 
           <DialogFooter className="border-t px-6 py-4">
             <Button
