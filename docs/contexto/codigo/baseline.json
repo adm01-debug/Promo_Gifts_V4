@@ -2,11 +2,21 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "cfd7f833bb03a1c175460bbc8d60bdc84aef46e4",
+  "commit": "f83c473fab5fd69573ac9bd9d35e51aeead35000",
   "branch": "main",
-  "data_commit": "2026-11-20T17:00:23-03:00",
+  "data_commit": "2026-11-20T17:28:29-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "f83c473f",
+    "data": "2026-11-20",
+    "assunto": "chore(main): release gifts-store 1.16.0 (#3945)"
+   },
+   {
+    "sha": "3f273fe9",
+    "data": "2026-11-20",
+    "assunto": "docs(migrations-log): recibo E15 — aplicação de 20261120180000 (#3946)"
+   },
    {
     "sha": "cfd7f833",
     "data": "2026-11-20",
@@ -121,16 +131,6 @@
     "sha": "e25ff678",
     "data": "2026-11-20",
     "assunto": "fix(frete): formulário de caixa volta a rolar e correções da revisão do admin (#3917)"
-   },
-   {
-    "sha": "777cac4c",
-    "data": "2026-11-19",
-    "assunto": "feat(frete): admin de caixas de transporte e parâmetros de frete (Bloco C/D) (#3915)"
-   },
-   {
-    "sha": "8fe268c2",
-    "data": "2026-11-19",
-    "assunto": "chore(main): release gifts-store 1.13.0 (#3904)"
    }
   ],
   "arquivos_mudados_7d": 1499,
@@ -199,11 +199,11 @@
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "supabase/MIGRATIONS_SYNC_LOG.md",
-    "mudancas": 69
+    "mudancas": 70
    },
    {
     "arquivo": "package.json",
-    "mudancas": 28
+    "mudancas": 29
    },
    {
     "arquivo": "docs/coordenacao/conflitos-semanticos.md",
@@ -211,27 +211,23 @@
    },
    {
     "arquivo": "package-lock.json",
-    "mudancas": 18
+    "mudancas": 19
    },
    {
     "arquivo": ".github/workflows/deploy-gates.yml",
     "mudancas": 13
    },
    {
-    "arquivo": "audit/supabase-reference-catalog.temporary.json",
-    "mudancas": 13
-   },
-   {
-    "arquivo": "RELATORIO_CI.md",
+    "arquivo": "CHANGELOG.md",
     "mudancas": 12
    },
    {
-    "arquivo": "CHANGELOG.md",
-    "mudancas": 11
+    "arquivo": "audit/supabase-reference-catalog.temporary.json",
+    "mudancas": 12
    },
    {
-    "arquivo": "PENDENCIAS.md",
-    "mudancas": 10
+    "arquivo": "RELATORIO_CI.md",
+    "mudancas": 11
    },
    {
     "arquivo": "docs/agentes/resgates/2026-11-16-auditoria-branches.md",
@@ -240,6 +236,10 @@
    {
     "arquivo": "src/pages/mockups/MockupGenerator.tsx",
     "mudancas": 10
+   },
+   {
+    "arquivo": "PENDENCIAS.md",
+    "mudancas": 8
    },
    {
     "arquivo": "src/integrations/supabase/types.ts",
@@ -251,10 +251,6 @@
    },
    {
     "arquivo": "supabase/EDGE_FUNCTIONS_DEPLOY_LOG.md",
-    "mudancas": 8
-   },
-   {
-    "arquivo": "supabase/functions/crm-db-bridge/index.ts",
     "mudancas": 8
    },
    {
@@ -282,6 +278,10 @@
     "mudancas": 7
    },
    {
+    "arquivo": "supabase/functions/crm-db-bridge/index.ts",
+    "mudancas": 7
+   },
+   {
     "arquivo": ".github/workflows/e2e-swatch-quickview.yml",
     "mudancas": 6
    },
@@ -301,7 +301,7 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 324
+    "commits": 320
    },
    {
     "autor": "Claude",
@@ -309,7 +309,7 @@
    },
    {
     "autor": "github-actions[bot]",
-    "commits": 27
+    "commits": 29
    },
    {
     "autor": "Joaquim Ataides",

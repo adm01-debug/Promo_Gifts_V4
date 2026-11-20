@@ -1,9 +1,9 @@
 {
  "meta": {
-  "sha": "cfd7f833bb03a1c175460bbc8d60bdc84aef46e4",
+  "sha": "f83c473fab5fd69573ac9bd9d35e51aeead35000",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-20 20:01 UTC",
+  "generated_at": "2026-11-20 20:29 UTC",
   "files_total": 11106,
   "code_files": 9118,
   "code_lines": 1294007
@@ -560122,10 +560122,31 @@
   }
  },
  "git": {
-  "sha": "cfd7f833bb03a1c175460bbc8d60bdc84aef46e4",
+  "sha": "f83c473fab5fd69573ac9bd9d35e51aeead35000",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "f83c473",
+    "date": "2026-11-20",
+    "author": "github-actions[bot]",
+    "subject": "chore(main): release gifts-store 1.16.0 (#3945)",
+    "files": [
+     ".release-please-manifest.json",
+     "CHANGELOG.md",
+     "package-lock.json",
+     "package.json"
+    ]
+   },
+   {
+    "sha": "3f273fe",
+    "date": "2026-11-20",
+    "author": "github-actions[bot]",
+    "subject": "docs(migrations-log): recibo E15 — aplicação de 20261120180000 (#3946)",
+    "files": [
+     "supabase/MIGRATIONS_SYNC_LOG.md"
+    ]
+   },
    {
     "sha": "cfd7f83",
     "date": "2026-11-20",
@@ -560678,33 +560699,12 @@
     "files": [
      "supabase/MIGRATIONS_SYNC_LOG.md"
     ]
-   },
-   {
-    "sha": "16f7dd7",
-    "date": "2026-11-19",
-    "author": "github-actions[bot]",
-    "subject": "docs(migrations-log): recibo E15 — aplicação de 20261119220000 (#3913)",
-    "files": [
-     "supabase/MIGRATIONS_SYNC_LOG.md"
-    ]
-   },
-   {
-    "sha": "719c8f0",
-    "date": "2026-11-19",
-    "author": "adm01-debug",
-    "subject": "feat: funções irmãs do painel EMA + remonta Onda 3 no /estoque (#3907)",
-    "files": [
-     "src/pages/admin/StockDashboardPage.tsx",
-     "supabase/MIGRATIONS_SYNC_LOG.md",
-     "supabase/migrations/20261119220000_create_ema_sister_functions.sql",
-     "supabase/rollbacks/20261119220000_rollback.sql"
-    ]
    }
   ],
   "hot_files": [
    [
     "supabase/MIGRATIONS_SYNC_LOG.md",
-    12
+    11
    ],
    [
     "src/integrations/supabase/types.ts",
@@ -560713,6 +560713,22 @@
    [
     "src/lib/freight/index.ts",
     5
+   ],
+   [
+    ".release-please-manifest.json",
+    4
+   ],
+   [
+    "CHANGELOG.md",
+    4
+   ],
+   [
+    "package-lock.json",
+    4
+   ],
+   [
+    "package.json",
+    4
    ],
    [
     "audit/supabase-reference-catalog.temporary.json",
@@ -560732,22 +560748,6 @@
    ],
    [
     ".file-size-baseline.json",
-    3
-   ],
-   [
-    ".release-please-manifest.json",
-    3
-   ],
-   [
-    "CHANGELOG.md",
-    3
-   ],
-   [
-    "package-lock.json",
-    3
-   ],
-   [
-    "package.json",
     3
    ],
    [
