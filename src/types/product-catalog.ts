@@ -6,7 +6,6 @@
  */
 import type { ColorSwatch } from './colorSwatch';
 
-
 /** Variação de cor de um produto com hex real, grupo cromático e imagem da variação. */
 export interface ProductColor {
   name: string;
@@ -30,6 +29,8 @@ export interface Product {
   shortDescription: string;
   price: number;
   sale_price?: number;
+  /** Vai sempre em caixa própria no frete (`products.ships_separately`). */
+  shipsSeparately?: boolean;
   /** Preço de comparação / preço original antes do desconto. */
   comparePrice?: number | null;
   category_id?: string | null;
