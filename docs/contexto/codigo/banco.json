@@ -8,7 +8,7 @@
   "supabase/migrations",
   "typeorm"
  ],
- "migrations": 3110,
+ "migrations": 3111,
  "seeds": [],
  "avisos": [
   "323 bloco(s) com DDL dinâmico (EXECUTE format/...) não modelado — policies/colunas criadas dinamicamente podem faltar; confira no banco vivo"
@@ -35250,6 +35250,13 @@
      "nn": false,
      "pk": false,
      "default": null,
+     "ref": null
+    },
+    "ships_separately": {
+     "tipo": "boolean",
+     "nn": true,
+     "pk": false,
+     "default": "false",
      "ref": null
     },
     "sizes": {
