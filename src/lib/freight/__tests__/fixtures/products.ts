@@ -28,6 +28,7 @@ export const GARRAFA_ESPORTIVA: ProductMeasureRow = {
   length_cm: 6.6,
   diameter_cm: 6.6,
   weight_g: 67,
+  ships_separately: false,
 };
 
 /**
@@ -46,6 +47,7 @@ export const SUPORTE_PARA_GARRAFAS: ProductMeasureRow = {
   length_cm: 1.2,
   diameter_cm: null,
   weight_g: 1,
+  ships_separately: false,
 };
 
 /**
@@ -63,6 +65,7 @@ export const KIT_SQUEEZE: ProductMeasureRow = {
   length_cm: 34.2,
   diameter_cm: null,
   weight_g: 1184,
+  ships_separately: false,
 };
 
 /** Caderneta B6, 162 g. O caso médio: peça pequena, peso conhecido. */
@@ -75,6 +78,7 @@ export const CADERNETA: ProductMeasureRow = {
   length_cm: 13.5,
   diameter_cm: 13.5,
   weight_g: 162,
+  ships_separately: false,
 };
 
 /** Caneta reciclável, 6 g. A peça mais leve: testa o teto por volume, não por peso. */
@@ -87,6 +91,7 @@ export const CANETA: ProductMeasureRow = {
   length_cm: 3,
   diameter_cm: 3,
   weight_g: 6,
+  ships_separately: false,
 };
 
 /**
@@ -103,6 +108,7 @@ export const GARRAFA_TERMICA_SEM_PESO: ProductMeasureRow = {
   length_cm: 8,
   diameter_cm: 8,
   weight_g: null,
+  ships_separately: false,
 };
 
 /** Enfeite de porcelana. Nenhuma medida e nenhum peso — bloqueia por tudo. */
@@ -115,6 +121,7 @@ export const ENFEITE_SEM_NADA: ProductMeasureRow = {
   length_cm: null,
   diameter_cm: null,
   weight_g: null,
+  ships_separately: false,
 };
 
 /**
@@ -131,6 +138,7 @@ export const ZEROS: ProductMeasureRow = {
   length_cm: 0,
   diameter_cm: 0,
   weight_g: 0,
+  ships_separately: false,
 };
 
 /**

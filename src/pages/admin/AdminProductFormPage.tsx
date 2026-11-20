@@ -12,6 +12,8 @@
 import { dbInvokeSingle } from '@/lib/db/postgrest';
 import { useState, useEffect, useCallback, useRef, Suspense } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import { useQueryClient } from '@tanstack/react-query';
+import { FREIGHT_QUERY_KEYS } from '@/hooks/freight/keys';
 import {
   fetchPromobrindProductById,
   getProductImageUrl,
@@ -61,6 +63,7 @@ function splitLines(value: string | null | undefined): string[] | null {
 export default function AdminProductFormPage() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const isEdit = !!id && id !== 'novo';
 
   const [product, setProduct] = useState<PromobrindProduct | null>(null);
@@ -459,6 +462,8 @@ export default function AdminProductFormPage() {
           });
         }
 
+        // Medidas em cache (plano de volumes do orçamento) ficariam velhas por até 5 min.
+        void queryClient.invalidateQueries({ queryKey: FREIGHT_QUERY_KEYS.productMeasuresAll });
         toast.success('Produto atualizado com sucesso');
         const refreshed = await fetchPromobrindProductById(product.id);
         // a view v_products_public não traz ships_separately: mantém o valor salvo
@@ -484,6 +489,7 @@ export default function AdminProductFormPage() {
           );
         }
 
+        void queryClient.invalidateQueries({ queryKey: FREIGHT_QUERY_KEYS.productMeasuresAll });
         if (newProduct) {
           await logAction({
             action: 'INSERT',

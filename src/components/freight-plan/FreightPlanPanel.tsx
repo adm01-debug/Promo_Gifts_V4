@@ -6,7 +6,9 @@
  * (lista o que falta no cadastro) e "não cabe" (o aviso do motor nomeia o
  * produto e a maior caixa).
  */
+import { useId, useState } from 'react';
 import { AlertTriangle, ChevronDown, Truck } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { Skeleton } from '@/components/ui/skeleton';
 import { formatPlanSummary, type FreightPlan, type PackVolume } from '@/lib/freight';
@@ -25,6 +27,9 @@ interface FreightPlanPanelProps {
   unavailable?: readonly { productId: string; name: string }[];
   className?: string;
 }
+
+/** Acima disto a lista de volumes nasce recolhida: o resumo e os avisos bastam para decidir. */
+export const VOLUMES_COLLAPSE_THRESHOLD = 5;
 
 const KG = new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 1, maximumFractionDigits: 1 });
 
@@ -87,6 +92,49 @@ function VolumeRow({
         </dl>
       </CollapsibleContent>
     </Collapsible>
+  );
+}
+
+function VolumeList({
+  volumes,
+  products,
+}: {
+  volumes: readonly PackVolume[];
+  products?: FreightProductLabels;
+}) {
+  const listId = useId();
+  const collapsible = volumes.length > VOLUMES_COLLAPSE_THRESHOLD;
+  const [expanded, setExpanded] = useState(false);
+  const open = !collapsible || expanded;
+
+  return (
+    <div className="space-y-2">
+      {collapsible && (
+        <Button
+          type="button"
+          variant="outline"
+          size="sm"
+          aria-expanded={expanded}
+          aria-controls={listId}
+          onClick={() => setExpanded((atual) => !atual)}
+        >
+          {expanded ? 'Ocultar' : `Ver ${volumes.length} volumes`}
+        </Button>
+      )}
+      {open && (
+        <div id={listId} className="space-y-2">
+          {volumes.map((volume, index) => (
+            <VolumeRow
+              // Volumes não têm id: a posição na lista é a identidade.
+              key={`${volume.box.code}-${index}`}
+              volume={volume}
+              index={index}
+              products={products}
+            />
+          ))}
+        </div>
+      )}
+    </div>
   );
 }
 
@@ -162,17 +210,7 @@ function Body({
 
   return (
     <div className="space-y-3">
-      <div className="space-y-2">
-        {plan.volumes.map((volume, index) => (
-          <VolumeRow
-            // Volumes não têm id: a posição na lista é a identidade.
-            key={`${volume.box.code}-${index}`}
-            volume={volume}
-            index={index}
-            products={products}
-          />
-        ))}
-      </div>
+      <VolumeList volumes={plan.volumes} products={products} />
       {plan.warnings.length > 0 && (
         <div className="space-y-1 text-sm text-amber-700 dark:text-amber-500">
           {plan.warnings.map((warning) => (

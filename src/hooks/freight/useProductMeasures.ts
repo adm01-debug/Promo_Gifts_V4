@@ -7,7 +7,7 @@
  * ordem reaproveita a consulta.
  */
 import { useMemo } from 'react';
-import { useQuery } from '@tanstack/react-query';
+import { keepPreviousData, useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { FREIGHT_QUERY_KEYS, PRODUCT_MEASURES_STALE_TIME_MS } from '@/hooks/freight/keys';
 import { PRODUCT_MEASURE_SELECT, type ProductMeasureRow } from '@/lib/freight';
@@ -60,6 +60,8 @@ export function useProductMeasures(productIds: readonly string[]): UseProductMea
     queryFn: () => fetchMeasures(ids),
     enabled: ids.length > 0,
     staleTime: PRODUCT_MEASURES_STALE_TIME_MS,
+    // Remover um produto do orçamento troca a chave: mostra as medidas anteriores até a nova leitura.
+    placeholderData: keepPreviousData,
   });
 
   // A consulta devolve array: o React Query mantém a mesma referência quando o
@@ -70,10 +72,14 @@ export function useProductMeasures(productIds: readonly string[]): UseProductMea
     [rows],
   );
 
+  // Com medidas anteriores na tela, só conta como "carregando" se faltar alguma das pedidas
+  // (produto novo no orçamento); remover um produto não pode piscar o esqueleto.
+  const waitingForNewIds = query.isPlaceholderData && ids.some((id) => !measures.has(id));
+
   return {
     measures,
     hasData: rows !== undefined,
-    isLoading: query.isLoading,
+    isLoading: query.isLoading || waitingForNewIds,
     isFetching: query.isFetching,
     isError: query.isError,
     error: query.error,
