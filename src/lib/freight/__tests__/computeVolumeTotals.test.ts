@@ -86,13 +86,29 @@ describe('computeVolumeTotals', () => {
     expect(volume.grossWeightG).toBe(1_200);
   });
 
-  it('fator da caixa fora do intervalo cai no padrão global', () => {
-    const semFator = { ...CAIXA_G, fillFactor: 0 };
+  it.each([0, 1.5])('fator da caixa fora do intervalo (%d) cai no padrão global', (fillFactor) => {
+    // 0 é ausência de cadastro e 1,5 prometeria mais espaço do que a caixa tem:
+    // nos dois vale o padrão 0,9 → 100 × 294 = 29.400 sobre 60.226,8696
+    const foraDoIntervalo = { ...CAIXA_G, fillFactor };
     const volume = computeVolumeTotals(
-      { box: semFator, contents: [{ item: caderneta(100), quantity: 100 }] },
+      { box: foraDoIntervalo, contents: [{ item: caderneta(100), quantity: 100 }] },
       SETTINGS_PADRAO,
     );
 
     expect(volume.fillRatio).toBeCloseTo(29_400 / 60_226.8696, 6);
+  });
+
+  it('fator da própria caixa (0,50) define a ocupação, não o padrão global', () => {
+    // aproveitável: 66.918,744 × 0,5 = 33.459,372 cm³
+    // ocupação: 100 × 294 = 29.400 ÷ 33.459,372 = 0,8787
+    // (com o padrão 0,9 daria 29.400 ÷ 60.226,8696 = 0,4882 e o plano avisaria
+    // "menos de metade" numa caixa que está 88% tomada)
+    const g50 = { ...CAIXA_G, fillFactor: 0.5 };
+    const volume = computeVolumeTotals(
+      { box: g50, contents: [{ item: caderneta(100), quantity: 100 }] },
+      SETTINGS_PADRAO,
+    );
+
+    expect(volume.fillRatio).toBeCloseTo(29_400 / 33_459.372, 6);
   });
 });
