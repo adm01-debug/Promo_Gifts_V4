@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "5ac27dbcfa3a0059ec4ada7ebbda31d06f58731d",
+  "sha": "38a84ba1511e2133442e2281f6166f8f575e6c46",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-20 02:37 UTC",
-  "files_total": 11016,
-  "code_files": 9032,
-  "code_lines": 1280659
+  "generated_at": "2026-11-20 10:28 UTC",
+  "files_total": 11040,
+  "code_files": 9055,
+  "code_lines": 1282318
  },
  "version": "1.3.2",
- "facts_hash": "219121833a3be8b1",
+ "facts_hash": "60d7015ea06abea7",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -1129,8 +1129,8 @@
   "package_manager": "npm",
   "languages": {
    ".sql": 3463,
-   ".ts": 3115,
-   ".tsx": 1984,
+   ".ts": 3130,
+   ".tsx": 1992,
    ".mjs": 455,
    ".py": 15,
    ".js": 7
@@ -143856,6 +143856,13 @@
     "component": "AdminProductFormPage",
     "guard": "",
     "roles": [],
+    "file": "src/pages/admin/__tests__/AdminProductFormPage.shipsSeparately.test.tsx"
+   },
+   {
+    "path": "/admin/cadastros/produto/:id",
+    "component": "AdminProductFormPage",
+    "guard": "",
+    "roles": [],
     "file": "src/routes/admin-routes.tsx"
    },
    {
@@ -145370,7 +145377,7 @@
     "file": ".github/workflows/wraparound-monitor-report.yml"
    }
   ],
-  "components_count": 1722,
+  "components_count": 1735,
   "hooks": [
    {
     "name": "useQuoteComments",
@@ -147481,6 +147488,10 @@
     "file": "src/hooks/freight/useFreightPlan.ts"
    },
    {
+    "name": "useFreightReadinessReport",
+    "file": "src/hooks/freight/useFreightReadinessReport.ts"
+   },
+   {
     "name": "useFreightSettings",
     "file": "src/hooks/freight/useFreightSettings.ts"
    },
@@ -148251,6 +148262,10 @@
    {
     "name": "useSupplierComparison",
     "file": "src/hooks/products/useSupplierComparison.ts"
+   },
+   {
+    "name": "useSupplierDefaultLeadTime",
+    "file": "src/hooks/products/useSupplierDefaultLeadTime.ts"
    },
    {
     "name": "useSupplierFiscalData",
@@ -150050,8 +150065,8 @@
   },
   {
    "module": "src/components",
-   "files": 1447,
-   "lines": 285983,
+   "files": 1460,
+   "lines": 286929,
    "tables": [
     "admin_audit_log",
     "art_file_attachments",
@@ -150414,8 +150429,8 @@
   },
   {
    "module": "src/hooks",
-   "files": 496,
-   "lines": 92715,
+   "files": 498,
+   "lines": 92782,
    "tables": [
     "admin_audit_log",
     "admin_settings",
@@ -150475,6 +150490,7 @@
     "seller_discount_limits",
     "simulator_wizard_drafts",
     "stock_notes",
+    "supplier_settings",
     "system_settings",
     "tpgo",
     "tpgo_faixa",
@@ -150703,8 +150719,8 @@
   },
   {
    "module": "src/lib",
-   "files": 398,
-   "lines": 60292,
+   "files": 400,
+   "lines": 60487,
    "tables": [
     "...",
     "companies",
@@ -150910,8 +150926,8 @@
   },
   {
    "module": "src/pages",
-   "files": 369,
-   "lines": 85071,
+   "files": 370,
+   "lines": 85182,
    "tables": [
     "ai_usage_events",
     "bot_detection_log",
@@ -151096,6 +151112,7 @@
     "src/pages/admin/StorageTestPage.tsx",
     "src/pages/admin/engraving-schema-diff.ts",
     "src/pages/admin/__tests__/AdminFreteSettingsPage.test.tsx",
+    "src/pages/admin/__tests__/AdminProductFormPage.shipsSeparately.test.tsx",
     "src/pages/admin/__tests__/RolePermissionsPage.save.test.tsx",
     "src/pages/admin/ai-usage/AiCharts.tsx",
     "src/pages/admin/ai-usage/AiQuotaManager.tsx",
@@ -151110,8 +151127,7 @@
     "src/pages/admin/telemetry/useOptimizationMetrics.ts",
     "src/pages/admin/telemetry/useOptimizationQueue.ts",
     "src/pages/admin/telemetry/usePlatformFailureAlert.ts",
-    "src/pages/admin/telemetry/usePlatformFailureMetrics.ts",
-    "src/pages/admin/telemetry/useProductsListingLatencyAlert.ts"
+    "src/pages/admin/telemetry/usePlatformFailureMetrics.ts"
    ]
   },
   {
@@ -151171,8 +151187,8 @@
   },
   {
    "module": "src/services",
-   "files": 33,
-   "lines": 6621,
+   "files": 37,
+   "lines": 6896,
    "tables": [
     "freight_settings",
     "frontend_telemetry",
@@ -151188,17 +151204,20 @@
     "quote_items",
     "quotes",
     "shipping_boxes",
+    "suppliers",
     "user_notification_preferences",
     "user_roles"
    ],
    "exports": [
     "authService.ts: authService",
+    "freightReadinessService.ts: FreightReadinessError, FREIGHT_READINESS_SELECT, FreightReadinessProduct, fetchActiveProductsForFreight, fetchSupplierNames",
     "freightSettingsService.ts: FreightSettingsRow, MultiPersonalizationRule, FreightSettingsWrite, FreightSettingsPatch, FreightSettingsErrorReason, FreightSettingsError",
     "magazineService.ts: MagazineMetadataPatch, MagazineMutationError, productToSnapshot, magazineService",
     "materialService.ts: MaterialGroup, MaterialType, MaterialComplete, materialService",
     "notificationPreferenceService.ts: UserNotificationPreference, notificationPreferenceService",
     "orderService.ts: OrderLookupItem, OrderLookup, orderService",
     "productService.ts: productService",
+    "productShipsSeparatelyService.ts: fetchShipsSeparately",
     "quoteItemsReorder.ts: ReorderRow, persistItemsOrder",
     "quoteService.ts: quoteService",
     "ramoAtividadeService.ts: ramoAtividadeService",
@@ -151207,11 +151226,11 @@
    ],
    "docs": [
     "freightSettingsService.ts: Parâmetros globais do frete (`public.freight_settings`) — linha única. A tabela é um singleton com chave booleana travada em `true` (migration 20261119213100_create_freight_settings.sql) e só tem policy de SELECT e de UPDATE. Por isso salvar é sempre `update(...).eq('id', true)`: `upsert` e `insert` …",
+    "productShipsSeparatelyService.ts: Lê `products.ships_separately` direto da tabela-base. O formulário de produto carrega o cadastro por `v_products_public`, que não expõe esta coluna. Sem esta leitura, o formulário abriria sempre com \"Não mistura\" desligado e, ao salvar, apagaria a marcação em silêncio. Em erro lança: assumir `false` …",
     "authService.oauth.test.ts: Onda 16 — Contrato dos wrappers OAuth Safe. signInWithOAuthSafe + exchangeCodeForSessionSafe: nunca lançam, classificam errorKind.",
+    "freightReadinessService.test.ts: freightReadinessService e productShipsSeparatelyService — o que é enviado ao PostgREST e como as páginas de 1.000 linhas são juntadas.",
     "freightSettingsService.test.ts: freightSettingsService — contrato com `public.freight_settings` (linha única). O cliente Supabase é trocado por um builder que grava cada chamada (`ops`), então o teste confere o que seria enviado ao PostgREST. O detector de RLS (`isRlsDenialError`) é o real.",
-    "magazineEdgeContract.test.ts: magazineService.getPublicByToken — contract tests contra a edge magazine-public-view. 60+ cenários (HTTP status, timeout, headers, tokens). Objetivo: garantir que a leitura pública: - JAMAIS envia Authorization header (não é o mesmo que apikey) - propaga X-Request-Id - retorna null em qualquer erro …",
-    "magazineService.branding.test.ts: magazineService.updateBranding — Regression tests REGRESSION: shallow merge { ...branding, ...patch } where patch.colors is a partial object drops the non-patched color keys. validateBranding() then fills defaults (#000000), silently overwriting the user's secondary/text colors. Fix: deep-merge colo …",
-    "quoteNumberConcurrency.test.ts: Concorrência multi-vendedor — simulação do trigger generate_quote_number. O teste reproduz a lógica EXATA do trigger atual (MAX+1 sem lock) e a versão proposta (MAX+1 + advisory lock). O objetivo é provar duas coisas: 1. Sob N inserts concorrentes no mesmo ano, a versão atual produz COLISÕES (mesmo …"
+    "magazineEdgeContract.test.ts: magazineService.getPublicByToken — contract tests contra a edge magazine-public-view. 60+ cenários (HTTP status, timeout, headers, tokens). Objetivo: garantir que a leitura pública: - JAMAIS envia Authorization header (não é o mesmo que apikey) - propaga X-Request-Id - retorna null em qualquer erro …"
    ],
    "deps": [
     "@supabase/supabase-js",
@@ -151227,18 +151246,21 @@
    ],
    "file_list": [
     "src/services/authService.ts",
+    "src/services/freightReadinessService.ts",
     "src/services/freightSettingsService.ts",
     "src/services/magazineService.ts",
     "src/services/materialService.ts",
     "src/services/notificationPreferenceService.ts",
     "src/services/orderService.ts",
     "src/services/productService.ts",
+    "src/services/productShipsSeparatelyService.ts",
     "src/services/quoteItemsReorder.ts",
     "src/services/quoteService.ts",
     "src/services/ramoAtividadeService.ts",
     "src/services/shippingBoxService.ts",
     "src/services/telemetryService.ts",
     "src/services/__tests__/authService.oauth.test.ts",
+    "src/services/__tests__/freightReadinessService.test.ts",
     "src/services/__tests__/freightSettingsService.test.ts",
     "src/services/__tests__/magazineAddProductsUnique.test.ts",
     "src/services/__tests__/magazineEdgeContract.test.ts",
@@ -151251,6 +151273,7 @@
     "src/services/__tests__/orderService.test.ts",
     "src/services/__tests__/productService.integration.test.ts",
     "src/services/__tests__/productService.test.ts",
+    "src/services/__tests__/productShipsSeparatelyService.test.ts",
     "src/services/__tests__/quoteItemsReorder.test.ts",
     "src/services/__tests__/quoteNumberConcurrency.test.ts",
     "src/services/__tests__/quoteReorderAutosaveRace.test.ts",
@@ -151419,7 +151442,7 @@
   {
    "module": "src/types",
    "files": 30,
-   "lines": 4629,
+   "lines": 4632,
    "tables": [],
    "exports": [
     "advancedFilters.ts: ColorOption, CategoryOption, TechniqueOption, SupplierOption, MaterialOption, StockFilterOption",
@@ -152170,8 +152193,8 @@
   },
   {
    "module": "tests",
-   "files": 1104,
-   "lines": 174513,
+   "files": 1105,
+   "lines": 174575,
    "tables": [
     "bot_detection_log",
     "clients",
@@ -153907,6 +153930,8 @@
      "src/lib/freight/columns.ts",
      "src/pages/products/ProductDetail.tsx",
      "src/pages/products/seller-carts/useSellerCartsPage.ts",
+     "src/services/freightReadinessService.ts",
+     "src/services/productShipsSeparatelyService.ts",
      "src/services/quoteService.ts",
      "src/tests/ProductFetch.test.ts",
      "supabase/functions/categories-api/index.ts",
@@ -154509,8 +154534,14 @@
      "supabase/functions/asia-ingestion/index.ts"
     ]
    },
+   "supplier_settings": {
+    "select": [
+     "src/hooks/products/useSupplierDefaultLeadTime.ts"
+    ]
+   },
    "suppliers": {
     "select": [
+     "src/services/freightReadinessService.ts",
      "supabase/functions/expert-chat/index.ts"
     ],
     "ref": [
@@ -155679,6 +155710,7 @@
     "brand",
     "category_id",
     "category_name",
+    "deleted_at",
     "description",
     "id",
     "images",
@@ -155689,6 +155721,7 @@
     "nome",
     "primary_image_url",
     "sale_price",
+    "ships_separately",
     "sku",
     "stock_quantity",
     "supplier_id",
@@ -155961,6 +155994,10 @@
    "stock_notes": [
     "id",
     "variant_id"
+   ],
+   "supplier_settings": [
+    "default_lead_time_days",
+    "supplier_id"
    ],
    "suppliers": [
     "id",
@@ -159301,7 +159338,6 @@
    "supplier_products_raw_history_p2027_01",
    "supplier_property_mappings",
    "supplier_replenishment_events",
-   "supplier_settings",
    "supplier_sub_brands",
    "supplier_subtype_category_map",
    "supplier_unit_conversions",
@@ -159586,6 +159622,10 @@
    },
    {
     "table": "products",
+    "column": "deleted_at"
+   },
+   {
+    "table": "products",
     "column": "images"
    },
    {
@@ -159607,6 +159647,10 @@
    {
     "table": "products",
     "column": "sale_price"
+   },
+   {
+    "table": "products",
+    "column": "ships_separately"
    },
    {
     "table": "products",
@@ -159799,6 +159843,14 @@
    {
     "table": "crm_callback_events",
     "column": "received_at"
+   },
+   {
+    "table": "supplier_settings",
+    "column": "default_lead_time_days"
+   },
+   {
+    "table": "supplier_settings",
+    "column": "supplier_id"
    },
    {
     "table": "product_variants",
@@ -162531,6 +162583,11 @@
     "file": "src/components/admin/products/ProductFormHelpers.tsx",
     "name": "SectionId",
     "values": "classification | commercial | dimensions | fiscal | flags | info | marketing | media | packaging | price | seo"
+   },
+   {
+    "file": "src/components/admin/products/leadTimeSource.ts",
+    "name": "LeadTimeSource",
+    "values": "excecao | padrao"
    },
    {
     "file": "src/components/admin/products/productMarketingData.ts",
@@ -166058,6 +166115,10 @@
    {
     "file": "src/components/admin/connections/useIntegrationsHealthCard.ts",
     "msg": "Falha na auditoria: ${toErrorMessage(err)}"
+   },
+   {
+    "file": "src/components/admin/freight/FreightReadinessReport.tsx",
+    "msg": "\n        className="
    },
    {
     "file": "src/components/admin/freight-settings/FreightSettingsForm.tsx",
@@ -169624,6 +169685,14 @@
     "msg": "Seu navegador não suporta comandos de voz."
    },
    {
+    "file": "src/services/freightReadinessService.ts",
+    "msg": "Não foi possível carregar os fornecedores."
+   },
+   {
+    "file": "src/services/freightReadinessService.ts",
+    "msg": "Não foi possível carregar os produtos."
+   },
+   {
     "file": "src/services/freightSettingsService.ts",
     "msg": "permission"
    },
@@ -171596,6 +171665,18 @@
     "text": "Expirações dos flags (null = sem limite)"
    },
    {
+    "file": "src/components/admin/products/leadTimeSource.ts",
+    "text": "* Decide se o prazo de liberação de um produto é o padrão do fornecedor ou uma"
+   },
+   {
+    "file": "src/components/admin/products/leadTimeSource.ts",
+    "text": "(ou ainda carrega), e o produto tem prazo próprio."
+   },
+   {
+    "file": "src/components/admin/products/priceFreshnessFallback.ts",
+    "text": "Movido de AdminProductFormPage.tsx sem mudança de comportamento (limite de tamanho do arquivo)."
+   },
+   {
     "file": "src/components/admin/products/useProductsManager.ts",
     "text": "* useProductsManager — Business logic hook for ProductsManager."
    },
@@ -173128,6 +173209,10 @@
     "text": "Múltiplas listas e sem shift → o caller deve mostrar picker"
    },
    {
+    "file": "src/hooks/freight/useFreightReadinessReport.ts",
+    "text": "a regra do motor (`getFreightReadiness`), aplicada no navegador."
+   },
+   {
     "file": "src/hooks/freight/useProductMeasures.ts",
     "text": "na URL do PostgREST; um orçamento grande estouraria o limite). A chave de"
    },
@@ -173834,6 +173919,14 @@
    {
     "file": "src/hooks/products/useSupplierComparison.ts",
     "text": "* Mostra apenas fornecedores com produto ativo (proxy de \"verificado\"). */"
+   },
+   {
+    "file": "src/hooks/products/useSupplierDefaultLeadTime.ts",
+    "text": "* Prazo de liberação padrão de um fornecedor (`supplier_settings.default_lead_time_days`)."
+   },
+   {
+    "file": "src/hooks/products/useSupplierDefaultLeadTime.ts",
+    "text": "O formulário de produto o mostra ao lado do prazo do próprio produto."
    },
    {
     "file": "src/hooks/products/useSupplierSalesRanking.ts",
@@ -174762,6 +174855,10 @@
    {
     "file": "src/lib/freight/planFreight.ts",
     "text": "do volume sem passar do máximo. É a mesma coisa que `limitedBy: 'weight'`,"
+   },
+   {
+    "file": "src/lib/freight/readiness.ts",
+    "text": "empacotamento. É a mesma regra de `resolveItemDimensions` (peso e três lados,"
    },
    {
     "file": "src/lib/freight/types.ts",
@@ -175986,6 +176083,10 @@
    {
     "file": "src/services/authService.ts",
     "text": "data é opcional pois métodos como signOut retornam apenas { error }."
+   },
+   {
+    "file": "src/services/freightReadinessService.ts",
+    "text": "menor que 1.000, a página curta não pode ser tomada como a última."
    },
    {
     "file": "src/services/freightSettingsService.ts",
@@ -198274,6 +198375,26 @@
     "value": "60"
    },
    {
+    "file": "src/components/admin/freight/FreightReadinessReport.tsx",
+    "name": "ALL_SUPPLIERS",
+    "value": "'all'"
+   },
+   {
+    "file": "src/components/admin/freight/FreightReadinessReport.tsx",
+    "name": "PAGE_STEP",
+    "value": "200"
+   },
+   {
+    "file": "src/components/admin/freight/freightReadinessRows.ts",
+    "name": "NO_SUPPLIER_LABEL",
+    "value": "'Sem fornecedor'"
+   },
+   {
+    "file": "src/components/admin/freight/freightReadinessRows.ts",
+    "name": "NO_SUPPLIER_FILTER",
+    "value": "'none'"
+   },
+   {
     "file": "src/components/admin/freight-settings/freightSettingsFormSchema.ts",
     "name": "FILL_FACTOR_MIN",
     "value": "0.5"
@@ -198292,6 +198413,11 @@
     "file": "src/components/admin/freight-settings/freightSettingsFormSchema.ts",
     "name": "FACTOR_MESSAGE",
     "value": "'Use um valor entre 0,50 e 1,00, com até duas casas decimais.'"
+   },
+   {
+    "file": "src/components/admin/products/priceFreshnessFallback.ts",
+    "name": "PRICE_FRESHNESS_THRESHOLD_COLUMN",
+    "value": "'price_freshness_threshold_days'"
    },
    {
     "file": "src/components/admin/products/productMarketingData.ts",
@@ -199549,6 +199675,11 @@
     "value": "2"
    },
    {
+    "file": "src/hooks/products/useSupplierDefaultLeadTime.ts",
+    "name": "STALE_TIME_MS",
+    "value": "10"
+   },
+   {
     "file": "src/hooks/quotes/quoteHelpers.ts",
     "name": "MARKUP_MAX_PERCENT",
     "value": "50"
@@ -200399,11 +200530,6 @@
     "value": "100"
    },
    {
-    "file": "src/pages/admin/AdminProductFormPage.tsx",
-    "name": "PRICE_FRESHNESS_THRESHOLD_COLUMN",
-    "value": "'price_freshness_threshold_days'"
-   },
-   {
     "file": "src/pages/admin/RlsDenialsAdminPage.tsx",
     "name": "ALERT_THRESHOLD_24H",
     "value": "10"
@@ -200712,6 +200838,11 @@
     "file": "src/pages/tools/VisualSearchPage.tsx",
     "name": "MAX_UPLOAD_SIZE_BYTES",
     "value": "5"
+   },
+   {
+    "file": "src/services/freightReadinessService.ts",
+    "name": "PAGE_SIZE",
+    "value": "1000"
    },
    {
     "file": "src/services/magazineService.ts",
@@ -209446,6 +209577,12 @@
     "kind": "compara"
    },
    {
+    "file": "src/lib/freight/readiness.ts",
+    "field": "status",
+    "value": "incomplete",
+    "kind": "compara"
+   },
+   {
     "file": "src/lib/freight/resolveItemDimensions.ts",
     "field": "status",
     "value": "incomplete",
@@ -215076,6 +215213,18 @@
     "body": ""
    },
    {
+    "file": "src/components/admin/products/priceFreshnessFallback.ts",
+    "name": "isMissingPriceFreshnessThresholdColumn",
+    "params": "error: unknown",
+    "body": "const message = error instanceof Error ? error.message : String(error); return /price_freshness_threshold_days|column products\\.price_freshness_threshold_days does not exist/i.test( message, );"
+   },
+   {
+    "file": "src/components/admin/products/priceFreshnessFallback.ts",
+    "name": "withoutPriceFreshnessThreshold",
+    "params": "data: Record<string, unknown>,",
+    "body": "const fallbackData = { ...data }; delete fallbackData[PRICE_FRESHNESS_THRESHOLD_COLUMN]; return fallbackData;"
+   },
+   {
     "file": "src/components/admin/products/sections/ProductSupplierSection.tsx",
     "name": "formatCurrency",
     "params": "v: number | null",
@@ -216814,18 +216963,6 @@
     "name": "computeStats",
     "params": "images: CfImage[]",
     "body": "const stats: CfStats = { total: images.length, verified: 0, pending: 0, syncing: 0, failed: 0, missing: 0, noStatus: 0, }; for (const img of images) { switch (img.cf_sync_status) { case 'verified': stats.verified++; break; case 'pending': stats.pending++; break; case 'uploading': case 'uploaded': stats.syncing++; break; case 'failed': stats.failed++; break; case 'missing': case 'orphaned': stats.missing++; break; default: stats.noStatus++; } } return stats;"
-   },
-   {
-    "file": "src/pages/admin/AdminProductFormPage.tsx",
-    "name": "isMissingPriceFreshnessThresholdColumn",
-    "params": "error: unknown",
-    "body": "const message = error instanceof Error ? error.message : String(error); return /price_freshness_threshold_days|column products\\.price_freshness_threshold_days does not exist/i.test( message, );"
-   },
-   {
-    "file": "src/pages/admin/AdminProductFormPage.tsx",
-    "name": "withoutPriceFreshnessThreshold",
-    "params": "data: Record<string, unknown>",
-    "body": "const fallbackData = { ...data }; delete fallbackData[PRICE_FRESHNESS_THRESHOLD_COLUMN]; return fallbackData;"
    },
    {
     "file": "src/pages/admin/DiscountRequestDetailPage.tsx",
@@ -219032,6 +219169,10 @@
    {
     "file": "src/hooks/products/useSupplierComparison.ts",
     "line": "{ enabled: !!product && (!!categoryId || !!categoryName), staleTime: 10 * 60 * 1000 },"
+   },
+   {
+    "file": "src/hooks/products/useSupplierDefaultLeadTime.ts",
+    "line": "const STALE_TIME_MS = 10 * 60 * 1000;"
    },
    {
     "file": "src/hooks/products/useSupplierFiscalData.ts",
@@ -231646,6 +231787,66 @@
     "name": "cancelar a confirmação não dispara a ação destrutiva"
    },
    {
+    "file": "src/components/admin/freight/__tests__/FreightReadinessReport.test.tsx",
+    "name": "buildReadinessRows"
+   },
+   {
+    "file": "src/components/admin/freight/__tests__/FreightReadinessReport.test.tsx",
+    "name": "só entram os 3 incompletos, ordenados por SKU em ordem natural (A-2 antes de A-10)"
+   },
+   {
+    "file": "src/components/admin/freight/__tests__/FreightReadinessReport.test.tsx",
+    "name": "escreve o que falta e o fornecedor"
+   },
+   {
+    "file": "src/components/admin/freight/__tests__/FreightReadinessReport.test.tsx",
+    "name": "filterBySupplier"
+   },
+   {
+    "file": "src/components/admin/freight/__tests__/FreightReadinessReport.test.tsx",
+    "name": "filtro "
+   },
+   {
+    "file": "src/components/admin/freight/__tests__/FreightReadinessReport.test.tsx",
+    "name": "FreightReadinessReport"
+   },
+   {
+    "file": "src/components/admin/freight/__tests__/FreightReadinessReport.test.tsx",
+    "name": "mostra as 3 linhas, o resumo e o link para o cadastro"
+   },
+   {
+    "file": "src/components/admin/freight/__tests__/FreightReadinessReport.test.tsx",
+    "name": "o arquivo baixado é o CSV com "
+   },
+   {
+    "file": "src/components/admin/freight/__tests__/FreightReadinessReport.test.tsx",
+    "name": "carregando e erro são anunciados para leitor de tela"
+   },
+   {
+    "file": "src/components/admin/freight/__tests__/FreightReadinessReport.test.tsx",
+    "name": "sem nenhum produto incompleto, diz que está tudo certo"
+   },
+   {
+    "file": "src/components/admin/freight/__tests__/FreightReadinessReport.test.tsx",
+    "name": "em erro, oferece tentar de novo"
+   },
+   {
+    "file": "src/components/admin/freight/__tests__/FreightReadinessReport.test.tsx",
+    "name": "buildReadinessCsv"
+   },
+   {
+    "file": "src/components/admin/freight/__tests__/FreightReadinessReport.test.tsx",
+    "name": "separa por "
+   },
+   {
+    "file": "src/components/admin/freight/__tests__/FreightReadinessReport.test.tsx",
+    "name": "nome que começa com = + - @ ganha apóstrofo (não vira fórmula no Excel)"
+   },
+   {
+    "file": "src/components/admin/freight/__tests__/FreightReadinessReport.test.tsx",
+    "name": "valor com "
+   },
+   {
     "file": "src/components/admin/freight-settings/__tests__/freightSettingsFormSchema.test.ts",
     "name": "maskCep"
    },
@@ -231702,6 +231903,50 @@
     "name": "fator igual em centésimos não conta como mudança"
    },
    {
+    "file": "src/components/admin/products/__tests__/FreightReadinessIndicator.test.tsx",
+    "name": "ProductSkuTag + indicador de dados de frete (etapa 37)"
+   },
+   {
+    "file": "src/components/admin/products/__tests__/FreightReadinessIndicator.test.tsx",
+    "name": "produto completo: mostra o SKU e nenhum aviso"
+   },
+   {
+    "file": "src/components/admin/products/__tests__/FreightReadinessIndicator.test.tsx",
+    "name": "produto sem peso: mostra o aviso dizendo que falta o peso"
+   },
+   {
+    "file": "src/components/admin/products/__tests__/FreightReadinessIndicator.test.tsx",
+    "name": "produto sem largura e comprimento: lista os dois campos"
+   },
+   {
+    "file": "src/components/admin/products/__tests__/FreightReadinessIndicator.test.tsx",
+    "name": "o aviso recebe foco pelo teclado (tabIndex 0) para abrir o tooltip"
+   },
+   {
+    "file": "src/components/admin/products/__tests__/ProductFormFreightFields.test.tsx",
+    "name": "Prazo de liberação do fornecedor (etapa 38)"
+   },
+   {
+    "file": "src/components/admin/products/__tests__/ProductFormFreightFields.test.tsx",
+    "name": "mostra o rótulo novo, o padrão do fornecedor e o selo "
+   },
+   {
+    "file": "src/components/admin/products/__tests__/ProductFormFreightFields.test.tsx",
+    "name": "mostra o selo "
+   },
+   {
+    "file": "src/components/admin/products/__tests__/ProductFormFreightFields.test.tsx",
+    "name": "não mostra a linha do padrão quando o fornecedor não tem prazo cadastrado"
+   },
+   {
+    "file": "src/components/admin/products/__tests__/ProductFormFreightFields.test.tsx",
+    "name": "Switch "
+   },
+   {
+    "file": "src/components/admin/products/__tests__/ProductFormFreightFields.test.tsx",
+    "name": "com ships_separately=$atual, clicar grava $esperado"
+   },
+   {
     "file": "src/components/admin/products/__tests__/ProductFormSchema.test.ts",
     "name": "ProductFormSchema - Price Freshness"
    },
@@ -231736,6 +231981,10 @@
    {
     "file": "src/components/admin/products/__tests__/ProductMarketingSection.test.tsx",
     "name": "categoria que não carregou mostra o motivo sem quebrar as outras"
+   },
+   {
+    "file": "src/components/admin/products/__tests__/leadTimeSource.test.ts",
+    "name": "getLeadTimeSource"
    },
    {
     "file": "src/components/admin/products/__tests__/productMarketingData.test.ts",
@@ -231780,6 +232029,38 @@
    {
     "file": "src/components/admin/products/__tests__/productMarketingData.test.ts",
     "name": "nenhuma operação toca products, v_products_public ou a coluna tags"
+   },
+   {
+    "file": "src/components/admin/products/bulk-import/__tests__/parseBooleanCell.test.ts",
+    "name": "parseBooleanCell"
+   },
+   {
+    "file": "src/components/admin/products/bulk-import/__tests__/parseBooleanCell.test.ts",
+    "name": "coluna "
+   },
+   {
+    "file": "src/components/admin/products/bulk-import/__tests__/parseBooleanCell.test.ts",
+    "name": "está entre os campos de destino e no modelo CSV"
+   },
+   {
+    "file": "src/components/admin/products/bulk-import/__tests__/parseBooleanCell.test.ts",
+    "name": "o cabeçalho "
+   },
+   {
+    "file": "src/components/admin/products/bulk-import/__tests__/parseBooleanCell.test.ts",
+    "name": "parseStrictBooleanCell (campo "
+   },
+   {
+    "file": "src/components/admin/products/bulk-import/__tests__/parseBooleanCell.test.ts",
+    "name": "números do Excel (1 e 0) valem"
+   },
+   {
+    "file": "src/components/admin/products/bulk-import/__tests__/parseBooleanCell.test.ts",
+    "name": "cabeçalho do próprio modelo"
+   },
+   {
+    "file": "src/components/admin/products/bulk-import/__tests__/parseBooleanCell.test.ts",
+    "name": "o rótulo de "
    },
    {
     "file": "src/components/admin/shipping-boxes/__tests__/ShippingBoxFormDialog.test.tsx",
@@ -253074,6 +253355,22 @@
     "name": "does not overwrite an explicit primary_image_url with image_url"
    },
    {
+    "file": "src/lib/external-db/batch-import.write.test.ts",
+    "name": "lote misto: linhas com e sem ships_separately saem em pedidos de chaves iguais, na ordem da planilha"
+   },
+   {
+    "file": "src/lib/external-db/batch-import.write.test.ts",
+    "name": "planilha alternada de 51 linhas: nada perdido nem duplicado e faixa de erro exata"
+   },
+   {
+    "file": "src/lib/external-db/batch-import.write.test.ts",
+    "name": "faixa de erro de um lote de 25 contíguos aponta as linhas daquele lote"
+   },
+   {
+    "file": "src/lib/external-db/batch-import.write.test.ts",
+    "name": "SKU repetido (linha 3 vazia, linha 40 "
+   },
+   {
     "file": "src/lib/external-db/kit-coverage.integration.test.ts",
     "name": "view e base retornam linhas para o mesmo kit"
    },
@@ -253908,6 +254205,14 @@
    {
     "file": "src/lib/freight/__tests__/planFreight.test.ts",
     "name": "lista vazia tem hash próprio e estável"
+   },
+   {
+    "file": "src/lib/freight/__tests__/readiness.test.ts",
+    "name": "getFreightReadiness"
+   },
+   {
+    "file": "src/lib/freight/__tests__/readiness.test.ts",
+    "name": "$caso"
    },
    {
     "file": "src/lib/freight/__tests__/resolveItemDimensions.test.ts",
@@ -258020,6 +258325,14 @@
    {
     "file": "src/pages/admin/__tests__/AdminFreteSettingsPage.test.tsx",
     "name": "recarrega os campos quando a linha salva muda"
+   },
+   {
+    "file": "src/pages/admin/__tests__/AdminProductFormPage.shipsSeparately.test.tsx",
+    "name": "AdminProductFormPage — Não mistura"
+   },
+   {
+    "file": "src/pages/admin/__tests__/AdminProductFormPage.shipsSeparately.test.tsx",
+    "name": "carrega marcado -> salva -> continua marcado ao voltar para a aba Editar"
    },
    {
     "file": "src/pages/admin/__tests__/RolePermissionsPage.save.test.tsx",
@@ -262678,6 +262991,58 @@
     "name": "throw AbortError → err"
    },
    {
+    "file": "src/services/__tests__/freightReadinessService.test.ts",
+    "name": "FREIGHT_READINESS_SELECT"
+   },
+   {
+    "file": "src/services/__tests__/freightReadinessService.test.ts",
+    "name": "é a lista de colunas do motor mais supplier_id"
+   },
+   {
+    "file": "src/services/__tests__/freightReadinessService.test.ts",
+    "name": "fetchActiveProductsForFreight"
+   },
+   {
+    "file": "src/services/__tests__/freightReadinessService.test.ts",
+    "name": "lê páginas de 1.000 até vir página vazia (1.000 + 250 = 1.250 linhas, 3 pedidos)"
+   },
+   {
+    "file": "src/services/__tests__/freightReadinessService.test.ts",
+    "name": "com "
+   },
+   {
+    "file": "src/services/__tests__/freightReadinessService.test.ts",
+    "name": "envia o select da constante FREIGHT_READINESS_SELECT"
+   },
+   {
+    "file": "src/services/__tests__/freightReadinessService.test.ts",
+    "name": "só pede produtos ativos e não excluídos, ordenados por id"
+   },
+   {
+    "file": "src/services/__tests__/freightReadinessService.test.ts",
+    "name": "erro do banco vira mensagem em português"
+   },
+   {
+    "file": "src/services/__tests__/freightReadinessService.test.ts",
+    "name": "fetchSupplierNames"
+   },
+   {
+    "file": "src/services/__tests__/freightReadinessService.test.ts",
+    "name": "devolve id → nome"
+   },
+   {
+    "file": "src/services/__tests__/freightReadinessService.test.ts",
+    "name": "fetchShipsSeparately"
+   },
+   {
+    "file": "src/services/__tests__/freightReadinessService.test.ts",
+    "name": "linha $linha → $esperado"
+   },
+   {
+    "file": "src/services/__tests__/freightReadinessService.test.ts",
+    "name": "erro do banco é lançado, não vira "
+   },
+   {
     "file": "src/services/__tests__/freightSettingsService.test.ts",
     "name": "freightSettingsService.get"
    },
@@ -262980,6 +263345,22 @@
    {
     "file": "src/services/__tests__/productService.test.ts",
     "name": "should ignore invalid price bounds instead of filtering out products"
+   },
+   {
+    "file": "src/services/__tests__/productShipsSeparatelyService.test.ts",
+    "name": "fetchShipsSeparately"
+   },
+   {
+    "file": "src/services/__tests__/productShipsSeparatelyService.test.ts",
+    "name": "1ª leitura falha, 2ª traz true: devolve true (2 chamadas)"
+   },
+   {
+    "file": "src/services/__tests__/productShipsSeparatelyService.test.ts",
+    "name": "as 2 leituras falham: lança (1 original + 1 nova tentativa = 2 chamadas)"
+   },
+   {
+    "file": "src/services/__tests__/productShipsSeparatelyService.test.ts",
+    "name": "leitura ok de primeira: 1 chamada"
    },
    {
     "file": "src/services/__tests__/quoteItemsReorder.test.ts",
@@ -291912,6 +292293,18 @@
    {
     "file": "tests/hooks/freight/useFreightPlan.test.ts",
     "name": "falha ao ler as caixas vira erro, sem plano"
+   },
+   {
+    "file": "tests/hooks/freight/useFreightReadinessReport.test.tsx",
+    "name": "useFreightReadinessReport"
+   },
+   {
+    "file": "tests/hooks/freight/useFreightReadinessReport.test.tsx",
+    "name": "cada montagem refaz a consulta, mesmo com dado recém-lido em cache"
+   },
+   {
+    "file": "tests/hooks/freight/useFreightReadinessReport.test.tsx",
+    "name": "voltar o foco à janela refaz a consulta, mesmo com o padrão global desligado"
    },
    {
     "file": "tests/hooks/freight/useFreightSettings.test.ts",
@@ -354975,6 +355368,7 @@
      ],
      "incomplete": [
       "compara:src/lib/freight/planFreight.ts",
+      "compara:src/lib/freight/readiness.ts",
       "escreve:src/lib/freight/resolveItemDimensions.ts"
      ],
      "in_transit": [
@@ -361256,6 +361650,20 @@
     "table": "supplier_products_raw",
     "issue": "RLS ligado sem nenhuma política → só service_role acessa",
     "files": []
+   },
+   {
+    "table": "supplier_settings",
+    "issue": "RLS ligado sem nenhuma política → só service_role acessa",
+    "files": [
+     "src/hooks/products/useSupplierDefaultLeadTime.ts"
+    ]
+   },
+   {
+    "table": "suppliers",
+    "issue": "front faz SELECT mas nenhuma política RLS permite SELECT → vai falhar/retornar vazio para usuários",
+    "files": [
+     "src/services/freightReadinessService.ts"
+    ]
    },
    {
     "table": "tabela_preco_gravacao_oficial",
@@ -403691,6 +404099,7 @@
     "msg": "valor `incomplete` para `status` usado no código não existe em nenhum enum do banco/TS",
     "where": [
      "compara:src/lib/freight/planFreight.ts",
+     "compara:src/lib/freight/readiness.ts",
      "escreve:src/lib/freight/resolveItemDimensions.ts"
     ]
    },
@@ -404306,6 +404715,11 @@
    },
    {
     "kind": "coluna",
+    "msg": "coluna `deleted_at` usada no código não existe no schema de `products`",
+    "where": []
+   },
+   {
+    "kind": "coluna",
     "msg": "coluna `images` usada no código não existe no schema de `products`",
     "where": []
    },
@@ -404332,6 +404746,11 @@
    {
     "kind": "coluna",
     "msg": "coluna `sale_price` usada no código não existe no schema de `products`",
+    "where": []
+   },
+   {
+    "kind": "coluna",
+    "msg": "coluna `ships_separately` usada no código não existe no schema de `products`",
     "where": []
    },
    {
@@ -404572,6 +404991,16 @@
    {
     "kind": "coluna",
     "msg": "coluna `received_at` usada no código não existe no schema de `crm_callback_events`",
+    "where": []
+   },
+   {
+    "kind": "coluna",
+    "msg": "coluna `default_lead_time_days` usada no código não existe no schema de `supplier_settings`",
+    "where": []
+   },
+   {
+    "kind": "coluna",
+    "msg": "coluna `supplier_id` usada no código não existe no schema de `supplier_settings`",
     "where": []
    },
    {
@@ -405252,6 +405681,20 @@
     "kind": "rls",
     "msg": "`supplier_products_raw`: RLS ligado sem nenhuma política → só service_role acessa",
     "where": []
+   },
+   {
+    "kind": "rls",
+    "msg": "`supplier_settings`: RLS ligado sem nenhuma política → só service_role acessa",
+    "where": [
+     "src/hooks/products/useSupplierDefaultLeadTime.ts"
+    ]
+   },
+   {
+    "kind": "rls",
+    "msg": "`suppliers`: front faz SELECT mas nenhuma política RLS permite SELECT → vai falhar/retornar vazio para usuários",
+    "where": [
+     "src/services/freightReadinessService.ts"
+    ]
    },
    {
     "kind": "rls",
@@ -436898,7 +437341,7 @@
   },
   "src/components/admin/ProductsManager.tsx": {
    "path": "src/components/admin/ProductsManager.tsx",
-   "lines": 504,
+   "lines": 503,
    "exports": [
     "function ProductsManager"
    ],
@@ -439703,6 +440146,80 @@
     "cancelar a confirmação não dispara a ação destrutiva"
    ]
   },
+  "src/components/admin/freight/FreightReadinessReport.tsx": {
+   "path": "src/components/admin/freight/FreightReadinessReport.tsx",
+   "lines": 203,
+   "exports": [
+    "function FreightReadinessReport"
+   ],
+   "errors": [
+    "\n        className="
+   ],
+   "params": [
+    {
+     "name": "ALL_SUPPLIERS",
+     "value": "'all'"
+    },
+    {
+     "name": "PAGE_STEP",
+     "value": "200"
+    }
+   ],
+   "doc": "Relatório \"Produtos sem dados de frete\" (sub-aba de Caixas de transporte). Lista os produtos ativos sem peso ou sem medidas — os que o cálculo de frete se recusa a estimar — com o que falta em cada um e o link para o cadastro."
+  },
+  "src/components/admin/freight/freightReadinessRows.ts": {
+   "path": "src/components/admin/freight/freightReadinessRows.ts",
+   "lines": 84,
+   "exports": [
+    "const NO_SUPPLIER_LABEL",
+    "type ReadinessReportRow",
+    "function describeMissing",
+    "function buildReadinessRows",
+    "const NO_SUPPLIER_FILTER",
+    "function filterBySupplier",
+    "function buildReadinessCsv"
+   ],
+   "params": [
+    {
+     "name": "NO_SUPPLIER_LABEL",
+     "value": "'Sem fornecedor'"
+    },
+    {
+     "name": "NO_SUPPLIER_FILTER",
+     "value": "'none'"
+    }
+   ],
+   "doc": "Regras puras do relatório \"Produtos sem dados de frete\": quais produtos entram, como o que falta é escrito e como a linha vira CSV."
+  },
+  "src/components/admin/freight/index.ts": {
+   "path": "src/components/admin/freight/index.ts",
+   "lines": 2
+  },
+  "src/components/admin/freight/__tests__/FreightReadinessReport.test.tsx": {
+   "path": "src/components/admin/freight/__tests__/FreightReadinessReport.test.tsx",
+   "lines": 206,
+   "is_test": true,
+   "errors": [
+    ").textContent).toContain("
+   ],
+   "tests": [
+    "buildReadinessRows",
+    "só entram os 3 incompletos, ordenados por SKU em ordem natural (A-2 antes de A-10)",
+    "escreve o que falta e o fornecedor",
+    "filterBySupplier",
+    "filtro ",
+    "FreightReadinessReport",
+    "mostra as 3 linhas, o resumo e o link para o cadastro",
+    "o arquivo baixado é o CSV com ",
+    "carregando e erro são anunciados para leitor de tela",
+    "sem nenhum produto incompleto, diz que está tudo certo",
+    "em erro, oferece tentar de novo",
+    "buildReadinessCsv",
+    "separa por ",
+    "nome que começa com = + - @ ganha apóstrofo (não vira fórmula no Excel)",
+    "valor com "
+   ]
+  },
   "src/components/admin/freight-settings/FreightSettingsForm.tsx": {
    "path": "src/components/admin/freight-settings/FreightSettingsForm.tsx",
    "lines": 310,
@@ -440231,7 +440748,7 @@
   },
   "src/components/admin/products/BulkImportDialog.tsx": {
    "path": "src/components/admin/products/BulkImportDialog.tsx",
-   "lines": 396,
+   "lines": 412,
    "exports": [
     "function BulkImportDialog"
    ],
@@ -440313,6 +440830,14 @@
    "exports": [
     "function CategorySelect"
    ]
+  },
+  "src/components/admin/products/FreightReadinessIndicator.tsx": {
+   "path": "src/components/admin/products/FreightReadinessIndicator.tsx",
+   "lines": 31,
+   "exports": [
+    "function FreightReadinessIndicator"
+   ],
+   "doc": "Ícone \"sem dados de frete\" da lista de produtos do admin. Aparece só quando o motor de frete não consegue empacotar o produto, e o tooltip diz o que falta."
   },
   "src/components/admin/products/HorizontalStepper.tsx": {
    "path": "src/components/admin/products/HorizontalStepper.tsx",
@@ -440405,7 +440930,7 @@
   },
   "src/components/admin/products/ProductFormSchema.ts": {
    "path": "src/components/admin/products/ProductFormSchema.ts",
-   "lines": 227,
+   "lines": 229,
    "exports": [
     "const productFormSchema",
     "type ProductFormData",
@@ -440486,6 +441011,14 @@
     "staleTime: 5 * 60 * 1000,"
    ]
   },
+  "src/components/admin/products/ProductSkuTag.tsx": {
+   "path": "src/components/admin/products/ProductSkuTag.tsx",
+   "lines": 13,
+   "exports": [
+    "function ProductSkuTag"
+   ],
+   "doc": "SKU em destaque na lista de produtos, com o aviso de \"sem dados de frete\"."
+  },
   "src/components/admin/products/ProductTagsSection.tsx": {
    "path": "src/components/admin/products/ProductTagsSection.tsx",
    "lines": 284,
@@ -440565,6 +441098,55 @@
     "Nome e SKU são obrigatórios"
    ],
    "doc": "VariantForm — Inline form for creating/editing a product variant. Extracted from ProductVariantsSection.tsx."
+  },
+  "src/components/admin/products/leadTimeSource.ts": {
+   "path": "src/components/admin/products/leadTimeSource.ts",
+   "lines": 27,
+   "exports": [
+    "type LeadTimeSource",
+    "function getLeadTimeSource"
+   ],
+   "enums": [
+    {
+     "name": "LeadTimeSource",
+     "values": "excecao | padrao"
+    }
+   ],
+   "rule_comments": [
+    "* Decide se o prazo de liberação de um produto é o padrão do fornecedor ou uma",
+    "(ou ainda carrega), e o produto tem prazo próprio."
+   ],
+   "doc": "Decide se o prazo de liberação de um produto é o padrão do fornecedor ou uma exceção (decisão 10 do plano de frete, opção C): vazio ou igual ao padrão do fornecedor conta como \"padrão\"; só um valor diferente é \"exceção\"."
+  },
+  "src/components/admin/products/priceFreshnessFallback.ts": {
+   "path": "src/components/admin/products/priceFreshnessFallback.ts",
+   "lines": 21,
+   "exports": [
+    "function isMissingPriceFreshnessThresholdColumn",
+    "function withoutPriceFreshnessThreshold"
+   ],
+   "params": [
+    {
+     "name": "PRICE_FRESHNESS_THRESHOLD_COLUMN",
+     "value": "'price_freshness_threshold_days'"
+    }
+   ],
+   "rule_comments": [
+    "Movido de AdminProductFormPage.tsx sem mudança de comportamento (limite de tamanho do arquivo)."
+   ],
+   "doc": "Fallback de `price_freshness_threshold_days`: bancos sem a coluna recusam a escrita. Movido de AdminProductFormPage.tsx sem mudança de comportamento (limite de tamanho do arquivo).",
+   "calc_fns": [
+    {
+     "name": "isMissingPriceFreshnessThresholdColumn",
+     "params": "error: unknown",
+     "body": "const message = error instanceof Error ? error.message : String(error); return /price_freshness_threshold_days|column products\\.price_freshness_threshold_days does not exist/i.test( message, );"
+    },
+    {
+     "name": "withoutPriceFreshnessThreshold",
+     "params": "data: Record<string, unknown>,",
+     "body": "const fallbackData = { ...data }; delete fallbackData[PRICE_FRESHNESS_THRESHOLD_COLUMN]; return fallbackData;"
+    }
+   ]
   },
   "src/components/admin/products/productMarketingData.ts": {
    "path": "src/components/admin/products/productMarketingData.ts",
@@ -440769,6 +441351,34 @@
     "useProductsManager"
    ]
   },
+  "src/components/admin/products/__tests__/FreightReadinessIndicator.test.tsx": {
+   "path": "src/components/admin/products/__tests__/FreightReadinessIndicator.test.tsx",
+   "lines": 52,
+   "is_test": true,
+   "tests": [
+    "ProductSkuTag + indicador de dados de frete (etapa 37)",
+    "produto completo: mostra o SKU e nenhum aviso",
+    "produto sem peso: mostra o aviso dizendo que falta o peso",
+    "produto sem largura e comprimento: lista os dois campos",
+    "o aviso recebe foco pelo teclado (tabIndex 0) para abrir o tooltip"
+   ]
+  },
+  "src/components/admin/products/__tests__/ProductFormFreightFields.test.tsx": {
+   "path": "src/components/admin/products/__tests__/ProductFormFreightFields.test.tsx",
+   "lines": 96,
+   "is_test": true,
+   "errors": [
+    "chave "
+   ],
+   "tests": [
+    "Prazo de liberação do fornecedor (etapa 38)",
+    "mostra o rótulo novo, o padrão do fornecedor e o selo ",
+    "mostra o selo ",
+    "não mostra a linha do padrão quando o fornecedor não tem prazo cadastrado",
+    "Switch ",
+    "com ships_separately=$atual, clicar grava $esperado"
+   ]
+  },
   "src/components/admin/products/__tests__/ProductFormSchema.test.ts": {
    "path": "src/components/admin/products/__tests__/ProductFormSchema.test.ts",
    "lines": 42,
@@ -440790,6 +441400,14 @@
     "desmarcar herdado chama unselectMarketingOption com o vínculo",
     "erro de permissão aparece com a mensagem clara",
     "categoria que não carregou mostra o motivo sem quebrar as outras"
+   ]
+  },
+  "src/components/admin/products/__tests__/leadTimeSource.test.ts": {
+   "path": "src/components/admin/products/__tests__/leadTimeSource.test.ts",
+   "lines": 43,
+   "is_test": true,
+   "tests": [
+    "getLeadTimeSource"
    ]
   },
   "src/components/admin/products/__tests__/productMarketingData.test.ts": {
@@ -440836,6 +441454,7 @@
    "path": "src/components/admin/products/bulk-import/StepUpload.tsx",
    "lines": 205,
    "exports": [
+    "const normalizeStr",
     "function StepUpload"
    ],
    "errors": [
@@ -440854,9 +441473,18 @@
     }
    ]
   },
+  "src/components/admin/products/bulk-import/parseBooleanCell.ts": {
+   "path": "src/components/admin/products/bulk-import/parseBooleanCell.ts",
+   "lines": 31,
+   "exports": [
+    "function parseBooleanCell",
+    "function parseStrictBooleanCell"
+   ],
+   "doc": "Converte uma célula de planilha em booleano. Aceita \"sim/não\", \"true/false\" e \"1/0\" (e as variações abaixo); o que não for reconhecido como \"sim\" vira `false`, que é o comportamento da importação desde antes de este helper existir."
+  },
   "src/components/admin/products/bulk-import/types.ts": {
    "path": "src/components/admin/products/bulk-import/types.ts",
-   "lines": 254,
+   "lines": 261,
    "exports": [
     "type Step",
     "type TargetFieldKey",
@@ -440878,6 +441506,21 @@
      "name": "MAX_ROWS",
      "value": "10"
     }
+   ]
+  },
+  "src/components/admin/products/bulk-import/__tests__/parseBooleanCell.test.ts": {
+   "path": "src/components/admin/products/bulk-import/__tests__/parseBooleanCell.test.ts",
+   "lines": 86,
+   "is_test": true,
+   "tests": [
+    "parseBooleanCell",
+    "coluna ",
+    "está entre os campos de destino e no modelo CSV",
+    "o cabeçalho ",
+    "parseStrictBooleanCell (campo ",
+    "números do Excel (1 e 0) valem",
+    "cabeçalho do próprio modelo",
+    "o rótulo de "
    ]
   },
   "src/components/admin/products/hooks/useProductFormDraft.ts": {
@@ -441321,7 +441964,7 @@
   },
   "src/components/admin/products/sections/ProductInfoSection.tsx": {
    "path": "src/components/admin/products/sections/ProductInfoSection.tsx",
-   "lines": 251,
+   "lines": 266,
    "exports": [
     "function ProductInfoSection"
    ],
@@ -441364,7 +442007,7 @@
   },
   "src/components/admin/products/sections/ProductPackagingSection.tsx": {
    "path": "src/components/admin/products/sections/ProductPackagingSection.tsx",
-   "lines": 335,
+   "lines": 340,
    "exports": [
     "function ProductPackagingSection"
    ],
@@ -442762,13 +443405,14 @@
   },
   "src/components/admin/shipping-boxes/__tests__/ShippingBoxesManager.test.tsx": {
    "path": "src/components/admin/shipping-boxes/__tests__/ShippingBoxesManager.test.tsx",
-   "lines": 496,
+   "lines": 503,
    "is_test": true,
    "errors": [
     ")).not.toBeInTheDocument();\n  });\n});\n\ndescribe(",
     ")).toHaveTextContent(\n      ",
     ")).toHaveTextContent(/Use de 1 a 6 caracteres/);\n    expect(within(dialog).getByLabelText(",
-    ")).toHaveTextContent(DUPLICATE_MESSAGE);\n    expect(screen.getByRole("
+    ")).toHaveTextContent(DUPLICATE_MESSAGE);\n    expect(screen.getByRole(",
+    "lista de abas não encontrada"
    ],
    "tests": [
     "ShippingBoxesManager — tabela e estados",
@@ -466700,6 +467344,21 @@
     "useFreightPlan"
    ]
   },
+  "src/hooks/freight/useFreightReadinessReport.ts": {
+   "path": "src/hooks/freight/useFreightReadinessReport.ts",
+   "lines": 41,
+   "exports": [
+    "interface FreightReadinessReport",
+    "function useFreightReadinessReport"
+   ],
+   "rule_comments": [
+    "a regra do motor (`getFreightReadiness`), aplicada no navegador."
+   ],
+   "doc": "Produtos ativos que ainda não têm peso e medidas para o cálculo de frete. Leitura em duas consultas (produtos e fornecedores); o filtro \"sem dados\" é a regra do motor (`getFreightReadiness`), aplicada no navegador.",
+   "hooks": [
+    "useFreightReadinessReport"
+   ]
+  },
   "src/hooks/freight/useFreightSettings.ts": {
    "path": "src/hooks/freight/useFreightSettings.ts",
    "lines": 95,
@@ -472448,6 +473107,42 @@
    ],
    "percents": [
     "// Preço: -50% diff = 1.0 ; +50% diff = 0.0"
+   ]
+  },
+  "src/hooks/products/useSupplierDefaultLeadTime.ts": {
+   "path": "src/hooks/products/useSupplierDefaultLeadTime.ts",
+   "lines": 26,
+   "exports": [
+    "function useSupplierDefaultLeadTime"
+   ],
+   "tables": [
+    {
+     "table": "supplier_settings",
+     "op": "select"
+    }
+   ],
+   "table_cols": {
+    "supplier_settings": [
+     "default_lead_time_days",
+     "supplier_id"
+    ]
+   },
+   "params": [
+    {
+     "name": "STALE_TIME_MS",
+     "value": "10"
+    }
+   ],
+   "rule_comments": [
+    "* Prazo de liberação padrão de um fornecedor (`supplier_settings.default_lead_time_days`).",
+    "O formulário de produto o mostra ao lado do prazo do próprio produto."
+   ],
+   "doc": "Prazo de liberação padrão de um fornecedor (`supplier_settings.default_lead_time_days`). O formulário de produto o mostra ao lado do prazo do próprio produto.",
+   "hooks": [
+    "useSupplierDefaultLeadTime"
+   ],
+   "temporal": [
+    "const STALE_TIME_MS = 10 * 60 * 1000;"
    ]
   },
   "src/hooks/products/useSupplierFiscalData.ts": {
@@ -481554,7 +482249,7 @@
   },
   "src/lib/external-db/batch-import.ts": {
    "path": "src/lib/external-db/batch-import.ts",
-   "lines": 260,
+   "lines": 275,
    "exports": [
     "type ImportMode",
     "interface ImportRow",
@@ -481595,7 +482290,7 @@
   },
   "src/lib/external-db/batch-import.write.test.ts": {
    "path": "src/lib/external-db/batch-import.write.test.ts",
-   "lines": 80,
+   "lines": 181,
    "is_test": true,
    "params": [
     {
@@ -481612,7 +482307,11 @@
     "executeBatchImport",
     "injects organization_id and folds phantom image_url into primary_image_url (insert mode)",
     "uses the real upsert op with onConflict=sku in upsert mode (and still sets org)",
-    "does not overwrite an explicit primary_image_url with image_url"
+    "does not overwrite an explicit primary_image_url with image_url",
+    "lote misto: linhas com e sem ships_separately saem em pedidos de chaves iguais, na ordem da planilha",
+    "planilha alternada de 51 linhas: nada perdido nem duplicado e faixa de erro exata",
+    "faixa de erro de um lote de 25 contíguos aponta as linhas daquele lote",
+    "SKU repetido (linha 3 vazia, linha 40 "
    ]
   },
   "src/lib/external-db/bridge-status-events.ts": {
@@ -482000,7 +482699,7 @@
   },
   "src/lib/external-db/product-types.ts": {
    "path": "src/lib/external-db/product-types.ts",
-   "lines": 307,
+   "lines": 308,
    "exports": [
     "interface PromobrindProduct",
     "function getProductImageUrl",
@@ -482684,7 +483383,7 @@
   },
   "src/lib/freight/index.ts": {
    "path": "src/lib/freight/index.ts",
-   "lines": 70,
+   "lines": 72,
    "doc": "Motor de frete — barril público. Contrato, unidades e limites em `./README.md`."
   },
   "src/lib/freight/packMixed.ts": {
@@ -482836,6 +483535,25 @@
      "body": "const canonico = [...items] .map(({ productId, quantity }) => `${productId}:${quantity}`) .sort() .join('|'); let hash = 0x811c9dc5; for (let i = 0; i < canonico.length; i += 1) { hash ^= canonico.charCodeAt(i); hash = Math.imul(hash, 0x01000193) >>> 0; } return hash.toString(16).padStart(8, '0');"
     }
    ]
+  },
+  "src/lib/freight/readiness.ts": {
+   "path": "src/lib/freight/readiness.ts",
+   "lines": 28,
+   "exports": [
+    "interface FreightReadiness",
+    "function getFreightReadiness"
+   ],
+   "status_values": [
+    {
+     "field": "status",
+     "value": "incomplete",
+     "kind": "compara"
+    }
+   ],
+   "rule_comments": [
+    "empacotamento. É a mesma regra de `resolveItemDimensions` (peso e três lados,"
+   ],
+   "doc": "Diz se um produto já tem os dados de frete que o motor exige — sem rodar o empacotamento. É a mesma regra de `resolveItemDimensions` (peso e três lados, ou altura + diâmetro), só que devolvida no formato que o cadastro precisa para apontar o que falta: o relatório \"Produtos sem dados de frete\" e o i …"
   },
   "src/lib/freight/resolveItemDimensions.ts": {
    "path": "src/lib/freight/resolveItemDimensions.ts",
@@ -483221,6 +483939,15 @@
     "muda quando um produto entra",
     "é estável entre execuções: o mesmo conteúdo dá o mesmo hash",
     "lista vazia tem hash próprio e estável"
+   ]
+  },
+  "src/lib/freight/__tests__/readiness.test.ts": {
+   "path": "src/lib/freight/__tests__/readiness.test.ts",
+   "lines": 48,
+   "is_test": true,
+   "tests": [
+    "getFreightReadiness",
+    "$caso"
    ]
   },
   "src/lib/freight/__tests__/resolveItemDimensions.test.ts": {
@@ -488594,7 +489321,7 @@
   },
   "src/pages/admin/AdminCadastrosPage.tsx": {
    "path": "src/pages/admin/AdminCadastrosPage.tsx",
-   "lines": 155,
+   "lines": 171,
    "exports": [
     "function AdminCadastrosPage"
    ]
@@ -488813,7 +489540,7 @@
   },
   "src/pages/admin/AdminProductFormPage.tsx": {
    "path": "src/pages/admin/AdminProductFormPage.tsx",
-   "lines": 706,
+   "lines": 700,
    "exports": [
     "function AdminProductFormPage"
    ],
@@ -488830,29 +489557,11 @@
     "Produto não encontrado",
     "Selecione uma categoria antes de salvar o produto."
    ],
-   "params": [
-    {
-     "name": "PRICE_FRESHNESS_THRESHOLD_COLUMN",
-     "value": "'price_freshness_threshold_days'"
-    }
-   ],
    "rule_comments": [
     "sem isso, cost_price=0.001 passa na validação JS mas o banco arredonda",
     "REQUIRED by the products RLS INSERT/UPDATE policy, which gates on"
    ],
    "doc": "AdminProductFormPage — Página full-screen para criar/editar produtos Substitui o Dialog modal por uma experiência imersiva com sidebar de navegação Sprint 3 (26/05/2026): BUG-03: engravingFlushRef criado aqui e passado para ProductFormFullscreen. Após criação bem-sucedida do produto, chama flushLoca …",
-   "calc_fns": [
-    {
-     "name": "isMissingPriceFreshnessThresholdColumn",
-     "params": "error: unknown",
-     "body": "const message = error instanceof Error ? error.message : String(error); return /price_freshness_threshold_days|column products\\.price_freshness_threshold_days does not exist/i.test( message, );"
-    },
-    {
-     "name": "withoutPriceFreshnessThreshold",
-     "params": "data: Record<string, unknown>",
-     "body": "const fallbackData = { ...data }; delete fallbackData[PRICE_FRESHNESS_THRESHOLD_COLUMN]; return fallbackData;"
-    }
-   ],
    "temporal": [
     "const in30Days = (): string => new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString();"
    ],
@@ -489699,6 +490408,27 @@
     "terminada a releitura, os campos voltam a aceitar digitação",
     "a dica do fator padrão diz para que ele serve: sugestão na caixa nova",
     "recarrega os campos quando a linha salva muda"
+   ]
+  },
+  "src/pages/admin/__tests__/AdminProductFormPage.shipsSeparately.test.tsx": {
+   "path": "src/pages/admin/__tests__/AdminProductFormPage.shipsSeparately.test.tsx",
+   "lines": 101,
+   "is_test": true,
+   "routes": [
+    {
+     "path": "/admin/cadastros/produto/:id",
+     "component": "AdminProductFormPage",
+     "guard": "",
+     "roles": []
+    }
+   ],
+   "rule_comments": [
+    "2) salvar: o payload leva true e a releitura (sem a coluna) não pode desligar."
+   ],
+   "doc": "Página de edição de produto: o flag \"Não mistura\" tem de sobreviver ao salvar. A releitura pós-save vem de `v_products_public`, que não traz `ships_separately`; sem manter o valor salvo, voltar para a aba \"Editar\" remontava o formulário desligado e o salvar seguinte apagava a marcação.",
+   "tests": [
+    "AdminProductFormPage — Não mistura",
+    "carrega marcado -> salva -> continua marcado ao voltar para a aba Editar"
    ]
   },
   "src/pages/admin/__tests__/RolePermissionsPage.save.test.tsx": {
@@ -497743,6 +498473,50 @@
     "setTimeout(() => reject(new Error('Timeout RPC')), 2000);"
    ]
   },
+  "src/services/freightReadinessService.ts": {
+   "path": "src/services/freightReadinessService.ts",
+   "lines": 72,
+   "exports": [
+    "class FreightReadinessError",
+    "const FREIGHT_READINESS_SELECT",
+    "type FreightReadinessProduct",
+    "function fetchActiveProductsForFreight",
+    "function fetchSupplierNames"
+   ],
+   "tables": [
+    {
+     "table": "products",
+     "op": "select"
+    },
+    {
+     "table": "suppliers",
+     "op": "select"
+    }
+   ],
+   "table_cols": {
+    "products": [
+     "deleted_at",
+     "is_active"
+    ],
+    "suppliers": [
+     "id",
+     "name"
+    ]
+   },
+   "errors": [
+    "Não foi possível carregar os fornecedores.",
+    "Não foi possível carregar os produtos."
+   ],
+   "params": [
+    {
+     "name": "PAGE_SIZE",
+     "value": "1000"
+    }
+   ],
+   "rule_comments": [
+    "menor que 1.000, a página curta não pode ser tomada como a última."
+   ]
+  },
   "src/services/freightSettingsService.ts": {
    "path": "src/services/freightSettingsService.ts",
    "lines": 122,
@@ -497990,6 +498764,26 @@
    "exports": [
     "const productService"
    ]
+  },
+  "src/services/productShipsSeparatelyService.ts": {
+   "path": "src/services/productShipsSeparatelyService.ts",
+   "lines": 27,
+   "exports": [
+    "function fetchShipsSeparately"
+   ],
+   "tables": [
+    {
+     "table": "products",
+     "op": "select"
+    }
+   ],
+   "table_cols": {
+    "products": [
+     "id",
+     "ships_separately"
+    ]
+   },
+   "doc": "Lê `products.ships_separately` direto da tabela-base. O formulário de produto carrega o cadastro por `v_products_public`, que não expõe esta coluna. Sem esta leitura, o formulário abriria sempre com \"Não mistura\" desligado e, ao salvar, apagaria a marcação em silêncio. Em erro lança: assumir `false` …"
   },
   "src/services/quoteItemsReorder.ts": {
    "path": "src/services/quoteItemsReorder.ts",
@@ -498378,6 +499172,27 @@
     "throw AbortError → err"
    ]
   },
+  "src/services/__tests__/freightReadinessService.test.ts": {
+   "path": "src/services/__tests__/freightReadinessService.test.ts",
+   "lines": 135,
+   "is_test": true,
+   "doc": "freightReadinessService e productShipsSeparatelyService — o que é enviado ao PostgREST e como as páginas de 1.000 linhas são juntadas.",
+   "tests": [
+    "FREIGHT_READINESS_SELECT",
+    "é a lista de colunas do motor mais supplier_id",
+    "fetchActiveProductsForFreight",
+    "lê páginas de 1.000 até vir página vazia (1.000 + 250 = 1.250 linhas, 3 pedidos)",
+    "com ",
+    "envia o select da constante FREIGHT_READINESS_SELECT",
+    "só pede produtos ativos e não excluídos, ordenados por id",
+    "erro do banco vira mensagem em português",
+    "fetchSupplierNames",
+    "devolve id → nome",
+    "fetchShipsSeparately",
+    "linha $linha → $esperado",
+    "erro do banco é lançado, não vira "
+   ]
+  },
   "src/services/__tests__/freightSettingsService.test.ts": {
    "path": "src/services/__tests__/freightSettingsService.test.ts",
    "lines": 218,
@@ -498566,6 +499381,18 @@
     "should apply search filter",
     "should filter results client-side (category, price, stock)",
     "should ignore invalid price bounds instead of filtering out products"
+   ]
+  },
+  "src/services/__tests__/productShipsSeparatelyService.test.ts": {
+   "path": "src/services/__tests__/productShipsSeparatelyService.test.ts",
+   "lines": 41,
+   "is_test": true,
+   "doc": "Leitura do flag `ships_separately`: uma falha passageira ganha 1 nova tentativa antes de lançar (lançar evita assumir `false` e apagar a marcação ao salvar).",
+   "tests": [
+    "fetchShipsSeparately",
+    "1ª leitura falha, 2ª traz true: devolve true (2 chamadas)",
+    "as 2 leituras falham: lança (1 original + 1 nova tentativa = 2 chamadas)",
+    "leitura ok de primeira: 1 chamada"
    ]
   },
   "src/services/__tests__/quoteItemsReorder.test.ts": {
@@ -499914,7 +500741,7 @@
   },
   "src/types/product-catalog.ts": {
    "path": "src/types/product-catalog.ts",
-   "lines": 282,
+   "lines": 283,
    "exports": [
     "interface ProductColor",
     "interface Product",
@@ -499930,7 +500757,7 @@
   },
   "src/types/product.ts": {
    "path": "src/types/product.ts",
-   "lines": 143,
+   "lines": 145,
    "exports": [
     "interface Product",
     "interface ProductCategoryRef",
@@ -542607,6 +543434,17 @@
     "falha ao ler as caixas vira erro, sem plano"
    ]
   },
+  "tests/hooks/freight/useFreightReadinessReport.test.tsx": {
+   "path": "tests/hooks/freight/useFreightReadinessReport.test.tsx",
+   "lines": 62,
+   "is_test": true,
+   "doc": "Voltar do cadastro monta o relatório de novo: a consulta tem de ir ao banco outra vez (sem staleTime), senão o produto recém-corrigido segue na lista.",
+   "tests": [
+    "useFreightReadinessReport",
+    "cada montagem refaz a consulta, mesmo com dado recém-lido em cache",
+    "voltar o foco à janela refaz a consulta, mesmo com o padrão global desligado"
+   ]
+  },
   "tests/hooks/freight/useFreightSettings.test.ts": {
    "path": "tests/hooks/freight/useFreightSettings.test.ts",
    "lines": 187,
@@ -553833,10 +554671,61 @@
   }
  },
  "git": {
-  "sha": "5ac27dbcfa3a0059ec4ada7ebbda31d06f58731d",
+  "sha": "38a84ba1511e2133442e2281f6166f8f575e6c46",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "38a84ba",
+    "date": "2026-11-20",
+    "author": "adm01-debug",
+    "subject": "feat(frete): produto \"não mistura\", importação em massa e relatório de dados de frete (Bloco D, etapas 32–39) (#3922)",
+    "files": [
+     "audit/supabase-reference-catalog.temporary.json",
+     "docs/frete/colunas-legadas.md",
+     "src/components/admin/ProductsManager.tsx",
+     "src/components/admin/freight/FreightReadinessReport.tsx",
+     "src/components/admin/freight/__tests__/FreightReadinessReport.test.tsx",
+     "src/components/admin/freight/freightReadinessRows.ts",
+     "src/components/admin/freight/index.ts",
+     "src/components/admin/products/BulkImportDialog.tsx",
+     "src/components/admin/products/FreightReadinessIndicator.tsx",
+     "src/components/admin/products/ProductFormSchema.ts",
+     "src/components/admin/products/ProductSkuTag.tsx",
+     "src/components/admin/products/__tests__/FreightReadinessIndicator.test.tsx",
+     "src/components/admin/products/__tests__/ProductFormFreightFields.test.tsx",
+     "src/components/admin/products/__tests__/leadTimeSource.test.ts",
+     "src/components/admin/products/bulk-import/StepUpload.tsx",
+     "src/components/admin/products/bulk-import/__tests__/parseBooleanCell.test.ts",
+     "src/components/admin/products/bulk-import/parseBooleanCell.ts",
+     "src/components/admin/products/bulk-import/types.ts",
+     "src/components/admin/products/leadTimeSource.ts",
+     "src/components/admin/products/priceFreshnessFallback.ts",
+     "src/components/admin/products/sections/ProductInfoSection.tsx",
+     "src/components/admin/products/sections/ProductPackagingSection.tsx",
+     "src/components/admin/shipping-boxes/__tests__/ShippingBoxesManager.test.tsx",
+     "src/hooks/freight/useFreightReadinessReport.ts",
+     "src/hooks/products/useSupplierDefaultLeadTime.ts",
+     "src/integrations/supabase/types.ts",
+     "src/lib/external-db/batch-import.ts",
+     "src/lib/external-db/batch-import.write.test.ts",
+     "src/lib/external-db/product-types.ts",
+     "src/lib/freight/__tests__/readiness.test.ts",
+     "src/lib/freight/index.ts",
+     "src/lib/freight/readiness.ts",
+     "src/pages/admin/AdminCadastrosPage.tsx",
+     "src/pages/admin/AdminProductFormPage.tsx",
+     "src/pages/admin/__tests__/AdminProductFormPage.shipsSeparately.test.tsx",
+     "src/services/__tests__/freightReadinessService.test.ts",
+     "src/services/__tests__/productShipsSeparatelyService.test.ts",
+     "src/services/freightReadinessService.ts",
+     "src/services/productShipsSeparatelyService.ts",
+     "src/types/product-catalog.ts",
+     "src/types/product.ts",
+     "supabase/MIGRATIONS_SYNC_LOG.md",
+     "tests/hooks/freight/useFreightReadinessReport.test.tsx"
+    ]
+   },
    {
     "sha": "5ac27db",
     "date": "2026-11-19",
@@ -554265,16 +555154,6 @@
     "files": [
      "supabase/MIGRATIONS_SYNC_LOG.md"
     ]
-   },
-   {
-    "sha": "4b1f6e1",
-    "date": "2026-11-19",
-    "author": "adm01-debug",
-    "subject": "chore(security): regrava baseline de policies e recibo E15 da 20261113140000 (#3885)",
-    "files": [
-     ".security/policies-baseline.json",
-     "supabase/MIGRATIONS_SYNC_LOG.md"
-    ]
    }
   ],
   "hot_files": [
@@ -554288,7 +555167,7 @@
    ],
    [
     "src/lib/freight/index.ts",
-    4
+    5
    ],
    [
     ".release-please-manifest.json",
@@ -554307,8 +555186,24 @@
     4
    ],
    [
+    "src/components/admin/shipping-boxes/__tests__/ShippingBoxesManager.test.tsx",
+    3
+   ],
+   [
     "src/lib/freight/types.ts",
     3
+   ],
+   [
+    "audit/supabase-reference-catalog.temporary.json",
+    2
+   ],
+   [
+    "src/integrations/supabase/types.ts",
+    2
+   ],
+   [
+    "src/pages/admin/AdminCadastrosPage.tsx",
+    2
    ],
    [
     "src/hooks/freight/index.ts",
@@ -554339,23 +555234,7 @@
     2
    ],
    [
-    "src/components/admin/shipping-boxes/__tests__/ShippingBoxesManager.test.tsx",
-    2
-   ],
-   [
     "src/components/admin/shipping-boxes/__tests__/shippingBoxFormSchema.test.ts",
-    2
-   ],
-   [
-    "src/components/admin/shipping-boxes/shippingBoxFormSchema.ts",
-    2
-   ],
-   [
-    "src/components/admin/shipping-boxes/shippingBoxFormat.ts",
-    2
-   ],
-   [
-    "src/hooks/freight/useShippingBoxes.ts",
     2
    ]
   ]

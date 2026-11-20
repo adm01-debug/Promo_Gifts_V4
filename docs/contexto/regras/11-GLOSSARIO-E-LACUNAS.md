@@ -1,6 +1,6 @@
 # 11 · GLOSSÁRIO, DADOS DE REFERÊNCIA E LACUNAS
 
-> Gerado automaticamente por AI Context Sync v1.3.2 · commit `5ac27dbcfa` · branch `main` · 2026-11-20 02:37 UTC
+> Gerado automaticamente por AI Context Sync v1.3.2 · commit `38a84ba151` · branch `main` · 2026-11-20 10:28 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## Glossário do domínio (entidades do sistema)
@@ -307,7 +307,7 @@
 | `product_price_freshness_overrides` | Override local da janela de validade de preço por produto (30/60/90 dias). Sobrescreve o valor padrão de 60 dias e tem precedência sobre qualquer valor que venha a ser exposto pelo BD externo no futuro. | 6 colunas | migration |
 | `product_print_positions` | _(sem COMMENT ON TABLE — significado não documentado)_ | 18 colunas | migration |
 | `product_properties` | Relacionamento entre produtos e suas propriedades | 9 colunas | migration |
-| … +517 linhas — lista completa em `context.json` | | | |
+| … +518 linhas — lista completa em `context.json` | | | |
 
 ## Dados de referência (seed — planos, categorias, perfis fixos)
 
@@ -371,7 +371,7 @@
 | status | valor `changed` para `status` usado no código não existe em nenhum enum do banco/TS | `compara:src/pages/kit-builder/useKitBuilderQuote.ts`<br>`escreve:src/hooks/kit-builder/useKitPriceValidation.ts` |
 | status | valor `unchanged` para `status` usado no código não existe em nenhum enum do banco/TS | `escreve:src/hooks/kit-builder/useKitPriceValidation.ts` |
 | status | valor `APPLIED` para `status` usado no código não existe em nenhum enum do banco/TS | `escreve:src/lib/theme-presets-css-vars-patch.ts` |
-| status | valor `incomplete` para `status` usado no código não existe em nenhum enum do banco/TS | `compara:src/lib/freight/planFreight.ts`<br>`escreve:src/lib/freight/resolveItemDimensions.ts` |
+| status | valor `incomplete` para `status` usado no código não existe em nenhum enum do banco/TS | `compara:src/lib/freight/planFreight.ts`<br>`compara:src/lib/freight/readiness.ts`<br>`escreve:src/lib/freight/resolveItemDimensions.ts` |
 | status | valor `string` para `status` usado no código não existe em nenhum enum do banco/TS | `compara:src/lib/products/stock-status.ts` |
 | status | valor `confirming` para `status` usado no código não existe em nenhum enum do banco/TS | `compara:src/pages/auth/SSOCallbackPage.tsx` |
 | status | valor `already_applied` para `status` usado no código não existe em nenhum enum do banco/TS | `escreve:supabase/functions/crm-callback-reprocess/index.ts` |
@@ -473,12 +473,14 @@
 | coluna | coluna `ai_version` usada no código não existe no schema de `products` |  |
 | coluna | coluna `category_id` usada no código não existe no schema de `products` |  |
 | coluna | coluna `category_name` usada no código não existe no schema de `products` |  |
+| coluna | coluna `deleted_at` usada no código não existe no schema de `products` |  |
 | coluna | coluna `images` usada no código não existe no schema de `products` |  |
 | coluna | coluna `is_deleted` usada no código não existe no schema de `products` |  |
 | coluna | coluna `locked_fields` usada no código não existe no schema de `products` |  |
 | coluna | coluna `nome` usada no código não existe no schema de `products` |  |
 | coluna | coluna `primary_image_url` usada no código não existe no schema de `products` |  |
 | coluna | coluna `sale_price` usada no código não existe no schema de `products` |  |
+| coluna | coluna `ships_separately` usada no código não existe no schema de `products` |  |
 | coluna | coluna `sku` usada no código não existe no schema de `products` |  |
 | coluna | coluna `stock_quantity` usada no código não existe no schema de `products` |  |
 | coluna | coluna `supplier_id` usada no código não existe no schema de `products` |  |
@@ -527,6 +529,8 @@
 | coluna | coluna `new_values` usada no código não existe no schema de `price_history` |  |
 | coluna | coluna `category` usada no código não existe no schema de `saved_filters` |  |
 | coluna | coluna `received_at` usada no código não existe no schema de `crm_callback_events` |  |
+| coluna | coluna `default_lead_time_days` usada no código não existe no schema de `supplier_settings` |  |
+| coluna | coluna `supplier_id` usada no código não existe no schema de `supplier_settings` |  |
 | coluna | coluna `color_code` usada no código não existe no schema de `product_variants` |  |
 | coluna | coluna `color_hex` usada no código não existe no schema de `product_variants` |  |
 | coluna | coluna `color_name` usada no código não existe no schema de `product_variants` |  |
@@ -631,6 +635,8 @@
 | rls | `seller_cart_items`: RLS ligado sem nenhuma política → só service_role acessa | `recovery/src-legacy/src/hooks/useSellerCarts.ts`<br>`src/hooks/products/useSellerCarts.helpers.ts`<br>`src/hooks/products/useSellerCarts.ts` |
 | rls | `seller_carts`: RLS ligado sem nenhuma política → só service_role acessa | `recovery/src-legacy/src/hooks/useSellerCarts.ts`<br>`src/hooks/products/useSellerCarts.helpers.ts`<br>`src/hooks/products/useSellerCarts.ts` |
 | rls | `supplier_products_raw`: RLS ligado sem nenhuma política → só service_role acessa |  |
+| rls | `supplier_settings`: RLS ligado sem nenhuma política → só service_role acessa | `src/hooks/products/useSupplierDefaultLeadTime.ts` |
+| rls | `suppliers`: front faz SELECT mas nenhuma política RLS permite SELECT → vai falhar/retornar vazio para usuários | `src/services/freightReadinessService.ts` |
 | rls | `tabela_preco_gravacao_oficial`: RLS ligado sem nenhuma política → só service_role acessa | `src/lib/external-db/rpc-native.ts` |
 | rls | `target_audiences`: RLS ligado sem nenhuma política → só service_role acessa | `src/components/admin/products/productMarketingData.ts` |
 | rls | `user_comparisons`: RLS ligado sem nenhuma política → só service_role acessa | `recovery/src-legacy/src/components/compare/ShareComparisonDialog.tsx`<br>`recovery/src-legacy/src/hooks/useComparisonSync.ts`<br>`src/hooks/comparison/useComparisonSync.ts` |
@@ -640,13 +646,7 @@
 | dinheiro | `ops.pgss_history.total_exec_time` guarda dinheiro em `double precision NOT NULL` (ponto flutuante) — arredondamento imprevisível; padrão é numeric |  |
 | edge | edge function `a` invocada mas não existe em supabase/functions/ | `scripts/__tests__/check-invoke-direct-calls.test.mjs` |
 | edge | edge function `b` invocada mas não existe em supabase/functions/ | `scripts/__tests__/check-invoke-direct-calls.test.mjs` |
-| edge | edge function `chamada-literal` invocada mas não existe em supabase/functions/ | `tests/scripts/inventario-repo.test.mjs` |
-| edge | edge function `chamada-ok` invocada mas não existe em supabase/functions/ | `tests/scripts/inventario-repo.test.mjs` |
-| edge | edge function `chamada-por-outra-edge` invocada mas não existe em supabase/functions/ | `tests/scripts/inventario-repo.test.mjs` |
-| edge | edge function `dashboard-edge` invocada mas não existe em supabase/functions/ | `scripts/ai-context/gerar.unit.mjs` |
-| edge | edge function `e` invocada mas não existe em supabase/functions/ | `src/integrations/supabase/__tests__/edge-request-id.test.ts` |
-| edge | edge function `e1` invocada mas não existe em supabase/functions/ | `src/integrations/supabase/__tests__/edge-request-id.test.ts` |
-| … +238 linhas — lista completa em `context.json` | | |
+| … +244 linhas — lista completa em `context.json` | | |
 
 ## Lacunas — o que este contexto NÃO consegue responder (perguntas para o dono do negócio)
 

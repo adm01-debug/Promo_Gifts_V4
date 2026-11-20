@@ -2237,6 +2237,7 @@
   "src/components/admin/ProductsManager.tsx": [
    "src/components/admin/products/BulkImportDialog.tsx",
    "src/components/admin/products/ProductFiltersBar.tsx",
+   "src/components/admin/products/ProductSkuTag.tsx",
    "src/components/admin/products/useProductsManager.ts",
    "src/components/ui/ConfirmDialog.tsx",
    "src/components/ui/badge.tsx",
@@ -3117,6 +3118,20 @@
   "src/components/admin/freight-settings/freightSettingsFormSchema.ts": [
    "src/services/freightSettingsService.ts"
   ],
+  "src/components/admin/freight/FreightReadinessReport.tsx": [
+   "src/components/admin/freight/freightReadinessRows.ts",
+   "src/components/ui/button.tsx",
+   "src/components/ui/select.tsx",
+   "src/components/ui/table.tsx",
+   "src/hooks/freight/useFreightReadinessReport.ts"
+  ],
+  "src/components/admin/freight/freightReadinessRows.ts": [
+   "src/lib/freight/index.ts",
+   "src/services/freightReadinessService.ts"
+  ],
+  "src/components/admin/freight/index.ts": [
+   "src/components/admin/freight/FreightReadinessReport.tsx"
+  ],
   "src/components/admin/group-personalization/GroupComponentCard.tsx": [
    "src/components/admin/InlineEditField.tsx",
    "src/components/admin/SortableItem.tsx",
@@ -3268,6 +3283,7 @@
    "src/components/admin/products/bulk-import/StepMapping.tsx",
    "src/components/admin/products/bulk-import/StepPreview.tsx",
    "src/components/admin/products/bulk-import/StepUpload.tsx",
+   "src/components/admin/products/bulk-import/parseBooleanCell.ts",
    "src/components/admin/products/bulk-import/types.ts",
    "src/components/ui/badge.tsx",
    "src/components/ui/dialog.tsx",
@@ -3292,6 +3308,11 @@
    "src/components/ui/scroll-area.tsx",
    "src/hooks/products/index.ts",
    "src/lib/utils.ts"
+  ],
+  "src/components/admin/products/FreightReadinessIndicator.tsx": [
+   "src/components/admin/freight/freightReadinessRows.ts",
+   "src/components/ui/tooltip.tsx",
+   "src/lib/freight/index.ts"
   ],
   "src/components/admin/products/HorizontalStepper.tsx": [
    "src/components/admin/products/ProductFormSchema.ts",
@@ -3417,6 +3438,10 @@
    "src/components/ui/skeleton.tsx",
    "src/lib/utils.ts",
    "src/services/ramoAtividadeService.ts"
+  ],
+  "src/components/admin/products/ProductSkuTag.tsx": [
+   "src/components/admin/products/FreightReadinessIndicator.tsx",
+   "src/lib/freight/index.ts"
   ],
   "src/components/admin/products/ProductTagsSection.tsx": [
    "src/components/ui/checkbox.tsx",
@@ -3738,10 +3763,13 @@
   ],
   "src/components/admin/products/sections/ProductInfoSection.tsx": [
    "src/components/admin/products/ProductFormHelpers.tsx",
+   "src/components/admin/products/leadTimeSource.ts",
+   "src/components/ui/badge.tsx",
    "src/components/ui/input.tsx",
    "src/components/ui/select.tsx",
    "src/components/ui/textarea.tsx",
    "src/components/ui/tooltip.tsx",
+   "src/hooks/products/useSupplierDefaultLeadTime.ts",
    "src/lib/utils.ts"
   ],
   "src/components/admin/products/sections/ProductMarketingTextsSection.tsx": [
@@ -10553,6 +10581,10 @@
    "src/hooks/freight/useShippingBoxes.ts",
    "src/lib/freight/index.ts"
   ],
+  "src/hooks/freight/useFreightReadinessReport.ts": [
+   "src/components/admin/freight/freightReadinessRows.ts",
+   "src/services/freightReadinessService.ts"
+  ],
   "src/hooks/freight/useFreightSettings.ts": [
    "src/contexts/AuthContext.tsx",
    "src/hooks/freight/keys.ts",
@@ -11440,6 +11472,9 @@
   "src/hooks/products/useSupplierComparison.ts": [
    "src/hooks/products/index.ts"
   ],
+  "src/hooks/products/useSupplierDefaultLeadTime.ts": [
+   "src/integrations/supabase/client.ts"
+  ],
   "src/hooks/products/useSupplierFiscalData.ts": [
    "src/lib/logger.ts",
    "src/lib/supabase-untyped.ts"
@@ -12322,6 +12357,7 @@
    "src/lib/freight/packMixed.ts",
    "src/lib/freight/packSingleProduct.ts",
    "src/lib/freight/planFreight.ts",
+   "src/lib/freight/readiness.ts",
    "src/lib/freight/resolveItemDimensions.ts",
    "src/lib/freight/types.ts",
    "src/lib/freight/units.ts"
@@ -12350,6 +12386,11 @@
    "src/lib/freight/resolveItemDimensions.ts",
    "src/lib/freight/types.ts",
    "src/lib/freight/units.ts"
+  ],
+  "src/lib/freight/readiness.ts": [
+   "src/lib/freight/columns.ts",
+   "src/lib/freight/resolveItemDimensions.ts",
+   "src/lib/freight/types.ts"
   ],
   "src/lib/freight/resolveItemDimensions.ts": [
    "src/lib/freight/columns.ts",
@@ -12887,6 +12928,7 @@
    "src/components/admin/ProductsManager.tsx",
    "src/components/admin/badges-manager/index.ts",
    "src/components/admin/categories-manager/index.ts",
+   "src/components/admin/freight/index.ts",
    "src/components/admin/shipping-boxes/index.ts",
    "src/components/admin/suppliers-manager/index.ts",
    "src/components/seo/PageSEO.tsx",
@@ -13020,6 +13062,7 @@
    "src/components/admin/products/ProductFormFullscreen.tsx",
    "src/components/admin/products/ProductFormSchema.ts",
    "src/components/admin/products/new-supplier/types.ts",
+   "src/components/admin/products/priceFreshnessFallback.ts",
    "src/components/audit/AuditHistory.tsx",
    "src/components/seo/PageSEO.tsx",
    "src/components/ui/button.tsx",
@@ -13029,6 +13072,7 @@
    "src/lib/external-db/index.ts",
    "src/lib/lazyWithRetry.ts",
    "src/lib/logger.ts",
+   "src/services/productShipsSeparatelyService.ts",
    "src/utils/productPdfExport.ts"
   ],
   "src/pages/admin/AdminPromoverUsuarioPage.tsx": [
@@ -15146,6 +15190,10 @@
    "src/lib/auth/safeAuthCall.ts",
    "src/lib/logger.ts"
   ],
+  "src/services/freightReadinessService.ts": [
+   "src/integrations/supabase/client.ts",
+   "src/lib/logger.ts"
+  ],
   "src/services/freightSettingsService.ts": [
    "src/integrations/supabase/client.ts",
    "src/integrations/supabase/types.ts",
@@ -15176,6 +15224,10 @@
    "src/lib/external-db/index.ts",
    "src/types/product-catalog.ts",
    "src/utils/product-mapper.ts"
+  ],
+  "src/services/productShipsSeparatelyService.ts": [
+   "src/integrations/supabase/client.ts",
+   "src/lib/logger.ts"
   ],
   "src/services/quoteItemsReorder.ts": [
    "src/integrations/supabase/client.ts",

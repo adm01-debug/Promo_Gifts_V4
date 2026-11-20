@@ -1,7 +1,7 @@
 {
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
- "total": 1271,
+ "total": 1274,
  "orfaos": 157,
  "nomes_duplicados": {
   "AdminTemplatesManager": [
@@ -3837,6 +3837,22 @@
    "orfao": false
   },
   {
+   "arquivo": "src/components/admin/freight/FreightReadinessReport.tsx",
+   "exports": [
+    "FreightReadinessReport"
+   ],
+   "export_default": null,
+   "linhas": 203,
+   "dominio": "components/admin",
+   "hooks_locais": [
+    "useFreightReadinessReport"
+   ],
+   "tabelas": [],
+   "edges": [],
+   "usado_por": 1,
+   "orfao": false
+  },
+  {
    "arquivo": "src/components/admin/group-personalization/GroupComponentCard.tsx",
    "exports": [
     "GroupComponentCard"
@@ -4206,7 +4222,7 @@
     "BulkImportDialog"
    ],
    "export_default": null,
-   "linhas": 396,
+   "linhas": 412,
    "dominio": "components/admin",
    "hooks_locais": [],
    "tabelas": [],
@@ -4245,6 +4261,20 @@
    "edges": [],
    "usado_por": 0,
    "orfao": true
+  },
+  {
+   "arquivo": "src/components/admin/products/FreightReadinessIndicator.tsx",
+   "exports": [
+    "FreightReadinessIndicator"
+   ],
+   "export_default": null,
+   "linhas": 31,
+   "dominio": "components/admin",
+   "hooks_locais": [],
+   "tabelas": [],
+   "edges": [],
+   "usado_por": 1,
+   "orfao": false
   },
   {
    "arquivo": "src/components/admin/products/HorizontalStepper.tsx",
@@ -4686,6 +4716,20 @@
    "orfao": false
   },
   {
+   "arquivo": "src/components/admin/products/ProductSkuTag.tsx",
+   "exports": [
+    "ProductSkuTag"
+   ],
+   "export_default": null,
+   "linhas": 13,
+   "dominio": "components/admin",
+   "hooks_locais": [],
+   "tabelas": [],
+   "edges": [],
+   "usado_por": 1,
+   "orfao": false
+  },
+  {
    "arquivo": "src/components/admin/products/ProductTagsSection.tsx",
    "exports": [
     "ProductTagsSection"
@@ -4837,9 +4881,11 @@
     "ProductInfoSection"
    ],
    "export_default": null,
-   "linhas": 251,
+   "linhas": 266,
    "dominio": "components/admin",
-   "hooks_locais": [],
+   "hooks_locais": [
+    "useSupplierDefaultLeadTime"
+   ],
    "tabelas": [],
    "edges": [],
    "usado_por": 1,
@@ -4879,7 +4925,7 @@
     "ProductPackagingSection"
    ],
    "export_default": null,
-   "linhas": 335,
+   "linhas": 340,
    "dominio": "components/admin",
    "hooks_locais": [],
    "tabelas": [],
@@ -5025,7 +5071,7 @@
     "ProductsManager"
    ],
    "export_default": null,
-   "linhas": 504,
+   "linhas": 503,
    "dominio": "components/admin",
    "hooks_locais": [
     "useProductsManager"
@@ -16439,7 +16485,7 @@
    "hooks_locais": [],
    "tabelas": [],
    "edges": [],
-   "usado_por": 488,
+   "usado_por": 489,
    "orfao": false
   },
   {
@@ -16474,7 +16520,7 @@
    "hooks_locais": [],
    "tabelas": [],
    "edges": [],
-   "usado_por": 647,
+   "usado_por": 648,
    "orfao": false
   },
   {
@@ -17057,7 +17103,7 @@
    ],
    "tabelas": [],
    "edges": [],
-   "usado_por": 143,
+   "usado_por": 144,
    "orfao": false
   },
   {
@@ -17261,7 +17307,7 @@
    "hooks_locais": [],
    "tabelas": [],
    "edges": [],
-   "usado_por": 56,
+   "usado_por": 57,
    "orfao": false
   },
   {
@@ -17357,7 +17403,7 @@
    ],
    "tabelas": [],
    "edges": [],
-   "usado_por": 178,
+   "usado_por": 179,
    "orfao": false
   },
   {
@@ -17797,7 +17843,7 @@
     "AdminCadastrosPage"
    ],
    "export_default": "AdminCadastrosPage",
-   "linhas": 155,
+   "linhas": 171,
    "dominio": "pages/admin",
    "hooks_locais": [],
    "tabelas": [],
@@ -17955,7 +18001,7 @@
     "AdminProductFormPage"
    ],
    "export_default": "AdminProductFormPage",
-   "linhas": 706,
+   "linhas": 700,
    "dominio": "pages/admin",
    "hooks_locais": [
     "useAuditLog"

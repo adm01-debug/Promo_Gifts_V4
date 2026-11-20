@@ -8,23 +8,23 @@
    "api/health.ts (1)"
   ],
   "componentes": [
-   "src/components (971)",
+   "src/components (974)",
    "src/pages (181)",
    "recovery/src-legacy (100)"
   ],
   "hooks": [
-   "src/hooks (306)",
+   "src/hooks (308)",
    "recovery/src-legacy (196)",
    "src/components (78)"
   ],
   "servicos_logica": [
-   "src/lib (258)",
+   "src/lib (259)",
    "src/utils (33)",
-   "src/services (12)"
+   "src/services (14)"
   ],
   "testes": [
-   "tests/ (1089)",
-   "co-localizado (__tests__) (734)",
+   "tests/ (1090)",
+   "co-localizado (__tests__) (743)",
    "e2e/ (627)"
   ],
   "edge_functions": "supabase/functions",
@@ -43,13 +43,13 @@
  "nomenclatura": {
   "componentes": "PascalCase (96%)",
   "hooks": "use + PascalCase",
-  "servicos": "camelCase (50%)",
+  "servicos": "camelCase (51%)",
   "edge_functions": "kebab-case (99%)",
   "tabelas": "snake_case (86%)"
  },
  "barrels_index": 50,
  "extensao_componentes": [
-  ".tsx (1271)"
+  ".tsx (1274)"
  ],
  "alias_imports": {
   "e2e/": {},
@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "feat(frete): produto \"não mistura\", importação em massa e relatório de dados de frete (Bloco D, etapas 32–39) (#3922)",
    "feat(frete): hooks e painel do plano de volumes (Bloco E, etapas 41–45 e 48) (#3920)",
    "feat(frete): biblioteca de prazo de produção em dias úteis (Bloco H, etapas 72–75) (#3919)",
    "feat(db): coluna products.ships_separately (frete, Bloco D — DDL) (#3918)",
-   "fix(frete): formulário de caixa volta a rolar e correções da revisão do admin (#3917)",
-   "feat(frete): admin de caixas de transporte e parâmetros de frete (Bloco C/D) (#3915)"
+   "fix(frete): formulário de caixa volta a rolar e correções da revisão do admin (#3917)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",

@@ -1,7 +1,7 @@
 {
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
- "total": 637,
+ "total": 639,
  "hooks": [
   {
    "arquivo": "docs/agentes/resgates/quote-comments/codigo/useQuoteComments.ts",
@@ -8815,6 +8815,26 @@
    "coberto_por_testes": 0
   },
   {
+   "arquivo": "src/hooks/freight/useFreightReadinessReport.ts",
+   "hooks_exportados": [
+    "useFreightReadinessReport"
+   ],
+   "linhas": 41,
+   "dominio": "hooks/freight",
+   "tabelas": [],
+   "rpcs": [],
+   "edges": [],
+   "hooks_internos": [
+    "useQuery"
+   ],
+   "canais_realtime": [],
+   "usado_por": 1,
+   "usado_por_arquivos": [
+    "src/components/admin/freight/FreightReadinessReport.tsx"
+   ],
+   "coberto_por_testes": 1
+  },
+  {
    "arquivo": "src/hooks/freight/useFreightSettings.ts",
    "hooks_exportados": [
     "useFreightSettings",
@@ -11913,6 +11933,28 @@
     "src/hooks/products/index.ts"
    ],
    "coberto_por_testes": 5
+  },
+  {
+   "arquivo": "src/hooks/products/useSupplierDefaultLeadTime.ts",
+   "hooks_exportados": [
+    "useSupplierDefaultLeadTime"
+   ],
+   "linhas": 26,
+   "dominio": "hooks/products",
+   "tabelas": [
+    "supplier_settings"
+   ],
+   "rpcs": [],
+   "edges": [],
+   "hooks_internos": [
+    "useQuery"
+   ],
+   "canais_realtime": [],
+   "usado_por": 1,
+   "usado_por_arquivos": [
+    "src/components/admin/products/sections/ProductInfoSection.tsx"
+   ],
+   "coberto_por_testes": 0
   },
   {
    "arquivo": "src/hooks/products/useSupplierFiscalData.ts",

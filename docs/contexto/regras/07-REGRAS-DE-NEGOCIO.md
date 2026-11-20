@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.3.2 · commit `5ac27dbcfa` · branch `main` · 2026-11-20 02:37 UTC
+> Gerado automaticamente por AI Context Sync v1.3.2 · commit `38a84ba151` · branch `main` · 2026-11-20 10:28 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -1804,7 +1804,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `status` | `in_transit` | compara | `src/lib/inventory/future-stock-stats.ts` |
 | `status` | `incoming` | compara | `recovery/src-legacy/src/hooks/useVariantStock.ts`<br>`src/components/inventory/StockDashboard.tsx`<br>`src/hooks/products/useVariantStock.ts`<br>`src/lib/inventory/stock-filter.ts`<br>`src/types/stock.ts` |
 | `status` | `incompatible` | compara, escreve | `src/components/kit-builder/BoxComparisonDialog.tsx`<br>`src/components/kit-builder/BoxSelector.tsx`<br>`src/lib/kit-builder/ai-composition.ts`<br>`src/lib/kit-builder/box-recommendations.ts` |
-| `status` | `incomplete` | compara, escreve | `src/lib/freight/planFreight.ts`<br>`src/lib/freight/resolveItemDimensions.ts` |
+| `status` | `incomplete` | compara, escreve | `src/lib/freight/planFreight.ts`<br>`src/lib/freight/readiness.ts`<br>`src/lib/freight/resolveItemDimensions.ts` |
 | `status` | `inconclusive` | compara, escreve | `src/components/kit-builder/BoxComparisonDialog.tsx`<br>`src/components/kit-builder/BoxSelector.tsx`<br>`src/lib/kit-builder/box-recommendations.ts` |
 | `status` | `insufficient_data` | escreve | `src/pages/admin/telemetry/useRegressionGuardrail.ts` |
 | `status` | `invalid` | escreve | `supabase/functions/e2e-cleanup/index.ts` |
@@ -1938,6 +1938,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | ZoneId | ai-router \| connections \| health \| operation | `src/components/admin/connections/useZoneVisibility.ts` |
 | StepId | classification \| commercial \| content \| engraving \| essentials \| fiscal \| kits \| media \| packaging | `src/components/admin/products/HorizontalStepper.tsx` |
 | SectionId | classification \| commercial \| dimensions \| fiscal \| flags \| info \| marketing \| media \| packaging \| price \| seo | `src/components/admin/products/ProductFormHelpers.tsx` |
+| LeadTimeSource | excecao \| padrao | `src/components/admin/products/leadTimeSource.ts` |
 | MarketingCategoryKey | datasComemorativas \| endomarketing \| publicoAlvo | `src/components/admin/products/productMarketingData.ts` |
 | Step | complete \| importing \| mapping \| preview \| upload | `src/components/admin/products/bulk-import/types.ts` |
 | CONTACT_ROLES | 'Proprietário', 'Diretor', 'Gerente', 'Vendedor', 'Financeiro', 'Compras', 'Logística', 'Suporte', 'Outro', | `src/components/admin/products/new-supplier/types.ts` |
@@ -2168,8 +2169,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | ErrorKind | timeout \| network \| dns \| http \| auth \| config \| unknown | `supabase/functions/_shared/connection-test-runner.ts` |
 | ConnectionType | supabase \| bitrix24 \| n8n \| mcp \| webhook_outbound | `supabase/functions/_shared/connection-timeouts.ts` |
 | EdgeRole | vendedor \| agente \| supervisor \| admin \| dev | `supabase/functions/_shared/createEdge.ts` |
-| CredentialSource | db \| env \| none | `supabase/functions/_shared/credentials.ts` |
-| … +22 linhas — lista completa em `context.json` | | |
+| … +23 linhas — lista completa em `context.json` | | |
 
 ## F. Validações de entrada
 
@@ -3678,6 +3678,14 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
   ```
   
   ```
+- **isMissingPriceFreshnessThresholdColumn(error: unknown)** — `src/components/admin/products/priceFreshnessFallback.ts`
+  ```
+  const message = error instanceof Error ? error.message : String(error); return /price_freshness_threshold_days|column products\.price_freshness_threshold_days does not exist/i.test( message, );
+  ```
+- **withoutPriceFreshnessThreshold(data: Record<string, unknown>,)** — `src/components/admin/products/priceFreshnessFallback.ts`
+  ```
+  const fallbackData = { ...data }; delete fallbackData[PRICE_FRESHNESS_THRESHOLD_COLUMN]; return fallbackData;
+  ```
 - **formatCurrency(v: number | null)** — `src/components/admin/products/sections/ProductSupplierSection.tsx`
   ```
   
@@ -4838,14 +4846,6 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
   ```
   const stats: CfStats = { total: images.length, verified: 0, pending: 0, syncing: 0, failed: 0, missing: 0, noStatus: 0, }; for (const img of images) { switch (img.cf_sync_status) { case 'verified': stats.verified++; break; case 'pending': stats.pending++; break; case 'uploading': case 'uploaded': stats.syncing++; break; case 'failed': stats.failed++; break; case 'missing': case 'orphaned': stats.missing++; break; default: stats.noStatus++; } } return stats;
   ```
-- **isMissingPriceFreshnessThresholdColumn(error: unknown)** — `src/pages/admin/AdminProductFormPage.tsx`
-  ```
-  const message = error instanceof Error ? error.message : String(error); return /price_freshness_threshold_days|column products\.price_freshness_threshold_days does not exist/i.test( message, );
-  ```
-- **withoutPriceFreshnessThreshold(data: Record<string, unknown>)** — `src/pages/admin/AdminProductFormPage.tsx`
-  ```
-  const fallbackData = { ...data }; delete fallbackData[PRICE_FRESHNESS_THRESHOLD_COLUMN]; return fallbackData;
-  ```
 - **DiscountRequestDetailPage()** — `src/pages/admin/DiscountRequestDetailPage.tsx`
   ```
   const { id } = useParams<{ id: string }>(); const navigate = useNavigate(); const { isAdmin, rolesLoaded } = useAuth(); const qc = useQueryClient(); const [adminNotes, setAdminNotes] = useState(''); const { data, isLoading } = useQuery({ queryKey: ['discount-approval-detail', id], queryFn: async () => { if (!id) return null; const { data: row, error } = await supabase // rls-allow: admin via has_role; RLS filtra .from('discount_approval_requests') .select( '*, quotes:quote_id(quote_number, clien …
@@ -5583,10 +5583,15 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `TTL_MS` | `30` | `src/components/admin/connections/useFocusContext.ts` |
 | `WINDOW_MS` | `72` | `src/components/admin/connections/useIncidentTimeline72h.ts` |
 | `SNOOZE_MS` | `60` | `src/components/admin/connections/useSeverityChangeNotifier.ts` |
+| `ALL_SUPPLIERS` | `'all'` | `src/components/admin/freight/FreightReadinessReport.tsx` |
+| `PAGE_STEP` | `200` | `src/components/admin/freight/FreightReadinessReport.tsx` |
+| `NO_SUPPLIER_LABEL` | `'Sem fornecedor'` | `src/components/admin/freight/freightReadinessRows.ts` |
+| `NO_SUPPLIER_FILTER` | `'none'` | `src/components/admin/freight/freightReadinessRows.ts` |
 | `FILL_FACTOR_MIN` | `0.5` | `src/components/admin/freight-settings/freightSettingsFormSchema.ts` |
 | `FILL_FACTOR_MAX` | `1` | `src/components/admin/freight-settings/freightSettingsFormSchema.ts` |
 | `DIVISOR_MESSAGE` | `'Use um número inteiro maior que zero.'` | `src/components/admin/freight-settings/freightSettingsFormSchema.ts` |
 | `FACTOR_MESSAGE` | `'Use um valor entre 0,50 e 1,00, com até duas casas decimais.'` | `src/components/admin/freight-settings/freightSettingsFormSchema.ts` |
+| `PRICE_FRESHNESS_THRESHOLD_COLUMN` | `'price_freshness_threshold_days'` | `src/components/admin/products/priceFreshnessFallback.ts` |
 | `PERMISSION_DENIED_MESSAGE` | `'Sem permissão para editar marketing deste produto'` | `src/components/admin/products/productMarketingData.ts` |
 | `MAX_ROWS` | `10` | `src/components/admin/products/bulk-import/types.ts` |
 | `MAX_FILE_SIZE` | `100` | `src/components/admin/products/video-gallery/types.ts` |
@@ -5815,12 +5820,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `TAG_POINTS` | `10` | `src/hooks/products/useProductMatch.ts` |
 | `NICHE_POINTS` | `15` | `src/hooks/products/useProductMatch.ts` |
 | `SUPPLIER_POINTS` | `5` | `src/hooks/products/useProductMatch.ts` |
-| `DESCRIPTIVE_TAG_POINTS` | `8` | `src/hooks/products/useProductMatch.ts` |
-| `DESCRIPTIVE_TAG_CAP` | `24` | `src/hooks/products/useProductMatch.ts` |
-| `MATERIAL_POINTS` | `6` | `src/hooks/products/useProductMatch.ts` |
-| `COMPLEMENTARY_POINTS` | `20` | `src/hooks/products/useProductMatch.ts` |
-| `PRODUCT_DETAIL_TIMEOUT_MS` | `15` | `src/hooks/products/useProducts.ts` |
-| … +391 linhas — lista completa em `context.json` | | |
+| … +397 linhas — lista completa em `context.json` | | |
 
 ### H.2 Prazos, expirações e janelas de tempo
 
@@ -6126,7 +6126,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `staleTime: 5 * 60 * 1000,` | `src/hooks/auth/useRBAC.tsx` |
 | `staleTime: 5 * 60 * 1000,` | `src/hooks/bi/useClientAffinity.ts` |
 | `const NINETY_DAYS = 90 * 24 * 60 * 60 * 1000;` | `src/hooks/bi/useClientCategoryAffinity.ts` |
-| … +394 linhas — lista completa em `context.json` | |
+| … +395 linhas — lista completa em `context.json` | |
 
 ### H.3 Limites de paginação
 
@@ -6609,7 +6609,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | allowlist inválida: versions contém duplicatas | `scripts/check-supabase-migration-ledger.mjs` |
 | allowlist inválida: versions contém valor vazio/não textual | `scripts/check-supabase-migration-ledger.mjs` |
 | allowlist inválida: versions deve ser array não vazio | `scripts/check-supabase-migration-ledger.mjs` |
-| … +1333 linhas — lista completa em `context.json` | |
+| … +1336 linhas — lista completa em `context.json` | |
 
 ## J. Controle de acesso no código (checagens de perfil/permissão)
 
@@ -6733,7 +6733,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `admin` | `supabase/migrations/20261112120500_fix_optimization_queue_rpcs_dev_access.sql` |
 | `anon` | `tests/edge-functions/live/_live-client.ts` |
 
-## K. Testes como especificação (23119 testes em 2328 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (23182 testes em 2338 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -7037,7 +7037,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `tests/edge-functions/voice-agent.test.ts` | 19 | Voice Agent Response Contract · action types · should have valid action enum values · response structure … |
 | `tests/edge-functions/integration/secure-upload.test.ts` | 19 | secure-upload · happy path — upload válido · retorna 200 com path, bucket e hash · hash retornado é string hexadecimal de 64 chars (SHA-256) … |
 | `tests/lib/query-config.test.ts` | 19 | CACHE_TIMES · should have increasing cache durations · getStaleTimeForKey · should return TECNICAS time for tecnicas keys … |
-| … +2028 linhas — lista completa em `context.json` | | |
+| … +2038 linhas — lista completa em `context.json` | | |
 
 ## L. Eventos de webhook tratados (contratos com sistemas externos)
 
@@ -7403,6 +7403,9 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | Required by the categories RLS INSERT policy is_org_owner_or_admin(organization_id). | `src/components/admin/products/NewCategoryDialog.tsx` |
 | Validade do preço (dias). Após esse prazo o sistema avisa o vendedor | `src/components/admin/products/ProductFormSchema.ts` |
 | Expirações dos flags (null = sem limite) | `src/components/admin/products/ProductFormSchema.ts` |
+| * Decide se o prazo de liberação de um produto é o padrão do fornecedor ou uma | `src/components/admin/products/leadTimeSource.ts` |
+| (ou ainda carrega), e o produto tem prazo próprio. | `src/components/admin/products/leadTimeSource.ts` |
+| Movido de AdminProductFormPage.tsx sem mudança de comportamento (limite de tamanho do arquivo). | `src/components/admin/products/priceFreshnessFallback.ts` |
 | * useProductsManager — Business logic hook for ProductsManager. | `src/components/admin/products/useProductsManager.ts` |
 | BUG-08: galeria completa preservada; imageUrl apenas como fallback | `src/components/admin/products/useProductsManager.ts` |
 | Edição desfeita: o rascunho gravado nesta sessão não pode reviver o valor desfeito. | `src/components/admin/products/hooks/useProductFormDraft.ts` |
@@ -7502,7 +7505,4 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | * Dados da projeção preditiva (apenas quando status foi reavaliado por Risco de Ruptura). */ | `src/components/inventory/VariantStockVisuals.tsx` |
 | deve passar por aqui para não dar drift entre bulk e single-row. | `src/components/inventory/useStockSelection.ts` |
 | Peso desconhecido nunca deve ser lido como zero: um kit com 1 item sem | `src/components/kit-builder/FreightEstimator.tsx` |
-| * Etapa 18: 3 erros de negócio distintos em vez do genérico "Erro ao gerar | `src/components/kit-builder/KitAIPromptDialog.tsx` |
-| O servidor já devolve mensagens de negócio (sem chave/quota/timeout); | `src/components/kit-builder/KitAIPromptDialog.tsx` |
-| Reabrir o guia num passo diferente deve pular direto para o capítulo | `src/components/kit-builder/KitMakerGuideDialog.tsx` |
-| … +1409 linhas — lista completa em `context.json` | |
+| … +1417 linhas — lista completa em `context.json` | |

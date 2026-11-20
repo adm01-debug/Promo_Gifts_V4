@@ -6,7 +6,7 @@
   "rotas_http_backend": 13,
   "vistas_por_id": 0,
   "itens_menu": 71,
-  "lazy": 174
+  "lazy": 175
  },
  "urls": [
   {
@@ -2997,6 +2997,7 @@
     "useFilteredTechniques",
     "useFocusTrap",
     "useFreightPlan",
+    "useFreightReadinessReport",
     "useFreightSettings",
     "useGenericFuzzySearch",
     "useGeoBlocking",
@@ -3315,6 +3316,7 @@
     "useFilteredTechniques",
     "useFocusTrap",
     "useFreightPlan",
+    "useFreightReadinessReport",
     "useFreightSettings",
     "useGenericFuzzySearch",
     "useGeoBlocking",
@@ -3540,6 +3542,7 @@
     "seller_cart_items",
     "seller_carts",
     "shipping_boxes",
+    "suppliers",
     "system_kill_switches",
     "system_settings",
     "user_roles",
@@ -3585,6 +3588,7 @@
     "combobox",
     "dialog",
     "group",
+    "img",
     "listbox",
     "manager",
     "menu",
@@ -3595,7 +3599,7 @@
     "status",
     "supervisor"
    ],
-   "arquivos_puxados": 541
+   "arquivos_puxados": 550
   },
   {
    "protegida": true,
@@ -3881,6 +3885,7 @@
     "useStockVelocity",
     "useStockVelocityPrefetch",
     "useSupplierComparison",
+    "useSupplierDefaultLeadTime",
     "useSupplierFiscalData",
     "useSupplierNames",
     "useSupplierSales",
@@ -4175,6 +4180,7 @@
     "useStockVelocity",
     "useStockVelocityPrefetch",
     "useSupplierComparison",
+    "useSupplierDefaultLeadTime",
     "useSupplierFiscalData",
     "useSupplierNames",
     "useSupplierSales",
@@ -4253,6 +4259,7 @@
     "product_target_audiences",
     "product_variants",
     "product_views",
+    "products",
     "profiles",
     "quote_items",
     "quotes",
@@ -4262,6 +4269,7 @@
     "search_analytics",
     "seller_cart_items",
     "seller_carts",
+    "supplier_settings",
     "system_kill_switches",
     "system_settings",
     "target_audiences",
@@ -4323,7 +4331,7 @@
     "tab",
     "tablist"
    ],
-   "arquivos_puxados": 534
+   "arquivos_puxados": 538
   },
   {
    "protegida": true,
@@ -6681,7 +6689,7 @@
     "alert",
     "status"
    ],
-   "arquivos_puxados": 63
+   "arquivos_puxados": 64
   },
   {
    "protegida": true,
@@ -38330,6 +38338,7 @@
   "FiltersPage": "src/pages/products/FiltersPage.tsx",
   "FloatingCompareBar": "src/components/compare/FloatingCompareBar.tsx",
   "ForgotPasswordConfirmation": "src/pages/auth/ForgotPasswordConfirmation.tsx",
+  "FreightReadinessReport": "src/components/admin/freight/index.ts",
   "FutureStockModal": "src/components/products/FutureStockModal.tsx",
   "Header": "src/components/layout/Header.tsx",
   "HighLimitTelemetryCard": "src/components/admin/telemetry/HighLimitTelemetryCard.tsx",
