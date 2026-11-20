@@ -1642,6 +1642,7 @@ Após VACUUM ANALYZE executado pelos jobs temporários `vacuum-snapshots-now` e
 | `20261119213000` | `0863f0915908977d964098549b7b284dff37210091d7da9936ee6f0ed4f312ba` | — | GitHub Actions (db-apply-migration.yml, disparado por adm01-debug, aprovado por @adm01-debug) | E15 | 2026-11-19 22:21:38 UTC | job post-check da run 44627641478 confirmou a version no ledger | aplicada |
 | `20261119213100` | `a47a4b359bdf1bed8da503831ae1a6dc1a372804186a9a4fb599b6f49765b8d6` | — | GitHub Actions (db-apply-migration.yml, disparado por adm01-debug, aprovado por @adm01-debug) | E15 | 2026-11-19 22:26:25 UTC | job post-check da run 44628516008 confirmou a version no ledger | aplicada |
 | `20261119220000` | `86b737e483c230339864d45e00dce01ebfe639dd4d972c8b971c8b5ffc9bb126` | — | GitHub Actions (db-apply-migration.yml, disparado por adm01-debug, aprovado por adm01-debug) | E15 | 2026-11-19 22:59:14 UTC | job post-check da run 44633481796 confirmou a version no ledger | aplicada |
+| `20261120013000` | `7d0ba2f172b092e7151107f857b1db28a9788a797f0d324fc078035e19619622` | — | GitHub Actions (db-apply-migration.yml, disparado por adm01-debug, aprovado por @adm01-debug) | E15 | 2026-11-20 02:23:16 UTC | job post-check da run 44660270776 confirmou a version no ledger | aplicada |
 
 ## 2026-11-08 — Reconciliação de `e2e_cleanup_audit`
 
@@ -2627,3 +2628,22 @@ Anti-regressão: anon SEM EXECUTE nas três; grants authenticated + service_role
 | versão | arquivo | sha256 | status |
 |---|---|---|---|
 | `20261119220000` | `create_ema_sister_functions` | `86b737e483c230339864d45e00dce01ebfe639dd4d972c8b971c8b5ffc9bb126` | pendente — aplicar via `db-apply-migration.yml` (`version=20261119220000`) após merge da PR |
+
+### 2026-11-20 — frete: produto "não mistura" (bloco D)
+
+Uma coluna nova em `public.products`: `ships_separately boolean NOT NULL DEFAULT false`
+(etapa 31 do plano de frete). Produto marcado vai sempre em caixa própria no
+cálculo de frete e vence a escolha "misturar" do vendedor. Nenhuma view é
+recriada: em produção, 96 views e views materializadas dependem de `products`
+(consulta somente leitura a `pg_depend` em 2026-11-20) e nenhuma precisa da
+coluna para o motor, que lê `products` direto. Conferido por SELECT em
+`information_schema.columns`: a coluna ainda não existe em produção.
+
+Ordem: esta migration vai sozinha na PR D-DDL, que é mergeada e aplicada
+primeiro. A PR de código que lê ou grava `ships_separately` (formulário de
+produto, importação em massa, relatório de frete) só é mergeada depois de a
+coluna existir em produção; sem a coluna, o select/insert que a cita devolve 400.
+
+| versão | arquivo | sha256 | status |
+|---|---|---|---|
+| `20261120013000` | `add_products_ships_separately` | `7d0ba2f172b092e7151107f857b1db28a9788a797f0d324fc078035e19619622` | aplicada — recibo na tabela E15 (run 44660270776) |

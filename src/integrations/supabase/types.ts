@@ -32355,6 +32355,7 @@ export type Database = {
           shipping_notes: string | null
           shipping_weight_kg: number | null
           shipping_width_cm: number | null
+          ships_separately: boolean
           short_description: string | null
           sku: string
           sku_promo: string
@@ -32541,6 +32542,7 @@ export type Database = {
           shipping_notes?: string | null
           shipping_weight_kg?: number | null
           shipping_width_cm?: number | null
+          ships_separately?: boolean
           short_description?: string | null
           sku: string
           sku_promo: string
@@ -32727,6 +32729,7 @@ export type Database = {
           shipping_notes?: string | null
           shipping_weight_kg?: number | null
           shipping_width_cm?: number | null
+          ships_separately?: boolean
           short_description?: string | null
           sku?: string
           sku_promo?: string

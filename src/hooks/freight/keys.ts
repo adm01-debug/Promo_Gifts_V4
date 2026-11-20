@@ -12,7 +12,12 @@ export const FREIGHT_QUERY_KEYS = {
     deleted: () => [...FREIGHT_QUERY_KEYS.shippingBoxes.all, 'deleted'] as const,
   },
   settings: ['freight-settings'] as const,
+  /** Ids ordenados e sem duplicata: a mesma lista em outra ordem reaproveita o cache. */
+  productMeasures: (ids: readonly string[]) => ['product-measures', ids] as const,
 };
 
 /** Caixas e parâmetros mudam raramente: 10 minutos sem refazer a consulta. */
 export const FREIGHT_STALE_TIME_MS = 10 * 60 * 1000;
+
+/** Medidas de produto mudam um pouco mais (cadastro): 5 minutos. */
+export const PRODUCT_MEASURES_STALE_TIME_MS = 5 * 60 * 1000;

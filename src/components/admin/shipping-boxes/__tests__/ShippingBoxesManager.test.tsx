@@ -438,7 +438,14 @@ describe('aba Caixas de transporte em /admin/cadastros', () => {
 
     const tab = screen.getByRole('tab', { name: /Caixas de transporte/ });
     expect(tab).toHaveAttribute('aria-selected', 'true');
-    expect(screen.getAllByRole('tab').map((item) => item.textContent)).toEqual([
+    // só o TabsList externo: as sub-abas de Caixas (lista e relatório) ficam de fora
+    const lista = tab.closest('[role="tablist"]');
+    if (!(lista instanceof HTMLElement)) throw new Error('lista de abas não encontrada');
+    expect(
+      within(lista)
+        .getAllByRole('tab')
+        .map((item) => item.textContent),
+    ).toEqual([
       'Produtos',
       'Fornecedores',
       'Caixas de transporte',

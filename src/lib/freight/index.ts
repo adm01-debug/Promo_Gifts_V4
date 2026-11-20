@@ -45,6 +45,8 @@ export {
 
 export { expandQuantities, type ExpandResult } from './expandQuantities';
 
+export { getFreightReadiness, type FreightReadiness } from './readiness';
+
 export {
   daMaiorParaMenor,
   daMenorParaMaior,
@@ -65,3 +67,5 @@ export { computeVolumeTotals, type VolumeDraft } from './computeVolumeTotals';
 export { computeItemsHash, planFreight, type PlanInput, type PlanOptions } from './planFreight';
 
 export { formatPlanSummary } from './formatPlanSummary';
+
+export { formatPlanForClient } from './format';

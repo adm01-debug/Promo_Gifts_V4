@@ -29,6 +29,8 @@ export interface Product {
   new_arrival: boolean | null;
   on_sale: boolean | null;
   is_kit: boolean | null;
+  /** Vai sempre em caixa própria no frete (frágil, líquido, volumoso). */
+  ships_separately?: boolean;
   kit_items: KitItem[] | null; // JSONB array
   is_active: boolean | null;
   min_quantity: number | null;
