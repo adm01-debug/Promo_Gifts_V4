@@ -65,6 +65,7 @@ export function linhaDeTeste(
     length_cm: lengthCm,
     diameter_cm: null,
     weight_g: weightG,
+    ships_separately: false,
   };
 }
 

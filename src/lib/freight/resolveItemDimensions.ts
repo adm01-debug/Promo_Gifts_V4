@@ -25,7 +25,7 @@
  * Peso desconhecido bloqueia junto com a dimensão: a decisão 7 não admite
  * estimativa parcial.
  */
-import type { ProductMeasureRow } from './columns';
+import type { ProductDimensionRow } from './columns';
 import type { Dimensions, IncompleteItem, MeasureSource, MissingMeasure } from './types';
 import { isKnownMeasure } from './units';
 
@@ -41,7 +41,7 @@ export type ResolveResult =
   | { status: 'ok'; measures: ResolvedMeasures };
 
 /** Lados da peça nua, ou `null` se algum lado falta. */
-function productDims(row: ProductMeasureRow): Dimensions | null {
+function productDims(row: ProductDimensionRow): Dimensions | null {
   if (
     !isKnownMeasure(row.height_cm) ||
     !isKnownMeasure(row.width_cm) ||
@@ -53,7 +53,7 @@ function productDims(row: ProductMeasureRow): Dimensions | null {
 }
 
 /** Caixa envolvente de um cilíndrico, ou `null` sem diâmetro ou sem altura. */
-function cylinderDims(row: ProductMeasureRow): Dimensions | null {
+function cylinderDims(row: ProductDimensionRow): Dimensions | null {
   if (!isKnownMeasure(row.diameter_cm) || !isKnownMeasure(row.height_cm)) return null;
   return { heightCm: row.height_cm, widthCm: row.diameter_cm, lengthCm: row.diameter_cm };
 }
@@ -62,7 +62,7 @@ function cylinderDims(row: ProductMeasureRow): Dimensions | null {
  * Campos de dimensão que o cadastro precisa receber. O diâmetro cobre largura
  * e comprimento: quem tem diâmetro só precisa da altura.
  */
-function missingDimensionFields(row: ProductMeasureRow): MissingMeasure[] {
+function missingDimensionFields(row: ProductDimensionRow): MissingMeasure[] {
   const hasDiameter = isKnownMeasure(row.diameter_cm);
   const missing: MissingMeasure[] = [];
   if (!isKnownMeasure(row.height_cm)) missing.push('height');
@@ -72,7 +72,7 @@ function missingDimensionFields(row: ProductMeasureRow): MissingMeasure[] {
 }
 
 /** Aplica a precedência e devolve a primeira fonte que fecha os três lados. */
-function resolveDims(row: ProductMeasureRow): { dims: Dimensions; source: MeasureSource } | null {
+function resolveDims(row: ProductDimensionRow): { dims: Dimensions; source: MeasureSource } | null {
   const product = productDims(row);
   if (product) return { dims: product, source: 'product' };
 
@@ -82,7 +82,7 @@ function resolveDims(row: ProductMeasureRow): { dims: Dimensions; source: Measur
   return null;
 }
 
-export function resolveItemDimensions(row: ProductMeasureRow): ResolveResult {
+export function resolveItemDimensions(row: ProductDimensionRow): ResolveResult {
   const resolved = resolveDims(row);
 
   const missing: MissingMeasure[] = resolved ? [] : missingDimensionFields(row);

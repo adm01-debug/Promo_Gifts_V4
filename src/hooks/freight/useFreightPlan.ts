@@ -187,7 +187,7 @@ export function useFreightPlan({
         indisponiveis.push({ productId: line.productId, name: line.name ?? UNAVAILABLE_NAME });
         return;
       }
-      inputs.push({ row, quantity: line.quantity });
+      inputs.push({ row, quantity: line.quantity, shipsSeparately: row.ships_separately });
     });
 
     const calculado = planFreight(

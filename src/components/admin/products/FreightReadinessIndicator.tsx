@@ -4,10 +4,10 @@
  */
 import { PackageX } from 'lucide-react';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
-import { getFreightReadiness, type ProductMeasureRow } from '@/lib/freight';
+import { getFreightReadiness, type ProductDimensionRow } from '@/lib/freight';
 import { describeMissing } from '../freight/freightReadinessRows';
 
-export function FreightReadinessIndicator({ product }: { product: ProductMeasureRow }) {
+export function FreightReadinessIndicator({ product }: { product: ProductDimensionRow }) {
   const readiness = getFreightReadiness(product);
   if (readiness.ready) return null;
   const text = `Sem dados de frete: falta ${describeMissing(readiness.missing).toLowerCase()}.`;

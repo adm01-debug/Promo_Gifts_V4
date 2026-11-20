@@ -25,6 +25,7 @@ export {
   PRODUCT_MEASURE_COLUMNS,
   PRODUCT_MEASURE_SELECT,
   type ProductMeasureColumn,
+  type ProductDimensionRow,
   type ProductMeasureRow,
 } from './columns';
 

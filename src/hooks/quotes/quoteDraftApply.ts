@@ -13,6 +13,7 @@
  * chegou a existir em `useQuoteAutoSave` (QuoteAutoSave.tsx:370) mas tinha zero
  * consumidores. Este módulo é a metade que faltava.
  */
+import { parseFreightMixMode, parseShowFreightPlan } from '@/hooks/quotes/useFreightPlanOptions';
 import { logger } from '@/lib/logger';
 import { quoteDraftRecoverySchema } from '@/lib/quotes/quoteDraftRecovery';
 import { syncValidityDaysFromDate } from '@/hooks/quotes/useQuoteBuilderState.helpers';
@@ -68,6 +69,7 @@ export type QuoteDraftApplyTarget = Pick<
   | 'setDeliveryTime'
   | 'setDiscountType'
   | 'setDiscountValue'
+  | 'setFreightMixMode'
   | 'setItems'
   | 'setNegotiationMarkup'
   | 'setNotes'
@@ -75,6 +77,7 @@ export type QuoteDraftApplyTarget = Pick<
   | 'setPaymentTerms'
   | 'setShippingCost'
   | 'setShippingType'
+  | 'setShowFreightPlanToClient'
   | 'setValidityDays'
   | 'setValidUntil'
 >;
@@ -261,6 +264,12 @@ export function applyDraftToBuilder(draft: RecoveredQuoteDraft, s: QuoteDraftApp
 
   if (draft.shippingType) s.setShippingType(draft.shippingType);
   if (typeof draft.shippingCost === 'number') s.setShippingCost(draft.shippingCost);
+  if (draft.freightMixMode !== undefined) {
+    s.setFreightMixMode(parseFreightMixMode(draft.freightMixMode));
+  }
+  if (draft.showFreightPlanToClient !== undefined) {
+    s.setShowFreightPlanToClient(parseShowFreightPlan(draft.showFreightPlanToClient));
+  }
 
   if (draft.validUntil) {
     s.setValidUntil(draft.validUntil);

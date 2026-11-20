@@ -14,6 +14,8 @@ import type {
   SelectedCompanyInfo,
   SelectedContactInfo,
 } from '@/components/quotes/CompanyContactSelector';
+import { parseFreightMixMode, parseShowFreightPlan } from '@/hooks/quotes/useFreightPlanOptions';
+import type { MixMode } from '@/lib/freight';
 import { logger } from '@/lib/logger';
 
 /** Forma do rascunho que o autosave do construtor grava. */
@@ -31,6 +33,9 @@ export interface RestoredQuoteDraft {
   deliveryTime?: string | null;
   shippingType?: string | null;
   shippingCost?: number | null;
+  /** Gravados pelo autosave; valor fora do esperado vira o padrão na restauração. */
+  freightMixMode?: unknown;
+  showFreightPlanToClient?: unknown;
   validUntil?: string | null;
   notes?: string | null;
 }
@@ -52,6 +57,8 @@ export interface RestoredDraftSetters {
   /** QBP-07: state pendente + efeito com cleanup, evita setState em desmontado. */
   setPendingShippingTypeRestore: (v: string) => void;
   setShippingCost: (v: number) => void;
+  setFreightMixMode: (v: MixMode) => void;
+  setShowFreightPlanToClient: (v: boolean) => void;
   setValidUntil: (v: string) => void;
   setValidityDays: (v: string) => void;
   setNotes: (v: string) => void;
@@ -86,6 +93,11 @@ export function applyRestoredDraft(saved: RestoredQuoteDraft, s: RestoredDraftSe
   }
   if (saved.shippingType) s.setPendingShippingTypeRestore(saved.shippingType);
   if (saved.shippingCost) s.setShippingCost(saved.shippingCost);
+  if (saved.freightMixMode !== undefined)
+    s.setFreightMixMode(parseFreightMixMode(saved.freightMixMode));
+  if (saved.showFreightPlanToClient !== undefined) {
+    s.setShowFreightPlanToClient(parseShowFreightPlan(saved.showFreightPlanToClient));
+  }
   if (saved.validUntil) {
     s.setValidUntil(saved.validUntil);
     // QBP-12: sincroniza o Select de validade; antes ficava em "Selecione".

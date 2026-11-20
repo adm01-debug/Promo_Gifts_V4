@@ -22,6 +22,7 @@ import { sanitizeError } from '@/lib/security/sanitize-error';
 import { formatCurrency as fmtCurrency } from '@/lib/format';
 import { validateQuoteForm, QUOTE_FIELD_LABELS } from '@/lib/validations';
 import { rascunhoRestauradoEValido } from '@/lib/quotes/quoteDraftRecovery';
+import { useFreightPlanOptions } from '@/hooks/quotes/useFreightPlanOptions';
 import { applyRestoredDraft } from '@/lib/quotes/applyRestoredDraft';
 import { useAuth } from '@/contexts/AuthContext';
 import type { ExternalVariantStock } from '@/hooks/products';
@@ -111,6 +112,8 @@ export function useQuoteBuilderState() {
   const [deliveryDate, setDeliveryDate] = useState<Date | undefined>(undefined);
   const [shippingType, setShippingType] = useState('');
   const [shippingCost, setShippingCost] = useState(0);
+  const freightPlan = useFreightPlanOptions();
+  const { freightMixMode, showFreightPlanToClient, resetFreightPlanOptions } = freightPlan;
 
   // QBP-07 FIX: defer shippingType restore via state+useEffect com cleanup
   // Evita chamar setShippingType em componente desmontado (setTimeout sem cleanup)
@@ -271,6 +274,8 @@ export function useQuoteBuilderState() {
       deliveryTime,
       shippingType,
       shippingCost,
+      freightMixMode,
+      showFreightPlanToClient,
       notes,
       validUntil,
     },
@@ -298,6 +303,8 @@ export function useQuoteBuilderState() {
         setDeliveryDate,
         setPendingShippingTypeRestore,
         setShippingCost,
+        setFreightMixMode: freightPlan.setFreightMixMode,
+        setShowFreightPlanToClient: freightPlan.setShowFreightPlanToClient,
         setValidUntil,
         setValidityDays,
         setNotes,
@@ -913,6 +920,7 @@ export function useQuoteBuilderState() {
     setDeliveryDate(undefined);
     setShippingType('');
     setShippingCost(0);
+    resetFreightPlanOptions();
     setDiscountType('percent');
     setDiscountValue(0);
     setNegotiationMarkup(0);
@@ -937,6 +945,7 @@ export function useQuoteBuilderState() {
     setExpandedItems,
     setActiveItemIndex,
     setCurrentStep,
+    resetFreightPlanOptions,
   ]);
 
   return {
@@ -990,6 +999,7 @@ export function useQuoteBuilderState() {
     setShippingType: handleShippingTypeChange,
     shippingCost,
     setShippingCost,
+    ...freightPlan,
     productSearchOpen,
     setProductSearchOpen,
     productSearch,
