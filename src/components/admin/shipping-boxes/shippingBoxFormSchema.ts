@@ -8,8 +8,8 @@
  *
  * As regras repetem os CHECKs da migration 20261119213000_create_shipping_boxes
  * para o erro aparecer no campo, e não como recusa genérica do banco:
- * medidas > 0, parede de 1 a 20 mm, medida interna > 0, peso máximo > peso
- * vazio e fator de 0,50 a 1,00.
+ * medida externa de 0,01 a 300 cm, parede de 1 a 20 mm, medida interna > 0,
+ * peso máximo até 100 kg e maior que o peso vazio, e fator de 0,50 a 1,00.
  *
  * As medidas internas NUNCA saem daqui: são colunas geradas pelo banco. O
  * cálculo abaixo serve só para validar e para a prévia na tela.
@@ -80,11 +80,23 @@ function toFactorText(factor: number): string {
 
 /**
  * Formulário de caixa NOVA. O fator vem do "fator de aproveitamento padrão" de
- * `/admin/frete` (`freight_settings.default_fill_factor`); é só uma sugestão, o
- * admin pode trocar antes de salvar.
+ * `/admin/frete` (`freight_settings.default_fill_factor`) e a ordem é a próxima
+ * da lista; são só sugestões, o admin pode trocar antes de salvar.
  */
-export function newShippingBoxDraft(defaultFillFactor: number): ShippingBoxFormDraft {
-  return { ...EMPTY_SHIPPING_BOX_DRAFT, fillFactor: toFactorText(defaultFillFactor) };
+export function newShippingBoxDraft(
+  defaultFillFactor: number,
+  sortOrder: number,
+): ShippingBoxFormDraft {
+  return {
+    ...EMPTY_SHIPPING_BOX_DRAFT,
+    fillFactor: toFactorText(defaultFillFactor),
+    sortOrder: String(sortOrder),
+  };
+}
+
+/** Maior ordem da lista + 1, para a caixa nova entrar no fim; lista vazia começa em 0. */
+export function nextShippingBoxSortOrder(boxes: ReadonlyArray<{ sort_order: number }>): number {
+  return boxes.length === 0 ? 0 : Math.max(...boxes.map((box) => box.sort_order)) + 1;
 }
 
 export const SHIPPING_BOX_CODE_MAX_LENGTH = 6;
@@ -96,8 +108,9 @@ const DECIMAL_3 = /^\d+(?:[.,]\d{1,3})?$/;
 const INTEGER = /^\d+$/;
 const SIGNED_INTEGER = /^-?\d+$/;
 
-/** Teto de `numeric(8,2)`, o tipo das medidas externas no banco. */
-const MAX_NUMERIC_8_2 = 999_999.99;
+const MIN_OUTER_CM = 0.01;
+const MAX_OUTER_CM = 300;
+const MAX_WEIGHT_G = 100_000;
 /** Teto de `integer`, o tipo dos pesos em gramas e da ordem no banco. */
 const MAX_INT4 = 2_147_483_647;
 
@@ -159,8 +172,8 @@ function outerMeasure(label: string) {
         .number({
           error: `${label}: informe a medida externa em cm, com até 2 casas decimais (ex.: 27 ou 26,5).`,
         })
-        .gt(0, `${label}: a medida precisa ser maior que zero.`)
-        .lte(MAX_NUMERIC_8_2, `${label}: medida grande demais.`),
+        .min(MIN_OUTER_CM, `${label}: use um valor entre 0,01 e 300 cm.`)
+        .max(MAX_OUTER_CM, `${label}: use um valor entre 0,01 e 300 cm.`),
     );
 }
 
@@ -207,8 +220,8 @@ export const shippingBoxFormSchema = z
             error: 'Informe o peso máximo em kg, com até 3 casas decimais (ex.: 10 ou 12,5).',
           })
           .int('Informe o peso máximo em kg, com até 3 casas decimais (ex.: 10 ou 12,5).')
-          .gt(0, 'O peso máximo precisa ser maior que zero.')
-          .lte(MAX_INT4, 'Peso máximo grande demais.'),
+          .min(1, 'Use um valor entre 0,001 e 100 kg.')
+          .max(MAX_WEIGHT_G, 'Use um valor entre 0,001 e 100 kg.'),
       ),
     emptyWeightG: z
       .string()
