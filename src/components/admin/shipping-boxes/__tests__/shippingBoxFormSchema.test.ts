@@ -7,6 +7,7 @@ import {
   computeInnerPreview,
   innerDimensionCm,
   newShippingBoxDraft,
+  nextShippingBoxSortOrder,
   parseShippingBoxForm,
   toShippingBoxDraft,
   type ShippingBoxFormDraft,
@@ -133,7 +134,7 @@ describe('parseShippingBoxForm — recusas', () => {
         caso: 'altura zero',
         draft: draftWith({ outerHeightCm: '0' }),
         campo: 'outerHeightCm',
-        erro: /maior que zero/,
+        erro: /Altura: use um valor entre 0,01 e 300 cm\./,
       },
       // 2 × 3 mm = 0,6 cm; 0,6 − 0,6 = 0 cm de altura interna
       {
@@ -184,7 +185,7 @@ describe('parseShippingBoxForm — recusas', () => {
         caso: 'peso máximo zero',
         draft: draftWith({ maxWeightKg: '0' }),
         campo: 'maxWeightKg',
-        erro: /maior que zero/,
+        erro: /^Use um valor entre 0,001 e 100 kg\.$/,
       },
       {
         caso: 'peso máximo com 4 casas decimais',
@@ -404,12 +405,69 @@ describe('buildShippingBoxPatch — edição grava só o que mudou', () => {
 
 describe('newShippingBoxDraft — caixa nova', () => {
   it('usa o fator padrão de /admin/frete, com vírgula e duas casas', () => {
-    expect(newShippingBoxDraft(0.8)).toEqual({ ...EMPTY_SHIPPING_BOX_DRAFT, fillFactor: '0,80' });
-    expect(newShippingBoxDraft(1).fillFactor).toBe('1,00');
+    expect(newShippingBoxDraft(0.8, 0)).toEqual({
+      ...EMPTY_SHIPPING_BOX_DRAFT,
+      fillFactor: '0,80',
+    });
+    expect(newShippingBoxDraft(1, 0).fillFactor).toBe('1,00');
   });
 
-  it('com o DEFAULT da coluna (0,90) é o formulário em branco de sempre', () => {
+  it('com o DEFAULT da coluna (0,90) e ordem 0 é o formulário em branco de sempre', () => {
     expect(SHIPPING_BOX_COLUMN_FILL_FACTOR).toBe(0.9);
-    expect(newShippingBoxDraft(SHIPPING_BOX_COLUMN_FILL_FACTOR)).toEqual(EMPTY_SHIPPING_BOX_DRAFT);
+    expect(newShippingBoxDraft(SHIPPING_BOX_COLUMN_FILL_FACTOR, 0)).toEqual(
+      EMPTY_SHIPPING_BOX_DRAFT,
+    );
+  });
+
+  it('a ordem sugerida entra como texto no campo', () => {
+    expect(newShippingBoxDraft(0.9, 4).sortOrder).toBe('4');
+  });
+});
+
+describe('nextShippingBoxSortOrder', () => {
+  it.each([
+    // Sem caixas, a primeira começa em 0.
+    { ordens: [], esperado: 0 },
+    // P = 1, M = 2: maior 2 + 1 = 3.
+    { ordens: [1, 2], esperado: 3 },
+    // A lista não vem em ordem e tem buraco: maior 10 + 1 = 11.
+    { ordens: [10, 1, 5], esperado: 11 },
+    // Só ordens negativas: maior −2 + 1 = −1.
+    { ordens: [-5, -2], esperado: -1 },
+  ])('ordens $ordens sugerem $esperado', ({ ordens, esperado }) => {
+    expect(nextShippingBoxSortOrder(ordens.map((ordem) => ({ sort_order: ordem })))).toBe(esperado);
+  });
+});
+
+describe('limites do banco (migration de endurecimento)', () => {
+  const MEDIDA = 'use um valor entre 0,01 e 300 cm.';
+  const PESO = 'Use um valor entre 0,001 e 100 kg.';
+
+  it.each([
+    { campo: 'outerHeightCm', rotulo: 'Altura' },
+    { campo: 'outerWidthCm', rotulo: 'Largura' },
+    { campo: 'outerLengthCm', rotulo: 'Comprimento' },
+  ] as const)('$campo: 0,01 e 300 passam; 0 e 300,01 são recusados', ({ campo, rotulo }) => {
+    // 0,01 cm com parede de 1 mm (0,1 cm) daria interna negativa: a parede mínima é separada.
+    expect(errorsOf(draftWith({ [campo]: '300' }))[campo]).toBeUndefined();
+    expect(errorsOf(draftWith({ [campo]: '300,01' }))[campo]).toBe(`${rotulo}: ${MEDIDA}`);
+    expect(errorsOf(draftWith({ [campo]: '0' }))[campo]).toBe(`${rotulo}: ${MEDIDA}`);
+    expect(errorsOf(draftWith({ [campo]: '0,01' }))[campo]).not.toBe(`${rotulo}: ${MEDIDA}`);
+  });
+
+  it.each([
+    // 100 kg × 1000 = 100000 g: o teto.
+    { kg: '100', erro: undefined },
+    // 100,001 kg × 1000 = 100001 g: 1 g acima do teto.
+    { kg: '100,001', erro: PESO },
+    // 0,001 kg × 1000 = 1 g: o piso.
+    { kg: '0,001', erro: undefined },
+    { kg: '0', erro: PESO },
+  ])('peso máximo $kg kg: $erro', ({ kg, erro }) => {
+    expect(errorsOf(draftWith({ maxWeightKg: kg })).maxWeightKg).toBe(erro);
+  });
+
+  it('100 kg viram exatamente 100000 g no payload', () => {
+    expect(valuesOf(draftWith({ maxWeightKg: '100' }))).toMatchObject({ max_weight_g: 100000 });
   });
 });

@@ -7,7 +7,7 @@
  * A validação está em `shippingBoxFormSchema.ts`.
  */
 import { useEffect, useRef, useState, type FormEvent } from 'react';
-import { ChevronDown } from 'lucide-react';
+import { ChevronDown, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import {
@@ -51,10 +51,12 @@ interface ShippingBoxFormDialogProps {
   box: ShippingBoxRow | null;
   /** Fator sugerido na caixa nova: o padrão de `/admin/frete`. Na edição não é usado. */
   newBoxFillFactor: number;
+  /** Ordem sugerida na caixa nova: a próxima da lista. Na edição não é usada. */
+  newBoxSortOrder: number;
   saving: boolean;
   /** Mostrado no campo Código enquanto o código digitado for o recusado. */
   rejectedCode?: RejectedShippingBoxCode | null;
-  onSave: (values: ShippingBoxWrite) => void;
+  onSave: (values: ShippingBoxWrite) => unknown;
 }
 
 interface TextFieldProps {
@@ -114,11 +116,17 @@ function TextField({
   );
 }
 
+/** Traz à vista o primeiro campo com erro, rolando só a área dos campos. */
+function revealFirstInvalid(area: HTMLElement | null) {
+  area?.querySelector('[aria-invalid="true"]')?.parentElement?.scrollIntoView({ block: 'center' });
+}
+
 export function ShippingBoxFormDialog({
   open,
   onOpenChange,
   box,
   newBoxFillFactor,
+  newBoxSortOrder,
   saving,
   rejectedCode = null,
   onSave,
@@ -128,23 +136,42 @@ export function ShippingBoxFormDialog({
   const [errors, setErrors] = useState<ShippingBoxFormErrors>({});
   const [advancedOpen, setAdvancedOpen] = useState(false);
   const [failedSubmits, setFailedSubmits] = useState(0);
-  const formRef = useRef<HTMLFormElement>(null);
+  const areaRef = useRef<HTMLDivElement>(null);
+  // Envio em andamento: o segundo clique de um duplo clique chega antes de
+  // `saving` virar true na tela e gravaria a caixa duas vezes.
+  const submittingRef = useRef(false);
 
   useEffect(() => {
     if (!open) return;
-    setDraft(box ? toShippingBoxDraft(box) : newShippingBoxDraft(newBoxFillFactor));
+    submittingRef.current = false;
+    setDraft(
+      box ? toShippingBoxDraft(box) : newShippingBoxDraft(newBoxFillFactor, newBoxSortOrder),
+    );
     setErrors({});
     setAdvancedOpen(box !== null && box.empty_weight_g > 0);
-  }, [open, box, newBoxFillFactor]);
+  }, [open, box, newBoxFillFactor, newBoxSortOrder]);
+
+  // Terminado o salvar (recusado pelo banco, por exemplo), o formulário volta a
+  // aceitar um novo envio.
+  useEffect(() => {
+    if (!saving) submittingRef.current = false;
+  }, [saving]);
+
+  const codeRejection =
+    rejectedCode?.code === normalizeShippingBoxCode(draft.code) ? rejectedCode.message : undefined;
 
   // A área do formulário rola: depois de uma validação recusada, traz para a
   // vista o primeiro campo com erro (rótulo, campo e mensagem).
   useEffect(() => {
     if (failedSubmits === 0) return;
-    formRef.current
-      ?.querySelector('[aria-invalid="true"]')
-      ?.parentElement?.scrollIntoView({ block: 'center' });
+    revealFirstInvalid(areaRef.current);
   }, [failedSubmits]);
+
+  // O mesmo vale quando o banco recusa o código por já estar em uso.
+  useEffect(() => {
+    if (codeRejection === undefined) return;
+    revealFirstInvalid(areaRef.current);
+  }, [codeRejection]);
 
   const setField = (field: ShippingBoxFormField, value: string) => {
     setDraft((current) => ({ ...current, [field]: value }));
@@ -153,6 +180,7 @@ export function ShippingBoxFormDialog({
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    if (saving || !open || submittingRef.current) return;
     const result = parseShippingBoxForm(draft);
     if (!result.ok) {
       setErrors(result.errors);
@@ -160,12 +188,20 @@ export function ShippingBoxFormDialog({
       setFailedSubmits((count) => count + 1);
       return;
     }
-    onSave(result.values);
+    submittingRef.current = true;
+    // Se a gravação falhar antes de `saving` chegar a true na tela (recusa
+    // imediata), o efeito acima não roda: a promessa devolvida libera a trava.
+    const resultado = onSave(result.values);
+    if (resultado instanceof Promise) {
+      void resultado
+        .finally(() => {
+          submittingRef.current = false;
+        })
+        .catch(() => undefined);
+    }
   };
 
   const preview = computeInnerPreview(draft);
-  const codeRejection =
-    rejectedCode?.code === normalizeShippingBoxCode(draft.code) ? rejectedCode.message : undefined;
 
   return (
     <Dialog
@@ -178,11 +214,11 @@ export function ShippingBoxFormDialog({
       }}
     >
       <DialogContent
-        className="max-h-[90vh] max-w-2xl overflow-hidden p-0"
+        className="flex max-h-[90vh] max-w-2xl flex-col overflow-hidden p-0"
         data-testid="admin-form"
       >
-        <form ref={formRef} onSubmit={handleSubmit} noValidate>
-          <DialogHeader className="border-b px-6 py-4">
+        <form onSubmit={handleSubmit} noValidate className="flex min-h-0 flex-1 flex-col">
+          <DialogHeader className="shrink-0 border-b px-6 py-4">
             <DialogTitle>
               {isEdit ? 'Editar caixa de transporte' : 'Nova caixa de transporte'}
             </DialogTitle>
@@ -191,8 +227,8 @@ export function ShippingBoxFormDialog({
             </DialogDescription>
           </DialogHeader>
 
-          <div className="max-h-[64vh] overflow-y-auto">
-            <div className="space-y-5 px-6 py-5">
+          <div ref={areaRef} className="relative min-h-0 flex-1 overflow-y-auto">
+            <fieldset disabled={saving} className="min-w-0 space-y-5 px-6 py-5">
               <div className="grid gap-4 sm:grid-cols-[minmax(0,1fr)_minmax(0,2fr)]">
                 <TextField
                   id="sb-code"
@@ -304,7 +340,7 @@ export function ShippingBoxFormDialog({
                   value={draft.sortOrder}
                   onChange={(value) => setField('sortOrder', value)}
                   error={errors.sortOrder}
-                  hint="Só muda a ordem da lista."
+                  hint="Menor número aparece primeiro; empate ordena pelo código."
                   inputMode="numeric"
                 />
               </div>
@@ -349,10 +385,10 @@ export function ShippingBoxFormDialog({
                   />
                 </CollapsibleContent>
               </Collapsible>
-            </div>
+            </fieldset>
           </div>
 
-          <DialogFooter className="border-t px-6 py-4">
+          <DialogFooter className="shrink-0 border-t px-6 py-4">
             <Button
               type="button"
               variant="ghost"
@@ -361,7 +397,8 @@ export function ShippingBoxFormDialog({
             >
               Cancelar
             </Button>
-            <Button type="submit" disabled={saving} data-testid="admin-save-btn">
+            <Button type="submit" disabled={saving || !open} data-testid="admin-save-btn">
+              {saving ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
               {isEdit ? 'Salvar alterações' : 'Criar caixa'}
             </Button>
           </DialogFooter>

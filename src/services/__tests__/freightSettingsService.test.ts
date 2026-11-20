@@ -13,11 +13,11 @@ interface Call {
   ops: Array<[string, unknown[]]>;
 }
 
-const h = vi.hoisted(() => ({
-  calls: [] as Call[],
-  responder: ((_c: Call): Result => ({ data: [], error: null })) as (c: Call) => Result,
-  loggerError: vi.fn(),
-}));
+const h = vi.hoisted(() => {
+  const calls: Call[] = [];
+  const responder: (c: Call) => Result = () => ({ data: [], error: null });
+  return { calls, responder, loggerError: vi.fn() };
+});
 
 vi.mock('@/integrations/supabase/client', () => {
   function builder(table: string) {
@@ -81,8 +81,10 @@ async function capture(promise: Promise<unknown>): Promise<FreightSettingsError>
     () => null,
     (err: unknown) => err,
   );
-  expect(outcome).toBeInstanceOf(FreightSettingsError);
-  return outcome as FreightSettingsError;
+  if (!(outcome instanceof FreightSettingsError)) {
+    throw new Error(`esperava FreightSettingsError, veio ${String(outcome)}`);
+  }
+  return outcome;
 }
 
 beforeEach(() => {
@@ -200,6 +202,10 @@ describe('freightSettingsService.update', () => {
 
     expect(err.reason).toBe('invalid');
     expect(err.message).toContain('Parâmetros fora do permitido');
+    // Limites novos do banco: divisores de 1000 a 10000 e folga de 0 a 60 dias.
+    expect(err.message).toContain('divisores (1000 a 10000)');
+    expect(err.message).toContain('folga (0 a 60 dias)');
+    expect(err.message).not.toContain('maiores que zero');
     expect(err.message).not.toContain('freight_settings');
     expect(h.loggerError).not.toHaveBeenCalled();
   });

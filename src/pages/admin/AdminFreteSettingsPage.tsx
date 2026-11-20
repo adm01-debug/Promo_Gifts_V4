@@ -7,6 +7,7 @@
  * O `PageSEO` e o container ficam fora dos estados de carregando/erro: o
  * teste AdminStandardRules exige os dois já no primeiro render.
  */
+import { useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { Loader2, Truck } from 'lucide-react';
 import { BusinessCalendarManager } from '@/components/admin/business-calendar';
@@ -19,16 +20,35 @@ import { useFreightSettings, useUpdateFreightSettings } from '@/hooks/freight';
 function FreightSettingsBody() {
   const { row, isLoading, isFetching, isError, refetch } = useFreightSettings();
   const update = useUpdateFreightSettings();
+  const bodyRef = useRef<HTMLDivElement>(null);
+  const refocusAfterSave = useRef(false);
+  const savedAt = row?.updated_at;
+
+  // O formulário é remontado (`key`) quando a linha salva muda e o foco cairia
+  // no corpo da página: depois de um salvar, volta para o primeiro campo.
+  useEffect(() => {
+    if (savedAt === undefined || !refocusAfterSave.current) return;
+    refocusAfterSave.current = false;
+    bodyRef.current?.querySelector<HTMLElement>('input')?.focus();
+  }, [savedAt]);
 
   if (row) {
     return (
-      <FreightSettingsForm
-        key={row.updated_at}
-        row={row}
-        saving={update.isPending}
-        syncing={isFetching}
-        onSave={(patch) => update.mutate(patch)}
-      />
+      <div ref={bodyRef}>
+        <FreightSettingsForm
+          key={row.updated_at}
+          row={row}
+          saving={update.isPending}
+          syncing={isFetching}
+          onSave={(patch) =>
+            update.mutate(patch, {
+              onSuccess: () => {
+                refocusAfterSave.current = true;
+              },
+            })
+          }
+        />
+      </div>
     );
   }
 
