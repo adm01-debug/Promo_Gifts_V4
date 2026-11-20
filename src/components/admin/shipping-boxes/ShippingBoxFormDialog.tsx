@@ -193,9 +193,11 @@ export function ShippingBoxFormDialog({
     // imediata), o efeito acima não roda: a promessa devolvida libera a trava.
     const resultado = onSave(result.values);
     if (resultado instanceof Promise) {
-      void resultado.finally(() => {
-        submittingRef.current = false;
-      });
+      void resultado
+        .finally(() => {
+          submittingRef.current = false;
+        })
+        .catch(() => undefined);
     }
   };
 
