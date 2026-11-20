@@ -12,8 +12,11 @@ export const FREIGHT_QUERY_KEYS = {
     deleted: () => [...FREIGHT_QUERY_KEYS.shippingBoxes.all, 'deleted'] as const,
   },
   settings: ['freight-settings'] as const,
+  /** Prefixo de toda consulta de medidas: invalidar este valor atualiza todas as listas de ids. */
+  productMeasuresAll: ['product-measures'] as const,
   /** Ids ordenados e sem duplicata: a mesma lista em outra ordem reaproveita o cache. */
-  productMeasures: (ids: readonly string[]) => ['product-measures', ids] as const,
+  productMeasures: (ids: readonly string[]) =>
+    [...FREIGHT_QUERY_KEYS.productMeasuresAll, ids] as const,
 };
 
 /** Caixas e parâmetros mudam raramente: 10 minutos sem refazer a consulta. */

@@ -25,10 +25,9 @@ import type { Database } from '@/integrations/supabase/types';
 /**
  * Ordem estável: o `select` gerado é comparável entre versões no diff.
  *
- * `ships_separately` entra aqui no bloco D, junto com a migration que cria a
- * coluna. Até então a linha vem sem o campo: `resolveItemDimensions` não o lê,
- * e `planFreight` trata `PlanInput.shipsSeparately` ausente como `false`, que
- * é o default da coluna.
+ * `ships_separately` (boolean, default `false`) marca o produto que vai sempre
+ * em caixa própria. `resolveItemDimensions` não o lê: quem monta o `PlanInput`
+ * passa `shipsSeparately = row.ships_separately === true`.
  */
 export const PRODUCT_MEASURE_COLUMNS = [
   'id',
@@ -39,6 +38,7 @@ export const PRODUCT_MEASURE_COLUMNS = [
   'length_cm',
   'diameter_cm',
   'weight_g',
+  'ships_separately',
 ] as const;
 
 /** Lista pronta para `supabase.from('products').select(...)`. */
@@ -60,3 +60,10 @@ export type ProductMeasureColumn = (typeof PRODUCT_MEASURE_COLUMNS)[number];
 type ProductsRow = Database['public']['Tables']['products']['Row'];
 
 export type ProductMeasureRow = Pick<ProductsRow, ProductMeasureColumn>;
+
+/**
+ * As colunas de medida e peso, sem `ships_separately`: o que `getFreightReadiness`
+ * e `resolveItemDimensions` leem. Telas que só mostram a prontidão (cadastro,
+ * relatório) não precisam carregar a flag.
+ */
+export type ProductDimensionRow = Omit<ProductMeasureRow, 'ships_separately'>;

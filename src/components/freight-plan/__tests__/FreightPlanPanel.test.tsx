@@ -37,7 +37,46 @@ function renderPanel(props: Parameters<typeof FreightPlanPanel>[0]) {
   );
 }
 
+/** Plano ok de 1 volume (250 cadernetas na GG) repetido `quantidade` vezes, com um aviso. */
+function planoComVolumes(quantidade: number): FreightPlan {
+  const base = plano([{ row: LINHA_CADERNETA, quantity: 250 }]);
+  return {
+    ...base,
+    volumes: Array.from({ length: quantidade }, () => base.volumes[0]),
+    warnings: ['Aviso de teste do plano'],
+  };
+}
+
 describe('FreightPlanPanel', () => {
+  it('mais de 5 volumes: lista recolhida, resumo e aviso à vista, botão abre e fecha', async () => {
+    renderPanel({ plan: planoComVolumes(6), products: PRODUTOS });
+
+    // Resumo: 6 volumes na GG; os totais vêm do plano base (250 × 120 g = 30,0 kg). Não dependem da lista.
+    expect(screen.getByText('6× GG · 30,0 kg · 0,12 m³ · cubado 20,0 kg')).toBeInTheDocument();
+    expect(screen.getByText('Aviso de teste do plano')).toBeInTheDocument();
+    expect(screen.queryByText(/Volume 1 ·/)).not.toBeInTheDocument();
+
+    const abrir = screen.getByRole('button', { name: 'Ver 6 volumes' });
+    expect(abrir).toHaveAttribute('aria-expanded', 'false');
+    await userEvent.click(abrir);
+
+    const ocultar = screen.getByRole('button', { name: 'Ocultar' });
+    expect(ocultar).toHaveAttribute('aria-expanded', 'true');
+    expect(screen.getByText('Volume 6 · Caixa GG')).toBeInTheDocument();
+    expect(screen.getAllByText(/^Volume \d · Caixa GG$/)).toHaveLength(6);
+
+    await userEvent.click(ocultar);
+    expect(screen.queryByText(/Volume 1 ·/)).not.toBeInTheDocument();
+    expect(screen.getByText('Aviso de teste do plano')).toBeInTheDocument();
+  });
+
+  it('até 5 volumes: lista aberta e sem botão de recolher', () => {
+    renderPanel({ plan: planoComVolumes(5), products: PRODUTOS });
+
+    expect(screen.getAllByText(/^Volume \d · Caixa GG$/)).toHaveLength(5);
+    expect(screen.queryByRole('button', { name: /Ver \d+ volumes|Ocultar/ })).toBeNull();
+  });
+
   it('plano ok: resumo, volume com conteúdo e detalhes ao expandir', async () => {
     // 250 cadernetas: 1× GG · 250 × 120 g = 30,0 kg · 0,12 m³ · cubado Correios 20.000 g = 20,0 kg
     // cubado rodoviário 36.003,6 g = 36,0 kg · ocupação 0,7064 = 71%

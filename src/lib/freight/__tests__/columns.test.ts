@@ -44,6 +44,7 @@ describe('PRODUCT_MEASURE_COLUMNS', () => {
       'length_cm',
       'diameter_cm',
       'weight_g',
+      'ships_separately',
     ]);
   });
 
@@ -61,7 +62,7 @@ describe('PRODUCT_MEASURE_COLUMNS', () => {
 describe('PRODUCT_MEASURE_SELECT', () => {
   it('é a lista separada por vírgula, pronta para o select', () => {
     expect(PRODUCT_MEASURE_SELECT).toBe(
-      'id, name, sku, height_cm, width_cm, length_cm, diameter_cm, weight_g',
+      'id, name, sku, height_cm, width_cm, length_cm, diameter_cm, weight_g, ships_separately',
     );
   });
 });
