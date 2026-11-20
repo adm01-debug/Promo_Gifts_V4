@@ -70,3 +70,8 @@ export { computeItemsHash, planFreight, type PlanInput, type PlanOptions } from 
 export { formatPlanSummary } from './formatPlanSummary';
 
 export { formatPlanForClient } from './format';
+
+export { kitToPackInput, type KitPackInput } from './fromKit';
+export { freightPlanSchema, parseStoredFreightPlan, toStoredFreightPlan } from './planSchema';
+export { buildQuoteRequest, quoteRequestSchema, quoteResponseSchema, QUOTE_ERROR_CODES } from './quoteContract';
+export { rankQuotes } from './rankQuotes';
