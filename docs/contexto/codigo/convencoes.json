@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "fix(frete): comparação de ships_separately sem violar lint do tipo expandido (#3939)",
    "feat(frete): bibliotecas do kit, schema do plano, contrato de cotação e ranking (etapas 51, 62, 81, 85) (#3928)",
    "chore(main): release gifts-store 1.14.0 (#3916)",
    "fix: crash appendChild ao digitar na busca global (CommandItem soltos) (#3937)",
-   "docs(migrations): recibos E15 das 20261120030000/030100 (baseline já em #3931) (#3932)",
-   "feat(db): resgata migrations órfãs de branches fechadas (P06 + onboarding) (#3914)"
+   "docs(migrations): recibos E15 das 20261120030000/030100 (baseline já em #3931) (#3932)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",

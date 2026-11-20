@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "9c386c0b226b0f1b02927a77809fa093f3769700",
+  "commit": "df4e1f2684cfa34ddb4726ea3f2adbb74280e489",
   "branch": "main",
-  "data_commit": "2026-11-20T14:31:07Z",
+  "data_commit": "2026-11-20T12:12:11-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "df4e1f26",
+    "data": "2026-11-20",
+    "assunto": "fix(frete): comparação de ships_separately sem violar lint do tipo expandido (#3939)"
+   },
    {
     "sha": "9c386c0b",
     "data": "2026-11-20",
@@ -126,11 +131,6 @@
     "sha": "b6a8d7eb",
     "data": "2026-11-19",
     "assunto": "fix: corrige bugs F12 (sparkline PGRST202 + KPI EMA 403) (#3903)"
-   },
-   {
-    "sha": "a78f9c89",
-    "data": "2026-11-19",
-    "assunto": "chore(main): release gifts-store 1.12.0 (#3899)"
    }
   ],
   "arquivos_mudados_7d": 1446,
@@ -181,7 +181,7 @@
    },
    {
     "pasta": "src/pages/admin",
-    "mudancas": 194
+    "mudancas": 192
    },
    {
     "pasta": "src/pages/quotes",
@@ -301,7 +301,7 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 333
+    "commits": 332
    },
    {
     "autor": "Claude",
@@ -313,7 +313,7 @@
    },
    {
     "autor": "Joaquim Ataides",
-    "commits": 9
+    "commits": 8
    },
    {
     "autor": "dependabot[bot]",

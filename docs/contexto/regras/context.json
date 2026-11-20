@@ -1,9 +1,9 @@
 {
  "meta": {
-  "sha": "9c386c0b226b0f1b02927a77809fa093f3769700",
+  "sha": "df4e1f2684cfa34ddb4726ea3f2adbb74280e489",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-20 14:32 UTC",
+  "generated_at": "2026-11-20 15:13 UTC",
   "files_total": 11064,
   "code_files": 9078,
   "code_lines": 1287211
@@ -557275,10 +557275,19 @@
   }
  },
  "git": {
-  "sha": "9c386c0b226b0f1b02927a77809fa093f3769700",
+  "sha": "df4e1f2684cfa34ddb4726ea3f2adbb74280e489",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "df4e1f2",
+    "date": "2026-11-20",
+    "author": "adm01-debug",
+    "subject": "fix(frete): comparação de ships_separately sem violar lint do tipo expandido (#3939)",
+    "files": [
+     "src/lib/freight/fromKit.ts"
+    ]
+   },
    {
     "sha": "9c386c0",
     "date": "2026-11-20",
@@ -557775,16 +557784,6 @@
      "package-lock.json",
      "package.json"
     ]
-   },
-   {
-    "sha": "6f0bd2f",
-    "date": "2026-11-19",
-    "author": "adm01-debug",
-    "subject": "chore(ci): resgata mitigacao de artifact do e2e-cart (#3897)",
-    "files": [
-     ".github/workflows/e2e-cart.yml",
-     "tests/scripts/e2e-cart-artifact-safety.test.mjs"
-    ]
    }
   ],
   "hot_files": [
@@ -557853,6 +557852,10 @@
     3
    ],
    [
+    "src/lib/freight/fromKit.ts",
+    2
+   ],
+   [
     ".security/policies-baseline.json",
     2
    ],
@@ -557862,10 +557865,6 @@
    ],
    [
     "supabase/rollbacks/20261119213000_rollback.sql",
-    2
-   ],
-   [
-    "supabase/rollbacks/20261119213100_rollback.sql",
     2
    ]
   ]
