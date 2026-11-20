@@ -10,11 +10,11 @@ import { supabase } from '@/integrations/supabase/client';
 import { logger } from '@/lib/logger';
 
 export async function fetchShipsSeparately(productId: string): Promise<boolean> {
-  const { data, error } = await supabase
-    .from('products')
-    .select('ships_separately')
-    .eq('id', productId)
-    .maybeSingle();
+  const ler = () =>
+    supabase.from('products').select('ships_separately').eq('id', productId).maybeSingle();
+  // Falha passageira de rede: uma nova tentativa antes de desistir.
+  let { data, error } = await ler();
+  if (error) ({ data, error } = await ler());
   if (error) {
     logger.error('[productShipsSeparatelyService] falha ao ler ships_separately', {
       code: error.code,

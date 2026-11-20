@@ -157,13 +157,18 @@ export async function executeBatchImport(
   mode: ImportMode,
   onProgress?: (progress: BatchImportProgress) => void,
 ): Promise<BatchImportResult> {
-  // Um pedido de upsert/insert em lote exige as mesmas chaves em todas as linhas:
-  // linhas com e sem `ships_separately` vão em grupos separados.
-  const comCampo = rows.filter((r) => r.ships_separately !== undefined);
-  const semCampo = rows.filter((r) => r.ships_separately === undefined);
+  // Um pedido de upsert/insert em lote exige as mesmas chaves em todas as linhas. Lotes são
+  // faixas contíguas da planilha: abre-se um novo quando a presença de `ships_separately`
+  // muda ou o lote chega a CHUNK_SIZE. Assim a ordem da planilha vale entre pedidos.
   const chunks: ImportRow[][] = [];
-  for (const grupo of [comCampo, semCampo]) {
-    for (let g = 0; g < grupo.length; g += CHUNK_SIZE) chunks.push(grupo.slice(g, g + CHUNK_SIZE));
+  for (const row of rows) {
+    const atual = chunks[chunks.length - 1];
+    const mesmaForma =
+      atual !== undefined &&
+      atual.length < CHUNK_SIZE &&
+      (atual[0].ships_separately !== undefined) === (row.ships_separately !== undefined);
+    if (mesmaForma) atual.push(row);
+    else chunks.push([row]);
   }
   const totalChunks = chunks.length;
   const progress: BatchImportProgress = {

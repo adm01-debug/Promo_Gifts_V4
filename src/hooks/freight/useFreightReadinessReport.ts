@@ -27,6 +27,8 @@ export function useFreightReadinessReport() {
     // O relatório é lido ao voltar do cadastro: sem cache velho, o item corrigido some da lista.
     staleTime: 0,
     refetchOnMount: 'always',
+    // Corrigiu o produto em outra aba e voltou: a lista refaz a leitura ao focar a janela.
+    refetchOnWindowFocus: true,
     queryFn: async (): Promise<FreightReadinessReport> => {
       const [products, suppliers] = await Promise.all([
         fetchActiveProductsForFreight(),
