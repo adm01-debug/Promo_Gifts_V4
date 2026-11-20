@@ -68,6 +68,7 @@ describe('quoteRequestSchema', () => {
     ['peso zero', { volumes: [{ ...PEDIDO_VALIDO.volumes[0], weight_g: 0 }] }],
     ['data pronta em formato BR', { ready_date: '03/12/2026' }],
     ['data pronta inexistente', { ready_date: '2026-13-45' }],
+    ['data pronta sem zero à esquerda', { ready_date: '2026-2-3' }],
     // fevereiro tem 28 dias em 2026; abril tem 30: Date.parse rolaria para março e maio
     ['data pronta 30 de fevereiro', { ready_date: '2026-02-30' }],
     ['data pronta 31 de abril', { ready_date: '2026-04-31' }],
@@ -226,6 +227,21 @@ describe('buildQuoteRequest', () => {
     expect(reason).toContain(trecho);
     // sem caminho técnico nem inglês
     expect(reason).not.toMatch(/_cep|_brl|_date|volumes\.\d|Invalid|expected|received/);
+  });
+
+  it('data fora do formato gera uma mensagem só (não repete "a data não existe")', () => {
+    const plano = planFreight(
+      [{ row: LINHA_CADERNETA, quantity: 460 }],
+      [CAIXA_P, CAIXA_G],
+      OPCOES,
+      SETTINGS_PADRAO,
+    );
+    const r = buildQuoteRequest(plano, { ...params, readyDate: '2026-2-3' });
+    expect(r.status).toBe('error');
+    if (r.status === 'error') {
+      expect(r.reason).toContain('Data de prontidão: a data deve estar no formato AAAA-MM-DD');
+      expect(r.reason).not.toContain('a data não existe');
+    }
   });
 
   it('plano ok sem volumes é recusado pelo contrato, com rótulo', () => {

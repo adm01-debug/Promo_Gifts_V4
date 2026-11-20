@@ -39,7 +39,9 @@ const shippingBoxSchema = z.object({
   outer: dimensionsSchema,
   emptyWeightG: z.number().nonnegative(),
   maxWeightG: z.number().positive(),
-  fillFactor: z.number().positive().max(1),
+  // O motor aceita fator fora de (0, 1] e usa o fator global no lugar (fallback),
+  // mas preserva a caixa como veio: o plano gravado precisa voltar a ler.
+  fillFactor: z.number().finite(),
 });
 
 const packVolumeSchema = z.object({

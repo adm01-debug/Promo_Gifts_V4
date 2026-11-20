@@ -29,7 +29,8 @@ function dataExiste(value: string): boolean {
 const isoDateSchema = z
   .string({ error: 'a data deve ser um texto' })
   .regex(ISO_DATE_PATTERN, 'a data deve estar no formato AAAA-MM-DD')
-  .refine(dataExiste, 'a data não existe');
+  // Com o formato errado o regex já acusou: não repete a mensagem.
+  .refine((value) => !ISO_DATE_PATTERN.test(value) || dataExiste(value), 'a data não existe');
 
 const positiveNumber = z
   .number({ error: 'informe um número válido' })

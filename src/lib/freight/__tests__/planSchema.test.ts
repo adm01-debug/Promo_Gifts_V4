@@ -71,6 +71,23 @@ describe('parseStoredFreightPlan', () => {
     expect(parseStoredFreightPlan(salvo)).toEqual({ status: 'ok', plan: PLANO_REAL });
   });
 
+  it.each([0, 1.5])(
+    'caixa com fillFactor %s (fallback para o fator global no motor) volta a ler',
+    (fillFactor) => {
+      // O motor usa o fator global no lugar de um fator fora de (0, 1], mas grava
+      // a caixa como veio: o plano salvo tem fillFactor 0 ou 1,5 e continua válido.
+      const plano = planFreight(
+        [{ row: LINHA_CADERNETA, quantity: 460 }],
+        [{ ...CAIXA_P, fillFactor }, CAIXA_G],
+        OPCOES,
+        SETTINGS_PADRAO,
+      );
+      expect(plano.status).toBe('ok');
+      const salvo = JSON.parse(JSON.stringify(toStoredFreightPlan(plano)));
+      expect(parseStoredFreightPlan(salvo)).toEqual({ status: 'ok', plan: plano });
+    },
+  );
+
   it('o JSON salvo carrega version: 1 e o plano devolvido não', () => {
     const salvo = toStoredFreightPlan(PLANO_REAL);
     expect(salvo.version).toBe(1);
