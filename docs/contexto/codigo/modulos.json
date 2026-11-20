@@ -15189,8 +15189,8 @@
   {
    "modulo": "components/search",
    "arquivos": 26,
-   "testes": 20,
-   "linhas": 6192,
+   "testes": 21,
+   "linhas": 6200,
    "itens_menu": [],
    "telas": [],
    "rotas_http": [],

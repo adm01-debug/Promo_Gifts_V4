@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "51ab7fb39da77d7565038034ef4508e228f05e7d",
+  "commit": "be9f4a209a0c2331b3fd9bee77f75e3d85e44b2b",
   "branch": "main",
-  "data_commit": "2026-11-20T12:08:52Z",
+  "data_commit": "2026-11-20T09:27:10-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "be9f4a20",
+    "data": "2026-11-20",
+    "assunto": "fix: crash appendChild ao digitar na busca global (CommandItem soltos) (#3937)"
+   },
    {
     "sha": "51ab7fb3",
     "data": "2026-11-20",
@@ -126,14 +131,9 @@
     "sha": "eebe7678",
     "data": "2026-11-19",
     "assunto": "feat(scripts): gate do Vercel no pre-push (resgate de trabalho de agente) (#3901)"
-   },
-   {
-    "sha": "2080226f",
-    "data": "2026-11-19",
-    "assunto": "fix(frete): motor ignora as colunas box_* do catálogo (caixa master, não embalagem) (#3898)"
    }
   ],
-  "arquivos_mudados_7d": 1437,
+  "arquivos_mudados_7d": 1439,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -301,7 +301,7 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 337
+    "commits": 336
    },
    {
     "autor": "Claude",
@@ -313,7 +313,7 @@
    },
    {
     "autor": "Joaquim Ataides",
-    "commits": 12
+    "commits": 11
    },
    {
     "autor": "dependabot[bot]",
@@ -322,9 +322,9 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 11126,
-  "arquivos_codigo": 5599,
-  "linhas_codigo": 1062976,
+  "arquivos_total": 11127,
+  "arquivos_codigo": 5600,
+  "linhas_codigo": 1063043,
   "rotas": 140,
   "rotas_http_backend": 13,
   "vistas_por_id": 0,
@@ -336,7 +336,7 @@
   "tabelas": 529,
   "migrations": 3115,
   "cron_jobs": 122,
-  "testes": 2669,
+  "testes": 2670,
   "workflows": 89,
   "scripts": 285,
   "docs_md": 1489
@@ -1907,8 +1907,8 @@
    "linhas": 130
   },
   "src/components": {
-   "arquivos": 1460,
-   "linhas": 286930
+   "arquivos": 1461,
+   "linhas": 286997
   },
   "src/config": {
    "arquivos": 1,
