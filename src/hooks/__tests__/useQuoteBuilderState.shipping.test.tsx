@@ -1,6 +1,8 @@
 import { renderHook, act } from '@testing-library/react';
 import { useQuoteBuilderState } from '@/hooks/quotes/useQuoteBuilderState';
 import { toast } from 'sonner';
+import { applyDraftToBuilder } from '@/hooks/quotes/quoteDraftApply';
+import { applyRestoredDraft } from '@/lib/quotes/applyRestoredDraft';
 import { vi, describe, it, expect, beforeEach } from 'vitest';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import React from 'react';
@@ -131,5 +133,90 @@ describe('useQuoteBuilderState - Shipping Logic', () => {
 
     expect(result.current.shippingType).toBe('cif');
     expect(result.current.shippingCost).toBe(0);
+  });
+
+  it('should start with mixed boxes and the plan hidden from the client, and accept changes', () => {
+    const { result } = renderHook(() => useQuoteBuilderState(), { wrapper });
+
+    expect(result.current.freightMixMode).toBe('misturar');
+    expect(result.current.showFreightPlanToClient).toBe(false);
+
+    act(() => {
+      result.current.setFreightMixMode('separar');
+      result.current.setShowFreightPlanToClient(true);
+    });
+
+    expect(result.current.freightMixMode).toBe('separar');
+    expect(result.current.showFreightPlanToClient).toBe(true);
+  });
+
+  it('should bring the freight plan options back to default on resetQuote', () => {
+    const { result } = renderHook(() => useQuoteBuilderState(), { wrapper });
+
+    act(() => {
+      result.current.setFreightMixMode('separar');
+      result.current.setShowFreightPlanToClient(true);
+    });
+    act(() => {
+      result.current.resetQuote();
+    });
+
+    expect(result.current.freightMixMode).toBe('misturar');
+    expect(result.current.showFreightPlanToClient).toBe(false);
+  });
+
+  it('round trip do rascunho: o que o autosave grava volta ao restaurar (recuperação)', () => {
+    const { result } = renderHook(() => useQuoteBuilderState(), { wrapper });
+
+    act(() => {
+      applyDraftToBuilder(
+        { freightMixMode: 'separar', showFreightPlanToClient: true },
+        result.current,
+      );
+    });
+
+    expect(result.current.freightMixMode).toBe('separar');
+    expect(result.current.showFreightPlanToClient).toBe(true);
+  });
+
+  it('round trip do rascunho: restauração automática aplica os dois campos', () => {
+    const { result } = renderHook(() => useQuoteBuilderState(), { wrapper });
+    const setters = {
+      setClientId: vi.fn(),
+      setContactId: vi.fn(),
+      setCompanyInfo: vi.fn(),
+      setContactInfo: vi.fn(),
+      setItems: vi.fn(),
+      setDiscountType: vi.fn(),
+      setDiscountValue: vi.fn(),
+      setNegotiationMarkup: vi.fn(),
+      setPaymentMethod: vi.fn(),
+      setPaymentTerms: vi.fn(),
+      setDeliveryTime: vi.fn(),
+      setDeliveryMode: vi.fn(),
+      setDeliveryDate: vi.fn(),
+      setPendingShippingTypeRestore: vi.fn(),
+      setShippingCost: vi.fn(),
+      setFreightMixMode: result.current.setFreightMixMode,
+      setShowFreightPlanToClient: result.current.setShowFreightPlanToClient,
+      setValidUntil: vi.fn(),
+      setValidityDays: vi.fn(),
+      setNotes: vi.fn(),
+      setDraftRestoredAt: vi.fn(),
+      syncValidityDaysFromDate: () => '',
+    };
+
+    act(() => {
+      applyRestoredDraft({ freightMixMode: 'separar', showFreightPlanToClient: true }, setters);
+    });
+    expect(result.current.freightMixMode).toBe('separar');
+    expect(result.current.showFreightPlanToClient).toBe(true);
+
+    // Valor estranho (arquivo editado à mão) volta ao padrão: misturar e desligado.
+    act(() => {
+      applyRestoredDraft({ freightMixMode: 'xyz', showFreightPlanToClient: 'sim' }, setters);
+    });
+    expect(result.current.freightMixMode).toBe('misturar');
+    expect(result.current.showFreightPlanToClient).toBe(false);
   });
 });

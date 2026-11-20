@@ -7,7 +7,9 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
+import { FREIGHT_QUERY_KEYS } from '@/hooks/freight/keys';
 
 const h = vi.hoisted(() => ({
   fetchById: vi.fn(),
@@ -17,6 +19,7 @@ const h = vi.hoisted(() => ({
 
 vi.mock('@/lib/external-db', () => ({
   fetchPromobrindProductById: h.fetchById,
+  fetchPromobrindProducts: () => Promise.resolve([]),
   getProductImageUrl: () => '',
   getProductPrice: () => 10,
   getProductStock: () => 1,
@@ -65,6 +68,20 @@ import AdminProductFormPage from '../AdminProductFormPage';
 
 const PRODUTO = { id: 'p1', sku: 'SKU1', name: 'Copo', updated_at: '2026-11-20T00:00:00Z' };
 
+function renderPagina(client: QueryClient, rota = '/admin/cadastros/produto/p1') {
+  return render(
+    <QueryClientProvider client={client}>
+      <MemoryRouter initialEntries={[rota]}>
+        <Routes>
+          <Route path="/admin/cadastros/produto/:id" element={<AdminProductFormPage />} />
+          <Route path="/admin/cadastros/produto/novo" element={<AdminProductFormPage />} />
+          <Route path="/admin/cadastros" element={<div>lista</div>} />
+        </Routes>
+      </MemoryRouter>
+    </QueryClientProvider>,
+  );
+}
+
 describe('AdminProductFormPage — Não mistura', () => {
   beforeEach(() => {
     h.fetchById.mockReset().mockResolvedValue(PRODUTO);
@@ -74,13 +91,7 @@ describe('AdminProductFormPage — Não mistura', () => {
 
   it('carrega marcado -> salva -> continua marcado ao voltar para a aba Editar', async () => {
     const user = userEvent.setup();
-    render(
-      <MemoryRouter initialEntries={['/admin/cadastros/produto/p1']}>
-        <Routes>
-          <Route path="/admin/cadastros/produto/:id" element={<AdminProductFormPage />} />
-        </Routes>
-      </MemoryRouter>,
-    );
+    renderPagina(new QueryClient());
 
     // 1) carregou: a tabela-base disse true, a view (PRODUTO) não traz a coluna.
     await waitFor(() => expect(screen.getByTestId('flag').textContent).toBe('true'));
@@ -96,5 +107,37 @@ describe('AdminProductFormPage — Não mistura', () => {
     await screen.findByText('historico');
     await user.click(screen.getByRole('tab', { name: /Editar/ }));
     await waitFor(() => expect(screen.getByTestId('flag').textContent).toBe('true'));
+  });
+
+  it('salvar produto editado invalida o cache de medidas do plano de volumes', async () => {
+    const user = userEvent.setup();
+    const client = new QueryClient();
+    const invalidar = vi.spyOn(client, 'invalidateQueries');
+    renderPagina(client);
+    await waitFor(() => expect(screen.getByTestId('flag').textContent).toBe('true'));
+    expect(invalidar).not.toHaveBeenCalled();
+
+    await user.click(screen.getByText('salvar-teste'));
+
+    // Sem isto o orçamento reaproveitaria por até 5 min as medidas de antes do salvamento.
+    await waitFor(() =>
+      expect(invalidar).toHaveBeenCalledWith({ queryKey: FREIGHT_QUERY_KEYS.productMeasuresAll }),
+    );
+    expect(FREIGHT_QUERY_KEYS.productMeasuresAll).toEqual(['product-measures']);
+  });
+
+  it('criar produto (e duplicar, que cria um novo) invalida o cache de medidas', async () => {
+    const user = userEvent.setup();
+    const client = new QueryClient();
+    const invalidar = vi.spyOn(client, 'invalidateQueries');
+    h.dbInvokeSingle.mockResolvedValue({ id: 'novo-1', sku: 'SKU1', name: 'Copo' });
+    renderPagina(client, '/admin/cadastros/produto/novo');
+
+    await user.click(await screen.findByText('salvar-teste'));
+
+    await waitFor(() =>
+      expect(invalidar).toHaveBeenCalledWith({ queryKey: FREIGHT_QUERY_KEYS.productMeasuresAll }),
+    );
+    expect(h.dbInvokeSingle.mock.calls[0][0].operation).toBe('insert');
   });
 });

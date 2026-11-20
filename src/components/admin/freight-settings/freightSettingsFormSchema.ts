@@ -3,8 +3,10 @@
  *
  * O formulário guarda o que a pessoa digita como texto (`FreightSettingsDraft`)
  * e só vira número aqui, na validação. Os limites repetem os CHECK da tabela
- * `freight_settings` (migration 20261119213100): validar antes evita que o
- * banco recuse o salvar com uma mensagem genérica.
+ * `freight_settings` (migration 20261119213100 e a de endurecimento): divisores
+ * de cubagem de 1000 a 10000, fator de 0,50 a 1,00 e folga interna de 0 a 60
+ * dias. Validar antes evita que o banco recuse o salvar com uma mensagem
+ * genérica.
  */
 import { z } from 'zod';
 import type {
@@ -42,23 +44,31 @@ const FIELDS = [
 ] as const satisfies readonly FreightSettingsField[];
 
 const CEP_PATTERN = /^\d{5}-\d{3}$/;
-/** Até 9 dígitos: cabe com folga no `integer` do Postgres. */
-const INTEGER_PATTERN = /^\d{1,9}$/;
+/** Só algarismos; o limite de cada campo vem da faixa abaixo. */
+const INTEGER_PATTERN = /^\d+$/;
 /** Um dígito e até duas casas, com vírgula ou ponto — a coluna é numeric(3,2). */
 const FACTOR_PATTERN = /^\d(?:[.,]\d{1,2})?$/;
 
 const FILL_FACTOR_MIN = 0.5;
 const FILL_FACTOR_MAX = 1;
 
-const DIVISOR_MESSAGE = 'Use um número inteiro maior que zero.';
+const DIVISOR_MIN = 1000;
+const DIVISOR_MAX = 10000;
+const BUFFER_DAYS_MAX = 60;
+
+const DIVISOR_FORMAT_MESSAGE =
+  'Use só algarismos, sem ponto nem vírgula, maior que zero (ex.: 6000).';
+const DIVISOR_RANGE_MESSAGE = `Use um valor entre ${DIVISOR_MIN} e ${DIVISOR_MAX}.`;
+const BUFFER_FORMAT_MESSAGE = 'Use só algarismos, sem ponto nem vírgula (ex.: 2).';
+const BUFFER_RANGE_MESSAGE = `Use um valor entre 0 e ${BUFFER_DAYS_MAX} dias.`;
 const FACTOR_MESSAGE = 'Use um valor entre 0,50 e 1,00, com até duas casas decimais.';
 
 const divisorSchema = z
   .string()
   .trim()
-  .regex(INTEGER_PATTERN, DIVISOR_MESSAGE)
+  .regex(INTEGER_PATTERN, DIVISOR_FORMAT_MESSAGE)
   .transform(Number)
-  .refine((value) => value > 0, DIVISOR_MESSAGE);
+  .refine((value) => value >= DIVISOR_MIN && value <= DIVISOR_MAX, DIVISOR_RANGE_MESSAGE);
 
 export const freightSettingsFormSchema = z.object({
   originCep: z.string().regex(CEP_PATTERN, 'Informe o CEP completo, no formato 00000-000.'),
@@ -73,8 +83,9 @@ export const freightSettingsFormSchema = z.object({
   internalBufferDays: z
     .string()
     .trim()
-    .regex(INTEGER_PATTERN, 'Use um número inteiro de dias, zero ou mais.')
-    .transform(Number),
+    .regex(INTEGER_PATTERN, BUFFER_FORMAT_MESSAGE)
+    .transform(Number)
+    .refine((value) => value <= BUFFER_DAYS_MAX, BUFFER_RANGE_MESSAGE),
   multiPersonalizationRule: z.enum(['max', 'sum']),
 });
 

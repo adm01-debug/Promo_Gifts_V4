@@ -6,6 +6,7 @@ import { MemoryRouter } from 'react-router-dom';
 import AdminCadastrosPage from '@/pages/admin/AdminCadastrosPage';
 import type { ShippingBoxRow } from '@/services/shippingBoxService';
 import { ShippingBoxesManager } from '../ShippingBoxesManager';
+import { BOX_M, BOX_OLD, BOX_P } from './shippingBoxFixtures';
 
 const mocks = vi.hoisted(() => {
   class ShippingBoxError extends Error {
@@ -39,51 +40,6 @@ interface MutateOptions {
   onError?: (error: Error) => void;
 }
 
-/** Caixa P real: externa 27 × 33 × 33 cm, parede 3 mm (interna 26,4 × 32,4 × 32,4), 10 kg. */
-const BOX_P: ShippingBoxRow = {
-  id: 'box-p',
-  code: 'P',
-  name: 'Caixa P',
-  outer_height_cm: 27,
-  outer_width_cm: 33,
-  outer_length_cm: 33,
-  wall_thickness_mm: 3,
-  inner_height_cm: 26.4,
-  inner_width_cm: 32.4,
-  inner_length_cm: 32.4,
-  empty_weight_g: 0,
-  max_weight_g: 10000,
-  fill_factor: 0.9,
-  is_active: true,
-  sort_order: 1,
-  created_at: '2026-11-19T12:00:00Z',
-  updated_at: '2026-11-19T12:00:00Z',
-  deleted_at: null,
-};
-
-/** Caixa M real, aqui inativa: externa 33 × 33 × 47 cm (interna 32,4 × 32,4 × 46,4), 20 kg. */
-const BOX_M: ShippingBoxRow = {
-  ...BOX_P,
-  id: 'box-m',
-  code: 'M',
-  name: 'Caixa M',
-  outer_length_cm: 47,
-  outer_height_cm: 33,
-  inner_height_cm: 32.4,
-  inner_length_cm: 46.4,
-  max_weight_g: 20000,
-  is_active: false,
-  sort_order: 2,
-};
-
-/** Excluída às 01:30 UTC de 19/11 = 22:30 de 18/11 em São Paulo (UTC−3). */
-const BOX_OLD: ShippingBoxRow = {
-  ...BOX_P,
-  id: 'box-old',
-  name: 'Caixa P antiga',
-  deleted_at: '2026-11-19T01:30:00Z',
-};
-
 const DUPLICATE_MESSAGE = 'Já existe uma caixa com o código P. Caixas inativas também contam.';
 
 function listState(rows: ShippingBoxRow[], overrides: Record<string, unknown> = {}) {
@@ -100,7 +56,7 @@ function listState(rows: ShippingBoxRow[], overrides: Record<string, unknown> = 
 }
 
 function mutation() {
-  return { mutate: vi.fn(), isPending: false };
+  return { mutate: vi.fn(), mutateAsync: vi.fn(), isPending: false };
 }
 
 let mutations: Record<'create' | 'restore' | 'softDelete' | 'update', ReturnType<typeof mutation>>;
@@ -203,7 +159,7 @@ describe('ShippingBoxesManager — tabela e estados', () => {
 
 describe('ShippingBoxesManager — criar', () => {
   it('caixa P real: mostra a interna e o volume ao vivo e envia o payload exato', async () => {
-    mutations.create.mutate.mockImplementation((_values: unknown, options?: MutateOptions) =>
+    mutations.create.mutateAsync.mockImplementation((_values: unknown, options?: MutateOptions) =>
       options?.onSuccess?.(),
     );
     const user = userEvent.setup();
@@ -221,8 +177,8 @@ describe('ShippingBoxesManager — criar', () => {
     await submit(user, dialog);
 
     // 10 kg × 1000 = 10000 g. Nenhuma inner_*_cm: são colunas geradas no banco.
-    expect(mutations.create.mutate).toHaveBeenCalledTimes(1);
-    expect(mutations.create.mutate).toHaveBeenCalledWith(
+    expect(mutations.create.mutateAsync).toHaveBeenCalledTimes(1);
+    expect(mutations.create.mutateAsync).toHaveBeenCalledWith(
       {
         code: 'P',
         name: 'Caixa P',
@@ -234,7 +190,8 @@ describe('ShippingBoxesManager — criar', () => {
         max_weight_g: 10000,
         fill_factor: 0.9,
         is_active: true,
-        sort_order: 0,
+        // Caixas P (ordem 1) e M (ordem 2) já existem: maior 2 + 1 = 3.
+        sort_order: 3,
       },
       expect.anything(),
     );
@@ -265,7 +222,7 @@ describe('ShippingBoxesManager — criar', () => {
     await submit(user, dialog);
 
     // 12,5 kg × 1000 = 12500 g
-    expect(mutations.create.mutate).toHaveBeenCalledWith(
+    expect(mutations.create.mutateAsync).toHaveBeenCalledWith(
       expect.objectContaining({ outer_height_cm: 26.5, max_weight_g: 12500 }),
       expect.anything(),
     );
@@ -281,7 +238,7 @@ describe('ShippingBoxesManager — criar', () => {
 
     expect(within(dialog).getByRole('alert')).toHaveTextContent(/Use de 1 a 6 caracteres/);
     expect(within(dialog).getByLabelText('Código')).toBeInvalid();
-    expect(mutations.create.mutate).not.toHaveBeenCalled();
+    expect(mutations.create.mutateAsync).not.toHaveBeenCalled();
   });
 
   it('parede que come a medida: interna zerada bloqueia o salvamento', async () => {
@@ -302,7 +259,7 @@ describe('ShippingBoxesManager — criar', () => {
     expect(within(dialog).getByRole('alert')).toHaveTextContent(
       'Altura: a parede de 20 mm ocupa a medida inteira. A medida interna precisa ser maior que zero.',
     );
-    expect(mutations.create.mutate).not.toHaveBeenCalled();
+    expect(mutations.create.mutateAsync).not.toHaveBeenCalled();
   });
 
   it('peso máximo igual ao da caixa vazia bloqueia o salvamento', async () => {
@@ -319,11 +276,11 @@ describe('ShippingBoxesManager — criar', () => {
     expect(within(dialog).getByRole('alert')).toHaveTextContent(
       'O peso máximo precisa ser maior que o peso da caixa vazia.',
     );
-    expect(mutations.create.mutate).not.toHaveBeenCalled();
+    expect(mutations.create.mutateAsync).not.toHaveBeenCalled();
   });
 
   it('código já em uso: o formulário continua aberto com a mensagem no campo', async () => {
-    mutations.create.mutate.mockImplementation((_values: unknown, options?: MutateOptions) =>
+    mutations.create.mutateAsync.mockImplementation((_values: unknown, options?: MutateOptions) =>
       options?.onError?.(new mocks.ShippingBoxError('duplicate_code', DUPLICATE_MESSAGE)),
     );
     const user = userEvent.setup();
@@ -366,12 +323,12 @@ describe('ShippingBoxesManager — editar, ativar e excluir', () => {
     await submit(user, dialog);
 
     // Os outros 10 campos não vão: regravariam o que outro admin tenha mudado.
-    expect(mutations.update.mutate).toHaveBeenCalledTimes(1);
-    expect(mutations.update.mutate).toHaveBeenCalledWith(
+    expect(mutations.update.mutateAsync).toHaveBeenCalledTimes(1);
+    expect(mutations.update.mutateAsync).toHaveBeenCalledWith(
       { id: 'box-p', patch: { name: 'Caixa pequena' } },
       expect.anything(),
     );
-    expect(mutations.create.mutate).not.toHaveBeenCalled();
+    expect(mutations.create.mutateAsync).not.toHaveBeenCalled();
   });
 
   it('salvar a edição sem mudar nada não grava e fecha o formulário', async () => {
@@ -381,7 +338,7 @@ describe('ShippingBoxesManager — editar, ativar e excluir', () => {
     const dialog = await screen.findByRole('dialog', { name: 'Editar caixa de transporte' });
     await submit(user, dialog);
 
-    expect(mutations.update.mutate).not.toHaveBeenCalled();
+    expect(mutations.update.mutateAsync).not.toHaveBeenCalled();
     await waitFor(() => expect(screen.queryByRole('dialog')).not.toBeInTheDocument());
   });
 

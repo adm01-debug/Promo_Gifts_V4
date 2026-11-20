@@ -14,7 +14,7 @@ import { logger } from '@/lib/logger';
 import { useState, useCallback, useMemo, useRef } from 'react';
 import { useQuery, useQueryClient, useMutation } from '@tanstack/react-query';
 import { toast } from 'sonner';
-import { sanitizeError } from '@/lib/security/sanitize-error';
+import { RlsDeniedError, sanitizeError } from '@/lib/security/sanitize-error';
 import {
   DEFAULT_DETAIL_FORM,
   type ExternalTechnique,
@@ -23,6 +23,7 @@ import {
   type WizardStep,
   type DetailFormState,
 } from './types';
+import { parseProductionDays } from './productionDays';
 
 export function useEngravingWizard(productId: string | undefined, isEdit: boolean) {
   const queryClient = useQueryClient();
@@ -117,8 +118,18 @@ export function useEngravingWizard(productId: string | undefined, isEdit: boolea
 
   const updateMutation = useMutation({
     mutationFn: async ({ id, ...payload }: Record<string, unknown> & { id: string }) => {
-      const { error } = await untypedFrom('print_area_techniques').update(payload).eq('id', id);
+      const { data, error } = await untypedFrom('print_area_techniques')
+        .update(payload)
+        .eq('id', id)
+        .select('id');
       if (error) throw new Error(error.message || 'Erro ao atualizar área');
+      // RLS nega UPDATE em silêncio (0 linhas, sem erro do Postgres): sem o
+      // `.select('id')` acima o toast de sucesso apareceria mesmo sem gravar nada.
+      if (!data?.length) {
+        throw new RlsDeniedError(
+          'Sem permissão para alterar esta área de gravação. Apenas administradores podem salvar.',
+        );
+      }
     },
     onSuccess: () => {
       invalidate();
@@ -178,6 +189,8 @@ export function useEngravingWizard(productId: string | undefined, isEdit: boolea
 
   const handleSaveArea = useCallback(() => {
     if (!selectedComponent || !selectedLocation || !selectedTechnique) return;
+    const productionDays = parseProductionDays(detailForm.production_days);
+    if (!productionDays.ok) return;
     const locationCode = `${selectedComponent.code}-${selectedLocation.code}`.toUpperCase();
     const locationName = `${selectedComponent.name} > ${selectedLocation.name}`;
     const newArea: Omit<PrintAreaTechnique, 'created_at' | 'id' | 'updated_at'> = {
@@ -194,6 +207,7 @@ export function useEngravingWizard(productId: string | undefined, isEdit: boolea
       is_active: detailForm.is_active,
       notes: detailForm.notes || null,
       unit_cost: detailForm.unit_cost,
+      production_days: productionDays.value,
     };
     if (isEdit && productId) {
       createMutation.mutate(newArea);
@@ -246,6 +260,20 @@ export function useEngravingWizard(productId: string | undefined, isEdit: boolea
     (area: EnrichedArea) => {
       if (!isEdit || !area.id || area.id.startsWith('local-')) return;
       updateMutation.mutate({ id: area.id, is_active: !area.is_active });
+    },
+    [isEdit, updateMutation],
+  );
+
+  /** Grava o prazo da técnica (null = usa a tabela). Área ainda não salva só muda na memória. */
+  const handleChangeProductionDays = useCallback(
+    (area: EnrichedArea, days: number | null) => {
+      if (isEdit && area.id && !area.id.startsWith('local-')) {
+        updateMutation.mutate({ id: area.id, production_days: days });
+        return;
+      }
+      setLocalAreas((prev) =>
+        prev.map((a) => (a.id === area.id ? { ...a, production_days: days } : a)),
+      );
     },
     [isEdit, updateMutation],
   );
@@ -338,6 +366,8 @@ export function useEngravingWizard(productId: string | undefined, isEdit: boolea
     confirmDeleteArea,
     cancelDeleteArea,
     handleToggleActive,
+    handleChangeProductionDays,
+    canSaveArea: parseProductionDays(detailForm.production_days).ok,
     flushLocalAreas,
   };
 }

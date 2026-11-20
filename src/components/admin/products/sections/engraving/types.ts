@@ -59,6 +59,8 @@ export interface PrintAreaTechnique {
   ativo?: boolean | null;
   notes: string | null;
   unit_cost: number | null;
+  /** Dias úteis de personalização; null = usa o prazo da faixa da tabela de preço */
+  production_days?: number | null;
   created_at?: string;
   updated_at?: string;
 }
@@ -148,6 +150,8 @@ export interface DetailFormState {
   unit_cost: number | null;
   notes: string;
   is_active: boolean;
+  /** Texto digitado em "Prazo (dias úteis)"; vazio = null */
+  production_days: string;
 }
 
 export const DEFAULT_DETAIL_FORM: DetailFormState = {
@@ -158,4 +162,5 @@ export const DEFAULT_DETAIL_FORM: DetailFormState = {
   unit_cost: null,
   notes: '',
   is_active: true,
+  production_days: '',
 };

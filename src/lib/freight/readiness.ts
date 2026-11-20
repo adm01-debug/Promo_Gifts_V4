@@ -5,7 +5,7 @@
  * para apontar o que falta: o relatório "Produtos sem dados de frete" e o
  * indicador da lista de produtos do admin.
  */
-import type { ProductMeasureRow } from './columns';
+import type { ProductDimensionRow } from './columns';
 import { resolveItemDimensions } from './resolveItemDimensions';
 import type { MeasureSource, MissingMeasure } from './types';
 
@@ -18,7 +18,7 @@ export interface FreightReadiness {
   source: MeasureSource | null;
 }
 
-export function getFreightReadiness(row: ProductMeasureRow): FreightReadiness {
+export function getFreightReadiness(row: ProductDimensionRow): FreightReadiness {
   const result = resolveItemDimensions(row);
   if (result.status === 'incomplete') {
     return { ready: false, missing: result.incomplete.missing, source: null };

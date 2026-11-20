@@ -7,26 +7,48 @@
  * O `PageSEO` e o container ficam fora dos estados de carregando/erro: o
  * teste AdminStandardRules exige os dois já no primeiro render.
  */
+import { useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { Loader2, Truck } from 'lucide-react';
+import { BusinessCalendarManager } from '@/components/admin/business-calendar';
 import { FreightSettingsForm } from '@/components/admin/freight-settings/FreightSettingsForm';
 import { PageSEO } from '@/components/seo/PageSEO';
 import { Button } from '@/components/ui/button';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useFreightSettings, useUpdateFreightSettings } from '@/hooks/freight';
 
 function FreightSettingsBody() {
   const { row, isLoading, isFetching, isError, refetch } = useFreightSettings();
   const update = useUpdateFreightSettings();
+  const bodyRef = useRef<HTMLDivElement>(null);
+  const refocusAfterSave = useRef(false);
+  const savedAt = row?.updated_at;
+
+  // O formulário é remontado (`key`) quando a linha salva muda e o foco cairia
+  // no corpo da página: depois de um salvar, volta para o primeiro campo.
+  useEffect(() => {
+    if (savedAt === undefined || !refocusAfterSave.current) return;
+    refocusAfterSave.current = false;
+    bodyRef.current?.querySelector<HTMLElement>('input')?.focus();
+  }, [savedAt]);
 
   if (row) {
     return (
-      <FreightSettingsForm
-        key={row.updated_at}
-        row={row}
-        saving={update.isPending}
-        syncing={isFetching}
-        onSave={(patch) => update.mutate(patch)}
-      />
+      <div ref={bodyRef}>
+        <FreightSettingsForm
+          key={row.updated_at}
+          row={row}
+          saving={update.isPending}
+          syncing={isFetching}
+          onSave={(patch) =>
+            update.mutate(patch, {
+              onSuccess: () => {
+                refocusAfterSave.current = true;
+              },
+            })
+          }
+        />
+      </div>
     );
   }
 
@@ -96,7 +118,18 @@ export default function AdminFreteSettingsPage() {
           </div>
         </div>
 
-        <FreightSettingsBody />
+        <Tabs defaultValue="parametros">
+          <TabsList>
+            <TabsTrigger value="parametros">Parâmetros</TabsTrigger>
+            <TabsTrigger value="feriados">Feriados</TabsTrigger>
+          </TabsList>
+          <TabsContent value="parametros" className="mt-4">
+            <FreightSettingsBody />
+          </TabsContent>
+          <TabsContent value="feriados" className="mt-4">
+            <BusinessCalendarManager />
+          </TabsContent>
+        </Tabs>
       </div>
     </>
   );

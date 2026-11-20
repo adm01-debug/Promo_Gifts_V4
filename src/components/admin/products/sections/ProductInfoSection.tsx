@@ -11,6 +11,7 @@ import {
 } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import { useSupplierDefaultLeadTime } from '@/hooks/products/useSupplierDefaultLeadTime';
 import { getLeadTimeSource } from '../leadTimeSource';
 import { FieldLabel, SectionCard, type FormSectionProps } from '../ProductFormHelpers';
@@ -234,6 +235,19 @@ export function ProductInfoSection({
                 <Badge variant={leadTimeSource === 'excecao' ? 'default' : 'outline'}>
                   {leadTimeSource === 'excecao' ? 'exceção' : 'padrão'}
                 </Badge>
+              )}
+              {leadTimeSource === 'excecao' && (
+                <Button
+                  type="button"
+                  variant="link"
+                  size="sm"
+                  className="h-auto p-0 text-xs"
+                  onClick={() =>
+                    setValue('lead_time_days', null, { shouldDirty: true, shouldValidate: true })
+                  }
+                >
+                  Usar padrão do fornecedor
+                </Button>
               )}
             </p>
           )}

@@ -8,11 +8,18 @@ import { act, waitFor } from '@testing-library/react';
 
 import type * as FreightSettingsServiceModule from '@/services/freightSettingsService';
 
-const h = vi.hoisted(() => ({
-  service: { get: vi.fn(), update: vi.fn() },
-  toast: { success: vi.fn(), error: vi.fn() },
-  auth: { user: { id: 'user-1' } as { id: string } | null },
-}));
+interface AuthState {
+  user: { id: string } | null;
+}
+
+const h = vi.hoisted(() => {
+  const auth: AuthState = { user: { id: 'user-1' } };
+  return {
+    service: { get: vi.fn(), update: vi.fn() },
+    toast: { success: vi.fn(), error: vi.fn() },
+    auth,
+  };
+});
 
 vi.mock('@/integrations/supabase/client', () => ({ supabase: {} }));
 vi.mock('sonner', () => ({ toast: h.toast }));

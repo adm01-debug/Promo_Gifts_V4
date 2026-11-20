@@ -45,6 +45,7 @@ import { QuoteConcurrencyAlert } from '@/components/quotes/QuoteConcurrencyAlert
 import { QuoteBuilderStepper } from '@/components/quotes/QuoteBuilderStepper';
 import { QuoteBuilderSummaryColumn } from '@/components/quotes/QuoteBuilderSummaryColumn';
 import { QuoteBuilderSkeleton } from '@/components/quotes/QuoteBuilderSkeleton';
+import { FreightPlanCard } from '@/components/freight-plan/FreightPlanCard';
 
 import { QuoteBuilderProductSearch } from '@/components/quotes/QuoteBuilderProductSearch';
 import { useQuoteBuilderState } from '@/hooks/quotes';
@@ -193,6 +194,8 @@ export default function QuoteBuilderPage() {
           deliveryTime: s.deliveryTime,
           shippingType: s.shippingType,
           shippingCost: s.shippingCost,
+          freightMixMode: s.freightMixMode,
+          showFreightPlanToClient: s.showFreightPlanToClient,
           notes: s.notes,
           items: s.items,
         }}
@@ -665,6 +668,14 @@ export default function QuoteBuilderPage() {
                         </p>
                       )}
                     </div>
+
+                    <FreightPlanCard
+                      items={s.items}
+                      mixMode={s.freightMixMode}
+                      onMixModeChange={s.setFreightMixMode}
+                      showToClient={s.showFreightPlanToClient}
+                      onShowToClientChange={s.setShowFreightPlanToClient}
+                    />
 
                     {s.companyInfo?.id && (
                       <a

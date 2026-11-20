@@ -6,7 +6,7 @@
  * A página remonta o formulário (`key`) quando a linha salva muda, então o
  * estado inicial sempre parte do que está no banco.
  */
-import { useMemo, useState, type FormEvent } from 'react';
+import { useEffect, useMemo, useRef, useState, type FormEvent } from 'react';
 import { Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
@@ -138,6 +138,8 @@ export function FreightSettingsForm({ row, saving, syncing, onSave }: FreightSet
   const [draft, setDraft] = useState<FreightSettingsDraft>(() => toFreightSettingsDraft(row));
   const [touched, setTouched] = useState<Partial<Record<FreightSettingsField, boolean>>>({});
   const [submitted, setSubmitted] = useState(false);
+  const [failedSubmits, setFailedSubmits] = useState(0);
+  const formRef = useRef<HTMLFormElement>(null);
 
   const parsed = useMemo(() => parseFreightSettingsDraft(draft), [draft]);
   const patch = useMemo(
@@ -162,6 +164,14 @@ export function FreightSettingsForm({ row, saving, syncing, onSave }: FreightSet
     return parsed.errors[field];
   };
 
+  // Salvar recusado pela validação: leva a tela e o foco ao primeiro campo com erro.
+  useEffect(() => {
+    if (failedSubmits === 0) return;
+    const field = formRef.current?.querySelector<HTMLElement>('[aria-invalid="true"]');
+    field?.scrollIntoView({ block: 'center' });
+    field?.focus({ preventScroll: true });
+  }, [failedSubmits]);
+
   const handleReset = () => {
     setDraft(toFreightSettingsDraft(row));
     setTouched({});
@@ -171,12 +181,13 @@ export function FreightSettingsForm({ row, saving, syncing, onSave }: FreightSet
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setSubmitted(true);
+    if (!parsed.ok) setFailedSubmits((count) => count + 1);
     if (patch === null || !dirty || saving || syncing) return;
     onSave(patch);
   };
 
   return (
-    <form noValidate onSubmit={handleSubmit} data-testid="freight-settings-form">
+    <form ref={formRef} noValidate onSubmit={handleSubmit} data-testid="freight-settings-form">
       <Card>
         <CardHeader>
           <CardTitle className="text-base">Parâmetros do cálculo</CardTitle>
@@ -296,6 +307,9 @@ export function FreightSettingsForm({ row, saving, syncing, onSave }: FreightSet
             <Button
               type="submit"
               disabled={!dirty || saving || syncing}
+              // O blur do campo ao apertar o mouse mostra a mensagem de erro e empurra o
+              // botão; sem isto o mouse solta fora dele e o clique (e o submit) se perde.
+              onMouseDown={(event) => event.preventDefault()}
               data-testid="save-freight-settings"
             >
               {saving ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}

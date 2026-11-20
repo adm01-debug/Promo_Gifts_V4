@@ -1643,6 +1643,8 @@ Após VACUUM ANALYZE executado pelos jobs temporários `vacuum-snapshots-now` e
 | `20261119213100` | `a47a4b359bdf1bed8da503831ae1a6dc1a372804186a9a4fb599b6f49765b8d6` | — | GitHub Actions (db-apply-migration.yml, disparado por adm01-debug, aprovado por @adm01-debug) | E15 | 2026-11-19 22:26:25 UTC | job post-check da run 44628516008 confirmou a version no ledger | aplicada |
 | `20261119220000` | `86b737e483c230339864d45e00dce01ebfe639dd4d972c8b971c8b5ffc9bb126` | — | GitHub Actions (db-apply-migration.yml, disparado por adm01-debug, aprovado por adm01-debug) | E15 | 2026-11-19 22:59:14 UTC | job post-check da run 44633481796 confirmou a version no ledger | aplicada |
 | `20261120013000` | `7d0ba2f172b092e7151107f857b1db28a9788a797f0d324fc078035e19619622` | — | GitHub Actions (db-apply-migration.yml, disparado por adm01-debug, aprovado por @adm01-debug) | E15 | 2026-11-20 02:23:16 UTC | job post-check da run 44660270776 confirmou a version no ledger | aplicada |
+| `20261120030000` | `fe42c3a8488c9ba53206e3c19ad900c324af8880a7bd1ff634d2ce584a0cb8c8` | — | GitHub Actions (db-apply-migration.yml, disparado por adm01-debug, aprovado por @adm01-debug) | E15 | 2026-11-20 10:47:18 UTC | job post-check da run 44722018776 confirmou a version no ledger | aplicada |
+| `20261120030100` | `bcd08d0663b68ddb6853c48aff9163f57fee2327c47d6eea8873b6075fd7bf25` | — | GitHub Actions (db-apply-migration.yml, disparado por adm01-debug, aprovado por @adm01-debug) | E15 | 2026-11-20 10:50:10 UTC | job post-check da run 44722386500 confirmou a version no ledger | aplicada |
 
 ## 2026-11-08 — Reconciliação de `e2e_cleanup_audit`
 
@@ -2737,8 +2739,8 @@ caixas já entram validadas pelos CHECKs novos).
 
 | versão | arquivo | sha256 | status |
 |---|---|---|---|
-| `20261120030000` | `harden_freight_tables` | `fe42c3a8488c9ba53206e3c19ad900c324af8880a7bd1ff634d2ce584a0cb8c8` | pendente — aplicar via `db-apply-migration.yml` (`version=20261120030000`) após merge |
-| `20261120030100` | `seed_shipping_boxes` | `bcd08d0663b68ddb6853c48aff9163f57fee2327c47d6eea8873b6075fd7bf25` | pendente — aplicar via `db-apply-migration.yml` (`version=20261120030100`) após merge |
+| `20261120030000` | `harden_freight_tables` | `fe42c3a8488c9ba53206e3c19ad900c324af8880a7bd1ff634d2ce584a0cb8c8` | aplicada — recibo na tabela E15 (run 44722018776) |
+| `20261120030100` | `seed_shipping_boxes` | `bcd08d0663b68ddb6853c48aff9163f57fee2327c47d6eea8873b6075fd7bf25` | aplicada — recibo na tabela E15 (run 44722386500) |
 
 ### 2026-11-20 — resgate de migrations órfãs de branches fechadas (P06 + onboarding)
 
@@ -2765,9 +2767,13 @@ Anti-regressão: REVOKE EXECUTE em ambas onde se aplica; rollbacks prontos.
 
 | versão | arquivo | sha256 | status |
 |---|---|---|---|
-| `20261118172500` | `security_invoker_views_p06_parcial` | `c5bc7606e0b6a84a9512bf3621c3d93bc77f6a21b5d50de854e544ef9b1de8d9` | pendente — aplicar via `db-apply-migration.yml` (`version=20261118172500`) após merge da PR de resgate |
-| `20261119103000` | `onboarding_auto_assign_org_reemissao` | `826fb238b0cd1a8079481d4a21b275834c5402e1c8865d681179bbec8ad4c57d` | pendente — aplicar via `db-apply-migration.yml` (`version=20261119103000`) após merge da PR de resgate |
+| versão | arquivo | sha256 | status |
+|---|---|---|---|
+| `20261118172500` | `security_invoker_views_p06_parcial` | `c5bc7606e0b6a84a9512bf3621c3d93bc77f6a21b5d50de854e544ef9b1de8d9` | aplicada — recibo na tabela E15 (run 44726866638) |
+| `20261119103000` | `onboarding_auto_assign_org_reemissao` | `826fb238b0cd1a8079481d4a21b275834c5402e1c8865d681179bbec8ad4c57d` | aplicada — recibo na tabela E15 (run 44726871534) |
+
 ### 2026-11-20 — frete: plano de volumes no orçamento (bloco G, G-DDL)
+ no orçamento (bloco G, G-DDL)
 
 Três colunas novas em `public.quotes` (etapa 61 do plano de frete): `freight_plan jsonb`,
 `freight_mix_mode text` (só `misturar`/`separar`) e `show_freight_plan_to_client boolean NOT NULL
@@ -2790,3 +2796,37 @@ depois de elas existirem em produção.
 | versão | arquivo | sha256 | status |
 |---|---|---|---|
 | `20261120040000` | `add_quotes_freight_plan` | `4c0007b4b8f8b608a12693dba5173cab8726627618393ecf61c378af310d4346` | pendente — aplicar via `db-apply-migration.yml` (`version=20261120040000`) após merge da PR G-DDL |
+
+### 2026-11-20 — frete: prazo de produção, feriados e calendário (bloco H-DDL)
+
+Etapa 71 do plano de frete. Três mudanças, todas aditivas:
+
+1. `public.print_area_techniques.production_days integer` (nula = usa o `prazo_dias`
+   da faixa da tabela de preço), com CHECK nomeado `0..365`. Conferido por SELECT
+   em produção em 2026-11-20: 16 colunas, 25263 linhas, 10 MB, a coluna não existe;
+   4 views e 12 funções citam a tabela e nenhuma é recriada; os grants são de
+   tabela (anon SELECT, authenticated SELECT/INSERT/UPDATE/DELETE), então a coluna
+   herda o acesso das demais.
+2. `public.business_calendar` (`day date` PK, `description`, `created_at`,
+   `created_by`): RLS com leitura para `authenticated` e escrita só para
+   `public.is_admin()` (mesmo padrão de `shipping_boxes`); `anon` sem acesso.
+   Seed de 26 datas (13 em 2026 e 13 em 2027): feriados nacionais + Carnaval e Corpus Christi (pontos facultativos em que a produção para), `ON CONFLICT (day) DO
+   NOTHING`. Móveis calculados pelo algoritmo de Meeus/Gauss: Páscoa 2026 =
+   05/04 e 2027 = 28/03. DELETE físico é o contrato da tabela (dado de calendário),
+   por isso o `soft-delete-exempt` na migration.
+3. `COMMENT ON COLUMN public.products.lead_time_days` passa a dizer que é o prazo
+   de liberação do fornecedor, e que valor diferente do padrão é exceção. O texto
+   anterior fica registrado no rollback.
+
+Validação prévia em PostgreSQL 16 local com stubs (`auth.users`, `auth.uid()`,
+`public.is_admin()`, papéis anon/authenticated/service_role): aplica 2x → 26
+linhas (não 52); authenticated não admin lê, não insere nem apaga; admin
+insere/atualiza/apaga; anon recebe "permission denied"; CHECKs recusam descrição
+vazia ou com 121 caracteres e `production_days` -1 ou 366; rollback 2x no mesmo
+dia (backup `_2` sem sobrescrever); reaplica e restaura do backup.
+
+As policies novas entram em `.security/policies-baseline.json` depois de aplicadas.
+
+| versão | arquivo | sha256 | status |
+|---|---|---|---|
+| `20261120041000` | `production_lead_time_calendar` | `ded27deffa89754ea8fd9ab3825008c0e76aad872e0fda66df45b9f71569ab3c` | pendente — aplicar via `db-apply-migration.yml` (`version=20261120041000`) após merge da PR H-DDL |

@@ -13,11 +13,11 @@ interface Call {
   ops: Array<[string, unknown[]]>;
 }
 
-const h = vi.hoisted(() => ({
-  calls: [] as Call[],
-  responder: ((_c: Call): Result => ({ data: [], error: null })) as (c: Call) => Result,
-  loggerError: vi.fn(),
-}));
+const h = vi.hoisted(() => {
+  const calls: Call[] = [];
+  const responder: (c: Call) => Result = () => ({ data: [], error: null });
+  return { calls, responder, loggerError: vi.fn() };
+});
 
 vi.mock('@/integrations/supabase/client', () => {
   function builder(table: string) {
@@ -81,7 +81,7 @@ const duplicadoSobRls = () =>
   );
 
 const NADA_ALTERADO =
-  'Nada foi alterado: a caixa foi modificada por outra pessoa ou você não tem permissão. Atualize a lista e tente de novo.';
+  'Nada foi alterado: a caixa foi modificada por outra pessoa ou você não tem permissão. A lista foi atualizada; confira a caixa e tente de novo.';
 
 /** Caixa P real: externa 27 × 33 × 33 cm, parede 3 mm, 10 kg. */
 const CAIXA_P: ShippingBoxWrite = {
@@ -130,8 +130,10 @@ async function capture(promise: Promise<unknown>): Promise<ShippingBoxError> {
     () => null,
     (err: unknown) => err,
   );
-  expect(outcome).toBeInstanceOf(ShippingBoxError);
-  return outcome as ShippingBoxError;
+  if (!(outcome instanceof ShippingBoxError)) {
+    throw new Error(`esperava ShippingBoxError, veio ${String(outcome)}`);
+  }
+  return outcome;
 }
 
 beforeEach(() => {
@@ -373,6 +375,9 @@ describe('shippingBoxService — erros de escrita', () => {
 
     expect(err.reason).toBe('invalid');
     expect(err.message).toContain('Dados da caixa fora do permitido');
+    // Limites novos do banco: medida externa de 0,01 a 300 cm e peso máximo até 100 kg.
+    expect(err.message).toContain('0,01 a 300 cm');
+    expect(err.message).toContain('até 100 kg');
     expect(err.message).not.toContain('shipping_boxes');
   });
 
