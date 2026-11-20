@@ -2,6 +2,18 @@
 
 Diff semântico gerado a cada coleta em que algo mudou.
 
+## 2026-11-20 19:16 UTC
+
+- **colunas** adicionado (8): `public.quote_comments.content`, `public.quote_comments.created_at`, `public.quote_comments.id`, `public.quote_comments.is_edited`, `public.quote_comments.parent_id`, `public.quote_comments.quote_id`, `public.quote_comments.updated_at`, `public.quote_comments.user_id`
+- **constraints** adicionado (7): `public.quote_comments.quote_comments_content_length_check`, `public.quote_comments.quote_comments_id_quote_id_key`, `public.quote_comments.quote_comments_not_self_parent_check`, `public.quote_comments.quote_comments_parent_quote_fkey`, `public.quote_comments.quote_comments_pkey`, `public.quote_comments.quote_comments_quote_id_fkey`, `public.quote_comments.quote_comments_user_id_fkey`
+- **functions** adicionado (1): `public.enforce_quote_comment_mutation()`
+- **grants** adicionado (2): `public.quote_comments:authenticated`, `public.quote_comments:service_role`
+- **indexes** adicionado (5): `public.quote_comments_id_quote_id_key`, `public.quote_comments_parent_quote_idx`, `public.quote_comments_pkey`, `public.quote_comments_quote_created_id_idx`, `public.quote_comments_user_id_idx`
+- **migrations** adicionado (1): `20261120180000_restore_quote_comments_scoped_threads`
+- **policies (RLS)** adicionado (4): `public.quote_comments.quote_comments_delete_own_visible_quote`, `public.quote_comments.quote_comments_insert_own_visible_quote`, `public.quote_comments.quote_comments_select_visible_quote`, `public.quote_comments.quote_comments_update_own_visible_quote`
+- **tabelas** adicionado (1): `public.quote_comments`
+- **triggers** adicionado (1): `public.quote_comments.quote_comments_enforce_mutation`
+
 ## 2026-11-20 17:15 UTC
 
 - **functions** alterado (1): `public.update_quote_transactional(_quote_id uuid, _quote_patch jsonb, _items jsonb, _expected_version integer)`

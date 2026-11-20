@@ -19,18 +19,18 @@ Gerado automaticamente a cada hora pelo workflow `contexto.yml` (job `banco`) na
 
 | categoria | quantidade |
 |---|---|
-| tabelas | 444 |
-| colunas | 8633 |
+| tabelas | 445 |
+| colunas | 8641 |
 | views | 219 |
-| functions | 1359 |
-| triggers | 427 |
-| policies (RLS) | 1079 |
-| índices | 1349 |
+| functions | 1360 |
+| triggers | 428 |
+| policies (RLS) | 1083 |
+| índices | 1354 |
 | tipos/enums | 17 |
 | extensões | 18 |
 | cron jobs | 143 |
 | filas pgmq | 0 |
-| migrations | 2999 |
+| migrations | 3000 |
 | buckets | 11 |
 | edge functions | n/d |
 | webhooks | 0 |

@@ -300,6 +300,7 @@ Um arquivo por tabela em `tables/<schema>/<tabela>.md` (colunas, constraints, í
 | [public.qa_image_coverage_log](tables/public/qa_image_coverage_log.md) | table | sim | 4 | 5 | não |  |
 | [public.query_telemetry](tables/public/query_telemetry.md) | table | sim | 3 | 18 | não |  |
 | [public.quote_approval_tokens](tables/public/quote_approval_tokens.md) | table | sim | 4 | 20 | não | Migrado do Lovable em 2026-05-22 (Lote A). Tokens públicos com assinatura eletrônica MP 2.200-2/2001. |
+| [public.quote_comments](tables/public/quote_comments.md) | table | sim | 4 | 8 | não | Quote-scoped internal comments. Visibility inherits quotes RLS; mutations require authorship. Root comments with replies cannot be deleted. |
 | [public.quote_drafts](tables/public/quote_drafts.md) | table | sim | 1 | 4 | não |  |
 | [public.quote_history](tables/public/quote_history.md) | table | sim | 2 | 10 | não | Audit trail de mudanças em orçamentos. Schema migrations/20251220131225 (com policies adaptadas: quotes.created_by/assigned_to em vez de seller_id que não existe). |
 | [public.quote_item_personalizations](tables/public/quote_item_personalizations.md) | table | sim | 4 | 18 | não | Personalização (gravação) de cada item de orçamento. Cada item pode ter múltiplas técnicas/posições. Cascateia delete com quote_items. |

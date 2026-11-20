@@ -112,6 +112,7 @@
 |---|---|---|---|
 | public.discount_approval_requests | discount_approval_requests_quote_id_fkey | quote_id | CASCADE |
 | public.kit_quote_requests | kit_quote_requests_quote_id_fkey | quote_id | RESTRICT |
+| public.quote_comments | quote_comments_quote_id_fkey | quote_id | CASCADE |
 | public.quote_history | quote_history_quote_id_fkey | quote_id | CASCADE |
 | public.quote_items | quote_items_quote_id_fkey | quote_id | CASCADE |
 | public.quote_versions | quote_versions_quote_id_fkey | quote_id | CASCADE |

@@ -322,6 +322,9 @@
 | public.profiles | organization_id | public.organizations | id | NO ACTION | NO ACTION |
 | public.profiles | user_id | auth.users | id | CASCADE | NO ACTION |
 | public.quote_approval_tokens | seller_id | auth.users | id | CASCADE | NO ACTION |
+| public.quote_comments | quote_id, parent_id | public.quote_comments | id, quote_id | RESTRICT | NO ACTION |
+| public.quote_comments | quote_id | public.quotes | id | CASCADE | NO ACTION |
+| public.quote_comments | user_id | auth.users | id | RESTRICT | NO ACTION |
 | public.quote_history | quote_id | public.quotes | id | CASCADE | NO ACTION |
 | public.quote_history | user_id | auth.users | id | NO ACTION | NO ACTION |
 | public.quote_item_personalizations | quote_item_id | public.quote_items | id | CASCADE | NO ACTION |

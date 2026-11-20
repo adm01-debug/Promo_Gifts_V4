@@ -941,6 +941,11 @@ Uso e tamanho em `stats.md`.
 | public.quote_approval_tokens | idx_quote_approval_tokens_seller_id | btree | seller_id | não | sim |  |
 | public.quote_approval_tokens | quote_approval_tokens_pkey | btree | id | sim | sim |  |
 | public.quote_approval_tokens | quote_approval_tokens_token_key | btree | token | sim | sim |  |
+| public.quote_comments | quote_comments_id_quote_id_key | btree | id, quote_id | sim | sim |  |
+| public.quote_comments | quote_comments_parent_quote_idx | btree | parent_id, quote_id | não | sim | `(parent_id IS NOT NULL)` |
+| public.quote_comments | quote_comments_pkey | btree | id | sim | sim |  |
+| public.quote_comments | quote_comments_quote_created_id_idx | btree | quote_id, created_at, id | não | sim |  |
+| public.quote_comments | quote_comments_user_id_idx | btree | user_id | não | sim |  |
 | public.quote_drafts | quote_drafts_pkey | btree | id | sim | sim |  |
 | public.quote_history | idx_quote_history_quote_id_ts | btree | quote_id, created_at | não | sim | `(quote_id IS NOT NULL)` |
 | public.quote_history | idx_quote_history_user_id | btree | user_id | não | sim |  |

@@ -769,6 +769,8 @@ Roles da API: `anon` (sem login), `authenticated` (logado), `service_role` (bypa
 | public.query_telemetry | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
 | public.quote_approval_tokens | authenticated | DELETE, INSERT, SELECT, UPDATE |
 | public.quote_approval_tokens | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
+| public.quote_comments | authenticated | DELETE, INSERT, SELECT, UPDATE |
+| public.quote_comments | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
 | public.quote_drafts | authenticated | DELETE, INSERT, SELECT, UPDATE |
 | public.quote_drafts | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
 | public.quote_history | authenticated | INSERT, SELECT |
