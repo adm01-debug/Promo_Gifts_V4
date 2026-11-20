@@ -23,7 +23,7 @@ export class FreightReadinessError extends Error {
 }
 
 export const FREIGHT_READINESS_SELECT =
-  'id, name, sku, height_cm, width_cm, length_cm, diameter_cm, weight_g, supplier_id';
+  'id, name, sku, height_cm, width_cm, length_cm, diameter_cm, weight_g, ships_separately, supplier_id';
 
 async function fetchPage(from: number) {
   const { data, error } = await supabase

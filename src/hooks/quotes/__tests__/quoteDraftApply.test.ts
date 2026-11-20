@@ -140,6 +140,23 @@ describe('draftDiffersFromCurrent', () => {
     expect(draftDiffersFromCurrent({ discountValue: 15 }, emptyCurrent)).toBe(true);
   });
 
+  it('detecta só o modo de mistura diferente (achado do Devin na #3933)', () => {
+    expect(draftDiffersFromCurrent({ freightMixMode: 'separar' }, emptyCurrent)).toBe(true);
+  });
+
+  it('detecta só o switch "mostrar ao cliente" diferente', () => {
+    expect(draftDiffersFromCurrent({ showFreightPlanToClient: true }, emptyCurrent)).toBe(true);
+  });
+
+  it('rascunho antigo sem os dois campos não difere da tela nos padrões', () => {
+    expect(
+      draftDiffersFromCurrent(
+        {},
+        { ...emptyCurrent, freightMixMode: 'misturar', showFreightPlanToClient: false },
+      ),
+    ).toBe(false);
+  });
+
   it('não acusa diferença quando o rascunho repete a tela', () => {
     expect(
       draftDiffersFromCurrent(

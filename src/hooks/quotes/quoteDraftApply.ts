@@ -46,6 +46,7 @@ export type QuoteDraftSnapshot = Pick<
   | 'deliveryTime'
   | 'discountType'
   | 'discountValue'
+  | 'freightMixMode'
   | 'items'
   | 'negotiationMarkup'
   | 'notes'
@@ -53,6 +54,7 @@ export type QuoteDraftSnapshot = Pick<
   | 'paymentTerms'
   | 'shippingCost'
   | 'shippingType'
+  | 'showFreightPlanToClient'
   | 'validityDays'
   | 'validUntil'
 >;
@@ -176,6 +178,8 @@ function comparable(snapshot: {
   shippingCost?: number | null;
   notes?: string | null;
   items?: unknown[] | null;
+  freightMixMode?: unknown;
+  showFreightPlanToClient?: unknown;
 }): string {
   const text = (value?: string | null) => value ?? '';
   const num = (value?: number | null) => value ?? 0;
@@ -196,6 +200,10 @@ function comparable(snapshot: {
     num(snapshot.shippingCost),
     text(snapshot.notes),
     snapshot.items ?? [],
+    // Campo ausente (rascunho antigo) e o padrão do builder têm de comparar iguais,
+    // senão o diálogo de recuperação abriria para todo rascunho salvo antes da etapa 46.
+    parseFreightMixMode(snapshot.freightMixMode),
+    parseShowFreightPlan(snapshot.showFreightPlanToClient),
   ]);
 }
 
