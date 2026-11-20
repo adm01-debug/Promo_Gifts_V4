@@ -52,6 +52,11 @@ const PACKAGING_FLAGS = [
     label: 'Embalagem Nativa',
     hint: 'O produto já vem com embalagem comercial do fabricante',
   },
+  {
+    key: 'ships_separately' as const,
+    label: 'Não mistura com outros itens',
+    hint: 'Vai em caixa própria no frete — frágil, líquido ou volumoso',
+  },
 ];
 
 export function ProductPackagingSection({

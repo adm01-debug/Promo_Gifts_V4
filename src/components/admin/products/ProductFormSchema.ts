@@ -80,6 +80,7 @@ export const productFormSchema = z.object({
   allows_personalization: z.boolean().default(true),
   has_gift_box: z.boolean().default(false),
   has_optional_packaging: z.boolean().default(false),
+  ships_separately: z.boolean().default(false),
 
   // Fiscal
   ncm_code: z.string().max(20).optional().default(''),
@@ -189,6 +190,7 @@ export const defaultFormValues: ProductFormData = {
   allows_personalization: true,
   has_gift_box: false,
   has_optional_packaging: false,
+  ships_separately: false,
   ncm_code: '',
   ean: '',
   gtin: '',

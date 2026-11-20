@@ -168,6 +168,7 @@
     "stock_daily_summary",
     "supplier_branches",
     "supplier_products_raw",
+    "supplier_settings",
     "suppliers",
     "system_kill_switches",
     "system_settings",

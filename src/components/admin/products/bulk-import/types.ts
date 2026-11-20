@@ -68,6 +68,7 @@ export const TARGET_FIELDS = [
   { key: 'is_new', label: 'Novidade', required: false },
   { key: 'is_on_sale', label: 'Em Promoção', required: false },
   { key: 'is_kit', label: 'É Kit', required: false },
+  { key: 'ships_separately', label: 'Não mistura (sim/não)', required: false },
   // ── Outros ──
   { key: 'gender', label: 'Gênero', required: false },
   { key: 'dimensions', label: 'Dimensões (texto)', required: false },
@@ -114,6 +115,7 @@ export const TEMPLATE_EXAMPLES: Record<string, number | string> = {
   is_new: 'Sim',
   is_on_sale: 'Não',
   is_kit: 'Não',
+  ships_separately: 'Não',
   gender: 'Unissex',
   dimensions: '14 x 1.2 cm',
 };
@@ -245,6 +247,11 @@ export const ALIAS_MAP: Record<string, TargetFieldKey> = {
   kit: 'is_kit',
   iskit: 'is_kit',
   ekit: 'is_kit',
+  naomistura: 'ships_separately',
+  naomisturar: 'ships_separately',
+  naomisturasimnao: 'ships_separately',
+  shipsseparately: 'ships_separately',
+  caixapropria: 'ships_separately',
   genero: 'gender',
   gender: 'gender',
   sexo: 'gender',

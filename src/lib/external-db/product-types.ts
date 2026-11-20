@@ -148,6 +148,7 @@ export interface PromobrindProduct {
   allows_personalization?: boolean | null;
   has_gift_box?: boolean | null;
   has_optional_packaging?: boolean | null;
+  ships_separately?: boolean | null;
   // Fiscal
   ncm_code?: string | null;
   ean?: string | null;

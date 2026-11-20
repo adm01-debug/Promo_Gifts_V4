@@ -28,6 +28,7 @@ import {
   type ColumnMapping,
   type ValidationResult,
 } from './bulk-import/types';
+import { parseBooleanCell, parseStrictBooleanCell } from './bulk-import/parseBooleanCell';
 import { StepUpload } from './bulk-import/StepUpload';
 import { StepMapping } from './bulk-import/StepMapping';
 import { StepPreview } from './bulk-import/StepPreview';
@@ -159,7 +160,17 @@ export function BulkImportDialog({ open, onOpenChange, onComplete }: BulkImportD
       for (const boolField of BOOLEAN_FIELDS) {
         if (mapped[boolField] !== undefined && mapped[boolField] !== '') {
           const raw = String(mapped[boolField]).toLowerCase().trim();
-          mapped[boolField] = ['true', '1', 'sim', 'yes', 's', 'y', 'x'].includes(raw);
+          mapped[boolField] = parseBooleanCell(raw);
+        }
+      }
+
+      if (mapped.ships_separately !== undefined && mapped.ships_separately !== '') {
+        const valor = parseStrictBooleanCell(mapped.ships_separately);
+        if (valor === undefined) {
+          warnings.push('"Não mistura" ignorado (use sim ou não)');
+          delete mapped.ships_separately;
+        } else {
+          mapped.ships_separately = valor;
         }
       }
 
@@ -231,6 +242,11 @@ export function BulkImportDialog({ open, onOpenChange, onComplete }: BulkImportD
               is_new: mapped.is_new ?? null,
               is_on_sale: mapped.is_on_sale ?? null,
               is_kit: mapped.is_kit ?? null,
+              // Só quando a planilha tem a coluna: sem ela o produto existente (modo
+              // upsert) mantém o valor que já tem, em vez de voltar para "mistura".
+              ...(typeof mapped.ships_separately === 'boolean'
+                ? { ships_separately: mapped.ships_separately }
+                : {}),
               gender: mapped.gender || null,
               dimensions: mapped.dimensions || null,
             } as unknown as ImportRow)
