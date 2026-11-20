@@ -29,8 +29,8 @@ describe('componentes prontos continuam montados', () => {
 
   it('/estoque monta o painel preditivo de ruptura', () => {
     const pagina = ler('src/pages/admin/StockDashboardPage.tsx');
-    expect(pagina).toContain("from '@/components/inventory/risk/RupturePanelEma'");
-    expect(pagina).toContain('<RupturePanelEma />');
+    expect(pagina).toContain("import('@/components/inventory/risk/RupturePanelEma')");
+    expect(pagina).toContain('<RupturePanelEma focusedLevel={emaActiveLevel} />');
   });
 
   it('a flag que promete o painel de ruptura continua ligada', () => {
@@ -47,6 +47,6 @@ describe('componentes prontos continuam montados', () => {
     // deveria estar aqui. Se um sair sem o outro, o cache fica órfão de novo.
     const pagina = ler('src/pages/admin/StockDashboardPage.tsx');
     expect(pagina).toContain("queryKey: ['rupture-alerts']");
-    expect(pagina).toContain('<RupturePanelEma />');
+    expect(pagina).toContain('<RupturePanelEma focusedLevel={emaActiveLevel} />');
   });
 });
