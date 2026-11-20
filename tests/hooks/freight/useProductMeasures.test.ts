@@ -29,6 +29,7 @@ vi.mock('@/integrations/supabase/client', () => ({
                 length_cm: 3,
                 diameter_cm: null,
                 weight_g: 100,
+                ships_separately: false,
               })),
               error: null,
             });
@@ -88,6 +89,42 @@ describe('useProductMeasures', () => {
 
     expect(h.calls).toHaveLength(1);
     expect(h.calls[0].ids).toEqual(['p001', 'p002']);
+  });
+
+  it('remover um produto da lista não volta a "carregando" (sem piscar o esqueleto)', async () => {
+    const carregando: boolean[] = [];
+    const { result, rerender } = renderHookWithProviders(
+      (props: { lista: string[] }) => {
+        const resultado = useProductMeasures(props.lista);
+        carregando.push(resultado.isLoading);
+        return resultado;
+      },
+      { initialProps: { lista: ['p001', 'p002'] } },
+    );
+    await waitFor(() => expect(result.current.isLoading).toBe(false));
+    carregando.length = 0;
+
+    // 2 ids -> 1 id: a chave de cache muda e há 1 leitura nova; as medidas de p001 já estavam na tela.
+    rerender({ lista: ['p001'] });
+    await waitFor(() => expect(h.calls).toHaveLength(2));
+    await waitFor(() => expect(result.current.isFetching).toBe(false));
+
+    expect(carregando).not.toContain(true);
+    expect(result.current.measures.get('p001')?.name).toBe('Produto p001');
+  });
+
+  it('produto novo na lista continua "carregando" até as medidas dele chegarem', async () => {
+    const { result, rerender } = renderHookWithProviders(
+      (props: { lista: string[] }) => useProductMeasures(props.lista),
+      { initialProps: { lista: ['p001'] } },
+    );
+    await waitFor(() => expect(result.current.isLoading).toBe(false));
+
+    rerender({ lista: ['p001', 'p002'] });
+    // p002 ainda não tem medida: o plano não pode ser calculado com a linha faltando.
+    expect(result.current.isLoading).toBe(true);
+    await waitFor(() => expect(result.current.isLoading).toBe(false));
+    expect(result.current.measures.get('p002')?.name).toBe('Produto p002');
   });
 
   it('sem ids: não consulta e devolve Map vazio', () => {

@@ -22,9 +22,10 @@ import {
 
 function makeTarget() {
   const order: string[] = [];
-  const spy = (name: string) => vi.fn(() => {
-    order.push(name);
-  });
+  const spy = (name: string) =>
+    vi.fn(() => {
+      order.push(name);
+    });
   return {
     order,
     target: {
@@ -41,6 +42,8 @@ function makeTarget() {
       setDeliveryTime: spy('setDeliveryTime'),
       setShippingType: spy('setShippingType'),
       setShippingCost: spy('setShippingCost'),
+      setFreightMixMode: spy('setFreightMixMode'),
+      setShowFreightPlanToClient: spy('setShowFreightPlanToClient'),
       setValidUntil: spy('setValidUntil'),
       setValidityDays: spy('setValidityDays'),
       setNotes: spy('setNotes'),
@@ -137,14 +140,58 @@ describe('draftDiffersFromCurrent', () => {
     expect(draftDiffersFromCurrent({ discountValue: 15 }, emptyCurrent)).toBe(true);
   });
 
+  it('detecta só o modo de mistura diferente (achado do Devin na #3933)', () => {
+    expect(draftDiffersFromCurrent({ freightMixMode: 'separar' }, emptyCurrent)).toBe(true);
+  });
+
+  it('detecta só o switch "mostrar ao cliente" diferente', () => {
+    expect(draftDiffersFromCurrent({ showFreightPlanToClient: true }, emptyCurrent)).toBe(true);
+  });
+
+  it('rascunho antigo sem os dois campos não difere da tela nos padrões', () => {
+    expect(
+      draftDiffersFromCurrent(
+        {},
+        { ...emptyCurrent, freightMixMode: 'misturar', showFreightPlanToClient: false },
+      ),
+    ).toBe(false);
+  });
+
   it('não acusa diferença quando o rascunho repete a tela', () => {
     expect(
-      draftDiffersFromCurrent({ notes: 'igual', items: [item] }, { ...emptyCurrent, notes: 'igual', items: [item] }),
+      draftDiffersFromCurrent(
+        { notes: 'igual', items: [item] },
+        { ...emptyCurrent, notes: 'igual', items: [item] },
+      ),
     ).toBe(false);
   });
 });
 
 describe('applyDraftToBuilder', () => {
+  it('restaura o modo de mistura e o switch do plano de volumes', () => {
+    const { target } = makeTarget();
+    applyDraftToBuilder({ freightMixMode: 'separar', showFreightPlanToClient: true }, target);
+
+    expect(target.setFreightMixMode).toHaveBeenCalledWith('separar');
+    expect(target.setShowFreightPlanToClient).toHaveBeenCalledWith(true);
+  });
+
+  it('valor estranho no rascunho vira o padrão (misturar, desligado)', () => {
+    const { target } = makeTarget();
+    applyDraftToBuilder({ freightMixMode: 'qualquer', showFreightPlanToClient: 'sim' }, target);
+
+    expect(target.setFreightMixMode).toHaveBeenCalledWith('misturar');
+    expect(target.setShowFreightPlanToClient).toHaveBeenCalledWith(false);
+  });
+
+  it('rascunho antigo, sem os dois campos, não mexe no plano', () => {
+    const { target } = makeTarget();
+    applyDraftToBuilder({ notes: 'x' }, target);
+
+    expect(target.setFreightMixMode).not.toHaveBeenCalled();
+    expect(target.setShowFreightPlanToClient).not.toHaveBeenCalled();
+  });
+
   it('preserva o frete: setShippingType vem antes de setShippingCost', () => {
     const { order, target } = makeTarget();
     applyDraftToBuilder({ shippingType: 'cif', shippingCost: 1234 }, target);
@@ -234,7 +281,9 @@ describe('applyDraftToBuilder — campos colhidos do QuoteBuilderDraftRecovery d
     expect(target.handleDeliveryModeChange).toHaveBeenCalledWith('prazo');
     expect(target.setDeliveryTime).toHaveBeenCalledWith('20 dias');
     expect(target.handleDeliveryDateChange).not.toHaveBeenCalled();
-    expect(order.indexOf('handleDeliveryModeChange')).toBeLessThan(order.indexOf('setDeliveryTime'));
+    expect(order.indexOf('handleDeliveryModeChange')).toBeLessThan(
+      order.indexOf('setDeliveryTime'),
+    );
   });
 
   it('respeita deliveryMode explícito "data" usando deliveryDate ISO', () => {
@@ -263,7 +312,11 @@ describe('applyDraftToBuilder — campos colhidos do QuoteBuilderDraftRecovery d
   it('deliveryDate explícito vence o prefixo date: do deliveryTime', () => {
     const { target } = makeTarget();
     applyDraftToBuilder(
-      { deliveryMode: 'data', deliveryTime: 'date:2026-01-01', deliveryDate: '2026-07-15T12:00:00.000Z' },
+      {
+        deliveryMode: 'data',
+        deliveryTime: 'date:2026-01-01',
+        deliveryDate: '2026-07-15T12:00:00.000Z',
+      },
       target,
     );
 
