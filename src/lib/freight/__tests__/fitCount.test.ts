@@ -164,9 +164,9 @@ describe('fitCount — outras peças', () => {
     }
   });
 
-  it('peça de 1,2 cm não perde fileira por erro de ponto flutuante', () => {
-    // 32,4 ÷ 1,2 em float é 26,999999999999996. Sem a tolerância do piso a
-    // melhor orientação cairia de 54 para 52 unidades.
+  it('suporte de 1,2 cm (SKU 34702) na P: 27 fileiras, 54 unidades', () => {
+    // 32,4 ÷ 1,2 em float dá 27 exato: este caso não depende da tolerância do
+    // piso (quem depende é o caso seguinte, 26,4 ÷ 4,4).
     // (12, 1,2, 31,6) → ⌊26,4/12⌋=2 · ⌊32,4/1,2⌋=27 · ⌊32,4/31,6⌋=1 = 54
     // volume: 24.942,2976 ÷ 455,04 = 54,81 → 54 (empata com a geometria)
     // peso:   10.000 ÷ 1 = 10.000
@@ -178,6 +178,83 @@ describe('fitCount — outras peças', () => {
       byVolume: 54,
       byWeight: 10_000,
     });
+  });
+
+  it('peça de 4,4 cm não perde camada por erro de ponto flutuante', () => {
+    // 26,4 ÷ 4,4 = 6, mas em float sai 5,999999999999999: sem a tolerância do
+    // piso viram 5 camadas e a capacidade cai de 54 para 45.
+    // (4,4, 10, 10) → ⌊26,4/4,4⌋=6 · ⌊32,4/10⌋=3 · ⌊32,4/10⌋=3 = 54
+    // (10, 4,4, 10) → ⌊26,4/10⌋=2 · ⌊32,4/4,4⌋=7 · ⌊32,4/10⌋=3 = 42
+    // volume: 24.942,2976 ÷ 440 = 56,69 → 56
+    // peso:   10.000 ÷ 100 = 100
+    const r = fitCount(peca(4.4, 10, 10, 100), CAIXA_P, SETTINGS_PADRAO);
+    expect(r).toMatchObject({
+      capacity: 54,
+      limitedBy: 'geometry',
+      byGeometry: 54,
+      byVolume: 56,
+      byWeight: 100,
+    });
+  });
+
+  // A peça 39 × 49 × 59 cm só entra na GG (39,4 × 49,4 × 59,4) com cada lado
+  // no eixo certo: ⌊39,4/39⌋ · ⌊49,4/49⌋ · ⌊59,4/59⌋ = 1. Qualquer outra
+  // permutação põe um lado maior que o eixo da caixa e zera. O cadastro pode
+  // trazer os lados em qualquer ordem, então as 6 permutações têm de achar a
+  // mesma orientação — cada linha abaixo depende de uma rotação diferente.
+  it.each([
+    [39, 49, 59],
+    [39, 59, 49],
+    [49, 39, 59],
+    [49, 59, 39],
+    [59, 39, 49],
+    [59, 49, 39],
+  ])('peça cadastrada como %d × %d × %d entra na GG girada para 39 × 49 × 59', (h, w, l) => {
+    // volume: 104.052,4056 ÷ 112.749 = 0,92 → 0, piso de 1 para a peça sozinha
+    // peso:   30.000 ÷ 500 = 60
+    const r = fitCount(peca(h, w, l, 500), CAIXA_GG, SETTINGS_PADRAO);
+    expect(r).toMatchObject({
+      capacity: 1,
+      limitedBy: 'geometry',
+      byGeometry: 1,
+      byVolume: 1,
+      byWeight: 60,
+      orientation: { heightCm: 39, widthCm: 49, lengthCm: 59 },
+    });
+  });
+});
+
+describe('fitCount — fator de aproveitamento da própria caixa', () => {
+  // Cubo de 10 cm na G (35,4 × 35,4 × 53,4 = 66.918,744 cm³):
+  // geometria ⌊35,4/10⌋=3 · ⌊35,4/10⌋=3 · ⌊53,4/10⌋=5 = 45 em qualquer fator.
+
+  it('caixa com fator 0,50 usa o dela, não o padrão global de 0,90', () => {
+    // volume: 66.918,744 × 0,5 = 33.459,372 ÷ 1.000 = 33,46 → 33
+    // (com o padrão 0,9 seriam 60 e a geometria mandaria com 45)
+    // peso:   25.000 ÷ 1 = 25.000
+    const g50 = { ...CAIXA_G, fillFactor: 0.5 };
+    const r = fitCount(peca(10, 10, 10, 1), g50, SETTINGS_PADRAO);
+    expect(r).toMatchObject({
+      capacity: 33,
+      limitedBy: 'volume',
+      byGeometry: 45,
+      byVolume: 33,
+      byWeight: 25_000,
+    });
+  });
+
+  it('volume uma unidade abaixo da geometria: quem limita é o volume', () => {
+    // volume: 66.918,744 × 0,66 = 44.166,37 ÷ 1.000 = 44,17 → 44 (geometria 45)
+    const g66 = { ...CAIXA_G, fillFactor: 0.66 };
+    const r = fitCount(peca(10, 10, 10, 1), g66, SETTINGS_PADRAO);
+    expect(r).toMatchObject({ capacity: 44, limitedBy: 'volume', byGeometry: 45, byVolume: 44 });
+  });
+
+  it('empate entre volume e peso: a ordem documentada é volume antes de peso', () => {
+    // volume: 44 (caso acima) · peso: 25.000 ÷ 560 = 44,64 → 44
+    const g66 = { ...CAIXA_G, fillFactor: 0.66 };
+    const r = fitCount(peca(10, 10, 10, 560), g66, SETTINGS_PADRAO);
+    expect(r).toMatchObject({ capacity: 44, limitedBy: 'volume', byVolume: 44, byWeight: 44 });
   });
 });
 
@@ -193,6 +270,20 @@ describe('fitCount — entradas degeneradas', () => {
     const r = fitCount(peca(10, 10, 10, 0), CAIXA_P, SETTINGS_PADRAO);
     expect(r.byWeight).toBe(Number.POSITIVE_INFINITY);
     expect(r).toMatchObject({ capacity: 18, limitedBy: 'geometry' });
+  });
+
+  it('peça que entra pela geometria e zera pelo peso não devolve orientação', () => {
+    // cubo de 10 cm na GG: ⌊39,4/10⌋=3 · ⌊49,4/10⌋=4 · ⌊59,4/10⌋=5 = 60
+    // volume: 104.052,4056 ÷ 1.000 = 104 · peso: 30.000 ÷ 30.001 = 0,99 → 0
+    const r = fitCount(peca(10, 10, 10, 30_001), CAIXA_GG, SETTINGS_PADRAO);
+    expect(r).toMatchObject({
+      capacity: 0,
+      limitedBy: 'weight',
+      byGeometry: 60,
+      byVolume: 104,
+      byWeight: 0,
+      orientation: null,
+    });
   });
 
   it('caixa sem peso útil zera por peso', () => {

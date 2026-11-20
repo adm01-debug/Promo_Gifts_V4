@@ -156,6 +156,9 @@ describe('fuzz — invariantes do plano', () => {
       const somaDeCaixas = Object.values(plan.totals.boxesByCode).reduce((a, b) => a + b, 0);
       expect(somaDeCaixas, `${onde}: boxesByCode`).toBe(caixas);
       expect(plan.totals.grossWeightG, `${onde}: peso total`).toBeGreaterThan(0);
+      // plano calculado nunca sai com peso cubado zero
+      expect(plan.totals.cubicWeightG.correios, `${onde}: cubado Correios`).toBeGreaterThan(0);
+      expect(plan.totals.cubicWeightG.rodoviario, `${onde}: cubado rodoviário`).toBeGreaterThan(0);
 
       // 5. "não mistura" nunca divide caixa com outro produto
       const separados = new Set(caso.inputs.filter((i) => i.shipsSeparately).map((i) => i.row.id));

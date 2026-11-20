@@ -188,6 +188,27 @@ describe('resolveItemDimensions — bloqueio por cadastro incompleto', () => {
       },
     });
   });
+
+  it('13. altura e comprimento presentes, largura ausente reporta só a largura', () => {
+    // 39 produtos ativos estavam assim em 19/11/2026 (altura e comprimento
+    // preenchidos, largura e diâmetro vazios). Sem esta checagem a peça passaria
+    // adiante com largura nula e o plano diria "não cabe" em vez de apontar o
+    // campo que o admin precisa digitar.
+    const result = resolveItemDimensions({
+      ...CADERNETA,
+      diameter_cm: null,
+      width_cm: null,
+    });
+
+    expect(result).toEqual({
+      status: 'incomplete',
+      incomplete: {
+        productId: CADERNETA.id,
+        name: CADERNETA.name,
+        missing: ['width'],
+      },
+    });
+  });
 });
 
 describe('resolveItemDimensions — contrato de leitura', () => {
