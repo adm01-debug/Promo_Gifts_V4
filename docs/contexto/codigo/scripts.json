@@ -1,7 +1,7 @@
 {
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
- "total": 285,
+ "total": 284,
  "scripts": [
   {
    "arquivo": ".github/scripts/e2e-relevance.mjs",
@@ -1073,17 +1073,6 @@
    ],
    "workflows": [
     "static-checks.yml"
-   ],
-   "orfao": false
-  },
-  {
-   "arquivo": "scripts/check-no-quote-comments.mjs",
-   "descricao": "* Gate: garante que `QuoteCommentsSection`, `useQuoteComments` e queries em",
-   "linhas": 102,
-   "env": [],
-   "npm_scripts": [],
-   "workflows": [
-    "ci-security-drift.yml"
    ],
    "orfao": false
   },

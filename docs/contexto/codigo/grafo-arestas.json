@@ -11,7 +11,8 @@
    "src/components/ui/separator.tsx",
    "src/components/ui/skeleton.tsx",
    "src/components/ui/textarea.tsx",
-   "src/contexts/AuthContext.tsx"
+   "src/contexts/AuthContext.tsx",
+   "src/hooks/useQuoteComments.ts"
   ],
   "docs/agentes/resgates/quote-comments/codigo/useQuoteComments.ts": [
    "src/contexts/AuthContext.tsx",
@@ -257,7 +258,8 @@
    "src/components/ui/separator.tsx",
    "src/components/ui/skeleton.tsx",
    "src/components/ui/textarea.tsx",
-   "src/contexts/AuthContext.tsx"
+   "src/contexts/AuthContext.tsx",
+   "src/hooks/useQuoteComments.ts"
   ],
   "recovery/src-legacy/src/components/quotes/QuoteRowQuickActions.tsx": [
    "src/components/ui/button.tsx",
@@ -1440,6 +1442,7 @@
    "src/components/presentation/PresentationMode.tsx",
    "src/components/quotes/PdfGenerationDialog.tsx",
    "src/components/quotes/QuoteClientInfo.tsx",
+   "src/components/quotes/QuoteCommentsSection.tsx",
    "src/components/quotes/QuoteHistoryPanel.tsx",
    "src/components/quotes/QuoteItemsTable.tsx",
    "src/components/quotes/QuoteMobileActionBar.tsx",
@@ -8970,6 +8973,18 @@
    "src/components/quotes/SectionEyebrow.tsx",
    "src/components/quotes/quote-view-typography.ts"
   ],
+  "src/components/quotes/QuoteCommentsSection.tsx": [
+   "src/components/ui/ConfirmDialog.tsx",
+   "src/components/ui/avatar.tsx",
+   "src/components/ui/badge.tsx",
+   "src/components/ui/button.tsx",
+   "src/components/ui/card.tsx",
+   "src/components/ui/separator.tsx",
+   "src/components/ui/skeleton.tsx",
+   "src/components/ui/textarea.tsx",
+   "src/contexts/AuthContext.tsx",
+   "src/hooks/useQuoteComments.ts"
+  ],
   "src/components/quotes/QuoteConcurrencyAlert.tsx": [
    "src/components/ui/alert.tsx",
    "src/components/ui/button.tsx",
@@ -12062,6 +12077,13 @@
   "src/hooks/useProductColorSwatch.ts": [
    "src/integrations/supabase/client.ts"
   ],
+  "src/hooks/useQuoteComments.ts": [
+   "src/contexts/AuthContext.tsx",
+   "src/integrations/supabase/client.ts",
+   "src/integrations/supabase/types.ts",
+   "src/lib/db/fetch-all-pages.ts",
+   "src/lib/logger.ts"
+  ],
   "src/hooks/useReplenishments.ts": [
    "src/lib/external-db/bridge.ts"
   ],
@@ -14855,6 +14877,7 @@
    "src/components/pdf/ProposalHtmlTemplate.tsx",
    "src/components/quotes/PdfGenerationDialog.tsx",
    "src/components/quotes/QuoteClientInfo.tsx",
+   "src/components/quotes/QuoteCommentsSection.tsx",
    "src/components/quotes/QuoteHistoryPanel.tsx",
    "src/components/quotes/QuoteItemsTable.tsx",
    "src/components/quotes/QuoteMobileActionBar.tsx",

@@ -1,7 +1,7 @@
 {
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
- "total": 643,
+ "total": 644,
  "hooks": [
   {
    "arquivo": "docs/agentes/resgates/quote-comments/codigo/useQuoteComments.ts",
@@ -6322,7 +6322,7 @@
     "useRef"
    ],
    "canais_realtime": [],
-   "usado_por": 210,
+   "usado_por": 212,
    "usado_por_arquivos": [
     "docs/agentes/resgates/quote-comments/codigo/QuoteCommentsSection.tsx",
     "docs/agentes/resgates/quote-comments/codigo/useQuoteComments.ts",
@@ -14138,6 +14138,36 @@
     "src/components/ui/ColorSwatchPicker.tsx"
    ],
    "coberto_por_testes": 2
+  },
+  {
+   "arquivo": "src/hooks/useQuoteComments.ts",
+   "hooks_exportados": [
+    "useQuoteComments"
+   ],
+   "linhas": 269,
+   "dominio": "hooks",
+   "tabelas": [
+    "profiles",
+    "quote_comments",
+    "workspace_notifications"
+   ],
+   "rpcs": [],
+   "edges": [],
+   "hooks_internos": [
+    "useAuth",
+    "useCallback",
+    "useEffect",
+    "useRef",
+    "useState"
+   ],
+   "canais_realtime": [],
+   "usado_por": 3,
+   "usado_por_arquivos": [
+    "docs/agentes/resgates/quote-comments/codigo/QuoteCommentsSection.tsx",
+    "recovery/src-legacy/src/components/quotes/QuoteCommentsSection.tsx",
+    "src/components/quotes/QuoteCommentsSection.tsx"
+   ],
+   "coberto_por_testes": 4
   },
   {
    "arquivo": "src/hooks/useReplenishments.ts",

@@ -27385,6 +27385,7 @@
     "useQuoteBuilderState",
     "useQuoteBuilderSteps",
     "useQuoteClientLogos",
+    "useQuoteComments",
     "useQuoteConcurrencyGuard",
     "useQuoteFunnel",
     "useQuoteHistory",
@@ -27719,6 +27720,7 @@
     "useQuoteBuilderState",
     "useQuoteBuilderSteps",
     "useQuoteClientLogos",
+    "useQuoteComments",
     "useQuoteConcurrencyGuard",
     "useQuoteFunnel",
     "useQuoteHistory",
@@ -27859,6 +27861,7 @@
     "products",
     "profiles",
     "quote_approval_tokens",
+    "quote_comments",
     "quote_history",
     "quote_item_personalizations",
     "quote_items",
@@ -27936,7 +27939,7 @@
     "tablist",
     "toolbar"
    ],
-   "arquivos_puxados": 623
+   "arquivos_puxados": 626
   },
   {
    "protegida": false,
@@ -28167,6 +28170,7 @@
     "useQueryClient",
     "useQuoteBuilderState",
     "useQuoteBuilderSteps",
+    "useQuoteComments",
     "useQuoteConcurrencyGuard",
     "useQuoteFunnel",
     "useQuoteHistory",
@@ -28459,6 +28463,7 @@
     "usePublicoAlvoOptions",
     "useQuoteBuilderState",
     "useQuoteBuilderSteps",
+    "useQuoteComments",
     "useQuoteConcurrencyGuard",
     "useQuoteFunnel",
     "useQuoteHistory",
@@ -28584,6 +28589,7 @@
     "products",
     "profiles",
     "quote_approval_tokens",
+    "quote_comments",
     "quote_history",
     "quote_item_personalizations",
     "quote_items",
@@ -28597,7 +28603,8 @@
     "system_settings",
     "user_roles",
     "video_variant_links",
-    "voice_command_logs"
+    "voice_command_logs",
+    "workspace_notifications"
    ],
    "rpcs": [
     "check_ai_quota",
@@ -28648,7 +28655,7 @@
     "status",
     "supervisor"
    ],
-   "arquivos_puxados": 523
+   "arquivos_puxados": 527
   },
   {
    "protegida": false,
@@ -31112,6 +31119,7 @@
     "useQuoteBuilderState",
     "useQuoteBuilderSteps",
     "useQuoteClientLogos",
+    "useQuoteComments",
     "useQuoteConcurrencyGuard",
     "useQuoteFunnel",
     "useQuoteHistory",
@@ -31446,6 +31454,7 @@
     "useQuoteBuilderState",
     "useQuoteBuilderSteps",
     "useQuoteClientLogos",
+    "useQuoteComments",
     "useQuoteConcurrencyGuard",
     "useQuoteFunnel",
     "useQuoteHistory",
@@ -31586,6 +31595,7 @@
     "products",
     "profiles",
     "quote_approval_tokens",
+    "quote_comments",
     "quote_history",
     "quote_item_personalizations",
     "quote_items",
@@ -31663,7 +31673,7 @@
     "tablist",
     "toolbar"
    ],
-   "arquivos_puxados": 623
+   "arquivos_puxados": 626
   },
   {
    "protegida": false,

@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "36e7b1c255dd79d5b822ba02355f18115f8beef2",
+  "sha": "cfd7f833bb03a1c175460bbc8d60bdc84aef46e4",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-20 18:29 UTC",
-  "files_total": 11101,
-  "code_files": 9114,
-  "code_lines": 1292492
+  "generated_at": "2026-11-20 20:01 UTC",
+  "files_total": 11106,
+  "code_files": 9118,
+  "code_lines": 1294007
  },
  "version": "1.3.2",
- "facts_hash": "39f430f1306fe7f4",
+ "facts_hash": "d6ebb60bd8fdc6aa",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -1128,11 +1128,11 @@
   ],
   "package_manager": "npm",
   "languages": {
-   ".sql": 3477,
-   ".ts": 3158,
-   ".tsx": 2008,
-   ".mjs": 456,
-   ".py": 15,
+   ".sql": 3478,
+   ".ts": 3159,
+   ".tsx": 2010,
+   ".mjs": 455,
+   ".py": 16,
    ".js": 7
   },
   "monorepo_packages": [],
@@ -138664,6 +138664,7 @@
      "products",
      "profiles",
      "quote_approval_tokens",
+     "quote_comments",
      "quote_history",
      "quote_item_personalizations",
      "quote_items",
@@ -138694,7 +138695,7 @@
      "request_discount_approval_transactional",
      "respond_discount_approval_transactional"
     ],
-    "deps_count": 213
+    "deps_count": 220
    },
    {
     "path": "",
@@ -145871,7 +145872,7 @@
     "file": ".github/workflows/wraparound-monitor-report.yml"
    }
   ],
-  "components_count": 1753,
+  "components_count": 1755,
   "hooks": [
    {
     "name": "useQuoteComments",
@@ -149242,6 +149243,10 @@
     "file": "src/hooks/useProductColorSwatch.ts"
    },
    {
+    "name": "useQuoteComments",
+    "file": "src/hooks/useQuoteComments.ts"
+   },
+   {
     "name": "useReplenishmentsWithDetails",
     "file": "src/hooks/useReplenishments.ts"
    },
@@ -149869,8 +149874,8 @@
   },
   {
    "module": "e2e",
-   "files": 628,
-   "lines": 76188,
+   "files": 627,
+   "lines": 76148,
    "tables": [
     "discount_approval_requests",
     "quote_items"
@@ -150339,8 +150344,8 @@
   },
   {
    "module": "scripts",
-   "files": 301,
-   "lines": 65133,
+   "files": 300,
+   "lines": 65031,
    "tables": [
     "a",
     "b",
@@ -150579,8 +150584,8 @@
   },
   {
    "module": "src/components",
-   "files": 1477,
-   "lines": 289607,
+   "files": 1478,
+   "lines": 290022,
    "tables": [
     "admin_audit_log",
     "art_file_attachments",
@@ -150943,8 +150948,8 @@
   },
   {
    "module": "src/hooks",
-   "files": 504,
-   "lines": 93682,
+   "files": 505,
+   "lines": 93951,
    "tables": [
     "admin_audit_log",
     "admin_settings",
@@ -150990,6 +150995,7 @@
     "products",
     "profiles",
     "quote_approval_tokens",
+    "quote_comments",
     "quote_history",
     "quote_items",
     "quote_templates",
@@ -151024,6 +151030,7 @@
     "useHorizontalScroll.ts: useHorizontalScroll",
     "useNavigationAnalytics.ts: useNavigationAnalytics",
     "useProductColorSwatch.ts: ColorSwatch, ProductWithSwatches, useProductColorSwatch",
+    "useQuoteComments.ts: QUOTE_COMMENT_MAX_LENGTH, QuoteComment, useQuoteComments",
     "useReplenishments.ts: ReplenishmentStatus, StockStatus, ReplenishmentWithDetails, ReplenishmentStatsDisplay, UseReplenishmentsOptions, useReplenishmentsWithDetails",
     "replenishment-test-utils.tsx: createTestQueryClient, TestWrapper",
     "useAdminKitTemplates.ts: KitTemplateInput, useAdminKitTemplates",
@@ -151055,8 +151062,7 @@
     "usePasswordResetRequests.ts: PasswordResetRequest, usePasswordResetRequests",
     "useProfileRoles.ts: useProfileRoles",
     "useRBAC.tsx: RoleName, Role, Permission, useRBAC",
-    "useStepUpAuth.ts: StepUpAction, useStepUpAuth",
-    "useBIDossierExport.ts: useBIDossierExport"
+    "useStepUpAuth.ts: StepUpAction, useStepUpAuth"
    ],
    "docs": [
     "useFutureStockPreference.ts: useFutureStockPreference Persiste a preferência do usuário para o toggle \"Estoque Futuro\" (ligado/desligado + janela de 7/15/30 dias) em localStorage. SSOT do storage key e dos valores válidos para a janela. Defensivo contra SSR, JSON inválido e janelas fora do conjunto permitido.",
@@ -151109,6 +151115,7 @@
     "src/hooks/useNavigationAnalytics.ts",
     "src/hooks/useProductColorSwatch.test.tsx",
     "src/hooks/useProductColorSwatch.ts",
+    "src/hooks/useQuoteComments.ts",
     "src/hooks/useReplenishments.ts",
     "src/hooks/__tests__/anti-flash-ref.unit.test.tsx",
     "src/hooks/__tests__/bug-g7-regression.unit.test.ts",
@@ -151179,8 +151186,7 @@
     "src/hooks/bi/useClientCategoryAffinity.ts",
     "src/hooks/bi/useClientHealthScore.ts",
     "src/hooks/bi/useClientOrdersHistory.ts",
-    "src/hooks/bi/useClientSeasonality.ts",
-    "src/hooks/bi/useClientVsIndustry.ts"
+    "src/hooks/bi/useClientSeasonality.ts"
    ]
   },
   {
@@ -151442,7 +151448,7 @@
   {
    "module": "src/pages",
    "files": 371,
-   "lines": 85563,
+   "lines": 85565,
    "tables": [
     "ai_usage_events",
     "bot_detection_log",
@@ -152717,8 +152723,8 @@
   },
   {
    "module": "tests",
-   "files": 1109,
-   "lines": 175212,
+   "files": 1113,
+   "lines": 176183,
    "tables": [
     "bot_detection_log",
     "clients",
@@ -154543,6 +154549,7 @@
      "src/hooks/quotes/useDiscountApproval.ts",
      "src/hooks/quotes/useQuoteTemplates.ts",
      "src/hooks/simulation/useSimulatorPreferences.ts",
+     "src/hooks/useQuoteComments.ts",
      "src/pages/admin/SellerDiscountLimitsAdminPage.tsx",
      "src/pages/auth/Auth.tsx",
      "src/pages/system/SystemStatusPage.tsx",
@@ -154598,19 +154605,23 @@
    "quote_comments": {
     "select": [
      "docs/agentes/resgates/quote-comments/codigo/useQuoteComments.ts",
-     "recovery/src-legacy/src/hooks/useQuoteComments.ts"
+     "recovery/src-legacy/src/hooks/useQuoteComments.ts",
+     "src/hooks/useQuoteComments.ts"
     ],
     "insert": [
      "docs/agentes/resgates/quote-comments/codigo/useQuoteComments.ts",
-     "recovery/src-legacy/src/hooks/useQuoteComments.ts"
+     "recovery/src-legacy/src/hooks/useQuoteComments.ts",
+     "src/hooks/useQuoteComments.ts"
     ],
     "update": [
      "docs/agentes/resgates/quote-comments/codigo/useQuoteComments.ts",
-     "recovery/src-legacy/src/hooks/useQuoteComments.ts"
+     "recovery/src-legacy/src/hooks/useQuoteComments.ts",
+     "src/hooks/useQuoteComments.ts"
     ],
     "delete": [
      "docs/agentes/resgates/quote-comments/codigo/useQuoteComments.ts",
-     "recovery/src-legacy/src/hooks/useQuoteComments.ts"
+     "recovery/src-legacy/src/hooks/useQuoteComments.ts",
+     "src/hooks/useQuoteComments.ts"
     ]
    },
    "quote_history": {
@@ -155410,6 +155421,7 @@
      "recovery/src-legacy/src/hooks/useDiscountApproval.ts",
      "recovery/src-legacy/src/hooks/useQuoteComments.ts",
      "src/hooks/bi/useSeasonalPeakNotifications.ts",
+     "src/hooks/useQuoteComments.ts",
      "src/lib/access/log-access-denied.ts",
      "src/lib/access/request-dev-access.ts",
      "supabase/functions/collections-watcher/index.ts",
@@ -168279,6 +168291,10 @@
     "msg": "contentWindow indisponível"
    },
    {
+    "file": "src/components/quotes/QuoteCommentsSection.tsx",
+    "msg": "\n            className="
+   },
+   {
     "file": "src/components/quotes/QuoteConcurrencyAlert.tsx",
     "msg": "\n      aria-live="
    },
@@ -168461,6 +168477,18 @@
    {
     "file": "src/contexts/SellerCartContext.tsx",
     "msg": "useSellerCartContext must be used within SellerCartProvider"
+   },
+   {
+    "file": "src/hooks/useQuoteComments.ts",
+    "msg": "Comment insert returned no row"
+   },
+   {
+    "file": "src/hooks/useQuoteComments.ts",
+    "msg": "Comment not found or delete not permitted"
+   },
+   {
+    "file": "src/hooks/useQuoteComments.ts",
+    "msg": "Comment not found or update not permitted"
    },
    {
     "file": "src/hooks/admin/useAdminKitTemplates.ts",
@@ -171145,6 +171173,46 @@
    {
     "file": "tests/sql/device-trust/run-tests.py",
     "msg": "Local fixture failed: "
+   },
+   {
+    "file": "tests/sql/quote-comments/run-tests.py",
+    "msg": "Cannot verify disposable-container ownership; no container was removed."
+   },
+   {
+    "file": "tests/sql/quote-comments/run-tests.py",
+    "msg": "Could not start the disposable PostgreSQL 17 container: "
+   },
+   {
+    "file": "tests/sql/quote-comments/run-tests.py",
+    "msg": "Disposable PostgreSQL did not become ready within 30 seconds."
+   },
+   {
+    "file": "tests/sql/quote-comments/run-tests.py",
+    "msg": "Disposable-container label mismatch; no container was removed."
+   },
+   {
+    "file": "tests/sql/quote-comments/run-tests.py",
+    "msg": "Failed to remove the owned disposable PostgreSQL container: "
+   },
+   {
+    "file": "tests/sql/quote-comments/run-tests.py",
+    "msg": "Local Docker daemon is unavailable: "
+   },
+   {
+    "file": "tests/sql/quote-comments/run-tests.py",
+    "msg": "concurrent delete did not reach synchronization marker"
+   },
+   {
+    "file": "tests/sql/quote-comments/run-tests.py",
+    "msg": "concurrent delete failed: "
+   },
+   {
+    "file": "tests/sql/quote-comments/run-tests.py",
+    "msg": "concurrent insert did not reach synchronization marker"
+   },
+   {
+    "file": "tests/sql/quote-comments/run-tests.py",
+    "msg": "concurrent insert failed: "
    },
    {
     "file": "tests/sw/sw-harness.ts",
@@ -200240,6 +200308,11 @@
     "value": "16"
    },
    {
+    "file": "src/hooks/useQuoteComments.ts",
+    "name": "QUOTE_COMMENT_MAX_LENGTH",
+    "value": "5000"
+   },
+   {
     "file": "src/hooks/useReplenishments.ts",
     "name": "REPLENISHMENT_WINDOW_DAYS",
     "value": "30"
@@ -208822,6 +208895,12 @@
     "field": "type",
     "value": "recovered",
     "kind": "compara"
+   },
+   {
+    "file": "src/hooks/useQuoteComments.ts",
+    "field": "type",
+    "value": "quote_comment",
+    "kind": "escreve"
    },
    {
     "file": "src/hooks/auth/usePasswordResetRequests.ts",
@@ -221812,6 +221891,14 @@
    {
     "file": "tests/sql/device-trust/run-tests.py",
     "line": "stdout, stderr = process.communicate(timeout=10)"
+   },
+   {
+    "file": "tests/sql/quote-comments/run-tests.py",
+    "line": "pdel.stdin.close(); pdel.wait(timeout=10)"
+   },
+   {
+    "file": "tests/sql/quote-comments/run-tests.py",
+    "line": "pins.stdin.close(); pins.wait(timeout=10)"
    }
   ],
   "percents": [
@@ -231752,14 +231839,6 @@
    {
     "file": "e2e/routes/quotes/quote-list-truncation.spec.ts",
     "name": "após redimensionar, header continua sem controles de drag/grip"
-   },
-   {
-    "file": "e2e/routes/quotes/view-no-comments-network.spec.ts",
-    "name": "/orcamentos/:id — sem network em quote_comments"
-   },
-   {
-    "file": "e2e/routes/quotes/view-no-comments-network.spec.ts",
-    "name": "não dispara nenhuma request a quote_comments"
    },
    {
     "file": "e2e/scripts/__tests__/generate-fixtures.test.ts",
@@ -275830,6 +275909,70 @@
     "name": "filtro "
    },
    {
+    "file": "tests/components/QuoteCommentsSection.test.tsx",
+    "name": "quote comments interface"
+   },
+   {
+    "file": "tests/components/QuoteCommentsSection.test.tsx",
+    "name": "shows a retryable error instead of an empty-state success"
+   },
+   {
+    "file": "tests/components/QuoteCommentsSection.test.tsx",
+    "name": "does not show the empty state while loading and shows it only after success"
+   },
+   {
+    "file": "tests/components/QuoteCommentsSection.test.tsx",
+    "name": "disables the main composer for unauthenticated users"
+   },
+   {
+    "file": "tests/components/QuoteCommentsSection.test.tsx",
+    "name": "keeps whitespace-only submissions disabled and enforces the shared length limit"
+   },
+   {
+    "file": "tests/components/QuoteCommentsSection.test.tsx",
+    "name": "trims and clears the composer only after successful creation"
+   },
+   {
+    "file": "tests/components/QuoteCommentsSection.test.tsx",
+    "name": "preserves the full draft after a failed creation"
+   },
+   {
+    "file": "tests/components/QuoteCommentsSection.test.tsx",
+    "name": "submits using %s + Enter"
+   },
+   {
+    "file": "tests/components/QuoteCommentsSection.test.tsx",
+    "name": "does not submit plain Enter or IME composition"
+   },
+   {
+    "file": "tests/components/QuoteCommentsSection.test.tsx",
+    "name": "prevents duplicate keyboard submissions while a mutation is pending"
+   },
+   {
+    "file": "tests/components/QuoteCommentsSection.test.tsx",
+    "name": "allows discussion but hides edit/delete controls for non-authors"
+   },
+   {
+    "file": "tests/components/QuoteCommentsSection.test.tsx",
+    "name": "keeps a failed reply draft and closes it after a successful retry to the root"
+   },
+   {
+    "file": "tests/components/QuoteCommentsSection.test.tsx",
+    "name": "keeps failed edits open and closes the editor only on successful retry"
+   },
+   {
+    "file": "tests/components/QuoteCommentsSection.test.tsx",
+    "name": "disables deleting a root with replies while keeping the thread visible"
+   },
+   {
+    "file": "tests/components/QuoteCommentsSection.test.tsx",
+    "name": "requires confirmation and leaves a comment untouched when deletion is cancelled"
+   },
+   {
+    "file": "tests/components/QuoteCommentsSection.test.tsx",
+    "name": "deletes an authored leaf only after explicit confirmation"
+   },
+   {
     "file": "tests/components/QuoteDraftRecovery.test.tsx",
     "name": "QuoteDraftRecovery — não restaura por conta própria"
    },
@@ -293720,6 +293863,86 @@
    {
     "file": "tests/hooks/useProducts.test.ts",
     "name": "returns empty array for non-string/array types"
+   },
+   {
+    "file": "tests/hooks/useQuoteComments.test.ts",
+    "name": "quote comments service boundary"
+   },
+   {
+    "file": "tests/hooks/useQuoteComments.test.ts",
+    "name": "does not fetch or mutate without an authenticated user"
+   },
+   {
+    "file": "tests/hooks/useQuoteComments.test.ts",
+    "name": "does not fetch or mutate without a quote id"
+   },
+   {
+    "file": "tests/hooks/useQuoteComments.test.ts",
+    "name": "shows loading while the first page is unresolved"
+   },
+   {
+    "file": "tests/hooks/useQuoteComments.test.ts",
+    "name": "uses quote filters, stable pagination order, author deduplication and one-level threads"
+   },
+   {
+    "file": "tests/hooks/useQuoteComments.test.ts",
+    "name": "loads beyond the PostgREST 1000-row cap"
+   },
+   {
+    "file": "tests/hooks/useQuoteComments.test.ts",
+    "name": "keeps comments readable when profile RLS denies author details"
+   },
+   {
+    "file": "tests/hooks/useQuoteComments.test.ts",
+    "name": "surfaces fetch failure and clears it after an explicit successful retry"
+   },
+   {
+    "file": "tests/hooks/useQuoteComments.test.ts",
+    "name": "clears the previous user comments on logout"
+   },
+   {
+    "file": "tests/hooks/useQuoteComments.test.ts",
+    "name": "ignores a previous quote response after the quote changes"
+   },
+   {
+    "file": "tests/hooks/useQuoteComments.test.ts",
+    "name": "ignores a pending response after unmount"
+   },
+   {
+    "file": "tests/hooks/useQuoteComments.test.ts",
+    "name": "inserts trimmed content with server-owned fields omitted"
+   },
+   {
+    "file": "tests/hooks/useQuoteComments.test.ts",
+    "name": "does not claim insert success for a failed/empty database response"
+   },
+   {
+    "file": "tests/hooks/useQuoteComments.test.ts",
+    "name": "updates only content and scopes the mutation to id, quote and author"
+   },
+   {
+    "file": "tests/hooks/useQuoteComments.test.ts",
+    "name": "treats zero affected rows in %s as failure"
+   },
+   {
+    "file": "tests/hooks/useQuoteComments.test.ts",
+    "name": "confirms a successful authored leaf deletion and refreshes the visible list"
+   },
+   {
+    "file": "tests/hooks/useQuoteComments.test.ts",
+    "name": "scopes deletion and maps the FK rejection of a root with replies"
+   },
+   {
+    "file": "tests/hooks/useQuoteComments.test.ts",
+    "name": "notifies distinct participants except the author without leaking comment text"
+   },
+   {
+    "file": "tests/hooks/useQuoteComments.test.ts",
+    "name": "keeps a committed comment successful when %s notifications fail"
+   },
+   {
+    "file": "tests/hooks/useQuoteComments.test.ts",
+    "name": "does not emit a previous quote success after notification delivery resolves in a new context"
    },
    {
     "file": "tests/hooks/useQuoteFunnel.test.ts",
@@ -357081,7 +357304,8 @@
       "filtra:src/components/security/useSecurityData.ts"
      ],
      "quote_comment": [
-      "escreve:recovery/src-legacy/src/hooks/useQuoteComments.ts"
+      "escreve:recovery/src-legacy/src/hooks/useQuoteComments.ts",
+      "escreve:src/hooks/useQuoteComments.ts"
      ],
      "monthly": [
       "compara:recovery/src-legacy/src/hooks/useSalesGoals.ts",
@@ -408748,7 +408972,8 @@
     "msg": "tabela `quote_comments` usada no código não existe nas migrations/types do repo",
     "where": [
      "docs/agentes/resgates/quote-comments/codigo/useQuoteComments.ts",
-     "recovery/src-legacy/src/hooks/useQuoteComments.ts"
+     "recovery/src-legacy/src/hooks/useQuoteComments.ts",
+     "src/hooks/useQuoteComments.ts"
     ]
    },
    {
@@ -423325,18 +423550,6 @@
    "lines": 3,
    "is_test": true
   },
-  "e2e/routes/quotes/view-no-comments-network.spec.ts": {
-   "path": "e2e/routes/quotes/view-no-comments-network.spec.ts",
-   "lines": 40,
-   "is_test": true,
-   "temporal": [
-    "() => new Promise<void>((r) => setTimeout(r, 1500)),"
-   ],
-   "tests": [
-    "/orcamentos/:id — sem network em quote_comments",
-    "não dispara nenhuma request a quote_comments"
-   ]
-  },
   "e2e/routes/quotes/view.spec.ts": {
    "path": "e2e/routes/quotes/view.spec.ts",
    "lines": 12,
@@ -435187,18 +435400,6 @@
     "Fail-closed: arquivo existe mas não pôde ser lido (permissão negada,"
    ],
    "doc": "!/usr/bin/env node"
-  },
-  "scripts/check-no-quote-comments.mjs": {
-   "path": "scripts/check-no-quote-comments.mjs",
-   "lines": 102,
-   "doc": "!/usr/bin/env node",
-   "calc_fns": [
-    {
-     "name": "scanFile",
-     "params": "full",
-     "body": "const rel = relative(cwd, full); if (ALLOW.some((re) => re.test(rel))) return; let content; try { content = readFileSync(full, \"utf8\"); } catch { return; // binary or unreadable file — skip } const lines = content.split(\"\\n\"); for (let i = 0; i < lines.length; i++) { const line = lines[i]; for (const pattern of PATTERNS) { if (pattern.test(line)) { violations.push(` ${rel}:${i + 1}:${line}`); break; // one violation per line is enough } } }"
-    }
-   ]
   },
   "scripts/check-no-salvar-alteracoes-draft.mjs": {
    "path": "scripts/check-no-salvar-alteracoes-draft.mjs",
@@ -462223,6 +462424,16 @@
    ],
    "doc": "QuoteClientInfo — Client & contact info cards for QuoteViewPage Tipografia/espaçamento via SSOT `quote-view-typography`. Cores estritamente em tokens semânticos para preservar contraste AA."
   },
+  "src/components/quotes/QuoteCommentsSection.tsx": {
+   "path": "src/components/quotes/QuoteCommentsSection.tsx",
+   "lines": 415,
+   "exports": [
+    "function QuoteCommentsSection"
+   ],
+   "errors": [
+    "\n            className="
+   ]
+  },
   "src/components/quotes/QuoteConcurrencyAlert.tsx": {
    "path": "src/components/quotes/QuoteConcurrencyAlert.tsx",
    "lines": 71,
@@ -467734,6 +467945,78 @@
    ],
    "hooks": [
     "useProductColorSwatch"
+   ]
+  },
+  "src/hooks/useQuoteComments.ts": {
+   "path": "src/hooks/useQuoteComments.ts",
+   "lines": 269,
+   "exports": [
+    "const QUOTE_COMMENT_MAX_LENGTH",
+    "interface QuoteComment",
+    "function useQuoteComments"
+   ],
+   "tables": [
+    {
+     "table": "quote_comments",
+     "op": "select"
+    },
+    {
+     "table": "profiles",
+     "op": "select"
+    },
+    {
+     "table": "quote_comments",
+     "op": "insert,select"
+    },
+    {
+     "table": "quote_comments",
+     "op": "select,update"
+    },
+    {
+     "table": "quote_comments",
+     "op": "delete,select"
+    },
+    {
+     "table": "quote_comments",
+     "op": "select"
+    },
+    {
+     "table": "workspace_notifications",
+     "op": "insert"
+    }
+   ],
+   "table_cols": {
+    "quote_comments": [
+     "id",
+     "quote_id",
+     "user_id"
+    ],
+    "profiles": [
+     "avatar_url",
+     "full_name",
+     "user_id"
+    ]
+   },
+   "errors": [
+    "Comment insert returned no row",
+    "Comment not found or delete not permitted",
+    "Comment not found or update not permitted"
+   ],
+   "params": [
+    {
+     "name": "QUOTE_COMMENT_MAX_LENGTH",
+     "value": "5000"
+    }
+   ],
+   "status_values": [
+    {
+     "field": "type",
+     "value": "quote_comment",
+     "kind": "escreve"
+    }
+   ],
+   "hooks": [
+    "useQuoteComments"
    ]
   },
   "src/hooks/useReplenishments.ts": {
@@ -500528,7 +500811,7 @@
   },
   "src/pages/quotes/QuoteViewPage.tsx": {
    "path": "src/pages/quotes/QuoteViewPage.tsx",
-   "lines": 591,
+   "lines": 593,
    "exports": [
     "function QuoteViewPage"
    ],
@@ -537376,6 +537659,32 @@
     "filtro "
    ]
   },
+  "tests/components/QuoteCommentsSection.test.tsx": {
+   "path": "tests/components/QuoteCommentsSection.test.tsx",
+   "lines": 236,
+   "is_test": true,
+   "errors": [
+    ")).toHaveTextContent(mock.error);\n    expect(screen.queryByText("
+   ],
+   "tests": [
+    "quote comments interface",
+    "shows a retryable error instead of an empty-state success",
+    "does not show the empty state while loading and shows it only after success",
+    "disables the main composer for unauthenticated users",
+    "keeps whitespace-only submissions disabled and enforces the shared length limit",
+    "trims and clears the composer only after successful creation",
+    "preserves the full draft after a failed creation",
+    "submits using %s + Enter",
+    "does not submit plain Enter or IME composition",
+    "prevents duplicate keyboard submissions while a mutation is pending",
+    "allows discussion but hides edit/delete controls for non-authors",
+    "keeps a failed reply draft and closes it after a successful retry to the root",
+    "keeps failed edits open and closes the editor only on successful retry",
+    "disables deleting a root with replies while keeping the thread visible",
+    "requires confirmation and leaves a comment untouched when deletion is cancelled",
+    "deletes an authored leaf only after explicit confirmation"
+   ]
+  },
   "tests/components/QuoteDraftRecovery.test.tsx": {
    "path": "tests/components/QuoteDraftRecovery.test.tsx",
    "lines": 263,
@@ -547491,6 +547800,33 @@
     "returns empty array for non-string/array types"
    ]
   },
+  "tests/hooks/useQuoteComments.test.ts": {
+   "path": "tests/hooks/useQuoteComments.test.ts",
+   "lines": 493,
+   "is_test": true,
+   "tests": [
+    "quote comments service boundary",
+    "does not fetch or mutate without an authenticated user",
+    "does not fetch or mutate without a quote id",
+    "shows loading while the first page is unresolved",
+    "uses quote filters, stable pagination order, author deduplication and one-level threads",
+    "loads beyond the PostgREST 1000-row cap",
+    "keeps comments readable when profile RLS denies author details",
+    "surfaces fetch failure and clears it after an explicit successful retry",
+    "clears the previous user comments on logout",
+    "ignores a previous quote response after the quote changes",
+    "ignores a pending response after unmount",
+    "inserts trimmed content with server-owned fields omitted",
+    "does not claim insert success for a failed/empty database response",
+    "updates only content and scopes the mutation to id, quote and author",
+    "treats zero affected rows in %s as failure",
+    "confirms a successful authored leaf deletion and refreshes the visible list",
+    "scopes deletion and maps the FK rejection of a root with replies",
+    "notifies distinct participants except the author without leaking comment text",
+    "keeps a committed comment successful when %s notifications fail",
+    "does not emit a previous quote success after notification delivery resolves in a new context"
+   ]
+  },
   "tests/hooks/useQuoteFunnel.test.ts": {
    "path": "tests/hooks/useQuoteFunnel.test.ts",
    "lines": 77,
@@ -557436,6 +557772,37 @@
     "stdout, stderr = process.communicate(timeout=10)"
    ]
   },
+  "tests/sql/quote-comments/fixture.sql": {
+   "path": "tests/sql/quote-comments/fixture.sql",
+   "lines": 42
+  },
+  "tests/sql/quote-comments/run-tests.py": {
+   "path": "tests/sql/quote-comments/run-tests.py",
+   "lines": 200,
+   "exports": [
+    "def docker",
+    "def cleanup_owned_container",
+    "def main",
+    "def run_cases"
+   ],
+   "errors": [
+    "Cannot verify disposable-container ownership; no container was removed.",
+    "Could not start the disposable PostgreSQL 17 container: ",
+    "Disposable PostgreSQL did not become ready within 30 seconds.",
+    "Disposable-container label mismatch; no container was removed.",
+    "Failed to remove the owned disposable PostgreSQL container: ",
+    "Local Docker daemon is unavailable: ",
+    "concurrent delete did not reach synchronization marker",
+    "concurrent delete failed: ",
+    "concurrent insert did not reach synchronization marker",
+    "concurrent insert failed: "
+   ],
+   "doc": "!/usr/bin/env python3",
+   "temporal": [
+    "pdel.stdin.close(); pdel.wait(timeout=10)",
+    "pins.stdin.close(); pins.wait(timeout=10)"
+   ]
+  },
   "tests/ssot/publish-ssot-schema.test.ts": {
    "path": "tests/ssot/publish-ssot-schema.test.ts",
    "lines": 107,
@@ -559755,10 +560122,34 @@
   }
  },
  "git": {
-  "sha": "36e7b1c255dd79d5b822ba02355f18115f8beef2",
+  "sha": "cfd7f833bb03a1c175460bbc8d60bdc84aef46e4",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "cfd7f83",
+    "date": "2026-11-20",
+    "author": "adm01-debug",
+    "subject": "feat: reativa comentários em orçamento (quote_comments) — UI + testes + trava (#3944)",
+    "files": [
+     ".file-size-baseline.json",
+     ".github/workflows/ci-security-drift.yml",
+     ".security/policies-baseline.json",
+     "audit/supabase-reference-catalog.temporary.json",
+     "e2e/routes/quotes/view-no-comments-network.spec.ts",
+     "scripts/automation.config.json",
+     "scripts/check-no-quote-comments.mjs",
+     "src/components/quotes/QuoteCommentsSection.tsx",
+     "src/hooks/useQuoteComments.ts",
+     "src/integrations/supabase/types.ts",
+     "src/pages/quotes/QuoteViewPage.tsx",
+     "tests/components/QuoteCommentsSection.test.tsx",
+     "tests/hooks/useQuoteComments.test.ts",
+     "tests/sql/quote-comments/README.md",
+     "tests/sql/quote-comments/fixture.sql",
+     "tests/sql/quote-comments/run-tests.py"
+    ]
+   },
    {
     "sha": "36e7b1c",
     "date": "2026-11-20",
@@ -560308,15 +560699,6 @@
      "supabase/migrations/20261119220000_create_ema_sister_functions.sql",
      "supabase/rollbacks/20261119220000_rollback.sql"
     ]
-   },
-   {
-    "sha": "809bd84",
-    "date": "2026-11-19",
-    "author": "github-actions[bot]",
-    "subject": "chore(security): atualiza baseline assinado de RLS policies (#3912)",
-    "files": [
-     ".security/policies-baseline.json"
-    ]
    }
   ],
   "hot_files": [
@@ -560325,11 +560707,15 @@
     12
    ],
    [
+    "src/integrations/supabase/types.ts",
+    5
+   ],
+   [
     "src/lib/freight/index.ts",
     5
    ],
    [
-    "src/integrations/supabase/types.ts",
+    "audit/supabase-reference-catalog.temporary.json",
     4
    ],
    [
@@ -560345,6 +560731,10 @@
     4
    ],
    [
+    ".file-size-baseline.json",
+    3
+   ],
+   [
     ".release-please-manifest.json",
     3
    ],
@@ -560358,10 +560748,6 @@
    ],
    [
     "package.json",
-    3
-   ],
-   [
-    "audit/supabase-reference-catalog.temporary.json",
     3
    ],
    [
@@ -560394,10 +560780,6 @@
    ],
    [
     "src/components/admin/shipping-boxes/shippingBoxFormSchema.ts",
-    3
-   ],
-   [
-    "src/services/__tests__/shippingBoxService.test.ts",
     3
    ]
   ]

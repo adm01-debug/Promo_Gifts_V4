@@ -1,7 +1,7 @@
 {
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
- "total": 1279,
+ "total": 1280,
  "orfaos": 157,
  "nomes_duplicados": {
   "AdminTemplatesManager": [
@@ -328,7 +328,8 @@
   ],
   "QuoteCommentsSection": [
    "docs/agentes/resgates/quote-comments/codigo/QuoteCommentsSection.tsx",
-   "recovery/src-legacy/src/components/quotes/QuoteCommentsSection.tsx"
+   "recovery/src-legacy/src/components/quotes/QuoteCommentsSection.tsx",
+   "src/components/quotes/QuoteCommentsSection.tsx"
   ],
   "QuoteDraftRecovery": [
    "src/components/quotes/QuoteAutoSave.tsx",
@@ -14881,6 +14882,23 @@
    "orfao": false
   },
   {
+   "arquivo": "src/components/quotes/QuoteCommentsSection.tsx",
+   "exports": [
+    "QuoteCommentsSection"
+   ],
+   "export_default": null,
+   "linhas": 415,
+   "dominio": "components/quotes",
+   "hooks_locais": [
+    "useAuth",
+    "useQuoteComments"
+   ],
+   "tabelas": [],
+   "edges": [],
+   "usado_por": 2,
+   "orfao": false
+  },
+  {
    "arquivo": "src/components/quotes/QuoteConcurrencyAlert.tsx",
    "exports": [
     "QuoteConcurrencyAlert"
@@ -16555,7 +16573,7 @@
    "hooks_locais": [],
    "tabelas": [],
    "edges": [],
-   "usado_por": 6,
+   "usado_por": 7,
    "orfao": false
   },
   {
@@ -16570,7 +16588,7 @@
    "hooks_locais": [],
    "tabelas": [],
    "edges": [],
-   "usado_por": 489,
+   "usado_por": 490,
    "orfao": false
   },
   {
@@ -16605,7 +16623,7 @@
    "hooks_locais": [],
    "tabelas": [],
    "edges": [],
-   "usado_por": 653,
+   "usado_por": 654,
    "orfao": false
   },
   {
@@ -16639,7 +16657,7 @@
    "hooks_locais": [],
    "tabelas": [],
    "edges": [],
-   "usado_por": 359,
+   "usado_por": 360,
    "orfao": false
   },
   {
@@ -16757,7 +16775,7 @@
    "hooks_locais": [],
    "tabelas": [],
    "edges": [],
-   "usado_por": 46,
+   "usado_por": 47,
    "orfao": false
   },
   {
@@ -17202,7 +17220,7 @@
    "hooks_locais": [],
    "tabelas": [],
    "edges": [],
-   "usado_por": 37,
+   "usado_por": 38,
    "orfao": false
   },
   {
@@ -17296,7 +17314,7 @@
    "hooks_locais": [],
    "tabelas": [],
    "edges": [],
-   "usado_por": 188,
+   "usado_por": 189,
    "orfao": false
   },
   {
@@ -17424,7 +17442,7 @@
    "hooks_locais": [],
    "tabelas": [],
    "edges": [],
-   "usado_por": 63,
+   "usado_por": 64,
    "orfao": false
   },
   {
@@ -17580,7 +17598,7 @@
    ],
    "tabelas": [],
    "edges": [],
-   "usado_por": 210,
+   "usado_por": 212,
    "orfao": false
   },
   {
@@ -20399,7 +20417,7 @@
     "QuoteViewPage"
    ],
    "export_default": "QuoteViewPage",
-   "linhas": 591,
+   "linhas": 593,
    "dominio": "pages/quotes",
    "hooks_locais": [
     "useDiscountApproval",

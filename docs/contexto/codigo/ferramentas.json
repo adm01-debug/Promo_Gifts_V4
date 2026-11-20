@@ -3,10 +3,10 @@
  "format_version": 2,
  "stack": {
   "linguagens": [
-   "TypeScript (5165)",
-   "SQL (3477)",
-   "Markdown (1490)",
-   "JavaScript (463)",
+   "TypeScript (5168)",
+   "SQL (3478)",
+   "Markdown (1491)",
+   "JavaScript (462)",
    "JSON (132)",
    "YAML (117)",
    "Shell (27)",
@@ -661,7 +661,6 @@
    ],
    "scripts_usados": [
     "scripts/check-invoke-direct-calls.mjs",
-    "scripts/check-no-quote-comments.mjs",
     "scripts/check-tsc-baseline.mjs"
    ],
    "npm_scripts": [
@@ -5432,7 +5431,7 @@
    },
    {
     "papel": "alert",
-    "ocorrencias": 65
+    "ocorrencias": 66
    },
    {
     "papel": "dev",

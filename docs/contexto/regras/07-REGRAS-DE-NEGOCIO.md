@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.3.2 · commit `36e7b1c255` · branch `main` · 2026-11-20 18:29 UTC
+> Gerado automaticamente por AI Context Sync v1.3.2 · commit `cfd7f833bb` · branch `main` · 2026-11-20 20:01 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -1697,7 +1697,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `type` | `quantity_tier` | escreve | `src/components/pricing/simulator/upsell/upsell-engine.ts` |
 | `type` | `quarterly` | compara | `recovery/src-legacy/src/hooks/useSalesGoals.ts`<br>`src/hooks/intelligence/useSalesGoals.ts` |
 | `type` | `quote` | compara, escreve | `recovery/src-legacy/src/hooks/useProductInsights.ts`<br>`src/components/search/useGlobalSearch.ts`<br>`src/hooks/products/useProductInsights.ts` |
-| `type` | `quote_comment` | escreve | `recovery/src-legacy/src/hooks/useQuoteComments.ts` |
+| `type` | `quote_comment` | escreve | `recovery/src-legacy/src/hooks/useQuoteComments.ts`<br>`src/hooks/useQuoteComments.ts` |
 | `type` | `react_error_boundary` | escreve | `src/components/errors/EnhancedErrorBoundary.tsx` |
 | `type` | `recent` | escreve | `recovery/src-legacy/src/components/search/SmartSuggestions.tsx` |
 | `type` | `recommended` | escreve | `recovery/src-legacy/src/components/search/SmartSuggestions.tsx` |
@@ -5813,6 +5813,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `TOAST_ID_DEGRADED` | `'bridge-degraded'` | `src/hooks/useBridgeStatusBanner.ts` |
 | `TOAST_ID_UNAVAILABLE` | `'bridge-unavailable'` | `src/hooks/useBridgeStatusBanner.ts` |
 | `LINE_HEIGHT` | `16` | `src/hooks/useHorizontalScroll.ts` |
+| `QUOTE_COMMENT_MAX_LENGTH` | `5000` | `src/hooks/useQuoteComments.ts` |
 | `REPLENISHMENT_WINDOW_DAYS` | `30` | `src/hooks/useReplenishments.ts` |
 | `MIN_REPLENISHMENT_DELTA_MS` | `86` | `src/hooks/useReplenishments.ts` |
 | `REFRESH_INTERVAL_MS` | `30` | `src/hooks/admin/useKillSwitchObservability.ts` |
@@ -5901,8 +5902,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `MS_PER_DAY` | `1000` | `src/hooks/products/useNovelties.helpers.ts` |
 | `NOVELTY_DISPLAY_WINDOW_DAYS` | `30` | `src/hooks/products/useNovelties.helpers.ts` |
 | `NOVELTY_FRESH_DAYS` | `5` | `src/hooks/products/useNovelties.helpers.ts` |
-| `NOVELTY_EXPIRING_SOON_DAYS` | `7` | `src/hooks/products/useNovelties.helpers.ts` |
-| … +415 linhas — lista completa em `context.json` | | |
+| … +416 linhas — lista completa em `context.json` | | |
 
 ### H.2 Prazos, expirações e janelas de tempo
 
@@ -6208,7 +6208,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `staleTime: 5 * 60 * 1000,` | `src/hooks/auth/useRBAC.tsx` |
 | `staleTime: 5 * 60 * 1000,` | `src/hooks/bi/useClientAffinity.ts` |
 | `const NINETY_DAYS = 90 * 24 * 60 * 60 * 1000;` | `src/hooks/bi/useClientCategoryAffinity.ts` |
-| … +398 linhas — lista completa em `context.json` | |
+| … +400 linhas — lista completa em `context.json` | |
 
 ### H.3 Limites de paginação
 
@@ -6691,7 +6691,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | allowlist inválida: versions contém duplicatas | `scripts/check-supabase-migration-ledger.mjs` |
 | allowlist inválida: versions contém valor vazio/não textual | `scripts/check-supabase-migration-ledger.mjs` |
 | allowlist inválida: versions deve ser array não vazio | `scripts/check-supabase-migration-ledger.mjs` |
-| … +1344 linhas — lista completa em `context.json` | |
+| … +1358 linhas — lista completa em `context.json` | |
 
 ## J. Controle de acesso no código (checagens de perfil/permissão)
 
@@ -6815,7 +6815,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `admin` | `supabase/migrations/20261112120500_fix_optimization_queue_rpcs_dev_access.sql` |
 | `anon` | `tests/edge-functions/live/_live-client.ts` |
 
-## K. Testes como especificação (23585 testes em 2361 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (23619 testes em 2362 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -7103,6 +7103,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `tests/edge-functions/integration/cnpj-lookup.test.ts` | 20 | cnpj-lookup · happy path · retorna 200 com dados da empresa para CNPJ válido formatado · aceita CNPJ sem formatação (somente dígitos) … |
 | `tests/edge-functions/integration/step-up-verify.test.ts` | 20 | step-up-verify · verificação bem-sucedida · retorna 200 com step_up_token quando OTP correto · step_up_token expira em tempo razoável (15min) … |
 | `tests/hooks/useLegacyLintMemoContracts.test.tsx` | 20 | ROOT search context, ranking and actual history · prefers explicit products and places exact SKU first without duplicate matches · uses context products for an empty explicit source and reacts to new context data · handles missing provider and short queries without leaking suggestions … |
+| `tests/hooks/useQuoteComments.test.ts` | 20 | quote comments service boundary · does not fetch or mutate without an authenticated user · does not fetch or mutate without a quote id · shows loading while the first page is unresolved … |
 | `tests/hooks/useSearch.test.ts` | 20 | useSearch · Histórico · adiciona termo ao histórico · remove duplicatas do histórico (case-insensitive) … |
 | `tests/integration/freight-quest/quote-freight-integration.test.ts` | 20 | quote-sync — integração com frete · sync_quote com shipping_type=fob_pre → total inclui frete · sync_quote com shipping_type=cif → total NÃO inclui frete · quoteId inválido (não-UUID) → 400 validation error … |
 | `tests/lib/rbac-permissions.test.ts` | 20 | RBAC Permission Matrix · admin · has access to everything · manager … |
@@ -7118,8 +7119,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `src/lib/auth/__tests__/oauth-error-explainer.test.ts` | 19 | explainOAuthError · config errors (admin needs to act) · mapeia redirect_uri_mismatch com hint sobre console do provedor · detecta redirect uri mismatch pela descrição quando code é genérico … |
 | `src/lib/external-db/rest-native.test.ts` | 19 | isRestNativeEligible · whitelisted COM coluna de busca → elegível mesmo com _search · A1: whitelisted SEM coluna de busca → continua elegível com _search · não-whitelisted → inelegível … |
 | `src/lib/inventory/__tests__/stock-filter.test.ts` | 19 | stock-filter — pipeline de seleção/agregação/montagem · normalize remove acentos e diferencia caixa · selectMatchingVariants retorna todas as variações quando não há filtro de cor · cor  … |
-| `src/lib/lead-time/__tests__/personalizationLeadTime.test.ts` | 19 | resolvePersonalizationLeadTime · prazo registrado vence a tabela: frente = 4 (a faixa 100..499 diria 5) · registrado sem production_days cai na tabela: verso com 100 un = faixa 100..499 = 5 · sem linha cadastrada para o local usa a tabela pela técnica: lateral com 100 un = 5 … |
-| … +2061 linhas — lista completa em `context.json` | | |
+| … +2062 linhas — lista completa em `context.json` | | |
 
 ## L. Eventos de webhook tratados (contratos com sistemas externos)
 

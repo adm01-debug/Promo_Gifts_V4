@@ -720,7 +720,7 @@
    "zod_schemas": 0,
    "flags": [],
    "papeis": [],
-   "usado_por": 414,
+   "usado_por": 415,
    "usado_por_modulos": [
     "components/admin",
     "components/ai",
@@ -953,7 +953,7 @@
     "TablesUpdate"
    ],
    "export_default": null,
-   "linhas": 65367,
+   "linhas": 65415,
    "tabelas": [],
    "rpcs": [],
    "edges": [],
@@ -962,11 +962,12 @@
    "zod_schemas": 0,
    "flags": [],
    "papeis": [],
-   "usado_por": 60,
+   "usado_por": 61,
    "usado_por_modulos": [
     "components/admin",
     "components/cart",
     "components/filters",
+    "hooks",
     "hooks/admin",
     "hooks/collections",
     "hooks/common",
@@ -990,7 +991,7 @@
     "services",
     "stores"
    ],
-   "coberto_por_testes": 8,
+   "coberto_por_testes": 9,
    "orfao": false
   },
   {
@@ -2593,10 +2594,11 @@
    "zod_schemas": 0,
    "flags": [],
    "papeis": [],
-   "usado_por": 15,
+   "usado_por": 16,
    "usado_por_modulos": [
     "components/admin",
     "components/intelligence",
+    "hooks",
     "hooks/bi",
     "hooks/crm",
     "hooks/intelligence",
@@ -5690,7 +5692,7 @@
    "zod_schemas": 0,
    "flags": [],
    "papeis": [],
-   "usado_por": 310,
+   "usado_por": 311,
    "usado_por_modulos": [
     "components",
     "components/admin",

@@ -37112,7 +37112,7 @@
     "user_id->auth"
    ],
    "criada_em": "20250103080000_complete_schema.sql",
-   "usada_no_front": 32,
+   "usada_no_front": 33,
    "usada_em_edges": [
     "anonymize-user",
     "expert-chat",
@@ -37929,7 +37929,7 @@
     "user_id->auth"
    ],
    "criada_em": "20261120180000_restore_quote_comments_scoped_threads.sql",
-   "usada_no_front": 1,
+   "usada_no_front": 2,
    "usada_em_edges": [],
    "triggers": [
     "quote_comments_enforce_mutation"
@@ -50920,7 +50920,7 @@
    ],
    "fks": [],
    "criada_em": "20260330104621_b1c5cde5-1d76-43c7-b27d-7ce25242435c.sql",
-   "usada_no_front": 10,
+   "usada_no_front": 11,
    "usada_em_edges": [
     "collections-watcher",
     "comparison-price-watcher",

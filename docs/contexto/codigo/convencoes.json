@@ -8,12 +8,12 @@
    "api/health.ts (1)"
   ],
   "componentes": [
-   "src/components (979)",
+   "src/components (980)",
    "src/pages (181)",
    "recovery/src-legacy (100)"
   ],
   "hooks": [
-   "src/hooks (312)",
+   "src/hooks (313)",
    "recovery/src-legacy (196)",
    "src/components (78)"
   ],
@@ -23,9 +23,9 @@
    "src/services (16)"
   ],
   "testes": [
-   "tests/ (1094)",
+   "tests/ (1097)",
    "co-localizado (__tests__) (764)",
-   "e2e/ (627)"
+   "e2e/ (626)"
   ],
   "edge_functions": "supabase/functions",
   "migrations": "supabase/migrations",
@@ -49,7 +49,7 @@
  },
  "barrels_index": 50,
  "extensao_componentes": [
-  ".tsx (1279)"
+  ".tsx (1280)"
  ],
  "alias_imports": {
   "e2e/": {},
@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "feat: reativa comentários em orçamento (quote_comments) — UI + testes + trava (#3944)",
    "feat(db): restaura comentários em orçamento (quote_comments) após decisão do dono (#3942)",
    "test",
    "fix: contrato de orphan-mounts alinha com montagem lazy do RupturePanelEma (#3941)",
-   "fix(stock): banner de risco EMA não derruba para usuário não-dev (403 da edge) (#3940)",
-   "feat(db): colunas do plano de volumes em quotes (frete, Bloco G — DDL, etapa 61) (#3926)"
+   "fix(stock): banner de risco EMA não derruba para usuário não-dev (403 da edge) (#3940)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",

@@ -1,6 +1,6 @@
 # 11 · GLOSSÁRIO, DADOS DE REFERÊNCIA E LACUNAS
 
-> Gerado automaticamente por AI Context Sync v1.3.2 · commit `36e7b1c255` · branch `main` · 2026-11-20 18:29 UTC
+> Gerado automaticamente por AI Context Sync v1.3.2 · commit `cfd7f833bb` · branch `main` · 2026-11-20 20:01 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## Glossário do domínio (entidades do sistema)
@@ -594,7 +594,7 @@
 | tabela | tabela `pg_class` usada no código não existe nas migrations/types do repo | `tests/security/rls-validation.test.ts` |
 | tabela | tabela `product_endomarketing` usada no código não existe nas migrations/types do repo | `src/components/admin/products/productMarketingData.ts` |
 | tabela | tabela `produtos` usada no código não existe nas migrations/types do repo | `tests/scripts/audit-db-frontend-coverage.test.mjs`<br>`tests/scripts/inventario-banco.test.mjs` |
-| tabela | tabela `quote_comments` usada no código não existe nas migrations/types do repo | `docs/agentes/resgates/quote-comments/codigo/useQuoteComments.ts`<br>`recovery/src-legacy/src/hooks/useQuoteComments.ts` |
+| tabela | tabela `quote_comments` usada no código não existe nas migrations/types do repo | `docs/agentes/resgates/quote-comments/codigo/useQuoteComments.ts`<br>`recovery/src-legacy/src/hooks/useQuoteComments.ts`<br>`src/hooks/useQuoteComments.ts` |
 | tabela | tabela `runtime_table` usada no código não existe nas migrations/types do repo | `scripts/ai-context/gerar.unit.mjs` |
 | tabela | tabela `so_teste` usada no código não existe nas migrations/types do repo | `scripts/ai-context/cenarios.mjs` |
 | tabela | tabela `some_table` usada no código não existe nas migrations/types do repo | `src/lib/intelligence/degradation.ts` |

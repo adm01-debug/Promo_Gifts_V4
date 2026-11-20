@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "36e7b1c255dd79d5b822ba02355f18115f8beef2",
+  "commit": "cfd7f833bb03a1c175460bbc8d60bdc84aef46e4",
   "branch": "main",
-  "data_commit": "2026-11-20T15:27:51-03:00",
+  "data_commit": "2026-11-20T17:00:23-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "cfd7f833",
+    "data": "2026-11-20",
+    "assunto": "feat: reativa comentários em orçamento (quote_comments) — UI + testes + trava (#3944)"
+   },
    {
     "sha": "36e7b1c2",
     "data": "2026-11-20",
@@ -126,14 +131,9 @@
     "sha": "8fe268c2",
     "data": "2026-11-19",
     "assunto": "chore(main): release gifts-store 1.13.0 (#3904)"
-   },
-   {
-    "sha": "4e503286",
-    "data": "2026-11-19",
-    "assunto": "docs(migrations-log): recibo E15 — aplicação de 20261119212000 (#3906)"
    }
   ],
-  "arquivos_mudados_7d": 1488,
+  "arquivos_mudados_7d": 1499,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -157,7 +157,7 @@
    },
    {
     "pasta": "src/components/quotes",
-    "mudancas": 210
+    "mudancas": 211
    },
    {
     "pasta": "src/pages/magazine",
@@ -185,7 +185,7 @@
    },
    {
     "pasta": "src/pages/quotes",
-    "mudancas": 124
+    "mudancas": 125
    },
    {
     "pasta": "src/components/kit-builder",
@@ -199,7 +199,7 @@
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "supabase/MIGRATIONS_SYNC_LOG.md",
-    "mudancas": 70
+    "mudancas": 69
    },
    {
     "arquivo": "package.json",
@@ -218,11 +218,11 @@
     "mudancas": 13
    },
    {
-    "arquivo": "RELATORIO_CI.md",
-    "mudancas": 12
+    "arquivo": "audit/supabase-reference-catalog.temporary.json",
+    "mudancas": 13
    },
    {
-    "arquivo": "audit/supabase-reference-catalog.temporary.json",
+    "arquivo": "RELATORIO_CI.md",
     "mudancas": 12
    },
    {
@@ -240,6 +240,10 @@
    {
     "arquivo": "src/pages/mockups/MockupGenerator.tsx",
     "mudancas": 10
+   },
+   {
+    "arquivo": "src/integrations/supabase/types.ts",
+    "mudancas": 8
    },
    {
     "arquivo": "src/pages/kit-builder/KitBuilderPage.tsx",
@@ -270,10 +274,6 @@
     "mudancas": 7
    },
    {
-    "arquivo": "src/integrations/supabase/types.ts",
-    "mudancas": 7
-   },
-   {
     "arquivo": "src/lib/freight/index.ts",
     "mudancas": 7
    },
@@ -290,11 +290,11 @@
     "mudancas": 6
    },
    {
-    "arquivo": "src/components/kit-builder/PersonalizationConfig.tsx",
+    "arquivo": "scripts/automation.config.json",
     "mudancas": 6
    },
    {
-    "arquivo": "src/components/quotes/QuoteAutoSave.tsx",
+    "arquivo": "src/components/kit-builder/PersonalizationConfig.tsx",
     "mudancas": 6
    }
   ],
@@ -309,7 +309,7 @@
    },
    {
     "autor": "github-actions[bot]",
-    "commits": 28
+    "commits": 27
    },
    {
     "autor": "Joaquim Ataides",
@@ -322,24 +322,24 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 11173,
-  "arquivos_codigo": 5638,
-  "linhas_codigo": 1069393,
+  "arquivos_total": 11178,
+  "arquivos_codigo": 5641,
+  "linhas_codigo": 1070914,
   "rotas": 140,
   "rotas_http_backend": 13,
   "vistas_por_id": 0,
   "itens_menu": 71,
   "modulos": 168,
-  "componentes": 1279,
-  "hooks": 643,
+  "componentes": 1280,
+  "hooks": 644,
   "edge_functions": 112,
   "tabelas": 531,
   "migrations": 3118,
   "cron_jobs": 122,
-  "testes": 2690,
+  "testes": 2692,
   "workflows": 89,
-  "scripts": 285,
-  "docs_md": 1490
+  "scripts": 284,
+  "docs_md": 1491
  },
  "por_pasta": {
   ".github/scripts": {
@@ -811,8 +811,8 @@
    "linhas": 171
   },
   "e2e/routes": {
-   "arquivos": 92,
-   "linhas": 5030
+   "arquivos": 91,
+   "linhas": 4990
   },
   "e2e/scripts": {
    "arquivos": 3,
@@ -1265,10 +1265,6 @@
   "scripts/check-no-prod-leak.mjs": {
    "arquivos": 1,
    "linhas": 119
-  },
-  "scripts/check-no-quote-comments.mjs": {
-   "arquivos": 1,
-   "linhas": 102
   },
   "scripts/check-no-salvar-alteracoes-draft.mjs": {
    "arquivos": 1,
@@ -1907,8 +1903,8 @@
    "linhas": 130
   },
   "src/components": {
-   "arquivos": 1477,
-   "linhas": 289608
+   "arquivos": 1478,
+   "linhas": 290023
   },
   "src/config": {
    "arquivos": 1,
@@ -1931,12 +1927,12 @@
    "linhas": 7
   },
   "src/hooks": {
-   "arquivos": 504,
-   "linhas": 93682
+   "arquivos": 505,
+   "linhas": 93951
   },
   "src/integrations": {
    "arquivos": 11,
-   "linhas": 66712
+   "linhas": 66760
   },
   "src/lib": {
    "arquivos": 413,
@@ -1952,7 +1948,7 @@
   },
   "src/pages": {
    "arquivos": 371,
-   "linhas": 85563
+   "linhas": 85565
   },
   "src/routes": {
    "arquivos": 15,
@@ -2059,8 +2055,8 @@
    "linhas": 141
   },
   "tests/components": {
-   "arquivos": 167,
-   "linhas": 36206
+   "arquivos": 168,
+   "linhas": 36442
   },
   "tests/config": {
    "arquivos": 6,
@@ -2103,8 +2099,8 @@
    "linhas": 325
   },
   "tests/hooks": {
-   "arquivos": 169,
-   "linhas": 27248
+   "arquivos": 170,
+   "linhas": 27741
   },
   "tests/integration": {
    "arquivos": 11,
@@ -2195,8 +2191,8 @@
    "linhas": 37
   },
   "tests/sql": {
-   "arquivos": 1,
-   "linhas": 257
+   "arquivos": 2,
+   "linhas": 457
   },
   "tests/ssot": {
    "arquivos": 8,
@@ -2286,7 +2282,7 @@
  "maiores_arquivos": [
   {
    "arquivo": "src/integrations/supabase/types.ts",
-   "linhas": 65367
+   "linhas": 65415
   },
   {
    "arquivo": "scripts/regras_negocio/generate.py",
@@ -2387,7 +2383,7 @@
  ],
  "qualidade": {
   "any": 695,
-  "console_log": 1307,
+  "console_log": 1306,
   "ts_ignore": 0,
   "eslint_disable": 24,
   "todos": 111,
