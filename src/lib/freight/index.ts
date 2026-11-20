@@ -45,6 +45,8 @@ export {
 
 export { expandQuantities, type ExpandResult } from './expandQuantities';
 
+export { getFreightReadiness, type FreightReadiness } from './readiness';
+
 export {
   daMaiorParaMenor,
   daMenorParaMaior,

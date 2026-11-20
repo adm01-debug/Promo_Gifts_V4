@@ -10,6 +10,9 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
+import { Badge } from '@/components/ui/badge';
+import { useSupplierDefaultLeadTime } from '@/hooks/products/useSupplierDefaultLeadTime';
+import { getLeadTimeSource } from '../leadTimeSource';
 import { FieldLabel, SectionCard, type FormSectionProps } from '../ProductFormHelpers';
 import { Info, Loader2, CheckCircle2, AlertCircle } from 'lucide-react';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
@@ -38,6 +41,8 @@ export function ProductInfoSection({
   const supplierRefValue = watch('supplier_reference') || '';
   const descValue = watch('description') || '';
   const shortDescValue = watch('short_description') || '';
+  const { data: supplierDefaultDays } = useSupplierDefaultLeadTime(watch('supplier_id'));
+  const leadTimeSource = getLeadTimeSource(watch('lead_time_days'), supplierDefaultDays);
 
   return (
     <SectionCard
@@ -217,11 +222,21 @@ export function ProductInfoSection({
         <div>
           <FieldLabel
             htmlFor="lead_time_days"
-            hint="Tempo médio em dias úteis para produção/entrega pelo fornecedor"
+            hint="Dias úteis para o fornecedor liberar a peça lisa. Vazio = padrão do fornecedor."
           >
-            Prazo Entrega (dias)
+            Prazo de liberação do fornecedor (dias úteis)
           </FieldLabel>
           <Input id="lead_time_days" {...numericProps('lead_time_days')} min="0" className="h-9" />
+          {supplierDefaultDays !== null && supplierDefaultDays !== undefined && (
+            <p className="mt-1 flex items-center gap-1.5 text-xs text-muted-foreground">
+              Padrão do fornecedor: {supplierDefaultDays} dias úteis
+              {leadTimeSource && (
+                <Badge variant={leadTimeSource === 'excecao' ? 'default' : 'outline'}>
+                  {leadTimeSource === 'excecao' ? 'exceção' : 'padrão'}
+                </Badge>
+              )}
+            </p>
+          )}
         </div>
         <div>
           <FieldLabel

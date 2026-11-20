@@ -41,6 +41,7 @@ import {
   Boxes,
 } from 'lucide-react';
 import { BulkImportDialog } from './products/BulkImportDialog';
+import { ProductSkuTag } from './products/ProductSkuTag';
 import { cn } from '@/lib/utils';
 import { m as motion } from 'framer-motion';
 import { ProductFiltersBar } from './products/ProductFiltersBar';
@@ -321,9 +322,7 @@ export function ProductsManager() {
                           )}
                         </TableCell>
                         <TableCell>
-                          <span className="rounded bg-muted/50 px-1.5 py-0.5 font-mono text-xs text-muted-foreground">
-                            {product.sku}
-                          </span>
+                          <ProductSkuTag product={product} />
                         </TableCell>
                         <TableCell>
                           <div className="max-w-[280px]">

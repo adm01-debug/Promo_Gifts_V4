@@ -15,6 +15,9 @@ const SuppliersManager = lazyWithRetry(() =>
 const ShippingBoxesManager = lazyWithRetry(() =>
   import('@/components/admin/shipping-boxes').then((m) => ({ default: m.ShippingBoxesManager })),
 );
+const FreightReadinessReport = lazyWithRetry(() =>
+  import('@/components/admin/freight').then((m) => ({ default: m.FreightReadinessReport })),
+);
 const EngravingRegistrationContent = lazyWithRetry(() =>
   import('@/pages/tools/EngravingRegistrationPage').then((m) => ({
     default: m.EngravingRegistrationContent,
@@ -125,9 +128,22 @@ export default function AdminCadastrosPage() {
           </TabsContent>
 
           <TabsContent value="caixas">
-            <Suspense fallback={<TabFallback />}>
-              <ShippingBoxesManager />
-            </Suspense>
+            <Tabs defaultValue="caixas-lista" className="space-y-4">
+              <TabsList>
+                <TabsTrigger value="caixas-lista">Caixas</TabsTrigger>
+                <TabsTrigger value="sem-dados-frete">Produtos sem dados de frete</TabsTrigger>
+              </TabsList>
+              <TabsContent value="caixas-lista">
+                <Suspense fallback={<TabFallback />}>
+                  <ShippingBoxesManager />
+                </Suspense>
+              </TabsContent>
+              <TabsContent value="sem-dados-frete">
+                <Suspense fallback={<TabFallback />}>
+                  <FreightReadinessReport />
+                </Suspense>
+              </TabsContent>
+            </Tabs>
           </TabsContent>
 
           <TabsContent value="categorias">

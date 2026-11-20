@@ -62,6 +62,8 @@ export interface ImportRow {
   is_new?: boolean | null;
   is_on_sale?: boolean | null;
   is_kit?: boolean | null;
+  /** Só vai na linha quando a planilha tem a coluna (ver BulkImportDialog). */
+  ships_separately?: boolean;
   // Outros
   gender?: string | null;
   dimensions?: string | null;
@@ -155,7 +157,15 @@ export async function executeBatchImport(
   mode: ImportMode,
   onProgress?: (progress: BatchImportProgress) => void,
 ): Promise<BatchImportResult> {
-  const totalChunks = Math.ceil(rows.length / CHUNK_SIZE);
+  // Um pedido de upsert/insert em lote exige as mesmas chaves em todas as linhas:
+  // linhas com e sem `ships_separately` vão em grupos separados.
+  const comCampo = rows.filter((r) => r.ships_separately !== undefined);
+  const semCampo = rows.filter((r) => r.ships_separately === undefined);
+  const chunks: ImportRow[][] = [];
+  for (const grupo of [comCampo, semCampo]) {
+    for (let g = 0; g < grupo.length; g += CHUNK_SIZE) chunks.push(grupo.slice(g, g + CHUNK_SIZE));
+  }
+  const totalChunks = chunks.length;
   const progress: BatchImportProgress = {
     total: rows.length,
     processed: 0,
@@ -172,9 +182,8 @@ export async function executeBatchImport(
     insertedIds: [],
   };
 
-  for (let i = 0; i < rows.length; i += CHUNK_SIZE) {
-    const chunk = rows.slice(i, i + CHUNK_SIZE);
-    const chunkIndex = Math.floor(i / CHUNK_SIZE);
+  let i = 0;
+  for (const [chunkIndex, chunk] of chunks.entries()) {
     progress.currentChunk = chunkIndex + 1;
 
     try {
@@ -225,6 +234,7 @@ export async function executeBatchImport(
     }
 
     progress.processed += chunk.length;
+    i += chunk.length;
     onProgress?.({ ...progress });
   }
 

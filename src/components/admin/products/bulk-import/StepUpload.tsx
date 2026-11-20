@@ -14,7 +14,7 @@ interface StepUploadProps {
   ) => void;
 }
 
-const normalizeStr = (s: string) =>
+export const normalizeStr = (s: string) =>
   s
     .toLowerCase()
     .normalize('NFD')

@@ -72,8 +72,39 @@ describe('executeBatchImport', () => {
       },
     ];
     await executeBatchImport(rows, 'insert');
-    const sent = (dbInvokeMock.mock.calls[0][0] as { data: Array<Record<string, unknown>> }).data[0];
+    const sent = (dbInvokeMock.mock.calls[0][0] as { data: Array<Record<string, unknown>> })
+      .data[0];
     expect(sent.primary_image_url).toBe('https://cdn/x/primary.jpg');
     expect(sent).not.toHaveProperty('image_url');
+  });
+
+  it('lote misto: linhas com e sem ships_separately saem em pedidos de chaves iguais', async () => {
+    // 3 linhas: A (com campo), B (sem), C (com). Conta esperada: 2 com + 1 sem = 2 pedidos.
+    const rows: ImportRow[] = [
+      { sku: 'A', name: 'A', sale_price: 1, ships_separately: true },
+      { sku: 'B', name: 'B', sale_price: 1 },
+      { sku: 'C', name: 'C', sale_price: 1, ships_separately: false },
+    ];
+    dbInvokeMock.mockImplementation((opts: { data: unknown[] }) =>
+      Promise.resolve({
+        records: opts.data.map((_, k) => ({ id: String(k) })),
+      }),
+    );
+    const r = await executeBatchImport(rows, 'upsert');
+
+    expect(dbInvokeMock).toHaveBeenCalledTimes(2);
+    const pedidos = dbInvokeMock.mock.calls.map(
+      (c) => (c[0] as { data: Array<Record<string, unknown>> }).data,
+    );
+    for (const dados of pedidos) {
+      const chaves = new Set(dados.map((d) => Object.keys(d).sort().join(',')));
+      expect(chaves.size).toBe(1);
+    }
+    expect(pedidos[0].map((d) => d.sku)).toEqual(['A', 'C']);
+    expect(pedidos[0].map((d) => d.ships_separately)).toEqual([true, false]);
+    expect(pedidos[1].map((d) => d.sku)).toEqual(['B']);
+    expect(pedidos[1][0]).not.toHaveProperty('ships_separately');
+    expect(r.succeeded).toBe(3);
+    expect(r.failed).toBe(0);
   });
 });

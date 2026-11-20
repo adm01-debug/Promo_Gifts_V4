@@ -23,6 +23,11 @@ import { useAuditLog, fetchAuditHistory } from '@/hooks/admin';
 import { toast } from 'sonner';
 import type { ProductFormData } from '@/components/admin/products/ProductFormSchema';
 import { ORGANIZATION_ID } from '@/components/admin/products/new-supplier/types';
+import { fetchShipsSeparately } from '@/services/productShipsSeparatelyService';
+import {
+  isMissingPriceFreshnessThresholdColumn,
+  withoutPriceFreshnessThreshold,
+} from '@/components/admin/products/priceFreshnessFallback';
 import { Loader2, ArrowLeft, History, Pencil, Copy, FileDown } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -38,21 +43,6 @@ const ProductFormFullscreen = lazyWithRetry(() =>
 const AuditHistory = lazyWithRetry(() =>
   import('@/components/audit/AuditHistory').then((m) => ({ default: m.AuditHistory })),
 );
-
-const PRICE_FRESHNESS_THRESHOLD_COLUMN = 'price_freshness_threshold_days';
-
-function isMissingPriceFreshnessThresholdColumn(error: unknown): boolean {
-  const message = error instanceof Error ? error.message : String(error);
-  return /price_freshness_threshold_days|column products\.price_freshness_threshold_days does not exist/i.test(
-    message,
-  );
-}
-
-function withoutPriceFreshnessThreshold(data: Record<string, unknown>): Record<string, unknown> {
-  const fallbackData = { ...data };
-  delete fallbackData[PRICE_FRESHNESS_THRESHOLD_COLUMN];
-  return fallbackData;
-}
 
 /**
  * Convert a multi-line textarea value into a clean Postgres text[] (one entry per
@@ -113,7 +103,7 @@ export default function AdminProductFormPage() {
       try {
         const fullProduct = await fetchPromobrindProductById(id);
         if (fullProduct) {
-          setProduct(fullProduct);
+          setProduct({ ...fullProduct, ships_separately: await fetchShipsSeparately(id) });
         } else {
           toast.error('Produto não encontrado');
           navigate('/admin/cadastros');
@@ -207,6 +197,7 @@ export default function AdminProductFormPage() {
       allows_personalization: p.allows_personalization ?? true,
       has_gift_box: p.has_gift_box ?? false,
       has_optional_packaging: p.has_optional_packaging ?? false,
+      ships_separately: p.ships_separately ?? false,
       ncm_code: p.ncm_code ?? '',
       ean: p.ean ?? '',
       gtin: p.gtin ?? '',
@@ -289,7 +280,8 @@ export default function AdminProductFormPage() {
       // fix_version: safecostprice-round-20260627
       const roundedCostPrice =
         typeof data.cost_price === 'number' ? Math.round(data.cost_price * 100) / 100 : null;
-      const safeCostPrice = roundedCostPrice !== null && roundedCostPrice > 0 ? roundedCostPrice : null;
+      const safeCostPrice =
+        roundedCostPrice !== null && roundedCostPrice > 0 ? roundedCostPrice : null;
       const fitLen = (s: string | null | undefined, min: number, max: number): string | null => {
         const v = (s ?? '').toString().trim();
         return v.length >= min && v.length <= max ? v : null;
@@ -351,6 +343,7 @@ export default function AdminProductFormPage() {
         allows_personalization: data.allows_personalization,
         has_gift_box: data.has_gift_box,
         has_optional_packaging: data.has_optional_packaging,
+        ships_separately: data.ships_separately,
         packing_type: data.packing_type || null,
         height_cm: data.height_cm ?? null,
         width_cm: data.width_cm ?? null,
@@ -468,7 +461,8 @@ export default function AdminProductFormPage() {
 
         toast.success('Produto atualizado com sucesso');
         const refreshed = await fetchPromobrindProductById(product.id);
-        if (refreshed) setProduct(refreshed);
+        // a view v_products_public não traz ships_separately: mantém o valor salvo
+        if (refreshed) setProduct({ ...refreshed, ships_separately: data.ships_separately });
       } else {
         let newProduct: PromobrindProduct | null;
         try {
