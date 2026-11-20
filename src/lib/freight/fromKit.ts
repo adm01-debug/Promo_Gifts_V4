@@ -46,7 +46,7 @@ const TODAS_AS_MEDIDAS: MissingMeasure[] = ['height', 'length', 'weight', 'width
 
 /** `ships_separately` ainda não está em `ProductMeasureRow` (bloco D): lê se vier. */
 function shipsSeparately(row: ProductMeasureRow): boolean {
-  return 'ships_separately' in row && row.ships_separately === true;
+  return (row as { ships_separately?: boolean }).ships_separately === true;
 }
 
 /** Linha de item sem catálogo: nada se sabe dele, então tudo falta. */
