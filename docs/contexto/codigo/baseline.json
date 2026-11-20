@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "be9f4a209a0c2331b3fd9bee77f75e3d85e44b2b",
+  "commit": "e9a62d400d580f299d05343853d5f93ba2734a32",
   "branch": "main",
-  "data_commit": "2026-11-20T09:27:10-03:00",
+  "data_commit": "2026-11-20T11:17:32-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "e9a62d40",
+    "data": "2026-11-20",
+    "assunto": "chore(main): release gifts-store 1.14.0 (#3916)"
+   },
    {
     "sha": "be9f4a20",
     "data": "2026-11-20",
@@ -126,18 +131,13 @@
     "sha": "41166fc8",
     "data": "2026-11-19",
     "assunto": "feat(frete): motor de empacotamento (Bloco B) (#3900)"
-   },
-   {
-    "sha": "eebe7678",
-    "data": "2026-11-19",
-    "assunto": "feat(scripts): gate do Vercel no pre-push (resgate de trabalho de agente) (#3901)"
    }
   ],
-  "arquivos_mudados_7d": 1439,
+  "arquivos_mudados_7d": 1437,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
-    "mudancas": 968
+    "mudancas": 959
    },
    {
     "pasta": "recovery/src-legacy/src",
@@ -145,19 +145,19 @@
    },
    {
     "pasta": "src/components/products",
-    "mudancas": 461
+    "mudancas": 460
    },
    {
     "pasta": "tests/edge-functions/live",
-    "mudancas": 350
+    "mudancas": 348
    },
    {
     "pasta": "src/hooks/products",
-    "mudancas": 343
+    "mudancas": 340
    },
    {
     "pasta": "src/components/quotes",
-    "mudancas": 298
+    "mudancas": 297
    },
    {
     "pasta": "src/pages/magazine",
@@ -165,7 +165,7 @@
    },
    {
     "pasta": "src/components/inventory",
-    "mudancas": 257
+    "mudancas": 250
    },
    {
     "pasta": "supabase/functions/_shared",
@@ -181,19 +181,19 @@
    },
    {
     "pasta": "src/pages/admin",
-    "mudancas": 197
+    "mudancas": 193
    },
    {
     "pasta": "src/pages/quotes",
-    "mudancas": 179
+    "mudancas": 172
    },
    {
     "pasta": "src/components/kit-builder",
-    "mudancas": 166
+    "mudancas": 165
    },
    {
     "pasta": "src/pages/products",
-    "mudancas": 151
+    "mudancas": 150
    }
   ],
   "arquivos_mais_mudados_90d": [
@@ -203,35 +203,35 @@
    },
    {
     "arquivo": "package.json",
-    "mudancas": 29
+    "mudancas": 30
    },
    {
     "arquivo": "docs/coordenacao/conflitos-semanticos.md",
     "mudancas": 26
    },
    {
+    "arquivo": "package-lock.json",
+    "mudancas": 19
+   },
+   {
     "arquivo": "RELATORIO_CI.md",
     "mudancas": 18
    },
    {
-    "arquivo": "package-lock.json",
-    "mudancas": 18
-   },
-   {
     "arquivo": ".github/workflows/deploy-gates.yml",
-    "mudancas": 17
+    "mudancas": 16
    },
    {
     "arquivo": "PENDENCIAS.md",
     "mudancas": 15
    },
    {
-    "arquivo": "audit/supabase-reference-catalog.temporary.json",
+    "arquivo": "CHANGELOG.md",
     "mudancas": 12
    },
    {
-    "arquivo": "CHANGELOG.md",
-    "mudancas": 11
+    "arquivo": "audit/supabase-reference-catalog.temporary.json",
+    "mudancas": 12
    },
    {
     "arquivo": "src/pages/mockups/MockupGenerator.tsx",
@@ -270,10 +270,6 @@
     "mudancas": 8
    },
    {
-    "arquivo": "src/pages/quotes/QuoteBuilderPage.tsx",
-    "mudancas": 8
-   },
-   {
     "arquivo": ".github/workflows/e2e-swatch-quickview.yml",
     "mudancas": 7
    },
@@ -296,12 +292,16 @@
    {
     "arquivo": "src/components/kit-builder/PersonalizationConfig.tsx",
     "mudancas": 7
+   },
+   {
+    "arquivo": "src/components/quotes/QuoteAutoSave.tsx",
+    "mudancas": 7
    }
   ],
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 336
+    "commits": 334
    },
    {
     "autor": "Claude",
@@ -309,11 +309,11 @@
    },
    {
     "autor": "github-actions[bot]",
-    "commits": 27
+    "commits": 28
    },
    {
     "autor": "Joaquim Ataides",
-    "commits": 11
+    "commits": 10
    },
    {
     "autor": "dependabot[bot]",

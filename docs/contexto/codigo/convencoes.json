@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "chore(main): release gifts-store 1.14.0 (#3916)",
    "fix: crash appendChild ao digitar na busca global (CommandItem soltos) (#3937)",
    "docs(migrations): recibos E15 das 20261120030000/030100 (baseline já em #3931) (#3932)",
    "feat(db): resgata migrations órfãs de branches fechadas (P06 + onboarding) (#3914)",
-   "chore(security): atualiza baseline assinado de RLS policies (#3931)",
-   "feat(db): endurece as tabelas de frete e cadastra as 4 caixas (P, M, G, GG) (#3923)"
+   "chore(security): atualiza baseline assinado de RLS policies (#3931)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",

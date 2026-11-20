@@ -1,9 +1,9 @@
 {
  "meta": {
-  "sha": "be9f4a209a0c2331b3fd9bee77f75e3d85e44b2b",
+  "sha": "e9a62d400d580f299d05343853d5f93ba2734a32",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-20 12:28 UTC",
+  "generated_at": "2026-11-20 14:20 UTC",
   "files_total": 11055,
   "code_files": 9070,
   "code_lines": 1285643
@@ -556161,10 +556161,22 @@
   }
  },
  "git": {
-  "sha": "be9f4a209a0c2331b3fd9bee77f75e3d85e44b2b",
+  "sha": "e9a62d400d580f299d05343853d5f93ba2734a32",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "e9a62d4",
+    "date": "2026-11-20",
+    "author": "github-actions[bot]",
+    "subject": "chore(main): release gifts-store 1.14.0 (#3916)",
+    "files": [
+     ".release-please-manifest.json",
+     "CHANGELOG.md",
+     "package-lock.json",
+     "package.json"
+    ]
+   },
    {
     "sha": "be9f4a2",
     "date": "2026-11-20",
@@ -556662,21 +556674,12 @@
      "src/lib/freight/units.ts",
      "src/lib/kit-builder/weight.ts"
     ]
-   },
-   {
-    "sha": "6ef73b8",
-    "date": "2026-11-19",
-    "author": "github-actions[bot]",
-    "subject": "docs(migrations-log): recibo E15 — aplicação de 20261119094500 (#3894)",
-    "files": [
-     "supabase/MIGRATIONS_SYNC_LOG.md"
-    ]
    }
   ],
   "hot_files": [
    [
     "supabase/MIGRATIONS_SYNC_LOG.md",
-    13
+    12
    ],
    [
     "src/lib/freight/README.md",
@@ -556685,6 +556688,22 @@
    [
     "src/lib/freight/index.ts",
     5
+   ],
+   [
+    ".release-please-manifest.json",
+    4
+   ],
+   [
+    "CHANGELOG.md",
+    4
+   ],
+   [
+    "package-lock.json",
+    4
+   ],
+   [
+    "package.json",
+    4
    ],
    [
     "src/lib/freight/types.ts",
@@ -556732,22 +556751,6 @@
    ],
    [
     "src/components/admin/shipping-boxes/__tests__/ShippingBoxesManager.test.tsx",
-    3
-   ],
-   [
-    ".release-please-manifest.json",
-    3
-   ],
-   [
-    "CHANGELOG.md",
-    3
-   ],
-   [
-    "package-lock.json",
-    3
-   ],
-   [
-    "package.json",
     3
    ],
    [
