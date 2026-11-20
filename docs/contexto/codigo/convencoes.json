@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "feat(db): resgata migrations órfãs de branches fechadas (P06 + onboarding) (#3914)",
    "chore(security): atualiza baseline assinado de RLS policies (#3931)",
    "feat(db): endurece as tabelas de frete e cadastra as 4 caixas (P, M, G, GG) (#3923)",
    "fix(frete): motor valida caixas e parâmetros na entrada, teto de volumes e testes de lacuna (#3925)",
-   "feat(frete): produto \"não mistura\", importação em massa e relatório de dados de frete (Bloco D, etapas 32–39) (#3922)",
-   "feat(frete): hooks e painel do plano de volumes (Bloco E, etapas 41–45 e 48) (#3920)"
+   "feat(frete): produto \"não mistura\", importação em massa e relatório de dados de frete (Bloco D, etapas 32–39) (#3922)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",

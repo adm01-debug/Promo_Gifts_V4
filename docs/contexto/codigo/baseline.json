@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "dd42ddfeca75ec49f470b8d18e4b41182940e26b",
+  "commit": "c2e99f6eb0e913e05398a1efc29abc3ea97968a3",
   "branch": "main",
-  "data_commit": "2026-11-20T08:09:02-03:00",
+  "data_commit": "2026-11-20T08:20:32-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "c2e99f6e",
+    "data": "2026-11-20",
+    "assunto": "feat(db): resgata migrations órfãs de branches fechadas (P06 + onboarding) (#3914)"
+   },
    {
     "sha": "dd42ddfe",
     "data": "2026-11-20",
@@ -126,14 +131,9 @@
     "sha": "fa3463ca",
     "data": "2026-11-19",
     "assunto": "chore(main): release gifts-store 1.11.0 (#3895)"
-   },
-   {
-    "sha": "6f0bd2fc",
-    "data": "2026-11-19",
-    "assunto": "chore(ci): resgata mitigacao de artifact do e2e-cart (#3897)"
    }
   ],
-  "arquivos_mudados_7d": 1433,
+  "arquivos_mudados_7d": 1437,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -199,7 +199,7 @@
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "supabase/MIGRATIONS_SYNC_LOG.md",
-    "mudancas": 67
+    "mudancas": 68
    },
    {
     "arquivo": "package.json",
@@ -223,7 +223,7 @@
    },
    {
     "arquivo": "PENDENCIAS.md",
-    "mudancas": 16
+    "mudancas": 15
    },
    {
     "arquivo": "audit/supabase-reference-catalog.temporary.json",
@@ -246,10 +246,6 @@
     "mudancas": 10
    },
    {
-    "arquivo": "e2e/flows/magazine-preview-sticky-smoke.spec.ts",
-    "mudancas": 9
-   },
-   {
     "arquivo": "src/pages/kit-builder/KitBuilderPage.tsx",
     "mudancas": 9
    },
@@ -263,6 +259,10 @@
    },
    {
     "arquivo": ".github/workflows/schema-snapshot-export.yml",
+    "mudancas": 8
+   },
+   {
+    "arquivo": "e2e/flows/magazine-preview-sticky-smoke.spec.ts",
     "mudancas": 8
    },
    {
@@ -286,22 +286,22 @@
     "mudancas": 7
    },
    {
-    "arquivo": "docs/ci/SEGREDOS.md",
-    "mudancas": 7
-   },
-   {
     "arquivo": "docs/prod-readiness.md",
     "mudancas": 7
    },
    {
     "arquivo": "e2e/flows/magazine-publish-smoke.spec.ts",
     "mudancas": 7
+   },
+   {
+    "arquivo": "e2e/helpers/auth.ts",
+    "mudancas": 7
    }
   ],
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 339
+    "commits": 338
    },
    {
     "autor": "Claude",
@@ -313,7 +313,7 @@
    },
    {
     "autor": "Joaquim Ataides",
-    "commits": 14
+    "commits": 13
    },
    {
     "autor": "dependabot[bot]",
@@ -322,7 +322,7 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 11122,
+  "arquivos_total": 11126,
   "arquivos_codigo": 5599,
   "linhas_codigo": 1062976,
   "rotas": 140,
@@ -334,7 +334,7 @@
   "hooks": 639,
   "edge_functions": 112,
   "tabelas": 529,
-  "migrations": 3113,
+  "migrations": 3115,
   "cron_jobs": 122,
   "testes": 2669,
   "workflows": 89,

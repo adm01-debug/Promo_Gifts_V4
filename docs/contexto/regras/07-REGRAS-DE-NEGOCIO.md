@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.3.2 · commit `dd42ddfeca` · branch `main` · 2026-11-20 11:16 UTC
+> Gerado automaticamente por AI Context Sync v1.3.2 · commit `c2e99f6eb0` · branch `main` · 2026-11-20 11:23 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -1115,7 +1115,7 @@ Fornecedor Asia → supplier_products_raw (Bronze) → normalização (Silver) �
 | trg_validate_approval_token_status | BEFORE INSERT OR UPDATE | `quote_approval_tokens` | `validate_status_fields` |  |
 | update_seller_discount_limits_updated_at | BEFORE UPDATE | `seller_discount_limits` | `update_updated_at_column` |  |
 | update_discount_approval_requests_updated_at | BEFORE UPDATE | `discount_approval_requests` | `update_updated_at_column` |  |
-| … +183 linhas — lista completa em `context.json` | | | | |
+| … +182 linhas — lista completa em `context.json` | | | | |
 
 Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banco):
 
