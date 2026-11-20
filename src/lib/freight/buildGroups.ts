@@ -34,8 +34,9 @@ function porProductId(a: PackItem, b: PackItem): number {
 
 /**
  * Soma as linhas do mesmo produto numa peça só. As medidas são do cadastro do
- * produto, então a primeira linha vale por todas; "não mistura" em qualquer
- * linha vale para o produto.
+ * produto, então a primeira linha vale por todas — `planFreight` bloqueia antes
+ * o pedido em que elas divergem; "não mistura" em qualquer linha vale para o
+ * produto.
  */
 function somarPorProduto(items: readonly PackItem[]): PackItem[] {
   const porId = new Map<string, PackItem>();

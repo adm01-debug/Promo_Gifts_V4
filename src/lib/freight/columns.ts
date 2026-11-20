@@ -26,8 +26,9 @@ import type { Database } from '@/integrations/supabase/types';
  * Ordem estável: o `select` gerado é comparável entre versões no diff.
  *
  * `ships_separately` entra aqui no bloco D, junto com a migration que cria a
- * coluna. Até então a linha vem sem o campo e `resolveItemDimensions` lê
- * `false`, que é o default da coluna.
+ * coluna. Até então a linha vem sem o campo: `resolveItemDimensions` não o lê,
+ * e `planFreight` trata `PlanInput.shipsSeparately` ausente como `false`, que
+ * é o default da coluna.
  */
 export const PRODUCT_MEASURE_COLUMNS = [
   'id',

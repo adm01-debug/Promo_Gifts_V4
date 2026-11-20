@@ -8,8 +8,15 @@
 import { describe, expect, it } from 'vitest';
 
 import { packSingleProduct } from '../packSingleProduct';
-import { CAIXAS_PADRAO, CAIXA_G, CAIXA_M, CAIXA_P, SETTINGS_PADRAO } from './fixtures/boxes';
-import { barraGigante, caderneta, squeeze } from './fixtures/items';
+import {
+  CAIXAS_PADRAO,
+  CAIXA_G,
+  CAIXA_GG,
+  CAIXA_M,
+  CAIXA_P,
+  SETTINGS_PADRAO,
+} from './fixtures/boxes';
+import { barraGigante, caderneta, pecaDeTeste, squeeze } from './fixtures/items';
 
 /** "2× GG + 1× M", da maior caixa para a menor. */
 function forma(volumes: Array<{ box: { code: string } }>): string {
@@ -138,5 +145,113 @@ describe('packSingleProduct — limites', () => {
         );
       }
     }
+  });
+});
+
+describe('packSingleProduct — caixas cheias de uma vez e teto de volumes', () => {
+  it('1.000.000 de cadernetas: 4.000 GG, cada volume um objeto próprio', () => {
+    // cheias = ⌈(1.000.000 − 250) ÷ 250⌉ = ⌈3.999⌉ = 3.999
+    // sobram 1.000.000 − 3.999 × 250 = 250 → a GG fecha (cabem 250)
+    const r = packSingleProduct(caderneta(1_000_000), CAIXAS_PADRAO, SETTINGS_PADRAO);
+
+    expect(r.status).toBe('ok');
+    if (r.status !== 'ok') return;
+    expect(forma(r.volumes)).toBe('4000× GG');
+    expect(total(r.volumes)).toBe(1_000_000);
+    // os volumes iguais não dividem objeto: mexer num não mexe no vizinho
+    expect(r.volumes[0]).not.toBe(r.volumes[1]);
+    expect(r.volumes[0].contents).not.toBe(r.volumes[1].contents);
+    expect(r.volumes[0].contents[0]).not.toBe(r.volumes[1].contents[0]);
+  });
+
+  it('exatamente 10.000 volumes passam; 10.001 voltam só com a contagem', () => {
+    // 2.500.000 ÷ 250 = 10.000 GG
+    const noTeto = packSingleProduct(caderneta(2_500_000), CAIXAS_PADRAO, SETTINGS_PADRAO);
+    expect(noTeto.status).toBe('ok');
+    if (noTeto.status !== 'ok') return;
+    expect(noTeto.volumes).toHaveLength(10_000);
+
+    // 2.500.250: cheias = ⌈(2.500.250 − 250) ÷ 250⌉ = 10.000; sobram 250 → +1
+    const acima = packSingleProduct(caderneta(2_500_250), CAIXAS_PADRAO, SETTINGS_PADRAO);
+    expect(acima).toEqual({ status: 'volumes_demais', quantos: 10_001 });
+  });
+
+  it('o teto é o que quem chama passar: 600 cadernetas são 3 volumes', () => {
+    // 2 GG cheias + 1 M (caso "600 unidades" acima)
+    expect(packSingleProduct(caderneta(600), CAIXAS_PADRAO, SETTINGS_PADRAO, 2)).toEqual({
+      status: 'volumes_demais',
+      quantos: 3,
+    });
+    const r = packSingleProduct(caderneta(600), CAIXAS_PADRAO, SETTINGS_PADRAO, 3);
+    expect(r.status).toBe('ok');
+  });
+
+  it('Number.MAX_SAFE_INTEGER: conta as caixas sem montar nenhuma', () => {
+    // cheias = ⌈(9.007.199.254.740.991 − 250) ÷ 250⌉ = 36.028.797.018.963
+    // sobram 241 → mais uma GG → 36.028.797.018.964
+    const r = packSingleProduct(caderneta(Number.MAX_SAFE_INTEGER), CAIXAS_PADRAO, SETTINGS_PADRAO);
+    expect(r).toEqual({ status: 'volumes_demais', quantos: 36_028_797_018_964 });
+  });
+
+  it('quantidade infinita não vira "zero volume": também para no teto', () => {
+    const r = packSingleProduct(
+      caderneta(Number.POSITIVE_INFINITY),
+      CAIXAS_PADRAO,
+      SETTINGS_PADRAO,
+    );
+    expect(r.status).toBe('volumes_demais');
+  });
+
+  it('a caixa menor leva mais unidades que a maior: a conta usa a maior capacidade', () => {
+    // peça 10 × 10 × 10 cm, 1 kg. Caixa "larga" (40 cm de lado por dentro, até
+    // 5 kg): 5 por peso. Caixa "forte" (30 cm de lado por dentro, até 20 kg):
+    // grade 3 · 3 · 3 = 27, volume ⌊27.000 × 0,9 ÷ 1.000⌋ = 24, peso 20 → 20.
+    // A maior por espaço é a larga (5 por caixa), mas a forte fecha até 20.
+    // 31 peças: cheias = ⌈(31 − 20) ÷ 5⌉ = ⌈2,2⌉ = 3 largas (15 peças);
+    //           sobram 16 → forte (cabem 20)
+    const larga = {
+      ...CAIXA_G,
+      id: 'larga',
+      code: 'LARGA',
+      inner: { heightCm: 40, widthCm: 40, lengthCm: 40 },
+      outer: { heightCm: 41, widthCm: 41, lengthCm: 41 },
+      maxWeightG: 5000,
+    };
+    const forte = {
+      ...CAIXA_G,
+      id: 'forte',
+      code: 'FORTE',
+      inner: { heightCm: 30, widthCm: 30, lengthCm: 30 },
+      outer: { heightCm: 31, widthCm: 31, lengthCm: 31 },
+      maxWeightG: 20_000,
+    };
+    const peca = pecaDeTeste('cubo-1kg', [10, 10, 10], 1000, 31);
+    const r = packSingleProduct(peca, [larga, forte], SETTINGS_PADRAO);
+
+    expect(r.status).toBe('ok');
+    if (r.status !== 'ok') return;
+    expect(r.volumes.map((v) => [v.box.code, v.contents[0].quantity])).toEqual([
+      ['LARGA', 5],
+      ['LARGA', 5],
+      ['LARGA', 5],
+      ['FORTE', 16],
+    ]);
+  });
+});
+
+describe('packSingleProduct — lista de caixas muito grande', () => {
+  it('1.000.000 de caixas na lista respondem ok, sem estourar a pilha', () => {
+    // Math.max(...lista) passa cada capacidade como argumento e estoura a pilha
+    // (RangeError) com listas dessa ordem. 10 peças de 10 cm (500 g) cabem
+    // numa GG: 1 volume com as 10 unidades.
+    const muitas = Array.from({ length: 1_000_000 }, () => CAIXA_GG);
+    const resultado = packSingleProduct(
+      pecaDeTeste('peq', [10, 10, 10], 500, 10),
+      muitas,
+      SETTINGS_PADRAO,
+    );
+
+    expect(resultado.status).toBe('ok');
+    expect(resultado.status === 'ok' ? resultado.volumes.length : 0).toBe(1);
   });
 });

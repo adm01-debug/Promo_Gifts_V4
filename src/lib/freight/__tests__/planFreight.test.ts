@@ -47,7 +47,10 @@ describe('planFreight — status ok', () => {
     expect(plan.totals.volumeM3).toBe(0.239355);
 
     // cubado Correios: 3 × 11.664 + 4.900,50 = 39.892,50 g
-    expect(plan.totals.cubicWeightG.correios).toBe(39_892.5);
+    // cubado rodoviário: G 69.984 ÷ 3.333 × 1.000 = 20.997,30 g; P 29.403 ÷ 3.333
+    // × 1.000 = 8.821,78 g → 3 × 20.997,30 + 8.821,78 = 62.991,90 + 8.821,78 =
+    // 71.813,68 g
+    expect(plan.totals.cubicWeightG).toEqual({ correios: 39_892.5, rodoviario: 71_813.68 });
 
     expect(plan.volumes).toHaveLength(4);
     expect(plan.missing).toEqual([]);
@@ -159,6 +162,92 @@ describe('planFreight — status ok', () => {
     expect(duas.totals.boxesByCode).toEqual({ GG: 2 });
   });
 
+  it.each([
+    [39, 49, 59],
+    [39, 59, 49],
+    [49, 39, 59],
+    [49, 59, 39],
+    [59, 39, 49],
+    [59, 49, 39],
+  ])('peça cadastrada como %d × %d × %d vai numa GG: o motor gira a peça', (h, w, l) => {
+    // só a orientação 39 × 49 × 59 entra na GG (39,4 × 49,4 × 59,4); sem testar
+    // as 6 rotações o plano diria "não cabe" conforme a ordem do cadastro
+    const row = linhaDeTeste('quase-gg', [h, w, l], 500, 'Quase GG');
+    const plan = planFreight([{ row, quantity: 1 }], CAIXAS_PADRAO, OPCOES, SETTINGS_PADRAO);
+
+    expect(plan.status).toBe('ok');
+    expect(plan.totals.boxesByCode).toEqual({ GG: 1 });
+  });
+
+  it('misturar: 5 cadernetas + 5 squeezes vão na menor caixa que segura tudo', () => {
+    // na P: 5/64 + 5/16 = 0,0781 + 0,3125 = 0,3906 ≤ 1 → 1× P
+    // peso bruto: 5 × 120 + 5 × 80 = 600 + 400 = 1.000 g
+    // volume: 27 × 33 × 33 = 29.403 cm³ = 0,029403 m³
+    // cubado: 29.403 ÷ 6.000 × 1.000 = 4.900,50 g · 29.403 ÷ 3.333 × 1.000 = 8.821,78 g
+    // (uma GG no lugar da P cubaria 20.000 g: 4,08× o frete)
+    const plan = planFreight(
+      [
+        { row: LINHA_CADERNETA, quantity: 5 },
+        { row: LINHA_SQUEEZE, quantity: 5 },
+      ],
+      CAIXAS_PADRAO,
+      OPCOES,
+      SETTINGS_PADRAO,
+    );
+
+    expect(plan.totals).toEqual({
+      boxesByCode: { P: 1 },
+      grossWeightG: 1000,
+      volumeM3: 0.029403,
+      cubicWeightG: { correios: 4900.5, rodoviario: 8821.78 },
+    });
+  });
+
+  it('misturar: 100 squeezes + 200 cadernetas dão 2× GG + 1× P', () => {
+    // GG 1: 70 squeezes (cheia) · GG 2: 30 squeezes + 142 cadernetas ·
+    // P: 58 cadernetas — a conta de cada caixa está em packMixed.test.ts
+    // peso bruto: 100 × 80 + 200 × 120 = 8.000 + 24.000 = 32.000 g
+    // volume: 2 × 120.000 + 29.403 = 269.403 cm³ = 0,269403 m³
+    // cubado Correios: 2 × 20.000 + 4.900,50 = 44.900,50 g
+    // cubado rodoviário: GG 120.000 ÷ 3.333 × 1.000 = 36.003,60 g →
+    //                    2 × 36.003,60 + 8.821,78 = 80.828,98 g
+    const plan = planFreight(
+      [
+        { row: LINHA_SQUEEZE, quantity: 100 },
+        { row: LINHA_CADERNETA, quantity: 200 },
+      ],
+      CAIXAS_PADRAO,
+      OPCOES,
+      SETTINGS_PADRAO,
+    );
+
+    expect(plan.totals).toEqual({
+      boxesByCode: { GG: 2, P: 1 },
+      grossWeightG: 32_000,
+      volumeM3: 0.269403,
+      cubicWeightG: { correios: 44_900.5, rodoviario: 80_828.98 },
+    });
+    expect(plan.volumes.map((v) => v.items)).toEqual([
+      [{ productId: 'squeeze', quantity: 70 }],
+      [
+        { productId: 'squeeze', quantity: 30 },
+        { productId: 'caderneta', quantity: 142 },
+      ],
+      [{ productId: 'caderneta', quantity: 58 }],
+    ]);
+  });
+
+  it('o plano devolve o modo em que foi calculado', () => {
+    const plan = planFreight(
+      [{ row: LINHA_CADERNETA, quantity: 10 }],
+      CAIXAS_PADRAO,
+      { ...OPCOES, mixMode: 'separar' },
+      SETTINGS_PADRAO,
+    );
+
+    expect(plan.mixMode).toBe('separar');
+  });
+
   it('"não mistura" do cadastro vence o "misturar" do vendedor', () => {
     const misturado = planFreight(
       [
@@ -218,9 +307,132 @@ describe('planFreight — status dados_insuficientes', () => {
 
     expect(plan.status).toBe('dados_insuficientes');
     expect(plan.missing).toEqual([]);
-    expect(plan.warnings).toHaveLength(1);
-    expect(plan.warnings[0]).toContain('Caderneta A5');
-    expect(plan.warnings[0]).toContain('2.5');
+    expect(plan.warnings).toEqual([
+      'Quantidade inválida para Caderneta A5: 2.5. Informe um número inteiro maior que zero.',
+    ]);
+  });
+
+  it('quantidade negativa bloqueia: não vira plano da quantidade positiva', () => {
+    const plan = planFreight(
+      [{ row: LINHA_CADERNETA, quantity: -5 }],
+      CAIXAS_PADRAO,
+      OPCOES,
+      SETTINGS_PADRAO,
+    );
+
+    expect(plan.status).toBe('dados_insuficientes');
+    expect(plan.volumes).toEqual([]);
+    expect(plan.warnings).toEqual([
+      'Quantidade inválida para Caderneta A5: -5. Informe um número inteiro maior que zero.',
+    ]);
+  });
+
+  it('produto só sem largura aponta a largura, não "não cabe"', () => {
+    const row = { ...linhaDeTeste('sem-largura', [10, 10, 10], 100), width_cm: null };
+    const plan = planFreight([{ row, quantity: 1 }], CAIXAS_PADRAO, OPCOES, SETTINGS_PADRAO);
+
+    expect(plan.status).toBe('dados_insuficientes');
+    expect(plan.missing).toEqual([
+      { productId: 'sem-largura', name: 'Peça sem-largura', missing: ['width'] },
+    ]);
+  });
+});
+
+describe('planFreight — o mesmo produto em várias linhas', () => {
+  it('missing traz uma entrada por produto, na ordem da primeira ocorrência', () => {
+    // 3 linhas do produto sem peso (10, 20 e 30) e 1 do produto sem medida:
+    // são 2 cadastros a corrigir, não 4
+    const semMedida = linhaDeTeste('sem-medida', null, 100);
+    const plan = planFreight(
+      [
+        { row: LINHA_SEM_PESO, quantity: 10 },
+        { row: semMedida, quantity: 1 },
+        { row: LINHA_SEM_PESO, quantity: 20 },
+        { row: LINHA_SEM_PESO, quantity: 30 },
+      ],
+      CAIXAS_PADRAO,
+      OPCOES,
+      SETTINGS_PADRAO,
+    );
+
+    expect(plan.status).toBe('dados_insuficientes');
+    expect(plan.missing).toEqual([
+      { productId: 'sem-peso', name: 'Peça sem peso', missing: ['weight'] },
+      { productId: 'sem-medida', name: 'Peça sem-medida', missing: ['height', 'width', 'length'] },
+    ]);
+  });
+
+  // O mesmo id com 30 × 30 × 30 cm e 2 kg numa linha e 1 × 1 × 1 cm e 1 g na
+  // outra. Antes valia a primeira linha: nesta ordem saíam 4 volumes
+  // (3× GG + 1× M, 8.000 g) e na ordem invertida 1× P de 4 g. As 4 peças pesam
+  // 2 × 2.000 + 2 × 1 = 4.002 g: nenhuma das duas respostas estava certa.
+  const grande = { row: linhaDeTeste('dup', [30, 30, 30], 2000), quantity: 2 };
+  const pequena = { row: linhaDeTeste('dup', [1, 1, 1], 1), quantity: 2 };
+  const AVISO_DUP =
+    'Peça dup (SKU-dup) aparece em mais de uma linha com medidas ou peso diferentes. Deixe o produto com uma medida só para calcular o frete.';
+
+  it.each([
+    ['grande primeiro', [grande, pequena]],
+    ['pequena primeiro', [pequena, grande]],
+  ])('medidas diferentes para o mesmo produto bloqueiam (%s)', (_ordem, linhas) => {
+    const plan = planFreight(linhas, CAIXAS_PADRAO, OPCOES, SETTINGS_PADRAO);
+
+    expect(plan.status).toBe('dados_insuficientes');
+    expect(plan.volumes).toEqual([]);
+    expect(plan.totals.grossWeightG).toBe(0);
+    expect(plan.missing).toEqual([]);
+    expect(plan.warnings).toEqual([AVISO_DUP]);
+  });
+
+  it.each([
+    ['peso', linhaDeTeste('dup', [30, 30, 30], 2001)],
+    ['altura', linhaDeTeste('dup', [31, 30, 30], 2000)],
+    ['largura', linhaDeTeste('dup', [30, 31, 30], 2000)],
+    ['comprimento', linhaDeTeste('dup', [30, 30, 31], 2000)],
+  ])('basta um campo diferente (%s) para bloquear', (_campo, outraLinha) => {
+    const plan = planFreight(
+      [grande, { row: outraLinha, quantity: 1 }],
+      CAIXAS_PADRAO,
+      OPCOES,
+      SETTINGS_PADRAO,
+    );
+
+    expect(plan.status).toBe('dados_insuficientes');
+    expect(plan.warnings).toEqual([AVISO_DUP]);
+  });
+
+  it('um aviso por produto divergente, mesmo com três linhas dele', () => {
+    const plan = planFreight(
+      [
+        grande,
+        { row: LINHA_CADERNETA, quantity: 5 },
+        pequena,
+        { row: { ...LINHA_CADERNETA, weight_g: 121 }, quantity: 5 },
+        pequena,
+      ],
+      CAIXAS_PADRAO,
+      OPCOES,
+      SETTINGS_PADRAO,
+    );
+
+    expect(plan.status).toBe('dados_insuficientes');
+    expect(plan.warnings).toEqual([
+      AVISO_DUP,
+      'Caderneta A5 (SKU-caderneta) aparece em mais de uma linha com medidas ou peso diferentes. Deixe o produto com uma medida só para calcular o frete.',
+    ]);
+  });
+
+  it('linha zerada com outra medida não bloqueia: ela saiu do orçamento', () => {
+    // sobra só a linha grande: 2 cubos de 30 cm = 1 por caixa → 1× GG + 1× M
+    const plan = planFreight(
+      [grande, { ...pequena, quantity: 0 }],
+      CAIXAS_PADRAO,
+      OPCOES,
+      SETTINGS_PADRAO,
+    );
+
+    expect(plan.status).toBe('ok');
+    expect(plan.totals.boxesByCode).toEqual({ GG: 1, M: 1 });
   });
 });
 
@@ -270,8 +482,51 @@ describe('planFreight — status nao_cabe', () => {
 
     expect(plan.status).toBe('nao_cabe');
     expect(plan.volumes).toEqual([]);
-    expect(plan.warnings[0]).toContain('Barra de 61 cm');
-    expect(plan.warnings[0]).toContain('GG');
+    // a caixa é citada pelo código (GG), não pelo nome ("Caixa GG")
+    expect(plan.warnings).toEqual([
+      'Barra de 61 cm (SKU-barra-61) não cabe nem na maior caixa ativa (GG).',
+    ]);
+  });
+
+  it('barra de 61 cm com 15 kg: passa do peso só da P, então a culpa é o tamanho', () => {
+    // 15.000 g > 10.000 g (P), mas M (20 kg), G (25 kg) e GG (30 kg) aguentam:
+    // o aviso de peso só vale quando NENHUMA caixa aguenta
+    const row = linhaDeTeste('barra-15kg', [61, 10, 10], 15_000, 'Barra pesada');
+    const plan = planFreight([{ row, quantity: 1 }], CAIXAS_PADRAO, OPCOES, SETTINGS_PADRAO);
+
+    expect(plan.status).toBe('nao_cabe');
+    expect(plan.warnings).toEqual([
+      'Barra pesada (SKU-barra-15kg) não cabe nem na maior caixa ativa (GG).',
+    ]);
+  });
+
+  it('o peso da caixa vazia conta no aviso de peso', () => {
+    // P de 10 kg que pesa 1 kg vazia: sobram 10.000 − 1.000 = 9.000 g úteis.
+    // Um cubo de 9.500 g cabe no espaço e passa do peso útil (9.500 > 9.000).
+    const row = linhaDeTeste('denso', [10, 10, 10], 9500, 'Denso');
+    const plan = planFreight(
+      [{ row, quantity: 1 }],
+      [{ ...CAIXA_P, emptyWeightG: 1000 }],
+      OPCOES,
+      SETTINGS_PADRAO,
+    );
+
+    expect(plan.status).toBe('nao_cabe');
+    expect(plan.warnings).toEqual([
+      'Denso (SKU-denso) pesa mais do que o peso máximo de qualquer caixa ativa.',
+    ]);
+  });
+
+  it('peso exatamente igual ao máximo da caixa não é "pesa mais"', () => {
+    // barra de 61 cm com 10.000 g e só a P (máximo 10.000 g): o peso cabe
+    // (10.000 não é maior que 10.000); o que impede é o tamanho
+    const row = linhaDeTeste('barra-10kg', [61, 10, 10], 10_000, 'Barra 10 kg');
+    const plan = planFreight([{ row, quantity: 1 }], [CAIXA_P], OPCOES, SETTINGS_PADRAO);
+
+    expect(plan.status).toBe('nao_cabe');
+    expect(plan.warnings).toEqual([
+      'Barra 10 kg (SKU-barra-10kg) não cabe nem na maior caixa ativa (P).',
+    ]);
   });
 
   it('peça pesada demais para qualquer caixa: o aviso culpa o peso, não o tamanho', () => {
@@ -299,7 +554,9 @@ describe('planFreight — status nao_cabe', () => {
     const plan = planFreight([{ row: LINHA_CADERNETA, quantity: 10 }], [], OPCOES, SETTINGS_PADRAO);
 
     expect(plan.status).toBe('nao_cabe');
-    expect(plan.warnings[0]).toContain('nenhuma caixa ativa');
+    expect(plan.warnings).toEqual([
+      'Caderneta A5 (SKU-caderneta) não cabe: nenhuma caixa ativa cadastrada.',
+    ]);
   });
 });
 
@@ -319,8 +576,99 @@ describe('planFreight — avisos', () => {
     ]);
   });
 
+  it('duas caixas ociosas do mesmo código viram um aviso só, no plural', () => {
+    // separar: 10 cadernetas → P com 10 × 294 = 2.940 cm³ sobre 24.942,2976 = 11,8%
+    //          2 squeezes   → P com 2 × 1.225 = 2.450 cm³ sobre 24.942,2976 = 9,8%
+    const plan = planFreight(
+      [
+        { row: LINHA_CADERNETA, quantity: 10 },
+        { row: LINHA_SQUEEZE, quantity: 2 },
+      ],
+      CAIXAS_PADRAO,
+      { ...OPCOES, mixMode: 'separar' },
+      SETTINGS_PADRAO,
+    );
+
+    expect(plan.totals.boxesByCode).toEqual({ P: 2 });
+    expect(plan.warnings).toEqual([
+      '2 caixas P vão com menos de metade do espaço aproveitável ocupado.',
+    ]);
+  });
+
+  it('53% de ocupação não avisa: o limiar é metade', () => {
+    // 45 cadernetas na P: 45 × 294 = 13.230 cm³ sobre 24.942,2976 = 53,0%
+    // peso: 45 × 120 = 5.400 g; mais uma dá 5.520 ≤ 10.000 → sem aviso de peso
+    const plan = planFreight(
+      [{ row: LINHA_CADERNETA, quantity: 45 }],
+      [CAIXA_P],
+      OPCOES,
+      SETTINGS_PADRAO,
+    );
+
+    expect(plan.warnings).toEqual([]);
+  });
+
+  it('exatamente 50% de ocupação não é "menos de metade"', () => {
+    // caixa de 10 × 10 × 10 cm por dentro com fator 1: aproveitável 1.000 cm³
+    // peça 5 × 10 × 10 = 500 cm³ → 500 ÷ 1.000 = 0,5 exato
+    const cubo10 = {
+      ...CAIXA_P,
+      id: 'fixture-c10',
+      code: 'C10',
+      inner: { heightCm: 10, widthCm: 10, lengthCm: 10 },
+      outer: { heightCm: 11, widthCm: 11, lengthCm: 11 },
+      fillFactor: 1,
+    };
+    const row = linhaDeTeste('meia', [5, 10, 10], 100);
+    const plan = planFreight([{ row, quantity: 1 }], [cubo10], OPCOES, SETTINGS_PADRAO);
+
+    expect(plan.status).toBe('ok');
+    expect(plan.volumes[0].fillRatio).toBe(0.5);
+    expect(plan.warnings).toEqual([]);
+  });
+
+  it('volume misturado: se ainda cabe uma da peça mais leve, não fechou no peso', () => {
+    // 2 cubos de 3 kg (10 cm) + 30 cubos de 100 g (5 cm) numa P:
+    // capacidades na P: pesado ⌊10.000/3.000⌋ = 3 (peso); leve 10.000/100 = 100
+    // fração: 2/3 + 30/100 = 0,667 + 0,3 = 0,967 ≤ 1 → 1× P
+    // peso bruto: 2 × 3.000 + 30 × 100 = 6.000 + 3.000 = 9.000 g
+    // mais uma leve: 9.000 + 100 = 9.100 ≤ 10.000 → cabe, sem aviso de peso
+    // (medir pela mais pesada daria 9.000 + 3.000 = 12.000 > 10.000 e avisaria)
+    // ocupação: 2 × 1.000 + 30 × 125 = 5.750 cm³ sobre 24.942,2976 = 23,1% → avisa
+    const plan = planFreight(
+      [
+        { row: linhaDeTeste('pesada', [10, 10, 10], 3000), quantity: 2 },
+        { row: linhaDeTeste('leve', [5, 5, 5], 100), quantity: 30 },
+      ],
+      CAIXAS_PADRAO,
+      OPCOES,
+      SETTINGS_PADRAO,
+    );
+
+    expect(plan.totals.boxesByCode).toEqual({ P: 1 });
+    expect(plan.totals.grossWeightG).toBe(9000);
+    expect(plan.warnings).toEqual([
+      '1 caixa P vai com menos de metade do espaço aproveitável ocupado.',
+    ]);
+  });
+
+  it('249 cadernetas na GG: ainda cabe uma, não avisa teto de peso', () => {
+    // bruto 249 × 120 = 29.880 g; mais uma dá 30.000, que não passa de 30.000
+    // ocupação: 249 × 294 = 73.206 cm³ sobre 104.052,4056 = 70,4%
+    const plan = planFreight(
+      [{ row: LINHA_CADERNETA, quantity: 249 }],
+      CAIXAS_PADRAO,
+      OPCOES,
+      SETTINGS_PADRAO,
+    );
+
+    expect(plan.totals.boxesByCode).toEqual({ GG: 1 });
+    expect(plan.warnings).toEqual([]);
+  });
+
   it('avisa quando a caixa fechou no peso e não no espaço', () => {
     // 250 cadernetas na GG = 30.000 g, exatamente o máximo: não cabe mais uma
+    // ocupação: 250 × 294 = 73.500 cm³ sobre 104.052,4056 = 70,6% → só o de peso
     const plan = planFreight(
       [{ row: LINHA_CADERNETA, quantity: 250 }],
       CAIXAS_PADRAO,
@@ -329,7 +677,7 @@ describe('planFreight — avisos', () => {
     );
 
     expect(plan.totals.boxesByCode).toEqual({ GG: 1 });
-    expect(plan.warnings).toContain('A caixa GG fechou no peso máximo, não no espaço.');
+    expect(plan.warnings).toEqual(['A caixa GG fechou no peso máximo, não no espaço.']);
   });
 
   it('caixa com peso próprio não é descontada duas vezes no aviso de peso', () => {
@@ -337,6 +685,7 @@ describe('planFreight — avisos', () => {
     // Cabe mais uma caderneta? 29.650 + 120 = 29.770 ≤ 30.000 → cabe, não avisa.
     // Comparar contra (30.000 − 250) daria 29.770 > 29.750 e avisaria teto com
     // 230 g ainda livres.
+    // ocupação: 245 × 294 = 72.030 cm³ sobre 104.052,4056 = 69,2% → nenhum aviso
     const ggComPesoProprio = { ...CAIXA_GG, emptyWeightG: 250 };
     const plan = planFreight(
       [{ row: LINHA_CADERNETA, quantity: 245 }],
@@ -348,7 +697,7 @@ describe('planFreight — avisos', () => {
     expect(plan.status).toBe('ok');
     expect(plan.totals.boxesByCode).toEqual({ GG: 1 });
     expect(plan.totals.grossWeightG).toBe(29_650);
-    expect(plan.warnings).not.toContain('A caixa GG fechou no peso máximo, não no espaço.');
+    expect(plan.warnings).toEqual([]);
   });
 
   it('caixa com peso próprio ainda avisa quando realmente fecha no peso', () => {
@@ -365,7 +714,8 @@ describe('planFreight — avisos', () => {
 
     expect(plan.status).toBe('ok');
     expect(plan.totals.grossWeightG).toBe(29_890);
-    expect(plan.warnings).toContain('A caixa GG fechou no peso máximo, não no espaço.');
+    // ocupação: 247 × 294 = 72.618 cm³ sobre 104.052,4056 = 69,8% → só o de peso
+    expect(plan.warnings).toEqual(['A caixa GG fechou no peso máximo, não no espaço.']);
   });
 
   it('plano confortável não gera aviso', () => {

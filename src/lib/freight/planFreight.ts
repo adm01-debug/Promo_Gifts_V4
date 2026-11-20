@@ -1,19 +1,25 @@
 /**
- * Orquestra o plano de frete: medidas → bloqueio → quantidades → grupos →
- * empacotamento → totais → avisos.
+ * Orquestra o plano de frete: caixas e parâmetros → medidas → bloqueio →
+ * quantidades → grupos → empacotamento → totais → avisos.
  *
  * Não lê relógio nem sorteia nada: `computedAt` e `itemsHash` entram por
  * parâmetro. É o que faz o plano ser reproduzível em teste e comparável com o
  * que está salvo no orçamento.
+ *
+ * Não lança por entrada inválida: lista de itens ou opções ausentes, item sem
+ * `row`, caixa, parâmetro, quantidade, o mesmo produto com medidas diferentes e
+ * pedido acima de `MAX_VOLUMES_POR_PLANO` saem como plano `dados_insuficientes`,
+ * com o motivo em `warnings`.
  */
 import { maiorCaixa } from './boxOrder';
 import { buildGroups } from './buildGroups';
 import type { ProductMeasureRow } from './columns';
 import { computeVolumeTotals, type VolumeDraft } from './computeVolumeTotals';
 import { expandQuantities } from './expandQuantities';
+import { MAX_VOLUMES_POR_PLANO } from './limits';
 import { packMixed } from './packMixed';
 import { packSingleProduct } from './packSingleProduct';
-import { resolveItemDimensions } from './resolveItemDimensions';
+import { resolveItemDimensions, type ResolvedMeasures } from './resolveItemDimensions';
 import type {
   CubicWeightG,
   FreightPlan,
@@ -26,6 +32,7 @@ import type {
   ShippingBox,
 } from './types';
 import { roundDecimal } from './units';
+import { validateConfig, validateEntrada } from './validateConfig';
 
 /** Uma linha do orçamento, do kit ou do simulador. */
 export interface PlanInput {
@@ -109,6 +116,18 @@ function somarTotais(volumes: PackVolume[]): FreightPlanTotals {
 
 const OCUPACAO_BAIXA = 0.5;
 
+const INTEIRO = new Intl.NumberFormat('pt-BR');
+
+/** As duas linhas do mesmo produto descrevem a mesma peça? */
+function mesmasMedidas(a: ResolvedMeasures, b: ResolvedMeasures): boolean {
+  return (
+    a.weightG === b.weightG &&
+    a.dims.heightCm === b.dims.heightCm &&
+    a.dims.widthCm === b.dims.widthCm &&
+    a.dims.lengthCm === b.dims.lengthCm
+  );
+}
+
 /** Um volume com as contas fechadas, ao lado do rascunho de onde saiu. */
 interface VolumeFechado {
   rascunho: VolumeDraft;
@@ -143,7 +162,7 @@ function montarAvisos(fechados: VolumeFechado[]): string[] {
     // O rascunho é a origem deste volume e carrega as peças com peso — não há
     // o que procurar nem valor ausente para tratar.
     const pesos = rascunho.contents.map(({ item }) => item.weightG);
-    const maisLeve = Math.min(...pesos);
+    const maisLeve = pesos.reduce((menor, peso) => Math.min(menor, peso), Infinity);
     if (volume.grossWeightG + maisLeve > volume.box.maxWeightG) noTeto.add(volume.box.code);
   }
 
@@ -167,11 +186,32 @@ export function planFreight(
   options: PlanOptions,
   settings: FreightSettings,
 ): FreightPlan {
+  // Opções ausentes são recusadas logo abaixo; o plano devolvido ainda precisa
+  // de um molde, então os campos que faltam saem vazios.
+  const opcoes: Partial<PlanOptions> =
+    typeof options === 'object' && options !== null ? options : {};
   const base = {
-    mixMode: options.mixMode,
-    computedAt: options.computedAt,
-    itemsHash: options.itemsHash,
+    mixMode: opcoes.mixMode ?? 'separar',
+    computedAt: opcoes.computedAt ?? '',
+    itemsHash: opcoes.itemsHash ?? '',
   };
+  /** Plano que não pôde ser calculado, com o motivo dito em aviso. */
+  const bloqueado = (warnings: string[]): FreightPlan => ({
+    ...base,
+    status: 'dados_insuficientes',
+    volumes: [],
+    totals: totaisVazios(),
+    warnings,
+    missing: [],
+  });
+
+  // Falha fechada: caixa ou parâmetro inválido bloqueia antes de qualquer
+  // conta, em vez de virar peso cubado 0 num plano `ok` (ver `validateConfig`).
+  const problemasDeConfiguracao = [
+    ...validateEntrada(inputs, options),
+    ...validateConfig(boxes, settings),
+  ];
+  if (problemasDeConfiguracao.length > 0) return bloqueado(problemasDeConfiguracao);
 
   // Linha com quantidade zerada é linha que saiu do orçamento, não erro.
   const relevantes = inputs.filter((input) => input.quantity !== 0);
@@ -190,14 +230,31 @@ export function planFreight(
   }
 
   const missing: IncompleteItem[] = [];
+  const semMedida = new Set<string>();
   const itens: PackItem[] = [];
+  const medidasPorProduto = new Map<string, ResolvedMeasures>();
+  /** productId → "Nome (SKU)" dos produtos que chegaram com medidas divergentes. */
+  const divergentes = new Map<string, string>();
 
   for (const input of relevantes) {
     const resolvido = resolveItemDimensions(input.row);
     if (resolvido.status === 'incomplete') {
-      missing.push(resolvido.incomplete);
+      // Uma entrada por produto, na ordem da primeira ocorrência: o mesmo
+      // produto em três linhas é um cadastro a corrigir, não três.
+      if (!semMedida.has(input.row.id)) {
+        semMedida.add(input.row.id);
+        missing.push(resolvido.incomplete);
+      }
       continue;
     }
+
+    const primeiraLinha = medidasPorProduto.get(input.row.id);
+    if (!primeiraLinha) {
+      medidasPorProduto.set(input.row.id, resolvido.measures);
+    } else if (!mesmasMedidas(primeiraLinha, resolvido.measures)) {
+      divergentes.set(input.row.id, `${input.row.name} (${input.row.sku})`);
+    }
+
     itens.push({
       productId: input.row.id,
       name: input.row.name,
@@ -222,6 +279,18 @@ export function planFreight(
     };
   }
 
+  // As linhas do mesmo produto são somadas numa peça só (`buildGroups`), com as
+  // medidas da primeira. Se elas divergem, somar seria escolher uma em
+  // silêncio — e o plano mudaria com a ordem das linhas. Bloqueia e diz qual.
+  if (divergentes.size > 0) {
+    return bloqueado(
+      [...divergentes.values()].map(
+        (peca) =>
+          `${peca} aparece em mais de uma linha com medidas ou peso diferentes. Deixe o produto com uma medida só para calcular o frete.`,
+      ),
+    );
+  }
+
   const expandido = expandQuantities(itens, options.kitQuantity ?? 1);
   if (expandido.status === 'error') {
     // Quantidade não inteira é erro de quem chamou, não dado faltando do
@@ -238,13 +307,29 @@ export function planFreight(
   }
 
   const grupos = buildGroups(expandido.items, options.mixMode);
+
+  // Acima de 2^53 − 1 o JavaScript já não conta de um em um: as contas de
+  // caixas deixariam de ser exatas. É a soma das linhas vezes os kits que
+  // importa, por isso a checagem é aqui, depois de agrupar.
+  const foraDaConta = grupos
+    .flatMap((grupo) => grupo.items)
+    .find((item) => !Number.isSafeInteger(item.quantity));
+  if (foraDaConta) {
+    return bloqueado([`Quantidade grande demais para ${foraDaConta.name}. Confira a quantidade.`]);
+  }
+
   const rascunhos: VolumeDraft[] = [];
+  let totalDeVolumes = 0;
 
   for (const grupo of grupos) {
+    // Cada empacotador conta os volumes antes de montar e só monta o que ainda
+    // cabe no teto do plano. Passou do teto, os grupos seguintes só contam:
+    // o aviso precisa do número inteiro.
+    const aindaCabem = Math.max(0, MAX_VOLUMES_POR_PLANO - totalDeVolumes);
     const resultado =
       grupo.items.length === 1
-        ? packSingleProduct(grupo.items[0], boxes, settings)
-        : packMixed(grupo.items, boxes, settings);
+        ? packSingleProduct(grupo.items[0], boxes, settings, aindaCabem)
+        : packMixed(grupo.items, boxes, settings, aindaCabem);
 
     if (resultado.status === 'nao_cabe') {
       const peca = `${resultado.item.name} (${resultado.item.sku})`;
@@ -267,7 +352,21 @@ export function planFreight(
       };
     }
 
-    rascunhos.push(...resultado.volumes);
+    if (resultado.status === 'volumes_demais') {
+      totalDeVolumes += resultado.quantos;
+      continue;
+    }
+
+    totalDeVolumes += resultado.volumes.length;
+    // Laço, não `push(...volumes)`: o espalhamento passa cada volume como
+    // argumento e estoura a pilha a partir de ~125 mil.
+    for (const rascunho of resultado.volumes) rascunhos.push(rascunho);
+  }
+
+  if (totalDeVolumes > MAX_VOLUMES_POR_PLANO) {
+    return bloqueado([
+      `O pedido daria ${INTEIRO.format(totalDeVolumes)} caixas, acima do limite de ${INTEIRO.format(MAX_VOLUMES_POR_PLANO)} caixas por plano. Confira a quantidade de cada item.`,
+    ]);
   }
 
   const fechados: VolumeFechado[] = rascunhos.map((rascunho) => ({

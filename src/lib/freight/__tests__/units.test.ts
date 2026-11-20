@@ -6,7 +6,7 @@
  */
 import { describe, expect, it } from 'vitest';
 
-import { cm3ToM3, isKnownMeasure, kgToG, mmToCm, round1, round2 } from '../units';
+import { cm3ToM3, isKnownMeasure, kgToG, mmToCm, round1, round2, roundDecimal } from '../units';
 
 describe('mmToCm', () => {
   it('converte milímetro em centímetro', () => {
@@ -41,8 +41,10 @@ describe('mmToCm', () => {
 
 describe('kgToG', () => {
   it('converte quilograma em grama', () => {
-    // 0,35 kg × 1000 = 350 g — em float puro daria 350.00000000000006
+    // 0,35 kg × 1000 = 350 g
     expect(kgToG(0.35)).toBe(350);
+    // 16,1 kg × 1000 = 16.100 g — em float puro `16.1 * 1000` dá 16100.000000000002
+    expect(kgToG(16.1)).toBe(16_100);
     // 5,5 kg × 1000 = 5500 g (box_weight_kg da garrafa 54601)
     expect(kgToG(5.5)).toBe(5500);
     // 1,183 kg × 1000 = 1183 g (box_weight_kg do kit KT-9059K)
@@ -143,6 +145,42 @@ describe('round2', () => {
     expect(round2(Number.NaN)).toBeNull();
     expect(round2(null)).toBeNull();
     expect(round2(undefined)).toBeNull();
+  });
+});
+
+describe('roundDecimal', () => {
+  it('literal decimal não perde o empate', () => {
+    // 3.283,005 com 2 casas → 3.283,01 (meia para cima)
+    expect(roundDecimal(3283.005, 2)).toBe(3283.01);
+  });
+
+  it('resultado de conta em float pode chegar abaixo do meio: aí arredonda para baixo', () => {
+    // caixa externa 19,7 × 30,3 × 33 cm = 19.698,03 cm³; ÷ 6.000 × 1.000 daria
+    // 3.283,005 g exatos, mas a conta em float chega como 3283.0049999999997.
+    // É o limite documentado da garantia: desvio de 0,01 g.
+    const cubado = ((19.7 * 30.3 * 33) / 6000) * 1000;
+    expect(cubado).toBe(3283.0049999999997);
+    expect(roundDecimal(cubado, 2)).toBe(3283);
+  });
+
+  it.each([
+    [1e19, 2], // 1e19 × 10² = 1e21: String() passa a escrever '1e+21'
+    [1e15, 6], // 1e15 × 10⁶ = 1e21
+    [-1e19, 2],
+    [3.5e20, 2],
+  ])('roundDecimal(%d, %d) devolve o próprio valor, não NaN', (valor, casas) => {
+    expect(roundDecimal(valor, casas)).toBe(valor);
+  });
+
+  it('logo abaixo de 1e21 o arredondamento por texto continua valendo', () => {
+    // 9,99e18 × 10² = 9,99e20 < 1e21: ainda sai como inteiro por extenso
+    expect(roundDecimal(9.99e18, 2)).toBe(9.99e18);
+  });
+
+  it('os conversores não devolvem NaN para valor enorme', () => {
+    // kgToG(1e16) = roundDecimal(1e19, 2) · mmToCm(1e20) = roundDecimal(1e19, 2)
+    expect(kgToG(1e16)).toBe(1e19);
+    expect(mmToCm(1e20)).toBe(1e19);
   });
 });
 
