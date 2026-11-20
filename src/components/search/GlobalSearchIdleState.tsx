@@ -1,5 +1,5 @@
 import React from 'react';
-import { CommandItem } from '@/components/ui/command';
+import { CommandGroup, CommandItem } from '@/components/ui/command';
 import { Clock, Flame, X, Sparkles, Eye, ChevronRight, Zap, Compass } from 'lucide-react';
 import { m as motion } from 'framer-motion';
 import { cn } from '@/lib/utils';
@@ -47,7 +47,7 @@ export function GlobalSearchIdleState({
     <>
       {/* Recent */}
       {history.length > 0 && (
-        <div className="duration-200 animate-in fade-in-0">
+        <CommandGroup className="p-0 duration-200 animate-in fade-in-0">
           <SectionHeader icon={<Clock />} label="Recentes" count={history.length} />
 
           <div className="space-y-0.5 px-2">
@@ -62,8 +62,8 @@ export function GlobalSearchIdleState({
                 )}
                 style={staggerStyle(i)}
               >
-                <Clock className="h-4 w-4 shrink-0 [color:hsl(var(--command-text-subtle))] transition-colors group-data-[selected=true]:[color:hsl(var(--command-text-muted))]" />
-                <span className="flex-1 truncate text-[13px] uppercase tracking-wide [color:hsl(var(--command-text-muted))] group-data-[selected=true]:text-foreground group-data-[selected=true]:font-medium">
+                <Clock className="h-4 w-4 shrink-0 transition-colors [color:hsl(var(--command-text-subtle))] group-data-[selected=true]:[color:hsl(var(--command-text-muted))]" />
+                <span className="flex-1 truncate text-[13px] uppercase tracking-wide [color:hsl(var(--command-text-muted))] group-data-[selected=true]:font-medium group-data-[selected=true]:text-foreground">
                   {term}
                 </span>
                 <button
@@ -79,12 +79,15 @@ export function GlobalSearchIdleState({
               </CommandItem>
             ))}
           </div>
-        </div>
+        </CommandGroup>
       )}
 
       {/* Popular Products */}
       {popularProducts.length > 0 && (
-        <div className="duration-300 animate-in fade-in-0" style={{ animationDelay: '80ms' }}>
+        <CommandGroup
+          className="p-0 duration-300 animate-in fade-in-0"
+          style={{ animationDelay: '80ms' }}
+        >
           <SectionHeader
             icon={<Flame />}
             label="Mais Populares"
@@ -113,7 +116,9 @@ export function GlobalSearchIdleState({
                       src={product.image_url}
                       alt={product.name}
                       className="h-full w-full object-cover"
-                      onError={(e) => { (e.currentTarget as HTMLImageElement).src = '/placeholder.svg'; }}
+                      onError={(e) => {
+                        (e.currentTarget as HTMLImageElement).src = '/placeholder.svg';
+                      }}
                     />
                   ) : (
                     <RankBadge index={idx} />
@@ -159,7 +164,7 @@ export function GlobalSearchIdleState({
               </CommandItem>
             ))}
           </div>
-        </div>
+        </CommandGroup>
       )}
 
       {/* Contextual Suggestions */}
@@ -241,7 +246,10 @@ export function GlobalSearchIdleState({
       )}
 
       {/* Go To — Navigation Grid */}
-      <div className="pb-2 duration-300 animate-in fade-in-0" style={{ animationDelay: '320ms' }}>
+      <CommandGroup
+        className="p-0 pb-2 duration-300 animate-in fade-in-0"
+        style={{ animationDelay: '320ms' }}
+      >
         <SectionHeader
           icon={<Compass />}
           label="Ir Para"
@@ -258,7 +266,7 @@ export function GlobalSearchIdleState({
             />
           ))}
         </div>
-      </div>
+      </CommandGroup>
     </>
   );
 }
