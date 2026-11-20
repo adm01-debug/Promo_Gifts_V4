@@ -1,6 +1,7 @@
 // Contrato de scripts/freight/seed-shipping-boxes.mjs: lê o CSV das caixas de transporte, repete os
 // CHECKs de public.shipping_boxes (migration 20261119213000) e gera o SQL idempotente do seed e o
-// rollback dele. O script só escreve arquivo — nunca abre conexão com banco.
+// rollback dele. O script só escreve arquivo — nunca abre conexão com banco. O texto do rollback é
+// conferido em seed-shipping-boxes-rollback.test.mjs.
 import { existsSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { dirname, join, resolve } from 'node:path';
@@ -13,6 +14,7 @@ import {
   executarCli,
   gerarRollbackSql,
   gerarSql,
+  idDaCaixa,
   parseCsv,
   validarCaixas,
 } from '../../scripts/freight/seed-shipping-boxes.mjs';
@@ -55,6 +57,23 @@ const linhaCsv = (troca = {}) => COLUNAS.map((c) => ({ ...P, ...troca })[c]).joi
 const csvCom = (...trocas) => `${CABECALHO}\n${trocas.map(linhaCsv).join('\n')}\n`;
 const validar = (...trocas) => validarCaixas(parseCsv(csvCom(...trocas)));
 const instrucao = (sql, inicio) => sql.slice(sql.indexOf(inicio));
+
+// Id fixo de cada caixa: UUID versão 8 tirado do sha256 de "shipping_boxes:<code>". Conta da P,
+// feita fora do gerador (`printf 'shipping_boxes:P' | sha256sum`):
+//   sha256 = 1a43b67a2bea056c2ae0268d914f9d21 7baa92497e2e2726c83af1b0ce2da604
+//   16 primeiros bytes, em 8-4-4-4-12  → 1a43b67a-2bea-056c-2ae0-268d914f9d21
+//   13º dígito vira 8 (a versão)       → 1a43b67a-2bea-856c-2ae0-268d914f9d21
+//   17º dígito: 2 = 0010 em binário; os 2 bits de cima viram 10 → 1010 = a (a variante)
+//                                      → 1a43b67a-2bea-856c-aae0-268d914f9d21
+// As outras três, pela mesma conta: M 184c412a392ebbc93ccd3852f0ecd0d1 (b → 8; 3 = 0011 → 1011 = b),
+// G 3f990d5db2aa3c2ce1d1e76c6c089525 (3 → 8; e = 1110 → 1010 = a) e
+// GG 3d412436292c19af61795b9433cc75e8 (1 → 8; 6 = 0110 → 1010 = a).
+const IDS = {
+  P: '1a43b67a-2bea-856c-aae0-268d914f9d21',
+  M: '184c412a-392e-8bc9-bccd-3852f0ecd0d1',
+  G: '3f990d5d-b2aa-8c2c-a1d1-e76c6c089525',
+  GG: '3d412436-292c-89af-a179-5b9433cc75e8',
+};
 
 describe('parseCsv', () => {
   it('lê o CSV real: 4 caixas, cada uma com a linha do arquivo (cabeçalho é a linha 1)', () => {
@@ -290,6 +309,24 @@ describe('validarCaixas — as mesmas regras dos CHECKs da tabela', () => {
   });
 });
 
+describe('idDaCaixa', () => {
+  it('as 4 caixas reais têm o id calculado à mão', () => {
+    expect(Object.fromEntries(Object.keys(IDS).map((code) => [code, idDaCaixa(code)]))).toEqual(
+      IDS,
+    );
+  });
+
+  it('é determinístico e é um UUID versão 8 válido, um por código', () => {
+    const codigos = ['P', 'M', 'G', 'GG', 'P2', 'GG2026'];
+    const ids = codigos.map(idDaCaixa);
+    expect(codigos.map(idDaCaixa)).toEqual(ids);
+    // 6 códigos diferentes → 6 ids diferentes.
+    expect(new Set(ids).size).toBe(6);
+    for (const id of ids)
+      expect(id).toMatch(/^[0-9a-f]{8}-[0-9a-f]{4}-8[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/);
+  });
+});
+
 describe('gerarSql', () => {
   const sqlP = gerarSql([P_VALIDADA], { version: VERSION });
   const sqlReal = gerarSql(validarCaixas(parseCsv(CSV_REAL)), { version: VERSION });
@@ -298,24 +335,24 @@ describe('gerarSql', () => {
     expect(instrucao(sqlP, 'INSERT INTO')).toBe(
       [
         'INSERT INTO public.shipping_boxes',
-        '  (code, name, outer_height_cm, outer_width_cm, outer_length_cm,',
+        '  (id, code, name, outer_height_cm, outer_width_cm, outer_length_cm,',
         '   wall_thickness_mm, empty_weight_g, max_weight_g, fill_factor,',
         '   is_active, sort_order)',
         'VALUES',
-        "  ('P', 'Caixa P', 27.00, 33.00, 33.00, 3, 0, 10000, 0.90, true, 1)",
-        'ON CONFLICT (code) WHERE deleted_at IS NULL DO NOTHING;',
+        "  ('1a43b67a-2bea-856c-aae0-268d914f9d21', 'P', 'Caixa P', 27.00, 33.00, 33.00, 3, 0, 10000, 0.90, true, 1)",
+        'ON CONFLICT DO NOTHING;',
         '',
       ].join('\n'),
     );
   });
 
-  it('as 4 caixas reais viram 4 tuplas, na ordem do CSV', () => {
+  it('as 4 caixas reais viram 4 tuplas, na ordem do CSV, cada uma com o seu id fixo', () => {
     const linhas = sqlReal.split('\n');
     expect(linhas.slice(linhas.indexOf('VALUES') + 1, -2)).toEqual([
-      "  ('P', 'Caixa P', 27.00, 33.00, 33.00, 3, 0, 10000, 0.90, true, 1),",
-      "  ('M', 'Caixa M', 33.00, 33.00, 47.00, 3, 0, 20000, 0.90, true, 2),",
-      "  ('G', 'Caixa G', 36.00, 36.00, 54.00, 3, 0, 25000, 0.90, true, 3),",
-      "  ('GG', 'Caixa GG', 40.00, 50.00, 60.00, 3, 0, 30000, 0.90, true, 4)",
+      `  ('${IDS.P}', 'P', 'Caixa P', 27.00, 33.00, 33.00, 3, 0, 10000, 0.90, true, 1),`,
+      `  ('${IDS.M}', 'M', 'Caixa M', 33.00, 33.00, 47.00, 3, 0, 20000, 0.90, true, 2),`,
+      `  ('${IDS.G}', 'G', 'Caixa G', 36.00, 36.00, 54.00, 3, 0, 25000, 0.90, true, 3),`,
+      `  ('${IDS.GG}', 'GG', 'Caixa GG', 40.00, 50.00, 60.00, 3, 0, 30000, 0.90, true, 4)`,
     ]);
   });
 
@@ -328,13 +365,14 @@ describe('gerarSql', () => {
     expect(cabecalho.join('\n')).toContain('-- scripts/freight/caixas.csv. Não edite à mão');
   });
 
-  it('é idempotente no texto: ON CONFLICT com o predicado do índice parcial, e só DO NOTHING', () => {
+  // Sem alvo, o ON CONFLICT vale para os dois índices únicos: o parcial de `code` e a chave primária
+  // (`id`). Com o alvo só em `code`, reaplicar depois de o admin excluir uma caixa do seed (a linha
+  // fica, com o mesmo id) parava em violação da chave primária.
+  it('é idempotente no texto: ON CONFLICT sem alvo, e só DO NOTHING', () => {
     const insert = instrucao(sqlReal, 'INSERT INTO');
-    expect(insert.endsWith('\nON CONFLICT (code) WHERE deleted_at IS NULL DO NOTHING;\n')).toBe(
-      true,
-    );
+    expect(insert.endsWith(')\nON CONFLICT DO NOTHING;\n')).toBe(true);
     expect(insert.match(/ON CONFLICT/g)).toHaveLength(1);
-    expect(insert).not.toContain('ON CONFLICT (code) DO NOTHING');
+    expect(insert).not.toContain('ON CONFLICT (');
     expect(insert).not.toContain('DO UPDATE');
   });
 
@@ -353,7 +391,7 @@ describe('gerarSql', () => {
     expect(escaparTexto("a'b''c")).toBe("'a''b''''c'");
     const [caixa] = validar({ code: 'X1', name: "x'); DROP TABLE shipping_boxes;--" });
     expect(gerarSql([caixa], { version: VERSION })).toContain(
-      "\n  ('X1', 'x''); DROP TABLE shipping_boxes;--', 27.00, 33.00, 33.00, 3, 0, 10000, 0.90, true, 1)\n",
+      "', 'X1', 'x''); DROP TABLE shipping_boxes;--', 27.00, 33.00, 33.00, 3, 0, 10000, 0.90, true, 1)\n",
     );
   });
 
@@ -377,56 +415,6 @@ describe('gerarSql', () => {
     expect(() =>
       gerarSql([P_VALIDADA], { version: VERSION, origemCsv: 'a.csv\nDROP TABLE x;' }),
     ).toThrow('tem caractere de controle');
-  });
-});
-
-describe('gerarRollbackSql', () => {
-  const rollback = gerarRollbackSql([P_VALIDADA], {
-    version: VERSION,
-    migration: '20261120090000_seed_shipping_boxes',
-  });
-
-  it('DELETE da caixa P, escrito à mão: só a viva e idêntica ao seed nas 11 colunas', () => {
-    expect(instrucao(rollback, 'DELETE FROM')).toBe(
-      [
-        'DELETE FROM public.shipping_boxes AS b',
-        ' USING (VALUES',
-        "    ('P', 'Caixa P', 27.00, 33.00, 33.00, 3, 0, 10000, 0.90, true, 1)",
-        ' ) AS s (code, name, outer_height_cm, outer_width_cm, outer_length_cm,',
-        '         wall_thickness_mm, empty_weight_g, max_weight_g, fill_factor,',
-        '         is_active, sort_order)',
-        ' WHERE b.deleted_at IS NULL',
-        '   AND b.code = s.code',
-        '   AND b.name = s.name',
-        '   AND b.outer_height_cm = s.outer_height_cm',
-        '   AND b.outer_width_cm = s.outer_width_cm',
-        '   AND b.outer_length_cm = s.outer_length_cm',
-        '   AND b.wall_thickness_mm = s.wall_thickness_mm',
-        '   AND b.empty_weight_g = s.empty_weight_g',
-        '   AND b.max_weight_g = s.max_weight_g',
-        '   AND b.fill_factor = s.fill_factor',
-        '   AND b.is_active = s.is_active',
-        '   AND b.sort_order = s.sort_order;',
-        '',
-      ].join('\n'),
-    );
-  });
-
-  it('faz o backup com RLS e REVOKE antes de apagar', () => {
-    const passos = [
-      "b text := '_backup_shipping_boxes_' || to_char(now() AT TIME ZONE 'UTC', 'YYYYMMDD');",
-      "EXECUTE format('CREATE TABLE public.%I AS TABLE public.shipping_boxes', b);",
-      "EXECUTE format('ALTER TABLE public.%I ENABLE ROW LEVEL SECURITY', b);",
-      "EXECUTE format('REVOKE ALL ON public.%I FROM anon, authenticated', b);",
-      'DELETE FROM public.shipping_boxes AS b',
-    ];
-    const posicoes = passos.map((passo) => rollback.indexOf(passo));
-    expect(posicoes.every((posicao) => posicao > 0)).toBe(true);
-    expect(posicoes).toEqual([...posicoes].sort((a, b) => a - b));
-  });
-
-  it('a primeira linha nomeia a migration desfeita', () => {
-    expect(rollback.split('\n')[0]).toBe('-- Rollback: 20261120090000_seed_shipping_boxes');
   });
 });
 

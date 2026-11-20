@@ -2685,19 +2685,28 @@ e `public.freight_settings`. Nenhuma coluna ou índice muda.
      cadastrar caixa nova) e de `updated_by` (preenchido pelo banco).
 2. `20261120030100_seed_shipping_boxes`: migration só de dados, gerada por
    `scripts/freight/seed-shipping-boxes.mjs` a partir de
-   `scripts/freight/caixas.csv` — cadastra P, M, G e GG com
-   `ON CONFLICT (code) WHERE deleted_at IS NULL DO NOTHING`.
+   `scripts/freight/caixas.csv` — cadastra P, M, G e GG, cada uma com id fixo
+   (UUID calculado pelo gerador a partir do código; o mesmo CSV gera sempre os
+   mesmos ids), com `ON CONFLICT DO NOTHING`: código que já tem caixa viva e
+   caixa do seed que continua na tabela não são inseridos nem sobrescritos.
 
 Os rollbacks `20261119213000_rollback.sql` e `20261119213100_rollback.sql`
 também mudam nesta PR: quando o backup do dia já existe, gravam a cópia no
 primeiro nome livre (`_YYYYMMDD_2`, `_3`, ...) em vez de pular o backup e
 apagar a tabela, e só fazem o DROP depois do backup conferido. Assim desfazer
 as quatro versões no mesmo dia (`20261120030100` → `20261120030000` →
-`20261119213100` → `20261119213000`) termina sem intervenção manual. O
-rollback `20261120030100_rollback.sql` tem uma diferença feita à mão para o
-texto do gerador (confere se a tabela existe antes do DELETE); ela precisa
-entrar em `scripts/freight/seed-shipping-boxes.mjs` antes de o arquivo ser
-gerado de novo.
+`20261119213100` → `20261119213000`) termina sem intervenção manual.
+
+O rollback `20261120030100_rollback.sql` é a saída do gerador, sem retoque à
+mão (um teste compara os dois arquivos commitados com a saída, byte a byte). É
+um bloco só: sem a tabela, avisa e termina; com ela, trava a tabela para
+escrita (a leitura continua), copia para o primeiro nome livre
+(`_backup_shipping_boxes_YYYYMMDD`, depois `_2`, `_3`, ...), confere a
+contagem e só então apaga. Apaga apenas a linha que tem o id do seed e que
+continua viva e idêntica a ele nas colunas gravadas: caixa igual cadastrada
+antes do seed (outro id), caixa do seed editada e caixa do seed excluída pelo
+admin ficam. Antes, o rollback apagava a caixa preexistente idêntica ao seed
+e, rodado duas vezes no mesmo dia, apagava da segunda vez sem gravar backup.
 
 Anti-regressão: `anon` segue sem nenhum privilégio nas duas tabelas e vendedor
 só lê. Conferido por SELECT em produção antes de escrever os CHECKs:
@@ -2707,15 +2716,21 @@ das faixas novas. Validação prévia em cluster PostgreSQL 16.15 local, com
 das quatro versões em ordem, duas vezes no mesmo dia → catálogo idêntico ao
 anterior, exit 0. Apagar em `auth.users` o admin que salvou os parâmetros
 deixa `updated_by` nulo, sem linha órfã, e `pg_dump` + restore passam.
+Seed e rollback do seed, no mesmo cluster: banco vazio → 4 caixas com os ids
+fixos, segunda aplicação insere 0; com uma P idêntica cadastrada antes, o seed
+insere M, G e GG e o rollback apaga só essas 3; aplicar → desfazer duas vezes
+no mesmo dia deixa dois backups (`_YYYYMMDD` e `_2`) com 4 linhas cada.
 O que a migration não fecha: `authenticated` continua podendo `LOCK TABLE`
 nas duas tabelas por SQL direto, porque esse direito vem do privilégio de
 UPDATE que a tela do admin usa (o PostgREST não executa LOCK).
 
-O `.security/policies-baseline.json` já vai nesta PR sem a policy
-`shipping_boxes_delete_admin` (1027 → 1026). Enquanto a `20261120030000` não é
-aplicada, o Gate 1.13 tolera a diferença porque a migration pendente é a fonte
-da mudança (versão maior que a última do ledger); depois da aplicação o banco
-passa a coincidir com o baseline e a `main` não fica vermelha.
+O `.security/policies-baseline.json` **não** muda nesta PR. Logo depois de
+aplicar a `20261120030000`, regerar o baseline sem a policy
+`shipping_boxes_delete_admin` (1027 → 1026) em PR própria — até ela entrar, a
+`main` fica vermelha no Gate 1.13. A tolerância do gate a migration pendente
+não serve aqui: ela só vale para versão maior que a última do ledger, e o
+ledger tem a linha órfã `2026062311292414001` (19 dígitos), numericamente maior
+que qualquer versão de 14 dígitos.
 
 Ordem de aplicação: `20261120030000` antes de `20261120030100` (assim as 4
 caixas já entram validadas pelos CHECKs novos).
@@ -2723,4 +2738,4 @@ caixas já entram validadas pelos CHECKs novos).
 | versão | arquivo | sha256 | status |
 |---|---|---|---|
 | `20261120030000` | `harden_freight_tables` | `fe42c3a8488c9ba53206e3c19ad900c324af8880a7bd1ff634d2ce584a0cb8c8` | pendente — aplicar via `db-apply-migration.yml` (`version=20261120030000`) após merge |
-| `20261120030100` | `seed_shipping_boxes` | `358ffc5e1b518b23ec7aac1556f8ec7e393ad505979676562da3bc834aab89f6` | pendente — aplicar via `db-apply-migration.yml` (`version=20261120030100`) após merge |
+| `20261120030100` | `seed_shipping_boxes` | `bcd08d0663b68ddb6853c48aff9163f57fee2327c47d6eea8873b6075fd7bf25` | pendente — aplicar via `db-apply-migration.yml` (`version=20261120030100`) após merge |

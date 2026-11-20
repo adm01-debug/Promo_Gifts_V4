@@ -1,7 +1,7 @@
 {
   "version": 1,
   "pending_seed": false,
-  "generated_at": "2026-11-20T02:26:35.169Z",
+  "generated_at": "2026-11-19T22:44:56.850Z",
   "project_ref": "doufsxqlfjyuvxuezpln",
   "schemas_checked": [
     "public",
@@ -13,7 +13,7 @@
     "prod_audit",
     "supplier_stricker"
   ],
-  "sha256": "06d1b4406a53a240bb4859c136d9a597594d0bfb0d30782363cccfc3a1d2f577",
+  "sha256": "d81c9d707514e70e4edadc86fc1b39fd050f49af583b4b2c439955009fbc2d5c",
   "policies": [
     {
       "schemaname": "cf_recon",
@@ -7843,6 +7843,16 @@
       "roles": "{authenticated}",
       "cmd": "SELECT",
       "qual": "true",
+      "with_check": ""
+    },
+    {
+      "schemaname": "public",
+      "tablename": "shipping_boxes",
+      "policyname": "shipping_boxes_delete_admin",
+      "permissive": "PERMISSIVE",
+      "roles": "{authenticated}",
+      "cmd": "DELETE",
+      "qual": "is_admin()",
       "with_check": ""
     },
     {

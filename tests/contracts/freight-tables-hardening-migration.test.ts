@@ -83,9 +83,10 @@ describe('20261120030000 — CHECK de name', () => {
   });
 
   it('as 4 caixas do seed passam na regra', () => {
-    const nomes = [...SEED.matchAll(/^ {2}\('[A-Z0-9]+', '(?<nome>[^']*)',/gm)].map(
-      (m) => m.groups?.nome ?? '',
-    );
+    // Cada tupla começa pelo id fixo (36 caracteres: 32 dígitos hexadecimais + 4 hífens).
+    const nomes = [
+      ...SEED.matchAll(/^ {2}\('[0-9a-f-]{36}', '[A-Z0-9]+', '(?<nome>[^']*)',/gm),
+    ].map((m) => m.groups?.nome ?? '');
     // 4 linhas no VALUES do seed (P, M, G, GG) → 4 nomes.
     expect(nomes).toEqual(['Caixa P', 'Caixa M', 'Caixa G', 'Caixa GG']);
     // Mesma regra do CHECK, em JS: nada da lista do btrim nas pontas (U+00A0 é
@@ -138,23 +139,57 @@ describe.each([
 });
 
 describe('rollback 20261120030100 — seed', () => {
-  it('confere se a tabela existe antes do DELETE, dentro do mesmo bloco', () => {
-    const codigo = linhasDeCodigo(ROLLBACK_SEED).join('\n');
-    const guarda = codigo.indexOf(
+  const codigo = linhasDeCodigo(ROLLBACK_SEED).join('\n');
+
+  it('é um bloco só, que começa conferindo se a tabela existe', () => {
+    // 1 abertura + 1 fechamento = 2 marcas: backup, conferência e DELETE valem
+    // juntos ou não valem.
+    expect(codigo.match(/\$seed\$/g)).toHaveLength(2);
+    expect(codigo.endsWith('END $seed$;')).toBe(true);
+    expect(codigo).toContain(
       [
-        'DO $$',
         'BEGIN',
         "IF to_regclass('public.shipping_boxes') IS NULL THEN",
         "RAISE NOTICE 'public.shipping_boxes não existe: nada a desfazer.';",
         'RETURN;',
         'END IF;',
-        'DELETE FROM public.shipping_boxes AS b',
       ].join('\n'),
     );
-    expect(guarda).toBeGreaterThan(0);
-    // O bloco da conferência é o último do arquivo e fecha depois do DELETE.
-    expect(codigo.endsWith('AND b.sort_order = s.sort_order;\nEND $$;')).toBe(true);
-    // 1 DELETE só: o que está dentro do bloco.
+  });
+
+  it('copia no primeiro nome livre, trava, confere a contagem e só então apaga', () => {
+    const passos = [
+      "WHILE to_regclass('public.' || b) IS NOT NULL LOOP",
+      'LOCK TABLE public.shipping_boxes IN SHARE ROW EXCLUSIVE MODE;',
+      "EXECUTE format('CREATE TABLE public.%I AS TABLE public.shipping_boxes', b);",
+      'IF linhas_backup IS DISTINCT FROM linhas_tabela THEN',
+      'DELETE FROM public.shipping_boxes AS c',
+    ];
+    const posicoes = passos.map((passo) => codigo.indexOf(passo));
+    expect(posicoes.every((posicao) => posicao > 0)).toBe(true);
+    expect(posicoes).toEqual([...posicoes].sort((a, b) => a - b));
+    // Antes o backup do dia já existente fazia a cópia ser pulada e o DELETE
+    // rodava assim mesmo.
+    expect(codigo).not.toContain("to_regclass('public.' || b) IS NULL THEN");
+  });
+
+  it('só apaga a linha com o id do seed, viva e ainda idêntica a ele', () => {
+    // 1 DELETE no arquivo; as duas primeiras condições são o id e a exclusão
+    // lógica, e depois vêm as 11 colunas gravadas (de code a sort_order).
     expect(codigo.match(/DELETE FROM/g)).toHaveLength(1);
+    const where = codigo.slice(codigo.indexOf('WHERE c.id = s.id::uuid'));
+    const condicoes = where.slice(0, where.indexOf(';')).split('\n');
+    expect(condicoes.slice(0, 2)).toEqual(['WHERE c.id = s.id::uuid', 'AND c.deleted_at IS NULL']);
+    // 2 + 11 = 13 condições.
+    expect(condicoes).toHaveLength(13);
+    expect(condicoes.at(-1)).toBe('AND c.sort_order = s.sort_order');
+  });
+
+  it('usa no DELETE os mesmos 4 ids que a migration insere', () => {
+    const ids = (sql: string) => [...sql.matchAll(/^\s+\('([0-9a-f-]{36})', /gm)].map((m) => m[1]);
+    // 4 caixas (P, M, G, GG) → 4 ids, sem repetição.
+    expect(ids(SEED)).toHaveLength(4);
+    expect(new Set(ids(SEED)).size).toBe(4);
+    expect(ids(ROLLBACK_SEED)).toEqual(ids(SEED));
   });
 });
