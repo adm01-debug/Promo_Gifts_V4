@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "96508a5f223ab222f76477ebed2100961606cbe1",
+  "sha": "347131701f8dda31639d5231319df768e6a58ea5",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-20 15:25 UTC",
-  "files_total": 11070,
-  "code_files": 9083,
-  "code_lines": 1288326
+  "generated_at": "2026-11-20 15:34 UTC",
+  "files_total": 11072,
+  "code_files": 9085,
+  "code_lines": 1288986
  },
  "version": "1.3.2",
- "facts_hash": "e20e3fdf053b33a1",
+ "facts_hash": "a2c41603e55f0261",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -1129,8 +1129,8 @@
   "package_manager": "npm",
   "languages": {
    ".sql": 3471,
-   ".ts": 3144,
-   ".tsx": 1997,
+   ".ts": 3145,
+   ".tsx": 1998,
    ".mjs": 456,
    ".py": 15,
    ".js": 7
@@ -145635,7 +145635,7 @@
     "file": ".github/workflows/wraparound-monitor-report.yml"
    }
   ],
-  "components_count": 1740,
+  "components_count": 1742,
   "hooks": [
    {
     "name": "useQuoteComments",
@@ -150327,8 +150327,8 @@
   },
   {
    "module": "src/components",
-   "files": 1464,
-   "lines": 287592,
+   "files": 1466,
+   "lines": 288131,
    "tables": [
     "admin_audit_log",
     "art_file_attachments",
@@ -151190,7 +151190,7 @@
   {
    "module": "src/pages",
    "files": 371,
-   "lines": 85421,
+   "lines": 85524,
    "tables": [
     "ai_usage_events",
     "bot_detection_log",
@@ -151451,7 +151451,7 @@
   {
    "module": "src/services",
    "files": 37,
-   "lines": 6896,
+   "lines": 6907,
    "tables": [
     "freight_settings",
     "frontend_telemetry",
@@ -152457,7 +152457,7 @@
   {
    "module": "tests",
    "files": 1107,
-   "lines": 174960,
+   "lines": 174967,
    "tables": [
     "bot_detection_log",
     "clients",
@@ -160272,10 +160272,8 @@
     "file": "src/components/admin/freight-settings/freightSettingsFormSchema.ts",
     "name": "freightSettingsFormSchema",
     "kind": "object",
-    "body": "{ originCep: z.string().regex(CEP_PATTERN, 'Informe o CEP completo, no formato 00000-000.'), cubicDivisorCorreios: divisorSchema, cubicDivisorRodoviario: divisorSchema, defaultFillFactor: z .string() .trim() .regex(FACTOR_PATTERN, FACTOR_MESSAGE) .transform((text) => Number(text.replace(',', '.'))) .refine((value) => value >= FILL_FACTOR_MIN && value <= FILL_FACTOR_MAX, FACTOR_MESSAGE), internalBufferDays: z .string() .trim() .regex(INTEGER_PATTERN, 'Use um número inteiro de dias, zero ou mais.') .transform(Number), multiPersonalizationRule: z.enum(['max', 'sum']), }",
-    "refines": [
-     "Use um número inteiro de dias, zero ou mais."
-    ],
+    "body": "{ originCep: z.string().regex(CEP_PATTERN, 'Informe o CEP completo, no formato 00000-000.'), cubicDivisorCorreios: divisorSchema, cubicDivisorRodoviario: divisorSchema, defaultFillFactor: z .string() .trim() .regex(FACTOR_PATTERN, FACTOR_MESSAGE) .transform((text) => Number(text.replace(',', '.'))) .refine((value) => value >= FILL_FACTOR_MIN && value <= FILL_FACTOR_MAX, FACTOR_MESSAGE), internalBufferDays: z .string() .trim() .regex(INTEGER_PATTERN, BUFFER_FORMAT_MESSAGE) .transform(Number) .refine((value) => value <= BUFFER_DAYS_MAX, BUFFER_RANGE_MESSAGE), multiPersonalizationRule: z.enum(['max', 'sum']), }",
+    "refines": [],
     "chain": []
    },
    {
@@ -172014,8 +172012,16 @@
     "text": "Rascunho inválido conta como alterado: a linha salva sempre passa na validação."
    },
    {
+    "file": "src/components/admin/freight-settings/FreightSettingsForm.tsx",
+    "text": "Salvar recusado pela validação: leva a tela e o foco ao primeiro campo com erro."
+   },
+   {
     "file": "src/components/admin/freight-settings/freightSettingsFormSchema.ts",
     "text": "e só vira número aqui, na validação. Os limites repetem os CHECK da tabela"
+   },
+   {
+    "file": "src/components/admin/freight-settings/freightSettingsFormSchema.ts",
+    "text": "* Só algarismos; o limite de cada campo vem da faixa abaixo. */"
    },
    {
     "file": "src/components/admin/freight-settings/freightSettingsFormSchema.ts",
@@ -172099,7 +172105,7 @@
    },
    {
     "file": "src/components/admin/shipping-boxes/shippingBoxFormSchema.ts",
-    "text": "medidas > 0, parede de 1 a 20 mm, medida interna > 0, peso máximo > peso"
+    "text": "peso máximo até 100 kg e maior que o peso vazio, e fator de 0,50 a 1,00."
    },
    {
     "file": "src/components/admin/shipping-boxes/shippingBoxFormSchema.ts",
@@ -198994,8 +199000,23 @@
    },
    {
     "file": "src/components/admin/freight-settings/freightSettingsFormSchema.ts",
-    "name": "DIVISOR_MESSAGE",
-    "value": "'Use um número inteiro maior que zero.'"
+    "name": "DIVISOR_MIN",
+    "value": "1000"
+   },
+   {
+    "file": "src/components/admin/freight-settings/freightSettingsFormSchema.ts",
+    "name": "DIVISOR_MAX",
+    "value": "10000"
+   },
+   {
+    "file": "src/components/admin/freight-settings/freightSettingsFormSchema.ts",
+    "name": "BUFFER_DAYS_MAX",
+    "value": "60"
+   },
+   {
+    "file": "src/components/admin/freight-settings/freightSettingsFormSchema.ts",
+    "name": "BUFFER_FORMAT_MESSAGE",
+    "value": "'Use só algarismos, sem ponto nem vírgula (ex.: 2).'"
    },
    {
     "file": "src/components/admin/freight-settings/freightSettingsFormSchema.ts",
@@ -199044,8 +199065,18 @@
    },
    {
     "file": "src/components/admin/shipping-boxes/shippingBoxFormSchema.ts",
-    "name": "MAX_NUMERIC_8_2",
-    "value": "999"
+    "name": "MIN_OUTER_CM",
+    "value": "0.01"
+   },
+   {
+    "file": "src/components/admin/shipping-boxes/shippingBoxFormSchema.ts",
+    "name": "MAX_OUTER_CM",
+    "value": "300"
+   },
+   {
+    "file": "src/components/admin/shipping-boxes/shippingBoxFormSchema.ts",
+    "name": "MAX_WEIGHT_G",
+    "value": "100"
    },
    {
     "file": "src/components/admin/shipping-boxes/shippingBoxFormSchema.ts",
@@ -216050,14 +216081,14 @@
    {
     "file": "src/components/admin/shipping-boxes/ShippingBoxFormDialog.tsx",
     "name": "ShippingBoxFormDialog",
-    "params": "{ open, onOpenChange, box, newBoxFillFactor, saving, rejectedCode = null, onSave, }: ShippingBoxFormDialogProps",
-    "body": "const isEdit = box !== null; const [draft, setDraft] = useState<ShippingBoxFormDraft>(EMPTY_SHIPPING_BOX_DRAFT); const [errors, setErrors] = useState<ShippingBoxFormErrors>({}); const [advancedOpen, setAdvancedOpen] = useState(false); const [failedSubmits, setFailedSubmits] = useState(0); const formRef = useRef<HTMLFormElement>(null); useEffect(() => { if (!open) return; setDraft(box ? toShippingBoxDraft(box) : newShippingBoxDraft(newBoxFillFactor)); setErrors({}); setAdvancedOpen(box !== null & …"
+    "params": "{ open, onOpenChange, box, newBoxFillFactor, newBoxSortOrder, saving, rejectedCode = null, onSave, }: ShippingBoxFormDia",
+    "body": "const isEdit = box !== null; const [draft, setDraft] = useState<ShippingBoxFormDraft>(EMPTY_SHIPPING_BOX_DRAFT); const [errors, setErrors] = useState<ShippingBoxFormErrors>({}); const [advancedOpen, setAdvancedOpen] = useState(false); const [failedSubmits, setFailedSubmits] = useState(0); const areaRef = useRef<HTMLDivElement>(null); // Envio em andamento: o segundo clique de um duplo clique chega antes de // `saving` virar true na tela e gravaria a caixa duas vezes. const submittingRef = useRef …"
    },
    {
     "file": "src/components/admin/shipping-boxes/ShippingBoxesManager.tsx",
     "name": "ShippingBoxesManager",
     "params": "",
-    "body": "const { rows, isLoading, isError, refetch } = useShippingBoxes({ includeInactive: true }); const { create, update, softDelete, restore } = useShippingBoxMutations(); const { row: freightSettings } = useFreightSettings(); const [dialogOpen, setDialogOpen] = useState(false); const [editingBox, setEditingBox] = useState<ShippingBoxRow | null>(null); const [deleteTarget, setDeleteTarget] = useState<ShippingBoxRow | null>(null); const [rejectedCode, setRejectedCode] = useState<RejectedShippingBoxCode …"
+    "body": "const { rows, isLoading, isError, refetch } = useShippingBoxes({ includeInactive: true }); const { create, update, softDelete, restore } = useShippingBoxMutations(); const { row: freightSettings, isLoading: settingsLoading } = useFreightSettings(); const [dialogOpen, setDialogOpen] = useState(false); const [editingBox, setEditingBox] = useState<ShippingBoxRow | null>(null); const [deleteTarget, setDeleteTarget] = useState<ShippingBoxRow | null>(null); const [rejectedCode, setRejectedCode] = useS …"
    },
    {
     "file": "src/components/admin/shipping-boxes/ShippingBoxesTable.tsx",
@@ -216074,8 +216105,14 @@
    {
     "file": "src/components/admin/shipping-boxes/shippingBoxFormSchema.ts",
     "name": "newShippingBoxDraft",
-    "params": "defaultFillFactor: number",
-    "body": "return { ...EMPTY_SHIPPING_BOX_DRAFT, fillFactor: toFactorText(defaultFillFactor) };"
+    "params": "defaultFillFactor: number, sortOrder: number,",
+    "body": "return { ...EMPTY_SHIPPING_BOX_DRAFT, fillFactor: toFactorText(defaultFillFactor), sortOrder: String(sortOrder), };"
+   },
+   {
+    "file": "src/components/admin/shipping-boxes/shippingBoxFormSchema.ts",
+    "name": "nextShippingBoxSortOrder",
+    "params": "boxes: ReadonlyArray<{ sort_order: number }>",
+    "body": "return boxes.length === 0 ? 0 : Math.max(...boxes.map((box) => box.sort_order)) + 1;"
    },
    {
     "file": "src/components/admin/shipping-boxes/shippingBoxFormSchema.ts",
@@ -232719,6 +232756,10 @@
    },
    {
     "file": "src/components/admin/freight-settings/__tests__/freightSettingsFormSchema.test.ts",
+    "name": "aceita %s = "
+   },
+   {
+    "file": "src/components/admin/freight-settings/__tests__/freightSettingsFormSchema.test.ts",
     "name": "aponta todos os campos inválidos de uma vez"
    },
    {
@@ -232907,7 +232948,7 @@
    },
    {
     "file": "src/components/admin/shipping-boxes/__tests__/ShippingBoxFormDialog.test.tsx",
-    "name": "a área dos campos rola por CSS nativo (max-h + overflow-y-auto)"
+    "name": "a área dos campos rola por CSS nativo, em coluna flexível dentro do diálogo"
    },
    {
     "file": "src/components/admin/shipping-boxes/__tests__/ShippingBoxFormDialog.test.tsx",
@@ -232927,6 +232968,50 @@
    },
    {
     "file": "src/components/admin/shipping-boxes/__tests__/ShippingBoxFormDialog.test.tsx",
+    "name": "o código que o banco recusou rola até o campo Código, onde está a mensagem"
+   },
+   {
+    "file": "src/components/admin/shipping-boxes/__tests__/ShippingBoxFormDialog.test.tsx",
+    "name": "a ordem sugerida abre no campo e a dica explica o desempate"
+   },
+   {
+    "file": "src/components/admin/shipping-boxes/__tests__/ShippingBoxFormDialog.test.tsx",
+    "name": "ShippingBoxFormDialog — envio único"
+   },
+   {
+    "file": "src/components/admin/shipping-boxes/__tests__/ShippingBoxFormDialog.test.tsx",
+    "name": "duplo clique em Criar caixa grava uma vez só"
+   },
+   {
+    "file": "src/components/admin/shipping-boxes/__tests__/ShippingBoxFormDialog.test.tsx",
+    "name": "com o salvar em andamento, nem o envio direto do formulário grava"
+   },
+   {
+    "file": "src/components/admin/shipping-boxes/__tests__/ShippingBoxFormDialog.test.tsx",
+    "name": "terminado o salvar sem fechar (código recusado), o envio volta a funcionar"
+   },
+   {
+    "file": "src/components/admin/shipping-boxes/__tests__/ShippingBoxFormDialog.test.tsx",
+    "name": "gravação recusada na hora, sem "
+   },
+   {
+    "file": "src/components/admin/shipping-boxes/__tests__/ShippingBoxFormDialog.test.tsx",
+    "name": "fechar e abrir de novo zera o envio em andamento"
+   },
+   {
+    "file": "src/components/admin/shipping-boxes/__tests__/ShippingBoxFormDialog.test.tsx",
+    "name": "ShippingBoxFormDialog — durante o salvar"
+   },
+   {
+    "file": "src/components/admin/shipping-boxes/__tests__/ShippingBoxFormDialog.test.tsx",
+    "name": "mostra o ícone de carregando e trava botão, campos, chave e Avançado"
+   },
+   {
+    "file": "src/components/admin/shipping-boxes/__tests__/ShippingBoxFormDialog.test.tsx",
+    "name": "sem salvar, nada está travado e não há ícone de carregando"
+   },
+   {
+    "file": "src/components/admin/shipping-boxes/__tests__/ShippingBoxFormDialog.test.tsx",
     "name": "ShippingBoxFormDialog — fechar durante o salvar"
    },
    {
@@ -232940,6 +233025,42 @@
    {
     "file": "src/components/admin/shipping-boxes/__tests__/ShippingBoxFormDialog.test.tsx",
     "name": "o X do canto também não fecha durante o salvar"
+   },
+   {
+    "file": "src/components/admin/shipping-boxes/__tests__/ShippingBoxesManager.form.test.tsx",
+    "name": "ShippingBoxesManager — valores sugeridos na caixa nova"
+   },
+   {
+    "file": "src/components/admin/shipping-boxes/__tests__/ShippingBoxesManager.form.test.tsx",
+    "name": "a ordem sugerida é a maior da lista + 1 (P = 1, M = 2 → 3)"
+   },
+   {
+    "file": "src/components/admin/shipping-boxes/__tests__/ShippingBoxesManager.form.test.tsx",
+    "name": "sem nenhuma caixa, a primeira começa na ordem 0"
+   },
+   {
+    "file": "src/components/admin/shipping-boxes/__tests__/ShippingBoxesManager.form.test.tsx",
+    "name": "editar mostra a ordem da própria caixa, não a sugerida"
+   },
+   {
+    "file": "src/components/admin/shipping-boxes/__tests__/ShippingBoxesManager.form.test.tsx",
+    "name": "ShippingBoxesManager — parâmetros de frete ainda carregando"
+   },
+   {
+    "file": "src/components/admin/shipping-boxes/__tests__/ShippingBoxesManager.form.test.tsx",
+    "name": "com erro ao carregar os parâmetros, libera e usa o padrão da coluna (0,90)"
+   },
+   {
+    "file": "src/components/admin/shipping-boxes/__tests__/ShippingBoxesManager.form.test.tsx",
+    "name": "ShippingBoxesManager — edição recusada por lista velha"
+   },
+   {
+    "file": "src/components/admin/shipping-boxes/__tests__/ShippingBoxesManager.form.test.tsx",
+    "name": "not_applied fecha o formulário: a lista já foi recarregada"
+   },
+   {
+    "file": "src/components/admin/shipping-boxes/__tests__/ShippingBoxesManager.form.test.tsx",
+    "name": "$reason mantém o formulário aberto para tentar de novo"
    },
    {
     "file": "src/components/admin/shipping-boxes/__tests__/ShippingBoxesManager.test.tsx",
@@ -233119,7 +233240,35 @@
    },
    {
     "file": "src/components/admin/shipping-boxes/__tests__/shippingBoxFormSchema.test.ts",
-    "name": "com o DEFAULT da coluna (0,90) é o formulário em branco de sempre"
+    "name": "com o DEFAULT da coluna (0,90) e ordem 0 é o formulário em branco de sempre"
+   },
+   {
+    "file": "src/components/admin/shipping-boxes/__tests__/shippingBoxFormSchema.test.ts",
+    "name": "a ordem sugerida entra como texto no campo"
+   },
+   {
+    "file": "src/components/admin/shipping-boxes/__tests__/shippingBoxFormSchema.test.ts",
+    "name": "nextShippingBoxSortOrder"
+   },
+   {
+    "file": "src/components/admin/shipping-boxes/__tests__/shippingBoxFormSchema.test.ts",
+    "name": "ordens $ordens sugerem $esperado"
+   },
+   {
+    "file": "src/components/admin/shipping-boxes/__tests__/shippingBoxFormSchema.test.ts",
+    "name": "limites do banco (migration de endurecimento)"
+   },
+   {
+    "file": "src/components/admin/shipping-boxes/__tests__/shippingBoxFormSchema.test.ts",
+    "name": "$campo: 0,01 e 300 passam; 0 e 300,01 são recusados"
+   },
+   {
+    "file": "src/components/admin/shipping-boxes/__tests__/shippingBoxFormSchema.test.ts",
+    "name": "peso máximo $kg kg: $erro"
+   },
+   {
+    "file": "src/components/admin/shipping-boxes/__tests__/shippingBoxFormSchema.test.ts",
+    "name": "100 kg viram exatamente 100000 g no payload"
    },
    {
     "file": "src/components/admin/telemetry/__tests__/BridgeAlertsCard.test.tsx",
@@ -260112,6 +260261,26 @@
    {
     "file": "src/pages/admin/__tests__/AdminFreteSettingsPage.test.tsx",
     "name": "recarrega os campos quando a linha salva muda"
+   },
+   {
+    "file": "src/pages/admin/__tests__/AdminFreteSettingsPage.test.tsx",
+    "name": "AdminFreteSettingsPage — foco"
+   },
+   {
+    "file": "src/pages/admin/__tests__/AdminFreteSettingsPage.test.tsx",
+    "name": "salvar recusado pela validação rola e foca o primeiro campo inválido"
+   },
+   {
+    "file": "src/pages/admin/__tests__/AdminFreteSettingsPage.test.tsx",
+    "name": "salvar válido não rola nem tira o foco do botão"
+   },
+   {
+    "file": "src/pages/admin/__tests__/AdminFreteSettingsPage.test.tsx",
+    "name": "depois de salvar, o formulário remontado devolve o foco ao primeiro campo"
+   },
+   {
+    "file": "src/pages/admin/__tests__/AdminFreteSettingsPage.test.tsx",
+    "name": "a linha mudar sem um salvar desta tela não rouba o foco"
    },
    {
     "file": "src/pages/admin/__tests__/AdminProductFormPage.shipsSeparately.test.tsx",
@@ -442245,7 +442414,7 @@
   },
   "src/components/admin/freight-settings/FreightSettingsForm.tsx": {
    "path": "src/components/admin/freight-settings/FreightSettingsForm.tsx",
-   "lines": 310,
+   "lines": 324,
    "exports": [
     "function FreightSettingsForm"
    ],
@@ -442261,13 +442430,14 @@
    "rule_comments": [
     "* Campos de texto livre; a regra de personalização é escolha entre duas opções. */",
     "* A empresa opera em São Paulo: a data não pode depender do fuso da máquina. */",
-    "Rascunho inválido conta como alterado: a linha salva sempre passa na validação."
+    "Rascunho inválido conta como alterado: a linha salva sempre passa na validação.",
+    "Salvar recusado pela validação: leva a tela e o foco ao primeiro campo com erro."
    ],
    "doc": "Formulário dos parâmetros globais de frete (linha única de `freight_settings`). Recebe a linha salva e devolve em `onSave` só os campos que mudaram. Quem grava e avisa por toast é o hook `useUpdateFreightSettings`, na página. A página remonta o formulário (`key`) quando a linha salva muda, então o e …"
   },
   "src/components/admin/freight-settings/freightSettingsFormSchema.ts": {
    "path": "src/components/admin/freight-settings/freightSettingsFormSchema.ts",
-   "lines": 160,
+   "lines": 171,
    "exports": [
     "interface FreightSettingsDraft",
     "type FreightSettingsField",
@@ -442294,10 +442464,8 @@
     {
      "name": "freightSettingsFormSchema",
      "kind": "object",
-     "body": "{ originCep: z.string().regex(CEP_PATTERN, 'Informe o CEP completo, no formato 00000-000.'), cubicDivisorCorreios: divisorSchema, cubicDivisorRodoviario: divisorSchema, defaultFillFactor: z .string() .trim() .regex(FACTOR_PATTERN, FACTOR_MESSAGE) .transform((text) => Number(text.replace(',', '.'))) .refine((value) => value >= FILL_FACTOR_MIN && value <= FILL_FACTOR_MAX, FACTOR_MESSAGE), internalBufferDays: z .string() .trim() .regex(INTEGER_PATTERN, 'Use um número inteiro de dias, zero ou mais.') .transform(Number), multiPersonalizationRule: z.enum(['max', 'sum']), }",
-     "refines": [
-      "Use um número inteiro de dias, zero ou mais."
-     ],
+     "body": "{ originCep: z.string().regex(CEP_PATTERN, 'Informe o CEP completo, no formato 00000-000.'), cubicDivisorCorreios: divisorSchema, cubicDivisorRodoviario: divisorSchema, defaultFillFactor: z .string() .trim() .regex(FACTOR_PATTERN, FACTOR_MESSAGE) .transform((text) => Number(text.replace(',', '.'))) .refine((value) => value >= FILL_FACTOR_MIN && value <= FILL_FACTOR_MAX, FACTOR_MESSAGE), internalBufferDays: z .string() .trim() .regex(INTEGER_PATTERN, BUFFER_FORMAT_MESSAGE) .transform(Number) .refine((value) => value <= BUFFER_DAYS_MAX, BUFFER_RANGE_MESSAGE), multiPersonalizationRule: z.enum(['max', 'sum']), }",
+     "refines": [],
      "chain": []
     }
    ],
@@ -442311,8 +442479,20 @@
      "value": "1"
     },
     {
-     "name": "DIVISOR_MESSAGE",
-     "value": "'Use um número inteiro maior que zero.'"
+     "name": "DIVISOR_MIN",
+     "value": "1000"
+    },
+    {
+     "name": "DIVISOR_MAX",
+     "value": "10000"
+    },
+    {
+     "name": "BUFFER_DAYS_MAX",
+     "value": "60"
+    },
+    {
+     "name": "BUFFER_FORMAT_MESSAGE",
+     "value": "'Use só algarismos, sem ponto nem vírgula (ex.: 2).'"
     },
     {
      "name": "FACTOR_MESSAGE",
@@ -442321,17 +442501,19 @@
    ],
    "rule_comments": [
     "e só vira número aqui, na validação. Os limites repetem os CHECK da tabela",
+    "* Só algarismos; o limite de cada campo vem da faixa abaixo. */",
     "* Aplica a máscara 00000-000 ao que foi digitado (só dígitos, no máximo 8). */"
    ],
-   "doc": "Regras do formulário de parâmetros de frete (`/admin/frete`). O formulário guarda o que a pessoa digita como texto (`FreightSettingsDraft`) e só vira número aqui, na validação. Os limites repetem os CHECK da tabela `freight_settings` (migration 20261119213100): validar antes evita que o banco recuse …"
+   "doc": "Regras do formulário de parâmetros de frete (`/admin/frete`). O formulário guarda o que a pessoa digita como texto (`FreightSettingsDraft`) e só vira número aqui, na validação. Os limites repetem os CHECK da tabela `freight_settings` (migration 20261119213100 e a de endurecimento): divisores de cuba …"
   },
   "src/components/admin/freight-settings/__tests__/freightSettingsFormSchema.test.ts": {
    "path": "src/components/admin/freight-settings/__tests__/freightSettingsFormSchema.test.ts",
-   "lines": 200,
+   "lines": 241,
    "is_test": true,
    "rule_comments": [
     "* Regras do formulário de `/admin/frete`: máscara do CEP, validação e o que",
-    "Fator: 0,49 fica 0,01 abaixo do mínimo 0,50; 1,01 fica 0,01 acima do máximo 1,00."
+    "Fator: 0,49 fica 0,01 abaixo do mínimo 0,50; 1,01 fica 0,01 acima do máximo 1,00.",
+    "Folga: só algarismos, de 0 a 60 dias (61 fica um acima do máximo)."
    ],
    "doc": "Regras do formulário de `/admin/frete`: máscara do CEP, validação e o que vai para o banco. Os limites conferidos aqui são os CHECK da migration 20261119213100_create_freight_settings.sql.",
    "tests": [
@@ -442343,6 +442525,7 @@
     "lê a regra ",
     "parseFreightSettingsDraft",
     "aceita a linha padrão e devolve os valores no formato do banco",
+    "aceita %s = ",
     "aponta todos os campos inválidos de uma vez",
     "buildFreightSettingsPatch",
     "sem mudança não há o que salvar",
@@ -445204,7 +445387,7 @@
   },
   "src/components/admin/shipping-boxes/ShippingBoxFormDialog.tsx": {
    "path": "src/components/admin/shipping-boxes/ShippingBoxFormDialog.tsx",
-   "lines": 373,
+   "lines": 410,
    "exports": [
     "interface RejectedShippingBoxCode",
     "function ShippingBoxFormDialog"
@@ -445227,14 +445410,14 @@
    "calc_fns": [
     {
      "name": "ShippingBoxFormDialog",
-     "params": "{ open, onOpenChange, box, newBoxFillFactor, saving, rejectedCode = null, onSave, }: ShippingBoxFormDialogProps",
-     "body": "const isEdit = box !== null; const [draft, setDraft] = useState<ShippingBoxFormDraft>(EMPTY_SHIPPING_BOX_DRAFT); const [errors, setErrors] = useState<ShippingBoxFormErrors>({}); const [advancedOpen, setAdvancedOpen] = useState(false); const [failedSubmits, setFailedSubmits] = useState(0); const formRef = useRef<HTMLFormElement>(null); useEffect(() => { if (!open) return; setDraft(box ? toShippingBoxDraft(box) : newShippingBoxDraft(newBoxFillFactor)); setErrors({}); setAdvancedOpen(box !== null & …"
+     "params": "{ open, onOpenChange, box, newBoxFillFactor, newBoxSortOrder, saving, rejectedCode = null, onSave, }: ShippingBoxFormDia",
+     "body": "const isEdit = box !== null; const [draft, setDraft] = useState<ShippingBoxFormDraft>(EMPTY_SHIPPING_BOX_DRAFT); const [errors, setErrors] = useState<ShippingBoxFormErrors>({}); const [advancedOpen, setAdvancedOpen] = useState(false); const [failedSubmits, setFailedSubmits] = useState(0); const areaRef = useRef<HTMLDivElement>(null); // Envio em andamento: o segundo clique de um duplo clique chega antes de // `saving` virar true na tela e gravaria a caixa duas vezes. const submittingRef = useRef …"
     }
    ]
   },
   "src/components/admin/shipping-boxes/ShippingBoxesManager.tsx": {
    "path": "src/components/admin/shipping-boxes/ShippingBoxesManager.tsx",
-   "lines": 175,
+   "lines": 194,
    "exports": [
     "function ShippingBoxesManager"
    ],
@@ -445243,7 +445426,7 @@
     {
      "name": "ShippingBoxesManager",
      "params": "",
-     "body": "const { rows, isLoading, isError, refetch } = useShippingBoxes({ includeInactive: true }); const { create, update, softDelete, restore } = useShippingBoxMutations(); const { row: freightSettings } = useFreightSettings(); const [dialogOpen, setDialogOpen] = useState(false); const [editingBox, setEditingBox] = useState<ShippingBoxRow | null>(null); const [deleteTarget, setDeleteTarget] = useState<ShippingBoxRow | null>(null); const [rejectedCode, setRejectedCode] = useState<RejectedShippingBoxCode …"
+     "body": "const { rows, isLoading, isError, refetch } = useShippingBoxes({ includeInactive: true }); const { create, update, softDelete, restore } = useShippingBoxMutations(); const { row: freightSettings, isLoading: settingsLoading } = useFreightSettings(); const [dialogOpen, setDialogOpen] = useState(false); const [editingBox, setEditingBox] = useState<ShippingBoxRow | null>(null); const [deleteTarget, setDeleteTarget] = useState<ShippingBoxRow | null>(null); const [rejectedCode, setRejectedCode] = useS …"
     }
    ]
   },
@@ -445286,7 +445469,7 @@
   },
   "src/components/admin/shipping-boxes/shippingBoxFormSchema.ts": {
    "path": "src/components/admin/shipping-boxes/shippingBoxFormSchema.ts",
-   "lines": 358,
+   "lines": 371,
    "exports": [
     "const SHIPPING_BOX_FORM_FIELDS",
     "type ShippingBoxFormField",
@@ -445297,6 +445480,7 @@
     "const EMPTY_SHIPPING_BOX_DRAFT",
     "const SHIPPING_BOX_COLUMN_FILL_FACTOR",
     "function newShippingBoxDraft",
+    "function nextShippingBoxSortOrder",
     "const SHIPPING_BOX_CODE_MAX_LENGTH",
     "const SHIPPING_BOX_NAME_MAX_LENGTH",
     "function normalizeShippingBoxCode",
@@ -445337,8 +445521,16 @@
      "value": "6"
     },
     {
-     "name": "MAX_NUMERIC_8_2",
-     "value": "999"
+     "name": "MIN_OUTER_CM",
+     "value": "0.01"
+    },
+    {
+     "name": "MAX_OUTER_CM",
+     "value": "300"
+    },
+    {
+     "name": "MAX_WEIGHT_G",
+     "value": "100"
     },
     {
      "name": "MAX_INT4",
@@ -445347,14 +445539,19 @@
    ],
    "rule_comments": [
     "* Validação do formulário de caixa de transporte.",
-    "medidas > 0, parede de 1 a 20 mm, medida interna > 0, peso máximo > peso",
+    "peso máximo até 100 kg e maior que o peso vazio, e fator de 0,50 a 1,00.",
     "* Preenche o formulário com uma caixa existente (peso máximo volta para kg). */"
    ],
    "calc_fns": [
     {
      "name": "newShippingBoxDraft",
-     "params": "defaultFillFactor: number",
-     "body": "return { ...EMPTY_SHIPPING_BOX_DRAFT, fillFactor: toFactorText(defaultFillFactor) };"
+     "params": "defaultFillFactor: number, sortOrder: number,",
+     "body": "return { ...EMPTY_SHIPPING_BOX_DRAFT, fillFactor: toFactorText(defaultFillFactor), sortOrder: String(sortOrder), };"
+    },
+    {
+     "name": "nextShippingBoxSortOrder",
+     "params": "boxes: ReadonlyArray<{ sort_order: number }>",
+     "body": "return boxes.length === 0 ? 0 : Math.max(...boxes.map((box) => box.sort_order)) + 1;"
     },
     {
      "name": "normalizeShippingBoxCode",
@@ -445407,28 +445604,57 @@
   },
   "src/components/admin/shipping-boxes/__tests__/ShippingBoxFormDialog.test.tsx": {
    "path": "src/components/admin/shipping-boxes/__tests__/ShippingBoxFormDialog.test.tsx",
-   "lines": 139,
+   "lines": 290,
    "is_test": true,
    "rule_comments": [
-    "A rolagem de verdade só existe em navegador; aqui se trava que a validação"
+    "A rolagem de verdade só existe em navegador; aqui se trava que a validação",
+    "Cabeçalho, área e rodapé na mesma coluna, dentro do diálogo de no máximo"
    ],
-   "doc": "Formulário de caixa, sozinho (sem a aba): o que depende das props e do DOM. A rolagem de verdade só existe em navegador; aqui se trava que a validação recusada pede para trazer o primeiro campo com erro à vista.",
+   "doc": "Formulário de caixa, sozinho (sem a aba): o que depende das props e do DOM. A rolagem de verdade só existe em navegador; aqui se trava que a validação recusada, e o código recusado pelo banco, pedem para trazer o primeiro campo com erro à vista, e que um duplo clique grava uma vez só.",
    "tests": [
     "ShippingBoxFormDialog — rolagem",
-    "a área dos campos rola por CSS nativo (max-h + overflow-y-auto)",
+    "a área dos campos rola por CSS nativo, em coluna flexível dentro do diálogo",
     "salvar sem o peso máximo traz o campo do peso, com a mensagem, para a vista",
     "com vários erros, vai para o primeiro campo errado da tela",
     "erro só no peso da caixa vazia: abre o Avançado e rola até ele",
     "validação aceita não rola nada",
+    "o código que o banco recusou rola até o campo Código, onde está a mensagem",
+    "a ordem sugerida abre no campo e a dica explica o desempate",
+    "ShippingBoxFormDialog — envio único",
+    "duplo clique em Criar caixa grava uma vez só",
+    "com o salvar em andamento, nem o envio direto do formulário grava",
+    "terminado o salvar sem fechar (código recusado), o envio volta a funcionar",
+    "gravação recusada na hora, sem ",
+    "fechar e abrir de novo zera o envio em andamento",
+    "ShippingBoxFormDialog — durante o salvar",
+    "mostra o ícone de carregando e trava botão, campos, chave e Avançado",
+    "sem salvar, nada está travado e não há ícone de carregando",
     "ShippingBoxFormDialog — fechar durante o salvar",
     "Esc fecha o formulário quando nada está sendo salvo",
     "Esc durante o salvar é ignorado: o formulário continua aberto",
     "o X do canto também não fecha durante o salvar"
    ]
   },
+  "src/components/admin/shipping-boxes/__tests__/ShippingBoxesManager.form.test.tsx": {
+   "path": "src/components/admin/shipping-boxes/__tests__/ShippingBoxesManager.form.test.tsx",
+   "lines": 191,
+   "is_test": true,
+   "doc": "Cadastro de caixas, parte do formulário: o que o gerenciador entrega ao diálogo ao abrir (fator e ordem sugeridos), quando \"Nova caixa\" libera e o que acontece com uma edição recusada. Mesmos mocks de `ShippingBoxesManager.test.tsx`.",
+   "tests": [
+    "ShippingBoxesManager — valores sugeridos na caixa nova",
+    "a ordem sugerida é a maior da lista + 1 (P = 1, M = 2 → 3)",
+    "sem nenhuma caixa, a primeira começa na ordem 0",
+    "editar mostra a ordem da própria caixa, não a sugerida",
+    "ShippingBoxesManager — parâmetros de frete ainda carregando",
+    "com erro ao carregar os parâmetros, libera e usa o padrão da coluna (0,90)",
+    "ShippingBoxesManager — edição recusada por lista velha",
+    "not_applied fecha o formulário: a lista já foi recarregada",
+    "$reason mantém o formulário aberto para tentar de novo"
+   ]
+  },
   "src/components/admin/shipping-boxes/__tests__/ShippingBoxesManager.test.tsx": {
    "path": "src/components/admin/shipping-boxes/__tests__/ShippingBoxesManager.test.tsx",
-   "lines": 503,
+   "lines": 460,
    "is_test": true,
    "errors": [
     ")).not.toBeInTheDocument();\n  });\n});\n\ndescribe(",
@@ -445465,12 +445691,32 @@
     "?tab=caixas abre a aba, logo depois de Fornecedores, com o cadastro dentro"
    ]
   },
+  "src/components/admin/shipping-boxes/__tests__/shippingBoxFixtures.ts": {
+   "path": "src/components/admin/shipping-boxes/__tests__/shippingBoxFixtures.ts",
+   "lines": 47,
+   "is_test": true,
+   "exports": [
+    "const BOX_P",
+    "const BOX_M",
+    "const BOX_OLD"
+   ]
+  },
   "src/components/admin/shipping-boxes/__tests__/shippingBoxFormSchema.test.ts": {
    "path": "src/components/admin/shipping-boxes/__tests__/shippingBoxFormSchema.test.ts",
-   "lines": 416,
+   "lines": 474,
    "is_test": true,
    "errors": [
     "rascunho inválido no teste"
+   ],
+   "params": [
+    {
+     "name": "MEDIDA",
+     "value": "'use um valor entre 0,01 e 300 cm.'"
+    },
+    {
+     "name": "PESO",
+     "value": "'Use um valor entre 0,001 e 100 kg.'"
+    }
    ],
    "tests": [
     "parseShippingBoxForm — payload",
@@ -445492,7 +445738,14 @@
     "o mesmo valor escrito de outro jeito não conta como alteração",
     "newShippingBoxDraft — caixa nova",
     "usa o fator padrão de /admin/frete, com vírgula e duas casas",
-    "com o DEFAULT da coluna (0,90) é o formulário em branco de sempre"
+    "com o DEFAULT da coluna (0,90) e ordem 0 é o formulário em branco de sempre",
+    "a ordem sugerida entra como texto no campo",
+    "nextShippingBoxSortOrder",
+    "ordens $ordens sugerem $esperado",
+    "limites do banco (migration de endurecimento)",
+    "$campo: 0,01 e 300 passam; 0 e 300,01 são recusados",
+    "peso máximo $kg kg: $erro",
+    "100 kg viram exatamente 100000 g no payload"
    ]
   },
   "src/components/admin/suppliers-manager/SupplierAddressTab.tsx": {
@@ -492347,7 +492600,7 @@
   },
   "src/pages/admin/AdminFreteSettingsPage.tsx": {
    "path": "src/pages/admin/AdminFreteSettingsPage.tsx",
-   "lines": 104,
+   "lines": 124,
    "exports": [
     "function AdminFreteSettingsPage"
    ],
@@ -493209,7 +493462,7 @@
   },
   "src/pages/admin/__tests__/AdminFreteSettingsPage.test.tsx": {
    "path": "src/pages/admin/__tests__/AdminFreteSettingsPage.test.tsx",
-   "lines": 332,
+   "lines": 415,
    "is_test": true,
    "errors": [
     ")).toHaveTextContent(\n      ",
@@ -493239,7 +493492,12 @@
     "enquanto relê a linha salva, campos e opções ficam travados e nada é enviado",
     "terminada a releitura, os campos voltam a aceitar digitação",
     "a dica do fator padrão diz para que ele serve: sugestão na caixa nova",
-    "recarrega os campos quando a linha salva muda"
+    "recarrega os campos quando a linha salva muda",
+    "AdminFreteSettingsPage — foco",
+    "salvar recusado pela validação rola e foca o primeiro campo inválido",
+    "salvar válido não rola nem tira o foco do botão",
+    "depois de salvar, o formulário remontado devolve o foco ao primeiro campo",
+    "a linha mudar sem um salvar desta tela não rouba o foco"
    ]
   },
   "src/pages/admin/__tests__/AdminProductFormPage.shipsSeparately.test.tsx": {
@@ -502062,8 +502320,11 @@
   },
   "src/services/__tests__/freightSettingsService.test.ts": {
    "path": "src/services/__tests__/freightSettingsService.test.ts",
-   "lines": 218,
+   "lines": 224,
    "is_test": true,
+   "errors": [
+    "esperava FreightSettingsError, veio ${String(outcome)}"
+   ],
    "doc": "freightSettingsService — contrato com `public.freight_settings` (linha única). O cliente Supabase é trocado por um builder que grava cada chamada (`ops`), então o teste confere o que seria enviado ao PostgREST. O detector de RLS (`isRlsDenialError`) é o real.",
    "tests": [
     "freightSettingsService.get",
@@ -502352,8 +502613,14 @@
   },
   "src/services/__tests__/shippingBoxService.test.ts": {
    "path": "src/services/__tests__/shippingBoxService.test.ts",
-   "lines": 441,
+   "lines": 446,
    "is_test": true,
+   "errors": [
+    "esperava ShippingBoxError, veio ${String(outcome)}"
+   ],
+   "rule_comments": [
+    "Limites novos do banco: medida externa de 0,01 a 300 cm e peso máximo até 100 kg."
+   ],
    "doc": "shippingBoxService — contrato com `public.shipping_boxes`. O cliente Supabase é trocado por um builder que grava cada chamada (`ops`), então o teste confere o que seria enviado ao PostgREST: filtros, ordem e payload. O detector de RLS (`isRlsDenialError`) é o real.",
    "tests": [
     "shippingBoxService — listagens",
@@ -546378,7 +546645,7 @@
   },
   "tests/hooks/freight/useFreightSettings.test.ts": {
    "path": "tests/hooks/freight/useFreightSettings.test.ts",
-   "lines": 187,
+   "lines": 194,
    "is_test": true,
    "doc": "Hooks dos parâmetros de frete. O serviço é mockado (não o Supabase): aqui o que se trava é a chave de cache, a tradução para o motor, de onde vem o id do usuário gravado em `updated_by` e o texto que chega ao toast.",
    "tests": [
@@ -557632,10 +557899,36 @@
   }
  },
  "git": {
-  "sha": "96508a5f223ab222f76477ebed2100961606cbe1",
+  "sha": "347131701f8dda31639d5231319df768e6a58ea5",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "3471317",
+    "date": "2026-11-20",
+    "author": "adm01-debug",
+    "subject": "fix(frete): admin de caixas e parâmetros — 2ª rodada (duplo clique, rolagem, limites do banco) (#3924)",
+    "files": [
+     "src/components/admin/freight-settings/FreightSettingsForm.tsx",
+     "src/components/admin/freight-settings/__tests__/freightSettingsFormSchema.test.ts",
+     "src/components/admin/freight-settings/freightSettingsFormSchema.ts",
+     "src/components/admin/shipping-boxes/ShippingBoxFormDialog.tsx",
+     "src/components/admin/shipping-boxes/ShippingBoxesManager.tsx",
+     "src/components/admin/shipping-boxes/__tests__/ShippingBoxFormDialog.test.tsx",
+     "src/components/admin/shipping-boxes/__tests__/ShippingBoxesManager.form.test.tsx",
+     "src/components/admin/shipping-boxes/__tests__/ShippingBoxesManager.test.tsx",
+     "src/components/admin/shipping-boxes/__tests__/shippingBoxFixtures.ts",
+     "src/components/admin/shipping-boxes/__tests__/shippingBoxFormSchema.test.ts",
+     "src/components/admin/shipping-boxes/shippingBoxFormSchema.ts",
+     "src/pages/admin/AdminFreteSettingsPage.tsx",
+     "src/pages/admin/__tests__/AdminFreteSettingsPage.test.tsx",
+     "src/services/__tests__/freightSettingsService.test.ts",
+     "src/services/__tests__/shippingBoxService.test.ts",
+     "src/services/freightSettingsService.ts",
+     "src/services/shippingBoxService.ts",
+     "tests/hooks/freight/useFreightSettings.test.ts"
+    ]
+   },
    {
     "sha": "96508a5",
     "date": "2026-11-20",
@@ -558153,21 +558446,6 @@
      "scripts/vercel-gate.mjs",
      "scripts/vercel-gate.unit.mjs"
     ]
-   },
-   {
-    "sha": "2080226",
-    "date": "2026-11-19",
-    "author": "adm01-debug",
-    "subject": "fix(frete): motor ignora as colunas box_* do catálogo (caixa master, não embalagem) (#3898)",
-    "files": [
-     "src/lib/freight/README.md",
-     "src/lib/freight/__tests__/columns.test.ts",
-     "src/lib/freight/__tests__/fixtures/products.ts",
-     "src/lib/freight/__tests__/resolveItemDimensions.test.ts",
-     "src/lib/freight/columns.ts",
-     "src/lib/freight/resolveItemDimensions.ts",
-     "src/lib/freight/types.ts"
-    ]
    }
   ],
   "hot_files": [
@@ -558180,15 +558458,47 @@
     6
    ],
    [
-    "src/lib/freight/README.md",
-    5
+    "src/components/admin/shipping-boxes/__tests__/ShippingBoxesManager.test.tsx",
+    4
    ],
    [
-    "src/hooks/freight/keys.ts",
+    "src/lib/freight/README.md",
+    4
+   ],
+   [
+    "src/components/admin/freight-settings/FreightSettingsForm.tsx",
     3
    ],
    [
-    "src/lib/freight/columns.ts",
+    "src/components/admin/shipping-boxes/ShippingBoxFormDialog.tsx",
+    3
+   ],
+   [
+    "src/components/admin/shipping-boxes/ShippingBoxesManager.tsx",
+    3
+   ],
+   [
+    "src/components/admin/shipping-boxes/__tests__/shippingBoxFormSchema.test.ts",
+    3
+   ],
+   [
+    "src/components/admin/shipping-boxes/shippingBoxFormSchema.ts",
+    3
+   ],
+   [
+    "src/pages/admin/__tests__/AdminFreteSettingsPage.test.tsx",
+    3
+   ],
+   [
+    "src/services/__tests__/shippingBoxService.test.ts",
+    3
+   ],
+   [
+    "src/services/shippingBoxService.ts",
+    3
+   ],
+   [
+    "src/hooks/freight/keys.ts",
     3
    ],
    [
@@ -558218,38 +558528,6 @@
    [
     "src/lib/freight/__tests__/fuzz.test.ts",
     3
-   ],
-   [
-    "src/lib/freight/__tests__/planFreight.test.ts",
-    3
-   ],
-   [
-    "src/lib/freight/buildGroups.ts",
-    3
-   ],
-   [
-    "src/lib/freight/fitCount.ts",
-    3
-   ],
-   [
-    "src/lib/freight/planFreight.ts",
-    3
-   ],
-   [
-    "src/lib/freight/types.ts",
-    3
-   ],
-   [
-    "src/components/admin/shipping-boxes/__tests__/ShippingBoxesManager.test.tsx",
-    3
-   ],
-   [
-    "src/components/admin/products/FreightReadinessIndicator.tsx",
-    2
-   ],
-   [
-    "src/components/admin/products/ProductSkuTag.tsx",
-    2
    ]
   ]
  }

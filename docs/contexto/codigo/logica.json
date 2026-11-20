@@ -9316,7 +9316,7 @@
     "components/admin",
     "hooks/freight"
    ],
-   "coberto_por_testes": 5,
+   "coberto_por_testes": 7,
    "orfao": false
   },
   {

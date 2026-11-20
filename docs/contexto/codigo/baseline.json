@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "96508a5f223ab222f76477ebed2100961606cbe1",
+  "commit": "347131701f8dda31639d5231319df768e6a58ea5",
   "branch": "main",
-  "data_commit": "2026-11-20T12:24:41-03:00",
+  "data_commit": "2026-11-20T15:33:19Z",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "34713170",
+    "data": "2026-11-20",
+    "assunto": "fix(frete): admin de caixas e parâmetros — 2ª rodada (duplo clique, rolagem, limites do banco) (#3924)"
+   },
    {
     "sha": "96508a5f",
     "data": "2026-11-20",
@@ -126,18 +131,13 @@
     "sha": "af5f0ed4",
     "data": "2026-11-19",
     "assunto": "feat(frete): tabelas shipping_boxes e freight_settings (Bloco C — DDL) (#3902)"
-   },
-   {
-    "sha": "2f37587a",
-    "data": "2026-11-19",
-    "assunto": "fix: substitui migration F12 por 20261119212000 (desbloqueia preflight E063/E066)"
    }
   ],
-  "arquivos_mudados_7d": 1453,
+  "arquivos_mudados_7d": 1455,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
-    "mudancas": 961
+    "mudancas": 972
    },
    {
     "pasta": "recovery/src-legacy/src",
@@ -181,7 +181,7 @@
    },
    {
     "pasta": "src/pages/admin",
-    "mudancas": 194
+    "mudancas": 196
    },
    {
     "pasta": "src/pages/quotes",
@@ -282,10 +282,6 @@
     "mudancas": 7
    },
    {
-    "arquivo": "e2e/flows/magazine-preview-sticky-smoke.spec.ts",
-    "mudancas": 7
-   },
-   {
     "arquivo": "e2e/helpers/auth.ts",
     "mudancas": 7
    },
@@ -296,12 +292,16 @@
    {
     "arquivo": "src/components/quotes/QuoteAutoSave.tsx",
     "mudancas": 7
+   },
+   {
+    "arquivo": "src/components/search/useGlobalSearch.ts",
+    "mudancas": 7
    }
   ],
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 331
+    "commits": 330
    },
    {
     "autor": "Claude",
@@ -313,7 +313,7 @@
    },
    {
     "autor": "Joaquim Ataides",
-    "commits": 7
+    "commits": 6
    },
    {
     "autor": "dependabot[bot]",
@@ -322,9 +322,9 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 11142,
-  "arquivos_codigo": 5613,
-  "linhas_codigo": 1065726,
+  "arquivos_total": 11144,
+  "arquivos_codigo": 5615,
+  "linhas_codigo": 1066386,
   "rotas": 140,
   "rotas_http_backend": 13,
   "vistas_por_id": 0,
@@ -336,7 +336,7 @@
   "tabelas": 529,
   "migrations": 3115,
   "cron_jobs": 122,
-  "testes": 2677,
+  "testes": 2679,
   "workflows": 89,
   "scripts": 285,
   "docs_md": 1490
@@ -1907,8 +1907,8 @@
    "linhas": 130
   },
   "src/components": {
-   "arquivos": 1464,
-   "linhas": 287593
+   "arquivos": 1466,
+   "linhas": 288132
   },
   "src/config": {
    "arquivos": 1,
@@ -1952,7 +1952,7 @@
   },
   "src/pages": {
    "arquivos": 371,
-   "linhas": 85421
+   "linhas": 85524
   },
   "src/routes": {
    "arquivos": 15,
@@ -1960,7 +1960,7 @@
   },
   "src/services": {
    "arquivos": 37,
-   "linhas": 6896
+   "linhas": 6907
   },
   "src/stores": {
    "arquivos": 12,
@@ -2104,7 +2104,7 @@
   },
   "tests/hooks": {
    "arquivos": 169,
-   "linhas": 27241
+   "linhas": 27248
   },
   "tests/integration": {
    "arquivos": 11,

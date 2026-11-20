@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.3.2 · commit `96508a5f22` · branch `main` · 2026-11-20 15:25 UTC
+> Gerado automaticamente por AI Context Sync v1.3.2 · commit `347131701f` · branch `main` · 2026-11-20 15:34 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -2181,9 +2181,8 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
   ```
 - **freightSettingsFormSchema** (`src/components/admin/freight-settings/freightSettingsFormSchema.ts`, z.object):
   ```ts
-  { originCep: z.string().regex(CEP_PATTERN, 'Informe o CEP completo, no formato 00000-000.'), cubicDivisorCorreios: divisorSchema, cubicDivisorRodoviario: divisorSchema, defaultFillFactor: z .string() .trim() .regex(FACTOR_PATTERN, FACTOR_MESSAGE) .transform((text) => Number(text.replace(',', '.'))) .refine((value) => value >= FILL_FACTOR_MIN && value <= FILL_FACTOR_MAX, FACTOR_MESSAGE), internalBufferDays: z .string() .trim() .regex(INTEGER_PATTERN, 'Use um número inteiro de dias, zero ou mais.') .transform(Number), multiPersonalizationRule: z.enum(['max', 'sum']), }
+  { originCep: z.string().regex(CEP_PATTERN, 'Informe o CEP completo, no formato 00000-000.'), cubicDivisorCorreios: divisorSchema, cubicDivisorRodoviario: divisorSchema, defaultFillFactor: z .string() .trim() .regex(FACTOR_PATTERN, FACTOR_MESSAGE) .transform((text) => Number(text.replace(',', '.'))) .refine((value) => value >= FILL_FACTOR_MIN && value <= FILL_FACTOR_MAX, FACTOR_MESSAGE), internalBufferDays: z .string() .trim() .regex(INTEGER_PATTERN, BUFFER_FORMAT_MESSAGE) .transform(Number) .refine((value) => value <= BUFFER_DAYS_MAX, BUFFER_RANGE_MESSAGE), multiPersonalizationRule: z.enum(['max', 'sum']), }
   ```
-  - Regras cruzadas (refine): “Use um número inteiro de dias, zero ou mais.”
 - **productFormSchema** (`src/components/admin/products/ProductFormSchema.ts`, z.object):
   ```ts
   { // Info básica sku: z.string().trim().min(1, 'SKU é obrigatório').max(50, 'SKU muito longo'), name: z.string().trim().min(1, 'Nome é obrigatório').max(300, 'Nome muito longo'), description: z.string().max(5000, 'Descrição muito longa').optional().default(''), short_description: z.string().max(500, 'Descrição curta muito longa').optional().default(''), brand: z.string().max(100).optional().default(''), // Categoria e fornecedor (IDs reais do BD externo) category_id: z.string().optional().default(''), supplier_id: z.string().min(1, 'Fornecedor é obrigatório'), supplier_reference: z.string().max(100).optional().default(''), supplier_product_url: z.string().max(500).optional().default(''), // Preço e estoque sale_price: z.coerce.number().min(0, 'Preço não pode ser negativo').default(0), cost …
@@ -3749,13 +3748,13 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
   ```
   
   ```
-- **ShippingBoxFormDialog({ open, onOpenChange, box, newBoxFillFactor, saving, rejectedCode = null, onSave, }: ShippingBoxFormDialogProps)** — `src/components/admin/shipping-boxes/ShippingBoxFormDialog.tsx`
+- **ShippingBoxFormDialog({ open, onOpenChange, box, newBoxFillFactor, newBoxSortOrder, saving, rejectedCode = null, onSave, }: ShippingBoxFormDia)** — `src/components/admin/shipping-boxes/ShippingBoxFormDialog.tsx`
   ```
-  const isEdit = box !== null; const [draft, setDraft] = useState<ShippingBoxFormDraft>(EMPTY_SHIPPING_BOX_DRAFT); const [errors, setErrors] = useState<ShippingBoxFormErrors>({}); const [advancedOpen, setAdvancedOpen] = useState(false); const [failedSubmits, setFailedSubmits] = useState(0); const formRef = useRef<HTMLFormElement>(null); useEffect(() => { if (!open) return; setDraft(box ? toShippingBoxDraft(box) : newShippingBoxDraft(newBoxFillFactor)); setErrors({}); setAdvancedOpen(box !== null & …
+  const isEdit = box !== null; const [draft, setDraft] = useState<ShippingBoxFormDraft>(EMPTY_SHIPPING_BOX_DRAFT); const [errors, setErrors] = useState<ShippingBoxFormErrors>({}); const [advancedOpen, setAdvancedOpen] = useState(false); const [failedSubmits, setFailedSubmits] = useState(0); const areaRef = useRef<HTMLDivElement>(null); // Envio em andamento: o segundo clique de um duplo clique chega antes de // `saving` virar true na tela e gravaria a caixa duas vezes. const submittingRef = useRef …
   ```
 - **ShippingBoxesManager()** — `src/components/admin/shipping-boxes/ShippingBoxesManager.tsx`
   ```
-  const { rows, isLoading, isError, refetch } = useShippingBoxes({ includeInactive: true }); const { create, update, softDelete, restore } = useShippingBoxMutations(); const { row: freightSettings } = useFreightSettings(); const [dialogOpen, setDialogOpen] = useState(false); const [editingBox, setEditingBox] = useState<ShippingBoxRow | null>(null); const [deleteTarget, setDeleteTarget] = useState<ShippingBoxRow | null>(null); const [rejectedCode, setRejectedCode] = useState<RejectedShippingBoxCode …
+  const { rows, isLoading, isError, refetch } = useShippingBoxes({ includeInactive: true }); const { create, update, softDelete, restore } = useShippingBoxMutations(); const { row: freightSettings, isLoading: settingsLoading } = useFreightSettings(); const [dialogOpen, setDialogOpen] = useState(false); const [editingBox, setEditingBox] = useState<ShippingBoxRow | null>(null); const [deleteTarget, setDeleteTarget] = useState<ShippingBoxRow | null>(null); const [rejectedCode, setRejectedCode] = useS …
   ```
 - **ShippingBoxesTable({ boxes, onEdit, onToggleActive, onDelete, busy = false, }: ShippingBoxesTableProps)** — `src/components/admin/shipping-boxes/ShippingBoxesTable.tsx`
   ```
@@ -3765,9 +3764,13 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
   ```
   const [open, setOpen] = useState(false); const { rows, isLoading, isError, refetch } = useDeletedShippingBoxes({ enabled: open }); return ( <Collapsible open={open} onOpenChange={setOpen} className="rounded-lg border"> <CollapsibleTrigger asChild> <Button variant="ghost" className="w-full justify-between px-4 text-sm font-medium"> <span className="flex items-center gap-2"> <Trash2 className="h-4 w-4 text-muted-foreground" /> Caixas excluídas </span> <ChevronDown className={cn('h-4 w-4 transition …
   ```
-- **newShippingBoxDraft(defaultFillFactor: number)** — `src/components/admin/shipping-boxes/shippingBoxFormSchema.ts`
+- **newShippingBoxDraft(defaultFillFactor: number, sortOrder: number,)** — `src/components/admin/shipping-boxes/shippingBoxFormSchema.ts`
   ```
-  return { ...EMPTY_SHIPPING_BOX_DRAFT, fillFactor: toFactorText(defaultFillFactor) };
+  return { ...EMPTY_SHIPPING_BOX_DRAFT, fillFactor: toFactorText(defaultFillFactor), sortOrder: String(sortOrder), };
+  ```
+- **nextShippingBoxSortOrder(boxes: ReadonlyArray<{ sort_order: number }>)** — `src/components/admin/shipping-boxes/shippingBoxFormSchema.ts`
+  ```
+  return boxes.length === 0 ? 0 : Math.max(...boxes.map((box) => box.sort_order)) + 1;
   ```
 - **normalizeShippingBoxCode(text: string)** — `src/components/admin/shipping-boxes/shippingBoxFormSchema.ts`
   ```
@@ -5660,7 +5663,10 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `NO_SUPPLIER_FILTER` | `'none'` | `src/components/admin/freight/freightReadinessRows.ts` |
 | `FILL_FACTOR_MIN` | `0.5` | `src/components/admin/freight-settings/freightSettingsFormSchema.ts` |
 | `FILL_FACTOR_MAX` | `1` | `src/components/admin/freight-settings/freightSettingsFormSchema.ts` |
-| `DIVISOR_MESSAGE` | `'Use um número inteiro maior que zero.'` | `src/components/admin/freight-settings/freightSettingsFormSchema.ts` |
+| `DIVISOR_MIN` | `1000` | `src/components/admin/freight-settings/freightSettingsFormSchema.ts` |
+| `DIVISOR_MAX` | `10000` | `src/components/admin/freight-settings/freightSettingsFormSchema.ts` |
+| `BUFFER_DAYS_MAX` | `60` | `src/components/admin/freight-settings/freightSettingsFormSchema.ts` |
+| `BUFFER_FORMAT_MESSAGE` | `'Use só algarismos, sem ponto nem vírgula (ex.: 2).'` | `src/components/admin/freight-settings/freightSettingsFormSchema.ts` |
 | `FACTOR_MESSAGE` | `'Use um valor entre 0,50 e 1,00, com até duas casas decimais.'` | `src/components/admin/freight-settings/freightSettingsFormSchema.ts` |
 | `PRICE_FRESHNESS_THRESHOLD_COLUMN` | `'price_freshness_threshold_days'` | `src/components/admin/products/priceFreshnessFallback.ts` |
 | `PERMISSION_DENIED_MESSAGE` | `'Sem permissão para editar marketing deste produto'` | `src/components/admin/products/productMarketingData.ts` |
@@ -5670,7 +5676,9 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `PAGE_SIZE` | `50` | `src/components/admin/security/keys/audit/useMcpAuditFeed.ts` |
 | `SHIPPING_BOX_COLUMN_FILL_FACTOR` | `0.9` | `src/components/admin/shipping-boxes/shippingBoxFormSchema.ts` |
 | `SHIPPING_BOX_CODE_MAX_LENGTH` | `6` | `src/components/admin/shipping-boxes/shippingBoxFormSchema.ts` |
-| `MAX_NUMERIC_8_2` | `999` | `src/components/admin/shipping-boxes/shippingBoxFormSchema.ts` |
+| `MIN_OUTER_CM` | `0.01` | `src/components/admin/shipping-boxes/shippingBoxFormSchema.ts` |
+| `MAX_OUTER_CM` | `300` | `src/components/admin/shipping-boxes/shippingBoxFormSchema.ts` |
+| `MAX_WEIGHT_G` | `100` | `src/components/admin/shipping-boxes/shippingBoxFormSchema.ts` |
 | `MAX_INT4` | `2` | `src/components/admin/shipping-boxes/shippingBoxFormSchema.ts` |
 | `NO_VALUE` | `'—'` | `src/components/admin/shipping-boxes/shippingBoxFormat.ts` |
 | `POLL_MS` | `15` | `src/components/admin/telemetry/BreakerStatusCard.tsx` |
@@ -5886,12 +5894,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `MAX_PAGES` | `100` | `src/hooks/products/useNovelties.helpers.ts` |
 | `PAGE` | `1000` | `src/hooks/products/useNovelties.helpers.ts` |
 | `MAX_PAGES` | `50` | `src/hooks/products/useNovelties.helpers.ts` |
-| `CF_BASE` | `'https://imagedelivery.net/vKMs9Ow8bA_enuhLXZ2HAw'` | `src/hooks/products/useProductImages.ts` |
-| `IMAGE_BATCH_CHUNK_SIZE` | `80` | `src/hooks/products/useProductImages.ts` |
-| `CATEGORY_POINTS` | `30` | `src/hooks/products/useProductMatch.ts` |
-| `TAG_POINTS` | `10` | `src/hooks/products/useProductMatch.ts` |
-| `NICHE_POINTS` | `15` | `src/hooks/products/useProductMatch.ts` |
-| … +402 linhas — lista completa em `context.json` | | |
+| … +407 linhas — lista completa em `context.json` | | |
 
 ### H.2 Prazos, expirações e janelas de tempo
 
@@ -6804,7 +6807,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `admin` | `supabase/migrations/20261112120500_fix_optimization_queue_rpcs_dev_access.sql` |
 | `anon` | `tests/edge-functions/live/_live-client.ts` |
 
-## K. Testes como especificação (23453 testes em 2349 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (23486 testes em 2350 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -6951,6 +6954,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `tests/unit/error-kind-inference.test.ts` | 28 | inferErrorKind · returns null when success=true (regardless of other fields) · returns existing errorKind as-is when already set · returns  … |
 | `e2e/catalog/product-sorting.spec.ts` | 27 | Catálogo • Ordenação — Contrato visual e SSOT (G1, G5) · G1 • trigger possui data-testid estável · G1 • dropdown expõe os 9 items com data-testid por value · G5 • trigger desktop tem largura ampliada (sm:w-52) … |
 | `e2e/flows/36-freight-dashboard-stress.spec.ts` | 27 | dashboard: carregamento de rotas críticas @smoke · rota  · wizard orçamento: validação de cada botão e transição @freight · botão Próximo desabilitado quando campos obrigatórios ausentes … |
+| `src/components/admin/shipping-boxes/__tests__/shippingBoxFormSchema.test.ts` | 27 | parseShippingBoxForm — payload · caixa P real vira o payload do serviço, em cm, mm e gramas, sem medida interna · parseShippingBoxForm — recusas · peso máximo 1 g acima do vazio passa (0,5 kg = 500 g contra 499 g) … |
 | `src/components/quotes/__tests__/QuoteBuilderSummaryColumn.collapsedHeader.test.ts` | 27 | QuoteBuilderSummaryColumn — header do item (visual/estrutural) · nome do produto força quebra em até 2 linhas (webkit-box + WebkitLineClamp) e não usa truncate · SKU e cor ficam na mesma linha (flex-wrap items-center), cor logo após o código · bloco recolhido exibe Qtd / Vl Unitário / Subtotal empilhados com rótulos uppercase … |
 | `src/hooks/common/__tests__/useEntitySelectionMode.test.ts` | 27 | estado inicial · selectedCount=0, sem IDs · modais fechados · selectedProducts vazio … |
 | `src/hooks/products/__tests__/useAdvancedFilters.test.ts` | 27 | useAdvancedFilters · estado inicial · BUG-LOADING-01: isLoading inicia false (sem flash de skeleton) · filters iniciam como defaultAdvancedFilters … |
@@ -6978,6 +6982,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `src/components/inventory/__tests__/product-risk-detail.test.tsx` | 25 | ProductRiskDetail — loading state · renders loading spinner when isLoading=true · ProductRiskDetail — error state · renders error message when summary has error and no data … |
 | `src/lib/auth/__tests__/post-login-redirect.test.ts` | 25 | clearPostLoginRedirect · remove a chave do sessionStorage quando ela existe · nao lanca erro quando sessionStorage esta vazio · nao lanca erro quando sessionStorage.removeItem lanca excecao … |
 | `src/lib/freight/__tests__/fitCount.test.ts` | 25 | fitCount — caderneta 21 × 14 × 1 cm, 120 g · P: geometria manda, 64 unidades · M: geometria manda, 128 unidades · G: geometria manda, 140 unidades … |
+| `src/pages/admin/__tests__/AdminFreteSettingsPage.test.tsx` | 25 | AdminFreteSettingsPage — estados · mostra título, SEO e container padrão mesmo enquanto carrega · em erro avisa e deixa tentar de novo · não quebra quando a linha não está visível … |
 | `src/utils/__tests__/cnpj-gap-hunt.test.ts` | 25 | G1 — maskCnpj com input já mascarado não duplica separadores · idempotência: mask(mask(x)) === mask(x) · input parcial mascarado não gera pontuação órfã · G2 — normalizeCnpj com surrogate pairs / emoji / unicode invisível … |
 | `tests/contracts/webhooks.contract.test.ts` | 25 | contract: webhook-inbound v1 (passthrough) · aceita qualquer objeto (compat com produção) · aceita array (compat — v1 é any) · body vazio → 400 missing_body … |
 | `tests/hooks/useKitBuilderPageState.legacy.test.tsx` | 25 | Original PageState operational integration preserves its state/actions · empty save is rejected without success or network mutation · manual save uses real state and response, cancels debounce and acknowledges ID/revision · does not race with %s save … |
@@ -7038,6 +7043,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `tests/unit/novelty-dates.test.ts` | 22 | formatDaysAgoFromTs · returns  · returns  · returns  … |
 | `tests/unit/roles.test.ts` | 22 | getRoleLabel · returns  · returns  · returns  … |
 | `tests/utils/price-freshness.extreme-thresholds.test.ts` | 22 | getPriceFreshness — thresholds inválidos voltam ao default 60d · threshold $label → default 60d e classifica corretamente · getPriceFreshness — threshold = 1 dia (cotação volátil) · hoje (0d) ainda é fresh — vendedor não é alarmado no mesmo dia … |
+| `src/components/admin/shipping-boxes/__tests__/ShippingBoxFormDialog.test.tsx` | 21 | ShippingBoxFormDialog — rolagem · a área dos campos rola por CSS nativo, em coluna flexível dentro do diálogo · salvar sem o peso máximo traz o campo do peso, com a mensagem, para a vista · com vários erros, vai para o primeiro campo errado da tela … |
 | `src/components/inventory/__tests__/StockDashboard.test.tsx` | 21 | StockDashboard — render states · mostra o estado de carregamento (skeletons + progresso) · mostra estado de erro com botão  · renderiza cartões de KPI e tabela quando carregado … |
 | `src/components/mockup/__tests__/a11y.mockup.test.tsx` | 21 | ProductSearchCombobox — a11y · não tem violações axe no estado fechado · não tem violações axe no estado aberto (lista exposta) · não tem violações axe com um produto já selecionado … |
 | `src/hooks/common/__tests__/useDebounce.test.ts` | 21 | useDebounce · retorna valor inicial imediatamente · nao atualiza antes do delay · atualiza após o delay completo … |
@@ -7069,7 +7075,6 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `e2e/visual-search-module.spec.ts` | 20 | Visual Search Module - Public Access (No Auth) · should redirect to auth when accessing /raio-x unauthenticated · should display auth page when accessing /raio-x · should not expose visual search data to unauthenticated users … |
 | `e2e/ui/cart-delete-header-popover-exhaustive.spec.ts` | 20 | CartHeaderButton — exaustivo (delete via popover) · happy path — clique → dialog → confirmar → 1 DELETE → cartão some @smoke · carrinho expandido com itens — lixeira abre dialog mesmo após fechamento do popover · DELETE 200 com 0 linhas removidas — trata como erro e mantém o carrinho … |
 | `recovery/src-legacy/src/utils/price-freshness.test.ts` | 20 | Price Freshness Utility · formatPriceDateShort · formats date in pt-BR short format · formatPriceDateLong … |
-| `src/components/admin/shipping-boxes/__tests__/shippingBoxFormSchema.test.ts` | 20 | parseShippingBoxForm — payload · caixa P real vira o payload do serviço, em cm, mm e gramas, sem medida interna · parseShippingBoxForm — recusas · peso máximo 1 g acima do vazio passa (0,5 kg = 500 g contra 499 g) … |
 | `src/components/cart/__tests__/PopoverQtyInput.exhaustive.test.tsx` | 20 | normalizeQty — property-based (1000 amostras) · resultado sempre em [MIN_QTY, MAX_QTY] ou null · idempotência: normalize(String(normalize(x))) === normalize(x) · respeita a extração de dígitos por regex /[^0-9]/g … |
 | `src/components/inventory/__tests__/FutureStockDialog.test.tsx` | 20 | FutureStockDialog — render states · não renderiza conteúdo quando open=false · mostra estado vazio quando não há entradas · renderiza título, badge de contagem e KPIs com dados … |
 | `src/components/inventory/__tests__/VariantStockRowActions.test.tsx` | 20 | VariantStockRowActions · Copiar SKU · copia o SKU da variação no clipboard e emite toast de sucesso · mostra erro profissional se clipboard falhar (sem fallback disponível) · VariantStockRowActions · Carrinho … |
@@ -7080,7 +7085,6 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `src/lib/inventory/__tests__/stock-filter.edge-cases.test.ts` | 20 | normalize — função base · normalize(%j) === %j · regressão — categoria · categoryId=%j → %j … |
 | `src/lib/security/__tests__/sanitize-message.test.ts` | 20 | sanitize-message (SSOT) · looksTechnical · detects %s as technical · does not flag %s … |
 | `src/lib/telemetry/__tests__/restoreEventSchema.test.ts` | 20 | restoreEventSchema — payloads válidos · restore_start válido · restore_ok válido (success) · restore_ok aceita restore_result=%s … |
-| `src/pages/admin/__tests__/AdminFreteSettingsPage.test.tsx` | 20 | AdminFreteSettingsPage — estados · mostra título, SEO e container padrão mesmo enquanto carrega · em erro avisa e deixa tentar de novo · não quebra quando a linha não está visível … |
 | `src/pages/quotes/__tests__/useQuotesListPage.expiring.test.ts` | 20 | useQuotesListPage — filtro  · I1: exclui quotes com status=expired mesmo com valid_until futuro · I2: exclui valid_until no passado (mesmo status=pending) · I3: exclui quotes sem valid_until … |
 | `src/pages/quotes/__tests__/useQuotesListPage.test.ts` | 20 | useQuotesListPage — onlyPendingStatuses · false quando lista está vazia · true quando todos os quotes são pending · false quando há mix de status … |
 | `src/tests/ProductSortingRelevance.test.ts` | 20 | SORT_OPTIONS — contrato do seletor · expõe exatamente as 7 opções esperadas, na ordem da UI · todas as opções têm label não vazia · sortProducts — Nome (A-Z) … |
@@ -7107,8 +7111,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `src/lib/external-db/rest-native.test.ts` | 19 | isRestNativeEligible · whitelisted COM coluna de busca → elegível mesmo com _search · A1: whitelisted SEM coluna de busca → continua elegível com _search · não-whitelisted → inelegível … |
 | `src/lib/inventory/__tests__/stock-filter.test.ts` | 19 | stock-filter — pipeline de seleção/agregação/montagem · normalize remove acentos e diferencia caixa · selectMatchingVariants retorna todas as variações quando não há filtro de cor · cor  … |
 | `src/lib/lead-time/__tests__/personalizationLeadTime.test.ts` | 19 | resolvePersonalizationLeadTime · prazo registrado vence a tabela: frente = 4 (a faixa 100..499 diria 5) · registrado sem production_days cai na tabela: verso com 100 un = faixa 100..499 = 5 · sem linha cadastrada para o local usa a tabela pela técnica: lateral com 100 un = 5 … |
-| `src/lib/telemetry/__tests__/restoreTelemetry.fuzz.test.ts` | 19 | fuzz — normalizeCorrelationId · para QUALQUER entrada inválida, retorno é UUID v4 canônico · para QUALQUER string não-vazia após trim, retorno === entrada (verbatim) · output SEMPRE passa em isValidCorrelationId … |
-| … +2049 linhas — lista completa em `context.json` | | |
+| … +2050 linhas — lista completa em `context.json` | | |
 
 ## L. Eventos de webhook tratados (contratos com sistemas externos)
 
@@ -7468,7 +7471,9 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | * Campos de texto livre; a regra de personalização é escolha entre duas opções. */ | `src/components/admin/freight-settings/FreightSettingsForm.tsx` |
 | * A empresa opera em São Paulo: a data não pode depender do fuso da máquina. */ | `src/components/admin/freight-settings/FreightSettingsForm.tsx` |
 | Rascunho inválido conta como alterado: a linha salva sempre passa na validação. | `src/components/admin/freight-settings/FreightSettingsForm.tsx` |
+| Salvar recusado pela validação: leva a tela e o foco ao primeiro campo com erro. | `src/components/admin/freight-settings/FreightSettingsForm.tsx` |
 | e só vira número aqui, na validação. Os limites repetem os CHECK da tabela | `src/components/admin/freight-settings/freightSettingsFormSchema.ts` |
+| * Só algarismos; o limite de cada campo vem da faixa abaixo. */ | `src/components/admin/freight-settings/freightSettingsFormSchema.ts` |
 | * Aplica a máscara 00000-000 ao que foi digitado (só dígitos, no máximo 8). */ | `src/components/admin/freight-settings/freightSettingsFormSchema.ts` |
 | Must throw on failure — proceeding would create duplicate components. | `src/components/admin/personalization/GroupInheritance.tsx` |
 | Required by the categories RLS INSERT policy is_org_owner_or_admin(organization_id). | `src/components/admin/products/NewCategoryDialog.tsx` |
@@ -7489,7 +7494,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | A área do formulário rola: depois de uma validação recusada, traz para a | `src/components/admin/shipping-boxes/ShippingBoxFormDialog.tsx` |
 | interna, peso máximo em kg, fator, ordem, chave de ativa e ações. | `src/components/admin/shipping-boxes/ShippingBoxesTable.tsx` |
 | * Validação do formulário de caixa de transporte. | `src/components/admin/shipping-boxes/shippingBoxFormSchema.ts` |
-| medidas > 0, parede de 1 a 20 mm, medida interna > 0, peso máximo > peso | `src/components/admin/shipping-boxes/shippingBoxFormSchema.ts` |
+| peso máximo até 100 kg e maior que o peso vazio, e fator de 0,50 a 1,00. | `src/components/admin/shipping-boxes/shippingBoxFormSchema.ts` |
 | * Preenche o formulário com uma caixa existente (peso máximo volta para kg). */ | `src/components/admin/shipping-boxes/shippingBoxFormSchema.ts` |
 | * A empresa opera em São Paulo: a data não pode depender do fuso da máquina. */ | `src/components/admin/shipping-boxes/shippingBoxFormat.ts` |
 | apenas colunas reais e não os retorna. | `src/components/admin/suppliers-manager/types.ts` |
@@ -7574,6 +7579,4 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | Aplica fórmula preditiva apenas quando o status base é "saudável". | `src/components/inventory/VariantStockTable.tsx` |
 | Virtual scroll: renderiza apenas a janela visível — suporta 5k+ SKUs sem degradação. | `src/components/inventory/VariantStockTable.tsx` |
 | * Dados da projeção preditiva (apenas quando status foi reavaliado por Risco de Ruptura). */ | `src/components/inventory/VariantStockVisuals.tsx` |
-| deve passar por aqui para não dar drift entre bulk e single-row. | `src/components/inventory/useStockSelection.ts` |
-| Peso desconhecido nunca deve ser lido como zero: um kit com 1 item sem | `src/components/kit-builder/FreightEstimator.tsx` |
-| … +1437 linhas — lista completa em `context.json` | |
+| … +1439 linhas — lista completa em `context.json` | |

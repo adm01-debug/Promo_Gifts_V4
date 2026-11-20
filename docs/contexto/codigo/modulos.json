@@ -259,8 +259,8 @@
   {
    "modulo": "components/admin",
    "arquivos": 321,
-   "testes": 22,
-   "linhas": 72832,
+   "testes": 24,
+   "linhas": 72926,
    "itens_menu": [],
    "telas": [],
    "rotas_http": [],
@@ -28060,7 +28060,7 @@
    "modulo": "pages/admin",
    "arquivos": 60,
    "testes": 3,
-   "linhas": 15628,
+   "linhas": 15648,
    "itens_menu": [
     "Acesso & Bots",
     "Auditoria RBAC",

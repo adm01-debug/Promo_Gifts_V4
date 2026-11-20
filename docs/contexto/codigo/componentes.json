@@ -3828,7 +3828,7 @@
     "FreightSettingsForm"
    ],
    "export_default": null,
-   "linhas": 310,
+   "linhas": 324,
    "dominio": "components/admin",
    "hooks_locais": [],
    "tabelas": [],
@@ -5520,7 +5520,7 @@
     "ShippingBoxesManager"
    ],
    "export_default": null,
-   "linhas": 175,
+   "linhas": 194,
    "dominio": "components/admin",
    "hooks_locais": [
     "useFreightSettings",
@@ -5569,7 +5569,7 @@
     "ShippingBoxFormDialog"
    ],
    "export_default": null,
-   "linhas": 373,
+   "linhas": 410,
    "dominio": "components/admin",
    "hooks_locais": [],
    "tabelas": [],
@@ -17973,7 +17973,7 @@
     "AdminFreteSettingsPage"
    ],
    "export_default": "AdminFreteSettingsPage",
-   "linhas": 104,
+   "linhas": 124,
    "dominio": "pages/admin",
    "hooks_locais": [
     "useFreightSettings",
