@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "chore(docs): memoria do GOAL 4 - achados e resgate quote_comments (#3948)",
    "chore(main): release gifts-store 1.16.0 (#3945)",
    "docs(migrations-log): recibo E15 — aplicação de 20261120180000 (#3946)",
    "feat: reativa comentários em orçamento (quote_comments) — UI + testes + trava (#3944)",
-   "feat(db): restaura comentários em orçamento (quote_comments) após decisão do dono (#3942)",
-   "test"
+   "feat(db): restaura comentários em orçamento (quote_comments) após decisão do dono (#3942)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",

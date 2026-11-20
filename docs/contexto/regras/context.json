@@ -1,10 +1,10 @@
 {
  "meta": {
-  "sha": "f83c473fab5fd69573ac9bd9d35e51aeead35000",
+  "sha": "a87dc91e86acb02053c53cf741b3e8e9e1abb78c",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-20 20:29 UTC",
-  "files_total": 11106,
+  "generated_at": "2026-11-20 21:14 UTC",
+  "files_total": 11110,
   "code_files": 9118,
   "code_lines": 1294007
  },
@@ -560122,10 +560122,22 @@
   }
  },
  "git": {
-  "sha": "f83c473fab5fd69573ac9bd9d35e51aeead35000",
+  "sha": "a87dc91e86acb02053c53cf741b3e8e9e1abb78c",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "a87dc91",
+    "date": "2026-11-20",
+    "author": "adm01-debug",
+    "subject": "chore(docs): memoria do GOAL 4 - achados e resgate quote_comments (#3948)",
+    "files": [
+     "docs/pendencias/_achados.md",
+     "docs/pendencias/_linha-de-base.md",
+     "docs/pendencias/_ordem.md",
+     "docs/pendencias/_regras-de-negocio.md"
+    ]
+   },
    {
     "sha": "f83c473",
     "date": "2026-11-20",
@@ -560690,21 +560702,12 @@
      "src/lib/freight/planFreight.ts",
      "src/lib/freight/types.ts"
     ]
-   },
-   {
-    "sha": "f653a19",
-    "date": "2026-11-19",
-    "author": "adm01-debug",
-    "subject": "docs(migrations): recibos E15 das tabelas de frete (#3911)",
-    "files": [
-     "supabase/MIGRATIONS_SYNC_LOG.md"
-    ]
    }
   ],
   "hot_files": [
    [
     "supabase/MIGRATIONS_SYNC_LOG.md",
-    11
+    10
    ],
    [
     "src/integrations/supabase/types.ts",

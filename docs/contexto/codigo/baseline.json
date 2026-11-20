@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "f83c473fab5fd69573ac9bd9d35e51aeead35000",
+  "commit": "a87dc91e86acb02053c53cf741b3e8e9e1abb78c",
   "branch": "main",
-  "data_commit": "2026-11-20T17:28:29-03:00",
+  "data_commit": "2026-11-20T17:34:48-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "a87dc91e",
+    "data": "2026-11-20",
+    "assunto": "chore(docs): memoria do GOAL 4 - achados e resgate quote_comments (#3948)"
+   },
    {
     "sha": "f83c473f",
     "data": "2026-11-20",
@@ -126,14 +131,9 @@
     "sha": "16762dcb",
     "data": "2026-11-20",
     "assunto": "feat(db): coluna products.ships_separately (frete, Bloco D — DDL) (#3918)"
-   },
-   {
-    "sha": "e25ff678",
-    "data": "2026-11-20",
-    "assunto": "fix(frete): formulário de caixa volta a rolar e correções da revisão do admin (#3917)"
    }
   ],
-  "arquivos_mudados_7d": 1499,
+  "arquivos_mudados_7d": 1503,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -227,7 +227,7 @@
    },
    {
     "arquivo": "RELATORIO_CI.md",
-    "mudancas": 11
+    "mudancas": 10
    },
    {
     "arquivo": "docs/agentes/resgates/2026-11-16-auditoria-branches.md",
@@ -301,7 +301,7 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 320
+    "commits": 319
    },
    {
     "autor": "Claude",
@@ -322,7 +322,7 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 11178,
+  "arquivos_total": 11182,
   "arquivos_codigo": 5641,
   "linhas_codigo": 1070914,
   "rotas": 140,
@@ -339,7 +339,7 @@
   "testes": 2692,
   "workflows": 89,
   "scripts": 284,
-  "docs_md": 1491
+  "docs_md": 1495
  },
  "por_pasta": {
   ".github/scripts": {
