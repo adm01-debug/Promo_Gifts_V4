@@ -10,9 +10,11 @@
 import { useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { Loader2, Truck } from 'lucide-react';
+import { BusinessCalendarManager } from '@/components/admin/business-calendar';
 import { FreightSettingsForm } from '@/components/admin/freight-settings/FreightSettingsForm';
 import { PageSEO } from '@/components/seo/PageSEO';
 import { Button } from '@/components/ui/button';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useFreightSettings, useUpdateFreightSettings } from '@/hooks/freight';
 
 function FreightSettingsBody() {
@@ -116,7 +118,18 @@ export default function AdminFreteSettingsPage() {
           </div>
         </div>
 
-        <FreightSettingsBody />
+        <Tabs defaultValue="parametros">
+          <TabsList>
+            <TabsTrigger value="parametros">Parâmetros</TabsTrigger>
+            <TabsTrigger value="feriados">Feriados</TabsTrigger>
+          </TabsList>
+          <TabsContent value="parametros" className="mt-4">
+            <FreightSettingsBody />
+          </TabsContent>
+          <TabsContent value="feriados" className="mt-4">
+            <BusinessCalendarManager />
+          </TabsContent>
+        </Tabs>
       </div>
     </>
   );

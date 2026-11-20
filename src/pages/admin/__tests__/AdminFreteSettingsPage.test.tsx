@@ -29,6 +29,19 @@ vi.mock('@/hooks/freight', () => ({
     refetch: h.refetch,
   }),
   useUpdateFreightSettings: () => ({ mutate: h.mutate, isPending: h.update.isPending }),
+  useBusinessCalendarYear: () => ({
+    rows: [],
+    isLoading: false,
+    isFetching: false,
+    isError: false,
+    error: null,
+    refetch: vi.fn(),
+  }),
+  useBusinessCalendarMutations: () => ({
+    create: { mutate: vi.fn(), isPending: false },
+    updateDescription: { mutate: vi.fn(), isPending: false },
+    remove: { mutate: vi.fn(), isPending: false },
+  }),
 }));
 
 vi.mock('@/components/seo/PageSEO', () => ({
@@ -336,6 +349,19 @@ describe('AdminFreteSettingsPage — salvar', () => {
     expect(screen.getByTestId('freight-settings-updated-at')).toHaveTextContent(
       'Atualizado em 20/11/2026 09:00',
     );
+  });
+
+  it('a aba Feriados abre o cadastro de feriados', async () => {
+    renderPage();
+    expect(screen.getByRole('tab', { name: 'Parâmetros' })).toHaveAttribute(
+      'aria-selected',
+      'true',
+    );
+
+    await userEvent.click(screen.getByRole('tab', { name: 'Feriados' }));
+
+    expect(screen.getByRole('heading', { name: 'Feriados' })).toBeInTheDocument();
+    expect(screen.getByText(/Nenhum feriado cadastrado em/)).toBeInTheDocument();
   });
 });
 

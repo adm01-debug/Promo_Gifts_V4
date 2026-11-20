@@ -59,6 +59,40 @@ describe('Prazo de liberação do fornecedor (etapa 38)', () => {
     expect(screen.getByText('exceção')).toBeTruthy();
   });
 
+  it('na exceção, "Usar padrão do fornecedor" limpa o prazo do produto (vira null)', () => {
+    hoisted.padrao = 3;
+    const setValue = vi.fn();
+    render(
+      <TooltipProvider>
+        <ProductInfoSection
+          {...infoProps}
+          {...propsDeFormulario({ supplier_id: 'f1', lead_time_days: 7 }, setValue)}
+        />
+      </TooltipProvider>,
+    );
+    fireEvent.click(screen.getByRole('button', { name: 'Usar padrão do fornecedor' }));
+    expect(setValue).toHaveBeenCalledWith('lead_time_days', null, {
+      shouldDirty: true,
+      shouldValidate: true,
+    });
+  });
+
+  it.each([
+    { prazo: null, descricao: 'vazio (herda o padrão)' },
+    { prazo: 3, descricao: 'igual ao padrão de 3 dias' },
+  ])('sem exceção ($descricao) o botão não aparece', ({ prazo }) => {
+    hoisted.padrao = 3;
+    render(
+      <TooltipProvider>
+        <ProductInfoSection
+          {...infoProps}
+          {...propsDeFormulario({ supplier_id: 'f1', lead_time_days: prazo })}
+        />
+      </TooltipProvider>,
+    );
+    expect(screen.queryByRole('button', { name: 'Usar padrão do fornecedor' })).toBeNull();
+  });
+
   it('não mostra a linha do padrão quando o fornecedor não tem prazo cadastrado', () => {
     hoisted.padrao = null;
     render(

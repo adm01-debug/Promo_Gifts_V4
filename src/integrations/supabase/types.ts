@@ -2926,6 +2926,27 @@ export type Database = {
         }
         Relationships: []
       }
+      business_calendar: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          day: string
+          description: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          day: string
+          description: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          day?: string
+          description?: string
+        }
+        Relationships: []
+      }
       cart_templates: {
         Row: {
           created_at: string
@@ -17042,6 +17063,7 @@ export type Database = {
           max_width: number
           notes: string | null
           product_id: string
+          production_days: number | null
           shape: string
           tabela_preco_id: string
           technique_order: number
@@ -17060,6 +17082,7 @@ export type Database = {
           max_width: number
           notes?: string | null
           product_id: string
+          production_days?: number | null
           shape?: string
           tabela_preco_id: string
           technique_order?: number
@@ -17078,6 +17101,7 @@ export type Database = {
           max_width?: number
           notes?: string | null
           product_id?: string
+          production_days?: number | null
           shape?: string
           tabela_preco_id?: string
           technique_order?: number

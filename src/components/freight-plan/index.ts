@@ -6,3 +6,4 @@ export {
   type FreightPlanCardItem,
   type FreightPlanCardProps,
 } from './FreightPlanCard';
+export { ProductionLeadTimeCard } from './ProductionLeadTimeCard';
