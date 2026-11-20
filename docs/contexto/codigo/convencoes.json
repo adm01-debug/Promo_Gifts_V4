@@ -24,7 +24,7 @@
   ],
   "testes": [
    "tests/ (1087)",
-   "co-localizado (__tests__) (725)",
+   "co-localizado (__tests__) (726)",
    "e2e/ (627)"
   ],
   "edge_functions": "supabase/functions",
@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "fix(frete): formulário de caixa volta a rolar e correções da revisão do admin (#3917)",
    "feat(frete): admin de caixas de transporte e parâmetros de frete (Bloco C/D) (#3915)",
    "chore(main): release gifts-store 1.13.0 (#3904)",
    "docs(migrations-log): recibo E15 — aplicação de 20261119212000 (#3906)",
-   "fix(frete): motor agrupa por produto e corrige bordas (#3910)",
-   "docs(migrations): recibos E15 das tabelas de frete (#3911)"
+   "fix(frete): motor agrupa por produto e corrige bordas (#3910)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",

@@ -3828,7 +3828,7 @@
     "FreightSettingsForm"
    ],
    "export_default": null,
-   "linhas": 296,
+   "linhas": 310,
    "dominio": "components/admin",
    "hooks_locais": [],
    "tabelas": [],
@@ -5474,9 +5474,10 @@
     "ShippingBoxesManager"
    ],
    "export_default": null,
-   "linhas": 160,
+   "linhas": 175,
    "dominio": "components/admin",
    "hooks_locais": [
+    "useFreightSettings",
     "useShippingBoxMutations",
     "useShippingBoxes"
    ],
@@ -5505,7 +5506,7 @@
     "ShippingBoxesTrash"
    ],
    "export_default": null,
-   "linhas": 131,
+   "linhas": 132,
    "dominio": "components/admin",
    "hooks_locais": [
     "useDeletedShippingBoxes"
@@ -5522,7 +5523,7 @@
     "ShippingBoxFormDialog"
    ],
    "export_default": null,
-   "linhas": 350,
+   "linhas": 373,
    "dominio": "components/admin",
    "hooks_locais": [],
    "tabelas": [],
@@ -16985,7 +16986,7 @@
    "hooks_locais": [],
    "tabelas": [],
    "edges": [],
-   "usado_por": 95,
+   "usado_por": 94,
    "orfao": false
   },
   {

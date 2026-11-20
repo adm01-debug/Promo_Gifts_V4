@@ -8823,7 +8823,7 @@
     "useShippingBoxMutations",
     "useShippingBoxes"
    ],
-   "linhas": 202,
+   "linhas": 209,
    "dominio": "hooks/freight",
    "tabelas": [],
    "rpcs": [],

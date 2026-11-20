@@ -5,13 +5,13 @@
   "vitest",
   "playwright"
  ],
- "total": 2644,
+ "total": 2645,
  "por_tipo": {
   "contrato": 67,
   "e2e": 679,
   "pytest": 5,
   "qa": 17,
-  "unit": 1876
+  "unit": 1877
  },
  "onde_ficam": [
   {
@@ -20,7 +20,7 @@
   },
   {
    "padrao": "co-localizado (__tests__)",
-   "arquivos": 725
+   "arquivos": 726
   },
   {
    "padrao": "e2e/",
@@ -4974,23 +4974,32 @@
   {
    "arquivo": "src/components/admin/shipping-boxes/__tests__/ShippingBoxesManager.test.tsx",
    "tipo": "unit",
-   "linhas": 485,
+   "linhas": 496,
    "testa": [
     "src/components/admin/shipping-boxes/ShippingBoxesManager.tsx",
     "src/pages/admin/AdminCadastrosPage.tsx",
     "src/services/shippingBoxService.ts"
    ],
-   "casos": 18
+   "casos": 20
+  },
+  {
+   "arquivo": "src/components/admin/shipping-boxes/__tests__/ShippingBoxFormDialog.test.tsx",
+   "tipo": "unit",
+   "linhas": 139,
+   "testa": [
+    "src/components/admin/shipping-boxes/ShippingBoxFormDialog.tsx"
+   ],
+   "casos": 8
   },
   {
    "arquivo": "src/components/admin/shipping-boxes/__tests__/shippingBoxFormSchema.test.ts",
    "tipo": "unit",
-   "linhas": 352,
+   "linhas": 416,
    "testa": [
     "src/components/admin/shipping-boxes/shippingBoxFormSchema.ts",
     "src/services/shippingBoxService.ts"
    ],
-   "casos": 10
+   "casos": 15
   },
   {
    "arquivo": "src/components/admin/telemetry/__tests__/BridgeAlertsCard.test.tsx",
@@ -10563,12 +10572,12 @@
   {
    "arquivo": "src/pages/admin/__tests__/AdminFreteSettingsPage.test.tsx",
    "tipo": "unit",
-   "linhas": 289,
+   "linhas": 332,
    "testa": [
     "src/pages/admin/AdminFreteSettingsPage.tsx",
     "src/services/freightSettingsService.ts"
    ],
-   "casos": 15
+   "casos": 19
   },
   {
    "arquivo": "src/pages/admin/__tests__/RolePermissionsPage.save.test.tsx",
@@ -11886,11 +11895,11 @@
   {
    "arquivo": "src/services/__tests__/shippingBoxService.test.ts",
    "tipo": "unit",
-   "linhas": 410,
+   "linhas": 441,
    "testa": [
     "src/services/shippingBoxService.ts"
    ],
-   "casos": 21
+   "casos": 23
   },
   {
    "arquivo": "src/stores/__tests__/useBadgeVisibilityStore.test.ts",
@@ -17230,12 +17239,12 @@
   {
    "arquivo": "tests/hooks/freight/useShippingBoxes.test.ts",
    "tipo": "unit",
-   "linhas": 349,
+   "linhas": 383,
    "testa": [
     "src/hooks/freight/index.ts",
     "src/services/shippingBoxService.ts"
    ],
-   "casos": 15
+   "casos": 17
   },
   {
    "arquivo": "tests/hooks/hooks-audit-bugfix-08-14.test.ts",
@@ -22662,6 +22671,7 @@
   "src/components/admin/products/ProductFormSchema.ts": 2,
   "src/components/admin/products/ProductMarketingSection.tsx": 1,
   "src/components/admin/products/productMarketingData.ts": 2,
+  "src/components/admin/shipping-boxes/ShippingBoxFormDialog.tsx": 1,
   "src/components/admin/shipping-boxes/ShippingBoxesManager.tsx": 1,
   "src/components/admin/shipping-boxes/shippingBoxFormSchema.ts": 1,
   "src/components/admin/telemetry/BridgeAlertsCard.tsx": 1,

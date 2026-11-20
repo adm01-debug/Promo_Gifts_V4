@@ -2,7 +2,7 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "nos": 2902,
- "arestas": 11447,
+ "arestas": 11446,
  "hubs": [
   {
    "arquivo": "src/lib/utils.ts",
@@ -73,12 +73,12 @@
    "importado_por": 109
   },
   {
-   "arquivo": "src/components/ui/scroll-area.tsx",
+   "arquivo": "src/lib/db/postgrest.ts",
    "importado_por": 95
   },
   {
-   "arquivo": "src/lib/db/postgrest.ts",
-   "importado_por": 95
+   "arquivo": "src/components/ui/scroll-area.tsx",
+   "importado_por": 94
   },
   {
    "arquivo": "src/types/product-catalog.ts",

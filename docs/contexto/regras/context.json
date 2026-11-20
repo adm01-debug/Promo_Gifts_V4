@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "777cac4c50c377f01bc3642c7b61805f2a0d24d0",
+  "sha": "e25ff678c10ae6f67107e6a202c853f65f29bb1a",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-20 01:15 UTC",
-  "files_total": 10989,
-  "code_files": 9006,
-  "code_lines": 1276881
+  "generated_at": "2026-11-20 01:32 UTC",
+  "files_total": 10990,
+  "code_files": 9007,
+  "code_lines": 1277358
  },
  "version": "1.3.2",
- "facts_hash": "bb2a596bf2d05354",
+ "facts_hash": "98c8ad9a2de97972",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -1130,7 +1130,7 @@
   "languages": {
    ".sql": 3461,
    ".ts": 3098,
-   ".tsx": 1977,
+   ".tsx": 1978,
    ".mjs": 455,
    ".py": 15,
    ".js": 7
@@ -145367,7 +145367,7 @@
     "file": ".github/workflows/wraparound-monitor-report.yml"
    }
   ],
-  "components_count": 1714,
+  "components_count": 1715,
   "hooks": [
    {
     "name": "useQuoteComments",
@@ -150039,8 +150039,8 @@
   },
   {
    "module": "src/components",
-   "files": 1439,
-   "lines": 284918,
+   "files": 1440,
+   "lines": 285254,
    "tables": [
     "admin_audit_log",
     "art_file_attachments",
@@ -150404,7 +150404,7 @@
   {
    "module": "src/hooks",
    "files": 494,
-   "lines": 92392,
+   "lines": 92399,
    "tables": [
     "admin_audit_log",
     "admin_settings",
@@ -150899,7 +150899,7 @@
   {
    "module": "src/pages",
    "files": 369,
-   "lines": 85028,
+   "lines": 85071,
    "tables": [
     "ai_usage_events",
     "bot_detection_log",
@@ -151160,7 +151160,7 @@
   {
    "module": "src/services",
    "files": 33,
-   "lines": 6564,
+   "lines": 6621,
    "tables": [
     "freight_settings",
     "frontend_telemetry",
@@ -152159,7 +152159,7 @@
   {
    "module": "tests",
    "files": 1102,
-   "lines": 173978,
+   "lines": 174012,
    "tables": [
     "bot_detection_log",
     "clients",
@@ -163502,7 +163502,7 @@
    {
     "file": "src/services/shippingBoxService.ts",
     "name": "ShippingBoxErrorReason",
-    "values": "duplicate_code | invalid | permission | unknown"
+    "values": "duplicate_code | invalid | not_applied | permission | unknown"
    },
    {
     "file": "src/services/telemetryService.ts",
@@ -169679,6 +169679,10 @@
    },
    {
     "file": "src/services/shippingBoxService.ts",
+    "msg": "not_applied"
+   },
+   {
+    "file": "src/services/shippingBoxService.ts",
     "msg": "permission"
    },
    {
@@ -171511,6 +171515,10 @@
    },
    {
     "file": "src/components/admin/freight-settings/FreightSettingsForm.tsx",
+    "text": "* A empresa opera em São Paulo: a data não pode depender do fuso da máquina. */"
+   },
+   {
+    "file": "src/components/admin/freight-settings/FreightSettingsForm.tsx",
     "text": "Rascunho inválido conta como alterado: a linha salva sempre passa na validação."
    },
    {
@@ -171574,6 +171582,10 @@
     "text": "A validação está em `shippingBoxFormSchema.ts`."
    },
    {
+    "file": "src/components/admin/shipping-boxes/ShippingBoxFormDialog.tsx",
+    "text": "A área do formulário rola: depois de uma validação recusada, traz para a"
+   },
+   {
     "file": "src/components/admin/shipping-boxes/ShippingBoxesTable.tsx",
     "text": "interna, peso máximo em kg, fator, ordem, chave de ativa e ações."
    },
@@ -171588,6 +171600,10 @@
    {
     "file": "src/components/admin/shipping-boxes/shippingBoxFormSchema.ts",
     "text": "* Preenche o formulário com uma caixa existente (peso máximo volta para kg). */"
+   },
+   {
+    "file": "src/components/admin/shipping-boxes/shippingBoxFormat.ts",
+    "text": "* A empresa opera em São Paulo: a data não pode depender do fuso da máquina. */"
    },
    {
     "file": "src/components/admin/suppliers-manager/types.ts",
@@ -175903,7 +175919,7 @@
    },
    {
     "file": "src/services/shippingBoxService.ts",
-    "text": "`.select('id')` e 0 linhas vira erro de permissão."
+    "text": "dizer \"sem permissão OU a caixa mudou\" (`not_applied`)."
    },
    {
     "file": "src/services/telemetryService.ts",
@@ -198186,6 +198202,11 @@
    },
    {
     "file": "src/components/admin/shipping-boxes/shippingBoxFormSchema.ts",
+    "name": "SHIPPING_BOX_COLUMN_FILL_FACTOR",
+    "value": "0.9"
+   },
+   {
+    "file": "src/components/admin/shipping-boxes/shippingBoxFormSchema.ts",
     "name": "SHIPPING_BOX_CODE_MAX_LENGTH",
     "value": "6"
    },
@@ -214895,14 +214916,14 @@
    {
     "file": "src/components/admin/shipping-boxes/ShippingBoxFormDialog.tsx",
     "name": "ShippingBoxFormDialog",
-    "params": "{ open, onOpenChange, box, saving, rejectedCode = null, onSave, }: ShippingBoxFormDialogProps",
-    "body": "const isEdit = box !== null; const [draft, setDraft] = useState<ShippingBoxFormDraft>(EMPTY_SHIPPING_BOX_DRAFT); const [errors, setErrors] = useState<ShippingBoxFormErrors>({}); const [advancedOpen, setAdvancedOpen] = useState(false); useEffect(() => { if (!open) return; setDraft(box ? toShippingBoxDraft(box) : EMPTY_SHIPPING_BOX_DRAFT); setErrors({}); setAdvancedOpen(box !== null && box.empty_weight_g > 0); }, [open, box]); const setField = (field: ShippingBoxFormField, value: string) => { setD …"
+    "params": "{ open, onOpenChange, box, newBoxFillFactor, saving, rejectedCode = null, onSave, }: ShippingBoxFormDialogProps",
+    "body": "const isEdit = box !== null; const [draft, setDraft] = useState<ShippingBoxFormDraft>(EMPTY_SHIPPING_BOX_DRAFT); const [errors, setErrors] = useState<ShippingBoxFormErrors>({}); const [advancedOpen, setAdvancedOpen] = useState(false); const [failedSubmits, setFailedSubmits] = useState(0); const formRef = useRef<HTMLFormElement>(null); useEffect(() => { if (!open) return; setDraft(box ? toShippingBoxDraft(box) : newShippingBoxDraft(newBoxFillFactor)); setErrors({}); setAdvancedOpen(box !== null & …"
    },
    {
     "file": "src/components/admin/shipping-boxes/ShippingBoxesManager.tsx",
     "name": "ShippingBoxesManager",
     "params": "",
-    "body": "const { rows, isLoading, isError, refetch } = useShippingBoxes({ includeInactive: true }); const { create, update, softDelete, restore } = useShippingBoxMutations(); const [dialogOpen, setDialogOpen] = useState(false); const [editingBox, setEditingBox] = useState<ShippingBoxRow | null>(null); const [deleteTarget, setDeleteTarget] = useState<ShippingBoxRow | null>(null); const [rejectedCode, setRejectedCode] = useState<RejectedShippingBoxCode | null>(null); const openForm = (box: ShippingBoxRow | …"
+    "body": "const { rows, isLoading, isError, refetch } = useShippingBoxes({ includeInactive: true }); const { create, update, softDelete, restore } = useShippingBoxMutations(); const { row: freightSettings } = useFreightSettings(); const [dialogOpen, setDialogOpen] = useState(false); const [editingBox, setEditingBox] = useState<ShippingBoxRow | null>(null); const [deleteTarget, setDeleteTarget] = useState<ShippingBoxRow | null>(null); const [rejectedCode, setRejectedCode] = useState<RejectedShippingBoxCode …"
    },
    {
     "file": "src/components/admin/shipping-boxes/ShippingBoxesTable.tsx",
@@ -214915,6 +214936,12 @@
     "name": "ShippingBoxesTrash",
     "params": "{ onRestore, busy = false }: ShippingBoxesTrashProps",
     "body": "const [open, setOpen] = useState(false); const { rows, isLoading, isError, refetch } = useDeletedShippingBoxes({ enabled: open }); return ( <Collapsible open={open} onOpenChange={setOpen} className=\"rounded-lg border\"> <CollapsibleTrigger asChild> <Button variant=\"ghost\" className=\"w-full justify-between px-4 text-sm font-medium\"> <span className=\"flex items-center gap-2\"> <Trash2 className=\"h-4 w-4 text-muted-foreground\" /> Caixas excluídas </span> <ChevronDown className={cn('h-4 w-4 transition …"
+   },
+   {
+    "file": "src/components/admin/shipping-boxes/shippingBoxFormSchema.ts",
+    "name": "newShippingBoxDraft",
+    "params": "defaultFillFactor: number",
+    "body": "return { ...EMPTY_SHIPPING_BOX_DRAFT, fillFactor: toFactorText(defaultFillFactor) };"
    },
    {
     "file": "src/components/admin/shipping-boxes/shippingBoxFormSchema.ts",
@@ -214938,7 +214965,13 @@
     "file": "src/components/admin/shipping-boxes/shippingBoxFormSchema.ts",
     "name": "toShippingBoxDraft",
     "params": "row: ShippingBoxRow",
-    "body": "return { code: row.code, name: row.name, outerHeightCm: toInputText(row.outer_height_cm), outerWidthCm: toInputText(row.outer_width_cm), outerLengthCm: toInputText(row.outer_length_cm), wallThicknessMm: String(row.wall_thickness_mm), maxWeightKg: toInputText(row.max_weight_g / 1000), emptyWeightG: String(row.empty_weight_g), fillFactor: row.fill_factor.toFixed(2).replace('.', ','), sortOrder: String(row.sort_order), isActive: row.is_active, };"
+    "body": "return { code: row.code, name: row.name, outerHeightCm: toInputText(row.outer_height_cm), outerWidthCm: toInputText(row.outer_width_cm), outerLengthCm: toInputText(row.outer_length_cm), wallThicknessMm: String(row.wall_thickness_mm), maxWeightKg: toInputText(row.max_weight_g / 1000), emptyWeightG: String(row.empty_weight_g), fillFactor: toFactorText(row.fill_factor), sortOrder: String(row.sort_order), isActive: row.is_active, };"
+   },
+   {
+    "file": "src/components/admin/shipping-boxes/shippingBoxFormSchema.ts",
+    "name": "buildShippingBoxPatch",
+    "params": "row: ShippingBoxRow, values: ShippingBoxWrite,",
+    "body": "const patch: ShippingBoxPatch = {}; if (changed(values.code, row.code)) patch.code = values.code; if (changed(values.name, row.name)) patch.name = values.name; if (changed(values.outer_height_cm, row.outer_height_cm)) { patch.outer_height_cm = values.outer_height_cm; } if (changed(values.outer_width_cm, row.outer_width_cm)) { patch.outer_width_cm = values.outer_width_cm; } if (changed(values.outer_length_cm, row.outer_length_cm)) { patch.outer_length_cm = values.outer_length_cm; } if (changed(va …"
    },
    {
     "file": "src/components/bi/ClientCategoryRadar.tsx",
@@ -231551,6 +231584,46 @@
     "name": "nenhuma operação toca products, v_products_public ou a coluna tags"
    },
    {
+    "file": "src/components/admin/shipping-boxes/__tests__/ShippingBoxFormDialog.test.tsx",
+    "name": "ShippingBoxFormDialog — rolagem"
+   },
+   {
+    "file": "src/components/admin/shipping-boxes/__tests__/ShippingBoxFormDialog.test.tsx",
+    "name": "a área dos campos rola por CSS nativo (max-h + overflow-y-auto)"
+   },
+   {
+    "file": "src/components/admin/shipping-boxes/__tests__/ShippingBoxFormDialog.test.tsx",
+    "name": "salvar sem o peso máximo traz o campo do peso, com a mensagem, para a vista"
+   },
+   {
+    "file": "src/components/admin/shipping-boxes/__tests__/ShippingBoxFormDialog.test.tsx",
+    "name": "com vários erros, vai para o primeiro campo errado da tela"
+   },
+   {
+    "file": "src/components/admin/shipping-boxes/__tests__/ShippingBoxFormDialog.test.tsx",
+    "name": "erro só no peso da caixa vazia: abre o Avançado e rola até ele"
+   },
+   {
+    "file": "src/components/admin/shipping-boxes/__tests__/ShippingBoxFormDialog.test.tsx",
+    "name": "validação aceita não rola nada"
+   },
+   {
+    "file": "src/components/admin/shipping-boxes/__tests__/ShippingBoxFormDialog.test.tsx",
+    "name": "ShippingBoxFormDialog — fechar durante o salvar"
+   },
+   {
+    "file": "src/components/admin/shipping-boxes/__tests__/ShippingBoxFormDialog.test.tsx",
+    "name": "Esc fecha o formulário quando nada está sendo salvo"
+   },
+   {
+    "file": "src/components/admin/shipping-boxes/__tests__/ShippingBoxFormDialog.test.tsx",
+    "name": "Esc durante o salvar é ignorado: o formulário continua aberto"
+   },
+   {
+    "file": "src/components/admin/shipping-boxes/__tests__/ShippingBoxFormDialog.test.tsx",
+    "name": "o X do canto também não fecha durante o salvar"
+   },
+   {
     "file": "src/components/admin/shipping-boxes/__tests__/ShippingBoxesManager.test.tsx",
     "name": "ShippingBoxesManager — tabela e estados"
    },
@@ -231580,6 +231653,10 @@
    },
    {
     "file": "src/components/admin/shipping-boxes/__tests__/ShippingBoxesManager.test.tsx",
+    "name": "caixa nova abre com o fator padrão salvo em /admin/frete (0,80)"
+   },
+   {
+    "file": "src/components/admin/shipping-boxes/__tests__/ShippingBoxesManager.test.tsx",
     "name": "aceita vírgula decimal nas medidas e no peso"
    },
    {
@@ -231604,7 +231681,11 @@
    },
    {
     "file": "src/components/admin/shipping-boxes/__tests__/ShippingBoxesManager.test.tsx",
-    "name": "editar abre o formulário preenchido e envia o patch com o id da caixa"
+    "name": "editar abre o formulário preenchido e envia só o campo alterado, com o id da caixa"
+   },
+   {
+    "file": "src/components/admin/shipping-boxes/__tests__/ShippingBoxesManager.test.tsx",
+    "name": "salvar a edição sem mudar nada não grava e fecha o formulário"
    },
    {
     "file": "src/components/admin/shipping-boxes/__tests__/ShippingBoxesManager.test.tsx",
@@ -231624,7 +231705,7 @@
    },
    {
     "file": "src/components/admin/shipping-boxes/__tests__/ShippingBoxesManager.test.tsx",
-    "name": "só consulta as excluídas depois de abrir a seção e restaura pelo id"
+    "name": "só consulta as excluídas depois de abrir a seção e restaura pelo id, com o código"
    },
    {
     "file": "src/components/admin/shipping-boxes/__tests__/ShippingBoxesManager.test.tsx",
@@ -231693,6 +231774,34 @@
    {
     "file": "src/components/admin/shipping-boxes/__tests__/shippingBoxFormSchema.test.ts",
     "name": "salvar sem mexer devolve os mesmos valores da linha, sem as internas"
+   },
+   {
+    "file": "src/components/admin/shipping-boxes/__tests__/shippingBoxFormSchema.test.ts",
+    "name": "buildShippingBoxPatch — edição grava só o que mudou"
+   },
+   {
+    "file": "src/components/admin/shipping-boxes/__tests__/shippingBoxFormSchema.test.ts",
+    "name": "sem mexer em nada: patch vazio, nada a salvar"
+   },
+   {
+    "file": "src/components/admin/shipping-boxes/__tests__/shippingBoxFormSchema.test.ts",
+    "name": "dois campos alterados: o patch leva os dois e mais nenhum"
+   },
+   {
+    "file": "src/components/admin/shipping-boxes/__tests__/shippingBoxFormSchema.test.ts",
+    "name": "o mesmo valor escrito de outro jeito não conta como alteração"
+   },
+   {
+    "file": "src/components/admin/shipping-boxes/__tests__/shippingBoxFormSchema.test.ts",
+    "name": "newShippingBoxDraft — caixa nova"
+   },
+   {
+    "file": "src/components/admin/shipping-boxes/__tests__/shippingBoxFormSchema.test.ts",
+    "name": "usa o fator padrão de /admin/frete, com vírgula e duas casas"
+   },
+   {
+    "file": "src/components/admin/shipping-boxes/__tests__/shippingBoxFormSchema.test.ts",
+    "name": "com o DEFAULT da coluna (0,90) é o formulário em branco de sempre"
    },
    {
     "file": "src/components/admin/telemetry/__tests__/BridgeAlertsCard.test.tsx",
@@ -257400,6 +257509,22 @@
    },
    {
     "file": "src/pages/admin/__tests__/AdminFreteSettingsPage.test.tsx",
+    "name": "enquanto salva, nenhum campo aceita digitação"
+   },
+   {
+    "file": "src/pages/admin/__tests__/AdminFreteSettingsPage.test.tsx",
+    "name": "enquanto relê a linha salva, campos e opções ficam travados e nada é enviado"
+   },
+   {
+    "file": "src/pages/admin/__tests__/AdminFreteSettingsPage.test.tsx",
+    "name": "terminada a releitura, os campos voltam a aceitar digitação"
+   },
+   {
+    "file": "src/pages/admin/__tests__/AdminFreteSettingsPage.test.tsx",
+    "name": "a dica do fator padrão diz para que ele serve: sugestão na caixa nova"
+   },
+   {
+    "file": "src/pages/admin/__tests__/AdminFreteSettingsPage.test.tsx",
     "name": "recarrega os campos quando a linha salva muda"
    },
    {
@@ -262556,7 +262681,7 @@
    },
    {
     "file": "src/services/__tests__/shippingBoxService.test.ts",
-    "name": "update: envia só o que mudou, filtra pelo id e pede o id de volta"
+    "name": "update: envia só o que mudou, só em caixa viva com aquele id, e pede o id de volta"
    },
    {
     "file": "src/services/__tests__/shippingBoxService.test.ts",
@@ -262568,7 +262693,7 @@
    },
    {
     "file": "src/services/__tests__/shippingBoxService.test.ts",
-    "name": "restore: limpa deleted_at"
+    "name": "restore: limpa deleted_at, só em caixa excluída"
    },
    {
     "file": "src/services/__tests__/shippingBoxService.test.ts",
@@ -262576,11 +262701,11 @@
    },
    {
     "file": "src/services/__tests__/shippingBoxService.test.ts",
-    "name": "23505 sem details: create e update usam o código enviado"
+    "name": "23505 com details (quem ignora a RLS): vale o código que o banco apontou"
    },
    {
     "file": "src/services/__tests__/shippingBoxService.test.ts",
-    "name": "23505 sem details no restore: mensagem sem inventar o código"
+    "name": "23505 em update que não troca o código: mensagem sem inventar o código"
    },
    {
     "file": "src/services/__tests__/shippingBoxService.test.ts",
@@ -262588,7 +262713,15 @@
    },
    {
     "file": "src/services/__tests__/shippingBoxService.test.ts",
-    "name": "%s: 0 linhas sem erro (RLS em silêncio) vira permission"
+    "name": "create: 0 linhas sem erro vira permission"
+   },
+   {
+    "file": "src/services/__tests__/shippingBoxService.test.ts",
+    "name": "%s: 0 linhas sem erro (RLS em silêncio ou caixa mudada por outro admin) vira not_applied"
+   },
+   {
+    "file": "src/services/__tests__/shippingBoxService.test.ts",
+    "name": "%s: data nula sem erro também vira not_applied"
    },
    {
     "file": "src/services/__tests__/shippingBoxService.test.ts",
@@ -291324,7 +291457,11 @@
    },
    {
     "file": "tests/hooks/freight/useShippingBoxes.test.ts",
-    "name": "%s: chama o serviço com o id, avisa "
+    "name": "softDelete: chama o serviço com o id, avisa "
+   },
+   {
+    "file": "tests/hooks/freight/useShippingBoxes.test.ts",
+    "name": "restore: passa o id E o código ao serviço, avisa "
    },
    {
     "file": "tests/hooks/freight/useShippingBoxes.test.ts",
@@ -291344,7 +291481,11 @@
    },
    {
     "file": "tests/hooks/freight/useShippingBoxes.test.ts",
-    "name": "erro não invalida as listas"
+    "name": "%s: erro também invalida todas as listas de caixas"
+   },
+   {
+    "file": "tests/hooks/freight/useShippingBoxes.test.ts",
+    "name": "salvar recusado por lista velha: a lista montada na tela é buscada de novo"
    },
    {
     "file": "tests/hooks/kit-builder/useKitFitsValidation.test.ts",
@@ -438972,7 +439113,7 @@
   },
   "src/components/admin/freight-settings/FreightSettingsForm.tsx": {
    "path": "src/components/admin/freight-settings/FreightSettingsForm.tsx",
-   "lines": 296,
+   "lines": 310,
    "exports": [
     "function FreightSettingsForm"
    ],
@@ -438987,6 +439128,7 @@
    ],
    "rule_comments": [
     "* Campos de texto livre; a regra de personalização é escolha entre duas opções. */",
+    "* A empresa opera em São Paulo: a data não pode depender do fuso da máquina. */",
     "Rascunho inválido conta como alterado: a linha salva sempre passa na validação."
    ],
    "doc": "Formulário dos parâmetros globais de frete (linha única de `freight_settings`). Recebe a linha salva e devolve em `onSave` só os campos que mudaram. Quem grava e avisa por toast é o hook `useUpdateFreightSettings`, na página. A página remonta o formulário (`key`) quando a linha salva muda, então o e …"
@@ -441804,7 +441946,7 @@
   },
   "src/components/admin/shipping-boxes/ShippingBoxFormDialog.tsx": {
    "path": "src/components/admin/shipping-boxes/ShippingBoxFormDialog.tsx",
-   "lines": 350,
+   "lines": 373,
    "exports": [
     "interface RejectedShippingBoxCode",
     "function ShippingBoxFormDialog"
@@ -441820,20 +441962,21 @@
    ],
    "rule_comments": [
     "nunca vão no payload. O peso máximo é digitado em kg e gravado em gramas.",
-    "A validação está em `shippingBoxFormSchema.ts`."
+    "A validação está em `shippingBoxFormSchema.ts`.",
+    "A área do formulário rola: depois de uma validação recusada, traz para a"
    ],
    "doc": "Formulário de caixa de transporte (criar e editar). O admin digita a medida EXTERNA e a espessura da parede; a medida interna e o volume aparecem calculados, só para leitura — no banco são colunas geradas e nunca vão no payload. O peso máximo é digitado em kg e gravado em gramas. A validação está em …",
    "calc_fns": [
     {
      "name": "ShippingBoxFormDialog",
-     "params": "{ open, onOpenChange, box, saving, rejectedCode = null, onSave, }: ShippingBoxFormDialogProps",
-     "body": "const isEdit = box !== null; const [draft, setDraft] = useState<ShippingBoxFormDraft>(EMPTY_SHIPPING_BOX_DRAFT); const [errors, setErrors] = useState<ShippingBoxFormErrors>({}); const [advancedOpen, setAdvancedOpen] = useState(false); useEffect(() => { if (!open) return; setDraft(box ? toShippingBoxDraft(box) : EMPTY_SHIPPING_BOX_DRAFT); setErrors({}); setAdvancedOpen(box !== null && box.empty_weight_g > 0); }, [open, box]); const setField = (field: ShippingBoxFormField, value: string) => { setD …"
+     "params": "{ open, onOpenChange, box, newBoxFillFactor, saving, rejectedCode = null, onSave, }: ShippingBoxFormDialogProps",
+     "body": "const isEdit = box !== null; const [draft, setDraft] = useState<ShippingBoxFormDraft>(EMPTY_SHIPPING_BOX_DRAFT); const [errors, setErrors] = useState<ShippingBoxFormErrors>({}); const [advancedOpen, setAdvancedOpen] = useState(false); const [failedSubmits, setFailedSubmits] = useState(0); const formRef = useRef<HTMLFormElement>(null); useEffect(() => { if (!open) return; setDraft(box ? toShippingBoxDraft(box) : newShippingBoxDraft(newBoxFillFactor)); setErrors({}); setAdvancedOpen(box !== null & …"
     }
    ]
   },
   "src/components/admin/shipping-boxes/ShippingBoxesManager.tsx": {
    "path": "src/components/admin/shipping-boxes/ShippingBoxesManager.tsx",
-   "lines": 160,
+   "lines": 175,
    "exports": [
     "function ShippingBoxesManager"
    ],
@@ -441842,7 +441985,7 @@
     {
      "name": "ShippingBoxesManager",
      "params": "",
-     "body": "const { rows, isLoading, isError, refetch } = useShippingBoxes({ includeInactive: true }); const { create, update, softDelete, restore } = useShippingBoxMutations(); const [dialogOpen, setDialogOpen] = useState(false); const [editingBox, setEditingBox] = useState<ShippingBoxRow | null>(null); const [deleteTarget, setDeleteTarget] = useState<ShippingBoxRow | null>(null); const [rejectedCode, setRejectedCode] = useState<RejectedShippingBoxCode | null>(null); const openForm = (box: ShippingBoxRow | …"
+     "body": "const { rows, isLoading, isError, refetch } = useShippingBoxes({ includeInactive: true }); const { create, update, softDelete, restore } = useShippingBoxMutations(); const { row: freightSettings } = useFreightSettings(); const [dialogOpen, setDialogOpen] = useState(false); const [editingBox, setEditingBox] = useState<ShippingBoxRow | null>(null); const [deleteTarget, setDeleteTarget] = useState<ShippingBoxRow | null>(null); const [rejectedCode, setRejectedCode] = useState<RejectedShippingBoxCode …"
     }
    ]
   },
@@ -441866,11 +442009,11 @@
   },
   "src/components/admin/shipping-boxes/ShippingBoxesTrash.tsx": {
    "path": "src/components/admin/shipping-boxes/ShippingBoxesTrash.tsx",
-   "lines": 131,
+   "lines": 132,
    "exports": [
     "function ShippingBoxesTrash"
    ],
-   "doc": "Caixas excluídas, com \"Restaurar\". A exclusão do cadastro é lógica: a caixa some das listas e libera o código. A consulta só roda quando a seção é aberta. Restaurar falha se o código já estiver em uso por outra caixa — o aviso vem do hook, com o código no texto.",
+   "doc": "Caixas excluídas, com \"Restaurar\". A exclusão do cadastro é lógica: a caixa some das listas e libera o código. A consulta só roda quando a seção é aberta. Restaurar falha se o código já estiver em uso por outra caixa. O aviso vem do hook e cita o código porque quem restaura o informa ao serviço: sob …",
    "calc_fns": [
     {
      "name": "ShippingBoxesTrash",
@@ -441885,7 +442028,7 @@
   },
   "src/components/admin/shipping-boxes/shippingBoxFormSchema.ts": {
    "path": "src/components/admin/shipping-boxes/shippingBoxFormSchema.ts",
-   "lines": 293,
+   "lines": 358,
    "exports": [
     "const SHIPPING_BOX_FORM_FIELDS",
     "type ShippingBoxFormField",
@@ -441894,6 +442037,8 @@
     "type ShippingBoxFormResult",
     "interface ShippingBoxInnerPreview",
     "const EMPTY_SHIPPING_BOX_DRAFT",
+    "const SHIPPING_BOX_COLUMN_FILL_FACTOR",
+    "function newShippingBoxDraft",
     "const SHIPPING_BOX_CODE_MAX_LENGTH",
     "const SHIPPING_BOX_NAME_MAX_LENGTH",
     "function normalizeShippingBoxCode",
@@ -441901,7 +442046,8 @@
     "function computeInnerPreview",
     "const shippingBoxFormSchema",
     "function parseShippingBoxForm",
-    "function toShippingBoxDraft"
+    "function toShippingBoxDraft",
+    "function buildShippingBoxPatch"
    ],
    "zod": [
     {
@@ -441925,6 +442071,10 @@
    ],
    "params": [
     {
+     "name": "SHIPPING_BOX_COLUMN_FILL_FACTOR",
+     "value": "0.9"
+    },
+    {
      "name": "SHIPPING_BOX_CODE_MAX_LENGTH",
      "value": "6"
     },
@@ -441944,6 +442094,11 @@
    ],
    "calc_fns": [
     {
+     "name": "newShippingBoxDraft",
+     "params": "defaultFillFactor: number",
+     "body": "return { ...EMPTY_SHIPPING_BOX_DRAFT, fillFactor: toFactorText(defaultFillFactor) };"
+    },
+    {
      "name": "normalizeShippingBoxCode",
      "params": "text: string",
      "body": "return text.trim().toUpperCase();"
@@ -441961,13 +442116,18 @@
     {
      "name": "toShippingBoxDraft",
      "params": "row: ShippingBoxRow",
-     "body": "return { code: row.code, name: row.name, outerHeightCm: toInputText(row.outer_height_cm), outerWidthCm: toInputText(row.outer_width_cm), outerLengthCm: toInputText(row.outer_length_cm), wallThicknessMm: String(row.wall_thickness_mm), maxWeightKg: toInputText(row.max_weight_g / 1000), emptyWeightG: String(row.empty_weight_g), fillFactor: row.fill_factor.toFixed(2).replace('.', ','), sortOrder: String(row.sort_order), isActive: row.is_active, };"
+     "body": "return { code: row.code, name: row.name, outerHeightCm: toInputText(row.outer_height_cm), outerWidthCm: toInputText(row.outer_width_cm), outerLengthCm: toInputText(row.outer_length_cm), wallThicknessMm: String(row.wall_thickness_mm), maxWeightKg: toInputText(row.max_weight_g / 1000), emptyWeightG: String(row.empty_weight_g), fillFactor: toFactorText(row.fill_factor), sortOrder: String(row.sort_order), isActive: row.is_active, };"
+    },
+    {
+     "name": "buildShippingBoxPatch",
+     "params": "row: ShippingBoxRow, values: ShippingBoxWrite,",
+     "body": "const patch: ShippingBoxPatch = {}; if (changed(values.code, row.code)) patch.code = values.code; if (changed(values.name, row.name)) patch.name = values.name; if (changed(values.outer_height_cm, row.outer_height_cm)) { patch.outer_height_cm = values.outer_height_cm; } if (changed(values.outer_width_cm, row.outer_width_cm)) { patch.outer_width_cm = values.outer_width_cm; } if (changed(values.outer_length_cm, row.outer_length_cm)) { patch.outer_length_cm = values.outer_length_cm; } if (changed(va …"
     }
    ]
   },
   "src/components/admin/shipping-boxes/shippingBoxFormat.ts": {
    "path": "src/components/admin/shipping-boxes/shippingBoxFormat.ts",
-   "lines": 55,
+   "lines": 59,
    "exports": [
     "const NO_VALUE",
     "function formatDimensionsCm",
@@ -441982,11 +442142,35 @@
      "value": "'—'"
     }
    ],
+   "rule_comments": [
+    "* A empresa opera em São Paulo: a data não pode depender do fuso da máquina. */"
+   ],
    "doc": "Formatação PT-BR dos números do cadastro de caixas de transporte. Uso só de exibição: nada daqui volta para o banco."
+  },
+  "src/components/admin/shipping-boxes/__tests__/ShippingBoxFormDialog.test.tsx": {
+   "path": "src/components/admin/shipping-boxes/__tests__/ShippingBoxFormDialog.test.tsx",
+   "lines": 139,
+   "is_test": true,
+   "rule_comments": [
+    "A rolagem de verdade só existe em navegador; aqui se trava que a validação"
+   ],
+   "doc": "Formulário de caixa, sozinho (sem a aba): o que depende das props e do DOM. A rolagem de verdade só existe em navegador; aqui se trava que a validação recusada pede para trazer o primeiro campo com erro à vista.",
+   "tests": [
+    "ShippingBoxFormDialog — rolagem",
+    "a área dos campos rola por CSS nativo (max-h + overflow-y-auto)",
+    "salvar sem o peso máximo traz o campo do peso, com a mensagem, para a vista",
+    "com vários erros, vai para o primeiro campo errado da tela",
+    "erro só no peso da caixa vazia: abre o Avançado e rola até ele",
+    "validação aceita não rola nada",
+    "ShippingBoxFormDialog — fechar durante o salvar",
+    "Esc fecha o formulário quando nada está sendo salvo",
+    "Esc durante o salvar é ignorado: o formulário continua aberto",
+    "o X do canto também não fecha durante o salvar"
+   ]
   },
   "src/components/admin/shipping-boxes/__tests__/ShippingBoxesManager.test.tsx": {
    "path": "src/components/admin/shipping-boxes/__tests__/ShippingBoxesManager.test.tsx",
-   "lines": 485,
+   "lines": 496,
    "is_test": true,
    "errors": [
     ")).not.toBeInTheDocument();\n  });\n});\n\ndescribe(",
@@ -442002,18 +442186,20 @@
     "vazio: convida a cadastrar a primeira caixa e o botão abre o formulário",
     "ShippingBoxesManager — criar",
     "caixa P real: mostra a interna e o volume ao vivo e envia o payload exato",
+    "caixa nova abre com o fator padrão salvo em /admin/frete (0,80)",
     "aceita vírgula decimal nas medidas e no peso",
     "código inválido: mostra o erro no campo e não salva",
     "parede que come a medida: interna zerada bloqueia o salvamento",
     "peso máximo igual ao da caixa vazia bloqueia o salvamento",
     "código já em uso: o formulário continua aberto com a mensagem no campo",
     "ShippingBoxesManager — editar, ativar e excluir",
-    "editar abre o formulário preenchido e envia o patch com o id da caixa",
+    "editar abre o formulário preenchido e envia só o campo alterado, com o id da caixa",
+    "salvar a edição sem mudar nada não grava e fecha o formulário",
     "a chave da caixa $caixa grava só is_active = $ativa",
     "excluir pede confirmação e só então faz a exclusão lógica",
     "cancelar a confirmação não exclui",
     "ShippingBoxesManager — caixas excluídas",
-    "só consulta as excluídas depois de abrir a seção e restaura pelo id",
+    "só consulta as excluídas depois de abrir a seção e restaura pelo id, com o código",
     "sem excluídas: avisa que não há nenhuma",
     "erro ao carregar as excluídas: ",
     "aba Caixas de transporte em /admin/cadastros",
@@ -442022,8 +442208,11 @@
   },
   "src/components/admin/shipping-boxes/__tests__/shippingBoxFormSchema.test.ts": {
    "path": "src/components/admin/shipping-boxes/__tests__/shippingBoxFormSchema.test.ts",
-   "lines": 352,
+   "lines": 416,
    "is_test": true,
+   "errors": [
+    "rascunho inválido no teste"
+   ],
    "tests": [
     "parseShippingBoxForm — payload",
     "caixa P real vira o payload do serviço, em cm, mm e gramas, sem medida interna",
@@ -442037,7 +442226,14 @@
     "prévia não mostra medida interna zerada ou negativa",
     "toShippingBoxDraft",
     "preenche o formulário com vírgula decimal e peso máximo em kg",
-    "salvar sem mexer devolve os mesmos valores da linha, sem as internas"
+    "salvar sem mexer devolve os mesmos valores da linha, sem as internas",
+    "buildShippingBoxPatch — edição grava só o que mudou",
+    "sem mexer em nada: patch vazio, nada a salvar",
+    "dois campos alterados: o patch leva os dois e mais nenhum",
+    "o mesmo valor escrito de outro jeito não conta como alteração",
+    "newShippingBoxDraft — caixa nova",
+    "usa o fator padrão de /admin/frete, com vírgula e duas casas",
+    "com o DEFAULT da coluna (0,90) é o formulário em branco de sempre"
    ]
   },
   "src/components/admin/suppliers-manager/SupplierAddressTab.tsx": {
@@ -465802,13 +465998,14 @@
   },
   "src/hooks/freight/useShippingBoxes.ts": {
    "path": "src/hooks/freight/useShippingBoxes.ts",
-   "lines": 202,
+   "lines": 209,
    "exports": [
     "interface UseShippingBoxesOptions",
     "interface UseShippingBoxesResult",
     "interface UseDeletedShippingBoxesOptions",
     "interface UseDeletedShippingBoxesResult",
     "interface UpdateShippingBoxInput",
+    "interface RestoreShippingBoxInput",
     "interface UseShippingBoxMutationsResult",
     "function useShippingBoxes",
     "function useDeletedShippingBoxes",
@@ -488421,11 +488618,14 @@
   },
   "src/pages/admin/__tests__/AdminFreteSettingsPage.test.tsx": {
    "path": "src/pages/admin/__tests__/AdminFreteSettingsPage.test.tsx",
-   "lines": 289,
+   "lines": 332,
    "is_test": true,
    "errors": [
     ")).toHaveTextContent(\n      ",
     ")).toHaveTextContent(mensagem);\n  });\n\n  it("
+   ],
+   "rule_comments": [
+    "5 campos de texto + 2 opções da regra de personalização = 7 controles travados"
    ],
    "doc": "Tela `/admin/frete`. Os hooks de `@/hooks/freight` são mockados: aqui o que se trava é o que a tela mostra em cada estado, o que bloqueia o salvar e o que ela entrega ao hook de gravação (que é quem grava e dispara o toast).",
    "tests": [
@@ -488444,6 +488644,10 @@
     "escrever o mesmo valor de outro jeito não habilita o salvar",
     "Desfazer alterações volta ao valor salvo",
     "enquanto salva, o botão fica desabilitado",
+    "enquanto salva, nenhum campo aceita digitação",
+    "enquanto relê a linha salva, campos e opções ficam travados e nada é enviado",
+    "terminada a releitura, os campos voltam a aceitar digitação",
+    "a dica do fator padrão diz para que ele serve: sugestão na caixa nova",
     "recarrega os campos quando a linha salva muda"
    ]
   },
@@ -496990,7 +497194,7 @@
   },
   "src/services/shippingBoxService.ts": {
    "path": "src/services/shippingBoxService.ts",
-   "lines": 226,
+   "lines": 252,
    "exports": [
     "type ShippingBoxRow",
     "type ShippingBoxWrite",
@@ -497037,16 +497241,17 @@
     ]
    },
    "errors": [
+    "not_applied",
     "permission"
    ],
    "enums": [
     {
      "name": "ShippingBoxErrorReason",
-     "values": "duplicate_code | invalid | permission | unknown"
+     "values": "duplicate_code | invalid | not_applied | permission | unknown"
     }
    ],
    "rule_comments": [
-    "`.select('id')` e 0 linhas vira erro de permissão."
+    "dizer \"sem permissão OU a caixa mudou\" (`not_applied`)."
    ]
   },
   "src/services/telemetryService.ts": {
@@ -497403,7 +497608,7 @@
   },
   "src/services/__tests__/shippingBoxService.test.ts": {
    "path": "src/services/__tests__/shippingBoxService.test.ts",
-   "lines": 410,
+   "lines": 441,
    "is_test": true,
    "doc": "shippingBoxService — contrato com `public.shipping_boxes`. O cliente Supabase é trocado por um builder que grava cada chamada (`ops`), então o teste confere o que seria enviado ao PostgREST: filtros, ordem e payload. O detector de RLS (`isRlsDenialError`) é o real.",
    "tests": [
@@ -497418,15 +497623,17 @@
     "campo opcional ausente não é enviado: vale o padrão do banco",
     "nunca usa upsert nem delete",
     "shippingBoxService — update, softDelete e restore",
-    "update: envia só o que mudou, filtra pelo id e pede o id de volta",
+    "update: envia só o que mudou, só em caixa viva com aquele id, e pede o id de volta",
     "o payload de update não tem a chave %s",
     "softDelete: grava deleted_at com o instante atual, sem apagar a linha",
-    "restore: limpa deleted_at",
+    "restore: limpa deleted_at, só em caixa excluída",
     "shippingBoxService — erros de escrita",
-    "23505 sem details: create e update usam o código enviado",
-    "23505 sem details no restore: mensagem sem inventar o código",
+    "23505 com details (quem ignora a RLS): vale o código que o banco apontou",
+    "23505 em update que não troca o código: mensagem sem inventar o código",
     "%s: 23514 (CHECK violado) vira invalid",
-    "%s: 0 linhas sem erro (RLS em silêncio) vira permission",
+    "create: 0 linhas sem erro vira permission",
+    "%s: 0 linhas sem erro (RLS em silêncio ou caixa mudada por outro admin) vira not_applied",
+    "%s: data nula sem erro também vira not_applied",
     "%s: 42501 (RLS com erro) vira permission"
    ]
   },
@@ -541340,7 +541547,7 @@
   },
   "tests/hooks/freight/useShippingBoxes.test.ts": {
    "path": "tests/hooks/freight/useShippingBoxes.test.ts",
-   "lines": 349,
+   "lines": 383,
    "is_test": true,
    "doc": "Hooks das caixas de transporte. O serviço é mockado (não o Supabase): aqui o que se trava é qual listagem cada hook chama, a chave de cache do plano, a tradução para o motor, a invalidação e o texto que chega ao toast.",
    "tests": [
@@ -541357,12 +541564,14 @@
     "useShippingBoxMutations — sucesso",
     "create: chama o serviço, devolve o id, avisa e invalida todas as listas de caixas",
     "update com %s: avisa ",
-    "%s: chama o serviço com o id, avisa ",
+    "softDelete: chama o serviço com o id, avisa ",
+    "restore: passa o id E o código ao serviço, avisa ",
     "depois de salvar, a lista montada na tela é buscada de novo",
     "useShippingBoxMutations — erro",
     "%s: a mensagem do serviço vai no TÍTULO do toast, sem description",
     "%s: erro que não é do serviço mostra ",
-    "erro não invalida as listas"
+    "%s: erro também invalida todas as listas de caixas",
+    "salvar recusado por lista velha: a lista montada na tela é buscada de novo"
    ]
   },
   "tests/hooks/kit-builder/useKitFitsValidation.test.ts": {
@@ -552527,10 +552736,34 @@
   }
  },
  "git": {
-  "sha": "777cac4c50c377f01bc3642c7b61805f2a0d24d0",
+  "sha": "e25ff678c10ae6f67107e6a202c853f65f29bb1a",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "e25ff67",
+    "date": "2026-11-19",
+    "author": "adm01-debug",
+    "subject": "fix(frete): formulário de caixa volta a rolar e correções da revisão do admin (#3917)",
+    "files": [
+     "scripts/freight/README.md",
+     "src/components/admin/freight-settings/FreightSettingsForm.tsx",
+     "src/components/admin/shipping-boxes/ShippingBoxFormDialog.tsx",
+     "src/components/admin/shipping-boxes/ShippingBoxesManager.tsx",
+     "src/components/admin/shipping-boxes/ShippingBoxesTrash.tsx",
+     "src/components/admin/shipping-boxes/__tests__/ShippingBoxFormDialog.test.tsx",
+     "src/components/admin/shipping-boxes/__tests__/ShippingBoxesManager.test.tsx",
+     "src/components/admin/shipping-boxes/__tests__/shippingBoxFormSchema.test.ts",
+     "src/components/admin/shipping-boxes/shippingBoxFormSchema.ts",
+     "src/components/admin/shipping-boxes/shippingBoxFormat.ts",
+     "src/hooks/freight/useShippingBoxes.ts",
+     "src/lib/freight/README.md",
+     "src/pages/admin/__tests__/AdminFreteSettingsPage.test.tsx",
+     "src/services/__tests__/shippingBoxService.test.ts",
+     "src/services/shippingBoxService.ts",
+     "tests/hooks/freight/useShippingBoxes.test.ts"
+    ]
+   },
    {
     "sha": "777cac4",
     "date": "2026-11-19",
@@ -552920,15 +553153,6 @@
     "files": [
      "docs/agentes/resgates/2026-11-19-migrations-orfas-e-o-portao-retroativo.md"
     ]
-   },
-   {
-    "sha": "a6ad441",
-    "date": "2026-11-19",
-    "author": "adm01-debug",
-    "subject": "chore(resgates): adjudica a quinta branch salvo, que estava fora do ruleset (#3880)",
-    "files": [
-     "docs/agentes/resgates/2026-11-19-fechamento-da-reconciliacao.md"
-    ]
    }
   ],
   "hot_files": [
@@ -552938,7 +553162,7 @@
    ],
    [
     "src/lib/freight/README.md",
-    5
+    6
    ],
    [
     ".release-please-manifest.json",
@@ -552965,51 +553189,51 @@
     3
    ],
    [
-    "scripts/automation.config.json",
+    "scripts/freight/README.md",
     2
    ],
    [
-    "src/lib/freight/__tests__/buildGroups.test.ts",
+    "src/components/admin/freight-settings/FreightSettingsForm.tsx",
     2
    ],
    [
-    "src/lib/freight/__tests__/fitCount.test.ts",
+    "src/components/admin/shipping-boxes/ShippingBoxFormDialog.tsx",
     2
    ],
    [
-    "src/lib/freight/__tests__/fuzz.test.ts",
+    "src/components/admin/shipping-boxes/ShippingBoxesManager.tsx",
     2
    ],
    [
-    "src/lib/freight/__tests__/planFreight.test.ts",
+    "src/components/admin/shipping-boxes/ShippingBoxesTrash.tsx",
     2
    ],
    [
-    "src/lib/freight/buildGroups.ts",
+    "src/components/admin/shipping-boxes/__tests__/ShippingBoxesManager.test.tsx",
     2
    ],
    [
-    "src/lib/freight/fitCount.ts",
+    "src/components/admin/shipping-boxes/__tests__/shippingBoxFormSchema.test.ts",
     2
    ],
    [
-    "src/lib/freight/planFreight.ts",
+    "src/components/admin/shipping-boxes/shippingBoxFormSchema.ts",
     2
    ],
    [
-    ".security/policies-baseline.json",
+    "src/components/admin/shipping-boxes/shippingBoxFormat.ts",
     2
    ],
    [
-    "src/lib/freight/units.ts",
+    "src/hooks/freight/useShippingBoxes.ts",
     2
    ],
    [
-    "src/lib/freight/__tests__/columns.test.ts",
+    "src/pages/admin/__tests__/AdminFreteSettingsPage.test.tsx",
     2
    ],
    [
-    "src/lib/freight/__tests__/fixtures/products.ts",
+    "src/services/__tests__/shippingBoxService.test.ts",
     2
    ]
   ]

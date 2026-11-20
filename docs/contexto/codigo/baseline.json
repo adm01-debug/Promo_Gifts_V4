@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "777cac4c50c377f01bc3642c7b61805f2a0d24d0",
+  "commit": "e25ff678c10ae6f67107e6a202c853f65f29bb1a",
   "branch": "main",
-  "data_commit": "2026-11-19T22:14:00-03:00",
+  "data_commit": "2026-11-20T01:31:37Z",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "e25ff678",
+    "data": "2026-11-20",
+    "assunto": "fix(frete): formulário de caixa volta a rolar e correções da revisão do admin (#3917)"
+   },
    {
     "sha": "777cac4c",
     "data": "2026-11-19",
@@ -126,18 +131,13 @@
     "sha": "ad8ba97e",
     "data": "2026-11-19",
     "assunto": "docs(resgates): adjudica os 124 arquivos nunca aplicados e registra as contas de teste em produção (#3890)"
-   },
-   {
-    "sha": "7d01b06c",
-    "data": "2026-11-19",
-    "assunto": "docs: recibo de aplicação — 20261022000000 (E15)"
    }
   ],
-  "arquivos_mudados_7d": 1433,
+  "arquivos_mudados_7d": 1434,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
-    "mudancas": 1253
+    "mudancas": 1262
    },
    {
     "pasta": "recovery/src-legacy/src",
@@ -157,7 +157,7 @@
    },
    {
     "pasta": "src/components/quotes",
-    "mudancas": 400
+    "mudancas": 399
    },
    {
     "pasta": "src/pages/magazine",
@@ -181,7 +181,7 @@
    },
    {
     "pasta": "src/pages/admin",
-    "mudancas": 257
+    "mudancas": 258
    },
    {
     "pasta": "src/pages/quotes",
@@ -189,7 +189,7 @@
    },
    {
     "pasta": "src/components/kit-builder",
-    "mudancas": 215
+    "mudancas": 214
    },
    {
     "pasta": "src/pages/products",
@@ -203,7 +203,7 @@
    },
    {
     "arquivo": "package.json",
-    "mudancas": 33
+    "mudancas": 32
    },
    {
     "arquivo": "docs/coordenacao/conflitos-semanticos.md",
@@ -211,19 +211,19 @@
    },
    {
     "arquivo": "RELATORIO_CI.md",
-    "mudancas": 21
+    "mudancas": 20
    },
    {
     "arquivo": ".github/workflows/deploy-gates.yml",
     "mudancas": 19
    },
    {
-    "arquivo": "PENDENCIAS.md",
+    "arquivo": "package-lock.json",
     "mudancas": 19
    },
    {
-    "arquivo": "package-lock.json",
-    "mudancas": 19
+    "arquivo": "PENDENCIAS.md",
+    "mudancas": 18
    },
    {
     "arquivo": "audit/supabase-reference-catalog.temporary.json",
@@ -270,10 +270,6 @@
     "mudancas": 9
    },
    {
-    "arquivo": "docs/ci/SEGREDOS.md",
-    "mudancas": 9
-   },
-   {
     "arquivo": "scripts/drift-baseline.mjs",
     "mudancas": 9
    },
@@ -296,12 +292,16 @@
    {
     "arquivo": ".github/workflows/e2e-swatch-quickview.yml",
     "mudancas": 8
+   },
+   {
+    "arquivo": ".github/workflows/e2e.yml",
+    "mudancas": 8
    }
   ],
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 347
+    "commits": 346
    },
    {
     "autor": "Claude",
@@ -309,7 +309,7 @@
    },
    {
     "autor": "Joaquim Ataides",
-    "commits": 30
+    "commits": 28
    },
    {
     "autor": "github-actions[bot]",
@@ -322,9 +322,9 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 11061,
-  "arquivos_codigo": 5546,
-  "linhas_codigo": 1055000,
+  "arquivos_total": 11062,
+  "arquivos_codigo": 5547,
+  "linhas_codigo": 1055477,
   "rotas": 140,
   "rotas_http_backend": 13,
   "vistas_por_id": 0,
@@ -336,7 +336,7 @@
   "tabelas": 529,
   "migrations": 3110,
   "cron_jobs": 122,
-  "testes": 2644,
+  "testes": 2645,
   "workflows": 89,
   "scripts": 285,
   "docs_md": 1487
@@ -1907,8 +1907,8 @@
    "linhas": 130
   },
   "src/components": {
-   "arquivos": 1439,
-   "linhas": 284919
+   "arquivos": 1440,
+   "linhas": 285255
   },
   "src/config": {
    "arquivos": 1,
@@ -1932,7 +1932,7 @@
   },
   "src/hooks": {
    "arquivos": 494,
-   "linhas": 92392
+   "linhas": 92399
   },
   "src/integrations": {
    "arquivos": 11,
@@ -1952,7 +1952,7 @@
   },
   "src/pages": {
    "arquivos": 369,
-   "linhas": 85028
+   "linhas": 85071
   },
   "src/routes": {
    "arquivos": 15,
@@ -1960,7 +1960,7 @@
   },
   "src/services": {
    "arquivos": 33,
-   "linhas": 6564
+   "linhas": 6621
   },
   "src/stores": {
    "arquivos": 12,
@@ -2104,7 +2104,7 @@
   },
   "tests/hooks": {
    "arquivos": 166,
-   "linhas": 26607
+   "linhas": 26641
   },
   "tests/integration": {
    "arquivos": 11,
