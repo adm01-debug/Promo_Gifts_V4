@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "4e5032865a4ef1a18c35e8f9e0738102ec2a169c",
+  "commit": "8fe268c2748f4f3cfb1dfdd26ae9d66e2bf5fa88",
   "branch": "main",
-  "data_commit": "2026-11-19T20:59:57-03:00",
+  "data_commit": "2026-11-19T21:04:38-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "8fe268c2",
+    "data": "2026-11-19",
+    "assunto": "chore(main): release gifts-store 1.13.0 (#3904)"
+   },
    {
     "sha": "4e503286",
     "data": "2026-11-19",
@@ -126,11 +131,6 @@
     "sha": "4b1f6e1c",
     "data": "2026-11-19",
     "assunto": "chore(security): regrava baseline de policies e recibo E15 da 20261113140000 (#3885)"
-   },
-   {
-    "sha": "9f72f0f2",
-    "data": "2026-11-19",
-    "assunto": "fix(db): reafirma 7 revogações que o baseline ressuscita na reconstrução (#3883)"
    }
   ],
   "arquivos_mudados_7d": 1395,
@@ -203,7 +203,7 @@
    },
    {
     "arquivo": "package.json",
-    "mudancas": 32
+    "mudancas": 33
    },
    {
     "arquivo": "docs/coordenacao/conflitos-semanticos.md",
@@ -223,7 +223,11 @@
    },
    {
     "arquivo": "package-lock.json",
-    "mudancas": 18
+    "mudancas": 19
+   },
+   {
+    "arquivo": "CHANGELOG.md",
+    "mudancas": 12
    },
    {
     "arquivo": "audit/supabase-reference-catalog.temporary.json",
@@ -232,10 +236,6 @@
    {
     "arquivo": "src/pages/mockups/MockupGenerator.tsx",
     "mudancas": 12
-   },
-   {
-    "arquivo": "CHANGELOG.md",
-    "mudancas": 11
    },
    {
     "arquivo": "src/pages/kit-builder/KitBuilderPage.tsx",
@@ -301,15 +301,15 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 349
+    "commits": 348
    },
    {
     "autor": "Claude",
-    "commits": 62
+    "commits": 61
    },
    {
     "autor": "Joaquim Ataides",
-    "commits": 32
+    "commits": 31
    },
    {
     "autor": "github-actions[bot]",

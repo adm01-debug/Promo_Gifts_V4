@@ -1,9 +1,9 @@
 {
  "meta": {
-  "sha": "4e5032865a4ef1a18c35e8f9e0738102ec2a169c",
+  "sha": "8fe268c2748f4f3cfb1dfdd26ae9d66e2bf5fa88",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-20 00:03 UTC",
+  "generated_at": "2026-11-20 00:07 UTC",
   "files_total": 10957,
   "code_files": 8976,
   "code_lines": 1270595
@@ -550569,10 +550569,22 @@
   }
  },
  "git": {
-  "sha": "4e5032865a4ef1a18c35e8f9e0738102ec2a169c",
+  "sha": "8fe268c2748f4f3cfb1dfdd26ae9d66e2bf5fa88",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "8fe268c",
+    "date": "2026-11-19",
+    "author": "github-actions[bot]",
+    "subject": "chore(main): release gifts-store 1.13.0 (#3904)",
+    "files": [
+     ".release-please-manifest.json",
+     "CHANGELOG.md",
+     "package-lock.json",
+     "package.json"
+    ]
+   },
    {
     "sha": "4e50328",
     "date": "2026-11-19",
@@ -550914,21 +550926,28 @@
     "files": [
      "docs/agentes/resgates/2026-11-19-migrations-orfas-e-o-portao-retroativo.md"
     ]
-   },
-   {
-    "sha": "c653e3a",
-    "date": "2026-11-19",
-    "author": "github-actions[bot]",
-    "subject": "docs(migrations-log): recibo E15 da aplicacao de 20261119081500 (#3878)",
-    "files": [
-     "supabase/MIGRATIONS_SYNC_LOG.md"
-    ]
    }
   ],
   "hot_files": [
    [
     "supabase/MIGRATIONS_SYNC_LOG.md",
-    15
+    14
+   ],
+   [
+    ".release-please-manifest.json",
+    4
+   ],
+   [
+    "CHANGELOG.md",
+    4
+   ],
+   [
+    "package-lock.json",
+    4
+   ],
+   [
+    "package.json",
+    4
    ],
    [
     "src/lib/freight/README.md",
@@ -550936,22 +550955,6 @@
    ],
    [
     "src/lib/freight/types.ts",
-    3
-   ],
-   [
-    ".release-please-manifest.json",
-    3
-   ],
-   [
-    "CHANGELOG.md",
-    3
-   ],
-   [
-    "package-lock.json",
-    3
-   ],
-   [
-    "package.json",
     3
    ],
    [

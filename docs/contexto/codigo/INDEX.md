@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e de hora em hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `4e5032865a4ef1a18c35e8f9e0738102ec2a169c` (2026-11-19T20:59:57-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e de hora em hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `8fe268c2748f4f3cfb1dfdd26ae9d66e2bf5fa88` (2026-11-19T21:04:38-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -593,22 +593,22 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - possiveis_segredos_no_codigo: 7 — ex.: scripts/ai-context/cenarios.mjs:102, src/components/admin/connections/__tests__/ConnectionSecurity.unit.test.tsx:9, src/integrations/supabase/client.ts:27
 
 ## Grafo de código (graphify)
-- 49509 nós · 83434 arestas · 2797 comunidades · grafo do commit `4e503286`
-- comunidades maiores: vitest (979), ref_components (861), ref_integrations (769), ref_lib (445), ref_node_child_process (433), @tanstack/react-query (395), react-router-dom (394), ref_hooks (365), ref_node_fs (355), gotoAndSettle (347), ref_utils (317), ref_types (314)
+- 49512 nós · 83437 arestas · 2863 comunidades · grafo do commit `8fe268c2`
+- comunidades maiores: ref_integrations (649), react (500), lucide-react (430), ref_hooks (399), vitest (388), ref_node_child_process (371), @testing-library/react (349), ref_node_fs (320), scripts (310), react-router-dom (305), gotoAndSettle (304), sonner (287)
 - símbolos mais chamados: gotoAndSettle() (e2e/helpers/nav.ts), re (?), q() (scripts/supabase_snapshot/snapshot.py), analyze() (tests/scripts/test_personalization_artifact_diagnostics.py), outer() (tests/scripts/test_personalization_artifact_diagnostics.py), json (?), useExternalDatabase() (recovery/src-legacy/src/hooks/useExternalDatabase.ts), concludeCheck() (scripts/check-result-contract.mjs), querySupabaseReadOnly() (scripts/supabase-read-only-query.mjs), loginAs() (e2e/helpers/auth.ts), inner() (tests/scripts/test_personalization_artifact_diagnostics.py), excluded_sql() (scripts/supabase_snapshot/snapshot.py)
 - consulta local: `graphify query "<pergunta>"`, `graphify path "<A>" "<B>"`, `graphify explain "<X>"`
 
 ## Hotspots (arquivos mais alterados, 90 dias)
 - supabase/MIGRATIONS_SYNC_LOG.md (70)
-- package.json (32)
+- package.json (33)
 - docs/coordenacao/conflitos-semanticos.md (27)
 - RELATORIO_CI.md (21)
 - .github/workflows/deploy-gates.yml (19)
 - PENDENCIAS.md (19)
-- package-lock.json (18)
+- package-lock.json (19)
+- CHANGELOG.md (12)
 - audit/supabase-reference-catalog.temporary.json (12)
 - src/pages/mockups/MockupGenerator.tsx (12)
-- CHANGELOG.md (11)
 - src/pages/kit-builder/KitBuilderPage.tsx (11)
 - supabase/EDGE_FUNCTIONS_DEPLOY_LOG.md (11)
 - docs/agentes/resgates/2026-11-16-auditoria-branches.md (10)
@@ -1023,7 +1023,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - `.github/PULL_REQUEST_TEMPLATE.md` (112 linhas)
 - `.github/SENTINEL_CHANGELOG.md` — Sentinel Changelog (188 linhas)
 - `AGENTS.md` — AGENTS.md — Promo Gifts V4 (111 linhas)
-- `CHANGELOG.md` — Changelog (2430 linhas)
+- `CHANGELOG.md` — Changelog (2445 linhas)
 - `CI_PROVA_P33.md` — CI_PROVA_P33.md — Prova Final de Conclusão CI (Sessão P33, 2026-10-30) (97 linhas)
 - `CLAUDE.md` (2 linhas)
 - `CONTRIBUTING.md` — Guia de Contribuição (299 linhas)
@@ -1187,9 +1187,10 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - `docs/notifications-module-audit.md` — Auditoria — Módulo "Notificações de Estoque" (sino do header) (110 linhas)
 - `docs/prod-readiness.md` — Prontidão para produção — inventário e prova (1148 linhas)
 - subpastas de docs/: docs/arquivo (92), docs/redeploy (27), docs/agentes (26), docs/estado (26), docs/plans (24), docs/db (14), docs/audits (12), docs/ci (12), docs/adr (11), docs/auditoria-planejado-nao-executado-2026-10-11 (11), docs/hardening (11), docs/validation (11), docs/architecture (9), docs/runbooks (8), docs/bugs (6), docs/security (6), docs/sessoes (5), docs/suppliers (5), docs/arquitetura (4), docs/audit (4), docs/operations (4), docs/testing (4), docs/RUNBOOKS (3), docs/contexto (3), docs/design (3), docs/fabrica-vps (3), docs/faxina-261114 (3), docs/observability (3), docs/qa (3), docs/reports (3), docs/INCIDENTS (2), docs/contracts (2), docs/coordenacao (2), docs/edge-functions (2), docs/historico (2), docs/incidente-2026-10-13 (2), docs/prompts (2), docs/e2e (1), docs/graphify (1), docs/incidents (1), docs/migrations (1), docs/pipelines (1), docs/postmortems (1), docs/promo-champions (1), docs/storage (1), docs/workflows (1)
-- CHANGELOG topo: [1.12.0](https://github.com/adm01-debug/Promo_Gifts_V4/compare/gifts-store-v1.11.0...gifts-store-v1.12.0) (2026-11-19)
+- CHANGELOG topo: [1.13.0](https://github.com/adm01-debug/Promo_Gifts_V4/compare/gifts-store-v1.12.0...gifts-store-v1.13.0) (2026-11-20)
 
 ## Últimos commits
+- 2026-11-19 `8fe268c2` chore(main): release gifts-store 1.13.0 (#3904)
 - 2026-11-19 `4e503286` docs(migrations-log): recibo E15 — aplicação de 20261119212000 (#3906)
 - 2026-11-19 `00502c7a` fix(frete): motor agrupa por produto e corrige bordas (#3910)
 - 2026-11-19 `f653a19d` docs(migrations): recibos E15 das tabelas de frete (#3911)
@@ -1204,7 +1205,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-19 `eebe7678` feat(scripts): gate do Vercel no pre-push (resgate de trabalho de agente) (#3901)
 - 2026-11-19 `2080226f` fix(frete): motor ignora as colunas box_* do catálogo (caixa master, não embalagem) (#3898)
 - 2026-11-19 `fa3463ca` chore(main): release gifts-store 1.11.0 (#3895)
-- 2026-11-19 `6f0bd2fc` chore(ci): resgata mitigacao de artifact do e2e-cart (#3897)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

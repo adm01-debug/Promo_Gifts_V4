@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "chore(main): release gifts-store 1.13.0 (#3904)",
    "docs(migrations-log): recibo E15 — aplicação de 20261119212000 (#3906)",
    "fix(frete): motor agrupa por produto e corrige bordas (#3910)",
    "docs(migrations): recibos E15 das tabelas de frete (#3911)",
-   "docs(migrations-log): recibo E15 — aplicação de 20261119220000 (#3913)",
-   "feat: funções irmãs do painel EMA + remonta Onda 3 no /estoque (#3907)"
+   "docs(migrations-log): recibo E15 — aplicação de 20261119220000 (#3913)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",
