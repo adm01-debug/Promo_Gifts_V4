@@ -1,15 +1,15 @@
 {
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
- "total": 327,
+ "total": 330,
  "por_camada": {
   "api": 4,
   "config": 1,
   "data": 3,
   "integrations": 8,
-  "lib": 250,
+  "lib": 251,
   "python": 9,
-  "services": 10,
+  "services": 12,
   "stores": 9,
   "utils": 33
  },
@@ -720,7 +720,7 @@
    "zod_schemas": 0,
    "flags": [],
    "papeis": [],
-   "usado_por": 406,
+   "usado_por": 408,
    "usado_por_modulos": [
     "components/admin",
     "components/ai",
@@ -952,7 +952,7 @@
     "TablesUpdate"
    ],
    "export_default": null,
-   "linhas": 65232,
+   "linhas": 65331,
    "tabelas": [],
    "rpcs": [],
    "edges": [],
@@ -961,7 +961,7 @@
    "zod_schemas": 0,
    "flags": [],
    "papeis": [],
-   "usado_por": 56,
+   "usado_por": 59,
    "usado_por_modulos": [
     "components/admin",
     "components/cart",
@@ -989,7 +989,7 @@
     "services",
     "stores"
    ],
-   "coberto_por_testes": 7,
+   "coberto_por_testes": 8,
    "orfao": false
   },
   {
@@ -2540,8 +2540,9 @@
    "zod_schemas": 0,
    "flags": [],
    "papeis": [],
-   "usado_por": 2,
+   "usado_por": 3,
    "usado_por_modulos": [
+    "components/admin",
     "components/kit-library",
     "utils"
    ],
@@ -3943,7 +3944,7 @@
    "usado_por_modulos": [
     "lib/freight"
    ],
-   "coberto_por_testes": 1,
+   "coberto_por_testes": 2,
    "orfao": false
   },
   {
@@ -4095,6 +4096,32 @@
    "orfao": false
   },
   {
+   "arquivo": "src/lib/freight/fromDatabase.ts",
+   "camada": "lib",
+   "exports": [
+    "FreightSettingsSource",
+    "ShippingBoxSource",
+    "toFreightSettings",
+    "toShippingBox"
+   ],
+   "export_default": null,
+   "linhas": 96,
+   "tabelas": [],
+   "rpcs": [],
+   "edges": [],
+   "env": [],
+   "externos": [],
+   "zod_schemas": 0,
+   "flags": [],
+   "papeis": [],
+   "usado_por": 1,
+   "usado_por_modulos": [
+    "lib/freight"
+   ],
+   "coberto_por_testes": 1,
+   "orfao": false
+  },
+  {
    "arquivo": "src/lib/freight/index.ts",
    "camada": "lib",
    "exports": [
@@ -4119,11 +4146,13 @@
     "resolveItemDimensions",
     "round1",
     "round2",
+    "toFreightSettings",
+    "toShippingBox",
     "volumeCm3",
     "volumeInternoCm3"
    ],
    "export_default": null,
-   "linhas": 61,
+   "linhas": 68,
    "tabelas": [],
    "rpcs": [],
    "edges": [],
@@ -4132,8 +4161,11 @@
    "zod_schemas": 0,
    "flags": [],
    "papeis": [],
-   "usado_por": 0,
-   "usado_por_modulos": [],
+   "usado_por": 3,
+   "usado_por_modulos": [
+    "components/admin",
+    "hooks/freight"
+   ],
    "coberto_por_testes": 0,
    "orfao": false
   },
@@ -4264,7 +4296,7 @@
    "zod_schemas": 0,
    "flags": [],
    "papeis": [],
-   "usado_por": 11,
+   "usado_por": 12,
    "usado_por_modulos": [
     "lib/freight"
    ],
@@ -4293,7 +4325,7 @@
    "zod_schemas": 0,
    "flags": [],
    "papeis": [],
-   "usado_por": 6,
+   "usado_por": 7,
    "usado_por_modulos": [
     "lib/freight",
     "lib/kit-builder"
@@ -5223,7 +5255,7 @@
    "zod_schemas": 0,
    "flags": [],
    "papeis": [],
-   "usado_por": 305,
+   "usado_por": 307,
    "usado_por_modulos": [
     "components",
     "components/admin",
@@ -6793,7 +6825,7 @@
     "summarizeRoutes"
    ],
    "export_default": null,
-   "linhas": 465,
+   "linhas": 474,
    "tabelas": [],
    "rpcs": [],
    "edges": [],
@@ -6852,7 +6884,7 @@
     "prefetchRoute"
    ],
    "export_default": null,
-   "linhas": 76,
+   "linhas": 77,
    "tabelas": [],
    "rpcs": [],
    "edges": [],
@@ -7000,10 +7032,11 @@
    "zod_schemas": 0,
    "flags": [],
    "papeis": [],
-   "usado_por": 4,
+   "usado_por": 6,
    "usado_por_modulos": [
     "components/admin",
-    "hooks/quotes"
+    "hooks/quotes",
+    "services"
    ],
    "coberto_por_testes": 0,
    "orfao": false
@@ -8195,7 +8228,7 @@
    "zod_schemas": 0,
    "flags": [],
    "papeis": [],
-   "usado_por": 657,
+   "usado_por": 659,
    "usado_por_modulos": [
     "components",
     "components/admin",
@@ -8528,6 +8561,40 @@
    "orfao": false
   },
   {
+   "arquivo": "src/services/freightSettingsService.ts",
+   "camada": "services",
+   "exports": [
+    "FreightSettingsError",
+    "FreightSettingsErrorReason",
+    "FreightSettingsPatch",
+    "FreightSettingsRow",
+    "FreightSettingsWrite",
+    "MultiPersonalizationRule",
+    "freightSettingsService"
+   ],
+   "export_default": null,
+   "linhas": 122,
+   "tabelas": [
+    "freight_settings"
+   ],
+   "rpcs": [],
+   "edges": [],
+   "env": [],
+   "externos": [
+    "@supabase/supabase-js"
+   ],
+   "zod_schemas": 0,
+   "flags": [],
+   "papeis": [],
+   "usado_por": 3,
+   "usado_por_modulos": [
+    "components/admin",
+    "hooks/freight"
+   ],
+   "coberto_por_testes": 4,
+   "orfao": false
+  },
+  {
    "arquivo": "src/services/magazineService.ts",
    "camada": "services",
    "exports": [
@@ -8757,6 +8824,39 @@
     "hooks/crm"
    ],
    "coberto_por_testes": 0,
+   "orfao": false
+  },
+  {
+   "arquivo": "src/services/shippingBoxService.ts",
+   "camada": "services",
+   "exports": [
+    "ShippingBoxError",
+    "ShippingBoxErrorReason",
+    "ShippingBoxPatch",
+    "ShippingBoxRow",
+    "ShippingBoxWrite",
+    "shippingBoxService"
+   ],
+   "export_default": null,
+   "linhas": 226,
+   "tabelas": [
+    "shipping_boxes"
+   ],
+   "rpcs": [],
+   "edges": [],
+   "env": [],
+   "externos": [
+    "@supabase/supabase-js"
+   ],
+   "zod_schemas": 0,
+   "flags": [],
+   "papeis": [],
+   "usado_por": 6,
+   "usado_por_modulos": [
+    "components/admin",
+    "hooks/freight"
+   ],
+   "coberto_por_testes": 4,
    "orfao": false
   },
   {

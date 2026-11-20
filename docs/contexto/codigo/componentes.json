@@ -1,7 +1,7 @@
 {
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
- "total": 1262,
+ "total": 1268,
  "orfaos": 157,
  "nomes_duplicados": {
   "AdminTemplatesManager": [
@@ -3823,6 +3823,20 @@
    "orfao": false
   },
   {
+   "arquivo": "src/components/admin/freight-settings/FreightSettingsForm.tsx",
+   "exports": [
+    "FreightSettingsForm"
+   ],
+   "export_default": null,
+   "linhas": 296,
+   "dominio": "components/admin",
+   "hooks_locais": [],
+   "tabelas": [],
+   "edges": [],
+   "usado_por": 1,
+   "orfao": false
+  },
+  {
    "arquivo": "src/components/admin/group-personalization/GroupComponentCard.tsx",
    "exports": [
     "GroupComponentCard"
@@ -5453,6 +5467,68 @@
    "edges": [],
    "usado_por": 0,
    "orfao": true
+  },
+  {
+   "arquivo": "src/components/admin/shipping-boxes/ShippingBoxesManager.tsx",
+   "exports": [
+    "ShippingBoxesManager"
+   ],
+   "export_default": null,
+   "linhas": 160,
+   "dominio": "components/admin",
+   "hooks_locais": [
+    "useShippingBoxMutations",
+    "useShippingBoxes"
+   ],
+   "tabelas": [],
+   "edges": [],
+   "usado_por": 1,
+   "orfao": false
+  },
+  {
+   "arquivo": "src/components/admin/shipping-boxes/ShippingBoxesTable.tsx",
+   "exports": [
+    "ShippingBoxesTable"
+   ],
+   "export_default": null,
+   "linhas": 109,
+   "dominio": "components/admin",
+   "hooks_locais": [],
+   "tabelas": [],
+   "edges": [],
+   "usado_por": 1,
+   "orfao": false
+  },
+  {
+   "arquivo": "src/components/admin/shipping-boxes/ShippingBoxesTrash.tsx",
+   "exports": [
+    "ShippingBoxesTrash"
+   ],
+   "export_default": null,
+   "linhas": 131,
+   "dominio": "components/admin",
+   "hooks_locais": [
+    "useDeletedShippingBoxes"
+   ],
+   "tabelas": [],
+   "edges": [],
+   "usado_por": 1,
+   "orfao": false
+  },
+  {
+   "arquivo": "src/components/admin/shipping-boxes/ShippingBoxFormDialog.tsx",
+   "exports": [
+    "RejectedShippingBoxCode",
+    "ShippingBoxFormDialog"
+   ],
+   "export_default": null,
+   "linhas": 350,
+   "dominio": "components/admin",
+   "hooks_locais": [],
+   "tabelas": [],
+   "edges": [],
+   "usado_por": 1,
+   "orfao": false
   },
   {
    "arquivo": "src/components/admin/SortableItem.tsx",
@@ -11040,7 +11116,7 @@
     "SidebarReorganized"
    ],
    "export_default": null,
-   "linhas": 662,
+   "linhas": 675,
    "dominio": "components/layout",
    "hooks_locais": [
     "useAuth",
@@ -15696,7 +15772,7 @@
    "hooks_locais": [],
    "tabelas": [],
    "edges": [],
-   "usado_por": 132,
+   "usado_por": 133,
    "orfao": false
   },
   {
@@ -16351,7 +16427,7 @@
    "hooks_locais": [],
    "tabelas": [],
    "edges": [],
-   "usado_por": 640,
+   "usado_por": 646,
    "orfao": false
   },
   {
@@ -16385,7 +16461,7 @@
    "hooks_locais": [],
    "tabelas": [],
    "edges": [],
-   "usado_por": 358,
+   "usado_por": 359,
    "orfao": false
   },
   {
@@ -16503,7 +16579,7 @@
    "hooks_locais": [],
    "tabelas": [],
    "edges": [],
-   "usado_por": 44,
+   "usado_por": 45,
    "orfao": false
   },
   {
@@ -16575,7 +16651,7 @@
    ],
    "tabelas": [],
    "edges": [],
-   "usado_por": 139,
+   "usado_por": 140,
    "orfao": false
   },
   {
@@ -16734,7 +16810,7 @@
    "hooks_locais": [],
    "tabelas": [],
    "edges": [],
-   "usado_por": 262,
+   "usado_por": 264,
    "orfao": false
   },
   {
@@ -16762,7 +16838,7 @@
    "hooks_locais": [],
    "tabelas": [],
    "edges": [],
-   "usado_por": 145,
+   "usado_por": 147,
    "orfao": false
   },
   {
@@ -16894,7 +16970,7 @@
    "hooks_locais": [],
    "tabelas": [],
    "edges": [],
-   "usado_por": 4,
+   "usado_por": 5,
    "orfao": false
   },
   {
@@ -16909,7 +16985,7 @@
    "hooks_locais": [],
    "tabelas": [],
    "edges": [],
-   "usado_por": 94,
+   "usado_por": 95,
    "orfao": false
   },
   {
@@ -17116,7 +17192,7 @@
    "hooks_locais": [],
    "tabelas": [],
    "edges": [],
-   "usado_por": 63,
+   "usado_por": 65,
    "orfao": false
   },
   {
@@ -17138,7 +17214,7 @@
    "hooks_locais": [],
    "tabelas": [],
    "edges": [],
-   "usado_por": 54,
+   "usado_por": 56,
    "orfao": false
   },
   {
@@ -17326,7 +17402,7 @@
    ],
    "tabelas": [],
    "edges": [],
-   "usado_por": 207,
+   "usado_por": 208,
    "orfao": false
   },
   {
@@ -17674,7 +17750,7 @@
     "AdminCadastrosPage"
    ],
    "export_default": "AdminCadastrosPage",
-   "linhas": 135,
+   "linhas": 155,
    "dominio": "pages/admin",
    "hooks_locais": [],
    "tabelas": [],
@@ -17776,6 +17852,23 @@
    "tabelas": [],
    "edges": [],
    "usado_por": 1,
+   "orfao": false
+  },
+  {
+   "arquivo": "src/pages/admin/AdminFreteSettingsPage.tsx",
+   "exports": [
+    "AdminFreteSettingsPage"
+   ],
+   "export_default": "AdminFreteSettingsPage",
+   "linhas": 104,
+   "dominio": "pages/admin",
+   "hooks_locais": [
+    "useFreightSettings",
+    "useUpdateFreightSettings"
+   ],
+   "tabelas": [],
+   "edges": [],
+   "usado_por": 2,
    "orfao": false
   },
   {

@@ -2,11 +2,11 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "resumo": {
-  "urls": 139,
+  "urls": 140,
   "rotas_http_backend": 13,
   "vistas_por_id": 0,
-  "itens_menu": 69,
-  "lazy": 172
+  "itens_menu": 71,
+  "lazy": 174
  },
  "urls": [
   {
@@ -2952,6 +2952,7 @@
     "useDeleteFreshnessOverride",
     "useDeleteRamoAtividade",
     "useDeleteSegmento",
+    "useDeletedShippingBoxes",
     "useDevAccessAudit",
     "useDevGate",
     "useDeviceDetection",
@@ -2995,6 +2996,7 @@
     "useFilteredProductIds",
     "useFilteredTechniques",
     "useFocusTrap",
+    "useFreightSettings",
     "useGenericFuzzySearch",
     "useGeoBlocking",
     "useGlobalErrorCatcher",
@@ -3133,6 +3135,8 @@
     "useSellerCarts",
     "useSensor",
     "useSensors",
+    "useShippingBoxMutations",
+    "useShippingBoxes",
     "useSimilarProducts",
     "useSimulation",
     "useSimulatorPreferences",
@@ -3179,6 +3183,7 @@
     "useUndoStack",
     "useUnsavedChangesGuard",
     "useUpcomingCommemorativeDates",
+    "useUpdateFreightSettings",
     "useUpdateQuota",
     "useUpdateRamoAtividade",
     "useUpdateSegmento",
@@ -3265,6 +3270,7 @@
     "useDeleteFreshnessOverride",
     "useDeleteRamoAtividade",
     "useDeleteSegmento",
+    "useDeletedShippingBoxes",
     "useDevAccessAudit",
     "useDevGate",
     "useDeviceDetection",
@@ -3306,6 +3312,7 @@
     "useFilterPanelState",
     "useFilteredTechniques",
     "useFocusTrap",
+    "useFreightSettings",
     "useGenericFuzzySearch",
     "useGeoBlocking",
     "useGlobalErrorCatcher",
@@ -3427,6 +3434,8 @@
     "useSegmentosCompletos",
     "useSegmentosPorRamo",
     "useSellerCarts",
+    "useShippingBoxMutations",
+    "useShippingBoxes",
     "useSimilarProducts",
     "useSimulation",
     "useSimulatorPreferences",
@@ -3470,6 +3479,7 @@
     "useUndoStack",
     "useUnsavedChangesGuard",
     "useUpcomingCommemorativeDates",
+    "useUpdateFreightSettings",
     "useUpdateQuota",
     "useUpdateRamoAtividade",
     "useUpdateSegmento",
@@ -3497,6 +3507,7 @@
     "favorite_items",
     "favorite_items_trash",
     "favorite_lists",
+    "freight_settings",
     "frontend_telemetry",
     "generated_mockups",
     "kill_switch_hits",
@@ -3523,6 +3534,7 @@
     "search_analytics",
     "seller_cart_items",
     "seller_carts",
+    "shipping_boxes",
     "system_kill_switches",
     "system_settings",
     "user_roles",
@@ -3542,6 +3554,7 @@
     "get_promo_sales_90d_by_product",
     "get_promo_sales_ranking",
     "increment_kit_template_usage",
+    "log_rls_denial",
     "log_user_logout",
     "restore_favorite_from_trash",
     "restore_seller_cart",
@@ -3577,7 +3590,7 @@
     "status",
     "supervisor"
    ],
-   "arquivos_puxados": 510
+   "arquivos_puxados": 538
   },
   {
    "protegida": true,
@@ -6595,6 +6608,70 @@
     "supervisor"
    ],
    "arquivos_puxados": 414
+  },
+  {
+   "protegida": true,
+   "wrappers": [],
+   "pai": null,
+   "indice": false,
+   "lazy": true,
+   "tipo": "tela",
+   "caminho": "/admin/frete",
+   "componente": "AdminFreteSettingsPage",
+   "arquivo": "src/pages/admin/AdminFreteSettingsPage.tsx",
+   "definida_em": "src/routes/admin-routes.tsx",
+   "redireciona": null,
+   "hooks": [
+    "useAuth",
+    "useAuthMFA",
+    "useCallback",
+    "useContext",
+    "useDeletedShippingBoxes",
+    "useEffect",
+    "useFreightSettings",
+    "useId",
+    "useMemo",
+    "useMutation",
+    "useProductsColorsBatch",
+    "useProfileRoles",
+    "useQuery",
+    "useQueryClient",
+    "useRef",
+    "useShippingBoxMutations",
+    "useShippingBoxes",
+    "useState",
+    "useUpdateFreightSettings"
+   ],
+   "hooks_locais": [
+    "useAuth",
+    "useAuthMFA",
+    "useDeletedShippingBoxes",
+    "useFreightSettings",
+    "useProductsColorsBatch",
+    "useProfileRoles",
+    "useShippingBoxMutations",
+    "useShippingBoxes",
+    "useUpdateFreightSettings"
+   ],
+   "tabelas": [
+    "freight_settings",
+    "profiles",
+    "shipping_boxes",
+    "user_roles"
+   ],
+   "rpcs": [
+    "get_profile_and_roles",
+    "log_rls_denial",
+    "log_user_logout"
+   ],
+   "edges": [],
+   "canais_realtime": [],
+   "flags": [],
+   "papeis": [
+    "alert",
+    "status"
+   ],
+   "arquivos_puxados": 61
   },
   {
    "protegida": true,
@@ -37617,6 +37694,15 @@
    "resolve_para": "src/pages/tools/AdvancedPriceSearchPage.tsx"
   },
   {
+   "rotulo": "Caixas de transporte",
+   "destino": "/admin/cadastros?tab=caixas",
+   "grupo": null,
+   "papeis": [],
+   "papeis_nao_resolvidos": null,
+   "definido_em": "src/components/layout/SidebarReorganized.tsx",
+   "resolve_para": "src/pages/admin/AdminCadastrosPage.tsx"
+  },
+  {
    "rotulo": "Carrinho",
    "destino": "__open_cart__",
    "grupo": null,
@@ -37795,6 +37881,15 @@
    "papeis_nao_resolvidos": null,
    "definido_em": "src/components/layout/SidebarReorganized.tsx",
    "resolve_para": "src/pages/admin/AdminCadastrosPage.tsx"
+  },
+  {
+   "rotulo": "Frete",
+   "destino": "/admin/frete",
+   "grupo": null,
+   "papeis": [],
+   "papeis_nao_resolvidos": null,
+   "definido_em": "src/components/layout/SidebarReorganized.tsx",
+   "resolve_para": "src/pages/admin/AdminFreteSettingsPage.tsx"
   },
   {
    "rotulo": "Gerador de Mockups",
@@ -38168,6 +38263,7 @@
   "AdminConexoesStatusPage": "src/pages/admin/AdminConexoesStatusPage.tsx",
   "AdminDesignTokensPage": "src/pages/admin/AdminDesignTokensPage.tsx",
   "AdminExternalDbPage": "src/pages/admin/AdminExternalDbPage.tsx",
+  "AdminFreteSettingsPage": "src/pages/admin/AdminFreteSettingsPage.tsx",
   "AdminLoginAttemptsPage": "src/pages/admin/AdminLoginAttemptsPage.tsx",
   "AdminMigracaoPapeisPage": "src/pages/admin/AdminMigracaoPapeisPage.tsx",
   "AdminProductFormPage": "src/pages/admin/AdminProductFormPage.tsx",
@@ -38305,6 +38401,7 @@
   "SellerCartsPage": "src/pages/products/SellerCartsPage.tsx",
   "SellerDiscountLimitsAdminPage": "src/pages/admin/SellerDiscountLimitsAdminPage.tsx",
   "SharePreviewDialog": "src/components/products/share/SharePreviewDialog.tsx",
+  "ShippingBoxesManager": "src/components/admin/shipping-boxes/index.ts",
   "SidebarQAPage": "src/pages/SidebarQAPage.tsx",
   "SidebarReorganized": "src/components/layout/SidebarReorganized.tsx",
   "SimilarProducts": "src/components/products/SimilarProducts.tsx",

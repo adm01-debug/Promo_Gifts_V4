@@ -1,7 +1,7 @@
 {
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
- "total": 633,
+ "total": 635,
  "hooks": [
   {
    "arquivo": "docs/agentes/resgates/quote-comments/codigo/useQuoteComments.ts",
@@ -6321,7 +6321,7 @@
     "useRef"
    ],
    "canais_realtime": [],
-   "usado_por": 207,
+   "usado_por": 208,
    "usado_por_arquivos": [
     "docs/agentes/resgates/quote-comments/codigo/QuoteCommentsSection.tsx",
     "docs/agentes/resgates/quote-comments/codigo/useQuoteComments.ts",
@@ -8788,6 +8788,56 @@
    "usado_por": 1,
    "usado_por_arquivos": [
     "src/hooks/favorites/index.ts"
+   ],
+   "coberto_por_testes": 0
+  },
+  {
+   "arquivo": "src/hooks/freight/useFreightSettings.ts",
+   "hooks_exportados": [
+    "useFreightSettings",
+    "useUpdateFreightSettings"
+   ],
+   "linhas": 95,
+   "dominio": "hooks/freight",
+   "tabelas": [],
+   "rpcs": [],
+   "edges": [],
+   "hooks_internos": [
+    "useAuth",
+    "useMemo",
+    "useMutation",
+    "useQuery",
+    "useQueryClient"
+   ],
+   "canais_realtime": [],
+   "usado_por": 1,
+   "usado_por_arquivos": [
+    "src/hooks/freight/index.ts"
+   ],
+   "coberto_por_testes": 0
+  },
+  {
+   "arquivo": "src/hooks/freight/useShippingBoxes.ts",
+   "hooks_exportados": [
+    "useDeletedShippingBoxes",
+    "useShippingBoxMutations",
+    "useShippingBoxes"
+   ],
+   "linhas": 202,
+   "dominio": "hooks/freight",
+   "tabelas": [],
+   "rpcs": [],
+   "edges": [],
+   "hooks_internos": [
+    "useMemo",
+    "useMutation",
+    "useQuery",
+    "useQueryClient"
+   ],
+   "canais_realtime": [],
+   "usado_por": 1,
+   "usado_por_arquivos": [
+    "src/hooks/freight/index.ts"
    ],
    "coberto_por_testes": 0
   },

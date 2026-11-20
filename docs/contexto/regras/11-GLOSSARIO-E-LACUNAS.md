@@ -1,6 +1,6 @@
 # 11 · GLOSSÁRIO, DADOS DE REFERÊNCIA E LACUNAS
 
-> Gerado automaticamente por AI Context Sync v1.3.2 · commit `8fe268c274` · branch `main` · 2026-11-20 00:07 UTC
+> Gerado automaticamente por AI Context Sync v1.3.2 · commit `777cac4c50` · branch `main` · 2026-11-20 01:15 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## Glossário do domínio (entidades do sistema)
@@ -307,7 +307,7 @@
 | `product_price_freshness_overrides` | Override local da janela de validade de preço por produto (30/60/90 dias). Sobrescreve o valor padrão de 60 dias e tem precedência sobre qualquer valor que venha a ser exposto pelo BD externo no futuro. | 6 colunas | migration |
 | `product_print_positions` | _(sem COMMENT ON TABLE — significado não documentado)_ | 18 colunas | migration |
 | `product_properties` | Relacionamento entre produtos e suas propriedades | 9 colunas | migration |
-| … +508 linhas — lista completa em `context.json` | | | |
+| … +512 linhas — lista completa em `context.json` | | | |
 
 ## Dados de referência (seed — planos, categorias, perfis fixos)
 
@@ -576,6 +576,7 @@
 | tabela | tabela `fantasma` usada no código não existe nas migrations/types do repo | `scripts/ai-context/cenarios.mjs` |
 | tabela | tabela `fixture_table` usada no código não existe nas migrations/types do repo | `scripts/ai-context/gerar.unit.mjs` |
 | tabela | tabela `foreign_quotes` usada no código não existe nas migrations/types do repo | `tests/scripts/check-supabase-reference-catalog.test.mjs` |
+| tabela | tabela `freight_settings` usada no código não existe nas migrations/types do repo | `src/services/freightSettingsService.ts` |
 | tabela | tabela `ghost_table` usada no código não existe nas migrations/types do repo | `scripts/ai-context/gerar.unit.mjs` |
 | tabela | tabela `literal` usada no código não existe nas migrations/types do repo | `scripts/check-select-columns.mjs` |
 | tabela | tabela `messages` usada no código não existe nas migrations/types do repo | `recovery/RealtimeMessagesExample.tsx` |
@@ -585,6 +586,7 @@
 | tabela | tabela `produtos` usada no código não existe nas migrations/types do repo | `tests/scripts/audit-db-frontend-coverage.test.mjs`<br>`tests/scripts/inventario-banco.test.mjs` |
 | tabela | tabela `quote_comments` usada no código não existe nas migrations/types do repo | `docs/agentes/resgates/quote-comments/codigo/useQuoteComments.ts`<br>`recovery/src-legacy/src/hooks/useQuoteComments.ts` |
 | tabela | tabela `runtime_table` usada no código não existe nas migrations/types do repo | `scripts/ai-context/gerar.unit.mjs` |
+| tabela | tabela `shipping_boxes` usada no código não existe nas migrations/types do repo | `src/services/shippingBoxService.ts` |
 | tabela | tabela `so_teste` usada no código não existe nas migrations/types do repo | `scripts/ai-context/cenarios.mjs` |
 | tabela | tabela `some_table` usada no código não existe nas migrations/types do repo | `src/lib/intelligence/degradation.ts` |
 | tabela | tabela `stock_notes` usada no código não existe nas migrations/types do repo | `src/hooks/stock/useStockNotes.ts`<br>`tests/scripts/check-supabase-reference-catalog.test.mjs` |
@@ -644,9 +646,7 @@
 | edge | edge function `dashboard-edge` invocada mas não existe em supabase/functions/ | `scripts/ai-context/gerar.unit.mjs` |
 | edge | edge function `e` invocada mas não existe em supabase/functions/ | `src/integrations/supabase/__tests__/edge-request-id.test.ts` |
 | edge | edge function `e1` invocada mas não existe em supabase/functions/ | `src/integrations/supabase/__tests__/edge-request-id.test.ts` |
-| edge | edge function `e2` invocada mas não existe em supabase/functions/ | `src/integrations/supabase/__tests__/edge-request-id.test.ts` |
-| edge | edge function `fixture-edge` invocada mas não existe em supabase/functions/ | `scripts/ai-context/gerar.unit.mjs` |
-| … +236 linhas — lista completa em `context.json` | | |
+| … +238 linhas — lista completa em `context.json` | | |
 
 ## Lacunas — o que este contexto NÃO consegue responder (perguntas para o dono do negócio)
 

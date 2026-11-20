@@ -3105,6 +3105,19 @@
   "src/components/admin/connections/useZoneCollapse.ts": [
    "src/components/admin/connections/useZoneVisibility.ts"
   ],
+  "src/components/admin/freight-settings/FreightSettingsForm.tsx": [
+   "src/components/admin/freight-settings/freightSettingsFormSchema.ts",
+   "src/components/ui/button.tsx",
+   "src/components/ui/card.tsx",
+   "src/components/ui/input.tsx",
+   "src/components/ui/label.tsx",
+   "src/components/ui/radio-group.tsx",
+   "src/lib/date-utils.ts",
+   "src/services/freightSettingsService.ts"
+  ],
+  "src/components/admin/freight-settings/freightSettingsFormSchema.ts": [
+   "src/services/freightSettingsService.ts"
+  ],
   "src/components/admin/group-personalization/GroupComponentCard.tsx": [
    "src/components/admin/InlineEditField.tsx",
    "src/components/admin/SortableItem.tsx",
@@ -4088,6 +4101,51 @@
    "src/components/ui/textarea.tsx",
    "src/hooks/admin/index.ts",
    "src/integrations/supabase/client.ts"
+  ],
+  "src/components/admin/shipping-boxes/ShippingBoxFormDialog.tsx": [
+   "src/components/admin/shipping-boxes/shippingBoxFormSchema.ts",
+   "src/components/admin/shipping-boxes/shippingBoxFormat.ts",
+   "src/components/ui/button.tsx",
+   "src/components/ui/collapsible.tsx",
+   "src/components/ui/dialog.tsx",
+   "src/components/ui/input.tsx",
+   "src/components/ui/label.tsx",
+   "src/components/ui/scroll-area.tsx",
+   "src/components/ui/switch.tsx",
+   "src/lib/utils.ts",
+   "src/services/shippingBoxService.ts"
+  ],
+  "src/components/admin/shipping-boxes/ShippingBoxesManager.tsx": [
+   "src/components/admin/shipping-boxes/ShippingBoxFormDialog.tsx",
+   "src/components/admin/shipping-boxes/ShippingBoxesTable.tsx",
+   "src/components/admin/shipping-boxes/ShippingBoxesTrash.tsx",
+   "src/components/ui/ConfirmDialog.tsx",
+   "src/components/ui/button.tsx",
+   "src/hooks/freight/index.ts",
+   "src/services/shippingBoxService.ts"
+  ],
+  "src/components/admin/shipping-boxes/ShippingBoxesTable.tsx": [
+   "src/components/admin/shipping-boxes/shippingBoxFormat.ts",
+   "src/components/ui/button.tsx",
+   "src/components/ui/switch.tsx",
+   "src/components/ui/table.tsx",
+   "src/services/shippingBoxService.ts"
+  ],
+  "src/components/admin/shipping-boxes/ShippingBoxesTrash.tsx": [
+   "src/components/admin/shipping-boxes/shippingBoxFormat.ts",
+   "src/components/ui/button.tsx",
+   "src/components/ui/collapsible.tsx",
+   "src/components/ui/table.tsx",
+   "src/hooks/freight/index.ts",
+   "src/lib/utils.ts",
+   "src/services/shippingBoxService.ts"
+  ],
+  "src/components/admin/shipping-boxes/index.ts": [
+   "src/components/admin/shipping-boxes/ShippingBoxesManager.tsx"
+  ],
+  "src/components/admin/shipping-boxes/shippingBoxFormSchema.ts": [
+   "src/lib/freight/index.ts",
+   "src/services/shippingBoxService.ts"
   ],
   "src/components/admin/suppliers-manager/SupplierAddressTab.tsx": [
    "src/components/admin/suppliers-manager/types.ts",
@@ -10461,6 +10519,22 @@
    "src/hooks/products/index.ts",
    "src/stores/useFavoritesStore.ts"
   ],
+  "src/hooks/freight/index.ts": [
+   "src/hooks/freight/keys.ts",
+   "src/hooks/freight/useFreightSettings.ts",
+   "src/hooks/freight/useShippingBoxes.ts"
+  ],
+  "src/hooks/freight/useFreightSettings.ts": [
+   "src/contexts/AuthContext.tsx",
+   "src/hooks/freight/keys.ts",
+   "src/lib/freight/index.ts",
+   "src/services/freightSettingsService.ts"
+  ],
+  "src/hooks/freight/useShippingBoxes.ts": [
+   "src/hooks/freight/keys.ts",
+   "src/lib/freight/index.ts",
+   "src/services/shippingBoxService.ts"
+  ],
   "src/hooks/gravacao/gravacao-constants.ts": [
    "src/hooks/gravacao/gravacao-types.ts"
   ],
@@ -12193,6 +12267,11 @@
    "src/lib/freight/boxOrder.ts",
    "src/lib/freight/types.ts"
   ],
+  "src/lib/freight/fromDatabase.ts": [
+   "src/integrations/supabase/types.ts",
+   "src/lib/freight/types.ts",
+   "src/lib/freight/units.ts"
+  ],
   "src/lib/freight/index.ts": [
    "src/lib/freight/boxOrder.ts",
    "src/lib/freight/buildGroups.ts",
@@ -12201,6 +12280,7 @@
    "src/lib/freight/expandQuantities.ts",
    "src/lib/freight/fitCount.ts",
    "src/lib/freight/formatPlanSummary.ts",
+   "src/lib/freight/fromDatabase.ts",
    "src/lib/freight/packMixed.ts",
    "src/lib/freight/packSingleProduct.ts",
    "src/lib/freight/planFreight.ts",
@@ -12477,6 +12557,7 @@
    "src/pages/Index.tsx",
    "src/pages/admin/AdminCadastrosPage.tsx",
    "src/pages/admin/AdminConexoesStatusPage.tsx",
+   "src/pages/admin/AdminFreteSettingsPage.tsx",
    "src/pages/admin/AdminTelemetriaPage.tsx",
    "src/pages/admin/AdminUsuariosPage.tsx",
    "src/pages/admin/StockDashboardPage.tsx",
@@ -12746,6 +12827,7 @@
    "src/components/admin/ProductsManager.tsx",
    "src/components/admin/badges-manager/index.ts",
    "src/components/admin/categories-manager/index.ts",
+   "src/components/admin/shipping-boxes/index.ts",
    "src/components/admin/suppliers-manager/index.ts",
    "src/components/seo/PageSEO.tsx",
    "src/components/ui/skeleton.tsx",
@@ -12852,6 +12934,12 @@
    "src/lib/personalization/rpc-contracts.ts",
    "src/lib/personalization/rpc-validator.ts",
    "src/pages/admin/engraving-schema-diff.ts"
+  ],
+  "src/pages/admin/AdminFreteSettingsPage.tsx": [
+   "src/components/admin/freight-settings/FreightSettingsForm.tsx",
+   "src/components/seo/PageSEO.tsx",
+   "src/components/ui/button.tsx",
+   "src/hooks/freight/index.ts"
   ],
   "src/pages/admin/AdminLoginAttemptsPage.tsx": [
    "src/components/seo/PageSEO.tsx",
@@ -14884,6 +14972,7 @@
    "src/pages/admin/AdminConexoesStatusPage.tsx",
    "src/pages/admin/AdminDesignTokensPage.tsx",
    "src/pages/admin/AdminExternalDbPage.tsx",
+   "src/pages/admin/AdminFreteSettingsPage.tsx",
    "src/pages/admin/AdminLoginAttemptsPage.tsx",
    "src/pages/admin/AdminMigracaoPapeisPage.tsx",
    "src/pages/admin/AdminProductFormPage.tsx",
@@ -14997,6 +15086,12 @@
    "src/lib/auth/safeAuthCall.ts",
    "src/lib/logger.ts"
   ],
+  "src/services/freightSettingsService.ts": [
+   "src/integrations/supabase/client.ts",
+   "src/integrations/supabase/types.ts",
+   "src/lib/logger.ts",
+   "src/lib/security/rls-denial-logger.ts"
+  ],
   "src/services/magazineService.ts": [
    "src/integrations/supabase/magazine-schema.ts",
    "src/integrations/supabase/types.ts",
@@ -15044,6 +15139,12 @@
   "src/services/ramoAtividadeService.ts": [
    "src/integrations/supabase/client.ts",
    "src/types/ramo-atividade.ts"
+  ],
+  "src/services/shippingBoxService.ts": [
+   "src/integrations/supabase/client.ts",
+   "src/integrations/supabase/types.ts",
+   "src/lib/logger.ts",
+   "src/lib/security/rls-denial-logger.ts"
   ],
   "src/services/telemetryService.ts": [
    "src/integrations/supabase/client.ts",

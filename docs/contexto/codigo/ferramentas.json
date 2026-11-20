@@ -3,10 +3,10 @@
  "format_version": 2,
  "stack": {
   "linguagens": [
-   "TypeScript (5046)",
+   "TypeScript (5074)",
    "SQL (3461)",
-   "Markdown (1486)",
-   "JavaScript (460)",
+   "Markdown (1487)",
+   "JavaScript (462)",
    "JSON (132)",
    "YAML (117)",
    "Shell (27)",
@@ -5424,11 +5424,11 @@
   "papeis_no_codigo": [
    {
     "papel": "status",
-    "ocorrencias": 82
+    "ocorrencias": 83
    },
    {
     "papel": "alert",
-    "ocorrencias": 58
+    "ocorrencias": 61
    },
    {
     "papel": "dev",
@@ -5771,7 +5771,7 @@
    "src/components/layout/ProtectedRoute.tsx",
    "src/components/system/RootInteractivityGuard.tsx"
   ],
-  "rotas_protegidas": 31,
+  "rotas_protegidas": 32,
   "rotas_publicas": [
    "/",
    "/__test/alert-dialog",

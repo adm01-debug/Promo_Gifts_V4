@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "8fe268c2748f4f3cfb1dfdd26ae9d66e2bf5fa88",
+  "sha": "777cac4c50c377f01bc3642c7b61805f2a0d24d0",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-20 00:07 UTC",
-  "files_total": 10957,
-  "code_files": 8976,
-  "code_lines": 1270595
+  "generated_at": "2026-11-20 01:15 UTC",
+  "files_total": 10989,
+  "code_files": 9006,
+  "code_lines": 1276881
  },
  "version": "1.3.2",
- "facts_hash": "c970a2d01d2a48f1",
+ "facts_hash": "bb2a596bf2d05354",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -1129,9 +1129,9 @@
   "package_manager": "npm",
   "languages": {
    ".sql": 3461,
-   ".ts": 3078,
-   ".tsx": 1969,
-   ".mjs": 453,
+   ".ts": 3098,
+   ".tsx": 1977,
+   ".mjs": 455,
    ".py": 15,
    ".js": 7
   },
@@ -143940,6 +143940,13 @@
     "file": "src/routes/admin-routes.tsx"
    },
    {
+    "path": "/admin/frete",
+    "component": "AdminFreteSettingsPage",
+    "guard": "",
+    "roles": [],
+    "file": "src/routes/admin-routes.tsx"
+   },
+   {
     "path": "/admin/kit-templates",
     "component": "KitTemplatesAdminPage",
     "guard": "",
@@ -145360,7 +145367,7 @@
     "file": ".github/workflows/wraparound-monitor-report.yml"
    }
   ],
-  "components_count": 1702,
+  "components_count": 1714,
   "hooks": [
    {
     "name": "useQuoteComments",
@@ -147467,6 +147474,26 @@
     "file": "src/hooks/favorites/useFavoritesPageState.ts"
    },
    {
+    "name": "useFreightSettings",
+    "file": "src/hooks/freight/useFreightSettings.ts"
+   },
+   {
+    "name": "useUpdateFreightSettings",
+    "file": "src/hooks/freight/useFreightSettings.ts"
+   },
+   {
+    "name": "useShippingBoxes",
+    "file": "src/hooks/freight/useShippingBoxes.ts"
+   },
+   {
+    "name": "useDeletedShippingBoxes",
+    "file": "src/hooks/freight/useShippingBoxes.ts"
+   },
+   {
+    "name": "useShippingBoxMutations",
+    "file": "src/hooks/freight/useShippingBoxes.ts"
+   },
+   {
     "name": "useTecnicasGravacao",
     "file": "src/hooks/gravacao/useTecnicasGravacao.ts"
    },
@@ -149302,8 +149329,8 @@
   },
   {
    "module": "e2e",
-   "files": 626,
-   "lines": 75977,
+   "files": 628,
+   "lines": 76188,
    "tables": [
     "discount_approval_requests",
     "quote_items"
@@ -149772,8 +149799,8 @@
   },
   {
    "module": "scripts",
-   "files": 300,
-   "lines": 64633,
+   "files": 301,
+   "lines": 65083,
    "tables": [
     "a",
     "b",
@@ -150012,8 +150039,8 @@
   },
   {
    "module": "src/components",
-   "files": 1427,
-   "lines": 282312,
+   "files": 1439,
+   "lines": 284918,
    "tables": [
     "admin_audit_log",
     "art_file_attachments",
@@ -150376,8 +150403,8 @@
   },
   {
    "module": "src/hooks",
-   "files": 490,
-   "lines": 92071,
+   "files": 494,
+   "lines": 92392,
    "tables": [
     "admin_audit_log",
     "admin_settings",
@@ -150664,8 +150691,8 @@
   },
   {
    "module": "src/lib",
-   "files": 384,
-   "lines": 58350,
+   "files": 386,
+   "lines": 58619,
    "tables": [
     "...",
     "companies",
@@ -150871,8 +150898,8 @@
   },
   {
    "module": "src/pages",
-   "files": 367,
-   "lines": 84615,
+   "files": 369,
+   "lines": 85028,
    "tables": [
     "ai_usage_events",
     "bot_detection_log",
@@ -150926,6 +150953,7 @@
     "AdminConexoesStatusPage.tsx: AdminConexoesStatusPage",
     "AdminDesignTokensPage.tsx: AdminDesignTokensPage",
     "AdminExternalDbPage.tsx: AdminExternalDbPage",
+    "AdminFreteSettingsPage.tsx: AdminFreteSettingsPage",
     "AdminLoginAttemptsPage.tsx: AdminLoginAttemptsPage",
     "AdminMigracaoPapeisPage.tsx: AdminMigracaoPapeisPage",
     "AdminProductFormPage.tsx: AdminProductFormPage",
@@ -150940,8 +150968,7 @@
     "AdminTemasPage.tsx: AdminTemasPage",
     "AdminUsuariosPage.tsx: AdminUsuariosPage",
     "AdminV4CallbacksPage.tsx: AdminV4CallbacksPage",
-    "AdminVideoVariantsPage.tsx: AdminVideoVariantsPage",
-    "AdminWorkflowsPage.tsx: AdminWorkflowsPage"
+    "AdminVideoVariantsPage.tsx: AdminVideoVariantsPage"
    ],
    "docs": [
     "Index.tsx: Catálogo de Produtos - Index Page (v3 - refactored)",
@@ -151022,6 +151049,7 @@
     "src/pages/admin/AdminConexoesStatusPage.tsx",
     "src/pages/admin/AdminDesignTokensPage.tsx",
     "src/pages/admin/AdminExternalDbPage.tsx",
+    "src/pages/admin/AdminFreteSettingsPage.tsx",
     "src/pages/admin/AdminLoginAttemptsPage.tsx",
     "src/pages/admin/AdminMigracaoPapeisPage.tsx",
     "src/pages/admin/AdminProductFormPage.tsx",
@@ -151055,6 +151083,7 @@
     "src/pages/admin/StockDashboardPage.tsx",
     "src/pages/admin/StorageTestPage.tsx",
     "src/pages/admin/engraving-schema-diff.ts",
+    "src/pages/admin/__tests__/AdminFreteSettingsPage.test.tsx",
     "src/pages/admin/__tests__/RolePermissionsPage.save.test.tsx",
     "src/pages/admin/ai-usage/AiCharts.tsx",
     "src/pages/admin/ai-usage/AiQuotaManager.tsx",
@@ -151070,15 +151099,13 @@
     "src/pages/admin/telemetry/useOptimizationQueue.ts",
     "src/pages/admin/telemetry/usePlatformFailureAlert.ts",
     "src/pages/admin/telemetry/usePlatformFailureMetrics.ts",
-    "src/pages/admin/telemetry/useProductsListingLatencyAlert.ts",
-    "src/pages/admin/telemetry/useRegressionGuardrail.ts",
-    "src/pages/admin/telemetry/useResolveProductsSelectComparison.ts"
+    "src/pages/admin/telemetry/useProductsListingLatencyAlert.ts"
    ]
   },
   {
    "module": "src/routes",
    "files": 15,
-   "lines": 1403,
+   "lines": 1408,
    "tables": [],
    "exports": [
     "AppRoutes.tsx: AppRoutes",
@@ -151132,9 +151159,10 @@
   },
   {
    "module": "src/services",
-   "files": 29,
-   "lines": 5588,
+   "files": 33,
+   "lines": 6564,
    "tables": [
+    "freight_settings",
     "frontend_telemetry",
     "magazine_items",
     "magazines",
@@ -151147,11 +151175,13 @@
     "quote_item_personalizations",
     "quote_items",
     "quotes",
+    "shipping_boxes",
     "user_notification_preferences",
     "user_roles"
    ],
    "exports": [
     "authService.ts: authService",
+    "freightSettingsService.ts: FreightSettingsRow, MultiPersonalizationRule, FreightSettingsWrite, FreightSettingsPatch, FreightSettingsErrorReason, FreightSettingsError",
     "magazineService.ts: MagazineMetadataPatch, MagazineMutationError, productToSnapshot, magazineService",
     "materialService.ts: MaterialGroup, MaterialType, MaterialComplete, materialService",
     "notificationPreferenceService.ts: UserNotificationPreference, notificationPreferenceService",
@@ -151160,15 +151190,19 @@
     "quoteItemsReorder.ts: ReorderRow, persistItemsOrder",
     "quoteService.ts: quoteService",
     "ramoAtividadeService.ts: ramoAtividadeService",
+    "shippingBoxService.ts: ShippingBoxRow, ShippingBoxWrite, ShippingBoxPatch, ShippingBoxErrorReason, ShippingBoxError, shippingBoxService",
     "telemetryService.ts: TelemetryEventType, TelemetryPayload, telemetryService"
    ],
    "docs": [
+    "freightSettingsService.ts: Parâmetros globais do frete (`public.freight_settings`) — linha única. A tabela é um singleton com chave booleana travada em `true` (migration 20261119213100_create_freight_settings.sql) e só tem policy de SELECT e de UPDATE. Por isso salvar é sempre `update(...).eq('id', true)`: `upsert` e `insert` …",
     "authService.oauth.test.ts: Onda 16 — Contrato dos wrappers OAuth Safe. signInWithOAuthSafe + exchangeCodeForSessionSafe: nunca lançam, classificam errorKind.",
+    "freightSettingsService.test.ts: freightSettingsService — contrato com `public.freight_settings` (linha única). O cliente Supabase é trocado por um builder que grava cada chamada (`ops`), então o teste confere o que seria enviado ao PostgREST. O detector de RLS (`isRlsDenialError`) é o real.",
     "magazineEdgeContract.test.ts: magazineService.getPublicByToken — contract tests contra a edge magazine-public-view. 60+ cenários (HTTP status, timeout, headers, tokens). Objetivo: garantir que a leitura pública: - JAMAIS envia Authorization header (não é o mesmo que apikey) - propaga X-Request-Id - retorna null em qualquer erro …",
     "magazineService.branding.test.ts: magazineService.updateBranding — Regression tests REGRESSION: shallow merge { ...branding, ...patch } where patch.colors is a partial object drops the non-patched color keys. validateBranding() then fills defaults (#000000), silently overwriting the user's secondary/text colors. Fix: deep-merge colo …",
     "quoteNumberConcurrency.test.ts: Concorrência multi-vendedor — simulação do trigger generate_quote_number. O teste reproduz a lógica EXATA do trigger atual (MAX+1 sem lock) e a versão proposta (MAX+1 + advisory lock). O objetivo é provar duas coisas: 1. Sob N inserts concorrentes no mesmo ano, a versão atual produz COLISÕES (mesmo …"
    ],
    "deps": [
+    "@supabase/supabase-js",
     "vitest"
    ],
    "imports_modules": [
@@ -151181,6 +151215,7 @@
    ],
    "file_list": [
     "src/services/authService.ts",
+    "src/services/freightSettingsService.ts",
     "src/services/magazineService.ts",
     "src/services/materialService.ts",
     "src/services/notificationPreferenceService.ts",
@@ -151189,8 +151224,10 @@
     "src/services/quoteItemsReorder.ts",
     "src/services/quoteService.ts",
     "src/services/ramoAtividadeService.ts",
+    "src/services/shippingBoxService.ts",
     "src/services/telemetryService.ts",
     "src/services/__tests__/authService.oauth.test.ts",
+    "src/services/__tests__/freightSettingsService.test.ts",
     "src/services/__tests__/magazineAddProductsUnique.test.ts",
     "src/services/__tests__/magazineEdgeContract.test.ts",
     "src/services/__tests__/magazineListPagination.test.ts",
@@ -151208,7 +151245,8 @@
     "src/services/__tests__/quoteService.test.ts",
     "src/services/__tests__/quoteServicePayloadContract.test.ts",
     "src/services/__tests__/quoteServiceVariantSkuHydration.test.ts",
-    "src/services/__tests__/quoteStatusTransitionTelemetry.test.ts"
+    "src/services/__tests__/quoteStatusTransitionTelemetry.test.ts",
+    "src/services/__tests__/shippingBoxService.test.ts"
    ]
   },
   {
@@ -152120,8 +152158,8 @@
   },
   {
    "module": "tests",
-   "files": 1099,
-   "lines": 172943,
+   "files": 1102,
+   "lines": 173978,
    "tables": [
     "bot_detection_log",
     "clients",
@@ -153048,6 +153086,14 @@
    "foreign_quotes": {
     "ref": [
      "tests/scripts/check-supabase-reference-catalog.test.mjs"
+    ]
+   },
+   "freight_settings": {
+    "select": [
+     "src/services/freightSettingsService.ts"
+    ],
+    "update": [
+     "src/services/freightSettingsService.ts"
     ]
    },
    "frontend_telemetry": {
@@ -154386,6 +154432,17 @@
      "src/hooks/quotes/useSellerDiscountLimits.ts"
     ]
    },
+   "shipping_boxes": {
+    "select": [
+     "src/services/shippingBoxService.ts"
+    ],
+    "insert": [
+     "src/services/shippingBoxService.ts"
+    ],
+    "update": [
+     "src/services/shippingBoxService.ts"
+    ]
+   },
    "simulator_wizard_drafts": {
     "select": [
      "src/hooks/simulator/useWizardDrafts.ts"
@@ -155157,6 +155214,9 @@
    "follow_up_reminders": [
     "quote_id"
    ],
+   "freight_settings": [
+    "id"
+   ],
    "frontend_telemetry": [
     "created_at",
     "event_type",
@@ -155861,6 +155921,11 @@
     "max_discount_percent",
     "notes",
     "user_id"
+   ],
+   "shipping_boxes": [
+    "deleted_at",
+    "id",
+    "is_active"
    ],
    "simulator_wizard_drafts": [
     "id",
@@ -158908,6 +158973,7 @@
    "fantasma",
    "fixture_table",
    "foreign_quotes",
+   "freight_settings",
    "ghost_table",
    "literal",
    "messages",
@@ -158917,6 +158983,7 @@
    "produtos",
    "quote_comments",
    "runtime_table",
+   "shipping_boxes",
    "so_teste",
    "some_table",
    "stock_notes",
@@ -159861,12 +159928,46 @@
  "rules": {
   "validation_schemas": [
    {
+    "file": "src/components/admin/freight-settings/freightSettingsFormSchema.ts",
+    "name": "divisorSchema",
+    "kind": "string",
+    "body": "",
+    "refines": [],
+    "chain": [
+     "refine",
+     "transform"
+    ]
+   },
+   {
+    "file": "src/components/admin/freight-settings/freightSettingsFormSchema.ts",
+    "name": "freightSettingsFormSchema",
+    "kind": "object",
+    "body": "{ originCep: z.string().regex(CEP_PATTERN, 'Informe o CEP completo, no formato 00000-000.'), cubicDivisorCorreios: divisorSchema, cubicDivisorRodoviario: divisorSchema, defaultFillFactor: z .string() .trim() .regex(FACTOR_PATTERN, FACTOR_MESSAGE) .transform((text) => Number(text.replace(',', '.'))) .refine((value) => value >= FILL_FACTOR_MIN && value <= FILL_FACTOR_MAX, FACTOR_MESSAGE), internalBufferDays: z .string() .trim() .regex(INTEGER_PATTERN, 'Use um número inteiro de dias, zero ou mais.') .transform(Number), multiPersonalizationRule: z.enum(['max', 'sum']), }",
+    "refines": [
+     "Use um número inteiro de dias, zero ou mais."
+    ],
+    "chain": []
+   },
+   {
     "file": "src/components/admin/products/ProductFormSchema.ts",
     "name": "productFormSchema",
     "kind": "object",
     "body": "{ // Info básica sku: z.string().trim().min(1, 'SKU é obrigatório').max(50, 'SKU muito longo'), name: z.string().trim().min(1, 'Nome é obrigatório').max(300, 'Nome muito longo'), description: z.string().max(5000, 'Descrição muito longa').optional().default(''), short_description: z.string().max(500, 'Descrição curta muito longa').optional().default(''), brand: z.string().max(100).optional().default(''), // Categoria e fornecedor (IDs reais do BD externo) category_id: z.string().optional().default(''), supplier_id: z.string().min(1, 'Fornecedor é obrigatório'), supplier_reference: z.string().max(100).optional().default(''), supplier_product_url: z.string().max(500).optional().default(''), // Preço e estoque sale_price: z.coerce.number().min(0, 'Preço não pode ser negativo').default(0), cost …",
     "refines": [],
     "chain": []
+   },
+   {
+    "file": "src/components/admin/shipping-boxes/shippingBoxFormSchema.ts",
+    "name": "shippingBoxFormSchema",
+    "kind": "object",
+    "body": "{ code: z .string() .transform(normalizeShippingBoxCode) .pipe( z .string() .regex( CODE_PATTERN, 'Use de 1 a 6 caracteres: letras de A a Z e números, sem espaço nem acento (ex.: P, GG, M2).', ), ), name: z .string() .trim() .min(1, 'Informe o nome da caixa.') .max( SHIPPING_BOX_NAME_MAX_LENGTH, `O nome pode ter até ${SHIPPING_BOX_NAME_MAX_LENGTH} caracteres.`, ), outerHeightCm: outerMeasure('Altura'), outerWidthCm: outerMeasure('Largura'), outerLengthCm: outerMeasure('Comprimento'), wallThicknessMm: z .string() .transform((text) => toNumber(text, INTEGER)) .pipe( z .number({ error: 'Informe a espessura em milímetros, número inteiro (ex.: 3).' }) .min(1, 'A espessura da parede vai de 1 a 20 mm.') .max(20, 'A espessura da parede vai de 1 a 20 mm.'), ), // Digitado em kg, sai daqui em GRAMAS …",
+    "refines": [
+     "${axis.label}: a parede de ${box.wallThicknessMm} mm ocupa a medida inteira. A medida interna precisa ser maior que zero."
+    ],
+    "chain": [
+     "superRefine",
+     "transform"
+    ]
    },
    {
     "file": "src/components/admin/users/PromotionDialog.tsx",
@@ -161897,6 +161998,11 @@
     "rules": "type=datetime-local"
    },
    {
+    "file": "src/components/admin/freight-settings/FreightSettingsForm.tsx",
+    "field": "id",
+    "rules": "disabled=disabled"
+   },
+   {
     "file": "src/components/admin/products/sections/ProductDimensionsSection.tsx",
     "field": "fId",
     "rules": "min=0, step=0.1"
@@ -162010,6 +162116,11 @@
     "file": "src/components/admin/security/keys/diagnostics/FullOpDiagnosticsPanel.tsx",
     "field": "diag-token",
     "rules": "type=password, step"
+   },
+   {
+    "file": "src/components/admin/shipping-boxes/ShippingBoxFormDialog.tsx",
+    "field": "id",
+    "rules": "max, max"
    },
    {
     "file": "src/components/admin/suppliers-manager/SupplierAddressTab.tsx",
@@ -162447,6 +162558,11 @@
     "file": "src/components/admin/security/keys/audit/useStepUpAttempts.ts",
     "name": "StepUpReason",
     "values": "step_up_invalid | step_up_required"
+   },
+   {
+    "file": "src/components/admin/shipping-boxes/shippingBoxFormSchema.ts",
+    "name": "SHIPPING_BOX_FORM_FIELDS",
+    "values": "'code', 'name', 'outerHeightCm', 'outerWidthCm', 'outerLengthCm', 'wallThicknessMm', 'maxWeightKg', 'emptyWeightG', 'fillFactor', 'sortOrder',"
    },
    {
     "file": "src/components/admin/suppliers-manager/types.ts",
@@ -163372,6 +163488,21 @@
     "file": "src/pages/quotes/components/DeliveryModeToggle.tsx",
     "name": "DeliveryMode",
     "values": "data | prazo"
+   },
+   {
+    "file": "src/services/freightSettingsService.ts",
+    "name": "MultiPersonalizationRule",
+    "values": "max | sum"
+   },
+   {
+    "file": "src/services/freightSettingsService.ts",
+    "name": "FreightSettingsErrorReason",
+    "values": "invalid | permission | unknown"
+   },
+   {
+    "file": "src/services/shippingBoxService.ts",
+    "name": "ShippingBoxErrorReason",
+    "values": "duplicate_code | invalid | permission | unknown"
    },
    {
     "file": "src/services/telemetryService.ts",
@@ -165331,6 +165462,46 @@
     "msg": "arquivo de segredos não pode conter ${bad.join("
    },
    {
+    "file": "scripts/freight/seed-shipping-boxes.mjs",
+    "msg": "${arg} exige um valor"
+   },
+   {
+    "file": "scripts/freight/seed-shipping-boxes.mjs",
+    "msg": "--out é obrigatório"
+   },
+   {
+    "file": "scripts/freight/seed-shipping-boxes.mjs",
+    "msg": "CSV vazio: falta a linha de cabeçalho."
+   },
+   {
+    "file": "scripts/freight/seed-shipping-boxes.mjs",
+    "msg": "linha ${linha} (cabeçalho): ${problemas.join("
+   },
+   {
+    "file": "scripts/freight/seed-shipping-boxes.mjs",
+    "msg": "linha ${linha}: ${campos.length} campo(s), o cabeçalho tem ${colunas.length}. Texto com vírgula vai entre aspas duplas."
+   },
+   {
+    "file": "scripts/freight/seed-shipping-boxes.mjs",
+    "msg": "linha ${linha}: aspas duplas abertas e não fechadas."
+   },
+   {
+    "file": "scripts/freight/seed-shipping-boxes.mjs",
+    "msg": "nenhuma caixa para gerar o SQL."
+   },
+   {
+    "file": "scripts/freight/seed-shipping-boxes.mjs",
+    "msg": "opção desconhecida: ${arg}"
+   },
+   {
+    "file": "scripts/freight/seed-shipping-boxes.mjs",
+    "msg": "versão "
+   },
+   {
+    "file": "scripts/freight/seed-shipping-boxes.mjs",
+    "msg": "versão ${version} tem de ser maior que ${VERSAO_DA_TABELA}, a migration que cria public.shipping_boxes."
+   },
+   {
     "file": "scripts/graphify/build-sql-graph.py",
     "msg": "Nenhum arquivo SQL rastreado ou não ignorado foi encontrado."
    },
@@ -165849,6 +166020,10 @@
    {
     "file": "src/components/admin/connections/useIntegrationsHealthCard.ts",
     "msg": "Falha na auditoria: ${toErrorMessage(err)}"
+   },
+   {
+    "file": "src/components/admin/freight-settings/FreightSettingsForm.tsx",
+    "msg": " className="
    },
    {
     "file": "src/components/admin/hooks/useGroupPersonalization.ts",
@@ -166477,6 +166652,10 @@
    {
     "file": "src/components/admin/security/role-migration/RoleMigrationPanel.tsx",
     "msg": "Selecione ao menos 1 usuário"
+   },
+   {
+    "file": "src/components/admin/shipping-boxes/ShippingBoxFormDialog.tsx",
+    "msg": " className="
    },
    {
     "file": "src/components/admin/suppliers-manager/useSuppliersManager.ts",
@@ -167643,6 +167822,10 @@
     "msg": "Não foi possível remover dos favoritos"
    },
    {
+    "file": "src/hooks/freight/useFreightSettings.ts",
+    "msg": "permission"
+   },
+   {
     "file": "src/hooks/gravacao/useTecnicasGravacao.ts",
     "msg": "Não é possível excluir: há ${faixasCount} faixa(s) de preço vinculada(s). "
    },
@@ -168723,6 +168906,10 @@
     "msg": "Falha ao testar RPC"
    },
    {
+    "file": "src/pages/admin/AdminFreteSettingsPage.tsx",
+    "msg": "\n      className="
+   },
+   {
     "file": "src/pages/admin/AdminProductFormPage.tsx",
     "msg": "Erro ao carregar produto"
    },
@@ -169387,6 +169574,14 @@
     "msg": "Seu navegador não suporta comandos de voz."
    },
    {
+    "file": "src/services/freightSettingsService.ts",
+    "msg": "permission"
+   },
+   {
+    "file": "src/services/freightSettingsService.ts",
+    "msg": "unknown"
+   },
+   {
     "file": "src/services/magazineService.ts",
     "msg": "Não foi possível carregar a revista."
    },
@@ -169481,6 +169676,10 @@
    {
     "file": "src/services/quoteService.ts",
     "msg": "Versão do orçamento ausente ou inválida. Recarregue antes de salvar para evitar sobrescrever alterações de outro usuário."
+   },
+   {
+    "file": "src/services/shippingBoxService.ts",
+    "msg": "permission"
    },
    {
     "file": "src/utils/excelExport.ts",
@@ -171307,6 +171506,22 @@
     "text": "- Mudança de P0→P1 (downgrade) — apenas escalations geram toast"
    },
    {
+    "file": "src/components/admin/freight-settings/FreightSettingsForm.tsx",
+    "text": "* Campos de texto livre; a regra de personalização é escolha entre duas opções. */"
+   },
+   {
+    "file": "src/components/admin/freight-settings/FreightSettingsForm.tsx",
+    "text": "Rascunho inválido conta como alterado: a linha salva sempre passa na validação."
+   },
+   {
+    "file": "src/components/admin/freight-settings/freightSettingsFormSchema.ts",
+    "text": "e só vira número aqui, na validação. Os limites repetem os CHECK da tabela"
+   },
+   {
+    "file": "src/components/admin/freight-settings/freightSettingsFormSchema.ts",
+    "text": "* Aplica a máscara 00000-000 ao que foi digitado (só dígitos, no máximo 8). */"
+   },
+   {
     "file": "src/components/admin/personalization/GroupInheritance.tsx",
     "text": "Must throw on failure — proceeding would create duplicate components."
    },
@@ -171349,6 +171564,30 @@
    {
     "file": "src/components/admin/security/role-migration/RoleMigrationPanel.tsx",
     "text": "gateamos por `useUserRole` para evitar mostrar a UI a quem não pode usar."
+   },
+   {
+    "file": "src/components/admin/shipping-boxes/ShippingBoxFormDialog.tsx",
+    "text": "nunca vão no payload. O peso máximo é digitado em kg e gravado em gramas."
+   },
+   {
+    "file": "src/components/admin/shipping-boxes/ShippingBoxFormDialog.tsx",
+    "text": "A validação está em `shippingBoxFormSchema.ts`."
+   },
+   {
+    "file": "src/components/admin/shipping-boxes/ShippingBoxesTable.tsx",
+    "text": "interna, peso máximo em kg, fator, ordem, chave de ativa e ações."
+   },
+   {
+    "file": "src/components/admin/shipping-boxes/shippingBoxFormSchema.ts",
+    "text": "* Validação do formulário de caixa de transporte."
+   },
+   {
+    "file": "src/components/admin/shipping-boxes/shippingBoxFormSchema.ts",
+    "text": "medidas > 0, parede de 1 a 20 mm, medida interna > 0, peso máximo > peso"
+   },
+   {
+    "file": "src/components/admin/shipping-boxes/shippingBoxFormSchema.ts",
+    "text": "* Preenche o formulário com uma caixa existente (peso máximo volta para kg). */"
    },
    {
     "file": "src/components/admin/suppliers-manager/types.ts",
@@ -174435,6 +174674,10 @@
     "text": "* O mínimo que `fitCount` precisa saber de uma peça. `PackItem` satisfaz. */"
    },
    {
+    "file": "src/lib/freight/fromDatabase.ts",
+    "text": "* Caixa do banco → caixa do motor, ou `null` quando ela não pode receber carga."
+   },
+   {
     "file": "src/lib/freight/packMixed.ts",
     "text": "máximo): vai na próxima aberta."
    },
@@ -175611,6 +175854,10 @@
     "text": "data é opcional pois métodos como signOut retornam apenas { error }."
    },
    {
+    "file": "src/services/freightSettingsService.ts",
+    "text": "a escrita pede `.select('id')` e 0 linhas vira erro de permissão."
+   },
+   {
     "file": "src/services/magazineService.ts",
     "text": "T é inferido APENAS de `fallback` — nunca do schema — para evitar conflito"
    },
@@ -175653,6 +175900,10 @@
    {
     "file": "src/services/quoteService.ts",
     "text": "rls-allow: DELETE por id; RLS (org_admins_delete_quotes) valida permissão"
+   },
+   {
+    "file": "src/services/shippingBoxService.ts",
+    "text": "`.select('id')` e 0 linhas vira erro de permissão."
    },
    {
     "file": "src/services/telemetryService.ts",
@@ -197889,6 +198140,26 @@
     "value": "60"
    },
    {
+    "file": "src/components/admin/freight-settings/freightSettingsFormSchema.ts",
+    "name": "FILL_FACTOR_MIN",
+    "value": "0.5"
+   },
+   {
+    "file": "src/components/admin/freight-settings/freightSettingsFormSchema.ts",
+    "name": "FILL_FACTOR_MAX",
+    "value": "1"
+   },
+   {
+    "file": "src/components/admin/freight-settings/freightSettingsFormSchema.ts",
+    "name": "DIVISOR_MESSAGE",
+    "value": "'Use um número inteiro maior que zero.'"
+   },
+   {
+    "file": "src/components/admin/freight-settings/freightSettingsFormSchema.ts",
+    "name": "FACTOR_MESSAGE",
+    "value": "'Use um valor entre 0,50 e 1,00, com até duas casas decimais.'"
+   },
+   {
     "file": "src/components/admin/products/productMarketingData.ts",
     "name": "PERMISSION_DENIED_MESSAGE",
     "value": "'Sem permissão para editar marketing deste produto'"
@@ -197912,6 +198183,26 @@
     "file": "src/components/admin/security/keys/audit/useMcpAuditFeed.ts",
     "name": "PAGE_SIZE",
     "value": "50"
+   },
+   {
+    "file": "src/components/admin/shipping-boxes/shippingBoxFormSchema.ts",
+    "name": "SHIPPING_BOX_CODE_MAX_LENGTH",
+    "value": "6"
+   },
+   {
+    "file": "src/components/admin/shipping-boxes/shippingBoxFormSchema.ts",
+    "name": "MAX_NUMERIC_8_2",
+    "value": "999"
+   },
+   {
+    "file": "src/components/admin/shipping-boxes/shippingBoxFormSchema.ts",
+    "name": "MAX_INT4",
+    "value": "2"
+   },
+   {
+    "file": "src/components/admin/shipping-boxes/shippingBoxFormat.ts",
+    "name": "NO_VALUE",
+    "value": "'—'"
    },
    {
     "file": "src/components/admin/telemetry/BreakerStatusCard.tsx",
@@ -198652,6 +198943,11 @@
     "file": "src/hooks/customization/useCustomizationCollapsePrefs.ts",
     "name": "REMOTE_DEBOUNCE_MS",
     "value": "800"
+   },
+   {
+    "file": "src/hooks/freight/keys.ts",
+    "name": "FREIGHT_STALE_TIME_MS",
+    "value": "10"
    },
    {
     "file": "src/hooks/intelligence/magicUpShare.ts",
@@ -209275,6 +209571,12 @@
    {
     "file": "src/lib/rbac/route-matrix.ts",
     "field": "role",
+    "value": "admin",
+    "kind": "escreve"
+   },
+   {
+    "file": "src/lib/rbac/route-matrix.ts",
+    "field": "role",
     "value": "authenticated",
     "kind": "escreve"
    },
@@ -214591,6 +214893,54 @@
     "body": ""
    },
    {
+    "file": "src/components/admin/shipping-boxes/ShippingBoxFormDialog.tsx",
+    "name": "ShippingBoxFormDialog",
+    "params": "{ open, onOpenChange, box, saving, rejectedCode = null, onSave, }: ShippingBoxFormDialogProps",
+    "body": "const isEdit = box !== null; const [draft, setDraft] = useState<ShippingBoxFormDraft>(EMPTY_SHIPPING_BOX_DRAFT); const [errors, setErrors] = useState<ShippingBoxFormErrors>({}); const [advancedOpen, setAdvancedOpen] = useState(false); useEffect(() => { if (!open) return; setDraft(box ? toShippingBoxDraft(box) : EMPTY_SHIPPING_BOX_DRAFT); setErrors({}); setAdvancedOpen(box !== null && box.empty_weight_g > 0); }, [open, box]); const setField = (field: ShippingBoxFormField, value: string) => { setD …"
+   },
+   {
+    "file": "src/components/admin/shipping-boxes/ShippingBoxesManager.tsx",
+    "name": "ShippingBoxesManager",
+    "params": "",
+    "body": "const { rows, isLoading, isError, refetch } = useShippingBoxes({ includeInactive: true }); const { create, update, softDelete, restore } = useShippingBoxMutations(); const [dialogOpen, setDialogOpen] = useState(false); const [editingBox, setEditingBox] = useState<ShippingBoxRow | null>(null); const [deleteTarget, setDeleteTarget] = useState<ShippingBoxRow | null>(null); const [rejectedCode, setRejectedCode] = useState<RejectedShippingBoxCode | null>(null); const openForm = (box: ShippingBoxRow | …"
+   },
+   {
+    "file": "src/components/admin/shipping-boxes/ShippingBoxesTable.tsx",
+    "name": "ShippingBoxesTable",
+    "params": "{ boxes, onEdit, onToggleActive, onDelete, busy = false, }: ShippingBoxesTableProps",
+    "body": "return ( <div className=\"overflow-x-auto rounded-lg border\" data-testid=\"admin-table\"> <Table> <TableHeader> <TableRow> <TableHead>Código</TableHead> <TableHead className=\"min-w-[160px]\">Nome</TableHead> <TableHead>Externa (A × L × C)</TableHead> <TableHead>Interna (A × L × C)</TableHead> <TableHead className=\"text-right\">Peso máx.</TableHead> <TableHead className=\"text-center\">Fator</TableHead> <TableHead className=\"text-center\">Ordem</TableHead> <TableHead className=\"text-center\">Ativa</TableH …"
+   },
+   {
+    "file": "src/components/admin/shipping-boxes/ShippingBoxesTrash.tsx",
+    "name": "ShippingBoxesTrash",
+    "params": "{ onRestore, busy = false }: ShippingBoxesTrashProps",
+    "body": "const [open, setOpen] = useState(false); const { rows, isLoading, isError, refetch } = useDeletedShippingBoxes({ enabled: open }); return ( <Collapsible open={open} onOpenChange={setOpen} className=\"rounded-lg border\"> <CollapsibleTrigger asChild> <Button variant=\"ghost\" className=\"w-full justify-between px-4 text-sm font-medium\"> <span className=\"flex items-center gap-2\"> <Trash2 className=\"h-4 w-4 text-muted-foreground\" /> Caixas excluídas </span> <ChevronDown className={cn('h-4 w-4 transition …"
+   },
+   {
+    "file": "src/components/admin/shipping-boxes/shippingBoxFormSchema.ts",
+    "name": "normalizeShippingBoxCode",
+    "params": "text: string",
+    "body": "return text.trim().toUpperCase();"
+   },
+   {
+    "file": "src/components/admin/shipping-boxes/shippingBoxFormSchema.ts",
+    "name": "computeInnerPreview",
+    "params": "draft: ShippingBoxFormDraft",
+    "body": "const wallMm = toNumber(draft.wallThicknessMm, INTEGER); const inner = (text: string) => positiveOrNull(innerDimensionCm(toNumber(text, DECIMAL_2), wallMm)); const heightCm = inner(draft.outerHeightCm); const widthCm = inner(draft.outerWidthCm); const lengthCm = inner(draft.outerLengthCm); const volumeL = heightCm !== null && widthCm !== null && lengthCm !== null ? round2((heightCm * widthCm * lengthCm) / 1000) : null; return { heightCm, widthCm, lengthCm, volumeL };"
+   },
+   {
+    "file": "src/components/admin/shipping-boxes/shippingBoxFormSchema.ts",
+    "name": "parseShippingBoxForm",
+    "params": "draft: ShippingBoxFormDraft",
+    "body": "const result = shippingBoxFormSchema.safeParse(draft); if (result.success) return { ok: true, values: result.data }; const errors: ShippingBoxFormErrors = {}; for (const issue of result.error.issues) { const [field] = issue.path; if (isFormField(field) && errors[field] === undefined) errors[field] = issue.message; } return { ok: false, errors };"
+   },
+   {
+    "file": "src/components/admin/shipping-boxes/shippingBoxFormSchema.ts",
+    "name": "toShippingBoxDraft",
+    "params": "row: ShippingBoxRow",
+    "body": "return { code: row.code, name: row.name, outerHeightCm: toInputText(row.outer_height_cm), outerWidthCm: toInputText(row.outer_width_cm), outerLengthCm: toInputText(row.outer_length_cm), wallThicknessMm: String(row.wall_thickness_mm), maxWeightKg: toInputText(row.max_weight_g / 1000), emptyWeightG: String(row.empty_weight_g), fillFactor: row.fill_factor.toFixed(2).replace('.', ','), sortOrder: String(row.sort_order), isActive: row.is_active, };"
+   },
+   {
     "file": "src/components/bi/ClientCategoryRadar.tsx",
     "name": "score",
     "params": "r: MergedRow",
@@ -215117,6 +215467,12 @@
     "name": "mapScoreToWeights",
     "params": "s: ComparisonScoreWeights",
     "body": "return { price: s.price, stock: s.stock, minQty: s.minQuantity, colors: s.colorVariety, verified: s.verifiedSupplier, leadTime: s.leadTime, };"
+   },
+   {
+    "file": "src/hooks/freight/useShippingBoxes.ts",
+    "name": "invalidate",
+    "params": "",
+    "body": "void queryClient.invalidateQueries({ queryKey: FREIGHT_QUERY_KEYS.shippingBoxes.all });"
    },
    {
     "file": "src/hooks/gravacao/gravacao-constants.ts",
@@ -215747,6 +216103,12 @@
     "name": "computeVolumeTotals",
     "params": "draft: VolumeDraft, settings: FreightSettings",
     "body": "const { box, contents } = draft; const pesoItensG = contents.reduce( (total, { item, quantity }) => total + item.weightG * quantity, 0, ); const grossWeightG = roundDecimal(box.emptyWeightG + pesoItensG, 2); const outerVolumeCm3 = volumeCm3(box.outer); const cubicWeightG: CubicWeightG = { correios: cubicWeight(outerVolumeCm3, settings.cubicDivisorCorreios), rodoviario: cubicWeight(outerVolumeCm3, settings.cubicDivisorRodoviario), }; const fator = isKnownMeasure(box.fillFactor) && box.fillFactor …"
+   },
+   {
+    "file": "src/lib/freight/fromDatabase.ts",
+    "name": "toShippingBox",
+    "params": "row: ShippingBoxSource",
+    "body": "const { inner_height_cm, inner_width_cm, inner_length_cm } = row; if ( !isKnownMeasure(inner_height_cm) || !isKnownMeasure(inner_width_cm) || !isKnownMeasure(inner_length_cm) ) { return null; } return { id: row.id, code: row.code, name: row.name, inner: { heightCm: inner_height_cm, widthCm: inner_width_cm, lengthCm: inner_length_cm, }, outer: { heightCm: row.outer_height_cm, widthCm: row.outer_width_cm, lengthCm: row.outer_length_cm, }, emptyWeightG: row.empty_weight_g, maxWeightG: row.max_weigh …"
    },
    {
     "file": "src/lib/freight/planFreight.ts",
@@ -218107,6 +218469,10 @@
    {
     "file": "src/hooks/crm/useRamoAtividade.ts",
     "line": "staleTime: 60 * 60 * 1000,"
+   },
+   {
+    "file": "src/hooks/freight/keys.ts",
+    "line": "export const FREIGHT_STALE_TIME_MS = 10 * 60 * 1000;"
    },
    {
     "file": "src/hooks/gravacao/useTecnicasGravacao.ts",
@@ -228905,6 +229271,26 @@
     "name": "Deve retornar erro para tipos de arquivos inválidos (Fuzzing)"
    },
    {
+    "file": "e2e/routes/admin/cadastros-caixas.spec.ts",
+    "name": "[module:admin] [component:cadastros-tab-caixas] [owner:team-growth] @regression route:/admin/cadastros?tab=caixas listagem"
+   },
+   {
+    "file": "e2e/routes/admin/cadastros-caixas.spec.ts",
+    "name": "@critical abre na aba Caixas de transporte e lista a caixa devolvida pelo banco"
+   },
+   {
+    "file": "e2e/routes/admin/frete.spec.ts",
+    "name": "[module:admin] [component:frete] [owner:team-growth] @regression route:/admin/frete formulário"
+   },
+   {
+    "file": "e2e/routes/admin/frete.spec.ts",
+    "name": "@critical salvar 6000 → 5000 envia só o divisor e o valor continua após recarregar"
+   },
+   {
+    "file": "e2e/routes/admin/frete.spec.ts",
+    "name": "@edge CEP incompleto bloqueia o salvar e nada é enviado"
+   },
+   {
     "file": "e2e/routes/admin/privilege-escalation.spec.ts",
     "name": "Admin RBAC — acesso e tentativa de elevação de privilégio"
    },
@@ -231029,6 +231415,62 @@
     "name": "cancelar a confirmação não dispara a ação destrutiva"
    },
    {
+    "file": "src/components/admin/freight-settings/__tests__/freightSettingsFormSchema.test.ts",
+    "name": "maskCep"
+   },
+   {
+    "file": "src/components/admin/freight-settings/__tests__/freightSettingsFormSchema.test.ts",
+    "name": "formatFillFactor"
+   },
+   {
+    "file": "src/components/admin/freight-settings/__tests__/freightSettingsFormSchema.test.ts",
+    "name": "%d vira %s"
+   },
+   {
+    "file": "src/components/admin/freight-settings/__tests__/freightSettingsFormSchema.test.ts",
+    "name": "toFreightSettingsDraft"
+   },
+   {
+    "file": "src/components/admin/freight-settings/__tests__/freightSettingsFormSchema.test.ts",
+    "name": "preenche os campos com a linha salva"
+   },
+   {
+    "file": "src/components/admin/freight-settings/__tests__/freightSettingsFormSchema.test.ts",
+    "name": "lê a regra "
+   },
+   {
+    "file": "src/components/admin/freight-settings/__tests__/freightSettingsFormSchema.test.ts",
+    "name": "parseFreightSettingsDraft"
+   },
+   {
+    "file": "src/components/admin/freight-settings/__tests__/freightSettingsFormSchema.test.ts",
+    "name": "aceita a linha padrão e devolve os valores no formato do banco"
+   },
+   {
+    "file": "src/components/admin/freight-settings/__tests__/freightSettingsFormSchema.test.ts",
+    "name": "aponta todos os campos inválidos de uma vez"
+   },
+   {
+    "file": "src/components/admin/freight-settings/__tests__/freightSettingsFormSchema.test.ts",
+    "name": "buildFreightSettingsPatch"
+   },
+   {
+    "file": "src/components/admin/freight-settings/__tests__/freightSettingsFormSchema.test.ts",
+    "name": "sem mudança não há o que salvar"
+   },
+   {
+    "file": "src/components/admin/freight-settings/__tests__/freightSettingsFormSchema.test.ts",
+    "name": "6000 → 5000 no divisor dos Correios leva só esse campo"
+   },
+   {
+    "file": "src/components/admin/freight-settings/__tests__/freightSettingsFormSchema.test.ts",
+    "name": "leva todos os campos quando todos mudam"
+   },
+   {
+    "file": "src/components/admin/freight-settings/__tests__/freightSettingsFormSchema.test.ts",
+    "name": "fator igual em centésimos não conta como mudança"
+   },
+   {
     "file": "src/components/admin/products/__tests__/ProductFormSchema.test.ts",
     "name": "ProductFormSchema - Price Freshness"
    },
@@ -231107,6 +231549,150 @@
    {
     "file": "src/components/admin/products/__tests__/productMarketingData.test.ts",
     "name": "nenhuma operação toca products, v_products_public ou a coluna tags"
+   },
+   {
+    "file": "src/components/admin/shipping-boxes/__tests__/ShippingBoxesManager.test.tsx",
+    "name": "ShippingBoxesManager — tabela e estados"
+   },
+   {
+    "file": "src/components/admin/shipping-boxes/__tests__/ShippingBoxesManager.test.tsx",
+    "name": "pede a lista com as inativas e mostra externa, interna, peso em kg, fator e ordem"
+   },
+   {
+    "file": "src/components/admin/shipping-boxes/__tests__/ShippingBoxesManager.test.tsx",
+    "name": "carregando: mostra o aviso e nenhuma tabela"
+   },
+   {
+    "file": "src/components/admin/shipping-boxes/__tests__/ShippingBoxesManager.test.tsx",
+    "name": "erro: mostra a falha e "
+   },
+   {
+    "file": "src/components/admin/shipping-boxes/__tests__/ShippingBoxesManager.test.tsx",
+    "name": "vazio: convida a cadastrar a primeira caixa e o botão abre o formulário"
+   },
+   {
+    "file": "src/components/admin/shipping-boxes/__tests__/ShippingBoxesManager.test.tsx",
+    "name": "ShippingBoxesManager — criar"
+   },
+   {
+    "file": "src/components/admin/shipping-boxes/__tests__/ShippingBoxesManager.test.tsx",
+    "name": "caixa P real: mostra a interna e o volume ao vivo e envia o payload exato"
+   },
+   {
+    "file": "src/components/admin/shipping-boxes/__tests__/ShippingBoxesManager.test.tsx",
+    "name": "aceita vírgula decimal nas medidas e no peso"
+   },
+   {
+    "file": "src/components/admin/shipping-boxes/__tests__/ShippingBoxesManager.test.tsx",
+    "name": "código inválido: mostra o erro no campo e não salva"
+   },
+   {
+    "file": "src/components/admin/shipping-boxes/__tests__/ShippingBoxesManager.test.tsx",
+    "name": "parede que come a medida: interna zerada bloqueia o salvamento"
+   },
+   {
+    "file": "src/components/admin/shipping-boxes/__tests__/ShippingBoxesManager.test.tsx",
+    "name": "peso máximo igual ao da caixa vazia bloqueia o salvamento"
+   },
+   {
+    "file": "src/components/admin/shipping-boxes/__tests__/ShippingBoxesManager.test.tsx",
+    "name": "código já em uso: o formulário continua aberto com a mensagem no campo"
+   },
+   {
+    "file": "src/components/admin/shipping-boxes/__tests__/ShippingBoxesManager.test.tsx",
+    "name": "ShippingBoxesManager — editar, ativar e excluir"
+   },
+   {
+    "file": "src/components/admin/shipping-boxes/__tests__/ShippingBoxesManager.test.tsx",
+    "name": "editar abre o formulário preenchido e envia o patch com o id da caixa"
+   },
+   {
+    "file": "src/components/admin/shipping-boxes/__tests__/ShippingBoxesManager.test.tsx",
+    "name": "a chave da caixa $caixa grava só is_active = $ativa"
+   },
+   {
+    "file": "src/components/admin/shipping-boxes/__tests__/ShippingBoxesManager.test.tsx",
+    "name": "excluir pede confirmação e só então faz a exclusão lógica"
+   },
+   {
+    "file": "src/components/admin/shipping-boxes/__tests__/ShippingBoxesManager.test.tsx",
+    "name": "cancelar a confirmação não exclui"
+   },
+   {
+    "file": "src/components/admin/shipping-boxes/__tests__/ShippingBoxesManager.test.tsx",
+    "name": "ShippingBoxesManager — caixas excluídas"
+   },
+   {
+    "file": "src/components/admin/shipping-boxes/__tests__/ShippingBoxesManager.test.tsx",
+    "name": "só consulta as excluídas depois de abrir a seção e restaura pelo id"
+   },
+   {
+    "file": "src/components/admin/shipping-boxes/__tests__/ShippingBoxesManager.test.tsx",
+    "name": "sem excluídas: avisa que não há nenhuma"
+   },
+   {
+    "file": "src/components/admin/shipping-boxes/__tests__/ShippingBoxesManager.test.tsx",
+    "name": "erro ao carregar as excluídas: "
+   },
+   {
+    "file": "src/components/admin/shipping-boxes/__tests__/ShippingBoxesManager.test.tsx",
+    "name": "aba Caixas de transporte em /admin/cadastros"
+   },
+   {
+    "file": "src/components/admin/shipping-boxes/__tests__/ShippingBoxesManager.test.tsx",
+    "name": "?tab=caixas abre a aba, logo depois de Fornecedores, com o cadastro dentro"
+   },
+   {
+    "file": "src/components/admin/shipping-boxes/__tests__/shippingBoxFormSchema.test.ts",
+    "name": "parseShippingBoxForm — payload"
+   },
+   {
+    "file": "src/components/admin/shipping-boxes/__tests__/shippingBoxFormSchema.test.ts",
+    "name": "caixa P real vira o payload do serviço, em cm, mm e gramas, sem medida interna"
+   },
+   {
+    "file": "src/components/admin/shipping-boxes/__tests__/shippingBoxFormSchema.test.ts",
+    "name": "parseShippingBoxForm — recusas"
+   },
+   {
+    "file": "src/components/admin/shipping-boxes/__tests__/shippingBoxFormSchema.test.ts",
+    "name": "peso máximo 1 g acima do vazio passa (0,5 kg = 500 g contra 499 g)"
+   },
+   {
+    "file": "src/components/admin/shipping-boxes/__tests__/shippingBoxFormSchema.test.ts",
+    "name": "devolve um erro por campo quando vários estão errados"
+   },
+   {
+    "file": "src/components/admin/shipping-boxes/__tests__/shippingBoxFormSchema.test.ts",
+    "name": "medidas internas"
+   },
+   {
+    "file": "src/components/admin/shipping-boxes/__tests__/shippingBoxFormSchema.test.ts",
+    "name": "innerDimensionCm($outerCm, $wallMm) = $esperado"
+   },
+   {
+    "file": "src/components/admin/shipping-boxes/__tests__/shippingBoxFormSchema.test.ts",
+    "name": "prévia da caixa P: 26,4 × 32,4 × 32,4 cm e 27,71 L"
+   },
+   {
+    "file": "src/components/admin/shipping-boxes/__tests__/shippingBoxFormSchema.test.ts",
+    "name": "prévia sem volume enquanto falta uma medida"
+   },
+   {
+    "file": "src/components/admin/shipping-boxes/__tests__/shippingBoxFormSchema.test.ts",
+    "name": "prévia não mostra medida interna zerada ou negativa"
+   },
+   {
+    "file": "src/components/admin/shipping-boxes/__tests__/shippingBoxFormSchema.test.ts",
+    "name": "toShippingBoxDraft"
+   },
+   {
+    "file": "src/components/admin/shipping-boxes/__tests__/shippingBoxFormSchema.test.ts",
+    "name": "preenche o formulário com vírgula decimal e peso máximo em kg"
+   },
+   {
+    "file": "src/components/admin/shipping-boxes/__tests__/shippingBoxFormSchema.test.ts",
+    "name": "salvar sem mexer devolve os mesmos valores da linha, sem as internas"
    },
    {
     "file": "src/components/admin/telemetry/__tests__/BridgeAlertsCard.test.tsx",
@@ -252621,6 +253207,42 @@
     "name": "plano bloqueado não tem resumo"
    },
    {
+    "file": "src/lib/freight/__tests__/fromDatabase.test.ts",
+    "name": "toShippingBox"
+   },
+   {
+    "file": "src/lib/freight/__tests__/fromDatabase.test.ts",
+    "name": "mapeia cada coluna para o campo certo do motor"
+   },
+   {
+    "file": "src/lib/freight/__tests__/fromDatabase.test.ts",
+    "name": "a caixa mapeada tem o volume interno que o motor espera"
+   },
+   {
+    "file": "src/lib/freight/__tests__/fromDatabase.test.ts",
+    "name": "aceita só as colunas que o motor lê, sem a linha inteira"
+   },
+   {
+    "file": "src/lib/freight/__tests__/fromDatabase.test.ts",
+    "name": "devolve null com %s"
+   },
+   {
+    "file": "src/lib/freight/__tests__/fromDatabase.test.ts",
+    "name": "não filtra caixa %s: quem escolhe as caixas é quem consulta"
+   },
+   {
+    "file": "src/lib/freight/__tests__/fromDatabase.test.ts",
+    "name": "toFreightSettings"
+   },
+   {
+    "file": "src/lib/freight/__tests__/fromDatabase.test.ts",
+    "name": "devolve só os três parâmetros que o motor usa"
+   },
+   {
+    "file": "src/lib/freight/__tests__/fromDatabase.test.ts",
+    "name": "não confunde os dois divisores"
+   },
+   {
     "file": "src/lib/freight/__tests__/fuzz.test.ts",
     "name": "fuzz — invariantes do plano"
    },
@@ -256715,6 +257337,70 @@
    {
     "file": "src/pages/__tests__/SimulationPage.blocked.test.tsx",
     "name": "rejeita payload 424 incompleto antes de renderizar o relatório"
+   },
+   {
+    "file": "src/pages/admin/__tests__/AdminFreteSettingsPage.test.tsx",
+    "name": "AdminFreteSettingsPage — estados"
+   },
+   {
+    "file": "src/pages/admin/__tests__/AdminFreteSettingsPage.test.tsx",
+    "name": "mostra título, SEO e container padrão mesmo enquanto carrega"
+   },
+   {
+    "file": "src/pages/admin/__tests__/AdminFreteSettingsPage.test.tsx",
+    "name": "em erro avisa e deixa tentar de novo"
+   },
+   {
+    "file": "src/pages/admin/__tests__/AdminFreteSettingsPage.test.tsx",
+    "name": "não quebra quando a linha não está visível"
+   },
+   {
+    "file": "src/pages/admin/__tests__/AdminFreteSettingsPage.test.tsx",
+    "name": "preenche o formulário com a linha salva"
+   },
+   {
+    "file": "src/pages/admin/__tests__/AdminFreteSettingsPage.test.tsx",
+    "name": "mostra quando foi a última alteração"
+   },
+   {
+    "file": "src/pages/admin/__tests__/AdminFreteSettingsPage.test.tsx",
+    "name": "AdminFreteSettingsPage — salvar"
+   },
+   {
+    "file": "src/pages/admin/__tests__/AdminFreteSettingsPage.test.tsx",
+    "name": "sem alteração o botão Salvar fica desabilitado"
+   },
+   {
+    "file": "src/pages/admin/__tests__/AdminFreteSettingsPage.test.tsx",
+    "name": "aplica a máscara 00000-000 enquanto o CEP é digitado"
+   },
+   {
+    "file": "src/pages/admin/__tests__/AdminFreteSettingsPage.test.tsx",
+    "name": "CEP inválido bloqueia o salvar e não chama o update"
+   },
+   {
+    "file": "src/pages/admin/__tests__/AdminFreteSettingsPage.test.tsx",
+    "name": "salvar 6000 → 5000 envia só o divisor dos Correios"
+   },
+   {
+    "file": "src/pages/admin/__tests__/AdminFreteSettingsPage.test.tsx",
+    "name": "envia junto todos os campos alterados, já convertidos"
+   },
+   {
+    "file": "src/pages/admin/__tests__/AdminFreteSettingsPage.test.tsx",
+    "name": "escrever o mesmo valor de outro jeito não habilita o salvar"
+   },
+   {
+    "file": "src/pages/admin/__tests__/AdminFreteSettingsPage.test.tsx",
+    "name": "Desfazer alterações volta ao valor salvo"
+   },
+   {
+    "file": "src/pages/admin/__tests__/AdminFreteSettingsPage.test.tsx",
+    "name": "enquanto salva, o botão fica desabilitado"
+   },
+   {
+    "file": "src/pages/admin/__tests__/AdminFreteSettingsPage.test.tsx",
+    "name": "recarrega os campos quando a linha salva muda"
    },
    {
     "file": "src/pages/admin/__tests__/RolePermissionsPage.save.test.tsx",
@@ -261373,6 +262059,58 @@
     "name": "throw AbortError → err"
    },
    {
+    "file": "src/services/__tests__/freightSettingsService.test.ts",
+    "name": "freightSettingsService.get"
+   },
+   {
+    "file": "src/services/__tests__/freightSettingsService.test.ts",
+    "name": "lê a linha única pelo id = true"
+   },
+   {
+    "file": "src/services/__tests__/freightSettingsService.test.ts",
+    "name": "devolve null quando a linha não está visível"
+   },
+   {
+    "file": "src/services/__tests__/freightSettingsService.test.ts",
+    "name": "erro do banco vira mensagem amigável, sem texto técnico"
+   },
+   {
+    "file": "src/services/__tests__/freightSettingsService.test.ts",
+    "name": "freightSettingsService.update"
+   },
+   {
+    "file": "src/services/__tests__/freightSettingsService.test.ts",
+    "name": "faz UPDATE em id = true, grava updated_by e pede o id de volta"
+   },
+   {
+    "file": "src/services/__tests__/freightSettingsService.test.ts",
+    "name": "envia só o que mudou, mais updated_by"
+   },
+   {
+    "file": "src/services/__tests__/freightSettingsService.test.ts",
+    "name": "o payload não tem a chave %s, mesmo recebendo a linha inteira"
+   },
+   {
+    "file": "src/services/__tests__/freightSettingsService.test.ts",
+    "name": "nunca usa upsert, insert nem delete"
+   },
+   {
+    "file": "src/services/__tests__/freightSettingsService.test.ts",
+    "name": "0 linhas sem erro (%s) vira permission: a RLS nega em silêncio"
+   },
+   {
+    "file": "src/services/__tests__/freightSettingsService.test.ts",
+    "name": "42501 (RLS com erro) vira permission"
+   },
+   {
+    "file": "src/services/__tests__/freightSettingsService.test.ts",
+    "name": "23514 (CHECK violado) vira invalid"
+   },
+   {
+    "file": "src/services/__tests__/freightSettingsService.test.ts",
+    "name": "erro genérico vira unknown, guarda a causa e registra no log"
+   },
+   {
     "file": "src/services/__tests__/magazineAddProductsUnique.test.ts",
     "name": "magazineService.addProducts — RPC v2"
    },
@@ -261771,6 +262509,90 @@
    {
     "file": "src/services/__tests__/quoteStatusTransitionTelemetry.test.ts",
     "name": "NÃO emite telemetria quando a transição é válida e o banco aceita"
+   },
+   {
+    "file": "src/services/__tests__/shippingBoxService.test.ts",
+    "name": "shippingBoxService — listagens"
+   },
+   {
+    "file": "src/services/__tests__/shippingBoxService.test.ts",
+    "name": "listActive: só vivas e ativas, por sort_order e code"
+   },
+   {
+    "file": "src/services/__tests__/shippingBoxService.test.ts",
+    "name": "listAll: vivas, sem filtrar is_active"
+   },
+   {
+    "file": "src/services/__tests__/shippingBoxService.test.ts",
+    "name": "listDeleted: só excluídas, da mais recente para a mais antiga"
+   },
+   {
+    "file": "src/services/__tests__/shippingBoxService.test.ts",
+    "name": "shippingBoxService — create"
+   },
+   {
+    "file": "src/services/__tests__/shippingBoxService.test.ts",
+    "name": "insere os 11 campos graváveis, pede o id de volta e o devolve"
+   },
+   {
+    "file": "src/services/__tests__/shippingBoxService.test.ts",
+    "name": "nunca envia inner_*_cm, id nem datas, mesmo recebendo a linha inteira"
+   },
+   {
+    "file": "src/services/__tests__/shippingBoxService.test.ts",
+    "name": "o payload de insert não tem a chave %s"
+   },
+   {
+    "file": "src/services/__tests__/shippingBoxService.test.ts",
+    "name": "campo opcional ausente não é enviado: vale o padrão do banco"
+   },
+   {
+    "file": "src/services/__tests__/shippingBoxService.test.ts",
+    "name": "nunca usa upsert nem delete"
+   },
+   {
+    "file": "src/services/__tests__/shippingBoxService.test.ts",
+    "name": "shippingBoxService — update, softDelete e restore"
+   },
+   {
+    "file": "src/services/__tests__/shippingBoxService.test.ts",
+    "name": "update: envia só o que mudou, filtra pelo id e pede o id de volta"
+   },
+   {
+    "file": "src/services/__tests__/shippingBoxService.test.ts",
+    "name": "o payload de update não tem a chave %s"
+   },
+   {
+    "file": "src/services/__tests__/shippingBoxService.test.ts",
+    "name": "softDelete: grava deleted_at com o instante atual, sem apagar a linha"
+   },
+   {
+    "file": "src/services/__tests__/shippingBoxService.test.ts",
+    "name": "restore: limpa deleted_at"
+   },
+   {
+    "file": "src/services/__tests__/shippingBoxService.test.ts",
+    "name": "shippingBoxService — erros de escrita"
+   },
+   {
+    "file": "src/services/__tests__/shippingBoxService.test.ts",
+    "name": "23505 sem details: create e update usam o código enviado"
+   },
+   {
+    "file": "src/services/__tests__/shippingBoxService.test.ts",
+    "name": "23505 sem details no restore: mensagem sem inventar o código"
+   },
+   {
+    "file": "src/services/__tests__/shippingBoxService.test.ts",
+    "name": "%s: 23514 (CHECK violado) vira invalid"
+   },
+   {
+    "file": "src/services/__tests__/shippingBoxService.test.ts",
+    "name": "%s: 0 linhas sem erro (RLS em silêncio) vira permission"
+   },
+   {
+    "file": "src/services/__tests__/shippingBoxService.test.ts",
+    "name": "%s: 42501 (RLS com erro) vira permission"
    },
    {
     "file": "src/stores/useProductSelectionStore.test.ts",
@@ -290405,6 +291227,126 @@
     "name": "aplica o preço quando a tiragem da resposta é a atual"
    },
    {
+    "file": "tests/hooks/freight/useFreightSettings.test.ts",
+    "name": "useFreightSettings"
+   },
+   {
+    "file": "tests/hooks/freight/useFreightSettings.test.ts",
+    "name": "devolve a linha do banco e os três parâmetros do motor"
+   },
+   {
+    "file": "tests/hooks/freight/useFreightSettings.test.ts",
+    "name": "sem linha visível: row e settings nulos, sem padrão inventado"
+   },
+   {
+    "file": "tests/hooks/freight/useFreightSettings.test.ts",
+    "name": "usa a chave ["
+   },
+   {
+    "file": "tests/hooks/freight/useFreightSettings.test.ts",
+    "name": "erro do serviço: nulos e a mensagem amigável disponível"
+   },
+   {
+    "file": "tests/hooks/freight/useFreightSettings.test.ts",
+    "name": "useUpdateFreightSettings"
+   },
+   {
+    "file": "tests/hooks/freight/useFreightSettings.test.ts",
+    "name": "salva com o id do usuário de useAuth, avisa e invalida a leitura"
+   },
+   {
+    "file": "tests/hooks/freight/useFreightSettings.test.ts",
+    "name": "depois de salvar, a leitura montada na tela é buscada de novo"
+   },
+   {
+    "file": "tests/hooks/freight/useFreightSettings.test.ts",
+    "name": "sem usuário logado: não chama o serviço e avisa que a sessão expirou"
+   },
+   {
+    "file": "tests/hooks/freight/useFreightSettings.test.ts",
+    "name": "a mensagem do serviço vai no TÍTULO do toast, sem description"
+   },
+   {
+    "file": "tests/hooks/freight/useFreightSettings.test.ts",
+    "name": "erro que não é do serviço mostra o texto padrão, nunca o técnico"
+   },
+   {
+    "file": "tests/hooks/freight/useShippingBoxes.test.ts",
+    "name": "useShippingBoxes"
+   },
+   {
+    "file": "tests/hooks/freight/useShippingBoxes.test.ts",
+    "name": "por padrão lê só as ativas e devolve linhas e caixas do motor"
+   },
+   {
+    "file": "tests/hooks/freight/useShippingBoxes.test.ts",
+    "name": "includeInactive traz as inativas nas linhas, mas o motor só recebe ativa e mapeável"
+   },
+   {
+    "file": "tests/hooks/freight/useShippingBoxes.test.ts",
+    "name": "caixa excluída que chegue na lista não vai para o motor"
+   },
+   {
+    "file": "tests/hooks/freight/useShippingBoxes.test.ts",
+    "name": "usa a chave ["
+   },
+   {
+    "file": "tests/hooks/freight/useShippingBoxes.test.ts",
+    "name": "guarda o resultado por 10 minutos"
+   },
+   {
+    "file": "tests/hooks/freight/useShippingBoxes.test.ts",
+    "name": "erro do serviço: listas vazias e a mensagem amigável disponível"
+   },
+   {
+    "file": "tests/hooks/freight/useShippingBoxes.test.ts",
+    "name": "useDeletedShippingBoxes"
+   },
+   {
+    "file": "tests/hooks/freight/useShippingBoxes.test.ts",
+    "name": "lê só as excluídas, na chave própria da lixeira"
+   },
+   {
+    "file": "tests/hooks/freight/useShippingBoxes.test.ts",
+    "name": "enabled: false não consulta"
+   },
+   {
+    "file": "tests/hooks/freight/useShippingBoxes.test.ts",
+    "name": "useShippingBoxMutations — sucesso"
+   },
+   {
+    "file": "tests/hooks/freight/useShippingBoxes.test.ts",
+    "name": "create: chama o serviço, devolve o id, avisa e invalida todas as listas de caixas"
+   },
+   {
+    "file": "tests/hooks/freight/useShippingBoxes.test.ts",
+    "name": "update com %s: avisa "
+   },
+   {
+    "file": "tests/hooks/freight/useShippingBoxes.test.ts",
+    "name": "%s: chama o serviço com o id, avisa "
+   },
+   {
+    "file": "tests/hooks/freight/useShippingBoxes.test.ts",
+    "name": "depois de salvar, a lista montada na tela é buscada de novo"
+   },
+   {
+    "file": "tests/hooks/freight/useShippingBoxes.test.ts",
+    "name": "useShippingBoxMutations — erro"
+   },
+   {
+    "file": "tests/hooks/freight/useShippingBoxes.test.ts",
+    "name": "%s: a mensagem do serviço vai no TÍTULO do toast, sem description"
+   },
+   {
+    "file": "tests/hooks/freight/useShippingBoxes.test.ts",
+    "name": "%s: erro que não é do serviço mostra "
+   },
+   {
+    "file": "tests/hooks/freight/useShippingBoxes.test.ts",
+    "name": "erro não invalida as listas"
+   },
+   {
     "file": "tests/hooks/kit-builder/useKitFitsValidation.test.ts",
     "name": "validateKitFitsForQuote"
    },
@@ -304691,6 +305633,134 @@
    {
     "file": "tests/scripts/rpc-live-evidence-contract.test.mjs",
     "name": "não aceita audit inacessível como smoke aprovado"
+   },
+   {
+    "file": "tests/scripts/seed-shipping-boxes.test.mjs",
+    "name": "parseCsv"
+   },
+   {
+    "file": "tests/scripts/seed-shipping-boxes.test.mjs",
+    "name": "lê o CSV real: 4 caixas, cada uma com a linha do arquivo (cabeçalho é a linha 1)"
+   },
+   {
+    "file": "tests/scripts/seed-shipping-boxes.test.mjs",
+    "name": "o cabeçalho do CSV real são as colunas graváveis, sem as inner_*_cm geradas"
+   },
+   {
+    "file": "tests/scripts/seed-shipping-boxes.test.mjs",
+    "name": "aponta a linha que tem campo a mais ou a menos"
+   },
+   {
+    "file": "tests/scripts/seed-shipping-boxes.test.mjs",
+    "name": "aceita texto entre aspas duplas, com vírgula e aspas dobradas"
+   },
+   {
+    "file": "tests/scripts/seed-shipping-boxes.test.mjs",
+    "name": "recusa aspas abertas e não fechadas, com a linha"
+   },
+   {
+    "file": "tests/scripts/seed-shipping-boxes.test.mjs",
+    "name": "ignora BOM, CRLF e linha vazia sem perder a numeração do arquivo"
+   },
+   {
+    "file": "tests/scripts/seed-shipping-boxes.test.mjs",
+    "name": "recusa CSV sem cabeçalho"
+   },
+   {
+    "file": "tests/scripts/seed-shipping-boxes.test.mjs",
+    "name": "validarCaixas — CSV real"
+   },
+   {
+    "file": "tests/scripts/seed-shipping-boxes.test.mjs",
+    "name": "normaliza a caixa P: medidas e fator com 2 casas, inteiros como número"
+   },
+   {
+    "file": "tests/scripts/seed-shipping-boxes.test.mjs",
+    "name": "validarCaixas — as mesmas regras dos CHECKs da tabela"
+   },
+   {
+    "file": "tests/scripts/seed-shipping-boxes.test.mjs",
+    "name": "junta os problemas de todas as linhas, cada um com a linha do CSV"
+   },
+   {
+    "file": "tests/scripts/seed-shipping-boxes.test.mjs",
+    "name": "recusa código repetido e diz onde está o primeiro"
+   },
+   {
+    "file": "tests/scripts/seed-shipping-boxes.test.mjs",
+    "name": "recusa CSV só com cabeçalho"
+   },
+   {
+    "file": "tests/scripts/seed-shipping-boxes.test.mjs",
+    "name": "gerarSql"
+   },
+   {
+    "file": "tests/scripts/seed-shipping-boxes.test.mjs",
+    "name": "INSERT da caixa P, escrito à mão"
+   },
+   {
+    "file": "tests/scripts/seed-shipping-boxes.test.mjs",
+    "name": "as 4 caixas reais viram 4 tuplas, na ordem do CSV"
+   },
+   {
+    "file": "tests/scripts/seed-shipping-boxes.test.mjs",
+    "name": "cabeçalho: a primeira linha aponta o rollback e tudo antes do INSERT é comentário"
+   },
+   {
+    "file": "tests/scripts/seed-shipping-boxes.test.mjs",
+    "name": "é idempotente no texto: ON CONFLICT com o predicado do índice parcial, e só DO NOTHING"
+   },
+   {
+    "file": "tests/scripts/seed-shipping-boxes.test.mjs",
+    "name": "não grava coluna gerada nem abre transação (o workflow aplica com psql -1)"
+   },
+   {
+    "file": "tests/scripts/seed-shipping-boxes.test.mjs",
+    "name": "é determinístico: o mesmo CSV gera o mesmo texto"
+   },
+   {
+    "file": "tests/scripts/seed-shipping-boxes.test.mjs",
+    "name": "escapa aspa simples do nome"
+   },
+   {
+    "file": "tests/scripts/seed-shipping-boxes.test.mjs",
+    "name": "recusa versão %s"
+   },
+   {
+    "file": "tests/scripts/seed-shipping-boxes.test.mjs",
+    "name": "recusa versão que não vem depois da migration que cria a tabela"
+   },
+   {
+    "file": "tests/scripts/seed-shipping-boxes.test.mjs",
+    "name": "recusa lista vazia e origem com quebra de linha (viraria SQL fora do comentário)"
+   },
+   {
+    "file": "tests/scripts/seed-shipping-boxes.test.mjs",
+    "name": "gerarRollbackSql"
+   },
+   {
+    "file": "tests/scripts/seed-shipping-boxes.test.mjs",
+    "name": "DELETE da caixa P, escrito à mão: só a viva e idêntica ao seed nas 11 colunas"
+   },
+   {
+    "file": "tests/scripts/seed-shipping-boxes.test.mjs",
+    "name": "faz o backup com RLS e REVOKE antes de apagar"
+   },
+   {
+    "file": "tests/scripts/seed-shipping-boxes.test.mjs",
+    "name": "a primeira linha nomeia a migration desfeita"
+   },
+   {
+    "file": "tests/scripts/seed-shipping-boxes.test.mjs",
+    "name": "executarCli"
+   },
+   {
+    "file": "tests/scripts/seed-shipping-boxes.test.mjs",
+    "name": "gera a migration e o rollback do CSV real; a versão sai do nome de --out"
+   },
+   {
+    "file": "tests/scripts/seed-shipping-boxes.test.mjs",
+    "name": "CSV inválido: sai com 1, aponta arquivo e linha e não escreve nada"
    },
    {
     "file": "tests/scripts/sentinel-push-range.test.mjs",
@@ -403052,6 +404122,13 @@
    },
    {
     "kind": "tabela",
+    "msg": "tabela `freight_settings` usada no código não existe nas migrations/types do repo",
+    "where": [
+     "src/services/freightSettingsService.ts"
+    ]
+   },
+   {
+    "kind": "tabela",
     "msg": "tabela `ghost_table` usada no código não existe nas migrations/types do repo",
     "where": [
      "scripts/ai-context/gerar.unit.mjs"
@@ -403113,6 +404190,13 @@
     "msg": "tabela `runtime_table` usada no código não existe nas migrations/types do repo",
     "where": [
      "scripts/ai-context/gerar.unit.mjs"
+    ]
+   },
+   {
+    "kind": "tabela",
+    "msg": "tabela `shipping_boxes` usada no código não existe nas migrations/types do repo",
+    "where": [
+     "src/services/shippingBoxService.ts"
     ]
    },
    {
@@ -416602,7 +417686,7 @@
   },
   "e2e/routes/_catalog.ts": {
    "path": "e2e/routes/_catalog.ts",
-   "lines": 182,
+   "lines": 183,
    "exports": [
     "const SAMPLE_ID",
     "const SAMPLE_",
@@ -416684,6 +417768,26 @@
    "lines": 3,
    "is_test": true
   },
+  "e2e/routes/admin/cadastros-caixas.spec.ts": {
+   "path": "e2e/routes/admin/cadastros-caixas.spec.ts",
+   "lines": 94,
+   "is_test": true,
+   "doc": "/admin/cadastros?tab=caixas — cadastro de caixas de transporte (shipping_boxes). REST 100% mockado com `page.route()`: este spec roda contra o banco de produção depois do merge e NUNCA pode gravar nele. Criar, editar, excluir e restaurar são cobertos pelos testes unitários da aba; aqui se confere qu …",
+   "calc_fns": [
+    {
+     "name": "mockShippingBoxes",
+     "params": "page: Page",
+     "body": "const writes: string[] = []; await page.route(BOXES_ROUTE, async route => { const request = route.request(); if (request.method() !== \"GET\") { writes.push(request.method()); await route.fulfill({ status: 405, contentType: \"application/json\", body: JSON.stringify({ message: \"escrita não mockada\" }) }); return; } const trash = request.url().includes(\"deleted_at=not.is.null\"); await route.fulfill({ status: 200, contentType: \"application/json\", body: JSON.stringify(trash ? [] : [BOX]) }); }); return …"
+    }
+   ],
+   "temporal": [
+    "const opened = await tab.waitFor({ state: \"visible\", timeout: 10_000 }).then("
+   ],
+   "tests": [
+    "[module:admin] [component:cadastros-tab-caixas] [owner:team-growth] @regression route:/admin/cadastros?tab=caixas listagem",
+    "@critical abre na aba Caixas de transporte e lista a caixa devolvida pelo banco"
+   ]
+  },
   "e2e/routes/admin/cadastros.spec.ts": {
    "path": "e2e/routes/admin/cadastros.spec.ts",
    "lines": 8,
@@ -416693,6 +417797,30 @@
    "path": "e2e/routes/admin/conexoes.spec.ts",
    "lines": 8,
    "is_test": true
+  },
+  "e2e/routes/admin/frete.spec.ts": {
+   "path": "e2e/routes/admin/frete.spec.ts",
+   "lines": 116,
+   "is_test": true,
+   "params": [
+    {
+     "name": "NEW_DIVISOR",
+     "value": "5000"
+    },
+    {
+     "name": "INCOMPLETE_CEP",
+     "value": "\"0337\""
+    }
+   ],
+   "doc": "/admin/frete — parâmetros globais de frete (linha única de freight_settings). REST 100% mockado com `page.route()`: este spec roda contra o banco de produção depois do merge e NUNCA pode gravar nele. O GET devolve a linha de exemplo abaixo e o PATCH fica só na memória do teste.",
+   "temporal": [
+    "const opened = await form.waitFor({ state: \"visible\", timeout: 10_000 }).then("
+   ],
+   "tests": [
+    "[module:admin] [component:frete] [owner:team-growth] @regression route:/admin/frete formulário",
+    "@critical salvar 6000 → 5000 envia só o divisor e o valor continua após recarregar",
+    "@edge CEP incompleto bloqueia o salvar e nada é enviado"
+   ]
   },
   "e2e/routes/admin/limites-desconto.spec.ts": {
    "path": "e2e/routes/admin/limites-desconto.spec.ts",
@@ -433174,6 +434302,77 @@
    ],
    "doc": "Shim local de actions/upload-artifact (mesmas entradas/saídas usadas no repo)."
   },
+  "scripts/freight/seed-shipping-boxes.mjs": {
+   "path": "scripts/freight/seed-shipping-boxes.mjs",
+   "lines": 450,
+   "exports": [
+    "const CSV_PADRAO",
+    "const VERSAO_DA_TABELA",
+    "const COLUNAS",
+    "function parseCsv",
+    "function validarCaixas",
+    "const escaparTexto",
+    "function gerarSql",
+    "function gerarRollbackSql",
+    "function executarCli"
+   ],
+   "errors": [
+    "${arg} exige um valor",
+    "--out é obrigatório",
+    "CSV vazio: falta a linha de cabeçalho.",
+    "linha ${linha} (cabeçalho): ${problemas.join(",
+    "linha ${linha}: ${campos.length} campo(s), o cabeçalho tem ${colunas.length}. Texto com vírgula vai entre aspas duplas.",
+    "linha ${linha}: aspas duplas abertas e não fechadas.",
+    "nenhuma caixa para gerar o SQL.",
+    "opção desconhecida: ${arg}",
+    "versão ",
+    "versão ${version} tem de ser maior que ${VERSAO_DA_TABELA}, a migration que cria public.shipping_boxes."
+   ],
+   "params": [
+    {
+     "name": "CSV_PADRAO",
+     "value": "'scripts/freight/caixas.csv'"
+    },
+    {
+     "name": "VERSAO_DA_TABELA",
+     "value": "'20261119213000'"
+    },
+    {
+     "name": "NOME_MAX",
+     "value": "80"
+    },
+    {
+     "name": "MAX_INT4",
+     "value": "2"
+    }
+   ],
+   "rule_comments": [
+    "`code` e `name` são text livre no banco; a regra é a do formulário do admin"
+   ],
+   "doc": "!/usr/bin/env node",
+   "calc_fns": [
+    {
+     "name": "validarCaixa",
+     "params": "v, erro",
+     "body": "if (!CODIGO.test(v.code)) erro('code', `\"${v.code}\" inválido: de 1 a 6 caracteres, letras maiúsculas de A a Z e números`); if (v.name === '' || v.name.length > NOME_MAX || temControle(v.name)) erro('name', `nome obrigatório, com até ${NOME_MAX} caracteres e sem caractere de controle`); const parede = inteiro(v.wall_thickness_mm); const paredeOk = parede !== null && parede >= 1 && parede <= 20; if (!paredeOk) erro('wall_thickness_mm', `\"${v.wall_thickness_mm}\" inválido: inteiro de 1 a 20 (mm)`); …"
+    },
+    {
+     "name": "validarCaixas",
+     "params": "registros",
+     "body": "const erros = []; const caixas = []; const linhaDoCodigo = new Map(); if (registros.length === 0) erros.push('nenhuma caixa: o CSV só tem o cabeçalho.'); for (const { linha, valores } of registros) { const antes = erros.length; const caixa = validarCaixa(valores, (campo, motivo) => erros.push(`linha ${linha}: ${campo} — ${motivo}.`), ); if (!CODIGO.test(caixa.code)) continue; if (linhaDoCodigo.has(caixa.code)) erros.push( `linha ${linha}: code — \"${caixa.code}\" repetido (já está na linha ${linha …"
+    },
+    {
+     "name": "gerarSql",
+     "params": "caixas, { version, origemCsv = CSV_PADRAO } = {}",
+     "body": "conferirEntrada(caixas, version, origemCsv); return [ `-- Rollback: supabase/rollbacks/${version}_rollback.sql`, '--', '-- Migration SÓ DE DADOS: cadastra em public.shipping_boxes as caixas de', `-- transporte padrão da empresa (${caixas.map((c) => c.code).join(', ')}).`, '--', '-- GERADA por scripts/freight/seed-shipping-boxes.mjs a partir de', `-- ${origemCsv}. Não edite à mão: corrija o CSV e gere de novo.`, '--', '-- Idempotente. O ON CONFLICT repete o predicado do índice único PARCIAL', '-- …"
+    },
+    {
+     "name": "gerarRollbackSql",
+     "params": "caixas, { version, migration = `${version}_seed_shipping_boxes` } = {},",
+     "body": "conferirEntrada(caixas, version, migration); return [ `-- Rollback: ${migration}`, '--', `-- Desfaz o seed das caixas de transporte (${caixas.map((c) => c.code).join(', ')}). GERADO por`, '-- scripts/freight/seed-shipping-boxes.mjs junto com a migration: os valores', '-- abaixo são os mesmos do INSERT dela.', '--', '-- Apaga SÓ a caixa viva que continua IDÊNTICA ao seed em todas as colunas', '-- gravadas. Ficam de propósito:', '-- - a caixa que o admin editou (qualquer coluna diferente do seed); …"
+    }
+   ]
+  },
   "scripts/graphify/build-sql-graph.py": {
    "path": "scripts/graphify/build-sql-graph.py",
    "lines": 102,
@@ -437771,6 +438970,113 @@
     "cancelar a confirmação não dispara a ação destrutiva"
    ]
   },
+  "src/components/admin/freight-settings/FreightSettingsForm.tsx": {
+   "path": "src/components/admin/freight-settings/FreightSettingsForm.tsx",
+   "lines": 296,
+   "exports": [
+    "function FreightSettingsForm"
+   ],
+   "errors": [
+    " className="
+   ],
+   "html_constraints": [
+    {
+     "field": "id",
+     "rules": "disabled=disabled"
+    }
+   ],
+   "rule_comments": [
+    "* Campos de texto livre; a regra de personalização é escolha entre duas opções. */",
+    "Rascunho inválido conta como alterado: a linha salva sempre passa na validação."
+   ],
+   "doc": "Formulário dos parâmetros globais de frete (linha única de `freight_settings`). Recebe a linha salva e devolve em `onSave` só os campos que mudaram. Quem grava e avisa por toast é o hook `useUpdateFreightSettings`, na página. A página remonta o formulário (`key`) quando a linha salva muda, então o e …"
+  },
+  "src/components/admin/freight-settings/freightSettingsFormSchema.ts": {
+   "path": "src/components/admin/freight-settings/freightSettingsFormSchema.ts",
+   "lines": 160,
+   "exports": [
+    "interface FreightSettingsDraft",
+    "type FreightSettingsField",
+    "type FreightSettingsFieldErrors",
+    "type FreightSettingsParseResult",
+    "const freightSettingsFormSchema",
+    "function maskCep",
+    "function formatFillFactor",
+    "function toFreightSettingsDraft",
+    "function parseFreightSettingsDraft",
+    "function buildFreightSettingsPatch"
+   ],
+   "zod": [
+    {
+     "name": "divisorSchema",
+     "kind": "string",
+     "body": "",
+     "refines": [],
+     "chain": [
+      "refine",
+      "transform"
+     ]
+    },
+    {
+     "name": "freightSettingsFormSchema",
+     "kind": "object",
+     "body": "{ originCep: z.string().regex(CEP_PATTERN, 'Informe o CEP completo, no formato 00000-000.'), cubicDivisorCorreios: divisorSchema, cubicDivisorRodoviario: divisorSchema, defaultFillFactor: z .string() .trim() .regex(FACTOR_PATTERN, FACTOR_MESSAGE) .transform((text) => Number(text.replace(',', '.'))) .refine((value) => value >= FILL_FACTOR_MIN && value <= FILL_FACTOR_MAX, FACTOR_MESSAGE), internalBufferDays: z .string() .trim() .regex(INTEGER_PATTERN, 'Use um número inteiro de dias, zero ou mais.') .transform(Number), multiPersonalizationRule: z.enum(['max', 'sum']), }",
+     "refines": [
+      "Use um número inteiro de dias, zero ou mais."
+     ],
+     "chain": []
+    }
+   ],
+   "params": [
+    {
+     "name": "FILL_FACTOR_MIN",
+     "value": "0.5"
+    },
+    {
+     "name": "FILL_FACTOR_MAX",
+     "value": "1"
+    },
+    {
+     "name": "DIVISOR_MESSAGE",
+     "value": "'Use um número inteiro maior que zero.'"
+    },
+    {
+     "name": "FACTOR_MESSAGE",
+     "value": "'Use um valor entre 0,50 e 1,00, com até duas casas decimais.'"
+    }
+   ],
+   "rule_comments": [
+    "e só vira número aqui, na validação. Os limites repetem os CHECK da tabela",
+    "* Aplica a máscara 00000-000 ao que foi digitado (só dígitos, no máximo 8). */"
+   ],
+   "doc": "Regras do formulário de parâmetros de frete (`/admin/frete`). O formulário guarda o que a pessoa digita como texto (`FreightSettingsDraft`) e só vira número aqui, na validação. Os limites repetem os CHECK da tabela `freight_settings` (migration 20261119213100): validar antes evita que o banco recuse …"
+  },
+  "src/components/admin/freight-settings/__tests__/freightSettingsFormSchema.test.ts": {
+   "path": "src/components/admin/freight-settings/__tests__/freightSettingsFormSchema.test.ts",
+   "lines": 200,
+   "is_test": true,
+   "rule_comments": [
+    "* Regras do formulário de `/admin/frete`: máscara do CEP, validação e o que",
+    "Fator: 0,49 fica 0,01 abaixo do mínimo 0,50; 1,01 fica 0,01 acima do máximo 1,00."
+   ],
+   "doc": "Regras do formulário de `/admin/frete`: máscara do CEP, validação e o que vai para o banco. Os limites conferidos aqui são os CHECK da migration 20261119213100_create_freight_settings.sql.",
+   "tests": [
+    "maskCep",
+    "formatFillFactor",
+    "%d vira %s",
+    "toFreightSettingsDraft",
+    "preenche os campos com a linha salva",
+    "lê a regra ",
+    "parseFreightSettingsDraft",
+    "aceita a linha padrão e devolve os valores no formato do banco",
+    "aponta todos os campos inválidos de uma vez",
+    "buildFreightSettingsPatch",
+    "sem mudança não há o que salvar",
+    "6000 → 5000 no divisor dos Correios leva só esse campo",
+    "leva todos os campos quando todos mudam",
+    "fator igual em centésimos não conta como mudança"
+   ]
+  },
   "src/components/admin/group-personalization/GroupComponentCard.tsx": {
    "path": "src/components/admin/group-personalization/GroupComponentCard.tsx",
    "lines": 286,
@@ -440494,6 +441800,244 @@
    ],
    "rule_comments": [
     "gateamos por `useUserRole` para evitar mostrar a UI a quem não pode usar."
+   ]
+  },
+  "src/components/admin/shipping-boxes/ShippingBoxFormDialog.tsx": {
+   "path": "src/components/admin/shipping-boxes/ShippingBoxFormDialog.tsx",
+   "lines": 350,
+   "exports": [
+    "interface RejectedShippingBoxCode",
+    "function ShippingBoxFormDialog"
+   ],
+   "errors": [
+    " className="
+   ],
+   "html_constraints": [
+    {
+     "field": "id",
+     "rules": "max, max"
+    }
+   ],
+   "rule_comments": [
+    "nunca vão no payload. O peso máximo é digitado em kg e gravado em gramas.",
+    "A validação está em `shippingBoxFormSchema.ts`."
+   ],
+   "doc": "Formulário de caixa de transporte (criar e editar). O admin digita a medida EXTERNA e a espessura da parede; a medida interna e o volume aparecem calculados, só para leitura — no banco são colunas geradas e nunca vão no payload. O peso máximo é digitado em kg e gravado em gramas. A validação está em …",
+   "calc_fns": [
+    {
+     "name": "ShippingBoxFormDialog",
+     "params": "{ open, onOpenChange, box, saving, rejectedCode = null, onSave, }: ShippingBoxFormDialogProps",
+     "body": "const isEdit = box !== null; const [draft, setDraft] = useState<ShippingBoxFormDraft>(EMPTY_SHIPPING_BOX_DRAFT); const [errors, setErrors] = useState<ShippingBoxFormErrors>({}); const [advancedOpen, setAdvancedOpen] = useState(false); useEffect(() => { if (!open) return; setDraft(box ? toShippingBoxDraft(box) : EMPTY_SHIPPING_BOX_DRAFT); setErrors({}); setAdvancedOpen(box !== null && box.empty_weight_g > 0); }, [open, box]); const setField = (field: ShippingBoxFormField, value: string) => { setD …"
+    }
+   ]
+  },
+  "src/components/admin/shipping-boxes/ShippingBoxesManager.tsx": {
+   "path": "src/components/admin/shipping-boxes/ShippingBoxesManager.tsx",
+   "lines": 160,
+   "exports": [
+    "function ShippingBoxesManager"
+   ],
+   "doc": "Cadastro de caixas de transporte (aba \"Caixas de transporte\" em Cadastros). São as caixas padrão da empresa que o motor de frete (`src/lib/freight`) usa para montar os volumes. Aqui o admin cria, edita, ativa/desativa, exclui (exclusão lógica) e restaura. Os avisos de sucesso e de erro saem dos hook …",
+   "calc_fns": [
+    {
+     "name": "ShippingBoxesManager",
+     "params": "",
+     "body": "const { rows, isLoading, isError, refetch } = useShippingBoxes({ includeInactive: true }); const { create, update, softDelete, restore } = useShippingBoxMutations(); const [dialogOpen, setDialogOpen] = useState(false); const [editingBox, setEditingBox] = useState<ShippingBoxRow | null>(null); const [deleteTarget, setDeleteTarget] = useState<ShippingBoxRow | null>(null); const [rejectedCode, setRejectedCode] = useState<RejectedShippingBoxCode | null>(null); const openForm = (box: ShippingBoxRow | …"
+    }
+   ]
+  },
+  "src/components/admin/shipping-boxes/ShippingBoxesTable.tsx": {
+   "path": "src/components/admin/shipping-boxes/ShippingBoxesTable.tsx",
+   "lines": 109,
+   "exports": [
+    "function ShippingBoxesTable"
+   ],
+   "rule_comments": [
+    "interna, peso máximo em kg, fator, ordem, chave de ativa e ações."
+   ],
+   "doc": "Tabela das caixas de transporte vivas (ativas e inativas): medidas externa e interna, peso máximo em kg, fator, ordem, chave de ativa e ações.",
+   "calc_fns": [
+    {
+     "name": "ShippingBoxesTable",
+     "params": "{ boxes, onEdit, onToggleActive, onDelete, busy = false, }: ShippingBoxesTableProps",
+     "body": "return ( <div className=\"overflow-x-auto rounded-lg border\" data-testid=\"admin-table\"> <Table> <TableHeader> <TableRow> <TableHead>Código</TableHead> <TableHead className=\"min-w-[160px]\">Nome</TableHead> <TableHead>Externa (A × L × C)</TableHead> <TableHead>Interna (A × L × C)</TableHead> <TableHead className=\"text-right\">Peso máx.</TableHead> <TableHead className=\"text-center\">Fator</TableHead> <TableHead className=\"text-center\">Ordem</TableHead> <TableHead className=\"text-center\">Ativa</TableH …"
+    }
+   ]
+  },
+  "src/components/admin/shipping-boxes/ShippingBoxesTrash.tsx": {
+   "path": "src/components/admin/shipping-boxes/ShippingBoxesTrash.tsx",
+   "lines": 131,
+   "exports": [
+    "function ShippingBoxesTrash"
+   ],
+   "doc": "Caixas excluídas, com \"Restaurar\". A exclusão do cadastro é lógica: a caixa some das listas e libera o código. A consulta só roda quando a seção é aberta. Restaurar falha se o código já estiver em uso por outra caixa — o aviso vem do hook, com o código no texto.",
+   "calc_fns": [
+    {
+     "name": "ShippingBoxesTrash",
+     "params": "{ onRestore, busy = false }: ShippingBoxesTrashProps",
+     "body": "const [open, setOpen] = useState(false); const { rows, isLoading, isError, refetch } = useDeletedShippingBoxes({ enabled: open }); return ( <Collapsible open={open} onOpenChange={setOpen} className=\"rounded-lg border\"> <CollapsibleTrigger asChild> <Button variant=\"ghost\" className=\"w-full justify-between px-4 text-sm font-medium\"> <span className=\"flex items-center gap-2\"> <Trash2 className=\"h-4 w-4 text-muted-foreground\" /> Caixas excluídas </span> <ChevronDown className={cn('h-4 w-4 transition …"
+    }
+   ]
+  },
+  "src/components/admin/shipping-boxes/index.ts": {
+   "path": "src/components/admin/shipping-boxes/index.ts",
+   "lines": 2
+  },
+  "src/components/admin/shipping-boxes/shippingBoxFormSchema.ts": {
+   "path": "src/components/admin/shipping-boxes/shippingBoxFormSchema.ts",
+   "lines": 293,
+   "exports": [
+    "const SHIPPING_BOX_FORM_FIELDS",
+    "type ShippingBoxFormField",
+    "type ShippingBoxFormDraft",
+    "type ShippingBoxFormErrors",
+    "type ShippingBoxFormResult",
+    "interface ShippingBoxInnerPreview",
+    "const EMPTY_SHIPPING_BOX_DRAFT",
+    "const SHIPPING_BOX_CODE_MAX_LENGTH",
+    "const SHIPPING_BOX_NAME_MAX_LENGTH",
+    "function normalizeShippingBoxCode",
+    "function innerDimensionCm",
+    "function computeInnerPreview",
+    "const shippingBoxFormSchema",
+    "function parseShippingBoxForm",
+    "function toShippingBoxDraft"
+   ],
+   "zod": [
+    {
+     "name": "shippingBoxFormSchema",
+     "kind": "object",
+     "body": "{ code: z .string() .transform(normalizeShippingBoxCode) .pipe( z .string() .regex( CODE_PATTERN, 'Use de 1 a 6 caracteres: letras de A a Z e números, sem espaço nem acento (ex.: P, GG, M2).', ), ), name: z .string() .trim() .min(1, 'Informe o nome da caixa.') .max( SHIPPING_BOX_NAME_MAX_LENGTH, `O nome pode ter até ${SHIPPING_BOX_NAME_MAX_LENGTH} caracteres.`, ), outerHeightCm: outerMeasure('Altura'), outerWidthCm: outerMeasure('Largura'), outerLengthCm: outerMeasure('Comprimento'), wallThicknessMm: z .string() .transform((text) => toNumber(text, INTEGER)) .pipe( z .number({ error: 'Informe a espessura em milímetros, número inteiro (ex.: 3).' }) .min(1, 'A espessura da parede vai de 1 a 20 mm.') .max(20, 'A espessura da parede vai de 1 a 20 mm.'), ), // Digitado em kg, sai daqui em GRAMAS …",
+     "refines": [
+      "${axis.label}: a parede de ${box.wallThicknessMm} mm ocupa a medida inteira. A medida interna precisa ser maior que zero."
+     ],
+     "chain": [
+      "superRefine",
+      "transform"
+     ]
+    }
+   ],
+   "enums": [
+    {
+     "name": "SHIPPING_BOX_FORM_FIELDS",
+     "values": "'code', 'name', 'outerHeightCm', 'outerWidthCm', 'outerLengthCm', 'wallThicknessMm', 'maxWeightKg', 'emptyWeightG', 'fillFactor', 'sortOrder',"
+    }
+   ],
+   "params": [
+    {
+     "name": "SHIPPING_BOX_CODE_MAX_LENGTH",
+     "value": "6"
+    },
+    {
+     "name": "MAX_NUMERIC_8_2",
+     "value": "999"
+    },
+    {
+     "name": "MAX_INT4",
+     "value": "2"
+    }
+   ],
+   "rule_comments": [
+    "* Validação do formulário de caixa de transporte.",
+    "medidas > 0, parede de 1 a 20 mm, medida interna > 0, peso máximo > peso",
+    "* Preenche o formulário com uma caixa existente (peso máximo volta para kg). */"
+   ],
+   "calc_fns": [
+    {
+     "name": "normalizeShippingBoxCode",
+     "params": "text: string",
+     "body": "return text.trim().toUpperCase();"
+    },
+    {
+     "name": "computeInnerPreview",
+     "params": "draft: ShippingBoxFormDraft",
+     "body": "const wallMm = toNumber(draft.wallThicknessMm, INTEGER); const inner = (text: string) => positiveOrNull(innerDimensionCm(toNumber(text, DECIMAL_2), wallMm)); const heightCm = inner(draft.outerHeightCm); const widthCm = inner(draft.outerWidthCm); const lengthCm = inner(draft.outerLengthCm); const volumeL = heightCm !== null && widthCm !== null && lengthCm !== null ? round2((heightCm * widthCm * lengthCm) / 1000) : null; return { heightCm, widthCm, lengthCm, volumeL };"
+    },
+    {
+     "name": "parseShippingBoxForm",
+     "params": "draft: ShippingBoxFormDraft",
+     "body": "const result = shippingBoxFormSchema.safeParse(draft); if (result.success) return { ok: true, values: result.data }; const errors: ShippingBoxFormErrors = {}; for (const issue of result.error.issues) { const [field] = issue.path; if (isFormField(field) && errors[field] === undefined) errors[field] = issue.message; } return { ok: false, errors };"
+    },
+    {
+     "name": "toShippingBoxDraft",
+     "params": "row: ShippingBoxRow",
+     "body": "return { code: row.code, name: row.name, outerHeightCm: toInputText(row.outer_height_cm), outerWidthCm: toInputText(row.outer_width_cm), outerLengthCm: toInputText(row.outer_length_cm), wallThicknessMm: String(row.wall_thickness_mm), maxWeightKg: toInputText(row.max_weight_g / 1000), emptyWeightG: String(row.empty_weight_g), fillFactor: row.fill_factor.toFixed(2).replace('.', ','), sortOrder: String(row.sort_order), isActive: row.is_active, };"
+    }
+   ]
+  },
+  "src/components/admin/shipping-boxes/shippingBoxFormat.ts": {
+   "path": "src/components/admin/shipping-boxes/shippingBoxFormat.ts",
+   "lines": 55,
+   "exports": [
+    "const NO_VALUE",
+    "function formatDimensionsCm",
+    "function formatLiters",
+    "function formatWeightKg",
+    "function formatFillFactor",
+    "function formatDeletedDay"
+   ],
+   "params": [
+    {
+     "name": "NO_VALUE",
+     "value": "'—'"
+    }
+   ],
+   "doc": "Formatação PT-BR dos números do cadastro de caixas de transporte. Uso só de exibição: nada daqui volta para o banco."
+  },
+  "src/components/admin/shipping-boxes/__tests__/ShippingBoxesManager.test.tsx": {
+   "path": "src/components/admin/shipping-boxes/__tests__/ShippingBoxesManager.test.tsx",
+   "lines": 485,
+   "is_test": true,
+   "errors": [
+    ")).not.toBeInTheDocument();\n  });\n});\n\ndescribe(",
+    ")).toHaveTextContent(\n      ",
+    ")).toHaveTextContent(/Use de 1 a 6 caracteres/);\n    expect(within(dialog).getByLabelText(",
+    ")).toHaveTextContent(DUPLICATE_MESSAGE);\n    expect(screen.getByRole("
+   ],
+   "tests": [
+    "ShippingBoxesManager — tabela e estados",
+    "pede a lista com as inativas e mostra externa, interna, peso em kg, fator e ordem",
+    "carregando: mostra o aviso e nenhuma tabela",
+    "erro: mostra a falha e ",
+    "vazio: convida a cadastrar a primeira caixa e o botão abre o formulário",
+    "ShippingBoxesManager — criar",
+    "caixa P real: mostra a interna e o volume ao vivo e envia o payload exato",
+    "aceita vírgula decimal nas medidas e no peso",
+    "código inválido: mostra o erro no campo e não salva",
+    "parede que come a medida: interna zerada bloqueia o salvamento",
+    "peso máximo igual ao da caixa vazia bloqueia o salvamento",
+    "código já em uso: o formulário continua aberto com a mensagem no campo",
+    "ShippingBoxesManager — editar, ativar e excluir",
+    "editar abre o formulário preenchido e envia o patch com o id da caixa",
+    "a chave da caixa $caixa grava só is_active = $ativa",
+    "excluir pede confirmação e só então faz a exclusão lógica",
+    "cancelar a confirmação não exclui",
+    "ShippingBoxesManager — caixas excluídas",
+    "só consulta as excluídas depois de abrir a seção e restaura pelo id",
+    "sem excluídas: avisa que não há nenhuma",
+    "erro ao carregar as excluídas: ",
+    "aba Caixas de transporte em /admin/cadastros",
+    "?tab=caixas abre a aba, logo depois de Fornecedores, com o cadastro dentro"
+   ]
+  },
+  "src/components/admin/shipping-boxes/__tests__/shippingBoxFormSchema.test.ts": {
+   "path": "src/components/admin/shipping-boxes/__tests__/shippingBoxFormSchema.test.ts",
+   "lines": 352,
+   "is_test": true,
+   "tests": [
+    "parseShippingBoxForm — payload",
+    "caixa P real vira o payload do serviço, em cm, mm e gramas, sem medida interna",
+    "parseShippingBoxForm — recusas",
+    "peso máximo 1 g acima do vazio passa (0,5 kg = 500 g contra 499 g)",
+    "devolve um erro por campo quando vários estão errados",
+    "medidas internas",
+    "innerDimensionCm($outerCm, $wallMm) = $esperado",
+    "prévia da caixa P: 26,4 × 32,4 × 32,4 cm e 27,71 L",
+    "prévia sem volume enquanto falta uma medida",
+    "prévia não mostra medida interna zerada ou negativa",
+    "toShippingBoxDraft",
+    "preenche o formulário com vírgula decimal e peso máximo em kg",
+    "salvar sem mexer devolve os mesmos valores da linha, sem as internas"
    ]
   },
   "src/components/admin/suppliers-manager/SupplierAddressTab.tsx": {
@@ -448335,7 +449879,7 @@
   },
   "src/components/layout/SidebarReorganized.tsx": {
    "path": "src/components/layout/SidebarReorganized.tsx",
-   "lines": 662,
+   "lines": 675,
    "exports": [
     "const SidebarReorganized"
    ],
@@ -464216,6 +465760,74 @@
     "useFavoritesPageState"
    ]
   },
+  "src/hooks/freight/index.ts": {
+   "path": "src/hooks/freight/index.ts",
+   "lines": 5,
+   "doc": "Hooks do domínio de frete: caixas de transporte e parâmetros globais."
+  },
+  "src/hooks/freight/keys.ts": {
+   "path": "src/hooks/freight/keys.ts",
+   "lines": 19,
+   "exports": [
+    "const FREIGHT_QUERY_KEYS",
+    "const FREIGHT_STALE_TIME_MS"
+   ],
+   "params": [
+    {
+     "name": "FREIGHT_STALE_TIME_MS",
+     "value": "10"
+    }
+   ],
+   "doc": "Query keys do domínio de frete (caixas de transporte e parâmetros). Toda chave de caixa começa por `shippingBoxes.all`, então invalidar esse prefixo atualiza a lista do motor, a tabela do cadastro e a lixeira de uma vez.",
+   "temporal": [
+    "export const FREIGHT_STALE_TIME_MS = 10 * 60 * 1000;"
+   ]
+  },
+  "src/hooks/freight/useFreightSettings.ts": {
+   "path": "src/hooks/freight/useFreightSettings.ts",
+   "lines": 95,
+   "exports": [
+    "interface UseFreightSettingsResult",
+    "function useFreightSettings",
+    "function useUpdateFreightSettings"
+   ],
+   "errors": [
+    "permission"
+   ],
+   "doc": "Hooks dos parâmetros globais de frete (`freight_settings`, linha única). - `useFreightSettings` — leitura. Devolve a linha do banco (para a tela `/admin/frete`) e os três parâmetros que o motor usa. - `useUpdateFreightSettings` — salva e registra quem alterou. O id do usuário vem de `useAuth()`; `su …",
+   "hooks": [
+    "useFreightSettings",
+    "useUpdateFreightSettings"
+   ]
+  },
+  "src/hooks/freight/useShippingBoxes.ts": {
+   "path": "src/hooks/freight/useShippingBoxes.ts",
+   "lines": 202,
+   "exports": [
+    "interface UseShippingBoxesOptions",
+    "interface UseShippingBoxesResult",
+    "interface UseDeletedShippingBoxesOptions",
+    "interface UseDeletedShippingBoxesResult",
+    "interface UpdateShippingBoxInput",
+    "interface UseShippingBoxMutationsResult",
+    "function useShippingBoxes",
+    "function useDeletedShippingBoxes",
+    "function useShippingBoxMutations"
+   ],
+   "doc": "Hooks das caixas de transporte (`shipping_boxes`). - `useShippingBoxes` — leitura. Devolve as linhas do banco (para a tabela do cadastro) e a lista já traduzida para o motor de frete (`src/lib/freight`). - `useDeletedShippingBoxes` — a lixeira: só as excluídas. - `useShippingBoxMutations` — criar, a …",
+   "hooks": [
+    "useShippingBoxes",
+    "useDeletedShippingBoxes",
+    "useShippingBoxMutations"
+   ],
+   "calc_fns": [
+    {
+     "name": "invalidate",
+     "params": "",
+     "body": "void queryClient.invalidateQueries({ queryKey: FREIGHT_QUERY_KEYS.shippingBoxes.all });"
+    }
+   ]
+  },
   "src/hooks/gravacao/gravacao-constants.ts": {
    "path": "src/hooks/gravacao/gravacao-constants.ts",
    "lines": 220,
@@ -476005,7 +477617,7 @@
   },
   "src/lib/routePrefetch.ts": {
    "path": "src/lib/routePrefetch.ts",
-   "lines": 76,
+   "lines": 77,
    "exports": [
     "function prefetchRoute",
     "function getPrefetchHandlers"
@@ -480081,9 +481693,29 @@
    ],
    "doc": "Resumo do plano em uma linha, para cabeçalho de card e barra de resumo. Formato: `3× G + 1× P · 18,4 kg · 0,21 m³ · cubado 35,0 kg`. O peso cubado mostrado é o dos **Correios** (divisor 6.000 cm³/kg). Qual divisor vale é decisão da cotação (bloco I); para um resumo de tela o dos Correios é o de leit …"
   },
+  "src/lib/freight/fromDatabase.ts": {
+   "path": "src/lib/freight/fromDatabase.ts",
+   "lines": 96,
+   "exports": [
+    "type ShippingBoxSource",
+    "type FreightSettingsSource",
+    "function toShippingBox",
+    "function toFreightSettings"
+   ],
+   "rule_comments": [
+    "* Caixa do banco → caixa do motor, ou `null` quando ela não pode receber carga."
+   ],
+   "calc_fns": [
+    {
+     "name": "toShippingBox",
+     "params": "row: ShippingBoxSource",
+     "body": "const { inner_height_cm, inner_width_cm, inner_length_cm } = row; if ( !isKnownMeasure(inner_height_cm) || !isKnownMeasure(inner_width_cm) || !isKnownMeasure(inner_length_cm) ) { return null; } return { id: row.id, code: row.code, name: row.name, inner: { heightCm: inner_height_cm, widthCm: inner_width_cm, lengthCm: inner_length_cm, }, outer: { heightCm: row.outer_height_cm, widthCm: row.outer_width_cm, lengthCm: row.outer_length_cm, }, emptyWeightG: row.empty_weight_g, maxWeightG: row.max_weigh …"
+    }
+   ]
+  },
   "src/lib/freight/index.ts": {
    "path": "src/lib/freight/index.ts",
-   "lines": 61,
+   "lines": 68,
    "doc": "Motor de frete — barril público. Contrato, unidades e limites em `./README.md`."
   },
   "src/lib/freight/packMixed.ts": {
@@ -480461,6 +482093,23 @@
     "250 cadernetas nas quatro caixas: uma GG só",
     "caixas de mesmo volume saem em ordem de código",
     "plano bloqueado não tem resumo"
+   ]
+  },
+  "src/lib/freight/__tests__/fromDatabase.test.ts": {
+   "path": "src/lib/freight/__tests__/fromDatabase.test.ts",
+   "lines": 156,
+   "is_test": true,
+   "doc": "fromDatabase.test.ts — tradução da linha do banco para os tipos do motor. A caixa usada é a GG real (externa 40 × 50 × 60 cm, parede de 3 mm, 30 kg): os três lados são diferentes, então trocar altura por largura ou comprimento no mapeador quebra o teste.",
+   "tests": [
+    "toShippingBox",
+    "mapeia cada coluna para o campo certo do motor",
+    "a caixa mapeada tem o volume interno que o motor espera",
+    "aceita só as colunas que o motor lê, sem a linha inteira",
+    "devolve null com %s",
+    "não filtra caixa %s: quem escolhe as caixas é quem consulta",
+    "toFreightSettings",
+    "devolve só os três parâmetros que o motor usa",
+    "não confunde os dois divisores"
    ]
   },
   "src/lib/freight/__tests__/fuzz.test.ts": {
@@ -483299,7 +484948,7 @@
   },
   "src/lib/rbac/route-matrix.ts": {
    "path": "src/lib/rbac/route-matrix.ts",
-   "lines": 465,
+   "lines": 474,
    "exports": [
     "type RouteRole",
     "type RouteGuard",
@@ -483412,6 +485061,11 @@
     {
      "field": "role",
      "value": "authenticated",
+     "kind": "escreve"
+    },
+    {
+     "field": "role",
+     "value": "admin",
      "kind": "escreve"
     },
     {
@@ -485693,7 +487347,7 @@
   },
   "src/pages/admin/AdminCadastrosPage.tsx": {
    "path": "src/pages/admin/AdminCadastrosPage.tsx",
-   "lines": 135,
+   "lines": 155,
    "exports": [
     "function AdminCadastrosPage"
    ]
@@ -485884,6 +487538,17 @@
     "Falha ao gerar diff",
     "Falha ao testar RPC"
    ]
+  },
+  "src/pages/admin/AdminFreteSettingsPage.tsx": {
+   "path": "src/pages/admin/AdminFreteSettingsPage.tsx",
+   "lines": 104,
+   "exports": [
+    "function AdminFreteSettingsPage"
+   ],
+   "errors": [
+    "\n      className="
+   ],
+   "doc": "Admin: parâmetros globais de frete (`freight_settings`, linha única). Rota: /admin/frete (AdminRoute — o mesmo grupo que a RLS deixa salvar). As caixas de transporte ficam em /admin/cadastros?tab=caixas. O `PageSEO` e o container ficam fora dos estados de carregando/erro: o teste AdminStandardRules …"
   },
   "src/pages/admin/AdminLoginAttemptsPage.tsx": {
    "path": "src/pages/admin/AdminLoginAttemptsPage.tsx",
@@ -486753,6 +488418,34 @@
     "function buildMarkdownReport"
    ],
    "doc": "Schema esperado pelo front para as 4 tabelas de Gravação. Usado pela página AdminExternalDbPage para comparar com o schema real retornado pela edge function external-db-inspect (mode: 'columns'). Quando o usuário clica em \"Comparar tipos do front com schema atual\", cada tabela é inspecionada e geram …"
+  },
+  "src/pages/admin/__tests__/AdminFreteSettingsPage.test.tsx": {
+   "path": "src/pages/admin/__tests__/AdminFreteSettingsPage.test.tsx",
+   "lines": 289,
+   "is_test": true,
+   "errors": [
+    ")).toHaveTextContent(\n      ",
+    ")).toHaveTextContent(mensagem);\n  });\n\n  it("
+   ],
+   "doc": "Tela `/admin/frete`. Os hooks de `@/hooks/freight` são mockados: aqui o que se trava é o que a tela mostra em cada estado, o que bloqueia o salvar e o que ela entrega ao hook de gravação (que é quem grava e dispara o toast).",
+   "tests": [
+    "AdminFreteSettingsPage — estados",
+    "mostra título, SEO e container padrão mesmo enquanto carrega",
+    "em erro avisa e deixa tentar de novo",
+    "não quebra quando a linha não está visível",
+    "preenche o formulário com a linha salva",
+    "mostra quando foi a última alteração",
+    "AdminFreteSettingsPage — salvar",
+    "sem alteração o botão Salvar fica desabilitado",
+    "aplica a máscara 00000-000 enquanto o CEP é digitado",
+    "CEP inválido bloqueia o salvar e não chama o update",
+    "salvar 6000 → 5000 envia só o divisor dos Correios",
+    "envia junto todos os campos alterados, já convertidos",
+    "escrever o mesmo valor de outro jeito não habilita o salvar",
+    "Desfazer alterações volta ao valor salvo",
+    "enquanto salva, o botão fica desabilitado",
+    "recarrega os campos quando a linha salva muda"
+   ]
   },
   "src/pages/admin/__tests__/RolePermissionsPage.save.test.tsx": {
    "path": "src/pages/admin/__tests__/RolePermissionsPage.save.test.tsx",
@@ -493779,7 +495472,7 @@
   },
   "src/routes/admin-routes.tsx": {
    "path": "src/routes/admin-routes.tsx",
-   "lines": 151,
+   "lines": 153,
    "exports": [
     "const adminRoutes"
    ],
@@ -493835,6 +495528,12 @@
     {
      "path": "/admin/cadastros/produto/:id",
      "component": "AdminProductFormPage",
+     "guard": "",
+     "roles": []
+    },
+    {
+     "path": "/admin/frete",
+     "component": "AdminFreteSettingsPage",
      "guard": "",
      "roles": []
     },
@@ -494181,7 +495880,7 @@
   },
   "src/routes/lazy-pages.ts": {
    "path": "src/routes/lazy-pages.ts",
-   "lines": 229,
+   "lines": 232,
    "exports": [
     "const Auth",
     "const Unauthorized",
@@ -494214,6 +495913,7 @@
     "const AdminPromoverUsuarioPage",
     "const AdminSegurancaPage",
     "const AdminCadastrosPage",
+    "const AdminFreteSettingsPage",
     "const AdminPromptsIAPage",
     "const AdminProductFormPage",
     "const AdminTelemetriaPage",
@@ -494241,8 +495941,7 @@
     "const ObservabilityDashboardPage",
     "const AdminRbacRoutesPage",
     "const SellerDiscountLimitsAdminPage",
-    "const RlsDenialsAdminPage",
-    "const OwnershipAuditAdminPage"
+    "const RlsDenialsAdminPage"
    ],
    "doc": "Centralized lazy-loaded page imports. All page components are loaded via lazyWithRetry for code-splitting and resilient fetch retry on network failures. Organized by area for navigability."
   },
@@ -494790,6 +496489,52 @@
     "setTimeout(() => reject(new Error('Timeout RPC')), 2000);"
    ]
   },
+  "src/services/freightSettingsService.ts": {
+   "path": "src/services/freightSettingsService.ts",
+   "lines": 122,
+   "exports": [
+    "type FreightSettingsRow",
+    "type MultiPersonalizationRule",
+    "interface FreightSettingsWrite",
+    "type FreightSettingsPatch",
+    "type FreightSettingsErrorReason",
+    "class FreightSettingsError",
+    "const freightSettingsService"
+   ],
+   "tables": [
+    {
+     "table": "freight_settings",
+     "op": "select"
+    },
+    {
+     "table": "freight_settings",
+     "op": "select,update"
+    }
+   ],
+   "table_cols": {
+    "freight_settings": [
+     "id"
+    ]
+   },
+   "errors": [
+    "permission",
+    "unknown"
+   ],
+   "enums": [
+    {
+     "name": "MultiPersonalizationRule",
+     "values": "max | sum"
+    },
+    {
+     "name": "FreightSettingsErrorReason",
+     "values": "invalid | permission | unknown"
+    }
+   ],
+   "rule_comments": [
+    "a escrita pede `.select('id')` e 0 linhas vira erro de permissão."
+   ],
+   "doc": "Parâmetros globais do frete (`public.freight_settings`) — linha única. A tabela é um singleton com chave booleana travada em `true` (migration 20261119213100_create_freight_settings.sql) e só tem policy de SELECT e de UPDATE. Por isso salvar é sempre `update(...).eq('id', true)`: `upsert` e `insert` …"
+  },
   "src/services/magazineService.ts": {
    "path": "src/services/magazineService.ts",
    "lines": 820,
@@ -495243,6 +496988,67 @@
     "VITE_SUPABASE_URL"
    ]
   },
+  "src/services/shippingBoxService.ts": {
+   "path": "src/services/shippingBoxService.ts",
+   "lines": 226,
+   "exports": [
+    "type ShippingBoxRow",
+    "type ShippingBoxWrite",
+    "type ShippingBoxPatch",
+    "type ShippingBoxErrorReason",
+    "class ShippingBoxError",
+    "const shippingBoxService"
+   ],
+   "tables": [
+    {
+     "table": "shipping_boxes",
+     "op": "select"
+    },
+    {
+     "table": "shipping_boxes",
+     "op": "select"
+    },
+    {
+     "table": "shipping_boxes",
+     "op": "select"
+    },
+    {
+     "table": "shipping_boxes",
+     "op": "insert,select"
+    },
+    {
+     "table": "shipping_boxes",
+     "op": "select,update"
+    },
+    {
+     "table": "shipping_boxes",
+     "op": "select,update"
+    },
+    {
+     "table": "shipping_boxes",
+     "op": "select,update"
+    }
+   ],
+   "table_cols": {
+    "shipping_boxes": [
+     "deleted_at",
+     "id",
+     "is_active"
+    ]
+   },
+   "errors": [
+    "permission"
+   ],
+   "enums": [
+    {
+     "name": "ShippingBoxErrorReason",
+     "values": "duplicate_code | invalid | permission | unknown"
+    }
+   ],
+   "rule_comments": [
+    "`.select('id')` e 0 linhas vira erro de permissão."
+   ]
+  },
   "src/services/telemetryService.ts": {
    "path": "src/services/telemetryService.ts",
    "lines": 226,
@@ -495315,6 +497121,27 @@
     "exchangeCodeForSessionSafe",
     "server 500 → err/server",
     "throw AbortError → err"
+   ]
+  },
+  "src/services/__tests__/freightSettingsService.test.ts": {
+   "path": "src/services/__tests__/freightSettingsService.test.ts",
+   "lines": 218,
+   "is_test": true,
+   "doc": "freightSettingsService — contrato com `public.freight_settings` (linha única). O cliente Supabase é trocado por um builder que grava cada chamada (`ops`), então o teste confere o que seria enviado ao PostgREST. O detector de RLS (`isRlsDenialError`) é o real.",
+   "tests": [
+    "freightSettingsService.get",
+    "lê a linha única pelo id = true",
+    "devolve null quando a linha não está visível",
+    "erro do banco vira mensagem amigável, sem texto técnico",
+    "freightSettingsService.update",
+    "faz UPDATE em id = true, grava updated_by e pede o id de volta",
+    "envia só o que mudou, mais updated_by",
+    "o payload não tem a chave %s, mesmo recebendo a linha inteira",
+    "nunca usa upsert, insert nem delete",
+    "0 linhas sem erro (%s) vira permission: a RLS nega em silêncio",
+    "42501 (RLS com erro) vira permission",
+    "23514 (CHECK violado) vira invalid",
+    "erro genérico vira unknown, guarda a causa e registra no log"
    ]
   },
   "src/services/__tests__/magazineAddProductsUnique.test.ts": {
@@ -495572,6 +497399,35 @@
     "emite quote_status_transition_blocked (not_allowed_by_config) ao tentar draft→converted",
     "emite quote_status_transition_blocked (db_check_violation) quando o banco rejeita com 23514",
     "NÃO emite telemetria quando a transição é válida e o banco aceita"
+   ]
+  },
+  "src/services/__tests__/shippingBoxService.test.ts": {
+   "path": "src/services/__tests__/shippingBoxService.test.ts",
+   "lines": 410,
+   "is_test": true,
+   "doc": "shippingBoxService — contrato com `public.shipping_boxes`. O cliente Supabase é trocado por um builder que grava cada chamada (`ops`), então o teste confere o que seria enviado ao PostgREST: filtros, ordem e payload. O detector de RLS (`isRlsDenialError`) é o real.",
+   "tests": [
+    "shippingBoxService — listagens",
+    "listActive: só vivas e ativas, por sort_order e code",
+    "listAll: vivas, sem filtrar is_active",
+    "listDeleted: só excluídas, da mais recente para a mais antiga",
+    "shippingBoxService — create",
+    "insere os 11 campos graváveis, pede o id de volta e o devolve",
+    "nunca envia inner_*_cm, id nem datas, mesmo recebendo a linha inteira",
+    "o payload de insert não tem a chave %s",
+    "campo opcional ausente não é enviado: vale o padrão do banco",
+    "nunca usa upsert nem delete",
+    "shippingBoxService — update, softDelete e restore",
+    "update: envia só o que mudou, filtra pelo id e pede o id de volta",
+    "o payload de update não tem a chave %s",
+    "softDelete: grava deleted_at com o instante atual, sem apagar a linha",
+    "restore: limpa deleted_at",
+    "shippingBoxService — erros de escrita",
+    "23505 sem details: create e update usam o código enviado",
+    "23505 sem details no restore: mensagem sem inventar o código",
+    "%s: 23514 (CHECK violado) vira invalid",
+    "%s: 0 linhas sem erro (RLS em silêncio) vira permission",
+    "%s: 42501 (RLS com erro) vira permission"
    ]
   },
   "src/stores/oracleVoiceBridge.ts": {
@@ -539463,6 +541319,52 @@
    ],
    "doc": "Smoke test template — helpers para gerar testes mínimos que apenas garantem que o hook não crasha ao montar com providers padrão. Uso: import { smokeHook } from \"../_helpers/smoke-template\"; import { useAlgumaCoisa } from \"@/hooks/useAlgumaCoisa\"; smokeHook(\"useAlgumaCoisa\", () => useAlgumaCoisa());"
   },
+  "tests/hooks/freight/useFreightSettings.test.ts": {
+   "path": "tests/hooks/freight/useFreightSettings.test.ts",
+   "lines": 187,
+   "is_test": true,
+   "doc": "Hooks dos parâmetros de frete. O serviço é mockado (não o Supabase): aqui o que se trava é a chave de cache, a tradução para o motor, de onde vem o id do usuário gravado em `updated_by` e o texto que chega ao toast.",
+   "tests": [
+    "useFreightSettings",
+    "devolve a linha do banco e os três parâmetros do motor",
+    "sem linha visível: row e settings nulos, sem padrão inventado",
+    "usa a chave [",
+    "erro do serviço: nulos e a mensagem amigável disponível",
+    "useUpdateFreightSettings",
+    "salva com o id do usuário de useAuth, avisa e invalida a leitura",
+    "depois de salvar, a leitura montada na tela é buscada de novo",
+    "sem usuário logado: não chama o serviço e avisa que a sessão expirou",
+    "a mensagem do serviço vai no TÍTULO do toast, sem description",
+    "erro que não é do serviço mostra o texto padrão, nunca o técnico"
+   ]
+  },
+  "tests/hooks/freight/useShippingBoxes.test.ts": {
+   "path": "tests/hooks/freight/useShippingBoxes.test.ts",
+   "lines": 349,
+   "is_test": true,
+   "doc": "Hooks das caixas de transporte. O serviço é mockado (não o Supabase): aqui o que se trava é qual listagem cada hook chama, a chave de cache do plano, a tradução para o motor, a invalidação e o texto que chega ao toast.",
+   "tests": [
+    "useShippingBoxes",
+    "por padrão lê só as ativas e devolve linhas e caixas do motor",
+    "includeInactive traz as inativas nas linhas, mas o motor só recebe ativa e mapeável",
+    "caixa excluída que chegue na lista não vai para o motor",
+    "usa a chave [",
+    "guarda o resultado por 10 minutos",
+    "erro do serviço: listas vazias e a mensagem amigável disponível",
+    "useDeletedShippingBoxes",
+    "lê só as excluídas, na chave própria da lixeira",
+    "enabled: false não consulta",
+    "useShippingBoxMutations — sucesso",
+    "create: chama o serviço, devolve o id, avisa e invalida todas as listas de caixas",
+    "update com %s: avisa ",
+    "%s: chama o serviço com o id, avisa ",
+    "depois de salvar, a lista montada na tela é buscada de novo",
+    "useShippingBoxMutations — erro",
+    "%s: a mensagem do serviço vai no TÍTULO do toast, sem description",
+    "%s: erro que não é do serviço mostra ",
+    "erro não invalida as listas"
+   ]
+  },
   "tests/hooks/kit-builder/useKitFitsValidation.test.ts": {
    "path": "tests/hooks/kit-builder/useKitFitsValidation.test.ts",
    "lines": 59,
@@ -546973,6 +548875,62 @@
     "não aceita audit inacessível como smoke aprovado"
    ]
   },
+  "tests/scripts/seed-shipping-boxes.test.mjs": {
+   "path": "tests/scripts/seed-shipping-boxes.test.mjs",
+   "lines": 499,
+   "is_test": true,
+   "params": [
+    {
+     "name": "VERSION",
+     "value": "'20261120090000'"
+    }
+   ],
+   "rule_comments": [
+    "limite de 80 caracteres: 81 passa do limite."
+   ],
+   "doc": "Contrato de scripts/freight/seed-shipping-boxes.mjs: lê o CSV das caixas de transporte, repete os CHECKs de public.shipping_boxes (migration 20261119213000) e gera o SQL idempotente do seed e o rollback dele. O script só escreve arquivo — nunca abre conexão com banco.",
+   "calc_fns": [
+    {
+     "name": "validar",
+     "params": "...trocas",
+     "body": "validarCaixas(parseCsv(csvCom(...trocas)));"
+    }
+   ],
+   "tests": [
+    "parseCsv",
+    "lê o CSV real: 4 caixas, cada uma com a linha do arquivo (cabeçalho é a linha 1)",
+    "o cabeçalho do CSV real são as colunas graváveis, sem as inner_*_cm geradas",
+    "aponta a linha que tem campo a mais ou a menos",
+    "aceita texto entre aspas duplas, com vírgula e aspas dobradas",
+    "recusa aspas abertas e não fechadas, com a linha",
+    "ignora BOM, CRLF e linha vazia sem perder a numeração do arquivo",
+    "recusa CSV sem cabeçalho",
+    "validarCaixas — CSV real",
+    "normaliza a caixa P: medidas e fator com 2 casas, inteiros como número",
+    "validarCaixas — as mesmas regras dos CHECKs da tabela",
+    "junta os problemas de todas as linhas, cada um com a linha do CSV",
+    "recusa código repetido e diz onde está o primeiro",
+    "recusa CSV só com cabeçalho",
+    "gerarSql",
+    "INSERT da caixa P, escrito à mão",
+    "as 4 caixas reais viram 4 tuplas, na ordem do CSV",
+    "cabeçalho: a primeira linha aponta o rollback e tudo antes do INSERT é comentário",
+    "é idempotente no texto: ON CONFLICT com o predicado do índice parcial, e só DO NOTHING",
+    "não grava coluna gerada nem abre transação (o workflow aplica com psql -1)",
+    "é determinístico: o mesmo CSV gera o mesmo texto",
+    "escapa aspa simples do nome",
+    "recusa versão %s",
+    "recusa versão que não vem depois da migration que cria a tabela",
+    "recusa lista vazia e origem com quebra de linha (viraria SQL fora do comentário)",
+    "gerarRollbackSql",
+    "DELETE da caixa P, escrito à mão: só a viva e idêntica ao seed nas 11 colunas",
+    "faz o backup com RLS e REVOKE antes de apagar",
+    "a primeira linha nomeia a migration desfeita",
+    "executarCli",
+    "gera a migration e o rollback do CSV real; a versão sai do nome de --out",
+    "CSV inválido: sai com 1, aponta arquivo e linha e não escreve nada"
+   ]
+  },
   "tests/scripts/sentinel-push-range.test.mjs": {
    "path": "tests/scripts/sentinel-push-range.test.mjs",
    "lines": 140,
@@ -550569,10 +552527,64 @@
   }
  },
  "git": {
-  "sha": "8fe268c2748f4f3cfb1dfdd26ae9d66e2bf5fa88",
+  "sha": "777cac4c50c377f01bc3642c7b61805f2a0d24d0",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "777cac4",
+    "date": "2026-11-19",
+    "author": "adm01-debug",
+    "subject": "feat(frete): admin de caixas de transporte e parâmetros de frete (Bloco C/D) (#3915)",
+    "files": [
+     ".file-size-baseline.json",
+     "audit/supabase-reference-catalog.temporary.json",
+     "docs/E2E_SMOKE_COVERAGE.md",
+     "e2e/routes/_catalog.ts",
+     "e2e/routes/admin/cadastros-caixas.spec.ts",
+     "e2e/routes/admin/frete.spec.ts",
+     "scripts/automation.config.json",
+     "scripts/freight/README.md",
+     "scripts/freight/caixas.csv",
+     "scripts/freight/seed-shipping-boxes.mjs",
+     "src/components/admin/freight-settings/FreightSettingsForm.tsx",
+     "src/components/admin/freight-settings/__tests__/freightSettingsFormSchema.test.ts",
+     "src/components/admin/freight-settings/freightSettingsFormSchema.ts",
+     "src/components/admin/shipping-boxes/ShippingBoxFormDialog.tsx",
+     "src/components/admin/shipping-boxes/ShippingBoxesManager.tsx",
+     "src/components/admin/shipping-boxes/ShippingBoxesTable.tsx",
+     "src/components/admin/shipping-boxes/ShippingBoxesTrash.tsx",
+     "src/components/admin/shipping-boxes/__tests__/ShippingBoxesManager.test.tsx",
+     "src/components/admin/shipping-boxes/__tests__/shippingBoxFormSchema.test.ts",
+     "src/components/admin/shipping-boxes/index.ts",
+     "src/components/admin/shipping-boxes/shippingBoxFormSchema.ts",
+     "src/components/admin/shipping-boxes/shippingBoxFormat.ts",
+     "src/components/layout/SidebarReorganized.tsx",
+     "src/hooks/freight/index.ts",
+     "src/hooks/freight/keys.ts",
+     "src/hooks/freight/useFreightSettings.ts",
+     "src/hooks/freight/useShippingBoxes.ts",
+     "src/integrations/supabase/types.ts",
+     "src/lib/freight/README.md",
+     "src/lib/freight/__tests__/fromDatabase.test.ts",
+     "src/lib/freight/fromDatabase.ts",
+     "src/lib/freight/index.ts",
+     "src/lib/rbac/route-matrix.ts",
+     "src/lib/routePrefetch.ts",
+     "src/pages/admin/AdminCadastrosPage.tsx",
+     "src/pages/admin/AdminFreteSettingsPage.tsx",
+     "src/pages/admin/__tests__/AdminFreteSettingsPage.test.tsx",
+     "src/routes/admin-routes.tsx",
+     "src/routes/lazy-pages.ts",
+     "src/services/__tests__/freightSettingsService.test.ts",
+     "src/services/__tests__/shippingBoxService.test.ts",
+     "src/services/freightSettingsService.ts",
+     "src/services/shippingBoxService.ts",
+     "tests/hooks/freight/useFreightSettings.test.ts",
+     "tests/hooks/freight/useShippingBoxes.test.ts",
+     "tests/scripts/seed-shipping-boxes.test.mjs"
+    ]
+   },
    {
     "sha": "8fe268c",
     "date": "2026-11-19",
@@ -550917,21 +552929,16 @@
     "files": [
      "docs/agentes/resgates/2026-11-19-fechamento-da-reconciliacao.md"
     ]
-   },
-   {
-    "sha": "9241db0",
-    "date": "2026-11-19",
-    "author": "adm01-debug",
-    "subject": "chore(resgates): registra que os detectores estao ligados e os regeneradores nao (#3879)",
-    "files": [
-     "docs/agentes/resgates/2026-11-19-migrations-orfas-e-o-portao-retroativo.md"
-    ]
    }
   ],
   "hot_files": [
    [
     "supabase/MIGRATIONS_SYNC_LOG.md",
     14
+   ],
+   [
+    "src/lib/freight/README.md",
+    5
    ],
    [
     ".release-please-manifest.json",
@@ -550950,12 +552957,16 @@
     4
    ],
    [
-    "src/lib/freight/README.md",
-    4
+    "src/lib/freight/index.ts",
+    3
    ],
    [
     "src/lib/freight/types.ts",
     3
+   ],
+   [
+    "scripts/automation.config.json",
+    2
    ],
    [
     "src/lib/freight/__tests__/buildGroups.test.ts",
@@ -550990,10 +553001,6 @@
     2
    ],
    [
-    "src/lib/freight/index.ts",
-    2
-   ],
-   [
     "src/lib/freight/units.ts",
     2
    ],
@@ -551003,10 +553010,6 @@
    ],
    [
     "src/lib/freight/__tests__/fixtures/products.ts",
-    2
-   ],
-   [
-    "src/lib/freight/__tests__/resolveItemDimensions.test.ts",
     2
    ]
   ]

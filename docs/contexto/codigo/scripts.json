@@ -1,7 +1,7 @@
 {
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
- "total": 284,
+ "total": 285,
  "scripts": [
   {
    "arquivo": ".github/scripts/e2e-relevance.mjs",
@@ -2199,6 +2199,15 @@
    "npm_scripts": [
     "test:freight:load"
    ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/freight/seed-shipping-boxes.mjs",
+   "descricao": "* Gerador do seed das caixas de transporte (etapa 29 do plano de frete).",
+   "linhas": 450,
+   "env": [],
+   "npm_scripts": [],
    "workflows": [],
    "orfao": false
   },

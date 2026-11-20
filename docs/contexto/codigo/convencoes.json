@@ -3,29 +3,29 @@
  "format_version": 2,
  "onde_ficam": {
   "telas": [
-   "src/pages (112)",
+   "src/pages (113)",
    "src/components (3)",
    "api/health.ts (1)"
   ],
   "componentes": [
-   "src/components (963)",
-   "src/pages (180)",
+   "src/components (968)",
+   "src/pages (181)",
    "recovery/src-legacy (100)"
   ],
   "hooks": [
-   "src/hooks (302)",
+   "src/hooks (304)",
    "recovery/src-legacy (196)",
    "src/components (78)"
   ],
   "servicos_logica": [
-   "src/lib (250)",
+   "src/lib (251)",
    "src/utils (33)",
-   "src/services (10)"
+   "src/services (12)"
   ],
   "testes": [
-   "tests/ (1084)",
-   "co-localizado (__tests__) (718)",
-   "e2e/ (625)"
+   "tests/ (1087)",
+   "co-localizado (__tests__) (725)",
+   "e2e/ (627)"
   ],
   "edge_functions": "supabase/functions",
   "migrations": "supabase/migrations",
@@ -47,9 +47,9 @@
   "edge_functions": "kebab-case (99%)",
   "tabelas": "snake_case (86%)"
  },
- "barrels_index": 47,
+ "barrels_index": 48,
  "extensao_componentes": [
-  ".tsx (1262)"
+  ".tsx (1268)"
  ],
  "alias_imports": {
   "e2e/": {},
@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "feat(frete): admin de caixas de transporte e parâmetros de frete (Bloco C/D) (#3915)",
    "chore(main): release gifts-store 1.13.0 (#3904)",
    "docs(migrations-log): recibo E15 — aplicação de 20261119212000 (#3906)",
    "fix(frete): motor agrupa por produto e corrige bordas (#3910)",
-   "docs(migrations): recibos E15 das tabelas de frete (#3911)",
-   "docs(migrations-log): recibo E15 — aplicação de 20261119220000 (#3913)"
+   "docs(migrations): recibos E15 das tabelas de frete (#3911)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",

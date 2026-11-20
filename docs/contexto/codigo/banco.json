@@ -17680,13 +17680,13 @@
     "updated_by->auth"
    ],
    "criada_em": "20261119213100_create_freight_settings.sql",
-   "usada_no_front": 0,
+   "usada_no_front": 1,
    "usada_em_edges": [],
    "triggers": [
     "set_freight_settings_updated_at"
    ],
    "sem_rls": false,
-   "nao_usada": true
+   "nao_usada": false
   },
   "frontend_telemetry": {
    "colunas": {
@@ -42771,13 +42771,13 @@
    ],
    "fks": [],
    "criada_em": "20261119213000_create_shipping_boxes.sql",
-   "usada_no_front": 0,
+   "usada_no_front": 1,
    "usada_em_edges": [],
    "triggers": [
     "set_shipping_boxes_updated_at"
    ],
    "sem_rls": false,
-   "nao_usada": true
+   "nao_usada": false
   },
   "simulation_logs": {
    "colunas": {
