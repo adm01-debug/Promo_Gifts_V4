@@ -54,7 +54,7 @@ const PERMISSION_MESSAGE =
   'Sem permissão para alterar os parâmetros de frete. Apenas administradores podem salvar.';
 
 const INVALID_MESSAGE =
-  'Parâmetros fora do permitido. Confira o CEP (00000-000), os divisores (maiores que zero), o fator (0,50 a 1,00) e a folga (zero ou mais).';
+  'Parâmetros fora do permitido. Confira o CEP (00000-000), os divisores (1000 a 10000), o fator (0,50 a 1,00) e a folga (0 a 60 dias).';
 
 function toWriteError(error: PostgrestError): FreightSettingsError {
   if (error.code === '23514') return new FreightSettingsError('invalid', INVALID_MESSAGE, error);

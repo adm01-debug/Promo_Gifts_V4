@@ -22,18 +22,23 @@ import {
 import { ShippingBoxFormDialog, type RejectedShippingBoxCode } from './ShippingBoxFormDialog';
 import { ShippingBoxesTable } from './ShippingBoxesTable';
 import { ShippingBoxesTrash } from './ShippingBoxesTrash';
-import { SHIPPING_BOX_COLUMN_FILL_FACTOR, buildShippingBoxPatch } from './shippingBoxFormSchema';
+import {
+  SHIPPING_BOX_COLUMN_FILL_FACTOR,
+  buildShippingBoxPatch,
+  nextShippingBoxSortOrder,
+} from './shippingBoxFormSchema';
 
 export function ShippingBoxesManager() {
   const { rows, isLoading, isError, refetch } = useShippingBoxes({ includeInactive: true });
   const { create, update, softDelete, restore } = useShippingBoxMutations();
-  const { row: freightSettings } = useFreightSettings();
+  const { row: freightSettings, isLoading: settingsLoading } = useFreightSettings();
 
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingBox, setEditingBox] = useState<ShippingBoxRow | null>(null);
   const [deleteTarget, setDeleteTarget] = useState<ShippingBoxRow | null>(null);
   const [rejectedCode, setRejectedCode] = useState<RejectedShippingBoxCode | null>(null);
   const [newBoxFillFactor, setNewBoxFillFactor] = useState(SHIPPING_BOX_COLUMN_FILL_FACTOR);
+  const [newBoxSortOrder, setNewBoxSortOrder] = useState(0);
 
   const openForm = (box: ShippingBoxRow | null) => {
     setEditingBox(box);
@@ -41,6 +46,7 @@ export function ShippingBoxesManager() {
     // Fixado na abertura: parâmetros que chegam depois não apagam o que já foi
     // digitado. Enquanto não carregaram, vale o DEFAULT da coluna no banco.
     setNewBoxFillFactor(freightSettings?.default_fill_factor ?? SHIPPING_BOX_COLUMN_FILL_FACTOR);
+    setNewBoxSortOrder(nextShippingBoxSortOrder(rows));
     setDialogOpen(true);
   };
 
@@ -50,6 +56,10 @@ export function ShippingBoxesManager() {
       onError: (error: Error) => {
         if (error instanceof ShippingBoxError && error.reason === 'duplicate_code') {
           setRejectedCode({ code: values.code, message: error.message });
+        }
+        // A lista já foi recarregada: a caixa aberta pode nem existir mais.
+        if (error instanceof ShippingBoxError && error.reason === 'not_applied') {
+          setDialogOpen(false);
         }
       },
     };
@@ -88,7 +98,11 @@ export function ShippingBoxesManager() {
             </p>
           </div>
         </div>
-        <Button onClick={() => openForm(null)} data-testid="admin-create-btn">
+        <Button
+          onClick={() => openForm(null)}
+          disabled={settingsLoading}
+          data-testid="admin-create-btn"
+        >
           <Plus className="mr-1.5 h-4 w-4" />
           Nova caixa
         </Button>
@@ -119,7 +133,7 @@ export function ShippingBoxesManager() {
           <p className="text-sm text-muted-foreground">
             Nenhuma caixa de transporte cadastrada. Sem caixas, o frete não é calculado.
           </p>
-          <Button variant="outline" onClick={() => openForm(null)}>
+          <Button variant="outline" onClick={() => openForm(null)} disabled={settingsLoading}>
             <Plus className="mr-1.5 h-4 w-4" />
             Cadastrar a primeira caixa
           </Button>
@@ -148,6 +162,7 @@ export function ShippingBoxesManager() {
         onOpenChange={setDialogOpen}
         box={editingBox}
         newBoxFillFactor={newBoxFillFactor}
+        newBoxSortOrder={newBoxSortOrder}
         saving={saving}
         rejectedCode={rejectedCode}
         onSave={handleSave}

@@ -181,7 +181,7 @@ describe('AdminFreteSettingsPage — salvar', () => {
     await user.click(botaoSalvar());
 
     expect(h.mutate).toHaveBeenCalledTimes(1);
-    expect(h.mutate).toHaveBeenCalledWith({ cubic_divisor_correios: 5000 });
+    expect(h.mutate).toHaveBeenCalledWith({ cubic_divisor_correios: 5000 }, expect.anything());
   });
 
   it('envia junto todos os campos alterados, já convertidos', async () => {
@@ -198,17 +198,26 @@ describe('AdminFreteSettingsPage — salvar', () => {
     await user.click(botaoSalvar());
 
     // "0,85" vira o número 0.85; "2" vira 2; a opção "Somar os prazos" é 'sum'.
-    expect(h.mutate).toHaveBeenCalledWith({
-      default_fill_factor: 0.85,
-      internal_buffer_days: 2,
-      multi_personalization_rule: 'sum',
-    });
+    expect(h.mutate).toHaveBeenCalledWith(
+      {
+        default_fill_factor: 0.85,
+        internal_buffer_days: 2,
+        multi_personalization_rule: 'sum',
+      },
+      expect.anything(),
+    );
   });
 
   it.each([
     ['Fator de aproveitamento padrão', '1,20', 'Use um valor entre 0,50 e 1,00'],
-    ['Divisor de cubagem — Rodoviário', '0', 'Use um número inteiro maior que zero.'],
-    ['Folga interna (dias úteis)', '1,5', 'Use um número inteiro de dias, zero ou mais.'],
+    ['Divisor de cubagem — Rodoviário', '0', 'Use um valor entre 1000 e 10000.'],
+    [
+      'Divisor de cubagem — Correios',
+      '6.000',
+      'Use só algarismos, sem ponto nem vírgula, maior que zero (ex.: 6000).',
+    ],
+    ['Folga interna (dias úteis)', '1,5', 'Use só algarismos, sem ponto nem vírgula (ex.: 2).'],
+    ['Folga interna (dias úteis)', '61', 'Use um valor entre 0 e 60 dias.'],
   ])('%s = "%s" mostra o erro e não salva', async (rotulo, texto, mensagem) => {
     const user = userEvent.setup();
     renderPage();
@@ -327,5 +336,79 @@ describe('AdminFreteSettingsPage — salvar', () => {
     expect(screen.getByTestId('freight-settings-updated-at')).toHaveTextContent(
       'Atualizado em 20/11/2026 09:00',
     );
+  });
+});
+
+describe('AdminFreteSettingsPage — foco', () => {
+  const scrollIntoView = vi.mocked(Element.prototype.scrollIntoView);
+
+  it('salvar recusado pela validação rola e foca o primeiro campo inválido', async () => {
+    const user = userEvent.setup();
+    renderPage();
+    const fator = screen.getByLabelText('Fator de aproveitamento padrão');
+    const folga = screen.getByLabelText('Folga interna (dias úteis)');
+    // Fator (1,20 passa de 1,00) e folga (61 passa de 60) inválidos: vale o primeiro da tela.
+    await user.clear(fator);
+    await user.type(fator, '1,20');
+    await user.clear(folga);
+    await user.type(folga, '61');
+    scrollIntoView.mockClear();
+    await user.click(botaoSalvar());
+
+    expect(h.mutate).not.toHaveBeenCalled();
+    expect(scrollIntoView).toHaveBeenCalledTimes(1);
+    expect(scrollIntoView.mock.contexts[0]).toBe(fator);
+    expect(fator).toHaveFocus();
+  });
+
+  it('salvar válido não rola nem tira o foco do botão', async () => {
+    const user = userEvent.setup();
+    renderPage();
+    const divisor = screen.getByLabelText('Divisor de cubagem — Correios');
+    await user.clear(divisor);
+    await user.type(divisor, '5000');
+    scrollIntoView.mockClear();
+    await user.click(botaoSalvar());
+
+    expect(scrollIntoView).not.toHaveBeenCalled();
+    expect(h.mutate).toHaveBeenCalledTimes(1);
+  });
+
+  it('depois de salvar, o formulário remontado devolve o foco ao primeiro campo', async () => {
+    h.mutate.mockImplementation((_patch: unknown, options?: { onSuccess?: () => void }) =>
+      options?.onSuccess?.(),
+    );
+    const user = userEvent.setup();
+    const { rerender } = renderPage();
+    const divisor = screen.getByLabelText('Divisor de cubagem — Correios');
+    await user.clear(divisor);
+    await user.type(divisor, '5000');
+    await user.click(botaoSalvar());
+    expect(screen.getByLabelText('CEP de origem')).not.toHaveFocus();
+
+    h.state = {
+      ...h.state,
+      row: { ...LINHA, cubic_divisor_correios: 5000, updated_at: '2026-11-20T12:00:00Z' },
+    };
+    rerender(
+      <MemoryRouter initialEntries={['/admin/frete']}>
+        <AdminFreteSettingsPage />
+      </MemoryRouter>,
+    );
+
+    expect(screen.getByLabelText('CEP de origem')).toHaveFocus();
+  });
+
+  it('a linha mudar sem um salvar desta tela não rouba o foco', () => {
+    const { rerender } = renderPage();
+
+    h.state = { ...h.state, row: { ...LINHA, updated_at: '2026-11-20T12:00:00Z' } };
+    rerender(
+      <MemoryRouter initialEntries={['/admin/frete']}>
+        <AdminFreteSettingsPage />
+      </MemoryRouter>,
+    );
+
+    expect(screen.getByLabelText('CEP de origem')).not.toHaveFocus();
   });
 });

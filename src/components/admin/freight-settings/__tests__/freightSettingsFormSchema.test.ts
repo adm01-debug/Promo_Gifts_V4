@@ -104,23 +104,51 @@ describe('parseFreightSettingsDraft', () => {
     ['originCep', '0337', 'Informe o CEP completo, no formato 00000-000.'],
     ['originCep', '03377-00', 'Informe o CEP completo, no formato 00000-000.'],
     ['originCep', '03377000', 'Informe o CEP completo, no formato 00000-000.'],
-    // Divisores: inteiro maior que zero (CHECK > 0).
-    ['cubicDivisorCorreios', '', 'Use um número inteiro maior que zero.'],
-    ['cubicDivisorCorreios', '0', 'Use um número inteiro maior que zero.'],
-    ['cubicDivisorCorreios', '-1', 'Use um número inteiro maior que zero.'],
-    ['cubicDivisorCorreios', '6000,5', 'Use um número inteiro maior que zero.'],
-    ['cubicDivisorRodoviario', 'abc', 'Use um número inteiro maior que zero.'],
-    ['cubicDivisorRodoviario', '0', 'Use um número inteiro maior que zero.'],
+    // Divisores: só algarismos (ponto de milhar e vírgula não valem).
+    [
+      'cubicDivisorCorreios',
+      '',
+      'Use só algarismos, sem ponto nem vírgula, maior que zero (ex.: 6000).',
+    ],
+    [
+      'cubicDivisorCorreios',
+      '-1',
+      'Use só algarismos, sem ponto nem vírgula, maior que zero (ex.: 6000).',
+    ],
+    [
+      'cubicDivisorCorreios',
+      '6000,5',
+      'Use só algarismos, sem ponto nem vírgula, maior que zero (ex.: 6000).',
+    ],
+    [
+      'cubicDivisorCorreios',
+      '6.000',
+      'Use só algarismos, sem ponto nem vírgula, maior que zero (ex.: 6000).',
+    ],
+    [
+      'cubicDivisorRodoviario',
+      'abc',
+      'Use só algarismos, sem ponto nem vírgula, maior que zero (ex.: 6000).',
+    ],
+    // Divisores: faixa do CHECK, 1000 a 10000 (um a menos e um a mais nos limites).
+    ['cubicDivisorCorreios', '0', 'Use um valor entre 1000 e 10000.'],
+    ['cubicDivisorCorreios', '999', 'Use um valor entre 1000 e 10000.'],
+    ['cubicDivisorCorreios', '10001', 'Use um valor entre 1000 e 10000.'],
+    ['cubicDivisorRodoviario', '999', 'Use um valor entre 1000 e 10000.'],
+    ['cubicDivisorRodoviario', '10001', 'Use um valor entre 1000 e 10000.'],
+    // 10 dígitos são só algarismos: o problema é o tamanho, não o formato.
+    ['cubicDivisorCorreios', '1234567890', 'Use um valor entre 1000 e 10000.'],
     // Fator: 0,49 fica 0,01 abaixo do mínimo 0,50; 1,01 fica 0,01 acima do máximo 1,00.
     ['defaultFillFactor', '0,49', 'Use um valor entre 0,50 e 1,00, com até duas casas decimais.'],
     ['defaultFillFactor', '1,01', 'Use um valor entre 0,50 e 1,00, com até duas casas decimais.'],
     // Três casas não cabem na coluna numeric(3,2).
     ['defaultFillFactor', '0,905', 'Use um valor entre 0,50 e 1,00, com até duas casas decimais.'],
     ['defaultFillFactor', '', 'Use um valor entre 0,50 e 1,00, com até duas casas decimais.'],
-    // Folga: inteiro, zero ou mais (CHECK >= 0).
-    ['internalBufferDays', '', 'Use um número inteiro de dias, zero ou mais.'],
-    ['internalBufferDays', '-1', 'Use um número inteiro de dias, zero ou mais.'],
-    ['internalBufferDays', '1,5', 'Use um número inteiro de dias, zero ou mais.'],
+    // Folga: só algarismos, de 0 a 60 dias (61 fica um acima do máximo).
+    ['internalBufferDays', '', 'Use só algarismos, sem ponto nem vírgula (ex.: 2).'],
+    ['internalBufferDays', '-1', 'Use só algarismos, sem ponto nem vírgula (ex.: 2).'],
+    ['internalBufferDays', '1,5', 'Use só algarismos, sem ponto nem vírgula (ex.: 2).'],
+    ['internalBufferDays', '61', 'Use um valor entre 0 e 60 dias.'],
   ])('recusa %s = "%s"', (campo, texto, mensagem) => {
     const resultado = parseFreightSettingsDraft({ ...RASCUNHO, [campo]: texto });
     expect(resultado).toEqual({ ok: false, errors: { [campo]: mensagem } });
@@ -139,6 +167,19 @@ describe('parseFreightSettingsDraft', () => {
     expect(resultado.ok && resultado.values.default_fill_factor).toBe(esperado);
   });
 
+  it.each([
+    // Os dois extremos de cada faixa do CHECK são aceitos.
+    ['cubicDivisorCorreios', '1000', 'cubic_divisor_correios', 1000],
+    ['cubicDivisorCorreios', '10000', 'cubic_divisor_correios', 10000],
+    ['cubicDivisorRodoviario', '1000', 'cubic_divisor_rodoviario', 1000],
+    ['cubicDivisorRodoviario', '10000', 'cubic_divisor_rodoviario', 10000],
+    ['internalBufferDays', '0', 'internal_buffer_days', 0],
+    ['internalBufferDays', '60', 'internal_buffer_days', 60],
+  ] as const)('aceita %s = "%s" no limite da faixa', (campo, texto, coluna, esperado) => {
+    const resultado = parseFreightSettingsDraft({ ...RASCUNHO, [campo]: texto });
+    expect(resultado.ok && resultado.values[coluna]).toBe(esperado);
+  });
+
   it('aponta todos os campos inválidos de uma vez', () => {
     const resultado = parseFreightSettingsDraft({
       ...RASCUNHO,
@@ -150,8 +191,8 @@ describe('parseFreightSettingsDraft', () => {
       ok: false,
       errors: {
         originCep: 'Informe o CEP completo, no formato 00000-000.',
-        cubicDivisorCorreios: 'Use um número inteiro maior que zero.',
-        internalBufferDays: 'Use um número inteiro de dias, zero ou mais.',
+        cubicDivisorCorreios: 'Use um valor entre 1000 e 10000.',
+        internalBufferDays: 'Use só algarismos, sem ponto nem vírgula (ex.: 2).',
       },
     });
   });
