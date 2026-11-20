@@ -67,14 +67,19 @@ export interface UpdateShippingBoxInput {
   patch: ShippingBoxPatch;
 }
 
+export interface RestoreShippingBoxInput {
+  id: string;
+  /** Código da caixa restaurada: entra no aviso se ele já estiver em uso. */
+  code: string;
+}
+
 export interface UseShippingBoxMutationsResult {
   /** Resolve com o id da caixa criada. */
   create: UseMutationResult<string, Error, ShippingBoxWrite>;
   update: UseMutationResult<void, Error, UpdateShippingBoxInput>;
   /** Recebe o id da caixa. */
   softDelete: UseMutationResult<void, Error, string>;
-  /** Recebe o id da caixa. */
-  restore: UseMutationResult<void, Error, string>;
+  restore: UseMutationResult<void, Error, RestoreShippingBoxInput>;
 }
 
 function toEngineBoxes(rows: ShippingBoxRow[]): ShippingBox[] {
@@ -143,8 +148,10 @@ export function useDeletedShippingBoxes({
 }
 
 /**
- * Escritas do cadastro. Cada uma invalida todas as listas de caixas e avisa por
- * toast; com `mutateAsync` a promessa também rejeita com `ShippingBoxError`.
+ * Escritas do cadastro. Cada uma avisa por toast e, dando certo ou não, invalida
+ * todas as listas de caixas: uma recusa costuma ser lista velha na tela (outro
+ * admin mudou a caixa). Com `mutateAsync` a promessa também rejeita com
+ * `ShippingBoxError`.
  */
 export function useShippingBoxMutations(): UseShippingBoxMutationsResult {
   const queryClient = useQueryClient();
@@ -156,45 +163,45 @@ export function useShippingBoxMutations(): UseShippingBoxMutationsResult {
   const create = useMutation({
     mutationFn: (input: ShippingBoxWrite) => shippingBoxService.create(input),
     onSuccess: () => {
-      invalidate();
       toast.success('Caixa criada');
     },
     onError: (err: Error) => {
       toast.error(errorTitle(err, 'Falha ao criar caixa'));
     },
+    onSettled: invalidate,
   });
 
   const update = useMutation({
     mutationFn: ({ id, patch }: UpdateShippingBoxInput) => shippingBoxService.update(id, patch),
     onSuccess: (_data, { patch }) => {
-      invalidate();
       toast.success(updateSuccessTitle(patch));
     },
     onError: (err: Error) => {
       toast.error(errorTitle(err, 'Falha ao salvar caixa'));
     },
+    onSettled: invalidate,
   });
 
   const softDelete = useMutation({
     mutationFn: (id: string) => shippingBoxService.softDelete(id),
     onSuccess: () => {
-      invalidate();
       toast.success('Caixa excluída');
     },
     onError: (err: Error) => {
       toast.error(errorTitle(err, 'Falha ao excluir caixa'));
     },
+    onSettled: invalidate,
   });
 
   const restore = useMutation({
-    mutationFn: (id: string) => shippingBoxService.restore(id),
+    mutationFn: ({ id, code }: RestoreShippingBoxInput) => shippingBoxService.restore(id, code),
     onSuccess: () => {
-      invalidate();
       toast.success('Caixa restaurada');
     },
     onError: (err: Error) => {
       toast.error(errorTitle(err, 'Falha ao restaurar caixa'));
     },
+    onSettled: invalidate,
   });
 
   return { create, update, softDelete, restore };

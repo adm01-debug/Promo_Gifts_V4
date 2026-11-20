@@ -66,11 +66,13 @@ por parâmetro, para o plano ser reproduzível em teste e comparável no banco.
 **Parâmetros nunca no código:** divisores de cubagem, fator de aproveitamento e
 CEP de origem vêm de `freight_settings` (bloco C) e viajam em `FreightSettings`.
 
-**Sem consumidor de produção ainda:** `mmToCm` e `kgToG` não são chamados por
-nenhum arquivo fora dos testes depois que `box_*` saiu da leitura. Ficam porque
-o bloco C os consome: `shipping_boxes.wall_thickness_mm` (externa − 2 × espessura
-→ interna) e o peso máximo da caixa, que o admin digita em kg e a coluna guarda
-em `max_weight_g`. Se o bloco C não usar nenhum dos dois, apague os dois.
+**Quem usa `mmToCm` e `kgToG`:** o motor não chama nenhum dos dois desde que
+`box_*` saiu da leitura. O consumidor de produção é o formulário de caixas de
+transporte do bloco C
+(`src/components/admin/shipping-boxes/shippingBoxFormSchema.ts`): `mmToCm` na
+medida interna (externa − 2 × `wall_thickness_mm`), que valida e mostra a prévia,
+e `kgToG` no peso máximo, que o admin digita em kg e a coluna guarda em
+`max_weight_g`.
 
 **O peso cubado sai nos dois divisores** (Correios 6.000 e rodoviário 3.333
 cm³/kg) porque qual deles vale é decisão da cotação, no bloco I. O

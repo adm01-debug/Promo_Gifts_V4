@@ -21,7 +21,8 @@ O SQL gerado é uma migration de dados e segue o caminho de qualquer migration d
 2. a PR leva a linha `pendente` em `supabase/MIGRATIONS_SYNC_LOG.md`, fica aberta e chama o dono;
 3. a produção recebe a migration **só** pelo workflow `db-apply-migration.yml`.
 
-Nunca cole o SQL no painel do Supabase, no MCP `execute_sql` nem em `supabase db push`.
+Nunca cole o SQL no painel do Supabase, no MCP `execute_sql` nem aplique pelo `db push` da CLI
+do Supabase.
 
 ## Como rodar
 

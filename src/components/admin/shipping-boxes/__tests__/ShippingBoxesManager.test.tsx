@@ -19,6 +19,7 @@ const mocks = vi.hoisted(() => {
   }
   return {
     ShippingBoxError,
+    useFreightSettings: vi.fn(),
     useShippingBoxes: vi.fn(),
     useDeletedShippingBoxes: vi.fn(),
     useShippingBoxMutations: vi.fn(),
@@ -26,6 +27,7 @@ const mocks = vi.hoisted(() => {
 });
 
 vi.mock('@/hooks/freight', () => ({
+  useFreightSettings: mocks.useFreightSettings,
   useShippingBoxes: mocks.useShippingBoxes,
   useDeletedShippingBoxes: mocks.useDeletedShippingBoxes,
   useShippingBoxMutations: mocks.useShippingBoxMutations,
@@ -141,6 +143,8 @@ beforeEach(() => {
     restore: mutation(),
   };
   mocks.useShippingBoxMutations.mockReturnValue(mutations);
+  // Parâmetros de frete ainda não carregados: o fator da caixa nova cai em 0,90.
+  mocks.useFreightSettings.mockReturnValue({ row: null });
   mocks.useShippingBoxes.mockReturnValue(listState([BOX_P, BOX_M]));
   mocks.useDeletedShippingBoxes.mockReturnValue(listState([BOX_OLD]));
 });
@@ -237,6 +241,15 @@ describe('ShippingBoxesManager — criar', () => {
     await waitFor(() => expect(screen.queryByRole('dialog')).not.toBeInTheDocument());
   });
 
+  it('caixa nova abre com o fator padrão salvo em /admin/frete (0,80)', async () => {
+    mocks.useFreightSettings.mockReturnValue({ row: { default_fill_factor: 0.8 } });
+    const user = userEvent.setup();
+    renderManager();
+    const dialog = await openNewBoxForm(user);
+
+    expect(within(dialog).getByLabelText('Fator de aproveitamento')).toHaveValue('0,80');
+  });
+
   it('aceita vírgula decimal nas medidas e no peso', async () => {
     const user = userEvent.setup();
     renderManager();
@@ -329,7 +342,9 @@ describe('ShippingBoxesManager — criar', () => {
 });
 
 describe('ShippingBoxesManager — editar, ativar e excluir', () => {
-  it('editar abre o formulário preenchido e envia o patch com o id da caixa', async () => {
+  it('editar abre o formulário preenchido e envia só o campo alterado, com o id da caixa', async () => {
+    // O padrão de /admin/frete (0,80) não mexe no fator da caixa que já existe (0,90).
+    mocks.useFreightSettings.mockReturnValue({ row: { default_fill_factor: 0.8 } });
     const user = userEvent.setup();
     renderManager();
     await user.click(screen.getByRole('button', { name: 'Editar caixa P' }));
@@ -348,30 +363,26 @@ describe('ShippingBoxesManager — editar, ativar e excluir', () => {
     expect(within(dialog).getByRole('switch')).toBeChecked();
 
     await typeInto(user, dialog, 'Nome', 'Caixa pequena');
-    await typeInto(user, dialog, 'Peso máximo (kg)', '12,5');
     await submit(user, dialog);
 
-    // 12,5 kg × 1000 = 12500 g; o resto volta como estava na linha.
+    // Os outros 10 campos não vão: regravariam o que outro admin tenha mudado.
+    expect(mutations.update.mutate).toHaveBeenCalledTimes(1);
     expect(mutations.update.mutate).toHaveBeenCalledWith(
-      {
-        id: 'box-p',
-        patch: {
-          code: 'P',
-          name: 'Caixa pequena',
-          outer_height_cm: 27,
-          outer_width_cm: 33,
-          outer_length_cm: 33,
-          wall_thickness_mm: 3,
-          empty_weight_g: 0,
-          max_weight_g: 12500,
-          fill_factor: 0.9,
-          is_active: true,
-          sort_order: 1,
-        },
-      },
+      { id: 'box-p', patch: { name: 'Caixa pequena' } },
       expect.anything(),
     );
     expect(mutations.create.mutate).not.toHaveBeenCalled();
+  });
+
+  it('salvar a edição sem mudar nada não grava e fecha o formulário', async () => {
+    const user = userEvent.setup();
+    renderManager();
+    await user.click(screen.getByRole('button', { name: 'Editar caixa P' }));
+    const dialog = await screen.findByRole('dialog', { name: 'Editar caixa de transporte' });
+    await submit(user, dialog);
+
+    expect(mutations.update.mutate).not.toHaveBeenCalled();
+    await waitFor(() => expect(screen.queryByRole('dialog')).not.toBeInTheDocument());
   });
 
   it.each([
@@ -414,7 +425,7 @@ describe('ShippingBoxesManager — editar, ativar e excluir', () => {
 });
 
 describe('ShippingBoxesManager — caixas excluídas', () => {
-  it('só consulta as excluídas depois de abrir a seção e restaura pelo id', async () => {
+  it('só consulta as excluídas depois de abrir a seção e restaura pelo id, com o código', async () => {
     const user = userEvent.setup();
     renderManager();
 
@@ -430,7 +441,7 @@ describe('ShippingBoxesManager — caixas excluídas', () => {
 
     await user.click(row.getByRole('button', { name: 'Restaurar caixa P' }));
     expect(mutations.restore.mutate).toHaveBeenCalledTimes(1);
-    expect(mutations.restore.mutate).toHaveBeenCalledWith('box-old');
+    expect(mutations.restore.mutate).toHaveBeenCalledWith({ id: 'box-old', code: 'P' });
   });
 
   it('sem excluídas: avisa que não há nenhuma', async () => {

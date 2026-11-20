@@ -20,7 +20,6 @@ import {
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
-import { formatDateTime } from '@/lib/date-utils';
 import type {
   FreightSettingsPatch,
   FreightSettingsRow,
@@ -118,9 +117,21 @@ function TextField({
 /** Campos de texto livre; a regra de personalização é escolha entre duas opções. */
 type TextFieldName = Exclude<FreightSettingsField, 'multiPersonalizationRule'>;
 
+/** A empresa opera em São Paulo: a data não pode depender do fuso da máquina. */
+const UPDATED_AT_DAY = new Intl.DateTimeFormat('pt-BR', {
+  dateStyle: 'short',
+  timeZone: 'America/Sao_Paulo',
+});
+const UPDATED_AT_TIME = new Intl.DateTimeFormat('pt-BR', {
+  timeStyle: 'short',
+  timeZone: 'America/Sao_Paulo',
+});
+
 /** "19/11/2026 18:31", ou `null` se o banco não devolveu uma data legível. */
 function formatUpdatedAt(value: string): string | null {
-  return Number.isNaN(Date.parse(value)) ? null : formatDateTime(value);
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return null;
+  return `${UPDATED_AT_DAY.format(date)} ${UPDATED_AT_TIME.format(date)}`;
 }
 
 export function FreightSettingsForm({ row, saving, syncing, onSave }: FreightSettingsFormProps) {
@@ -135,6 +146,9 @@ export function FreightSettingsForm({ row, saving, syncing, onSave }: FreightSet
   );
   // Rascunho inválido conta como alterado: a linha salva sempre passa na validação.
   const dirty = patch === null || Object.keys(patch).length > 0;
+  // Enquanto salva ou relê a linha, nada é digitável: a releitura remonta o
+  // formulário e descartaria o que fosse digitado nesse intervalo.
+  const locked = saving || syncing;
   const updatedAt = formatUpdatedAt(row.updated_at);
 
   const setField = (field: TextFieldName, value: string) => {
@@ -179,18 +193,18 @@ export function FreightSettingsForm({ row, saving, syncing, onSave }: FreightSet
               value={draft.originCep}
               error={errorOf('originCep')}
               inputMode="numeric"
-              disabled={saving}
+              disabled={locked}
               onChange={(value) => setField('originCep', maskCep(value))}
               onBlur={() => touch('originCep')}
             />
             <TextField
               id="frete-fator-aproveitamento"
               label="Fator de aproveitamento padrão"
-              hint="Quanto do espaço interno da caixa pode ser ocupado, de 0,50 a 1,00. Vale para caixas sem fator próprio."
+              hint="Quanto do espaço interno da caixa pode ser ocupado, de 0,50 a 1,00. Valor sugerido ao cadastrar uma caixa nova."
               value={draft.defaultFillFactor}
               error={errorOf('defaultFillFactor')}
               inputMode="decimal"
-              disabled={saving}
+              disabled={locked}
               onChange={(value) => setField('defaultFillFactor', value)}
               onBlur={() => touch('defaultFillFactor')}
             />
@@ -201,7 +215,7 @@ export function FreightSettingsForm({ row, saving, syncing, onSave }: FreightSet
               value={draft.cubicDivisorCorreios}
               error={errorOf('cubicDivisorCorreios')}
               inputMode="numeric"
-              disabled={saving}
+              disabled={locked}
               onChange={(value) => setField('cubicDivisorCorreios', value)}
               onBlur={() => touch('cubicDivisorCorreios')}
             />
@@ -212,7 +226,7 @@ export function FreightSettingsForm({ row, saving, syncing, onSave }: FreightSet
               value={draft.cubicDivisorRodoviario}
               error={errorOf('cubicDivisorRodoviario')}
               inputMode="numeric"
-              disabled={saving}
+              disabled={locked}
               onChange={(value) => setField('cubicDivisorRodoviario', value)}
               onBlur={() => touch('cubicDivisorRodoviario')}
             />
@@ -223,7 +237,7 @@ export function FreightSettingsForm({ row, saving, syncing, onSave }: FreightSet
               value={draft.internalBufferDays}
               error={errorOf('internalBufferDays')}
               inputMode="numeric"
-              disabled={saving}
+              disabled={locked}
               onChange={(value) => setField('internalBufferDays', value)}
               onBlur={() => touch('internalBufferDays')}
             />
@@ -239,7 +253,7 @@ export function FreightSettingsForm({ row, saving, syncing, onSave }: FreightSet
             <RadioGroup
               aria-labelledby="frete-regra-rotulo"
               value={draft.multiPersonalizationRule}
-              disabled={saving}
+              disabled={locked}
               onValueChange={(value) =>
                 setDraft((current) => ({
                   ...current,

@@ -265,6 +265,49 @@ describe('AdminFreteSettingsPage — salvar', () => {
     expect(botaoSalvar()).toBeDisabled();
   });
 
+  it('enquanto salva, nenhum campo aceita digitação', () => {
+    h.update.isPending = true;
+    renderPage();
+
+    for (const campo of screen.getAllByRole('textbox')) expect(campo).toBeDisabled();
+    // 5 campos de texto + 2 opções da regra de personalização = 7 controles travados
+    expect(screen.getAllByRole('textbox')).toHaveLength(5);
+    for (const opcao of screen.getAllByRole('radio')) expect(opcao).toBeDisabled();
+    expect(screen.getAllByRole('radio')).toHaveLength(2);
+  });
+
+  it('enquanto relê a linha salva, campos e opções ficam travados e nada é enviado', async () => {
+    h.state = { ...h.state, isFetching: true };
+    const user = userEvent.setup();
+    renderPage();
+    const folga = screen.getByLabelText('Folga interna (dias úteis)');
+
+    for (const campo of screen.getAllByRole('textbox')) expect(campo).toBeDisabled();
+    for (const opcao of screen.getAllByRole('radio')) expect(opcao).toBeDisabled();
+    // Digitar durante a releitura não entra: seria descartado quando ela chegasse.
+    await user.type(folga, '2');
+    await user.click(screen.getByRole('radio', { name: /Somar os prazos/ }));
+    expect(folga).toHaveValue('0');
+    expect(screen.getByRole('radio', { name: /Usar o maior prazo/ })).toBeChecked();
+    expect(botaoSalvar()).toBeDisabled();
+    expect(h.mutate).not.toHaveBeenCalled();
+  });
+
+  it('terminada a releitura, os campos voltam a aceitar digitação', () => {
+    renderPage();
+
+    for (const campo of screen.getAllByRole('textbox')) expect(campo).toBeEnabled();
+    for (const opcao of screen.getAllByRole('radio')) expect(opcao).toBeEnabled();
+  });
+
+  it('a dica do fator padrão diz para que ele serve: sugestão na caixa nova', () => {
+    renderPage();
+
+    expect(screen.getByLabelText('Fator de aproveitamento padrão')).toHaveAccessibleDescription(
+      /Valor sugerido ao cadastrar uma caixa nova\./,
+    );
+  });
+
   it('recarrega os campos quando a linha salva muda', () => {
     const { rerender } = renderPage();
     expect(screen.getByLabelText('Divisor de cubagem — Correios')).toHaveValue('6000');

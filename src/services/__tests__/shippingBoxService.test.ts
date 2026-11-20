@@ -62,12 +62,26 @@ const firstArg = (c: Call, op: string) => argsOf(c, op)[0]?.[0];
 /** O payload como vai no corpo da requisição: JSON descarta campo `undefined`. */
 const sentPayload = (c: Call, op: string): unknown => JSON.parse(JSON.stringify(firstArg(c, op)));
 
-const pgError = (code: string, message: string, details = '') => ({
+const pgError = (code: string, message: string, details: string | null = '') => ({
   code,
   message,
   details,
   hint: '',
 });
+
+/**
+ * O 23505 como o banco responde a um admin, com a RLS ligada: `details` vem
+ * NULO. O `Key (code)=(G) already exists.` só aparece para quem ignora a RLS.
+ */
+const duplicadoSobRls = () =>
+  pgError(
+    '23505',
+    'duplicate key value violates unique constraint "shipping_boxes_code_unique_active"',
+    null,
+  );
+
+const NADA_ALTERADO =
+  'Nada foi alterado: a caixa foi modificada por outra pessoa ou você não tem permissão. Atualize a lista e tente de novo.';
 
 /** Caixa P real: externa 27 × 33 × 33 cm, parede 3 mm, 10 kg. */
 const CAIXA_P: ShippingBoxWrite = {
@@ -255,13 +269,14 @@ describe('shippingBoxService — create', () => {
 });
 
 describe('shippingBoxService — update, softDelete e restore', () => {
-  it('update: envia só o que mudou, filtra pelo id e pede o id de volta', async () => {
+  it('update: envia só o que mudou, só em caixa viva com aquele id, e pede o id de volta', async () => {
     await shippingBoxService.update('box-p', { is_active: false });
 
     expect(h.calls[0].table).toBe('shipping_boxes');
-    expect(opNames(h.calls[0])).toEqual(['update', 'eq', 'select']);
+    expect(opNames(h.calls[0])).toEqual(['update', 'eq', 'is', 'select']);
     expect(sentPayload(h.calls[0], 'update')).toEqual({ is_active: false });
     expect(argsOf(h.calls[0], 'eq')).toEqual([['id', 'box-p']]);
+    expect(argsOf(h.calls[0], 'is')).toEqual([['deleted_at', null]]);
     expect(argsOf(h.calls[0], 'select')).toEqual([['id']]);
   });
 
@@ -279,18 +294,21 @@ describe('shippingBoxService — update, softDelete e restore', () => {
       vi.useRealTimers();
     }
 
-    expect(opNames(h.calls[0])).toEqual(['update', 'eq', 'select']);
+    // Só em caixa viva: excluir de novo não regrava a data da primeira exclusão.
+    expect(opNames(h.calls[0])).toEqual(['update', 'eq', 'is', 'select']);
     expect(firstArg(h.calls[0], 'update')).toEqual({ deleted_at: '2026-11-19T23:05:00.000Z' });
     expect(argsOf(h.calls[0], 'eq')).toEqual([['id', 'box-p']]);
+    expect(argsOf(h.calls[0], 'is')).toEqual([['deleted_at', null]]);
     expect(argsOf(h.calls[0], 'select')).toEqual([['id']]);
   });
 
-  it('restore: limpa deleted_at', async () => {
-    await shippingBoxService.restore('box-p');
+  it('restore: limpa deleted_at, só em caixa excluída', async () => {
+    await shippingBoxService.restore('box-p', 'P');
 
-    expect(opNames(h.calls[0])).toEqual(['update', 'eq', 'select']);
+    expect(opNames(h.calls[0])).toEqual(['update', 'eq', 'not', 'select']);
     expect(firstArg(h.calls[0], 'update')).toEqual({ deleted_at: null });
     expect(argsOf(h.calls[0], 'eq')).toEqual([['id', 'box-p']]);
+    expect(argsOf(h.calls[0], 'not')).toEqual([['deleted_at', 'is', null]]);
     expect(argsOf(h.calls[0], 'select')).toEqual([['id']]);
   });
 });
@@ -300,47 +318,44 @@ const ESCRITAS = [
   ['create', () => shippingBoxService.create(CAIXA_P)],
   ['update', () => shippingBoxService.update('box-p', { code: 'P' })],
   ['softDelete', () => shippingBoxService.softDelete('box-p')],
-  ['restore', () => shippingBoxService.restore('box-p')],
+  ['restore', () => shippingBoxService.restore('box-p', 'P')],
 ] as const;
+
+/** As três que alteram uma caixa que já existe. */
+const ALTERACOES = ESCRITAS.filter(([nome]) => nome !== 'create');
 
 describe('shippingBoxService — erros de escrita', () => {
   it.each([
-    ['create', () => shippingBoxService.create(CAIXA_P)],
-    ['update de code', () => shippingBoxService.update('box-g', { code: 'P' })],
-    ['restore', () => shippingBoxService.restore('box-p')],
-  ] as const)('%s: 23505 vira duplicate_code com o código que colidiu', async (_nome, escrever) => {
+    ['create', () => shippingBoxService.create({ ...CAIXA_P, code: 'G' })],
+    ['update de code', () => shippingBoxService.update('box-p', { code: 'G' })],
+    ['restore', () => shippingBoxService.restore('box-g-antiga', 'G')],
+  ] as const)(
+    '%s: 23505 como o banco responde sob RLS (details nulo) cita o código informado',
+    async (_nome, escrever) => {
+      h.responder = () => ({ data: null, error: duplicadoSobRls() });
+      const err = await capture(escrever());
+
+      expect(err.reason).toBe('duplicate_code');
+      expect(err.message).toBe(
+        'Já existe uma caixa com o código G. Caixas inativas também contam.',
+      );
+      expect(h.loggerError).not.toHaveBeenCalled();
+    },
+  );
+
+  it('23505 com details (quem ignora a RLS): vale o código que o banco apontou', async () => {
     h.responder = () => ({
       data: null,
-      error: pgError(
-        '23505',
-        'duplicate key value violates unique constraint "shipping_boxes_code_unique_active"',
-        'Key (code)=(P) already exists.',
-      ),
+      error: pgError('23505', 'duplicate key value', 'Key (code)=(GG) already exists.'),
     });
-    const err = await capture(escrever());
+    const err = await capture(shippingBoxService.restore('box-g-antiga', 'G'));
 
-    expect(err.reason).toBe('duplicate_code');
-    expect(err.message).toBe('Já existe uma caixa com o código P. Caixas inativas também contam.');
-    expect(h.loggerError).not.toHaveBeenCalled();
+    expect(err.message).toBe('Já existe uma caixa com o código GG. Caixas inativas também contam.');
   });
 
-  it('23505 sem details: create e update usam o código enviado', async () => {
-    h.responder = () => ({ data: null, error: pgError('23505', 'duplicate key value') });
-
-    const naCriacao = await capture(shippingBoxService.create({ ...CAIXA_P, code: 'GG' }));
-    expect(naCriacao.message).toBe(
-      'Já existe uma caixa com o código GG. Caixas inativas também contam.',
-    );
-
-    const naEdicao = await capture(shippingBoxService.update('box-p', { code: 'M' }));
-    expect(naEdicao.message).toBe(
-      'Já existe uma caixa com o código M. Caixas inativas também contam.',
-    );
-  });
-
-  it('23505 sem details no restore: mensagem sem inventar o código', async () => {
-    h.responder = () => ({ data: null, error: pgError('23505', 'duplicate key value') });
-    const err = await capture(shippingBoxService.restore('box-p'));
+  it('23505 em update que não troca o código: mensagem sem inventar o código', async () => {
+    h.responder = () => ({ data: null, error: duplicadoSobRls() });
+    const err = await capture(shippingBoxService.update('box-p', { name: 'Caixa P2' }));
 
     expect(err.reason).toBe('duplicate_code');
     expect(err.message).toBe('Já existe uma caixa com este código. Caixas inativas também contam.');
@@ -361,18 +376,34 @@ describe('shippingBoxService — erros de escrita', () => {
     expect(err.message).not.toContain('shipping_boxes');
   });
 
-  it.each(ESCRITAS)(
-    '%s: 0 linhas sem erro (RLS em silêncio) vira permission',
+  it('create: 0 linhas sem erro vira permission', async () => {
+    h.responder = () => ({ data: [], error: null });
+    const err = await capture(shippingBoxService.create(CAIXA_P));
+
+    expect(err.reason).toBe('permission');
+    expect(err.message).toBe(
+      'Sem permissão para alterar caixas de transporte. Apenas administradores podem salvar.',
+    );
+  });
+
+  it.each(ALTERACOES)(
+    '%s: 0 linhas sem erro (RLS em silêncio ou caixa mudada por outro admin) vira not_applied',
     async (_nome, escrever) => {
       h.responder = () => ({ data: [], error: null });
       const err = await capture(escrever());
 
-      expect(err.reason).toBe('permission');
-      expect(err.message).toBe(
-        'Sem permissão para alterar caixas de transporte. Apenas administradores podem salvar.',
-      );
+      expect(err.reason).toBe('not_applied');
+      expect(err.message).toBe(NADA_ALTERADO);
     },
   );
+
+  it.each(ALTERACOES)('%s: data nula sem erro também vira not_applied', async (_nome, escrever) => {
+    h.responder = () => ({ data: null, error: null });
+    const err = await capture(escrever());
+
+    expect(err.reason).toBe('not_applied');
+    expect(err.message).toBe(NADA_ALTERADO);
+  });
 
   it.each(ESCRITAS)('%s: 42501 (RLS com erro) vira permission', async (_nome, escrever) => {
     h.responder = () => ({
@@ -392,7 +423,7 @@ describe('shippingBoxService — erros de escrita', () => {
     ['create', () => shippingBoxService.create(CAIXA_P), 'criar'],
     ['update', () => shippingBoxService.update('box-p', { name: 'Caixa P2' }), 'salvar'],
     ['softDelete', () => shippingBoxService.softDelete('box-p'), 'excluir'],
-    ['restore', () => shippingBoxService.restore('box-p'), 'restaurar'],
+    ['restore', () => shippingBoxService.restore('box-p', 'P'), 'restaurar'],
   ] as const)(
     '%s: erro genérico vira unknown, guarda a causa e registra no log',
     async (_nome, escrever, verbo) => {
