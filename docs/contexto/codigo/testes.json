@@ -5,9 +5,9 @@
   "vitest",
   "playwright"
  ],
- "total": 2689,
+ "total": 2690,
  "por_tipo": {
-  "contrato": 69,
+  "contrato": 70,
   "e2e": 679,
   "pytest": 5,
   "qa": 17,
@@ -16,7 +16,7 @@
  "onde_ficam": [
   {
    "padrao": "tests/",
-   "arquivos": 1093
+   "arquivos": 1094
   },
   {
    "padrao": "co-localizado (__tests__)",
@@ -15767,6 +15767,13 @@
    "arquivo": "tests/contracts/quote-conditions-spec-contract.test.ts",
    "tipo": "contrato",
    "linhas": 59,
+   "testa": [],
+   "casos": 6
+  },
+  {
+   "arquivo": "tests/contracts/quotes-freight-plan-migration.test.ts",
+   "tipo": "contrato",
+   "linhas": 89,
    "testa": [],
    "casos": 6
   },

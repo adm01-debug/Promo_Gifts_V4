@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.3.2 · commit `a499d84193` · branch `main` · 2026-11-20 16:04 UTC
+> Gerado automaticamente por AI Context Sync v1.3.2 · commit `e54228abcc` · branch `main` · 2026-11-20 16:20 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -6815,7 +6815,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `admin` | `supabase/migrations/20261112120500_fix_optimization_queue_rpcs_dev_access.sql` |
 | `anon` | `tests/edge-functions/live/_live-client.ts` |
 
-## K. Testes como especificação (23577 testes em 2360 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (23584 testes em 2361 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -7119,7 +7119,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `src/lib/external-db/rest-native.test.ts` | 19 | isRestNativeEligible · whitelisted COM coluna de busca → elegível mesmo com _search · A1: whitelisted SEM coluna de busca → continua elegível com _search · não-whitelisted → inelegível … |
 | `src/lib/inventory/__tests__/stock-filter.test.ts` | 19 | stock-filter — pipeline de seleção/agregação/montagem · normalize remove acentos e diferencia caixa · selectMatchingVariants retorna todas as variações quando não há filtro de cor · cor  … |
 | `src/lib/lead-time/__tests__/personalizationLeadTime.test.ts` | 19 | resolvePersonalizationLeadTime · prazo registrado vence a tabela: frente = 4 (a faixa 100..499 diria 5) · registrado sem production_days cai na tabela: verso com 100 un = faixa 100..499 = 5 · sem linha cadastrada para o local usa a tabela pela técnica: lateral com 100 un = 5 … |
-| … +2060 linhas — lista completa em `context.json` | | |
+| … +2061 linhas — lista completa em `context.json` | | |
 
 ## L. Eventos de webhook tratados (contratos com sistemas externos)
 

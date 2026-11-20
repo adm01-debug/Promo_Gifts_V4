@@ -8,7 +8,7 @@
   "supabase/migrations",
   "typeorm"
  ],
- "migrations": 3116,
+ "migrations": 3117,
  "seeds": [],
  "avisos": [
   "323 bloco(s) com DDL dinâmico (EXECUTE format/...) não modelado — policies/colunas criadas dinamicamente podem faltar; confira no banco vivo"
@@ -39181,6 +39181,20 @@
      "default": null,
      "ref": null
     },
+    "freight_mix_mode": {
+     "tipo": "text",
+     "nn": false,
+     "pk": false,
+     "default": null,
+     "ref": null
+    },
+    "freight_plan": {
+     "tipo": "jsonb",
+     "nn": false,
+     "pk": false,
+     "default": null,
+     "ref": null
+    },
     "id": {
      "tipo": "uuid",
      "nn": false,
@@ -39312,6 +39326,13 @@
      "nn": false,
      "pk": false,
      "default": null,
+     "ref": null
+    },
+    "show_freight_plan_to_client": {
+     "tipo": "boolean",
+     "nn": true,
+     "pk": false,
+     "default": "false",
      "ref": null
     },
     "stage": {

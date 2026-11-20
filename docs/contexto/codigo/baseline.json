@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "a499d841939b19749b4db766ceda04c76f39591a",
+  "commit": "e54228abcce9e491bf335c04f61428342ec0d9f4",
   "branch": "main",
-  "data_commit": "2026-11-20T13:03:51-03:00",
+  "data_commit": "2026-11-20T16:19:24Z",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "e54228ab",
+    "data": "2026-11-20",
+    "assunto": "feat(db): colunas do plano de volumes em quotes (frete, Bloco G — DDL, etapa 61) (#3926)"
+   },
    {
     "sha": "a499d841",
     "data": "2026-11-20",
@@ -126,14 +131,9 @@
     "sha": "719c8f0f",
     "data": "2026-11-19",
     "assunto": "feat: funções irmãs do painel EMA + remonta Onda 3 no /estoque (#3907)"
-   },
-   {
-    "sha": "809bd846",
-    "data": "2026-11-19",
-    "assunto": "chore(security): atualiza baseline assinado de RLS policies (#3912)"
    }
   ],
-  "arquivos_mudados_7d": 1483,
+  "arquivos_mudados_7d": 1486,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -199,7 +199,7 @@
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "supabase/MIGRATIONS_SYNC_LOG.md",
-    "mudancas": 69
+    "mudancas": 70
    },
    {
     "arquivo": "package.json",
@@ -207,7 +207,7 @@
    },
    {
     "arquivo": "docs/coordenacao/conflitos-semanticos.md",
-    "mudancas": 27
+    "mudancas": 28
    },
    {
     "arquivo": "package-lock.json",
@@ -215,7 +215,7 @@
    },
    {
     "arquivo": "RELATORIO_CI.md",
-    "mudancas": 18
+    "mudancas": 17
    },
    {
     "arquivo": ".github/workflows/deploy-gates.yml",
@@ -223,7 +223,7 @@
    },
    {
     "arquivo": "PENDENCIAS.md",
-    "mudancas": 15
+    "mudancas": 14
    },
    {
     "arquivo": "audit/supabase-reference-catalog.temporary.json",
@@ -270,6 +270,10 @@
     "mudancas": 8
    },
    {
+    "arquivo": "src/integrations/supabase/types.ts",
+    "mudancas": 8
+   },
+   {
     "arquivo": "src/pages/quotes/QuoteBuilderPage.tsx",
     "mudancas": 8
    },
@@ -292,16 +296,12 @@
    {
     "arquivo": "src/components/search/useGlobalSearch.ts",
     "mudancas": 7
-   },
-   {
-    "arquivo": "src/hooks/mockup/useMockupGenerator.ts",
-    "mudancas": 7
    }
   ],
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 329
+    "commits": 328
    },
    {
     "autor": "Claude",
@@ -313,7 +313,7 @@
    },
    {
     "autor": "Joaquim Ataides",
-    "commits": 5
+    "commits": 4
    },
    {
     "autor": "dependabot[bot]",
@@ -322,9 +322,9 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 11168,
-  "arquivos_codigo": 5637,
-  "linhas_codigo": 1069217,
+  "arquivos_total": 11171,
+  "arquivos_codigo": 5638,
+  "linhas_codigo": 1069315,
   "rotas": 140,
   "rotas_http_backend": 13,
   "vistas_por_id": 0,
@@ -334,9 +334,9 @@
   "hooks": 643,
   "edge_functions": 112,
   "tabelas": 530,
-  "migrations": 3116,
+  "migrations": 3117,
   "cron_jobs": 122,
-  "testes": 2689,
+  "testes": 2690,
   "workflows": 89,
   "scripts": 285,
   "docs_md": 1490
@@ -1936,7 +1936,7 @@
   },
   "src/integrations": {
    "arquivos": 11,
-   "linhas": 66703
+   "linhas": 66712
   },
   "src/lib": {
    "arquivos": 413,
@@ -2071,8 +2071,8 @@
    "linhas": 387
   },
   "tests/contracts": {
-   "arquivos": 19,
-   "linhas": 5162
+   "arquivos": 20,
+   "linhas": 5251
   },
   "tests/e2e": {
    "arquivos": 48,
@@ -2286,7 +2286,7 @@
  "maiores_arquivos": [
   {
    "arquivo": "src/integrations/supabase/types.ts",
-   "linhas": 65358
+   "linhas": 65367
   },
   {
    "arquivo": "scripts/regras_negocio/generate.py",

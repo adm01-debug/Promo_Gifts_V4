@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "a499d841939b19749b4db766ceda04c76f39591a",
+  "sha": "e54228abcce9e491bf335c04f61428342ec0d9f4",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-20 16:04 UTC",
-  "files_total": 11096,
-  "code_files": 9109,
-  "code_lines": 1292039
+  "generated_at": "2026-11-20 16:20 UTC",
+  "files_total": 11099,
+  "code_files": 9112,
+  "code_lines": 1292279
  },
  "version": "1.3.2",
- "facts_hash": "5fc3509c4785fdac",
+ "facts_hash": "d5092e223cfdcaa5",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -1128,8 +1128,8 @@
   ],
   "package_manager": "npm",
   "languages": {
-   ".sql": 3473,
-   ".ts": 3157,
+   ".sql": 3475,
+   ".ts": 3158,
    ".tsx": 2008,
    ".mjs": 456,
    ".py": 15,
@@ -96553,6 +96553,7 @@
    "supabase/migrations/20261120013000_add_products_ships_separately.sql",
    "supabase/migrations/20261120030000_harden_freight_tables.sql",
    "supabase/migrations/20261120030100_seed_shipping_boxes.sql",
+   "supabase/migrations/20261120040000_add_quotes_freight_plan.sql",
    "supabase/migrations/20261120041000_production_lead_time_calendar.sql",
    "supabase/rollbacks/20260511235950_rollback.sql",
    "supabase/rollbacks/20260511235959_rollback.sql",
@@ -96675,6 +96676,7 @@
    "supabase/rollbacks/20261120013000_rollback.sql",
    "supabase/rollbacks/20261120030000_rollback.sql",
    "supabase/rollbacks/20261120030100_rollback.sql",
+   "supabase/rollbacks/20261120040000_rollback.sql",
    "supabase/rollbacks/20261120041000_rollback.sql",
    "supabase/rollbacks/rollback_20261025002500_analyze_tables_p03.sql",
    "supabase/sql-legacy/001_notification_system.sql",
@@ -138324,6 +138326,9 @@
    "column:freight_settings.updated_at": "Última alteração, mantida pelo trigger set_freight_settings_updated_at.",
    "column:freight_settings.updated_by": "Usuário admin que fez a última alteração.",
    "column:products.ships_separately": "Vai sempre em caixa própria no frete: frágil, líquido, volumoso. Vence a escolha do vendedor.",
+   "column:quotes.freight_plan": "Plano de volumes do frete calculado no orçamento (objeto JSON com version, itemsHash, computedAt, caixas e totais). NULL = orçamento sem plano calculado. Objeto com menos de 256 KB.",
+   "column:quotes.freight_mix_mode": "Escolha do vendedor para o frete: misturar produtos na mesma caixa ou separar. NULL = sem escolha. Produto marcado como \"não mistura\" vence esta escolha.",
+   "column:quotes.show_freight_plan_to_client": "true = o bloco \"Volumes estimados para transporte\" aparece no PDF e na proposta do cliente. Padrão false: o plano é interno.",
    "column:print_area_techniques.production_days": "Dias úteis de personalização para este produto × local × técnica. NULL = usa prazo_dias da faixa da tabela de preço",
    "table:business_calendar": "Feriados em que não se conta dia útil no prazo de produção (src/lib/lead-time). Uma linha por data. Sábado e domingo não entram: a biblioteca já os pula.",
    "column:business_calendar.day": "Data do feriado (AAAA-MM-DD). Chave primária: uma linha por dia.",
@@ -152322,8 +152327,8 @@
   },
   {
    "module": "supabase/migrations",
-   "files": 3115,
-   "lines": 225235,
+   "files": 3116,
+   "lines": 225313,
    "tables": [
     "...",
     "admin_audit_log",
@@ -152421,8 +152426,8 @@
   },
   {
    "module": "supabase/rollbacks",
-   "files": 123,
-   "lines": 3926,
+   "files": 124,
+   "lines": 3999,
    "tables": [],
    "exports": [],
    "docs": [],
@@ -152597,8 +152602,8 @@
   },
   {
    "module": "tests",
-   "files": 1108,
-   "lines": 175123,
+   "files": 1109,
+   "lines": 175212,
    "tables": [
     "bot_detection_log",
     "clients",
@@ -281420,6 +281425,34 @@
    {
     "file": "tests/contracts/quote-conditions-spec-contract.test.ts",
     "name": "ordem de foco Validade → Forma → Prazo preservada"
+   },
+   {
+    "file": "tests/contracts/quotes-freight-plan-migration.test.ts",
+    "name": "quotes.freight_plan migration contract"
+   },
+   {
+    "file": "tests/contracts/quotes-freight-plan-migration.test.ts",
+    "name": "adds the 3 columns idempotently, with a constant default"
+   },
+   {
+    "file": "tests/contracts/quotes-freight-plan-migration.test.ts",
+    "name": "documents column %s with COMMENT"
+   },
+   {
+    "file": "tests/contracts/quotes-freight-plan-migration.test.ts",
+    "name": "does not touch RLS policies or functions"
+   },
+   {
+    "file": "tests/contracts/quotes-freight-plan-migration.test.ts",
+    "name": "quotes.freight_plan rollback contract"
+   },
+   {
+    "file": "tests/contracts/quotes-freight-plan-migration.test.ts",
+    "name": "backs up used rows with RLS and no public access before dropping"
+   },
+   {
+    "file": "tests/contracts/quotes-freight-plan-migration.test.ts",
+    "name": "only drops after the backup count check"
    },
    {
     "file": "tests/contracts/send-transactional-email.contract.test.ts",
@@ -533496,6 +533529,10 @@
    "path": "supabase/migrations/20261120030100_seed_shipping_boxes.sql",
    "lines": 35
   },
+  "supabase/migrations/20261120040000_add_quotes_freight_plan.sql": {
+   "path": "supabase/migrations/20261120040000_add_quotes_freight_plan.sql",
+   "lines": 78
+  },
   "supabase/migrations/20261120041000_production_lead_time_calendar.sql": {
    "path": "supabase/migrations/20261120041000_production_lead_time_calendar.sql",
    "lines": 138,
@@ -534003,6 +534040,10 @@
   "supabase/rollbacks/20261120030100_rollback.sql": {
    "path": "supabase/rollbacks/20261120030100_rollback.sql",
    "lines": 86
+  },
+  "supabase/rollbacks/20261120040000_rollback.sql": {
+   "path": "supabase/rollbacks/20261120040000_rollback.sql",
+   "lines": 73
   },
   "supabase/rollbacks/20261120041000_rollback.sql": {
    "path": "supabase/rollbacks/20261120041000_rollback.sql",
@@ -540141,6 +540182,20 @@
     "toHaveScreenshot usa animations disabled + caret hide + scale css + maxDiffPixelRatio",
     "tolerâncias de bounding box ≤ 4px",
     "ordem de foco Validade → Forma → Prazo preservada"
+   ]
+  },
+  "tests/contracts/quotes-freight-plan-migration.test.ts": {
+   "path": "tests/contracts/quotes-freight-plan-migration.test.ts",
+   "lines": 89,
+   "is_test": true,
+   "tests": [
+    "quotes.freight_plan migration contract",
+    "adds the 3 columns idempotently, with a constant default",
+    "documents column %s with COMMENT",
+    "does not touch RLS policies or functions",
+    "quotes.freight_plan rollback contract",
+    "backs up used rows with RLS and no public access before dropping",
+    "only drops after the backup count check"
    ]
   },
   "tests/contracts/send-transactional-email.contract.test.ts": {
@@ -559492,10 +559547,24 @@
   }
  },
  "git": {
-  "sha": "a499d841939b19749b4db766ceda04c76f39591a",
+  "sha": "e54228abcce9e491bf335c04f61428342ec0d9f4",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "e54228a",
+    "date": "2026-11-20",
+    "author": "adm01-debug",
+    "subject": "feat(db): colunas do plano de volumes em quotes (frete, Bloco G — DDL, etapa 61) (#3926)",
+    "files": [
+     "docs/coordenacao/conflitos-semanticos.md",
+     "src/integrations/supabase/types.ts",
+     "supabase/MIGRATIONS_SYNC_LOG.md",
+     "supabase/migrations/20261120040000_add_quotes_freight_plan.sql",
+     "supabase/rollbacks/20261120040000_rollback.sql",
+     "tests/contracts/quotes-freight-plan-migration.test.ts"
+    ]
+   },
    {
     "sha": "a499d84",
     "date": "2026-11-20",
@@ -560045,46 +560114,20 @@
      "package-lock.json",
      "package.json"
     ]
-   },
-   {
-    "sha": "41166fc",
-    "date": "2026-11-19",
-    "author": "adm01-debug",
-    "subject": "feat(frete): motor de empacotamento (Bloco B) (#3900)",
-    "files": [
-     "src/lib/freight/README.md",
-     "src/lib/freight/__tests__/boxOrder.test.ts",
-     "src/lib/freight/__tests__/buildGroups.test.ts",
-     "src/lib/freight/__tests__/computeVolumeTotals.test.ts",
-     "src/lib/freight/__tests__/fitCount.test.ts",
-     "src/lib/freight/__tests__/fixtures/boxes.ts",
-     "src/lib/freight/__tests__/fixtures/items.ts",
-     "src/lib/freight/__tests__/formatPlanSummary.test.ts",
-     "src/lib/freight/__tests__/fuzz.test.ts",
-     "src/lib/freight/__tests__/packMixed.test.ts",
-     "src/lib/freight/__tests__/packSingleProduct.test.ts",
-     "src/lib/freight/__tests__/planFreight.test.ts",
-     "src/lib/freight/boxOrder.ts",
-     "src/lib/freight/buildGroups.ts",
-     "src/lib/freight/computeVolumeTotals.ts",
-     "src/lib/freight/fitCount.ts",
-     "src/lib/freight/formatPlanSummary.ts",
-     "src/lib/freight/index.ts",
-     "src/lib/freight/packMixed.ts",
-     "src/lib/freight/packSingleProduct.ts",
-     "src/lib/freight/planFreight.ts",
-     "src/lib/freight/units.ts"
-    ]
    }
   ],
   "hot_files": [
    [
     "supabase/MIGRATIONS_SYNC_LOG.md",
-    13
+    14
    ],
    [
     "src/lib/freight/index.ts",
-    6
+    5
+   ],
+   [
+    "src/integrations/supabase/types.ts",
+    4
    ],
    [
     "src/hooks/freight/keys.ts",
@@ -560099,10 +560142,6 @@
     4
    ],
    [
-    "src/lib/freight/README.md",
-    4
-   ],
-   [
     "audit/supabase-reference-catalog.temporary.json",
     3
    ],
@@ -560112,10 +560151,6 @@
    ],
    [
     "src/hooks/freight/index.ts",
-    3
-   ],
-   [
-    "src/integrations/supabase/types.ts",
     3
    ],
    [
@@ -560156,6 +560191,10 @@
    ],
    [
     "CHANGELOG.md",
+    3
+   ],
+   [
+    "package-lock.json",
     3
    ]
   ]
