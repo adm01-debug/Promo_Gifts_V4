@@ -1,6 +1,6 @@
 # 11 · GLOSSÁRIO, DADOS DE REFERÊNCIA E LACUNAS
 
-> Gerado automaticamente por AI Context Sync v1.3.2 · commit `38a84ba151` · branch `main` · 2026-11-20 10:28 UTC
+> Gerado automaticamente por AI Context Sync v1.3.2 · commit `1b8de977ba` · branch `main` · 2026-11-20 10:36 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## Glossário do domínio (entidades do sistema)
@@ -371,6 +371,7 @@
 | status | valor `changed` para `status` usado no código não existe em nenhum enum do banco/TS | `compara:src/pages/kit-builder/useKitBuilderQuote.ts`<br>`escreve:src/hooks/kit-builder/useKitPriceValidation.ts` |
 | status | valor `unchanged` para `status` usado no código não existe em nenhum enum do banco/TS | `escreve:src/hooks/kit-builder/useKitPriceValidation.ts` |
 | status | valor `APPLIED` para `status` usado no código não existe em nenhum enum do banco/TS | `escreve:src/lib/theme-presets-css-vars-patch.ts` |
+| status | valor `volumes_demais` para `status` usado no código não existe em nenhum enum do banco/TS | `compara:src/lib/freight/planFreight.ts`<br>`escreve:src/lib/freight/packSingleProduct.ts` |
 | status | valor `incomplete` para `status` usado no código não existe em nenhum enum do banco/TS | `compara:src/lib/freight/planFreight.ts`<br>`compara:src/lib/freight/readiness.ts`<br>`escreve:src/lib/freight/resolveItemDimensions.ts` |
 | status | valor `string` para `status` usado no código não existe em nenhum enum do banco/TS | `compara:src/lib/products/stock-status.ts` |
 | status | valor `confirming` para `status` usado no código não existe em nenhum enum do banco/TS | `compara:src/pages/auth/SSOCallbackPage.tsx` |
@@ -645,8 +646,7 @@
 | rls | `user_onboarding`: front faz UPDATE mas nenhuma política RLS permite UPDATE → vai falhar/retornar vazio para usuários | `recovery/src-legacy/src/hooks/useOnboarding.ts`<br>`src/hooks/ui/useOnboarding.ts` |
 | dinheiro | `ops.pgss_history.total_exec_time` guarda dinheiro em `double precision NOT NULL` (ponto flutuante) — arredondamento imprevisível; padrão é numeric |  |
 | edge | edge function `a` invocada mas não existe em supabase/functions/ | `scripts/__tests__/check-invoke-direct-calls.test.mjs` |
-| edge | edge function `b` invocada mas não existe em supabase/functions/ | `scripts/__tests__/check-invoke-direct-calls.test.mjs` |
-| … +244 linhas — lista completa em `context.json` | | |
+| … +245 linhas — lista completa em `context.json` | | |
 
 ## Lacunas — o que este contexto NÃO consegue responder (perguntas para o dono do negócio)
 

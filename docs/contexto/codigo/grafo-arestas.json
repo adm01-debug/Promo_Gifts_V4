@@ -12366,6 +12366,7 @@
    "src/lib/freight/boxOrder.ts",
    "src/lib/freight/computeVolumeTotals.ts",
    "src/lib/freight/fitCount.ts",
+   "src/lib/freight/limits.ts",
    "src/lib/freight/packSingleProduct.ts",
    "src/lib/freight/types.ts"
   ],
@@ -12373,6 +12374,7 @@
    "src/lib/freight/boxOrder.ts",
    "src/lib/freight/computeVolumeTotals.ts",
    "src/lib/freight/fitCount.ts",
+   "src/lib/freight/limits.ts",
    "src/lib/freight/types.ts"
   ],
   "src/lib/freight/planFreight.ts": [
@@ -12381,11 +12383,13 @@
    "src/lib/freight/columns.ts",
    "src/lib/freight/computeVolumeTotals.ts",
    "src/lib/freight/expandQuantities.ts",
+   "src/lib/freight/limits.ts",
    "src/lib/freight/packMixed.ts",
    "src/lib/freight/packSingleProduct.ts",
    "src/lib/freight/resolveItemDimensions.ts",
    "src/lib/freight/types.ts",
-   "src/lib/freight/units.ts"
+   "src/lib/freight/units.ts",
+   "src/lib/freight/validateConfig.ts"
   ],
   "src/lib/freight/readiness.ts": [
    "src/lib/freight/columns.ts",

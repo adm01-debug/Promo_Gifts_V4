@@ -1,13 +1,13 @@
 {
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
- "total": 340,
+ "total": 342,
  "por_camada": {
   "api": 4,
   "config": 1,
   "data": 3,
   "integrations": 8,
-  "lib": 259,
+  "lib": 261,
   "python": 9,
   "services": 14,
   "stores": 9,
@@ -3956,7 +3956,7 @@
     "buildGroups"
    ],
    "export_default": null,
-   "linhas": 82,
+   "linhas": 83,
    "tabelas": [],
    "rpcs": [],
    "edges": [],
@@ -3982,7 +3982,7 @@
     "ProductMeasureRow"
    ],
    "export_default": null,
-   "linhas": 62,
+   "linhas": 63,
    "tabelas": [],
    "rpcs": [],
    "edges": [],
@@ -4056,7 +4056,7 @@
     "fitCount"
    ],
    "export_default": null,
-   "linhas": 158,
+   "linhas": 160,
    "tabelas": [],
    "rpcs": [],
    "edges": [],
@@ -4102,7 +4102,7 @@
     "formatPlanSummary"
    ],
    "export_default": null,
-   "linhas": 46,
+   "linhas": 50,
    "tabelas": [],
    "rpcs": [],
    "edges": [],
@@ -4196,13 +4196,36 @@
    "orfao": false
   },
   {
+   "arquivo": "src/lib/freight/limits.ts",
+   "camada": "lib",
+   "exports": [
+    "MAX_VOLUMES_POR_PLANO"
+   ],
+   "export_default": null,
+   "linhas": 39,
+   "tabelas": [],
+   "rpcs": [],
+   "edges": [],
+   "env": [],
+   "externos": [],
+   "zod_schemas": 0,
+   "flags": [],
+   "papeis": [],
+   "usado_por": 3,
+   "usado_por_modulos": [
+    "lib/freight"
+   ],
+   "coberto_por_testes": 1,
+   "orfao": false
+  },
+  {
    "arquivo": "src/lib/freight/packMixed.ts",
    "camada": "lib",
    "exports": [
     "packMixed"
    ],
    "export_default": null,
-   "linhas": 121,
+   "linhas": 169,
    "tabelas": [],
    "rpcs": [],
    "edges": [],
@@ -4222,11 +4245,13 @@
    "arquivo": "src/lib/freight/packSingleProduct.ts",
    "camada": "lib",
    "exports": [
+    "LoteDeVolumes",
     "PackResult",
+    "fecharLotes",
     "packSingleProduct"
    ],
    "export_default": null,
-   "linhas": 62,
+   "linhas": 120,
    "tabelas": [],
    "rpcs": [],
    "edges": [],
@@ -4252,7 +4277,7 @@
     "planFreight"
    ],
    "export_default": null,
-   "linhas": 288,
+   "linhas": 387,
    "tabelas": [],
    "rpcs": [],
    "edges": [],
@@ -4265,7 +4290,7 @@
    "usado_por_modulos": [
     "lib/freight"
    ],
-   "coberto_por_testes": 4,
+   "coberto_por_testes": 5,
    "orfao": false
   },
   {
@@ -4337,7 +4362,7 @@
     "ValidationError"
    ],
    "export_default": null,
-   "linhas": 166,
+   "linhas": 170,
    "tabelas": [],
    "rpcs": [],
    "edges": [],
@@ -4350,7 +4375,7 @@
    "usado_por_modulos": [
     "lib/freight"
    ],
-   "coberto_por_testes": 4,
+   "coberto_por_testes": 5,
    "orfao": false
   },
   {
@@ -4366,7 +4391,7 @@
     "roundDecimal"
    ],
    "export_default": null,
-   "linhas": 89,
+   "linhas": 103,
    "tabelas": [],
    "rpcs": [],
    "edges": [],
@@ -4379,6 +4404,30 @@
    "usado_por_modulos": [
     "lib/freight",
     "lib/kit-builder"
+   ],
+   "coberto_por_testes": 1,
+   "orfao": false
+  },
+  {
+   "arquivo": "src/lib/freight/validateConfig.ts",
+   "camada": "lib",
+   "exports": [
+    "validateConfig",
+    "validateEntrada"
+   ],
+   "export_default": null,
+   "linhas": 212,
+   "tabelas": [],
+   "rpcs": [],
+   "edges": [],
+   "env": [],
+   "externos": [],
+   "zod_schemas": 0,
+   "flags": [],
+   "papeis": [],
+   "usado_por": 1,
+   "usado_por_modulos": [
+    "lib/freight"
    ],
    "coberto_por_testes": 1,
    "orfao": false

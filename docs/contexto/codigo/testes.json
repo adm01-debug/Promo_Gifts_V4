@@ -5,13 +5,13 @@
   "vitest",
   "playwright"
  ],
- "total": 2665,
+ "total": 2667,
  "por_tipo": {
   "contrato": 67,
   "e2e": 679,
   "pytest": 5,
   "qa": 17,
-  "unit": 1897
+  "unit": 1899
  },
  "onde_ficam": [
   {
@@ -20,7 +20,7 @@
   },
   {
    "padrao": "co-localizado (__tests__)",
-   "arquivos": 743
+   "arquivos": 745
   },
   {
    "padrao": "e2e/",
@@ -9898,11 +9898,11 @@
   {
    "arquivo": "src/lib/freight/__tests__/computeVolumeTotals.test.ts",
    "tipo": "unit",
-   "linhas": 99,
+   "linhas": 115,
    "testa": [
     "src/lib/freight/computeVolumeTotals.ts"
    ],
-   "casos": 6
+   "casos": 7
   },
   {
    "arquivo": "src/lib/freight/__tests__/expandQuantities.test.ts",
@@ -9917,11 +9917,11 @@
   {
    "arquivo": "src/lib/freight/__tests__/fitCount.test.ts",
    "tipo": "unit",
-   "linhas": 236,
+   "linhas": 327,
    "testa": [
     "src/lib/freight/fitCount.ts"
    ],
-   "casos": 15
+   "casos": 21
   },
   {
    "arquivo": "src/lib/freight/__tests__/fixtures/boxes.ts",
@@ -9964,12 +9964,12 @@
   {
    "arquivo": "src/lib/freight/__tests__/formatPlanSummary.test.ts",
    "tipo": "unit",
-   "linhas": 82,
+   "linhas": 145,
    "testa": [
     "src/lib/freight/formatPlanSummary.ts",
     "src/lib/freight/planFreight.ts"
    ],
-   "casos": 4
+   "casos": 8
   },
   {
    "arquivo": "src/lib/freight/__tests__/fromDatabase.test.ts",
@@ -9985,7 +9985,7 @@
   {
    "arquivo": "src/lib/freight/__tests__/fuzz.test.ts",
    "tipo": "unit",
-   "linhas": 206,
+   "linhas": 209,
    "testa": [
     "src/lib/freight/columns.ts",
     "src/lib/freight/planFreight.ts",
@@ -9996,30 +9996,41 @@
   {
    "arquivo": "src/lib/freight/__tests__/packMixed.test.ts",
    "tipo": "unit",
-   "linhas": 194,
+   "linhas": 459,
    "testa": [
     "src/lib/freight/packMixed.ts",
     "src/lib/freight/packSingleProduct.ts"
    ],
-   "casos": 11
+   "casos": 25
   },
   {
    "arquivo": "src/lib/freight/__tests__/packSingleProduct.test.ts",
    "tipo": "unit",
-   "linhas": 143,
+   "linhas": 258,
    "testa": [
     "src/lib/freight/packSingleProduct.ts"
    ],
-   "casos": 12
+   "casos": 19
+  },
+  {
+   "arquivo": "src/lib/freight/__tests__/planFreight.robustez.test.ts",
+   "tipo": "unit",
+   "linhas": 469,
+   "testa": [
+    "src/lib/freight/limits.ts",
+    "src/lib/freight/planFreight.ts",
+    "src/lib/freight/types.ts"
+   ],
+   "casos": 23
   },
   {
    "arquivo": "src/lib/freight/__tests__/planFreight.test.ts",
    "tipo": "unit",
-   "linhas": 427,
+   "linhas": 777,
    "testa": [
     "src/lib/freight/planFreight.ts"
    ],
-   "casos": 27
+   "casos": 46
   },
   {
    "arquivo": "src/lib/freight/__tests__/readiness.test.ts",
@@ -10034,21 +10045,30 @@
   {
    "arquivo": "src/lib/freight/__tests__/resolveItemDimensions.test.ts",
    "tipo": "unit",
-   "linhas": 202,
+   "linhas": 223,
    "testa": [
     "src/lib/freight/columns.ts",
     "src/lib/freight/resolveItemDimensions.ts"
    ],
-   "casos": 13
+   "casos": 14
   },
   {
    "arquivo": "src/lib/freight/__tests__/units.test.ts",
    "tipo": "unit",
-   "linhas": 167,
+   "linhas": 205,
    "testa": [
     "src/lib/freight/units.ts"
    ],
-   "casos": 22
+   "casos": 27
+  },
+  {
+   "arquivo": "src/lib/freight/__tests__/validateConfig.test.ts",
+   "tipo": "unit",
+   "linhas": 307,
+   "testa": [
+    "src/lib/freight/validateConfig.ts"
+   ],
+   "casos": 35
   },
   {
    "arquivo": "src/lib/intelligence/__tests__/degradation.test.ts",
@@ -23446,13 +23466,15 @@
   "src/lib/freight/formatPlanSummary.ts": 1,
   "src/lib/freight/fromDatabase.ts": 1,
   "src/lib/freight/index.ts": 6,
+  "src/lib/freight/limits.ts": 1,
   "src/lib/freight/packMixed.ts": 1,
   "src/lib/freight/packSingleProduct.ts": 2,
-  "src/lib/freight/planFreight.ts": 4,
+  "src/lib/freight/planFreight.ts": 5,
   "src/lib/freight/readiness.ts": 1,
   "src/lib/freight/resolveItemDimensions.ts": 1,
-  "src/lib/freight/types.ts": 4,
+  "src/lib/freight/types.ts": 5,
   "src/lib/freight/units.ts": 1,
+  "src/lib/freight/validateConfig.ts": 1,
   "src/lib/image-converter.ts": 2,
   "src/lib/intelligence/degradation.ts": 2,
   "src/lib/intelligence/degradationRegistry.ts": 1,

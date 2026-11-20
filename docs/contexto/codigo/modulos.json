@@ -25609,9 +25609,9 @@
   },
   {
    "modulo": "lib/freight",
-   "arquivos": 17,
-   "testes": 19,
-   "linhas": 1555,
+   "arquivos": 19,
+   "testes": 21,
+   "linhas": 2037,
    "itens_menu": [],
    "telas": [],
    "rotas_http": [],

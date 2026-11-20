@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "38a84ba1511e2133442e2281f6166f8f575e6c46",
+  "commit": "1b8de977ba3d242e3fbcd0fcb99893ba432ed102",
   "branch": "main",
-  "data_commit": "2026-11-20T10:27:26Z",
+  "data_commit": "2026-11-20T10:35:28Z",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "1b8de977",
+    "data": "2026-11-20",
+    "assunto": "fix(frete): motor valida caixas e parâmetros na entrada, teto de volumes e testes de lacuna (#3925)"
+   },
    {
     "sha": "38a84ba1",
     "data": "2026-11-20",
@@ -126,14 +131,9 @@
     "sha": "6ef73b8a",
     "data": "2026-11-19",
     "assunto": "docs(migrations-log): recibo E15 — aplicação de 20261119094500 (#3894)"
-   },
-   {
-    "sha": "df0eda1d",
-    "data": "2026-11-19",
-    "assunto": "fix(db): termina a intenção da 20260706223316 sem aplicá-la — updated_at em crm_callback_events (#3892)"
    }
   ],
-  "arquivos_mudados_7d": 1423,
+  "arquivos_mudados_7d": 1427,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -149,7 +149,7 @@
    },
    {
     "pasta": "tests/edge-functions/live",
-    "mudancas": 357
+    "mudancas": 355
    },
    {
     "pasta": "src/hooks/products",
@@ -199,7 +199,7 @@
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "supabase/MIGRATIONS_SYNC_LOG.md",
-    "mudancas": 67
+    "mudancas": 66
    },
    {
     "arquivo": "package.json",
@@ -227,7 +227,7 @@
    },
    {
     "arquivo": "audit/supabase-reference-catalog.temporary.json",
-    "mudancas": 13
+    "mudancas": 12
    },
    {
     "arquivo": "CHANGELOG.md",
@@ -278,10 +278,6 @@
     "mudancas": 8
    },
    {
-    "arquivo": "tests/edge-functions/live/_live-client.ts",
-    "mudancas": 8
-   },
-   {
     "arquivo": ".github/workflows/e2e-swatch-quickview.yml",
     "mudancas": 7
    },
@@ -296,12 +292,16 @@
    {
     "arquivo": "docs/prod-readiness.md",
     "mudancas": 7
+   },
+   {
+    "arquivo": "e2e/flows/magazine-publish-smoke.spec.ts",
+    "mudancas": 7
    }
   ],
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 343
+    "commits": 342
    },
    {
     "autor": "Claude",
@@ -313,7 +313,7 @@
    },
    {
     "autor": "Joaquim Ataides",
-    "commits": 17
+    "commits": 16
    },
    {
     "autor": "dependabot[bot]",
@@ -322,9 +322,9 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 11112,
-  "arquivos_codigo": 5593,
-  "linhas_codigo": 1060358,
+  "arquivos_total": 11116,
+  "arquivos_codigo": 5597,
+  "linhas_codigo": 1062578,
   "rotas": 140,
   "rotas_http_backend": 13,
   "vistas_por_id": 0,
@@ -336,7 +336,7 @@
   "tabelas": 529,
   "migrations": 3111,
   "cron_jobs": 122,
-  "testes": 2665,
+  "testes": 2667,
   "workflows": 89,
   "scripts": 285,
   "docs_md": 1489
@@ -1939,8 +1939,8 @@
    "linhas": 66679
   },
   "src/lib": {
-   "arquivos": 399,
-   "linhas": 60477
+   "arquivos": 403,
+   "linhas": 62697
   },
   "src/logic": {
    "arquivos": 4,

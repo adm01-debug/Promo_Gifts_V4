@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.3.2 · commit `38a84ba151` · branch `main` · 2026-11-20 10:28 UTC
+> Gerado automaticamente por AI Context Sync v1.3.2 · commit `1b8de977ba` · branch `main` · 2026-11-20 10:36 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -1863,7 +1863,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `status` | `unconfigured` | compara | `src/components/admin/connections/DataSourceDebugTab.tsx` |
 | `status` | `underindex` | compara | `src/components/bi/ClientCategoryRadar.tsx` |
 | `status` | `unhealthy` | compara, escreve | `supabase/functions/health-check/index.ts` |
-| … +123 linhas — lista completa em `context.json` | | | |
+| … +124 linhas — lista completa em `context.json` | | | |
 
 ### E.4 Enums e listas de valores
 
@@ -4524,7 +4524,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
   ```
 - **roundDecimal(value: number, decimals: number)** — `src/lib/freight/units.ts`
   ```
-  const shifted = Number(`${value}e${decimals}`); if (!Number.isFinite(shifted)) return Number(value.toFixed(decimals)); return Number(`${Math.round(shifted)}e-${decimals}`);
+  const shifted = Number(`${value}e${decimals}`); if (!Number.isFinite(shifted)) return Number(value.toFixed(decimals)); const rounded = Math.round(shifted); // A partir de 1e21 o JavaScript imprime o inteiro em notação exponencial // (`'1e+21'`), e `'1e+21e-2'` não é número: sairia `NaN`. Nessa escala o // valor já não tem casa além das pedidas — com 2 casas o limite é 1e19, onde // os números representáveis andam de 2.048 em 2.048; com 6 casas é 1e15, // onde andam de 0,125 em 0,125 (3 casas) —, …
   ```
 - **round1(value: MaybeNumber)** — `src/lib/freight/units.ts`
   ```
@@ -4533,6 +4533,14 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 - **round2(value: MaybeNumber)** — `src/lib/freight/units.ts`
   ```
   if (!isUsable(value)) return null; return roundDecimal(value, 2);
+  ```
+- **validateConfig(boxes: unknown, settings: unknown)** — `src/lib/freight/validateConfig.ts`
+  ```
+  const problemas = problemasDosParametros(settings); if (!Array.isArray(boxes)) { problemas.push('Caixas de transporte inválidas: a lista de caixas não veio.'); return problemas; } // `Array.isArray` estreita `unknown` para `any[]`; cada caixa continua sendo // conferida como `unknown`. const caixas: readonly unknown[] = boxes; const idsVistos = new Set<string>(); return [ ...problemas, ...caixas.flatMap((box, indice) => problemasDaCaixa(box, indice + 1, idsVistos)), ];
+  ```
+- **validateEntrada(inputs: unknown, options: unknown)** — `src/lib/freight/validateConfig.ts`
+  ```
+  const problemas: string[] = []; if (!ehRegistro(options)) { problemas.push('Opções do plano inválidas: as opções do cálculo não vieram.'); } if (!Array.isArray(inputs)) { problemas.push('Itens do plano inválidos: a lista de itens não veio.'); return problemas; } const linhas: readonly unknown[] = inputs; linhas.forEach((linha, indice) => { if (!ehRegistro(linha)) { problemas.push(`Item nº ${indice + 1} inválido: os dados do item não vieram.`); } else if (!ehRegistro(linha.row)) { problemas.push( …
   ```
 - **computeFutureStockStats(entries: FutureStockEntry[])** — `src/lib/inventory/future-stock-stats.ts`
   ```
@@ -5820,7 +5828,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `TAG_POINTS` | `10` | `src/hooks/products/useProductMatch.ts` |
 | `NICHE_POINTS` | `15` | `src/hooks/products/useProductMatch.ts` |
 | `SUPPLIER_POINTS` | `5` | `src/hooks/products/useProductMatch.ts` |
-| … +397 linhas — lista completa em `context.json` | | |
+| … +398 linhas — lista completa em `context.json` | | |
 
 ### H.2 Prazos, expirações e janelas de tempo
 
@@ -6733,7 +6741,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `admin` | `supabase/migrations/20261112120500_fix_optimization_queue_rpcs_dev_access.sql` |
 | `anon` | `tests/edge-functions/live/_live-client.ts` |
 
-## K. Testes como especificação (23182 testes em 2338 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (23314 testes em 2340 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -6784,6 +6792,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `src/hooks/mockup/__tests__/mockupGenerationService.test.ts` | 52 | getTechniquePrompt · maps known technique codes to their prompts · maps the remaining known codes (uv, sublimacao) · falls back to default for unknown techniques … |
 | `tests/components/search/VoiceSearchOverlay.test.tsx` | 52 | VoiceSearchOverlay · Rendering · renders when open · does not render when closed … |
 | `tests/e2e/tools-simulator.test.ts` | 51 | E2E Tools — Simulator Wizard · has 4 steps · starts at product · ends at summary … |
+| `src/lib/freight/__tests__/planFreight.test.ts` | 50 | planFreight — status ok · 460 cadernetas sem a GG: 3× G + 1× P, com os totais fechados à mão · kitQuantity multiplica a quantidade de cada linha · linha com quantidade zero sai do plano sem virar erro … |
 | `tests/e2e/kit-builder-flow.test.ts` | 50 | Kit Builder E2E Flow - Box Selection · validates box selection is required before adding items · allows item addition after box selection · prevents proceeding to items step without box … |
 | `src/lib/security/__tests__/sanitize-ssrf.test.ts` | 47 | sanitizeUrl — CRIT-2 typeof guard · returns null for a number (truthy non-string) · returns null for an object · returns null for an array … |
 | `tests/components/TelemetryCharts.test.tsx` | 46 | TelemetryCharts - Rendering · returns null when no rows · renders chart titles when rows exist · renders bar chart for table distribution … |
@@ -6798,6 +6807,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `tests/color-navigation.test.ts` | 43 | buildColorNavParams · builds params with name only · builds params with all fields · skips null/undefined fields … |
 | `tests/utils/tailwindRings.interaction.test.tsx` | 43 | hoverRingsOf / ringsByVariant — interação · (I1) hoverRingsOf é estável antes/durante/depois de pointerenter+leave · (I2) focusRingsOf é estável sob Tab e blur programático · (I3) hover e focus-visible NÃO se contaminam no elemento  … |
 | `src/components/inventory/__tests__/useStockSelection.test.ts` | 42 | rowKey · gera chave  · chaves diferentes para IDs diferentes · é determinístico … |
+| `src/lib/freight/__tests__/validateConfig.test.ts` | 41 | validateConfig — entrada válida · as quatro caixas e os parâmetros padrão passam · lista de caixas vazia não é problema daqui: o plano responde  · fator padrão exatamente 1 passa: o intervalo é (0, 1] … |
 | `src/components/cart/__tests__/PopoverQtyInput.test.tsx` | 40 | normalizeQty (regra pura) · aceita inteiros dentro do intervalo · faz clamp acima do máximo · rejeita valores abaixo do mínimo … |
 | `src/hooks/quotes/__tests__/quoteDraftApply.test.ts` | 40 | quoteDraftKey · usa o prefixo que o QuoteAutoSave grava · readStoredQuoteDraft · devolve null quando não há rascunho … |
 | `src/lib/carts/__tests__/shipping-deadline.test.ts` | 39 | shipping-deadline · daysUntilDeadline · retorna 0 para hoje · retorna 3 para +3 dias … |
@@ -6828,6 +6838,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `src/components/search/__tests__/searchStates.test.ts` | 34 | GlobalSearchPalette search-state conditions (BUG-GS-02 regression) · empty query (length 0) · shows idle state · does NOT show short-query hint … |
 | `src/lib/assistant/__tests__/buildReason.test.ts` | 34 | buildReason · com todos os sinais ligados, cita os sete na ordem do mais forte ao mais fraco · a ordem dos trechos acompanha ORDEM_DOS_SINAIS · só um sinal … |
 | `src/pages/magazine/__tests__/stepValidation.test.ts` | 34 | validateStep identity · bloqueia se título vazio · bloqueia se título apenas espaços · NÃO bloqueia se título preenchido … |
+| `src/lib/freight/__tests__/units.test.ts` | 33 | mmToCm · converte milímetro em centímetro · não arrasta erro de ponto flutuante · não perde o empate por imprecisão binária … |
 | `src/lib/security/__tests__/sanitize-adversarial.test.ts` | 33 | sanitizeUrl — G1 WHATWG decimal IP normalisation · blocks http://2130706433 (decimal 127.0.0.1) · blocks http://2886729729 (decimal 172.16.0.1 — RFC1918) · blocks http://167772161 (decimal 10.0.0.1 — RFC1918) … |
 | `tests/components/kit-builder/FreightEstimator.test.tsx` | 33 | FreightEstimator — tabela transportadora (default) · peso zero → alerta de peso não informado visível · 0g → exibe peso 0.0kg · 1000g (1kg) → faixa ≤5kg = R$ 18,00 … |
 | `tests/edge-functions/integration/data-ops.test.ts` | 33 | external-db-bridge · SELECT com tabela válida → 200 + rows · SELECT com filtro WHERE → 200 · INSERT → 200 + inserted_id … |
@@ -6841,7 +6852,6 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `tests/scripts/seed-shipping-boxes.test.mjs` | 32 | parseCsv · lê o CSV real: 4 caixas, cada uma com a linha do arquivo (cabeçalho é a linha 1) · o cabeçalho do CSV real são as colunas graváveis, sem as inner_*_cm geradas · aponta a linha que tem campo a mais ou a menos … |
 | `tests/unit/freight-quest/quote-shipping-validation.test.ts` | 32 | quoteFormSchema — valid cases · CIF com shippingCost=0 → válido · FOB com shippingCost=0 → válido · FOB_PRE com shippingCost=50 → válido … |
 | `src/lib/assistant/__tests__/logoColorToGroups.test.ts` | 31 | logoColorToGroups — azul institucional · põe Azul na frente, com a distância medida e folga sobre o 2º lugar · devolve o hex do grupo e o hex da logo normalizados em minúsculo · trata a logo que usa literalmente o hex do grupo como cor exata … |
-| `src/lib/freight/__tests__/planFreight.test.ts` | 31 | planFreight — status ok · 460 cadernetas sem a GG: 3× G + 1× P, com os totais fechados à mão · kitQuantity multiplica a quantidade de cada linha · linha com quantidade zero sai do plano sem virar erro … |
 | `tests/ai-usage.test.ts` | 31 | AI Usage - Cost Estimation · calculates Gemini 2.5 Flash cost correctly · calculates Gemini 3 Flash Preview cost correctly · calculates GPT-5 cost correctly … |
 | `tests/e2e/performance.test.ts` | 31 | E2E Performance — Lazy Loading · MainLayout lazy loads 12+ components · E2E Performance — Query Limits · app page size < supabase limit … |
 | `tests/edge-functions/integration/ai-features.test.ts` | 31 | ai-recommendations · product_id válido → 200 + recomendações · contexto de orçamento → 200 + recomendações contextuais · produto inexistente → 404 … |
@@ -6857,6 +6867,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `e2e/catalog/catalog-search-audit.spec.ts` | 29 | Catálogo · Busca · termos comuns (grade não-vazia + relevância) · busca comum retorna resultados relevantes:  · Catálogo · Busca · SKU exato (bug #1) · busca por SKU encontra o produto:  … |
 | `src/components/inventory/__tests__/ri[REDACTED].test.tsx` | 29 | RiskKpi · renders label, value and sub · renders with alert style when alert=true · renders with warning style when warning=true … |
 | `src/components/products/__tests__/ColorSwatchTwoLineOverflow.test.tsx` | 29 | V1 ProductColorSwatches (wrap, max=14) · 7 cores → exibe TODAS, sem chip  · 14 cores → exibe TODAS, sem chip  · 20 cores → 13 bolinhas + chip  … |
+| `src/lib/freight/__tests__/packMixed.test.ts` | 29 | packMixed · 50 cadernetas + 50 squeezes cabem numa GG só · misturar nunca usa mais caixas que separar · preserva a quantidade de cada produto quando precisa de várias caixas … |
 | `tests/components/pages/KitBuilderPage.test.tsx` | 29 | KitBuilderPage · renderiza o passo box (padrão) · renderiza o passo items · renderiza o passo personalization … |
 | `tests/e2e/analytics-bi.test.ts` | 29 | E2E Analytics — BI Metrics · total = approved + rejected + pending · conversion rate is correct · avg ticket = revenue / approved … |
 | `tests/lib/kit-builder-price.test.ts` | 29 | kit-builder price-calculator · calculateBoxPrice · returns 0 for null box · multiplies box price by quantity … |
@@ -6869,7 +6880,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `src/components/search/__tests__/useGlobalSearch.test.ts` | 28 | useGlobalSearch · expõe estado inicial e sugestões rápidas · limpa resultados para consultas com menos de 3 caracteres sem chamar a IA · busca mista monta resultados de produtos, clientes, orçamentos e tabelas auxiliares … |
 | `src/components/ui/__tests__/currency-input.test.ts` | 28 | CurrencyInput · round2 · round2(%s) === %s · CurrencyInput · formatBR (pt-BR, 2 casas) · formata com vírgula decimal e ponto de milhar … |
 | `src/hooks/__tests__/bug-g7-regression.unit.test.ts` | 28 | BUG-G7 — TooltipTrigger asChild nao envolve Radix composto · nenhum bloco TooltipTrigger asChild contem <Select> · ordem correta dentro do Select: Tooltip -> span wrapper -> SelectTrigger; SelectContent fora do Tooltip · DEFAULT_SORT_VALUE deriva do SSOT (SORT_OPTIONS[0]) … |
-| `src/lib/freight/__tests__/units.test.ts` | 28 | mmToCm · converte milímetro em centímetro · não arrasta erro de ponto flutuante · não perde o empate por imprecisão binária … |
+| `src/lib/freight/__tests__/planFreight.robustez.test.ts` | 28 | planFreight — falha fechada: caixa ou parâmetro inválido bloqueia · controle: 3 cubos de 30 cm dão 2× GG + 1× M, com cubado maior que zero · linha crua de freight_settings (snake_case) não vira cubado 0 com status ok · divisor dos Correios %d bloqueia o plano … |
 | `tests/components/KitComposition.test.tsx` | 28 | KitComposition · renders trigger card with component count · abre o diálogo pelo teclado (%s) · renders header with correct component and piece counts in dialog … |
 | `tests/hooks/hooks-audit-bugfix-08-14.test.ts` | 28 | BUG-08 -- polling nao recriado apos fetch · setInterval de 60s criado UMA vez por montagem · polling dispara fetch apos 60s (timer nao resetado) · notificationsLengthRef como dep estavel (sem notifications.length no codigo) … |
 | `tests/lib/crm-db-fixed.test.ts` | 28 | invokeCrmDb · bloqueia a ponte antes do invoke quando não há sessão autenticada · returns data on success · throws on edge function error (non-retryable) … |
@@ -6903,6 +6914,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `src/components/cart/__tests__/cartCompanyCnpj.test.ts` | 25 | resolveCartCompanyCnpj · caminho 1 — CRM entrega CNPJ (fonte preferida) · CNPJ cru (14 dígitos) é mascarado para exibição · CNPJ já mascarado é re-normalizado e mascarado consistentemente … |
 | `src/components/inventory/__tests__/product-risk-detail.test.tsx` | 25 | ProductRiskDetail — loading state · renders loading spinner when isLoading=true · ProductRiskDetail — error state · renders error message when summary has error and no data … |
 | `src/lib/auth/__tests__/post-login-redirect.test.ts` | 25 | clearPostLoginRedirect · remove a chave do sessionStorage quando ela existe · nao lanca erro quando sessionStorage esta vazio · nao lanca erro quando sessionStorage.removeItem lanca excecao … |
+| `src/lib/freight/__tests__/fitCount.test.ts` | 25 | fitCount — caderneta 21 × 14 × 1 cm, 120 g · P: geometria manda, 64 unidades · M: geometria manda, 128 unidades · G: geometria manda, 140 unidades … |
 | `src/utils/__tests__/cnpj-gap-hunt.test.ts` | 25 | G1 — maskCnpj com input já mascarado não duplica separadores · idempotência: mask(mask(x)) === mask(x) · input parcial mascarado não gera pontuação órfã · G2 — normalizeCnpj com surrogate pairs / emoji / unicode invisível … |
 | `tests/contracts/webhooks.contract.test.ts` | 25 | contract: webhook-inbound v1 (passthrough) · aceita qualquer objeto (compat com produção) · aceita array (compat — v1 é any) · body vazio → 400 missing_body … |
 | `tests/hooks/useKitBuilderPageState.legacy.test.tsx` | 25 | Original PageState operational integration preserves its state/actions · empty save is rejected without success or network mutation · manual save uses real state and response, cancels debounce and acknowledges ID/revision · does not race with %s save … |
@@ -6913,6 +6925,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `src/lib/auth/__tests__/resolve-redirect-target.test.ts` | 24 | resolveRedirectTarget — precedência pós-login · 1️⃣ location.state.from vence todas as outras fontes · Google: state.from sobrescreve ?redirect e sessionStorage · E-mail/senha: state.from idem … |
 | `src/lib/customization/__tests__/format-engraving-title.test.ts` | 24 | formatEngravingTitle · prioriza nome_tabela quando disponível · usa techniqueName como fallback quando nome_tabela vazio · usa groupName como último fallback antes do default … |
 | `src/lib/edge/__tests__/invokeEdge-contracts.integration.test.ts` | 24 | invokeEdge contract — secrets-manager · cache_metrics: sucesso devolve envelope { ok, metrics } · reset_cache_metrics: 403 → error credential, data=null · erro embutido em envelope (200) é preservado para o caller … |
+| `src/lib/freight/__tests__/packSingleProduct.test.ts` | 24 | packSingleProduct — caderneta · 7 unidades: a menor caixa que fecha é a P (cabem 64) · 100 unidades: a P não fecha (64), a M fecha (128) · 250 unidades: a GG fecha exatamente no peso máximo … |
 | `src/lib/security/__tests__/magazine-guard-adversarial.test.ts` | 24 | validateBranding — G6 color key whitelist · drops unknown key  · drops unknown key  · drops unknown key  … |
 | `tests/fuzz/freight-quest-fuzzer.test.ts` | 24 | fuzz: injeções no campo event · SQL injection em event= · XSS em event= · fuzz: path traversal em campos de texto … |
 | `tests/hooks/useSupplierComparison.test.ts` | 24 | useSupplierComparison · should return null when no product is provided · should query by category name when the product has no category id · should pass undefined filters when the product has no category at all … |
@@ -7032,12 +7045,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `src/lib/telemetry/__tests__/restoreTelemetry.fuzz.test.ts` | 19 | fuzz — normalizeCorrelationId · para QUALQUER entrada inválida, retorno é UUID v4 canônico · para QUALQUER string não-vazia após trim, retorno === entrada (verbatim) · output SEMPRE passa em isValidCorrelationId … |
 | `src/pages/products/seller-carts/__tests__/mapRestoreCartError.test.ts` | 19 | mapRestoreCartError · RLS (SQLSTATE 42501) →  · RLS por status 403 →  · unique_cart_item_variant (23505) → mensagem específica de item duplicado … |
 | `supabase/functions/magic-up-score/index.limits.test.ts` | 19 | F-07 — corpo acima do teto é recusado com 413 antes do download completo · content-length acima do teto → 413 sem abrir o corpo · sem content-length, a leitura para ao passar do teto (não baixa tudo) · F-07 — imagem acima do limite é recusada com 413 antes do provedor … |
-| `tests/admin/route-guards-ref-warning.test.tsx` | 19 | Route guards — React ref warning guard · AdminRoute (loading) — sem warning de ref · AdminRoute (sem user → Navigate /login) — sem warning de ref · AdminRoute (admin com MFA OK → Outlet) — sem warning de ref … |
-| `tests/components/ReplenishmentToolbar.test.tsx` | 19 | ReplenishmentToolbar · renders title and count badge · shows loading state when isLoading with zero total · shows filtered/total when hasActiveFilters … |
-| `tests/edge-functions/voice-agent.test.ts` | 19 | Voice Agent Response Contract · action types · should have valid action enum values · response structure … |
-| `tests/edge-functions/integration/secure-upload.test.ts` | 19 | secure-upload · happy path — upload válido · retorna 200 com path, bucket e hash · hash retornado é string hexadecimal de 64 chars (SHA-256) … |
-| `tests/lib/query-config.test.ts` | 19 | CACHE_TIMES · should have increasing cache durations · getStaleTimeForKey · should return TECNICAS time for tecnicas keys … |
-| … +2038 linhas — lista completa em `context.json` | | |
+| … +2040 linhas — lista completa em `context.json` | | |
 
 ## L. Eventos de webhook tratados (contratos com sistemas externos)
 
@@ -7505,4 +7513,4 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | * Dados da projeção preditiva (apenas quando status foi reavaliado por Risco de Ruptura). */ | `src/components/inventory/VariantStockVisuals.tsx` |
 | deve passar por aqui para não dar drift entre bulk e single-row. | `src/components/inventory/useStockSelection.ts` |
 | Peso desconhecido nunca deve ser lido como zero: um kit com 1 item sem | `src/components/kit-builder/FreightEstimator.tsx` |
-| … +1417 linhas — lista completa em `context.json` | |
+| … +1428 linhas — lista completa em `context.json` | |
