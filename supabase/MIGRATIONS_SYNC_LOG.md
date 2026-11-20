@@ -2739,3 +2739,31 @@ caixas já entram validadas pelos CHECKs novos).
 |---|---|---|---|
 | `20261120030000` | `harden_freight_tables` | `fe42c3a8488c9ba53206e3c19ad900c324af8880a7bd1ff634d2ce584a0cb8c8` | pendente — aplicar via `db-apply-migration.yml` (`version=20261120030000`) após merge |
 | `20261120030100` | `seed_shipping_boxes` | `bcd08d0663b68ddb6853c48aff9163f57fee2327c47d6eea8873b6075fd7bf25` | pendente — aplicar via `db-apply-migration.yml` (`version=20261120030100`) após merge |
+
+### 2026-11-20 — resgate de migrations órfãs de branches fechadas (P06 + onboarding)
+
+Duas migrations escritas por agentes e abandonadas em branches que nunca viraram
+PR. Verificadas byte a byte contra main e ledger em 20/11: nenhuma das duas existe
+no main nem tem linha no ledger, e o trabalho não foi perdido por outra via.
+
+1. `20261118172500_security_invoker_views_p06_parcial` — resgate da branch
+   `claude/fix-resgate-p06-security-invoker-261118-1725` (PR #3720 fechada sem
+   merge). Fase B do P06: põe `security_invoker=true` nas 5 views públicas cuja
+   base é comprovadamente alcançável por anon (medido em 2026-11-18 no canônico);
+   deixa de fora as que derrubariam catálogo/painel (v_products_public,
+   v_system_health_dashboard).
+2. `20261119103000_onboarding_auto_assign_org_reemissao` — resgate da branch
+   `claude/fix-onboarding-vinculo-organizacao-261119-1035`. Reemissão da
+   20260621210001 (escrita 21/06 e nunca aplicada). Corrige o bug medido em prod:
+   usuário novo nasce SEM vínculo com a organização e, por causa das policies de
+   quotes, não cria nem enxerga orçamento. Aplica o trigger
+   `trg_auto_assign_org` que vincula em `user_organizations` +
+   `organization_members`. Deixa de fora o backfill dos 72 perfis existentes
+   (decisão do dono — deleção/backfill de acesso).
+
+Anti-regressão: REVOKE EXECUTE em ambas onde se aplica; rollbacks prontos.
+
+| versão | arquivo | sha256 | status |
+|---|---|---|---|
+| `20261118172500` | `security_invoker_views_p06_parcial` | `c5bc7606e0b6a84a9512bf3621c3d93bc77f6a21b5d50de854e544ef9b1de8d9` | pendente — aplicar via `db-apply-migration.yml` (`version=20261118172500`) após merge da PR de resgate |
+| `20261119103000` | `onboarding_auto_assign_org_reemissao` | `826fb238b0cd1a8079481d4a21b275834c5402e1c8865d681179bbec8ad4c57d` | pendente — aplicar via `db-apply-migration.yml` (`version=20261119103000`) após merge da PR de resgate |
