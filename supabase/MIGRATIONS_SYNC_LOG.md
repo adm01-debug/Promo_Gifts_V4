@@ -2802,4 +2802,4 @@ As policies novas entram em `.security/policies-baseline.json` depois de aplicad
 
 | versão | arquivo | sha256 | status |
 |---|---|---|---|
-| `20261120041000` | `production_lead_time_calendar` | `75a4e3e4fa6defde9b89f3e04430432a023ec5e9bd8878c01c0777b40e25c9c2` | pendente — aplicar via `db-apply-migration.yml` (`version=20261120041000`) após merge da PR H-DDL |
+| `20261120041000` | `production_lead_time_calendar` | `ded27deffa89754ea8fd9ab3825008c0e76aad872e0fda66df45b9f71569ab3c` | pendente — aplicar via `db-apply-migration.yml` (`version=20261120041000`) após merge da PR H-DDL |

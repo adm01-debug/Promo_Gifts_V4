@@ -87,7 +87,9 @@ CREATE POLICY business_calendar_delete_admin
   TO authenticated
   USING (public.is_admin());
 
-REVOKE ALL ON public.business_calendar FROM PUBLIC, anon;
+-- `authenticated` entra no REVOKE para perder REFERENCES/TRIGGER/MAINTAIN herdados
+-- dos privilégios padrão; a concessão abaixo devolve só o que a tela usa.
+REVOKE ALL ON public.business_calendar FROM PUBLIC, anon, authenticated;
 GRANT SELECT, INSERT, UPDATE, DELETE ON public.business_calendar TO authenticated;
 GRANT SELECT, INSERT, UPDATE, DELETE ON public.business_calendar TO service_role;
 
