@@ -51590,6 +51590,19 @@
         "type": "character varying(500)"
       },
       {
+        "comment": "Vai sempre em caixa própria no frete: frágil, líquido, volumoso. Vence a escolha do vendedor.",
+        "default": "false",
+        "generated": null,
+        "identity": null,
+        "is_enum": false,
+        "name": "ships_separately",
+        "nullable": false,
+        "position": 228,
+        "schema": "public",
+        "table": "products",
+        "type": "boolean"
+      },
+      {
         "comment": null,
         "default": null,
         "generated": null,
@@ -240242,6 +240255,12 @@
         "statements": 13,
         "statements_sha": "92c3e2f969476d38",
         "version": "20261119220000"
+      },
+      {
+        "name": "add_products_ships_separately",
+        "statements": 2,
+        "statements_sha": "1c87d2d3091b9744",
+        "version": "20261120013000"
       }
     ],
     "policies": [
@@ -253324,11 +253343,6 @@
         {
           "publication": "supabase_realtime_messages_publication",
           "schema": "realtime",
-          "table": "messages_2026_11_16"
-        },
-        {
-          "publication": "supabase_realtime_messages_publication",
-          "schema": "realtime",
           "table": "messages_2026_11_17"
         },
         {
@@ -253355,6 +253369,11 @@
           "publication": "supabase_realtime_messages_publication",
           "schema": "realtime",
           "table": "messages_2026_11_22"
+        },
+        {
+          "publication": "supabase_realtime_messages_publication",
+          "schema": "realtime",
+          "table": "messages_2026_11_23"
         }
       ]
     },

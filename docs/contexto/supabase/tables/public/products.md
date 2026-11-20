@@ -216,6 +216,7 @@ BACKLOG:
 | 225 | `default_carrier` | `character varying(100)` | sim |  |  | Transportadora padrão. fix_version=cadastro-produtos-audit-20260627-v1 |
 | 226 | `requires_special_shipping` | `boolean` | não | `false` |  | Exige frete especial. fix_version=cadastro-produtos-audit-20260627-v1 |
 | 227 | `shipping_notes` | `character varying(500)` | sim |  |  | Observações de frete. fix_version=cadastro-produtos-audit-20260627-v1 |
+| 228 | `ships_separately` | `boolean` | não | `false` |  | Vai sempre em caixa própria no frete: frágil, líquido, volumoso. Vence a escolha do vendedor. |
 
 
 ## Constraints

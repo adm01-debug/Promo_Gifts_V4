@@ -2998,3 +2998,4 @@ SQL em `migrations/<versao>_<nome>.sql`. Mudanças feitas pelo Dashboard/SQL Edi
 | 20261119213000 | [create_shipping_boxes](migrations/20261119213000_create_shipping_boxes.sql) | 34 |
 | 20261119213100 | [create_freight_settings](migrations/20261119213100_create_freight_settings.sql) | 19 |
 | 20261119220000 | [create_ema_sister_functions](migrations/20261119220000_create_ema_sister_functions.sql) | 13 |
+| 20261120013000 | [add_products_ships_separately](migrations/20261120013000_add_products_ships_separately.sql) | 2 |

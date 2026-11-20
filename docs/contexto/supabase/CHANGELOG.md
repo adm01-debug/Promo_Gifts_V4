@@ -2,6 +2,13 @@
 
 Diff semântico gerado a cada coleta em que algo mudou.
 
+## 2026-11-20 03:20 UTC
+
+- **colunas** adicionado (1): `public.products.ships_separately`
+- **migrations** adicionado (1): `20261120013000_add_products_ships_separately`
+- **realtime** adicionado (1): `supabase_realtime_messages_publication:realtime.messages_2026_11_23`
+- **realtime** removido (1): `supabase_realtime_messages_publication:realtime.messages_2026_11_16`
+
 ## 2026-11-19 23:16 UTC
 
 - **colunas** adicionado (27): `public.freight_settings.cubic_divisor_correios`, `public.freight_settings.cubic_divisor_rodoviario`, `public.freight_settings.default_fill_factor`, `public.freight_settings.id`, `public.freight_settings.internal_buffer_days`, `public.freight_settings.multi_personalization_rule`, `public.freight_settings.origin_cep`, `public.freight_settings.updated_at`, `public.freight_settings.updated_by`, `public.shipping_boxes.code`, `public.shipping_boxes.created_at`, `public.shipping_boxes.deleted_at`, `public.shipping_boxes.empty_weight_g`, `public.shipping_boxes.fill_factor`, `public.shipping_boxes.id`, `public.shipping_boxes.inner_height_cm`, `public.shipping_boxes.inner_length_cm`, `public.shipping_boxes.inner_width_cm`, `public.shipping_boxes.is_active`, `public.shipping_boxes.max_weight_g`, `public.shipping_boxes.name`, `public.shipping_boxes.outer_height_cm`, `public.shipping_boxes.outer_length_cm`, `public.shipping_boxes.outer_width_cm`, `public.shipping_boxes.sort_order`, `public.shipping_boxes.updated_at`, `public.shipping_boxes.wall_thickness_mm`
