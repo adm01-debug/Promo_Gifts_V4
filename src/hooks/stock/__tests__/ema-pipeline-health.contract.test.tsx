@@ -8,6 +8,12 @@ const { invokeMock, rpcMock } = vi.hoisted(() => ({
   rpcMock: vi.fn(),
 }));
 
+const { isDevMock } = vi.hoisted(() => ({ isDevMock: vi.fn() }));
+
+vi.mock('@/contexts/AuthContext', () => ({
+  useAuth: () => ({ isDev: isDevMock() }),
+}));
+
 vi.mock('@/integrations/supabase/client', () => ({
   supabase: {
     rpc: (name: string) => rpcMock(name),
@@ -40,6 +46,8 @@ function withQueryClient(queryClient: QueryClient) {
 beforeEach(() => {
   invokeMock.mockReset();
   rpcMock.mockReset();
+  isDevMock.mockReset();
+  isDevMock.mockReturnValue(true);
 });
 
 describe('EMA pipeline health contracts', () => {
@@ -52,14 +60,16 @@ describe('EMA pipeline health contracts', () => {
         status: 'OK',
         semantics: 'read_model_refresh',
       },
-      components: [{
-        id: 'EMA_READ_MODEL',
-        status: 'OK',
-        last_refreshed_at: '2026-08-26T12:00:00.000Z',
-        next_scheduled_at: null,
-        detail: 'refresh concluído',
-        source: 'rupture_health_check',
-      }],
+      components: [
+        {
+          id: 'EMA_READ_MODEL',
+          status: 'OK',
+          last_refreshed_at: '2026-08-26T12:00:00.000Z',
+          next_scheduled_at: null,
+          detail: 'refresh concluído',
+          source: 'rupture_health_check',
+        },
+      ],
     };
     invokeMock.mockResolvedValue({ data: response, error: null });
 
@@ -68,13 +78,17 @@ describe('EMA pipeline health contracts', () => {
       wrapper: withQueryClient(queryClient),
     });
 
-    await waitFor(() => expect(result.current.data).toEqual([{
-      componente: 'EMA_READ_MODEL',
-      status: 'OK',
-      ultima_execucao: '2026-08-26T12:00:00.000Z',
-      proxima_execucao: null,
-      detalhe: 'refresh concluído',
-    }]));
+    await waitFor(() =>
+      expect(result.current.data).toEqual([
+        {
+          componente: 'EMA_READ_MODEL',
+          status: 'OK',
+          ultima_execucao: '2026-08-26T12:00:00.000Z',
+          proxima_execucao: null,
+          detalhe: 'refresh concluído',
+        },
+      ]),
+    );
 
     expect(invokeMock).toHaveBeenCalledWith('ema-pipeline-health', { method: 'GET' });
     const query = queryClient.getQueryCache().find({
@@ -113,18 +127,20 @@ describe('EMA pipeline health contracts', () => {
     expect(failed.result.current.error!.message).toBe('source failed');
   });
 
-  it('não rebaixa falha do boundary de health para WARN silencioso', async () => {
+  it('usuário dev: falha da edge de health rebaixa para WARN sem derrubar o sumário', async () => {
     rpcMock.mockResolvedValue({
-      data: [{
-        nivel_alerta: 'ALERTA',
-        prioridade: 3,
-        total_variantes: 7,
-        total_gap_unidades: 1,
-        total_valor_estoque: 10,
-        com_anomalia_spike: 0,
-        avg_cobertura: 2,
-        refreshed_at: '2026-08-26T12:00:00.000Z',
-      }],
+      data: [
+        {
+          nivel_alerta: 'ALERTA',
+          prioridade: 3,
+          total_variantes: 7,
+          total_gap_unidades: 1,
+          total_valor_estoque: 10,
+          com_anomalia_spike: 0,
+          avg_cobertura: 2,
+          refreshed_at: '2026-08-26T12:00:00.000Z',
+        },
+      ],
       error: null,
     });
     invokeMock.mockResolvedValue({ data: null, error: new Error('source failed') });
@@ -134,14 +150,44 @@ describe('EMA pipeline health contracts', () => {
       wrapper: withQueryClient(queryClient),
     });
 
-    await waitFor(() => expect(result.current.error).toBeInstanceOf(Error));
-    expect(result.current.error?.message).toBe('source failed');
-    expect(result.current.totalVariants).toBe(0);
+    await waitFor(() => expect(result.current.totalVariants).toBe(7));
+    expect(result.current.error).toBeNull();
     expect(result.current.etlHealth).toEqual({
-      freshness: null,
+      freshness: '2026-08-26T12:00:00.000Z',
       status: 'WARN',
     });
     expect(rpcMock).toHaveBeenCalledWith('fn_rupture_quick_stats');
     expect(invokeMock).toHaveBeenCalledWith('ema-pipeline-health', { method: 'GET' });
+  });
+
+  it('usuário não-dev: não chama a edge dev-only e usa refreshed_at como frescor', async () => {
+    isDevMock.mockReturnValue(false);
+    rpcMock.mockResolvedValue({
+      data: [
+        {
+          nivel_alerta: 'ALERTA',
+          prioridade: 3,
+          total_variantes: 7,
+          total_gap_unidades: 1,
+          total_valor_estoque: 10,
+          com_anomalia_spike: 0,
+          avg_cobertura: 2,
+          refreshed_at: '2026-08-26T12:00:00.000Z',
+        },
+      ],
+      error: null,
+    });
+
+    const queryClient = createQueryClient();
+    const { result } = renderHook(() => useEmaRiskSummary(), {
+      wrapper: withQueryClient(queryClient),
+    });
+
+    await waitFor(() => expect(result.current.totalVariants).toBe(7));
+    expect(result.current.error).toBeNull();
+    expect(result.current.etlHealth.freshness).toBe('2026-08-26T12:00:00.000Z');
+    expect(result.current.etlHealth.status).toBe('WARN');
+    expect(rpcMock).toHaveBeenCalledWith('fn_rupture_quick_stats');
+    expect(invokeMock).not.toHaveBeenCalled();
   });
 });
