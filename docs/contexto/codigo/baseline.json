@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "c2e99f6eb0e913e05398a1efc29abc3ea97968a3",
+  "commit": "51ab7fb39da77d7565038034ef4508e228f05e7d",
   "branch": "main",
-  "data_commit": "2026-11-20T08:20:32-03:00",
+  "data_commit": "2026-11-20T12:08:52Z",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "51ab7fb3",
+    "data": "2026-11-20",
+    "assunto": "docs(migrations): recibos E15 das 20261120030000/030100 (baseline já em #3931) (#3932)"
+   },
    {
     "sha": "c2e99f6e",
     "data": "2026-11-20",
@@ -126,18 +131,13 @@
     "sha": "2080226f",
     "data": "2026-11-19",
     "assunto": "fix(frete): motor ignora as colunas box_* do catálogo (caixa master, não embalagem) (#3898)"
-   },
-   {
-    "sha": "fa3463ca",
-    "data": "2026-11-19",
-    "assunto": "chore(main): release gifts-store 1.11.0 (#3895)"
    }
   ],
   "arquivos_mudados_7d": 1437,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
-    "mudancas": 977
+    "mudancas": 968
    },
    {
     "pasta": "recovery/src-legacy/src",
@@ -145,19 +145,19 @@
    },
    {
     "pasta": "src/components/products",
-    "mudancas": 463
+    "mudancas": 461
    },
    {
     "pasta": "tests/edge-functions/live",
-    "mudancas": 351
+    "mudancas": 350
    },
    {
     "pasta": "src/hooks/products",
-    "mudancas": 344
+    "mudancas": 343
    },
    {
     "pasta": "src/components/quotes",
-    "mudancas": 299
+    "mudancas": 298
    },
    {
     "pasta": "src/pages/magazine",
@@ -181,25 +181,25 @@
    },
    {
     "pasta": "src/pages/admin",
-    "mudancas": 202
+    "mudancas": 197
    },
    {
     "pasta": "src/pages/quotes",
-    "mudancas": 180
+    "mudancas": 179
    },
    {
     "pasta": "src/components/kit-builder",
-    "mudancas": 167
+    "mudancas": 166
    },
    {
     "pasta": "src/pages/products",
-    "mudancas": 152
+    "mudancas": 151
    }
   ],
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "supabase/MIGRATIONS_SYNC_LOG.md",
-    "mudancas": 68
+    "mudancas": 69
    },
    {
     "arquivo": "package.json",
@@ -270,10 +270,6 @@
     "mudancas": 8
    },
    {
-    "arquivo": "src/components/kit-builder/PersonalizationConfig.tsx",
-    "mudancas": 8
-   },
-   {
     "arquivo": "src/pages/quotes/QuoteBuilderPage.tsx",
     "mudancas": 8
    },
@@ -296,12 +292,16 @@
    {
     "arquivo": "e2e/helpers/auth.ts",
     "mudancas": 7
+   },
+   {
+    "arquivo": "src/components/kit-builder/PersonalizationConfig.tsx",
+    "mudancas": 7
    }
   ],
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 338
+    "commits": 337
    },
    {
     "autor": "Claude",
@@ -313,7 +313,7 @@
    },
    {
     "autor": "Joaquim Ataides",
-    "commits": 13
+    "commits": 12
    },
    {
     "autor": "dependabot[bot]",
