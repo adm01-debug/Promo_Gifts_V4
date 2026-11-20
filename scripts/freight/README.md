@@ -74,20 +74,27 @@ editável por lá.
 
 ## O que o SQL gerado faz
 
-**Migration** — um `INSERT` com `ON CONFLICT (code) WHERE deleted_at IS NULL DO NOTHING`. O
-predicado repete o do índice único parcial de `code`; sem ele o Postgres recusa o `INSERT`.
+**Migration** — um `INSERT` com `ON CONFLICT DO NOTHING`. Cada caixa entra com um `id` fixo, que
+o script calcula a partir do código (UUID versão 8 tirado do sha256 de `shipping_boxes:<code>`): o
+mesmo CSV gera sempre os mesmos ids, e é por eles que o rollback reconhece o que veio do seed. Sem
+alvo, o `ON CONFLICT` vale para a chave primária (`id`) e para o índice único parcial de `code`.
 
-- código que já tem caixa viva: nada é inserido nem sobrescrito (edição do admin fica como está);
-- código sem caixa viva (nunca cadastrado, ou excluído): a caixa é criada;
-- aplicar duas vezes insere zero linhas na segunda.
+- código que já tem caixa viva: nada é inserido nem sobrescrito (cadastro do admin fica como está);
+- caixa do seed que continua na tabela, mesmo editada ou excluída pelo admin: nada é inserido;
+- nos outros casos a caixa é criada; aplicar duas vezes insere zero linhas na segunda.
 
-**Rollback** — copia a tabela para `_backup_shipping_boxes_YYYYMMDD` (RLS ligada, sem acesso de
-`anon`/`authenticated`) e apaga só a caixa viva que continua idêntica ao seed em todas as colunas
-gravadas. Caixa editada ou excluída pelo admin e caixa de outro código ficam. Roda antes do
-rollback `20261119213000`, que derruba a tabela.
+**Rollback** — um bloco só. Sem a tabela, avisa e termina sem erro. Com ela, trava a tabela para
+escrita, copia para `_backup_shipping_boxes_YYYYMMDD` (RLS ligada, sem acesso de
+`anon`/`authenticated`; se o backup do dia já existe, usa `_2`, `_3`, ...), confere a contagem e
+apaga só a linha que tem o id do seed e continua viva e idêntica a ele em todas as colunas
+gravadas. Ficam a caixa igual cadastrada antes do seed (outro id) e a caixa do seed que o admin
+editou ou excluiu. Roda antes do rollback `20261119213000`, que derruba a tabela.
+
+Os dois arquivos commitados têm de ser a saída do script, sem edição manual — o teste compara.
 
 ## Teste
 
 ```sh
-TZ=America/Sao_Paulo npx vitest run tests/scripts/seed-shipping-boxes.test.mjs
+TZ=America/Sao_Paulo npx vitest run tests/scripts/seed-shipping-boxes.test.mjs \
+  tests/scripts/seed-shipping-boxes-rollback.test.mjs
 ```
