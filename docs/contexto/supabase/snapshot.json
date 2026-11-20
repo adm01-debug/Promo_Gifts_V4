@@ -192696,9 +192696,13 @@
             {
               "file": "supabase/migrations/20260829120000_quote_save_with_discount_approval_transactional.sql",
               "hits": 1
+            },
+            {
+              "file": "supabase/migrations/20261120040000_add_quotes_freight_plan.sql",
+              "hits": 1
             }
           ],
-          "code_total_files": 9,
+          "code_total_files": 10,
           "cron": [],
           "db": [
             "public.update_quote_with_discount_approval_transactional"

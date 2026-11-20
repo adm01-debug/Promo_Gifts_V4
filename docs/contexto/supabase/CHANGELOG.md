@@ -2,6 +2,10 @@
 
 Diff semântico gerado a cada coleta em que algo mudou.
 
+## 2026-11-20 17:15 UTC
+
+- **functions** alterado (1): `public.update_quote_transactional(_quote_id uuid, _quote_patch jsonb, _items jsonb, _expected_version integer)`
+
 ## 2026-11-20 16:18 UTC
 
 - **functions** alterado (2): `public.is_admin()`, `public.is_admin(_user_id uuid)`
