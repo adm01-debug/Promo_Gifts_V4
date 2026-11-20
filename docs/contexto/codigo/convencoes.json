@@ -18,13 +18,13 @@
    "src/components (78)"
   ],
   "servicos_logica": [
-   "src/lib (251)",
+   "src/lib (257)",
    "src/utils (33)",
    "src/services (12)"
   ],
   "testes": [
    "tests/ (1087)",
-   "co-localizado (__tests__) (726)",
+   "co-localizado (__tests__) (730)",
    "e2e/ (627)"
   ],
   "edge_functions": "supabase/functions",
@@ -43,11 +43,11 @@
  "nomenclatura": {
   "componentes": "PascalCase (96%)",
   "hooks": "use + PascalCase",
-  "servicos": "camelCase (49%)",
+  "servicos": "camelCase (50%)",
   "edge_functions": "kebab-case (99%)",
   "tabelas": "snake_case (86%)"
  },
- "barrels_index": 48,
+ "barrels_index": 49,
  "extensao_componentes": [
   ".tsx (1268)"
  ],
@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "feat(frete): biblioteca de prazo de produção em dias úteis (Bloco H, etapas 72–75) (#3919)",
    "feat(db): coluna products.ships_separately (frete, Bloco D — DDL) (#3918)",
    "fix(frete): formulário de caixa volta a rolar e correções da revisão do admin (#3917)",
    "feat(frete): admin de caixas de transporte e parâmetros de frete (Bloco C/D) (#3915)",
-   "chore(main): release gifts-store 1.13.0 (#3904)",
-   "docs(migrations-log): recibo E15 — aplicação de 20261119212000 (#3906)"
+   "chore(main): release gifts-store 1.13.0 (#3904)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",

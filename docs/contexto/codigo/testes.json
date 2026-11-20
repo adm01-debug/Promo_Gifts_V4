@@ -5,13 +5,13 @@
   "vitest",
   "playwright"
  ],
- "total": 2645,
+ "total": 2649,
  "por_tipo": {
   "contrato": 67,
   "e2e": 679,
   "pytest": 5,
   "qa": 17,
-  "unit": 1877
+  "unit": 1881
  },
  "onde_ficam": [
   {
@@ -20,7 +20,7 @@
   },
   {
    "padrao": "co-localizado (__tests__)",
-   "arquivos": 726
+   "arquivos": 730
   },
   {
    "padrao": "e2e/",
@@ -10123,6 +10123,44 @@
     "src/lib/kit-builder/index.ts"
    ],
    "casos": 2
+  },
+  {
+   "arquivo": "src/lib/lead-time/__tests__/businessDays.test.ts",
+   "tipo": "unit",
+   "linhas": 195,
+   "testa": [
+    "src/lib/lead-time/businessDays.ts"
+   ],
+   "casos": 12
+  },
+  {
+   "arquivo": "src/lib/lead-time/__tests__/personalizationLeadTime.test.ts",
+   "tipo": "unit",
+   "linhas": 285,
+   "testa": [
+    "src/lib/lead-time/personalizationLeadTime.ts",
+    "src/lib/lead-time/types.ts"
+   ],
+   "casos": 21
+  },
+  {
+   "arquivo": "src/lib/lead-time/__tests__/productionLeadTime.test.ts",
+   "tipo": "unit",
+   "linhas": 311,
+   "testa": [
+    "src/lib/lead-time/productionLeadTime.ts",
+    "src/lib/lead-time/types.ts"
+   ],
+   "casos": 13
+  },
+  {
+   "arquivo": "src/lib/lead-time/__tests__/supplierLeadTime.test.ts",
+   "tipo": "unit",
+   "linhas": 87,
+   "testa": [
+    "src/lib/lead-time/supplierLeadTime.ts"
+   ],
+   "casos": 4
   },
   {
    "arquivo": "src/lib/navigation/__tests__/active-match.test.ts",
@@ -23264,6 +23302,11 @@
   "src/lib/kit-builder/weight.ts": 1,
   "src/lib/kit-library/buildCustomKitInsert.ts": 2,
   "src/lib/latency-percentiles.ts": 1,
+  "src/lib/lead-time/businessDays.ts": 1,
+  "src/lib/lead-time/personalizationLeadTime.ts": 1,
+  "src/lib/lead-time/productionLeadTime.ts": 1,
+  "src/lib/lead-time/supplierLeadTime.ts": 1,
+  "src/lib/lead-time/types.ts": 2,
   "src/lib/logger.ts": 14,
   "src/lib/magazine-status-config.ts": 1,
   "src/lib/masked-suffix.ts": 3,

@@ -1,13 +1,13 @@
 {
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
- "total": 330,
+ "total": 336,
  "por_camada": {
   "api": 4,
   "config": 1,
   "data": 3,
   "integrations": 8,
-  "lib": 251,
+  "lib": 257,
   "python": 9,
   "services": 12,
   "stores": 9,
@@ -5236,6 +5236,172 @@
     "routes"
    ],
    "coberto_por_testes": 0,
+   "orfao": false
+  },
+  {
+   "arquivo": "src/lib/lead-time/businessDays.ts",
+   "camada": "lib",
+   "exports": [
+    "addBusinessDays",
+    "businessDaysBetween"
+   ],
+   "export_default": null,
+   "linhas": 123,
+   "tabelas": [],
+   "rpcs": [],
+   "edges": [],
+   "env": [],
+   "externos": [
+    "date-fns"
+   ],
+   "zod_schemas": 0,
+   "flags": [],
+   "papeis": [],
+   "usado_por": 2,
+   "usado_por_modulos": [
+    "lib/lead-time"
+   ],
+   "coberto_por_testes": 1,
+   "orfao": false
+  },
+  {
+   "arquivo": "src/lib/lead-time/index.ts",
+   "camada": "lib",
+   "exports": [
+    "addBusinessDays",
+    "businessDaysBetween",
+    "computeProductionLeadTime",
+    "resolvePersonalizationLeadTime",
+    "resolveSupplierLeadTime"
+   ],
+   "export_default": null,
+   "linhas": 38,
+   "tabelas": [],
+   "rpcs": [],
+   "edges": [],
+   "env": [],
+   "externos": [],
+   "zod_schemas": 0,
+   "flags": [],
+   "papeis": [],
+   "usado_por": 0,
+   "usado_por_modulos": [],
+   "coberto_por_testes": 0,
+   "orfao": false
+  },
+  {
+   "arquivo": "src/lib/lead-time/personalizationLeadTime.ts",
+   "camada": "lib",
+   "exports": [
+    "resolvePersonalizationLeadTime"
+   ],
+   "export_default": null,
+   "linhas": 165,
+   "tabelas": [],
+   "rpcs": [],
+   "edges": [],
+   "env": [],
+   "externos": [],
+   "zod_schemas": 0,
+   "flags": [],
+   "papeis": [],
+   "usado_por": 2,
+   "usado_por_modulos": [
+    "lib/lead-time"
+   ],
+   "coberto_por_testes": 1,
+   "orfao": false
+  },
+  {
+   "arquivo": "src/lib/lead-time/productionLeadTime.ts",
+   "camada": "lib",
+   "exports": [
+    "computeProductionLeadTime"
+   ],
+   "export_default": null,
+   "linhas": 120,
+   "tabelas": [],
+   "rpcs": [],
+   "edges": [],
+   "env": [],
+   "externos": [],
+   "zod_schemas": 0,
+   "flags": [],
+   "papeis": [],
+   "usado_por": 1,
+   "usado_por_modulos": [
+    "lib/lead-time"
+   ],
+   "coberto_por_testes": 1,
+   "orfao": false
+  },
+  {
+   "arquivo": "src/lib/lead-time/supplierLeadTime.ts",
+   "camada": "lib",
+   "exports": [
+    "resolveSupplierLeadTime"
+   ],
+   "export_default": null,
+   "linhas": 66,
+   "tabelas": [],
+   "rpcs": [],
+   "edges": [],
+   "env": [],
+   "externos": [],
+   "zod_schemas": 0,
+   "flags": [],
+   "papeis": [],
+   "usado_por": 2,
+   "usado_por_modulos": [
+    "lib/lead-time"
+   ],
+   "coberto_por_testes": 1,
+   "orfao": false
+  },
+  {
+   "arquivo": "src/lib/lead-time/types.ts",
+   "camada": "lib",
+   "exports": [
+    "IsoDate",
+    "ItemLeadTime",
+    "LeadTimeIssue",
+    "LeadTimeIssueCode",
+    "LeadTimeResult",
+    "MultiPersonalizationRule",
+    "PersonalizationInput",
+    "PersonalizationItemInput",
+    "PersonalizationLeadTime",
+    "PersonalizationLeadTimeEntry",
+    "PersonalizationLeadTimeResult",
+    "PersonalizationLookup",
+    "PersonalizationSource",
+    "PriceBandInput",
+    "PrintAreaTechniqueInput",
+    "ProductLeadTimeInput",
+    "ProductionLeadSettings",
+    "ProductionLeadTime",
+    "ProductionLeadTimeStatus",
+    "QuoteLeadTimeInput",
+    "QuoteLeadTimeItem",
+    "SupplierLeadTime",
+    "SupplierLeadTimeInput",
+    "SupplierLeadTimeSource"
+   ],
+   "export_default": null,
+   "linhas": 165,
+   "tabelas": [],
+   "rpcs": [],
+   "edges": [],
+   "env": [],
+   "externos": [],
+   "zod_schemas": 0,
+   "flags": [],
+   "papeis": [],
+   "usado_por": 5,
+   "usado_por_modulos": [
+    "lib/lead-time"
+   ],
+   "coberto_por_testes": 2,
    "orfao": false
   },
   {

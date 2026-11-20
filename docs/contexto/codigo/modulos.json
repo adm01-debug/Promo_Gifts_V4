@@ -25729,6 +25729,36 @@
    "pacotes_externos": []
   },
   {
+   "modulo": "lib/lead-time",
+   "arquivos": 6,
+   "testes": 4,
+   "linhas": 677,
+   "itens_menu": [],
+   "telas": [],
+   "rotas_http": [],
+   "componentes": 0,
+   "hooks_locais": [],
+   "hooks_definidos": [],
+   "edges": [],
+   "tabelas": [],
+   "rpcs": [],
+   "buckets": [],
+   "canais_realtime": [],
+   "env": [],
+   "flags": [],
+   "papeis": [],
+   "diretos": {
+    "edges": [],
+    "tabelas": [],
+    "rpcs": []
+   },
+   "importado_por_outros_modulos": [],
+   "depende_de_modulos": [],
+   "pacotes_externos": [
+    "date-fns"
+   ]
+  },
+  {
    "modulo": "lib/mcp",
    "arquivos": 1,
    "testes": 0,

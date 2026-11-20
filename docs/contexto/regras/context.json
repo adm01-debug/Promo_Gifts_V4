@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "16762dcbcbb92282645d0738b685958876c857f0",
+  "sha": "23c5aed4d2ee91f9fc935d8f68b58e0051215d77",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-20 02:24 UTC",
-  "files_total": 10992,
-  "code_files": 9009,
-  "code_lines": 1277440
+  "generated_at": "2026-11-20 02:30 UTC",
+  "files_total": 11003,
+  "code_files": 9019,
+  "code_lines": 1278995
  },
  "version": "1.3.2",
- "facts_hash": "66dea0a11f2e7ba6",
+ "facts_hash": "648ca9ed0210e411",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -1129,7 +1129,7 @@
   "package_manager": "npm",
   "languages": {
    ".sql": 3463,
-   ".ts": 3098,
+   ".ts": 3108,
    ".tsx": 1978,
    ".mjs": 455,
    ".py": 15,
@@ -150694,8 +150694,8 @@
   },
   {
    "module": "src/lib",
-   "files": 386,
-   "lines": 58619,
+   "files": 396,
+   "lines": 60174,
    "tables": [
     "...",
     "companies",
@@ -163273,6 +163273,31 @@
     "values": "box-first | items-first"
    },
    {
+    "file": "src/lib/lead-time/types.ts",
+    "name": "LeadTimeIssueCode",
+    "values": "invalid_input | personalization_lead_time | supplier_lead_time"
+   },
+   {
+    "file": "src/lib/lead-time/types.ts",
+    "name": "SupplierLeadTimeSource",
+    "values": "product_exception | supplier_default"
+   },
+   {
+    "file": "src/lib/lead-time/types.ts",
+    "name": "MultiPersonalizationRule",
+    "values": "max | sum"
+   },
+   {
+    "file": "src/lib/lead-time/types.ts",
+    "name": "PersonalizationSource",
+    "values": "price_table | registered"
+   },
+   {
+    "file": "src/lib/lead-time/types.ts",
+    "name": "ProductionLeadTimeStatus",
+    "values": "dados_insuficientes | ok"
+   },
+   {
     "file": "src/lib/mcp/scopes.ts",
     "name": "KNOWN_SCOPES",
     "values": "'quotes:read', 'orders:read', 'crm:read', 'products:read', 'code:read', 'code:write', '*',"
@@ -174843,6 +174868,66 @@
    {
     "file": "src/lib/kit-library/buildCustomKitInsert.ts",
     "text": "unused id/revision/timestamps are required merely to duplicate a draft."
+   },
+   {
+    "file": "src/lib/lead-time/businessDays.ts",
+    "text": "* Teto técnico (dias úteis): acima disso o pedido é erro de digitação, não prazo. */"
+   },
+   {
+    "file": "src/lib/lead-time/index.ts",
+    "text": "* Prazo de produção — barril público."
+   },
+   {
+    "file": "src/lib/lead-time/personalizationLeadTime.ts",
+    "text": "* Prazo de personalização de um item. Cada personalização usa o prazo cadastrado"
+   },
+   {
+    "file": "src/lib/lead-time/personalizationLeadTime.ts",
+    "text": "`rule`: `max` (rodam em paralelo) ou `sum` (uma depois da outra). Reúne as"
+   },
+   {
+    "file": "src/lib/lead-time/productionLeadTime.ts",
+    "text": "* Prazo total 0: pronto no próprio dia se for útil; senão no próximo dia útil (nunca promete data parada). */"
+   },
+   {
+    "file": "src/lib/lead-time/productionLeadTime.ts",
+    "text": "* Prazo de produção do pedido. Por item: fornecedor + personalização + folga"
+   },
+   {
+    "file": "src/lib/lead-time/supplierLeadTime.ts",
+    "text": "* Prazo de liberação do fornecedor para um produto."
+   },
+   {
+    "file": "src/lib/lead-time/supplierLeadTime.ts",
+    "text": "- produto sem prazo, ou igual ao padrão do fornecedor: padrão (`supplier_default`);"
+   },
+   {
+    "file": "src/lib/lead-time/types.ts",
+    "text": "* Tipos de entrada e saída do prazo de produção."
+   },
+   {
+    "file": "src/lib/lead-time/types.ts",
+    "text": "* Prazo do fornecedor para um produto. */"
+   },
+   {
+    "file": "src/lib/lead-time/types.ts",
+    "text": "* Regra de várias personalizações no mesmo item: freight_settings.multi_personalization_rule. */"
+   },
+   {
+    "file": "src/lib/lead-time/types.ts",
+    "text": "* Item do orçamento para o cálculo do prazo (quote_items). */"
+   },
+   {
+    "file": "src/lib/lead-time/types.ts",
+    "text": "* ...prazo_dias (dias úteis; null = faixa sem prazo) */"
+   },
+   {
+    "file": "src/lib/lead-time/types.ts",
+    "text": "* Dias combinados pela regra max|sum. 0 quando o item não tem personalização. */"
+   },
+   {
+    "file": "src/lib/lead-time/types.ts",
+    "text": "* Configuração do prazo (freight_settings). */"
    },
    {
     "file": "src/lib/navigation/filter-dev-only-items.ts",
@@ -200099,6 +200184,16 @@
     "value": "0.85"
    },
    {
+    "file": "src/lib/lead-time/businessDays.ts",
+    "name": "NOON",
+    "value": "12"
+   },
+   {
+    "file": "src/lib/lead-time/businessDays.ts",
+    "name": "MAX_BUSINESS_DAYS",
+    "value": "3650"
+   },
+   {
     "file": "src/lib/mcp/scopes.ts",
     "name": "FULL_SCOPE",
     "value": "'*'"
@@ -209425,6 +209520,18 @@
     "kind": "compara"
    },
    {
+    "file": "src/lib/lead-time/productionLeadTime.ts",
+    "field": "status",
+    "value": "dados_insuficientes",
+    "kind": "escreve"
+   },
+   {
+    "file": "src/lib/lead-time/productionLeadTime.ts",
+    "field": "status",
+    "value": "ok",
+    "kind": "escreve"
+   },
+   {
     "file": "src/lib/products/stock-status.ts",
     "field": "status",
     "value": "out-of-stock",
@@ -216309,6 +216416,18 @@
     "body": "const parsed = Number.parseFloat(value.replace(',', '.')); return unit === 'mm' ? parsed / 10 : parsed;"
    },
    {
+    "file": "src/lib/lead-time/businessDays.ts",
+    "name": "invalid",
+    "params": "message: string",
+    "body": "ok: false; issue: LeadTimeIssue"
+   },
+   {
+    "file": "src/lib/lead-time/productionLeadTime.ts",
+    "name": "computeProductionLeadTime",
+    "params": "quote: QuoteLeadTimeInput, settings: ProductionLeadSettings, holidays: readonly IsoDate[], today: IsoDate,",
+    "body": "if ( quote === null || quote === undefined || !Array.isArray(quote.items) || settings === null || settings === undefined || quote.items.some((item) => item === null || item === undefined) ) { return blocked( [ { code: 'invalid_input', message: 'O orçamento, os itens e a configuração do prazo são obrigatórios.', productId: null, }, ], [], ); } if (quote.items.length === 0) { return blocked( [ { code: 'invalid_input', message: 'O orçamento não tem itens para calcular o prazo.', productId: null, }, …"
+   },
+   {
     "file": "src/lib/navigation/restricted-routes.ts",
     "name": "canNavigateTo",
     "params": "pathname: string, opts: { isDev: boolean; isAdmin: boolean },",
@@ -219053,6 +219172,10 @@
    {
     "file": "src/lib/external-db/products-detail-retry.ts",
     "line": "setTimeout(r, 1000 * (attempt + 1));"
+   },
+   {
+    "file": "src/lib/lead-time/productionLeadTime.ts",
+    "line": "return previous.ok ? addBusinessDays(previous.value, 1, holidays) : previous;"
    },
    {
     "file": "src/pages/admin/AdminCloudflareImagesPage.tsx",
@@ -254441,6 +254564,190 @@
    {
     "file": "src/lib/kit-builder/__tests__/dead-code.test.ts",
     "name": "não mantém os arquivos abandonados no src"
+   },
+   {
+    "file": "src/lib/lead-time/__tests__/businessDays.test.ts",
+    "name": "addBusinessDays"
+   },
+   {
+    "file": "src/lib/lead-time/__tests__/businessDays.test.ts",
+    "name": "businessDaysBetween"
+   },
+   {
+    "file": "src/lib/lead-time/__tests__/businessDays.test.ts",
+    "name": "devolve erro (sem lançar) para %s"
+   },
+   {
+    "file": "src/lib/lead-time/__tests__/businessDays.test.ts",
+    "name": "addBusinessDays (fuzz com semente fixa)"
+   },
+   {
+    "file": "src/lib/lead-time/__tests__/businessDays.test.ts",
+    "name": "resultado é dia útil: $start +$days"
+   },
+   {
+    "file": "src/lib/lead-time/__tests__/businessDays.test.ts",
+    "name": "monotonia: $start +$days <= +($days+1)"
+   },
+   {
+    "file": "src/lib/lead-time/__tests__/businessDays.test.ts",
+    "name": "ida e volta: add(d, between(d, e)) == e para e útil ($start +$days)"
+   },
+   {
+    "file": "src/lib/lead-time/__tests__/businessDays.test.ts",
+    "name": "teto de 3650 dias úteis e limites de data"
+   },
+   {
+    "file": "src/lib/lead-time/__tests__/businessDays.test.ts",
+    "name": "3650 dias úteis ainda calcula: sexta 13/11/2026 + 3650 = sexta 09/11/2040"
+   },
+   {
+    "file": "src/lib/lead-time/__tests__/businessDays.test.ts",
+    "name": "%i dias úteis passa do teto e vira invalid_input"
+   },
+   {
+    "file": "src/lib/lead-time/__tests__/businessDays.test.ts",
+    "name": "businessDaysBetween: 3650 úteis passa; 3651 (segunda 12/11/2040) vira invalid_input"
+   },
+   {
+    "file": "src/lib/lead-time/__tests__/businessDays.test.ts",
+    "name": "resultado que sai do ano de 4 dígitos é invalid_input: 31/12/9999 (sexta) + 1 útil"
+   },
+   {
+    "file": "src/lib/lead-time/__tests__/businessDays.test.ts",
+    "name": "feriados nulos ou indefinidos são invalid_input, não exceção"
+   },
+   {
+    "file": "src/lib/lead-time/__tests__/personalizationLeadTime.test.ts",
+    "name": "resolvePersonalizationLeadTime"
+   },
+   {
+    "file": "src/lib/lead-time/__tests__/personalizationLeadTime.test.ts",
+    "name": "prazo registrado vence a tabela: frente = 4 (a faixa 100..499 diria 5)"
+   },
+   {
+    "file": "src/lib/lead-time/__tests__/personalizationLeadTime.test.ts",
+    "name": "registrado sem production_days cai na tabela: verso com 100 un = faixa 100..499 = 5"
+   },
+   {
+    "file": "src/lib/lead-time/__tests__/personalizationLeadTime.test.ts",
+    "name": "sem linha cadastrada para o local usa a tabela pela técnica: lateral com 100 un = 5"
+   },
+   {
+    "file": "src/lib/lead-time/__tests__/personalizationLeadTime.test.ts",
+    "name": "quantidade da personalização nula usa a do item: item de 500 un = 7"
+   },
+   {
+    "file": "src/lib/lead-time/__tests__/personalizationLeadTime.test.ts",
+    "name": "regra max: frente 4 (registrado) e verso 5 (tabela) -> max(4, 5) = 5, origem da mais demorada"
+   },
+   {
+    "file": "src/lib/lead-time/__tests__/personalizationLeadTime.test.ts",
+    "name": "regra sum: frente 4 + verso 5 = 9"
+   },
+   {
+    "file": "src/lib/lead-time/__tests__/personalizationLeadTime.test.ts",
+    "name": "empate de prazos mantém a origem da primeira: 4 (registrado) e 4 (registrado) -> max 4"
+   },
+   {
+    "file": "src/lib/lead-time/__tests__/personalizationLeadTime.test.ts",
+    "name": "empate com origens diferentes vale a primeira: 4 (registrado, frente) e 4 (tabela 100..499 com prazo 4) -> registered"
+   },
+   {
+    "file": "src/lib/lead-time/__tests__/personalizationLeadTime.test.ts",
+    "name": "sem personalização: 0 dias, sem origem"
+   },
+   {
+    "file": "src/lib/lead-time/__tests__/personalizationLeadTime.test.ts",
+    "name": "devolve cada entrada com técnica, local, dias e origem"
+   },
+   {
+    "file": "src/lib/lead-time/__tests__/personalizationLeadTime.test.ts",
+    "name": "faixas repetidas (dimensionais) com prazos diferentes valem o maior: max(3, 6) = 6"
+   },
+   {
+    "file": "src/lib/lead-time/__tests__/personalizationLeadTime.test.ts",
+    "name": "faltante em uma de duas personalizações bloqueia o item inteiro"
+   },
+   {
+    "file": "src/lib/lead-time/__tests__/personalizationLeadTime.test.ts",
+    "name": "acumula as pendências de TODAS as personalizações do item: 2 faltantes -> 2 issues, issue = a primeira"
+   },
+   {
+    "file": "src/lib/lead-time/__tests__/personalizationLeadTime.test.ts",
+    "name": "prazo cadastrado com quantidade inválida também é erro: frente (4 dias) com -5 un"
+   },
+   {
+    "file": "src/lib/lead-time/__tests__/personalizationLeadTime.test.ts",
+    "name": "faixa inválida que casa junto com uma válida não some: prazos %s"
+   },
+   {
+    "file": "src/lib/lead-time/__tests__/personalizationLeadTime.test.ts",
+    "name": "regra fora de max|sum (%s) é invalid_input, não vira max"
+   },
+   {
+    "file": "src/lib/lead-time/__tests__/personalizationLeadTime.test.ts",
+    "name": "entradas nulas são devolvidas como invalid_input, nunca lançadas"
+   },
+   {
+    "file": "src/lib/lead-time/__tests__/personalizationLeadTime.test.ts",
+    "name": "mensagem do faltante traz o local quando há local"
+   },
+   {
+    "file": "src/lib/lead-time/__tests__/productionLeadTime.test.ts",
+    "name": "computeProductionLeadTime"
+   },
+   {
+    "file": "src/lib/lead-time/__tests__/productionLeadTime.test.ts",
+    "name": "(3+2) vs (5+8): total 13, crítico é o segundo; pronto em 10/12/2026"
+   },
+   {
+    "file": "src/lib/lead-time/__tests__/productionLeadTime.test.ts",
+    "name": "folga interna de 1 dia soma em cada item: (3+2+1)=6 e (5+8+1)=14 -> 14, pronto em 11/12/2026"
+   },
+   {
+    "file": "src/lib/lead-time/__tests__/productionLeadTime.test.ts",
+    "name": "a data de aprovação vale mais que hoje: aprovado 09/11 (segunda) + 13 úteis = 26/11"
+   },
+   {
+    "file": "src/lib/lead-time/__tests__/productionLeadTime.test.ts",
+    "name": "feriado no caminho empurra a data: feriado 08/12 -> 13º dia útil vira sexta 11/12/2026"
+   },
+   {
+    "file": "src/lib/lead-time/__tests__/productionLeadTime.test.ts",
+    "name": "empate no maior total marca os dois itens como críticos: 5 e 5"
+   },
+   {
+    "file": "src/lib/lead-time/__tests__/productionLeadTime.test.ts",
+    "name": "item sem personalização: personalização 0 e sem origem; total = fornecedor 3 + folga 0"
+   },
+   {
+    "file": "src/lib/lead-time/__tests__/productionLeadTime.test.ts",
+    "name": "faltante bloqueia: sem prazo do fornecedor do item B, não há data nem total"
+   },
+   {
+    "file": "src/lib/lead-time/__tests__/productionLeadTime.test.ts",
+    "name": "faltante de fornecedor e de personalização no mesmo item gera 2 pendências"
+   },
+   {
+    "file": "src/lib/lead-time/__tests__/productionLeadTime.test.ts",
+    "name": "pendências de todas as personalizações do item entram em missing: 2 locais sem faixa = 2 pendências"
+   },
+   {
+    "file": "src/lib/lead-time/__tests__/productionLeadTime.test.ts",
+    "name": "total acima do teto vira dados_insuficientes: fornecedor 3651 dias úteis"
+   },
+   {
+    "file": "src/lib/lead-time/__tests__/productionLeadTime.test.ts",
+    "name": "entradas nulas são devolvidas como invalid_input, nunca lançadas"
+   },
+   {
+    "file": "src/lib/lead-time/__tests__/supplierLeadTime.test.ts",
+    "name": "resolveSupplierLeadTime"
+   },
+   {
+    "file": "src/lib/lead-time/__tests__/supplierLeadTime.test.ts",
+    "name": "produto nulo ou indefinido é invalid_input, não exceção"
    },
    {
     "file": "src/lib/navigation/__tests__/active-match.test.ts",
@@ -353702,6 +354009,7 @@
       "escreve:src/lib/freight/packSingleProduct.ts",
       "escreve:src/lib/freight/planFreight.ts",
       "escreve:src/lib/freight/resolveItemDimensions.ts",
+      "escreve:src/lib/lead-time/productionLeadTime.ts",
       "escreve:src/pages/admin/DevChallengeExamplesPage.tsx",
       "escreve:src/pages/system/SystemStatusPage.tsx",
       "escreve:supabase/functions/_shared/external-db-telemetry.ts",
@@ -354382,7 +354690,8 @@
       "escreve:src/lib/freight/planFreight.ts"
      ],
      "dados_insuficientes": [
-      "escreve:src/lib/freight/planFreight.ts"
+      "escreve:src/lib/freight/planFreight.ts",
+      "escreve:src/lib/lead-time/productionLeadTime.ts"
      ],
      "incomplete": [
       "compara:src/lib/freight/planFreight.ts",
@@ -483720,6 +484029,267 @@
    ],
    "doc": "buildCustomKitInsert — Helper tipado para construir payloads de insert/update em custom_kits. Remove a necessidade de `as never` em chamadas Supabase."
   },
+  "src/lib/lead-time/businessDays.ts": {
+   "path": "src/lib/lead-time/businessDays.ts",
+   "lines": 123,
+   "exports": [
+    "function addBusinessDays",
+    "function businessDaysBetween"
+   ],
+   "params": [
+    {
+     "name": "NOON",
+     "value": "12"
+    },
+    {
+     "name": "MAX_BUSINESS_DAYS",
+     "value": "3650"
+    }
+   ],
+   "rule_comments": [
+    "* Teto técnico (dias úteis): acima disso o pedido é erro de digitação, não prazo. */"
+   ],
+   "calc_fns": [
+    {
+     "name": "invalid",
+     "params": "message: string",
+     "body": "ok: false; issue: LeadTimeIssue"
+    }
+   ]
+  },
+  "src/lib/lead-time/index.ts": {
+   "path": "src/lib/lead-time/index.ts",
+   "lines": 38,
+   "rule_comments": [
+    "* Prazo de produção — barril público."
+   ],
+   "doc": "Prazo de produção — barril público. Contrato e fontes de dados em `./README.md`."
+  },
+  "src/lib/lead-time/personalizationLeadTime.ts": {
+   "path": "src/lib/lead-time/personalizationLeadTime.ts",
+   "lines": 165,
+   "exports": [
+    "function resolvePersonalizationLeadTime"
+   ],
+   "rule_comments": [
+    "* Prazo de personalização de um item. Cada personalização usa o prazo cadastrado",
+    "`rule`: `max` (rodam em paralelo) ou `sum` (uma depois da outra). Reúne as"
+   ]
+  },
+  "src/lib/lead-time/productionLeadTime.ts": {
+   "path": "src/lib/lead-time/productionLeadTime.ts",
+   "lines": 120,
+   "exports": [
+    "function computeProductionLeadTime"
+   ],
+   "status_values": [
+    {
+     "field": "status",
+     "value": "dados_insuficientes",
+     "kind": "escreve"
+    },
+    {
+     "field": "status",
+     "value": "ok",
+     "kind": "escreve"
+    }
+   ],
+   "rule_comments": [
+    "* Prazo total 0: pronto no próprio dia se for útil; senão no próximo dia útil (nunca promete data parada). */",
+    "* Prazo de produção do pedido. Por item: fornecedor + personalização + folga"
+   ],
+   "calc_fns": [
+    {
+     "name": "computeProductionLeadTime",
+     "params": "quote: QuoteLeadTimeInput, settings: ProductionLeadSettings, holidays: readonly IsoDate[], today: IsoDate,",
+     "body": "if ( quote === null || quote === undefined || !Array.isArray(quote.items) || settings === null || settings === undefined || quote.items.some((item) => item === null || item === undefined) ) { return blocked( [ { code: 'invalid_input', message: 'O orçamento, os itens e a configuração do prazo são obrigatórios.', productId: null, }, ], [], ); } if (quote.items.length === 0) { return blocked( [ { code: 'invalid_input', message: 'O orçamento não tem itens para calcular o prazo.', productId: null, }, …"
+    }
+   ],
+   "temporal": [
+    "return previous.ok ? addBusinessDays(previous.value, 1, holidays) : previous;"
+   ]
+  },
+  "src/lib/lead-time/supplierLeadTime.ts": {
+   "path": "src/lib/lead-time/supplierLeadTime.ts",
+   "lines": 66,
+   "exports": [
+    "function resolveSupplierLeadTime"
+   ],
+   "rule_comments": [
+    "* Prazo de liberação do fornecedor para um produto.",
+    "- produto sem prazo, ou igual ao padrão do fornecedor: padrão (`supplier_default`);"
+   ]
+  },
+  "src/lib/lead-time/types.ts": {
+   "path": "src/lib/lead-time/types.ts",
+   "lines": 165,
+   "exports": [
+    "type IsoDate",
+    "type LeadTimeIssueCode",
+    "interface LeadTimeIssue",
+    "type LeadTimeResult",
+    "interface ProductLeadTimeInput",
+    "interface SupplierLeadTimeInput",
+    "type SupplierLeadTimeSource",
+    "interface SupplierLeadTime",
+    "type MultiPersonalizationRule",
+    "interface PersonalizationInput",
+    "interface PersonalizationItemInput",
+    "interface PrintAreaTechniqueInput",
+    "interface PriceBandInput",
+    "interface PersonalizationLookup",
+    "type PersonalizationSource",
+    "interface PersonalizationLeadTimeEntry",
+    "type PersonalizationLeadTimeResult",
+    "interface PersonalizationLeadTime",
+    "interface ProductionLeadSettings",
+    "interface QuoteLeadTimeItem",
+    "interface QuoteLeadTimeInput",
+    "interface ItemLeadTime",
+    "type ProductionLeadTimeStatus",
+    "interface ProductionLeadTime"
+   ],
+   "enums": [
+    {
+     "name": "LeadTimeIssueCode",
+     "values": "invalid_input | personalization_lead_time | supplier_lead_time"
+    },
+    {
+     "name": "SupplierLeadTimeSource",
+     "values": "product_exception | supplier_default"
+    },
+    {
+     "name": "MultiPersonalizationRule",
+     "values": "max | sum"
+    },
+    {
+     "name": "PersonalizationSource",
+     "values": "price_table | registered"
+    },
+    {
+     "name": "ProductionLeadTimeStatus",
+     "values": "dados_insuficientes | ok"
+    }
+   ],
+   "rule_comments": [
+    "* Tipos de entrada e saída do prazo de produção.",
+    "* Prazo do fornecedor para um produto. */",
+    "* Regra de várias personalizações no mesmo item: freight_settings.multi_personalization_rule. */",
+    "* Item do orçamento para o cálculo do prazo (quote_items). */",
+    "* ...prazo_dias (dias úteis; null = faixa sem prazo) */",
+    "* Dias combinados pela regra max|sum. 0 quando o item não tem personalização. */",
+    "* Configuração do prazo (freight_settings). */"
+   ],
+   "doc": "Tipos de entrada e saída do prazo de produção. Cada campo de entrada espelha uma coluna do banco (indicada no comentário), mas o módulo NÃO conhece linhas cruas: quem carrega os dados (hook, bloco H parte 2) converte para estes objetos simples."
+  },
+  "src/lib/lead-time/__tests__/businessDays.test.ts": {
+   "path": "src/lib/lead-time/__tests__/businessDays.test.ts",
+   "lines": 195,
+   "is_test": true,
+   "temporal": [
+    "const withNull = addBusinessDays('2026-11-13', 1, null);",
+    "expect(addBusinessDays('9999-12-31', 1, NO_HOLIDAYS).ok).toBe(false);"
+   ],
+   "tests": [
+    "addBusinessDays",
+    "businessDaysBetween",
+    "devolve erro (sem lançar) para %s",
+    "addBusinessDays (fuzz com semente fixa)",
+    "resultado é dia útil: $start +$days",
+    "monotonia: $start +$days <= +($days+1)",
+    "ida e volta: add(d, between(d, e)) == e para e útil ($start +$days)",
+    "teto de 3650 dias úteis e limites de data",
+    "3650 dias úteis ainda calcula: sexta 13/11/2026 + 3650 = sexta 09/11/2040",
+    "%i dias úteis passa do teto e vira invalid_input",
+    "businessDaysBetween: 3650 úteis passa; 3651 (segunda 12/11/2040) vira invalid_input",
+    "resultado que sai do ano de 4 dígitos é invalid_input: 31/12/9999 (sexta) + 1 útil",
+    "feriados nulos ou indefinidos são invalid_input, não exceção"
+   ]
+  },
+  "src/lib/lead-time/__tests__/personalizationLeadTime.test.ts": {
+   "path": "src/lib/lead-time/__tests__/personalizationLeadTime.test.ts",
+   "lines": 285,
+   "is_test": true,
+   "params": [
+    {
+     "name": "TABELA_A",
+     "value": "'tab-a'"
+    },
+    {
+     "name": "TABELA_B",
+     "value": "'tab-b'"
+    }
+   ],
+   "rule_comments": [
+    "mínimo inclusivo da 1ª faixa",
+    "máximo inclusivo da 1ª faixa",
+    "mínimo inclusivo da 2ª faixa (99 já era da 1ª)",
+    "máximo inclusivo da 2ª faixa",
+    "mínimo inclusivo da faixa sem teto"
+   ],
+   "tests": [
+    "resolvePersonalizationLeadTime",
+    "prazo registrado vence a tabela: frente = 4 (a faixa 100..499 diria 5)",
+    "registrado sem production_days cai na tabela: verso com 100 un = faixa 100..499 = 5",
+    "sem linha cadastrada para o local usa a tabela pela técnica: lateral com 100 un = 5",
+    "quantidade da personalização nula usa a do item: item de 500 un = 7",
+    "regra max: frente 4 (registrado) e verso 5 (tabela) -> max(4, 5) = 5, origem da mais demorada",
+    "regra sum: frente 4 + verso 5 = 9",
+    "empate de prazos mantém a origem da primeira: 4 (registrado) e 4 (registrado) -> max 4",
+    "empate com origens diferentes vale a primeira: 4 (registrado, frente) e 4 (tabela 100..499 com prazo 4) -> registered",
+    "sem personalização: 0 dias, sem origem",
+    "devolve cada entrada com técnica, local, dias e origem",
+    "faixas repetidas (dimensionais) com prazos diferentes valem o maior: max(3, 6) = 6",
+    "faltante em uma de duas personalizações bloqueia o item inteiro",
+    "acumula as pendências de TODAS as personalizações do item: 2 faltantes -> 2 issues, issue = a primeira",
+    "prazo cadastrado com quantidade inválida também é erro: frente (4 dias) com -5 un",
+    "faixa inválida que casa junto com uma válida não some: prazos %s",
+    "regra fora de max|sum (%s) é invalid_input, não vira max",
+    "entradas nulas são devolvidas como invalid_input, nunca lançadas",
+    "mensagem do faltante traz o local quando há local"
+   ]
+  },
+  "src/lib/lead-time/__tests__/productionLeadTime.test.ts": {
+   "path": "src/lib/lead-time/__tests__/productionLeadTime.test.ts",
+   "lines": 311,
+   "is_test": true,
+   "params": [
+    {
+     "name": "TABELA",
+     "value": "'tab-a'"
+    },
+    {
+     "name": "TODAY",
+     "value": "'2026-11-23'"
+    }
+   ],
+   "tests": [
+    "computeProductionLeadTime",
+    "(3+2) vs (5+8): total 13, crítico é o segundo; pronto em 10/12/2026",
+    "folga interna de 1 dia soma em cada item: (3+2+1)=6 e (5+8+1)=14 -> 14, pronto em 11/12/2026",
+    "a data de aprovação vale mais que hoje: aprovado 09/11 (segunda) + 13 úteis = 26/11",
+    "feriado no caminho empurra a data: feriado 08/12 -> 13º dia útil vira sexta 11/12/2026",
+    "empate no maior total marca os dois itens como críticos: 5 e 5",
+    "item sem personalização: personalização 0 e sem origem; total = fornecedor 3 + folga 0",
+    "faltante bloqueia: sem prazo do fornecedor do item B, não há data nem total",
+    "faltante de fornecedor e de personalização no mesmo item gera 2 pendências",
+    "pendências de todas as personalizações do item entram em missing: 2 locais sem faixa = 2 pendências",
+    "total acima do teto vira dados_insuficientes: fornecedor 3651 dias úteis",
+    "entradas nulas são devolvidas como invalid_input, nunca lançadas"
+   ]
+  },
+  "src/lib/lead-time/__tests__/supplierLeadTime.test.ts": {
+   "path": "src/lib/lead-time/__tests__/supplierLeadTime.test.ts",
+   "lines": 87,
+   "is_test": true,
+   "rule_comments": [
+    "produto sem prazo (null) -> usa o padrão do fornecedor: 3"
+   ],
+   "tests": [
+    "resolveSupplierLeadTime",
+    "produto nulo ou indefinido é invalid_input, não exceção"
+   ]
+  },
   "src/lib/mcp/scopes.ts": {
    "path": "src/lib/mcp/scopes.ts",
    "lines": 76,
@@ -552747,10 +553317,29 @@
   }
  },
  "git": {
-  "sha": "16762dcbcbb92282645d0738b685958876c857f0",
+  "sha": "23c5aed4d2ee91f9fc935d8f68b58e0051215d77",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "23c5aed",
+    "date": "2026-11-19",
+    "author": "adm01-debug",
+    "subject": "feat(frete): biblioteca de prazo de produção em dias úteis (Bloco H, etapas 72–75) (#3919)",
+    "files": [
+     "src/lib/lead-time/README.md",
+     "src/lib/lead-time/__tests__/businessDays.test.ts",
+     "src/lib/lead-time/__tests__/personalizationLeadTime.test.ts",
+     "src/lib/lead-time/__tests__/productionLeadTime.test.ts",
+     "src/lib/lead-time/__tests__/supplierLeadTime.test.ts",
+     "src/lib/lead-time/businessDays.ts",
+     "src/lib/lead-time/index.ts",
+     "src/lib/lead-time/personalizationLeadTime.ts",
+     "src/lib/lead-time/productionLeadTime.ts",
+     "src/lib/lead-time/supplierLeadTime.ts",
+     "src/lib/lead-time/types.ts"
+    ]
+   },
    {
     "sha": "16762dc",
     "date": "2026-11-19",
@@ -553156,15 +553745,6 @@
      "supabase/MIGRATIONS_SYNC_LOG.md",
      "supabase/migrations/20261119094500_reafirma_revogacoes_anteriores_ao_baseline.sql",
      "supabase/rollbacks/20261119094500_rollback.sql"
-    ]
-   },
-   {
-    "sha": "f346446",
-    "date": "2026-11-19",
-    "author": "adm01-debug",
-    "subject": "fix(docs): referência a migration inexistente na main quebrava o Gate 1 (#3882)",
-    "files": [
-     "docs/agentes/resgates/2026-11-19-fechamento-da-reconciliacao.md"
     ]
    }
   ],
