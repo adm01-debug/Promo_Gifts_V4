@@ -1561,21 +1561,6 @@
       "reason": "Legado mantido no fluxo existente; referências literais: package.json:scripts, .github/workflows/deploy-gates.yml, .github/workflows/edge-integration-all.yml, .github/workflows/static-checks.yml, .github/workflows/supabase-linter-gate.yml. O dispatcher não executa esta operação."
     },
     {
-      "id": "legacy-fa07c7714a5c1bfe",
-      "kind": "legacy",
-      "files": [
-        "scripts/check-no-quote-comments.mjs"
-      ],
-      "manual": [
-        "node",
-        "scripts/check-no-quote-comments.mjs"
-      ],
-      "triggers": [
-        "manual"
-      ],
-      "reason": "Legado mantido no fluxo existente; referências literais: .github/workflows/ci-security-drift.yml, .github/workflows/deploy-gates.yml, .github/workflows/edge-integration-all.yml, .github/workflows/supabase-linter-gate.yml. O dispatcher não executa esta operação."
-    },
-    {
       "id": "legacy-34694faea7bf930f",
       "kind": "legacy",
       "files": [
