@@ -345,7 +345,7 @@ function CommentItem({
                     disabled={isSubmitting || hasReplies}
                     title={
                       hasReplies
-                        ? 'Remova as respostas antes de excluir este comentário'
+                        ? 'Remova suas respostas antes de excluir este comentário'
                         : undefined
                     }
                     className="h-7 gap-1 px-2 text-xs text-destructive hover:text-destructive"
@@ -359,7 +359,7 @@ function CommentItem({
           )}
           {isAuthor && hasReplies && (
             <p className="mt-1 text-xs text-muted-foreground">
-              Remova as respostas antes de excluir este comentário.
+              Remova suas respostas antes de excluir este comentário.
             </p>
           )}
 
