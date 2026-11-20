@@ -2768,4 +2768,4 @@ Anti-regressão: REVOKE EXECUTE em ambas onde se aplica; rollbacks prontos.
 | versão | arquivo | sha256 | status |
 |---|---|---|---|
 | `20261118172500` | `security_invoker_views_p06_parcial` | `c5bc7606e0b6a84a9512bf3621c3d93bc77f6a21b5d50de854e544ef9b1de8d9` | aplicada — recibo na tabela E15 (run 44726866638) |
-| `20261119103000` | `onboarding_auto_assign_org_reemissao` | `826fb238b0cd1a8079481d4a21b275834c5402e1c8865d681179bbec8ad4c57d` | pendente — aplicar via `db-apply-migration.yml` (`version=20261119103000`) após merge da PR de resgate |
+| `20261119103000` | `onboarding_auto_assign_org_reemissao` | `826fb238b0cd1a8079481d4a21b275834c5402e1c8865d681179bbec8ad4c57d` | aplicada — recibo na tabela E15 (run 44726871534) |
