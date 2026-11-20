@@ -307,6 +307,9 @@ export function FreightSettingsForm({ row, saving, syncing, onSave }: FreightSet
             <Button
               type="submit"
               disabled={!dirty || saving || syncing}
+              // O blur do campo ao apertar o mouse mostra a mensagem de erro e empurra o
+              // botão; sem isto o mouse solta fora dele e o clique (e o submit) se perde.
+              onMouseDown={(event) => event.preventDefault()}
               data-testid="save-freight-settings"
             >
               {saving ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}

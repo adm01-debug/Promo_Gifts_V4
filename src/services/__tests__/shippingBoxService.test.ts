@@ -81,7 +81,7 @@ const duplicadoSobRls = () =>
   );
 
 const NADA_ALTERADO =
-  'Nada foi alterado: a caixa foi modificada por outra pessoa ou você não tem permissão. A lista foi atualizada; abra a caixa de novo.';
+  'Nada foi alterado: a caixa foi modificada por outra pessoa ou você não tem permissão. A lista foi atualizada; confira a caixa e tente de novo.';
 
 /** Caixa P real: externa 27 × 33 × 33 cm, parede 3 mm, 10 kg. */
 const CAIXA_P: ShippingBoxWrite = {

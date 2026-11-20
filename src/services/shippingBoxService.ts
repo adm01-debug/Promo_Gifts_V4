@@ -70,7 +70,7 @@ const PERMISSION_MESSAGE =
   'Sem permissão para alterar caixas de transporte. Apenas administradores podem salvar.';
 
 const NOT_APPLIED_MESSAGE =
-  'Nada foi alterado: a caixa foi modificada por outra pessoa ou você não tem permissão. A lista foi atualizada; abra a caixa de novo.';
+  'Nada foi alterado: a caixa foi modificada por outra pessoa ou você não tem permissão. A lista foi atualizada; confira a caixa e tente de novo.';
 
 const INVALID_MESSAGE =
   'Dados da caixa fora do permitido. Confira as medidas externas (0,01 a 300 cm), a espessura da parede (1 a 20 mm), os pesos (máximo até 100 kg e maior que o vazio) e o fator (0,50 a 1,00).';

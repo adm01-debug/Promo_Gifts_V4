@@ -43,7 +43,7 @@ interface MutateOptions {
 }
 
 const NADA_ALTERADO =
-  'Nada foi alterado: a caixa foi modificada por outra pessoa ou você não tem permissão. A lista foi atualizada; abra a caixa de novo.';
+  'Nada foi alterado: a caixa foi modificada por outra pessoa ou você não tem permissão. A lista foi atualizada; confira a caixa e tente de novo.';
 
 function listState(rows: ShippingBoxRow[]) {
   return {
