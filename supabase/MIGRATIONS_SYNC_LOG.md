@@ -2767,8 +2767,35 @@ Anti-regressão: REVOKE EXECUTE em ambas onde se aplica; rollbacks prontos.
 
 | versão | arquivo | sha256 | status |
 |---|---|---|---|
+| versão | arquivo | sha256 | status |
+|---|---|---|---|
 | `20261118172500` | `security_invoker_views_p06_parcial` | `c5bc7606e0b6a84a9512bf3621c3d93bc77f6a21b5d50de854e544ef9b1de8d9` | aplicada — recibo na tabela E15 (run 44726866638) |
 | `20261119103000` | `onboarding_auto_assign_org_reemissao` | `826fb238b0cd1a8079481d4a21b275834c5402e1c8865d681179bbec8ad4c57d` | aplicada — recibo na tabela E15 (run 44726871534) |
+
+### 2026-11-20 — frete: plano de volumes no orçamento (bloco G, G-DDL)
+ no orçamento (bloco G, G-DDL)
+
+Três colunas novas em `public.quotes` (etapa 61 do plano de frete): `freight_plan jsonb`,
+`freight_mix_mode text` (só `misturar`/`separar`) e `show_freight_plan_to_client boolean NOT NULL
+DEFAULT false`, com 2 CHECKs nomeados (`quotes_freight_mix_mode_check`,
+`quotes_freight_plan_shape_check`: objeto JSON com menos de 256 KB). Conferido por SELECT em
+produção em 2026-11-20: `quotes` tem 7 linhas e 432 kB, as colunas ainda não existem e não há
+GRANT por coluna. `quote_versions` (snapshot jsonb), `quote_history` e `quote_drafts` (jsonb) não
+têm lista de colunas de `quotes`; nenhuma função do banco escreve em `quote_versions`. A cópia
+que perderia as colunas fica no front: "Criar nova versão" (`useQuoteVersions.ts`, `createNewVersion`)
+e duplicar (`useQuotes.ts`, `duplicateQuote`) montam a linha nova campo a campo e gravam pela RPC
+`create_quote_transactional`, que também ignora as 3 colunas — correção no escopo do G-UI (etapa 63).
+
+Atenção para a PR G-UI (etapa 63): `create_quote_transactional` e `update_quote_transactional`
+montam o INSERT/UPDATE de `quotes` com lista explícita de colunas e ignoram as 3 novas. Salvar o
+plano pelo orçamento exige migration própria que altere essas funções.
+
+Ordem: esta migration vai sozinha na PR G-DDL; o código que lê ou grava as colunas só é mergeado
+depois de elas existirem em produção.
+
+| versão | arquivo | sha256 | status |
+|---|---|---|---|
+| `20261120040000` | `add_quotes_freight_plan` | `4c0007b4b8f8b608a12693dba5173cab8726627618393ecf61c378af310d4346` | pendente — aplicar via `db-apply-migration.yml` (`version=20261120040000`) após merge da PR G-DDL |
 
 ### 2026-11-20 — frete: prazo de produção, feriados e calendário (bloco H-DDL)
 
