@@ -2767,3 +2767,36 @@ Anti-regressão: REVOKE EXECUTE em ambas onde se aplica; rollbacks prontos.
 |---|---|---|---|
 | `20261118172500` | `security_invoker_views_p06_parcial` | `c5bc7606e0b6a84a9512bf3621c3d93bc77f6a21b5d50de854e544ef9b1de8d9` | pendente — aplicar via `db-apply-migration.yml` (`version=20261118172500`) após merge da PR de resgate |
 | `20261119103000` | `onboarding_auto_assign_org_reemissao` | `826fb238b0cd1a8079481d4a21b275834c5402e1c8865d681179bbec8ad4c57d` | pendente — aplicar via `db-apply-migration.yml` (`version=20261119103000`) após merge da PR de resgate |
+### 2026-11-20 — frete: prazo de produção, feriados e calendário (bloco H-DDL)
+
+Etapa 71 do plano de frete. Três mudanças, todas aditivas:
+
+1. `public.print_area_techniques.production_days integer` (nula = usa o `prazo_dias`
+   da faixa da tabela de preço), com CHECK nomeado `0..365`. Conferido por SELECT
+   em produção em 2026-11-20: 16 colunas, 25263 linhas, 10 MB, a coluna não existe;
+   4 views e 12 funções citam a tabela e nenhuma é recriada; os grants são de
+   tabela (anon SELECT, authenticated SELECT/INSERT/UPDATE/DELETE), então a coluna
+   herda o acesso das demais.
+2. `public.business_calendar` (`day date` PK, `description`, `created_at`,
+   `created_by`): RLS com leitura para `authenticated` e escrita só para
+   `public.is_admin()` (mesmo padrão de `shipping_boxes`); `anon` sem acesso.
+   Seed de 26 datas (13 em 2026 e 13 em 2027): feriados nacionais + Carnaval e Corpus Christi (pontos facultativos em que a produção para), `ON CONFLICT (day) DO
+   NOTHING`. Móveis calculados pelo algoritmo de Meeus/Gauss: Páscoa 2026 =
+   05/04 e 2027 = 28/03. DELETE físico é o contrato da tabela (dado de calendário),
+   por isso o `soft-delete-exempt` na migration.
+3. `COMMENT ON COLUMN public.products.lead_time_days` passa a dizer que é o prazo
+   de liberação do fornecedor, e que valor diferente do padrão é exceção. O texto
+   anterior fica registrado no rollback.
+
+Validação prévia em PostgreSQL 16 local com stubs (`auth.users`, `auth.uid()`,
+`public.is_admin()`, papéis anon/authenticated/service_role): aplica 2x → 26
+linhas (não 52); authenticated não admin lê, não insere nem apaga; admin
+insere/atualiza/apaga; anon recebe "permission denied"; CHECKs recusam descrição
+vazia ou com 121 caracteres e `production_days` -1 ou 366; rollback 2x no mesmo
+dia (backup `_2` sem sobrescrever); reaplica e restaura do backup.
+
+As policies novas entram em `.security/policies-baseline.json` depois de aplicadas.
+
+| versão | arquivo | sha256 | status |
+|---|---|---|---|
+| `20261120041000` | `production_lead_time_calendar` | `75a4e3e4fa6defde9b89f3e04430432a023ec5e9bd8878c01c0777b40e25c9c2` | pendente — aplicar via `db-apply-migration.yml` (`version=20261120041000`) após merge da PR H-DDL |
