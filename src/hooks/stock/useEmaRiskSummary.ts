@@ -103,6 +103,6 @@ export function useEmaRiskSummary(): UseEmaRiskSummaryResult {
     totalVariants,
     etlHealth,
     isLoading: query.isLoading,
-    error: (query.error as Error | null) ?? null,
+    error: query.error ?? null,
   };
 }
