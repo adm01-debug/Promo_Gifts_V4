@@ -11916,6 +11916,7 @@
    "src/types/ema-health.ts"
   ],
   "src/hooks/stock/useEmaRiskSummary.ts": [
+   "src/contexts/AuthContext.tsx",
    "src/integrations/supabase/client.ts",
    "src/types/ema-health.ts"
   ],

@@ -9333,12 +9333,12 @@
   {
    "arquivo": "src/hooks/stock/__tests__/ema-pipeline-health.contract.test.tsx",
    "tipo": "contrato",
-   "linhas": 148,
+   "linhas": 194,
    "testa": [
     "src/hooks/stock/useEmaPipelineHealth.ts",
     "src/hooks/stock/useEmaRiskSummary.ts"
    ],
-   "casos": 3
+   "casos": 4
   },
   {
    "arquivo": "src/hooks/stock/__tests__/stockAlerts.test.ts",

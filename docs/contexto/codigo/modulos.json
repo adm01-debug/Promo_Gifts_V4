@@ -17157,6 +17157,7 @@
     "hooks/products",
     "hooks/quotes",
     "hooks/simulation",
+    "hooks/stock",
     "hooks/ui",
     "integrations/supabase",
     "lib/access",
@@ -22602,7 +22603,7 @@
    "modulo": "hooks/stock",
    "arquivos": 13,
    "testes": 4,
-   "linhas": 1526,
+   "linhas": 1558,
    "itens_menu": [],
    "telas": [],
    "rotas_http": [],
@@ -22719,6 +22720,7 @@
     "pages/admin"
    ],
    "depende_de_modulos": [
+    "contexts",
     "hooks/ui",
     "integrations/supabase",
     "lib",

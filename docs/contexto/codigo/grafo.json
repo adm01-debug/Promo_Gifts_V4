@@ -2,7 +2,7 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "nos": 2948,
- "arestas": 11603,
+ "arestas": 11604,
  "hubs": [
   {
    "arquivo": "src/lib/utils.ts",
@@ -38,7 +38,7 @@
   },
   {
    "arquivo": "src/contexts/AuthContext.tsx",
-   "importado_por": 248
+   "importado_por": 249
   },
   {
    "arquivo": "src/components/ui/skeleton.tsx",
@@ -629,7 +629,7 @@
   {
    "modulo": "contexts",
    "depende_de": 17,
-   "importado_por": 62
+   "importado_por": 63
   },
   {
    "modulo": "components/ui",

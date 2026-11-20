@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "e54228abcce9e491bf335c04f61428342ec0d9f4",
+  "commit": "04369208fbea9d5f298114d677e2670da2628265",
   "branch": "main",
-  "data_commit": "2026-11-20T16:19:24Z",
+  "data_commit": "2026-11-20T13:58:10-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "04369208",
+    "data": "2026-11-20",
+    "assunto": "fix(stock): banner de risco EMA não derruba para usuário não-dev (403 da edge) (#3940)"
+   },
    {
     "sha": "e54228ab",
     "data": "2026-11-20",
@@ -126,14 +131,9 @@
     "sha": "16f7dd7b",
     "data": "2026-11-19",
     "assunto": "docs(migrations-log): recibo E15 — aplicação de 20261119220000 (#3913)"
-   },
-   {
-    "sha": "719c8f0f",
-    "data": "2026-11-19",
-    "assunto": "feat: funções irmãs do painel EMA + remonta Onda 3 no /estoque (#3907)"
    }
   ],
-  "arquivos_mudados_7d": 1486,
+  "arquivos_mudados_7d": 1488,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -203,7 +203,7 @@
    },
    {
     "arquivo": "package.json",
-    "mudancas": 30
+    "mudancas": 29
    },
    {
     "arquivo": "docs/coordenacao/conflitos-semanticos.md",
@@ -215,15 +215,15 @@
    },
    {
     "arquivo": "RELATORIO_CI.md",
-    "mudancas": 17
+    "mudancas": 16
    },
    {
     "arquivo": ".github/workflows/deploy-gates.yml",
-    "mudancas": 15
+    "mudancas": 14
    },
    {
     "arquivo": "PENDENCIAS.md",
-    "mudancas": 14
+    "mudancas": 13
    },
    {
     "arquivo": "audit/supabase-reference-catalog.temporary.json",
@@ -301,7 +301,7 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 328
+    "commits": 327
    },
    {
     "autor": "Claude",
@@ -313,7 +313,7 @@
    },
    {
     "autor": "Joaquim Ataides",
-    "commits": 4
+    "commits": 3
    },
    {
     "autor": "dependabot[bot]",
@@ -324,7 +324,7 @@
  "contagens": {
   "arquivos_total": 11171,
   "arquivos_codigo": 5638,
-  "linhas_codigo": 1069315,
+  "linhas_codigo": 1069393,
   "rotas": 140,
   "rotas_http_backend": 13,
   "vistas_por_id": 0,
@@ -1932,7 +1932,7 @@
   },
   "src/hooks": {
    "arquivos": 504,
-   "linhas": 93604
+   "linhas": 93682
   },
   "src/integrations": {
    "arquivos": 11,
