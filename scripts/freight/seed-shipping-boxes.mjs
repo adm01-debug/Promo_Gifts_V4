@@ -16,6 +16,7 @@
  *   node scripts/freight/seed-shipping-boxes.mjs [--csv <arquivo>] --out <arquivo.sql>
  *     [--version <14 dígitos>] [--rollback-out <arquivo.sql>]
  */
+import { createHash } from 'node:crypto';
 import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { basename, dirname, relative, resolve, sep } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
@@ -261,11 +262,22 @@ function conferirEntrada(caixas, version, rotulo) {
     );
 }
 
+/**
+ * Id fixo da caixa do seed: UUID versão 8 (RFC 9562) tirado dos 16 primeiros bytes do sha256 de
+ * "shipping_boxes:<code>". Mesmo código, mesmo id: é por ele que o rollback acha a linha do seed.
+ */
+export function idDaCaixa(code) {
+  const bytes = createHash('sha256').update(`shipping_boxes:${code}`).digest().subarray(0, 16);
+  bytes[6] = (bytes[6] & 0x0f) | 0x80; // versão 8: o 13º dígito hexadecimal vira 8
+  bytes[8] = (bytes[8] & 0x3f) | 0x80; // variante RFC: o 17º dígito fica entre 8 e b
+  return bytes.toString('hex').replace(/^(.{8})(.{4})(.{4})(.{4})(.{12})$/, '$1-$2-$3-$4-$5');
+}
+
 const tupla = (caixa) =>
-  `(${COLUNAS.map((c) => (COLUNAS_DE_TEXTO.includes(c) ? escaparTexto(caixa[c]) : String(caixa[c]))).join(', ')})`;
+  `(${[`'${idDaCaixa(caixa.code)}'`, ...COLUNAS.map((c) => (COLUNAS_DE_TEXTO.includes(c) ? escaparTexto(caixa[c]) : String(caixa[c])))].join(', ')})`;
 
 const listaDeColunas = (recuo) =>
-  [COLUNAS.slice(0, 5), COLUNAS.slice(5, 9), COLUNAS.slice(9)]
+  [['id', ...COLUNAS.slice(0, 5)], COLUNAS.slice(5, 9), COLUNAS.slice(9)]
     .map((grupo) => grupo.join(', '))
     .join(`,\n${recuo}`);
 
@@ -281,12 +293,18 @@ export function gerarSql(caixas, { version, origemCsv = CSV_PADRAO } = {}) {
     '-- GERADA por scripts/freight/seed-shipping-boxes.mjs a partir de',
     `-- ${origemCsv}. Não edite à mão: corrija o CSV e gere de novo.`,
     '--',
-    '-- Idempotente. O ON CONFLICT repete o predicado do índice único PARCIAL',
-    '-- shipping_boxes_code_unique_active (code) WHERE deleted_at IS NULL; sem o',
-    '-- predicado o Postgres não casa o índice e o INSERT falha. Efeito:',
+    '-- Cada caixa entra com id FIXO, calculado pelo gerador a partir do código',
+    '-- (UUID versão 8 tirado do sha256 de "shipping_boxes:<code>"): é por ele que o',
+    '-- rollback reconhece a linha que veio daqui. O trigger guard_shipping_boxes_row',
+    '-- (20261120030000) mantém o id enviado: a migration roda sem usuário logado.',
+    '--',
+    '-- Idempotente. O ON CONFLICT sem alvo vale para a chave primária (id) e para o',
+    '-- índice único parcial de code (WHERE deleted_at IS NULL). Efeito:',
     '--   - código que já tem caixa viva: nada é inserido nem sobrescrito (o que',
-    '--     o admin editou fica como está);',
-    '--   - código sem caixa viva (nunca cadastrado, ou excluído): a caixa é criada.',
+    '--     o admin cadastrou ou editou fica como está);',
+    '--   - caixa deste seed que continua na tabela (mesmo id), mesmo editada ou',
+    '--     excluída pelo admin: nada é inserido;',
+    '--   - nos outros casos a caixa é criada.',
     '--',
     '-- As colunas inner_*_cm ficam de fora: são geradas (externa − 2 × parede).',
     `-- Depende da migration ${VERSAO_DA_TABELA}, que cria a tabela.`,
@@ -295,62 +313,94 @@ export function gerarSql(caixas, { version, origemCsv = CSV_PADRAO } = {}) {
     `  (${listaDeColunas('   ')})`,
     'VALUES',
     caixas.map((c) => `  ${tupla(c)}`).join(',\n'),
-    'ON CONFLICT (code) WHERE deleted_at IS NULL DO NOTHING;',
+    'ON CONFLICT DO NOTHING;',
     '',
   ].join('\n');
 }
 
 /**
- * SQL do rollback do seed: backup da tabela e DELETE só das caixas vivas que
- * continuam idênticas ao seed. `migration` é o nome do arquivo da migration, sem `.sql`.
+ * SQL do rollback do seed: um bloco só, que copia a tabela e apaga as caixas vivas que têm o id do
+ * seed e continuam idênticas a ele. `migration` é o nome do arquivo da migration, sem `.sql`.
  */
 export function gerarRollbackSql(
   caixas,
   { version, migration = `${version}_seed_shipping_boxes` } = {},
 ) {
   conferirEntrada(caixas, version, migration);
+  // Os valores vão dentro do bloco DO $seed$: a marca num nome fecharia o bloco antes da hora.
+  const comMarca = caixas.find((c) => c.name.includes('$seed$'));
+  if (comMarca) throw new Error(`caixa ${comMarca.code}: o nome não pode conter $seed$.`);
   return [
     `-- Rollback: ${migration}`,
     '--',
     `-- Desfaz o seed das caixas de transporte (${caixas.map((c) => c.code).join(', ')}). GERADO por`,
-    '-- scripts/freight/seed-shipping-boxes.mjs junto com a migration: os valores',
-    '-- abaixo são os mesmos do INSERT dela.',
+    '-- scripts/freight/seed-shipping-boxes.mjs junto com a migration, com os mesmos',
+    '-- ids e valores do INSERT dela. Não edite à mão: gere de novo.',
     '--',
-    '-- Apaga SÓ a caixa viva que continua IDÊNTICA ao seed em todas as colunas',
-    '-- gravadas. Ficam de propósito:',
-    '--   - a caixa que o admin editou (qualquer coluna diferente do seed);',
-    '--   - a caixa que o admin excluiu (deleted_at preenchido);',
-    '--   - toda caixa cujo código não veio do seed.',
-    '-- Motivo: a migration usa ON CONFLICT DO NOTHING. Se o código já tinha caixa',
-    '-- viva antes dela, nada foi inserido, e apagar só pelo código destruiria um',
-    '-- cadastro que não é do seed.',
+    '-- Apaga SÓ a linha que tem o id do seed E continua viva e IDÊNTICA ao seed em',
+    '-- todas as colunas gravadas. Ficam de propósito:',
+    '--   - a caixa cadastrada antes do seed, mesmo com valores iguais (outro id);',
+    '--   - a caixa do seed que o admin editou (qualquer coluna diferente);',
+    '--   - a caixa do seed que o admin excluiu (deleted_at preenchido).',
     '--',
     '-- Efeito no negócio: sem caixa ativa, todo plano de frete (src/lib/freight)',
     '-- sai como "nao_cabe: nenhuma caixa ativa cadastrada" até alguém recadastrar.',
     '--',
     '-- Antes de apagar, copia shipping_boxes para _backup_shipping_boxes_YYYYMMDD',
-    '-- (CONTRIBUTING.md), com RLS ligada e sem acesso de anon/authenticated.',
-    '-- Reexecutar no mesmo dia não sobrescreve o backup.',
+    '-- (CONTRIBUTING.md; data em UTC), com RLS ligada e sem acesso de',
+    '-- anon/authenticated. Se o backup do dia já existe, usa o primeiro nome livre',
+    '-- (_YYYYMMDD_2, depois _3, ...): cada execução tem o seu backup. Cópia,',
+    '-- conferência da contagem e DELETE ficam no mesmo bloco, com a tabela travada',
+    '-- para escrita: se um passo falhar, nada fica.',
     '--',
-    `-- Rodar ANTES do rollback ${VERSAO_DA_TABELA}, que derruba a tabela.`,
+    `-- Rodar ANTES do rollback ${VERSAO_DA_TABELA}, que derruba a tabela. Sem a`,
+    '-- tabela, avisa e termina sem erro.',
     '',
-    'DO $$',
+    'DO $seed$',
     'DECLARE',
-    "  b text := '_backup_shipping_boxes_' || to_char(now() AT TIME ZONE 'UTC', 'YYYYMMDD');",
+    "  dia text := '_backup_shipping_boxes_' || to_char(now() AT TIME ZONE 'UTC', 'YYYYMMDD');",
+    '  b text := dia;',
+    '  n integer := 1;',
+    '  linhas_tabela bigint;',
+    '  linhas_backup bigint;',
+    '  apagadas bigint;',
     'BEGIN',
-    "  IF to_regclass('public.shipping_boxes') IS NOT NULL AND to_regclass('public.' || b) IS NULL THEN",
-    "    EXECUTE format('CREATE TABLE public.%I AS TABLE public.shipping_boxes', b);",
-    "    EXECUTE format('ALTER TABLE public.%I ENABLE ROW LEVEL SECURITY', b);",
-    "    EXECUTE format('REVOKE ALL ON public.%I FROM anon, authenticated', b);",
+    "  IF to_regclass('public.shipping_boxes') IS NULL THEN",
+    "    RAISE NOTICE 'public.shipping_boxes não existe: nada a desfazer.';",
+    '    RETURN;',
     '  END IF;',
-    'END $$;',
     '',
-    'DELETE FROM public.shipping_boxes AS b',
-    ' USING (VALUES',
-    caixas.map((c) => `    ${tupla(c)}`).join(',\n'),
-    ` ) AS s (${listaDeColunas('         ')})`,
-    ' WHERE b.deleted_at IS NULL',
-    ...COLUNAS.map((c, i) => `   AND b.${c} = s.${c}${i === COLUNAS.length - 1 ? ';' : ''}`),
+    '  -- Primeiro nome livre do dia: _YYYYMMDD, depois _YYYYMMDD_2, _3, ...',
+    "  WHILE to_regclass('public.' || b) IS NOT NULL LOOP",
+    '    n := n + 1;',
+    "    b := dia || '_' || n;",
+    '  END LOOP;',
+    '',
+    '  -- Ninguém grava entre a cópia e o DELETE; a leitura continua liberada.',
+    '  LOCK TABLE public.shipping_boxes IN SHARE ROW EXCLUSIVE MODE;',
+    '',
+    "  EXECUTE format('CREATE TABLE public.%I AS TABLE public.shipping_boxes', b);",
+    "  EXECUTE format('ALTER TABLE public.%I ENABLE ROW LEVEL SECURITY', b);",
+    "  EXECUTE format('REVOKE ALL ON public.%I FROM anon, authenticated', b);",
+    '',
+    '  SELECT count(*) INTO linhas_tabela FROM public.shipping_boxes;',
+    "  EXECUTE format('SELECT count(*) FROM public.%I', b) INTO linhas_backup;",
+    '  IF linhas_backup IS DISTINCT FROM linhas_tabela THEN',
+    '    RAISE EXCEPTION',
+    "      'Rollback recusado: o backup public.% ficou com % linha(s) e public.shipping_boxes tem %. Nada foi apagado.',",
+    '      b, linhas_backup, linhas_tabela;',
+    '  END IF;',
+    '',
+    '  DELETE FROM public.shipping_boxes AS c',
+    '   USING (VALUES',
+    caixas.map((c) => `      ${tupla(c)}`).join(',\n'),
+    `   ) AS s (${listaDeColunas('           ')})`,
+    '   WHERE c.id = s.id::uuid',
+    '     AND c.deleted_at IS NULL',
+    ...COLUNAS.map((c, i) => `     AND c.${c} = s.${c}${i === COLUNAS.length - 1 ? ';' : ''}`),
+    '  GET DIAGNOSTICS apagadas = ROW_COUNT;',
+    "  RAISE NOTICE '% caixa(s) do seed apagada(s). Backup em public.% (% linha(s)).', apagadas, b, linhas_backup;",
+    'END $seed$;',
     '',
   ].join('\n');
 }
