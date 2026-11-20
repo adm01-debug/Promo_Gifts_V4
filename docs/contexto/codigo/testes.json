@@ -5,18 +5,18 @@
   "vitest",
   "playwright"
  ],
- "total": 2667,
+ "total": 2669,
  "por_tipo": {
-  "contrato": 67,
+  "contrato": 68,
   "e2e": 679,
   "pytest": 5,
   "qa": 17,
-  "unit": 1899
+  "unit": 1900
  },
  "onde_ficam": [
   {
    "padrao": "tests/",
-   "arquivos": 1090
+   "arquivos": 1092
   },
   {
    "padrao": "co-localizado (__tests__)",
@@ -15515,6 +15515,13 @@
    "casos": 7
   },
   {
+   "arquivo": "tests/contracts/freight-tables-hardening-migration.test.ts",
+   "tipo": "contrato",
+   "linhas": 196,
+   "testa": [],
+   "casos": 12
+  },
+  {
    "arquivo": "tests/contracts/kit-maker-optimistic-persistence-migration.test.ts",
    "tipo": "contrato",
    "linhas": 25,
@@ -21489,13 +21496,22 @@
    "casos": 8
   },
   {
-   "arquivo": "tests/scripts/seed-shipping-boxes.test.mjs",
+   "arquivo": "tests/scripts/seed-shipping-boxes-rollback.test.mjs",
    "tipo": "unit",
-   "linhas": 499,
+   "linhas": 164,
    "testa": [
     "scripts/freight/seed-shipping-boxes.mjs"
    ],
-   "casos": 31
+   "casos": 7
+  },
+  {
+   "arquivo": "tests/scripts/seed-shipping-boxes.test.mjs",
+   "tipo": "unit",
+   "linhas": 487,
+   "testa": [
+    "scripts/freight/seed-shipping-boxes.mjs"
+   ],
+   "casos": 30
   },
   {
    "arquivo": "tests/scripts/sentinel-push-range.test.mjs",
@@ -22834,7 +22850,7 @@
   "scripts/ci-local/select.mjs": 1,
   "scripts/drift-baseline.mjs": 2,
   "scripts/extract-types-inventory.mjs": 1,
-  "scripts/freight/seed-shipping-boxes.mjs": 1,
+  "scripts/freight/seed-shipping-boxes.mjs": 2,
   "scripts/fuzz-edge-uploads.mjs": 1,
   "scripts/fuzz-testing.mjs": 1,
   "scripts/generate-audit-report.mjs": 1,

@@ -1,6 +1,6 @@
 # 11 · GLOSSÁRIO, DADOS DE REFERÊNCIA E LACUNAS
 
-> Gerado automaticamente por AI Context Sync v1.3.2 · commit `1b8de977ba` · branch `main` · 2026-11-20 10:36 UTC
+> Gerado automaticamente por AI Context Sync v1.3.2 · commit `dc4a2dfc0c` · branch `main` · 2026-11-20 10:43 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## Glossário do domínio (entidades do sistema)
@@ -149,6 +149,7 @@
 | `feminine_color_config` | Lista de grupos de cores consideradas femininas para auto-link com target_audience e datas comemorativas | 5 colunas | migration |
 | `file_scan_logs` | Auditoria de scans VirusTotal em uploads. user_id obrigatório (manifest edge secure-upload). | 8 colunas | migration |
 | `follow_up_reminders` | _(sem COMMENT ON TABLE — significado não documentado)_ | 9 colunas | migration |
+| `freight_settings` | Parâmetros globais do cálculo de frete (linha única). Lidos pelo motor em src/lib/freight; alterados só por admin em /admin/frete. | 9 colunas | migration |
 | `frontend_telemetry` | ATENCAO: Auditoria 20260602 - user_id = NULL em 100% dos registros. Bug de instrumentacao no frontend. | 10 colunas | migration |
 | `future_stock_entries` | _(sem COMMENT ON TABLE — significado não documentado)_ | 21 colunas | migration |
 | `generated_mockups` | _(sem COMMENT ON TABLE — significado não documentado)_ | 20 colunas | migration |
@@ -306,8 +307,7 @@
 | `product_physical` | [ARQ 2026-06-26] Satélite physical (buffer WRITE-ONLY; não lido por view/função/FK).  | 21 colunas | migration |
 | `product_price_freshness_overrides` | Override local da janela de validade de preço por produto (30/60/90 dias). Sobrescreve o valor padrão de 60 dias e tem precedência sobre qualquer valor que venha a ser exposto pelo BD externo no futuro. | 6 colunas | migration |
 | `product_print_positions` | _(sem COMMENT ON TABLE — significado não documentado)_ | 18 colunas | migration |
-| `product_properties` | Relacionamento entre produtos e suas propriedades | 9 colunas | migration |
-| … +518 linhas — lista completa em `context.json` | | | |
+| … +520 linhas — lista completa em `context.json` | | | |
 
 ## Dados de referência (seed — planos, categorias, perfis fixos)
 
@@ -339,6 +339,7 @@
 | `orders` | `seller_id, organization_id, client_name, client_company, subtotal, discount_amount, shipping_cost, total, status, fulfillment_status, payment_status, payment_method, created_at, updated_at` | `( '75921d8b-611f-4413-9ce5-afccdb733d26', '5db5aee1-064b-4ef4-9193-345dcd8274ea', 'Maria Fernanda Costa', 'TechCorp Brasil LTDA', 11500.00, 500.00, 350.00, 11350.00, 'confirmed', 'processing', 'pending', 'boleto', now() - INTERVAL '5 days', now() - INTERVAL '5 days' ), ( '75921d8b-611f-4413-9ce5-afccdb733d26', '5db5aee1-064b-4ef4-9193-345dcd8274ea', 'Carlos Mendes', 'Grupo Alfa Comercial', 4200.00 …` | `supabase/migrations/20260612125828_fix_orders_trigger_and_seed_corrected.sql` |
 | `order_items` | `order_id, product_id, product_sku, product_name, product_image_url, quantity, unit_price, subtotal, discount_amount, personalization_cost, created_at` | `('11308c8e-fc34-400a-8217-5b85cd57c0f7', 'e0ad65da-6812-404e-bf7e-debf68774d6c', '18904', 'Garrafa térmica inox 320ml', 'https://imagedelivery.net/vKMs9Ow8bA_enuhLXZ2HAw/xbz-18904-01/public', 50, 45.00, 2250.00, 0, 0, now()), ('11308c8e-fc34-400a-8217-5b85cd57c0f7', '818883b9-11ca-4408-8f97-d472b5e299fe', 'KT-9094Q', 'Kit para café - 5 pçs', 'https://imagedelivery.net/vKMs9Ow8bA_enuhLXZ2HAw/sm-kt- …` | `supabase/migrations/20260612130502_seed_order_items_correct_subtotals.sql` |
 | `product_badge_definitions` | `badge_key,name,short_label,description,business_rule,category,source_kind,data_source,placements,surfaces,icon_lucide,icon_emoji,color_token,class_bg,class_text,class_border,priority,sort_order,config,supports_expiration,is_enabled` | `('stockout','Fora de estoque','Esgotado','Produto sem saldo disponível em estoque.','products.is_stockout = TRUE (equivale a stock_quantity menor ou igual a 0).','status_estoque','computed','products.is_stockout',ARRAY['card_header_right'],ARRAY['catalog','super_filter','product_detail','comparison'],'PackageX','❌','red',NULL,NULL,NULL,99,10,'{}'::jsonb,false,true), ('low_stock','Estoque baixo','B …` | `supabase/migrations/20260627140133_seed_product_badge_definitions_pbd_v1.sql` |
+| `shipping_boxes` | `id, code, name, outer_height_cm, outer_width_cm, outer_length_cm, wall_thickness_mm, empty_weight_g, max_weight_g, fill_factor, is_active, sort_order` | `('1a43b67a-2bea-856c-aae0-268d914f9d21', 'P', 'Caixa P', 27.00, 33.00, 33.00, 3, 0, 10000, 0.90, true, 1), ('184c412a-392e-8bc9-bccd-3852f0ecd0d1', 'M', 'Caixa M', 33.00, 33.00, 47.00, 3, 0, 20000, 0.90, true, 2), ('3f990d5d-b2aa-8c2c-a1d1-e76c6c089525', 'G', 'Caixa G', 36.00, 36.00, 54.00, 3, 0, 25000, 0.90, true, 3), ('3d412436-292c-89af-a179-5b9433cc75e8', 'GG', 'Caixa GG', 40.00, 50.00, 60.00, …` | `supabase/migrations/20261120030100_seed_shipping_boxes.sql` |
 
 ## Auditoria de consistência (código × schema) — trate como NÃO VERIFICADO
 
@@ -581,7 +582,6 @@
 | tabela | tabela `fantasma` usada no código não existe nas migrations/types do repo | `scripts/ai-context/cenarios.mjs` |
 | tabela | tabela `fixture_table` usada no código não existe nas migrations/types do repo | `scripts/ai-context/gerar.unit.mjs` |
 | tabela | tabela `foreign_quotes` usada no código não existe nas migrations/types do repo | `tests/scripts/check-supabase-reference-catalog.test.mjs` |
-| tabela | tabela `freight_settings` usada no código não existe nas migrations/types do repo | `src/services/freightSettingsService.ts` |
 | tabela | tabela `ghost_table` usada no código não existe nas migrations/types do repo | `scripts/ai-context/gerar.unit.mjs` |
 | tabela | tabela `literal` usada no código não existe nas migrations/types do repo | `scripts/check-select-columns.mjs` |
 | tabela | tabela `messages` usada no código não existe nas migrations/types do repo | `recovery/RealtimeMessagesExample.tsx` |
@@ -591,7 +591,6 @@
 | tabela | tabela `produtos` usada no código não existe nas migrations/types do repo | `tests/scripts/audit-db-frontend-coverage.test.mjs`<br>`tests/scripts/inventario-banco.test.mjs` |
 | tabela | tabela `quote_comments` usada no código não existe nas migrations/types do repo | `docs/agentes/resgates/quote-comments/codigo/useQuoteComments.ts`<br>`recovery/src-legacy/src/hooks/useQuoteComments.ts` |
 | tabela | tabela `runtime_table` usada no código não existe nas migrations/types do repo | `scripts/ai-context/gerar.unit.mjs` |
-| tabela | tabela `shipping_boxes` usada no código não existe nas migrations/types do repo | `src/services/shippingBoxService.ts` |
 | tabela | tabela `so_teste` usada no código não existe nas migrations/types do repo | `scripts/ai-context/cenarios.mjs` |
 | tabela | tabela `some_table` usada no código não existe nas migrations/types do repo | `src/lib/intelligence/degradation.ts` |
 | tabela | tabela `stock_notes` usada no código não existe nas migrations/types do repo | `src/hooks/stock/useStockNotes.ts`<br>`tests/scripts/check-supabase-reference-catalog.test.mjs` |
@@ -646,7 +645,9 @@
 | rls | `user_onboarding`: front faz UPDATE mas nenhuma política RLS permite UPDATE → vai falhar/retornar vazio para usuários | `recovery/src-legacy/src/hooks/useOnboarding.ts`<br>`src/hooks/ui/useOnboarding.ts` |
 | dinheiro | `ops.pgss_history.total_exec_time` guarda dinheiro em `double precision NOT NULL` (ponto flutuante) — arredondamento imprevisível; padrão é numeric |  |
 | edge | edge function `a` invocada mas não existe em supabase/functions/ | `scripts/__tests__/check-invoke-direct-calls.test.mjs` |
-| … +245 linhas — lista completa em `context.json` | | |
+| edge | edge function `b` invocada mas não existe em supabase/functions/ | `scripts/__tests__/check-invoke-direct-calls.test.mjs` |
+| edge | edge function `chamada-literal` invocada mas não existe em supabase/functions/ | `tests/scripts/inventario-repo.test.mjs` |
+| … +243 linhas — lista completa em `context.json` | | |
 
 ## Lacunas — o que este contexto NÃO consegue responder (perguntas para o dono do negócio)
 
@@ -716,7 +717,7 @@
 - `quote_approval_tokens.status` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.
 - `kit_share_tokens.status` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.
 - `_deprecated_silver_images_queue_20260606.img_status` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.
-- 268/495 tabelas sem `COMMENT ON TABLE` — o significado de negócio não está no schema: `optimization_queue`, `quotes`, `magazines`, `material_types`, `quotes_inbound`, `webhook_inbound_dedupe`, `webhook_inbound_log`, `magazine_items`, `magazine_reader_state`, `magazine_templates`, `admin_audit_log_y2025m12`, `admin_audit_log_y2026m01` …
+- 268/497 tabelas sem `COMMENT ON TABLE` — o significado de negócio não está no schema: `optimization_queue`, `quotes`, `magazines`, `material_types`, `quotes_inbound`, `webhook_inbound_dedupe`, `webhook_inbound_log`, `magazine_items`, `magazine_reader_state`, `magazine_templates`, `admin_audit_log_y2025m12`, `admin_audit_log_y2026m01` …
 - Há tabelas usadas no código sem migration no repo — o schema real pode ter sido alterado pelo painel.
 
 ## Regras manuais presentes

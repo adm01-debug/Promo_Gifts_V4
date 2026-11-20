@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "1b8de977ba3d242e3fbcd0fcb99893ba432ed102",
+  "sha": "dc4a2dfc0cb4d0ba20c7ad031c61bcf78a162db3",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-20 10:36 UTC",
-  "files_total": 11044,
-  "code_files": 9059,
-  "code_lines": 1284538
+  "generated_at": "2026-11-20 10:43 UTC",
+  "files_total": 11050,
+  "code_files": 9065,
+  "code_lines": 1285419
  },
  "version": "1.3.2",
- "facts_hash": "7e76be0b9e10a8d4",
+ "facts_hash": "29d23371703e2c87",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -1128,10 +1128,10 @@
   ],
   "package_manager": "npm",
   "languages": {
-   ".sql": 3463,
-   ".ts": 3134,
+   ".sql": 3467,
+   ".ts": 3135,
    ".tsx": 1992,
-   ".mjs": 455,
+   ".mjs": 456,
    ".py": 15,
    ".js": 7
   },
@@ -42840,6 +42840,211 @@
     "comment": "",
     "origin": "migration"
    },
+   "shipping_boxes": {
+    "columns": [
+     {
+      "name": "id",
+      "type": "uuid PRIMARY KEY DEFAULT gen_random_uuid()",
+      "fk": "",
+      "generated": "",
+      "src": "supabase/migrations/20261119213000_create_shipping_boxes.sql"
+     },
+     {
+      "name": "code",
+      "type": "text NOT NULL",
+      "fk": "",
+      "generated": "",
+      "src": "supabase/migrations/20261119213000_create_shipping_boxes.sql"
+     },
+     {
+      "name": "name",
+      "type": "text NOT NULL",
+      "fk": "",
+      "generated": "",
+      "src": "supabase/migrations/20261119213000_create_shipping_boxes.sql"
+     },
+     {
+      "name": "outer_height_cm",
+      "type": "numeric(8,2) NOT NULL CHECK (outer_height_cm > 0)",
+      "fk": "",
+      "generated": "",
+      "src": "supabase/migrations/20261119213000_create_shipping_boxes.sql"
+     },
+     {
+      "name": "outer_width_cm",
+      "type": "numeric(8,2) NOT NULL CHECK (outer_width_cm > 0)",
+      "fk": "",
+      "generated": "",
+      "src": "supabase/migrations/20261119213000_create_shipping_boxes.sql"
+     },
+     {
+      "name": "outer_length_cm",
+      "type": "numeric(8,2) NOT NULL CHECK (outer_length_cm > 0)",
+      "fk": "",
+      "generated": "",
+      "src": "supabase/migrations/20261119213000_create_shipping_boxes.sql"
+     },
+     {
+      "name": "wall_thickness_mm",
+      "type": "integer NOT NULL DEFAULT 3 CHECK (wall_thickness_mm BETWEEN 1 AND 20)",
+      "fk": "",
+      "generated": "",
+      "src": "supabase/migrations/20261119213000_create_shipping_boxes.sql"
+     },
+     {
+      "name": "inner_height_cm",
+      "type": "numeric(8,2) GENERATED ALWAYS AS (outer_height_cm - (wall_thickness_mm * 2) / 10.0) STORED CONSTRAINT shipping_boxes_inner_height_positive CHECK (inner_height_cm > 0)",
+      "fk": "",
+      "generated": "outer_height_cm - (wall_thickness_mm * 2) / 10.0",
+      "src": "supabase/migrations/20261119213000_create_shipping_boxes.sql"
+     },
+     {
+      "name": "inner_width_cm",
+      "type": "numeric(8,2) GENERATED ALWAYS AS (outer_width_cm - (wall_thickness_mm * 2) / 10.0) STORED CONSTRAINT shipping_boxes_inner_width_positive CHECK (inner_width_cm > 0)",
+      "fk": "",
+      "generated": "outer_width_cm - (wall_thickness_mm * 2) / 10.0",
+      "src": "supabase/migrations/20261119213000_create_shipping_boxes.sql"
+     },
+     {
+      "name": "inner_length_cm",
+      "type": "numeric(8,2) GENERATED ALWAYS AS (outer_length_cm - (wall_thickness_mm * 2) / 10.0) STORED CONSTRAINT shipping_boxes_inner_length_positive CHECK (inner_length_cm > 0)",
+      "fk": "",
+      "generated": "outer_length_cm - (wall_thickness_mm * 2) / 10.0",
+      "src": "supabase/migrations/20261119213000_create_shipping_boxes.sql"
+     },
+     {
+      "name": "empty_weight_g",
+      "type": "integer NOT NULL DEFAULT 0 CHECK (empty_weight_g >= 0)",
+      "fk": "",
+      "generated": "",
+      "src": "supabase/migrations/20261119213000_create_shipping_boxes.sql"
+     },
+     {
+      "name": "max_weight_g",
+      "type": "integer NOT NULL CHECK (max_weight_g > empty_weight_g)",
+      "fk": "",
+      "generated": "",
+      "src": "supabase/migrations/20261119213000_create_shipping_boxes.sql"
+     },
+     {
+      "name": "fill_factor",
+      "type": "numeric(3,2) NOT NULL DEFAULT 0.90 CHECK (fill_factor BETWEEN 0.50 AND 1.00)",
+      "fk": "",
+      "generated": "",
+      "src": "supabase/migrations/20261119213000_create_shipping_boxes.sql"
+     },
+     {
+      "name": "is_active",
+      "type": "boolean NOT NULL DEFAULT true",
+      "fk": "",
+      "generated": "",
+      "src": "supabase/migrations/20261119213000_create_shipping_boxes.sql"
+     },
+     {
+      "name": "sort_order",
+      "type": "integer NOT NULL DEFAULT 0",
+      "fk": "",
+      "generated": "",
+      "src": "supabase/migrations/20261119213000_create_shipping_boxes.sql"
+     },
+     {
+      "name": "created_at",
+      "type": "timestamptz NOT NULL DEFAULT now()",
+      "fk": "",
+      "generated": "",
+      "src": "supabase/migrations/20261119213000_create_shipping_boxes.sql"
+     },
+     {
+      "name": "updated_at",
+      "type": "timestamptz NOT NULL DEFAULT now()",
+      "fk": "",
+      "generated": "",
+      "src": "supabase/migrations/20261119213000_create_shipping_boxes.sql"
+     },
+     {
+      "name": "deleted_at",
+      "type": "timestamptz DEFAULT NULL",
+      "fk": "",
+      "generated": "",
+      "src": "supabase/migrations/20261119213000_create_shipping_boxes.sql"
+     }
+    ],
+    "constraints": [],
+    "src": "supabase/migrations/20261119213000_create_shipping_boxes.sql",
+    "comment": "Caixas de transporte padrão da empresa. O motor de frete (src/lib/freight) empacota as peças nestas caixas; a caixa master do fornecedor é ignorada para frete.",
+    "origin": "migration"
+   },
+   "freight_settings": {
+    "columns": [
+     {
+      "name": "id",
+      "type": "boolean PRIMARY KEY DEFAULT true CHECK (id)",
+      "fk": "",
+      "generated": "",
+      "src": "supabase/migrations/20261119213100_create_freight_settings.sql"
+     },
+     {
+      "name": "origin_cep",
+      "type": "text NOT NULL DEFAULT '03377-000' CHECK (origin_cep ~ '^[0-9]{5}-[0-9]{3}$')",
+      "fk": "",
+      "generated": "",
+      "src": "supabase/migrations/20261119213100_create_freight_settings.sql"
+     },
+     {
+      "name": "cubic_divisor_correios",
+      "type": "integer NOT NULL DEFAULT 6000 CHECK (cubic_divisor_correios > 0)",
+      "fk": "",
+      "generated": "",
+      "src": "supabase/migrations/20261119213100_create_freight_settings.sql"
+     },
+     {
+      "name": "cubic_divisor_rodoviario",
+      "type": "integer NOT NULL DEFAULT 3333 CHECK (cubic_divisor_rodoviario > 0)",
+      "fk": "",
+      "generated": "",
+      "src": "supabase/migrations/20261119213100_create_freight_settings.sql"
+     },
+     {
+      "name": "default_fill_factor",
+      "type": "numeric(3,2) NOT NULL DEFAULT 0.90 CHECK (default_fill_factor BETWEEN 0.50 AND 1.00)",
+      "fk": "",
+      "generated": "",
+      "src": "supabase/migrations/20261119213100_create_freight_settings.sql"
+     },
+     {
+      "name": "internal_buffer_days",
+      "type": "integer NOT NULL DEFAULT 0 CHECK (internal_buffer_days >= 0)",
+      "fk": "",
+      "generated": "",
+      "src": "supabase/migrations/20261119213100_create_freight_settings.sql"
+     },
+     {
+      "name": "multi_personalization_rule",
+      "type": "text NOT NULL DEFAULT 'max' CHECK (multi_personalization_rule IN ('max', 'sum'))",
+      "fk": "",
+      "generated": "",
+      "src": "supabase/migrations/20261119213100_create_freight_settings.sql"
+     },
+     {
+      "name": "updated_at",
+      "type": "timestamptz NOT NULL DEFAULT now()",
+      "fk": "",
+      "generated": "",
+      "src": "supabase/migrations/20261119213100_create_freight_settings.sql"
+     },
+     {
+      "name": "updated_by",
+      "type": "uuid REFERENCES auth.users(id) ON DELETE SET NULL",
+      "fk": "users.id ON DELETE SET NULL",
+      "generated": "",
+      "src": "supabase/migrations/20261119213100_create_freight_settings.sql"
+     }
+    ],
+    "constraints": [],
+    "src": "supabase/migrations/20261119213100_create_freight_settings.sql",
+    "comment": "Parâmetros globais do cálculo de frete (linha única). Lidos pelo motor em src/lib/freight; alterados só por admin em /admin/frete.",
+    "origin": "migration"
+   },
    "webhook_configs": {
     "columns": [
      {
@@ -50269,16 +50474,6 @@
     "src": "supabase/migrations/20261119213000_create_shipping_boxes.sql"
    },
    {
-    "name": "shipping_boxes_delete_admin",
-    "table": "shipping_boxes",
-    "cmd": "DELETE",
-    "roles": "authenticated",
-    "mode": "permissive",
-    "using": "public.is_admin()",
-    "check": "",
-    "src": "supabase/migrations/20261119213000_create_shipping_boxes.sql"
-   },
-   {
     "name": "freight_settings_select_authenticated",
     "table": "freight_settings",
     "cmd": "SELECT",
@@ -55368,6 +55563,24 @@
     "condition": "",
     "each": "row",
     "src": "supabase/migrations/20261119213100_create_freight_settings.sql"
+   },
+   {
+    "name": "guard_freight_settings_row",
+    "when": "BEFORE UPDATE",
+    "table": "freight_settings",
+    "function": "guard_freight_settings_row",
+    "condition": "",
+    "each": "row",
+    "src": "supabase/migrations/20261120030000_harden_freight_tables.sql"
+   },
+   {
+    "name": "guard_shipping_boxes_row",
+    "when": "BEFORE INSERT OR UPDATE",
+    "table": "shipping_boxes",
+    "function": "guard_shipping_boxes_row",
+    "condition": "",
+    "each": "row",
+    "src": "supabase/migrations/20261120030000_harden_freight_tables.sql"
    },
    {
     "name": "trigger_update_notification_updated_at",
@@ -96277,6 +96490,8 @@
    "supabase/migrations/20261119213100_create_freight_settings.sql",
    "supabase/migrations/20261119220000_create_ema_sister_functions.sql",
    "supabase/migrations/20261120013000_add_products_ships_separately.sql",
+   "supabase/migrations/20261120030000_harden_freight_tables.sql",
+   "supabase/migrations/20261120030100_seed_shipping_boxes.sql",
    "supabase/rollbacks/20260511235950_rollback.sql",
    "supabase/rollbacks/20260511235959_rollback.sql",
    "supabase/rollbacks/20260611014515_fn_dryrun_standardize_supplier_real_rollback.sql",
@@ -96394,6 +96609,8 @@
    "supabase/rollbacks/20261119213100_rollback.sql",
    "supabase/rollbacks/20261119220000_rollback.sql",
    "supabase/rollbacks/20261120013000_rollback.sql",
+   "supabase/rollbacks/20261120030000_rollback.sql",
+   "supabase/rollbacks/20261120030100_rollback.sql",
    "supabase/rollbacks/rollback_20261025002500_analyze_tables_p03.sql",
    "supabase/sql-legacy/001_notification_system.sql",
    "supabase/sql-legacy/002_notification_preferences.sql",
@@ -133018,6 +133235,38 @@
     "src": "supabase/migrations/20261119220000_create_ema_sister_functions.sql"
    },
    {
+    "kind": "grant",
+    "privs": "select, insert, update",
+    "object": "shipping_boxes",
+    "objkind": "table",
+    "roles": "authenticated",
+    "src": "supabase/migrations/20261120030000_harden_freight_tables.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "select, update",
+    "object": "freight_settings",
+    "objkind": "table",
+    "roles": "authenticated",
+    "src": "supabase/migrations/20261120030000_harden_freight_tables.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "all",
+    "object": "guard_freight_settings_row",
+    "objkind": "function",
+    "roles": "PUBLIC, anon, authenticated",
+    "src": "supabase/migrations/20261120030000_harden_freight_tables.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "all",
+    "object": "guard_shipping_boxes_row",
+    "objkind": "function",
+    "roles": "PUBLIC, anon, authenticated",
+    "src": "supabase/migrations/20261120030000_harden_freight_tables.sql"
+   },
+   {
     "kind": "revoke",
     "privs": "all",
     "object": "fn_dryrun_standardize_supplier",
@@ -136840,6 +137089,12 @@
     "columns": "badge_key,name,short_label,description,business_rule,category,source_kind,data_source,placements,surfaces,icon_lucide,icon_emoji,color_token,class_bg,class_text,class_border,priority,sort_order,config,supports_expiration,is_enabled",
     "values": "('stockout','Fora de estoque','Esgotado','Produto sem saldo disponível em estoque.','products.is_stockout = TRUE (equivale a stock_quantity menor ou igual a 0).','status_estoque','computed','products.is_stockout',ARRAY['card_header_right'],ARRAY['catalog','super_filter','product_detail','comparison'],'PackageX','❌','red',NULL,NULL,NULL,99,10,'{}'::jsonb,false,true), ('low_stock','Estoque baixo','B …",
     "src": "supabase/migrations/20260627140133_seed_product_badge_definitions_pbd_v1.sql"
+   },
+   {
+    "table": "shipping_boxes",
+    "columns": "id, code, name, outer_height_cm, outer_width_cm, outer_length_cm, wall_thickness_mm, empty_weight_g, max_weight_g, fill_factor, is_active, sort_order",
+    "values": "('1a43b67a-2bea-856c-aae0-268d914f9d21', 'P', 'Caixa P', 27.00, 33.00, 33.00, 3, 0, 10000, 0.90, true, 1), ('184c412a-392e-8bc9-bccd-3852f0ecd0d1', 'M', 'Caixa M', 33.00, 33.00, 47.00, 3, 0, 20000, 0.90, true, 2), ('3f990d5d-b2aa-8c2c-a1d1-e76c6c089525', 'G', 'Caixa G', 36.00, 36.00, 54.00, 3, 0, 25000, 0.90, true, 3), ('3d412436-292c-89af-a179-5b9433cc75e8', 'GG', 'Caixa GG', 40.00, 50.00, 60.00, …",
+    "src": "supabase/migrations/20261120030100_seed_shipping_boxes.sql"
    }
   ],
   "comments": {
@@ -149826,7 +150081,7 @@
   {
    "module": "scripts",
    "files": 301,
-   "lines": 65083,
+   "lines": 65133,
    "tables": [
     "a",
     "b",
@@ -151918,8 +152173,8 @@
   },
   {
    "module": "supabase/migrations",
-   "files": 3110,
-   "lines": 224739,
+   "files": 3112,
+   "lines": 224972,
    "tables": [
     "...",
     "admin_audit_log",
@@ -152017,8 +152272,8 @@
   },
   {
    "module": "supabase/rollbacks",
-   "files": 118,
-   "lines": 3536,
+   "files": 120,
+   "lines": 3786,
    "tables": [],
    "exports": [],
    "docs": [],
@@ -152193,8 +152448,8 @@
   },
   {
    "module": "tests",
-   "files": 1105,
-   "lines": 174575,
+   "files": 1107,
+   "lines": 174923,
    "tables": [
     "bot_detection_log",
     "clients",
@@ -159023,7 +159278,6 @@
    "fantasma",
    "fixture_table",
    "foreign_quotes",
-   "freight_settings",
    "ghost_table",
    "literal",
    "messages",
@@ -159033,7 +159287,6 @@
    "produtos",
    "quote_comments",
    "runtime_table",
-   "shipping_boxes",
    "so_teste",
    "some_table",
    "stock_notes",
@@ -165567,6 +165820,10 @@
    {
     "file": "scripts/freight/seed-shipping-boxes.mjs",
     "msg": "CSV vazio: falta a linha de cabeçalho."
+   },
+   {
+    "file": "scripts/freight/seed-shipping-boxes.mjs",
+    "msg": "caixa ${comMarca.code}: o nome não pode conter $seed$."
    },
    {
     "file": "scripts/freight/seed-shipping-boxes.mjs",
@@ -198005,6 +198262,141 @@
     "table": "_p06_before",
     "column": "metric",
     "rule": "PK"
+   },
+   {
+    "table": "shipping_boxes",
+    "column": "id",
+    "rule": "PK; default gen_random_uuid()"
+   },
+   {
+    "table": "shipping_boxes",
+    "column": "code",
+    "rule": "obrigatório"
+   },
+   {
+    "table": "shipping_boxes",
+    "column": "name",
+    "rule": "obrigatório"
+   },
+   {
+    "table": "shipping_boxes",
+    "column": "outer_height_cm",
+    "rule": "obrigatório; CHECK outer_height_cm > 0"
+   },
+   {
+    "table": "shipping_boxes",
+    "column": "outer_width_cm",
+    "rule": "obrigatório; CHECK outer_width_cm > 0"
+   },
+   {
+    "table": "shipping_boxes",
+    "column": "outer_length_cm",
+    "rule": "obrigatório; CHECK outer_length_cm > 0"
+   },
+   {
+    "table": "shipping_boxes",
+    "column": "wall_thickness_mm",
+    "rule": "default 3; CHECK wall_thickness_mm BETWEEN 1 AND 20"
+   },
+   {
+    "table": "shipping_boxes",
+    "column": "inner_height_cm",
+    "rule": "CHECK inner_height_cm > 0; CALCULADA = outer_height_cm - (wall_thickness_mm * 2) / 10.0"
+   },
+   {
+    "table": "shipping_boxes",
+    "column": "inner_width_cm",
+    "rule": "CHECK inner_width_cm > 0; CALCULADA = outer_width_cm - (wall_thickness_mm * 2) / 10.0"
+   },
+   {
+    "table": "shipping_boxes",
+    "column": "inner_length_cm",
+    "rule": "CHECK inner_length_cm > 0; CALCULADA = outer_length_cm - (wall_thickness_mm * 2) / 10.0"
+   },
+   {
+    "table": "shipping_boxes",
+    "column": "empty_weight_g",
+    "rule": "default 0; CHECK empty_weight_g >= 0"
+   },
+   {
+    "table": "shipping_boxes",
+    "column": "max_weight_g",
+    "rule": "obrigatório; CHECK max_weight_g > empty_weight_g"
+   },
+   {
+    "table": "shipping_boxes",
+    "column": "fill_factor",
+    "rule": "default 0.90; CHECK fill_factor BETWEEN 0.50 AND 1.00"
+   },
+   {
+    "table": "shipping_boxes",
+    "column": "is_active",
+    "rule": "default true"
+   },
+   {
+    "table": "shipping_boxes",
+    "column": "sort_order",
+    "rule": "default 0"
+   },
+   {
+    "table": "shipping_boxes",
+    "column": "created_at",
+    "rule": "default now()"
+   },
+   {
+    "table": "shipping_boxes",
+    "column": "updated_at",
+    "rule": "default now()"
+   },
+   {
+    "table": "shipping_boxes",
+    "column": "deleted_at",
+    "rule": "default NULL"
+   },
+   {
+    "table": "freight_settings",
+    "column": "id",
+    "rule": "PK; default true; CHECK id"
+   },
+   {
+    "table": "freight_settings",
+    "column": "origin_cep",
+    "rule": "default '03377-000'; CHECK origin_cep ~ '^[0-9]{5}-[0-9]{3}$'"
+   },
+   {
+    "table": "freight_settings",
+    "column": "cubic_divisor_correios",
+    "rule": "default 6000; CHECK cubic_divisor_correios > 0"
+   },
+   {
+    "table": "freight_settings",
+    "column": "cubic_divisor_rodoviario",
+    "rule": "default 3333; CHECK cubic_divisor_rodoviario > 0"
+   },
+   {
+    "table": "freight_settings",
+    "column": "default_fill_factor",
+    "rule": "default 0.90; CHECK default_fill_factor BETWEEN 0.50 AND 1.00"
+   },
+   {
+    "table": "freight_settings",
+    "column": "internal_buffer_days",
+    "rule": "default 0; CHECK internal_buffer_days >= 0"
+   },
+   {
+    "table": "freight_settings",
+    "column": "multi_personalization_rule",
+    "rule": "default 'max'; CHECK multi_personalization_rule IN ('max', 'sum')"
+   },
+   {
+    "table": "freight_settings",
+    "column": "updated_at",
+    "rule": "default now()"
+   },
+   {
+    "table": "freight_settings",
+    "column": "updated_by",
+    "rule": "FK → users.id ON DELETE SET NULL"
    },
    {
     "table": "webhook_configs",
@@ -278670,6 +279062,70 @@
     "name": "payload de validação inclui campo received quando explicitado"
    },
    {
+    "file": "tests/contracts/freight-tables-hardening-migration.test.ts",
+    "name": "20261120030000 — guard_freight_settings_row"
+   },
+   {
+    "file": "tests/contracts/freight-tables-hardening-migration.test.ts",
+    "name": "só carimba o autor no UPDATE direto, para o ON DELETE SET NULL da FK passar"
+   },
+   {
+    "file": "tests/contracts/freight-tables-hardening-migration.test.ts",
+    "name": "20261120030000 — guard_shipping_boxes_row"
+   },
+   {
+    "file": "tests/contracts/freight-tables-hardening-migration.test.ts",
+    "name": "no INSERT de usuário logado gera id e datas; no UPDATE mantém id e created_at"
+   },
+   {
+    "file": "tests/contracts/freight-tables-hardening-migration.test.ts",
+    "name": "o trigger dispara em INSERT e em UPDATE"
+   },
+   {
+    "file": "tests/contracts/freight-tables-hardening-migration.test.ts",
+    "name": "20261120030000 — CHECK de name"
+   },
+   {
+    "file": "tests/contracts/freight-tables-hardening-migration.test.ts",
+    "name": "compara o nome com ele mesmo sem espaço, TAB, LF, CR e NBSP nas pontas"
+   },
+   {
+    "file": "tests/contracts/freight-tables-hardening-migration.test.ts",
+    "name": "as 4 caixas do seed passam na regra"
+   },
+   {
+    "file": "tests/contracts/freight-tables-hardening-migration.test.ts",
+    "name": "rollback %s — backup no primeiro nome livre"
+   },
+   {
+    "file": "tests/contracts/freight-tables-hardening-migration.test.ts",
+    "name": "procura o nome livre em vez de recusar quando o backup do dia existe"
+   },
+   {
+    "file": "tests/contracts/freight-tables-hardening-migration.test.ts",
+    "name": "só faz o DROP depois de copiar e conferir a contagem"
+   },
+   {
+    "file": "tests/contracts/freight-tables-hardening-migration.test.ts",
+    "name": "rollback 20261120030100 — seed"
+   },
+   {
+    "file": "tests/contracts/freight-tables-hardening-migration.test.ts",
+    "name": "é um bloco só, que começa conferindo se a tabela existe"
+   },
+   {
+    "file": "tests/contracts/freight-tables-hardening-migration.test.ts",
+    "name": "copia no primeiro nome livre, trava, confere a contagem e só então apaga"
+   },
+   {
+    "file": "tests/contracts/freight-tables-hardening-migration.test.ts",
+    "name": "só apaga a linha com o id do seed, viva e ainda idêntica a ele"
+   },
+   {
+    "file": "tests/contracts/freight-tables-hardening-migration.test.ts",
+    "name": "usa no DELETE os mesmos 4 ids que a migration insere"
+   },
+   {
     "file": "tests/contracts/kit-maker-optimistic-persistence-migration.test.ts",
     "name": "Kit Maker optimistic persistence migration contract"
    },
@@ -307362,6 +307818,38 @@
     "name": "não aceita audit inacessível como smoke aprovado"
    },
    {
+    "file": "tests/scripts/seed-shipping-boxes-rollback.test.mjs",
+    "name": "gerarRollbackSql"
+   },
+   {
+    "file": "tests/scripts/seed-shipping-boxes-rollback.test.mjs",
+    "name": "bloco da caixa P, escrito à mão: backup no primeiro nome livre, trava, conferência e DELETE"
+   },
+   {
+    "file": "tests/scripts/seed-shipping-boxes-rollback.test.mjs",
+    "name": "cabeçalho: a primeira linha nomeia a migration e tudo antes do bloco é comentário"
+   },
+   {
+    "file": "tests/scripts/seed-shipping-boxes-rollback.test.mjs",
+    "name": "é um bloco só: um DELETE, uma cópia e nada fora da transação do bloco"
+   },
+   {
+    "file": "tests/scripts/seed-shipping-boxes-rollback.test.mjs",
+    "name": "as 4 caixas reais entram no DELETE com os mesmos ids e valores do INSERT da migration"
+   },
+   {
+    "file": "tests/scripts/seed-shipping-boxes-rollback.test.mjs",
+    "name": "aceita nome com $$ e recusa o que fecharia o bloco antes da hora"
+   },
+   {
+    "file": "tests/scripts/seed-shipping-boxes-rollback.test.mjs",
+    "name": "arquivos commitados da 20261120030100"
+   },
+   {
+    "file": "tests/scripts/seed-shipping-boxes-rollback.test.mjs",
+    "name": "migration e rollback são a saída do gerador para o CSV real, byte a byte"
+   },
+   {
     "file": "tests/scripts/seed-shipping-boxes.test.mjs",
     "name": "parseCsv"
    },
@@ -307419,6 +307907,18 @@
    },
    {
     "file": "tests/scripts/seed-shipping-boxes.test.mjs",
+    "name": "idDaCaixa"
+   },
+   {
+    "file": "tests/scripts/seed-shipping-boxes.test.mjs",
+    "name": "as 4 caixas reais têm o id calculado à mão"
+   },
+   {
+    "file": "tests/scripts/seed-shipping-boxes.test.mjs",
+    "name": "é determinístico e é um UUID versão 8 válido, um por código"
+   },
+   {
+    "file": "tests/scripts/seed-shipping-boxes.test.mjs",
     "name": "gerarSql"
    },
    {
@@ -307427,7 +307927,7 @@
    },
    {
     "file": "tests/scripts/seed-shipping-boxes.test.mjs",
-    "name": "as 4 caixas reais viram 4 tuplas, na ordem do CSV"
+    "name": "as 4 caixas reais viram 4 tuplas, na ordem do CSV, cada uma com o seu id fixo"
    },
    {
     "file": "tests/scripts/seed-shipping-boxes.test.mjs",
@@ -307435,7 +307935,7 @@
    },
    {
     "file": "tests/scripts/seed-shipping-boxes.test.mjs",
-    "name": "é idempotente no texto: ON CONFLICT com o predicado do índice parcial, e só DO NOTHING"
+    "name": "é idempotente no texto: ON CONFLICT sem alvo, e só DO NOTHING"
    },
    {
     "file": "tests/scripts/seed-shipping-boxes.test.mjs",
@@ -307460,22 +307960,6 @@
    {
     "file": "tests/scripts/seed-shipping-boxes.test.mjs",
     "name": "recusa lista vazia e origem com quebra de linha (viraria SQL fora do comentário)"
-   },
-   {
-    "file": "tests/scripts/seed-shipping-boxes.test.mjs",
-    "name": "gerarRollbackSql"
-   },
-   {
-    "file": "tests/scripts/seed-shipping-boxes.test.mjs",
-    "name": "DELETE da caixa P, escrito à mão: só a viva e idêntica ao seed nas 11 colunas"
-   },
-   {
-    "file": "tests/scripts/seed-shipping-boxes.test.mjs",
-    "name": "faz o backup com RLS e REVOKE antes de apagar"
-   },
-   {
-    "file": "tests/scripts/seed-shipping-boxes.test.mjs",
-    "name": "a primeira linha nomeia a migration desfeita"
    },
    {
     "file": "tests/scripts/seed-shipping-boxes.test.mjs",
@@ -322588,16 +323072,6 @@
     "src": "supabase/migrations/20261119213000_create_shipping_boxes.sql"
    },
    {
-    "name": "shipping_boxes_delete_admin",
-    "table": "shipping_boxes",
-    "cmd": "DELETE",
-    "roles": "authenticated",
-    "mode": "permissive",
-    "using": "public.is_admin()",
-    "check": "",
-    "src": "supabase/migrations/20261119213000_create_shipping_boxes.sql"
-   },
-   {
     "name": "freight_settings_select_authenticated",
     "table": "freight_settings",
     "cmd": "SELECT",
@@ -327687,6 +328161,24 @@
     "condition": "",
     "each": "row",
     "src": "supabase/migrations/20261119213100_create_freight_settings.sql"
+   },
+   {
+    "name": "guard_freight_settings_row",
+    "when": "BEFORE UPDATE",
+    "table": "freight_settings",
+    "function": "guard_freight_settings_row",
+    "condition": "",
+    "each": "row",
+    "src": "supabase/migrations/20261120030000_harden_freight_tables.sql"
+   },
+   {
+    "name": "guard_shipping_boxes_row",
+    "when": "BEFORE INSERT OR UPDATE",
+    "table": "shipping_boxes",
+    "function": "guard_shipping_boxes_row",
+    "condition": "",
+    "each": "row",
+    "src": "supabase/migrations/20261120030000_harden_freight_tables.sql"
    },
    {
     "name": "trigger_update_notification_updated_at",
@@ -351644,6 +352136,21 @@
     "table": "tabela_preco_gravacao_oficial",
     "column": "nome_grupo",
     "expr": "grupo_tecnica"
+   },
+   {
+    "table": "shipping_boxes",
+    "column": "inner_height_cm",
+    "expr": "outer_height_cm - (wall_thickness_mm * 2) / 10.0"
+   },
+   {
+    "table": "shipping_boxes",
+    "column": "inner_width_cm",
+    "expr": "outer_width_cm - (wall_thickness_mm * 2) / 10.0"
+   },
+   {
+    "table": "shipping_boxes",
+    "column": "inner_length_cm",
+    "expr": "outer_length_cm - (wall_thickness_mm * 2) / 10.0"
    }
   ],
   "db_views": {
@@ -358220,6 +358727,17 @@
      "authenticated: (seller_id = auth.uid())"
     ]
    },
+   "freight_settings": {
+    "rls": "enabled",
+    "SELECT": [
+     "authenticated: true"
+    ],
+    "INSERT": [],
+    "UPDATE": [
+     "authenticated: public.is_admin()"
+    ],
+    "DELETE": []
+   },
    "frontend_telemetry": {
     "rls": "enabled",
     "SELECT": [
@@ -360818,6 +361336,19 @@
     "UPDATE": [],
     "DELETE": []
    },
+   "shipping_boxes": {
+    "rls": "enabled",
+    "SELECT": [
+     "authenticated: deleted_at IS NULL OR public.is_admin()"
+    ],
+    "INSERT": [
+     "authenticated: public.is_admin()"
+    ],
+    "UPDATE": [
+     "authenticated: public.is_admin()"
+    ],
+    "DELETE": []
+   },
    "simulation_logs": {
     "rls": "enabled",
     "SELECT": [
@@ -363090,6 +363621,7 @@
    "supabase/migrations/20261118223000_fn_supplier_risk_breakdown.sql",
    "supabase/migrations/20261119212000_fix_f12_sparkline_ema_kpi.sql",
    "supabase/migrations/20261119220000_create_ema_sister_functions.sql",
+   "supabase/migrations/20261120030000_harden_freight_tables.sql",
    "supabase/rollbacks/20260611014515_fn_dryrun_standardize_supplier_real_rollback.sql",
    "supabase/rollbacks/20260611124000_fn_dryrun_standardize_supplier_real_rollback.sql",
    "supabase/rollbacks/20260917061500_rollback.sql",
@@ -399930,6 +400462,38 @@
     "src": "supabase/migrations/20261119220000_create_ema_sister_functions.sql"
    },
    {
+    "kind": "grant",
+    "privs": "select, insert, update",
+    "object": "shipping_boxes",
+    "objkind": "table",
+    "roles": "authenticated",
+    "src": "supabase/migrations/20261120030000_harden_freight_tables.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "select, update",
+    "object": "freight_settings",
+    "objkind": "table",
+    "roles": "authenticated",
+    "src": "supabase/migrations/20261120030000_harden_freight_tables.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "all",
+    "object": "guard_freight_settings_row",
+    "objkind": "function",
+    "roles": "PUBLIC, anon, authenticated",
+    "src": "supabase/migrations/20261120030000_harden_freight_tables.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "all",
+    "object": "guard_shipping_boxes_row",
+    "objkind": "function",
+    "roles": "PUBLIC, anon, authenticated",
+    "src": "supabase/migrations/20261120030000_harden_freight_tables.sql"
+   },
+   {
     "kind": "revoke",
     "privs": "all",
     "object": "fn_dryrun_standardize_supplier",
@@ -402231,6 +402795,14 @@
     "is_active"
    ],
    [
+    "shipping_boxes",
+    "is_active"
+   ],
+   [
+    "shipping_boxes",
+    "deleted_at"
+   ],
+   [
     "webhook_configs",
     "is_active"
    ]
@@ -403683,6 +404255,14 @@
    "ops.pgss_history": [],
    "ops.wraparound_monitor_log": [],
    "_p06_before": [],
+   "shipping_boxes": [
+    "created_at",
+    "updated_at"
+   ],
+   "freight_settings": [
+    "updated_at",
+    "updated_by"
+   ],
    "webhook_configs": [
     "created_at"
    ],
@@ -405903,13 +406483,6 @@
    },
    {
     "kind": "tabela",
-    "msg": "tabela `freight_settings` usada no código não existe nas migrations/types do repo",
-    "where": [
-     "src/services/freightSettingsService.ts"
-    ]
-   },
-   {
-    "kind": "tabela",
     "msg": "tabela `ghost_table` usada no código não existe nas migrations/types do repo",
     "where": [
      "scripts/ai-context/gerar.unit.mjs"
@@ -405971,13 +406544,6 @@
     "msg": "tabela `runtime_table` usada no código não existe nas migrations/types do repo",
     "where": [
      "scripts/ai-context/gerar.unit.mjs"
-    ]
-   },
-   {
-    "kind": "tabela",
-    "msg": "tabela `shipping_boxes` usada no código não existe nas migrations/types do repo",
-    "where": [
-     "src/services/shippingBoxService.ts"
     ]
    },
    {
@@ -408161,7 +408727,7 @@
    "`quote_approval_tokens.status` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.",
    "`kit_share_tokens.status` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.",
    "`_deprecated_silver_images_queue_20260606.img_status` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.",
-   "268/495 tabelas sem `COMMENT ON TABLE` — o significado de negócio não está no schema: `optimization_queue`, `quotes`, `magazines`, `material_types`, `quotes_inbound`, `webhook_inbound_dedupe`, `webhook_inbound_log`, `magazine_items`, `magazine_reader_state`, `magazine_templates`, `admin_audit_log_y2025m12`, `admin_audit_log_y2026m01` …",
+   "268/497 tabelas sem `COMMENT ON TABLE` — o significado de negócio não está no schema: `optimization_queue`, `quotes`, `magazines`, `material_types`, `quotes_inbound`, `webhook_inbound_dedupe`, `webhook_inbound_log`, `magazine_items`, `magazine_reader_state`, `magazine_templates`, `admin_audit_log_y2025m12`, `admin_audit_log_y2026m01` …",
    "Há tabelas usadas no código sem migration no repo — o schema real pode ter sido alterado pelo painel."
   ]
  },
@@ -436099,7 +436665,7 @@
   },
   "scripts/freight/seed-shipping-boxes.mjs": {
    "path": "scripts/freight/seed-shipping-boxes.mjs",
-   "lines": 450,
+   "lines": 500,
    "exports": [
     "const CSV_PADRAO",
     "const VERSAO_DA_TABELA",
@@ -436107,6 +436673,7 @@
     "function parseCsv",
     "function validarCaixas",
     "const escaparTexto",
+    "function idDaCaixa",
     "function gerarSql",
     "function gerarRollbackSql",
     "function executarCli"
@@ -436115,6 +436682,7 @@
     "${arg} exige um valor",
     "--out é obrigatório",
     "CSV vazio: falta a linha de cabeçalho.",
+    "caixa ${comMarca.code}: o nome não pode conter $seed$.",
     "linha ${linha} (cabeçalho): ${problemas.join(",
     "linha ${linha}: ${campos.length} campo(s), o cabeçalho tem ${colunas.length}. Texto com vírgula vai entre aspas duplas.",
     "linha ${linha}: aspas duplas abertas e não fechadas.",
@@ -436159,12 +436727,12 @@
     {
      "name": "gerarSql",
      "params": "caixas, { version, origemCsv = CSV_PADRAO } = {}",
-     "body": "conferirEntrada(caixas, version, origemCsv); return [ `-- Rollback: supabase/rollbacks/${version}_rollback.sql`, '--', '-- Migration SÓ DE DADOS: cadastra em public.shipping_boxes as caixas de', `-- transporte padrão da empresa (${caixas.map((c) => c.code).join(', ')}).`, '--', '-- GERADA por scripts/freight/seed-shipping-boxes.mjs a partir de', `-- ${origemCsv}. Não edite à mão: corrija o CSV e gere de novo.`, '--', '-- Idempotente. O ON CONFLICT repete o predicado do índice único PARCIAL', '-- …"
+     "body": "conferirEntrada(caixas, version, origemCsv); return [ `-- Rollback: supabase/rollbacks/${version}_rollback.sql`, '--', '-- Migration SÓ DE DADOS: cadastra em public.shipping_boxes as caixas de', `-- transporte padrão da empresa (${caixas.map((c) => c.code).join(', ')}).`, '--', '-- GERADA por scripts/freight/seed-shipping-boxes.mjs a partir de', `-- ${origemCsv}. Não edite à mão: corrija o CSV e gere de novo.`, '--', '-- Cada caixa entra com id FIXO, calculado pelo gerador a partir do código', ' …"
     },
     {
      "name": "gerarRollbackSql",
      "params": "caixas, { version, migration = `${version}_seed_shipping_boxes` } = {},",
-     "body": "conferirEntrada(caixas, version, migration); return [ `-- Rollback: ${migration}`, '--', `-- Desfaz o seed das caixas de transporte (${caixas.map((c) => c.code).join(', ')}). GERADO por`, '-- scripts/freight/seed-shipping-boxes.mjs junto com a migration: os valores', '-- abaixo são os mesmos do INSERT dela.', '--', '-- Apaga SÓ a caixa viva que continua IDÊNTICA ao seed em todas as colunas', '-- gravadas. Ficam de propósito:', '-- - a caixa que o admin editou (qualquer coluna diferente do seed); …"
+     "body": "conferirEntrada(caixas, version, migration); // Os valores vão dentro do bloco DO $seed$: a marca num nome fecharia o bloco antes da hora. const comMarca = caixas.find((c) => c.name.includes('$seed$')); if (comMarca) throw new Error(`caixa ${comMarca.code}: o nome não pode conter $seed$.`); return [ `-- Rollback: ${migration}`, '--', `-- Desfaz o seed das caixas de transporte (${caixas.map((c) => c.code).join(', ')}). GERADO por`, '-- scripts/freight/seed-shipping-boxes.mjs junto com a migration …"
     }
    ]
   },
@@ -529633,6 +530201,15 @@
    "path": "supabase/migrations/20261120013000_add_products_ships_separately.sql",
    "lines": 18
   },
+  "supabase/migrations/20261120030000_harden_freight_tables.sql": {
+   "path": "supabase/migrations/20261120030000_harden_freight_tables.sql",
+   "lines": 198,
+   "uses_service_role": true
+  },
+  "supabase/migrations/20261120030100_seed_shipping_boxes.sql": {
+   "path": "supabase/migrations/20261120030100_seed_shipping_boxes.sql",
+   "lines": 35
+  },
   "supabase/rollbacks/20260511235950_rollback.sql": {
    "path": "supabase/rollbacks/20260511235950_rollback.sql",
    "lines": 5
@@ -530106,11 +530683,11 @@
   },
   "supabase/rollbacks/20261119213000_rollback.sql": {
    "path": "supabase/rollbacks/20261119213000_rollback.sql",
-   "lines": 37
+   "lines": 76
   },
   "supabase/rollbacks/20261119213100_rollback.sql": {
    "path": "supabase/rollbacks/20261119213100_rollback.sql",
-   "lines": 37
+   "lines": 75
   },
   "supabase/rollbacks/20261119220000_rollback.sql": {
    "path": "supabase/rollbacks/20261119220000_rollback.sql",
@@ -530119,6 +530696,14 @@
   "supabase/rollbacks/20261120013000_rollback.sql": {
    "path": "supabase/rollbacks/20261120013000_rollback.sql",
    "lines": 64
+  },
+  "supabase/rollbacks/20261120030000_rollback.sql": {
+   "path": "supabase/rollbacks/20261120030000_rollback.sql",
+   "lines": 87
+  },
+  "supabase/rollbacks/20261120030100_rollback.sql": {
+   "path": "supabase/rollbacks/20261120030100_rollback.sql",
+   "lines": 86
   },
   "supabase/rollbacks/rollback_20261025002500_analyze_tables_p03.sql": {
    "path": "supabase/rollbacks/rollback_20261025002500_analyze_tables_p03.sql",
@@ -536044,6 +536629,36 @@
     "zodErrorToFieldIssues converte paths aninhados e índices",
     "zodValidationErrorResponse propaga corsHeaders e versão",
     "payload de validação inclui campo received quando explicitado"
+   ]
+  },
+  "tests/contracts/freight-tables-hardening-migration.test.ts": {
+   "path": "tests/contracts/freight-tables-hardening-migration.test.ts",
+   "lines": 196,
+   "is_test": true,
+   "errors": [
+    "função ${nome} não encontrada"
+   ],
+   "rule_comments": [
+    "Mesma regra do CHECK, em JS: nada da lista do btrim nas pontas (U+00A0 é"
+   ],
+   "doc": "Contrato estático das correções feitas depois da verificação adversarial do endurecimento das tabelas de frete (20261120030000) e dos rollbacks. O comportamento foi provado em PostgreSQL 16 local, com os mesmos arquivos (apagar o usuário → updated_by NULL; rollback das 4 versões no mesmo dia, duas v …",
+   "tests": [
+    "20261120030000 — guard_freight_settings_row",
+    "só carimba o autor no UPDATE direto, para o ON DELETE SET NULL da FK passar",
+    "20261120030000 — guard_shipping_boxes_row",
+    "no INSERT de usuário logado gera id e datas; no UPDATE mantém id e created_at",
+    "o trigger dispara em INSERT e em UPDATE",
+    "20261120030000 — CHECK de name",
+    "compara o nome com ele mesmo sem espaço, TAB, LF, CR e NBSP nas pontas",
+    "as 4 caixas do seed passam na regra",
+    "rollback %s — backup no primeiro nome livre",
+    "procura o nome livre em vez de recusar quando o backup do dia existe",
+    "só faz o DROP depois de copiar e conferir a contagem",
+    "rollback 20261120030100 — seed",
+    "é um bloco só, que começa conferindo se a tabela existe",
+    "copia no primeiro nome livre, trava, confere a contagem e só então apaga",
+    "só apaga a linha com o id do seed, viva e ainda idêntica a ele",
+    "usa no DELETE os mesmos 4 ids que a migration insere"
    ]
   },
   "tests/contracts/kit-maker-optimistic-persistence-migration.test.ts": {
@@ -551863,9 +552478,35 @@
     "não aceita audit inacessível como smoke aprovado"
    ]
   },
+  "tests/scripts/seed-shipping-boxes-rollback.test.mjs": {
+   "path": "tests/scripts/seed-shipping-boxes-rollback.test.mjs",
+   "lines": 164,
+   "is_test": true,
+   "params": [
+    {
+     "name": "VERSION",
+     "value": "'20261120090000'"
+    },
+    {
+     "name": "MIGRATION",
+     "value": "'20261120090000_seed_shipping_boxes'"
+    }
+   ],
+   "doc": "Contrato do rollback que scripts/freight/seed-shipping-boxes.mjs gera para o seed das caixas, e dos dois arquivos commitados (migration e rollback), que têm de ser a saída do gerador sem retoque. O comportamento em banco foi provado em PostgreSQL 16 local com os mesmos arquivos (caixa igual cadastra …",
+   "tests": [
+    "gerarRollbackSql",
+    "bloco da caixa P, escrito à mão: backup no primeiro nome livre, trava, conferência e DELETE",
+    "cabeçalho: a primeira linha nomeia a migration e tudo antes do bloco é comentário",
+    "é um bloco só: um DELETE, uma cópia e nada fora da transação do bloco",
+    "as 4 caixas reais entram no DELETE com os mesmos ids e valores do INSERT da migration",
+    "aceita nome com $$ e recusa o que fecharia o bloco antes da hora",
+    "arquivos commitados da 20261120030100",
+    "migration e rollback são a saída do gerador para o CSV real, byte a byte"
+   ]
+  },
   "tests/scripts/seed-shipping-boxes.test.mjs": {
    "path": "tests/scripts/seed-shipping-boxes.test.mjs",
-   "lines": 499,
+   "lines": 487,
    "is_test": true,
    "params": [
     {
@@ -551876,7 +552517,7 @@
    "rule_comments": [
     "limite de 80 caracteres: 81 passa do limite."
    ],
-   "doc": "Contrato de scripts/freight/seed-shipping-boxes.mjs: lê o CSV das caixas de transporte, repete os CHECKs de public.shipping_boxes (migration 20261119213000) e gera o SQL idempotente do seed e o rollback dele. O script só escreve arquivo — nunca abre conexão com banco.",
+   "doc": "Contrato de scripts/freight/seed-shipping-boxes.mjs: lê o CSV das caixas de transporte, repete os CHECKs de public.shipping_boxes (migration 20261119213000) e gera o SQL idempotente do seed e o rollback dele. O script só escreve arquivo — nunca abre conexão com banco. O texto do rollback é conferido …",
    "calc_fns": [
     {
      "name": "validar",
@@ -551899,21 +552540,20 @@
     "junta os problemas de todas as linhas, cada um com a linha do CSV",
     "recusa código repetido e diz onde está o primeiro",
     "recusa CSV só com cabeçalho",
+    "idDaCaixa",
+    "as 4 caixas reais têm o id calculado à mão",
+    "é determinístico e é um UUID versão 8 válido, um por código",
     "gerarSql",
     "INSERT da caixa P, escrito à mão",
-    "as 4 caixas reais viram 4 tuplas, na ordem do CSV",
+    "as 4 caixas reais viram 4 tuplas, na ordem do CSV, cada uma com o seu id fixo",
     "cabeçalho: a primeira linha aponta o rollback e tudo antes do INSERT é comentário",
-    "é idempotente no texto: ON CONFLICT com o predicado do índice parcial, e só DO NOTHING",
+    "é idempotente no texto: ON CONFLICT sem alvo, e só DO NOTHING",
     "não grava coluna gerada nem abre transação (o workflow aplica com psql -1)",
     "é determinístico: o mesmo CSV gera o mesmo texto",
     "escapa aspa simples do nome",
     "recusa versão %s",
     "recusa versão que não vem depois da migration que cria a tabela",
     "recusa lista vazia e origem com quebra de linha (viraria SQL fora do comentário)",
-    "gerarRollbackSql",
-    "DELETE da caixa P, escrito à mão: só a viva e idêntica ao seed nas 11 colunas",
-    "faz o backup com RLS e REVOKE antes de apagar",
-    "a primeira linha nomeia a migration desfeita",
     "executarCli",
     "gera a migration e o rollback do CSV real; a versão sai do nome de --out",
     "CSV inválido: sai com 1, aponta arquivo e linha e não escreve nada"
@@ -555515,10 +556155,30 @@
   }
  },
  "git": {
-  "sha": "1b8de977ba3d242e3fbcd0fcb99893ba432ed102",
+  "sha": "dc4a2dfc0cb4d0ba20c7ad031c61bcf78a162db3",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "dc4a2df",
+    "date": "2026-11-20",
+    "author": "adm01-debug",
+    "subject": "feat(db): endurece as tabelas de frete e cadastra as 4 caixas (P, M, G, GG) (#3923)",
+    "files": [
+     "scripts/freight/README.md",
+     "scripts/freight/seed-shipping-boxes.mjs",
+     "supabase/MIGRATIONS_SYNC_LOG.md",
+     "supabase/migrations/20261120030000_harden_freight_tables.sql",
+     "supabase/migrations/20261120030100_seed_shipping_boxes.sql",
+     "supabase/rollbacks/20261119213000_rollback.sql",
+     "supabase/rollbacks/20261119213100_rollback.sql",
+     "supabase/rollbacks/20261120030000_rollback.sql",
+     "supabase/rollbacks/20261120030100_rollback.sql",
+     "tests/contracts/freight-tables-hardening-migration.test.ts",
+     "tests/scripts/seed-shipping-boxes-rollback.test.mjs",
+     "tests/scripts/seed-shipping-boxes.test.mjs"
+    ]
+   },
    {
     "sha": "1b8de97",
     "date": "2026-11-20",
@@ -556010,21 +556670,12 @@
     "files": [
      "supabase/MIGRATIONS_SYNC_LOG.md"
     ]
-   },
-   {
-    "sha": "ad8ba97",
-    "date": "2026-11-19",
-    "author": "adm01-debug",
-    "subject": "docs(resgates): adjudica os 124 arquivos nunca aplicados e registra as contas de teste em produção (#3890)",
-    "files": [
-     "docs/agentes/resgates/2026-11-19-triggers-ausentes-e-contas-de-teste-em-producao.md"
-    ]
    }
   ],
   "hot_files": [
    [
     "supabase/MIGRATIONS_SYNC_LOG.md",
-    13
+    14
    ],
    [
     "src/lib/freight/README.md",
@@ -556053,6 +556704,10 @@
    [
     "package.json",
     4
+   ],
+   [
+    "scripts/freight/README.md",
+    3
    ],
    [
     "src/lib/freight/__tests__/fitCount.test.ts",
@@ -556095,11 +556750,7 @@
     3
    ],
    [
-    "src/lib/freight/__tests__/computeVolumeTotals.test.ts",
-    2
-   ],
-   [
-    "src/lib/freight/__tests__/formatPlanSummary.test.ts",
+    "scripts/freight/seed-shipping-boxes.mjs",
     2
    ]
   ]

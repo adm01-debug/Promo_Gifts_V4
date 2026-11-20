@@ -8,7 +8,7 @@
   "supabase/migrations",
   "typeorm"
  ],
- "migrations": 3111,
+ "migrations": 3113,
  "seeds": [],
  "avisos": [
   "323 bloco(s) com DDL dinâmico (EXECUTE format/...) não modelado — policies/colunas criadas dinamicamente podem faltar; confira no banco vivo"
@@ -1151,7 +1151,9 @@
   "get_voice_command_stats",
   "get_webhook_delivery_summary",
   "grant_mcp_full_to_user",
+  "guard_freight_settings_row",
   "guard_mcp_api_keys_writes",
+  "guard_shipping_boxes_row",
   "handle_new_user",
   "handle_password_reset_request",
   "handle_updated_at",
@@ -1857,6 +1859,13 @@
    "evento": "update",
    "tabela": "follow_up_reminders",
    "funcao": "update_updated_at_column"
+  },
+  {
+   "nome": "guard_freight_settings_row",
+   "quando": "before",
+   "evento": "update",
+   "tabela": "freight_settings",
+   "funcao": "guard_freight_settings_row"
   },
   {
    "nome": "set_freight_settings_updated_at",
@@ -3068,6 +3077,13 @@
    "evento": "update",
    "tabela": "seller_gamification",
    "funcao": "update_updated_at_column"
+  },
+  {
+   "nome": "guard_shipping_boxes_row",
+   "quando": "before",
+   "evento": "insert or update",
+   "tabela": "shipping_boxes",
+   "funcao": "guard_shipping_boxes_row"
   },
   {
    "nome": "set_shipping_boxes_updated_at",
@@ -17683,6 +17699,7 @@
    "usada_no_front": 1,
    "usada_em_edges": [],
    "triggers": [
+    "guard_freight_settings_row",
     "set_freight_settings_updated_at"
    ],
    "sem_rls": false,
@@ -42740,12 +42757,6 @@
    "rls": true,
    "policies": [
     {
-     "nome": "shipping_boxes_delete_admin",
-     "comando": "delete",
-     "para": "authenticated",
-     "tipo": "permissive"
-    },
-    {
      "nome": "shipping_boxes_insert_admin",
      "comando": "insert",
      "para": "authenticated",
@@ -42781,6 +42792,7 @@
    "usada_no_front": 1,
    "usada_em_edges": [],
    "triggers": [
+    "guard_shipping_boxes_row",
     "set_shipping_boxes_updated_at"
    ],
    "sem_rls": false,

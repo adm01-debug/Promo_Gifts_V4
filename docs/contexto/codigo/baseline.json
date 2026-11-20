@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "1b8de977ba3d242e3fbcd0fcb99893ba432ed102",
+  "commit": "dc4a2dfc0cb4d0ba20c7ad031c61bcf78a162db3",
   "branch": "main",
-  "data_commit": "2026-11-20T10:35:28Z",
+  "data_commit": "2026-11-20T10:42:26Z",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "dc4a2dfc",
+    "data": "2026-11-20",
+    "assunto": "feat(db): endurece as tabelas de frete e cadastra as 4 caixas (P, M, G, GG) (#3923)"
+   },
    {
     "sha": "1b8de977",
     "data": "2026-11-20",
@@ -126,14 +131,9 @@
     "sha": "6319e099",
     "data": "2026-11-19",
     "assunto": "feat(frete): base do motor — tipos, unidades e medidas (Bloco A) (#3896)"
-   },
-   {
-    "sha": "6ef73b8a",
-    "data": "2026-11-19",
-    "assunto": "docs(migrations-log): recibo E15 — aplicação de 20261119094500 (#3894)"
    }
   ],
-  "arquivos_mudados_7d": 1427,
+  "arquivos_mudados_7d": 1433,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -199,7 +199,7 @@
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "supabase/MIGRATIONS_SYNC_LOG.md",
-    "mudancas": 66
+    "mudancas": 67
    },
    {
     "arquivo": "package.json",
@@ -210,11 +210,11 @@
     "mudancas": 26
    },
    {
-    "arquivo": "RELATORIO_CI.md",
-    "mudancas": 19
+    "arquivo": ".github/workflows/deploy-gates.yml",
+    "mudancas": 18
    },
    {
-    "arquivo": ".github/workflows/deploy-gates.yml",
+    "arquivo": "RELATORIO_CI.md",
     "mudancas": 18
    },
    {
@@ -223,7 +223,7 @@
    },
    {
     "arquivo": "PENDENCIAS.md",
-    "mudancas": 17
+    "mudancas": 16
    },
    {
     "arquivo": "audit/supabase-reference-catalog.temporary.json",
@@ -301,7 +301,7 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 342
+    "commits": 341
    },
    {
     "autor": "Claude",
@@ -313,7 +313,7 @@
    },
    {
     "autor": "Joaquim Ataides",
-    "commits": 16
+    "commits": 15
    },
    {
     "autor": "dependabot[bot]",
@@ -322,9 +322,9 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 11116,
-  "arquivos_codigo": 5597,
-  "linhas_codigo": 1062578,
+  "arquivos_total": 11122,
+  "arquivos_codigo": 5599,
+  "linhas_codigo": 1062976,
   "rotas": 140,
   "rotas_http_backend": 13,
   "vistas_por_id": 0,
@@ -334,9 +334,9 @@
   "hooks": 639,
   "edge_functions": 112,
   "tabelas": 529,
-  "migrations": 3111,
+  "migrations": 3113,
   "cron_jobs": 122,
-  "testes": 2667,
+  "testes": 2669,
   "workflows": 89,
   "scripts": 285,
   "docs_md": 1489
@@ -1556,7 +1556,7 @@
   },
   "scripts/freight": {
    "arquivos": 1,
-   "linhas": 450
+   "linhas": 500
   },
   "scripts/freight-quest-load-test.mjs": {
    "arquivos": 1,
@@ -2071,8 +2071,8 @@
    "linhas": 387
   },
   "tests/contracts": {
-   "arquivos": 17,
-   "linhas": 4810
+   "arquivos": 18,
+   "linhas": 5006
   },
   "tests/e2e": {
    "arquivos": 48,
@@ -2163,8 +2163,8 @@
    "linhas": 89
   },
   "tests/scripts": {
-   "arquivos": 181,
-   "linhas": 29079
+   "arquivos": 182,
+   "linhas": 29231
   },
   "tests/search": {
    "arquivos": 1,

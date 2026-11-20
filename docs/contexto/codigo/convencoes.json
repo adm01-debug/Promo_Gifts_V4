@@ -23,7 +23,7 @@
    "src/services (14)"
   ],
   "testes": [
-   "tests/ (1090)",
+   "tests/ (1092)",
    "co-localizado (__tests__) (745)",
    "e2e/ (627)"
   ],
@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "feat(db): endurece as tabelas de frete e cadastra as 4 caixas (P, M, G, GG) (#3923)",
    "fix(frete): motor valida caixas e parâmetros na entrada, teto de volumes e testes de lacuna (#3925)",
    "feat(frete): produto \"não mistura\", importação em massa e relatório de dados de frete (Bloco D, etapas 32–39) (#3922)",
    "feat(frete): hooks e painel do plano de volumes (Bloco E, etapas 41–45 e 48) (#3920)",
-   "feat(frete): biblioteca de prazo de produção em dias úteis (Bloco H, etapas 72–75) (#3919)",
-   "feat(db): coluna products.ships_separately (frete, Bloco D — DDL) (#3918)"
+   "feat(frete): biblioteca de prazo de produção em dias úteis (Bloco H, etapas 72–75) (#3919)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",

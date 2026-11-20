@@ -2205,7 +2205,7 @@
   {
    "arquivo": "scripts/freight/seed-shipping-boxes.mjs",
    "descricao": "* Gerador do seed das caixas de transporte (etapa 29 do plano de frete).",
-   "linhas": 450,
+   "linhas": 500,
    "env": [],
    "npm_scripts": [],
    "workflows": [],

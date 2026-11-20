@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.3.2 · commit `1b8de977ba` · branch `main` · 2026-11-20 10:36 UTC
+> Gerado automaticamente por AI Context Sync v1.3.2 · commit `dc4a2dfc0c` · branch `main` · 2026-11-20 10:43 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -503,7 +503,7 @@ Fornecedor Asia → supplier_products_raw (Bronze) → normalização (Silver) �
 | `user_token_revocations` | revocations_supervisor_delete | DELETE | public | permissive | `"public"."is_supervisor_or_above"(( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid"))` |  |
 | `user_token_revocations` | revocations_supervisor_insert | INSERT | public | permissive |  | `"public"."is_supervisor_or_above"(( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid"))` |
 | `saved_filters` | saved_filters_delete | DELETE | public | permissive | `(( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid") = "user_id")` |  |
-| … +508 linhas — lista completa em `context.json` | | | | | | |
+| … +507 linhas — lista completa em `context.json` | | | | | | |
 
 ## C. Restrições de dados (obrigatório / único / default / CHECK / FK / calculada)
 
@@ -809,7 +809,7 @@ Fornecedor Asia → supplier_products_raw (Bronze) → normalização (Silver) �
 | `cart_templates` | `name` | obrigatório |
 | `cart_templates` | `items` | default '[]'::jsonb |
 | `cart_templates` | `created_at` | default now() |
-| … +3763 linhas — lista completa em `context.json` | | |
+| … +3790 linhas — lista completa em `context.json` | | |
 
 ## D. Automações no banco (triggers e funções — regras que rodam sozinhas)
 
@@ -1115,7 +1115,7 @@ Fornecedor Asia → supplier_products_raw (Bronze) → normalização (Silver) �
 | trg_validate_approval_token_status | BEFORE INSERT OR UPDATE | `quote_approval_tokens` | `validate_status_fields` |  |
 | update_seller_discount_limits_updated_at | BEFORE UPDATE | `seller_discount_limits` | `update_updated_at_column` |  |
 | update_discount_approval_requests_updated_at | BEFORE UPDATE | `discount_approval_requests` | `update_updated_at_column` |  |
-| … +181 linhas — lista completa em `context.json` | | | | |
+| … +183 linhas — lista completa em `context.json` | | | | |
 
 Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banco):
 
@@ -3221,6 +3221,9 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `supplier_products_raw` | `images_processed` | `images_status = 'processed'::supplier_raw_status` |
 | `tabela_preco_gravacao_oficial` | `codigo` | `codigo_tabela` |
 | `tabela_preco_gravacao_oficial` | `nome_grupo` | `grupo_tecnica` |
+| `shipping_boxes` | `inner_height_cm` | `outer_height_cm - (wall_thickness_mm * 2) / 10.0` |
+| `shipping_boxes` | `inner_width_cm` | `outer_width_cm - (wall_thickness_mm * 2) / 10.0` |
+| `shipping_boxes` | `inner_length_cm` | `outer_length_cm - (wall_thickness_mm * 2) / 10.0` |
 
 ### G.2 Views (consultas derivadas)
 
@@ -6617,7 +6620,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | allowlist inválida: versions contém duplicatas | `scripts/check-supabase-migration-ledger.mjs` |
 | allowlist inválida: versions contém valor vazio/não textual | `scripts/check-supabase-migration-ledger.mjs` |
 | allowlist inválida: versions deve ser array não vazio | `scripts/check-supabase-migration-ledger.mjs` |
-| … +1336 linhas — lista completa em `context.json` | |
+| … +1337 linhas — lista completa em `context.json` | |
 
 ## J. Controle de acesso no código (checagens de perfil/permissão)
 
@@ -6741,7 +6744,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `admin` | `supabase/migrations/20261112120500_fix_optimization_queue_rpcs_dev_access.sql` |
 | `anon` | `tests/edge-functions/live/_live-client.ts` |
 
-## K. Testes como especificação (23314 testes em 2340 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (23337 testes em 2342 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -6849,7 +6852,6 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `src/pages/magazine/hooks/__tests__/useMagazineReaderState.test.ts` | 32 | useMagazineReaderState — hidratação inicial · estado zerado quando localStorage vazio · lê bookmarks + lastPage válidos do localStorage · sobrevive a JSON corrompido em bookmarks … |
 | `tests/edge-functions/integration/connections.test.ts` | 32 | connections-hub-audit · payload válido · GET sem body → 200 + lista de conexões · POST com connection_id → 200 + audit entries … |
 | `tests/integration/freight-quest/webhook-matrix-1000.test.ts` | 32 | matriz 1: todos eventos × todas fontes (v2 envelope) · event=$event source=$source → 200 · matriz 2: todos eventos com envelope v1 · evento  … |
-| `tests/scripts/seed-shipping-boxes.test.mjs` | 32 | parseCsv · lê o CSV real: 4 caixas, cada uma com a linha do arquivo (cabeçalho é a linha 1) · o cabeçalho do CSV real são as colunas graváveis, sem as inner_*_cm geradas · aponta a linha que tem campo a mais ou a menos … |
 | `tests/unit/freight-quest/quote-shipping-validation.test.ts` | 32 | quoteFormSchema — valid cases · CIF com shippingCost=0 → válido · FOB com shippingCost=0 → válido · FOB_PRE com shippingCost=50 → válido … |
 | `src/lib/assistant/__tests__/logoColorToGroups.test.ts` | 31 | logoColorToGroups — azul institucional · põe Azul na frente, com a distância medida e folga sobre o 2º lugar · devolve o hex do grupo e o hex da logo normalizados em minúsculo · trata a logo que usa literalmente o hex do grupo como cor exata … |
 | `tests/ai-usage.test.ts` | 31 | AI Usage - Cost Estimation · calculates Gemini 2.5 Flash cost correctly · calculates Gemini 3 Flash Preview cost correctly · calculates GPT-5 cost correctly … |
@@ -6857,6 +6859,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `tests/edge-functions/integration/ai-features.test.ts` | 31 | ai-recommendations · product_id válido → 200 + recomendações · contexto de orçamento → 200 + recomendações contextuais · produto inexistente → 404 … |
 | `tests/edge-functions/integration/notifications.test.ts` | 31 | send-notification · notificação válida → 200 + notification_id · notificação broadcast para múltiplos usuários → 200 + count · user_id inexistente → 404 … |
 | `tests/lib/date-utils-extended.test.ts` | 31 | formatDate — extended · formats Date object dd/MM/yyyy · formats ISO string · formats timestamp … |
+| `tests/scripts/seed-shipping-boxes.test.mjs` | 31 | parseCsv · lê o CSV real: 4 caixas, cada uma com a linha do arquivo (cabeçalho é a linha 1) · o cabeçalho do CSV real são as colunas graváveis, sem as inner_*_cm geradas · aponta a linha que tem campo a mais ou a menos … |
 | `tests/unit/quote-status-config.test.ts` | 31 | QUOTE_STATUS_CONFIG shape · defines all 10 expected statuses · every entry has a non-empty label · every entry has a color string … |
 | `src/pages/products/seller-carts/__tests__/cartViewModePrefs.test.ts` | 30 | getLocalDateStamp — timezone local · usa componentes de data LOCAL (não UTC) · formata com padding de mês/dia · não depende de toISOString (UTC) … |
 | `src/utils/masks.test.ts` | 30 | Utility Masks & Validation · CNPJ Masking & Validation · masks a raw 14-digit string to CNPJ format · masks the reference format 02.931.668/0001-88 … |
@@ -7045,7 +7048,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `src/lib/telemetry/__tests__/restoreTelemetry.fuzz.test.ts` | 19 | fuzz — normalizeCorrelationId · para QUALQUER entrada inválida, retorno é UUID v4 canônico · para QUALQUER string não-vazia após trim, retorno === entrada (verbatim) · output SEMPRE passa em isValidCorrelationId … |
 | `src/pages/products/seller-carts/__tests__/mapRestoreCartError.test.ts` | 19 | mapRestoreCartError · RLS (SQLSTATE 42501) →  · RLS por status 403 →  · unique_cart_item_variant (23505) → mensagem específica de item duplicado … |
 | `supabase/functions/magic-up-score/index.limits.test.ts` | 19 | F-07 — corpo acima do teto é recusado com 413 antes do download completo · content-length acima do teto → 413 sem abrir o corpo · sem content-length, a leitura para ao passar do teto (não baixa tudo) · F-07 — imagem acima do limite é recusada com 413 antes do provedor … |
-| … +2040 linhas — lista completa em `context.json` | | |
+| … +2042 linhas — lista completa em `context.json` | | |
 
 ## L. Eventos de webhook tratados (contratos com sistemas externos)
 
