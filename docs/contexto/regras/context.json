@@ -1,9 +1,9 @@
 {
  "meta": {
-  "sha": "0ec2fc565883b642880927f1d557457b546f9891",
+  "sha": "e50717437bb9f6cfd67d201ce6de02953d45734a",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-20 17:44 UTC",
+  "generated_at": "2026-11-20 17:48 UTC",
   "files_total": 11099,
   "code_files": 9112,
   "code_lines": 1292357
@@ -559544,10 +559544,22 @@
   }
  },
  "git": {
-  "sha": "0ec2fc565883b642880927f1d557457b546f9891",
+  "sha": "e50717437bb9f6cfd67d201ce6de02953d45734a",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "e507174",
+    "date": "2026-11-20",
+    "author": "github-actions[bot]",
+    "subject": "test",
+    "files": [
+     ".release-please-manifest.json",
+     "CHANGELOG.md",
+     "package-lock.json",
+     "package.json"
+    ]
+   },
    {
     "sha": "0ec2fc5",
     "date": "2026-11-20",
@@ -560096,23 +560108,12 @@
      "supabase/rollbacks/20261119213000_rollback.sql",
      "supabase/rollbacks/20261119213100_rollback.sql"
     ]
-   },
-   {
-    "sha": "2f37587",
-    "date": "2026-11-19",
-    "author": "adm01-debug",
-    "subject": "fix: substitui migration F12 por 20261119212000 (desbloqueia preflight E063/E066)",
-    "files": [
-     "supabase/MIGRATIONS_SYNC_LOG.md",
-     "supabase/migrations/20261119212000_fix_f12_sparkline_ema_kpi.sql",
-     "supabase/rollbacks/20261119212000_rollback.sql"
-    ]
    }
   ],
   "hot_files": [
    [
     "supabase/MIGRATIONS_SYNC_LOG.md",
-    13
+    12
    ],
    [
     "src/lib/freight/index.ts",
@@ -560133,6 +560134,22 @@
    [
     "src/components/admin/shipping-boxes/__tests__/ShippingBoxesManager.test.tsx",
     4
+   ],
+   [
+    ".release-please-manifest.json",
+    3
+   ],
+   [
+    "CHANGELOG.md",
+    3
+   ],
+   [
+    "package-lock.json",
+    3
+   ],
+   [
+    "package.json",
+    3
    ],
    [
     "audit/supabase-reference-catalog.temporary.json",
@@ -560173,22 +560190,6 @@
    [
     "src/services/__tests__/shippingBoxService.test.ts",
     3
-   ],
-   [
-    "src/services/shippingBoxService.ts",
-    3
-   ],
-   [
-    "scripts/freight/README.md",
-    3
-   ],
-   [
-    "src/lib/freight/README.md",
-    3
-   ],
-   [
-    "docs/coordenacao/conflitos-semanticos.md",
-    2
    ]
   ]
  }

@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "0ec2fc565883b642880927f1d557457b546f9891",
+  "commit": "e50717437bb9f6cfd67d201ce6de02953d45734a",
   "branch": "main",
-  "data_commit": "2026-11-20T14:42:48-03:00",
+  "data_commit": "2026-11-20T14:46:48-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "e5071743",
+    "data": "2026-11-20",
+    "assunto": "test"
+   },
    {
     "sha": "0ec2fc56",
     "data": "2026-11-20",
@@ -126,11 +131,6 @@
     "sha": "00502c7a",
     "data": "2026-11-19",
     "assunto": "fix(frete): motor agrupa por produto e corrige bordas (#3910)"
-   },
-   {
-    "sha": "f653a19d",
-    "data": "2026-11-19",
-    "assunto": "docs(migrations): recibos E15 das tabelas de frete (#3911)"
    }
   ],
   "arquivos_mudados_7d": 1486,
@@ -203,7 +203,7 @@
    },
    {
     "arquivo": "package.json",
-    "mudancas": 28
+    "mudancas": 29
    },
    {
     "arquivo": "docs/coordenacao/conflitos-semanticos.md",
@@ -211,23 +211,23 @@
    },
    {
     "arquivo": "package-lock.json",
-    "mudancas": 18
-   },
-   {
-    "arquivo": "RELATORIO_CI.md",
-    "mudancas": 14
+    "mudancas": 19
    },
    {
     "arquivo": ".github/workflows/deploy-gates.yml",
     "mudancas": 13
    },
    {
-    "arquivo": "audit/supabase-reference-catalog.temporary.json",
-    "mudancas": 12
+    "arquivo": "RELATORIO_CI.md",
+    "mudancas": 13
    },
    {
     "arquivo": "CHANGELOG.md",
-    "mudancas": 11
+    "mudancas": 12
+   },
+   {
+    "arquivo": "audit/supabase-reference-catalog.temporary.json",
+    "mudancas": 12
    },
    {
     "arquivo": "PENDENCIAS.md",
@@ -242,11 +242,11 @@
     "mudancas": 10
    },
    {
-    "arquivo": "supabase/EDGE_FUNCTIONS_DEPLOY_LOG.md",
-    "mudancas": 9
+    "arquivo": "src/pages/kit-builder/KitBuilderPage.tsx",
+    "mudancas": 8
    },
    {
-    "arquivo": "src/pages/kit-builder/KitBuilderPage.tsx",
+    "arquivo": "supabase/EDGE_FUNCTIONS_DEPLOY_LOG.md",
     "mudancas": 8
    },
    {
@@ -301,7 +301,7 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 326
+    "commits": 324
    },
    {
     "autor": "Claude",
@@ -309,7 +309,7 @@
    },
    {
     "autor": "github-actions[bot]",
-    "commits": 28
+    "commits": 29
    },
    {
     "autor": "Joaquim Ataides",
