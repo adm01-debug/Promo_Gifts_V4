@@ -1,6 +1,19 @@
 {
-  "generated_at": "2026-07-22T19:59:21.691Z",
+  "generated_at": "2026-11-20T18:17:01.646Z",
   "note": "Snapshot congelado de call sites diretos a supabase.functions.invoke. Novos call sites DEVEM usar invokeEdgeSafe (src/lib/edge/safeInvokeCall.ts). Regenerar com UPDATE_BASELINE=1 após migração legítima.",
-  "total": 0,
-  "entries": []
+  "total": 12,
+  "entries": [
+    "src/components/admin/RlsIntegrationTestsDialog.tsx:60",
+    "src/components/admin/security/RlsAuditPanel.tsx:32",
+    "src/components/admin/users/useUserManagement.ts:129",
+    "src/components/admin/users/useUserManagement.ts:158",
+    "src/components/admin/users/useUserManagement.ts:180",
+    "src/components/admin/users/useUserManagement.ts:230",
+    "src/components/admin/users/useUserManagement.ts:253",
+    "src/hooks/admin/useV4Callbacks.ts:198",
+    "src/hooks/admin/useV4Callbacks.ts:215",
+    "src/hooks/intelligence/useMagicUpGeneration.ts:100",
+    "src/hooks/stock/useEmaPipelineHealth.ts:25",
+    "src/hooks/stock/useEmaRiskSummary.ts:63"
+  ]
 }

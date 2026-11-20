@@ -3,21 +3,30 @@
  * recriada em silêncio (exit 0), desligando o ratchet.
  */
 import { spawnSync } from 'node:child_process';
-import { cpSync, mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs';
+import { cpSync, mkdirSync, mkdtempSync, rmSync, symlinkSync, writeFileSync } from 'node:fs';
+import { createRequire } from 'node:module';
 import { tmpdir } from 'node:os';
-import { join, resolve } from 'node:path';
+import { dirname, join, resolve } from 'node:path';
 import { afterAll, describe, expect, it } from 'vitest';
 
 const ROOT = resolve(import.meta.dirname, '../..');
+const require = createRequire(import.meta.url);
+const TYPESCRIPT_DIR = dirname(require.resolve('typescript/package.json'));
 const dirs = [];
 afterAll(() => dirs.forEach((d) => rmSync(d, { recursive: true, force: true })));
 
 function zodSandbox() {
   const dir = sandbox(['scripts/check-edge-zod-ratchet.mjs']);
   mkdirSync(join(dir, 'tests/contracts'), { recursive: true });
-  cpSync(join(ROOT, 'tests/contracts/webhook-schemas.ts'), join(dir, 'tests/contracts/webhook-schemas.ts'));
+  cpSync(
+    join(ROOT, 'tests/contracts/webhook-schemas.ts'),
+    join(dir, 'tests/contracts/webhook-schemas.ts'),
+  );
   mkdirSync(join(dir, 'supabase/functions/nova-edge'), { recursive: true });
-  writeFileSync(join(dir, 'supabase/functions/nova-edge/index.ts'), 'Deno.serve(async (req) => { const b = await req.json(); return new Response(JSON.stringify(b)); });\n');
+  writeFileSync(
+    join(dir, 'supabase/functions/nova-edge/index.ts'),
+    'Deno.serve(async (req) => { const b = await req.json(); return new Response(JSON.stringify(b)); });\n',
+  );
   return dir;
 }
 
@@ -28,9 +37,21 @@ function sandbox(scripts) {
   mkdirSync(join(dir, '.security'), { recursive: true });
   writeFileSync(join(dir, 'package.json'), '{"type":"module"}');
   for (const f of scripts) cpSync(join(ROOT, f), join(dir, f));
+  if (scripts.includes('scripts/check-invoke-direct-calls.mjs')) {
+    mkdirSync(join(dir, 'node_modules'), { recursive: true });
+    symlinkSync(TYPESCRIPT_DIR, join(dir, 'node_modules/typescript'), 'dir');
+  }
   // dependências relativas comuns dos scripts de drift
-  for (const f of ['scripts/check-result-contract.mjs', 'scripts/supabase-read-only-query.mjs', 'scripts/lib/canonical-pg-connection.mjs']) {
-    try { cpSync(join(ROOT, f), join(dir, f)); } catch { /* opcional */ }
+  for (const f of [
+    'scripts/check-result-contract.mjs',
+    'scripts/supabase-read-only-query.mjs',
+    'scripts/lib/canonical-pg-connection.mjs',
+  ]) {
+    try {
+      cpSync(join(ROOT, f), join(dir, f));
+    } catch {
+      /* opcional */
+    }
   }
   return dir;
 }
@@ -45,11 +66,19 @@ const run = (dir, script, args = [], env = {}) =>
 describe.each([
   ['scripts/check-lint-0011-drift.mjs', '.security/lint-0011-allowlist.json', 'functions', 'fn'],
   ['scripts/check-lint-0029-drift.mjs', '.security/lint-0029-allowlist.json', 'functions', 'fn'],
-  ['scripts/check-secdef-anon-drift.mjs', '.security/secdef-anon-allowlist.json', 'functions', 'fn'],
+  [
+    'scripts/check-secdef-anon-drift.mjs',
+    '.security/secdef-anon-allowlist.json',
+    'functions',
+    'fn',
+  ],
 ])('%s: reason placeholder não satisfaz o gate', (script, allowlist, key, idKey) => {
   const prepare = (reason) => {
     const dir = sandbox([script]);
-    writeFileSync(join(dir, allowlist), JSON.stringify({ [key]: [{ [idKey]: 'public.zz_probe()', reason }] }));
+    writeFileSync(
+      join(dir, allowlist),
+      JSON.stringify({ [key]: [{ [idKey]: 'public.zz_probe()', reason }] }),
+    );
     writeFileSync(join(dir, 'live.json'), JSON.stringify([{ [idKey]: 'public.zz_probe()' }]));
     return dir;
   };
@@ -87,7 +116,10 @@ describe('baseline ausente não é recriada em silêncio', () => {
   it('check-invoke-direct-calls sem baseline → exit 2; com UPDATE_BASELINE=1 cria', () => {
     const dir = sandbox(['scripts/check-invoke-direct-calls.mjs']);
     mkdirSync(join(dir, 'src'), { recursive: true });
-    writeFileSync(join(dir, 'src/a.ts'), "export const x = () => supabase.functions.invoke('fn');\n");
+    writeFileSync(
+      join(dir, 'src/a.ts'),
+      "export const x = () => supabase.functions.invoke('fn');\n",
+    );
     const missing = run(dir, 'scripts/check-invoke-direct-calls.mjs');
     expect(missing.status).toBe(2);
     expect(missing.stderr).toContain('baseline ausente');
