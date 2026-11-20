@@ -36108,6 +36108,8 @@ export type Database = {
           discount_approved_at: string | null
           discount_percent: number | null
           estimated_delivery_days: number | null
+          freight_mix_mode: string | null
+          freight_plan: Json | null
           id: string
           internal_notes: string | null
           is_latest_version: boolean
@@ -36127,6 +36129,7 @@ export type Database = {
           shipping_cost: number | null
           shipping_method: string | null
           shipping_type: string | null
+          show_freight_plan_to_client: boolean
           stage: string | null
           status: string | null
           subtotal: number | null
@@ -36170,6 +36173,8 @@ export type Database = {
           discount_approved_at?: string | null
           discount_percent?: number | null
           estimated_delivery_days?: number | null
+          freight_mix_mode?: string | null
+          freight_plan?: Json | null
           id?: string
           internal_notes?: string | null
           is_latest_version?: boolean
@@ -36189,6 +36194,7 @@ export type Database = {
           shipping_cost?: number | null
           shipping_method?: string | null
           shipping_type?: string | null
+          show_freight_plan_to_client?: boolean
           stage?: string | null
           status?: string | null
           subtotal?: number | null
@@ -36232,6 +36238,8 @@ export type Database = {
           discount_approved_at?: string | null
           discount_percent?: number | null
           estimated_delivery_days?: number | null
+          freight_mix_mode?: string | null
+          freight_plan?: Json | null
           id?: string
           internal_notes?: string | null
           is_latest_version?: boolean
@@ -36251,6 +36259,7 @@ export type Database = {
           shipping_cost?: number | null
           shipping_method?: string | null
           shipping_type?: string | null
+          show_freight_plan_to_client?: boolean
           stage?: string | null
           status?: string | null
           subtotal?: number | null
