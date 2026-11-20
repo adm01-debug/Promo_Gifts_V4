@@ -5,6 +5,21 @@ Todas as mudanças notáveis deste projeto são documentadas neste arquivo.
 O formato é baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/),
 e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR/).
 
+## [1.13.0](https://github.com/adm01-debug/Promo_Gifts_V4/compare/gifts-store-v1.12.0...gifts-store-v1.13.0) (2026-11-20)
+
+
+### Features
+
+* **frete:** tabelas shipping_boxes e freight_settings (Bloco C — DDL) ([#3902](https://github.com/adm01-debug/Promo_Gifts_V4/issues/3902)) ([af5f0ed](https://github.com/adm01-debug/Promo_Gifts_V4/commit/af5f0ed438397cabeb3fcaf7fe32ec7f6a631a41))
+* funções irmãs do painel EMA + remonta Onda 3 no /estoque ([#3907](https://github.com/adm01-debug/Promo_Gifts_V4/issues/3907)) ([719c8f0](https://github.com/adm01-debug/Promo_Gifts_V4/commit/719c8f0fce77e07246226e52bac9c8188060cb5e))
+
+
+### Bug Fixes
+
+* corrige bugs F12 (sparkline PGRST202 + KPI EMA 403) ([#3903](https://github.com/adm01-debug/Promo_Gifts_V4/issues/3903)) ([b6a8d7e](https://github.com/adm01-debug/Promo_Gifts_V4/commit/b6a8d7eb9f40d67a38ffaf634f179297b8406e0a))
+* **frete:** motor agrupa por produto e corrige bordas ([#3910](https://github.com/adm01-debug/Promo_Gifts_V4/issues/3910)) ([00502c7](https://github.com/adm01-debug/Promo_Gifts_V4/commit/00502c7a4bfd2f9a7efac767943bac21ac74a351))
+* substitui migration F12 por 20261119212000 (desbloqueia preflight E063/E066) ([2f37587](https://github.com/adm01-debug/Promo_Gifts_V4/commit/2f37587a9743b13ee5c39170d120a3957766b46f))
+
 ## [1.12.0](https://github.com/adm01-debug/Promo_Gifts_V4/compare/gifts-store-v1.11.0...gifts-store-v1.12.0) (2026-11-19)
 
 
