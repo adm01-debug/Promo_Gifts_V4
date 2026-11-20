@@ -5,6 +5,26 @@ Todas as mudanças notáveis deste projeto são documentadas neste arquivo.
 O formato é baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/),
 e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR/).
 
+## [1.14.0](https://github.com/adm01-debug/Promo_Gifts_V4/compare/gifts-store-v1.13.0...gifts-store-v1.14.0) (2026-11-20)
+
+
+### Features
+
+* **db:** coluna products.ships_separately (frete, Bloco D — DDL) ([#3918](https://github.com/adm01-debug/Promo_Gifts_V4/issues/3918)) ([16762dc](https://github.com/adm01-debug/Promo_Gifts_V4/commit/16762dcbcbb92282645d0738b685958876c857f0))
+* **db:** endurece as tabelas de frete e cadastra as 4 caixas (P, M, G, GG) ([#3923](https://github.com/adm01-debug/Promo_Gifts_V4/issues/3923)) ([dc4a2df](https://github.com/adm01-debug/Promo_Gifts_V4/commit/dc4a2dfc0cb4d0ba20c7ad031c61bcf78a162db3))
+* **db:** resgata migrations órfãs de branches fechadas (P06 + onboarding) ([#3914](https://github.com/adm01-debug/Promo_Gifts_V4/issues/3914)) ([c2e99f6](https://github.com/adm01-debug/Promo_Gifts_V4/commit/c2e99f6eb0e913e05398a1efc29abc3ea97968a3))
+* **frete:** admin de caixas de transporte e parâmetros de frete (Bloco C/D) ([#3915](https://github.com/adm01-debug/Promo_Gifts_V4/issues/3915)) ([777cac4](https://github.com/adm01-debug/Promo_Gifts_V4/commit/777cac4c50c377f01bc3642c7b61805f2a0d24d0))
+* **frete:** biblioteca de prazo de produção em dias úteis (Bloco H, etapas 72–75) ([#3919](https://github.com/adm01-debug/Promo_Gifts_V4/issues/3919)) ([23c5aed](https://github.com/adm01-debug/Promo_Gifts_V4/commit/23c5aed4d2ee91f9fc935d8f68b58e0051215d77))
+* **frete:** hooks e painel do plano de volumes (Bloco E, etapas 41–45 e 48) ([#3920](https://github.com/adm01-debug/Promo_Gifts_V4/issues/3920)) ([5ac27db](https://github.com/adm01-debug/Promo_Gifts_V4/commit/5ac27dbcfa3a0059ec4ada7ebbda31d06f58731d))
+* **frete:** produto "não mistura", importação em massa e relatório de dados de frete (Bloco D, etapas 32–39) ([#3922](https://github.com/adm01-debug/Promo_Gifts_V4/issues/3922)) ([38a84ba](https://github.com/adm01-debug/Promo_Gifts_V4/commit/38a84ba1511e2133442e2281f6166f8f575e6c46))
+
+
+### Bug Fixes
+
+* crash appendChild ao digitar na busca global (CommandItem soltos) ([#3937](https://github.com/adm01-debug/Promo_Gifts_V4/issues/3937)) ([be9f4a2](https://github.com/adm01-debug/Promo_Gifts_V4/commit/be9f4a209a0c2331b3fd9bee77f75e3d85e44b2b))
+* **frete:** formulário de caixa volta a rolar e correções da revisão do admin ([#3917](https://github.com/adm01-debug/Promo_Gifts_V4/issues/3917)) ([e25ff67](https://github.com/adm01-debug/Promo_Gifts_V4/commit/e25ff678c10ae6f67107e6a202c853f65f29bb1a))
+* **frete:** motor valida caixas e parâmetros na entrada, teto de volumes e testes de lacuna ([#3925](https://github.com/adm01-debug/Promo_Gifts_V4/issues/3925)) ([1b8de97](https://github.com/adm01-debug/Promo_Gifts_V4/commit/1b8de977ba3d242e3fbcd0fcb99893ba432ed102))
+
 ## [1.13.0](https://github.com/adm01-debug/Promo_Gifts_V4/compare/gifts-store-v1.12.0...gifts-store-v1.13.0) (2026-11-20)
 
 
