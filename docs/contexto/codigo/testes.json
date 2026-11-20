@@ -5,13 +5,13 @@
   "vitest",
   "playwright"
  ],
- "total": 2670,
+ "total": 2674,
  "por_tipo": {
   "contrato": 68,
   "e2e": 679,
   "pytest": 5,
   "qa": 17,
-  "unit": 1901
+  "unit": 1905
  },
  "onde_ficam": [
   {
@@ -20,7 +20,7 @@
   },
   {
    "padrao": "co-localizado (__tests__)",
-   "arquivos": 746
+   "arquivos": 750
   },
   {
    "padrao": "e2e/",
@@ -9993,6 +9993,17 @@
    "casos": 7
   },
   {
+   "arquivo": "src/lib/freight/__tests__/fromKit.test.ts",
+   "tipo": "unit",
+   "linhas": 330,
+   "testa": [
+    "src/lib/freight/columns.ts",
+    "src/lib/freight/fromKit.ts",
+    "src/lib/freight/planFreight.ts"
+   ],
+   "casos": 21
+  },
+  {
    "arquivo": "src/lib/freight/__tests__/fuzz.test.ts",
    "tipo": "unit",
    "linhas": 209,
@@ -10041,6 +10052,37 @@
     "src/lib/freight/planFreight.ts"
    ],
    "casos": 46
+  },
+  {
+   "arquivo": "src/lib/freight/__tests__/planSchema.test.ts",
+   "tipo": "unit",
+   "linhas": 153,
+   "testa": [
+    "src/lib/freight/planFreight.ts",
+    "src/lib/freight/planSchema.ts",
+    "src/lib/freight/types.ts"
+   ],
+   "casos": 11
+  },
+  {
+   "arquivo": "src/lib/freight/__tests__/quoteContract.test.ts",
+   "tipo": "unit",
+   "linhas": 298,
+   "testa": [
+    "src/lib/freight/planFreight.ts",
+    "src/lib/freight/quoteContract.ts"
+   ],
+   "casos": 17
+  },
+  {
+   "arquivo": "src/lib/freight/__tests__/rankQuotes.test.ts",
+   "tipo": "unit",
+   "linhas": 184,
+   "testa": [
+    "src/lib/freight/quoteContract.ts",
+    "src/lib/freight/rankQuotes.ts"
+   ],
+   "casos": 16
   },
   {
    "arquivo": "src/lib/freight/__tests__/readiness.test.ts",
@@ -23484,21 +23526,25 @@
   "src/lib/format.ts": 4,
   "src/lib/freight/boxOrder.ts": 2,
   "src/lib/freight/buildGroups.ts": 1,
-  "src/lib/freight/columns.ts": 6,
+  "src/lib/freight/columns.ts": 7,
   "src/lib/freight/computeVolumeTotals.ts": 1,
   "src/lib/freight/expandQuantities.ts": 1,
   "src/lib/freight/fitCount.ts": 1,
   "src/lib/freight/format.ts": 1,
   "src/lib/freight/formatPlanSummary.ts": 1,
   "src/lib/freight/fromDatabase.ts": 1,
+  "src/lib/freight/fromKit.ts": 1,
   "src/lib/freight/index.ts": 6,
   "src/lib/freight/limits.ts": 1,
   "src/lib/freight/packMixed.ts": 1,
   "src/lib/freight/packSingleProduct.ts": 2,
-  "src/lib/freight/planFreight.ts": 5,
+  "src/lib/freight/planFreight.ts": 8,
+  "src/lib/freight/planSchema.ts": 1,
+  "src/lib/freight/quoteContract.ts": 2,
+  "src/lib/freight/rankQuotes.ts": 1,
   "src/lib/freight/readiness.ts": 1,
   "src/lib/freight/resolveItemDimensions.ts": 1,
-  "src/lib/freight/types.ts": 5,
+  "src/lib/freight/types.ts": 6,
   "src/lib/freight/units.ts": 1,
   "src/lib/freight/validateConfig.ts": 1,
   "src/lib/image-converter.ts": 2,

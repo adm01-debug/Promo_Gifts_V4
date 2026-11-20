@@ -12344,6 +12344,14 @@
    "src/lib/freight/types.ts",
    "src/lib/freight/units.ts"
   ],
+  "src/lib/freight/fromKit.ts": [
+   "src/lib/freight/columns.ts",
+   "src/lib/freight/planFreight.ts",
+   "src/lib/freight/resolveItemDimensions.ts",
+   "src/lib/freight/types.ts",
+   "src/lib/freight/units.ts",
+   "src/lib/kit-builder/types.ts"
+  ],
   "src/lib/freight/index.ts": [
    "src/lib/freight/boxOrder.ts",
    "src/lib/freight/buildGroups.ts",
@@ -12354,9 +12362,13 @@
    "src/lib/freight/format.ts",
    "src/lib/freight/formatPlanSummary.ts",
    "src/lib/freight/fromDatabase.ts",
+   "src/lib/freight/fromKit.ts",
    "src/lib/freight/packMixed.ts",
    "src/lib/freight/packSingleProduct.ts",
    "src/lib/freight/planFreight.ts",
+   "src/lib/freight/planSchema.ts",
+   "src/lib/freight/quoteContract.ts",
+   "src/lib/freight/rankQuotes.ts",
    "src/lib/freight/readiness.ts",
    "src/lib/freight/resolveItemDimensions.ts",
    "src/lib/freight/types.ts",
@@ -12390,6 +12402,16 @@
    "src/lib/freight/types.ts",
    "src/lib/freight/units.ts",
    "src/lib/freight/validateConfig.ts"
+  ],
+  "src/lib/freight/planSchema.ts": [
+   "src/lib/freight/types.ts"
+  ],
+  "src/lib/freight/quoteContract.ts": [
+   "src/lib/freight/types.ts"
+  ],
+  "src/lib/freight/rankQuotes.ts": [
+   "src/lib/freight/quoteContract.ts",
+   "src/lib/lead-time/index.ts"
   ],
   "src/lib/freight/readiness.ts": [
    "src/lib/freight/columns.ts",

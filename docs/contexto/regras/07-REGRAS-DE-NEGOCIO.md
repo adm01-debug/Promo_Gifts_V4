@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.3.2 · commit `e9a62d400d` · branch `main` · 2026-11-20 14:20 UTC
+> Gerado automaticamente por AI Context Sync v1.3.2 · commit `9c386c0b22` · branch `main` · 2026-11-20 14:32 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -1788,7 +1788,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `status` | `duplicate_ignored` | escreve | `supabase/functions/receive-crm-callback/index.ts` |
 | `status` | `em_separacao` | escreve | `src/hooks/products/useSellerCarts.ts` |
 | `status` | `empty` | escreve | `src/components/admin/connections/KeysValidationTab.tsx` |
-| `status` | `error` | compara, escreve | `api/health.ts`<br>`api/ready.ts`<br>`recovery/src-legacy/src/pages/SystemStatusPage.tsx`<br>`src/components/admin/connections/IssueMcpKeyForm.tsx`<br>`src/components/admin/security/keys/RotateMcpKeyDialog.tsx`<br>… +27 |
+| `status` | `error` | compara, escreve | `api/health.ts`<br>`api/ready.ts`<br>`recovery/src-legacy/src/pages/SystemStatusPage.tsx`<br>`src/components/admin/connections/IssueMcpKeyForm.tsx`<br>`src/components/admin/security/keys/RotateMcpKeyDialog.tsx`<br>… +30 |
 | `status` | `expired` | compara | `src/components/admin/security/keys/McpKeyDetailsDrawer.tsx`<br>`src/components/admin/security/keys/McpKeyRow.tsx`<br>`src/components/admin/security/keys/useMcpKeys.ts`<br>`src/components/quotes/QuoteStatusTimeline.tsx`<br>`src/components/quotes/QuoteValidityBanner.tsx`<br>… +4 |
 | `status` | `expiring_soon` | compara | `src/components/novelties/NoveltyCards.tsx` |
 | `status` | `fail` | compara, escreve | `recovery/src-legacy/src/hooks/useConnectionsOverviewFilters.ts`<br>`src/components/admin/connections/ConnectionTestHistoryPanel.tsx`<br>`src/hooks/intelligence/useConnectionsOverviewFilters.ts`<br>`supabase/functions/full-op-diagnostics/index.ts` |
@@ -1804,10 +1804,10 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `status` | `in_transit` | compara | `src/lib/inventory/future-stock-stats.ts` |
 | `status` | `incoming` | compara | `recovery/src-legacy/src/hooks/useVariantStock.ts`<br>`src/components/inventory/StockDashboard.tsx`<br>`src/hooks/products/useVariantStock.ts`<br>`src/lib/inventory/stock-filter.ts`<br>`src/types/stock.ts` |
 | `status` | `incompatible` | compara, escreve | `src/components/kit-builder/BoxComparisonDialog.tsx`<br>`src/components/kit-builder/BoxSelector.tsx`<br>`src/lib/kit-builder/ai-composition.ts`<br>`src/lib/kit-builder/box-recommendations.ts` |
-| `status` | `incomplete` | compara, escreve | `src/lib/freight/planFreight.ts`<br>`src/lib/freight/readiness.ts`<br>`src/lib/freight/resolveItemDimensions.ts` |
+| `status` | `incomplete` | compara, escreve | `src/lib/freight/fromKit.ts`<br>`src/lib/freight/planFreight.ts`<br>`src/lib/freight/readiness.ts`<br>`src/lib/freight/resolveItemDimensions.ts` |
 | `status` | `inconclusive` | compara, escreve | `src/components/kit-builder/BoxComparisonDialog.tsx`<br>`src/components/kit-builder/BoxSelector.tsx`<br>`src/lib/kit-builder/box-recommendations.ts` |
 | `status` | `insufficient_data` | escreve | `src/pages/admin/telemetry/useRegressionGuardrail.ts` |
-| `status` | `invalid` | escreve | `supabase/functions/e2e-cleanup/index.ts` |
+| `status` | `invalid` | escreve | `src/lib/freight/planSchema.ts`<br>`supabase/functions/e2e-cleanup/index.ts` |
 | `status` | `loading` | compara, escreve | `recovery/src-legacy/src/pages/SystemStatusPage.tsx`<br>`src/components/ui/StatusBadge.tsx`<br>`src/pages/system/SystemStatusPage.tsx` |
 | `status` | `low-stock` | compara | `recovery/src-legacy/src/pages/ComparePage.tsx`<br>`recovery/src-legacy/src/pages/product-detail/ProductDetailHero.tsx`<br>`src/components/compare/ComparisonRadarChart.tsx`<br>`src/components/compare/StockRiskBadge.tsx`<br>`src/components/inventory/StockBadge.tsx`<br>… +5 |
 | `status` | `low_stock` | compara | `recovery/src-legacy/src/hooks/useVariantStock.ts`<br>`src/components/inventory/StockDashboard.tsx`<br>`src/components/simulator/StockAlert.tsx`<br>`src/hooks/products/useVariantStock.ts`<br>`src/hooks/stock/stockAlerts.ts`<br>… +2 |
@@ -1819,7 +1819,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `status` | `novo` | escreve | `recovery/src-legacy/src/hooks/useSellerCarts.ts` |
 | `status` | `number` | compara | `recovery/src-legacy/src/components/admin/telemetry/BridgeCallDetailDrawer.tsx`<br>`src/components/admin/connections/SecretsManagerHealthPanel.tsx`<br>`src/components/admin/connections/TestAllConnectionsButton.tsx`<br>`src/components/admin/telemetry/BridgeCallDetailDrawer.tsx`<br>`src/contexts/SellerCartContext.tsx`<br>… +9 |
 | `status` | `offline` | compara | `src/components/quotes/QuoteAutoSave.tsx` |
-| `status` | `ok` | compara, escreve | `api/health.ts`<br>`api/ready.ts`<br>`recovery/src-legacy/src/components/admin/telemetry/PlatformFailureCards.tsx`<br>`recovery/src-legacy/src/hooks/useConnectionsOverviewFilters.ts`<br>`recovery/src-legacy/src/pages/SystemStatusPage.tsx`<br>… +23 |
+| `status` | `ok` | compara, escreve | `api/health.ts`<br>`api/ready.ts`<br>`recovery/src-legacy/src/components/admin/telemetry/PlatformFailureCards.tsx`<br>`recovery/src-legacy/src/hooks/useConnectionsOverviewFilters.ts`<br>`recovery/src-legacy/src/pages/SystemStatusPage.tsx`<br>… +27 |
 | `status` | `order` | compara | `src/components/dashboard/MyClientsWidget.tsx` |
 | `status` | `out-of-stock` | compara, escreve | `recovery/src-legacy/src/pages/ComparePage.tsx`<br>`recovery/src-legacy/src/pages/product-detail/ProductDetailHero.tsx`<br>`src/components/compare/ComparisonRadarChart.tsx`<br>`src/components/compare/StockRiskBadge.tsx`<br>`src/components/products/ProductListItem.tsx`<br>… +4 |
 | `status` | `out_of_stock` | compara | `recovery/src-legacy/src/hooks/useVariantStock.ts`<br>`src/components/inventory/StockDashboard.tsx`<br>`src/components/inventory/VariantStockTable.tsx`<br>`src/components/simulator/StockAlert.tsx`<br>`src/hooks/products/useVariantStock.ts`<br>… +2 |
@@ -2210,6 +2210,58 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
   [z.string().trim(), z.null()]
   ```
   - Regras cruzadas (refine): “Data inválida. Use o formato dd/mm/aaaa.” · “Data inválida.” · “A data não pode estar no passado.”
+- **dimensionsSchema** (`src/lib/freight/planSchema.ts`, z.object):
+  ```ts
+  { heightCm: z.number().positive(), widthCm: z.number().positive(), lengthCm: z.number().positive(), }
+  ```
+- **cubicWeightSchema** (`src/lib/freight/planSchema.ts`, z.object):
+  ```ts
+  { correios: z.number().nonnegative(), rodoviario: z.number().nonnegative(), }
+  ```
+- **packVolumeSchema** (`src/lib/freight/planSchema.ts`, z.object):
+  ```ts
+  { box: shippingBoxSchema, items: z.array(z.object({ productId: z.string(), quantity: z.number().int().positive() })), grossWeightG: z.number().nonnegative(), cubicWeightG: cubicWeightSchema, volumeM3: z.number().nonnegative(), fillRatio: z.number().nonnegative(), }
+  ```
+- **incompleteItemSchema** (`src/lib/freight/planSchema.ts`, z.object):
+  ```ts
+  { productId: z.string(), name: z.string(), missing: z.array(z.enum(['height', 'length', 'weight', 'width'])), }
+  ```
+- **freightPlanShape** (`src/lib/freight/planSchema.ts`, z.object):
+  ```ts
+  { status: z.enum(['dados_insuficientes', 'nao_cabe', 'ok']), volumes: z.array(packVolumeSchema), totals: z.object({ boxesByCode: z.record(z.string(), z.number().int().positive()), grossWeightG: z.number().nonnegative(), volumeM3: z.number().nonnegative(), cubicWeightG: cubicWeightSchema, }), warnings: z.array(z.string()), missing: z.array(incompleteItemSchema), mixMode: z.enum(['misturar', 'separar']), computedAt: z.iso.datetime({ offset: true }), itemsHash: z.string().min(1), }
+  ```
+- **cepSchema** (`src/lib/freight/quoteContract.ts`, z.string):
+  ```ts
+  { error: 'o CEP deve ser um texto' }
+  ```
+- **isoDateSchema** (`src/lib/freight/quoteContract.ts`, z.string):
+  ```ts
+  { error: 'a data deve ser um texto' }
+  ```
+- **positiveNumber** (`src/lib/freight/quoteContract.ts`, z.number):
+  ```ts
+  { error: 'informe um número válido' }
+  ```
+- **quoteVolumeSchema** (`src/lib/freight/quoteContract.ts`, z.object):
+  ```ts
+  { height_cm: positiveNumber, width_cm: positiveNumber, length_cm: positiveNumber, weight_g: z .number({ error: 'informe um número válido' }) .int('o peso deve ser em gramas inteiras') .positive('o peso deve ser maior que zero'), }
+  ```
+- **quoteRequestSchema** (`src/lib/freight/quoteContract.ts`, z.object):
+  ```ts
+  { origin_cep: cepSchema, destination_cep: cepSchema, declared_value_brl: positiveNumber, volumes: z.array(quoteVolumeSchema).min(1, 'informe ao menos um volume'), ready_date: isoDateSchema.optional(), }
+  ```
+- **quoteOptionSchema** (`src/lib/freight/quoteContract.ts`, z.object):
+  ```ts
+  { carrier: z.string().min(1), service: z.string().min(1), price_brl: positiveNumber, transit_business_days: z.number().int().nonnegative(), delivery_date: isoDateSchema.optional(), option_id: z.string().min(1), }
+  ```
+- **quoteResponseSchema** (`src/lib/freight/quoteContract.ts`, z.object):
+  ```ts
+  { quote_id: z.string().min(1), options: z.array(quoteOptionSchema).min(1, 'a cotação veio sem opções'), computed_at: z.iso.datetime({ offset: true }), }
+  ```
+- **quoteErrorSchema** (`src/lib/freight/quoteContract.ts`, z.object):
+  ```ts
+  { error: z.enum([ 'invalid_request', 'unauthorized', 'rate_limited', 'carrier_error', 'carrier_timeout', ]), message: z.string().min(1), request_id: z.string().min(1).optional(), }
+  ```
 - **snapshotNumber** (`src/lib/kit-builder/snapshot/read-draft.ts`, z.number):
   ```ts
   
@@ -4525,6 +4577,14 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
   ```
   const canonico = [...items] .map(({ productId, quantity }) => `${productId}:${quantity}`) .sort() .join('|'); let hash = 0x811c9dc5; for (let i = 0; i < canonico.length; i += 1) { hash ^= canonico.charCodeAt(i); hash = Math.imul(hash, 0x01000193) >>> 0; } return hash.toString(16).padStart(8, '0');
   ```
+- **byPriceThenTransit(a: RankedQuote, b: RankedQuote)** — `src/lib/freight/rankQuotes.ts`
+  ```
+  return ( a.option.price_brl - b.option.price_brl || a.option.transit_business_days - b.option.transit_business_days );
+  ```
+- **rankQuotes(options: readonly QuoteOption[], params: RankQuotesParams,)** — `src/lib/freight/rankQuotes.ts`
+  ```
+  if (options.length === 0) { return { status: 'error', code: 'no_options', message: 'A cotação não trouxe nenhuma opção de frete.', }; } const negativa = options.find((option) => option.transit_business_days < 0); if (negativa) { return { status: 'error', code: 'invalid_input', message: `Prazo negativo na opção ${negativa.option_id}: ${negativa.transit_business_days} dias úteis.`, }; } const requestedDate = params.requestedDate ?? null; if (requestedDate !== null) { // Prazo 0 não anda: serve só …
+  ```
 - **roundDecimal(value: number, decimals: number)** — `src/lib/freight/units.ts`
   ```
   const shifted = Number(`${value}e${decimals}`); if (!Number.isFinite(shifted)) return Number(value.toFixed(decimals)); const rounded = Math.round(shifted); // A partir de 1e21 o JavaScript imprime o inteiro em notação exponencial // (`'1e+21'`), e `'1e+21e-2'` não é número: sairia `NaN`. Nessa escala o // valor já não tem casa além das pedidas — com 2 casas o limite é 1e19, onde // os números representáveis andam de 2.048 em 2.048; com 6 casas é 1e15, // onde andam de 0,125 em 0,125 (3 casas) —, …
@@ -5831,7 +5891,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `TAG_POINTS` | `10` | `src/hooks/products/useProductMatch.ts` |
 | `NICHE_POINTS` | `15` | `src/hooks/products/useProductMatch.ts` |
 | `SUPPLIER_POINTS` | `5` | `src/hooks/products/useProductMatch.ts` |
-| … +398 linhas — lista completa em `context.json` | | |
+| … +400 linhas — lista completa em `context.json` | | |
 
 ### H.2 Prazos, expirações e janelas de tempo
 
@@ -6137,7 +6197,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `staleTime: 5 * 60 * 1000,` | `src/hooks/auth/useRBAC.tsx` |
 | `staleTime: 5 * 60 * 1000,` | `src/hooks/bi/useClientAffinity.ts` |
 | `const NINETY_DAYS = 90 * 24 * 60 * 60 * 1000;` | `src/hooks/bi/useClientCategoryAffinity.ts` |
-| … +395 linhas — lista completa em `context.json` | |
+| … +396 linhas — lista completa em `context.json` | |
 
 ### H.3 Limites de paginação
 
@@ -6744,7 +6804,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `admin` | `supabase/migrations/20261112120500_fix_optimization_queue_rpcs_dev_access.sql` |
 | `anon` | `tests/edge-functions/live/_live-client.ts` |
 
-## K. Testes como especificação (23339 testes em 2343 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (23414 testes em 2347 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -6928,6 +6988,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `src/lib/auth/__tests__/resolve-redirect-target.test.ts` | 24 | resolveRedirectTarget — precedência pós-login · 1️⃣ location.state.from vence todas as outras fontes · Google: state.from sobrescreve ?redirect e sessionStorage · E-mail/senha: state.from idem … |
 | `src/lib/customization/__tests__/format-engraving-title.test.ts` | 24 | formatEngravingTitle · prioriza nome_tabela quando disponível · usa techniqueName como fallback quando nome_tabela vazio · usa groupName como último fallback antes do default … |
 | `src/lib/edge/__tests__/invokeEdge-contracts.integration.test.ts` | 24 | invokeEdge contract — secrets-manager · cache_metrics: sucesso devolve envelope { ok, metrics } · reset_cache_metrics: 403 → error credential, data=null · erro embutido em envelope (200) é preservado para o caller … |
+| `src/lib/freight/__tests__/fromKit.test.ts` | 24 | kitToPackInput — kit com caixa própria · uma peça = a caixa (id real, medida externa), peso = caixa + itens · alimenta planFreight: 5 kits de 680 g pesam 5 × 680 = 3.400 g · usa a medida EXTERNA da caixa real 94659 (11,5 × 11,5 × 19,5), não a interna … |
 | `src/lib/freight/__tests__/packSingleProduct.test.ts` | 24 | packSingleProduct — caderneta · 7 unidades: a menor caixa que fecha é a P (cabem 64) · 100 unidades: a P não fecha (64), a M fecha (128) · 250 unidades: a GG fecha exatamente no peso máximo … |
 | `src/lib/security/__tests__/magazine-guard-adversarial.test.ts` | 24 | validateBranding — G6 color key whitelist · drops unknown key  · drops unknown key  · drops unknown key  … |
 | `tests/fuzz/freight-quest-fuzzer.test.ts` | 24 | fuzz: injeções no campo event · SQL injection em event= · XSS em event= · fuzz: path traversal em campos de texto … |
@@ -6983,6 +7044,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `src/hooks/common/__tests__/useUnsavedChangesGuard.test.ts` | 21 | estado inicial · showDialog=false, nenhuma ação pendente · message padrão em PT-BR · message customizada respeitada … |
 | `src/hooks/quotes/__tests__/useQuoteConcurrencyGuard.test.ts` | 21 | estado inicial · baseline é null quando quote=null · retorna funções estáveis (useCallback) · checkForConflict — sem consulta ao DB … |
 | `src/lib/auth/auth-utils.test.ts` | 21 | auth-utils · getGreeting · returns  · returns  … |
+| `src/lib/freight/__tests__/quoteContract.test.ts` | 21 | quoteRequestSchema · aceita o pedido válido, com e sem ready_date · recusa: %s · quoteResponseSchema … |
 | `src/utils/cnpj-schema.test.ts` | 21 | cnpjOptionalSchema · normalizes masked CNPJ to 14-digit string on parse · accepts already-normalized 14-digit input · coerces empty / null / undefined to null … |
 | `supabase/functions/generate-mockup/index.geometry.test.ts` | 21 | geometry (generate-mockup) — sem dimensões cadastradas, o fallback é a estimativa do editor · sem dimensões a conta usa 8×20 cm (o que o editor mostra), não o produto-referência de 20 cm do canvas · dimensões inválidas (0, negativa, string) valem como ausentes — mesmo fallback, nunca NaN · o handler recusa payload sem nenhuma dimensão real (422 missing_dimensions) … |
 | `tests/components/PriceFreshnessBadge.a11y.test.tsx` | 21 | PriceFreshnessBadge — acessibilidade · aria-label rico por status · fresh: menciona  · aging: menciona  … |
@@ -7046,9 +7108,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `src/lib/inventory/__tests__/stock-filter.test.ts` | 19 | stock-filter — pipeline de seleção/agregação/montagem · normalize remove acentos e diferencia caixa · selectMatchingVariants retorna todas as variações quando não há filtro de cor · cor  … |
 | `src/lib/lead-time/__tests__/personalizationLeadTime.test.ts` | 19 | resolvePersonalizationLeadTime · prazo registrado vence a tabela: frente = 4 (a faixa 100..499 diria 5) · registrado sem production_days cai na tabela: verso com 100 un = faixa 100..499 = 5 · sem linha cadastrada para o local usa a tabela pela técnica: lateral com 100 un = 5 … |
 | `src/lib/telemetry/__tests__/restoreTelemetry.fuzz.test.ts` | 19 | fuzz — normalizeCorrelationId · para QUALQUER entrada inválida, retorno é UUID v4 canônico · para QUALQUER string não-vazia após trim, retorno === entrada (verbatim) · output SEMPRE passa em isValidCorrelationId … |
-| `src/pages/products/seller-carts/__tests__/mapRestoreCartError.test.ts` | 19 | mapRestoreCartError · RLS (SQLSTATE 42501) →  · RLS por status 403 →  · unique_cart_item_variant (23505) → mensagem específica de item duplicado … |
-| `supabase/functions/magic-up-score/index.limits.test.ts` | 19 | F-07 — corpo acima do teto é recusado com 413 antes do download completo · content-length acima do teto → 413 sem abrir o corpo · sem content-length, a leitura para ao passar do teto (não baixa tudo) · F-07 — imagem acima do limite é recusada com 413 antes do provedor … |
-| … +2043 linhas — lista completa em `context.json` | | |
+| … +2047 linhas — lista completa em `context.json` | | |
 
 ## L. Eventos de webhook tratados (contratos com sistemas externos)
 
@@ -7516,4 +7576,4 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | * Dados da projeção preditiva (apenas quando status foi reavaliado por Risco de Ruptura). */ | `src/components/inventory/VariantStockVisuals.tsx` |
 | deve passar por aqui para não dar drift entre bulk e single-row. | `src/components/inventory/useStockSelection.ts` |
 | Peso desconhecido nunca deve ser lido como zero: um kit com 1 item sem | `src/components/kit-builder/FreightEstimator.tsx` |
-| … +1428 linhas — lista completa em `context.json` | |
+| … +1435 linhas — lista completa em `context.json` | |

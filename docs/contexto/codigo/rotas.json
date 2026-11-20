@@ -3599,7 +3599,7 @@
     "status",
     "supervisor"
    ],
-   "arquivos_puxados": 552
+   "arquivos_puxados": 562
   },
   {
    "protegida": true,
@@ -6689,7 +6689,7 @@
     "alert",
     "status"
    ],
-   "arquivos_puxados": 66
+   "arquivos_puxados": 77
   },
   {
    "protegida": true,

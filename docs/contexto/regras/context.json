@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "e9a62d400d580f299d05343853d5f93ba2734a32",
+  "sha": "9c386c0b226b0f1b02927a77809fa093f3769700",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-20 14:20 UTC",
-  "files_total": 11055,
-  "code_files": 9070,
-  "code_lines": 1285643
+  "generated_at": "2026-11-20 14:32 UTC",
+  "files_total": 11064,
+  "code_files": 9078,
+  "code_lines": 1287211
  },
  "version": "1.3.2",
- "facts_hash": "44224cfca12fe429",
+ "facts_hash": "0bd85318acd0b1eb",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -1129,7 +1129,7 @@
   "package_manager": "npm",
   "languages": {
    ".sql": 3471,
-   ".ts": 3135,
+   ".ts": 3143,
    ".tsx": 1993,
    ".mjs": 456,
    ".py": 15,
@@ -150962,8 +150962,8 @@
   },
   {
    "module": "src/lib",
-   "files": 404,
-   "lines": 62707,
+   "files": 412,
+   "lines": 64275,
    "tables": [
     "...",
     "companies",
@@ -151040,6 +151040,7 @@
     "jspdf",
     "jspdf-autotable",
     "lucide-react",
+    "node:crypto",
     "node:fs",
     "node:path",
     "nprogress",
@@ -160313,6 +160314,110 @@
      "refine",
      "transform"
     ]
+   },
+   {
+    "file": "src/lib/freight/planSchema.ts",
+    "name": "dimensionsSchema",
+    "kind": "object",
+    "body": "{ heightCm: z.number().positive(), widthCm: z.number().positive(), lengthCm: z.number().positive(), }",
+    "refines": [],
+    "chain": []
+   },
+   {
+    "file": "src/lib/freight/planSchema.ts",
+    "name": "cubicWeightSchema",
+    "kind": "object",
+    "body": "{ correios: z.number().nonnegative(), rodoviario: z.number().nonnegative(), }",
+    "refines": [],
+    "chain": []
+   },
+   {
+    "file": "src/lib/freight/planSchema.ts",
+    "name": "packVolumeSchema",
+    "kind": "object",
+    "body": "{ box: shippingBoxSchema, items: z.array(z.object({ productId: z.string(), quantity: z.number().int().positive() })), grossWeightG: z.number().nonnegative(), cubicWeightG: cubicWeightSchema, volumeM3: z.number().nonnegative(), fillRatio: z.number().nonnegative(), }",
+    "refines": [],
+    "chain": []
+   },
+   {
+    "file": "src/lib/freight/planSchema.ts",
+    "name": "incompleteItemSchema",
+    "kind": "object",
+    "body": "{ productId: z.string(), name: z.string(), missing: z.array(z.enum(['height', 'length', 'weight', 'width'])), }",
+    "refines": [],
+    "chain": []
+   },
+   {
+    "file": "src/lib/freight/planSchema.ts",
+    "name": "freightPlanShape",
+    "kind": "object",
+    "body": "{ status: z.enum(['dados_insuficientes', 'nao_cabe', 'ok']), volumes: z.array(packVolumeSchema), totals: z.object({ boxesByCode: z.record(z.string(), z.number().int().positive()), grossWeightG: z.number().nonnegative(), volumeM3: z.number().nonnegative(), cubicWeightG: cubicWeightSchema, }), warnings: z.array(z.string()), missing: z.array(incompleteItemSchema), mixMode: z.enum(['misturar', 'separar']), computedAt: z.iso.datetime({ offset: true }), itemsHash: z.string().min(1), }",
+    "refines": [],
+    "chain": []
+   },
+   {
+    "file": "src/lib/freight/quoteContract.ts",
+    "name": "cepSchema",
+    "kind": "string",
+    "body": "{ error: 'o CEP deve ser um texto' }",
+    "refines": [],
+    "chain": []
+   },
+   {
+    "file": "src/lib/freight/quoteContract.ts",
+    "name": "isoDateSchema",
+    "kind": "string",
+    "body": "{ error: 'a data deve ser um texto' }",
+    "refines": [],
+    "chain": []
+   },
+   {
+    "file": "src/lib/freight/quoteContract.ts",
+    "name": "positiveNumber",
+    "kind": "number",
+    "body": "{ error: 'informe um número válido' }",
+    "refines": [],
+    "chain": []
+   },
+   {
+    "file": "src/lib/freight/quoteContract.ts",
+    "name": "quoteVolumeSchema",
+    "kind": "object",
+    "body": "{ height_cm: positiveNumber, width_cm: positiveNumber, length_cm: positiveNumber, weight_g: z .number({ error: 'informe um número válido' }) .int('o peso deve ser em gramas inteiras') .positive('o peso deve ser maior que zero'), }",
+    "refines": [],
+    "chain": []
+   },
+   {
+    "file": "src/lib/freight/quoteContract.ts",
+    "name": "quoteRequestSchema",
+    "kind": "object",
+    "body": "{ origin_cep: cepSchema, destination_cep: cepSchema, declared_value_brl: positiveNumber, volumes: z.array(quoteVolumeSchema).min(1, 'informe ao menos um volume'), ready_date: isoDateSchema.optional(), }",
+    "refines": [],
+    "chain": []
+   },
+   {
+    "file": "src/lib/freight/quoteContract.ts",
+    "name": "quoteOptionSchema",
+    "kind": "object",
+    "body": "{ carrier: z.string().min(1), service: z.string().min(1), price_brl: positiveNumber, transit_business_days: z.number().int().nonnegative(), delivery_date: isoDateSchema.optional(), option_id: z.string().min(1), }",
+    "refines": [],
+    "chain": []
+   },
+   {
+    "file": "src/lib/freight/quoteContract.ts",
+    "name": "quoteResponseSchema",
+    "kind": "object",
+    "body": "{ quote_id: z.string().min(1), options: z.array(quoteOptionSchema).min(1, 'a cotação veio sem opções'), computed_at: z.iso.datetime({ offset: true }), }",
+    "refines": [],
+    "chain": []
+   },
+   {
+    "file": "src/lib/freight/quoteContract.ts",
+    "name": "quoteErrorSchema",
+    "kind": "object",
+    "body": "{ error: z.enum([ 'invalid_request', 'unauthorized', 'rate_limited', 'carrier_error', 'carrier_timeout', ]), message: z.string().min(1), request_id: z.string().min(1).optional(), }",
+    "refines": [],
+    "chain": []
    },
    {
     "file": "src/lib/kit-builder/snapshot/read-draft.ts",
@@ -175128,6 +175233,34 @@
    {
     "file": "src/lib/freight/planFreight.ts",
     "text": "do volume sem passar do máximo. É a mesma coisa que `limitedBy: 'weight'`,"
+   },
+   {
+    "file": "src/lib/freight/rankQuotes.ts",
+    "text": "* - `cheapest`: menor preço; empate → menor prazo."
+   },
+   {
+    "file": "src/lib/freight/rankQuotes.ts",
+    "text": "- `fastest`: menor prazo; empate → menor preço."
+   },
+   {
+    "file": "src/lib/freight/rankQuotes.ts",
+    "text": "a mais rápida, e `noneOnTime` fica `true`. Sem data pedida não há prazo a"
+   },
+   {
+    "file": "src/lib/freight/rankQuotes.ts",
+    "text": "* Empate total (mesmo preço e mesmo prazo) mantém a ordem em que as opções"
+   },
+   {
+    "file": "src/lib/freight/rankQuotes.ts",
+    "text": "* Data que o cliente pediu; ausente = sem prazo a cumprir. */"
+   },
+   {
+    "file": "src/lib/freight/rankQuotes.ts",
+    "text": "* Por preço crescente (empate: menor prazo). */"
+   },
+   {
+    "file": "src/lib/freight/rankQuotes.ts",
+    "text": "Prazo 0 não anda: serve só para validar a data pedida e os feriados."
    },
    {
     "file": "src/lib/freight/readiness.ts",
@@ -200734,6 +200867,16 @@
     "value": "0.5"
    },
    {
+    "file": "src/lib/freight/planSchema.ts",
+    "name": "FREIGHT_PLAN_VERSION",
+    "value": "1"
+   },
+   {
+    "file": "src/lib/freight/planSchema.ts",
+    "name": "STALE_PLAN_REASON",
+    "value": "'Plano antigo, recalcular o frete.'"
+   },
+   {
     "file": "src/lib/intelligence/degradationRegistry.ts",
     "name": "DEGRADATION_LOG_CAP",
     "value": "200"
@@ -209910,6 +210053,66 @@
     "kind": "compara"
    },
    {
+    "file": "src/lib/freight/fromKit.ts",
+    "field": "status",
+    "value": "incomplete",
+    "kind": "escreve"
+   },
+   {
+    "file": "src/lib/freight/fromKit.ts",
+    "field": "status",
+    "value": "error",
+    "kind": "escreve"
+   },
+   {
+    "file": "src/lib/freight/fromKit.ts",
+    "field": "status",
+    "value": "incomplete",
+    "kind": "escreve"
+   },
+   {
+    "file": "src/lib/freight/fromKit.ts",
+    "field": "status",
+    "value": "ok",
+    "kind": "escreve"
+   },
+   {
+    "file": "src/lib/freight/fromKit.ts",
+    "field": "status",
+    "value": "error",
+    "kind": "escreve"
+   },
+   {
+    "file": "src/lib/freight/fromKit.ts",
+    "field": "status",
+    "value": "error",
+    "kind": "escreve"
+   },
+   {
+    "file": "src/lib/freight/fromKit.ts",
+    "field": "status",
+    "value": "incomplete",
+    "kind": "escreve"
+   },
+   {
+    "file": "src/lib/freight/fromKit.ts",
+    "field": "status",
+    "value": "ok",
+    "kind": "escreve"
+   },
+   {
+    "file": "src/lib/freight/fromKit.ts",
+    "field": "status",
+    "value": "ok",
+    "kind": "escreve"
+   },
+   {
+    "file": "src/lib/freight/fromKit.ts",
+    "field": "status",
+    "value": "incomplete",
+    "kind": "compara"
+   },
+   {
     "file": "src/lib/freight/packMixed.ts",
     "field": "status",
     "value": "ok",
@@ -210022,6 +210225,126 @@
     "field": "status",
     "value": "volumes_demais",
     "kind": "compara"
+   },
+   {
+    "file": "src/lib/freight/planSchema.ts",
+    "field": "status",
+    "value": "invalid",
+    "kind": "escreve"
+   },
+   {
+    "file": "src/lib/freight/planSchema.ts",
+    "field": "status",
+    "value": "ok",
+    "kind": "escreve"
+   },
+   {
+    "file": "src/lib/freight/planSchema.ts",
+    "field": "status",
+    "value": "invalid",
+    "kind": "escreve"
+   },
+   {
+    "file": "src/lib/freight/planSchema.ts",
+    "field": "status",
+    "value": "ok",
+    "kind": "escreve"
+   },
+   {
+    "file": "src/lib/freight/planSchema.ts",
+    "field": "status",
+    "value": "ok",
+    "kind": "compara"
+   },
+   {
+    "file": "src/lib/freight/quoteContract.ts",
+    "field": "status",
+    "value": "error",
+    "kind": "escreve"
+   },
+   {
+    "file": "src/lib/freight/quoteContract.ts",
+    "field": "status",
+    "value": "ok",
+    "kind": "escreve"
+   },
+   {
+    "file": "src/lib/freight/quoteContract.ts",
+    "field": "status",
+    "value": "error",
+    "kind": "escreve"
+   },
+   {
+    "file": "src/lib/freight/quoteContract.ts",
+    "field": "status",
+    "value": "error",
+    "kind": "escreve"
+   },
+   {
+    "file": "src/lib/freight/quoteContract.ts",
+    "field": "status",
+    "value": "error",
+    "kind": "escreve"
+   },
+   {
+    "file": "src/lib/freight/quoteContract.ts",
+    "field": "status",
+    "value": "error",
+    "kind": "escreve"
+   },
+   {
+    "file": "src/lib/freight/quoteContract.ts",
+    "field": "status",
+    "value": "ok",
+    "kind": "escreve"
+   },
+   {
+    "file": "src/lib/freight/quoteContract.ts",
+    "field": "status",
+    "value": "ok",
+    "kind": "compara"
+   },
+   {
+    "file": "src/lib/freight/rankQuotes.ts",
+    "field": "status",
+    "value": "ok",
+    "kind": "escreve"
+   },
+   {
+    "file": "src/lib/freight/rankQuotes.ts",
+    "field": "status",
+    "value": "error",
+    "kind": "escreve"
+   },
+   {
+    "file": "src/lib/freight/rankQuotes.ts",
+    "field": "status",
+    "value": "error",
+    "kind": "escreve"
+   },
+   {
+    "file": "src/lib/freight/rankQuotes.ts",
+    "field": "status",
+    "value": "error",
+    "kind": "escreve"
+   },
+   {
+    "file": "src/lib/freight/rankQuotes.ts",
+    "field": "status",
+    "value": "error",
+    "kind": "escreve"
+   },
+   {
+    "file": "src/lib/freight/rankQuotes.ts",
+    "field": "status",
+    "value": "error",
+    "kind": "escreve"
+   },
+   {
+    "file": "src/lib/freight/rankQuotes.ts",
+    "field": "status",
+    "value": "ok",
+    "kind": "escreve"
    },
    {
     "file": "src/lib/freight/readiness.ts",
@@ -216926,6 +217249,18 @@
     "body": "const canonico = [...items] .map(({ productId, quantity }) => `${productId}:${quantity}`) .sort() .join('|'); let hash = 0x811c9dc5; for (let i = 0; i < canonico.length; i += 1) { hash ^= canonico.charCodeAt(i); hash = Math.imul(hash, 0x01000193) >>> 0; } return hash.toString(16).padStart(8, '0');"
    },
    {
+    "file": "src/lib/freight/rankQuotes.ts",
+    "name": "byPriceThenTransit",
+    "params": "a: RankedQuote, b: RankedQuote",
+    "body": "return ( a.option.price_brl - b.option.price_brl || a.option.transit_business_days - b.option.transit_business_days );"
+   },
+   {
+    "file": "src/lib/freight/rankQuotes.ts",
+    "name": "rankQuotes",
+    "params": "options: readonly QuoteOption[], params: RankQuotesParams,",
+    "body": "if (options.length === 0) { return { status: 'error', code: 'no_options', message: 'A cotação não trouxe nenhuma opção de frete.', }; } const negativa = options.find((option) => option.transit_business_days < 0); if (negativa) { return { status: 'error', code: 'invalid_input', message: `Prazo negativo na opção ${negativa.option_id}: ${negativa.transit_business_days} dias úteis.`, }; } const requestedDate = params.requestedDate ?? null; if (requestedDate !== null) { // Prazo 0 não anda: serve só …"
+   },
+   {
     "file": "src/lib/freight/units.ts",
     "name": "roundDecimal",
     "params": "value: number, decimals: number",
@@ -219840,6 +220175,10 @@
    {
     "file": "src/lib/external-db/products-detail-retry.ts",
     "line": "setTimeout(r, 1000 * (attempt + 1));"
+   },
+   {
+    "file": "src/lib/freight/rankQuotes.ts",
+    "line": "const checked = addBusinessDays(requestedDate, 0, params.holidays);"
    },
    {
     "file": "src/lib/lead-time/productionLeadTime.ts",
@@ -254474,6 +254813,102 @@
     "name": "não confunde os dois divisores"
    },
    {
+    "file": "src/lib/freight/__tests__/fromKit.test.ts",
+    "name": "kitToPackInput — kit com caixa própria"
+   },
+   {
+    "file": "src/lib/freight/__tests__/fromKit.test.ts",
+    "name": "uma peça = a caixa (id real, medida externa), peso = caixa + itens"
+   },
+   {
+    "file": "src/lib/freight/__tests__/fromKit.test.ts",
+    "name": "alimenta planFreight: 5 kits de 680 g pesam 5 × 680 = 3.400 g"
+   },
+   {
+    "file": "src/lib/freight/__tests__/fromKit.test.ts",
+    "name": "usa a medida EXTERNA da caixa real 94659 (11,5 × 11,5 × 19,5), não a interna"
+   },
+   {
+    "file": "src/lib/freight/__tests__/fromKit.test.ts",
+    "name": "soma de peso fracionado é arredondada: 0,1 + 0,2 = 0,3 (não 0,30000000000000004)"
+   },
+   {
+    "file": "src/lib/freight/__tests__/fromKit.test.ts",
+    "name": "linha de quantidade 0 não pesa nem bloqueia, mesmo sem peso nem catálogo"
+   },
+   {
+    "file": "src/lib/freight/__tests__/fromKit.test.ts",
+    "name": "caixa sem itens pesa só a caixa"
+   },
+   {
+    "file": "src/lib/freight/__tests__/fromKit.test.ts",
+    "name": "item sem peso: missing aponta o ITEM (id e nome reais), não a caixa, e não há input"
+   },
+   {
+    "file": "src/lib/freight/__tests__/fromKit.test.ts",
+    "name": "item sem linha de catálogo dentro da caixa: missing de peso com o id do item"
+   },
+   {
+    "file": "src/lib/freight/__tests__/fromKit.test.ts",
+    "name": "caixa sem peso: missing da caixa com o id real dela"
+   },
+   {
+    "file": "src/lib/freight/__tests__/fromKit.test.ts",
+    "name": "caixa sem medida externa: missing das medidas da caixa"
+   },
+   {
+    "file": "src/lib/freight/__tests__/fromKit.test.ts",
+    "name": "caixa sem linha de catálogo: pendência de tudo, com o id real e nunca sintético"
+   },
+   {
+    "file": "src/lib/freight/__tests__/fromKit.test.ts",
+    "name": "caixa e item sem peso aparecem juntos, caixa primeiro"
+   },
+   {
+    "file": "src/lib/freight/__tests__/fromKit.test.ts",
+    "name": "kitToPackInput — kit sem caixa"
+   },
+   {
+    "file": "src/lib/freight/__tests__/fromKit.test.ts",
+    "name": "cada item vira uma linha com a linha de catálogo e mixMode misturar"
+   },
+   {
+    "file": "src/lib/freight/__tests__/fromKit.test.ts",
+    "name": "alimenta planFreight: itens × quantidade × kits"
+   },
+   {
+    "file": "src/lib/freight/__tests__/fromKit.test.ts",
+    "name": "ships_separately do catálogo vence: "
+   },
+   {
+    "file": "src/lib/freight/__tests__/fromKit.test.ts",
+    "name": "item sem linha de catálogo vira missing com id e nome do item"
+   },
+   {
+    "file": "src/lib/freight/__tests__/fromKit.test.ts",
+    "name": "item sem medida ou sem peso vira missing do motor e não gera inputs parciais"
+   },
+   {
+    "file": "src/lib/freight/__tests__/fromKit.test.ts",
+    "name": "linha de quantidade 0 é ignorada"
+   },
+   {
+    "file": "src/lib/freight/__tests__/fromKit.test.ts",
+    "name": "kit vazio vira lista vazia, que o motor bloqueia"
+   },
+   {
+    "file": "src/lib/freight/__tests__/fromKit.test.ts",
+    "name": "kitToPackInput — erro de entrada devolvido, nunca lançado"
+   },
+   {
+    "file": "src/lib/freight/__tests__/fromKit.test.ts",
+    "name": "quantidade de kits %p"
+   },
+   {
+    "file": "src/lib/freight/__tests__/fromKit.test.ts",
+    "name": "quantidade %p de um item"
+   },
+   {
     "file": "src/lib/freight/__tests__/fuzz.test.ts",
     "name": "fuzz — invariantes do plano"
    },
@@ -255012,6 +255447,210 @@
    {
     "file": "src/lib/freight/__tests__/planFreight.test.ts",
     "name": "lista vazia tem hash próprio e estável"
+   },
+   {
+    "file": "src/lib/freight/__tests__/planSchema.test.ts",
+    "name": "freightPlanSchema — tipo"
+   },
+   {
+    "file": "src/lib/freight/__tests__/planSchema.test.ts",
+    "name": "z.infer do corpo é idêntico a FreightPlan, nos dois sentidos"
+   },
+   {
+    "file": "src/lib/freight/__tests__/planSchema.test.ts",
+    "name": "a guarda de tipo do schema (conferida pelo typecheck de src) está exportada"
+   },
+   {
+    "file": "src/lib/freight/__tests__/planSchema.test.ts",
+    "name": "o envelope salvo é o plano mais version: 1"
+   },
+   {
+    "file": "src/lib/freight/__tests__/planSchema.test.ts",
+    "name": "parseStoredFreightPlan"
+   },
+   {
+    "file": "src/lib/freight/__tests__/planSchema.test.ts",
+    "name": "plano REAL gerado por planFreight passa e volta idêntico, sem version"
+   },
+   {
+    "file": "src/lib/freight/__tests__/planSchema.test.ts",
+    "name": "caixa com fillFactor %s (fallback para o fator global no motor) volta a ler"
+   },
+   {
+    "file": "src/lib/freight/__tests__/planSchema.test.ts",
+    "name": "o JSON salvo carrega version: 1 e o plano devolvido não"
+   },
+   {
+    "file": "src/lib/freight/__tests__/planSchema.test.ts",
+    "name": "sem version = plano antigo"
+   },
+   {
+    "file": "src/lib/freight/__tests__/planSchema.test.ts",
+    "name": "version %p desconhecida = plano antigo"
+   },
+   {
+    "file": "src/lib/freight/__tests__/planSchema.test.ts",
+    "name": "valor %p não é plano"
+   },
+   {
+    "file": "src/lib/freight/__tests__/planSchema.test.ts",
+    "name": "plano inválido: %s"
+   },
+   {
+    "file": "src/lib/freight/__tests__/quoteContract.test.ts",
+    "name": "quoteRequestSchema"
+   },
+   {
+    "file": "src/lib/freight/__tests__/quoteContract.test.ts",
+    "name": "aceita o pedido válido, com e sem ready_date"
+   },
+   {
+    "file": "src/lib/freight/__tests__/quoteContract.test.ts",
+    "name": "recusa: %s"
+   },
+   {
+    "file": "src/lib/freight/__tests__/quoteContract.test.ts",
+    "name": "quoteResponseSchema"
+   },
+   {
+    "file": "src/lib/freight/__tests__/quoteContract.test.ts",
+    "name": "aceita a resposta válida, com delivery_date opcional"
+   },
+   {
+    "file": "src/lib/freight/__tests__/quoteContract.test.ts",
+    "name": "recusa: %s"
+   },
+   {
+    "file": "src/lib/freight/__tests__/quoteContract.test.ts",
+    "name": "quoteErrorSchema"
+   },
+   {
+    "file": "src/lib/freight/__tests__/quoteContract.test.ts",
+    "name": "recusa código fora da lista"
+   },
+   {
+    "file": "src/lib/freight/__tests__/quoteContract.test.ts",
+    "name": "buildQuoteRequest"
+   },
+   {
+    "file": "src/lib/freight/__tests__/quoteContract.test.ts",
+    "name": "usa a medida EXTERNA da caixa e o peso bruto de cada volume"
+   },
+   {
+    "file": "src/lib/freight/__tests__/quoteContract.test.ts",
+    "name": "sem readyDate o pedido não leva ready_date"
+   },
+   {
+    "file": "src/lib/freight/__tests__/quoteContract.test.ts",
+    "name": "peso fracionado sobe para o grama inteiro"
+   },
+   {
+    "file": "src/lib/freight/__tests__/quoteContract.test.ts",
+    "name": "devolve erro em PT-BR com rótulo para %s inválido"
+   },
+   {
+    "file": "src/lib/freight/__tests__/quoteContract.test.ts",
+    "name": "data fora do formato gera uma mensagem só (não repete "
+   },
+   {
+    "file": "src/lib/freight/__tests__/quoteContract.test.ts",
+    "name": "plano ok sem volumes é recusado pelo contrato, com rótulo"
+   },
+   {
+    "file": "src/lib/freight/__tests__/quoteContract.test.ts",
+    "name": "volume sem peso é nomeado como Volume 1"
+   },
+   {
+    "file": "src/lib/freight/__tests__/quoteContract.test.ts",
+    "name": "nunca lança: plano null e params undefined viram erro"
+   },
+   {
+    "file": "src/lib/freight/__tests__/quoteContract.test.ts",
+    "name": "rotuloDoCaminho"
+   },
+   {
+    "file": "src/lib/freight/__tests__/quoteContract.test.ts",
+    "name": "%j vira %s"
+   },
+   {
+    "file": "src/lib/freight/__tests__/quoteContract.test.ts",
+    "name": "docs/frete/contrato-cotacao-loggi.md"
+   },
+   {
+    "file": "src/lib/freight/__tests__/quoteContract.test.ts",
+    "name": "o sha256 do rodapé confere com o bloco de contrato"
+   },
+   {
+    "file": "src/lib/freight/__tests__/rankQuotes.test.ts",
+    "name": "rankQuotes — as 4 opções do plano"
+   },
+   {
+    "file": "src/lib/freight/__tests__/rankQuotes.test.ts",
+    "name": "sem data pedida: mais barata A, mais rápida D, recomendada A, onTime nulo"
+   },
+   {
+    "file": "src/lib/freight/__tests__/rankQuotes.test.ts",
+    "name": "chegada da opção %s é %s"
+   },
+   {
+    "file": "src/lib/freight/__tests__/rankQuotes.test.ts",
+    "name": "data pedida 09/12: A atrasa; B, C e D chegam; recomendada = mais barata das que chegam (B)"
+   },
+   {
+    "file": "src/lib/freight/__tests__/rankQuotes.test.ts",
+    "name": "data pedida 03/12 (hoje): nenhuma chega; recomendada = mais rápida (D) e noneOnTime"
+   },
+   {
+    "file": "src/lib/freight/__tests__/rankQuotes.test.ts",
+    "name": "feriado no caminho: com terça 08/12 feriada, B (+4) chega 10/12 e perde a data 09/12"
+   },
+   {
+    "file": "src/lib/freight/__tests__/rankQuotes.test.ts",
+    "name": "rankQuotes — empates e bordas"
+   },
+   {
+    "file": "src/lib/freight/__tests__/rankQuotes.test.ts",
+    "name": "mesmo preço: a mais barata é a de menor prazo"
+   },
+   {
+    "file": "src/lib/freight/__tests__/rankQuotes.test.ts",
+    "name": "mesmo prazo: a mais rápida é a de menor preço"
+   },
+   {
+    "file": "src/lib/freight/__tests__/rankQuotes.test.ts",
+    "name": "empate total mantém a ordem de chegada"
+   },
+   {
+    "file": "src/lib/freight/__tests__/rankQuotes.test.ts",
+    "name": "uma só opção é tudo ao mesmo tempo"
+   },
+   {
+    "file": "src/lib/freight/__tests__/rankQuotes.test.ts",
+    "name": "trânsito 0 chega no mesmo dia"
+   },
+   {
+    "file": "src/lib/freight/__tests__/rankQuotes.test.ts",
+    "name": "requestedDate null equivale a sem data"
+   },
+   {
+    "file": "src/lib/freight/__tests__/rankQuotes.test.ts",
+    "name": "não altera a lista recebida"
+   },
+   {
+    "file": "src/lib/freight/__tests__/rankQuotes.test.ts",
+    "name": "rankQuotes — erro de entrada devolvido, nunca lançado"
+   },
+   {
+    "file": "src/lib/freight/__tests__/rankQuotes.test.ts",
+    "name": "lista vazia"
+   },
+   {
+    "file": "src/lib/freight/__tests__/rankQuotes.test.ts",
+    "name": "prazo negativo é recusado: andaria para trás (pronto 03/12 chegaria 02/12)"
+   },
+   {
+    "file": "src/lib/freight/__tests__/rankQuotes.test.ts",
+    "name": "prazo de trânsito fracionado"
    },
    {
     "file": "src/lib/freight/__tests__/readiness.test.ts",
@@ -355716,6 +356355,9 @@
       "escreve:src/components/pricing/calculator/QuantityComparisonTable.tsx",
       "escreve:src/lib/auth/invoke-full-scope.ts",
       "escreve:src/lib/freight/expandQuantities.ts",
+      "escreve:src/lib/freight/fromKit.ts",
+      "escreve:src/lib/freight/quoteContract.ts",
+      "escreve:src/lib/freight/rankQuotes.ts",
       "escreve:src/pages/admin/DevChallengeExamplesPage.tsx",
       "escreve:src/pages/admin/telemetry/useRegressionGuardrail.ts",
       "escreve:src/pages/system/SystemStatusPage.tsx",
@@ -355747,6 +356389,8 @@
       "compara:src/lib/auth/invoke-full-scope.ts",
       "compara:src/lib/freight/format.ts",
       "compara:src/lib/freight/formatPlanSummary.ts",
+      "compara:src/lib/freight/planSchema.ts",
+      "compara:src/lib/freight/quoteContract.ts",
       "compara:src/pages/admin/DevChallengeExamplesPage.tsx",
       "compara:src/pages/products/CartsListPage.tsx",
       "compara:src/pages/products/seller-carts/useSellerCartsPage.ts",
@@ -355761,9 +356405,13 @@
       "escreve:src/hooks/kit-builder/useKitMinQuantityValidation.ts",
       "escreve:src/lib/auth/invoke-full-scope.ts",
       "escreve:src/lib/freight/expandQuantities.ts",
+      "escreve:src/lib/freight/fromKit.ts",
       "escreve:src/lib/freight/packMixed.ts",
       "escreve:src/lib/freight/packSingleProduct.ts",
       "escreve:src/lib/freight/planFreight.ts",
+      "escreve:src/lib/freight/planSchema.ts",
+      "escreve:src/lib/freight/quoteContract.ts",
+      "escreve:src/lib/freight/rankQuotes.ts",
       "escreve:src/lib/freight/resolveItemDimensions.ts",
       "escreve:src/lib/lead-time/productionLeadTime.ts",
       "escreve:src/pages/admin/DevChallengeExamplesPage.tsx",
@@ -356452,14 +357100,20 @@
       "compara:src/lib/carts/shipping-deadline.ts",
       "compara:src/pages/products/CartsListPage.tsx"
      ],
+     "incomplete": [
+      "compara:src/lib/freight/fromKit.ts",
+      "compara:src/lib/freight/planFreight.ts",
+      "compara:src/lib/freight/readiness.ts",
+      "escreve:src/lib/freight/fromKit.ts",
+      "escreve:src/lib/freight/resolveItemDimensions.ts"
+     ],
      "volumes_demais": [
       "compara:src/lib/freight/planFreight.ts",
       "escreve:src/lib/freight/packSingleProduct.ts"
      ],
-     "incomplete": [
-      "compara:src/lib/freight/planFreight.ts",
-      "compara:src/lib/freight/readiness.ts",
-      "escreve:src/lib/freight/resolveItemDimensions.ts"
+     "invalid": [
+      "escreve:src/lib/freight/planSchema.ts",
+      "escreve:supabase/functions/e2e-cleanup/index.ts"
      ],
      "in_transit": [
       "compara:src/lib/inventory/future-stock-stats.ts"
@@ -356517,9 +357171,6 @@
      ],
      "forbidden": [
       "escreve:supabase/functions/e2e-cleanup/handler_characterization_test.ts",
-      "escreve:supabase/functions/e2e-cleanup/index.ts"
-     ],
-     "invalid": [
       "escreve:supabase/functions/e2e-cleanup/index.ts"
      ],
      "rate_limited": [
@@ -405267,19 +405918,20 @@
    },
    {
     "kind": "status",
-    "msg": "valor `volumes_demais` para `status` usado no código não existe em nenhum enum do banco/TS",
+    "msg": "valor `incomplete` para `status` usado no código não existe em nenhum enum do banco/TS",
     "where": [
+     "compara:src/lib/freight/fromKit.ts",
      "compara:src/lib/freight/planFreight.ts",
-     "escreve:src/lib/freight/packSingleProduct.ts"
+     "compara:src/lib/freight/readiness.ts",
+     "escreve:src/lib/freight/fromKit.ts"
     ]
    },
    {
     "kind": "status",
-    "msg": "valor `incomplete` para `status` usado no código não existe em nenhum enum do banco/TS",
+    "msg": "valor `volumes_demais` para `status` usado no código não existe em nenhum enum do banco/TS",
     "where": [
      "compara:src/lib/freight/planFreight.ts",
-     "compara:src/lib/freight/readiness.ts",
-     "escreve:src/lib/freight/resolveItemDimensions.ts"
+     "escreve:src/lib/freight/packSingleProduct.ts"
     ]
    },
    {
@@ -484557,9 +485209,70 @@
     }
    ]
   },
+  "src/lib/freight/fromKit.ts": {
+   "path": "src/lib/freight/fromKit.ts",
+   "lines": 161,
+   "exports": [
+    "interface FreightKit",
+    "type KitPackInput",
+    "function kitToPackInput"
+   ],
+   "status_values": [
+    {
+     "field": "status",
+     "value": "incomplete",
+     "kind": "escreve"
+    },
+    {
+     "field": "status",
+     "value": "error",
+     "kind": "escreve"
+    },
+    {
+     "field": "status",
+     "value": "incomplete",
+     "kind": "escreve"
+    },
+    {
+     "field": "status",
+     "value": "ok",
+     "kind": "escreve"
+    },
+    {
+     "field": "status",
+     "value": "error",
+     "kind": "escreve"
+    },
+    {
+     "field": "status",
+     "value": "error",
+     "kind": "escreve"
+    },
+    {
+     "field": "status",
+     "value": "incomplete",
+     "kind": "escreve"
+    },
+    {
+     "field": "status",
+     "value": "ok",
+     "kind": "escreve"
+    },
+    {
+     "field": "status",
+     "value": "ok",
+     "kind": "escreve"
+    },
+    {
+     "field": "status",
+     "value": "incomplete",
+     "kind": "compara"
+    }
+   ]
+  },
   "src/lib/freight/index.ts": {
    "path": "src/lib/freight/index.ts",
-   "lines": 72,
+   "lines": 77,
    "doc": "Motor de frete — barril público. Contrato, unidades e limites em `./README.md`."
   },
   "src/lib/freight/limits.ts": {
@@ -484748,6 +485461,288 @@
      "params": "items: ReadonlyArray<{ productId: string; quantity: number }>,",
      "body": "const canonico = [...items] .map(({ productId, quantity }) => `${productId}:${quantity}`) .sort() .join('|'); let hash = 0x811c9dc5; for (let i = 0; i < canonico.length; i += 1) { hash ^= canonico.charCodeAt(i); hash = Math.imul(hash, 0x01000193) >>> 0; } return hash.toString(16).padStart(8, '0');"
     }
+   ]
+  },
+  "src/lib/freight/planSchema.ts": {
+   "path": "src/lib/freight/planSchema.ts",
+   "lines": 127,
+   "exports": [
+    "const FREIGHT_PLAN_VERSION",
+    "const STALE_PLAN_REASON",
+    "const freightPlanBodySchema",
+    "const freightPlanSchema",
+    "const FREIGHT_PLAN_SCHEMA_MATCHES_TYPE",
+    "type StoredFreightPlan",
+    "type ParsedFreightPlan",
+    "function toStoredFreightPlan",
+    "function parseStoredFreightPlan"
+   ],
+   "zod": [
+    {
+     "name": "dimensionsSchema",
+     "kind": "object",
+     "body": "{ heightCm: z.number().positive(), widthCm: z.number().positive(), lengthCm: z.number().positive(), }",
+     "refines": [],
+     "chain": []
+    },
+    {
+     "name": "cubicWeightSchema",
+     "kind": "object",
+     "body": "{ correios: z.number().nonnegative(), rodoviario: z.number().nonnegative(), }",
+     "refines": [],
+     "chain": []
+    },
+    {
+     "name": "packVolumeSchema",
+     "kind": "object",
+     "body": "{ box: shippingBoxSchema, items: z.array(z.object({ productId: z.string(), quantity: z.number().int().positive() })), grossWeightG: z.number().nonnegative(), cubicWeightG: cubicWeightSchema, volumeM3: z.number().nonnegative(), fillRatio: z.number().nonnegative(), }",
+     "refines": [],
+     "chain": []
+    },
+    {
+     "name": "incompleteItemSchema",
+     "kind": "object",
+     "body": "{ productId: z.string(), name: z.string(), missing: z.array(z.enum(['height', 'length', 'weight', 'width'])), }",
+     "refines": [],
+     "chain": []
+    },
+    {
+     "name": "freightPlanShape",
+     "kind": "object",
+     "body": "{ status: z.enum(['dados_insuficientes', 'nao_cabe', 'ok']), volumes: z.array(packVolumeSchema), totals: z.object({ boxesByCode: z.record(z.string(), z.number().int().positive()), grossWeightG: z.number().nonnegative(), volumeM3: z.number().nonnegative(), cubicWeightG: cubicWeightSchema, }), warnings: z.array(z.string()), missing: z.array(incompleteItemSchema), mixMode: z.enum(['misturar', 'separar']), computedAt: z.iso.datetime({ offset: true }), itemsHash: z.string().min(1), }",
+     "refines": [],
+     "chain": []
+    }
+   ],
+   "params": [
+    {
+     "name": "FREIGHT_PLAN_VERSION",
+     "value": "1"
+    },
+    {
+     "name": "STALE_PLAN_REASON",
+     "value": "'Plano antigo, recalcular o frete.'"
+    }
+   ],
+   "status_values": [
+    {
+     "field": "status",
+     "value": "invalid",
+     "kind": "escreve"
+    },
+    {
+     "field": "status",
+     "value": "ok",
+     "kind": "escreve"
+    },
+    {
+     "field": "status",
+     "value": "invalid",
+     "kind": "escreve"
+    },
+    {
+     "field": "status",
+     "value": "ok",
+     "kind": "escreve"
+    },
+    {
+     "field": "status",
+     "value": "ok",
+     "kind": "compara"
+    }
+   ]
+  },
+  "src/lib/freight/quoteContract.ts": {
+   "path": "src/lib/freight/quoteContract.ts",
+   "lines": 176,
+   "exports": [
+    "const quoteVolumeSchema",
+    "const quoteRequestSchema",
+    "const quoteOptionSchema",
+    "const quoteResponseSchema",
+    "const QUOTE_ERROR_CODES",
+    "const quoteErrorSchema",
+    "type QuoteVolume",
+    "type QuoteRequest",
+    "type QuoteOption",
+    "type QuoteResponse",
+    "type QuoteError",
+    "interface QuoteRequestParams",
+    "type BuildQuoteRequestResult",
+    "function rotuloDoCaminho",
+    "function buildQuoteRequest"
+   ],
+   "zod": [
+    {
+     "name": "cepSchema",
+     "kind": "string",
+     "body": "{ error: 'o CEP deve ser um texto' }",
+     "refines": [],
+     "chain": []
+    },
+    {
+     "name": "isoDateSchema",
+     "kind": "string",
+     "body": "{ error: 'a data deve ser um texto' }",
+     "refines": [],
+     "chain": []
+    },
+    {
+     "name": "positiveNumber",
+     "kind": "number",
+     "body": "{ error: 'informe um número válido' }",
+     "refines": [],
+     "chain": []
+    },
+    {
+     "name": "quoteVolumeSchema",
+     "kind": "object",
+     "body": "{ height_cm: positiveNumber, width_cm: positiveNumber, length_cm: positiveNumber, weight_g: z .number({ error: 'informe um número válido' }) .int('o peso deve ser em gramas inteiras') .positive('o peso deve ser maior que zero'), }",
+     "refines": [],
+     "chain": []
+    },
+    {
+     "name": "quoteRequestSchema",
+     "kind": "object",
+     "body": "{ origin_cep: cepSchema, destination_cep: cepSchema, declared_value_brl: positiveNumber, volumes: z.array(quoteVolumeSchema).min(1, 'informe ao menos um volume'), ready_date: isoDateSchema.optional(), }",
+     "refines": [],
+     "chain": []
+    },
+    {
+     "name": "quoteOptionSchema",
+     "kind": "object",
+     "body": "{ carrier: z.string().min(1), service: z.string().min(1), price_brl: positiveNumber, transit_business_days: z.number().int().nonnegative(), delivery_date: isoDateSchema.optional(), option_id: z.string().min(1), }",
+     "refines": [],
+     "chain": []
+    },
+    {
+     "name": "quoteResponseSchema",
+     "kind": "object",
+     "body": "{ quote_id: z.string().min(1), options: z.array(quoteOptionSchema).min(1, 'a cotação veio sem opções'), computed_at: z.iso.datetime({ offset: true }), }",
+     "refines": [],
+     "chain": []
+    },
+    {
+     "name": "quoteErrorSchema",
+     "kind": "object",
+     "body": "{ error: z.enum([ 'invalid_request', 'unauthorized', 'rate_limited', 'carrier_error', 'carrier_timeout', ]), message: z.string().min(1), request_id: z.string().min(1).optional(), }",
+     "refines": [],
+     "chain": []
+    }
+   ],
+   "status_values": [
+    {
+     "field": "status",
+     "value": "error",
+     "kind": "escreve"
+    },
+    {
+     "field": "status",
+     "value": "ok",
+     "kind": "escreve"
+    },
+    {
+     "field": "status",
+     "value": "error",
+     "kind": "escreve"
+    },
+    {
+     "field": "status",
+     "value": "error",
+     "kind": "escreve"
+    },
+    {
+     "field": "status",
+     "value": "error",
+     "kind": "escreve"
+    },
+    {
+     "field": "status",
+     "value": "error",
+     "kind": "escreve"
+    },
+    {
+     "field": "status",
+     "value": "ok",
+     "kind": "escreve"
+    },
+    {
+     "field": "status",
+     "value": "ok",
+     "kind": "compara"
+    }
+   ],
+   "doc": "Contrato da cotação de frete Promo Gifts → Loggi (lado Promo, etapa 81). Texto, exemplos e erros em `docs/frete/contrato-cotacao-loggi.md`; o bloco `contract` desse documento e este arquivo dizem a mesma coisa. Os nomes dos campos são `snake_case` porque é o JSON que viaja entre os dois sistemas. Me …"
+  },
+  "src/lib/freight/rankQuotes.ts": {
+   "path": "src/lib/freight/rankQuotes.ts",
+   "lines": 134,
+   "exports": [
+    "interface RankQuotesParams",
+    "interface RankedQuote",
+    "type RankQuotesResult",
+    "function rankQuotes"
+   ],
+   "status_values": [
+    {
+     "field": "status",
+     "value": "ok",
+     "kind": "escreve"
+    },
+    {
+     "field": "status",
+     "value": "error",
+     "kind": "escreve"
+    },
+    {
+     "field": "status",
+     "value": "error",
+     "kind": "escreve"
+    },
+    {
+     "field": "status",
+     "value": "error",
+     "kind": "escreve"
+    },
+    {
+     "field": "status",
+     "value": "error",
+     "kind": "escreve"
+    },
+    {
+     "field": "status",
+     "value": "error",
+     "kind": "escreve"
+    },
+    {
+     "field": "status",
+     "value": "ok",
+     "kind": "escreve"
+    }
+   ],
+   "rule_comments": [
+    "* - `cheapest`: menor preço; empate → menor prazo.",
+    "- `fastest`: menor prazo; empate → menor preço.",
+    "a mais rápida, e `noneOnTime` fica `true`. Sem data pedida não há prazo a",
+    "* Empate total (mesmo preço e mesmo prazo) mantém a ordem em que as opções",
+    "* Data que o cliente pediu; ausente = sem prazo a cumprir. */",
+    "* Por preço crescente (empate: menor prazo). */",
+    "Prazo 0 não anda: serve só para validar a data pedida e os feriados."
+   ],
+   "calc_fns": [
+    {
+     "name": "byPriceThenTransit",
+     "params": "a: RankedQuote, b: RankedQuote",
+     "body": "return ( a.option.price_brl - b.option.price_brl || a.option.transit_business_days - b.option.transit_business_days );"
+    },
+    {
+     "name": "rankQuotes",
+     "params": "options: readonly QuoteOption[], params: RankQuotesParams,",
+     "body": "if (options.length === 0) { return { status: 'error', code: 'no_options', message: 'A cotação não trouxe nenhuma opção de frete.', }; } const negativa = options.find((option) => option.transit_business_days < 0); if (negativa) { return { status: 'error', code: 'invalid_input', message: `Prazo negativo na opção ${negativa.option_id}: ${negativa.transit_business_days} dias úteis.`, }; } const requestedDate = params.requestedDate ?? null; if (requestedDate !== null) { // Prazo 0 não anda: serve só …"
+    }
+   ],
+   "temporal": [
+    "const checked = addBusinessDays(requestedDate, 0, params.holidays);"
    ]
   },
   "src/lib/freight/readiness.ts": {
@@ -485070,6 +486065,41 @@
     "não confunde os dois divisores"
    ]
   },
+  "src/lib/freight/__tests__/fromKit.test.ts": {
+   "path": "src/lib/freight/__tests__/fromKit.test.ts",
+   "lines": 330,
+   "is_test": true,
+   "errors": [
+    "status ${resultado.status}"
+   ],
+   "doc": "fromKit.test.ts — kit do kit builder → entrada do motor de frete (etapa 51). Medida e peso vêm do catálogo (cm e g, chave = products.id); o kit só diz quais produtos e quantos.",
+   "tests": [
+    "kitToPackInput — kit com caixa própria",
+    "uma peça = a caixa (id real, medida externa), peso = caixa + itens",
+    "alimenta planFreight: 5 kits de 680 g pesam 5 × 680 = 3.400 g",
+    "usa a medida EXTERNA da caixa real 94659 (11,5 × 11,5 × 19,5), não a interna",
+    "soma de peso fracionado é arredondada: 0,1 + 0,2 = 0,3 (não 0,30000000000000004)",
+    "linha de quantidade 0 não pesa nem bloqueia, mesmo sem peso nem catálogo",
+    "caixa sem itens pesa só a caixa",
+    "item sem peso: missing aponta o ITEM (id e nome reais), não a caixa, e não há input",
+    "item sem linha de catálogo dentro da caixa: missing de peso com o id do item",
+    "caixa sem peso: missing da caixa com o id real dela",
+    "caixa sem medida externa: missing das medidas da caixa",
+    "caixa sem linha de catálogo: pendência de tudo, com o id real e nunca sintético",
+    "caixa e item sem peso aparecem juntos, caixa primeiro",
+    "kitToPackInput — kit sem caixa",
+    "cada item vira uma linha com a linha de catálogo e mixMode misturar",
+    "alimenta planFreight: itens × quantidade × kits",
+    "ships_separately do catálogo vence: ",
+    "item sem linha de catálogo vira missing com id e nome do item",
+    "item sem medida ou sem peso vira missing do motor e não gera inputs parciais",
+    "linha de quantidade 0 é ignorada",
+    "kit vazio vira lista vazia, que o motor bloqueia",
+    "kitToPackInput — erro de entrada devolvido, nunca lançado",
+    "quantidade de kits %p",
+    "quantidade %p de um item"
+   ]
+  },
   "src/lib/freight/__tests__/fuzz.test.ts": {
    "path": "src/lib/freight/__tests__/fuzz.test.ts",
    "lines": 209,
@@ -485280,6 +486310,90 @@
     "muda quando um produto entra",
     "é estável entre execuções: o mesmo conteúdo dá o mesmo hash",
     "lista vazia tem hash próprio e estável"
+   ]
+  },
+  "src/lib/freight/__tests__/planSchema.test.ts": {
+   "path": "src/lib/freight/__tests__/planSchema.test.ts",
+   "lines": 153,
+   "is_test": true,
+   "doc": "planSchema.test.ts — formato salvo do plano de frete (etapa 62).",
+   "tests": [
+    "freightPlanSchema — tipo",
+    "z.infer do corpo é idêntico a FreightPlan, nos dois sentidos",
+    "a guarda de tipo do schema (conferida pelo typecheck de src) está exportada",
+    "o envelope salvo é o plano mais version: 1",
+    "parseStoredFreightPlan",
+    "plano REAL gerado por planFreight passa e volta idêntico, sem version",
+    "caixa com fillFactor %s (fallback para o fator global no motor) volta a ler",
+    "o JSON salvo carrega version: 1 e o plano devolvido não",
+    "sem version = plano antigo",
+    "version %p desconhecida = plano antigo",
+    "valor %p não é plano",
+    "plano inválido: %s"
+   ]
+  },
+  "src/lib/freight/__tests__/quoteContract.test.ts": {
+   "path": "src/lib/freight/__tests__/quoteContract.test.ts",
+   "lines": 298,
+   "is_test": true,
+   "doc": "quoteContract.test.ts — contrato da cotação Promo → Loggi (etapa 81).",
+   "tests": [
+    "quoteRequestSchema",
+    "aceita o pedido válido, com e sem ready_date",
+    "recusa: %s",
+    "quoteResponseSchema",
+    "aceita a resposta válida, com delivery_date opcional",
+    "recusa: %s",
+    "quoteErrorSchema",
+    "recusa código fora da lista",
+    "buildQuoteRequest",
+    "usa a medida EXTERNA da caixa e o peso bruto de cada volume",
+    "sem readyDate o pedido não leva ready_date",
+    "peso fracionado sobe para o grama inteiro",
+    "devolve erro em PT-BR com rótulo para %s inválido",
+    "data fora do formato gera uma mensagem só (não repete ",
+    "plano ok sem volumes é recusado pelo contrato, com rótulo",
+    "volume sem peso é nomeado como Volume 1",
+    "nunca lança: plano null e params undefined viram erro",
+    "rotuloDoCaminho",
+    "%j vira %s",
+    "docs/frete/contrato-cotacao-loggi.md",
+    "o sha256 do rodapé confere com o bloco de contrato"
+   ]
+  },
+  "src/lib/freight/__tests__/rankQuotes.test.ts": {
+   "path": "src/lib/freight/__tests__/rankQuotes.test.ts",
+   "lines": 184,
+   "is_test": true,
+   "errors": [
+    "esperava ok, veio ${result.message}"
+   ],
+   "params": [
+    {
+     "name": "PRONTO",
+     "value": "'2026-12-03'"
+    }
+   ],
+   "doc": "rankQuotes.test.ts — ranking das opções de frete (etapa 85). Calendário usado: 2026-12-03 é quinta-feira. Chegada = pronto + dias úteis: +1 → sex 04/12 · +2 → seg 07/12 · +4 → qua 09/12 · +6 → sex 11/12.",
+   "tests": [
+    "rankQuotes — as 4 opções do plano",
+    "sem data pedida: mais barata A, mais rápida D, recomendada A, onTime nulo",
+    "chegada da opção %s é %s",
+    "data pedida 09/12: A atrasa; B, C e D chegam; recomendada = mais barata das que chegam (B)",
+    "data pedida 03/12 (hoje): nenhuma chega; recomendada = mais rápida (D) e noneOnTime",
+    "feriado no caminho: com terça 08/12 feriada, B (+4) chega 10/12 e perde a data 09/12",
+    "rankQuotes — empates e bordas",
+    "mesmo preço: a mais barata é a de menor prazo",
+    "mesmo prazo: a mais rápida é a de menor preço",
+    "empate total mantém a ordem de chegada",
+    "uma só opção é tudo ao mesmo tempo",
+    "trânsito 0 chega no mesmo dia",
+    "requestedDate null equivale a sem data",
+    "não altera a lista recebida",
+    "rankQuotes — erro de entrada devolvido, nunca lançado",
+    "lista vazia",
+    "prazo negativo é recusado: andaria para trás (pronto 03/12 chegaria 02/12)",
+    "prazo de trânsito fracionado"
    ]
   },
   "src/lib/freight/__tests__/readiness.test.ts": {
@@ -556161,10 +557275,28 @@
   }
  },
  "git": {
-  "sha": "e9a62d400d580f299d05343853d5f93ba2734a32",
+  "sha": "9c386c0b226b0f1b02927a77809fa093f3769700",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "9c386c0",
+    "date": "2026-11-20",
+    "author": "adm01-debug",
+    "subject": "feat(frete): bibliotecas do kit, schema do plano, contrato de cotação e ranking (etapas 51, 62, 81, 85) (#3928)",
+    "files": [
+     "docs/frete/contrato-cotacao-loggi.md",
+     "src/lib/freight/__tests__/fromKit.test.ts",
+     "src/lib/freight/__tests__/planSchema.test.ts",
+     "src/lib/freight/__tests__/quoteContract.test.ts",
+     "src/lib/freight/__tests__/rankQuotes.test.ts",
+     "src/lib/freight/fromKit.ts",
+     "src/lib/freight/index.ts",
+     "src/lib/freight/planSchema.ts",
+     "src/lib/freight/quoteContract.ts",
+     "src/lib/freight/rankQuotes.ts"
+    ]
+   },
    {
     "sha": "e9a62d4",
     "date": "2026-11-20",
@@ -556653,27 +557785,6 @@
      ".github/workflows/e2e-cart.yml",
      "tests/scripts/e2e-cart-artifact-safety.test.mjs"
     ]
-   },
-   {
-    "sha": "6319e09",
-    "date": "2026-11-19",
-    "author": "adm01-debug",
-    "subject": "feat(frete): base do motor — tipos, unidades e medidas (Bloco A) (#3896)",
-    "files": [
-     "src/lib/freight/README.md",
-     "src/lib/freight/__tests__/columns.test.ts",
-     "src/lib/freight/__tests__/expandQuantities.test.ts",
-     "src/lib/freight/__tests__/fixtures/products.ts",
-     "src/lib/freight/__tests__/resolveItemDimensions.test.ts",
-     "src/lib/freight/__tests__/units.test.ts",
-     "src/lib/freight/columns.ts",
-     "src/lib/freight/expandQuantities.ts",
-     "src/lib/freight/index.ts",
-     "src/lib/freight/resolveItemDimensions.ts",
-     "src/lib/freight/types.ts",
-     "src/lib/freight/units.ts",
-     "src/lib/kit-builder/weight.ts"
-    ]
    }
   ],
   "hot_files": [
@@ -556682,11 +557793,11 @@
     12
    ],
    [
-    "src/lib/freight/README.md",
-    6
+    "src/lib/freight/index.ts",
+    5
    ],
    [
-    "src/lib/freight/index.ts",
+    "src/lib/freight/README.md",
     5
    ],
    [
@@ -556706,10 +557817,6 @@
     4
    ],
    [
-    "src/lib/freight/types.ts",
-    4
-   ],
-   [
     "scripts/freight/README.md",
     3
    ],
@@ -556726,15 +557833,7 @@
     3
    ],
    [
-    "src/lib/freight/__tests__/resolveItemDimensions.test.ts",
-    3
-   ],
-   [
     "src/lib/freight/buildGroups.ts",
-    3
-   ],
-   [
-    "src/lib/freight/columns.ts",
     3
    ],
    [
@@ -556746,7 +557845,7 @@
     3
    ],
    [
-    "src/lib/freight/units.ts",
+    "src/lib/freight/types.ts",
     3
    ],
    [
@@ -556755,6 +557854,18 @@
    ],
    [
     ".security/policies-baseline.json",
+    2
+   ],
+   [
+    "scripts/freight/seed-shipping-boxes.mjs",
+    2
+   ],
+   [
+    "supabase/rollbacks/20261119213000_rollback.sql",
+    2
+   ],
+   [
+    "supabase/rollbacks/20261119213100_rollback.sql",
     2
    ]
   ]

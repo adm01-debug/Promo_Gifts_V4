@@ -1,6 +1,6 @@
 # 11 · GLOSSÁRIO, DADOS DE REFERÊNCIA E LACUNAS
 
-> Gerado automaticamente por AI Context Sync v1.3.2 · commit `e9a62d400d` · branch `main` · 2026-11-20 14:20 UTC
+> Gerado automaticamente por AI Context Sync v1.3.2 · commit `9c386c0b22` · branch `main` · 2026-11-20 14:32 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## Glossário do domínio (entidades do sistema)
@@ -372,8 +372,8 @@
 | status | valor `changed` para `status` usado no código não existe em nenhum enum do banco/TS | `compara:src/pages/kit-builder/useKitBuilderQuote.ts`<br>`escreve:src/hooks/kit-builder/useKitPriceValidation.ts` |
 | status | valor `unchanged` para `status` usado no código não existe em nenhum enum do banco/TS | `escreve:src/hooks/kit-builder/useKitPriceValidation.ts` |
 | status | valor `APPLIED` para `status` usado no código não existe em nenhum enum do banco/TS | `escreve:src/lib/theme-presets-css-vars-patch.ts` |
+| status | valor `incomplete` para `status` usado no código não existe em nenhum enum do banco/TS | `compara:src/lib/freight/fromKit.ts`<br>`compara:src/lib/freight/planFreight.ts`<br>`compara:src/lib/freight/readiness.ts`<br>`escreve:src/lib/freight/fromKit.ts` |
 | status | valor `volumes_demais` para `status` usado no código não existe em nenhum enum do banco/TS | `compara:src/lib/freight/planFreight.ts`<br>`escreve:src/lib/freight/packSingleProduct.ts` |
-| status | valor `incomplete` para `status` usado no código não existe em nenhum enum do banco/TS | `compara:src/lib/freight/planFreight.ts`<br>`compara:src/lib/freight/readiness.ts`<br>`escreve:src/lib/freight/resolveItemDimensions.ts` |
 | status | valor `string` para `status` usado no código não existe em nenhum enum do banco/TS | `compara:src/lib/products/stock-status.ts` |
 | status | valor `confirming` para `status` usado no código não existe em nenhum enum do banco/TS | `compara:src/pages/auth/SSOCallbackPage.tsx` |
 | status | valor `already_applied` para `status` usado no código não existe em nenhum enum do banco/TS | `escreve:supabase/functions/crm-callback-reprocess/index.ts` |

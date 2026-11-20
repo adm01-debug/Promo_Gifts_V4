@@ -18,13 +18,13 @@
    "src/components (78)"
   ],
   "servicos_logica": [
-   "src/lib (261)",
+   "src/lib (265)",
    "src/utils (33)",
    "src/services (14)"
   ],
   "testes": [
    "tests/ (1092)",
-   "co-localizado (__tests__) (746)",
+   "co-localizado (__tests__) (750)",
    "e2e/ (627)"
   ],
   "edge_functions": "supabase/functions",
@@ -43,7 +43,7 @@
  "nomenclatura": {
   "componentes": "PascalCase (96%)",
   "hooks": "use + PascalCase",
-  "servicos": "camelCase (51%)",
+  "servicos": "camelCase (52%)",
   "edge_functions": "kebab-case (99%)",
   "tabelas": "snake_case (86%)"
  },
@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "feat(frete): bibliotecas do kit, schema do plano, contrato de cotação e ranking (etapas 51, 62, 81, 85) (#3928)",
    "chore(main): release gifts-store 1.14.0 (#3916)",
    "fix: crash appendChild ao digitar na busca global (CommandItem soltos) (#3937)",
    "docs(migrations): recibos E15 das 20261120030000/030100 (baseline já em #3931) (#3932)",
-   "feat(db): resgata migrations órfãs de branches fechadas (P06 + onboarding) (#3914)",
-   "chore(security): atualiza baseline assinado de RLS policies (#3931)"
+   "feat(db): resgata migrations órfãs de branches fechadas (P06 + onboarding) (#3914)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",

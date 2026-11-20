@@ -1,13 +1,13 @@
 {
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
- "total": 342,
+ "total": 346,
  "por_camada": {
   "api": 4,
   "config": 1,
   "data": 3,
   "integrations": 8,
-  "lib": 261,
+  "lib": 265,
   "python": 9,
   "services": 14,
   "stores": 9,
@@ -3991,11 +3991,11 @@
    "zod_schemas": 0,
    "flags": [],
    "papeis": [],
-   "usado_por": 4,
+   "usado_por": 5,
    "usado_por_modulos": [
     "lib/freight"
    ],
-   "coberto_por_testes": 6,
+   "coberto_por_testes": 7,
    "orfao": false
   },
   {
@@ -4145,12 +4145,39 @@
    "orfao": false
   },
   {
+   "arquivo": "src/lib/freight/fromKit.ts",
+   "camada": "lib",
+   "exports": [
+    "FreightKit",
+    "KitPackInput",
+    "kitToPackInput"
+   ],
+   "export_default": null,
+   "linhas": 161,
+   "tabelas": [],
+   "rpcs": [],
+   "edges": [],
+   "env": [],
+   "externos": [],
+   "zod_schemas": 0,
+   "flags": [],
+   "papeis": [],
+   "usado_por": 1,
+   "usado_por_modulos": [
+    "lib/freight"
+   ],
+   "coberto_por_testes": 1,
+   "orfao": false
+  },
+  {
    "arquivo": "src/lib/freight/index.ts",
    "camada": "lib",
    "exports": [
     "PRODUCT_MEASURE_COLUMNS",
     "PRODUCT_MEASURE_SELECT",
+    "QUOTE_ERROR_CODES",
     "buildGroups",
+    "buildQuoteRequest",
     "cm3ToM3",
     "computeItemsHash",
     "computeVolumeTotals",
@@ -4160,24 +4187,31 @@
     "fitCount",
     "formatPlanForClient",
     "formatPlanSummary",
+    "freightPlanSchema",
     "getFreightReadiness",
     "isKnownMeasure",
     "kgToG",
+    "kitToPackInput",
     "maiorCaixa",
     "mmToCm",
     "packMixed",
     "packSingleProduct",
+    "parseStoredFreightPlan",
     "planFreight",
+    "quoteRequestSchema",
+    "quoteResponseSchema",
+    "rankQuotes",
     "resolveItemDimensions",
     "round1",
     "round2",
     "toFreightSettings",
     "toShippingBox",
+    "toStoredFreightPlan",
     "volumeCm3",
     "volumeInternoCm3"
    ],
    "export_default": null,
-   "linhas": 72,
+   "linhas": 77,
    "tabelas": [],
    "rpcs": [],
    "edges": [],
@@ -4286,11 +4320,109 @@
    "zod_schemas": 0,
    "flags": [],
    "papeis": [],
+   "usado_por": 2,
+   "usado_por_modulos": [
+    "lib/freight"
+   ],
+   "coberto_por_testes": 8,
+   "orfao": false
+  },
+  {
+   "arquivo": "src/lib/freight/planSchema.ts",
+   "camada": "lib",
+   "exports": [
+    "FREIGHT_PLAN_SCHEMA_MATCHES_TYPE",
+    "FREIGHT_PLAN_VERSION",
+    "ParsedFreightPlan",
+    "STALE_PLAN_REASON",
+    "StoredFreightPlan",
+    "freightPlanBodySchema",
+    "freightPlanSchema",
+    "parseStoredFreightPlan",
+    "toStoredFreightPlan"
+   ],
+   "export_default": null,
+   "linhas": 127,
+   "tabelas": [],
+   "rpcs": [],
+   "edges": [],
+   "env": [],
+   "externos": [
+    "zod"
+   ],
+   "zod_schemas": 8,
+   "flags": [],
+   "papeis": [],
    "usado_por": 1,
    "usado_por_modulos": [
     "lib/freight"
    ],
-   "coberto_por_testes": 5,
+   "coberto_por_testes": 1,
+   "orfao": false
+  },
+  {
+   "arquivo": "src/lib/freight/quoteContract.ts",
+   "camada": "lib",
+   "exports": [
+    "BuildQuoteRequestResult",
+    "QUOTE_ERROR_CODES",
+    "QuoteError",
+    "QuoteOption",
+    "QuoteRequest",
+    "QuoteRequestParams",
+    "QuoteResponse",
+    "QuoteVolume",
+    "buildQuoteRequest",
+    "quoteErrorSchema",
+    "quoteOptionSchema",
+    "quoteRequestSchema",
+    "quoteResponseSchema",
+    "quoteVolumeSchema",
+    "rotuloDoCaminho"
+   ],
+   "export_default": null,
+   "linhas": 176,
+   "tabelas": [],
+   "rpcs": [],
+   "edges": [],
+   "env": [],
+   "externos": [
+    "zod"
+   ],
+   "zod_schemas": 5,
+   "flags": [],
+   "papeis": [],
+   "usado_por": 2,
+   "usado_por_modulos": [
+    "lib/freight"
+   ],
+   "coberto_por_testes": 2,
+   "orfao": false
+  },
+  {
+   "arquivo": "src/lib/freight/rankQuotes.ts",
+   "camada": "lib",
+   "exports": [
+    "RankQuotesParams",
+    "RankQuotesResult",
+    "RankedQuote",
+    "rankQuotes"
+   ],
+   "export_default": null,
+   "linhas": 134,
+   "tabelas": [],
+   "rpcs": [],
+   "edges": [],
+   "env": [],
+   "externos": [],
+   "zod_schemas": 0,
+   "flags": [],
+   "papeis": [],
+   "usado_por": 1,
+   "usado_por_modulos": [
+    "lib/freight"
+   ],
+   "coberto_por_testes": 1,
    "orfao": false
   },
   {
@@ -4335,7 +4467,7 @@
    "zod_schemas": 0,
    "flags": [],
    "papeis": [],
-   "usado_por": 3,
+   "usado_por": 4,
    "usado_por_modulos": [
     "lib/freight"
    ],
@@ -4371,11 +4503,11 @@
    "zod_schemas": 0,
    "flags": [],
    "papeis": [],
-   "usado_por": 14,
+   "usado_por": 17,
    "usado_por_modulos": [
     "lib/freight"
    ],
-   "coberto_por_testes": 5,
+   "coberto_por_testes": 6,
    "orfao": false
   },
   {
@@ -4400,7 +4532,7 @@
    "zod_schemas": 0,
    "flags": [],
    "papeis": [],
-   "usado_por": 7,
+   "usado_por": 8,
    "usado_por_modulos": [
     "lib/freight",
     "lib/kit-builder"
@@ -5165,10 +5297,11 @@
    "zod_schemas": 0,
    "flags": [],
    "papeis": [],
-   "usado_por": 18,
+   "usado_por": 19,
    "usado_por_modulos": [
     "components/kit-builder",
     "hooks/kit-builder",
+    "lib/freight",
     "lib/kit-builder"
    ],
    "coberto_por_testes": 6,
@@ -5384,8 +5517,10 @@
    "zod_schemas": 0,
    "flags": [],
    "papeis": [],
-   "usado_por": 0,
-   "usado_por_modulos": [],
+   "usado_por": 1,
+   "usado_por_modulos": [
+    "lib/freight"
+   ],
    "coberto_por_testes": 0,
    "orfao": false
   },

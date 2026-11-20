@@ -3,9 +3,9 @@
  "format_version": 2,
  "stack": {
   "linguagens": [
-   "TypeScript (5127)",
+   "TypeScript (5135)",
    "SQL (3471)",
-   "Markdown (1489)",
+   "Markdown (1490)",
    "JavaScript (463)",
    "JSON (132)",
    "YAML (117)",
@@ -4390,6 +4390,10 @@
    "arquivos_md": 2
   },
   {
+   "pasta": "docs/frete",
+   "arquivos_md": 2
+  },
+  {
    "pasta": "docs/historico",
    "arquivos_md": 2
   },
@@ -4403,10 +4407,6 @@
   },
   {
    "pasta": "docs/e2e",
-   "arquivos_md": 1
-  },
-  {
-   "pasta": "docs/frete",
    "arquivos_md": 1
   },
   {

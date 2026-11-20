@@ -25609,9 +25609,9 @@
   },
   {
    "modulo": "lib/freight",
-   "arquivos": 19,
-   "testes": 21,
-   "linhas": 2037,
+   "arquivos": 23,
+   "testes": 25,
+   "linhas": 2640,
    "itens_menu": [],
    "telas": [],
    "rotas_http": [],
@@ -25638,9 +25638,13 @@
     "lib/kit-builder"
    ],
    "depende_de_modulos": [
-    "integrations/supabase"
+    "integrations/supabase",
+    "lib/kit-builder",
+    "lib/lead-time"
    ],
-   "pacotes_externos": []
+   "pacotes_externos": [
+    "zod"
+   ]
   },
   {
    "modulo": "lib/intelligence",
@@ -25784,6 +25788,7 @@
     "components/kit-builder",
     "components/kit-library",
     "hooks/kit-builder",
+    "lib/freight",
     "pages/admin",
     "pages/kit-builder",
     "utils"
@@ -25855,7 +25860,9 @@
     "tabelas": [],
     "rpcs": []
    },
-   "importado_por_outros_modulos": [],
+   "importado_por_outros_modulos": [
+    "lib/freight"
+   ],
    "depende_de_modulos": [],
    "pacotes_externos": [
     "date-fns"

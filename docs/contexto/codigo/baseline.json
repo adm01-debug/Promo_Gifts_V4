@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "e9a62d400d580f299d05343853d5f93ba2734a32",
+  "commit": "9c386c0b226b0f1b02927a77809fa093f3769700",
   "branch": "main",
-  "data_commit": "2026-11-20T11:17:32-03:00",
+  "data_commit": "2026-11-20T14:31:07Z",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "9c386c0b",
+    "data": "2026-11-20",
+    "assunto": "feat(frete): bibliotecas do kit, schema do plano, contrato de cotação e ranking (etapas 51, 62, 81, 85) (#3928)"
+   },
    {
     "sha": "e9a62d40",
     "data": "2026-11-20",
@@ -126,14 +131,9 @@
     "sha": "a78f9c89",
     "data": "2026-11-19",
     "assunto": "chore(main): release gifts-store 1.12.0 (#3899)"
-   },
-   {
-    "sha": "41166fc8",
-    "data": "2026-11-19",
-    "assunto": "feat(frete): motor de empacotamento (Bloco B) (#3900)"
    }
   ],
-  "arquivos_mudados_7d": 1437,
+  "arquivos_mudados_7d": 1446,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -181,11 +181,11 @@
    },
    {
     "pasta": "src/pages/admin",
-    "mudancas": 193
+    "mudancas": 194
    },
    {
     "pasta": "src/pages/quotes",
-    "mudancas": 172
+    "mudancas": 173
    },
    {
     "pasta": "src/components/kit-builder",
@@ -199,7 +199,7 @@
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "supabase/MIGRATIONS_SYNC_LOG.md",
-    "mudancas": 69
+    "mudancas": 68
    },
    {
     "arquivo": "package.json",
@@ -301,7 +301,7 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 334
+    "commits": 333
    },
    {
     "autor": "Claude",
@@ -313,7 +313,7 @@
    },
    {
     "autor": "Joaquim Ataides",
-    "commits": 10
+    "commits": 9
    },
    {
     "autor": "dependabot[bot]",
@@ -322,9 +322,9 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 11127,
-  "arquivos_codigo": 5600,
-  "linhas_codigo": 1063043,
+  "arquivos_total": 11136,
+  "arquivos_codigo": 5608,
+  "linhas_codigo": 1064611,
   "rotas": 140,
   "rotas_http_backend": 13,
   "vistas_por_id": 0,
@@ -336,10 +336,10 @@
   "tabelas": 529,
   "migrations": 3115,
   "cron_jobs": 122,
-  "testes": 2670,
+  "testes": 2674,
   "workflows": 89,
   "scripts": 285,
-  "docs_md": 1489
+  "docs_md": 1490
  },
  "por_pasta": {
   ".github/scripts": {
@@ -1939,8 +1939,8 @@
    "linhas": 66679
   },
   "src/lib": {
-   "arquivos": 403,
-   "linhas": 62697
+   "arquivos": 411,
+   "linhas": 64265
   },
   "src/logic": {
    "arquivos": 4,
