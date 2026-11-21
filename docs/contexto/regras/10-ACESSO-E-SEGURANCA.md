@@ -1,6 +1,6 @@
 # 10 · ACESSO E SEGURANÇA — quem pode o quê
 
-> Gerado automaticamente por AI Context Sync v1.3.2 · commit `7f8c55ef2e` · branch `main` · 2026-11-21 16:51 UTC
+> Gerado automaticamente por AI Context Sync v1.3.2 · commit `27369d5ec5` · branch `main` · 2026-11-21 17:04 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## Perfis / roles identificados
@@ -327,7 +327,7 @@
 
 > `—` com RLS ligado = ninguém além de service_role. `sem RLS` = qualquer chave anon lê/escreve tudo.
 
-## Onde o RLS é IGNORADO (service_role) — 838 arquivo(s)
+## Onde o RLS é IGNORADO (service_role) — 839 arquivo(s)
 
 - `auditoria-supabase/propostas/P01_rls_restrictive_correcao.sql`
 - `auditoria-supabase/propostas/P10_func_new_001_fn_cron_guard_revoke.sql`
@@ -479,7 +479,7 @@
 - `supabase/functions/hash-product-images/index.ts`
 - `supabase/functions/health-check/index.ts`
 - `supabase/functions/load-test/index.ts`
-- … +688 (lista completa em `context.json`)
+- … +689 (lista completa em `context.json`)
 
 ## Funções SQL `SECURITY DEFINER` (rodam com privilégio do dono, ignoram RLS)
 
@@ -1223,7 +1223,7 @@ Middleware matcher (Next.js): nenhum
 | grant | anon | select, insert, update, delete, references, trigger | `mockup_approval_links` |
 | grant | anon, authenticated | execute | `check_login_rate_limit`, `get_public_schema_signatures`, `get_catalog_bestseller_page`, `get_catalog_bestseller_ids`, `get_catalog_bestseller_page`, `fn_get_product_intelligence_all`, `fn_get_all_leaf_categories`, `get_catalog_bestseller_page`, `get_promo_sales_ranking`, `get_catalog_bestseller_page`, `get_catalog_bestseller_page`, `fn_get_reposicao_listing`, `get_catalog_bestseller_page`, `get_promo_sales_90d_by_product`, `fn_get_similar_products` |
 | grant | anon, authenticated | insert | `password_reset_requests` |
-| grant | anon, authenticated | select | `v_products_public`, `v_products_public`, `v_suppliers_public`, `system_settings`, `video_sim_results`, `product_novelties`, `v_product_active_badge`, `v_product_active_badge`, `v_product_active_badge`, `v_products_public`, `v_catalog_stats`, `mv_product_leaf_category`, `mv_product_leaf_category`, `v_catalog_stats`, `category_ancestors` … +20 |
+| grant | anon, authenticated | select | `v_products_public`, `v_products_public`, `v_suppliers_public`, `system_settings`, `video_sim_results`, `product_novelties`, `v_product_active_badge`, `v_product_active_badge`, `v_product_active_badge`, `v_products_public`, `v_catalog_stats`, `mv_product_leaf_category`, `mv_product_leaf_category`, `v_catalog_stats`, `category_ancestors` … +21 |
 | grant | anon, authenticated | usage, select | `kill_switch_hits_id_seq` |
 | grant | anon, authenticated, service_role | execute | `claim_webhook_delivery`, `release_webhook_delivery_lock`, `cleanup_stale_webhook_locks`, `fn_video_set_dimensions`, `fn_video_queue_old_uid`, `fn_video_queue_recover_stuck`, `fn_video_sim_export`, `fn_video_sim_upsert`, `fn_super_filtro_product_ids`, `fn_super_filtro_product_ids`, `fn_ema_kpi_by_level`, `fn_ema_kpi_by_level`, `fn_ema_kpi_by_level`, `fn_super_filtro_product_ids`, `get_sitemap_public` … +1 |
 | grant | anon, authenticated, service_role | select | `system_kill_switches`, `vw_product_novelties_active`, `vw_novelties_home_highlights`, `vw_novelties_home_highlights`, `v_variant_sale_prices_public`, `v_products_min_price`, `v_print_area_techniques_public`, `v_product_properties_public`, `v_product_compositions_public`, `v_kit_component_media_public`, `v_tags_public`, `v_product_tags_public`, `v_personalization_techniques_public`, `v_color_nuances_public`, `v_kit_component_print_areas_public` … +5 |

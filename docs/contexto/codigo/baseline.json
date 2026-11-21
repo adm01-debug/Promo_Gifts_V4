@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "7f8c55ef2e7cf05745e8ffc63b513638dd24afd2",
+  "commit": "27369d5ec53b44226dc5847786e29f2056c46626",
   "branch": "main",
-  "data_commit": "2026-11-21T13:49:50-03:00",
+  "data_commit": "2026-11-21T17:03:12Z",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "27369d5e",
+    "data": "2026-11-21",
+    "assunto": "feat: migration v_compras_precos_faixa — view de faixas de preço para compras (#3962)"
+   },
    {
     "sha": "7f8c55ef",
     "data": "2026-11-21",
@@ -126,14 +131,9 @@
     "sha": "9c386c0b",
     "data": "2026-11-20",
     "assunto": "feat(frete): bibliotecas do kit, schema do plano, contrato de cotação e ranking (etapas 51, 62, 81, 85) (#3928)"
-   },
-   {
-    "sha": "e9a62d40",
-    "data": "2026-11-20",
-    "assunto": "chore(main): release gifts-store 1.14.0 (#3916)"
    }
   ],
-  "arquivos_mudados_7d": 11301,
+  "arquivos_mudados_7d": 11305,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -153,7 +153,7 @@
    },
    {
     "pasta": "src/hooks/products",
-    "mudancas": 754
+    "mudancas": 751
    },
    {
     "pasta": "src/components/quotes",
@@ -199,7 +199,7 @@
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "supabase/MIGRATIONS_SYNC_LOG.md",
-    "mudancas": 70
+    "mudancas": 67
    },
    {
     "arquivo": "package.json",
@@ -207,7 +207,7 @@
    },
    {
     "arquivo": "docs/coordenacao/conflitos-semanticos.md",
-    "mudancas": 31
+    "mudancas": 30
    },
    {
     "arquivo": "package-lock.json",
@@ -301,11 +301,11 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 303
+    "commits": 299
    },
    {
     "autor": "Claude",
-    "commits": 48
+    "commits": 46
    },
    {
     "autor": "github-actions[bot]",
@@ -322,7 +322,7 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 11196,
+  "arquivos_total": 11197,
   "arquivos_codigo": 5650,
   "linhas_codigo": 1072210,
   "rotas": 141,
@@ -334,7 +334,7 @@
   "hooks": 645,
   "edge_functions": 112,
   "tabelas": 531,
-  "migrations": 3121,
+  "migrations": 3122,
   "cron_jobs": 122,
   "testes": 2699,
   "workflows": 89,

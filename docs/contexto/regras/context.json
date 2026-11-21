@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "7f8c55ef2e7cf05745e8ffc63b513638dd24afd2",
+  "sha": "27369d5ec53b44226dc5847786e29f2056c46626",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-21 16:51 UTC",
-  "files_total": 11124,
-  "code_files": 9132,
-  "code_lines": 1297029
+  "generated_at": "2026-11-21 17:04 UTC",
+  "files_total": 11125,
+  "code_files": 9133,
+  "code_lines": 1297086
  },
  "version": "1.3.2",
- "facts_hash": "78ad0d91dc85e062",
+ "facts_hash": "f73f1e7875fa54e6",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -1128,7 +1128,7 @@
   ],
   "package_manager": "npm",
   "languages": {
-   ".sql": 3483,
+   ".sql": 3484,
    ".ts": 3164,
    ".tsx": 2014,
    ".mjs": 455,
@@ -93485,6 +93485,10 @@
    "v_compras_catalogo": {
     "body": "select p.id as pim_product_id, v.id as pim_variant_id, p.sku, p.sku_promo, p.name, p.supplier_id, s.code as supplier_code, s.name as supplier_name, coalesce(v.supplier_sku, p.supplier_reference) as supplier_reference, p.cost_price, p.sale_price, p.suggested_price, p.ipi_rate, p.ncm_code, p.min_quantity, p.min_order_quantity, s.min_order_value, coalesce(v.stock_quantity, p.stock_quantity) as stock_quantity, p.is_stockout, p.last_stock_update_at, v.color_id, v.color_name, v.color_code, v.color_hex, v.size_code, p.primary_image_url as image_url, p.lead_time_days, p.price_updated_at, p.updated_at …",
     "src": "supabase/migrations/20261121163000_v_compras_catalogo.sql"
+   },
+   "v_compras_precos_faixa": {
+    "body": "SELECT pcp.product_id AS pim_product_id, NULL::uuid AS pim_variant_id, band.qty_min, LEAD(band.qty_min) OVER ( PARTITION BY pcp.id ORDER BY band.ord ) - 1 AS qty_max, band.unit_cost, NULL::numeric AS unit_price, 'spot_customization'::text AS source, pcp.service_code, pcp.table_code, pcp.component, pcp.location, pcp.handling_cost, pcp.table_max_area_cm2, pcp.max_stitches, pcp.hotspot, pcp.currency FROM public.product_customization_prices pcp CROSS JOIN LATERAL ( SELECT t.qty_min_val AS qty_min, t.price_val AS unit_cost, t.ord FROM unnest(pcp.min_qty, pcp.price) WITH ORDINALITY AS t(qty_min_val, …",
+    "src": "supabase/migrations/20261121183000_v_compras_precos_faixa.sql"
    }
   },
   "sources": [
@@ -96636,6 +96640,7 @@
    "supabase/migrations/20261121000000_quote_rpcs_freight_plan.sql",
    "supabase/migrations/20261121120000_fix_quote_rpcs_contract_freight.sql",
    "supabase/migrations/20261121163000_v_compras_catalogo.sql",
+   "supabase/migrations/20261121183000_v_compras_precos_faixa.sql",
    "supabase/rollbacks/20260511235950_rollback.sql",
    "supabase/rollbacks/20260511235959_rollback.sql",
    "supabase/rollbacks/20260611014515_fn_dryrun_standardize_supplier_real_rollback.sql",
@@ -133483,6 +133488,14 @@
     "src": "supabase/migrations/20261121163000_v_compras_catalogo.sql"
    },
    {
+    "kind": "grant",
+    "privs": "select",
+    "object": "v_compras_precos_faixa",
+    "objkind": "table",
+    "roles": "anon, authenticated",
+    "src": "supabase/migrations/20261121183000_v_compras_precos_faixa.sql"
+   },
+   {
     "kind": "revoke",
     "privs": "all",
     "object": "fn_dryrun_standardize_supplier",
@@ -152478,8 +152491,8 @@
   },
   {
    "module": "supabase/migrations",
-   "files": 3120,
-   "lines": 226466,
+   "files": 3121,
+   "lines": 226523,
    "tables": [
     "...",
     "admin_audit_log",
@@ -355629,6 +355642,10 @@
    "v_compras_catalogo": {
     "body": "select p.id as pim_product_id, v.id as pim_variant_id, p.sku, p.sku_promo, p.name, p.supplier_id, s.code as supplier_code, s.name as supplier_name, coalesce(v.supplier_sku, p.supplier_reference) as supplier_reference, p.cost_price, p.sale_price, p.suggested_price, p.ipi_rate, p.ncm_code, p.min_quantity, p.min_order_quantity, s.min_order_value, coalesce(v.stock_quantity, p.stock_quantity) as stock_quantity, p.is_stockout, p.last_stock_update_at, v.color_id, v.color_name, v.color_code, v.color_hex, v.size_code, p.primary_image_url as image_url, p.lead_time_days, p.price_updated_at, p.updated_at …",
     "src": "supabase/migrations/20261121163000_v_compras_catalogo.sql"
+   },
+   "v_compras_precos_faixa": {
+    "body": "SELECT pcp.product_id AS pim_product_id, NULL::uuid AS pim_variant_id, band.qty_min, LEAD(band.qty_min) OVER ( PARTITION BY pcp.id ORDER BY band.ord ) - 1 AS qty_max, band.unit_cost, NULL::numeric AS unit_price, 'spot_customization'::text AS source, pcp.service_code, pcp.table_code, pcp.component, pcp.location, pcp.handling_cost, pcp.table_max_area_cm2, pcp.max_stitches, pcp.hotspot, pcp.currency FROM public.product_customization_prices pcp CROSS JOIN LATERAL ( SELECT t.qty_min_val AS qty_min, t.price_val AS unit_cost, t.ord FROM unnest(pcp.min_qty, pcp.price) WITH ORDINALITY AS t(qty_min_val, …",
+    "src": "supabase/migrations/20261121183000_v_compras_precos_faixa.sql"
    }
   },
   "pagination": [
@@ -366217,6 +366234,7 @@
    "supabase/migrations/20261119220000_create_ema_sister_functions.sql",
    "supabase/migrations/20261120030000_harden_freight_tables.sql",
    "supabase/migrations/20261120041000_production_lead_time_calendar.sql",
+   "supabase/migrations/20261121183000_v_compras_precos_faixa.sql",
    "supabase/rollbacks/20260611014515_fn_dryrun_standardize_supplier_real_rollback.sql",
    "supabase/rollbacks/20260611124000_fn_dryrun_standardize_supplier_real_rollback.sql",
    "supabase/rollbacks/20260917061500_rollback.sql",
@@ -403151,6 +403169,14 @@
     "objkind": "table",
     "roles": "anon, authenticated",
     "src": "supabase/migrations/20261121163000_v_compras_catalogo.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "select",
+    "object": "v_compras_precos_faixa",
+    "objkind": "table",
+    "roles": "anon, authenticated",
+    "src": "supabase/migrations/20261121183000_v_compras_precos_faixa.sql"
    },
    {
     "kind": "revoke",
@@ -534511,6 +534537,11 @@
    "path": "supabase/migrations/20261121163000_v_compras_catalogo.sql",
    "lines": 55
   },
+  "supabase/migrations/20261121183000_v_compras_precos_faixa.sql": {
+   "path": "supabase/migrations/20261121183000_v_compras_precos_faixa.sql",
+   "lines": 57,
+   "uses_service_role": true
+  },
   "supabase/rollbacks/20260511235950_rollback.sql": {
    "path": "supabase/rollbacks/20260511235950_rollback.sql",
    "lines": 5
@@ -560616,10 +560647,19 @@
   }
  },
  "git": {
-  "sha": "7f8c55ef2e7cf05745e8ffc63b513638dd24afd2",
+  "sha": "27369d5ec53b44226dc5847786e29f2056c46626",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "27369d5",
+    "date": "2026-11-21",
+    "author": "adm01-debug",
+    "subject": "feat: migration v_compras_precos_faixa — view de faixas de preço para compras (#3962)",
+    "files": [
+     "supabase/migrations/20261121183000_v_compras_precos_faixa.sql"
+    ]
+   },
    {
     "sha": "7f8c55e",
     "date": "2026-11-21",
@@ -561062,32 +561102,12 @@
     "files": [
      ".security/policies-baseline.json"
     ]
-   },
-   {
-    "sha": "dc4a2df",
-    "date": "2026-11-20",
-    "author": "adm01-debug",
-    "subject": "feat(db): endurece as tabelas de frete e cadastra as 4 caixas (P, M, G, GG) (#3923)",
-    "files": [
-     "scripts/freight/README.md",
-     "scripts/freight/seed-shipping-boxes.mjs",
-     "supabase/MIGRATIONS_SYNC_LOG.md",
-     "supabase/migrations/20261120030000_harden_freight_tables.sql",
-     "supabase/migrations/20261120030100_seed_shipping_boxes.sql",
-     "supabase/rollbacks/20261119213000_rollback.sql",
-     "supabase/rollbacks/20261119213100_rollback.sql",
-     "supabase/rollbacks/20261120030000_rollback.sql",
-     "supabase/rollbacks/20261120030100_rollback.sql",
-     "tests/contracts/freight-tables-hardening-migration.test.ts",
-     "tests/scripts/seed-shipping-boxes-rollback.test.mjs",
-     "tests/scripts/seed-shipping-boxes.test.mjs"
-    ]
    }
   ],
   "hot_files": [
    [
     "supabase/MIGRATIONS_SYNC_LOG.md",
-    9
+    8
    ],
    [
     ".file-size-baseline.json",
