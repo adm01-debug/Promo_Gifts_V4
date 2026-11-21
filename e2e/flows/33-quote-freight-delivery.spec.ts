@@ -1,6 +1,6 @@
 /**
  * Fluxo: Orçamento + Frete (freight-quest)
- * Cobre: FOB pré-negociado, FOB repassado, CIF, FreightEstimator no KitBuilder,
+ * Cobre: FOB pré-negociado, FOB repassado, CIF, plano de volumes no KitBuilder,
  *        validação de campo obrigatório e atualização em tempo real do total.
  *
  * Não submete dados reais ao BD — usa mocks de rede onde necessário.
@@ -111,21 +111,23 @@ test.describe("Fluxo: Orçamento + Frete", () => {
     });
   });
 
-  // ── KitBuilder: FreightEstimator atualiza com peso ────────────────────────
+  // ── KitBuilder: plano de volumes atualiza com a composição ───────────────
 
-  test("KitBuilder — FreightEstimator exibe estimativa ao alterar peso", async ({ page }) => {
+  test("KitBuilder — painel de volumes exibe o plano da composição", async ({ page }) => {
     await gotoAndSettle(page, "/kit-builder");
     await expect(page).toHaveURL(/kit-builder/);
 
     const freightSection = page
-      .getByText(/estimativa de frete/i)
+      .getByText(/volumes para transporte/i)
       .first();
 
     if (await freightSection.isVisible({ timeout: 5_000 }).catch(() => false)) {
       await expect(freightSection).toBeVisible();
 
-      const valuesEstimated = page.getByText(/valores estimados/i).first();
-      await expect(valuesEstimated).toBeVisible({ timeout: 5_000 });
+      const estimate = page
+        .getByText(/caixas padrão da empresa/i)
+        .first();
+      await expect(estimate).toBeVisible({ timeout: 5_000 });
     }
   });
 

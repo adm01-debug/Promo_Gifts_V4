@@ -1646,6 +1646,8 @@ Após VACUUM ANALYZE executado pelos jobs temporários `vacuum-snapshots-now` e
 | `20261120030000` | `fe42c3a8488c9ba53206e3c19ad900c324af8880a7bd1ff634d2ce584a0cb8c8` | — | GitHub Actions (db-apply-migration.yml, disparado por adm01-debug, aprovado por @adm01-debug) | E15 | 2026-11-20 10:47:18 UTC | job post-check da run 44722018776 confirmou a version no ledger | aplicada |
 | `20261120030100` | `bcd08d0663b68ddb6853c48aff9163f57fee2327c47d6eea8873b6075fd7bf25` | — | GitHub Actions (db-apply-migration.yml, disparado por adm01-debug, aprovado por @adm01-debug) | E15 | 2026-11-20 10:50:10 UTC | job post-check da run 44722386500 confirmou a version no ledger | aplicada |
 | `20261120180000` | `aec27e3458b5d54992901ca205415ed05fb711893e5b0a8ec783982672327514` | — | GitHub Actions (db-apply-migration.yml, disparado por adm01-debug, aprovado por @adm01-debug) | E15 | 2026-11-20 18:29:07 UTC | job post-check da run 44793019185 confirmou a version no ledger | aplicada |
+| `20261121000000` | `e77669031f158b0bf4287acddc4bd6d7fd5eac5fbe80092f7ad392c7642de8fc` | — | GitHub Actions (db-apply-migration.yml, disparado por adm01-debug, aprovado por @adm01-debug) | E15 | 2026-11-21 15:53:08 UTC | job post-check da run 44921479101 confirmou a version no ledger | aplicada |
+| `20261121120000` | `dffda6b2d2881ec8355618e7ddfb833856f50d558b4b00a4bdf8646f07c54e91` | — | GitHub Actions (db-apply-migration.yml, disparado por adm01-debug, aprovado por @dono) | E15 | 2026-11-21 16:39:08 UTC | job post-check da run 44925650009 confirmou a version no ledger | aplicada |
 
 ## 2026-11-08 — Reconciliação de `e2e_cleanup_audit`
 
@@ -2340,6 +2342,7 @@ ativo.
 
 | versão | arquivo | sha256 | status |
 |---|---|---|---|
+| `20261121120000` | `fix_quote_rpcs_contract_freight` | `dffda6b2d2881ec8355618e7ddfb833856f50d558b4b00a4bdf8646f07c54e91` | pendente — aplicar via `db-apply-migration.yml` (`version=20261121120000`) após merge da PR fix-contract |
 | `20261115230000` | `ai_function_routing_mockup_assistant` | `2937d5ff62750fed7a98cec78f147de2547df00055d361796ce65ee6db996dec` | pendente — aplicar via `db-apply-migration.yml` após merge (banco de produção autorizado pelo dono no chat em 2026-11-15) |
 
 ## 2026-11-16 — Recibos superseded: hashes de arquivos revisados antes de aplicar
@@ -2832,3 +2835,31 @@ As policies novas entram em `.security/policies-baseline.json` depois de aplicad
 |---|---|---|---|
 | `20261120041000` | `production_lead_time_calendar` | `ded27deffa89754ea8fd9ab3825008c0e76aad872e0fda66df45b9f71569ab3c` | pendente — aplicar via `db-apply-migration.yml` (`version=20261120041000`) após merge da PR H-DDL |
 | `20261120180000` | `restore_quote_comments_scoped_threads` | `aec27e3458b5d54992901ca205415ed05fb711893e5b0a8ec783982672327514` | pendente — aplicar via `db-apply-migration.yml` (`version=20261120180000`) após merge e decisão do dono (comentários em orçamento) |
+
+
+
+### 2026-11-21 — frete: RPCs do orçamento gravam o plano de volumes (bloco G, G-UI)
+
+Etapa 62/63 do plano de frete. `create_quote_transactional` e `update_quote_transactional`
+passam a incluir as 3 colunas de frete (`freight_plan`, `freight_mix_mode`,
+`show_freight_plan_to_client`) no INSERT/UPDATE de `quotes`. Copiadas da
+`20260623141532_fix_quote_rpcs_personalization_cost.sql` com diff mínimo (CASE WHEN para
+campos limpáveis, nullif para a string nullable, coalesce boolean). RPCs de aprovação
+delegam nas base → cobertas. Aplicar em produção após o merge da PR G-UI.
+
+| versão | arquivo | sha256 | status |
+|---|---|---|---|
+| `20261121000000` | `quote_rpcs_freight_plan` | `e77669031f158b0bf4287acddc4bd6d7fd5eac5fbe80092f7ad392c7642de8fc` | pendente — aplicar via `db-apply-migration.yml` (`version=20261121000000`) após merge da PR G-UI |
+
+### 2026-11-21 — correção do contrato transacional das RPCs de orçamento (Gate 2.5)
+
+Regressão: a `20261121000000` reescreveu as RPCs com corpo curto, removendo a lógica
+transacional canônica (row locks, version guard, audit) e os marcadores do contrato
+`check-quote-rpc-canonical-readiness.mjs` → Gate 2.5 falhava com
+`canonical_contract_not_applied`. Esta migration restaura o corpo canônico completo
+(baseline `20261015140000`) mantendo as 3 colunas de frete, e o contrato do gate foi
+atualizado para os novos md5. Aplicar em produção via `db-apply-migration.yml`
+(`version=20261121120000`).
+
+| versão | arquivo | sha256 | status |
+|---|---|---|---|

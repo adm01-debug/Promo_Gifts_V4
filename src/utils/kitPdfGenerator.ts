@@ -21,6 +21,7 @@ import {
   hasKnownKitPrices,
   KIT_UNKNOWN_PRICE_MESSAGE,
 } from '@/lib/kit-builder/pricing-availability';
+import { formatPlanForClient, type FreightPlan } from '@/lib/freight';
 import {
   GRAY_500,
   GRAY_800,
@@ -39,6 +40,8 @@ interface KitPdfOptions {
   /** Defaults to `kitState.name` when omitted. */
   kitName?: string;
   orgName?: string;
+  /** Plano de volumes do frete, quando calculado: entra no PDF como total ao cliente. */
+  freightPlan?: FreightPlan | null;
 }
 
 function drawHeader(doc: jsPDF, kitName: string, orgName?: string, identity?: KitIdentity): number {
@@ -379,6 +382,33 @@ function drawPriceBreakdown(
   return totalBoxY + 30;
 }
 
+/**
+ * Linha de volumes do frete no PDF, só o total que o cliente vê na balança:
+ * `Volumes para transporte: 4 volumes · 18,4 kg · 0,21 m³` (formatPlanForClient).
+ * Nada de código de caixa, ocupação, peso cubado ou avisos — conversa interna
+ * fica fora do PDF. Sem plano calculado a linha não aparece.
+ */
+function drawFreightSummary(
+  doc: jsPDF,
+  freightPlan: FreightPlan | null | undefined,
+  y: number,
+): number {
+  const clientText = freightPlan ? formatPlanForClient(freightPlan) : '';
+  if (!clientText) return y;
+
+  if (y > 210) {
+    doc.addPage();
+    y = 20;
+  }
+
+  y = drawSectionTitle(doc, 'Volumes para transporte', y);
+  doc.setFontSize(9);
+  doc.setFont('helvetica', 'normal');
+  setText(doc, GRAY_800);
+  doc.text(clientText, 14, y);
+  return y + 8;
+}
+
 function drawFooter(doc: jsPDF) {
   const pageHeight = doc.internal.pageSize.getHeight();
   const pageCount = doc.getNumberOfPages();
@@ -425,6 +455,9 @@ export function generateKitPDF(options: KitPdfOptions): Blob {
 
   // Personalization details
   y = drawPersonalizationDetails(doc, kitState, y);
+
+  // Freight summary (client-facing total, only when the plan was calculated)
+  y = drawFreightSummary(doc, options.freightPlan, y);
 
   // Check if we need a new page for price breakdown
   if (y > 210) {

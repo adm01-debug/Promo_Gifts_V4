@@ -10,14 +10,12 @@ import { AlertTriangle } from 'lucide-react';
 import { KitMarginSimulator } from './KitMarginSimulator';
 import { KitVisualPreview } from './KitVisualPreview';
 import { DiscontinuedItemsAlert } from './DiscontinuedItemsAlert';
-import { FreightEstimator } from './FreightEstimator';
 import { useKitStockValidation, type KitStockStatus } from '@/hooks/kit-builder';
-import {
-  calculateTotalKitPrice,
-  summarizeKitWeight,
-  type KitIdentity,
-  type KitState,
-} from '@/lib/kit-builder';
+import { calculateTotalKitPrice, type KitIdentity, type KitState } from '@/lib/kit-builder';
+import { FreightPlanPanel } from '@/components/freight-plan/FreightPlanPanel';
+import { useKitFreightPlan } from '@/hooks/freight';
+import type { FreightKit } from '@/lib/freight/fromKit';
+import type { FreightPlan } from '@/lib/freight';
 import { KitIdentificationCard } from './kit-summary/KitIdentificationCard';
 import { KitStatsCards } from './kit-summary/KitStatsCards';
 import { KitCompositionCard } from './kit-summary/KitCompositionCard';
@@ -40,7 +38,7 @@ interface KitSummaryProps {
   onKitNameChange: (name: string) => void;
   onKitQuantityChange: (quantity: number) => void;
   onAddToQuote?: () => void;
-  onExportPDF?: () => void;
+  onExportPDF?: (freightPlan?: FreightPlan | null) => void;
   isAddingToQuote?: boolean;
   currentKitId?: string;
   quoteClient?: Partial<ClientData>;
@@ -85,13 +83,14 @@ export function KitSummary({
   const pricesKnown = hasKnownKitPrices(kitState);
   const pricing = calculateTotalKitPrice(box, items, personalization, kitQuantity);
   const totalItems = items.reduce((sum, item) => sum + item.quantity, 0);
-  // `totalWeight` soma apenas os pesos conhecidos (nunca assume 0 para um
-  // item sem peso cadastrado); esta contagem existe para o FreightEstimator
-  // avisar quando o total exibido é parcial, não a composição completa.
-  const itemsWithUnknownWeight = useMemo(
-    () => summarizeKitWeight(items, box).unknownWeightCount,
-    [items, box],
+  const freightKit = useMemo<FreightKit>(
+    () => ({
+      box: box ? { id: box.id, name: box.name } : null,
+      items: items.map((item) => ({ id: item.id, name: item.name, quantity: item.quantity })),
+    }),
+    [box, items],
   );
+  const freightPlan = useKitFreightPlan(freightKit, kitQuantity);
   const personalizedCount =
     (personalization.box.enabled ? 1 : 0) +
     Object.values(personalization.items).filter((p) => p.enabled).length;
@@ -249,10 +248,13 @@ export function KitSummary({
               kitQuantity={kitQuantity}
             />
           )}
-          <FreightEstimator
-            totalWeightGrams={kitState.totalWeight}
-            kitQuantity={kitQuantity}
-            itemsWithUnknownWeight={itemsWithUnknownWeight}
+          <FreightPlanPanel
+            plan={freightPlan.plan}
+            isLoading={freightPlan.isLoading}
+            error={freightPlan.error?.message ?? null}
+            products={freightPlan.products}
+            unavailable={freightPlan.unavailable}
+            className="bg-card"
           />
         </aside>
       </div>
@@ -316,7 +318,7 @@ export function KitSummary({
           total={pricing.total}
           items={items}
           onAddToQuote={onAddToQuote}
-          onExportPDF={onExportPDF}
+          onExportPDF={onExportPDF ? () => onExportPDF(freightPlan.plan) : undefined}
           onSaveDraft={onSaveDraft}
           isSavingDraft={isSavingDraft}
         />

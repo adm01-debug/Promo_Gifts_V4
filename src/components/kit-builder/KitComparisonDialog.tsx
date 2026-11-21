@@ -45,6 +45,11 @@ interface KitForComparison {
   personalization_price: number;
   total_price: number;
   volume_usage_percent: number;
+  /** Plano de volumes do frete (etapa 53): caixas usadas por código e peso bruto. */
+  freight?: {
+    boxesByCode?: Record<string, number>;
+    grossWeightG?: number;
+  } | null;
 }
 
 interface KitComparisonDialogProps {
@@ -112,6 +117,22 @@ export function KitComparisonDialog({ open, onOpenChange, kits }: KitComparisonD
       label: 'Ocupação',
       icon: null,
       getValue: (k: KitForComparison) => `${Math.round(Number(k.volume_usage_percent))}%`,
+    },
+    {
+      label: 'Volumes',
+      icon: null,
+      getValue: (k: KitForComparison) => {
+        const byCode = k.freight?.boxesByCode;
+        if (!byCode || Object.keys(byCode).length === 0) return '—';
+        const summary = Object.entries(byCode)
+          .sort(([codeA], [codeB]) => codeA.localeCompare(codeB))
+          .map(([code, quantas]) => `${quantas}× ${code}`)
+          .join(' + ');
+        const grossG = k.freight?.grossWeightG;
+        if (typeof grossG !== 'number') return summary;
+        const peso = grossG >= 1000 ? `${(grossG / 1000).toFixed(1)}kg` : `${grossG}g`;
+        return `${summary} · ${peso}`;
+      },
     },
     { label: 'Qtd Kits', icon: null, getValue: (k: KitForComparison) => `${k.kit_quantity}` },
     {

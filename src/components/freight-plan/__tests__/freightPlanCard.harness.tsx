@@ -73,9 +73,13 @@ function consulta(resolve: (ids: readonly string[] | null) => unknown) {
 /** Ajustes da simulação por teste: banco sem caixas e produtos marcados "não mistura". */
 export const simulacao = { semCaixas: false, separados: new Set<string>() };
 
+/** Registro dos inserts de telemetria para os testes espiarem (etapa 59). */
+export const telemetriaInserts: Array<Record<string, unknown>> = [];
+
 export function reiniciarSimulacao() {
   simulacao.semCaixas = false;
   simulacao.separados.clear();
+  telemetriaInserts.length = 0;
 }
 
 /** `supabase.from(tabela)` da simulação. Tabela desconhecida devolve lista vazia. */
@@ -90,6 +94,16 @@ export function fromSimulado(tabela: string) {
         ships_separately: simulacao.separados.has(row.id),
       })),
     );
+  }
+  if (tabela === 'frontend_telemetry') {
+    const builder = consulta(() => []) as {
+      insert?: (row: Record<string, unknown>) => Promise<{ data: null; error: null }>;
+    };
+    builder.insert = (row: Record<string, unknown>) => {
+      telemetriaInserts.push(row);
+      return Promise.resolve({ data: null, error: null });
+    };
+    return builder;
   }
   return consulta(() => []);
 }

@@ -51,7 +51,7 @@ export const quoteService = {
       // rls-allow: escopo aplicado condicionalmente abaixo (self → seller_id; admin scope=all sem filtro); RLS reforça
       .from('quotes')
       .select(
-        'id,quote_number,client_id,contact_id,client_name,client_email,client_phone,client_company,seller_id,status,payment_method,subtotal,discount_percent,discount_amount,total,valid_until,payment_terms,delivery_time,shipping_type,shipping_cost,notes,internal_notes,bitrix_deal_id,bitrix_quote_id,synced_to_bitrix,synced_at,client_response,client_response_at,client_response_notes,created_at,updated_at,sent_at,discount_approval_status,discount_approved_at',
+        'id,quote_number,client_id,contact_id,client_name,client_email,client_phone,client_company,seller_id,status,payment_method,subtotal,discount_percent,discount_amount,total,valid_until,payment_terms,delivery_time,shipping_type,shipping_cost,notes,internal_notes,bitrix_deal_id,bitrix_quote_id,synced_to_bitrix,synced_at,client_response,client_response_at,client_response_notes,created_at,updated_at,sent_at,discount_approval_status,discount_approved_at,freight_plan,freight_mix_mode,show_freight_plan_to_client',
       )
       .order('created_at', { ascending: false })
       .limit(500);
@@ -74,7 +74,7 @@ export const quoteService = {
         // rls-allow: lookup por id; RLS (can_access_quote) valida ownership
         .from('quotes')
         .select(
-          'id,quote_number,client_id,contact_id,client_name,client_email,client_phone,client_company,seller_id,status,payment_method,subtotal,discount_percent,discount_amount,total,valid_until,payment_terms,delivery_time,shipping_type,shipping_cost,notes,internal_notes,bitrix_deal_id,bitrix_quote_id,synced_to_bitrix,synced_at,client_response,client_response_at,client_response_notes,created_at,updated_at,sent_at,version,negotiation_markup_percent,real_subtotal,real_discount_percent,discount_approval_status,discount_approved_at',
+          'id,quote_number,client_id,contact_id,client_name,client_email,client_phone,client_company,seller_id,status,payment_method,subtotal,discount_percent,discount_amount,total,valid_until,payment_terms,delivery_time,shipping_type,shipping_cost,notes,internal_notes,bitrix_deal_id,bitrix_quote_id,synced_to_bitrix,synced_at,client_response,client_response_at,client_response_notes,created_at,updated_at,sent_at,version,negotiation_markup_percent,real_subtotal,real_discount_percent,discount_approval_status,discount_approved_at,freight_plan,freight_mix_mode,show_freight_plan_to_client',
         )
         .eq('id', quoteId)
         .single(),

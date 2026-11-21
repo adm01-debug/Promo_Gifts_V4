@@ -24,6 +24,7 @@ import { KitMakerGuideDialog } from '@/components/kit-builder/KitMakerGuideDialo
 import { useKitWizardShortcuts } from '@/hooks/kit-builder/useKitWizardShortcuts';
 import { toast } from 'sonner';
 import { exportKitPdf } from '@/utils/kitPdfGenerator';
+import type { FreightPlan } from '@/lib/freight';
 import type { KitMakerGuideChapterId } from '@/lib/kit-builder';
 
 const KitIsometricPreview = lazy(() =>
@@ -52,8 +53,8 @@ export default function KitBuilderPage() {
     state.wizardState.currentStep,
   );
 
-  const handleExportPDF = () => {
-    exportKitPdf({ kitState: state.kitState, kitQuantity: state.kitQuantity });
+  const handleExportPDF = (freightPlan?: FreightPlan | null) => {
+    exportKitPdf({ kitState: state.kitState, kitQuantity: state.kitQuantity, freightPlan });
   };
 
   // Restore unsaved edits from beforeunload backup once hydration finishes.

@@ -155,6 +155,9 @@ export const SimuladorWizard = lazyWithRetry(() => import('@/pages/tools/Simulad
 export const MockupGenerator = lazyWithRetry(() => import('@/pages/mockups/MockupGenerator'));
 export const MagicUp = lazyWithRetry(() => import('@/pages/tools/MagicUp'));
 export const PriceSimulatorPage = lazyWithRetry(() => import('@/pages/tools/PriceSimulatorPage'));
+export const FreightSimulatorPage = lazyWithRetry(
+  () => import('@/pages/freight/FreightSimulatorPage'),
+);
 export const StockDashboardPage = lazyWithRetry(() => import('@/pages/admin/StockDashboardPage'));
 export const AdvancedPriceSearchPage = lazyWithRetry(
   () => import('@/pages/tools/AdvancedPriceSearchPage'),
