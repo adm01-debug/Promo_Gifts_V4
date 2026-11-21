@@ -10,14 +10,14 @@
  * Fica ao lado do bloco de frete da página, nunca dentro dele: os guardas de
  * layout do bloco medem aquele elemento.
  */
-import { memo, useId, useMemo } from 'react';
+import { memo, useId, useEffect, useMemo, useRef } from 'react';
 import { FreightPlanPanel } from '@/components/freight-plan/FreightPlanPanel';
 import { MixModeSelector, type MixModeProduct } from '@/components/freight-plan/MixModeSelector';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import { useFreightPlan, type FreightPlanLine } from '@/hooks/freight/useFreightPlan';
 import { useShippingBoxes } from '@/hooks/freight/useShippingBoxes';
-import { formatPlanForClient, type MixMode } from '@/lib/freight';
+import { formatPlanForClient, type FreightPlan, type MixMode } from '@/lib/freight';
 
 /** O que o card lê de cada item do orçamento (`QuoteItem` serve). */
 export interface FreightPlanCardItem {
@@ -32,6 +32,8 @@ export interface FreightPlanCardProps {
   onMixModeChange: (mode: MixMode) => void;
   showToClient: boolean;
   onShowToClientChange: (show: boolean) => void;
+  /** Recebe o plano calculado (ou null) para quem precisa persistir o valor. */
+  onPlanChange?: (plan: FreightPlan | null) => void;
 }
 
 function toLines(items: readonly FreightPlanCardItem[]): FreightPlanLine[] {
@@ -61,6 +63,7 @@ function FreightPlanCardBody({
   onMixModeChange,
   showToClient,
   onShowToClientChange,
+  onPlanChange,
 }: FreightPlanCardProps & { lines: readonly FreightPlanLine[] }) {
   const switchId = useId();
   const hintId = useId();
@@ -70,6 +73,14 @@ function FreightPlanCardBody({
   });
   // Mesma consulta do plano (cache compartilhado do React Query), sem pedido extra.
   const boxesQuery = useShippingBoxes();
+
+  // Sobe o plano calculado (ou null) para o pai persistir; ref estável evita
+  // re-render por mudança de identidade do callback.
+  const onPlanChangeRef = useRef(onPlanChange);
+  onPlanChangeRef.current = onPlanChange;
+  useEffect(() => {
+    onPlanChangeRef.current?.(isLoading || error ? null : plan);
+  }, [plan, isLoading, error]);
 
   const mixProducts = useMemo<MixModeProduct[]>(
     () =>

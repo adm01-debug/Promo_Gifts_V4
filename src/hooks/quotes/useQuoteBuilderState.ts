@@ -23,6 +23,8 @@ import { formatCurrency as fmtCurrency } from '@/lib/format';
 import { validateQuoteForm, QUOTE_FIELD_LABELS } from '@/lib/validations';
 import { rascunhoRestauradoEValido } from '@/lib/quotes/quoteDraftRecovery';
 import { useFreightPlanOptions } from '@/hooks/quotes/useFreightPlanOptions';
+import { toStoredFreightPlan } from '@/lib/freight/planSchema';
+import type { FreightPlan } from '@/lib/freight';
 import { applyRestoredDraft } from '@/lib/quotes/applyRestoredDraft';
 import { useAuth } from '@/contexts/AuthContext';
 import type { ExternalVariantStock } from '@/hooks/products';
@@ -113,7 +115,14 @@ export function useQuoteBuilderState() {
   const [shippingType, setShippingType] = useState('');
   const [shippingCost, setShippingCost] = useState(0);
   const freightPlan = useFreightPlanOptions();
-  const { freightMixMode, showFreightPlanToClient, resetFreightPlanOptions } = freightPlan;
+  const {
+    freightMixMode,
+    setFreightMixMode,
+    showFreightPlanToClient,
+    setShowFreightPlanToClient,
+    resetFreightPlanOptions,
+  } = freightPlan;
+  const [freightPlanValue, setFreightPlanValue] = useState<FreightPlan | null>(null);
 
   // QBP-07 FIX: defer shippingType restore via state+useEffect com cleanup
   // Evita chamar setShippingType em componente desmontado (setTimeout sem cleanup)
@@ -340,6 +349,8 @@ export function useQuoteBuilderState() {
             setPaymentTerms,
             setShippingType,
             setShippingCost,
+            setFreightMixMode,
+            setShowFreightPlanToClient,
             setDeliveryMode,
             setDeliveryDate,
             setDeliveryTime,
@@ -790,6 +801,9 @@ export function useQuoteBuilderState() {
           delivery_time: deliveryTime || undefined,
           shipping_type: shippingType || undefined,
           shipping_cost: shippingType === 'fob_pre' ? shippingCost || 0 : 0,
+          freight_plan: freightPlanValue ? toStoredFreightPlan(freightPlanValue) : null,
+          freight_mix_mode: freightMixMode,
+          show_freight_plan_to_client: showFreightPlanToClient,
         };
         let result;
         if (isEditMode && quoteId) {
@@ -882,6 +896,9 @@ export function useQuoteBuilderState() {
       deliveryTime,
       shippingType,
       shippingCost,
+      freightMixMode,
+      showFreightPlanToClient,
+      freightPlanValue,
       isEditMode,
       quoteId,
       currentStatus,
@@ -921,6 +938,7 @@ export function useQuoteBuilderState() {
     setShippingType('');
     setShippingCost(0);
     resetFreightPlanOptions();
+    setFreightPlanValue(null);
     setDiscountType('percent');
     setDiscountValue(0);
     setNegotiationMarkup(0);
@@ -999,6 +1017,8 @@ export function useQuoteBuilderState() {
     setShippingType: handleShippingTypeChange,
     shippingCost,
     setShippingCost,
+    freightPlanValue,
+    setFreightPlanValue,
     ...freightPlan,
     productSearchOpen,
     setProductSearchOpen,

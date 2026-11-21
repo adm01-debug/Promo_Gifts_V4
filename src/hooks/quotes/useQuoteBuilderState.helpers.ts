@@ -22,6 +22,8 @@ import {
 import { validateQuoteForm } from '@/lib/validations';
 import type { PromobrindProduct } from '@/lib/external-db';
 import { logger } from '@/lib/logger';
+import { parseFreightMixMode, parseShowFreightPlan } from '@/hooks/quotes/useFreightPlanOptions';
+import type { MixMode } from '@/lib/freight';
 
 const VALIDITY_PRESETS = ['1', '3', '7', '15', '30'] as const;
 
@@ -497,6 +499,8 @@ export interface LoadedQuoteSetters {
   setPaymentTerms: (v: string) => void;
   setShippingType: (v: string) => void;
   setShippingCost: (v: number) => void;
+  setFreightMixMode: (v: MixMode) => void;
+  setShowFreightPlanToClient: (v: boolean) => void;
   setDeliveryMode: (v: 'data' | 'prazo') => void;
   setDeliveryDate: (v: Date) => void;
   setDeliveryTime: (v: string) => void;
@@ -554,6 +558,10 @@ export function applyLoadedQuote(quote: Quote, s: LoadedQuoteSetters): void {
   // BUG-004 FIX: falsy check skips 0 (valid for CIF); use explicit null check
   if (quote.shipping_cost !== null && quote.shipping_cost !== undefined)
     s.setShippingCost(quote.shipping_cost);
+  // Frete: restaura o modo de mistura e o switch de exibição ao cliente.
+  if (quote.freight_mix_mode) s.setFreightMixMode(parseFreightMixMode(quote.freight_mix_mode));
+  if (quote.show_freight_plan_to_client !== undefined)
+    s.setShowFreightPlanToClient(parseShowFreightPlan(quote.show_freight_plan_to_client));
   if (quote.delivery_time) {
     if (quote.delivery_time.startsWith('date:')) {
       s.setDeliveryMode('data');
