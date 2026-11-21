@@ -3,8 +3,8 @@ import { hasKnownKitPrices } from '@/lib/kit-builder/pricing-availability';
  * Mobile Sticky Bottom Summary
  * Shows price/volume/weight at-a-glance and opens a drawer with full sidebar content.
  */
-import { useState } from 'react';
-import { ChevronUp, Package } from 'lucide-react';
+import { useMemo, useState } from 'react';
+import { ChevronUp, Package, Truck } from 'lucide-react';
 import {
   Drawer,
   DrawerContent,
@@ -14,6 +14,9 @@ import {
 } from '@/components/ui/drawer';
 import { Badge } from '@/components/ui/badge';
 import { formatCurrency, type KitState } from '@/lib/kit-builder';
+import { formatPlanSummary } from '@/lib/freight';
+import { useKitFreightPlan } from '@/hooks/freight';
+import type { FreightKit } from '@/lib/freight/fromKit';
 import { cn } from '@/lib/utils';
 
 interface KitMobileSummaryBarProps {
@@ -30,6 +33,23 @@ export function KitMobileSummaryBar({ kitState, kitQuantity, children }: KitMobi
   const pricesKnown = hasKnownKitPrices(kitState);
   const grandTotal = kitState.totalPrice;
   const volume = Math.round(kitState.volumeUsagePercent);
+
+  const freightKit = useMemo<FreightKit>(
+    () => ({
+      box: kitState.box ? { id: kitState.box.id, name: kitState.box.name } : null,
+      items: kitState.items.map((item) => ({
+        id: item.id,
+        name: item.name,
+        quantity: item.quantity,
+      })),
+    }),
+    [kitState.box, kitState.items],
+  );
+  const freightPlan = useKitFreightPlan(freightKit, kitQuantity);
+  const planSummary =
+    !freightPlan.isLoading && freightPlan.plan?.status === 'ok'
+      ? formatPlanSummary(freightPlan.plan)
+      : '';
 
   return (
     <Drawer open={open} onOpenChange={setOpen}>
@@ -52,6 +72,12 @@ export function KitMobileSummaryBar({ kitState, kitQuantity, children }: KitMobi
                   Total {pricesKnown ? formatCurrency(grandTotal) : 'Não informado'} · {kitQuantity}
                   x
                 </p>
+                {planSummary && (
+                  <p className="flex items-center gap-1 truncate text-[11px] text-muted-foreground">
+                    <Truck className="h-3 w-3 shrink-0" />
+                    {planSummary}
+                  </p>
+                )}
               </div>
             </div>
             <div className="flex shrink-0 items-center gap-2">

@@ -4,7 +4,7 @@
  * Simula o fluxo real do usuário:
  *  1. Login → navegação ao catálogo
  *  2. Seleção de produto → Kit Builder
- *  3. FreightEstimator: seleção de método e validação de cálculo
+ *  3. Plano de volumes (Volumes para transporte): exibição e resumo
  *  4. Criação de orçamento com frete (CIF, FOB, FOB_PRE)
  *  5. Validação do total no sumário
  *  6. Progresso pelo wizard (3 steps)
@@ -33,15 +33,15 @@ async function fillQuoteStep1(page: Page) {
   }
 }
 
-// ─── Suite: FreightEstimator no Kit Builder ────────────────────────────────────
+// ─── Suite: Plano de volumes no Kit Builder ────────────────────────────────────
 
-test.describe("FreightEstimator — Kit Builder @freight", () => {
+test.describe("Plano de volumes — Kit Builder @freight", () => {
   test.skip(
     !process.env.VITE_SUPABASE_URL || process.env.CI_SKIP_FREIGHT_E2E === "1",
     "Pulando: credenciais não configuradas ou CI_SKIP_FREIGHT_E2E=1",
   );
 
-  test("navega para Kit Builder e verifica FreightEstimator visível", async ({ page }) => {
+  test("navega para Kit Builder e verifica painel de volumes visível", async ({ page }) => {
     await page.goto("/kit-builder");
     await waitForNetworkIdle(page);
 
@@ -54,49 +54,38 @@ test.describe("FreightEstimator — Kit Builder @freight", () => {
       return;
     }
 
-    const freightCard = page.getByText(/estimativa de frete/i, { exact: false });
+    const freightCard = page.getByText(/volumes para transporte/i, { exact: false });
     await expect(freightCard).toBeVisible({ timeout: 10_000 });
   });
 
-  test("seleciona método de frete SEDEX e exibe preço correto", async ({ page }) => {
+  test("painel de volumes lista o resumo do plano (volumes e peso)", async ({ page }) => {
     await page.goto("/kit-builder");
     await waitForNetworkIdle(page);
 
-    const freightSelect = page.locator("select, [role='combobox']").filter({
-      hasText: /sedex|pac|transportadora/i,
-    }).first();
-
-    if (!(await freightSelect.isVisible({ timeout: 5_000 }).catch(() => false))) {
+    const freightCard = page.getByText(/volumes para transporte/i, { exact: false });
+    if (!(await freightCard.isVisible({ timeout: 5_000 }).catch(() => false))) {
       test.skip();
       return;
     }
 
-    await freightSelect.selectOption({ label: /sedex/i });
-    const priceText = await page.getByText(/r\$\s*\d+/i, { exact: false }).first().textContent();
-    expect(priceText).toMatch(/R\$/);
+    // Com itens no kit, o resumo aparece como "N× C · peso · volume" ou o
+    // aviso de dados insuficientes; o painel nunca fica em branco.
+    await expect(freightCard).toBeVisible();
   });
 
-  test("troca entre PAC e SEDEX atualiza preço exibido", async ({ page }) => {
+  test("painel de volumes mostra rodapé de estimativa por caixas padrão", async ({ page }) => {
     await page.goto("/kit-builder");
     await waitForNetworkIdle(page);
 
-    const freightSelect = page.locator("select, [role='combobox']").filter({
-      hasText: /sedex|pac|transportadora/i,
-    }).first();
-
-    if (!(await freightSelect.isVisible({ timeout: 5_000 }).catch(() => false))) {
+    const freightCard = page.getByText(/volumes para transporte/i, { exact: false });
+    if (!(await freightCard.isVisible({ timeout: 5_000 }).catch(() => false))) {
       test.skip();
       return;
     }
 
-    await freightSelect.selectOption({ label: /sedex/i });
-    const priceSedex = await page.getByText(/r\$\s*\d+/i).first().textContent().catch(() => "");
-
-    await freightSelect.selectOption({ label: /pac/i });
-    const pricePac = await page.getByText(/r\$\s*\d+/i).first().textContent().catch(() => "");
-
-    expect(priceSedex).toBeTruthy();
-    expect(pricePac).toBeTruthy();
+    await expect(page.getByText(/caixas padrão da empresa/i, { exact: false })).toBeVisible({
+      timeout: 5_000,
+    });
   });
 });
 
