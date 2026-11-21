@@ -23,7 +23,7 @@ import { validateQuoteForm } from '@/lib/validations';
 import type { PromobrindProduct } from '@/lib/external-db';
 import { logger } from '@/lib/logger';
 import { parseFreightMixMode, parseShowFreightPlan } from '@/hooks/quotes/useFreightPlanOptions';
-import type { MixMode } from '@/lib/freight';
+import { parseStoredFreightPlan, type FreightPlan, type MixMode } from '@/lib/freight';
 
 const VALIDITY_PRESETS = ['1', '3', '7', '15', '30'] as const;
 
@@ -501,6 +501,7 @@ export interface LoadedQuoteSetters {
   setShippingCost: (v: number) => void;
   setFreightMixMode: (v: MixMode) => void;
   setShowFreightPlanToClient: (v: boolean) => void;
+  setFreightPlanValue: (v: FreightPlan | null) => void;
   setDeliveryMode: (v: 'data' | 'prazo') => void;
   setDeliveryDate: (v: Date) => void;
   setDeliveryTime: (v: string) => void;
@@ -562,6 +563,10 @@ export function applyLoadedQuote(quote: Quote, s: LoadedQuoteSetters): void {
   if (quote.freight_mix_mode) s.setFreightMixMode(parseFreightMixMode(quote.freight_mix_mode));
   if (quote.show_freight_plan_to_client !== undefined)
     s.setShowFreightPlanToClient(parseShowFreightPlan(quote.show_freight_plan_to_client));
+  // Restaura o plano de volumes salvo (etapa 65). Só `ok` sobe; plano inválido
+  // ou de versão antiga vira null — o banner stale do card cobre o restante.
+  const storedPlan = parseStoredFreightPlan(quote.freight_plan);
+  s.setFreightPlanValue(storedPlan.status === 'ok' ? storedPlan.plan : null);
   if (quote.delivery_time) {
     if (quote.delivery_time.startsWith('date:')) {
       s.setDeliveryMode('data');

@@ -15,6 +15,7 @@ import { ProposalProductTable } from './proposal/ProposalProductTable';
 import { ProposalTotals } from './proposal/ProposalTotals';
 import { maskCnpj } from '@/utils/masks';
 import { ProposalNotes } from './proposal/ProposalNotes';
+import { ProposalFreightVolumes } from './proposal/ProposalFreightVolumes';
 import { ProposalSellerSignature } from './proposal/ProposalSellerSignature';
 import { ProposalFooter } from './proposal/ProposalFooter';
 import { WATERMARK_COLOR_CSS, WATERMARK_TEXT } from './watermarkTokens';
@@ -76,6 +77,7 @@ const ROW_H = 100; // altura TÍPICA de uma linha (foto 92px + respiro). Linhas 
 const NOTES_H = 300; // bloco "Condições + Termos" (renderizado SÓ na última página — ver #5a)
 const HINT_H = 28; // lembrete enxuto "Condições na última página" nas páginas intermediárias (#5b)
 const TOTALS_H = 180; // bloco de totais (subtotal/desconto/frete/total)
+const FREIGHT_H = 140; // bloco "Volumes para transporte" (só quando showFreightPlanToClient + plano ok)
 const SIGNATURE_H = 120; // assinatura do vendedor + disclaimer eletrônico
 const SAFETY = 24; // folga anti-clipping
 
@@ -158,25 +160,27 @@ function estimateItemHeight(item: ProposalItem): number {
  * totais+assinatura+notas; intermediárias reservam só o lembrete. @fix_version
  * proposal-height-spill-5b-2026-06
  */
-function itemsBudget(isFirst: boolean, isLast: boolean): number {
+function itemsBudget(isFirst: boolean, isLast: boolean, freightBlock: boolean): number {
   const header = isFirst ? FIRST_HEADER_H : CONT_HEADER_H;
   const client = isFirst ? CLIENT_BAR_H : CONT_CLIENT_H;
-  const reserve = isLast ? TOTALS_H + SIGNATURE_H + NOTES_H : HINT_H;
+  const freightReserve = isLast && freightBlock ? FREIGHT_H : 0;
+  const reserve = isLast ? TOTALS_H + SIGNATURE_H + NOTES_H + freightReserve : HINT_H;
   return PAGE_H - header - client - TABLE_HEADER_H - reserve - SIMPLE_FOOTER_H - SAFETY;
 }
 
-function paginateItems(items: ProposalItem[]): ProposalItem[][] {
+function paginateItems(items: ProposalItem[], freightBlock = false): ProposalItem[][] {
   const n = items.length;
   if (n === 0) return [[]];
   // Cabe tudo numa única página? Checa também a ALTURA real (2 linhas ricas podem não caber).
   if (n <= LAST_CAP_SINGLE) {
     const totalHeight = items.reduce((acc, item) => acc + estimateItemHeight(item), 0);
-    if (totalHeight <= itemsBudget(true, true)) return [items];
+    if (totalHeight <= itemsBudget(true, true, freightBlock)) return [items];
   }
 
   // Capacidade de p páginas: 1ª + (p-2) continuações + última-com-totais.
+  const lastCap = freightBlock ? LAST_CAP_SINGLE - rowCap(FREIGHT_H) : LAST_CAP_SINGLE;
   const capacityFor = (p: number): number =>
-    p <= 1 ? LAST_CAP_SINGLE : MID_CAP_FIRST + Math.max(0, p - 2) * MID_CAP_CONT + LAST_CAP_CONT;
+    p <= 1 ? lastCap : MID_CAP_FIRST + Math.max(0, p - 2) * MID_CAP_CONT + lastCap;
 
   // Menor nº de páginas que comporta todos os itens.
   let pageCount = 2;
@@ -219,7 +223,7 @@ function paginateItems(items: ProposalItem[]): ProposalItem[][] {
   for (let pass = 0; pass <= items.length; pass++) {
     let moved = false;
     for (let j = 0; j < pages.length; j++) {
-      const budget = itemsBudget(j === 0, j === pages.length - 1);
+      const budget = itemsBudget(j === 0, j === pages.length - 1, freightBlock);
       let used = pages[j].reduce((acc, item) => acc + estimateItemHeight(item), 0);
       while (used > budget && pages[j].length > 1) {
         const overflow = pages[j].pop()!;
@@ -239,7 +243,8 @@ export const PropostaComercialTailwind = forwardRef<
   HTMLDivElement,
   { data: ProposalTemplateData; isDraft?: boolean }
 >(({ data, isDraft = false }, ref) => {
-  const pages = paginateItems(data.items);
+  const showFreight = data.freightPlan?.status === 'ok' && data.showFreightPlanToClient === true;
+  const pages = paginateItems(data.items, showFreight);
   const totalPages = pages.length;
 
   // FIX #7: pré-computar índices de forma imutável — seguro em React 18 StrictMode.
@@ -362,6 +367,15 @@ export const PropostaComercialTailwind = forwardRef<
                   </div>
                 </div>
               )}
+
+              {isLast &&
+                showFreight &&
+                (() => {
+                  const plan = data.freightPlan;
+                  return plan?.status === 'ok' ? (
+                    <ProposalFreightVolumes plan={plan.plan} />
+                  ) : null;
+                })()}
 
               {/* P0 #5: Condições + Termos de aceite APENAS na última página
                   (antes repetidos em TODA página — redundância). Continuações

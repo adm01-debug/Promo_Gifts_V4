@@ -10,7 +10,9 @@
  * Fica ao lado do bloco de frete da página, nunca dentro dele: os guardas de
  * layout do bloco medem aquele elemento.
  */
-import { memo, useId, useEffect, useMemo, useRef } from 'react';
+import { memo, useId, useEffect, useMemo, useRef, useState } from 'react';
+import { format } from 'date-fns';
+import { Button } from '@/components/ui/button';
 import { FreightPlanPanel } from '@/components/freight-plan/FreightPlanPanel';
 import { MixModeSelector, type MixModeProduct } from '@/components/freight-plan/MixModeSelector';
 import { Label } from '@/components/ui/label';
@@ -34,6 +36,9 @@ export interface FreightPlanCardProps {
   onShowToClientChange: (show: boolean) => void;
   /** Recebe o plano calculado (ou null) para quem precisa persistir o valor. */
   onPlanChange?: (plan: FreightPlan | null) => void;
+  /** Plano restaurado do banco ao abrir o orçamento em edição. O card mostra um
+   *  aviso de "recalcular" se ele não bater com os itens/caixas atuais. */
+  savedPlan?: FreightPlan | null;
 }
 
 function toLines(items: readonly FreightPlanCardItem[]): FreightPlanLine[] {
@@ -46,6 +51,15 @@ function toLines(items: readonly FreightPlanCardItem[]): FreightPlanLine[] {
 
 function hasQuantity(lines: readonly FreightPlanLine[]): boolean {
   return lines.some((line) => line.quantity > 0);
+}
+
+/** O `updated_at` mais recente entre as caixas ativas; `''` se não houver linhas. */
+function latestBoxUpdatedAt(rows: readonly { updated_at?: string | null }[]): string {
+  let latest = '';
+  for (const row of rows) {
+    if (row.updated_at && row.updated_at > latest) latest = row.updated_at;
+  }
+  return latest;
 }
 
 /** `memo`: digitar em campo sem relação com o frete não redesenha o card. */
@@ -64,6 +78,7 @@ function FreightPlanCardBody({
   showToClient,
   onShowToClientChange,
   onPlanChange,
+  savedPlan,
 }: FreightPlanCardProps & { lines: readonly FreightPlanLine[] }) {
   const switchId = useId();
   const hintId = useId();
@@ -74,6 +89,20 @@ function FreightPlanCardBody({
   // Mesma consulta do plano (cache compartilhado do React Query), sem pedido extra.
   const boxesQuery = useShippingBoxes();
 
+  // Snapshot do plano restaurado: congela o valor que veio do banco. O efeito
+  // de `onPlanChange` abaixo sobe o plano recém-computado no mount e não pode
+  // sobrescrever o restaurado — por isso o banner compara contra este snapshot,
+  // e o botão "Recalcular" o descarta explicitamente.
+  const [savedSnapshot, setSavedSnapshot] = useState<FreightPlan | null | undefined>(savedPlan);
+  const snapshotHydratedRef = useRef(false);
+  useEffect(() => {
+    if (snapshotHydratedRef.current) return;
+    snapshotHydratedRef.current = true;
+    setSavedSnapshot(savedPlan);
+    // Só observa a primeira carga do `savedPlan` (mudanças seguintes são a vida
+    // da página, não a restauração inicial).
+  }, [savedPlan]);
+
   // Sobe o plano calculado (ou null) para o pai persistir; ref estável evita
   // re-render por mudança de identidade do callback.
   const onPlanChangeRef = useRef(onPlanChange);
@@ -81,6 +110,19 @@ function FreightPlanCardBody({
   useEffect(() => {
     onPlanChangeRef.current?.(isLoading || error ? null : plan);
   }, [plan, isLoading, error]);
+
+  // Plano restaurado ficou velho? Duas causas: os itens mudaram (hash diferente)
+  // ou as caixas foram editadas depois do cálculo (updated_at mais novo que o
+  // computedAt). Só a comparação temporal usa o snapshot restaurado — o plano
+  // recém-calculado sempre vence, sem data para comparar.
+  const stale =
+    savedSnapshot?.status === 'ok' &&
+    plan?.status === 'ok' &&
+    (savedSnapshot.itemsHash !== plan.itemsHash ||
+      savedSnapshot.computedAt < (latestBoxUpdatedAt(boxesQuery.rows) ?? ''));
+  const staleDate = savedSnapshot?.status === 'ok' && stale
+    ? format(new Date(savedSnapshot.computedAt), 'dd/MM')
+    : '';
 
   const mixProducts = useMemo<MixModeProduct[]>(
     () =>
@@ -110,6 +152,32 @@ function FreightPlanCardBody({
       data-testid="freight-plan-card"
       className="mt-3 space-y-3"
     >
+      {stale && (
+        <div
+          role="alert"
+          data-testid="freight-plan-stale-banner"
+          className="flex flex-wrap items-center justify-between gap-2 rounded-md border border-amber-500/40 bg-amber-500/[0.06] p-3 text-sm"
+        >
+          <div className="space-y-0.5">
+            <p className="font-medium text-amber-700 dark:text-amber-500">
+              Plano calculado em {staleDate} — itens ou caixas mudaram.
+            </p>
+            <p className="text-xs text-muted-foreground">
+              Recalcule para o frete refletir o que está no orçamento agora.
+            </p>
+          </div>
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            onClick={() => {
+              setSavedSnapshot(null);
+            }}
+          >
+            Recalcular
+          </Button>
+        </div>
+      )}
       <MixModeSelector value={mixMode} onChange={onMixModeChange} products={mixProducts} />
       <FreightPlanPanel
         plan={plan}
