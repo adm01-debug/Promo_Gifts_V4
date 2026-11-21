@@ -11,8 +11,11 @@
       "release-please--**": false,
       "autoheal/**": false,
       "bot/**": false,
+      "chore/**": false,
       "ci-metrics/**": false,
+      "docs/**": false,
       "Github_Copilot*": false,
+      "infra/**": false,
       "e66-edge-deploy-receipt-*": false
     }
   },
