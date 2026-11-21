@@ -11,7 +11,7 @@
  * Kit é por definição misto: kitToPackInput fixa mixMode: 'misturar' e o
  * número de kits vai em options.kitQuantity, igual à tela.
  */
-import { useMemo } from 'react';
+import { useEffect, useMemo, useRef } from 'react';
 import { useFreightSettings } from '@/hooks/freight/useFreightSettings';
 import { useProductMeasures } from '@/hooks/freight/useProductMeasures';
 import { useShippingBoxes } from '@/hooks/freight/useShippingBoxes';
@@ -23,6 +23,7 @@ import {
   type IncompleteItem,
   type PlanOptions,
 } from '@/lib/freight';
+import { trackFreightPlanComputed } from '@/lib/freight/telemetry';
 import type { FreightKit } from '@/lib/freight/fromKit';
 import type { UseFreightPlanResult } from './useFreightPlan';
 
@@ -106,6 +107,14 @@ export function useKitFreightPlan(kit: FreightKit, kitQuantity: number): UseFrei
       unavailable: NO_UNAVAILABLE,
     };
   }, [isLoading, loadError, settings, kit, kitQuantity, measures, boxes]);
+
+  const plan = computed.plan;
+  const prevPlanRef = useRef<FreightPlan | null>(null);
+  useEffect(() => {
+    if (!plan || plan === prevPlanRef.current) return;
+    prevPlanRef.current = plan;
+    trackFreightPlanComputed(plan, 'kit');
+  }, [plan]);
 
   const error =
     loadError ??

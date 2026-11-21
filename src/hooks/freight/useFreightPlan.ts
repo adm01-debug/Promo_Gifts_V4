@@ -16,7 +16,7 @@
  * é outro caso: vai em `unavailable`, não na lista de medidas faltantes, e
  * também deixa o plano `dados_insuficientes`.
  */
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { useFreightSettings } from '@/hooks/freight/useFreightSettings';
 import { useProductMeasures } from '@/hooks/freight/useProductMeasures';
 import { useShippingBoxes } from '@/hooks/freight/useShippingBoxes';
@@ -30,6 +30,7 @@ import {
   type PlanInput,
   type ProductMeasureRow,
 } from '@/lib/freight';
+import { trackFreightPlanComputed, type FreightPlanOrigin } from '@/lib/freight/telemetry';
 
 /** Uma linha do orçamento, do kit ou do simulador. */
 export interface FreightPlanLine {
@@ -45,6 +46,8 @@ export interface UseFreightPlanInput {
   mixMode: MixMode;
   /** Número de kits/conjuntos. Padrão 1. */
   kitQuantity?: number;
+  /** Origem do cálculo, para telemetria. Padrão `quote`. */
+  origin?: FreightPlanOrigin;
 }
 
 /** Produto que o banco não devolveu: não dá para saber as medidas. */
@@ -129,6 +132,7 @@ export function useFreightPlan({
   items,
   mixMode,
   kitQuantity = 1,
+  origin = 'quote',
 }: UseFreightPlanInput): UseFreightPlanResult {
   const incoming = normalizeLines(items);
   const incomingKey = linesKey(incoming);
@@ -210,6 +214,14 @@ export function useFreightPlan({
       unavailable: indisponiveis,
     };
   }, [isLoading, loadError, settings, lines, measures, boxes, mixMode, kitQuantity]);
+
+  const plan = computed.plan;
+  const prevPlanRef = useRef<FreightPlan | null>(null);
+  useEffect(() => {
+    if (!plan || plan === prevPlanRef.current) return;
+    prevPlanRef.current = plan;
+    trackFreightPlanComputed(plan, origin);
+  }, [plan, origin]);
 
   const error =
     loadError ??
