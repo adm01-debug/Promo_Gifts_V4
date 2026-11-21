@@ -47,7 +47,10 @@ ORDER BY signature;
 
 const CONTRACTS = {
   'create_quote_transactional(jsonb,jsonb)': {
-    bodyMd5: '54d09802f6eaf0504a09e30cd2ce30c7',
+    // 2026-11-21: corpo passou a incluir as 3 colunas de frete
+    // (freight_plan, freight_mix_mode, show_freight_plan_to_client)
+    // mantendo todo o contrato transacional (baseline 20261015140000).
+    bodyMd5: '562108d34294856d24dc27e2159b704f',
     proconfig: 'search_path=public',
     markers: [
       'has_product_variant_id',
@@ -63,7 +66,10 @@ const CONTRACTS = {
     markers: ['has_explicit_bump'],
   },
   'update_quote_transactional(uuid,jsonb,jsonb,integer)': {
-    bodyMd5: '40613079070aceb2054b4c7124cffe12',
+    // 2026-11-21: corpo passou a incluir as 3 colunas de frete
+    // (freight_plan, freight_mix_mode, show_freight_plan_to_client)
+    // mantendo todo o contrato transacional (baseline 20261015140000).
+    bodyMd5: 'cc7dea4fe8ccbfea5030e12345325851',
     proconfig: 'search_path=public',
     markers: [
       'has_product_variant_id',
