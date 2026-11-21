@@ -145929,9 +145929,11 @@
           "views": []
         },
         "comment": "Criação atômica de orçamento; resolve organização autenticada no servidor e preserva custos de personalização.",
-        "config": null,
+        "config": [
+          "search_path=public"
+        ],
         "definition": null,
-        "definition_sha": "97fd01ff28f056c6",
+        "definition_sha": "93f2719c7f23a163",
         "execute_api_roles": "anon, authenticated, service_role",
         "execute_public": false,
         "is_trigger_fn": false,
@@ -193052,9 +193054,11 @@
           "views": []
         },
         "comment": null,
-        "config": null,
+        "config": [
+          "search_path=public"
+        ],
         "definition": null,
-        "definition_sha": "e9ac3da58aee93a7",
+        "definition_sha": "1a206059daadfb5f",
         "execute_api_roles": "anon, authenticated, service_role",
         "execute_public": true,
         "is_trigger_fn": false,
@@ -193737,12 +193741,17 @@
             {
               "file": "supabase/migrations/20261119103000_onboarding_auto_assign_org_reemissao.sql",
               "hits": 2
+            },
+            {
+              "file": "supabase/migrations/20261121120000_fix_quote_rpcs_contract_freight.sql",
+              "hits": 1
             }
           ],
-          "code_total_files": 28,
+          "code_total_files": 29,
           "cron": [],
           "db": [
             "public.can_access_quote",
+            "public.create_quote_transactional",
             "public.fn_run_smoke_tests"
           ],
           "triggers": [],
@@ -240967,6 +240976,12 @@
         "statements": 2,
         "statements_sha": "f390733e5cd6d89b",
         "version": "20261121000000"
+      },
+      {
+        "name": "fix_quote_rpcs_contract_freight",
+        "statements": 6,
+        "statements_sha": "e99d85f4a067d9f2",
+        "version": "20261121120000"
       }
     ],
     "policies": [
