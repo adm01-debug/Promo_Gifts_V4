@@ -24,7 +24,7 @@
   ],
   "testes": [
    "tests/ (1097)",
-   "co-localizado (__tests__) (764)",
+   "co-localizado (__tests__) (765)",
    "e2e/ (626)"
   ],
   "edge_functions": "supabase/functions",
@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "test(kit): classificacao de status KMM-075/KMX-037 (D7) (#3950)",
+   "fix(ci): endurece gate de chamadas diretas (#3943)",
    "chore(docs): memoria do GOAL 4 - achados e resgate quote_comments (#3948)",
    "chore(main): release gifts-store 1.16.0 (#3945)",
-   "docs(migrations-log): recibo E15 — aplicação de 20261120180000 (#3946)",
-   "feat: reativa comentários em orçamento (quote_comments) — UI + testes + trava (#3944)",
-   "feat(db): restaura comentários em orçamento (quote_comments) após decisão do dono (#3942)"
+   "docs(migrations-log): recibo E15 — aplicação de 20261120180000 (#3946)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",

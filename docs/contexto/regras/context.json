@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "a87dc91e86acb02053c53cf741b3e8e9e1abb78c",
+  "sha": "912bfae1a2609a7add3d86464517bd19c8d441ec",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-20 21:14 UTC",
-  "files_total": 11110,
-  "code_files": 9118,
-  "code_lines": 1294007
+  "generated_at": "2026-11-21 11:47 UTC",
+  "files_total": 11111,
+  "code_files": 9119,
+  "code_lines": 1294055
  },
  "version": "1.3.2",
- "facts_hash": "d6ebb60bd8fdc6aa",
+ "facts_hash": "975cf78576f7c4e9",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -1129,7 +1129,7 @@
   "package_manager": "npm",
   "languages": {
    ".sql": 3478,
-   ".ts": 3159,
+   ".ts": 3160,
    ".tsx": 2010,
    ".mjs": 455,
    ".py": 16,
@@ -150345,7 +150345,7 @@
   {
    "module": "scripts",
    "files": 300,
-   "lines": 65031,
+   "lines": 65017,
    "tables": [
     "a",
     "b",
@@ -151239,8 +151239,8 @@
   },
   {
    "module": "src/lib",
-   "files": 414,
-   "lines": 64404,
+   "files": 415,
+   "lines": 64434,
    "tables": [
     "...",
     "companies",
@@ -152724,7 +152724,7 @@
   {
    "module": "tests",
    "files": 1113,
-   "lines": 176183,
+   "lines": 176215,
    "tables": [
     "bot_detection_log",
     "clients",
@@ -158982,6 +158982,9 @@
    ],
    "visual-search": [
     "src/tests/visual-search/VisualSearch.test.ts"
+   ],
+   "x": [
+    "scripts/__tests__/check-invoke-direct-calls.test.mjs"
    ]
   },
   "storage": {
@@ -232922,7 +232925,7 @@
    },
    {
     "file": "scripts/__tests__/check-invoke-direct-calls.test.mjs",
-    "name": "cria baseline no primeiro run"
+    "name": "baseline ausente falha fechada e exige atualização explícita"
    },
    {
     "file": "scripts/__tests__/check-invoke-direct-calls.test.mjs",
@@ -232943,6 +232946,18 @@
    {
     "file": "scripts/__tests__/check-invoke-direct-calls.test.mjs",
     "name": "UPDATE_BASELINE=1 consolida remoções"
+   },
+   {
+    "file": "scripts/__tests__/check-invoke-direct-calls.test.mjs",
+    "name": "chamada dentro de interpolação de template é detectada"
+   },
+   {
+    "file": "scripts/__tests__/check-invoke-direct-calls.test.mjs",
+    "name": "chamada com tipo genérico é detectada"
+   },
+   {
+    "file": "scripts/__tests__/check-invoke-direct-calls.test.mjs",
+    "name": "acesso dinâmico citado em string documental é ignorado"
    },
    {
     "file": "scripts/__tests__/check-package-duplicate-scripts.test.ts",
@@ -257903,6 +257918,22 @@
    {
     "file": "src/lib/kit-builder/__tests__/dead-code.test.ts",
     "name": "não mantém os arquivos abandonados no src"
+   },
+   {
+    "file": "src/lib/kit-builder/__tests__/status-classification.test.ts",
+    "name": "getKitStatusBadge (KMM-075 / KMX-037)"
+   },
+   {
+    "file": "src/lib/kit-builder/__tests__/status-classification.test.ts",
+    "name": "mapeia os status reais do app"
+   },
+   {
+    "file": "src/lib/kit-builder/__tests__/status-classification.test.ts",
+    "name": "ready nunca é "
+   },
+   {
+    "file": "src/lib/kit-builder/__tests__/status-classification.test.ts",
+    "name": "só status realmente publicados recebem o selo "
    },
    {
     "file": "src/lib/lead-time/__tests__/businessDays.test.ts",
@@ -409576,6 +409607,13 @@
     ]
    },
    {
+    "kind": "edge",
+    "msg": "edge function `x` invocada mas não existe em supabase/functions/",
+    "where": [
+     "scripts/__tests__/check-invoke-direct-calls.test.mjs"
+    ]
+   },
+   {
     "kind": "rpc",
     "msg": "RPC `admin_active_sessions` chamada mas não definida nas migrations/types",
     "where": [
@@ -435054,7 +435092,7 @@
   },
   "scripts/check-invoke-direct-calls.mjs": {
    "path": "scripts/check-invoke-direct-calls.mjs",
-   "lines": 272,
+   "lines": 196,
    "env": [
     "STRICT_BASELINE",
     "UPDATE_BASELINE"
@@ -435075,11 +435113,8 @@
     {
      "name": "scanFile",
      "params": "absPath",
-     "body": "const rel = relative(ROOT, absPath).split(sep).join('/'); if (shouldIgnore(rel)) return []; let src; try { src = readFileSync(absPath, 'utf8'); } catch { return []; } if (!src.includes('.invoke')) return []; const codeNoStrings = stripCommentsAndStrings(src); const codeWithStrings = stripComments(src); const hits = []; RE_A.lastIndex = 0; let m; while ((m = RE_A.exec(codeNoStrings)) !== null) { const line = codeNoStrings.slice(0, m.index).split('\\n').length; hits.push({ file: rel, line }); } RE_ …"
+     "body": "const rel = relative(ROOT, absPath).split(sep).join('/'); if (shouldIgnore(rel)) return []; let src; try { src = readFileSync(absPath, 'utf8'); } catch { return []; } if (!src.includes('.invoke')) return []; const sourceFile = ts.createSourceFile( rel, src, ts.ScriptTarget.Latest, true, rel.endsWith('.tsx') ? ts.ScriptKind.TSX : ts.ScriptKind.TS, ); const hits = []; const visit = (node) => { if (isDirectInvokeCall(node)) { const { line } = sourceFile.getLineAndCharacterOfPosition(node.getStart(s …"
     }
-   ],
-   "side_effects": [
-    "invoke("
    ]
   },
   "scripts/check-ledger-manifest-drift.mjs": {
@@ -438374,26 +438409,30 @@
   },
   "scripts/__tests__/check-invoke-direct-calls.test.mjs": {
    "path": "scripts/__tests__/check-invoke-direct-calls.test.mjs",
-   "lines": 151,
+   "lines": 213,
    "is_test": true,
    "invokes": [
     "a",
     "b",
     "no",
     "ssot-ignored",
-    "t"
+    "t",
+    "x"
    ],
    "rule_comments": [
     "SSOT stub — deve ser ignorado."
    ],
    "doc": "!/usr/bin/env node",
    "tests": [
-    "cria baseline no primeiro run",
+    "baseline ausente falha fechada e exige atualização explícita",
     "call site novo fora da baseline → falha",
     "comentário e string literal são ignorados",
     "acesso dinâmico [",
     "arquivos de teste são ignorados",
-    "UPDATE_BASELINE=1 consolida remoções"
+    "UPDATE_BASELINE=1 consolida remoções",
+    "chamada dentro de interpolação de template é detectada",
+    "chamada com tipo genérico é detectada",
+    "acesso dinâmico citado em string documental é ignorado"
    ],
    "side_effects": [
     "invoke("
@@ -490141,6 +490180,18 @@
     "kit-builder sem mock nem métrica falsa no bundle",
     "não reexporta fixtures de mock no barrel",
     "não mantém os arquivos abandonados no src"
+   ]
+  },
+  "src/lib/kit-builder/__tests__/status-classification.test.ts": {
+   "path": "src/lib/kit-builder/__tests__/status-classification.test.ts",
+   "lines": 30,
+   "is_test": true,
+   "doc": "KMM-075 / KMX-037 — classificação de status da biblioteca de kits. Decisão D7 (PO, 2026-11-21): o app nunca grava `published`/`shared` (`getPersistedKitStatus` só devolve `draft`/`ready`; medido em produção: 21 'draft' + 1 'ready', zero 'published'/'shared'). O selo \"Publicado\" só pode aparecer para …",
+   "tests": [
+    "getKitStatusBadge (KMM-075 / KMX-037)",
+    "mapeia os status reais do app",
+    "ready nunca é ",
+    "só status realmente publicados recebem o selo "
    ]
   },
   "src/lib/kit-builder/snapshot/read-draft.ts": {
@@ -555502,7 +555553,7 @@
   },
   "tests/scripts/gate-baseline-absence.test.mjs": {
    "path": "tests/scripts/gate-baseline-absence.test.mjs",
-   "lines": 99,
+   "lines": 131,
    "is_test": true,
    "invokes": [
     "fn"
@@ -560122,10 +560173,31 @@
   }
  },
  "git": {
-  "sha": "a87dc91e86acb02053c53cf741b3e8e9e1abb78c",
+  "sha": "912bfae1a2609a7add3d86464517bd19c8d441ec",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "912bfae",
+    "date": "2026-11-21",
+    "author": "adm01-debug",
+    "subject": "test(kit): classificacao de status KMM-075/KMX-037 (D7) (#3950)",
+    "files": [
+     "src/lib/kit-builder/__tests__/status-classification.test.ts"
+    ]
+   },
+   {
+    "sha": "f483626",
+    "date": "2026-11-21",
+    "author": "adm01-debug",
+    "subject": "fix(ci): endurece gate de chamadas diretas (#3943)",
+    "files": [
+     ".invoke-direct-baseline.json",
+     "scripts/__tests__/check-invoke-direct-calls.test.mjs",
+     "scripts/check-invoke-direct-calls.mjs",
+     "tests/scripts/gate-baseline-absence.test.mjs"
+    ]
+   },
    {
     "sha": "a87dc91",
     "date": "2026-11-20",
@@ -560676,38 +560748,12 @@
      "package-lock.json",
      "package.json"
     ]
-   },
-   {
-    "sha": "4e50328",
-    "date": "2026-11-19",
-    "author": "github-actions[bot]",
-    "subject": "docs(migrations-log): recibo E15 — aplicação de 20261119212000 (#3906)",
-    "files": [
-     "supabase/MIGRATIONS_SYNC_LOG.md"
-    ]
-   },
-   {
-    "sha": "00502c7",
-    "date": "2026-11-19",
-    "author": "adm01-debug",
-    "subject": "fix(frete): motor agrupa por produto e corrige bordas (#3910)",
-    "files": [
-     "src/lib/freight/README.md",
-     "src/lib/freight/__tests__/buildGroups.test.ts",
-     "src/lib/freight/__tests__/fitCount.test.ts",
-     "src/lib/freight/__tests__/fuzz.test.ts",
-     "src/lib/freight/__tests__/planFreight.test.ts",
-     "src/lib/freight/buildGroups.ts",
-     "src/lib/freight/fitCount.ts",
-     "src/lib/freight/planFreight.ts",
-     "src/lib/freight/types.ts"
-    ]
    }
   ],
   "hot_files": [
    [
     "supabase/MIGRATIONS_SYNC_LOG.md",
-    10
+    9
    ],
    [
     "src/integrations/supabase/types.ts",

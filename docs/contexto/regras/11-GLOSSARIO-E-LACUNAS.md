@@ -1,6 +1,6 @@
 # 11 · GLOSSÁRIO, DADOS DE REFERÊNCIA E LACUNAS
 
-> Gerado automaticamente por AI Context Sync v1.3.2 · commit `a87dc91e86` · branch `main` · 2026-11-20 21:14 UTC
+> Gerado automaticamente por AI Context Sync v1.3.2 · commit `912bfae1a2` · branch `main` · 2026-11-21 11:47 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## Glossário do domínio (entidades do sistema)
@@ -647,7 +647,7 @@
 | rls | `tabela_preco_gravacao_oficial_faixa`: RLS ligado sem nenhuma política → só service_role acessa | `src/services/productionLeadTimeService.ts` |
 | rls | `target_audiences`: RLS ligado sem nenhuma política → só service_role acessa | `src/components/admin/products/productMarketingData.ts` |
 | rls | `user_comparisons`: RLS ligado sem nenhuma política → só service_role acessa | `recovery/src-legacy/src/components/compare/ShareComparisonDialog.tsx`<br>`recovery/src-legacy/src/hooks/useComparisonSync.ts`<br>`src/hooks/comparison/useComparisonSync.ts` |
-| … +251 linhas — lista completa em `context.json` | | |
+| … +252 linhas — lista completa em `context.json` | | |
 
 ## Lacunas — o que este contexto NÃO consegue responder (perguntas para o dono do negócio)
 

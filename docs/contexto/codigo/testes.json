@@ -5,13 +5,13 @@
   "vitest",
   "playwright"
  ],
- "total": 2692,
+ "total": 2693,
  "por_tipo": {
   "contrato": 70,
   "e2e": 678,
   "pytest": 6,
   "qa": 17,
-  "unit": 1921
+  "unit": 1922
  },
  "onde_ficam": [
   {
@@ -20,7 +20,7 @@
   },
   {
    "padrao": "co-localizado (__tests__)",
-   "arquivos": 764
+   "arquivos": 765
   },
   {
    "padrao": "e2e/",
@@ -4607,9 +4607,9 @@
   {
    "arquivo": "scripts/__tests__/check-invoke-direct-calls.test.mjs",
    "tipo": "unit",
-   "linhas": 151,
+   "linhas": 213,
    "testa": [],
-   "casos": 6
+   "casos": 9
   },
   {
    "arquivo": "scripts/__tests__/check-package-duplicate-scripts.test.ts",
@@ -10403,6 +10403,15 @@
     "src/lib/kit-builder/index.ts"
    ],
    "casos": 2
+  },
+  {
+   "arquivo": "src/lib/kit-builder/__tests__/status-classification.test.ts",
+   "tipo": "unit",
+   "linhas": 30,
+   "testa": [
+    "src/lib/kit-builder/persistence.ts"
+   ],
+   "casos": 3
   },
   {
    "arquivo": "src/lib/lead-time/__tests__/businessDays.test.ts",
@@ -21426,7 +21435,7 @@
   {
    "arquivo": "tests/scripts/gate-baseline-absence.test.mjs",
    "tipo": "unit",
-   "linhas": 99,
+   "linhas": 131,
    "testa": [],
    "casos": 5
   },
@@ -23757,7 +23766,7 @@
   "src/lib/kit-builder/ai-composition.ts": 2,
   "src/lib/kit-builder/index.ts": 40,
   "src/lib/kit-builder/item-sort.ts": 1,
-  "src/lib/kit-builder/persistence.ts": 5,
+  "src/lib/kit-builder/persistence.ts": 6,
   "src/lib/kit-builder/price-calculator.ts": 2,
   "src/lib/kit-builder/pricing-availability.ts": 2,
   "src/lib/kit-builder/snapshot/read-draft.ts": 1,

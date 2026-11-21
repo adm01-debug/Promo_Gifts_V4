@@ -2,11 +2,21 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "a87dc91e86acb02053c53cf741b3e8e9e1abb78c",
+  "commit": "912bfae1a2609a7add3d86464517bd19c8d441ec",
   "branch": "main",
-  "data_commit": "2026-11-20T17:34:48-03:00",
+  "data_commit": "2026-11-21T08:45:57-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "912bfae1",
+    "data": "2026-11-21",
+    "assunto": "test(kit): classificacao de status KMM-075/KMX-037 (D7) (#3950)"
+   },
+   {
+    "sha": "f483626a",
+    "data": "2026-11-21",
+    "assunto": "fix(ci): endurece gate de chamadas diretas (#3943)"
+   },
    {
     "sha": "a87dc91e",
     "data": "2026-11-20",
@@ -121,19 +131,9 @@
     "sha": "5ac27dbc",
     "data": "2026-11-20",
     "assunto": "feat(frete): hooks e painel do plano de volumes (Bloco E, etapas 41–45 e 48) (#3920)"
-   },
-   {
-    "sha": "23c5aed4",
-    "data": "2026-11-20",
-    "assunto": "feat(frete): biblioteca de prazo de produção em dias úteis (Bloco H, etapas 72–75) (#3919)"
-   },
-   {
-    "sha": "16762dcb",
-    "data": "2026-11-20",
-    "assunto": "feat(db): coluna products.ships_separately (frete, Bloco D — DDL) (#3918)"
    }
   ],
-  "arquivos_mudados_7d": 1503,
+  "arquivos_mudados_7d": 1416,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -145,7 +145,7 @@
    },
    {
     "pasta": "src/components/products",
-    "mudancas": 310
+    "mudancas": 306
    },
    {
     "pasta": "src/hooks/products",
@@ -181,7 +181,7 @@
    },
    {
     "pasta": "src/pages/admin",
-    "mudancas": 138
+    "mudancas": 137
    },
    {
     "pasta": "src/pages/quotes",
@@ -189,7 +189,7 @@
    },
    {
     "pasta": "src/components/kit-builder",
-    "mudancas": 118
+    "mudancas": 116
    },
    {
     "pasta": "src/hooks/quotes",
@@ -226,10 +226,6 @@
     "mudancas": 12
    },
    {
-    "arquivo": "RELATORIO_CI.md",
-    "mudancas": 10
-   },
-   {
     "arquivo": "docs/agentes/resgates/2026-11-16-auditoria-branches.md",
     "mudancas": 10
    },
@@ -238,7 +234,7 @@
     "mudancas": 10
    },
    {
-    "arquivo": "PENDENCIAS.md",
+    "arquivo": "RELATORIO_CI.md",
     "mudancas": 8
    },
    {
@@ -290,6 +286,10 @@
     "mudancas": 6
    },
    {
+    "arquivo": "PENDENCIAS.md",
+    "mudancas": 6
+   },
+   {
     "arquivo": "scripts/automation.config.json",
     "mudancas": 6
    },
@@ -301,7 +301,7 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 319
+    "commits": 317
    },
    {
     "autor": "Claude",
@@ -322,9 +322,9 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 11182,
-  "arquivos_codigo": 5641,
-  "linhas_codigo": 1070914,
+  "arquivos_total": 11183,
+  "arquivos_codigo": 5642,
+  "linhas_codigo": 1070962,
   "rotas": 140,
   "rotas_http_backend": 13,
   "vistas_por_id": 0,
@@ -336,7 +336,7 @@
   "tabelas": 531,
   "migrations": 3118,
   "cron_jobs": 122,
-  "testes": 2692,
+  "testes": 2693,
   "workflows": 89,
   "scripts": 284,
   "docs_md": 1495
@@ -924,7 +924,7 @@
   },
   "scripts/__tests__": {
    "arquivos": 7,
-   "linhas": 1051
+   "linhas": 1113
   },
   "scripts/ai-context": {
    "arquivos": 3,
@@ -1196,7 +1196,7 @@
   },
   "scripts/check-invoke-direct-calls.mjs": {
    "arquivos": 1,
-   "linhas": 272
+   "linhas": 196
   },
   "scripts/check-ledger-manifest-drift.mjs": {
    "arquivos": 1,
@@ -1935,8 +1935,8 @@
    "linhas": 66760
   },
   "src/lib": {
-   "arquivos": 413,
-   "linhas": 64394
+   "arquivos": 414,
+   "linhas": 64424
   },
   "src/logic": {
    "arquivos": 4,
@@ -2160,7 +2160,7 @@
   },
   "tests/scripts": {
    "arquivos": 182,
-   "linhas": 29231
+   "linhas": 29263
   },
   "tests/search": {
    "arquivos": 1,
@@ -2986,13 +2986,13 @@
   },
   {
    "arquivo": "tests/scripts/gate-baseline-absence.test.mjs",
-   "linha": 57,
+   "linha": 86,
    "tipo": "TODO",
    "texto": "documentar motivo…\" → exit 1', () => {"
   },
   {
    "arquivo": "tests/scripts/gate-baseline-absence.test.mjs",
-   "linha": 58,
+   "linha": 87,
    "tipo": "TODO",
    "texto": "documentar motivo antes de aprovar PR');"
   },

@@ -5176,7 +5176,7 @@
     "lib/kit-builder",
     "pages/kit-builder"
    ],
-   "coberto_por_testes": 5,
+   "coberto_por_testes": 6,
    "orfao": false
   },
   {

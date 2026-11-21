@@ -868,7 +868,7 @@
   {
    "arquivo": "scripts/check-invoke-direct-calls.mjs",
    "descricao": "* check-invoke-direct-calls — Onda 18 gate.",
-   "linhas": 272,
+   "linhas": 196,
    "env": [
     "STRICT_BASELINE",
     "UPDATE_BASELINE"
