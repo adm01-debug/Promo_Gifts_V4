@@ -20,7 +20,6 @@ import {
   kitToPackInput,
   planFreight,
   type FreightPlan,
-  type FreightSettings,
   type IncompleteItem,
   type PlanOptions,
 } from '@/lib/freight';
@@ -103,7 +102,7 @@ export function useKitFreightPlan(kit: FreightKit, kitQuantity: number): UseFrei
     }
 
     return {
-      plan: planFreight(resultado.inputs, boxes, base, settings as FreightSettings),
+      plan: planFreight(resultado.inputs, boxes, base, settings),
       unavailable: NO_UNAVAILABLE,
     };
   }, [isLoading, loadError, settings, kit, kitQuantity, measures, boxes]);
