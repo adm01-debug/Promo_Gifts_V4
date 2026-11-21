@@ -15,6 +15,7 @@ import { calculateTotalKitPrice, type KitIdentity, type KitState } from '@/lib/k
 import { FreightPlanPanel } from '@/components/freight-plan/FreightPlanPanel';
 import { useKitFreightPlan } from '@/hooks/freight';
 import type { FreightKit } from '@/lib/freight/fromKit';
+import type { FreightPlan } from '@/lib/freight';
 import { KitIdentificationCard } from './kit-summary/KitIdentificationCard';
 import { KitStatsCards } from './kit-summary/KitStatsCards';
 import { KitCompositionCard } from './kit-summary/KitCompositionCard';
@@ -37,7 +38,7 @@ interface KitSummaryProps {
   onKitNameChange: (name: string) => void;
   onKitQuantityChange: (quantity: number) => void;
   onAddToQuote?: () => void;
-  onExportPDF?: () => void;
+  onExportPDF?: (freightPlan?: FreightPlan | null) => void;
   isAddingToQuote?: boolean;
   currentKitId?: string;
   quoteClient?: Partial<ClientData>;
@@ -317,7 +318,7 @@ export function KitSummary({
           total={pricing.total}
           items={items}
           onAddToQuote={onAddToQuote}
-          onExportPDF={onExportPDF}
+          onExportPDF={onExportPDF ? () => onExportPDF(freightPlan.plan) : undefined}
           onSaveDraft={onSaveDraft}
           isSavingDraft={isSavingDraft}
         />
