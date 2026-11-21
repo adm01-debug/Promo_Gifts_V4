@@ -5,6 +5,13 @@ Todas as mudanças notáveis deste projeto são documentadas neste arquivo.
 O formato é baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/),
 e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR/).
 
+## [1.16.1](https://github.com/adm01-debug/Promo_Gifts_V4/compare/gifts-store-v1.16.0...gifts-store-v1.16.1) (2026-11-21)
+
+
+### Bug Fixes
+
+* **ci:** endurece gate de chamadas diretas ([#3943](https://github.com/adm01-debug/Promo_Gifts_V4/issues/3943)) ([f483626](https://github.com/adm01-debug/Promo_Gifts_V4/commit/f483626a43648e55ad4da83d6bf4085f143dd715))
+
 ## [1.16.0](https://github.com/adm01-debug/Promo_Gifts_V4/compare/gifts-store-v1.15.0...gifts-store-v1.16.0) (2026-11-20)
 
 
