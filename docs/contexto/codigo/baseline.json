@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "184ac28b03c53f0359910cd275f6e0efdc6e1b09",
+  "commit": "60f9275e828a8f4d08ecb2e8c872cfda3121446d",
   "branch": "main",
-  "data_commit": "2026-11-21T12:22:19-03:00",
+  "data_commit": "2026-11-21T12:51:49-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "60f9275e",
+    "data": "2026-11-21",
+    "assunto": "chore(migrations): rollback da migration 20261121000000 (E058) (#3957)"
+   },
    {
     "sha": "184ac28b",
     "data": "2026-11-21",
@@ -126,14 +131,9 @@
     "sha": "51ab7fb3",
     "data": "2026-11-20",
     "assunto": "docs(migrations): recibos E15 das 20261120030000/030100 (baseline já em #3931) (#3932)"
-   },
-   {
-    "sha": "c2e99f6e",
-    "data": "2026-11-20",
-    "assunto": "feat(db): resgata migrations órfãs de branches fechadas (P06 + onboarding) (#3914)"
    }
   ],
-  "arquivos_mudados_7d": 11300,
+  "arquivos_mudados_7d": 11299,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -199,7 +199,7 @@
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "supabase/MIGRATIONS_SYNC_LOG.md",
-    "mudancas": 72
+    "mudancas": 71
    },
    {
     "arquivo": "package.json",
@@ -254,10 +254,6 @@
     "mudancas": 11
    },
    {
-    "arquivo": "supabase/EDGE_FUNCTIONS_DEPLOY_LOG.md",
-    "mudancas": 11
-   },
-   {
     "arquivo": "supabase/functions/crm-db-bridge/index.ts",
     "mudancas": 11
    },
@@ -271,10 +267,6 @@
    },
    {
     "arquivo": "docs/agentes/resgates/2026-11-16-auditoria-branches.md",
-    "mudancas": 10
-   },
-   {
-    "arquivo": "docs/prod-readiness.md",
     "mudancas": 10
    },
    {
@@ -296,16 +288,24 @@
    {
     "arquivo": "src/components/search/useGlobalSearch.ts",
     "mudancas": 10
+   },
+   {
+    "arquivo": "src/hooks/mockup/useMockupGenerator.ts",
+    "mudancas": 10
+   },
+   {
+    "arquivo": "src/hooks/quotes/useQuoteTemplates.ts",
+    "mudancas": 10
    }
   ],
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 312
+    "commits": 309
    },
    {
     "autor": "Claude",
-    "commits": 53
+    "commits": 51
    },
    {
     "autor": "github-actions[bot]",
@@ -322,7 +322,7 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 11192,
+  "arquivos_total": 11193,
   "arquivos_codigo": 5650,
   "linhas_codigo": 1072204,
   "rotas": 141,

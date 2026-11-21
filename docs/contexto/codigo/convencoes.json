@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "chore(migrations): rollback da migration 20261121000000 (E058) (#3957)",
    "feat(frete): persiste plano de frete no orcamento (G-UI, etapas 62-63) (#3956)",
    "feat(frete): expoe volumes para transporte no PDF do kit (#3955)",
    "feat(frete): Bloco F - comparador de volumes, simulador de frete e telemetria (etapas 53-60) (#3954)",
-   "feat(kit): plano de volumes do kit no lugar do FreightEstimator (etapa 52) (#3951)",
-   "chore(main): release gifts-store 1.16.1 (#3949)"
+   "feat(kit): plano de volumes do kit no lugar do FreightEstimator (etapa 52) (#3951)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",
