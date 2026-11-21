@@ -2340,6 +2340,7 @@ ativo.
 
 | versão | arquivo | sha256 | status |
 |---|---|---|---|
+| `20261121120000` | `fix_quote_rpcs_contract_freight` | `dffda6b2d2881ec8355618e7ddfb833856f50d558b4b00a4bdf8646f07c54e91` | pendente — aplicar via `db-apply-migration.yml` (`version=20261121120000`) após merge da PR fix-contract |
 | `20261115230000` | `ai_function_routing_mockup_assistant` | `2937d5ff62750fed7a98cec78f147de2547df00055d361796ce65ee6db996dec` | pendente — aplicar via `db-apply-migration.yml` após merge (banco de produção autorizado pelo dono no chat em 2026-11-15) |
 
 ## 2026-11-16 — Recibos superseded: hashes de arquivos revisados antes de aplicar
@@ -2846,4 +2847,17 @@ delegam nas base → cobertas. Aplicar em produção após o merge da PR G-UI.
 
 | versão | arquivo | sha256 | status |
 |---|---|---|---|
-| `20261121000000` | `quote_rpcs_freight_plan` | `e77669031f158b0bf4287acddc4bd6d7fd5eac5fbe80092f7ad392c7642de8fc` | pendente — aplicar via `db-apply-migration.yml` (`version=20261121000000`) após merge da PR G-UI |n
+| `20261121000000` | `quote_rpcs_freight_plan` | `e77669031f158b0bf4287acddc4bd6d7fd5eac5fbe80092f7ad392c7642de8fc` | pendente — aplicar via `db-apply-migration.yml` (`version=20261121000000`) após merge da PR G-UI |
+
+### 2026-11-21 — correção do contrato transacional das RPCs de orçamento (Gate 2.5)
+
+Regressão: a `20261121000000` reescreveu as RPCs com corpo curto, removendo a lógica
+transacional canônica (row locks, version guard, audit) e os marcadores do contrato
+`check-quote-rpc-canonical-readiness.mjs` → Gate 2.5 falhava com
+`canonical_contract_not_applied`. Esta migration restaura o corpo canônico completo
+(baseline `20261015140000`) mantendo as 3 colunas de frete, e o contrato do gate foi
+atualizado para os novos md5. Aplicar em produção via `db-apply-migration.yml`
+(`version=20261121120000`).
+
+| versão | arquivo | sha256 | status |
+|---|---|---|---|

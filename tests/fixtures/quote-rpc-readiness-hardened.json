@@ -2,7 +2,7 @@
   "rows": [
     {
       "signature": "create_quote_transactional(jsonb,jsonb)",
-      "body_md5": "54d09802f6eaf0504a09e30cd2ce30c7",
+      "body_md5": "562108d34294856d24dc27e2159b704f",
       "security_invoker": true,
       "owner": "postgres",
       "proconfig": "search_path=public",
@@ -38,7 +38,7 @@
     },
     {
       "signature": "update_quote_transactional(uuid,jsonb,jsonb,integer)",
-      "body_md5": "40613079070aceb2054b4c7124cffe12",
+      "body_md5": "cc7dea4fe8ccbfea5030e12345325851",
       "security_invoker": true,
       "owner": "postgres",
       "proconfig": "search_path=public",
