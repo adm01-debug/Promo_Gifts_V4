@@ -8,12 +8,12 @@
    "api/health.ts (1)"
   ],
   "componentes": [
-   "src/components (980)",
+   "src/components (979)",
    "src/pages (181)",
    "recovery/src-legacy (100)"
   ],
   "hooks": [
-   "src/hooks (313)",
+   "src/hooks (314)",
    "recovery/src-legacy (196)",
    "src/components (78)"
   ],
@@ -24,7 +24,7 @@
   ],
   "testes": [
    "tests/ (1097)",
-   "co-localizado (__tests__) (765)",
+   "co-localizado (__tests__) (766)",
    "e2e/ (626)"
   ],
   "edge_functions": "supabase/functions",
@@ -49,7 +49,7 @@
  },
  "barrels_index": 50,
  "extensao_componentes": [
-  ".tsx (1280)"
+  ".tsx (1279)"
  ],
  "alias_imports": {
   "e2e/": {},
@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "feat(kit): plano de volumes do kit no lugar do FreightEstimator (etapa 52) (#3951)",
    "chore(main): release gifts-store 1.16.1 (#3949)",
    "test(kit): classificacao de status KMM-075/KMX-037 (D7) (#3950)",
    "fix(ci): endurece gate de chamadas diretas (#3943)",
-   "chore(docs): memoria do GOAL 4 - achados e resgate quote_comments (#3948)",
-   "chore(main): release gifts-store 1.16.0 (#3945)"
+   "chore(docs): memoria do GOAL 4 - achados e resgate quote_comments (#3948)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",

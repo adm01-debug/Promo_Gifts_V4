@@ -2,7 +2,7 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "nos": 2949,
- "arestas": 11623,
+ "arestas": 11629,
  "hubs": [
   {
    "arquivo": "src/lib/utils.ts",
@@ -14,7 +14,7 @@
   },
   {
    "arquivo": "src/components/ui/badge.tsx",
-   "importado_por": 490
+   "importado_por": 489
   },
   {
    "arquivo": "src/integrations/supabase/client.ts",
@@ -22,7 +22,7 @@
   },
   {
    "arquivo": "src/components/ui/card.tsx",
-   "importado_por": 360
+   "importado_por": 359
   },
   {
    "arquivo": "src/lib/logger.ts",
@@ -30,7 +30,7 @@
   },
   {
    "arquivo": "src/components/ui/tooltip.tsx",
-   "importado_por": 308
+   "importado_por": 307
   },
   {
    "arquivo": "src/components/ui/input.tsx",
@@ -46,11 +46,11 @@
   },
   {
    "arquivo": "src/components/ui/label.tsx",
-   "importado_por": 155
+   "importado_por": 154
   },
   {
    "arquivo": "src/components/ui/select.tsx",
-   "importado_por": 150
+   "importado_por": 149
   },
   {
    "arquivo": "src/components/ui/dialog.tsx",
@@ -66,7 +66,7 @@
   },
   {
    "arquivo": "src/lib/kit-builder/index.ts",
-   "importado_por": 116
+   "importado_por": 115
   },
   {
    "arquivo": "supabase/functions/_shared/cors.ts",

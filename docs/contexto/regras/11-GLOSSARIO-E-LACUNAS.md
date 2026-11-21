@@ -1,6 +1,6 @@
 # 11 · GLOSSÁRIO, DADOS DE REFERÊNCIA E LACUNAS
 
-> Gerado automaticamente por AI Context Sync v1.3.2 · commit `f613f3f502` · branch `main` · 2026-11-21 11:54 UTC
+> Gerado automaticamente por AI Context Sync v1.3.2 · commit `4eddf85d8b` · branch `main` · 2026-11-21 12:36 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## Glossário do domínio (entidades do sistema)
@@ -368,11 +368,11 @@
 | status | valor `Concluído` para `status` usado no código não existe em nenhum enum do banco/TS | `compara:src/components/kit-builder/PersonalizationConfig.tsx` |
 | status | valor `Inválido` para `status` usado no código não existe em nenhum enum do banco/TS | `compara:src/components/kit-builder/PersonalizationConfig.tsx` |
 | status | valor `dimension` para `status` usado no código não existe em nenhum enum do banco/TS | `compara:src/components/pricing/calculator/QuantityComparisonTable.tsx`<br>`escreve:src/components/pricing/calculator/QuantityComparisonTable.tsx` |
+| status | valor `incomplete` para `status` usado no código não existe em nenhum enum do banco/TS | `compara:src/hooks/freight/useKitFreightPlan.ts`<br>`compara:src/lib/freight/fromKit.ts`<br>`compara:src/lib/freight/planFreight.ts`<br>`compara:src/lib/freight/readiness.ts` |
 | status | valor `violations` para `status` usado no código não existe em nenhum enum do banco/TS | `compara:src/pages/kit-builder/useKitBuilderQuote.ts`<br>`escreve:src/hooks/kit-builder/useKitFitsValidation.ts`<br>`escreve:src/hooks/kit-builder/useKitMinQuantityValidation.ts` |
 | status | valor `changed` para `status` usado no código não existe em nenhum enum do banco/TS | `compara:src/pages/kit-builder/useKitBuilderQuote.ts`<br>`escreve:src/hooks/kit-builder/useKitPriceValidation.ts` |
 | status | valor `unchanged` para `status` usado no código não existe em nenhum enum do banco/TS | `escreve:src/hooks/kit-builder/useKitPriceValidation.ts` |
 | status | valor `APPLIED` para `status` usado no código não existe em nenhum enum do banco/TS | `escreve:src/lib/theme-presets-css-vars-patch.ts` |
-| status | valor `incomplete` para `status` usado no código não existe em nenhum enum do banco/TS | `compara:src/lib/freight/fromKit.ts`<br>`compara:src/lib/freight/planFreight.ts`<br>`compara:src/lib/freight/readiness.ts`<br>`escreve:src/lib/freight/fromKit.ts` |
 | status | valor `volumes_demais` para `status` usado no código não existe em nenhum enum do banco/TS | `compara:src/lib/freight/planFreight.ts`<br>`escreve:src/lib/freight/packSingleProduct.ts` |
 | status | valor `string` para `status` usado no código não existe em nenhum enum do banco/TS | `compara:src/lib/products/stock-status.ts` |
 | status | valor `confirming` para `status` usado no código não existe em nenhum enum do banco/TS | `compara:src/pages/auth/SSOCallbackPage.tsx` |

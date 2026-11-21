@@ -1,7 +1,7 @@
 {
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
- "total": 644,
+ "total": 645,
  "hooks": [
   {
    "arquivo": "docs/agentes/resgates/quote-comments/codigo/useQuoteComments.ts",
@@ -8832,10 +8832,11 @@
     "useShippingBoxes"
    ],
    "canais_realtime": [],
-   "usado_por": 2,
+   "usado_por": 3,
    "usado_por_arquivos": [
     "src/components/freight-plan/FreightPlanCard.tsx",
-    "src/hooks/freight/index.ts"
+    "src/hooks/freight/index.ts",
+    "src/hooks/freight/useKitFreightPlan.ts"
    ],
    "coberto_por_testes": 0
   },
@@ -8878,13 +8879,37 @@
     "useQueryClient"
    ],
    "canais_realtime": [],
-   "usado_por": 3,
+   "usado_por": 4,
    "usado_por_arquivos": [
     "src/hooks/freight/index.ts",
     "src/hooks/freight/useFreightPlan.ts",
+    "src/hooks/freight/useKitFreightPlan.ts",
     "src/hooks/freight/useProductionLeadTime.ts"
    ],
    "coberto_por_testes": 0
+  },
+  {
+   "arquivo": "src/hooks/freight/useKitFreightPlan.ts",
+   "hooks_exportados": [
+    "useKitFreightPlan"
+   ],
+   "linhas": 122,
+   "dominio": "hooks/freight",
+   "tabelas": [],
+   "rpcs": [],
+   "edges": [],
+   "hooks_internos": [
+    "useFreightSettings",
+    "useMemo",
+    "useProductMeasures",
+    "useShippingBoxes"
+   ],
+   "canais_realtime": [],
+   "usado_por": 1,
+   "usado_por_arquivos": [
+    "src/hooks/freight/index.ts"
+   ],
+   "coberto_por_testes": 1
   },
   {
    "arquivo": "src/hooks/freight/usePriceTableBands.ts",
@@ -8945,10 +8970,11 @@
     "useQuery"
    ],
    "canais_realtime": [],
-   "usado_por": 2,
+   "usado_por": 3,
    "usado_por_arquivos": [
     "src/hooks/freight/index.ts",
-    "src/hooks/freight/useFreightPlan.ts"
+    "src/hooks/freight/useFreightPlan.ts",
+    "src/hooks/freight/useKitFreightPlan.ts"
    ],
    "coberto_por_testes": 0
   },
@@ -8971,11 +8997,12 @@
     "useQueryClient"
    ],
    "canais_realtime": [],
-   "usado_por": 3,
+   "usado_por": 4,
    "usado_por_arquivos": [
     "src/components/freight-plan/FreightPlanCard.tsx",
     "src/hooks/freight/index.ts",
-    "src/hooks/freight/useFreightPlan.ts"
+    "src/hooks/freight/useFreightPlan.ts",
+    "src/hooks/freight/useKitFreightPlan.ts"
    ],
    "coberto_por_testes": 0
   },

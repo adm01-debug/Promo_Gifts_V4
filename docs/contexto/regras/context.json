@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "f613f3f50224a19b7e90966bf475d98e061c5ce8",
+  "sha": "4eddf85d8b6e5d0227dcc995b4733f1c143588ec",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-21 11:54 UTC",
-  "files_total": 11111,
-  "code_files": 9119,
-  "code_lines": 1294055
+  "generated_at": "2026-11-21 12:36 UTC",
+  "files_total": 11112,
+  "code_files": 9120,
+  "code_lines": 1294107
  },
  "version": "1.3.2",
- "facts_hash": "975cf78576f7c4e9",
+ "facts_hash": "81983c2a3712296c",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -1129,7 +1129,7 @@
   "package_manager": "npm",
   "languages": {
    ".sql": 3478,
-   ".ts": 3160,
+   ".ts": 3161,
    ".tsx": 2010,
    ".mjs": 455,
    ".py": 16,
@@ -138522,6 +138522,7 @@
      "product_price_freshness_overrides",
      "product_variants",
      "product_views",
+     "products",
      "profiles",
      "quote_items",
      "role_permissions",
@@ -138550,7 +138551,7 @@
      "save_custom_kit_atomic",
      "set_custom_kit_pinned"
     ],
-    "deps_count": 257
+    "deps_count": 274
    },
    {
     "path": "",
@@ -139344,6 +139345,7 @@
      "kit_variants",
      "login_attempts",
      "password_reset_requests",
+     "products",
      "profiles",
      "role_permissions",
      "user_roles"
@@ -139361,7 +139363,7 @@
      "save_custom_kit_atomic",
      "set_custom_kit_pinned"
     ],
-    "deps_count": 138
+    "deps_count": 168
    },
    {
     "path": "",
@@ -145872,7 +145874,7 @@
     "file": ".github/workflows/wraparound-monitor-report.yml"
    }
   ],
-  "components_count": 1755,
+  "components_count": 1754,
   "hooks": [
    {
     "name": "useQuoteComments",
@@ -148003,6 +148005,10 @@
     "file": "src/hooks/freight/useFreightSettings.ts"
    },
    {
+    "name": "useKitFreightPlan",
+    "file": "src/hooks/freight/useKitFreightPlan.ts"
+   },
+   {
     "name": "usePriceTableBands",
     "file": "src/hooks/freight/usePriceTableBands.ts"
    },
@@ -149875,7 +149881,7 @@
   {
    "module": "e2e",
    "files": 627,
-   "lines": 76148,
+   "lines": 76139,
    "tables": [
     "discount_approval_requests",
     "quote_items"
@@ -150584,8 +150590,8 @@
   },
   {
    "module": "src/components",
-   "files": 1478,
-   "lines": 290022,
+   "files": 1477,
+   "lines": 289884,
    "tables": [
     "admin_audit_log",
     "art_file_attachments",
@@ -150948,8 +150954,8 @@
   },
   {
    "module": "src/hooks",
-   "files": 505,
-   "lines": 93951,
+   "files": 507,
+   "lines": 94150,
    "tables": [
     "admin_audit_log",
     "admin_settings",
@@ -172958,10 +172964,6 @@
     "text": "deve passar por aqui para não dar drift entre bulk e single-row."
    },
    {
-    "file": "src/components/kit-builder/FreightEstimator.tsx",
-    "text": "Peso desconhecido nunca deve ser lido como zero: um kit com 1 item sem"
-   },
-   {
     "file": "src/components/kit-builder/KitAIPromptDialog.tsx",
     "text": "* Etapa 18: 3 erros de negócio distintos em vez do genérico \"Erro ao gerar"
    },
@@ -172980,10 +172982,6 @@
    {
     "file": "src/components/kit-builder/KitOccasionSelector.tsx",
     "text": "ou apenas armazena para sugestões contextuais."
-   },
-   {
-    "file": "src/components/kit-builder/KitSummary.tsx",
-    "text": "`totalWeight` soma apenas os pesos conhecidos (nunca assume 0 para um"
    },
    {
     "file": "src/components/kit-builder/KitSummary.tsx",
@@ -206716,6 +206714,12 @@
     "kind": "compara"
    },
    {
+    "file": "src/components/kit-builder/KitMobileSummaryBar.tsx",
+    "field": "status",
+    "value": "ok",
+    "kind": "compara"
+   },
+   {
     "file": "src/components/kit-builder/KitSummary.tsx",
     "field": "status",
     "value": "available",
@@ -209048,6 +209052,24 @@
     "field": "status",
     "value": "dados_insuficientes",
     "kind": "escreve"
+   },
+   {
+    "file": "src/hooks/freight/useKitFreightPlan.ts",
+    "field": "status",
+    "value": "dados_insuficientes",
+    "kind": "escreve"
+   },
+   {
+    "file": "src/hooks/freight/useKitFreightPlan.ts",
+    "field": "status",
+    "value": "error",
+    "kind": "compara"
+   },
+   {
+    "file": "src/hooks/freight/useKitFreightPlan.ts",
+    "field": "status",
+    "value": "incomplete",
+    "kind": "compara"
    },
    {
     "file": "src/hooks/intelligence/useAiUsage.ts",
@@ -229217,7 +229239,7 @@
    },
    {
     "file": "e2e/flows/33-quote-freight-delivery.spec.ts",
-    "name": "KitBuilder — FreightEstimator exibe estimativa ao alterar peso"
+    "name": "KitBuilder — painel de volumes exibe o plano da composição"
    },
    {
     "file": "e2e/flows/33-quote-freight-delivery.spec.ts",
@@ -229609,19 +229631,19 @@
    },
    {
     "file": "e2e/flows/freight-quest-complete-flow.spec.ts",
-    "name": "FreightEstimator — Kit Builder @freight"
+    "name": "Plano de volumes — Kit Builder @freight"
    },
    {
     "file": "e2e/flows/freight-quest-complete-flow.spec.ts",
-    "name": "navega para Kit Builder e verifica FreightEstimator visível"
+    "name": "navega para Kit Builder e verifica painel de volumes visível"
    },
    {
     "file": "e2e/flows/freight-quest-complete-flow.spec.ts",
-    "name": "seleciona método de frete SEDEX e exibe preço correto"
+    "name": "painel de volumes lista o resumo do plano (volumes e peso)"
    },
    {
     "file": "e2e/flows/freight-quest-complete-flow.spec.ts",
-    "name": "troca entre PAC e SEDEX atualiza preço exibido"
+    "name": "painel de volumes mostra rodapé de estimativa por caixas padrão"
    },
    {
     "file": "e2e/flows/freight-quest-complete-flow.spec.ts",
@@ -247878,6 +247900,22 @@
    {
     "file": "src/hooks/freight/__tests__/useBusinessCalendar.test.tsx",
     "name": "erro desconhecido usa o texto padrão da ação"
+   },
+   {
+    "file": "src/hooks/freight/__tests__/useKitFreightPlan.test.tsx",
+    "name": "useKitFreightPlan"
+   },
+   {
+    "file": "src/hooks/freight/__tests__/useKitFreightPlan.test.tsx",
+    "name": "kit com caixa própria calcula a caixa fechada (peso = caixa + Σ itens)"
+   },
+   {
+    "file": "src/hooks/freight/__tests__/useKitFreightPlan.test.tsx",
+    "name": "kit sem caixa vira linhas normais do motor"
+   },
+   {
+    "file": "src/hooks/freight/__tests__/useKitFreightPlan.test.tsx",
+    "name": "item sem peso cadastrado deixa o plano em dados_insuficientes"
    },
    {
     "file": "src/hooks/freight/__tests__/useProductionLeadTime.test.tsx",
@@ -358064,6 +358102,7 @@
       "compara:src/components/mockup/MockupCompletionStates.tsx",
       "compara:src/components/pricing/calculator/QuantityComparisonTable.tsx",
       "compara:src/components/quotes/QuoteAutoSave.tsx",
+      "compara:src/hooks/freight/useKitFreightPlan.ts",
       "compara:src/lib/freight/planFreight.ts",
       "compara:src/pages/system/SystemStatusPage.tsx",
       "compara:supabase/functions/_shared/ai-router/index.ts",
@@ -358109,6 +358148,7 @@
       "compara:src/components/admin/connections/KeysValidationTab.tsx",
       "compara:src/components/admin/connections/LastSyncRunPanel.tsx",
       "compara:src/components/freight-plan/ProductionLeadTimeCard.tsx",
+      "compara:src/components/kit-builder/KitMobileSummaryBar.tsx",
       "compara:src/components/pricing/calculator/QuantityComparisonTable.tsx",
       "compara:src/hooks/intelligence/useConnectionsOverviewFilters.ts",
       "compara:src/lib/auth/invoke-full-scope.ts",
@@ -358674,6 +358714,7 @@
       "compara:src/components/freight-plan/FreightPlanPanel.tsx",
       "compara:src/components/freight-plan/ProductionLeadTimeCard.tsx",
       "escreve:src/hooks/freight/useFreightPlan.ts",
+      "escreve:src/hooks/freight/useKitFreightPlan.ts",
       "escreve:src/lib/freight/planFreight.ts",
       "escreve:src/lib/lead-time/productionLeadTime.ts"
      ],
@@ -358788,6 +358829,14 @@
       "escreve:supabase/functions/product-webhook/index.ts",
       "escreve:supabase/functions/word-magic/index.ts"
      ],
+     "incomplete": [
+      "compara:src/hooks/freight/useKitFreightPlan.ts",
+      "compara:src/lib/freight/fromKit.ts",
+      "compara:src/lib/freight/planFreight.ts",
+      "compara:src/lib/freight/readiness.ts",
+      "escreve:src/lib/freight/fromKit.ts",
+      "escreve:src/lib/freight/resolveItemDimensions.ts"
+     ],
      "violations": [
       "compara:src/pages/kit-builder/useKitBuilderQuote.ts",
       "escreve:src/hooks/kit-builder/useKitFitsValidation.ts",
@@ -358825,13 +358874,6 @@
      "soon": [
       "compara:src/lib/carts/shipping-deadline.ts",
       "compara:src/pages/products/CartsListPage.tsx"
-     ],
-     "incomplete": [
-      "compara:src/lib/freight/fromKit.ts",
-      "compara:src/lib/freight/planFreight.ts",
-      "compara:src/lib/freight/readiness.ts",
-      "escreve:src/lib/freight/fromKit.ts",
-      "escreve:src/lib/freight/resolveItemDimensions.ts"
      ],
      "volumes_demais": [
       "compara:src/lib/freight/planFreight.ts",
@@ -407697,6 +407739,16 @@
    },
    {
     "kind": "status",
+    "msg": "valor `incomplete` para `status` usado no código não existe em nenhum enum do banco/TS",
+    "where": [
+     "compara:src/hooks/freight/useKitFreightPlan.ts",
+     "compara:src/lib/freight/fromKit.ts",
+     "compara:src/lib/freight/planFreight.ts",
+     "compara:src/lib/freight/readiness.ts"
+    ]
+   },
+   {
+    "kind": "status",
     "msg": "valor `violations` para `status` usado no código não existe em nenhum enum do banco/TS",
     "where": [
      "compara:src/pages/kit-builder/useKitBuilderQuote.ts",
@@ -407724,16 +407776,6 @@
     "msg": "valor `APPLIED` para `status` usado no código não existe em nenhum enum do banco/TS",
     "where": [
      "escreve:src/lib/theme-presets-css-vars-patch.ts"
-    ]
-   },
-   {
-    "kind": "status",
-    "msg": "valor `incomplete` para `status` usado no código não existe em nenhum enum do banco/TS",
-    "where": [
-     "compara:src/lib/freight/fromKit.ts",
-     "compara:src/lib/freight/planFreight.ts",
-     "compara:src/lib/freight/readiness.ts",
-     "escreve:src/lib/freight/fromKit.ts"
     ]
    },
    {
@@ -419141,7 +419183,7 @@
   },
   "e2e/flows/33-quote-freight-delivery.spec.ts": {
    "path": "e2e/flows/33-quote-freight-delivery.spec.ts",
-   "lines": 210,
+   "lines": 212,
    "is_test": true,
    "rule_comments": [
     "validação de campo obrigatório e atualização em tempo real do total.",
@@ -419149,11 +419191,11 @@
     "Se não há validação inline, pelo menos não deve avançar de etapa sem o valor",
     "Aqui assumimos que não deve quebrar o render."
    ],
-   "doc": "Fluxo: Orçamento + Frete (freight-quest) Cobre: FOB pré-negociado, FOB repassado, CIF, FreightEstimator no KitBuilder, validação de campo obrigatório e atualização em tempo real do total. Não submete dados reais ao BD — usa mocks de rede onde necessário. Seletores via SSOT Sel.* + data-testid acorda …",
+   "doc": "Fluxo: Orçamento + Frete (freight-quest) Cobre: FOB pré-negociado, FOB repassado, CIF, plano de volumes no KitBuilder, validação de campo obrigatório e atualização em tempo real do total. Não submete dados reais ao BD — usa mocks de rede onde necessário. Seletores via SSOT Sel.* + data-testid acorda …",
    "temporal": [
     "await expect(errorMsg).toBeVisible({ timeout: 5_000 }).catch(() => {",
+    "await expect(estimate).toBeVisible({ timeout: 5_000 });",
     "await expect(page.locator(Sel.quote.wizard).first()).toBeVisible({ timeout: 10_000 });",
-    "await expect(valuesEstimated).toBeVisible({ timeout: 5_000 });",
     "if (await freightSection.isVisible({ timeout: 5_000 }).catch(() => false)) {",
     "timeout: 10_000,"
    ],
@@ -419164,7 +419206,7 @@
     "CIF — campo de frete visível e total reflete o valor",
     "FOB pré-negociado sem valor — exibe mensagem de validação",
     "lista de orçamentos carrega sem erro",
-    "KitBuilder — FreightEstimator exibe estimativa ao alterar peso",
+    "KitBuilder — painel de volumes exibe o plano da composição",
     "salva rascunho de orçamento com tipo de frete selecionado",
     "troca de FOB repassado para pré-negociado altera seção de resumo",
     "Valores de frete extremos (muito altos/baixos) — validação e persistência",
@@ -419605,19 +419647,18 @@
   },
   "e2e/flows/freight-quest-complete-flow.spec.ts": {
    "path": "e2e/flows/freight-quest-complete-flow.spec.ts",
-   "lines": 406,
+   "lines": 395,
    "is_test": true,
    "env": [
     "CI_SKIP_FREIGHT_E2E",
     "VITE_SUPABASE_URL"
    ],
    "rule_comments": [
-    "3. FreightEstimator: seleção de método e validação de cálculo",
     "5. Validação do total no sumário",
     "8. Validação de estados de erro e loading",
     "─── Suite: Validação de estados de erro ─────────────────────────────────────"
    ],
-   "doc": "freight-quest: Fluxo E2E completo com Playwright Simula o fluxo real do usuário: 1. Login → navegação ao catálogo 2. Seleção de produto → Kit Builder 3. FreightEstimator: seleção de método e validação de cálculo 4. Criação de orçamento com frete (CIF, FOB, FOB_PRE) 5. Validação do total no sumário 6 …",
+   "doc": "freight-quest: Fluxo E2E completo com Playwright Simula o fluxo real do usuário: 1. Login → navegação ao catálogo 2. Seleção de produto → Kit Builder 3. Plano de volumes (Volumes para transporte): exibição e resumo 4. Criação de orçamento com frete (CIF, FOB, FOB_PRE) 5. Validação do total no sumári …",
    "temporal": [
     "await expect(errorHeading).toBeVisible({ timeout: 12_000 });",
     "await expect(freightCard).toBeVisible({ timeout: 10_000 });",
@@ -419632,7 +419673,7 @@
     "const hasLabel = await label.isVisible({ timeout: 3_000 }).catch(() => false);",
     "const isBlocked = await errorMsg.isVisible({ timeout: 2_000 }).catch(() => false);",
     "if (!(await fobPreOption.isVisible({ timeout: 2_000 }).catch(() => false))) {",
-    "if (!(await freightSelect.isVisible({ timeout: 5_000 }).catch(() => false))) {",
+    "if (!(await freightCard.isVisible({ timeout: 5_000 }).catch(() => false))) {",
     "if (!(await shippingSelect.isVisible({ timeout: 8_000 }).catch(() => false))) {",
     "if (await cifOption.isVisible({ timeout: 3_000 }).catch(() => false)) {",
     "if (await costInput.isVisible({ timeout: 3_000 }).catch(() => false)) {",
@@ -419641,10 +419682,10 @@
     "if (await nextBtn.isVisible({ timeout: 5_000 }).catch(() => false)) {"
    ],
    "tests": [
-    "FreightEstimator — Kit Builder @freight",
-    "navega para Kit Builder e verifica FreightEstimator visível",
-    "seleciona método de frete SEDEX e exibe preço correto",
-    "troca entre PAC e SEDEX atualiza preço exibido",
+    "Plano de volumes — Kit Builder @freight",
+    "navega para Kit Builder e verifica painel de volumes visível",
+    "painel de volumes lista o resumo do plano (volumes e peso)",
+    "painel de volumes mostra rodapé de estimativa por caixas padrão",
     "Orçamento — step Condições com frete @freight @quote",
     "página de novo orçamento carrega corretamente",
     "step Condições: campo de frete visível com opções CIF/FOB",
@@ -454618,17 +454659,6 @@
    ],
    "doc": "Favorite Toggle Button Ícone de coração reusado nos cards de item e de caixa do Kit Maker. Usa o mesmo store de favoritos do catálogo principal (useFavoritesStore), garantindo que favoritar aqui reflita em /favoritos sem duplicar lógica."
   },
-  "src/components/kit-builder/FreightEstimator.tsx": {
-   "path": "src/components/kit-builder/FreightEstimator.tsx",
-   "lines": 165,
-   "exports": [
-    "function FreightEstimator"
-   ],
-   "rule_comments": [
-    "Peso desconhecido nunca deve ser lido como zero: um kit com 1 item sem"
-   ],
-   "doc": "Freight Estimator Estimates shipping cost based on total weight Tabela interna estimada — sem integração CEP real"
-  },
   "src/components/kit-builder/IdentitySuggestionButton.tsx": {
    "path": "src/components/kit-builder/IdentitySuggestionButton.tsx",
    "lines": 113,
@@ -454808,9 +454838,16 @@
   },
   "src/components/kit-builder/KitMobileSummaryBar.tsx": {
    "path": "src/components/kit-builder/KitMobileSummaryBar.tsx",
-   "lines": 91,
+   "lines": 117,
    "exports": [
     "function KitMobileSummaryBar"
+   ],
+   "status_values": [
+    {
+     "field": "status",
+     "value": "ok",
+     "kind": "compara"
+    }
    ]
   },
   "src/components/kit-builder/KitOccasionSelector.tsx": {
@@ -454897,7 +454934,7 @@
   },
   "src/components/kit-builder/KitSummary.tsx": {
    "path": "src/components/kit-builder/KitSummary.tsx",
-   "lines": 327,
+   "lines": 328,
    "exports": [
     "function shouldRenderKitStockForecast",
     "function KitSummary"
@@ -454921,7 +454958,6 @@
     }
    ],
    "rule_comments": [
-    "`totalWeight` soma apenas os pesos conhecidos (nunca assume 0 para um",
     "`<aside>` acima é ocultado inteiro pela regra genérica de impressão"
    ],
    "calc_fns": [
@@ -471461,7 +471497,7 @@
   },
   "src/hooks/freight/index.ts": {
    "path": "src/hooks/freight/index.ts",
-   "lines": 10,
+   "lines": 11,
    "doc": "Hooks do domínio de frete: caixas de transporte e parâmetros globais."
   },
   "src/hooks/freight/keys.ts": {
@@ -471574,6 +471610,33 @@
    "hooks": [
     "useFreightSettings",
     "useUpdateFreightSettings"
+   ]
+  },
+  "src/hooks/freight/useKitFreightPlan.ts": {
+   "path": "src/hooks/freight/useKitFreightPlan.ts",
+   "lines": 122,
+   "exports": [
+    "function useKitFreightPlan"
+   ],
+   "status_values": [
+    {
+     "field": "status",
+     "value": "dados_insuficientes",
+     "kind": "escreve"
+    },
+    {
+     "field": "status",
+     "value": "error",
+     "kind": "compara"
+    },
+    {
+     "field": "status",
+     "value": "incomplete",
+     "kind": "compara"
+    }
+   ],
+   "hooks": [
+    "useKitFreightPlan"
    ]
   },
   "src/hooks/freight/usePriceTableBands.ts": {
@@ -471697,6 +471760,18 @@
     "adicionar com sucesso avisa e invalida a lista e o cálculo do prazo",
     "erro do serviço vai no título do aviso (a mensagem é PT-BR e segura)",
     "erro desconhecido usa o texto padrão da ação"
+   ]
+  },
+  "src/hooks/freight/__tests__/useKitFreightPlan.test.tsx": {
+   "path": "src/hooks/freight/__tests__/useKitFreightPlan.test.tsx",
+   "lines": 76,
+   "is_test": true,
+   "doc": "useKitFreightPlan — plano de volumes do kit via kitToPackInput. Kit com caixa própria: a peça é a caixa fechada (peso = caixa + Σ itens), 1 linha, mixMode: 'misturar'. Kit sem caixa: cada item vira linha do caminho normal. Item sem peso cadastrado → dados_insuficientes.",
+   "tests": [
+    "useKitFreightPlan",
+    "kit com caixa própria calcula a caixa fechada (peso = caixa + Σ itens)",
+    "kit sem caixa vira linhas normais do motor",
+    "item sem peso cadastrado deixa o plano em dados_insuficientes"
    ]
   },
   "src/hooks/freight/__tests__/useProductionLeadTime.test.tsx": {
@@ -560173,10 +560248,26 @@
   }
  },
  "git": {
-  "sha": "f613f3f50224a19b7e90966bf475d98e061c5ce8",
+  "sha": "4eddf85d8b6e5d0227dcc995b4733f1c143588ec",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "4eddf85",
+    "date": "2026-11-21",
+    "author": "adm01-debug",
+    "subject": "feat(kit): plano de volumes do kit no lugar do FreightEstimator (etapa 52) (#3951)",
+    "files": [
+     "e2e/flows/33-quote-freight-delivery.spec.ts",
+     "e2e/flows/freight-quest-complete-flow.spec.ts",
+     "src/components/kit-builder/FreightEstimator.tsx",
+     "src/components/kit-builder/KitMobileSummaryBar.tsx",
+     "src/components/kit-builder/KitSummary.tsx",
+     "src/hooks/freight/__tests__/useKitFreightPlan.test.tsx",
+     "src/hooks/freight/index.ts",
+     "src/hooks/freight/useKitFreightPlan.ts"
+    ]
+   },
    {
     "sha": "f613f3f",
     "date": "2026-11-21",
@@ -560694,74 +560785,12 @@
      "src/services/shippingBoxService.ts",
      "tests/hooks/freight/useShippingBoxes.test.ts"
     ]
-   },
-   {
-    "sha": "777cac4",
-    "date": "2026-11-19",
-    "author": "adm01-debug",
-    "subject": "feat(frete): admin de caixas de transporte e parâmetros de frete (Bloco C/D) (#3915)",
-    "files": [
-     ".file-size-baseline.json",
-     "audit/supabase-reference-catalog.temporary.json",
-     "docs/E2E_SMOKE_COVERAGE.md",
-     "e2e/routes/_catalog.ts",
-     "e2e/routes/admin/cadastros-caixas.spec.ts",
-     "e2e/routes/admin/frete.spec.ts",
-     "scripts/automation.config.json",
-     "scripts/freight/README.md",
-     "scripts/freight/caixas.csv",
-     "scripts/freight/seed-shipping-boxes.mjs",
-     "src/components/admin/freight-settings/FreightSettingsForm.tsx",
-     "src/components/admin/freight-settings/__tests__/freightSettingsFormSchema.test.ts",
-     "src/components/admin/freight-settings/freightSettingsFormSchema.ts",
-     "src/components/admin/shipping-boxes/ShippingBoxFormDialog.tsx",
-     "src/components/admin/shipping-boxes/ShippingBoxesManager.tsx",
-     "src/components/admin/shipping-boxes/ShippingBoxesTable.tsx",
-     "src/components/admin/shipping-boxes/ShippingBoxesTrash.tsx",
-     "src/components/admin/shipping-boxes/__tests__/ShippingBoxesManager.test.tsx",
-     "src/components/admin/shipping-boxes/__tests__/shippingBoxFormSchema.test.ts",
-     "src/components/admin/shipping-boxes/index.ts",
-     "src/components/admin/shipping-boxes/shippingBoxFormSchema.ts",
-     "src/components/admin/shipping-boxes/shippingBoxFormat.ts",
-     "src/components/layout/SidebarReorganized.tsx",
-     "src/hooks/freight/index.ts",
-     "src/hooks/freight/keys.ts",
-     "src/hooks/freight/useFreightSettings.ts",
-     "src/hooks/freight/useShippingBoxes.ts",
-     "src/integrations/supabase/types.ts",
-     "src/lib/freight/README.md",
-     "src/lib/freight/__tests__/fromDatabase.test.ts",
-     "src/lib/freight/fromDatabase.ts",
-     "src/lib/freight/index.ts",
-     "src/lib/rbac/route-matrix.ts",
-     "src/lib/routePrefetch.ts",
-     "src/pages/admin/AdminCadastrosPage.tsx",
-     "src/pages/admin/AdminFreteSettingsPage.tsx",
-     "src/pages/admin/__tests__/AdminFreteSettingsPage.test.tsx",
-     "src/routes/admin-routes.tsx",
-     "src/routes/lazy-pages.ts",
-     "src/services/__tests__/freightSettingsService.test.ts",
-     "src/services/__tests__/shippingBoxService.test.ts",
-     "src/services/freightSettingsService.ts",
-     "src/services/shippingBoxService.ts",
-     "tests/hooks/freight/useFreightSettings.test.ts",
-     "tests/hooks/freight/useShippingBoxes.test.ts",
-     "tests/scripts/seed-shipping-boxes.test.mjs"
-    ]
    }
   ],
   "hot_files": [
    [
     "supabase/MIGRATIONS_SYNC_LOG.md",
     9
-   ],
-   [
-    "src/integrations/supabase/types.ts",
-    5
-   ],
-   [
-    "src/lib/freight/index.ts",
-    5
    ],
    [
     ".release-please-manifest.json",
@@ -560780,23 +560809,19 @@
     4
    ],
    [
+    "src/integrations/supabase/types.ts",
+    4
+   ],
+   [
+    "src/lib/freight/index.ts",
+    4
+   ],
+   [
+    "src/hooks/freight/index.ts",
+    3
+   ],
+   [
     "audit/supabase-reference-catalog.temporary.json",
-    4
-   ],
-   [
-    "src/hooks/freight/keys.ts",
-    4
-   ],
-   [
-    "src/pages/admin/__tests__/AdminFreteSettingsPage.test.tsx",
-    4
-   ],
-   [
-    "src/components/admin/shipping-boxes/__tests__/ShippingBoxesManager.test.tsx",
-    4
-   ],
-   [
-    ".file-size-baseline.json",
     3
    ],
    [
@@ -560804,32 +560829,44 @@
     3
    ],
    [
-    "src/hooks/freight/index.ts",
+    "src/hooks/freight/keys.ts",
     3
+   ],
+   [
+    "src/pages/admin/__tests__/AdminFreteSettingsPage.test.tsx",
+    3
+   ],
+   [
+    "src/components/admin/shipping-boxes/__tests__/ShippingBoxesManager.test.tsx",
+    3
+   ],
+   [
+    ".file-size-baseline.json",
+    2
+   ],
+   [
+    ".security/policies-baseline.json",
+    2
+   ],
+   [
+    "docs/coordenacao/conflitos-semanticos.md",
+    2
+   ],
+   [
+    "src/components/admin/products/__tests__/ProductFormFreightFields.test.tsx",
+    2
+   ],
+   [
+    "src/components/admin/products/sections/ProductInfoSection.tsx",
+    2
    ],
    [
     "src/pages/admin/AdminFreteSettingsPage.tsx",
-    3
+    2
    ],
    [
     "src/components/admin/freight-settings/FreightSettingsForm.tsx",
-    3
-   ],
-   [
-    "src/components/admin/shipping-boxes/ShippingBoxFormDialog.tsx",
-    3
-   ],
-   [
-    "src/components/admin/shipping-boxes/ShippingBoxesManager.tsx",
-    3
-   ],
-   [
-    "src/components/admin/shipping-boxes/__tests__/shippingBoxFormSchema.test.ts",
-    3
-   ],
-   [
-    "src/components/admin/shipping-boxes/shippingBoxFormSchema.ts",
-    3
+    2
    ]
   ]
  }

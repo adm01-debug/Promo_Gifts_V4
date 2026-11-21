@@ -1,7 +1,7 @@
 {
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
- "total": 1280,
+ "total": 1279,
  "orfaos": 157,
  "nomes_duplicados": {
   "AdminTemplatesManager": [
@@ -9202,7 +9202,7 @@
    "hooks_locais": [],
    "tabelas": [],
    "edges": [],
-   "usado_por": 2,
+   "usado_por": 3,
    "orfao": false
   },
   {
@@ -10328,20 +10328,6 @@
    "orfao": false
   },
   {
-   "arquivo": "src/components/kit-builder/FreightEstimator.tsx",
-   "exports": [
-    "FreightEstimator"
-   ],
-   "export_default": null,
-   "linhas": 165,
-   "dominio": "components/kit-builder",
-   "hooks_locais": [],
-   "tabelas": [],
-   "edges": [],
-   "usado_por": 1,
-   "orfao": false
-  },
-  {
    "arquivo": "src/components/kit-builder/IdentitySuggestionButton.tsx",
    "exports": [
     "IdentitySuggestionButton"
@@ -10655,9 +10641,11 @@
     "KitMobileSummaryBar"
    ],
    "export_default": null,
-   "linhas": 91,
+   "linhas": 117,
    "dominio": "components/kit-builder",
-   "hooks_locais": [],
+   "hooks_locais": [
+    "useKitFreightPlan"
+   ],
    "tabelas": [],
    "edges": [],
    "usado_por": 1,
@@ -10776,9 +10764,10 @@
     "KitSummary"
    ],
    "export_default": null,
-   "linhas": 327,
+   "linhas": 328,
    "dominio": "components/kit-builder",
    "hooks_locais": [
+    "useKitFreightPlan",
     "useKitStockValidation"
    ],
    "tabelas": [],
@@ -16588,7 +16577,7 @@
    "hooks_locais": [],
    "tabelas": [],
    "edges": [],
-   "usado_por": 490,
+   "usado_por": 489,
    "orfao": false
   },
   {
@@ -16657,7 +16646,7 @@
    "hooks_locais": [],
    "tabelas": [],
    "edges": [],
-   "usado_por": 360,
+   "usado_por": 359,
    "orfao": false
   },
   {
@@ -17034,7 +17023,7 @@
    "hooks_locais": [],
    "tabelas": [],
    "edges": [],
-   "usado_por": 152,
+   "usado_por": 151,
    "orfao": false
   },
   {
@@ -17206,7 +17195,7 @@
    ],
    "tabelas": [],
    "edges": [],
-   "usado_por": 144,
+   "usado_por": 143,
    "orfao": false
   },
   {
@@ -17506,7 +17495,7 @@
    ],
    "tabelas": [],
    "edges": [],
-   "usado_por": 179,
+   "usado_por": 178,
    "orfao": false
   },
   {

@@ -6535,14 +6535,6 @@
    "src/lib/utils.ts",
    "src/stores/useFavoritesStore.ts"
   ],
-  "src/components/kit-builder/FreightEstimator.tsx": [
-   "src/components/ui/badge.tsx",
-   "src/components/ui/card.tsx",
-   "src/components/ui/label.tsx",
-   "src/components/ui/select.tsx",
-   "src/components/ui/tooltip.tsx",
-   "src/lib/kit-builder/index.ts"
-  ],
   "src/components/kit-builder/IdentitySuggestionButton.tsx": [
    "src/components/ui/badge.tsx",
    "src/components/ui/button.tsx",
@@ -6681,6 +6673,9 @@
   "src/components/kit-builder/KitMobileSummaryBar.tsx": [
    "src/components/ui/badge.tsx",
    "src/components/ui/drawer.tsx",
+   "src/hooks/freight/index.ts",
+   "src/lib/freight/fromKit.ts",
+   "src/lib/freight/index.ts",
    "src/lib/kit-builder/index.ts",
    "src/lib/kit-builder/pricing-availability.ts",
    "src/lib/utils.ts"
@@ -6730,8 +6725,8 @@
    "src/lib/kit-builder/index.ts"
   ],
   "src/components/kit-builder/KitSummary.tsx": [
+   "src/components/freight-plan/FreightPlanPanel.tsx",
    "src/components/kit-builder/DiscontinuedItemsAlert.tsx",
-   "src/components/kit-builder/FreightEstimator.tsx",
    "src/components/kit-builder/KitConflictAlerts.tsx",
    "src/components/kit-builder/KitMarginSimulator.tsx",
    "src/components/kit-builder/KitPersonalizationPreview.tsx",
@@ -6747,8 +6742,10 @@
    "src/components/quotes/ClientPicker.tsx",
    "src/components/ui/card.tsx",
    "src/components/ui/textarea.tsx",
+   "src/hooks/freight/index.ts",
    "src/hooks/kit-builder/index.ts",
    "src/hooks/kit-builder/useKitCatalogPriceRefresh.ts",
+   "src/lib/freight/fromKit.ts",
    "src/lib/kit-builder/index.ts",
    "src/lib/kit-builder/pricing-availability.ts"
   ],
@@ -10642,6 +10639,7 @@
    "src/hooks/freight/useBusinessCalendar.ts",
    "src/hooks/freight/useFreightPlan.ts",
    "src/hooks/freight/useFreightSettings.ts",
+   "src/hooks/freight/useKitFreightPlan.ts",
    "src/hooks/freight/usePriceTableBands.ts",
    "src/hooks/freight/useProductMeasures.ts",
    "src/hooks/freight/useProductionLeadTime.ts",
@@ -10666,6 +10664,14 @@
    "src/hooks/freight/keys.ts",
    "src/lib/freight/index.ts",
    "src/services/freightSettingsService.ts"
+  ],
+  "src/hooks/freight/useKitFreightPlan.ts": [
+   "src/hooks/freight/useFreightPlan.ts",
+   "src/hooks/freight/useFreightSettings.ts",
+   "src/hooks/freight/useProductMeasures.ts",
+   "src/hooks/freight/useShippingBoxes.ts",
+   "src/lib/freight/fromKit.ts",
+   "src/lib/freight/index.ts"
   ],
   "src/hooks/freight/usePriceTableBands.ts": [
    "src/hooks/freight/keys.ts",

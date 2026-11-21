@@ -4165,8 +4165,10 @@
    "zod_schemas": 0,
    "flags": [],
    "papeis": [],
-   "usado_por": 1,
+   "usado_por": 4,
    "usado_por_modulos": [
+    "components/kit-builder",
+    "hooks/freight",
     "lib/freight"
    ],
    "coberto_por_testes": 1,
@@ -4223,10 +4225,11 @@
    "zod_schemas": 0,
    "flags": [],
    "papeis": [],
-   "usado_por": 14,
+   "usado_por": 16,
    "usado_por_modulos": [
     "components/admin",
     "components/freight-plan",
+    "components/kit-builder",
     "hooks/freight",
     "hooks/quotes",
     "lib/quotes"
@@ -5109,7 +5112,7 @@
    "zod_schemas": 0,
    "flags": [],
    "papeis": [],
-   "usado_por": 76,
+   "usado_por": 75,
    "usado_por_modulos": [
     "components/dashboard",
     "components/kit-builder",

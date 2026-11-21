@@ -3017,6 +3017,7 @@
     "useInvalidateTecnicas",
     "useIsProductNovelty",
     "useKeyboardShortcut",
+    "useKitFreightPlan",
     "useKitTemplates",
     "useLayoutEffect",
     "useLegacyFavoritesMigration",
@@ -3338,6 +3339,7 @@
     "useInvalidateTecnicas",
     "useIsProductNovelty",
     "useKeyboardShortcut",
+    "useKitFreightPlan",
     "useKitTemplates",
     "useLegacyFavoritesMigration",
     "useLogoColorAnalysis",
@@ -3613,7 +3615,7 @@
     "status",
     "supervisor"
    ],
-   "arquivos_puxados": 568
+   "arquivos_puxados": 569
   },
   {
    "protegida": true,
@@ -3767,6 +3769,7 @@
     "useInvalidateTecnicas",
     "useIsProductNovelty",
     "useKeyboardShortcut",
+    "useKitFreightPlan",
     "useKitTemplates",
     "useLayoutEffect",
     "useLegacyFavoritesMigration",
@@ -4087,6 +4090,7 @@
     "useInvalidateTecnicas",
     "useIsProductNovelty",
     "useKeyboardShortcut",
+    "useKitFreightPlan",
     "useKitTemplates",
     "useLegacyFavoritesMigration",
     "useLogoColorAnalysis",
@@ -4372,7 +4376,7 @@
     "tab",
     "tablist"
    ],
-   "arquivos_puxados": 583
+   "arquivos_puxados": 584
   },
   {
    "protegida": true,
@@ -6687,6 +6691,7 @@
     "useFreightPlan",
     "useFreightSettings",
     "useId",
+    "useKitFreightPlan",
     "useMemo",
     "useMutation",
     "useOverlayInteractivity",
@@ -6711,6 +6716,7 @@
     "useDeletedShippingBoxes",
     "useFreightPlan",
     "useFreightSettings",
+    "useKitFreightPlan",
     "useOverlayInteractivity",
     "usePriceTableBands",
     "useProductMeasures",
@@ -6748,7 +6754,7 @@
     "menu",
     "status"
    ],
-   "arquivos_puxados": 90
+   "arquivos_puxados": 91
   },
   {
    "protegida": true,
