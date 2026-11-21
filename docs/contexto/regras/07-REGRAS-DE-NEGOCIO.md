@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.3.2 · commit `4eddf85d8b` · branch `main` · 2026-11-21 12:36 UTC
+> Gerado automaticamente por AI Context Sync v1.3.2 · commit `e311dad9ed` · branch `main` · 2026-11-21 13:50 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -2075,6 +2075,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | GroupReason | mixed \| ships_separately \| single_product | `src/lib/freight/buildGroups.ts` |
 | PRODUCT_MEASURE_COLUMNS | 'id', 'name', 'sku', 'height_cm', 'width_cm', 'length_cm', 'diameter_cm', 'weight_g', 'ships_separately', | `src/lib/freight/columns.ts` |
 | FitLimit | geometry \| volume \| weight | `src/lib/freight/fitCount.ts` |
+| FreightPlanOrigin | kit \| quote \| simulator | `src/lib/freight/telemetry.ts` |
 | MeasureSource | cylinder \| product | `src/lib/freight/types.ts` |
 | MissingMeasure | height \| length \| weight \| width | `src/lib/freight/types.ts` |
 | MixMode | misturar \| separar | `src/lib/freight/types.ts` |
@@ -2168,8 +2169,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | AppRole | dev \| supervisor \| admin \| agente \| vendedor | `supabase/functions/_shared/authorize.ts` |
 | TriggeredBy | manual \| cron \| webhook | `supabase/functions/_shared/connection-test-runner.ts` |
 | ErrorKind | timeout \| network \| dns \| http \| auth \| config \| unknown | `supabase/functions/_shared/connection-test-runner.ts` |
-| ConnectionType | supabase \| bitrix24 \| n8n \| mcp \| webhook_outbound | `supabase/functions/_shared/connection-timeouts.ts` |
-| … +24 linhas — lista completa em `context.json` | | |
+| … +25 linhas — lista completa em `context.json` | | |
 
 ## F. Validações de entrada
 
@@ -3256,6 +3256,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `tpl-price` | type=number, step=0.01 | `src/pages/admin/KitTemplatesAdminPage.tsx` |
 | `test-file` | disabled=uploading | `src/pages/admin/StorageTestPage.tsx` |
 | `login-email` | type=email | `src/pages/auth/Auth.tsx` |
+| `simulator-kit-quantity` | type=number, min=1 | `src/pages/freight/FreightSimulatorPage.tsx` |
 | `magazine-intro-text` | max | `src/pages/magazine/components/steps/ContentStep.tsx` |
 | `magazine-closing-text` | max | `src/pages/magazine/components/steps/ContentStep.tsx` |
 | `magic-logo-upload` | accept=image/*, disabled=m.logoUploading | `src/pages/magic-up/MagicUpLogoCard.tsx` |
@@ -5902,7 +5903,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `MS_PER_DAY` | `1000` | `src/hooks/products/useNovelties.helpers.ts` |
 | `NOVELTY_DISPLAY_WINDOW_DAYS` | `30` | `src/hooks/products/useNovelties.helpers.ts` |
 | `NOVELTY_FRESH_DAYS` | `5` | `src/hooks/products/useNovelties.helpers.ts` |
-| … +416 linhas — lista completa em `context.json` | | |
+| … +418 linhas — lista completa em `context.json` | | |
 
 ### H.2 Prazos, expirações e janelas de tempo
 
@@ -6208,7 +6209,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `staleTime: 5 * 60 * 1000,` | `src/hooks/auth/useRBAC.tsx` |
 | `staleTime: 5 * 60 * 1000,` | `src/hooks/bi/useClientAffinity.ts` |
 | `const NINETY_DAYS = 90 * 24 * 60 * 60 * 1000;` | `src/hooks/bi/useClientCategoryAffinity.ts` |
-| … +400 linhas — lista completa em `context.json` | |
+| … +401 linhas — lista completa em `context.json` | |
 
 ### H.3 Limites de paginação
 
@@ -6691,7 +6692,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | allowlist inválida: versions contém duplicatas | `scripts/check-supabase-migration-ledger.mjs` |
 | allowlist inválida: versions contém valor vazio/não textual | `scripts/check-supabase-migration-ledger.mjs` |
 | allowlist inválida: versions deve ser array não vazio | `scripts/check-supabase-migration-ledger.mjs` |
-| … +1358 linhas — lista completa em `context.json` | |
+| … +1360 linhas — lista completa em `context.json` | |
 
 ## J. Controle de acesso no código (checagens de perfil/permissão)
 
@@ -6815,7 +6816,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `admin` | `supabase/migrations/20261112120500_fix_optimization_queue_rpcs_dev_access.sql` |
 | `anon` | `tests/edge-functions/live/_live-client.ts` |
 
-## K. Testes como especificação (23630 testes em 2364 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (23648 testes em 2369 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -7119,7 +7120,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `src/lib/auth/__tests__/oauth-error-explainer.test.ts` | 19 | explainOAuthError · config errors (admin needs to act) · mapeia redirect_uri_mismatch com hint sobre console do provedor · detecta redirect uri mismatch pela descrição quando code é genérico … |
 | `src/lib/external-db/rest-native.test.ts` | 19 | isRestNativeEligible · whitelisted COM coluna de busca → elegível mesmo com _search · A1: whitelisted SEM coluna de busca → continua elegível com _search · não-whitelisted → inelegível … |
 | `src/lib/inventory/__tests__/stock-filter.test.ts` | 19 | stock-filter — pipeline de seleção/agregação/montagem · normalize remove acentos e diferencia caixa · selectMatchingVariants retorna todas as variações quando não há filtro de cor · cor  … |
-| … +2064 linhas — lista completa em `context.json` | | |
+| … +2069 linhas — lista completa em `context.json` | | |
 
 ## L. Eventos de webhook tratados (contratos com sistemas externos)
 

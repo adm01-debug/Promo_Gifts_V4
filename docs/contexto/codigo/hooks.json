@@ -8820,25 +8820,27 @@
    "hooks_exportados": [
     "useFreightPlan"
    ],
-   "linhas": 226,
+   "linhas": 238,
    "dominio": "hooks/freight",
    "tabelas": [],
    "rpcs": [],
    "edges": [],
    "hooks_internos": [
+    "useEffect",
     "useFreightSettings",
     "useMemo",
     "useProductMeasures",
     "useShippingBoxes"
    ],
    "canais_realtime": [],
-   "usado_por": 3,
+   "usado_por": 4,
    "usado_por_arquivos": [
     "src/components/freight-plan/FreightPlanCard.tsx",
     "src/hooks/freight/index.ts",
-    "src/hooks/freight/useKitFreightPlan.ts"
+    "src/hooks/freight/useKitFreightPlan.ts",
+    "src/pages/freight/FreightSimulatorPage.tsx"
    ],
-   "coberto_por_testes": 0
+   "coberto_por_testes": 1
   },
   {
    "arquivo": "src/hooks/freight/useFreightReadinessReport.ts",
@@ -8893,12 +8895,13 @@
    "hooks_exportados": [
     "useKitFreightPlan"
    ],
-   "linhas": 122,
+   "linhas": 131,
    "dominio": "hooks/freight",
    "tabelas": [],
    "rpcs": [],
    "edges": [],
    "hooks_internos": [
+    "useEffect",
     "useFreightSettings",
     "useMemo",
     "useProductMeasures",
@@ -8909,7 +8912,7 @@
    "usado_por_arquivos": [
     "src/hooks/freight/index.ts"
    ],
-   "coberto_por_testes": 1
+   "coberto_por_testes": 2
   },
   {
    "arquivo": "src/hooks/freight/usePriceTableBands.ts",
@@ -12324,11 +12327,12 @@
     "useState"
    ],
    "canais_realtime": [],
-   "usado_por": 3,
+   "usado_por": 4,
    "usado_por_arquivos": [
     "src/hooks/quotes/quoteDraftApply.ts",
     "src/hooks/quotes/useQuoteBuilderState.ts",
-    "src/lib/quotes/applyRestoredDraft.ts"
+    "src/lib/quotes/applyRestoredDraft.ts",
+    "src/pages/freight/FreightSimulatorPage.tsx"
    ],
    "coberto_por_testes": 0
   },
@@ -12392,12 +12396,13 @@
     "useMemo"
    ],
    "canais_realtime": [],
-   "usado_por": 2,
+   "usado_por": 3,
    "usado_por_arquivos": [
     "src/hooks/quotes/quoteDraftApply.ts",
-    "src/hooks/quotes/useQuoteBuilderState.ts"
+    "src/hooks/quotes/useQuoteBuilderState.ts",
+    "src/pages/freight/FreightSimulatorPage.tsx"
    ],
-   "coberto_por_testes": 1
+   "coberto_por_testes": 2
   },
   {
    "arquivo": "src/hooks/quotes/useQuoteBuilderState.ts",

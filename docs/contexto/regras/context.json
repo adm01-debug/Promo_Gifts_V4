@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "4eddf85d8b6e5d0227dcc995b4733f1c143588ec",
+  "sha": "e311dad9eda31cb55fff4e7fc14e7206a10a6eb8",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-21 12:36 UTC",
-  "files_total": 11112,
-  "code_files": 9120,
-  "code_lines": 1294107
+  "generated_at": "2026-11-21 13:50 UTC",
+  "files_total": 11119,
+  "code_files": 9127,
+  "code_lines": 1295137
  },
  "version": "1.3.2",
- "facts_hash": "81983c2a3712296c",
+ "facts_hash": "0f1919ba0f299ad0",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -1129,8 +1129,8 @@
   "package_manager": "npm",
   "languages": {
    ".sql": 3478,
-   ".ts": 3161,
-   ".tsx": 2010,
+   ".ts": 3164,
+   ".tsx": 2014,
    ".mjs": 455,
    ".py": 16,
    ".js": 7
@@ -139412,7 +139412,7 @@
      "request_discount_approval_transactional",
      "respond_discount_approval_transactional"
     ],
-    "deps_count": 242
+    "deps_count": 243
    },
    {
     "path": "*",
@@ -145525,6 +145525,13 @@
     "file": "src/routes/tools-routes.tsx"
    },
    {
+    "path": "/simulador-frete",
+    "component": "FreightSimulatorPage",
+    "guard": "",
+    "roles": [],
+    "file": "src/routes/tools-routes.tsx"
+   },
+   {
     "path": "/simulador-precos",
     "component": "PriceSimulatorPage",
     "guard": "",
@@ -145874,7 +145881,7 @@
     "file": ".github/workflows/wraparound-monitor-report.yml"
    }
   ],
-  "components_count": 1754,
+  "components_count": 1755,
   "hooks": [
    {
     "name": "useQuoteComments",
@@ -149880,8 +149887,8 @@
   },
   {
    "module": "e2e",
-   "files": 627,
-   "lines": 76139,
+   "files": 628,
+   "lines": 76217,
    "tables": [
     "discount_approval_requests",
     "quote_items"
@@ -150590,8 +150597,8 @@
   },
   {
    "module": "src/components",
-   "files": 1477,
-   "lines": 289884,
+   "files": 1478,
+   "lines": 289981,
    "tables": [
     "admin_audit_log",
     "art_file_attachments",
@@ -150954,8 +150961,8 @@
   },
   {
    "module": "src/hooks",
-   "files": 507,
-   "lines": 94150,
+   "files": 508,
+   "lines": 94277,
    "tables": [
     "admin_audit_log",
     "admin_settings",
@@ -151245,8 +151252,8 @@
   },
   {
    "module": "src/lib",
-   "files": 415,
-   "lines": 64434,
+   "files": 417,
+   "lines": 64612,
    "tables": [
     "...",
     "companies",
@@ -151453,8 +151460,8 @@
   },
   {
    "module": "src/pages",
-   "files": 371,
-   "lines": 85565,
+   "files": 373,
+   "lines": 86110,
    "tables": [
     "ai_usage_events",
     "bot_detection_log",
@@ -151660,7 +151667,7 @@
   {
    "module": "src/routes",
    "files": 15,
-   "lines": 1408,
+   "lines": 1413,
    "tables": [],
    "exports": [
     "AppRoutes.tsx: AppRoutes",
@@ -153687,6 +153694,7 @@
     ],
     "insert": [
      "src/lib/error-reporter.ts",
+     "src/lib/freight/telemetry.ts",
      "src/lib/telemetry/quoteHandoffTelemetry.ts",
      "src/pages/products/seller-carts/cartViewModeTelemetry.ts",
      "src/services/telemetryService.ts"
@@ -156853,7 +156861,8 @@
    ],
    "CI_SKIP_FREIGHT_E2E": [
     "e2e/flows/36-freight-dashboard-stress.spec.ts",
-    "e2e/flows/freight-quest-complete-flow.spec.ts"
+    "e2e/flows/freight-quest-complete-flow.spec.ts",
+    "e2e/freight/simulator.spec.ts"
    ],
    "CODE_SCAN_DIRS": [
     "scripts/supabase_snapshot/snapshot.py"
@@ -158218,6 +158227,7 @@
     "e2e/flows/freight-quest-complete-flow.spec.ts",
     "e2e/flows/p0/07-rls-enforcement.spec.ts",
     "e2e/flows/webhook-fuzzing.spec.ts",
+    "e2e/freight/simulator.spec.ts",
     "e2e/helpers/cleanup-client.ts",
     "e2e/helpers/require-env-base-url.ts",
     "recovery/src-legacy/src/hooks/useAIRecommendations.ts",
@@ -163087,6 +163097,11 @@
     "rules": "type=email"
    },
    {
+    "file": "src/pages/freight/FreightSimulatorPage.tsx",
+    "field": "simulator-kit-quantity",
+    "rules": "type=number, min=1"
+   },
+   {
     "file": "src/pages/magazine/components/steps/ContentStep.tsx",
     "field": "magazine-intro-text",
     "rules": "max"
@@ -164002,6 +164017,11 @@
     "file": "src/lib/freight/fitCount.ts",
     "name": "FitLimit",
     "values": "geometry | volume | weight"
+   },
+   {
+    "file": "src/lib/freight/telemetry.ts",
+    "name": "FreightPlanOrigin",
+    "values": "kit | quote | simulator"
    },
    {
     "file": "src/lib/freight/types.ts",
@@ -170006,6 +170026,14 @@
    {
     "file": "src/pages/filters/useFiltersPageState.ts",
     "msg": "Erro ao aplicar filtro de tamanhos"
+   },
+   {
+    "file": "src/pages/freight/FreightSimulatorPage.tsx",
+    "msg": "Adicione ao menos um produto antes de levar para o orçamento."
+   },
+   {
+    "file": "src/pages/freight/FreightSimulatorPage.tsx",
+    "msg": "Não foi possível salvar o rascunho. Tente novamente."
    },
    {
     "file": "src/pages/kit-builder/KitBuilderPage.tsx",
@@ -201584,6 +201612,11 @@
     "value": "'Plano antigo, recalcular o frete.'"
    },
    {
+    "file": "src/lib/freight/telemetry.ts",
+    "name": "FREIGHT_PLAN_EVENT_TYPE",
+    "value": "'interaction'"
+   },
+   {
     "file": "src/lib/intelligence/degradationRegistry.ts",
     "name": "DEGRADATION_LOG_CAP",
     "value": "200"
@@ -201867,6 +201900,11 @@
     "file": "src/pages/filters/useFiltersPageState.ts",
     "name": "PRICE_MAX",
     "value": "9999"
+   },
+   {
+    "file": "src/pages/freight/FreightSimulatorPage.tsx",
+    "name": "AUTOSAVE_SCHEMA_VERSION",
+    "value": "2"
    },
    {
     "file": "src/pages/magazine/MagazineListPage.tsx",
@@ -211325,6 +211363,12 @@
     "file": "src/lib/rbac/route-matrix.ts",
     "field": "role",
     "value": "public",
+    "kind": "escreve"
+   },
+   {
+    "file": "src/lib/rbac/route-matrix.ts",
+    "field": "role",
+    "value": "authenticated",
     "kind": "escreve"
    },
    {
@@ -221014,6 +221058,10 @@
     "line": "redirectTimerRef.current = setTimeout(() => { navigate('/'); }, 3000);"
    },
    {
+    "file": "src/pages/freight/FreightSimulatorPage.tsx",
+    "line": "staleTime: 5 * 60 * 1000,"
+   },
+   {
     "file": "src/pages/magazine/editorRecovery.ts",
     "line": "const MAX_AGE_MS = 7 * 24 * 60 * 60 * 1_000;"
    },
@@ -230282,6 +230330,22 @@
     "name": "Fluxo Completo: Catálogo -> Detalhe -> Novo Orçamento"
    },
    {
+    "file": "e2e/freight/simulator.spec.ts",
+    "name": "Simulador de Volumes de Frete @freight"
+   },
+   {
+    "file": "e2e/freight/simulator.spec.ts",
+    "name": "abre a rota com título e estado vazio"
+   },
+   {
+    "file": "e2e/freight/simulator.spec.ts",
+    "name": "adiciona produto, altera quantidade e preenche o CEP"
+   },
+   {
+    "file": "e2e/freight/simulator.spec.ts",
+    "name": "leva para o orçamento com autosave"
+   },
+   {
     "file": "e2e/magazine/magazine-ring-focus.spec.ts",
     "name": "PublicMagazineView — Tab/Shift+Tab e integridade do anel de foco"
    },
@@ -237964,6 +238028,18 @@
    {
     "file": "src/components/inventory/risk/__tests__/types.test.ts",
     "name": "returns ok when daysUntilFullStockout is undefined and product healthy"
+   },
+   {
+    "file": "src/components/kit-builder/__tests__/KitComparisonDialog.test.tsx",
+    "name": "KitComparisonDialog"
+   },
+   {
+    "file": "src/components/kit-builder/__tests__/KitComparisonDialog.test.tsx",
+    "name": "mostra a linha Volumes com caixas e peso bruto por kit"
+   },
+   {
+    "file": "src/components/kit-builder/__tests__/KitComparisonDialog.test.tsx",
+    "name": "mostra travessão quando o kit não tem plano de volumes"
    },
    {
     "file": "src/components/kit-library/__tests__/KitLibraryStats.test.tsx",
@@ -247874,6 +247950,22 @@
     "name": "emite analytics imediatamente em cada toggle (independente do debounce)"
    },
    {
+    "file": "src/hooks/freight/__tests__/telemetry.test.tsx",
+    "name": "trackFreightPlanComputed — etapa 59"
+   },
+   {
+    "file": "src/hooks/freight/__tests__/telemetry.test.tsx",
+    "name": "orçamento (useFreightPlan) emite 1× com origin quote"
+   },
+   {
+    "file": "src/hooks/freight/__tests__/telemetry.test.tsx",
+    "name": "simulador emite 1× com origin simulator"
+   },
+   {
+    "file": "src/hooks/freight/__tests__/telemetry.test.tsx",
+    "name": "kit emite 1× com origin kit e não recalcula evento no mesmo plano"
+   },
+   {
     "file": "src/hooks/freight/__tests__/useBusinessCalendar.test.tsx",
     "name": "useBusinessCalendarYear"
    },
@@ -256406,6 +256498,18 @@
     "name": "1.000.000 de caixas na lista respondem ok, sem estourar a pilha"
    },
    {
+    "file": "src/lib/freight/__tests__/parity.test.ts",
+    "name": "paridade de volumes — orçamento / kit / simulador (etapa 58)"
+   },
+   {
+    "file": "src/lib/freight/__tests__/parity.test.ts",
+    "name": "totais idênticos nos três caminhos para a mesma lista de peças"
+   },
+   {
+    "file": "src/lib/freight/__tests__/parity.test.ts",
+    "name": "paridade preservada com kitQuantity multiplicando os três caminhos"
+   },
+   {
     "file": "src/lib/freight/__tests__/planFreight.robustez.test.ts",
     "name": "planFreight — falha fechada: caixa ou parâmetro inválido bloqueia"
    },
@@ -261936,6 +262040,22 @@
    {
     "file": "src/pages/filters/__tests__/applyProductFilters.simulation.test.ts",
     "name": "minSupplierSales90d filtra pelo depleted90d do fornecedor"
+   },
+   {
+    "file": "src/pages/freight/__tests__/FreightSimulatorPage.test.tsx",
+    "name": "FreightSimulatorPage"
+   },
+   {
+    "file": "src/pages/freight/__tests__/FreightSimulatorPage.test.tsx",
+    "name": "abre vazia com o título e o CEP com máscara e validação"
+   },
+   {
+    "file": "src/pages/freight/__tests__/FreightSimulatorPage.test.tsx",
+    "name": "adiciona 2 produtos, altera quantidade e remove 1 (etapa 55)"
+   },
+   {
+    "file": "src/pages/freight/__tests__/FreightSimulatorPage.test.tsx",
+    "name": "leva para o orçamento gravando rascunho com itens e mixMode (etapa 57)"
    },
    {
     "file": "src/pages/kit-builder/__tests__/useKitBuilderQuote.sem-cliente.test.tsx",
@@ -420479,6 +420599,31 @@
     "Fluxo Completo: Catálogo -> Detalhe -> Novo Orçamento"
    ]
   },
+  "e2e/freight/simulator.spec.ts": {
+   "path": "e2e/freight/simulator.spec.ts",
+   "lines": 78,
+   "is_test": true,
+   "env": [
+    "CI_SKIP_FREIGHT_E2E",
+    "VITE_SUPABASE_URL"
+   ],
+   "doc": "e2e/freight/simulator.spec.ts — Simulador de Volumes de Frete (etapa 60). Cobre o fluxo real da página `/simulador-frete`: 1. Abre a rota com o guard autenticado e o título visível. 2. Busca e adiciona um produto; edita a quantidade. 3. Preenche o CEP (máscara) e vê o plano de volumes. 4. \"Levar par …",
+   "temporal": [
+    "await expect(carry).toBeEnabled({ timeout: 10_000 });",
+    "await expect(hint).toContainText(/cotação: disponível em breve/i, { timeout: 10_000 });",
+    "await expect(page.getByTestId('page-title-simulador-frete')).toBeVisible({ timeout: 10_000 });",
+    "await expect(qty).toBeVisible({ timeout: 10_000 });",
+    "await firstOption.waitFor({ state: 'visible', timeout: 10_000 });",
+    "await page.waitForURL(/\\/orcamentos\\/novo/, { timeout: 15_000 });",
+    "await searchInput.waitFor({ state: 'visible', timeout: 10_000 });"
+   ],
+   "tests": [
+    "Simulador de Volumes de Frete @freight",
+    "abre a rota com título e estado vazio",
+    "adiciona produto, altera quantidade e preenche o CEP",
+    "leva para o orçamento com autosave"
+   ]
+  },
   "e2e/helpers/analytics.ts": {
    "path": "e2e/helpers/analytics.ts",
    "lines": 129,
@@ -452442,12 +452587,13 @@
   },
   "src/components/freight-plan/__tests__/freightPlanCard.harness.tsx": {
    "path": "src/components/freight-plan/__tests__/freightPlanCard.harness.tsx",
-   "lines": 150,
+   "lines": 164,
    "is_test": true,
    "exports": [
     "function shippingBoxRows",
     "const FREIGHT_SETTINGS_ROW",
     "const simulacao",
+    "const telemetriaInserts",
     "function reiniciarSimulacao",
     "function fromSimulado",
     "function Providers",
@@ -454751,7 +454897,7 @@
   },
   "src/components/kit-builder/KitComparisonDialog.tsx": {
    "path": "src/components/kit-builder/KitComparisonDialog.tsx",
-   "lines": 249,
+   "lines": 270,
    "exports": [
     "function KitComparisonDialog"
    ],
@@ -455152,6 +455298,16 @@
     }
    ]
   },
+  "src/components/kit-builder/__tests__/KitComparisonDialog.test.tsx": {
+   "path": "src/components/kit-builder/__tests__/KitComparisonDialog.test.tsx",
+   "lines": 56,
+   "is_test": true,
+   "tests": [
+    "KitComparisonDialog",
+    "mostra a linha Volumes com caixas e peso bruto por kit",
+    "mostra travessão quando o kit não tem plano de volumes"
+   ]
+  },
   "src/components/kit-builder/kit-summary/KitActionsBar.tsx": {
    "path": "src/components/kit-builder/kit-summary/KitActionsBar.tsx",
    "lines": 94,
@@ -455519,7 +455675,7 @@
   },
   "src/components/layout/SidebarReorganized.tsx": {
    "path": "src/components/layout/SidebarReorganized.tsx",
-   "lines": 675,
+   "lines": 681,
    "exports": [
     "const SidebarReorganized"
    ],
@@ -471561,7 +471717,7 @@
   },
   "src/hooks/freight/useFreightPlan.ts": {
    "path": "src/hooks/freight/useFreightPlan.ts",
-   "lines": 226,
+   "lines": 238,
    "exports": [
     "interface FreightPlanLine",
     "interface UseFreightPlanInput",
@@ -471614,7 +471770,7 @@
   },
   "src/hooks/freight/useKitFreightPlan.ts": {
    "path": "src/hooks/freight/useKitFreightPlan.ts",
-   "lines": 122,
+   "lines": 131,
    "exports": [
     "function useKitFreightPlan"
    ],
@@ -471745,6 +471901,18 @@
      "params": "",
      "body": "void queryClient.invalidateQueries({ queryKey: FREIGHT_QUERY_KEYS.shippingBoxes.all });"
     }
+   ]
+  },
+  "src/hooks/freight/__tests__/telemetry.test.tsx": {
+   "path": "src/hooks/freight/__tests__/telemetry.test.tsx",
+   "lines": 106,
+   "is_test": true,
+   "doc": "telemetry.test.ts — telemetria do plano de volumes (etapa 59). Cada cálculo de plano emite EXATAMENTE um evento `freight_plan_computed` com o `origin` certo (quote | kit | simulator), e o insert é fire-and-forget (nunca quebra o fluxo). O harness registra os inserts em `telemetriaInserts`.",
+   "tests": [
+    "trackFreightPlanComputed — etapa 59",
+    "orçamento (useFreightPlan) emite 1× com origin quote",
+    "simulador emite 1× com origin simulator",
+    "kit emite 1× com origin kit e não recalcula evento no mesmo plano"
    ]
   },
   "src/hooks/freight/__tests__/useBusinessCalendar.test.tsx": {
@@ -488374,6 +488542,35 @@
     }
    ]
   },
+  "src/lib/freight/telemetry.ts": {
+   "path": "src/lib/freight/telemetry.ts",
+   "lines": 63,
+   "exports": [
+    "type FreightPlanOrigin",
+    "const FREIGHT_PLAN_EVENT_NAME",
+    "const FREIGHT_PLAN_EVENT_TYPE",
+    "function trackFreightPlanComputed"
+   ],
+   "tables": [
+    {
+     "table": "frontend_telemetry",
+     "op": "insert"
+    }
+   ],
+   "enums": [
+    {
+     "name": "FreightPlanOrigin",
+     "values": "kit | quote | simulator"
+    }
+   ],
+   "params": [
+    {
+     "name": "FREIGHT_PLAN_EVENT_TYPE",
+     "value": "'interaction'"
+    }
+   ],
+   "doc": "Telemetria do plano de volumes (etapa 59 do plano de frete). Cada vez que um plano é calculado (orçamento, kit builder ou simulador), registra um evento em `frontend_telemetry` para o painel `/admin/telemetria` medir cobertura e detectar regressões silenciosas. Mesmas regras do `quoteHandoffTelemetr …"
+  },
   "src/lib/freight/types.ts": {
    "path": "src/lib/freight/types.ts",
    "lines": 170,
@@ -488786,6 +488983,17 @@
     "a caixa menor leva mais unidades que a maior: a conta usa a maior capacidade",
     "packSingleProduct — lista de caixas muito grande",
     "1.000.000 de caixas na lista respondem ok, sem estourar a pilha"
+   ]
+  },
+  "src/lib/freight/__tests__/parity.test.ts": {
+   "path": "src/lib/freight/__tests__/parity.test.ts",
+   "lines": 105,
+   "is_test": true,
+   "doc": "parity.test.ts — paridade de volumes entre os três caminhos (etapa 58). Mesma lista de peças entra no motor por três portas: 1. orçamento → useFreightPlan (linhas com productId do catálogo) 2. kit → kitToPackInput (kit sem caixa própria → itens viram linhas) 3. simulador → planFreight (mesma entrada …",
+   "tests": [
+    "paridade de volumes — orçamento / kit / simulador (etapa 58)",
+    "totais idênticos nos três caminhos para a mesma lista de peças",
+    "paridade preservada com kitQuantity multiplicando os três caminhos"
    ]
   },
   "src/lib/freight/__tests__/planFreight.robustez.test.ts": {
@@ -492052,7 +492260,7 @@
   },
   "src/lib/rbac/route-matrix.ts": {
    "path": "src/lib/rbac/route-matrix.ts",
-   "lines": 474,
+   "lines": 484,
    "exports": [
     "type RouteRole",
     "type RouteGuard",
@@ -492105,6 +492313,11 @@
     {
      "field": "role",
      "value": "public",
+     "kind": "escreve"
+    },
+    {
+     "field": "role",
+     "value": "authenticated",
      "kind": "escreve"
     },
     {
@@ -497111,6 +497324,51 @@
     "minPromoSales90d com mapa vazio → não filtra",
     "produto não presente no promoMap tem contagem=0 (abaixo de threshold)",
     "minSupplierSales90d filtra pelo depleted90d do fornecedor"
+   ]
+  },
+  "src/pages/freight/FreightSimulatorPage.tsx": {
+   "path": "src/pages/freight/FreightSimulatorPage.tsx",
+   "lines": 411,
+   "exports": [
+    "function FreightSimulatorPage"
+   ],
+   "navigates": [
+    "/orcamentos/novo"
+   ],
+   "errors": [
+    "Adicione ao menos um produto antes de levar para o orçamento.",
+    "Não foi possível salvar o rascunho. Tente novamente."
+   ],
+   "html_constraints": [
+    {
+     "field": "simulator-kit-quantity",
+     "rules": "type=number, min=1"
+    }
+   ],
+   "params": [
+    {
+     "name": "AUTOSAVE_SCHEMA_VERSION",
+     "value": "2"
+    }
+   ],
+   "doc": "Simulador de volumes de frete — Bloco F (etapas 54-57). Busca produtos do catálogo (mesma busca do orçamento), monta uma lista local de itens com quantidade editável e calcula o plano de volumes com o motor de frete (`useFreightPlan`). CEP de destino fica guardado no estado para o bloco I (cotação); …",
+   "temporal": [
+    "staleTime: 5 * 60 * 1000,"
+   ]
+  },
+  "src/pages/freight/__tests__/FreightSimulatorPage.test.tsx": {
+   "path": "src/pages/freight/__tests__/FreightSimulatorPage.test.tsx",
+   "lines": 134,
+   "is_test": true,
+   "rule_comments": [
+    "validação e aviso de cotação) e o handoff \"Levar para orçamento\" via"
+   ],
+   "doc": "Testes do Simulador de Volumes de Frete (Bloco F, etapas 54-57). Cobre a página inteira com o cliente Supabase simulado do harness de frete: busca + adição de produtos, edição de quantidade, remoção, CEP (máscara, validação e aviso de cotação) e o handoff \"Levar para orçamento\" via `quote_builder_au …",
+   "tests": [
+    "FreightSimulatorPage",
+    "abre vazia com o título e o CEP com máscara e validação",
+    "adiciona 2 produtos, altera quantidade e remove 1 (etapa 55)",
+    "leva para o orçamento gravando rascunho com itens e mixMode (etapa 57)"
    ]
   },
   "src/pages/kit-builder/KitBuilderPage.tsx": {
@@ -503035,7 +503293,7 @@
   },
   "src/routes/lazy-pages.ts": {
    "path": "src/routes/lazy-pages.ts",
-   "lines": 232,
+   "lines": 235,
    "exports": [
     "const Auth",
     "const Unauthorized",
@@ -503354,7 +503612,7 @@
   },
   "src/routes/tools-routes.tsx": {
    "path": "src/routes/tools-routes.tsx",
-   "lines": 140,
+   "lines": 142,
    "exports": [
     "const toolsRoutes"
    ],
@@ -503371,6 +503629,12 @@
     {
      "path": "/simulador-precos",
      "component": "PriceSimulatorPage",
+     "guard": "",
+     "roles": []
+    },
+    {
+     "path": "/simulador-frete",
+     "component": "FreightSimulatorPage",
      "guard": "",
      "roles": []
     },
@@ -560248,10 +560512,35 @@
   }
  },
  "git": {
-  "sha": "4eddf85d8b6e5d0227dcc995b4733f1c143588ec",
+  "sha": "e311dad9eda31cb55fff4e7fc14e7206a10a6eb8",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "e311dad",
+    "date": "2026-11-21",
+    "author": "adm01-debug",
+    "subject": "feat(frete): Bloco F - comparador de volumes, simulador de frete e telemetria (etapas 53-60) (#3954)",
+    "files": [
+     ".as-assertions-baseline.json",
+     ".file-size-baseline.json",
+     "e2e/freight/simulator.spec.ts",
+     "src/components/freight-plan/__tests__/freightPlanCard.harness.tsx",
+     "src/components/kit-builder/KitComparisonDialog.tsx",
+     "src/components/kit-builder/__tests__/KitComparisonDialog.test.tsx",
+     "src/components/layout/SidebarReorganized.tsx",
+     "src/hooks/freight/__tests__/telemetry.test.tsx",
+     "src/hooks/freight/useFreightPlan.ts",
+     "src/hooks/freight/useKitFreightPlan.ts",
+     "src/lib/freight/__tests__/parity.test.ts",
+     "src/lib/freight/telemetry.ts",
+     "src/lib/rbac/route-matrix.ts",
+     "src/pages/freight/FreightSimulatorPage.tsx",
+     "src/pages/freight/__tests__/FreightSimulatorPage.test.tsx",
+     "src/routes/lazy-pages.ts",
+     "src/routes/tools-routes.tsx"
+    ]
+   },
    {
     "sha": "4eddf85",
     "date": "2026-11-21",
@@ -560761,30 +561050,6 @@
      "supabase/migrations/20261120013000_add_products_ships_separately.sql",
      "supabase/rollbacks/20261120013000_rollback.sql"
     ]
-   },
-   {
-    "sha": "e25ff67",
-    "date": "2026-11-19",
-    "author": "adm01-debug",
-    "subject": "fix(frete): formulário de caixa volta a rolar e correções da revisão do admin (#3917)",
-    "files": [
-     "scripts/freight/README.md",
-     "src/components/admin/freight-settings/FreightSettingsForm.tsx",
-     "src/components/admin/shipping-boxes/ShippingBoxFormDialog.tsx",
-     "src/components/admin/shipping-boxes/ShippingBoxesManager.tsx",
-     "src/components/admin/shipping-boxes/ShippingBoxesTrash.tsx",
-     "src/components/admin/shipping-boxes/__tests__/ShippingBoxFormDialog.test.tsx",
-     "src/components/admin/shipping-boxes/__tests__/ShippingBoxesManager.test.tsx",
-     "src/components/admin/shipping-boxes/__tests__/shippingBoxFormSchema.test.ts",
-     "src/components/admin/shipping-boxes/shippingBoxFormSchema.ts",
-     "src/components/admin/shipping-boxes/shippingBoxFormat.ts",
-     "src/hooks/freight/useShippingBoxes.ts",
-     "src/lib/freight/README.md",
-     "src/pages/admin/__tests__/AdminFreteSettingsPage.test.tsx",
-     "src/services/__tests__/shippingBoxService.test.ts",
-     "src/services/shippingBoxService.ts",
-     "tests/hooks/freight/useShippingBoxes.test.ts"
-    ]
    }
   ],
   "hot_files": [
@@ -560817,6 +561082,14 @@
     4
    ],
    [
+    ".file-size-baseline.json",
+    3
+   ],
+   [
+    "src/hooks/freight/useFreightPlan.ts",
+    3
+   ],
+   [
     "src/hooks/freight/index.ts",
     3
    ],
@@ -560833,15 +561106,11 @@
     3
    ],
    [
-    "src/pages/admin/__tests__/AdminFreteSettingsPage.test.tsx",
-    3
+    "src/components/freight-plan/__tests__/freightPlanCard.harness.tsx",
+    2
    ],
    [
-    "src/components/admin/shipping-boxes/__tests__/ShippingBoxesManager.test.tsx",
-    3
-   ],
-   [
-    ".file-size-baseline.json",
+    "src/hooks/freight/useKitFreightPlan.ts",
     2
    ],
    [
@@ -560862,10 +561131,6 @@
    ],
    [
     "src/pages/admin/AdminFreteSettingsPage.tsx",
-    2
-   ],
-   [
-    "src/components/admin/freight-settings/FreightSettingsForm.tsx",
     2
    ]
   ]

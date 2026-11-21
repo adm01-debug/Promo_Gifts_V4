@@ -1,8 +1,8 @@
 {
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
- "nos": 2949,
- "arestas": 11629,
+ "nos": 2951,
+ "arestas": 11650,
  "hubs": [
   {
    "arquivo": "src/lib/utils.ts",
@@ -10,7 +10,7 @@
   },
   {
    "arquivo": "src/components/ui/button.tsx",
-   "importado_por": 659
+   "importado_por": 660
   },
   {
    "arquivo": "src/components/ui/badge.tsx",
@@ -18,15 +18,15 @@
   },
   {
    "arquivo": "src/integrations/supabase/client.ts",
-   "importado_por": 467
+   "importado_por": 468
   },
   {
    "arquivo": "src/components/ui/card.tsx",
-   "importado_por": 359
+   "importado_por": 360
   },
   {
    "arquivo": "src/lib/logger.ts",
-   "importado_por": 325
+   "importado_por": 326
   },
   {
    "arquivo": "src/components/ui/tooltip.tsx",
@@ -34,7 +34,7 @@
   },
   {
    "arquivo": "src/components/ui/input.tsx",
-   "importado_por": 267
+   "importado_por": 268
   },
   {
    "arquivo": "src/contexts/AuthContext.tsx",
@@ -46,7 +46,7 @@
   },
   {
    "arquivo": "src/components/ui/label.tsx",
-   "importado_por": 154
+   "importado_por": 155
   },
   {
    "arquivo": "src/components/ui/select.tsx",
@@ -62,11 +62,11 @@
   },
   {
    "arquivo": "src/components/seo/PageSEO.tsx",
-   "importado_por": 134
+   "importado_por": 135
   },
   {
    "arquivo": "src/lib/kit-builder/index.ts",
-   "importado_por": 115
+   "importado_por": 116
   },
   {
    "arquivo": "supabase/functions/_shared/cors.ts",
@@ -121,11 +121,11 @@
    "importado_por": 57
   },
   {
-   "arquivo": "src/lib/security/sanitize-error.ts",
-   "importado_por": 55
+   "arquivo": "src/utils/image-utils.ts",
+   "importado_por": 56
   },
   {
-   "arquivo": "src/utils/image-utils.ts",
+   "arquivo": "src/lib/security/sanitize-error.ts",
    "importado_por": 55
   },
   {
@@ -624,7 +624,7 @@
   {
    "modulo": "lib",
    "depende_de": 20,
-   "importado_por": 109
+   "importado_por": 110
   },
   {
    "modulo": "contexts",
@@ -634,7 +634,7 @@
   {
    "modulo": "components/ui",
    "depende_de": 7,
-   "importado_por": 69
+   "importado_por": 70
   },
   {
    "modulo": "integrations/supabase",
@@ -654,7 +654,7 @@
   {
    "modulo": "utils",
    "depende_de": 12,
-   "importado_por": 40
+   "importado_por": 41
   },
   {
    "modulo": "components/products",
@@ -692,14 +692,14 @@
    "importado_por": 27
   },
   {
+   "modulo": "hooks/common",
+   "depende_de": 11,
+   "importado_por": 23
+  },
+  {
    "modulo": "lib/security",
    "depende_de": 5,
    "importado_por": 29
-  },
-  {
-   "modulo": "hooks/common",
-   "depende_de": 11,
-   "importado_por": 22
   },
   {
    "modulo": "lib/edge",
@@ -712,14 +712,14 @@
    "importado_por": 18
   },
   {
+   "modulo": "components/quotes",
+   "depende_de": 23,
+   "importado_por": 7
+  },
+  {
    "modulo": "lib/telemetry",
    "depende_de": 2,
    "importado_por": 28
-  },
-  {
-   "modulo": "services",
-   "depende_de": 12,
-   "importado_por": 18
   }
  ],
  "arestas_em": "docs/contexto/codigo/grafo-arestas.json"

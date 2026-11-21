@@ -17922,7 +17922,7 @@
     "user_id->auth"
    ],
    "criada_em": "20260519182200_d63ddf60-9235-4881-a97f-7a5081bcfc22.sql",
-   "usada_no_front": 5,
+   "usada_no_front": 6,
    "usada_em_edges": [],
    "triggers": [
     "trg_anon_rate_guard",

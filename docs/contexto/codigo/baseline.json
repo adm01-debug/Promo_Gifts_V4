@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "4eddf85d8b6e5d0227dcc995b4733f1c143588ec",
+  "commit": "e311dad9eda31cb55fff4e7fc14e7206a10a6eb8",
   "branch": "main",
-  "data_commit": "2026-11-21T09:35:35-03:00",
+  "data_commit": "2026-11-21T10:49:29-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "e311dad9",
+    "data": "2026-11-21",
+    "assunto": "feat(frete): Bloco F - comparador de volumes, simulador de frete e telemetria (etapas 53-60) (#3954)"
+   },
    {
     "sha": "4eddf85d",
     "data": "2026-11-21",
@@ -126,14 +131,9 @@
     "sha": "dc4a2dfc",
     "data": "2026-11-20",
     "assunto": "feat(db): endurece as tabelas de frete e cadastra as 4 caixas (P, M, G, GG) (#3923)"
-   },
-   {
-    "sha": "1b8de977",
-    "data": "2026-11-20",
-    "assunto": "fix(frete): motor valida caixas e parâmetros na entrada, teto de volumes e testes de lacuna (#3925)"
    }
   ],
-  "arquivos_mudados_7d": 11291,
+  "arquivos_mudados_7d": 11298,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -153,7 +153,7 @@
    },
    {
     "pasta": "src/hooks/products",
-    "mudancas": 443
+    "mudancas": 441
    },
    {
     "pasta": "src/components/quotes",
@@ -189,7 +189,7 @@
    },
    {
     "pasta": "src/components/kit-builder",
-    "mudancas": 211
+    "mudancas": 213
    },
    {
     "pasta": "src/pages/products",
@@ -203,7 +203,7 @@
    },
    {
     "arquivo": "package.json",
-    "mudancas": 31
+    "mudancas": 30
    },
    {
     "arquivo": "docs/coordenacao/conflitos-semanticos.md",
@@ -211,7 +211,7 @@
    },
    {
     "arquivo": "package-lock.json",
-    "mudancas": 21
+    "mudancas": 20
    },
    {
     "arquivo": ".github/workflows/deploy-gates.yml",
@@ -219,7 +219,7 @@
    },
    {
     "arquivo": "CHANGELOG.md",
-    "mudancas": 15
+    "mudancas": 14
    },
    {
     "arquivo": "audit/supabase-reference-catalog.temporary.json",
@@ -247,10 +247,6 @@
    },
    {
     "arquivo": ".github/workflows/schema-snapshot-export.yml",
-    "mudancas": 9
-   },
-   {
-    "arquivo": "RELATORIO_CI.md",
     "mudancas": 9
    },
    {
@@ -282,6 +278,10 @@
     "mudancas": 8
    },
    {
+    "arquivo": "RELATORIO_CI.md",
+    "mudancas": 8
+   },
+   {
     "arquivo": "scripts/automation.config.json",
     "mudancas": 8
    },
@@ -301,11 +301,11 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 314
+    "commits": 313
    },
    {
     "autor": "Claude",
-    "commits": 59
+    "commits": 57
    },
    {
     "autor": "github-actions[bot]",
@@ -322,21 +322,21 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 11184,
-  "arquivos_codigo": 5643,
-  "linhas_codigo": 1071014,
-  "rotas": 140,
+  "arquivos_total": 11191,
+  "arquivos_codigo": 5650,
+  "linhas_codigo": 1072044,
+  "rotas": 141,
   "rotas_http_backend": 13,
   "vistas_por_id": 0,
-  "itens_menu": 71,
-  "modulos": 168,
-  "componentes": 1279,
+  "itens_menu": 72,
+  "modulos": 169,
+  "componentes": 1280,
   "hooks": 645,
   "edge_functions": 112,
   "tabelas": 531,
   "migrations": 3118,
   "cron_jobs": 122,
-  "testes": 2694,
+  "testes": 2699,
   "workflows": 89,
   "scripts": 284,
   "docs_md": 1495
@@ -557,6 +557,10 @@
   "e2e/flows": {
    "arquivos": 183,
    "linhas": 25327
+  },
+  "e2e/freight": {
+   "arquivos": 1,
+   "linhas": 78
   },
   "e2e/future-stock.spec.ts": {
    "arquivos": 1,
@@ -1903,8 +1907,8 @@
    "linhas": 130
   },
   "src/components": {
-   "arquivos": 1477,
-   "linhas": 289885
+   "arquivos": 1478,
+   "linhas": 289982
   },
   "src/config": {
    "arquivos": 1,
@@ -1927,16 +1931,16 @@
    "linhas": 7
   },
   "src/hooks": {
-   "arquivos": 507,
-   "linhas": 94150
+   "arquivos": 508,
+   "linhas": 94277
   },
   "src/integrations": {
    "arquivos": 11,
    "linhas": 66760
   },
   "src/lib": {
-   "arquivos": 414,
-   "linhas": 64424
+   "arquivos": 416,
+   "linhas": 64602
   },
   "src/logic": {
    "arquivos": 4,
@@ -1947,12 +1951,12 @@
    "linhas": 63
   },
   "src/pages": {
-   "arquivos": 371,
-   "linhas": 85565
+   "arquivos": 373,
+   "linhas": 86110
   },
   "src/routes": {
    "arquivos": 15,
-   "linhas": 1408
+   "linhas": 1413
   },
   "src/services": {
    "arquivos": 40,

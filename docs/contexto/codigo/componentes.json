@@ -1,7 +1,7 @@
 {
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
- "total": 1279,
+ "total": 1280,
  "orfaos": 157,
  "nomes_duplicados": {
   "AdminTemplatesManager": [
@@ -9202,7 +9202,7 @@
    "hooks_locais": [],
    "tabelas": [],
    "edges": [],
-   "usado_por": 3,
+   "usado_por": 4,
    "orfao": false
   },
   {
@@ -9217,7 +9217,7 @@
    "hooks_locais": [],
    "tabelas": [],
    "edges": [],
-   "usado_por": 2,
+   "usado_por": 3,
    "orfao": false
   },
   {
@@ -10527,7 +10527,7 @@
     "KitComparisonDialog"
    ],
    "export_default": null,
-   "linhas": 249,
+   "linhas": 270,
    "dominio": "components/kit-builder",
    "hooks_locais": [],
    "tabelas": [],
@@ -11284,7 +11284,7 @@
     "SidebarReorganized"
    ],
    "export_default": null,
-   "linhas": 675,
+   "linhas": 681,
    "dominio": "components/layout",
    "hooks_locais": [
     "useAuth",
@@ -14751,7 +14751,7 @@
    "hooks_locais": [],
    "tabelas": [],
    "edges": [],
-   "usado_por": 3,
+   "usado_por": 4,
    "orfao": false
   },
   {
@@ -15957,7 +15957,7 @@
    "hooks_locais": [],
    "tabelas": [],
    "edges": [],
-   "usado_por": 133,
+   "usado_por": 134,
    "orfao": false
   },
   {
@@ -16612,7 +16612,7 @@
    "hooks_locais": [],
    "tabelas": [],
    "edges": [],
-   "usado_por": 654,
+   "usado_por": 655,
    "orfao": false
   },
   {
@@ -16646,7 +16646,7 @@
    "hooks_locais": [],
    "tabelas": [],
    "edges": [],
-   "usado_por": 359,
+   "usado_por": 360,
    "orfao": false
   },
   {
@@ -16995,7 +16995,7 @@
    "hooks_locais": [],
    "tabelas": [],
    "edges": [],
-   "usado_por": 267,
+   "usado_por": 268,
    "orfao": false
   },
   {
@@ -17023,7 +17023,7 @@
    "hooks_locais": [],
    "tabelas": [],
    "edges": [],
-   "usado_por": 151,
+   "usado_por": 152,
    "orfao": false
   },
   {
@@ -19116,6 +19116,23 @@
    "linhas": 75,
    "dominio": "pages/dev",
    "hooks_locais": [],
+   "tabelas": [],
+   "edges": [],
+   "usado_por": 1,
+   "orfao": false
+  },
+  {
+   "arquivo": "src/pages/freight/FreightSimulatorPage.tsx",
+   "exports": [
+    "FreightSimulatorPage"
+   ],
+   "export_default": "FreightSimulatorPage",
+   "linhas": 411,
+   "dominio": "pages/freight",
+   "hooks_locais": [
+    "useDebounce",
+    "useFreightPlan"
+   ],
    "tabelas": [],
    "edges": [],
    "usado_por": 1,

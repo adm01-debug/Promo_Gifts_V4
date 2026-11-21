@@ -5,13 +5,13 @@
   "vitest",
   "playwright"
  ],
- "total": 2694,
+ "total": 2699,
  "por_tipo": {
   "contrato": 70,
-  "e2e": 678,
+  "e2e": 679,
   "pytest": 6,
   "qa": 17,
-  "unit": 1923
+  "unit": 1927
  },
  "onde_ficam": [
   {
@@ -20,11 +20,11 @@
   },
   {
    "padrao": "co-localizado (__tests__)",
-   "arquivos": 766
+   "arquivos": 770
   },
   {
    "padrao": "e2e/",
-   "arquivos": 626
+   "arquivos": 627
   },
   {
    "padrao": "co-localizado (*.test)",
@@ -2330,6 +2330,13 @@
    "linhas": 41,
    "testa": [],
    "casos": 1
+  },
+  {
+   "arquivo": "e2e/freight/simulator.spec.ts",
+   "tipo": "e2e",
+   "linhas": 78,
+   "testa": [],
+   "casos": 4
   },
   {
    "arquivo": "e2e/future-stock.spec.ts",
@@ -5549,7 +5556,7 @@
   {
    "arquivo": "src/components/freight-plan/__tests__/freightPlanCard.harness.tsx",
    "tipo": "unit",
-   "linhas": 150,
+   "linhas": 164,
    "testa": [
     "src/components/freight-plan/FreightPlanCard.tsx",
     "src/lib/freight/index.ts"
@@ -6010,6 +6017,15 @@
     "src/types/stock.ts"
    ],
    "casos": 11
+  },
+  {
+   "arquivo": "src/components/kit-builder/__tests__/KitComparisonDialog.test.tsx",
+   "tipo": "unit",
+   "linhas": 56,
+   "testa": [
+    "src/components/kit-builder/KitComparisonDialog.tsx"
+   ],
+   "casos": 2
   },
   {
    "arquivo": "src/components/kit-library/__tests__/kit-template-icons.test.ts",
@@ -8515,6 +8531,16 @@
    "casos": 6
   },
   {
+   "arquivo": "src/hooks/freight/__tests__/telemetry.test.tsx",
+   "tipo": "unit",
+   "linhas": 106,
+   "testa": [
+    "src/hooks/freight/useFreightPlan.ts",
+    "src/hooks/freight/useKitFreightPlan.ts"
+   ],
+   "casos": 3
+  },
+  {
    "arquivo": "src/hooks/freight/__tests__/useBusinessCalendar.test.tsx",
    "tipo": "unit",
    "linhas": 89,
@@ -10149,6 +10175,15 @@
    "casos": 19
   },
   {
+   "arquivo": "src/lib/freight/__tests__/parity.test.ts",
+   "tipo": "unit",
+   "linhas": 105,
+   "testa": [
+    "src/lib/freight/index.ts"
+   ],
+   "casos": 2
+  },
+  {
    "arquivo": "src/lib/freight/__tests__/planFreight.robustez.test.ts",
    "tipo": "unit",
    "linhas": 469,
@@ -11064,6 +11099,16 @@
     "src/pages/filters/useFiltersPageState.ts"
    ],
    "casos": 5
+  },
+  {
+   "arquivo": "src/pages/freight/__tests__/FreightSimulatorPage.test.tsx",
+   "tipo": "unit",
+   "linhas": 134,
+   "testa": [
+    "src/hooks/quotes/useQuoteBuilderState.helpers.ts",
+    "src/pages/freight/FreightSimulatorPage.tsx"
+   ],
+   "casos": 3
   },
   {
    "arquivo": "src/pages/kit-builder/__tests__/useKitBuilderQuote.sem-cliente.test.tsx",
@@ -23259,7 +23304,7 @@
   "src/components/kit-builder/ItemSelector.tsx": 2,
   "src/components/kit-builder/KitAIPromptDialog.tsx": 1,
   "src/components/kit-builder/KitBuilderHeader.tsx": 2,
-  "src/components/kit-builder/KitComparisonDialog.tsx": 1,
+  "src/components/kit-builder/KitComparisonDialog.tsx": 2,
   "src/components/kit-builder/KitHeroPricingCard.tsx": 2,
   "src/components/kit-builder/KitMakerGuideDialog.tsx": 1,
   "src/components/kit-builder/KitMakerLanding.tsx": 1,
@@ -23513,8 +23558,9 @@
   "src/hooks/freight/index.ts": 4,
   "src/hooks/freight/keys.ts": 1,
   "src/hooks/freight/useBusinessCalendar.ts": 1,
+  "src/hooks/freight/useFreightPlan.ts": 1,
   "src/hooks/freight/useFreightReadinessReport.ts": 1,
-  "src/hooks/freight/useKitFreightPlan.ts": 1,
+  "src/hooks/freight/useKitFreightPlan.ts": 2,
   "src/hooks/freight/useProductionLeadTime.ts": 1,
   "src/hooks/intelligence/index.ts": 9,
   "src/hooks/intelligence/intelligenceHelpers.ts": 1,
@@ -23617,7 +23663,7 @@
   "src/hooks/quotes/restoredDraftBase.ts": 2,
   "src/hooks/quotes/useAutoSaveQuote.ts": 8,
   "src/hooks/quotes/useDiscountApproval.ts": 3,
-  "src/hooks/quotes/useQuoteBuilderState.helpers.ts": 1,
+  "src/hooks/quotes/useQuoteBuilderState.helpers.ts": 2,
   "src/hooks/quotes/useQuoteBuilderState.ts": 10,
   "src/hooks/quotes/useQuoteConcurrencyGuard.ts": 1,
   "src/hooks/quotes/useQuoteFunnel.ts": 1,
@@ -23741,7 +23787,7 @@
   "src/lib/freight/formatPlanSummary.ts": 1,
   "src/lib/freight/fromDatabase.ts": 1,
   "src/lib/freight/fromKit.ts": 1,
-  "src/lib/freight/index.ts": 7,
+  "src/lib/freight/index.ts": 8,
   "src/lib/freight/limits.ts": 1,
   "src/lib/freight/packMixed.ts": 1,
   "src/lib/freight/packSingleProduct.ts": 2,
@@ -23884,6 +23930,7 @@
   "src/pages/auth/postLoginGuards.ts": 1,
   "src/pages/filters/applyProductFilters.ts": 1,
   "src/pages/filters/useFiltersPageState.ts": 3,
+  "src/pages/freight/FreightSimulatorPage.tsx": 1,
   "src/pages/kit-builder/KitBuilderPage.tsx": 2,
   "src/pages/kit-builder/KitLibraryPage.tsx": 1,
   "src/pages/kit-builder/useKitBuilderQuote.ts": 2,
@@ -24462,7 +24509,6 @@
    "src/hooks/favorites/useFavoriteQuickAdd.ts",
    "src/hooks/favorites/useFavoritesGlobalShortcuts.ts",
    "src/hooks/favorites/useFavoritesPageState.ts",
-   "src/hooks/freight/useFreightPlan.ts",
    "src/hooks/freight/useFreightSettings.ts",
    "src/hooks/freight/usePriceTableBands.ts",
    "src/hooks/freight/useProductMeasures.ts",

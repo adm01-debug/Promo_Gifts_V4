@@ -1,13 +1,13 @@
 {
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
- "total": 349,
+ "total": 350,
  "por_camada": {
   "api": 4,
   "config": 1,
   "data": 3,
   "integrations": 8,
-  "lib": 266,
+  "lib": 267,
   "python": 9,
   "services": 16,
   "stores": 9,
@@ -720,7 +720,7 @@
    "zod_schemas": 0,
    "flags": [],
    "papeis": [],
-   "usado_por": 415,
+   "usado_por": 416,
    "usado_por_modulos": [
     "components/admin",
     "components/ai",
@@ -774,6 +774,7 @@
     "lib/auth",
     "lib/edge",
     "lib/external-db",
+    "lib/freight",
     "lib/kit-builder",
     "lib/pdf",
     "lib/security",
@@ -4225,16 +4226,18 @@
    "zod_schemas": 0,
    "flags": [],
    "papeis": [],
-   "usado_por": 16,
+   "usado_por": 18,
    "usado_por_modulos": [
     "components/admin",
     "components/freight-plan",
     "components/kit-builder",
     "hooks/freight",
     "hooks/quotes",
-    "lib/quotes"
+    "lib/freight",
+    "lib/quotes",
+    "pages/freight"
    ],
-   "coberto_por_testes": 7,
+   "coberto_por_testes": 8,
    "orfao": false
   },
   {
@@ -4480,6 +4483,34 @@
     "lib/freight"
    ],
    "coberto_por_testes": 1,
+   "orfao": false
+  },
+  {
+   "arquivo": "src/lib/freight/telemetry.ts",
+   "camada": "lib",
+   "exports": [
+    "FREIGHT_PLAN_EVENT_NAME",
+    "FREIGHT_PLAN_EVENT_TYPE",
+    "FreightPlanOrigin",
+    "trackFreightPlanComputed"
+   ],
+   "export_default": null,
+   "linhas": 63,
+   "tabelas": [
+    "frontend_telemetry"
+   ],
+   "rpcs": [],
+   "edges": [],
+   "env": [],
+   "externos": [],
+   "zod_schemas": 0,
+   "flags": [],
+   "papeis": [],
+   "usado_por": 2,
+   "usado_por_modulos": [
+    "hooks/freight"
+   ],
+   "coberto_por_testes": 0,
    "orfao": false
   },
   {
@@ -5112,13 +5143,14 @@
    "zod_schemas": 0,
    "flags": [],
    "papeis": [],
-   "usado_por": 75,
+   "usado_por": 76,
    "usado_por_modulos": [
     "components/dashboard",
     "components/kit-builder",
     "components/kit-library",
     "hooks/kit-builder",
     "pages/admin",
+    "pages/freight",
     "pages/kit-builder",
     "utils"
    ],
@@ -5695,7 +5727,7 @@
    "zod_schemas": 0,
    "flags": [],
    "papeis": [],
-   "usado_por": 311,
+   "usado_por": 312,
    "usado_por_modulos": [
     "components",
     "components/admin",
@@ -5751,6 +5783,7 @@
     "lib/auth",
     "lib/db",
     "lib/external-db",
+    "lib/freight",
     "lib/intelligence",
     "lib/personalization",
     "lib/quotes",
@@ -7265,7 +7298,7 @@
     "summarizeRoutes"
    ],
    "export_default": null,
-   "linhas": 474,
+   "linhas": 484,
    "tabelas": [],
    "rpcs": [],
    "edges": [],
@@ -10084,7 +10117,7 @@
    "zod_schemas": 0,
    "flags": [],
    "papeis": [],
-   "usado_por": 51,
+   "usado_por": 52,
    "usado_por_modulos": [
     "components/admin",
     "components/catalog",
@@ -10101,6 +10134,7 @@
     "hooks/mockup",
     "lib/external-db",
     "pages/admin",
+    "pages/freight",
     "pages/products",
     "pages/tools"
    ],

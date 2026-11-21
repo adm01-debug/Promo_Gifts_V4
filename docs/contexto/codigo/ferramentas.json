@@ -3,7 +3,7 @@
  "format_version": 2,
  "stack": {
   "linguagens": [
-   "TypeScript (5170)",
+   "TypeScript (5177)",
    "SQL (3478)",
    "Markdown (1495)",
    "JavaScript (462)",
@@ -5871,6 +5871,7 @@
    "/revista-publica/:token",
    "/simulacao",
    "/simulador",
+   "/simulador-frete",
    "/simulador-precos",
    "/tendencias",
    "/termos"

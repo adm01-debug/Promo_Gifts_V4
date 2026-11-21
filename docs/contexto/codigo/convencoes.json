@@ -3,13 +3,13 @@
  "format_version": 2,
  "onde_ficam": {
   "telas": [
-   "src/pages (113)",
+   "src/pages (114)",
    "src/components (3)",
    "api/health.ts (1)"
   ],
   "componentes": [
    "src/components (979)",
-   "src/pages (181)",
+   "src/pages (182)",
    "recovery/src-legacy (100)"
   ],
   "hooks": [
@@ -18,14 +18,14 @@
    "src/components (78)"
   ],
   "servicos_logica": [
-   "src/lib (266)",
+   "src/lib (267)",
    "src/utils (33)",
    "src/services (16)"
   ],
   "testes": [
    "tests/ (1097)",
-   "co-localizado (__tests__) (766)",
-   "e2e/ (626)"
+   "co-localizado (__tests__) (770)",
+   "e2e/ (627)"
   ],
   "edge_functions": "supabase/functions",
   "migrations": "supabase/migrations",
@@ -49,7 +49,7 @@
  },
  "barrels_index": 50,
  "extensao_componentes": [
-  ".tsx (1279)"
+  ".tsx (1280)"
  ],
  "alias_imports": {
   "e2e/": {},
@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "feat(frete): Bloco F - comparador de volumes, simulador de frete e telemetria (etapas 53-60) (#3954)",
    "feat(kit): plano de volumes do kit no lugar do FreightEstimator (etapa 52) (#3951)",
    "chore(main): release gifts-store 1.16.1 (#3949)",
    "test(kit): classificacao de status KMM-075/KMX-037 (D7) (#3950)",
-   "fix(ci): endurece gate de chamadas diretas (#3943)",
-   "chore(docs): memoria do GOAL 4 - achados e resgate quote_comments (#3948)"
+   "fix(ci): endurece gate de chamadas diretas (#3943)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",
