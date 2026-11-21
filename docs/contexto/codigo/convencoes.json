@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "chore(main): release gifts-store 1.16.1 (#3949)",
    "test(kit): classificacao de status KMM-075/KMX-037 (D7) (#3950)",
    "fix(ci): endurece gate de chamadas diretas (#3943)",
    "chore(docs): memoria do GOAL 4 - achados e resgate quote_comments (#3948)",
-   "chore(main): release gifts-store 1.16.0 (#3945)",
-   "docs(migrations-log): recibo E15 — aplicação de 20261120180000 (#3946)"
+   "chore(main): release gifts-store 1.16.0 (#3945)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",

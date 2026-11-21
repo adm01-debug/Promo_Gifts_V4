@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "912bfae1a2609a7add3d86464517bd19c8d441ec",
+  "commit": "f613f3f50224a19b7e90966bf475d98e061c5ce8",
   "branch": "main",
-  "data_commit": "2026-11-21T08:45:57-03:00",
+  "data_commit": "2026-11-21T08:53:20-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "f613f3f5",
+    "data": "2026-11-21",
+    "assunto": "chore(main): release gifts-store 1.16.1 (#3949)"
+   },
    {
     "sha": "912bfae1",
     "data": "2026-11-21",
@@ -126,182 +131,177 @@
     "sha": "38a84ba1",
     "data": "2026-11-20",
     "assunto": "feat(frete): produto \"não mistura\", importação em massa e relatório de dados de frete (Bloco D, etapas 32–39) (#3922)"
-   },
-   {
-    "sha": "5ac27dbc",
-    "data": "2026-11-20",
-    "assunto": "feat(frete): hooks e painel do plano de volumes (Bloco E, etapas 41–45 e 48) (#3920)"
    }
   ],
   "arquivos_mudados_7d": 1416,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
-    "mudancas": 689
+    "mudancas": 991
    },
    {
     "pasta": "recovery/src-legacy/src",
-    "mudancas": 317
+    "mudancas": 633
    },
    {
     "pasta": "src/components/products",
-    "mudancas": 306
-   },
-   {
-    "pasta": "src/hooks/products",
-    "mudancas": 235
+    "mudancas": 458
    },
    {
     "pasta": "tests/edge-functions/live",
-    "mudancas": 233
+    "mudancas": 347
+   },
+   {
+    "pasta": "src/hooks/products",
+    "mudancas": 340
    },
    {
     "pasta": "src/components/quotes",
-    "mudancas": 211
+    "mudancas": 298
    },
    {
     "pasta": "src/pages/magazine",
-    "mudancas": 184
+    "mudancas": 276
    },
    {
     "pasta": "src/components/inventory",
-    "mudancas": 170
-   },
-   {
-    "pasta": "src/components/mockup",
-    "mudancas": 163
+    "mudancas": 250
    },
    {
     "pasta": "supabase/functions/_shared",
-    "mudancas": 150
+    "mudancas": 225
+   },
+   {
+    "pasta": "src/components/mockup",
+    "mudancas": 223
    },
    {
     "pasta": "src/components/ui",
-    "mudancas": 146
+    "mudancas": 219
    },
    {
     "pasta": "src/pages/admin",
-    "mudancas": 137
+    "mudancas": 197
    },
    {
     "pasta": "src/pages/quotes",
-    "mudancas": 125
+    "mudancas": 176
    },
    {
     "pasta": "src/components/kit-builder",
-    "mudancas": 116
+    "mudancas": 162
    },
    {
-    "pasta": "src/hooks/quotes",
-    "mudancas": 105
+    "pasta": "src/pages/products",
+    "mudancas": 148
    }
   ],
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "supabase/MIGRATIONS_SYNC_LOG.md",
-    "mudancas": 70
+    "mudancas": 71
    },
    {
     "arquivo": "package.json",
-    "mudancas": 29
+    "mudancas": 31
    },
    {
     "arquivo": "docs/coordenacao/conflitos-semanticos.md",
-    "mudancas": 27
+    "mudancas": 28
    },
    {
     "arquivo": "package-lock.json",
-    "mudancas": 19
+    "mudancas": 21
    },
    {
     "arquivo": ".github/workflows/deploy-gates.yml",
-    "mudancas": 13
+    "mudancas": 14
    },
    {
     "arquivo": "CHANGELOG.md",
-    "mudancas": 12
+    "mudancas": 14
    },
    {
     "arquivo": "audit/supabase-reference-catalog.temporary.json",
-    "mudancas": 12
+    "mudancas": 13
+   },
+   {
+    "arquivo": "src/pages/mockups/MockupGenerator.tsx",
+    "mudancas": 11
    },
    {
     "arquivo": "docs/agentes/resgates/2026-11-16-auditoria-branches.md",
     "mudancas": 10
    },
    {
-    "arquivo": "src/pages/mockups/MockupGenerator.tsx",
-    "mudancas": 10
-   },
-   {
     "arquivo": "RELATORIO_CI.md",
-    "mudancas": 8
+    "mudancas": 9
    },
    {
     "arquivo": "src/integrations/supabase/types.ts",
-    "mudancas": 8
+    "mudancas": 9
    },
    {
     "arquivo": "src/pages/kit-builder/KitBuilderPage.tsx",
-    "mudancas": 8
+    "mudancas": 9
    },
    {
     "arquivo": "supabase/EDGE_FUNCTIONS_DEPLOY_LOG.md",
-    "mudancas": 8
+    "mudancas": 9
    },
    {
     "arquivo": ".github/workflows/replenishment-quality.yml",
-    "mudancas": 7
+    "mudancas": 8
    },
    {
     "arquivo": ".github/workflows/schema-snapshot-export.yml",
-    "mudancas": 7
+    "mudancas": 8
    },
    {
     "arquivo": "docs/prod-readiness.md",
-    "mudancas": 7
+    "mudancas": 8
    },
    {
     "arquivo": "scripts/drift-baseline.mjs",
-    "mudancas": 7
-   },
-   {
-    "arquivo": "src/lib/freight/index.ts",
-    "mudancas": 7
+    "mudancas": 8
    },
    {
     "arquivo": "src/pages/quotes/QuoteBuilderPage.tsx",
-    "mudancas": 7
+    "mudancas": 8
    },
    {
     "arquivo": "supabase/functions/crm-db-bridge/index.ts",
-    "mudancas": 7
+    "mudancas": 8
    },
    {
     "arquivo": ".github/workflows/e2e-swatch-quickview.yml",
-    "mudancas": 6
+    "mudancas": 7
    },
    {
     "arquivo": ".github/workflows/e2e.yml",
-    "mudancas": 6
-   },
-   {
-    "arquivo": "PENDENCIAS.md",
-    "mudancas": 6
+    "mudancas": 7
    },
    {
     "arquivo": "scripts/automation.config.json",
-    "mudancas": 6
+    "mudancas": 7
    },
    {
     "arquivo": "src/components/kit-builder/PersonalizationConfig.tsx",
-    "mudancas": 6
+    "mudancas": 7
+   },
+   {
+    "arquivo": "src/components/quotes/QuoteAutoSave.tsx",
+    "mudancas": 7
+   },
+   {
+    "arquivo": "src/components/search/useGlobalSearch.ts",
+    "mudancas": 7
    }
   ],
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 317
+    "commits": 315
    },
    {
     "autor": "Claude",
@@ -309,7 +309,7 @@
    },
    {
     "autor": "github-actions[bot]",
-    "commits": 29
+    "commits": 30
    },
    {
     "autor": "Joaquim Ataides",

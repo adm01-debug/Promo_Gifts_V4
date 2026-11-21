@@ -1,9 +1,9 @@
 {
  "meta": {
-  "sha": "912bfae1a2609a7add3d86464517bd19c8d441ec",
+  "sha": "f613f3f50224a19b7e90966bf475d98e061c5ce8",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-21 11:47 UTC",
+  "generated_at": "2026-11-21 11:54 UTC",
   "files_total": 11111,
   "code_files": 9119,
   "code_lines": 1294055
@@ -560173,10 +560173,22 @@
   }
  },
  "git": {
-  "sha": "912bfae1a2609a7add3d86464517bd19c8d441ec",
+  "sha": "f613f3f50224a19b7e90966bf475d98e061c5ce8",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "f613f3f",
+    "date": "2026-11-21",
+    "author": "github-actions[bot]",
+    "subject": "chore(main): release gifts-store 1.16.1 (#3949)",
+    "files": [
+     ".release-please-manifest.json",
+     "CHANGELOG.md",
+     "package-lock.json",
+     "package.json"
+    ]
+   },
    {
     "sha": "912bfae",
     "date": "2026-11-21",
@@ -560735,18 +560747,6 @@
      "tests/hooks/freight/useFreightSettings.test.ts",
      "tests/hooks/freight/useShippingBoxes.test.ts",
      "tests/scripts/seed-shipping-boxes.test.mjs"
-    ]
-   },
-   {
-    "sha": "8fe268c",
-    "date": "2026-11-19",
-    "author": "github-actions[bot]",
-    "subject": "chore(main): release gifts-store 1.13.0 (#3904)",
-    "files": [
-     ".release-please-manifest.json",
-     "CHANGELOG.md",
-     "package-lock.json",
-     "package.json"
     ]
    }
   ],
