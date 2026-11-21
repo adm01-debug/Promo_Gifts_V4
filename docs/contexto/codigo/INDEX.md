@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e de hora em hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `8a224b1274906d3eed67900bcdf071fc22929d88` (2026-11-21T14:22:11-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e de hora em hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `8ca0bd0fe57a1c4b7b71f87cded87f2e56eb2334` (2026-11-21T14:47:19-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -599,27 +599,27 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - possiveis_segredos_no_codigo: 7 — ex.: scripts/ai-context/cenarios.mjs:102, src/components/admin/connections/__tests__/ConnectionSecurity.unit.test.tsx:9, src/integrations/supabase/client.ts:27
 
 ## Grafo de código (graphify)
-- 50455 nós · 85550 arestas · 2832 comunidades · grafo do commit `8a224b12`
+- 50455 nós · 85550 arestas · 2832 comunidades · grafo do commit `8ca0bd0f`
 - comunidades maiores: ref_components (896), vitest (881), ref_integrations (573), ref_lib (477), ref_node_child_process (460), @tanstack/react-query (433), ref_hooks (403), gotoAndSettle (394), sonner (361), ref_types (344), react-router-dom (337), ref_node_fs (329)
 - símbolos mais chamados: gotoAndSettle() (e2e/helpers/nav.ts), re (?), q() (scripts/supabase_snapshot/snapshot.py), analyze() (tests/scripts/test_personalization_artifact_diagnostics.py), outer() (tests/scripts/test_personalization_artifact_diagnostics.py), json (?), useExternalDatabase() (recovery/src-legacy/src/hooks/useExternalDatabase.ts), concludeCheck() (scripts/check-result-contract.mjs), querySupabaseReadOnly() (scripts/supabase-read-only-query.mjs), loginAs() (e2e/helpers/auth.ts), inner() (tests/scripts/test_personalization_artifact_diagnostics.py), excluded_sql() (scripts/supabase_snapshot/snapshot.py)
 - consulta local: `graphify query "<pergunta>"`, `graphify path "<A>" "<B>"`, `graphify explain "<X>"`
 
 ## Hotspots (arquivos mais alterados, 90 dias)
-- supabase/MIGRATIONS_SYNC_LOG.md (69)
-- package.json (35)
-- docs/coordenacao/conflitos-semanticos.md (32)
-- package-lock.json (25)
-- .github/workflows/deploy-gates.yml (20)
-- CHANGELOG.md (19)
-- audit/supabase-reference-catalog.temporary.json (18)
-- src/pages/mockups/MockupGenerator.tsx (17)
-- src/pages/kit-builder/KitBuilderPage.tsx (16)
-- src/integrations/supabase/types.ts (15)
-- src/pages/quotes/QuoteBuilderPage.tsx (15)
-- .github/workflows/replenishment-quality.yml (14)
-- .github/workflows/schema-snapshot-export.yml (14)
-- .github/workflows/e2e-swatch-quickview.yml (13)
-- .github/workflows/e2e.yml (13)
+- supabase/MIGRATIONS_SYNC_LOG.md (68)
+- package.json (33)
+- docs/coordenacao/conflitos-semanticos.md (31)
+- package-lock.json (23)
+- .github/workflows/deploy-gates.yml (18)
+- CHANGELOG.md (17)
+- audit/supabase-reference-catalog.temporary.json (16)
+- src/pages/mockups/MockupGenerator.tsx (15)
+- src/pages/kit-builder/KitBuilderPage.tsx (14)
+- src/integrations/supabase/types.ts (13)
+- src/pages/quotes/QuoteBuilderPage.tsx (13)
+- .github/workflows/replenishment-quality.yml (12)
+- .github/workflows/schema-snapshot-export.yml (12)
+- .github/workflows/e2e-swatch-quickview.yml (11)
+- .github/workflows/e2e.yml (11)
 
 ## Workflows
 - `_e2e-relevance.yml` — Reusable — E2E Runtime Relevance (workflow_call)
@@ -1196,6 +1196,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - CHANGELOG topo: [1.16.1](https://github.com/adm01-debug/Promo_Gifts_V4/compare/gifts-store-v1.16.0...gifts-store-v1.16.1) (2026-11-21)
 
 ## Últimos commits
+- 2026-11-21 `8ca0bd0f` docs: recibo de aplicação — 20261121120000 (E15) (#3961)
 - 2026-11-21 `8a224b12` docs: recibo de aplicação — 20261121000000 (E15) (#3958)
 - 2026-11-21 `27369d5e` feat: migration v_compras_precos_faixa — view de faixas de preço para compras (#3962)
 - 2026-11-21 `7f8c55ef` feat(compras): view v_compras_catalogo no PIM [PR 1.1]
@@ -1210,7 +1211,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-21 `f483626a` fix(ci): endurece gate de chamadas diretas (#3943)
 - 2026-11-20 `a87dc91e` chore(docs): memoria do GOAL 4 - achados e resgate quote_comments (#3948)
 - 2026-11-20 `f83c473f` chore(main): release gifts-store 1.16.0 (#3945)
-- 2026-11-20 `3f273fe9` docs(migrations-log): recibo E15 — aplicação de 20261120180000 (#3946)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

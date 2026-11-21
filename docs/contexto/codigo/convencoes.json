@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "docs: recibo de aplicação — 20261121120000 (E15) (#3961)",
    "docs: recibo de aplicação — 20261121000000 (E15) (#3958)",
    "feat: migration v_compras_precos_faixa — view de faixas de preço para compras (#3962)",
    "feat(compras): view v_compras_catalogo no PIM [PR 1.1]",
-   "fix(quotes): restaura contrato transacional das RPCs com frete (Gate 2.5) (#3959)",
-   "chore(migrations): rollback da migration 20261121000000 (E058) (#3957)"
+   "fix(quotes): restaura contrato transacional das RPCs com frete (Gate 2.5) (#3959)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",

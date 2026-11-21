@@ -1,9 +1,9 @@
 {
  "meta": {
-  "sha": "8a224b1274906d3eed67900bcdf071fc22929d88",
+  "sha": "8ca0bd0fe57a1c4b7b71f87cded87f2e56eb2334",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-21 17:23 UTC",
+  "generated_at": "2026-11-21 17:48 UTC",
   "files_total": 11125,
   "code_files": 9133,
   "code_lines": 1297086
@@ -560647,10 +560647,20 @@
   }
  },
  "git": {
-  "sha": "8a224b1274906d3eed67900bcdf071fc22929d88",
+  "sha": "8ca0bd0fe57a1c4b7b71f87cded87f2e56eb2334",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "8ca0bd0",
+    "date": "2026-11-21",
+    "author": "github-actions[bot]",
+    "subject": "docs: recibo de aplicação — 20261121120000 (E15) (#3961)",
+    "files": [
+     "docs/coordenacao/conflitos-semanticos.md",
+     "supabase/MIGRATIONS_SYNC_LOG.md"
+    ]
+   },
    {
     "sha": "8a224b1",
     "date": "2026-11-21",
@@ -561089,19 +561099,6 @@
     "files": [
      "supabase/MIGRATIONS_SYNC_LOG.md"
     ]
-   },
-   {
-    "sha": "c2e99f6",
-    "date": "2026-11-20",
-    "author": "adm01-debug",
-    "subject": "feat(db): resgata migrations órfãs de branches fechadas (P06 + onboarding) (#3914)",
-    "files": [
-     "supabase/MIGRATIONS_SYNC_LOG.md",
-     "supabase/migrations/20261118172500_security_invoker_views_p06_parcial.sql",
-     "supabase/migrations/20261119103000_onboarding_auto_assign_org_reemissao.sql",
-     "supabase/rollbacks/20261118172500_rollback.sql",
-     "supabase/rollbacks/20261119103000_rollback.sql"
-    ]
    }
   ],
   "hot_files": [
@@ -561128,6 +561125,10 @@
    [
     "package.json",
     4
+   ],
+   [
+    "docs/coordenacao/conflitos-semanticos.md",
+    3
    ],
    [
     "src/integrations/supabase/types.ts",
@@ -561167,10 +561168,6 @@
    ],
    [
     "audit/supabase-reference-catalog.temporary.json",
-    2
-   ],
-   [
-    "docs/coordenacao/conflitos-semanticos.md",
     2
    ],
    [
