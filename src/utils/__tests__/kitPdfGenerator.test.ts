@@ -9,6 +9,7 @@
  */
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import type { KitBox, KitItem, KitState } from '@/lib/kit-builder';
+import type { FreightPlan } from '@/lib/freight';
 
 const { autoTableMock, jsPdfCtorMock, docStub, textCalls } = vi.hoisted(() => {
   const calls: unknown[][] = [];
@@ -226,4 +227,70 @@ describe('generateKitPDF', () => {
     expect(blob).toBeInstanceOf(Blob);
     expect(jsPdfCtorMock).toHaveBeenCalled();
   });
+
+  it('imprime a seção de volumes para transporte quando o plano de frete está ok', () => {
+    const plan = makeFreightPlan({ status: 'ok' });
+    generateKitPDF({ kitState: makeState(), kitQuantity: 1, freightPlan: plan });
+
+    const printed = textCalls.flat().map((v) => JSON.stringify(v));
+    expect(printed.some((t) => t.includes('Volumes para transporte'))).toBe(true);
+    // formatPlanForClient: só totais, conversa de cliente
+    expect(printed.some((t) => t.includes('1 volume · 18,4 kg · 0,21 m³'))).toBe(true);
+    // Nenhum detalhe interno de vendedor vaza para o cliente
+    expect(JSON.stringify(printed)).not.toContain('Caixa G');
+    expect(JSON.stringify(printed)).not.toContain('cubado');
+  });
+
+  it('não imprime a seção quando o plano tem dados insuficientes', () => {
+    const plan = makeFreightPlan({ status: 'dados_insuficientes' });
+    generateKitPDF({ kitState: makeState(), kitQuantity: 1, freightPlan: plan });
+
+    const printed = textCalls.flat().map((v) => JSON.stringify(v));
+    expect(printed.some((t) => t.includes('Volumes para transporte'))).toBe(false);
+  });
+
+  it('não quebra sem plano de frete (comportamento atual)', () => {
+    expect(() =>
+      generateKitPDF({ kitState: makeState({ items: [makeItem()] }), kitQuantity: 1 }),
+    ).not.toThrow();
+    const printed = textCalls.flat().map((v) => JSON.stringify(v));
+    expect(printed.some((t) => t.includes('Volumes para transporte'))).toBe(false);
+  });
 });
+
+function makeFreightPlan(overrides: Partial<FreightPlan> = {}): FreightPlan {
+  return {
+    status: 'ok',
+    volumes: [
+      {
+        box: {
+          id: 'box-g',
+          code: 'G',
+          name: 'Caixa G',
+          inner: { width: 40, height: 30, depth: 30 },
+          outer: { width: 42, height: 32, depth: 32 },
+          emptyWeightG: 400,
+          maxWeightG: 30000,
+          fillFactor: 0.9,
+        },
+        items: [{ productId: 'prod-1', quantity: 1 }],
+        grossWeightG: 18400,
+        cubicWeightG: { correios: 31000, rodoviario: 25000 },
+        volumeM3: 0.21,
+        fillRatio: 0.8,
+      },
+    ],
+    totals: {
+      boxesByCode: { G: 1 },
+      grossWeightG: 18400,
+      volumeM3: 0.21,
+      cubicWeightG: { correios: 31000, rodoviario: 25000 },
+    },
+    warnings: [],
+    missing: [],
+    mixMode: 'misturar',
+    computedAt: '2026-11-21T12:00:00.000Z',
+    itemsHash: 'hash-test',
+    ...overrides,
+  };
+}
