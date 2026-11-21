@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "1948642c18085434511e6e31db2b9facafa4030e",
+  "sha": "2dc4d8284e48fcfd01cc1e1724d3c8ba7634f64a",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-21 19:14 UTC",
-  "files_total": 11125,
-  "code_files": 9133,
-  "code_lines": 1297172
+  "generated_at": "2026-11-21 19:59 UTC",
+  "files_total": 11126,
+  "code_files": 9134,
+  "code_lines": 1297229
  },
  "version": "1.3.2",
- "facts_hash": "d7b9d9e035013eca",
+ "facts_hash": "cfacd2a482768aea",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -1129,7 +1129,7 @@
   "package_manager": "npm",
   "languages": {
    ".sql": 3484,
-   ".ts": 3164,
+   ".ts": 3165,
    ".tsx": 2014,
    ".mjs": 455,
    ".py": 16,
@@ -150992,7 +150992,7 @@
   {
    "module": "src/hooks",
    "files": 508,
-   "lines": 94323,
+   "lines": 94333,
    "tables": [
     "admin_audit_log",
     "admin_settings",
@@ -151282,8 +151282,8 @@
   },
   {
    "module": "src/lib",
-   "files": 417,
-   "lines": 64612,
+   "files": 418,
+   "lines": 64659,
    "tables": [
     "...",
     "companies",
@@ -174413,6 +174413,10 @@
    {
     "file": "src/hooks/kit-builder/useKitBuilderQueries.ts",
     "text": "* A count is not an identity. React Query must invalidate the stock aggregate"
+   },
+   {
+    "file": "src/hooks/kit-builder/useKitBuilderTransformers.ts",
+    "text": "D1 (2026-11-21): o limite estrutural da caixa de brinde vem do catÃ¡logo"
    },
    {
     "file": "src/hooks/kit-builder/useKitBuilderTransformers.ts",
@@ -258139,6 +258143,22 @@
    {
     "file": "src/lib/kit-builder/__tests__/status-classification.test.ts",
     "name": "só status realmente publicados recebem o selo "
+   },
+   {
+    "file": "src/lib/kit-builder/__tests__/transform-to-kit-box-maxweight.test.ts",
+    "name": "transformToKitBox maxWeight (D1)"
+   },
+   {
+    "file": "src/lib/kit-builder/__tests__/transform-to-kit-box-maxweight.test.ts",
+    "name": "preenche maxWeight em gramas a partir de box_weight_kg (kg)"
+   },
+   {
+    "file": "src/lib/kit-builder/__tests__/transform-to-kit-box-maxweight.test.ts",
+    "name": "box_weight_kg ausente/nulo deixa maxWeight indefinido (limite desconhecido)"
+   },
+   {
+    "file": "src/lib/kit-builder/__tests__/transform-to-kit-box-maxweight.test.ts",
+    "name": "valores invalidos (zero/negativo/NaN) nao viram maxWeight falso"
    },
    {
     "file": "src/lib/lead-time/__tests__/businessDays.test.ts",
@@ -474217,12 +474237,13 @@
   },
   "src/hooks/kit-builder/useKitBuilderTransformers.ts": {
    "path": "src/hooks/kit-builder/useKitBuilderTransformers.ts",
-   "lines": 155,
+   "lines": 165,
    "exports": [
     "function transformToKitBox",
     "function transformToKitItem"
    ],
    "rule_comments": [
+    "D1 (2026-11-21): o limite estrutural da caixa de brinde vem do catÃ¡logo",
     "Same invariant as packaging: catalog metadata without a sale price may be",
     "Missing catalog metadata must not be interpreted as permission to print."
    ],
@@ -490438,7 +490459,7 @@
   },
   "src/lib/kit-builder/types.ts": {
    "path": "src/lib/kit-builder/types.ts",
-   "lines": 395,
+   "lines": 397,
    "exports": [
     "type KitType",
     "interface KitBox",
@@ -490608,6 +490629,21 @@
     "mapeia os status reais do app",
     "ready nunca é ",
     "só status realmente publicados recebem o selo "
+   ]
+  },
+  "src/lib/kit-builder/__tests__/transform-to-kit-box-maxweight.test.ts": {
+   "path": "src/lib/kit-builder/__tests__/transform-to-kit-box-maxweight.test.ts",
+   "lines": 45,
+   "is_test": true,
+   "rule_comments": [
+    "(caixa de TRANSPORTE do frete). Sem o campo, a regra de peso em"
+   ],
+   "doc": "D1 (2026-11-21): maxWeight do Kit Builder vem de `products.box_weight_kg` (carga util maxima da caixa de brinde, em kg). shipping_boxes e outra coisa (caixa de TRANSPORTE do frete). Sem o campo, a regra de peso em useKitBuilder.ts:140 nunca disparava.",
+   "tests": [
+    "transformToKitBox maxWeight (D1)",
+    "preenche maxWeight em gramas a partir de box_weight_kg (kg)",
+    "box_weight_kg ausente/nulo deixa maxWeight indefinido (limite desconhecido)",
+    "valores invalidos (zero/negativo/NaN) nao viram maxWeight falso"
    ]
   },
   "src/lib/kit-builder/snapshot/read-draft.ts": {
@@ -560679,10 +560715,22 @@
   }
  },
  "git": {
-  "sha": "1948642c18085434511e6e31db2b9facafa4030e",
+  "sha": "2dc4d8284e48fcfd01cc1e1724d3c8ba7634f64a",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "2dc4d82",
+    "date": "2026-11-21",
+    "author": "adm01-debug",
+    "subject": "fix: preenche maxWeight da caixa no Kit Builder a partir de box_weight_kg (D1) (#3965)",
+    "files": [
+     "src/hooks/kit-builder/useKitBuilderQueries.ts",
+     "src/hooks/kit-builder/useKitBuilderTransformers.ts",
+     "src/lib/kit-builder/__tests__/transform-to-kit-box-maxweight.test.ts",
+     "src/lib/kit-builder/types.ts"
+    ]
+   },
    {
     "sha": "1948642",
     "date": "2026-11-21",
@@ -561113,15 +561161,6 @@
      "src/pages/quotes/__tests__/QuoteBuilder.freightPlan.test.tsx",
      "src/services/freightReadinessService.ts",
      "tests/hooks/freight/useProductMeasures.test.ts"
-    ]
-   },
-   {
-    "sha": "df4e1f2",
-    "date": "2026-11-20",
-    "author": "adm01-debug",
-    "subject": "fix(frete): comparação de ships_separately sem violar lint do tipo expandido (#3939)",
-    "files": [
-     "src/lib/freight/fromKit.ts"
     ]
    }
   ],

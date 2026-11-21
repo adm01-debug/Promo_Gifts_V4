@@ -5157,7 +5157,7 @@
     "pages/kit-builder",
     "utils"
    ],
-   "coberto_por_testes": 40,
+   "coberto_por_testes": 41,
    "orfao": false
   },
   {
@@ -5331,7 +5331,7 @@
     "normalizeKitItemLine"
    ],
    "export_default": null,
-   "linhas": 395,
+   "linhas": 397,
    "tabelas": [],
    "rpcs": [],
    "edges": [],

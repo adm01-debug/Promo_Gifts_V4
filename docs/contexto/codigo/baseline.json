@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "1948642c18085434511e6e31db2b9facafa4030e",
+  "commit": "2dc4d8284e48fcfd01cc1e1724d3c8ba7634f64a",
   "branch": "main",
-  "data_commit": "2026-11-21T16:04:56-03:00",
+  "data_commit": "2026-11-21T16:56:32-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "2dc4d82",
+    "data": "2026-11-21",
+    "assunto": "fix: preenche maxWeight da caixa no Kit Builder a partir de box_weight_kg (D1) (#3965)"
+   },
    {
     "sha": "1948642",
     "data": "2026-11-21",
@@ -126,182 +131,177 @@
     "sha": "0ec2fc5",
     "data": "2026-11-20",
     "assunto": "fix: contrato de orphan-mounts alinha com montagem lazy do RupturePanelEma (#3941)"
-   },
-   {
-    "sha": "0436920",
-    "data": "2026-11-20",
-    "assunto": "fix(stock): banner de risco EMA não derruba para usuário não-dev (403 da edge) (#3940)"
    }
   ],
-  "arquivos_mudados_7d": 11306,
+  "arquivos_mudados_7d": 11305,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
-    "mudancas": 2497
+    "mudancas": 1893
    },
    {
     "pasta": "recovery/src-legacy/src",
-    "mudancas": 1897
+    "mudancas": 1265
    },
    {
     "pasta": "src/components/products",
-    "mudancas": 1213
+    "mudancas": 909
    },
    {
     "pasta": "tests/edge-functions/live",
-    "mudancas": 922
+    "mudancas": 692
    },
    {
     "pasta": "src/hooks/products",
-    "mudancas": 847
-   },
-   {
-    "pasta": "src/pages/magazine",
-    "mudancas": 736
+    "mudancas": 639
    },
    {
     "pasta": "src/components/quotes",
-    "mudancas": 733
+    "mudancas": 559
+   },
+   {
+    "pasta": "src/pages/magazine",
+    "mudancas": 552
    },
    {
     "pasta": "src/components/inventory",
-    "mudancas": 646
+    "mudancas": 486
    },
    {
     "pasta": "supabase/functions/_shared",
-    "mudancas": 594
+    "mudancas": 444
    },
    {
     "pasta": "src/components/ui",
-    "mudancas": 584
+    "mudancas": 438
    },
    {
     "pasta": "src/components/mockup",
-    "mudancas": 523
+    "mudancas": 403
    },
    {
     "pasta": "src/pages/admin",
-    "mudancas": 494
+    "mudancas": 374
    },
    {
     "pasta": "src/pages/quotes",
-    "mudancas": 428
+    "mudancas": 326
    },
    {
     "pasta": "src/components/kit-builder",
-    "mudancas": 399
+    "mudancas": 307
    },
    {
     "pasta": "src/pages/products",
-    "mudancas": 388
+    "mudancas": 292
    }
   ],
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "supabase/MIGRATIONS_SYNC_LOG.md",
-    "mudancas": 66
+    "mudancas": 63
    },
    {
     "arquivo": "package.json",
-    "mudancas": 35
+    "mudancas": 33
    },
    {
     "arquivo": "docs/coordenacao/conflitos-semanticos.md",
-    "mudancas": 29
+    "mudancas": 27
    },
    {
     "arquivo": "package-lock.json",
-    "mudancas": 25
+    "mudancas": 23
    },
    {
     "arquivo": "CHANGELOG.md",
-    "mudancas": 19
-   },
-   {
-    "arquivo": ".github/workflows/deploy-gates.yml",
-    "mudancas": 18
-   },
-   {
-    "arquivo": "audit/supabase-reference-catalog.temporary.json",
     "mudancas": 17
    },
    {
-    "arquivo": "src/pages/mockups/MockupGenerator.tsx",
+    "arquivo": ".github/workflows/deploy-gates.yml",
     "mudancas": 16
    },
    {
-    "arquivo": "src/integrations/supabase/types.ts",
+    "arquivo": "audit/supabase-reference-catalog.temporary.json",
+    "mudancas": 15
+   },
+   {
+    "arquivo": "src/pages/mockups/MockupGenerator.tsx",
     "mudancas": 14
+   },
+   {
+    "arquivo": "src/integrations/supabase/types.ts",
+    "mudancas": 12
    },
    {
     "arquivo": "src/pages/kit-builder/KitBuilderPage.tsx",
-    "mudancas": 14
+    "mudancas": 12
    },
    {
     "arquivo": "src/pages/quotes/QuoteBuilderPage.tsx",
-    "mudancas": 14
+    "mudancas": 12
    },
    {
-    "arquivo": ".github/workflows/replenishment-quality.yml",
-    "mudancas": 12
+    "arquivo": "docs/agentes/resgates/2026-11-16-auditoria-branches.md",
+    "mudancas": 10
    },
    {
     "arquivo": "src/components/kit-builder/KitSummary.tsx",
-    "mudancas": 12
+    "mudancas": 10
    },
    {
     "arquivo": "src/components/kit-builder/PersonalizationConfig.tsx",
-    "mudancas": 12
+    "mudancas": 10
    },
    {
     "arquivo": "src/components/quotes/QuoteAutoSave.tsx",
-    "mudancas": 12
+    "mudancas": 10
    },
    {
     "arquivo": "src/hooks/mockup/useMockupGenerator.ts",
-    "mudancas": 12
+    "mudancas": 10
    },
    {
     "arquivo": "src/hooks/quotes/useQuoteTemplates.ts",
-    "mudancas": 12
+    "mudancas": 10
    },
    {
     "arquivo": "vitest.config.ts",
-    "mudancas": 12
+    "mudancas": 10
+   },
+   {
+    "arquivo": ".github/workflows/replenishment-quality.yml",
+    "mudancas": 9
    },
    {
     "arquivo": ".github/workflows/schema-snapshot-export.yml",
-    "mudancas": 11
+    "mudancas": 9
    },
    {
     "arquivo": "e2e/helpers/auth.ts",
-    "mudancas": 11
+    "mudancas": 9
    },
    {
     "arquivo": "scripts/automation.config.json",
-    "mudancas": 11
+    "mudancas": 9
    },
    {
     "arquivo": "scripts/drift-baseline.mjs",
-    "mudancas": 11
+    "mudancas": 9
    },
    {
     "arquivo": "src/components/mockup/MockupClientSelector.tsx",
-    "mudancas": 11
+    "mudancas": 9
    },
    {
     "arquivo": "src/components/mockup/MockupConfigPanel.tsx",
-    "mudancas": 11
-   },
-   {
-    "arquivo": "src/components/search/useGlobalSearch.ts",
-    "mudancas": 11
+    "mudancas": 9
    }
   ],
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 277
+    "commits": 274
    },
    {
     "autor": "github-actions[bot]",
@@ -309,7 +309,7 @@
    },
    {
     "autor": "Claude",
-    "commits": 30
+    "commits": 26
    },
    {
     "autor": "Joaquim Ataides",
@@ -322,9 +322,9 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 11197,
-  "arquivos_codigo": 5650,
-  "linhas_codigo": 1072296,
+  "arquivos_total": 11198,
+  "arquivos_codigo": 5651,
+  "linhas_codigo": 1072353,
   "rotas": 141,
   "rotas_http_backend": 13,
   "vistas_por_id": 0,
@@ -336,7 +336,7 @@
   "tabelas": 531,
   "migrations": 3122,
   "cron_jobs": 122,
-  "testes": 2699,
+  "testes": 2700,
   "workflows": 89,
   "scripts": 284,
   "docs_md": 1495
@@ -1932,15 +1932,15 @@
   },
   "src/hooks": {
    "arquivos": 508,
-   "linhas": 94323
+   "linhas": 94333
   },
   "src/integrations": {
    "arquivos": 11,
    "linhas": 66760
   },
   "src/lib": {
-   "arquivos": 416,
-   "linhas": 64602
+   "arquivos": 417,
+   "linhas": 64649
   },
   "src/logic": {
    "arquivos": 4,

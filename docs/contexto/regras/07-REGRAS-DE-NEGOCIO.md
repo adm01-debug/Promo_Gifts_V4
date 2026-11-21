@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.3.2 · commit `1948642c18` · branch `main` · 2026-11-21 19:14 UTC
+> Gerado automaticamente por AI Context Sync v1.3.2 · commit `2dc4d8284e` · branch `main` · 2026-11-21 19:59 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -6818,7 +6818,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `admin` | `supabase/migrations/20261112120500_fix_optimization_queue_rpcs_dev_access.sql` |
 | `anon` | `tests/edge-functions/live/_live-client.ts` |
 
-## K. Testes como especificação (23653 testes em 2369 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (23657 testes em 2370 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -7122,7 +7122,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `src/lib/auth/__tests__/oauth-error-explainer.test.ts` | 19 | explainOAuthError · config errors (admin needs to act) · mapeia redirect_uri_mismatch com hint sobre console do provedor · detecta redirect uri mismatch pela descrição quando code é genérico … |
 | `src/lib/external-db/rest-native.test.ts` | 19 | isRestNativeEligible · whitelisted COM coluna de busca → elegível mesmo com _search · A1: whitelisted SEM coluna de busca → continua elegível com _search · não-whitelisted → inelegível … |
 | `src/lib/inventory/__tests__/stock-filter.test.ts` | 19 | stock-filter — pipeline de seleção/agregação/montagem · normalize remove acentos e diferencia caixa · selectMatchingVariants retorna todas as variações quando não há filtro de cor · cor  … |
-| … +2069 linhas — lista completa em `context.json` | | |
+| … +2070 linhas — lista completa em `context.json` | | |
 
 ## L. Eventos de webhook tratados (contratos com sistemas externos)
 
@@ -7590,4 +7590,4 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | pronto para envio, qual item define esse prazo e de onde vem cada número. | `src/components/freight-plan/ProductionLeadTimeCard.tsx` |
 | deliveryMode={deliveryMode}            // 'data' \| 'prazo' do orçamento | `src/components/freight-plan/ProductionLeadTimeCard.tsx` |
 | * Dia da aprovação (AAAA-MM-DD); null = o prazo começa hoje. */ | `src/components/freight-plan/ProductionLeadTimeCard.tsx` |
-| … +1471 linhas — lista completa em `context.json` | |
+| … +1472 linhas — lista completa em `context.json` | |

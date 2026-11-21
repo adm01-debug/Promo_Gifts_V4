@@ -24,7 +24,7 @@
   ],
   "testes": [
    "tests/ (1097)",
-   "co-localizado (__tests__) (770)",
+   "co-localizado (__tests__) (771)",
    "e2e/ (627)"
   ],
   "edge_functions": "supabase/functions",
@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "fix: preenche maxWeight da caixa no Kit Builder a partir de box_weight_kg (D1) (#3965)",
    "chore(vercel): desativa preview em branches docs/infra/chore (#3964)",
    "chore: consolida baselines de assertions (any-type 1-0, as-unknown 250-229) (#3963)",
    "chore(main): release gifts-store 1.17.0 (#3953)",
-   "fix(ci): bloqueia variantes de invoke direto (#3952)",
-   "docs: recibo de aplicação — 20261121120000 (E15) (#3961)"
+   "fix(ci): bloqueia variantes de invoke direto (#3952)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",
