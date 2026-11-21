@@ -4226,7 +4226,7 @@
    "zod_schemas": 0,
    "flags": [],
    "papeis": [],
-   "usado_por": 21,
+   "usado_por": 23,
    "usado_por_modulos": [
     "components/admin",
     "components/freight-plan",
@@ -4366,8 +4366,9 @@
    "zod_schemas": 8,
    "flags": [],
    "papeis": [],
-   "usado_por": 1,
+   "usado_por": 2,
    "usado_por_modulos": [
+    "hooks/quotes",
     "lib/freight"
    ],
    "coberto_por_testes": 1,

@@ -12327,9 +12327,10 @@
     "useState"
    ],
    "canais_realtime": [],
-   "usado_por": 4,
+   "usado_por": 5,
    "usado_por_arquivos": [
     "src/hooks/quotes/quoteDraftApply.ts",
+    "src/hooks/quotes/useQuoteBuilderState.helpers.ts",
     "src/hooks/quotes/useQuoteBuilderState.ts",
     "src/lib/quotes/applyRestoredDraft.ts",
     "src/pages/freight/FreightSimulatorPage.tsx"
@@ -12386,7 +12387,7 @@
    "hooks_exportados": [
     "useQuoteBuilderSteps"
    ],
-   "linhas": 572,
+   "linhas": 580,
    "dominio": "hooks/quotes",
    "tabelas": [],
    "rpcs": [],
@@ -12409,7 +12410,7 @@
    "hooks_exportados": [
     "useQuoteBuilderState"
    ],
-   "linhas": 1083,
+   "linhas": 1103,
    "dominio": "hooks/quotes",
    "tabelas": [
     "quotes"
@@ -12576,7 +12577,7 @@
    "hooks_exportados": [
     "useQuotes"
    ],
-   "linhas": 412,
+   "linhas": 415,
    "dominio": "hooks/quotes",
    "tabelas": [],
    "rpcs": [],
@@ -12642,7 +12643,7 @@
    "hooks_exportados": [
     "useQuoteVersions"
    ],
-   "linhas": 274,
+   "linhas": 277,
    "dominio": "hooks/quotes",
    "tabelas": [
     "quote_items",

@@ -1,6 +1,6 @@
 # 11 · GLOSSÁRIO, DADOS DE REFERÊNCIA E LACUNAS
 
-> Gerado automaticamente por AI Context Sync v1.3.2 · commit `1ab2619311` · branch `main` · 2026-11-21 14:29 UTC
+> Gerado automaticamente por AI Context Sync v1.3.2 · commit `184ac28b03` · branch `main` · 2026-11-21 15:23 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## Glossário do domínio (entidades do sistema)
@@ -451,10 +451,13 @@
 | coluna | coluna `created_at` usada no código não existe no schema de `quotes` |  |
 | coluna | coluna `discount_approval_status` usada no código não existe no schema de `quotes` |  |
 | coluna | coluna `discount_approved_at` usada no código não existe no schema de `quotes` |  |
+| coluna | coluna `freight_mix_mode` usada no código não existe no schema de `quotes` |  |
+| coluna | coluna `freight_plan` usada no código não existe no schema de `quotes` |  |
 | coluna | coluna `is_latest_version` usada no código não existe no schema de `quotes` |  |
 | coluna | coluna `parent_quote_id` usada no código não existe no schema de `quotes` |  |
 | coluna | coluna `real_subtotal` usada no código não existe no schema de `quotes` |  |
 | coluna | coluna `sent_at` usada no código não existe no schema de `quotes` |  |
+| coluna | coluna `show_freight_plan_to_client` usada no código não existe no schema de `quotes` |  |
 | coluna | coluna `synced_at` usada no código não existe no schema de `quotes` |  |
 | coluna | coluna `synced_to_bitrix` usada no código não existe no schema de `quotes` |  |
 | coluna | coluna `updated_at` usada no código não existe no schema de `quotes` |  |
@@ -644,10 +647,7 @@
 | rls | `supplier_settings`: RLS ligado sem nenhuma política → só service_role acessa | `src/hooks/products/useSupplierDefaultLeadTime.ts`<br>`src/services/productionLeadTimeService.ts` |
 | rls | `suppliers`: front faz SELECT mas nenhuma política RLS permite SELECT → vai falhar/retornar vazio para usuários | `src/services/freightReadinessService.ts` |
 | rls | `tabela_preco_gravacao_oficial`: RLS ligado sem nenhuma política → só service_role acessa | `src/lib/external-db/rpc-native.ts` |
-| rls | `tabela_preco_gravacao_oficial_faixa`: RLS ligado sem nenhuma política → só service_role acessa | `src/services/productionLeadTimeService.ts` |
-| rls | `target_audiences`: RLS ligado sem nenhuma política → só service_role acessa | `src/components/admin/products/productMarketingData.ts` |
-| rls | `user_comparisons`: RLS ligado sem nenhuma política → só service_role acessa | `recovery/src-legacy/src/components/compare/ShareComparisonDialog.tsx`<br>`recovery/src-legacy/src/hooks/useComparisonSync.ts`<br>`src/hooks/comparison/useComparisonSync.ts` |
-| … +252 linhas — lista completa em `context.json` | | |
+| … +255 linhas — lista completa em `context.json` | | |
 
 ## Lacunas — o que este contexto NÃO consegue responder (perguntas para o dono do negócio)
 

@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "1ab261931175be5cf2626a625f40050e1d1c0292",
+  "commit": "184ac28b03c53f0359910cd275f6e0efdc6e1b09",
   "branch": "main",
-  "data_commit": "2026-11-21T11:28:30-03:00",
+  "data_commit": "2026-11-21T12:22:19-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "184ac28b",
+    "data": "2026-11-21",
+    "assunto": "feat(frete): persiste plano de frete no orcamento (G-UI, etapas 62-63) (#3956)"
+   },
    {
     "sha": "1ab26193",
     "data": "2026-11-21",
@@ -126,186 +131,181 @@
     "sha": "c2e99f6e",
     "data": "2026-11-20",
     "assunto": "feat(db): resgata migrations órfãs de branches fechadas (P06 + onboarding) (#3914)"
-   },
-   {
-    "sha": "dd42ddfe",
-    "data": "2026-11-20",
-    "assunto": "chore(security): atualiza baseline assinado de RLS policies (#3931)"
    }
   ],
-  "arquivos_mudados_7d": 11297,
+  "arquivos_mudados_7d": 11300,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
-    "mudancas": 1293
+    "mudancas": 1897
    },
    {
     "pasta": "recovery/src-legacy/src",
-    "mudancas": 949
+    "mudancas": 1581
    },
    {
     "pasta": "src/components/products",
-    "mudancas": 608
+    "mudancas": 912
    },
    {
     "pasta": "tests/edge-functions/live",
-    "mudancas": 462
+    "mudancas": 692
    },
    {
     "pasta": "src/hooks/products",
-    "mudancas": 441
+    "mudancas": 651
    },
    {
     "pasta": "src/components/quotes",
-    "mudancas": 385
+    "mudancas": 559
    },
    {
     "pasta": "src/pages/magazine",
-    "mudancas": 368
+    "mudancas": 552
    },
    {
     "pasta": "src/components/inventory",
-    "mudancas": 327
+    "mudancas": 486
    },
    {
     "pasta": "supabase/functions/_shared",
-    "mudancas": 300
+    "mudancas": 450
    },
    {
     "pasta": "src/components/ui",
-    "mudancas": 292
+    "mudancas": 438
    },
    {
     "pasta": "src/components/mockup",
-    "mudancas": 283
+    "mudancas": 403
    },
    {
     "pasta": "src/pages/admin",
-    "mudancas": 257
+    "mudancas": 375
    },
    {
     "pasta": "src/pages/quotes",
-    "mudancas": 227
+    "mudancas": 330
    },
    {
     "pasta": "src/components/kit-builder",
-    "mudancas": 214
+    "mudancas": 306
    },
    {
     "pasta": "src/pages/products",
-    "mudancas": 196
+    "mudancas": 292
    }
   ],
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "supabase/MIGRATIONS_SYNC_LOG.md",
-    "mudancas": 71
+    "mudancas": 72
    },
    {
     "arquivo": "package.json",
-    "mudancas": 30
+    "mudancas": 32
    },
    {
     "arquivo": "docs/coordenacao/conflitos-semanticos.md",
-    "mudancas": 29
+    "mudancas": 31
    },
    {
     "arquivo": "package-lock.json",
-    "mudancas": 20
+    "mudancas": 22
    },
    {
     "arquivo": ".github/workflows/deploy-gates.yml",
-    "mudancas": 15
+    "mudancas": 17
    },
    {
     "arquivo": "CHANGELOG.md",
-    "mudancas": 14
+    "mudancas": 16
    },
    {
     "arquivo": "audit/supabase-reference-catalog.temporary.json",
-    "mudancas": 14
+    "mudancas": 15
    },
    {
     "arquivo": "src/pages/mockups/MockupGenerator.tsx",
-    "mudancas": 12
+    "mudancas": 14
    },
    {
     "arquivo": "src/pages/kit-builder/KitBuilderPage.tsx",
+    "mudancas": 13
+   },
+   {
+    "arquivo": "src/integrations/supabase/types.ts",
+    "mudancas": 12
+   },
+   {
+    "arquivo": "src/pages/quotes/QuoteBuilderPage.tsx",
+    "mudancas": 12
+   },
+   {
+    "arquivo": ".github/workflows/replenishment-quality.yml",
     "mudancas": 11
+   },
+   {
+    "arquivo": ".github/workflows/schema-snapshot-export.yml",
+    "mudancas": 11
+   },
+   {
+    "arquivo": "scripts/drift-baseline.mjs",
+    "mudancas": 11
+   },
+   {
+    "arquivo": "supabase/EDGE_FUNCTIONS_DEPLOY_LOG.md",
+    "mudancas": 11
+   },
+   {
+    "arquivo": "supabase/functions/crm-db-bridge/index.ts",
+    "mudancas": 11
+   },
+   {
+    "arquivo": ".github/workflows/e2e-swatch-quickview.yml",
+    "mudancas": 10
+   },
+   {
+    "arquivo": ".github/workflows/e2e.yml",
+    "mudancas": 10
    },
    {
     "arquivo": "docs/agentes/resgates/2026-11-16-auditoria-branches.md",
     "mudancas": 10
    },
    {
-    "arquivo": "src/integrations/supabase/types.ts",
+    "arquivo": "docs/prod-readiness.md",
     "mudancas": 10
    },
    {
-    "arquivo": ".github/workflows/replenishment-quality.yml",
-    "mudancas": 9
-   },
-   {
-    "arquivo": ".github/workflows/schema-snapshot-export.yml",
-    "mudancas": 9
-   },
-   {
-    "arquivo": "scripts/drift-baseline.mjs",
-    "mudancas": 9
-   },
-   {
-    "arquivo": "src/pages/quotes/QuoteBuilderPage.tsx",
-    "mudancas": 9
-   },
-   {
-    "arquivo": "supabase/EDGE_FUNCTIONS_DEPLOY_LOG.md",
-    "mudancas": 9
-   },
-   {
-    "arquivo": "supabase/functions/crm-db-bridge/index.ts",
-    "mudancas": 9
-   },
-   {
-    "arquivo": ".github/workflows/e2e-swatch-quickview.yml",
-    "mudancas": 8
-   },
-   {
-    "arquivo": ".github/workflows/e2e.yml",
-    "mudancas": 8
-   },
-   {
-    "arquivo": "docs/prod-readiness.md",
-    "mudancas": 8
-   },
-   {
     "arquivo": "scripts/automation.config.json",
-    "mudancas": 8
+    "mudancas": 10
    },
    {
     "arquivo": "src/components/kit-builder/KitSummary.tsx",
-    "mudancas": 8
+    "mudancas": 10
    },
    {
     "arquivo": "src/components/kit-builder/PersonalizationConfig.tsx",
-    "mudancas": 8
+    "mudancas": 10
    },
    {
     "arquivo": "src/components/quotes/QuoteAutoSave.tsx",
-    "mudancas": 8
+    "mudancas": 10
    },
    {
     "arquivo": "src/components/search/useGlobalSearch.ts",
-    "mudancas": 8
+    "mudancas": 10
    }
   ],
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 313
+    "commits": 312
    },
    {
     "autor": "Claude",
-    "commits": 55
+    "commits": 53
    },
    {
     "autor": "github-actions[bot]",
@@ -322,9 +322,9 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 11191,
+  "arquivos_total": 11192,
   "arquivos_codigo": 5650,
-  "linhas_codigo": 1072146,
+  "linhas_codigo": 1072204,
   "rotas": 141,
   "rotas_http_backend": 13,
   "vistas_por_id": 0,
@@ -334,7 +334,7 @@
   "hooks": 645,
   "edge_functions": 112,
   "tabelas": 531,
-  "migrations": 3118,
+  "migrations": 3119,
   "cron_jobs": 122,
   "testes": 2699,
   "workflows": 89,
@@ -1908,7 +1908,7 @@
   },
   "src/components": {
    "arquivos": 1478,
-   "linhas": 289983
+   "linhas": 289994
   },
   "src/config": {
    "arquivos": 1,
@@ -1932,7 +1932,7 @@
   },
   "src/hooks": {
    "arquivos": 508,
-   "linhas": 94277
+   "linhas": 94323
   },
   "src/integrations": {
    "arquivos": 11,
@@ -1952,7 +1952,7 @@
   },
   "src/pages": {
    "arquivos": 373,
-   "linhas": 86111
+   "linhas": 86112
   },
   "src/routes": {
    "arquivos": 15,
@@ -2333,12 +2333,12 @@
    "linhas": 1107
   },
   {
-   "arquivo": "supabase/functions/crm-db-bridge/index.ts",
-   "linhas": 1091
+   "arquivo": "src/hooks/quotes/useQuoteBuilderState.ts",
+   "linhas": 1103
   },
   {
-   "arquivo": "src/hooks/quotes/useQuoteBuilderState.ts",
-   "linhas": 1083
+   "arquivo": "supabase/functions/crm-db-bridge/index.ts",
+   "linhas": 1091
   },
   {
    "arquivo": "scripts/graphify-local.mjs",

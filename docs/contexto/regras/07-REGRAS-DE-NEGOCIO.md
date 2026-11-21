@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.3.2 · commit `1ab2619311` · branch `main` · 2026-11-21 14:29 UTC
+> Gerado automaticamente por AI Context Sync v1.3.2 · commit `184ac28b03` · branch `main` · 2026-11-21 15:23 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -1325,9 +1325,6 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `prevent_category_loops` | Self-reference: category % cannot be its own parent | `supabase/migrations/20260623134124_optimize_trigger_prevent_loops_cte_exists.sql` |
 | `prevent_category_loops` | Circular reference: category % cannot be its own ancestor (detected in chain of %) | `supabase/migrations/20260623134124_optimize_trigger_prevent_loops_cte_exists.sql` |
 | `prevent_category_loops` | Max hierarchy depth (%) exceeded: parent chain already has % levels | `supabase/migrations/20260623134124_optimize_trigger_prevent_loops_cte_exists.sql` |
-| `update_quote_transactional` | Orçamento não encontrado: % | `supabase/migrations/20260623141532_fix_quote_rpcs_personalization_cost.sql` |
-| `update_quote_transactional` | Conflito de versão: orçamento foi modificado por outro usuário (versão atual: %, versão esperada: %). Recarregue e tente novamente. | `supabase/migrations/20260623141532_fix_quote_rpcs_personalization_cost.sql` |
-| `update_quote_transactional` | Orçamento não encontrado: % | `supabase/migrations/20260623141532_fix_quote_rpcs_personalization_cost.sql` |
 | `fn_standardize_kit_component` | kit_component_enrichment_raw % não encontrado | `supabase/migrations/20260624135450_kit_silver_item_color_path.sql` |
 | `fn_promote_kit_component_padronizacao` | kit_component_padronizacao % não encontrada ou não está approved | `supabase/migrations/20260624135450_kit_silver_item_color_path.sql` |
 | `fn_pkc_guard_not_sellable` | component_code % colide com SKU vendável em products | `supabase/migrations/20260624153343_kit_component_identity_guards.sql` |
@@ -1421,6 +1418,9 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `magazine_update_metadata_atomic` | magazine_not_editable | `supabase/migrations/20260909190400_magazine_page_order_numeric_version.sql` |
 | `magazine_guard_and_version_v2` | magazine_publish_requires_rpc | `supabase/migrations/20260909200000_magazine_hardening_v2.sql` |
 | `magazine_guard_and_version_v2` | magazine_import_marker_forbidden | `supabase/migrations/20260909200000_magazine_hardening_v2.sql` |
+| `magazine_guard_and_version_v2` | magazine_import_marker_immutable | `supabase/migrations/20260909200000_magazine_hardening_v2.sql` |
+| `magazine_guard_and_version_v2` | magazine_deleted_read_only | `supabase/migrations/20260909200000_magazine_hardening_v2.sql` |
+| `magazine_guard_and_version_v2` | magazine_published_read_only | `supabase/migrations/20260909200000_magazine_hardening_v2.sql` |
 | … +127 linhas — lista completa em `context.json` | | |
 
 ## E. Estados, máquinas de estado e transições

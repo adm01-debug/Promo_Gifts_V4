@@ -11685,7 +11685,9 @@
    "src/components/quotes/QuoteBuilderStepper.tsx",
    "src/hooks/products/index.ts",
    "src/hooks/quotes/index.ts",
+   "src/hooks/quotes/useFreightPlanOptions.ts",
    "src/lib/external-db/index.ts",
+   "src/lib/freight/index.ts",
    "src/lib/logger.ts",
    "src/lib/validations/index.ts",
    "src/utils/product-search.ts"
@@ -11701,6 +11703,8 @@
    "src/hooks/quotes/useQuoteConcurrencyGuard.ts",
    "src/integrations/supabase/client.ts",
    "src/lib/format.ts",
+   "src/lib/freight/index.ts",
+   "src/lib/freight/planSchema.ts",
    "src/lib/logger.ts",
    "src/lib/quote-status-config.ts",
    "src/lib/quotes/applyRestoredDraft.ts",

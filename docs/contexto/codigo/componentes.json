@@ -9179,7 +9179,7 @@
     "FreightPlanCardProps"
    ],
    "export_default": null,
-   "linhas": 140,
+   "linhas": 151,
    "dominio": "components/freight-plan",
    "hooks_locais": [
     "useFreightPlan",
@@ -20341,7 +20341,7 @@
     "QuoteBuilderPage"
    ],
    "export_default": "QuoteBuilderPage",
-   "linhas": 830,
+   "linhas": 831,
    "dominio": "pages/quotes",
    "hooks_locais": [
     "useNextQuoteNumberPreview",
