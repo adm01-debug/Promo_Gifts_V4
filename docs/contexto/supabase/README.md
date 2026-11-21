@@ -20,7 +20,7 @@ Gerado automaticamente a cada hora pelo workflow `contexto.yml` (job `banco`) na
 | categoria | quantidade |
 |---|---|
 | tabelas | 445 |
-| colunas | 8641 |
+| colunas | 8644 |
 | views | 219 |
 | functions | 1360 |
 | triggers | 428 |

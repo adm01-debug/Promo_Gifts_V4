@@ -57414,6 +57414,45 @@
         "type": "timestamp with time zone"
       },
       {
+        "comment": "Plano de volumes do frete calculado no orÃ§amento (objeto JSON com version, itemsHash, computedAt, caixas e totais). NULL = orÃ§amento sem plano calculado. Objeto com menos de 256 KB.",
+        "default": null,
+        "generated": null,
+        "identity": null,
+        "is_enum": false,
+        "name": "freight_plan",
+        "nullable": true,
+        "position": 63,
+        "schema": "public",
+        "table": "quotes",
+        "type": "jsonb"
+      },
+      {
+        "comment": "Escolha do vendedor para o frete: misturar produtos na mesma caixa ou separar. NULL = sem escolha. Produto marcado como \"nÃ£o mistura\" vence esta escolha.",
+        "default": null,
+        "generated": null,
+        "identity": null,
+        "is_enum": false,
+        "name": "freight_mix_mode",
+        "nullable": true,
+        "position": 64,
+        "schema": "public",
+        "table": "quotes",
+        "type": "text"
+      },
+      {
+        "comment": "true = o bloco \"Volumes estimados para transporte\" aparece no PDF e na proposta do cliente. PadrÃ£o false: o plano Ã© interno.",
+        "default": "false",
+        "generated": null,
+        "identity": null,
+        "is_enum": false,
+        "name": "show_freight_plan_to_client",
+        "nullable": false,
+        "position": 65,
+        "schema": "public",
+        "table": "quotes",
+        "type": "boolean"
+      },
+      {
         "comment": null,
         "default": "gen_random_uuid()",
         "generated": null,
@@ -131764,6 +131803,40 @@
         "schema": "public",
         "table": "quotes",
         "type": "FOREIGN KEY",
+        "validated": true
+      },
+      {
+        "columns": [
+          "freight_mix_mode"
+        ],
+        "deferrable": false,
+        "definition": "CHECK (freight_mix_mode IS NULL OR (freight_mix_mode = ANY (ARRAY['misturar'::text, 'separar'::text])))",
+        "name": "quotes_freight_mix_mode_check",
+        "on_delete": null,
+        "on_update": null,
+        "ref_columns": [],
+        "ref_schema": null,
+        "ref_table": null,
+        "schema": "public",
+        "table": "quotes",
+        "type": "CHECK",
+        "validated": true
+      },
+      {
+        "columns": [
+          "freight_plan"
+        ],
+        "deferrable": false,
+        "definition": "CHECK (freight_plan IS NULL OR jsonb_typeof(freight_plan) = 'object'::text AND pg_column_size(freight_plan) < 262144)",
+        "name": "quotes_freight_plan_shape_check",
+        "on_delete": null,
+        "on_update": null,
+        "ref_columns": [],
+        "ref_schema": null,
+        "ref_table": null,
+        "schema": "public",
+        "table": "quotes",
+        "type": "CHECK",
         "validated": true
       },
       {

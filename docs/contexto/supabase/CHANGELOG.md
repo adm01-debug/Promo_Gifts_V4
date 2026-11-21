@@ -2,6 +2,11 @@
 
 Diff semântico gerado a cada coleta em que algo mudou.
 
+## 2026-11-21 15:16 UTC
+
+- **colunas** adicionado (3): `public.quotes.freight_mix_mode`, `public.quotes.freight_plan`, `public.quotes.show_freight_plan_to_client`
+- **constraints** adicionado (2): `public.quotes.quotes_freight_mix_mode_check`, `public.quotes.quotes_freight_plan_shape_check`
+
 ## 2026-11-21 02:22 UTC
 
 - **realtime** adicionado (1): `supabase_realtime_messages_publication:realtime.messages_2026_11_24`

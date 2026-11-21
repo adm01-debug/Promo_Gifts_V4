@@ -77,6 +77,9 @@
 | 60 | `contact_id` | `uuid` | sim |  |  | ID do contato no CRM externo (pgxfvjmuubtbowutlide). Sem FK — banco externo. |
 | 61 | `discount_approval_status` | `text` | sim |  |  |  |
 | 62 | `discount_approved_at` | `timestamp with time zone` | sim |  |  |  |
+| 63 | `freight_plan` | `jsonb` | sim |  |  | Plano de volumes do frete calculado no orÃ§amento (objeto JSON com version, itemsHash, computedAt, caixas e totais). NULL = orÃ§amento sem plano calculado. Objeto com menos de 256 KB. |
+| 64 | `freight_mix_mode` | `text` | sim |  |  | Escolha do vendedor para o frete: misturar produtos na mesma caixa ou separar. NULL = sem escolha. Produto marcado como "nÃ£o mistura" vence esta escolha. |
+| 65 | `show_freight_plan_to_client` | `boolean` | não | `false` |  | true = o bloco "Volumes estimados para transporte" aparece no PDF e na proposta do cliente. PadrÃ£o false: o plano Ã© interno. |
 
 
 ## Constraints
@@ -87,6 +90,8 @@
 | quotes_approval_token_key | UNIQUE | `UNIQUE (approval_token)` |  |  | sim |
 | quotes_assigned_to_fkey | FOREIGN KEY | `FOREIGN KEY (assigned_to) REFERENCES profiles(user_id) ON DELETE SET NULL` | SET NULL | NO ACTION | sim |
 | quotes_created_by_fkey | FOREIGN KEY | `FOREIGN KEY (created_by) REFERENCES profiles(user_id) ON DELETE SET NULL` | SET NULL | NO ACTION | sim |
+| quotes_freight_mix_mode_check | CHECK | `CHECK (freight_mix_mode IS NULL OR (freight_mix_mode = ANY (ARRAY['misturar'::text, 'separar'::text])))` |  |  | sim |
+| quotes_freight_plan_shape_check | CHECK | `CHECK (freight_plan IS NULL OR jsonb_typeof(freight_plan) = 'object'::text AND pg_column_size(freight_plan) < 262144)` |  |  | sim |
 | quotes_organization_id_fkey | FOREIGN KEY | `FOREIGN KEY (organization_id) REFERENCES organizations(id) ON DELETE CASCADE` | CASCADE | NO ACTION | sim |
 | quotes_parent_quote_id_fkey | FOREIGN KEY | `FOREIGN KEY (parent_quote_id) REFERENCES quotes(id) ON DELETE SET NULL` | SET NULL | NO ACTION | sim |
 | quotes_pkey | PRIMARY KEY | `PRIMARY KEY (id)` |  |  | sim |

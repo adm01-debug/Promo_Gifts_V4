@@ -307,7 +307,7 @@ Um arquivo por tabela em `tables/<schema>/<tabela>.md` (colunas, constraints, í
 | [public.quote_items](tables/public/quote_items.md) | table | sim | 4 | 35 | sim |  |
 | [public.quote_templates](tables/public/quote_templates.md) | table | sim | 4 | 23 | não | Wave 3.3.C.1 2026-05-22: unificado (seller-owned + system templates). seller_id opcional, suporta ambos os usos. |
 | [public.quote_versions](tables/public/quote_versions.md) | table | sim | 2 | 7 | não |  |
-| [public.quotes](tables/public/quotes.md) | table | sim | 4 | 60 | sim |  |
+| [public.quotes](tables/public/quotes.md) | table | sim | 4 | 63 | sim |  |
 | [public.ramo_atividade](tables/public/ramo_atividade.md) | table | sim | 4 | 10 | não | Categorias pai de ramos de atividade/nichos de mercado |
 | [public.ramo_atividade_filho](tables/public/ramo_atividade_filho.md) | table | sim | 4 | 10 | não | Subcategorias/segmentos específicos dentro de cada ramo de atividade |
 | [public.recently_viewed_products](tables/public/recently_viewed_products.md) | table | sim | 5 | 4 | não |  |
