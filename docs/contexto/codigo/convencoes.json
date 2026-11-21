@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "feat(frete): expoe volumes para transporte no PDF do kit (#3955)",
    "feat(frete): Bloco F - comparador de volumes, simulador de frete e telemetria (etapas 53-60) (#3954)",
    "feat(kit): plano de volumes do kit no lugar do FreightEstimator (etapa 52) (#3951)",
    "chore(main): release gifts-store 1.16.1 (#3949)",
-   "test(kit): classificacao de status KMM-075/KMX-037 (D7) (#3950)",
-   "fix(ci): endurece gate de chamadas diretas (#3943)"
+   "test(kit): classificacao de status KMM-075/KMX-037 (D7) (#3950)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",

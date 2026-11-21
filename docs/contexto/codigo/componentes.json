@@ -10764,7 +10764,7 @@
     "KitSummary"
    ],
    "export_default": null,
-   "linhas": 328,
+   "linhas": 329,
    "dominio": "components/kit-builder",
    "hooks_locais": [
     "useKitFreightPlan",
@@ -19161,7 +19161,7 @@
     "KitBuilderPage"
    ],
    "export_default": "KitBuilderPage",
-   "linhas": 499,
+   "linhas": 500,
    "dominio": "pages/kit-builder",
    "hooks_locais": [
     "useKitBuilderPageState",

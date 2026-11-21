@@ -6746,6 +6746,7 @@
    "src/hooks/kit-builder/index.ts",
    "src/hooks/kit-builder/useKitCatalogPriceRefresh.ts",
    "src/lib/freight/fromKit.ts",
+   "src/lib/freight/index.ts",
    "src/lib/kit-builder/index.ts",
    "src/lib/kit-builder/pricing-availability.ts"
   ],
@@ -14026,6 +14027,7 @@
    "src/hooks/kit-builder/index.ts",
    "src/hooks/kit-builder/useKitItemReplaceTarget.ts",
    "src/hooks/kit-builder/useKitWizardShortcuts.ts",
+   "src/lib/freight/index.ts",
    "src/lib/kit-builder/index.ts",
    "src/lib/kit-builder/pricing-availability.ts",
    "src/utils/kitPdfGenerator.ts"
@@ -15518,6 +15520,7 @@
    "src/lib/date-utils.ts"
   ],
   "src/utils/kitPdfGenerator.ts": [
+   "src/lib/freight/index.ts",
    "src/lib/kit-builder/index.ts",
    "src/lib/kit-builder/pricing-availability.ts",
    "src/utils/kitPdfPrimitives.ts"

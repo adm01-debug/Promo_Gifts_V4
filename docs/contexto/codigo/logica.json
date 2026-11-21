@@ -4226,7 +4226,7 @@
    "zod_schemas": 0,
    "flags": [],
    "papeis": [],
-   "usado_por": 18,
+   "usado_por": 21,
    "usado_por_modulos": [
     "components/admin",
     "components/freight-plan",
@@ -4235,9 +4235,11 @@
     "hooks/quotes",
     "lib/freight",
     "lib/quotes",
-    "pages/freight"
+    "pages/freight",
+    "pages/kit-builder",
+    "utils"
    ],
-   "coberto_por_testes": 8,
+   "coberto_por_testes": 9,
    "orfao": false
   },
   {
@@ -10189,7 +10191,7 @@
     "generateKitPDF"
    ],
    "export_default": null,
-   "linhas": 468,
+   "linhas": 501,
    "tabelas": [],
    "rpcs": [],
    "edges": [],

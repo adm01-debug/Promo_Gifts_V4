@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e de hora em hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `e311dad9eda31cb55fff4e7fc14e7206a10a6eb8` (2026-11-21T10:49:29-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e de hora em hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `1ab261931175be5cf2626a625f40050e1d1c0292` (2026-11-21T11:28:30-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -36,7 +36,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 |---|---|
 | arquivos_total | 11191 |
 | arquivos_codigo | 5650 |
-| linhas_codigo | 1072044 |
+| linhas_codigo | 1072146 |
 | rotas | 141 |
 | rotas_http_backend | 13 |
 | vistas_por_id | 0 |
@@ -599,8 +599,8 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - possiveis_segredos_no_codigo: 7 — ex.: scripts/ai-context/cenarios.mjs:102, src/components/admin/connections/__tests__/ConnectionSecurity.unit.test.tsx:9, src/integrations/supabase/client.ts:27
 
 ## Grafo de código (graphify)
-- 50451 nós · 85543 arestas · 2835 comunidades · grafo do commit `e311dad9`
-- comunidades maiores: vitest (971), ref_components (920), ref_integrations (614), @tanstack/react-query (603), ref_node_child_process (489), ref_hooks (443), ref_node_fs (397), ref_types (389), react (351), sonner (326), scripts (310), concludeCheck (309)
+- 50453 nós · 85548 arestas · 2819 comunidades · grafo do commit `1ab26193`
+- comunidades maiores: vitest (869), ref_components (858), ref_integrations (630), react-router-dom (532), ref_node_child_process (470), ref_hooks (420), @tanstack/react-query (382), ref_types (352), gotoAndSettle (350), ref_node_fs (345), sonner (337), react (324)
 - símbolos mais chamados: gotoAndSettle() (e2e/helpers/nav.ts), re (?), q() (scripts/supabase_snapshot/snapshot.py), analyze() (tests/scripts/test_personalization_artifact_diagnostics.py), outer() (tests/scripts/test_personalization_artifact_diagnostics.py), json (?), useExternalDatabase() (recovery/src-legacy/src/hooks/useExternalDatabase.ts), concludeCheck() (scripts/check-result-contract.mjs), querySupabaseReadOnly() (scripts/supabase-read-only-query.mjs), loginAs() (e2e/helpers/auth.ts), inner() (tests/scripts/test_personalization_artifact_diagnostics.py), excluded_sql() (scripts/supabase_snapshot/snapshot.py)
 - consulta local: `graphify query "<pergunta>"`, `graphify path "<A>" "<B>"`, `graphify explain "<X>"`
 
@@ -613,13 +613,13 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - CHANGELOG.md (14)
 - audit/supabase-reference-catalog.temporary.json (14)
 - src/pages/mockups/MockupGenerator.tsx (12)
+- src/pages/kit-builder/KitBuilderPage.tsx (11)
 - docs/agentes/resgates/2026-11-16-auditoria-branches.md (10)
 - src/integrations/supabase/types.ts (10)
-- src/pages/kit-builder/KitBuilderPage.tsx (10)
 - .github/workflows/replenishment-quality.yml (9)
 - .github/workflows/schema-snapshot-export.yml (9)
-- docs/prod-readiness.md (9)
 - scripts/drift-baseline.mjs (9)
+- src/pages/quotes/QuoteBuilderPage.tsx (9)
 
 ## Workflows
 - `_e2e-relevance.yml` — Reusable — E2E Runtime Relevance (workflow_call)
@@ -1196,6 +1196,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - CHANGELOG topo: [1.16.1](https://github.com/adm01-debug/Promo_Gifts_V4/compare/gifts-store-v1.16.0...gifts-store-v1.16.1) (2026-11-21)
 
 ## Últimos commits
+- 2026-11-21 `1ab26193` feat(frete): expoe volumes para transporte no PDF do kit (#3955)
 - 2026-11-21 `e311dad9` feat(frete): Bloco F - comparador de volumes, simulador de frete e telemetria (etapas 53-60) (#3954)
 - 2026-11-21 `4eddf85d` feat(kit): plano de volumes do kit no lugar do FreightEstimator (etapa 52) (#3951)
 - 2026-11-21 `f613f3f5` chore(main): release gifts-store 1.16.1 (#3949)
@@ -1210,7 +1211,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-20 `0ec2fc56` fix: contrato de orphan-mounts alinha com montagem lazy do RupturePanelEma (#3941)
 - 2026-11-20 `04369208` fix(stock): banner de risco EMA não derruba para usuário não-dev (403 da edge) (#3940)
 - 2026-11-20 `e54228ab` feat(db): colunas do plano de volumes em quotes (frete, Bloco G — DDL, etapa 61) (#3926)
-- 2026-11-20 `a499d841` feat(frete): prazo de produção no admin — card, aba Feriados e exceção por produto (Bloco H-UI) (#3936)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

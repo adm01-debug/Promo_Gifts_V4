@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "e311dad9eda31cb55fff4e7fc14e7206a10a6eb8",
+  "sha": "1ab261931175be5cf2626a625f40050e1d1c0292",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-21 13:50 UTC",
+  "generated_at": "2026-11-21 14:29 UTC",
   "files_total": 11119,
   "code_files": 9127,
-  "code_lines": 1295137
+  "code_lines": 1295239
  },
  "version": "1.3.2",
- "facts_hash": "0f1919ba0f299ad0",
+ "facts_hash": "41bcc242b72b37b0",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -138551,7 +138551,7 @@
      "save_custom_kit_atomic",
      "set_custom_kit_pinned"
     ],
-    "deps_count": 274
+    "deps_count": 288
    },
    {
     "path": "",
@@ -139363,7 +139363,7 @@
      "save_custom_kit_atomic",
      "set_custom_kit_pinned"
     ],
-    "deps_count": 168
+    "deps_count": 171
    },
    {
     "path": "",
@@ -150598,7 +150598,7 @@
   {
    "module": "src/components",
    "files": 1478,
-   "lines": 289981,
+   "lines": 289982,
    "tables": [
     "admin_audit_log",
     "art_file_attachments",
@@ -151461,7 +151461,7 @@
   {
    "module": "src/pages",
    "files": 373,
-   "lines": 86110,
+   "lines": 86111,
    "tables": [
     "ai_usage_events",
     "bot_detection_log",
@@ -152065,7 +152065,7 @@
   {
    "module": "src/utils",
    "files": 61,
-   "lines": 9151,
+   "lines": 9251,
    "tables": [],
    "exports": [
     "br-schemas.ts: cpfOptionalSchema, cepOptionalSchema, phoneBrOptionalSchema, assertPersistableCpf, assertPersistableCep, assertPersistablePhoneBr",
@@ -269184,6 +269184,18 @@
    {
     "file": "src/utils/__tests__/kitPdfGenerator.test.ts",
     "name": "não lança com kit mínimo (sem caixa, sem itens) e devolve um Blob"
+   },
+   {
+    "file": "src/utils/__tests__/kitPdfGenerator.test.ts",
+    "name": "imprime a seção de volumes para transporte quando o plano de frete está ok"
+   },
+   {
+    "file": "src/utils/__tests__/kitPdfGenerator.test.ts",
+    "name": "não imprime a seção quando o plano tem dados insuficientes"
+   },
+   {
+    "file": "src/utils/__tests__/kitPdfGenerator.test.ts",
+    "name": "não quebra sem plano de frete (comportamento atual)"
    },
    {
     "file": "src/utils/__tests__/product-sorting.test.ts",
@@ -455080,7 +455092,7 @@
   },
   "src/components/kit-builder/KitSummary.tsx": {
    "path": "src/components/kit-builder/KitSummary.tsx",
-   "lines": 328,
+   "lines": 329,
    "exports": [
     "function shouldRenderKitStockForecast",
     "function KitSummary"
@@ -497373,7 +497385,7 @@
   },
   "src/pages/kit-builder/KitBuilderPage.tsx": {
    "path": "src/pages/kit-builder/KitBuilderPage.tsx",
-   "lines": 499,
+   "lines": 500,
    "exports": [
     "function KitBuilderPage"
    ],
@@ -507225,7 +507237,7 @@
   },
   "src/utils/kitPdfGenerator.ts": {
    "path": "src/utils/kitPdfGenerator.ts",
-   "lines": 468,
+   "lines": 501,
    "exports": [
     "function generateKitPDF",
     "function downloadKitPDF",
@@ -508145,7 +508157,7 @@
   },
   "src/utils/__tests__/kitPdfGenerator.test.ts": {
    "path": "src/utils/__tests__/kitPdfGenerator.test.ts",
-   "lines": 230,
+   "lines": 297,
    "is_test": true,
    "rule_comments": [
     "(c) kit mínimo não lança."
@@ -508157,7 +508169,10 @@
     "cai para a chave legada pelo id do produto quando não há entrada por lineId",
     "não imprime R$ 0,00 para item com priceKnown false",
     "imprime o piso/setup da personalização no detalhamento de preços",
-    "não lança com kit mínimo (sem caixa, sem itens) e devolve um Blob"
+    "não lança com kit mínimo (sem caixa, sem itens) e devolve um Blob",
+    "imprime a seção de volumes para transporte quando o plano de frete está ok",
+    "não imprime a seção quando o plano tem dados insuficientes",
+    "não quebra sem plano de frete (comportamento atual)"
    ]
   },
   "src/utils/__tests__/product-sorting.test.ts": {
@@ -560512,10 +560527,22 @@
   }
  },
  "git": {
-  "sha": "e311dad9eda31cb55fff4e7fc14e7206a10a6eb8",
+  "sha": "1ab261931175be5cf2626a625f40050e1d1c0292",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "1ab2619",
+    "date": "2026-11-21",
+    "author": "adm01-debug",
+    "subject": "feat(frete): expoe volumes para transporte no PDF do kit (#3955)",
+    "files": [
+     "src/components/kit-builder/KitSummary.tsx",
+     "src/pages/kit-builder/KitBuilderPage.tsx",
+     "src/utils/__tests__/kitPdfGenerator.test.ts",
+     "src/utils/kitPdfGenerator.ts"
+    ]
+   },
    {
     "sha": "e311dad",
     "date": "2026-11-21",
@@ -561039,23 +561066,12 @@
      "src/lib/lead-time/supplierLeadTime.ts",
      "src/lib/lead-time/types.ts"
     ]
-   },
-   {
-    "sha": "16762dc",
-    "date": "2026-11-19",
-    "author": "adm01-debug",
-    "subject": "feat(db): coluna products.ships_separately (frete, Bloco D — DDL) (#3918)",
-    "files": [
-     "supabase/MIGRATIONS_SYNC_LOG.md",
-     "supabase/migrations/20261120013000_add_products_ships_separately.sql",
-     "supabase/rollbacks/20261120013000_rollback.sql"
-    ]
    }
   ],
   "hot_files": [
    [
     "supabase/MIGRATIONS_SYNC_LOG.md",
-    9
+    8
    ],
    [
     ".release-please-manifest.json",
@@ -561106,6 +561122,10 @@
     3
    ],
    [
+    "src/components/kit-builder/KitSummary.tsx",
+    2
+   ],
+   [
     "src/components/freight-plan/__tests__/freightPlanCard.harness.tsx",
     2
    ],
@@ -561127,10 +561147,6 @@
    ],
    [
     "src/components/admin/products/sections/ProductInfoSection.tsx",
-    2
-   ],
-   [
-    "src/pages/admin/AdminFreteSettingsPage.tsx",
     2
    ]
   ]

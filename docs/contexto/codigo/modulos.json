@@ -8446,7 +8446,7 @@
    "modulo": "components/kit-builder",
    "arquivos": 49,
    "testes": 1,
-   "linhas": 10552,
+   "linhas": 10553,
    "itens_menu": [],
    "telas": [],
    "rotas_http": [],
@@ -25802,7 +25802,9 @@
     "hooks/quotes",
     "lib/kit-builder",
     "lib/quotes",
-    "pages/freight"
+    "pages/freight",
+    "pages/kit-builder",
+    "utils"
    ],
    "depende_de_modulos": [
     "integrations/supabase",
@@ -31909,7 +31911,7 @@
    "modulo": "pages/kit-builder",
    "arquivos": 3,
    "testes": 1,
-   "linhas": 1691,
+   "linhas": 1692,
    "itens_menu": [],
    "telas": [
     "/meus-kits"
@@ -32395,6 +32397,7 @@
     "hooks/kit-builder",
     "integrations/supabase",
     "lib",
+    "lib/freight",
     "lib/kit-builder",
     "lib/kit-library",
     "lib/security",
@@ -37165,7 +37168,7 @@
    "modulo": "utils",
    "arquivos": 34,
    "testes": 3,
-   "linhas": 5663,
+   "linhas": 5696,
    "itens_menu": [],
    "telas": [],
    "rotas_http": [],
@@ -37639,6 +37642,7 @@
     "lib",
     "lib/edge",
     "lib/external-db",
+    "lib/freight",
     "lib/kit-builder",
     "services",
     "types"

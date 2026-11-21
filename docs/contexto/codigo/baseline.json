@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "e311dad9eda31cb55fff4e7fc14e7206a10a6eb8",
+  "commit": "1ab261931175be5cf2626a625f40050e1d1c0292",
   "branch": "main",
-  "data_commit": "2026-11-21T10:49:29-03:00",
+  "data_commit": "2026-11-21T11:28:30-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "1ab26193",
+    "data": "2026-11-21",
+    "assunto": "feat(frete): expoe volumes para transporte no PDF do kit (#3955)"
+   },
    {
     "sha": "e311dad9",
     "data": "2026-11-21",
@@ -126,14 +131,9 @@
     "sha": "dd42ddfe",
     "data": "2026-11-20",
     "assunto": "chore(security): atualiza baseline assinado de RLS policies (#3931)"
-   },
-   {
-    "sha": "dc4a2dfc",
-    "data": "2026-11-20",
-    "assunto": "feat(db): endurece as tabelas de frete e cadastra as 4 caixas (P, M, G, GG) (#3923)"
    }
   ],
-  "arquivos_mudados_7d": 11298,
+  "arquivos_mudados_7d": 11297,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -145,7 +145,7 @@
    },
    {
     "pasta": "src/components/products",
-    "mudancas": 610
+    "mudancas": 608
    },
    {
     "pasta": "tests/edge-functions/live",
@@ -165,7 +165,7 @@
    },
    {
     "pasta": "src/components/inventory",
-    "mudancas": 330
+    "mudancas": 327
    },
    {
     "pasta": "supabase/functions/_shared",
@@ -189,7 +189,7 @@
    },
    {
     "pasta": "src/components/kit-builder",
-    "mudancas": 213
+    "mudancas": 214
    },
    {
     "pasta": "src/pages/products",
@@ -230,6 +230,10 @@
     "mudancas": 12
    },
    {
+    "arquivo": "src/pages/kit-builder/KitBuilderPage.tsx",
+    "mudancas": 11
+   },
+   {
     "arquivo": "docs/agentes/resgates/2026-11-16-auditoria-branches.md",
     "mudancas": 10
    },
@@ -238,19 +242,11 @@
     "mudancas": 10
    },
    {
-    "arquivo": "src/pages/kit-builder/KitBuilderPage.tsx",
-    "mudancas": 10
-   },
-   {
     "arquivo": ".github/workflows/replenishment-quality.yml",
     "mudancas": 9
    },
    {
     "arquivo": ".github/workflows/schema-snapshot-export.yml",
-    "mudancas": 9
-   },
-   {
-    "arquivo": "docs/prod-readiness.md",
     "mudancas": 9
    },
    {
@@ -278,11 +274,15 @@
     "mudancas": 8
    },
    {
-    "arquivo": "RELATORIO_CI.md",
+    "arquivo": "docs/prod-readiness.md",
     "mudancas": 8
    },
    {
     "arquivo": "scripts/automation.config.json",
+    "mudancas": 8
+   },
+   {
+    "arquivo": "src/components/kit-builder/KitSummary.tsx",
     "mudancas": 8
    },
    {
@@ -305,11 +305,11 @@
    },
    {
     "autor": "Claude",
-    "commits": 57
+    "commits": 55
    },
    {
     "autor": "github-actions[bot]",
-    "commits": 30
+    "commits": 29
    },
    {
     "autor": "Joaquim Ataides",
@@ -324,7 +324,7 @@
  "contagens": {
   "arquivos_total": 11191,
   "arquivos_codigo": 5650,
-  "linhas_codigo": 1072044,
+  "linhas_codigo": 1072146,
   "rotas": 141,
   "rotas_http_backend": 13,
   "vistas_por_id": 0,
@@ -1908,7 +1908,7 @@
   },
   "src/components": {
    "arquivos": 1478,
-   "linhas": 289982
+   "linhas": 289983
   },
   "src/config": {
    "arquivos": 1,
@@ -1952,7 +1952,7 @@
   },
   "src/pages": {
    "arquivos": 373,
-   "linhas": 86110
+   "linhas": 86111
   },
   "src/routes": {
    "arquivos": 15,
@@ -1980,7 +1980,7 @@
   },
   "src/utils": {
    "arquivos": 61,
-   "linhas": 9151
+   "linhas": 9251
   },
   "supabase/functions": {
    "arquivos": 278,
@@ -2391,7 +2391,7 @@
   "ts_ignore": 0,
   "eslint_disable": 24,
   "todos": 111,
-  "arquivos_acima_500_linhas": 184
+  "arquivos_acima_500_linhas": 185
  },
  "todos": [
   {

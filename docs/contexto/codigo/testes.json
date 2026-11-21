@@ -12881,12 +12881,13 @@
   {
    "arquivo": "src/utils/__tests__/kitPdfGenerator.test.ts",
    "tipo": "unit",
-   "linhas": 230,
+   "linhas": 297,
    "testa": [
+    "src/lib/freight/index.ts",
     "src/lib/kit-builder/index.ts",
     "src/utils/kitPdfGenerator.ts"
    ],
-   "casos": 5
+   "casos": 8
   },
   {
    "arquivo": "src/utils/__tests__/product-sorting.test.ts",
@@ -23787,7 +23788,7 @@
   "src/lib/freight/formatPlanSummary.ts": 1,
   "src/lib/freight/fromDatabase.ts": 1,
   "src/lib/freight/fromKit.ts": 1,
-  "src/lib/freight/index.ts": 8,
+  "src/lib/freight/index.ts": 9,
   "src/lib/freight/limits.ts": 1,
   "src/lib/freight/packMixed.ts": 1,
   "src/lib/freight/packSingleProduct.ts": 2,
