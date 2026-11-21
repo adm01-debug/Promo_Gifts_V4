@@ -1,9 +1,9 @@
 {
  "meta": {
-  "sha": "27369d5ec53b44226dc5847786e29f2056c46626",
+  "sha": "8a224b1274906d3eed67900bcdf071fc22929d88",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-21 17:04 UTC",
+  "generated_at": "2026-11-21 17:23 UTC",
   "files_total": 11125,
   "code_files": 9133,
   "code_lines": 1297086
@@ -560647,10 +560647,19 @@
   }
  },
  "git": {
-  "sha": "27369d5ec53b44226dc5847786e29f2056c46626",
+  "sha": "8a224b1274906d3eed67900bcdf071fc22929d88",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "8a224b1",
+    "date": "2026-11-21",
+    "author": "github-actions[bot]",
+    "subject": "docs: recibo de aplicação — 20261121000000 (E15) (#3958)",
+    "files": [
+     "supabase/MIGRATIONS_SYNC_LOG.md"
+    ]
+   },
    {
     "sha": "27369d5",
     "date": "2026-11-21",
@@ -561093,21 +561102,12 @@
      "supabase/rollbacks/20261118172500_rollback.sql",
      "supabase/rollbacks/20261119103000_rollback.sql"
     ]
-   },
-   {
-    "sha": "dd42ddf",
-    "date": "2026-11-20",
-    "author": "github-actions[bot]",
-    "subject": "chore(security): atualiza baseline assinado de RLS policies (#3931)",
-    "files": [
-     ".security/policies-baseline.json"
-    ]
    }
   ],
   "hot_files": [
    [
     "supabase/MIGRATIONS_SYNC_LOG.md",
-    8
+    9
    ],
    [
     ".file-size-baseline.json",
@@ -561166,10 +561166,6 @@
     2
    ],
    [
-    ".security/policies-baseline.json",
-    2
-   ],
-   [
     "audit/supabase-reference-catalog.temporary.json",
     2
    ],
@@ -561183,6 +561179,10 @@
    ],
    [
     "src/hooks/freight/keys.ts",
+    2
+   ],
+   [
+    "src/pages/admin/AdminFreteSettingsPage.tsx",
     2
    ]
   ]

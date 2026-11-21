@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "27369d5ec53b44226dc5847786e29f2056c46626",
+  "commit": "8a224b1274906d3eed67900bcdf071fc22929d88",
   "branch": "main",
-  "data_commit": "2026-11-21T17:03:12Z",
+  "data_commit": "2026-11-21T14:22:11-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "8a224b12",
+    "data": "2026-11-21",
+    "assunto": "docs: recibo de aplicação — 20261121000000 (E15) (#3958)"
+   },
    {
     "sha": "27369d5e",
     "data": "2026-11-21",
@@ -126,190 +131,185 @@
     "sha": "df4e1f26",
     "data": "2026-11-20",
     "assunto": "fix(frete): comparação de ships_separately sem violar lint do tipo expandido (#3939)"
-   },
-   {
-    "sha": "9c386c0b",
-    "data": "2026-11-20",
-    "assunto": "feat(frete): bibliotecas do kit, schema do plano, contrato de cotação e ranking (etapas 51, 62, 81, 85) (#3928)"
    }
   ],
   "arquivos_mudados_7d": 11305,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
-    "mudancas": 2199
+    "mudancas": 2803
    },
    {
     "pasta": "recovery/src-legacy/src",
-    "mudancas": 1897
+    "mudancas": 2529
    },
    {
     "pasta": "src/components/products",
-    "mudancas": 1064
+    "mudancas": 1368
    },
    {
     "pasta": "tests/edge-functions/live",
-    "mudancas": 807
+    "mudancas": 1037
    },
    {
     "pasta": "src/hooks/products",
-    "mudancas": 751
-   },
-   {
-    "pasta": "src/components/quotes",
-    "mudancas": 646
+    "mudancas": 959
    },
    {
     "pasta": "src/pages/magazine",
-    "mudancas": 644
+    "mudancas": 828
+   },
+   {
+    "pasta": "src/components/quotes",
+    "mudancas": 820
    },
    {
     "pasta": "src/components/inventory",
-    "mudancas": 566
+    "mudancas": 726
    },
    {
     "pasta": "supabase/functions/_shared",
-    "mudancas": 525
+    "mudancas": 675
    },
    {
     "pasta": "src/components/ui",
-    "mudancas": 511
+    "mudancas": 657
    },
    {
     "pasta": "src/components/mockup",
-    "mudancas": 463
+    "mudancas": 583
    },
    {
     "pasta": "src/pages/admin",
-    "mudancas": 435
+    "mudancas": 555
    },
    {
     "pasta": "src/pages/quotes",
-    "mudancas": 381
+    "mudancas": 483
    },
    {
     "pasta": "src/components/kit-builder",
-    "mudancas": 352
+    "mudancas": 444
    },
    {
     "pasta": "src/pages/products",
-    "mudancas": 340
+    "mudancas": 436
    }
   ],
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "supabase/MIGRATIONS_SYNC_LOG.md",
-    "mudancas": 67
+    "mudancas": 69
    },
    {
     "arquivo": "package.json",
-    "mudancas": 33
+    "mudancas": 35
    },
    {
     "arquivo": "docs/coordenacao/conflitos-semanticos.md",
-    "mudancas": 30
+    "mudancas": 32
    },
    {
     "arquivo": "package-lock.json",
-    "mudancas": 23
+    "mudancas": 25
    },
    {
     "arquivo": ".github/workflows/deploy-gates.yml",
-    "mudancas": 18
+    "mudancas": 20
    },
    {
     "arquivo": "CHANGELOG.md",
-    "mudancas": 17
+    "mudancas": 19
    },
    {
     "arquivo": "audit/supabase-reference-catalog.temporary.json",
-    "mudancas": 16
+    "mudancas": 18
    },
    {
     "arquivo": "src/pages/mockups/MockupGenerator.tsx",
-    "mudancas": 15
+    "mudancas": 17
    },
    {
     "arquivo": "src/pages/kit-builder/KitBuilderPage.tsx",
-    "mudancas": 14
+    "mudancas": 16
    },
    {
     "arquivo": "src/integrations/supabase/types.ts",
-    "mudancas": 13
+    "mudancas": 15
    },
    {
     "arquivo": "src/pages/quotes/QuoteBuilderPage.tsx",
-    "mudancas": 13
+    "mudancas": 15
    },
    {
     "arquivo": ".github/workflows/replenishment-quality.yml",
-    "mudancas": 12
+    "mudancas": 14
    },
    {
     "arquivo": ".github/workflows/schema-snapshot-export.yml",
-    "mudancas": 12
-   },
-   {
-    "arquivo": "supabase/functions/crm-db-bridge/index.ts",
-    "mudancas": 12
+    "mudancas": 14
    },
    {
     "arquivo": ".github/workflows/e2e-swatch-quickview.yml",
-    "mudancas": 11
+    "mudancas": 13
    },
    {
     "arquivo": ".github/workflows/e2e.yml",
-    "mudancas": 11
+    "mudancas": 13
    },
    {
     "arquivo": "scripts/automation.config.json",
-    "mudancas": 11
+    "mudancas": 13
    },
    {
     "arquivo": "scripts/drift-baseline.mjs",
-    "mudancas": 11
+    "mudancas": 13
    },
    {
     "arquivo": "src/components/kit-builder/KitSummary.tsx",
-    "mudancas": 11
+    "mudancas": 13
    },
    {
     "arquivo": "src/components/kit-builder/PersonalizationConfig.tsx",
-    "mudancas": 11
+    "mudancas": 13
    },
    {
     "arquivo": "src/components/quotes/QuoteAutoSave.tsx",
-    "mudancas": 11
-   },
-   {
-    "arquivo": "src/components/search/useGlobalSearch.ts",
-    "mudancas": 11
+    "mudancas": 13
    },
    {
     "arquivo": "src/hooks/mockup/useMockupGenerator.ts",
-    "mudancas": 11
+    "mudancas": 13
    },
    {
     "arquivo": "src/hooks/quotes/useQuoteTemplates.ts",
-    "mudancas": 11
+    "mudancas": 13
    },
    {
     "arquivo": "vitest.config.ts",
-    "mudancas": 11
+    "mudancas": 13
+   },
+   {
+    "arquivo": ".github/workflows/delivery-quality.yml",
+    "mudancas": 12
+   },
+   {
+    "arquivo": ".github/workflows/e2e-cart.yml",
+    "mudancas": 12
    }
   ],
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 299
+    "commits": 294
    },
    {
     "autor": "Claude",
-    "commits": 46
+    "commits": 44
    },
    {
     "autor": "github-actions[bot]",
-    "commits": 29
+    "commits": 30
    },
    {
     "autor": "Joaquim Ataides",
