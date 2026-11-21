@@ -101,6 +101,16 @@ export function transformToKitBox(product: ExternalProductForKit): KitBox | null
     materials: resolveAllProductMaterials(product),
     finish: product.packaging_finish || undefined,
     weight: isKnownItemWeight(product.weight_g) ? product.weight_g : undefined,
+    // D1 (2026-11-21): o limite estrutural da caixa de brinde vem do catÃ¡logo
+    // (`products.box_weight_kg`), nÃ£o de shipping_boxes (caixa de transporte do
+    // frete, outro conceito). `box_weight_kg` Ã© a carga Ãºtil mÃ¡xima em kg; em
+    // gramas para bater com itemsWeight em validate-composition.ts:50.
+    maxWeight:
+      typeof product.box_weight_kg === 'number' &&
+      Number.isFinite(product.box_weight_kg) &&
+      product.box_weight_kg > 0
+        ? Math.round(product.box_weight_kg * 1000)
+        : undefined,
   };
 }
 

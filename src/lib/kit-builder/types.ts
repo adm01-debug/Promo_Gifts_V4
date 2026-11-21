@@ -368,6 +368,8 @@ export interface ExternalProductForKit {
   box_length_cm?: number | null;
   box_width_cm?: number | null;
   box_height_cm?: number | null;
+  // Carga Ãºtil mÃ¡xima da caixa de brinde em kg (fonte do maxWeight, D1 2026-11-21)
+  box_weight_kg?: number | null;
   internal_length_cm?: number | null;
   internal_width_cm?: number | null;
   internal_height_cm?: number | null;
