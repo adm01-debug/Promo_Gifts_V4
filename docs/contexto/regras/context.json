@@ -1,9 +1,9 @@
 {
  "meta": {
-  "sha": "687ee379788567322a8bdccc319d931ae89685c8",
+  "sha": "1948642c18085434511e6e31db2b9facafa4030e",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-21 18:08 UTC",
+  "generated_at": "2026-11-21 19:14 UTC",
   "files_total": 11125,
   "code_files": 9133,
   "code_lines": 1297172
@@ -560679,10 +560679,29 @@
   }
  },
  "git": {
-  "sha": "687ee379788567322a8bdccc319d931ae89685c8",
+  "sha": "1948642c18085434511e6e31db2b9facafa4030e",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "1948642",
+    "date": "2026-11-21",
+    "author": "adm01-debug",
+    "subject": "chore(vercel): desativa preview em branches docs/infra/chore (#3964)",
+    "files": [
+     "vercel.json"
+    ]
+   },
+   {
+    "sha": "2ae3463",
+    "date": "2026-11-21",
+    "author": "adm01-debug",
+    "subject": "chore: consolida baselines de assertions (any-type 1-0, as-unknown 250-229) (#3963)",
+    "files": [
+     ".any-type-baseline.json",
+     ".as-unknown-baseline.json"
+    ]
+   },
    {
     "sha": "687ee37",
     "date": "2026-11-21",
@@ -561104,36 +561123,6 @@
     "files": [
      "src/lib/freight/fromKit.ts"
     ]
-   },
-   {
-    "sha": "9c386c0",
-    "date": "2026-11-20",
-    "author": "adm01-debug",
-    "subject": "feat(frete): bibliotecas do kit, schema do plano, contrato de cotação e ranking (etapas 51, 62, 81, 85) (#3928)",
-    "files": [
-     "docs/frete/contrato-cotacao-loggi.md",
-     "src/lib/freight/__tests__/fromKit.test.ts",
-     "src/lib/freight/__tests__/planSchema.test.ts",
-     "src/lib/freight/__tests__/quoteContract.test.ts",
-     "src/lib/freight/__tests__/rankQuotes.test.ts",
-     "src/lib/freight/fromKit.ts",
-     "src/lib/freight/index.ts",
-     "src/lib/freight/planSchema.ts",
-     "src/lib/freight/quoteContract.ts",
-     "src/lib/freight/rankQuotes.ts"
-    ]
-   },
-   {
-    "sha": "e9a62d4",
-    "date": "2026-11-20",
-    "author": "github-actions[bot]",
-    "subject": "chore(main): release gifts-store 1.14.0 (#3916)",
-    "files": [
-     ".release-please-manifest.json",
-     "CHANGELOG.md",
-     "package-lock.json",
-     "package.json"
-    ]
    }
   ],
   "hot_files": [
@@ -561143,19 +561132,19 @@
    ],
    [
     ".release-please-manifest.json",
-    5
+    4
    ],
    [
     "CHANGELOG.md",
-    5
+    4
    ],
    [
     "package-lock.json",
-    5
+    4
    ],
    [
     "package.json",
-    5
+    4
    ],
    [
     ".file-size-baseline.json",

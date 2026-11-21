@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e de hora em hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `687ee379788567322a8bdccc319d931ae89685c8` (2026-11-21T15:07:07-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e de hora em hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `1948642c18085434511e6e31db2b9facafa4030e` (2026-11-21T16:04:56-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -599,27 +599,27 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - possiveis_segredos_no_codigo: 7 — ex.: scripts/ai-context/cenarios.mjs:102, src/components/admin/connections/__tests__/ConnectionSecurity.unit.test.tsx:9, src/integrations/supabase/client.ts:27
 
 ## Grafo de código (graphify)
-- 50461 nós · 85563 arestas · 2840 comunidades · grafo do commit `687ee379`
-- comunidades maiores: vitest (958), ref_components (838), ref_integrations (681), ref_node_child_process (500), ref_hooks (418), @tanstack/react-query (404), ref_types (384), react (367), react-router-dom (365), sonner (338), ref_node_fs (329), nav.ts (310)
+- 50464 nós · 85566 arestas · 2757 comunidades · grafo do commit `1948642c`
+- comunidades maiores: vitest (789), ref_lib (608), ref_hooks (530), ref_node_child_process (508), ref_integrations (491), react (476), @tanstack/react-query (454), sonner (438), ref_contexts (401), ref_components (396), ref_node_fs (317), scripts (310)
 - símbolos mais chamados: gotoAndSettle() (e2e/helpers/nav.ts), re (?), q() (scripts/supabase_snapshot/snapshot.py), analyze() (tests/scripts/test_personalization_artifact_diagnostics.py), outer() (tests/scripts/test_personalization_artifact_diagnostics.py), json (?), useExternalDatabase() (recovery/src-legacy/src/hooks/useExternalDatabase.ts), concludeCheck() (scripts/check-result-contract.mjs), querySupabaseReadOnly() (scripts/supabase-read-only-query.mjs), loginAs() (e2e/helpers/auth.ts), inner() (tests/scripts/test_personalization_artifact_diagnostics.py), excluded_sql() (scripts/supabase_snapshot/snapshot.py)
 - consulta local: `graphify query "<pergunta>"`, `graphify path "<A>" "<B>"`, `graphify explain "<X>"`
 
 ## Hotspots (arquivos mais alterados, 90 dias)
 - supabase/MIGRATIONS_SYNC_LOG.md (66)
-- package.json (33)
-- docs/coordenacao/conflitos-semanticos.md (30)
-- package-lock.json (23)
-- .github/workflows/deploy-gates.yml (17)
-- CHANGELOG.md (17)
-- audit/supabase-reference-catalog.temporary.json (15)
-- src/pages/mockups/MockupGenerator.tsx (14)
-- src/pages/kit-builder/KitBuilderPage.tsx (13)
-- src/integrations/supabase/types.ts (12)
-- src/pages/quotes/QuoteBuilderPage.tsx (12)
-- .github/workflows/e2e.yml (10)
-- .github/workflows/replenishment-quality.yml (10)
-- docs/agentes/resgates/2026-11-16-auditoria-branches.md (10)
-- scripts/drift-baseline.mjs (10)
+- package.json (35)
+- docs/coordenacao/conflitos-semanticos.md (29)
+- package-lock.json (25)
+- CHANGELOG.md (19)
+- .github/workflows/deploy-gates.yml (18)
+- audit/supabase-reference-catalog.temporary.json (17)
+- src/pages/mockups/MockupGenerator.tsx (16)
+- src/integrations/supabase/types.ts (14)
+- src/pages/kit-builder/KitBuilderPage.tsx (14)
+- src/pages/quotes/QuoteBuilderPage.tsx (14)
+- .github/workflows/replenishment-quality.yml (12)
+- src/components/kit-builder/KitSummary.tsx (12)
+- src/components/kit-builder/PersonalizationConfig.tsx (12)
+- src/components/quotes/QuoteAutoSave.tsx (12)
 
 ## Workflows
 - `_e2e-relevance.yml` — Reusable — E2E Runtime Relevance (workflow_call)
@@ -1196,21 +1196,21 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - CHANGELOG topo: [1.17.0](https://github.com/adm01-debug/Promo_Gifts_V4/compare/gifts-store-v1.16.1...gifts-store-v1.17.0) (2026-11-21)
 
 ## Últimos commits
-- 2026-11-21 `687ee379` chore(main): release gifts-store 1.17.0 (#3953)
-- 2026-11-21 `a7be36d6` fix(ci): bloqueia variantes de invoke direto (#3952)
-- 2026-11-21 `8ca0bd0f` docs: recibo de aplicação — 20261121120000 (E15) (#3961)
-- 2026-11-21 `8a224b12` docs: recibo de aplicação — 20261121000000 (E15) (#3958)
-- 2026-11-21 `27369d5e` feat: migration v_compras_precos_faixa — view de faixas de preço para compras (#3962)
-- 2026-11-21 `7f8c55ef` feat(compras): view v_compras_catalogo no PIM [PR 1.1]
-- 2026-11-21 `fdf20b39` fix(quotes): restaura contrato transacional das RPCs com frete (Gate 2.5) (#3959)
-- 2026-11-21 `60f9275e` chore(migrations): rollback da migration 20261121000000 (E058) (#3957)
-- 2026-11-21 `184ac28b` feat(frete): persiste plano de frete no orcamento (G-UI, etapas 62-63) (#3956)
-- 2026-11-21 `1ab26193` feat(frete): expoe volumes para transporte no PDF do kit (#3955)
-- 2026-11-21 `e311dad9` feat(frete): Bloco F - comparador de volumes, simulador de frete e telemetria (etapas 53-60) (#3954)
-- 2026-11-21 `4eddf85d` feat(kit): plano de volumes do kit no lugar do FreightEstimator (etapa 52) (#3951)
-- 2026-11-21 `f613f3f5` chore(main): release gifts-store 1.16.1 (#3949)
-- 2026-11-21 `912bfae1` test(kit): classificacao de status KMM-075/KMX-037 (D7) (#3950)
-- 2026-11-21 `f483626a` fix(ci): endurece gate de chamadas diretas (#3943)
+- 2026-11-21 `1948642` chore(vercel): desativa preview em branches docs/infra/chore (#3964)
+- 2026-11-21 `2ae3463` chore: consolida baselines de assertions (any-type 1-0, as-unknown 250-229) (#3963)
+- 2026-11-21 `687ee37` chore(main): release gifts-store 1.17.0 (#3953)
+- 2026-11-21 `a7be36d` fix(ci): bloqueia variantes de invoke direto (#3952)
+- 2026-11-21 `8ca0bd0` docs: recibo de aplicação — 20261121120000 (E15) (#3961)
+- 2026-11-21 `8a224b1` docs: recibo de aplicação — 20261121000000 (E15) (#3958)
+- 2026-11-21 `27369d5` feat: migration v_compras_precos_faixa — view de faixas de preço para compras (#3962)
+- 2026-11-21 `7f8c55e` feat(compras): view v_compras_catalogo no PIM [PR 1.1]
+- 2026-11-21 `fdf20b3` fix(quotes): restaura contrato transacional das RPCs com frete (Gate 2.5) (#3959)
+- 2026-11-21 `60f9275` chore(migrations): rollback da migration 20261121000000 (E058) (#3957)
+- 2026-11-21 `184ac28` feat(frete): persiste plano de frete no orcamento (G-UI, etapas 62-63) (#3956)
+- 2026-11-21 `1ab2619` feat(frete): expoe volumes para transporte no PDF do kit (#3955)
+- 2026-11-21 `e311dad` feat(frete): Bloco F - comparador de volumes, simulador de frete e telemetria (etapas 53-60) (#3954)
+- 2026-11-21 `4eddf85` feat(kit): plano de volumes do kit no lugar do FreightEstimator (etapa 52) (#3951)
+- 2026-11-21 `f613f3f` chore(main): release gifts-store 1.16.1 (#3949)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

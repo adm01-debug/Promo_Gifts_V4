@@ -2,198 +2,198 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "687ee379788567322a8bdccc319d931ae89685c8",
+  "commit": "1948642c18085434511e6e31db2b9facafa4030e",
   "branch": "main",
-  "data_commit": "2026-11-21T15:07:07-03:00",
+  "data_commit": "2026-11-21T16:04:56-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
    {
-    "sha": "687ee379",
+    "sha": "1948642",
+    "data": "2026-11-21",
+    "assunto": "chore(vercel): desativa preview em branches docs/infra/chore (#3964)"
+   },
+   {
+    "sha": "2ae3463",
+    "data": "2026-11-21",
+    "assunto": "chore: consolida baselines de assertions (any-type 1-0, as-unknown 250-229) (#3963)"
+   },
+   {
+    "sha": "687ee37",
     "data": "2026-11-21",
     "assunto": "chore(main): release gifts-store 1.17.0 (#3953)"
    },
    {
-    "sha": "a7be36d6",
+    "sha": "a7be36d",
     "data": "2026-11-21",
     "assunto": "fix(ci): bloqueia variantes de invoke direto (#3952)"
    },
    {
-    "sha": "8ca0bd0f",
+    "sha": "8ca0bd0",
     "data": "2026-11-21",
     "assunto": "docs: recibo de aplicação — 20261121120000 (E15) (#3961)"
    },
    {
-    "sha": "8a224b12",
+    "sha": "8a224b1",
     "data": "2026-11-21",
     "assunto": "docs: recibo de aplicação — 20261121000000 (E15) (#3958)"
    },
    {
-    "sha": "27369d5e",
+    "sha": "27369d5",
     "data": "2026-11-21",
     "assunto": "feat: migration v_compras_precos_faixa — view de faixas de preço para compras (#3962)"
    },
    {
-    "sha": "7f8c55ef",
+    "sha": "7f8c55e",
     "data": "2026-11-21",
     "assunto": "feat(compras): view v_compras_catalogo no PIM [PR 1.1]"
    },
    {
-    "sha": "fdf20b39",
+    "sha": "fdf20b3",
     "data": "2026-11-21",
     "assunto": "fix(quotes): restaura contrato transacional das RPCs com frete (Gate 2.5) (#3959)"
    },
    {
-    "sha": "60f9275e",
+    "sha": "60f9275",
     "data": "2026-11-21",
     "assunto": "chore(migrations): rollback da migration 20261121000000 (E058) (#3957)"
    },
    {
-    "sha": "184ac28b",
+    "sha": "184ac28",
     "data": "2026-11-21",
     "assunto": "feat(frete): persiste plano de frete no orcamento (G-UI, etapas 62-63) (#3956)"
    },
    {
-    "sha": "1ab26193",
+    "sha": "1ab2619",
     "data": "2026-11-21",
     "assunto": "feat(frete): expoe volumes para transporte no PDF do kit (#3955)"
    },
    {
-    "sha": "e311dad9",
+    "sha": "e311dad",
     "data": "2026-11-21",
     "assunto": "feat(frete): Bloco F - comparador de volumes, simulador de frete e telemetria (etapas 53-60) (#3954)"
    },
    {
-    "sha": "4eddf85d",
+    "sha": "4eddf85",
     "data": "2026-11-21",
     "assunto": "feat(kit): plano de volumes do kit no lugar do FreightEstimator (etapa 52) (#3951)"
    },
    {
-    "sha": "f613f3f5",
+    "sha": "f613f3f",
     "data": "2026-11-21",
     "assunto": "chore(main): release gifts-store 1.16.1 (#3949)"
    },
    {
-    "sha": "912bfae1",
+    "sha": "912bfae",
     "data": "2026-11-21",
     "assunto": "test(kit): classificacao de status KMM-075/KMX-037 (D7) (#3950)"
    },
    {
-    "sha": "f483626a",
+    "sha": "f483626",
     "data": "2026-11-21",
     "assunto": "fix(ci): endurece gate de chamadas diretas (#3943)"
    },
    {
-    "sha": "a87dc91e",
+    "sha": "a87dc91",
     "data": "2026-11-20",
     "assunto": "chore(docs): memoria do GOAL 4 - achados e resgate quote_comments (#3948)"
    },
    {
-    "sha": "f83c473f",
+    "sha": "f83c473",
     "data": "2026-11-20",
     "assunto": "chore(main): release gifts-store 1.16.0 (#3945)"
    },
    {
-    "sha": "3f273fe9",
+    "sha": "3f273fe",
     "data": "2026-11-20",
     "assunto": "docs(migrations-log): recibo E15 — aplicação de 20261120180000 (#3946)"
    },
    {
-    "sha": "cfd7f833",
+    "sha": "cfd7f83",
     "data": "2026-11-20",
     "assunto": "feat: reativa comentários em orçamento (quote_comments) — UI + testes + trava (#3944)"
    },
    {
-    "sha": "36e7b1c2",
+    "sha": "36e7b1c",
     "data": "2026-11-20",
     "assunto": "feat(db): restaura comentários em orçamento (quote_comments) após decisão do dono (#3942)"
    },
    {
-    "sha": "e5071743",
+    "sha": "e507174",
     "data": "2026-11-20",
     "assunto": "test"
    },
    {
-    "sha": "0ec2fc56",
+    "sha": "0ec2fc5",
     "data": "2026-11-20",
     "assunto": "fix: contrato de orphan-mounts alinha com montagem lazy do RupturePanelEma (#3941)"
    },
    {
-    "sha": "04369208",
+    "sha": "0436920",
     "data": "2026-11-20",
     "assunto": "fix(stock): banner de risco EMA não derruba para usuário não-dev (403 da edge) (#3940)"
-   },
-   {
-    "sha": "e54228ab",
-    "data": "2026-11-20",
-    "assunto": "feat(db): colunas do plano de volumes em quotes (frete, Bloco G — DDL, etapa 61) (#3926)"
-   },
-   {
-    "sha": "a499d841",
-    "data": "2026-11-20",
-    "assunto": "feat(frete): prazo de produção no admin — card, aba Feriados e exceção por produto (Bloco H-UI) (#3936)"
    }
   ],
   "arquivos_mudados_7d": 11306,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
-    "mudancas": 1893
+    "mudancas": 2497
    },
    {
     "pasta": "recovery/src-legacy/src",
-    "mudancas": 1265
+    "mudancas": 1897
    },
    {
     "pasta": "src/components/products",
-    "mudancas": 909
+    "mudancas": 1213
    },
    {
     "pasta": "tests/edge-functions/live",
-    "mudancas": 692
+    "mudancas": 922
    },
    {
     "pasta": "src/hooks/products",
-    "mudancas": 642
-   },
-   {
-    "pasta": "src/components/quotes",
-    "mudancas": 559
+    "mudancas": 847
    },
    {
     "pasta": "src/pages/magazine",
-    "mudancas": 552
+    "mudancas": 736
+   },
+   {
+    "pasta": "src/components/quotes",
+    "mudancas": 733
    },
    {
     "pasta": "src/components/inventory",
-    "mudancas": 486
+    "mudancas": 646
    },
    {
     "pasta": "supabase/functions/_shared",
-    "mudancas": 444
+    "mudancas": 594
    },
    {
     "pasta": "src/components/ui",
-    "mudancas": 438
+    "mudancas": 584
    },
    {
     "pasta": "src/components/mockup",
-    "mudancas": 403
+    "mudancas": 523
    },
    {
     "pasta": "src/pages/admin",
-    "mudancas": 374
+    "mudancas": 494
    },
    {
     "pasta": "src/pages/quotes",
-    "mudancas": 326
+    "mudancas": 428
    },
    {
     "pasta": "src/components/kit-builder",
-    "mudancas": 307
+    "mudancas": 399
    },
    {
     "pasta": "src/pages/products",
-    "mudancas": 292
+    "mudancas": 388
    }
   ],
   "arquivos_mais_mudados_90d": [
@@ -203,113 +203,113 @@
    },
    {
     "arquivo": "package.json",
-    "mudancas": 33
+    "mudancas": 35
    },
    {
     "arquivo": "docs/coordenacao/conflitos-semanticos.md",
-    "mudancas": 30
+    "mudancas": 29
    },
    {
     "arquivo": "package-lock.json",
-    "mudancas": 23
-   },
-   {
-    "arquivo": ".github/workflows/deploy-gates.yml",
-    "mudancas": 17
+    "mudancas": 25
    },
    {
     "arquivo": "CHANGELOG.md",
-    "mudancas": 17
+    "mudancas": 19
+   },
+   {
+    "arquivo": ".github/workflows/deploy-gates.yml",
+    "mudancas": 18
    },
    {
     "arquivo": "audit/supabase-reference-catalog.temporary.json",
-    "mudancas": 15
+    "mudancas": 17
    },
    {
     "arquivo": "src/pages/mockups/MockupGenerator.tsx",
+    "mudancas": 16
+   },
+   {
+    "arquivo": "src/integrations/supabase/types.ts",
     "mudancas": 14
    },
    {
     "arquivo": "src/pages/kit-builder/KitBuilderPage.tsx",
-    "mudancas": 13
-   },
-   {
-    "arquivo": "src/integrations/supabase/types.ts",
-    "mudancas": 12
+    "mudancas": 14
    },
    {
     "arquivo": "src/pages/quotes/QuoteBuilderPage.tsx",
-    "mudancas": 12
-   },
-   {
-    "arquivo": ".github/workflows/e2e.yml",
-    "mudancas": 10
+    "mudancas": 14
    },
    {
     "arquivo": ".github/workflows/replenishment-quality.yml",
-    "mudancas": 10
-   },
-   {
-    "arquivo": "docs/agentes/resgates/2026-11-16-auditoria-branches.md",
-    "mudancas": 10
-   },
-   {
-    "arquivo": "scripts/drift-baseline.mjs",
-    "mudancas": 10
+    "mudancas": 12
    },
    {
     "arquivo": "src/components/kit-builder/KitSummary.tsx",
-    "mudancas": 10
+    "mudancas": 12
    },
    {
     "arquivo": "src/components/kit-builder/PersonalizationConfig.tsx",
-    "mudancas": 10
+    "mudancas": 12
    },
    {
     "arquivo": "src/components/quotes/QuoteAutoSave.tsx",
-    "mudancas": 10
+    "mudancas": 12
    },
    {
     "arquivo": "src/hooks/mockup/useMockupGenerator.ts",
-    "mudancas": 10
+    "mudancas": 12
    },
    {
     "arquivo": "src/hooks/quotes/useQuoteTemplates.ts",
-    "mudancas": 10
+    "mudancas": 12
    },
    {
     "arquivo": "vitest.config.ts",
-    "mudancas": 10
+    "mudancas": 12
    },
    {
-    "arquivo": ".github/workflows/delivery-quality.yml",
-    "mudancas": 9
+    "arquivo": ".github/workflows/schema-snapshot-export.yml",
+    "mudancas": 11
    },
    {
-    "arquivo": ".github/workflows/e2e-cart.yml",
-    "mudancas": 9
+    "arquivo": "e2e/helpers/auth.ts",
+    "mudancas": 11
    },
    {
-    "arquivo": ".github/workflows/e2e-flows.yml",
-    "mudancas": 9
+    "arquivo": "scripts/automation.config.json",
+    "mudancas": 11
    },
    {
-    "arquivo": ".github/workflows/e2e-personalization.yml",
-    "mudancas": 9
+    "arquivo": "scripts/drift-baseline.mjs",
+    "mudancas": 11
+   },
+   {
+    "arquivo": "src/components/mockup/MockupClientSelector.tsx",
+    "mudancas": 11
+   },
+   {
+    "arquivo": "src/components/mockup/MockupConfigPanel.tsx",
+    "mudancas": 11
+   },
+   {
+    "arquivo": "src/components/search/useGlobalSearch.ts",
+    "mudancas": 11
    }
   ],
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 283
-   },
-   {
-    "autor": "Claude",
-    "commits": 35
+    "commits": 277
    },
    {
     "autor": "github-actions[bot]",
     "commits": 32
+   },
+   {
+    "autor": "Claude",
+    "commits": 30
    },
    {
     "autor": "Joaquim Ataides",
