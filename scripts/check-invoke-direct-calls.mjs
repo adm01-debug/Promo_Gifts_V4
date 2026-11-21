@@ -21,118 +21,33 @@ import { readFileSync, writeFileSync, existsSync } from 'node:fs';
 import { resolve, relative, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { globSync } from 'node:fs';
+import ts from 'typescript';
 
 const ROOT = resolve(fileURLToPath(new URL('..', import.meta.url)));
 const BASELINE_PATH = resolve(ROOT, '.invoke-direct-baseline.json');
 
 const SSOT_FILE = 'src/lib/edge/safeInvokeCall.ts';
-const IGNORE_PATTERNS = [
-  /(^|[\\/])__tests__[\\/]/,
-  /\.test\.(t|j)sx?$/,
-  /(^|[\\/])e2e[\\/]/,
-];
+const IGNORE_PATTERNS = [/(^|[\\/])__tests__[\\/]/, /\.test\.(t|j)sx?$/, /(^|[\\/])e2e[\\/]/];
 
-// Regex — dois padrões:
-//   A) `.functions.invoke(` (com espaços flexíveis)
-//   B) `["functions"].invoke(` (acesso dinâmico)
-const RE_A = /\.functions\s*\.\s*invoke\s*\(/g;
-const RE_B = /\[\s*["']functions["']\s*\]\s*\.\s*invoke\s*\(/g;
-
-/** Zera comentários (linha e bloco), preservando quebras de linha. */
-function stripComments(src) {
-  let out = '';
-  let i = 0;
-  const n = src.length;
-  while (i < n) {
-    const c = src[i];
-    const c2 = src[i + 1];
-    if (c === '/' && c2 === '*') {
-      const end = src.indexOf('*/', i + 2);
-      const chunk = src.slice(i, end === -1 ? n : end + 2);
-      out += chunk.replace(/[^\n]/g, ' ');
-      i += chunk.length;
-      continue;
-    }
-    if (c === '/' && c2 === '/') {
-      const end = src.indexOf('\n', i);
-      const chunk = src.slice(i, end === -1 ? n : end);
-      out += chunk.replace(/[^\n]/g, ' ');
-      i += chunk.length;
-      continue;
-    }
-    // pula string literal SEM apagar — usada só p/ RE_B (que precisa de `"functions"`)
-    if (c === '"' || c === "'" || c === '`') {
-      const quote = c;
-      let j = i + 1;
-      while (j < n) {
-        if (src[j] === '\\') { j += 2; continue; }
-        if (src[j] === quote) { j += 1; break; }
-        if (quote === '`' && src[j] === '$' && src[j + 1] === '{') {
-          let depth = 1; j += 2;
-          while (j < n && depth > 0) {
-            if (src[j] === '{') depth += 1;
-            else if (src[j] === '}') depth -= 1;
-            j += 1;
-          }
-          continue;
-        }
-        j += 1;
-      }
-      out += src.slice(i, j);
-      i = j;
-      continue;
-    }
-    out += c;
-    i += 1;
+function isFunctionsAccess(node) {
+  if (ts.isPropertyAccessExpression(node)) {
+    return node.name.text === 'functions';
   }
-  return out;
+  if (!ts.isElementAccessExpression(node)) return false;
+  const key = node.argumentExpression;
+  return (
+    (ts.isStringLiteral(key) || ts.isNoSubstitutionTemplateLiteral(key)) && key.text === 'functions'
+  );
 }
 
-/** Zera comentários E string literals — usado p/ RE_A. */
-function stripCommentsAndStrings(src) {
-  let out = '';
-  let i = 0;
-  const n = src.length;
-  while (i < n) {
-    const c = src[i];
-    const c2 = src[i + 1];
-    if (c === '/' && c2 === '*') {
-      const end = src.indexOf('*/', i + 2);
-      const chunk = src.slice(i, end === -1 ? n : end + 2);
-      out += chunk.replace(/[^\n]/g, ' ');
-      i += chunk.length; continue;
-    }
-    if (c === '/' && c2 === '/') {
-      const end = src.indexOf('\n', i);
-      const chunk = src.slice(i, end === -1 ? n : end);
-      out += chunk.replace(/[^\n]/g, ' ');
-      i += chunk.length; continue;
-    }
-    if (c === '"' || c === "'" || c === '`') {
-      const quote = c;
-      let j = i + 1;
-      while (j < n) {
-        if (src[j] === '\\') { j += 2; continue; }
-        if (src[j] === quote) { j += 1; break; }
-        if (quote === '`' && src[j] === '$' && src[j + 1] === '{') {
-          let depth = 1; j += 2;
-          while (j < n && depth > 0) {
-            if (src[j] === '{') depth += 1;
-            else if (src[j] === '}') depth -= 1;
-            j += 1;
-          }
-          continue;
-        }
-        j += 1;
-      }
-      const chunk = src.slice(i, j);
-      out += chunk.replace(/[^\n]/g, ' ');
-      i = j; continue;
-    }
-    out += c;
-    i += 1;
-  }
-  return out;
+function isDirectInvokeCall(node) {
+  if (!ts.isCallExpression(node)) return false;
+  const invoke = node.expression;
+  return (
+    ts.isPropertyAccessExpression(invoke) &&
+    invoke.name.text === 'invoke' &&
+    isFunctionsAccess(invoke.expression)
+  );
 }
 
 function shouldIgnore(relPath) {
@@ -145,25 +60,30 @@ function scanFile(absPath) {
   const rel = relative(ROOT, absPath).split(sep).join('/');
   if (shouldIgnore(rel)) return [];
   let src;
-  try { src = readFileSync(absPath, 'utf8'); } catch { return []; }
+  try {
+    src = readFileSync(absPath, 'utf8');
+  } catch {
+    return [];
+  }
   if (!src.includes('.invoke')) return [];
-  const codeNoStrings = stripCommentsAndStrings(src);
-  const codeWithStrings = stripComments(src);
+  const sourceFile = ts.createSourceFile(
+    rel,
+    src,
+    ts.ScriptTarget.Latest,
+    true,
+    rel.endsWith('.tsx') ? ts.ScriptKind.TSX : ts.ScriptKind.TS,
+  );
   const hits = [];
-  RE_A.lastIndex = 0;
-  let m;
-  while ((m = RE_A.exec(codeNoStrings)) !== null) {
-    const line = codeNoStrings.slice(0, m.index).split('\n').length;
-    hits.push({ file: rel, line });
-  }
-  RE_B.lastIndex = 0;
-  while ((m = RE_B.exec(codeWithStrings)) !== null) {
-    const line = codeWithStrings.slice(0, m.index).split('\n').length;
-    hits.push({ file: rel, line });
-  }
+  const visit = (node) => {
+    if (isDirectInvokeCall(node)) {
+      const { line } = sourceFile.getLineAndCharacterOfPosition(node.getStart(sourceFile));
+      hits.push({ file: rel, line: line + 1 });
+    }
+    ts.forEachChild(node, visit);
+  };
+  visit(sourceFile);
   return hits;
 }
-
 
 function collect() {
   const files = globSync('src/**/*.{ts,tsx}', { cwd: ROOT, absolute: true });
@@ -214,7 +134,9 @@ function main() {
 
   // GUARD: baseline ausente não é recriada em silêncio (apagar o arquivo zerava o gate).
   if (!update && !existsSync(BASELINE_PATH)) {
-    console.error(`❌ baseline ausente: ${BASELINE_PATH}. Recrie com UPDATE_BASELINE=1 node scripts/check-invoke-direct-calls.mjs`);
+    console.error(
+      `❌ baseline ausente: ${BASELINE_PATH}. Recrie com UPDATE_BASELINE=1 node scripts/check-invoke-direct-calls.mjs`,
+    );
     process.exit(2);
   }
 
@@ -247,7 +169,9 @@ function main() {
     );
     for (const r of removed.slice(0, 20)) console.log(`   - ${r}`);
     if (removed.length > 20) console.log(`   ... +${removed.length - 20}`);
-    console.log('   Rode `UPDATE_BASELINE=1 node scripts/check-invoke-direct-calls.mjs` para consolidar.');
+    console.log(
+      '   Rode `UPDATE_BASELINE=1 node scripts/check-invoke-direct-calls.mjs` para consolidar.',
+    );
   }
 
   if (added.length > 0) {

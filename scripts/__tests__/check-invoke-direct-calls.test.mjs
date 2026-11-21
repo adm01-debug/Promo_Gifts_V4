@@ -5,13 +5,16 @@
  */
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { mkdtempSync, writeFileSync, mkdirSync, rmSync } from 'node:fs';
+import { mkdtempSync, writeFileSync, mkdirSync, rmSync, symlinkSync } from 'node:fs';
 import { tmpdir } from 'node:os';
-import { join } from 'node:path';
+import { dirname, join } from 'node:path';
 import { execFileSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
+import { createRequire } from 'node:module';
 
 const SCRIPT = fileURLToPath(new URL('../check-invoke-direct-calls.mjs', import.meta.url));
+const require = createRequire(import.meta.url);
+const TYPESCRIPT_DIR = dirname(require.resolve('typescript/package.json'));
 
 function runInSandbox(files) {
   const dir = mkdtempSync(join(tmpdir(), 'invoke-gate-'));
@@ -20,6 +23,8 @@ function runInSandbox(files) {
   const libEdge = join(src, 'lib', 'edge');
   mkdirSync(scripts, { recursive: true });
   mkdirSync(libEdge, { recursive: true });
+  mkdirSync(join(dir, 'node_modules'), { recursive: true });
+  symlinkSync(TYPESCRIPT_DIR, join(dir, 'node_modules', 'typescript'), 'dir');
   // Copia o script para dentro do sandbox p/ que ROOT resolva certo.
   execFileSync('cp', [SCRIPT, join(scripts, 'check-invoke-direct-calls.mjs')]);
   // SSOT stub — deve ser ignorado.
@@ -47,14 +52,22 @@ function runInSandbox(files) {
   return { dir, run, cleanup: () => rmSync(dir, { recursive: true, force: true }) };
 }
 
-test('cria baseline no primeiro run', () => {
+function seedBaseline(run) {
+  const result = run({ UPDATE_BASELINE: '1' });
+  assert.equal(result.code, 0);
+  return result;
+}
+
+test('baseline ausente falha fechada e exige atualização explícita', () => {
   const { run, cleanup } = runInSandbox({
     'src/a.ts': 'await supabase.functions.invoke("a");\n',
   });
   try {
-    const r = run();
-    assert.equal(r.code, 0);
-    assert.match(r.out, /baseline criada/);
+    const missing = run();
+    assert.equal(missing.code, 2);
+    assert.match(missing.out, /baseline ausente/);
+    const updated = seedBaseline(run);
+    assert.match(updated.out, /baseline atualizada/);
   } finally {
     cleanup();
   }
@@ -65,7 +78,7 @@ test('call site novo fora da baseline → falha', () => {
     'src/a.ts': 'await supabase.functions.invoke("a");\n',
   });
   try {
-    assert.equal(run().code, 0); // cria baseline
+    seedBaseline(run);
     writeFileSync(join(dir, 'src', 'b.ts'), 'await supabase.functions.invoke("b");\n');
     const r = run();
     assert.equal(r.code, 1);
@@ -84,6 +97,7 @@ test('comentário e string literal são ignorados', () => {
       'const s = "supabase.functions.invoke(\\"no\\")";\n',
   });
   try {
+    seedBaseline(run);
     const r = run();
     assert.equal(r.code, 0);
     // baseline vazia
@@ -98,11 +112,8 @@ test('acesso dinâmico ["functions"].invoke é detectado', () => {
     'src/a.ts': '// vazio\n',
   });
   try {
-    assert.equal(run().code, 0);
-    writeFileSync(
-      join(dir, 'src', 'dyn.ts'),
-      'await supa["functions"].invoke("x");\n',
-    );
+    seedBaseline(run);
+    writeFileSync(join(dir, 'src', 'dyn.ts'), 'await supa["functions"].invoke("x");\n');
     const r = run();
     assert.equal(r.code, 1);
     assert.match(r.out, /src\/dyn\.ts/);
@@ -118,6 +129,7 @@ test('arquivos de teste são ignorados', () => {
     'src/ok.ts': '// nada\n',
   });
   try {
+    seedBaseline(run);
     const r = run();
     assert.equal(r.code, 0);
     assert.match(r.out, /0 call sites/);
@@ -131,7 +143,7 @@ test('UPDATE_BASELINE=1 consolida remoções', () => {
     'src/a.ts': 'await supabase.functions.invoke("a");\n',
   });
   try {
-    assert.equal(run().code, 0);
+    seedBaseline(run);
     // remove a chamada
     writeFileSync(join(dir, 'src', 'a.ts'), '// migrated\n');
     const warn = run();
@@ -144,6 +156,56 @@ test('UPDATE_BASELINE=1 consolida remoções', () => {
     const clean = run();
     assert.equal(clean.code, 0);
     assert.match(clean.out, /0 call sites/);
+  } finally {
+    cleanup();
+  }
+});
+
+test('chamada dentro de interpolação de template é detectada', () => {
+  const { dir, run, cleanup } = runInSandbox({
+    'src/a.ts': 'const clean = `sem chamada`;\n',
+  });
+  try {
+    seedBaseline(run);
+    writeFileSync(
+      join(dir, 'src', 'template.ts'),
+      'const rendered = `${supabase.functions.invoke("x")}`;\n',
+    );
+    const result = run();
+    assert.equal(result.code, 1);
+    assert.match(result.out, /src\/template\.ts/);
+  } finally {
+    cleanup();
+  }
+});
+
+test('chamada com tipo genérico é detectada', () => {
+  const { dir, run, cleanup } = runInSandbox({
+    'src/a.ts': 'const clean = true;\n',
+  });
+  try {
+    seedBaseline(run);
+    writeFileSync(
+      join(dir, 'src', 'generic.ts'),
+      'await supabase.functions.invoke<Result>("x");\n',
+    );
+    const result = run();
+    assert.equal(result.code, 1);
+    assert.match(result.out, /src\/generic\.ts/);
+  } finally {
+    cleanup();
+  }
+});
+
+test('acesso dinâmico citado em string documental é ignorado', () => {
+  const { run, cleanup } = runInSandbox({
+    'src/a.ts': 'const docs = `use supa["functions"].invoke("x")`;\n',
+  });
+  try {
+    seedBaseline(run);
+    const result = run();
+    assert.equal(result.code, 0);
+    assert.match(result.out, /0 call sites/);
   } finally {
     cleanup();
   }
