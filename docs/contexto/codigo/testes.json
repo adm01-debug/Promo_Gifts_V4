@@ -4614,9 +4614,9 @@
   {
    "arquivo": "scripts/__tests__/check-invoke-direct-calls.test.mjs",
    "tipo": "unit",
-   "linhas": 213,
+   "linhas": 267,
    "testa": [],
-   "casos": 9
+   "casos": 11
   },
   {
    "arquivo": "scripts/__tests__/check-package-duplicate-scripts.test.ts",

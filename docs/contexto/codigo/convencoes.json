@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "chore(main): release gifts-store 1.17.0 (#3953)",
+   "fix(ci): bloqueia variantes de invoke direto (#3952)",
    "docs: recibo de aplicação — 20261121120000 (E15) (#3961)",
    "docs: recibo de aplicação — 20261121000000 (E15) (#3958)",
-   "feat: migration v_compras_precos_faixa — view de faixas de preço para compras (#3962)",
-   "feat(compras): view v_compras_catalogo no PIM [PR 1.1]",
-   "fix(quotes): restaura contrato transacional das RPCs com frete (Gate 2.5) (#3959)"
+   "feat: migration v_compras_precos_faixa — view de faixas de preço para compras (#3962)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",

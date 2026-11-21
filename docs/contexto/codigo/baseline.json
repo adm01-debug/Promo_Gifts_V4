@@ -2,11 +2,21 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "8ca0bd0fe57a1c4b7b71f87cded87f2e56eb2334",
+  "commit": "687ee379788567322a8bdccc319d931ae89685c8",
   "branch": "main",
-  "data_commit": "2026-11-21T14:47:19-03:00",
+  "data_commit": "2026-11-21T15:07:07-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "687ee379",
+    "data": "2026-11-21",
+    "assunto": "chore(main): release gifts-store 1.17.0 (#3953)"
+   },
+   {
+    "sha": "a7be36d6",
+    "data": "2026-11-21",
+    "assunto": "fix(ci): bloqueia variantes de invoke direto (#3952)"
+   },
    {
     "sha": "8ca0bd0f",
     "data": "2026-11-21",
@@ -121,85 +131,75 @@
     "sha": "a499d841",
     "data": "2026-11-20",
     "assunto": "feat(frete): prazo de produção no admin — card, aba Feriados e exceção por produto (Bloco H-UI) (#3936)"
-   },
-   {
-    "sha": "34713170",
-    "data": "2026-11-20",
-    "assunto": "fix(frete): admin de caixas e parâmetros — 2ª rodada (duplo clique, rolagem, limites do banco) (#3924)"
-   },
-   {
-    "sha": "96508a5f",
-    "data": "2026-11-20",
-    "assunto": "feat(frete): plano de volumes no orçamento, cache ao salvar produto e ships_separately (Bloco E, etapas 46, 47, 49) (#39"
    }
   ],
-  "arquivos_mudados_7d": 11305,
+  "arquivos_mudados_7d": 11306,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
-    "mudancas": 2199
+    "mudancas": 1893
    },
    {
     "pasta": "recovery/src-legacy/src",
-    "mudancas": 1897
+    "mudancas": 1265
    },
    {
     "pasta": "src/components/products",
-    "mudancas": 1064
+    "mudancas": 909
    },
    {
     "pasta": "tests/edge-functions/live",
-    "mudancas": 807
+    "mudancas": 692
    },
    {
     "pasta": "src/hooks/products",
-    "mudancas": 749
+    "mudancas": 642
    },
    {
     "pasta": "src/components/quotes",
-    "mudancas": 646
+    "mudancas": 559
    },
    {
     "pasta": "src/pages/magazine",
-    "mudancas": 644
+    "mudancas": 552
    },
    {
     "pasta": "src/components/inventory",
-    "mudancas": 566
+    "mudancas": 486
    },
    {
     "pasta": "supabase/functions/_shared",
-    "mudancas": 525
+    "mudancas": 444
    },
    {
     "pasta": "src/components/ui",
-    "mudancas": 511
+    "mudancas": 438
    },
    {
     "pasta": "src/components/mockup",
-    "mudancas": 463
+    "mudancas": 403
    },
    {
     "pasta": "src/pages/admin",
-    "mudancas": 435
+    "mudancas": 374
    },
    {
     "pasta": "src/pages/quotes",
-    "mudancas": 381
+    "mudancas": 326
    },
    {
     "pasta": "src/components/kit-builder",
-    "mudancas": 352
+    "mudancas": 307
    },
    {
     "pasta": "src/pages/products",
-    "mudancas": 340
+    "mudancas": 292
    }
   ],
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "supabase/MIGRATIONS_SYNC_LOG.md",
-    "mudancas": 68
+    "mudancas": 66
    },
    {
     "arquivo": "package.json",
@@ -207,7 +207,7 @@
    },
    {
     "arquivo": "docs/coordenacao/conflitos-semanticos.md",
-    "mudancas": 31
+    "mudancas": 30
    },
    {
     "arquivo": "package-lock.json",
@@ -215,7 +215,7 @@
    },
    {
     "arquivo": ".github/workflows/deploy-gates.yml",
-    "mudancas": 18
+    "mudancas": 17
    },
    {
     "arquivo": "CHANGELOG.md",
@@ -223,93 +223,93 @@
    },
    {
     "arquivo": "audit/supabase-reference-catalog.temporary.json",
-    "mudancas": 16
-   },
-   {
-    "arquivo": "src/pages/mockups/MockupGenerator.tsx",
     "mudancas": 15
    },
    {
-    "arquivo": "src/pages/kit-builder/KitBuilderPage.tsx",
+    "arquivo": "src/pages/mockups/MockupGenerator.tsx",
     "mudancas": 14
    },
    {
-    "arquivo": "src/integrations/supabase/types.ts",
+    "arquivo": "src/pages/kit-builder/KitBuilderPage.tsx",
     "mudancas": 13
+   },
+   {
+    "arquivo": "src/integrations/supabase/types.ts",
+    "mudancas": 12
    },
    {
     "arquivo": "src/pages/quotes/QuoteBuilderPage.tsx",
-    "mudancas": 13
-   },
-   {
-    "arquivo": ".github/workflows/replenishment-quality.yml",
     "mudancas": 12
-   },
-   {
-    "arquivo": ".github/workflows/schema-snapshot-export.yml",
-    "mudancas": 12
-   },
-   {
-    "arquivo": ".github/workflows/e2e-swatch-quickview.yml",
-    "mudancas": 11
    },
    {
     "arquivo": ".github/workflows/e2e.yml",
-    "mudancas": 11
+    "mudancas": 10
    },
    {
-    "arquivo": "scripts/automation.config.json",
-    "mudancas": 11
+    "arquivo": ".github/workflows/replenishment-quality.yml",
+    "mudancas": 10
+   },
+   {
+    "arquivo": "docs/agentes/resgates/2026-11-16-auditoria-branches.md",
+    "mudancas": 10
    },
    {
     "arquivo": "scripts/drift-baseline.mjs",
-    "mudancas": 11
+    "mudancas": 10
    },
    {
     "arquivo": "src/components/kit-builder/KitSummary.tsx",
-    "mudancas": 11
+    "mudancas": 10
    },
    {
     "arquivo": "src/components/kit-builder/PersonalizationConfig.tsx",
-    "mudancas": 11
+    "mudancas": 10
    },
    {
     "arquivo": "src/components/quotes/QuoteAutoSave.tsx",
-    "mudancas": 11
+    "mudancas": 10
    },
    {
     "arquivo": "src/hooks/mockup/useMockupGenerator.ts",
-    "mudancas": 11
+    "mudancas": 10
    },
    {
     "arquivo": "src/hooks/quotes/useQuoteTemplates.ts",
-    "mudancas": 11
+    "mudancas": 10
    },
    {
     "arquivo": "vitest.config.ts",
-    "mudancas": 11
+    "mudancas": 10
    },
    {
     "arquivo": ".github/workflows/delivery-quality.yml",
-    "mudancas": 10
+    "mudancas": 9
    },
    {
     "arquivo": ".github/workflows/e2e-cart.yml",
-    "mudancas": 10
+    "mudancas": 9
+   },
+   {
+    "arquivo": ".github/workflows/e2e-flows.yml",
+    "mudancas": 9
+   },
+   {
+    "arquivo": ".github/workflows/e2e-personalization.yml",
+    "mudancas": 9
    }
   ],
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 289
+    "commits": 283
    },
    {
     "autor": "Claude",
-    "commits": 41
+    "commits": 35
    },
    {
     "autor": "github-actions[bot]",
-    "commits": 31
+    "commits": 32
    },
    {
     "autor": "Joaquim Ataides",
@@ -324,7 +324,7 @@
  "contagens": {
   "arquivos_total": 11197,
   "arquivos_codigo": 5650,
-  "linhas_codigo": 1072210,
+  "linhas_codigo": 1072296,
   "rotas": 141,
   "rotas_http_backend": 13,
   "vistas_por_id": 0,
@@ -928,7 +928,7 @@
   },
   "scripts/__tests__": {
    "arquivos": 7,
-   "linhas": 1113
+   "linhas": 1167
   },
   "scripts/ai-context": {
    "arquivos": 3,
@@ -1200,7 +1200,7 @@
   },
   "scripts/check-invoke-direct-calls.mjs": {
    "arquivos": 1,
-   "linhas": 196
+   "linhas": 228
   },
   "scripts/check-ledger-manifest-drift.mjs": {
    "arquivos": 1,

@@ -1,6 +1,6 @@
 # 11 · GLOSSÁRIO, DADOS DE REFERÊNCIA E LACUNAS
 
-> Gerado automaticamente por AI Context Sync v1.3.2 · commit `8ca0bd0fe5` · branch `main` · 2026-11-21 17:48 UTC
+> Gerado automaticamente por AI Context Sync v1.3.2 · commit `687ee37978` · branch `main` · 2026-11-21 18:08 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## Glossário do domínio (entidades do sistema)
@@ -647,7 +647,7 @@
 | rls | `supplier_settings`: RLS ligado sem nenhuma política → só service_role acessa | `src/hooks/products/useSupplierDefaultLeadTime.ts`<br>`src/services/productionLeadTimeService.ts` |
 | rls | `suppliers`: front faz SELECT mas nenhuma política RLS permite SELECT → vai falhar/retornar vazio para usuários | `src/services/freightReadinessService.ts` |
 | rls | `tabela_preco_gravacao_oficial`: RLS ligado sem nenhuma política → só service_role acessa | `src/lib/external-db/rpc-native.ts` |
-| … +255 linhas — lista completa em `context.json` | | |
+| … +257 linhas — lista completa em `context.json` | | |
 
 ## Lacunas — o que este contexto NÃO consegue responder (perguntas para o dono do negócio)
 

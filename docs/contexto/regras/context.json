@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "8ca0bd0fe57a1c4b7b71f87cded87f2e56eb2334",
+  "sha": "687ee379788567322a8bdccc319d931ae89685c8",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-21 17:48 UTC",
+  "generated_at": "2026-11-21 18:08 UTC",
   "files_total": 11125,
   "code_files": 9133,
-  "code_lines": 1297086
+  "code_lines": 1297172
  },
  "version": "1.3.2",
- "facts_hash": "f73f1e7875fa54e6",
+ "facts_hash": "d7b9d9e035013eca",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -150388,7 +150388,7 @@
   {
    "module": "scripts",
    "files": 300,
-   "lines": 65023,
+   "lines": 65109,
    "tables": [
     "a",
     "b",
@@ -158949,6 +158949,9 @@
    "kit-identity-suggest": [
     "recovery/src-legacy/src/hooks/useKitIdentitySuggestion.ts"
    ],
+   "legacy": [
+    "scripts/__tests__/check-invoke-direct-calls.test.mjs"
+   ],
    "log-login-attempt": [
     "recovery/src-legacy/src/hooks/useIPValidation.ts"
    ],
@@ -158967,6 +158970,9 @@
    ],
    "minha-func": [
     "tests/scripts/gen-edges-readme.test.mjs"
+   ],
+   "new": [
+    "scripts/__tests__/check-invoke-direct-calls.test.mjs"
    ],
    "no": [
     "scripts/__tests__/check-invoke-direct-calls.test.mjs"
@@ -233089,6 +233095,14 @@
    {
     "file": "scripts/__tests__/check-invoke-direct-calls.test.mjs",
     "name": "chamada com tipo genérico é detectada"
+   },
+   {
+    "file": "scripts/__tests__/check-invoke-direct-calls.test.mjs",
+    "name": "variantes executáveis de acesso a invoke são detectadas"
+   },
+   {
+    "file": "scripts/__tests__/check-invoke-direct-calls.test.mjs",
+    "name": "segunda ocorrência na mesma linha não herda a baseline da primeira"
    },
    {
     "file": "scripts/__tests__/check-invoke-direct-calls.test.mjs",
@@ -409772,9 +409786,23 @@
    },
    {
     "kind": "edge",
+    "msg": "edge function `legacy` invocada mas não existe em supabase/functions/",
+    "where": [
+     "scripts/__tests__/check-invoke-direct-calls.test.mjs"
+    ]
+   },
+   {
+    "kind": "edge",
     "msg": "edge function `minha-func` invocada mas não existe em supabase/functions/",
     "where": [
      "tests/scripts/gen-edges-readme.test.mjs"
+    ]
+   },
+   {
+    "kind": "edge",
+    "msg": "edge function `new` invocada mas não existe em supabase/functions/",
+    "where": [
+     "scripts/__tests__/check-invoke-direct-calls.test.mjs"
     ]
    },
    {
@@ -435379,7 +435407,7 @@
   },
   "scripts/check-invoke-direct-calls.mjs": {
    "path": "scripts/check-invoke-direct-calls.mjs",
-   "lines": 196,
+   "lines": 228,
    "env": [
     "STRICT_BASELINE",
     "UPDATE_BASELINE"
@@ -435400,7 +435428,7 @@
     {
      "name": "scanFile",
      "params": "absPath",
-     "body": "const rel = relative(ROOT, absPath).split(sep).join('/'); if (shouldIgnore(rel)) return []; let src; try { src = readFileSync(absPath, 'utf8'); } catch { return []; } if (!src.includes('.invoke')) return []; const sourceFile = ts.createSourceFile( rel, src, ts.ScriptTarget.Latest, true, rel.endsWith('.tsx') ? ts.ScriptKind.TSX : ts.ScriptKind.TS, ); const hits = []; const visit = (node) => { if (isDirectInvokeCall(node)) { const { line } = sourceFile.getLineAndCharacterOfPosition(node.getStart(s …"
+     "body": "const rel = relative(ROOT, absPath).split(sep).join('/'); if (shouldIgnore(rel)) return []; let src; try { src = readFileSync(absPath, 'utf8'); } catch { return []; } const sourceFile = ts.createSourceFile( rel, src, ts.ScriptTarget.Latest, true, rel.endsWith('.tsx') ? ts.ScriptKind.TSX : ts.ScriptKind.TS, ); const hits = []; const visit = (node) => { if (isDirectInvokeAccess(node) || isDirectInvokeBinding(node)) { const { line } = sourceFile.getLineAndCharacterOfPosition(node.getStart(sourceFil …"
     }
    ]
   },
@@ -438696,11 +438724,13 @@
   },
   "scripts/__tests__/check-invoke-direct-calls.test.mjs": {
    "path": "scripts/__tests__/check-invoke-direct-calls.test.mjs",
-   "lines": 213,
+   "lines": 267,
    "is_test": true,
    "invokes": [
     "a",
     "b",
+    "legacy",
+    "new",
     "no",
     "ssot-ignored",
     "t",
@@ -438719,6 +438749,8 @@
     "UPDATE_BASELINE=1 consolida remoções",
     "chamada dentro de interpolação de template é detectada",
     "chamada com tipo genérico é detectada",
+    "variantes executáveis de acesso a invoke são detectadas",
+    "segunda ocorrência na mesma linha não herda a baseline da primeira",
     "acesso dinâmico citado em string documental é ignorado"
    ],
    "side_effects": [
@@ -560647,10 +560679,32 @@
   }
  },
  "git": {
-  "sha": "8ca0bd0fe57a1c4b7b71f87cded87f2e56eb2334",
+  "sha": "687ee379788567322a8bdccc319d931ae89685c8",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "687ee37",
+    "date": "2026-11-21",
+    "author": "github-actions[bot]",
+    "subject": "chore(main): release gifts-store 1.17.0 (#3953)",
+    "files": [
+     ".release-please-manifest.json",
+     "CHANGELOG.md",
+     "package-lock.json",
+     "package.json"
+    ]
+   },
+   {
+    "sha": "a7be36d",
+    "date": "2026-11-21",
+    "author": "adm01-debug",
+    "subject": "fix(ci): bloqueia variantes de invoke direto (#3952)",
+    "files": [
+     "scripts/__tests__/check-invoke-direct-calls.test.mjs",
+     "scripts/check-invoke-direct-calls.mjs"
+    ]
+   },
    {
     "sha": "8ca0bd0",
     "date": "2026-11-21",
@@ -561080,50 +561134,31 @@
      "package-lock.json",
      "package.json"
     ]
-   },
-   {
-    "sha": "be9f4a2",
-    "date": "2026-11-20",
-    "author": "adm01-debug",
-    "subject": "fix: crash appendChild ao digitar na busca global (CommandItem soltos) (#3937)",
-    "files": [
-     "src/components/search/GlobalSearchIdleState.tsx",
-     "src/components/search/__tests__/GlobalSearchIdleStateCrashes.test.tsx"
-    ]
-   },
-   {
-    "sha": "51ab7fb",
-    "date": "2026-11-20",
-    "author": "adm01-debug",
-    "subject": "docs(migrations): recibos E15 das 20261120030000/030100 (baseline já em #3931) (#3932)",
-    "files": [
-     "supabase/MIGRATIONS_SYNC_LOG.md"
-    ]
    }
   ],
   "hot_files": [
    [
     "supabase/MIGRATIONS_SYNC_LOG.md",
-    9
-   ],
-   [
-    ".file-size-baseline.json",
-    4
+    8
    ],
    [
     ".release-please-manifest.json",
-    4
+    5
    ],
    [
     "CHANGELOG.md",
-    4
+    5
    ],
    [
     "package-lock.json",
-    4
+    5
    ],
    [
     "package.json",
+    5
+   ],
+   [
+    ".file-size-baseline.json",
     4
    ],
    [
@@ -561133,6 +561168,14 @@
    [
     "src/integrations/supabase/types.ts",
     3
+   ],
+   [
+    "scripts/__tests__/check-invoke-direct-calls.test.mjs",
+    2
+   ],
+   [
+    "scripts/check-invoke-direct-calls.mjs",
+    2
    ],
    [
     "src/components/freight-plan/FreightPlanCard.tsx",
@@ -561172,14 +561215,6 @@
    ],
    [
     "src/components/freight-plan/index.ts",
-    2
-   ],
-   [
-    "src/hooks/freight/keys.ts",
-    2
-   ],
-   [
-    "src/pages/admin/AdminFreteSettingsPage.tsx",
     2
    ]
   ]
