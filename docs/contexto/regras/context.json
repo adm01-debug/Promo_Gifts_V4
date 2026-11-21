@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "fdf20b391c2b93013a868088a348bcb658fd6dda",
+  "sha": "7f8c55ef2e7cf05745e8ffc63b513638dd24afd2",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-21 16:38 UTC",
-  "files_total": 11123,
-  "code_files": 9131,
-  "code_lines": 1296974
+  "generated_at": "2026-11-21 16:51 UTC",
+  "files_total": 11124,
+  "code_files": 9132,
+  "code_lines": 1297029
  },
  "version": "1.3.2",
- "facts_hash": "300ca1855d829825",
+ "facts_hash": "78ad0d91dc85e062",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -1128,7 +1128,7 @@
   ],
   "package_manager": "npm",
   "languages": {
-   ".sql": 3482,
+   ".sql": 3483,
    ".ts": 3164,
    ".tsx": 2014,
    ".mjs": 455,
@@ -93481,6 +93481,10 @@
    "v_audit_paradoxos_gravacao": {
     "body": "WITH p1 AS ( SELECT 'P1'::text AS codigo_paradoxo, 'Técnica ativa sem faixas de preço'::text AS descricao, t.codigo_tabela, t.nome, t.grupo_tecnica, NULL::text AS produto_sku, NULL::text AS location_code, NULL::text AS detalhe, 'ALTO'::text AS severidade FROM tabela_preco_gravacao_oficial t WHERE t.ativo = true AND NOT EXISTS ( SELECT 1 FROM tabela_preco_gravacao_oficial_faixa f WHERE f.tabela_preco_gravacao_id = t.id ) ), p2 AS ( SELECT 'P2'::text, 'Produto ativo sem técnica configurada'::text, NULL::text, NULL::text, NULL::text, p.sku::text, NULL::text, p.name::text, 'MEDIO'::text FROM produ …",
     "src": "supabase/migrations/20260623184007_melhoria_06_v_audit_paradoxos_gravacao_rebuild_v2.sql"
+   },
+   "v_compras_catalogo": {
+    "body": "select p.id as pim_product_id, v.id as pim_variant_id, p.sku, p.sku_promo, p.name, p.supplier_id, s.code as supplier_code, s.name as supplier_name, coalesce(v.supplier_sku, p.supplier_reference) as supplier_reference, p.cost_price, p.sale_price, p.suggested_price, p.ipi_rate, p.ncm_code, p.min_quantity, p.min_order_quantity, s.min_order_value, coalesce(v.stock_quantity, p.stock_quantity) as stock_quantity, p.is_stockout, p.last_stock_update_at, v.color_id, v.color_name, v.color_code, v.color_hex, v.size_code, p.primary_image_url as image_url, p.lead_time_days, p.price_updated_at, p.updated_at …",
+    "src": "supabase/migrations/20261121163000_v_compras_catalogo.sql"
    }
   },
   "sources": [
@@ -96631,6 +96635,7 @@
    "supabase/migrations/20261120180000_restore_quote_comments_scoped_threads.sql",
    "supabase/migrations/20261121000000_quote_rpcs_freight_plan.sql",
    "supabase/migrations/20261121120000_fix_quote_rpcs_contract_freight.sql",
+   "supabase/migrations/20261121163000_v_compras_catalogo.sql",
    "supabase/rollbacks/20260511235950_rollback.sql",
    "supabase/rollbacks/20260511235959_rollback.sql",
    "supabase/rollbacks/20260611014515_fn_dryrun_standardize_supplier_real_rollback.sql",
@@ -133470,6 +133475,14 @@
     "src": "supabase/migrations/20261120180000_restore_quote_comments_scoped_threads.sql"
    },
    {
+    "kind": "grant",
+    "privs": "select",
+    "object": "v_compras_catalogo",
+    "objkind": "table",
+    "roles": "anon, authenticated",
+    "src": "supabase/migrations/20261121163000_v_compras_catalogo.sql"
+   },
+   {
     "kind": "revoke",
     "privs": "all",
     "object": "fn_dryrun_standardize_supplier",
@@ -152465,8 +152478,8 @@
   },
   {
    "module": "supabase/migrations",
-   "files": 3119,
-   "lines": 226411,
+   "files": 3120,
+   "lines": 226466,
    "tables": [
     "...",
     "admin_audit_log",
@@ -355612,6 +355625,10 @@
    "v_audit_paradoxos_gravacao": {
     "body": "WITH p1 AS ( SELECT 'P1'::text AS codigo_paradoxo, 'Técnica ativa sem faixas de preço'::text AS descricao, t.codigo_tabela, t.nome, t.grupo_tecnica, NULL::text AS produto_sku, NULL::text AS location_code, NULL::text AS detalhe, 'ALTO'::text AS severidade FROM tabela_preco_gravacao_oficial t WHERE t.ativo = true AND NOT EXISTS ( SELECT 1 FROM tabela_preco_gravacao_oficial_faixa f WHERE f.tabela_preco_gravacao_id = t.id ) ), p2 AS ( SELECT 'P2'::text, 'Produto ativo sem técnica configurada'::text, NULL::text, NULL::text, NULL::text, p.sku::text, NULL::text, p.name::text, 'MEDIO'::text FROM produ …",
     "src": "supabase/migrations/20260623184007_melhoria_06_v_audit_paradoxos_gravacao_rebuild_v2.sql"
+   },
+   "v_compras_catalogo": {
+    "body": "select p.id as pim_product_id, v.id as pim_variant_id, p.sku, p.sku_promo, p.name, p.supplier_id, s.code as supplier_code, s.name as supplier_name, coalesce(v.supplier_sku, p.supplier_reference) as supplier_reference, p.cost_price, p.sale_price, p.suggested_price, p.ipi_rate, p.ncm_code, p.min_quantity, p.min_order_quantity, s.min_order_value, coalesce(v.stock_quantity, p.stock_quantity) as stock_quantity, p.is_stockout, p.last_stock_update_at, v.color_id, v.color_name, v.color_code, v.color_hex, v.size_code, p.primary_image_url as image_url, p.lead_time_days, p.price_updated_at, p.updated_at …",
+    "src": "supabase/migrations/20261121163000_v_compras_catalogo.sql"
    }
   },
   "pagination": [
@@ -403126,6 +403143,14 @@
     "objkind": "function",
     "roles": "PUBLIC, anon, authenticated",
     "src": "supabase/migrations/20261120180000_restore_quote_comments_scoped_threads.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "select",
+    "object": "v_compras_catalogo",
+    "objkind": "table",
+    "roles": "anon, authenticated",
+    "src": "supabase/migrations/20261121163000_v_compras_catalogo.sql"
    },
    {
     "kind": "revoke",
@@ -534482,6 +534507,10 @@
     "'Version must advance exactly once' (exact version guard)"
    ]
   },
+  "supabase/migrations/20261121163000_v_compras_catalogo.sql": {
+   "path": "supabase/migrations/20261121163000_v_compras_catalogo.sql",
+   "lines": 55
+  },
   "supabase/rollbacks/20260511235950_rollback.sql": {
    "path": "supabase/rollbacks/20260511235950_rollback.sql",
    "lines": 5
@@ -560587,10 +560616,19 @@
   }
  },
  "git": {
-  "sha": "fdf20b391c2b93013a868088a348bcb658fd6dda",
+  "sha": "7f8c55ef2e7cf05745e8ffc63b513638dd24afd2",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "7f8c55e",
+    "date": "2026-11-21",
+    "author": "adm01-debug",
+    "subject": "feat(compras): view v_compras_catalogo no PIM [PR 1.1]",
+    "files": [
+     "supabase/migrations/20261121163000_v_compras_catalogo.sql"
+    ]
+   },
    {
     "sha": "fdf20b3",
     "date": "2026-11-21",
@@ -561043,36 +561081,6 @@
      "tests/contracts/freight-tables-hardening-migration.test.ts",
      "tests/scripts/seed-shipping-boxes-rollback.test.mjs",
      "tests/scripts/seed-shipping-boxes.test.mjs"
-    ]
-   },
-   {
-    "sha": "1b8de97",
-    "date": "2026-11-20",
-    "author": "adm01-debug",
-    "subject": "fix(frete): motor valida caixas e parâmetros na entrada, teto de volumes e testes de lacuna (#3925)",
-    "files": [
-     "src/lib/freight/__tests__/computeVolumeTotals.test.ts",
-     "src/lib/freight/__tests__/fitCount.test.ts",
-     "src/lib/freight/__tests__/formatPlanSummary.test.ts",
-     "src/lib/freight/__tests__/fuzz.test.ts",
-     "src/lib/freight/__tests__/packMixed.test.ts",
-     "src/lib/freight/__tests__/packSingleProduct.test.ts",
-     "src/lib/freight/__tests__/planFreight.robustez.test.ts",
-     "src/lib/freight/__tests__/planFreight.test.ts",
-     "src/lib/freight/__tests__/resolveItemDimensions.test.ts",
-     "src/lib/freight/__tests__/units.test.ts",
-     "src/lib/freight/__tests__/validateConfig.test.ts",
-     "src/lib/freight/buildGroups.ts",
-     "src/lib/freight/columns.ts",
-     "src/lib/freight/fitCount.ts",
-     "src/lib/freight/formatPlanSummary.ts",
-     "src/lib/freight/limits.ts",
-     "src/lib/freight/packMixed.ts",
-     "src/lib/freight/packSingleProduct.ts",
-     "src/lib/freight/planFreight.ts",
-     "src/lib/freight/types.ts",
-     "src/lib/freight/units.ts",
-     "src/lib/freight/validateConfig.ts"
     ]
    }
   ],

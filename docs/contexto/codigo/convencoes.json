@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "feat(compras): view v_compras_catalogo no PIM [PR 1.1]",
    "fix(quotes): restaura contrato transacional das RPCs com frete (Gate 2.5) (#3959)",
    "chore(migrations): rollback da migration 20261121000000 (E058) (#3957)",
    "feat(frete): persiste plano de frete no orcamento (G-UI, etapas 62-63) (#3956)",
-   "feat(frete): expoe volumes para transporte no PDF do kit (#3955)",
-   "feat(frete): Bloco F - comparador de volumes, simulador de frete e telemetria (etapas 53-60) (#3954)"
+   "feat(frete): expoe volumes para transporte no PDF do kit (#3955)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",

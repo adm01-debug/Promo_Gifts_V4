@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.3.2 · commit `fdf20b391c` · branch `main` · 2026-11-21 16:38 UTC
+> Gerado automaticamente por AI Context Sync v1.3.2 · commit `7f8c55ef2e` · branch `main` · 2026-11-21 16:51 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -3518,6 +3518,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `v_ai_function_routing_effective` | `SELECT r.id AS routing_id, r.function_name, r.is_active, r.required_capabilities, r.request_overrides, r.primary_model_id, pm.model_id AS primary_model, pm.capabilities AS primary_capabilities, pm.provider_id AS primary_provider_id, pp.slug AS primary_provider_slug, pm.is_active AS primary_active, p …` |
 | `v_health_gravacao` | `WITH tecnicas AS ( SELECT COUNT(*) AS total, COUNT(*) FILTER (WHERE ativo) AS ativas, COUNT(*) FILTER (WHERE NOT ativo) AS inativas, COUNT(*) FILTER (WHERE ativo AND NOT EXISTS ( SELECT 1 FROM tabela_preco_gravacao_oficial_faixa f WHERE f.tabela_preco_gravacao_id = t.id )) AS ativas_sem_faixa FROM t …` |
 | `v_audit_paradoxos_gravacao` | `WITH p1 AS ( SELECT 'P1'::text AS codigo_paradoxo, 'Técnica ativa sem faixas de preço'::text AS descricao, t.codigo_tabela, t.nome, t.grupo_tecnica, NULL::text AS produto_sku, NULL::text AS location_code, NULL::text AS detalhe, 'ALTO'::text AS severidade FROM tabela_preco_gravacao_oficial t WHERE t. …` |
+| `v_compras_catalogo` | `select p.id as pim_product_id, v.id as pim_variant_id, p.sku, p.sku_promo, p.name, p.supplier_id, s.code as supplier_code, s.name as supplier_name, coalesce(v.supplier_sku, p.supplier_reference) as supplier_reference, p.cost_price, p.sale_price, p.suggested_price, p.ipi_rate, p.ncm_code, p.min_quant …` |
 
 ### G.3 Funções de cálculo/decisão no código
 
