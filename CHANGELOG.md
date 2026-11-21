@@ -5,6 +5,24 @@ Todas as mudanças notáveis deste projeto são documentadas neste arquivo.
 O formato é baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/),
 e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR/).
 
+## [1.17.0](https://github.com/adm01-debug/Promo_Gifts_V4/compare/gifts-store-v1.16.1...gifts-store-v1.17.0) (2026-11-21)
+
+
+### Features
+
+* **compras:** view v_compras_catalogo no PIM [PR 1.1] ([7f8c55e](https://github.com/adm01-debug/Promo_Gifts_V4/commit/7f8c55ef2e7cf05745e8ffc63b513638dd24afd2))
+* **frete:** Bloco F - comparador de volumes, simulador de frete e telemetria (etapas 53-60) ([#3954](https://github.com/adm01-debug/Promo_Gifts_V4/issues/3954)) ([e311dad](https://github.com/adm01-debug/Promo_Gifts_V4/commit/e311dad9eda31cb55fff4e7fc14e7206a10a6eb8))
+* **frete:** expoe volumes para transporte no PDF do kit ([#3955](https://github.com/adm01-debug/Promo_Gifts_V4/issues/3955)) ([1ab2619](https://github.com/adm01-debug/Promo_Gifts_V4/commit/1ab261931175be5cf2626a625f40050e1d1c0292))
+* **frete:** persiste plano de frete no orcamento (G-UI, etapas 62-63) ([#3956](https://github.com/adm01-debug/Promo_Gifts_V4/issues/3956)) ([184ac28](https://github.com/adm01-debug/Promo_Gifts_V4/commit/184ac28b03c53f0359910cd275f6e0efdc6e1b09))
+* **kit:** plano de volumes do kit no lugar do FreightEstimator (etapa 52) ([#3951](https://github.com/adm01-debug/Promo_Gifts_V4/issues/3951)) ([4eddf85](https://github.com/adm01-debug/Promo_Gifts_V4/commit/4eddf85d8b6e5d0227dcc995b4733f1c143588ec))
+* migration v_compras_precos_faixa — view de faixas de preço para compras ([#3962](https://github.com/adm01-debug/Promo_Gifts_V4/issues/3962)) ([27369d5](https://github.com/adm01-debug/Promo_Gifts_V4/commit/27369d5ec53b44226dc5847786e29f2056c46626))
+
+
+### Bug Fixes
+
+* **ci:** bloqueia variantes de invoke direto ([#3952](https://github.com/adm01-debug/Promo_Gifts_V4/issues/3952)) ([a7be36d](https://github.com/adm01-debug/Promo_Gifts_V4/commit/a7be36d60bdb959ca74b8bf4b96fe957d71e91ed))
+* **quotes:** restaura contrato transacional das RPCs com frete (Gate 2.5) ([#3959](https://github.com/adm01-debug/Promo_Gifts_V4/issues/3959)) ([fdf20b3](https://github.com/adm01-debug/Promo_Gifts_V4/commit/fdf20b391c2b93013a868088a348bcb658fd6dda))
+
 ## [1.16.1](https://github.com/adm01-debug/Promo_Gifts_V4/compare/gifts-store-v1.16.0...gifts-store-v1.16.1) (2026-11-21)
 
 
