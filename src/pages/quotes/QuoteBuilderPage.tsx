@@ -675,6 +675,7 @@ export default function QuoteBuilderPage() {
                       onMixModeChange={s.setFreightMixMode}
                       showToClient={s.showFreightPlanToClient}
                       onShowToClientChange={s.setShowFreightPlanToClient}
+                      onPlanChange={s.setFreightPlanValue}
                     />
 
                     {s.companyInfo?.id && (

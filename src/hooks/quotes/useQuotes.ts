@@ -322,6 +322,9 @@ export function useQuotes() {
           shipping_cost: original.shipping_cost,
           // BUG-NEW-01 FIX: preserve negotiation_markup_percent when duplicating.
           negotiation_markup_percent: original.negotiation_markup_percent ?? 0,
+          freight_plan: original.freight_plan,
+          freight_mix_mode: original.freight_mix_mode,
+          show_freight_plan_to_client: original.show_freight_plan_to_client,
           // internal_notes removido: campo descontinuado na UI (apenas observações vão na proposta).
           valid_until: original.valid_until,
         },

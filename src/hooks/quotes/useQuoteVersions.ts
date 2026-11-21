@@ -217,6 +217,9 @@ export function useQuoteVersions(quoteId?: string) {
             delivery_time: original.delivery_time,
             shipping_type: original.shipping_type,
             shipping_cost: original.shipping_cost,
+            freight_plan: original.freight_plan,
+            freight_mix_mode: original.freight_mix_mode,
+            show_freight_plan_to_client: original.show_freight_plan_to_client,
             // internal_notes removido: campo descontinuado (apenas notes vai na proposta).
             valid_until: original.valid_until,
           },

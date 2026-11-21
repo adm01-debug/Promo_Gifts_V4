@@ -92,6 +92,12 @@ export interface Quote {
   shipping_method?: string;
   shipping_type?: string;
   shipping_cost?: number;
+  /** Plano de volumes do frete calculado (objeto StoredFreightPlan com version). NULL = sem plano. */
+  freight_plan?: Json | null;
+  /** Escolha do vendedor: 'misturar' | 'separar'. NULL = sem escolha. */
+  freight_mix_mode?: string | null;
+  /** true = o bloco de volumes aparece para o cliente no PDF/proposta. */
+  show_freight_plan_to_client?: boolean;
   /** Margem de negociação interna 0–50% (default 0). Infla o subtotal apresentado para criar margem psicológica de desconto. NUNCA exposto ao cliente. */
   negotiation_markup_percent?: number;
   /** Subtotal real (sem markup). Calculado pelo trigger; somente leitura. */
