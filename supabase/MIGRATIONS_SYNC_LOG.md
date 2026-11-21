@@ -2832,3 +2832,18 @@ As policies novas entram em `.security/policies-baseline.json` depois de aplicad
 |---|---|---|---|
 | `20261120041000` | `production_lead_time_calendar` | `ded27deffa89754ea8fd9ab3825008c0e76aad872e0fda66df45b9f71569ab3c` | pendente — aplicar via `db-apply-migration.yml` (`version=20261120041000`) após merge da PR H-DDL |
 | `20261120180000` | `restore_quote_comments_scoped_threads` | `aec27e3458b5d54992901ca205415ed05fb711893e5b0a8ec783982672327514` | pendente — aplicar via `db-apply-migration.yml` (`version=20261120180000`) após merge e decisão do dono (comentários em orçamento) |
+
+
+
+### 2026-11-21 — frete: RPCs do orçamento gravam o plano de volumes (bloco G, G-UI)
+
+Etapa 62/63 do plano de frete. `create_quote_transactional` e `update_quote_transactional`
+passam a incluir as 3 colunas de frete (`freight_plan`, `freight_mix_mode`,
+`show_freight_plan_to_client`) no INSERT/UPDATE de `quotes`. Copiadas da
+`20260623141532_fix_quote_rpcs_personalization_cost.sql` com diff mínimo (CASE WHEN para
+campos limpáveis, nullif para a string nullable, coalesce boolean). RPCs de aprovação
+delegam nas base → cobertas. Aplicar em produção após o merge da PR G-UI.
+
+| versão | arquivo | sha256 | status |
+|---|---|---|---|
+| `20261121000000` | `quote_rpcs_freight_plan` | `e77669031f158b0bf4287acddc4bd6d7fd5eac5fbe80092f7ad392c7642de8fc` | pendente — aplicar via `db-apply-migration.yml` (`version=20261121000000`) após merge da PR G-UI |n
