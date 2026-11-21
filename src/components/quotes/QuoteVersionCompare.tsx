@@ -19,6 +19,8 @@ import { ptBR } from 'date-fns/locale';
 import type { QuoteVersion } from '@/hooks/quotes';
 import { getQuoteStatusLabel } from '@/lib/quote-status-config';
 import { formatCurrency } from '@/lib/format';
+import { parseStoredFreightPlan } from '@/lib/freight';
+import type { Json } from '@/integrations/supabase/types';
 
 interface QuoteItem {
   id: string;
@@ -44,6 +46,7 @@ interface QuoteDetail {
   delivery_time: string | null;
   notes: string | null;
   created_at: string | null;
+  freight_plan?: Json | null;
   items: QuoteItem[];
 }
 
@@ -82,6 +85,30 @@ function DiffBadge({
     <Badge className="border-destructive/20 bg-destructive/15 text-destructive">
       <TrendingDown className="mr-1 h-3 w-3" />-{formatted}
     </Badge>
+  );
+}
+
+/** Resumo legível do plano de volumes: "G: 3, P: 1" ou "—". */
+function planSummary(plan: unknown): string {
+  const parsed = parseStoredFreightPlan(plan);
+  if (parsed.status !== 'ok') return '—';
+  const codes = Object.entries(parsed.plan.totals.boxesByCode);
+  if (codes.length === 0) return '—';
+  return codes.map(([code, qty]) => `${code}: ${qty}`).join(', ');
+}
+
+/** Linha de diferença pontual entre dois planos de volumes (string vs string). */
+function PlanDiffRow({ left, right }: { left: unknown; right: unknown }) {
+  const leftSummary = planSummary(left);
+  const rightSummary = planSummary(right);
+  if (leftSummary === rightSummary) return null;
+  return (
+    <div className="flex items-center gap-2 text-sm">
+      <span className="text-muted-foreground">Volumes:</span>
+      <span>{leftSummary}</span>
+      <ArrowRight className="h-3 w-3 text-muted-foreground" />
+      <span>{rightSummary}</span>
+    </div>
   );
 }
 
@@ -145,7 +172,7 @@ export function QuoteVersionCompare({
       // rls-allow: lookup por id específico; RLS valida ownership
       .from('quotes')
       .select(
-        'id, quote_number, version, status, subtotal, total, discount_amount, discount_percent, shipping_cost, payment_terms, delivery_time, notes, created_at',
+        'id, quote_number, version, status, subtotal, total, discount_amount, discount_percent, shipping_cost, payment_terms, delivery_time, notes, created_at, freight_plan',
       )
       .eq('id', id)
       .single();
@@ -292,6 +319,7 @@ export function QuoteVersionCompare({
                     format={(v) => `${v}%`}
                   />
                 </div>
+                <PlanDiffRow left={leftDetail.freight_plan} right={rightDetail.freight_plan} />
               </CardContent>
             </Card>
 

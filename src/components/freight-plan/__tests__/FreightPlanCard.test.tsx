@@ -4,6 +4,15 @@ import { axe } from 'jest-axe';
 import type { ComponentProps } from 'react';
 import type * as PainelReal from '@/components/freight-plan/FreightPlanPanel';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import {
+  computeItemsHash,
+  planFreight,
+  type FreightPlan,
+  type MixMode,
+  type PlanInput,
+  type ProductMeasureRow,
+} from '@/lib/freight';
+import { CAIXAS_PADRAO, SETTINGS_PADRAO } from '@/lib/freight/__tests__/fixtures/boxes';
 import { CADERNETA, CANETA } from '@/lib/freight/__tests__/fixtures/products';
 import type { FreightPlanCardItem } from '../FreightPlanCard';
 import {
@@ -50,12 +59,58 @@ const RESUMO_MISTURADO = '1× M · 708 g · 0,05 m³ · cubado 8,5 kg';
 // cubado 58.806 ÷ 6.000 = 9,80 kg. Peso igual: 648 + 60 = 708 g.
 const RESUMO_SEPARADO = '2× P · 708 g · 0,06 m³ · cubado 9,8 kg';
 
-function renderCard(items: FreightPlanCardItem[], initialShow = false) {
+function renderCard(
+  items: FreightPlanCardItem[],
+  initialShow = false,
+  initialSavedPlan?: FreightPlan | null,
+) {
   return render(
     <Providers>
-      <CardHost initialItems={items} initialShow={initialShow} />
+      <CardHost
+        initialItems={items}
+        initialShow={initialShow}
+        initialSavedPlan={initialSavedPlan ?? null}
+      />
     </Providers>,
   );
+}
+
+/**
+ * O plano que o cartão restauraria do banco (o `freight_plan` salvo no
+ * orçamento). Calcula com os mesmos produtos, caixas e parâmetros do harness,
+ * mas com `computedAt` e `itemsHash` fora do padrão: o harness roda com as
+ * caixas atualizadas em 2026-11-01, então um plano de 2026-11-10 é coerente
+ * ("sem banner") e um de 2026-10-20 fica velho.
+ */
+function planoSalvo(
+  rows: readonly ProductMeasureRow[],
+  quantities: readonly number[],
+  computedAt: string,
+  overrides?: { mixMode?: MixMode; itemsHash?: string },
+): FreightPlan {
+  const inputs: PlanInput[] = rows.map((row, index) => ({
+    row,
+    quantity: quantities[index] ?? 0,
+  }));
+  const plano = planFreight(
+    inputs,
+    CAIXAS_PADRAO,
+    { mixMode: 'misturar', computedAt, itemsHash: '' },
+    SETTINGS_PADRAO,
+  );
+  if (plano.status !== 'ok') return plano;
+  return {
+    ...plano,
+    mixMode: overrides?.mixMode ?? 'misturar',
+    itemsHash:
+      overrides?.itemsHash ??
+      computeItemsHash(
+        rows.map((row, index) => ({
+          productId: row.id,
+          quantity: quantities[index] ?? 0,
+        })),
+      ),
+  };
 }
 
 describe('FreightPlanCard', () => {
@@ -207,6 +262,66 @@ describe('FreightPlanCard', () => {
 
     const rodape = screen.getByRole('switch').closest('div')?.parentElement;
     expect(rodape).toHaveClass('flex-col', 'sm:flex-row');
+  });
+
+  it('plano salvo do banco bate com o cálculo: sem banner de recalcular', async () => {
+    renderCard(
+      [CADERNETA_4, CANETA_10],
+      false,
+      planoSalvo([CADERNETA, CANETA], [4, 10], '2026-11-10T12:00:00.000Z'),
+    );
+
+    await screen.findByText(RESUMO_MISTURADO);
+    await waitFor(() => expect(screen.queryByRole('status')).not.toBeInTheDocument());
+
+    expect(screen.queryByTestId('freight-plan-stale-banner')).not.toBeInTheDocument();
+  });
+
+  it('plano salvo com hash antigo (itens mudaram): banner pede recalcular', async () => {
+    renderCard(
+      [CADERNETA_4, CANETA_10],
+      false,
+      planoSalvo([CADERNETA, CANETA], [2, 10], '2026-11-10T12:00:00.000Z'),
+    );
+
+    await screen.findByText(RESUMO_MISTURADO);
+    await waitFor(() => expect(screen.queryByRole('status')).not.toBeInTheDocument());
+
+    const banner = screen.getByTestId('freight-plan-stale-banner');
+    expect(banner).toHaveTextContent(/itens ou caixas mudaram/i);
+    expect(banner).toHaveTextContent(/plano calculado em 10\/11/i);
+  });
+
+  it('caixa editada depois do cálculo salvo: banner pede recalcular', async () => {
+    simulacao.caixasAtualizadasEm = '2026-12-01T00:00:00.000Z';
+    renderCard(
+      [CADERNETA_4, CANETA_10],
+      false,
+      planoSalvo([CADERNETA, CANETA], [4, 10], '2026-11-10T12:00:00.000Z'),
+    );
+
+    await screen.findByText(RESUMO_MISTURADO);
+    await waitFor(() => expect(screen.queryByRole('status')).not.toBeInTheDocument());
+
+    expect(screen.getByTestId('freight-plan-stale-banner')).toBeInTheDocument();
+  });
+
+  it('botão "Recalcular" descarta o banner stale', async () => {
+    renderCard(
+      [CADERNETA_4, CANETA_10],
+      false,
+      planoSalvo([CADERNETA, CANETA], [2, 10], '2026-11-10T12:00:00.000Z'),
+    );
+
+    await screen.findByText(RESUMO_MISTURADO);
+    await waitFor(() => expect(screen.queryByRole('status')).not.toBeInTheDocument());
+    expect(screen.queryByTestId('freight-plan-stale-banner')).toBeInTheDocument();
+
+    await userEvent.click(screen.getByRole('button', { name: 'Recalcular' }));
+
+    expect(screen.queryByTestId('freight-plan-stale-banner')).not.toBeInTheDocument();
+    // O plano continua na tela: só o aviso some.
+    expect(screen.getByText(RESUMO_MISTURADO)).toBeInTheDocument();
   });
 
   it('snapshot do card com 2 produtos e a prévia ligada', async () => {

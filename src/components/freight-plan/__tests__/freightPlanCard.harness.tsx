@@ -29,6 +29,7 @@ export function shippingBoxRows() {
     is_active: true,
     sort_order: index,
     deleted_at: null,
+    updated_at: simulacao.caixasAtualizadasEm,
   }));
 }
 
@@ -70,8 +71,12 @@ function consulta(resolve: (ids: readonly string[] | null) => unknown) {
   return builder;
 }
 
-/** Ajustes da simulação por teste: banco sem caixas e produtos marcados "não mistura". */
-export const simulacao = { semCaixas: false, separados: new Set<string>() };
+/** Última atualização das caixas, simulada pelo harness; o card a usa no banner stale. */
+export const simulacao = {
+  semCaixas: false,
+  separados: new Set<string>(),
+  caixasAtualizadasEm: '2026-11-01T00:00:00.000Z',
+};
 
 /** Registro dos inserts de telemetria para os testes espiarem (etapa 59). */
 export const telemetriaInserts: Array<Record<string, unknown>> = [];
@@ -79,6 +84,7 @@ export const telemetriaInserts: Array<Record<string, unknown>> = [];
 export function reiniciarSimulacao() {
   simulacao.semCaixas = false;
   simulacao.separados.clear();
+  simulacao.caixasAtualizadasEm = '2026-11-01T00:00:00.000Z';
   telemetriaInserts.length = 0;
 }
 
@@ -119,18 +125,21 @@ export function Providers({ children }: { children: ReactNode }) {
   );
 }
 
-/** Hospedeiro: guarda itens, modo e switch como o `useQuoteBuilderState` faz. */
+/** Hospedeiro: guarda itens, modo, switch e o plano salvo como o `useQuoteBuilderState` faz. */
 export function CardHost({
   initialItems,
   initialShow = false,
+  initialSavedPlan = null,
 }: {
   initialItems: FreightPlanCardItem[];
   initialShow?: boolean;
+  initialSavedPlan?: FreightPlan | null;
 }) {
   const [items, setItems] = useState(initialItems);
   const [observacoes, setObservacoes] = useState('');
   const [mixMode, setMixMode] = useState<MixMode>('misturar');
   const [show, setShow] = useState(initialShow);
+  const [savedPlan, setSavedPlan] = useState<FreightPlan | null>(initialSavedPlan);
 
   return (
     <>
@@ -157,6 +166,8 @@ export function CardHost({
         onMixModeChange={setMixMode}
         showToClient={show}
         onShowToClientChange={setShow}
+        onPlanChange={setSavedPlan}
+        savedPlan={savedPlan}
       />
     </>
   );

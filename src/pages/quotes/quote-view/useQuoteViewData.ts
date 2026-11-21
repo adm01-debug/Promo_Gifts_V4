@@ -10,6 +10,7 @@ import { selectCrmById } from '@/lib/crm-db';
 import { toast } from 'sonner';
 import { generateProposalPDFv2, downloadPDF } from '@/utils/proposalPdfReactGenerator';
 import { type ProposalTemplateData } from '@/components/pdf/ProposalHtmlTemplate';
+import { parseStoredFreightPlan } from '@/lib/freight';
 import {
   formatCurrency as formatCurrencyHelper,
   calcPersTotal,
@@ -213,6 +214,8 @@ export function useQuoteViewData(id: string | undefined) {
       notes: quote.notes || undefined,
       paymentTerms: quote.payment_terms || undefined,
       deliveryTime: quote.delivery_time || undefined,
+      freightPlan: quote.freight_plan ? parseStoredFreightPlan(quote.freight_plan) : null,
+      showFreightPlanToClient: quote.show_freight_plan_to_client === true,
     };
   }, [quote, user, profile, clientCnpj]);
 

@@ -351,6 +351,7 @@ export function useQuoteBuilderState() {
             setShippingCost,
             setFreightMixMode,
             setShowFreightPlanToClient,
+            setFreightPlanValue,
             setDeliveryMode,
             setDeliveryDate,
             setDeliveryTime,

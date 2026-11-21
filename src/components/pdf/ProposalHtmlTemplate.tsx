@@ -1,4 +1,5 @@
 import { forwardRef } from 'react';
+import type { ParsedFreightPlan } from '@/lib/freight';
 
 const PAYMENT_METHOD_LABELS: Record<string, string> = {
   boleto: 'Boleto Bancário',
@@ -29,6 +30,7 @@ import {
   NotesSection,
   FooterSection,
 } from './ProposalSections';
+import { ProposalFreightVolumes } from './proposal/ProposalFreightVolumes';
 
 export interface ProposalItemPersonalization {
   technique_name: string;
@@ -91,6 +93,10 @@ export interface ProposalTemplateData {
   paymentMethod?: string;
   paymentTerms?: string;
   deliveryTime?: string;
+  /** Plano de volumes do frete parseado (ok-only), para o PDF da proposta. */
+  freightPlan?: ParsedFreightPlan | null;
+  /** true = o bloco de volumes aparece para o cliente na proposta. */
+  showFreightPlanToClient?: boolean;
 }
 
 export function formatPaymentMethod(value?: string): string {
@@ -157,6 +163,9 @@ export const ProposalHtmlTemplate = forwardRef<HTMLDivElement, { data: ProposalT
           <ClientBar company={company} contact={contact} cnpj={data.client.cnpj} />
           <ProductsTable items={data.items} />
           <TotalsSection data={data} />
+          {data.freightPlan?.status === 'ok' && data.showFreightPlanToClient && (
+            <ProposalFreightVolumes plan={data.freightPlan.plan} />
+          )}
           <NotesSection data={data} />
         </div>
         <FooterSection data={data} />

@@ -61,6 +61,9 @@ import { QuoteTotalsSummary } from '@/components/quotes/QuoteTotalsSummary';
 import { qvType, qvSpacing } from '@/components/quotes/quote-view-typography';
 import { SectionEyebrow } from '@/components/quotes/SectionEyebrow';
 import { PdfGenerationDialog } from '@/components/quotes/PdfGenerationDialog';
+import { FreightPlanPanel } from '@/components/freight-plan/FreightPlanPanel';
+import type { FreightProductLabels } from '@/components/freight-plan/FreightMissingActions';
+import { parseStoredFreightPlan } from '@/lib/freight';
 import { QUOTE_STATUS_CONFIG } from '@/lib/quote-status-config';
 import { useQuoteViewData } from '@/pages/quotes/quote-view/useQuoteViewData';
 import { QuoteUnavailableState } from '@/pages/quotes/quote-view/QuoteUnavailableState';
@@ -117,6 +120,21 @@ export default function QuoteViewPage() {
     () => applyNegotiationMarkup(quote?.items || [], quote?.negotiation_markup_percent),
     [quote],
   );
+
+  // Frete: o plano de volumes salvo pelo vendedor no builder. Em leitura não há
+  // switch — o que foi salvo na edição é o que aparece (etapa 66).
+  const freightPlanView = useMemo(() => {
+    if (!quote) return null;
+    const resultado = parseStoredFreightPlan(quote.freight_plan);
+    if (resultado.status !== 'ok') return null;
+    const products: FreightProductLabels = new Map(
+      (quote.items ?? []).map((item) => [
+        item.product_id,
+        { name: item.product_name, sku: item.product_sku ?? '' },
+      ]),
+    );
+    return { plan: resultado.plan, products };
+  }, [quote]);
 
   useEffect(() => {
     if (id && quote?.status === 'pending_approval') {
@@ -494,6 +512,16 @@ export default function QuoteViewPage() {
                     )}
                   </div>
                 </section>
+              </>
+            )}
+
+            {freightPlanView && (
+              <>
+                <Separator />
+                <FreightPlanPanel
+                  plan={freightPlanView.plan}
+                  products={freightPlanView.products}
+                />
               </>
             )}
 

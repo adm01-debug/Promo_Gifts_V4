@@ -676,6 +676,7 @@ export default function QuoteBuilderPage() {
                       showToClient={s.showFreightPlanToClient}
                       onShowToClientChange={s.setShowFreightPlanToClient}
                       onPlanChange={s.setFreightPlanValue}
+                      savedPlan={s.freightPlanValue}
                     />
 
                     {s.companyInfo?.id && (

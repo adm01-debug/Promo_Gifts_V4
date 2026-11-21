@@ -13,6 +13,7 @@
     "src/components/pdf/PropostaComercialTailwind.tsx": ["#1535", "#333", "#666", "#9e9e9e", "#e0e0e0", "#fff"],
     "src/components/pdf/proposal/ProposalClientBar.tsx": ["#00c853", "#1a1a1a", "#666", "#f8f9fa"],
     "src/components/pdf/proposal/ProposalFooter.tsx": ["#00c853", "#999"],
+    "src/components/pdf/proposal/ProposalFreightVolumes.tsx": ["#00c853", "#333", "#888", "#999", "#e0e0e0", "#e8f5e9", "#eee", "#fafafa"],
     "src/components/pdf/proposal/ProposalHeader.tsx": ["#000000", "#00c853", "#111", "#ffffff"],
     "src/components/pdf/proposal/ProposalNotes.tsx": ["#00c853", "#333", "#555", "#777", "#888", "#e0e0e0", "#e8f5e9", "#fafafa"],
     "src/components/pdf/proposal/ProposalProductTable.tsx": ["#00796b", "#00c853", "#111", "#222", "#2e7d32", "#333", "#555", "#666", "#999", "#ccc", "#e0f2f1", "#e53935", "#e8f5e9", "#eef0f2"],
