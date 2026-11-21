@@ -94,11 +94,13 @@ function FreightPlanCardBody({
   // sobrescrever o restaurado — por isso o banner compara contra este snapshot,
   // e o botão "Recalcular" o descarta explicitamente.
   const [savedSnapshot, setSavedSnapshot] = useState<FreightPlan | null | undefined>(savedPlan);
+  const snapshotHydratedRef = useRef(false);
   useEffect(() => {
-    if (savedSnapshot === undefined) setSavedSnapshot(savedPlan);
+    if (snapshotHydratedRef.current) return;
+    snapshotHydratedRef.current = true;
+    setSavedSnapshot(savedPlan);
     // Só observa a primeira carga do `savedPlan` (mudanças seguintes são a vida
     // da página, não a restauração inicial).
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [savedPlan]);
 
   // Sobe o plano calculado (ou null) para o pai persistir; ref estável evita
