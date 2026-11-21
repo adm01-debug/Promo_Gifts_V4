@@ -2,6 +2,11 @@
 
 Diff semântico gerado a cada coleta em que algo mudou.
 
+## 2026-11-21 16:17 UTC
+
+- **functions** alterado (3): `public.create_quote_transactional(_quote jsonb, _items jsonb)`, `public.update_quote_transactional(_quote_id uuid, _quote_patch jsonb, _items jsonb, _expected_version integer)`, `public.user_is_org_member(org_id uuid)`
+- **migrations** adicionado (1): `20261121000000_quote_rpcs_freight_plan`
+
 ## 2026-11-21 15:16 UTC
 
 - **colunas** adicionado (3): `public.quotes.freight_mix_mode`, `public.quotes.freight_plan`, `public.quotes.show_freight_plan_to_client`

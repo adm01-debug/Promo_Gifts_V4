@@ -145929,11 +145929,9 @@
           "views": []
         },
         "comment": "Criação atômica de orçamento; resolve organização autenticada no servidor e preserva custos de personalização.",
-        "config": [
-          "search_path=public"
-        ],
+        "config": null,
         "definition": null,
-        "definition_sha": "c42ed8f61b0d1398",
+        "definition_sha": "97fd01ff28f056c6",
         "execute_api_roles": "anon, authenticated, service_role",
         "execute_public": false,
         "is_trigger_fn": false,
@@ -193054,11 +193052,9 @@
           "views": []
         },
         "comment": null,
-        "config": [
-          "search_path=public"
-        ],
+        "config": null,
         "definition": null,
-        "definition_sha": "fa6ef282416460b0",
+        "definition_sha": "e9ac3da58aee93a7",
         "execute_api_roles": "anon, authenticated, service_role",
         "execute_public": true,
         "is_trigger_fn": false,
@@ -193747,7 +193743,6 @@
           "cron": [],
           "db": [
             "public.can_access_quote",
-            "public.create_quote_transactional",
             "public.fn_run_smoke_tests"
           ],
           "triggers": [],
@@ -240966,6 +240961,12 @@
         "statements": 16,
         "statements_sha": "a4b06cbf600b8b59",
         "version": "20261120180000"
+      },
+      {
+        "name": "quote_rpcs_freight_plan",
+        "statements": 2,
+        "statements_sha": "f390733e5cd6d89b",
+        "version": "20261121000000"
       }
     ],
     "policies": [
