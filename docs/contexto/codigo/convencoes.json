@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "chore(lint): consolida baseline de ESLint apos eliminacao de 366 erros (#3971)",
    "fix: preenche maxWeight da caixa no Kit Builder a partir de box_weight_kg (D1) (#3965)",
    "chore(vercel): desativa preview em branches docs/infra/chore (#3964)",
    "chore: consolida baselines de assertions (any-type 1-0, as-unknown 250-229) (#3963)",
-   "chore(main): release gifts-store 1.17.0 (#3953)",
-   "fix(ci): bloqueia variantes de invoke direto (#3952)"
+   "chore(main): release gifts-store 1.17.0 (#3953)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",

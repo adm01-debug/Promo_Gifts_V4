@@ -1,9 +1,9 @@
 {
  "meta": {
-  "sha": "2dc4d8284e48fcfd01cc1e1724d3c8ba7634f64a",
+  "sha": "de7e7c9f2d1d5fd9b8f45a92cdc2d900969fab67",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-21 19:59 UTC",
+  "generated_at": "2026-11-21 21:14 UTC",
   "files_total": 11126,
   "code_files": 9134,
   "code_lines": 1297229
@@ -560715,10 +560715,19 @@
   }
  },
  "git": {
-  "sha": "2dc4d8284e48fcfd01cc1e1724d3c8ba7634f64a",
+  "sha": "de7e7c9f2d1d5fd9b8f45a92cdc2d900969fab67",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "de7e7c9",
+    "date": "2026-11-21",
+    "author": "adm01-debug",
+    "subject": "chore(lint): consolida baseline de ESLint apos eliminacao de 366 erros (#3971)",
+    "files": [
+     ".eslint-baseline.json"
+    ]
+   },
    {
     "sha": "2dc4d82",
     "date": "2026-11-21",
@@ -561123,45 +561132,6 @@
      "src/services/shippingBoxService.ts",
      "tests/hooks/freight/useFreightSettings.test.ts"
     ]
-   },
-   {
-    "sha": "96508a5",
-    "date": "2026-11-20",
-    "author": "adm01-debug",
-    "subject": "feat(frete): plano de volumes no orçamento, cache ao salvar produto e ships_separately (Bloco E, etapas 46, 47, 49) (#3933)",
-    "files": [
-     "src/components/admin/products/FreightReadinessIndicator.tsx",
-     "src/components/admin/products/ProductSkuTag.tsx",
-     "src/components/freight-plan/FreightPlanCard.tsx",
-     "src/components/freight-plan/FreightPlanPanel.tsx",
-     "src/components/freight-plan/__tests__/FreightPlanCard.test.tsx",
-     "src/components/freight-plan/__tests__/FreightPlanPanel.test.tsx",
-     "src/components/freight-plan/__tests__/__snapshots__/FreightPlanCard.test.tsx.snap",
-     "src/components/freight-plan/__tests__/freightPlanCard.harness.tsx",
-     "src/components/freight-plan/index.ts",
-     "src/hooks/__tests__/useQuoteBuilderState.shipping.test.tsx",
-     "src/hooks/freight/keys.ts",
-     "src/hooks/freight/useFreightPlan.ts",
-     "src/hooks/freight/useProductMeasures.ts",
-     "src/hooks/quotes/__tests__/quoteDraftApply.test.ts",
-     "src/hooks/quotes/quoteDraftApply.ts",
-     "src/hooks/quotes/useFreightPlanOptions.ts",
-     "src/hooks/quotes/useQuoteBuilderState.ts",
-     "src/lib/freight/__tests__/columns.test.ts",
-     "src/lib/freight/__tests__/fixtures/items.ts",
-     "src/lib/freight/__tests__/fixtures/products.ts",
-     "src/lib/freight/columns.ts",
-     "src/lib/freight/index.ts",
-     "src/lib/freight/readiness.ts",
-     "src/lib/freight/resolveItemDimensions.ts",
-     "src/lib/quotes/applyRestoredDraft.ts",
-     "src/pages/admin/AdminProductFormPage.tsx",
-     "src/pages/admin/__tests__/AdminProductFormPage.shipsSeparately.test.tsx",
-     "src/pages/quotes/QuoteBuilderPage.tsx",
-     "src/pages/quotes/__tests__/QuoteBuilder.freightPlan.test.tsx",
-     "src/services/freightReadinessService.ts",
-     "tests/hooks/freight/useProductMeasures.test.ts"
-    ]
    }
   ],
   "hot_files": [
@@ -561206,27 +561176,7 @@
     2
    ],
    [
-    "src/components/freight-plan/FreightPlanCard.tsx",
-    2
-   ],
-   [
-    "src/hooks/quotes/useQuoteBuilderState.ts",
-    2
-   ],
-   [
-    "src/pages/quotes/QuoteBuilderPage.tsx",
-    2
-   ],
-   [
     "src/components/kit-builder/KitSummary.tsx",
-    2
-   ],
-   [
-    "src/components/freight-plan/__tests__/freightPlanCard.harness.tsx",
-    2
-   ],
-   [
-    "src/hooks/freight/useFreightPlan.ts",
     2
    ],
    [
@@ -561242,8 +561192,28 @@
     2
    ],
    [
-    "src/components/freight-plan/index.ts",
+    "src/pages/admin/AdminFreteSettingsPage.tsx",
     2
+   ],
+   [
+    "src/pages/admin/__tests__/AdminFreteSettingsPage.test.tsx",
+    2
+   ],
+   [
+    ".eslint-baseline.json",
+    1
+   ],
+   [
+    "src/hooks/kit-builder/useKitBuilderQueries.ts",
+    1
+   ],
+   [
+    "src/hooks/kit-builder/useKitBuilderTransformers.ts",
+    1
+   ],
+   [
+    "src/lib/kit-builder/__tests__/transform-to-kit-box-maxweight.test.ts",
+    1
    ]
   ]
  }

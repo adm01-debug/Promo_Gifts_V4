@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e de hora em hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `2dc4d8284e48fcfd01cc1e1724d3c8ba7634f64a` (2026-11-21T16:56:32-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e de hora em hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `de7e7c9f2d1d5fd9b8f45a92cdc2d900969fab67` (2026-11-21T17:38:31-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -599,27 +599,27 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - possiveis_segredos_no_codigo: 7 — ex.: scripts/ai-context/cenarios.mjs:102, src/components/admin/connections/__tests__/ConnectionSecurity.unit.test.tsx:9, src/integrations/supabase/client.ts:27
 
 ## Grafo de código (graphify)
-- 50466 nós · 85570 arestas · 2797 comunidades · grafo do commit `2dc4d828`
+- 50466 nós · 85570 arestas · 2797 comunidades · grafo do commit `de7e7c9f`
 - comunidades maiores: vitest (612), ref_node_child_process (530), react (479), ref_hooks (455), @testing-library/react (432), D.1 — Núcleo (adoção alta, é o que sustenta o padrão) (325), ref_components (321), scripts (310), ref_node_fs (296), cors.ts (291), @tanstack/react-query (289), ref_utils (246)
 - símbolos mais chamados: gotoAndSettle() (e2e/helpers/nav.ts), re (?), q() (scripts/supabase_snapshot/snapshot.py), analyze() (tests/scripts/test_personalization_artifact_diagnostics.py), outer() (tests/scripts/test_personalization_artifact_diagnostics.py), json (?), useExternalDatabase() (recovery/src-legacy/src/hooks/useExternalDatabase.ts), concludeCheck() (scripts/check-result-contract.mjs), querySupabaseReadOnly() (scripts/supabase-read-only-query.mjs), loginAs() (e2e/helpers/auth.ts), inner() (tests/scripts/test_personalization_artifact_diagnostics.py), excluded_sql() (scripts/supabase_snapshot/snapshot.py)
 - consulta local: `graphify query "<pergunta>"`, `graphify path "<A>" "<B>"`, `graphify explain "<X>"`
 
 ## Hotspots (arquivos mais alterados, 90 dias)
-- supabase/MIGRATIONS_SYNC_LOG.md (63)
-- package.json (33)
-- docs/coordenacao/conflitos-semanticos.md (27)
-- package-lock.json (23)
-- CHANGELOG.md (17)
-- .github/workflows/deploy-gates.yml (16)
-- audit/supabase-reference-catalog.temporary.json (15)
-- src/pages/mockups/MockupGenerator.tsx (14)
-- src/integrations/supabase/types.ts (12)
-- src/pages/kit-builder/KitBuilderPage.tsx (12)
-- src/pages/quotes/QuoteBuilderPage.tsx (12)
+- supabase/MIGRATIONS_SYNC_LOG.md (62)
+- package.json (32)
+- docs/coordenacao/conflitos-semanticos.md (25)
+- package-lock.json (22)
+- CHANGELOG.md (16)
+- .github/workflows/deploy-gates.yml (15)
+- audit/supabase-reference-catalog.temporary.json (14)
+- src/pages/mockups/MockupGenerator.tsx (13)
+- src/integrations/supabase/types.ts (11)
+- src/pages/kit-builder/KitBuilderPage.tsx (11)
+- src/pages/quotes/QuoteBuilderPage.tsx (11)
 - docs/agentes/resgates/2026-11-16-auditoria-branches.md (10)
-- src/components/kit-builder/KitSummary.tsx (10)
-- src/components/kit-builder/PersonalizationConfig.tsx (10)
-- src/components/quotes/QuoteAutoSave.tsx (10)
+- src/components/kit-builder/KitSummary.tsx (9)
+- src/components/kit-builder/PersonalizationConfig.tsx (9)
+- src/components/quotes/QuoteAutoSave.tsx (9)
 
 ## Workflows
 - `_e2e-relevance.yml` — Reusable — E2E Runtime Relevance (workflow_call)
@@ -1196,6 +1196,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - CHANGELOG topo: [1.17.0](https://github.com/adm01-debug/Promo_Gifts_V4/compare/gifts-store-v1.16.1...gifts-store-v1.17.0) (2026-11-21)
 
 ## Últimos commits
+- 2026-11-21 `de7e7c9` chore(lint): consolida baseline de ESLint apos eliminacao de 366 erros (#3971)
 - 2026-11-21 `2dc4d82` fix: preenche maxWeight da caixa no Kit Builder a partir de box_weight_kg (D1) (#3965)
 - 2026-11-21 `1948642` chore(vercel): desativa preview em branches docs/infra/chore (#3964)
 - 2026-11-21 `2ae3463` chore: consolida baselines de assertions (any-type 1-0, as-unknown 250-229) (#3963)
@@ -1210,7 +1211,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-21 `184ac28` feat(frete): persiste plano de frete no orcamento (G-UI, etapas 62-63) (#3956)
 - 2026-11-21 `1ab2619` feat(frete): expoe volumes para transporte no PDF do kit (#3955)
 - 2026-11-21 `e311dad` feat(frete): Bloco F - comparador de volumes, simulador de frete e telemetria (etapas 53-60) (#3954)
-- 2026-11-21 `4eddf85` feat(kit): plano de volumes do kit no lugar do FreightEstimator (etapa 52) (#3951)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`
