@@ -138,6 +138,15 @@
         "status": "succeeded"
       },
       {
+        "end_time": "2026-11-21T11:05:00.194309+00:00",
+        "jobid": 15,
+        "return_message": "1 row",
+        "runid": 1422216,
+        "seconds": 0.02,
+        "start_time": "2026-11-21T11:05:00.172525+00:00",
+        "status": "succeeded"
+      },
+      {
         "end_time": "2026-11-21T10:05:00.228066+00:00",
         "jobid": 15,
         "return_message": "1 row",
@@ -156,12 +165,12 @@
         "status": "succeeded"
       },
       {
-        "end_time": "2026-11-21T08:05:00.262047+00:00",
-        "jobid": 15,
+        "end_time": "2026-11-21T11:10:00.172092+00:00",
+        "jobid": 16,
         "return_message": "1 row",
-        "runid": 1421924,
-        "seconds": 0.06,
-        "start_time": "2026-11-21T08:05:00.202132+00:00",
+        "runid": 1422222,
+        "seconds": 0.04,
+        "start_time": "2026-11-21T11:10:00.129583+00:00",
         "status": "succeeded"
       },
       {
@@ -180,15 +189,6 @@
         "runid": 1422053,
         "seconds": 0.02,
         "start_time": "2026-11-21T09:10:00.065824+00:00",
-        "status": "succeeded"
-      },
-      {
-        "end_time": "2026-11-21T08:10:00.053423+00:00",
-        "jobid": 16,
-        "return_message": "1 row",
-        "runid": 1421934,
-        "seconds": 0.01,
-        "start_time": "2026-11-21T08:10:00.041457+00:00",
         "status": "succeeded"
       },
       {
@@ -228,6 +228,15 @@
         "status": "succeeded"
       },
       {
+        "end_time": "2026-11-21T10:17:00.140757+00:00",
+        "jobid": 26,
+        "return_message": "1 row",
+        "runid": 1422149,
+        "seconds": 0.02,
+        "start_time": "2026-11-21T10:17:00.122444+00:00",
+        "status": "succeeded"
+      },
+      {
         "end_time": "2026-11-21T09:17:00.131969+00:00",
         "jobid": 26,
         "return_message": "1 row",
@@ -243,15 +252,6 @@
         "runid": 1421948,
         "seconds": 0.02,
         "start_time": "2026-11-21T08:17:00.079107+00:00",
-        "status": "succeeded"
-      },
-      {
-        "end_time": "2026-11-21T07:17:00.111393+00:00",
-        "jobid": 26,
-        "return_message": "1 row",
-        "runid": 1421827,
-        "seconds": 0.01,
-        "start_time": "2026-11-21T07:17:00.104505+00:00",
         "status": "succeeded"
       },
       {
@@ -309,6 +309,15 @@
         "status": "succeeded"
       },
       {
+        "end_time": "2026-11-21T10:52:00.179006+00:00",
+        "jobid": 58,
+        "return_message": "1 row",
+        "runid": 1422199,
+        "seconds": 0.12,
+        "start_time": "2026-11-21T10:52:00.062717+00:00",
+        "status": "succeeded"
+      },
+      {
         "end_time": "2026-11-21T09:52:00.358597+00:00",
         "jobid": 58,
         "return_message": "1 row",
@@ -327,22 +336,13 @@
         "status": "succeeded"
       },
       {
-        "end_time": "2026-11-21T07:52:00.164516+00:00",
-        "jobid": 58,
-        "return_message": "1 row",
-        "runid": 1421898,
-        "seconds": 0.09,
-        "start_time": "2026-11-21T07:52:00.074044+00:00",
-        "status": "succeeded"
-      },
-      {
-        "end_time": null,
+        "end_time": "2026-11-21T10:15:03.816310+00:00",
         "jobid": 60,
-        "return_message": null,
+        "return_message": "INSERT 0 1",
         "runid": 1422144,
-        "seconds": null,
+        "seconds": 3.77,
         "start_time": "2026-11-21T10:15:00.049187+00:00",
-        "status": "running"
+        "status": "succeeded"
       },
       {
         "end_time": "2026-11-21T09:15:02.528135+00:00",
@@ -426,6 +426,15 @@
         "status": "succeeded"
       },
       {
+        "end_time": "2026-11-21T10:25:00.072714+00:00",
+        "jobid": 84,
+        "return_message": "1 row",
+        "runid": 1422161,
+        "seconds": 0.02,
+        "start_time": "2026-11-21T10:25:00.057000+00:00",
+        "status": "succeeded"
+      },
+      {
         "end_time": "2026-11-21T09:25:00.128762+00:00",
         "jobid": 84,
         "return_message": "1 row",
@@ -441,15 +450,6 @@
         "runid": 1421965,
         "seconds": 0.01,
         "start_time": "2026-11-21T08:25:00.100275+00:00",
-        "status": "succeeded"
-      },
-      {
-        "end_time": "2026-11-21T07:25:00.111208+00:00",
-        "jobid": 84,
-        "return_message": "1 row",
-        "runid": 1421843,
-        "seconds": 0.02,
-        "start_time": "2026-11-21T07:25:00.091417+00:00",
         "status": "succeeded"
       },
       {
@@ -507,6 +507,15 @@
         "status": "succeeded"
       },
       {
+        "end_time": "2026-11-21T10:20:02.167436+00:00",
+        "jobid": 93,
+        "return_message": "1 row",
+        "runid": 1422154,
+        "seconds": 2.02,
+        "start_time": "2026-11-21T10:20:00.143267+00:00",
+        "status": "succeeded"
+      },
+      {
         "end_time": "2026-11-21T08:20:01.322512+00:00",
         "jobid": 93,
         "return_message": "1 row",
@@ -522,15 +531,6 @@
         "runid": 1421711,
         "seconds": 0.71,
         "start_time": "2026-11-21T06:20:00.193761+00:00",
-        "status": "succeeded"
-      },
-      {
-        "end_time": "2026-11-21T04:20:01.462992+00:00",
-        "jobid": 93,
-        "return_message": "1 row",
-        "runid": 1421465,
-        "seconds": 1.33,
-        "start_time": "2026-11-21T04:20:00.128583+00:00",
         "status": "succeeded"
       },
       {
@@ -615,6 +615,15 @@
         "status": "succeeded"
       },
       {
+        "end_time": "2026-11-21T11:05:00.399534+00:00",
+        "jobid": 100,
+        "return_message": "1 row",
+        "runid": 1422215,
+        "seconds": 0.15,
+        "start_time": "2026-11-21T11:05:00.251694+00:00",
+        "status": "succeeded"
+      },
+      {
         "end_time": "2026-11-21T10:05:00.615693+00:00",
         "jobid": 100,
         "return_message": "1 row",
@@ -630,15 +639,6 @@
         "runid": 1422045,
         "seconds": 0.43,
         "start_time": "2026-11-21T09:05:00.189954+00:00",
-        "status": "succeeded"
-      },
-      {
-        "end_time": "2026-11-21T08:05:00.599861+00:00",
-        "jobid": 100,
-        "return_message": "1 row",
-        "runid": 1421923,
-        "seconds": 0.37,
-        "start_time": "2026-11-21T08:05:00.226209+00:00",
         "status": "succeeded"
       },
       {
@@ -759,6 +759,15 @@
         "status": "succeeded"
       },
       {
+        "end_time": "2026-11-21T10:57:00.159661+00:00",
+        "jobid": 114,
+        "return_message": "1 row",
+        "runid": 1422204,
+        "seconds": 0.07,
+        "start_time": "2026-11-21T10:57:00.086413+00:00",
+        "status": "succeeded"
+      },
+      {
         "end_time": "2026-11-21T09:57:01.030242+00:00",
         "jobid": 114,
         "return_message": "1 row",
@@ -774,15 +783,6 @@
         "runid": 1422030,
         "seconds": 0.25,
         "start_time": "2026-11-21T08:57:00.136986+00:00",
-        "status": "succeeded"
-      },
-      {
-        "end_time": "2026-11-21T07:57:00.221987+00:00",
-        "jobid": 114,
-        "return_message": "1 row",
-        "runid": 1421906,
-        "seconds": 0.14,
-        "start_time": "2026-11-21T07:57:00.079498+00:00",
         "status": "succeeded"
       },
       {
@@ -939,57 +939,66 @@
         "status": "succeeded"
       },
       {
-        "end_time": "2026-11-21T10:15:00.147030+00:00",
+        "end_time": "2026-11-21T11:00:00.199603+00:00",
         "jobid": 204,
         "return_message": "1 row",
-        "runid": 1422145,
+        "runid": 1422208,
+        "seconds": 0.12,
+        "start_time": "2026-11-21T11:00:00.075138+00:00",
+        "status": "succeeded"
+      },
+      {
+        "end_time": "2026-11-21T10:45:00.180799+00:00",
+        "jobid": 204,
+        "return_message": "1 row",
+        "runid": 1422185,
+        "seconds": 0.12,
+        "start_time": "2026-11-21T10:45:00.060128+00:00",
+        "status": "succeeded"
+      },
+      {
+        "end_time": "2026-11-21T10:30:00.193670+00:00",
+        "jobid": 204,
+        "return_message": "1 row",
+        "runid": 1422166,
         "seconds": 0.08,
-        "start_time": "2026-11-21T10:15:00.064264+00:00",
+        "start_time": "2026-11-21T10:30:00.114803+00:00",
         "status": "succeeded"
       },
       {
-        "end_time": "2026-11-21T10:00:00.607102+00:00",
-        "jobid": 204,
+        "end_time": "2026-11-21T11:01:00.125575+00:00",
+        "jobid": 205,
         "return_message": "1 row",
-        "runid": 1422126,
-        "seconds": 0.49,
-        "start_time": "2026-11-21T10:00:00.118307+00:00",
+        "runid": 1422209,
+        "seconds": 0.03,
+        "start_time": "2026-11-21T11:01:00.092335+00:00",
         "status": "succeeded"
       },
       {
-        "end_time": "2026-11-21T09:45:00.120332+00:00",
-        "jobid": 204,
+        "end_time": "2026-11-21T10:46:00.197083+00:00",
+        "jobid": 205,
         "return_message": "1 row",
-        "runid": 1422102,
+        "runid": 1422186,
         "seconds": 0.05,
-        "start_time": "2026-11-21T09:45:00.069694+00:00",
+        "start_time": "2026-11-21T10:46:00.142497+00:00",
         "status": "succeeded"
       },
       {
-        "end_time": "2026-11-21T10:01:00.368695+00:00",
+        "end_time": "2026-11-21T10:31:00.116921+00:00",
         "jobid": 205,
         "return_message": "1 row",
-        "runid": 1422127,
-        "seconds": 0.32,
-        "start_time": "2026-11-21T10:01:00.050660+00:00",
+        "runid": 1422167,
+        "seconds": 0.04,
+        "start_time": "2026-11-21T10:31:00.079215+00:00",
         "status": "succeeded"
       },
       {
-        "end_time": "2026-11-21T09:46:00.834310+00:00",
-        "jobid": 205,
+        "end_time": "2026-11-21T10:57:00.231122+00:00",
+        "jobid": 206,
         "return_message": "1 row",
-        "runid": 1422103,
-        "seconds": 0.74,
-        "start_time": "2026-11-21T09:46:00.089473+00:00",
-        "status": "succeeded"
-      },
-      {
-        "end_time": "2026-11-21T09:31:00.146309+00:00",
-        "jobid": 205,
-        "return_message": "1 row",
-        "runid": 1422082,
-        "seconds": 0.07,
-        "start_time": "2026-11-21T09:31:00.074145+00:00",
+        "runid": 1422203,
+        "seconds": 0.16,
+        "start_time": "2026-11-21T10:57:00.075374+00:00",
         "status": "succeeded"
       },
       {
@@ -1011,12 +1020,12 @@
         "status": "succeeded"
       },
       {
-        "end_time": "2026-11-21T07:57:00.256124+00:00",
-        "jobid": 206,
+        "end_time": "2026-11-21T10:51:00.804822+00:00",
+        "jobid": 207,
         "return_message": "1 row",
-        "runid": 1421905,
-        "seconds": 0.19,
-        "start_time": "2026-11-21T07:57:00.061426+00:00",
+        "runid": 1422198,
+        "seconds": 0.67,
+        "start_time": "2026-11-21T10:51:00.130476+00:00",
         "status": "succeeded"
       },
       {
@@ -1038,12 +1047,21 @@
         "status": "succeeded"
       },
       {
-        "end_time": "2026-11-21T07:51:00.554305+00:00",
-        "jobid": 207,
+        "end_time": "2026-11-21T11:04:00.280804+00:00",
+        "jobid": 208,
         "return_message": "1 row",
-        "runid": 1421896,
-        "seconds": 0.44,
-        "start_time": "2026-11-21T07:51:00.115198+00:00",
+        "runid": 1422213,
+        "seconds": 0.21,
+        "start_time": "2026-11-21T11:04:00.070416+00:00",
+        "status": "succeeded"
+      },
+      {
+        "end_time": "2026-11-21T10:34:00.859904+00:00",
+        "jobid": 208,
+        "return_message": "1 row",
+        "runid": 1422171,
+        "seconds": 0.74,
+        "start_time": "2026-11-21T10:34:00.116300+00:00",
         "status": "succeeded"
       },
       {
@@ -1056,21 +1074,12 @@
         "status": "succeeded"
       },
       {
-        "end_time": "2026-11-21T09:34:03.220541+00:00",
-        "jobid": 208,
+        "end_time": "2026-11-21T10:19:00.105555+00:00",
+        "jobid": 209,
         "return_message": "1 row",
-        "runid": 1422086,
-        "seconds": 3.17,
-        "start_time": "2026-11-21T09:34:00.051437+00:00",
-        "status": "succeeded"
-      },
-      {
-        "end_time": "2026-11-21T09:04:01.739971+00:00",
-        "jobid": 208,
-        "return_message": "1 row",
-        "runid": 1422043,
-        "seconds": 1.66,
-        "start_time": "2026-11-21T09:04:00.077702+00:00",
+        "runid": 1422153,
+        "seconds": 0.03,
+        "start_time": "2026-11-21T10:19:00.070639+00:00",
         "status": "succeeded"
       },
       {
@@ -1092,39 +1101,39 @@
         "status": "succeeded"
       },
       {
-        "end_time": "2026-11-21T07:19:00.098415+00:00",
-        "jobid": 209,
+        "end_time": "2026-11-21T11:06:00.202849+00:00",
+        "jobid": 210,
         "return_message": "1 row",
-        "runid": 1421832,
+        "runid": 1422220,
+        "seconds": 0.04,
+        "start_time": "2026-11-21T11:06:00.166464+00:00",
+        "status": "succeeded"
+      },
+      {
+        "end_time": "2026-11-21T10:51:00.153374+00:00",
+        "jobid": 210,
+        "return_message": "1 row",
+        "runid": 1422197,
         "seconds": 0.02,
-        "start_time": "2026-11-21T07:19:00.081400+00:00",
+        "start_time": "2026-11-21T10:51:00.128428+00:00",
         "status": "succeeded"
       },
       {
-        "end_time": "2026-11-21T10:06:00.619826+00:00",
+        "end_time": "2026-11-21T10:36:00.175686+00:00",
         "jobid": 210,
         "return_message": "1 row",
-        "runid": 1422138,
-        "seconds": 0.47,
-        "start_time": "2026-11-21T10:06:00.154256+00:00",
+        "runid": 1422176,
+        "seconds": 0.04,
+        "start_time": "2026-11-21T10:36:00.133299+00:00",
         "status": "succeeded"
       },
       {
-        "end_time": "2026-11-21T09:51:00.803380+00:00",
-        "jobid": 210,
+        "end_time": "2026-11-21T10:24:00.048320+00:00",
+        "jobid": 211,
         "return_message": "1 row",
-        "runid": 1422114,
-        "seconds": 0.67,
-        "start_time": "2026-11-21T09:51:00.129458+00:00",
-        "status": "succeeded"
-      },
-      {
-        "end_time": "2026-11-21T09:36:00.167599+00:00",
-        "jobid": 210,
-        "return_message": "1 row",
-        "runid": 1422091,
-        "seconds": 0.06,
-        "start_time": "2026-11-21T09:36:00.106511+00:00",
+        "runid": 1422159,
+        "seconds": 0.01,
+        "start_time": "2026-11-21T10:24:00.038782+00:00",
         "status": "succeeded"
       },
       {
@@ -1146,12 +1155,12 @@
         "status": "succeeded"
       },
       {
-        "end_time": "2026-11-21T07:24:00.090130+00:00",
-        "jobid": 211,
+        "end_time": "2026-11-21T10:23:00.321736+00:00",
+        "jobid": 212,
         "return_message": "1 row",
-        "runid": 1421840,
-        "seconds": 0.03,
-        "start_time": "2026-11-21T07:24:00.060382+00:00",
+        "runid": 1422158,
+        "seconds": 0.26,
+        "start_time": "2026-11-21T10:23:00.064398+00:00",
         "status": "succeeded"
       },
       {
@@ -1170,15 +1179,6 @@
         "runid": 1421961,
         "seconds": 0.11,
         "start_time": "2026-11-21T08:23:00.029196+00:00",
-        "status": "succeeded"
-      },
-      {
-        "end_time": "2026-11-21T07:23:00.187210+00:00",
-        "jobid": 212,
-        "return_message": "1 row",
-        "runid": 1421839,
-        "seconds": 0.15,
-        "start_time": "2026-11-21T07:23:00.034079+00:00",
         "status": "succeeded"
       },
       {
@@ -1236,84 +1236,84 @@
         "status": "succeeded"
       },
       {
-        "end_time": "2026-11-21T10:13:00.189678+00:00",
+        "end_time": "2026-11-21T11:13:00.083869+00:00",
         "jobid": 215,
         "return_message": "1 row",
-        "runid": 1422141,
-        "seconds": 0.11,
-        "start_time": "2026-11-21T10:13:00.080863+00:00",
-        "status": "succeeded"
-      },
-      {
-        "end_time": "2026-11-21T09:58:00.168096+00:00",
-        "jobid": 215,
-        "return_message": "1 row",
-        "runid": 1422123,
-        "seconds": 0.09,
-        "start_time": "2026-11-21T09:58:00.076954+00:00",
-        "status": "succeeded"
-      },
-      {
-        "end_time": "2026-11-21T09:43:00.166050+00:00",
-        "jobid": 215,
-        "return_message": "1 row",
-        "runid": 1422098,
-        "seconds": 0.06,
-        "start_time": "2026-11-21T09:43:00.104696+00:00",
-        "status": "succeeded"
-      },
-      {
-        "end_time": "2026-11-21T10:14:00.596764+00:00",
-        "jobid": 216,
-        "return_message": "1 row",
-        "runid": 1422142,
-        "seconds": 0.49,
-        "start_time": "2026-11-21T10:14:00.108285+00:00",
-        "status": "succeeded"
-      },
-      {
-        "end_time": "2026-11-21T09:59:00.896758+00:00",
-        "jobid": 216,
-        "return_message": "1 row",
-        "runid": 1422124,
-        "seconds": 0.79,
-        "start_time": "2026-11-21T09:59:00.103580+00:00",
-        "status": "succeeded"
-      },
-      {
-        "end_time": "2026-11-21T09:44:00.996563+00:00",
-        "jobid": 216,
-        "return_message": "1 row",
-        "runid": 1422100,
-        "seconds": 0.89,
-        "start_time": "2026-11-21T09:44:00.111263+00:00",
-        "status": "succeeded"
-      },
-      {
-        "end_time": "2026-11-21T10:14:00.123199+00:00",
-        "jobid": 217,
-        "return_message": "1 row",
-        "runid": 1422143,
+        "runid": 1422223,
         "seconds": 0.01,
-        "start_time": "2026-11-21T10:14:00.111467+00:00",
+        "start_time": "2026-11-21T11:13:00.074158+00:00",
         "status": "succeeded"
       },
       {
-        "end_time": "2026-11-21T10:04:00.125961+00:00",
-        "jobid": 217,
+        "end_time": "2026-11-21T10:58:00.061403+00:00",
+        "jobid": 215,
         "return_message": "1 row",
-        "runid": 1422132,
-        "seconds": 0.03,
-        "start_time": "2026-11-21T10:04:00.096062+00:00",
+        "runid": 1422205,
+        "seconds": 0.01,
+        "start_time": "2026-11-21T10:58:00.055387+00:00",
         "status": "succeeded"
       },
       {
-        "end_time": "2026-11-21T09:54:00.073060+00:00",
+        "end_time": "2026-11-21T10:43:00.128304+00:00",
+        "jobid": 215,
+        "return_message": "1 row",
+        "runid": 1422181,
+        "seconds": 0.03,
+        "start_time": "2026-11-21T10:43:00.101915+00:00",
+        "status": "succeeded"
+      },
+      {
+        "end_time": "2026-11-21T11:14:00.573984+00:00",
+        "jobid": 216,
+        "return_message": "1 row",
+        "runid": 1422224,
+        "seconds": 0.41,
+        "start_time": "2026-11-21T11:14:00.166434+00:00",
+        "status": "succeeded"
+      },
+      {
+        "end_time": "2026-11-21T10:59:00.403530+00:00",
+        "jobid": 216,
+        "return_message": "1 row",
+        "runid": 1422206,
+        "seconds": 0.34,
+        "start_time": "2026-11-21T10:59:00.067081+00:00",
+        "status": "succeeded"
+      },
+      {
+        "end_time": "2026-11-21T10:44:00.601414+00:00",
+        "jobid": 216,
+        "return_message": "1 row",
+        "runid": 1422183,
+        "seconds": 0.45,
+        "start_time": "2026-11-21T10:44:00.155191+00:00",
+        "status": "succeeded"
+      },
+      {
+        "end_time": "2026-11-21T11:14:00.237410+00:00",
         "jobid": 217,
         "return_message": "1 row",
-        "runid": 1422119,
+        "runid": 1422225,
         "seconds": 0.03,
-        "start_time": "2026-11-21T09:54:00.039410+00:00",
+        "start_time": "2026-11-21T11:14:00.209832+00:00",
+        "status": "succeeded"
+      },
+      {
+        "end_time": "2026-11-21T11:04:00.106668+00:00",
+        "jobid": 217,
+        "return_message": "1 row",
+        "runid": 1422214,
+        "seconds": 0,
+        "start_time": "2026-11-21T11:04:00.101677+00:00",
+        "status": "succeeded"
+      },
+      {
+        "end_time": "2026-11-21T10:54:00.060152+00:00",
+        "jobid": 217,
+        "return_message": "1 row",
+        "runid": 1422201,
+        "seconds": 0.01,
+        "start_time": "2026-11-21T10:54:00.049460+00:00",
         "status": "succeeded"
       },
       {
@@ -1344,30 +1344,30 @@
         "status": "succeeded"
       },
       {
-        "end_time": "2026-11-21T10:03:00.066924+00:00",
+        "end_time": "2026-11-21T11:03:00.037455+00:00",
         "jobid": 221,
         "return_message": "1 row",
-        "runid": 1422130,
-        "seconds": 0.03,
-        "start_time": "2026-11-21T10:03:00.036771+00:00",
+        "runid": 1422212,
+        "seconds": 0.01,
+        "start_time": "2026-11-21T11:03:00.028313+00:00",
         "status": "succeeded"
       },
       {
-        "end_time": "2026-11-21T09:48:00.155296+00:00",
+        "end_time": "2026-11-21T10:48:00.148645+00:00",
         "jobid": 221,
         "return_message": "1 row",
-        "runid": 1422109,
-        "seconds": 0.09,
-        "start_time": "2026-11-21T09:48:00.068631+00:00",
-        "status": "succeeded"
-      },
-      {
-        "end_time": "2026-11-21T09:33:00.084544+00:00",
-        "jobid": 221,
-        "return_message": "1 row",
-        "runid": 1422085,
+        "runid": 1422192,
         "seconds": 0.02,
-        "start_time": "2026-11-21T09:33:00.064007+00:00",
+        "start_time": "2026-11-21T10:48:00.131700+00:00",
+        "status": "succeeded"
+      },
+      {
+        "end_time": "2026-11-21T10:33:00.084713+00:00",
+        "jobid": 221,
+        "return_message": "1 row",
+        "runid": 1422170,
+        "seconds": 0.01,
+        "start_time": "2026-11-21T10:33:00.078514+00:00",
         "status": "succeeded"
       },
       {
@@ -1452,6 +1452,24 @@
         "status": "succeeded"
       },
       {
+        "end_time": "2026-11-21T10:56:00.058406+00:00",
+        "jobid": 226,
+        "return_message": "1 row",
+        "runid": 1422202,
+        "seconds": 0.01,
+        "start_time": "2026-11-21T10:56:00.052066+00:00",
+        "status": "succeeded"
+      },
+      {
+        "end_time": "2026-11-21T10:26:00.076843+00:00",
+        "jobid": 226,
+        "return_message": "1 row",
+        "runid": 1422162,
+        "seconds": 0.03,
+        "start_time": "2026-11-21T10:26:00.047247+00:00",
+        "status": "succeeded"
+      },
+      {
         "end_time": "2026-11-21T09:56:00.100434+00:00",
         "jobid": 226,
         "return_message": "1 row",
@@ -1461,21 +1479,21 @@
         "status": "succeeded"
       },
       {
-        "end_time": "2026-11-21T09:26:00.133669+00:00",
-        "jobid": 226,
+        "end_time": "2026-11-21T10:59:00.241337+00:00",
+        "jobid": 227,
         "return_message": "1 row",
-        "runid": 1422076,
-        "seconds": 0.04,
-        "start_time": "2026-11-21T09:26:00.092931+00:00",
+        "runid": 1422207,
+        "seconds": 0.14,
+        "start_time": "2026-11-21T10:59:00.106260+00:00",
         "status": "succeeded"
       },
       {
-        "end_time": "2026-11-21T08:56:00.117312+00:00",
-        "jobid": 226,
+        "end_time": "2026-11-21T10:29:00.237025+00:00",
+        "jobid": 227,
         "return_message": "1 row",
-        "runid": 1422026,
-        "seconds": 0.03,
-        "start_time": "2026-11-21T08:56:00.090953+00:00",
+        "runid": 1422165,
+        "seconds": 0.15,
+        "start_time": "2026-11-21T10:29:00.091428+00:00",
         "status": "succeeded"
       },
       {
@@ -1488,21 +1506,12 @@
         "status": "succeeded"
       },
       {
-        "end_time": "2026-11-21T09:29:00.297808+00:00",
-        "jobid": 227,
+        "end_time": "2026-11-21T10:37:00.094821+00:00",
+        "jobid": 228,
         "return_message": "1 row",
-        "runid": 1422080,
-        "seconds": 0.21,
-        "start_time": "2026-11-21T09:29:00.090420+00:00",
-        "status": "succeeded"
-      },
-      {
-        "end_time": "2026-11-21T08:59:00.325313+00:00",
-        "jobid": 227,
-        "return_message": "1 row",
-        "runid": 1422036,
-        "seconds": 0.17,
-        "start_time": "2026-11-21T08:59:00.153428+00:00",
+        "runid": 1422178,
+        "seconds": 0.04,
+        "start_time": "2026-11-21T10:37:00.051082+00:00",
         "status": "succeeded"
       },
       {
@@ -1524,12 +1533,12 @@
         "status": "succeeded"
       },
       {
-        "end_time": "2026-11-21T07:37:00.040628+00:00",
-        "jobid": 228,
+        "end_time": "2026-11-21T10:43:00.123168+00:00",
+        "jobid": 229,
         "return_message": "1 row",
-        "runid": 1421867,
-        "seconds": 0.01,
-        "start_time": "2026-11-21T07:37:00.032565+00:00",
+        "runid": 1422182,
+        "seconds": 0.02,
+        "start_time": "2026-11-21T10:43:00.106560+00:00",
         "status": "succeeded"
       },
       {
@@ -1551,12 +1560,12 @@
         "status": "succeeded"
       },
       {
-        "end_time": "2026-11-21T07:43:00.117358+00:00",
-        "jobid": 229,
+        "end_time": "2026-11-21T10:46:00.156320+00:00",
+        "jobid": 230,
         "return_message": "1 row",
-        "runid": 1421875,
-        "seconds": 0.04,
-        "start_time": "2026-11-21T07:43:00.078848+00:00",
+        "runid": 1422187,
+        "seconds": 0.05,
+        "start_time": "2026-11-21T10:46:00.105543+00:00",
         "status": "succeeded"
       },
       {
@@ -1578,12 +1587,12 @@
         "status": "succeeded"
       },
       {
-        "end_time": "2026-11-21T07:46:00.297631+00:00",
-        "jobid": 230,
+        "end_time": "2026-11-21T10:48:00.155611+00:00",
+        "jobid": 231,
         "return_message": "1 row",
-        "runid": 1421882,
+        "runid": 1422193,
         "seconds": 0.03,
-        "start_time": "2026-11-21T07:46:00.270512+00:00",
+        "start_time": "2026-11-21T10:48:00.128415+00:00",
         "status": "succeeded"
       },
       {
@@ -1605,12 +1614,12 @@
         "status": "succeeded"
       },
       {
-        "end_time": "2026-11-21T07:48:00.165500+00:00",
-        "jobid": 231,
+        "end_time": "2026-11-21T10:51:00.258116+00:00",
+        "jobid": 232,
         "return_message": "1 row",
-        "runid": 1421890,
-        "seconds": 0.05,
-        "start_time": "2026-11-21T07:48:00.118012+00:00",
+        "runid": 1422196,
+        "seconds": 0.15,
+        "start_time": "2026-11-21T10:51:00.107793+00:00",
         "status": "succeeded"
       },
       {
@@ -1632,12 +1641,12 @@
         "status": "succeeded"
       },
       {
-        "end_time": "2026-11-21T07:51:00.374321+00:00",
-        "jobid": 232,
+        "end_time": "2026-11-21T10:34:00.283242+00:00",
+        "jobid": 233,
         "return_message": "1 row",
-        "runid": 1421894,
-        "seconds": 0.23,
-        "start_time": "2026-11-21T07:51:00.140580+00:00",
+        "runid": 1422173,
+        "seconds": 0.16,
+        "start_time": "2026-11-21T10:34:00.127271+00:00",
         "status": "succeeded"
       },
       {
@@ -1656,15 +1665,6 @@
         "runid": 1421984,
         "seconds": 0.12,
         "start_time": "2026-11-21T08:34:00.139482+00:00",
-        "status": "succeeded"
-      },
-      {
-        "end_time": "2026-11-21T07:34:00.270914+00:00",
-        "jobid": 233,
-        "return_message": "1 row",
-        "runid": 1421861,
-        "seconds": 0.17,
-        "start_time": "2026-11-21T07:34:00.101827+00:00",
         "status": "succeeded"
       },
       {
@@ -1776,6 +1776,15 @@
         "status": "succeeded"
       },
       {
+        "end_time": "2026-11-21T10:16:00.424780+00:00",
+        "jobid": 240,
+        "return_message": "1 row",
+        "runid": 1422148,
+        "seconds": 0.27,
+        "start_time": "2026-11-21T10:16:00.151709+00:00",
+        "status": "succeeded"
+      },
+      {
         "end_time": "2026-11-21T09:16:00.319945+00:00",
         "jobid": 240,
         "return_message": "1 row",
@@ -1794,12 +1803,12 @@
         "status": "succeeded"
       },
       {
-        "end_time": "2026-11-21T07:16:00.391149+00:00",
-        "jobid": 240,
+        "end_time": "2026-11-21T10:18:01.701065+00:00",
+        "jobid": 241,
         "return_message": "1 row",
-        "runid": 1421826,
-        "seconds": 0.19,
-        "start_time": "2026-11-21T07:16:00.203962+00:00",
+        "runid": 1422152,
+        "seconds": 1.63,
+        "start_time": "2026-11-21T10:18:00.075991+00:00",
         "status": "succeeded"
       },
       {
@@ -1818,15 +1827,6 @@
         "runid": 1421952,
         "seconds": 1.31,
         "start_time": "2026-11-21T08:18:00.101966+00:00",
-        "status": "succeeded"
-      },
-      {
-        "end_time": "2026-11-21T07:18:01.247063+00:00",
-        "jobid": 241,
-        "return_message": "1 row",
-        "runid": 1421831,
-        "seconds": 1.11,
-        "start_time": "2026-11-21T07:18:00.136574+00:00",
         "status": "succeeded"
       },
       {
@@ -2370,6 +2370,15 @@
         "status": "succeeded"
       },
       {
+        "end_time": "2026-11-21T10:40:01.363115+00:00",
+        "jobid": 265,
+        "return_message": "1 row",
+        "runid": 1422180,
+        "seconds": 1.32,
+        "start_time": "2026-11-21T10:40:00.040449+00:00",
+        "status": "succeeded"
+      },
+      {
         "end_time": "2026-11-21T09:40:04.048659+00:00",
         "jobid": 265,
         "return_message": "1 row",
@@ -2385,15 +2394,6 @@
         "runid": 1421995,
         "seconds": 1.32,
         "start_time": "2026-11-21T08:40:00.087458+00:00",
-        "status": "succeeded"
-      },
-      {
-        "end_time": "2026-11-21T07:40:01.464169+00:00",
-        "jobid": 265,
-        "return_message": "1 row",
-        "runid": 1421871,
-        "seconds": 1.43,
-        "start_time": "2026-11-21T07:40:00.031143+00:00",
         "status": "succeeded"
       },
       {
@@ -2424,30 +2424,30 @@
         "status": "succeeded"
       },
       {
-        "end_time": "2026-11-21T10:05:00.419323+00:00",
+        "end_time": "2026-11-21T11:05:00.344150+00:00",
         "jobid": 267,
         "return_message": "1 row",
-        "runid": 1422135,
-        "seconds": 0.17,
-        "start_time": "2026-11-21T10:05:00.249971+00:00",
+        "runid": 1422217,
+        "seconds": 0.16,
+        "start_time": "2026-11-21T11:05:00.183565+00:00",
         "status": "succeeded"
       },
       {
-        "end_time": "2026-11-21T09:50:03.023828+00:00",
+        "end_time": "2026-11-21T10:50:00.248179+00:00",
         "jobid": 267,
         "return_message": "1 row",
-        "runid": 1422111,
-        "seconds": 2.95,
-        "start_time": "2026-11-21T09:50:00.076503+00:00",
-        "status": "succeeded"
-      },
-      {
-        "end_time": "2026-11-21T09:35:00.143708+00:00",
-        "jobid": 267,
-        "return_message": "1 row",
-        "runid": 1422089,
+        "runid": 1422194,
         "seconds": 0.09,
-        "start_time": "2026-11-21T09:35:00.055984+00:00",
+        "start_time": "2026-11-21T10:50:00.157468+00:00",
+        "status": "succeeded"
+      },
+      {
+        "end_time": "2026-11-21T10:35:00.130327+00:00",
+        "jobid": 267,
+        "return_message": "1 row",
+        "runid": 1422174,
+        "seconds": 0.06,
+        "start_time": "2026-11-21T10:35:00.074578+00:00",
         "status": "succeeded"
       },
       {
@@ -2514,6 +2514,15 @@
         "status": "succeeded"
       },
       {
+        "end_time": "2026-11-21T10:47:00.343105+00:00",
+        "jobid": 273,
+        "return_message": "1 row",
+        "runid": 1422189,
+        "seconds": 0.2,
+        "start_time": "2026-11-21T10:47:00.141942+00:00",
+        "status": "succeeded"
+      },
+      {
         "end_time": "2026-11-21T09:47:03.290572+00:00",
         "jobid": 273,
         "return_message": "1 row",
@@ -2532,12 +2541,21 @@
         "status": "succeeded"
       },
       {
-        "end_time": "2026-11-21T07:47:00.266894+00:00",
-        "jobid": 273,
+        "end_time": "2026-11-21T11:06:00.382298+00:00",
+        "jobid": 275,
         "return_message": "1 row",
-        "runid": 1421885,
-        "seconds": 0.18,
-        "start_time": "2026-11-21T07:47:00.089762+00:00",
+        "runid": 1422221,
+        "seconds": 0.17,
+        "start_time": "2026-11-21T11:06:00.213541+00:00",
+        "status": "succeeded"
+      },
+      {
+        "end_time": "2026-11-21T10:36:01.040795+00:00",
+        "jobid": 275,
+        "return_message": "1 row",
+        "runid": 1422177,
+        "seconds": 0.94,
+        "start_time": "2026-11-21T10:36:00.105386+00:00",
         "status": "succeeded"
       },
       {
@@ -2547,24 +2565,6 @@
         "runid": 1422139,
         "seconds": 1.13,
         "start_time": "2026-11-21T10:06:00.141396+00:00",
-        "status": "succeeded"
-      },
-      {
-        "end_time": "2026-11-21T09:36:01.726426+00:00",
-        "jobid": 275,
-        "return_message": "1 row",
-        "runid": 1422092,
-        "seconds": 1.61,
-        "start_time": "2026-11-21T09:36:00.111496+00:00",
-        "status": "succeeded"
-      },
-      {
-        "end_time": "2026-11-21T09:06:01.703537+00:00",
-        "jobid": 275,
-        "return_message": "1 row",
-        "runid": 1422051,
-        "seconds": 1.58,
-        "start_time": "2026-11-21T09:06:00.123295+00:00",
         "status": "succeeded"
       },
       {
@@ -2595,6 +2595,15 @@
         "status": "succeeded"
       },
       {
+        "end_time": "2026-11-21T10:53:01.559720+00:00",
+        "jobid": 277,
+        "return_message": "1 row",
+        "runid": 1422200,
+        "seconds": 1.51,
+        "start_time": "2026-11-21T10:53:00.050513+00:00",
+        "status": "succeeded"
+      },
+      {
         "end_time": "2026-11-21T09:53:11.026184+00:00",
         "jobid": 277,
         "return_message": "1 row",
@@ -2610,15 +2619,6 @@
         "runid": 1422023,
         "seconds": 5.65,
         "start_time": "2026-11-21T08:53:00.061537+00:00",
-        "status": "succeeded"
-      },
-      {
-        "end_time": "2026-11-21T07:53:00.562472+00:00",
-        "jobid": 277,
-        "return_message": "1 row",
-        "runid": 1421899,
-        "seconds": 0.5,
-        "start_time": "2026-11-21T07:53:00.060262+00:00",
         "status": "succeeded"
       },
       {
@@ -2721,6 +2721,15 @@
         "status": "succeeded"
       },
       {
+        "end_time": "2026-11-21T10:38:00.115151+00:00",
+        "jobid": 283,
+        "return_message": "1 row",
+        "runid": 1422179,
+        "seconds": 0.06,
+        "start_time": "2026-11-21T10:38:00.053441+00:00",
+        "status": "succeeded"
+      },
+      {
         "end_time": "2026-11-21T09:38:00.120207+00:00",
         "jobid": 283,
         "return_message": "1 row",
@@ -2736,15 +2745,6 @@
         "runid": 1421993,
         "seconds": 0.05,
         "start_time": "2026-11-21T08:38:00.090783+00:00",
-        "status": "succeeded"
-      },
-      {
-        "end_time": "2026-11-21T07:38:00.103968+00:00",
-        "jobid": 283,
-        "return_message": "1 row",
-        "runid": 1421869,
-        "seconds": 0.02,
-        "start_time": "2026-11-21T07:38:00.080476+00:00",
         "status": "succeeded"
       },
       {
@@ -2901,6 +2901,15 @@
         "status": "succeeded"
       },
       {
+        "end_time": "2026-11-21T10:47:00.147631+00:00",
+        "jobid": 291,
+        "return_message": "1 row",
+        "runid": 1422191,
+        "seconds": 0.03,
+        "start_time": "2026-11-21T10:47:00.116564+00:00",
+        "status": "succeeded"
+      },
+      {
         "end_time": "2026-11-21T09:47:00.097743+00:00",
         "jobid": 291,
         "return_message": "1 row",
@@ -2916,15 +2925,6 @@
         "runid": 1422011,
         "seconds": 0.01,
         "start_time": "2026-11-21T08:47:00.102811+00:00",
-        "status": "succeeded"
-      },
-      {
-        "end_time": "2026-11-21T07:47:00.100573+00:00",
-        "jobid": 291,
-        "return_message": "1 row",
-        "runid": 1421887,
-        "seconds": 0.03,
-        "start_time": "2026-11-21T07:47:00.074021+00:00",
         "status": "succeeded"
       },
       {
@@ -2991,30 +2991,30 @@
         "status": "succeeded"
       },
       {
-        "end_time": "2026-11-21T10:05:00.262572+00:00",
+        "end_time": "2026-11-21T11:05:00.253115+00:00",
         "jobid": 296,
         "return_message": "1 row",
-        "runid": 1422137,
-        "seconds": 0.06,
-        "start_time": "2026-11-21T10:05:00.197814+00:00",
-        "status": "succeeded"
-      },
-      {
-        "end_time": "2026-11-21T09:50:00.172760+00:00",
-        "jobid": 296,
-        "return_message": "1 row",
-        "runid": 1422112,
-        "seconds": 0.06,
-        "start_time": "2026-11-21T09:50:00.115164+00:00",
-        "status": "succeeded"
-      },
-      {
-        "end_time": "2026-11-21T09:35:00.093251+00:00",
-        "jobid": 296,
-        "return_message": "1 row",
-        "runid": 1422090,
+        "runid": 1422219,
         "seconds": 0.01,
-        "start_time": "2026-11-21T09:35:00.083460+00:00",
+        "start_time": "2026-11-21T11:05:00.244372+00:00",
+        "status": "succeeded"
+      },
+      {
+        "end_time": "2026-11-21T10:50:00.163556+00:00",
+        "jobid": 296,
+        "return_message": "1 row",
+        "runid": 1422195,
+        "seconds": 0,
+        "start_time": "2026-11-21T10:50:00.158876+00:00",
+        "status": "succeeded"
+      },
+      {
+        "end_time": "2026-11-21T10:35:00.105724+00:00",
+        "jobid": 296,
+        "return_message": "1 row",
+        "runid": 1422175,
+        "seconds": 0.01,
+        "start_time": "2026-11-21T10:35:00.099113+00:00",
         "status": "succeeded"
       },
       {
@@ -3081,6 +3081,15 @@
         "status": "succeeded"
       },
       {
+        "end_time": "2026-11-21T11:05:00.265512+00:00",
+        "jobid": 300,
+        "return_message": "1 row",
+        "runid": 1422218,
+        "seconds": 0.06,
+        "start_time": "2026-11-21T11:05:00.201264+00:00",
+        "status": "succeeded"
+      },
+      {
         "end_time": "2026-11-21T10:05:00.367933+00:00",
         "jobid": 300,
         "return_message": "1 row",
@@ -3096,15 +3105,6 @@
         "runid": 1422048,
         "seconds": 0.15,
         "start_time": "2026-11-21T09:05:00.216888+00:00",
-        "status": "succeeded"
-      },
-      {
-        "end_time": "2026-11-21T08:05:00.402986+00:00",
-        "jobid": 300,
-        "return_message": "1 row",
-        "runid": 1421927,
-        "seconds": 0.17,
-        "start_time": "2026-11-21T08:05:00.231746+00:00",
         "status": "succeeded"
       },
       {
@@ -3189,57 +3189,57 @@
         "status": "succeeded"
       },
       {
-        "end_time": "2026-11-21T10:01:00.090283+00:00",
+        "end_time": "2026-11-21T11:01:00.110337+00:00",
         "jobid": 306,
         "return_message": "DELETE 0",
-        "runid": 1422128,
+        "runid": 1422210,
         "seconds": 0.01,
-        "start_time": "2026-11-21T10:01:00.083208+00:00",
+        "start_time": "2026-11-21T11:01:00.103486+00:00",
         "status": "succeeded"
       },
       {
-        "end_time": "2026-11-21T09:46:00.138024+00:00",
+        "end_time": "2026-11-21T10:46:00.171396+00:00",
         "jobid": 306,
         "return_message": "DELETE 0",
-        "runid": 1422105,
-        "seconds": 0.04,
-        "start_time": "2026-11-21T09:46:00.095350+00:00",
-        "status": "succeeded"
-      },
-      {
-        "end_time": "2026-11-21T09:31:00.078530+00:00",
-        "jobid": 306,
-        "return_message": "DELETE 0",
-        "runid": 1422083,
+        "runid": 1422188,
         "seconds": 0.01,
-        "start_time": "2026-11-21T09:31:00.066357+00:00",
+        "start_time": "2026-11-21T10:46:00.157951+00:00",
         "status": "succeeded"
       },
       {
-        "end_time": "2026-11-21T10:02:00.428397+00:00",
-        "jobid": 307,
-        "return_message": "1 row",
-        "runid": 1422129,
-        "seconds": 0.39,
-        "start_time": "2026-11-21T10:02:00.034399+00:00",
+        "end_time": "2026-11-21T10:31:00.098431+00:00",
+        "jobid": 306,
+        "return_message": "DELETE 0",
+        "runid": 1422168,
+        "seconds": 0.01,
+        "start_time": "2026-11-21T10:31:00.087303+00:00",
         "status": "succeeded"
       },
       {
-        "end_time": "2026-11-21T09:47:00.530642+00:00",
+        "end_time": "2026-11-21T11:02:00.119322+00:00",
         "jobid": 307,
         "return_message": "1 row",
-        "runid": 1422107,
-        "seconds": 0.45,
-        "start_time": "2026-11-21T09:47:00.076179+00:00",
+        "runid": 1422211,
+        "seconds": 0.03,
+        "start_time": "2026-11-21T11:02:00.088074+00:00",
         "status": "succeeded"
       },
       {
-        "end_time": "2026-11-21T09:32:00.078376+00:00",
+        "end_time": "2026-11-21T10:47:00.144691+00:00",
         "jobid": 307,
         "return_message": "1 row",
-        "runid": 1422084,
+        "runid": 1422190,
+        "seconds": 0.01,
+        "start_time": "2026-11-21T10:47:00.135108+00:00",
+        "status": "succeeded"
+      },
+      {
+        "end_time": "2026-11-21T10:32:00.089691+00:00",
+        "jobid": 307,
+        "return_message": "1 row",
+        "runid": 1422169,
         "seconds": 0.02,
-        "start_time": "2026-11-21T09:32:00.056136+00:00",
+        "start_time": "2026-11-21T10:32:00.074546+00:00",
         "status": "succeeded"
       },
       {
@@ -3362,7 +3362,7 @@
           "usename": "supabase_admin"
         }
       ],
-      "database_bytes": 6398348435,
+      "database_bytes": 6398356627,
       "queues": [],
       "schema_bytes": [
         {
@@ -3421,12 +3421,20 @@
           "total_ms": 3430966
         },
         {
-          "calls": 2441,
-          "mean_ms": 1104,
+          "calls": 2486,
+          "mean_ms": 1088.71,
           "query": "SELECT public.fn_cron_safe_run($1::bigint, $2, $3, $4)",
           "role": "postgres",
-          "rows": 2441,
-          "total_ms": 2694859
+          "rows": 2486,
+          "total_ms": 2706524
+        },
+        {
+          "calls": 41,
+          "mean_ms": 41187.45,
+          "query": "SELECT table_schema AS schema, table_name AS \"table\", column_name AS \"column\", grantee, string_agg(privilege_type, $1 ORDER BY privilege_type) AS privileges FROM information_schema.column_privileges cp WHERE grantee NOT ",
+          "role": "postgres",
+          "rows": 2337,
+          "total_ms": 1688685
         },
         {
           "calls": 130,
@@ -3435,14 +3443,6 @@
           "role": "authenticated",
           "rows": 130,
           "total_ms": 1657180
-        },
-        {
-          "calls": 40,
-          "mean_ms": 41173.67,
-          "query": "SELECT table_schema AS schema, table_name AS \"table\", column_name AS \"column\", grantee, string_agg(privilege_type, $1 ORDER BY privilege_type) AS privileges FROM information_schema.column_privileges cp WHERE grantee NOT ",
-          "role": "postgres",
-          "rows": 2280,
-          "total_ms": 1646947
         },
         {
           "calls": 1346,
@@ -3477,12 +3477,12 @@
           "total_ms": 408648
         },
         {
-          "calls": 39,
-          "mean_ms": 9802.91,
+          "calls": 40,
+          "mean_ms": 9780.55,
           "query": "WITH pgrst_source AS (SELECT pgrst_call.pgrst_scalar FROM (SELECT $1 AS json_data) pgrst_payload, LATERAL (SELECT \"p_items\" FROM json_to_record(pgrst_payload.json_data) AS _(\"p_items\" jsonb) LIMIT $4) pgrst_body , LATERA",
           "role": "service_role",
-          "rows": 39,
-          "total_ms": 382313
+          "rows": 40,
+          "total_ms": 391222
         },
         {
           "calls": 5074,
@@ -3630,7 +3630,7 @@
         "is_primary": false,
         "is_unique": true,
         "name": "mv_stock_velocity_pk",
-        "scans": 1242,
+        "scans": 1246,
         "schema": "analytics",
         "table": "mv_stock_velocity"
       },
@@ -4152,7 +4152,7 @@
         "is_primary": false,
         "is_unique": false,
         "name": "idx_ai_queue_locked_at",
-        "scans": 80,
+        "scans": 82,
         "schema": "public",
         "table": "ai_enrichment_queue"
       },
@@ -4179,7 +4179,7 @@
         "is_primary": false,
         "is_unique": false,
         "name": "idx_ai_queue_status",
-        "scans": 40,
+        "scans": 41,
         "schema": "public",
         "table": "ai_enrichment_queue"
       },
@@ -4350,7 +4350,7 @@
         "is_primary": false,
         "is_unique": false,
         "name": "idx_ai_usage_logs_status_errors",
-        "scans": 158,
+        "scans": 162,
         "schema": "public",
         "table": "ai_usage_logs"
       },
@@ -4746,7 +4746,7 @@
         "is_primary": false,
         "is_unique": false,
         "name": "idx_bot_detection_log_created_at",
-        "scans": 321,
+        "scans": 329,
         "schema": "public",
         "table": "bot_detection_log"
       },
@@ -4809,7 +4809,7 @@
         "is_primary": true,
         "is_unique": true,
         "name": "categories_pkey",
-        "scans": 125797,
+        "scans": 127727,
         "schema": "public",
         "table": "categories"
       },
@@ -4845,7 +4845,7 @@
         "is_primary": false,
         "is_unique": false,
         "name": "idx_categories_org_id",
-        "scans": 159,
+        "scans": 163,
         "schema": "public",
         "table": "categories"
       },
@@ -5448,7 +5448,7 @@
         "is_primary": true,
         "is_unique": true,
         "name": "color_variations_pkey",
-        "scans": 1401,
+        "scans": 1405,
         "schema": "public",
         "table": "color_variations"
       },
@@ -6195,7 +6195,7 @@
         "is_primary": false,
         "is_unique": false,
         "name": "idx_edge_rate_limits_reset_at",
-        "scans": 41,
+        "scans": 42,
         "schema": "public",
         "table": "edge_rate_limits"
       },
@@ -6636,7 +6636,7 @@
         "is_primary": false,
         "is_unique": false,
         "name": "idx_backfill_queue_by_task",
-        "scans": 159,
+        "scans": 163,
         "schema": "public",
         "table": "image_backfill_queue"
       },
@@ -6654,7 +6654,7 @@
         "is_primary": true,
         "is_unique": true,
         "name": "image_backfill_queue_pkey",
-        "scans": 316,
+        "scans": 324,
         "schema": "public",
         "table": "image_backfill_queue"
       },
@@ -7077,7 +7077,7 @@
         "is_primary": false,
         "is_unique": false,
         "name": "ix_kcfs_status",
-        "scans": 80,
+        "scans": 82,
         "schema": "public",
         "table": "kit_component_ficha_staging"
       },
@@ -7104,7 +7104,7 @@
         "is_primary": false,
         "is_unique": false,
         "name": "idx_kcpad_approved",
-        "scans": 40,
+        "scans": 41,
         "schema": "public",
         "table": "kit_component_padronizacao"
       },
@@ -7131,7 +7131,7 @@
         "is_primary": false,
         "is_unique": false,
         "name": "idx_kcpad_status",
-        "scans": 79,
+        "scans": 81,
         "schema": "public",
         "table": "kit_component_padronizacao"
       },
@@ -7491,7 +7491,7 @@
         "is_primary": false,
         "is_unique": false,
         "name": "idx_login_attempts_ip",
-        "scans": 678,
+        "scans": 682,
         "schema": "public",
         "table": "login_attempts"
       },
@@ -7509,7 +7509,7 @@
         "is_primary": false,
         "is_unique": false,
         "name": "idx_login_attempts_user_id",
-        "scans": 161,
+        "scans": 165,
         "schema": "public",
         "table": "login_attempts"
       },
@@ -7761,7 +7761,7 @@
         "is_primary": true,
         "is_unique": true,
         "name": "magazine_public_view_events_2026_11_pkey",
-        "scans": 42,
+        "scans": 43,
         "schema": "public",
         "table": "magazine_public_view_events_2026_11"
       },
@@ -8715,7 +8715,7 @@
         "is_primary": true,
         "is_unique": true,
         "name": "ncm_codes_pkey",
-        "scans": 5806,
+        "scans": 5807,
         "schema": "public",
         "table": "ncm_codes"
       },
@@ -9309,7 +9309,7 @@
         "is_primary": true,
         "is_unique": true,
         "name": "pipeline_run_log_pkey",
-        "scans": 82,
+        "scans": 84,
         "schema": "public",
         "table": "pipeline_run_log"
       },
@@ -9354,7 +9354,7 @@
         "is_primary": false,
         "is_unique": false,
         "name": "idx_pat_product_active",
-        "scans": 7079903,
+        "scans": 7258239,
         "schema": "public",
         "table": "print_area_techniques"
       },
@@ -9363,7 +9363,7 @@
         "is_primary": false,
         "is_unique": false,
         "name": "idx_pat_product_location_active",
-        "scans": 432,
+        "scans": 460,
         "schema": "public",
         "table": "print_area_techniques"
       },
@@ -10065,7 +10065,7 @@
         "is_primary": false,
         "is_unique": false,
         "name": "idx_product_images_primary_verified",
-        "scans": 45174,
+        "scans": 45676,
         "schema": "public",
         "table": "product_images"
       },
@@ -10074,7 +10074,7 @@
         "is_primary": false,
         "is_unique": false,
         "name": "idx_product_images_product_id",
-        "scans": 357866,
+        "scans": 365848,
         "schema": "public",
         "table": "product_images"
       },
@@ -10119,7 +10119,7 @@
         "is_primary": false,
         "is_unique": false,
         "name": "idx_product_images_variant_id",
-        "scans": 667,
+        "scans": 670,
         "schema": "public",
         "table": "product_images"
       },
@@ -10524,7 +10524,7 @@
         "is_primary": false,
         "is_unique": false,
         "name": "idx_pn_supplier",
-        "scans": 11904,
+        "scans": 11908,
         "schema": "public",
         "table": "product_novelties"
       },
@@ -10551,7 +10551,7 @@
         "is_primary": true,
         "is_unique": true,
         "name": "pk_product_novelties",
-        "scans": 2130,
+        "scans": 2242,
         "schema": "public",
         "table": "product_novelties"
       },
@@ -10560,7 +10560,7 @@
         "is_primary": false,
         "is_unique": true,
         "name": "uq_pn_product_one_active",
-        "scans": 12477,
+        "scans": 13130,
         "schema": "public",
         "table": "product_novelties"
       },
@@ -10578,7 +10578,7 @@
         "is_primary": false,
         "is_unique": true,
         "name": "uq_product_novelties_product_supplier",
-        "scans": 2130,
+        "scans": 2242,
         "schema": "public",
         "table": "product_novelties"
       },
@@ -10785,7 +10785,7 @@
         "is_primary": false,
         "is_unique": false,
         "name": "idx_pqia_is_resolved",
-        "scans": 79,
+        "scans": 81,
         "schema": "public",
         "table": "product_qa_image_alerts"
       },
@@ -10794,7 +10794,7 @@
         "is_primary": false,
         "is_unique": false,
         "name": "idx_pqia_product_id",
-        "scans": 10166,
+        "scans": 10422,
         "schema": "public",
         "table": "product_qa_image_alerts"
       },
@@ -11064,7 +11064,7 @@
         "is_primary": false,
         "is_unique": false,
         "name": "idx_product_variants_product_id",
-        "scans": 656719,
+        "scans": 666719,
         "schema": "public",
         "table": "product_variants"
       },
@@ -11100,7 +11100,7 @@
         "is_primary": false,
         "is_unique": false,
         "name": "idx_pv_supplier_sku",
-        "scans": 139412,
+        "scans": 143079,
         "schema": "public",
         "table": "product_variants"
       },
@@ -11154,7 +11154,7 @@
         "is_primary": false,
         "is_unique": false,
         "name": "product_variants_color_id_idx",
-        "scans": 980,
+        "scans": 984,
         "schema": "public",
         "table": "product_variants"
       },
@@ -11163,7 +11163,7 @@
         "is_primary": true,
         "is_unique": true,
         "name": "product_variants_pkey",
-        "scans": 406333,
+        "scans": 413496,
         "schema": "public",
         "table": "product_variants"
       },
@@ -11280,7 +11280,7 @@
         "is_primary": false,
         "is_unique": false,
         "name": "idx_products_active",
-        "scans": 37702,
+        "scans": 37711,
         "schema": "public",
         "table": "products"
       },
@@ -11316,7 +11316,7 @@
         "is_primary": false,
         "is_unique": false,
         "name": "idx_products_category",
-        "scans": 126345,
+        "scans": 129457,
         "schema": "public",
         "table": "products"
       },
@@ -11415,7 +11415,7 @@
         "is_primary": false,
         "is_unique": false,
         "name": "idx_products_new_active_sort",
-        "scans": 620,
+        "scans": 621,
         "schema": "public",
         "table": "products"
       },
@@ -11532,7 +11532,7 @@
         "is_primary": false,
         "is_unique": false,
         "name": "idx_products_supplier",
-        "scans": 989,
+        "scans": 990,
         "schema": "public",
         "table": "products"
       },
@@ -11541,7 +11541,7 @@
         "is_primary": false,
         "is_unique": false,
         "name": "idx_products_supplier_id_type_code",
-        "scans": 209,
+        "scans": 214,
         "schema": "public",
         "table": "products"
       },
@@ -11586,7 +11586,7 @@
         "is_primary": true,
         "is_unique": true,
         "name": "products_pkey",
-        "scans": 20007622,
+        "scans": 20018732,
         "schema": "public",
         "table": "products"
       },
@@ -11604,7 +11604,7 @@
         "is_primary": false,
         "is_unique": true,
         "name": "uq_products_supplier_ref",
-        "scans": 7430,
+        "scans": 7784,
         "schema": "public",
         "table": "products"
       },
@@ -11658,7 +11658,7 @@
         "is_primary": false,
         "is_unique": false,
         "name": "idx_pad_promovidos",
-        "scans": 162,
+        "scans": 166,
         "schema": "public",
         "table": "produtos_padronizacao"
       },
@@ -11667,7 +11667,7 @@
         "is_primary": false,
         "is_unique": false,
         "name": "idx_pad_raw",
-        "scans": 320,
+        "scans": 328,
         "schema": "public",
         "table": "produtos_padronizacao"
       },
@@ -11685,7 +11685,7 @@
         "is_primary": false,
         "is_unique": false,
         "name": "idx_pad_to_promote",
-        "scans": 451,
+        "scans": 460,
         "schema": "public",
         "table": "produtos_padronizacao"
       },
@@ -11712,7 +11712,7 @@
         "is_primary": true,
         "is_unique": true,
         "name": "produtos_padronizacao_pkey",
-        "scans": 69678,
+        "scans": 71233,
         "schema": "public",
         "table": "produtos_padronizacao"
       },
@@ -11721,7 +11721,7 @@
         "is_primary": false,
         "is_unique": true,
         "name": "uq_pad_supplier_reference",
-        "scans": 1129,
+        "scans": 1130,
         "schema": "public",
         "table": "produtos_padronizacao"
       },
@@ -11748,7 +11748,7 @@
         "is_primary": false,
         "is_unique": false,
         "name": "idx_padvar_parent",
-        "scans": 119159,
+        "scans": 121632,
         "schema": "public",
         "table": "produtos_padronizacao_variantes"
       },
@@ -11775,7 +11775,7 @@
         "is_primary": false,
         "is_unique": false,
         "name": "idx_padvar_status",
-        "scans": 130,
+        "scans": 138,
         "schema": "public",
         "table": "produtos_padronizacao_variantes"
       },
@@ -11784,7 +11784,7 @@
         "is_primary": false,
         "is_unique": false,
         "name": "idx_produtos_padronizacao_variantes_variant_id",
-        "scans": 8160,
+        "scans": 8364,
         "schema": "public",
         "table": "produtos_padronizacao_variantes"
       },
@@ -11802,7 +11802,7 @@
         "is_primary": false,
         "is_unique": true,
         "name": "uq_padvar_supplier_variant",
-        "scans": 497,
+        "scans": 499,
         "schema": "public",
         "table": "produtos_padronizacao_variantes"
       },
@@ -11883,7 +11883,7 @@
         "is_primary": false,
         "is_unique": true,
         "name": "profiles_user_id_key",
-        "scans": 8746,
+        "scans": 8747,
         "schema": "public",
         "table": "profiles"
       },
@@ -13530,7 +13530,7 @@
         "is_primary": false,
         "is_unique": false,
         "name": "idx_spr_status_failed_quarantined",
-        "scans": 160,
+        "scans": 161,
         "schema": "public",
         "table": "supplier_products_raw"
       },
@@ -13539,7 +13539,7 @@
         "is_primary": false,
         "is_unique": false,
         "name": "idx_spr_status_pending",
-        "scans": 457,
+        "scans": 466,
         "schema": "public",
         "table": "supplier_products_raw"
       },
@@ -13548,7 +13548,7 @@
         "is_primary": false,
         "is_unique": false,
         "name": "idx_spr_stock_pending",
-        "scans": 40,
+        "scans": 41,
         "schema": "public",
         "table": "supplier_products_raw"
       },
@@ -13557,7 +13557,7 @@
         "is_primary": false,
         "is_unique": false,
         "name": "idx_spr_stock_status_pending",
-        "scans": 80,
+        "scans": 81,
         "schema": "public",
         "table": "supplier_products_raw"
       },
@@ -13611,7 +13611,7 @@
         "is_primary": true,
         "is_unique": true,
         "name": "supplier_products_raw_pkey",
-        "scans": 228434,
+        "scans": 234050,
         "schema": "public",
         "table": "supplier_products_raw"
       },
@@ -13638,7 +13638,7 @@
         "is_primary": false,
         "is_unique": true,
         "name": "uq_supplier_product_raw",
-        "scans": 311840,
+        "scans": 311846,
         "schema": "public",
         "table": "supplier_products_raw"
       },
@@ -13872,7 +13872,7 @@
         "is_primary": false,
         "is_unique": false,
         "name": "idx_sre_source_pending",
-        "scans": 494,
+        "scans": 495,
         "schema": "public",
         "table": "supplier_replenishment_events"
       },
@@ -13926,7 +13926,7 @@
         "is_primary": false,
         "is_unique": true,
         "name": "supplier_settings_supplier_id_key",
-        "scans": 266,
+        "scans": 272,
         "schema": "public",
         "table": "supplier_settings"
       },
@@ -14052,7 +14052,7 @@
         "is_primary": false,
         "is_unique": true,
         "name": "suppliers_code_key",
-        "scans": 35,
+        "scans": 36,
         "schema": "public",
         "table": "suppliers"
       },
@@ -14061,7 +14061,7 @@
         "is_primary": true,
         "is_unique": true,
         "name": "suppliers_pkey",
-        "scans": 6604580,
+        "scans": 6608086,
         "schema": "public",
         "table": "suppliers"
       },
@@ -14718,7 +14718,7 @@
         "is_primary": false,
         "is_unique": false,
         "name": "idx_variant_supplier_sources_supplier_id",
-        "scans": 147368,
+        "scans": 151146,
         "schema": "public",
         "table": "variant_supplier_sources"
       },
@@ -14745,7 +14745,7 @@
         "is_primary": false,
         "is_unique": false,
         "name": "idx_vss_preferred",
-        "scans": 144601,
+        "scans": 148071,
         "schema": "public",
         "table": "variant_supplier_sources"
       },
@@ -14763,7 +14763,7 @@
         "is_primary": false,
         "is_unique": true,
         "name": "idx_vss_variant_supplier_unique",
-        "scans": 2932808,
+        "scans": 3004866,
         "schema": "public",
         "table": "variant_supplier_sources"
       },
@@ -14781,7 +14781,7 @@
         "is_primary": true,
         "is_unique": true,
         "name": "variant_stocks_pkey",
-        "scans": 1701641,
+        "scans": 1701649,
         "schema": "public",
         "table": "variant_supplier_sources"
       },
@@ -15006,7 +15006,7 @@
         "is_primary": false,
         "is_unique": false,
         "name": "idx_webhook_dispatcher_log_fired_at",
-        "scans": 477,
+        "scans": 489,
         "schema": "public",
         "table": "webhook_dispatcher_log"
       },
@@ -15096,7 +15096,7 @@
         "is_primary": false,
         "is_unique": false,
         "name": "idx_workspace_notifications_user_unread",
-        "scans": 11327,
+        "scans": 11447,
         "schema": "public",
         "table": "workspace_notifications"
       },
@@ -15105,7 +15105,7 @@
         "is_primary": false,
         "is_unique": false,
         "name": "idx_workspace_notifications_user_unread_v2",
-        "scans": 15729,
+        "scans": 15855,
         "schema": "public",
         "table": "workspace_notifications"
       },
@@ -15792,7 +15792,7 @@
         "dead_rows": 0,
         "est_rows": 20922,
         "heap_bytes": 269434880,
-        "idx_scan": 566895,
+        "idx_scan": 572529,
         "index_bytes": 24788992,
         "last_autoanalyze": "2026-11-21T09:02:49.190432+00:00",
         "last_autovacuum": "2026-11-21T09:02:45.802956+00:00",
@@ -15802,16 +15802,16 @@
         "total_bytes": 394387456
       },
       {
-        "dead_rows": 0,
+        "dead_rows": 2,
         "est_rows": 8388,
         "heap_bytes": 45932544,
-        "idx_scan": 25483932,
+        "idx_scan": 25498524,
         "index_bytes": 45170688,
         "last_autoanalyze": "2026-11-21T09:51:47.981559+00:00",
         "last_autovacuum": "2026-11-21T09:51:34.557767+00:00",
         "name": "products",
         "schema": "public",
-        "seq_scan": 5871,
+        "seq_scan": 5873,
         "total_bytes": 189284352
       },
       {
@@ -15831,7 +15831,7 @@
         "dead_rows": 71,
         "est_rows": 72007,
         "heap_bytes": 85835776,
-        "idx_scan": 554348,
+        "idx_scan": 562835,
         "index_bytes": 62324736,
         "last_autoanalyze": null,
         "last_autovacuum": null,
@@ -15844,7 +15844,7 @@
         "dead_rows": 0,
         "est_rows": 110596,
         "heap_bytes": 113721344,
-        "idx_scan": 321,
+        "idx_scan": 329,
         "index_bytes": 9871360,
         "last_autoanalyze": null,
         "last_autovacuum": null,
@@ -15870,7 +15870,7 @@
         "dead_rows": 8539,
         "est_rows": 116383,
         "heap_bytes": 54812672,
-        "idx_scan": 485,
+        "idx_scan": 497,
         "index_bytes": 27934720,
         "last_autoanalyze": null,
         "last_autovacuum": null,
@@ -15896,20 +15896,20 @@
         "dead_rows": 0,
         "est_rows": 20886,
         "heap_bytes": 58777600,
-        "idx_scan": 4926822,
+        "idx_scan": 5006136,
         "index_bytes": 13705216,
-        "last_autoanalyze": "2026-11-21T10:00:34.611542+00:00",
-        "last_autovacuum": "2026-11-21T10:00:33.563331+00:00",
+        "last_autoanalyze": "2026-11-21T11:01:36.404070+00:00",
+        "last_autovacuum": "2026-11-21T11:01:35.728293+00:00",
         "name": "variant_supplier_sources",
         "schema": "public",
-        "seq_scan": 287,
+        "seq_scan": 292,
         "total_bytes": 72687616
       },
       {
         "dead_rows": 0,
         "est_rows": 43167,
         "heap_bytes": 27516928,
-        "idx_scan": 839,
+        "idx_scan": 847,
         "index_bytes": 20971520,
         "last_autoanalyze": null,
         "last_autovacuum": null,
@@ -15935,13 +15935,13 @@
         "dead_rows": 459,
         "est_rows": 20854,
         "heap_bytes": 35143680,
-        "idx_scan": 130789,
+        "idx_scan": 133476,
         "index_bytes": 8110080,
         "last_autoanalyze": "2026-11-21T09:51:48.619400+00:00",
         "last_autovacuum": "2026-11-20T09:51:34.103245+00:00",
         "name": "produtos_padronizacao_variantes",
         "schema": "public",
-        "seq_scan": 45,
+        "seq_scan": 46,
         "total_bytes": 43696128
       },
       {
@@ -15958,16 +15958,16 @@
         "total_bytes": 39362560
       },
       {
-        "dead_rows": 54,
+        "dead_rows": 102,
         "est_rows": 20939,
         "heap_bytes": 27918336,
-        "idx_scan": 1213393,
+        "idx_scan": 1234227,
         "index_bytes": 8699904,
         "last_autoanalyze": "2026-11-21T09:51:51.675662+00:00",
         "last_autovacuum": "2026-11-21T09:51:50.950615+00:00",
         "name": "product_variants",
         "schema": "public",
-        "seq_scan": 8007,
+        "seq_scan": 8009,
         "total_bytes": 36659200
       },
       {
@@ -15987,7 +15987,7 @@
         "dead_rows": 0,
         "est_rows": 8382,
         "heap_bytes": 24870912,
-        "idx_scan": 88245,
+        "idx_scan": 89822,
         "index_bytes": 2883584,
         "last_autoanalyze": "2026-11-21T09:51:50.556300+00:00",
         "last_autovacuum": "2026-11-21T09:51:49.855893+00:00",
@@ -16156,13 +16156,13 @@
         "dead_rows": 0,
         "est_rows": 24442,
         "heap_bytes": 5480448,
-        "idx_scan": 7080356,
+        "idx_scan": 7258720,
         "index_bytes": 5079040,
         "last_autoanalyze": null,
         "last_autovacuum": null,
         "name": "print_area_techniques",
         "schema": "public",
-        "seq_scan": 567,
+        "seq_scan": 571,
         "total_bytes": 10600448
       },
       {
@@ -16182,13 +16182,13 @@
         "dead_rows": 0,
         "est_rows": 21800,
         "heap_bytes": 4571136,
-        "idx_scan": 951,
+        "idx_scan": 952,
         "index_bytes": 5332992,
         "last_autoanalyze": null,
         "last_autovacuum": null,
         "name": "supplier_replenishment_events",
         "schema": "public",
-        "seq_scan": 39,
+        "seq_scan": 40,
         "total_bytes": 9945088
       },
       {
@@ -16257,10 +16257,10 @@
         "total_bytes": 7438336
       },
       {
-        "dead_rows": 154,
+        "dead_rows": 156,
         "est_rows": 2792,
         "heap_bytes": 6103040,
-        "idx_scan": 272,
+        "idx_scan": 274,
         "index_bytes": 622592,
         "last_autoanalyze": null,
         "last_autovacuum": null,
@@ -16299,13 +16299,13 @@
         "dead_rows": 1,
         "est_rows": 2038,
         "heap_bytes": 3465216,
-        "idx_scan": 28763,
+        "idx_scan": 29644,
         "index_bytes": 2244608,
         "last_autoanalyze": null,
         "last_autovacuum": null,
         "name": "product_novelties",
         "schema": "public",
-        "seq_scan": 84,
+        "seq_scan": 85,
         "total_bytes": 5750784
       },
       {
@@ -16364,7 +16364,7 @@
         "dead_rows": 0,
         "est_rows": 6819,
         "heap_bytes": 2875392,
-        "idx_scan": 137,
+        "idx_scan": 140,
         "index_bytes": 1851392,
         "last_autoanalyze": null,
         "last_autovacuum": null,
@@ -16416,13 +16416,13 @@
         "dead_rows": 0,
         "est_rows": 8197,
         "heap_bytes": 1900544,
-        "idx_scan": 1793,
+        "idx_scan": 1796,
         "index_bytes": 2220032,
         "last_autoanalyze": "2026-11-21T04:17:17.005416+00:00",
         "last_autovacuum": "2026-11-21T04:18:17.023105+00:00",
         "name": "ai_enrichment_queue",
         "schema": "public",
-        "seq_scan": 46,
+        "seq_scan": 47,
         "total_bytes": 4161536
       },
       {
@@ -16455,7 +16455,7 @@
         "dead_rows": 0,
         "est_rows": 4487,
         "heap_bytes": 2613248,
-        "idx_scan": 27057,
+        "idx_scan": 27303,
         "index_bytes": 794624,
         "last_autoanalyze": null,
         "last_autovacuum": null,
@@ -16585,13 +16585,13 @@
         "dead_rows": 10,
         "est_rows": 478,
         "heap_bytes": 1638400,
-        "idx_scan": 135452,
+        "idx_scan": 137386,
         "index_bytes": 688128,
         "last_autoanalyze": null,
         "last_autovacuum": null,
         "name": "categories",
         "schema": "public",
-        "seq_scan": 19608,
+        "seq_scan": 19612,
         "total_bytes": 2383872
       },
       {
@@ -16734,7 +16734,7 @@
         "last_autovacuum": null,
         "name": "video_import_queue",
         "schema": "public",
-        "seq_scan": 167,
+        "seq_scan": 171,
         "total_bytes": 1564672
       },
       {
@@ -16806,13 +16806,13 @@
         "dead_rows": 4,
         "est_rows": 359,
         "heap_bytes": 614400,
-        "idx_scan": 10247,
+        "idx_scan": 10505,
         "index_bytes": 311296,
         "last_autoanalyze": null,
         "last_autovacuum": null,
         "name": "product_qa_image_alerts",
         "schema": "public",
-        "seq_scan": 79,
+        "seq_scan": 81,
         "total_bytes": 966656
       },
       {
@@ -16962,7 +16962,7 @@
         "dead_rows": 0,
         "est_rows": 812,
         "heap_bytes": 294912,
-        "idx_scan": 42,
+        "idx_scan": 43,
         "index_bytes": 262144,
         "last_autoanalyze": null,
         "last_autovacuum": null,
@@ -17014,13 +17014,13 @@
         "dead_rows": 0,
         "est_rows": 87,
         "heap_bytes": 32768,
-        "idx_scan": 2297,
+        "idx_scan": 2301,
         "index_bytes": 385024,
         "last_autoanalyze": null,
         "last_autovacuum": null,
         "name": "color_variations",
         "schema": "public",
-        "seq_scan": 1557,
+        "seq_scan": 1558,
         "total_bytes": 458752
       },
       {
@@ -17261,7 +17261,7 @@
         "dead_rows": 0,
         "est_rows": 432,
         "heap_bytes": 155648,
-        "idx_scan": 580,
+        "idx_scan": 582,
         "index_bytes": 73728,
         "last_autoanalyze": null,
         "last_autovacuum": null,
@@ -17287,20 +17287,20 @@
         "dead_rows": 0,
         "est_rows": 83,
         "heap_bytes": 98304,
-        "idx_scan": 8822,
+        "idx_scan": 8823,
         "index_bytes": 114688,
         "last_autoanalyze": null,
         "last_autovacuum": null,
         "name": "profiles",
         "schema": "public",
-        "seq_scan": 84,
+        "seq_scan": 86,
         "total_bytes": 253952
       },
       {
-        "dead_rows": 4,
+        "dead_rows": 5,
         "est_rows": 5,
         "heap_bytes": 147456,
-        "idx_scan": 6606541,
+        "idx_scan": 6610048,
         "index_bytes": 65536,
         "last_autoanalyze": null,
         "last_autovacuum": null,
@@ -17352,7 +17352,7 @@
         "dead_rows": 5,
         "est_rows": 61,
         "heap_bytes": 81920,
-        "idx_scan": 289,
+        "idx_scan": 293,
         "index_bytes": 98304,
         "last_autoanalyze": null,
         "last_autovacuum": null,
@@ -17365,20 +17365,20 @@
         "dead_rows": 31,
         "est_rows": 11,
         "heap_bytes": 8192,
-        "idx_scan": 436,
+        "idx_scan": 437,
         "index_bytes": 188416,
         "last_autoanalyze": "2026-11-20T19:27:52.029700+00:00",
         "last_autovacuum": "2026-11-20T18:37:49.896450+00:00",
         "name": "edge_rate_limits",
         "schema": "public",
-        "seq_scan": 41,
+        "seq_scan": 42,
         "total_bytes": 221184
       },
       {
         "dead_rows": 0,
         "est_rows": 261,
         "heap_bytes": 98304,
-        "idx_scan": 5836,
+        "idx_scan": 5837,
         "index_bytes": 81920,
         "last_autoanalyze": null,
         "last_autovacuum": null,
@@ -17475,7 +17475,7 @@
         "last_autovacuum": null,
         "name": "user_roles",
         "schema": "public",
-        "seq_scan": 8492,
+        "seq_scan": 8498,
         "total_bytes": 196608
       },
       {
@@ -17618,7 +17618,7 @@
         "last_autovacuum": null,
         "name": "markup_configurations",
         "schema": "public",
-        "seq_scan": 139670,
+        "seq_scan": 143140,
         "total_bytes": 155648
       },
       {
@@ -17729,7 +17729,7 @@
         "dead_rows": 0,
         "est_rows": 2,
         "heap_bytes": 16384,
-        "idx_scan": 477,
+        "idx_scan": 489,
         "index_bytes": 81920,
         "last_autoanalyze": null,
         "last_autovacuum": null,
@@ -17748,7 +17748,7 @@
         "last_autovacuum": null,
         "name": "anon_insert_rate",
         "schema": "public",
-        "seq_scan": 158,
+        "seq_scan": 162,
         "total_bytes": 131072
       },
       {
@@ -17865,7 +17865,7 @@
         "last_autovacuum": null,
         "name": "integration_credentials",
         "schema": "public",
-        "seq_scan": 4123,
+        "seq_scan": 4128,
         "total_bytes": 114688
       },
       {
@@ -17904,7 +17904,7 @@
         "last_autovacuum": "2026-11-21T02:01:11.594248+00:00",
         "name": "dashboard_insights_cache",
         "schema": "public",
-        "seq_scan": 178,
+        "seq_scan": 179,
         "total_bytes": 106496
       },
       {
@@ -18281,7 +18281,7 @@
         "last_autovacuum": null,
         "name": "organizations",
         "schema": "public",
-        "seq_scan": 5828,
+        "seq_scan": 5829,
         "total_bytes": 81920
       },
       {
@@ -18314,13 +18314,13 @@
         "dead_rows": 0,
         "est_rows": 5,
         "heap_bytes": 8192,
-        "idx_scan": 266,
+        "idx_scan": 272,
         "index_bytes": 32768,
         "last_autoanalyze": null,
         "last_autovacuum": null,
         "name": "supplier_settings",
         "schema": "public",
-        "seq_scan": 12285,
+        "seq_scan": 12291,
         "total_bytes": 81920
       },
       {
@@ -18346,7 +18346,7 @@
         "last_autovacuum": null,
         "name": "user_onboarding",
         "schema": "public",
-        "seq_scan": 6055,
+        "seq_scan": 6056,
         "total_bytes": 81920
       },
       {
@@ -18883,7 +18883,7 @@
         "total_bytes": 57344
       },
       {
-        "dead_rows": 42,
+        "dead_rows": 43,
         "est_rows": 1,
         "heap_bytes": 8192,
         "idx_scan": 0,
@@ -18892,7 +18892,7 @@
         "last_autovacuum": null,
         "name": "magazine_view_rollup_watermark",
         "schema": "public",
-        "seq_scan": 84,
+        "seq_scan": 86,
         "total_bytes": 57344
       },
       {
@@ -18931,7 +18931,7 @@
         "last_autovacuum": null,
         "name": "outbound_webhooks",
         "schema": "public",
-        "seq_scan": 52,
+        "seq_scan": 53,
         "total_bytes": 57344
       },
       {
@@ -18957,7 +18957,7 @@
         "last_autovacuum": null,
         "name": "secret_rotation_log",
         "schema": "public",
-        "seq_scan": 43,
+        "seq_scan": 44,
         "total_bytes": 57344
       },
       {
@@ -18983,7 +18983,7 @@
         "last_autovacuum": null,
         "name": "webhook_delivery_locks",
         "schema": "public",
-        "seq_scan": 41,
+        "seq_scan": 42,
         "total_bytes": 57344
       },
       {
@@ -19100,7 +19100,7 @@
         "last_autovacuum": null,
         "name": "expert_conversations",
         "schema": "public",
-        "seq_scan": 5732,
+        "seq_scan": 5733,
         "total_bytes": 49152
       },
       {
@@ -19477,7 +19477,7 @@
         "last_autovacuum": null,
         "name": "external_connections",
         "schema": "public",
-        "seq_scan": 80,
+        "seq_scan": 82,
         "total_bytes": 40960
       },
       {
@@ -19581,7 +19581,7 @@
         "last_autovacuum": null,
         "name": "user_token_revocations",
         "schema": "public",
-        "seq_scan": 340,
+        "seq_scan": 341,
         "total_bytes": 40960
       },
       {
@@ -20127,7 +20127,7 @@
         "last_autovacuum": null,
         "name": "pipeline_control",
         "schema": "public",
-        "seq_scan": 82,
+        "seq_scan": 84,
         "total_bytes": 32768
       },
       {
@@ -20244,7 +20244,7 @@
         "last_autovacuum": null,
         "name": "system_settings",
         "schema": "public",
-        "seq_scan": 15519,
+        "seq_scan": 15521,
         "total_bytes": 32768
       },
       {
@@ -20296,7 +20296,7 @@
         "last_autovacuum": null,
         "name": "webhook_request_nonces",
         "schema": "public",
-        "seq_scan": 40,
+        "seq_scan": 41,
         "total_bytes": 32768
       },
       {
@@ -20634,7 +20634,7 @@
         "last_autovacuum": null,
         "name": "scheduled_reports",
         "schema": "public",
-        "seq_scan": 220,
+        "seq_scan": 222,
         "total_bytes": 24576
       },
       {
@@ -20660,7 +20660,7 @@
         "last_autovacuum": null,
         "name": "step_up_challenges",
         "schema": "public",
-        "seq_scan": 160,
+        "seq_scan": 164,
         "total_bytes": 24576
       },
       {
@@ -21115,7 +21115,7 @@
         "last_autovacuum": null,
         "name": "public_token_failures",
         "schema": "public",
-        "seq_scan": 162,
+        "seq_scan": 166,
         "total_bytes": 16384
       },
       {
@@ -21245,7 +21245,7 @@
         "last_autovacuum": null,
         "name": "step_up_tokens",
         "schema": "public",
-        "seq_scan": 160,
+        "seq_scan": 164,
         "total_bytes": 16384
       },
       {
