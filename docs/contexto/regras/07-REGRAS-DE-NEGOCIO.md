@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.3.2 · commit `60f9275e82` · branch `main` · 2026-11-21 15:53 UTC
+> Gerado automaticamente por AI Context Sync v1.3.2 · commit `fdf20b391c` · branch `main` · 2026-11-21 16:38 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -7588,4 +7588,4 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | pronto para envio, qual item define esse prazo e de onde vem cada número. | `src/components/freight-plan/ProductionLeadTimeCard.tsx` |
 | deliveryMode={deliveryMode}            // 'data' \| 'prazo' do orçamento | `src/components/freight-plan/ProductionLeadTimeCard.tsx` |
 | * Dia da aprovação (AAAA-MM-DD); null = o prazo começa hoje. */ | `src/components/freight-plan/ProductionLeadTimeCard.tsx` |
-| … +1470 linhas — lista completa em `context.json` | |
+| … +1471 linhas — lista completa em `context.json` | |

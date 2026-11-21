@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "60f9275e828a8f4d08ecb2e8c872cfda3121446d",
+  "commit": "fdf20b391c2b93013a868088a348bcb658fd6dda",
   "branch": "main",
-  "data_commit": "2026-11-21T12:51:49-03:00",
+  "data_commit": "2026-11-21T13:37:37-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "fdf20b39",
+    "data": "2026-11-21",
+    "assunto": "fix(quotes): restaura contrato transacional das RPCs com frete (Gate 2.5) (#3959)"
+   },
    {
     "sha": "60f9275e",
     "data": "2026-11-21",
@@ -126,143 +131,122 @@
     "sha": "be9f4a20",
     "data": "2026-11-20",
     "assunto": "fix: crash appendChild ao digitar na busca global (CommandItem soltos) (#3937)"
-   },
-   {
-    "sha": "51ab7fb3",
-    "data": "2026-11-20",
-    "assunto": "docs(migrations): recibos E15 das 20261120030000/030100 (baseline já em #3931) (#3932)"
    }
   ],
-  "arquivos_mudados_7d": 11299,
+  "arquivos_mudados_7d": 11300,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
-    "mudancas": 1897
+    "mudancas": 1595
    },
    {
     "pasta": "recovery/src-legacy/src",
-    "mudancas": 1581
+    "mudancas": 1265
    },
    {
     "pasta": "src/components/products",
-    "mudancas": 912
+    "mudancas": 760
    },
    {
     "pasta": "tests/edge-functions/live",
-    "mudancas": 692
+    "mudancas": 577
    },
    {
     "pasta": "src/hooks/products",
-    "mudancas": 651
+    "mudancas": 546
    },
    {
     "pasta": "src/components/quotes",
-    "mudancas": 559
+    "mudancas": 472
    },
    {
     "pasta": "src/pages/magazine",
-    "mudancas": 552
+    "mudancas": 460
    },
    {
     "pasta": "src/components/inventory",
-    "mudancas": 486
+    "mudancas": 406
    },
    {
     "pasta": "supabase/functions/_shared",
-    "mudancas": 450
-   },
-   {
-    "pasta": "src/components/ui",
-    "mudancas": 438
-   },
-   {
-    "pasta": "src/components/mockup",
-    "mudancas": 403
-   },
-   {
-    "pasta": "src/pages/admin",
     "mudancas": 375
    },
    {
+    "pasta": "src/components/ui",
+    "mudancas": 365
+   },
+   {
+    "pasta": "src/components/mockup",
+    "mudancas": 343
+   },
+   {
+    "pasta": "src/pages/admin",
+    "mudancas": 315
+   },
+   {
     "pasta": "src/pages/quotes",
-    "mudancas": 330
+    "mudancas": 279
    },
    {
     "pasta": "src/components/kit-builder",
-    "mudancas": 306
+    "mudancas": 260
    },
    {
     "pasta": "src/pages/products",
-    "mudancas": 292
+    "mudancas": 244
    }
   ],
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "supabase/MIGRATIONS_SYNC_LOG.md",
-    "mudancas": 71
+    "mudancas": 70
    },
    {
     "arquivo": "package.json",
-    "mudancas": 32
-   },
-   {
-    "arquivo": "docs/coordenacao/conflitos-semanticos.md",
     "mudancas": 31
    },
    {
+    "arquivo": "docs/coordenacao/conflitos-semanticos.md",
+    "mudancas": 29
+   },
+   {
     "arquivo": "package-lock.json",
-    "mudancas": 22
+    "mudancas": 21
    },
    {
     "arquivo": ".github/workflows/deploy-gates.yml",
-    "mudancas": 17
-   },
-   {
-    "arquivo": "CHANGELOG.md",
     "mudancas": 16
    },
    {
-    "arquivo": "audit/supabase-reference-catalog.temporary.json",
+    "arquivo": "CHANGELOG.md",
     "mudancas": 15
    },
    {
-    "arquivo": "src/pages/mockups/MockupGenerator.tsx",
+    "arquivo": "audit/supabase-reference-catalog.temporary.json",
     "mudancas": 14
    },
    {
-    "arquivo": "src/pages/kit-builder/KitBuilderPage.tsx",
+    "arquivo": "src/pages/mockups/MockupGenerator.tsx",
     "mudancas": 13
    },
    {
-    "arquivo": "src/integrations/supabase/types.ts",
+    "arquivo": "src/pages/kit-builder/KitBuilderPage.tsx",
     "mudancas": 12
+   },
+   {
+    "arquivo": "src/integrations/supabase/types.ts",
+    "mudancas": 11
    },
    {
     "arquivo": "src/pages/quotes/QuoteBuilderPage.tsx",
-    "mudancas": 12
+    "mudancas": 11
    },
    {
     "arquivo": ".github/workflows/replenishment-quality.yml",
-    "mudancas": 11
-   },
-   {
-    "arquivo": ".github/workflows/schema-snapshot-export.yml",
-    "mudancas": 11
-   },
-   {
-    "arquivo": "scripts/drift-baseline.mjs",
-    "mudancas": 11
-   },
-   {
-    "arquivo": "supabase/functions/crm-db-bridge/index.ts",
-    "mudancas": 11
-   },
-   {
-    "arquivo": ".github/workflows/e2e-swatch-quickview.yml",
     "mudancas": 10
    },
    {
-    "arquivo": ".github/workflows/e2e.yml",
+    "arquivo": ".github/workflows/schema-snapshot-export.yml",
     "mudancas": 10
    },
    {
@@ -270,42 +254,58 @@
     "mudancas": 10
    },
    {
-    "arquivo": "scripts/automation.config.json",
+    "arquivo": "supabase/functions/crm-db-bridge/index.ts",
     "mudancas": 10
+   },
+   {
+    "arquivo": ".github/workflows/e2e-swatch-quickview.yml",
+    "mudancas": 9
+   },
+   {
+    "arquivo": ".github/workflows/e2e.yml",
+    "mudancas": 9
+   },
+   {
+    "arquivo": "scripts/automation.config.json",
+    "mudancas": 9
+   },
+   {
+    "arquivo": "scripts/drift-baseline.mjs",
+    "mudancas": 9
    },
    {
     "arquivo": "src/components/kit-builder/KitSummary.tsx",
-    "mudancas": 10
+    "mudancas": 9
    },
    {
     "arquivo": "src/components/kit-builder/PersonalizationConfig.tsx",
-    "mudancas": 10
+    "mudancas": 9
    },
    {
     "arquivo": "src/components/quotes/QuoteAutoSave.tsx",
-    "mudancas": 10
+    "mudancas": 9
    },
    {
     "arquivo": "src/components/search/useGlobalSearch.ts",
-    "mudancas": 10
+    "mudancas": 9
    },
    {
     "arquivo": "src/hooks/mockup/useMockupGenerator.ts",
-    "mudancas": 10
+    "mudancas": 9
    },
    {
     "arquivo": "src/hooks/quotes/useQuoteTemplates.ts",
-    "mudancas": 10
+    "mudancas": 9
    }
   ],
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 309
+    "commits": 306
    },
    {
     "autor": "Claude",
-    "commits": 51
+    "commits": 49
    },
    {
     "autor": "github-actions[bot]",
@@ -322,9 +322,9 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 11193,
+  "arquivos_total": 11195,
   "arquivos_codigo": 5650,
-  "linhas_codigo": 1072204,
+  "linhas_codigo": 1072210,
   "rotas": 141,
   "rotas_http_backend": 13,
   "vistas_por_id": 0,
@@ -334,7 +334,7 @@
   "hooks": 645,
   "edge_functions": 112,
   "tabelas": 531,
-  "migrations": 3119,
+  "migrations": 3120,
   "cron_jobs": 122,
   "testes": 2699,
   "workflows": 89,
@@ -1328,7 +1328,7 @@
   },
   "scripts/check-quote-rpc-canonical-readiness.mjs": {
    "arquivos": 1,
-   "linhas": 206
+   "linhas": 212
   },
   "scripts/check-removed-phrases.mjs": {
    "arquivos": 1,

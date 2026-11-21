@@ -8,7 +8,7 @@
   "supabase/migrations",
   "typeorm"
  ],
- "migrations": 3119,
+ "migrations": 3120,
  "seeds": [],
  "avisos": [
   "323 bloco(s) com DDL dinâmico (EXECUTE format/...) não modelado — policies/colunas criadas dinamicamente podem faltar; confira no banco vivo"
@@ -1305,6 +1305,7 @@
   "process_supplier_product_data",
   "process_supplier_products_batch",
   "products_generate_search_vector",
+  "public",
   "purge_edge_invocations_old",
   "purge_expired_security_data",
   "purge_expired_step_up_artifacts",

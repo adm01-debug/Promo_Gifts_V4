@@ -1256,7 +1256,7 @@
   {
    "arquivo": "scripts/check-quote-rpc-canonical-readiness.mjs",
    "descricao": "* Bloqueia a promocao do consumidor transacional de orcamentos enquanto o",
-   "linhas": 206,
+   "linhas": 212,
    "env": [
     "SUPABASE_ACCESS_TOKEN",
     "SUPABASE_PROJECT_REF",

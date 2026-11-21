@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "60f9275e828a8f4d08ecb2e8c872cfda3121446d",
+  "sha": "fdf20b391c2b93013a868088a348bcb658fd6dda",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-21 15:53 UTC",
-  "files_total": 11121,
-  "code_files": 9129,
-  "code_lines": 1296016
+  "generated_at": "2026-11-21 16:38 UTC",
+  "files_total": 11123,
+  "code_files": 9131,
+  "code_lines": 1296974
  },
  "version": "1.3.2",
- "facts_hash": "7462d933780f6811",
+ "facts_hash": "300ca1855d829825",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -1128,7 +1128,7 @@
   ],
   "package_manager": "npm",
   "languages": {
-   ".sql": 3480,
+   ".sql": 3482,
    ".ts": 3164,
    ".tsx": 2014,
    ".mjs": 455,
@@ -70898,12 +70898,12 @@
    },
    "increment_quote_version": {
     "args": "",
-    "returns": "trigger",
-    "lang": "plpgsql",
-    "src": "supabase/migrations/20260626164441_dar_mirror_c_version_neutral.sql",
+    "returns": "?",
+    "lang": "",
+    "src": "supabase/migrations/20261121120000_fix_quote_rpcs_contract_freight.sql",
     "security_definer": false,
-    "search_path": true,
-    "body": "DECLARE _old jsonb := to_jsonb(OLD) - 'subtotal' - 'total' - 'discount_amount' - 'real_subtotal' - 'real_discount_percent' - 'updated_at' - 'version' - 'discount_approval_status' - 'discount_approved_at'; _new jsonb := to_jsonb(NEW) - 'subtotal' - 'total' - 'discount_amount' - 'real_subtotal' - 'real_discount_percent' - 'updated_at' - 'version' - 'discount_approval_status' - 'discount_approved_at'; BEGIN IF _old IS DISTINCT FROM _new THEN NEW.version := COALESCE(OLD.version, 0) + 1; ELSE NEW.version := COALESCE(OLD.version, 1); END IF; RETURN NEW; END",
+    "search_path": false,
+    "body": "DECLARE _old jsonb := to_jsonb(OLD) - 'subtotal' - 'total' - 'discount_amount' - 'real_subtotal' - 'real_discount_percent' - 'updated_at' - 'version' - 'discount_approval_status' - 'discount_approved_at'; _new jsonb := to_jsonb(NEW) - 'subtotal' - 'total' - 'discount_amount' - 'real_subtotal' - 'real_discount_percent' - 'updated_at' - 'version' - 'discount_approval_status' - 'discount_approved_at'; BEGIN IF _old IS DISTINCT FROM _new OR NEW.version = COALESCE(OLD.version, 0) + 1 THEN NEW.version := COALESCE(OLD.version, 0) + 1; ELSE NEW.version := COALESCE(OLD.version, 1); END IF; RETURN NEW; END",
     "raises": [],
     "tables": [
      "_new"
@@ -76741,7 +76741,7 @@
     "args": "_quote_id uuid, _quote_patch jsonb, _items jsonb, _expected_version integer DEFAULT NULL",
     "returns": "public.quotes",
     "lang": "plpgsql",
-    "src": "supabase/rollbacks/20261121000000_rollback.sql",
+    "src": "supabase/rollbacks/20261121120000_rollback.sql",
     "security_definer": false,
     "search_path": false,
     "body": "DECLARE _updated_quote public.quotes; _current_version integer; _prev_status text; _prev_total numeric; _item jsonb; _pers jsonb; _new_item_id uuid; _actor_id uuid; _action text; _desc text; BEGIN SELECT version, status, total INTO _current_version, _prev_status, _prev_total FROM public.quotes WHERE id = _quote_id; IF _expected_version IS NOT NULL THEN IF _current_version IS NULL THEN RAISE EXCEPTION 'Orçamento não encontrado: %', _quote_id USING errcode = 'no_data_found'; END IF; IF _current_version <> _expected_version THEN RAISE EXCEPTION 'Conflito de versão: orçamento foi modificado por outro usuário (versão atual: %, versão esperada: %). Recarregue e tente novamente.', _current_version, …",
@@ -96630,6 +96630,7 @@
    "supabase/migrations/20261120041000_production_lead_time_calendar.sql",
    "supabase/migrations/20261120180000_restore_quote_comments_scoped_threads.sql",
    "supabase/migrations/20261121000000_quote_rpcs_freight_plan.sql",
+   "supabase/migrations/20261121120000_fix_quote_rpcs_contract_freight.sql",
    "supabase/rollbacks/20260511235950_rollback.sql",
    "supabase/rollbacks/20260511235959_rollback.sql",
    "supabase/rollbacks/20260611014515_fn_dryrun_standardize_supplier_real_rollback.sql",
@@ -96755,6 +96756,7 @@
    "supabase/rollbacks/20261120041000_rollback.sql",
    "supabase/rollbacks/20261120180000_rollback.sql",
    "supabase/rollbacks/20261121000000_rollback.sql",
+   "supabase/rollbacks/20261121120000_rollback.sql",
    "supabase/rollbacks/rollback_20261025002500_analyze_tables_p03.sql",
    "supabase/sql-legacy/001_notification_system.sql",
    "supabase/sql-legacy/002_notification_preferences.sql",
@@ -137121,17 +137123,17 @@
    {
     "function": "update_quote_transactional",
     "msg": "Orçamento não encontrado: %",
-    "src": "supabase/rollbacks/20261121000000_rollback.sql"
+    "src": "supabase/rollbacks/20261121120000_rollback.sql"
    },
    {
     "function": "update_quote_transactional",
     "msg": "Conflito de versão: orçamento foi modificado por outro usuário (versão atual: %, versão esperada: %). Recarregue e tente novamente.",
-    "src": "supabase/rollbacks/20261121000000_rollback.sql"
+    "src": "supabase/rollbacks/20261121120000_rollback.sql"
    },
    {
     "function": "update_quote_transactional",
     "msg": "Orçamento não encontrado: %",
-    "src": "supabase/rollbacks/20261121000000_rollback.sql"
+    "src": "supabase/rollbacks/20261121120000_rollback.sql"
    },
    {
     "function": "audit_ownership_orphans",
@@ -150360,7 +150362,7 @@
   {
    "module": "scripts",
    "files": 300,
-   "lines": 65017,
+   "lines": 65023,
    "tables": [
     "a",
     "b",
@@ -152463,8 +152465,8 @@
   },
   {
    "module": "supabase/migrations",
-   "files": 3118,
-   "lines": 225815,
+   "files": 3119,
+   "lines": 226411,
    "tables": [
     "...",
     "admin_audit_log",
@@ -152562,8 +152564,8 @@
   },
   {
    "module": "supabase/rollbacks",
-   "files": 126,
-   "lines": 4351,
+   "files": 127,
+   "lines": 4707,
    "tables": [],
    "exports": [],
    "docs": [],
@@ -178647,6 +178649,10 @@
    {
     "file": "supabase/migrations/20261013180500_incidente_2026_10_13_drop_tabelas_backup_vencidas.sql",
     "text": "4), então o gate deve passar sem necessidade de nova"
+   },
+   {
+    "file": "supabase/migrations/20261121120000_fix_quote_rpcs_contract_freight.sql",
+    "text": "'Version must advance exactly once' (exact version guard)"
    },
    {
     "file": "tests/setup-ref-warning-capture.ts",
@@ -345894,12 +345900,12 @@
    },
    "increment_quote_version": {
     "args": "",
-    "returns": "trigger",
-    "lang": "plpgsql",
-    "src": "supabase/migrations/20260626164441_dar_mirror_c_version_neutral.sql",
+    "returns": "?",
+    "lang": "",
+    "src": "supabase/migrations/20261121120000_fix_quote_rpcs_contract_freight.sql",
     "security_definer": false,
-    "search_path": true,
-    "body": "DECLARE _old jsonb := to_jsonb(OLD) - 'subtotal' - 'total' - 'discount_amount' - 'real_subtotal' - 'real_discount_percent' - 'updated_at' - 'version' - 'discount_approval_status' - 'discount_approved_at'; _new jsonb := to_jsonb(NEW) - 'subtotal' - 'total' - 'discount_amount' - 'real_subtotal' - 'real_discount_percent' - 'updated_at' - 'version' - 'discount_approval_status' - 'discount_approved_at'; BEGIN IF _old IS DISTINCT FROM _new THEN NEW.version := COALESCE(OLD.version, 0) + 1; ELSE NEW.version := COALESCE(OLD.version, 1); END IF; RETURN NEW; END",
+    "search_path": false,
+    "body": "DECLARE _old jsonb := to_jsonb(OLD) - 'subtotal' - 'total' - 'discount_amount' - 'real_subtotal' - 'real_discount_percent' - 'updated_at' - 'version' - 'discount_approval_status' - 'discount_approved_at'; _new jsonb := to_jsonb(NEW) - 'subtotal' - 'total' - 'discount_amount' - 'real_subtotal' - 'real_discount_percent' - 'updated_at' - 'version' - 'discount_approval_status' - 'discount_approved_at'; BEGIN IF _old IS DISTINCT FROM _new OR NEW.version = COALESCE(OLD.version, 0) + 1 THEN NEW.version := COALESCE(OLD.version, 0) + 1; ELSE NEW.version := COALESCE(OLD.version, 1); END IF; RETURN NEW; END",
     "raises": [],
     "tables": [
      "_new"
@@ -351737,7 +351743,7 @@
     "args": "_quote_id uuid, _quote_patch jsonb, _items jsonb, _expected_version integer DEFAULT NULL",
     "returns": "public.quotes",
     "lang": "plpgsql",
-    "src": "supabase/rollbacks/20261121000000_rollback.sql",
+    "src": "supabase/rollbacks/20261121120000_rollback.sql",
     "security_definer": false,
     "search_path": false,
     "body": "DECLARE _updated_quote public.quotes; _current_version integer; _prev_status text; _prev_total numeric; _item jsonb; _pers jsonb; _new_item_id uuid; _actor_id uuid; _action text; _desc text; BEGIN SELECT version, status, total INTO _current_version, _prev_status, _prev_total FROM public.quotes WHERE id = _quote_id; IF _expected_version IS NOT NULL THEN IF _current_version IS NULL THEN RAISE EXCEPTION 'Orçamento não encontrado: %', _quote_id USING errcode = 'no_data_found'; END IF; IF _current_version <> _expected_version THEN RAISE EXCEPTION 'Conflito de versão: orçamento foi modificado por outro usuário (versão atual: %, versão esperada: %). Recarregue e tente novamente.', _current_version, …",
@@ -354584,17 +354590,17 @@
    {
     "function": "update_quote_transactional",
     "msg": "Orçamento não encontrado: %",
-    "src": "supabase/rollbacks/20261121000000_rollback.sql"
+    "src": "supabase/rollbacks/20261121120000_rollback.sql"
    },
    {
     "function": "update_quote_transactional",
     "msg": "Conflito de versão: orçamento foi modificado por outro usuário (versão atual: %, versão esperada: %). Recarregue e tente novamente.",
-    "src": "supabase/rollbacks/20261121000000_rollback.sql"
+    "src": "supabase/rollbacks/20261121120000_rollback.sql"
    },
    {
     "function": "update_quote_transactional",
     "msg": "Orçamento não encontrado: %",
-    "src": "supabase/rollbacks/20261121000000_rollback.sql"
+    "src": "supabase/rollbacks/20261121120000_rollback.sql"
    },
    {
     "function": "audit_ownership_orphans",
@@ -435867,7 +435873,7 @@
   },
   "scripts/check-quote-rpc-canonical-readiness.mjs": {
    "path": "scripts/check-quote-rpc-canonical-readiness.mjs",
-   "lines": 206,
+   "lines": 212,
    "env": [
     "SUPABASE_ACCESS_TOKEN",
     "SUPABASE_PROJECT_REF",
@@ -534469,6 +534475,13 @@
    "path": "supabase/migrations/20261121000000_quote_rpcs_freight_plan.sql",
    "lines": 372
   },
+  "supabase/migrations/20261121120000_fix_quote_rpcs_contract_freight.sql": {
+   "path": "supabase/migrations/20261121120000_fix_quote_rpcs_contract_freight.sql",
+   "lines": 596,
+   "rule_comments": [
+    "'Version must advance exactly once' (exact version guard)"
+   ]
+  },
   "supabase/rollbacks/20260511235950_rollback.sql": {
    "path": "supabase/rollbacks/20260511235950_rollback.sql",
    "lines": 5
@@ -534987,6 +535000,10 @@
   "supabase/rollbacks/20261121000000_rollback.sql": {
    "path": "supabase/rollbacks/20261121000000_rollback.sql",
    "lines": 347
+  },
+  "supabase/rollbacks/20261121120000_rollback.sql": {
+   "path": "supabase/rollbacks/20261121120000_rollback.sql",
+   "lines": 356
   },
   "supabase/rollbacks/rollback_20261025002500_analyze_tables_p03.sql": {
    "path": "supabase/rollbacks/rollback_20261025002500_analyze_tables_p03.sql",
@@ -560570,10 +560587,23 @@
   }
  },
  "git": {
-  "sha": "60f9275e828a8f4d08ecb2e8c872cfda3121446d",
+  "sha": "fdf20b391c2b93013a868088a348bcb658fd6dda",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "fdf20b3",
+    "date": "2026-11-21",
+    "author": "adm01-debug",
+    "subject": "fix(quotes): restaura contrato transacional das RPCs com frete (Gate 2.5) (#3959)",
+    "files": [
+     "scripts/check-quote-rpc-canonical-readiness.mjs",
+     "supabase/MIGRATIONS_SYNC_LOG.md",
+     "supabase/migrations/20261121120000_fix_quote_rpcs_contract_freight.sql",
+     "supabase/rollbacks/20261121120000_rollback.sql",
+     "tests/fixtures/quote-rpc-readiness-hardened.json"
+    ]
+   },
    {
     "sha": "60f9275",
     "date": "2026-11-21",
@@ -561044,57 +561074,6 @@
      "src/lib/freight/units.ts",
      "src/lib/freight/validateConfig.ts"
     ]
-   },
-   {
-    "sha": "38a84ba",
-    "date": "2026-11-20",
-    "author": "adm01-debug",
-    "subject": "feat(frete): produto \"não mistura\", importação em massa e relatório de dados de frete (Bloco D, etapas 32–39) (#3922)",
-    "files": [
-     "audit/supabase-reference-catalog.temporary.json",
-     "docs/frete/colunas-legadas.md",
-     "src/components/admin/ProductsManager.tsx",
-     "src/components/admin/freight/FreightReadinessReport.tsx",
-     "src/components/admin/freight/__tests__/FreightReadinessReport.test.tsx",
-     "src/components/admin/freight/freightReadinessRows.ts",
-     "src/components/admin/freight/index.ts",
-     "src/components/admin/products/BulkImportDialog.tsx",
-     "src/components/admin/products/FreightReadinessIndicator.tsx",
-     "src/components/admin/products/ProductFormSchema.ts",
-     "src/components/admin/products/ProductSkuTag.tsx",
-     "src/components/admin/products/__tests__/FreightReadinessIndicator.test.tsx",
-     "src/components/admin/products/__tests__/ProductFormFreightFields.test.tsx",
-     "src/components/admin/products/__tests__/leadTimeSource.test.ts",
-     "src/components/admin/products/bulk-import/StepUpload.tsx",
-     "src/components/admin/products/bulk-import/__tests__/parseBooleanCell.test.ts",
-     "src/components/admin/products/bulk-import/parseBooleanCell.ts",
-     "src/components/admin/products/bulk-import/types.ts",
-     "src/components/admin/products/leadTimeSource.ts",
-     "src/components/admin/products/priceFreshnessFallback.ts",
-     "src/components/admin/products/sections/ProductInfoSection.tsx",
-     "src/components/admin/products/sections/ProductPackagingSection.tsx",
-     "src/components/admin/shipping-boxes/__tests__/ShippingBoxesManager.test.tsx",
-     "src/hooks/freight/useFreightReadinessReport.ts",
-     "src/hooks/products/useSupplierDefaultLeadTime.ts",
-     "src/integrations/supabase/types.ts",
-     "src/lib/external-db/batch-import.ts",
-     "src/lib/external-db/batch-import.write.test.ts",
-     "src/lib/external-db/product-types.ts",
-     "src/lib/freight/__tests__/readiness.test.ts",
-     "src/lib/freight/index.ts",
-     "src/lib/freight/readiness.ts",
-     "src/pages/admin/AdminCadastrosPage.tsx",
-     "src/pages/admin/AdminProductFormPage.tsx",
-     "src/pages/admin/__tests__/AdminProductFormPage.shipsSeparately.test.tsx",
-     "src/services/__tests__/freightReadinessService.test.ts",
-     "src/services/__tests__/productShipsSeparatelyService.test.ts",
-     "src/services/freightReadinessService.ts",
-     "src/services/productShipsSeparatelyService.ts",
-     "src/types/product-catalog.ts",
-     "src/types/product.ts",
-     "supabase/MIGRATIONS_SYNC_LOG.md",
-     "tests/hooks/freight/useFreightReadinessReport.test.tsx"
-    ]
    }
   ],
   "hot_files": [
@@ -561124,14 +561103,6 @@
    ],
    [
     "src/integrations/supabase/types.ts",
-    4
-   ],
-   [
-    "audit/supabase-reference-catalog.temporary.json",
-    3
-   ],
-   [
-    "src/lib/freight/index.ts",
     3
    ],
    [
@@ -561171,11 +561142,19 @@
     2
    ],
    [
+    "audit/supabase-reference-catalog.temporary.json",
+    2
+   ],
+   [
     "docs/coordenacao/conflitos-semanticos.md",
     2
    ],
    [
-    "src/components/admin/products/__tests__/ProductFormFreightFields.test.tsx",
+    "src/components/freight-plan/index.ts",
+    2
+   ],
+   [
+    "src/hooks/freight/keys.ts",
     2
    ]
   ]
