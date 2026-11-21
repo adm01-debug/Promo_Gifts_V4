@@ -197,6 +197,60 @@ test('chamada com tipo genérico é detectada', () => {
   }
 });
 
+test('variantes executáveis de acesso a invoke são detectadas', () => {
+  const { dir, run, cleanup } = runInSandbox({
+    'src/a.ts': 'const clean = true;\n',
+  });
+  const variants = [
+    ['espaço após ponto', 'await supabase.functions. invoke("x");\n'],
+    ['comentário após ponto', 'await supabase.functions./*gap*/invoke("x");\n'],
+    ['element access', 'await supabase.functions["invoke"]("x");\n'],
+    ['element access duplo', 'await supabase["functions"]["invoke"]("x");\n'],
+    ['template key', 'await supabase.functions[`invoke`]("x");\n'],
+    ['parênteses', 'await (supabase.functions.invoke)("x");\n'],
+    ['comma operator', 'await (0, supabase.functions.invoke)("x");\n'],
+    ['Function.call', 'await supabase.functions.invoke.call(null, "x");\n'],
+    [
+      'bind alias',
+      'const call = supabase.functions.invoke.bind(supabase.functions); await call("x");\n',
+    ],
+    ['destructuring', 'const { invoke } = supabase.functions; await invoke("x");\n'],
+    ['destructuring alias', 'const { invoke: call } = supabase.functions; await call("x");\n'],
+    ['regex com aspas', 'const special = /["]/;\nawait supabase.functions.invoke("x");\n'],
+    ['optional chain', 'await supabase.functions?.invoke("x");\n'],
+  ];
+  try {
+    seedBaseline(run);
+    for (const [name, source] of variants) {
+      writeFileSync(join(dir, 'src', 'variant.ts'), source);
+      const result = run();
+      assert.equal(result.code, 1, name);
+      assert.match(result.out, /src\/variant\.ts/, name);
+      rmSync(join(dir, 'src', 'variant.ts'));
+    }
+  } finally {
+    cleanup();
+  }
+});
+
+test('segunda ocorrência na mesma linha não herda a baseline da primeira', () => {
+  const { dir, run, cleanup } = runInSandbox({
+    'src/a.ts': 'await supabase.functions.invoke("legacy");\n',
+  });
+  try {
+    seedBaseline(run);
+    writeFileSync(
+      join(dir, 'src', 'a.ts'),
+      'await supabase.functions.invoke("legacy"); await supabase.functions.invoke("new");\n',
+    );
+    const result = run();
+    assert.equal(result.code, 1);
+    assert.match(result.out, /src\/a\.ts:1#2/);
+  } finally {
+    cleanup();
+  }
+});
+
 test('acesso dinâmico citado em string documental é ignorado', () => {
   const { run, cleanup } = runInSandbox({
     'src/a.ts': 'const docs = `use supa["functions"].invoke("x")`;\n',

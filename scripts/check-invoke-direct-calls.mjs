@@ -30,23 +30,59 @@ const SSOT_FILE = 'src/lib/edge/safeInvokeCall.ts';
 const IGNORE_PATTERNS = [/(^|[\\/])__tests__[\\/]/, /\.test\.(t|j)sx?$/, /(^|[\\/])e2e[\\/]/];
 
 function isFunctionsAccess(node) {
+  node = unwrapExpression(node);
   if (ts.isPropertyAccessExpression(node)) {
     return node.name.text === 'functions';
   }
   if (!ts.isElementAccessExpression(node)) return false;
-  const key = node.argumentExpression;
+  return staticPropertyName(node.argumentExpression) === 'functions';
+}
+
+function unwrapExpression(node) {
+  while (
+    node &&
+    (ts.isParenthesizedExpression(node) ||
+      ts.isAsExpression(node) ||
+      ts.isTypeAssertionExpression(node) ||
+      ts.isNonNullExpression(node) ||
+      ts.isSatisfiesExpression(node))
+  ) {
+    node = node.expression;
+  }
+  return node;
+}
+
+function staticPropertyName(node) {
+  if (!node) return null;
+  if (
+    ts.isIdentifier(node) ||
+    ts.isStringLiteral(node) ||
+    ts.isNoSubstitutionTemplateLiteral(node)
+  ) {
+    return node.text;
+  }
+  if (ts.isComputedPropertyName(node)) return staticPropertyName(node.expression);
+  return null;
+}
+
+function isDirectInvokeAccess(node) {
+  if (ts.isPropertyAccessExpression(node)) {
+    return node.name.text === 'invoke' && isFunctionsAccess(node.expression);
+  }
+  if (!ts.isElementAccessExpression(node)) return false;
   return (
-    (ts.isStringLiteral(key) || ts.isNoSubstitutionTemplateLiteral(key)) && key.text === 'functions'
+    staticPropertyName(node.argumentExpression) === 'invoke' && isFunctionsAccess(node.expression)
   );
 }
 
-function isDirectInvokeCall(node) {
-  if (!ts.isCallExpression(node)) return false;
-  const invoke = node.expression;
+function isDirectInvokeBinding(node) {
+  if (!ts.isBindingElement(node) || !ts.isObjectBindingPattern(node.parent)) return false;
+  const declaration = node.parent.parent;
   return (
-    ts.isPropertyAccessExpression(invoke) &&
-    invoke.name.text === 'invoke' &&
-    isFunctionsAccess(invoke.expression)
+    ts.isVariableDeclaration(declaration) &&
+    declaration.initializer &&
+    isFunctionsAccess(declaration.initializer) &&
+    staticPropertyName(node.propertyName || node.name) === 'invoke'
   );
 }
 
@@ -65,7 +101,6 @@ function scanFile(absPath) {
   } catch {
     return [];
   }
-  if (!src.includes('.invoke')) return [];
   const sourceFile = ts.createSourceFile(
     rel,
     src,
@@ -75,9 +110,9 @@ function scanFile(absPath) {
   );
   const hits = [];
   const visit = (node) => {
-    if (isDirectInvokeCall(node)) {
+    if (isDirectInvokeAccess(node) || isDirectInvokeBinding(node)) {
       const { line } = sourceFile.getLineAndCharacterOfPosition(node.getStart(sourceFile));
-      hits.push({ file: rel, line: line + 1 });
+      hits.push({ file: rel, line: line + 1, pos: node.getStart(sourceFile) });
     }
     ts.forEachChild(node, visit);
   };
@@ -91,17 +126,14 @@ function collect() {
   for (const f of files) {
     hits.push(...scanFile(f));
   }
-  // dedupe file:line
-  const seen = new Set();
-  const uniq = [];
-  for (const h of hits) {
-    const k = `${h.file}:${h.line}`;
-    if (seen.has(k)) continue;
-    seen.add(k);
-    uniq.push(h);
-  }
-  uniq.sort((a, b) => a.file.localeCompare(b.file) || a.line - b.line);
-  return uniq;
+  hits.sort((a, b) => a.file.localeCompare(b.file) || a.line - b.line || a.pos - b.pos);
+  const occurrences = new Map();
+  return hits.map((hit) => {
+    const base = `${hit.file}:${hit.line}`;
+    const occurrence = (occurrences.get(base) || 0) + 1;
+    occurrences.set(base, occurrence);
+    return { ...hit, key: occurrence === 1 ? base : `${base}#${occurrence}` };
+  });
 }
 
 function loadBaseline() {
@@ -122,7 +154,7 @@ function writeBaseline(hits) {
       'Novos call sites DEVEM usar invokeEdgeSafe (src/lib/edge/safeInvokeCall.ts). ' +
       'Regenerar com UPDATE_BASELINE=1 após migração legítima.',
     total: hits.length,
-    entries: hits.map((h) => `${h.file}:${h.line}`),
+    entries: hits.map((h) => h.key),
   };
   writeFileSync(BASELINE_PATH, JSON.stringify(payload, null, 2) + '\n', 'utf8');
 }
@@ -154,7 +186,7 @@ function main() {
     process.exit(2);
   }
 
-  const current = new Set(hits.map((h) => `${h.file}:${h.line}`));
+  const current = new Set(hits.map((h) => h.key));
   const added = [...current].filter((k) => !baseline.has(k)).sort();
   const removed = [...baseline].filter((k) => !current.has(k)).sort();
 
