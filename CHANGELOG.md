@@ -5,6 +5,13 @@ Todas as mudanças notáveis deste projeto são documentadas neste arquivo.
 O formato é baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/),
 e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR/).
 
+## [1.17.1](https://github.com/adm01-debug/Promo_Gifts_V4/compare/gifts-store-v1.17.0...gifts-store-v1.17.1) (2026-11-21)
+
+
+### Bug Fixes
+
+* preenche maxWeight da caixa no Kit Builder a partir de box_weight_kg (D1) ([#3965](https://github.com/adm01-debug/Promo_Gifts_V4/issues/3965)) ([2dc4d82](https://github.com/adm01-debug/Promo_Gifts_V4/commit/2dc4d8284e48fcfd01cc1e1724d3c8ba7634f64a))
+
 ## [1.17.0](https://github.com/adm01-debug/Promo_Gifts_V4/compare/gifts-store-v1.16.1...gifts-store-v1.17.0) (2026-11-21)
 
 
