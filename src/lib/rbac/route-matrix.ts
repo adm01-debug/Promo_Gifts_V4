@@ -170,6 +170,16 @@ export const RBAC_ROUTES: RbacRouteEntry[] = [
     category: 'user',
   },
   {
+    path: '/simulador-frete',
+    label: 'Simulador de volumes de frete',
+    guard: 'ProtectedRoute',
+    role: 'authenticated',
+    mfaAal2: false,
+    category: 'user',
+    notes:
+      'Bloco F do plano de frete (etapas 54-57): simula caixas, pesos e volumes antes do orçamento.',
+  },
+  {
     path: '/inteligencia-comercial',
     label: 'Inteligência Comercial',
     guard: 'ProtectedRoute',

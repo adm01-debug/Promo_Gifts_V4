@@ -21,6 +21,7 @@ import {
   MockupGenerator,
   MockupHistoryPage,
   PriceSimulatorPage,
+  FreightSimulatorPage,
   ProductMatchPage,
   SimuladorWizard,
   StockDashboardPage,
@@ -72,6 +73,7 @@ export const toolsRoutes = (
   <>
     <Route path="/simulador" element={<SimuladorWizard />} />
     <Route path="/simulador-precos" element={<PriceSimulatorPage />} />
+    <Route path="/simulador-frete" element={<FreightSimulatorPage />} />
     <Route path="/estoque" element={<StockDashboardPage />} />
     <Route path="/busca-preco" element={<AdvancedPriceSearchPage />} />
     <Route path="/montar-kit" element={<KitBuilderRoute />} />

@@ -191,6 +191,12 @@ const navGroups: NavGroup[] = [
         tooltip: 'Calcule o preço final com gravação e quantidade antes de enviar a proposta.',
       },
       {
+        icon: Boxes,
+        label: 'Simulador de Frete',
+        href: '/simulador-frete',
+        tooltip: 'Simule caixas, pesos e volumes do frete antes de fechar o orçamento.',
+      },
+      {
         icon: BarChart3,
         label: 'Preços por Tiragem',
         href: '/simulador-precos',
