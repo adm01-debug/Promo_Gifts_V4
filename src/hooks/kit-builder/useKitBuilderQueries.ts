@@ -29,7 +29,7 @@ const PRODUCT_PAGE_SIZE = 200;
 // module from PostgREST 42703 regressions. The Gold view intentionally exposes
 // `sale_price`, not the private/legacy `base_price` field.
 export const KIT_PACKAGING_SELECT =
-  'id, name, sku, sale_price, primary_image_url, images, dimensions, weight_g, materials, internal_width_cm, internal_height_cm, internal_length_cm, packing_type, packing_classification, packaging_finish, product_type';
+  'id, name, sku, sale_price, primary_image_url, images, dimensions, weight_g, materials, internal_width_cm, internal_height_cm, internal_length_cm, packing_type, packing_classification, packaging_finish, product_type, box_weight_kg';
 
 // `category_name` não existe em `v_products_public` — só a tabela-base
 // `products` tem essa coluna (auditoria de 2026-09-24, PostgREST 42703 em
