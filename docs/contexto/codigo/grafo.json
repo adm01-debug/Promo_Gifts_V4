@@ -1,8 +1,8 @@
 {
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
- "nos": 2951,
- "arestas": 11657,
+ "nos": 2952,
+ "arestas": 11668,
  "hubs": [
   {
    "arquivo": "src/lib/utils.ts",
@@ -10,7 +10,7 @@
   },
   {
    "arquivo": "src/components/ui/button.tsx",
-   "importado_por": 660
+   "importado_por": 661
   },
   {
    "arquivo": "src/components/ui/badge.tsx",
@@ -89,12 +89,12 @@
    "importado_por": 76
   },
   {
-   "arquivo": "src/lib/edge/safeInvokeCall.ts",
-   "importado_por": 71
+   "arquivo": "src/integrations/supabase/types.ts",
+   "importado_por": 72
   },
   {
-   "arquivo": "src/integrations/supabase/types.ts",
-   "importado_por": 70
+   "arquivo": "src/lib/edge/safeInvokeCall.ts",
+   "importado_por": 71
   },
   {
    "arquivo": "src/components/ui/switch.tsx",
@@ -707,14 +707,14 @@
    "importado_por": 30
   },
   {
+   "modulo": "components/quotes",
+   "depende_de": 24,
+   "importado_por": 7
+  },
+  {
    "modulo": "components/common",
    "depende_de": 12,
    "importado_por": 18
-  },
-  {
-   "modulo": "components/quotes",
-   "depende_de": 23,
-   "importado_por": 7
   },
   {
    "modulo": "lib/telemetry",

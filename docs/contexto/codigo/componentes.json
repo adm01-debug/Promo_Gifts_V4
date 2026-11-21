@@ -1,7 +1,7 @@
 {
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
- "total": 1280,
+ "total": 1281,
  "orfaos": 157,
  "nomes_duplicados": {
   "AdminTemplatesManager": [
@@ -9168,7 +9168,7 @@
    ],
    "tabelas": [],
    "edges": [],
-   "usado_por": 2,
+   "usado_por": 3,
    "orfao": false
   },
   {
@@ -9179,7 +9179,7 @@
     "FreightPlanCardProps"
    ],
    "export_default": null,
-   "linhas": 151,
+   "linhas": 219,
    "dominio": "components/freight-plan",
    "hooks_locais": [
     "useFreightPlan",
@@ -9202,7 +9202,7 @@
    "hooks_locais": [],
    "tabelas": [],
    "edges": [],
-   "usado_por": 4,
+   "usado_por": 5,
    "orfao": false
   },
   {
@@ -12559,6 +12559,20 @@
    "orfao": false
   },
   {
+   "arquivo": "src/components/pdf/proposal/ProposalFreightVolumes.tsx",
+   "exports": [
+    "ProposalFreightVolumes"
+   ],
+   "export_default": null,
+   "linhas": 144,
+   "dominio": "components/pdf",
+   "hooks_locais": [],
+   "tabelas": [],
+   "edges": [],
+   "usado_por": 2,
+   "orfao": false
+  },
+  {
    "arquivo": "src/components/pdf/proposal/ProposalHeader.tsx",
    "exports": [
     "ProposalHeader"
@@ -12637,7 +12651,7 @@
     "ProposalTemplateData"
    ],
    "export_default": null,
-   "linhas": 169,
+   "linhas": 178,
    "dominio": "components/pdf",
    "hooks_locais": [],
    "tabelas": [],
@@ -12671,7 +12685,7 @@
     "PropostaComercialTailwind"
    ],
    "export_default": "PropostaComercialTailwind",
-   "linhas": 418,
+   "linhas": 432,
    "dominio": "components/pdf",
    "hooks_locais": [],
    "tabelas": [],
@@ -15244,7 +15258,7 @@
     "QuoteVersionCompare"
    ],
    "export_default": null,
-   "linhas": 358,
+   "linhas": 386,
    "dominio": "components/quotes",
    "hooks_locais": [],
    "tabelas": [
@@ -16612,7 +16626,7 @@
    "hooks_locais": [],
    "tabelas": [],
    "edges": [],
-   "usado_por": 655,
+   "usado_por": 656,
    "orfao": false
   },
   {
@@ -20341,7 +20355,7 @@
     "QuoteBuilderPage"
    ],
    "export_default": "QuoteBuilderPage",
-   "linhas": 831,
+   "linhas": 832,
    "dominio": "pages/quotes",
    "hooks_locais": [
     "useNextQuoteNumberPreview",
@@ -20423,7 +20437,7 @@
     "QuoteViewPage"
    ],
    "export_default": "QuoteViewPage",
-   "linhas": 593,
+   "linhas": 621,
    "dominio": "pages/quotes",
    "hooks_locais": [
     "useDiscountApproval",

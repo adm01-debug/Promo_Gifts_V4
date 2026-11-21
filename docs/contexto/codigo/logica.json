@@ -963,11 +963,12 @@
    "zod_schemas": 0,
    "flags": [],
    "papeis": [],
-   "usado_por": 61,
+   "usado_por": 62,
    "usado_por_modulos": [
     "components/admin",
     "components/cart",
     "components/filters",
+    "components/quotes",
     "hooks",
     "hooks/admin",
     "hooks/collections",
@@ -992,7 +993,7 @@
     "services",
     "stores"
    ],
-   "coberto_por_testes": 9,
+   "coberto_por_testes": 10,
    "orfao": false
   },
   {
@@ -4226,20 +4227,23 @@
    "zod_schemas": 0,
    "flags": [],
    "papeis": [],
-   "usado_por": 23,
+   "usado_por": 28,
    "usado_por_modulos": [
     "components/admin",
     "components/freight-plan",
     "components/kit-builder",
+    "components/pdf",
+    "components/quotes",
     "hooks/freight",
     "hooks/quotes",
     "lib/freight",
     "lib/quotes",
     "pages/freight",
     "pages/kit-builder",
+    "pages/quotes",
     "utils"
    ],
-   "coberto_por_testes": 9,
+   "coberto_por_testes": 12,
    "orfao": false
   },
   {

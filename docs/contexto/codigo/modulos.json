@@ -6993,7 +6993,7 @@
    "modulo": "components/freight-plan",
    "arquivos": 6,
    "testes": 6,
-   "linhas": 894,
+   "linhas": 962,
    "itens_menu": [],
    "telas": [],
    "rotas_http": [],
@@ -7075,6 +7075,7 @@
     "lib/lead-time"
    ],
    "pacotes_externos": [
+    "date-fns",
     "lucide-react",
     "react-router-dom",
     "sonner"
@@ -12285,13 +12286,13 @@
   },
   {
    "modulo": "components/pdf",
-   "arquivos": 13,
-   "testes": 17,
-   "linhas": 2638,
+   "arquivos": 14,
+   "testes": 18,
+   "linhas": 2805,
    "itens_menu": [],
    "telas": [],
    "rotas_http": [],
-   "componentes": 11,
+   "componentes": 12,
    "hooks_locais": [],
    "hooks_definidos": [],
    "edges": [],
@@ -12314,6 +12315,7 @@
     "utils"
    ],
    "depende_de_modulos": [
+    "lib/freight",
     "lib/pdf",
     "lib/quotes",
     "utils"
@@ -13842,7 +13844,7 @@
    "modulo": "components/quotes",
    "arquivos": 62,
    "testes": 39,
-   "linhas": 13468,
+   "linhas": 13496,
    "itens_menu": [],
    "telas": [],
    "rotas_http": [],
@@ -14349,6 +14351,7 @@
     "lib",
     "lib/customization",
     "lib/dom",
+    "lib/freight",
     "lib/quotes",
     "lib/telemetry",
     "pages/quotes",
@@ -21837,7 +21840,7 @@
    "modulo": "hooks/quotes",
    "arquivos": 27,
    "testes": 22,
-   "linhas": 5695,
+   "linhas": 5701,
    "itens_menu": [],
    "telas": [],
    "rotas_http": [],
@@ -25798,12 +25801,15 @@
     "components/admin",
     "components/freight-plan",
     "components/kit-builder",
+    "components/pdf",
+    "components/quotes",
     "hooks/freight",
     "hooks/quotes",
     "lib/kit-builder",
     "lib/quotes",
     "pages/freight",
     "pages/kit-builder",
+    "pages/quotes",
     "utils"
    ],
    "depende_de_modulos": [
@@ -34084,8 +34090,8 @@
   {
    "modulo": "pages/quotes",
    "arquivos": 16,
-   "testes": 43,
-   "linhas": 4605,
+   "testes": 44,
+   "linhas": 4637,
    "itens_menu": [
     "Gestão de Orçamentos",
     "Novo Orçamento",
@@ -34597,6 +34603,7 @@
     "integrations/supabase",
     "lib",
     "lib/edge",
+    "lib/freight",
     "lib/quotes",
     "types",
     "utils"

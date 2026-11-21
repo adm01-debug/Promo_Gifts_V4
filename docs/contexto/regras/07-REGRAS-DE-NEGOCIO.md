@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.3.2 · commit `de7e7c9f2d` · branch `main` · 2026-11-21 21:14 UTC
+> Gerado automaticamente por AI Context Sync v1.3.2 · commit `146fd646bf` · branch `main` · 2026-11-21 23:37 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -1819,7 +1819,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `status` | `novo` | escreve | `recovery/src-legacy/src/hooks/useSellerCarts.ts` |
 | `status` | `number` | compara | `recovery/src-legacy/src/components/admin/telemetry/BridgeCallDetailDrawer.tsx`<br>`src/components/admin/connections/SecretsManagerHealthPanel.tsx`<br>`src/components/admin/connections/TestAllConnectionsButton.tsx`<br>`src/components/admin/telemetry/BridgeCallDetailDrawer.tsx`<br>`src/contexts/SellerCartContext.tsx`<br>… +9 |
 | `status` | `offline` | compara | `src/components/quotes/QuoteAutoSave.tsx` |
-| `status` | `ok` | compara, escreve | `api/health.ts`<br>`api/ready.ts`<br>`recovery/src-legacy/src/components/admin/telemetry/PlatformFailureCards.tsx`<br>`recovery/src-legacy/src/hooks/useConnectionsOverviewFilters.ts`<br>`recovery/src-legacy/src/pages/SystemStatusPage.tsx`<br>… +29 |
+| `status` | `ok` | compara, escreve | `api/health.ts`<br>`api/ready.ts`<br>`recovery/src-legacy/src/components/admin/telemetry/PlatformFailureCards.tsx`<br>`recovery/src-legacy/src/hooks/useConnectionsOverviewFilters.ts`<br>`recovery/src-legacy/src/pages/SystemStatusPage.tsx`<br>… +35 |
 | `status` | `order` | compara | `src/components/dashboard/MyClientsWidget.tsx` |
 | `status` | `out-of-stock` | compara, escreve | `recovery/src-legacy/src/pages/ComparePage.tsx`<br>`recovery/src-legacy/src/pages/product-detail/ProductDetailHero.tsx`<br>`src/components/compare/ComparisonRadarChart.tsx`<br>`src/components/compare/StockRiskBadge.tsx`<br>`src/components/products/ProductListItem.tsx`<br>… +4 |
 | `status` | `out_of_stock` | compara | `recovery/src-legacy/src/hooks/useVariantStock.ts`<br>`src/components/inventory/StockDashboard.tsx`<br>`src/components/inventory/VariantStockTable.tsx`<br>`src/components/simulator/StockAlert.tsx`<br>`src/hooks/products/useVariantStock.ts`<br>… +2 |
@@ -3967,6 +3967,10 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
   ```
   const tokens = getTotalsColorTokens(); const shippingLabel = data.shippingType ? formatShipping(data.shippingType, data.shippingCost) : data.shippingCost ? fmt(data.shippingCost) : 'Cortesia'; return ( <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '20px' }} data-totals-scheme={tokens.scheme} > <div style={{ width: `${TOTALS_BLOCK_WIDTH_PX}px` }}> <div style={totalsRowStyle}> <span>Subtotal:</span> <span style={{ fontWeight: 500 }}>{fmt(data.subtotal)}</span> </div> {/* Ec …
   ```
+- **boxTotalFor(code: string)** — `src/components/pdf/proposal/ProposalFreightVolumes.tsx`
+  ```
+  
+  ```
 - **formatCurrency(value: number | null)** — `src/components/personalization/TechniqueSLACard.tsx`
   ```
   if (!value) return '—'; return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value);
@@ -5774,6 +5778,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `NOTES_H` | `300` | `src/components/pdf/PropostaComercialTailwind.tsx` |
 | `HINT_H` | `28` | `src/components/pdf/PropostaComercialTailwind.tsx` |
 | `TOTALS_H` | `180` | `src/components/pdf/PropostaComercialTailwind.tsx` |
+| `FREIGHT_H` | `140` | `src/components/pdf/PropostaComercialTailwind.tsx` |
 | `SIGNATURE_H` | `120` | `src/components/pdf/PropostaComercialTailwind.tsx` |
 | `SAFETY` | `24` | `src/components/pdf/PropostaComercialTailwind.tsx` |
 | `IMG` | `92` | `src/components/pdf/PropostaComercialTailwind.tsx` |
@@ -5784,6 +5789,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `DESC_CPL` | `58` | `src/components/pdf/PropostaComercialTailwind.tsx` |
 | `WATERMARK_TEXT` | `'RASCUNHO'` | `src/components/pdf/watermarkTokens.ts` |
 | `WATERMARK_ALPHA` | `0.0805` | `src/components/pdf/watermarkTokens.ts` |
+| `GREEN` | `'#00c853'` | `src/components/pdf/proposal/ProposalFreightVolumes.tsx` |
 | `MAX_ENGRAVINGS` | `5` | `src/components/pricing/ProductPriceSimulator.tsx` |
 | `TIER_PROXIMITY_THRESHOLD` | `0.3` | `src/components/pricing/simulator/upsell/upsell-engine.ts` |
 | `TIER_HIGH_PRIORITY_THRESHOLD` | `0.15` | `src/components/pricing/simulator/upsell/upsell-engine.ts` |
@@ -5903,9 +5909,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `CART_ITEM_DEBOUNCE_MS_MIN` | `0` | `src/hooks/products/useDebouncedCartItemActions.ts` |
 | `CART_ITEM_DEBOUNCE_MS_MAX` | `2000` | `src/hooks/products/useDebouncedCartItemActions.ts` |
 | `MS_PER_DAY` | `1000` | `src/hooks/products/useNovelties.helpers.ts` |
-| `NOVELTY_DISPLAY_WINDOW_DAYS` | `30` | `src/hooks/products/useNovelties.helpers.ts` |
-| `NOVELTY_FRESH_DAYS` | `5` | `src/hooks/products/useNovelties.helpers.ts` |
-| … +418 linhas — lista completa em `context.json` | | |
+| … +420 linhas — lista completa em `context.json` | | |
 
 ### H.2 Prazos, expirações e janelas de tempo
 
@@ -6694,7 +6698,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | allowlist inválida: versions contém duplicatas | `scripts/check-supabase-migration-ledger.mjs` |
 | allowlist inválida: versions contém valor vazio/não textual | `scripts/check-supabase-migration-ledger.mjs` |
 | allowlist inválida: versions deve ser array não vazio | `scripts/check-supabase-migration-ledger.mjs` |
-| … +1360 linhas — lista completa em `context.json` | |
+| … +1361 linhas — lista completa em `context.json` | |
 
 ## J. Controle de acesso no código (checagens de perfil/permissão)
 
@@ -6818,7 +6822,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `admin` | `supabase/migrations/20261112120500_fix_optimization_queue_rpcs_dev_access.sql` |
 | `anon` | `tests/edge-functions/live/_live-client.ts` |
 
-## K. Testes como especificação (23657 testes em 2370 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (23670 testes em 2372 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -7087,6 +7091,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `e2e/ui/cart-delete-header-popover-exhaustive.spec.ts` | 20 | CartHeaderButton — exaustivo (delete via popover) · happy path — clique → dialog → confirmar → 1 DELETE → cartão some @smoke · carrinho expandido com itens — lixeira abre dialog mesmo após fechamento do popover · DELETE 200 com 0 linhas removidas — trata como erro e mantém o carrinho … |
 | `recovery/src-legacy/src/utils/price-freshness.test.ts` | 20 | Price Freshness Utility · formatPriceDateShort · formats date in pt-BR short format · formatPriceDateLong … |
 | `src/components/cart/__tests__/PopoverQtyInput.exhaustive.test.tsx` | 20 | normalizeQty — property-based (1000 amostras) · resultado sempre em [MIN_QTY, MAX_QTY] ou null · idempotência: normalize(String(normalize(x))) === normalize(x) · respeita a extração de dígitos por regex /[^0-9]/g … |
+| `src/components/freight-plan/__tests__/FreightPlanCard.test.tsx` | 20 | FreightPlanCard · produto marcado  · sem nenhuma caixa cadastrada (e sem erro de rede) o card não aparece · digitar em outro campo da página não redesenha o card (React.memo) … |
 | `src/components/inventory/__tests__/FutureStockDialog.test.tsx` | 20 | FutureStockDialog — render states · não renderiza conteúdo quando open=false · mostra estado vazio quando não há entradas · renderiza título, badge de contagem e KPIs com dados … |
 | `src/components/inventory/__tests__/VariantStockRowActions.test.tsx` | 20 | VariantStockRowActions · Copiar SKU · copia o SKU da variação no clipboard e emite toast de sucesso · mostra erro profissional se clipboard falhar (sem fallback disponível) · VariantStockRowActions · Carrinho … |
 | `src/components/products/__tests__/ProductColorSwatches.test.tsx` | 20 | ProductColorSwatches · should render color $name · should highlight the selected color · should call onSelect when a color is clicked … |
@@ -7121,8 +7126,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `src/lib/auth/__tests__/checkLoginGate.test.ts` | 19 | isOperationalGateBlock · allowed=false + reason operacional %s → true · %o → false · gateBlockMessage … |
 | `src/lib/auth/__tests__/oauth-error-explainer.test.ts` | 19 | explainOAuthError · config errors (admin needs to act) · mapeia redirect_uri_mismatch com hint sobre console do provedor · detecta redirect uri mismatch pela descrição quando code é genérico … |
 | `src/lib/external-db/rest-native.test.ts` | 19 | isRestNativeEligible · whitelisted COM coluna de busca → elegível mesmo com _search · A1: whitelisted SEM coluna de busca → continua elegível com _search · não-whitelisted → inelegível … |
-| `src/lib/inventory/__tests__/stock-filter.test.ts` | 19 | stock-filter — pipeline de seleção/agregação/montagem · normalize remove acentos e diferencia caixa · selectMatchingVariants retorna todas as variações quando não há filtro de cor · cor  … |
-| … +2070 linhas — lista completa em `context.json` | | |
+| … +2072 linhas — lista completa em `context.json` | | |
 
 ## L. Eventos de webhook tratados (contratos com sistemas externos)
 
@@ -7585,9 +7589,9 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | COMERCIAL — Filtros por vendas (somente Super Filtro) — janela padronizada 90d | `src/components/filters/filter-panel/types.ts` |
 | BUG-SF-12 FIX: limite era 30 sem indicador — aumentado para 50 e adicionado | `src/components/filters/filter-panel/sections/SimpleFilters.tsx` |
 | aviso "+X mais" quando o total filtrado excede o limite. | `src/components/filters/filter-panel/sections/SimpleFilters.tsx` |
+| de `onPlanChange` abaixo sobe o plano recém-computado no mount e não pode | `src/components/freight-plan/FreightPlanCard.tsx` |
 | `div`, não `p`: a regra global `.dark p/span/li` pinta de branco e esconderia a cor do erro. | `src/components/freight-plan/FreightPlanPanel.tsx` |
 | * Card "Prazo de produção" do orçamento: em quantos dias úteis o pedido fica | `src/components/freight-plan/ProductionLeadTimeCard.tsx` |
 | pronto para envio, qual item define esse prazo e de onde vem cada número. | `src/components/freight-plan/ProductionLeadTimeCard.tsx` |
 | deliveryMode={deliveryMode}            // 'data' \| 'prazo' do orçamento | `src/components/freight-plan/ProductionLeadTimeCard.tsx` |
-| * Dia da aprovação (AAAA-MM-DD); null = o prazo começa hoje. */ | `src/components/freight-plan/ProductionLeadTimeCard.tsx` |
-| … +1472 linhas — lista completa em `context.json` | |
+| … +1473 linhas — lista completa em `context.json` | |

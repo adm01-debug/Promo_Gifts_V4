@@ -12387,7 +12387,7 @@
    "hooks_exportados": [
     "useQuoteBuilderSteps"
    ],
-   "linhas": 580,
+   "linhas": 585,
    "dominio": "hooks/quotes",
    "tabelas": [],
    "rpcs": [],
@@ -12410,7 +12410,7 @@
    "hooks_exportados": [
     "useQuoteBuilderState"
    ],
-   "linhas": 1103,
+   "linhas": 1104,
    "dominio": "hooks/quotes",
    "tabelas": [
     "quotes"
@@ -15067,7 +15067,7 @@
    "hooks_exportados": [
     "useQuoteViewData"
    ],
-   "linhas": 389,
+   "linhas": 392,
    "dominio": "pages/quotes",
    "tabelas": [],
    "rpcs": [],
