@@ -20,13 +20,13 @@
 | supabase_realtime | public.quote_items | full |
 | supabase_realtime | public.quotes | full |
 | supabase_realtime | public.workspace_notifications | full |
-| supabase_realtime_messages_publication | realtime.messages_2026_11_17 |  |
 | supabase_realtime_messages_publication | realtime.messages_2026_11_18 |  |
 | supabase_realtime_messages_publication | realtime.messages_2026_11_19 |  |
 | supabase_realtime_messages_publication | realtime.messages_2026_11_20 |  |
 | supabase_realtime_messages_publication | realtime.messages_2026_11_21 |  |
 | supabase_realtime_messages_publication | realtime.messages_2026_11_22 |  |
 | supabase_realtime_messages_publication | realtime.messages_2026_11_23 |  |
+| supabase_realtime_messages_publication | realtime.messages_2026_11_24 |  |
 
 ## Broadcast / Presence (policies em realtime.messages)
 
