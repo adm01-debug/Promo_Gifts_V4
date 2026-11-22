@@ -8,7 +8,7 @@
   "supabase/migrations",
   "typeorm"
  ],
- "migrations": 3124,
+ "migrations": 3125,
  "seeds": [],
  "avisos": [
   "323 bloco(s) com DDL dinâmico (EXECUTE format/...) não modelado — policies/colunas criadas dinamicamente podem faltar; confira no banco vivo"
@@ -189,6 +189,7 @@
   "v_color_nuances_public",
   "v_compras_catalogo",
   "v_compras_precos_faixa",
+  "v_compras_precos_variante",
   "v_connection_health",
   "v_db_health_audit",
   "v_dimensions_source_divergence",

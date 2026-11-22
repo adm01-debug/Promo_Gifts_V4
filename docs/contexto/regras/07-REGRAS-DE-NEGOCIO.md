@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.3.2 · commit `e8006d75cd` · branch `main` · 2026-11-22 12:44 UTC
+> Gerado automaticamente por AI Context Sync v1.3.2 · commit `bf4f25b239` · branch `main` · 2026-11-22 12:52 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -3518,8 +3518,9 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `v_ai_function_routing_effective` | `SELECT r.id AS routing_id, r.function_name, r.is_active, r.required_capabilities, r.request_overrides, r.primary_model_id, pm.model_id AS primary_model, pm.capabilities AS primary_capabilities, pm.provider_id AS primary_provider_id, pp.slug AS primary_provider_slug, pm.is_active AS primary_active, p …` |
 | `v_health_gravacao` | `WITH tecnicas AS ( SELECT COUNT(*) AS total, COUNT(*) FILTER (WHERE ativo) AS ativas, COUNT(*) FILTER (WHERE NOT ativo) AS inativas, COUNT(*) FILTER (WHERE ativo AND NOT EXISTS ( SELECT 1 FROM tabela_preco_gravacao_oficial_faixa f WHERE f.tabela_preco_gravacao_id = t.id )) AS ativas_sem_faixa FROM t …` |
 | `v_audit_paradoxos_gravacao` | `WITH p1 AS ( SELECT 'P1'::text AS codigo_paradoxo, 'Técnica ativa sem faixas de preço'::text AS descricao, t.codigo_tabela, t.nome, t.grupo_tecnica, NULL::text AS produto_sku, NULL::text AS location_code, NULL::text AS detalhe, 'ALTO'::text AS severidade FROM tabela_preco_gravacao_oficial t WHERE t. …` |
-| `v_compras_catalogo` | `select p.id as pim_product_id, v.id as pim_variant_id, p.sku, p.sku_promo, p.name, p.supplier_id, s.code as supplier_code, s.name as supplier_name, coalesce(v.supplier_sku, p.supplier_reference) as supplier_reference, p.cost_price, p.sale_price, p.suggested_price, p.ipi_rate, p.ncm_code, p.min_quant …` |
-| `v_compras_precos_faixa` | `SELECT pcp.product_id AS pim_product_id, NULL::uuid AS pim_variant_id, band.qty_min, LEAD(band.qty_min) OVER ( PARTITION BY pcp.id ORDER BY band.ord ) - 1 AS qty_max, band.unit_cost, NULL::numeric AS unit_price, 'spot_customization'::text AS source, pcp.service_code, pcp.table_code, pcp.component, p …` |
+| `v_compras_catalogo` | `select p.id as pim_product_id, v.id as pim_variant_id, p.sku, p.sku_promo, p.name, p.supplier_id, s.code as supplier_code, s.name as supplier_name, coalesce(v.supplier_sku, p.supplier_reference) as supplier_reference, p.supplier_external_id, p.cost_price, p.sale_price, p.suggested_price, p.ipi_rate, …` |
+| `v_compras_precos_faixa` | `select pcp.product_id as pim_product_id, null::uuid as pim_variant_id, band.qty_min, lead(band.qty_min) over ( partition by pcp.id order by band.ord ) - 1 as qty_max, band.unit_cost, null::numeric as unit_price, 'spot_customization'::text as source, pcp.service_code, pcp.table_code, pcp.component, p …` |
+| `v_compras_precos_variante` | `select product_id as pim_product_id, variant_id as pim_variant_id, 1 as tier, min_qty_1 as qty_min, (min_qty_2 - 1) as qty_max, cost_price_1 as unit_cost, sale_price_1 as unit_price, 'vw_variant_sale_prices' as source from public.vw_variant_sale_prices where min_qty_1 is not null union all select pr …` |
 
 ### G.3 Funções de cálculo/decisão no código
 
@@ -7594,4 +7595,4 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | * Card "Prazo de produção" do orçamento: em quantos dias úteis o pedido fica | `src/components/freight-plan/ProductionLeadTimeCard.tsx` |
 | pronto para envio, qual item define esse prazo e de onde vem cada número. | `src/components/freight-plan/ProductionLeadTimeCard.tsx` |
 | deliveryMode={deliveryMode}            // 'data' \| 'prazo' do orçamento | `src/components/freight-plan/ProductionLeadTimeCard.tsx` |
-| … +1474 linhas — lista completa em `context.json` | |
+| … +1475 linhas — lista completa em `context.json` | |

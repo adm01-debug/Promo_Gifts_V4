@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "feat: views de compras canonicas (consolida #3968 e #3969) (#3976)",
    "chore(main): release gifts-store 1.18.0 (#3966)",
    "docs: recibo E15 da aplicacao de 20261121223000 (#3977)",
    "docs(migrations-log): recibo E15 — aplicação de 20261121203000 (#3973)",
-   "fix: rollback e recibo da migration supplier_external_id (#3974)",
-   "feat(compras): supplier_external_id para identidade do produto no fornecedor (#3967)"
+   "fix: rollback e recibo da migration supplier_external_id (#3974)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",

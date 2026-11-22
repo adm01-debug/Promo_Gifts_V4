@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "e8006d75cdf99caee96eb003680436e888912007",
+  "commit": "bf4f25b239e43b80b68377dad24cf7967366ff2c",
   "branch": "main",
-  "data_commit": "2026-11-22T09:39:00-03:00",
+  "data_commit": "2026-11-22T09:50:52-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "bf4f25b",
+    "data": "2026-11-22",
+    "assunto": "feat: views de compras canonicas (consolida #3968 e #3969) (#3976)"
+   },
    {
     "sha": "e8006d7",
     "data": "2026-11-22",
@@ -126,14 +131,9 @@
     "sha": "f613f3f",
     "data": "2026-11-21",
     "assunto": "chore(main): release gifts-store 1.16.1 (#3949)"
-   },
-   {
-    "sha": "912bfae",
-    "data": "2026-11-21",
-    "assunto": "test(kit): classificacao de status KMM-075/KMX-037 (D7) (#3950)"
    }
   ],
-  "arquivos_mudados_7d": 1322,
+  "arquivos_mudados_7d": 1286,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -199,7 +199,7 @@
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "supabase/MIGRATIONS_SYNC_LOG.md",
-    "mudancas": 61
+    "mudancas": 62
    },
    {
     "arquivo": "package.json",
@@ -309,7 +309,7 @@
    },
    {
     "autor": "Claude",
-    "commits": 12
+    "commits": 11
    },
    {
     "autor": "dependabot[bot]",
@@ -318,7 +318,7 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 11206,
+  "arquivos_total": 11208,
   "arquivos_codigo": 5654,
   "linhas_codigo": 1073021,
   "rotas": 141,
@@ -330,7 +330,7 @@
   "hooks": 645,
   "edge_functions": 112,
   "tabelas": 531,
-  "migrations": 3124,
+  "migrations": 3125,
   "cron_jobs": 122,
   "testes": 2702,
   "workflows": 89,
