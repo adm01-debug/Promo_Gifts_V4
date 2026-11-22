@@ -12,7 +12,7 @@
 | realtime (publication) | não |
 | replica identity | default |
 | vem de extensão | não |
-| usada por views | analytics.mv_product_cards, public.v_catalog_stats, public.v_color_coverage_monitor, public.v_kit_component_skus, public.v_kit_max_quantity, public.v_products_pending_images, public.v_super_filtro_options, public.v_system_alerts, public.v_system_health_dashboard, public.v_variant_sale_prices_public, public.v_variants_with_commemorative_dates, public.vw_color_coverage, public.vw_orphan_active_variants, public.vw_product_availability, public.vw_product_color_category_links, public.vw_product_images_variant_gap, public.vw_products_pending_variants, public.vw_somarcas_materials, public.vw_spot_cf_health, public.vw_spot_color_health, public.vw_spot_image_coverage, public.vw_stock_quantity_outliers, public.vw_super_filtro_health, public.vw_variant_sale_prices |
+| usada por views | analytics.mv_product_cards, public.v_catalog_stats, public.v_color_coverage_monitor, public.v_compras_catalogo, public.v_kit_component_skus, public.v_kit_max_quantity, public.v_products_pending_images, public.v_super_filtro_options, public.v_system_alerts, public.v_system_health_dashboard, public.v_variant_sale_prices_public, public.v_variants_with_commemorative_dates, public.vw_color_coverage, public.vw_orphan_active_variants, public.vw_product_availability, public.vw_product_color_category_links, public.vw_product_images_variant_gap, public.vw_products_pending_variants, public.vw_somarcas_materials, public.vw_spot_cf_health, public.vw_spot_color_health, public.vw_spot_image_coverage, public.vw_stock_quantity_outliers, public.vw_super_filtro_health, public.vw_variant_sale_prices |
 
 
 ## Colunas
@@ -59,6 +59,7 @@
 | 63 | `next_date_6` | `date` | sim |  |  | SPOT: NextDate6 (data da 6ª janela de reposição) |
 | 66 | `next_entry_date` | `date` | sim |  |  |  |
 | 67 | `next_entry_quantity` | `integer` | sim |  |  |  |
+| 68 | `supplier_external_id` | `text` | sim |  |  |  |
 
 
 ## Constraints

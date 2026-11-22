@@ -20,8 +20,8 @@ Gerado automaticamente a cada hora pelo workflow `contexto.yml` (job `banco`) na
 | categoria | quantidade |
 |---|---|
 | tabelas | 445 |
-| colunas | 8644 |
-| views | 219 |
+| colunas | 8703 |
+| views | 222 |
 | functions | 1360 |
 | triggers | 428 |
 | policies (RLS) | 1083 |
@@ -30,12 +30,12 @@ Gerado automaticamente a cada hora pelo workflow `contexto.yml` (job `banco`) na
 | extensões | 18 |
 | cron jobs | 143 |
 | filas pgmq | 0 |
-| migrations | 3003 |
+| migrations | 3005 |
 | buckets | 11 |
 | edge functions | n/d |
 | webhooks | 0 |
-| lints ALTA | 4 |
-| lints total | 24 |
+| lints ALTA | 7 |
+| lints total | 27 |
 
 ## Estado das fontes do mapa de referências
 

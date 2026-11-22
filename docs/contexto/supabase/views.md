@@ -2123,6 +2123,164 @@ SELECT id,
   ORDER BY date_month, date_day;
 ```
 
+## public.v_compras_catalogo (view)
+
+| campo | valor |
+|---|---|
+| owner | postgres |
+| security_invoker | não |
+| opções | security_invoker=on |
+| depende de | public.product_variants, public.products, public.suppliers |
+| populada | n/a |
+| comentário | Catalogo de produtos do PIM para o Promo Supply V2 (external-db-bridge). Superconjunto da versao 20261121163000 com supplier_external_id, xbz_stock_reliability_text, price_verified_at, price_freshness_threshold_days e fallback de imagem (PR #3968). |
+
+
+```sql
+SELECT p.id AS pim_product_id,
+    v.id AS pim_variant_id,
+    p.sku,
+    p.sku_promo,
+    p.name,
+    p.supplier_id,
+    s.code AS supplier_code,
+    s.name AS supplier_name,
+    COALESCE(v.supplier_sku, p.supplier_reference) AS supplier_reference,
+    p.supplier_external_id,
+    p.cost_price,
+    p.sale_price,
+    p.suggested_price,
+    p.ipi_rate,
+    p.ncm_code,
+    p.min_quantity,
+    p.min_order_quantity,
+    s.min_order_value,
+    COALESCE(v.stock_quantity, p.stock_quantity) AS stock_quantity,
+    p.is_stockout,
+    p.last_stock_update_at,
+    p.xbz_stock_reliability_text,
+    v.color_id,
+    v.color_name,
+    v.color_code,
+    v.color_hex,
+    v.size_code,
+    COALESCE(p.primary_image_url, p.primary_image_fallback_url) AS image_url,
+    p.lead_time_days,
+    p.price_updated_at,
+    p.price_verified_at,
+    p.price_freshness_threshold_days,
+    p.updated_at
+   FROM products p
+     JOIN suppliers s ON s.id = p.supplier_id
+     LEFT JOIN product_variants v ON v.product_id = p.id AND v.is_active
+  WHERE p.is_active AND NOT COALESCE(p.is_deleted, false) AND s.active AND s.is_product_supplier;
+```
+
+## public.v_compras_precos_faixa (view)
+
+| campo | valor |
+|---|---|
+| owner | postgres |
+| security_invoker | não |
+| opções | security_invoker=on |
+| depende de | public.product_customization_prices |
+| populada | n/a |
+| comentário | Faixas de preco de personalizacao (product_customization_prices) desnormalizadas para consumo pelo Promo Supply V2 via external-db-bridge. Uma linha por faixa de quantidade. Fonte: spot_customization. |
+
+
+```sql
+SELECT pcp.product_id AS pim_product_id,
+    NULL::uuid AS pim_variant_id,
+    band.qty_min,
+    lead(band.qty_min) OVER (PARTITION BY pcp.id ORDER BY band.ord) - 1 AS qty_max,
+    band.unit_cost,
+    NULL::numeric AS unit_price,
+    'spot_customization'::text AS source,
+    pcp.service_code,
+    pcp.table_code,
+    pcp.component,
+    pcp.location,
+    pcp.handling_cost,
+    pcp.table_max_area_cm2,
+    pcp.max_stitches,
+    pcp.hotspot,
+    pcp.currency
+   FROM product_customization_prices pcp
+     CROSS JOIN LATERAL ( SELECT t.qty_min_val AS qty_min,
+            t.price_val AS unit_cost,
+            t.ord
+           FROM UNNEST(pcp.min_qty, pcp.price) WITH ORDINALITY t(qty_min_val, price_val, ord)) band
+  WHERE array_length(pcp.min_qty, 1) > 0;
+```
+
+## public.v_compras_precos_variante (view)
+
+| campo | valor |
+|---|---|
+| owner | postgres |
+| security_invoker | não |
+| opções | security_invoker=on |
+| depende de | public.vw_variant_sale_prices |
+| populada | n/a |
+| comentário | Preco de VENDA por faixa de quantidade e por variante (vw_variant_sale_prices), ate 5 tiers. Trabalho preservado da PR #3969. Conceito distinto de v_compras_precos_faixa (preco de personalizacao); as duas coexistem. |
+
+
+```sql
+SELECT vw_variant_sale_prices.product_id AS pim_product_id,
+    vw_variant_sale_prices.variant_id AS pim_variant_id,
+    1 AS tier,
+    vw_variant_sale_prices.min_qty_1 AS qty_min,
+    vw_variant_sale_prices.min_qty_2 - 1 AS qty_max,
+    vw_variant_sale_prices.cost_price_1 AS unit_cost,
+    vw_variant_sale_prices.sale_price_1 AS unit_price,
+    'vw_variant_sale_prices'::text AS source
+   FROM vw_variant_sale_prices
+  WHERE vw_variant_sale_prices.min_qty_1 IS NOT NULL
+UNION ALL
+ SELECT vw_variant_sale_prices.product_id AS pim_product_id,
+    vw_variant_sale_prices.variant_id AS pim_variant_id,
+    2 AS tier,
+    vw_variant_sale_prices.min_qty_2 AS qty_min,
+    vw_variant_sale_prices.min_qty_3 - 1 AS qty_max,
+    vw_variant_sale_prices.cost_price_2 AS unit_cost,
+    vw_variant_sale_prices.sale_price_2 AS unit_price,
+    'vw_variant_sale_prices'::text AS source
+   FROM vw_variant_sale_prices
+  WHERE vw_variant_sale_prices.min_qty_2 IS NOT NULL
+UNION ALL
+ SELECT vw_variant_sale_prices.product_id AS pim_product_id,
+    vw_variant_sale_prices.variant_id AS pim_variant_id,
+    3 AS tier,
+    vw_variant_sale_prices.min_qty_3 AS qty_min,
+    vw_variant_sale_prices.min_qty_4 - 1 AS qty_max,
+    vw_variant_sale_prices.cost_price_3 AS unit_cost,
+    vw_variant_sale_prices.sale_price_3 AS unit_price,
+    'vw_variant_sale_prices'::text AS source
+   FROM vw_variant_sale_prices
+  WHERE vw_variant_sale_prices.min_qty_3 IS NOT NULL
+UNION ALL
+ SELECT vw_variant_sale_prices.product_id AS pim_product_id,
+    vw_variant_sale_prices.variant_id AS pim_variant_id,
+    4 AS tier,
+    vw_variant_sale_prices.min_qty_4 AS qty_min,
+    vw_variant_sale_prices.min_qty_5 - 1 AS qty_max,
+    vw_variant_sale_prices.cost_price_4 AS unit_cost,
+    vw_variant_sale_prices.sale_price_4 AS unit_price,
+    'vw_variant_sale_prices'::text AS source
+   FROM vw_variant_sale_prices
+  WHERE vw_variant_sale_prices.min_qty_4 IS NOT NULL
+UNION ALL
+ SELECT vw_variant_sale_prices.product_id AS pim_product_id,
+    vw_variant_sale_prices.variant_id AS pim_variant_id,
+    5 AS tier,
+    vw_variant_sale_prices.min_qty_5 AS qty_min,
+    NULL::integer AS qty_max,
+    vw_variant_sale_prices.cost_price_5 AS unit_cost,
+    vw_variant_sale_prices.sale_price_5 AS unit_price,
+    'vw_variant_sale_prices'::text AS source
+   FROM vw_variant_sale_prices
+  WHERE vw_variant_sale_prices.min_qty_5 IS NOT NULL;
+```
+
 ## public.v_connection_health (view)
 
 | campo | valor |
