@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "aba6acfb9afa02e8f83fc0cf324de131006cc32d",
+  "commit": "3aa6694279ea40f735bfac363519bc477ff3c30f",
   "branch": "main",
-  "data_commit": "2026-11-22T09:54:23-03:00",
+  "data_commit": "2026-11-22T10:20:59-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "3aa6694",
+    "data": "2026-11-22",
+    "assunto": "fix: alinhar recibo da 20261121203000 com a linha E15 (aplicada) (#3980)"
+   },
    {
     "sha": "aba6acf",
     "data": "2026-11-22",
@@ -126,14 +131,9 @@
     "sha": "1ab2619",
     "data": "2026-11-21",
     "assunto": "feat(frete): expoe volumes para transporte no PDF do kit (#3955)"
-   },
-   {
-    "sha": "e311dad",
-    "data": "2026-11-21",
-    "assunto": "feat(frete): Bloco F - comparador de volumes, simulador de frete e telemetria (etapas 53-60) (#3954)"
    }
   ],
-  "arquivos_mudados_7d": 1286,
+  "arquivos_mudados_7d": 1265,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -199,7 +199,7 @@
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "supabase/MIGRATIONS_SYNC_LOG.md",
-    "mudancas": 62
+    "mudancas": 63
    },
    {
     "arquivo": "package.json",

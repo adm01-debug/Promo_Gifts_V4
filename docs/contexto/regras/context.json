@@ -1,9 +1,9 @@
 {
  "meta": {
-  "sha": "aba6acfb9afa02e8f83fc0cf324de131006cc32d",
+  "sha": "3aa6694279ea40f735bfac363519bc477ff3c30f",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-22 12:57 UTC",
+  "generated_at": "2026-11-22 13:25 UTC",
   "files_total": 11136,
   "code_files": 9143,
   "code_lines": 1298522
@@ -561137,10 +561137,19 @@
   }
  },
  "git": {
-  "sha": "aba6acfb9afa02e8f83fc0cf324de131006cc32d",
+  "sha": "3aa6694279ea40f735bfac363519bc477ff3c30f",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "3aa6694",
+    "date": "2026-11-22",
+    "author": "adm01-debug",
+    "subject": "fix: alinhar recibo da 20261121203000 com a linha E15 (aplicada) (#3980)",
+    "files": [
+     "supabase/MIGRATIONS_SYNC_LOG.md"
+    ]
+   },
    {
     "sha": "aba6acf",
     "date": "2026-11-22",
@@ -561486,24 +561495,12 @@
      "scripts/check-invoke-direct-calls.mjs",
      "tests/scripts/gate-baseline-absence.test.mjs"
     ]
-   },
-   {
-    "sha": "a87dc91",
-    "date": "2026-11-20",
-    "author": "adm01-debug",
-    "subject": "chore(docs): memoria do GOAL 4 - achados e resgate quote_comments (#3948)",
-    "files": [
-     "docs/pendencias/_achados.md",
-     "docs/pendencias/_linha-de-base.md",
-     "docs/pendencias/_ordem.md",
-     "docs/pendencias/_regras-de-negocio.md"
-    ]
    }
   ],
   "hot_files": [
    [
     "supabase/MIGRATIONS_SYNC_LOG.md",
-    10
+    11
    ],
    [
     ".release-please-manifest.json",
