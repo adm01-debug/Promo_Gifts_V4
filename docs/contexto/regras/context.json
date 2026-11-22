@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "cd04fc225bc5605697c14f2c11c045402c04dcd1",
+  "sha": "8b5d0d8cf720f530e15ec652ad16a9817f9cbfbf",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-22 11:43 UTC",
-  "files_total": 11132,
-  "code_files": 9139,
-  "code_lines": 1298319
+  "generated_at": "2026-11-22 11:52 UTC",
+  "files_total": 11133,
+  "code_files": 9140,
+  "code_lines": 1298351
  },
  "version": "1.3.2",
- "facts_hash": "6af890fb5cca6358",
+ "facts_hash": "a01493de7829c3f3",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -1128,7 +1128,7 @@
   ],
   "package_manager": "npm",
   "languages": {
-   ".sql": 3486,
+   ".sql": 3487,
    ".ts": 3165,
    ".tsx": 2017,
    ".mjs": 455,
@@ -13009,6 +13009,13 @@
       "fk": "",
       "generated": "",
       "src": "supabase/migrations/20260617230500_estoque_sanitize_restock_dates_trigger.sql"
+     },
+     {
+      "name": "supplier_external_id",
+      "type": "text",
+      "fk": "",
+      "generated": "",
+      "src": "supabase/migrations/20261121223000_add_supplier_external_id.sql"
      },
      {
       "name": "next_entry_date",
@@ -96642,6 +96649,7 @@
    "supabase/migrations/20261121163000_v_compras_catalogo.sql",
    "supabase/migrations/20261121183000_v_compras_precos_faixa.sql",
    "supabase/migrations/20261121203000_kit_maker_server_revalidation.sql",
+   "supabase/migrations/20261121223000_add_supplier_external_id.sql",
    "supabase/rollbacks/20260511235950_rollback.sql",
    "supabase/rollbacks/20260511235959_rollback.sql",
    "supabase/rollbacks/20260611014515_fn_dryrun_standardize_supplier_real_rollback.sql",
@@ -152525,8 +152533,8 @@
   },
   {
    "module": "supabase/migrations",
-   "files": 3122,
-   "lines": 226802,
+   "files": 3123,
+   "lines": 226834,
    "tables": [
     "...",
     "admin_audit_log",
@@ -534945,6 +534953,10 @@
     "1000, mesma regra do front)."
    ]
   },
+  "supabase/migrations/20261121223000_add_supplier_external_id.sql": {
+   "path": "supabase/migrations/20261121223000_add_supplier_external_id.sql",
+   "lines": 32
+  },
   "supabase/rollbacks/20260511235950_rollback.sql": {
    "path": "supabase/rollbacks/20260511235950_rollback.sql",
    "lines": 5
@@ -561054,10 +561066,19 @@
   }
  },
  "git": {
-  "sha": "cd04fc225bc5605697c14f2c11c045402c04dcd1",
+  "sha": "8b5d0d8cf720f530e15ec652ad16a9817f9cbfbf",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "8b5d0d8",
+    "date": "2026-11-22",
+    "author": "adm01-debug",
+    "subject": "feat(compras): supplier_external_id para identidade do produto no fornecedor (#3967)",
+    "files": [
+     "supabase/migrations/20261121223000_add_supplier_external_id.sql"
+    ]
+   },
    {
     "sha": "cd04fc2",
     "date": "2026-11-22",
@@ -561420,26 +561441,12 @@
      "src/hooks/stock/__tests__/ema-pipeline-health.contract.test.tsx",
      "src/hooks/stock/useEmaRiskSummary.ts"
     ]
-   },
-   {
-    "sha": "e54228a",
-    "date": "2026-11-20",
-    "author": "adm01-debug",
-    "subject": "feat(db): colunas do plano de volumes em quotes (frete, Bloco G — DDL, etapa 61) (#3926)",
-    "files": [
-     "docs/coordenacao/conflitos-semanticos.md",
-     "src/integrations/supabase/types.ts",
-     "supabase/MIGRATIONS_SYNC_LOG.md",
-     "supabase/migrations/20261120040000_add_quotes_freight_plan.sql",
-     "supabase/rollbacks/20261120040000_rollback.sql",
-     "tests/contracts/quotes-freight-plan-migration.test.ts"
-    ]
    }
   ],
   "hot_files": [
    [
     "supabase/MIGRATIONS_SYNC_LOG.md",
-    8
+    7
    ],
    [
     ".file-size-baseline.json",
@@ -561494,10 +561501,6 @@
     2
    ],
    [
-    "docs/coordenacao/conflitos-semanticos.md",
-    2
-   ],
-   [
     "src/components/kit-builder/KitSummary.tsx",
     2
    ],
@@ -561506,8 +561509,8 @@
     2
    ],
    [
-    "src/integrations/supabase/types.ts",
-    2
+    "supabase/migrations/20261121223000_add_supplier_external_id.sql",
+    1
    ],
    [
     "supabase/migrations/20261121203000_kit_maker_server_revalidation.sql",
@@ -561515,6 +561518,10 @@
    ],
    [
     "supabase/rollbacks/20261121203000_rollback.sql",
+    1
+   ],
+   [
+    "qa/pdf-color-allowlist.json",
     1
    ]
   ]

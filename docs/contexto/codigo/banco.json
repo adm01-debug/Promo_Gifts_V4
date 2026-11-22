@@ -8,7 +8,7 @@
   "supabase/migrations",
   "typeorm"
  ],
- "migrations": 3123,
+ "migrations": 3124,
  "seeds": [],
  "avisos": [
   "323 bloco(s) com DDL dinâmico (EXECUTE format/...) não modelado — policies/colunas criadas dinamicamente podem faltar; confira no banco vivo"
@@ -34545,6 +34545,13 @@
      "default": "0",
      "ref": null
     },
+    "supplier_external_id": {
+     "tipo": "text",
+     "nn": false,
+     "pk": false,
+     "default": null,
+     "ref": null
+    },
     "updated_at": {
      "tipo": "timestamptz",
      "nn": false,
@@ -35415,6 +35422,13 @@
     },
     "suggested_price": {
      "tipo": "decimal(10,2)",
+     "nn": false,
+     "pk": false,
+     "default": null,
+     "ref": null
+    },
+    "supplier_external_id": {
+     "tipo": "text",
      "nn": false,
      "pk": false,
      "default": null,
