@@ -1,7 +1,7 @@
 -- ==============================================================
 -- SCHEMA_LIVE.sql — dump do schema do projeto canônico
 -- Projeto: doufsxqlfjyuvxuezpln
--- Gerado em: 2026-11-22T13:21:00.140Z
+-- Gerado em: 2026-11-22T14:47:15.781Z
 -- Fonte: supabase db dump --linked
 -- ==============================================================
 
@@ -58079,7 +58079,7 @@ COMMENT ON COLUMN "public"."products"."is_imported" IS 'TRUE se produto importad
 
 
 
-COMMENT ON COLUMN "public"."products"."lead_time_days" IS 'Prazo de produção em dias úteis. 82% preenchido (NULL=herda fornecedor). Valores: 2 ou 3.';
+COMMENT ON COLUMN "public"."products"."lead_time_days" IS 'Prazo de liberação do fornecedor em dias úteis. Igual ao padrão do fornecedor = herdado; diferente = exceção por produto.';
 
 
 
@@ -76736,6 +76736,38 @@ COMMENT ON COLUMN "public"."bot_detection_log"."blocked" IS 'Marca se a deteccao
 
 
 
+CREATE TABLE IF NOT EXISTS "public"."business_calendar" (
+    "day" "date" NOT NULL,
+    "description" "text" NOT NULL,
+    "created_at" timestamp with time zone DEFAULT "now"() NOT NULL,
+    "created_by" "uuid" DEFAULT "auth"."uid"(),
+    CONSTRAINT "business_calendar_description_check" CHECK ((("description" ~ '\S'::"text") AND ("length"("description") <= 120)))
+);
+
+
+ALTER TABLE "public"."business_calendar" OWNER TO "postgres";
+
+
+COMMENT ON TABLE "public"."business_calendar" IS 'Feriados em que não se conta dia útil no prazo de produção (src/lib/lead-time). Uma linha por data. Sábado e domingo não entram: a biblioteca já os pula.';
+
+
+
+COMMENT ON COLUMN "public"."business_calendar"."day" IS 'Data do feriado (AAAA-MM-DD). Chave primária: uma linha por dia.';
+
+
+
+COMMENT ON COLUMN "public"."business_calendar"."description" IS 'Nome do feriado em português, até 120 caracteres.';
+
+
+
+COMMENT ON COLUMN "public"."business_calendar"."created_at" IS 'Criação do registro.';
+
+
+
+COMMENT ON COLUMN "public"."business_calendar"."created_by" IS 'Usuário que cadastrou. Nulo no seed e quando o usuário é removido.';
+
+
+
 CREATE TABLE IF NOT EXISTS "public"."cart_templates" (
     "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
     "user_id" "uuid" NOT NULL,
@@ -81411,7 +81443,9 @@ CREATE TABLE IF NOT EXISTS "public"."print_area_techniques" (
     "location_name" "text",
     "location_order" integer,
     "notes" "text",
-    "unit_cost" numeric(10,4)
+    "unit_cost" numeric(10,4),
+    "production_days" integer,
+    CONSTRAINT "print_area_techniques_production_days_check" CHECK ((("production_days" IS NULL) OR (("production_days" >= 0) AND ("production_days" <= 365))))
 )
 WITH ("autovacuum_vacuum_scale_factor"='0.1', "autovacuum_analyze_scale_factor"='0.05');
 
@@ -81460,6 +81494,10 @@ COMMENT ON COLUMN "public"."print_area_techniques"."notes" IS 'Observações sob
 
 
 COMMENT ON COLUMN "public"."print_area_techniques"."unit_cost" IS 'Custo unitário de gravação sobrescrito para este produto (se diferir da tabela de preço padrão)';
+
+
+
+COMMENT ON COLUMN "public"."print_area_techniques"."production_days" IS 'Dias úteis de personalização para este produto × local × técnica. NULL = usa prazo_dias da faixa da tabela de preço';
 
 
 
@@ -86924,7 +86962,7 @@ CREATE OR REPLACE VIEW "public"."v_commemorative_dates_with_colors" WITH ("secur
 ALTER VIEW "public"."v_commemorative_dates_with_colors" OWNER TO "postgres";
 
 
-CREATE OR REPLACE VIEW "public"."v_compras_catalogo" WITH ("security_invoker"='on') AS
+CREATE OR REPLACE VIEW "public"."v_compras_catalogo" WITH ("security_invoker"='false') AS
  SELECT "p"."id" AS "pim_product_id",
     "v"."id" AS "pim_variant_id",
     "p"."sku",
@@ -86967,11 +87005,11 @@ CREATE OR REPLACE VIEW "public"."v_compras_catalogo" WITH ("security_invoker"='o
 ALTER VIEW "public"."v_compras_catalogo" OWNER TO "postgres";
 
 
-COMMENT ON VIEW "public"."v_compras_catalogo" IS 'Catalogo de produtos do PIM para o Promo Supply V2 (external-db-bridge). Superconjunto da versao 20261121163000 com supplier_external_id, xbz_stock_reliability_text, price_verified_at, price_freshness_threshold_days e fallback de imagem (PR #3968).';
+COMMENT ON VIEW "public"."v_compras_catalogo" IS 'Catalogo canônico para o bridge PIM -> Promo Supply V2 (SECURITY DEFINER). Projeta cost_price/sale_price/suggested_price de proposito: useCatalogoPim.ts consome esses campos para recompra. O recorte e a projecao + o WHERE, nao o GRANT. NAO religar security_invoker=true.';
 
 
 
-CREATE OR REPLACE VIEW "public"."v_compras_precos_faixa" WITH ("security_invoker"='on') AS
+CREATE OR REPLACE VIEW "public"."v_compras_precos_faixa" WITH ("security_invoker"='false') AS
  SELECT "pcp"."product_id" AS "pim_product_id",
     NULL::"uuid" AS "pim_variant_id",
     "band"."qty_min",
@@ -86999,7 +87037,7 @@ CREATE OR REPLACE VIEW "public"."v_compras_precos_faixa" WITH ("security_invoker
 ALTER VIEW "public"."v_compras_precos_faixa" OWNER TO "postgres";
 
 
-COMMENT ON VIEW "public"."v_compras_precos_faixa" IS 'Faixas de preco de personalizacao (product_customization_prices) desnormalizadas para consumo pelo Promo Supply V2 via external-db-bridge. Uma linha por faixa de quantidade. Fonte: spot_customization.';
+COMMENT ON VIEW "public"."v_compras_precos_faixa" IS 'Faixas de preco por quantidade para o bridge PIM (SECURITY DEFINER). Projeta unit_cost/unit_price de proposito (PimPrecoFaixa). NAO religar security_invoker=true.';
 
 
 
@@ -87038,7 +87076,7 @@ CREATE OR REPLACE VIEW "public"."vw_variant_sale_prices" WITH ("security_invoker
 ALTER VIEW "public"."vw_variant_sale_prices" OWNER TO "postgres";
 
 
-CREATE OR REPLACE VIEW "public"."v_compras_precos_variante" WITH ("security_invoker"='on') AS
+CREATE OR REPLACE VIEW "public"."v_compras_precos_variante" WITH ("security_invoker"='false') AS
  SELECT "vw_variant_sale_prices"."product_id" AS "pim_product_id",
     "vw_variant_sale_prices"."variant_id" AS "pim_variant_id",
     1 AS "tier",
@@ -87098,7 +87136,7 @@ UNION ALL
 ALTER VIEW "public"."v_compras_precos_variante" OWNER TO "postgres";
 
 
-COMMENT ON VIEW "public"."v_compras_precos_variante" IS 'Preco de VENDA por faixa de quantidade e por variante (vw_variant_sale_prices), ate 5 tiers. Trabalho preservado da PR #3969. Conceito distinto de v_compras_precos_faixa (preco de personalizacao); as duas coexistem.';
+COMMENT ON VIEW "public"."v_compras_precos_variante" IS 'Precos por variante para o bridge PIM (SECURITY DEFINER). Depende de vw_variant_sale_prices, que nao tem GRANT SELECT para anon. NAO religar security_invoker=true.';
 
 
 
@@ -87568,7 +87606,7 @@ COMMENT ON VIEW "public"."v_kit_component_identity_health" IS 'Saúde honesta da
 
 
 
-CREATE OR REPLACE VIEW "public"."v_kit_component_media_public" WITH ("security_invoker"='true') AS
+CREATE OR REPLACE VIEW "public"."v_kit_component_media_public" WITH ("security_invoker"='false') AS
  SELECT "pkc"."id" AS "kit_component_id",
     "pkc"."kit_product_id",
     "pkc"."component_product_id",
@@ -87585,7 +87623,7 @@ CREATE OR REPLACE VIEW "public"."v_kit_component_media_public" WITH ("security_i
 ALTER VIEW "public"."v_kit_component_media_public" OWNER TO "postgres";
 
 
-COMMENT ON VIEW "public"."v_kit_component_media_public" IS 'SECURITY DEFINER intencional (fix_version 20260717). Depende de products para filtro is_active. Colunas de output: kit_component_id, component_code/name, primary_image_url.';
+COMMENT ON VIEW "public"."v_kit_component_media_public" IS 'Midias de componentes de kit (SECURITY DEFINER). NAO religar security_invoker=true: sem GRANT SELECT em product_kit_components o anon recebe 401 42501, e com GRANT passaria a ler componentes de produto inativo que esta view esconde. Regressao de 2026-11-22 revertida pela 20261122180000.';
 
 
 
@@ -88328,7 +88366,7 @@ CREATE OR REPLACE VIEW "public"."v_product_active_badge" WITH ("security_invoker
 ALTER VIEW "public"."v_product_active_badge" OWNER TO "postgres";
 
 
-CREATE OR REPLACE VIEW "public"."v_product_compositions_public" WITH ("security_invoker"='true') AS
+CREATE OR REPLACE VIEW "public"."v_product_compositions_public" WITH ("security_invoker"='false') AS
  SELECT "mpc"."product_id",
     "mpc"."product_name",
     "mpc"."total_materials",
@@ -88341,7 +88379,7 @@ CREATE OR REPLACE VIEW "public"."v_product_compositions_public" WITH ("security_
 ALTER VIEW "public"."v_product_compositions_public" OWNER TO "postgres";
 
 
-COMMENT ON VIEW "public"."v_product_compositions_public" IS 'SECURITY DEFINER intencional (fix_version 20260717). Depende de products e analytics.mv_product_compositions.';
+COMMENT ON VIEW "public"."v_product_compositions_public" IS 'Composicoes de produto (SECURITY DEFINER). Cadeia de 2 niveis ate analytics.mv_product_compositions, que nao tem GRANT SELECT para anon. NAO religar security_invoker=true. Regressao de 2026-11-22 revertida pela 20261122180000.';
 
 
 
@@ -89426,7 +89464,7 @@ UNION ALL
 ALTER VIEW "public"."v_super_filtro_options" OWNER TO "postgres";
 
 
-CREATE OR REPLACE VIEW "public"."v_suppliers_public" WITH ("security_invoker"='true') AS
+CREATE OR REPLACE VIEW "public"."v_suppliers_public" WITH ("security_invoker"='false') AS
  SELECT "id",
     "name",
     "code",
@@ -89444,7 +89482,7 @@ CREATE OR REPLACE VIEW "public"."v_suppliers_public" WITH ("security_invoker"='t
 ALTER VIEW "public"."v_suppliers_public" OWNER TO "postgres";
 
 
-COMMENT ON VIEW "public"."v_suppliers_public" IS 'PUBLIC SUPPLIER PROJECTION (SECURITY DEFINER intencional / fix_version 20260717_v1). Expoe apenas: id, name, code, trading_name, logo_url, website, active, flags, state_uf. Mascara: api_credentials, api_base_url, default_markup_percent, cnpj, email, phone, etc. NAO alterar para security_invoker=true (expoeria api_credentials ao anon via REST).';
+COMMENT ON VIEW "public"."v_suppliers_public" IS 'Fornecedores publicos (SECURITY DEFINER, security_invoker=false). Contrato fechado de colunas: NAO expoe api_credentials/api_key/api_token/password/email/phone/cnpj/api_base_url/default_markup_percent. NAO religar security_invoker=true: anon nao tem GRANT SELECT em suppliers e a view responderia 401 42501 (regressao de 2026-11-22, revertida pela 20261122180000).';
 
 
 
@@ -89907,7 +89945,7 @@ COMMENT ON VIEW "public"."v_system_health_dashboard" IS 'Dashboard mestre de sa�
 
 
 
-CREATE OR REPLACE VIEW "public"."v_tabela_preco_gravacao_oficial_public" WITH ("security_invoker"='true') AS
+CREATE OR REPLACE VIEW "public"."v_tabela_preco_gravacao_oficial_public" WITH ("security_invoker"='false') AS
  SELECT "id",
     "codigo_tabela",
     "codigo",
@@ -89952,7 +89990,7 @@ CREATE OR REPLACE VIEW "public"."v_tabela_preco_gravacao_oficial_public" WITH ("
 ALTER VIEW "public"."v_tabela_preco_gravacao_oficial_public" OWNER TO "postgres";
 
 
-COMMENT ON VIEW "public"."v_tabela_preco_gravacao_oficial_public" IS 'PUBLIC ENGRAVING TABLE PROJECTION (SECURITY DEFINER / fix_version 20260717). Expõe apenas colunas de cobrança e preços de venda. EXCLUÍDOS: custo_setup (R$325 max), markup_percent (115% max), custo_aplicacao, custo_termo_transferencia, custo_queima_forno, faturamento_minimo. NAO reverter para security_invoker=true nem re-expor a tabela base ao anon.';
+COMMENT ON VIEW "public"."v_tabela_preco_gravacao_oficial_public" IS 'Tabela de preco de gravacao oficial (SECURITY DEFINER). NAO religar security_invoker=true nem re-expor a tabela base ao anon: exigiria GRANT em 37 colunas. Regressao de 2026-11-22 revertida pela 20261122180000.';
 
 
 
@@ -95192,6 +95230,11 @@ ALTER TABLE ONLY "public"."_bkp_orphan_active_variants_20260619"
 
 ALTER TABLE ONLY "public"."bot_detection_log"
     ADD CONSTRAINT "bot_detection_log_pkey" PRIMARY KEY ("id");
+
+
+
+ALTER TABLE ONLY "public"."business_calendar"
+    ADD CONSTRAINT "business_calendar_pkey" PRIMARY KEY ("day");
 
 
 
@@ -103208,6 +103251,11 @@ ALTER TABLE ONLY "public"."b2b_collection_products"
 
 
 
+ALTER TABLE ONLY "public"."business_calendar"
+    ADD CONSTRAINT "business_calendar_created_by_fkey" FOREIGN KEY ("created_by") REFERENCES "auth"."users"("id") ON DELETE SET NULL;
+
+
+
 ALTER TABLE ONLY "public"."cart_templates"
     ADD CONSTRAINT "cart_templates_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "auth"."users"("id") ON DELETE CASCADE;
 
@@ -106766,6 +106814,25 @@ CREATE POLICY "bkp_orphan_variants_service_only" ON "public"."_bkp_orphan_active
 
 
 ALTER TABLE "public"."bot_detection_log" ENABLE ROW LEVEL SECURITY;
+
+
+ALTER TABLE "public"."business_calendar" ENABLE ROW LEVEL SECURITY;
+
+
+CREATE POLICY "business_calendar_delete_admin" ON "public"."business_calendar" FOR DELETE TO "authenticated" USING ("public"."is_admin"());
+
+
+
+CREATE POLICY "business_calendar_insert_admin" ON "public"."business_calendar" FOR INSERT TO "authenticated" WITH CHECK ("public"."is_admin"());
+
+
+
+CREATE POLICY "business_calendar_select_authenticated" ON "public"."business_calendar" FOR SELECT TO "authenticated" USING (true);
+
+
+
+CREATE POLICY "business_calendar_update_admin" ON "public"."business_calendar" FOR UPDATE TO "authenticated" USING ("public"."is_admin"()) WITH CHECK ("public"."is_admin"());
+
 
 
 ALTER TABLE "public"."cart_templates" ENABLE ROW LEVEL SECURITY;
@@ -120125,6 +120192,11 @@ GRANT ALL ON TABLE "public"."binding_types" TO "service_role";
 
 GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."bot_detection_log" TO "authenticated";
 GRANT ALL ON TABLE "public"."bot_detection_log" TO "service_role";
+
+
+
+GRANT ALL ON TABLE "public"."business_calendar" TO "service_role";
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE "public"."business_calendar" TO "authenticated";
 
 
 
