@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "b1fe749e8a3f14bb32ac240b09cf1c6442bd5486",
+  "commit": "0d30dea8929446aa87dd1dc6e2a004673c5d7b1e",
   "branch": "main",
-  "data_commit": "2026-11-22T09:21:20-03:00",
+  "data_commit": "2026-11-22T09:35:49-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "0d30dea",
+    "data": "2026-11-22",
+    "assunto": "docs(migrations-log): recibo E15 — aplicação de 20261121203000 (#3973)"
+   },
    {
     "sha": "b1fe749",
     "data": "2026-11-22",
@@ -126,74 +131,69 @@
     "sha": "a87dc91",
     "data": "2026-11-20",
     "assunto": "chore(docs): memoria do GOAL 4 - achados e resgate quote_comments (#3948)"
-   },
-   {
-    "sha": "f83c473",
-    "data": "2026-11-20",
-    "assunto": "chore(main): release gifts-store 1.16.0 (#3945)"
    }
   ],
-  "arquivos_mudados_7d": 1339,
+  "arquivos_mudados_7d": 1322,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
-    "mudancas": 995
+    "mudancas": 693
    },
    {
     "pasta": "recovery/src-legacy/src",
-    "mudancas": 949
+    "mudancas": 633
    },
    {
     "pasta": "src/components/products",
-    "mudancas": 457
+    "mudancas": 305
    },
    {
     "pasta": "tests/edge-functions/live",
-    "mudancas": 347
+    "mudancas": 232
    },
    {
     "pasta": "src/hooks/products",
-    "mudancas": 319
+    "mudancas": 216
    },
    {
     "pasta": "src/components/quotes",
-    "mudancas": 299
+    "mudancas": 212
    },
    {
     "pasta": "src/pages/magazine",
-    "mudancas": 276
+    "mudancas": 184
    },
    {
     "pasta": "src/components/inventory",
-    "mudancas": 246
-   },
-   {
-    "pasta": "supabase/functions/_shared",
-    "mudancas": 231
+    "mudancas": 166
    },
    {
     "pasta": "src/components/mockup",
-    "mudancas": 223
+    "mudancas": 163
+   },
+   {
+    "pasta": "supabase/functions/_shared",
+    "mudancas": 156
    },
    {
     "pasta": "src/components/ui",
-    "mudancas": 219
+    "mudancas": 146
    },
    {
     "pasta": "src/pages/admin",
-    "mudancas": 196
+    "mudancas": 136
    },
    {
     "pasta": "src/pages/quotes",
-    "mudancas": 185
+    "mudancas": 134
    },
    {
     "pasta": "src/components/kit-builder",
-    "mudancas": 167
+    "mudancas": 121
    },
    {
     "pasta": "src/hooks/quotes",
-    "mudancas": 156
+    "mudancas": 114
    }
   ],
   "arquivos_mais_mudados_90d": [
@@ -203,50 +203,42 @@
    },
    {
     "arquivo": "package.json",
-    "mudancas": 30
+    "mudancas": 29
    },
    {
     "arquivo": "docs/coordenacao/conflitos-semanticos.md",
-    "mudancas": 21
-   },
-   {
-    "arquivo": "package-lock.json",
     "mudancas": 20
    },
    {
-    "arquivo": "CHANGELOG.md",
-    "mudancas": 14
+    "arquivo": "package-lock.json",
+    "mudancas": 19
    },
    {
-    "arquivo": ".github/workflows/deploy-gates.yml",
+    "arquivo": "CHANGELOG.md",
     "mudancas": 13
    },
    {
-    "arquivo": "audit/supabase-reference-catalog.temporary.json",
-    "mudancas": 11
+    "arquivo": ".github/workflows/deploy-gates.yml",
+    "mudancas": 12
    },
    {
-    "arquivo": "src/pages/mockups/MockupGenerator.tsx",
-    "mudancas": 11
+    "arquivo": "audit/supabase-reference-catalog.temporary.json",
+    "mudancas": 10
    },
    {
     "arquivo": "docs/agentes/resgates/2026-11-16-auditoria-branches.md",
     "mudancas": 10
    },
    {
-    "arquivo": "src/pages/quotes/QuoteBuilderPage.tsx",
+    "arquivo": "src/pages/mockups/MockupGenerator.tsx",
     "mudancas": 10
    },
    {
+    "arquivo": "src/pages/quotes/QuoteBuilderPage.tsx",
+    "mudancas": 9
+   },
+   {
     "arquivo": "src/integrations/supabase/types.ts",
-    "mudancas": 9
-   },
-   {
-    "arquivo": "src/pages/kit-builder/KitBuilderPage.tsx",
-    "mudancas": 9
-   },
-   {
-    "arquivo": "scripts/automation.config.json",
     "mudancas": 8
    },
    {
@@ -254,62 +246,70 @@
     "mudancas": 8
    },
    {
-    "arquivo": "src/components/kit-builder/KitSummary.tsx",
+    "arquivo": "src/pages/kit-builder/KitBuilderPage.tsx",
+    "mudancas": 8
+   },
+   {
+    "arquivo": "scripts/automation.config.json",
     "mudancas": 7
+   },
+   {
+    "arquivo": "src/components/kit-builder/KitSummary.tsx",
+    "mudancas": 6
    },
    {
     "arquivo": "src/components/kit-builder/PersonalizationConfig.tsx",
-    "mudancas": 7
+    "mudancas": 6
    },
    {
     "arquivo": "src/components/quotes/QuoteAutoSave.tsx",
-    "mudancas": 7
+    "mudancas": 6
    },
    {
     "arquivo": "src/hooks/mockup/useMockupGenerator.ts",
-    "mudancas": 7
+    "mudancas": 6
    },
    {
     "arquivo": "src/hooks/quotes/useQuoteBuilderState.ts",
-    "mudancas": 7
+    "mudancas": 6
    },
    {
     "arquivo": "src/hooks/quotes/useQuoteTemplates.ts",
-    "mudancas": 7
+    "mudancas": 6
+   },
+   {
+    "arquivo": "src/lib/freight/README.md",
+    "mudancas": 6
    },
    {
     "arquivo": "vitest.config.ts",
-    "mudancas": 7
+    "mudancas": 6
    },
    {
     "arquivo": ".github/workflows/schema-snapshot-export.yml",
-    "mudancas": 6
+    "mudancas": 5
    },
    {
     "arquivo": "e2e/helpers/auth.ts",
-    "mudancas": 6
+    "mudancas": 5
    },
    {
     "arquivo": "scripts/drift-baseline.mjs",
-    "mudancas": 6
-   },
-   {
-    "arquivo": "src/components/mockup/MockupClientSelector.tsx",
-    "mudancas": 6
+    "mudancas": 5
    }
   ],
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 269
+    "commits": 267
    },
    {
     "autor": "github-actions[bot]",
-    "commits": 31
+    "commits": 32
    },
    {
     "autor": "Claude",
-    "commits": 15
+    "commits": 14
    },
    {
     "autor": "dependabot[bot]",

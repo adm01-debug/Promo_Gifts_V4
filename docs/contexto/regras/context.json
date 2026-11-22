@@ -1,9 +1,9 @@
 {
  "meta": {
-  "sha": "b1fe749e8a3f14bb32ac240b09cf1c6442bd5486",
+  "sha": "0d30dea8929446aa87dd1dc6e2a004673c5d7b1e",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-22 12:24 UTC",
+  "generated_at": "2026-11-22 12:37 UTC",
   "files_total": 11134,
   "code_files": 9141,
   "code_lines": 1298368
@@ -561064,10 +561064,19 @@
   }
  },
  "git": {
-  "sha": "b1fe749e8a3f14bb32ac240b09cf1c6442bd5486",
+  "sha": "0d30dea8929446aa87dd1dc6e2a004673c5d7b1e",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "0d30dea",
+    "date": "2026-11-22",
+    "author": "github-actions[bot]",
+    "subject": "docs(migrations-log): recibo E15 — aplicação de 20261121203000 (#3973)",
+    "files": [
+     "supabase/MIGRATIONS_SYNC_LOG.md"
+    ]
+   },
    {
     "sha": "b1fe749",
     "date": "2026-11-22",
@@ -561431,21 +561440,12 @@
      "package-lock.json",
      "package.json"
     ]
-   },
-   {
-    "sha": "0ec2fc5",
-    "date": "2026-11-20",
-    "author": "adm01-debug",
-    "subject": "fix: contrato de orphan-mounts alinha com montagem lazy do RupturePanelEma (#3941)",
-    "files": [
-     "src/tests/orphan-mounts.test.ts"
-    ]
    }
   ],
   "hot_files": [
    [
     "supabase/MIGRATIONS_SYNC_LOG.md",
-    8
+    9
    ],
    [
     ".file-size-baseline.json",
