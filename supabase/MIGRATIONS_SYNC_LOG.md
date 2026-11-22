@@ -1652,7 +1652,7 @@ Após VACUUM ANALYZE executado pelos jobs temporários `vacuum-snapshots-now` e
 | `20261121223000` | `a7ec4ec364ac19fa73aa99d3a2d53ea77be6643e9ea1068b34a3707049b90920` | — | GitHub Actions (db-apply-migration.yml, disparado por adm01-debug, aprovado por adm01-debug) | E15 | 2026-11-22 12:23:00 UTC | job post-check da run 45021861895 confirmou a version no ledger | aplicada |
 | `20261122100000` | `14a5ad6082bae20ffe71e135b1e22719b07063bdd0f39dc65d1f29e5950360d3` | — | GitHub Actions (db-apply-migration.yml, disparado por adm01-debug, aprovado por adm01-debug) | E15 | 2026-11-22 12:51:55 UTC | job post-check da run 45024406019 confirmou a version no ledger | aplicada |
 | `20261120041000` | `ded27deffa89754ea8fd9ab3825008c0e76aad872e0fda66df45b9f71569ab3c` | — | GitHub Actions (db-apply-migration.yml, disparado por adm01-debug, aprovado por adm01-debug) | E15 | 2026-11-22 13:28:38 UTC | job post-check da run 45027559300 confirmou a version no ledger | aplicada |
-| `20261122180000` | `accfa9583e9960e55860f42539cf5f19115f5b166989ff1360cdcf3e1fbccac3` | — | — | — | — | aguardando aplicação via `db-apply-migration.yml` (`version=20261122180000`) — DDL em produção, regra 8 | aguardando aplicação |
+| `20261122180000` | `0557bb14d32b939ea057ee211025f64d44987f8c14fb6339fa03c771b59bb3e9` | — | — | — | — | aguardando aplicação via `db-apply-migration.yml` (`version=20261122180000`) — DDL em produção, regra 8 | aguardando aplicação |
 
 ## 2026-11-08 — Reconciliação de `e2e_cleanup_audit`
 
@@ -2975,4 +2975,4 @@ Forward-only e idempotente (`SET (security_invoker = false)` repetido é no-op).
 
 | versão | arquivo | sha256 | status |
 |---|---|---|---|
-| `20261122180000` | `restore_definer_views_p06_e_compras` | `accfa9583e9960e55860f42539cf5f19115f5b166989ff1360cdcf3e1fbccac3` | aguardando aplicação via `db-apply-migration.yml` (`version=20261122180000`) — DDL em produção, regra 8 |
+| `20261122180000` | `restore_definer_views_p06_e_compras` | `0557bb14d32b939ea057ee211025f64d44987f8c14fb6339fa03c771b59bb3e9` | aguardando aplicação via `db-apply-migration.yml` (`version=20261122180000`) — DDL em produção, regra 8 |

@@ -1,4 +1,5 @@
 -- Migration: 20261122180000_restore_definer_views_p06_e_compras.sql
+-- Rollback: supabase/rollbacks/20261122180000_rollback.sql
 --
 -- CAUSA-RAIZ (medida em produção, projeto doufsxqlfjyuvxuezpln, 2026-11-22):
 --   A 20261118172500_security_invoker_views_p06_parcial.sql ligou security_invoker=true em 5
@@ -44,7 +45,6 @@
 --
 -- ANTI-REGRESSAO: NAO religar security_invoker=true nestas views sem antes conceder os GRANTs e
 --   medir linha a linha com `SET ROLE anon` — foi exatamente essa omissão que gerou os 401.
--- Rollback: supabase/rollbacks/20261122180000_rollback.sql
 
 -- ---------------------------------------------------------------------------------------------
 -- 1) Views públicas quebradas pela 20261118172500 (volta ao estado de antes dela)
