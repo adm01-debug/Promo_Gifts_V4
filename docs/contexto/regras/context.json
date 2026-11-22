@@ -1,9 +1,9 @@
 {
  "meta": {
-  "sha": "0a339aa9946c43cb22319da1437f038983d071aa",
+  "sha": "c5cbd373208d03cdfb9522edc094f001ec7c91bf",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-22 13:28 UTC",
+  "generated_at": "2026-11-22 13:32 UTC",
   "files_total": 11136,
   "code_files": 9143,
   "code_lines": 1298522
@@ -562559,10 +562559,19 @@
   }
  },
  "git": {
-  "sha": "0a339aa9946c43cb22319da1437f038983d071aa",
+  "sha": "c5cbd373208d03cdfb9522edc094f001ec7c91bf",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "c5cbd37",
+    "date": "2026-11-22",
+    "author": "github-actions[bot]",
+    "subject": "docs(migrations-log): recibo E15 — aplicação de 20261120041000 (#3984)",
+    "files": [
+     "supabase/MIGRATIONS_SYNC_LOG.md"
+    ]
+   },
    {
     "sha": "0a339aa",
     "date": "2026-11-22",
@@ -562909,21 +562918,12 @@
      "package-lock.json",
      "package.json"
     ]
-   },
-   {
-    "sha": "912bfae",
-    "date": "2026-11-21",
-    "author": "adm01-debug",
-    "subject": "test(kit): classificacao de status KMM-075/KMX-037 (D7) (#3950)",
-    "files": [
-     "src/lib/kit-builder/__tests__/status-classification.test.ts"
-    ]
    }
   ],
   "hot_files": [
    [
     "supabase/MIGRATIONS_SYNC_LOG.md",
-    11
+    12
    ],
    [
     ".release-please-manifest.json",

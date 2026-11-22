@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "docs(migrations-log): recibo E15 — aplicação de 20261120041000 (#3984)",
    "chore(schema-snapshot): snapshot semanal 2026-W47 (run 45026234350) (#3982)",
    "fix: alinhar recibo da 20261121203000 com a linha E15 (aplicada) (#3980)",
    "chore(main): release gifts-store 1.19.0 (#3978)",
-   "docs(migrations-log): recibo E15 — aplicação de 20261122100000 (#3979)",
-   "feat: views de compras canonicas (consolida #3968 e #3969) (#3976)"
+   "docs(migrations-log): recibo E15 — aplicação de 20261122100000 (#3979)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",

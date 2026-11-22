@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "0a339aa9946c43cb22319da1437f038983d071aa",
+  "commit": "c5cbd373208d03cdfb9522edc094f001ec7c91bf",
   "branch": "main",
-  "data_commit": "2026-11-22T10:22:13-03:00",
+  "data_commit": "2026-11-22T10:31:29-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "c5cbd37",
+    "data": "2026-11-22",
+    "assunto": "docs(migrations-log): recibo E15 — aplicação de 20261120041000 (#3984)"
+   },
    {
     "sha": "0a339aa",
     "data": "2026-11-22",
@@ -126,18 +131,13 @@
     "sha": "60f9275",
     "data": "2026-11-21",
     "assunto": "chore(migrations): rollback da migration 20261121000000 (E058) (#3957)"
-   },
-   {
-    "sha": "184ac28",
-    "data": "2026-11-21",
-    "assunto": "feat(frete): persiste plano de frete no orcamento (G-UI, etapas 62-63) (#3956)"
    }
   ],
   "arquivos_mudados_7d": 1270,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
-    "mudancas": 391
+    "mudancas": 390
    },
    {
     "pasta": "recovery/src-legacy/src",
@@ -199,7 +199,7 @@
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "supabase/MIGRATIONS_SYNC_LOG.md",
-    "mudancas": 62
+    "mudancas": 63
    },
    {
     "arquivo": "package.json",
@@ -301,11 +301,11 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 263
+    "commits": 262
    },
    {
     "autor": "github-actions[bot]",
-    "commits": 36
+    "commits": 37
    },
    {
     "autor": "Claude",
