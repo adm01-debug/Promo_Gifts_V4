@@ -1,9 +1,9 @@
 {
  "meta": {
-  "sha": "8ab7ae0f7f98cf0dc59f3f1e15075acf2c99ce1b",
+  "sha": "e8006d75cdf99caee96eb003680436e888912007",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-22 12:40 UTC",
+  "generated_at": "2026-11-22 12:44 UTC",
   "files_total": 11134,
   "code_files": 9141,
   "code_lines": 1298368
@@ -561064,10 +561064,22 @@
   }
  },
  "git": {
-  "sha": "8ab7ae0f7f98cf0dc59f3f1e15075acf2c99ce1b",
+  "sha": "e8006d75cdf99caee96eb003680436e888912007",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "e8006d7",
+    "date": "2026-11-22",
+    "author": "github-actions[bot]",
+    "subject": "chore(main): release gifts-store 1.18.0 (#3966)",
+    "files": [
+     ".release-please-manifest.json",
+     "CHANGELOG.md",
+     "package-lock.json",
+     "package.json"
+    ]
+   },
    {
     "sha": "8ab7ae0",
     "date": "2026-11-22",
@@ -561426,43 +561438,32 @@
      "tests/sql/quote-comments/fixture.sql",
      "tests/sql/quote-comments/run-tests.py"
     ]
-   },
-   {
-    "sha": "36e7b1c",
-    "date": "2026-11-20",
-    "author": "adm01-debug",
-    "subject": "feat(db): restaura comentários em orçamento (quote_comments) após decisão do dono (#3942)",
-    "files": [
-     "supabase/MIGRATIONS_SYNC_LOG.md",
-     "supabase/migrations/20261120180000_restore_quote_comments_scoped_threads.sql",
-     "supabase/rollbacks/20261120180000_rollback.sql"
-    ]
    }
   ],
   "hot_files": [
    [
     "supabase/MIGRATIONS_SYNC_LOG.md",
-    10
+    9
+   ],
+   [
+    ".release-please-manifest.json",
+    4
+   ],
+   [
+    "CHANGELOG.md",
+    4
+   ],
+   [
+    "package-lock.json",
+    4
+   ],
+   [
+    "package.json",
+    4
    ],
    [
     ".file-size-baseline.json",
     4
-   ],
-   [
-    ".release-please-manifest.json",
-    3
-   ],
-   [
-    "CHANGELOG.md",
-    3
-   ],
-   [
-    "package-lock.json",
-    3
-   ],
-   [
-    "package.json",
-    3
    ],
    [
     "supabase/migrations/20261121223000_add_supplier_external_id.sql",

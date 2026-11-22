@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "8ab7ae0f7f98cf0dc59f3f1e15075acf2c99ce1b",
+  "commit": "e8006d75cdf99caee96eb003680436e888912007",
   "branch": "main",
-  "data_commit": "2026-11-22T09:38:29-03:00",
+  "data_commit": "2026-11-22T09:39:00-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "e8006d7",
+    "data": "2026-11-22",
+    "assunto": "chore(main): release gifts-store 1.18.0 (#3966)"
+   },
    {
     "sha": "8ab7ae0",
     "data": "2026-11-22",
@@ -126,11 +131,6 @@
     "sha": "912bfae",
     "data": "2026-11-21",
     "assunto": "test(kit): classificacao de status KMM-075/KMX-037 (D7) (#3950)"
-   },
-   {
-    "sha": "f483626",
-    "data": "2026-11-21",
-    "assunto": "fix(ci): endurece gate de chamadas diretas (#3943)"
    }
   ],
   "arquivos_mudados_7d": 1322,
@@ -203,11 +203,11 @@
    },
    {
     "arquivo": "package.json",
-    "mudancas": 29
+    "mudancas": 30
    },
    {
     "arquivo": "package-lock.json",
-    "mudancas": 19
+    "mudancas": 20
    },
    {
     "arquivo": "docs/coordenacao/conflitos-semanticos.md",
@@ -215,7 +215,7 @@
    },
    {
     "arquivo": "CHANGELOG.md",
-    "mudancas": 13
+    "mudancas": 14
    },
    {
     "arquivo": ".github/workflows/deploy-gates.yml",
@@ -301,15 +301,15 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 267
+    "commits": 266
    },
    {
     "autor": "github-actions[bot]",
-    "commits": 32
+    "commits": 33
    },
    {
     "autor": "Claude",
-    "commits": 13
+    "commits": 12
    },
    {
     "autor": "dependabot[bot]",
