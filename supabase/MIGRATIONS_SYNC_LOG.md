@@ -1652,7 +1652,6 @@ Após VACUUM ANALYZE executado pelos jobs temporários `vacuum-snapshots-now` e
 | `20261121223000` | `a7ec4ec364ac19fa73aa99d3a2d53ea77be6643e9ea1068b34a3707049b90920` | — | GitHub Actions (db-apply-migration.yml, disparado por adm01-debug, aprovado por adm01-debug) | E15 | 2026-11-22 12:23:00 UTC | job post-check da run 45021861895 confirmou a version no ledger | aplicada |
 | `20261122100000` | `14a5ad6082bae20ffe71e135b1e22719b07063bdd0f39dc65d1f29e5950360d3` | — | GitHub Actions (db-apply-migration.yml, disparado por adm01-debug, aprovado por adm01-debug) | E15 | 2026-11-22 12:51:55 UTC | job post-check da run 45024406019 confirmou a version no ledger | aplicada |
 | `20261120041000` | `ded27deffa89754ea8fd9ab3825008c0e76aad872e0fda66df45b9f71569ab3c` | — | GitHub Actions (db-apply-migration.yml, disparado por adm01-debug, aprovado por adm01-debug) | E15 | 2026-11-22 13:28:38 UTC | job post-check da run 45027559300 confirmou a version no ledger | aplicada |
-| `20261122180000` | `0557bb14d32b939ea057ee211025f64d44987f8c14fb6339fa03c771b59bb3e9` | — | — | — | — | aguardando aplicação via `db-apply-migration.yml` (`version=20261122180000`) — DDL em produção, regra 8 | aguardando aplicação |
 | `20261122180000` | `0557bb14d32b939ea057ee211025f64d44987f8c14fb6339fa03c771b59bb3e9` | — | GitHub Actions (db-apply-migration.yml, disparado por adm01-debug, aprovado por adm01-debug) | E15 | 2026-11-22 14:27:28 UTC | job post-check da run 45032798408 confirmou a version no ledger | aplicada |
 
 ## 2026-11-08 — Reconciliação de `e2e_cleanup_audit`
@@ -2855,7 +2854,7 @@ delegam nas base → cobertas. Aplicar em produção após o merge da PR G-UI.
 
 | versão | arquivo | sha256 | status |
 |---|---|---|---|
-| `20261121000000` | `quote_rpcs_freight_plan` | `e77669031f158b0bf4287acddc4bd6d7fd5eac5fbe80092f7ad392c7642de8fc` | pendente — aplicar via `db-apply-migration.yml` (`version=20261121000000`) após merge da PR G-UI |
+| `20261121000000` | `quote_rpcs_freight_plan` | `e77669031f158b0bf4287acddc4bd6d7fd5eac5fbe80092f7ad392c7642de8fc` | **aplicada em produção** via `db-apply-migration.yml` (run `44921479101`), post-check confirmou a version no ledger |
 
 ### 2026-11-21 — correção do contrato transacional das RPCs de orçamento (Gate 2.5)
 
@@ -2894,7 +2893,7 @@ Cria `supplier_external_id text` em `products` e `product_variants` e faz backfi
 
 | versão | arquivo | sha256 | status |
 |---|---|---|---|
-| `20261121223000` | `add_supplier_external_id` | `a7ec4ec364ac19fa73aa99d3a2d53ea77be6643e9ea1068b34a3707049b90920` | aguardando aplicação via `db-apply-migration.yml` (`version=20261121223000`) — DDL em produção, regra 8 |
+| `20261121223000` | `add_supplier_external_id` | `a7ec4ec364ac19fa73aa99d3a2d53ea77be6643e9ea1068b34a3707049b90920` | **aplicada em produção** via `db-apply-migration.yml` (run `45021861895`), post-check confirmou a version no ledger |
 ### 2026-11-22 — Views de compras canônicas (consolidação de #3968 + #3969)
 
 As views `v_compras_catalogo` e `v_compras_precos_faixa` estavam na `main` desde
@@ -2977,3 +2976,4 @@ Forward-only e idempotente (`SET (security_invoker = false)` repetido é no-op).
 | versão | arquivo | sha256 | status |
 |---|---|---|---|
 | `20261122180000` | `restore_definer_views_p06_e_compras` | `0557bb14d32b939ea057ee211025f64d44987f8c14fb6339fa03c771b59bb3e9` | aguardando aplicação via `db-apply-migration.yml` (`version=20261122180000`) — DDL em produção, regra 8 |
+| `20261122200000` | `fix_cadeia_views_compras_e_compositions` | `3120c7fe446a3b190d768c7de6c1c40af900f9678cef8d5b97e54f62e9b725b2` | aguardando aplicação via `db-apply-migration.yml` (`version=20261122200000`) — DDL em produção, regra 8 |
