@@ -1157,6 +1157,204 @@ export function dropDumpLossyFunctions(diffSql, shadowSql) {
   return { sql: out, dropped };
 }
 
+// Esquemas de aplica??o monitorados (SSOT: supabase/baseline/schemas.txt). S? a
+// qualifica??o destes ? removida na normaliza??o de objetos, para n?o mascarar
+// diferen?a real de schema entre o baseline e o remoto.
+const MONITORED_SCHEMAS = new Set([
+  'public', 'analytics', 'api', 'cf_recon', 'classification_audit',
+  'internal', 'prod_audit', 'supplier_stricker',
+]);
+
+// In?cio de um objeto de schema que o `pg_dump` serializa de um jeito e o
+// `supabase db diff` de outro (ru?do de serializa??o): views, matviews e
+// policies. N?o inclui tabelas (o diff as trata por CREATE TABLE, que o dump
+// emite com mesma estrutura) nem fun??es (j? cobertas por dropDumpLossyFunctions).
+const SCHEMA_OBJECT_START = /^[ \t]*CREATE[ \t]+(?:OR[ \t]+REPLACE[ \t]+)?(VIEW|MATERIALIZED[ \t]+VIEW|POLICY)\b/gim;
+
+// Extrai os statements de VIEW/MATVIEW/POLICY de um SQL (baseline ou diff),
+// respeitando literais/identificadores entre aspas via codeMask + statementEnd.
+function extractSchemaObjectStatements(sql) {
+  const found = [];
+  const mask = codeMask(sql);
+  SCHEMA_OBJECT_START.lastIndex = 0;
+  let start;
+  while ((start = SCHEMA_OBJECT_START.exec(sql)) !== null) {
+    const keyword = start.index + (start[0].length - start[0].trimStart().length);
+    if (!mask[keyword]) continue;
+    const stmtStart = start.index;
+    const end = stmtStart + statementEnd(sql.slice(stmtStart));
+    found.push({ start: stmtStart, end, text: sql.slice(stmtStart, end) });
+    SCHEMA_OBJECT_START.lastIndex = end;
+  }
+  return found;
+}
+
+// Remove a qualifica??o de schema (`schema.obj` -> `obj`) apenas para os schemas
+// monitorados. O `pg_dump` qualifica (`"public"."foo"`) e o `db diff` nem sempre
+// (`FROM foo`); ap?s normalizeHeader ambos viram `schema.obj`/`obj`, e esta
+// passada normaliza a diferen?a de serializa??o.
+function stripMonitoredSchemaQual(text) {
+  const re = /(^|[ (,\n])([A-Za-z_][A-Za-z0-9_]*|"[A-Za-z_][A-Za-z0-9_]*")\s*\.\s*([A-Za-z_][A-Za-z0-9_]*|"[A-Za-z_][A-Za-z0-9_]*")/g;
+  return text.replace(re, (m, prefix, schema, obj) => {
+    const plain = schema.replace(/"/g, '').toLowerCase();
+    if (!MONITORED_SCHEMAS.has(plain)) return m;
+    return `${prefix}${obj}`;
+  });
+}
+
+// Identifica "o mesmo objeto" entre baseline e diff: tipo + nome qualificado.
+// Para policy o nome da tabela entra na assinatura (v?rias policies com o mesmo
+// nome em tabelas diferentes). Nome/tabela s?o lower-cased e sem aspas.
+function schemaObjectSignature(text) {
+  const full = text.trim();
+  const first = full.split('\n')[0];
+  const m = /^create (?:or replace )?(materialized view|view|policy)\s+/i.exec(first);
+  if (!m) return null;
+  const kind = m[1].toLowerCase();
+  if (kind === 'policy') {
+    const after = first.slice(m[0].length);
+    const nameM = /^\s*("?[^"\s]+"?)/i.exec(after);
+    const name = (nameM ? nameM[1] : '').replace(/"/g, '').toLowerCase();
+    const onM = /\bon\s+("[^"]+"|[\w]+)(?:\s*\.\s*("[^"]+"|[\w]+))?\s+/i.exec(full);
+    const tbl = onM ? (onM[2] || onM[1]).replace(/"/g, '').toLowerCase() : '';
+    return `policy|${name}|${tbl}`;
+  }
+  const rest = first.slice(m[0].length);
+  let name = '';
+  let i = 0;
+  while (i < rest.length && !/[\s(=\n]/.test(rest[i])) { name += rest[i]; i += 1; }
+  return `${kind}|${name.toLowerCase().replace(/"/g, '')}`;
+}
+
+// Assinatura de um `DROP <tipo> ... <nome>` (prel?dio que o `db diff` emite antes
+// de recriar): tipo + nome qualificado, no mesmo formato de schemaObjectSignature.
+function schemaObjectDropSignature(text) {
+  // `DROP POLICY` n?o aceita `IF EXISTS` (o `db diff` o omite); para views e
+  // matviews o `db diff` emite `IF EXISTS`. O texto pode vir sem o `;` final
+  // (o extrator corta nele).
+  const m = /^drop[ \t]+(materialized[ \t]+view|view|policy)[ \t]+(?:if[ \t]+exists[ \t]+)?(.+?)[ \t]*;?\s*$/i.exec(text.trim());
+  if (!m) return null;
+  const kind = m[1].toLowerCase();
+  const target = m[2].trim().replace(/"/g, '').toLowerCase();
+  if (kind === 'policy') {
+    const onM = /\bon\s+([\w.]+)\s*$/i.exec(target);
+    if (!onM) return null;
+    const name = target.replace(/\bon\s+[\w.]+\s*$/i, '').trim();
+    const tbl = onM[1].split('.').pop();
+    return `policy|${name}|${tbl}`;
+  }
+  return `${kind}|${target.replace(/\bon\s+.*$/i, '').trim()}`;
+}
+
+// Normaliza um objeto de schema para compara??o, tratando apenas as diferen?as
+// de serializa??o (n?o de sem?ntica):
+//  - policy: `as permissive`/`for all` s?o defaults que o dump omite;
+//  - matview: `with no data` ? emitido pelo dump, mas n?o pelo `db diff`;
+//  - aspas redundantes e qualifica??o de schema dos esquemas monitorados;
+//  - espa?amento e caixa de palavra-chave/identificador sem aspas.
+// `WITH ("security_invoker"='true')` fica intacto: n?o ? default e, se o remoto
+// perder essa cl?usula, o texto normalizado difere e o objeto permanece no
+// res?duo (drift real, n?o ru?do).
+function normalizeSchemaObject(text) {
+  let t = text.replace(/\bas[ \t]+permissive\b/g, ' ').replace(/\bfor[ \t]+all\b/g, ' ');
+  t = t.replace(/\s*with[ \t]+no[ \t]+data\s*$/i, ' ');
+  t = normalizeHeader(t);
+  t = stripMonitoredSchemaQual(t);
+  return collapseSqlWhitespace(t);
+}
+
+// E040: o `pg_dump` do baseline e o `supabase db diff` serializam views, matviews
+// e policies de formas diferentes (aspas, qualifica??o de schema, defaults que um
+// omite). Um objeto que existe nos dois lados com a MESMA defini??o normalizada ? 
+// ru?do do dump, n?o drift. Esta fun??o remove esses objetos do res?duo, mantendo
+// no diff aqueles cuja defini??o normalizada difere (ex.: view que perdeu
+// `security_invoker=true` em produ??o).
+export function dropDumpLossyViewsPolicies(diffSql, shadowSql) {
+  const current = new Map();
+  for (const statement of extractSchemaObjectStatements(shadowSql)) {
+    const sig = schemaObjectSignature(statement.text);
+    if (!sig) continue;
+    current.set(sig, normalizeSchemaObject(statement.text));
+  }
+  // Mapeia cada DROP do diff (prel?dio de recria??o) ? assinatura do objeto.
+  const DROP_START = /^[ \t]*DROP[ \t]+(MATERIALIZED[ \t]+VIEW|VIEW|POLICY)[ \t]+/gim;
+  const dropRanges = [];
+  const mask = codeMask(diffSql);
+  DROP_START.lastIndex = 0;
+  let m;
+  while ((m = DROP_START.exec(diffSql)) !== null) {
+    const kw = m.index + (m[0].length - m[0].trimStart().length);
+    if (!mask[kw]) continue;
+    const start = m.index;
+    const end = start + statementEnd(diffSql.slice(start));
+    dropRanges.push({ start, end, text: diffSql.slice(start, end) });
+    DROP_START.lastIndex = end;
+  }
+  const dropsBySig = new Map();
+  for (const d of dropRanges) {
+    const sig = schemaObjectDropSignature(d.text);
+    if (sig) dropsBySig.set(sig, d);
+  }
+  // Cada objeto de ru?do gera um par `drop; create;` no diff. Os drops de todos
+  // os objetos costumam vir agrupados antes dos creates, ent?o processar com um
+  // `cursor` seq?encial deixaria os drops ?rf?os. Identificamos o bloco
+  // cont?guo [menor drop.start, maior statement.end] entre os objetos de ru?do e
+  // o removemos inteiro, desde que nenhum objeto N?O-dropado (drift real) esteja
+  // dentro desse span. Se houver sobreposi??o com um objeto leg?timo, removemos
+  // apenas os intervalos de cada par (mais conservador).
+  const noise = [];
+  const dropped = [];
+  for (const statement of extractSchemaObjectStatements(diffSql)) {
+    const sig = schemaObjectSignature(statement.text);
+    if (!sig || current.get(sig) !== normalizeSchemaObject(statement.text)) continue;
+    const drop = dropsBySig.get(sig);
+    noise.push({
+      start: drop ? Math.min(drop.start, statement.start) : statement.start,
+      end: drop ? Math.max(drop.end, statement.end) : statement.end,
+    });
+    dropped.push(sig);
+  }
+  if (!noise.length) return { sql: diffSql, dropped };
+  // Objetos leg?timos (drift real) que ficam entre os objetos de ru?do.
+  const legit = [];
+  for (const statement of extractSchemaObjectStatements(diffSql)) {
+    const sig = schemaObjectSignature(statement.text);
+    if (!sig || current.get(sig) === normalizeSchemaObject(statement.text)) continue;
+    legit.push({ start: statement.start, end: statement.end });
+  }
+  // Funde os spans dos pares drop+create de ru?do que se tocam/sobrep?em, j?
+  // que os drops costumam vir agrupados antes dos creates. O span fundido pode
+  // englobar objetos leg?timos; nesse caso removemos o span e re-inserimos os
+  // leg?timos que estavam dentro dele, preservando a ordem original.
+  noise.sort((a, b) => a.start - b.start);
+  const merged = [];
+  for (const n of noise) {
+    const last = merged[merged.length - 1];
+    if (last && n.start <= last.end) last.end = Math.max(last.end, n.end);
+    else merged.push({ ...n });
+  }
+  // Constru??o do res?duo: percorre o diff e, dentro de cada span fundido,
+  // preserva apenas os objetos leg?timos que caem nele.
+  let out = '';
+  let cursor = 0;
+  for (const s of merged) {
+    // Copia tudo antes do span, incluindo qualquer leg?timo que comece antes.
+    out += diffSql.slice(cursor, s.start);
+    // Dentro do span, preserva os objetos leg?timos na ordem original.
+    let innerCursor = s.start;
+    for (const l of legit) {
+      if (l.start >= s.start && l.end <= s.end) {
+        out += diffSql.slice(innerCursor, l.start);
+        out += diffSql.slice(l.start, l.end);
+        innerCursor = l.end;
+      }
+    }
+    cursor = s.end;
+  }
+  out += diffSql.slice(cursor);
+  return { sql: out, dropped };
+}
+
 // E038: agrupa linhas em statements SQL antes de filtrar. Sem agrupamento,
 // um statement multi-linha como `CREATE INDEX … ON … (col);` teria só a
 // primeira linha removida pela allowlist, deixando as continuações como ruído.
@@ -1216,12 +1414,17 @@ export function splitDiffStatements(sql) {
 // scenarios — not schema objects, strip before allowlist validation.
 const SESSION_NOISE_EXACT = new Set([
   'set check_function_bodies = off;',
+  ';',
 ]);
 
 export function filterDiff(diffSql, allowlist) {
   return splitDiffStatements(diffSql).filter((stmt) => {
     const first = stmt.split('\n').find((l) => l.trim() && !l.trim().startsWith('--')) ?? '';
-    if (SESSION_NOISE_EXACT.has(first.trim().toLowerCase())) return false;
+    const trimmed = first.trim().toLowerCase();
+    if (SESSION_NOISE_EXACT.has(trimmed)) return false;
+    // Statements que sobraram como ru?do da remo??o de objetos (s? `;` ou s?mbolos
+    // soltos) n?o representam mudan?a de schema.
+    if (/^[;\s]*$/.test(trimmed)) return false;
     return !allowlist.some((re) => re.test(first.trim()));
   });
 }
@@ -1260,6 +1463,9 @@ export function runCli(argv = process.argv.slice(2), rootDir = process.cwd()) {
         .join('\n');
       const lossy = dropDumpLossyFunctions(diffSql, shadowSql);
       diffSql = lossy.sql;
+      const lossyObjs = dropDumpLossyViewsPolicies(diffSql, shadowSql);
+      diffSql = lossyObjs.sql;
+      console.error(`drift-baseline: ${lossyObjs.dropped.length} view(s)/matview(s)/policy(s) iguais ao baseline exceto serializacao (ruido do dump) fora do residuo`);
       console.error(`drift-baseline: ${lossy.dropped.length} função(ões) iguais ao replay exceto comentário de coluna 0 (ruído do dump) fora do resíduo`);
     }
     const residue = filterDiff(diffSql, allowlist);
