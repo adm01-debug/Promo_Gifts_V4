@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "146fd646bfb794f5225c49822c93c5aba204f0a8",
+  "sha": "cd04fc225bc5605697c14f2c11c045402c04dcd1",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-21 23:37 UTC",
-  "files_total": 11130,
-  "code_files": 9137,
-  "code_lines": 1297897
+  "generated_at": "2026-11-22 11:43 UTC",
+  "files_total": 11132,
+  "code_files": 9139,
+  "code_lines": 1298319
  },
  "version": "1.3.2",
- "facts_hash": "eb05cba8e5c5a178",
+ "facts_hash": "6af890fb5cca6358",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -1128,7 +1128,7 @@
   ],
   "package_manager": "npm",
   "languages": {
-   ".sql": 3484,
+   ".sql": 3486,
    ".ts": 3165,
    ".tsx": 2017,
    ".mjs": 455,
@@ -57960,7 +57960,7 @@
     "args": "_request_id uuid, _quote jsonb, _items jsonb",
     "returns": "public.quotes",
     "lang": "plpgsql",
-    "src": "supabase/migrations/20260912150000_kit_maker_quote_lineage_forward_only.sql",
+    "src": "supabase/rollbacks/20261121203000_rollback.sql",
     "security_definer": false,
     "search_path": true,
     "body": "DECLARE _actor_id uuid := auth.uid(); _payload_hash text; _existing public.kit_quote_requests%ROWTYPE; _quote_result public.quotes; _item jsonb; _ordinality bigint; _variant_id uuid; _product_id uuid; _artwork_urls jsonb; _updated_count integer; BEGIN IF _actor_id IS NULL THEN RAISE EXCEPTION 'Authentication is required to create a Kit Maker quote' USING ERRCODE = '28000'; END IF; IF _request_id IS NULL THEN RAISE EXCEPTION 'A request id is required for idempotent quote creation' USING ERRCODE = '22023'; END IF; IF jsonb_typeof(_quote) IS DISTINCT FROM 'object' OR jsonb_typeof(_items) IS DISTINCT FROM 'array' THEN RAISE EXCEPTION 'Invalid quote payload' USING ERRCODE = '22023'; END IF; IF _q …",
@@ -96641,6 +96641,7 @@
    "supabase/migrations/20261121120000_fix_quote_rpcs_contract_freight.sql",
    "supabase/migrations/20261121163000_v_compras_catalogo.sql",
    "supabase/migrations/20261121183000_v_compras_precos_faixa.sql",
+   "supabase/migrations/20261121203000_kit_maker_server_revalidation.sql",
    "supabase/rollbacks/20260511235950_rollback.sql",
    "supabase/rollbacks/20260511235959_rollback.sql",
    "supabase/rollbacks/20260611014515_fn_dryrun_standardize_supplier_real_rollback.sql",
@@ -96767,6 +96768,7 @@
    "supabase/rollbacks/20261120180000_rollback.sql",
    "supabase/rollbacks/20261121000000_rollback.sql",
    "supabase/rollbacks/20261121120000_rollback.sql",
+   "supabase/rollbacks/20261121203000_rollback.sql",
    "supabase/rollbacks/rollback_20261025002500_analyze_tables_p03.sql",
    "supabase/sql-legacy/001_notification_system.sql",
    "supabase/sql-legacy/002_notification_preferences.sql",
@@ -133498,6 +133500,22 @@
    {
     "kind": "revoke",
     "privs": "all",
+    "object": "create_kit_quote_transactional",
+    "objkind": "function",
+    "roles": "PUBLIC",
+    "src": "supabase/migrations/20261121203000_kit_maker_server_revalidation.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "create_kit_quote_transactional",
+    "objkind": "function",
+    "roles": "authenticated",
+    "src": "supabase/migrations/20261121203000_kit_maker_server_revalidation.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "all",
     "object": "fn_dryrun_standardize_supplier",
     "objkind": "function",
     "roles": "PUBLIC",
@@ -134774,6 +134792,22 @@
     "objkind": "function",
     "roles": "authenticated",
     "src": "supabase/rollbacks/20261119212000_rollback.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "all",
+    "object": "create_kit_quote_transactional",
+    "objkind": "function",
+    "roles": "PUBLIC",
+    "src": "supabase/rollbacks/20261121203000_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "create_kit_quote_transactional",
+    "objkind": "function",
+    "roles": "authenticated",
+    "src": "supabase/rollbacks/20261121203000_rollback.sql"
    },
    {
     "kind": "grant",
@@ -136902,51 +136936,6 @@
     "src": "supabase/migrations/20260911130357_kit_maker_optimistic_persistence.sql"
    },
    {
-    "function": "create_kit_quote_transactional",
-    "msg": "Authentication is required to create a Kit Maker quote",
-    "src": "supabase/migrations/20260912150000_kit_maker_quote_lineage_forward_only.sql"
-   },
-   {
-    "function": "create_kit_quote_transactional",
-    "msg": "A request id is required for idempotent quote creation",
-    "src": "supabase/migrations/20260912150000_kit_maker_quote_lineage_forward_only.sql"
-   },
-   {
-    "function": "create_kit_quote_transactional",
-    "msg": "Invalid quote payload",
-    "src": "supabase/migrations/20260912150000_kit_maker_quote_lineage_forward_only.sql"
-   },
-   {
-    "function": "create_kit_quote_transactional",
-    "msg": "Kit Maker quote tags must be a JSON object",
-    "src": "supabase/migrations/20260912150000_kit_maker_quote_lineage_forward_only.sql"
-   },
-   {
-    "function": "create_kit_quote_transactional",
-    "msg": "The request id was already used with a different payload",
-    "src": "supabase/migrations/20260912150000_kit_maker_quote_lineage_forward_only.sql"
-   },
-   {
-    "function": "create_kit_quote_transactional",
-    "msg": "Idempotency ledger references a missing quote",
-    "src": "supabase/migrations/20260912150000_kit_maker_quote_lineage_forward_only.sql"
-   },
-   {
-    "function": "create_kit_quote_transactional",
-    "msg": "artwork_urls must be a JSON array",
-    "src": "supabase/migrations/20260912150000_kit_maker_quote_lineage_forward_only.sql"
-   },
-   {
-    "function": "create_kit_quote_transactional",
-    "msg": "Selected variant does not belong to the quoted product",
-    "src": "supabase/migrations/20260912150000_kit_maker_quote_lineage_forward_only.sql"
-   },
-   {
-    "function": "create_kit_quote_transactional",
-    "msg": "Kit Maker quote lineage could not match exactly one quote item (sort order %, product %)",
-    "src": "supabase/migrations/20260912150000_kit_maker_quote_lineage_forward_only.sql"
-   },
-   {
     "function": "set_custom_kit_pinned",
     "msg": "Authentication is required to change a pinned kit",
     "src": "supabase/migrations/20260912151000_kit_maker_atomic_pin_forward_only.sql"
@@ -137160,6 +137149,51 @@
     "function": "update_quote_transactional",
     "msg": "Orçamento não encontrado: %",
     "src": "supabase/rollbacks/20261121120000_rollback.sql"
+   },
+   {
+    "function": "create_kit_quote_transactional",
+    "msg": "Authentication is required to create a Kit Maker quote",
+    "src": "supabase/rollbacks/20261121203000_rollback.sql"
+   },
+   {
+    "function": "create_kit_quote_transactional",
+    "msg": "A request id is required for idempotent quote creation",
+    "src": "supabase/rollbacks/20261121203000_rollback.sql"
+   },
+   {
+    "function": "create_kit_quote_transactional",
+    "msg": "Invalid quote payload",
+    "src": "supabase/rollbacks/20261121203000_rollback.sql"
+   },
+   {
+    "function": "create_kit_quote_transactional",
+    "msg": "Kit Maker quote tags must be a JSON object",
+    "src": "supabase/rollbacks/20261121203000_rollback.sql"
+   },
+   {
+    "function": "create_kit_quote_transactional",
+    "msg": "The request id was already used with a different payload",
+    "src": "supabase/rollbacks/20261121203000_rollback.sql"
+   },
+   {
+    "function": "create_kit_quote_transactional",
+    "msg": "Idempotency ledger references a missing quote",
+    "src": "supabase/rollbacks/20261121203000_rollback.sql"
+   },
+   {
+    "function": "create_kit_quote_transactional",
+    "msg": "artwork_urls must be a JSON array",
+    "src": "supabase/rollbacks/20261121203000_rollback.sql"
+   },
+   {
+    "function": "create_kit_quote_transactional",
+    "msg": "Selected variant does not belong to the quoted product",
+    "src": "supabase/rollbacks/20261121203000_rollback.sql"
+   },
+   {
+    "function": "create_kit_quote_transactional",
+    "msg": "Kit Maker quote lineage could not match exactly one quote item (sort order %, product %)",
+    "src": "supabase/rollbacks/20261121203000_rollback.sql"
    },
    {
     "function": "audit_ownership_orphans",
@@ -152491,8 +152525,8 @@
   },
   {
    "module": "supabase/migrations",
-   "files": 3121,
-   "lines": 226523,
+   "files": 3122,
+   "lines": 226802,
    "tables": [
     "...",
     "admin_audit_log",
@@ -152590,8 +152624,8 @@
   },
   {
    "module": "supabase/rollbacks",
-   "files": 127,
-   "lines": 4707,
+   "files": 128,
+   "lines": 4850,
    "tables": [],
    "exports": [],
    "docs": [],
@@ -178697,6 +178731,10 @@
    {
     "file": "supabase/migrations/20261121120000_fix_quote_rpcs_contract_freight.sql",
     "text": "'Version must advance exactly once' (exact version guard)"
+   },
+   {
+    "file": "supabase/migrations/20261121203000_kit_maker_server_revalidation.sql",
+    "text": "1000, mesma regra do front)."
    },
    {
     "file": "tests/setup-ref-warning-capture.ts",
@@ -333152,7 +333190,7 @@
     "args": "_request_id uuid, _quote jsonb, _items jsonb",
     "returns": "public.quotes",
     "lang": "plpgsql",
-    "src": "supabase/migrations/20260912150000_kit_maker_quote_lineage_forward_only.sql",
+    "src": "supabase/rollbacks/20261121203000_rollback.sql",
     "security_definer": false,
     "search_path": true,
     "body": "DECLARE _actor_id uuid := auth.uid(); _payload_hash text; _existing public.kit_quote_requests%ROWTYPE; _quote_result public.quotes; _item jsonb; _ordinality bigint; _variant_id uuid; _product_id uuid; _artwork_urls jsonb; _updated_count integer; BEGIN IF _actor_id IS NULL THEN RAISE EXCEPTION 'Authentication is required to create a Kit Maker quote' USING ERRCODE = '28000'; END IF; IF _request_id IS NULL THEN RAISE EXCEPTION 'A request id is required for idempotent quote creation' USING ERRCODE = '22023'; END IF; IF jsonb_typeof(_quote) IS DISTINCT FROM 'object' OR jsonb_typeof(_items) IS DISTINCT FROM 'array' THEN RAISE EXCEPTION 'Invalid quote payload' USING ERRCODE = '22023'; END IF; IF _q …",
@@ -354533,51 +354571,6 @@
     "src": "supabase/migrations/20260911130357_kit_maker_optimistic_persistence.sql"
    },
    {
-    "function": "create_kit_quote_transactional",
-    "msg": "Authentication is required to create a Kit Maker quote",
-    "src": "supabase/migrations/20260912150000_kit_maker_quote_lineage_forward_only.sql"
-   },
-   {
-    "function": "create_kit_quote_transactional",
-    "msg": "A request id is required for idempotent quote creation",
-    "src": "supabase/migrations/20260912150000_kit_maker_quote_lineage_forward_only.sql"
-   },
-   {
-    "function": "create_kit_quote_transactional",
-    "msg": "Invalid quote payload",
-    "src": "supabase/migrations/20260912150000_kit_maker_quote_lineage_forward_only.sql"
-   },
-   {
-    "function": "create_kit_quote_transactional",
-    "msg": "Kit Maker quote tags must be a JSON object",
-    "src": "supabase/migrations/20260912150000_kit_maker_quote_lineage_forward_only.sql"
-   },
-   {
-    "function": "create_kit_quote_transactional",
-    "msg": "The request id was already used with a different payload",
-    "src": "supabase/migrations/20260912150000_kit_maker_quote_lineage_forward_only.sql"
-   },
-   {
-    "function": "create_kit_quote_transactional",
-    "msg": "Idempotency ledger references a missing quote",
-    "src": "supabase/migrations/20260912150000_kit_maker_quote_lineage_forward_only.sql"
-   },
-   {
-    "function": "create_kit_quote_transactional",
-    "msg": "artwork_urls must be a JSON array",
-    "src": "supabase/migrations/20260912150000_kit_maker_quote_lineage_forward_only.sql"
-   },
-   {
-    "function": "create_kit_quote_transactional",
-    "msg": "Selected variant does not belong to the quoted product",
-    "src": "supabase/migrations/20260912150000_kit_maker_quote_lineage_forward_only.sql"
-   },
-   {
-    "function": "create_kit_quote_transactional",
-    "msg": "Kit Maker quote lineage could not match exactly one quote item (sort order %, product %)",
-    "src": "supabase/migrations/20260912150000_kit_maker_quote_lineage_forward_only.sql"
-   },
-   {
     "function": "set_custom_kit_pinned",
     "msg": "Authentication is required to change a pinned kit",
     "src": "supabase/migrations/20260912151000_kit_maker_atomic_pin_forward_only.sql"
@@ -354791,6 +354784,51 @@
     "function": "update_quote_transactional",
     "msg": "Orçamento não encontrado: %",
     "src": "supabase/rollbacks/20261121120000_rollback.sql"
+   },
+   {
+    "function": "create_kit_quote_transactional",
+    "msg": "Authentication is required to create a Kit Maker quote",
+    "src": "supabase/rollbacks/20261121203000_rollback.sql"
+   },
+   {
+    "function": "create_kit_quote_transactional",
+    "msg": "A request id is required for idempotent quote creation",
+    "src": "supabase/rollbacks/20261121203000_rollback.sql"
+   },
+   {
+    "function": "create_kit_quote_transactional",
+    "msg": "Invalid quote payload",
+    "src": "supabase/rollbacks/20261121203000_rollback.sql"
+   },
+   {
+    "function": "create_kit_quote_transactional",
+    "msg": "Kit Maker quote tags must be a JSON object",
+    "src": "supabase/rollbacks/20261121203000_rollback.sql"
+   },
+   {
+    "function": "create_kit_quote_transactional",
+    "msg": "The request id was already used with a different payload",
+    "src": "supabase/rollbacks/20261121203000_rollback.sql"
+   },
+   {
+    "function": "create_kit_quote_transactional",
+    "msg": "Idempotency ledger references a missing quote",
+    "src": "supabase/rollbacks/20261121203000_rollback.sql"
+   },
+   {
+    "function": "create_kit_quote_transactional",
+    "msg": "artwork_urls must be a JSON array",
+    "src": "supabase/rollbacks/20261121203000_rollback.sql"
+   },
+   {
+    "function": "create_kit_quote_transactional",
+    "msg": "Selected variant does not belong to the quoted product",
+    "src": "supabase/rollbacks/20261121203000_rollback.sql"
+   },
+   {
+    "function": "create_kit_quote_transactional",
+    "msg": "Kit Maker quote lineage could not match exactly one quote item (sort order %, product %)",
+    "src": "supabase/rollbacks/20261121203000_rollback.sql"
    },
    {
     "function": "audit_ownership_orphans",
@@ -403351,6 +403389,22 @@
    {
     "kind": "revoke",
     "privs": "all",
+    "object": "create_kit_quote_transactional",
+    "objkind": "function",
+    "roles": "PUBLIC",
+    "src": "supabase/migrations/20261121203000_kit_maker_server_revalidation.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "create_kit_quote_transactional",
+    "objkind": "function",
+    "roles": "authenticated",
+    "src": "supabase/migrations/20261121203000_kit_maker_server_revalidation.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "all",
     "object": "fn_dryrun_standardize_supplier",
     "objkind": "function",
     "roles": "PUBLIC",
@@ -404627,6 +404681,22 @@
     "objkind": "function",
     "roles": "authenticated",
     "src": "supabase/rollbacks/20261119212000_rollback.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "all",
+    "object": "create_kit_quote_transactional",
+    "objkind": "function",
+    "roles": "PUBLIC",
+    "src": "supabase/rollbacks/20261121203000_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "create_kit_quote_transactional",
+    "objkind": "function",
+    "roles": "authenticated",
+    "src": "supabase/rollbacks/20261121203000_rollback.sql"
    },
    {
     "kind": "grant",
@@ -534868,6 +534938,13 @@
    "lines": 57,
    "uses_service_role": true
   },
+  "supabase/migrations/20261121203000_kit_maker_server_revalidation.sql": {
+   "path": "supabase/migrations/20261121203000_kit_maker_server_revalidation.sql",
+   "lines": 279,
+   "rule_comments": [
+    "1000, mesma regra do front)."
+   ]
+  },
   "supabase/rollbacks/20260511235950_rollback.sql": {
    "path": "supabase/rollbacks/20260511235950_rollback.sql",
    "lines": 5
@@ -535390,6 +535467,10 @@
   "supabase/rollbacks/20261121120000_rollback.sql": {
    "path": "supabase/rollbacks/20261121120000_rollback.sql",
    "lines": 356
+  },
+  "supabase/rollbacks/20261121203000_rollback.sql": {
+   "path": "supabase/rollbacks/20261121203000_rollback.sql",
+   "lines": 143
   },
   "supabase/rollbacks/rollback_20261025002500_analyze_tables_p03.sql": {
    "path": "supabase/rollbacks/rollback_20261025002500_analyze_tables_p03.sql",
@@ -560973,10 +561054,21 @@
   }
  },
  "git": {
-  "sha": "146fd646bfb794f5225c49822c93c5aba204f0a8",
+  "sha": "cd04fc225bc5605697c14f2c11c045402c04dcd1",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "cd04fc2",
+    "date": "2026-11-22",
+    "author": "adm01-debug",
+    "subject": "fix(kit-maker): reverifica peso e encaixe do kit no servidor (KM2-099) (#3970)",
+    "files": [
+     "supabase/MIGRATIONS_SYNC_LOG.md",
+     "supabase/migrations/20261121203000_kit_maker_server_revalidation.sql",
+     "supabase/rollbacks/20261121203000_rollback.sql"
+    ]
+   },
    {
     "sha": "146fd64",
     "date": "2026-11-21",
@@ -561342,54 +561434,6 @@
      "supabase/rollbacks/20261120040000_rollback.sql",
      "tests/contracts/quotes-freight-plan-migration.test.ts"
     ]
-   },
-   {
-    "sha": "a499d84",
-    "date": "2026-11-20",
-    "author": "adm01-debug",
-    "subject": "feat(frete): prazo de produção no admin — card, aba Feriados e exceção por produto (Bloco H-UI) (#3936)",
-    "files": [
-     ".file-size-baseline.json",
-     "audit/supabase-reference-catalog.temporary.json",
-     "docs/coordenacao/conflitos-semanticos.md",
-     "src/components/admin/business-calendar/BusinessCalendarManager.tsx",
-     "src/components/admin/business-calendar/__tests__/BusinessCalendarManager.test.tsx",
-     "src/components/admin/business-calendar/index.ts",
-     "src/components/admin/products/__tests__/ProductFormFreightFields.test.tsx",
-     "src/components/admin/products/sections/ProductEngravingSection.tsx",
-     "src/components/admin/products/sections/ProductInfoSection.tsx",
-     "src/components/admin/products/sections/engraving/EngravingAreaCard.tsx",
-     "src/components/admin/products/sections/engraving/NewAreaProductionDays.tsx",
-     "src/components/admin/products/sections/engraving/ProductionDaysInput.tsx",
-     "src/components/admin/products/sections/engraving/__tests__/EngravingAreaCard.test.tsx",
-     "src/components/admin/products/sections/engraving/__tests__/productionDays.test.ts",
-     "src/components/admin/products/sections/engraving/__tests__/useEngravingWizard.productionDays.test.tsx",
-     "src/components/admin/products/sections/engraving/productionDays.ts",
-     "src/components/admin/products/sections/engraving/types.ts",
-     "src/components/admin/products/sections/engraving/useEngravingWizard.ts",
-     "src/components/freight-plan/ProductionLeadTimeCard.tsx",
-     "src/components/freight-plan/__tests__/ProductionLeadTimeCard.test.tsx",
-     "src/components/freight-plan/index.ts",
-     "src/hooks/freight/__tests__/useBusinessCalendar.test.tsx",
-     "src/hooks/freight/__tests__/useProductionLeadTime.test.tsx",
-     "src/hooks/freight/index.ts",
-     "src/hooks/freight/keys.ts",
-     "src/hooks/freight/useBusinessCalendar.ts",
-     "src/hooks/freight/usePriceTableBands.ts",
-     "src/hooks/freight/useProductionLeadTime.ts",
-     "src/integrations/supabase/types.ts",
-     "src/lib/lead-time/__tests__/formatDate.test.ts",
-     "src/lib/lead-time/formatDate.ts",
-     "src/pages/admin/AdminFreteSettingsPage.tsx",
-     "src/pages/admin/__tests__/AdminFreteSettingsPage.test.tsx",
-     "src/services/__tests__/businessCalendarService.test.ts",
-     "src/services/businessCalendarService.ts",
-     "src/services/productionLeadTimeService.ts",
-     "supabase/MIGRATIONS_SYNC_LOG.md",
-     "supabase/migrations/20261120041000_production_lead_time_calendar.sql",
-     "supabase/rollbacks/20261120041000_rollback.sql",
-     "tests/contracts/production-lead-time-calendar-migration.test.ts"
-    ]
    }
   ],
   "hot_files": [
@@ -561399,7 +561443,7 @@
    ],
    [
     ".file-size-baseline.json",
-    5
+    4
    ],
    [
     ".release-please-manifest.json",
@@ -561416,14 +561460,6 @@
    [
     "package.json",
     4
-   ],
-   [
-    "docs/coordenacao/conflitos-semanticos.md",
-    3
-   ],
-   [
-    "src/integrations/supabase/types.ts",
-    3
    ],
    [
     "src/components/freight-plan/FreightPlanCard.tsx",
@@ -561458,6 +561494,10 @@
     2
    ],
    [
+    "docs/coordenacao/conflitos-semanticos.md",
+    2
+   ],
+   [
     "src/components/kit-builder/KitSummary.tsx",
     2
    ],
@@ -561466,12 +561506,16 @@
     2
    ],
    [
-    "src/hooks/freight/index.ts",
+    "src/integrations/supabase/types.ts",
     2
    ],
    [
-    "audit/supabase-reference-catalog.temporary.json",
-    2
+    "supabase/migrations/20261121203000_kit_maker_server_revalidation.sql",
+    1
+   ],
+   [
+    "supabase/rollbacks/20261121203000_rollback.sql",
+    1
    ]
   ]
  }

@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "fix(kit-maker): reverifica peso e encaixe do kit no servidor (KM2-099) (#3970)",
    "feat(frete): bloco G etapas 65-69 — plano de volumes no builder, view na QuoteViewPage, diff no comparador e PDF da proposta (#3972)",
    "chore(lint): consolida baseline de ESLint apos eliminacao de 366 erros (#3971)",
    "fix: preenche maxWeight da caixa no Kit Builder a partir de box_weight_kg (D1) (#3965)",
-   "chore(vercel): desativa preview em branches docs/infra/chore (#3964)",
-   "chore: consolida baselines de assertions (any-type 1-0, as-unknown 250-229) (#3963)"
+   "chore(vercel): desativa preview em branches docs/infra/chore (#3964)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",
