@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "8b5d0d8cf720f530e15ec652ad16a9817f9cbfbf",
+  "sha": "b1fe749e8a3f14bb32ac240b09cf1c6442bd5486",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-22 11:52 UTC",
-  "files_total": 11133,
-  "code_files": 9140,
-  "code_lines": 1298351
+  "generated_at": "2026-11-22 12:24 UTC",
+  "files_total": 11134,
+  "code_files": 9141,
+  "code_lines": 1298368
  },
  "version": "1.3.2",
- "facts_hash": "a01493de7829c3f3",
+ "facts_hash": "98eb0b6b52f853d2",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -1128,7 +1128,7 @@
   ],
   "package_manager": "npm",
   "languages": {
-   ".sql": 3487,
+   ".sql": 3488,
    ".ts": 3165,
    ".tsx": 2017,
    ".mjs": 455,
@@ -13009,13 +13009,6 @@
       "fk": "",
       "generated": "",
       "src": "supabase/migrations/20260617230500_estoque_sanitize_restock_dates_trigger.sql"
-     },
-     {
-      "name": "supplier_external_id",
-      "type": "text",
-      "fk": "",
-      "generated": "",
-      "src": "supabase/migrations/20261121223000_add_supplier_external_id.sql"
      },
      {
       "name": "next_entry_date",
@@ -96777,6 +96770,7 @@
    "supabase/rollbacks/20261121000000_rollback.sql",
    "supabase/rollbacks/20261121120000_rollback.sql",
    "supabase/rollbacks/20261121203000_rollback.sql",
+   "supabase/rollbacks/20261121223000_rollback.sql",
    "supabase/rollbacks/rollback_20261025002500_analyze_tables_p03.sql",
    "supabase/sql-legacy/001_notification_system.sql",
    "supabase/sql-legacy/002_notification_preferences.sql",
@@ -152534,7 +152528,7 @@
   {
    "module": "supabase/migrations",
    "files": 3123,
-   "lines": 226834,
+   "lines": 226837,
    "tables": [
     "...",
     "admin_audit_log",
@@ -152632,8 +152626,8 @@
   },
   {
    "module": "supabase/rollbacks",
-   "files": 128,
-   "lines": 4850,
+   "files": 129,
+   "lines": 4864,
    "tables": [],
    "exports": [],
    "docs": [],
@@ -534955,7 +534949,7 @@
   },
   "supabase/migrations/20261121223000_add_supplier_external_id.sql": {
    "path": "supabase/migrations/20261121223000_add_supplier_external_id.sql",
-   "lines": 32
+   "lines": 35
   },
   "supabase/rollbacks/20260511235950_rollback.sql": {
    "path": "supabase/rollbacks/20260511235950_rollback.sql",
@@ -535483,6 +535477,10 @@
   "supabase/rollbacks/20261121203000_rollback.sql": {
    "path": "supabase/rollbacks/20261121203000_rollback.sql",
    "lines": 143
+  },
+  "supabase/rollbacks/20261121223000_rollback.sql": {
+   "path": "supabase/rollbacks/20261121223000_rollback.sql",
+   "lines": 14
   },
   "supabase/rollbacks/rollback_20261025002500_analyze_tables_p03.sql": {
    "path": "supabase/rollbacks/rollback_20261025002500_analyze_tables_p03.sql",
@@ -561066,10 +561064,21 @@
   }
  },
  "git": {
-  "sha": "8b5d0d8cf720f530e15ec652ad16a9817f9cbfbf",
+  "sha": "b1fe749e8a3f14bb32ac240b09cf1c6442bd5486",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "b1fe749",
+    "date": "2026-11-22",
+    "author": "adm01-debug",
+    "subject": "fix: rollback e recibo da migration supplier_external_id (#3974)",
+    "files": [
+     "supabase/MIGRATIONS_SYNC_LOG.md",
+     "supabase/migrations/20261121223000_add_supplier_external_id.sql",
+     "supabase/rollbacks/20261121223000_rollback.sql"
+    ]
+   },
    {
     "sha": "8b5d0d8",
     "date": "2026-11-22",
@@ -561431,22 +561440,12 @@
     "files": [
      "src/tests/orphan-mounts.test.ts"
     ]
-   },
-   {
-    "sha": "0436920",
-    "date": "2026-11-20",
-    "author": "adm01-debug",
-    "subject": "fix(stock): banner de risco EMA não derruba para usuário não-dev (403 da edge) (#3940)",
-    "files": [
-     "src/hooks/stock/__tests__/ema-pipeline-health.contract.test.tsx",
-     "src/hooks/stock/useEmaRiskSummary.ts"
-    ]
    }
   ],
   "hot_files": [
    [
     "supabase/MIGRATIONS_SYNC_LOG.md",
-    7
+    8
    ],
    [
     ".file-size-baseline.json",
@@ -561467,6 +561466,10 @@
    [
     "package.json",
     4
+   ],
+   [
+    "supabase/migrations/20261121223000_add_supplier_external_id.sql",
+    2
    ],
    [
     "src/components/freight-plan/FreightPlanCard.tsx",
@@ -561509,7 +561512,7 @@
     2
    ],
    [
-    "supabase/migrations/20261121223000_add_supplier_external_id.sql",
+    "supabase/rollbacks/20261121223000_rollback.sql",
     1
    ],
    [
@@ -561518,10 +561521,6 @@
    ],
    [
     "supabase/rollbacks/20261121203000_rollback.sql",
-    1
-   ],
-   [
-    "qa/pdf-color-allowlist.json",
     1
    ]
   ]

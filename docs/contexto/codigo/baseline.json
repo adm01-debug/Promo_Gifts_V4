@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "8b5d0d8cf720f530e15ec652ad16a9817f9cbfbf",
+  "commit": "b1fe749e8a3f14bb32ac240b09cf1c6442bd5486",
   "branch": "main",
-  "data_commit": "2026-11-22T08:51:46-03:00",
+  "data_commit": "2026-11-22T09:21:20-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "b1fe749",
+    "data": "2026-11-22",
+    "assunto": "fix: rollback e recibo da migration supplier_external_id (#3974)"
+   },
    {
     "sha": "8b5d0d8",
     "data": "2026-11-22",
@@ -126,18 +131,13 @@
     "sha": "f83c473",
     "data": "2026-11-20",
     "assunto": "chore(main): release gifts-store 1.16.0 (#3945)"
-   },
-   {
-    "sha": "3f273fe",
-    "data": "2026-11-20",
-    "assunto": "docs(migrations-log): recibo E15 — aplicação de 20261120180000 (#3946)"
    }
   ],
-  "arquivos_mudados_7d": 1347,
+  "arquivos_mudados_7d": 1339,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
-    "mudancas": 1293
+    "mudancas": 995
    },
    {
     "pasta": "recovery/src-legacy/src",
@@ -145,55 +145,55 @@
    },
    {
     "pasta": "src/components/products",
-    "mudancas": 607
+    "mudancas": 457
    },
    {
     "pasta": "tests/edge-functions/live",
-    "mudancas": 462
+    "mudancas": 347
    },
    {
     "pasta": "src/hooks/products",
-    "mudancas": 424
+    "mudancas": 319
    },
    {
     "pasta": "src/components/quotes",
-    "mudancas": 386
+    "mudancas": 299
    },
    {
     "pasta": "src/pages/magazine",
-    "mudancas": 368
+    "mudancas": 276
    },
    {
     "pasta": "src/components/inventory",
-    "mudancas": 326
+    "mudancas": 246
    },
    {
     "pasta": "supabase/functions/_shared",
-    "mudancas": 300
-   },
-   {
-    "pasta": "src/components/ui",
-    "mudancas": 292
+    "mudancas": 231
    },
    {
     "pasta": "src/components/mockup",
-    "mudancas": 283
+    "mudancas": 223
+   },
+   {
+    "pasta": "src/components/ui",
+    "mudancas": 219
    },
    {
     "pasta": "src/pages/admin",
-    "mudancas": 255
+    "mudancas": 196
    },
    {
     "pasta": "src/pages/quotes",
-    "mudancas": 232
+    "mudancas": 185
    },
    {
     "pasta": "src/components/kit-builder",
-    "mudancas": 214
+    "mudancas": 167
    },
    {
     "pasta": "src/hooks/quotes",
-    "mudancas": 197
+    "mudancas": 156
    }
   ],
   "arquivos_mais_mudados_90d": [
@@ -203,34 +203,30 @@
    },
    {
     "arquivo": "package.json",
-    "mudancas": 31
+    "mudancas": 30
    },
    {
     "arquivo": "docs/coordenacao/conflitos-semanticos.md",
-    "mudancas": 22
-   },
-   {
-    "arquivo": "package-lock.json",
     "mudancas": 21
    },
    {
-    "arquivo": "CHANGELOG.md",
-    "mudancas": 15
+    "arquivo": "package-lock.json",
+    "mudancas": 20
    },
    {
-    "arquivo": ".github/workflows/deploy-gates.yml",
+    "arquivo": "CHANGELOG.md",
     "mudancas": 14
    },
    {
+    "arquivo": ".github/workflows/deploy-gates.yml",
+    "mudancas": 13
+   },
+   {
     "arquivo": "audit/supabase-reference-catalog.temporary.json",
-    "mudancas": 12
+    "mudancas": 11
    },
    {
     "arquivo": "src/pages/mockups/MockupGenerator.tsx",
-    "mudancas": 12
-   },
-   {
-    "arquivo": "src/pages/quotes/QuoteBuilderPage.tsx",
     "mudancas": 11
    },
    {
@@ -238,39 +234,19 @@
     "mudancas": 10
    },
    {
-    "arquivo": "src/integrations/supabase/types.ts",
+    "arquivo": "src/pages/quotes/QuoteBuilderPage.tsx",
     "mudancas": 10
+   },
+   {
+    "arquivo": "src/integrations/supabase/types.ts",
+    "mudancas": 9
    },
    {
     "arquivo": "src/pages/kit-builder/KitBuilderPage.tsx",
-    "mudancas": 10
+    "mudancas": 9
    },
    {
     "arquivo": "scripts/automation.config.json",
-    "mudancas": 8
-   },
-   {
-    "arquivo": "src/components/kit-builder/KitSummary.tsx",
-    "mudancas": 8
-   },
-   {
-    "arquivo": "src/components/kit-builder/PersonalizationConfig.tsx",
-    "mudancas": 8
-   },
-   {
-    "arquivo": "src/components/quotes/QuoteAutoSave.tsx",
-    "mudancas": 8
-   },
-   {
-    "arquivo": "src/hooks/mockup/useMockupGenerator.ts",
-    "mudancas": 8
-   },
-   {
-    "arquivo": "src/hooks/quotes/useQuoteBuilderState.ts",
-    "mudancas": 8
-   },
-   {
-    "arquivo": "src/hooks/quotes/useQuoteTemplates.ts",
     "mudancas": 8
    },
    {
@@ -278,24 +254,48 @@
     "mudancas": 8
    },
    {
+    "arquivo": "src/components/kit-builder/KitSummary.tsx",
+    "mudancas": 7
+   },
+   {
+    "arquivo": "src/components/kit-builder/PersonalizationConfig.tsx",
+    "mudancas": 7
+   },
+   {
+    "arquivo": "src/components/quotes/QuoteAutoSave.tsx",
+    "mudancas": 7
+   },
+   {
+    "arquivo": "src/hooks/mockup/useMockupGenerator.ts",
+    "mudancas": 7
+   },
+   {
+    "arquivo": "src/hooks/quotes/useQuoteBuilderState.ts",
+    "mudancas": 7
+   },
+   {
+    "arquivo": "src/hooks/quotes/useQuoteTemplates.ts",
+    "mudancas": 7
+   },
+   {
     "arquivo": "vitest.config.ts",
-    "mudancas": 8
+    "mudancas": 7
    },
    {
     "arquivo": ".github/workflows/schema-snapshot-export.yml",
-    "mudancas": 7
+    "mudancas": 6
    },
    {
     "arquivo": "e2e/helpers/auth.ts",
-    "mudancas": 7
+    "mudancas": 6
    },
    {
     "arquivo": "scripts/drift-baseline.mjs",
-    "mudancas": 7
+    "mudancas": 6
    },
    {
     "arquivo": "src/components/mockup/MockupClientSelector.tsx",
-    "mudancas": 7
+    "mudancas": 6
    }
   ],
   "autores_30d": [
@@ -309,11 +309,7 @@
    },
    {
     "autor": "Claude",
-    "commits": 17
-   },
-   {
-    "autor": "Joaquim Ataides",
-    "commits": 1
+    "commits": 15
    },
    {
     "autor": "dependabot[bot]",
@@ -322,7 +318,7 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 11205,
+  "arquivos_total": 11206,
   "arquivos_codigo": 5654,
   "linhas_codigo": 1073021,
   "rotas": 141,
