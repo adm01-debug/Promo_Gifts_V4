@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.3.2 · commit `94a724adfd` · branch `main` · 2026-11-22 16:44 UTC
+> Gerado automaticamente por AI Context Sync v1.3.2 · commit `d519f4e13e` · branch `main` · 2026-11-22 17:42 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -809,7 +809,7 @@ Fornecedor Asia → supplier_products_raw (Bronze) → normalização (Silver) �
 | `cart_templates` | `name` | obrigatório |
 | `cart_templates` | `items` | default '[]'::jsonb |
 | `cart_templates` | `created_at` | default now() |
-| … +3770 linhas — lista completa em `context.json` | | |
+| … +3771 linhas — lista completa em `context.json` | | |
 
 ## D. Automações no banco (triggers e funções — regras que rodam sozinhas)
 

@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "94a724adfd8db7c6ca5ba6050c137833dedc4f8e",
+  "commit": "d519f4e13e5390794d82abf26347a1664282f983",
   "branch": "main",
-  "data_commit": "2026-11-22T13:42:34-03:00",
+  "data_commit": "2026-11-22T14:40:53-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "d519f4e",
+    "data": "2026-11-22",
+    "assunto": "chore(schema-snapshot): snapshot semanal 2026-W47 (run 45033672701) (#3988)"
+   },
    {
     "sha": "94a724a",
     "data": "2026-11-22",
@@ -126,14 +131,9 @@
     "sha": "a7be36d",
     "data": "2026-11-21",
     "assunto": "fix(ci): bloqueia variantes de invoke direto (#3952)"
-   },
-   {
-    "sha": "8ca0bd0",
-    "data": "2026-11-21",
-    "assunto": "docs: recibo de aplicação — 20261121120000 (E15) (#3961)"
    }
   ],
-  "arquivos_mudados_7d": 1202,
+  "arquivos_mudados_7d": 1172,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -215,7 +215,7 @@
    },
    {
     "arquivo": "docs/coordenacao/conflitos-semanticos.md",
-    "mudancas": 13
+    "mudancas": 12
    },
    {
     "arquivo": ".github/workflows/deploy-gates.yml",
@@ -234,12 +234,12 @@
     "mudancas": 8
    },
    {
-    "arquivo": "src/pages/mockups/MockupGenerator.tsx",
+    "arquivo": "src/pages/quotes/QuoteBuilderPage.tsx",
     "mudancas": 8
    },
    {
-    "arquivo": "src/pages/quotes/QuoteBuilderPage.tsx",
-    "mudancas": 8
+    "arquivo": "src/pages/mockups/MockupGenerator.tsx",
+    "mudancas": 7
    },
    {
     "arquivo": "scripts/automation.config.json",
@@ -254,14 +254,6 @@
     "mudancas": 6
    },
    {
-    "arquivo": "src/pages/kit-builder/KitBuilderPage.tsx",
-    "mudancas": 6
-   },
-   {
-    "arquivo": "src/components/kit-builder/PersonalizationConfig.tsx",
-    "mudancas": 5
-   },
-   {
     "arquivo": "src/components/quotes/QuoteAutoSave.tsx",
     "mudancas": 5
    },
@@ -271,6 +263,10 @@
    },
    {
     "arquivo": "src/hooks/quotes/useQuoteTemplates.ts",
+    "mudancas": 5
+   },
+   {
+    "arquivo": "src/pages/kit-builder/KitBuilderPage.tsx",
     "mudancas": 5
    },
    {
@@ -296,16 +292,20 @@
    {
     "arquivo": "scripts/drift-baseline.mjs",
     "mudancas": 4
+   },
+   {
+    "arquivo": "src/components/admin/shipping-boxes/__tests__/ShippingBoxesManager.test.tsx",
+    "mudancas": 4
    }
   ],
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 260
+    "commits": 259
    },
    {
     "autor": "github-actions[bot]",
-    "commits": 39
+    "commits": 40
    },
    {
     "autor": "Claude",

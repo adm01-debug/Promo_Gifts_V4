@@ -1,6 +1,6 @@
 # 10 · ACESSO E SEGURANÇA — quem pode o quê
 
-> Gerado automaticamente por AI Context Sync v1.3.2 · commit `94a724adfd` · branch `main` · 2026-11-22 16:44 UTC
+> Gerado automaticamente por AI Context Sync v1.3.2 · commit `d519f4e13e` · branch `main` · 2026-11-22 17:42 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## Perfis / roles identificados
@@ -1647,6 +1647,7 @@ Middleware matcher (Next.js): nenhum
 | `b2b_collections` | `created_at`, `created_by`, `updated_at` |
 | `binding_colors` | `created_at`, `updated_at` |
 | `binding_types` | `created_at`, `updated_at` |
+| `business_calendar` | `created_at`, `created_by` |
 | `catalog_analytics` | `created_at` |
 | `category_accessory_categories` | `created_at`, `updated_at` |
 | `category_attributes` | `created_at`, `updated_at` |
@@ -1810,7 +1811,6 @@ Middleware matcher (Next.js): nenhum
 | `system_kill_switches` | `created_at`, `updated_at` |
 | `user_2fa_settings` | `created_at` |
 | `user_allowed_ips` | `created_at`, `created_by` |
-| `user_favorites` | `created_at` |
 | … +55 linhas — lista completa em `context.json` | |
 
 ## Dados pessoais / sensíveis (LGPD — cuidado em logs, exports, prompts de IA)
