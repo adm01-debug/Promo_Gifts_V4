@@ -2888,4 +2888,4 @@ Cria `supplier_external_id text` em `products` e `product_variants` e faz backfi
 
 | versão | arquivo | sha256 | status |
 |---|---|---|---|
-| `20261121223000` | `add_supplier_external_id` | `a7ec4ec364ac19fa73aa99d3a2d53ea77be6643e9ea1068b34a3707049b90920` | pendente — aplicar via `db-apply-migration.yml` (`version=20261121223000`) |
+| `20261121223000` | `add_supplier_external_id` | `a7ec4ec364ac19fa73aa99d3a2d53ea77be6643e9ea1068b34a3707049b90920` | aguardando aplicação via `db-apply-migration.yml` (`version=20261121223000`) — DDL em produção, regra 8 |
