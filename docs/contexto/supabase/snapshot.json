@@ -195746,6 +195746,13 @@
         },
         {
           "column": "default_markup_percent",
+          "grantee": "anon",
+          "privileges": "SELECT",
+          "schema": "public",
+          "table": "suppliers"
+        },
+        {
+          "column": "default_markup_percent",
           "grantee": "authenticated",
           "privileges": "SELECT",
           "schema": "public",
@@ -199335,7 +199342,7 @@
         },
         {
           "grantee": "anon",
-          "privileges": "DELETE, INSERT, REFERENCES, TRIGGER, UPDATE",
+          "privileges": "DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE",
           "schema": "public",
           "table": "markup_configurations"
         },
@@ -204038,6 +204045,12 @@
           "table": "variant_commemorative_dates"
         },
         {
+          "grantee": "anon",
+          "privileges": "SELECT",
+          "schema": "public",
+          "table": "variant_supplier_sources"
+        },
+        {
           "grantee": "authenticated",
           "privileges": "DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE",
           "schema": "public",
@@ -204810,6 +204823,12 @@
           "privileges": "DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE",
           "schema": "public",
           "table": "vw_thermal_products"
+        },
+        {
+          "grantee": "anon",
+          "privileges": "SELECT",
+          "schema": "public",
+          "table": "vw_variant_sale_prices"
         },
         {
           "grantee": "authenticated",
@@ -224667,6 +224686,12 @@
       {
         "code": "view_security_definer",
         "detail": "View em public sem security_invoker: executa como owner e ignora RLS das tabelas base.",
+        "object": "public.mv_product_compositions",
+        "severity": "ALTA"
+      },
+      {
+        "code": "view_security_definer",
+        "detail": "View em public sem security_invoker: executa como owner e ignora RLS das tabelas base.",
         "object": "public.v_compras_catalogo",
         "severity": "ALTA"
       },
@@ -242056,6 +242081,12 @@
         "statements": 15,
         "statements_sha": "4de941f86b0a9744",
         "version": "20261122180000"
+      },
+      {
+        "name": "fix_cadeia_views_compras_e_compositions",
+        "statements": 7,
+        "statements_sha": "b2e27f42cba29882",
+        "version": "20261122200000"
       }
     ],
     "policies": [
@@ -268202,7 +268233,7 @@
         "security_invoker": true
       },
       {
-        "comment": "VIEW pública de exposição sobre a matview analytics.mv_product_compositions (refresh CONCURRENTLY via cron 47, hourly). public.mv_* é VIEW, não matview — não rode REFRESH aqui.",
+        "comment": "VIEW publica sobre a matview analytics.mv_product_compositions (refresh pelo cron 47, horario). public.mv_* e VIEW, nao matview - nao rode REFRESH aqui. SECURITY DEFINER desde 20261122200000 porque a matview-base nao concede SELECT a anon nem suporta RLS. NAO religar security_invoker=true.",
         "definition": " SELECT product_id,\n    organization_id,\n    product_name,\n    total_materials,\n    total_percentage,\n    materials_detail\n   FROM analytics.mv_product_compositions;",
         "depends_on": [
           "analytics.mv_product_compositions"
@@ -268210,12 +268241,12 @@
         "kind": "view",
         "name": "mv_product_compositions",
         "options": [
-          "security_invoker=true"
+          "security_invoker=false"
         ],
         "owner": "postgres",
         "populated": null,
         "schema": "public",
-        "security_invoker": true
+        "security_invoker": false
       },
       {
         "comment": "Auditoria completa de product_images: 7 dimensões de qualidade, score 0-100, gap flags, prioridade_correcao. Refresh a cada 6h via pg_cron (job refresh-mv-product-images-audit). Não exposto a anon/authenticated.",

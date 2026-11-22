@@ -446,7 +446,7 @@ Roles da API: `anon` (sem login), `authenticated` (logado), `service_role` (bypa
 | public.magic_up_reactions | anon | DELETE, INSERT, REFERENCES, TRIGGER, UPDATE |
 | public.magic_up_reactions | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | public.magic_up_reactions | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
-| public.markup_configurations | anon | DELETE, INSERT, REFERENCES, TRIGGER, UPDATE |
+| public.markup_configurations | anon | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | public.markup_configurations | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | public.markup_configurations | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
 | public.material_equivalences | anon | DELETE, INSERT, REFERENCES, TRIGGER, UPDATE |
@@ -1230,6 +1230,7 @@ Roles da API: `anon` (sem login), `authenticated` (logado), `service_role` (bypa
 | public.variant_commemorative_dates | anon | DELETE, INSERT, REFERENCES, TRIGGER, UPDATE |
 | public.variant_commemorative_dates | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | public.variant_commemorative_dates | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
+| public.variant_supplier_sources | anon | SELECT |
 | public.variant_supplier_sources | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | public.variant_supplier_sources | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
 | public.variation_types | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
@@ -1359,6 +1360,7 @@ Roles da API: `anon` (sem login), `authenticated` (logado), `service_role` (bypa
 | public.vw_supplier_products_raw_status | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
 | public.vw_system_health_quick | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
 | public.vw_thermal_products | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
+| public.vw_variant_sale_prices | anon | SELECT |
 | public.vw_variant_sale_prices | authenticated | SELECT |
 | public.vw_variant_sale_prices | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
 | public.vw_xbz_products_by_category | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
@@ -1475,6 +1477,7 @@ Roles da API: `anon` (sem login), `authenticated` (logado), `service_role` (bypa
 | public.suppliers.contact_name | authenticated | SELECT |
 | public.suppliers.contact_person | authenticated | SELECT |
 | public.suppliers.created_at | authenticated | SELECT |
+| public.suppliers.default_markup_percent | anon | SELECT |
 | public.suppliers.default_markup_percent | authenticated | SELECT |
 | public.suppliers.delivery_time_days | authenticated | SELECT |
 | public.suppliers.email | authenticated | SELECT |

@@ -3011,3 +3011,4 @@ SQL em `migrations/<versao>_<nome>.sql`. Mudanças feitas pelo Dashboard/SQL Edi
 | 20261121223000 | [add_supplier_external_id](migrations/20261121223000_add_supplier_external_id.sql) | 4 |
 | 20261122100000 | [compras_views_canonicas](migrations/20261122100000_compras_views_canonicas.sql) | 9 |
 | 20261122180000 | [restore_definer_views_p06_e_compras](migrations/20261122180000_restore_definer_views_p06_e_compras.sql) | 15 |
+| 20261122200000 | [fix_cadeia_views_compras_e_compositions](migrations/20261122200000_fix_cadeia_views_compras_e_compositions.sql) | 7 |

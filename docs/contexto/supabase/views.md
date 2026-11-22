@@ -971,11 +971,11 @@ SELECT id,
 | campo | valor |
 |---|---|
 | owner | postgres |
-| security_invoker | sim |
-| opções | security_invoker=true |
+| security_invoker | não |
+| opções | security_invoker=false |
 | depende de | analytics.mv_product_compositions |
 | populada | n/a |
-| comentário | VIEW pública de exposição sobre a matview analytics.mv_product_compositions (refresh CONCURRENTLY via cron 47, hourly). public.mv_* é VIEW, não matview — não rode REFRESH aqui. |
+| comentário | VIEW publica sobre a matview analytics.mv_product_compositions (refresh pelo cron 47, horario). public.mv_* e VIEW, nao matview - nao rode REFRESH aqui. SECURITY DEFINER desde 20261122200000 porque a matview-base nao concede SELECT a anon nem suporta RLS. NAO religar security_invoker=true. |
 
 
 ```sql

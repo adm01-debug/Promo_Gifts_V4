@@ -4,6 +4,7 @@ Verificações objetivas feitas no catálogo. Um agente deve ler isto antes de p
 
 | severidade | código | objeto | detalhe |
 |---|---|---|---|
+| ALTA | view_security_definer | public.mv_product_compositions | View em public sem security_invoker: executa como owner e ignora RLS das tabelas base. |
 | ALTA | view_security_definer | public.v_compras_catalogo | View em public sem security_invoker: executa como owner e ignora RLS das tabelas base. |
 | ALTA | view_security_definer | public.v_compras_precos_faixa | View em public sem security_invoker: executa como owner e ignora RLS das tabelas base. |
 | ALTA | view_security_definer | public.v_compras_precos_variante | View em public sem security_invoker: executa como owner e ignora RLS das tabelas base. |

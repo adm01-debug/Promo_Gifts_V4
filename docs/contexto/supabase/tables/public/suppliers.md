@@ -206,6 +206,7 @@ Grants por coluna:
 | contact_name | authenticated | SELECT |
 | contact_person | authenticated | SELECT |
 | created_at | authenticated | SELECT |
+| default_markup_percent | anon | SELECT |
 | default_markup_percent | authenticated | SELECT |
 | delivery_time_days | authenticated | SELECT |
 | email | authenticated | SELECT |

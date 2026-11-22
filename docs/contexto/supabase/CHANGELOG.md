@@ -2,6 +2,14 @@
 
 Diff semântico gerado a cada coleta em que algo mudou.
 
+## 2026-11-22 19:15 UTC
+
+- **grants** adicionado (2): `public.variant_supplier_sources:anon`, `public.vw_variant_sale_prices:anon`
+- **grants** alterado (1): `public.markup_configurations:anon`
+- **lints** adicionado (1): `view_security_definer:public.mv_product_compositions`
+- **migrations** adicionado (1): `20261122200000_fix_cadeia_views_compras_e_compositions`
+- **views** alterado (1): `public.mv_product_compositions`
+
 ## 2026-11-22 15:16 UTC
 
 - **lints** adicionado (4): `view_security_definer:public.v_kit_component_media_public`, `view_security_definer:public.v_product_compositions_public`, `view_security_definer:public.v_suppliers_public`, `view_security_definer:public.v_tabela_preco_gravacao_oficial_public`
