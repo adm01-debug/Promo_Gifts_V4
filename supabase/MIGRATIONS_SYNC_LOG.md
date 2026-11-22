@@ -2877,3 +2877,15 @@ peso-violado — todos OK). Aplicar em produção via `db-apply-migration.yml`
 | versão | arquivo | sha256 | status |
 |---|---|---|---|
 | `20261121203000` | `kit_maker_server_revalidation` | `583d9588687cfffa76dab232e01fff040b16c1eda0c6dc43c4acc947d4a372a7` | pendente — aplicar via `db-apply-migration.yml` (`version=20261121203000`) após merge e decisão do dono |
+
+### 2026-11-22 — PR 1.3 do plano PIM/Promo Supply V2: supplier_external_id
+
+Migration do agente anterior (PR #3967) mesclada na `main` em `8b5d0d8c`. O `preflight-migration-apply`
+reprovava o arquivo por ausência de cabeçalho `-- Rollback:` e de arquivo em `supabase/rollbacks/`;
+esta sessão completou os dois (sem alterar uma linha do SQL original) para destravar a aplicação.
+Cria `supplier_external_id text` em `products` e `product_variants` e faz backfill a partir de
+`supplier_products_raw.raw_data->>'IdProduto'` (14.035 linhas na origem). Idempotente.
+
+| versão | arquivo | sha256 | status |
+|---|---|---|---|
+| `20261121223000` | `add_supplier_external_id` | `a7ec4ec364ac19fa73aa99d3a2d53ea77be6643e9ea1068b34a3707049b90920` | aguardando aplicação via `db-apply-migration.yml` (`version=20261121223000`) — DDL em produção, regra 8 |

@@ -1,4 +1,7 @@
 -- PR 1.3 do plano PIM/Promo Supply V2: identidade do produto no fornecedor (D-2(A))
+--
+-- Rollback: supabase/rollbacks/20261121223000_rollback.sql (dropa as 2 colunas;
+-- o backfill é perdido com elas — reaplicar a migration o reconstitui).
 -- Verificado em produção (21/11/2026): supplier_products_raw tem 14035 linhas com
 -- raw_data->>'IdProduto', das quais 14035/14035 com product_id e 14031/14035 com
 -- variant_id preenchidos -- o backfill usa esse join direto, sem match por nome/sku.
