@@ -1,7 +1,7 @@
 -- ==============================================================
 -- SCHEMA_LIVE.sql — dump do schema do projeto canônico
 -- Projeto: doufsxqlfjyuvxuezpln
--- Gerado em: 2026-10-15T15:48:25.900Z
+-- Gerado em: 2026-11-22T13:21:00.140Z
 -- Fonte: supabase db dump --linked
 -- ==============================================================
 
@@ -999,6 +999,154 @@ $$;
 ALTER FUNCTION "public"."acquire_ai_quota"("_user_id" "uuid", "_function_name" "text", "_model" "text") OWNER TO "postgres";
 
 
+CREATE OR REPLACE FUNCTION "public"."admin_active_sessions"() RETURNS TABLE("user_id" "uuid", "email" "text", "session_id" "uuid", "session_created_at" timestamp with time zone, "session_updated_at" timestamp with time zone, "refreshed_at" timestamp with time zone, "not_after" timestamp with time zone, "ip" "text", "user_agent" "text", "live_refresh_token" boolean)
+    LANGUAGE "plpgsql" STABLE SECURITY DEFINER
+    SET "search_path" TO 'pg_catalog'
+    AS $$
+BEGIN
+  IF NOT public.has_role(auth.uid(), 'dev'::public.app_role) THEN
+    RAISE EXCEPTION 'insufficient_privilege: requer role dev'
+      USING ERRCODE = '42501';
+  END IF;
+
+  -- Espelha mfaAal2 da rota: claim aal do JWT já verificado pelo PostgREST.
+  IF coalesce(auth.jwt() ->> 'aal', '') <> 'aal2' THEN
+    RAISE EXCEPTION 'insufficient_privilege: requer sessão AAL2'
+      USING ERRCODE = '42501';
+  END IF;
+
+  RETURN QUERY
+  SELECT
+    u.id,
+    u.email::text,
+    s.id,
+    s.created_at,
+    s.updated_at,
+    s.refreshed_at::timestamptz,
+    s.not_after,
+    s.ip::text,
+    s.user_agent,
+    (
+      EXISTS (
+        SELECT 1
+        FROM auth.refresh_tokens rt
+        WHERE rt.session_id = s.id
+          AND rt.revoked IS NOT TRUE
+      )
+      -- Refresh tokens v2 vivem na própria sessão (hmac_key + counter),
+      -- sem linha em auth.refresh_tokens.
+      OR s.refresh_token_hmac_key IS NOT NULL
+    ) AS live_refresh_token
+  FROM auth.users u
+  JOIN auth.sessions s ON s.user_id = u.id
+  WHERE s.not_after IS NULL OR s.not_after > now()
+  ORDER BY s.updated_at DESC NULLS LAST;
+END;
+$$;
+
+
+ALTER FUNCTION "public"."admin_active_sessions"() OWNER TO "postgres";
+
+
+COMMENT ON FUNCTION "public"."admin_active_sessions"() IS 'Lista sessões ativas de auth.users (dev + aal2). Painel: /admin/sessoes.';
+
+
+
+CREATE OR REPLACE FUNCTION "public"."admin_execute_role_migration_batch"("_label" "text", "_reason" "text", "_items" "jsonb", "_dry_run" boolean DEFAULT false) RETURNS "uuid"
+    LANGUAGE "plpgsql" SECURITY DEFINER
+    SET "search_path" TO 'pg_catalog', 'pg_temp'
+    AS $$
+BEGIN
+  IF NOT public.has_role(auth.uid(), 'dev'::public.app_role) THEN
+    RAISE EXCEPTION 'insufficient_privilege: requer role dev'
+      USING ERRCODE = '42501';
+  END IF;
+
+  -- Espelha mfaAal2 da rota: claim aal do JWT já verificado pelo PostgREST.
+  IF coalesce(auth.jwt() ->> 'aal', '') <> 'aal2' THEN
+    RAISE EXCEPTION 'insufficient_privilege: requer sessão AAL2'
+      USING ERRCODE = '42501';
+  END IF;
+
+  RETURN public.execute_role_migration_batch(_label, _reason, _items, _dry_run);
+END;
+$$;
+
+
+ALTER FUNCTION "public"."admin_execute_role_migration_batch"("_label" "text", "_reason" "text", "_items" "jsonb", "_dry_run" boolean) OWNER TO "postgres";
+
+
+COMMENT ON FUNCTION "public"."admin_execute_role_migration_batch"("_label" "text", "_reason" "text", "_items" "jsonb", "_dry_run" boolean) IS 'Executa lote de migração de papéis (dev + aal2) via execute_role_migration_batch. Tela: /admin/seguranca/migracao-papeis.';
+
+
+
+CREATE OR REPLACE FUNCTION "public"."admin_revoke_user_sessions"("_user_id" "uuid") RETURNS "void"
+    LANGUAGE "plpgsql" SECURITY DEFINER
+    SET "search_path" TO 'pg_catalog'
+    AS $_$
+BEGIN
+  IF NOT public.has_role(auth.uid(), 'dev'::public.app_role) THEN
+    RAISE EXCEPTION 'insufficient_privilege: requer role dev'
+      USING ERRCODE = '42501';
+  END IF;
+  IF coalesce(auth.jwt() ->> 'aal', '') <> 'aal2' THEN
+    RAISE EXCEPTION 'insufficient_privilege: requer sessão AAL2'
+      USING ERRCODE = '42501';
+  END IF;
+
+  -- Paridade com o 400 da edge manage-users (revoke_sessions): a RPC
+  -- revoga TODAS as sessões do alvo, incluindo a do próprio chamador —
+  -- quem quer derrubar só as outras sessões deve usar o logout normal.
+  IF _user_id = auth.uid() THEN
+    RAISE EXCEPTION 'self_revocation_denied: use o logout em outros dispositivos'
+      USING ERRCODE = '42501';
+  END IF;
+
+  UPDATE auth.refresh_tokens rt
+     SET revoked = true
+    FROM auth.sessions s
+   WHERE rt.session_id = s.id
+     AND s.user_id = _user_id;
+
+  UPDATE auth.sessions
+     SET refresh_token_hmac_key = NULL
+   WHERE user_id = _user_id;
+
+  PERFORM public.revoke_all_user_tokens(_user_id);
+
+  -- Trilha no DB: a edge audita a camada de aplicação (source distinto),
+  -- aqui fica a evidência da revogação efetiva, cobrindo também chamada
+  -- direta via PostgREST. Falha não aborta a revogação.
+  BEGIN
+    INSERT INTO public.admin_audit_log
+      (user_id, action, resource_type, resource_id, status, source,
+       details, ip_address)
+    VALUES (
+      auth.uid(),
+      'session.revoke_all',
+      'auth',
+      _user_id::text,
+      'success',
+      'db:admin_revoke_user_sessions',
+      jsonb_build_object('target_user_id', _user_id, 'scope', 'global'),
+      btrim(substring(
+        NULLIF(current_setting('request.headers', true), '')::jsonb
+          ->> 'x-forwarded-for'
+        from '([^,]+)$')));
+  EXCEPTION WHEN OTHERS THEN
+    RAISE WARNING 'admin_revoke_user_sessions: audit insert failed: %', SQLERRM;
+  END;
+END;
+$_$;
+
+
+ALTER FUNCTION "public"."admin_revoke_user_sessions"("_user_id" "uuid") OWNER TO "postgres";
+
+
+COMMENT ON FUNCTION "public"."admin_revoke_user_sessions"("_user_id" "uuid") IS 'Revoga refresh tokens + marca revogação (dev + aal2, sem self, com auditoria no DB). Painel: /admin/sessoes.';
+
+
+
 CREATE OR REPLACE FUNCTION "public"."apply_transform"("p_value" "text", "p_transform_type" character varying, "p_transform_config" "jsonb" DEFAULT NULL::"jsonb") RETURNS "text"
     LANGUAGE "plpgsql" IMMUTABLE
     SET "search_path" TO 'public'
@@ -1537,6 +1685,9 @@ CREATE OR REPLACE FUNCTION "public"."audit_security_definer_acl"() RETURNS TABLE
            ) OR (
              p.proname = 'get_sitemap_public'
              AND pg_get_function_identity_arguments(p.oid) = 'p_limit integer, p_offset integer'
+           ) OR (
+             p.proname = 'request_password_reset'
+             AND pg_get_function_identity_arguments(p.oid) = 'p_email text'
            )) AS public_intent,
            (p.proname IN (
              'fn_video_queue_next','fn_xbz_enqueue_videos','fn_xbz_link_video',
@@ -1576,10 +1727,13 @@ CREATE OR REPLACE FUNCTION "public"."audit_security_definer_acl"() RETURNS TABLE
   acl_expanded AS (
     SELECT d.oid, d.proname, d.args, d.is_trigger,
            d.public_intent, d.anon_pipeline, d.anon_edge, d.anon_mcp, d.catalog_intent,
-           a.grantee::regrole::text AS grantee
+           CASE WHEN a.grantee = 0 THEN '-'
+                ELSE pg_get_userbyid(a.grantee)
+           END AS grantee
     FROM defs d
     LEFT JOIN LATERAL (SELECT (aclexplode(d.proacl)).grantee) a ON true
     WHERE a.grantee IS NOT NULL
+      AND (a.grantee = 0 OR EXISTS (SELECT 1 FROM pg_catalog.pg_roles r WHERE r.oid = a.grantee))
   )
   SELECT proname, args, 'PUBLIC has EXECUTE'::text, 'PUBLIC'::text
   FROM acl_expanded
@@ -1601,7 +1755,7 @@ $$;
 ALTER FUNCTION "public"."audit_security_definer_acl"() OWNER TO "postgres";
 
 
-COMMENT ON FUNCTION "public"."audit_security_definer_acl"() IS 'Read-only SECURITY DEFINER ACL audit; exact-signature public endpoint allowlist aligned 2026-09-09.';
+COMMENT ON FUNCTION "public"."audit_security_definer_acl"() IS 'Retorna funções SECURITY DEFINER em public acessíveis por roles indevidos. Cast seguro via pg_get_userbyid() — tolera roles removidas sem lançar exceção.';
 
 
 
@@ -2365,7 +2519,7 @@ ALTER FUNCTION "public"."check_auth_throttling"("_email" "text", "_ip" "text") O
 
 CREATE OR REPLACE FUNCTION "public"."check_edge_rate_limit"("p_key" "text", "p_window_ms" integer, "p_max_requests" integer) RETURNS TABLE("allowed" boolean, "remaining" integer, "reset_at" timestamp with time zone)
     LANGUAGE "plpgsql" SECURITY DEFINER
-    SET "search_path" TO 'public', 'pg_temp'
+    SET "search_path" TO 'public'
     AS $$
 DECLARE
     v_now TIMESTAMP WITH TIME ZONE := now();
@@ -2536,7 +2690,7 @@ ALTER FUNCTION "public"."check_ip_access"("_ip" "text") OWNER TO "postgres";
 
 CREATE OR REPLACE FUNCTION "public"."check_login_rate_limit"("_email" "text", "_ip" "text" DEFAULT NULL::"text") RETURNS "jsonb"
     LANGUAGE "plpgsql" SECURITY DEFINER
-    SET "search_path" TO 'public', 'pg_temp'
+    SET "search_path" TO 'public'
     AS $$
 DECLARE
   _max_failures int := 5;
@@ -2968,17 +3122,20 @@ ALTER TABLE "public"."optimization_queue" OWNER TO "postgres";
 
 CREATE OR REPLACE FUNCTION "public"."claim_next_optimization"() RETURNS "public"."optimization_queue"
     LANGUAGE "plpgsql" SECURITY DEFINER
-    SET "search_path" TO 'public'
+    SET "search_path" TO 'pg_catalog', 'pg_temp'
     AS $$
 DECLARE
   claimed public.optimization_queue;
 BEGIN
-  IF NOT public.has_role(auth.uid(), 'admin') THEN
-    RAISE EXCEPTION 'forbidden';
+  IF NOT public.is_dev((SELECT auth.uid())) THEN
+    RAISE EXCEPTION 'forbidden' USING ERRCODE = '42501';
   END IF;
+
+  -- Bloqueia se já existe um running
   IF EXISTS (SELECT 1 FROM public.optimization_queue WHERE status = 'running') THEN
     RETURN NULL;
   END IF;
+
   UPDATE public.optimization_queue
      SET status = 'running', started_at = now()
    WHERE id = (
@@ -2989,12 +3146,17 @@ BEGIN
       FOR UPDATE SKIP LOCKED
    )
    RETURNING * INTO claimed;
+
   RETURN claimed;
 END;
 $$;
 
 
 ALTER FUNCTION "public"."claim_next_optimization"() OWNER TO "postgres";
+
+
+COMMENT ON FUNCTION "public"."claim_next_optimization"() IS 'Fila de otimização (UI dev /admin/telemetria). Guarda interna is_dev(); EXECUTE: authenticated, service_role. Ver 20261112120500.';
+
 
 
 CREATE OR REPLACE FUNCTION "public"."claim_webhook_delivery"("p_webhook_id" "uuid", "p_payload_hash" "text") RETURNS boolean
@@ -7603,6 +7765,19 @@ $$;
 ALTER FUNCTION "public"."cleanup_discount_test_data"() OWNER TO "postgres";
 
 
+CREATE OR REPLACE FUNCTION "public"."cleanup_expired_auth_sessions"() RETURNS "void"
+    LANGUAGE "plpgsql" SECURITY DEFINER
+    SET "search_path" TO 'public'
+    AS $$
+BEGIN
+  DELETE FROM auth.sessions WHERE created_at < NOW() - INTERVAL '30 days';
+END;
+$$;
+
+
+ALTER FUNCTION "public"."cleanup_expired_auth_sessions"() OWNER TO "postgres";
+
+
 CREATE OR REPLACE FUNCTION "public"."cleanup_expired_collection_trash"() RETURNS integer
     LANGUAGE "plpgsql" SECURITY DEFINER
     SET "search_path" TO 'public'
@@ -7616,7 +7791,7 @@ ALTER FUNCTION "public"."cleanup_expired_collection_trash"() OWNER TO "postgres"
 
 CREATE OR REPLACE FUNCTION "public"."cleanup_expired_edge_rate_limits"() RETURNS "void"
     LANGUAGE "plpgsql" SECURITY DEFINER
-    SET "search_path" TO 'public', 'pg_temp'
+    SET "search_path" TO 'public'
     AS $$
 BEGIN
     DELETE FROM public.edge_rate_limits WHERE reset_at < now();
@@ -8238,18 +8413,20 @@ ALTER FUNCTION "public"."compare_quote_versions"("_quote_id" "uuid", "_version_a
 
 CREATE OR REPLACE FUNCTION "public"."complete_optimization"("_id" "uuid", "_status" "text", "_notes" "text" DEFAULT NULL::"text", "_guardrail_status" "text" DEFAULT NULL::"text", "_result" "jsonb" DEFAULT NULL::"jsonb", "_error" "text" DEFAULT NULL::"text") RETURNS "public"."optimization_queue"
     LANGUAGE "plpgsql" SECURITY DEFINER
-    SET "search_path" TO 'public'
+    SET "search_path" TO 'pg_catalog', 'pg_temp'
     AS $$
 DECLARE
   updated public.optimization_queue;
-  duration int;
+  duration integer;
 BEGIN
-  IF NOT public.has_role(auth.uid(), 'admin') THEN
-    RAISE EXCEPTION 'forbidden';
+  IF NOT public.is_dev((SELECT auth.uid())) THEN
+    RAISE EXCEPTION 'forbidden' USING ERRCODE = '42501';
   END IF;
-  IF _status NOT IN ('done','failed','skipped','blocked') THEN
+
+  IF _status NOT IN ('done', 'failed', 'skipped', 'blocked') THEN
     RAISE EXCEPTION 'invalid status: %', _status;
   END IF;
+
   UPDATE public.optimization_queue
      SET status = _status,
          finished_at = now(),
@@ -8258,18 +8435,26 @@ BEGIN
          guardrail_status = COALESCE(_guardrail_status, guardrail_status)
    WHERE id = _id
    RETURNING * INTO updated;
+
   IF updated.id IS NULL THEN
     RAISE EXCEPTION 'optimization not found';
   END IF;
+
   duration := EXTRACT(EPOCH FROM (updated.finished_at - COALESCE(updated.started_at, updated.finished_at))) * 1000;
+
   INSERT INTO public.optimization_queue_runs (queue_id, status, notes, guardrail_status, duration_ms, executed_by)
-  VALUES (_id, _status, _notes, _guardrail_status, duration, auth.uid());
+  VALUES (_id, _status, _notes, _guardrail_status, duration, (SELECT auth.uid()));
+
   RETURN updated;
 END;
 $$;
 
 
 ALTER FUNCTION "public"."complete_optimization"("_id" "uuid", "_status" "text", "_notes" "text", "_guardrail_status" "text", "_result" "jsonb", "_error" "text") OWNER TO "postgres";
+
+
+COMMENT ON FUNCTION "public"."complete_optimization"("_id" "uuid", "_status" "text", "_notes" "text", "_guardrail_status" "text", "_result" "jsonb", "_error" "text") IS 'Fila de otimização (UI dev /admin/telemetria). Guarda interna is_dev(); EXECUTE: authenticated, service_role. Ver 20261112120500.';
+
 
 
 CREATE OR REPLACE FUNCTION "public"."complete_xbz_image_import"("p_staging_id" "uuid", "p_cloudflare_id" character varying, "p_product_id" "uuid" DEFAULT NULL::"uuid", "p_variant_id" "uuid" DEFAULT NULL::"uuid") RETURNS "uuid"
@@ -8742,7 +8927,12 @@ CREATE TABLE IF NOT EXISTS "public"."quotes" (
     "contact_id" "uuid",
     "discount_approval_status" "text",
     "discount_approved_at" timestamp with time zone,
+    "freight_plan" "jsonb",
+    "freight_mix_mode" "text",
+    "show_freight_plan_to_client" boolean DEFAULT false NOT NULL,
     CONSTRAINT "chk_quotes_discount_approval_status" CHECK ((("discount_approval_status" IS NULL) OR ("discount_approval_status" = ANY (ARRAY['pending'::"text", 'approved'::"text", 'rejected'::"text", 'expired'::"text"])))),
+    CONSTRAINT "quotes_freight_mix_mode_check" CHECK ((("freight_mix_mode" IS NULL) OR ("freight_mix_mode" = ANY (ARRAY['misturar'::"text", 'separar'::"text"])))),
+    CONSTRAINT "quotes_freight_plan_shape_check" CHECK ((("freight_plan" IS NULL) OR (("jsonb_typeof"("freight_plan") = 'object'::"text") AND ("pg_column_size"("freight_plan") < 262144)))),
     CONSTRAINT "valid_discount_amount_nonnegative" CHECK ((("discount_amount" IS NULL) OR ("discount_amount" >= (0)::numeric))),
     CONSTRAINT "valid_discount_percent_range" CHECK ((("discount_percent" IS NULL) OR (("discount_percent" >= (0)::numeric) AND ("discount_percent" <= (100)::numeric)))),
     CONSTRAINT "valid_negotiation_markup_range" CHECK ((("negotiation_markup_percent" IS NULL) OR (("negotiation_markup_percent" >= (0)::numeric) AND ("negotiation_markup_percent" <= (50)::numeric)))),
@@ -8794,6 +8984,18 @@ COMMENT ON COLUMN "public"."quotes"."contact_id" IS 'ID do contato no CRM extern
 
 
 
+COMMENT ON COLUMN "public"."quotes"."freight_plan" IS 'Plano de volumes do frete calculado no orÃ§amento (objeto JSON com version, itemsHash, computedAt, caixas e totais). NULL = orÃ§amento sem plano calculado. Objeto com menos de 256 KB.';
+
+
+
+COMMENT ON COLUMN "public"."quotes"."freight_mix_mode" IS 'Escolha do vendedor para o frete: misturar produtos na mesma caixa ou separar. NULL = sem escolha. Produto marcado como "nÃ£o mistura" vence esta escolha.';
+
+
+
+COMMENT ON COLUMN "public"."quotes"."show_freight_plan_to_client" IS 'true = o bloco "Volumes estimados para transporte" aparece no PDF e na proposta do cliente. PadrÃ£o false: o plano Ã© interno.';
+
+
+
 COMMENT ON CONSTRAINT "valid_negotiation_markup_range" ON "public"."quotes" IS 'Markup interno limitado a 0-50%. Inflar mais que isso indica problema de configuração ou abuso.';
 
 
@@ -8813,6 +9015,20 @@ DECLARE
   _product_id uuid;
   _artwork_urls jsonb;
   _updated_count integer;
+  -- KM2-099: revalidação servidor
+  _box_id uuid;
+  _box_max_weight_kg numeric;
+  _items_weight_g bigint := 0;
+  _item_weight_g integer;
+  _used_liters numeric := 0;
+  _fit record;
+  _line_volume numeric;
+  _line_product_id uuid;
+  _line_name text;
+  _line_qty integer;
+  _violations text[] := '{}';
+  _it jsonb;
+  _idx integer;
 BEGIN
   IF _actor_id IS NULL THEN
     RAISE EXCEPTION 'Authentication is required to create a Kit Maker quote'
@@ -8866,6 +9082,80 @@ BEGIN
     RETURN _quote_result;
   END IF;
 
+  -- ------------------------------------------------------------------
+  -- KM2-099: revalidação física do kit montado.
+  -- A caixa entra como linha com product_type='packaging' (sort_order=0 no
+  -- front); os itens vêm em seguida. Espelha a semântica de peso
+  -- (summarizeKitWeight) e de encaixe (validateKitFitsForQuote) que o
+  -- front aplica antes de chamar a RPC.
+  -- ------------------------------------------------------------------
+
+  -- 1) Identifica a caixa (primeira linha packaging) e sua carga útil.
+  SELECT p.id, p.box_weight_kg
+    INTO _box_id, _box_max_weight_kg
+    FROM jsonb_array_elements(_items) AS j(item)
+    JOIN public.products p ON p.id = nullif(j.item->>'product_id','')::uuid
+   WHERE p.product_type = 'packaging'
+   ORDER BY coalesce(nullif(j.item->>'sort_order','')::integer, 0)
+   LIMIT 1;
+
+  -- 2) Acumula peso e encaixe linha a linha, na ordem do payload.
+  FOR _it, _idx IN
+    SELECT value, ordinality
+    FROM jsonb_array_elements(_items) WITH ORDINALITY
+  LOOP
+    _line_product_id := nullif(_it->>'product_id','')::uuid;
+    _line_name := coalesce(_it->>'product_name','Item');
+    _line_qty := greatest(1, coalesce(nullif(_it->>'quantity','')::integer, 1));
+    IF _line_product_id IS NULL THEN
+      CONTINUE;
+    END IF;
+
+    -- Peso: a caixa é o limite, não soma. Só soma peso conhecido (>0).
+    IF _line_product_id IS DISTINCT FROM _box_id THEN
+      SELECT max(p.weight_g)
+        INTO _item_weight_g
+        FROM public.products p
+       WHERE p.id = _line_product_id;
+      IF _item_weight_g IS NOT NULL AND _item_weight_g > 0 THEN
+        _items_weight_g := _items_weight_g + (_item_weight_g::bigint * _line_qty::bigint);
+      END IF;
+    END IF;
+
+    -- Encaixe: mesmo loop sequencial do cliente; falha comprovada bloqueia.
+    IF _box_id IS NOT NULL AND _line_product_id IS DISTINCT FROM _box_id THEN
+      SELECT * INTO _fit
+        FROM public.fn_check_item_fits(_box_id, _line_product_id, _used_liters);
+      _line_volume := coalesce(_fit.product_volume, 0) * _line_qty;
+      IF _fit.fits = FALSE
+         OR (_line_qty > 1 AND _fit.fits IS NOT NULL
+             AND (_used_liters + _line_volume) > coalesce(_fit.packaging_volume, 0)) THEN
+        _violations := array_append(_violations,
+          format('%s (cabe: %s, volume: %sL)',
+                 _line_name,
+                 coalesce(_fit.fits::text, 'sem dados'),
+                 round(coalesce(_line_volume,0), 2)));
+      END IF;
+      _used_liters := _used_liters + _line_volume;
+    END IF;
+  END LOOP;
+
+  -- Violação comprovada de encaixe: rejeita (fail-closed p/ violação
+  -- determinística; dados ausentes seguem fail-open como no front).
+  IF _box_id IS NOT NULL AND cardinality(_violations) > 0 THEN
+    RAISE EXCEPTION 'Kit nao cabe fisicamente na embalagem selecionada (KM2-099): %',
+      array_to_string(_violations, '; ')
+      USING ERRCODE = 'P0001';
+  END IF;
+
+  -- Sobrepeso comprovado (maxWeight = box_weight_kg*1000, mesma regra do front).
+  IF _box_max_weight_kg IS NOT NULL
+     AND _items_weight_g > floor(_box_max_weight_kg * 1000)::bigint THEN
+    RAISE EXCEPTION 'Peso dos itens (% kg) excede a carga util da caixa (% kg) (KM2-099)',
+      round(_items_weight_g / 1000.0, 1), round(_box_max_weight_kg, 1)
+      USING ERRCODE = 'P0001';
+  END IF;
+
   SELECT * INTO _quote_result
   FROM public.create_quote_transactional(_quote, _items);
 
@@ -8905,13 +9195,13 @@ BEGIN
     SET artwork_urls = _artwork_urls,
         product_variant_id = _variant_id
     WHERE quote_id = _quote_result.id
-      AND sort_order = coalesce(nullif(_item->>'sort_order', '')::integer, _ordinality::integer - 1)
+      AND sort_order = coalesce(nullif(_item->>'sort_order','')::integer, _ordinality::integer - 1)
       AND product_id IS NOT DISTINCT FROM _product_id;
 
     GET DIAGNOSTICS _updated_count = ROW_COUNT;
     IF _updated_count <> 1 THEN
       RAISE EXCEPTION 'Kit Maker quote lineage could not match exactly one quote item (sort order %, product %)',
-        coalesce(nullif(_item->>'sort_order', '')::integer, _ordinality::integer - 1),
+        coalesce(nullif(_item->>'sort_order','')::integer, _ordinality::integer - 1),
         _product_id
         USING ERRCODE = '23505';
     END IF;
@@ -8928,7 +9218,7 @@ $$;
 ALTER FUNCTION "public"."create_kit_quote_transactional"("_request_id" "uuid", "_quote" "jsonb", "_items" "jsonb") OWNER TO "postgres";
 
 
-COMMENT ON FUNCTION "public"."create_kit_quote_transactional"("_request_id" "uuid", "_quote" "jsonb", "_items" "jsonb") IS 'Idempotent Kit Maker quote writer; persists Kit context, artwork URLs and the selected catalog variant.';
+COMMENT ON FUNCTION "public"."create_kit_quote_transactional"("_request_id" "uuid", "_quote" "jsonb", "_items" "jsonb") IS 'Idempotent Kit Maker quote writer; persists Kit context, artwork URLs, the selected catalog variant and revalidates weight/fit server-side (KM2-099).';
 
 
 
@@ -9257,6 +9547,7 @@ BEGIN
     seller_id, created_by, organization_id, status,
     subtotal, discount_percent, discount_amount, total, negotiation_markup_percent,
     payment_method, payment_terms, delivery_time, shipping_type, shipping_cost,
+    freight_plan, freight_mix_mode, show_freight_plan_to_client,
     notes, internal_notes, valid_until
   )
   VALUES (
@@ -9282,6 +9573,9 @@ BEGIN
     _quote->>'delivery_time',
     _quote->>'shipping_type',
     coalesce((_quote->>'shipping_cost')::numeric, 0),
+    CASE WHEN _quote ? 'freight_plan' THEN nullif(_quote->>'freight_plan', '')::jsonb END,
+    nullif(_quote->>'freight_mix_mode', ''),
+    coalesce((_quote->>'show_freight_plan_to_client')::boolean, false),
     _quote->>'notes',
     _quote->>'internal_notes',
     nullif(_quote->>'valid_until', '')::date
@@ -10001,6 +10295,51 @@ $$;
 ALTER FUNCTION "public"."enforce_password_reset_rate_limit"() OWNER TO "postgres";
 
 
+CREATE OR REPLACE FUNCTION "public"."enforce_quote_comment_mutation"() RETURNS "trigger"
+    LANGUAGE "plpgsql"
+    SET "search_path" TO ''
+    AS $$
+DECLARE
+  parent_parent_id uuid;
+BEGIN
+  NEW.content := pg_catalog.btrim(NEW.content, E' \t\n\r\v\f' || U&'\00A0\1680\2000\2001\2002\2003\2004\2005\2006\2007\2008\2009\200A\2028\2029\202F\205F\3000\FEFF');
+  IF TG_OP = 'INSERT' THEN
+    NEW.created_at := pg_catalog.statement_timestamp();
+    NEW.updated_at := NEW.created_at;
+    NEW.is_edited := false;
+    IF NEW.parent_id IS NOT NULL THEN
+      SELECT c.parent_id INTO parent_parent_id
+      FROM public.quote_comments c
+      WHERE c.id = NEW.parent_id AND c.quote_id = NEW.quote_id;
+      IF NOT FOUND THEN
+        RAISE EXCEPTION 'Parent comment is not visible in this quote'
+          USING ERRCODE = '23503', CONSTRAINT = 'quote_comments_parent_quote_fkey';
+      END IF;
+      IF parent_parent_id IS NOT NULL THEN
+        RAISE EXCEPTION 'Replies must reference a root comment'
+          USING ERRCODE = '23514', CONSTRAINT = 'quote_comments_root_parent_check';
+      END IF;
+    END IF;
+  ELSE
+    IF NEW.id IS DISTINCT FROM OLD.id
+      OR NEW.quote_id IS DISTINCT FROM OLD.quote_id
+      OR NEW.user_id IS DISTINCT FROM OLD.user_id
+      OR NEW.parent_id IS DISTINCT FROM OLD.parent_id
+      OR NEW.created_at IS DISTINCT FROM OLD.created_at THEN
+      RAISE EXCEPTION 'Comment identity, author, quote and thread cannot be changed'
+        USING ERRCODE = '23514', CONSTRAINT = 'quote_comments_immutable_fields_check';
+    END IF;
+    NEW.updated_at := pg_catalog.statement_timestamp();
+    NEW.is_edited := OLD.is_edited OR (NEW.content IS DISTINCT FROM OLD.content);
+  END IF;
+  RETURN NEW;
+END;
+$$;
+
+
+ALTER FUNCTION "public"."enforce_quote_comment_mutation"() OWNER TO "postgres";
+
+
 CREATE OR REPLACE FUNCTION "public"."enforce_seller_cart_limit"() RETURNS "trigger"
     LANGUAGE "plpgsql"
     SET "search_path" TO 'public'
@@ -10052,23 +10391,29 @@ ALTER FUNCTION "public"."enforce_user_id_owner"() OWNER TO "postgres";
 
 CREATE OR REPLACE FUNCTION "public"."enqueue_optimization"("_title" "text", "_description" "text" DEFAULT NULL::"text", "_category" "text" DEFAULT 'performance'::"text", "_priority" integer DEFAULT 100) RETURNS "uuid"
     LANGUAGE "plpgsql" SECURITY DEFINER
-    SET "search_path" TO 'public'
+    SET "search_path" TO 'pg_catalog', 'pg_temp'
     AS $$
 DECLARE
   new_id uuid;
 BEGIN
-  IF NOT public.has_role(auth.uid(), 'admin') THEN
-    RAISE EXCEPTION 'forbidden';
+  IF NOT public.is_dev((SELECT auth.uid())) THEN
+    RAISE EXCEPTION 'forbidden' USING ERRCODE = '42501';
   END IF;
+
   INSERT INTO public.optimization_queue (title, description, category, priority, created_by)
-  VALUES (_title, _description, COALESCE(_category,'performance'), COALESCE(_priority,100), auth.uid())
+  VALUES (_title, _description, COALESCE(_category, 'performance'), COALESCE(_priority, 100), (SELECT auth.uid()))
   RETURNING id INTO new_id;
+
   RETURN new_id;
 END;
 $$;
 
 
 ALTER FUNCTION "public"."enqueue_optimization"("_title" "text", "_description" "text", "_category" "text", "_priority" integer) OWNER TO "postgres";
+
+
+COMMENT ON FUNCTION "public"."enqueue_optimization"("_title" "text", "_description" "text", "_category" "text", "_priority" integer) IS 'Fila de otimização (UI dev /admin/telemetria). Guarda interna is_dev(); EXECUTE: authenticated, service_role. Ver 20261112120500.';
+
 
 
 CREATE OR REPLACE FUNCTION "public"."ensure_default_favorite_list"("_user_id" "uuid") RETURNS "uuid"
@@ -11530,15 +11875,77 @@ Uso: SELECT fn_adicionar_mapeamento_fornecedor(
 
 
 
-CREATE OR REPLACE FUNCTION "public"."fn_admin_sync_external_connections"() RETURNS "jsonb"
+CREATE OR REPLACE FUNCTION "public"."fn_admin_run_smoke_tests"() RETURNS "void"
     LANGUAGE "plpgsql" SECURITY DEFINER
-    SET "search_path" TO ''
+    SET "search_path" TO 'pg_catalog', 'pg_temp'
     AS $$
 BEGIN
-  IF NOT public.has_role((SELECT auth.uid()), 'admin'::public.app_role) THEN
+  IF NOT coalesce(public.is_admin_or_above((SELECT auth.uid())), false) THEN
+    RAISE EXCEPTION 'not authorized' USING ERRCODE = '42501';
+  END IF;
+
+  -- Executa como owner (postgres); a guarda interna de fn_run_and_persist_smoke_tests
+  -- (role do JWT + is_admin_or_above) continua valendo.
+  PERFORM public.fn_run_and_persist_smoke_tests();
+END
+$$;
+
+
+ALTER FUNCTION "public"."fn_admin_run_smoke_tests"() OWNER TO "postgres";
+
+
+COMMENT ON FUNCTION "public"."fn_admin_run_smoke_tests"() IS 'Execucao manual dos smoke tests pelo dashboard admin. Exige is_admin_or_above e delega para fn_run_and_persist_smoke_tests(), que segue sem EXECUTE para authenticated.';
+
+
+
+CREATE OR REPLACE FUNCTION "public"."fn_admin_smoke_tests_dashboard"() RETURNS "jsonb"
+    LANGUAGE "plpgsql" STABLE SECURITY DEFINER
+    SET "search_path" TO 'pg_catalog', 'pg_temp'
+    AS $$
+BEGIN
+  IF NOT coalesce(public.is_admin_or_above((SELECT auth.uid())), false) THEN
+    RAISE EXCEPTION 'not authorized' USING ERRCODE = '42501';
+  END IF;
+
+  RETURN jsonb_build_object(
+    'latest', coalesce((
+      SELECT jsonb_agg(
+               to_jsonb(l)
+               ORDER BY CASE
+                          WHEN l.result LIKE '%FAIL%' THEN 0
+                          WHEN l.result LIKE '%WARN%' THEN 1
+                          ELSE 2
+                        END,
+                        l.test_name
+             )
+      FROM public.v_smoke_tests_latest_run AS l
+    ), '[]'::jsonb),
+    'trend', coalesce((
+      SELECT jsonb_agg(to_jsonb(t) ORDER BY t.ran_at DESC)
+      FROM public.v_smoke_tests_trend AS t
+    ), '[]'::jsonb)
+  );
+END
+$$;
+
+
+ALTER FUNCTION "public"."fn_admin_smoke_tests_dashboard"() OWNER TO "postgres";
+
+
+COMMENT ON FUNCTION "public"."fn_admin_smoke_tests_dashboard"() IS 'Dashboard de smoke tests (/admin/observabilidade): {latest, trend} de v_smoke_tests_latest_run e v_smoke_tests_trend. Exige is_admin_or_above; as views seguem revogadas para authenticated (20260716192234).';
+
+
+
+CREATE OR REPLACE FUNCTION "public"."fn_admin_sync_external_connections"() RETURNS "jsonb"
+    LANGUAGE "plpgsql" SECURITY DEFINER
+    SET "search_path" TO 'pg_catalog', 'pg_temp'
+    AS $$
+BEGIN
+  IF NOT (public.is_dev((SELECT auth.uid()))
+          OR public.has_role((SELECT auth.uid()), 'admin'::public.app_role)) THEN
     RAISE EXCEPTION 'forbidden' USING ERRCODE = '42501';
   END IF;
-  RETURN public.sync_external_connections_from_credentials();
+  RETURN public.sync_external_connections_from_credentials(NULL::text, 'manual'::text, (SELECT auth.uid()));
 END;
 $$;
 
@@ -11978,7 +12385,7 @@ ALTER FUNCTION "public"."fn_anon_catalog_grant_audit_run"() OWNER TO "postgres";
 
 CREATE OR REPLACE FUNCTION "public"."fn_anon_insert_rate_guard"() RETURNS "trigger"
     LANGUAGE "plpgsql" SECURITY DEFINER
-    SET "search_path" TO 'public', 'pg_temp'
+    SET "search_path" TO 'public'
     AS $$
 DECLARE
   v_role  text;
@@ -14643,7 +15050,7 @@ COMMENT ON FUNCTION "public"."fn_assert_public_contract"() IS 'Guarda do contrat
 
 CREATE OR REPLACE FUNCTION "public"."fn_audit_and_fix_grants"("p_source" "text" DEFAULT 'cron'::"text") RETURNS "jsonb"
     LANGUAGE "plpgsql" SECURITY DEFINER
-    SET "search_path" TO 'public', 'pg_temp'
+    SET "search_path" TO 'public'
     AS $$
 DECLARE r record; v_fixed int := 0;
 BEGIN
@@ -14903,6 +15310,27 @@ ALTER FUNCTION "public"."fn_audit_row_change"() OWNER TO "postgres";
 
 COMMENT ON FUNCTION "public"."fn_audit_row_change"() IS 'Trigger genérica de auditoria → admin_audit_log com redação de PII/segredos (Onda 4).';
 
+
+
+CREATE OR REPLACE FUNCTION "public"."fn_auto_assign_org_on_profile"() RETURNS "trigger"
+    LANGUAGE "plpgsql" SECURITY DEFINER
+    SET "search_path" TO 'public', 'pg_temp'
+    AS $$
+DECLARE
+  _org constant uuid := '5db5aee1-064b-4ef4-9193-345dcd8274ea'; -- unica org real (Promo Brindes)
+BEGIN
+  IF EXISTS (SELECT 1 FROM public.organizations WHERE id = _org) THEN
+    INSERT INTO public.user_organizations (organization_id, user_id)
+    VALUES (_org, NEW.id) ON CONFLICT (organization_id, user_id) DO NOTHING;
+    INSERT INTO public.organization_members (organization_id, user_id)
+    VALUES (_org, NEW.id) ON CONFLICT (organization_id, user_id) DO NOTHING;
+  END IF;
+  RETURN NEW;
+END;
+$$;
+
+
+ALTER FUNCTION "public"."fn_auto_assign_org_on_profile"() OWNER TO "postgres";
 
 
 CREATE OR REPLACE FUNCTION "public"."fn_auto_classify_kit_product"() RETURNS "trigger"
@@ -20924,7 +21352,7 @@ ALTER FUNCTION "public"."fn_cron_guard"("p_key" bigint, "p_sql" "text") OWNER TO
 
 CREATE OR REPLACE FUNCTION "public"."fn_cron_safe_run"("p_key" bigint, "p_sql" "text", "p_timeout_ms" integer DEFAULT 45000, "p_job_label" "text" DEFAULT 'cron'::"text") RETURNS "text"
     LANGUAGE "plpgsql" SECURITY DEFINER
-    SET "search_path" TO 'public'
+    SET "search_path" TO 'pg_catalog', 'public'
     AS $$
 DECLARE v_start timestamptz := clock_timestamp(); v_duration_ms int;
 BEGIN
@@ -20937,9 +21365,12 @@ BEGIN
   RETURN format('[%s] OK: %sms', p_job_label, v_duration_ms);
 EXCEPTION
   WHEN query_canceled THEN
+    RAISE WARNING 'fn_cron_safe_run [%] TIMEOUT após %ms (limite=%ms)', p_job_label,
+      EXTRACT(EPOCH FROM (clock_timestamp() - v_start))::int * 1000, p_timeout_ms;
     RETURN format('[%s] TIMEOUT após %sms (limite=%sms)', p_job_label,
       EXTRACT(EPOCH FROM (clock_timestamp() - v_start))::int * 1000, p_timeout_ms);
   WHEN OTHERS THEN
+    RAISE WARNING 'fn_cron_safe_run [%] ERRO: %', p_job_label, SQLERRM;
     RETURN format('[%s] ERRO: %s', p_job_label, SQLERRM);
 END; $$;
 
@@ -21751,6 +22182,42 @@ $$;
 ALTER FUNCTION "public"."fn_detecta_familia_cor"("p_r" integer, "p_g" integer, "p_b" integer) OWNER TO "postgres";
 
 
+CREATE OR REPLACE FUNCTION "public"."fn_dev_medallion_health"() RETURNS "jsonb"
+    LANGUAGE "plpgsql" STABLE SECURITY DEFINER
+    SET "search_path" TO 'public', 'pg_catalog', 'pg_temp'
+    AS $$
+DECLARE
+  v_uid uuid := (SELECT auth.uid());
+BEGIN
+  IF v_uid IS NULL OR NOT public.is_dev(v_uid) THEN
+    RAISE EXCEPTION 'forbidden: requer papel dev' USING ERRCODE = '42501';
+  END IF;
+
+  RETURN jsonb_build_object(
+    'coverage',
+    COALESCE(
+      (SELECT jsonb_agg(to_jsonb(c) ORDER BY c.fornecedor, c.camada)
+         FROM public.vw_medallion_coverage c),
+      '[]'::jsonb
+    ),
+    'progress',
+    COALESCE(
+      (SELECT jsonb_agg(to_jsonb(p) ORDER BY p.fase)
+         FROM public.v_pipeline_progress p),
+      '[]'::jsonb
+    )
+  );
+END;
+$$;
+
+
+ALTER FUNCTION "public"."fn_dev_medallion_health"() OWNER TO "postgres";
+
+
+COMMENT ON FUNCTION "public"."fn_dev_medallion_health"() IS 'Saúde do pipeline Medallion para o MedallionPipelineCard (/admin/status, DevRoute): {coverage: vw_medallion_coverage[], progress: v_pipeline_progress[]}. Só papel dev (42501 para os demais). As views seguem sem SELECT para authenticated (20260716192234).';
+
+
+
 CREATE OR REPLACE FUNCTION "public"."fn_display_product_name"("p_name" "text") RETURNS "text"
     LANGUAGE "plpgsql" IMMUTABLE PARALLEL SAFE
     SET "search_path" TO 'public'
@@ -21961,6 +22428,40 @@ ALTER FUNCTION "public"."fn_dryrun_standardize_supplier"("p_supplier_id" "uuid",
 
 COMMENT ON FUNCTION "public"."fn_dryrun_standardize_supplier"("p_supplier_id" "uuid", "p_limit" integer) IS 'Dry-run REAL do Bronze->Silver: executa fn_standardize_supplier numa subtransação, coleta preview (contagens + amostra de rejeitados) e REVERTE tudo via exceção sentinela. 2026-06-11: antes escrevia no Silver apesar do nome.';
 
+
+
+CREATE OR REPLACE FUNCTION "public"."fn_ema_coverage_stats"() RETURNS TABLE("metric" "text", "valor" numeric, "unidade" "text", "status" "text")
+    LANGUAGE "sql" STABLE SECURITY DEFINER
+    SET "search_path" TO 'public', 'pg_catalog', 'pg_temp'
+    AS $$
+  WITH base AS (
+    SELECT a.ema_diaria, a.confidence_level, a.anomalia_spike
+    FROM public.mv_stock_rupture_alert a
+  )
+  SELECT 'pct_cobertura_ema'::text AS metric,
+         ROUND(100.0 * COUNT(*) FILTER (WHERE base.ema_diaria > 0.01) / NULLIF(COUNT(*), 0), 1),
+         'pct'::text,
+         CASE WHEN COUNT(*) FILTER (WHERE base.ema_diaria > 0.01) = 0
+              THEN 'WARN'::text ELSE 'OK'::text END
+  FROM base
+  UNION ALL
+  SELECT 'pct_alta_confianca'::text,
+         ROUND(100.0 * COUNT(*) FILTER (WHERE base.confidence_level = 'ALTA') / NULLIF(COUNT(*), 0), 1),
+         'pct'::text,
+         CASE WHEN COUNT(*) FILTER (WHERE base.confidence_level = 'ALTA') = 0
+              THEN 'WARN'::text ELSE 'OK'::text END
+  FROM base
+  UNION ALL
+  SELECT 'spikes_ativos'::text,
+         COUNT(*) FILTER (WHERE base.anomalia_spike)::numeric,
+         'un'::text,
+         CASE WHEN COUNT(*) FILTER (WHERE base.anomalia_spike) > 0
+              THEN 'WARN'::text ELSE 'OK'::text END
+  FROM base;
+$$;
+
+
+ALTER FUNCTION "public"."fn_ema_coverage_stats"() OWNER TO "postgres";
 
 
 CREATE OR REPLACE FUNCTION "public"."fn_ema_kpi_by_level"("p_preferred_only" boolean DEFAULT true) RETURNS TABLE("nivel_alerta" "text", "prioridade" integer, "total_variantes" bigint, "avg_cobertura" numeric, "min_cobertura" numeric)
@@ -27455,6 +27956,670 @@ $$;
 ALTER FUNCTION "public"."fn_get_repressed_demand"("p_user_id" "uuid", "p_days" integer, "p_limit" integer) OWNER TO "postgres";
 
 
+CREATE TABLE IF NOT EXISTS "public"."stock_daily_summary" (
+    "id" bigint NOT NULL,
+    "variant_supplier_source_id" "uuid" NOT NULL,
+    "supplier_id" "uuid" NOT NULL,
+    "supplier_branch_id" "uuid",
+    "variant_id" "uuid" NOT NULL,
+    "product_id" "uuid" NOT NULL,
+    "summary_date" "date" NOT NULL,
+    "stock_open" integer,
+    "stock_close" integer,
+    "stock_min" integer,
+    "stock_max" integer,
+    "net_change" integer,
+    "units_depleted" integer DEFAULT 0,
+    "units_restocked" integer DEFAULT 0,
+    "restock_detected" boolean DEFAULT false,
+    "restock_quantity" integer DEFAULT 0,
+    "restock_count" smallint DEFAULT 0,
+    "cost_price_open" numeric(12,4),
+    "cost_price_close" numeric(12,4),
+    "price_changed" boolean DEFAULT false,
+    "sync_count" smallint DEFAULT 0,
+    "created_at" timestamp with time zone DEFAULT "now"() NOT NULL,
+    "restock_zero_to_positive" boolean DEFAULT false NOT NULL
+)
+WITH ("autovacuum_vacuum_scale_factor"='0.05', "autovacuum_analyze_scale_factor"='0.05', "autovacuum_vacuum_threshold"='50', "autovacuum_analyze_threshold"='50');
+
+
+ALTER TABLE "public"."stock_daily_summary" OWNER TO "postgres";
+
+
+COMMENT ON TABLE "public"."stock_daily_summary" IS 'Camada 2: Resumo diário de movimentação de estoque e preço por variante/fornecedor. Retenção permanente. Gerado automaticamente por job noturno via pg_cron.';
+
+
+
+COMMENT ON COLUMN "public"."stock_daily_summary"."restock_zero_to_positive" IS 'TRUE se em qualquer snapshot do dia o stock_total_old=0 E stock_total_new>0 (transição real de zero-para-positivo). Diferente de restock_detected que marca qualquer delta positivo — este campo é semanticamente correto para o módulo Reposição.';
+
+
+
+CREATE TABLE IF NOT EXISTS "public"."variant_supplier_sources" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "organization_id" "uuid" NOT NULL,
+    "variant_id" "uuid" NOT NULL,
+    "supplier_id" "uuid" NOT NULL,
+    "quantity" integer DEFAULT 0,
+    "source" character varying(50) DEFAULT 'manual'::character varying,
+    "last_synced_at" timestamp with time zone,
+    "sync_status" character varying(50) DEFAULT 'synced'::character varying,
+    "sync_error" "text",
+    "updated_at" timestamp with time zone DEFAULT "now"(),
+    "next_quantity_1" integer,
+    "next_date_1" "date",
+    "next_quantity_2" integer,
+    "next_date_2" "date",
+    "next_quantity_3" integer,
+    "next_date_3" "date",
+    "supplier_sku" character varying(100),
+    "supplier_color_code" character varying(50),
+    "supplier_color_name" character varying(100),
+    "cost_price" numeric(10,4),
+    "list_price" numeric(10,4),
+    "cost_price_1" numeric(10,4),
+    "min_qty_1" integer,
+    "cost_price_2" numeric(10,4),
+    "min_qty_2" integer,
+    "cost_price_3" numeric(10,4),
+    "min_qty_3" integer,
+    "cost_price_4" numeric(10,4),
+    "min_qty_4" integer,
+    "cost_price_5" numeric(10,4),
+    "min_qty_5" integer,
+    "lead_time_days" integer,
+    "min_order_qty" integer DEFAULT 1,
+    "pack_quantity" integer DEFAULT 1,
+    "sale_multiplier" integer DEFAULT 1,
+    "is_preferred" boolean DEFAULT false,
+    "priority" integer DEFAULT 99,
+    "is_active" boolean DEFAULT true,
+    "supplier_images" "jsonb" DEFAULT '[]'::"jsonb",
+    "supplier_videos" "jsonb" DEFAULT '[]'::"jsonb",
+    "supplier_thumbnail" character varying(500),
+    "removed_from_api" boolean DEFAULT false,
+    "removed_at" timestamp with time zone,
+    "raw_data" "jsonb",
+    "stock_main_warehouse" integer DEFAULT 0 NOT NULL,
+    "stock_other_warehouses" integer DEFAULT 0 NOT NULL,
+    "supplier_availability_status" character varying(20),
+    "supplier_ipi_rate" numeric(5,2),
+    "supplier_branch_id" "uuid",
+    "icms_rate" numeric(5,2),
+    "pis_rate" numeric(5,4),
+    "cofins_rate" numeric(5,4),
+    "cfop" character varying(4),
+    "csosn" character varying(4),
+    "cest" character varying(7),
+    "cst" character varying(3),
+    "operation_nature" character varying(100),
+    "price_updated_at" timestamp with time zone,
+    "next_quantity_4" integer,
+    "next_quantity_5" integer,
+    "next_quantity_6" integer,
+    "next_date_4" "date",
+    "next_date_5" "date",
+    "next_date_6" "date",
+    "your_price" numeric,
+    CONSTRAINT "chk_vss_cost_price_not_zero" CHECK ((("cost_price" IS NULL) OR ("cost_price" > (0)::numeric))),
+    CONSTRAINT "chk_vss_priority_positive" CHECK ((("priority" IS NULL) OR ("priority" > 0))),
+    CONSTRAINT "chk_vss_quantity_positive" CHECK ((("quantity" IS NULL) OR ("quantity" >= 0))),
+    CONSTRAINT "variant_stocks_quantity_check" CHECK (("quantity" >= 0))
+)
+WITH ("autovacuum_analyze_scale_factor"='0.005', "autovacuum_vacuum_cost_delay"='2', "autovacuum_vacuum_scale_factor"='0.03');
+ALTER TABLE ONLY "public"."variant_supplier_sources" ALTER COLUMN "variant_id" SET STATISTICS 1000;
+ALTER TABLE ONLY "public"."variant_supplier_sources" ALTER COLUMN "supplier_id" SET STATISTICS 500;
+
+ALTER TABLE ONLY "public"."variant_supplier_sources" REPLICA IDENTITY FULL;
+
+
+ALTER TABLE "public"."variant_supplier_sources" OWNER TO "postgres";
+
+
+COMMENT ON TABLE "public"."variant_supplier_sources" IS 'Fonte dados por variante x fornecedor. BACKLOG: cost_price_1..5+min_qty_1..5 → supplier_price_tiers; next_quantity/date_1..6 → variant_restock_schedule. Bloqueado por 24+ refs frontend.';
+
+
+
+COMMENT ON COLUMN "public"."variant_supplier_sources"."quantity" IS 'Quantidade em estoque deste fornecedor para esta variante. Trigger sincroniza cache em products.stock_quantity.';
+
+
+
+COMMENT ON COLUMN "public"."variant_supplier_sources"."supplier_sku" IS 'SKU/código desta variante no sistema do fornecedor.
+Ex: XBZ usa "01320-AZ", SPOT usa "22900-105"';
+
+
+
+COMMENT ON COLUMN "public"."variant_supplier_sources"."supplier_color_code" IS 'Código da cor no sistema do fornecedor.
+Ex: SPOT usa "104" para Azul, XBZ usa "AZ"';
+
+
+
+COMMENT ON COLUMN "public"."variant_supplier_sources"."supplier_color_name" IS 'Nome da cor como o fornecedor chama.
+Ex: "Azul Royal", "Azul Marinho", "Navy Blue"';
+
+
+
+COMMENT ON COLUMN "public"."variant_supplier_sources"."cost_price" IS 'Custo unitário atual de compra (menor faixa ou preço base)';
+
+
+
+COMMENT ON COLUMN "public"."variant_supplier_sources"."list_price" IS 'Preço de tabela/lista do fornecedor (antes de descontos por quantidade)';
+
+
+
+COMMENT ON COLUMN "public"."variant_supplier_sources"."cost_price_1" IS 'Preço de custo faixa 1 (menor quantidade). cost_price_2/3/4/5 para faixas maiores.';
+
+
+
+COMMENT ON COLUMN "public"."variant_supplier_sources"."min_qty_1" IS 'Quantidade mínima para faixa 1';
+
+
+
+COMMENT ON COLUMN "public"."variant_supplier_sources"."cost_price_2" IS 'Custo unitário faixa 2';
+
+
+
+COMMENT ON COLUMN "public"."variant_supplier_sources"."min_qty_2" IS 'Quantidade mínima para faixa 2';
+
+
+
+COMMENT ON COLUMN "public"."variant_supplier_sources"."cost_price_3" IS 'Custo unitário faixa 3';
+
+
+
+COMMENT ON COLUMN "public"."variant_supplier_sources"."min_qty_3" IS 'Quantidade mínima para faixa 3';
+
+
+
+COMMENT ON COLUMN "public"."variant_supplier_sources"."cost_price_4" IS 'Custo unitário faixa 4';
+
+
+
+COMMENT ON COLUMN "public"."variant_supplier_sources"."min_qty_4" IS 'Quantidade mínima para faixa 4';
+
+
+
+COMMENT ON COLUMN "public"."variant_supplier_sources"."cost_price_5" IS 'Custo unitário faixa 5 (maior quantidade = melhor preço)';
+
+
+
+COMMENT ON COLUMN "public"."variant_supplier_sources"."min_qty_5" IS 'Quantidade mínima para faixa 5';
+
+
+
+COMMENT ON COLUMN "public"."variant_supplier_sources"."lead_time_days" IS 'Prazo de entrega em dias úteis para este fornecedor';
+
+
+
+COMMENT ON COLUMN "public"."variant_supplier_sources"."min_order_qty" IS 'Quantidade mínima para fazer pedido neste fornecedor';
+
+
+
+COMMENT ON COLUMN "public"."variant_supplier_sources"."pack_quantity" IS 'Quantidade de unidades por embalagem/pack';
+
+
+
+COMMENT ON COLUMN "public"."variant_supplier_sources"."sale_multiplier" IS 'Deve comprar em múltiplos de X unidades';
+
+
+
+COMMENT ON COLUMN "public"."variant_supplier_sources"."is_preferred" IS 'Marca este VSS como preferencial para a variante. 100% das variantes têm exatamente 1 preferred.';
+
+
+
+COMMENT ON COLUMN "public"."variant_supplier_sources"."priority" IS 'Prioridade para seleção automática (1 = maior prioridade).
+Usado quando há empate em outros critérios';
+
+
+
+COMMENT ON COLUMN "public"."variant_supplier_sources"."is_active" IS 'Se este fornecedor está ativo para venda desta variante';
+
+
+
+COMMENT ON COLUMN "public"."variant_supplier_sources"."supplier_images" IS 'Array de URLs de imagens enviadas pelo fornecedor.
+Formato: ["https://...", "https://..."]';
+
+
+
+COMMENT ON COLUMN "public"."variant_supplier_sources"."supplier_videos" IS 'Array de URLs de vídeos enviados pelo fornecedor.
+Formato: ["https://...", "https://..."]';
+
+
+
+COMMENT ON COLUMN "public"."variant_supplier_sources"."supplier_thumbnail" IS 'URL da imagem principal/thumbnail deste fornecedor';
+
+
+
+COMMENT ON COLUMN "public"."variant_supplier_sources"."removed_from_api" IS 'TRUE se o item não aparece mais na API do fornecedor.
+Mantemos o registro para histórico, mas não oferecemos para venda';
+
+
+
+COMMENT ON COLUMN "public"."variant_supplier_sources"."removed_at" IS 'Data/hora em que foi detectada a remoção da API';
+
+
+
+COMMENT ON COLUMN "public"."variant_supplier_sources"."raw_data" IS 'Backup dos dados brutos recebidos da API do fornecedor.
+Útil para debug e reprocessamento';
+
+
+
+COMMENT ON COLUMN "public"."variant_supplier_sources"."stock_main_warehouse" IS 'Estoque no depósito principal do fornecedor (pronta entrega). XBZ: QuantidadeDisponivelEstoquePrincipal';
+
+
+
+COMMENT ON COLUMN "public"."variant_supplier_sources"."stock_other_warehouses" IS 'Estoque em depósitos secundários/trânsito (prazo de transferência). XBZ: QuantidadeDisponivel - EstoquePrincipal';
+
+
+
+COMMENT ON COLUMN "public"."variant_supplier_sources"."supplier_availability_status" IS 'Status de disponibilidade do fornecedor (SIM, CONSULTE, INDISPONÍVEL). Fonte: API /ruiz/consultaEstoque campo Disponivel';
+
+
+
+COMMENT ON COLUMN "public"."variant_supplier_sources"."supplier_ipi_rate" IS 'Alíquota de IPI informada pelo fornecedor para este SKU. Fonte XBZ: campo IpiTaxa da API /ruiz/consultaEstoque. NULL = fornecedor não informou.';
+
+
+
+COMMENT ON COLUMN "public"."variant_supplier_sources"."supplier_branch_id" IS 'Filial do fornecedor que fatura este item. Define UF de origem para calculo de ICMS.';
+
+
+
+COMMENT ON COLUMN "public"."variant_supplier_sources"."icms_rate" IS 'Aliquota ICMS desta operacao. Depende da UF da filial (supplier_branch) x UF destino.';
+
+
+
+COMMENT ON COLUMN "public"."variant_supplier_sources"."cfop" IS 'CFOP da operacao. Ex: 5102 (venda interna), 6102 (venda interestadual).';
+
+
+
+COMMENT ON COLUMN "public"."variant_supplier_sources"."csosn" IS 'CSOSN fiscal. Hoje 0 registros. 7 refs frontend. DROP requer sprint fiscal dedicada.';
+
+
+
+COMMENT ON COLUMN "public"."variant_supplier_sources"."cst" IS 'Código de Situação Tributária. Ex: 100 (importado tributado), 060 (nacional ST), 500 (nacional produção)';
+
+
+
+COMMENT ON COLUMN "public"."variant_supplier_sources"."operation_nature" IS 'Natureza da operação fiscal. Ex: Venda de Merc. Adquirida de Terceiros, Venda de Produção, Venda com ST';
+
+
+
+COMMENT ON COLUMN "public"."variant_supplier_sources"."next_quantity_4" IS 'Restock slot 4. Hoje 0 registros. API Spot não retorna 4+ slots. DROP requer refatoração coordenada (5 funções + frontend).';
+
+
+
+COMMENT ON COLUMN "public"."variant_supplier_sources"."next_quantity_5" IS 'Restock slot 5. Hoje 0 registros. DROP requer refatoração coordenada.';
+
+
+
+COMMENT ON COLUMN "public"."variant_supplier_sources"."next_quantity_6" IS 'Restock slot 6. Hoje 0 registros. DROP requer refatoração coordenada.';
+
+
+
+COMMENT ON COLUMN "public"."variant_supplier_sources"."next_date_4" IS 'Data restock slot 4. Hoje 0 registros. DROP requer refatoração coordenada.';
+
+
+
+COMMENT ON COLUMN "public"."variant_supplier_sources"."next_date_5" IS 'Data restock slot 5. Hoje 0 registros.';
+
+
+
+COMMENT ON COLUMN "public"."variant_supplier_sources"."next_date_6" IS 'Data restock slot 6. Hoje 0 registros.';
+
+
+
+COMMENT ON CONSTRAINT "chk_vss_cost_price_not_zero" ON "public"."variant_supplier_sources" IS 'cost_price nunca 0 em variant_supplier_sources. Usar NULL para preço desconhecido.';
+
+
+
+CREATE MATERIALIZED VIEW "analytics"."mv_stock_velocity" AS
+ WITH "latest_per_vss" AS (
+         SELECT DISTINCT ON ("sd"."variant_supplier_source_id") "sd"."variant_supplier_source_id",
+            "sd"."supplier_id",
+            "sd"."supplier_branch_id",
+            "sd"."variant_id",
+            "sd"."product_id",
+            "sd"."stock_close" AS "current_stock",
+            "sd"."cost_price_close" AS "current_price",
+            "sd"."summary_date" AS "last_update_date"
+           FROM "public"."stock_daily_summary" "sd"
+          WHERE ("sd"."sync_count" > 0)
+          ORDER BY "sd"."variant_supplier_source_id", "sd"."summary_date" DESC
+        ), "agg_7d" AS (
+         SELECT "sd"."variant_supplier_source_id",
+            "sum"(GREATEST(0, (- COALESCE("sd"."net_change", 0)))) AS "depleted",
+            "sum"(GREATEST(0, COALESCE("sd"."net_change", 0))) AS "restocked",
+            "count"(*) FILTER (WHERE ("sd"."sync_count" > 0)) AS "active_days"
+           FROM "public"."stock_daily_summary" "sd"
+          WHERE ("sd"."summary_date" >= (CURRENT_DATE - 7))
+          GROUP BY "sd"."variant_supplier_source_id"
+        ), "agg_30d" AS (
+         SELECT "sd"."variant_supplier_source_id",
+            "sum"(GREATEST(0, (- COALESCE("sd"."net_change", 0)))) AS "depleted",
+            "sum"(GREATEST(0, COALESCE("sd"."net_change", 0))) AS "restocked",
+            "count"(*) FILTER (WHERE ("sd"."sync_count" > 0)) AS "active_days",
+            "count"(*) FILTER (WHERE ("sd"."restock_zero_to_positive" = true)) AS "restock_events",
+            "count"(*) FILTER (WHERE "sd"."price_changed") AS "price_changes"
+           FROM "public"."stock_daily_summary" "sd"
+          WHERE ("sd"."summary_date" >= (CURRENT_DATE - 30))
+          GROUP BY "sd"."variant_supplier_source_id"
+        ), "agg_90d" AS (
+         SELECT "sd"."variant_supplier_source_id",
+            "sum"(GREATEST(0, (- COALESCE("sd"."net_change", 0)))) AS "depleted",
+            "count"(*) FILTER (WHERE ("sd"."sync_count" > 0)) AS "active_days"
+           FROM "public"."stock_daily_summary" "sd"
+          WHERE ("sd"."summary_date" >= (CURRENT_DATE - 90))
+          GROUP BY "sd"."variant_supplier_source_id"
+        )
+ SELECT "l"."variant_supplier_source_id",
+    "l"."supplier_id",
+    "l"."supplier_branch_id",
+    "l"."variant_id",
+    "l"."product_id",
+    "l"."current_stock",
+    "l"."current_price",
+    "l"."last_update_date",
+    COALESCE("a7"."depleted", (0)::bigint) AS "total_depleted_7d",
+    COALESCE("a30"."depleted", (0)::bigint) AS "total_depleted_30d",
+    COALESCE("a90"."depleted", (0)::bigint) AS "total_depleted_90d",
+    "a7"."active_days" AS "active_days_7d",
+    "a30"."active_days" AS "active_days_30d",
+    "a90"."active_days" AS "active_days_90d",
+    "round"(COALESCE((("a7"."depleted")::numeric / (NULLIF("a7"."active_days", 0))::numeric), (0)::numeric), 2) AS "avg_daily_depletion_7d",
+    "round"(COALESCE((("a30"."depleted")::numeric / (NULLIF("a30"."active_days", 0))::numeric), (0)::numeric), 2) AS "avg_daily_depletion_30d",
+    "round"(COALESCE((("a90"."depleted")::numeric / (NULLIF("a90"."active_days", 0))::numeric), (0)::numeric), 2) AS "avg_daily_depletion_90d",
+        CASE
+            WHEN (COALESCE((("a30"."depleted")::numeric / (NULLIF("a30"."active_days", 0))::numeric), (0)::numeric) > (0)::numeric) THEN "round"((COALESCE((("a7"."depleted")::numeric / (NULLIF("a7"."active_days", 0))::numeric), (0)::numeric) / (("a30"."depleted")::numeric / ("a30"."active_days")::numeric)), 2)
+            ELSE NULL::numeric
+        END AS "velocity_trend",
+        CASE
+            WHEN (COALESCE((("a7"."depleted")::numeric / (NULLIF("a7"."active_days", 0))::numeric), (0)::numeric) > (0)::numeric) THEN "round"((("l"."current_stock")::numeric / (("a7"."depleted")::numeric / ("a7"."active_days")::numeric)), 1)
+            ELSE NULL::numeric
+        END AS "days_to_stockout",
+    COALESCE("a30"."restocked", (0)::bigint) AS "total_restocked_30d",
+    COALESCE("a30"."restock_events", (0)::bigint) AS "restock_events_30d",
+        CASE
+            WHEN (COALESCE("a30"."restock_events", (0)::bigint) > 1) THEN "round"((30.0 / ("a30"."restock_events")::numeric), 1)
+            ELSE NULL::numeric
+        END AS "avg_days_between_restocks",
+    COALESCE("a30"."price_changes", (0)::bigint) AS "price_changes_30d",
+    "now"() AS "refreshed_at"
+   FROM (((("latest_per_vss" "l"
+     JOIN "public"."variant_supplier_sources" "vss" ON ((("vss"."id" = "l"."variant_supplier_source_id") AND ("vss"."is_active" = true))))
+     LEFT JOIN "agg_7d" "a7" ON (("a7"."variant_supplier_source_id" = "l"."variant_supplier_source_id")))
+     LEFT JOIN "agg_30d" "a30" ON (("a30"."variant_supplier_source_id" = "l"."variant_supplier_source_id")))
+     LEFT JOIN "agg_90d" "a90" ON (("a90"."variant_supplier_source_id" = "l"."variant_supplier_source_id")))
+  WITH NO DATA;
+
+
+ALTER MATERIALIZED VIEW "analytics"."mv_stock_velocity" OWNER TO "postgres";
+
+
+CREATE TABLE IF NOT EXISTS "public"."suppliers" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "name" "text" NOT NULL,
+    "code" "text" NOT NULL,
+    "cnpj" "text",
+    "contact_name" "text",
+    "email" "text",
+    "phone" "text",
+    "address" "text",
+    "active" boolean DEFAULT true,
+    "created_at" timestamp with time zone DEFAULT "now"() NOT NULL,
+    "website" "text",
+    "contact_person" "text",
+    "payment_terms" "text",
+    "delivery_time_days" integer,
+    "minimum_order_value" numeric(10,2),
+    "notes" "text",
+    "updated_at" timestamp with time zone DEFAULT "now"(),
+    "organization_id" "uuid",
+    "trading_name" character varying(255),
+    "api_type" character varying(20),
+    "api_base_url" "text",
+    "api_credentials" "jsonb",
+    "min_order_value" numeric(10,2),
+    "shipping_terms" "text",
+    "default_markup_percent" numeric(5,2) DEFAULT 50.00,
+    "is_product_supplier" boolean DEFAULT true,
+    "is_engraving_supplier" boolean DEFAULT false,
+    "sync_enabled" boolean DEFAULT true,
+    "sync_interval_minutes" integer DEFAULT 240,
+    "last_full_sync_at" timestamp with time zone,
+    "last_sync_status" character varying(50),
+    "last_sync_error" "text",
+    "api_rate_limit_per_hour" integer DEFAULT 100,
+    "priority" integer DEFAULT 99,
+    "api_requests_current_hour" integer DEFAULT 0,
+    "api_requests_reset_at" timestamp with time zone DEFAULT "now"(),
+    "state_uf" character varying(2),
+    "tax_regime" character varying(30),
+    "inscricao_estadual" character varying(20),
+    "phone2" character varying(30),
+    "logo_url" "text",
+    "low_stock_threshold" integer DEFAULT 10 NOT NULL,
+    CONSTRAINT "chk_low_stock_threshold_positive" CHECK (("low_stock_threshold" > 0)),
+    CONSTRAINT "suppliers_cnpj_digits_only_chk" CHECK ((("cnpj" IS NULL) OR ("cnpj" ~ '^[0-9]+$'::"text"))),
+    CONSTRAINT "suppliers_cnpj_length_chk" CHECK ((("cnpj" IS NULL) OR ("length"("cnpj") = 14)))
+);
+
+
+ALTER TABLE "public"."suppliers" OWNER TO "postgres";
+
+
+COMMENT ON COLUMN "public"."suppliers"."default_markup_percent" IS 'Markup padrão em % para produtos deste fornecedor. Ex: 50 = preço venda é 1.5x o custo';
+
+
+
+COMMENT ON COLUMN "public"."suppliers"."is_product_supplier" IS 'Indica se o fornecedor fornece produtos para revenda';
+
+
+
+COMMENT ON COLUMN "public"."suppliers"."is_engraving_supplier" IS 'Indica se o fornecedor oferece serviços de gravação/personalização';
+
+
+
+COMMENT ON COLUMN "public"."suppliers"."sync_enabled" IS 'Habilitar sincronização automática com API do fornecedor';
+
+
+
+COMMENT ON COLUMN "public"."suppliers"."sync_interval_minutes" IS 'Intervalo entre sincronizações em minutos (padrão: 240 = 4 horas)';
+
+
+
+COMMENT ON COLUMN "public"."suppliers"."last_full_sync_at" IS 'Data/hora da última sincronização completa bem-sucedida';
+
+
+
+COMMENT ON COLUMN "public"."suppliers"."last_sync_status" IS 'Status da última sync: success, error, in_progress, partial';
+
+
+
+COMMENT ON COLUMN "public"."suppliers"."last_sync_error" IS 'Mensagem de erro detalhada se last_sync_status = error';
+
+
+
+COMMENT ON COLUMN "public"."suppliers"."api_rate_limit_per_hour" IS 'Limite máximo de requisições à API por hora';
+
+
+
+COMMENT ON COLUMN "public"."suppliers"."priority" IS 'Prioridade do fornecedor para escolha automática (1 = maior prioridade)';
+
+
+
+COMMENT ON COLUMN "public"."suppliers"."api_requests_current_hour" IS 'Contador de requisições na hora atual (resetado a cada hora)';
+
+
+
+COMMENT ON COLUMN "public"."suppliers"."api_requests_reset_at" IS 'Timestamp do último reset do contador de requisições';
+
+
+
+COMMENT ON COLUMN "public"."suppliers"."state_uf" IS 'UF da matriz do fornecedor. Para filiais especificas, usar supplier_branches.';
+
+
+
+COMMENT ON COLUMN "public"."suppliers"."inscricao_estadual" IS 'IE principal do fornecedor (da matriz). Para IE de filiais, usar supplier_branches.inscricao_estadual';
+
+
+
+COMMENT ON COLUMN "public"."suppliers"."phone2" IS 'Telefone fixo secundário';
+
+
+
+COMMENT ON COLUMN "public"."suppliers"."logo_url" IS 'URL do logo do fornecedor';
+
+
+
+COMMENT ON COLUMN "public"."suppliers"."low_stock_threshold" IS 'Threshold de estoque baixo para o badge "Estoque Baixo" no catálogo. Padrão 10 unidades. Configurável por fornecedor pois volumes variam muito (XBZ/Spot: pequenos lotes, Asia Import: grandes volumes).';
+
+
+
+CREATE MATERIALIZED VIEW "public"."mv_stock_rupture_alert" AS
+ WITH "ema_raw" AS (
+         SELECT "sv"."variant_supplier_source_id" AS "vss_id",
+            "sv"."variant_id",
+            "sv"."supplier_id",
+            "sv"."velocity_trend",
+            "sv"."active_days_30d",
+            "sv"."days_to_stockout",
+            (GREATEST(0.01,
+                CASE
+                    WHEN (("sv"."avg_daily_depletion_7d" > (0)::numeric) AND ("sv"."avg_daily_depletion_30d" > (0)::numeric)) THEN ((("sv"."avg_daily_depletion_7d" * 0.50) + ("sv"."avg_daily_depletion_30d" * 0.35)) + (COALESCE("sv"."avg_daily_depletion_90d", "sv"."avg_daily_depletion_30d") * 0.15))
+                    WHEN ("sv"."avg_daily_depletion_30d" > (0)::numeric) THEN (("sv"."avg_daily_depletion_30d" * 0.70) + (COALESCE("sv"."avg_daily_depletion_90d", "sv"."avg_daily_depletion_30d") * 0.30))
+                    WHEN ("sv"."avg_daily_depletion_90d" > (0)::numeric) THEN "sv"."avg_daily_depletion_90d"
+                    ELSE 0.01
+                END))::numeric(10,4) AS "ema_bruta"
+           FROM ("analytics"."mv_stock_velocity" "sv"
+             JOIN "public"."variant_supplier_sources" "vss_chk" ON ((("vss_chk"."id" = "sv"."variant_supplier_source_id") AND ("vss_chk"."is_active" = true) AND ("vss_chk"."removed_from_api" IS DISTINCT FROM true))))
+        ), "base" AS (
+         SELECT "e"."vss_id",
+            "e"."variant_id",
+            "e"."supplier_id",
+            "e"."velocity_trend",
+            "e"."active_days_30d",
+            "e"."days_to_stockout",
+            "s"."name" AS "supplier_name",
+            "vss"."supplier_sku",
+            COALESCE("vss"."is_preferred", false) AS "is_preferred",
+            (COALESCE("vss"."stock_main_warehouse", 0) + COALESCE("vss"."stock_other_warehouses", 0)) AS "stock_live",
+            COALESCE("vss"."lead_time_days", "s"."delivery_time_days", 7) AS "lead_time_efetivo",
+            COALESCE("vss"."cost_price", "vss"."your_price", (0)::numeric) AS "unit_cost",
+            (
+                CASE
+                    WHEN (((COALESCE("vss"."stock_main_warehouse", 0) + COALESCE("vss"."stock_other_warehouses", 0)) <= 10) AND ("e"."ema_bruta" > (GREATEST(((COALESCE("vss"."stock_main_warehouse", 0) + COALESCE("vss"."stock_other_warehouses", 0)))::numeric, 0.001) * (500)::numeric))) THEN 0.01
+                    ELSE "e"."ema_bruta"
+                END)::numeric(10,4) AS "ema_diaria"
+           FROM (("ema_raw" "e"
+             JOIN "public"."variant_supplier_sources" "vss" ON (("vss"."id" = "e"."vss_id")))
+             JOIN "public"."suppliers" "s" ON (("s"."id" = "e"."supplier_id")))
+        ), "enriched" AS (
+         SELECT "b"."vss_id",
+            "b"."variant_id",
+            "b"."supplier_id",
+            "b"."velocity_trend",
+            "b"."active_days_30d",
+            "b"."days_to_stockout",
+            "b"."supplier_name",
+            "b"."supplier_sku",
+            "b"."is_preferred",
+            "b"."stock_live",
+            "b"."lead_time_efetivo",
+            "b"."unit_cost",
+            "b"."ema_diaria",
+                CASE
+                    WHEN ("b"."stock_live" = 0) THEN 0.0
+                    WHEN ("b"."ema_diaria" > 0.01) THEN "round"((("b"."stock_live")::numeric / "b"."ema_diaria"), 1)
+                    ELSE COALESCE("b"."days_to_stockout", 9999.0)
+                END AS "cobertura_dias"
+           FROM "base" "b"
+        ), "classified" AS (
+         SELECT "e"."vss_id",
+            "e"."variant_id",
+            "e"."supplier_id",
+            "e"."velocity_trend",
+            "e"."active_days_30d",
+            "e"."days_to_stockout",
+            "e"."supplier_name",
+            "e"."supplier_sku",
+            "e"."is_preferred",
+            "e"."stock_live",
+            "e"."lead_time_efetivo",
+            "e"."unit_cost",
+            "e"."ema_diaria",
+            "e"."cobertura_dias",
+                CASE
+                    WHEN ("e"."stock_live" = 0) THEN 'RUPTURA'::"text"
+                    WHEN ("e"."cobertura_dias" < ("e"."lead_time_efetivo")::numeric) THEN 'CRÍTICO'::"text"
+                    WHEN ("e"."cobertura_dias" < (("e"."lead_time_efetivo")::numeric * 1.5)) THEN 'ALERTA'::"text"
+                    WHEN ("e"."cobertura_dias" < (("e"."lead_time_efetivo")::numeric * 2.0)) THEN 'ATENÇÃO'::"text"
+                    ELSE 'OK'::"text"
+                END AS "nivel_alerta",
+                CASE
+                    WHEN ("e"."stock_live" = 0) THEN 1
+                    WHEN ("e"."cobertura_dias" < ("e"."lead_time_efetivo")::numeric) THEN 2
+                    WHEN ("e"."cobertura_dias" < (("e"."lead_time_efetivo")::numeric * 1.5)) THEN 3
+                    WHEN ("e"."cobertura_dias" < (("e"."lead_time_efetivo")::numeric * 2.0)) THEN 4
+                    ELSE 5
+                END AS "prioridade"
+           FROM "enriched" "e"
+        )
+ SELECT "vss_id",
+    "variant_id",
+    "supplier_id",
+    "supplier_name",
+    "supplier_sku",
+    "is_preferred",
+    "ema_diaria",
+    "lead_time_efetivo",
+    "stock_live" AS "stock_total",
+    "cobertura_dias",
+    "nivel_alerta",
+    "prioridade",
+    (LEAST((100)::numeric, GREATEST((0)::numeric,
+        CASE
+            WHEN ("nivel_alerta" = 'RUPTURA'::"text") THEN 100.0
+            WHEN ("nivel_alerta" = 'CRÍTICO'::"text") THEN LEAST(99.99, (75.0 + (25.0 * GREATEST(0.0, (1.0 - ("cobertura_dias" / NULLIF(("lead_time_efetivo")::numeric, (0)::numeric)))))))
+            WHEN ("nivel_alerta" = 'ALERTA'::"text") THEN (50.0 + (25.0 * GREATEST(0.0, (1.0 - (("cobertura_dias" - ("lead_time_efetivo")::numeric) / NULLIF((("lead_time_efetivo")::numeric * 0.5), (0)::numeric))))))
+            WHEN ("nivel_alerta" = 'ATENÇÃO'::"text") THEN (25.0 + (25.0 * GREATEST(0.0, (1.0 - (("cobertura_dias" - (("lead_time_efetivo")::numeric * 1.5)) / NULLIF((("lead_time_efetivo")::numeric * 0.5), (0)::numeric))))))
+            ELSE GREATEST(0.0, (25.0 - LEAST(25.0, ("cobertura_dias" / 40.0))))
+        END)))::numeric(5,2) AS "score_composto",
+        CASE
+            WHEN (COALESCE("active_days_30d", (0)::bigint) >= 20) THEN 'ALTA'::"text"
+            WHEN (COALESCE("active_days_30d", (0)::bigint) >= 12) THEN 'MÉDIA'::"text"
+            WHEN (COALESCE("active_days_30d", (0)::bigint) >= 5) THEN 'BAIXA'::"text"
+            ELSE 'INSUFICIENTE'::"text"
+        END AS "confidence_level",
+    COALESCE(("velocity_trend" > 1.5), false) AS "anomalia_spike",
+    (GREATEST((0)::numeric, "ceil"((((("lead_time_efetivo")::numeric * 2.0) * "ema_diaria") - ("stock_live")::numeric))))::integer AS "gap_unidades",
+    "round"((("stock_live")::numeric * "unit_cost"), 2) AS "valor_estoque_reais"
+   FROM "classified" "c"
+  ORDER BY ((LEAST((100)::numeric, GREATEST((0)::numeric,
+        CASE
+            WHEN ("nivel_alerta" = 'RUPTURA'::"text") THEN 100.0
+            WHEN ("nivel_alerta" = 'CRÍTICO'::"text") THEN LEAST(99.99, (75.0 + (25.0 * GREATEST(0.0, (1.0 - ("cobertura_dias" / NULLIF(("lead_time_efetivo")::numeric, (0)::numeric)))))))
+            WHEN ("nivel_alerta" = 'ALERTA'::"text") THEN (50.0 + (25.0 * GREATEST(0.0, (1.0 - (("cobertura_dias" - ("lead_time_efetivo")::numeric) / NULLIF((("lead_time_efetivo")::numeric * 0.5), (0)::numeric))))))
+            WHEN ("nivel_alerta" = 'ATENÇÃO'::"text") THEN (25.0 + (25.0 * GREATEST(0.0, (1.0 - (("cobertura_dias" - (("lead_time_efetivo")::numeric * 1.5)) / NULLIF((("lead_time_efetivo")::numeric * 0.5), (0)::numeric))))))
+            ELSE GREATEST(0.0, (25.0 - LEAST(25.0, ("cobertura_dias" / 40.0))))
+        END)))::numeric(5,2)) DESC NULLS LAST
+  WITH NO DATA;
+
+
+ALTER MATERIALIZED VIEW "public"."mv_stock_rupture_alert" OWNER TO "postgres";
+
+
+CREATE OR REPLACE FUNCTION "public"."fn_get_rupture_alerts"() RETURNS SETOF "public"."mv_stock_rupture_alert"
+    LANGUAGE "sql" STABLE SECURITY DEFINER
+    SET "search_path" TO 'public', 'pg_catalog', 'pg_temp'
+    AS $$
+  SELECT * FROM public.mv_stock_rupture_alert
+  WHERE public.is_supervisor_or_above((SELECT auth.uid()))
+$$;
+
+
+ALTER FUNCTION "public"."fn_get_rupture_alerts"() OWNER TO "postgres";
+
+
 CREATE OR REPLACE FUNCTION "public"."fn_get_similar_products"("p_product_id" "uuid", "p_limit" integer DEFAULT 50, "p_offset" integer DEFAULT 0) RETURNS TABLE("similar_product_id" "uuid", "direction" "text")
     LANGUAGE "sql" STABLE
     SET "search_path" TO 'public'
@@ -27623,9 +28788,204 @@ COMMENT ON FUNCTION "public"."fn_get_supplier_mappings"("p_supplier_code" "text"
 
 
 
+CREATE TABLE IF NOT EXISTS "public"."supplier_replenishment_events" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "source_id" "uuid" NOT NULL,
+    "supplier_id" "uuid" NOT NULL,
+    "variant_id" "uuid" NOT NULL,
+    "slot" smallint NOT NULL,
+    "promised_date" "date" NOT NULL,
+    "promised_quantity" integer NOT NULL,
+    "observed_at" timestamp with time zone NOT NULL,
+    "resolution" "text" DEFAULT 'pending'::"text" NOT NULL,
+    "actual_date" "date",
+    "actual_quantity" integer,
+    "delay_days" integer GENERATED ALWAYS AS (
+CASE
+    WHEN ("actual_date" IS NULL) THEN NULL::integer
+    ELSE ("actual_date" - "promised_date")
+END) STORED,
+    "fulfillment_ratio" numeric(5,4) GENERATED ALWAYS AS (
+CASE
+    WHEN (("actual_quantity" IS NULL) OR ("promised_quantity" = 0)) THEN NULL::numeric
+    ELSE LEAST(1.0, (("actual_quantity")::numeric / ("promised_quantity")::numeric))
+END) STORED,
+    "resolved_at" timestamp with time zone,
+    "arrival_snapshot_id" bigint,
+    "created_at" timestamp with time zone DEFAULT "now"() NOT NULL,
+    "updated_at" timestamp with time zone DEFAULT "now"() NOT NULL,
+    CONSTRAINT "supplier_replenishment_events_actual_quantity_check" CHECK ((("actual_quantity" IS NULL) OR ("actual_quantity" >= 0))),
+    CONSTRAINT "supplier_replenishment_events_promised_quantity_check" CHECK (("promised_quantity" > 0)),
+    CONSTRAINT "supplier_replenishment_events_resolution_check" CHECK (("resolution" = ANY (ARRAY['pending'::"text", 'fulfilled'::"text", 'expired'::"text", 'superseded'::"text"]))),
+    CONSTRAINT "supplier_replenishment_events_slot_check" CHECK ((("slot" >= 1) AND ("slot" <= 6)))
+);
+
+
+ALTER TABLE "public"."supplier_replenishment_events" OWNER TO "postgres";
+
+
+COMMENT ON TABLE "public"."supplier_replenishment_events" IS 'Append-only ledger de eventos de reposição de estoque. Cada linha representa uma promessa de chegada (promised_date + promised_quantity) capturada de variant_supplier_sources (slots 1-6), e opcionalmente casada com um delta positivo real em stock_snapshots. resolution: pending → fulfilled/expired/superseded. Criado: 2026-06-22. Arquitetura: Gold layer (read-only para app).';
+
+
+
+COMMENT ON COLUMN "public"."supplier_replenishment_events"."id" IS 'PK UUID gerado. Imutável após criação.';
+
+
+
+COMMENT ON COLUMN "public"."supplier_replenishment_events"."source_id" IS 'FK lógica para variant_supplier_sources.id (sem FK física para evitar cascade delete). Identifica a linha de estoque que gerou a promessa.';
+
+
+
+COMMENT ON COLUMN "public"."supplier_replenishment_events"."supplier_id" IS 'Desnormalizado de variant_supplier_sources.supplier_id para queries sem JOIN.';
+
+
+
+COMMENT ON COLUMN "public"."supplier_replenishment_events"."variant_id" IS 'Desnormalizado de variant_supplier_sources.variant_id para queries sem JOIN.';
+
+
+
+COMMENT ON COLUMN "public"."supplier_replenishment_events"."slot" IS 'Posição 1-6 correspondente a next_date_N/next_quantity_N em variant_supplier_sources.';
+
+
+
+COMMENT ON COLUMN "public"."supplier_replenishment_events"."promised_date" IS 'Data de chegada prometida pelo fornecedor (variant_supplier_sources.next_date_N).';
+
+
+
+COMMENT ON COLUMN "public"."supplier_replenishment_events"."promised_quantity" IS 'Quantidade prometida (variant_supplier_sources.next_quantity_N). Sempre > 0.';
+
+
+
+COMMENT ON COLUMN "public"."supplier_replenishment_events"."observed_at" IS 'Timestamp em que a promessa foi capturada (= variant_supplier_sources.updated_at no momento da captura).';
+
+
+
+COMMENT ON COLUMN "public"."supplier_replenishment_events"."resolution" IS 'Estado do ciclo de vida: pending = aguardando confirmação; fulfilled = chegada confirmada via delta positivo em stock_snapshots; expired = data passou + 15 dias sem confirmação (fn_expire_pending_promises); superseded = promessa substituída por nova promessa no mesmo slot antes de vencer.';
+
+
+
+COMMENT ON COLUMN "public"."supplier_replenishment_events"."actual_date" IS 'Data em que o estoque real chegou (capturada de stock_snapshots.captured_at::date).';
+
+
+
+COMMENT ON COLUMN "public"."supplier_replenishment_events"."actual_quantity" IS 'Delta de estoque observado (stock_main_delta + stock_other_delta) no snapshot casado.';
+
+
+
+COMMENT ON COLUMN "public"."supplier_replenishment_events"."delay_days" IS 'GENERATED: actual_date - promised_date. Negativo = chegou antes. NULL se não fulfilled.';
+
+
+
+COMMENT ON COLUMN "public"."supplier_replenishment_events"."fulfillment_ratio" IS 'GENERATED: LEAST(1.0, actual_quantity / promised_quantity). NULL se não fulfilled. Capped em 1.0 para evitar superscore em recebimentos maiores que o prometido.';
+
+
+
+COMMENT ON COLUMN "public"."supplier_replenishment_events"."arrival_snapshot_id" IS 'ID (bigint) do stock_snapshots que confirmou o fulfillment. NOTA: stock_snapshots.id é bigint, não UUID. FK lógica sem constraint física porque stock_snapshots é purgado a cada 14 dias.';
+
+
+
+CREATE MATERIALIZED VIEW "public"."mv_supplier_reliability" AS
+ WITH "events_base" AS (
+         SELECT "supplier_replenishment_events"."supplier_id",
+            "supplier_replenishment_events"."resolution",
+            "supplier_replenishment_events"."promised_date",
+            "supplier_replenishment_events"."delay_days",
+            "supplier_replenishment_events"."fulfillment_ratio",
+            GREATEST((0)::numeric, (1.0 - (GREATEST((0)::numeric, (COALESCE("supplier_replenishment_events"."delay_days", 0))::numeric) / 14.0))) AS "pontuality_score",
+            LEAST(1.0, COALESCE("supplier_replenishment_events"."fulfillment_ratio", (0)::numeric)) AS "fulfillment_score"
+           FROM "public"."supplier_replenishment_events"
+          WHERE ("supplier_replenishment_events"."resolution" = ANY (ARRAY['fulfilled'::"text", 'expired'::"text", 'pending'::"text"]))
+        ), "so" AS (
+         SELECT "events_base"."supplier_id",
+            "count"(*) AS "total_promises",
+            "count"(*) FILTER (WHERE ("events_base"."resolution" = 'fulfilled'::"text")) AS "matched_count",
+            "count"(*) FILTER (WHERE ("events_base"."resolution" = 'expired'::"text")) AS "expired_count",
+            "count"(*) FILTER (WHERE ("events_base"."resolution" = 'pending'::"text")) AS "pending_count",
+            COALESCE(("round"(((100)::numeric * ((0.6 * "avg"("events_base"."pontuality_score") FILTER (WHERE ("events_base"."resolution" = 'fulfilled'::"text"))) + (0.4 * "avg"("events_base"."fulfillment_score") FILTER (WHERE ("events_base"."resolution" = 'fulfilled'::"text")))))))::integer, 0) AS "overall_score",
+            "round"("avg"("events_base"."pontuality_score") FILTER (WHERE ("events_base"."resolution" = 'fulfilled'::"text")), 4) AS "overall_pontuality",
+            "round"("avg"("events_base"."fulfillment_score") FILTER (WHERE ("events_base"."resolution" = 'fulfilled'::"text")), 4) AS "overall_fulfillment",
+            "round"("avg"("events_base"."delay_days") FILTER (WHERE ("events_base"."resolution" = 'fulfilled'::"text")), 1) AS "overall_avg_delay_days"
+           FROM "events_base"
+          GROUP BY "events_base"."supplier_id"
+        ), "s30" AS (
+         SELECT "events_base"."supplier_id",
+            "count"(*) FILTER (WHERE ("events_base"."resolution" = 'fulfilled'::"text")) AS "matched_30d",
+            COALESCE(("round"(((100)::numeric * ((0.6 * "avg"("events_base"."pontuality_score") FILTER (WHERE ("events_base"."resolution" = 'fulfilled'::"text"))) + (0.4 * "avg"("events_base"."fulfillment_score") FILTER (WHERE ("events_base"."resolution" = 'fulfilled'::"text")))))))::integer, 0) AS "score_30d"
+           FROM "events_base"
+          WHERE ("events_base"."promised_date" >= (CURRENT_DATE - 30))
+          GROUP BY "events_base"."supplier_id"
+        ), "s90" AS (
+         SELECT "events_base"."supplier_id",
+            "count"(*) FILTER (WHERE ("events_base"."resolution" = 'fulfilled'::"text")) AS "matched_90d",
+            COALESCE(("round"(((100)::numeric * ((0.6 * "avg"("events_base"."pontuality_score") FILTER (WHERE ("events_base"."resolution" = 'fulfilled'::"text"))) + (0.4 * "avg"("events_base"."fulfillment_score") FILTER (WHERE ("events_base"."resolution" = 'fulfilled'::"text")))))))::integer, 0) AS "score_90d"
+           FROM "events_base"
+          WHERE ("events_base"."promised_date" >= (CURRENT_DATE - 90))
+          GROUP BY "events_base"."supplier_id"
+        ), "np" AS (
+         SELECT DISTINCT ON ("supplier_replenishment_events"."supplier_id") "supplier_replenishment_events"."supplier_id",
+            "supplier_replenishment_events"."promised_date" AS "next_promise_date",
+            "supplier_replenishment_events"."promised_quantity" AS "next_promise_quantity"
+           FROM "public"."supplier_replenishment_events"
+          WHERE (("supplier_replenishment_events"."resolution" = 'pending'::"text") AND ("supplier_replenishment_events"."promised_date" >= CURRENT_DATE))
+          ORDER BY "supplier_replenishment_events"."supplier_id", "supplier_replenishment_events"."promised_date"
+        )
+ SELECT "so"."supplier_id",
+    "s"."name" AS "supplier_name",
+    "so"."total_promises",
+    "so"."matched_count",
+    "so"."expired_count",
+    "so"."pending_count",
+    "so"."overall_score",
+    "so"."overall_pontuality",
+    "so"."overall_fulfillment",
+    "so"."overall_avg_delay_days",
+    COALESCE("s30"."score_30d", 0) AS "score_30d",
+    COALESCE("s30"."matched_30d", (0)::bigint) AS "matched_30d",
+    COALESCE("s90"."score_90d", 0) AS "score_90d",
+    COALESCE("s90"."matched_90d", (0)::bigint) AS "matched_90d",
+    "np"."next_promise_date",
+    "np"."next_promise_quantity",
+        CASE
+            WHEN ("so"."matched_count" = 0) THEN 'unknown'::"text"
+            WHEN ("so"."overall_score" >= 85) THEN 'high'::"text"
+            WHEN ("so"."overall_score" >= 60) THEN 'medium'::"text"
+            ELSE 'low'::"text"
+        END AS "band",
+    "now"() AS "refreshed_at"
+   FROM (((("so"
+     JOIN "public"."suppliers" "s" ON (("s"."id" = "so"."supplier_id")))
+     LEFT JOIN "s30" ON (("s30"."supplier_id" = "so"."supplier_id")))
+     LEFT JOIN "s90" ON (("s90"."supplier_id" = "so"."supplier_id")))
+     LEFT JOIN "np" ON (("np"."supplier_id" = "so"."supplier_id")))
+  WITH NO DATA;
+
+
+ALTER MATERIALIZED VIEW "public"."mv_supplier_reliability" OWNER TO "postgres";
+
+
+COMMENT ON MATERIALIZED VIEW "public"."mv_supplier_reliability" IS 'Agregado de confiabilidade por fornecedor para consumo direto do frontend. Score 0-100 = 60% pontualidade + 40% cumprimento de quantidade. Banda: high>=85, medium>=60, low<60, unknown se sem histórico. Refresh: CONCURRENTLY a cada 15 min via pg_cron job refresh-mv-supplier-reliability. Índice único em supplier_id habilitado para REFRESH CONCURRENTLY.';
+
+
+
+CREATE OR REPLACE FUNCTION "public"."fn_get_supplier_reliability"() RETURNS SETOF "public"."mv_supplier_reliability"
+    LANGUAGE "sql" STABLE SECURITY DEFINER
+    SET "search_path" TO 'public', 'pg_catalog', 'pg_temp'
+    AS $$
+  SELECT * FROM public.mv_supplier_reliability
+  WHERE public.is_supervisor_or_above((SELECT auth.uid()))
+$$;
+
+
+ALTER FUNCTION "public"."fn_get_supplier_reliability"() OWNER TO "postgres";
+
+
+COMMENT ON FUNCTION "public"."fn_get_supplier_reliability"() IS 'Aba Confiabilidade de Fornecedores (/estoque). SECURITY DEFINER sobre mv_supplier_reliability (MV admin only, sem SELECT para anon/authenticated desde 20260716191641). Retorna linhas so para is_supervisor_or_above(auth.uid()); demais papeis recebem vazio. EXECUTE: authenticated, service_role; anon/PUBLIC nao.';
+
+
+
 CREATE OR REPLACE FUNCTION "public"."fn_global_search"("p_term" "text", "p_limit" integer DEFAULT 12, "p_types" "text"[] DEFAULT ARRAY['product'::"text", 'quote'::"text"]) RETURNS TABLE("result_id" "text", "result_type" "text", "result_title" "text", "result_description" "text", "result_url" "text", "result_image_url" "text", "result_metadata" "jsonb", "result_relevance" numeric)
     LANGUAGE "plpgsql" STABLE SECURITY DEFINER
-    SET "search_path" TO 'public', 'extensions'
+    SET "search_path" TO 'pg_catalog', 'public', 'extensions', 'pg_temp'
     AS $_$
 DECLARE
   v_term_norm text;
@@ -27635,7 +28995,7 @@ BEGIN
   IF p_term IS NULL OR length(trim(p_term)) < 2 THEN RETURN; END IF;
   IF p_limit IS NULL OR p_limit <= 0 THEN RETURN; END IF;
   v_term_norm := lower(unaccent(trim(p_term)));
-  v_lim_each  := GREATEST(1, p_limit / GREATEST(array_length(p_types, 1), 1));
+  v_lim_each  := GREATEST(1, LEAST(p_limit, 100) / GREATEST(array_length(p_types, 1), 1));
   BEGIN
     v_tsquery := websearch_to_tsquery('portuguese', unaccent(trim(p_term)));
   EXCEPTION WHEN OTHERS THEN v_tsquery := NULL;
@@ -29573,6 +30933,33 @@ $$;
 
 
 ALTER FUNCTION "public"."fn_inherit_techniques_from_material"() OWNER TO "postgres";
+
+
+CREATE OR REPLACE FUNCTION "public"."fn_insights_cache_count"("p_function_name" "text", "p_since" timestamp with time zone) RETURNS bigint
+    LANGUAGE "plpgsql" STABLE SECURITY DEFINER
+    SET "search_path" TO 'pg_catalog', 'public', 'pg_temp'
+    AS $$
+BEGIN
+  IF NOT COALESCE(public.can_view_telemetry((SELECT auth.uid())), false) THEN
+    RAISE EXCEPTION 'fn_insights_cache_count: acesso negado'
+      USING ERRCODE = '42501';
+  END IF;
+
+  RETURN (
+    SELECT count(*)
+    FROM public.dashboard_insights_cache c
+    WHERE (p_function_name IS NULL OR c.function_name = p_function_name)
+      AND c.created_at >= COALESCE(p_since, '-infinity'::timestamptz)
+  );
+END;
+$$;
+
+
+ALTER FUNCTION "public"."fn_insights_cache_count"("p_function_name" "text", "p_since" timestamp with time zone) OWNER TO "postgres";
+
+
+COMMENT ON FUNCTION "public"."fn_insights_cache_count"("p_function_name" "text", "p_since" timestamp with time zone) IS 'Contagem agregada de dashboard_insights_cache por function_name e periodo (created_at >= p_since). Restrita a can_view_telemetry() (dev/supervisor+); devolve so o numero, nunca payload. Consumidor: src/pages/admin/ai-usage/MarketIntelInsightsUsagePanel.tsx (/admin/consumo-ia).';
+
 
 
 CREATE OR REPLACE FUNCTION "public"."fn_is_admin_user"("p_user_id" "uuid" DEFAULT NULL::"uuid") RETURNS boolean
@@ -37045,7 +38432,7 @@ ALTER FUNCTION "public"."fn_purge_old_stock_snapshots"("p_retention_days" intege
 
 CREATE OR REPLACE FUNCTION "public"."fn_purge_spr_history"("p_keep_days" integer DEFAULT 90) RETURNS integer
     LANGUAGE "plpgsql" SECURITY DEFINER
-    SET "search_path" TO 'public', 'pg_temp'
+    SET "search_path" TO 'public'
     AS $$
 DECLARE
   v_cutoff   timestamptz := now() - make_interval(days => GREATEST(p_keep_days, 30));
@@ -39926,6 +41313,49 @@ $$;
 
 
 ALTER FUNCTION "public"."fn_run_smoke_tests"() OWNER TO "postgres";
+
+
+CREATE OR REPLACE FUNCTION "public"."fn_ruptura_forecast_7_15_30"() RETURNS TABLE("horizonte_dias" integer, "novos_ruptura" bigint, "com_restock" bigint, "net_ruptura" bigint, "score_medio" numeric, "gap_total_un" bigint)
+    LANGUAGE "sql" STABLE SECURITY DEFINER
+    SET "search_path" TO 'public', 'pg_catalog', 'pg_temp'
+    AS $$
+  WITH alert AS (
+    SELECT a.vss_id, a.cobertura_dias, a.score_composto, a.gap_unidades
+    FROM public.mv_stock_rupture_alert a
+  ),
+  restock AS (
+    SELECT vss.id AS vss_id,
+           ARRAY[vss.next_quantity_1, vss.next_quantity_2, vss.next_quantity_3,
+                 vss.next_quantity_4, vss.next_quantity_5, vss.next_quantity_6] AS qtys,
+           ARRAY[vss.next_date_1, vss.next_date_2, vss.next_date_3,
+                 vss.next_date_4, vss.next_date_5, vss.next_date_6] AS dates
+    FROM public.variant_supplier_sources vss
+  )
+  SELECT h.horizonte_dias,
+         c.novos_ruptura,
+         c.com_restock,
+         GREATEST(c.novos_ruptura - c.com_restock, 0) AS net_ruptura,
+         c.score_medio,
+         c.gap_total_un
+  FROM (VALUES (7), (15), (30)) AS h(horizonte_dias)
+  CROSS JOIN LATERAL (
+    SELECT COUNT(*)::bigint AS novos_ruptura,
+           COUNT(*) FILTER (WHERE EXISTS (
+             SELECT 1 FROM restock r, generate_subscripts(r.qtys, 1) AS s(i)
+             WHERE r.vss_id = alert.vss_id
+               AND r.qtys[s.i] > 0
+               AND r.dates[s.i] BETWEEN CURRENT_DATE AND CURRENT_DATE + h.horizonte_dias
+           ))::bigint AS com_restock,
+           ROUND(AVG(alert.score_composto), 1) AS score_medio,
+           COALESCE(SUM(alert.gap_unidades), 0)::bigint AS gap_total_un
+    FROM alert
+    WHERE alert.cobertura_dias <= h.horizonte_dias
+  ) c
+  ORDER BY h.horizonte_dias;
+$$;
+
+
+ALTER FUNCTION "public"."fn_ruptura_forecast_7_15_30"() OWNER TO "postgres";
 
 
 CREATE OR REPLACE FUNCTION "public"."fn_rupture_anomalia_report"("p_threshold" numeric DEFAULT 1.5) RETURNS TABLE("vss_id" "uuid", "supplier_name" "text", "supplier_sku" "text", "nivel_alerta" "text", "velocity_trend" numeric, "ema_diaria" numeric, "stock_total" integer, "cobertura_dias" numeric, "gap_unidades" integer, "score_composto" numeric, "descricao_anomalia" "text")
@@ -46835,6 +48265,63 @@ COMMENT ON FUNCTION "public"."fn_super_filtro_product_ids"("_datas" "text"[], "_
 
 
 
+CREATE OR REPLACE FUNCTION "public"."fn_supplier_risk_breakdown"("p_preferred_only" boolean DEFAULT true) RETURNS TABLE("supplier_id" "uuid", "supplier_name" "text", "total" bigint, "ruptura" bigint, "critico" bigint, "alerta" bigint, "atencao" bigint, "sem_sinal" bigint, "ok" bigint, "pct_risco" numeric, "score_medio" numeric, "gap_total_un" bigint, "spikes" bigint, "valor_risco_reais" numeric)
+    LANGUAGE "sql" STABLE SECURITY DEFINER
+    SET "search_path" TO 'public', 'pg_catalog', 'pg_temp'
+    AS $$
+  SELECT
+    m.supplier_id,
+    m.supplier_name,
+    count(*)::bigint AS total,
+    count(*) FILTER (WHERE m.nivel_alerta = 'RUPTURA')::bigint AS ruptura,
+    count(*) FILTER (WHERE m.nivel_alerta = 'CRÍTICO')::bigint AS critico,
+    count(*) FILTER (WHERE m.nivel_alerta = 'ALERTA')::bigint  AS alerta,
+    count(*) FILTER (WHERE m.nivel_alerta = 'ATENÇÃO')::bigint AS atencao,
+    -- 'OK' so no papel: ha estoque, mas a demanda esta no piso da EMA (sem sinal de consumo).
+    count(*) FILTER (
+      WHERE m.nivel_alerta = 'OK'
+        AND COALESCE(m.stock_total, 0) > 0
+        AND COALESCE(m.ema_diaria, 0) <= 0.01
+    )::bigint AS sem_sinal,
+    count(*) FILTER (
+      WHERE m.nivel_alerta = 'OK'
+        AND NOT (COALESCE(m.stock_total, 0) > 0 AND COALESCE(m.ema_diaria, 0) <= 0.01)
+    )::bigint AS ok,
+    COALESCE(
+      round(
+        100.0 * count(*) FILTER (WHERE m.nivel_alerta <> 'OK')::numeric
+             / NULLIF(count(*), 0)::numeric,
+        1
+      ),
+      0
+    ) AS pct_risco,
+    COALESCE(round(avg(COALESCE(m.score_composto, 0))::numeric, 2), 0) AS score_medio,
+    COALESCE(sum(COALESCE(m.gap_unidades, 0)), 0)::bigint AS gap_total_un,
+    count(*) FILTER (WHERE COALESCE(m.anomalia_spike, false))::bigint AS spikes,
+    -- Capital parado em itens sob risco que AINDA tem estoque: ruptura exige stock_live = 0 na MV,
+    -- entao contribui 0,00 aqui por construcao. Nao e perda potencial — ver cabecalho e COMMENT.
+    COALESCE(
+      round(
+        sum(COALESCE(m.valor_estoque_reais, 0)) FILTER (WHERE m.nivel_alerta <> 'OK')::numeric,
+        2
+      ),
+      0
+    ) AS valor_risco_reais
+  FROM public.mv_stock_rupture_alert m
+  WHERE public.is_supervisor_or_above((SELECT auth.uid()))
+    AND (NOT p_preferred_only OR m.is_preferred = true)
+  GROUP BY m.supplier_id, m.supplier_name
+  ORDER BY pct_risco DESC, total DESC
+$$;
+
+
+ALTER FUNCTION "public"."fn_supplier_risk_breakdown"("p_preferred_only" boolean) OWNER TO "postgres";
+
+
+COMMENT ON FUNCTION "public"."fn_supplier_risk_breakdown"("p_preferred_only" boolean) IS 'Breakdown de risco de ruptura por fornecedor a partir de public.mv_stock_rupture_alert (refresh horario). Devolve as 14 colunas do tipo TS SupplierRiskRow. pct_risco = linhas nao-OK (ruptura+critico+alerta+atencao) / base completa do fornecedor (inclui OK), escala 0-100 ja arredondada, porque o front imprime o valor cru + "%"; NAO e taxa de CRITICO — o selo em RupturePanelEma le este campo rotulado "% em risco". sem_sinal = linhas OK com estoque e EMA no piso (<= 0,01): nao existe nivel "SEM SINAL" na fonte; buckets sao mutuamente exclusivos e somam total. valor_risco_reais NAO e perda potencial: e capital parado em itens sob risco que AINDA TEM ESTOQUE — o balde RUPTURA entra com 0,00 por construcao, porque na MV ruptura exige stock_live = 0 e valor_estoque_reais = stock_live * unit_cost. Para exposicao fisica de ruptura use gap_total_un. SECURITY DEFINER (a MV nao concede SELECT a authenticated) com guarda is_supervisor_or_above no WHERE: sem papel, zero linhas e o selo nao renderiza. Consumida por useSupplierRiskBreakdown / RupturePanelEma.';
+
+
+
 CREATE OR REPLACE FUNCTION "public"."fn_sync_ai_usage_logs_total_tokens"() RETURNS "trigger"
     LANGUAGE "plpgsql" SECURITY DEFINER
     SET "search_path" TO 'public'
@@ -51783,6 +53270,24 @@ $$;
 ALTER FUNCTION "public"."fn_validate_video_on_change"() OWNER TO "postgres";
 
 
+CREATE OR REPLACE FUNCTION "public"."fn_variant_sparkline"("p_variant_id" "uuid", "p_days" integer DEFAULT 7) RETURNS TABLE("day" "date", "units_depleted" integer, "stock_close" integer)
+    LANGUAGE "sql" STABLE SECURITY DEFINER
+    SET "search_path" TO 'public', 'pg_catalog', 'pg_temp'
+    AS $$
+  SELECT s.summary_date::date AS day,
+         s.units_depleted,
+         s.stock_close
+  FROM public.stock_daily_summary s
+  WHERE s.variant_id = p_variant_id
+    AND s.summary_date >= (CURRENT_DATE - (p_days - 1))
+  ORDER BY s.summary_date ASC
+  LIMIT GREATEST(p_days, 1);
+$$;
+
+
+ALTER FUNCTION "public"."fn_variant_sparkline"("p_variant_id" "uuid", "p_days" integer) OWNER TO "postgres";
+
+
 CREATE OR REPLACE FUNCTION "public"."fn_verify_anon_catalog_grants"() RETURNS TABLE("object_name" "text", "object_kind" "text", "issue" "text")
     LANGUAGE "plpgsql" SECURITY DEFINER
     SET "search_path" TO 'public'
@@ -52373,6 +53878,62 @@ $$;
 
 
 ALTER FUNCTION "public"."fn_vss_sync_warehouse_from_qty"() OWNER TO "postgres";
+
+
+CREATE OR REPLACE FUNCTION "public"."fn_whatif_scenario"("p_delta_units_per_sku" numeric DEFAULT 100, "p_nivel_filter" "text" DEFAULT 'RUPTURA'::"text", "p_supplier_id" "uuid" DEFAULT NULL::"uuid") RETURNS TABLE("nivel_atual" "text", "nivel_simulado" "text", "variantes" bigint, "descricao" "text")
+    LANGUAGE "sql" STABLE SECURITY DEFINER
+    SET "search_path" TO 'public', 'pg_catalog', 'pg_temp'
+    AS $$
+  WITH sim AS (
+    SELECT a.variant_id,
+           a.nivel_alerta,
+           CASE
+               WHEN (a.stock_total + p_delta_units_per_sku) <= 0 THEN 'RUPTURA'
+               WHEN (((a.stock_total + p_delta_units_per_sku)::numeric / NULLIF(a.ema_diaria, 0)))
+                    < a.lead_time_efetivo THEN 'CRÍTICO'
+               WHEN (((a.stock_total + p_delta_units_per_sku)::numeric / NULLIF(a.ema_diaria, 0)))
+                    < (a.lead_time_efetivo * 1.5) THEN 'ALERTA'
+               WHEN (((a.stock_total + p_delta_units_per_sku)::numeric / NULLIF(a.ema_diaria, 0)))
+                    < (a.lead_time_efetivo * 2.0) THEN 'ATENÇÃO'
+               ELSE 'OK'
+           END AS nivel_simulado,
+           CASE
+               WHEN (a.stock_total + p_delta_units_per_sku) <= 0 THEN 1
+               WHEN (((a.stock_total + p_delta_units_per_sku)::numeric / NULLIF(a.ema_diaria, 0)))
+                    < a.lead_time_efetivo THEN 2
+               WHEN (((a.stock_total + p_delta_units_per_sku)::numeric / NULLIF(a.ema_diaria, 0)))
+                    < (a.lead_time_efetivo * 1.5) THEN 3
+               WHEN (((a.stock_total + p_delta_units_per_sku)::numeric / NULLIF(a.ema_diaria, 0)))
+                    < (a.lead_time_efetivo * 2.0) THEN 4
+               ELSE 5
+           END AS prioridade_sim
+    FROM public.mv_stock_rupture_alert a
+    WHERE (p_nivel_filter IS NULL OR p_nivel_filter = '' OR a.nivel_alerta = p_nivel_filter)
+      AND (p_supplier_id IS NULL OR a.supplier_id = p_supplier_id)
+  ),
+  pior AS (
+    SELECT sim.variant_id, MIN(sim.prioridade_sim) AS pmin
+    FROM sim
+    GROUP BY sim.variant_id
+  )
+  SELECT s.nivel_alerta AS nivel_atual,
+         s.nivel_simulado,
+         COUNT(DISTINCT s.variant_id)::bigint AS variantes,
+         CASE s.nivel_simulado
+             WHEN 'RUPTURA' THEN 'Sem estoque mesmo após a reposição simulada'
+             WHEN 'CRÍTICO' THEN 'Cobertura simulada ainda abaixo do lead time'
+             WHEN 'ALERTA'  THEN 'Cobertura simulada entre 1x e 1,5x do lead time'
+             WHEN 'ATENÇÃO' THEN 'Cobertura simulada entre 1,5x e 2x do lead time'
+             ELSE 'Cobertura simulada acima de 2x do lead time'
+         END AS descricao
+  FROM sim s
+  JOIN pior p ON p.variant_id = s.variant_id AND p.pmin = s.prioridade_sim
+  GROUP BY s.nivel_alerta, s.nivel_simulado
+  ORDER BY MIN(s.prioridade_sim);
+$$;
+
+
+ALTER FUNCTION "public"."fn_whatif_scenario"("p_delta_units_per_sku" numeric, "p_nivel_filter" "text", "p_supplier_id" "uuid") OWNER TO "postgres";
 
 
 CREATE OR REPLACE FUNCTION "public"."fn_xbz_batch_to_silver"("p_batch_size" integer DEFAULT 500) RETURNS TABLE("processed" integer, "errors" integer)
@@ -56149,6 +57710,8 @@ CREATE TABLE IF NOT EXISTS "public"."products" (
     "default_carrier" character varying(100),
     "requires_special_shipping" boolean DEFAULT false NOT NULL,
     "shipping_notes" character varying(500),
+    "ships_separately" boolean DEFAULT false NOT NULL,
+    "supplier_external_id" "text",
     CONSTRAINT "chk_cost_price_not_zero" CHECK ((("cost_price" IS NULL) OR ("cost_price" > (0)::numeric))),
     CONSTRAINT "chk_products_active_has_identity" CHECK ((NOT ("is_active" AND ("sku" IS NULL) AND ("supplier_reference" IS NULL)))),
     CONSTRAINT "chk_products_bestseller_requires_expires" CHECK ((NOT (("is_bestseller" = true) AND ("is_bestseller_expires_at" IS NULL)))),
@@ -56915,6 +58478,10 @@ COMMENT ON COLUMN "public"."products"."requires_special_shipping" IS 'Exige fret
 
 
 COMMENT ON COLUMN "public"."products"."shipping_notes" IS 'Observações de frete. fix_version=cadastro-produtos-audit-20260627-v1';
+
+
+
+COMMENT ON COLUMN "public"."products"."ships_separately" IS 'Vai sempre em caixa própria no frete: frágil, líquido, volumoso. Vence a escolha do vendedor.';
 
 
 
@@ -58061,7 +59628,7 @@ ALTER FUNCTION "public"."get_edge_anon_key"() OWNER TO "postgres";
 
 CREATE OR REPLACE FUNCTION "public"."get_edge_function_secret"("_name" "text") RETURNS "text"
     LANGUAGE "plpgsql" SECURITY DEFINER
-    SET "search_path" TO 'vault', 'public', 'pg_temp'
+    SET "search_path" TO 'vault', 'public'
     AS $$
 DECLARE
   _secret text;
@@ -58105,7 +59672,7 @@ COMMENT ON FUNCTION "public"."get_edge_function_secret"("_name" "text") IS 'Whit
 
 CREATE OR REPLACE FUNCTION "public"."get_edge_functions_base_url"() RETURNS "text"
     LANGUAGE "plpgsql" SECURITY DEFINER
-    SET "search_path" TO 'public', 'vault', 'pg_temp'
+    SET "search_path" TO 'public', 'vault'
     AS $_$
 DECLARE
   _cfg text;
@@ -59488,7 +61055,7 @@ COMMENT ON FUNCTION "public"."get_quote_token_by_value"("_token" "text") IS 'Whi
 
 CREATE OR REPLACE FUNCTION "public"."get_quote_token_public"("_token" "text") RETURNS "jsonb"
     LANGUAGE "sql" STABLE SECURITY DEFINER
-    SET "search_path" TO ''
+    SET "search_path" TO 'pg_catalog', 'pg_temp'
     AS $$
   SELECT jsonb_build_object(
     'id',             qat.id,
@@ -59507,6 +61074,10 @@ CREATE OR REPLACE FUNCTION "public"."get_quote_token_public"("_token" "text") RE
   )
   FROM public.quote_approval_tokens qat
   WHERE qat.token = _token
+    -- GUARD: link expirado deixa de devolver dados. Espelha a condição que
+    -- public.submit_quote_response já aplica. `expires_at IS NULL` segue aceito porque a
+    -- coluna é nullable e o default (now() + 30 days) só vale para linhas novas.
+    AND (qat.expires_at IS NULL OR qat.expires_at > pg_catalog.now())
   LIMIT 1;
 $$;
 
@@ -59653,7 +61224,7 @@ ALTER FUNCTION "public"."get_sale_price_for_quantity"("p_variant_id" "uuid", "p_
 
 CREATE OR REPLACE FUNCTION "public"."get_sitemap_public"("p_limit" integer DEFAULT 1000, "p_offset" integer DEFAULT 0) RETURNS TABLE("url_type" "text", "url_path" "text", "identifier" "text", "title" "text", "lastmod" timestamp with time zone, "priority" numeric, "changefreq" "text", "image_url" "text")
     LANGUAGE "plpgsql" STABLE SECURITY DEFINER
-    SET "search_path" TO 'public', 'pg_temp'
+    SET "search_path" TO 'public', 'pg_catalog', 'pg_temp'
     AS $$
 BEGIN
   IF p_limit IS NULL OR p_limit NOT BETWEEN 1 AND 1000 THEN
@@ -60330,6 +61901,36 @@ END $$;
 ALTER FUNCTION "public"."grant_mcp_full_to_user"("_target_user_id" "uuid", "_reason" "text") OWNER TO "postgres";
 
 
+CREATE OR REPLACE FUNCTION "public"."guard_freight_settings_row"() RETURNS "trigger"
+    LANGUAGE "plpgsql"
+    SET "search_path" TO 'pg_catalog', 'pg_temp'
+    AS $$
+BEGIN
+  -- A chave do singleton não muda.
+  NEW.id := OLD.id;
+  -- Autor = quem está autenticado na requisição, nunca o valor que o cliente
+  -- mandou. Sem usuário (service_role, manutenção), o autor anterior fica.
+  --
+  -- Só quando o UPDATE vem direto de um comando (profundidade 1). A coluna tem
+  -- FK para auth.users com ON DELETE SET NULL, e o Postgres executa esse SET
+  -- NULL como um UPDATE disparado por trigger interno (profundidade 2). Sem o
+  -- IF, este trigger devolvia o autor antigo por cima do NULL e a linha ficava
+  -- apontando para um usuário que não existe mais.
+  IF pg_trigger_depth() = 1 THEN
+    NEW.updated_by := coalesce(auth.uid(), OLD.updated_by);
+  END IF;
+  RETURN NEW;
+END;
+$$;
+
+
+ALTER FUNCTION "public"."guard_freight_settings_row"() OWNER TO "postgres";
+
+
+COMMENT ON FUNCTION "public"."guard_freight_settings_row"() IS 'Trigger BEFORE UPDATE de freight_settings: mantém id e grava updated_by com auth.uid(), ignorando o valor enviado pelo cliente. Sem usuário autenticado (service_role), mantém o autor anterior. Não mexe em updated_by quando o UPDATE vem de outro trigger (pg_trigger_depth() > 1), para o ON DELETE SET NULL da FK com auth.users funcionar.';
+
+
+
 CREATE OR REPLACE FUNCTION "public"."guard_mcp_api_keys_writes"() RETURNS "trigger"
     LANGUAGE "plpgsql" SECURITY DEFINER
     SET "search_path" TO 'public'
@@ -60360,6 +61961,37 @@ $$;
 
 
 ALTER FUNCTION "public"."guard_mcp_api_keys_writes"() OWNER TO "postgres";
+
+
+CREATE OR REPLACE FUNCTION "public"."guard_shipping_boxes_row"() RETURNS "trigger"
+    LANGUAGE "plpgsql"
+    SET "search_path" TO 'pg_catalog', 'pg_temp'
+    AS $$
+BEGIN
+  IF TG_OP = 'INSERT' THEN
+    -- Caixa criada por usuário logado (a tela do admin): identificador e datas
+    -- são do banco, não do cliente. Sem usuário (migration, service_role), vale
+    -- o que foi enviado — é o que deixa o INSERT ... SELECT do backup devolver
+    -- as caixas com o id e as datas originais.
+    IF auth.uid() IS NOT NULL THEN
+      NEW.id := gen_random_uuid();
+      NEW.created_at := now();
+      NEW.updated_at := now();
+    END IF;
+    RETURN NEW;
+  END IF;
+  NEW.id := OLD.id;
+  NEW.created_at := OLD.created_at;
+  RETURN NEW;
+END;
+$$;
+
+
+ALTER FUNCTION "public"."guard_shipping_boxes_row"() OWNER TO "postgres";
+
+
+COMMENT ON FUNCTION "public"."guard_shipping_boxes_row"() IS 'Trigger BEFORE INSERT OR UPDATE de shipping_boxes. No UPDATE mantém id e created_at, que não mudam depois que a caixa é criada. No INSERT feito por usuário logado gera id, created_at e updated_at no banco, ignorando o valor enviado pelo cliente; sem usuário (migration, service_role) mantém o que foi enviado.';
+
 
 
 CREATE OR REPLACE FUNCTION "public"."handle_new_user"() RETURNS "trigger"
@@ -60396,6 +62028,17 @@ $$;
 
 
 ALTER FUNCTION "public"."handle_new_user"() OWNER TO "postgres";
+
+
+CREATE OR REPLACE FUNCTION "public"."handle_updated_at"() RETURNS "trigger"
+    LANGUAGE "plpgsql"
+    SET "search_path" TO 'public'
+    AS $$
+BEGIN NEW.updated_at = now(); RETURN NEW; END;
+$$;
+
+
+ALTER FUNCTION "public"."handle_updated_at"() OWNER TO "postgres";
 
 
 CREATE OR REPLACE FUNCTION "public"."has_active_step_up_challenge"("_action" "public"."step_up_action" DEFAULT NULL::"public"."step_up_action") RETURNS boolean
@@ -61753,7 +63396,7 @@ ALTER FUNCTION "public"."m_to_cm"("p_m" numeric) OWNER TO "postgres";
 
 CREATE OR REPLACE FUNCTION "public"."magazine_add_items_atomic"("p_magazine_id" "uuid", "p_expected_updated_at" timestamp with time zone, "p_items" "jsonb") RETURNS "jsonb"
     LANGUAGE "plpgsql" SECURITY DEFINER
-    SET "search_path" TO 'public', 'pg_temp'
+    SET "search_path" TO 'public'
     AS $$
 DECLARE
   v_actor UUID := auth.uid();
@@ -61854,7 +63497,7 @@ ALTER FUNCTION "public"."magazine_add_items_atomic"("p_magazine_id" "uuid", "p_e
 
 CREATE OR REPLACE FUNCTION "public"."magazine_add_items_v2"("p_magazine_id" "uuid", "p_expected_edit_version" bigint, "p_items" "jsonb") RETURNS "jsonb"
     LANGUAGE "plpgsql" SECURITY DEFINER
-    SET "search_path" TO 'public', 'pg_temp'
+    SET "search_path" TO 'public'
     AS $_$
 DECLARE v_mag public.magazines%ROWTYPE; v_inserted INT; v_current INT; v_new INT; v_result public.magazines%ROWTYPE;
 BEGIN
@@ -61879,7 +63522,7 @@ ALTER FUNCTION "public"."magazine_add_items_v2"("p_magazine_id" "uuid", "p_expec
 
 CREATE OR REPLACE FUNCTION "public"."magazine_archive_v2"("p_magazine_id" "uuid", "p_expected_edit_version" bigint) RETURNS "jsonb"
     LANGUAGE "plpgsql" SECURITY DEFINER
-    SET "search_path" TO 'public', 'pg_temp'
+    SET "search_path" TO 'public'
     AS $$ DECLARE v_mag public.magazines%ROWTYPE; v_result public.magazines%ROWTYPE; BEGIN v_mag:=public.magazine_lock_v2(p_magazine_id,p_expected_edit_version,FALSE); IF v_mag.status='archived' THEN RETURN jsonb_build_object('archived_at',v_mag.archived_at,'edit_version',v_mag.edit_version,'updated_at',v_mag.updated_at); END IF; IF v_mag.status NOT IN ('draft','published') THEN RAISE EXCEPTION 'magazine_not_archivable' USING ERRCODE='55000'; END IF; UPDATE public.magazines SET status='archived',edit_version=v_mag.edit_version+1 WHERE id=p_magazine_id RETURNING * INTO v_result; RETURN jsonb_build_object('archived_at',v_result.archived_at,'edit_version',v_result.edit_version,'updated_at',v_result.updated_at); END $$;
 
 
@@ -61888,7 +63531,7 @@ ALTER FUNCTION "public"."magazine_archive_v2"("p_magazine_id" "uuid", "p_expecte
 
 CREATE OR REPLACE FUNCTION "public"."magazine_auto_archive_stale_drafts"("_ttl_days" integer DEFAULT 365) RETURNS integer
     LANGUAGE "plpgsql" SECURITY DEFINER
-    SET "search_path" TO 'public', 'pg_temp'
+    SET "search_path" TO 'public'
     AS $$
 DECLARE
   archived_count INTEGER;
@@ -61909,7 +63552,7 @@ ALTER FUNCTION "public"."magazine_auto_archive_stale_drafts"("_ttl_days" integer
 
 CREATE OR REPLACE FUNCTION "public"."magazine_cleanup_all"() RETURNS TABLE("step" "text", "affected_rows" integer)
     LANGUAGE "plpgsql" SECURITY DEFINER
-    SET "search_path" TO 'public', 'pg_temp'
+    SET "search_path" TO 'public'
     AS $$
 BEGIN
   RETURN QUERY SELECT 'orphan_reader_state'::TEXT, public.magazine_cleanup_orphan_state(180);
@@ -61925,7 +63568,7 @@ ALTER FUNCTION "public"."magazine_cleanup_all"() OWNER TO "postgres";
 
 CREATE OR REPLACE FUNCTION "public"."magazine_cleanup_orphan_state"("_ttl_days" integer DEFAULT 180) RETURNS integer
     LANGUAGE "plpgsql" SECURITY DEFINER
-    SET "search_path" TO 'public', 'pg_temp'
+    SET "search_path" TO 'public'
     AS $$
 DECLARE
   deleted_count INTEGER;
@@ -61943,7 +63586,7 @@ ALTER FUNCTION "public"."magazine_cleanup_orphan_state"("_ttl_days" integer) OWN
 
 CREATE OR REPLACE FUNCTION "public"."magazine_cleanup_view_events"("_ttl_days" integer DEFAULT 180) RETURNS integer
     LANGUAGE "plpgsql" SECURITY DEFINER
-    SET "search_path" TO 'public', 'pg_temp'
+    SET "search_path" TO 'public'
     AS $$
 DECLARE
   deleted_count integer := 0;
@@ -61966,7 +63609,7 @@ COMMENT ON FUNCTION "public"."magazine_cleanup_view_events"("_ttl_days" integer)
 
 CREATE OR REPLACE FUNCTION "public"."magazine_create_v2"("p_organization_id" "uuid", "p_title" "text", "p_template_id" "text") RETURNS "jsonb"
     LANGUAGE "plpgsql" SECURITY DEFINER
-    SET "search_path" TO 'public', 'pg_temp'
+    SET "search_path" TO 'public'
     AS $$
 DECLARE
   v_actor UUID := auth.uid();
@@ -62012,7 +63655,7 @@ ALTER FUNCTION "public"."magazine_create_v2"("p_organization_id" "uuid", "p_titl
 
 CREATE OR REPLACE FUNCTION "public"."magazine_duplicate_atomic"("p_source_magazine_id" "uuid", "p_title" "text" DEFAULT NULL::"text") RETURNS "jsonb"
     LANGUAGE "plpgsql" SECURITY DEFINER
-    SET "search_path" TO 'public', 'pg_temp'
+    SET "search_path" TO 'public'
     AS $$
 DECLARE
   v_actor UUID := auth.uid();
@@ -62109,7 +63752,7 @@ ALTER FUNCTION "public"."magazine_duplicate_atomic"("p_source_magazine_id" "uuid
 
 CREATE OR REPLACE FUNCTION "public"."magazine_duplicate_v2"("p_source_magazine_id" "uuid", "p_expected_edit_version" bigint, "p_idempotency_key" "text", "p_title" "text" DEFAULT NULL::"text") RETURNS "jsonb"
     LANGUAGE "plpgsql" SECURITY DEFINER
-    SET "search_path" TO 'public', 'pg_temp'
+    SET "search_path" TO 'public'
     AS $$
 DECLARE v_actor UUID:=auth.uid(); v_source public.magazines%ROWTYPE; v_existing public.magazine_duplicate_requests%ROWTYPE; v_item public.magazine_items%ROWTYPE; v_new_id UUID; v_new_item UUID; v_count INT:=0; v_map JSONB:='{}'; v_pages JSONB; v_order JSONB; v_request_title TEXT:=NULLIF(BTRIM(p_title),''); v_title TEXT;
 BEGIN
@@ -62133,7 +63776,7 @@ ALTER FUNCTION "public"."magazine_duplicate_v2"("p_source_magazine_id" "uuid", "
 
 CREATE OR REPLACE FUNCTION "public"."magazine_ensure_view_event_partitions"("_months_ahead" integer DEFAULT 3) RETURNS integer
     LANGUAGE "plpgsql" SECURITY DEFINER
-    SET "search_path" TO 'public', 'extensions', 'pg_temp'
+    SET "search_path" TO 'public', 'extensions'
     AS $$
 DECLARE
   _created INTEGER := 0;
@@ -62191,7 +63834,7 @@ COMMENT ON FUNCTION "public"."magazine_ensure_view_event_partitions"("_months_ah
 
 CREATE OR REPLACE FUNCTION "public"."magazine_guard_and_version_v2"() RETURNS "trigger"
     LANGUAGE "plpgsql" SECURITY DEFINER
-    SET "search_path" TO 'public', 'extensions', 'pg_temp'
+    SET "search_path" TO 'public', 'extensions'
     AS $$
 DECLARE
   v_changed BOOLEAN;
@@ -62329,7 +63972,7 @@ ALTER FUNCTION "public"."magazine_guard_and_version_v2"() OWNER TO "postgres";
 
 CREATE OR REPLACE FUNCTION "public"."magazine_import_local_v2"("p_idempotency_key" "text", "p_payload" "jsonb") RETURNS "jsonb"
     LANGUAGE "plpgsql" SECURITY DEFINER
-    SET "search_path" TO 'public', 'extensions', 'pg_temp'
+    SET "search_path" TO 'public', 'extensions'
     AS $_$
 DECLARE
   v_actor UUID := auth.uid();
@@ -62586,7 +64229,7 @@ ALTER FUNCTION "public"."magazine_import_local_v2"("p_idempotency_key" "text", "
 
 CREATE OR REPLACE FUNCTION "public"."magazine_items_guard_v2"() RETURNS "trigger"
     LANGUAGE "plpgsql" SECURITY DEFINER
-    SET "search_path" TO 'public', 'pg_temp'
+    SET "search_path" TO 'public'
     AS $$
 DECLARE
   v_magazine_id UUID := CASE WHEN TG_OP = 'INSERT' THEN NEW.magazine_id ELSE OLD.magazine_id END;
@@ -62655,7 +64298,7 @@ ALTER TABLE "public"."magazines" OWNER TO "postgres";
 
 CREATE OR REPLACE FUNCTION "public"."magazine_lock_v2"("p_magazine_id" "uuid", "p_expected_edit_version" bigint, "p_allow_deleted" boolean DEFAULT false) RETURNS "public"."magazines"
     LANGUAGE "plpgsql" SECURITY DEFINER
-    SET "search_path" TO 'public', 'pg_temp'
+    SET "search_path" TO 'public'
     AS $$
 DECLARE
   v_actor UUID := auth.uid();
@@ -62723,7 +64366,7 @@ ALTER FUNCTION "public"."magazine_page_order_remove_items_v2"("p_page_order" "js
 
 CREATE OR REPLACE FUNCTION "public"."magazine_publish_atomic"("p_magazine_id" "uuid") RETURNS "jsonb"
     LANGUAGE "plpgsql" SECURITY DEFINER
-    SET "search_path" TO 'public', 'pg_temp'
+    SET "search_path" TO 'public'
     AS $$
 DECLARE
   v_actor UUID := auth.uid();
@@ -62791,7 +64434,7 @@ ALTER FUNCTION "public"."magazine_publish_atomic"("p_magazine_id" "uuid") OWNER 
 
 CREATE OR REPLACE FUNCTION "public"."magazine_publish_v2"("p_magazine_id" "uuid", "p_expected_edit_version" bigint) RETURNS "jsonb"
     LANGUAGE "plpgsql" SECURITY DEFINER
-    SET "search_path" TO 'public', 'pg_temp'
+    SET "search_path" TO 'public'
     AS $_$
 DECLARE v_mag public.magazines%ROWTYPE; v_result public.magazines%ROWTYPE;
 BEGIN v_mag:=public.magazine_lock_v2(p_magazine_id,p_expected_edit_version,FALSE); IF v_mag.status='published' THEN IF v_mag.public_token IS NULL OR v_mag.public_token !~ '^[0-9a-f]{48}$' OR v_mag.published_at IS NULL THEN RAISE EXCEPTION 'magazine_publication_invariant_invalid' USING ERRCODE='55000'; END IF; RETURN jsonb_build_object('public_token',v_mag.public_token,'published_at',v_mag.published_at,'edit_version',v_mag.edit_version,'updated_at',v_mag.updated_at); END IF; IF v_mag.status<>'draft' THEN RAISE EXCEPTION 'magazine_not_publishable' USING ERRCODE='55000'; END IF; UPDATE public.magazines SET status='published',public_token=NULL,edit_version=v_mag.edit_version+1 WHERE id=p_magazine_id RETURNING * INTO v_result; RETURN jsonb_build_object('public_token',v_result.public_token,'published_at',v_result.published_at,'edit_version',v_result.edit_version,'updated_at',v_result.updated_at); END $_$;
@@ -62802,7 +64445,7 @@ ALTER FUNCTION "public"."magazine_publish_v2"("p_magazine_id" "uuid", "p_expecte
 
 CREATE OR REPLACE FUNCTION "public"."magazine_reactivate_v2"("p_magazine_id" "uuid", "p_expected_edit_version" bigint) RETURNS "jsonb"
     LANGUAGE "plpgsql" SECURITY DEFINER
-    SET "search_path" TO 'public', 'pg_temp'
+    SET "search_path" TO 'public'
     AS $$ DECLARE v_mag public.magazines%ROWTYPE; v_result public.magazines%ROWTYPE; BEGIN v_mag:=public.magazine_lock_v2(p_magazine_id,p_expected_edit_version,FALSE); IF v_mag.status='draft' THEN RETURN jsonb_build_object('edit_version',v_mag.edit_version,'updated_at',v_mag.updated_at); END IF; IF v_mag.status<>'archived' THEN RAISE EXCEPTION 'magazine_not_reactivatable' USING ERRCODE='55000'; END IF; UPDATE public.magazines SET status='draft',edit_version=v_mag.edit_version+1 WHERE id=p_magazine_id RETURNING * INTO v_result; RETURN jsonb_build_object('edit_version',v_result.edit_version,'updated_at',v_result.updated_at); END $$;
 
 
@@ -62811,7 +64454,7 @@ ALTER FUNCTION "public"."magazine_reactivate_v2"("p_magazine_id" "uuid", "p_expe
 
 CREATE OR REPLACE FUNCTION "public"."magazine_remove_items_atomic"("p_magazine_id" "uuid", "p_expected_updated_at" timestamp with time zone, "p_item_ids" "uuid"[]) RETURNS "jsonb"
     LANGUAGE "plpgsql" SECURITY DEFINER
-    SET "search_path" TO 'public', 'pg_temp'
+    SET "search_path" TO 'public'
     AS $$
 DECLARE
   v_actor UUID := auth.uid();
@@ -62859,7 +64502,7 @@ ALTER FUNCTION "public"."magazine_remove_items_atomic"("p_magazine_id" "uuid", "
 
 CREATE OR REPLACE FUNCTION "public"."magazine_remove_items_v2"("p_magazine_id" "uuid", "p_expected_edit_version" bigint, "p_item_ids" "uuid"[]) RETURNS "jsonb"
     LANGUAGE "plpgsql" SECURITY DEFINER
-    SET "search_path" TO 'public', 'pg_temp'
+    SET "search_path" TO 'public'
     AS $$
 DECLARE v_mag public.magazines%ROWTYPE; v_removed INT; v_result public.magazines%ROWTYPE;
 BEGIN
@@ -62877,7 +64520,7 @@ ALTER FUNCTION "public"."magazine_remove_items_v2"("p_magazine_id" "uuid", "p_ex
 
 CREATE OR REPLACE FUNCTION "public"."magazine_reorder_items_atomic"("p_magazine_id" "uuid", "p_expected_updated_at" timestamp with time zone, "p_ordered_item_ids" "uuid"[]) RETURNS "jsonb"
     LANGUAGE "plpgsql" SECURITY DEFINER
-    SET "search_path" TO 'public', 'pg_temp'
+    SET "search_path" TO 'public'
     AS $$
 DECLARE
   v_actor UUID := auth.uid();
@@ -62939,7 +64582,7 @@ ALTER FUNCTION "public"."magazine_reorder_items_atomic"("p_magazine_id" "uuid", 
 
 CREATE OR REPLACE FUNCTION "public"."magazine_reorder_items_v2"("p_magazine_id" "uuid", "p_expected_edit_version" bigint, "p_ordered_item_ids" "uuid"[]) RETURNS "jsonb"
     LANGUAGE "plpgsql" SECURITY DEFINER
-    SET "search_path" TO 'public', 'pg_temp'
+    SET "search_path" TO 'public'
     AS $$
 DECLARE v_mag public.magazines%ROWTYPE; v_total INT; v_current UUID[]; v_result public.magazines%ROWTYPE;
 BEGIN
@@ -62960,7 +64603,7 @@ ALTER FUNCTION "public"."magazine_reorder_items_v2"("p_magazine_id" "uuid", "p_e
 
 CREATE OR REPLACE FUNCTION "public"."magazine_restore_v2"("p_magazine_id" "uuid", "p_expected_edit_version" bigint) RETURNS "jsonb"
     LANGUAGE "plpgsql" SECURITY DEFINER
-    SET "search_path" TO 'public', 'pg_temp'
+    SET "search_path" TO 'public'
     AS $$ DECLARE v_mag public.magazines%ROWTYPE; v_result public.magazines%ROWTYPE; BEGIN v_mag:=public.magazine_lock_v2(p_magazine_id,p_expected_edit_version,TRUE); IF v_mag.deleted_at IS NULL THEN RETURN jsonb_build_object('edit_version',v_mag.edit_version,'updated_at',v_mag.updated_at); END IF; UPDATE public.magazines SET deleted_at=NULL,status='draft',edit_version=v_mag.edit_version+1 WHERE id=p_magazine_id RETURNING * INTO v_result; RETURN jsonb_build_object('edit_version',v_result.edit_version,'updated_at',v_result.updated_at); END $$;
 
 
@@ -62969,7 +64612,7 @@ ALTER FUNCTION "public"."magazine_restore_v2"("p_magazine_id" "uuid", "p_expecte
 
 CREATE OR REPLACE FUNCTION "public"."magazine_rollup_view_counts"() RETURNS integer
     LANGUAGE "plpgsql" SECURITY DEFINER
-    SET "search_path" TO 'public', 'pg_temp'
+    SET "search_path" TO 'public'
     AS $$
 DECLARE
   _from         timestamptz;
@@ -63026,7 +64669,7 @@ COMMENT ON FUNCTION "public"."magazine_rollup_view_counts"() IS 'Exactly-once. S
 
 CREATE OR REPLACE FUNCTION "public"."magazine_soft_delete_v2"("p_magazine_id" "uuid", "p_expected_edit_version" bigint) RETURNS "jsonb"
     LANGUAGE "plpgsql" SECURITY DEFINER
-    SET "search_path" TO 'public', 'pg_temp'
+    SET "search_path" TO 'public'
     AS $$ DECLARE v_mag public.magazines%ROWTYPE; v_result public.magazines%ROWTYPE; BEGIN v_mag:=public.magazine_lock_v2(p_magazine_id,p_expected_edit_version,TRUE); IF v_mag.deleted_at IS NOT NULL THEN RETURN jsonb_build_object('deleted_at',v_mag.deleted_at,'edit_version',v_mag.edit_version,'updated_at',v_mag.updated_at); END IF; UPDATE public.magazines SET deleted_at=clock_timestamp(),status='archived',edit_version=v_mag.edit_version+1 WHERE id=p_magazine_id RETURNING * INTO v_result; RETURN jsonb_build_object('deleted_at',v_result.deleted_at,'edit_version',v_result.edit_version,'updated_at',v_result.updated_at); END $$;
 
 
@@ -63035,7 +64678,7 @@ ALTER FUNCTION "public"."magazine_soft_delete_v2"("p_magazine_id" "uuid", "p_exp
 
 CREATE OR REPLACE FUNCTION "public"."magazine_unpublish_v2"("p_magazine_id" "uuid", "p_expected_edit_version" bigint) RETURNS "jsonb"
     LANGUAGE "plpgsql" SECURITY DEFINER
-    SET "search_path" TO 'public', 'pg_temp'
+    SET "search_path" TO 'public'
     AS $$ DECLARE v_mag public.magazines%ROWTYPE; v_result public.magazines%ROWTYPE; BEGIN v_mag:=public.magazine_lock_v2(p_magazine_id,p_expected_edit_version,FALSE); IF v_mag.status='draft' THEN RETURN jsonb_build_object('edit_version',v_mag.edit_version,'updated_at',v_mag.updated_at); END IF; IF v_mag.status<>'published' THEN RAISE EXCEPTION 'magazine_not_unpublishable' USING ERRCODE='55000'; END IF; UPDATE public.magazines SET status='draft',edit_version=v_mag.edit_version+1 WHERE id=p_magazine_id RETURNING * INTO v_result; RETURN jsonb_build_object('edit_version',v_result.edit_version,'updated_at',v_result.updated_at); END $$;
 
 
@@ -63044,7 +64687,7 @@ ALTER FUNCTION "public"."magazine_unpublish_v2"("p_magazine_id" "uuid", "p_expec
 
 CREATE OR REPLACE FUNCTION "public"."magazine_update_item_v2"("p_magazine_id" "uuid", "p_expected_edit_version" bigint, "p_item_id" "uuid", "p_patch" "jsonb") RETURNS "jsonb"
     LANGUAGE "plpgsql" SECURITY DEFINER
-    SET "search_path" TO 'public', 'pg_temp'
+    SET "search_path" TO 'public'
     AS $$
 DECLARE v_mag public.magazines%ROWTYPE; v_result public.magazines%ROWTYPE;
 BEGIN
@@ -63063,7 +64706,7 @@ ALTER FUNCTION "public"."magazine_update_item_v2"("p_magazine_id" "uuid", "p_exp
 
 CREATE OR REPLACE FUNCTION "public"."magazine_update_metadata_atomic"("p_magazine_id" "uuid", "p_expected_updated_at" timestamp with time zone, "p_patch" "jsonb") RETURNS "jsonb"
     LANGUAGE "plpgsql" SECURITY DEFINER
-    SET "search_path" TO 'public', 'pg_temp'
+    SET "search_path" TO 'public'
     AS $$
 DECLARE
   v_actor UUID := auth.uid();
@@ -63197,7 +64840,7 @@ ALTER FUNCTION "public"."magazine_update_metadata_atomic"("p_magazine_id" "uuid"
 
 CREATE OR REPLACE FUNCTION "public"."magazine_update_metadata_v2"("p_magazine_id" "uuid", "p_expected_edit_version" bigint, "p_patch" "jsonb") RETURNS "jsonb"
     LANGUAGE "plpgsql" SECURITY DEFINER
-    SET "search_path" TO 'public', 'pg_temp'
+    SET "search_path" TO 'public'
     AS $$
 DECLARE v_mag public.magazines%ROWTYPE; v_result public.magazines%ROWTYPE;
 BEGIN
@@ -63246,7 +64889,7 @@ ALTER FUNCTION "public"."magazine_update_metadata_v2"("p_magazine_id" "uuid", "p
 
 CREATE OR REPLACE FUNCTION "public"."magazine_validate_page_order_v2"("p_magazine_id" "uuid", "p_page_order" "jsonb") RETURNS boolean
     LANGUAGE "plpgsql" STABLE SECURITY DEFINER
-    SET "search_path" TO 'public', 'pg_temp'
+    SET "search_path" TO 'public'
     AS $_$
 DECLARE
   v_pages JSONB;
@@ -65321,7 +66964,7 @@ ALTER FUNCTION "public"."purge_edge_invocations_old"() OWNER TO "postgres";
 
 CREATE OR REPLACE FUNCTION "public"."purge_expired_security_data"() RETURNS "void"
     LANGUAGE "plpgsql" SECURITY DEFINER
-    SET "search_path" TO 'public', 'pg_temp'
+    SET "search_path" TO 'public'
     AS $$
 DECLARE
   v_purged_step_up integer;
@@ -66730,6 +68373,33 @@ $$;
 ALTER FUNCTION "public"."request_discount_approval_transactional"("_quote_id" "uuid", "_seller_notes" "text") OWNER TO "postgres";
 
 
+CREATE OR REPLACE FUNCTION "public"."request_password_reset"("p_email" "text") RETURNS "void"
+    LANGUAGE "plpgsql" SECURITY DEFINER
+    SET "search_path" TO 'pg_catalog', 'pg_temp'
+    AS $_$
+DECLARE
+  v_email text := pg_catalog.lower(pg_catalog.btrim(COALESCE(p_email, '')));
+BEGIN
+  IF pg_catalog.length(v_email) < 5
+     OR pg_catalog.length(v_email) > 254
+     OR v_email !~ '^[a-z0-9._%+\-]+@[a-z0-9.\-]+\.[a-z]{2,}$' THEN
+    RAISE EXCEPTION 'E-mail inválido.' USING ERRCODE = '22023';
+  END IF;
+
+  INSERT INTO public.password_reset_requests (email, status)
+  VALUES (v_email, 'pending')
+  ON CONFLICT DO NOTHING;
+END;
+$_$;
+
+
+ALTER FUNCTION "public"."request_password_reset"("p_email" "text") OWNER TO "postgres";
+
+
+COMMENT ON FUNCTION "public"."request_password_reset"("p_email" "text") IS 'Registra pedido pendente de reset de senha (tela de login, anon). Valida e-mail como a policy de INSERT, duplicata pendente = no-op silencioso (sem enumeração). Rate limit via triggers trg_password_reset_rate_limit e trg_anon_rate_guard. Bug #50, 2026-11-12. ATENCAO: fora da whitelist do event trigger evt_auto_revoke_secdef_public_execute — todo CREATE OR REPLACE/ALTER FUNCTION futuro revoga EXECUTE de anon em silencio; repetir GRANT EXECUTE ON FUNCTION public.request_password_reset(text) TO anon, authenticated logo apos a redefinicao.';
+
+
+
 CREATE OR REPLACE FUNCTION "public"."request_step_up_challenge"("_action" "public"."step_up_action", "_target_ref" "text" DEFAULT NULL::"text", "_ip" "inet" DEFAULT NULL::"inet", "_user_agent" "text" DEFAULT NULL::"text") RETURNS TABLE("challenge_id" "uuid", "otp_plain" "text", "expires_at" timestamp with time zone)
     LANGUAGE "plpgsql"
     SET "search_path" TO 'public'
@@ -66803,19 +68473,25 @@ ALTER FUNCTION "public"."reset_mockup_credit_limits"() OWNER TO "postgres";
 
 CREATE OR REPLACE FUNCTION "public"."reset_optimization_queue"("_only_running" boolean DEFAULT true) RETURNS integer
     LANGUAGE "plpgsql"
-    SET "search_path" TO 'public'
+    SET "search_path" TO 'pg_catalog', 'pg_temp'
     AS $$
 DECLARE
-  affected int;
+  affected integer;
 BEGIN
-  IF NOT public.has_role(auth.uid(), 'admin') THEN
-    RAISE EXCEPTION 'forbidden';
+  IF NOT public.is_dev((SELECT auth.uid())) THEN
+    RAISE EXCEPTION 'forbidden' USING ERRCODE = '42501';
   END IF;
+
   IF _only_running THEN
-    UPDATE public.optimization_queue SET status = 'pending', started_at = NULL WHERE status = 'running';
+    UPDATE public.optimization_queue
+       SET status = 'pending', started_at = NULL
+     WHERE status = 'running';
   ELSE
-    UPDATE public.optimization_queue SET status = 'pending', started_at = NULL, finished_at = NULL, error = NULL WHERE status IN ('running','failed','blocked');
+    UPDATE public.optimization_queue
+       SET status = 'pending', started_at = NULL, finished_at = NULL, error = NULL
+     WHERE status IN ('running', 'failed', 'blocked');
   END IF;
+
   GET DIAGNOSTICS affected = ROW_COUNT;
   RETURN affected;
 END;
@@ -66823,6 +68499,10 @@ $$;
 
 
 ALTER FUNCTION "public"."reset_optimization_queue"("_only_running" boolean) OWNER TO "postgres";
+
+
+COMMENT ON FUNCTION "public"."reset_optimization_queue"("_only_running" boolean) IS 'Fila de otimização (UI dev /admin/telemetria). SECURITY INVOKER + RLS is_dev; guarda interna is_dev(). Ver 20261112120500.';
+
 
 
 CREATE OR REPLACE FUNCTION "public"."reset_user_step_up_state"("_user_id" "uuid") RETURNS "void"
@@ -67414,6 +69094,110 @@ ALTER FUNCTION "public"."rpc_enrich_kit_component"("p_kit_component_id" "uuid", 
 COMMENT ON FUNCTION "public"."rpc_enrich_kit_component"("p_kit_component_id" "uuid", "p_source" character varying, "p_shape_type" character varying, "p_length_mm" integer, "p_width_mm" integer, "p_height_mm" integer, "p_diameter_mm" integer, "p_weight_g" integer, "p_pkg_ext_length_mm" integer, "p_pkg_ext_width_mm" integer, "p_pkg_ext_height_mm" integer, "p_pkg_int_length_mm" integer, "p_pkg_int_width_mm" integer, "p_pkg_int_height_mm" integer, "p_pkg_material" character varying, "p_pkg_color" character varying, "p_pkg_finish" character varying, "p_notes" "text") IS 'RPC pública: recebe dimensões de um componente de kit via painel admin,
    executa o fluxo completo bronze→prata→gold automaticamente.
    Input manual = auto-approve (confiança 1.0).';
+
+
+
+CREATE OR REPLACE FUNCTION "public"."rpc_sales_assistant_candidates"("p_ramo_pai_id" "uuid", "p_color_group_ids" "uuid"[], "p_price_min" numeric, "p_price_max" numeric, "p_limit" integer DEFAULT 8, "p_max_per_category" integer DEFAULT 2, "p_min_score" integer DEFAULT 50) RETURNS TABLE("product_id" "uuid", "name" "text", "sale_price" numeric, "primary_image_url" "text", "category_id" "uuid", "score" integer, "sinal_ramo" boolean, "sinal_cor" boolean, "sinal_giro" boolean, "sinal_novidade" boolean, "sinal_gravacao" boolean, "sinal_preco" boolean, "sinal_estoque" boolean, "classe_giro" "text")
+    LANGUAGE "sql" STABLE
+    SET "search_path" TO ''
+    AS $$
+WITH
+ramo_hits AS MATERIALIZED (
+  SELECT DISTINCT pra.produto_id AS id
+  FROM public.produto_ramo_atividade pra
+  JOIN public.ramo_atividade_filho raf ON raf.id = pra.ramo_atividade_filho_id
+  WHERE raf.ramo_atividade_id = p_ramo_pai_id
+),
+cor_hits AS MATERIALIZED (
+  SELECT DISTINCT pv.product_id AS id
+  FROM public.product_variants pv
+  JOIN public.color_variations cv ON cv.id = pv.color_id
+  WHERE pv.is_active
+    AND COALESCE(cv.is_active, true)
+    AND cv.color_group_id = ANY(p_color_group_ids)
+),
+pontuado AS MATERIALIZED (
+  SELECT
+    p.id                AS product_id,
+    p.name              AS name,
+    p.sale_price        AS sale_price,
+    p.primary_image_url AS primary_image_url,
+    p.category_id       AS category_id,
+    (rh.id IS NOT NULL) AS sinal_ramo,
+    (ch.id IS NOT NULL) AS sinal_cor,
+    (mv.abc_classification = 'A') AS sinal_giro,
+    -- Novidade só vale dentro da janela: `is_new` sem validade não envelhece sozinho.
+    (COALESCE(p.is_new, false)
+      AND COALESCE(p.is_new_expires_at, p.novelty_expires_at) > now()) AS sinal_novidade,
+    COALESCE(p.allows_personalization, false) AS sinal_gravacao,
+    -- Sem faixa informada o sinal de preço não é avaliado: some para todos por igual, em vez
+    -- de afirmar "está na faixa que o cliente costuma comprar" sem faixa nenhuma na mão.
+    (p.sale_price IS NOT NULL
+      AND (p_price_min IS NOT NULL OR p_price_max IS NOT NULL)
+      AND p.sale_price >= COALESCE(p_price_min, 0::numeric)
+      AND p.sale_price <= COALESCE(p_price_max, 'Infinity'::numeric)) AS sinal_preco,
+    (COALESCE(p.stock_quantity, 0) > 0) AS sinal_estoque,
+    mv.abc_classification AS classe_giro,
+    -- Critério de desempate, não de nota: entre dois produtos com a mesma pontuação, ganha o
+    -- de maior giro. Fica fora do retorno porque o front não escreve nada com ele.
+    COALESCE(mv.turnover_score, 0::numeric) AS giro_num,
+    (CASE WHEN rh.id IS NOT NULL THEN 30 ELSE 0 END
+   + CASE WHEN ch.id IS NOT NULL THEN 25 ELSE 0 END
+   + CASE WHEN mv.abc_classification = 'A' THEN 15 ELSE 0 END
+   + CASE WHEN COALESCE(p.is_new, false)
+               AND COALESCE(p.is_new_expires_at, p.novelty_expires_at) > now()
+          THEN 12 ELSE 0 END
+   + CASE WHEN COALESCE(p.allows_personalization, false) THEN 10 ELSE 0 END
+   + CASE WHEN p.sale_price IS NOT NULL
+               AND (p_price_min IS NOT NULL OR p_price_max IS NOT NULL)
+               AND p.sale_price >= COALESCE(p_price_min, 0::numeric)
+               AND p.sale_price <= COALESCE(p_price_max, 'Infinity'::numeric)
+          THEN 10 ELSE 0 END
+   + CASE WHEN COALESCE(p.stock_quantity, 0) > 0 THEN 8 ELSE 0 END)::int AS score
+  FROM public.products p
+  LEFT JOIN ramo_hits rh ON rh.id = p.id
+  LEFT JOIN cor_hits  ch ON ch.id = p.id
+  LEFT JOIN public.mv_product_intelligence mv ON mv.product_id = p.id
+  -- Os dois ÚNICOS filtros duros.
+  WHERE p.is_active
+    AND NOT COALESCE(p.is_deleted, false)
+),
+elegivel AS (
+  SELECT
+    pt.*,
+    row_number() OVER (
+      PARTITION BY pt.category_id
+      ORDER BY pt.score DESC, pt.giro_num DESC, pt.product_id
+    ) AS pos_na_categoria
+  FROM pontuado pt
+  WHERE pt.score >= p_min_score
+)
+SELECT
+  e.product_id,
+  e.name,
+  e.sale_price,
+  e.primary_image_url,
+  e.category_id,
+  e.score,
+  e.sinal_ramo,
+  e.sinal_cor,
+  e.sinal_giro,
+  e.sinal_novidade,
+  e.sinal_gravacao,
+  e.sinal_preco,
+  e.sinal_estoque,
+  e.classe_giro
+FROM elegivel e
+WHERE e.pos_na_categoria <= p_max_per_category
+ORDER BY e.score DESC, e.giro_num DESC, e.product_id
+LIMIT p_limit;
+$$;
+
+
+ALTER FUNCTION "public"."rpc_sales_assistant_candidates"("p_ramo_pai_id" "uuid", "p_color_group_ids" "uuid"[], "p_price_min" numeric, "p_price_max" numeric, "p_limit" integer, "p_max_per_category" integer, "p_min_score" integer) OWNER TO "postgres";
+
+
+COMMENT ON FUNCTION "public"."rpc_sales_assistant_candidates"("p_ramo_pai_id" "uuid", "p_color_group_ids" "uuid"[], "p_price_min" numeric, "p_price_max" numeric, "p_limit" integer, "p_max_per_category" integer, "p_min_score" integer) IS 'Encaixe do Cliente (fase 1): pontua o catálogo ativo para um cliente e devolve os melhores candidatos com a nota e um booleano por sinal. Filtros duros: apenas is_active e NOT is_deleted. Pesos: ramo 30, cor 25, giro classe A 15, novidade 12, gravação 10, faixa de preço 10, estoque 8 (máximo 110). SECURITY INVOKER: lê só o que o vendedor já pode ler.';
 
 
 
@@ -69145,7 +70929,7 @@ ALTER FUNCTION "public"."tg_ip_access_control_set_updated_at"() OWNER TO "postgr
 
 CREATE OR REPLACE FUNCTION "public"."tg_magazines_on_publish"() RETURNS "trigger"
     LANGUAGE "plpgsql" SECURITY DEFINER
-    SET "search_path" TO 'public', 'extensions', 'pg_temp'
+    SET "search_path" TO 'public', 'extensions'
     AS $$
 DECLARE
   candidate_token TEXT;
@@ -69182,7 +70966,7 @@ ALTER FUNCTION "public"."tg_magazines_on_publish"() OWNER TO "postgres";
 
 CREATE OR REPLACE FUNCTION "public"."tg_reader_state_validate"() RETURNS "trigger"
     LANGUAGE "plpgsql" SECURITY DEFINER
-    SET "search_path" TO 'public', 'pg_temp'
+    SET "search_path" TO 'public'
     AS $$
 BEGIN
   IF cardinality(NEW.bookmarks) > 500 THEN
@@ -70502,6 +72286,9 @@ BEGIN
     payment_method=coalesce(_quote_patch->>'payment_method',payment_method),
     payment_terms=coalesce(_quote_patch->>'payment_terms',payment_terms),
     delivery_time=CASE WHEN _quote_patch ? 'delivery_time' THEN nullif(_quote_patch->>'delivery_time','') ELSE delivery_time END,
+    freight_plan=CASE WHEN _quote_patch ? 'freight_plan' THEN nullif(_quote_patch->>'freight_plan','')::jsonb ELSE freight_plan END,
+    freight_mix_mode=CASE WHEN _quote_patch ? 'freight_mix_mode' THEN nullif(_quote_patch->>'freight_mix_mode','') ELSE freight_mix_mode END,
+    show_freight_plan_to_client=CASE WHEN _quote_patch ? 'show_freight_plan_to_client' THEN coalesce((_quote_patch->>'show_freight_plan_to_client')::boolean,false) ELSE show_freight_plan_to_client END,
     notes=CASE WHEN _quote_patch ? 'notes' THEN _quote_patch->>'notes' ELSE notes END,
     internal_notes=CASE WHEN _quote_patch ? 'internal_notes' THEN _quote_patch->>'internal_notes' ELSE internal_notes END,
     discount_percent=coalesce((_quote_patch->>'discount_percent')::numeric,discount_percent),
@@ -72262,126 +74049,6 @@ COMMENT ON CONSTRAINT "chk_blurhash_format" ON "public"."product_images" IS 'Gar
 
 
 
-CREATE TABLE IF NOT EXISTS "public"."suppliers" (
-    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
-    "name" "text" NOT NULL,
-    "code" "text" NOT NULL,
-    "cnpj" "text",
-    "contact_name" "text",
-    "email" "text",
-    "phone" "text",
-    "address" "text",
-    "active" boolean DEFAULT true,
-    "created_at" timestamp with time zone DEFAULT "now"() NOT NULL,
-    "website" "text",
-    "contact_person" "text",
-    "payment_terms" "text",
-    "delivery_time_days" integer,
-    "minimum_order_value" numeric(10,2),
-    "notes" "text",
-    "updated_at" timestamp with time zone DEFAULT "now"(),
-    "organization_id" "uuid",
-    "trading_name" character varying(255),
-    "api_type" character varying(20),
-    "api_base_url" "text",
-    "api_credentials" "jsonb",
-    "min_order_value" numeric(10,2),
-    "shipping_terms" "text",
-    "default_markup_percent" numeric(5,2) DEFAULT 50.00,
-    "is_product_supplier" boolean DEFAULT true,
-    "is_engraving_supplier" boolean DEFAULT false,
-    "sync_enabled" boolean DEFAULT true,
-    "sync_interval_minutes" integer DEFAULT 240,
-    "last_full_sync_at" timestamp with time zone,
-    "last_sync_status" character varying(50),
-    "last_sync_error" "text",
-    "api_rate_limit_per_hour" integer DEFAULT 100,
-    "priority" integer DEFAULT 99,
-    "api_requests_current_hour" integer DEFAULT 0,
-    "api_requests_reset_at" timestamp with time zone DEFAULT "now"(),
-    "state_uf" character varying(2),
-    "tax_regime" character varying(30),
-    "inscricao_estadual" character varying(20),
-    "phone2" character varying(30),
-    "logo_url" "text",
-    "low_stock_threshold" integer DEFAULT 10 NOT NULL,
-    CONSTRAINT "chk_low_stock_threshold_positive" CHECK (("low_stock_threshold" > 0)),
-    CONSTRAINT "suppliers_cnpj_digits_only_chk" CHECK ((("cnpj" IS NULL) OR ("cnpj" ~ '^[0-9]+$'::"text"))),
-    CONSTRAINT "suppliers_cnpj_length_chk" CHECK ((("cnpj" IS NULL) OR ("length"("cnpj") = 14)))
-);
-
-
-ALTER TABLE "public"."suppliers" OWNER TO "postgres";
-
-
-COMMENT ON COLUMN "public"."suppliers"."default_markup_percent" IS 'Markup padrão em % para produtos deste fornecedor. Ex: 50 = preço venda é 1.5x o custo';
-
-
-
-COMMENT ON COLUMN "public"."suppliers"."is_product_supplier" IS 'Indica se o fornecedor fornece produtos para revenda';
-
-
-
-COMMENT ON COLUMN "public"."suppliers"."is_engraving_supplier" IS 'Indica se o fornecedor oferece serviços de gravação/personalização';
-
-
-
-COMMENT ON COLUMN "public"."suppliers"."sync_enabled" IS 'Habilitar sincronização automática com API do fornecedor';
-
-
-
-COMMENT ON COLUMN "public"."suppliers"."sync_interval_minutes" IS 'Intervalo entre sincronizações em minutos (padrão: 240 = 4 horas)';
-
-
-
-COMMENT ON COLUMN "public"."suppliers"."last_full_sync_at" IS 'Data/hora da última sincronização completa bem-sucedida';
-
-
-
-COMMENT ON COLUMN "public"."suppliers"."last_sync_status" IS 'Status da última sync: success, error, in_progress, partial';
-
-
-
-COMMENT ON COLUMN "public"."suppliers"."last_sync_error" IS 'Mensagem de erro detalhada se last_sync_status = error';
-
-
-
-COMMENT ON COLUMN "public"."suppliers"."api_rate_limit_per_hour" IS 'Limite máximo de requisições à API por hora';
-
-
-
-COMMENT ON COLUMN "public"."suppliers"."priority" IS 'Prioridade do fornecedor para escolha automática (1 = maior prioridade)';
-
-
-
-COMMENT ON COLUMN "public"."suppliers"."api_requests_current_hour" IS 'Contador de requisições na hora atual (resetado a cada hora)';
-
-
-
-COMMENT ON COLUMN "public"."suppliers"."api_requests_reset_at" IS 'Timestamp do último reset do contador de requisições';
-
-
-
-COMMENT ON COLUMN "public"."suppliers"."state_uf" IS 'UF da matriz do fornecedor. Para filiais especificas, usar supplier_branches.';
-
-
-
-COMMENT ON COLUMN "public"."suppliers"."inscricao_estadual" IS 'IE principal do fornecedor (da matriz). Para IE de filiais, usar supplier_branches.inscricao_estadual';
-
-
-
-COMMENT ON COLUMN "public"."suppliers"."phone2" IS 'Telefone fixo secundário';
-
-
-
-COMMENT ON COLUMN "public"."suppliers"."logo_url" IS 'URL do logo do fornecedor';
-
-
-
-COMMENT ON COLUMN "public"."suppliers"."low_stock_threshold" IS 'Threshold de estoque baixo para o badge "Estoque Baixo" no catálogo. Padrão 10 unidades. Configurável por fornecedor pois volumes variam muito (XBZ/Spot: pequenos lotes, Asia Import: grandes volumes).';
-
-
-
 CREATE MATERIALIZED VIEW "analytics"."mv_media_health" AS
  SELECT "s"."code" AS "source_supplier",
     "count"(DISTINCT "p"."id") AS "total_produtos",
@@ -72467,6 +74134,7 @@ CREATE TABLE IF NOT EXISTS "public"."product_variants" (
     "next_date_6" "date",
     "next_entry_date" "date",
     "next_entry_quantity" integer,
+    "supplier_external_id" "text",
     CONSTRAINT "chk_pv_capacity_ml_positive" CHECK (("capacity_ml" > 0)),
     CONSTRAINT "chk_pv_next_quantities_nonneg" CHECK ((("next_quantity_1" >= 0) AND ("next_quantity_2" >= 0) AND ("next_quantity_3" >= 0) AND ("next_quantity_4" >= 0) AND ("next_quantity_5" >= 0) AND ("next_quantity_6" >= 0))),
     CONSTRAINT "chk_pv_size_length" CHECK ((("size_length_cm" > (0)::numeric) AND ("size_length_cm" <= (300)::numeric))),
@@ -72616,405 +74284,6 @@ CREATE MATERIALIZED VIEW "analytics"."mv_product_compositions" AS
 
 
 ALTER MATERIALIZED VIEW "analytics"."mv_product_compositions" OWNER TO "postgres";
-
-
-CREATE TABLE IF NOT EXISTS "public"."stock_daily_summary" (
-    "id" bigint NOT NULL,
-    "variant_supplier_source_id" "uuid" NOT NULL,
-    "supplier_id" "uuid" NOT NULL,
-    "supplier_branch_id" "uuid",
-    "variant_id" "uuid" NOT NULL,
-    "product_id" "uuid" NOT NULL,
-    "summary_date" "date" NOT NULL,
-    "stock_open" integer,
-    "stock_close" integer,
-    "stock_min" integer,
-    "stock_max" integer,
-    "net_change" integer,
-    "units_depleted" integer DEFAULT 0,
-    "units_restocked" integer DEFAULT 0,
-    "restock_detected" boolean DEFAULT false,
-    "restock_quantity" integer DEFAULT 0,
-    "restock_count" smallint DEFAULT 0,
-    "cost_price_open" numeric(12,4),
-    "cost_price_close" numeric(12,4),
-    "price_changed" boolean DEFAULT false,
-    "sync_count" smallint DEFAULT 0,
-    "created_at" timestamp with time zone DEFAULT "now"() NOT NULL,
-    "restock_zero_to_positive" boolean DEFAULT false NOT NULL
-)
-WITH ("autovacuum_vacuum_scale_factor"='0.05', "autovacuum_analyze_scale_factor"='0.05', "autovacuum_vacuum_threshold"='50', "autovacuum_analyze_threshold"='50');
-
-
-ALTER TABLE "public"."stock_daily_summary" OWNER TO "postgres";
-
-
-COMMENT ON TABLE "public"."stock_daily_summary" IS 'Camada 2: Resumo diário de movimentação de estoque e preço por variante/fornecedor. Retenção permanente. Gerado automaticamente por job noturno via pg_cron.';
-
-
-
-COMMENT ON COLUMN "public"."stock_daily_summary"."restock_zero_to_positive" IS 'TRUE se em qualquer snapshot do dia o stock_total_old=0 E stock_total_new>0 (transição real de zero-para-positivo). Diferente de restock_detected que marca qualquer delta positivo — este campo é semanticamente correto para o módulo Reposição.';
-
-
-
-CREATE TABLE IF NOT EXISTS "public"."variant_supplier_sources" (
-    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
-    "organization_id" "uuid" NOT NULL,
-    "variant_id" "uuid" NOT NULL,
-    "supplier_id" "uuid" NOT NULL,
-    "quantity" integer DEFAULT 0,
-    "source" character varying(50) DEFAULT 'manual'::character varying,
-    "last_synced_at" timestamp with time zone,
-    "sync_status" character varying(50) DEFAULT 'synced'::character varying,
-    "sync_error" "text",
-    "updated_at" timestamp with time zone DEFAULT "now"(),
-    "next_quantity_1" integer,
-    "next_date_1" "date",
-    "next_quantity_2" integer,
-    "next_date_2" "date",
-    "next_quantity_3" integer,
-    "next_date_3" "date",
-    "supplier_sku" character varying(100),
-    "supplier_color_code" character varying(50),
-    "supplier_color_name" character varying(100),
-    "cost_price" numeric(10,4),
-    "list_price" numeric(10,4),
-    "cost_price_1" numeric(10,4),
-    "min_qty_1" integer,
-    "cost_price_2" numeric(10,4),
-    "min_qty_2" integer,
-    "cost_price_3" numeric(10,4),
-    "min_qty_3" integer,
-    "cost_price_4" numeric(10,4),
-    "min_qty_4" integer,
-    "cost_price_5" numeric(10,4),
-    "min_qty_5" integer,
-    "lead_time_days" integer,
-    "min_order_qty" integer DEFAULT 1,
-    "pack_quantity" integer DEFAULT 1,
-    "sale_multiplier" integer DEFAULT 1,
-    "is_preferred" boolean DEFAULT false,
-    "priority" integer DEFAULT 99,
-    "is_active" boolean DEFAULT true,
-    "supplier_images" "jsonb" DEFAULT '[]'::"jsonb",
-    "supplier_videos" "jsonb" DEFAULT '[]'::"jsonb",
-    "supplier_thumbnail" character varying(500),
-    "removed_from_api" boolean DEFAULT false,
-    "removed_at" timestamp with time zone,
-    "raw_data" "jsonb",
-    "stock_main_warehouse" integer DEFAULT 0 NOT NULL,
-    "stock_other_warehouses" integer DEFAULT 0 NOT NULL,
-    "supplier_availability_status" character varying(20),
-    "supplier_ipi_rate" numeric(5,2),
-    "supplier_branch_id" "uuid",
-    "icms_rate" numeric(5,2),
-    "pis_rate" numeric(5,4),
-    "cofins_rate" numeric(5,4),
-    "cfop" character varying(4),
-    "csosn" character varying(4),
-    "cest" character varying(7),
-    "cst" character varying(3),
-    "operation_nature" character varying(100),
-    "price_updated_at" timestamp with time zone,
-    "next_quantity_4" integer,
-    "next_quantity_5" integer,
-    "next_quantity_6" integer,
-    "next_date_4" "date",
-    "next_date_5" "date",
-    "next_date_6" "date",
-    "your_price" numeric,
-    CONSTRAINT "chk_vss_cost_price_not_zero" CHECK ((("cost_price" IS NULL) OR ("cost_price" > (0)::numeric))),
-    CONSTRAINT "chk_vss_priority_positive" CHECK ((("priority" IS NULL) OR ("priority" > 0))),
-    CONSTRAINT "chk_vss_quantity_positive" CHECK ((("quantity" IS NULL) OR ("quantity" >= 0))),
-    CONSTRAINT "variant_stocks_quantity_check" CHECK (("quantity" >= 0))
-)
-WITH ("autovacuum_analyze_scale_factor"='0.005', "autovacuum_vacuum_cost_delay"='2', "autovacuum_vacuum_scale_factor"='0.03');
-ALTER TABLE ONLY "public"."variant_supplier_sources" ALTER COLUMN "variant_id" SET STATISTICS 1000;
-ALTER TABLE ONLY "public"."variant_supplier_sources" ALTER COLUMN "supplier_id" SET STATISTICS 500;
-
-ALTER TABLE ONLY "public"."variant_supplier_sources" REPLICA IDENTITY FULL;
-
-
-ALTER TABLE "public"."variant_supplier_sources" OWNER TO "postgres";
-
-
-COMMENT ON TABLE "public"."variant_supplier_sources" IS 'Fonte dados por variante x fornecedor. BACKLOG: cost_price_1..5+min_qty_1..5 → supplier_price_tiers; next_quantity/date_1..6 → variant_restock_schedule. Bloqueado por 24+ refs frontend.';
-
-
-
-COMMENT ON COLUMN "public"."variant_supplier_sources"."quantity" IS 'Quantidade em estoque deste fornecedor para esta variante. Trigger sincroniza cache em products.stock_quantity.';
-
-
-
-COMMENT ON COLUMN "public"."variant_supplier_sources"."supplier_sku" IS 'SKU/código desta variante no sistema do fornecedor.
-Ex: XBZ usa "01320-AZ", SPOT usa "22900-105"';
-
-
-
-COMMENT ON COLUMN "public"."variant_supplier_sources"."supplier_color_code" IS 'Código da cor no sistema do fornecedor.
-Ex: SPOT usa "104" para Azul, XBZ usa "AZ"';
-
-
-
-COMMENT ON COLUMN "public"."variant_supplier_sources"."supplier_color_name" IS 'Nome da cor como o fornecedor chama.
-Ex: "Azul Royal", "Azul Marinho", "Navy Blue"';
-
-
-
-COMMENT ON COLUMN "public"."variant_supplier_sources"."cost_price" IS 'Custo unitário atual de compra (menor faixa ou preço base)';
-
-
-
-COMMENT ON COLUMN "public"."variant_supplier_sources"."list_price" IS 'Preço de tabela/lista do fornecedor (antes de descontos por quantidade)';
-
-
-
-COMMENT ON COLUMN "public"."variant_supplier_sources"."cost_price_1" IS 'Preço de custo faixa 1 (menor quantidade). cost_price_2/3/4/5 para faixas maiores.';
-
-
-
-COMMENT ON COLUMN "public"."variant_supplier_sources"."min_qty_1" IS 'Quantidade mínima para faixa 1';
-
-
-
-COMMENT ON COLUMN "public"."variant_supplier_sources"."cost_price_2" IS 'Custo unitário faixa 2';
-
-
-
-COMMENT ON COLUMN "public"."variant_supplier_sources"."min_qty_2" IS 'Quantidade mínima para faixa 2';
-
-
-
-COMMENT ON COLUMN "public"."variant_supplier_sources"."cost_price_3" IS 'Custo unitário faixa 3';
-
-
-
-COMMENT ON COLUMN "public"."variant_supplier_sources"."min_qty_3" IS 'Quantidade mínima para faixa 3';
-
-
-
-COMMENT ON COLUMN "public"."variant_supplier_sources"."cost_price_4" IS 'Custo unitário faixa 4';
-
-
-
-COMMENT ON COLUMN "public"."variant_supplier_sources"."min_qty_4" IS 'Quantidade mínima para faixa 4';
-
-
-
-COMMENT ON COLUMN "public"."variant_supplier_sources"."cost_price_5" IS 'Custo unitário faixa 5 (maior quantidade = melhor preço)';
-
-
-
-COMMENT ON COLUMN "public"."variant_supplier_sources"."min_qty_5" IS 'Quantidade mínima para faixa 5';
-
-
-
-COMMENT ON COLUMN "public"."variant_supplier_sources"."lead_time_days" IS 'Prazo de entrega em dias úteis para este fornecedor';
-
-
-
-COMMENT ON COLUMN "public"."variant_supplier_sources"."min_order_qty" IS 'Quantidade mínima para fazer pedido neste fornecedor';
-
-
-
-COMMENT ON COLUMN "public"."variant_supplier_sources"."pack_quantity" IS 'Quantidade de unidades por embalagem/pack';
-
-
-
-COMMENT ON COLUMN "public"."variant_supplier_sources"."sale_multiplier" IS 'Deve comprar em múltiplos de X unidades';
-
-
-
-COMMENT ON COLUMN "public"."variant_supplier_sources"."is_preferred" IS 'Marca este VSS como preferencial para a variante. 100% das variantes têm exatamente 1 preferred.';
-
-
-
-COMMENT ON COLUMN "public"."variant_supplier_sources"."priority" IS 'Prioridade para seleção automática (1 = maior prioridade).
-Usado quando há empate em outros critérios';
-
-
-
-COMMENT ON COLUMN "public"."variant_supplier_sources"."is_active" IS 'Se este fornecedor está ativo para venda desta variante';
-
-
-
-COMMENT ON COLUMN "public"."variant_supplier_sources"."supplier_images" IS 'Array de URLs de imagens enviadas pelo fornecedor.
-Formato: ["https://...", "https://..."]';
-
-
-
-COMMENT ON COLUMN "public"."variant_supplier_sources"."supplier_videos" IS 'Array de URLs de vídeos enviados pelo fornecedor.
-Formato: ["https://...", "https://..."]';
-
-
-
-COMMENT ON COLUMN "public"."variant_supplier_sources"."supplier_thumbnail" IS 'URL da imagem principal/thumbnail deste fornecedor';
-
-
-
-COMMENT ON COLUMN "public"."variant_supplier_sources"."removed_from_api" IS 'TRUE se o item não aparece mais na API do fornecedor.
-Mantemos o registro para histórico, mas não oferecemos para venda';
-
-
-
-COMMENT ON COLUMN "public"."variant_supplier_sources"."removed_at" IS 'Data/hora em que foi detectada a remoção da API';
-
-
-
-COMMENT ON COLUMN "public"."variant_supplier_sources"."raw_data" IS 'Backup dos dados brutos recebidos da API do fornecedor.
-Útil para debug e reprocessamento';
-
-
-
-COMMENT ON COLUMN "public"."variant_supplier_sources"."stock_main_warehouse" IS 'Estoque no depósito principal do fornecedor (pronta entrega). XBZ: QuantidadeDisponivelEstoquePrincipal';
-
-
-
-COMMENT ON COLUMN "public"."variant_supplier_sources"."stock_other_warehouses" IS 'Estoque em depósitos secundários/trânsito (prazo de transferência). XBZ: QuantidadeDisponivel - EstoquePrincipal';
-
-
-
-COMMENT ON COLUMN "public"."variant_supplier_sources"."supplier_availability_status" IS 'Status de disponibilidade do fornecedor (SIM, CONSULTE, INDISPONÍVEL). Fonte: API /ruiz/consultaEstoque campo Disponivel';
-
-
-
-COMMENT ON COLUMN "public"."variant_supplier_sources"."supplier_ipi_rate" IS 'Alíquota de IPI informada pelo fornecedor para este SKU. Fonte XBZ: campo IpiTaxa da API /ruiz/consultaEstoque. NULL = fornecedor não informou.';
-
-
-
-COMMENT ON COLUMN "public"."variant_supplier_sources"."supplier_branch_id" IS 'Filial do fornecedor que fatura este item. Define UF de origem para calculo de ICMS.';
-
-
-
-COMMENT ON COLUMN "public"."variant_supplier_sources"."icms_rate" IS 'Aliquota ICMS desta operacao. Depende da UF da filial (supplier_branch) x UF destino.';
-
-
-
-COMMENT ON COLUMN "public"."variant_supplier_sources"."cfop" IS 'CFOP da operacao. Ex: 5102 (venda interna), 6102 (venda interestadual).';
-
-
-
-COMMENT ON COLUMN "public"."variant_supplier_sources"."csosn" IS 'CSOSN fiscal. Hoje 0 registros. 7 refs frontend. DROP requer sprint fiscal dedicada.';
-
-
-
-COMMENT ON COLUMN "public"."variant_supplier_sources"."cst" IS 'Código de Situação Tributária. Ex: 100 (importado tributado), 060 (nacional ST), 500 (nacional produção)';
-
-
-
-COMMENT ON COLUMN "public"."variant_supplier_sources"."operation_nature" IS 'Natureza da operação fiscal. Ex: Venda de Merc. Adquirida de Terceiros, Venda de Produção, Venda com ST';
-
-
-
-COMMENT ON COLUMN "public"."variant_supplier_sources"."next_quantity_4" IS 'Restock slot 4. Hoje 0 registros. API Spot não retorna 4+ slots. DROP requer refatoração coordenada (5 funções + frontend).';
-
-
-
-COMMENT ON COLUMN "public"."variant_supplier_sources"."next_quantity_5" IS 'Restock slot 5. Hoje 0 registros. DROP requer refatoração coordenada.';
-
-
-
-COMMENT ON COLUMN "public"."variant_supplier_sources"."next_quantity_6" IS 'Restock slot 6. Hoje 0 registros. DROP requer refatoração coordenada.';
-
-
-
-COMMENT ON COLUMN "public"."variant_supplier_sources"."next_date_4" IS 'Data restock slot 4. Hoje 0 registros. DROP requer refatoração coordenada.';
-
-
-
-COMMENT ON COLUMN "public"."variant_supplier_sources"."next_date_5" IS 'Data restock slot 5. Hoje 0 registros.';
-
-
-
-COMMENT ON COLUMN "public"."variant_supplier_sources"."next_date_6" IS 'Data restock slot 6. Hoje 0 registros.';
-
-
-
-COMMENT ON CONSTRAINT "chk_vss_cost_price_not_zero" ON "public"."variant_supplier_sources" IS 'cost_price nunca 0 em variant_supplier_sources. Usar NULL para preço desconhecido.';
-
-
-
-CREATE MATERIALIZED VIEW "analytics"."mv_stock_velocity" AS
- WITH "latest_per_vss" AS (
-         SELECT DISTINCT ON ("sd"."variant_supplier_source_id") "sd"."variant_supplier_source_id",
-            "sd"."supplier_id",
-            "sd"."supplier_branch_id",
-            "sd"."variant_id",
-            "sd"."product_id",
-            "sd"."stock_close" AS "current_stock",
-            "sd"."cost_price_close" AS "current_price",
-            "sd"."summary_date" AS "last_update_date"
-           FROM "public"."stock_daily_summary" "sd"
-          WHERE ("sd"."sync_count" > 0)
-          ORDER BY "sd"."variant_supplier_source_id", "sd"."summary_date" DESC
-        ), "agg_7d" AS (
-         SELECT "sd"."variant_supplier_source_id",
-            "sum"(GREATEST(0, (- COALESCE("sd"."net_change", 0)))) AS "depleted",
-            "sum"(GREATEST(0, COALESCE("sd"."net_change", 0))) AS "restocked",
-            "count"(*) FILTER (WHERE ("sd"."sync_count" > 0)) AS "active_days"
-           FROM "public"."stock_daily_summary" "sd"
-          WHERE ("sd"."summary_date" >= (CURRENT_DATE - 7))
-          GROUP BY "sd"."variant_supplier_source_id"
-        ), "agg_30d" AS (
-         SELECT "sd"."variant_supplier_source_id",
-            "sum"(GREATEST(0, (- COALESCE("sd"."net_change", 0)))) AS "depleted",
-            "sum"(GREATEST(0, COALESCE("sd"."net_change", 0))) AS "restocked",
-            "count"(*) FILTER (WHERE ("sd"."sync_count" > 0)) AS "active_days",
-            "count"(*) FILTER (WHERE ("sd"."restock_zero_to_positive" = true)) AS "restock_events",
-            "count"(*) FILTER (WHERE "sd"."price_changed") AS "price_changes"
-           FROM "public"."stock_daily_summary" "sd"
-          WHERE ("sd"."summary_date" >= (CURRENT_DATE - 30))
-          GROUP BY "sd"."variant_supplier_source_id"
-        ), "agg_90d" AS (
-         SELECT "sd"."variant_supplier_source_id",
-            "sum"(GREATEST(0, (- COALESCE("sd"."net_change", 0)))) AS "depleted",
-            "count"(*) FILTER (WHERE ("sd"."sync_count" > 0)) AS "active_days"
-           FROM "public"."stock_daily_summary" "sd"
-          WHERE ("sd"."summary_date" >= (CURRENT_DATE - 90))
-          GROUP BY "sd"."variant_supplier_source_id"
-        )
- SELECT "l"."variant_supplier_source_id",
-    "l"."supplier_id",
-    "l"."supplier_branch_id",
-    "l"."variant_id",
-    "l"."product_id",
-    "l"."current_stock",
-    "l"."current_price",
-    "l"."last_update_date",
-    COALESCE("a7"."depleted", (0)::bigint) AS "total_depleted_7d",
-    COALESCE("a30"."depleted", (0)::bigint) AS "total_depleted_30d",
-    COALESCE("a90"."depleted", (0)::bigint) AS "total_depleted_90d",
-    "a7"."active_days" AS "active_days_7d",
-    "a30"."active_days" AS "active_days_30d",
-    "a90"."active_days" AS "active_days_90d",
-    "round"(COALESCE((("a7"."depleted")::numeric / (NULLIF("a7"."active_days", 0))::numeric), (0)::numeric), 2) AS "avg_daily_depletion_7d",
-    "round"(COALESCE((("a30"."depleted")::numeric / (NULLIF("a30"."active_days", 0))::numeric), (0)::numeric), 2) AS "avg_daily_depletion_30d",
-    "round"(COALESCE((("a90"."depleted")::numeric / (NULLIF("a90"."active_days", 0))::numeric), (0)::numeric), 2) AS "avg_daily_depletion_90d",
-        CASE
-            WHEN (COALESCE((("a30"."depleted")::numeric / (NULLIF("a30"."active_days", 0))::numeric), (0)::numeric) > (0)::numeric) THEN "round"((COALESCE((("a7"."depleted")::numeric / (NULLIF("a7"."active_days", 0))::numeric), (0)::numeric) / (("a30"."depleted")::numeric / ("a30"."active_days")::numeric)), 2)
-            ELSE NULL::numeric
-        END AS "velocity_trend",
-        CASE
-            WHEN (COALESCE((("a7"."depleted")::numeric / (NULLIF("a7"."active_days", 0))::numeric), (0)::numeric) > (0)::numeric) THEN "round"((("l"."current_stock")::numeric / (("a7"."depleted")::numeric / ("a7"."active_days")::numeric)), 1)
-            ELSE NULL::numeric
-        END AS "days_to_stockout",
-    COALESCE("a30"."restocked", (0)::bigint) AS "total_restocked_30d",
-    COALESCE("a30"."restock_events", (0)::bigint) AS "restock_events_30d",
-        CASE
-            WHEN (COALESCE("a30"."restock_events", (0)::bigint) > 1) THEN "round"((30.0 / ("a30"."restock_events")::numeric), 1)
-            ELSE NULL::numeric
-        END AS "avg_days_between_restocks",
-    COALESCE("a30"."price_changes", (0)::bigint) AS "price_changes_30d",
-    "now"() AS "refreshed_at"
-   FROM (((("latest_per_vss" "l"
-     JOIN "public"."variant_supplier_sources" "vss" ON ((("vss"."id" = "l"."variant_supplier_source_id") AND ("vss"."is_active" = true))))
-     LEFT JOIN "agg_7d" "a7" ON (("a7"."variant_supplier_source_id" = "l"."variant_supplier_source_id")))
-     LEFT JOIN "agg_30d" "a30" ON (("a30"."variant_supplier_source_id" = "l"."variant_supplier_source_id")))
-     LEFT JOIN "agg_90d" "a90" ON (("a90"."variant_supplier_source_id" = "l"."variant_supplier_source_id")))
-  WITH NO DATA;
-
-
-ALTER MATERIALIZED VIEW "analytics"."mv_stock_velocity" OWNER TO "postgres";
 
 
 CREATE MATERIALIZED VIEW "analytics"."mv_product_intelligence" AS
@@ -73756,36 +75025,6 @@ ALTER TABLE "public"."_archive_supplier_price_tiers_20260626" OWNER TO "postgres
 
 COMMENT ON TABLE "public"."_archive_supplier_price_tiers_20260626" IS 'Archive de supplier_price_tiers (aposentada 2026-06-26). Snapshot stale de 13/06; substituída pela fonte viva VSS via get_variant_price. Reversível se necessário.';
 
-
-
-CREATE TABLE IF NOT EXISTS "public"."_backup_stock_daily_summary_20260618" (
-    "id" bigint NOT NULL,
-    "variant_supplier_source_id" "uuid",
-    "supplier_id" "uuid",
-    "supplier_branch_id" "uuid",
-    "variant_id" "uuid",
-    "product_id" "uuid",
-    "summary_date" "date",
-    "stock_open" integer,
-    "stock_close" integer,
-    "stock_min" integer,
-    "stock_max" integer,
-    "net_change" integer,
-    "units_depleted" integer,
-    "units_restocked" integer,
-    "restock_detected" boolean,
-    "restock_quantity" integer,
-    "restock_count" smallint,
-    "cost_price_open" numeric(12,4),
-    "cost_price_close" numeric(12,4),
-    "price_changed" boolean,
-    "sync_count" smallint,
-    "created_at" timestamp with time zone,
-    "restock_zero_to_positive" boolean
-);
-
-
-ALTER TABLE "public"."_backup_stock_daily_summary_20260618" OWNER TO "postgres";
 
 
 CREATE TABLE IF NOT EXISTS "public"."_bkp_kcvs_pre_normalize_20260624" (
@@ -76522,6 +77761,27 @@ COMMENT ON TABLE "public"."crm_callback_events" IS 'Auditoria + chave de idempot
 
 
 
+CREATE TABLE IF NOT EXISTS "public"."crm_seller_identity_links" (
+    "auth_user_id" "uuid" NOT NULL,
+    "crm_seller_id" bigint NOT NULL,
+    "link_source" "text" DEFAULT 'email_bootstrap'::"text" NOT NULL,
+    "created_at" timestamp with time zone DEFAULT "now"() NOT NULL,
+    CONSTRAINT "crm_seller_identity_links_crm_seller_id_check" CHECK (("crm_seller_id" > 0)),
+    CONSTRAINT "crm_seller_identity_links_link_source_check" CHECK (("link_source" = ANY (ARRAY['email_bootstrap'::"text", 'manual'::"text"])))
+);
+
+
+ALTER TABLE "public"."crm_seller_identity_links" OWNER TO "postgres";
+
+
+COMMENT ON TABLE "public"."crm_seller_identity_links" IS 'Mapeamento 1:1 canônico auth.users -> public.users.id do CRM externo usado pelo crm-db-bridge.';
+
+
+
+COMMENT ON COLUMN "public"."crm_seller_identity_links"."crm_seller_id" IS 'Identificador inteiro de public.users.id no projeto CRM externo pgxfvjmuubtbowutlide.';
+
+
+
 CREATE TABLE IF NOT EXISTS "public"."cron_job_timeout_map" (
     "jobname" "text" NOT NULL,
     "timeout_sec" integer DEFAULT 55 NOT NULL,
@@ -76603,6 +77863,8 @@ CREATE TABLE IF NOT EXISTS "public"."device_login_notifications" (
     "created_at" timestamp with time zone DEFAULT "now"() NOT NULL
 );
 
+ALTER TABLE ONLY "public"."device_login_notifications" REPLICA IDENTITY FULL;
+
 
 ALTER TABLE "public"."device_login_notifications" OWNER TO "postgres";
 
@@ -76637,6 +77899,36 @@ ALTER TABLE "public"."discount_approval_audit" OWNER TO "postgres";
 
 
 COMMENT ON TABLE "public"."discount_approval_audit" IS 'Trilha de auditoria de aprovações de desconto. Reconciliada em 2026-06-25 (migration Lovable 20260625161934 nunca aplicou em produção). Escrita apenas via trigger definer.';
+
+
+
+CREATE TABLE IF NOT EXISTS "public"."e2e_cleanup_audit" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "email" "text",
+    "user_id" "uuid",
+    "seller_id" "uuid",
+    "seller_scope" "text",
+    "name_filter_prefix" "text",
+    "dry_run" boolean DEFAULT true NOT NULL,
+    "status" "text" NOT NULL,
+    "reason" "text",
+    "ip" "text",
+    "user_agent" "text",
+    "total_deleted" integer DEFAULT 0 NOT NULL,
+    "totals" "jsonb" DEFAULT '{}'::"jsonb" NOT NULL,
+    "total_ms" integer DEFAULT 0 NOT NULL,
+    "deleted_by_table" "jsonb" DEFAULT '{}'::"jsonb" NOT NULL,
+    "errors" "jsonb" DEFAULT '{}'::"jsonb" NOT NULL,
+    "duration_ms" integer DEFAULT 0 NOT NULL,
+    "created_at" timestamp with time zone DEFAULT "now"() NOT NULL,
+    CONSTRAINT "e2e_cleanup_audit_status_check" CHECK (("status" = ANY (ARRAY['started'::"text", 'success'::"text", 'partial_error'::"text", 'auth_failed'::"text", 'ok'::"text", 'error'::"text", 'rate_limited'::"text", 'unauthorized'::"text", 'forbidden'::"text", 'not_found'::"text", 'invalid'::"text"])))
+);
+
+
+ALTER TABLE "public"."e2e_cleanup_audit" OWNER TO "postgres";
+
+
+COMMENT ON TABLE "public"."e2e_cleanup_audit" IS 'created_by=20261108001500_reconcile_e2e_cleanup_audit; append-only Edge cleanup audit';
 
 
 
@@ -76742,6 +78034,24 @@ ALTER TABLE "public"."edge_rate_limits" OWNER TO "postgres";
 
 
 COMMENT ON TABLE "public"."edge_rate_limits" IS 'Migrado do Lovable em 2026-05-22 (Lote B). Rate limit transitório (chave -> contador + reset_at). Dados NÃO migrados (transitórios).';
+
+
+
+CREATE TABLE IF NOT EXISTS "public"."endomarketing_themes" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "name" "text" NOT NULL,
+    "slug" "text" NOT NULL,
+    "is_active" boolean DEFAULT true NOT NULL,
+    "display_order" integer DEFAULT 0 NOT NULL,
+    "created_at" timestamp with time zone DEFAULT "now"() NOT NULL,
+    "updated_at" timestamp with time zone DEFAULT "now"() NOT NULL
+);
+
+
+ALTER TABLE "public"."endomarketing_themes" OWNER TO "postgres";
+
+
+COMMENT ON TABLE "public"."endomarketing_themes" IS 'Temas de endomarketing (comunicação interna) para classificar produtos. Separado de datas comemorativas/público-alvo.';
 
 
 
@@ -76857,6 +78167,8 @@ CREATE TABLE IF NOT EXISTS "public"."external_connections" (
     CONSTRAINT "external_connections_status_check" CHECK (("status" = ANY (ARRAY['unconfigured'::"text", 'active'::"text", 'degraded'::"text", 'error'::"text", 'disabled'::"text"]))),
     CONSTRAINT "external_connections_type_check" CHECK (("type" = ANY (ARRAY['supabase'::"text", 'bitrix24'::"text", 'n8n'::"text", 'mcp'::"text", 'webhook_outbound'::"text", 'webhook_inbound'::"text"])))
 );
+
+ALTER TABLE ONLY "public"."external_connections" FORCE ROW LEVEL SECURITY;
 
 
 ALTER TABLE "public"."external_connections" OWNER TO "postgres";
@@ -77022,6 +78334,72 @@ CREATE TABLE IF NOT EXISTS "public"."follow_up_reminders" (
 ALTER TABLE "public"."follow_up_reminders" OWNER TO "postgres";
 
 
+CREATE TABLE IF NOT EXISTS "public"."freight_settings" (
+    "id" boolean DEFAULT true NOT NULL,
+    "origin_cep" "text" DEFAULT '03377-000'::"text" NOT NULL,
+    "cubic_divisor_correios" integer DEFAULT 6000 NOT NULL,
+    "cubic_divisor_rodoviario" integer DEFAULT 3333 NOT NULL,
+    "default_fill_factor" numeric(3,2) DEFAULT 0.90 NOT NULL,
+    "internal_buffer_days" integer DEFAULT 0 NOT NULL,
+    "multi_personalization_rule" "text" DEFAULT 'max'::"text" NOT NULL,
+    "updated_at" timestamp with time zone DEFAULT "now"() NOT NULL,
+    "updated_by" "uuid",
+    CONSTRAINT "freight_settings_cubic_divisor_correios_check" CHECK (("cubic_divisor_correios" > 0)),
+    CONSTRAINT "freight_settings_cubic_divisor_correios_range" CHECK ((("cubic_divisor_correios" >= 1000) AND ("cubic_divisor_correios" <= 10000))),
+    CONSTRAINT "freight_settings_cubic_divisor_rodoviario_check" CHECK (("cubic_divisor_rodoviario" > 0)),
+    CONSTRAINT "freight_settings_cubic_divisor_rodoviario_range" CHECK ((("cubic_divisor_rodoviario" >= 1000) AND ("cubic_divisor_rodoviario" <= 10000))),
+    CONSTRAINT "freight_settings_default_fill_factor_check" CHECK ((("default_fill_factor" >= 0.50) AND ("default_fill_factor" <= 1.00))),
+    CONSTRAINT "freight_settings_id_check" CHECK ("id"),
+    CONSTRAINT "freight_settings_internal_buffer_days_ceiling" CHECK (("internal_buffer_days" <= 60)),
+    CONSTRAINT "freight_settings_internal_buffer_days_check" CHECK (("internal_buffer_days" >= 0)),
+    CONSTRAINT "freight_settings_multi_personalization_rule_check" CHECK (("multi_personalization_rule" = ANY (ARRAY['max'::"text", 'sum'::"text"]))),
+    CONSTRAINT "freight_settings_origin_cep_check" CHECK (("origin_cep" ~ '^[0-9]{5}-[0-9]{3}$'::"text"))
+);
+
+
+ALTER TABLE "public"."freight_settings" OWNER TO "postgres";
+
+
+COMMENT ON TABLE "public"."freight_settings" IS 'Parâmetros globais do cálculo de frete (linha única). Lidos pelo motor em src/lib/freight; alterados só por admin em /admin/frete.';
+
+
+
+COMMENT ON COLUMN "public"."freight_settings"."id" IS 'Sempre TRUE. A PK booleana com CHECK garante que a tabela tem no máximo uma linha.';
+
+
+
+COMMENT ON COLUMN "public"."freight_settings"."origin_cep" IS 'CEP de origem das remessas, formato 00000-000. Padrão: 03377-000 (Av. Renata, 249 – Vila Formosa, São Paulo/SP).';
+
+
+
+COMMENT ON COLUMN "public"."freight_settings"."cubic_divisor_correios" IS 'Divisor de cubagem dos Correios em cm³/kg. Padrão 6000.';
+
+
+
+COMMENT ON COLUMN "public"."freight_settings"."cubic_divisor_rodoviario" IS 'Divisor de cubagem do transporte rodoviário em cm³/kg. Padrão 3333.';
+
+
+
+COMMENT ON COLUMN "public"."freight_settings"."default_fill_factor" IS 'Fator de aproveitamento SUGERIDO ao cadastrar uma caixa nova (0,50 a 1,00). Padrão 0,90. Não entra no cálculo: o motor usa o fill_factor gravado em cada caixa.';
+
+
+
+COMMENT ON COLUMN "public"."freight_settings"."internal_buffer_days" IS 'Folga interna em dias úteis somada ao prazo de produção. Padrão 0.';
+
+
+
+COMMENT ON COLUMN "public"."freight_settings"."multi_personalization_rule" IS 'Como combinar os prazos de várias personalizações no mesmo item: max (a mais demorada) ou sum (soma). Padrão max.';
+
+
+
+COMMENT ON COLUMN "public"."freight_settings"."updated_at" IS 'Última alteração, mantida pelo trigger set_freight_settings_updated_at.';
+
+
+
+COMMENT ON COLUMN "public"."freight_settings"."updated_by" IS 'Usuário que fez a última alteração. Preenchido pelo banco (trigger guard_freight_settings_row) com auth.uid(); o valor enviado pelo cliente é ignorado. Fica NULL quando esse usuário é apagado (ON DELETE SET NULL).';
+
+
+
 CREATE TABLE IF NOT EXISTS "public"."frontend_telemetry" (
     "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
     "event_type" "text" NOT NULL,
@@ -77033,15 +78411,11 @@ CREATE TABLE IF NOT EXISTS "public"."frontend_telemetry" (
     "session_id" "text",
     "user_id" "uuid",
     "created_at" timestamp with time zone DEFAULT "now"() NOT NULL,
-    CONSTRAINT "frontend_telemetry_size_caps_check" CHECK (((("length"(COALESCE("event_type", ''::"text")) >= 1) AND ("length"(COALESCE("event_type", ''::"text")) <= 64)) AND (("length"(COALESCE("name", ''::"text")) >= 1) AND ("length"(COALESCE("name", ''::"text")) <= 256)) AND ("length"(COALESCE("url", ''::"text")) <= 2048) AND ("length"(COALESCE("user_agent", ''::"text")) <= 1024) AND ("length"(COALESCE("session_id", ''::"text")) <= 128) AND ("length"(COALESCE(("metadata")::"text", ''::"text")) <= 8192)))
+    CONSTRAINT "frontend_telemetry_size_caps_check" CHECK ((("length"(COALESCE("event_type", ''::"text")) >= 1) AND ("length"(COALESCE("event_type", ''::"text")) <= 64) AND (("length"(COALESCE("name", ''::"text")) >= 1) AND ("length"(COALESCE("name", ''::"text")) <= 256)) AND ("length"(COALESCE("url", ''::"text")) <= 2048) AND ("length"(COALESCE("user_agent", ''::"text")) <= 1024) AND ("length"(COALESCE("session_id", ''::"text")) <= 128) AND ("length"(COALESCE(("metadata")::"text", ''::"text")) <= 8192)))
 );
 
 
 ALTER TABLE "public"."frontend_telemetry" OWNER TO "postgres";
-
-
-COMMENT ON CONSTRAINT "frontend_telemetry_size_caps_check" ON "public"."frontend_telemetry" IS 'SEC-002 defesa em profundidade — caps de tamanho não dependem da policy ativa.';
-
 
 
 CREATE TABLE IF NOT EXISTS "public"."generated_mockups" (
@@ -77602,6 +78976,8 @@ CREATE TABLE IF NOT EXISTS "public"."integration_credentials" (
     "masked_suffix" "text",
     "length" integer
 );
+
+ALTER TABLE ONLY "public"."integration_credentials" FORCE ROW LEVEL SECURITY;
 
 
 ALTER TABLE "public"."integration_credentials" OWNER TO "postgres";
@@ -78195,6 +79571,8 @@ CREATE TABLE IF NOT EXISTS "public"."login_attempts" (
     "verified" boolean DEFAULT false NOT NULL
 );
 
+ALTER TABLE ONLY "public"."login_attempts" REPLICA IDENTITY FULL;
+
 
 ALTER TABLE "public"."login_attempts" OWNER TO "postgres";
 
@@ -78393,6 +79771,22 @@ CREATE TABLE IF NOT EXISTS "public"."magazine_public_view_events_2027_01" (
 
 
 ALTER TABLE "public"."magazine_public_view_events_2027_01" OWNER TO "postgres";
+
+
+CREATE TABLE IF NOT EXISTS "public"."magazine_public_view_events_2027_02" (
+    "id" bigint DEFAULT "nextval"('"public"."magazine_public_view_events_id_seq"'::"regclass") NOT NULL,
+    "magazine_id" "uuid" NOT NULL,
+    "token_hash" "text" NOT NULL,
+    "ip_hash" "text" NOT NULL,
+    "user_agent_hash" "text",
+    "referer_host" "text",
+    "page_index" integer,
+    "session_id" "text",
+    "viewed_at" timestamp with time zone DEFAULT "now"() NOT NULL
+);
+
+
+ALTER TABLE "public"."magazine_public_view_events_2027_02" OWNER TO "postgres";
 
 
 CREATE TABLE IF NOT EXISTS "public"."magazine_public_view_events_default" (
@@ -79044,139 +80438,6 @@ CREATE TABLE IF NOT EXISTS "public"."mockup_templates" (
 ALTER TABLE "public"."mockup_templates" OWNER TO "postgres";
 
 
-CREATE MATERIALIZED VIEW "public"."mv_stock_rupture_alert" AS
- WITH "ema_raw" AS (
-         SELECT "sv"."variant_supplier_source_id" AS "vss_id",
-            "sv"."variant_id",
-            "sv"."supplier_id",
-            "sv"."velocity_trend",
-            "sv"."active_days_30d",
-            "sv"."days_to_stockout",
-            (GREATEST(0.01,
-                CASE
-                    WHEN (("sv"."avg_daily_depletion_7d" > (0)::numeric) AND ("sv"."avg_daily_depletion_30d" > (0)::numeric)) THEN ((("sv"."avg_daily_depletion_7d" * 0.50) + ("sv"."avg_daily_depletion_30d" * 0.35)) + (COALESCE("sv"."avg_daily_depletion_90d", "sv"."avg_daily_depletion_30d") * 0.15))
-                    WHEN ("sv"."avg_daily_depletion_30d" > (0)::numeric) THEN (("sv"."avg_daily_depletion_30d" * 0.70) + (COALESCE("sv"."avg_daily_depletion_90d", "sv"."avg_daily_depletion_30d") * 0.30))
-                    WHEN ("sv"."avg_daily_depletion_90d" > (0)::numeric) THEN "sv"."avg_daily_depletion_90d"
-                    ELSE 0.01
-                END))::numeric(10,4) AS "ema_bruta"
-           FROM ("analytics"."mv_stock_velocity" "sv"
-             JOIN "public"."variant_supplier_sources" "vss_chk" ON ((("vss_chk"."id" = "sv"."variant_supplier_source_id") AND ("vss_chk"."is_active" = true) AND ("vss_chk"."removed_from_api" IS DISTINCT FROM true))))
-        ), "base" AS (
-         SELECT "e"."vss_id",
-            "e"."variant_id",
-            "e"."supplier_id",
-            "e"."velocity_trend",
-            "e"."active_days_30d",
-            "e"."days_to_stockout",
-            "s"."name" AS "supplier_name",
-            "vss"."supplier_sku",
-            COALESCE("vss"."is_preferred", false) AS "is_preferred",
-            (COALESCE("vss"."stock_main_warehouse", 0) + COALESCE("vss"."stock_other_warehouses", 0)) AS "stock_live",
-            COALESCE("vss"."lead_time_days", "s"."delivery_time_days", 7) AS "lead_time_efetivo",
-            COALESCE("vss"."cost_price", "vss"."your_price", (0)::numeric) AS "unit_cost",
-            (
-                CASE
-                    WHEN (((COALESCE("vss"."stock_main_warehouse", 0) + COALESCE("vss"."stock_other_warehouses", 0)) <= 10) AND ("e"."ema_bruta" > (GREATEST(((COALESCE("vss"."stock_main_warehouse", 0) + COALESCE("vss"."stock_other_warehouses", 0)))::numeric, 0.001) * (500)::numeric))) THEN 0.01
-                    ELSE "e"."ema_bruta"
-                END)::numeric(10,4) AS "ema_diaria"
-           FROM (("ema_raw" "e"
-             JOIN "public"."variant_supplier_sources" "vss" ON (("vss"."id" = "e"."vss_id")))
-             JOIN "public"."suppliers" "s" ON (("s"."id" = "e"."supplier_id")))
-        ), "enriched" AS (
-         SELECT "b"."vss_id",
-            "b"."variant_id",
-            "b"."supplier_id",
-            "b"."velocity_trend",
-            "b"."active_days_30d",
-            "b"."days_to_stockout",
-            "b"."supplier_name",
-            "b"."supplier_sku",
-            "b"."is_preferred",
-            "b"."stock_live",
-            "b"."lead_time_efetivo",
-            "b"."unit_cost",
-            "b"."ema_diaria",
-                CASE
-                    WHEN ("b"."stock_live" = 0) THEN 0.0
-                    WHEN ("b"."ema_diaria" > 0.01) THEN "round"((("b"."stock_live")::numeric / "b"."ema_diaria"), 1)
-                    ELSE COALESCE("b"."days_to_stockout", 9999.0)
-                END AS "cobertura_dias"
-           FROM "base" "b"
-        ), "classified" AS (
-         SELECT "e"."vss_id",
-            "e"."variant_id",
-            "e"."supplier_id",
-            "e"."velocity_trend",
-            "e"."active_days_30d",
-            "e"."days_to_stockout",
-            "e"."supplier_name",
-            "e"."supplier_sku",
-            "e"."is_preferred",
-            "e"."stock_live",
-            "e"."lead_time_efetivo",
-            "e"."unit_cost",
-            "e"."ema_diaria",
-            "e"."cobertura_dias",
-                CASE
-                    WHEN ("e"."stock_live" = 0) THEN 'RUPTURA'::"text"
-                    WHEN ("e"."cobertura_dias" < ("e"."lead_time_efetivo")::numeric) THEN 'CRÍTICO'::"text"
-                    WHEN ("e"."cobertura_dias" < (("e"."lead_time_efetivo")::numeric * 1.5)) THEN 'ALERTA'::"text"
-                    WHEN ("e"."cobertura_dias" < (("e"."lead_time_efetivo")::numeric * 2.0)) THEN 'ATENÇÃO'::"text"
-                    ELSE 'OK'::"text"
-                END AS "nivel_alerta",
-                CASE
-                    WHEN ("e"."stock_live" = 0) THEN 1
-                    WHEN ("e"."cobertura_dias" < ("e"."lead_time_efetivo")::numeric) THEN 2
-                    WHEN ("e"."cobertura_dias" < (("e"."lead_time_efetivo")::numeric * 1.5)) THEN 3
-                    WHEN ("e"."cobertura_dias" < (("e"."lead_time_efetivo")::numeric * 2.0)) THEN 4
-                    ELSE 5
-                END AS "prioridade"
-           FROM "enriched" "e"
-        )
- SELECT "vss_id",
-    "variant_id",
-    "supplier_id",
-    "supplier_name",
-    "supplier_sku",
-    "is_preferred",
-    "ema_diaria",
-    "lead_time_efetivo",
-    "stock_live" AS "stock_total",
-    "cobertura_dias",
-    "nivel_alerta",
-    "prioridade",
-    (LEAST((100)::numeric, GREATEST((0)::numeric,
-        CASE
-            WHEN ("nivel_alerta" = 'RUPTURA'::"text") THEN 100.0
-            WHEN ("nivel_alerta" = 'CRÍTICO'::"text") THEN LEAST(99.99, (75.0 + (25.0 * GREATEST(0.0, (1.0 - ("cobertura_dias" / NULLIF(("lead_time_efetivo")::numeric, (0)::numeric)))))))
-            WHEN ("nivel_alerta" = 'ALERTA'::"text") THEN (50.0 + (25.0 * GREATEST(0.0, (1.0 - (("cobertura_dias" - ("lead_time_efetivo")::numeric) / NULLIF((("lead_time_efetivo")::numeric * 0.5), (0)::numeric))))))
-            WHEN ("nivel_alerta" = 'ATENÇÃO'::"text") THEN (25.0 + (25.0 * GREATEST(0.0, (1.0 - (("cobertura_dias" - (("lead_time_efetivo")::numeric * 1.5)) / NULLIF((("lead_time_efetivo")::numeric * 0.5), (0)::numeric))))))
-            ELSE GREATEST(0.0, (25.0 - LEAST(25.0, ("cobertura_dias" / 40.0))))
-        END)))::numeric(5,2) AS "score_composto",
-        CASE
-            WHEN (COALESCE("active_days_30d", (0)::bigint) >= 20) THEN 'ALTA'::"text"
-            WHEN (COALESCE("active_days_30d", (0)::bigint) >= 12) THEN 'MÉDIA'::"text"
-            WHEN (COALESCE("active_days_30d", (0)::bigint) >= 5) THEN 'BAIXA'::"text"
-            ELSE 'INSUFICIENTE'::"text"
-        END AS "confidence_level",
-    COALESCE(("velocity_trend" > 1.5), false) AS "anomalia_spike",
-    (GREATEST((0)::numeric, "ceil"((((("lead_time_efetivo")::numeric * 2.0) * "ema_diaria") - ("stock_live")::numeric))))::integer AS "gap_unidades",
-    "round"((("stock_live")::numeric * "unit_cost"), 2) AS "valor_estoque_reais"
-   FROM "classified" "c"
-  ORDER BY ((LEAST((100)::numeric, GREATEST((0)::numeric,
-        CASE
-            WHEN ("nivel_alerta" = 'RUPTURA'::"text") THEN 100.0
-            WHEN ("nivel_alerta" = 'CRÍTICO'::"text") THEN LEAST(99.99, (75.0 + (25.0 * GREATEST(0.0, (1.0 - ("cobertura_dias" / NULLIF(("lead_time_efetivo")::numeric, (0)::numeric)))))))
-            WHEN ("nivel_alerta" = 'ALERTA'::"text") THEN (50.0 + (25.0 * GREATEST(0.0, (1.0 - (("cobertura_dias" - ("lead_time_efetivo")::numeric) / NULLIF((("lead_time_efetivo")::numeric * 0.5), (0)::numeric))))))
-            WHEN ("nivel_alerta" = 'ATENÇÃO'::"text") THEN (25.0 + (25.0 * GREATEST(0.0, (1.0 - (("cobertura_dias" - (("lead_time_efetivo")::numeric * 1.5)) / NULLIF((("lead_time_efetivo")::numeric * 0.5), (0)::numeric))))))
-            ELSE GREATEST(0.0, (25.0 - LEAST(25.0, ("cobertura_dias" / 40.0))))
-        END)))::numeric(5,2)) DESC NULLS LAST
-  WITH NO DATA;
-
-
-ALTER MATERIALIZED VIEW "public"."mv_stock_rupture_alert" OWNER TO "postgres";
-
-
 CREATE MATERIALIZED VIEW "public"."mv_ema_kpi_by_level" AS
  SELECT "nivel_alerta",
     "prioridade",
@@ -79413,185 +80674,6 @@ ALTER VIEW "public"."mv_stock_velocity" OWNER TO "postgres";
 
 
 COMMENT ON VIEW "public"."mv_stock_velocity" IS 'SECURITY DEFINER POR DESIGN (reloptions vazio). Wrapper PostgREST sobre analytics.mv_stock_velocity. authenticated NÃO tem SELECT em analytics schema. anon: REVOKED (dados operacionais internos). ANTI-REGRESSÃO fix_version 20260717c.';
-
-
-
-CREATE TABLE IF NOT EXISTS "public"."supplier_replenishment_events" (
-    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
-    "source_id" "uuid" NOT NULL,
-    "supplier_id" "uuid" NOT NULL,
-    "variant_id" "uuid" NOT NULL,
-    "slot" smallint NOT NULL,
-    "promised_date" "date" NOT NULL,
-    "promised_quantity" integer NOT NULL,
-    "observed_at" timestamp with time zone NOT NULL,
-    "resolution" "text" DEFAULT 'pending'::"text" NOT NULL,
-    "actual_date" "date",
-    "actual_quantity" integer,
-    "delay_days" integer GENERATED ALWAYS AS (
-CASE
-    WHEN ("actual_date" IS NULL) THEN NULL::integer
-    ELSE ("actual_date" - "promised_date")
-END) STORED,
-    "fulfillment_ratio" numeric(5,4) GENERATED ALWAYS AS (
-CASE
-    WHEN (("actual_quantity" IS NULL) OR ("promised_quantity" = 0)) THEN NULL::numeric
-    ELSE LEAST(1.0, (("actual_quantity")::numeric / ("promised_quantity")::numeric))
-END) STORED,
-    "resolved_at" timestamp with time zone,
-    "arrival_snapshot_id" bigint,
-    "created_at" timestamp with time zone DEFAULT "now"() NOT NULL,
-    "updated_at" timestamp with time zone DEFAULT "now"() NOT NULL,
-    CONSTRAINT "supplier_replenishment_events_actual_quantity_check" CHECK ((("actual_quantity" IS NULL) OR ("actual_quantity" >= 0))),
-    CONSTRAINT "supplier_replenishment_events_promised_quantity_check" CHECK (("promised_quantity" > 0)),
-    CONSTRAINT "supplier_replenishment_events_resolution_check" CHECK (("resolution" = ANY (ARRAY['pending'::"text", 'fulfilled'::"text", 'expired'::"text", 'superseded'::"text"]))),
-    CONSTRAINT "supplier_replenishment_events_slot_check" CHECK ((("slot" >= 1) AND ("slot" <= 6)))
-);
-
-
-ALTER TABLE "public"."supplier_replenishment_events" OWNER TO "postgres";
-
-
-COMMENT ON TABLE "public"."supplier_replenishment_events" IS 'Append-only ledger de eventos de reposição de estoque. Cada linha representa uma promessa de chegada (promised_date + promised_quantity) capturada de variant_supplier_sources (slots 1-6), e opcionalmente casada com um delta positivo real em stock_snapshots. resolution: pending → fulfilled/expired/superseded. Criado: 2026-06-22. Arquitetura: Gold layer (read-only para app).';
-
-
-
-COMMENT ON COLUMN "public"."supplier_replenishment_events"."id" IS 'PK UUID gerado. Imutável após criação.';
-
-
-
-COMMENT ON COLUMN "public"."supplier_replenishment_events"."source_id" IS 'FK lógica para variant_supplier_sources.id (sem FK física para evitar cascade delete). Identifica a linha de estoque que gerou a promessa.';
-
-
-
-COMMENT ON COLUMN "public"."supplier_replenishment_events"."supplier_id" IS 'Desnormalizado de variant_supplier_sources.supplier_id para queries sem JOIN.';
-
-
-
-COMMENT ON COLUMN "public"."supplier_replenishment_events"."variant_id" IS 'Desnormalizado de variant_supplier_sources.variant_id para queries sem JOIN.';
-
-
-
-COMMENT ON COLUMN "public"."supplier_replenishment_events"."slot" IS 'Posição 1-6 correspondente a next_date_N/next_quantity_N em variant_supplier_sources.';
-
-
-
-COMMENT ON COLUMN "public"."supplier_replenishment_events"."promised_date" IS 'Data de chegada prometida pelo fornecedor (variant_supplier_sources.next_date_N).';
-
-
-
-COMMENT ON COLUMN "public"."supplier_replenishment_events"."promised_quantity" IS 'Quantidade prometida (variant_supplier_sources.next_quantity_N). Sempre > 0.';
-
-
-
-COMMENT ON COLUMN "public"."supplier_replenishment_events"."observed_at" IS 'Timestamp em que a promessa foi capturada (= variant_supplier_sources.updated_at no momento da captura).';
-
-
-
-COMMENT ON COLUMN "public"."supplier_replenishment_events"."resolution" IS 'Estado do ciclo de vida: pending = aguardando confirmação; fulfilled = chegada confirmada via delta positivo em stock_snapshots; expired = data passou + 15 dias sem confirmação (fn_expire_pending_promises); superseded = promessa substituída por nova promessa no mesmo slot antes de vencer.';
-
-
-
-COMMENT ON COLUMN "public"."supplier_replenishment_events"."actual_date" IS 'Data em que o estoque real chegou (capturada de stock_snapshots.captured_at::date).';
-
-
-
-COMMENT ON COLUMN "public"."supplier_replenishment_events"."actual_quantity" IS 'Delta de estoque observado (stock_main_delta + stock_other_delta) no snapshot casado.';
-
-
-
-COMMENT ON COLUMN "public"."supplier_replenishment_events"."delay_days" IS 'GENERATED: actual_date - promised_date. Negativo = chegou antes. NULL se não fulfilled.';
-
-
-
-COMMENT ON COLUMN "public"."supplier_replenishment_events"."fulfillment_ratio" IS 'GENERATED: LEAST(1.0, actual_quantity / promised_quantity). NULL se não fulfilled. Capped em 1.0 para evitar superscore em recebimentos maiores que o prometido.';
-
-
-
-COMMENT ON COLUMN "public"."supplier_replenishment_events"."arrival_snapshot_id" IS 'ID (bigint) do stock_snapshots que confirmou o fulfillment. NOTA: stock_snapshots.id é bigint, não UUID. FK lógica sem constraint física porque stock_snapshots é purgado a cada 14 dias.';
-
-
-
-CREATE MATERIALIZED VIEW "public"."mv_supplier_reliability" AS
- WITH "events_base" AS (
-         SELECT "supplier_replenishment_events"."supplier_id",
-            "supplier_replenishment_events"."resolution",
-            "supplier_replenishment_events"."promised_date",
-            "supplier_replenishment_events"."delay_days",
-            "supplier_replenishment_events"."fulfillment_ratio",
-            GREATEST((0)::numeric, (1.0 - (GREATEST((0)::numeric, (COALESCE("supplier_replenishment_events"."delay_days", 0))::numeric) / 14.0))) AS "pontuality_score",
-            LEAST(1.0, COALESCE("supplier_replenishment_events"."fulfillment_ratio", (0)::numeric)) AS "fulfillment_score"
-           FROM "public"."supplier_replenishment_events"
-          WHERE ("supplier_replenishment_events"."resolution" = ANY (ARRAY['fulfilled'::"text", 'expired'::"text", 'pending'::"text"]))
-        ), "so" AS (
-         SELECT "events_base"."supplier_id",
-            "count"(*) AS "total_promises",
-            "count"(*) FILTER (WHERE ("events_base"."resolution" = 'fulfilled'::"text")) AS "matched_count",
-            "count"(*) FILTER (WHERE ("events_base"."resolution" = 'expired'::"text")) AS "expired_count",
-            "count"(*) FILTER (WHERE ("events_base"."resolution" = 'pending'::"text")) AS "pending_count",
-            COALESCE(("round"(((100)::numeric * ((0.6 * "avg"("events_base"."pontuality_score") FILTER (WHERE ("events_base"."resolution" = 'fulfilled'::"text"))) + (0.4 * "avg"("events_base"."fulfillment_score") FILTER (WHERE ("events_base"."resolution" = 'fulfilled'::"text")))))))::integer, 0) AS "overall_score",
-            "round"("avg"("events_base"."pontuality_score") FILTER (WHERE ("events_base"."resolution" = 'fulfilled'::"text")), 4) AS "overall_pontuality",
-            "round"("avg"("events_base"."fulfillment_score") FILTER (WHERE ("events_base"."resolution" = 'fulfilled'::"text")), 4) AS "overall_fulfillment",
-            "round"("avg"("events_base"."delay_days") FILTER (WHERE ("events_base"."resolution" = 'fulfilled'::"text")), 1) AS "overall_avg_delay_days"
-           FROM "events_base"
-          GROUP BY "events_base"."supplier_id"
-        ), "s30" AS (
-         SELECT "events_base"."supplier_id",
-            "count"(*) FILTER (WHERE ("events_base"."resolution" = 'fulfilled'::"text")) AS "matched_30d",
-            COALESCE(("round"(((100)::numeric * ((0.6 * "avg"("events_base"."pontuality_score") FILTER (WHERE ("events_base"."resolution" = 'fulfilled'::"text"))) + (0.4 * "avg"("events_base"."fulfillment_score") FILTER (WHERE ("events_base"."resolution" = 'fulfilled'::"text")))))))::integer, 0) AS "score_30d"
-           FROM "events_base"
-          WHERE ("events_base"."promised_date" >= (CURRENT_DATE - 30))
-          GROUP BY "events_base"."supplier_id"
-        ), "s90" AS (
-         SELECT "events_base"."supplier_id",
-            "count"(*) FILTER (WHERE ("events_base"."resolution" = 'fulfilled'::"text")) AS "matched_90d",
-            COALESCE(("round"(((100)::numeric * ((0.6 * "avg"("events_base"."pontuality_score") FILTER (WHERE ("events_base"."resolution" = 'fulfilled'::"text"))) + (0.4 * "avg"("events_base"."fulfillment_score") FILTER (WHERE ("events_base"."resolution" = 'fulfilled'::"text")))))))::integer, 0) AS "score_90d"
-           FROM "events_base"
-          WHERE ("events_base"."promised_date" >= (CURRENT_DATE - 90))
-          GROUP BY "events_base"."supplier_id"
-        ), "np" AS (
-         SELECT DISTINCT ON ("supplier_replenishment_events"."supplier_id") "supplier_replenishment_events"."supplier_id",
-            "supplier_replenishment_events"."promised_date" AS "next_promise_date",
-            "supplier_replenishment_events"."promised_quantity" AS "next_promise_quantity"
-           FROM "public"."supplier_replenishment_events"
-          WHERE (("supplier_replenishment_events"."resolution" = 'pending'::"text") AND ("supplier_replenishment_events"."promised_date" >= CURRENT_DATE))
-          ORDER BY "supplier_replenishment_events"."supplier_id", "supplier_replenishment_events"."promised_date"
-        )
- SELECT "so"."supplier_id",
-    "s"."name" AS "supplier_name",
-    "so"."total_promises",
-    "so"."matched_count",
-    "so"."expired_count",
-    "so"."pending_count",
-    "so"."overall_score",
-    "so"."overall_pontuality",
-    "so"."overall_fulfillment",
-    "so"."overall_avg_delay_days",
-    COALESCE("s30"."score_30d", 0) AS "score_30d",
-    COALESCE("s30"."matched_30d", (0)::bigint) AS "matched_30d",
-    COALESCE("s90"."score_90d", 0) AS "score_90d",
-    COALESCE("s90"."matched_90d", (0)::bigint) AS "matched_90d",
-    "np"."next_promise_date",
-    "np"."next_promise_quantity",
-        CASE
-            WHEN ("so"."matched_count" = 0) THEN 'unknown'::"text"
-            WHEN ("so"."overall_score" >= 85) THEN 'high'::"text"
-            WHEN ("so"."overall_score" >= 60) THEN 'medium'::"text"
-            ELSE 'low'::"text"
-        END AS "band",
-    "now"() AS "refreshed_at"
-   FROM (((("so"
-     JOIN "public"."suppliers" "s" ON (("s"."id" = "so"."supplier_id")))
-     LEFT JOIN "s30" ON (("s30"."supplier_id" = "so"."supplier_id")))
-     LEFT JOIN "s90" ON (("s90"."supplier_id" = "so"."supplier_id")))
-     LEFT JOIN "np" ON (("np"."supplier_id" = "so"."supplier_id")))
-  WITH NO DATA;
-
-
-ALTER MATERIALIZED VIEW "public"."mv_supplier_reliability" OWNER TO "postgres";
-
-
-COMMENT ON MATERIALIZED VIEW "public"."mv_supplier_reliability" IS 'Agregado de confiabilidade por fornecedor para consumo direto do frontend. Score 0-100 = 60% pontualidade + 40% cumprimento de quantidade. Banda: high>=85, medium>=60, low<60, unknown se sem histórico. Refresh: CONCURRENTLY a cada 15 min via pg_cron job refresh-mv-supplier-reliability. Índice único em supplier_id habilitado para REFRESH CONCURRENTLY.';
 
 
 
@@ -80778,6 +81860,25 @@ CAMPOS:
 
 HISTÓRICO: 397 registros de Jun/2026 = desativações aprovadas e executadas (todos used=true).
 RENOMEADA em 2026-06-15: era _deactivation_auth (prefixo _ era enganoso — tabela é ativa e crítica).';
+
+
+
+CREATE TABLE IF NOT EXISTS "public"."product_endomarketing" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "product_id" "uuid" NOT NULL,
+    "theme_id" "uuid" NOT NULL,
+    "source" character varying(20) DEFAULT 'manual'::character varying NOT NULL,
+    "is_active" boolean DEFAULT true NOT NULL,
+    "created_at" timestamp with time zone DEFAULT "now"() NOT NULL,
+    "updated_at" timestamp with time zone DEFAULT "now"() NOT NULL,
+    CONSTRAINT "product_endomarketing_source_check" CHECK ((("source")::"text" = ANY ((ARRAY['category'::character varying, 'manual'::character varying])::"text"[])))
+);
+
+
+ALTER TABLE "public"."product_endomarketing" OWNER TO "postgres";
+
+
+COMMENT ON TABLE "public"."product_endomarketing" IS 'Vincula produtos a temas de endomarketing. source: manual (aba Marketing) ou category (herdado).';
 
 
 
@@ -82564,6 +83665,29 @@ CREATE TABLE IF NOT EXISTS "public"."query_telemetry" (
 ALTER TABLE "public"."query_telemetry" OWNER TO "postgres";
 
 
+CREATE TABLE IF NOT EXISTS "public"."quote_comments" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "quote_id" "uuid" NOT NULL,
+    "user_id" "uuid" NOT NULL,
+    "parent_id" "uuid",
+    "content" "text" NOT NULL,
+    "is_edited" boolean DEFAULT false NOT NULL,
+    "created_at" timestamp with time zone DEFAULT "now"() NOT NULL,
+    "updated_at" timestamp with time zone DEFAULT "now"() NOT NULL,
+    CONSTRAINT "quote_comments_content_length_check" CHECK ((("char_length"("btrim"("content")) >= 1) AND ("char_length"("btrim"("content")) <= 5000))),
+    CONSTRAINT "quote_comments_not_self_parent_check" CHECK (("parent_id" IS DISTINCT FROM "id"))
+);
+
+ALTER TABLE ONLY "public"."quote_comments" FORCE ROW LEVEL SECURITY;
+
+
+ALTER TABLE "public"."quote_comments" OWNER TO "postgres";
+
+
+COMMENT ON TABLE "public"."quote_comments" IS 'Quote-scoped internal comments. Visibility inherits quotes RLS; mutations require authorship. Root comments with replies cannot be deleted.';
+
+
+
 CREATE TABLE IF NOT EXISTS "public"."quote_drafts" (
     "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
     "user_id" "uuid" NOT NULL,
@@ -83157,6 +84281,8 @@ CREATE TABLE IF NOT EXISTS "public"."secret_rotation_log" (
     CONSTRAINT "secret_rotation_log_action_type_check" CHECK (("action_type" = ANY (ARRAY['set'::"text", 'rotate'::"text"])))
 );
 
+ALTER TABLE ONLY "public"."secret_rotation_log" FORCE ROW LEVEL SECURITY;
+
 
 ALTER TABLE "public"."secret_rotation_log" OWNER TO "postgres";
 
@@ -83301,6 +84427,124 @@ ALTER TABLE "public"."seo_redirects" OWNER TO "postgres";
 
 
 COMMENT ON TABLE "public"."seo_redirects" IS 'Redirects 301/302 para manter link equity e evitar 404.';
+
+
+
+CREATE TABLE IF NOT EXISTS "public"."shipping_boxes" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "code" "text" NOT NULL,
+    "name" "text" NOT NULL,
+    "outer_height_cm" numeric(8,2) NOT NULL,
+    "outer_width_cm" numeric(8,2) NOT NULL,
+    "outer_length_cm" numeric(8,2) NOT NULL,
+    "wall_thickness_mm" integer DEFAULT 3 NOT NULL,
+    "inner_height_cm" numeric(8,2) GENERATED ALWAYS AS (("outer_height_cm" - ((("wall_thickness_mm" * 2))::numeric / 10.0))) STORED,
+    "inner_width_cm" numeric(8,2) GENERATED ALWAYS AS (("outer_width_cm" - ((("wall_thickness_mm" * 2))::numeric / 10.0))) STORED,
+    "inner_length_cm" numeric(8,2) GENERATED ALWAYS AS (("outer_length_cm" - ((("wall_thickness_mm" * 2))::numeric / 10.0))) STORED,
+    "empty_weight_g" integer DEFAULT 0 NOT NULL,
+    "max_weight_g" integer NOT NULL,
+    "fill_factor" numeric(3,2) DEFAULT 0.90 NOT NULL,
+    "is_active" boolean DEFAULT true NOT NULL,
+    "sort_order" integer DEFAULT 0 NOT NULL,
+    "created_at" timestamp with time zone DEFAULT "now"() NOT NULL,
+    "updated_at" timestamp with time zone DEFAULT "now"() NOT NULL,
+    "deleted_at" timestamp with time zone,
+    CONSTRAINT "shipping_boxes_check" CHECK (("max_weight_g" > "empty_weight_g")),
+    CONSTRAINT "shipping_boxes_code_format" CHECK ((("code" = "upper"("btrim"("code"))) AND ("code" ~ '^[A-Z0-9][A-Z0-9_-]{0,9}$'::"text"))),
+    CONSTRAINT "shipping_boxes_empty_weight_g_check" CHECK (("empty_weight_g" >= 0)),
+    CONSTRAINT "shipping_boxes_fill_factor_check" CHECK ((("fill_factor" >= 0.50) AND ("fill_factor" <= 1.00))),
+    CONSTRAINT "shipping_boxes_inner_height_positive" CHECK (("inner_height_cm" > (0)::numeric)),
+    CONSTRAINT "shipping_boxes_inner_length_positive" CHECK (("inner_length_cm" > (0)::numeric)),
+    CONSTRAINT "shipping_boxes_inner_width_positive" CHECK (("inner_width_cm" > (0)::numeric)),
+    CONSTRAINT "shipping_boxes_max_weight_g_ceiling" CHECK (("max_weight_g" <= 100000)),
+    CONSTRAINT "shipping_boxes_name_format" CHECK ((("name" = "btrim"("name", (' 	
+'::"text" || "chr"(160)))) AND ("name" <> ''::"text") AND ("char_length"("name") <= 80))),
+    CONSTRAINT "shipping_boxes_outer_height_cm_check" CHECK (("outer_height_cm" > (0)::numeric)),
+    CONSTRAINT "shipping_boxes_outer_height_cm_range" CHECK ((("outer_height_cm" >= 0.01) AND ("outer_height_cm" <= (300)::numeric))),
+    CONSTRAINT "shipping_boxes_outer_length_cm_check" CHECK (("outer_length_cm" > (0)::numeric)),
+    CONSTRAINT "shipping_boxes_outer_length_cm_range" CHECK ((("outer_length_cm" >= 0.01) AND ("outer_length_cm" <= (300)::numeric))),
+    CONSTRAINT "shipping_boxes_outer_width_cm_check" CHECK (("outer_width_cm" > (0)::numeric)),
+    CONSTRAINT "shipping_boxes_outer_width_cm_range" CHECK ((("outer_width_cm" >= 0.01) AND ("outer_width_cm" <= (300)::numeric))),
+    CONSTRAINT "shipping_boxes_wall_thickness_mm_check" CHECK ((("wall_thickness_mm" >= 1) AND ("wall_thickness_mm" <= 20)))
+);
+
+
+ALTER TABLE "public"."shipping_boxes" OWNER TO "postgres";
+
+
+COMMENT ON TABLE "public"."shipping_boxes" IS 'Caixas de transporte padrão da empresa. O motor de frete (src/lib/freight) empacota as peças nestas caixas; a caixa master do fornecedor é ignorada para frete.';
+
+
+
+COMMENT ON COLUMN "public"."shipping_boxes"."id" IS 'Identificador da caixa.';
+
+
+
+COMMENT ON COLUMN "public"."shipping_boxes"."code" IS 'Código curto como a expedição chama a caixa (P, M, G, GG). Único entre as caixas não excluídas.';
+
+
+
+COMMENT ON COLUMN "public"."shipping_boxes"."name" IS 'Nome da caixa para exibição no admin.';
+
+
+
+COMMENT ON COLUMN "public"."shipping_boxes"."outer_height_cm" IS 'Altura EXTERNA em cm. É a medida que o admin digita e a que a transportadora cuba.';
+
+
+
+COMMENT ON COLUMN "public"."shipping_boxes"."outer_width_cm" IS 'Largura EXTERNA em cm.';
+
+
+
+COMMENT ON COLUMN "public"."shipping_boxes"."outer_length_cm" IS 'Comprimento EXTERNO em cm.';
+
+
+
+COMMENT ON COLUMN "public"."shipping_boxes"."wall_thickness_mm" IS 'Espessura de UMA parede de papelão, em mm. Padrão 3. A medida interna desconta duas por eixo.';
+
+
+
+COMMENT ON COLUMN "public"."shipping_boxes"."inner_height_cm" IS 'Altura INTERNA em cm, gerada: externa − 2 × espessura. Somente leitura — é a medida que recebe carga.';
+
+
+
+COMMENT ON COLUMN "public"."shipping_boxes"."inner_width_cm" IS 'Largura INTERNA em cm, gerada: externa − 2 × espessura. Somente leitura.';
+
+
+
+COMMENT ON COLUMN "public"."shipping_boxes"."inner_length_cm" IS 'Comprimento INTERNO em cm, gerado: externo − 2 × espessura. Somente leitura.';
+
+
+
+COMMENT ON COLUMN "public"."shipping_boxes"."empty_weight_g" IS 'Peso da caixa vazia em gramas. Conta contra max_weight_g. Zero por decisão do dono nas quatro caixas atuais.';
+
+
+
+COMMENT ON COLUMN "public"."shipping_boxes"."max_weight_g" IS 'Peso máximo TOTAL do volume em gramas (caixa + carga). A carga útil é max_weight_g − empty_weight_g.';
+
+
+
+COMMENT ON COLUMN "public"."shipping_boxes"."fill_factor" IS 'Fração do volume interno considerada aproveitável (0,50 a 1,00). Padrão 0,90: nenhum empacotamento real preenche 100%.';
+
+
+
+COMMENT ON COLUMN "public"."shipping_boxes"."is_active" IS 'Caixa disponível para o cálculo. Falso tira a caixa do plano sem apagar o histórico.';
+
+
+
+COMMENT ON COLUMN "public"."shipping_boxes"."sort_order" IS 'Ordem de exibição no admin. Não afeta o cálculo, que ordena por volume interno.';
+
+
+
+COMMENT ON COLUMN "public"."shipping_boxes"."created_at" IS 'Criação do registro.';
+
+
+
+COMMENT ON COLUMN "public"."shipping_boxes"."updated_at" IS 'Última alteração, mantida pelo trigger set_shipping_boxes_updated_at.';
+
+
+
+COMMENT ON COLUMN "public"."shipping_boxes"."deleted_at" IS 'Exclusão lógica. Nulo = caixa viva.';
 
 
 
@@ -83693,6 +84937,8 @@ CREATE TABLE IF NOT EXISTS "public"."step_up_tokens" (
     "consumed_at" timestamp with time zone
 );
 
+ALTER TABLE ONLY "public"."step_up_tokens" FORCE ROW LEVEL SECURITY;
+
 
 ALTER TABLE "public"."step_up_tokens" OWNER TO "postgres";
 
@@ -83706,6 +84952,22 @@ ALTER TABLE "public"."stock_daily_summary" ALTER COLUMN "id" ADD GENERATED ALWAY
     CACHE 1
 );
 
+
+
+CREATE TABLE IF NOT EXISTS "public"."stock_notes" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "variant_id" "uuid" NOT NULL,
+    "supplier_id" "uuid",
+    "created_by" "uuid" NOT NULL,
+    "note" "text" NOT NULL,
+    "is_pinned" boolean DEFAULT false NOT NULL,
+    "created_at" timestamp with time zone DEFAULT "now"() NOT NULL,
+    "updated_at" timestamp with time zone DEFAULT "now"() NOT NULL,
+    "deleted_at" timestamp with time zone
+);
+
+
+ALTER TABLE "public"."stock_notes" OWNER TO "postgres";
 
 
 CREATE TABLE IF NOT EXISTS "public"."stock_snapshots" (
@@ -84108,20 +85370,6 @@ COMMENT ON TABLE "public"."supplier_products_raw_history" IS 'Versões anteriore
 
 
 
-CREATE TABLE IF NOT EXISTS "public"."supplier_products_raw_history_p2026_07" (
-    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
-    "raw_id" "uuid",
-    "supplier_id" "uuid",
-    "supplier_reference" character varying,
-    "content_hash" "text",
-    "raw_data" "jsonb",
-    "captured_at" timestamp with time zone DEFAULT "now"() NOT NULL
-);
-
-
-ALTER TABLE "public"."supplier_products_raw_history_p2026_07" OWNER TO "postgres";
-
-
 CREATE TABLE IF NOT EXISTS "public"."supplier_products_raw_history_p2026_08" (
     "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
     "raw_id" "uuid",
@@ -84204,6 +85452,160 @@ CREATE TABLE IF NOT EXISTS "public"."supplier_products_raw_history_p2027_01" (
 
 
 ALTER TABLE "public"."supplier_products_raw_history_p2027_01" OWNER TO "postgres";
+
+
+CREATE TABLE IF NOT EXISTS "public"."supplier_products_raw_history_p2027_02" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "raw_id" "uuid",
+    "supplier_id" "uuid",
+    "supplier_reference" character varying,
+    "content_hash" "text",
+    "raw_data" "jsonb",
+    "captured_at" timestamp with time zone DEFAULT "now"() NOT NULL
+);
+
+
+ALTER TABLE "public"."supplier_products_raw_history_p2027_02" OWNER TO "postgres";
+
+
+CREATE TABLE IF NOT EXISTS "public"."supplier_products_raw_history_p2027_03" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "raw_id" "uuid",
+    "supplier_id" "uuid",
+    "supplier_reference" character varying,
+    "content_hash" "text",
+    "raw_data" "jsonb",
+    "captured_at" timestamp with time zone DEFAULT "now"() NOT NULL
+);
+
+
+ALTER TABLE "public"."supplier_products_raw_history_p2027_03" OWNER TO "postgres";
+
+
+CREATE TABLE IF NOT EXISTS "public"."supplier_products_raw_history_p2027_04" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "raw_id" "uuid",
+    "supplier_id" "uuid",
+    "supplier_reference" character varying,
+    "content_hash" "text",
+    "raw_data" "jsonb",
+    "captured_at" timestamp with time zone DEFAULT "now"() NOT NULL
+);
+
+
+ALTER TABLE "public"."supplier_products_raw_history_p2027_04" OWNER TO "postgres";
+
+
+CREATE TABLE IF NOT EXISTS "public"."supplier_products_raw_history_p2027_05" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "raw_id" "uuid",
+    "supplier_id" "uuid",
+    "supplier_reference" character varying,
+    "content_hash" "text",
+    "raw_data" "jsonb",
+    "captured_at" timestamp with time zone DEFAULT "now"() NOT NULL
+);
+
+
+ALTER TABLE "public"."supplier_products_raw_history_p2027_05" OWNER TO "postgres";
+
+
+CREATE TABLE IF NOT EXISTS "public"."supplier_products_raw_history_p2027_06" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "raw_id" "uuid",
+    "supplier_id" "uuid",
+    "supplier_reference" character varying,
+    "content_hash" "text",
+    "raw_data" "jsonb",
+    "captured_at" timestamp with time zone DEFAULT "now"() NOT NULL
+);
+
+
+ALTER TABLE "public"."supplier_products_raw_history_p2027_06" OWNER TO "postgres";
+
+
+CREATE TABLE IF NOT EXISTS "public"."supplier_products_raw_history_p2027_07" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "raw_id" "uuid",
+    "supplier_id" "uuid",
+    "supplier_reference" character varying,
+    "content_hash" "text",
+    "raw_data" "jsonb",
+    "captured_at" timestamp with time zone DEFAULT "now"() NOT NULL
+);
+
+
+ALTER TABLE "public"."supplier_products_raw_history_p2027_07" OWNER TO "postgres";
+
+
+CREATE TABLE IF NOT EXISTS "public"."supplier_products_raw_history_p2027_08" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "raw_id" "uuid",
+    "supplier_id" "uuid",
+    "supplier_reference" character varying,
+    "content_hash" "text",
+    "raw_data" "jsonb",
+    "captured_at" timestamp with time zone DEFAULT "now"() NOT NULL
+);
+
+
+ALTER TABLE "public"."supplier_products_raw_history_p2027_08" OWNER TO "postgres";
+
+
+CREATE TABLE IF NOT EXISTS "public"."supplier_products_raw_history_p2027_09" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "raw_id" "uuid",
+    "supplier_id" "uuid",
+    "supplier_reference" character varying,
+    "content_hash" "text",
+    "raw_data" "jsonb",
+    "captured_at" timestamp with time zone DEFAULT "now"() NOT NULL
+);
+
+
+ALTER TABLE "public"."supplier_products_raw_history_p2027_09" OWNER TO "postgres";
+
+
+CREATE TABLE IF NOT EXISTS "public"."supplier_products_raw_history_p2027_10" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "raw_id" "uuid",
+    "supplier_id" "uuid",
+    "supplier_reference" character varying,
+    "content_hash" "text",
+    "raw_data" "jsonb",
+    "captured_at" timestamp with time zone DEFAULT "now"() NOT NULL
+);
+
+
+ALTER TABLE "public"."supplier_products_raw_history_p2027_10" OWNER TO "postgres";
+
+
+CREATE TABLE IF NOT EXISTS "public"."supplier_products_raw_history_p2027_11" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "raw_id" "uuid",
+    "supplier_id" "uuid",
+    "supplier_reference" character varying,
+    "content_hash" "text",
+    "raw_data" "jsonb",
+    "captured_at" timestamp with time zone DEFAULT "now"() NOT NULL
+);
+
+
+ALTER TABLE "public"."supplier_products_raw_history_p2027_11" OWNER TO "postgres";
+
+
+CREATE TABLE IF NOT EXISTS "public"."supplier_products_raw_history_p2027_12" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "raw_id" "uuid",
+    "supplier_id" "uuid",
+    "supplier_reference" character varying,
+    "content_hash" "text",
+    "raw_data" "jsonb",
+    "captured_at" timestamp with time zone DEFAULT "now"() NOT NULL
+);
+
+
+ALTER TABLE "public"."supplier_products_raw_history_p2027_12" OWNER TO "postgres";
 
 
 CREATE TABLE IF NOT EXISTS "public"."supplier_property_mappings" (
@@ -84781,7 +86183,8 @@ CREATE TABLE IF NOT EXISTS "public"."user_known_devices" (
     "fingerprint" "text" NOT NULL,
     "device_name" "text",
     "last_seen_at" timestamp with time zone DEFAULT "now"() NOT NULL,
-    "created_at" timestamp with time zone DEFAULT "now"() NOT NULL
+    "created_at" timestamp with time zone DEFAULT "now"() NOT NULL,
+    "is_trusted" boolean DEFAULT false NOT NULL
 );
 
 
@@ -84890,6 +86293,8 @@ CREATE TABLE IF NOT EXISTS "public"."user_token_revocations" (
     "expires_at" timestamp with time zone,
     "reason" "text"
 );
+
+ALTER TABLE ONLY "public"."user_token_revocations" FORCE ROW LEVEL SECURITY;
 
 
 ALTER TABLE "public"."user_token_revocations" OWNER TO "postgres";
@@ -85519,6 +86924,184 @@ CREATE OR REPLACE VIEW "public"."v_commemorative_dates_with_colors" WITH ("secur
 ALTER VIEW "public"."v_commemorative_dates_with_colors" OWNER TO "postgres";
 
 
+CREATE OR REPLACE VIEW "public"."v_compras_catalogo" WITH ("security_invoker"='on') AS
+ SELECT "p"."id" AS "pim_product_id",
+    "v"."id" AS "pim_variant_id",
+    "p"."sku",
+    "p"."sku_promo",
+    "p"."name",
+    "p"."supplier_id",
+    "s"."code" AS "supplier_code",
+    "s"."name" AS "supplier_name",
+    COALESCE("v"."supplier_sku", "p"."supplier_reference") AS "supplier_reference",
+    "p"."supplier_external_id",
+    "p"."cost_price",
+    "p"."sale_price",
+    "p"."suggested_price",
+    "p"."ipi_rate",
+    "p"."ncm_code",
+    "p"."min_quantity",
+    "p"."min_order_quantity",
+    "s"."min_order_value",
+    COALESCE("v"."stock_quantity", "p"."stock_quantity") AS "stock_quantity",
+    "p"."is_stockout",
+    "p"."last_stock_update_at",
+    "p"."xbz_stock_reliability_text",
+    "v"."color_id",
+    "v"."color_name",
+    "v"."color_code",
+    "v"."color_hex",
+    "v"."size_code",
+    COALESCE("p"."primary_image_url", "p"."primary_image_fallback_url") AS "image_url",
+    "p"."lead_time_days",
+    "p"."price_updated_at",
+    "p"."price_verified_at",
+    "p"."price_freshness_threshold_days",
+    "p"."updated_at"
+   FROM (("public"."products" "p"
+     JOIN "public"."suppliers" "s" ON (("s"."id" = "p"."supplier_id")))
+     LEFT JOIN "public"."product_variants" "v" ON ((("v"."product_id" = "p"."id") AND "v"."is_active")))
+  WHERE ("p"."is_active" AND (NOT COALESCE("p"."is_deleted", false)) AND "s"."active" AND "s"."is_product_supplier");
+
+
+ALTER VIEW "public"."v_compras_catalogo" OWNER TO "postgres";
+
+
+COMMENT ON VIEW "public"."v_compras_catalogo" IS 'Catalogo de produtos do PIM para o Promo Supply V2 (external-db-bridge). Superconjunto da versao 20261121163000 com supplier_external_id, xbz_stock_reliability_text, price_verified_at, price_freshness_threshold_days e fallback de imagem (PR #3968).';
+
+
+
+CREATE OR REPLACE VIEW "public"."v_compras_precos_faixa" WITH ("security_invoker"='on') AS
+ SELECT "pcp"."product_id" AS "pim_product_id",
+    NULL::"uuid" AS "pim_variant_id",
+    "band"."qty_min",
+    ("lead"("band"."qty_min") OVER (PARTITION BY "pcp"."id" ORDER BY "band"."ord") - 1) AS "qty_max",
+    "band"."unit_cost",
+    NULL::numeric AS "unit_price",
+    'spot_customization'::"text" AS "source",
+    "pcp"."service_code",
+    "pcp"."table_code",
+    "pcp"."component",
+    "pcp"."location",
+    "pcp"."handling_cost",
+    "pcp"."table_max_area_cm2",
+    "pcp"."max_stitches",
+    "pcp"."hotspot",
+    "pcp"."currency"
+   FROM ("public"."product_customization_prices" "pcp"
+     CROSS JOIN LATERAL ( SELECT "t"."qty_min_val" AS "qty_min",
+            "t"."price_val" AS "unit_cost",
+            "t"."ord"
+           FROM UNNEST("pcp"."min_qty", "pcp"."price") WITH ORDINALITY "t"("qty_min_val", "price_val", "ord")) "band")
+  WHERE ("array_length"("pcp"."min_qty", 1) > 0);
+
+
+ALTER VIEW "public"."v_compras_precos_faixa" OWNER TO "postgres";
+
+
+COMMENT ON VIEW "public"."v_compras_precos_faixa" IS 'Faixas de preco de personalizacao (product_customization_prices) desnormalizadas para consumo pelo Promo Supply V2 via external-db-bridge. Uma linha por faixa de quantidade. Fonte: spot_customization.';
+
+
+
+CREATE OR REPLACE VIEW "public"."vw_variant_sale_prices" WITH ("security_invoker"='true') AS
+ SELECT "pv"."id" AS "variant_id",
+    "pv"."product_id",
+    "pv"."sku",
+    "pv"."color_name",
+    "vss"."cost_price_1",
+    "vss"."cost_price_2",
+    "vss"."cost_price_3",
+    "vss"."cost_price_4",
+    "vss"."cost_price_5",
+    "vss"."min_qty_1",
+    "vss"."min_qty_2",
+    "vss"."min_qty_3",
+    "vss"."min_qty_4",
+    "vss"."min_qty_5",
+    COALESCE("mc_var"."markup_percent", "mc_prod"."markup_percent", "mc_cat"."markup_percent", "s"."default_markup_percent", 115.0) AS "markup_percent",
+    "round"(("vss"."cost_price_1" * ((1)::numeric + (COALESCE("mc_var"."markup_percent", "mc_prod"."markup_percent", "mc_cat"."markup_percent", "s"."default_markup_percent", 115.0) / (100)::numeric))), 2) AS "sale_price_1",
+    "round"(("vss"."cost_price_2" * ((1)::numeric + (COALESCE("mc_var"."markup_percent", "mc_prod"."markup_percent", "mc_cat"."markup_percent", "s"."default_markup_percent", 115.0) / (100)::numeric))), 2) AS "sale_price_2",
+    "round"(("vss"."cost_price_3" * ((1)::numeric + (COALESCE("mc_var"."markup_percent", "mc_prod"."markup_percent", "mc_cat"."markup_percent", "s"."default_markup_percent", 115.0) / (100)::numeric))), 2) AS "sale_price_3",
+    "round"(("vss"."cost_price_4" * ((1)::numeric + (COALESCE("mc_var"."markup_percent", "mc_prod"."markup_percent", "mc_cat"."markup_percent", "s"."default_markup_percent", 115.0) / (100)::numeric))), 2) AS "sale_price_4",
+    "round"(("vss"."cost_price_5" * ((1)::numeric + (COALESCE("mc_var"."markup_percent", "mc_prod"."markup_percent", "mc_cat"."markup_percent", "s"."default_markup_percent", 115.0) / (100)::numeric))), 2) AS "sale_price_5"
+   FROM ((((("public"."product_variants" "pv"
+     JOIN "public"."variant_supplier_sources" "vss" ON ((("vss"."variant_id" = "pv"."id") AND ("vss"."is_preferred" = true))))
+     LEFT JOIN "public"."suppliers" "s" ON (("s"."id" = "vss"."supplier_id")))
+     LEFT JOIN "public"."markup_configurations" "mc_var" ON ((("mc_var"."variant_id" = "pv"."id") AND ("mc_var"."is_active" = true))))
+     LEFT JOIN "public"."markup_configurations" "mc_prod" ON ((("mc_prod"."product_id" = "pv"."product_id") AND ("mc_prod"."variant_id" IS NULL) AND ("mc_prod"."category_id" IS NULL) AND ("mc_prod"."is_active" = true))))
+     LEFT JOIN "public"."markup_configurations" "mc_cat" ON ((("mc_cat"."category_id" = ( SELECT "products"."category_id"
+           FROM "public"."products"
+          WHERE ("products"."id" = "pv"."product_id"))) AND ("mc_cat"."product_id" IS NULL) AND ("mc_cat"."variant_id" IS NULL) AND ("mc_cat"."is_active" = true))))
+  WHERE ("pv"."is_active" = true);
+
+
+ALTER VIEW "public"."vw_variant_sale_prices" OWNER TO "postgres";
+
+
+CREATE OR REPLACE VIEW "public"."v_compras_precos_variante" WITH ("security_invoker"='on') AS
+ SELECT "vw_variant_sale_prices"."product_id" AS "pim_product_id",
+    "vw_variant_sale_prices"."variant_id" AS "pim_variant_id",
+    1 AS "tier",
+    "vw_variant_sale_prices"."min_qty_1" AS "qty_min",
+    ("vw_variant_sale_prices"."min_qty_2" - 1) AS "qty_max",
+    "vw_variant_sale_prices"."cost_price_1" AS "unit_cost",
+    "vw_variant_sale_prices"."sale_price_1" AS "unit_price",
+    'vw_variant_sale_prices'::"text" AS "source"
+   FROM "public"."vw_variant_sale_prices"
+  WHERE ("vw_variant_sale_prices"."min_qty_1" IS NOT NULL)
+UNION ALL
+ SELECT "vw_variant_sale_prices"."product_id" AS "pim_product_id",
+    "vw_variant_sale_prices"."variant_id" AS "pim_variant_id",
+    2 AS "tier",
+    "vw_variant_sale_prices"."min_qty_2" AS "qty_min",
+    ("vw_variant_sale_prices"."min_qty_3" - 1) AS "qty_max",
+    "vw_variant_sale_prices"."cost_price_2" AS "unit_cost",
+    "vw_variant_sale_prices"."sale_price_2" AS "unit_price",
+    'vw_variant_sale_prices'::"text" AS "source"
+   FROM "public"."vw_variant_sale_prices"
+  WHERE ("vw_variant_sale_prices"."min_qty_2" IS NOT NULL)
+UNION ALL
+ SELECT "vw_variant_sale_prices"."product_id" AS "pim_product_id",
+    "vw_variant_sale_prices"."variant_id" AS "pim_variant_id",
+    3 AS "tier",
+    "vw_variant_sale_prices"."min_qty_3" AS "qty_min",
+    ("vw_variant_sale_prices"."min_qty_4" - 1) AS "qty_max",
+    "vw_variant_sale_prices"."cost_price_3" AS "unit_cost",
+    "vw_variant_sale_prices"."sale_price_3" AS "unit_price",
+    'vw_variant_sale_prices'::"text" AS "source"
+   FROM "public"."vw_variant_sale_prices"
+  WHERE ("vw_variant_sale_prices"."min_qty_3" IS NOT NULL)
+UNION ALL
+ SELECT "vw_variant_sale_prices"."product_id" AS "pim_product_id",
+    "vw_variant_sale_prices"."variant_id" AS "pim_variant_id",
+    4 AS "tier",
+    "vw_variant_sale_prices"."min_qty_4" AS "qty_min",
+    ("vw_variant_sale_prices"."min_qty_5" - 1) AS "qty_max",
+    "vw_variant_sale_prices"."cost_price_4" AS "unit_cost",
+    "vw_variant_sale_prices"."sale_price_4" AS "unit_price",
+    'vw_variant_sale_prices'::"text" AS "source"
+   FROM "public"."vw_variant_sale_prices"
+  WHERE ("vw_variant_sale_prices"."min_qty_4" IS NOT NULL)
+UNION ALL
+ SELECT "vw_variant_sale_prices"."product_id" AS "pim_product_id",
+    "vw_variant_sale_prices"."variant_id" AS "pim_variant_id",
+    5 AS "tier",
+    "vw_variant_sale_prices"."min_qty_5" AS "qty_min",
+    NULL::integer AS "qty_max",
+    "vw_variant_sale_prices"."cost_price_5" AS "unit_cost",
+    "vw_variant_sale_prices"."sale_price_5" AS "unit_price",
+    'vw_variant_sale_prices'::"text" AS "source"
+   FROM "public"."vw_variant_sale_prices"
+  WHERE ("vw_variant_sale_prices"."min_qty_5" IS NOT NULL);
+
+
+ALTER VIEW "public"."v_compras_precos_variante" OWNER TO "postgres";
+
+
+COMMENT ON VIEW "public"."v_compras_precos_variante" IS 'Preco de VENDA por faixa de quantidade e por variante (vw_variant_sale_prices), ate 5 tiers. Trabalho preservado da PR #3969. Conceito distinto de v_compras_precos_faixa (preco de personalizacao); as duas coexistem.';
+
+
+
 CREATE OR REPLACE VIEW "public"."v_connection_health" WITH ("security_invoker"='true') AS
  SELECT "captured_at",
     "total_conns",
@@ -85790,7 +87373,7 @@ CREATE OR REPLACE VIEW "public"."v_kill_switch_hits_summary" WITH ("security_inv
 ALTER VIEW "public"."v_kill_switch_hits_summary" OWNER TO "postgres";
 
 
-COMMENT ON VIEW "public"."v_kill_switch_hits_summary" IS 'Resumo de kill_switch_hits. SECURITY INVOKER: respeita RLS do caller.';
+COMMENT ON VIEW "public"."v_kill_switch_hits_summary" IS 'Resumo de kill_switch_hits. SECURITY INVOKER: respeita RLS do caller (leitura só is_admin_or_above). SELECT para authenticated é intencional (20261112120200): não incluir em revogações de views admin.';
 
 
 
@@ -85985,7 +87568,7 @@ COMMENT ON VIEW "public"."v_kit_component_identity_health" IS 'Saúde honesta da
 
 
 
-CREATE OR REPLACE VIEW "public"."v_kit_component_media_public" WITH ("security_invoker"='false') AS
+CREATE OR REPLACE VIEW "public"."v_kit_component_media_public" WITH ("security_invoker"='true') AS
  SELECT "pkc"."id" AS "kit_component_id",
     "pkc"."kit_product_id",
     "pkc"."component_product_id",
@@ -86745,7 +88328,7 @@ CREATE OR REPLACE VIEW "public"."v_product_active_badge" WITH ("security_invoker
 ALTER VIEW "public"."v_product_active_badge" OWNER TO "postgres";
 
 
-CREATE OR REPLACE VIEW "public"."v_product_compositions_public" WITH ("security_invoker"='false') AS
+CREATE OR REPLACE VIEW "public"."v_product_compositions_public" WITH ("security_invoker"='true') AS
  SELECT "mpc"."product_id",
     "mpc"."product_name",
     "mpc"."total_materials",
@@ -86862,7 +88445,7 @@ COMMENT ON VIEW "public"."v_product_images_quality_gap" IS 'Observabilidade de g
 
 
 
-CREATE OR REPLACE VIEW "public"."v_product_properties_public" WITH ("security_invoker"='false') AS
+CREATE OR REPLACE VIEW "public"."v_product_properties_public" WITH ("security_invoker"='true') AS
  SELECT "pp"."id",
     "pp"."product_id",
     "pp"."property_code",
@@ -86875,11 +88458,11 @@ CREATE OR REPLACE VIEW "public"."v_product_properties_public" WITH ("security_in
 ALTER VIEW "public"."v_product_properties_public" OWNER TO "postgres";
 
 
-COMMENT ON VIEW "public"."v_product_properties_public" IS 'SECURITY DEFINER intencional (fix_version 20260717). Colunas: property_code, property_value.';
+COMMENT ON VIEW "public"."v_product_properties_public" IS 'Propriedades de produtos ativos. security_invoker=true desde P06/A-V01 (20261117073000): o corte das linhas e o RLS de public.product_properties (product_properties_anon_read -> fn_product_active_for_rls), nao o JOIN da view. Nenhum GRANT novo foi necessario — anon ja tinha SELECT nas 9 colunas da tabela-base. Colunas de output: id, product_id, property_code, property_value, source.';
 
 
 
-CREATE OR REPLACE VIEW "public"."v_product_tags_public" WITH ("security_invoker"='false') AS
+CREATE OR REPLACE VIEW "public"."v_product_tags_public" WITH ("security_invoker"='true') AS
  SELECT "pt"."id",
     "pt"."product_id",
     "pt"."tag_id"
@@ -87843,7 +89426,7 @@ UNION ALL
 ALTER VIEW "public"."v_super_filtro_options" OWNER TO "postgres";
 
 
-CREATE OR REPLACE VIEW "public"."v_suppliers_public" WITH ("security_invoker"='false') AS
+CREATE OR REPLACE VIEW "public"."v_suppliers_public" WITH ("security_invoker"='true') AS
  SELECT "id",
     "name",
     "code",
@@ -88077,7 +89660,7 @@ COMMENT ON VIEW "public"."v_system_alerts" IS 'Alertas do sistema. Correções 2
 
 
 
-CREATE OR REPLACE VIEW "public"."v_system_health_dashboard" WITH ("security_invoker"='true') AS
+CREATE OR REPLACE VIEW "public"."v_system_health_dashboard" AS
  WITH "metrics" AS (
          SELECT 'database'::"text" AS "categoria",
             'total_tables_public'::"text" AS "metrica",
@@ -88087,226 +89670,226 @@ CREATE OR REPLACE VIEW "public"."v_system_health_dashboard" WITH ("security_invo
                   WHERE (("n"."nspname" = 'public'::"name") AND ("c"."relkind" = 'r'::"char"))))::"text" AS "valor",
             'count'::"text" AS "unit"
         UNION ALL
-         SELECT 'database'::"text",
-            'total_functions'::"text",
+         SELECT 'database'::"text" AS "text",
+            'total_functions'::"text" AS "text",
             (( SELECT "count"(*) AS "count"
                    FROM ("pg_proc" "p"
                      JOIN "pg_namespace" "n" ON (("n"."oid" = "p"."pronamespace")))
                   WHERE ("n"."nspname" = 'public'::"name")))::"text" AS "count",
-            'count'::"text"
+            'count'::"text" AS "text"
         UNION ALL
-         SELECT 'database'::"text",
-            'total_triggers'::"text",
+         SELECT 'database'::"text" AS "text",
+            'total_triggers'::"text" AS "text",
             (( SELECT "count"(*) AS "count"
                    FROM (("pg_trigger" "t"
                      JOIN "pg_class" "c" ON (("c"."oid" = "t"."tgrelid")))
                      JOIN "pg_namespace" "n" ON (("n"."oid" = "c"."relnamespace")))
                   WHERE (("n"."nspname" = 'public'::"name") AND (NOT "t"."tgisinternal"))))::"text" AS "count",
-            'count'::"text"
+            'count'::"text" AS "text"
         UNION ALL
-         SELECT 'database'::"text",
-            'total_indexes'::"text",
+         SELECT 'database'::"text" AS "text",
+            'total_indexes'::"text" AS "text",
             (( SELECT "count"(*) AS "count"
                    FROM "pg_indexes"
                   WHERE ("pg_indexes"."schemaname" = 'public'::"name")))::"text" AS "count",
-            'count'::"text"
+            'count'::"text" AS "text"
         UNION ALL
-         SELECT 'database'::"text",
-            'total_rls_policies'::"text",
+         SELECT 'database'::"text" AS "text",
+            'total_rls_policies'::"text" AS "text",
             (( SELECT "count"(*) AS "count"
                    FROM "pg_policies"
                   WHERE ("pg_policies"."schemaname" = 'public'::"name")))::"text" AS "count",
-            'count'::"text"
+            'count'::"text" AS "text"
         UNION ALL
-         SELECT 'database'::"text",
-            'realtime_published_tables'::"text",
+         SELECT 'database'::"text" AS "text",
+            'realtime_published_tables'::"text" AS "text",
             (( SELECT "count"(*) AS "count"
                    FROM "pg_publication_tables"
                   WHERE ("pg_publication_tables"."pubname" = 'supabase_realtime'::"name")))::"text" AS "count",
-            'count'::"text"
+            'count'::"text" AS "text"
         UNION ALL
-         SELECT 'catalog'::"text",
-            'total_products'::"text",
+         SELECT 'catalog'::"text" AS "text",
+            'total_products'::"text" AS "text",
             (( SELECT "count"(*) AS "count"
                    FROM "public"."products"))::"text" AS "count",
-            'count'::"text"
+            'count'::"text" AS "text"
         UNION ALL
-         SELECT 'catalog'::"text",
-            'active_products'::"text",
+         SELECT 'catalog'::"text" AS "text",
+            'active_products'::"text" AS "text",
             (( SELECT "count"(*) AS "count"
                    FROM "public"."products"
                   WHERE ("products"."is_active" = true)))::"text" AS "count",
-            'count'::"text"
+            'count'::"text" AS "text"
         UNION ALL
-         SELECT 'catalog'::"text",
-            'products_with_image'::"text",
+         SELECT 'catalog'::"text" AS "text",
+            'products_with_image'::"text" AS "text",
             (( SELECT "count"(*) AS "count"
                    FROM "public"."products"
                   WHERE ("products"."primary_image_url" IS NOT NULL)))::"text" AS "count",
-            'count'::"text"
+            'count'::"text" AS "text"
         UNION ALL
-         SELECT 'catalog'::"text",
-            'products_with_ncm'::"text",
+         SELECT 'catalog'::"text" AS "text",
+            'products_with_ncm'::"text" AS "text",
             (( SELECT "count"(*) AS "count"
                    FROM "public"."products"
                   WHERE ("products"."ncm_id" IS NOT NULL)))::"text" AS "count",
-            'count'::"text"
+            'count'::"text" AS "text"
         UNION ALL
-         SELECT 'catalog'::"text",
-            'products_with_ai_description'::"text",
+         SELECT 'catalog'::"text" AS "text",
+            'products_with_ai_description'::"text" AS "text",
             (( SELECT "count"(*) AS "count"
                    FROM "public"."products"
                   WHERE ("products"."ai_description" IS NOT NULL)))::"text" AS "count",
-            'count'::"text"
+            'count'::"text" AS "text"
         UNION ALL
-         SELECT 'catalog'::"text",
-            'total_variants'::"text",
+         SELECT 'catalog'::"text" AS "text",
+            'total_variants'::"text" AS "text",
             (( SELECT "count"(*) AS "count"
                    FROM "public"."product_variants"))::"text" AS "count",
-            'count'::"text"
+            'count'::"text" AS "text"
         UNION ALL
-         SELECT 'catalog'::"text",
-            'active_variants'::"text",
+         SELECT 'catalog'::"text" AS "text",
+            'active_variants'::"text" AS "text",
             (( SELECT "count"(*) AS "count"
                    FROM "public"."product_variants"
                   WHERE ("product_variants"."is_active" = true)))::"text" AS "count",
-            'count'::"text"
+            'count'::"text" AS "text"
         UNION ALL
-         SELECT 'catalog'::"text",
-            'total_images'::"text",
+         SELECT 'catalog'::"text" AS "text",
+            'total_images'::"text" AS "text",
             (( SELECT "count"(*) AS "count"
                    FROM "public"."product_images"))::"text" AS "count",
-            'count'::"text"
+            'count'::"text" AS "text"
         UNION ALL
-         SELECT 'catalog'::"text",
-            'total_videos'::"text",
+         SELECT 'catalog'::"text" AS "text",
+            'total_videos'::"text" AS "text",
             (( SELECT "count"(*) AS "count"
                    FROM "public"."product_videos"))::"text" AS "count",
-            'count'::"text"
+            'count'::"text" AS "text"
         UNION ALL
-         SELECT 'catalog'::"text",
-            'total_categories'::"text",
+         SELECT 'catalog'::"text" AS "text",
+            'total_categories'::"text" AS "text",
             (( SELECT "count"(*) AS "count"
                    FROM "public"."categories"
                   WHERE ("categories"."is_active" = true)))::"text" AS "count",
-            'count'::"text"
+            'count'::"text" AS "text"
         UNION ALL
-         SELECT 'catalog'::"text",
-            'total_stock_units'::"text",
+         SELECT 'catalog'::"text" AS "text",
+            'total_stock_units'::"text" AS "text",
             (COALESCE(( SELECT "sum"("variant_supplier_sources"."quantity") AS "sum"
                    FROM "public"."variant_supplier_sources"
                   WHERE ("variant_supplier_sources"."is_active" = true)), (0)::bigint))::"text" AS "coalesce",
-            'units'::"text"
+            'units'::"text" AS "text"
         UNION ALL
-         SELECT 'suppliers'::"text",
-            'total_suppliers'::"text",
+         SELECT 'suppliers'::"text" AS "text",
+            'total_suppliers'::"text" AS "text",
             (( SELECT "count"(*) AS "count"
                    FROM "public"."suppliers"))::"text" AS "count",
-            'count'::"text"
+            'count'::"text" AS "text"
         UNION ALL
-         SELECT 'suppliers'::"text",
-            'active_sync_suppliers'::"text",
+         SELECT 'suppliers'::"text" AS "text",
+            'active_sync_suppliers'::"text" AS "text",
             (( SELECT "count"(*) AS "count"
                    FROM "public"."suppliers"
                   WHERE ("suppliers"."sync_enabled" = true)))::"text" AS "count",
-            'count'::"text"
+            'count'::"text" AS "text"
         UNION ALL
-         SELECT 'suppliers'::"text",
-            'pending_import_batches'::"text",
+         SELECT 'suppliers'::"text" AS "text",
+            'pending_import_batches'::"text" AS "text",
             (( SELECT "count"(DISTINCT "supplier_products_raw"."import_batch_id") AS "count"
                    FROM "public"."supplier_products_raw"
                   WHERE ("supplier_products_raw"."status" <> 'processed'::"public"."supplier_raw_status")))::"text" AS "count",
-            'count'::"text"
+            'count'::"text" AS "text"
         UNION ALL
-         SELECT 'ai'::"text",
-            'ai_queue_pending'::"text",
+         SELECT 'ai'::"text" AS "text",
+            'ai_queue_pending'::"text" AS "text",
             (( SELECT "count"(*) AS "count"
                    FROM "public"."ai_enrichment_queue"
                   WHERE ("ai_enrichment_queue"."status" = 'pending'::"text")))::"text" AS "count",
-            'count'::"text"
+            'count'::"text" AS "text"
         UNION ALL
-         SELECT 'ai'::"text",
-            'ai_queue_completed'::"text",
+         SELECT 'ai'::"text" AS "text",
+            'ai_queue_completed'::"text" AS "text",
             (( SELECT "count"(*) AS "count"
                    FROM "public"."ai_enrichment_queue"
                   WHERE ("ai_enrichment_queue"."status" = 'done'::"text")))::"text" AS "count",
-            'count'::"text"
+            'count'::"text" AS "text"
         UNION ALL
-         SELECT 'ai'::"text",
-            'ai_queue_stuck'::"text",
+         SELECT 'ai'::"text" AS "text",
+            'ai_queue_stuck'::"text" AS "text",
             (( SELECT "count"(*) AS "count"
                    FROM "public"."ai_enrichment_queue"
                   WHERE (("ai_enrichment_queue"."status" = 'processing'::"text") AND ("ai_enrichment_queue"."locked_at" < ("now"() - '02:00:00'::interval)))))::"text" AS "count",
-            'count'::"text"
+            'count'::"text" AS "text"
         UNION ALL
-         SELECT 'crm'::"text",
-            'total_quotes'::"text",
+         SELECT 'crm'::"text" AS "text",
+            'total_quotes'::"text" AS "text",
             (( SELECT "count"(*) AS "count"
                    FROM "public"."quotes"))::"text" AS "count",
-            'count'::"text"
+            'count'::"text" AS "text"
         UNION ALL
-         SELECT 'crm'::"text",
-            'total_orders'::"text",
+         SELECT 'crm'::"text" AS "text",
+            'total_orders'::"text" AS "text",
             (( SELECT "count"(*) AS "count"
                    FROM "public"."orders"))::"text" AS "count",
-            'count'::"text"
+            'count'::"text" AS "text"
         UNION ALL
-         SELECT 'auth'::"text",
-            'total_users'::"text",
+         SELECT 'auth'::"text" AS "text",
+            'total_users'::"text" AS "text",
             (( SELECT "count"(*) AS "count"
                    FROM "auth"."users"))::"text" AS "count",
-            'count'::"text"
+            'count'::"text" AS "text"
         UNION ALL
-         SELECT 'auth'::"text",
-            'total_organizations'::"text",
+         SELECT 'auth'::"text" AS "text",
+            'total_organizations'::"text" AS "text",
             (( SELECT "count"(*) AS "count"
                    FROM "public"."organizations"))::"text" AS "count",
-            'count'::"text"
+            'count'::"text" AS "text"
         UNION ALL
-         SELECT 'cron'::"text",
-            'active_jobs'::"text",
+         SELECT 'cron'::"text" AS "text",
+            'active_jobs'::"text" AS "text",
             (( SELECT "count"(*) AS "count"
                    FROM "cron"."job"
                   WHERE ("job"."active" = true)))::"text" AS "count",
-            'count'::"text"
+            'count'::"text" AS "text"
         UNION ALL
-         SELECT 'cron'::"text",
-            'failed_runs_24h'::"text",
+         SELECT 'cron'::"text" AS "text",
+            'failed_runs_24h'::"text" AS "text",
             (( SELECT "count"(*) AS "count"
                    FROM "cron"."job_run_details"
                   WHERE (("job_run_details"."status" = 'failed'::"text") AND ("job_run_details"."start_time" > ("now"() - '24:00:00'::interval)))))::"text" AS "count",
-            'count'::"text"
+            'count'::"text" AS "text"
         UNION ALL
-         SELECT 'cron'::"text",
-            'succeeded_runs_24h'::"text",
+         SELECT 'cron'::"text" AS "text",
+            'succeeded_runs_24h'::"text" AS "text",
             (( SELECT "count"(*) AS "count"
                    FROM "cron"."job_run_details"
                   WHERE (("job_run_details"."status" = 'succeeded'::"text") AND ("job_run_details"."start_time" > ("now"() - '24:00:00'::interval)))))::"text" AS "count",
-            'count'::"text"
+            'count'::"text" AS "text"
         UNION ALL
-         SELECT 'bi'::"text",
-            'stock_snapshots_count'::"text",
+         SELECT 'bi'::"text" AS "text",
+            'stock_snapshots_count'::"text" AS "text",
             (( SELECT "count"(*) AS "count"
                    FROM "public"."stock_snapshots"))::"text" AS "count",
-            'count'::"text"
+            'count'::"text" AS "text"
         UNION ALL
-         SELECT 'bi'::"text",
-            'stock_daily_summary_count'::"text",
+         SELECT 'bi'::"text" AS "text",
+            'stock_daily_summary_count'::"text" AS "text",
             (( SELECT "count"(*) AS "count"
                    FROM "public"."stock_daily_summary"))::"text" AS "count",
-            'count'::"text"
+            'count'::"text" AS "text"
         UNION ALL
-         SELECT 'storage'::"text",
-            'db_total_size'::"text",
+         SELECT 'storage'::"text" AS "text",
+            'db_total_size'::"text" AS "text",
             "pg_size_pretty"("pg_database_size"("current_database"())) AS "pg_size_pretty",
-            'size'::"text"
+            'size'::"text" AS "text"
         UNION ALL
-         SELECT 'storage'::"text",
-            'indexes_size_public'::"text",
+         SELECT 'storage'::"text" AS "text",
+            'indexes_size_public'::"text" AS "text",
             ( SELECT "pg_size_pretty"("sum"("pg_relation_size"(("pg_stat_user_indexes"."indexrelid")::"regclass"))) AS "pg_size_pretty"
                    FROM "pg_stat_user_indexes"
                   WHERE ("pg_stat_user_indexes"."schemaname" = 'public'::"name")) AS "pg_size_pretty",
-            'size'::"text"
+            'size'::"text" AS "text"
         )
  SELECT "categoria",
     "metrica",
@@ -88324,7 +89907,7 @@ COMMENT ON VIEW "public"."v_system_health_dashboard" IS 'Dashboard mestre de sa�
 
 
 
-CREATE OR REPLACE VIEW "public"."v_tabela_preco_gravacao_oficial_public" WITH ("security_invoker"='false') AS
+CREATE OR REPLACE VIEW "public"."v_tabela_preco_gravacao_oficial_public" WITH ("security_invoker"='true') AS
  SELECT "id",
     "codigo_tabela",
     "codigo",
@@ -91864,7 +93447,7 @@ CREATE OR REPLACE VIEW "public"."vw_supplier_products_raw_status" WITH ("securit
 ALTER VIEW "public"."vw_supplier_products_raw_status" OWNER TO "postgres";
 
 
-CREATE OR REPLACE VIEW "public"."vw_system_health_quick" WITH ("security_invoker"='true') AS
+CREATE OR REPLACE VIEW "public"."vw_system_health_quick" WITH ("security_invoker"='on') AS
  SELECT 'generated_columns_product_variants'::"text" AS "check_name",
         CASE
             WHEN (( SELECT "count"(*) AS "count"
@@ -91914,9 +93497,9 @@ UNION ALL
             WHEN ((( SELECT "count"(*) AS "count"
                FROM ("pg_class" "c"
                  JOIN "pg_namespace" "n" ON (("n"."oid" = "c"."relnamespace")))
-              WHERE (("n"."nspname" = 'public'::"name") AND ("c"."relname" = ANY (ARRAY['_backup_stock_daily_summary_20260618'::"name", '_bkp_kit_dims_20260619'::"name", '_bkp_orphan_active_variants_20260619'::"name"])) AND ("c"."relrowsecurity" = true))) = 3) AND (( SELECT "count"(*) AS "count"
+              WHERE (("n"."nspname" = 'public'::"name") AND ("c"."relname" = ANY (ARRAY['_bkp_kit_dims_20260619'::"name", '_bkp_orphan_active_variants_20260619'::"name"])) AND ("c"."relrowsecurity" = true))) = 2) AND (( SELECT "count"(*) AS "count"
                FROM "pg_policies"
-              WHERE (("pg_policies"."schemaname" = 'public'::"name") AND ("pg_policies"."tablename" = ANY (ARRAY['_backup_stock_daily_summary_20260618'::"name", '_bkp_kit_dims_20260619'::"name", '_bkp_orphan_active_variants_20260619'::"name"])) AND ("pg_policies"."cmd" = 'SELECT'::"text") AND ((("pg_policies"."roles")::"text" ~~* '%anon%'::"text") OR (("pg_policies"."roles")::"text" ~~* '%authenticated%'::"text") OR (("pg_policies"."roles")::"text" ~~* '%public%'::"text")))) = 0) AND (NOT "has_table_privilege"('anon'::"name", 'public._bkp_kit_dims_20260619'::"text", 'SELECT'::"text")) AND (NOT "has_table_privilege"('authenticated'::"name", 'public._bkp_kit_dims_20260619'::"text", 'SELECT'::"text"))) THEN '✅ PASS'::"text"
+              WHERE (("pg_policies"."schemaname" = 'public'::"name") AND ("pg_policies"."tablename" = ANY (ARRAY['_bkp_kit_dims_20260619'::"name", '_bkp_orphan_active_variants_20260619'::"name"])) AND ("pg_policies"."cmd" = 'SELECT'::"text") AND ((("pg_policies"."roles")::"text" ~~* '%anon%'::"text") OR (("pg_policies"."roles")::"text" ~~* '%authenticated%'::"text") OR (("pg_policies"."roles")::"text" ~~* '%public%'::"text")))) = 0) AND (NOT "has_table_privilege"('anon'::"name", 'public._bkp_kit_dims_20260619'::"text", 'SELECT'::"text")) AND (NOT "has_table_privilege"('authenticated'::"name", 'public._bkp_kit_dims_20260619'::"text", 'SELECT'::"text"))) THEN '✅ PASS'::"text"
             ELSE '❌ FAIL (RLS ou grant incorreto)'::"text"
         END AS "result"
 UNION ALL
@@ -91976,41 +93559,6 @@ ALTER VIEW "public"."vw_thermal_products" OWNER TO "postgres";
 
 COMMENT ON VIEW "public"."vw_thermal_products" IS 'Produtos térmicos com suas propriedades térmicas';
 
-
-
-CREATE OR REPLACE VIEW "public"."vw_variant_sale_prices" WITH ("security_invoker"='true') AS
- SELECT "pv"."id" AS "variant_id",
-    "pv"."product_id",
-    "pv"."sku",
-    "pv"."color_name",
-    "vss"."cost_price_1",
-    "vss"."cost_price_2",
-    "vss"."cost_price_3",
-    "vss"."cost_price_4",
-    "vss"."cost_price_5",
-    "vss"."min_qty_1",
-    "vss"."min_qty_2",
-    "vss"."min_qty_3",
-    "vss"."min_qty_4",
-    "vss"."min_qty_5",
-    COALESCE("mc_var"."markup_percent", "mc_prod"."markup_percent", "mc_cat"."markup_percent", "s"."default_markup_percent", 115.0) AS "markup_percent",
-    "round"(("vss"."cost_price_1" * ((1)::numeric + (COALESCE("mc_var"."markup_percent", "mc_prod"."markup_percent", "mc_cat"."markup_percent", "s"."default_markup_percent", 115.0) / (100)::numeric))), 2) AS "sale_price_1",
-    "round"(("vss"."cost_price_2" * ((1)::numeric + (COALESCE("mc_var"."markup_percent", "mc_prod"."markup_percent", "mc_cat"."markup_percent", "s"."default_markup_percent", 115.0) / (100)::numeric))), 2) AS "sale_price_2",
-    "round"(("vss"."cost_price_3" * ((1)::numeric + (COALESCE("mc_var"."markup_percent", "mc_prod"."markup_percent", "mc_cat"."markup_percent", "s"."default_markup_percent", 115.0) / (100)::numeric))), 2) AS "sale_price_3",
-    "round"(("vss"."cost_price_4" * ((1)::numeric + (COALESCE("mc_var"."markup_percent", "mc_prod"."markup_percent", "mc_cat"."markup_percent", "s"."default_markup_percent", 115.0) / (100)::numeric))), 2) AS "sale_price_4",
-    "round"(("vss"."cost_price_5" * ((1)::numeric + (COALESCE("mc_var"."markup_percent", "mc_prod"."markup_percent", "mc_cat"."markup_percent", "s"."default_markup_percent", 115.0) / (100)::numeric))), 2) AS "sale_price_5"
-   FROM ((((("public"."product_variants" "pv"
-     JOIN "public"."variant_supplier_sources" "vss" ON ((("vss"."variant_id" = "pv"."id") AND ("vss"."is_preferred" = true))))
-     LEFT JOIN "public"."suppliers" "s" ON (("s"."id" = "vss"."supplier_id")))
-     LEFT JOIN "public"."markup_configurations" "mc_var" ON ((("mc_var"."variant_id" = "pv"."id") AND ("mc_var"."is_active" = true))))
-     LEFT JOIN "public"."markup_configurations" "mc_prod" ON ((("mc_prod"."product_id" = "pv"."product_id") AND ("mc_prod"."variant_id" IS NULL) AND ("mc_prod"."category_id" IS NULL) AND ("mc_prod"."is_active" = true))))
-     LEFT JOIN "public"."markup_configurations" "mc_cat" ON ((("mc_cat"."category_id" = ( SELECT "products"."category_id"
-           FROM "public"."products"
-          WHERE ("products"."id" = "pv"."product_id"))) AND ("mc_cat"."product_id" IS NULL) AND ("mc_cat"."variant_id" IS NULL) AND ("mc_cat"."is_active" = true))))
-  WHERE ("pv"."is_active" = true);
-
-
-ALTER VIEW "public"."vw_variant_sale_prices" OWNER TO "postgres";
 
 
 CREATE OR REPLACE VIEW "public"."vw_xbz_products_by_category" WITH ("security_invoker"='true') AS
@@ -92283,8 +93831,11 @@ CREATE TABLE IF NOT EXISTS "public"."workspace_notifications" (
     "action_url" "text",
     "metadata" "jsonb" DEFAULT '{}'::"jsonb",
     "created_at" timestamp with time zone DEFAULT "now"() NOT NULL,
-    "search_vector" "tsvector"
+    "search_vector" "tsvector",
+    "idempotency_key" "text"
 );
+
+ALTER TABLE ONLY "public"."workspace_notifications" REPLICA IDENTITY FULL;
 
 
 ALTER TABLE "public"."workspace_notifications" OWNER TO "postgres";
@@ -93129,11 +94680,11 @@ ALTER TABLE ONLY "public"."magazine_public_view_events" ATTACH PARTITION "public
 
 
 
+ALTER TABLE ONLY "public"."magazine_public_view_events" ATTACH PARTITION "public"."magazine_public_view_events_2027_02" FOR VALUES FROM ('2027-02-01 00:00:00+00') TO ('2027-03-01 00:00:00+00');
+
+
+
 ALTER TABLE ONLY "public"."magazine_public_view_events" ATTACH PARTITION "public"."magazine_public_view_events_default" DEFAULT;
-
-
-
-ALTER TABLE ONLY "public"."supplier_products_raw_history" ATTACH PARTITION "public"."supplier_products_raw_history_p2026_07" FOR VALUES FROM ('2026-07-01 00:00:00+00') TO ('2026-08-01 00:00:00+00');
 
 
 
@@ -93158,6 +94709,50 @@ ALTER TABLE ONLY "public"."supplier_products_raw_history" ATTACH PARTITION "publ
 
 
 ALTER TABLE ONLY "public"."supplier_products_raw_history" ATTACH PARTITION "public"."supplier_products_raw_history_p2027_01" FOR VALUES FROM ('2027-01-01 00:00:00+00') TO ('2027-02-01 00:00:00+00');
+
+
+
+ALTER TABLE ONLY "public"."supplier_products_raw_history" ATTACH PARTITION "public"."supplier_products_raw_history_p2027_02" FOR VALUES FROM ('2027-02-01 00:00:00+00') TO ('2027-03-01 00:00:00+00');
+
+
+
+ALTER TABLE ONLY "public"."supplier_products_raw_history" ATTACH PARTITION "public"."supplier_products_raw_history_p2027_03" FOR VALUES FROM ('2027-03-01 00:00:00+00') TO ('2027-04-01 00:00:00+00');
+
+
+
+ALTER TABLE ONLY "public"."supplier_products_raw_history" ATTACH PARTITION "public"."supplier_products_raw_history_p2027_04" FOR VALUES FROM ('2027-04-01 00:00:00+00') TO ('2027-05-01 00:00:00+00');
+
+
+
+ALTER TABLE ONLY "public"."supplier_products_raw_history" ATTACH PARTITION "public"."supplier_products_raw_history_p2027_05" FOR VALUES FROM ('2027-05-01 00:00:00+00') TO ('2027-06-01 00:00:00+00');
+
+
+
+ALTER TABLE ONLY "public"."supplier_products_raw_history" ATTACH PARTITION "public"."supplier_products_raw_history_p2027_06" FOR VALUES FROM ('2027-06-01 00:00:00+00') TO ('2027-07-01 00:00:00+00');
+
+
+
+ALTER TABLE ONLY "public"."supplier_products_raw_history" ATTACH PARTITION "public"."supplier_products_raw_history_p2027_07" FOR VALUES FROM ('2027-07-01 00:00:00+00') TO ('2027-08-01 00:00:00+00');
+
+
+
+ALTER TABLE ONLY "public"."supplier_products_raw_history" ATTACH PARTITION "public"."supplier_products_raw_history_p2027_08" FOR VALUES FROM ('2027-08-01 00:00:00+00') TO ('2027-09-01 00:00:00+00');
+
+
+
+ALTER TABLE ONLY "public"."supplier_products_raw_history" ATTACH PARTITION "public"."supplier_products_raw_history_p2027_09" FOR VALUES FROM ('2027-09-01 00:00:00+00') TO ('2027-10-01 00:00:00+00');
+
+
+
+ALTER TABLE ONLY "public"."supplier_products_raw_history" ATTACH PARTITION "public"."supplier_products_raw_history_p2027_10" FOR VALUES FROM ('2027-10-01 00:00:00+00') TO ('2027-11-01 00:00:00+00');
+
+
+
+ALTER TABLE ONLY "public"."supplier_products_raw_history" ATTACH PARTITION "public"."supplier_products_raw_history_p2027_11" FOR VALUES FROM ('2027-11-01 00:00:00+00') TO ('2027-12-01 00:00:00+00');
+
+
+
+ALTER TABLE ONLY "public"."supplier_products_raw_history" ATTACH PARTITION "public"."supplier_products_raw_history_p2027_12" FOR VALUES FROM ('2027-12-01 00:00:00+00') TO ('2028-01-01 00:00:00+00');
 
 
 
@@ -93595,11 +95190,6 @@ ALTER TABLE ONLY "public"."_bkp_orphan_active_variants_20260619"
 
 
 
-ALTER TABLE ONLY "public"."_backup_stock_daily_summary_20260618"
-    ADD CONSTRAINT "bkp_stock_daily_summary_pkey" PRIMARY KEY ("id");
-
-
-
 ALTER TABLE ONLY "public"."bot_detection_log"
     ADD CONSTRAINT "bot_detection_log_pkey" PRIMARY KEY ("id");
 
@@ -93935,6 +95525,16 @@ ALTER TABLE ONLY "public"."crm_callback_events"
 
 
 
+ALTER TABLE ONLY "public"."crm_seller_identity_links"
+    ADD CONSTRAINT "crm_seller_identity_links_crm_seller_id_key" UNIQUE ("crm_seller_id");
+
+
+
+ALTER TABLE ONLY "public"."crm_seller_identity_links"
+    ADD CONSTRAINT "crm_seller_identity_links_pkey" PRIMARY KEY ("auth_user_id");
+
+
+
 ALTER TABLE ONLY "public"."cron_job_timeout_map"
     ADD CONSTRAINT "cron_job_timeout_map_pkey" PRIMARY KEY ("jobname");
 
@@ -93975,6 +95575,11 @@ ALTER TABLE ONLY "public"."discount_approval_requests"
 
 
 
+ALTER TABLE ONLY "public"."e2e_cleanup_audit"
+    ADD CONSTRAINT "e2e_cleanup_audit_pkey" PRIMARY KEY ("id");
+
+
+
 ALTER TABLE ONLY "public"."e2e_cleanup_rate_limit"
     ADD CONSTRAINT "e2e_cleanup_rate_limit_pkey" PRIMARY KEY ("key");
 
@@ -94002,6 +95607,21 @@ ALTER TABLE ONLY "public"."edge_function_invocations"
 
 ALTER TABLE ONLY "public"."edge_rate_limits"
     ADD CONSTRAINT "edge_rate_limits_pkey" PRIMARY KEY ("key");
+
+
+
+ALTER TABLE ONLY "public"."endomarketing_themes"
+    ADD CONSTRAINT "endomarketing_themes_name_key" UNIQUE ("name");
+
+
+
+ALTER TABLE ONLY "public"."endomarketing_themes"
+    ADD CONSTRAINT "endomarketing_themes_pkey" PRIMARY KEY ("id");
+
+
+
+ALTER TABLE ONLY "public"."endomarketing_themes"
+    ADD CONSTRAINT "endomarketing_themes_slug_key" UNIQUE ("slug");
 
 
 
@@ -94087,6 +95707,11 @@ ALTER TABLE ONLY "public"."file_scan_logs"
 
 ALTER TABLE ONLY "public"."follow_up_reminders"
     ADD CONSTRAINT "follow_up_reminders_pkey" PRIMARY KEY ("id");
+
+
+
+ALTER TABLE ONLY "public"."freight_settings"
+    ADD CONSTRAINT "freight_settings_pkey" PRIMARY KEY ("id");
 
 
 
@@ -94357,6 +95982,11 @@ ALTER TABLE ONLY "public"."magazine_public_view_events_2026_12"
 
 ALTER TABLE ONLY "public"."magazine_public_view_events_2027_01"
     ADD CONSTRAINT "magazine_public_view_events_2027_01_pkey" PRIMARY KEY ("id", "viewed_at");
+
+
+
+ALTER TABLE ONLY "public"."magazine_public_view_events_2027_02"
+    ADD CONSTRAINT "magazine_public_view_events_2027_02_pkey" PRIMARY KEY ("id", "viewed_at");
 
 
 
@@ -94940,6 +96570,11 @@ ALTER TABLE ONLY "public"."product_deactivation_requests"
 
 
 
+ALTER TABLE ONLY "public"."product_endomarketing"
+    ADD CONSTRAINT "product_endomarketing_pkey" PRIMARY KEY ("id");
+
+
+
 ALTER TABLE ONLY "public"."product_faqs"
     ADD CONSTRAINT "product_faqs_pkey" PRIMARY KEY ("id");
 
@@ -95305,6 +96940,16 @@ ALTER TABLE ONLY "public"."quote_approval_tokens"
 
 
 
+ALTER TABLE ONLY "public"."quote_comments"
+    ADD CONSTRAINT "quote_comments_id_quote_id_key" UNIQUE ("id", "quote_id");
+
+
+
+ALTER TABLE ONLY "public"."quote_comments"
+    ADD CONSTRAINT "quote_comments_pkey" PRIMARY KEY ("id");
+
+
+
 ALTER TABLE ONLY "public"."quote_drafts"
     ADD CONSTRAINT "quote_drafts_pkey" PRIMARY KEY ("id");
 
@@ -95520,6 +97165,11 @@ ALTER TABLE ONLY "public"."seo_redirects"
 
 
 
+ALTER TABLE ONLY "public"."shipping_boxes"
+    ADD CONSTRAINT "shipping_boxes_pkey" PRIMARY KEY ("id");
+
+
+
 ALTER TABLE ONLY "public"."simulator_wizard_drafts"
     ADD CONSTRAINT "simulator_wizard_drafts_pkey" PRIMARY KEY ("id");
 
@@ -95587,6 +97237,11 @@ ALTER TABLE ONLY "public"."step_up_tokens"
 
 ALTER TABLE ONLY "public"."stock_daily_summary"
     ADD CONSTRAINT "stock_daily_summary_pkey" PRIMARY KEY ("id");
+
+
+
+ALTER TABLE ONLY "public"."stock_notes"
+    ADD CONSTRAINT "stock_notes_pkey" PRIMARY KEY ("id");
 
 
 
@@ -95705,11 +97360,6 @@ ALTER TABLE ONLY "public"."supplier_products_raw_history"
 
 
 
-ALTER TABLE ONLY "public"."supplier_products_raw_history_p2026_07"
-    ADD CONSTRAINT "supplier_products_raw_history_p2026_07_pkey" PRIMARY KEY ("id", "captured_at");
-
-
-
 ALTER TABLE ONLY "public"."supplier_products_raw_history_p2026_08"
     ADD CONSTRAINT "supplier_products_raw_history_p2026_08_pkey" PRIMARY KEY ("id", "captured_at");
 
@@ -95737,6 +97387,61 @@ ALTER TABLE ONLY "public"."supplier_products_raw_history_p2026_12"
 
 ALTER TABLE ONLY "public"."supplier_products_raw_history_p2027_01"
     ADD CONSTRAINT "supplier_products_raw_history_p2027_01_pkey" PRIMARY KEY ("id", "captured_at");
+
+
+
+ALTER TABLE ONLY "public"."supplier_products_raw_history_p2027_02"
+    ADD CONSTRAINT "supplier_products_raw_history_p2027_02_pkey" PRIMARY KEY ("id", "captured_at");
+
+
+
+ALTER TABLE ONLY "public"."supplier_products_raw_history_p2027_03"
+    ADD CONSTRAINT "supplier_products_raw_history_p2027_03_pkey" PRIMARY KEY ("id", "captured_at");
+
+
+
+ALTER TABLE ONLY "public"."supplier_products_raw_history_p2027_04"
+    ADD CONSTRAINT "supplier_products_raw_history_p2027_04_pkey" PRIMARY KEY ("id", "captured_at");
+
+
+
+ALTER TABLE ONLY "public"."supplier_products_raw_history_p2027_05"
+    ADD CONSTRAINT "supplier_products_raw_history_p2027_05_pkey" PRIMARY KEY ("id", "captured_at");
+
+
+
+ALTER TABLE ONLY "public"."supplier_products_raw_history_p2027_06"
+    ADD CONSTRAINT "supplier_products_raw_history_p2027_06_pkey" PRIMARY KEY ("id", "captured_at");
+
+
+
+ALTER TABLE ONLY "public"."supplier_products_raw_history_p2027_07"
+    ADD CONSTRAINT "supplier_products_raw_history_p2027_07_pkey" PRIMARY KEY ("id", "captured_at");
+
+
+
+ALTER TABLE ONLY "public"."supplier_products_raw_history_p2027_08"
+    ADD CONSTRAINT "supplier_products_raw_history_p2027_08_pkey" PRIMARY KEY ("id", "captured_at");
+
+
+
+ALTER TABLE ONLY "public"."supplier_products_raw_history_p2027_09"
+    ADD CONSTRAINT "supplier_products_raw_history_p2027_09_pkey" PRIMARY KEY ("id", "captured_at");
+
+
+
+ALTER TABLE ONLY "public"."supplier_products_raw_history_p2027_10"
+    ADD CONSTRAINT "supplier_products_raw_history_p2027_10_pkey" PRIMARY KEY ("id", "captured_at");
+
+
+
+ALTER TABLE ONLY "public"."supplier_products_raw_history_p2027_11"
+    ADD CONSTRAINT "supplier_products_raw_history_p2027_11_pkey" PRIMARY KEY ("id", "captured_at");
+
+
+
+ALTER TABLE ONLY "public"."supplier_products_raw_history_p2027_12"
+    ADD CONSTRAINT "supplier_products_raw_history_p2027_12_pkey" PRIMARY KEY ("id", "captured_at");
 
 
 
@@ -95972,6 +97677,11 @@ ALTER TABLE ONLY "public"."product_kit_components"
 
 ALTER TABLE ONLY "public"."product_commemorative_dates"
     ADD CONSTRAINT "uq_product_commemorative_date" UNIQUE ("product_id", "commemorative_date_id");
+
+
+
+ALTER TABLE ONLY "public"."product_endomarketing"
+    ADD CONSTRAINT "uq_product_endomarketing" UNIQUE ("product_id", "theme_id");
 
 
 
@@ -96886,6 +98596,10 @@ CREATE INDEX "idx_crm_callback_events_result_received" ON "public"."crm_callback
 
 
 
+CREATE INDEX "idx_crm_callback_events_type" ON "public"."crm_callback_events" USING "btree" ("event_type");
+
+
+
 CREATE INDEX "idx_cron_watchdog_killed" ON "public"."cron_watchdog_log" USING "btree" ("killed_at" DESC);
 
 
@@ -96954,6 +98668,26 @@ CREATE INDEX "idx_discount_approval_requests_seller_id" ON "public"."discount_ap
 
 
 
+CREATE INDEX "idx_e2e_cleanup_audit_created_at" ON "public"."e2e_cleanup_audit" USING "btree" ("created_at" DESC);
+
+
+
+CREATE INDEX "idx_e2e_cleanup_audit_email" ON "public"."e2e_cleanup_audit" USING "btree" ("email", "created_at" DESC);
+
+
+
+CREATE INDEX "idx_e2e_cleanup_audit_seller_id" ON "public"."e2e_cleanup_audit" USING "btree" ("seller_id", "created_at" DESC) WHERE ("seller_id" IS NOT NULL);
+
+
+
+CREATE INDEX "idx_e2e_cleanup_audit_status" ON "public"."e2e_cleanup_audit" USING "btree" ("status", "created_at" DESC);
+
+
+
+CREATE INDEX "idx_e2e_cleanup_audit_user_id" ON "public"."e2e_cleanup_audit" USING "btree" ("user_id", "created_at" DESC) WHERE ("user_id" IS NOT NULL);
+
+
+
 CREATE INDEX "idx_edge_function_invocations_invoked_by" ON "public"."edge_function_invocations" USING "btree" ("invoked_by");
 
 
@@ -97015,6 +98749,10 @@ CREATE INDEX "idx_fi_user" ON "public"."favorite_items" USING "btree" ("user_id"
 
 
 CREATE INDEX "idx_file_scan_logs_user_id" ON "public"."file_scan_logs" USING "btree" ("user_id");
+
+
+
+CREATE INDEX "idx_fit_expires_at" ON "public"."favorite_items_trash" USING "btree" ("expires_at") WHERE ("expires_at" IS NOT NULL);
 
 
 
@@ -97226,6 +98964,22 @@ CREATE INDEX "idx_kit_padronizacao_material_id" ON "public"."kit_component_padro
 
 
 
+CREATE INDEX "idx_kit_quote_requests_quote_id" ON "public"."kit_quote_requests" USING "btree" ("quote_id");
+
+
+
+CREATE INDEX "idx_kit_quote_requests_user_id" ON "public"."kit_quote_requests" USING "btree" ("user_id");
+
+
+
+CREATE INDEX "idx_kit_save_requests_kit_id" ON "public"."kit_save_requests" USING "btree" ("kit_id");
+
+
+
+CREATE INDEX "idx_kit_save_requests_user_id" ON "public"."kit_save_requests" USING "btree" ("user_id");
+
+
+
 CREATE INDEX "idx_kit_share_tokens_kit_id" ON "public"."kit_share_tokens" USING "btree" ("kit_id");
 
 
@@ -97243,6 +98997,10 @@ CREATE INDEX "idx_login_attempts_email_ip_created" ON "public"."login_attempts" 
 
 
 CREATE INDEX "idx_login_attempts_ip" ON "public"."login_attempts" USING "btree" ("ip_address", "created_at" DESC);
+
+
+
+CREATE INDEX "idx_login_attempts_lower_email_ip_created" ON "public"."login_attempts" USING "btree" ("lower"("email"), "ip_address", "created_at" DESC);
 
 
 
@@ -97734,6 +99492,10 @@ CREATE INDEX "idx_product_deactivation_tokens_request_id" ON "public"."product_d
 
 
 
+CREATE INDEX "idx_product_endomarketing_theme_id" ON "public"."product_endomarketing" USING "btree" ("theme_id");
+
+
+
 CREATE INDEX "idx_product_faqs_category_id" ON "public"."product_faqs" USING "btree" ("category_id");
 
 
@@ -97990,6 +99752,10 @@ CREATE INDEX "idx_product_views_product_id" ON "public"."product_views" USING "b
 
 
 CREATE INDEX "idx_products_active" ON "public"."products" USING "btree" ("is_active") WHERE ("is_active" = true);
+
+
+
+CREATE INDEX "idx_products_active_created_at_desc" ON "public"."products" USING "btree" ("created_at" DESC, "id") WHERE (("is_active" = true) AND ("is_deleted" IS NOT TRUE));
 
 
 
@@ -98387,15 +100153,7 @@ CREATE INDEX "idx_smoke_test_runs_ran_at" ON "public"."smoke_test_runs" USING "b
 
 
 
-CREATE INDEX "idx_snapshots_captured_at" ON "public"."stock_snapshots" USING "btree" ("captured_at" DESC);
-
-
-
-CREATE INDEX "idx_snapshots_product_captured" ON "public"."stock_snapshots" USING "btree" ("product_id", "captured_at" DESC);
-
-
-
-CREATE INDEX "idx_snapshots_vss_captured" ON "public"."stock_snapshots" USING "btree" ("variant_supplier_source_id", "captured_at" DESC);
+CREATE INDEX "idx_snapshots_captured_at" ON "public"."stock_snapshots" USING "btree" ("captured_at");
 
 
 
@@ -98407,11 +100165,35 @@ COMMENT ON INDEX "public"."idx_spr_images_pending" IS 'Fila do worker de imagens
 
 
 
+CREATE INDEX "idx_spr_images_status_pending" ON "public"."supplier_products_raw" USING "btree" ("id") WHERE ("images_status" = 'pending'::"public"."supplier_raw_status");
+
+
+
 CREATE INDEX "idx_spr_import_batch_id" ON "public"."supplier_products_raw" USING "btree" ("import_batch_id");
 
 
 
+CREATE INDEX "idx_spr_site_status_failed" ON "public"."supplier_products_raw" USING "btree" ("id") WHERE ("site_status" = 'failed'::"public"."supplier_raw_status");
+
+
+
+CREATE INDEX "idx_spr_site_status_pending" ON "public"."supplier_products_raw" USING "btree" ("id") WHERE ("site_status" = 'pending'::"public"."supplier_raw_status");
+
+
+
+CREATE INDEX "idx_spr_status_failed_quarantined" ON "public"."supplier_products_raw" USING "btree" ("supplier_id") WHERE ("status" = ANY (ARRAY['failed'::"public"."supplier_raw_status", 'quarantined'::"public"."supplier_raw_status"]));
+
+
+
+CREATE INDEX "idx_spr_status_pending" ON "public"."supplier_products_raw" USING "btree" ("supplier_id") WHERE ("status" = 'pending'::"public"."supplier_raw_status");
+
+
+
 CREATE INDEX "idx_spr_stock_pending" ON "public"."supplier_products_raw" USING "btree" ("supplier_id", "stock_synced_at") WHERE ("stock_status" <> 'processed'::"public"."supplier_raw_status");
+
+
+
+CREATE INDEX "idx_spr_stock_status_pending" ON "public"."supplier_products_raw" USING "btree" ("id") WHERE ("stock_status" = 'pending'::"public"."supplier_raw_status");
 
 
 
@@ -98463,14 +100245,6 @@ CREATE INDEX "idx_sre_variant_date" ON "public"."supplier_replenishment_events" 
 
 
 
-CREATE INDEX "idx_ss_supplier_id" ON "public"."stock_snapshots" USING "btree" ("supplier_id");
-
-
-
-CREATE INDEX "idx_ss_variant_id" ON "public"."stock_snapshots" USING "btree" ("variant_id");
-
-
-
 CREATE INDEX "idx_step_up_challenges_expires" ON "public"."step_up_challenges" USING "btree" ("expires_at") WHERE ("consumed" = false);
 
 
@@ -98483,11 +100257,35 @@ CREATE INDEX "idx_stock_daily_summary_supplier_id" ON "public"."stock_daily_summ
 
 
 
-CREATE INDEX "idx_stock_snapshots_captured_at_br_date" ON "public"."stock_snapshots" USING "btree" (((("captured_at" AT TIME ZONE 'America/Sao_Paulo'::"text"))::"date"), "variant_supplier_source_id") WHERE ("variant_supplier_source_id" IS NOT NULL);
+CREATE INDEX "idx_stock_notes_created_by" ON "public"."stock_notes" USING "btree" ("created_by");
+
+
+
+CREATE INDEX "idx_stock_notes_supplier_id" ON "public"."stock_notes" USING "btree" ("supplier_id");
+
+
+
+CREATE INDEX "idx_stock_snapshots_product_id" ON "public"."stock_snapshots" USING "btree" ("product_id");
 
 
 
 CREATE INDEX "idx_stock_snapshots_supplier_branch_id" ON "public"."stock_snapshots" USING "btree" ("supplier_branch_id");
+
+
+
+CREATE INDEX "idx_stock_snapshots_supplier_id" ON "public"."stock_snapshots" USING "btree" ("supplier_id");
+
+
+
+CREATE INDEX "idx_stock_snapshots_variant_id" ON "public"."stock_snapshots" USING "btree" ("variant_id");
+
+
+
+CREATE INDEX "idx_stock_snapshots_variant_supplier" ON "public"."stock_snapshots" USING "btree" ("variant_id", "supplier_id");
+
+
+
+CREATE INDEX "idx_stock_snapshots_variant_supplier_source_id" ON "public"."stock_snapshots" USING "btree" ("variant_supplier_source_id");
 
 
 
@@ -98589,6 +100387,14 @@ CREATE UNIQUE INDEX "idx_tags_slug_org_unique" ON "public"."tags" USING "btree" 
 
 
 CREATE INDEX "idx_target_audiences_organization_id" ON "public"."target_audiences" USING "btree" ("organization_id");
+
+
+
+CREATE INDEX "idx_token_revocations_expires" ON "public"."user_token_revocations" USING "btree" ("expires_at") WHERE ("expires_at" IS NOT NULL);
+
+
+
+CREATE INDEX "idx_token_revocations_jti" ON "public"."user_token_revocations" USING "btree" ("token_jti") WHERE ("token_jti" IS NOT NULL);
 
 
 
@@ -98732,6 +100538,10 @@ CREATE INDEX "idx_webhook_deliveries_webhook_id" ON "public"."webhook_deliveries
 
 
 
+CREATE INDEX "idx_webhook_delivery_locks_claimed_at" ON "public"."webhook_delivery_locks" USING "btree" ("claimed_at");
+
+
+
 CREATE INDEX "idx_webhook_dispatcher_log_delivery_status" ON "public"."webhook_dispatcher_log" USING "btree" ("delivery_status", "fired_at" DESC);
 
 
@@ -98757,6 +100567,10 @@ CREATE INDEX "idx_webhook_outbox_pending" ON "public"."webhook_outbox" USING "bt
 
 
 CREATE INDEX "idx_webhook_request_nonces_expires_at" ON "public"."webhook_request_nonces" USING "btree" ("expires_at");
+
+
+
+CREATE INDEX "idx_workspace_notifications_category" ON "public"."workspace_notifications" USING "btree" ("category");
 
 
 
@@ -98864,6 +100678,14 @@ CREATE INDEX "magazine_public_view_events_2027_01_token_hash_viewed_at_idx" ON "
 
 
 
+CREATE INDEX "magazine_public_view_events_2027_02_magazine_id_idx" ON "public"."magazine_public_view_events_2027_02" USING "btree" ("magazine_id");
+
+
+
+CREATE INDEX "magazine_public_view_events_2027_02_token_hash_viewed_at_idx" ON "public"."magazine_public_view_events_2027_02" USING "btree" ("token_hash", "viewed_at" DESC);
+
+
+
 CREATE INDEX "magazine_public_view_events_default_magazine_id_idx" ON "public"."magazine_public_view_events_default" USING "btree" ("magazine_id");
 
 
@@ -98916,7 +100738,35 @@ CREATE INDEX "products_main_category_id_idx" ON "public"."products" USING "btree
 
 
 
+CREATE INDEX "quote_comments_parent_quote_idx" ON "public"."quote_comments" USING "btree" ("parent_id", "quote_id") WHERE ("parent_id" IS NOT NULL);
+
+
+
+CREATE INDEX "quote_comments_quote_created_id_idx" ON "public"."quote_comments" USING "btree" ("quote_id", "created_at", "id");
+
+
+
+CREATE INDEX "quote_comments_user_id_idx" ON "public"."quote_comments" USING "btree" ("user_id");
+
+
+
+CREATE INDEX "shipping_boxes_active_sort_idx" ON "public"."shipping_boxes" USING "btree" ("sort_order", "code") WHERE (("deleted_at" IS NULL) AND ("is_active" = true));
+
+
+
+CREATE UNIQUE INDEX "shipping_boxes_code_unique_active" ON "public"."shipping_boxes" USING "btree" ("code") WHERE ("deleted_at" IS NULL);
+
+
+
 CREATE INDEX "sm_category_pages_status_idx" ON "public"."sm_category_pages" USING "btree" ("status");
+
+
+
+CREATE INDEX "stock_notes_active_idx" ON "public"."stock_notes" USING "btree" ("variant_id") WHERE ("deleted_at" IS NULL);
+
+
+
+CREATE INDEX "stock_notes_variant_idx" ON "public"."stock_notes" USING "btree" ("variant_id");
 
 
 
@@ -99037,6 +100887,10 @@ COMMENT ON INDEX "public"."uq_spr_source_event" IS 'Idempotencia na origem: impe
 
 
 CREATE UNIQUE INDEX "uq_tecnicas_gravacao_id" ON "public"."tecnicas_gravacao" USING "btree" ("id");
+
+
+
+CREATE UNIQUE INDEX "uq_workspace_notifications_idempotency" ON "public"."workspace_notifications" USING "btree" ("idempotency_key");
 
 
 
@@ -99256,6 +101110,18 @@ ALTER INDEX "public"."idx_mag_view_events_token_hash" ATTACH PARTITION "public".
 
 
 
+ALTER INDEX "public"."idx_magazine_pub_view_events_magazine_id" ATTACH PARTITION "public"."magazine_public_view_events_2027_02_magazine_id_idx";
+
+
+
+ALTER INDEX "public"."magazine_public_view_events_pkey" ATTACH PARTITION "public"."magazine_public_view_events_2027_02_pkey";
+
+
+
+ALTER INDEX "public"."idx_mag_view_events_token_hash" ATTACH PARTITION "public"."magazine_public_view_events_2027_02_token_hash_viewed_at_idx";
+
+
+
 ALTER INDEX "public"."idx_magazine_pub_view_events_magazine_id" ATTACH PARTITION "public"."magazine_public_view_events_default_magazine_id_idx";
 
 
@@ -99265,10 +101131,6 @@ ALTER INDEX "public"."magazine_public_view_events_pkey" ATTACH PARTITION "public
 
 
 ALTER INDEX "public"."idx_mag_view_events_token_hash" ATTACH PARTITION "public"."magazine_public_view_events_default_token_hash_viewed_at_idx";
-
-
-
-ALTER INDEX "public"."supplier_products_raw_history_pkey1" ATTACH PARTITION "public"."supplier_products_raw_history_p2026_07_pkey";
 
 
 
@@ -99293,6 +101155,50 @@ ALTER INDEX "public"."supplier_products_raw_history_pkey1" ATTACH PARTITION "pub
 
 
 ALTER INDEX "public"."supplier_products_raw_history_pkey1" ATTACH PARTITION "public"."supplier_products_raw_history_p2027_01_pkey";
+
+
+
+ALTER INDEX "public"."supplier_products_raw_history_pkey1" ATTACH PARTITION "public"."supplier_products_raw_history_p2027_02_pkey";
+
+
+
+ALTER INDEX "public"."supplier_products_raw_history_pkey1" ATTACH PARTITION "public"."supplier_products_raw_history_p2027_03_pkey";
+
+
+
+ALTER INDEX "public"."supplier_products_raw_history_pkey1" ATTACH PARTITION "public"."supplier_products_raw_history_p2027_04_pkey";
+
+
+
+ALTER INDEX "public"."supplier_products_raw_history_pkey1" ATTACH PARTITION "public"."supplier_products_raw_history_p2027_05_pkey";
+
+
+
+ALTER INDEX "public"."supplier_products_raw_history_pkey1" ATTACH PARTITION "public"."supplier_products_raw_history_p2027_06_pkey";
+
+
+
+ALTER INDEX "public"."supplier_products_raw_history_pkey1" ATTACH PARTITION "public"."supplier_products_raw_history_p2027_07_pkey";
+
+
+
+ALTER INDEX "public"."supplier_products_raw_history_pkey1" ATTACH PARTITION "public"."supplier_products_raw_history_p2027_08_pkey";
+
+
+
+ALTER INDEX "public"."supplier_products_raw_history_pkey1" ATTACH PARTITION "public"."supplier_products_raw_history_p2027_09_pkey";
+
+
+
+ALTER INDEX "public"."supplier_products_raw_history_pkey1" ATTACH PARTITION "public"."supplier_products_raw_history_p2027_10_pkey";
+
+
+
+ALTER INDEX "public"."supplier_products_raw_history_pkey1" ATTACH PARTITION "public"."supplier_products_raw_history_p2027_11_pkey";
+
+
+
+ALTER INDEX "public"."supplier_products_raw_history_pkey1" ATTACH PARTITION "public"."supplier_products_raw_history_p2027_12_pkey";
 
 
 
@@ -99394,6 +101300,14 @@ CREATE OR REPLACE TRIGGER "enforce_seller_cart_limit" BEFORE INSERT ON "public".
 
 
 
+CREATE OR REPLACE TRIGGER "guard_freight_settings_row" BEFORE UPDATE ON "public"."freight_settings" FOR EACH ROW EXECUTE FUNCTION "public"."guard_freight_settings_row"();
+
+
+
+CREATE OR REPLACE TRIGGER "guard_shipping_boxes_row" BEFORE INSERT OR UPDATE ON "public"."shipping_boxes" FOR EACH ROW EXECUTE FUNCTION "public"."guard_shipping_boxes_row"();
+
+
+
 CREATE OR REPLACE TRIGGER "handle_updated_at" BEFORE UPDATE ON "public"."attribute_definitions" FOR EACH ROW EXECUTE FUNCTION "extensions"."moddatetime"('updated_at');
 
 
@@ -99422,11 +101336,19 @@ CREATE OR REPLACE TRIGGER "product_materials_updated_at" BEFORE UPDATE ON "publi
 
 
 
+CREATE OR REPLACE TRIGGER "quote_comments_enforce_mutation" BEFORE INSERT OR UPDATE ON "public"."quote_comments" FOR EACH ROW EXECUTE FUNCTION "public"."enforce_quote_comment_mutation"();
+
+
+
 CREATE OR REPLACE TRIGGER "set_audit_fields_material_groups" BEFORE INSERT OR UPDATE ON "public"."material_groups" FOR EACH ROW EXECUTE FUNCTION "public"."set_audit_user_fields"();
 
 
 
 CREATE OR REPLACE TRIGGER "set_audit_fields_product_materials" BEFORE INSERT OR UPDATE ON "public"."product_materials" FOR EACH ROW EXECUTE FUNCTION "public"."set_audit_user_fields"();
+
+
+
+CREATE OR REPLACE TRIGGER "set_freight_settings_updated_at" BEFORE UPDATE ON "public"."freight_settings" FOR EACH ROW EXECUTE FUNCTION "public"."update_updated_at_column"();
 
 
 
@@ -99443,6 +101365,14 @@ CREATE OR REPLACE TRIGGER "set_magic_up_public_shares_updated_at" BEFORE UPDATE 
 
 
 CREATE OR REPLACE TRIGGER "set_quote_number" BEFORE INSERT ON "public"."quotes" FOR EACH ROW WHEN ((("new"."quote_number" IS NULL) OR ("new"."quote_number" = ''::"text"))) EXECUTE FUNCTION "public"."generate_quote_number"();
+
+
+
+CREATE OR REPLACE TRIGGER "set_shipping_boxes_updated_at" BEFORE UPDATE ON "public"."shipping_boxes" FOR EACH ROW EXECUTE FUNCTION "public"."update_updated_at_column"();
+
+
+
+CREATE OR REPLACE TRIGGER "set_stock_notes_updated_at" BEFORE UPDATE ON "public"."stock_notes" FOR EACH ROW EXECUTE FUNCTION "public"."handle_updated_at"();
 
 
 
@@ -99502,6 +101432,10 @@ CREATE OR REPLACE TRIGGER "set_updated_at_trigger" BEFORE UPDATE ON "public"."cu
 
 
 
+CREATE OR REPLACE TRIGGER "set_updated_at_trigger" BEFORE UPDATE ON "public"."endomarketing_themes" FOR EACH ROW EXECUTE FUNCTION "public"."set_updated_at"();
+
+
+
 CREATE OR REPLACE TRIGGER "set_updated_at_trigger" BEFORE UPDATE ON "public"."included_packaging_print_areas" FOR EACH ROW EXECUTE FUNCTION "public"."set_updated_at"();
 
 
@@ -99547,6 +101481,10 @@ CREATE OR REPLACE TRIGGER "set_updated_at_trigger" BEFORE UPDATE ON "public"."pa
 
 
 CREATE OR REPLACE TRIGGER "set_updated_at_trigger" BEFORE UPDATE ON "public"."print_area_techniques" FOR EACH ROW EXECUTE FUNCTION "public"."set_updated_at"();
+
+
+
+CREATE OR REPLACE TRIGGER "set_updated_at_trigger" BEFORE UPDATE ON "public"."product_endomarketing" FOR EACH ROW EXECUTE FUNCTION "public"."set_updated_at"();
 
 
 
@@ -99738,6 +101676,10 @@ CREATE OR REPLACE TRIGGER "trg_anon_rate_guard" BEFORE INSERT ON "public"."front
 
 
 
+CREATE OR REPLACE TRIGGER "trg_anon_rate_guard" BEFORE INSERT ON "public"."kill_switch_hits" FOR EACH ROW EXECUTE FUNCTION "public"."fn_anon_insert_rate_guard"('120');
+
+
+
 CREATE OR REPLACE TRIGGER "trg_anon_rate_guard" BEFORE INSERT ON "public"."password_reset_requests" FOR EACH ROW EXECUTE FUNCTION "public"."fn_anon_insert_rate_guard"('10');
 
 
@@ -99787,6 +101729,10 @@ CREATE OR REPLACE TRIGGER "trg_audit_seller_carts" AFTER INSERT OR DELETE OR UPD
 
 
 CREATE OR REPLACE TRIGGER "trg_audit_suppliers" AFTER INSERT OR DELETE OR UPDATE ON "public"."suppliers" FOR EACH ROW EXECUTE FUNCTION "public"."fn_audit_row_change"();
+
+
+
+CREATE OR REPLACE TRIGGER "trg_auto_assign_org" AFTER INSERT ON "public"."profiles" FOR EACH ROW EXECUTE FUNCTION "public"."fn_auto_assign_org_on_profile"();
 
 
 
@@ -101462,6 +103408,11 @@ ALTER TABLE ONLY "public"."content_articles"
 
 
 
+ALTER TABLE ONLY "public"."crm_seller_identity_links"
+    ADD CONSTRAINT "crm_seller_identity_links_auth_user_id_fkey" FOREIGN KEY ("auth_user_id") REFERENCES "auth"."users"("id") ON DELETE CASCADE;
+
+
+
 ALTER TABLE ONLY "public"."custom_kits"
     ADD CONSTRAINT "custom_kits_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "auth"."users"("id") ON DELETE CASCADE;
 
@@ -101619,6 +103570,11 @@ ALTER TABLE ONLY "public"."product_views"
 
 ALTER TABLE ONLY "public"."webhook_delivery_locks"
     ADD CONSTRAINT "fk_webhook_delivery_locks_webhook" FOREIGN KEY ("webhook_id") REFERENCES "public"."outbound_webhooks"("id") ON DELETE CASCADE;
+
+
+
+ALTER TABLE ONLY "public"."freight_settings"
+    ADD CONSTRAINT "freight_settings_updated_by_fkey" FOREIGN KEY ("updated_by") REFERENCES "auth"."users"("id") ON DELETE SET NULL;
 
 
 
@@ -102252,6 +104208,16 @@ ALTER TABLE ONLY "public"."product_deactivation_requests"
 
 
 
+ALTER TABLE ONLY "public"."product_endomarketing"
+    ADD CONSTRAINT "product_endomarketing_product_id_fkey" FOREIGN KEY ("product_id") REFERENCES "public"."products"("id") ON DELETE CASCADE;
+
+
+
+ALTER TABLE ONLY "public"."product_endomarketing"
+    ADD CONSTRAINT "product_endomarketing_theme_id_fkey" FOREIGN KEY ("theme_id") REFERENCES "public"."endomarketing_themes"("id") ON DELETE CASCADE;
+
+
+
 ALTER TABLE ONLY "public"."product_faqs"
     ADD CONSTRAINT "product_faqs_category_id_fkey" FOREIGN KEY ("category_id") REFERENCES "public"."categories"("id") ON DELETE CASCADE;
 
@@ -102702,6 +104668,21 @@ ALTER TABLE ONLY "public"."quote_approval_tokens"
 
 
 
+ALTER TABLE ONLY "public"."quote_comments"
+    ADD CONSTRAINT "quote_comments_parent_quote_fkey" FOREIGN KEY ("parent_id", "quote_id") REFERENCES "public"."quote_comments"("id", "quote_id") ON DELETE RESTRICT;
+
+
+
+ALTER TABLE ONLY "public"."quote_comments"
+    ADD CONSTRAINT "quote_comments_quote_id_fkey" FOREIGN KEY ("quote_id") REFERENCES "public"."quotes"("id") ON DELETE CASCADE;
+
+
+
+ALTER TABLE ONLY "public"."quote_comments"
+    ADD CONSTRAINT "quote_comments_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "auth"."users"("id") ON DELETE RESTRICT;
+
+
+
 ALTER TABLE ONLY "public"."quote_history"
     ADD CONSTRAINT "quote_history_quote_id_fkey" FOREIGN KEY ("quote_id") REFERENCES "public"."quotes"("id") ON DELETE CASCADE;
 
@@ -102849,6 +104830,21 @@ ALTER TABLE ONLY "public"."stock_daily_summary"
 
 ALTER TABLE ONLY "public"."stock_daily_summary"
     ADD CONSTRAINT "stock_daily_summary_variant_supplier_source_id_fkey" FOREIGN KEY ("variant_supplier_source_id") REFERENCES "public"."variant_supplier_sources"("id") ON DELETE CASCADE;
+
+
+
+ALTER TABLE ONLY "public"."stock_notes"
+    ADD CONSTRAINT "stock_notes_created_by_fkey" FOREIGN KEY ("created_by") REFERENCES "auth"."users"("id") ON DELETE CASCADE;
+
+
+
+ALTER TABLE ONLY "public"."stock_notes"
+    ADD CONSTRAINT "stock_notes_supplier_id_fkey" FOREIGN KEY ("supplier_id") REFERENCES "public"."suppliers"("id") ON DELETE SET NULL;
+
+
+
+ALTER TABLE ONLY "public"."stock_notes"
+    ADD CONSTRAINT "stock_notes_variant_id_fkey" FOREIGN KEY ("variant_id") REFERENCES "public"."product_variants"("id") ON DELETE CASCADE;
 
 
 
@@ -103475,7 +105471,7 @@ COMMENT ON POLICY "Anyone can view variant commemorative dates" ON "public"."var
 
 
 
-CREATE POLICY "Authenticated can insert notifications for valid users" ON "public"."workspace_notifications" FOR INSERT TO "authenticated" WITH CHECK (((( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid") IS NOT NULL) AND ("user_id" IS NOT NULL)));
+CREATE POLICY "Authenticated can insert own notifications" ON "public"."workspace_notifications" FOR INSERT TO "authenticated" WITH CHECK (("user_id" = ( SELECT "auth"."uid"() AS "uid")));
 
 
 
@@ -103519,11 +105515,11 @@ CREATE POLICY "Authenticated view component locations" ON "public"."product_comp
 
 
 
-CREATE POLICY "Author can delete own comment" ON "public"."kit_comments" FOR DELETE USING ((("author_id" = ( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid")) OR "public"."is_admin"(( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid"))));
+CREATE POLICY "Author can delete own comment" ON "public"."kit_comments" FOR DELETE TO "authenticated" USING ((("author_id" = ( SELECT "auth"."uid"() AS "uid")) OR "public"."is_admin"(( SELECT "auth"."uid"() AS "uid"))));
 
 
 
-CREATE POLICY "Author can edit own comment" ON "public"."kit_comments" FOR UPDATE USING ((("author_id" = ( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid")) OR "public"."is_admin"(( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid")))) WITH CHECK ((("author_id" = ( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid")) OR "public"."is_admin"(( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid"))));
+CREATE POLICY "Author can edit own comment" ON "public"."kit_comments" FOR UPDATE TO "authenticated" USING ((("author_id" = ( SELECT "auth"."uid"() AS "uid")) OR "public"."is_admin"(( SELECT "auth"."uid"() AS "uid")))) WITH CHECK ((("author_id" = ( SELECT "auth"."uid"() AS "uid")) OR "public"."is_admin"(( SELECT "auth"."uid"() AS "uid"))));
 
 
 
@@ -103633,45 +105629,45 @@ CREATE POLICY "No direct update via JWT" ON "public"."mcp_api_keys" FOR UPDATE T
 
 
 
-CREATE POLICY "Owner can delete variants" ON "public"."kit_variants" FOR DELETE USING ((EXISTS ( SELECT 1
+CREATE POLICY "Owner can delete variants" ON "public"."kit_variants" FOR DELETE TO "authenticated" USING ((EXISTS ( SELECT 1
    FROM "public"."custom_kits" "k"
-  WHERE (("k"."id" = "kit_variants"."kit_master_id") AND ("k"."user_id" = ( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid"))))));
+  WHERE (("k"."id" = "kit_variants"."kit_master_id") AND ("k"."user_id" = ( SELECT "auth"."uid"() AS "uid"))))));
 
 
 
-CREATE POLICY "Owner can insert variants" ON "public"."kit_variants" FOR INSERT WITH CHECK ((EXISTS ( SELECT 1
+CREATE POLICY "Owner can insert variants" ON "public"."kit_variants" FOR INSERT TO "authenticated" WITH CHECK ((EXISTS ( SELECT 1
    FROM "public"."custom_kits" "k"
-  WHERE (("k"."id" = "kit_variants"."kit_master_id") AND ("k"."user_id" = ( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid"))))));
+  WHERE (("k"."id" = "kit_variants"."kit_master_id") AND ("k"."user_id" = ( SELECT "auth"."uid"() AS "uid"))))));
 
 
 
-CREATE POLICY "Owner can invite collaborators" ON "public"."kit_collaborators" FOR INSERT WITH CHECK ("public"."is_kit_owner"("kit_id", ( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid")));
+CREATE POLICY "Owner can invite collaborators" ON "public"."kit_collaborators" FOR INSERT TO "authenticated" WITH CHECK ("public"."is_kit_owner"("kit_id", ( SELECT "auth"."uid"() AS "uid")));
 
 
 
-CREATE POLICY "Owner can remove collaborators" ON "public"."kit_collaborators" FOR DELETE USING ("public"."is_kit_owner"("kit_id", ( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid")));
+CREATE POLICY "Owner can remove collaborators" ON "public"."kit_collaborators" FOR DELETE TO "authenticated" USING ("public"."is_kit_owner"("kit_id", ( SELECT "auth"."uid"() AS "uid")));
 
 
 
-CREATE POLICY "Owner can update collaborators" ON "public"."kit_collaborators" FOR UPDATE USING ("public"."is_kit_owner"("kit_id", ( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid"))) WITH CHECK ("public"."is_kit_owner"("kit_id", ( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid")));
+CREATE POLICY "Owner can update collaborators" ON "public"."kit_collaborators" FOR UPDATE TO "authenticated" USING ("public"."is_kit_owner"("kit_id", ( SELECT "auth"."uid"() AS "uid")));
 
 
 
-CREATE POLICY "Owner can update variants" ON "public"."kit_variants" FOR UPDATE USING ((EXISTS ( SELECT 1
+CREATE POLICY "Owner can update variants" ON "public"."kit_variants" FOR UPDATE TO "authenticated" USING ((EXISTS ( SELECT 1
    FROM "public"."custom_kits" "k"
-  WHERE (("k"."id" = "kit_variants"."kit_master_id") AND ("k"."user_id" = ( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid")))))) WITH CHECK ((EXISTS ( SELECT 1
+  WHERE (("k"."id" = "kit_variants"."kit_master_id") AND ("k"."user_id" = ( SELECT "auth"."uid"() AS "uid")))))) WITH CHECK ((EXISTS ( SELECT 1
    FROM "public"."custom_kits" "k"
-  WHERE (("k"."id" = "kit_variants"."kit_master_id") AND ("k"."user_id" = ( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid"))))));
+  WHERE (("k"."id" = "kit_variants"."kit_master_id") AND ("k"."user_id" = ( SELECT "auth"."uid"() AS "uid"))))));
 
 
 
-CREATE POLICY "Owner can view variants" ON "public"."kit_variants" FOR SELECT USING (((EXISTS ( SELECT 1
+CREATE POLICY "Owner can view variants" ON "public"."kit_variants" FOR SELECT TO "authenticated" USING (((EXISTS ( SELECT 1
    FROM "public"."custom_kits" "k"
-  WHERE (("k"."id" = "kit_variants"."kit_master_id") AND ("k"."user_id" = ( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid"))))) OR "public"."is_admin"(( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid"))));
+  WHERE (("k"."id" = "kit_variants"."kit_master_id") AND ("k"."user_id" = ( SELECT "auth"."uid"() AS "uid"))))) OR "public"."is_admin"(( SELECT "auth"."uid"() AS "uid"))));
 
 
 
-CREATE POLICY "Owner or collab can comment" ON "public"."kit_comments" FOR INSERT WITH CHECK ((("author_id" = ( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid")) AND ("public"."is_kit_owner"("kit_id", ( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid")) OR "public"."is_kit_collaborator"("kit_id", ( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid")))));
+CREATE POLICY "Owner or collab can comment" ON "public"."kit_comments" FOR INSERT TO "authenticated" WITH CHECK ((("author_id" = ( SELECT "auth"."uid"() AS "uid")) AND ("public"."is_kit_owner"("kit_id", ( SELECT "auth"."uid"() AS "uid")) OR "public"."is_kit_collaborator"("kit_id", ( SELECT "auth"."uid"() AS "uid")))));
 
 
 
@@ -103823,7 +105819,7 @@ CREATE POLICY "Users can delete their own cached insights" ON "public"."dashboar
 
 
 
-CREATE POLICY "Users can delete their own recently viewed products" ON "public"."recently_viewed_products" FOR DELETE USING ((( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid") = "user_id"));
+CREATE POLICY "Users can delete their own recently viewed products" ON "public"."recently_viewed_products" FOR DELETE TO "authenticated" USING ((( SELECT "auth"."uid"() AS "uid") = "user_id"));
 
 
 
@@ -103847,7 +105843,7 @@ CREATE POLICY "Users can insert their own cached insights" ON "public"."dashboar
 
 
 
-CREATE POLICY "Users can insert their own recently viewed products" ON "public"."recently_viewed_products" FOR INSERT WITH CHECK ((( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid") = "user_id"));
+CREATE POLICY "Users can insert their own recently viewed products" ON "public"."recently_viewed_products" FOR INSERT TO "authenticated" WITH CHECK ((( SELECT "auth"."uid"() AS "uid") = "user_id"));
 
 
 
@@ -103955,7 +105951,7 @@ CREATE POLICY "Users can update their own cached insights" ON "public"."dashboar
 
 
 
-CREATE POLICY "Users can update their own recently viewed products" ON "public"."recently_viewed_products" FOR UPDATE USING ((( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid") = "user_id")) WITH CHECK ((( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid") = "user_id"));
+CREATE POLICY "Users can update their own recently viewed products" ON "public"."recently_viewed_products" FOR UPDATE TO "authenticated" USING ((( SELECT "auth"."uid"() AS "uid") = "user_id")) WITH CHECK ((( SELECT "auth"."uid"() AS "uid") = "user_id"));
 
 
 
@@ -104023,7 +106019,7 @@ CREATE POLICY "Users can view their own cached insights" ON "public"."dashboard_
 
 
 
-CREATE POLICY "Users can view their own recently viewed products" ON "public"."recently_viewed_products" FOR SELECT USING ((( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid") = "user_id"));
+CREATE POLICY "Users can view their own recently viewed products" ON "public"."recently_viewed_products" FOR SELECT TO "authenticated" USING ((( SELECT "auth"."uid"() AS "uid") = "user_id"));
 
 
 
@@ -104031,7 +106027,7 @@ CREATE POLICY "Users can view their own usage events" ON "public"."ai_usage_even
 
 
 
-CREATE POLICY "Users delete own art files" ON "public"."art_file_attachments" FOR DELETE USING ((( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid") = "user_id"));
+CREATE POLICY "Users delete own art files" ON "public"."art_file_attachments" FOR DELETE TO "authenticated" USING (("user_id" = ( SELECT "auth"."uid"() AS "uid")));
 
 
 
@@ -104039,7 +106035,7 @@ CREATE POLICY "Users delete own collection trash" ON "public"."collection_items_
 
 
 
-CREATE POLICY "Users insert own art files" ON "public"."art_file_attachments" FOR INSERT WITH CHECK ((( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid") = "user_id"));
+CREATE POLICY "Users insert own art files" ON "public"."art_file_attachments" FOR INSERT TO "authenticated" WITH CHECK (("user_id" = ( SELECT "auth"."uid"() AS "uid")));
 
 
 
@@ -104070,7 +106066,7 @@ CREATE POLICY "Users read own roles" ON "public"."user_roles" FOR SELECT TO "aut
 
 
 
-CREATE POLICY "Users update own art files" ON "public"."art_file_attachments" FOR UPDATE USING ((( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid") = "user_id")) WITH CHECK ((( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid") = "user_id"));
+CREATE POLICY "Users update own art files" ON "public"."art_file_attachments" FOR UPDATE TO "authenticated" USING (("user_id" = ( SELECT "auth"."uid"() AS "uid"))) WITH CHECK (("user_id" = ( SELECT "auth"."uid"() AS "uid")));
 
 
 
@@ -104078,7 +106074,7 @@ CREATE POLICY "Users update own preferences" ON "public"."user_preferences" FOR 
 
 
 
-CREATE POLICY "Users view own art files" ON "public"."art_file_attachments" FOR SELECT USING ((( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid") = "user_id"));
+CREATE POLICY "Users view own art files" ON "public"."art_file_attachments" FOR SELECT TO "authenticated" USING (("user_id" = ( SELECT "auth"."uid"() AS "uid")));
 
 
 
@@ -104098,11 +106094,11 @@ CREATE POLICY "Usuários podem ver seus próprios logs de conversa" ON "public".
 
 
 
-CREATE POLICY "View collaborators if owner or self" ON "public"."kit_collaborators" FOR SELECT USING (("public"."is_kit_owner"("kit_id", ( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid")) OR ("user_id" = ( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid")) OR "public"."is_admin"(( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid"))));
+CREATE POLICY "View collaborators if owner or self" ON "public"."kit_collaborators" FOR SELECT TO "authenticated" USING (("public"."is_kit_owner"("kit_id", ( SELECT "auth"."uid"() AS "uid")) OR ("user_id" = "auth"."uid"())));
 
 
 
-CREATE POLICY "View comments if owner/collab/admin" ON "public"."kit_comments" FOR SELECT USING (("public"."is_kit_owner"("kit_id", ( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid")) OR "public"."is_kit_collaborator"("kit_id", ( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid")) OR "public"."is_admin"(( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid"))));
+CREATE POLICY "View comments if owner/collab/admin" ON "public"."kit_comments" FOR SELECT TO "authenticated" USING (("public"."is_kit_owner"("kit_id", ( SELECT "auth"."uid"() AS "uid")) OR "public"."is_kit_collaborator"("kit_id", ( SELECT "auth"."uid"() AS "uid")) OR "public"."is_admin"(( SELECT "auth"."uid"() AS "uid"))));
 
 
 
@@ -104113,9 +106109,6 @@ ALTER TABLE "public"."_archive_product_seo_20260626" ENABLE ROW LEVEL SECURITY;
 
 
 ALTER TABLE "public"."_archive_supplier_price_tiers_20260626" ENABLE ROW LEVEL SECURITY;
-
-
-ALTER TABLE "public"."_backup_stock_daily_summary_20260618" ENABLE ROW LEVEL SECURITY;
 
 
 ALTER TABLE "public"."_bkp_kcvs_pre_normalize_20260624" ENABLE ROW LEVEL SECURITY;
@@ -104279,6 +106272,10 @@ CREATE POLICY "admin_read_xbz_gallery_staging" ON "public"."xbz_gallery_staging"
 ALTER TABLE "public"."admin_settings" ENABLE ROW LEVEL SECURITY;
 
 
+CREATE POLICY "admins_select_e2e_cleanup_audit" ON "public"."e2e_cleanup_audit" FOR SELECT TO "authenticated" USING ("public"."has_role"(( SELECT "auth"."uid"() AS "uid"), 'admin'::"public"."app_role"));
+
+
+
 CREATE POLICY "ae_delete_dev" ON "public"."analytics_events" FOR DELETE TO "authenticated" USING ("public"."is_dev"(( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid")));
 
 
@@ -104353,19 +106350,19 @@ CREATE POLICY "ai_usage_logs_user_own" ON "public"."ai_usage_logs" FOR SELECT US
 ALTER TABLE "public"."ai_usage_quotas" ENABLE ROW LEVEL SECURITY;
 
 
-CREATE POLICY "ai_usage_quotas_admin_delete" ON "public"."ai_usage_quotas" FOR DELETE USING (("public"."is_dev"() OR "public"."has_role"(( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid"), 'admin'::"public"."app_role")));
+CREATE POLICY "ai_usage_quotas_admin_delete" ON "public"."ai_usage_quotas" FOR DELETE TO "authenticated" USING (("public"."is_dev"() OR "public"."has_role"(( SELECT "auth"."uid"() AS "uid"), 'admin'::"public"."app_role")));
 
 
 
-CREATE POLICY "ai_usage_quotas_admin_insert" ON "public"."ai_usage_quotas" FOR INSERT WITH CHECK (("public"."is_dev"() OR "public"."has_role"(( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid"), 'admin'::"public"."app_role")));
+CREATE POLICY "ai_usage_quotas_admin_insert" ON "public"."ai_usage_quotas" FOR INSERT TO "authenticated" WITH CHECK (("public"."is_dev"() OR "public"."has_role"(( SELECT "auth"."uid"() AS "uid"), 'admin'::"public"."app_role")));
 
 
 
-CREATE POLICY "ai_usage_quotas_admin_update" ON "public"."ai_usage_quotas" FOR UPDATE USING (("public"."is_dev"() OR "public"."has_role"(( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid"), 'admin'::"public"."app_role"))) WITH CHECK (("public"."is_dev"() OR "public"."has_role"(( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid"), 'admin'::"public"."app_role")));
+CREATE POLICY "ai_usage_quotas_admin_update" ON "public"."ai_usage_quotas" FOR UPDATE TO "authenticated" USING (("public"."is_dev"() OR "public"."has_role"(( SELECT "auth"."uid"() AS "uid"), 'admin'::"public"."app_role"))) WITH CHECK (("public"."is_dev"() OR "public"."has_role"(( SELECT "auth"."uid"() AS "uid"), 'admin'::"public"."app_role")));
 
 
 
-CREATE POLICY "ai_usage_quotas_read_authenticated" ON "public"."ai_usage_quotas" FOR SELECT USING ((( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid") IS NOT NULL));
+CREATE POLICY "ai_usage_quotas_read_authenticated" ON "public"."ai_usage_quotas" FOR SELECT TO "authenticated" USING ((( SELECT "auth"."uid"() AS "uid") IS NOT NULL));
 
 
 
@@ -104731,19 +106728,19 @@ ALTER TABLE "public"."b2b_collection_products" ENABLE ROW LEVEL SECURITY;
 ALTER TABLE "public"."b2b_collections" ENABLE ROW LEVEL SECURITY;
 
 
-CREATE POLICY "b2b_collections_delete" ON "public"."b2b_collections" FOR DELETE USING ("public"."is_org_owner_or_admin"("organization_id"));
+CREATE POLICY "b2b_collections_delete" ON "public"."b2b_collections" FOR DELETE TO "authenticated" USING ("public"."is_org_owner_or_admin"("organization_id"));
 
 
 
-CREATE POLICY "b2b_collections_insert" ON "public"."b2b_collections" FOR INSERT WITH CHECK ("public"."is_org_owner_or_admin"("organization_id"));
+CREATE POLICY "b2b_collections_insert" ON "public"."b2b_collections" FOR INSERT TO "authenticated" WITH CHECK ("public"."is_org_owner_or_admin"("organization_id"));
 
 
 
-CREATE POLICY "b2b_collections_select" ON "public"."b2b_collections" FOR SELECT USING ("public"."user_is_org_member"("organization_id"));
+CREATE POLICY "b2b_collections_select" ON "public"."b2b_collections" FOR SELECT TO "authenticated" USING ("public"."user_is_org_member"("organization_id"));
 
 
 
-CREATE POLICY "b2b_collections_update" ON "public"."b2b_collections" FOR UPDATE USING ("public"."is_org_owner_or_admin"("organization_id")) WITH CHECK ("public"."is_org_owner_or_admin"("organization_id"));
+CREATE POLICY "b2b_collections_update" ON "public"."b2b_collections" FOR UPDATE TO "authenticated" USING ("public"."is_org_owner_or_admin"("organization_id")) WITH CHECK ("public"."is_org_owner_or_admin"("organization_id"));
 
 
 
@@ -104752,10 +106749,6 @@ CREATE POLICY "backfill_queue_admin_all" ON "public"."image_backfill_queue" TO "
 
 
 ALTER TABLE "public"."backup_produto_ramo_atividade_20260625" ENABLE ROW LEVEL SECURITY;
-
-
-CREATE POLICY "backup_stock_service_only" ON "public"."_backup_stock_daily_summary_20260618" TO "service_role" USING (true) WITH CHECK (true);
-
 
 
 ALTER TABLE "public"."binding_colors" ENABLE ROW LEVEL SECURITY;
@@ -105071,7 +107064,7 @@ ALTER TABLE "public"."collection_items_trash" ENABLE ROW LEVEL SECURITY;
 ALTER TABLE "public"."collection_products" ENABLE ROW LEVEL SECURITY;
 
 
-CREATE POLICY "collection_products_delete" ON "public"."b2b_collection_products" FOR DELETE USING ((EXISTS ( SELECT 1
+CREATE POLICY "collection_products_delete" ON "public"."b2b_collection_products" FOR DELETE TO "authenticated" USING ((EXISTS ( SELECT 1
    FROM "public"."b2b_collections" "c"
   WHERE (("c"."id" = "b2b_collection_products"."b2b_collection_id") AND "public"."is_org_owner_or_admin"("c"."organization_id")))));
 
@@ -105083,7 +107076,7 @@ CREATE POLICY "collection_products_delete" ON "public"."collection_products" FOR
 
 
 
-CREATE POLICY "collection_products_insert" ON "public"."b2b_collection_products" FOR INSERT WITH CHECK ((EXISTS ( SELECT 1
+CREATE POLICY "collection_products_insert" ON "public"."b2b_collection_products" FOR INSERT TO "authenticated" WITH CHECK ((EXISTS ( SELECT 1
    FROM "public"."b2b_collections" "c"
   WHERE (("c"."id" = "b2b_collection_products"."b2b_collection_id") AND "public"."is_org_owner_or_admin"("c"."organization_id")))));
 
@@ -105095,7 +107088,7 @@ CREATE POLICY "collection_products_insert" ON "public"."collection_products" FOR
 
 
 
-CREATE POLICY "collection_products_select" ON "public"."b2b_collection_products" FOR SELECT USING ((EXISTS ( SELECT 1
+CREATE POLICY "collection_products_select" ON "public"."b2b_collection_products" FOR SELECT TO "authenticated" USING ((EXISTS ( SELECT 1
    FROM "public"."b2b_collections" "c"
   WHERE (("c"."id" = "b2b_collection_products"."b2b_collection_id") AND "public"."user_is_org_member"("c"."organization_id")))));
 
@@ -105107,7 +107100,7 @@ CREATE POLICY "collection_products_select" ON "public"."collection_products" FOR
 
 
 
-CREATE POLICY "collection_products_update" ON "public"."b2b_collection_products" FOR UPDATE USING ((EXISTS ( SELECT 1
+CREATE POLICY "collection_products_update" ON "public"."b2b_collection_products" FOR UPDATE TO "authenticated" USING ((EXISTS ( SELECT 1
    FROM "public"."b2b_collections" "c"
   WHERE (("c"."id" = "b2b_collection_products"."b2b_collection_id") AND "public"."is_org_owner_or_admin"("c"."organization_id")))));
 
@@ -105329,6 +107322,9 @@ ALTER TABLE "public"."cover_types" ENABLE ROW LEVEL SECURITY;
 ALTER TABLE "public"."crm_callback_events" ENABLE ROW LEVEL SECURITY;
 
 
+ALTER TABLE "public"."crm_seller_identity_links" ENABLE ROW LEVEL SECURITY;
+
+
 ALTER TABLE "public"."cron_job_timeout_map" ENABLE ROW LEVEL SECURITY;
 
 
@@ -105407,6 +107403,9 @@ ALTER TABLE "public"."discount_approval_audit" ENABLE ROW LEVEL SECURITY;
 ALTER TABLE "public"."discount_approval_requests" ENABLE ROW LEVEL SECURITY;
 
 
+ALTER TABLE "public"."e2e_cleanup_audit" ENABLE ROW LEVEL SECURITY;
+
+
 ALTER TABLE "public"."e2e_cleanup_rate_limit" ENABLE ROW LEVEL SECURITY;
 
 
@@ -105446,6 +107445,13 @@ CREATE POLICY "emc_admin_update" ON "public"."eco_material_config" FOR UPDATE TO
 
 
 CREATE POLICY "emc_dev_delete" ON "public"."eco_material_config" FOR DELETE TO "authenticated" USING ("public"."is_dev"(( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid")));
+
+
+
+ALTER TABLE "public"."endomarketing_themes" ENABLE ROW LEVEL SECURITY;
+
+
+CREATE POLICY "endomarketing_themes_auth_read" ON "public"."endomarketing_themes" FOR SELECT TO "authenticated" USING (true);
 
 
 
@@ -105546,6 +107552,17 @@ CREATE POLICY "fl_update_own" ON "public"."favorite_lists" FOR UPDATE TO "authen
 ALTER TABLE "public"."follow_up_reminders" ENABLE ROW LEVEL SECURITY;
 
 
+ALTER TABLE "public"."freight_settings" ENABLE ROW LEVEL SECURITY;
+
+
+CREATE POLICY "freight_settings_select_authenticated" ON "public"."freight_settings" FOR SELECT TO "authenticated" USING (true);
+
+
+
+CREATE POLICY "freight_settings_update_admin" ON "public"."freight_settings" FOR UPDATE TO "authenticated" USING ("public"."is_admin"()) WITH CHECK ("public"."is_admin"());
+
+
+
 ALTER TABLE "public"."frontend_telemetry" ENABLE ROW LEVEL SECURITY;
 
 
@@ -105594,10 +107611,6 @@ CREATE POLICY "hist_all_service" ON "public"."supplier_products_raw_history" TO 
 
 
 
-CREATE POLICY "hist_all_service" ON "public"."supplier_products_raw_history_p2026_07" TO "service_role" USING (true) WITH CHECK (true);
-
-
-
 CREATE POLICY "hist_all_service" ON "public"."supplier_products_raw_history_p2026_08" TO "service_role" USING (true) WITH CHECK (true);
 
 
@@ -105622,11 +107635,51 @@ CREATE POLICY "hist_all_service" ON "public"."supplier_products_raw_history_p202
 
 
 
+CREATE POLICY "hist_all_service" ON "public"."supplier_products_raw_history_p2027_02" TO "service_role" USING (true) WITH CHECK (true);
+
+
+
+CREATE POLICY "hist_all_service" ON "public"."supplier_products_raw_history_p2027_03" TO "service_role" USING (true) WITH CHECK (true);
+
+
+
+CREATE POLICY "hist_all_service" ON "public"."supplier_products_raw_history_p2027_04" TO "service_role" USING (true) WITH CHECK (true);
+
+
+
+CREATE POLICY "hist_all_service" ON "public"."supplier_products_raw_history_p2027_05" TO "service_role" USING (true) WITH CHECK (true);
+
+
+
+CREATE POLICY "hist_all_service" ON "public"."supplier_products_raw_history_p2027_06" TO "service_role" USING (true) WITH CHECK (true);
+
+
+
+CREATE POLICY "hist_all_service" ON "public"."supplier_products_raw_history_p2027_07" TO "service_role" USING (true) WITH CHECK (true);
+
+
+
+CREATE POLICY "hist_all_service" ON "public"."supplier_products_raw_history_p2027_08" TO "service_role" USING (true) WITH CHECK (true);
+
+
+
+CREATE POLICY "hist_all_service" ON "public"."supplier_products_raw_history_p2027_09" TO "service_role" USING (true) WITH CHECK (true);
+
+
+
+CREATE POLICY "hist_all_service" ON "public"."supplier_products_raw_history_p2027_10" TO "service_role" USING (true) WITH CHECK (true);
+
+
+
+CREATE POLICY "hist_all_service" ON "public"."supplier_products_raw_history_p2027_11" TO "service_role" USING (true) WITH CHECK (true);
+
+
+
+CREATE POLICY "hist_all_service" ON "public"."supplier_products_raw_history_p2027_12" TO "service_role" USING (true) WITH CHECK (true);
+
+
+
 CREATE POLICY "hist_select_admin" ON "public"."supplier_products_raw_history" FOR SELECT TO "authenticated" USING ("public"."is_admin_or_above"(( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid")));
-
-
-
-CREATE POLICY "hist_select_admin" ON "public"."supplier_products_raw_history_p2026_07" FOR SELECT TO "authenticated" USING ("public"."is_admin_or_above"(( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid")));
 
 
 
@@ -105651,6 +107704,50 @@ CREATE POLICY "hist_select_admin" ON "public"."supplier_products_raw_history_p20
 
 
 CREATE POLICY "hist_select_admin" ON "public"."supplier_products_raw_history_p2027_01" FOR SELECT TO "authenticated" USING ("public"."is_admin_or_above"(( SELECT "auth"."uid"() AS "uid")));
+
+
+
+CREATE POLICY "hist_select_admin" ON "public"."supplier_products_raw_history_p2027_02" FOR SELECT TO "authenticated" USING ("public"."is_admin_or_above"(( SELECT "auth"."uid"() AS "uid")));
+
+
+
+CREATE POLICY "hist_select_admin" ON "public"."supplier_products_raw_history_p2027_03" FOR SELECT TO "authenticated" USING ("public"."is_admin_or_above"(( SELECT "auth"."uid"() AS "uid")));
+
+
+
+CREATE POLICY "hist_select_admin" ON "public"."supplier_products_raw_history_p2027_04" FOR SELECT TO "authenticated" USING ("public"."is_admin_or_above"(( SELECT "auth"."uid"() AS "uid")));
+
+
+
+CREATE POLICY "hist_select_admin" ON "public"."supplier_products_raw_history_p2027_05" FOR SELECT TO "authenticated" USING ("public"."is_admin_or_above"(( SELECT "auth"."uid"() AS "uid")));
+
+
+
+CREATE POLICY "hist_select_admin" ON "public"."supplier_products_raw_history_p2027_06" FOR SELECT TO "authenticated" USING ("public"."is_admin_or_above"(( SELECT "auth"."uid"() AS "uid")));
+
+
+
+CREATE POLICY "hist_select_admin" ON "public"."supplier_products_raw_history_p2027_07" FOR SELECT TO "authenticated" USING ("public"."is_admin_or_above"(( SELECT "auth"."uid"() AS "uid")));
+
+
+
+CREATE POLICY "hist_select_admin" ON "public"."supplier_products_raw_history_p2027_08" FOR SELECT TO "authenticated" USING ("public"."is_admin_or_above"(( SELECT "auth"."uid"() AS "uid")));
+
+
+
+CREATE POLICY "hist_select_admin" ON "public"."supplier_products_raw_history_p2027_09" FOR SELECT TO "authenticated" USING ("public"."is_admin_or_above"(( SELECT "auth"."uid"() AS "uid")));
+
+
+
+CREATE POLICY "hist_select_admin" ON "public"."supplier_products_raw_history_p2027_10" FOR SELECT TO "authenticated" USING ("public"."is_admin_or_above"(( SELECT "auth"."uid"() AS "uid")));
+
+
+
+CREATE POLICY "hist_select_admin" ON "public"."supplier_products_raw_history_p2027_11" FOR SELECT TO "authenticated" USING ("public"."is_admin_or_above"(( SELECT "auth"."uid"() AS "uid")));
+
+
+
+CREATE POLICY "hist_select_admin" ON "public"."supplier_products_raw_history_p2027_12" FOR SELECT TO "authenticated" USING ("public"."is_admin_or_above"(( SELECT "auth"."uid"() AS "uid")));
 
 
 
@@ -105691,19 +107788,19 @@ CREATE POLICY "ip_whitelist_admin_all" ON "public"."ip_whitelist" TO "authentica
 
 
 
-CREATE POLICY "kcer_admin_delete" ON "public"."kit_component_enrichment_raw" FOR DELETE USING ("public"."is_admin_or_above"(( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid")));
+CREATE POLICY "kcer_admin_delete" ON "public"."kit_component_enrichment_raw" FOR DELETE TO "authenticated" USING ("public"."is_admin_or_above"(( SELECT "auth"."uid"() AS "uid")));
 
 
 
-CREATE POLICY "kcer_admin_insert" ON "public"."kit_component_enrichment_raw" FOR INSERT WITH CHECK ("public"."is_admin_or_above"(( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid")));
+CREATE POLICY "kcer_admin_insert" ON "public"."kit_component_enrichment_raw" FOR INSERT TO "authenticated" WITH CHECK ("public"."is_admin_or_above"(( SELECT "auth"."uid"() AS "uid")));
 
 
 
-CREATE POLICY "kcer_admin_update" ON "public"."kit_component_enrichment_raw" FOR UPDATE USING ("public"."is_admin_or_above"(( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid"))) WITH CHECK ("public"."is_admin_or_above"(( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid")));
+CREATE POLICY "kcer_admin_update" ON "public"."kit_component_enrichment_raw" FOR UPDATE TO "authenticated" USING ("public"."is_admin_or_above"(( SELECT "auth"."uid"() AS "uid"))) WITH CHECK ("public"."is_admin_or_above"(( SELECT "auth"."uid"() AS "uid")));
 
 
 
-CREATE POLICY "kcer_read_auth" ON "public"."kit_component_enrichment_raw" FOR SELECT USING ((( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid") IS NOT NULL));
+CREATE POLICY "kcer_read_auth" ON "public"."kit_component_enrichment_raw" FOR SELECT TO "authenticated" USING ((( SELECT "auth"."uid"() AS "uid") IS NOT NULL));
 
 
 
@@ -105719,19 +107816,19 @@ CREATE POLICY "kcpa_dev_delete" ON "public"."kit_component_print_areas" FOR DELE
 
 
 
-CREATE POLICY "kcpad_admin_delete" ON "public"."kit_component_padronizacao" FOR DELETE USING ("public"."is_admin_or_above"(( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid")));
+CREATE POLICY "kcpad_admin_delete" ON "public"."kit_component_padronizacao" FOR DELETE TO "authenticated" USING ("public"."is_admin_or_above"(( SELECT "auth"."uid"() AS "uid")));
 
 
 
-CREATE POLICY "kcpad_admin_insert" ON "public"."kit_component_padronizacao" FOR INSERT WITH CHECK ("public"."is_admin_or_above"(( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid")));
+CREATE POLICY "kcpad_admin_insert" ON "public"."kit_component_padronizacao" FOR INSERT TO "authenticated" WITH CHECK ("public"."is_admin_or_above"(( SELECT "auth"."uid"() AS "uid")));
 
 
 
-CREATE POLICY "kcpad_admin_update" ON "public"."kit_component_padronizacao" FOR UPDATE USING ("public"."is_admin_or_above"(( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid"))) WITH CHECK ("public"."is_admin_or_above"(( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid")));
+CREATE POLICY "kcpad_admin_update" ON "public"."kit_component_padronizacao" FOR UPDATE TO "authenticated" USING ("public"."is_admin_or_above"(( SELECT "auth"."uid"() AS "uid"))) WITH CHECK ("public"."is_admin_or_above"(( SELECT "auth"."uid"() AS "uid")));
 
 
 
-CREATE POLICY "kcpad_read_auth" ON "public"."kit_component_padronizacao" FOR SELECT USING ((( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid") IS NOT NULL));
+CREATE POLICY "kcpad_read_auth" ON "public"."kit_component_padronizacao" FOR SELECT TO "authenticated" USING ((( SELECT "auth"."uid"() AS "uid") IS NOT NULL));
 
 
 
@@ -105776,14 +107873,6 @@ CREATE POLICY "kill_switches_delete_admin" ON "public"."system_kill_switches" FO
 
 
 CREATE POLICY "kill_switches_insert_admin" ON "public"."system_kill_switches" FOR INSERT TO "authenticated" WITH CHECK ("public"."is_admin_or_above"(( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid")));
-
-
-
-CREATE POLICY "kill_switches_read_all" ON "public"."system_kill_switches" FOR SELECT TO "authenticated", "anon" USING (true);
-
-
-
-COMMENT ON POLICY "kill_switches_read_all" ON "public"."system_kill_switches" IS 'Read-only para feature flag checks. Restringido de PUBLIC para anon+authenticated em 2026-05-24 (P2-02) — reduz multiple_permissive_policies hits do advisor.';
 
 
 
@@ -105944,6 +108033,9 @@ ALTER TABLE "public"."magazine_public_view_events_2026_12" ENABLE ROW LEVEL SECU
 
 
 ALTER TABLE "public"."magazine_public_view_events_2027_01" ENABLE ROW LEVEL SECURITY;
+
+
+ALTER TABLE "public"."magazine_public_view_events_2027_02" ENABLE ROW LEVEL SECURITY;
 
 
 ALTER TABLE "public"."magazine_public_view_events_default" ENABLE ROW LEVEL SECURITY;
@@ -106281,19 +108373,19 @@ ALTER TABLE "public"."notebook_features" ENABLE ROW LEVEL SECURITY;
 ALTER TABLE "public"."notification_preferences" ENABLE ROW LEVEL SECURITY;
 
 
-CREATE POLICY "notification_preferences_delete" ON "public"."notification_preferences" FOR DELETE USING ((( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid") = "user_id"));
+CREATE POLICY "notification_preferences_delete" ON "public"."notification_preferences" FOR DELETE TO "authenticated" USING ((( SELECT "auth"."uid"() AS "uid") = "user_id"));
 
 
 
-CREATE POLICY "notification_preferences_insert" ON "public"."notification_preferences" FOR INSERT WITH CHECK ((( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid") = "user_id"));
+CREATE POLICY "notification_preferences_insert" ON "public"."notification_preferences" FOR INSERT TO "authenticated" WITH CHECK ((( SELECT "auth"."uid"() AS "uid") = "user_id"));
 
 
 
-CREATE POLICY "notification_preferences_select" ON "public"."notification_preferences" FOR SELECT USING ((( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid") = "user_id"));
+CREATE POLICY "notification_preferences_select" ON "public"."notification_preferences" FOR SELECT TO "authenticated" USING ((( SELECT "auth"."uid"() AS "uid") = "user_id"));
 
 
 
-CREATE POLICY "notification_preferences_update" ON "public"."notification_preferences" FOR UPDATE USING ((( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid") = "user_id")) WITH CHECK ((( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid") = "user_id"));
+CREATE POLICY "notification_preferences_update" ON "public"."notification_preferences" FOR UPDATE TO "authenticated" USING ((( SELECT "auth"."uid"() AS "uid") = "user_id")) WITH CHECK ((( SELECT "auth"."uid"() AS "uid") = "user_id"));
 
 
 
@@ -106351,27 +108443,23 @@ CREATE POLICY "order_items_delete" ON "public"."order_items" FOR DELETE USING ((
 
 
 
-CREATE POLICY "order_items_insert" ON "public"."order_items" FOR INSERT TO "authenticated" WITH CHECK ((EXISTS ( SELECT 1
+CREATE POLICY "order_items_insert" ON "public"."order_items" FOR INSERT TO "authenticated" WITH CHECK (("public"."can_view_all_sales"() OR (EXISTS ( SELECT 1
    FROM "public"."orders" "o"
-  WHERE (("o"."id" = "order_items"."order_id") AND "public"."user_is_org_member"("o"."organization_id")))));
+  WHERE (("o"."id" = "order_items"."order_id") AND (("o"."seller_id" = "auth"."uid"()) OR ("public"."has_role"("auth"."uid"(), 'supervisor'::"public"."app_role") AND (("o"."organization_id" IS NULL) OR ("o"."organization_id" IN ( SELECT "public"."get_user_org_ids"("auth"."uid"()) AS "get_user_org_ids"))))))))));
 
 
 
-COMMENT ON POLICY "order_items_insert" ON "public"."order_items" IS 'Hardening Etapa 10: INSERT exige membership na org do order pai.';
-
-
-
-CREATE POLICY "order_items_select" ON "public"."order_items" FOR SELECT USING ((EXISTS ( SELECT 1
+CREATE POLICY "order_items_select" ON "public"."order_items" FOR SELECT USING (("public"."can_view_all_sales"() OR (EXISTS ( SELECT 1
    FROM "public"."orders" "o"
-  WHERE (("o"."id" = "order_items"."order_id") AND "public"."user_is_org_member"("o"."organization_id")))));
+  WHERE (("o"."id" = "order_items"."order_id") AND (("o"."seller_id" = "auth"."uid"()) OR ("public"."has_role"("auth"."uid"(), 'supervisor'::"public"."app_role") AND (("o"."organization_id" IS NULL) OR ("o"."organization_id" IN ( SELECT "public"."get_user_org_ids"("auth"."uid"()) AS "get_user_org_ids"))))))))));
 
 
 
-CREATE POLICY "order_items_update" ON "public"."order_items" FOR UPDATE USING ((EXISTS ( SELECT 1
+CREATE POLICY "order_items_update" ON "public"."order_items" FOR UPDATE USING (("public"."can_view_all_sales"() OR (EXISTS ( SELECT 1
    FROM "public"."orders" "o"
-  WHERE (("o"."id" = "order_items"."order_id") AND "public"."user_is_org_member"("o"."organization_id"))))) WITH CHECK ((EXISTS ( SELECT 1
+  WHERE (("o"."id" = "order_items"."order_id") AND (("o"."seller_id" = "auth"."uid"()) OR ("public"."has_role"("auth"."uid"(), 'supervisor'::"public"."app_role") AND (("o"."organization_id" IS NULL) OR ("o"."organization_id" IN ( SELECT "public"."get_user_org_ids"("auth"."uid"()) AS "get_user_org_ids")))))))))) WITH CHECK (("public"."can_view_all_sales"() OR (EXISTS ( SELECT 1
    FROM "public"."orders" "o"
-  WHERE (("o"."id" = "order_items"."order_id") AND "public"."user_is_org_member"("o"."organization_id")))));
+  WHERE (("o"."id" = "order_items"."order_id") AND (("o"."seller_id" = "auth"."uid"()) OR ("public"."has_role"("auth"."uid"(), 'supervisor'::"public"."app_role") AND (("o"."organization_id" IS NULL) OR ("o"."organization_id" IN ( SELECT "public"."get_user_org_ids"("auth"."uid"()) AS "get_user_org_ids"))))))))));
 
 
 
@@ -106382,19 +108470,15 @@ CREATE POLICY "orders_delete" ON "public"."orders" FOR DELETE USING ("public"."i
 
 
 
-CREATE POLICY "orders_insert" ON "public"."orders" FOR INSERT TO "authenticated" WITH CHECK ("public"."user_is_org_member"("organization_id"));
+CREATE POLICY "orders_insert" ON "public"."orders" FOR INSERT TO "authenticated" WITH CHECK (("public"."can_view_all_sales"() OR ("seller_id" = "auth"."uid"())));
 
 
 
-COMMENT ON POLICY "orders_insert" ON "public"."orders" IS 'Hardening Etapa 10: INSERT exige user_is_org_member(organization_id).';
+CREATE POLICY "orders_select" ON "public"."orders" FOR SELECT USING (("public"."can_view_all_sales"() OR ("public"."has_role"("auth"."uid"(), 'supervisor'::"public"."app_role") AND (("organization_id" IS NULL) OR ("organization_id" IN ( SELECT "public"."get_user_org_ids"("auth"."uid"()) AS "get_user_org_ids")))) OR ("seller_id" = "auth"."uid"())));
 
 
 
-CREATE POLICY "orders_select" ON "public"."orders" FOR SELECT USING ("public"."user_is_org_member"("organization_id"));
-
-
-
-CREATE POLICY "orders_update" ON "public"."orders" FOR UPDATE USING ("public"."user_is_org_member"("organization_id")) WITH CHECK ("public"."user_is_org_member"("organization_id"));
+CREATE POLICY "orders_update" ON "public"."orders" FOR UPDATE USING (("public"."can_view_all_sales"() OR ("public"."has_role"("auth"."uid"(), 'supervisor'::"public"."app_role") AND (("organization_id" IS NULL) OR ("organization_id" IN ( SELECT "public"."get_user_org_ids"("auth"."uid"()) AS "get_user_org_ids")))) OR ("seller_id" = "auth"."uid"()))) WITH CHECK (("public"."can_view_all_sales"() OR ("public"."has_role"("auth"."uid"(), 'supervisor'::"public"."app_role") AND (("organization_id" IS NULL) OR ("organization_id" IN ( SELECT "public"."get_user_org_ids"("auth"."uid"()) AS "get_user_org_ids")))) OR ("seller_id" = "auth"."uid"())));
 
 
 
@@ -106536,6 +108620,42 @@ CREATE POLICY "pbd_admin_update" ON "public"."product_badge_definitions" FOR UPD
 
 
 CREATE POLICY "pbd_public_read" ON "public"."product_badge_definitions" FOR SELECT TO "authenticated", "anon" USING (true);
+
+
+
+CREATE POLICY "pcd_oa_del" ON "public"."product_commemorative_dates" FOR DELETE TO "authenticated" USING ((EXISTS ( SELECT 1
+   FROM "public"."products" "p"
+  WHERE (("p"."id" = "product_commemorative_dates"."product_id") AND ("p"."organization_id" IN ( SELECT "uo"."organization_id"
+           FROM "public"."user_organizations" "uo"
+          WHERE (("uo"."user_id" = ( SELECT "auth"."uid"() AS "uid")) AND ("uo"."role" = ANY (ARRAY['owner'::"public"."org_role", 'admin'::"public"."org_role"])))))))));
+
+
+
+CREATE POLICY "pcd_oa_ins" ON "public"."product_commemorative_dates" FOR INSERT TO "authenticated" WITH CHECK ((EXISTS ( SELECT 1
+   FROM "public"."products" "p"
+  WHERE (("p"."id" = "product_commemorative_dates"."product_id") AND ("p"."organization_id" IN ( SELECT "uo"."organization_id"
+           FROM "public"."user_organizations" "uo"
+          WHERE (("uo"."user_id" = ( SELECT "auth"."uid"() AS "uid")) AND ("uo"."role" = ANY (ARRAY['owner'::"public"."org_role", 'admin'::"public"."org_role"])))))))));
+
+
+
+CREATE POLICY "pcd_oa_read_all" ON "public"."product_commemorative_dates" FOR SELECT TO "authenticated" USING ((EXISTS ( SELECT 1
+   FROM "public"."products" "p"
+  WHERE (("p"."id" = "product_commemorative_dates"."product_id") AND ("p"."organization_id" IN ( SELECT "uo"."organization_id"
+           FROM "public"."user_organizations" "uo"
+          WHERE (("uo"."user_id" = ( SELECT "auth"."uid"() AS "uid")) AND ("uo"."role" = ANY (ARRAY['owner'::"public"."org_role", 'admin'::"public"."org_role"])))))))));
+
+
+
+CREATE POLICY "pcd_oa_upd" ON "public"."product_commemorative_dates" FOR UPDATE TO "authenticated" USING ((EXISTS ( SELECT 1
+   FROM "public"."products" "p"
+  WHERE (("p"."id" = "product_commemorative_dates"."product_id") AND ("p"."organization_id" IN ( SELECT "uo"."organization_id"
+           FROM "public"."user_organizations" "uo"
+          WHERE (("uo"."user_id" = ( SELECT "auth"."uid"() AS "uid")) AND ("uo"."role" = ANY (ARRAY['owner'::"public"."org_role", 'admin'::"public"."org_role"]))))))))) WITH CHECK ((EXISTS ( SELECT 1
+   FROM "public"."products" "p"
+  WHERE (("p"."id" = "product_commemorative_dates"."product_id") AND ("p"."organization_id" IN ( SELECT "uo"."organization_id"
+           FROM "public"."user_organizations" "uo"
+          WHERE (("uo"."user_id" = ( SELECT "auth"."uid"() AS "uid")) AND ("uo"."role" = ANY (ARRAY['owner'::"public"."org_role", 'admin'::"public"."org_role"])))))))));
 
 
 
@@ -106725,11 +108845,11 @@ CREATE POLICY "print_area_techniques_oa_upd" ON "public"."print_area_techniques"
 
 
 
-CREATE POLICY "product_ai_anon_select" ON "public"."product_ai_content" FOR SELECT TO "authenticated", "anon" USING (true);
-
-
-
 ALTER TABLE "public"."product_ai_content" ENABLE ROW LEVEL SECURITY;
+
+
+CREATE POLICY "product_ai_content_authenticated_select" ON "public"."product_ai_content" FOR SELECT TO "authenticated" USING (true);
+
 
 
 ALTER TABLE "public"."product_ai_history" ENABLE ROW LEVEL SECURITY;
@@ -106809,6 +108929,41 @@ ALTER TABLE "public"."product_deactivation_requests" ENABLE ROW LEVEL SECURITY;
 ALTER TABLE "public"."product_deactivation_tokens" ENABLE ROW LEVEL SECURITY;
 
 
+ALTER TABLE "public"."product_endomarketing" ENABLE ROW LEVEL SECURITY;
+
+
+CREATE POLICY "product_endomarketing_auth_read" ON "public"."product_endomarketing" FOR SELECT TO "authenticated" USING (true);
+
+
+
+CREATE POLICY "product_endomarketing_oa_del" ON "public"."product_endomarketing" FOR DELETE TO "authenticated" USING ((EXISTS ( SELECT 1
+   FROM "public"."products" "p"
+  WHERE (("p"."id" = "product_endomarketing"."product_id") AND ("p"."organization_id" IN ( SELECT "uo"."organization_id"
+           FROM "public"."user_organizations" "uo"
+          WHERE (("uo"."user_id" = ( SELECT "auth"."uid"() AS "uid")) AND ("uo"."role" = ANY (ARRAY['owner'::"public"."org_role", 'admin'::"public"."org_role"])))))))));
+
+
+
+CREATE POLICY "product_endomarketing_oa_ins" ON "public"."product_endomarketing" FOR INSERT TO "authenticated" WITH CHECK ((EXISTS ( SELECT 1
+   FROM "public"."products" "p"
+  WHERE (("p"."id" = "product_endomarketing"."product_id") AND ("p"."organization_id" IN ( SELECT "uo"."organization_id"
+           FROM "public"."user_organizations" "uo"
+          WHERE (("uo"."user_id" = ( SELECT "auth"."uid"() AS "uid")) AND ("uo"."role" = ANY (ARRAY['owner'::"public"."org_role", 'admin'::"public"."org_role"])))))))));
+
+
+
+CREATE POLICY "product_endomarketing_oa_upd" ON "public"."product_endomarketing" FOR UPDATE TO "authenticated" USING ((EXISTS ( SELECT 1
+   FROM "public"."products" "p"
+  WHERE (("p"."id" = "product_endomarketing"."product_id") AND ("p"."organization_id" IN ( SELECT "uo"."organization_id"
+           FROM "public"."user_organizations" "uo"
+          WHERE (("uo"."user_id" = ( SELECT "auth"."uid"() AS "uid")) AND ("uo"."role" = ANY (ARRAY['owner'::"public"."org_role", 'admin'::"public"."org_role"]))))))))) WITH CHECK ((EXISTS ( SELECT 1
+   FROM "public"."products" "p"
+  WHERE (("p"."id" = "product_endomarketing"."product_id") AND ("p"."organization_id" IN ( SELECT "uo"."organization_id"
+           FROM "public"."user_organizations" "uo"
+          WHERE (("uo"."user_id" = ( SELECT "auth"."uid"() AS "uid")) AND ("uo"."role" = ANY (ARRAY['owner'::"public"."org_role", 'admin'::"public"."org_role"])))))))));
+
+
+
 ALTER TABLE "public"."product_faqs" ENABLE ROW LEVEL SECURITY;
 
 
@@ -106819,7 +108974,7 @@ CREATE POLICY "product_faqs_public_read" ON "public"."product_faqs" FOR SELECT U
 ALTER TABLE "public"."product_fiscal" ENABLE ROW LEVEL SECURITY;
 
 
-CREATE POLICY "product_fiscal_anon_select" ON "public"."product_fiscal" FOR SELECT TO "authenticated", "anon" USING (true);
+CREATE POLICY "product_fiscal_authenticated_select" ON "public"."product_fiscal" FOR SELECT TO "authenticated" USING (true);
 
 
 
@@ -107047,7 +109202,7 @@ ALTER TABLE "public"."product_search_logs" ENABLE ROW LEVEL SECURITY;
 ALTER TABLE "public"."product_seo" ENABLE ROW LEVEL SECURITY;
 
 
-CREATE POLICY "product_seo_anon_select" ON "public"."product_seo" FOR SELECT TO "authenticated", "anon" USING (true);
+CREATE POLICY "product_seo_authenticated_select" ON "public"."product_seo" FOR SELECT TO "authenticated" USING (true);
 
 
 
@@ -107064,7 +109219,7 @@ ALTER TABLE "public"."product_similarity_groups" ENABLE ROW LEVEL SECURITY;
 ALTER TABLE "public"."product_supply" ENABLE ROW LEVEL SECURITY;
 
 
-CREATE POLICY "product_supply_anon_select" ON "public"."product_supply" FOR SELECT TO "authenticated", "anon" USING (true);
+CREATE POLICY "product_supply_authenticated_select" ON "public"."product_supply" FOR SELECT TO "authenticated" USING (true);
 
 
 
@@ -107289,25 +109444,53 @@ CREATE POLICY "pt_select_active_or_admin" ON "public"."personalization_technique
 
 
 
+CREATE POLICY "pta_oa_del" ON "public"."product_target_audiences" FOR DELETE TO "authenticated" USING ((EXISTS ( SELECT 1
+   FROM "public"."products" "p"
+  WHERE (("p"."id" = "product_target_audiences"."product_id") AND ("p"."organization_id" IN ( SELECT "uo"."organization_id"
+           FROM "public"."user_organizations" "uo"
+          WHERE (("uo"."user_id" = ( SELECT "auth"."uid"() AS "uid")) AND ("uo"."role" = ANY (ARRAY['owner'::"public"."org_role", 'admin'::"public"."org_role"])))))))));
+
+
+
+CREATE POLICY "pta_oa_ins" ON "public"."product_target_audiences" FOR INSERT TO "authenticated" WITH CHECK ((EXISTS ( SELECT 1
+   FROM "public"."products" "p"
+  WHERE (("p"."id" = "product_target_audiences"."product_id") AND ("p"."organization_id" IN ( SELECT "uo"."organization_id"
+           FROM "public"."user_organizations" "uo"
+          WHERE (("uo"."user_id" = ( SELECT "auth"."uid"() AS "uid")) AND ("uo"."role" = ANY (ARRAY['owner'::"public"."org_role", 'admin'::"public"."org_role"])))))))));
+
+
+
+CREATE POLICY "pta_oa_upd" ON "public"."product_target_audiences" FOR UPDATE TO "authenticated" USING ((EXISTS ( SELECT 1
+   FROM "public"."products" "p"
+  WHERE (("p"."id" = "product_target_audiences"."product_id") AND ("p"."organization_id" IN ( SELECT "uo"."organization_id"
+           FROM "public"."user_organizations" "uo"
+          WHERE (("uo"."user_id" = ( SELECT "auth"."uid"() AS "uid")) AND ("uo"."role" = ANY (ARRAY['owner'::"public"."org_role", 'admin'::"public"."org_role"]))))))))) WITH CHECK ((EXISTS ( SELECT 1
+   FROM "public"."products" "p"
+  WHERE (("p"."id" = "product_target_audiences"."product_id") AND ("p"."organization_id" IN ( SELECT "uo"."organization_id"
+           FROM "public"."user_organizations" "uo"
+          WHERE (("uo"."user_id" = ( SELECT "auth"."uid"() AS "uid")) AND ("uo"."role" = ANY (ARRAY['owner'::"public"."org_role", 'admin'::"public"."org_role"])))))))));
+
+
+
 ALTER TABLE "public"."public_token_failures" ENABLE ROW LEVEL SECURITY;
 
 
 ALTER TABLE "public"."push_subscriptions" ENABLE ROW LEVEL SECURITY;
 
 
-CREATE POLICY "push_subscriptions_delete" ON "public"."push_subscriptions" FOR DELETE USING ((( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid") = "user_id"));
+CREATE POLICY "push_subscriptions_delete" ON "public"."push_subscriptions" FOR DELETE TO "authenticated" USING ((( SELECT "auth"."uid"() AS "uid") = "user_id"));
 
 
 
-CREATE POLICY "push_subscriptions_insert" ON "public"."push_subscriptions" FOR INSERT WITH CHECK ((( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid") = "user_id"));
+CREATE POLICY "push_subscriptions_insert" ON "public"."push_subscriptions" FOR INSERT TO "authenticated" WITH CHECK ((( SELECT "auth"."uid"() AS "uid") = "user_id"));
 
 
 
-CREATE POLICY "push_subscriptions_select" ON "public"."push_subscriptions" FOR SELECT USING ((( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid") = "user_id"));
+CREATE POLICY "push_subscriptions_select" ON "public"."push_subscriptions" FOR SELECT TO "authenticated" USING ((( SELECT "auth"."uid"() AS "uid") = "user_id"));
 
 
 
-CREATE POLICY "push_subscriptions_update" ON "public"."push_subscriptions" FOR UPDATE USING ((( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid") = "user_id")) WITH CHECK ((( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid") = "user_id"));
+CREATE POLICY "push_subscriptions_update" ON "public"."push_subscriptions" FOR UPDATE TO "authenticated" USING ((( SELECT "auth"."uid"() AS "uid") = "user_id")) WITH CHECK ((( SELECT "auth"."uid"() AS "uid") = "user_id"));
 
 
 
@@ -107397,6 +109580,14 @@ COMMENT ON POLICY "qip_update_own_quote" ON "public"."quote_item_personalization
 ALTER TABLE "public"."query_telemetry" ENABLE ROW LEVEL SECURITY;
 
 
+CREATE POLICY "query_telemetry_delete_dev" ON "public"."query_telemetry" FOR DELETE TO "authenticated" USING (("public"."is_dev"(( SELECT "auth"."uid"() AS "uid")) AND ("created_at" < ("now"() - '7 days'::interval))));
+
+
+
+COMMENT ON POLICY "query_telemetry_delete_dev" ON "public"."query_telemetry" IS 'telemetry-cleanup (2026-11-12): dev apaga telemetria com mais de 7 dias (botao Limpar dados antigos em /admin/telemetria).';
+
+
+
 CREATE POLICY "query_telemetry_insert_any" ON "public"."query_telemetry" FOR INSERT TO "authenticated" WITH CHECK (("user_id" = ( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid")));
 
 
@@ -107406,6 +109597,35 @@ CREATE POLICY "query_telemetry_select_admin" ON "public"."query_telemetry" FOR S
 
 
 ALTER TABLE "public"."quote_approval_tokens" ENABLE ROW LEVEL SECURITY;
+
+
+ALTER TABLE "public"."quote_comments" ENABLE ROW LEVEL SECURITY;
+
+
+CREATE POLICY "quote_comments_delete_own_visible_quote" ON "public"."quote_comments" FOR DELETE TO "authenticated" USING ((("user_id" = ( SELECT "auth"."uid"() AS "uid")) AND (EXISTS ( SELECT 1
+   FROM "public"."quotes" "q"
+  WHERE ("q"."id" = "quote_comments"."quote_id")))));
+
+
+
+CREATE POLICY "quote_comments_insert_own_visible_quote" ON "public"."quote_comments" FOR INSERT TO "authenticated" WITH CHECK ((("user_id" = ( SELECT "auth"."uid"() AS "uid")) AND (EXISTS ( SELECT 1
+   FROM "public"."quotes" "q"
+  WHERE ("q"."id" = "quote_comments"."quote_id")))));
+
+
+
+CREATE POLICY "quote_comments_select_visible_quote" ON "public"."quote_comments" FOR SELECT TO "authenticated" USING (((( SELECT "auth"."uid"() AS "uid") IS NOT NULL) AND (EXISTS ( SELECT 1
+   FROM "public"."quotes" "q"
+  WHERE ("q"."id" = "quote_comments"."quote_id")))));
+
+
+
+CREATE POLICY "quote_comments_update_own_visible_quote" ON "public"."quote_comments" FOR UPDATE TO "authenticated" USING ((("user_id" = ( SELECT "auth"."uid"() AS "uid")) AND (EXISTS ( SELECT 1
+   FROM "public"."quotes" "q"
+  WHERE ("q"."id" = "quote_comments"."quote_id"))))) WITH CHECK ((("user_id" = ( SELECT "auth"."uid"() AS "uid")) AND (EXISTS ( SELECT 1
+   FROM "public"."quotes" "q"
+  WHERE ("q"."id" = "quote_comments"."quote_id")))));
+
 
 
 ALTER TABLE "public"."quote_drafts" ENABLE ROW LEVEL SECURITY;
@@ -107599,10 +109819,6 @@ CREATE POLICY "revocations_supervisor_update" ON "public"."user_token_revocation
 
 
 
-CREATE POLICY "rls_anon_read_color_synonym_map" ON "public"."color_synonym_map" FOR SELECT TO "anon" USING (true);
-
-
-
 ALTER TABLE "public"."rls_denial_log" ENABLE ROW LEVEL SECURITY;
 
 
@@ -107631,6 +109847,46 @@ CREATE POLICY "rls_infra_deny_public" ON "public"."pipeline_run_log" TO "authent
 
 
 CREATE POLICY "rls_infra_deny_public" ON "public"."supplier_customization_options_raw" TO "authenticated", "anon" USING (false);
+
+
+
+CREATE POLICY "rls_restrictive_ai_usage_quotas" ON "public"."ai_usage_quotas" AS RESTRICTIVE TO "authenticated", "service_role" USING (true);
+
+
+
+CREATE POLICY "rls_restrictive_kit_collaborators" ON "public"."kit_collaborators" AS RESTRICTIVE TO "authenticated", "service_role" USING (true);
+
+
+
+CREATE POLICY "rls_restrictive_notification_preferences" ON "public"."notification_preferences" AS RESTRICTIVE TO "authenticated", "service_role" USING (true);
+
+
+
+CREATE POLICY "rls_restrictive_product_ai_content" ON "public"."product_ai_content" AS RESTRICTIVE TO "authenticated", "service_role" USING (true);
+
+
+
+CREATE POLICY "rls_restrictive_product_fiscal" ON "public"."product_fiscal" AS RESTRICTIVE TO "authenticated", "service_role" USING (true);
+
+
+
+CREATE POLICY "rls_restrictive_product_seo" ON "public"."product_seo" AS RESTRICTIVE TO "authenticated", "service_role" USING (true);
+
+
+
+CREATE POLICY "rls_restrictive_product_supply" ON "public"."product_supply" AS RESTRICTIVE TO "authenticated", "service_role" USING (true);
+
+
+
+CREATE POLICY "rls_restrictive_push_subscriptions" ON "public"."push_subscriptions" AS RESTRICTIVE TO "authenticated", "service_role" USING (true);
+
+
+
+CREATE POLICY "rls_restrictive_recently_viewed_products" ON "public"."recently_viewed_products" AS RESTRICTIVE TO "authenticated", "service_role" USING (true);
+
+
+
+CREATE POLICY "rls_restrictive_system_kill_switches" ON "public"."system_kill_switches" AS RESTRICTIVE TO "authenticated", "service_role" USING (true);
 
 
 
@@ -107792,6 +110048,21 @@ CREATE POLICY "service_role_manage_webhook_request_nonces" ON "public"."webhook_
 
 
 
+ALTER TABLE "public"."shipping_boxes" ENABLE ROW LEVEL SECURITY;
+
+
+CREATE POLICY "shipping_boxes_insert_admin" ON "public"."shipping_boxes" FOR INSERT TO "authenticated" WITH CHECK ("public"."is_admin"());
+
+
+
+CREATE POLICY "shipping_boxes_select_authenticated" ON "public"."shipping_boxes" FOR SELECT TO "authenticated" USING ((("deleted_at" IS NULL) OR "public"."is_admin"()));
+
+
+
+CREATE POLICY "shipping_boxes_update_admin" ON "public"."shipping_boxes" FOR UPDATE TO "authenticated" USING ("public"."is_admin"()) WITH CHECK ("public"."is_admin"());
+
+
+
 CREATE POLICY "sim_read" ON "public"."video_sim_results" FOR SELECT TO "authenticated", "anon" USING (true);
 
 
@@ -107929,6 +110200,25 @@ CREATE POLICY "step_up_tokens_update_own" ON "public"."step_up_tokens" FOR UPDAT
 ALTER TABLE "public"."stock_daily_summary" ENABLE ROW LEVEL SECURITY;
 
 
+ALTER TABLE "public"."stock_notes" ENABLE ROW LEVEL SECURITY;
+
+
+CREATE POLICY "stock_notes_delete_own" ON "public"."stock_notes" FOR DELETE TO "authenticated" USING (("created_by" = ( SELECT "auth"."uid"() AS "uid")));
+
+
+
+CREATE POLICY "stock_notes_insert_own" ON "public"."stock_notes" FOR INSERT TO "authenticated" WITH CHECK (("created_by" = ( SELECT "auth"."uid"() AS "uid")));
+
+
+
+CREATE POLICY "stock_notes_select_authenticated" ON "public"."stock_notes" FOR SELECT TO "authenticated" USING (true);
+
+
+
+CREATE POLICY "stock_notes_update_own" ON "public"."stock_notes" FOR UPDATE TO "authenticated" USING (("created_by" = ( SELECT "auth"."uid"() AS "uid"))) WITH CHECK (("created_by" = ( SELECT "auth"."uid"() AS "uid")));
+
+
+
 ALTER TABLE "public"."stock_snapshots" ENABLE ROW LEVEL SECURITY;
 
 
@@ -108038,9 +110328,6 @@ ALTER TABLE "public"."supplier_products_raw" ENABLE ROW LEVEL SECURITY;
 ALTER TABLE "public"."supplier_products_raw_history" ENABLE ROW LEVEL SECURITY;
 
 
-ALTER TABLE "public"."supplier_products_raw_history_p2026_07" ENABLE ROW LEVEL SECURITY;
-
-
 ALTER TABLE "public"."supplier_products_raw_history_p2026_08" ENABLE ROW LEVEL SECURITY;
 
 
@@ -108057,6 +110344,39 @@ ALTER TABLE "public"."supplier_products_raw_history_p2026_12" ENABLE ROW LEVEL S
 
 
 ALTER TABLE "public"."supplier_products_raw_history_p2027_01" ENABLE ROW LEVEL SECURITY;
+
+
+ALTER TABLE "public"."supplier_products_raw_history_p2027_02" ENABLE ROW LEVEL SECURITY;
+
+
+ALTER TABLE "public"."supplier_products_raw_history_p2027_03" ENABLE ROW LEVEL SECURITY;
+
+
+ALTER TABLE "public"."supplier_products_raw_history_p2027_04" ENABLE ROW LEVEL SECURITY;
+
+
+ALTER TABLE "public"."supplier_products_raw_history_p2027_05" ENABLE ROW LEVEL SECURITY;
+
+
+ALTER TABLE "public"."supplier_products_raw_history_p2027_06" ENABLE ROW LEVEL SECURITY;
+
+
+ALTER TABLE "public"."supplier_products_raw_history_p2027_07" ENABLE ROW LEVEL SECURITY;
+
+
+ALTER TABLE "public"."supplier_products_raw_history_p2027_08" ENABLE ROW LEVEL SECURITY;
+
+
+ALTER TABLE "public"."supplier_products_raw_history_p2027_09" ENABLE ROW LEVEL SECURITY;
+
+
+ALTER TABLE "public"."supplier_products_raw_history_p2027_10" ENABLE ROW LEVEL SECURITY;
+
+
+ALTER TABLE "public"."supplier_products_raw_history_p2027_11" ENABLE ROW LEVEL SECURITY;
+
+
+ALTER TABLE "public"."supplier_products_raw_history_p2027_12" ENABLE ROW LEVEL SECURITY;
 
 
 ALTER TABLE "public"."supplier_property_mappings" ENABLE ROW LEVEL SECURITY;
@@ -108121,6 +110441,10 @@ ALTER TABLE "public"."system_documentation" ENABLE ROW LEVEL SECURITY;
 
 
 ALTER TABLE "public"."system_kill_switches" ENABLE ROW LEVEL SECURITY;
+
+
+CREATE POLICY "system_kill_switches_authenticated_select" ON "public"."system_kill_switches" FOR SELECT TO "authenticated" USING (true);
+
 
 
 ALTER TABLE "public"."system_settings" ENABLE ROW LEVEL SECURITY;
@@ -108620,6 +110944,12 @@ CREATE POLICY "view_events_read" ON "public"."magazine_public_view_events_2027_0
 
 
 
+CREATE POLICY "view_events_read" ON "public"."magazine_public_view_events_2027_02" FOR SELECT TO "authenticated" USING (("public"."has_role"(( SELECT "auth"."uid"() AS "uid"), 'admin'::"public"."app_role") OR (EXISTS ( SELECT 1
+   FROM "public"."magazines" "m"
+  WHERE (("m"."id" = "magazine_public_view_events_2027_02"."magazine_id") AND ("m"."owner_id" = ( SELECT "auth"."uid"() AS "uid")))))));
+
+
+
 CREATE POLICY "view_events_read" ON "public"."magazine_public_view_events_default" FOR SELECT TO "authenticated" USING (("public"."has_role"(( SELECT "auth"."uid"() AS "uid"), 'admin'::"public"."app_role") OR (EXISTS ( SELECT 1
    FROM "public"."magazines" "m"
   WHERE (("m"."id" = "magazine_public_view_events_default"."magazine_id") AND ("m"."owner_id" = ( SELECT "auth"."uid"() AS "uid")))))));
@@ -108655,6 +110985,10 @@ CREATE POLICY "view_events_service_all" ON "public"."magazine_public_view_events
 
 
 CREATE POLICY "view_events_service_all" ON "public"."magazine_public_view_events_2027_01" TO "service_role" USING (true) WITH CHECK (true);
+
+
+
+CREATE POLICY "view_events_service_all" ON "public"."magazine_public_view_events_2027_02" TO "service_role" USING (true) WITH CHECK (true);
 
 
 
@@ -108733,6 +111067,125 @@ ALTER TABLE "public"."xbz_upload_mapping" ENABLE ROW LEVEL SECURITY;
 
 CREATE POLICY "xbz_upload_mapping_auth_read" ON "public"."xbz_upload_mapping" FOR SELECT TO "authenticated" USING (true);
 
+
+
+ALTER TABLE "supplier_stricker"."canceled_products" ENABLE ROW LEVEL SECURITY;
+
+
+ALTER TABLE "supplier_stricker"."category_mappings" ENABLE ROW LEVEL SECURITY;
+
+
+ALTER TABLE "supplier_stricker"."colors" ENABLE ROW LEVEL SECURITY;
+
+
+ALTER TABLE "supplier_stricker"."customization_options" ENABLE ROW LEVEL SECURITY;
+
+
+ALTER TABLE "supplier_stricker"."customization_tables" ENABLE ROW LEVEL SECURITY;
+
+
+CREATE POLICY "deny_all" ON "supplier_stricker"."canceled_products" AS RESTRICTIVE USING (false);
+
+
+
+CREATE POLICY "deny_all" ON "supplier_stricker"."category_mappings" AS RESTRICTIVE USING (false);
+
+
+
+CREATE POLICY "deny_all" ON "supplier_stricker"."colors" AS RESTRICTIVE USING (false);
+
+
+
+CREATE POLICY "deny_all" ON "supplier_stricker"."customization_options" AS RESTRICTIVE USING (false);
+
+
+
+CREATE POLICY "deny_all" ON "supplier_stricker"."customization_tables" AS RESTRICTIVE USING (false);
+
+
+
+CREATE POLICY "deny_all" ON "supplier_stricker"."optionals" AS RESTRICTIVE USING (false);
+
+
+
+CREATE POLICY "deny_all" ON "supplier_stricker"."product_types" AS RESTRICTIVE USING (false);
+
+
+
+CREATE POLICY "deny_all" ON "supplier_stricker"."products" AS RESTRICTIVE USING (false);
+
+
+
+CREATE POLICY "deny_all" ON "supplier_stricker"."stg_colors" AS RESTRICTIVE USING (false);
+
+
+
+CREATE POLICY "deny_all" ON "supplier_stricker"."stg_customizations" AS RESTRICTIVE USING (false);
+
+
+
+CREATE POLICY "deny_all" ON "supplier_stricker"."stg_images" AS RESTRICTIVE USING (false);
+
+
+
+CREATE POLICY "deny_all" ON "supplier_stricker"."stg_optionals" AS RESTRICTIVE USING (false);
+
+
+
+CREATE POLICY "deny_all" ON "supplier_stricker"."stg_product_types" AS RESTRICTIVE USING (false);
+
+
+
+CREATE POLICY "deny_all" ON "supplier_stricker"."stg_products" AS RESTRICTIVE USING (false);
+
+
+
+CREATE POLICY "deny_all" ON "supplier_stricker"."stg_stock" AS RESTRICTIVE USING (false);
+
+
+
+CREATE POLICY "deny_all" ON "supplier_stricker"."stocks" AS RESTRICTIVE USING (false);
+
+
+
+CREATE POLICY "deny_all" ON "supplier_stricker"."sync_log" AS RESTRICTIVE USING (false);
+
+
+
+ALTER TABLE "supplier_stricker"."optionals" ENABLE ROW LEVEL SECURITY;
+
+
+ALTER TABLE "supplier_stricker"."product_types" ENABLE ROW LEVEL SECURITY;
+
+
+ALTER TABLE "supplier_stricker"."products" ENABLE ROW LEVEL SECURITY;
+
+
+ALTER TABLE "supplier_stricker"."stg_colors" ENABLE ROW LEVEL SECURITY;
+
+
+ALTER TABLE "supplier_stricker"."stg_customizations" ENABLE ROW LEVEL SECURITY;
+
+
+ALTER TABLE "supplier_stricker"."stg_images" ENABLE ROW LEVEL SECURITY;
+
+
+ALTER TABLE "supplier_stricker"."stg_optionals" ENABLE ROW LEVEL SECURITY;
+
+
+ALTER TABLE "supplier_stricker"."stg_product_types" ENABLE ROW LEVEL SECURITY;
+
+
+ALTER TABLE "supplier_stricker"."stg_products" ENABLE ROW LEVEL SECURITY;
+
+
+ALTER TABLE "supplier_stricker"."stg_stock" ENABLE ROW LEVEL SECURITY;
+
+
+ALTER TABLE "supplier_stricker"."stocks" ENABLE ROW LEVEL SECURITY;
+
+
+ALTER TABLE "supplier_stricker"."sync_log" ENABLE ROW LEVEL SECURITY;
 
 
 
@@ -109364,6 +111817,24 @@ GRANT ALL ON FUNCTION "public"."acquire_ai_quota"("_user_id" "uuid", "_function_
 
 
 
+REVOKE ALL ON FUNCTION "public"."admin_active_sessions"() FROM PUBLIC;
+GRANT ALL ON FUNCTION "public"."admin_active_sessions"() TO "authenticated";
+GRANT ALL ON FUNCTION "public"."admin_active_sessions"() TO "service_role";
+
+
+
+REVOKE ALL ON FUNCTION "public"."admin_execute_role_migration_batch"("_label" "text", "_reason" "text", "_items" "jsonb", "_dry_run" boolean) FROM PUBLIC;
+GRANT ALL ON FUNCTION "public"."admin_execute_role_migration_batch"("_label" "text", "_reason" "text", "_items" "jsonb", "_dry_run" boolean) TO "authenticated";
+GRANT ALL ON FUNCTION "public"."admin_execute_role_migration_batch"("_label" "text", "_reason" "text", "_items" "jsonb", "_dry_run" boolean) TO "service_role";
+
+
+
+REVOKE ALL ON FUNCTION "public"."admin_revoke_user_sessions"("_user_id" "uuid") FROM PUBLIC;
+GRANT ALL ON FUNCTION "public"."admin_revoke_user_sessions"("_user_id" "uuid") TO "authenticated";
+GRANT ALL ON FUNCTION "public"."admin_revoke_user_sessions"("_user_id" "uuid") TO "service_role";
+
+
+
 REVOKE ALL ON FUNCTION "public"."apply_transform"("p_value" "text", "p_transform_type" character varying, "p_transform_config" "jsonb") FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."apply_transform"("p_value" "text", "p_transform_type" character varying, "p_transform_config" "jsonb") TO "authenticated";
 GRANT ALL ON FUNCTION "public"."apply_transform"("p_value" "text", "p_transform_type" character varying, "p_transform_config" "jsonb") TO "service_role";
@@ -109623,6 +112094,7 @@ GRANT ALL ON TABLE "public"."optimization_queue" TO "service_role";
 
 REVOKE ALL ON FUNCTION "public"."claim_next_optimization"() FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."claim_next_optimization"() TO "service_role";
+GRANT ALL ON FUNCTION "public"."claim_next_optimization"() TO "authenticated";
 
 
 
@@ -109949,6 +112421,11 @@ GRANT ALL ON FUNCTION "public"."cleanup_discount_test_data"() TO "service_role";
 
 
 
+REVOKE ALL ON FUNCTION "public"."cleanup_expired_auth_sessions"() FROM PUBLIC;
+GRANT ALL ON FUNCTION "public"."cleanup_expired_auth_sessions"() TO "service_role";
+
+
+
 REVOKE ALL ON FUNCTION "public"."cleanup_expired_collection_trash"() FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."cleanup_expired_collection_trash"() TO "service_role";
 
@@ -110081,6 +112558,7 @@ GRANT ALL ON FUNCTION "public"."compare_quote_versions"("_quote_id" "uuid", "_ve
 
 REVOKE ALL ON FUNCTION "public"."complete_optimization"("_id" "uuid", "_status" "text", "_notes" "text", "_guardrail_status" "text", "_result" "jsonb", "_error" "text") FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."complete_optimization"("_id" "uuid", "_status" "text", "_notes" "text", "_guardrail_status" "text", "_result" "jsonb", "_error" "text") TO "service_role";
+GRANT ALL ON FUNCTION "public"."complete_optimization"("_id" "uuid", "_status" "text", "_notes" "text", "_guardrail_status" "text", "_result" "jsonb", "_error" "text") TO "authenticated";
 
 
 
@@ -110097,7 +112575,6 @@ GRANT ALL ON FUNCTION "public"."compute_quote_snapshot_hash"("_quote_id" "uuid")
 
 
 REVOKE ALL ON FUNCTION "public"."confirm_notifications_dispatched"("p_ids" "uuid"[]) FROM PUBLIC;
-GRANT ALL ON FUNCTION "public"."confirm_notifications_dispatched"("p_ids" "uuid"[]) TO "authenticated";
 GRANT ALL ON FUNCTION "public"."confirm_notifications_dispatched"("p_ids" "uuid"[]) TO "service_role";
 
 
@@ -110240,6 +112717,11 @@ GRANT ALL ON FUNCTION "public"."enforce_password_reset_rate_limit"() TO "service
 
 
 
+REVOKE ALL ON FUNCTION "public"."enforce_quote_comment_mutation"() FROM PUBLIC;
+GRANT ALL ON FUNCTION "public"."enforce_quote_comment_mutation"() TO "service_role";
+
+
+
 GRANT ALL ON FUNCTION "public"."enforce_seller_cart_limit"() TO "anon";
 GRANT ALL ON FUNCTION "public"."enforce_seller_cart_limit"() TO "authenticated";
 GRANT ALL ON FUNCTION "public"."enforce_seller_cart_limit"() TO "service_role";
@@ -110258,6 +112740,7 @@ GRANT ALL ON FUNCTION "public"."enforce_user_id_owner"() TO "service_role";
 
 REVOKE ALL ON FUNCTION "public"."enqueue_optimization"("_title" "text", "_description" "text", "_category" "text", "_priority" integer) FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."enqueue_optimization"("_title" "text", "_description" "text", "_category" "text", "_priority" integer) TO "service_role";
+GRANT ALL ON FUNCTION "public"."enqueue_optimization"("_title" "text", "_description" "text", "_category" "text", "_priority" integer) TO "authenticated";
 
 
 
@@ -110421,8 +112904,21 @@ GRANT ALL ON FUNCTION "public"."fn_adicionar_mapeamento_fornecedor"("p_supplier_
 
 
 
+REVOKE ALL ON FUNCTION "public"."fn_admin_run_smoke_tests"() FROM PUBLIC;
+GRANT ALL ON FUNCTION "public"."fn_admin_run_smoke_tests"() TO "authenticated";
+GRANT ALL ON FUNCTION "public"."fn_admin_run_smoke_tests"() TO "service_role";
+
+
+
+REVOKE ALL ON FUNCTION "public"."fn_admin_smoke_tests_dashboard"() FROM PUBLIC;
+GRANT ALL ON FUNCTION "public"."fn_admin_smoke_tests_dashboard"() TO "authenticated";
+GRANT ALL ON FUNCTION "public"."fn_admin_smoke_tests_dashboard"() TO "service_role";
+
+
+
 REVOKE ALL ON FUNCTION "public"."fn_admin_sync_external_connections"() FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."fn_admin_sync_external_connections"() TO "service_role";
+GRANT ALL ON FUNCTION "public"."fn_admin_sync_external_connections"() TO "authenticated";
 
 
 
@@ -110660,7 +113156,6 @@ GRANT ALL ON FUNCTION "public"."fn_audit_gravacao_changes"() TO "service_role";
 REVOKE ALL ON FUNCTION "public"."fn_audit_role_changes"() FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."fn_audit_role_changes"() TO "service_role";
 GRANT ALL ON FUNCTION "public"."fn_audit_role_changes"() TO "authenticated";
-GRANT ALL ON FUNCTION "public"."fn_audit_role_changes"() TO "anon";
 
 
 
@@ -110669,7 +113164,12 @@ GRANT ALL ON FUNCTION "public"."fn_audit_row_change"() TO "service_role";
 
 
 
-GRANT ALL ON FUNCTION "public"."fn_auto_classify_kit_product"() TO "anon";
+REVOKE ALL ON FUNCTION "public"."fn_auto_assign_org_on_profile"() FROM PUBLIC;
+GRANT ALL ON FUNCTION "public"."fn_auto_assign_org_on_profile"() TO "service_role";
+
+
+
+REVOKE ALL ON FUNCTION "public"."fn_auto_classify_kit_product"() FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."fn_auto_classify_kit_product"() TO "authenticated";
 GRANT ALL ON FUNCTION "public"."fn_auto_classify_kit_product"() TO "service_role";
 
@@ -110678,21 +113178,18 @@ GRANT ALL ON FUNCTION "public"."fn_auto_classify_kit_product"() TO "service_role
 REVOKE ALL ON FUNCTION "public"."fn_auto_classify_packing"() FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."fn_auto_classify_packing"() TO "service_role";
 GRANT ALL ON FUNCTION "public"."fn_auto_classify_packing"() TO "authenticated";
-GRANT ALL ON FUNCTION "public"."fn_auto_classify_packing"() TO "anon";
 
 
 
 REVOKE ALL ON FUNCTION "public"."fn_auto_classify_product_image"() FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."fn_auto_classify_product_image"() TO "service_role";
 GRANT ALL ON FUNCTION "public"."fn_auto_classify_product_image"() TO "authenticated";
-GRANT ALL ON FUNCTION "public"."fn_auto_classify_product_image"() TO "anon";
 
 
 
 REVOKE ALL ON FUNCTION "public"."fn_auto_criar_equivalencia_spot"() FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."fn_auto_criar_equivalencia_spot"() TO "service_role";
 GRANT ALL ON FUNCTION "public"."fn_auto_criar_equivalencia_spot"() TO "authenticated";
-GRANT ALL ON FUNCTION "public"."fn_auto_criar_equivalencia_spot"() TO "anon";
 
 
 
@@ -110726,14 +113223,12 @@ GRANT ALL ON FUNCTION "public"."fn_auto_link_eco"("p_product_id" "uuid") TO "ano
 REVOKE ALL ON FUNCTION "public"."fn_auto_link_eco_material"() FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."fn_auto_link_eco_material"() TO "service_role";
 GRANT ALL ON FUNCTION "public"."fn_auto_link_eco_material"() TO "authenticated";
-GRANT ALL ON FUNCTION "public"."fn_auto_link_eco_material"() TO "anon";
 
 
 
 REVOKE ALL ON FUNCTION "public"."fn_auto_link_feminine_color"() FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."fn_auto_link_feminine_color"() TO "service_role";
 GRANT ALL ON FUNCTION "public"."fn_auto_link_feminine_color"() TO "authenticated";
-GRANT ALL ON FUNCTION "public"."fn_auto_link_feminine_color"() TO "anon";
 
 
 
@@ -110773,7 +113268,6 @@ GRANT ALL ON FUNCTION "public"."fn_auto_revoke_secdef_public_execute"() TO "serv
 REVOKE ALL ON FUNCTION "public"."fn_auto_set_same_supplier"() FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."fn_auto_set_same_supplier"() TO "service_role";
 GRANT ALL ON FUNCTION "public"."fn_auto_set_same_supplier"() TO "authenticated";
-GRANT ALL ON FUNCTION "public"."fn_auto_set_same_supplier"() TO "anon";
 
 
 
@@ -110790,7 +113284,6 @@ GRANT ALL ON FUNCTION "public"."fn_auto_similarity_groups_v3"() TO "service_role
 REVOKE ALL ON FUNCTION "public"."fn_auto_vincular_cor_variante"() FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."fn_auto_vincular_cor_variante"() TO "service_role";
 GRANT ALL ON FUNCTION "public"."fn_auto_vincular_cor_variante"() TO "authenticated";
-GRANT ALL ON FUNCTION "public"."fn_auto_vincular_cor_variante"() TO "anon";
 
 
 
@@ -110848,7 +113341,6 @@ GRANT ALL ON FUNCTION "public"."fn_backfill_product_categories"("p_batch_size" i
 
 
 REVOKE ALL ON FUNCTION "public"."fn_backfill_queue_reap_stuck"("p_stuck_minutes" integer, "p_max_attempts" integer) FROM PUBLIC;
-GRANT ALL ON FUNCTION "public"."fn_backfill_queue_reap_stuck"("p_stuck_minutes" integer, "p_max_attempts" integer) TO "authenticated";
 GRANT ALL ON FUNCTION "public"."fn_backfill_queue_reap_stuck"("p_stuck_minutes" integer, "p_max_attempts" integer) TO "service_role";
 
 
@@ -110883,7 +113375,6 @@ GRANT ALL ON FUNCTION "public"."fn_best_packaging_price"("p_packaging_id" "uuid"
 REVOKE ALL ON FUNCTION "public"."fn_block_unauthorized_product_deactivation"() FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."fn_block_unauthorized_product_deactivation"() TO "authenticated";
 GRANT ALL ON FUNCTION "public"."fn_block_unauthorized_product_deactivation"() TO "service_role";
-GRANT ALL ON FUNCTION "public"."fn_block_unauthorized_product_deactivation"() TO "anon";
 
 
 
@@ -110986,7 +113477,6 @@ GRANT ALL ON FUNCTION "public"."fn_categories_health_check"() TO "service_role";
 REVOKE ALL ON FUNCTION "public"."fn_category_copywriting_updated"() FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."fn_category_copywriting_updated"() TO "service_role";
 GRANT ALL ON FUNCTION "public"."fn_category_copywriting_updated"() TO "authenticated";
-GRANT ALL ON FUNCTION "public"."fn_category_copywriting_updated"() TO "anon";
 
 
 
@@ -111111,19 +113601,19 @@ GRANT ALL ON FUNCTION "public"."fn_cleanup_webhook_dispatcher_log"() TO "service
 
 
 
-GRANT ALL ON FUNCTION "public"."fn_color_equiv_clear_primary_on_inactive"() TO "anon";
+REVOKE ALL ON FUNCTION "public"."fn_color_equiv_clear_primary_on_inactive"() FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."fn_color_equiv_clear_primary_on_inactive"() TO "authenticated";
 GRANT ALL ON FUNCTION "public"."fn_color_equiv_clear_primary_on_inactive"() TO "service_role";
 
 
 
-GRANT ALL ON FUNCTION "public"."fn_color_equiv_ensure_primary"() TO "anon";
+REVOKE ALL ON FUNCTION "public"."fn_color_equiv_ensure_primary"() FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."fn_color_equiv_ensure_primary"() TO "authenticated";
 GRANT ALL ON FUNCTION "public"."fn_color_equiv_ensure_primary"() TO "service_role";
 
 
 
-GRANT ALL ON FUNCTION "public"."fn_color_equiv_ensure_primary_stmt"() TO "anon";
+REVOKE ALL ON FUNCTION "public"."fn_color_equiv_ensure_primary_stmt"() FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."fn_color_equiv_ensure_primary_stmt"() TO "authenticated";
 GRANT ALL ON FUNCTION "public"."fn_color_equiv_ensure_primary_stmt"() TO "service_role";
 
@@ -111162,14 +113652,12 @@ GRANT ALL ON FUNCTION "public"."fn_convert_unit"("p_value" numeric, "p_source_un
 REVOKE ALL ON FUNCTION "public"."fn_cor_generate_slug"() FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."fn_cor_generate_slug"() TO "service_role";
 GRANT ALL ON FUNCTION "public"."fn_cor_generate_slug"() TO "authenticated";
-GRANT ALL ON FUNCTION "public"."fn_cor_generate_slug"() TO "anon";
 
 
 
 REVOKE ALL ON FUNCTION "public"."fn_cor_updated_at"() FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."fn_cor_updated_at"() TO "service_role";
 GRANT ALL ON FUNCTION "public"."fn_cor_updated_at"() TO "authenticated";
-GRANT ALL ON FUNCTION "public"."fn_cor_updated_at"() TO "anon";
 
 
 
@@ -111201,8 +113689,7 @@ GRANT ALL ON FUNCTION "public"."fn_create_quote_v3"("p_quote_data" "jsonb", "p_i
 
 
 
-GRANT ALL ON FUNCTION "public"."fn_cron_guard"("p_key" bigint, "p_sql" "text") TO "anon";
-GRANT ALL ON FUNCTION "public"."fn_cron_guard"("p_key" bigint, "p_sql" "text") TO "authenticated";
+REVOKE ALL ON FUNCTION "public"."fn_cron_guard"("p_key" bigint, "p_sql" "text") FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."fn_cron_guard"("p_key" bigint, "p_sql" "text") TO "service_role";
 
 
@@ -111220,11 +113707,10 @@ GRANT ALL ON FUNCTION "public"."fn_cron_watchdog"() TO "service_role";
 REVOKE ALL ON FUNCTION "public"."fn_custom_kits_sync_user_id"() FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."fn_custom_kits_sync_user_id"() TO "service_role";
 GRANT ALL ON FUNCTION "public"."fn_custom_kits_sync_user_id"() TO "authenticated";
-GRANT ALL ON FUNCTION "public"."fn_custom_kits_sync_user_id"() TO "anon";
 
 
 
-GRANT ALL ON FUNCTION "public"."fn_dar_check_valid_until_future"() TO "anon";
+REVOKE ALL ON FUNCTION "public"."fn_dar_check_valid_until_future"() FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."fn_dar_check_valid_until_future"() TO "authenticated";
 GRANT ALL ON FUNCTION "public"."fn_dar_check_valid_until_future"() TO "service_role";
 
@@ -111250,7 +113736,6 @@ GRANT ALL ON FUNCTION "public"."fn_dar_forbid_reopen"() TO "service_role";
 REVOKE ALL ON FUNCTION "public"."fn_dar_set_snapshot_hash"() FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."fn_dar_set_snapshot_hash"() TO "service_role";
 GRANT ALL ON FUNCTION "public"."fn_dar_set_snapshot_hash"() TO "authenticated";
-GRANT ALL ON FUNCTION "public"."fn_dar_set_snapshot_hash"() TO "anon";
 
 
 
@@ -111294,7 +113779,6 @@ GRANT ALL ON FUNCTION "public"."fn_derive_similarity_pairs_on_insert"() TO "serv
 
 
 REVOKE ALL ON FUNCTION "public"."fn_detect_recurring_errors_last_hour"("_min_occurrences" integer) FROM PUBLIC;
-GRANT ALL ON FUNCTION "public"."fn_detect_recurring_errors_last_hour"("_min_occurrences" integer) TO "authenticated";
 GRANT ALL ON FUNCTION "public"."fn_detect_recurring_errors_last_hour"("_min_occurrences" integer) TO "service_role";
 
 
@@ -111303,6 +113787,12 @@ REVOKE ALL ON FUNCTION "public"."fn_detecta_familia_cor"("p_r" integer, "p_g" in
 GRANT ALL ON FUNCTION "public"."fn_detecta_familia_cor"("p_r" integer, "p_g" integer, "p_b" integer) TO "authenticated";
 GRANT ALL ON FUNCTION "public"."fn_detecta_familia_cor"("p_r" integer, "p_g" integer, "p_b" integer) TO "service_role";
 GRANT ALL ON FUNCTION "public"."fn_detecta_familia_cor"("p_r" integer, "p_g" integer, "p_b" integer) TO "anon";
+
+
+
+REVOKE ALL ON FUNCTION "public"."fn_dev_medallion_health"() FROM PUBLIC;
+GRANT ALL ON FUNCTION "public"."fn_dev_medallion_health"() TO "authenticated";
+GRANT ALL ON FUNCTION "public"."fn_dev_medallion_health"() TO "service_role";
 
 
 
@@ -111329,12 +113819,19 @@ GRANT ALL ON FUNCTION "public"."fn_dryrun_standardize_supplier"("p_supplier_id" 
 
 
 
+REVOKE ALL ON FUNCTION "public"."fn_ema_coverage_stats"() FROM PUBLIC;
+GRANT ALL ON FUNCTION "public"."fn_ema_coverage_stats"() TO "authenticated";
+GRANT ALL ON FUNCTION "public"."fn_ema_coverage_stats"() TO "service_role";
+
+
+
 REVOKE ALL ON FUNCTION "public"."fn_ema_kpi_by_level"("p_preferred_only" boolean) FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."fn_ema_kpi_by_level"("p_preferred_only" boolean) TO "service_role";
+GRANT ALL ON FUNCTION "public"."fn_ema_kpi_by_level"("p_preferred_only" boolean) TO "authenticated";
 
 
 
-GRANT ALL ON FUNCTION "public"."fn_enforce_inactive_variant_zero_stock"() TO "anon";
+REVOKE ALL ON FUNCTION "public"."fn_enforce_inactive_variant_zero_stock"() FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."fn_enforce_inactive_variant_zero_stock"() TO "authenticated";
 GRANT ALL ON FUNCTION "public"."fn_enforce_inactive_variant_zero_stock"() TO "service_role";
 
@@ -111392,7 +113889,6 @@ GRANT ALL ON FUNCTION "public"."fn_ensure_seller_discount_limit"() TO "service_r
 REVOKE ALL ON FUNCTION "public"."fn_ensure_single_primary_image"() FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."fn_ensure_single_primary_image"() TO "service_role";
 GRANT ALL ON FUNCTION "public"."fn_ensure_single_primary_image"() TO "authenticated";
-GRANT ALL ON FUNCTION "public"."fn_ensure_single_primary_image"() TO "anon";
 
 
 
@@ -111600,7 +114096,6 @@ GRANT ALL ON FUNCTION "public"."fn_fix_mojibake"("p" "text") TO "anon";
 REVOKE ALL ON FUNCTION "public"."fn_force_user_logout"() FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."fn_force_user_logout"() TO "service_role";
 GRANT ALL ON FUNCTION "public"."fn_force_user_logout"() TO "authenticated";
-GRANT ALL ON FUNCTION "public"."fn_force_user_logout"() TO "anon";
 
 
 
@@ -111845,6 +114340,203 @@ GRANT ALL ON FUNCTION "public"."fn_get_repressed_demand"("p_user_id" "uuid", "p_
 
 
 
+GRANT REFERENCES,TRIGGER,MAINTAIN ON TABLE "public"."stock_daily_summary" TO "anon";
+GRANT SELECT,REFERENCES,TRIGGER,MAINTAIN ON TABLE "public"."stock_daily_summary" TO "authenticated";
+GRANT ALL ON TABLE "public"."stock_daily_summary" TO "service_role";
+
+
+
+GRANT MAINTAIN ON TABLE "public"."variant_supplier_sources" TO "anon";
+GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."variant_supplier_sources" TO "authenticated";
+GRANT ALL ON TABLE "public"."variant_supplier_sources" TO "service_role";
+
+
+
+GRANT SELECT ON TABLE "analytics"."mv_stock_velocity" TO "service_role";
+GRANT SELECT ON TABLE "analytics"."mv_stock_velocity" TO "authenticated";
+
+
+
+GRANT MAINTAIN ON TABLE "public"."suppliers" TO "anon";
+GRANT INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."suppliers" TO "authenticated";
+GRANT ALL ON TABLE "public"."suppliers" TO "service_role";
+
+
+
+GRANT SELECT("id") ON TABLE "public"."suppliers" TO "authenticated";
+
+
+
+GRANT SELECT("name") ON TABLE "public"."suppliers" TO "authenticated";
+
+
+
+GRANT SELECT("code") ON TABLE "public"."suppliers" TO "authenticated";
+
+
+
+GRANT SELECT("cnpj") ON TABLE "public"."suppliers" TO "authenticated";
+
+
+
+GRANT SELECT("contact_name") ON TABLE "public"."suppliers" TO "authenticated";
+
+
+
+GRANT SELECT("email") ON TABLE "public"."suppliers" TO "authenticated";
+
+
+
+GRANT SELECT("phone") ON TABLE "public"."suppliers" TO "authenticated";
+
+
+
+GRANT SELECT("address") ON TABLE "public"."suppliers" TO "authenticated";
+
+
+
+GRANT SELECT("active") ON TABLE "public"."suppliers" TO "authenticated";
+
+
+
+GRANT SELECT("created_at") ON TABLE "public"."suppliers" TO "authenticated";
+
+
+
+GRANT SELECT("website") ON TABLE "public"."suppliers" TO "authenticated";
+
+
+
+GRANT SELECT("contact_person") ON TABLE "public"."suppliers" TO "authenticated";
+
+
+
+GRANT SELECT("payment_terms") ON TABLE "public"."suppliers" TO "authenticated";
+
+
+
+GRANT SELECT("delivery_time_days") ON TABLE "public"."suppliers" TO "authenticated";
+
+
+
+GRANT SELECT("minimum_order_value") ON TABLE "public"."suppliers" TO "authenticated";
+
+
+
+GRANT SELECT("notes") ON TABLE "public"."suppliers" TO "authenticated";
+
+
+
+GRANT SELECT("updated_at") ON TABLE "public"."suppliers" TO "authenticated";
+
+
+
+GRANT SELECT("organization_id") ON TABLE "public"."suppliers" TO "authenticated";
+
+
+
+GRANT SELECT("trading_name") ON TABLE "public"."suppliers" TO "authenticated";
+
+
+
+GRANT SELECT("api_type") ON TABLE "public"."suppliers" TO "authenticated";
+
+
+
+GRANT SELECT("api_base_url") ON TABLE "public"."suppliers" TO "authenticated";
+
+
+
+GRANT SELECT("min_order_value") ON TABLE "public"."suppliers" TO "authenticated";
+
+
+
+GRANT SELECT("shipping_terms") ON TABLE "public"."suppliers" TO "authenticated";
+
+
+
+GRANT SELECT("default_markup_percent") ON TABLE "public"."suppliers" TO "authenticated";
+
+
+
+GRANT SELECT("is_product_supplier") ON TABLE "public"."suppliers" TO "authenticated";
+
+
+
+GRANT SELECT("is_engraving_supplier") ON TABLE "public"."suppliers" TO "authenticated";
+
+
+
+GRANT SELECT("sync_enabled") ON TABLE "public"."suppliers" TO "authenticated";
+
+
+
+GRANT SELECT("sync_interval_minutes") ON TABLE "public"."suppliers" TO "authenticated";
+
+
+
+GRANT SELECT("last_full_sync_at") ON TABLE "public"."suppliers" TO "authenticated";
+
+
+
+GRANT SELECT("last_sync_status") ON TABLE "public"."suppliers" TO "authenticated";
+
+
+
+GRANT SELECT("last_sync_error") ON TABLE "public"."suppliers" TO "authenticated";
+
+
+
+GRANT SELECT("api_rate_limit_per_hour") ON TABLE "public"."suppliers" TO "authenticated";
+
+
+
+GRANT SELECT("priority") ON TABLE "public"."suppliers" TO "authenticated";
+
+
+
+GRANT SELECT("api_requests_current_hour") ON TABLE "public"."suppliers" TO "authenticated";
+
+
+
+GRANT SELECT("api_requests_reset_at") ON TABLE "public"."suppliers" TO "authenticated";
+
+
+
+GRANT SELECT("state_uf") ON TABLE "public"."suppliers" TO "authenticated";
+
+
+
+GRANT SELECT("tax_regime") ON TABLE "public"."suppliers" TO "authenticated";
+
+
+
+GRANT SELECT("inscricao_estadual") ON TABLE "public"."suppliers" TO "authenticated";
+
+
+
+GRANT SELECT("phone2") ON TABLE "public"."suppliers" TO "authenticated";
+
+
+
+GRANT SELECT("logo_url") ON TABLE "public"."suppliers" TO "authenticated";
+
+
+
+GRANT SELECT("low_stock_threshold") ON TABLE "public"."suppliers" TO "authenticated";
+
+
+
+GRANT ALL ON TABLE "public"."mv_stock_rupture_alert" TO "service_role";
+
+
+
+REVOKE ALL ON FUNCTION "public"."fn_get_rupture_alerts"() FROM PUBLIC;
+GRANT ALL ON FUNCTION "public"."fn_get_rupture_alerts"() TO "authenticated";
+GRANT ALL ON FUNCTION "public"."fn_get_rupture_alerts"() TO "service_role";
+
+
+
 REVOKE ALL ON FUNCTION "public"."fn_get_similar_products"("p_product_id" "uuid", "p_limit" integer, "p_offset" integer) FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."fn_get_similar_products"("p_product_id" "uuid", "p_limit" integer, "p_offset" integer) TO "authenticated";
 GRANT ALL ON FUNCTION "public"."fn_get_similar_products"("p_product_id" "uuid", "p_limit" integer, "p_offset" integer) TO "service_role";
@@ -111885,10 +114577,24 @@ GRANT ALL ON FUNCTION "public"."fn_get_supplier_mappings"("p_supplier_code" "tex
 
 
 
+GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."supplier_replenishment_events" TO "authenticated";
+GRANT ALL ON TABLE "public"."supplier_replenishment_events" TO "service_role";
+
+
+
+GRANT ALL ON TABLE "public"."mv_supplier_reliability" TO "service_role";
+
+
+
+REVOKE ALL ON FUNCTION "public"."fn_get_supplier_reliability"() FROM PUBLIC;
+GRANT ALL ON FUNCTION "public"."fn_get_supplier_reliability"() TO "authenticated";
+GRANT ALL ON FUNCTION "public"."fn_get_supplier_reliability"() TO "service_role";
+
+
+
 REVOKE ALL ON FUNCTION "public"."fn_global_search"("p_term" "text", "p_limit" integer, "p_types" "text"[]) FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."fn_global_search"("p_term" "text", "p_limit" integer, "p_types" "text"[]) TO "authenticated";
 GRANT ALL ON FUNCTION "public"."fn_global_search"("p_term" "text", "p_limit" integer, "p_types" "text"[]) TO "service_role";
-GRANT ALL ON FUNCTION "public"."fn_global_search"("p_term" "text", "p_limit" integer, "p_types" "text"[]) TO "anon";
 
 
 
@@ -111920,11 +114626,10 @@ GRANT ALL ON FUNCTION "public"."fn_health_check_gravacao"() TO "service_role";
 REVOKE ALL ON FUNCTION "public"."fn_hex_to_rgb"() FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."fn_hex_to_rgb"() TO "service_role";
 GRANT ALL ON FUNCTION "public"."fn_hex_to_rgb"() TO "authenticated";
-GRANT ALL ON FUNCTION "public"."fn_hex_to_rgb"() TO "anon";
 
 
 
-GRANT ALL ON FUNCTION "public"."fn_image_types_check_constraint_reminder"() TO "anon";
+REVOKE ALL ON FUNCTION "public"."fn_image_types_check_constraint_reminder"() FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."fn_image_types_check_constraint_reminder"() TO "authenticated";
 GRANT ALL ON FUNCTION "public"."fn_image_types_check_constraint_reminder"() TO "service_role";
 
@@ -112052,7 +114757,12 @@ GRANT ALL ON FUNCTION "public"."fn_ingestion_run_open"("p_supplier_code" "text",
 REVOKE ALL ON FUNCTION "public"."fn_inherit_techniques_from_material"() FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."fn_inherit_techniques_from_material"() TO "service_role";
 GRANT ALL ON FUNCTION "public"."fn_inherit_techniques_from_material"() TO "authenticated";
-GRANT ALL ON FUNCTION "public"."fn_inherit_techniques_from_material"() TO "anon";
+
+
+
+REVOKE ALL ON FUNCTION "public"."fn_insights_cache_count"("p_function_name" "text", "p_since" timestamp with time zone) FROM PUBLIC;
+GRANT ALL ON FUNCTION "public"."fn_insights_cache_count"("p_function_name" "text", "p_since" timestamp with time zone) TO "authenticated";
+GRANT ALL ON FUNCTION "public"."fn_insights_cache_count"("p_function_name" "text", "p_since" timestamp with time zone) TO "service_role";
 
 
 
@@ -112095,7 +114805,7 @@ GRANT ALL ON FUNCTION "public"."fn_kit_auto_promote_approved"() TO "service_role
 
 
 
-GRANT ALL ON FUNCTION "public"."fn_kit_component_calc_circumference"() TO "anon";
+REVOKE ALL ON FUNCTION "public"."fn_kit_component_calc_circumference"() FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."fn_kit_component_calc_circumference"() TO "authenticated";
 GRANT ALL ON FUNCTION "public"."fn_kit_component_calc_circumference"() TO "service_role";
 
@@ -112104,7 +114814,6 @@ GRANT ALL ON FUNCTION "public"."fn_kit_component_calc_circumference"() TO "servi
 REVOKE ALL ON FUNCTION "public"."fn_kit_component_inherit_personalization"() FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."fn_kit_component_inherit_personalization"() TO "service_role";
 GRANT ALL ON FUNCTION "public"."fn_kit_component_inherit_personalization"() TO "authenticated";
-GRANT ALL ON FUNCTION "public"."fn_kit_component_inherit_personalization"() TO "anon";
 
 
 
@@ -112121,7 +114830,6 @@ GRANT ALL ON FUNCTION "public"."fn_kit_material_quick_propagate"() TO "service_r
 REVOKE ALL ON FUNCTION "public"."fn_kit_print_area_normalizar_eixos"() FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."fn_kit_print_area_normalizar_eixos"() TO "service_role";
 GRANT ALL ON FUNCTION "public"."fn_kit_print_area_normalizar_eixos"() TO "authenticated";
-GRANT ALL ON FUNCTION "public"."fn_kit_print_area_normalizar_eixos"() TO "anon";
 
 
 
@@ -112167,14 +114875,12 @@ GRANT ALL ON FUNCTION "public"."fn_list_deactivation_requests"("p_status" "text"
 REVOKE ALL ON FUNCTION "public"."fn_log_login_attempt"() FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."fn_log_login_attempt"() TO "service_role";
 GRANT ALL ON FUNCTION "public"."fn_log_login_attempt"() TO "authenticated";
-GRANT ALL ON FUNCTION "public"."fn_log_login_attempt"() TO "anon";
 
 
 
 REVOKE ALL ON FUNCTION "public"."fn_log_price_change"() FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."fn_log_price_change"() TO "service_role";
 GRANT ALL ON FUNCTION "public"."fn_log_price_change"() TO "authenticated";
-GRANT ALL ON FUNCTION "public"."fn_log_price_change"() TO "anon";
 
 
 
@@ -112187,7 +114893,6 @@ GRANT ALL ON FUNCTION "public"."fn_log_search_analytics"("p_search_term" "text",
 REVOKE ALL ON FUNCTION "public"."fn_log_step_up_event"() FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."fn_log_step_up_event"() TO "service_role";
 GRANT ALL ON FUNCTION "public"."fn_log_step_up_event"() TO "authenticated";
-GRANT ALL ON FUNCTION "public"."fn_log_step_up_event"() TO "anon";
 
 
 
@@ -112243,7 +114948,7 @@ GRANT ALL ON FUNCTION "public"."fn_norm_piece_label"("p" "text") TO "service_rol
 
 
 
-GRANT ALL ON FUNCTION "public"."fn_normalize_image_format"() TO "anon";
+REVOKE ALL ON FUNCTION "public"."fn_normalize_image_format"() FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."fn_normalize_image_format"() TO "authenticated";
 GRANT ALL ON FUNCTION "public"."fn_normalize_image_format"() TO "service_role";
 
@@ -112283,13 +114988,13 @@ GRANT ALL ON FUNCTION "public"."fn_normalize_silver_all"() TO "anon";
 
 
 
-GRANT ALL ON FUNCTION "public"."fn_normalize_source_supplier"() TO "anon";
+REVOKE ALL ON FUNCTION "public"."fn_normalize_source_supplier"() FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."fn_normalize_source_supplier"() TO "authenticated";
 GRANT ALL ON FUNCTION "public"."fn_normalize_source_supplier"() TO "service_role";
 
 
 
-GRANT ALL ON FUNCTION "public"."fn_normalize_source_supplier_videos"() TO "anon";
+REVOKE ALL ON FUNCTION "public"."fn_normalize_source_supplier_videos"() FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."fn_normalize_source_supplier_videos"() TO "authenticated";
 GRANT ALL ON FUNCTION "public"."fn_normalize_source_supplier_videos"() TO "service_role";
 
@@ -112306,7 +115011,6 @@ GRANT ALL ON FUNCTION "public"."fn_notify_champions_on_quote_status"() TO "servi
 
 
 REVOKE ALL ON FUNCTION "public"."fn_notify_user"("_target_user_id" "uuid", "_title" "text", "_message" "text", "_type" "text", "_category" "text", "_action_url" "text", "_metadata" "jsonb") FROM PUBLIC;
-GRANT ALL ON FUNCTION "public"."fn_notify_user"("_target_user_id" "uuid", "_title" "text", "_message" "text", "_type" "text", "_category" "text", "_action_url" "text", "_metadata" "jsonb") TO "authenticated";
 GRANT ALL ON FUNCTION "public"."fn_notify_user"("_target_user_id" "uuid", "_title" "text", "_message" "text", "_type" "text", "_category" "text", "_action_url" "text", "_metadata" "jsonb") TO "service_role";
 
 
@@ -112314,21 +115018,18 @@ GRANT ALL ON FUNCTION "public"."fn_notify_user"("_target_user_id" "uuid", "_titl
 REVOKE ALL ON FUNCTION "public"."fn_order_items_calc_subtotal"() FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."fn_order_items_calc_subtotal"() TO "service_role";
 GRANT ALL ON FUNCTION "public"."fn_order_items_calc_subtotal"() TO "authenticated";
-GRANT ALL ON FUNCTION "public"."fn_order_items_calc_subtotal"() TO "anon";
 
 
 
 REVOKE ALL ON FUNCTION "public"."fn_orders_sync_seller"() FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."fn_orders_sync_seller"() TO "service_role";
 GRANT ALL ON FUNCTION "public"."fn_orders_sync_seller"() TO "authenticated";
-GRANT ALL ON FUNCTION "public"."fn_orders_sync_seller"() TO "anon";
 
 
 
 REVOKE ALL ON FUNCTION "public"."fn_pad_sync_status"() FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."fn_pad_sync_status"() TO "authenticated";
 GRANT ALL ON FUNCTION "public"."fn_pad_sync_status"() TO "service_role";
-GRANT ALL ON FUNCTION "public"."fn_pad_sync_status"() TO "anon";
 
 
 
@@ -112446,13 +115147,13 @@ GRANT ALL ON FUNCTION "public"."fn_parse_xbz_site_html"("p_html" "text", "p_codi
 
 
 
-GRANT ALL ON FUNCTION "public"."fn_pbd_before_write"() TO "anon";
+REVOKE ALL ON FUNCTION "public"."fn_pbd_before_write"() FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."fn_pbd_before_write"() TO "authenticated";
 GRANT ALL ON FUNCTION "public"."fn_pbd_before_write"() TO "service_role";
 
 
 
-GRANT ALL ON FUNCTION "public"."fn_pbd_block_system_delete"() TO "anon";
+REVOKE ALL ON FUNCTION "public"."fn_pbd_block_system_delete"() FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."fn_pbd_block_system_delete"() TO "authenticated";
 GRANT ALL ON FUNCTION "public"."fn_pbd_block_system_delete"() TO "service_role";
 
@@ -112514,17 +115215,16 @@ GRANT ALL ON FUNCTION "public"."fn_pipeline_status"() TO "anon";
 REVOKE ALL ON FUNCTION "public"."fn_pipeline_steps_updated_at"() FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."fn_pipeline_steps_updated_at"() TO "service_role";
 GRANT ALL ON FUNCTION "public"."fn_pipeline_steps_updated_at"() TO "authenticated";
-GRANT ALL ON FUNCTION "public"."fn_pipeline_steps_updated_at"() TO "anon";
 
 
 
-GRANT ALL ON FUNCTION "public"."fn_pkc_auto_enrich_status"() TO "anon";
+REVOKE ALL ON FUNCTION "public"."fn_pkc_auto_enrich_status"() FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."fn_pkc_auto_enrich_status"() TO "authenticated";
 GRANT ALL ON FUNCTION "public"."fn_pkc_auto_enrich_status"() TO "service_role";
 
 
 
-GRANT ALL ON FUNCTION "public"."fn_pkc_auto_inherit_material"() TO "anon";
+REVOKE ALL ON FUNCTION "public"."fn_pkc_auto_inherit_material"() FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."fn_pkc_auto_inherit_material"() TO "authenticated";
 GRANT ALL ON FUNCTION "public"."fn_pkc_auto_inherit_material"() TO "service_role";
 
@@ -112668,7 +115368,6 @@ GRANT ALL ON FUNCTION "public"."fn_product_name_quality_score"("p_name" "text") 
 REVOKE ALL ON FUNCTION "public"."fn_products_capture_manual_edits"() FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."fn_products_capture_manual_edits"() TO "authenticated";
 GRANT ALL ON FUNCTION "public"."fn_products_capture_manual_edits"() TO "service_role";
-GRANT ALL ON FUNCTION "public"."fn_products_capture_manual_edits"() TO "anon";
 
 
 
@@ -112732,7 +115431,6 @@ GRANT ALL ON FUNCTION "public"."fn_promote_variants_of_parent"("p_supplier_id" "
 REVOKE ALL ON FUNCTION "public"."fn_propagar_atualizacao_cor"() FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."fn_propagar_atualizacao_cor"() TO "service_role";
 GRANT ALL ON FUNCTION "public"."fn_propagar_atualizacao_cor"() TO "authenticated";
-GRANT ALL ON FUNCTION "public"."fn_propagar_atualizacao_cor"() TO "anon";
 
 
 
@@ -112788,7 +115486,6 @@ GRANT ALL ON FUNCTION "public"."fn_quote_children_enforce_parent_immutability"()
 REVOKE ALL ON FUNCTION "public"."fn_quote_items_calc_subtotal"() FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."fn_quote_items_calc_subtotal"() TO "service_role";
 GRANT ALL ON FUNCTION "public"."fn_quote_items_calc_subtotal"() TO "authenticated";
-GRANT ALL ON FUNCTION "public"."fn_quote_items_calc_subtotal"() TO "anon";
 
 
 
@@ -112812,7 +115509,6 @@ GRANT ALL ON FUNCTION "public"."fn_quotes_recalc_subtotal_from_items"() TO "serv
 REVOKE ALL ON FUNCTION "public"."fn_quotes_sync_seller"() FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."fn_quotes_sync_seller"() TO "service_role";
 GRANT ALL ON FUNCTION "public"."fn_quotes_sync_seller"() TO "authenticated";
-GRANT ALL ON FUNCTION "public"."fn_quotes_sync_seller"() TO "anon";
 
 
 
@@ -112836,7 +115532,7 @@ GRANT ALL ON FUNCTION "public"."fn_rebuild_color_swatches"("p_product_id" "uuid"
 
 
 
-GRANT ALL ON FUNCTION "public"."fn_recalc_compat_on_dim_change"() TO "anon";
+REVOKE ALL ON FUNCTION "public"."fn_recalc_compat_on_dim_change"() FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."fn_recalc_compat_on_dim_change"() TO "authenticated";
 GRANT ALL ON FUNCTION "public"."fn_recalc_compat_on_dim_change"() TO "service_role";
 
@@ -113054,6 +115750,12 @@ GRANT ALL ON FUNCTION "public"."fn_run_smoke_tests"() TO "service_role";
 
 
 
+REVOKE ALL ON FUNCTION "public"."fn_ruptura_forecast_7_15_30"() FROM PUBLIC;
+GRANT ALL ON FUNCTION "public"."fn_ruptura_forecast_7_15_30"() TO "authenticated";
+GRANT ALL ON FUNCTION "public"."fn_ruptura_forecast_7_15_30"() TO "service_role";
+
+
+
 REVOKE ALL ON FUNCTION "public"."fn_rupture_anomalia_report"("p_threshold" numeric) FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."fn_rupture_anomalia_report"("p_threshold" numeric) TO "service_role";
 
@@ -113166,13 +115868,13 @@ GRANT ALL ON FUNCTION "public"."fn_set_updated_at"() TO "service_role";
 
 
 
-GRANT ALL ON FUNCTION "public"."fn_set_updated_at_aeq"() TO "anon";
+REVOKE ALL ON FUNCTION "public"."fn_set_updated_at_aeq"() FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."fn_set_updated_at_aeq"() TO "authenticated";
 GRANT ALL ON FUNCTION "public"."fn_set_updated_at_aeq"() TO "service_role";
 
 
 
-GRANT ALL ON FUNCTION "public"."fn_set_updated_at_pa"() TO "anon";
+REVOKE ALL ON FUNCTION "public"."fn_set_updated_at_pa"() FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."fn_set_updated_at_pa"() TO "authenticated";
 GRANT ALL ON FUNCTION "public"."fn_set_updated_at_pa"() TO "service_role";
 
@@ -113188,7 +115890,6 @@ GRANT ALL ON FUNCTION "public"."fn_should_apply_kill_switch"("p_switch_name" "te
 REVOKE ALL ON FUNCTION "public"."fn_silver_set_updated_at"() FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."fn_silver_set_updated_at"() TO "authenticated";
 GRANT ALL ON FUNCTION "public"."fn_silver_set_updated_at"() TO "service_role";
-GRANT ALL ON FUNCTION "public"."fn_silver_set_updated_at"() TO "anon";
 
 
 
@@ -113283,7 +115984,6 @@ GRANT ALL ON FUNCTION "public"."fn_sm_category_seed"() TO "service_role";
 REVOKE ALL ON FUNCTION "public"."fn_sm_category_set_updated"() FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."fn_sm_category_set_updated"() TO "authenticated";
 GRANT ALL ON FUNCTION "public"."fn_sm_category_set_updated"() TO "service_role";
-GRANT ALL ON FUNCTION "public"."fn_sm_category_set_updated"() TO "anon";
 
 
 
@@ -113377,7 +116077,6 @@ GRANT ALL ON FUNCTION "public"."fn_sm_url_map_from_site_urls"("p_urls" "jsonb") 
 REVOKE ALL ON FUNCTION "public"."fn_sm_url_map_set_updated"() FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."fn_sm_url_map_set_updated"() TO "authenticated";
 GRANT ALL ON FUNCTION "public"."fn_sm_url_map_set_updated"() TO "service_role";
-GRANT ALL ON FUNCTION "public"."fn_sm_url_map_set_updated"() TO "anon";
 
 
 
@@ -113544,7 +116243,6 @@ GRANT ALL ON FUNCTION "public"."fn_spot_vimeo_daily_sync"("p_items" "jsonb") TO 
 REVOKE ALL ON FUNCTION "public"."fn_spr_before_write"() FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."fn_spr_before_write"() TO "authenticated";
 GRANT ALL ON FUNCTION "public"."fn_spr_before_write"() TO "service_role";
-GRANT ALL ON FUNCTION "public"."fn_spr_before_write"() TO "anon";
 
 
 
@@ -113565,7 +116263,6 @@ GRANT ALL ON FUNCTION "public"."fn_spr_history_purge"("p_keep_months" integer) T
 REVOKE ALL ON FUNCTION "public"."fn_spr_normalize_keys"() FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."fn_spr_normalize_keys"() TO "authenticated";
 GRANT ALL ON FUNCTION "public"."fn_spr_normalize_keys"() TO "service_role";
-GRANT ALL ON FUNCTION "public"."fn_spr_normalize_keys"() TO "anon";
 
 
 
@@ -113656,6 +116353,12 @@ GRANT ALL ON FUNCTION "public"."fn_super_filtro_product_ids"("_datas" "text"[], 
 
 
 
+REVOKE ALL ON FUNCTION "public"."fn_supplier_risk_breakdown"("p_preferred_only" boolean) FROM PUBLIC;
+GRANT ALL ON FUNCTION "public"."fn_supplier_risk_breakdown"("p_preferred_only" boolean) TO "authenticated";
+GRANT ALL ON FUNCTION "public"."fn_supplier_risk_breakdown"("p_preferred_only" boolean) TO "service_role";
+
+
+
 REVOKE ALL ON FUNCTION "public"."fn_sync_ai_usage_logs_total_tokens"() FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."fn_sync_ai_usage_logs_total_tokens"() TO "service_role";
 
@@ -113688,7 +116391,7 @@ GRANT ALL ON FUNCTION "public"."fn_sync_category_image_url_on_slug_change"() TO 
 
 
 
-GRANT ALL ON FUNCTION "public"."fn_sync_color_variation_group"() TO "anon";
+REVOKE ALL ON FUNCTION "public"."fn_sync_color_variation_group"() FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."fn_sync_color_variation_group"() TO "authenticated";
 GRANT ALL ON FUNCTION "public"."fn_sync_color_variation_group"() TO "service_role";
 
@@ -113702,7 +116405,6 @@ GRANT ALL ON FUNCTION "public"."fn_sync_derived_product_flags"() TO "service_rol
 REVOKE ALL ON FUNCTION "public"."fn_sync_dimensions_display"() FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."fn_sync_dimensions_display"() TO "authenticated";
 GRANT ALL ON FUNCTION "public"."fn_sync_dimensions_display"() TO "service_role";
-GRANT ALL ON FUNCTION "public"."fn_sync_dimensions_display"() TO "anon";
 
 
 
@@ -113716,7 +116418,7 @@ GRANT ALL ON FUNCTION "public"."fn_sync_dynamic_collections"() TO "service_role"
 
 
 
-GRANT ALL ON FUNCTION "public"."fn_sync_image_type_code"() TO "anon";
+REVOKE ALL ON FUNCTION "public"."fn_sync_image_type_code"() FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."fn_sync_image_type_code"() TO "authenticated";
 GRANT ALL ON FUNCTION "public"."fn_sync_image_type_code"() TO "service_role";
 
@@ -113742,7 +116444,7 @@ GRANT ALL ON FUNCTION "public"."fn_sync_main_category_from_pca"() TO "service_ro
 
 
 
-GRANT ALL ON FUNCTION "public"."fn_sync_novelty_expires_at"() TO "anon";
+REVOKE ALL ON FUNCTION "public"."fn_sync_novelty_expires_at"() FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."fn_sync_novelty_expires_at"() TO "authenticated";
 GRANT ALL ON FUNCTION "public"."fn_sync_novelty_expires_at"() TO "service_role";
 
@@ -113763,7 +116465,7 @@ GRANT ALL ON FUNCTION "public"."fn_sync_product_ai_on_change"() TO "service_role
 
 
 
-GRANT ALL ON FUNCTION "public"."fn_sync_product_category_name"() TO "anon";
+REVOKE ALL ON FUNCTION "public"."fn_sync_product_category_name"() FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."fn_sync_product_category_name"() TO "authenticated";
 GRANT ALL ON FUNCTION "public"."fn_sync_product_category_name"() TO "service_role";
 
@@ -113789,7 +116491,6 @@ GRANT ALL ON FUNCTION "public"."fn_sync_product_fiscal_on_change"() TO "service_
 REVOKE ALL ON FUNCTION "public"."fn_sync_product_has_sizes"() FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."fn_sync_product_has_sizes"() TO "service_role";
 GRANT ALL ON FUNCTION "public"."fn_sync_product_has_sizes"() TO "authenticated";
-GRANT ALL ON FUNCTION "public"."fn_sync_product_has_sizes"() TO "anon";
 
 
 
@@ -113888,14 +116589,12 @@ GRANT ALL ON FUNCTION "public"."fn_sync_stock_bronze_to_gold_spot"() TO "service
 REVOKE ALL ON FUNCTION "public"."fn_sync_variant_to_product"() FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."fn_sync_variant_to_product"() TO "service_role";
 GRANT ALL ON FUNCTION "public"."fn_sync_variant_to_product"() TO "authenticated";
-GRANT ALL ON FUNCTION "public"."fn_sync_variant_to_product"() TO "anon";
 
 
 
 REVOKE ALL ON FUNCTION "public"."fn_sync_vss_to_variant"() FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."fn_sync_vss_to_variant"() TO "service_role";
 GRANT ALL ON FUNCTION "public"."fn_sync_vss_to_variant"() TO "authenticated";
-GRANT ALL ON FUNCTION "public"."fn_sync_vss_to_variant"() TO "anon";
 
 
 
@@ -113958,20 +116657,17 @@ GRANT ALL ON FUNCTION "public"."fn_trg_sync_physical_on_product_update"() TO "se
 REVOKE ALL ON FUNCTION "public"."fn_trigger_auto_classify_product"() FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."fn_trigger_auto_classify_product"() TO "service_role";
 GRANT ALL ON FUNCTION "public"."fn_trigger_auto_classify_product"() TO "authenticated";
-GRANT ALL ON FUNCTION "public"."fn_trigger_auto_classify_product"() TO "anon";
 
 
 
 REVOKE ALL ON FUNCTION "public"."fn_trigger_auto_extract_attributes"() FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."fn_trigger_auto_extract_attributes"() TO "service_role";
 GRANT ALL ON FUNCTION "public"."fn_trigger_auto_extract_attributes"() TO "authenticated";
-GRANT ALL ON FUNCTION "public"."fn_trigger_auto_extract_attributes"() TO "anon";
 
 
 
 REVOKE ALL ON FUNCTION "public"."fn_trigger_auto_sync_dimensions"() FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."fn_trigger_auto_sync_dimensions"() TO "service_role";
-GRANT ALL ON FUNCTION "public"."fn_trigger_auto_sync_dimensions"() TO "anon";
 GRANT ALL ON FUNCTION "public"."fn_trigger_auto_sync_dimensions"() TO "authenticated";
 
 
@@ -113979,21 +116675,18 @@ GRANT ALL ON FUNCTION "public"."fn_trigger_auto_sync_dimensions"() TO "authentic
 REVOKE ALL ON FUNCTION "public"."fn_trigger_calculate_sale_price"() FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."fn_trigger_calculate_sale_price"() TO "service_role";
 GRANT ALL ON FUNCTION "public"."fn_trigger_calculate_sale_price"() TO "authenticated";
-GRANT ALL ON FUNCTION "public"."fn_trigger_calculate_sale_price"() TO "anon";
 
 
 
 REVOKE ALL ON FUNCTION "public"."fn_trigger_classify_packing"() FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."fn_trigger_classify_packing"() TO "service_role";
 GRANT ALL ON FUNCTION "public"."fn_trigger_classify_packing"() TO "authenticated";
-GRANT ALL ON FUNCTION "public"."fn_trigger_classify_packing"() TO "anon";
 
 
 
 REVOKE ALL ON FUNCTION "public"."fn_trigger_extract_materials_from_name"() FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."fn_trigger_extract_materials_from_name"() TO "service_role";
 GRANT ALL ON FUNCTION "public"."fn_trigger_extract_materials_from_name"() TO "authenticated";
-GRANT ALL ON FUNCTION "public"."fn_trigger_extract_materials_from_name"() TO "anon";
 
 
 
@@ -114010,18 +116703,16 @@ GRANT ALL ON FUNCTION "public"."fn_trigger_product_automation"() TO "service_rol
 REVOKE ALL ON FUNCTION "public"."fn_trigger_product_status_sync_category_count"() FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."fn_trigger_product_status_sync_category_count"() TO "service_role";
 GRANT ALL ON FUNCTION "public"."fn_trigger_product_status_sync_category_count"() TO "authenticated";
-GRANT ALL ON FUNCTION "public"."fn_trigger_product_status_sync_category_count"() TO "anon";
 
 
 
 REVOKE ALL ON FUNCTION "public"."fn_trigger_propagate_category_min"() FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."fn_trigger_propagate_category_min"() TO "service_role";
 GRANT ALL ON FUNCTION "public"."fn_trigger_propagate_category_min"() TO "authenticated";
-GRANT ALL ON FUNCTION "public"."fn_trigger_propagate_category_min"() TO "anon";
 
 
 
-GRANT ALL ON FUNCTION "public"."fn_trigger_propagate_fpr"() TO "anon";
+REVOKE ALL ON FUNCTION "public"."fn_trigger_propagate_fpr"() FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."fn_trigger_propagate_fpr"() TO "authenticated";
 GRANT ALL ON FUNCTION "public"."fn_trigger_propagate_fpr"() TO "service_role";
 
@@ -114045,32 +116736,28 @@ GRANT ALL ON FUNCTION "public"."fn_trigger_schema_drift_fetch"() TO "service_rol
 REVOKE ALL ON FUNCTION "public"."fn_trigger_set_has_gift_box"() FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."fn_trigger_set_has_gift_box"() TO "service_role";
 GRANT ALL ON FUNCTION "public"."fn_trigger_set_has_gift_box"() TO "authenticated";
-GRANT ALL ON FUNCTION "public"."fn_trigger_set_has_gift_box"() TO "anon";
 
 
 
 REVOKE ALL ON FUNCTION "public"."fn_trigger_set_has_optional_packaging"() FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."fn_trigger_set_has_optional_packaging"() TO "service_role";
 GRANT ALL ON FUNCTION "public"."fn_trigger_set_has_optional_packaging"() TO "authenticated";
-GRANT ALL ON FUNCTION "public"."fn_trigger_set_has_optional_packaging"() TO "anon";
 
 
 
 REVOKE ALL ON FUNCTION "public"."fn_trigger_set_min_quantity"() FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."fn_trigger_set_min_quantity"() TO "service_role";
 GRANT ALL ON FUNCTION "public"."fn_trigger_set_min_quantity"() TO "authenticated";
-GRANT ALL ON FUNCTION "public"."fn_trigger_set_min_quantity"() TO "anon";
 
 
 
 REVOKE ALL ON FUNCTION "public"."fn_trigger_supplier_source_price"() FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."fn_trigger_supplier_source_price"() TO "service_role";
 GRANT ALL ON FUNCTION "public"."fn_trigger_supplier_source_price"() TO "authenticated";
-GRANT ALL ON FUNCTION "public"."fn_trigger_supplier_source_price"() TO "anon";
 
 
 
-GRANT ALL ON FUNCTION "public"."fn_trigger_sync_category_ancestors"() TO "anon";
+REVOKE ALL ON FUNCTION "public"."fn_trigger_sync_category_ancestors"() FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."fn_trigger_sync_category_ancestors"() TO "authenticated";
 GRANT ALL ON FUNCTION "public"."fn_trigger_sync_category_ancestors"() TO "service_role";
 
@@ -114079,46 +116766,40 @@ GRANT ALL ON FUNCTION "public"."fn_trigger_sync_category_ancestors"() TO "servic
 REVOKE ALL ON FUNCTION "public"."fn_trigger_sync_colors_to_product"() FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."fn_trigger_sync_colors_to_product"() TO "service_role";
 GRANT ALL ON FUNCTION "public"."fn_trigger_sync_colors_to_product"() TO "authenticated";
-GRANT ALL ON FUNCTION "public"."fn_trigger_sync_colors_to_product"() TO "anon";
 
 
 
 REVOKE ALL ON FUNCTION "public"."fn_trigger_sync_descendants_count"() FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."fn_trigger_sync_descendants_count"() TO "service_role";
 GRANT ALL ON FUNCTION "public"."fn_trigger_sync_descendants_count"() TO "authenticated";
-GRANT ALL ON FUNCTION "public"."fn_trigger_sync_descendants_count"() TO "anon";
 
 
 
 REVOKE ALL ON FUNCTION "public"."fn_trigger_sync_pca_products_count"() FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."fn_trigger_sync_pca_products_count"() TO "service_role";
 GRANT ALL ON FUNCTION "public"."fn_trigger_sync_pca_products_count"() TO "authenticated";
-GRANT ALL ON FUNCTION "public"."fn_trigger_sync_pca_products_count"() TO "anon";
 
 
 
 REVOKE ALL ON FUNCTION "public"."fn_trigger_sync_product_status_fields"() FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."fn_trigger_sync_product_status_fields"() TO "service_role";
 GRANT ALL ON FUNCTION "public"."fn_trigger_sync_product_status_fields"() TO "authenticated";
-GRANT ALL ON FUNCTION "public"."fn_trigger_sync_product_status_fields"() TO "anon";
 
 
 
 REVOKE ALL ON FUNCTION "public"."fn_trigger_track_price_updated_products"() FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."fn_trigger_track_price_updated_products"() TO "service_role";
 GRANT ALL ON FUNCTION "public"."fn_trigger_track_price_updated_products"() TO "authenticated";
-GRANT ALL ON FUNCTION "public"."fn_trigger_track_price_updated_products"() TO "anon";
 
 
 
 REVOKE ALL ON FUNCTION "public"."fn_trigger_track_price_updated_vss"() FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."fn_trigger_track_price_updated_vss"() TO "service_role";
 GRANT ALL ON FUNCTION "public"."fn_trigger_track_price_updated_vss"() TO "authenticated";
-GRANT ALL ON FUNCTION "public"."fn_trigger_track_price_updated_vss"() TO "anon";
 
 
 
-GRANT ALL ON FUNCTION "public"."fn_trigger_update_price_last_verified"() TO "anon";
+REVOKE ALL ON FUNCTION "public"."fn_trigger_update_price_last_verified"() FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."fn_trigger_update_price_last_verified"() TO "authenticated";
 GRANT ALL ON FUNCTION "public"."fn_trigger_update_price_last_verified"() TO "service_role";
 
@@ -114127,14 +116808,12 @@ GRANT ALL ON FUNCTION "public"."fn_trigger_update_price_last_verified"() TO "ser
 REVOKE ALL ON FUNCTION "public"."fn_trigger_variant_automation"() FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."fn_trigger_variant_automation"() TO "service_role";
 GRANT ALL ON FUNCTION "public"."fn_trigger_variant_automation"() TO "authenticated";
-GRANT ALL ON FUNCTION "public"."fn_trigger_variant_automation"() TO "anon";
 
 
 
 REVOKE ALL ON FUNCTION "public"."fn_trigger_variant_price"() FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."fn_trigger_variant_price"() TO "service_role";
 GRANT ALL ON FUNCTION "public"."fn_trigger_variant_price"() TO "authenticated";
-GRANT ALL ON FUNCTION "public"."fn_trigger_variant_price"() TO "anon";
 
 
 
@@ -114146,14 +116825,12 @@ GRANT ALL ON FUNCTION "public"."fn_update_all_seo_scores"("p_only_stale" boolean
 REVOKE ALL ON FUNCTION "public"."fn_update_cat_acc_timestamp"() FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."fn_update_cat_acc_timestamp"() TO "service_role";
 GRANT ALL ON FUNCTION "public"."fn_update_cat_acc_timestamp"() TO "authenticated";
-GRANT ALL ON FUNCTION "public"."fn_update_cat_acc_timestamp"() TO "anon";
 
 
 
 REVOKE ALL ON FUNCTION "public"."fn_update_cat_comm_timestamp"() FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."fn_update_cat_comm_timestamp"() TO "service_role";
 GRANT ALL ON FUNCTION "public"."fn_update_cat_comm_timestamp"() TO "authenticated";
-GRANT ALL ON FUNCTION "public"."fn_update_cat_comm_timestamp"() TO "anon";
 
 
 
@@ -114165,7 +116842,6 @@ GRANT ALL ON FUNCTION "public"."fn_update_image_dimensions"("p_image_id" "uuid",
 REVOKE ALL ON FUNCTION "public"."fn_update_prod_comm_timestamp"() FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."fn_update_prod_comm_timestamp"() TO "service_role";
 GRANT ALL ON FUNCTION "public"."fn_update_prod_comm_timestamp"() TO "authenticated";
-GRANT ALL ON FUNCTION "public"."fn_update_prod_comm_timestamp"() TO "anon";
 
 
 
@@ -114176,13 +116852,13 @@ GRANT ALL ON FUNCTION "public"."fn_update_product_dimensions"() TO "anon";
 
 
 
-GRANT ALL ON FUNCTION "public"."fn_update_product_search_vector"() TO "anon";
+REVOKE ALL ON FUNCTION "public"."fn_update_product_search_vector"() FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."fn_update_product_search_vector"() TO "authenticated";
 GRANT ALL ON FUNCTION "public"."fn_update_product_search_vector"() TO "service_role";
 
 
 
-GRANT ALL ON FUNCTION "public"."fn_update_ptm_timestamp"() TO "anon";
+REVOKE ALL ON FUNCTION "public"."fn_update_ptm_timestamp"() FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."fn_update_ptm_timestamp"() TO "authenticated";
 GRANT ALL ON FUNCTION "public"."fn_update_ptm_timestamp"() TO "service_role";
 
@@ -114196,18 +116872,16 @@ GRANT ALL ON FUNCTION "public"."fn_update_supplier_last_sync"() TO "service_role
 REVOKE ALL ON FUNCTION "public"."fn_update_target_aud_timestamp"() FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."fn_update_target_aud_timestamp"() TO "service_role";
 GRANT ALL ON FUNCTION "public"."fn_update_target_aud_timestamp"() TO "authenticated";
-GRANT ALL ON FUNCTION "public"."fn_update_target_aud_timestamp"() TO "anon";
 
 
 
 REVOKE ALL ON FUNCTION "public"."fn_update_timestamp"() FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."fn_update_timestamp"() TO "service_role";
 GRANT ALL ON FUNCTION "public"."fn_update_timestamp"() TO "authenticated";
-GRANT ALL ON FUNCTION "public"."fn_update_timestamp"() TO "anon";
 
 
 
-GRANT ALL ON FUNCTION "public"."fn_update_updated_at"() TO "anon";
+REVOKE ALL ON FUNCTION "public"."fn_update_updated_at"() FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."fn_update_updated_at"() TO "authenticated";
 GRANT ALL ON FUNCTION "public"."fn_update_updated_at"() TO "service_role";
 
@@ -114243,7 +116917,7 @@ GRANT ALL ON FUNCTION "public"."fn_validate_member_supplier"() TO "service_role"
 
 
 
-GRANT ALL ON FUNCTION "public"."fn_validate_packaging_config_hierarchy"() TO "anon";
+REVOKE ALL ON FUNCTION "public"."fn_validate_packaging_config_hierarchy"() FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."fn_validate_packaging_config_hierarchy"() TO "authenticated";
 GRANT ALL ON FUNCTION "public"."fn_validate_packaging_config_hierarchy"() TO "service_role";
 
@@ -114252,7 +116926,6 @@ GRANT ALL ON FUNCTION "public"."fn_validate_packaging_config_hierarchy"() TO "se
 REVOKE ALL ON FUNCTION "public"."fn_validate_packaging_type_on_compat"() FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."fn_validate_packaging_type_on_compat"() TO "service_role";
 GRANT ALL ON FUNCTION "public"."fn_validate_packaging_type_on_compat"() TO "authenticated";
-GRANT ALL ON FUNCTION "public"."fn_validate_packaging_type_on_compat"() TO "anon";
 
 
 
@@ -114266,11 +116939,10 @@ GRANT ALL ON FUNCTION "public"."fn_validate_print_area_dimensions"("p_area_id" "
 REVOKE ALL ON FUNCTION "public"."fn_validate_role_change"() FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."fn_validate_role_change"() TO "service_role";
 GRANT ALL ON FUNCTION "public"."fn_validate_role_change"() TO "authenticated";
-GRANT ALL ON FUNCTION "public"."fn_validate_role_change"() TO "anon";
 
 
 
-GRANT ALL ON FUNCTION "public"."fn_validate_selected_packaging"() TO "anon";
+REVOKE ALL ON FUNCTION "public"."fn_validate_selected_packaging"() FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."fn_validate_selected_packaging"() TO "authenticated";
 GRANT ALL ON FUNCTION "public"."fn_validate_selected_packaging"() TO "service_role";
 
@@ -114279,7 +116951,12 @@ GRANT ALL ON FUNCTION "public"."fn_validate_selected_packaging"() TO "service_ro
 REVOKE ALL ON FUNCTION "public"."fn_validate_video_on_change"() FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."fn_validate_video_on_change"() TO "service_role";
 GRANT ALL ON FUNCTION "public"."fn_validate_video_on_change"() TO "authenticated";
-GRANT ALL ON FUNCTION "public"."fn_validate_video_on_change"() TO "anon";
+
+
+
+REVOKE ALL ON FUNCTION "public"."fn_variant_sparkline"("p_variant_id" "uuid", "p_days" integer) FROM PUBLIC;
+GRANT ALL ON FUNCTION "public"."fn_variant_sparkline"("p_variant_id" "uuid", "p_days" integer) TO "authenticated";
+GRANT ALL ON FUNCTION "public"."fn_variant_sparkline"("p_variant_id" "uuid", "p_days" integer) TO "service_role";
 
 
 
@@ -114346,9 +117023,15 @@ GRANT ALL ON FUNCTION "public"."fn_video_sim_upsert"("p_items" "jsonb") TO "serv
 
 
 
-GRANT ALL ON FUNCTION "public"."fn_vss_sync_warehouse_from_qty"() TO "anon";
+REVOKE ALL ON FUNCTION "public"."fn_vss_sync_warehouse_from_qty"() FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."fn_vss_sync_warehouse_from_qty"() TO "authenticated";
 GRANT ALL ON FUNCTION "public"."fn_vss_sync_warehouse_from_qty"() TO "service_role";
+
+
+
+REVOKE ALL ON FUNCTION "public"."fn_whatif_scenario"("p_delta_units_per_sku" numeric, "p_nivel_filter" "text", "p_supplier_id" "uuid") FROM PUBLIC;
+GRANT ALL ON FUNCTION "public"."fn_whatif_scenario"("p_delta_units_per_sku" numeric, "p_nivel_filter" "text", "p_supplier_id" "uuid") TO "authenticated";
+GRANT ALL ON FUNCTION "public"."fn_whatif_scenario"("p_delta_units_per_sku" numeric, "p_nivel_filter" "text", "p_supplier_id" "uuid") TO "service_role";
 
 
 
@@ -114362,7 +117045,6 @@ GRANT ALL ON FUNCTION "public"."fn_xbz_batch_to_silver"("p_batch_size" integer) 
 REVOKE ALL ON FUNCTION "public"."fn_xbz_derivar_campos_editoriais"() FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."fn_xbz_derivar_campos_editoriais"() TO "authenticated";
 GRANT ALL ON FUNCTION "public"."fn_xbz_derivar_campos_editoriais"() TO "service_role";
-GRANT ALL ON FUNCTION "public"."fn_xbz_derivar_campos_editoriais"() TO "anon";
 
 
 
@@ -114386,7 +117068,6 @@ GRANT ALL ON FUNCTION "public"."fn_xbz_enqueue_videos"() TO "service_role";
 REVOKE ALL ON FUNCTION "public"."fn_xbz_enrich_from_site"() FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."fn_xbz_enrich_from_site"() TO "authenticated";
 GRANT ALL ON FUNCTION "public"."fn_xbz_enrich_from_site"() TO "service_role";
-GRANT ALL ON FUNCTION "public"."fn_xbz_enrich_from_site"() TO "anon";
 
 
 
@@ -114463,7 +117144,6 @@ GRANT ALL ON FUNCTION "public"."fn_xbz_populate_videos_from_site"("p_supplier_id
 REVOKE ALL ON FUNCTION "public"."fn_xbz_propagate_site_to_silver"() FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."fn_xbz_propagate_site_to_silver"() TO "authenticated";
 GRANT ALL ON FUNCTION "public"."fn_xbz_propagate_site_to_silver"() TO "service_role";
-GRANT ALL ON FUNCTION "public"."fn_xbz_propagate_site_to_silver"() TO "anon";
 
 
 
@@ -115164,7 +117844,6 @@ GRANT ALL ON FUNCTION "public"."get_quote_token_by_value"("_token" "text") TO "s
 
 REVOKE ALL ON FUNCTION "public"."get_quote_token_public"("_token" "text") FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."get_quote_token_public"("_token" "text") TO "service_role";
-GRANT ALL ON FUNCTION "public"."get_quote_token_public"("_token" "text") TO "anon";
 
 
 
@@ -115324,13 +118003,28 @@ GRANT ALL ON FUNCTION "public"."grant_mcp_full_to_user"("_target_user_id" "uuid"
 
 
 
+REVOKE ALL ON FUNCTION "public"."guard_freight_settings_row"() FROM PUBLIC;
+GRANT ALL ON FUNCTION "public"."guard_freight_settings_row"() TO "service_role";
+
+
+
 REVOKE ALL ON FUNCTION "public"."guard_mcp_api_keys_writes"() FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."guard_mcp_api_keys_writes"() TO "service_role";
 
 
 
+REVOKE ALL ON FUNCTION "public"."guard_shipping_boxes_row"() FROM PUBLIC;
+GRANT ALL ON FUNCTION "public"."guard_shipping_boxes_row"() TO "service_role";
+
+
+
 REVOKE ALL ON FUNCTION "public"."handle_new_user"() FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."handle_new_user"() TO "service_role";
+
+
+
+GRANT ALL ON FUNCTION "public"."handle_updated_at"() TO "authenticated";
+GRANT ALL ON FUNCTION "public"."handle_updated_at"() TO "service_role";
 
 
 
@@ -115381,7 +118075,7 @@ GRANT ALL ON FUNCTION "public"."increment_mockup_template_usage"() TO "service_r
 
 
 
-GRANT ALL ON FUNCTION "public"."increment_quote_version"() TO "anon";
+REVOKE ALL ON FUNCTION "public"."increment_quote_version"() FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."increment_quote_version"() TO "authenticated";
 GRANT ALL ON FUNCTION "public"."increment_quote_version"() TO "service_role";
 
@@ -115928,7 +118622,6 @@ GRANT ALL ON FUNCTION "public"."mcp_audit_violation"("_key_id" "uuid", "_reason"
 
 
 REVOKE ALL ON FUNCTION "public"."mcp_kv_get"("p_secret" "text", "p_key" "text") FROM PUBLIC;
-GRANT ALL ON FUNCTION "public"."mcp_kv_get"("p_secret" "text", "p_key" "text") TO "authenticated";
 GRANT ALL ON FUNCTION "public"."mcp_kv_get"("p_secret" "text", "p_key" "text") TO "service_role";
 
 
@@ -116118,7 +118811,7 @@ GRANT ALL ON FUNCTION "public"."process_supplier_products_batch"("p_supplier_id"
 
 
 
-GRANT ALL ON FUNCTION "public"."products_search_vector_update"() TO "anon";
+REVOKE ALL ON FUNCTION "public"."products_search_vector_update"() FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."products_search_vector_update"() TO "authenticated";
 GRANT ALL ON FUNCTION "public"."products_search_vector_update"() TO "service_role";
 
@@ -116254,7 +118947,6 @@ GRANT ALL ON FUNCTION "public"."register_classify_function"("p_function_name" ch
 
 
 REVOKE ALL ON FUNCTION "public"."registrar_entrada_estoque"("p_variant_sku" character varying, "p_quantity" integer, "p_unit_cost" numeric, "p_supplier_name" character varying, "p_document_number" character varying, "p_notes" "text", "p_user_id" "uuid") FROM PUBLIC;
-GRANT ALL ON FUNCTION "public"."registrar_entrada_estoque"("p_variant_sku" character varying, "p_quantity" integer, "p_unit_cost" numeric, "p_supplier_name" character varying, "p_document_number" character varying, "p_notes" "text", "p_user_id" "uuid") TO "authenticated";
 GRANT ALL ON FUNCTION "public"."registrar_entrada_estoque"("p_variant_sku" character varying, "p_quantity" integer, "p_unit_cost" numeric, "p_supplier_name" character varying, "p_document_number" character varying, "p_notes" "text", "p_user_id" "uuid") TO "service_role";
 
 
@@ -116266,7 +118958,6 @@ GRANT ALL ON FUNCTION "public"."registrar_mudancas_preco_spot"("p_dados_api" "js
 
 
 REVOKE ALL ON FUNCTION "public"."registrar_saida_estoque"("p_variant_sku" character varying, "p_quantity" integer, "p_movement_type" character varying, "p_document_number" character varying, "p_notes" "text", "p_user_id" "uuid", "p_allow_negative" boolean) FROM PUBLIC;
-GRANT ALL ON FUNCTION "public"."registrar_saida_estoque"("p_variant_sku" character varying, "p_quantity" integer, "p_movement_type" character varying, "p_document_number" character varying, "p_notes" "text", "p_user_id" "uuid", "p_allow_negative" boolean) TO "authenticated";
 GRANT ALL ON FUNCTION "public"."registrar_saida_estoque"("p_variant_sku" character varying, "p_quantity" integer, "p_movement_type" character varying, "p_document_number" character varying, "p_notes" "text", "p_user_id" "uuid", "p_allow_negative" boolean) TO "service_role";
 
 
@@ -116310,6 +119001,13 @@ GRANT ALL ON FUNCTION "public"."request_discount_approval_transactional"("_quote
 
 
 
+REVOKE ALL ON FUNCTION "public"."request_password_reset"("p_email" "text") FROM PUBLIC;
+GRANT ALL ON FUNCTION "public"."request_password_reset"("p_email" "text") TO "service_role";
+GRANT ALL ON FUNCTION "public"."request_password_reset"("p_email" "text") TO "anon";
+GRANT ALL ON FUNCTION "public"."request_password_reset"("p_email" "text") TO "authenticated";
+
+
+
 REVOKE ALL ON FUNCTION "public"."request_step_up_challenge"("_action" "public"."step_up_action", "_target_ref" "text", "_ip" "inet", "_user_agent" "text") FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."request_step_up_challenge"("_action" "public"."step_up_action", "_target_ref" "text", "_ip" "inet", "_user_agent" "text") TO "authenticated";
 GRANT ALL ON FUNCTION "public"."request_step_up_challenge"("_action" "public"."step_up_action", "_target_ref" "text", "_ip" "inet", "_user_agent" "text") TO "service_role";
@@ -116323,6 +119021,7 @@ GRANT ALL ON FUNCTION "public"."reset_mockup_credit_limits"() TO "service_role";
 
 REVOKE ALL ON FUNCTION "public"."reset_optimization_queue"("_only_running" boolean) FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."reset_optimization_queue"("_only_running" boolean) TO "service_role";
+GRANT ALL ON FUNCTION "public"."reset_optimization_queue"("_only_running" boolean) TO "authenticated";
 
 
 
@@ -116402,6 +119101,12 @@ GRANT ALL ON FUNCTION "public"."rotate_mcp_key"("_key_id" "uuid", "_new_key_hash
 
 REVOKE ALL ON FUNCTION "public"."rpc_enrich_kit_component"("p_kit_component_id" "uuid", "p_source" character varying, "p_shape_type" character varying, "p_length_mm" integer, "p_width_mm" integer, "p_height_mm" integer, "p_diameter_mm" integer, "p_weight_g" integer, "p_pkg_ext_length_mm" integer, "p_pkg_ext_width_mm" integer, "p_pkg_ext_height_mm" integer, "p_pkg_int_length_mm" integer, "p_pkg_int_width_mm" integer, "p_pkg_int_height_mm" integer, "p_pkg_material" character varying, "p_pkg_color" character varying, "p_pkg_finish" character varying, "p_notes" "text") FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."rpc_enrich_kit_component"("p_kit_component_id" "uuid", "p_source" character varying, "p_shape_type" character varying, "p_length_mm" integer, "p_width_mm" integer, "p_height_mm" integer, "p_diameter_mm" integer, "p_weight_g" integer, "p_pkg_ext_length_mm" integer, "p_pkg_ext_width_mm" integer, "p_pkg_ext_height_mm" integer, "p_pkg_int_length_mm" integer, "p_pkg_int_width_mm" integer, "p_pkg_int_height_mm" integer, "p_pkg_material" character varying, "p_pkg_color" character varying, "p_pkg_finish" character varying, "p_notes" "text") TO "service_role";
+
+
+
+REVOKE ALL ON FUNCTION "public"."rpc_sales_assistant_candidates"("p_ramo_pai_id" "uuid", "p_color_group_ids" "uuid"[], "p_price_min" numeric, "p_price_max" numeric, "p_limit" integer, "p_max_per_category" integer, "p_min_score" integer) FROM PUBLIC;
+GRANT ALL ON FUNCTION "public"."rpc_sales_assistant_candidates"("p_ramo_pai_id" "uuid", "p_color_group_ids" "uuid"[], "p_price_min" numeric, "p_price_max" numeric, "p_limit" integer, "p_max_per_category" integer, "p_min_score" integer) TO "authenticated";
+GRANT ALL ON FUNCTION "public"."rpc_sales_assistant_candidates"("p_ramo_pai_id" "uuid", "p_color_group_ids" "uuid"[], "p_price_min" numeric, "p_price_max" numeric, "p_limit" integer, "p_max_per_category" integer, "p_min_score" integer) TO "service_role";
 
 
 
@@ -116703,13 +119408,13 @@ GRANT ALL ON FUNCTION "public"."trg_categories_seo_autofill"() TO "service_role"
 
 
 
-GRANT ALL ON FUNCTION "public"."trg_content_articles_updated_at"() TO "anon";
+REVOKE ALL ON FUNCTION "public"."trg_content_articles_updated_at"() FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."trg_content_articles_updated_at"() TO "authenticated";
 GRANT ALL ON FUNCTION "public"."trg_content_articles_updated_at"() TO "service_role";
 
 
 
-GRANT ALL ON FUNCTION "public"."trg_fn_sanitize_restock_dates"() TO "anon";
+REVOKE ALL ON FUNCTION "public"."trg_fn_sanitize_restock_dates"() FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."trg_fn_sanitize_restock_dates"() TO "authenticated";
 GRANT ALL ON FUNCTION "public"."trg_fn_sanitize_restock_dates"() TO "service_role";
 
@@ -117095,172 +119800,6 @@ GRANT ALL ON TABLE "public"."product_images" TO "service_role";
 
 
 
-GRANT MAINTAIN ON TABLE "public"."suppliers" TO "anon";
-GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."suppliers" TO "authenticated";
-GRANT ALL ON TABLE "public"."suppliers" TO "service_role";
-
-
-
-GRANT SELECT("id") ON TABLE "public"."suppliers" TO "authenticated";
-
-
-
-GRANT SELECT("name") ON TABLE "public"."suppliers" TO "authenticated";
-
-
-
-GRANT SELECT("code") ON TABLE "public"."suppliers" TO "authenticated";
-
-
-
-GRANT SELECT("cnpj") ON TABLE "public"."suppliers" TO "authenticated";
-
-
-
-GRANT SELECT("contact_name") ON TABLE "public"."suppliers" TO "authenticated";
-
-
-
-GRANT SELECT("email") ON TABLE "public"."suppliers" TO "authenticated";
-
-
-
-GRANT SELECT("phone") ON TABLE "public"."suppliers" TO "authenticated";
-
-
-
-GRANT SELECT("address") ON TABLE "public"."suppliers" TO "authenticated";
-
-
-
-GRANT SELECT("active") ON TABLE "public"."suppliers" TO "authenticated";
-
-
-
-GRANT SELECT("created_at") ON TABLE "public"."suppliers" TO "authenticated";
-
-
-
-GRANT SELECT("website") ON TABLE "public"."suppliers" TO "authenticated";
-
-
-
-GRANT SELECT("contact_person") ON TABLE "public"."suppliers" TO "authenticated";
-
-
-
-GRANT SELECT("payment_terms") ON TABLE "public"."suppliers" TO "authenticated";
-
-
-
-GRANT SELECT("delivery_time_days") ON TABLE "public"."suppliers" TO "authenticated";
-
-
-
-GRANT SELECT("minimum_order_value") ON TABLE "public"."suppliers" TO "authenticated";
-
-
-
-GRANT SELECT("notes") ON TABLE "public"."suppliers" TO "authenticated";
-
-
-
-GRANT SELECT("updated_at") ON TABLE "public"."suppliers" TO "authenticated";
-
-
-
-GRANT SELECT("organization_id") ON TABLE "public"."suppliers" TO "authenticated";
-
-
-
-GRANT SELECT("trading_name") ON TABLE "public"."suppliers" TO "authenticated";
-
-
-
-GRANT SELECT("api_type") ON TABLE "public"."suppliers" TO "authenticated";
-
-
-
-GRANT SELECT("api_base_url") ON TABLE "public"."suppliers" TO "authenticated";
-
-
-
-GRANT SELECT("min_order_value") ON TABLE "public"."suppliers" TO "authenticated";
-
-
-
-GRANT SELECT("shipping_terms") ON TABLE "public"."suppliers" TO "authenticated";
-
-
-
-GRANT SELECT("default_markup_percent") ON TABLE "public"."suppliers" TO "authenticated";
-
-
-
-GRANT SELECT("is_product_supplier") ON TABLE "public"."suppliers" TO "authenticated";
-
-
-
-GRANT SELECT("is_engraving_supplier") ON TABLE "public"."suppliers" TO "authenticated";
-
-
-
-GRANT SELECT("sync_enabled") ON TABLE "public"."suppliers" TO "authenticated";
-
-
-
-GRANT SELECT("sync_interval_minutes") ON TABLE "public"."suppliers" TO "authenticated";
-
-
-
-GRANT SELECT("last_full_sync_at") ON TABLE "public"."suppliers" TO "authenticated";
-
-
-
-GRANT SELECT("last_sync_status") ON TABLE "public"."suppliers" TO "authenticated";
-
-
-
-GRANT SELECT("last_sync_error") ON TABLE "public"."suppliers" TO "authenticated";
-
-
-
-GRANT SELECT("api_rate_limit_per_hour") ON TABLE "public"."suppliers" TO "authenticated";
-
-
-
-GRANT SELECT("priority") ON TABLE "public"."suppliers" TO "authenticated";
-
-
-
-GRANT SELECT("api_requests_current_hour") ON TABLE "public"."suppliers" TO "authenticated";
-
-
-
-GRANT SELECT("api_requests_reset_at") ON TABLE "public"."suppliers" TO "authenticated";
-
-
-
-GRANT SELECT("state_uf") ON TABLE "public"."suppliers" TO "authenticated";
-
-
-
-GRANT SELECT("tax_regime") ON TABLE "public"."suppliers" TO "authenticated";
-
-
-
-GRANT SELECT("inscricao_estadual") ON TABLE "public"."suppliers" TO "authenticated";
-
-
-
-GRANT SELECT("phone2") ON TABLE "public"."suppliers" TO "authenticated";
-
-
-
-GRANT SELECT("logo_url") ON TABLE "public"."suppliers" TO "authenticated";
-
-
-
 GRANT ALL ON TABLE "analytics"."mv_media_health" TO "service_role";
 
 
@@ -117278,23 +119817,6 @@ GRANT SELECT ON TABLE "analytics"."mv_product_cards" TO "authenticated";
 
 GRANT ALL ON TABLE "analytics"."mv_product_compositions" TO "service_role";
 GRANT SELECT ON TABLE "analytics"."mv_product_compositions" TO "authenticated";
-
-
-
-GRANT REFERENCES,TRIGGER,MAINTAIN ON TABLE "public"."stock_daily_summary" TO "anon";
-GRANT SELECT,REFERENCES,TRIGGER,MAINTAIN ON TABLE "public"."stock_daily_summary" TO "authenticated";
-GRANT ALL ON TABLE "public"."stock_daily_summary" TO "service_role";
-
-
-
-GRANT MAINTAIN ON TABLE "public"."variant_supplier_sources" TO "anon";
-GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."variant_supplier_sources" TO "authenticated";
-GRANT ALL ON TABLE "public"."variant_supplier_sources" TO "service_role";
-
-
-
-GRANT SELECT ON TABLE "analytics"."mv_stock_velocity" TO "service_role";
-GRANT SELECT ON TABLE "analytics"."mv_stock_velocity" TO "authenticated";
 
 
 
@@ -117357,11 +119879,6 @@ GRANT ALL ON TABLE "public"."_archive_product_seo_20260626" TO "service_role";
 
 
 GRANT ALL ON TABLE "public"."_archive_supplier_price_tiers_20260626" TO "service_role";
-
-
-
-GRANT REFERENCES,TRIGGER,MAINTAIN ON TABLE "public"."_backup_stock_daily_summary_20260618" TO "authenticated";
-GRANT ALL ON TABLE "public"."_backup_stock_daily_summary_20260618" TO "service_role";
 
 
 
@@ -117763,7 +120280,7 @@ GRANT ALL ON TABLE "public"."color_nuances" TO "service_role";
 
 
 
-GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."color_synonym_map" TO "anon";
+GRANT SELECT,REFERENCES,TRIGGER,MAINTAIN ON TABLE "public"."color_synonym_map" TO "anon";
 GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."color_synonym_map" TO "authenticated";
 GRANT ALL ON TABLE "public"."color_synonym_map" TO "service_role";
 
@@ -117869,6 +120386,10 @@ GRANT ALL ON TABLE "public"."crm_callback_events" TO "service_role";
 
 
 
+GRANT ALL ON TABLE "public"."crm_seller_identity_links" TO "service_role";
+
+
+
 GRANT REFERENCES,TRIGGER,MAINTAIN ON TABLE "public"."cron_job_timeout_map" TO "anon";
 GRANT REFERENCES,TRIGGER,MAINTAIN ON TABLE "public"."cron_job_timeout_map" TO "authenticated";
 GRANT ALL ON TABLE "public"."cron_job_timeout_map" TO "service_role";
@@ -117905,6 +120426,11 @@ GRANT ALL ON TABLE "public"."device_login_notifications" TO "service_role";
 
 GRANT SELECT,MAINTAIN ON TABLE "public"."discount_approval_audit" TO "authenticated";
 GRANT ALL ON TABLE "public"."discount_approval_audit" TO "service_role";
+
+
+
+GRANT ALL ON TABLE "public"."e2e_cleanup_audit" TO "service_role";
+GRANT SELECT ON TABLE "public"."e2e_cleanup_audit" TO "authenticated";
 
 
 
@@ -117949,6 +120475,11 @@ GRANT ALL ON TABLE "public"."edge_rate_limits" TO "service_role";
 
 
 
+GRANT ALL ON TABLE "public"."endomarketing_themes" TO "service_role";
+GRANT SELECT ON TABLE "public"."endomarketing_themes" TO "authenticated";
+
+
+
 GRANT INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."enriched_contacts" TO "anon";
 GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."enriched_contacts" TO "authenticated";
 GRANT ALL ON TABLE "public"."enriched_contacts" TO "service_role";
@@ -117973,7 +120504,6 @@ GRANT ALL ON TABLE "public"."expert_messages" TO "service_role";
 
 
 
-GRANT INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."external_connections" TO "anon";
 GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."external_connections" TO "authenticated";
 GRANT ALL ON TABLE "public"."external_connections" TO "service_role";
 
@@ -118024,6 +120554,11 @@ GRANT ALL ON TABLE "public"."file_scan_logs" TO "service_role";
 GRANT INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."follow_up_reminders" TO "anon";
 GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."follow_up_reminders" TO "authenticated";
 GRANT ALL ON TABLE "public"."follow_up_reminders" TO "service_role";
+
+
+
+GRANT ALL ON TABLE "public"."freight_settings" TO "service_role";
+GRANT SELECT,UPDATE ON TABLE "public"."freight_settings" TO "authenticated";
 
 
 
@@ -118329,6 +120864,10 @@ GRANT ALL ON TABLE "public"."magazine_public_view_events_2027_01" TO "service_ro
 
 
 
+GRANT ALL ON TABLE "public"."magazine_public_view_events_2027_02" TO "service_role";
+
+
+
 GRANT ALL ON TABLE "public"."magazine_public_view_events_default" TO "service_role";
 
 
@@ -118466,7 +121005,6 @@ GRANT ALL ON SEQUENCE "public"."medallion_coverage_snapshots_id_seq" TO "service
 
 
 
-GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."mockup_approval_links" TO "anon";
 GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."mockup_approval_links" TO "authenticated";
 GRANT ALL ON TABLE "public"."mockup_approval_links" TO "service_role";
 
@@ -118514,10 +121052,6 @@ GRANT ALL ON TABLE "public"."mockup_templates" TO "service_role";
 
 
 
-GRANT ALL ON TABLE "public"."mv_stock_rupture_alert" TO "service_role";
-
-
-
 GRANT ALL ON TABLE "public"."mv_ema_kpi_by_level" TO "service_role";
 
 
@@ -118552,15 +121086,6 @@ GRANT ALL ON TABLE "public"."mv_product_intelligence" TO "service_role";
 
 GRANT SELECT ON TABLE "public"."mv_stock_velocity" TO "authenticated";
 GRANT ALL ON TABLE "public"."mv_stock_velocity" TO "service_role";
-
-
-
-GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."supplier_replenishment_events" TO "authenticated";
-GRANT ALL ON TABLE "public"."supplier_replenishment_events" TO "service_role";
-
-
-
-GRANT ALL ON TABLE "public"."mv_supplier_reliability" TO "service_role";
 
 
 
@@ -118840,6 +121365,11 @@ GRANT ALL ON TABLE "public"."product_deactivation_tokens" TO "service_role";
 
 
 
+GRANT ALL ON TABLE "public"."product_endomarketing" TO "service_role";
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE "public"."product_endomarketing" TO "authenticated";
+
+
+
 GRANT INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."product_faqs" TO "anon";
 GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."product_faqs" TO "authenticated";
 GRANT ALL ON TABLE "public"."product_faqs" TO "service_role";
@@ -119096,6 +121626,11 @@ GRANT ALL ON TABLE "public"."query_telemetry" TO "service_role";
 
 
 
+GRANT ALL ON TABLE "public"."quote_comments" TO "service_role";
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE "public"."quote_comments" TO "authenticated";
+
+
+
 GRANT SELECT,INSERT,DELETE,MAINTAIN,UPDATE ON TABLE "public"."quote_drafts" TO "authenticated";
 GRANT ALL ON TABLE "public"."quote_drafts" TO "service_role";
 
@@ -119288,6 +121823,11 @@ GRANT ALL ON TABLE "public"."seo_redirects" TO "service_role";
 
 
 
+GRANT ALL ON TABLE "public"."shipping_boxes" TO "service_role";
+GRANT SELECT,INSERT,UPDATE ON TABLE "public"."shipping_boxes" TO "authenticated";
+
+
+
 GRANT INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."simulator_wizard_drafts" TO "anon";
 GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."simulator_wizard_drafts" TO "authenticated";
 GRANT ALL ON TABLE "public"."simulator_wizard_drafts" TO "service_role";
@@ -119363,6 +121903,12 @@ GRANT ALL ON TABLE "public"."step_up_tokens" TO "service_role";
 GRANT ALL ON SEQUENCE "public"."stock_daily_summary_id_seq" TO "anon";
 GRANT ALL ON SEQUENCE "public"."stock_daily_summary_id_seq" TO "authenticated";
 GRANT ALL ON SEQUENCE "public"."stock_daily_summary_id_seq" TO "service_role";
+
+
+
+GRANT REFERENCES,TRIGGER,MAINTAIN ON TABLE "public"."stock_notes" TO "anon";
+GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."stock_notes" TO "authenticated";
+GRANT ALL ON TABLE "public"."stock_notes" TO "service_role";
 
 
 
@@ -119453,12 +121999,6 @@ GRANT ALL ON TABLE "public"."supplier_products_raw_history" TO "service_role";
 
 
 
-GRANT INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."supplier_products_raw_history_p2026_07" TO "anon";
-GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."supplier_products_raw_history_p2026_07" TO "authenticated";
-GRANT ALL ON TABLE "public"."supplier_products_raw_history_p2026_07" TO "service_role";
-
-
-
 GRANT INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."supplier_products_raw_history_p2026_08" TO "anon";
 GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."supplier_products_raw_history_p2026_08" TO "authenticated";
 GRANT ALL ON TABLE "public"."supplier_products_raw_history_p2026_08" TO "service_role";
@@ -119492,6 +122032,72 @@ GRANT ALL ON TABLE "public"."supplier_products_raw_history_p2026_12" TO "service
 GRANT REFERENCES,TRIGGER,MAINTAIN ON TABLE "public"."supplier_products_raw_history_p2027_01" TO "anon";
 GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."supplier_products_raw_history_p2027_01" TO "authenticated";
 GRANT ALL ON TABLE "public"."supplier_products_raw_history_p2027_01" TO "service_role";
+
+
+
+GRANT REFERENCES,TRIGGER,MAINTAIN ON TABLE "public"."supplier_products_raw_history_p2027_02" TO "anon";
+GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."supplier_products_raw_history_p2027_02" TO "authenticated";
+GRANT ALL ON TABLE "public"."supplier_products_raw_history_p2027_02" TO "service_role";
+
+
+
+GRANT REFERENCES,TRIGGER,MAINTAIN ON TABLE "public"."supplier_products_raw_history_p2027_03" TO "anon";
+GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."supplier_products_raw_history_p2027_03" TO "authenticated";
+GRANT ALL ON TABLE "public"."supplier_products_raw_history_p2027_03" TO "service_role";
+
+
+
+GRANT REFERENCES,TRIGGER,MAINTAIN ON TABLE "public"."supplier_products_raw_history_p2027_04" TO "anon";
+GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."supplier_products_raw_history_p2027_04" TO "authenticated";
+GRANT ALL ON TABLE "public"."supplier_products_raw_history_p2027_04" TO "service_role";
+
+
+
+GRANT REFERENCES,TRIGGER,MAINTAIN ON TABLE "public"."supplier_products_raw_history_p2027_05" TO "anon";
+GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."supplier_products_raw_history_p2027_05" TO "authenticated";
+GRANT ALL ON TABLE "public"."supplier_products_raw_history_p2027_05" TO "service_role";
+
+
+
+GRANT REFERENCES,TRIGGER,MAINTAIN ON TABLE "public"."supplier_products_raw_history_p2027_06" TO "anon";
+GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."supplier_products_raw_history_p2027_06" TO "authenticated";
+GRANT ALL ON TABLE "public"."supplier_products_raw_history_p2027_06" TO "service_role";
+
+
+
+GRANT REFERENCES,TRIGGER,MAINTAIN ON TABLE "public"."supplier_products_raw_history_p2027_07" TO "anon";
+GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."supplier_products_raw_history_p2027_07" TO "authenticated";
+GRANT ALL ON TABLE "public"."supplier_products_raw_history_p2027_07" TO "service_role";
+
+
+
+GRANT REFERENCES,TRIGGER,MAINTAIN ON TABLE "public"."supplier_products_raw_history_p2027_08" TO "anon";
+GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."supplier_products_raw_history_p2027_08" TO "authenticated";
+GRANT ALL ON TABLE "public"."supplier_products_raw_history_p2027_08" TO "service_role";
+
+
+
+GRANT REFERENCES,TRIGGER,MAINTAIN ON TABLE "public"."supplier_products_raw_history_p2027_09" TO "anon";
+GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."supplier_products_raw_history_p2027_09" TO "authenticated";
+GRANT ALL ON TABLE "public"."supplier_products_raw_history_p2027_09" TO "service_role";
+
+
+
+GRANT REFERENCES,TRIGGER,MAINTAIN ON TABLE "public"."supplier_products_raw_history_p2027_10" TO "anon";
+GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."supplier_products_raw_history_p2027_10" TO "authenticated";
+GRANT ALL ON TABLE "public"."supplier_products_raw_history_p2027_10" TO "service_role";
+
+
+
+GRANT REFERENCES,TRIGGER,MAINTAIN ON TABLE "public"."supplier_products_raw_history_p2027_11" TO "anon";
+GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."supplier_products_raw_history_p2027_11" TO "authenticated";
+GRANT ALL ON TABLE "public"."supplier_products_raw_history_p2027_11" TO "service_role";
+
+
+
+GRANT REFERENCES,TRIGGER,MAINTAIN ON TABLE "public"."supplier_products_raw_history_p2027_12" TO "anon";
+GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."supplier_products_raw_history_p2027_12" TO "authenticated";
+GRANT ALL ON TABLE "public"."supplier_products_raw_history_p2027_12" TO "service_role";
 
 
 
@@ -119753,6 +122359,30 @@ GRANT ALL ON TABLE "public"."v_commemorative_dates_with_colors" TO "service_role
 
 
 
+GRANT SELECT,MAINTAIN ON TABLE "public"."v_compras_catalogo" TO "anon";
+GRANT SELECT,MAINTAIN ON TABLE "public"."v_compras_catalogo" TO "authenticated";
+GRANT ALL ON TABLE "public"."v_compras_catalogo" TO "service_role";
+
+
+
+GRANT SELECT,MAINTAIN ON TABLE "public"."v_compras_precos_faixa" TO "anon";
+GRANT SELECT,MAINTAIN ON TABLE "public"."v_compras_precos_faixa" TO "authenticated";
+GRANT ALL ON TABLE "public"."v_compras_precos_faixa" TO "service_role";
+
+
+
+GRANT MAINTAIN ON TABLE "public"."vw_variant_sale_prices" TO "anon";
+GRANT SELECT,MAINTAIN ON TABLE "public"."vw_variant_sale_prices" TO "authenticated";
+GRANT ALL ON TABLE "public"."vw_variant_sale_prices" TO "service_role";
+
+
+
+GRANT SELECT,MAINTAIN ON TABLE "public"."v_compras_precos_variante" TO "anon";
+GRANT SELECT,MAINTAIN ON TABLE "public"."v_compras_precos_variante" TO "authenticated";
+GRANT ALL ON TABLE "public"."v_compras_precos_variante" TO "service_role";
+
+
+
 GRANT MAINTAIN ON TABLE "public"."v_connection_health" TO "anon";
 GRANT MAINTAIN ON TABLE "public"."v_connection_health" TO "authenticated";
 GRANT ALL ON TABLE "public"."v_connection_health" TO "service_role";
@@ -119801,7 +122431,7 @@ GRANT ALL ON TABLE "public"."v_image_quality_stats" TO "service_role";
 
 
 GRANT MAINTAIN ON TABLE "public"."v_kill_switch_hits_summary" TO "anon";
-GRANT MAINTAIN ON TABLE "public"."v_kill_switch_hits_summary" TO "authenticated";
+GRANT SELECT,MAINTAIN ON TABLE "public"."v_kill_switch_hits_summary" TO "authenticated";
 GRANT ALL ON TABLE "public"."v_kill_switch_hits_summary" TO "service_role";
 
 
@@ -120751,12 +123381,6 @@ GRANT ALL ON TABLE "public"."vw_system_health_quick" TO "service_role";
 GRANT MAINTAIN ON TABLE "public"."vw_thermal_products" TO "anon";
 GRANT MAINTAIN ON TABLE "public"."vw_thermal_products" TO "authenticated";
 GRANT ALL ON TABLE "public"."vw_thermal_products" TO "service_role";
-
-
-
-GRANT MAINTAIN ON TABLE "public"."vw_variant_sale_prices" TO "anon";
-GRANT SELECT,MAINTAIN ON TABLE "public"."vw_variant_sale_prices" TO "authenticated";
-GRANT ALL ON TABLE "public"."vw_variant_sale_prices" TO "service_role";
 
 
 
