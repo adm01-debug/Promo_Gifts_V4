@@ -2,11 +2,21 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "c5cbd373208d03cdfb9522edc094f001ec7c91bf",
+  "commit": "20c63c3f7f3cb525b36610fea9a646fdd57c798a",
   "branch": "main",
-  "data_commit": "2026-11-22T10:31:29-03:00",
+  "data_commit": "2026-11-22T11:04:38-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "20c63c3",
+    "data": "2026-11-22",
+    "assunto": "fix: devolve security_invoker=false às views p06 e de compras (#3981)"
+   },
+   {
+    "sha": "2121d82",
+    "data": "2026-11-22",
+    "assunto": "chore(security): atualiza baseline assinado de RLS policies (#3985)"
+   },
    {
     "sha": "c5cbd37",
     "data": "2026-11-22",
@@ -121,19 +131,9 @@
     "sha": "7f8c55e",
     "data": "2026-11-21",
     "assunto": "feat(compras): view v_compras_catalogo no PIM [PR 1.1]"
-   },
-   {
-    "sha": "fdf20b3",
-    "data": "2026-11-21",
-    "assunto": "fix(quotes): restaura contrato transacional das RPCs com frete (Gate 2.5) (#3959)"
-   },
-   {
-    "sha": "60f9275",
-    "data": "2026-11-21",
-    "assunto": "chore(migrations): rollback da migration 20261121000000 (E058) (#3957)"
    }
   ],
-  "arquivos_mudados_7d": 1270,
+  "arquivos_mudados_7d": 1271,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -199,7 +199,7 @@
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "supabase/MIGRATIONS_SYNC_LOG.md",
-    "mudancas": 63
+    "mudancas": 64
    },
    {
     "arquivo": "package.json",
@@ -301,11 +301,11 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 262
+    "commits": 261
    },
    {
     "autor": "github-actions[bot]",
-    "commits": 37
+    "commits": 38
    },
    {
     "autor": "Claude",
@@ -318,7 +318,7 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 11208,
+  "arquivos_total": 11210,
   "arquivos_codigo": 5654,
   "linhas_codigo": 1073021,
   "rotas": 141,
@@ -330,7 +330,7 @@
   "hooks": 645,
   "edge_functions": 112,
   "tabelas": 531,
-  "migrations": 3125,
+  "migrations": 3126,
   "cron_jobs": 122,
   "testes": 2702,
   "workflows": 89,
