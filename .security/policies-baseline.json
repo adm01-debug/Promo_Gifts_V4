@@ -1,7 +1,7 @@
 {
   "version": 1,
   "pending_seed": false,
-  "generated_at": "2026-11-20T19:45:40.723Z",
+  "generated_at": "2026-11-22T13:36:59.488Z",
   "project_ref": "doufsxqlfjyuvxuezpln",
   "schemas_checked": [
     "public",
@@ -13,7 +13,7 @@
     "prod_audit",
     "supplier_stricker"
   ],
-  "sha256": "6363a6598c1a6ad702cbe11723769cc172165638a80eb749e7078cdbdb54fffb",
+  "sha256": "b74d31e7540d4fac8cd94ee1914205cda07dccf314c5bfe7d51bf4f8247d40ad",
   "policies": [
     {
       "schemaname": "cf_recon",
@@ -824,6 +824,46 @@
       "cmd": "SELECT",
       "qual": "is_admin_or_above(( SELECT ( SELECT auth.uid() AS uid) AS uid))",
       "with_check": ""
+    },
+    {
+      "schemaname": "public",
+      "tablename": "business_calendar",
+      "policyname": "business_calendar_delete_admin",
+      "permissive": "PERMISSIVE",
+      "roles": "{authenticated}",
+      "cmd": "DELETE",
+      "qual": "is_admin()",
+      "with_check": ""
+    },
+    {
+      "schemaname": "public",
+      "tablename": "business_calendar",
+      "policyname": "business_calendar_insert_admin",
+      "permissive": "PERMISSIVE",
+      "roles": "{authenticated}",
+      "cmd": "INSERT",
+      "qual": "",
+      "with_check": "is_admin()"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "business_calendar",
+      "policyname": "business_calendar_select_authenticated",
+      "permissive": "PERMISSIVE",
+      "roles": "{authenticated}",
+      "cmd": "SELECT",
+      "qual": "true",
+      "with_check": ""
+    },
+    {
+      "schemaname": "public",
+      "tablename": "business_calendar",
+      "policyname": "business_calendar_update_admin",
+      "permissive": "PERMISSIVE",
+      "roles": "{authenticated}",
+      "cmd": "UPDATE",
+      "qual": "is_admin()",
+      "with_check": "is_admin()"
     },
     {
       "schemaname": "public",
