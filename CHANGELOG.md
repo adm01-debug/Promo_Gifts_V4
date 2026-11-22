@@ -5,6 +5,13 @@ Todas as mudanças notáveis deste projeto são documentadas neste arquivo.
 O formato é baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/),
 e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR/).
 
+## [1.19.0](https://github.com/adm01-debug/Promo_Gifts_V4/compare/gifts-store-v1.18.0...gifts-store-v1.19.0) (2026-11-22)
+
+
+### Features
+
+* views de compras canonicas (consolida [#3968](https://github.com/adm01-debug/Promo_Gifts_V4/issues/3968) e [#3969](https://github.com/adm01-debug/Promo_Gifts_V4/issues/3969)) ([#3976](https://github.com/adm01-debug/Promo_Gifts_V4/issues/3976)) ([bf4f25b](https://github.com/adm01-debug/Promo_Gifts_V4/commit/bf4f25b239e43b80b68377dad24cf7967366ff2c))
+
 ## [1.18.0](https://github.com/adm01-debug/Promo_Gifts_V4/compare/gifts-store-v1.17.0...gifts-store-v1.18.0) (2026-11-22)
 
 
