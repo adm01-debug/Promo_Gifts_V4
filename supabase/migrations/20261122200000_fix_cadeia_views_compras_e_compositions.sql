@@ -56,7 +56,7 @@
 alter view public.mv_product_compositions set (security_invoker = false);
 
 comment on view public.mv_product_compositions is
-  'VIEW publica sobre a matview analytics.mv_product_compositions (refresh CONCURRENTLY pelo cron 47, horario). public.mv_* e VIEW, nao matview - nao rode REFRESH aqui. SECURITY DEFINER desde 20261122200000 porque a matview-base nao concede SELECT a anon nem suporta RLS. NAO religar security_invoker=true.';
+  'VIEW publica sobre a matview analytics.mv_product_compositions (refresh pelo cron 47, horario). public.mv_* e VIEW, nao matview - nao rode REFRESH aqui. SECURITY DEFINER desde 20261122200000 porque a matview-base nao concede SELECT a anon nem suporta RLS. NAO religar security_invoker=true.';
 
 -- ---------------------------------------------------------------------------------------------
 -- (B) Cadeia de precos por variante -> privilegio minimo, RLS preservada
