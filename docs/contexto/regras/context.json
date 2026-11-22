@@ -1,9 +1,9 @@
 {
  "meta": {
-  "sha": "23b0135bc121a5a0de532029d323e87b544f67b5",
+  "sha": "ded84e9704e5011e247aa870f6c710e201f02cc5",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-22 18:20 UTC",
+  "generated_at": "2026-11-22 18:35 UTC",
   "files_total": 11140,
   "code_files": 9147,
   "code_lines": 1298796
@@ -562683,10 +562683,19 @@
   }
  },
  "git": {
-  "sha": "23b0135bc121a5a0de532029d323e87b544f67b5",
+  "sha": "ded84e9704e5011e247aa870f6c710e201f02cc5",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "ded84e9",
+    "date": "2026-11-22",
+    "author": "github-actions[bot]",
+    "subject": "docs(migrations-log): recibo E15 — aplicação de 20261122200000 (#3992)",
+    "files": [
+     "supabase/MIGRATIONS_SYNC_LOG.md"
+    ]
+   },
    {
     "sha": "23b0135",
     "date": "2026-11-22",
@@ -562998,21 +563007,12 @@
     "files": [
      "supabase/MIGRATIONS_SYNC_LOG.md"
     ]
-   },
-   {
-    "sha": "27369d5",
-    "date": "2026-11-21",
-    "author": "adm01-debug",
-    "subject": "feat: migration v_compras_precos_faixa — view de faixas de preço para compras (#3962)",
-    "files": [
-     "supabase/migrations/20261121183000_v_compras_precos_faixa.sql"
-    ]
    }
   ],
   "hot_files": [
    [
     "supabase/MIGRATIONS_SYNC_LOG.md",
-    14
+    15
    ],
    [
     ".release-please-manifest.json",

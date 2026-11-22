@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "23b0135bc121a5a0de532029d323e87b544f67b5",
+  "commit": "ded84e9704e5011e247aa870f6c710e201f02cc5",
   "branch": "main",
-  "data_commit": "2026-11-22T15:19:39-03:00",
+  "data_commit": "2026-11-22T15:33:09-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "ded84e9",
+    "data": "2026-11-22",
+    "assunto": "docs(migrations-log): recibo E15 — aplicação de 20261122200000 (#3992)"
+   },
    {
     "sha": "23b0135",
     "data": "2026-11-22",
@@ -126,18 +131,13 @@
     "sha": "1948642",
     "data": "2026-11-21",
     "assunto": "chore(vercel): desativa preview em branches docs/infra/chore (#3964)"
-   },
-   {
-    "sha": "2ae3463",
-    "data": "2026-11-21",
-    "assunto": "chore: consolida baselines de assertions (any-type 1-0, as-unknown 250-229) (#3963)"
    }
   ],
   "arquivos_mudados_7d": 1159,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
-    "mudancas": 389
+    "mudancas": 388
    },
    {
     "pasta": "recovery/src-legacy/src",
@@ -165,7 +165,7 @@
    },
    {
     "pasta": "src/components/mockup",
-    "mudancas": 99
+    "mudancas": 95
    },
    {
     "pasta": "src/pages/magazine",
@@ -173,7 +173,7 @@
    },
    {
     "pasta": "src/components/inventory",
-    "mudancas": 86
+    "mudancas": 85
    },
    {
     "pasta": "src/pages/quotes",
@@ -193,13 +193,13 @@
    },
    {
     "pasta": "src/hooks/quotes",
-    "mudancas": 72
+    "mudancas": 71
    }
   ],
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "supabase/MIGRATIONS_SYNC_LOG.md",
-    "mudancas": 65
+    "mudancas": 66
    },
    {
     "arquivo": "package.json",
@@ -262,14 +262,6 @@
     "mudancas": 5
    },
    {
-    "arquivo": "src/hooks/quotes/useQuoteTemplates.ts",
-    "mudancas": 5
-   },
-   {
-    "arquivo": "src/pages/kit-builder/KitBuilderPage.tsx",
-    "mudancas": 5
-   },
-   {
     "arquivo": "vitest.config.ts",
     "mudancas": 5
    },
@@ -282,30 +274,38 @@
     "mudancas": 4
    },
    {
-    "arquivo": "e2e/helpers/auth.ts",
-    "mudancas": 4
-   },
-   {
-    "arquivo": "scripts/drift-baseline.mjs",
-    "mudancas": 4
-   },
-   {
     "arquivo": "src/components/admin/shipping-boxes/__tests__/ShippingBoxesManager.test.tsx",
     "mudancas": 4
    },
    {
     "arquivo": "src/components/kit-builder/KitSummary.tsx",
     "mudancas": 4
+   },
+   {
+    "arquivo": "src/components/kit-builder/PersonalizationConfig.tsx",
+    "mudancas": 4
+   },
+   {
+    "arquivo": "src/components/quotes/AdminTemplatesManager.tsx",
+    "mudancas": 4
+   },
+   {
+    "arquivo": "src/components/quotes/QuoteTemplatesList.tsx",
+    "mudancas": 4
+   },
+   {
+    "arquivo": "src/hooks/freight/index.ts",
+    "mudancas": 4
    }
   ],
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 259
+    "commits": 258
    },
    {
     "autor": "github-actions[bot]",
-    "commits": 40
+    "commits": 41
    },
    {
     "autor": "Claude",
