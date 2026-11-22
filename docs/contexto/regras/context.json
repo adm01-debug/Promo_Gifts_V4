@@ -1,9 +1,9 @@
 {
  "meta": {
-  "sha": "20c63c3f7f3cb525b36610fea9a646fdd57c798a",
+  "sha": "e883e2f06b46233b64209ebbc2b87913759c5a45",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-22 14:09 UTC",
+  "generated_at": "2026-11-22 14:27 UTC",
   "files_total": 11138,
   "code_files": 9145,
   "code_lines": 1298659
@@ -562569,10 +562569,20 @@
   }
  },
  "git": {
-  "sha": "20c63c3f7f3cb525b36610fea9a646fdd57c798a",
+  "sha": "e883e2f06b46233b64209ebbc2b87913759c5a45",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "e883e2f",
+    "date": "2026-11-22",
+    "author": "adm01-debug",
+    "subject": "fix: move cabeçalho -- Rollback: para as primeiras 40 linhas da 20261122180000 (#3986)",
+    "files": [
+     "supabase/MIGRATIONS_SYNC_LOG.md",
+     "supabase/migrations/20261122180000_restore_definer_views_p06_e_compras.sql"
+    ]
+   },
    {
     "sha": "20c63c3",
     "date": "2026-11-22",
@@ -562895,37 +562905,12 @@
      "src/utils/__tests__/kitPdfGenerator.test.ts",
      "src/utils/kitPdfGenerator.ts"
     ]
-   },
-   {
-    "sha": "e311dad",
-    "date": "2026-11-21",
-    "author": "adm01-debug",
-    "subject": "feat(frete): Bloco F - comparador de volumes, simulador de frete e telemetria (etapas 53-60) (#3954)",
-    "files": [
-     ".as-assertions-baseline.json",
-     ".file-size-baseline.json",
-     "e2e/freight/simulator.spec.ts",
-     "src/components/freight-plan/__tests__/freightPlanCard.harness.tsx",
-     "src/components/kit-builder/KitComparisonDialog.tsx",
-     "src/components/kit-builder/__tests__/KitComparisonDialog.test.tsx",
-     "src/components/layout/SidebarReorganized.tsx",
-     "src/hooks/freight/__tests__/telemetry.test.tsx",
-     "src/hooks/freight/useFreightPlan.ts",
-     "src/hooks/freight/useKitFreightPlan.ts",
-     "src/lib/freight/__tests__/parity.test.ts",
-     "src/lib/freight/telemetry.ts",
-     "src/lib/rbac/route-matrix.ts",
-     "src/pages/freight/FreightSimulatorPage.tsx",
-     "src/pages/freight/__tests__/FreightSimulatorPage.test.tsx",
-     "src/routes/lazy-pages.ts",
-     "src/routes/tools-routes.tsx"
-    ]
    }
   ],
   "hot_files": [
    [
     "supabase/MIGRATIONS_SYNC_LOG.md",
-    13
+    14
    ],
    [
     ".release-please-manifest.json",
@@ -562944,19 +562929,19 @@
     3
    ],
    [
-    ".file-size-baseline.json",
-    3
+    "supabase/migrations/20261122180000_restore_definer_views_p06_e_compras.sql",
+    2
    ],
    [
     "supabase/migrations/20261121223000_add_supplier_external_id.sql",
     2
    ],
    [
-    "src/components/freight-plan/FreightPlanCard.tsx",
+    ".file-size-baseline.json",
     2
    ],
    [
-    "src/components/freight-plan/__tests__/freightPlanCard.harness.tsx",
+    "src/components/freight-plan/FreightPlanCard.tsx",
     2
    ],
    [
@@ -562970,10 +562955,6 @@
    [
     "src/pages/quotes/QuoteBuilderPage.tsx",
     2
-   ],
-   [
-    "supabase/migrations/20261122180000_restore_definer_views_p06_e_compras.sql",
-    1
    ],
    [
     "supabase/rollbacks/20261122180000_rollback.sql",
@@ -563001,6 +562982,10 @@
    ],
    [
     "supabase/migrations-snapshot/SNAPSHOT_META.json",
+    1
+   ],
+   [
+    "supabase/migrations/20261122100000_compras_views_canonicas.sql",
     1
    ]
   ]

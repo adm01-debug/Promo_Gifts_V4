@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "20c63c3f7f3cb525b36610fea9a646fdd57c798a",
+  "commit": "e883e2f06b46233b64209ebbc2b87913759c5a45",
   "branch": "main",
-  "data_commit": "2026-11-22T11:04:38-03:00",
+  "data_commit": "2026-11-22T11:25:59-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "e883e2f",
+    "data": "2026-11-22",
+    "assunto": "fix: move cabeçalho -- Rollback: para as primeiras 40 linhas da 20261122180000 (#3986)"
+   },
    {
     "sha": "20c63c3",
     "data": "2026-11-22",
@@ -126,18 +131,13 @@
     "sha": "27369d5",
     "data": "2026-11-21",
     "assunto": "feat: migration v_compras_precos_faixa — view de faixas de preço para compras (#3962)"
-   },
-   {
-    "sha": "7f8c55e",
-    "data": "2026-11-21",
-    "assunto": "feat(compras): view v_compras_catalogo no PIM [PR 1.1]"
    }
   ],
-  "arquivos_mudados_7d": 1271,
+  "arquivos_mudados_7d": 1270,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
-    "mudancas": 390
+    "mudancas": 389
    },
    {
     "pasta": "recovery/src-legacy/src",
@@ -160,12 +160,12 @@
     "mudancas": 113
    },
    {
-    "pasta": "src/components/mockup",
+    "pasta": "src/lib/freight",
     "mudancas": 103
    },
    {
-    "pasta": "src/lib/freight",
-    "mudancas": 103
+    "pasta": "src/components/mockup",
+    "mudancas": 99
    },
    {
     "pasta": "src/pages/magazine",
@@ -177,7 +177,7 @@
    },
    {
     "pasta": "src/pages/quotes",
-    "mudancas": 83
+    "mudancas": 82
    },
    {
     "pasta": "supabase/functions/_shared",
@@ -211,7 +211,7 @@
    },
    {
     "arquivo": "docs/coordenacao/conflitos-semanticos.md",
-    "mudancas": 16
+    "mudancas": 15
    },
    {
     "arquivo": "CHANGELOG.md",
@@ -227,14 +227,14 @@
    },
    {
     "arquivo": "audit/supabase-reference-catalog.temporary.json",
-    "mudancas": 9
-   },
-   {
-    "arquivo": "src/pages/mockups/MockupGenerator.tsx",
-    "mudancas": 9
+    "mudancas": 8
    },
    {
     "arquivo": "src/lib/freight/index.ts",
+    "mudancas": 8
+   },
+   {
+    "arquivo": "src/pages/mockups/MockupGenerator.tsx",
     "mudancas": 8
    },
    {
@@ -242,11 +242,11 @@
     "mudancas": 8
    },
    {
-    "arquivo": "src/integrations/supabase/types.ts",
-    "mudancas": 7
+    "arquivo": "scripts/automation.config.json",
+    "mudancas": 6
    },
    {
-    "arquivo": "scripts/automation.config.json",
+    "arquivo": "src/integrations/supabase/types.ts",
     "mudancas": 6
    },
    {
@@ -263,10 +263,6 @@
    },
    {
     "arquivo": "src/components/quotes/QuoteAutoSave.tsx",
-    "mudancas": 5
-   },
-   {
-    "arquivo": "src/hooks/mockup/useMockupGenerator.ts",
     "mudancas": 5
    },
    {
@@ -295,6 +291,10 @@
    },
    {
     "arquivo": "e2e/helpers/auth.ts",
+    "mudancas": 4
+   },
+   {
+    "arquivo": "scripts/drift-baseline.mjs",
     "mudancas": 4
    }
   ],
