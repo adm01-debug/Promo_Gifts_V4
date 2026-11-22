@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "4eddd73bc63ed06bbbd23bfbc633e06518463da6",
+  "commit": "94a724adfd8db7c6ca5ba6050c137833dedc4f8e",
   "branch": "main",
-  "data_commit": "2026-11-22T11:35:31-03:00",
+  "data_commit": "2026-11-22T13:42:34-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "94a724a",
+    "data": "2026-11-22",
+    "assunto": "feat: informa frete e tributos nao incluidos no total do kit (#3990)"
+   },
    {
     "sha": "4eddd73",
     "data": "2026-11-22",
@@ -126,14 +131,9 @@
     "sha": "8ca0bd0",
     "data": "2026-11-21",
     "assunto": "docs: recibo de aplicação — 20261121120000 (E15) (#3961)"
-   },
-   {
-    "sha": "8a224b1",
-    "data": "2026-11-21",
-    "assunto": "docs: recibo de aplicação — 20261121000000 (E15) (#3958)"
    }
   ],
-  "arquivos_mudados_7d": 1270,
+  "arquivos_mudados_7d": 1202,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -199,7 +199,7 @@
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "supabase/MIGRATIONS_SYNC_LOG.md",
-    "mudancas": 65
+    "mudancas": 64
    },
    {
     "arquivo": "package.json",
@@ -215,7 +215,7 @@
    },
    {
     "arquivo": "docs/coordenacao/conflitos-semanticos.md",
-    "mudancas": 14
+    "mudancas": 13
    },
    {
     "arquivo": ".github/workflows/deploy-gates.yml",
@@ -320,7 +320,7 @@
  "contagens": {
   "arquivos_total": 11210,
   "arquivos_codigo": 5654,
-  "linhas_codigo": 1073021,
+  "linhas_codigo": 1073028,
   "rotas": 141,
   "rotas_http_backend": 13,
   "vistas_por_id": 0,
@@ -1904,7 +1904,7 @@
   },
   "src/components": {
    "arquivos": 1480,
-   "linhas": 290473
+   "linhas": 290480
   },
   "src/config": {
    "arquivos": 1,

@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "feat: informa frete e tributos nao incluidos no total do kit (#3990)",
    "docs(migrations-log): recibo E15 — aplicação de 20261122180000 (#3987)",
    "fix: move cabeçalho -- Rollback: para as primeiras 40 linhas da 20261122180000 (#3986)",
    "fix: devolve security_invoker=false às views p06 e de compras (#3981)",
-   "chore(security): atualiza baseline assinado de RLS policies (#3985)",
-   "docs(migrations-log): recibo E15 — aplicação de 20261120041000 (#3984)"
+   "chore(security): atualiza baseline assinado de RLS policies (#3985)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",

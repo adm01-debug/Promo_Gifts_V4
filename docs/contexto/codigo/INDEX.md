@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e de hora em hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `4eddd73bc63ed06bbbd23bfbc633e06518463da6` (2026-11-22T11:35:31-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e de hora em hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `94a724adfd8db7c6ca5ba6050c137833dedc4f8e` (2026-11-22T13:42:34-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -36,7 +36,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 |---|---|
 | arquivos_total | 11210 |
 | arquivos_codigo | 5654 |
-| linhas_codigo | 1073021 |
+| linhas_codigo | 1073028 |
 | rotas | 141 |
 | rotas_http_backend | 13 |
 | vistas_por_id | 0 |
@@ -599,17 +599,17 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - possiveis_segredos_no_codigo: 7 — ex.: scripts/ai-context/cenarios.mjs:102, src/components/admin/connections/__tests__/ConnectionSecurity.unit.test.tsx:9, src/integrations/supabase/client.ts:27
 
 ## Grafo de código (graphify)
-- 50491 nós · 85624 arestas · 2862 comunidades · grafo do commit `4eddd73b`
+- 50491 nós · 85624 arestas · 2862 comunidades · grafo do commit `94a724ad`
 - comunidades maiores: vitest (1145), ref_components (735), ref_integrations (583), ref_node_child_process (495), @tanstack/react-query (451), ref_hooks (448), ref_node_fs (397), react (370), ref_types (365), ref_utils (334), gotoAndSettle (332), sonner (313)
 - símbolos mais chamados: gotoAndSettle() (e2e/helpers/nav.ts), re (?), q() (scripts/supabase_snapshot/snapshot.py), analyze() (tests/scripts/test_personalization_artifact_diagnostics.py), outer() (tests/scripts/test_personalization_artifact_diagnostics.py), json (?), useExternalDatabase() (recovery/src-legacy/src/hooks/useExternalDatabase.ts), concludeCheck() (scripts/check-result-contract.mjs), querySupabaseReadOnly() (scripts/supabase-read-only-query.mjs), loginAs() (e2e/helpers/auth.ts), inner() (tests/scripts/test_personalization_artifact_diagnostics.py), excluded_sql() (scripts/supabase_snapshot/snapshot.py)
 - consulta local: `graphify query "<pergunta>"`, `graphify path "<A>" "<B>"`, `graphify explain "<X>"`
 
 ## Hotspots (arquivos mais alterados, 90 dias)
-- supabase/MIGRATIONS_SYNC_LOG.md (65)
+- supabase/MIGRATIONS_SYNC_LOG.md (64)
 - package.json (30)
 - package-lock.json (20)
 - CHANGELOG.md (14)
-- docs/coordenacao/conflitos-semanticos.md (14)
+- docs/coordenacao/conflitos-semanticos.md (13)
 - .github/workflows/deploy-gates.yml (11)
 - docs/agentes/resgates/2026-11-16-auditoria-branches.md (10)
 - audit/supabase-reference-catalog.temporary.json (8)
@@ -1196,6 +1196,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - CHANGELOG topo: [1.19.0](https://github.com/adm01-debug/Promo_Gifts_V4/compare/gifts-store-v1.18.0...gifts-store-v1.19.0) (2026-11-22)
 
 ## Últimos commits
+- 2026-11-22 `94a724a` feat: informa frete e tributos nao incluidos no total do kit (#3990)
 - 2026-11-22 `4eddd73` docs(migrations-log): recibo E15 — aplicação de 20261122180000 (#3987)
 - 2026-11-22 `e883e2f` fix: move cabeçalho -- Rollback: para as primeiras 40 linhas da 20261122180000 (#3986)
 - 2026-11-22 `20c63c3` fix: devolve security_invoker=false às views p06 e de compras (#3981)
@@ -1210,7 +1211,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-22 `8ab7ae0` docs: recibo E15 da aplicacao de 20261121223000 (#3977)
 - 2026-11-22 `0d30dea` docs(migrations-log): recibo E15 — aplicação de 20261121203000 (#3973)
 - 2026-11-22 `b1fe749` fix: rollback e recibo da migration supplier_external_id (#3974)
-- 2026-11-22 `8b5d0d8` feat(compras): supplier_external_id para identidade do produto no fornecedor (#3967)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

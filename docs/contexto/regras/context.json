@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "4eddd73bc63ed06bbbd23bfbc633e06518463da6",
+  "sha": "94a724adfd8db7c6ca5ba6050c137833dedc4f8e",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-22 14:36 UTC",
+  "generated_at": "2026-11-22 16:44 UTC",
   "files_total": 11138,
   "code_files": 9145,
-  "code_lines": 1298659
+  "code_lines": 1298666
  },
  "version": "1.3.2",
- "facts_hash": "7df0cb0df2baa63a",
+ "facts_hash": "5c9871cf62bb4095",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -151139,7 +151139,7 @@
   {
    "module": "src/components",
    "files": 1480,
-   "lines": 290472,
+   "lines": 290479,
    "tables": [
     "admin_audit_log",
     "art_file_attachments",
@@ -457214,7 +457214,7 @@
   },
   "src/components/kit-builder/kit-summary/KitPricingCard.tsx": {
    "path": "src/components/kit-builder/kit-summary/KitPricingCard.tsx",
-   "lines": 188,
+   "lines": 195,
    "exports": [
     "function KitPricingCard"
    ]
@@ -562569,10 +562569,19 @@
   }
  },
  "git": {
-  "sha": "4eddd73bc63ed06bbbd23bfbc633e06518463da6",
+  "sha": "94a724adfd8db7c6ca5ba6050c137833dedc4f8e",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "94a724a",
+    "date": "2026-11-22",
+    "author": "adm01-debug",
+    "subject": "feat: informa frete e tributos nao incluidos no total do kit (#3990)",
+    "files": [
+     "src/components/kit-builder/kit-summary/KitPricingCard.tsx"
+    ]
+   },
    {
     "sha": "4eddd73",
     "date": "2026-11-22",
@@ -562882,32 +562891,12 @@
     "files": [
      "supabase/rollbacks/20261121000000_rollback.sql"
     ]
-   },
-   {
-    "sha": "184ac28",
-    "date": "2026-11-21",
-    "author": "adm01-debug",
-    "subject": "feat(frete): persiste plano de frete no orcamento (G-UI, etapas 62-63) (#3956)",
-    "files": [
-     ".file-size-baseline.json",
-     "src/components/freight-plan/FreightPlanCard.tsx",
-     "src/hooks/quotes/quoteHelpers.ts",
-     "src/hooks/quotes/quoteTypes.ts",
-     "src/hooks/quotes/useQuoteBuilderState.helpers.ts",
-     "src/hooks/quotes/useQuoteBuilderState.ts",
-     "src/hooks/quotes/useQuoteVersions.ts",
-     "src/hooks/quotes/useQuotes.ts",
-     "src/pages/quotes/QuoteBuilderPage.tsx",
-     "src/services/quoteService.ts",
-     "supabase/MIGRATIONS_SYNC_LOG.md",
-     "supabase/migrations/20261121000000_quote_rpcs_freight_plan.sql"
-    ]
    }
   ],
   "hot_files": [
    [
     "supabase/MIGRATIONS_SYNC_LOG.md",
-    15
+    14
    ],
    [
     ".release-please-manifest.json",
@@ -562934,24 +562923,8 @@
     2
    ],
    [
-    ".file-size-baseline.json",
-    2
-   ],
-   [
-    "src/components/freight-plan/FreightPlanCard.tsx",
-    2
-   ],
-   [
-    "src/hooks/quotes/useQuoteBuilderState.helpers.ts",
-    2
-   ],
-   [
-    "src/hooks/quotes/useQuoteBuilderState.ts",
-    2
-   ],
-   [
-    "src/pages/quotes/QuoteBuilderPage.tsx",
-    2
+    "src/components/kit-builder/kit-summary/KitPricingCard.tsx",
+    1
    ],
    [
     "supabase/rollbacks/20261122180000_rollback.sql",
@@ -562983,6 +562956,22 @@
    ],
    [
     "supabase/migrations/20261122100000_compras_views_canonicas.sql",
+    1
+   ],
+   [
+    "supabase/rollbacks/20261122100000_rollback.sql",
+    1
+   ],
+   [
+    "supabase/rollbacks/20261121223000_rollback.sql",
+    1
+   ],
+   [
+    "supabase/migrations/20261121203000_kit_maker_server_revalidation.sql",
+    1
+   ],
+   [
+    "supabase/rollbacks/20261121203000_rollback.sql",
     1
    ]
   ]
