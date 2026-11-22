@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e de hora em hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `0d30dea8929446aa87dd1dc6e2a004673c5d7b1e` (2026-11-22T09:35:49-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e de hora em hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `8ab7ae0f7f98cf0dc59f3f1e15075acf2c99ce1b` (2026-11-22T09:38:29-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -599,16 +599,16 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - possiveis_segredos_no_codigo: 7 — ex.: scripts/ai-context/cenarios.mjs:102, src/components/admin/connections/__tests__/ConnectionSecurity.unit.test.tsx:9, src/integrations/supabase/client.ts:27
 
 ## Grafo de código (graphify)
-- 50484 nós · 85617 arestas · 2824 comunidades · grafo do commit `0d30dea8`
+- 50484 nós · 85617 arestas · 2824 comunidades · grafo do commit `8ab7ae0f`
 - comunidades maiores: vitest (961), ref_components (848), ref_integrations (684), ref_node_child_process (488), @tanstack/react-query (440), ref_hooks (426), ref_types (396), react-router-dom (376), ref_node_fs (369), react (333), gotoAndSettle (322), sonner (317)
 - símbolos mais chamados: gotoAndSettle() (e2e/helpers/nav.ts), re (?), q() (scripts/supabase_snapshot/snapshot.py), analyze() (tests/scripts/test_personalization_artifact_diagnostics.py), outer() (tests/scripts/test_personalization_artifact_diagnostics.py), json (?), useExternalDatabase() (recovery/src-legacy/src/hooks/useExternalDatabase.ts), concludeCheck() (scripts/check-result-contract.mjs), querySupabaseReadOnly() (scripts/supabase-read-only-query.mjs), loginAs() (e2e/helpers/auth.ts), inner() (tests/scripts/test_personalization_artifact_diagnostics.py), excluded_sql() (scripts/supabase_snapshot/snapshot.py)
 - consulta local: `graphify query "<pergunta>"`, `graphify path "<A>" "<B>"`, `graphify explain "<X>"`
 
 ## Hotspots (arquivos mais alterados, 90 dias)
-- supabase/MIGRATIONS_SYNC_LOG.md (60)
+- supabase/MIGRATIONS_SYNC_LOG.md (61)
 - package.json (29)
-- docs/coordenacao/conflitos-semanticos.md (20)
 - package-lock.json (19)
+- docs/coordenacao/conflitos-semanticos.md (18)
 - CHANGELOG.md (13)
 - .github/workflows/deploy-gates.yml (12)
 - audit/supabase-reference-catalog.temporary.json (10)
@@ -1196,6 +1196,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - CHANGELOG topo: [1.17.0](https://github.com/adm01-debug/Promo_Gifts_V4/compare/gifts-store-v1.16.1...gifts-store-v1.17.0) (2026-11-21)
 
 ## Últimos commits
+- 2026-11-22 `8ab7ae0` docs: recibo E15 da aplicacao de 20261121223000 (#3977)
 - 2026-11-22 `0d30dea` docs(migrations-log): recibo E15 — aplicação de 20261121203000 (#3973)
 - 2026-11-22 `b1fe749` fix: rollback e recibo da migration supplier_external_id (#3974)
 - 2026-11-22 `8b5d0d8` feat(compras): supplier_external_id para identidade do produto no fornecedor (#3967)
@@ -1210,7 +1211,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-21 `8ca0bd0` docs: recibo de aplicação — 20261121120000 (E15) (#3961)
 - 2026-11-21 `8a224b1` docs: recibo de aplicação — 20261121000000 (E15) (#3958)
 - 2026-11-21 `27369d5` feat: migration v_compras_precos_faixa — view de faixas de preço para compras (#3962)
-- 2026-11-21 `7f8c55e` feat(compras): view v_compras_catalogo no PIM [PR 1.1]
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

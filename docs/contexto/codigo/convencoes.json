@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "docs: recibo E15 da aplicacao de 20261121223000 (#3977)",
    "docs(migrations-log): recibo E15 — aplicação de 20261121203000 (#3973)",
    "fix: rollback e recibo da migration supplier_external_id (#3974)",
    "feat(compras): supplier_external_id para identidade do produto no fornecedor (#3967)",
-   "fix(kit-maker): reverifica peso e encaixe do kit no servidor (KM2-099) (#3970)",
-   "feat(frete): bloco G etapas 65-69 — plano de volumes no builder, view na QuoteViewPage, diff no comparador e PDF da proposta (#3972)"
+   "fix(kit-maker): reverifica peso e encaixe do kit no servidor (KM2-099) (#3970)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",

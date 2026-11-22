@@ -1,9 +1,9 @@
 {
  "meta": {
-  "sha": "0d30dea8929446aa87dd1dc6e2a004673c5d7b1e",
+  "sha": "8ab7ae0f7f98cf0dc59f3f1e15075acf2c99ce1b",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-22 12:37 UTC",
+  "generated_at": "2026-11-22 12:40 UTC",
   "files_total": 11134,
   "code_files": 9141,
   "code_lines": 1298368
@@ -561064,10 +561064,19 @@
   }
  },
  "git": {
-  "sha": "0d30dea8929446aa87dd1dc6e2a004673c5d7b1e",
+  "sha": "8ab7ae0f7f98cf0dc59f3f1e15075acf2c99ce1b",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "8ab7ae0",
+    "date": "2026-11-22",
+    "author": "adm01-debug",
+    "subject": "docs: recibo E15 da aplicacao de 20261121223000 (#3977)",
+    "files": [
+     "supabase/MIGRATIONS_SYNC_LOG.md"
+    ]
+   },
    {
     "sha": "0d30dea",
     "date": "2026-11-22",
@@ -561428,24 +561437,12 @@
      "supabase/migrations/20261120180000_restore_quote_comments_scoped_threads.sql",
      "supabase/rollbacks/20261120180000_rollback.sql"
     ]
-   },
-   {
-    "sha": "e507174",
-    "date": "2026-11-20",
-    "author": "github-actions[bot]",
-    "subject": "test",
-    "files": [
-     ".release-please-manifest.json",
-     "CHANGELOG.md",
-     "package-lock.json",
-     "package.json"
-    ]
    }
   ],
   "hot_files": [
    [
     "supabase/MIGRATIONS_SYNC_LOG.md",
-    9
+    10
    ],
    [
     ".file-size-baseline.json",
@@ -561453,19 +561450,19 @@
    ],
    [
     ".release-please-manifest.json",
-    4
+    3
    ],
    [
     "CHANGELOG.md",
-    4
+    3
    ],
    [
     "package-lock.json",
-    4
+    3
    ],
    [
     "package.json",
-    4
+    3
    ],
    [
     "supabase/migrations/20261121223000_add_supplier_external_id.sql",
