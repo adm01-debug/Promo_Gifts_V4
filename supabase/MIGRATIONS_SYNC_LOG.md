@@ -2874,12 +2874,12 @@ quote, as mesmas regras físicas do front (peso vs `box_weight_kg` e encaixe via
 `fn_check_item_fits`), fechando o gap de segurança em que a validação era 100%
 client-side. Migração forward-only; rollback em `supabase/rollbacks/20261121203000_rollback.sql`.
 Validada em Postgres 17 isolado (4 cenários: fit-ok, fit-violado, peso-limite,
-peso-violado — todos OK). Aplicar em produção via `db-apply-migration.yml`
-(`version=20261121203000`) após aprovação da PR.
+peso-violado — todos OK). **Aplicada em produção** via `db-apply-migration.yml`
+(run 45018589151); o job post-check confirmou a version no ledger.
 
 | versão | arquivo | sha256 | status |
 |---|---|---|---|
-| `20261121203000` | `kit_maker_server_revalidation` | `583d9588687cfffa76dab232e01fff040b16c1eda0c6dc43c4acc947d4a372a7` | pendente — aplicar via `db-apply-migration.yml` (`version=20261121203000`) após merge e decisão do dono |
+| `20261121203000` | `kit_maker_server_revalidation` | `583d9588687cfffa76dab232e01fff040b16c1eda0c6dc43c4acc947d4a372a7` | aplicada — run 45018589151, post-check confirmou a version no ledger |
 
 ### 2026-11-22 — PR 1.3 do plano PIM/Promo Supply V2: supplier_external_id
 
