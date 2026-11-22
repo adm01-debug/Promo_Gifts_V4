@@ -5,6 +5,21 @@ Todas as mudanças notáveis deste projeto são documentadas neste arquivo.
 O formato é baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/),
 e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR/).
 
+## [1.18.0](https://github.com/adm01-debug/Promo_Gifts_V4/compare/gifts-store-v1.17.0...gifts-store-v1.18.0) (2026-11-22)
+
+
+### Features
+
+* **compras:** supplier_external_id para identidade do produto no fornecedor ([#3967](https://github.com/adm01-debug/Promo_Gifts_V4/issues/3967)) ([8b5d0d8](https://github.com/adm01-debug/Promo_Gifts_V4/commit/8b5d0d8cf720f530e15ec652ad16a9817f9cbfbf))
+* **frete:** bloco G etapas 65-69 — plano de volumes no builder, view na QuoteViewPage, diff no comparador e PDF da proposta ([#3972](https://github.com/adm01-debug/Promo_Gifts_V4/issues/3972)) ([146fd64](https://github.com/adm01-debug/Promo_Gifts_V4/commit/146fd646bfb794f5225c49822c93c5aba204f0a8))
+
+
+### Bug Fixes
+
+* **kit-maker:** reverifica peso e encaixe do kit no servidor (KM2-099) ([#3970](https://github.com/adm01-debug/Promo_Gifts_V4/issues/3970)) ([cd04fc2](https://github.com/adm01-debug/Promo_Gifts_V4/commit/cd04fc225bc5605697c14f2c11c045402c04dcd1))
+* preenche maxWeight da caixa no Kit Builder a partir de box_weight_kg (D1) ([#3965](https://github.com/adm01-debug/Promo_Gifts_V4/issues/3965)) ([2dc4d82](https://github.com/adm01-debug/Promo_Gifts_V4/commit/2dc4d8284e48fcfd01cc1e1724d3c8ba7634f64a))
+* rollback e recibo da migration supplier_external_id ([#3974](https://github.com/adm01-debug/Promo_Gifts_V4/issues/3974)) ([b1fe749](https://github.com/adm01-debug/Promo_Gifts_V4/commit/b1fe749e8a3f14bb32ac240b09cf1c6442bd5486))
+
 ## [1.17.0](https://github.com/adm01-debug/Promo_Gifts_V4/compare/gifts-store-v1.16.1...gifts-store-v1.17.0) (2026-11-21)
 
 
