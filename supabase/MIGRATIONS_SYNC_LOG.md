@@ -2891,3 +2891,28 @@ Cria `supplier_external_id text` em `products` e `product_variants` e faz backfi
 | versão | arquivo | sha256 | status |
 |---|---|---|---|
 | `20261121223000` | `add_supplier_external_id` | `a7ec4ec364ac19fa73aa99d3a2d53ea77be6643e9ea1068b34a3707049b90920` | aguardando aplicação via `db-apply-migration.yml` (`version=20261121223000`) — DDL em produção, regra 8 |
+### 2026-11-22 — Views de compras canônicas (consolidação de #3968 + #3969)
+
+As views `v_compras_catalogo` e `v_compras_precos_faixa` estavam na `main` desde
+`20261121163000` / `20261121183000` mas **nunca foram aplicadas em produção** (nenhum recibo,
+nenhum run do `db-apply-migration.yml`). O Promo Supply V2 (`src/hooks/useCatalogoPim.ts`)
+já consome esses nomes e recebia erro de relação inexistente.
+
+Esta migration consolida o trabalho de dois agentes sem descartar nenhum:
+
+- `v_compras_catalogo` — versão literal da PR #3968 (superconjunto aditivo: `supplier_external_id`,
+  `xbz_stock_reliability_text`, `price_verified_at`, `price_freshness_threshold_days`,
+  `coalesce(primary_image_url, primary_image_fallback_url)`).
+- `v_compras_precos_faixa` — lógica literal da `20261121183000` da `main`
+  (`product_customization_prices` + `UNNEST` + `LEAD()`), que é o contrato exigido por
+  `PimPrecoFaixa` no consumidor.
+- `v_compras_precos_variante` — **view nova**, preserva literalmente o SQL da PR #3969
+  (UNION ALL de 5 tiers de `vw_variant_sale_prices`) sem sobrescrever o contrato existente.
+
+Forward-only e idempotente (`create or replace view`). Rollback em
+`supabase/rollbacks/20261122100000_rollback.sql` (dropa as 3 views; estado anterior de produção
+era a inexistência delas).
+
+| versão | arquivo | sha256 | status |
+|---|---|---|---|
+| `20261122100000` | `compras_views_canonicas` | `14a5ad6082bae20ffe71e135b1e22719b07063bdd0f39dc65d1f29e5950360d3` | aguardando aplicação via `db-apply-migration.yml` (`version=20261122100000`) — DDL em produção, regra 8 |
