@@ -224685,13 +224685,37 @@
       {
         "code": "view_security_definer",
         "detail": "View em public sem security_invoker: executa como owner e ignora RLS das tabelas base.",
+        "object": "public.v_kit_component_media_public",
+        "severity": "ALTA"
+      },
+      {
+        "code": "view_security_definer",
+        "detail": "View em public sem security_invoker: executa como owner e ignora RLS das tabelas base.",
+        "object": "public.v_product_compositions_public",
+        "severity": "ALTA"
+      },
+      {
+        "code": "view_security_definer",
+        "detail": "View em public sem security_invoker: executa como owner e ignora RLS das tabelas base.",
         "object": "public.v_products_public",
         "severity": "ALTA"
       },
       {
         "code": "view_security_definer",
         "detail": "View em public sem security_invoker: executa como owner e ignora RLS das tabelas base.",
+        "object": "public.v_suppliers_public",
+        "severity": "ALTA"
+      },
+      {
+        "code": "view_security_definer",
+        "detail": "View em public sem security_invoker: executa como owner e ignora RLS das tabelas base.",
         "object": "public.v_system_health_dashboard",
+        "severity": "ALTA"
+      },
+      {
+        "code": "view_security_definer",
+        "detail": "View em public sem security_invoker: executa como owner e ignora RLS das tabelas base.",
+        "object": "public.v_tabela_preco_gravacao_oficial_public",
         "severity": "ALTA"
       },
       {
@@ -242026,6 +242050,12 @@
         "statements": 9,
         "statements_sha": "a78f8d0e32986639",
         "version": "20261122100000"
+      },
+      {
+        "name": "restore_definer_views_p06_e_compras",
+        "statements": 15,
+        "statements_sha": "4de941f86b0a9744",
+        "version": "20261122180000"
       }
     ],
     "policies": [
@@ -268540,7 +268570,7 @@
         "security_invoker": true
       },
       {
-        "comment": "Catalogo de produtos do PIM para o Promo Supply V2 (external-db-bridge). Superconjunto da versao 20261121163000 com supplier_external_id, xbz_stock_reliability_text, price_verified_at, price_freshness_threshold_days e fallback de imagem (PR #3968).",
+        "comment": "Catalogo canônico para o bridge PIM -> Promo Supply V2 (SECURITY DEFINER). Projeta cost_price/sale_price/suggested_price de proposito: useCatalogoPim.ts consome esses campos para recompra. O recorte e a projecao + o WHERE, nao o GRANT. NAO religar security_invoker=true.",
         "definition": " SELECT p.id AS pim_product_id,\n    v.id AS pim_variant_id,\n    p.sku,\n    p.sku_promo,\n    p.name,\n    p.supplier_id,\n    s.code AS supplier_code,\n    s.name AS supplier_name,\n    COALESCE(v.supplier_sku, p.supplier_reference) AS supplier_reference,\n    p.supplier_external_id,\n    p.cost_price,\n    p.sale_price,\n    p.suggested_price,\n    p.ipi_rate,\n    p.ncm_code,\n    p.min_quantity,\n    p.min_order_quantity,\n    s.min_order_value,\n    COALESCE(v.stock_quantity, p.stock_quantity) AS stock_quantity,\n    p.is_stockout,\n    p.last_stock_update_at,\n    p.xbz_stock_reliability_text,\n    v.color_id,\n    v.color_name,\n    v.color_code,\n    v.color_hex,\n    v.size_code,\n    COALESCE(p.primary_image_url, p.primary_image_fallback_url) AS image_url,\n    p.lead_time_days,\n    p.price_updated_at,\n    p.price_verified_at,\n    p.price_freshness_threshold_days,\n    p.updated_at\n   FROM products p\n     JOIN suppliers s ON s.id = p.supplier_id\n     LEFT JOIN product_variants v ON v.product_id = p.id AND v.is_active\n  WHERE p.is_active AND NOT COALESCE(p.is_deleted, false) AND s.active AND s.is_product_supplier;",
         "depends_on": [
           "public.product_variants",
@@ -268550,7 +268580,7 @@
         "kind": "view",
         "name": "v_compras_catalogo",
         "options": [
-          "security_invoker=on"
+          "security_invoker=false"
         ],
         "owner": "postgres",
         "populated": null,
@@ -268558,7 +268588,7 @@
         "security_invoker": false
       },
       {
-        "comment": "Faixas de preco de personalizacao (product_customization_prices) desnormalizadas para consumo pelo Promo Supply V2 via external-db-bridge. Uma linha por faixa de quantidade. Fonte: spot_customization.",
+        "comment": "Faixas de preco por quantidade para o bridge PIM (SECURITY DEFINER). Projeta unit_cost/unit_price de proposito (PimPrecoFaixa). NAO religar security_invoker=true.",
         "definition": " SELECT pcp.product_id AS pim_product_id,\n    NULL::uuid AS pim_variant_id,\n    band.qty_min,\n    lead(band.qty_min) OVER (PARTITION BY pcp.id ORDER BY band.ord) - 1 AS qty_max,\n    band.unit_cost,\n    NULL::numeric AS unit_price,\n    'spot_customization'::text AS source,\n    pcp.service_code,\n    pcp.table_code,\n    pcp.component,\n    pcp.location,\n    pcp.handling_cost,\n    pcp.table_max_area_cm2,\n    pcp.max_stitches,\n    pcp.hotspot,\n    pcp.currency\n   FROM product_customization_prices pcp\n     CROSS JOIN LATERAL ( SELECT t.qty_min_val AS qty_min,\n            t.price_val AS unit_cost,\n            t.ord\n           FROM UNNEST(pcp.min_qty, pcp.price) WITH ORDINALITY t(qty_min_val, price_val, ord)) band\n  WHERE array_length(pcp.min_qty, 1) > 0;",
         "depends_on": [
           "public.product_customization_prices"
@@ -268566,7 +268596,7 @@
         "kind": "view",
         "name": "v_compras_precos_faixa",
         "options": [
-          "security_invoker=on"
+          "security_invoker=false"
         ],
         "owner": "postgres",
         "populated": null,
@@ -268574,7 +268604,7 @@
         "security_invoker": false
       },
       {
-        "comment": "Preco de VENDA por faixa de quantidade e por variante (vw_variant_sale_prices), ate 5 tiers. Trabalho preservado da PR #3969. Conceito distinto de v_compras_precos_faixa (preco de personalizacao); as duas coexistem.",
+        "comment": "Precos por variante para o bridge PIM (SECURITY DEFINER). Depende de vw_variant_sale_prices, que nao tem GRANT SELECT para anon. NAO religar security_invoker=true.",
         "definition": " SELECT vw_variant_sale_prices.product_id AS pim_product_id,\n    vw_variant_sale_prices.variant_id AS pim_variant_id,\n    1 AS tier,\n    vw_variant_sale_prices.min_qty_1 AS qty_min,\n    vw_variant_sale_prices.min_qty_2 - 1 AS qty_max,\n    vw_variant_sale_prices.cost_price_1 AS unit_cost,\n    vw_variant_sale_prices.sale_price_1 AS unit_price,\n    'vw_variant_sale_prices'::text AS source\n   FROM vw_variant_sale_prices\n  WHERE vw_variant_sale_prices.min_qty_1 IS NOT NULL\nUNION ALL\n SELECT vw_variant_sale_prices.product_id AS pim_product_id,\n    vw_variant_sale_prices.variant_id AS pim_variant_id,\n    2 AS tier,\n    vw_variant_sale_prices.min_qty_2 AS qty_min,\n    vw_variant_sale_prices.min_qty_3 - 1 AS qty_max,\n    vw_variant_sale_prices.cost_price_2 AS unit_cost,\n    vw_variant_sale_prices.sale_price_2 AS unit_price,\n    'vw_variant_sale_prices'::text AS source\n   FROM vw_variant_sale_prices\n  WHERE vw_variant_sale_prices.min_qty_2 IS NOT NULL\nUNION ALL\n SELECT vw_variant_sale_prices.product_id AS pim_product_id,\n    vw_variant_sale_prices.variant_id AS pim_variant_id,\n    3 AS tier,\n    vw_variant_sale_prices.min_qty_3 AS qty_min,\n    vw_variant_sale_prices.min_qty_4 - 1 AS qty_max,\n    vw_variant_sale_prices.cost_price_3 AS unit_cost,\n    vw_variant_sale_prices.sale_price_3 AS unit_price,\n    'vw_variant_sale_prices'::text AS source\n   FROM vw_variant_sale_prices\n  WHERE vw_variant_sale_prices.min_qty_3 IS NOT NULL\nUNION ALL\n SELECT vw_variant_sale_prices.product_id AS pim_product_id,\n    vw_variant_sale_prices.variant_id AS pim_variant_id,\n    4 AS tier,\n    vw_variant_sale_prices.min_qty_4 AS qty_min,\n    vw_variant_sale_prices.min_qty_5 - 1 AS qty_max,\n    vw_variant_sale_prices.cost_price_4 AS unit_cost,\n    vw_variant_sale_prices.sale_price_4 AS unit_price,\n    'vw_variant_sale_prices'::text AS source\n   FROM vw_variant_sale_prices\n  WHERE vw_variant_sale_prices.min_qty_4 IS NOT NULL\nUNION ALL\n SELECT vw_variant_sale_prices.product_id AS pim_product_id,\n    vw_variant_sale_prices.variant_id AS pim_variant_id,\n    5 AS tier,\n    vw_variant_sale_prices.min_qty_5 AS qty_min,\n    NULL::integer AS qty_max,\n    vw_variant_sale_prices.cost_price_5 AS unit_cost,\n    vw_variant_sale_prices.sale_price_5 AS unit_price,\n    'vw_variant_sale_prices'::text AS source\n   FROM vw_variant_sale_prices\n  WHERE vw_variant_sale_prices.min_qty_5 IS NOT NULL;",
         "depends_on": [
           "public.vw_variant_sale_prices"
@@ -268582,7 +268612,7 @@
         "kind": "view",
         "name": "v_compras_precos_variante",
         "options": [
-          "security_invoker=on"
+          "security_invoker=false"
         ],
         "owner": "postgres",
         "populated": null,
@@ -268813,7 +268843,7 @@
         "security_invoker": true
       },
       {
-        "comment": "SECURITY DEFINER intencional (fix_version 20260717). Depende de products para filtro is_active. Colunas de output: kit_component_id, component_code/name, primary_image_url.",
+        "comment": "Midias de componentes de kit (SECURITY DEFINER). NAO religar security_invoker=true: sem GRANT SELECT em product_kit_components o anon recebe 401 42501, e com GRANT passaria a ler componentes de produto inativo que esta view esconde. Regressao de 2026-11-22 revertida pela 20261122180000.",
         "definition": " SELECT pkc.id AS kit_component_id,\n    pkc.kit_product_id,\n    pkc.component_product_id,\n    pkc.component_code,\n    pkc.component_name,\n    pkc.primary_image_url,\n    pkc.images,\n    pkc.display_order\n   FROM product_kit_components pkc\n     JOIN products p ON p.id = pkc.kit_product_id AND p.is_active = true AND p.is_deleted IS NOT TRUE\n  WHERE pkc.primary_image_url IS NOT NULL OR pkc.images IS NOT NULL;",
         "depends_on": [
           "public.product_kit_components",
@@ -268822,12 +268852,12 @@
         "kind": "view",
         "name": "v_kit_component_media_public",
         "options": [
-          "security_invoker=true"
+          "security_invoker=false"
         ],
         "owner": "postgres",
         "populated": null,
         "schema": "public",
-        "security_invoker": true
+        "security_invoker": false
       },
       {
         "comment": "security_invoker=true: respeita RLS/grants de kit_component_print_areas, product_kit_components e products.",
@@ -269164,7 +269194,7 @@
         "security_invoker": true
       },
       {
-        "comment": "SECURITY DEFINER intencional (fix_version 20260717). Depende de products e analytics.mv_product_compositions.",
+        "comment": "Composicoes de produto (SECURITY DEFINER). Cadeia de 2 niveis ate analytics.mv_product_compositions, que nao tem GRANT SELECT para anon. NAO religar security_invoker=true. Regressao de 2026-11-22 revertida pela 20261122180000.",
         "definition": " SELECT mpc.product_id,\n    mpc.product_name,\n    mpc.total_materials,\n    mpc.total_percentage,\n    mpc.materials_detail\n   FROM mv_product_compositions mpc\n     JOIN products p ON p.id = mpc.product_id AND p.is_active = true AND p.is_deleted IS NOT TRUE;",
         "depends_on": [
           "public.mv_product_compositions",
@@ -269173,12 +269203,12 @@
         "kind": "view",
         "name": "v_product_compositions_public",
         "options": [
-          "security_invoker=true"
+          "security_invoker=false"
         ],
         "owner": "postgres",
         "populated": null,
         "schema": "public",
-        "security_invoker": true
+        "security_invoker": false
       },
       {
         "comment": "Images with identical SHA-256 content_hash stored under different cloudflare_image_ids. Populated once hash-product-images cron has run. Use for deduplication audits.",
@@ -269670,7 +269700,7 @@
         "security_invoker": true
       },
       {
-        "comment": "PUBLIC SUPPLIER PROJECTION (SECURITY DEFINER intencional / fix_version 20260717_v1). Expoe apenas: id, name, code, trading_name, logo_url, website, active, flags, state_uf. Mascara: api_credentials, api_base_url, default_markup_percent, cnpj, email, phone, etc. NAO alterar para security_invoker=true (expoeria api_credentials ao anon via REST).",
+        "comment": "Fornecedores publicos (SECURITY DEFINER, security_invoker=false). Contrato fechado de colunas: NAO expoe api_credentials/api_key/api_token/password/email/phone/cnpj/api_base_url/default_markup_percent. NAO religar security_invoker=true: anon nao tem GRANT SELECT em suppliers e a view responderia 401 42501 (regressao de 2026-11-22, revertida pela 20261122180000).",
         "definition": " SELECT id,\n    name,\n    code,\n    trading_name,\n    logo_url,\n    website,\n    active,\n    is_product_supplier,\n    is_engraving_supplier,\n    state_uf,\n    low_stock_threshold\n   FROM suppliers;",
         "depends_on": [
           "public.suppliers"
@@ -269678,12 +269708,12 @@
         "kind": "view",
         "name": "v_suppliers_public",
         "options": [
-          "security_invoker=true"
+          "security_invoker=false"
         ],
         "owner": "postgres",
         "populated": null,
         "schema": "public",
-        "security_invoker": true
+        "security_invoker": false
       },
       {
         "comment": "Alertas do sistema. Correções 2026-06-23: CRON_FAIL_RECENT só conta jobs existentes; AI_QUEUE_STALE exclui worker ativo; locked_by_residual alert threshold >100.",
@@ -269746,7 +269776,7 @@
         "security_invoker": false
       },
       {
-        "comment": "PUBLIC ENGRAVING TABLE PROJECTION (SECURITY DEFINER / fix_version 20260717). Expõe apenas colunas de cobrança e preços de venda. EXCLUÍDOS: custo_setup (R$325 max), markup_percent (115% max), custo_aplicacao, custo_termo_transferencia, custo_queima_forno, faturamento_minimo. NAO reverter para security_invoker=true nem re-expor a tabela base ao anon.",
+        "comment": "Tabela de preco de gravacao oficial (SECURITY DEFINER). NAO religar security_invoker=true nem re-expor a tabela base ao anon: exigiria GRANT em 37 colunas. Regressao de 2026-11-22 revertida pela 20261122180000.",
         "definition": " SELECT id,\n    codigo_tabela,\n    codigo,\n    codigo_curto,\n    nome,\n    nome_grupo,\n    descricao,\n    grupo_tecnica,\n    cobra_por_cor,\n    max_cores,\n    desconto_segunda_cor,\n    desconto_terceira_cor,\n    desconto_quarta_cor_mais,\n    preco_minimo_unitario,\n    preco_maximo_unitario,\n    cobra_por_area,\n    area_maxima_cm2,\n    area_maxima_texto,\n    cobra_por_pontos,\n    max_pontos,\n    usa_faixa_dimensional,\n    opcoes_modificadores,\n    tom_options,\n    cobra_aplicacao,\n    cobra_queima_forno,\n    cobra_termo_transferencia,\n    custo_setup_por_cor,\n    custo_manuseio_por_peca,\n    quantidade_corte,\n    tipo_setup,\n    validade_inicio,\n    validade_fim,\n    ordem_exibicao,\n    tecnica_variante_id,\n    ativo,\n    created_at,\n    updated_at\n   FROM tabela_preco_gravacao_oficial\n  WHERE ativo = true;",
         "depends_on": [
           "public.tabela_preco_gravacao_oficial"
@@ -269754,12 +269784,12 @@
         "kind": "view",
         "name": "v_tabela_preco_gravacao_oficial_public",
         "options": [
-          "security_invoker=true"
+          "security_invoker=false"
         ],
         "owner": "postgres",
         "populated": null,
         "schema": "public",
-        "security_invoker": true
+        "security_invoker": false
       },
       {
         "comment": null,

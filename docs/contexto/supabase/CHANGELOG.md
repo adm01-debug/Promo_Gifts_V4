@@ -2,6 +2,12 @@
 
 Diff semântico gerado a cada coleta em que algo mudou.
 
+## 2026-11-22 15:16 UTC
+
+- **lints** adicionado (4): `view_security_definer:public.v_kit_component_media_public`, `view_security_definer:public.v_product_compositions_public`, `view_security_definer:public.v_suppliers_public`, `view_security_definer:public.v_tabela_preco_gravacao_oficial_public`
+- **migrations** adicionado (1): `20261122180000_restore_definer_views_p06_e_compras`
+- **views** alterado (7): `public.v_compras_catalogo`, `public.v_compras_precos_faixa`, `public.v_compras_precos_variante`, `public.v_kit_component_media_public`, `public.v_product_compositions_public`, `public.v_suppliers_public`, `public.v_tabela_preco_gravacao_oficial_public`
+
 ## 2026-11-22 14:17 UTC
 
 - **colunas** adicionado (5): `public.business_calendar.created_at`, `public.business_calendar.created_by`, `public.business_calendar.day`, `public.business_calendar.description`, `public.print_area_techniques.production_days`

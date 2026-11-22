@@ -2129,10 +2129,10 @@ SELECT id,
 |---|---|
 | owner | postgres |
 | security_invoker | não |
-| opções | security_invoker=on |
+| opções | security_invoker=false |
 | depende de | public.product_variants, public.products, public.suppliers |
 | populada | n/a |
-| comentário | Catalogo de produtos do PIM para o Promo Supply V2 (external-db-bridge). Superconjunto da versao 20261121163000 com supplier_external_id, xbz_stock_reliability_text, price_verified_at, price_freshness_threshold_days e fallback de imagem (PR #3968). |
+| comentário | Catalogo canônico para o bridge PIM -> Promo Supply V2 (SECURITY DEFINER). Projeta cost_price/sale_price/suggested_price de proposito: useCatalogoPim.ts consome esses campos para recompra. O recorte e a projecao + o WHERE, nao o GRANT. NAO religar security_invoker=true. |
 
 
 ```sql
@@ -2181,10 +2181,10 @@ SELECT p.id AS pim_product_id,
 |---|---|
 | owner | postgres |
 | security_invoker | não |
-| opções | security_invoker=on |
+| opções | security_invoker=false |
 | depende de | public.product_customization_prices |
 | populada | n/a |
-| comentário | Faixas de preco de personalizacao (product_customization_prices) desnormalizadas para consumo pelo Promo Supply V2 via external-db-bridge. Uma linha por faixa de quantidade. Fonte: spot_customization. |
+| comentário | Faixas de preco por quantidade para o bridge PIM (SECURITY DEFINER). Projeta unit_cost/unit_price de proposito (PimPrecoFaixa). NAO religar security_invoker=true. |
 
 
 ```sql
@@ -2218,10 +2218,10 @@ SELECT pcp.product_id AS pim_product_id,
 |---|---|
 | owner | postgres |
 | security_invoker | não |
-| opções | security_invoker=on |
+| opções | security_invoker=false |
 | depende de | public.vw_variant_sale_prices |
 | populada | n/a |
-| comentário | Preco de VENDA por faixa de quantidade e por variante (vw_variant_sale_prices), ate 5 tiers. Trabalho preservado da PR #3969. Conceito distinto de v_compras_precos_faixa (preco de personalizacao); as duas coexistem. |
+| comentário | Precos por variante para o bridge PIM (SECURITY DEFINER). Depende de vw_variant_sale_prices, que nao tem GRANT SELECT para anon. NAO religar security_invoker=true. |
 
 
 ```sql
@@ -2849,11 +2849,11 @@ SELECT s.name AS supplier,
 | campo | valor |
 |---|---|
 | owner | postgres |
-| security_invoker | sim |
-| opções | security_invoker=true |
+| security_invoker | não |
+| opções | security_invoker=false |
 | depende de | public.product_kit_components, public.products |
 | populada | n/a |
-| comentário | SECURITY DEFINER intencional (fix_version 20260717). Depende de products para filtro is_active. Colunas de output: kit_component_id, component_code/name, primary_image_url. |
+| comentário | Midias de componentes de kit (SECURITY DEFINER). NAO religar security_invoker=true: sem GRANT SELECT em product_kit_components o anon recebe 401 42501, e com GRANT passaria a ler componentes de produto inativo que esta view esconde. Regressao de 2026-11-22 revertida pela 20261122180000. |
 
 
 ```sql
@@ -3680,11 +3680,11 @@ SELECT p.id AS product_id,
 | campo | valor |
 |---|---|
 | owner | postgres |
-| security_invoker | sim |
-| opções | security_invoker=true |
+| security_invoker | não |
+| opções | security_invoker=false |
 | depende de | public.mv_product_compositions, public.products |
 | populada | n/a |
-| comentário | SECURITY DEFINER intencional (fix_version 20260717). Depende de products e analytics.mv_product_compositions. |
+| comentário | Composicoes de produto (SECURITY DEFINER). Cadeia de 2 niveis ate analytics.mv_product_compositions, que nao tem GRANT SELECT para anon. NAO religar security_invoker=true. Regressao de 2026-11-22 revertida pela 20261122180000. |
 
 
 ```sql
@@ -5084,11 +5084,11 @@ UNION ALL
 | campo | valor |
 |---|---|
 | owner | postgres |
-| security_invoker | sim |
-| opções | security_invoker=true |
+| security_invoker | não |
+| opções | security_invoker=false |
 | depende de | public.suppliers |
 | populada | n/a |
-| comentário | PUBLIC SUPPLIER PROJECTION (SECURITY DEFINER intencional / fix_version 20260717_v1). Expoe apenas: id, name, code, trading_name, logo_url, website, active, flags, state_uf. Mascara: api_credentials, api_base_url, default_markup_percent, cnpj, email, phone, etc. NAO alterar para security_invoker=true (expoeria api_credentials ao anon via REST). |
+| comentário | Fornecedores publicos (SECURITY DEFINER, security_invoker=false). Contrato fechado de colunas: NAO expoe api_credentials/api_key/api_token/password/email/phone/cnpj/api_base_url/default_markup_percent. NAO religar security_invoker=true: anon nao tem GRANT SELECT em suppliers e a view responderia 401 42501 (regressao de 2026-11-22, revertida pela 20261122180000). |
 
 
 ```sql
@@ -5580,11 +5580,11 @@ WITH metrics AS (
 | campo | valor |
 |---|---|
 | owner | postgres |
-| security_invoker | sim |
-| opções | security_invoker=true |
+| security_invoker | não |
+| opções | security_invoker=false |
 | depende de | public.tabela_preco_gravacao_oficial |
 | populada | n/a |
-| comentário | PUBLIC ENGRAVING TABLE PROJECTION (SECURITY DEFINER / fix_version 20260717). Expõe apenas colunas de cobrança e preços de venda. EXCLUÍDOS: custo_setup (R$325 max), markup_percent (115% max), custo_aplicacao, custo_termo_transferencia, custo_queima_forno, faturamento_minimo. NAO reverter para security_invoker=true nem re-expor a tabela base ao anon. |
+| comentário | Tabela de preco de gravacao oficial (SECURITY DEFINER). NAO religar security_invoker=true nem re-expor a tabela base ao anon: exigiria GRANT em 37 colunas. Regressao de 2026-11-22 revertida pela 20261122180000. |
 
 
 ```sql

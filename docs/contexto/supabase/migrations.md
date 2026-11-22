@@ -3010,3 +3010,4 @@ SQL em `migrations/<versao>_<nome>.sql`. Mudanças feitas pelo Dashboard/SQL Edi
 | 20261121203000 | [kit_maker_server_revalidation](migrations/20261121203000_kit_maker_server_revalidation.sql) | 6 |
 | 20261121223000 | [add_supplier_external_id](migrations/20261121223000_add_supplier_external_id.sql) | 4 |
 | 20261122100000 | [compras_views_canonicas](migrations/20261122100000_compras_views_canonicas.sql) | 9 |
+| 20261122180000 | [restore_definer_views_p06_e_compras](migrations/20261122180000_restore_definer_views_p06_e_compras.sql) | 15 |
