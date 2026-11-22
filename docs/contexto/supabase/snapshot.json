@@ -10042,6 +10042,58 @@
         "type": "boolean"
       },
       {
+        "comment": "Data do feriado (AAAA-MM-DD). Chave primária: uma linha por dia.",
+        "default": null,
+        "generated": null,
+        "identity": null,
+        "is_enum": false,
+        "name": "day",
+        "nullable": false,
+        "position": 1,
+        "schema": "public",
+        "table": "business_calendar",
+        "type": "date"
+      },
+      {
+        "comment": "Nome do feriado em português, até 120 caracteres.",
+        "default": null,
+        "generated": null,
+        "identity": null,
+        "is_enum": false,
+        "name": "description",
+        "nullable": false,
+        "position": 2,
+        "schema": "public",
+        "table": "business_calendar",
+        "type": "text"
+      },
+      {
+        "comment": "Criação do registro.",
+        "default": "now()",
+        "generated": null,
+        "identity": null,
+        "is_enum": false,
+        "name": "created_at",
+        "nullable": false,
+        "position": 3,
+        "schema": "public",
+        "table": "business_calendar",
+        "type": "timestamp with time zone"
+      },
+      {
+        "comment": "Usuário que cadastrou. Nulo no seed e quando o usuário é removido.",
+        "default": "auth.uid()",
+        "generated": null,
+        "identity": null,
+        "is_enum": false,
+        "name": "created_by",
+        "nullable": true,
+        "position": 4,
+        "schema": "public",
+        "table": "business_calendar",
+        "type": "uuid"
+      },
+      {
         "comment": null,
         "default": "gen_random_uuid()",
         "generated": null,
@@ -39760,6 +39812,19 @@
         "type": "numeric(10,4)"
       },
       {
+        "comment": "Dias úteis de personalização para este produto × local × técnica. NULL = usa prazo_dias da faixa da tabela de preço",
+        "default": null,
+        "generated": null,
+        "identity": null,
+        "is_enum": false,
+        "name": "production_days",
+        "nullable": true,
+        "position": 24,
+        "schema": "public",
+        "table": "print_area_techniques",
+        "type": "integer"
+      },
+      {
         "comment": null,
         "default": "gen_random_uuid()",
         "generated": null,
@@ -50225,7 +50290,7 @@
         "type": "boolean"
       },
       {
-        "comment": "Prazo de produção em dias úteis. 82% preenchido (NULL=herda fornecedor). Valores: 2 ou 3.",
+        "comment": "Prazo de liberação do fornecedor em dias úteis. Igual ao padrão do fornecedor = herdado; diferente = exceção por produto.",
         "default": null,
         "generated": null,
         "identity": null,
@@ -115279,6 +115344,59 @@
       },
       {
         "columns": [
+          "created_by"
+        ],
+        "deferrable": false,
+        "definition": "FOREIGN KEY (created_by) REFERENCES auth.users(id) ON DELETE SET NULL",
+        "name": "business_calendar_created_by_fkey",
+        "on_delete": "SET NULL",
+        "on_update": "NO ACTION",
+        "ref_columns": [
+          "id"
+        ],
+        "ref_schema": "auth",
+        "ref_table": "users",
+        "schema": "public",
+        "table": "business_calendar",
+        "type": "FOREIGN KEY",
+        "validated": true
+      },
+      {
+        "columns": [
+          "description"
+        ],
+        "deferrable": false,
+        "definition": "CHECK (description ~ '\\S'::text AND length(description) <= 120)",
+        "name": "business_calendar_description_check",
+        "on_delete": null,
+        "on_update": null,
+        "ref_columns": [],
+        "ref_schema": null,
+        "ref_table": null,
+        "schema": "public",
+        "table": "business_calendar",
+        "type": "CHECK",
+        "validated": true
+      },
+      {
+        "columns": [
+          "day"
+        ],
+        "deferrable": false,
+        "definition": "PRIMARY KEY (day)",
+        "name": "business_calendar_pkey",
+        "on_delete": null,
+        "on_update": null,
+        "ref_columns": [],
+        "ref_schema": null,
+        "ref_table": null,
+        "schema": "public",
+        "table": "business_calendar",
+        "type": "PRIMARY KEY",
+        "validated": true
+      },
+      {
+        "columns": [
           "id"
         ],
         "deferrable": false,
@@ -126005,6 +126123,23 @@
         "schema": "public",
         "table": "print_area_techniques",
         "type": "PRIMARY KEY",
+        "validated": true
+      },
+      {
+        "columns": [
+          "production_days"
+        ],
+        "deferrable": false,
+        "definition": "CHECK (production_days IS NULL OR production_days >= 0 AND production_days <= 365)",
+        "name": "print_area_techniques_production_days_check",
+        "on_delete": null,
+        "on_update": null,
+        "ref_columns": [],
+        "ref_schema": null,
+        "ref_table": null,
+        "schema": "public",
+        "table": "print_area_techniques",
+        "type": "CHECK",
         "validated": true
       },
       {
@@ -197159,6 +197294,18 @@
           "table": "bot_detection_log"
         },
         {
+          "grantee": "authenticated",
+          "privileges": "DELETE, INSERT, SELECT, UPDATE",
+          "schema": "public",
+          "table": "business_calendar"
+        },
+        {
+          "grantee": "service_role",
+          "privileges": "DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE",
+          "schema": "public",
+          "table": "business_calendar"
+        },
+        {
           "grantee": "anon",
           "privileges": "DELETE, INSERT, REFERENCES, TRIGGER, UPDATE",
           "schema": "public",
@@ -207072,6 +207219,20 @@
         "predicate": null,
         "schema": "public",
         "table": "bot_detection_log"
+      },
+      {
+        "columns": [
+          "day"
+        ],
+        "definition": "CREATE UNIQUE INDEX business_calendar_pkey ON public.business_calendar USING btree (day)",
+        "is_primary": true,
+        "is_unique": true,
+        "is_valid": true,
+        "method": "btree",
+        "name": "business_calendar_pkey",
+        "predicate": null,
+        "schema": "public",
+        "table": "business_calendar"
       },
       {
         "columns": [
@@ -224565,6 +224726,12 @@
       },
       {
         "code": "fk_without_index",
+        "detail": "FK sem índice nas colunas ['created_by']: joins e DELETE/UPDATE na tabela pai ficam lentos.",
+        "object": "public.business_calendar.business_calendar_created_by_fkey",
+        "severity": "BAIXA"
+      },
+      {
+        "code": "fk_without_index",
         "detail": "FK sem índice nas colunas ['updated_by']: joins e DELETE/UPDATE na tabela pai ficam lentos.",
         "object": "public.freight_settings.freight_settings_updated_by_fkey",
         "severity": "BAIXA"
@@ -241819,6 +241986,12 @@
         "version": "20261120030100"
       },
       {
+        "name": "production_lead_time_calendar",
+        "statements": 23,
+        "statements_sha": "0bd4dd8077b38389",
+        "version": "20261120041000"
+      },
+      {
         "name": "restore_quote_comments_scoped_threads",
         "statements": 16,
         "statements_sha": "a4b06cbf600b8b59",
@@ -242830,6 +243003,54 @@
         "table": "bot_detection_log",
         "using": "is_admin_or_above(( SELECT ( SELECT auth.uid() AS uid) AS uid))",
         "with_check": null
+      },
+      {
+        "cmd": "DELETE",
+        "name": "business_calendar_delete_admin",
+        "permissive": "PERMISSIVE",
+        "roles": [
+          "authenticated"
+        ],
+        "schema": "public",
+        "table": "business_calendar",
+        "using": "is_admin()",
+        "with_check": null
+      },
+      {
+        "cmd": "INSERT",
+        "name": "business_calendar_insert_admin",
+        "permissive": "PERMISSIVE",
+        "roles": [
+          "authenticated"
+        ],
+        "schema": "public",
+        "table": "business_calendar",
+        "using": null,
+        "with_check": "is_admin()"
+      },
+      {
+        "cmd": "SELECT",
+        "name": "business_calendar_select_authenticated",
+        "permissive": "PERMISSIVE",
+        "roles": [
+          "authenticated"
+        ],
+        "schema": "public",
+        "table": "business_calendar",
+        "using": "true",
+        "with_check": null
+      },
+      {
+        "cmd": "UPDATE",
+        "name": "business_calendar_update_admin",
+        "permissive": "PERMISSIVE",
+        "roles": [
+          "authenticated"
+        ],
+        "schema": "public",
+        "table": "business_calendar",
+        "using": "is_admin()",
+        "with_check": "is_admin()"
       },
       {
         "cmd": "ALL",
@@ -256580,6 +256801,21 @@
         "is_partition": false,
         "kind": "table",
         "name": "bot_detection_log",
+        "owner": "postgres",
+        "parent": null,
+        "partition_bound": null,
+        "partition_key": null,
+        "replica_identity": "default",
+        "rls_enabled": true,
+        "rls_forced": false,
+        "schema": "public"
+      },
+      {
+        "comment": "Feriados em que não se conta dia útil no prazo de produção (src/lib/lead-time). Uma linha por data. Sábado e domingo não entram: a biblioteca já os pula.",
+        "from_extension": false,
+        "is_partition": false,
+        "kind": "table",
+        "name": "business_calendar",
         "owner": "postgres",
         "parent": null,
         "partition_bound": null,

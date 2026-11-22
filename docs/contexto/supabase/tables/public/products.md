@@ -110,7 +110,7 @@ BACKLOG:
 | 101 | `internal_length_cm` | `numeric(8,2)` | sim |  |  | Dimensão interna (comprimento). null_frac=99.8%. Usado em kit-builder. DROP requer refatoração coordenada. |
 | 103 | `packaging_material` | `character varying(100)` | sim |  |  | Material da embalagem. Ex: papel, plástico. |
 | 108 | `is_imported` | `boolean` | sim | `true` |  | TRUE se produto importado (vs nacional). Afeta cálculos fiscais. |
-| 109 | `lead_time_days` | `integer` | sim |  |  | Prazo de produção em dias úteis. 82% preenchido (NULL=herda fornecedor). Valores: 2 ou 3. |
+| 109 | `lead_time_days` | `integer` | sim |  |  | Prazo de liberação do fornecedor em dias úteis. Igual ao padrão do fornecedor = herdado; diferente = exceção por produto. |
 | 112 | `supply_mode` | `character varying(30)` | sim | `'pronta_entrega_liso'::character varying` |  | Modalidade de fornecimento. FLAG-MORTA: constante pronta_entrega_liso. Futuro uso: diferenciar modos. |
 | 113 | `is_thermal` | `boolean` | sim | `false` |  | TRUE se produto térmico (garrafa, caneca). Classificação automática. |
 | 114 | `capacity_ml` | `integer` | sim |  |  | Capacidade em ml (para copos, garrafas, canecas). Extraído do name por trigger. |

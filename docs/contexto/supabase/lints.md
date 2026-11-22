@@ -14,6 +14,7 @@ Verificações objetivas feitas no catálogo. Um agente deve ler isto antes de p
 | MÉDIA | rls_no_policies | public.crm_seller_identity_links | RLS ligado sem policies: inacessível via API (só service_role). |
 | BAIXA | extension_in_public | pg_repack | Extensão instalada no schema public (recomendado: schema extensions). |
 | BAIXA | extension_in_public | pgstattuple | Extensão instalada no schema public (recomendado: schema extensions). |
+| BAIXA | fk_without_index | public.business_calendar.business_calendar_created_by_fkey | FK sem índice nas colunas ['created_by']: joins e DELETE/UPDATE na tabela pai ficam lentos. |
 | BAIXA | fk_without_index | public.freight_settings.freight_settings_updated_by_fkey | FK sem índice nas colunas ['updated_by']: joins e DELETE/UPDATE na tabela pai ficam lentos. |
 | BAIXA | policy_auth_fn_not_wrapped | public.order_items.order_items_insert | Policy chama auth.uid()/jwt() sem `(select ...)`: é reavaliada por linha; envolva em subselect. |
 | BAIXA | policy_auth_fn_not_wrapped | public.order_items.order_items_select | Policy chama auth.uid()/jwt() sem `(select ...)`: é reavaliada por linha; envolva em subselect. |

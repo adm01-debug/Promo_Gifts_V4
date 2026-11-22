@@ -86,6 +86,10 @@ Visão consolidada (inclui `storage.objects` e `realtime.messages`); detalhes po
 | public.binding_colors | ref_select_public | SELECT | PERMISSIVE | public | `true` |  |
 | public.binding_types | ref_select_public | SELECT | PERMISSIVE | public | `true` |  |
 | public.bot_detection_log | Admins can read bot log | SELECT | PERMISSIVE | authenticated | `is_admin_or_above(( SELECT ( SELECT auth.uid() AS uid) AS uid))` |  |
+| public.business_calendar | business_calendar_delete_admin | DELETE | PERMISSIVE | authenticated | `is_admin()` |  |
+| public.business_calendar | business_calendar_insert_admin | INSERT | PERMISSIVE | authenticated |  | `is_admin()` |
+| public.business_calendar | business_calendar_select_authenticated | SELECT | PERMISSIVE | authenticated | `true` |  |
+| public.business_calendar | business_calendar_update_admin | UPDATE | PERMISSIVE | authenticated | `is_admin()` | `is_admin()` |
 | public.cart_templates | Users can manage own templates | ALL | PERMISSIVE | authenticated | `(user_id = ( SELECT ( SELECT auth.uid() AS uid) AS uid))` | `(user_id = ( SELECT ( SELECT auth.uid() AS uid) AS uid))` |
 | public.catalog_analytics | anon_insert_catalog_analytics | INSERT | PERMISSIVE | anon |  | `(user_id IS NULL)` |
 | public.catalog_analytics | catalog_analytics_read | SELECT | PERMISSIVE | authenticated | `(is_manager_or_admin() OR (( SELECT ( SELECT auth.uid() AS uid) AS uid) = user_id))` |  |

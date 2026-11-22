@@ -26,6 +26,7 @@
 | public.b2b_collection_products | product_id | public.products | id | CASCADE | NO ACTION |
 | public.b2b_collections | created_by | auth.users | id | SET NULL | NO ACTION |
 | public.b2b_collections | organization_id | public.organizations | id | CASCADE | NO ACTION |
+| public.business_calendar | created_by | auth.users | id | SET NULL | NO ACTION |
 | public.cart_templates | user_id | auth.users | id | CASCADE | NO ACTION |
 | public.catalog_analytics | user_id | auth.users | id | SET NULL | NO ACTION |
 | public.categories | created_by | auth.users | id | NO ACTION | NO ACTION |

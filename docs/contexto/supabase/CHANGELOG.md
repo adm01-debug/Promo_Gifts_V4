@@ -2,6 +2,18 @@
 
 Diff semântico gerado a cada coleta em que algo mudou.
 
+## 2026-11-22 14:17 UTC
+
+- **colunas** adicionado (5): `public.business_calendar.created_at`, `public.business_calendar.created_by`, `public.business_calendar.day`, `public.business_calendar.description`, `public.print_area_techniques.production_days`
+- **colunas** alterado (1): `public.products.lead_time_days`
+- **constraints** adicionado (4): `public.business_calendar.business_calendar_created_by_fkey`, `public.business_calendar.business_calendar_description_check`, `public.business_calendar.business_calendar_pkey`, `public.print_area_techniques.print_area_techniques_production_days_check`
+- **grants** adicionado (2): `public.business_calendar:authenticated`, `public.business_calendar:service_role`
+- **indexes** adicionado (1): `public.business_calendar_pkey`
+- **lints** adicionado (1): `fk_without_index:public.business_calendar.business_calendar_created_by_fkey`
+- **migrations** adicionado (1): `20261120041000_production_lead_time_calendar`
+- **policies (RLS)** adicionado (4): `public.business_calendar.business_calendar_delete_admin`, `public.business_calendar.business_calendar_insert_admin`, `public.business_calendar.business_calendar_select_authenticated`, `public.business_calendar.business_calendar_update_admin`
+- **tabelas** adicionado (1): `public.business_calendar`
+
 ## 2026-11-22 13:16 UTC
 
 - **colunas** adicionado (59): `public.product_variants.supplier_external_id`, `public.products.supplier_external_id`, `public.v_compras_catalogo.color_code`, `public.v_compras_catalogo.color_hex`, `public.v_compras_catalogo.color_id`, `public.v_compras_catalogo.color_name`, `public.v_compras_catalogo.cost_price`, `public.v_compras_catalogo.image_url`, `public.v_compras_catalogo.ipi_rate`, `public.v_compras_catalogo.is_stockout`, `public.v_compras_catalogo.last_stock_update_at`, `public.v_compras_catalogo.lead_time_days`, `public.v_compras_catalogo.min_order_quantity`, `public.v_compras_catalogo.min_order_value`, `public.v_compras_catalogo.min_quantity`, `public.v_compras_catalogo.name`, `public.v_compras_catalogo.ncm_code`, `public.v_compras_catalogo.pim_product_id`, `public.v_compras_catalogo.pim_variant_id`, `public.v_compras_catalogo.price_freshness_threshold_days`, `public.v_compras_catalogo.price_updated_at`, `public.v_compras_catalogo.price_verified_at`, `public.v_compras_catalogo.sale_price`, `public.v_compras_catalogo.size_code`, `public.v_compras_catalogo.sku`, `public.v_compras_catalogo.sku_promo`, `public.v_compras_catalogo.stock_quantity`, `public.v_compras_catalogo.suggested_price`, `public.v_compras_catalogo.supplier_code`, `public.v_compras_catalogo.supplier_external_id`, `public.v_compras_catalogo.supplier_id`, `public.v_compras_catalogo.supplier_name`, `public.v_compras_catalogo.supplier_reference`, `public.v_compras_catalogo.updated_at`, `public.v_compras_catalogo.xbz_stock_reliability_text`, `public.v_compras_precos_faixa.component`, `public.v_compras_precos_faixa.currency`, `public.v_compras_precos_faixa.handling_cost`, `public.v_compras_precos_faixa.hotspot`, `public.v_compras_precos_faixa.location` … (+19)

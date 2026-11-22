@@ -106,6 +106,8 @@ Roles da API: `anon` (sem login), `authenticated` (logado), `service_role` (bypa
 | public.binding_types | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
 | public.bot_detection_log | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | public.bot_detection_log | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
+| public.business_calendar | authenticated | DELETE, INSERT, SELECT, UPDATE |
+| public.business_calendar | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
 | public.cart_templates | anon | DELETE, INSERT, REFERENCES, TRIGGER, UPDATE |
 | public.cart_templates | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | public.cart_templates | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |

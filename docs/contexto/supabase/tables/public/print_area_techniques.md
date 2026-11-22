@@ -35,6 +35,7 @@
 | 21 | `location_order` | `integer` | sim |  |  | Ordem de exibição do local: 1=LADO-A, 2=LADO-B, 3=CIRCULAR |
 | 22 | `notes` | `text` | sim |  |  | Observações sobre esta área de gravação |
 | 23 | `unit_cost` | `numeric(10,4)` | sim |  |  | Custo unitário de gravação sobrescrito para este produto (se diferir da tabela de preço padrão) |
+| 24 | `production_days` | `integer` | sim |  |  | Dias úteis de personalização para este produto × local × técnica. NULL = usa prazo_dias da faixa da tabela de preço |
 
 
 ## Constraints
@@ -43,6 +44,7 @@
 |---|---|---|---|---|---|
 | fk_pat_product_id | FOREIGN KEY | `FOREIGN KEY (product_id) REFERENCES products(id)` | NO ACTION | NO ACTION | sim |
 | print_area_techniques_pkey | PRIMARY KEY | `PRIMARY KEY (id)` |  |  | sim |
+| print_area_techniques_production_days_check | CHECK | `CHECK (production_days IS NULL OR production_days >= 0 AND production_days <= 365)` |  |  | sim |
 | print_area_techniques_tabela_preco_id_fkey | FOREIGN KEY | `FOREIGN KEY (tabela_preco_id) REFERENCES tabela_preco_gravacao_oficial(id)` | NO ACTION | NO ACTION | sim |
 | uq_pat_product_location_tecnica | UNIQUE | `UNIQUE (product_id, location_code, tabela_preco_id)` |  |  | sim |
 

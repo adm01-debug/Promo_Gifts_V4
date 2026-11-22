@@ -3003,6 +3003,7 @@ SQL em `migrations/<versao>_<nome>.sql`. Mudanças feitas pelo Dashboard/SQL Edi
 | 20261120013000 | [add_products_ships_separately](migrations/20261120013000_add_products_ships_separately.sql) | 2 |
 | 20261120030000 | [harden_freight_tables](migrations/20261120030000_harden_freight_tables.sql) | 16 |
 | 20261120030100 | [seed_shipping_boxes](migrations/20261120030100_seed_shipping_boxes.sql) | 1 |
+| 20261120041000 | [production_lead_time_calendar](migrations/20261120041000_production_lead_time_calendar.sql) | 23 |
 | 20261120180000 | [restore_quote_comments_scoped_threads](migrations/20261120180000_restore_quote_comments_scoped_threads.sql) | 16 |
 | 20261121000000 | [quote_rpcs_freight_plan](migrations/20261121000000_quote_rpcs_freight_plan.sql) | 2 |
 | 20261121120000 | [fix_quote_rpcs_contract_freight](migrations/20261121120000_fix_quote_rpcs_contract_freight.sql) | 6 |

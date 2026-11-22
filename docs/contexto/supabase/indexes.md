@@ -139,6 +139,7 @@ Uso e tamanho em `stats.md`.
 | public.binding_types | binding_types_pkey | btree | id | sim | sim |  |
 | public.bot_detection_log | bot_detection_log_pkey | btree | id | sim | sim |  |
 | public.bot_detection_log | idx_bot_detection_log_created_at | btree | created_at | não | sim |  |
+| public.business_calendar | business_calendar_pkey | btree | day | sim | sim |  |
 | public.cart_templates | cart_templates_pkey | btree | id | sim | sim |  |
 | public.cart_templates | idx_cart_templates_user_id | btree | user_id | não | sim |  |
 | public.catalog_analytics | catalog_analytics_pkey | btree | id | sim | sim |  |
