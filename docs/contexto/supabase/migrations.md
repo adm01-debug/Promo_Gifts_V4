@@ -3006,3 +3006,4 @@ SQL em `migrations/<versao>_<nome>.sql`. Mudanças feitas pelo Dashboard/SQL Edi
 | 20261120180000 | [restore_quote_comments_scoped_threads](migrations/20261120180000_restore_quote_comments_scoped_threads.sql) | 16 |
 | 20261121000000 | [quote_rpcs_freight_plan](migrations/20261121000000_quote_rpcs_freight_plan.sql) | 2 |
 | 20261121120000 | [fix_quote_rpcs_contract_freight](migrations/20261121120000_fix_quote_rpcs_contract_freight.sql) | 6 |
+| 20261121203000 | [kit_maker_server_revalidation](migrations/20261121203000_kit_maker_server_revalidation.sql) | 6 |

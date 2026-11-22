@@ -2,6 +2,11 @@
 
 Diff semântico gerado a cada coleta em que algo mudou.
 
+## 2026-11-22 12:22 UTC
+
+- **functions** alterado (3): `public.create_kit_quote_transactional(_request_id uuid, _quote jsonb, _items jsonb)`, `public.create_quote_transactional(_quote jsonb, _items jsonb)`, `public.fn_check_item_fits(p_packaging_id uuid, p_product_id uuid, p_current_used_liters numeric)`
+- **migrations** adicionado (1): `20261121203000_kit_maker_server_revalidation`
+
 ## 2026-11-22 00:40 UTC
 
 - **realtime** adicionado (1): `supabase_realtime_messages_publication:realtime.messages_2026_11_25`

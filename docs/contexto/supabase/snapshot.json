@@ -145738,20 +145738,24 @@
             {
               "file": "supabase/migrations/20260912150000_kit_maker_quote_lineage_forward_only.sql",
               "hits": 5
+            },
+            {
+              "file": "supabase/migrations/20261121203000_kit_maker_server_revalidation.sql",
+              "hits": 5
             }
           ],
-          "code_total_files": 3,
+          "code_total_files": 4,
           "cron": [],
           "db": [],
           "triggers": [],
           "views": []
         },
-        "comment": "Idempotent Kit Maker quote writer; persists Kit context, artwork URLs and the selected catalog variant.",
+        "comment": "Idempotent Kit Maker quote writer; persists Kit context, artwork URLs, the selected catalog variant and revalidates weight/fit server-side (KM2-099).",
         "config": [
           "search_path=pg_catalog, public"
         ],
         "definition": null,
-        "definition_sha": "d9676f1b13ca7c5e",
+        "definition_sha": "6bc684694a0c9656",
         "execute_api_roles": "authenticated, service_role",
         "execute_public": false,
         "is_trigger_fn": false,
@@ -145916,9 +145920,13 @@
             {
               "file": "supabase/migrations/20260912150000_kit_maker_quote_lineage_forward_only.sql",
               "hits": 4
+            },
+            {
+              "file": "supabase/migrations/20261121203000_kit_maker_server_revalidation.sql",
+              "hits": 2
             }
           ],
-          "code_total_files": 10,
+          "code_total_files": 11,
           "cron": [],
           "db": [
             "public.create_kit_quote_transactional",
@@ -151959,11 +151967,17 @@
             {
               "file": "supabase/migrations/20260620190500_faxina_tier3b_archive_dead_functions_bulk.sql",
               "hits": 1
+            },
+            {
+              "file": "supabase/migrations/20261121203000_kit_maker_server_revalidation.sql",
+              "hits": 4
             }
           ],
-          "code_total_files": 2,
+          "code_total_files": 3,
           "cron": [],
-          "db": [],
+          "db": [
+            "public.create_kit_quote_transactional"
+          ],
           "triggers": [],
           "views": []
         },
@@ -240982,6 +240996,12 @@
         "statements": 6,
         "statements_sha": "e99d85f4a067d9f2",
         "version": "20261121120000"
+      },
+      {
+        "name": "kit_maker_server_revalidation",
+        "statements": 6,
+        "statements_sha": "c1b1c18e58f9ca6d",
+        "version": "20261121203000"
       }
     ],
     "policies": [

@@ -14,6 +14,20 @@ DECLARE
   _product_id uuid;
   _artwork_urls jsonb;
   _updated_count integer;
+  -- KM2-099: revalidação servidor
+  _box_id uuid;
+  _box_max_weight_kg numeric;
+  _items_weight_g bigint := 0;
+  _item_weight_g integer;
+  _used_liters numeric := 0;
+  _fit record;
+  _line_volume numeric;
+  _line_product_id uuid;
+  _line_name text;
+  _line_qty integer;
+  _violations text[] := '{}';
+  _it jsonb;
+  _idx integer;
 BEGIN
   IF _actor_id IS NULL THEN
     RAISE EXCEPTION 'Authentication is required to create a Kit Maker quote'
@@ -67,6 +81,80 @@ BEGIN
     RETURN _quote_result;
   END IF;
 
+  -- ------------------------------------------------------------------
+  -- KM2-099: revalidação física do kit montado.
+  -- A caixa entra como linha com product_type='packaging' (sort_order=0 no
+  -- front); os itens vêm em seguida. Espelha a semântica de peso
+  -- (summarizeKitWeight) e de encaixe (validateKitFitsForQuote) que o
+  -- front aplica antes de chamar a RPC.
+  -- ------------------------------------------------------------------
+
+  -- 1) Identifica a caixa (primeira linha packaging) e sua carga útil.
+  SELECT p.id, p.box_weight_kg
+    INTO _box_id, _box_max_weight_kg
+    FROM jsonb_array_elements(_items) AS j(item)
+    JOIN public.products p ON p.id = nullif(j.item->>'product_id','')::uuid
+   WHERE p.product_type = 'packaging'
+   ORDER BY coalesce(nullif(j.item->>'sort_order','')::integer, 0)
+   LIMIT 1;
+
+  -- 2) Acumula peso e encaixe linha a linha, na ordem do payload.
+  FOR _it, _idx IN
+    SELECT value, ordinality
+    FROM jsonb_array_elements(_items) WITH ORDINALITY
+  LOOP
+    _line_product_id := nullif(_it->>'product_id','')::uuid;
+    _line_name := coalesce(_it->>'product_name','Item');
+    _line_qty := greatest(1, coalesce(nullif(_it->>'quantity','')::integer, 1));
+    IF _line_product_id IS NULL THEN
+      CONTINUE;
+    END IF;
+
+    -- Peso: a caixa é o limite, não soma. Só soma peso conhecido (>0).
+    IF _line_product_id IS DISTINCT FROM _box_id THEN
+      SELECT max(p.weight_g)
+        INTO _item_weight_g
+        FROM public.products p
+       WHERE p.id = _line_product_id;
+      IF _item_weight_g IS NOT NULL AND _item_weight_g > 0 THEN
+        _items_weight_g := _items_weight_g + (_item_weight_g::bigint * _line_qty::bigint);
+      END IF;
+    END IF;
+
+    -- Encaixe: mesmo loop sequencial do cliente; falha comprovada bloqueia.
+    IF _box_id IS NOT NULL AND _line_product_id IS DISTINCT FROM _box_id THEN
+      SELECT * INTO _fit
+        FROM public.fn_check_item_fits(_box_id, _line_product_id, _used_liters);
+      _line_volume := coalesce(_fit.product_volume, 0) * _line_qty;
+      IF _fit.fits = FALSE
+         OR (_line_qty > 1 AND _fit.fits IS NOT NULL
+             AND (_used_liters + _line_volume) > coalesce(_fit.packaging_volume, 0)) THEN
+        _violations := array_append(_violations,
+          format('%s (cabe: %s, volume: %sL)',
+                 _line_name,
+                 coalesce(_fit.fits::text, 'sem dados'),
+                 round(coalesce(_line_volume,0), 2)));
+      END IF;
+      _used_liters := _used_liters + _line_volume;
+    END IF;
+  END LOOP;
+
+  -- Violação comprovada de encaixe: rejeita (fail-closed p/ violação
+  -- determinística; dados ausentes seguem fail-open como no front).
+  IF _box_id IS NOT NULL AND cardinality(_violations) > 0 THEN
+    RAISE EXCEPTION 'Kit nao cabe fisicamente na embalagem selecionada (KM2-099): %',
+      array_to_string(_violations, '; ')
+      USING ERRCODE = 'P0001';
+  END IF;
+
+  -- Sobrepeso comprovado (maxWeight = box_weight_kg*1000, mesma regra do front).
+  IF _box_max_weight_kg IS NOT NULL
+     AND _items_weight_g > floor(_box_max_weight_kg * 1000)::bigint THEN
+    RAISE EXCEPTION 'Peso dos itens (% kg) excede a carga util da caixa (% kg) (KM2-099)',
+      round(_items_weight_g / 1000.0, 1), round(_box_max_weight_kg, 1)
+      USING ERRCODE = 'P0001';
+  END IF;
+
   SELECT * INTO _quote_result
   FROM public.create_quote_transactional(_quote, _items);
 
@@ -106,13 +194,13 @@ BEGIN
     SET artwork_urls = _artwork_urls,
         product_variant_id = _variant_id
     WHERE quote_id = _quote_result.id
-      AND sort_order = coalesce(nullif(_item->>'sort_order', '')::integer, _ordinality::integer - 1)
+      AND sort_order = coalesce(nullif(_item->>'sort_order','')::integer, _ordinality::integer - 1)
       AND product_id IS NOT DISTINCT FROM _product_id;
 
     GET DIAGNOSTICS _updated_count = ROW_COUNT;
     IF _updated_count <> 1 THEN
       RAISE EXCEPTION 'Kit Maker quote lineage could not match exactly one quote item (sort order %, product %)',
-        coalesce(nullif(_item->>'sort_order', '')::integer, _ordinality::integer - 1),
+        coalesce(nullif(_item->>'sort_order','')::integer, _ordinality::integer - 1),
         _product_id
         USING ERRCODE = '23505';
     END IF;
