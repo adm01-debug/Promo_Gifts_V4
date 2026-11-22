@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.3.2 · commit `3aa6694279` · branch `main` · 2026-11-22 13:25 UTC
+> Gerado automaticamente por AI Context Sync v1.3.2 · commit `0a339aa994` · branch `main` · 2026-11-22 13:28 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -503,7 +503,7 @@ Fornecedor Asia → supplier_products_raw (Bronze) → normalização (Silver) �
 | `user_token_revocations` | revocations_supervisor_delete | DELETE | public | permissive | `"public"."is_supervisor_or_above"(( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid"))` |  |
 | `user_token_revocations` | revocations_supervisor_insert | INSERT | public | permissive |  | `"public"."is_supervisor_or_above"(( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid"))` |
 | `saved_filters` | saved_filters_delete | DELETE | public | permissive | `(( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid") = "user_id")` |  |
-| … +515 linhas — lista completa em `context.json` | | | | | | |
+| … +532 linhas — lista completa em `context.json` | | | | | | |
 
 ## C. Restrições de dados (obrigatório / único / default / CHECK / FK / calculada)
 
@@ -809,7 +809,7 @@ Fornecedor Asia → supplier_products_raw (Bronze) → normalização (Silver) �
 | `cart_templates` | `name` | obrigatório |
 | `cart_templates` | `items` | default '[]'::jsonb |
 | `cart_templates` | `created_at` | default now() |
-| … +3794 linhas — lista completa em `context.json` | | |
+| … +3770 linhas — lista completa em `context.json` | | |
 
 ## D. Automações no banco (triggers e funções — regras que rodam sozinhas)
 
@@ -1465,8 +1465,6 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `webhook_delivery_metrics` | `http_status` | **livre (sem enum/CHECK)** |  |
 | `webhook_delivery_metrics_y2026m05` | `http_status` | **livre (sem enum/CHECK)** |  |
 | `webhook_delivery_metrics_y2026m06` | `http_status` | **livre (sem enum/CHECK)** |  |
-| `variant_supplier_sources` | `sync_status` | **livre (sem enum/CHECK)** | `synced` |
-| `variant_supplier_sources` | `supplier_availability_status` | **livre (sem enum/CHECK)** |  |
 | `cf_recon.action_log` | `old_status` | **livre (sem enum/CHECK)** |  |
 | `cf_recon.action_log` | `new_status` | **livre (sem enum/CHECK)** |  |
 | `cf_recon.cf_ghost_check_queue` | `status` | `checked_alive`, `checked_dead`, `error`, `false_positive`, `pending` | `pending` |
@@ -3271,15 +3269,15 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `categories` | `active` | `is_active` |
 | `webhook_deliveries` | `idempotency_key` | `webhook_id::text \|\| ':' \|\| payload_hash` |
 | `markup_configurations` | `priority` | `CASE WHEN ("variant_id" IS NOT NULL) THEN 1 WHEN ("product_id" IS NOT NULL) THEN 2 WHEN ("category_id" IS NOT NULL) THEN 3 WHEN ("supplier_id" IS NOT NULL) THEN 4 WHEN ("organization_id" IS NOT NULL) THEN 5 ELSE 6 END` |
-| `supplier_replenishment_events` | `delay_days` | `CASE WHEN actual_date IS NULL THEN NULL ELSE actual_date - promised_date END` |
-| `supplier_replenishment_events` | `fulfillment_ratio` | `CASE WHEN actual_quantity IS NULL OR promised_quantity = 0 THEN NULL ELSE LEAST(1.0, actual_quantity::numeric / promised_quantity::numeric) END` |
-| `sm_category_pages` | `site_url` | `CASE WHEN category_id IS NOT NULL THEN 'https://www.somarcas.com.br/' \|\| category_id::text \|\| '/categorias/' \|\| slug ELSE NULL END` |
-| `supplier_products_raw` | `images_processed` | `images_status = 'processed'::supplier_raw_status` |
-| `tabela_preco_gravacao_oficial` | `codigo` | `codigo_tabela` |
-| `tabela_preco_gravacao_oficial` | `nome_grupo` | `grupo_tecnica` |
 | `shipping_boxes` | `inner_height_cm` | `outer_height_cm - (wall_thickness_mm * 2) / 10.0` |
 | `shipping_boxes` | `inner_width_cm` | `outer_width_cm - (wall_thickness_mm * 2) / 10.0` |
 | `shipping_boxes` | `inner_length_cm` | `outer_length_cm - (wall_thickness_mm * 2) / 10.0` |
+| `sm_category_pages` | `site_url` | `CASE WHEN category_id IS NOT NULL THEN 'https://www.somarcas.com.br/' \|\| category_id::text \|\| '/categorias/' \|\| slug ELSE NULL END` |
+| `supplier_products_raw` | `images_processed` | `images_status = 'processed'::supplier_raw_status` |
+| `supplier_replenishment_events` | `delay_days` | `CASE WHEN actual_date IS NULL THEN NULL ELSE actual_date - promised_date END` |
+| `supplier_replenishment_events` | `fulfillment_ratio` | `CASE WHEN actual_quantity IS NULL OR promised_quantity = 0 THEN NULL ELSE LEAST(1.0, actual_quantity::numeric / promised_quantity::numeric) END` |
+| `tabela_preco_gravacao_oficial` | `codigo` | `codigo_tabela` |
+| `tabela_preco_gravacao_oficial` | `nome_grupo` | `grupo_tecnica` |
 
 ### G.2 Views (consultas derivadas)
 
@@ -3293,7 +3291,6 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `analytics.mv_media_health` | `SELECT "s"."code" AS "source_supplier", "count"(DISTINCT "p"."id") AS "total_produtos", "count"(DISTINCT CASE WHEN ("pi_main"."id" IS NOT NULL) THEN "p"."id" ELSE NULL::"uuid" END) AS "com_img_principal", "count"(DISTINCT CASE WHEN ("pi_any"."id" IS NOT NULL) THEN "p"."id" ELSE NULL::"uuid" END) AS …` |
 | `analytics.mv_product_cards` | `SELECT "p"."id", "p"."name", "p"."slug", "p"."sku", "p"."short_description", "p"."sale_price", "p"."is_active", "p"."is_new", "p"."is_featured", "p"."is_stockout", "p"."category_id", "p"."main_category_id", "p"."colors", "p"."product_type", "p"."supplier_id", "p"."primary_image_url", "pi"."url_cdn" …` |
 | `analytics.mv_product_compositions` | `SELECT "p"."id" AS "product_id", "p"."organization_id", "p"."name" AS "product_name", "count"(DISTINCT "pm"."material_id") AS "total_materials", "sum"("pm"."percentage") AS "total_percentage", "array_agg"("json_build_object"('material_id', "mt"."id", 'material_name', "mt"."name", 'group_name', "mg". …` |
-| `analytics.mv_stock_velocity` | `WITH latest_per_vss AS ( SELECT DISTINCT ON (sd.variant_supplier_source_id) sd.variant_supplier_source_id, sd.supplier_id, sd.supplier_branch_id, sd.variant_id, sd.product_id, sd.stock_close AS current_stock, sd.cost_price_close AS current_price, sd.summary_date AS last_update_date FROM stock_daily_ …` |
 | `analytics.mv_product_intelligence` | `WITH product_metrics AS ( SELECT sv.product_id, SUM(sv.total_depleted_30d) AS total_depleted_30d, SUM(sv.total_depleted_90d) AS total_depleted_90d, SUM(sv.current_stock) AS total_current_stock, AVG(sv.avg_daily_depletion_7d) AS avg_depletion_7d, AVG(sv.avg_daily_depletion_30d) AS avg_depletion_30d, …` |
 | `cf_recon.v_cf_orphans` | `SELECT ci.image_id, ci.uploaded_at, ci.filename FROM cf_recon.cf_image ci LEFT JOIN public.product_images pi ON (pi.cloudflare_image_id)::text = ci.image_id WHERE pi.id IS NULL AND ci.crawl_run_id IS NOT NULL` |
 | `cf_recon.v_divergence` | `SELECT pi.id AS db_id, pi.cloudflare_image_id, pi.cf_sync_status, pi.cf_id_scheme, pi.source_supplier, pi.is_active, pi.deleted_at IS NOT NULL AS is_deleted, ci.image_id IS NOT NULL AS exists_in_cf, CASE WHEN ci.image_id IS NOT NULL AND ci.crawl_run_id IS NOT NULL AND pi.cf_sync_status = 'verified' …` |
@@ -3310,7 +3307,6 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `categories_tree_visual` | `SELECT "id", "bitrix_id", "name", "level", "parent_id", "tree_structure", "sort_path" FROM "analytics"."categories_tree_visual"` |
 | `category_icons` | `SELECT id, name AS category_name, icon, NULL::text AS description, is_active FROM categories c WHERE icon IS NOT NULL` |
 | `materials_complete` | `SELECT "mt"."id" AS "material_id", "mt"."organization_id", "mt"."name" AS "material_name", "mt"."slug" AS "material_slug", "mt"."description", "mg"."id" AS "group_id", "mg"."name" AS "group_name", "mg"."slug" AS "group_slug", "mt"."is_active", "count"(DISTINCT "pm"."product_id") AS "products_count", …` |
-| `mv_stock_rupture_alert` | `WITH ema_calc AS ( SELECT sv.variant_supplier_source_id AS vss_id, sv.variant_id, sv.supplier_id, sv.current_stock, sv.current_price, sv.velocity_trend, sv.active_days_30d, sv.days_to_stockout, CASE WHEN sv.current_stock <= 10 AND GREATEST( 0.01, CASE WHEN sv.avg_daily_depletion_7d > 0 AND sv.avg_da …` |
 | `mv_ema_kpi_by_level` | `SELECT "nivel_alerta", "prioridade", "count"(DISTINCT "variant_id") AS "total_variantes", "count"(*) AS "total_vss", "round"("avg"("cobertura_dias"), 1) AS "avg_cobertura", "round"("min"("cobertura_dias"), 1) AS "min_cobertura", "round"("max"("score_composto"), 2) AS "max_score", "round"("avg"("scor …` |
 | `mv_material_group_stats` | `SELECT "group_id", "organization_id", "group_name", "group_slug", "total_materials", "active_materials", "products_using" FROM "analytics"."mv_material_group_stats"` |
 | `mv_media_health` | `SELECT "source_supplier", "total_produtos", "com_img_principal", "com_qualquer_img", "pct_cobertura_principal", "pct_cobertura_qualquer", "total_imagens", "imagens_vinculadas", "imagens_com_seo" FROM "analytics"."mv_media_health"` |
@@ -3319,7 +3315,6 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `mv_product_images_audit` | `SELECT pi.id, pi.product_id, pi.cloudflare_image_id, pi.source_supplier, pi.organization_id, pi.created_at, pi.updated_at, it.code AS image_type_code, it.category AS image_type_category, it.subcategory AS image_type_subcategory, it.is_color_specific, it.show_in_gallery, it.show_in_simulator, it.is_p …` |
 | `mv_product_intelligence` | `SELECT product_id, total_depleted_30d, total_depleted_90d, total_current_stock, avg_depletion_7d, avg_depletion_30d, min_days_to_stockout, max_velocity_trend, total_restocked_30d, supplier_count, avg_current_price, abc_classification, turnover_score, is_hot_product, is_stagnant, is_negotiation_oppor …` |
 | `mv_stock_velocity` | `SELECT * FROM analytics.mv_stock_velocity` |
-| `mv_supplier_reliability` | `WITH events_base AS ( SELECT supplier_id, resolution, promised_date, delay_days, fulfillment_ratio, GREATEST(0::numeric, 1.0 - GREATEST(0::numeric, COALESCE(delay_days,0)::numeric) / 14.0) AS pontuality_score, LEAST(1.0::numeric, COALESCE(fulfillment_ratio, 0)) AS fulfillment_score FROM public.suppl …` |
 | `products_with_materials` | `SELECT "p"."id" AS "product_id", "p"."organization_id", "p"."name" AS "product_name", "mt"."id" AS "material_id", "mt"."name" AS "material_name", "mg"."name" AS "material_group", "pm"."part", "pm"."percentage", "pm"."sort_order", "p"."created_at", "pm"."created_at" AS "material_added_at" FROM ((("pu …` |
 | `v_catalog_stats` | `SELECT COUNT(pv.id)::bigint AS total_variants, COUNT(DISTINCT p.supplier_id)::bigint AS total_suppliers FROM public.product_variants pv JOIN public.products p ON p.id = pv.product_id WHERE (p.is_deleted IS NOT TRUE) AND (p.is_active = TRUE) AND (pv.is_active IS NOT FALSE)` |
 | `v_category_keywords` | `WITH "tokens" AS ( SELECT "c"."id" AS "category_id", "c"."full_path_readable", "c"."level", "c"."name" AS "category_name", "unnest"("regexp_split_to_array"("lower"("extensions"."unaccent"("c"."name")), '[\s\\|>/,\.\-]+'::"text")) AS "token" FROM "public"."categories" "c" WHERE "c"."is_active" ) SELEC …` |
@@ -3330,6 +3325,10 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `v_color_nuances_public` | `SELECT cn.id, cn.name, cn.slug, cn.description, cn.sort_order FROM public.color_nuances cn WHERE cn.is_active = true` |
 | `v_commemorative_dates_calendar` | `SELECT "id", "name", "slug", "date_day", "date_month", "is_fixed_date", "variable_date_rule", "category", "target_audience", "icon_name", "color_hex", "campaign_start_days", "is_featured", CASE WHEN ("is_fixed_date" AND ("date_day" IS NOT NULL)) THEN (("lpad"(("date_day")::"text", 2, '0'::"text") \|\| …` |
 | `v_commemorative_dates_with_colors` | `SELECT "id", "name", "slug", "date_day", "date_month", "is_fixed_date", "category", "icon_name", "color_hex" AS "date_color", "campaign_start_days", "is_featured", "is_active", COALESCE(( SELECT "json_agg"("json_build_object"('color_group_id', "cg"."id", 'color_name', "cg"."name", 'color_hex', "cg". …` |
+| `v_compras_catalogo` | `select p.id as pim_product_id, v.id as pim_variant_id, p.sku, p.sku_promo, p.name, p.supplier_id, s.code as supplier_code, s.name as supplier_name, coalesce(v.supplier_sku, p.supplier_reference) as supplier_reference, p.supplier_external_id, p.cost_price, p.sale_price, p.suggested_price, p.ipi_rate, …` |
+| `v_compras_precos_faixa` | `select pcp.product_id as pim_product_id, null::uuid as pim_variant_id, band.qty_min, lead(band.qty_min) over ( partition by pcp.id order by band.ord ) - 1 as qty_max, band.unit_cost, null::numeric as unit_price, 'spot_customization'::text as source, pcp.service_code, pcp.table_code, pcp.component, p …` |
+| `vw_variant_sale_prices` | `SELECT "pv"."id" AS "variant_id", "pv"."product_id", "pv"."sku", "pv"."color_name", "vss"."cost_price_1", "vss"."cost_price_2", "vss"."cost_price_3", "vss"."cost_price_4", "vss"."cost_price_5", "vss"."min_qty_1", "vss"."min_qty_2", "vss"."min_qty_3", "vss"."min_qty_4", "vss"."min_qty_5", COALESCE("m …` |
+| `v_compras_precos_variante` | `select product_id as pim_product_id, variant_id as pim_variant_id, 1 as tier, min_qty_1 as qty_min, (min_qty_2 - 1) as qty_max, cost_price_1 as unit_cost, sale_price_1 as unit_price, 'vw_variant_sale_prices' as source from public.vw_variant_sale_prices where min_qty_1 is not null union all select pr …` |
 | `v_connection_health` | `SELECT captured_at, total_conns, active_conns, idle_in_tx_conns, max_conns, usage_pct, CASE WHEN usage_pct >= 90 THEN '🔴 CRÍTICO' WHEN usage_pct >= 75 THEN '🟠 ALERTA' WHEN usage_pct >= 50 THEN '🟡 ATENÇÃO' ELSE '🟢 NORMAL' END AS status, top_users FROM public.db_connection_snapshots ORDER BY captured_ …` |
 | `v_crm_callback_health` | `SELECT "date_trunc"('hour'::"text", "occurred_at") AS "bucket", "event_type", "result", "count"(*) AS "total", "count"(*) FILTER (WHERE ("error_message" IS NOT NULL)) AS "with_error", "percentile_disc"((0.95)::double precision) WITHIN GROUP (ORDER BY (EXTRACT(epoch FROM ("received_at" - "occurred_at …` |
 | `v_db_health_audit` | `SELECT 'B02_quote_markup_nao_persistido'::text AS check_id, count(*) AS total_issues, 'negotiation_markup_percent=0 mas total > subtotal sem frete/imposto/desconto'::text AS descricao, 'HIGH'::text AS severidade FROM quotes WHERE (quotes.negotiation_markup_percent = (0)::numeric) AND (quotes.total > …` |
@@ -3489,7 +3488,6 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `vw_supplier_products_raw_status` | `SELECT s.id AS supplier_id, s.name AS supplier_name, count(*) AS total_produtos, count(*) FILTER (WHERE spr.status = 'processed'::supplier_raw_status) AS processados, count(*) FILTER (WHERE spr.status <> 'processed'::supplier_raw_status) AS pendentes, count(*) FILTER (WHERE spr.process_errors IS NOT …` |
 | `vw_system_health_quick` | `SELECT 'generated_columns_product_variants'::text AS check_name, CASE WHEN (( SELECT count(*) AS count FROM information_schema.columns WHERE (((columns.table_schema)::name = 'public'::name) AND ((columns.table_name)::name = 'product_variants'::name) AND ((columns.column_name)::name = ANY (ARRAY['nex …` |
 | `vw_thermal_products` | `SELECT "p"."id", "p"."sku", "p"."supplier_reference", "p"."name", "p"."is_thermal", "string_agg"(DISTINCT "pd"."name_pt", ', '::"text" ORDER BY "pd"."name_pt") AS "thermal_properties", "array_agg"(DISTINCT "pd"."code" ORDER BY "pd"."code") AS "thermal_codes" FROM (("public"."products" "p" JOIN "publ …` |
-| `vw_variant_sale_prices` | `SELECT "pv"."id" AS "variant_id", "pv"."product_id", "pv"."sku", "pv"."color_name", "vss"."cost_price_1", "vss"."cost_price_2", "vss"."cost_price_3", "vss"."cost_price_4", "vss"."cost_price_5", "vss"."min_qty_1", "vss"."min_qty_2", "vss"."min_qty_3", "vss"."min_qty_4", "vss"."min_qty_5", COALESCE("m …` |
 | `vw_xbz_products_by_category` | `SELECT ("raw_data" ->> 'web_tipo'::"text") AS "categoria", ("raw_data" ->> 'web_sub_tipo'::"text") AS "subcategoria", "count"(*) AS "total_produtos", "round"("avg"((("raw_data" ->> 'preco_venda'::"text"))::numeric), 2) AS "preco_medio" FROM "public"."supplier_products_raw" WHERE ("supplier_id" = 'd2 …` |
 | `vw_xbz_products_by_color` | `SELECT ("raw_data" ->> 'cor_web_principal'::"text") AS "cor", "count"(*) AS "total_produtos", "round"("avg"((("raw_data" ->> 'preco_venda'::"text"))::numeric), 2) AS "preco_medio" FROM "public"."supplier_products_raw" WHERE (("supplier_id" = 'd2734e23-d633-4819-bb15-e51aa44e2118'::"uuid") AND (("raw …` |
 | `vw_xbz_products_stats` | `SELECT "count"(*) AS "total_produtos", "count"( CASE WHEN ("status" = 'processed'::"public"."supplier_raw_status") THEN 1 ELSE NULL::integer END) AS "processados", "count"( CASE WHEN ("status" <> 'processed'::"public"."supplier_raw_status") THEN 1 ELSE NULL::integer END) AS "pendentes", "count"( CAS …` |
@@ -3504,6 +3502,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `slow_queries_view` | `SELECT pg_stat_statements.userid::regrole::text AS "user", pg_stat_statements.dbid, pg_stat_statements.queryid, left(pg_stat_statements.query, 200) AS query_snippet, pg_stat_statements.calls, round((pg_stat_statements.total_exec_time / pg_stat_statements.calls)::numeric, 2) AS avg_ms, round(pg_stat_ …` |
 | `somarcas_catalogo_publico` | `SELECT id, raw_data ->> 'codigo' AS codigo, raw_data ->> 'titulo' AS titulo, raw_data ->> 'descricao' AS descricao, raw_data ->> 'url_foto' AS url_foto, raw_data -> 'matriz_de_fotos_adicionais' AS fotos_adicionais, raw_data -> 'matriz_de_categorias' AS categorias, raw_data -> 'produtos_similares' AS …` |
 | `v_products_min_price` | `SELECT vp.product_id, p.name, p.sku, min(vp.sale_price_1) AS min_price, max(vp.sale_price_1) AS max_price, count(DISTINCT vp.variant_id) AS variants_count FROM public.v_variant_sale_prices_public vp JOIN public.v_products_public p ON p.id = vp.product_id GROUP BY vp.product_id, p.name, p.sku` |
+| `analytics.mv_stock_velocity` | `WITH latest_per_vss AS ( SELECT DISTINCT ON (sd.variant_supplier_source_id) sd.variant_supplier_source_id, sd.supplier_id, sd.supplier_branch_id, sd.variant_id, sd.product_id, sd.stock_close AS current_stock, sd.cost_price_close AS current_price, sd.summary_date AS last_update_date FROM stock_daily_ …` |
 | `color_analysis_staging` | `SELECT * FROM archive.color_analysis_staging` |
 | `import_staging_images` | `SELECT * FROM archive.import_staging_images` |
 | `scraper_images_staging` | `SELECT * FROM archive.scraper_images_staging` |
@@ -3516,11 +3515,10 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `v_n8n_sync_summary` | `SELECT 'products_total'::text AS metric, (count(*))::text AS value FROM products WHERE is_active = true UNION ALL SELECT 'products_with_images'::text, (count(DISTINCT product_images.product_id))::text FROM product_images WHERE is_active = true UNION ALL SELECT 'products_without_images'::text, ((SELE …` |
 | `mv_product_leaf_category` | `SELECT DISTINCT ON (pca.product_id) pca.product_id, c.id AS leaf_category_id, c.name AS leaf_category_name, c.level AS leaf_category_level, c.parent_id AS leaf_category_parent_id, c.slug AS leaf_category_slug, CASE WHEN p.main_category_id IS NULL THEN c.id WHEN c.id = p.main_category_id THEN c.id WH …` |
 | `v_ai_function_routing_effective` | `SELECT r.id AS routing_id, r.function_name, r.is_active, r.required_capabilities, r.request_overrides, r.primary_model_id, pm.model_id AS primary_model, pm.capabilities AS primary_capabilities, pm.provider_id AS primary_provider_id, pp.slug AS primary_provider_slug, pm.is_active AS primary_active, p …` |
+| `mv_stock_rupture_alert` | `WITH ema_calc AS ( SELECT sv.variant_supplier_source_id AS vss_id, sv.variant_id, sv.supplier_id, sv.current_stock, sv.current_price, sv.velocity_trend, sv.active_days_30d, sv.days_to_stockout, CASE WHEN sv.current_stock <= 10 AND GREATEST( 0.01, CASE WHEN sv.avg_daily_depletion_7d > 0 AND sv.avg_da …` |
+| `mv_supplier_reliability` | `WITH events_base AS ( SELECT supplier_id, resolution, promised_date, delay_days, fulfillment_ratio, GREATEST(0::numeric, 1.0 - GREATEST(0::numeric, COALESCE(delay_days,0)::numeric) / 14.0) AS pontuality_score, LEAST(1.0::numeric, COALESCE(fulfillment_ratio, 0)) AS fulfillment_score FROM public.suppl …` |
 | `v_health_gravacao` | `WITH tecnicas AS ( SELECT COUNT(*) AS total, COUNT(*) FILTER (WHERE ativo) AS ativas, COUNT(*) FILTER (WHERE NOT ativo) AS inativas, COUNT(*) FILTER (WHERE ativo AND NOT EXISTS ( SELECT 1 FROM tabela_preco_gravacao_oficial_faixa f WHERE f.tabela_preco_gravacao_id = t.id )) AS ativas_sem_faixa FROM t …` |
 | `v_audit_paradoxos_gravacao` | `WITH p1 AS ( SELECT 'P1'::text AS codigo_paradoxo, 'Técnica ativa sem faixas de preço'::text AS descricao, t.codigo_tabela, t.nome, t.grupo_tecnica, NULL::text AS produto_sku, NULL::text AS location_code, NULL::text AS detalhe, 'ALTO'::text AS severidade FROM tabela_preco_gravacao_oficial t WHERE t. …` |
-| `v_compras_catalogo` | `select p.id as pim_product_id, v.id as pim_variant_id, p.sku, p.sku_promo, p.name, p.supplier_id, s.code as supplier_code, s.name as supplier_name, coalesce(v.supplier_sku, p.supplier_reference) as supplier_reference, p.supplier_external_id, p.cost_price, p.sale_price, p.suggested_price, p.ipi_rate, …` |
-| `v_compras_precos_faixa` | `select pcp.product_id as pim_product_id, null::uuid as pim_variant_id, band.qty_min, lead(band.qty_min) over ( partition by pcp.id order by band.ord ) - 1 as qty_max, band.unit_cost, null::numeric as unit_price, 'spot_customization'::text as source, pcp.service_code, pcp.table_code, pcp.component, p …` |
-| `v_compras_precos_variante` | `select product_id as pim_product_id, variant_id as pim_variant_id, 1 as tier, min_qty_1 as qty_min, (min_qty_2 - 1) as qty_max, cost_price_1 as unit_cost, sale_price_1 as unit_price, 'vw_variant_sale_prices' as source from public.vw_variant_sale_prices where min_qty_1 is not null union all select pr …` |
 
 ### G.3 Funções de cálculo/decisão no código
 

@@ -1,6 +1,6 @@
 # 10 · ACESSO E SEGURANÇA — quem pode o quê
 
-> Gerado automaticamente por AI Context Sync v1.3.2 · commit `3aa6694279` · branch `main` · 2026-11-22 13:25 UTC
+> Gerado automaticamente por AI Context Sync v1.3.2 · commit `0a339aa994` · branch `main` · 2026-11-22 13:28 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## Perfis / roles identificados
@@ -24,7 +24,6 @@
 | Tabela | RLS | SELECT | INSERT | UPDATE | DELETE |
 |---|---|---|---|---|---|
 | `_asia_api_staging` | não encontrado | sem RLS | sem RLS | sem RLS | sem RLS |
-| `_backup_stock_daily_summary_20260618` | enabled | service_role: true | service_role: true | service_role: true | service_role: true |
 | `_deprecated_silver_images_queue_20260606` | enabled | service_role: true<br>authenticated: true | service_role: true | service_role: true | service_role: true |
 | `_deprecated_silver_print_areas_20260606` | enabled | service_role: true<br>authenticated: true | service_role: true | service_role: true | service_role: true |
 | `_deprecated_silver_products_20260606` | enabled | service_role: true<br>authenticated: true | service_role: true | service_role: true | service_role: true |
@@ -211,6 +210,7 @@
 | `magazine_public_view_events_2026_11` | enabled | — | — | — | — |
 | `magazine_public_view_events_2026_12` | enabled | — | — | — | — |
 | `magazine_public_view_events_2027_01` | enabled | — | — | — | — |
+| `magazine_public_view_events_2027_02` | enabled | — | — | — | — |
 | `magazine_public_view_events_default` | enabled | — | — | — | — |
 | `magazine_reader_state` | enabled | anon, authenticated: true<br>authenticated: user_id = (SELECT auth.uid()) | anon, authenticated: magazine_token IS NOT NULL AND viewer_fingerprint IS NOT NULL AND cardinality(bookmarks) <= 500 AND last_page_index >=  | anon, authenticated: true | — |
 | `magazine_templates` | enabled | authenticated: owner_id = auth.uid()<br>authenticated: shared_in_org = true AND organization_id IS NOT NULL AND EXISTS ( SELECT 1 FROM public.organization_members om WHERE om.organ<br>authenticated: owner_id = (SELECT auth.uid())<br>authenticated: shared_in_org = true AND organization_id IS NOT NULL AND EXISTS ( SELECT 1 FROM public.organization_members om WHERE om.organ | authenticated: owner_id = auth.uid()<br>authenticated: owner_id = (SELECT auth.uid()) | authenticated: owner_id = auth.uid()<br>authenticated: owner_id = (SELECT auth.uid()) | authenticated: owner_id = auth.uid()<br>authenticated: owner_id = (SELECT auth.uid()) |
@@ -1266,7 +1266,7 @@ Middleware matcher (Next.js): nenhum
 | grant | service_role | select, insert, update, delete, references, trigger, truncate | `v_products_public` |
 | grant | service_role, authenticated | execute | `record_mcp_access_violation`, `fn_sm_pipeline_health`, `fn_expire_novelties`, `fn_check_schema_signature_drift` |
 | grant | service_role, postgres | execute | `increment_webhook_stats` |
-| revoke | PUBLIC | all | `get_edge_invoke_summary`, `_can_act_on_behalf_of_others`, `_get_user_primary_role`, `acquire_ai_quota`, `apply_transform`, `assert_quote_discount_integrity`, `audit_mcp_api_keys_changes`, `audit_mcp_key_insert`, `audit_mcp_key_revoke`, `audit_ownership_orphans`, `audit_rls_coverage`, `audit_rls_matrix`, `audit_security_definer_acl`, `audit_user_role_changes`, `auto_block_extreme_offenders` … +2554 |
+| revoke | PUBLIC | all | `get_edge_invoke_summary`, `_can_act_on_behalf_of_others`, `_get_user_primary_role`, `acquire_ai_quota`, `admin_active_sessions`, `admin_execute_role_migration_batch`, `admin_revoke_user_sessions`, `apply_transform`, `assert_quote_discount_integrity`, `audit_mcp_api_keys_changes`, `audit_mcp_key_insert`, `audit_mcp_key_revoke`, `audit_ownership_orphans`, `audit_rls_coverage`, `audit_rls_matrix` … +2668 |
 | revoke | PUBLIC | execute | `fn_magazine_public_token`, `public`, `can_access_quote`, `org_has_any_members`, `org_has_any_members`, `get_edge_function_secret`, `create_organization_with_owner`, `get_quote_token_by_value`, `submit_quote_response`, `get_public_schema_signatures`, `public`, `check_webhook_dedup`, `process_notifications_queue`, `process_notifications_queue`, `process_notifications_queue` … +42 |
 | revoke | PUBLIC | insert, update, delete, truncate, trigger, references | `anon_catalog_grant_audit_log`, `anon_catalog_grant_audit_log` |
 | revoke | PUBLIC | select | `vw_product_availability`, `extensions.pg_stat_statements`, `extensions.pg_stat_statements_info` |
@@ -1376,7 +1376,7 @@ Middleware matcher (Next.js): nenhum
 
 ## Multi-tenancy
 
-- Chave de tenant: **`organization_id`** presente em 30 tabela(s): `quotes`, `magazines`, `material_groups`, `material_types`, `product_materials`, `magazine_templates`, `order_items`, `orders`, `organization_members`, `variant_supplier_sources`, `ai_enrichment_queue`, `attribute_definitions`, `attribute_equivalences`, `attribute_groups`, `auto_tag_rules`, `b2b_collections`, `category_relationships`, `color_equivalences`, `commemorative_dates`, `markup_configurations`, `material_variations`, `ncm_codes`, `product_ai_history`, `product_deactivation_requests`, `product_videos`, `variation_types`, `variation_values`, `user_organizations`, `_deprecated_silver_products_20260606`, `product_specifications`
+- Chave de tenant: **`organization_id`** presente em 29 tabela(s): `quotes`, `magazines`, `material_groups`, `material_types`, `product_materials`, `magazine_templates`, `order_items`, `orders`, `organization_members`, `ai_enrichment_queue`, `attribute_definitions`, `attribute_equivalences`, `attribute_groups`, `auto_tag_rules`, `b2b_collections`, `category_relationships`, `color_equivalences`, `commemorative_dates`, `markup_configurations`, `material_variations`, `ncm_codes`, `product_ai_history`, `product_deactivation_requests`, `product_videos`, `variation_types`, `variation_values`, `user_organizations`, `_deprecated_silver_products_20260606`, `product_specifications`
 - Cobertura: 6% das tabelas. Abaixo de 60% — isolamento provavelmente por usuário (auth.uid()) ou misto; não flagado por tabela.
 
 ## Soft delete (registros 'apagados' continuam na tabela — filtre!)
@@ -1406,11 +1406,7 @@ Middleware matcher (Next.js): nenhum
 | `product_groups` | `is_active` |
 | `profiles` | `is_active` |
 | `scheduled_reports` | `is_active` |
-| `suppliers` | `is_active` |
-| `suppliers` | `deleted_at` |
 | `product_variants` | `is_active` |
-| `variant_supplier_sources` | `is_active` |
-| `variant_supplier_sources` | `removed_at` |
 | `prod_audit.classification_rules` | `active` |
 | `ai_function_routing` | `is_active` |
 | `ai_models` | `is_active` |
@@ -1481,6 +1477,8 @@ Middleware matcher (Next.js): nenhum
 | `ramo_atividade` | `ativo` |
 | `ramo_atividade_filho` | `ativo` |
 | `seo_redirects` | `is_active` |
+| `shipping_boxes` | `is_active` |
+| `shipping_boxes` | `deleted_at` |
 | `variation_types` | `is_active` |
 | `variation_values` | `is_active` |
 | `video_types` | `is_active` |
@@ -1489,6 +1487,8 @@ Middleware matcher (Next.js): nenhum
 | `supplier_stricker.optionals` | `is_active` |
 | `supplier_stricker.product_types` | `is_active` |
 | `supplier_stricker.products` | `is_active` |
+| `suppliers` | `is_active` |
+| `suppliers` | `deleted_at` |
 | `user_allowed_ips` | `is_active` |
 | `user_ip_allowlist` | `is_active` |
 | `user_sessions` | `is_active` |
@@ -1505,8 +1505,6 @@ Middleware matcher (Next.js): nenhum
 | `_deprecated_silver_print_areas_20260606` | `is_active` |
 | `_deprecated_silver_images_queue_20260606` | `is_active` |
 | `product_specifications` | `is_active` |
-| `shipping_boxes` | `is_active` |
-| `shipping_boxes` | `deleted_at` |
 | `webhook_configs` | `is_active` |
 
 ## Auditoria (colunas de rastreio)
@@ -1626,14 +1624,10 @@ Middleware matcher (Next.js): nenhum
 | `video_variant_links` | `created_at` |
 | `voice_command_logs` | `created_at` |
 | `workspace_notifications` | `created_at` |
-| `suppliers` | `created_at`, `updated_at` |
 | `product_variants` | `created_at`, `updated_at` |
-| `stock_daily_summary` | `created_at` |
-| `variant_supplier_sources` | `updated_at` |
 | `cf_recon.remediation` | `created_at` |
 | `prod_audit.category_suggestions` | `created_at` |
 | `prod_audit.classification_rules` | `created_at` |
-| `_backup_stock_daily_summary_20260618` | `created_at` |
 | `_qa_pct_results` | `created_at` |
 | `access_blocked_log` | `created_at` |
 | `ai_enrichment_queue` | `created_at`, `updated_at` |
@@ -1686,6 +1680,7 @@ Middleware matcher (Next.js): nenhum
 | `enriched_contacts` | `created_at`, `created_by`, `updated_at` |
 | `enrichment_log` | `created_at` |
 | `feminine_color_config` | `created_at` |
+| `freight_settings` | `updated_at`, `updated_by` |
 | `frontend_telemetry` | `created_at` |
 | `image_backfill_queue` | `created_at` |
 | `image_types` | `created_at`, `updated_at` |
@@ -1713,7 +1708,6 @@ Middleware matcher (Next.js): nenhum
 | `mockup_credit_transactions` | `created_at` |
 | `mockup_credits` | `created_at`, `updated_at` |
 | `mockup_generation_jobs` | `created_at`, `updated_at` |
-| `supplier_replenishment_events` | `created_at`, `updated_at` |
 | `navigation_analytics` | `created_at` |
 | `ncm_codes` | `created_at`, `updated_at` |
 | `notebook_features` | `created_at`, `updated_at` |
@@ -1778,6 +1772,7 @@ Middleware matcher (Next.js): nenhum
 | `search_queries` | `created_at` |
 | `security_settings` | `updated_at`, `updated_by` |
 | `seo_redirects` | `created_at`, `created_by` |
+| `shipping_boxes` | `created_at`, `updated_at` |
 | `sm_category_pages` | `created_at`, `updated_at` |
 | `sm_site_url_map` | `created_at`, `updated_at` |
 | `sm_worker_partitions` | `created_at` |
@@ -1809,11 +1804,14 @@ Middleware matcher (Next.js): nenhum
 | `supplier_stricker.stg_stock` | `created_at`, `updated_at` |
 | `supplier_stricker.stocks` | `created_at`, `updated_at` |
 | `supplier_customization_raw` | `created_at`, `updated_at` |
+| `supplier_replenishment_events` | `created_at`, `updated_at` |
 | `supplier_subtype_category_map` | `created_at`, `updated_at` |
+| `suppliers` | `created_at`, `updated_at` |
 | `system_kill_switches` | `created_at`, `updated_at` |
 | `user_2fa_settings` | `created_at` |
 | `user_allowed_ips` | `created_at`, `created_by` |
-| … +58 linhas — lista completa em `context.json` | |
+| `user_favorites` | `created_at` |
+| … +55 linhas — lista completa em `context.json` | |
 
 ## Dados pessoais / sensíveis (LGPD — cuidado em logs, exports, prompts de IA)
 
@@ -1839,9 +1837,6 @@ Middleware matcher (Next.js): nenhum
 | `rls_denial_log` | `ip_address` |
 | `step_up_audit_log` | `ip_address` |
 | `step_up_challenges` | `ip_address` |
-| `suppliers` | `email` |
-| `suppliers` | `phone` |
-| `suppliers` | `address` |
 | `access_blocked_log` | `email` |
 | `access_blocked_log` | `ip_address` |
 | `audit_log` | `ip_address` |
@@ -1849,6 +1844,9 @@ Middleware matcher (Next.js): nenhum
 | `edge_function_invocations` | `ip_address` |
 | `ip_whitelist` | `ip_address` |
 | `password_reset_requests` | `email` |
+| `suppliers` | `email` |
+| `suppliers` | `phone` |
+| `suppliers` | `address` |
 | `user_allowed_ips` | `ip_address` |
 | `user_ip_allowlist` | `ip_address` |
 | `user_sessions` | `ip_address` |
@@ -1902,19 +1900,6 @@ Middleware matcher (Next.js): nenhum
 | `role_migration_batches` | `total_items` | `integer` |
 | `seller_carts` | `shipping_deadline` | `DATE` |
 | `product_variants` | `price_adjustment` | `DECIMAL(10,2)` |
-| `stock_daily_summary` | `cost_price_open` | `numeric(12,4)` |
-| `stock_daily_summary` | `cost_price_close` | `numeric(12,4)` |
-| `stock_daily_summary` | `price_changed` | `boolean` |
-| `variant_supplier_sources` | `cost_price` | `numeric(10,4)` |
-| `variant_supplier_sources` | `cost_price_1` | `numeric(10,4)` |
-| `variant_supplier_sources` | `cost_price_2` | `numeric(10,4)` |
-| `variant_supplier_sources` | `cost_price_3` | `numeric(10,4)` |
-| `variant_supplier_sources` | `cost_price_4` | `numeric(10,4)` |
-| `variant_supplier_sources` | `cost_price_5` | `numeric(10,4)` |
-| `variant_supplier_sources` | `price_updated_at` | `timestamp` |
-| `_backup_stock_daily_summary_20260618` | `cost_price_open` | `numeric(12,4)` |
-| `_backup_stock_daily_summary_20260618` | `cost_price_close` | `numeric(12,4)` |
-| `_backup_stock_daily_summary_20260618` | `price_changed` | `boolean` |
 | `ai_models` | `cost_input_per_1m` | `numeric(10,4)` |
 | `ai_models` | `cost_output_per_1m` | `numeric(10,4)` |
 | `ai_models` | `cost_per_image` | `numeric(10,4)` |

@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "3aa6694279ea40f735bfac363519bc477ff3c30f",
+  "commit": "0a339aa9946c43cb22319da1437f038983d071aa",
   "branch": "main",
-  "data_commit": "2026-11-22T10:20:59-03:00",
+  "data_commit": "2026-11-22T10:22:13-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "0a339aa",
+    "data": "2026-11-22",
+    "assunto": "chore(schema-snapshot): snapshot semanal 2026-W47 (run 45026234350) (#3982)"
+   },
    {
     "sha": "3aa6694",
     "data": "2026-11-22",
@@ -126,14 +131,9 @@
     "sha": "184ac28",
     "data": "2026-11-21",
     "assunto": "feat(frete): persiste plano de frete no orcamento (G-UI, etapas 62-63) (#3956)"
-   },
-   {
-    "sha": "1ab2619",
-    "data": "2026-11-21",
-    "assunto": "feat(frete): expoe volumes para transporte no PDF do kit (#3955)"
    }
   ],
-  "arquivos_mudados_7d": 1265,
+  "arquivos_mudados_7d": 1270,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -199,7 +199,7 @@
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "supabase/MIGRATIONS_SYNC_LOG.md",
-    "mudancas": 63
+    "mudancas": 62
    },
    {
     "arquivo": "package.json",
@@ -301,11 +301,11 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 264
+    "commits": 263
    },
    {
     "autor": "github-actions[bot]",
-    "commits": 35
+    "commits": 36
    },
    {
     "autor": "Claude",

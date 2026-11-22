@@ -1,6 +1,6 @@
 # 11 · GLOSSÁRIO, DADOS DE REFERÊNCIA E LACUNAS
 
-> Gerado automaticamente por AI Context Sync v1.3.2 · commit `3aa6694279` · branch `main` · 2026-11-22 13:25 UTC
+> Gerado automaticamente por AI Context Sync v1.3.2 · commit `0a339aa994` · branch `main` · 2026-11-22 13:28 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## Glossário do domínio (entidades do sistema)
@@ -8,7 +8,6 @@
 | Termo | Significado / valores | Tamanho | Origem |
 |---|---|---|---|
 | `_asia_api_staging` | _(sem COMMENT ON TABLE — significado não documentado)_ | 1 colunas | migration |
-| `_backup_stock_daily_summary_20260618` | _(sem COMMENT ON TABLE — significado não documentado)_ | 23 colunas | migration |
 | `_deprecated_silver_images_queue_20260606` | Camada Silver — fila de imagens.  | 23 colunas | migration |
 | `_deprecated_silver_print_areas_20260606` | Camada Silver — área de gravação normalizada.  | 26 colunas | migration |
 | `_deprecated_silver_products_20260606` | Camada Silver — produto normalizado por fornecedor.  | 54 colunas | migration |
@@ -195,6 +194,7 @@
 | `magazine_public_view_events_2026_11` | _(sem COMMENT ON TABLE — significado não documentado)_ | 9 colunas | migration |
 | `magazine_public_view_events_2026_12` | _(sem COMMENT ON TABLE — significado não documentado)_ | 9 colunas | migration |
 | `magazine_public_view_events_2027_01` | _(sem COMMENT ON TABLE — significado não documentado)_ | 9 colunas | migration |
+| `magazine_public_view_events_2027_02` | _(sem COMMENT ON TABLE — significado não documentado)_ | 9 colunas | migration |
 | `magazine_public_view_events_default` | _(sem COMMENT ON TABLE — significado não documentado)_ | 9 colunas | migration |
 | `magazine_reader_state` | _(sem COMMENT ON TABLE — significado não documentado)_ | 8 colunas | migration |
 | `magazine_templates` | _(sem COMMENT ON TABLE — significado não documentado)_ | 10 colunas | migration |
@@ -681,8 +681,6 @@
 - `webhook_delivery_metrics.http_status` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.
 - `webhook_delivery_metrics_y2026m05.http_status` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.
 - `webhook_delivery_metrics_y2026m06.http_status` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.
-- `variant_supplier_sources.sync_status` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.
-- `variant_supplier_sources.supplier_availability_status` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.
 - `cf_recon.action_log.old_status` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.
 - `cf_recon.action_log.new_status` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.
 - `access_blocked_log.state` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.
