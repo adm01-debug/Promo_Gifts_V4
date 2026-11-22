@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "7600d950a33dc7b50badce21a0b818eeccdf73a0",
+  "commit": "23b0135bc121a5a0de532029d323e87b544f67b5",
   "branch": "main",
-  "data_commit": "2026-11-22T15:03:41-03:00",
+  "data_commit": "2026-11-22T15:19:39-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "23b0135",
+    "data": "2026-11-22",
+    "assunto": "chore: remover palavra CONCURRENTLY de comment de view (destrava preflight E15) (#3991)"
+   },
    {
     "sha": "7600d95",
     "data": "2026-11-22",
@@ -126,14 +131,9 @@
     "sha": "2ae3463",
     "data": "2026-11-21",
     "assunto": "chore: consolida baselines de assertions (any-type 1-0, as-unknown 250-229) (#3963)"
-   },
-   {
-    "sha": "687ee37",
-    "data": "2026-11-21",
-    "assunto": "chore(main): release gifts-store 1.17.0 (#3953)"
    }
   ],
-  "arquivos_mudados_7d": 1162,
+  "arquivos_mudados_7d": 1159,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -215,11 +215,11 @@
    },
    {
     "arquivo": "docs/coordenacao/conflitos-semanticos.md",
-    "mudancas": 12
+    "mudancas": 11
    },
    {
     "arquivo": ".github/workflows/deploy-gates.yml",
-    "mudancas": 11
+    "mudancas": 10
    },
    {
     "arquivo": "docs/agentes/resgates/2026-11-16-auditoria-branches.md",
@@ -242,16 +242,16 @@
     "mudancas": 7
    },
    {
-    "arquivo": "scripts/automation.config.json",
-    "mudancas": 6
-   },
-   {
     "arquivo": "src/integrations/supabase/types.ts",
     "mudancas": 6
    },
    {
     "arquivo": "src/lib/freight/README.md",
     "mudancas": 6
+   },
+   {
+    "arquivo": "scripts/automation.config.json",
+    "mudancas": 5
    },
    {
     "arquivo": "src/components/quotes/QuoteAutoSave.tsx",
@@ -274,10 +274,6 @@
     "mudancas": 5
    },
    {
-    "arquivo": ".github/workflows/schema-snapshot-export.yml",
-    "mudancas": 4
-   },
-   {
     "arquivo": "analise-branches/dossies/claude__resgate-3390-261113.md",
     "mudancas": 4
    },
@@ -295,6 +291,10 @@
    },
    {
     "arquivo": "src/components/admin/shipping-boxes/__tests__/ShippingBoxesManager.test.tsx",
+    "mudancas": 4
+   },
+   {
+    "arquivo": "src/components/kit-builder/KitSummary.tsx",
     "mudancas": 4
    }
   ],

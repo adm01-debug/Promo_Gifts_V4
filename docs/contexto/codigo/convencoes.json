@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "chore: remover palavra CONCURRENTLY de comment de view (destrava preflight E15) (#3991)",
    "fix: corrigir cadeia invoker das views de compras e composicoes (#3989)",
    "chore(schema-snapshot): snapshot semanal 2026-W47 (run 45033672701) (#3988)",
    "feat: informa frete e tributos nao incluidos no total do kit (#3990)",
-   "docs(migrations-log): recibo E15 — aplicação de 20261122180000 (#3987)",
-   "fix: move cabeçalho -- Rollback: para as primeiras 40 linhas da 20261122180000 (#3986)"
+   "docs(migrations-log): recibo E15 — aplicação de 20261122180000 (#3987)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",

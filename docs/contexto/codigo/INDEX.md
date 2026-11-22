@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e de hora em hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `7600d950a33dc7b50badce21a0b818eeccdf73a0` (2026-11-22T15:03:41-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e de hora em hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `23b0135bc121a5a0de532029d323e87b544f67b5` (2026-11-22T15:19:39-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -599,7 +599,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - possiveis_segredos_no_codigo: 7 — ex.: scripts/ai-context/cenarios.mjs:102, src/components/admin/connections/__tests__/ConnectionSecurity.unit.test.tsx:9, src/integrations/supabase/client.ts:27
 
 ## Grafo de código (graphify)
-- 50491 nós · 85624 arestas · 2862 comunidades · grafo do commit `7600d950`
+- 50491 nós · 85624 arestas · 2862 comunidades · grafo do commit `23b0135b`
 - comunidades maiores: vitest (1145), ref_components (735), ref_integrations (583), ref_node_child_process (495), @tanstack/react-query (451), ref_hooks (448), ref_node_fs (397), react (370), ref_types (365), ref_utils (334), gotoAndSettle (332), sonner (313)
 - símbolos mais chamados: gotoAndSettle() (e2e/helpers/nav.ts), re (?), q() (scripts/supabase_snapshot/snapshot.py), analyze() (tests/scripts/test_personalization_artifact_diagnostics.py), outer() (tests/scripts/test_personalization_artifact_diagnostics.py), json (?), useExternalDatabase() (recovery/src-legacy/src/hooks/useExternalDatabase.ts), concludeCheck() (scripts/check-result-contract.mjs), querySupabaseReadOnly() (scripts/supabase-read-only-query.mjs), loginAs() (e2e/helpers/auth.ts), inner() (tests/scripts/test_personalization_artifact_diagnostics.py), excluded_sql() (scripts/supabase_snapshot/snapshot.py)
 - consulta local: `graphify query "<pergunta>"`, `graphify path "<A>" "<B>"`, `graphify explain "<X>"`
@@ -609,16 +609,16 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - package.json (30)
 - package-lock.json (20)
 - CHANGELOG.md (14)
-- docs/coordenacao/conflitos-semanticos.md (12)
-- .github/workflows/deploy-gates.yml (11)
+- docs/coordenacao/conflitos-semanticos.md (11)
+- .github/workflows/deploy-gates.yml (10)
 - docs/agentes/resgates/2026-11-16-auditoria-branches.md (10)
 - audit/supabase-reference-catalog.temporary.json (8)
 - src/lib/freight/index.ts (8)
 - src/pages/quotes/QuoteBuilderPage.tsx (8)
 - src/pages/mockups/MockupGenerator.tsx (7)
-- scripts/automation.config.json (6)
 - src/integrations/supabase/types.ts (6)
 - src/lib/freight/README.md (6)
+- scripts/automation.config.json (5)
 - src/components/quotes/QuoteAutoSave.tsx (5)
 
 ## Workflows
@@ -1196,6 +1196,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - CHANGELOG topo: [1.19.0](https://github.com/adm01-debug/Promo_Gifts_V4/compare/gifts-store-v1.18.0...gifts-store-v1.19.0) (2026-11-22)
 
 ## Últimos commits
+- 2026-11-22 `23b0135` chore: remover palavra CONCURRENTLY de comment de view (destrava preflight E15) (#3991)
 - 2026-11-22 `7600d95` fix: corrigir cadeia invoker das views de compras e composicoes (#3989)
 - 2026-11-22 `d519f4e` chore(schema-snapshot): snapshot semanal 2026-W47 (run 45033672701) (#3988)
 - 2026-11-22 `94a724a` feat: informa frete e tributos nao incluidos no total do kit (#3990)
@@ -1210,7 +1211,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-22 `3be2162` docs(migrations-log): recibo E15 — aplicação de 20261122100000 (#3979)
 - 2026-11-22 `bf4f25b` feat: views de compras canonicas (consolida #3968 e #3969) (#3976)
 - 2026-11-22 `e8006d7` chore(main): release gifts-store 1.18.0 (#3966)
-- 2026-11-22 `8ab7ae0` docs: recibo E15 da aplicacao de 20261121223000 (#3977)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

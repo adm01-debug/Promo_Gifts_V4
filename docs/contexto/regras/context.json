@@ -1,9 +1,9 @@
 {
  "meta": {
-  "sha": "7600d950a33dc7b50badce21a0b818eeccdf73a0",
+  "sha": "23b0135bc121a5a0de532029d323e87b544f67b5",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-22 18:04 UTC",
+  "generated_at": "2026-11-22 18:20 UTC",
   "files_total": 11140,
   "code_files": 9147,
   "code_lines": 1298796
@@ -562683,10 +562683,19 @@
   }
  },
  "git": {
-  "sha": "7600d950a33dc7b50badce21a0b818eeccdf73a0",
+  "sha": "23b0135bc121a5a0de532029d323e87b544f67b5",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "23b0135",
+    "date": "2026-11-22",
+    "author": "adm01-debug",
+    "subject": "chore: remover palavra CONCURRENTLY de comment de view (destrava preflight E15) (#3991)",
+    "files": [
+     "supabase/migrations/20261122200000_fix_cadeia_views_compras_e_compositions.sql"
+    ]
+   },
    {
     "sha": "7600d95",
     "date": "2026-11-22",
@@ -562998,15 +563007,6 @@
     "files": [
      "supabase/migrations/20261121183000_v_compras_precos_faixa.sql"
     ]
-   },
-   {
-    "sha": "7f8c55e",
-    "date": "2026-11-21",
-    "author": "adm01-debug",
-    "subject": "feat(compras): view v_compras_catalogo no PIM [PR 1.1]",
-    "files": [
-     "supabase/migrations/20261121163000_v_compras_catalogo.sql"
-    ]
    }
   ],
   "hot_files": [
@@ -563031,6 +563031,10 @@
     3
    ],
    [
+    "supabase/migrations/20261122200000_fix_cadeia_views_compras_e_compositions.sql",
+    2
+   ],
+   [
     "supabase/migrations-snapshot/ALL_IN_ONE.sql",
     2
    ],
@@ -563049,10 +563053,6 @@
    [
     "supabase/migrations/20261121223000_add_supplier_external_id.sql",
     2
-   ],
-   [
-    "supabase/migrations/20261122200000_fix_cadeia_views_compras_e_compositions.sql",
-    1
    ],
    [
     "supabase/rollbacks/20261122200000_rollback.sql",
