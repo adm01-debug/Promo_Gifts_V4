@@ -1652,6 +1652,7 @@ Após VACUUM ANALYZE executado pelos jobs temporários `vacuum-snapshots-now` e
 | `20261121223000` | `a7ec4ec364ac19fa73aa99d3a2d53ea77be6643e9ea1068b34a3707049b90920` | — | GitHub Actions (db-apply-migration.yml, disparado por adm01-debug, aprovado por adm01-debug) | E15 | 2026-11-22 12:23:00 UTC | job post-check da run 45021861895 confirmou a version no ledger | aplicada |
 | `20261122100000` | `14a5ad6082bae20ffe71e135b1e22719b07063bdd0f39dc65d1f29e5950360d3` | — | GitHub Actions (db-apply-migration.yml, disparado por adm01-debug, aprovado por adm01-debug) | E15 | 2026-11-22 12:51:55 UTC | job post-check da run 45024406019 confirmou a version no ledger | aplicada |
 | `20261120041000` | `ded27deffa89754ea8fd9ab3825008c0e76aad872e0fda66df45b9f71569ab3c` | — | GitHub Actions (db-apply-migration.yml, disparado por adm01-debug, aprovado por adm01-debug) | E15 | 2026-11-22 13:28:38 UTC | job post-check da run 45027559300 confirmou a version no ledger | aplicada |
+| `20261122180000` | `accfa9583e9960e55860f42539cf5f19115f5b166989ff1360cdcf3e1fbccac3` | — | — | — | — | aguardando aplicação via `db-apply-migration.yml` (`version=20261122180000`) — DDL em produção, regra 8 | aguardando aplicação |
 
 ## 2026-11-08 — Reconciliação de `e2e_cleanup_audit`
 
@@ -2917,4 +2918,61 @@ era a inexistência delas).
 
 | versão | arquivo | sha256 | status |
 |---|---|---|---|
-| `20261122100000` | `compras_views_canonicas` | `14a5ad6082bae20ffe71e135b1e22719b07063bdd0f39dc65d1f29e5950360d3` | aguardando aplicação via `db-apply-migration.yml` (`version=20261122100000`) — DDL em produção, regra 8 |
+| `20261122100000` | `compras_views_canonicas` | `14a5ad6082bae20ffe71e135b1e22719b07063bdd0f39dc65d1f29e5950360d3` | **aplicada em produção** via `db-apply-migration.yml` (run `45024406019`), post-check confirmou a version no ledger |
+
+### 2026-11-22 — Devolve `security_invoker=false` às views p06 e de compras (conserta os 401)
+
+As views ficaram ilegíveis para `anon` em produção. Prova via PostgREST com a anon key do projeto
+canônico, antes desta migration:
+
+| view | resposta |
+|---|---|
+| `v_suppliers_public` | `401 42501 permission denied for table suppliers` |
+| `v_kit_component_media_public` | `401 42501 ... table product_kit_components` |
+| `v_product_compositions_public` | `401 42501 ... materialized view mv_product_compositions` |
+| `v_tabela_preco_gravacao_oficial_public` | `401 42501 ... table tabela_preco_gravacao_oficial` |
+| `v_compras_catalogo` | `401 42501 ... table products` |
+| `v_compras_precos_faixa` | `401 42501 ... table product_customization_prices` |
+| `v_compras_precos_variante` | `401 42501 ... view vw_variant_sale_prices` |
+
+Causa: a `20261118172500_security_invoker_views_p06_parcial.sql` ligou `security_invoker=true` em 5
+views justificando "policy de SELECT para anon" nas bases. Policy não substitui GRANT — com
+`invoker=true` a query roda como `anon` e o PostgREST barra por falta de `GRANT SELECT` na tabela
+antes de avaliar a RLS. Das 5, 4 quebraram; sobreviveram `v_product_tags_public` e
+`v_product_properties_public` porque suas bases já tinham GRANT de tabela.
+As 3 views de compras da `20261122100000` nasceram com `security_invoker = on` e falharam pelo
+mesmo motivo.
+
+**Correção escolhida: voltar as 7 para `security_invoker=false` (SECURITY DEFINER).** Conceder
+`GRANT SELECT` nas bases, além de não consertar o problema de fundo, foi medido e **rejeitado** pela
+adjudicação de 2026-11-17 registrada acima nesta mesma página:
+
+- `suppliers` — o GRANT exporia `api_credentials`/`api_key`/`api_token`/`email`/`phone`/`cnpj` ao `anon`.
+- `v_variant_sale_prices_public` — exigiria expor `cost_price_1..5` + `markup_percent` e ainda
+  zeraria o INNER JOIN por policy org-scoped (20592 → 0 linhas).
+- `v_kit_component_media_public` — `anon` passaria a ler componentes de produto inativo que a view esconde.
+- `v_product_compositions_public` — entregaria 8312 linhas, 434 de produto inativo.
+- `v_product_tags_public` — 72 de 86 usuários logados veriam 0 linhas.
+- `products` — exigiria GRANT em 154 colunas; re-expor a tabela base é decisão do dono.
+
+A `20260717114423_fix_security_invoker_regression_suppliers_and_stock_velocity.sql` registra
+literalmente "NAO reintroduzir security_invoker=on nestas views", e 4 das 8 têm `COMMENT ON VIEW`
+com proibição textual. A `20261118172500` contrariou essa decisão sem medir o efeito em `anon`.
+`.security/public-views-columns.json` também assere que o contrato são "8 views SECURITY DEFINER
+expostas ao anon".
+
+As views de compras não podem ser resolvidas por GRANT porque
+`Promo_Supply_V2/src/hooks/useCatalogoPim.ts` exige `cost_price`/`sale_price`/`suggested_price`
+(`PimProduto`) e `unit_cost`/`unit_price` (`PimPrecoFaixa`); o recorte é a projeção + `WHERE` da
+view, não o privilégio de tabela.
+
+A migration ainda regrava o `COMMENT ON VIEW` das 7 para que o próximo agente leia a decisão e o
+motivo, e faz um post-check em `pg_class.reloptions` que aborta a transação se alguma das 7
+continuar com `security_invoker=true`.
+
+Forward-only e idempotente (`SET (security_invoker = false)` repetido é no-op). Rollback em
+`supabase/rollbacks/20261122180000_rollback.sql` (volta para `true` e re-quebra as 7).
+
+| versão | arquivo | sha256 | status |
+|---|---|---|---|
+| `20261122180000` | `restore_definer_views_p06_e_compras` | `accfa9583e9960e55860f42539cf5f19115f5b166989ff1360cdcf3e1fbccac3` | aguardando aplicação via `db-apply-migration.yml` (`version=20261122180000`) — DDL em produção, regra 8 |
