@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
-import { RefreshCw, TrendingUp } from 'lucide-react';
+import { Info, RefreshCw, TrendingUp } from 'lucide-react';
 import type { KitPriceRefresh } from '@/hooks/kit-builder/useKitCatalogPriceRefresh';
 import { cn } from '@/lib/utils';
 import {
@@ -143,6 +143,13 @@ export function KitPricingCard({
             </div>
             <p data-testid="kit-summary-total" className="text-2xl font-bold text-primary">
               {pricesKnown ? formatCurrency(pricing.total / divisor) : 'Não informado'}
+            </p>
+          </div>
+          <div className="mt-3 flex items-start gap-2 rounded-lg border border-border/50 bg-secondary/30 px-3 py-2">
+            <Info className="mt-0.5 h-4 w-4 shrink-0 text-muted-foreground" />
+            <p className="text-xs text-muted-foreground">
+              Frete e tributos não estão incluídos neste total. Eles são calculados à parte no
+              orçamento final.
             </p>
           </div>
         </CardContent>
