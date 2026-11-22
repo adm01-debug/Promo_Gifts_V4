@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e de hora em hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `bf4f25b239e43b80b68377dad24cf7967366ff2c` (2026-11-22T09:50:52-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e de hora em hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `aba6acfb9afa02e8f83fc0cf324de131006cc32d` (2026-11-22T09:54:23-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -599,8 +599,8 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - possiveis_segredos_no_codigo: 7 — ex.: scripts/ai-context/cenarios.mjs:102, src/components/admin/connections/__tests__/ConnectionSecurity.unit.test.tsx:9, src/integrations/supabase/client.ts:27
 
 ## Grafo de código (graphify)
-- 50488 nós · 85621 arestas · 2837 comunidades · grafo do commit `bf4f25b2`
-- comunidades maiores: vitest (926), ref_components (836), ref_integrations (675), ref_node_child_process (492), @tanstack/react-query (447), ref_hooks (410), react (370), ref_types (367), sonner (349), react-router-dom (347), ref_node_fs (342), ref_utils (334)
+- 50490 nós · 85623 arestas · 2872 comunidades · grafo do commit `aba6acfb`
+- comunidades maiores: ref_node_child_process (547), react (522), ref_components (450), lucide-react (402), vitest (398), ref_hooks (393), @testing-library/react (372), ref_lib (369), ref_node_fs (364), ref_integrations (359), sonner (342), gotoAndSettle (332)
 - símbolos mais chamados: gotoAndSettle() (e2e/helpers/nav.ts), re (?), q() (scripts/supabase_snapshot/snapshot.py), analyze() (tests/scripts/test_personalization_artifact_diagnostics.py), outer() (tests/scripts/test_personalization_artifact_diagnostics.py), json (?), useExternalDatabase() (recovery/src-legacy/src/hooks/useExternalDatabase.ts), concludeCheck() (scripts/check-result-contract.mjs), querySupabaseReadOnly() (scripts/supabase-read-only-query.mjs), loginAs() (e2e/helpers/auth.ts), inner() (tests/scripts/test_personalization_artifact_diagnostics.py), excluded_sql() (scripts/supabase_snapshot/snapshot.py)
 - consulta local: `graphify query "<pergunta>"`, `graphify path "<A>" "<B>"`, `graphify explain "<X>"`
 
@@ -608,18 +608,18 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - supabase/MIGRATIONS_SYNC_LOG.md (62)
 - package.json (30)
 - package-lock.json (20)
-- docs/coordenacao/conflitos-semanticos.md (18)
+- docs/coordenacao/conflitos-semanticos.md (16)
 - CHANGELOG.md (14)
-- .github/workflows/deploy-gates.yml (12)
-- audit/supabase-reference-catalog.temporary.json (10)
+- .github/workflows/deploy-gates.yml (11)
 - docs/agentes/resgates/2026-11-16-auditoria-branches.md (10)
-- src/pages/mockups/MockupGenerator.tsx (10)
-- src/pages/quotes/QuoteBuilderPage.tsx (9)
-- src/integrations/supabase/types.ts (8)
+- audit/supabase-reference-catalog.temporary.json (9)
+- src/pages/mockups/MockupGenerator.tsx (9)
 - src/lib/freight/index.ts (8)
-- src/pages/kit-builder/KitBuilderPage.tsx (8)
-- scripts/automation.config.json (7)
-- src/components/kit-builder/KitSummary.tsx (6)
+- src/pages/quotes/QuoteBuilderPage.tsx (8)
+- src/integrations/supabase/types.ts (7)
+- scripts/automation.config.json (6)
+- src/lib/freight/README.md (6)
+- src/pages/kit-builder/KitBuilderPage.tsx (6)
 
 ## Workflows
 - `_e2e-relevance.yml` — Reusable — E2E Runtime Relevance (workflow_call)
@@ -1029,7 +1029,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - `.github/PULL_REQUEST_TEMPLATE.md` (112 linhas)
 - `.github/SENTINEL_CHANGELOG.md` — Sentinel Changelog (188 linhas)
 - `AGENTS.md` — AGENTS.md — Promo Gifts V4 (111 linhas)
-- `CHANGELOG.md` — Changelog (2531 linhas)
+- `CHANGELOG.md` — Changelog (2538 linhas)
 - `CI_PROVA_P33.md` — CI_PROVA_P33.md — Prova Final de Conclusão CI (Sessão P33, 2026-10-30) (97 linhas)
 - `CLAUDE.md` (2 linhas)
 - `CONTRIBUTING.md` — Guia de Contribuição (299 linhas)
@@ -1193,9 +1193,11 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - `docs/notifications-module-audit.md` — Auditoria — Módulo "Notificações de Estoque" (sino do header) (110 linhas)
 - `docs/prod-readiness.md` — Prontidão para produção — inventário e prova (1148 linhas)
 - subpastas de docs/: docs/arquivo (92), docs/redeploy (27), docs/agentes (26), docs/estado (26), docs/plans (24), docs/db (14), docs/audits (12), docs/ci (12), docs/adr (11), docs/auditoria-planejado-nao-executado-2026-10-11 (11), docs/hardening (11), docs/validation (11), docs/architecture (9), docs/runbooks (8), docs/bugs (6), docs/security (6), docs/sessoes (5), docs/suppliers (5), docs/arquitetura (4), docs/audit (4), docs/operations (4), docs/pendencias (4), docs/testing (4), docs/RUNBOOKS (3), docs/contexto (3), docs/design (3), docs/fabrica-vps (3), docs/faxina-261114 (3), docs/observability (3), docs/qa (3), docs/reports (3), docs/INCIDENTS (2), docs/contracts (2), docs/coordenacao (2), docs/edge-functions (2), docs/frete (2), docs/historico (2), docs/incidente-2026-10-13 (2), docs/prompts (2), docs/e2e (1), docs/graphify (1), docs/incidents (1), docs/migrations (1), docs/pipelines (1), docs/postmortems (1), docs/promo-champions (1), docs/storage (1), docs/workflows (1)
-- CHANGELOG topo: [1.18.0](https://github.com/adm01-debug/Promo_Gifts_V4/compare/gifts-store-v1.17.0...gifts-store-v1.18.0) (2026-11-22)
+- CHANGELOG topo: [1.19.0](https://github.com/adm01-debug/Promo_Gifts_V4/compare/gifts-store-v1.18.0...gifts-store-v1.19.0) (2026-11-22)
 
 ## Últimos commits
+- 2026-11-22 `aba6acf` chore(main): release gifts-store 1.19.0 (#3978)
+- 2026-11-22 `3be2162` docs(migrations-log): recibo E15 — aplicação de 20261122100000 (#3979)
 - 2026-11-22 `bf4f25b` feat: views de compras canonicas (consolida #3968 e #3969) (#3976)
 - 2026-11-22 `e8006d7` chore(main): release gifts-store 1.18.0 (#3966)
 - 2026-11-22 `8ab7ae0` docs: recibo E15 da aplicacao de 20261121223000 (#3977)
@@ -1209,8 +1211,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-21 `1948642` chore(vercel): desativa preview em branches docs/infra/chore (#3964)
 - 2026-11-21 `2ae3463` chore: consolida baselines de assertions (any-type 1-0, as-unknown 250-229) (#3963)
 - 2026-11-21 `687ee37` chore(main): release gifts-store 1.17.0 (#3953)
-- 2026-11-21 `a7be36d` fix(ci): bloqueia variantes de invoke direto (#3952)
-- 2026-11-21 `8ca0bd0` docs: recibo de aplicação — 20261121120000 (E15) (#3961)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

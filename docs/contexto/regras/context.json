@@ -1,9 +1,9 @@
 {
  "meta": {
-  "sha": "bf4f25b239e43b80b68377dad24cf7967366ff2c",
+  "sha": "aba6acfb9afa02e8f83fc0cf324de131006cc32d",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-22 12:52 UTC",
+  "generated_at": "2026-11-22 12:57 UTC",
   "files_total": 11136,
   "code_files": 9143,
   "code_lines": 1298522
@@ -561137,10 +561137,31 @@
   }
  },
  "git": {
-  "sha": "bf4f25b239e43b80b68377dad24cf7967366ff2c",
+  "sha": "aba6acfb9afa02e8f83fc0cf324de131006cc32d",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "aba6acf",
+    "date": "2026-11-22",
+    "author": "github-actions[bot]",
+    "subject": "chore(main): release gifts-store 1.19.0 (#3978)",
+    "files": [
+     ".release-please-manifest.json",
+     "CHANGELOG.md",
+     "package-lock.json",
+     "package.json"
+    ]
+   },
+   {
+    "sha": "3be2162",
+    "date": "2026-11-22",
+    "author": "github-actions[bot]",
+    "subject": "docs(migrations-log): recibo E15 — aplicação de 20261122100000 (#3979)",
+    "files": [
+     "supabase/MIGRATIONS_SYNC_LOG.md"
+    ]
+   },
    {
     "sha": "bf4f25b",
     "date": "2026-11-22",
@@ -561476,27 +561497,6 @@
      "docs/pendencias/_linha-de-base.md",
      "docs/pendencias/_ordem.md",
      "docs/pendencias/_regras-de-negocio.md"
-    ]
-   },
-   {
-    "sha": "f83c473",
-    "date": "2026-11-20",
-    "author": "github-actions[bot]",
-    "subject": "chore(main): release gifts-store 1.16.0 (#3945)",
-    "files": [
-     ".release-please-manifest.json",
-     "CHANGELOG.md",
-     "package-lock.json",
-     "package.json"
-    ]
-   },
-   {
-    "sha": "3f273fe",
-    "date": "2026-11-20",
-    "author": "github-actions[bot]",
-    "subject": "docs(migrations-log): recibo E15 — aplicação de 20261120180000 (#3946)",
-    "files": [
-     "supabase/MIGRATIONS_SYNC_LOG.md"
     ]
    }
   ],

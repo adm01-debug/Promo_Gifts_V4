@@ -2,11 +2,21 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "bf4f25b239e43b80b68377dad24cf7967366ff2c",
+  "commit": "aba6acfb9afa02e8f83fc0cf324de131006cc32d",
   "branch": "main",
-  "data_commit": "2026-11-22T09:50:52-03:00",
+  "data_commit": "2026-11-22T09:54:23-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "aba6acf",
+    "data": "2026-11-22",
+    "assunto": "chore(main): release gifts-store 1.19.0 (#3978)"
+   },
+   {
+    "sha": "3be2162",
+    "data": "2026-11-22",
+    "assunto": "docs(migrations-log): recibo E15 — aplicação de 20261122100000 (#3979)"
+   },
    {
     "sha": "bf4f25b",
     "data": "2026-11-22",
@@ -121,79 +131,69 @@
     "sha": "e311dad",
     "data": "2026-11-21",
     "assunto": "feat(frete): Bloco F - comparador de volumes, simulador de frete e telemetria (etapas 53-60) (#3954)"
-   },
-   {
-    "sha": "4eddf85",
-    "data": "2026-11-21",
-    "assunto": "feat(kit): plano de volumes do kit no lugar do FreightEstimator (etapa 52) (#3951)"
-   },
-   {
-    "sha": "f613f3f",
-    "data": "2026-11-21",
-    "assunto": "chore(main): release gifts-store 1.16.1 (#3949)"
    }
   ],
   "arquivos_mudados_7d": 1286,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
-    "mudancas": 693
+    "mudancas": 391
    },
    {
     "pasta": "recovery/src-legacy/src",
-    "mudancas": 633
+    "mudancas": 317
    },
    {
     "pasta": "src/components/products",
-    "mudancas": 305
-   },
-   {
-    "pasta": "tests/edge-functions/live",
-    "mudancas": 232
-   },
-   {
-    "pasta": "src/hooks/products",
-    "mudancas": 216
+    "mudancas": 153
    },
    {
     "pasta": "src/components/quotes",
-    "mudancas": 212
+    "mudancas": 125
    },
    {
-    "pasta": "src/pages/magazine",
-    "mudancas": 184
+    "pasta": "tests/edge-functions/live",
+    "mudancas": 117
    },
    {
-    "pasta": "src/components/inventory",
-    "mudancas": 166
+    "pasta": "src/hooks/products",
+    "mudancas": 113
    },
    {
     "pasta": "src/components/mockup",
-    "mudancas": 163
+    "mudancas": 103
    },
    {
-    "pasta": "supabase/functions/_shared",
-    "mudancas": 156
+    "pasta": "src/lib/freight",
+    "mudancas": 103
    },
    {
-    "pasta": "src/components/ui",
-    "mudancas": 146
+    "pasta": "src/pages/magazine",
+    "mudancas": 92
    },
    {
-    "pasta": "src/pages/admin",
-    "mudancas": 136
+    "pasta": "src/components/inventory",
+    "mudancas": 86
    },
    {
     "pasta": "src/pages/quotes",
-    "mudancas": 134
+    "mudancas": 83
    },
    {
-    "pasta": "src/components/kit-builder",
-    "mudancas": 121
+    "pasta": "supabase/functions/_shared",
+    "mudancas": 81
+   },
+   {
+    "pasta": "src/pages/admin",
+    "mudancas": 76
+   },
+   {
+    "pasta": "src/components/ui",
+    "mudancas": 73
    },
    {
     "pasta": "src/hooks/quotes",
-    "mudancas": 114
+    "mudancas": 72
    }
   ],
   "arquivos_mais_mudados_90d": [
@@ -211,7 +211,7 @@
    },
    {
     "arquivo": "docs/coordenacao/conflitos-semanticos.md",
-    "mudancas": 18
+    "mudancas": 16
    },
    {
     "arquivo": "CHANGELOG.md",
@@ -219,62 +219,34 @@
    },
    {
     "arquivo": ".github/workflows/deploy-gates.yml",
-    "mudancas": 12
-   },
-   {
-    "arquivo": "audit/supabase-reference-catalog.temporary.json",
-    "mudancas": 10
+    "mudancas": 11
    },
    {
     "arquivo": "docs/agentes/resgates/2026-11-16-auditoria-branches.md",
     "mudancas": 10
    },
    {
-    "arquivo": "src/pages/mockups/MockupGenerator.tsx",
-    "mudancas": 10
-   },
-   {
-    "arquivo": "src/pages/quotes/QuoteBuilderPage.tsx",
+    "arquivo": "audit/supabase-reference-catalog.temporary.json",
     "mudancas": 9
    },
    {
-    "arquivo": "src/integrations/supabase/types.ts",
-    "mudancas": 8
+    "arquivo": "src/pages/mockups/MockupGenerator.tsx",
+    "mudancas": 9
    },
    {
     "arquivo": "src/lib/freight/index.ts",
     "mudancas": 8
    },
    {
-    "arquivo": "src/pages/kit-builder/KitBuilderPage.tsx",
+    "arquivo": "src/pages/quotes/QuoteBuilderPage.tsx",
     "mudancas": 8
    },
    {
-    "arquivo": "scripts/automation.config.json",
+    "arquivo": "src/integrations/supabase/types.ts",
     "mudancas": 7
    },
    {
-    "arquivo": "src/components/kit-builder/KitSummary.tsx",
-    "mudancas": 6
-   },
-   {
-    "arquivo": "src/components/kit-builder/PersonalizationConfig.tsx",
-    "mudancas": 6
-   },
-   {
-    "arquivo": "src/components/quotes/QuoteAutoSave.tsx",
-    "mudancas": 6
-   },
-   {
-    "arquivo": "src/hooks/mockup/useMockupGenerator.ts",
-    "mudancas": 6
-   },
-   {
-    "arquivo": "src/hooks/quotes/useQuoteBuilderState.ts",
-    "mudancas": 6
-   },
-   {
-    "arquivo": "src/hooks/quotes/useQuoteTemplates.ts",
+    "arquivo": "scripts/automation.config.json",
     "mudancas": 6
    },
    {
@@ -282,34 +254,62 @@
     "mudancas": 6
    },
    {
-    "arquivo": "vitest.config.ts",
+    "arquivo": "src/pages/kit-builder/KitBuilderPage.tsx",
     "mudancas": 6
    },
    {
-    "arquivo": ".github/workflows/schema-snapshot-export.yml",
+    "arquivo": "src/components/kit-builder/PersonalizationConfig.tsx",
     "mudancas": 5
+   },
+   {
+    "arquivo": "src/components/quotes/QuoteAutoSave.tsx",
+    "mudancas": 5
+   },
+   {
+    "arquivo": "src/hooks/mockup/useMockupGenerator.ts",
+    "mudancas": 5
+   },
+   {
+    "arquivo": "src/hooks/quotes/useQuoteBuilderState.ts",
+    "mudancas": 5
+   },
+   {
+    "arquivo": "src/hooks/quotes/useQuoteTemplates.ts",
+    "mudancas": 5
+   },
+   {
+    "arquivo": "vitest.config.ts",
+    "mudancas": 5
+   },
+   {
+    "arquivo": ".github/workflows/schema-snapshot-export.yml",
+    "mudancas": 4
+   },
+   {
+    "arquivo": "analise-branches/dossies/claude__resgate-3390-261113.md",
+    "mudancas": 4
+   },
+   {
+    "arquivo": "docs/agentes/resgates/2026-11-19-migrations-orfas-e-o-portao-retroativo.md",
+    "mudancas": 4
    },
    {
     "arquivo": "e2e/helpers/auth.ts",
-    "mudancas": 5
-   },
-   {
-    "arquivo": "scripts/drift-baseline.mjs",
-    "mudancas": 5
+    "mudancas": 4
    }
   ],
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 266
+    "commits": 264
    },
    {
     "autor": "github-actions[bot]",
-    "commits": 33
+    "commits": 35
    },
    {
     "autor": "Claude",
-    "commits": 11
+    "commits": 9
    },
    {
     "autor": "dependabot[bot]",
