@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "d519f4e13e5390794d82abf26347a1664282f983",
+  "commit": "7600d950a33dc7b50badce21a0b818eeccdf73a0",
   "branch": "main",
-  "data_commit": "2026-11-22T14:40:53-03:00",
+  "data_commit": "2026-11-22T15:03:41-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "7600d95",
+    "data": "2026-11-22",
+    "assunto": "fix: corrigir cadeia invoker das views de compras e composicoes (#3989)"
+   },
    {
     "sha": "d519f4e",
     "data": "2026-11-22",
@@ -126,14 +131,9 @@
     "sha": "687ee37",
     "data": "2026-11-21",
     "assunto": "chore(main): release gifts-store 1.17.0 (#3953)"
-   },
-   {
-    "sha": "a7be36d",
-    "data": "2026-11-21",
-    "assunto": "fix(ci): bloqueia variantes de invoke direto (#3952)"
    }
   ],
-  "arquivos_mudados_7d": 1172,
+  "arquivos_mudados_7d": 1162,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -199,7 +199,7 @@
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "supabase/MIGRATIONS_SYNC_LOG.md",
-    "mudancas": 64
+    "mudancas": 65
    },
    {
     "arquivo": "package.json",
@@ -318,7 +318,7 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 11210,
+  "arquivos_total": 11212,
   "arquivos_codigo": 5654,
   "linhas_codigo": 1073028,
   "rotas": 141,
@@ -330,7 +330,7 @@
   "hooks": 645,
   "edge_functions": 112,
   "tabelas": 531,
-  "migrations": 3126,
+  "migrations": 3127,
   "cron_jobs": 122,
   "testes": 2702,
   "workflows": 89,
