@@ -19,7 +19,6 @@ import {
   Trash2,
   Undo2,
 } from 'lucide-react';
-import { supabase } from '@/integrations/supabase/client';
 import { PageSEO } from '@/components/seo/PageSEO';
 import {
   formatPaymentTerms,
@@ -65,6 +64,7 @@ import { FreightPlanPanel } from '@/components/freight-plan/FreightPlanPanel';
 import type { FreightProductLabels } from '@/components/freight-plan/FreightMissingActions';
 import { parseStoredFreightPlan } from '@/lib/freight';
 import { QUOTE_STATUS_CONFIG } from '@/lib/quote-status-config';
+import { updateQuoteStatusSafely } from '@/lib/quotes/status-transition';
 import { useQuoteViewData } from '@/pages/quotes/quote-view/useQuoteViewData';
 import { QuoteUnavailableState } from '@/pages/quotes/quote-view/QuoteUnavailableState';
 
@@ -315,12 +315,14 @@ export default function QuoteViewPage() {
                         // denial or DB errors — it returns { error }. Without destructuring, an
                         // RLS rejection was silently swallowed and the success toast fired anyway,
                         // misleading the seller into thinking the status was reverted when it wasn't.
-                        const { error: revertErr } = await supabase
-                          // rls-allow: lookup por id; RLS valida ownership
-                          .from('quotes')
-                          .update({ status: 'pending' } as never)
-                          .eq('id', quote.id ?? '');
-                        if (revertErr) throw revertErr;
+                        // Etapa 099 (ACH-086): a escrita passa pelo caminho único, que valida
+                        // sent → pending no mapa do FE antes do UPDATE.
+                        await updateQuoteStatusSafely({
+                          quoteId: quote.id ?? '',
+                          from: quote.status,
+                          to: 'pending',
+                          source: 'ui',
+                        });
                         await logQuoteHistory(
                           quote.id ?? '',
                           'status_change',
