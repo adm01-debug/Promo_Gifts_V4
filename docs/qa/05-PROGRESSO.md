@@ -102,8 +102,8 @@ Severidade das etapas: Média 158 · Alta 79 · Baixa 54 · Crítica 9
 - [ ] 066 — Unificar a fórmula de custo de personalização num único módulo — onda 2 — Média
 - [~] 067 — Mover `/magazine/print` para fora do `ProtectedRoute` — onda 2 — Alta
 - [~] 068 — Teste de rota garantindo que a impressão pública não exige login — onda 2 — Média
-- [ ] 069 — Acrescentar `admin` ao `ROLE_RANK` do `dispatcher-auth` — onda 2 — Alta
-- [ ] 070 — Gate que compara os mapas de papel dos dois helpers de autorização — onda 2 — Média
+- [~] 069 — Acrescentar `admin` ao `ROLE_RANK` do `dispatcher-auth` — onda 2 — Alta
+- [~] 070 — Gate que compara os mapas de papel dos dois helpers de autorização — onda 2 — Média
 - [ ] 071 — Conferir se outros consumidores de `dispatcher-auth` estavam negando admin — onda 2 — Média
 - [ ] 072 — Expor o erro do catálogo em `useCatalogState` — onda 2 — Alta
 - [ ] 073 — Estado de erro em `/produtos` e `/filtros` — onda 2 — Alta

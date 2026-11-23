@@ -21,8 +21,19 @@ const SUPABASE_URL = Deno.env.get("SUPABASE_URL") ?? "";
 const ANON_KEY = Deno.env.get("SUPABASE_ANON_KEY") ?? "";
 const SERVICE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "";
 
-export type AppRole = "dev" | "supervisor" | "agente";
-const ROLE_RANK: Record<AppRole, number> = { agente: 1, supervisor: 2, dev: 3 };
+export type AppRole = "dev" | "supervisor" | "admin" | "agente" | "vendedor";
+// Ranking hierarquico. 'vendedor' e 'agente' sao a mesma tier-base (1);
+// 'admin' e 'supervisor' sao a mesma tier (2); 'dev' no topo (3).
+// BUGFIX (ACH-022): antes faltavam 'vendedor'/'admin' aqui, fazendo ROLE_RANK[role]
+// retornar undefined para usuarios reais -> comparacoes NaN instaveis.
+// Mapa alinhado a _shared/authorize.ts.
+export const ROLE_RANK: Record<AppRole, number> = {
+  vendedor: 1,
+  agente: 1,
+  supervisor: 2,
+  admin: 2,
+  dev: 3,
+};
 
 export type DispatcherAuthMode = "secret" | "user_jwt";
 export type CronAuthMode = "secret" | "secret_vault";
