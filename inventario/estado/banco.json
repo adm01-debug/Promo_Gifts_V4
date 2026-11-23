@@ -3,135 +3,13 @@
     {
       "detalhe": [
         "classification_audit.category_suggestions",
-        "pgmq.meta",
         "prod_audit.category_keywords",
         "prod_audit.category_suggestions",
         "prod_audit.classification_rules",
         "prod_audit.product_features",
-        "prod_audit.test_results",
-        "supplier_stricker.canceled_products",
-        "supplier_stricker.category_mappings",
-        "supplier_stricker.colors",
-        "supplier_stricker.customization_options",
-        "supplier_stricker.customization_tables",
-        "supplier_stricker.optionals",
-        "supplier_stricker.product_types",
-        "supplier_stricker.products",
-        "supplier_stricker.stg_colors",
-        "supplier_stricker.stg_customizations",
-        "supplier_stricker.stg_images",
-        "supplier_stricker.stg_optionals",
-        "supplier_stricker.stg_product_types",
-        "supplier_stricker.stg_products",
-        "supplier_stricker.stg_stock",
-        "supplier_stricker.stocks",
-        "supplier_stricker.sync_log"
+        "prod_audit.test_results"
       ],
       "tipo": "tabela_sem_rls_fora_de_public"
-    },
-    {
-      "detalhe": [
-        "ai-queue-stuck-cleanup (9.6% em 7d)",
-        "analyze-dictionaries-daily (14.3% em 7d)",
-        "anon-insert-rate-purge (7.8% em 7d)",
-        "asia-stock-sync (7% em 7d)",
-        "auto-block-offenders (7% em 7d)",
-        "backfill-image-dimensions (7.6% em 7d)",
-        "backfill-queue-reap-stuck (8.1% em 7d)",
-        "cleanup-edge-rate-limits (6% em 7d)",
-        "cleanup-expired-token-revocations (6.6% em 7d)",
-        "cleanup-notifications (14.3% em 7d)",
-        "cleanup-novelties (14.3% em 7d)",
-        "cleanup-product-webhook-nonces-hourly (6% em 7d)",
-        "cleanup-stale-ai-pending-logs (7.5% em 7d)",
-        "cleanup-webhook-delivery-locks-hourly (6% em 7d)",
-        "color-health-daily (14.3% em 7d)",
-        "comparison-price-watcher (14.3% em 7d)",
-        "connections-auto-test (5.4% em 7d)",
-        "connections-health-check (7.6% em 7d)",
-        "dashboard-insights-cache-cleanup (7.8% em 7d)",
-        "dispatcher-failure-alert (10.2% em 7d)",
-        "expire-product-novelties (42.9% em 7d)",
-        "expire-supplier-promises (14.3% em 7d)",
-        "fantasmas-deactivate-guard (10.2% em 7d)",
-        "fix_price_verified_drift_daily (14.3% em 7d)",
-        "generate-blurhashes (16.3% em 7d)",
-        "hash-product-images (8.4% em 7d)",
-        "kit-component-auto-approve (6.9% em 7d)",
-        "kit-component-auto-promote (6% em 7d)",
-        "kit-enrich-daily (28.6% em 7d)",
-        "kit-ficha-fetch (21.4% em 7d)",
-        "kit-ficha-parse-site (27.4% em 7d)",
-        "kit-ficha-promote (6.6% em 7d)",
-        "kit-material-propagate (7.1% em 7d)",
-        "magazine-cleanup-nightly (14.3% em 7d)",
-        "magazine-view-rollup-hourly (12.6% em 7d)",
-        "medallion-coverage-daily (14.3% em 7d)",
-        "medallion-promote-tick (6.9% em 7d)",
-        "notebook-specs-daily (28.6% em 7d)",
-        "novelties-safeguard-hourly (9.6% em 7d)",
-        "novelties-sync-bihourly (15.7% em 7d)",
-        "pgrst-schema-reload (11.3% em 7d)",
-        "pipeline-health-check-4h (14.3% em 7d)",
-        "pipeline-health-hourly (32.9% em 7d)",
-        "pipeline-print-profiles (8.7% em 7d)",
-        "populate-novelties-from-supplier (42.9% em 7d)",
-        "process-pending-products (6.7% em 7d)",
-        "process-queue (8.4% em 7d)",
-        "process-scheduled-reports (12% em 7d)",
-        "purge-expired-security (6.6% em 7d)",
-        "qa-image-coverage-hourly (9.6% em 7d)",
-        "qa-imageless-products (8.4% em 7d)",
-        "quote-followup-reminders (14.3% em 7d)",
-        "reconcile-category-products-count (9.8% em 7d)",
-        "reconcile-stock-gold-daily (14.3% em 7d)",
-        "refresh-all-materialized-views (7.2% em 7d)",
-        "refresh-backfill-queue-expiry (9.5% em 7d)",
-        "refresh-category-ancestors (14.3% em 7d)",
-        "refresh-mv-ema-kpi-by-level (10.1% em 7d)",
-        "refresh-mv-product-images-audit (10.7% em 7d)",
-        "refresh-mv-product-leaf-category (9.5% em 7d)",
-        "refresh-mv-stock-rupture-alert (10.8% em 7d)",
-        "refresh-mv-supplier-reliability (6.4% em 7d)",
-        "reposicao-backfill-hourly (50% em 7d)",
-        "revoke-truncate-daily (14.3% em 7d)",
-        "schema-drift-check (10.7% em 7d)",
-        "send-scheduled-reports (6.6% em 7d)",
-        "seo-populate-new-products (14.3% em 7d)",
-        "seo-recalculate-stale-scores (28.6% em 7d)",
-        "sm-category-collect (6% em 7d)",
-        "sm-category-enqueue (7.9% em 7d)",
-        "sm-session-check (28.6% em 7d)",
-        "sm-site-scrape (10.5% em 7d)",
-        "sm-site-scrape-auth (7.4% em 7d)",
-        "sm-stock-guard (7.3% em 7d)",
-        "sm-url-discover-collect (6.5% em 7d)",
-        "sm-url-discover-search (10.2% em 7d)",
-        "sm-variant-coherence-guard (5.6% em 7d)",
-        "spot-health-check-daily (28.6% em 7d)",
-        "spot-relink-family-images (5.7% em 7d)",
-        "spot-stock-fast-sync (7.8% em 7d)",
-        "spr-requeue-failed-hourly (6% em 7d)",
-        "stock_daily_aggregation (28.6% em 7d)",
-        "stock-daily-backfill-today (57.1% em 7d)",
-        "sync-dynamic-collections (14.3% em 7d)",
-        "sync-is-new-expires-at (14.3% em 7d)",
-        "sync-is-stockout-universal (8.4% em 7d)",
-        "sync-supplier-timestamps-hourly (12% em 7d)",
-        "video-botcheck-heal (14.3% em 7d)",
-        "video-recover-stuck (5.7% em 7d)",
-        "xbz-enrich-gold-extractors (7.2% em 7d)",
-        "xbz-image-uploader (6.4% em 7d)",
-        "xbz-site-scrape (6.9% em 7d)",
-        "xbz-stock-sync (5.4% em 7d)"
-      ],
-      "tipo": "cron_falhando"
-    },
-    {
-      "detalhe": [
-        "2026-10-31T15:00Z"
-      ],
-      "tipo": "cron_parado"
     }
   ],
   "cron": {
@@ -141,18 +19,12 @@
       "max_worker_processes": "6"
     },
     "historico": {
-      "bytes": 84066304,
-      "linhas": 70539,
-      "mais_antigo": "2026-10-18T04:00:00Z",
-      "mais_de_7_dias": 43632
+      "bytes": 82124800,
+      "linhas": 49028,
+      "mais_antigo": "2026-11-08T04:00:06Z",
+      "mais_de_7_dias": 30836
     },
-    "horas_paradas_7d": [
-      {
-        "execucoes": 156,
-        "falhas": 108,
-        "hora": "2026-10-31T15:00Z"
-      }
-    ],
+    "horas_paradas_7d": [],
     "jobs": [
       {
         "agenda": "17 4 * * *",
@@ -160,7 +32,7 @@
         "chama": [
           "public.fn_cron_safe_run"
         ],
-        "duracao_max_s_7d": 129,
+        "duracao_max_s_7d": 1,
         "edges": [],
         "execucoes_24h": 1,
         "execucoes_7d": 7,
@@ -178,17 +50,17 @@
         "chama": [
           "public.fn_cron_safe_run"
         ],
-        "duracao_max_s_7d": 52,
+        "duracao_max_s_7d": 0,
         "edges": [],
         "execucoes_24h": 24,
-        "execucoes_7d": 167,
-        "falhas_24h": 6,
-        "falhas_7d": 16,
+        "execucoes_7d": 168,
+        "falhas_24h": 0,
+        "falhas_7d": 0,
         "nome": "ai-queue-stuck-cleanup",
-        "startup_timeout_7d": 16,
+        "startup_timeout_7d": 0,
         "statement_timeout_7d": 0,
-        "taxa_falha_7d_pct": 9.6,
-        "ultima_falha": "2026-11-02T09:34:00Z"
+        "taxa_falha_7d_pct": 0,
+        "ultima_falha": null
       },
       {
         "agenda": "0 8 * * *",
@@ -196,7 +68,7 @@
         "chama": [
           "public.fn_alert_products_without_images"
         ],
-        "duracao_max_s_7d": 8,
+        "duracao_max_s_7d": 1,
         "edges": [],
         "execucoes_24h": 1,
         "execucoes_7d": 7,
@@ -214,7 +86,7 @@
         "chama": [
           "public.fn_alert_supplier_settings_incomplete"
         ],
-        "duracao_max_s_7d": 1,
+        "duracao_max_s_7d": 0,
         "edges": [],
         "execucoes_24h": 1,
         "execucoes_7d": 7,
@@ -232,17 +104,17 @@
         "chama": [
           "public.fn_analyze_dictionaries"
         ],
-        "duracao_max_s_7d": 8,
+        "duracao_max_s_7d": 0,
         "edges": [],
         "execucoes_24h": 1,
         "execucoes_7d": 7,
-        "falhas_24h": 1,
-        "falhas_7d": 1,
+        "falhas_24h": 0,
+        "falhas_7d": 0,
         "nome": "analyze-dictionaries-daily",
-        "startup_timeout_7d": 1,
+        "startup_timeout_7d": 0,
         "statement_timeout_7d": 0,
-        "taxa_falha_7d_pct": 14.3,
-        "ultima_falha": "2026-11-02T02:00:00Z"
+        "taxa_falha_7d_pct": 0,
+        "ultima_falha": null
       },
       {
         "agenda": "0 3 * * 6",
@@ -259,7 +131,7 @@
           "public.xbz_gallery_staging",
           "public.xbz_upload_mapping"
         ],
-        "duracao_max_s_7d": 17,
+        "duracao_max_s_7d": 8,
         "edges": [],
         "execucoes_24h": 0,
         "execucoes_7d": 1,
@@ -277,10 +149,10 @@
         "chama": [
           "public.fn_anon_catalog_grant_audit_run"
         ],
-        "duracao_max_s_7d": 5,
+        "duracao_max_s_7d": 0,
         "edges": [],
         "execucoes_24h": 4,
-        "execucoes_7d": 27,
+        "execucoes_7d": 28,
         "falhas_24h": 0,
         "falhas_7d": 0,
         "nome": "anon-catalog-grant-audit-6h",
@@ -295,72 +167,72 @@
         "chama": [
           "public.anon_insert_rate"
         ],
-        "duracao_max_s_7d": 20,
+        "duracao_max_s_7d": 0,
         "edges": [],
         "execucoes_24h": 96,
-        "execucoes_7d": 668,
-        "falhas_24h": 8,
-        "falhas_7d": 52,
+        "execucoes_7d": 672,
+        "falhas_24h": 0,
+        "falhas_7d": 0,
         "nome": "anon-insert-rate-purge",
-        "startup_timeout_7d": 52,
+        "startup_timeout_7d": 0,
         "statement_timeout_7d": 0,
-        "taxa_falha_7d_pct": 7.8,
-        "ultima_falha": "2026-11-02T11:01:00Z"
+        "taxa_falha_7d_pct": 0,
+        "ultima_falha": null
       },
       {
-        "agenda": "21,51 * * * *",
+        "agenda": "21,51 1-8 * * *",
         "ativo": true,
         "chama": [
           "public.fn_cron_safe_run"
         ],
-        "duracao_max_s_7d": 28,
+        "duracao_max_s_7d": 0,
         "edges": [],
-        "execucoes_24h": 49,
-        "execucoes_7d": 334,
-        "falhas_24h": 4,
-        "falhas_7d": 16,
+        "execucoes_24h": 16,
+        "execucoes_7d": 112,
+        "falhas_24h": 0,
+        "falhas_7d": 0,
         "nome": "asia-enqueue-new-products",
-        "startup_timeout_7d": 16,
+        "startup_timeout_7d": 0,
         "statement_timeout_7d": 0,
-        "taxa_falha_7d_pct": 4.8,
-        "ultima_falha": "2026-11-02T09:51:00Z"
+        "taxa_falha_7d_pct": 0,
+        "ultima_falha": null
       },
       {
-        "agenda": "9 * * * *",
+        "agenda": "9 1-8 * * *",
         "ativo": true,
         "chama": [
           "public.fn_asia_run_image_cycle",
           "public.fn_cron_safe_run"
         ],
-        "duracao_max_s_7d": 105,
+        "duracao_max_s_7d": 60,
         "edges": [],
-        "execucoes_24h": 24,
-        "execucoes_7d": 167,
-        "falhas_24h": 1,
-        "falhas_7d": 8,
+        "execucoes_24h": 8,
+        "execucoes_7d": 56,
+        "falhas_24h": 0,
+        "falhas_7d": 0,
         "nome": "asia-image-uploader",
-        "startup_timeout_7d": 7,
+        "startup_timeout_7d": 0,
         "statement_timeout_7d": 0,
-        "taxa_falha_7d_pct": 4.8,
-        "ultima_falha": "2026-11-01T22:09:00Z"
+        "taxa_falha_7d_pct": 0,
+        "ultima_falha": null
       },
       {
-        "agenda": "7,22,37,52 * * * *",
+        "agenda": "52 * * * *",
         "ativo": true,
         "chama": [
           "public.fn_process_asia_stock_pending"
         ],
-        "duracao_max_s_7d": 31,
+        "duracao_max_s_7d": 1,
         "edges": [],
-        "execucoes_24h": 96,
-        "execucoes_7d": 668,
-        "falhas_24h": 10,
-        "falhas_7d": 47,
+        "execucoes_24h": 24,
+        "execucoes_7d": 168,
+        "falhas_24h": 0,
+        "falhas_7d": 0,
         "nome": "asia-stock-sync",
-        "startup_timeout_7d": 47,
+        "startup_timeout_7d": 0,
         "statement_timeout_7d": 0,
-        "taxa_falha_7d_pct": 7,
-        "ultima_falha": "2026-11-02T10:52:00Z"
+        "taxa_falha_7d_pct": 0,
+        "ultima_falha": null
       },
       {
         "agenda": "1,16,31,46 * * * *",
@@ -369,39 +241,39 @@
           "public.auto_block_extreme_offenders",
           "public.fn_cron_safe_run"
         ],
-        "duracao_max_s_7d": 41,
+        "duracao_max_s_7d": 1,
         "edges": [],
         "execucoes_24h": 96,
-        "execucoes_7d": 669,
-        "falhas_24h": 8,
-        "falhas_7d": 47,
+        "execucoes_7d": 672,
+        "falhas_24h": 0,
+        "falhas_7d": 0,
         "nome": "auto-block-offenders",
-        "startup_timeout_7d": 47,
+        "startup_timeout_7d": 0,
         "statement_timeout_7d": 0,
-        "taxa_falha_7d_pct": 7,
-        "ultima_falha": "2026-11-02T11:01:00Z"
+        "taxa_falha_7d_pct": 0,
+        "ultima_falha": null
       },
       {
-        "agenda": "7,22,37,52 * * * *",
+        "agenda": "52 9-23/2 * * *",
         "ativo": true,
         "chama": [
           "net.http_post",
           "public.get_edge_function_secret",
           "public.get_edge_functions_base_url"
         ],
-        "duracao_max_s_7d": 29,
+        "duracao_max_s_7d": 0,
         "edges": [
           "backfill-image-dimensions"
         ],
-        "execucoes_24h": 96,
-        "execucoes_7d": 668,
-        "falhas_24h": 12,
-        "falhas_7d": 51,
+        "execucoes_24h": 8,
+        "execucoes_7d": 313,
+        "falhas_24h": 0,
+        "falhas_7d": 0,
         "nome": "backfill-image-dimensions",
-        "startup_timeout_7d": 51,
+        "startup_timeout_7d": 0,
         "statement_timeout_7d": 0,
-        "taxa_falha_7d_pct": 7.6,
-        "ultima_falha": "2026-11-02T10:52:00Z"
+        "taxa_falha_7d_pct": 0,
+        "ultima_falha": null
       },
       {
         "agenda": "2,17,32,47 * * * *",
@@ -409,17 +281,17 @@
         "chama": [
           "public.fn_backfill_queue_reap_stuck"
         ],
-        "duracao_max_s_7d": 68,
+        "duracao_max_s_7d": 2,
         "edges": [],
         "execucoes_24h": 96,
-        "execucoes_7d": 668,
-        "falhas_24h": 7,
-        "falhas_7d": 54,
+        "execucoes_7d": 672,
+        "falhas_24h": 0,
+        "falhas_7d": 0,
         "nome": "backfill-queue-reap-stuck",
-        "startup_timeout_7d": 53,
+        "startup_timeout_7d": 0,
         "statement_timeout_7d": 0,
-        "taxa_falha_7d_pct": 8.1,
-        "ultima_falha": "2026-11-02T11:47:00Z"
+        "taxa_falha_7d_pct": 0,
+        "ultima_falha": null
       },
       {
         "agenda": "0 2 * * 0",
@@ -446,17 +318,17 @@
           "public.cleanup_expired_edge_rate_limits",
           "public.fn_cron_safe_run"
         ],
-        "duracao_max_s_7d": 12,
+        "duracao_max_s_7d": 0,
         "edges": [],
         "execucoes_24h": 24,
-        "execucoes_7d": 167,
-        "falhas_24h": 3,
-        "falhas_7d": 10,
+        "execucoes_7d": 168,
+        "falhas_24h": 0,
+        "falhas_7d": 0,
         "nome": "cleanup-edge-rate-limits",
-        "startup_timeout_7d": 10,
+        "startup_timeout_7d": 0,
         "statement_timeout_7d": 0,
-        "taxa_falha_7d_pct": 6,
-        "ultima_falha": "2026-11-02T10:37:00Z"
+        "taxa_falha_7d_pct": 0,
+        "ultima_falha": null
       },
       {
         "agenda": "0 4 * * *",
@@ -464,10 +336,10 @@
         "chama": [
           "public.cleanup_expired_auth_sessions"
         ],
-        "duracao_max_s_7d": 5,
+        "duracao_max_s_7d": 0,
         "edges": [],
         "execucoes_24h": 1,
-        "execucoes_7d": 1,
+        "execucoes_7d": 7,
         "falhas_24h": 0,
         "falhas_7d": 0,
         "nome": "cleanup-expired-auth-sessions",
@@ -500,17 +372,17 @@
         "chama": [
           "public.fn_cron_safe_run"
         ],
-        "duracao_max_s_7d": 12,
+        "duracao_max_s_7d": 0,
         "edges": [],
         "execucoes_24h": 24,
-        "execucoes_7d": 166,
-        "falhas_24h": 2,
-        "falhas_7d": 11,
+        "execucoes_7d": 168,
+        "falhas_24h": 0,
+        "falhas_7d": 0,
         "nome": "cleanup-expired-token-revocations",
-        "startup_timeout_7d": 11,
+        "startup_timeout_7d": 0,
         "statement_timeout_7d": 0,
-        "taxa_falha_7d_pct": 6.6,
-        "ultima_falha": "2026-11-01T23:43:00Z"
+        "taxa_falha_7d_pct": 0,
+        "ultima_falha": null
       },
       {
         "agenda": "7 3 * * 0",
@@ -538,19 +410,19 @@
           "net.http_post",
           "public.get_edge_function_secret"
         ],
-        "duracao_max_s_7d": 1,
+        "duracao_max_s_7d": 0,
         "edges": [
           "cleanup-notifications"
         ],
         "execucoes_24h": 1,
         "execucoes_7d": 7,
         "falhas_24h": 0,
-        "falhas_7d": 1,
+        "falhas_7d": 0,
         "nome": "cleanup-notifications",
-        "startup_timeout_7d": 1,
+        "startup_timeout_7d": 0,
         "statement_timeout_7d": 0,
-        "taxa_falha_7d_pct": 14.3,
-        "ultima_falha": "2026-10-30T03:10:00Z"
+        "taxa_falha_7d_pct": 0,
+        "ultima_falha": null
       },
       {
         "agenda": "5 4 * * *",
@@ -559,19 +431,19 @@
           "net.http_post",
           "public.get_edge_function_secret"
         ],
-        "duracao_max_s_7d": 2,
+        "duracao_max_s_7d": 0,
         "edges": [
           "cleanup-novelties"
         ],
         "execucoes_24h": 1,
         "execucoes_7d": 7,
         "falhas_24h": 0,
-        "falhas_7d": 1,
+        "falhas_7d": 0,
         "nome": "cleanup-novelties",
-        "startup_timeout_7d": 1,
+        "startup_timeout_7d": 0,
         "statement_timeout_7d": 0,
-        "taxa_falha_7d_pct": 14.3,
-        "ultima_falha": "2026-10-30T04:05:00Z"
+        "taxa_falha_7d_pct": 0,
+        "ultima_falha": null
       },
       {
         "agenda": "17 * * * *",
@@ -579,17 +451,17 @@
         "chama": [
           "public.cleanup_expired_webhook_request_nonces"
         ],
-        "duracao_max_s_7d": 4,
+        "duracao_max_s_7d": 0,
         "edges": [],
         "execucoes_24h": 24,
         "execucoes_7d": 168,
-        "falhas_24h": 2,
-        "falhas_7d": 10,
+        "falhas_24h": 0,
+        "falhas_7d": 0,
         "nome": "cleanup-product-webhook-nonces-hourly",
-        "startup_timeout_7d": 10,
+        "startup_timeout_7d": 0,
         "statement_timeout_7d": 0,
-        "taxa_falha_7d_pct": 6,
-        "ultima_falha": "2026-11-02T10:17:00Z"
+        "taxa_falha_7d_pct": 0,
+        "ultima_falha": null
       },
       {
         "agenda": "30 3 * * *",
@@ -597,7 +469,7 @@
         "chama": [
           "public.cleanup_security_logs"
         ],
-        "duracao_max_s_7d": 6,
+        "duracao_max_s_7d": 0,
         "edges": [],
         "execucoes_24h": 1,
         "execucoes_7d": 7,
@@ -634,17 +506,17 @@
           "public.ai_usage_logs",
           "public.fn_cron_safe_run"
         ],
-        "duracao_max_s_7d": 15,
+        "duracao_max_s_7d": 0,
         "edges": [],
         "execucoes_24h": 96,
-        "execucoes_7d": 670,
-        "falhas_24h": 14,
-        "falhas_7d": 50,
+        "execucoes_7d": 671,
+        "falhas_24h": 0,
+        "falhas_7d": 0,
         "nome": "cleanup-stale-ai-pending-logs",
-        "startup_timeout_7d": 50,
+        "startup_timeout_7d": 0,
         "statement_timeout_7d": 0,
-        "taxa_falha_7d_pct": 7.5,
-        "ultima_falha": "2026-11-02T11:48:00Z"
+        "taxa_falha_7d_pct": 0,
+        "ultima_falha": null
       },
       {
         "agenda": "47 * * * *",
@@ -652,17 +524,17 @@
         "chama": [
           "public.cleanup_stale_webhook_locks"
         ],
-        "duracao_max_s_7d": 8,
+        "duracao_max_s_7d": 0,
         "edges": [],
         "execucoes_24h": 24,
-        "execucoes_7d": 166,
-        "falhas_24h": 2,
-        "falhas_7d": 10,
+        "execucoes_7d": 168,
+        "falhas_24h": 0,
+        "falhas_7d": 0,
         "nome": "cleanup-webhook-delivery-locks-hourly",
-        "startup_timeout_7d": 10,
+        "startup_timeout_7d": 0,
         "statement_timeout_7d": 0,
-        "taxa_falha_7d_pct": 6,
-        "ultima_falha": "2026-11-02T11:47:00Z"
+        "taxa_falha_7d_pct": 0,
+        "ultima_falha": null
       },
       {
         "agenda": "23 6 * * *",
@@ -671,7 +543,7 @@
           "net.http_post",
           "public.get_edge_function_secret"
         ],
-        "duracao_max_s_7d": 2,
+        "duracao_max_s_7d": 0,
         "edges": [
           "collections-watcher"
         ],
@@ -691,17 +563,17 @@
         "chama": [
           "public.fn_cron_safe_run"
         ],
-        "duracao_max_s_7d": 121,
+        "duracao_max_s_7d": 3,
         "edges": [],
         "execucoes_24h": 1,
         "execucoes_7d": 7,
         "falhas_24h": 0,
-        "falhas_7d": 1,
+        "falhas_7d": 0,
         "nome": "color-health-daily",
-        "startup_timeout_7d": 1,
+        "startup_timeout_7d": 0,
         "statement_timeout_7d": 0,
-        "taxa_falha_7d_pct": 14.3,
-        "ultima_falha": "2026-10-27T06:19:00Z"
+        "taxa_falha_7d_pct": 0,
+        "ultima_falha": null
       },
       {
         "agenda": "40 6 * * *",
@@ -716,55 +588,55 @@
         ],
         "execucoes_24h": 1,
         "execucoes_7d": 7,
-        "falhas_24h": 1,
-        "falhas_7d": 1,
+        "falhas_24h": 0,
+        "falhas_7d": 0,
         "nome": "comparison-price-watcher",
-        "startup_timeout_7d": 1,
+        "startup_timeout_7d": 0,
         "statement_timeout_7d": 0,
-        "taxa_falha_7d_pct": 14.3,
-        "ultima_falha": "2026-11-02T06:40:00Z"
+        "taxa_falha_7d_pct": 0,
+        "ultima_falha": null
       },
       {
-        "agenda": "9,24,39,54 * * * *",
+        "agenda": "24 * * * *",
         "ativo": true,
         "chama": [
           "net.http_post",
           "public.get_edge_function_secret"
         ],
-        "duracao_max_s_7d": 22,
+        "duracao_max_s_7d": 0,
         "edges": [
           "connections-auto-test"
         ],
-        "execucoes_24h": 96,
-        "execucoes_7d": 669,
-        "falhas_24h": 4,
-        "falhas_7d": 36,
+        "execucoes_24h": 24,
+        "execucoes_7d": 377,
+        "falhas_24h": 0,
+        "falhas_7d": 0,
         "nome": "connections-auto-test",
-        "startup_timeout_7d": 36,
+        "startup_timeout_7d": 0,
         "statement_timeout_7d": 0,
-        "taxa_falha_7d_pct": 5.4,
-        "ultima_falha": "2026-11-02T08:24:00Z"
+        "taxa_falha_7d_pct": 0,
+        "ultima_falha": null
       },
       {
-        "agenda": "4,19,34,49 * * * *",
+        "agenda": "19 * * * *",
         "ativo": true,
         "chama": [
           "net.http_post",
           "public.get_edge_function_secret"
         ],
-        "duracao_max_s_7d": 20,
+        "duracao_max_s_7d": 0,
         "edges": [
           "connections-health-check"
         ],
-        "execucoes_24h": 96,
-        "execucoes_7d": 667,
-        "falhas_24h": 14,
-        "falhas_7d": 51,
+        "execucoes_24h": 24,
+        "execucoes_7d": 378,
+        "falhas_24h": 0,
+        "falhas_7d": 0,
         "nome": "connections-health-check",
-        "startup_timeout_7d": 51,
+        "startup_timeout_7d": 0,
         "statement_timeout_7d": 0,
-        "taxa_falha_7d_pct": 7.6,
-        "ultima_falha": "2026-11-02T11:04:00Z"
+        "taxa_falha_7d_pct": 0,
+        "ultima_falha": null
       },
       {
         "agenda": "0 4 * * 0",
@@ -772,7 +644,7 @@
         "chama": [
           "cron.job_run_details"
         ],
-        "duracao_max_s_7d": 4,
+        "duracao_max_s_7d": 1,
         "edges": [],
         "execucoes_24h": 0,
         "execucoes_7d": 1,
@@ -790,7 +662,7 @@
         "chama": [
           "public.fn_expire_overdue_quotes"
         ],
-        "duracao_max_s_7d": 2,
+        "duracao_max_s_7d": 0,
         "edges": [],
         "execucoes_24h": 1,
         "execucoes_7d": 7,
@@ -809,17 +681,17 @@
           "public.dashboard_insights_cache",
           "public.fn_cron_safe_run"
         ],
-        "duracao_max_s_7d": 19,
+        "duracao_max_s_7d": 0,
         "edges": [],
         "execucoes_24h": 24,
-        "execucoes_7d": 166,
-        "falhas_24h": 3,
-        "falhas_7d": 13,
+        "execucoes_7d": 168,
+        "falhas_24h": 0,
+        "falhas_7d": 0,
         "nome": "dashboard-insights-cache-cleanup",
-        "startup_timeout_7d": 13,
+        "startup_timeout_7d": 0,
         "statement_timeout_7d": 0,
-        "taxa_falha_7d_pct": 7.8,
-        "ultima_falha": "2026-11-02T11:48:00Z"
+        "taxa_falha_7d_pct": 0,
+        "ultima_falha": null
       },
       {
         "agenda": "5,20,35,50 * * * *",
@@ -827,17 +699,17 @@
         "chama": [
           "public.fn_alert_dispatcher_failures"
         ],
-        "duracao_max_s_7d": 21,
+        "duracao_max_s_7d": 0,
         "edges": [],
-        "execucoes_24h": 95,
-        "execucoes_7d": 665,
-        "falhas_24h": 22,
-        "falhas_7d": 68,
+        "execucoes_24h": 96,
+        "execucoes_7d": 672,
+        "falhas_24h": 0,
+        "falhas_7d": 0,
         "nome": "dispatcher-failure-alert",
-        "startup_timeout_7d": 68,
+        "startup_timeout_7d": 0,
         "statement_timeout_7d": 0,
-        "taxa_falha_7d_pct": 10.2,
-        "ultima_falha": "2026-11-02T10:35:00Z"
+        "taxa_falha_7d_pct": 0,
+        "ultima_falha": null
       },
       {
         "agenda": "0 3 * * 0",
@@ -881,17 +753,17 @@
         "chama": [
           "public.fn_cron_safe_run"
         ],
-        "duracao_max_s_7d": 20,
+        "duracao_max_s_7d": 1,
         "edges": [],
         "execucoes_24h": 1,
         "execucoes_7d": 7,
-        "falhas_24h": 1,
-        "falhas_7d": 3,
+        "falhas_24h": 0,
+        "falhas_7d": 0,
         "nome": "expire-product-novelties",
-        "startup_timeout_7d": 3,
+        "startup_timeout_7d": 0,
         "statement_timeout_7d": 0,
-        "taxa_falha_7d_pct": 42.9,
-        "ultima_falha": "2026-11-02T03:07:00Z"
+        "taxa_falha_7d_pct": 0,
+        "ultima_falha": null
       },
       {
         "agenda": "7 6 * * *",
@@ -900,7 +772,7 @@
           "public.expire_stale_password_reset_requests",
           "public.fn_cron_safe_run"
         ],
-        "duracao_max_s_7d": 3,
+        "duracao_max_s_7d": 0,
         "edges": [],
         "execucoes_24h": 1,
         "execucoes_7d": 7,
@@ -919,17 +791,17 @@
           "public.fn_cron_safe_run",
           "public.fn_expire_pending_promises"
         ],
-        "duracao_max_s_7d": 4,
+        "duracao_max_s_7d": 0,
         "edges": [],
         "execucoes_24h": 1,
         "execucoes_7d": 7,
         "falhas_24h": 0,
-        "falhas_7d": 1,
+        "falhas_7d": 0,
         "nome": "expire-supplier-promises",
-        "startup_timeout_7d": 1,
+        "startup_timeout_7d": 0,
         "statement_timeout_7d": 0,
-        "taxa_falha_7d_pct": 14.3,
-        "ultima_falha": "2026-10-27T04:11:00Z"
+        "taxa_falha_7d_pct": 0,
+        "ultima_falha": null
       },
       {
         "agenda": "4,34 * * * *",
@@ -937,17 +809,17 @@
         "chama": [
           "public.fn_cron_safe_run"
         ],
-        "duracao_max_s_7d": 128,
+        "duracao_max_s_7d": 6,
         "edges": [],
         "execucoes_24h": 48,
-        "execucoes_7d": 334,
-        "falhas_24h": 10,
-        "falhas_7d": 34,
+        "execucoes_7d": 336,
+        "falhas_24h": 0,
+        "falhas_7d": 0,
         "nome": "fantasmas-deactivate-guard",
-        "startup_timeout_7d": 32,
-        "statement_timeout_7d": 1,
-        "taxa_falha_7d_pct": 10.2,
-        "ultima_falha": "2026-11-02T11:04:00Z"
+        "startup_timeout_7d": 0,
+        "statement_timeout_7d": 0,
+        "taxa_falha_7d_pct": 0,
+        "ultima_falha": null
       },
       {
         "agenda": "20 6 * * *",
@@ -956,7 +828,7 @@
           "net.http_post",
           "public.get_edge_function_secret"
         ],
-        "duracao_max_s_7d": 8,
+        "duracao_max_s_7d": 0,
         "edges": [
           "favorites-watcher"
         ],
@@ -976,20 +848,20 @@
         "chama": [
           "public.products"
         ],
-        "duracao_max_s_7d": 16,
+        "duracao_max_s_7d": 0,
         "edges": [],
         "execucoes_24h": 1,
         "execucoes_7d": 7,
         "falhas_24h": 0,
-        "falhas_7d": 1,
+        "falhas_7d": 0,
         "nome": "fix_price_verified_drift_daily",
-        "startup_timeout_7d": 1,
+        "startup_timeout_7d": 0,
         "statement_timeout_7d": 0,
-        "taxa_falha_7d_pct": 14.3,
-        "ultima_falha": "2026-10-30T03:15:00Z"
+        "taxa_falha_7d_pct": 0,
+        "ultima_falha": null
       },
       {
-        "agenda": "*/10 * * * *",
+        "agenda": "40 9-23/2 * * *",
         "ativo": true,
         "chama": [
           "net.http_post",
@@ -997,22 +869,22 @@
           "public.get_edge_function_secret",
           "public.get_edge_functions_base_url"
         ],
-        "duracao_max_s_7d": 18,
+        "duracao_max_s_7d": 1,
         "edges": [
           "generate-blurhashes"
         ],
-        "execucoes_24h": 142,
-        "execucoes_7d": 153,
-        "falhas_24h": 25,
-        "falhas_7d": 25,
+        "execucoes_24h": 8,
+        "execucoes_7d": 453,
+        "falhas_24h": 0,
+        "falhas_7d": 0,
         "nome": "generate-blurhashes",
-        "startup_timeout_7d": 25,
+        "startup_timeout_7d": 0,
         "statement_timeout_7d": 0,
-        "taxa_falha_7d_pct": 16.3,
-        "ultima_falha": "2026-11-02T11:10:00Z"
+        "taxa_falha_7d_pct": 0,
+        "ultima_falha": null
       },
       {
-        "agenda": "11,26,41,56 * * * *",
+        "agenda": "26 9-23/2 * * *",
         "ativo": true,
         "chama": [
           "net.http_post",
@@ -1020,19 +892,19 @@
           "public.get_edge_function_secret",
           "public.get_edge_functions_base_url"
         ],
-        "duracao_max_s_7d": 26,
+        "duracao_max_s_7d": 0,
         "edges": [
           "hash-product-images"
         ],
-        "execucoes_24h": 95,
-        "execucoes_7d": 667,
-        "falhas_24h": 16,
-        "falhas_7d": 56,
+        "execucoes_24h": 8,
+        "execucoes_7d": 313,
+        "falhas_24h": 0,
+        "falhas_7d": 0,
         "nome": "hash-product-images",
-        "startup_timeout_7d": 56,
+        "startup_timeout_7d": 0,
         "statement_timeout_7d": 0,
-        "taxa_falha_7d_pct": 8.4,
-        "ultima_falha": "2026-11-02T11:41:00Z"
+        "taxa_falha_7d_pct": 0,
+        "ultima_falha": null
       },
       {
         "agenda": "31 */3 * * *",
@@ -1042,12 +914,12 @@
           "public.get_edge_function_secret",
           "public.get_edge_functions_base_url"
         ],
-        "duracao_max_s_7d": 14,
+        "duracao_max_s_7d": null,
         "edges": [
           "run-script"
         ],
         "execucoes_24h": 0,
-        "execucoes_7d": 14,
+        "execucoes_7d": 0,
         "falhas_24h": 0,
         "falhas_7d": 0,
         "nome": "image-dimensions-backfill",
@@ -1080,17 +952,17 @@
         "chama": [
           "public.fn_cron_safe_run"
         ],
-        "duracao_max_s_7d": 14,
+        "duracao_max_s_7d": 0,
         "edges": [],
         "execucoes_24h": 48,
-        "execucoes_7d": 335,
-        "falhas_24h": 6,
-        "falhas_7d": 23,
+        "execucoes_7d": 336,
+        "falhas_24h": 0,
+        "falhas_7d": 0,
         "nome": "kit-component-auto-approve",
-        "startup_timeout_7d": 23,
+        "startup_timeout_7d": 0,
         "statement_timeout_7d": 0,
-        "taxa_falha_7d_pct": 6.9,
-        "ultima_falha": "2026-11-02T10:26:00Z"
+        "taxa_falha_7d_pct": 0,
+        "ultima_falha": null
       },
       {
         "agenda": "46 * * * *",
@@ -1098,17 +970,17 @@
         "chama": [
           "public.fn_cron_safe_run"
         ],
-        "duracao_max_s_7d": 18,
+        "duracao_max_s_7d": 0,
         "edges": [],
         "execucoes_24h": 24,
-        "execucoes_7d": 166,
+        "execucoes_7d": 168,
         "falhas_24h": 0,
-        "falhas_7d": 10,
+        "falhas_7d": 0,
         "nome": "kit-component-auto-promote",
-        "startup_timeout_7d": 10,
+        "startup_timeout_7d": 0,
         "statement_timeout_7d": 0,
-        "taxa_falha_7d_pct": 6,
-        "ultima_falha": "2026-10-31T15:46:00Z"
+        "taxa_falha_7d_pct": 0,
+        "ultima_falha": null
       },
       {
         "agenda": "20 */6 * * *",
@@ -1116,7 +988,7 @@
         "chama": [
           "public.fn_refresh_kit_component_variant_skus"
         ],
-        "duracao_max_s_7d": 48,
+        "duracao_max_s_7d": 1,
         "edges": [],
         "execucoes_24h": 4,
         "execucoes_7d": 28,
@@ -1134,53 +1006,53 @@
         "chama": [
           "public.fn_enrich_kits_daily"
         ],
-        "duracao_max_s_7d": 5,
+        "duracao_max_s_7d": 0,
         "edges": [],
         "execucoes_24h": 1,
         "execucoes_7d": 7,
-        "falhas_24h": 1,
-        "falhas_7d": 2,
+        "falhas_24h": 0,
+        "falhas_7d": 0,
         "nome": "kit-enrich-daily",
-        "startup_timeout_7d": 2,
+        "startup_timeout_7d": 0,
         "statement_timeout_7d": 0,
-        "taxa_falha_7d_pct": 28.6,
-        "ultima_falha": "2026-11-02T03:45:00Z"
+        "taxa_falha_7d_pct": 0,
+        "ultima_falha": null
       },
       {
-        "agenda": "12 */3 * * *",
+        "agenda": "12 1,4,7 * * *",
         "ativo": true,
         "chama": [
           "public.fn_xbz_ficha_run_batch"
         ],
-        "duracao_max_s_7d": 106,
+        "duracao_max_s_7d": 10,
         "edges": [],
-        "execucoes_24h": 8,
-        "execucoes_7d": 56,
-        "falhas_24h": 2,
-        "falhas_7d": 12,
+        "execucoes_24h": 3,
+        "execucoes_7d": 21,
+        "falhas_24h": 0,
+        "falhas_7d": 0,
         "nome": "kit-ficha-fetch",
-        "startup_timeout_7d": 2,
-        "statement_timeout_7d": 10,
-        "taxa_falha_7d_pct": 21.4,
-        "ultima_falha": "2026-11-02T06:12:00Z"
+        "startup_timeout_7d": 0,
+        "statement_timeout_7d": 0,
+        "taxa_falha_7d_pct": 0,
+        "ultima_falha": null
       },
       {
-        "agenda": "33 * * * *",
+        "agenda": "33 1-8 * * *",
         "ativo": true,
         "chama": [
           "public.fn_parse_xbz_ficha_site_batch"
         ],
-        "duracao_max_s_7d": 113,
+        "duracao_max_s_7d": 7,
         "edges": [],
-        "execucoes_24h": 24,
-        "execucoes_7d": 168,
-        "falhas_24h": 12,
-        "falhas_7d": 46,
+        "execucoes_24h": 8,
+        "execucoes_7d": 56,
+        "falhas_24h": 0,
+        "falhas_7d": 0,
         "nome": "kit-ficha-parse-site",
-        "startup_timeout_7d": 16,
-        "statement_timeout_7d": 30,
-        "taxa_falha_7d_pct": 27.4,
-        "ultima_falha": "2026-11-02T10:33:00Z"
+        "startup_timeout_7d": 0,
+        "statement_timeout_7d": 0,
+        "taxa_falha_7d_pct": 0,
+        "ultima_falha": null
       },
       {
         "agenda": "38 * * * *",
@@ -1188,17 +1060,17 @@
         "chama": [
           "public.fn_promote_kit_ficha_staging"
         ],
-        "duracao_max_s_7d": 17,
+        "duracao_max_s_7d": 0,
         "edges": [],
         "execucoes_24h": 24,
-        "execucoes_7d": 166,
-        "falhas_24h": 3,
-        "falhas_7d": 11,
+        "execucoes_7d": 168,
+        "falhas_24h": 0,
+        "falhas_7d": 0,
         "nome": "kit-ficha-promote",
-        "startup_timeout_7d": 11,
+        "startup_timeout_7d": 0,
         "statement_timeout_7d": 0,
-        "taxa_falha_7d_pct": 6.6,
-        "ultima_falha": "2026-11-02T10:38:00Z"
+        "taxa_falha_7d_pct": 0,
+        "ultima_falha": null
       },
       {
         "agenda": "10 */6 * * *",
@@ -1206,17 +1078,17 @@
         "chama": [
           "public.fn_kit_material_quick_propagate"
         ],
-        "duracao_max_s_7d": 8,
+        "duracao_max_s_7d": 0,
         "edges": [],
         "execucoes_24h": 4,
         "execucoes_7d": 28,
         "falhas_24h": 0,
-        "falhas_7d": 2,
+        "falhas_7d": 0,
         "nome": "kit-material-propagate",
-        "startup_timeout_7d": 2,
+        "startup_timeout_7d": 0,
         "statement_timeout_7d": 0,
-        "taxa_falha_7d_pct": 7.1,
-        "ultima_falha": "2026-10-30T00:10:00Z"
+        "taxa_falha_7d_pct": 0,
+        "ultima_falha": null
       },
       {
         "agenda": "31 6,18 * * *",
@@ -1224,7 +1096,7 @@
         "chama": [
           "public.fn_cron_safe_run"
         ],
-        "duracao_max_s_7d": 40,
+        "duracao_max_s_7d": 1,
         "edges": [],
         "execucoes_24h": 2,
         "execucoes_7d": 14,
@@ -1242,17 +1114,17 @@
         "chama": [
           "public.magazine_cleanup_all"
         ],
-        "duracao_max_s_7d": 30,
+        "duracao_max_s_7d": 0,
         "edges": [],
         "execucoes_24h": 1,
         "execucoes_7d": 7,
         "falhas_24h": 0,
-        "falhas_7d": 1,
+        "falhas_7d": 0,
         "nome": "magazine-cleanup-nightly",
-        "startup_timeout_7d": 1,
+        "startup_timeout_7d": 0,
         "statement_timeout_7d": 0,
-        "taxa_falha_7d_pct": 14.3,
-        "ultima_falha": "2026-10-30T03:15:00Z"
+        "taxa_falha_7d_pct": 0,
+        "ultima_falha": null
       },
       {
         "agenda": "0 4 * * *",
@@ -1260,7 +1132,7 @@
         "chama": [
           "public.magazine_ensure_view_event_partitions"
         ],
-        "duracao_max_s_7d": 3,
+        "duracao_max_s_7d": 0,
         "edges": [],
         "execucoes_24h": 1,
         "execucoes_7d": 7,
@@ -1278,17 +1150,17 @@
         "chama": [
           "public.magazine_rollup_view_counts"
         ],
-        "duracao_max_s_7d": 38,
+        "duracao_max_s_7d": 1,
         "edges": [],
         "execucoes_24h": 24,
-        "execucoes_7d": 167,
-        "falhas_24h": 3,
-        "falhas_7d": 21,
+        "execucoes_7d": 168,
+        "falhas_24h": 0,
+        "falhas_7d": 0,
         "nome": "magazine-view-rollup-hourly",
-        "startup_timeout_7d": 21,
+        "startup_timeout_7d": 0,
         "statement_timeout_7d": 0,
-        "taxa_falha_7d_pct": 12.6,
-        "ultima_falha": "2026-11-02T07:05:00Z"
+        "taxa_falha_7d_pct": 0,
+        "ultima_falha": null
       },
       {
         "agenda": "37 3 * * *",
@@ -1296,17 +1168,17 @@
         "chama": [
           "public.fn_snapshot_medallion_coverage"
         ],
-        "duracao_max_s_7d": 59,
+        "duracao_max_s_7d": 4,
         "edges": [],
         "execucoes_24h": 1,
         "execucoes_7d": 7,
         "falhas_24h": 0,
-        "falhas_7d": 1,
+        "falhas_7d": 0,
         "nome": "medallion-coverage-daily",
         "startup_timeout_7d": 0,
-        "statement_timeout_7d": 1,
-        "taxa_falha_7d_pct": 14.3,
-        "ultima_falha": "2026-10-30T03:37:09Z"
+        "statement_timeout_7d": 0,
+        "taxa_falha_7d_pct": 0,
+        "ultima_falha": null
       },
       {
         "agenda": "6,36 * * * *",
@@ -1315,17 +1187,17 @@
           "public.fn_cron_safe_run",
           "public.fn_pipeline_promote_tick"
         ],
-        "duracao_max_s_7d": 131,
+        "duracao_max_s_7d": 9,
         "edges": [],
         "execucoes_24h": 48,
-        "execucoes_7d": 335,
-        "falhas_24h": 5,
-        "falhas_7d": 23,
+        "execucoes_7d": 336,
+        "falhas_24h": 0,
+        "falhas_7d": 0,
         "nome": "medallion-promote-tick",
-        "startup_timeout_7d": 23,
+        "startup_timeout_7d": 0,
         "statement_timeout_7d": 0,
-        "taxa_falha_7d_pct": 6.9,
-        "ultima_falha": "2026-11-02T11:36:00Z"
+        "taxa_falha_7d_pct": 0,
+        "ultima_falha": null
       },
       {
         "agenda": "* * * * *",
@@ -1351,33 +1223,33 @@
         "chama": [
           "public.fn_cron_safe_run"
         ],
-        "duracao_max_s_7d": 26,
+        "duracao_max_s_7d": 2,
         "edges": [],
         "execucoes_24h": 1,
         "execucoes_7d": 7,
         "falhas_24h": 0,
-        "falhas_7d": 2,
+        "falhas_7d": 0,
         "nome": "notebook-specs-daily",
-        "startup_timeout_7d": 2,
+        "startup_timeout_7d": 0,
         "statement_timeout_7d": 0,
-        "taxa_falha_7d_pct": 28.6,
-        "ultima_falha": "2026-10-30T05:07:00Z"
+        "taxa_falha_7d_pct": 0,
+        "ultima_falha": null
       },
       {
         "agenda": "5 * * * *",
         "ativo": true,
         "chama": [],
-        "duracao_max_s_7d": 57,
+        "duracao_max_s_7d": 1,
         "edges": [],
         "execucoes_24h": 24,
-        "execucoes_7d": 167,
-        "falhas_24h": 3,
-        "falhas_7d": 16,
+        "execucoes_7d": 168,
+        "falhas_24h": 0,
+        "falhas_7d": 0,
         "nome": "novelties-safeguard-hourly",
-        "startup_timeout_7d": 16,
+        "startup_timeout_7d": 0,
         "statement_timeout_7d": 0,
-        "taxa_falha_7d_pct": 9.6,
-        "ultima_falha": "2026-11-02T10:05:00Z"
+        "taxa_falha_7d_pct": 0,
+        "ultima_falha": null
       },
       {
         "agenda": "20 */2 * * *",
@@ -1385,17 +1257,17 @@
         "chama": [
           "public.fn_sync_product_novelties"
         ],
-        "duracao_max_s_7d": 112,
+        "duracao_max_s_7d": 6,
         "edges": [],
         "execucoes_24h": 12,
-        "execucoes_7d": 83,
-        "falhas_24h": 2,
-        "falhas_7d": 13,
+        "execucoes_7d": 84,
+        "falhas_24h": 0,
+        "falhas_7d": 0,
         "nome": "novelties-sync-bihourly",
-        "startup_timeout_7d": 5,
-        "statement_timeout_7d": 8,
-        "taxa_falha_7d_pct": 15.7,
-        "ultima_falha": "2026-11-02T10:20:00Z"
+        "startup_timeout_7d": 0,
+        "statement_timeout_7d": 0,
+        "taxa_falha_7d_pct": 0,
+        "ultima_falha": null
       },
       {
         "agenda": "0 6 * * 1",
@@ -1403,7 +1275,7 @@
         "chama": [
           "public.fn_audit_and_fix_grants"
         ],
-        "duracao_max_s_7d": 8,
+        "duracao_max_s_7d": 0,
         "edges": [],
         "execucoes_24h": 1,
         "execucoes_7d": 1,
@@ -1416,22 +1288,22 @@
         "ultima_falha": null
       },
       {
-        "agenda": "7 * * * *",
+        "agenda": "7 9 * * *",
         "ativo": true,
         "chama": [
           "public.fn_pgrst_reload"
         ],
-        "duracao_max_s_7d": 7,
+        "duracao_max_s_7d": 0,
         "edges": [],
-        "execucoes_24h": 24,
-        "execucoes_7d": 168,
-        "falhas_24h": 4,
-        "falhas_7d": 19,
+        "execucoes_24h": 1,
+        "execucoes_7d": 74,
+        "falhas_24h": 0,
+        "falhas_7d": 0,
         "nome": "pgrst-schema-reload",
-        "startup_timeout_7d": 19,
+        "startup_timeout_7d": 0,
         "statement_timeout_7d": 0,
-        "taxa_falha_7d_pct": 11.3,
-        "ultima_falha": "2026-11-02T07:07:00Z"
+        "taxa_falha_7d_pct": 0,
+        "ultima_falha": null
       },
       {
         "agenda": "2,12,22,32,42,52 * * * *",
@@ -1458,17 +1330,17 @@
         "chama": [
           "public.fn_run_pipeline_health_check"
         ],
-        "duracao_max_s_7d": 67,
+        "duracao_max_s_7d": 3,
         "edges": [],
         "execucoes_24h": 6,
         "execucoes_7d": 42,
         "falhas_24h": 0,
-        "falhas_7d": 6,
+        "falhas_7d": 0,
         "nome": "pipeline-health-check-4h",
-        "startup_timeout_7d": 4,
-        "statement_timeout_7d": 2,
-        "taxa_falha_7d_pct": 14.3,
-        "ultima_falha": "2026-10-31T16:00:00Z"
+        "startup_timeout_7d": 0,
+        "statement_timeout_7d": 0,
+        "taxa_falha_7d_pct": 0,
+        "ultima_falha": null
       },
       {
         "agenda": "15 * * * *",
@@ -1477,17 +1349,17 @@
           "public.fn_pipeline_health",
           "public.pipeline_run_log"
         ],
-        "duracao_max_s_7d": 111,
+        "duracao_max_s_7d": 12,
         "edges": [],
         "execucoes_24h": 24,
-        "execucoes_7d": 167,
-        "falhas_24h": 7,
-        "falhas_7d": 55,
+        "execucoes_7d": 168,
+        "falhas_24h": 0,
+        "falhas_7d": 0,
         "nome": "pipeline-health-hourly",
-        "startup_timeout_7d": 19,
-        "statement_timeout_7d": 36,
-        "taxa_falha_7d_pct": 32.9,
-        "ultima_falha": "2026-11-02T10:15:00Z"
+        "startup_timeout_7d": 0,
+        "statement_timeout_7d": 0,
+        "taxa_falha_7d_pct": 0,
+        "ultima_falha": null
       },
       {
         "agenda": "14,29,44,59 * * * *",
@@ -1496,17 +1368,17 @@
           "public.fn_apply_print_profiles",
           "public.fn_cron_safe_run"
         ],
-        "duracao_max_s_7d": 57,
+        "duracao_max_s_7d": 2,
         "edges": [],
-        "execucoes_24h": 95,
-        "execucoes_7d": 666,
-        "falhas_24h": 10,
-        "falhas_7d": 58,
+        "execucoes_24h": 96,
+        "execucoes_7d": 672,
+        "falhas_24h": 0,
+        "falhas_7d": 0,
         "nome": "pipeline-print-profiles",
-        "startup_timeout_7d": 58,
+        "startup_timeout_7d": 0,
         "statement_timeout_7d": 0,
-        "taxa_falha_7d_pct": 8.7,
-        "ultima_falha": "2026-11-02T10:29:00Z"
+        "taxa_falha_7d_pct": 0,
+        "ultima_falha": null
       },
       {
         "agenda": "0 4 * * 0",
@@ -1530,17 +1402,17 @@
         "agenda": "5 3 * * *",
         "ativo": true,
         "chama": [],
-        "duracao_max_s_7d": 15,
+        "duracao_max_s_7d": 0,
         "edges": [],
         "execucoes_24h": 1,
         "execucoes_7d": 7,
-        "falhas_24h": 1,
-        "falhas_7d": 3,
+        "falhas_24h": 0,
+        "falhas_7d": 0,
         "nome": "populate-novelties-from-supplier",
-        "startup_timeout_7d": 3,
+        "startup_timeout_7d": 0,
         "statement_timeout_7d": 0,
-        "taxa_falha_7d_pct": 42.9,
-        "ultima_falha": "2026-11-02T03:05:00Z"
+        "taxa_falha_7d_pct": 0,
+        "ultima_falha": null
       },
       {
         "agenda": "44 1,7,13,19 * * *",
@@ -1549,36 +1421,36 @@
           "public.fn_cron_safe_run",
           "public.fn_generate_market_insights_cache"
         ],
-        "duracao_max_s_7d": 10,
+        "duracao_max_s_7d": 0,
         "edges": [],
         "execucoes_24h": 4,
         "execucoes_7d": 28,
         "falhas_24h": 0,
-        "falhas_7d": 1,
+        "falhas_7d": 0,
         "nome": "pre-generate-market-insights",
-        "startup_timeout_7d": 1,
+        "startup_timeout_7d": 0,
         "statement_timeout_7d": 0,
-        "taxa_falha_7d_pct": 3.6,
-        "ultima_falha": "2026-10-27T07:44:00Z"
+        "taxa_falha_7d_pct": 0,
+        "ultima_falha": null
       },
       {
-        "agenda": "2,17,32,47 * * * *",
+        "agenda": "47 * * * *",
         "ativo": true,
         "chama": [
           "public.fn_cron_safe_run",
           "public.process_pending_batches"
         ],
-        "duracao_max_s_7d": 143,
+        "duracao_max_s_7d": 6,
         "edges": [],
-        "execucoes_24h": 96,
-        "execucoes_7d": 669,
-        "falhas_24h": 6,
-        "falhas_7d": 45,
+        "execucoes_24h": 24,
+        "execucoes_7d": 168,
+        "falhas_24h": 0,
+        "falhas_7d": 0,
         "nome": "process-pending-products",
-        "startup_timeout_7d": 45,
+        "startup_timeout_7d": 0,
         "statement_timeout_7d": 0,
-        "taxa_falha_7d_pct": 6.7,
-        "ultima_falha": "2026-11-02T11:47:00Z"
+        "taxa_falha_7d_pct": 0,
+        "ultima_falha": null
       },
       {
         "agenda": "4,14,24,34,44,54 * * * *",
@@ -1587,19 +1459,19 @@
           "net.http_post",
           "public.get_edge_function_secret"
         ],
-        "duracao_max_s_7d": 18,
+        "duracao_max_s_7d": 0,
         "edges": [
           "process-queue"
         ],
-        "execucoes_24h": 143,
-        "execucoes_7d": 1000,
-        "falhas_24h": 22,
-        "falhas_7d": 84,
+        "execucoes_24h": 144,
+        "execucoes_7d": 1008,
+        "falhas_24h": 0,
+        "falhas_7d": 0,
         "nome": "process-queue",
-        "startup_timeout_7d": 84,
+        "startup_timeout_7d": 0,
         "statement_timeout_7d": 0,
-        "taxa_falha_7d_pct": 8.4,
-        "ultima_falha": "2026-11-02T11:04:00Z"
+        "taxa_falha_7d_pct": 0,
+        "ultima_falha": null
       },
       {
         "agenda": "5 * * * *",
@@ -1608,19 +1480,19 @@
           "net.http_post",
           "public.get_edge_function_secret"
         ],
-        "duracao_max_s_7d": 20,
+        "duracao_max_s_7d": 0,
         "edges": [
           "process-scheduled-reports"
         ],
         "execucoes_24h": 24,
-        "execucoes_7d": 167,
-        "falhas_24h": 4,
-        "falhas_7d": 20,
+        "execucoes_7d": 168,
+        "falhas_24h": 0,
+        "falhas_7d": 0,
         "nome": "process-scheduled-reports",
-        "startup_timeout_7d": 20,
+        "startup_timeout_7d": 0,
         "statement_timeout_7d": 0,
-        "taxa_falha_7d_pct": 12,
-        "ultima_falha": "2026-11-02T07:05:00Z"
+        "taxa_falha_7d_pct": 0,
+        "ultima_falha": null
       },
       {
         "agenda": "* * * * *",
@@ -1646,7 +1518,7 @@
         "chama": [
           "public.purge_old_crm_callback_events"
         ],
-        "duracao_max_s_7d": 9,
+        "duracao_max_s_7d": 0,
         "edges": [],
         "execucoes_24h": 1,
         "execucoes_7d": 7,
@@ -1665,7 +1537,7 @@
           "public.fn_cron_safe_run",
           "public.fn_purge_expired_restock_dates"
         ],
-        "duracao_max_s_7d": 123,
+        "duracao_max_s_7d": 5,
         "edges": [],
         "execucoes_24h": 1,
         "execucoes_7d": 7,
@@ -1684,17 +1556,17 @@
           "public.fn_cron_safe_run",
           "public.purge_expired_security_data"
         ],
-        "duracao_max_s_7d": 54,
+        "duracao_max_s_7d": 5,
         "edges": [],
         "execucoes_24h": 96,
-        "execucoes_7d": 669,
-        "falhas_24h": 8,
-        "falhas_7d": 44,
+        "execucoes_7d": 672,
+        "falhas_24h": 0,
+        "falhas_7d": 0,
         "nome": "purge-expired-security",
-        "startup_timeout_7d": 44,
+        "startup_timeout_7d": 0,
         "statement_timeout_7d": 0,
-        "taxa_falha_7d_pct": 6.6,
-        "ultima_falha": "2026-11-02T11:36:00Z"
+        "taxa_falha_7d_pct": 0,
+        "ultima_falha": null
       },
       {
         "agenda": "23 3 * * 0",
@@ -1756,7 +1628,7 @@
         "chama": [
           "public.fn_purge_spr_history"
         ],
-        "duracao_max_s_7d": 18,
+        "duracao_max_s_7d": 0,
         "edges": [],
         "execucoes_24h": 1,
         "execucoes_7d": 7,
@@ -1775,17 +1647,17 @@
           "public.fn_cron_safe_run",
           "public.fn_qa_check_image_coverage"
         ],
-        "duracao_max_s_7d": 43,
+        "duracao_max_s_7d": 1,
         "edges": [],
         "execucoes_24h": 24,
-        "execucoes_7d": 166,
-        "falhas_24h": 2,
-        "falhas_7d": 16,
+        "execucoes_7d": 168,
+        "falhas_24h": 0,
+        "falhas_7d": 0,
         "nome": "qa-image-coverage-hourly",
-        "startup_timeout_7d": 16,
+        "startup_timeout_7d": 0,
         "statement_timeout_7d": 0,
-        "taxa_falha_7d_pct": 9.6,
-        "ultima_falha": "2026-11-02T09:51:00Z"
+        "taxa_falha_7d_pct": 0,
+        "ultima_falha": null
       },
       {
         "agenda": "29,59 * * * *",
@@ -1793,17 +1665,17 @@
         "chama": [
           "public.fn_cron_safe_run"
         ],
-        "duracao_max_s_7d": 38,
+        "duracao_max_s_7d": 1,
         "edges": [],
         "execucoes_24h": 48,
-        "execucoes_7d": 335,
-        "falhas_24h": 6,
-        "falhas_7d": 28,
+        "execucoes_7d": 336,
+        "falhas_24h": 0,
+        "falhas_7d": 0,
         "nome": "qa-imageless-products",
-        "startup_timeout_7d": 28,
+        "startup_timeout_7d": 0,
         "statement_timeout_7d": 0,
-        "taxa_falha_7d_pct": 8.4,
-        "ultima_falha": "2026-11-02T10:29:00Z"
+        "taxa_falha_7d_pct": 0,
+        "ultima_falha": null
       },
       {
         "agenda": "17 9 * * *",
@@ -1819,12 +1691,12 @@
         "execucoes_24h": 1,
         "execucoes_7d": 7,
         "falhas_24h": 0,
-        "falhas_7d": 1,
+        "falhas_7d": 0,
         "nome": "quote-followup-reminders",
-        "startup_timeout_7d": 1,
+        "startup_timeout_7d": 0,
         "statement_timeout_7d": 0,
-        "taxa_falha_7d_pct": 14.3,
-        "ultima_falha": "2026-10-27T09:17:00Z"
+        "taxa_falha_7d_pct": 0,
+        "ultima_falha": null
       },
       {
         "agenda": "5,20,35,50 * * * *",
@@ -1833,17 +1705,17 @@
           "public.fn_cron_safe_run",
           "public.fn_reconcile_category_products_count"
         ],
-        "duracao_max_s_7d": 63,
+        "duracao_max_s_7d": 3,
         "edges": [],
-        "execucoes_24h": 95,
-        "execucoes_7d": 665,
-        "falhas_24h": 19,
-        "falhas_7d": 65,
+        "execucoes_24h": 96,
+        "execucoes_7d": 672,
+        "falhas_24h": 0,
+        "falhas_7d": 0,
         "nome": "reconcile-category-products-count",
-        "startup_timeout_7d": 65,
+        "startup_timeout_7d": 0,
         "statement_timeout_7d": 0,
-        "taxa_falha_7d_pct": 9.8,
-        "ultima_falha": "2026-11-02T10:05:00Z"
+        "taxa_falha_7d_pct": 0,
+        "ultima_falha": null
       },
       {
         "agenda": "10 5 * * *",
@@ -1851,36 +1723,36 @@
         "chama": [
           "public.fn_reconcile_stock_gold"
         ],
-        "duracao_max_s_7d": 61,
+        "duracao_max_s_7d": 1,
         "edges": [],
         "execucoes_24h": 1,
         "execucoes_7d": 7,
         "falhas_24h": 0,
-        "falhas_7d": 1,
+        "falhas_7d": 0,
         "nome": "reconcile-stock-gold-daily",
         "startup_timeout_7d": 0,
-        "statement_timeout_7d": 1,
-        "taxa_falha_7d_pct": 14.3,
-        "ultima_falha": "2026-10-30T05:10:05Z"
+        "statement_timeout_7d": 0,
+        "taxa_falha_7d_pct": 0,
+        "ultima_falha": null
       },
       {
-        "agenda": "38 * * * *",
+        "agenda": "38 9 * * *",
         "ativo": true,
         "chama": [
           "public.fn_cron_safe_run",
           "public.refresh_all_materialized_views"
         ],
-        "duracao_max_s_7d": 154,
+        "duracao_max_s_7d": 284,
         "edges": [],
-        "execucoes_24h": 24,
-        "execucoes_7d": 166,
-        "falhas_24h": 3,
-        "falhas_7d": 12,
+        "execucoes_24h": 1,
+        "execucoes_7d": 11,
+        "falhas_24h": 0,
+        "falhas_7d": 0,
         "nome": "refresh-all-materialized-views",
-        "startup_timeout_7d": 12,
+        "startup_timeout_7d": 0,
         "statement_timeout_7d": 0,
-        "taxa_falha_7d_pct": 7.2,
-        "ultima_falha": "2026-11-02T10:38:00Z"
+        "taxa_falha_7d_pct": 0,
+        "ultima_falha": null
       },
       {
         "agenda": "30 */6 * * *",
@@ -1922,17 +1794,17 @@
         "chama": [
           "public.fn_cron_safe_run"
         ],
-        "duracao_max_s_7d": 2,
+        "duracao_max_s_7d": 0,
         "edges": [],
         "execucoes_24h": 6,
         "execucoes_7d": 42,
-        "falhas_24h": 2,
-        "falhas_7d": 4,
+        "falhas_24h": 0,
+        "falhas_7d": 0,
         "nome": "refresh-backfill-queue-expiry",
-        "startup_timeout_7d": 4,
+        "startup_timeout_7d": 0,
         "statement_timeout_7d": 0,
-        "taxa_falha_7d_pct": 9.5,
-        "ultima_falha": "2026-11-02T08:33:00Z"
+        "taxa_falha_7d_pct": 0,
+        "ultima_falha": null
       },
       {
         "agenda": "7 1 * * *",
@@ -1940,17 +1812,17 @@
         "chama": [
           "public.category_ancestors"
         ],
-        "duracao_max_s_7d": 2,
+        "duracao_max_s_7d": 0,
         "edges": [],
         "execucoes_24h": 1,
         "execucoes_7d": 7,
-        "falhas_24h": 1,
-        "falhas_7d": 1,
+        "falhas_24h": 0,
+        "falhas_7d": 0,
         "nome": "refresh-category-ancestors",
-        "startup_timeout_7d": 1,
+        "startup_timeout_7d": 0,
         "statement_timeout_7d": 0,
-        "taxa_falha_7d_pct": 14.3,
-        "ultima_falha": "2026-11-02T01:07:00Z"
+        "taxa_falha_7d_pct": 0,
+        "ultima_falha": null
       },
       {
         "agenda": "16 * * * *",
@@ -1959,17 +1831,17 @@
           "public.fn_cron_safe_run",
           "public.mv_ema_kpi_by_level"
         ],
-        "duracao_max_s_7d": 74,
+        "duracao_max_s_7d": 1,
         "edges": [],
         "execucoes_24h": 24,
         "execucoes_7d": 168,
-        "falhas_24h": 3,
-        "falhas_7d": 17,
+        "falhas_24h": 0,
+        "falhas_7d": 0,
         "nome": "refresh-mv-ema-kpi-by-level",
-        "startup_timeout_7d": 17,
+        "startup_timeout_7d": 0,
         "statement_timeout_7d": 0,
-        "taxa_falha_7d_pct": 10.1,
-        "ultima_falha": "2026-11-02T10:16:00Z"
+        "taxa_falha_7d_pct": 0,
+        "ultima_falha": null
       },
       {
         "agenda": "42 */6 * * *",
@@ -1978,17 +1850,17 @@
           "public.fn_cron_safe_run",
           "public.mv_product_images_audit"
         ],
-        "duracao_max_s_7d": 126,
+        "duracao_max_s_7d": 10,
         "edges": [],
         "execucoes_24h": 4,
         "execucoes_7d": 28,
-        "falhas_24h": 1,
-        "falhas_7d": 3,
+        "falhas_24h": 0,
+        "falhas_7d": 0,
         "nome": "refresh-mv-product-images-audit",
-        "startup_timeout_7d": 3,
+        "startup_timeout_7d": 0,
         "statement_timeout_7d": 0,
-        "taxa_falha_7d_pct": 10.7,
-        "ultima_falha": "2026-11-02T06:42:00Z"
+        "taxa_falha_7d_pct": 0,
+        "ultima_falha": null
       },
       {
         "agenda": "37 */4 * * *",
@@ -1997,17 +1869,17 @@
           "internal.mv_product_leaf_category",
           "public.fn_cron_safe_run"
         ],
-        "duracao_max_s_7d": 63,
+        "duracao_max_s_7d": 1,
         "edges": [],
         "execucoes_24h": 6,
         "execucoes_7d": 42,
         "falhas_24h": 0,
-        "falhas_7d": 4,
+        "falhas_7d": 0,
         "nome": "refresh-mv-product-leaf-category",
-        "startup_timeout_7d": 4,
+        "startup_timeout_7d": 0,
         "statement_timeout_7d": 0,
-        "taxa_falha_7d_pct": 9.5,
-        "ultima_falha": "2026-10-30T20:37:00Z"
+        "taxa_falha_7d_pct": 0,
+        "ultima_falha": null
       },
       {
         "agenda": "18 * * * *",
@@ -2016,36 +1888,36 @@
           "public.fn_cron_safe_run",
           "public.mv_stock_rupture_alert"
         ],
-        "duracao_max_s_7d": 136,
+        "duracao_max_s_7d": 3,
         "edges": [],
         "execucoes_24h": 24,
-        "execucoes_7d": 167,
-        "falhas_24h": 2,
-        "falhas_7d": 18,
+        "execucoes_7d": 168,
+        "falhas_24h": 0,
+        "falhas_7d": 0,
         "nome": "refresh-mv-stock-rupture-alert",
-        "startup_timeout_7d": 18,
+        "startup_timeout_7d": 0,
         "statement_timeout_7d": 0,
-        "taxa_falha_7d_pct": 10.8,
-        "ultima_falha": "2026-11-01T19:15:00Z"
+        "taxa_falha_7d_pct": 0,
+        "ultima_falha": null
       },
       {
-        "agenda": "8,23,38,53 * * * *",
+        "agenda": "23 * * * *",
         "ativo": true,
         "chama": [
           "public.fn_cron_safe_run",
           "public.mv_supplier_reliability"
         ],
-        "duracao_max_s_7d": 105,
+        "duracao_max_s_7d": 1,
         "edges": [],
-        "execucoes_24h": 96,
-        "execucoes_7d": 669,
-        "falhas_24h": 10,
-        "falhas_7d": 43,
+        "execucoes_24h": 24,
+        "execucoes_7d": 377,
+        "falhas_24h": 0,
+        "falhas_7d": 0,
         "nome": "refresh-mv-supplier-reliability",
-        "startup_timeout_7d": 43,
+        "startup_timeout_7d": 0,
         "statement_timeout_7d": 0,
-        "taxa_falha_7d_pct": 6.4,
-        "ultima_falha": "2026-11-02T11:08:00Z"
+        "taxa_falha_7d_pct": 0,
+        "ultima_falha": null
       },
       {
         "agenda": "42 */4 * * *",
@@ -2053,23 +1925,23 @@
         "chama": [
           "public.fn_reposicao_backfill_today"
         ],
-        "duracao_max_s_7d": 115,
+        "duracao_max_s_7d": 51,
         "edges": [],
         "execucoes_24h": 6,
         "execucoes_7d": 42,
-        "falhas_24h": 5,
-        "falhas_7d": 21,
+        "falhas_24h": 0,
+        "falhas_7d": 0,
         "nome": "reposicao-backfill-hourly",
-        "startup_timeout_7d": 4,
-        "statement_timeout_7d": 17,
-        "taxa_falha_7d_pct": 50,
-        "ultima_falha": "2026-11-02T08:42:00Z"
+        "startup_timeout_7d": 0,
+        "statement_timeout_7d": 0,
+        "taxa_falha_7d_pct": 0,
+        "ultima_falha": null
       },
       {
         "agenda": "0 3 * * 0",
         "ativo": true,
         "chama": [],
-        "duracao_max_s_7d": 3,
+        "duracao_max_s_7d": 2,
         "edges": [],
         "execucoes_24h": 0,
         "execucoes_7d": 1,
@@ -2085,17 +1957,17 @@
         "agenda": "5 0 * * *",
         "ativo": true,
         "chama": [],
-        "duracao_max_s_7d": 6,
+        "duracao_max_s_7d": 0,
         "edges": [],
         "execucoes_24h": 1,
         "execucoes_7d": 7,
-        "falhas_24h": 1,
-        "falhas_7d": 1,
+        "falhas_24h": 0,
+        "falhas_7d": 0,
         "nome": "revoke-truncate-daily",
-        "startup_timeout_7d": 1,
+        "startup_timeout_7d": 0,
         "statement_timeout_7d": 0,
-        "taxa_falha_7d_pct": 14.3,
-        "ultima_falha": "2026-11-02T00:05:00Z"
+        "taxa_falha_7d_pct": 0,
+        "ultima_falha": null
       },
       {
         "agenda": "11 2,8,14,20 * * *",
@@ -2105,17 +1977,17 @@
           "public.fn_cron_safe_run",
           "public.fn_sync_local_drift_to_schema_drift_log"
         ],
-        "duracao_max_s_7d": 38,
+        "duracao_max_s_7d": 1,
         "edges": [],
         "execucoes_24h": 4,
         "execucoes_7d": 28,
-        "falhas_24h": 1,
-        "falhas_7d": 3,
+        "falhas_24h": 0,
+        "falhas_7d": 0,
         "nome": "schema-drift-check",
-        "startup_timeout_7d": 3,
+        "startup_timeout_7d": 0,
         "statement_timeout_7d": 0,
-        "taxa_falha_7d_pct": 10.7,
-        "ultima_falha": "2026-11-02T02:11:00Z"
+        "taxa_falha_7d_pct": 0,
+        "ultima_falha": null
       },
       {
         "agenda": "0 8 * * 1",
@@ -2124,7 +1996,7 @@
           "net.http_post",
           "public.get_edge_function_secret"
         ],
-        "duracao_max_s_7d": 1,
+        "duracao_max_s_7d": 0,
         "edges": [
           "send-digest"
         ],
@@ -2145,19 +2017,19 @@
           "net.http_post",
           "public.get_edge_function_secret"
         ],
-        "duracao_max_s_7d": 22,
+        "duracao_max_s_7d": 0,
         "edges": [
           "send-scheduled-reports"
         ],
-        "execucoes_24h": 23,
-        "execucoes_7d": 166,
-        "falhas_24h": 4,
-        "falhas_7d": 11,
+        "execucoes_24h": 24,
+        "execucoes_7d": 168,
+        "falhas_24h": 0,
+        "falhas_7d": 0,
         "nome": "send-scheduled-reports",
-        "startup_timeout_7d": 11,
+        "startup_timeout_7d": 0,
         "statement_timeout_7d": 0,
-        "taxa_falha_7d_pct": 6.6,
-        "ultima_falha": "2026-11-02T11:10:00Z"
+        "taxa_falha_7d_pct": 0,
+        "ultima_falha": null
       },
       {
         "agenda": "13 5 * * *",
@@ -2165,71 +2037,71 @@
         "chama": [
           "public.fn_cron_safe_run"
         ],
-        "duracao_max_s_7d": 129,
+        "duracao_max_s_7d": 3,
         "edges": [],
         "execucoes_24h": 1,
         "execucoes_7d": 7,
-        "falhas_24h": 1,
-        "falhas_7d": 1,
+        "falhas_24h": 0,
+        "falhas_7d": 0,
         "nome": "seo-populate-new-products",
-        "startup_timeout_7d": 1,
+        "startup_timeout_7d": 0,
         "statement_timeout_7d": 0,
-        "taxa_falha_7d_pct": 14.3,
-        "ultima_falha": "2026-11-02T05:13:00Z"
+        "taxa_falha_7d_pct": 0,
+        "ultima_falha": null
       },
       {
         "agenda": "30 5 * * *",
         "ativo": true,
         "chama": [],
-        "duracao_max_s_7d": 42,
+        "duracao_max_s_7d": 4,
         "edges": [],
         "execucoes_24h": 1,
         "execucoes_7d": 7,
-        "falhas_24h": 1,
-        "falhas_7d": 2,
+        "falhas_24h": 0,
+        "falhas_7d": 0,
         "nome": "seo-recalculate-stale-scores",
-        "startup_timeout_7d": 1,
-        "statement_timeout_7d": 1,
-        "taxa_falha_7d_pct": 28.6,
-        "ultima_falha": "2026-11-02T05:30:00Z"
+        "startup_timeout_7d": 0,
+        "statement_timeout_7d": 0,
+        "taxa_falha_7d_pct": 0,
+        "ultima_falha": null
       },
       {
-        "agenda": "12,27,42,57 * * * *",
+        "agenda": "12,27,42,57 1-8 * * *",
         "ativo": true,
         "chama": [
           "public.fn_cron_safe_run",
           "public.fn_sm_category_collect"
         ],
-        "duracao_max_s_7d": 14,
+        "duracao_max_s_7d": 0,
         "edges": [],
-        "execucoes_24h": 95,
-        "execucoes_7d": 666,
-        "falhas_24h": 12,
-        "falhas_7d": 40,
+        "execucoes_24h": 32,
+        "execucoes_7d": 224,
+        "falhas_24h": 0,
+        "falhas_7d": 0,
         "nome": "sm-category-collect",
-        "startup_timeout_7d": 40,
+        "startup_timeout_7d": 0,
         "statement_timeout_7d": 0,
-        "taxa_falha_7d_pct": 6,
-        "ultima_falha": "2026-11-02T10:42:00Z"
+        "taxa_falha_7d_pct": 0,
+        "ultima_falha": null
       },
       {
-        "agenda": "11,26,41,56 * * * *",
+        "agenda": "11,26,41,56 1-8 * * *",
         "ativo": true,
         "chama": [
           "public.fn_cron_safe_run",
           "public.fn_sm_category_enqueue"
         ],
-        "duracao_max_s_7d": 11,
+        "duracao_max_s_7d": 0,
         "edges": [],
-        "execucoes_24h": 95,
-        "execucoes_7d": 669,
-        "falhas_24h": 13,
-        "falhas_7d": 53,
+        "execucoes_24h": 32,
+        "execucoes_7d": 224,
+        "falhas_24h": 0,
+        "falhas_7d": 0,
         "nome": "sm-category-enqueue",
-        "startup_timeout_7d": 53,
+        "startup_timeout_7d": 0,
         "statement_timeout_7d": 0,
-        "taxa_falha_7d_pct": 7.9,
-        "ultima_falha": "2026-11-02T11:41:00Z"
+        "taxa_falha_7d_pct": 0,
+        "ultima_falha": null
       },
       {
         "agenda": "7 8 * * *",
@@ -2238,112 +2110,112 @@
           "public.fn_cron_safe_run",
           "public.fn_sm_session_check"
         ],
-        "duracao_max_s_7d": 16,
+        "duracao_max_s_7d": 1,
         "edges": [],
         "execucoes_24h": 1,
         "execucoes_7d": 7,
         "falhas_24h": 0,
-        "falhas_7d": 2,
+        "falhas_7d": 0,
         "nome": "sm-session-check",
-        "startup_timeout_7d": 2,
+        "startup_timeout_7d": 0,
         "statement_timeout_7d": 0,
-        "taxa_falha_7d_pct": 28.6,
-        "ultima_falha": "2026-10-30T08:07:00Z"
+        "taxa_falha_7d_pct": 0,
+        "ultima_falha": null
       },
       {
-        "agenda": "16,46 * * * *",
+        "agenda": "16,46 1-8 * * *",
         "ativo": true,
         "chama": [
           "public.fn_cron_safe_run",
           "public.fn_sm_site_tick"
         ],
-        "duracao_max_s_7d": 118,
+        "duracao_max_s_7d": 1,
         "edges": [],
-        "execucoes_24h": 48,
-        "execucoes_7d": 332,
-        "falhas_24h": 7,
-        "falhas_7d": 35,
+        "execucoes_24h": 16,
+        "execucoes_7d": 112,
+        "falhas_24h": 0,
+        "falhas_7d": 0,
         "nome": "sm-site-scrape",
-        "startup_timeout_7d": 35,
+        "startup_timeout_7d": 0,
         "statement_timeout_7d": 0,
-        "taxa_falha_7d_pct": 10.5,
-        "ultima_falha": "2026-11-02T10:16:00Z"
+        "taxa_falha_7d_pct": 0,
+        "ultima_falha": null
       },
       {
-        "agenda": "19,39,59 * * * *",
+        "agenda": "19,39,59 1-8 * * *",
         "ativo": true,
         "chama": [
           "public.fn_cron_safe_run",
           "public.fn_sm_site_tick"
         ],
-        "duracao_max_s_7d": 95,
+        "duracao_max_s_7d": 1,
         "edges": [],
-        "execucoes_24h": 72,
-        "execucoes_7d": 502,
-        "falhas_24h": 7,
-        "falhas_7d": 37,
+        "execucoes_24h": 24,
+        "execucoes_7d": 168,
+        "falhas_24h": 0,
+        "falhas_7d": 0,
         "nome": "sm-site-scrape-auth",
-        "startup_timeout_7d": 37,
+        "startup_timeout_7d": 0,
         "statement_timeout_7d": 0,
-        "taxa_falha_7d_pct": 7.4,
-        "ultima_falha": "2026-11-02T07:19:00Z"
+        "taxa_falha_7d_pct": 0,
+        "ultima_falha": null
       },
       {
-        "agenda": "6,21,36,51 * * * *",
+        "agenda": "51 * * * *",
         "ativo": true,
         "chama": [
           "public.fn_cron_safe_run",
           "public.fn_sm_stock_guard"
         ],
-        "duracao_max_s_7d": 141,
+        "duracao_max_s_7d": 17,
         "edges": [],
-        "execucoes_24h": 96,
-        "execucoes_7d": 668,
-        "falhas_24h": 8,
-        "falhas_7d": 49,
+        "execucoes_24h": 24,
+        "execucoes_7d": 168,
+        "falhas_24h": 0,
+        "falhas_7d": 0,
         "nome": "sm-stock-guard",
-        "startup_timeout_7d": 49,
+        "startup_timeout_7d": 0,
         "statement_timeout_7d": 0,
-        "taxa_falha_7d_pct": 7.3,
-        "ultima_falha": "2026-11-02T11:36:00Z"
+        "taxa_falha_7d_pct": 0,
+        "ultima_falha": null
       },
       {
-        "agenda": "8,18,28,38,48,58 * * * *",
+        "agenda": "8,18,28,38,48,58 1-8 * * *",
         "ativo": true,
         "chama": [
           "public.fn_cron_safe_run",
           "public.fn_sm_url_discover_collect"
         ],
-        "duracao_max_s_7d": 16,
+        "duracao_max_s_7d": 0,
         "edges": [],
-        "execucoes_24h": 144,
-        "execucoes_7d": 1002,
-        "falhas_24h": 16,
-        "falhas_7d": 65,
+        "execucoes_24h": 48,
+        "execucoes_7d": 336,
+        "falhas_24h": 0,
+        "falhas_7d": 0,
         "nome": "sm-url-discover-collect",
-        "startup_timeout_7d": 65,
+        "startup_timeout_7d": 0,
         "statement_timeout_7d": 0,
-        "taxa_falha_7d_pct": 6.5,
-        "ultima_falha": "2026-11-02T11:48:00Z"
+        "taxa_falha_7d_pct": 0,
+        "ultima_falha": null
       },
       {
-        "agenda": "5,15,25,35,45,55 * * * *",
+        "agenda": "5,15,25,35,45,55 1-8 * * *",
         "ativo": true,
         "chama": [
           "public.fn_cron_safe_run",
           "public.fn_sm_url_discover_via_search"
         ],
-        "duracao_max_s_7d": 29,
+        "duracao_max_s_7d": 1,
         "edges": [],
-        "execucoes_24h": 144,
-        "execucoes_7d": 1001,
-        "falhas_24h": 24,
-        "falhas_7d": 102,
+        "execucoes_24h": 48,
+        "execucoes_7d": 336,
+        "falhas_24h": 0,
+        "falhas_7d": 0,
         "nome": "sm-url-discover-search",
-        "startup_timeout_7d": 102,
+        "startup_timeout_7d": 0,
         "statement_timeout_7d": 0,
-        "taxa_falha_7d_pct": 10.2,
-        "ultima_falha": "2026-11-02T11:45:00Z"
+        "taxa_falha_7d_pct": 0,
+        "ultima_falha": null
       },
       {
         "agenda": "30 3 * * *",
@@ -2351,7 +2223,7 @@
         "chama": [
           "public.fn_sm_url_map_build"
         ],
-        "duracao_max_s_7d": 94,
+        "duracao_max_s_7d": 1,
         "edges": [],
         "execucoes_24h": 1,
         "execucoes_7d": 7,
@@ -2364,23 +2236,23 @@
         "ultima_falha": null
       },
       {
-        "agenda": "12,27,42,57 * * * *",
+        "agenda": "57 * * * *",
         "ativo": true,
         "chama": [
           "public.fn_cron_safe_run",
           "public.fn_sm_variant_coherence_guard"
         ],
-        "duracao_max_s_7d": 72,
+        "duracao_max_s_7d": 1,
         "edges": [],
-        "execucoes_24h": 95,
-        "execucoes_7d": 666,
-        "falhas_24h": 10,
-        "falhas_7d": 37,
+        "execucoes_24h": 24,
+        "execucoes_7d": 168,
+        "falhas_24h": 0,
+        "falhas_7d": 0,
         "nome": "sm-variant-coherence-guard",
-        "startup_timeout_7d": 37,
+        "startup_timeout_7d": 0,
         "statement_timeout_7d": 0,
-        "taxa_falha_7d_pct": 5.6,
-        "ultima_falha": "2026-11-02T10:42:00Z"
+        "taxa_falha_7d_pct": 0,
+        "ultima_falha": null
       },
       {
         "agenda": "0 3 1 * *",
@@ -2388,10 +2260,10 @@
         "chama": [
           "public.fn_run_and_persist_smoke_tests"
         ],
-        "duracao_max_s_7d": 13,
+        "duracao_max_s_7d": null,
         "edges": [],
         "execucoes_24h": 0,
-        "execucoes_7d": 1,
+        "execucoes_7d": 0,
         "falhas_24h": 0,
         "falhas_7d": 0,
         "nome": "smoke_tests_monthly",
@@ -2406,54 +2278,54 @@
         "chama": [
           "public.fn_cron_safe_run"
         ],
-        "duracao_max_s_7d": 4,
+        "duracao_max_s_7d": 5,
         "edges": [],
         "execucoes_24h": 1,
         "execucoes_7d": 7,
         "falhas_24h": 0,
-        "falhas_7d": 2,
+        "falhas_7d": 0,
         "nome": "spot-health-check-daily",
-        "startup_timeout_7d": 2,
+        "startup_timeout_7d": 0,
         "statement_timeout_7d": 0,
-        "taxa_falha_7d_pct": 28.6,
-        "ultima_falha": "2026-10-30T09:11:00Z"
+        "taxa_falha_7d_pct": 0,
+        "ultima_falha": null
       },
       {
-        "agenda": "22,52 * * * *",
+        "agenda": "22,52 1-8 * * *",
         "ativo": true,
         "chama": [
           "public.fn_cron_safe_run"
         ],
-        "duracao_max_s_7d": 35,
+        "duracao_max_s_7d": 1,
         "edges": [],
-        "execucoes_24h": 48,
-        "execucoes_7d": 333,
-        "falhas_24h": 4,
-        "falhas_7d": 19,
+        "execucoes_24h": 16,
+        "execucoes_7d": 112,
+        "falhas_24h": 0,
+        "falhas_7d": 0,
         "nome": "spot-relink-family-images",
-        "startup_timeout_7d": 19,
+        "startup_timeout_7d": 0,
         "statement_timeout_7d": 0,
-        "taxa_falha_7d_pct": 5.7,
-        "ultima_falha": "2026-11-02T10:52:00Z"
+        "taxa_falha_7d_pct": 0,
+        "ultima_falha": null
       },
       {
-        "agenda": "10,40 * * * *",
+        "agenda": "40 * * * *",
         "ativo": true,
         "chama": [
           "public.fn_cron_safe_run",
           "public.fn_spot_stock_fast_sync"
         ],
-        "duracao_max_s_7d": 133,
+        "duracao_max_s_7d": 10,
         "edges": [],
-        "execucoes_24h": 47,
-        "execucoes_7d": 333,
-        "falhas_24h": 8,
-        "falhas_7d": 26,
+        "execucoes_24h": 24,
+        "execucoes_7d": 168,
+        "falhas_24h": 0,
+        "falhas_7d": 0,
         "nome": "spot-stock-fast-sync",
-        "startup_timeout_7d": 26,
+        "startup_timeout_7d": 0,
         "statement_timeout_7d": 0,
-        "taxa_falha_7d_pct": 7.8,
-        "ultima_falha": "2026-11-02T11:10:00Z"
+        "taxa_falha_7d_pct": 0,
+        "ultima_falha": null
       },
       {
         "agenda": "25 * * * *",
@@ -2461,17 +2333,17 @@
         "chama": [
           "public.fn_spr_requeue_failed"
         ],
-        "duracao_max_s_7d": 103,
+        "duracao_max_s_7d": 3,
         "edges": [],
         "execucoes_24h": 24,
         "execucoes_7d": 168,
-        "falhas_24h": 4,
-        "falhas_7d": 10,
+        "falhas_24h": 0,
+        "falhas_7d": 0,
         "nome": "spr-requeue-failed-hourly",
-        "startup_timeout_7d": 10,
+        "startup_timeout_7d": 0,
         "statement_timeout_7d": 0,
-        "taxa_falha_7d_pct": 6,
-        "ultima_falha": "2026-11-02T10:25:00Z"
+        "taxa_falha_7d_pct": 0,
+        "ultima_falha": null
       },
       {
         "agenda": "30 22 * * *",
@@ -2479,17 +2351,17 @@
         "chama": [
           "public.fn_aggregate_stock_daily"
         ],
-        "duracao_max_s_7d": 79,
+        "duracao_max_s_7d": 38,
         "edges": [],
         "execucoes_24h": 1,
         "execucoes_7d": 7,
-        "falhas_24h": 1,
-        "falhas_7d": 2,
+        "falhas_24h": 0,
+        "falhas_7d": 0,
         "nome": "stock_daily_aggregation",
         "startup_timeout_7d": 0,
-        "statement_timeout_7d": 2,
-        "taxa_falha_7d_pct": 28.6,
-        "ultima_falha": "2026-11-01T22:30:00Z"
+        "statement_timeout_7d": 0,
+        "taxa_falha_7d_pct": 0,
+        "ultima_falha": null
       },
       {
         "agenda": "11 3 * * *",
@@ -2498,7 +2370,7 @@
           "public.fn_cron_safe_run",
           "public.fn_purge_old_stock_snapshots"
         ],
-        "duracao_max_s_7d": 41,
+        "duracao_max_s_7d": 0,
         "edges": [],
         "execucoes_24h": 1,
         "execucoes_7d": 7,
@@ -2516,17 +2388,17 @@
         "chama": [
           "public.fn_aggregate_stock_daily"
         ],
-        "duracao_max_s_7d": 42,
+        "duracao_max_s_7d": 27,
         "edges": [],
         "execucoes_24h": 1,
         "execucoes_7d": 7,
-        "falhas_24h": 1,
-        "falhas_7d": 4,
+        "falhas_24h": 0,
+        "falhas_7d": 0,
         "nome": "stock-daily-backfill-today",
-        "startup_timeout_7d": 1,
-        "statement_timeout_7d": 3,
-        "taxa_falha_7d_pct": 57.1,
-        "ultima_falha": "2026-11-02T03:15:01Z"
+        "startup_timeout_7d": 0,
+        "statement_timeout_7d": 0,
+        "taxa_falha_7d_pct": 0,
+        "ultima_falha": null
       },
       {
         "agenda": "23 2 * * *",
@@ -2535,7 +2407,7 @@
           "public.fn_cron_safe_run",
           "public.fn_sync_derived_product_flags"
         ],
-        "duracao_max_s_7d": 34,
+        "duracao_max_s_7d": 1,
         "edges": [],
         "execucoes_24h": 1,
         "execucoes_7d": 7,
@@ -2551,33 +2423,33 @@
         "agenda": "10 3 * * *",
         "ativo": true,
         "chama": [],
-        "duracao_max_s_7d": 25,
+        "duracao_max_s_7d": 0,
         "edges": [],
         "execucoes_24h": 1,
         "execucoes_7d": 7,
         "falhas_24h": 0,
-        "falhas_7d": 1,
+        "falhas_7d": 0,
         "nome": "sync-dynamic-collections",
-        "startup_timeout_7d": 1,
+        "startup_timeout_7d": 0,
         "statement_timeout_7d": 0,
-        "taxa_falha_7d_pct": 14.3,
-        "ultima_falha": "2026-10-30T03:10:00Z"
+        "taxa_falha_7d_pct": 0,
+        "ultima_falha": null
       },
       {
         "agenda": "10 3 * * *",
         "ativo": true,
         "chama": [],
-        "duracao_max_s_7d": 93,
+        "duracao_max_s_7d": 1,
         "edges": [],
         "execucoes_24h": 1,
         "execucoes_7d": 7,
         "falhas_24h": 0,
-        "falhas_7d": 1,
+        "falhas_7d": 0,
         "nome": "sync-is-new-expires-at",
-        "startup_timeout_7d": 1,
+        "startup_timeout_7d": 0,
         "statement_timeout_7d": 0,
-        "taxa_falha_7d_pct": 14.3,
-        "ultima_falha": "2026-10-30T03:10:00Z"
+        "taxa_falha_7d_pct": 0,
+        "ultima_falha": null
       },
       {
         "agenda": "0,15,30,45 * * * *",
@@ -2586,17 +2458,17 @@
           "public.fn_cron_safe_run",
           "public.fn_sync_is_stockout_all"
         ],
-        "duracao_max_s_7d": 27,
+        "duracao_max_s_7d": 6,
         "edges": [],
         "execucoes_24h": 96,
-        "execucoes_7d": 668,
-        "falhas_24h": 16,
-        "falhas_7d": 56,
+        "execucoes_7d": 672,
+        "falhas_24h": 0,
+        "falhas_7d": 0,
         "nome": "sync-is-stockout-universal",
-        "startup_timeout_7d": 56,
+        "startup_timeout_7d": 0,
         "statement_timeout_7d": 0,
-        "taxa_falha_7d_pct": 8.4,
-        "ultima_falha": "2026-11-02T11:45:00Z"
+        "taxa_falha_7d_pct": 0,
+        "ultima_falha": null
       },
       {
         "agenda": "57 * * * *",
@@ -2604,17 +2476,17 @@
         "chama": [
           "public.fn_refresh_supplier_sync_timestamps"
         ],
-        "duracao_max_s_7d": 108,
+        "duracao_max_s_7d": 3,
         "edges": [],
         "execucoes_24h": 24,
-        "execucoes_7d": 166,
-        "falhas_24h": 4,
-        "falhas_7d": 20,
+        "execucoes_7d": 168,
+        "falhas_24h": 0,
+        "falhas_7d": 0,
         "nome": "sync-supplier-timestamps-hourly",
-        "startup_timeout_7d": 18,
-        "statement_timeout_7d": 2,
-        "taxa_falha_7d_pct": 12,
-        "ultima_falha": "2026-11-02T10:57:00Z"
+        "startup_timeout_7d": 0,
+        "statement_timeout_7d": 0,
+        "taxa_falha_7d_pct": 0,
+        "ultima_falha": null
       },
       {
         "agenda": "0 2 * * 6",
@@ -2643,7 +2515,7 @@
           "public.user_search_history",
           "public.video_validation_log"
         ],
-        "duracao_max_s_7d": 139,
+        "duracao_max_s_7d": 33,
         "edges": [],
         "execucoes_24h": 0,
         "execucoes_7d": 1,
@@ -2664,7 +2536,7 @@
           "public.stock_daily_summary",
           "public.stock_snapshots"
         ],
-        "duracao_max_s_7d": 36,
+        "duracao_max_s_7d": 14,
         "edges": [],
         "execucoes_24h": 0,
         "execucoes_7d": 1,
@@ -2718,7 +2590,7 @@
         "chama": [
           "public.request_rate_limits"
         ],
-        "duracao_max_s_7d": 55,
+        "duracao_max_s_7d": 0,
         "edges": [],
         "execucoes_24h": 1,
         "execucoes_7d": 7,
@@ -2736,10 +2608,10 @@
         "chama": [
           "public.stock_snapshots"
         ],
-        "duracao_max_s_7d": null,
+        "duracao_max_s_7d": 3,
         "edges": [],
         "execucoes_24h": 0,
-        "execucoes_7d": 0,
+        "execucoes_7d": 1,
         "falhas_24h": 0,
         "falhas_7d": 0,
         "nome": "vacuum-stock-snapshots",
@@ -2752,17 +2624,17 @@
         "agenda": "30 1 * * *",
         "ativo": true,
         "chama": [],
-        "duracao_max_s_7d": 1,
+        "duracao_max_s_7d": 0,
         "edges": [],
         "execucoes_24h": 1,
         "execucoes_7d": 7,
         "falhas_24h": 0,
-        "falhas_7d": 1,
+        "falhas_7d": 0,
         "nome": "video-botcheck-heal",
-        "startup_timeout_7d": 1,
+        "startup_timeout_7d": 0,
         "statement_timeout_7d": 0,
-        "taxa_falha_7d_pct": 14.3,
-        "ultima_falha": "2026-10-27T01:30:00Z"
+        "taxa_falha_7d_pct": 0,
+        "ultima_falha": null
       },
       {
         "agenda": "13,28,43,58 * * * *",
@@ -2771,96 +2643,74 @@
           "public.fn_cron_safe_run",
           "public.fn_video_queue_recover_stuck"
         ],
-        "duracao_max_s_7d": 32,
+        "duracao_max_s_7d": 1,
         "edges": [],
         "execucoes_24h": 96,
-        "execucoes_7d": 667,
-        "falhas_24h": 10,
-        "falhas_7d": 38,
+        "execucoes_7d": 672,
+        "falhas_24h": 0,
+        "falhas_7d": 0,
         "nome": "video-recover-stuck",
-        "startup_timeout_7d": 38,
+        "startup_timeout_7d": 0,
         "statement_timeout_7d": 0,
-        "taxa_falha_7d_pct": 5.7,
-        "ultima_falha": "2026-11-02T07:13:00Z"
+        "taxa_falha_7d_pct": 0,
+        "ultima_falha": null
       },
       {
-        "agenda": "26,56 * * * *",
+        "agenda": "26,56 1-8 * * *",
         "ativo": true,
         "chama": [
           "public.fn_cron_safe_run",
           "public.fn_xbz_enrich_gold_extractors"
         ],
-        "duracao_max_s_7d": 96,
+        "duracao_max_s_7d": 3,
         "edges": [],
-        "execucoes_24h": 48,
-        "execucoes_7d": 335,
-        "falhas_24h": 6,
-        "falhas_7d": 24,
+        "execucoes_24h": 16,
+        "execucoes_7d": 112,
+        "falhas_24h": 0,
+        "falhas_7d": 0,
         "nome": "xbz-enrich-gold-extractors",
-        "startup_timeout_7d": 24,
+        "startup_timeout_7d": 0,
         "statement_timeout_7d": 0,
-        "taxa_falha_7d_pct": 7.2,
-        "ultima_falha": "2026-11-02T10:26:00Z"
+        "taxa_falha_7d_pct": 0,
+        "ultima_falha": null
       },
       {
-        "agenda": "3,13,23,33,43,53 * * * *",
-        "ativo": true,
-        "chama": [
-          "net.http_post",
-          "public.fn_cron_safe_run",
-          "public.get_edge_function_secret"
-        ],
-        "duracao_max_s_7d": 20,
-        "edges": [
-          "xbz-image-uploader"
-        ],
-        "execucoes_24h": 144,
-        "execucoes_7d": 1004,
-        "falhas_24h": 14,
-        "falhas_7d": 64,
-        "nome": "xbz-image-uploader",
-        "startup_timeout_7d": 64,
-        "statement_timeout_7d": 0,
-        "taxa_falha_7d_pct": 6.4,
-        "ultima_falha": "2026-11-02T10:33:00Z"
-      },
-      {
-        "agenda": "1,31 * * * *",
+        "agenda": "1,31 1-8 * * *",
         "ativo": true,
         "chama": [
           "public.fn_cron_safe_run",
           "public.fn_xbz_site_tick"
         ],
-        "duracao_max_s_7d": 146,
+        "duracao_max_s_7d": 15,
         "edges": [],
-        "execucoes_24h": 48,
-        "execucoes_7d": 335,
-        "falhas_24h": 8,
-        "falhas_7d": 23,
+        "execucoes_24h": 16,
+        "execucoes_7d": 112,
+        "falhas_24h": 0,
+        "falhas_7d": 0,
         "nome": "xbz-site-scrape",
-        "startup_timeout_7d": 21,
-        "statement_timeout_7d": 1,
-        "taxa_falha_7d_pct": 6.9,
-        "ultima_falha": "2026-11-02T11:01:00Z"
+        "startup_timeout_7d": 0,
+        "statement_timeout_7d": 0,
+        "taxa_falha_7d_pct": 0,
+        "ultima_falha": null
       },
       {
-        "agenda": "23,53 * * * *",
+        "agenda": "53 * * * *",
         "ativo": true,
         "chama": [
           "public.fn_cron_safe_run",
           "public.fn_xbz_stock_fast_sync_v3"
         ],
-        "duracao_max_s_7d": 134,
+        "duracao_max_s_7d": 48,
         "edges": [],
-        "execucoes_24h": 48,
-        "execucoes_7d": 335,
-        "falhas_24h": 3,
-        "falhas_7d": 18,
+        "execucoes_24h": 24,
+        "execucoes_7d": 168,
+        "falhas_24h": 0,
+        "falhas_7d": 0,
         "nome": "xbz-stock-sync",
-        "startup_timeout_7d": 17,
+        "startup_timeout_7d": 0,
         "statement_timeout_7d": 0,
-        "taxa_falha_7d_pct": 5.4,
-        "ultima_falha": "2026-11-01T21:23:00Z"
+        "taxa_falha_7d_pct": 0,
+        "ultima_falha": null
       }
     ]
   },
@@ -2871,671 +2721,678 @@
         "slug": "ai-recommendations",
         "status": "ACTIVE",
         "verify_jwt": false,
-        "versao": 296
+        "versao": 308
       },
       {
         "slug": "analyze-logo-colors",
         "status": "ACTIVE",
         "verify_jwt": true,
-        "versao": 260
+        "versao": 269
       },
       {
         "slug": "anonymize-user",
         "status": "ACTIVE",
         "verify_jwt": true,
-        "versao": 14
+        "versao": 25
       },
       {
         "slug": "asia-ingestion",
         "status": "ACTIVE",
         "verify_jwt": false,
-        "versao": 126
+        "versao": 137
       },
       {
         "slug": "audit-suite",
         "status": "ACTIVE",
         "verify_jwt": true,
-        "versao": 134
+        "versao": 145
       },
       {
         "slug": "backfill-image-dimensions",
         "status": "ACTIVE",
         "verify_jwt": false,
-        "versao": 126
+        "versao": 136
       },
       {
         "slug": "bi-copilot",
         "status": "ACTIVE",
         "verify_jwt": true,
-        "versao": 260
+        "versao": 271
       },
       {
         "slug": "bitrix-sync",
         "status": "ACTIVE",
         "verify_jwt": true,
-        "versao": 266
+        "versao": 275
       },
       {
         "slug": "block-ip-temporarily",
         "status": "ACTIVE",
         "verify_jwt": true,
-        "versao": 288
+        "versao": 299
       },
       {
         "slug": "bulk-random-passwords",
         "status": "ACTIVE",
         "verify_jwt": true,
-        "versao": 230
+        "versao": 240
       },
       {
         "slug": "categories-api",
         "status": "ACTIVE",
         "verify_jwt": true,
-        "versao": 280
+        "versao": 291
       },
       {
         "slug": "check-login",
         "status": "ACTIVE",
         "verify_jwt": false,
-        "versao": 130
+        "versao": 141
       },
       {
         "slug": "cleanup-notifications",
         "status": "ACTIVE",
         "verify_jwt": false,
-        "versao": 313
+        "versao": 322
       },
       {
         "slug": "cleanup-novelties",
         "status": "ACTIVE",
         "verify_jwt": false,
-        "versao": 303
+        "versao": 314
       },
       {
         "slug": "cnpj-lookup",
         "status": "ACTIVE",
         "verify_jwt": true,
-        "versao": 273
+        "versao": 281
       },
       {
         "slug": "collections-watcher",
         "status": "ACTIVE",
         "verify_jwt": false,
-        "versao": 299
+        "versao": 310
       },
       {
         "slug": "commemorative-dates",
         "status": "ACTIVE",
         "verify_jwt": true,
-        "versao": 285
+        "versao": 295
       },
       {
         "slug": "comparison-ai-advisor",
         "status": "ACTIVE",
         "verify_jwt": true,
-        "versao": 277
+        "versao": 287
       },
       {
         "slug": "comparison-price-watcher",
         "status": "ACTIVE",
         "verify_jwt": false,
-        "versao": 290
+        "versao": 299
       },
       {
         "slug": "connection-tester",
         "status": "ACTIVE",
         "verify_jwt": true,
-        "versao": 282
+        "versao": 290
       },
       {
         "slug": "connections-auto-test",
         "status": "ACTIVE",
         "verify_jwt": false,
-        "versao": 297
+        "versao": 307
       },
       {
         "slug": "connections-health-check",
         "status": "ACTIVE",
         "verify_jwt": false,
-        "versao": 311
+        "versao": 321
       },
       {
         "slug": "connections-hub-audit",
         "status": "ACTIVE",
         "verify_jwt": true,
-        "versao": 273
+        "versao": 282
       },
       {
         "slug": "cors-audit",
         "status": "ACTIVE",
         "verify_jwt": true,
-        "versao": 272
+        "versao": 280
       },
       {
         "slug": "crm-callback-alerts",
         "status": "ACTIVE",
         "verify_jwt": false,
-        "versao": 73
+        "versao": 84
       },
       {
         "slug": "crm-callback-reprocess",
         "status": "ACTIVE",
         "verify_jwt": false,
-        "versao": 73
+        "versao": 83
       },
       {
         "slug": "crm-db-bridge",
         "status": "ACTIVE",
         "verify_jwt": false,
-        "versao": 302
+        "versao": 313
       },
       {
         "slug": "detect-new-device",
         "status": "ACTIVE",
         "verify_jwt": true,
-        "versao": 276
+        "versao": 287
       },
       {
         "slug": "dropbox-list",
         "status": "ACTIVE",
         "verify_jwt": true,
-        "versao": 289
+        "versao": 298
       },
       {
         "slug": "e2e-cleanup",
         "status": "ACTIVE",
         "verify_jwt": false,
-        "versao": 298
+        "versao": 309
       },
       {
         "slug": "elevenlabs-scribe-token",
         "status": "ACTIVE",
         "verify_jwt": true,
-        "versao": 279
+        "versao": 288
       },
       {
         "slug": "elevenlabs-tts",
         "status": "ACTIVE",
         "verify_jwt": true,
-        "versao": 273
+        "versao": 282
       },
       {
         "slug": "ema-pipeline-health",
         "status": "ACTIVE",
         "verify_jwt": true,
-        "versao": 20
+        "versao": 29
       },
       {
         "slug": "expert-chat",
         "status": "ACTIVE",
         "verify_jwt": true,
-        "versao": 262
+        "versao": 271
       },
       {
         "slug": "external-db-bridge",
         "status": "ACTIVE",
         "verify_jwt": true,
-        "versao": 291
+        "versao": 300
       },
       {
         "slug": "external-db-inspect",
         "status": "ACTIVE",
         "verify_jwt": false,
-        "versao": 288
+        "versao": 298
       },
       {
         "slug": "favorites-watcher",
         "status": "ACTIVE",
         "verify_jwt": false,
-        "versao": 309
+        "versao": 319
       },
       {
         "slug": "force-global-logout",
         "status": "ACTIVE",
         "verify_jwt": true,
-        "versao": 280
+        "versao": 288
       },
       {
         "slug": "full-op-diagnostics",
         "status": "ACTIVE",
         "verify_jwt": true,
-        "versao": 264
+        "versao": 274
       },
       {
         "slug": "generate-ad-image",
         "status": "ACTIVE",
         "verify_jwt": true,
-        "versao": 291
+        "versao": 299
       },
       {
         "slug": "generate-ad-prompt",
         "status": "ACTIVE",
         "verify_jwt": true,
-        "versao": 280
+        "versao": 289
       },
       {
         "slug": "generate-blurhashes",
         "status": "ACTIVE",
         "verify_jwt": true,
-        "versao": 119
+        "versao": 127
       },
       {
         "slug": "generate-mockup",
         "status": "ACTIVE",
         "verify_jwt": true,
-        "versao": 271
+        "versao": 279
       },
       {
         "slug": "generate-product-seo",
         "status": "ACTIVE",
         "verify_jwt": true,
-        "versao": 276
+        "versao": 285
       },
       {
         "slug": "get-visitor-info",
         "status": "ACTIVE",
         "verify_jwt": false,
-        "versao": 278
+        "versao": 286
       },
       {
         "slug": "github-credentials-test",
         "status": "ACTIVE",
         "verify_jwt": true,
-        "versao": 279
+        "versao": 289
       },
       {
         "slug": "hash-product-images",
         "status": "ACTIVE",
         "verify_jwt": true,
-        "versao": 118
+        "versao": 127
       },
       {
         "slug": "health-check",
         "status": "ACTIVE",
         "verify_jwt": true,
-        "versao": 275
+        "versao": 288
       },
       {
         "slug": "image-proxy",
         "status": "ACTIVE",
         "verify_jwt": false,
-        "versao": 292
+        "versao": 300
       },
       {
         "slug": "intelligence-substitute-applied",
         "status": "ACTIVE",
         "verify_jwt": true,
-        "versao": 30
+        "versao": 39
       },
       {
         "slug": "kit-ai-builder",
         "status": "ACTIVE",
         "verify_jwt": true,
-        "versao": 290
+        "versao": 298
       },
       {
         "slug": "kit-identity-suggest",
         "status": "ACTIVE",
         "verify_jwt": true,
-        "versao": 266
+        "versao": 275
       },
       {
         "slug": "load-test",
         "status": "ACTIVE",
         "verify_jwt": true,
-        "versao": 184
+        "versao": 193
       },
       {
         "slug": "log-login-attempt",
         "status": "ACTIVE",
         "verify_jwt": false,
-        "versao": 281
+        "versao": 288
       },
       {
         "slug": "magazine-import-local",
         "status": "ACTIVE",
         "verify_jwt": false,
-        "versao": 45
+        "versao": 53
       },
       {
         "slug": "magazine-public-react",
         "status": "ACTIVE",
         "verify_jwt": false,
-        "versao": 42
+        "versao": 50
       },
       {
         "slug": "magazine-public-view",
         "status": "ACTIVE",
         "verify_jwt": false,
-        "versao": 43
+        "versao": 52
       },
       {
         "slug": "magazine-reader-state-read",
         "status": "ACTIVE",
         "verify_jwt": false,
-        "versao": 47
+        "versao": 56
       },
       {
         "slug": "magazine-reader-state-write",
         "status": "ACTIVE",
         "verify_jwt": false,
-        "versao": 44
+        "versao": 51
       },
       {
         "slug": "magic-up-score",
         "status": "ACTIVE",
         "verify_jwt": true,
-        "versao": 274
+        "versao": 282
       },
       {
         "slug": "manage-users",
         "status": "ACTIVE",
         "verify_jwt": true,
-        "versao": 270
+        "versao": 280
       },
       {
         "slug": "market-intelligence-insights",
         "status": "ACTIVE",
         "verify_jwt": true,
-        "versao": 281
+        "versao": 290
       },
       {
         "slug": "materials-api",
         "status": "ACTIVE",
         "verify_jwt": true,
-        "versao": 278
+        "versao": 288
       },
       {
         "slug": "mcp-keys-issue",
         "status": "ACTIVE",
         "verify_jwt": true,
-        "versao": 277
+        "versao": 287
       },
       {
         "slug": "mcp-keys-revoke",
         "status": "ACTIVE",
         "verify_jwt": true,
-        "versao": 281
+        "versao": 289
       },
       {
         "slug": "mcp-keys-rotate",
         "status": "ACTIVE",
         "verify_jwt": true,
-        "versao": 273
+        "versao": 283
       },
       {
         "slug": "mcp-keys-update",
         "status": "ACTIVE",
         "verify_jwt": true,
-        "versao": 282
+        "versao": 291
       },
       {
         "slug": "mcp-query",
         "status": "ACTIVE",
         "verify_jwt": true,
-        "versao": 12
+        "versao": 21
       },
       {
         "slug": "mcp-server",
         "status": "ACTIVE",
         "verify_jwt": false,
-        "versao": 302
+        "versao": 312
       },
       {
         "slug": "migrate-helper",
         "status": "ACTIVE",
         "verify_jwt": true,
-        "versao": 19
+        "versao": 28
+      },
+      {
+        "slug": "mockup-assistant",
+        "status": "ACTIVE",
+        "verify_jwt": true,
+        "versao": 2
       },
       {
         "slug": "ownership-audit",
         "status": "ACTIVE",
         "verify_jwt": false,
-        "versao": 297
+        "versao": 306
       },
       {
         "slug": "ownership-repair",
         "status": "ACTIVE",
         "verify_jwt": true,
-        "versao": 279
+        "versao": 288
       },
       {
         "slug": "process-queue",
         "status": "ACTIVE",
         "verify_jwt": false,
-        "versao": 300
+        "versao": 309
       },
       {
         "slug": "process-scheduled-reports",
         "status": "ACTIVE",
         "verify_jwt": false,
-        "versao": 305
+        "versao": 315
       },
       {
         "slug": "product-visual-search",
         "status": "ACTIVE",
         "verify_jwt": true,
-        "versao": 21
+        "versao": 30
       },
       {
         "slug": "product-webhook",
         "status": "ACTIVE",
         "verify_jwt": true,
-        "versao": 268
+        "versao": 278
       },
       {
         "slug": "quote-followup-reminders",
         "status": "ACTIVE",
         "verify_jwt": false,
-        "versao": 298
+        "versao": 307
       },
       {
         "slug": "quote-sync",
         "status": "ACTIVE",
         "verify_jwt": true,
-        "versao": 269
+        "versao": 278
       },
       {
         "slug": "quote-sync-promo-champions",
         "status": "ACTIVE",
         "verify_jwt": true,
-        "versao": 64
+        "versao": 74
       },
       {
         "slug": "rate-limit-check",
         "status": "ACTIVE",
         "verify_jwt": true,
-        "versao": 275
+        "versao": 284
       },
       {
         "slug": "receive-crm-callback",
         "status": "ACTIVE",
         "verify_jwt": false,
-        "versao": 76
+        "versao": 85
       },
       {
         "slug": "rls-audit",
         "status": "ACTIVE",
         "verify_jwt": true,
-        "versao": 278
+        "versao": 284
       },
       {
         "slug": "rls-integration-tests",
         "status": "ACTIVE",
         "verify_jwt": true,
-        "versao": 273
+        "versao": 280
       },
       {
         "slug": "rls-matrix-export",
         "status": "ACTIVE",
         "verify_jwt": true,
-        "versao": 264
+        "versao": 273
       },
       {
         "slug": "secrets-manager",
         "status": "ACTIVE",
         "verify_jwt": true,
-        "versao": 286
+        "versao": 295
       },
       {
         "slug": "secure-upload",
         "status": "ACTIVE",
         "verify_jwt": true,
-        "versao": 281
+        "versao": 291
       },
       {
         "slug": "semantic-search",
         "status": "ACTIVE",
         "verify_jwt": true,
-        "versao": 272
+        "versao": 281
       },
       {
         "slug": "send-digest",
         "status": "ACTIVE",
         "verify_jwt": false,
-        "versao": 296
+        "versao": 304
       },
       {
         "slug": "send-notification",
         "status": "ACTIVE",
         "verify_jwt": false,
-        "versao": 307
+        "versao": 315
       },
       {
         "slug": "send-scheduled-reports",
         "status": "ACTIVE",
         "verify_jwt": false,
-        "versao": 301
+        "versao": 309
       },
       {
         "slug": "send-transactional-email",
         "status": "ACTIVE",
         "verify_jwt": true,
-        "versao": 274
+        "versao": 284
       },
       {
         "slug": "simulation-orchestrator",
         "status": "ACTIVE",
         "verify_jwt": true,
-        "versao": 210
+        "versao": 219
       },
       {
         "slug": "step-up-verify",
         "status": "ACTIVE",
         "verify_jwt": true,
-        "versao": 277
+        "versao": 285
       },
       {
         "slug": "sync-external-db",
         "status": "ACTIVE",
         "verify_jwt": false,
-        "versao": 252
+        "versao": 260
       },
       {
         "slug": "sync-quote-bitrix",
         "status": "ACTIVE",
         "verify_jwt": true,
-        "versao": 280
+        "versao": 289
       },
       {
         "slug": "test-cart-concurrency",
         "status": "ACTIVE",
         "verify_jwt": true,
-        "versao": 118
+        "versao": 126
       },
       {
         "slug": "test-cart-limit",
         "status": "ACTIVE",
         "verify_jwt": true,
-        "versao": 119
+        "versao": 128
       },
       {
         "slug": "test-cart-rls",
         "status": "ACTIVE",
         "verify_jwt": true,
-        "versao": 116
+        "versao": 124
       },
       {
         "slug": "test-contract-orchestrator",
         "status": "ACTIVE",
         "verify_jwt": true,
-        "versao": 228
+        "versao": 237
       },
       {
         "slug": "test-inventory-orchestrator",
         "status": "ACTIVE",
         "verify_jwt": true,
-        "versao": 224
+        "versao": 232
       },
       {
         "slug": "trends-insights",
         "status": "ACTIVE",
         "verify_jwt": true,
-        "versao": 279
+        "versao": 288
       },
       {
         "slug": "validate-access",
         "status": "ACTIVE",
         "verify_jwt": true,
-        "versao": 283
+        "versao": 292
       },
       {
         "slug": "verify-2fa-token",
         "status": "ACTIVE",
         "verify_jwt": true,
-        "versao": 188
+        "versao": 198
       },
       {
         "slug": "verify-email",
         "status": "ACTIVE",
         "verify_jwt": true,
-        "versao": 273
+        "versao": 282
       },
       {
         "slug": "visual-search",
         "status": "ACTIVE",
         "verify_jwt": true,
-        "versao": 274
+        "versao": 283
       },
       {
         "slug": "voice-agent",
         "status": "ACTIVE",
         "verify_jwt": true,
-        "versao": 279
+        "versao": 287
       },
       {
         "slug": "webhook-dispatcher",
         "status": "ACTIVE",
         "verify_jwt": false,
-        "versao": 306
+        "versao": 313
       },
       {
         "slug": "webhook-inbound",
         "status": "ACTIVE",
         "verify_jwt": false,
-        "versao": 300
+        "versao": 309
       },
       {
         "slug": "word-magic",
         "status": "ACTIVE",
         "verify_jwt": true,
-        "versao": 124
+        "versao": 133
       },
       {
         "slug": "xbz-image-uploader",
         "status": "ACTIVE",
         "verify_jwt": true,
-        "versao": 1
+        "versao": 10
       }
     ],
     "publicadas_sem_codigo_no_repo": []
   },
   "fonte": "scripts/inventario/banco.sql + acesso a tabelas em src/ e supabase/functions/ + edge functions publicadas (scripts/inventario/gerar-banco.mjs)",
   "format_version": 1,
-  "medido_em": "2026-11-02T16:18:40Z",
+  "medido_em": "2026-11-23T12:55:49Z",
   "objetos": {
     "funcoes_security_definer": [
       "admin_active_sessions",
+      "admin_execute_role_migration_batch",
       "admin_revoke_user_sessions",
       "assert_quote_discount_integrity",
       "audit_mcp_api_keys_changes",
@@ -3590,6 +3447,8 @@
       "enqueue_optimization",
       "execute_role_migration_batch",
       "expire_stale_password_reset_requests",
+      "fn_admin_run_smoke_tests",
+      "fn_admin_smoke_tests_dashboard",
       "fn_admin_sync_external_connections",
       "fn_aggregate_stock_daily",
       "fn_ai_quota_summary",
@@ -3631,6 +3490,7 @@
       "fn_audit_discount_approval",
       "fn_audit_gravacao_changes",
       "fn_audit_row_change",
+      "fn_auto_assign_org_on_profile",
       "fn_auto_revoke_secdef_public_execute",
       "fn_auto_similarity_groups_v2",
       "fn_auto_similarity_groups_v3",
@@ -3674,8 +3534,10 @@
       "fn_dequeue_ai_enrichment",
       "fn_derive_similarity_pairs_on_insert",
       "fn_detect_recurring_errors_last_hour",
+      "fn_dev_medallion_health",
       "fn_dryrun_raw_v2",
       "fn_dryrun_standardize_supplier",
+      "fn_ema_coverage_stats",
       "fn_ema_kpi_by_level",
       "fn_enqueue_ai_enrichment",
       "fn_enrich_asia_components_batch",
@@ -3723,11 +3585,13 @@
       "fn_get_reposicao_metrics",
       "fn_get_reposicao_variants_summary",
       "fn_get_repressed_demand",
+      "fn_get_rupture_alerts",
       "fn_get_sm_session_cookie",
       "fn_get_spot_access_key",
       "fn_get_spot_feb2026_ids",
       "fn_get_stock_notification_counts",
       "fn_get_stockout_alerts",
+      "fn_get_supplier_reliability",
       "fn_global_search",
       "fn_grant_default_role_on_profile",
       "fn_handle_canonical_root_soft_delete",
@@ -3744,6 +3608,7 @@
       "fn_ingestion_health",
       "fn_ingestion_run_close",
       "fn_ingestion_run_open",
+      "fn_insights_cache_count",
       "fn_is_bulk_import_mode",
       "fn_is_graphic_material",
       "fn_kcvs_guard_not_sellable",
@@ -3835,6 +3700,7 @@
       "fn_run_and_persist_smoke_tests",
       "fn_run_pipeline_health_check",
       "fn_run_schema_drift_check",
+      "fn_ruptura_forecast_7_15_30",
       "fn_rupture_anomalia_report",
       "fn_rupture_by_level",
       "fn_rupture_health_check",
@@ -3897,6 +3763,7 @@
       "fn_super_filtro_opcoes",
       "fn_super_filtro_price_range",
       "fn_super_filtro_product_ids",
+      "fn_supplier_risk_breakdown",
       "fn_sync_ai_usage_logs_total_tokens",
       "fn_sync_all_is_new",
       "fn_sync_asia_colors",
@@ -3950,6 +3817,7 @@
       "fn_upsert_stocks_bulk_spot",
       "fn_vacuum_high_dead_tuples",
       "fn_validate_member_supplier",
+      "fn_variant_sparkline",
       "fn_verify_anon_catalog_grants",
       "fn_video_link",
       "fn_video_link_to_products",
@@ -3961,6 +3829,7 @@
       "fn_video_set_dimensions",
       "fn_video_sim_export",
       "fn_video_sim_upsert",
+      "fn_whatif_scenario",
       "fn_xbz_dispatch_image_batch",
       "fn_xbz_enqueue_videos",
       "fn_xbz_enrich_stock_batch",
@@ -4054,7 +3923,6 @@
       "notify_quote_status_change",
       "org_has_any_members",
       "ownership_check_orphans",
-      "perf002_drop_unused_snapshot_indexes",
       "prevent_profile_role_change",
       "prevent_role_self_update",
       "process_notifications_queue",
@@ -4074,6 +3942,7 @@
       "registrar_saida_estoque",
       "release_webhook_delivery_lock",
       "request_discount_approval_transactional",
+      "request_password_reset",
       "reset_mockup_credit_limits",
       "respond_discount_approval_transactional",
       "restore_collection_item_from_trash",
@@ -4108,226 +3977,229 @@
     ],
     "mviews": [
       "internal.mv_product_leaf_category",
+      "analytics.categories_tree_visual",
       "analytics.mv_product_cards",
       "analytics.mv_product_compositions",
-      "public.mv_product_images_audit",
-      "public.mv_supplier_reliability",
-      "public.mv_ema_kpi_by_level",
-      "public.mv_stock_rupture_alert",
       "analytics.mv_media_health",
       "analytics.mv_product_intelligence",
       "analytics.mv_material_group_stats",
       "analytics.mv_stock_velocity",
-      "analytics.categories_tree_visual"
+      "public.mv_stock_rupture_alert",
+      "public.mv_ema_kpi_by_level",
+      "public.mv_supplier_reliability",
+      "public.mv_product_images_audit"
     ],
     "views": [
-      "public.v_products_pending_images",
-      "public.vw_xbz_products_stats",
-      "public.v_performance_dashboard",
-      "public.v_kit_pipeline_health",
-      "public.vw_product_availability",
-      "public.vw_product_color_category_links",
-      "public.vw_rupture_confidence_audit",
-      "public.vw_somarcas_materials",
-      "public.vw_xbz_scraping_status",
-      "public.v_media_statistics",
-      "public.v_media_stats",
-      "public.v_webhook_delivery_stats",
-      "public.vw_category_completeness",
-      "public.vw_color_mapping",
-      "public.v_connection_health",
-      "public.v_products_images_summary",
-      "public.vw_xbz_produtos_sem_imagem",
-      "public.vw_spot_price_alerts",
-      "public.vw_ai_enrichment_status",
-      "public.v_product_tokens",
-      "public.vw_product_images_health",
       "cf_recon.v_health_dashboard",
-      "public.v_kill_switch_hits_summary",
-      "public.vw_category_commemorative_dates",
-      "public.vw_product_novelties_active",
-      "public.vw_product_images_variant_gap",
       "cf_recon.v_verification_queue",
-      "public.vw_images_pending_dimensions",
-      "public.v_products_ai_coverage",
-      "public.mv_product_intelligence",
-      "public.vw_variant_sale_prices",
       "cf_recon.v_divergence",
       "cf_recon.v_cf_orphans",
       "cf_recon.v_products_without_active_image",
-      "public.vw_somarcas_pending",
       "cf_recon.v_inactive_alive",
-      "public.products_with_materials",
       "cf_recon.v_inactive_alive_cf_cost",
+      "supplier_stricker.v_customization_by_technique",
+      "supplier_stricker.v_images_by_product",
+      "supplier_stricker.v_products_complete",
+      "classification_audit.v_gaps_acionaveis",
+      "prod_audit.v_category_suggestions_review",
+      "classification_audit.v_kits_para_revisao",
+      "supplier_stricker.v_stock_by_product",
+      "public.v_print_area_techniques_public",
+      "public.v_product_tags_public",
+      "public.v_video_dashboard",
+      "public.v_blurhash_coverage",
+      "public.vw_xbz_products_by_color",
+      "public.v_products_with_tags",
+      "public.v_videos_with_urls",
+      "public.v_suppliers_public",
+      "public.v_xbz_ficha_parse_queue",
+      "public.vw_product_images_health",
+      "public.v_kit_component_identity_health",
+      "public.vw_product_commemorative_dates",
+      "public.v_product_images_cdn",
+      "public.v_videos_pending",
+      "public.vw_rupture_live_divergence",
+      "public.v_pipeline_progress",
+      "public.v_kit_pipeline_health",
+      "public.v_webhook_delivery_stats",
+      "public.v_tags_public",
+      "public.vw_color_mapping",
+      "public.v_connection_health",
+      "public.v_products_public_test",
+      "public.vw_asia_products_stats",
+      "public.vw_supplier_color_mappings",
+      "public.v_kit_component_print_areas_public",
+      "public.vw_rupture_gap_purchase",
+      "public.v_variant_sale_prices_public",
+      "public.v_kit_ficha_pipeline_health",
+      "public.v_crm_callback_health",
+      "public.v_kit_completeness_by_supplier",
+      "public.v_system_health_dashboard",
+      "public.v_product_images_quality_gap",
+      "public.vw_xbz_produtos_sem_imagem",
+      "public.vw_ai_enrichment_status",
+      "public.v_product_tokens",
+      "public.v_smoke_tests_latest_run",
+      "public.v_kit_with_components",
+      "public.vw_products_with_properties",
+      "public.vw_spot_color_health",
+      "public.vw_novelties_home_highlights",
+      "public.vw_asia_products_promo",
+      "public.vw_component_types_usage",
+      "public.vw_category_commemorative_dates",
+      "public.v_category_keywords",
+      "public.vw_category_completeness",
+      "public.vw_somarcas_pending",
+      "public.vw_sitemap_products",
+      "public.vw_sitemap_categories",
+      "public.mv_stock_velocity",
+      "public.vw_asia_products_low_stock",
+      "public.v_price_history_safe",
+      "public.vw_products_seo_status",
+      "public.vw_novelty_health",
+      "public.vw_supplier_mapping_statistics",
+      "public.v_cf_image_remediation",
+      "public.somarcas_catalogo_publico",
+      "public.v_kit_component_complete",
+      "public.vw_products_pending_variants",
+      "public.vw_color_coverage",
+      "public.vw_packaging_suppliers",
+      "public.vw_product_all_packaging_options",
+      "public.v_system_alerts",
+      "public.v_slow_queries_analysis",
+      "public.vw_asia_products_by_color",
+      "public.vw_product_images_variant_gap",
+      "public.vw_products_min_quantity",
+      "public.v_ai_function_routing_effective",
+      "public.vw_image_type_coherence",
+      "public.v_products_without_video",
+      "public.materials_complete",
+      "public.v_stock_velocity_safe",
+      "public.v_audit_cobertura_tecnicas",
+      "public.v_performance_dashboard",
+      "public.vw_supplier_products_raw_errors",
+      "public.vw_seo_dashboard",
+      "public.v_kit_component_completeness",
+      "public.v_cf_recon_progress",
+      "public.v_db_health_audit",
+      "public.v_unmapped_images",
+      "public.v_smoke_tests_trend",
+      "public.vw_product_notebook_complete",
+      "public.v_product_properties_public",
+      "public.vw_produtos_sem_ncm",
+      "public.v_product_videos_cdn",
+      "public.ai_insights_cache",
+      "public.vw_material_health",
+      "public.vw_asia_products_pending",
+      "public.v_kill_switch_hits_summary",
+      "public.v_media_stats",
+      "public.vw_product_novelties_active",
+      "public.v_products_images_summary",
+      "public.vw_products_commercial_packing",
+      "public.v_my_markup_config",
+      "public.vw_spot_color_separator_reference",
+      "public.vw_somarcas_stats",
+      "public.vw_medallion_coverage",
+      "public.vw_media_stats_by_type",
+      "public.v_video_validation_recent",
+      "public.v_top_patterns",
+      "public.v_monthly_costs",
+      "public.v_site_products_public",
+      "public.v_kit_component_skus",
+      "public.vw_products_thermal_status",
+      "public.v_products_name_audit",
+      "public.v_db_health_check",
+      "public.vw_spot_cf_health",
+      "public.vw_product_availability",
+      "public.vw_product_color_category_links",
+      "public.vw_xbz_scraping_status",
       "public.vw_products_ai_status",
       "public.v_kit_max_quantity",
       "public.v_kit_enrichment_dashboard",
-      "supplier_stricker.v_customization_by_technique",
       "public.v_audit_paradoxos_gravacao",
       "public.vw_orphan_active_variants",
-      "supplier_stricker.v_images_by_product",
-      "supplier_stricker.v_products_complete",
-      "public.vw_sitemap_products",
       "public.vw_packagings_catalog",
       "public.v_variants_with_commemorative_dates",
       "public.vw_source_channel_coverage",
       "public.v_commemorative_dates_calendar",
       "public.vw_xbz_products_by_category",
       "public.vw_products_by_date",
-      "public.vw_products_commercial_packing",
-      "public.v_my_markup_config",
-      "public.vw_sitemap_categories",
-      "public.vw_product_notebook_complete",
-      "public.vw_spot_color_separator_reference",
-      "public.vw_somarcas_stats",
-      "public.v_product_tags_public",
-      "public.v_print_area_techniques_public",
-      "public.vw_products_min_quantity",
-      "public.vw_category_accessories",
-      "public.v_blurhash_summary",
-      "public.v_catalog_stats",
-      "public.v_products_without_video",
-      "public.materials_complete",
-      "public.v_super_filtro_options",
-      "public.v_product_images_cdn",
-      "public.v_videos_pending",
-      "public.mv_stock_velocity",
-      "public.v_products_public_test",
-      "public.v_kit_component_identity_health",
-      "public.v_enrichment_stats",
-      "public.v_pipeline_progress",
-      "public.vw_material_health",
-      "public.category_icons",
-      "public.v_kit_component_completeness",
-      "public.v_category_keywords",
-      "public.vw_product_commemorative_dates",
-      "public.v_blurhash_coverage",
-      "public.vw_asia_products_pending",
-      "public.vw_asia_products_errors",
-      "public.v_product_videos_ready",
-      "public.vw_asia_products_low_stock",
-      "public.v_price_history_safe",
-      "public.vw_products_seo_status",
+      "public.vw_somarcas_sync_status",
       "public.vw_supplier_field_mappings_summary",
-      "public.v_product_images_quality_gap",
-      "classification_audit.v_gaps_acionaveis",
-      "public.v_kit_component_media_public",
-      "public.v_suppliers_public",
-      "prod_audit.v_category_suggestions_review",
-      "classification_audit.v_kits_para_revisao",
       "public.v_products_without_images",
-      "supplier_stricker.v_stock_by_product",
-      "public.v_system_alerts",
-      "public.vw_medallion_coverage",
-      "public.mv_material_group_stats",
-      "public.vw_media_stats_by_type",
-      "public.v_top_patterns",
-      "public.v_xbz_ficha_parse_queue",
-      "public.v_db_health_audit",
-      "public.v_smoke_tests_latest_run",
-      "public.v_kit_with_components",
-      "public.vw_products_with_properties",
-      "public.vw_asia_products_by_category",
-      "public.vw_category_target_audiences",
-      "public.vw_spot_color_health",
-      "public.v_monthly_costs",
-      "public.v_products_missing_primary_image",
-      "public.vw_category_variation_types",
-      "public.vw_asia_products_stats",
-      "public.v_cf_drift_dashboard",
-      "public.v_quote_seller_kpis",
-      "public.vw_supplier_category_coverage",
-      "public.vw_rupture_gap_purchase",
-      "public.vw_supplier_color_mappings",
-      "public.v_kit_component_print_areas_public",
+      "public.v_compras_catalogo",
+      "public.v_compras_precos_faixa",
+      "public.v_compras_precos_variante",
       "public.vw_thermal_products",
-      "public.v_video_validation_recent",
       "public.vw_active_products_missing_gold_images",
       "public.v_gravacao_cobertura",
-      "public.v_variant_sale_prices_public",
-      "public.v_kit_ficha_pipeline_health",
-      "public.v_crm_callback_health",
-      "public.v_dimensions_source_divergence",
-      "public.v_kit_completeness_by_supplier",
-      "public.vw_novelty_health",
-      "public.v_pipeline_next_step",
-      "public.vw_classify_functions_status",
-      "public.vw_supplier_mapping_statistics",
-      "public.v_cf_image_remediation",
-      "public.mv_product_cards",
-      "public.vw_rupture_live_divergence",
-      "public.vw_products_thermal_status",
-      "public.v_audit_cobertura_tecnicas",
-      "public.v_site_products_public",
-      "public.v_kit_component_skus",
-      "public.mv_media_health",
-      "public.somarcas_catalogo_publico",
-      "public.v_kit_component_complete",
       "public.categories_tree_visual",
+      "public.v_product_image_hash_duplicates",
       "public.v_products_dimensions_audit",
       "public.v_products_kit_builder",
-      "public.vw_supplier_products_raw_errors",
       "public.v_color_coverage_monitor",
       "public.v_image_quality_stats",
       "public.vw_qa_products_missing_images",
-      "public.v_products_public",
-      "public.vw_ai_history_stats",
-      "public.vw_duplicate_images",
-      "public.vw_seo_dashboard",
-      "public.mv_product_compositions",
-      "public.v_tabela_preco_gravacao_oficial_public",
-      "public.vw_category_mapping_gaps",
-      "public.v_product_compositions_public",
-      "public.vw_products_pending_variants",
-      "public.vw_color_coverage",
-      "public.vw_packaging_suppliers",
-      "public.vw_asia_products_promo",
-      "public.vw_component_types_usage",
-      "public.v_product_image_hash_duplicates",
-      "public.v_personalization_techniques_public",
-      "public.v_tags_public",
-      "public.v_products_name_audit",
-      "public.vw_novelties_home_highlights",
-      "public.vw_produtos_sem_ncm",
-      "public.bi_quotes_summary",
-      "public.v_product_videos_cdn",
-      "public.v_video_dashboard",
-      "public.vw_products_packaging_info",
-      "public.vw_sitemap_all",
-      "public.vw_xbz_products_by_color",
+      "public.vw_images_pending_dimensions",
+      "public.vw_system_health_quick",
+      "public.v_products_ai_coverage",
+      "public.v_blurhash_summary",
+      "public.v_catalog_stats",
+      "public.vw_asia_products_errors",
+      "public.mv_product_cards",
       "public.vw_super_filtro_health",
-      "public.v_products_with_tags",
-      "public.v_product_properties_public",
-      "public.v_product_active_badge",
-      "public.v_color_nuances_public",
-      "public.v_db_health_check",
-      "public.v_videos_with_urls",
-      "public.vw_spot_cf_health",
-      "public.vw_supplier_products_raw_status",
-      "public.vw_asia_products_by_tag",
-      "public.vw_property_statistics",
-      "public.vw_product_all_packaging_options",
-      "public.vw_packaging_health",
-      "public.v_products_complete",
-      "public.vw_product_packaging_options",
-      "public.v_needs_enrichment",
-      "public.v_commemorative_dates_with_colors",
-      "public.v_smoke_tests_trend",
-      "public.v_slow_queries_analysis",
-      "public.ai_insights_cache",
-      "public.v_cf_recon_progress",
+      "public.bi_quotes_summary",
+      "public.mv_media_health",
+      "public.v_products_missing_primary_image",
       "public.vw_products_by_property_category",
       "public.vw_stock_quantity_outliers",
-      "public.v_stock_velocity_safe",
-      "public.vw_somarcas_sync_status",
-      "public.v_ai_function_routing_effective",
-      "public.vw_image_type_dropblockers",
-      "public.vw_system_health_quick",
-      "public.vw_image_type_coherence",
-      "public.v_system_health_dashboard",
+      "public.v_enrichment_stats",
+      "public.v_product_videos_ready",
+      "public.vw_category_variation_types",
+      "public.v_pipeline_next_step",
+      "public.v_product_active_badge",
+      "public.v_color_nuances_public",
+      "public.v_dimensions_source_divergence",
+      "public.products_with_materials",
+      "public.category_icons",
+      "public.vw_product_packaging_options",
       "public.vw_spot_image_coverage",
-      "public.v_unmapped_images",
-      "public.vw_asia_products_by_color"
+      "public.v_products_pending_images",
+      "public.v_commemorative_dates_with_colors",
+      "public.v_needs_enrichment",
+      "public.v_cf_drift_dashboard",
+      "public.v_quote_seller_kpis",
+      "public.vw_supplier_category_coverage",
+      "public.mv_product_intelligence",
+      "public.v_kit_component_media_public",
+      "public.v_product_compositions_public",
+      "public.v_tabela_preco_gravacao_oficial_public",
+      "public.mv_product_compositions",
+      "public.vw_variant_sale_prices",
+      "public.v_super_filtro_options",
+      "public.v_media_statistics",
+      "public.vw_classify_functions_status",
+      "public.mv_material_group_stats",
+      "public.vw_image_type_dropblockers",
+      "public.vw_ai_history_stats",
+      "public.vw_category_mapping_gaps",
+      "public.vw_products_packaging_info",
+      "public.vw_sitemap_all",
+      "public.vw_duplicate_images",
+      "public.vw_rupture_confidence_audit",
+      "public.vw_somarcas_materials",
+      "public.v_products_public",
+      "public.vw_supplier_products_raw_status",
+      "public.vw_asia_products_by_tag",
+      "public.v_personalization_techniques_public",
+      "public.vw_property_statistics",
+      "public.vw_packaging_health",
+      "public.v_products_complete",
+      "public.vw_xbz_products_stats",
+      "public.vw_category_accessories",
+      "public.vw_asia_products_by_category",
+      "public.vw_category_target_audiences",
+      "public.vw_spot_price_alerts"
     ]
   },
   "outros_schemas": [
@@ -4374,12 +4246,6 @@
       "rls": false
     },
     {
-      "linhas_estimadas": 0,
-      "nome": "pgmq.meta",
-      "policies": 0,
-      "rls": false
-    },
-    {
       "linhas_estimadas": 438,
       "nome": "prod_audit.category_keywords",
       "policies": 0,
@@ -4412,109 +4278,109 @@
     {
       "linhas_estimadas": 0,
       "nome": "supplier_stricker.canceled_products",
-      "policies": 0,
-      "rls": false
+      "policies": 1,
+      "rls": true
     },
     {
       "linhas_estimadas": 0,
       "nome": "supplier_stricker.category_mappings",
-      "policies": 0,
-      "rls": false
+      "policies": 1,
+      "rls": true
     },
     {
       "linhas_estimadas": 0,
       "nome": "supplier_stricker.colors",
-      "policies": 0,
-      "rls": false
+      "policies": 1,
+      "rls": true
     },
     {
       "linhas_estimadas": 0,
       "nome": "supplier_stricker.customization_options",
-      "policies": 0,
-      "rls": false
+      "policies": 1,
+      "rls": true
     },
     {
       "linhas_estimadas": 8,
       "nome": "supplier_stricker.customization_tables",
-      "policies": 0,
-      "rls": false
+      "policies": 1,
+      "rls": true
     },
     {
       "linhas_estimadas": 0,
       "nome": "supplier_stricker.optionals",
-      "policies": 0,
-      "rls": false
+      "policies": 1,
+      "rls": true
     },
     {
       "linhas_estimadas": 0,
       "nome": "supplier_stricker.product_types",
-      "policies": 0,
-      "rls": false
+      "policies": 1,
+      "rls": true
     },
     {
       "linhas_estimadas": 0,
       "nome": "supplier_stricker.products",
-      "policies": 0,
-      "rls": false
+      "policies": 1,
+      "rls": true
     },
     {
       "linhas_estimadas": 0,
       "nome": "supplier_stricker.stg_colors",
-      "policies": 0,
-      "rls": false
+      "policies": 1,
+      "rls": true
     },
     {
       "linhas_estimadas": 0,
       "nome": "supplier_stricker.stg_customizations",
-      "policies": 0,
-      "rls": false
+      "policies": 1,
+      "rls": true
     },
     {
       "linhas_estimadas": 0,
       "nome": "supplier_stricker.stg_images",
-      "policies": 0,
-      "rls": false
+      "policies": 1,
+      "rls": true
     },
     {
       "linhas_estimadas": 0,
       "nome": "supplier_stricker.stg_optionals",
-      "policies": 0,
-      "rls": false
+      "policies": 1,
+      "rls": true
     },
     {
       "linhas_estimadas": 0,
       "nome": "supplier_stricker.stg_product_types",
-      "policies": 0,
-      "rls": false
+      "policies": 1,
+      "rls": true
     },
     {
       "linhas_estimadas": 0,
       "nome": "supplier_stricker.stg_products",
-      "policies": 0,
-      "rls": false
+      "policies": 1,
+      "rls": true
     },
     {
       "linhas_estimadas": 0,
       "nome": "supplier_stricker.stg_stock",
-      "policies": 0,
-      "rls": false
+      "policies": 1,
+      "rls": true
     },
     {
       "linhas_estimadas": 0,
       "nome": "supplier_stricker.stocks",
-      "policies": 0,
-      "rls": false
+      "policies": 1,
+      "rls": true
     },
     {
       "linhas_estimadas": 0,
       "nome": "supplier_stricker.sync_log",
-      "policies": 0,
-      "rls": false
+      "policies": 1,
+      "rls": true
     }
   ],
   "resumo": {
-    "cron_ativos": 137,
-    "cron_jobs": 144,
+    "cron_ativos": 136,
+    "cron_jobs": 143,
     "extensoes": [
       "http",
       "hypopg",
@@ -4535,18 +4401,18 @@
       "uuid-ossp",
       "wrappers"
     ],
-    "funcoes_public": 1336,
-    "funcoes_security_definer": 572,
-    "ledger_registros": 2577,
-    "ledger_versao_max": "20261101232022",
+    "funcoes_public": 1354,
+    "funcoes_security_definer": 585,
+    "ledger_registros": 3008,
+    "ledger_versao_max": "20261122200000",
     "max_connections": 90,
-    "policies": 961,
+    "policies": 1011,
     "postgres": "17.6",
-    "tabelas_public": 398,
+    "tabelas_public": 417,
     "tabelas_sem_rls": 0,
-    "tamanho_bytes": 6097464467,
-    "triggers_public": 401,
-    "views_public": 197
+    "tamanho_bytes": 6407851155,
+    "triggers_public": 411,
+    "views_public": 200
   },
   "tabelas": [
     {
@@ -4754,9 +4620,9 @@
       }
     },
     {
-      "bytes": 4227072,
+      "bytes": 15556608,
       "citada_no_banco": true,
-      "linhas": 6174,
+      "linhas": 20900,
       "linhas_exatas": true,
       "nome": "admin_audit_log",
       "particao": false,
@@ -4790,7 +4656,7 @@
     {
       "bytes": 4161536,
       "citada_no_banco": true,
-      "linhas": 7832,
+      "linhas": 7921,
       "linhas_exatas": true,
       "nome": "ai_enrichment_queue",
       "particao": false,
@@ -4807,7 +4673,7 @@
     {
       "bytes": 114688,
       "citada_no_banco": true,
-      "linhas": 18,
+      "linhas": 19,
       "linhas_exatas": true,
       "nome": "ai_function_routing",
       "particao": false,
@@ -4856,9 +4722,9 @@
       }
     },
     {
-      "bytes": 188416,
+      "bytes": 221184,
       "citada_no_banco": true,
-      "linhas": 92,
+      "linhas": 150,
       "linhas_exatas": true,
       "nome": "ai_routing_decisions",
       "particao": false,
@@ -4890,9 +4756,9 @@
       }
     },
     {
-      "bytes": 196608,
+      "bytes": 229376,
       "citada_no_banco": true,
-      "linhas": 104,
+      "linhas": 162,
       "linhas_exatas": true,
       "nome": "ai_usage_logs",
       "particao": false,
@@ -4941,9 +4807,9 @@
       }
     },
     {
-      "bytes": 229376,
+      "bytes": 303104,
       "citada_no_banco": true,
-      "linhas": 426,
+      "linhas": 509,
       "linhas_exatas": true,
       "nome": "anon_catalog_grant_audit_log",
       "particao": false,
@@ -4958,9 +4824,9 @@
       }
     },
     {
-      "bytes": 147456,
+      "bytes": 131072,
       "citada_no_banco": true,
-      "linhas": 0,
+      "linhas": 2,
       "linhas_exatas": true,
       "nome": "anon_insert_rate",
       "particao": false,
@@ -4994,7 +4860,7 @@
     {
       "bytes": 1540096,
       "citada_no_banco": true,
-      "linhas": 55,
+      "linhas": 58,
       "linhas_exatas": true,
       "nome": "asia_image_import_queue",
       "particao": false,
@@ -5009,9 +4875,9 @@
       }
     },
     {
-      "bytes": 4710400,
+      "bytes": 4997120,
       "citada_no_banco": true,
-      "linhas": 19207,
+      "linhas": 20437,
       "linhas_exatas": true,
       "nome": "asia_upload_mapping",
       "particao": false,
@@ -5130,7 +4996,7 @@
     {
       "bytes": 3391488,
       "citada_no_banco": true,
-      "linhas": 6584,
+      "linhas": 6545,
       "linhas_exatas": true,
       "nome": "b2b_collection_products",
       "particao": false,
@@ -5213,9 +5079,9 @@
       }
     },
     {
-      "bytes": 77660160,
+      "bytes": 123805696,
       "citada_no_banco": true,
-      "linhas": 81608,
+      "linhas": 124719,
       "linhas_exatas": true,
       "nome": "bot_detection_log",
       "particao": false,
@@ -5227,6 +5093,23 @@
       "uso_no_codigo": {
         "edges": 0,
         "src": 3
+      }
+    },
+    {
+      "bytes": 32768,
+      "citada_no_banco": false,
+      "linhas": 26,
+      "linhas_exatas": true,
+      "nome": "business_calendar",
+      "particao": false,
+      "particionada": false,
+      "policies": 4,
+      "rls": true,
+      "rls_forcado": false,
+      "triggers": 0,
+      "uso_no_codigo": {
+        "edges": 0,
+        "src": 5
       }
     },
     {
@@ -5276,8 +5159,8 @@
       "rls_forcado": false,
       "triggers": 11,
       "uso_no_codigo": {
-        "edges": 9,
-        "src": 9
+        "edges": 10,
+        "src": 11
       }
     },
     {
@@ -5298,7 +5181,7 @@
       }
     },
     {
-      "bytes": 237568,
+      "bytes": 229376,
       "citada_no_banco": true,
       "linhas": 1014,
       "linhas_exatas": true,
@@ -5570,9 +5453,9 @@
       }
     },
     {
-      "bytes": 49152,
+      "bytes": 90112,
       "citada_no_banco": true,
-      "linhas": 4,
+      "linhas": 103,
       "linhas_exatas": true,
       "nome": "collections",
       "particao": false,
@@ -5645,7 +5528,7 @@
       "nome": "color_synonym_map",
       "particao": false,
       "particionada": false,
-      "policies": 5,
+      "policies": 4,
       "rls": true,
       "rls_forcado": false,
       "triggers": 0,
@@ -5706,9 +5589,9 @@
       }
     },
     {
-      "bytes": 65536,
+      "bytes": 98304,
       "citada_no_banco": true,
-      "linhas": 41,
+      "linhas": 45,
       "linhas_exatas": true,
       "nome": "commemorative_dates",
       "particao": false,
@@ -5719,7 +5602,7 @@
       "triggers": 1,
       "uso_no_codigo": {
         "edges": 0,
-        "src": 0
+        "src": 1
       }
     },
     {
@@ -5927,7 +5810,7 @@
       }
     },
     {
-      "bytes": 122880,
+      "bytes": 139264,
       "citada_no_banco": true,
       "linhas": 111,
       "linhas_exatas": true,
@@ -5941,6 +5824,23 @@
       "uso_no_codigo": {
         "edges": 9,
         "src": 1
+      }
+    },
+    {
+      "bytes": 24576,
+      "citada_no_banco": false,
+      "linhas": 0,
+      "linhas_exatas": true,
+      "nome": "crm_seller_identity_links",
+      "particao": false,
+      "particionada": false,
+      "policies": 0,
+      "rls": true,
+      "rls_forcado": false,
+      "triggers": 0,
+      "uso_no_codigo": {
+        "edges": 3,
+        "src": 0
       }
     },
     {
@@ -5978,9 +5878,9 @@
       }
     },
     {
-      "bytes": 57344,
+      "bytes": 114688,
       "citada_no_banco": true,
-      "linhas": 5,
+      "linhas": 22,
       "linhas_exatas": true,
       "nome": "custom_kits",
       "particao": false,
@@ -5991,7 +5891,7 @@
       "triggers": 2,
       "uso_no_codigo": {
         "edges": 1,
-        "src": 15
+        "src": 14
       }
     },
     {
@@ -6041,7 +5941,7 @@
       "rls_forcado": false,
       "triggers": 0,
       "uso_no_codigo": {
-        "edges": 1,
+        "edges": 2,
         "src": 1
       }
     },
@@ -6080,9 +5980,26 @@
       }
     },
     {
+      "bytes": 311296,
+      "citada_no_banco": false,
+      "linhas": 375,
+      "linhas_exatas": true,
+      "nome": "e2e_cleanup_audit",
+      "particao": false,
+      "particionada": false,
+      "policies": 1,
+      "rls": true,
+      "rls_forcado": false,
+      "triggers": 0,
+      "uso_no_codigo": {
+        "edges": 1,
+        "src": 0
+      }
+    },
+    {
       "bytes": 32768,
       "citada_no_banco": true,
-      "linhas": 2,
+      "linhas": 3,
       "linhas_exatas": true,
       "nome": "e2e_cleanup_rate_limit",
       "particao": false,
@@ -6150,7 +6067,7 @@
     {
       "bytes": 65536,
       "citada_no_banco": true,
-      "linhas": 20,
+      "linhas": 23,
       "linhas_exatas": true,
       "nome": "edge_function_invocations",
       "particao": false,
@@ -6167,7 +6084,7 @@
     {
       "bytes": 237568,
       "citada_no_banco": true,
-      "linhas": 0,
+      "linhas": 7,
       "linhas_exatas": true,
       "nome": "edge_rate_limits",
       "particao": false,
@@ -6179,6 +6096,23 @@
       "uso_no_codigo": {
         "edges": 0,
         "src": 0
+      }
+    },
+    {
+      "bytes": 65536,
+      "citada_no_banco": false,
+      "linhas": 11,
+      "linhas_exatas": true,
+      "nome": "endomarketing_themes",
+      "particao": false,
+      "particionada": false,
+      "policies": 1,
+      "rls": true,
+      "rls_forcado": false,
+      "triggers": 1,
+      "uso_no_codigo": {
+        "edges": 0,
+        "src": 1
       }
     },
     {
@@ -6216,9 +6150,9 @@
       }
     },
     {
-      "bytes": 24576,
+      "bytes": 49152,
       "citada_no_banco": true,
-      "linhas": 0,
+      "linhas": 1,
       "linhas_exatas": true,
       "nome": "expert_conversations",
       "particao": false,
@@ -6233,9 +6167,9 @@
       }
     },
     {
-      "bytes": 16384,
+      "bytes": 32768,
       "citada_no_banco": true,
-      "linhas": 0,
+      "linhas": 2,
       "linhas_exatas": true,
       "nome": "expert_messages",
       "particao": false,
@@ -6259,7 +6193,7 @@
       "particionada": false,
       "policies": 1,
       "rls": true,
-      "rls_forcado": false,
+      "rls_forcado": true,
       "triggers": 0,
       "uso_no_codigo": {
         "edges": 13,
@@ -6314,11 +6248,11 @@
       "triggers": 2,
       "uso_no_codigo": {
         "edges": 1,
-        "src": 12
+        "src": 13
       }
     },
     {
-      "bytes": 49152,
+      "bytes": 57344,
       "citada_no_banco": true,
       "linhas": 0,
       "linhas_exatas": true,
@@ -6337,7 +6271,7 @@
     {
       "bytes": 114688,
       "citada_no_banco": true,
-      "linhas": 5,
+      "linhas": 20,
       "linhas_exatas": true,
       "nome": "favorite_lists",
       "particao": false,
@@ -6381,7 +6315,7 @@
       "rls_forcado": false,
       "triggers": 0,
       "uso_no_codigo": {
-        "edges": 8,
+        "edges": 1,
         "src": 1
       }
     },
@@ -6403,9 +6337,26 @@
       }
     },
     {
-      "bytes": 71270400,
+      "bytes": 32768,
+      "citada_no_banco": false,
+      "linhas": 1,
+      "linhas_exatas": true,
+      "nome": "freight_settings",
+      "particao": false,
+      "particionada": false,
+      "policies": 2,
+      "rls": true,
+      "rls_forcado": false,
+      "triggers": 2,
+      "uso_no_codigo": {
+        "edges": 0,
+        "src": 2
+      }
+    },
+    {
+      "bytes": 92954624,
       "citada_no_banco": true,
-      "linhas": 103547,
+      "linhas": 131876,
       "linhas_exatas": true,
       "nome": "frontend_telemetry",
       "particao": false,
@@ -6416,7 +6367,7 @@
       "triggers": 1,
       "uso_no_codigo": {
         "edges": 0,
-        "src": 5
+        "src": 6
       }
     },
     {
@@ -6433,7 +6384,7 @@
       "triggers": 2,
       "uso_no_codigo": {
         "edges": 1,
-        "src": 8
+        "src": 9
       }
     },
     {
@@ -6552,7 +6503,7 @@
       "triggers": 0,
       "uso_no_codigo": {
         "edges": 2,
-        "src": 1
+        "src": 2
       }
     },
     {
@@ -6609,14 +6560,14 @@
     {
       "bytes": 114688,
       "citada_no_banco": true,
-      "linhas": 20,
+      "linhas": 21,
       "linhas_exatas": true,
       "nome": "integration_credentials",
       "particao": false,
       "particionada": false,
       "policies": 4,
       "rls": true,
-      "rls_forcado": false,
+      "rls_forcado": true,
       "triggers": 2,
       "uso_no_codigo": {
         "edges": 8,
@@ -6624,9 +6575,9 @@
       }
     },
     {
-      "bytes": 139264,
+      "bytes": 172032,
       "citada_no_banco": true,
-      "linhas": 207,
+      "linhas": 103,
       "linhas_exatas": true,
       "nome": "ip_access_control",
       "particao": false,
@@ -6668,7 +6619,7 @@
       "policies": 4,
       "rls": true,
       "rls_forcado": false,
-      "triggers": 0,
+      "triggers": 1,
       "uso_no_codigo": {
         "edges": 0,
         "src": 2
@@ -6847,7 +6798,7 @@
     {
       "bytes": 57344,
       "citada_no_banco": true,
-      "linhas": 1,
+      "linhas": 3,
       "linhas_exatas": true,
       "nome": "kit_save_requests",
       "particao": false,
@@ -6930,9 +6881,9 @@
       }
     },
     {
-      "bytes": 30318592,
+      "bytes": 48594944,
       "citada_no_banco": true,
-      "linhas": 30253,
+      "linhas": 49015,
       "linhas_exatas": true,
       "nome": "login_attempts",
       "particao": false,
@@ -6964,9 +6915,9 @@
       }
     },
     {
-      "bytes": 196608,
+      "bytes": 2637824,
       "citada_no_banco": true,
-      "linhas": 40,
+      "linhas": 1137,
       "linhas_exatas": true,
       "nome": "magazine_items",
       "particao": false,
@@ -7000,7 +6951,7 @@
     {
       "bytes": 0,
       "citada_no_banco": true,
-      "linhas": 1,
+      "linhas": 1067,
       "linhas_exatas": true,
       "nome": "magazine_public_view_events",
       "particao": false,
@@ -7083,9 +7034,9 @@
       }
     },
     {
-      "bytes": 32768,
+      "bytes": 630784,
       "citada_no_banco": false,
-      "linhas": 0,
+      "linhas": 1066,
       "linhas_exatas": true,
       "nome": "magazine_public_view_events_2026_11",
       "particao": true,
@@ -7236,9 +7187,9 @@
       }
     },
     {
-      "bytes": 221184,
+      "bytes": 1482752,
       "citada_no_banco": true,
-      "linhas": 143,
+      "linhas": 1534,
       "linhas_exatas": true,
       "nome": "magazines",
       "particao": false,
@@ -7457,9 +7408,9 @@
       }
     },
     {
-      "bytes": 32768,
+      "bytes": 770048,
       "citada_no_banco": true,
-      "linhas": 21,
+      "linhas": 1455,
       "linhas_exatas": true,
       "nome": "mcp_access_violations",
       "particao": false,
@@ -7559,9 +7510,9 @@
       }
     },
     {
-      "bytes": 245760,
+      "bytes": 278528,
       "citada_no_banco": true,
-      "linhas": 1420,
+      "linhas": 1610,
       "linhas_exatas": true,
       "nome": "medallion_coverage_snapshots",
       "particao": false,
@@ -7714,7 +7665,7 @@
     {
       "bytes": 106496,
       "citada_no_banco": true,
-      "linhas": 66,
+      "linhas": 68,
       "linhas_exatas": true,
       "nome": "navigation_analytics",
       "particao": false,
@@ -7895,11 +7846,11 @@
       "triggers": 3,
       "uso_no_codigo": {
         "edges": 1,
-        "src": 17
+        "src": 18
       }
     },
     {
-      "bytes": 114688,
+      "bytes": 147456,
       "citada_no_banco": true,
       "linhas": 5,
       "linhas_exatas": true,
@@ -7912,7 +7863,7 @@
       "triggers": 5,
       "uso_no_codigo": {
         "edges": 19,
-        "src": 16
+        "src": 17
       }
     },
     {
@@ -8133,7 +8084,7 @@
       "triggers": 2,
       "uso_no_codigo": {
         "edges": 0,
-        "src": 5
+        "src": 3
       }
     },
     {
@@ -8201,7 +8152,7 @@
       "triggers": 1,
       "uso_no_codigo": {
         "edges": 0,
-        "src": 12
+        "src": 13
       }
     },
     {
@@ -8222,9 +8173,9 @@
       }
     },
     {
-      "bytes": 270336,
+      "bytes": 393216,
       "citada_no_banco": true,
-      "linhas": 36,
+      "linhas": 42,
       "linhas_exatas": true,
       "nome": "pipeline_health_log",
       "particao": false,
@@ -8258,7 +8209,7 @@
     {
       "bytes": 6766592,
       "citada_no_banco": true,
-      "linhas": 3881,
+      "linhas": 2009,
       "linhas_exatas": true,
       "nome": "pipeline_run_log",
       "particao": false,
@@ -8290,9 +8241,9 @@
       }
     },
     {
-      "bytes": 10518528,
+      "bytes": 10600448,
       "citada_no_banco": true,
-      "linhas": 25116,
+      "linhas": 25267,
       "linhas_exatas": true,
       "nome": "print_area_techniques",
       "particao": false,
@@ -8303,13 +8254,13 @@
       "triggers": 1,
       "uso_no_codigo": {
         "edges": 0,
-        "src": 10
+        "src": 11
       }
     },
     {
-      "bytes": 11468800,
+      "bytes": 11476992,
       "citada_no_banco": true,
-      "linhas": 7868,
+      "linhas": 7957,
       "linhas_exatas": true,
       "nome": "product_ai_content",
       "particao": false,
@@ -8375,9 +8326,9 @@
       }
     },
     {
-      "bytes": 10543104,
+      "bytes": 10625024,
       "citada_no_banco": true,
-      "linhas": 33925,
+      "linhas": 34241,
       "linhas_exatas": true,
       "nome": "product_category_assignments",
       "particao": false,
@@ -8392,20 +8343,20 @@
       }
     },
     {
-      "bytes": 8388608,
+      "bytes": 8396800,
       "citada_no_banco": true,
-      "linhas": 35118,
+      "linhas": 35175,
       "linhas_exatas": true,
       "nome": "product_commemorative_dates",
       "particao": false,
       "particionada": false,
-      "policies": 1,
+      "policies": 5,
       "rls": true,
       "rls_forcado": false,
       "triggers": 1,
       "uso_no_codigo": {
         "edges": 0,
-        "src": 0
+        "src": 4
       }
     },
     {
@@ -8511,6 +8462,23 @@
       }
     },
     {
+      "bytes": 24576,
+      "citada_no_banco": false,
+      "linhas": 0,
+      "linhas_exatas": true,
+      "nome": "product_endomarketing",
+      "particao": false,
+      "particionada": false,
+      "policies": 4,
+      "rls": true,
+      "rls_forcado": false,
+      "triggers": 1,
+      "uso_no_codigo": {
+        "edges": 0,
+        "src": 4
+      }
+    },
+    {
       "bytes": 65536,
       "citada_no_banco": true,
       "linhas": 6,
@@ -8528,9 +8496,9 @@
       }
     },
     {
-      "bytes": 2129920,
+      "bytes": 2138112,
       "citada_no_banco": true,
-      "linhas": 8278,
+      "linhas": 8367,
       "linhas_exatas": true,
       "nome": "product_fiscal",
       "particao": false,
@@ -8649,7 +8617,7 @@
     {
       "bytes": 1032192,
       "citada_no_banco": true,
-      "linhas": 1269,
+      "linhas": 1289,
       "linhas_exatas": true,
       "nome": "product_included_packagings",
       "particao": false,
@@ -8681,9 +8649,9 @@
       }
     },
     {
-      "bytes": 5046272,
+      "bytes": 5103616,
       "citada_no_banco": true,
-      "linhas": 13763,
+      "linhas": 14197,
       "linhas_exatas": true,
       "nome": "product_materials",
       "particao": false,
@@ -8717,7 +8685,7 @@
     {
       "bytes": 598016,
       "citada_no_banco": true,
-      "linhas": 868,
+      "linhas": 876,
       "linhas_exatas": true,
       "nome": "product_notebook_specs",
       "particao": false,
@@ -8734,7 +8702,7 @@
     {
       "bytes": 5750784,
       "citada_no_banco": true,
-      "linhas": 2167,
+      "linhas": 2250,
       "linhas_exatas": true,
       "nome": "product_novelties",
       "particao": false,
@@ -8802,7 +8770,7 @@
     {
       "bytes": 2506752,
       "citada_no_banco": true,
-      "linhas": 8197,
+      "linhas": 8286,
       "linhas_exatas": true,
       "nome": "product_physical",
       "particao": false,
@@ -8853,7 +8821,7 @@
     {
       "bytes": 20848640,
       "citada_no_banco": true,
-      "linhas": 34141,
+      "linhas": 34177,
       "linhas_exatas": true,
       "nome": "product_properties",
       "particao": false,
@@ -8870,7 +8838,7 @@
     {
       "bytes": 966656,
       "citada_no_banco": true,
-      "linhas": 472,
+      "linhas": 530,
       "linhas_exatas": true,
       "nome": "product_qa_image_alerts",
       "particao": false,
@@ -8921,7 +8889,7 @@
     {
       "bytes": 27123712,
       "citada_no_banco": true,
-      "linhas": 8299,
+      "linhas": 8388,
       "linhas_exatas": true,
       "nome": "product_seo",
       "particao": false,
@@ -8972,7 +8940,7 @@
     {
       "bytes": 2121728,
       "citada_no_banco": true,
-      "linhas": 8299,
+      "linhas": 8388,
       "linhas_exatas": true,
       "nome": "product_supply",
       "particao": false,
@@ -9004,9 +8972,9 @@
       }
     },
     {
-      "bytes": 11681792,
+      "bytes": 11689984,
       "citada_no_banco": true,
-      "linhas": 50971,
+      "linhas": 50992,
       "linhas_exatas": true,
       "nome": "product_tags",
       "particao": false,
@@ -9028,19 +8996,19 @@
       "nome": "product_target_audiences",
       "particao": false,
       "particionada": false,
-      "policies": 1,
+      "policies": 4,
       "rls": true,
       "rls_forcado": false,
       "triggers": 2,
       "uso_no_codigo": {
         "edges": 0,
-        "src": 0
+        "src": 4
       }
     },
     {
-      "bytes": 36626432,
+      "bytes": 36741120,
       "citada_no_banco": true,
-      "linhas": 20696,
+      "linhas": 20939,
       "linhas_exatas": true,
       "nome": "product_variants",
       "particao": false,
@@ -9072,9 +9040,9 @@
       }
     },
     {
-      "bytes": 704512,
+      "bytes": 1171456,
       "citada_no_banco": true,
-      "linhas": 1857,
+      "linhas": 3371,
       "linhas_exatas": true,
       "nome": "product_views",
       "particao": false,
@@ -9089,9 +9057,9 @@
       }
     },
     {
-      "bytes": 186376192,
+      "bytes": 189292544,
       "citada_no_banco": true,
-      "linhas": 8299,
+      "linhas": 8388,
       "linhas_exatas": true,
       "nome": "products",
       "particao": false,
@@ -9101,8 +9069,8 @@
       "rls_forcado": false,
       "triggers": 43,
       "uso_no_codigo": {
-        "edges": 22,
-        "src": 37
+        "edges": 23,
+        "src": 45
       }
     },
     {
@@ -9125,7 +9093,7 @@
     {
       "bytes": 28106752,
       "citada_no_banco": true,
-      "linhas": 8293,
+      "linhas": 8382,
       "linhas_exatas": true,
       "nome": "produtos_padronizacao",
       "particao": false,
@@ -9140,9 +9108,9 @@
       }
     },
     {
-      "bytes": 43687936,
+      "bytes": 43696128,
       "citada_no_banco": true,
-      "linhas": 20611,
+      "linhas": 20854,
       "linhas_exatas": true,
       "nome": "produtos_padronizacao_variantes",
       "particao": false,
@@ -9174,9 +9142,9 @@
       }
     },
     {
-      "bytes": 204800,
+      "bytes": 253952,
       "citada_no_banco": true,
-      "linhas": 39,
+      "linhas": 86,
       "linhas_exatas": true,
       "nome": "profiles",
       "particao": false,
@@ -9184,10 +9152,10 @@
       "policies": 3,
       "rls": true,
       "rls_forcado": false,
-      "triggers": 3,
+      "triggers": 4,
       "uso_no_codigo": {
-        "edges": 8,
-        "src": 37
+        "edges": 10,
+        "src": 35
       }
     },
     {
@@ -9242,9 +9210,9 @@
       }
     },
     {
-      "bytes": 3342336,
+      "bytes": 3899392,
       "citada_no_banco": true,
-      "linhas": 3264,
+      "linhas": 3749,
       "linhas_exatas": true,
       "nome": "qa_image_coverage_log",
       "particao": false,
@@ -9266,12 +9234,12 @@
       "nome": "query_telemetry",
       "particao": false,
       "particionada": false,
-      "policies": 2,
+      "policies": 3,
       "rls": true,
       "rls_forcado": false,
       "triggers": 0,
       "uso_no_codigo": {
-        "edges": 0,
+        "edges": 1,
         "src": 10
       }
     },
@@ -9289,7 +9257,24 @@
       "triggers": 5,
       "uso_no_codigo": {
         "edges": 0,
-        "src": 0
+        "src": 1
+      }
+    },
+    {
+      "bytes": 49152,
+      "citada_no_banco": true,
+      "linhas": 0,
+      "linhas_exatas": true,
+      "nome": "quote_comments",
+      "particao": false,
+      "particionada": false,
+      "policies": 4,
+      "rls": true,
+      "rls_forcado": true,
+      "triggers": 1,
+      "uso_no_codigo": {
+        "edges": 0,
+        "src": 5
       }
     },
     {
@@ -9312,7 +9297,7 @@
     {
       "bytes": 172032,
       "citada_no_banco": true,
-      "linhas": 12,
+      "linhas": 13,
       "linhas_exatas": true,
       "nome": "quote_history",
       "particao": false,
@@ -9356,7 +9341,7 @@
       "rls_forcado": false,
       "triggers": 6,
       "uso_no_codigo": {
-        "edges": 2,
+        "edges": 3,
         "src": 19
       }
     },
@@ -9374,7 +9359,7 @@
       "triggers": 1,
       "uso_no_codigo": {
         "edges": 0,
-        "src": 8
+        "src": 9
       }
     },
     {
@@ -9407,7 +9392,7 @@
       "rls_forcado": false,
       "triggers": 11,
       "uso_no_codigo": {
-        "edges": 39,
+        "edges": 43,
         "src": 38
       }
     },
@@ -9463,9 +9448,9 @@
       }
     },
     {
-      "bytes": 4022272,
+      "bytes": 4194304,
       "citada_no_banco": true,
-      "linhas": 17815,
+      "linhas": 18599,
       "linhas_exatas": true,
       "nome": "request_rate_limits",
       "particao": false,
@@ -9544,7 +9529,7 @@
       "triggers": 0,
       "uso_no_codigo": {
         "edges": 0,
-        "src": 4
+        "src": 5
       }
     },
     {
@@ -9650,9 +9635,9 @@
       }
     },
     {
-      "bytes": 2416640,
+      "bytes": 2891776,
       "citada_no_banco": true,
-      "linhas": 552,
+      "linhas": 634,
       "linhas_exatas": true,
       "nome": "schema_drift_log",
       "particao": false,
@@ -9701,9 +9686,9 @@
       }
     },
     {
-      "bytes": 2457600,
+      "bytes": 2973696,
       "citada_no_banco": true,
-      "linhas": 529,
+      "linhas": 611,
       "linhas_exatas": true,
       "nome": "schema_signature_drift_log",
       "particao": false,
@@ -9720,7 +9705,7 @@
     {
       "bytes": 294912,
       "citada_no_banco": true,
-      "linhas": 351,
+      "linhas": 354,
       "linhas_exatas": true,
       "nome": "search_analytics",
       "particao": false,
@@ -9761,7 +9746,7 @@
       "particionada": false,
       "policies": 2,
       "rls": true,
-      "rls_forcado": false,
+      "rls_forcado": true,
       "triggers": 0,
       "uso_no_codigo": {
         "edges": 3,
@@ -9786,9 +9771,9 @@
       }
     },
     {
-      "bytes": 221184,
+      "bytes": 442368,
       "citada_no_banco": true,
-      "linhas": 54,
+      "linhas": 51,
       "linhas_exatas": true,
       "nome": "seller_cart_items",
       "particao": false,
@@ -9803,9 +9788,9 @@
       }
     },
     {
-      "bytes": 114688,
+      "bytes": 163840,
       "citada_no_banco": true,
-      "linhas": 28,
+      "linhas": 97,
       "linhas_exatas": true,
       "nome": "seller_carts",
       "particao": false,
@@ -9820,9 +9805,9 @@
       }
     },
     {
-      "bytes": 65536,
+      "bytes": 188416,
       "citada_no_banco": true,
-      "linhas": 39,
+      "linhas": 86,
       "linhas_exatas": true,
       "nome": "seller_discount_limits",
       "particao": false,
@@ -9871,6 +9856,23 @@
       }
     },
     {
+      "bytes": 65536,
+      "citada_no_banco": false,
+      "linhas": 4,
+      "linhas_exatas": true,
+      "nome": "shipping_boxes",
+      "particao": false,
+      "particionada": false,
+      "policies": 3,
+      "rls": true,
+      "rls_forcado": false,
+      "triggers": 2,
+      "uso_no_codigo": {
+        "edges": 0,
+        "src": 7
+      }
+    },
+    {
       "bytes": 16384,
       "citada_no_banco": false,
       "linhas": 0,
@@ -9907,7 +9909,7 @@
     {
       "bytes": 860160,
       "citada_no_banco": true,
-      "linhas": 1451,
+      "linhas": 1477,
       "linhas_exatas": true,
       "nome": "sm_site_url_map",
       "particao": false,
@@ -9958,7 +9960,7 @@
     {
       "bytes": 73728,
       "citada_no_banco": true,
-      "linhas": 149,
+      "linhas": 169,
       "linhas_exatas": true,
       "nome": "spot_health_log",
       "particao": false,
@@ -9990,9 +9992,9 @@
       }
     },
     {
-      "bytes": 16384,
+      "bytes": 32768,
       "citada_no_banco": true,
-      "linhas": 0,
+      "linhas": 2,
       "linhas_exatas": true,
       "nome": "step_up_audit_log",
       "particao": false,
@@ -10002,7 +10004,7 @@
       "rls_forcado": false,
       "triggers": 0,
       "uso_no_codigo": {
-        "edges": 1,
+        "edges": 4,
         "src": 0
       }
     },
@@ -10033,7 +10035,7 @@
       "particionada": false,
       "policies": 4,
       "rls": true,
-      "rls_forcado": false,
+      "rls_forcado": true,
       "triggers": 0,
       "uso_no_codigo": {
         "edges": 1,
@@ -10041,9 +10043,9 @@
       }
     },
     {
-      "bytes": 1014063104,
+      "bytes": 1143300096,
       "citada_no_banco": true,
-      "linhas": 2842691,
+      "linhas": 3250003,
       "linhas_exatas": false,
       "nome": "stock_daily_summary",
       "particao": false,
@@ -10054,13 +10056,30 @@
       "triggers": 0,
       "uso_no_codigo": {
         "edges": 0,
-        "src": 4
+        "src": 2
       }
     },
     {
-      "bytes": 815431680,
+      "bytes": 49152,
+      "citada_no_banco": false,
+      "linhas": 0,
+      "linhas_exatas": true,
+      "nome": "stock_notes",
+      "particao": false,
+      "particionada": false,
+      "policies": 4,
+      "rls": true,
+      "rls_forcado": false,
+      "triggers": 1,
+      "uso_no_codigo": {
+        "edges": 0,
+        "src": 3
+      }
+    },
+    {
+      "bytes": 829095936,
       "citada_no_banco": true,
-      "linhas": 151637,
+      "linhas": 156536,
       "linhas_exatas": true,
       "nome": "stock_snapshots",
       "particao": false,
@@ -10145,7 +10164,7 @@
     {
       "bytes": 393216,
       "citada_no_banco": true,
-      "linhas": 288,
+      "linhas": 289,
       "linhas_exatas": true,
       "nome": "supplier_colors",
       "particao": false,
@@ -10230,7 +10249,7 @@
     {
       "bytes": 10215424,
       "citada_no_banco": true,
-      "linhas": 844,
+      "linhas": 942,
       "linhas_exatas": true,
       "nome": "supplier_import_batches",
       "particao": false,
@@ -10279,9 +10298,9 @@
       }
     },
     {
-      "bytes": 393854976,
+      "bytes": 395722752,
       "citada_no_banco": true,
-      "linhas": 20648,
+      "linhas": 20891,
       "linhas_exatas": true,
       "nome": "supplier_products_raw",
       "particao": false,
@@ -10298,7 +10317,7 @@
     {
       "bytes": 0,
       "citada_no_banco": true,
-      "linhas": 1375941,
+      "linhas": 1402901,
       "linhas_exatas": false,
       "nome": "supplier_products_raw_history",
       "particao": false,
@@ -10315,7 +10334,7 @@
     {
       "bytes": 790126592,
       "citada_no_banco": false,
-      "linhas": 531285,
+      "linhas": 531115,
       "linhas_exatas": false,
       "nome": "supplier_products_raw_history_p2026_08",
       "particao": true,
@@ -10332,7 +10351,7 @@
     {
       "bytes": 738852864,
       "citada_no_banco": false,
-      "linhas": 495522,
+      "linhas": 496001,
       "linhas_exatas": false,
       "nome": "supplier_products_raw_history_p2026_09",
       "particao": true,
@@ -10349,7 +10368,7 @@
     {
       "bytes": 525950976,
       "citada_no_banco": false,
-      "linhas": 348092,
+      "linhas": 348743,
       "linhas_exatas": false,
       "nome": "supplier_products_raw_history_p2026_10",
       "particao": true,
@@ -10364,9 +10383,9 @@
       }
     },
     {
-      "bytes": 2514944,
+      "bytes": 51617792,
       "citada_no_banco": false,
-      "linhas": 1460,
+      "linhas": 30380,
       "linhas_exatas": true,
       "nome": "supplier_products_raw_history_p2026_11",
       "particao": true,
@@ -10432,6 +10451,176 @@
       }
     },
     {
+      "bytes": 16384,
+      "citada_no_banco": false,
+      "linhas": 0,
+      "linhas_exatas": true,
+      "nome": "supplier_products_raw_history_p2027_03",
+      "particao": true,
+      "particionada": false,
+      "policies": 2,
+      "rls": true,
+      "rls_forcado": false,
+      "triggers": 0,
+      "uso_no_codigo": {
+        "edges": 0,
+        "src": 0
+      }
+    },
+    {
+      "bytes": 16384,
+      "citada_no_banco": false,
+      "linhas": 0,
+      "linhas_exatas": true,
+      "nome": "supplier_products_raw_history_p2027_04",
+      "particao": true,
+      "particionada": false,
+      "policies": 2,
+      "rls": true,
+      "rls_forcado": false,
+      "triggers": 0,
+      "uso_no_codigo": {
+        "edges": 0,
+        "src": 0
+      }
+    },
+    {
+      "bytes": 16384,
+      "citada_no_banco": false,
+      "linhas": 0,
+      "linhas_exatas": true,
+      "nome": "supplier_products_raw_history_p2027_05",
+      "particao": true,
+      "particionada": false,
+      "policies": 2,
+      "rls": true,
+      "rls_forcado": false,
+      "triggers": 0,
+      "uso_no_codigo": {
+        "edges": 0,
+        "src": 0
+      }
+    },
+    {
+      "bytes": 16384,
+      "citada_no_banco": false,
+      "linhas": 0,
+      "linhas_exatas": true,
+      "nome": "supplier_products_raw_history_p2027_06",
+      "particao": true,
+      "particionada": false,
+      "policies": 2,
+      "rls": true,
+      "rls_forcado": false,
+      "triggers": 0,
+      "uso_no_codigo": {
+        "edges": 0,
+        "src": 0
+      }
+    },
+    {
+      "bytes": 16384,
+      "citada_no_banco": false,
+      "linhas": 0,
+      "linhas_exatas": true,
+      "nome": "supplier_products_raw_history_p2027_07",
+      "particao": true,
+      "particionada": false,
+      "policies": 2,
+      "rls": true,
+      "rls_forcado": false,
+      "triggers": 0,
+      "uso_no_codigo": {
+        "edges": 0,
+        "src": 0
+      }
+    },
+    {
+      "bytes": 16384,
+      "citada_no_banco": false,
+      "linhas": 0,
+      "linhas_exatas": true,
+      "nome": "supplier_products_raw_history_p2027_08",
+      "particao": true,
+      "particionada": false,
+      "policies": 2,
+      "rls": true,
+      "rls_forcado": false,
+      "triggers": 0,
+      "uso_no_codigo": {
+        "edges": 0,
+        "src": 0
+      }
+    },
+    {
+      "bytes": 16384,
+      "citada_no_banco": false,
+      "linhas": 0,
+      "linhas_exatas": true,
+      "nome": "supplier_products_raw_history_p2027_09",
+      "particao": true,
+      "particionada": false,
+      "policies": 2,
+      "rls": true,
+      "rls_forcado": false,
+      "triggers": 0,
+      "uso_no_codigo": {
+        "edges": 0,
+        "src": 0
+      }
+    },
+    {
+      "bytes": 16384,
+      "citada_no_banco": false,
+      "linhas": 0,
+      "linhas_exatas": true,
+      "nome": "supplier_products_raw_history_p2027_10",
+      "particao": true,
+      "particionada": false,
+      "policies": 2,
+      "rls": true,
+      "rls_forcado": false,
+      "triggers": 0,
+      "uso_no_codigo": {
+        "edges": 0,
+        "src": 0
+      }
+    },
+    {
+      "bytes": 16384,
+      "citada_no_banco": false,
+      "linhas": 0,
+      "linhas_exatas": true,
+      "nome": "supplier_products_raw_history_p2027_11",
+      "particao": true,
+      "particionada": false,
+      "policies": 2,
+      "rls": true,
+      "rls_forcado": false,
+      "triggers": 0,
+      "uso_no_codigo": {
+        "edges": 0,
+        "src": 0
+      }
+    },
+    {
+      "bytes": 16384,
+      "citada_no_banco": false,
+      "linhas": 0,
+      "linhas_exatas": true,
+      "nome": "supplier_products_raw_history_p2027_12",
+      "particao": true,
+      "particionada": false,
+      "policies": 2,
+      "rls": true,
+      "rls_forcado": false,
+      "triggers": 0,
+      "uso_no_codigo": {
+        "edges": 0,
+        "src": 0
+      }
+    },
+    {
       "bytes": 163840,
       "citada_no_banco": true,
       "linhas": 275,
@@ -10479,7 +10668,7 @@
       "triggers": 1,
       "uso_no_codigo": {
         "edges": 0,
-        "src": 0
+        "src": 2
       }
     },
     {
@@ -10581,7 +10770,7 @@
       "triggers": 2,
       "uso_no_codigo": {
         "edges": 2,
-        "src": 20
+        "src": 23
       }
     },
     {
@@ -10665,7 +10854,7 @@
       "rls_forcado": false,
       "triggers": 2,
       "uso_no_codigo": {
-        "edges": 0,
+        "edges": 2,
         "src": 20
       }
     },
@@ -10683,11 +10872,11 @@
       "triggers": 3,
       "uso_no_codigo": {
         "edges": 0,
-        "src": 7
+        "src": 9
       }
     },
     {
-      "bytes": 2973696,
+      "bytes": 2965504,
       "citada_no_banco": true,
       "linhas": 88,
       "linhas_exatas": true,
@@ -10706,7 +10895,7 @@
     {
       "bytes": 65536,
       "citada_no_banco": true,
-      "linhas": 38,
+      "linhas": 39,
       "linhas_exatas": true,
       "nome": "target_audiences",
       "particao": false,
@@ -10717,7 +10906,7 @@
       "triggers": 2,
       "uso_no_codigo": {
         "edges": 0,
-        "src": 0
+        "src": 1
       }
     },
     {
@@ -10925,9 +11114,9 @@
       }
     },
     {
-      "bytes": 122880,
+      "bytes": 196608,
       "citada_no_banco": true,
-      "linhas": 39,
+      "linhas": 86,
       "linhas_exatas": true,
       "nome": "user_roles",
       "particao": false,
@@ -10937,8 +11126,8 @@
       "rls_forcado": false,
       "triggers": 2,
       "uso_no_codigo": {
-        "edges": 20,
-        "src": 4
+        "edges": 21,
+        "src": 6
       }
     },
     {
@@ -10959,7 +11148,7 @@
       }
     },
     {
-      "bytes": 24576,
+      "bytes": 40960,
       "citada_no_banco": true,
       "linhas": 0,
       "linhas_exatas": true,
@@ -10968,7 +11157,7 @@
       "particionada": false,
       "policies": 4,
       "rls": true,
-      "rls_forcado": false,
+      "rls_forcado": true,
       "triggers": 0,
       "uso_no_codigo": {
         "edges": 1,
@@ -10993,9 +11182,9 @@
       }
     },
     {
-      "bytes": 72671232,
+      "bytes": 72687616,
       "citada_no_banco": true,
-      "linhas": 20641,
+      "linhas": 20886,
       "linhas_exatas": true,
       "nome": "variant_supplier_sources",
       "particao": false,
@@ -11175,12 +11364,12 @@
       "rls_forcado": false,
       "triggers": 0,
       "uso_no_codigo": {
-        "edges": 5,
-        "src": 6
+        "edges": 6,
+        "src": 8
       }
     },
     {
-      "bytes": 49152,
+      "bytes": 57344,
       "citada_no_banco": true,
       "linhas": 0,
       "linhas_exatas": true,
@@ -11265,9 +11454,9 @@
       }
     },
     {
-      "bytes": 2015232,
+      "bytes": 3481600,
       "citada_no_banco": true,
-      "linhas": 2338,
+      "linhas": 4236,
       "linhas_exatas": true,
       "nome": "workspace_notifications",
       "particao": false,
@@ -11278,7 +11467,7 @@
       "triggers": 1,
       "uso_no_codigo": {
         "edges": 14,
-        "src": 15
+        "src": 16
       }
     },
     {
@@ -11329,7 +11518,6 @@
       "notification_preferences",
       "order_item_personalizations",
       "product_search_logs",
-      "product_target_audiences",
       "push_subscriptions",
       "search_queries",
       "user_allowed_ips",
