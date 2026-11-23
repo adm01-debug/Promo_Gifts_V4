@@ -130,9 +130,22 @@ Severidade das etapas: Média 158 · Alta 79 · Baixa 54 · Crítica 9
   - Evidência 079: `useQuoteTemplates.fetchAllTemplates` agora chama
     `setError('Erro ao carregar templates')` no catch, usando o mesmo estado de `fetchTemplates`
     (sem `errorAll`).
-- [ ] 080 — Teste que prova o teto de desconto ficando desatualizado — onda 2 — Alta
-- [ ] 081 — Migrar `useSellerDiscountLimits` para react-query — onda 2 — Alta
-- [ ] 082 — Invalidar o limite de desconto depois de alterá-lo — onda 2 — Alta
+- [x] 080 — Teste que prova o teto de desconto ficando desatualizado — onda 2 — Alta
+- [x] 081 — Migrar `useSellerDiscountLimits` para react-query — onda 2 — Alta
+- [x] 082 — Invalidar o limite de desconto depois de alterá-lo — onda 2 — Alta
+  - Evidência 080: `useSellerDiscountLimits.propagation.test.tsx` monta dois consumidores no mesmo
+    `QueryClient` (painel admin grava, builder de orçamento lê). Antes da 081 falhava com
+    `- Expected 2 / + Received 5` (teto antigo permanecia no builder) — bug provado.
+  - Evidência 081: `useSellerDiscountLimits.ts` migrado para `useQuery` com
+    `SELLER_DISCOUNT_LIMITS_KEY`; `setLimit`/`deleteLimit` invalidam
+    `['seller-discount-limits']`. `fetchMyLimit`/`fetchAllLimits` mantêm identidade estável via
+    `useRef` (contrato exigido por `DiscountManagementPanel.tsx`). Testes antigos
+    (`useSellerDiscountLimits.test.ts` 12 casos, `.guard.test.ts` 2 casos) migrados para
+    `QueryClientProvider` e verdes.
+  - Evidência 082: `SellerDiscountLimitsAdminPage.tsx` (mutation `save`) agora também invalida
+    `['seller-discount-limits']`, a chave lida pelo builder (`SellerDiscountLimitsPanel.tsx:27`).
+  - Validação: `npx tsc --noEmit` exit 0; `npx eslint` nos 5 arquivos tocados sem problemas;
+    `npx vitest run src/hooks src/components/admin src/pages/admin` → 163 arquivos, 2885 testes verdes.
 - [ ] 083 — Reforçar o teto de desconto no banco, não só no front — onda 2 — Alta — APROVAÇÃO
 - [ ] 084 — Invalidar `['role-permissions']` depois de gravar permissões de papel — onda 2 — Alta
 - [ ] 085 — Substituir o `useState` local de `RolePermissionsPage` pela query compartilhada — onda 2 — Média

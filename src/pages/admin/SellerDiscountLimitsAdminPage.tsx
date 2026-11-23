@@ -215,6 +215,8 @@ export default function SellerDiscountLimitsAdminPage() {
       });
       qc.invalidateQueries({ queryKey: ['admin-seller-discount-limits'] });
       qc.invalidateQueries({ queryKey: ['admin-discount-impact'] });
+      // Mesmo limite lido pelo builder de orçamento (useSellerDiscountLimits).
+      qc.invalidateQueries({ queryKey: ['seller-discount-limits'] });
     },
     onError: (e: unknown) => toast.error(sanitizeError(e)),
   });
