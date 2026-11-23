@@ -1,4 +1,5 @@
 import { getCorsHeaders } from "../_shared/cors.ts";
+import { safeErrorResponse } from "../_shared/error-response.ts";
 import { createClient } from "npm:@supabase/supabase-js@2.49.4";
 import { parseContract } from "../_shared/contracts/index.ts";
 import {
@@ -68,7 +69,7 @@ Deno.serve(async (req) => {
     while (true) {
       const { data, error } = await supabaseAdmin.auth.admin.listUsers({ page, perPage });
       if (error) {
-        return jsonRes({ error: error.message }, 500);
+        return safeErrorResponse(error, { corsHeaders, logLabel: "[force-global-logout] listUsers error", publicMessage: "db_error" });
       }
 
       const users = data?.users || [];

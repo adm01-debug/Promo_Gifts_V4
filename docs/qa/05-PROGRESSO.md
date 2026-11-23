@@ -87,10 +87,10 @@ Severidade das etapas: Média 158 · Alta 79 · Baixa 54 · Crítica 9
 - [ ] 054 — Revisar as 9 funções `SECURITY DEFINER` executáveis por `anon` — onda 1 — Média — APROVAÇÃO
 - [ ] 055 — Triagem das 112 funções `SECURITY DEFINER` executáveis por usuário logado — onda 1 — Média — APROVAÇÃO
 - [ ] 056 — Revogar os grants de `anon` abertos para a cadeia das views de compras — onda 1 — Média — APROVAÇÃO
-- [ ] 057 — Parar de devolver erro cru do Postgres na `crm-db-bridge` — onda 1 — Média
-- [ ] 058 — Adotar o helper de erro em `manage-users` — onda 1 — Média
-- [ ] 059 — Adotar o helper de erro em `step-up-verify` e `external-db-inspect` — onda 1 — Média
-- [ ] 060 — Adotar o helper de erro em `force-global-logout` — onda 1 — Baixa
+- [~] 057 — Parar de devolver erro cru do Postgres na `crm-db-bridge` — onda 1 — Média
+- [~] 058 — Adotar o helper de erro em `manage-users` — onda 1 — Média
+- [~] 059 — Adotar o helper de erro em `step-up-verify` e `external-db-inspect` — onda 1 — Média
+- [~] 060 — Adotar o helper de erro em `force-global-logout` — onda 1 — Baixa
 - [ ] 061 — Gate que exige o helper de erro em edge function nova — onda 1 — Média — APROVAÇÃO
 - [ ] 062 — Varredura de segredo em `recovery/`, fixtures e artefatos versionados — onda 1 — Média — APROVAÇÃO
 
