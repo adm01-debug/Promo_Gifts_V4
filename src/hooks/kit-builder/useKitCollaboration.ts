@@ -9,6 +9,12 @@ import { toast } from 'sonner';
 import { sanitizeError } from '@/lib/security/sanitize-error';
 import { logger } from '@/lib/logger';
 
+/**
+ * Refetch de segurança dos comentários do kit. Baixa frequência de propósito: existe só para
+ * cobrir a ausência do realtime, não para ser a fonte principal de atualização.
+ */
+export const KIT_COMMENTS_FALLBACK_REFETCH_MS = 45_000;
+
 export interface KitCollaboratorRow {
   id: string;
   kit_id: string;
@@ -127,6 +133,19 @@ export function useKitComments(kitId: string | undefined) {
     return () => {
       supabase.removeChannel(channel);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [kitId, qc]);
+
+  // Rede de segurança do realtime (etapa 088 / ACH-035): quando `kit_comments` não está na
+  // publicação `supabase_realtime` o canal conecta com sucesso (SUBSCRIBED) e nunca entrega
+  // evento, então o fallback de erro do canal nunca dispara. Refetch de baixa frequência
+  // garante que o comentário do outro usuário apareça no ciclo seguinte.
+  useEffect(() => {
+    if (!kitId) return;
+    const intervalId = window.setInterval(() => {
+      void qc.invalidateQueries({ queryKey: key, refetchType: 'active' });
+    }, KIT_COMMENTS_FALLBACK_REFETCH_MS);
+    return () => window.clearInterval(intervalId);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [kitId, qc]);
 

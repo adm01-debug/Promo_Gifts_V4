@@ -165,9 +165,38 @@ Severidade das etapas: Média 158 · Alta 79 · Baixa 54 · Crítica 9
     `npx vitest run src/pages/admin src/hooks/quotes src/hooks/kit-builder src/components/admin`
     → 55 arquivos, 665 testes verdes.
 - [ ] 087 — Decidir e registrar se `kit_comments` entra no realtime — onda 2 — Média — APROVAÇÃO
-- [ ] 088 — Fazer o fallback da colaboração cobrir também a ausência de publicação — onda 2 — Média
-- [ ] 089 — Corrigir a comparação de `href` que impede o badge de aprovações aparecer — onda 2 — Média
-- [ ] 090 — Desligar o `refetchInterval` órfão do badge — onda 2 — Baixa
+- [x] 088 — Fazer o fallback da colaboração cobrir também a ausência de publicação — onda 2 — Média
+  - Evidência 088: `useKitComments` (`src/hooks/kit-builder/useKitCollaboration.ts`) exporta
+    `KIT_COMMENTS_FALLBACK_REFETCH_MS = 45_000` e mantém um `setInterval` que invalida
+    `['kit-comments', kitId]` com `refetchType: 'active'`. O canal realtime conecta (SUBSCRIBED)
+    mesmo quando `kit_comments` não está em `supabase_realtime` e nunca entrega evento —
+    sem o fallback, a lista só atualizava ao recarregar a página.
+    `useKitCollaboration.fallback.test.tsx` (2 casos, `vi.useFakeTimers()`) simula exatamente esse
+    cenário: o mock do canal **sempre** chama `cb('SUBSCRIBED')` e nenhum evento chega; sem o
+    `setInterval` os 2 casos falham (prova).
+  - Validação: `npm run typecheck` exit 0; `npx vitest run src/hooks/kit-builder`
+    → 3 arquivos, 13 testes verdes.
+- [x] 089 — Corrigir a comparação de `href` que impede o badge de aprovações aparecer — onda 2 — Média
+  - Causa raiz: `SidebarReorganized.tsx` comparava `item.href === '/admin/usuarios?tab=discounts'`,
+    mas o item do menu declara `href: '/admin/usuarios'` — a condição nunca era verdadeira e o
+    badge de aprovações pendentes nunca renderizava (a lógica de render em
+    `SidebarNavGroup.tsx:204` estava correta).
+  - Evidência 089: novo campo `badgeKey?: 'pending-discount-approvals'` em `NavItem`
+    (`sidebar/SidebarNavGroup.tsx`), item `/admin/usuarios` marcado com ele, e a seleção passou a
+    usar `item.badgeKey` através do helper puro `withPendingApprovalBadge`
+    (`sidebar/pending-approval-badge.ts`). `SidebarReorganized.badge.test.ts` (7 casos) cobre
+    aplicação, contagem zero/indefinida, não-admin, imutabilidade e preservação de identidade
+    dos grupos alheios; revertendo a comparação para o `href` antigo o caso principal falha (prova).
+- [x] 090 — Desligar o `refetchInterval` órfão do badge — onda 2 — Baixa
+  - Evidência 090: a chave virou a constante exportada `PENDING_DISCOUNT_APPROVALS_QUERY_KEY`
+    (mesmo valor `['pending-discount-approvals-count']`) e o intervalo da sidebar foi alinhado ao
+    de `DiscountApprovalHeaderBadge.tsx` (`60_000` em vez de `30_000`). Com `queryKey` idêntica o
+    React Query já compartilha **um** observer, mas a divergência de opções gerava refetch a
+    cada 30 s além do ciclo de 60 s do header. `AdminUsuariosPage.tsx` fica para a etapa 199.
+    Asserção de código no mesmo teste: a sidebar não contém mais `refetchInterval: 30_000` nem a
+    string literal da chave, e ambos os arquivos declaram `60_000`.
+  - Validação: `npm run typecheck` exit 0; `npx eslint` nos arquivos tocados sem problemas;
+    `npx vitest run src/components/layout` → 16 arquivos, 2377 testes verdes (42 skipped).
 - [ ] 091 — Dar ação ao botão "Exportar Relatório" da comparação de fornecedores — onda 2 — Média
 - [ ] 092 — Varredura dirigida de "erro virando vazio" nas demais telas de fluxo principal — onda 2 — Média
 
