@@ -19,6 +19,9 @@ import { authorizeDispatcher } from "../_shared/dispatcher-auth.ts";
 import { assertSwitchEnabled } from "../_shared/kill_switch.ts";
 import { getCredential } from "../_shared/credentials.ts";
 import { getBreaker } from "../_shared/circuit-breaker.ts";
+// QA Etapa 043 (ACH-009): url-allowlist conectada em modo observador.
+// Registra would-block sem bloquear. Etapa 044 liga o bloqueio efetivo.
+import { validateExternalUrl } from "../_shared/url-allowlist.ts";
 
 const corsHeaders = buildPublicCorsHeaders({ allowMethods: "POST, OPTIONS" });
 
@@ -157,6 +160,18 @@ Deno.serve(async (req) => {
       // fix_version=2026-07-09-webhook-header-compat: lê signature_header do registro (x-webhook-signature para Champions V2)
       const _sigHdr = ((hook as {signature_header?: string}).signature_header) ?? "X-Signature-256";
       if (secret) headers[_sigHdr] = "sha256=" + await hmacSign(bodyJson, secret);
+      // ACH-009 observador: registra destinos que seriam bloqueados pela allowlist
+      const _allowlistCheckTest = validateExternalUrl(hook.url);
+      if (!_allowlistCheckTest.ok) {
+        console.warn(JSON.stringify({
+          level: "warn", context: "allowlist", mode: "observer",
+          verdict: "would-block", host: (() => { try { return new URL(hook.url).hostname; } catch { return hook.url; } })(),
+          reason: _allowlistCheckTest.reason, test_mode: true,
+        }));
+      } else {
+        console.log(JSON.stringify({ level: "info", context: "allowlist", verdict: "pass",
+          host: (() => { try { return new URL(hook.url).hostname; } catch { return hook.url; } })(), test_mode: true }));
+      }
       const start = Date.now();
       try {
         const res = await fetch(hook.url, { method: "POST", headers, body: bodyJson });
@@ -301,6 +316,19 @@ Deno.serve(async (req) => {
           // fix_version=2026-07-09-webhook-header-compat: lê signature_header do registro (x-webhook-signature para Champions V2)
           const _sigHdr = ((hook as {signature_header?: string}).signature_header) ?? "X-Signature-256";
           if (secret) headers[_sigHdr] = "sha256=" + await hmacSign(bodyJson, secret);
+
+          // ACH-009 observador: registra destinos que seriam bloqueados pela allowlist
+          const _allowlistCheck = validateExternalUrl(hook.url);
+          if (!_allowlistCheck.ok) {
+            console.warn(JSON.stringify({
+              level: "warn", context: "allowlist", mode: "observer",
+              verdict: "would-block", host: (() => { try { return new URL(hook.url).hostname; } catch { return hook.url; } })(),
+              reason: _allowlistCheck.reason, webhook_id: hook.id, event,
+            }));
+          } else {
+            console.log(JSON.stringify({ level: "info", context: "allowlist", verdict: "pass",
+              host: (() => { try { return new URL(hook.url).hostname; } catch { return hook.url; } })(), webhook_id: hook.id }));
+          }
 
           const res = await fetch(hook.url, { method: "POST", headers, body: bodyJson });
           const respText = (await res.text()).slice(0, 4000);
