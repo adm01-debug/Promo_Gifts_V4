@@ -31,7 +31,7 @@ Severidade das etapas: Média 158 · Alta 79 · Baixa 54 · Crítica 9
 
 ## Onda 1 — Segurança e risco de perda de dado
 
-- [ ] 001 — Medir quem realmente consome as três views `v_compras_*` antes de mexer nelas — onda 1 — Crítica
+- [x] 001 — Medir quem realmente consome as três views `v_compras_*` antes de mexer nelas — onda 1 — Crítica
 - [ ] 002 — Mascarar `cost_price` e os campos de fornecedor em `v_compras_catalogo` — onda 1 — Crítica — APROVAÇÃO
 - [ ] 003 — Mascarar `unit_cost` em `v_compras_precos_faixa` — onda 1 — Crítica — APROVAÇÃO
 - [ ] 004 — Decidir o destino de `v_compras_precos_variante`, que hoje responde 401 ao `anon` — onda 1 — Alta — APROVAÇÃO
@@ -378,7 +378,14 @@ Severidade das etapas: Média 158 · Alta 79 · Baixa 54 · Crítica 9
 
 > Cole aqui a saída do comando, da consulta ou do request de cada etapa concluída. Uma entrada por etapa.
 
-### Etapa NNN
+### Etapa 001
 ```
-(saída)
+Consumidor: adm01-debug/Promo_Supply_V2 via edge function external-db-bridge.
+Fluxo: browser → supabase.functions.invoke('external-db-bridge') → createClient(EXTERNAL_DB_URL, EXTERNAL_DB_KEY)
+       → externalClient.from('v_compras_catalogo').select(*) e .from('v_compras_precos_faixa').select(*)
+Colunas sensiveis consumidas: cost_price, supplier_id/code/name/reference, unit_cost.
+v_compras_precos_variante: NAO referenciada no hook; ja retorna 401 ao anon (ACH-004).
+EXTERNAL_DB_KEY: provavelmente anon key do Gifts V4 (views respondem ao anon sem autenticacao).
+Supabase CLI: bloqueado (403 sem privilegio de link); evidencia coletada via GitHub API.
+Documento completo: docs/qa/evidencia-compras-views.md
 ```
