@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.3.2 · commit `5eaf98ad33` · branch `main` · 2026-11-23 21:59 UTC
+> Gerado automaticamente por AI Context Sync v1.3.2 · commit `e8a15b47c2` · branch `main` · 2026-11-23 22:23 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -5913,7 +5913,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `CART_ITEM_DEBOUNCE_MS` | `300` | `src/hooks/products/useDebouncedCartItemActions.ts` |
 | `CART_ITEM_DEBOUNCE_MS_MIN` | `0` | `src/hooks/products/useDebouncedCartItemActions.ts` |
 | `CART_ITEM_DEBOUNCE_MS_MAX` | `2000` | `src/hooks/products/useDebouncedCartItemActions.ts` |
-| … +421 linhas — lista completa em `context.json` | | |
+| … +422 linhas — lista completa em `context.json` | | |
 
 ### H.2 Prazos, expirações e janelas de tempo
 
@@ -6702,7 +6702,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | allowlist inválida: versions contém duplicatas | `scripts/check-supabase-migration-ledger.mjs` |
 | allowlist inválida: versions contém valor vazio/não textual | `scripts/check-supabase-migration-ledger.mjs` |
 | allowlist inválida: versions deve ser array não vazio | `scripts/check-supabase-migration-ledger.mjs` |
-| … +1386 linhas — lista completa em `context.json` | |
+| … +1388 linhas — lista completa em `context.json` | |
 
 ## J. Controle de acesso no código (checagens de perfil/permissão)
 
@@ -6826,7 +6826,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `admin` | `supabase/migrations/20261112120500_fix_optimization_queue_rpcs_dev_access.sql` |
 | `anon` | `tests/edge-functions/live/_live-client.ts` |
 
-## K. Testes como especificação (23693 testes em 2385 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (23699 testes em 2386 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -7130,7 +7130,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `src/lib/external-db/rest-native.test.ts` | 19 | isRestNativeEligible · whitelisted COM coluna de busca → elegível mesmo com _search · A1: whitelisted SEM coluna de busca → continua elegível com _search · não-whitelisted → inelegível … |
 | `src/lib/inventory/__tests__/stock-filter.test.ts` | 19 | stock-filter — pipeline de seleção/agregação/montagem · normalize remove acentos e diferencia caixa · selectMatchingVariants retorna todas as variações quando não há filtro de cor · cor  … |
 | `src/lib/lead-time/__tests__/personalizationLeadTime.test.ts` | 19 | resolvePersonalizationLeadTime · prazo registrado vence a tabela: frente = 4 (a faixa 100..499 diria 5) · registrado sem production_days cai na tabela: verso com 100 un = faixa 100..499 = 5 · sem linha cadastrada para o local usa a tabela pela técnica: lateral com 100 un = 5 … |
-| … +2085 linhas — lista completa em `context.json` | | |
+| … +2086 linhas — lista completa em `context.json` | | |
 
 ## L. Eventos de webhook tratados (contratos com sistemas externos)
 

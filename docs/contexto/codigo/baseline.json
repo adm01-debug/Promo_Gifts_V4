@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "5eaf98ad331ced29e88902b129a1c7b7787e9398",
+  "commit": "e8a15b47c2accbb35119323f3732977a589586b8",
   "branch": "main",
-  "data_commit": "2026-11-23T18:57:37-03:00",
+  "data_commit": "2026-11-23T19:19:28-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "e8a15b4",
+    "data": "2026-11-23",
+    "assunto": "feat(hooks): merge parcial em profiles.preferences (etapas 141-146) (#4029)"
+   },
    {
     "sha": "5eaf98a",
     "data": "2026-11-23",
@@ -126,14 +131,9 @@
     "sha": "94a724a",
     "data": "2026-11-22",
     "assunto": "feat: informa frete e tributos nao incluidos no total do kit (#3990)"
-   },
-   {
-    "sha": "4eddd73",
-    "data": "2026-11-22",
-    "assunto": "docs(migrations-log): recibo E15 — aplicação de 20261122180000 (#3987)"
    }
   ],
-  "arquivos_mudados_7d": 725,
+  "arquivos_mudados_7d": 732,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -153,7 +153,7 @@
    },
    {
     "pasta": "src/hooks/products",
-    "mudancas": 217
+    "mudancas": 218
    },
    {
     "pasta": "src/components/quotes",
@@ -211,7 +211,7 @@
    },
    {
     "arquivo": "docs/qa/05-PROGRESSO.md",
-    "mudancas": 17
+    "mudancas": 18
    },
    {
     "arquivo": "CHANGELOG.md",
@@ -309,7 +309,7 @@
    },
    {
     "autor": "Claude",
-    "commits": 7
+    "commits": 6
    },
    {
     "autor": "dependabot[bot]",
@@ -318,9 +318,9 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 11243,
-  "arquivos_codigo": 5673,
-  "linhas_codigo": 1075281,
+  "arquivos_total": 11245,
+  "arquivos_codigo": 5675,
+  "linhas_codigo": 1075392,
   "rotas": 141,
   "rotas_http_backend": 13,
   "vistas_por_id": 0,
@@ -332,7 +332,7 @@
   "tabelas": 531,
   "migrations": 3127,
   "cron_jobs": 122,
-  "testes": 2718,
+  "testes": 2719,
   "workflows": 89,
   "scripts": 284,
   "docs_md": 1505
@@ -1904,7 +1904,7 @@
   },
   "src/components": {
    "arquivos": 1485,
-   "linhas": 291000
+   "linhas": 290980
   },
   "src/config": {
    "arquivos": 1,
@@ -1928,15 +1928,15 @@
   },
   "src/hooks": {
    "arquivos": 511,
-   "linhas": 94730
+   "linhas": 94701
   },
   "src/integrations": {
    "arquivos": 11,
    "linhas": 66760
   },
   "src/lib": {
-   "arquivos": 421,
-   "linhas": 65199
+   "arquivos": 423,
+   "linhas": 65414
   },
   "src/logic": {
    "arquivos": 4,
@@ -1960,7 +1960,7 @@
   },
   "src/stores": {
    "arquivos": 12,
-   "linhas": 1171
+   "linhas": 1116
   },
   "src/test": {
    "arquivos": 3,

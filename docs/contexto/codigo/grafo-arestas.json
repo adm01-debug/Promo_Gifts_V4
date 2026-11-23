@@ -5666,7 +5666,8 @@
    "src/hooks/intelligence/index.ts",
    "src/integrations/supabase/client.ts",
    "src/lib/db/postgrest.ts",
-   "src/lib/logger.ts"
+   "src/lib/logger.ts",
+   "src/lib/profile-preferences.ts"
   ],
   "src/components/expert/chat/useExpertChatTts.ts": [
    "src/hooks/voice/playTtsAudio.ts"
@@ -11304,8 +11305,8 @@
    "src/hooks/products/useCatalogState.ts",
    "src/hooks/ui/use-toast.ts",
    "src/integrations/supabase/client.ts",
-   "src/integrations/supabase/types.ts",
-   "src/lib/logger.ts"
+   "src/lib/logger.ts",
+   "src/lib/profile-preferences.ts"
   ],
   "src/hooks/products/useCatalogRealStats.ts": [
    "src/lib/db/postgrest.ts"
@@ -11878,8 +11879,8 @@
   "src/hooks/simulation/useSimulatorPreferences.ts": [
    "src/contexts/AuthContext.tsx",
    "src/integrations/supabase/client.ts",
-   "src/integrations/supabase/types.ts",
    "src/lib/logger.ts",
+   "src/lib/profile-preferences.ts",
    "src/types/simulation.ts"
   ],
   "src/hooks/simulation/useTechniquePricing.ts": [
@@ -12796,6 +12797,10 @@
   ],
   "src/lib/products/kit-detection.ts": [
    "src/types/product-catalog.ts"
+  ],
+  "src/lib/profile-preferences.ts": [
+   "src/integrations/supabase/client.ts",
+   "src/integrations/supabase/types.ts"
   ],
   "src/lib/quote-status-config.ts": [
    "src/types/quote.ts"
@@ -15480,9 +15485,8 @@
    "src/lib/logger.ts"
   ],
   "src/stores/useBadgeVisibilityStore.ts": [
-   "src/integrations/supabase/client.ts",
-   "src/integrations/supabase/types.ts",
-   "src/lib/logger.ts"
+   "src/lib/logger.ts",
+   "src/lib/profile-preferences.ts"
   ],
   "src/stores/useFavoritesStore.ts": [
    "src/lib/logger.ts"

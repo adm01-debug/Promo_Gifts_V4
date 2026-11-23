@@ -5527,7 +5527,7 @@
    "hooks_exportados": [
     "useExpertChat"
    ],
-   "linhas": 757,
+   "linhas": 737,
    "dominio": "components/expert",
    "tabelas": [
     "profiles",
@@ -10760,7 +10760,7 @@
    "hooks_exportados": [
     "useCatalogPreferences"
    ],
-   "linhas": 179,
+   "linhas": 166,
    "dominio": "hooks/products",
    "tabelas": [
     "profiles"
@@ -10773,6 +10773,8 @@
     "useEffect",
     "useMutation",
     "useQuery",
+    "useQueryClient",
+    "useRef",
     "useState",
     "useToast"
    ],
@@ -12983,7 +12985,7 @@
    "hooks_exportados": [
     "useSimulatorPreferences"
    ],
-   "linhas": 272,
+   "linhas": 256,
    "dominio": "hooks/simulation",
    "tabelas": [
     "profiles"
@@ -15169,11 +15171,9 @@
    "hooks_exportados": [
     "useBadgeVisibilityStore"
    ],
-   "linhas": 147,
+   "linhas": 106,
    "dominio": "stores",
-   "tabelas": [
-    "profiles"
-   ],
+   "tabelas": [],
    "rpcs": [],
    "edges": [],
    "hooks_internos": [],

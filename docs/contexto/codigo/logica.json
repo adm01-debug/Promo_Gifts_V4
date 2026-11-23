@@ -1,13 +1,13 @@
 {
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
- "total": 352,
+ "total": 353,
  "por_camada": {
   "api": 4,
   "config": 1,
   "data": 3,
   "integrations": 8,
-  "lib": 268,
+  "lib": 269,
   "python": 9,
   "services": 16,
   "stores": 9,
@@ -792,7 +792,6 @@
     "pages/system",
     "pages/tools",
     "services",
-    "stores",
     "utils"
    ],
    "coberto_por_testes": 52,
@@ -964,7 +963,7 @@
    "zod_schemas": 0,
    "flags": [],
    "papeis": [],
-   "usado_por": 62,
+   "usado_por": 60,
    "usado_por_modulos": [
     "components/admin",
     "components/cart",
@@ -991,8 +990,7 @@
     "pages/admin",
     "pages/kit-builder",
     "pages/quotes",
-    "services",
-    "stores"
+    "services"
    ],
    "coberto_por_testes": 10,
    "orfao": false
@@ -6937,6 +6935,36 @@
    "orfao": false
   },
   {
+   "arquivo": "src/lib/profile-preferences.ts",
+   "camada": "lib",
+   "exports": [
+    "ProfilePreferences",
+    "isJsonValue",
+    "mergeProfilePreferences"
+   ],
+   "export_default": null,
+   "linhas": 121,
+   "tabelas": [
+    "profiles"
+   ],
+   "rpcs": [],
+   "edges": [],
+   "env": [],
+   "externos": [],
+   "zod_schemas": 0,
+   "flags": [],
+   "papeis": [],
+   "usado_por": 4,
+   "usado_por_modulos": [
+    "components/expert",
+    "hooks/products",
+    "hooks/simulation",
+    "stores"
+   ],
+   "coberto_por_testes": 1,
+   "orfao": false
+  },
+  {
    "arquivo": "src/lib/query-config.ts",
    "camada": "lib",
    "exports": [
@@ -9565,10 +9593,8 @@
     "useBadgeVisibilityStore"
    ],
    "export_default": null,
-   "linhas": 147,
-   "tabelas": [
-    "profiles"
-   ],
+   "linhas": 106,
+   "tabelas": [],
    "rpcs": [],
    "edges": [],
    "env": [],

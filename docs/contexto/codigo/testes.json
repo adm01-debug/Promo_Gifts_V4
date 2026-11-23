@@ -5,13 +5,13 @@
   "vitest",
   "playwright"
  ],
- "total": 2718,
+ "total": 2719,
  "por_tipo": {
   "contrato": 70,
   "e2e": 679,
   "pytest": 8,
   "qa": 17,
-  "unit": 1944
+  "unit": 1945
  },
  "onde_ficam": [
   {
@@ -20,7 +20,7 @@
   },
   {
    "padrao": "co-localizado (__tests__)",
-   "arquivos": 786
+   "arquivos": 787
   },
   {
    "padrao": "e2e/",
@@ -9656,6 +9656,15 @@
    "casos": 6
   },
   {
+   "arquivo": "src/lib/__tests__/profile-preferences.test.ts",
+   "tipo": "unit",
+   "linhas": 94,
+   "testa": [
+    "src/lib/profile-preferences.ts"
+   ],
+   "casos": 4
+  },
+  {
    "arquivo": "src/lib/__tests__/quote-status-config.transitions.test.ts",
    "tipo": "unit",
    "linhas": 114,
@@ -12502,11 +12511,11 @@
   {
    "arquivo": "src/stores/__tests__/useBadgeVisibilityStore.test.ts",
    "tipo": "unit",
-   "linhas": 105,
+   "linhas": 91,
    "testa": [
     "src/stores/useBadgeVisibilityStore.ts"
    ],
-   "casos": 6
+   "casos": 7
   },
   {
    "arquivo": "src/stores/__tests__/useComparisonStore.removeFromCompare.test.ts",
@@ -24043,6 +24052,7 @@
   "src/lib/products/kit-detection.ts": 1,
   "src/lib/products/novelty-days.ts": 1,
   "src/lib/products/stock-status.ts": 3,
+  "src/lib/profile-preferences.ts": 1,
   "src/lib/query-config.ts": 2,
   "src/lib/quote-status-config.ts": 4,
   "src/lib/quotes/applyRestoredDraft.ts": 1,

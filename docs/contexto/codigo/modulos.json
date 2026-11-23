@@ -5711,7 +5711,7 @@
    "modulo": "components/expert",
    "arquivos": 14,
    "testes": 0,
-   "linhas": 3126,
+   "linhas": 3106,
    "itens_menu": [],
    "telas": [],
    "rotas_http": [],
@@ -21233,7 +21233,7 @@
    "modulo": "hooks/products",
    "arquivos": 72,
    "testes": 34,
-   "linhas": 14472,
+   "linhas": 14459,
    "itens_menu": [],
    "telas": [],
    "rotas_http": [],
@@ -22360,7 +22360,7 @@
    "modulo": "hooks/simulation",
    "arquivos": 17,
    "testes": 1,
-   "linhas": 4030,
+   "linhas": 4014,
    "itens_menu": [],
    "telas": [],
    "rotas_http": [],
@@ -23391,7 +23391,6 @@
     "pages/system",
     "pages/tools",
     "services",
-    "stores",
     "utils"
    ],
    "depende_de_modulos": [
@@ -23405,9 +23404,9 @@
   },
   {
    "modulo": "lib",
-   "arquivos": 58,
+   "arquivos": 59,
    "testes": 1,
-   "linhas": 8922,
+   "linhas": 9043,
    "itens_menu": [],
    "telas": [],
    "rotas_http": [],
@@ -24107,6 +24106,7 @@
     "edges": [],
     "tabelas": [
      "frontend_telemetry",
+     "profiles",
      "system_kill_switches",
      "system_settings"
     ],
@@ -24262,7 +24262,7 @@
   {
    "modulo": "lib/__tests__",
    "arquivos": 0,
-   "testes": 17,
+   "testes": 18,
    "linhas": 0,
    "itens_menu": [],
    "telas": [],
@@ -36822,7 +36822,7 @@
    "modulo": "stores",
    "arquivos": 9,
    "testes": 1,
-   "linhas": 759,
+   "linhas": 718,
    "itens_menu": [],
    "telas": [],
    "rotas_http": [],
@@ -36861,9 +36861,7 @@
    "papeis": [],
    "diretos": {
     "edges": [],
-    "tabelas": [
-     "profiles"
-    ],
+    "tabelas": [],
     "rpcs": []
    },
    "importado_por_outros_modulos": [
@@ -36891,7 +36889,6 @@
    ],
    "depende_de_modulos": [
     "hooks/voice",
-    "integrations/supabase",
     "lib"
    ],
    "pacotes_externos": [

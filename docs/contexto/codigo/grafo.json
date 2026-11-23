@@ -1,8 +1,8 @@
 {
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
- "nos": 2955,
- "arestas": 11689,
+ "nos": 2956,
+ "arestas": 11691,
  "hubs": [
   {
    "arquivo": "src/lib/utils.ts",
@@ -89,12 +89,12 @@
    "importado_por": 76
   },
   {
-   "arquivo": "src/integrations/supabase/types.ts",
-   "importado_por": 72
-  },
-  {
    "arquivo": "src/lib/edge/safeInvokeCall.ts",
    "importado_por": 71
+  },
+  {
+   "arquivo": "src/integrations/supabase/types.ts",
+   "importado_por": 70
   },
   {
    "arquivo": "src/components/ui/switch.tsx",
@@ -639,7 +639,7 @@
   {
    "modulo": "integrations/supabase",
    "depende_de": 3,
-   "importado_por": 73
+   "importado_por": 72
   },
   {
    "modulo": "hooks/products",
