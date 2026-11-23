@@ -413,6 +413,12 @@ Deno.serve(async (req: Request) => {
       // sem nameFilterPrefix podem tocar estas tabelas e o storage.
       // Quotes são tratadas separadamente porque quote_items não possui
       // seller_id; a FK ON DELETE CASCADE remove os itens atomicamente.
+      //
+      // ACH-071 (etapa 042): segunda barreira de segurança — só apaga quotes
+      // com client_name começando em '[E2E]'. Mesmo que a allowlist de email
+      // seja misconfigured e um usuário real seja apagado, as quotes reais
+      // (sem o prefixo) não serão tocadas.
+      const E2E_CLIENT_NAME_PREFIX = '[E2E]%';
       const {
         data: fullQuoteRows,
         count: fullQuoteCount,
@@ -421,6 +427,7 @@ Deno.serve(async (req: Request) => {
         .from('quotes')
         .select('id', { count: 'exact' })
         .eq('seller_id', userId)
+        .like('client_name', E2E_CLIENT_NAME_PREFIX)
         .limit(1000);
       if (fullQuoteLookupError) {
         errors.quotes_lookup = fullQuoteLookupError.message;
@@ -444,7 +451,8 @@ Deno.serve(async (req: Request) => {
           const { count, error } = await supabase
             .from('quotes')
             .delete({ count: 'exact' })
-            .eq('seller_id', userId);
+            .eq('seller_id', userId)
+            .like('client_name', E2E_CLIENT_NAME_PREFIX);
           if (error) errors.quotes = error.message;
           else {
             deleted.quotes = count ?? 0;
