@@ -114,8 +114,13 @@ Severidade das etapas: Média 158 · Alta 79 · Baixa 54 · Crítica 9
   - Evidência 075: `CatalogContent.error.test.tsx` (3 casos) e `FiltersPage.error.test.tsx` (2 casos) passam.
     Revertendo 073/074 localmente, os testes falham (prova: ramo de erro desabilitado → 2 testes falham).
   - `useCatalogState`/`useFiltersPageState` já expõem `isCatalogError`/`catalogError`/`refetchCatalog`.
-- [ ] 076 — Propagar o erro de carga em `useCollections` — onda 2 — Alta
-- [ ] 077 — Estado de erro em `/colecoes`, separado do vazio com CTA — onda 2 — Alta
+- [x] 076 — Propagar o erro de carga em `useCollections` — onda 2 — Alta
+- [x] 077 — Estado de erro em `/colecoes`, separado do vazio com CTA — onda 2 — Alta
+  - Evidência 076: `useCollections.ts` agora expõe `loadError`/`isLoadError` (setado nos erros de
+    `collections` e `collection_items`; limpo no sucesso). `CollectionsContext`/`useCollectionsPageState`
+    propagam os campos.
+  - Evidência 077: `CollectionsPage.tsx` mostra `EmptyState variant="error"` com "Tentar novamente" e
+    esconde o CTA de criar coleção (`CollectionsEmptyStateSmart`) quando `state.isLoadError`.
 - [ ] 078 — Fazer os consumidores de `useQuoteTemplates` lerem o `error` — onda 2 — Alta
 - [ ] 079 — Fazer `fetchAllTemplates` registrar o erro em vez de engolir — onda 2 — Média
 - [ ] 080 — Teste que prova o teto de desconto ficando desatualizado — onda 2 — Alta

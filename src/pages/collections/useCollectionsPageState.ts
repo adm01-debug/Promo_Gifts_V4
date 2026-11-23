@@ -25,6 +25,9 @@ export function useCollectionsPageState() {
     getCollectionProducts,
     defaultColors,
     defaultIcons,
+    isLoaded,
+    isLoadError,
+    loadError,
   } = useCollectionsContext();
 
   const { collections: externalCollections, isLoading: isLoadingExternal } =
@@ -253,6 +256,9 @@ export function useCollectionsPageState() {
   }, [localCollections, searchQuery]);
 
   return {
+    isLoaded,
+    isLoadError,
+    loadError,
     // Collections data
     localCollections,
     externalCollections,
