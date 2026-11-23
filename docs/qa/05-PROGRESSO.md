@@ -44,7 +44,7 @@ Severidade das etapas: Média 158 · Alta 79 · Baixa 54 · Crítica 9
 - [ ] 011 — Fazer `static-checks.yml` bloquear merge — onda 1 — Alta — APROVAÇÃO
 - [ ] 012 — Tirar `docs/`, `tests/` e `e2e/` da allowlist do gitleaks — onda 1 — Alta — APROVAÇÃO
 - [ ] 013 — Fazer o gate de segredo varrer o histórico, não só a árvore de trabalho — onda 1 — Alta — APROVAÇÃO
-- [ ] 014 — Estender `check-production-harnesses.mjs` a `/__visual/` e aos 9 harnesses de `AppRoutes.tsx` — onda 1 — Média
+- [~] 014 — Estender `check-production-harnesses.mjs` a `/__visual/` e aos 9 harnesses de `AppRoutes.tsx` — onda 1 — Média
 - [ ] 015 — Levantar o alcance da chave `service_role` vazada e preparar a rotação — onda 1 — Crítica — APROVAÇÃO
 - [ ] 016 — Rotacionar a chave `service_role` do projeto de produção — onda 1 — Crítica — APROVAÇÃO
 - [ ] 017 — Conferir no banco se a chave vazada foi usada — onda 1 — Alta — APROVAÇÃO
