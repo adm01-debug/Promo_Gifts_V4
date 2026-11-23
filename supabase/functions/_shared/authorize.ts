@@ -40,7 +40,7 @@ const SERVICE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
 // 'admin' e 'supervisor' sao a mesma tier (2); 'dev' no topo (3).
 // BUGFIX: antes faltavam 'vendedor'/'admin' aqui, fazendo ROLE_RANK[role]
 // retornar undefined para usuarios reais -> comparacoes NaN instaveis.
-const ROLE_RANK: Record<AppRole, number> = {
+export const ROLE_RANK: Record<AppRole, number> = {
   vendedor: 1,
   agente: 1,
   supervisor: 2,
