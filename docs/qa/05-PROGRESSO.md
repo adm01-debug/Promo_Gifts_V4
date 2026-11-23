@@ -100,8 +100,8 @@ Severidade das etapas: Média 158 · Alta 79 · Baixa 54 · Crítica 9
 - [~] 064 — Gravar `total_cost` ao aplicar o template — onda 2 — Crítica
 - [ ] 065 — Verificar as cotações já criadas por template sem custo de personalização — onda 2 — Alta — APROVAÇÃO
 - [ ] 066 — Unificar a fórmula de custo de personalização num único módulo — onda 2 — Média
-- [ ] 067 — Mover `/magazine/print` para fora do `ProtectedRoute` — onda 2 — Alta
-- [ ] 068 — Teste de rota garantindo que a impressão pública não exige login — onda 2 — Média
+- [~] 067 — Mover `/magazine/print` para fora do `ProtectedRoute` — onda 2 — Alta
+- [~] 068 — Teste de rota garantindo que a impressão pública não exige login — onda 2 — Média
 - [ ] 069 — Acrescentar `admin` ao `ROLE_RANK` do `dispatcher-auth` — onda 2 — Alta
 - [ ] 070 — Gate que compara os mapas de papel dos dois helpers de autorização — onda 2 — Média
 - [ ] 071 — Conferir se outros consumidores de `dispatcher-auth` estavam negando admin — onda 2 — Média
