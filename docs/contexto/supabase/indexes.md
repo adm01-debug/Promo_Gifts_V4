@@ -140,6 +140,7 @@ Uso e tamanho em `stats.md`.
 | public.bot_detection_log | bot_detection_log_pkey | btree | id | sim | sim |  |
 | public.bot_detection_log | idx_bot_detection_log_created_at | btree | created_at | não | sim |  |
 | public.business_calendar | business_calendar_pkey | btree | day | sim | sim |  |
+| public.business_calendar | idx_business_calendar_created_by | btree | created_by | não | sim |  |
 | public.cart_templates | cart_templates_pkey | btree | id | sim | sim |  |
 | public.cart_templates | idx_cart_templates_user_id | btree | user_id | não | sim |  |
 | public.catalog_analytics | catalog_analytics_pkey | btree | id | sim | sim |  |
@@ -336,6 +337,7 @@ Uso e tamanho em `stats.md`.
 | public.file_scan_logs | idx_file_scan_logs_user_id | btree | user_id | não | sim |  |
 | public.follow_up_reminders | follow_up_reminders_pkey | btree | id | sim | sim |  |
 | public.freight_settings | freight_settings_pkey | btree | id | sim | sim |  |
+| public.freight_settings | idx_freight_settings_updated_by | btree | updated_by | não | sim |  |
 | public.frontend_telemetry | frontend_telemetry_pkey | btree | id | sim | sim |  |
 | public.frontend_telemetry | idx_frontend_telemetry_user_id | btree | user_id | não | sim |  |
 | public.generated_mockups | generated_mockups_pkey | btree | id | sim | sim |  |

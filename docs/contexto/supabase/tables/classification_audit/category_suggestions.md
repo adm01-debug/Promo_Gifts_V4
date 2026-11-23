@@ -4,7 +4,7 @@
 |---|---|
 | tipo | table |
 | owner | postgres |
-| RLS habilitado | não |
+| RLS habilitado | sim |
 | RLS forçado (owner) | não |
 | policies | 0 |
 | realtime (publication) | não |
@@ -55,7 +55,7 @@
 
 ## Policies (RLS)
 
-> ⚠️ RLS **desabilitado** nesta tabela.
+> ⚠️ RLS habilitado **sem policies**: nenhum acesso via API (anon/authenticated).
 
 
 

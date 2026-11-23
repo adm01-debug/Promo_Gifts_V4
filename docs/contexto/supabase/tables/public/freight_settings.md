@@ -52,6 +52,7 @@
 | nome | método | colunas | único | válido | predicado | definição |
 |---|---|---|---|---|---|---|
 | freight_settings_pkey | btree | id | sim | sim |  | `CREATE UNIQUE INDEX freight_settings_pkey ON public.freight_settings USING btree (id)` |
+| idx_freight_settings_updated_by | btree | updated_by | não | sim |  | `CREATE INDEX idx_freight_settings_updated_by ON public.freight_settings USING btree (updated_by)` |
 
 
 ## Policies (RLS)

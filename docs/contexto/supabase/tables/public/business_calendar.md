@@ -38,6 +38,7 @@
 | nome | método | colunas | único | válido | predicado | definição |
 |---|---|---|---|---|---|---|
 | business_calendar_pkey | btree | day | sim | sim |  | `CREATE UNIQUE INDEX business_calendar_pkey ON public.business_calendar USING btree (day)` |
+| idx_business_calendar_created_by | btree | created_by | não | sim |  | `CREATE INDEX idx_business_calendar_created_by ON public.business_calendar USING btree (created_by)` |
 
 
 ## Policies (RLS)

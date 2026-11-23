@@ -2,6 +2,12 @@
 
 Diff semântico gerado a cada coleta em que algo mudou.
 
+## 2026-11-23 16:26 UTC
+
+- **indexes** adicionado (2): `public.idx_business_calendar_created_by`, `public.idx_freight_settings_updated_by`
+- **lints** removido (2): `fk_without_index:public.business_calendar.business_calendar_created_by_fkey`, `fk_without_index:public.freight_settings.freight_settings_updated_by_fkey`
+- **tabelas** alterado (6): `classification_audit.category_suggestions`, `prod_audit.category_keywords`, `prod_audit.category_suggestions`, `prod_audit.classification_rules`, `prod_audit.product_features`, `prod_audit.test_results`
+
 ## 2026-11-23 15:34 UTC
 
 - **grants** removido (3): `public.v_compras_catalogo:anon`, `public.v_compras_precos_faixa:anon`, `public.v_compras_precos_variante:anon`

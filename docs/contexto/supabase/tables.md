@@ -10,12 +10,12 @@ Um arquivo por tabela em `tables/<schema>/<tabela>.md` (colunas, constraints, í
 | [cf_recon.crawl_run](tables/cf_recon/crawl_run.md) | table | sim | 1 | 8 | não | Histórico de crawls à API CF. 1 crawl parcial realizado (2026-06-16 23:44 UTC). cf_total_reported=72.086. Crawl completo (~721 páginas) deve rodar periodicamente. |
 | [cf_recon.metric_snapshot](tables/cf_recon/metric_snapshot.md) | table | sim | 1 | 3 | não | Snapshots periódicos de métricas de reconciliação CF×DB. Inserir via INSERT ON CONFLICT DO UPDATE por taken_at (aproximado ao dia). |
 | [cf_recon.remediation](tables/cf_recon/remediation.md) | table | sim | 1 | 8 | não | Plano de remediações pendentes. status: open\|in_progress\|done\|cancelled. Linkar às entradas de action_log quando executado. |
-| [classification_audit.category_suggestions](tables/classification_audit/category_suggestions.md) | table | não | 0 | 15 | não |  |
-| [prod_audit.category_keywords](tables/prod_audit/category_keywords.md) | table | não | 0 | 13 | não |  |
-| [prod_audit.category_suggestions](tables/prod_audit/category_suggestions.md) | table | não | 0 | 13 | não |  |
-| [prod_audit.classification_rules](tables/prod_audit/classification_rules.md) | table | não | 0 | 10 | não |  |
-| [prod_audit.product_features](tables/prod_audit/product_features.md) | table | não | 0 | 14 | não |  |
-| [prod_audit.test_results](tables/prod_audit/test_results.md) | table | não | 0 | 11 | não |  |
+| [classification_audit.category_suggestions](tables/classification_audit/category_suggestions.md) | table | sim | 0 | 15 | não |  |
+| [prod_audit.category_keywords](tables/prod_audit/category_keywords.md) | table | sim | 0 | 13 | não |  |
+| [prod_audit.category_suggestions](tables/prod_audit/category_suggestions.md) | table | sim | 0 | 13 | não |  |
+| [prod_audit.classification_rules](tables/prod_audit/classification_rules.md) | table | sim | 0 | 10 | não |  |
+| [prod_audit.product_features](tables/prod_audit/product_features.md) | table | sim | 0 | 14 | não |  |
+| [prod_audit.test_results](tables/prod_audit/test_results.md) | table | sim | 0 | 11 | não |  |
 | [public._archive_product_ai_20260626](tables/public/archive_product_ai_20260626.md) | table | sim | 1 | 10 | não | Backup de product_ai (casca morta removida em 2026-06-26, MELHORIA 1+2 medallion). Retencao ate ~2026-09-26. |
 | [public._archive_product_seo_20260626](tables/public/archive_product_seo_20260626.md) | table | sim | 1 | 13 | não | Backup de product_seo (casca morta removida em 2026-06-26, MELHORIA 1+2 medallion). Retencao ate ~2026-09-26. |
 | [public._archive_supplier_price_tiers_20260626](tables/public/archive_supplier_price_tiers_20260626.md) | table | sim | 1 | 9 | não | Archive de supplier_price_tiers (aposentada 2026-06-26). Snapshot stale de 13/06; substituída pela fonte viva VSS via get_variant_price. Reversível se necessário. |

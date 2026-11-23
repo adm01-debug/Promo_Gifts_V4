@@ -207237,6 +207237,20 @@
       },
       {
         "columns": [
+          "created_by"
+        ],
+        "definition": "CREATE INDEX idx_business_calendar_created_by ON public.business_calendar USING btree (created_by)",
+        "is_primary": false,
+        "is_unique": false,
+        "is_valid": true,
+        "method": "btree",
+        "name": "idx_business_calendar_created_by",
+        "predicate": null,
+        "schema": "public",
+        "table": "business_calendar"
+      },
+      {
+        "columns": [
           "id"
         ],
         "definition": "CREATE UNIQUE INDEX cart_templates_pkey ON public.cart_templates USING btree (id)",
@@ -210040,6 +210054,20 @@
         "is_valid": true,
         "method": "btree",
         "name": "freight_settings_pkey",
+        "predicate": null,
+        "schema": "public",
+        "table": "freight_settings"
+      },
+      {
+        "columns": [
+          "updated_by"
+        ],
+        "definition": "CREATE INDEX idx_freight_settings_updated_by ON public.freight_settings USING btree (updated_by)",
+        "is_primary": false,
+        "is_unique": false,
+        "is_valid": true,
+        "method": "btree",
+        "name": "idx_freight_settings_updated_by",
         "predicate": null,
         "schema": "public",
         "table": "freight_settings"
@@ -224753,18 +224781,6 @@
         "code": "extension_in_public",
         "detail": "Extensão instalada no schema public (recomendado: schema extensions).",
         "object": "pgstattuple",
-        "severity": "BAIXA"
-      },
-      {
-        "code": "fk_without_index",
-        "detail": "FK sem índice nas colunas ['created_by']: joins e DELETE/UPDATE na tabela pai ficam lentos.",
-        "object": "public.business_calendar.business_calendar_created_by_fkey",
-        "severity": "BAIXA"
-      },
-      {
-        "code": "fk_without_index",
-        "detail": "FK sem índice nas colunas ['updated_by']: joins e DELETE/UPDATE na tabela pai ficam lentos.",
-        "object": "public.freight_settings.freight_settings_updated_by_fkey",
         "severity": "BAIXA"
       },
       {
@@ -256174,7 +256190,7 @@
         "partition_bound": null,
         "partition_key": null,
         "replica_identity": "default",
-        "rls_enabled": false,
+        "rls_enabled": true,
         "rls_forced": false,
         "schema": "classification_audit"
       },
@@ -256189,7 +256205,7 @@
         "partition_bound": null,
         "partition_key": null,
         "replica_identity": "default",
-        "rls_enabled": false,
+        "rls_enabled": true,
         "rls_forced": false,
         "schema": "prod_audit"
       },
@@ -256204,7 +256220,7 @@
         "partition_bound": null,
         "partition_key": null,
         "replica_identity": "default",
-        "rls_enabled": false,
+        "rls_enabled": true,
         "rls_forced": false,
         "schema": "prod_audit"
       },
@@ -256219,7 +256235,7 @@
         "partition_bound": null,
         "partition_key": null,
         "replica_identity": "default",
-        "rls_enabled": false,
+        "rls_enabled": true,
         "rls_forced": false,
         "schema": "prod_audit"
       },
@@ -256234,7 +256250,7 @@
         "partition_bound": null,
         "partition_key": null,
         "replica_identity": "default",
-        "rls_enabled": false,
+        "rls_enabled": true,
         "rls_forced": false,
         "schema": "prod_audit"
       },
@@ -256249,7 +256265,7 @@
         "partition_bound": null,
         "partition_key": null,
         "replica_identity": "default",
-        "rls_enabled": false,
+        "rls_enabled": true,
         "rls_forced": false,
         "schema": "prod_audit"
       },
