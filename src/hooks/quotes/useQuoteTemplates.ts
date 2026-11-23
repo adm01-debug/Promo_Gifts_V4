@@ -131,6 +131,8 @@ export function useQuoteTemplates() {
       setAllTemplates(transformTemplates(data || []));
     } catch (err) {
       logger.error('Error fetching all templates:', err);
+      // Etapa 079: usa o MESMO estado de erro de fetchTemplates (sem criar errorAll).
+      setError('Erro ao carregar templates');
     }
   }, [user, isAdmin]);
 

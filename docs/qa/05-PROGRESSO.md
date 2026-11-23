@@ -121,8 +121,15 @@ Severidade das etapas: Média 158 · Alta 79 · Baixa 54 · Crítica 9
     propagam os campos.
   - Evidência 077: `CollectionsPage.tsx` mostra `EmptyState variant="error"` com "Tentar novamente" e
     esconde o CTA de criar coleção (`CollectionsEmptyStateSmart`) quando `state.isLoadError`.
-- [ ] 078 — Fazer os consumidores de `useQuoteTemplates` lerem o `error` — onda 2 — Alta
-- [ ] 079 — Fazer `fetchAllTemplates` registrar o erro em vez de engolir — onda 2 — Média
+- [x] 078 — Fazer os consumidores de `useQuoteTemplates` lerem o `error` — onda 2 — Alta
+- [x] 079 — Fazer `fetchAllTemplates` registrar o erro em vez de engolir — onda 2 — Média
+  - Evidência 078: `QuoteTemplatesList.tsx` e `AdminTemplatesManager.tsx` leem `error` do hook e
+    renderizam o bloco de falha antes do vazio (`Não foi possível carregar os templates`).
+    `QuoteTemplatesList.error.test.tsx` (4 casos) cobre erro e vazio legítimo nas duas telas; com o
+    ramo de erro desabilitado localmente os 2 casos de erro falham (prova).
+  - Evidência 079: `useQuoteTemplates.fetchAllTemplates` agora chama
+    `setError('Erro ao carregar templates')` no catch, usando o mesmo estado de `fetchTemplates`
+    (sem `errorAll`).
 - [ ] 080 — Teste que prova o teto de desconto ficando desatualizado — onda 2 — Alta
 - [ ] 081 — Migrar `useSellerDiscountLimits` para react-query — onda 2 — Alta
 - [ ] 082 — Invalidar o limite de desconto depois de alterá-lo — onda 2 — Alta
