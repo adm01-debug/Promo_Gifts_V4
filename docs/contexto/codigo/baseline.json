@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "ded84e9704e5011e247aa870f6c710e201f02cc5",
+  "commit": "042c2122cc5b05673103616c49eeb082bb5dddea",
   "branch": "main",
-  "data_commit": "2026-11-22T15:33:09-03:00",
+  "data_commit": "2026-11-23T06:53:43-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "042c212",
+    "data": "2026-11-23",
+    "assunto": "docs(qa): auditoria exaustiva de QA — 103 achados e plano de 300 etapas (#3994)"
+   },
    {
     "sha": "ded84e9",
     "data": "2026-11-22",
@@ -126,14 +131,9 @@
     "sha": "2dc4d82",
     "data": "2026-11-21",
     "assunto": "fix: preenche maxWeight da caixa no Kit Builder a partir de box_weight_kg (D1) (#3965)"
-   },
-   {
-    "sha": "1948642",
-    "data": "2026-11-21",
-    "assunto": "chore(vercel): desativa preview em branches docs/infra/chore (#3964)"
    }
   ],
-  "arquivos_mudados_7d": 1159,
+  "arquivos_mudados_7d": 1129,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -218,12 +218,12 @@
     "mudancas": 11
    },
    {
-    "arquivo": ".github/workflows/deploy-gates.yml",
+    "arquivo": "docs/agentes/resgates/2026-11-16-auditoria-branches.md",
     "mudancas": 10
    },
    {
-    "arquivo": "docs/agentes/resgates/2026-11-16-auditoria-branches.md",
-    "mudancas": 10
+    "arquivo": ".github/workflows/deploy-gates.yml",
+    "mudancas": 9
    },
    {
     "arquivo": "audit/supabase-reference-catalog.temporary.json",
@@ -318,7 +318,7 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 11212,
+  "arquivos_total": 11218,
   "arquivos_codigo": 5654,
   "linhas_codigo": 1073028,
   "rotas": 141,
@@ -335,7 +335,7 @@
   "testes": 2702,
   "workflows": 89,
   "scripts": 284,
-  "docs_md": 1495
+  "docs_md": 1501
  },
  "por_pasta": {
   ".github/scripts": {

@@ -1,10 +1,10 @@
 {
  "meta": {
-  "sha": "ded84e9704e5011e247aa870f6c710e201f02cc5",
+  "sha": "042c2122cc5b05673103616c49eeb082bb5dddea",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-22 18:35 UTC",
-  "files_total": 11140,
+  "generated_at": "2026-11-23 10:17 UTC",
+  "files_total": 11146,
   "code_files": 9147,
   "code_lines": 1298796
  },
@@ -562683,10 +562683,24 @@
   }
  },
  "git": {
-  "sha": "ded84e9704e5011e247aa870f6c710e201f02cc5",
+  "sha": "042c2122cc5b05673103616c49eeb082bb5dddea",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "042c212",
+    "date": "2026-11-23",
+    "author": "adm01-debug",
+    "subject": "docs(qa): auditoria exaustiva de QA — 103 achados e plano de 300 etapas (#3994)",
+    "files": [
+     "docs/qa/00-RESUMO.md",
+     "docs/qa/01-INVENTARIO.md",
+     "docs/qa/02-CENARIOS.md",
+     "docs/qa/03-ACHADOS.md",
+     "docs/qa/04-PLANO.md",
+     "docs/qa/05-PROGRESSO.md"
+    ]
+   },
    {
     "sha": "ded84e9",
     "date": "2026-11-22",
@@ -562998,21 +563012,12 @@
      "docs/coordenacao/conflitos-semanticos.md",
      "supabase/MIGRATIONS_SYNC_LOG.md"
     ]
-   },
-   {
-    "sha": "8a224b1",
-    "date": "2026-11-21",
-    "author": "github-actions[bot]",
-    "subject": "docs: recibo de aplicação — 20261121000000 (E15) (#3958)",
-    "files": [
-     "supabase/MIGRATIONS_SYNC_LOG.md"
-    ]
    }
   ],
   "hot_files": [
    [
     "supabase/MIGRATIONS_SYNC_LOG.md",
-    15
+    14
    ],
    [
     ".release-please-manifest.json",
@@ -563055,6 +563060,30 @@
     2
    ],
    [
+    "docs/qa/00-RESUMO.md",
+    1
+   ],
+   [
+    "docs/qa/01-INVENTARIO.md",
+    1
+   ],
+   [
+    "docs/qa/02-CENARIOS.md",
+    1
+   ],
+   [
+    "docs/qa/03-ACHADOS.md",
+    1
+   ],
+   [
+    "docs/qa/04-PLANO.md",
+    1
+   ],
+   [
+    "docs/qa/05-PROGRESSO.md",
+    1
+   ],
+   [
     "supabase/rollbacks/20261122200000_rollback.sql",
     1
    ],
@@ -563064,30 +563093,6 @@
    ],
    [
     "supabase/baseline/20261122180000_ledger_versions.json",
-    1
-   ],
-   [
-    "src/components/kit-builder/kit-summary/KitPricingCard.tsx",
-    1
-   ],
-   [
-    "supabase/rollbacks/20261122180000_rollback.sql",
-    1
-   ],
-   [
-    ".security/policies-baseline.json",
-    1
-   ],
-   [
-    "supabase/baseline/20261122100000_baseline_schema.sql",
-    1
-   ],
-   [
-    "supabase/baseline/20261122100000_ledger_versions.json",
-    1
-   ],
-   [
-    "supabase/migrations/20261122100000_compras_views_canonicas.sql",
     1
    ]
   ]
