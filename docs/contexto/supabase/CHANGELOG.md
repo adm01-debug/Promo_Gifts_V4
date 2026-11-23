@@ -2,6 +2,10 @@
 
 Diff semântico gerado a cada coleta em que algo mudou.
 
+## 2026-11-23 11:52 UTC
+
+- **realtime** adicionado (1): `supabase_realtime_messages_publication:realtime.messages_2026_11_26`
+
 ## 2026-11-22 19:15 UTC
 
 - **grants** adicionado (2): `public.variant_supplier_sources:anon`, `public.vw_variant_sale_prices:anon`
