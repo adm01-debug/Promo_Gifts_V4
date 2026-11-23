@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.3.2 · commit `042c2122cc` · branch `main` · 2026-11-23 10:17 UTC
+> Gerado automaticamente por AI Context Sync v1.3.2 · commit `ce11844016` · branch `main` · 2026-11-23 12:59 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -4850,6 +4850,10 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
   ```
   const plan = buildDiscountAuditPdfPlan(ctx); const { jsPDF } = await import('jspdf'); const doc = new jsPDF({ unit: 'pt', format: 'a4' }); const pageWidth = doc.internal.pageSize.getWidth(); const marginX = 40; let y = 50; doc.setFont('helvetica', 'bold'); doc.setFontSize(16); doc.text(plan.title, marginX, y); y += 22; doc.setFont('helvetica', 'normal'); doc.setFontSize(10); doc.setTextColor(90); plan.header.forEach((line) => { doc.text(line, marginX, y); y += 14; }); y += 8; doc.setDrawColor(22 …
   ```
+- **calcPersonalizationTotalCost(p: { unitCost?: number | null; setupCost?: number | null }, qty: number,)** — `src/lib/quotes/templateTotal.ts`
+  ```
+  const unit = typeof p.unitCost === 'number' && Number.isFinite(p.unitCost) ? p.unitCost : 0; const setup = typeof p.setupCost === 'number' && Number.isFinite(p.setupCost) ? p.setupCost : 0; return unit * qty + setup;
+  ```
 - **totalDoTemplate(template: EntradaDeTotal)** — `src/lib/quotes/templateTotal.ts`
   ```
   const itens = Array.isArray(template.items) ? template.items : []; if (itens.some((item) => !itemTemplateEhCalculavel(item))) return null; const itemsTotal = itens.reduce((sum, item) => { const personalizationCost = item.personalizations?.reduce( (pSum, p) => pSum + (numeroUsavel(p.unitCost) ? p.unitCost : 0) * item.quantity + (numeroUsavel(p.setupCost) ? p.setupCost : 0), 0, ) ?? 0; return sum + item.quantity * item.unitPrice + personalizationCost; }, 0); const percentual = numeroUsavel(templat …
@@ -6821,7 +6825,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `admin` | `supabase/migrations/20261112120500_fix_optimization_queue_rpcs_dev_access.sql` |
 | `anon` | `tests/edge-functions/live/_live-client.ts` |
 
-## K. Testes como especificação (23670 testes em 2372 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (23678 testes em 2374 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -7125,7 +7129,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `src/lib/auth/__tests__/checkLoginGate.test.ts` | 19 | isOperationalGateBlock · allowed=false + reason operacional %s → true · %o → false · gateBlockMessage … |
 | `src/lib/auth/__tests__/oauth-error-explainer.test.ts` | 19 | explainOAuthError · config errors (admin needs to act) · mapeia redirect_uri_mismatch com hint sobre console do provedor · detecta redirect uri mismatch pela descrição quando code é genérico … |
 | `src/lib/external-db/rest-native.test.ts` | 19 | isRestNativeEligible · whitelisted COM coluna de busca → elegível mesmo com _search · A1: whitelisted SEM coluna de busca → continua elegível com _search · não-whitelisted → inelegível … |
-| … +2072 linhas — lista completa em `context.json` | | |
+| … +2074 linhas — lista completa em `context.json` | | |
 
 ## L. Eventos de webhook tratados (contratos com sistemas externos)
 
@@ -7593,4 +7597,4 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | * Card "Prazo de produção" do orçamento: em quantos dias úteis o pedido fica | `src/components/freight-plan/ProductionLeadTimeCard.tsx` |
 | pronto para envio, qual item define esse prazo e de onde vem cada número. | `src/components/freight-plan/ProductionLeadTimeCard.tsx` |
 | deliveryMode={deliveryMode}            // 'data' \| 'prazo' do orçamento | `src/components/freight-plan/ProductionLeadTimeCard.tsx` |
-| … +1475 linhas — lista completa em `context.json` | |
+| … +1477 linhas — lista completa em `context.json` | |

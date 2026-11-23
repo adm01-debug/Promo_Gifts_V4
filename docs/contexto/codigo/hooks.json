@@ -15119,7 +15119,7 @@
    "hooks_exportados": [
     "useQuotesListPage"
    ],
-   "linhas": 423,
+   "linhas": 450,
    "dominio": "pages/quotes",
    "tabelas": [],
    "rpcs": [],

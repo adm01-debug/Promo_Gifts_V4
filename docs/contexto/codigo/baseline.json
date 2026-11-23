@@ -2,11 +2,66 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "042c2122cc5b05673103616c49eeb082bb5dddea",
+  "commit": "ce118440162fc18495954b5e9b8a0bf2456e6e49",
   "branch": "main",
-  "data_commit": "2026-11-23T06:53:43-03:00",
+  "data_commit": "2026-11-23T09:21:14-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "ce11844",
+    "data": "2026-11-23",
+    "assunto": "fix: Etapas 067-068 — impressao publica de revista sem login (ACH-046) (#4020)"
+   },
+   {
+    "sha": "384b16e",
+    "data": "2026-11-23",
+    "assunto": "fix: Etapas 063-064 — total_cost em personalizacoes de template (ACH-084) (#4019)"
+   },
+   {
+    "sha": "aeef004",
+    "data": "2026-11-23",
+    "assunto": "feat: Etapas 057-060 — adotar safeErrorResponse em 5 edge functions (ACH-030) (#4018)"
+   },
+   {
+    "sha": "ec295ba",
+    "data": "2026-11-23",
+    "assunto": "feat: Etapa 042 — restringir e2e-cleanup a quotes marcadas [E2E] (ACH-071) (#4017)"
+   },
+   {
+    "sha": "0f0ccc3",
+    "data": "2026-11-23",
+    "assunto": "feat: Etapa 041 — alarme explícito de dessincronia no e2e-cleanup (ACH-071) (#4016)"
+   },
+   {
+    "sha": "0b17fd8",
+    "data": "2026-11-23",
+    "assunto": "feat: Etapa 044 — ligar bloqueio efetivo allowlist no webhook-dispatcher (ACH-009) (#4015)"
+   },
+   {
+    "sha": "ec29a17",
+    "data": "2026-11-23",
+    "assunto": "fix: Etapa 045 — exigir auth antes de responder op=ping no crm-db-bridge (ACH-030) (#4014)"
+   },
+   {
+    "sha": "28515a1",
+    "data": "2026-11-23",
+    "assunto": "feat: Etapa 040 — confirmacao explicita na exclusao em massa (ACH-098) (#4013)"
+   },
+   {
+    "sha": "6fb570a",
+    "data": "2026-11-23",
+    "assunto": "feat: Etapa 043 — url-allowlist em modo observador no webhook-dispatcher (ACH-009) (#4012)"
+   },
+   {
+    "sha": "59e624b",
+    "data": "2026-11-23",
+    "assunto": "feat: Etapa 019 — prova de tautologia RLS em attribute_definitions/groups (ACH-013) (#4011)"
+   },
+   {
+    "sha": "13b9bae",
+    "data": "2026-11-23",
+    "assunto": "feat: Etapa 014 — descoberta automática de harnesses /__visual/ no gate de produção (#4010)"
+   },
    {
     "sha": "042c212",
     "data": "2026-11-23",
@@ -76,64 +131,9 @@
     "sha": "aba6acf",
     "data": "2026-11-22",
     "assunto": "chore(main): release gifts-store 1.19.0 (#3978)"
-   },
-   {
-    "sha": "3be2162",
-    "data": "2026-11-22",
-    "assunto": "docs(migrations-log): recibo E15 — aplicação de 20261122100000 (#3979)"
-   },
-   {
-    "sha": "bf4f25b",
-    "data": "2026-11-22",
-    "assunto": "feat: views de compras canonicas (consolida #3968 e #3969) (#3976)"
-   },
-   {
-    "sha": "e8006d7",
-    "data": "2026-11-22",
-    "assunto": "chore(main): release gifts-store 1.18.0 (#3966)"
-   },
-   {
-    "sha": "8ab7ae0",
-    "data": "2026-11-22",
-    "assunto": "docs: recibo E15 da aplicacao de 20261121223000 (#3977)"
-   },
-   {
-    "sha": "0d30dea",
-    "data": "2026-11-22",
-    "assunto": "docs(migrations-log): recibo E15 — aplicação de 20261121203000 (#3973)"
-   },
-   {
-    "sha": "b1fe749",
-    "data": "2026-11-22",
-    "assunto": "fix: rollback e recibo da migration supplier_external_id (#3974)"
-   },
-   {
-    "sha": "8b5d0d8",
-    "data": "2026-11-22",
-    "assunto": "feat(compras): supplier_external_id para identidade do produto no fornecedor (#3967)"
-   },
-   {
-    "sha": "cd04fc2",
-    "data": "2026-11-22",
-    "assunto": "fix(kit-maker): reverifica peso e encaixe do kit no servidor (KM2-099) (#3970)"
-   },
-   {
-    "sha": "146fd64",
-    "data": "2026-11-21",
-    "assunto": "feat(frete): bloco G etapas 65-69 — plano de volumes no builder, view na QuoteViewPage, diff no comparador e PDF da prop"
-   },
-   {
-    "sha": "de7e7c9",
-    "data": "2026-11-21",
-    "assunto": "chore(lint): consolida baseline de ESLint apos eliminacao de 366 erros (#3971)"
-   },
-   {
-    "sha": "2dc4d82",
-    "data": "2026-11-21",
-    "assunto": "fix: preenche maxWeight da caixa no Kit Builder a partir de box_weight_kg (D1) (#3965)"
    }
   ],
-  "arquivos_mudados_7d": 1129,
+  "arquivos_mudados_7d": 967,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -164,12 +164,12 @@
     "mudancas": 103
    },
    {
-    "pasta": "src/components/mockup",
-    "mudancas": 95
-   },
-   {
     "pasta": "src/pages/magazine",
     "mudancas": 92
+   },
+   {
+    "pasta": "src/components/mockup",
+    "mudancas": 90
    },
    {
     "pasta": "src/components/inventory",
@@ -177,7 +177,7 @@
    },
    {
     "pasta": "src/pages/quotes",
-    "mudancas": 82
+    "mudancas": 84
    },
    {
     "pasta": "supabase/functions/_shared",
@@ -199,7 +199,7 @@
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "supabase/MIGRATIONS_SYNC_LOG.md",
-    "mudancas": 66
+    "mudancas": 64
    },
    {
     "arquivo": "package.json",
@@ -214,6 +214,10 @@
     "mudancas": 14
    },
    {
+    "arquivo": "docs/qa/05-PROGRESSO.md",
+    "mudancas": 12
+   },
+   {
     "arquivo": "docs/coordenacao/conflitos-semanticos.md",
     "mudancas": 11
    },
@@ -226,10 +230,6 @@
     "mudancas": 9
    },
    {
-    "arquivo": "audit/supabase-reference-catalog.temporary.json",
-    "mudancas": 8
-   },
-   {
     "arquivo": "src/lib/freight/index.ts",
     "mudancas": 8
    },
@@ -238,8 +238,8 @@
     "mudancas": 8
    },
    {
-    "arquivo": "src/pages/mockups/MockupGenerator.tsx",
-    "mudancas": 7
+    "arquivo": "audit/supabase-reference-catalog.temporary.json",
+    "mudancas": 6
    },
    {
     "arquivo": "src/integrations/supabase/types.ts",
@@ -262,7 +262,7 @@
     "mudancas": 5
    },
    {
-    "arquivo": "vitest.config.ts",
+    "arquivo": "src/pages/mockups/MockupGenerator.tsx",
     "mudancas": 5
    },
    {
@@ -318,9 +318,9 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 11218,
-  "arquivos_codigo": 5654,
-  "linhas_codigo": 1073028,
+  "arquivos_total": 11220,
+  "arquivos_codigo": 5656,
+  "linhas_codigo": 1073438,
   "rotas": 141,
   "rotas_http_backend": 13,
   "vistas_por_id": 0,
@@ -332,7 +332,7 @@
   "tabelas": 531,
   "migrations": 3127,
   "cron_jobs": 122,
-  "testes": 2702,
+  "testes": 2704,
   "workflows": 89,
   "scripts": 284,
   "docs_md": 1501
@@ -1316,7 +1316,7 @@
   },
   "scripts/check-production-harnesses.mjs": {
    "arquivos": 1,
-   "linhas": 78
+   "linhas": 128
   },
   "scripts/check-public-views-drift.mjs": {
    "arquivos": 1,
@@ -1936,7 +1936,7 @@
   },
   "src/lib": {
    "arquivos": 417,
-   "linhas": 64649
+   "linhas": 64708
   },
   "src/logic": {
    "arquivos": 4,
@@ -1948,11 +1948,11 @@
   },
   "src/pages": {
    "arquivos": 374,
-   "linhas": 86295
+   "linhas": 86359
   },
   "src/routes": {
-   "arquivos": 15,
-   "linhas": 1413
+   "arquivos": 16,
+   "linhas": 1473
   },
   "src/services": {
    "arquivos": 40,
@@ -1980,7 +1980,7 @@
   },
   "supabase/functions": {
    "arquivos": 278,
-   "linhas": 51983
+   "linhas": 52053
   },
   "tailwind.config.ts": {
    "arquivos": 1,
@@ -2167,8 +2167,8 @@
    "linhas": 54
   },
   "tests/security": {
-   "arquivos": 29,
-   "linhas": 2923
+   "arquivos": 30,
+   "linhas": 3030
   },
   "tests/setup-ref-warning-capture.ts": {
    "arquivos": 1,
@@ -2334,7 +2334,7 @@
   },
   {
    "arquivo": "supabase/functions/crm-db-bridge/index.ts",
-   "linhas": 1091
+   "linhas": 1087
   },
   {
    "arquivo": "scripts/graphify-local.mjs",
@@ -2383,7 +2383,7 @@
  ],
  "qualidade": {
   "any": 695,
-  "console_log": 1306,
+  "console_log": 1308,
   "ts_ignore": 0,
   "eslint_disable": 24,
   "todos": 111,

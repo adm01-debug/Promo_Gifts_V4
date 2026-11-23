@@ -23387,7 +23387,7 @@
   {
    "protegida": false,
    "wrappers": [
-    "MagazineRoute"
+    "MagazineErrorBoundary"
    ],
    "pai": null,
    "indice": false,
@@ -23396,7 +23396,7 @@
    "caminho": "/magazine/print",
    "componente": "MagazinePrintPage",
    "arquivo": "src/pages/magazine/MagazinePrintPage.tsx",
-   "definida_em": "src/routes/tools-routes.tsx",
+   "definida_em": "src/routes/public-routes.tsx",
    "redireciona": null,
    "hooks": [
     "useEffect",

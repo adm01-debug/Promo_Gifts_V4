@@ -12802,7 +12802,8 @@
   ],
   "src/lib/quotes/applyTemplateToQuote.ts": [
    "src/hooks/quotes/quoteTypes.ts",
-   "src/hooks/quotes/useQuoteTemplates.ts"
+   "src/hooks/quotes/useQuoteTemplates.ts",
+   "src/lib/quotes/templateTotal.ts"
   ],
   "src/lib/quotes/personalizationSummary.ts": [
    "src/lib/customization/format-engraving-title.ts"
@@ -15359,6 +15360,7 @@
    "src/pages/dev/MagazineRingHarness.tsx",
    "src/pages/dev/TabSkipHarness.tsx",
    "src/pages/dev/UndoToastHarness.tsx",
+   "src/pages/magazine/components/MagazineErrorBoundary.tsx",
    "src/routes/lazy-pages.ts"
   ],
   "src/routes/quote-routes.tsx": [
@@ -15841,6 +15843,7 @@
    "supabase/functions/_shared/circuit-breaker.ts",
    "supabase/functions/_shared/cors.ts",
    "supabase/functions/_shared/credentials.ts",
+   "supabase/functions/_shared/error-response.ts",
    "supabase/functions/_shared/external-fetch.ts",
    "supabase/functions/_shared/kill_switch.ts",
    "supabase/functions/_shared/request-id.ts",
@@ -15909,7 +15912,8 @@
   "supabase/functions/external-db-inspect/index.ts": [
    "supabase/functions/_shared/bot-protection.ts",
    "supabase/functions/_shared/cors.ts",
-   "supabase/functions/_shared/credentials.ts"
+   "supabase/functions/_shared/credentials.ts",
+   "supabase/functions/_shared/error-response.ts"
   ],
   "supabase/functions/favorites-watcher/index.ts": [
    "supabase/functions/_shared/cors.ts",
@@ -15919,7 +15923,8 @@
   "supabase/functions/force-global-logout/index.ts": [
    "supabase/functions/_shared/contracts/index.ts",
    "supabase/functions/_shared/contracts/schemas/force-global-logout.ts",
-   "supabase/functions/_shared/cors.ts"
+   "supabase/functions/_shared/cors.ts",
+   "supabase/functions/_shared/error-response.ts"
   ],
   "supabase/functions/full-op-diagnostics/index.ts": [
    "supabase/functions/_shared/cors.ts"
@@ -16075,6 +16080,7 @@
   "supabase/functions/manage-users/index.ts": [
    "supabase/functions/_shared/authorize.ts",
    "supabase/functions/_shared/cors.ts",
+   "supabase/functions/_shared/error-response.ts",
    "supabase/functions/_shared/json-parser.ts",
    "supabase/functions/_shared/request-id.ts",
    "supabase/functions/_shared/structured-logger.ts",
@@ -16397,7 +16403,8 @@
    "supabase/functions/_shared/cors.ts",
    "supabase/functions/_shared/credentials.ts",
    "supabase/functions/_shared/dispatcher-auth.ts",
-   "supabase/functions/_shared/kill_switch.ts"
+   "supabase/functions/_shared/kill_switch.ts",
+   "supabase/functions/_shared/url-allowlist.ts"
   ],
   "supabase/functions/webhook-inbound/handler_characterization_test.ts": [
    "supabase/functions/webhook-inbound/index.ts"

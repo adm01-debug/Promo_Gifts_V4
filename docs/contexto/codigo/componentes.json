@@ -19288,7 +19288,7 @@
    "hooks_locais": [],
    "tabelas": [],
    "edges": [],
-   "usado_por": 1,
+   "usado_por": 2,
    "orfao": false
   },
   {
@@ -20327,7 +20327,7 @@
     "QuotesBulkDeleteDialog"
    ],
    "export_default": null,
-   "linhas": 164,
+   "linhas": 201,
    "dominio": "pages/quotes",
    "hooks_locais": [],
    "tabelas": [],

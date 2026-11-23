@@ -23,8 +23,8 @@
    "src/services (16)"
   ],
   "testes": [
-   "tests/ (1097)",
-   "co-localizado (__tests__) (773)",
+   "tests/ (1098)",
+   "co-localizado (__tests__) (774)",
    "e2e/ (627)"
   ],
   "edge_functions": "supabase/functions",
@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
-   "docs(qa): auditoria exaustiva de QA — 103 achados e plano de 300 etapas (#3994)",
-   "docs(migrations-log): recibo E15 — aplicação de 20261122200000 (#3992)",
-   "chore: remover palavra CONCURRENTLY de comment de view (destrava preflight E15) (#3991)",
-   "fix: corrigir cadeia invoker das views de compras e composicoes (#3989)",
-   "chore(schema-snapshot): snapshot semanal 2026-W47 (run 45033672701) (#3988)"
+   "fix: Etapas 067-068 — impressao publica de revista sem login (ACH-046) (#4020)",
+   "fix: Etapas 063-064 — total_cost em personalizacoes de template (ACH-084) (#4019)",
+   "feat: Etapas 057-060 — adotar safeErrorResponse em 5 edge functions (ACH-030) (#4018)",
+   "feat: Etapa 042 — restringir e2e-cleanup a quotes marcadas [E2E] (ACH-071) (#4017)",
+   "feat: Etapa 041 — alarme explícito de dessincronia no e2e-cleanup (ACH-071) (#4016)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",

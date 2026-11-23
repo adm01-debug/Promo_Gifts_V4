@@ -7041,7 +7041,7 @@
     "fromTemplateItems"
    ],
    "export_default": null,
-   "linhas": 173,
+   "linhas": 178,
    "tabelas": [],
    "rpcs": [],
    "edges": [],
@@ -7271,13 +7271,14 @@
    "exports": [
     "EntradaDeTotal",
     "VALOR_INDISPONIVEL",
+    "calcPersonalizationTotalCost",
     "itemTemplateEhCalculavel",
     "textoDoSubtotalDoItem",
     "textoDoTotal",
     "totalDoTemplate"
    ],
    "export_default": null,
-   "linhas": 99,
+   "linhas": 112,
    "tabelas": [],
    "rpcs": [],
    "edges": [],
@@ -7286,9 +7287,10 @@
    "zod_schemas": 0,
    "flags": [],
    "papeis": [],
-   "usado_por": 3,
+   "usado_por": 4,
    "usado_por_modulos": [
-    "components/quotes"
+    "components/quotes",
+    "lib/quotes"
    ],
    "coberto_por_testes": 1,
    "orfao": false

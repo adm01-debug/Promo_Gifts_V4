@@ -5,22 +5,22 @@
   "vitest",
   "playwright"
  ],
- "total": 2702,
+ "total": 2704,
  "por_tipo": {
   "contrato": 70,
   "e2e": 679,
   "pytest": 6,
   "qa": 17,
-  "unit": 1930
+  "unit": 1932
  },
  "onde_ficam": [
   {
    "padrao": "tests/",
-   "arquivos": 1097
+   "arquivos": 1098
   },
   {
    "padrao": "co-localizado (__tests__)",
-   "arquivos": 773
+   "arquivos": 774
   },
   {
    "padrao": "e2e/",
@@ -10574,14 +10574,15 @@
   {
    "arquivo": "src/lib/quotes/__tests__/applyTemplateToQuote.test.ts",
    "tipo": "unit",
-   "linhas": 247,
+   "linhas": 288,
    "testa": [
+    "src/hooks/quotes/quoteHelpers.ts",
     "src/hooks/quotes/quoteTypes.ts",
     "src/hooks/quotes/useQuoteTemplates.ts",
     "src/lib/quotes/applyTemplateToQuote.ts",
     "src/pages/quotes/components/QuoteBuilderNotesCard.tsx"
    ],
-   "casos": 15
+   "casos": 16
   },
   {
    "arquivo": "src/lib/quotes/__tests__/collapsedItemsStorage.fuzz.test.ts",
@@ -12107,6 +12108,15 @@
     "src/hooks/quotes/useQuoteBuilderState.ts"
    ],
    "casos": 3
+  },
+  {
+   "arquivo": "src/routes/__tests__/magazine-print-public.integration.test.tsx",
+   "tipo": "unit",
+   "linhas": 58,
+   "testa": [
+    "src/routes/public-routes.tsx"
+   ],
+   "casos": 2
   },
   {
    "arquivo": "src/routes/__tests__/quote-templates-route.integration.test.tsx",
@@ -22224,6 +22234,13 @@
    "casos": 4
   },
   {
+   "arquivo": "tests/security/rls-ach013-tautologia.test.ts",
+   "tipo": "unit",
+   "linhas": 107,
+   "testa": [],
+   "casos": 4
+  },
+  {
    "arquivo": "tests/security/rls-seller-policies.spec.ts",
    "tipo": "unit",
    "linhas": 379,
@@ -23691,7 +23708,7 @@
   "src/hooks/products/useVoiceFilterApply.ts": 2,
   "src/hooks/quotes/index.ts": 22,
   "src/hooks/quotes/quoteDraftApply.ts": 3,
-  "src/hooks/quotes/quoteHelpers.ts": 8,
+  "src/hooks/quotes/quoteHelpers.ts": 9,
   "src/hooks/quotes/quoteMarkup.ts": 1,
   "src/hooks/quotes/quoteTemplateItemGuard.ts": 1,
   "src/hooks/quotes/quoteTypes.ts": 16,
@@ -24047,6 +24064,7 @@
   "src/routes/RoutePrefetcher.tsx": 1,
   "src/routes/guards/ValidProductIdRoute.tsx": 1,
   "src/routes/lazy-pages.ts": 1,
+  "src/routes/public-routes.tsx": 1,
   "src/routes/quote-routes.tsx": 1,
   "src/routes/tools-routes.tsx": 1,
   "src/services/authService.ts": 4,

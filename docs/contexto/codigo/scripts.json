@@ -1230,8 +1230,8 @@
   },
   {
    "arquivo": "scripts/check-production-harnesses.mjs",
-   "descricao": null,
-   "linhas": 78,
+   "descricao": "QA Etapa 014 (ACH-011): descobre harnesses a partir de src/pages/dev/ e src/pages/__visual/ em vez de lista fixa. Qualquer arquivo *Harness*.tsx",
+   "linhas": 128,
    "env": [],
    "npm_scripts": [
     "build",

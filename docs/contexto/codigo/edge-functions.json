@@ -1010,7 +1010,7 @@
    "nome": "crm-db-bridge",
    "entrada": "supabase/functions/crm-db-bridge/index.ts",
    "arquivos": 3,
-   "linhas": 2101,
+   "linhas": 2097,
    "verify_jwt": false,
    "metodos": [
     "GET",
@@ -1045,6 +1045,7 @@
     "circuit-breaker.ts",
     "cors.ts",
     "credentials.ts",
+    "error-response.ts",
     "external-fetch.ts",
     "kill_switch.ts",
     "request-id.ts"
@@ -1125,7 +1126,7 @@
    "nome": "e2e-cleanup",
    "entrada": "supabase/functions/e2e-cleanup/index.ts",
    "arquivos": 2,
-   "linhas": 856,
+   "linhas": 880,
    "verify_jwt": false,
    "metodos": [
     "GET",
@@ -1352,7 +1353,7 @@
    "nome": "external-db-inspect",
    "entrada": "supabase/functions/external-db-inspect/index.ts",
    "arquivos": 1,
-   "linhas": 199,
+   "linhas": 200,
    "verify_jwt": false,
    "metodos": [
     "OPTIONS"
@@ -1371,7 +1372,8 @@
    "usa_shared": [
     "bot-protection.ts",
     "cors.ts",
-    "credentials.ts"
+    "credentials.ts",
+    "error-response.ts"
    ],
    "chamada_pelo_front": [
     "recovery/src-legacy/src/hooks/useExternalDbInspect.ts"
@@ -1418,7 +1420,7 @@
    "nome": "force-global-logout",
    "entrada": "supabase/functions/force-global-logout/index.ts",
    "arquivos": 1,
-   "linhas": 110,
+   "linhas": 111,
    "verify_jwt": true,
    "metodos": [
     "OPTIONS"
@@ -1440,6 +1442,7 @@
    "hosts_externos": [],
    "usa_shared": [
     "cors.ts",
+    "error-response.ts",
     "force-global-logout.ts",
     "index.ts"
    ],
@@ -2189,6 +2192,7 @@
    "usa_shared": [
     "authorize.ts",
     "cors.ts",
+    "error-response.ts",
     "json-parser.ts",
     "request-id.ts",
     "structured-logger.ts",
@@ -3331,7 +3335,7 @@
    "nome": "step-up-verify",
    "entrada": "supabase/functions/step-up-verify/index.ts",
    "arquivos": 1,
-   "linhas": 381,
+   "linhas": 385,
    "verify_jwt": true,
    "metodos": [
     "OPTIONS"
@@ -3824,7 +3828,7 @@
    "nome": "webhook-dispatcher",
    "entrada": "supabase/functions/webhook-dispatcher/index.ts",
    "arquivos": 1,
-   "linhas": 413,
+   "linhas": 457,
    "verify_jwt": false,
    "metodos": [
     "OPTIONS"
@@ -3848,6 +3852,7 @@
     "dispatcher-auth.ts",
     "index.ts",
     "kill_switch.ts",
+    "url-allowlist.ts",
     "webhook-dispatcher.ts"
    ],
    "chamada_pelo_front": [],

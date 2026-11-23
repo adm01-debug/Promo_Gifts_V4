@@ -1,6 +1,6 @@
 # 11 · GLOSSÁRIO, DADOS DE REFERÊNCIA E LACUNAS
 
-> Gerado automaticamente por AI Context Sync v1.3.2 · commit `042c2122cc` · branch `main` · 2026-11-23 10:17 UTC
+> Gerado automaticamente por AI Context Sync v1.3.2 · commit `ce11844016` · branch `main` · 2026-11-23 12:59 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## Glossário do domínio (entidades do sistema)
@@ -595,6 +595,7 @@
 | tabela | tabela `messages` usada no código não existe nas migrations/types do repo | `recovery/RealtimeMessagesExample.tsx` |
 | tabela | tabela `payments` usada no código não existe nas migrations/types do repo | `scripts/ai-context/gerar.unit.mjs` |
 | tabela | tabela `pg_class` usada no código não existe nas migrations/types do repo | `tests/security/rls-validation.test.ts` |
+| tabela | tabela `pg_policies` usada no código não existe nas migrations/types do repo | `tests/security/rls-ach013-tautologia.test.ts` |
 | tabela | tabela `product_endomarketing` usada no código não existe nas migrations/types do repo | `src/components/admin/products/productMarketingData.ts` |
 | tabela | tabela `produtos` usada no código não existe nas migrations/types do repo | `tests/scripts/audit-db-frontend-coverage.test.mjs`<br>`tests/scripts/inventario-banco.test.mjs` |
 | tabela | tabela `quote_comments` usada no código não existe nas migrations/types do repo | `docs/agentes/resgates/quote-comments/codigo/useQuoteComments.ts`<br>`recovery/src-legacy/src/hooks/useQuoteComments.ts`<br>`src/hooks/useQuoteComments.ts` |
@@ -646,8 +647,7 @@
 | rls | `supplier_products_raw`: RLS ligado sem nenhuma política → só service_role acessa |  |
 | rls | `supplier_settings`: RLS ligado sem nenhuma política → só service_role acessa | `src/hooks/products/useSupplierDefaultLeadTime.ts`<br>`src/services/productionLeadTimeService.ts` |
 | rls | `suppliers`: front faz SELECT mas nenhuma política RLS permite SELECT → vai falhar/retornar vazio para usuários | `src/services/freightReadinessService.ts` |
-| rls | `tabela_preco_gravacao_oficial`: RLS ligado sem nenhuma política → só service_role acessa | `src/lib/external-db/rpc-native.ts` |
-| … +257 linhas — lista completa em `context.json` | | |
+| … +258 linhas — lista completa em `context.json` | | |
 
 ## Lacunas — o que este contexto NÃO consegue responder (perguntas para o dono do negócio)
 
