@@ -1,5 +1,5 @@
 {
-  "$comment": "Contrato de colunas das 8 views SECURITY DEFINER expostas ao anon (catálogo público). Snapshot pg_catalog de 2026-09-05 (auditoria r3), recontado ao vivo em 2026-09-16 (E16 do plano DBA — 8/8 views, 265/265 colunas somadas batem contra o banco, 0 drift; ver docs/E16_VIEWS_PUBLIC_SECDEF_2026-09-16.md). Toda mudança nestas views exige atualizar este arquivo no mesmo PR; `node scripts/check-public-views-drift.mjs --live <json>` compara com o banco. Campo `sensitive_acknowledged` por view: colunas que batem no padrão sensível (cost/custo/supplier_price/ncm/bitrix_*/PII) do gate `check-public-views-drift.mjs` mas já foram investigadas — `status: REQUER-PO` quando é dado real ainda sem máscara aprovada, `status: ACEITO` quando o nome bate no padrão mas o valor não é sensível (ex.: boolean `custo_*` que é uma flag, não um valor monetário).",
+  "$comment": "Contrato de colunas das 10 views SECURITY DEFINER expostas ao anon (catálogo público). Atualizado em 2026-11-23 (QA etapas 002–006): +v_compras_catalogo, +v_compras_precos_faixa (v_compras_precos_variante teve grant anon revogado pela etapa 004 e não consta aqui). Snapshot pg_catalog de 2026-09-05 (auditoria r3), recontado ao vivo em 2026-09-16 (E16 do plano DBA — 8/8 views, 265/265 colunas somadas batem contra o banco, 0 drift; ver docs/E16_VIEWS_PUBLIC_SECDEF_2026-09-16.md). Toda mudança nestas views exige atualizar este arquivo no mesmo PR; `node scripts/check-public-views-drift.mjs --live <json>` compara com o banco. Campo `sensitive_acknowledged` por view: colunas que batem no padrão sensível (cost/custo/supplier_price/ncm/bitrix_*/PII) do gate `check-public-views-drift.mjs` mas já foram investigadas — `status: REQUER-PO` quando é dado real ainda sem máscara aprovada, `status: ACEITO` quando o nome bate no padrão mas o valor não é sensível (ex.: boolean `custo_*` que é uma flag, não um valor monetário).",
   "query": "select c.relname, array_agg(a.attname order by a.attnum) as columns from pg_class c join pg_namespace n on n.oid=c.relnamespace join pg_attribute a on a.attrelid=c.oid and a.attnum>0 and not a.attisdropped where n.nspname='public' and c.relkind='v' and c.relname = any($1) group by 1 order by 1",
   "views": {
     "v_kit_component_media_public": {
@@ -63,6 +63,30 @@
     "v_variant_sale_prices_public": {
       "columns": ["variant_id", "product_id", "sku", "color_name", "min_qty_1", "sale_price_1", "min_qty_2", "sale_price_2", "min_qty_3", "sale_price_3", "min_qty_4", "sale_price_4", "min_qty_5", "sale_price_5"],
       "forbidden": ["cost_price", "markup", "markup_percent", "supplier_cost", "unit_cost"]
+    },
+    "v_compras_catalogo": {
+      "$comment": "Catálogo PIM para Promo Supply V2 (external-db-bridge). Adicionada em 20261122100000. Campos sensíveis mascarados (NULL) desde 20261123100000 (QA etapa 002). Nota: v_compras_precos_variante NÃO aparece aqui — teve grant anon revogado pela etapa 004 (20261123120000).",
+      "columns": ["pim_product_id", "pim_variant_id", "sku", "sku_promo", "name", "supplier_id", "supplier_code", "supplier_name", "supplier_reference", "supplier_external_id", "cost_price", "sale_price", "suggested_price", "ipi_rate", "ncm_code", "min_quantity", "min_order_quantity", "min_order_value", "stock_quantity", "is_stockout", "last_stock_update_at", "xbz_stock_reliability_text", "color_id", "color_name", "color_code", "color_hex", "size_code", "image_url", "lead_time_days", "price_updated_at", "price_verified_at", "price_freshness_threshold_days", "updated_at"],
+      "masked_null": ["cost_price", "suggested_price", "supplier_reference", "supplier_external_id"],
+      "forbidden": [],
+      "sensitive_acknowledged": {
+        "ncm_code": {
+          "pattern": "ncm",
+          "status": "REQUER-PO",
+          "note": "Classificação fiscal NCM/Mercosul do produto (varchar(10)). Mesma decisão de v_products_public (E16, 2026-09-16): não é custo unitário nem preço negociado; código de tarifa aduaneira frequentemente público. Decisão de mascarar ou manter é do PO."
+        },
+        "supplier_code": {
+          "pattern": "supplier_price",
+          "status": "ACEITO",
+          "note": "supplier_code é o código curto do fornecedor (ex: 'XBZ'), não um preço. Bate no padrão parcial 'supplier' mas não é dado sensível."
+        }
+      }
+    },
+    "v_compras_precos_faixa": {
+      "$comment": "Faixas de preço de personalização para Promo Supply V2. Adicionada em 20261122100000. unit_cost e handling_cost mascarados (NULL) desde 20261123110000 (QA etapa 003).",
+      "columns": ["pim_product_id", "pim_variant_id", "qty_min", "qty_max", "unit_cost", "unit_price", "source", "service_code", "table_code", "component", "location", "handling_cost", "table_max_area_cm2", "max_stitches", "hotspot", "currency"],
+      "masked_null": ["unit_cost", "handling_cost"],
+      "forbidden": []
     }
   }
 }
