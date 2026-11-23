@@ -5,13 +5,13 @@
   "vitest",
   "playwright"
  ],
- "total": 2704,
+ "total": 2705,
  "por_tipo": {
   "contrato": 70,
   "e2e": 679,
   "pytest": 6,
   "qa": 17,
-  "unit": 1932
+  "unit": 1933
  },
  "onde_ficam": [
   {
@@ -28,7 +28,7 @@
   },
   {
    "padrao": "co-localizado (*.test)",
-   "arquivos": 154
+   "arquivos": 155
   },
   {
    "padrao": "outro",
@@ -13133,6 +13133,16 @@
    "casos": 6
   },
   {
+   "arquivo": "supabase/functions/_shared/role-rank-parity.test.ts",
+   "tipo": "unit",
+   "linhas": 25,
+   "testa": [
+    "supabase/functions/_shared/authorize.ts",
+    "supabase/functions/_shared/dispatcher-auth.ts"
+   ],
+   "casos": 2
+  },
+  {
    "arquivo": "supabase/functions/_shared/token-revocation.test.ts",
    "tipo": "unit",
    "linhas": 194,
@@ -24120,6 +24130,7 @@
   "src/utils/undoToast.tsx": 5,
   "src/utils/viacep.ts": 1,
   "supabase/functions/_shared/ai-usage.ts": 2,
+  "supabase/functions/_shared/authorize.ts": 1,
   "supabase/functions/_shared/connection-test-runner.ts": 1,
   "supabase/functions/_shared/contracts/_zod.ts": 1,
   "supabase/functions/_shared/contracts/errors.ts": 2,
@@ -24144,7 +24155,7 @@
   "supabase/functions/_shared/cors.ts": 1,
   "supabase/functions/_shared/createEdge.ts": 1,
   "supabase/functions/_shared/credentials.ts": 4,
-  "supabase/functions/_shared/dispatcher-auth.ts": 1,
+  "supabase/functions/_shared/dispatcher-auth.ts": 2,
   "supabase/functions/_shared/edge-authz-manifest.ts": 4,
   "supabase/functions/_shared/external-db-telemetry.ts": 1,
   "supabase/functions/_shared/kill_switch.ts": 1,

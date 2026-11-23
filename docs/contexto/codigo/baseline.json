@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "ce118440162fc18495954b5e9b8a0bf2456e6e49",
+  "commit": "3b7dc18c4358a4f27932a45967e90eda5ac764ab",
   "branch": "main",
-  "data_commit": "2026-11-23T09:21:14-03:00",
+  "data_commit": "2026-11-23T10:38:00-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "3b7dc18",
+    "data": "2026-11-23",
+    "assunto": "fix: Etapas 069-070 — alinhar ROLE_RANK em dispatcher-auth (ACH-022) (#4022)"
+   },
    {
     "sha": "ce11844",
     "data": "2026-11-23",
@@ -126,14 +131,9 @@
     "sha": "3aa6694",
     "data": "2026-11-22",
     "assunto": "fix: alinhar recibo da 20261121203000 com a linha E15 (aplicada) (#3980)"
-   },
-   {
-    "sha": "aba6acf",
-    "data": "2026-11-22",
-    "assunto": "chore(main): release gifts-store 1.19.0 (#3978)"
    }
   ],
-  "arquivos_mudados_7d": 967,
+  "arquivos_mudados_7d": 970,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -181,7 +181,7 @@
    },
    {
     "pasta": "supabase/functions/_shared",
-    "mudancas": 81
+    "mudancas": 84
    },
    {
     "pasta": "src/pages/admin",
@@ -215,7 +215,7 @@
    },
    {
     "arquivo": "docs/qa/05-PROGRESSO.md",
-    "mudancas": 12
+    "mudancas": 13
    },
    {
     "arquivo": "docs/coordenacao/conflitos-semanticos.md",
@@ -318,9 +318,9 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 11220,
-  "arquivos_codigo": 5656,
-  "linhas_codigo": 1073438,
+  "arquivos_total": 11221,
+  "arquivos_codigo": 5657,
+  "linhas_codigo": 1073474,
   "rotas": 141,
   "rotas_http_backend": 13,
   "vistas_por_id": 0,
@@ -332,7 +332,7 @@
   "tabelas": 531,
   "migrations": 3127,
   "cron_jobs": 122,
-  "testes": 2704,
+  "testes": 2705,
   "workflows": 89,
   "scripts": 284,
   "docs_md": 1501
@@ -1979,8 +1979,8 @@
    "linhas": 9251
   },
   "supabase/functions": {
-   "arquivos": 278,
-   "linhas": 52053
+   "arquivos": 279,
+   "linhas": 52089
   },
   "tailwind.config.ts": {
    "arquivos": 1,

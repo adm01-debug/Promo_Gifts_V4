@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "ce118440162fc18495954b5e9b8a0bf2456e6e49",
+  "sha": "3b7dc18c4358a4f27932a45967e90eda5ac764ab",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-23 12:59 UTC",
-  "files_total": 11148,
-  "code_files": 9149,
-  "code_lines": 1299206
+  "generated_at": "2026-11-23 13:42 UTC",
+  "files_total": 11149,
+  "code_files": 9150,
+  "code_lines": 1299242
  },
  "version": "1.3.2",
- "facts_hash": "3e776cf11dc7a028",
+ "facts_hash": "ab88534348c25169",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -1129,7 +1129,7 @@
   "package_manager": "npm",
   "languages": {
    ".sql": 3494,
-   ".ts": 3166,
+   ".ts": 3167,
    ".tsx": 2018,
    ".mjs": 455,
    ".py": 16,
@@ -152809,8 +152809,8 @@
   },
   {
    "module": "supabase/functions",
-   "files": 278,
-   "lines": 52053,
+   "files": 279,
+   "lines": 52089,
    "tables": [
     "access_blocked_log",
     "access_security_settings",
@@ -152903,7 +152903,7 @@
     "ai-usage.ts: checkAiQuota, acquireAiQuota, logAiUsage, extractTokensFromResponse, callAiWithTracking, QuotaExceededError",
     "audit-log.ts: redactPayload, summarizePayload, AuditEntryInput, writeAuditEntry, extractRequestMeta",
     "auth.ts: AuthResult, authenticateRequest, requireRole, requireDev, authErrorResponse",
-    "authorize.ts: AppRole, AuthorizeOptions, AuthorizeResult, readJwtAal, authorize",
+    "authorize.ts: AppRole, AuthorizeOptions, AuthorizeResult, ROLE_RANK, readJwtAal, authorize",
     "bot-protection.ts: BotCheckResult, detectBot, getClientIp, BotProtectionResult, runBotProtection",
     "circuit-breaker.ts: getAllBreakerStatuses, getBreaker",
     "connection-test-runner.ts: TriggeredBy, ErrorKind, RunOptions, TRANSIENT_ERROR_KINDS, isTransientFailure, RunResult",
@@ -152911,7 +152911,7 @@
     "cors.ts: getCorsHeaders, handleCorsPreflightIfNeeded, PublicCorsOptions, buildPublicCorsHeaders, handleCorsPreflight, publicCorsHeaders",
     "createEdge.ts: EdgeRole, EdgeConfig, EdgeContext, EdgeHandler, createEdge, jsonResponse",
     "credentials.ts: CredentialSource, CredentialResolution, CacheMetricsSnapshot, getCredentialCacheMetrics, CredentialHealthEntry, CredentialsHealthSummary",
-    "dispatcher-auth.ts: AppRole, DispatcherAuthMode, CronAuthMode, DispatcherAuthOk, DispatcherAuthErr, DispatcherAuthResult",
+    "dispatcher-auth.ts: AppRole, ROLE_RANK, DispatcherAuthMode, CronAuthMode, DispatcherAuthOk, DispatcherAuthErr",
     "edge-authz-manifest.ts: AuthzCategory, AuthzEntry, EDGE_AUTHZ_MANIFEST",
     "error-response.ts: SafeErrorOptions, safeErrorResponse",
     "external-db-aliases.ts: isTechniqueTableAlias, isTechniqueVarianteAlias, isCustomizationPriceTablesAlias, sanitizeExternalWriteData, mapPriceTableFiltersToExternal, mapPriceTableOrderByToExternal",
@@ -153006,6 +153006,7 @@
     "supabase/functions/_shared/request-id.ts",
     "supabase/functions/_shared/retry-backoff.test.ts",
     "supabase/functions/_shared/retry-backoff.ts",
+    "supabase/functions/_shared/role-rank-parity.test.ts",
     "supabase/functions/_shared/security.ts",
     "supabase/functions/_shared/security_audit_test.ts",
     "supabase/functions/_shared/structured-logger.ts",
@@ -153049,8 +153050,7 @@
     "supabase/functions/ai-recommendations/kill_switch_contract_test.ts",
     "supabase/functions/analyze-logo-colors/index.ts",
     "supabase/functions/anonymize-user/index.ts",
-    "supabase/functions/asia-ingestion/credential-client.test.ts",
-    "supabase/functions/asia-ingestion/index.ts"
+    "supabase/functions/asia-ingestion/credential-client.test.ts"
    ]
   },
   {
@@ -165128,7 +165128,7 @@
    {
     "file": "supabase/functions/_shared/dispatcher-auth.ts",
     "name": "AppRole",
-    "values": "dev | supervisor | agente"
+    "values": "dev | supervisor | admin | agente | vendedor"
    },
    {
     "file": "supabase/functions/_shared/dispatcher-auth.ts",
@@ -270615,6 +270615,14 @@
    {
     "file": "supabase/functions/_shared/retry-backoff.test.ts",
     "name": "retryWithBackoff respects maxAttempts"
+   },
+   {
+    "file": "supabase/functions/_shared/role-rank-parity.test.ts",
+    "name": "ROLE_RANK: authorize.ts e dispatcher-auth.ts sao iguais"
+   },
+   {
+    "file": "supabase/functions/_shared/role-rank-parity.test.ts",
+    "name": "ROLE_RANK: cobre todos os papeis reais (vendedor, admin, dev)"
    },
    {
     "file": "supabase/functions/_shared/token-revocation.test.ts",
@@ -510767,6 +510775,7 @@
     "type AppRole",
     "interface AuthorizeOptions",
     "type AuthorizeResult",
+    "const ROLE_RANK",
     "function readJwtAal",
     "function authorize"
    ],
@@ -511274,9 +511283,10 @@
   },
   "supabase/functions/_shared/dispatcher-auth.ts": {
    "path": "supabase/functions/_shared/dispatcher-auth.ts",
-   "lines": 321,
+   "lines": 332,
    "exports": [
     "type AppRole",
+    "const ROLE_RANK",
     "type DispatcherAuthMode",
     "type CronAuthMode",
     "interface DispatcherAuthOk",
@@ -511313,7 +511323,7 @@
    "enums": [
     {
      "name": "AppRole",
-     "values": "dev | supervisor | agente"
+     "values": "dev | supervisor | admin | agente | vendedor"
     },
     {
      "name": "DispatcherAuthMode",
@@ -511823,6 +511833,16 @@
     "slow query must not block the whole response."
    ],
    "doc": "supabase/functions/_shared/retry-backoff.ts Centralized retry policy with exponential backoff + decorrelated jitter. Why decorrelated jitter: - Pure exponential backoff causes \"thundering herd\" when many parallel callers (catalog fan-out, dashboards) retry on the same beat. - Decorrelated jitter spr …"
+  },
+  "supabase/functions/_shared/role-rank-parity.test.ts": {
+   "path": "supabase/functions/_shared/role-rank-parity.test.ts",
+   "lines": 25,
+   "is_test": true,
+   "doc": "supabase/functions/_shared/role-rank-parity.test.ts Prova que os dois helpers de autorizacao (_shared/authorize.ts e _shared/dispatcher-auth.ts) compartilham o MESMO mapa de rank de papel. ACH-022: os mapas divergiram uma vez — dispatcher-auth.ts nao tinha 'vendedor'/'admin', fazendo ROLE_RANK[role] …",
+   "tests": [
+    "ROLE_RANK: authorize.ts e dispatcher-auth.ts sao iguais",
+    "ROLE_RANK: cobre todos os papeis reais (vendedor, admin, dev)"
+   ]
   },
   "supabase/functions/_shared/security.ts": {
    "path": "supabase/functions/_shared/security.ts",
@@ -562813,10 +562833,22 @@
   }
  },
  "git": {
-  "sha": "ce118440162fc18495954b5e9b8a0bf2456e6e49",
+  "sha": "3b7dc18c4358a4f27932a45967e90eda5ac764ab",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "3b7dc18",
+    "date": "2026-11-23",
+    "author": "adm01-debug",
+    "subject": "fix: Etapas 069-070 — alinhar ROLE_RANK em dispatcher-auth (ACH-022) (#4022)",
+    "files": [
+     "docs/qa/05-PROGRESSO.md",
+     "supabase/functions/_shared/authorize.ts",
+     "supabase/functions/_shared/dispatcher-auth.ts",
+     "supabase/functions/_shared/role-rank-parity.test.ts"
+    ]
+   },
    {
     "sha": "ce11844",
     "date": "2026-11-23",
@@ -563123,25 +563155,16 @@
     "files": [
      "supabase/MIGRATIONS_SYNC_LOG.md"
     ]
-   },
-   {
-    "sha": "0d30dea",
-    "date": "2026-11-22",
-    "author": "github-actions[bot]",
-    "subject": "docs(migrations-log): recibo E15 — aplicação de 20261121203000 (#3973)",
-    "files": [
-     "supabase/MIGRATIONS_SYNC_LOG.md"
-    ]
    }
   ],
   "hot_files": [
    [
     "docs/qa/05-PROGRESSO.md",
-    12
+    13
    ],
    [
     "supabase/MIGRATIONS_SYNC_LOG.md",
-    11
+    10
    ],
    [
     "supabase/functions/crm-db-bridge/index.ts",
@@ -563192,6 +563215,18 @@
     2
    ],
    [
+    "supabase/functions/_shared/authorize.ts",
+    1
+   ],
+   [
+    "supabase/functions/_shared/dispatcher-auth.ts",
+    1
+   ],
+   [
+    "supabase/functions/_shared/role-rank-parity.test.ts",
+    1
+   ],
+   [
     "src/routes/__tests__/magazine-print-public.integration.test.tsx",
     1
    ],
@@ -563201,18 +563236,6 @@
    ],
    [
     "src/routes/tools-routes.tsx",
-    1
-   ],
-   [
-    "src/lib/quotes/__tests__/applyTemplateToQuote.test.ts",
-    1
-   ],
-   [
-    "src/lib/quotes/applyTemplateToQuote.ts",
-    1
-   ],
-   [
-    "src/lib/quotes/templateTotal.ts",
     1
    ]
   ]

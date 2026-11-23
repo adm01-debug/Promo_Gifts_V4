@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "fix: Etapas 069-070 — alinhar ROLE_RANK em dispatcher-auth (ACH-022) (#4022)",
    "fix: Etapas 067-068 — impressao publica de revista sem login (ACH-046) (#4020)",
    "fix: Etapas 063-064 — total_cost em personalizacoes de template (ACH-084) (#4019)",
    "feat: Etapas 057-060 — adotar safeErrorResponse em 5 edge functions (ACH-030) (#4018)",
-   "feat: Etapa 042 — restringir e2e-cleanup a quotes marcadas [E2E] (ACH-071) (#4017)",
-   "feat: Etapa 041 — alarme explícito de dessincronia no e2e-cleanup (ACH-071) (#4016)"
+   "feat: Etapa 042 — restringir e2e-cleanup a quotes marcadas [E2E] (ACH-071) (#4017)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",

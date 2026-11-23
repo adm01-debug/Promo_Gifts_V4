@@ -107,6 +107,7 @@
   "supabase/functions/_shared/request-id.ts",
   "supabase/functions/_shared/retry-backoff.test.ts",
   "supabase/functions/_shared/retry-backoff.ts",
+  "supabase/functions/_shared/role-rank-parity.test.ts",
   "supabase/functions/_shared/security.ts",
   "supabase/functions/_shared/security_audit_test.ts",
   "supabase/functions/_shared/structured-logger.ts",
