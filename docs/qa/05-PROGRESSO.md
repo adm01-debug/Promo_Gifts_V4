@@ -476,13 +476,19 @@ Severidade das etapas: Média 158 · Alta 79 · Baixa 54 · Crítica 9
 - [x] 185 — Teste e correção da corrida em `InlinePriceCalculator` — onda 5 — Alta
 - [ ] 186 — Invalidar `['quote-item-counts']` nas mutations de orçamento — onda 5 — Média
 - [ ] 187 — Varredura de `queryKey` definida e nunca invalidada — onda 5 — Média
+- [ ] 182 — Teste que prova a corrida na tabela de preço da técnica — onda 5 — Alta
+- [ ] 183 — Cancelar a busca anterior em `useTechniquePricingOptions` — onda 5 — Alta
+- [ ] 184 — Varredura do padrão "dois `await` e um `setState` sem guarda" — onda 5 — Média
+- [ ] 185 — Teste e correção da corrida em `InlinePriceCalculator` — onda 5 — Alta
+- [x] 186 — Invalidar `['quote-item-counts']` nas mutations de orçamento — onda 5 — Média
+- [x] 187 — Varredura de `queryKey` definida e nunca invalidada — onda 5 — Média
 - [ ] 188 — Unificar a contagem de aprovações de desconto num único hook — onda 5 — Média
 - [ ] 189 — Teste que impede a chave de contagem voltar a ter duas implementações — onda 5 — Baixa
 - [ ] 190 — Unificar a `queryFn` de `['video-variant-links']` — onda 5 — Média
 - [ ] 191 — Resolver a duplicação de `useReplenishments` — onda 5 — Baixa
 - [ ] 192 — Resolver a duplicação entre `usePersonalizationData` e `usePersonalizationManager` — onda 5 — Média
 - [ ] 193 — Resolver a duplicação de `useDevGate` — onda 5 — Baixa
-- [ ] 194 — Invalidar os widgets do painel de orçamentos — onda 5 — Baixa
+- [x] 194 — Invalidar os widgets do painel de orçamentos — onda 5 — Baixa
 - [ ] 195 — Decidir o destino de `useCustomKitsRealtime` — onda 5 — Média — APROVAÇÃO
 - [ ] 196 — Decidir o destino de `CredentialsChangedBanner` — onda 5 — Média — APROVAÇÃO
 - [ ] 197 — Decidir o destino de `RealtimeBadge` — onda 5 — Baixa
@@ -491,7 +497,7 @@ Severidade das etapas: Média 158 · Alta 79 · Baixa 54 · Crítica 9
 - [ ] 200 — Dar sufixo único ao canal de `MyDiscountRequestsWidget` — onda 5 — Média
 - [ ] 201 — Teste e correção do item duplicado no kit — onda 5 — Média
 - [ ] 202 — Dar retorno ao lote de thumbnails que falha inteiro — onda 5 — Baixa
-- [ ] 203 — Registrar com contexto o erro engolido em `useQuotesDashboard` — onda 5 — Baixa
+- [x] 203 — Registrar com contexto o erro engolido em `useQuotesDashboard` — onda 5 — Baixa
 - [ ] 204 — Armadilha de foco e Escape em `KitOnboardingTour` — onda 5 — Média
 - [ ] 205 — Armadilha de foco em `VoiceSearchOverlay` — onda 5 — Média
 - [ ] 206 — Nome acessível nos 6 botões de ícone — onda 5 — Baixa
@@ -632,6 +638,49 @@ grep -rn "dispatcher-auth" supabase/functions/ --include='*.ts'
 - connections-auto-test usa authorizeCron, nao authorizeDispatcher -> sem minRole, sem negacao de admin
 - So webhook-dispatcher usava o rank e negava admin -> corrigido pela etapa 069
 - Nenhum fluxo de negocio adicional negado a admin encontrado
+```
+### Etapa 186
+```
+novo: src/hooks/quotes/quoteCacheInvalidation.ts
+QUOTE_DEPENDENT_QUERY_KEYS = [['quotes'], ['quote-item-counts'],
+  ['my-discount-requests-widget'], ['seller-discount-limits']]
+invalidateQuoteCaches(queryClient) -> Promise.all(prefixos.map(invalidateQueries))
+
+src/hooks/quotes/useQuotes.ts: 6 ocorrencias de
+  queryClient.invalidateQueries({ queryKey: ['quotes'] })
+substituidas por invalidateQuoteCaches(queryClient)
+
+teste: src/hooks/quotes/__tests__/quoteCacheInvalidation.test.ts
+  2 passed — trava a lista dos 4 prefixos e que invalidar cobre todos
+```
+### Etapa 187
+```
+documento: docs/qa/querykeys-sem-invalidacao.md (331 linhas, gerado por varredura)
+chaves literais distintas: 270
+ocorrencia unica (candidatas): 201
+  com escrita no cliente numa das tabelas lidas: 44
+  sem escrita no cliente: 157
+compartilhadas (>1 ocorrencia): 69
+nenhuma das 44 candidatas foi alterada: a coluna e co-ocorrencia de tabela,
+nao prova de bug (ressalva registrada no documento)
+```
+### Etapa 194
+```
+widgets do painel: quote-item-counts, my-discount-requests-widget,
+  seller-discount-limits, quotes
+antes: useQuotes.ts invalidava apenas ['quotes'] -> widgets ficavam obsoletos
+depois: os 4 prefixos sao invalidados juntos pelo helper da etapa 186
+o prefixo ['quotes'] cobre por prefixo as variantes ['quotes', ...]
+(ex.: ['quotes','viewed-map']), entao a invalidação do painel e completa
+```
+### Etapa 203
+```
+src/pages/quotes/quotes-dashboard/useQuotesDashboard.ts
++ clientsError: string | null no retorno do hook
++ logger.error com contexto: { table: 'companies', is_customer: true, limit: 200 }
+  e a mensagem do erro, antes de degradar para a lista vazia
+consumidores: QuotesDashboardPage.tsx:54 e o mock de
+  __tests__/QuotesDashboardPage.pdfDisabled.test.tsx
 ```
 ### Etapa NNN
 ```
