@@ -104,11 +104,16 @@ Severidade das etapas: Média 158 · Alta 79 · Baixa 54 · Crítica 9
 - [~] 068 — Teste de rota garantindo que a impressão pública não exige login — onda 2 — Média
 - [~] 069 — Acrescentar `admin` ao `ROLE_RANK` do `dispatcher-auth` — onda 2 — Alta
 - [~] 070 — Gate que compara os mapas de papel dos dois helpers de autorização — onda 2 — Média
-- [ ] 071 — Conferir se outros consumidores de `dispatcher-auth` estavam negando admin — onda 2 — Média
-- [ ] 072 — Expor o erro do catálogo em `useCatalogState` — onda 2 — Alta
-- [ ] 073 — Estado de erro em `/produtos` e `/filtros` — onda 2 — Alta
-- [ ] 074 — Estado de erro na vitrine inicial — onda 2 — Alta
-- [ ] 075 — Teste que impede erro voltar a parecer vazio no catálogo — onda 2 — Média
+- [x] 071 — Conferir se outros consumidores de `dispatcher-auth` estavam negando admin — onda 2 — Média
+- [x] 072 — Expor o erro do catálogo em `useCatalogState` — onda 2 — Alta
+- [x] 073 — Estado de erro em `/produtos` e `/filtros` — onda 2 — Alta
+- [x] 074 — Estado de erro na vitrine inicial — onda 2 — Alta
+- [x] 075 — Teste que impede erro voltar a parecer vazio no catálogo — onda 2 — Média
+  - Evidência 073/074: `FiltersPage.tsx` e `CatalogContent.tsx` agora separam erro (`isCatalogError`)
+    de vazio (`shouldShowEmptyState`) usando `EmptyState variant="error"` com botão "Tentar novamente".
+  - Evidência 075: `CatalogContent.error.test.tsx` (3 casos) e `FiltersPage.error.test.tsx` (2 casos) passam.
+    Revertendo 073/074 localmente, os testes falham (prova: ramo de erro desabilitado → 2 testes falham).
+  - `useCatalogState`/`useFiltersPageState` já expõem `isCatalogError`/`catalogError`/`refetchCatalog`.
 - [ ] 076 — Propagar o erro de carga em `useCollections` — onda 2 — Alta
 - [ ] 077 — Estado de erro em `/colecoes`, separado do vazio com CTA — onda 2 — Alta
 - [ ] 078 — Fazer os consumidores de `useQuoteTemplates` lerem o `error` — onda 2 — Alta
@@ -378,6 +383,15 @@ Severidade das etapas: Média 158 · Alta 79 · Baixa 54 · Crítica 9
 
 > Cole aqui a saída do comando, da consulta ou do request de cada etapa concluída. Uma entrada por etapa.
 
+### Etapa 071
+```
+grep -rn "dispatcher-auth" supabase/functions/ --include='*.ts'
+- 27 importadores: 26 usam authorizeCron (sem rank de papel) ou constantTimeEqual
+- Apenas webhook-dispatcher (minRole:supervisor) e connections-auto-test usam o modulo com rank
+- connections-auto-test usa authorizeCron, nao authorizeDispatcher -> sem minRole, sem negacao de admin
+- So webhook-dispatcher usava o rank e negava admin -> corrigido pela etapa 069
+- Nenhum fluxo de negocio adicional negado a admin encontrado
+```
 ### Etapa NNN
 ```
 (saída)
