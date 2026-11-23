@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "chore(security): documentar deny-all das 6 tabelas de auditoria no allowlist de RLS (#4028)",
+   "chore: consolidar baselines de ratchet (as-assertions, file-size, eslint-disable) (#4027)",
+   "fix: referencia completa da migration do orcamento em 05-PROGRESSO (#4026)",
    "fix(qa): etapas 072-079 - erro de catalogo, colecoes e templates separados do vazio (#4023)",
-   "fix: Etapas 069-070 — alinhar ROLE_RANK em dispatcher-auth (ACH-022) (#4022)",
-   "fix: Etapas 067-068 — impressao publica de revista sem login (ACH-046) (#4020)",
-   "fix: Etapas 063-064 — total_cost em personalizacoes de template (ACH-084) (#4019)",
-   "feat: Etapas 057-060 — adotar safeErrorResponse em 5 edge functions (ACH-030) (#4018)"
+   "fix: Etapas 069-070 — alinhar ROLE_RANK em dispatcher-auth (ACH-022) (#4022)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",

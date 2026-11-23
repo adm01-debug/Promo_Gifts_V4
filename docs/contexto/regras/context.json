@@ -1,9 +1,9 @@
 {
  "meta": {
-  "sha": "4b02d228383656213215d9b3f58c1f44ad7da9c5",
+  "sha": "06620fcbb178b371abaafb1ca1b75b07ab8b066d",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-23 16:20 UTC",
+  "generated_at": "2026-11-23 21:15 UTC",
   "files_total": 11166,
   "code_files": 9164,
   "code_lines": 1301177
@@ -563310,10 +563310,39 @@
   }
  },
  "git": {
-  "sha": "4b02d228383656213215d9b3f58c1f44ad7da9c5",
+  "sha": "06620fcbb178b371abaafb1ca1b75b07ab8b066d",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "06620fc",
+    "date": "2026-11-23",
+    "author": "adm01-debug",
+    "subject": "chore(security): documentar deny-all das 6 tabelas de auditoria no allowlist de RLS (#4028)",
+    "files": [
+     ".security/rls-no-policy-allowlist.json"
+    ]
+   },
+   {
+    "sha": "d9b382b",
+    "date": "2026-11-23",
+    "author": "adm01-debug",
+    "subject": "chore: consolidar baselines de ratchet (as-assertions, file-size, eslint-disable) (#4027)",
+    "files": [
+     ".as-assertions-baseline.json",
+     ".eslint-disable-baseline.json",
+     ".file-size-baseline.json"
+    ]
+   },
+   {
+    "sha": "075a1e0",
+    "date": "2026-11-23",
+    "author": "adm01-debug",
+    "subject": "fix: referencia completa da migration do orcamento em 05-PROGRESSO (#4026)",
+    "files": [
+     "docs/qa/05-PROGRESSO.md"
+    ]
+   },
    {
     "sha": "4b02d22",
     "date": "2026-11-23",
@@ -563647,52 +563676,20 @@
      "package-lock.json",
      "package.json"
     ]
-   },
-   {
-    "sha": "3be2162",
-    "date": "2026-11-22",
-    "author": "github-actions[bot]",
-    "subject": "docs(migrations-log): recibo E15 — aplicação de 20261122100000 (#3979)",
-    "files": [
-     "supabase/MIGRATIONS_SYNC_LOG.md"
-    ]
-   },
-   {
-    "sha": "bf4f25b",
-    "date": "2026-11-22",
-    "author": "adm01-debug",
-    "subject": "feat: views de compras canonicas (consolida #3968 e #3969) (#3976)",
-    "files": [
-     "supabase/MIGRATIONS_SYNC_LOG.md",
-     "supabase/migrations/20261122100000_compras_views_canonicas.sql",
-     "supabase/rollbacks/20261122100000_rollback.sql"
-    ]
-   },
-   {
-    "sha": "e8006d7",
-    "date": "2026-11-22",
-    "author": "github-actions[bot]",
-    "subject": "chore(main): release gifts-store 1.18.0 (#3966)",
-    "files": [
-     ".release-please-manifest.json",
-     "CHANGELOG.md",
-     "package-lock.json",
-     "package.json"
-    ]
    }
   ],
   "hot_files": [
    [
     "docs/qa/05-PROGRESSO.md",
-    14
+    15
    ],
    [
     "supabase/MIGRATIONS_SYNC_LOG.md",
-    9
+    7
    ],
    [
     "package.json",
-    3
+    2
    ],
    [
     "supabase/functions/crm-db-bridge/index.ts",
@@ -563727,16 +563724,20 @@
     2
    ],
    [
-    ".release-please-manifest.json",
-    2
+    ".security/rls-no-policy-allowlist.json",
+    1
    ],
    [
-    "CHANGELOG.md",
-    2
+    ".as-assertions-baseline.json",
+    1
    ],
    [
-    "package-lock.json",
-    2
+    ".eslint-disable-baseline.json",
+    1
+   ],
+   [
+    ".file-size-baseline.json",
+    1
    ],
    [
     "docs/qa/telas-sem-estado-de-erro.md",
@@ -563756,10 +563757,6 @@
    ],
    [
     "src/components/compare/__tests__/SupplierComparisonModal.export.test.tsx",
-    1
-   ],
-   [
-    "src/components/layout/SidebarReorganized.tsx",
     1
    ]
   ]

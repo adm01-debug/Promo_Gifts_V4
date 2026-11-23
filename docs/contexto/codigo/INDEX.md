@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e de hora em hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `4b02d228383656213215d9b3f58c1f44ad7da9c5` (2026-11-23T12:22:14-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e de hora em hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `06620fcbb178b371abaafb1ca1b75b07ab8b066d` (2026-11-23T18:06:30-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -599,27 +599,27 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - possiveis_segredos_no_codigo: 7 — ex.: scripts/ai-context/cenarios.mjs:102, src/components/admin/connections/__tests__/ConnectionSecurity.unit.test.tsx:9, src/integrations/supabase/client.ts:27
 
 ## Grafo de código (graphify)
-- 50839 nós · 86192 arestas · 2778 comunidades · grafo do commit `4b02d228`
+- 50839 nós · 86192 arestas · 2778 comunidades · grafo do commit `06620fcb`
 - comunidades maiores: ref_components (915), vitest (858), ref_integrations (664), ref_node_child_process (497), ref_lib (428), @tanstack/react-query (417), ref_hooks (417), ref_node_fs (395), react-router-dom (391), ref_types (364), sonner (322), scripts (311)
 - símbolos mais chamados: gotoAndSettle() (e2e/helpers/nav.ts), re (?), json (?), q() (scripts/supabase_snapshot/snapshot.py), analyze() (tests/scripts/test_personalization_artifact_diagnostics.py), outer() (tests/scripts/test_personalization_artifact_diagnostics.py), useExternalDatabase() (recovery/src-legacy/src/hooks/useExternalDatabase.ts), concludeCheck() (scripts/check-result-contract.mjs), querySupabaseReadOnly() (scripts/supabase-read-only-query.mjs), loginAs() (e2e/helpers/auth.ts), inner() (tests/scripts/test_personalization_artifact_diagnostics.py), excluded_sql() (scripts/supabase_snapshot/snapshot.py)
 - consulta local: `graphify query "<pergunta>"`, `graphify path "<A>" "<B>"`, `graphify explain "<X>"`
 
 ## Hotspots (arquivos mais alterados, 90 dias)
-- supabase/MIGRATIONS_SYNC_LOG.md (64)
-- package.json (31)
-- package-lock.json (20)
-- CHANGELOG.md (14)
-- docs/qa/05-PROGRESSO.md (14)
-- docs/coordenacao/conflitos-semanticos.md (11)
+- supabase/MIGRATIONS_SYNC_LOG.md (65)
+- package.json (30)
+- package-lock.json (21)
+- CHANGELOG.md (15)
+- docs/qa/05-PROGRESSO.md (15)
+- docs/coordenacao/conflitos-semanticos.md (12)
+- .github/workflows/deploy-gates.yml (10)
 - docs/agentes/resgates/2026-11-16-auditoria-branches.md (10)
-- .github/workflows/deploy-gates.yml (9)
+- src/pages/quotes/QuoteBuilderPage.tsx (9)
 - src/lib/freight/index.ts (8)
-- src/pages/quotes/QuoteBuilderPage.tsx (8)
-- audit/supabase-reference-catalog.temporary.json (6)
-- src/hooks/quotes/useQuoteBuilderState.ts (6)
-- src/integrations/supabase/types.ts (6)
-- src/lib/freight/README.md (6)
-- scripts/automation.config.json (5)
+- audit/supabase-reference-catalog.temporary.json (7)
+- src/hooks/quotes/useQuoteBuilderState.ts (7)
+- src/integrations/supabase/types.ts (7)
+- scripts/automation.config.json (6)
+- src/components/quotes/QuoteAutoSave.tsx (6)
 
 ## Workflows
 - `_e2e-relevance.yml` — Reusable — E2E Runtime Relevance (workflow_call)
@@ -1197,6 +1197,9 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - CHANGELOG topo: [1.19.0](https://github.com/adm01-debug/Promo_Gifts_V4/compare/gifts-store-v1.18.0...gifts-store-v1.19.0) (2026-11-22)
 
 ## Últimos commits
+- 2026-11-23 `06620fc` chore(security): documentar deny-all das 6 tabelas de auditoria no allowlist de RLS (#4028)
+- 2026-11-23 `d9b382b` chore: consolidar baselines de ratchet (as-assertions, file-size, eslint-disable) (#4027)
+- 2026-11-23 `075a1e0` fix: referencia completa da migration do orcamento em 05-PROGRESSO (#4026)
 - 2026-11-23 `4b02d22` fix(qa): etapas 072-079 - erro de catalogo, colecoes e templates separados do vazio (#4023)
 - 2026-11-23 `3b7dc18` fix: Etapas 069-070 — alinhar ROLE_RANK em dispatcher-auth (ACH-022) (#4022)
 - 2026-11-23 `ce11844` fix: Etapas 067-068 — impressao publica de revista sem login (ACH-046) (#4020)
@@ -1209,9 +1212,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-23 `28515a1` feat: Etapa 040 — confirmacao explicita na exclusao em massa (ACH-098) (#4013)
 - 2026-11-23 `6fb570a` feat: Etapa 043 — url-allowlist em modo observador no webhook-dispatcher (ACH-009) (#4012)
 - 2026-11-23 `59e624b` feat: Etapa 019 — prova de tautologia RLS em attribute_definitions/groups (ACH-013) (#4011)
-- 2026-11-23 `13b9bae` feat: Etapa 014 — descoberta automática de harnesses /__visual/ no gate de produção (#4010)
-- 2026-11-23 `042c212` docs(qa): auditoria exaustiva de QA — 103 achados e plano de 300 etapas (#3994)
-- 2026-11-22 `ded84e9` docs(migrations-log): recibo E15 — aplicação de 20261122200000 (#3992)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

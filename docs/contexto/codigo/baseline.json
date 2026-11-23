@@ -2,11 +2,26 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "4b02d228383656213215d9b3f58c1f44ad7da9c5",
+  "commit": "06620fcbb178b371abaafb1ca1b75b07ab8b066d",
   "branch": "main",
-  "data_commit": "2026-11-23T12:22:14-03:00",
+  "data_commit": "2026-11-23T18:06:30-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "06620fc",
+    "data": "2026-11-23",
+    "assunto": "chore(security): documentar deny-all das 6 tabelas de auditoria no allowlist de RLS (#4028)"
+   },
+   {
+    "sha": "d9b382b",
+    "data": "2026-11-23",
+    "assunto": "chore: consolidar baselines de ratchet (as-assertions, file-size, eslint-disable) (#4027)"
+   },
+   {
+    "sha": "075a1e0",
+    "data": "2026-11-23",
+    "assunto": "fix: referencia completa da migration do orcamento em 05-PROGRESSO (#4026)"
+   },
    {
     "sha": "4b02d22",
     "data": "2026-11-23",
@@ -116,117 +131,106 @@
     "sha": "20c63c3",
     "data": "2026-11-22",
     "assunto": "fix: devolve security_invoker=false às views p06 e de compras (#3981)"
-   },
-   {
-    "sha": "2121d82",
-    "data": "2026-11-22",
-    "assunto": "chore(security): atualiza baseline assinado de RLS policies (#3985)"
-   },
-   {
-    "sha": "c5cbd37",
-    "data": "2026-11-22",
-    "assunto": "docs(migrations-log): recibo E15 — aplicação de 20261120041000 (#3984)"
-   },
-   {
-    "sha": "0a339aa",
-    "data": "2026-11-22",
-    "assunto": "chore(schema-snapshot): snapshot semanal 2026-W47 (run 45026234350) (#3982)"
    }
   ],
-  "arquivos_mudados_7d": 734,
+  "arquivos_mudados_7d": 714,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
-    "mudancas": 388
+    "mudancas": 696
    },
    {
     "pasta": "recovery/src-legacy/src",
-    "mudancas": 317
+    "mudancas": 634
    },
    {
     "pasta": "src/components/products",
-    "mudancas": 153
-   },
-   {
-    "pasta": "src/components/quotes",
-    "mudancas": 128
+    "mudancas": 305
    },
    {
     "pasta": "tests/edge-functions/live",
-    "mudancas": 117
+    "mudancas": 233
    },
    {
     "pasta": "src/hooks/products",
-    "mudancas": 114
+    "mudancas": 217
    },
    {
-    "pasta": "src/lib/freight",
-    "mudancas": 103
+    "pasta": "src/components/quotes",
+    "mudancas": 215
    },
    {
     "pasta": "src/pages/magazine",
-    "mudancas": 92
-   },
-   {
-    "pasta": "src/components/mockup",
-    "mudancas": 90
+    "mudancas": 184
    },
    {
     "pasta": "src/components/inventory",
-    "mudancas": 85
+    "mudancas": 166
    },
    {
-    "pasta": "src/pages/quotes",
-    "mudancas": 85
+    "pasta": "src/components/mockup",
+    "mudancas": 164
    },
    {
     "pasta": "supabase/functions/_shared",
-    "mudancas": 84
-   },
-   {
-    "pasta": "src/pages/admin",
-    "mudancas": 81
-   },
-   {
-    "pasta": "src/hooks/quotes",
-    "mudancas": 78
+    "mudancas": 159
    },
    {
     "pasta": "src/components/ui",
-    "mudancas": 73
+    "mudancas": 146
+   },
+   {
+    "pasta": "src/pages/admin",
+    "mudancas": 141
+   },
+   {
+    "pasta": "src/pages/quotes",
+    "mudancas": 137
+   },
+   {
+    "pasta": "src/hooks/quotes",
+    "mudancas": 120
+   },
+   {
+    "pasta": "src/components/kit-builder",
+    "mudancas": 112
    }
   ],
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "supabase/MIGRATIONS_SYNC_LOG.md",
-    "mudancas": 64
+    "mudancas": 65
    },
    {
     "arquivo": "package.json",
-    "mudancas": 31
+    "mudancas": 30
    },
    {
     "arquivo": "package-lock.json",
-    "mudancas": 20
+    "mudancas": 21
    },
    {
     "arquivo": "CHANGELOG.md",
-    "mudancas": 14
+    "mudancas": 15
    },
    {
     "arquivo": "docs/qa/05-PROGRESSO.md",
-    "mudancas": 14
+    "mudancas": 15
    },
    {
     "arquivo": "docs/coordenacao/conflitos-semanticos.md",
-    "mudancas": 11
+    "mudancas": 12
+   },
+   {
+    "arquivo": ".github/workflows/deploy-gates.yml",
+    "mudancas": 10
    },
    {
     "arquivo": "docs/agentes/resgates/2026-11-16-auditoria-branches.md",
     "mudancas": 10
    },
    {
-    "arquivo": ".github/workflows/deploy-gates.yml",
+    "arquivo": "src/pages/quotes/QuoteBuilderPage.tsx",
     "mudancas": 9
    },
    {
@@ -234,19 +238,27 @@
     "mudancas": 8
    },
    {
-    "arquivo": "src/pages/quotes/QuoteBuilderPage.tsx",
-    "mudancas": 8
-   },
-   {
     "arquivo": "audit/supabase-reference-catalog.temporary.json",
-    "mudancas": 6
+    "mudancas": 7
    },
    {
     "arquivo": "src/hooks/quotes/useQuoteBuilderState.ts",
-    "mudancas": 6
+    "mudancas": 7
    },
    {
     "arquivo": "src/integrations/supabase/types.ts",
+    "mudancas": 7
+   },
+   {
+    "arquivo": "scripts/automation.config.json",
+    "mudancas": 6
+   },
+   {
+    "arquivo": "src/components/quotes/QuoteAutoSave.tsx",
+    "mudancas": 6
+   },
+   {
+    "arquivo": "src/hooks/quotes/useQuoteTemplates.ts",
     "mudancas": 6
    },
    {
@@ -254,7 +266,19 @@
     "mudancas": 6
    },
    {
-    "arquivo": "scripts/automation.config.json",
+    "arquivo": "src/pages/mockups/MockupGenerator.tsx",
+    "mudancas": 6
+   },
+   {
+    "arquivo": "src/components/kit-builder/KitSummary.tsx",
+    "mudancas": 5
+   },
+   {
+    "arquivo": "src/components/kit-builder/PersonalizationConfig.tsx",
+    "mudancas": 5
+   },
+   {
+    "arquivo": "src/components/layout/SidebarReorganized.tsx",
     "mudancas": 5
    },
    {
@@ -262,40 +286,16 @@
     "mudancas": 5
    },
    {
-    "arquivo": "src/components/quotes/QuoteAutoSave.tsx",
-    "mudancas": 5
-   },
-   {
     "arquivo": "src/components/quotes/QuoteTemplatesList.tsx",
     "mudancas": 5
    },
    {
-    "arquivo": "src/hooks/quotes/useQuoteTemplates.ts",
+    "arquivo": "src/hooks/quotes/useQuoteVersions.ts",
     "mudancas": 5
    },
    {
-    "arquivo": "src/pages/mockups/MockupGenerator.tsx",
+    "arquivo": "src/pages/kit-builder/KitBuilderPage.tsx",
     "mudancas": 5
-   },
-   {
-    "arquivo": "analise-branches/dossies/claude__resgate-3390-261113.md",
-    "mudancas": 4
-   },
-   {
-    "arquivo": "docs/agentes/resgates/2026-11-19-migrations-orfas-e-o-portao-retroativo.md",
-    "mudancas": 4
-   },
-   {
-    "arquivo": "src/components/admin/shipping-boxes/__tests__/ShippingBoxesManager.test.tsx",
-    "mudancas": 4
-   },
-   {
-    "arquivo": "src/components/kit-builder/KitSummary.tsx",
-    "mudancas": 4
-   },
-   {
-    "arquivo": "src/components/kit-builder/PersonalizationConfig.tsx",
-    "mudancas": 4
    }
   ],
   "autores_30d": [
