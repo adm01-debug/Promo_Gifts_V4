@@ -53,7 +53,7 @@ export interface InvokeResult<T> {
 // EN column names, and its own RLS. Redirecting to tecnicas_gravacao returned wrong data.
 const BRIDGE_ALIASES: Record<string, string> = {
   tecnica_gravacao: 'tabela_preco_gravacao_oficial',
-  customization_price_tiers: 'tabela_preco_gravacao_oficial_faixa',
+  customization_price_tiers: 'v_tabela_preco_gravacao_oficial_faixa_public',
   customization_price_tables: 'tabela_preco_gravacao_oficial',
   tecnica_gravacao_variante: 'tabela_preco_gravacao_oficial',
   // NOTE: 'personalization_techniques' is intentionally NOT aliased here.

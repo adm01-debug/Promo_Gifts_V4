@@ -6,7 +6,7 @@ const TABLE_ALIASES: Record<string, string> = {
   suppliers: 'v_suppliers_public',
   print_area_techniques: 'v_print_area_techniques_public',
   tecnica_gravacao: 'tabela_preco_gravacao_oficial',
-  customization_price_tiers: 'tabela_preco_gravacao_oficial_faixa',
+  customization_price_tiers: 'v_tabela_preco_gravacao_oficial_faixa_public',
   // NOTE: 'personalization_techniques' is intentionally NOT aliased.
   // It is a real table in doufsxqlfjyuvxuezpln (uuid PK, EN columns, own RLS).
   // Redirecting it to tecnicas_gravacao (PT columns) returned wrong data — see

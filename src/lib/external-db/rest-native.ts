@@ -81,6 +81,7 @@ const REST_NATIVE_SAFE_TABLES = new Set<string>([
   'v_print_area_techniques_public',
   'tabela_preco_gravacao_oficial',
   'tabela_preco_gravacao_oficial_faixa',
+  'v_tabela_preco_gravacao_oficial_faixa_public',
   'tecnicas_gravacao',
   // Bridge aliases (resolve via TABLE_ALIASES)
   'tecnica_gravacao',
@@ -167,7 +168,7 @@ const TABLE_ALIASES: Record<string, string> = {
   suppliers: 'v_suppliers_public',
   print_area_techniques: 'v_print_area_techniques_public',
   tecnica_gravacao: 'tabela_preco_gravacao_oficial',
-  customization_price_tiers: 'tabela_preco_gravacao_oficial_faixa',
+  customization_price_tiers: 'v_tabela_preco_gravacao_oficial_faixa_public',
   // Phase 2 bridge aliases
   customization_price_tables: 'tabela_preco_gravacao_oficial',
   tecnica_gravacao_variante: 'tabela_preco_gravacao_oficial',
