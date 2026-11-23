@@ -1,4 +1,5 @@
-import { useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
+import { toast } from 'sonner';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -42,6 +43,7 @@ import { PriceSparkline } from './PriceSparkline';
 import { Progress } from '@/components/ui/progress';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { exportToExcel } from '@/utils/excelExport';
 
 interface SupplierComparisonModalProps {
   product?: Product | null;
@@ -181,6 +183,42 @@ export function SupplierComparisonModal({
     return `O ${winner.product.supplier.name} é o vencedor principalmente pelo ${factorLabels[topFactor[0]] || 'equilíbrio de fatores'}.`;
   }, [winner]);
 
+  const handleExportReport = useCallback(async () => {
+    if (filteredProducts.length === 0) {
+      toast.info('Nenhum fornecedor para exportar com os filtros atuais.');
+      return;
+    }
+    try {
+      await exportToExcel({
+        filename: `comparativo-${displayProduct?.name ?? 'produto'}`,
+        sheetName: 'Comparativo',
+        columns: [
+          { key: 'supplier', header: 'Fornecedor', width: 32 },
+          { key: 'price', header: 'Preço unitário (R$)', width: 18 },
+          { key: 'moq', header: 'Pedido mínimo', width: 14 },
+          { key: 'stock', header: 'Estoque', width: 12 },
+          { key: 'leadTime', header: 'Prazo (dias)', width: 12 },
+          { key: 'score', header: 'Pontuação', width: 12 },
+          { key: 'verified', header: 'Ativo', width: 10 },
+          { key: 'savings', header: 'Economia por MOQ (R$)', width: 20 },
+        ],
+        data: filteredProducts.map((row) => ({
+          supplier: row.product.supplier?.name ?? '—',
+          price: row.product.price,
+          moq: row.effectiveMOQ,
+          stock: row.product.stock,
+          leadTime: row.leadTimeDays ?? '',
+          score: row.score,
+          verified: row.isVerified ? 'Sim' : 'Não',
+          savings: row.economiaPorMOQ,
+        })),
+      });
+      toast.success('Relatório exportado.');
+    } catch {
+      toast.error('Não foi possível exportar o relatório.');
+    }
+  }, [filteredProducts, displayProduct]);
+
   if (isLoading) {
     return (
       <Dialog open={open} onOpenChange={onOpenChange}>
@@ -284,8 +322,14 @@ export function SupplierComparisonModal({
               <TooltipProvider>
                 <Tooltip>
                   <TooltipTrigger asChild>
-                    <Button variant="outline" size="icon" className="h-9 w-9 rounded-lg">
-                      <ExternalLink className="h-4 w-4" />
+                    <Button
+                      variant="outline"
+                      size="icon"
+                      className="h-9 w-9 rounded-lg"
+                      onClick={handleExportReport}
+                      aria-label="Exportar relatório comparativo em Excel"
+                    >
+                      <ExternalLink className="h-4 w-4" aria-hidden="true" />
                     </Button>
                   </TooltipTrigger>
                   <TooltipContent>Exportar Relatório</TooltipContent>

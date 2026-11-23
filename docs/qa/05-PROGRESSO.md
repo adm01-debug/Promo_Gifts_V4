@@ -197,8 +197,31 @@ Severidade das etapas: Média 158 · Alta 79 · Baixa 54 · Crítica 9
     string literal da chave, e ambos os arquivos declaram `60_000`.
   - Validação: `npm run typecheck` exit 0; `npx eslint` nos arquivos tocados sem problemas;
     `npx vitest run src/components/layout` → 16 arquivos, 2377 testes verdes (42 skipped).
-- [ ] 091 — Dar ação ao botão "Exportar Relatório" da comparação de fornecedores — onda 2 — Média
-- [ ] 092 — Varredura dirigida de "erro virando vazio" nas demais telas de fluxo principal — onda 2 — Média
+- [x] 091 — Dar ação ao botão "Exportar Relatório" da comparação de fornecedores — onda 2 — Média
+  - Decisão: **implementar**, não remover — o repo já tem o gerador de planilha
+    (`src/utils/excelExport.ts`, `@e965/xlsx`) usado em outras telas, e o comparativo é
+    exatamente o tipo de dado que o comprador leva para reunião.
+  - Evidência 091: `SupplierComparisonModal.tsx` ganhou `handleExportReport`, que exporta os
+    fornecedores **do filtro atual** (`filteredProducts`, não `allProducts`) com fornecedor, preço,
+    MOQ, estoque, prazo, pontuação, ativo e economia por MOQ. Nome acessível:
+    `aria-label="Exportar relatório comparativo em Excel"` + ícone `aria-hidden`.
+    Estados cobertos: sucesso (`toast.success`), falha (`toast.error`) e lista filtrada vazia
+    (`toast.info`, sem arquivo). `SupplierComparisonModal.export.test.tsx` (3 casos) cobre os três;
+    revertendo `onClick` + `aria-label` os 3 falham (prova). A lógica de comparação não foi tocada.
+  - Validação: `npm run typecheck` exit 0; `npx eslint` nos 2 arquivos sem problemas;
+    `npx vitest run src/components/compare` → 2 arquivos, 6 testes verdes.
+- [x] 092 — Varredura dirigida de "erro virando vazio" nas demais telas de fluxo principal — onda 2 — Média
+  - Evidência 092: criado `docs/qa/telas-sem-estado-de-erro.md` com **3 achados**, cada um com
+    `arquivo:linha` e trecho, mais a tabela das 11 telas verificadas e consideradas cobertas:
+    1. `src/pages/quotes/QuotesKanbanPage.tsx:26` — `useQuotes()` descarta `error`; quadro renderiza
+       todas as colunas vazias quando a consulta falha.
+    2. `src/pages/mockups/MockupHistoryPage.tsx:64` — `queryFn` lança, mas `isError`/`error` não são
+       lidos; a linha 220 cai em "Nenhum mockup gerado ainda".
+    3. `src/hooks/mockup/useMockupGenerator.ts:352-363` — `fetchHistory` só loga o erro; a aba
+       Histórico do `MockupGenerator` mostra vazio.
+    Conforme o caminho recomendado da etapa, **não foram corrigidos aqui** — cada um vira etapa
+    própria no modelo das 073/077. Não contados: `catch` do CRM bridge
+    (`QuotesKanbanPage.tsx:54-56`), que tem fallback declarado.
 
 ## Onda 3 — Integridade de dados, regras de negócio e a rede de teste
 
