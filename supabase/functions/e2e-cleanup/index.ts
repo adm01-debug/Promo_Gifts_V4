@@ -136,6 +136,7 @@ Deno.serve(async (req: Request) => {
   const SERVICE_KEY = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? '';
   const supabase = createClient(SUPABASE_URL, SERVICE_KEY);
 
+  const requestId = crypto.randomUUID();
   const { value: cleanupToken } = await resolveCredential('E2E_CLEANUP_TOKEN');
   const { value: allowedEmailsRaw } = await resolveCredential('E2E_CLEANUP_ALLOWED_EMAILS');
   const ALLOWED_EMAILS = new Set(
@@ -144,6 +145,21 @@ Deno.serve(async (req: Request) => {
       .map((e: string) => e.trim().toLowerCase())
       .filter(Boolean),
   );
+
+  // ACH-071: alarme de dessincronia — loga erro explícito quando configuração
+  // obrigatória está ausente, em vez de recusar em silêncio.
+  if (!cleanupToken) {
+    console.error(JSON.stringify({
+      level: 'error', context: 'e2e-cleanup', request_id: requestId,
+      alarm: 'missing_token', message: 'E2E_CLEANUP_TOKEN ausente — função está operacional mas nenhuma requisicao sera autenticada.',
+    }));
+  }
+  if (ALLOWED_EMAILS.size === 0) {
+    console.error(JSON.stringify({
+      level: 'error', context: 'e2e-cleanup', request_id: requestId,
+      alarm: 'empty_allowlist', message: 'E2E_CLEANUP_ALLOWED_EMAILS vazio — nenhum email sera autorizado (dessincronia com token).',
+    }));
+  }
 
   // 1. Auth
   const incomingToken = req.headers.get('x-e2e-cleanup-token') ?? '';
