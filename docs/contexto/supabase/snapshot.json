@@ -142499,7 +142499,11 @@
           "cron": [],
           "db": [],
           "triggers": [],
-          "views": []
+          "views": [
+            "public.v_compras_catalogo",
+            "public.v_compras_precos_faixa",
+            "public.v_compras_precos_variante"
+          ]
         },
         "comment": null,
         "config": [
@@ -142967,10 +142971,10 @@
         },
         "comment": "RLS-002 audit (2026-05-22): SECURITY DEFINER intencionalmente exposto a anon. Necessário para verificar rate limit ANTES de login. Sem ação adicional necessária.",
         "config": [
-          "search_path=public"
+          "search_path=pg_catalog, public, extensions, pg_temp"
         ],
         "definition": null,
-        "definition_sha": "367c6eda99bbd18d",
+        "definition_sha": "2d9a4a35a53d9ff7",
         "execute_api_roles": "anon, authenticated, service_role",
         "execute_public": false,
         "is_trigger_fn": false,
@@ -164228,11 +164232,11 @@
         },
         "comment": "Helper SECURITY DEFINER para políticas RLS anon (fix_version 20260717). Verifica se produto está ativo sem conceder SELECT direto em products ao anon. Usada em: product_properties_anon_read, product_tags_anon_read.",
         "config": [
-          "search_path=public"
+          "search_path=pg_catalog, public, extensions, pg_temp"
         ],
         "definition": null,
-        "definition_sha": "7c367554ae580e2e",
-        "execute_api_roles": "anon, authenticated, service_role",
+        "definition_sha": "1ded1bec47daf527",
+        "execute_api_roles": "authenticated, service_role",
         "execute_public": false,
         "is_trigger_fn": false,
         "kind": "function",
@@ -171594,10 +171598,10 @@
         },
         "comment": "Catálogo principal do storefront (SECURITY DEFINER). fix_version 20260717: bug p_only_in_stock=NULL corrigido via IS NOT TRUE. cost_price=NULL::numeric. ANTI-REGRESSAO: manter IS NOT TRUE no predicado de estoque.",
         "config": [
-          "search_path=public, extensions"
+          "search_path=pg_catalog, public, extensions, pg_temp"
         ],
         "definition": null,
-        "definition_sha": "565714178fa148da",
+        "definition_sha": "9c8dc2811100a32f",
         "execute_api_roles": "anon, authenticated, service_role",
         "execute_public": true,
         "is_trigger_fn": false,
@@ -171624,10 +171628,10 @@
         },
         "comment": null,
         "config": [
-          "search_path=public, extensions"
+          "search_path=pg_catalog, public, extensions, pg_temp"
         ],
         "definition": null,
-        "definition_sha": "ad3d380f75d1c42a",
+        "definition_sha": "4bc170e2b525129c",
         "execute_api_roles": "anon, authenticated, service_role",
         "execute_public": false,
         "is_trigger_fn": false,
@@ -171684,10 +171688,10 @@
         },
         "comment": null,
         "config": [
-          "search_path=public, extensions"
+          "search_path=pg_catalog, public, extensions, pg_temp"
         ],
         "definition": null,
-        "definition_sha": "171da52ecae9ac98",
+        "definition_sha": "fb4940e6bd646cba",
         "execute_api_roles": "anon, authenticated, service_role",
         "execute_public": false,
         "is_trigger_fn": false,
@@ -178585,10 +178589,10 @@
         },
         "comment": null,
         "config": [
-          "search_path=public"
+          "search_path=pg_catalog, public, extensions, pg_temp"
         ],
         "definition": null,
-        "definition_sha": "739dae46fe3395b6",
+        "definition_sha": "0894c3bc9bc62bc5",
         "execute_api_roles": "anon, authenticated, service_role",
         "execute_public": false,
         "is_trigger_fn": false,
@@ -224786,42 +224790,6 @@
       {
         "code": "policy_auth_fn_not_wrapped",
         "detail": "Policy chama auth.uid()/jwt() sem `(select ...)`: é reavaliada por linha; envolva em subselect.",
-        "object": "public.order_items.order_items_insert",
-        "severity": "BAIXA"
-      },
-      {
-        "code": "policy_auth_fn_not_wrapped",
-        "detail": "Policy chama auth.uid()/jwt() sem `(select ...)`: é reavaliada por linha; envolva em subselect.",
-        "object": "public.order_items.order_items_select",
-        "severity": "BAIXA"
-      },
-      {
-        "code": "policy_auth_fn_not_wrapped",
-        "detail": "Policy chama auth.uid()/jwt() sem `(select ...)`: é reavaliada por linha; envolva em subselect.",
-        "object": "public.order_items.order_items_update",
-        "severity": "BAIXA"
-      },
-      {
-        "code": "policy_auth_fn_not_wrapped",
-        "detail": "Policy chama auth.uid()/jwt() sem `(select ...)`: é reavaliada por linha; envolva em subselect.",
-        "object": "public.orders.orders_insert",
-        "severity": "BAIXA"
-      },
-      {
-        "code": "policy_auth_fn_not_wrapped",
-        "detail": "Policy chama auth.uid()/jwt() sem `(select ...)`: é reavaliada por linha; envolva em subselect.",
-        "object": "public.orders.orders_select",
-        "severity": "BAIXA"
-      },
-      {
-        "code": "policy_auth_fn_not_wrapped",
-        "detail": "Policy chama auth.uid()/jwt() sem `(select ...)`: é reavaliada por linha; envolva em subselect.",
-        "object": "public.orders.orders_update",
-        "severity": "BAIXA"
-      },
-      {
-        "code": "policy_auth_fn_not_wrapped",
-        "detail": "Policy chama auth.uid()/jwt() sem `(select ...)`: é reavaliada por linha; envolva em subselect.",
         "object": "storage.objects.Users can upload their own mockup assets",
         "severity": "BAIXA"
       },
@@ -224829,12 +224797,6 @@
         "code": "rpc_anon_executable",
         "detail": "SECURITY DEFINER chamável via RPC por anon (sem login): roda com privilégios do owner. Confirme que é intencional (Supabase dá EXECUTE a anon por padrão; revogue se não for API pública).",
         "object": "public.check_login_rate_limit(_email text, _ip text)",
-        "severity": "INFO"
-      },
-      {
-        "code": "rpc_anon_executable",
-        "detail": "SECURITY DEFINER chamável via RPC por anon (sem login): roda com privilégios do owner. Confirme que é intencional (Supabase dá EXECUTE a anon por padrão; revogue se não for API pública).",
-        "object": "public.fn_product_active_for_rls(p_id uuid)",
         "severity": "INFO"
       },
       {
@@ -247817,7 +247779,7 @@
         "schema": "public",
         "table": "order_items",
         "using": null,
-        "with_check": "(can_view_all_sales() OR (EXISTS ( SELECT 1\n   FROM orders o\n  WHERE ((o.id = order_items.order_id) AND ((o.seller_id = auth.uid()) OR (has_role(auth.uid(), 'supervisor'::app_role) AND ((o.organization_id IS NULL) OR (o.organization_id IN ( SELECT get_user_org_ids(auth.uid()) AS get_user_org_ids)))))))))"
+        "with_check": "(( SELECT can_view_all_sales() AS can_view_all_sales) OR (EXISTS ( SELECT 1\n   FROM orders o\n  WHERE ((o.id = order_items.order_id) AND ((o.seller_id = ( SELECT auth.uid() AS uid)) OR (( SELECT has_role(( SELECT auth.uid() AS uid), 'supervisor'::app_role) AS has_role) AND ((o.organization_id IS NULL) OR (o.organization_id IN ( SELECT get_user_org_ids(( SELECT auth.uid() AS uid)) AS get_user_org_ids)))))))))"
       },
       {
         "cmd": "SELECT",
@@ -247828,7 +247790,7 @@
         ],
         "schema": "public",
         "table": "order_items",
-        "using": "(can_view_all_sales() OR (EXISTS ( SELECT 1\n   FROM orders o\n  WHERE ((o.id = order_items.order_id) AND ((o.seller_id = auth.uid()) OR (has_role(auth.uid(), 'supervisor'::app_role) AND ((o.organization_id IS NULL) OR (o.organization_id IN ( SELECT get_user_org_ids(auth.uid()) AS get_user_org_ids)))))))))",
+        "using": "(( SELECT can_view_all_sales() AS can_view_all_sales) OR (EXISTS ( SELECT 1\n   FROM orders o\n  WHERE ((o.id = order_items.order_id) AND ((o.seller_id = ( SELECT auth.uid() AS uid)) OR (( SELECT has_role(( SELECT auth.uid() AS uid), 'supervisor'::app_role) AS has_role) AND ((o.organization_id IS NULL) OR (o.organization_id IN ( SELECT get_user_org_ids(( SELECT auth.uid() AS uid)) AS get_user_org_ids)))))))))",
         "with_check": null
       },
       {
@@ -247840,8 +247802,8 @@
         ],
         "schema": "public",
         "table": "order_items",
-        "using": "(can_view_all_sales() OR (EXISTS ( SELECT 1\n   FROM orders o\n  WHERE ((o.id = order_items.order_id) AND ((o.seller_id = auth.uid()) OR (has_role(auth.uid(), 'supervisor'::app_role) AND ((o.organization_id IS NULL) OR (o.organization_id IN ( SELECT get_user_org_ids(auth.uid()) AS get_user_org_ids)))))))))",
-        "with_check": "(can_view_all_sales() OR (EXISTS ( SELECT 1\n   FROM orders o\n  WHERE ((o.id = order_items.order_id) AND ((o.seller_id = auth.uid()) OR (has_role(auth.uid(), 'supervisor'::app_role) AND ((o.organization_id IS NULL) OR (o.organization_id IN ( SELECT get_user_org_ids(auth.uid()) AS get_user_org_ids)))))))))"
+        "using": "(( SELECT can_view_all_sales() AS can_view_all_sales) OR (EXISTS ( SELECT 1\n   FROM orders o\n  WHERE ((o.id = order_items.order_id) AND ((o.seller_id = ( SELECT auth.uid() AS uid)) OR (( SELECT has_role(( SELECT auth.uid() AS uid), 'supervisor'::app_role) AS has_role) AND ((o.organization_id IS NULL) OR (o.organization_id IN ( SELECT get_user_org_ids(( SELECT auth.uid() AS uid)) AS get_user_org_ids)))))))))",
+        "with_check": "(( SELECT can_view_all_sales() AS can_view_all_sales) OR (EXISTS ( SELECT 1\n   FROM orders o\n  WHERE ((o.id = order_items.order_id) AND ((o.seller_id = ( SELECT auth.uid() AS uid)) OR (( SELECT has_role(( SELECT auth.uid() AS uid), 'supervisor'::app_role) AS has_role) AND ((o.organization_id IS NULL) OR (o.organization_id IN ( SELECT get_user_org_ids(( SELECT auth.uid() AS uid)) AS get_user_org_ids)))))))))"
       },
       {
         "cmd": "DELETE",
@@ -247865,7 +247827,7 @@
         "schema": "public",
         "table": "orders",
         "using": null,
-        "with_check": "(can_view_all_sales() OR (seller_id = auth.uid()))"
+        "with_check": "(( SELECT can_view_all_sales() AS can_view_all_sales) OR (seller_id = ( SELECT auth.uid() AS uid)))"
       },
       {
         "cmd": "SELECT",
@@ -247876,7 +247838,7 @@
         ],
         "schema": "public",
         "table": "orders",
-        "using": "(can_view_all_sales() OR (has_role(auth.uid(), 'supervisor'::app_role) AND ((organization_id IS NULL) OR (organization_id IN ( SELECT get_user_org_ids(auth.uid()) AS get_user_org_ids)))) OR (seller_id = auth.uid()))",
+        "using": "(( SELECT can_view_all_sales() AS can_view_all_sales) OR (( SELECT has_role(( SELECT auth.uid() AS uid), 'supervisor'::app_role) AS has_role) AND ((organization_id IS NULL) OR (organization_id IN ( SELECT get_user_org_ids(( SELECT auth.uid() AS uid)) AS get_user_org_ids)))) OR (seller_id = ( SELECT auth.uid() AS uid)))",
         "with_check": null
       },
       {
@@ -247888,8 +247850,8 @@
         ],
         "schema": "public",
         "table": "orders",
-        "using": "(can_view_all_sales() OR (has_role(auth.uid(), 'supervisor'::app_role) AND ((organization_id IS NULL) OR (organization_id IN ( SELECT get_user_org_ids(auth.uid()) AS get_user_org_ids)))) OR (seller_id = auth.uid()))",
-        "with_check": "(can_view_all_sales() OR (has_role(auth.uid(), 'supervisor'::app_role) AND ((organization_id IS NULL) OR (organization_id IN ( SELECT get_user_org_ids(auth.uid()) AS get_user_org_ids)))) OR (seller_id = auth.uid()))"
+        "using": "(( SELECT can_view_all_sales() AS can_view_all_sales) OR (( SELECT has_role(( SELECT auth.uid() AS uid), 'supervisor'::app_role) AS has_role) AND ((organization_id IS NULL) OR (organization_id IN ( SELECT get_user_org_ids(( SELECT auth.uid() AS uid)) AS get_user_org_ids)))) OR (seller_id = ( SELECT auth.uid() AS uid)))",
+        "with_check": "(( SELECT can_view_all_sales() AS can_view_all_sales) OR (( SELECT has_role(( SELECT auth.uid() AS uid), 'supervisor'::app_role) AS has_role) AND ((organization_id IS NULL) OR (organization_id IN ( SELECT get_user_org_ids(( SELECT auth.uid() AS uid)) AS get_user_org_ids)))) OR (seller_id = ( SELECT auth.uid() AS uid)))"
       },
       {
         "cmd": "INSERT",
@@ -248686,7 +248648,7 @@
         ],
         "schema": "public",
         "table": "product_commemorative_dates",
-        "using": "(EXISTS ( SELECT 1\n   FROM products p\n  WHERE ((p.id = product_commemorative_dates.product_id) AND (p.organization_id IN ( SELECT uo.organization_id\n           FROM user_organizations uo\n          WHERE ((uo.user_id = ( SELECT auth.uid() AS uid)) AND (uo.role = ANY (ARRAY['owner'::org_role, 'admin'::org_role]))))))))",
+        "using": "((is_active = true) OR (EXISTS ( SELECT 1\n   FROM products p\n  WHERE ((p.id = product_commemorative_dates.product_id) AND (p.organization_id IN ( SELECT uo.organization_id\n           FROM user_organizations uo\n          WHERE ((uo.user_id = ( SELECT auth.uid() AS uid)) AND (uo.role = ANY (ARRAY['owner'::org_role, 'admin'::org_role])))))))))",
         "with_check": null
       },
       {
@@ -248706,8 +248668,7 @@
         "name": "pcd_read_public",
         "permissive": "PERMISSIVE",
         "roles": [
-          "anon",
-          "authenticated"
+          "anon"
         ],
         "schema": "public",
         "table": "product_commemorative_dates",
@@ -268600,7 +268561,7 @@
       },
       {
         "comment": "Catalogo canônico para o bridge PIM -> Promo Supply V2 (SECURITY DEFINER). Projeta cost_price/sale_price/suggested_price de proposito: useCatalogoPim.ts consome esses campos para recompra. O recorte e a projecao + o WHERE, nao o GRANT. NAO religar security_invoker=true.",
-        "definition": " SELECT p.id AS pim_product_id,\n    v.id AS pim_variant_id,\n    p.sku,\n    p.sku_promo,\n    p.name,\n    p.supplier_id,\n    s.code AS supplier_code,\n    s.name AS supplier_name,\n    COALESCE(v.supplier_sku, p.supplier_reference) AS supplier_reference,\n    p.supplier_external_id,\n    p.cost_price,\n    p.sale_price,\n    p.suggested_price,\n    p.ipi_rate,\n    p.ncm_code,\n    p.min_quantity,\n    p.min_order_quantity,\n    s.min_order_value,\n    COALESCE(v.stock_quantity, p.stock_quantity) AS stock_quantity,\n    p.is_stockout,\n    p.last_stock_update_at,\n    p.xbz_stock_reliability_text,\n    v.color_id,\n    v.color_name,\n    v.color_code,\n    v.color_hex,\n    v.size_code,\n    COALESCE(p.primary_image_url, p.primary_image_fallback_url) AS image_url,\n    p.lead_time_days,\n    p.price_updated_at,\n    p.price_verified_at,\n    p.price_freshness_threshold_days,\n    p.updated_at\n   FROM products p\n     JOIN suppliers s ON s.id = p.supplier_id\n     LEFT JOIN product_variants v ON v.product_id = p.id AND v.is_active\n  WHERE p.is_active AND NOT COALESCE(p.is_deleted, false) AND s.active AND s.is_product_supplier;",
+        "definition": " SELECT p.id AS pim_product_id,\n    v.id AS pim_variant_id,\n    p.sku,\n    p.sku_promo,\n    p.name,\n    p.supplier_id,\n    s.code AS supplier_code,\n    s.name AS supplier_name,\n    COALESCE(v.supplier_sku, p.supplier_reference) AS supplier_reference,\n    p.supplier_external_id,\n    p.cost_price,\n    p.sale_price,\n    p.suggested_price,\n    p.ipi_rate,\n    p.ncm_code,\n    p.min_quantity,\n    p.min_order_quantity,\n    s.min_order_value,\n    COALESCE(v.stock_quantity, p.stock_quantity) AS stock_quantity,\n    p.is_stockout,\n    p.last_stock_update_at,\n    p.xbz_stock_reliability_text,\n    v.color_id,\n    v.color_name,\n    v.color_code,\n    v.color_hex,\n    v.size_code,\n    COALESCE(p.primary_image_url, p.primary_image_fallback_url) AS image_url,\n    p.lead_time_days,\n    p.price_updated_at,\n    p.price_verified_at,\n    p.price_freshness_threshold_days,\n    p.updated_at\n   FROM products p\n     JOIN suppliers s ON s.id = p.supplier_id\n     LEFT JOIN product_variants v ON v.product_id = p.id AND v.is_active\n  WHERE p.is_active AND NOT COALESCE(p.is_deleted, false) AND s.active AND s.is_product_supplier AND can_view_all_sales();",
         "depends_on": [
           "public.product_variants",
           "public.products",
@@ -268608,9 +268569,7 @@
         ],
         "kind": "view",
         "name": "v_compras_catalogo",
-        "options": [
-          "security_invoker=false"
-        ],
+        "options": null,
         "owner": "postgres",
         "populated": null,
         "schema": "public",
@@ -268618,15 +268577,13 @@
       },
       {
         "comment": "Faixas de preco por quantidade para o bridge PIM (SECURITY DEFINER). Projeta unit_cost/unit_price de proposito (PimPrecoFaixa). NAO religar security_invoker=true.",
-        "definition": " SELECT pcp.product_id AS pim_product_id,\n    NULL::uuid AS pim_variant_id,\n    band.qty_min,\n    lead(band.qty_min) OVER (PARTITION BY pcp.id ORDER BY band.ord) - 1 AS qty_max,\n    band.unit_cost,\n    NULL::numeric AS unit_price,\n    'spot_customization'::text AS source,\n    pcp.service_code,\n    pcp.table_code,\n    pcp.component,\n    pcp.location,\n    pcp.handling_cost,\n    pcp.table_max_area_cm2,\n    pcp.max_stitches,\n    pcp.hotspot,\n    pcp.currency\n   FROM product_customization_prices pcp\n     CROSS JOIN LATERAL ( SELECT t.qty_min_val AS qty_min,\n            t.price_val AS unit_cost,\n            t.ord\n           FROM UNNEST(pcp.min_qty, pcp.price) WITH ORDINALITY t(qty_min_val, price_val, ord)) band\n  WHERE array_length(pcp.min_qty, 1) > 0;",
+        "definition": " SELECT pcp.product_id AS pim_product_id,\n    NULL::uuid AS pim_variant_id,\n    band.qty_min,\n    lead(band.qty_min) OVER (PARTITION BY pcp.id ORDER BY band.ord) - 1 AS qty_max,\n    band.unit_cost,\n    NULL::numeric AS unit_price,\n    'spot_customization'::text AS source,\n    pcp.service_code,\n    pcp.table_code,\n    pcp.component,\n    pcp.location,\n    pcp.handling_cost,\n    pcp.table_max_area_cm2,\n    pcp.max_stitches,\n    pcp.hotspot,\n    pcp.currency\n   FROM product_customization_prices pcp\n     CROSS JOIN LATERAL ( SELECT t.qty_min_val AS qty_min,\n            t.price_val AS unit_cost,\n            t.ord\n           FROM UNNEST(pcp.min_qty, pcp.price) WITH ORDINALITY t(qty_min_val, price_val, ord)) band\n  WHERE array_length(pcp.min_qty, 1) > 0 AND can_view_all_sales();",
         "depends_on": [
           "public.product_customization_prices"
         ],
         "kind": "view",
         "name": "v_compras_precos_faixa",
-        "options": [
-          "security_invoker=false"
-        ],
+        "options": null,
         "owner": "postgres",
         "populated": null,
         "schema": "public",
@@ -268634,15 +268591,13 @@
       },
       {
         "comment": "Precos por variante para o bridge PIM (SECURITY DEFINER). Depende de vw_variant_sale_prices, que nao tem GRANT SELECT para anon. NAO religar security_invoker=true.",
-        "definition": " SELECT vw_variant_sale_prices.product_id AS pim_product_id,\n    vw_variant_sale_prices.variant_id AS pim_variant_id,\n    1 AS tier,\n    vw_variant_sale_prices.min_qty_1 AS qty_min,\n    vw_variant_sale_prices.min_qty_2 - 1 AS qty_max,\n    vw_variant_sale_prices.cost_price_1 AS unit_cost,\n    vw_variant_sale_prices.sale_price_1 AS unit_price,\n    'vw_variant_sale_prices'::text AS source\n   FROM vw_variant_sale_prices\n  WHERE vw_variant_sale_prices.min_qty_1 IS NOT NULL\nUNION ALL\n SELECT vw_variant_sale_prices.product_id AS pim_product_id,\n    vw_variant_sale_prices.variant_id AS pim_variant_id,\n    2 AS tier,\n    vw_variant_sale_prices.min_qty_2 AS qty_min,\n    vw_variant_sale_prices.min_qty_3 - 1 AS qty_max,\n    vw_variant_sale_prices.cost_price_2 AS unit_cost,\n    vw_variant_sale_prices.sale_price_2 AS unit_price,\n    'vw_variant_sale_prices'::text AS source\n   FROM vw_variant_sale_prices\n  WHERE vw_variant_sale_prices.min_qty_2 IS NOT NULL\nUNION ALL\n SELECT vw_variant_sale_prices.product_id AS pim_product_id,\n    vw_variant_sale_prices.variant_id AS pim_variant_id,\n    3 AS tier,\n    vw_variant_sale_prices.min_qty_3 AS qty_min,\n    vw_variant_sale_prices.min_qty_4 - 1 AS qty_max,\n    vw_variant_sale_prices.cost_price_3 AS unit_cost,\n    vw_variant_sale_prices.sale_price_3 AS unit_price,\n    'vw_variant_sale_prices'::text AS source\n   FROM vw_variant_sale_prices\n  WHERE vw_variant_sale_prices.min_qty_3 IS NOT NULL\nUNION ALL\n SELECT vw_variant_sale_prices.product_id AS pim_product_id,\n    vw_variant_sale_prices.variant_id AS pim_variant_id,\n    4 AS tier,\n    vw_variant_sale_prices.min_qty_4 AS qty_min,\n    vw_variant_sale_prices.min_qty_5 - 1 AS qty_max,\n    vw_variant_sale_prices.cost_price_4 AS unit_cost,\n    vw_variant_sale_prices.sale_price_4 AS unit_price,\n    'vw_variant_sale_prices'::text AS source\n   FROM vw_variant_sale_prices\n  WHERE vw_variant_sale_prices.min_qty_4 IS NOT NULL\nUNION ALL\n SELECT vw_variant_sale_prices.product_id AS pim_product_id,\n    vw_variant_sale_prices.variant_id AS pim_variant_id,\n    5 AS tier,\n    vw_variant_sale_prices.min_qty_5 AS qty_min,\n    NULL::integer AS qty_max,\n    vw_variant_sale_prices.cost_price_5 AS unit_cost,\n    vw_variant_sale_prices.sale_price_5 AS unit_price,\n    'vw_variant_sale_prices'::text AS source\n   FROM vw_variant_sale_prices\n  WHERE vw_variant_sale_prices.min_qty_5 IS NOT NULL;",
+        "definition": " SELECT pim_product_id,\n    pim_variant_id,\n    tier,\n    qty_min,\n    qty_max,\n    unit_cost,\n    unit_price,\n    source\n   FROM ( SELECT vw_variant_sale_prices.product_id AS pim_product_id,\n            vw_variant_sale_prices.variant_id AS pim_variant_id,\n            1 AS tier,\n            vw_variant_sale_prices.min_qty_1 AS qty_min,\n            vw_variant_sale_prices.min_qty_2 - 1 AS qty_max,\n            vw_variant_sale_prices.cost_price_1 AS unit_cost,\n            vw_variant_sale_prices.sale_price_1 AS unit_price,\n            'vw_variant_sale_prices'::text AS source\n           FROM vw_variant_sale_prices\n          WHERE vw_variant_sale_prices.min_qty_1 IS NOT NULL\n        UNION ALL\n         SELECT vw_variant_sale_prices.product_id AS pim_product_id,\n            vw_variant_sale_prices.variant_id AS pim_variant_id,\n            2 AS tier,\n            vw_variant_sale_prices.min_qty_2 AS qty_min,\n            vw_variant_sale_prices.min_qty_3 - 1 AS qty_max,\n            vw_variant_sale_prices.cost_price_2 AS unit_cost,\n            vw_variant_sale_prices.sale_price_2 AS unit_price,\n            'vw_variant_sale_prices'::text AS source\n           FROM vw_variant_sale_prices\n          WHERE vw_variant_sale_prices.min_qty_2 IS NOT NULL\n        UNION ALL\n         SELECT vw_variant_sale_prices.product_id AS pim_product_id,\n            vw_variant_sale_prices.variant_id AS pim_variant_id,\n            3 AS tier,\n            vw_variant_sale_prices.min_qty_3 AS qty_min,\n            vw_variant_sale_prices.min_qty_4 - 1 AS qty_max,\n            vw_variant_sale_prices.cost_price_3 AS unit_cost,\n            vw_variant_sale_prices.sale_price_3 AS unit_price,\n            'vw_variant_sale_prices'::text AS source\n           FROM vw_variant_sale_prices\n          WHERE vw_variant_sale_prices.min_qty_3 IS NOT NULL\n        UNION ALL\n         SELECT vw_variant_sale_prices.product_id AS pim_product_id,\n            vw_variant_sale_prices.variant_id AS pim_variant_id,\n            4 AS tier,\n            vw_variant_sale_prices.min_qty_4 AS qty_min,\n            vw_variant_sale_prices.min_qty_5 - 1 AS qty_max,\n            vw_variant_sale_prices.cost_price_4 AS unit_cost,\n            vw_variant_sale_prices.sale_price_4 AS unit_price,\n            'vw_variant_sale_prices'::text AS source\n           FROM vw_variant_sale_prices\n          WHERE vw_variant_sale_prices.min_qty_4 IS NOT NULL\n        UNION ALL\n         SELECT vw_variant_sale_prices.product_id AS pim_product_id,\n            vw_variant_sale_prices.variant_id AS pim_variant_id,\n            5 AS tier,\n            vw_variant_sale_prices.min_qty_5 AS qty_min,\n            NULL::integer AS qty_max,\n            vw_variant_sale_prices.cost_price_5 AS unit_cost,\n            vw_variant_sale_prices.sale_price_5 AS unit_price,\n            'vw_variant_sale_prices'::text AS source\n           FROM vw_variant_sale_prices\n          WHERE vw_variant_sale_prices.min_qty_5 IS NOT NULL) q\n  WHERE can_view_all_sales();",
         "depends_on": [
           "public.vw_variant_sale_prices"
         ],
         "kind": "view",
         "name": "v_compras_precos_variante",
-        "options": [
-          "security_invoker=false"
-        ],
+        "options": null,
         "owner": "postgres",
         "populated": null,
         "schema": "public",

@@ -2,7 +2,7 @@ CREATE OR REPLACE FUNCTION public.fn_super_filtro_facets(p_search_term text DEFA
  RETURNS TABLE(facet_type text, facet_value text, facet_slug text, product_count bigint)
  LANGUAGE plpgsql
  SECURITY DEFINER
- SET search_path TO 'public', 'extensions'
+ SET search_path TO 'pg_catalog', 'public', 'extensions', 'pg_temp'
 AS $function$
 DECLARE
   v_search_normalized text;

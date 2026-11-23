@@ -78,7 +78,7 @@
 | tipo | PERMISSIVE |
 | roles | authenticated |
 | USING |  |
-| WITH CHECK | `(can_view_all_sales() OR (EXISTS ( SELECT 1    FROM orders o   WHERE ((o.id = order_items.order_id) AND ((o.seller_id = auth.uid()) OR (has_role(auth.uid(), 'supervisor'::app_role) AND ((o.organization_id IS NULL) OR (o.organization_id IN ( SELECT get_user_org_ids(auth.uid()) AS get_user_org_ids)))))))))` |
+| WITH CHECK | `(( SELECT can_view_all_sales() AS can_view_all_sales) OR (EXISTS ( SELECT 1    FROM orders o   WHERE ((o.id = order_items.order_id) AND ((o.seller_id = ( SELECT auth.uid() AS uid)) OR (( SELECT has_role(( SELECT auth.uid() AS uid), 'supervisor'::app_role) AS has_role) AND ((o.organization_id IS NULL) OR (o.organization_id IN ( SELECT get_user_org_ids(( SELECT auth.uid() AS uid)) AS get_user_org_ids)))))))))` |
 
 ### `order_items_select`
 
@@ -87,7 +87,7 @@
 | comando | SELECT |
 | tipo | PERMISSIVE |
 | roles | public |
-| USING | `(can_view_all_sales() OR (EXISTS ( SELECT 1    FROM orders o   WHERE ((o.id = order_items.order_id) AND ((o.seller_id = auth.uid()) OR (has_role(auth.uid(), 'supervisor'::app_role) AND ((o.organization_id IS NULL) OR (o.organization_id IN ( SELECT get_user_org_ids(auth.uid()) AS get_user_org_ids)))))))))` |
+| USING | `(( SELECT can_view_all_sales() AS can_view_all_sales) OR (EXISTS ( SELECT 1    FROM orders o   WHERE ((o.id = order_items.order_id) AND ((o.seller_id = ( SELECT auth.uid() AS uid)) OR (( SELECT has_role(( SELECT auth.uid() AS uid), 'supervisor'::app_role) AS has_role) AND ((o.organization_id IS NULL) OR (o.organization_id IN ( SELECT get_user_org_ids(( SELECT auth.uid() AS uid)) AS get_user_org_ids)))))))))` |
 | WITH CHECK |  |
 
 ### `order_items_update`
@@ -97,8 +97,8 @@
 | comando | UPDATE |
 | tipo | PERMISSIVE |
 | roles | public |
-| USING | `(can_view_all_sales() OR (EXISTS ( SELECT 1    FROM orders o   WHERE ((o.id = order_items.order_id) AND ((o.seller_id = auth.uid()) OR (has_role(auth.uid(), 'supervisor'::app_role) AND ((o.organization_id IS NULL) OR (o.organization_id IN ( SELECT get_user_org_ids(auth.uid()) AS get_user_org_ids)))))))))` |
-| WITH CHECK | `(can_view_all_sales() OR (EXISTS ( SELECT 1    FROM orders o   WHERE ((o.id = order_items.order_id) AND ((o.seller_id = auth.uid()) OR (has_role(auth.uid(), 'supervisor'::app_role) AND ((o.organization_id IS NULL) OR (o.organization_id IN ( SELECT get_user_org_ids(auth.uid()) AS get_user_org_ids)))))))))` |
+| USING | `(( SELECT can_view_all_sales() AS can_view_all_sales) OR (EXISTS ( SELECT 1    FROM orders o   WHERE ((o.id = order_items.order_id) AND ((o.seller_id = ( SELECT auth.uid() AS uid)) OR (( SELECT has_role(( SELECT auth.uid() AS uid), 'supervisor'::app_role) AS has_role) AND ((o.organization_id IS NULL) OR (o.organization_id IN ( SELECT get_user_org_ids(( SELECT auth.uid() AS uid)) AS get_user_org_ids)))))))))` |
+| WITH CHECK | `(( SELECT can_view_all_sales() AS can_view_all_sales) OR (EXISTS ( SELECT 1    FROM orders o   WHERE ((o.id = order_items.order_id) AND ((o.seller_id = ( SELECT auth.uid() AS uid)) OR (( SELECT has_role(( SELECT auth.uid() AS uid), 'supervisor'::app_role) AS has_role) AND ((o.organization_id IS NULL) OR (o.organization_id IN ( SELECT get_user_org_ids(( SELECT auth.uid() AS uid)) AS get_user_org_ids)))))))))` |
 
 
 ## Triggers

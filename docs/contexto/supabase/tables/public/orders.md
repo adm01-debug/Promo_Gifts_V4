@@ -110,7 +110,7 @@
 | tipo | PERMISSIVE |
 | roles | authenticated |
 | USING |  |
-| WITH CHECK | `(can_view_all_sales() OR (seller_id = auth.uid()))` |
+| WITH CHECK | `(( SELECT can_view_all_sales() AS can_view_all_sales) OR (seller_id = ( SELECT auth.uid() AS uid)))` |
 
 ### `orders_select`
 
@@ -119,7 +119,7 @@
 | comando | SELECT |
 | tipo | PERMISSIVE |
 | roles | public |
-| USING | `(can_view_all_sales() OR (has_role(auth.uid(), 'supervisor'::app_role) AND ((organization_id IS NULL) OR (organization_id IN ( SELECT get_user_org_ids(auth.uid()) AS get_user_org_ids)))) OR (seller_id = auth.uid()))` |
+| USING | `(( SELECT can_view_all_sales() AS can_view_all_sales) OR (( SELECT has_role(( SELECT auth.uid() AS uid), 'supervisor'::app_role) AS has_role) AND ((organization_id IS NULL) OR (organization_id IN ( SELECT get_user_org_ids(( SELECT auth.uid() AS uid)) AS get_user_org_ids)))) OR (seller_id = ( SELECT auth.uid() AS uid)))` |
 | WITH CHECK |  |
 
 ### `orders_update`
@@ -129,8 +129,8 @@
 | comando | UPDATE |
 | tipo | PERMISSIVE |
 | roles | public |
-| USING | `(can_view_all_sales() OR (has_role(auth.uid(), 'supervisor'::app_role) AND ((organization_id IS NULL) OR (organization_id IN ( SELECT get_user_org_ids(auth.uid()) AS get_user_org_ids)))) OR (seller_id = auth.uid()))` |
-| WITH CHECK | `(can_view_all_sales() OR (has_role(auth.uid(), 'supervisor'::app_role) AND ((organization_id IS NULL) OR (organization_id IN ( SELECT get_user_org_ids(auth.uid()) AS get_user_org_ids)))) OR (seller_id = auth.uid()))` |
+| USING | `(( SELECT can_view_all_sales() AS can_view_all_sales) OR (( SELECT has_role(( SELECT auth.uid() AS uid), 'supervisor'::app_role) AS has_role) AND ((organization_id IS NULL) OR (organization_id IN ( SELECT get_user_org_ids(( SELECT auth.uid() AS uid)) AS get_user_org_ids)))) OR (seller_id = ( SELECT auth.uid() AS uid)))` |
+| WITH CHECK | `(( SELECT can_view_all_sales() AS can_view_all_sales) OR (( SELECT has_role(( SELECT auth.uid() AS uid), 'supervisor'::app_role) AS has_role) AND ((organization_id IS NULL) OR (organization_id IN ( SELECT get_user_org_ids(( SELECT auth.uid() AS uid)) AS get_user_org_ids)))) OR (seller_id = ( SELECT auth.uid() AS uid)))` |
 
 
 ## Triggers

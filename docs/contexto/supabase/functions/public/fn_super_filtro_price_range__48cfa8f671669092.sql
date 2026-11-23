@@ -2,7 +2,7 @@ CREATE OR REPLACE FUNCTION public.fn_super_filtro_price_range(p_brands text[] DE
  RETURNS TABLE(price_min numeric, price_max numeric, price_p25 numeric, price_p75 numeric, price_median numeric, price_avg numeric, total_with_price bigint)
  LANGUAGE sql
  STABLE SECURITY DEFINER
- SET search_path TO 'public', 'extensions'
+ SET search_path TO 'pg_catalog', 'public', 'extensions', 'pg_temp'
 AS $function$
   SELECT
     MIN(p.sale_price) FILTER (WHERE p.sale_price >= 1)::numeric              AS price_min,

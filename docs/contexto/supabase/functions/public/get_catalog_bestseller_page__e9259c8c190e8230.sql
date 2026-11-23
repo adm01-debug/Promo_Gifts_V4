@@ -2,7 +2,7 @@ CREATE OR REPLACE FUNCTION public.get_catalog_bestseller_page(p_sort text DEFAUL
  RETURNS SETOF v_products_public
  LANGUAGE plpgsql
  STABLE SECURITY DEFINER
- SET search_path TO 'public'
+ SET search_path TO 'pg_catalog', 'public', 'extensions', 'pg_temp'
 AS $function$
 -- fix_version: v_products_public_v2_20260627
 -- Recriada após DROP CASCADE da view v_products_public (tipo de retorno atualizado)

@@ -84,7 +84,7 @@
 | comando | SELECT |
 | tipo | PERMISSIVE |
 | roles | authenticated |
-| USING | `(EXISTS ( SELECT 1    FROM products p   WHERE ((p.id = product_commemorative_dates.product_id) AND (p.organization_id IN ( SELECT uo.organization_id            FROM user_organizations uo           WHERE ((uo.user_id = ( SELECT auth.uid() AS uid)) AND (uo.role = ANY (ARRAY['owner'::org_role, 'admin'::org_role]))))))))` |
+| USING | `((is_active = true) OR (EXISTS ( SELECT 1    FROM products p   WHERE ((p.id = product_commemorative_dates.product_id) AND (p.organization_id IN ( SELECT uo.organization_id            FROM user_organizations uo           WHERE ((uo.user_id = ( SELECT auth.uid() AS uid)) AND (uo.role = ANY (ARRAY['owner'::org_role, 'admin'::org_role])))))))))` |
 | WITH CHECK |  |
 
 ### `pcd_oa_upd`
@@ -103,7 +103,7 @@
 |---|---|
 | comando | SELECT |
 | tipo | PERMISSIVE |
-| roles | anon, authenticated |
+| roles | anon |
 | USING | `(is_active = true)` |
 | WITH CHECK |  |
 

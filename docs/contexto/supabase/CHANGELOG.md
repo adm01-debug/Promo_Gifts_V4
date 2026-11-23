@@ -2,6 +2,13 @@
 
 Diff semântico gerado a cada coleta em que algo mudou.
 
+## 2026-11-23 23:20 UTC
+
+- **functions** alterado (7): `public.can_view_all_sales()`, `public.check_login_rate_limit(_email text, _ip text)`, `public.fn_product_active_for_rls(p_id uuid)`, `public.fn_super_filtro(p_search_term text, p_category_slug text, p_category_id uuid, p_brands text[], p_only_in_stock boolean, p_min_price numeric, p_max_price numeric, p_target_audiences text[], p_is_kit boolean, p_is_textil boolean, p_is_thermal boolean, p_has_gift_box boolean, p_material_groups text[], p_technique_groups text[], p_color_groups text[], p_date_slugs text[], p_endomarketing boolean, p_limit integer, p_offset integer, p_sort text)`, `public.fn_super_filtro_facets(p_search_term text, p_category_slug text, p_category_id uuid, p_brands text[], p_only_in_stock boolean, p_min_price numeric, p_max_price numeric, p_target_audiences text[], p_is_kit boolean, p_is_textil boolean, p_is_thermal boolean, p_has_gift_box boolean, p_material_groups text[], p_technique_groups text[], p_color_groups text[], p_date_slugs text[], p_endomarketing boolean)`, `public.fn_super_filtro_price_range(p_brands text[], p_category_slug text, p_target_audiences text[], p_is_textil boolean, p_is_thermal boolean, p_only_in_stock boolean)`, `public.get_catalog_bestseller_page(p_sort text, p_limit integer, p_offset integer)`
+- **lints** removido (7): `policy_auth_fn_not_wrapped:public.order_items.order_items_insert`, `policy_auth_fn_not_wrapped:public.order_items.order_items_select`, `policy_auth_fn_not_wrapped:public.order_items.order_items_update`, `policy_auth_fn_not_wrapped:public.orders.orders_insert`, `policy_auth_fn_not_wrapped:public.orders.orders_select`, `policy_auth_fn_not_wrapped:public.orders.orders_update`, `rpc_anon_executable:public.fn_product_active_for_rls(p_id uuid)`
+- **policies (RLS)** alterado (8): `public.order_items.order_items_insert`, `public.order_items.order_items_select`, `public.order_items.order_items_update`, `public.orders.orders_insert`, `public.orders.orders_select`, `public.orders.orders_update`, `public.product_commemorative_dates.pcd_oa_read_all`, `public.product_commemorative_dates.pcd_read_public`
+- **views** alterado (3): `public.v_compras_catalogo`, `public.v_compras_precos_faixa`, `public.v_compras_precos_variante`
+
 ## 2026-11-23 16:26 UTC
 
 - **indexes** adicionado (2): `public.idx_business_calendar_created_by`, `public.idx_freight_settings_updated_by`

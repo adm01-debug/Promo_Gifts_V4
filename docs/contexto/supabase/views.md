@@ -2129,7 +2129,7 @@ SELECT id,
 |---|---|
 | owner | postgres |
 | security_invoker | não |
-| opções | security_invoker=false |
+| opções |  |
 | depende de | public.product_variants, public.products, public.suppliers |
 | populada | n/a |
 | comentário | Catalogo canônico para o bridge PIM -> Promo Supply V2 (SECURITY DEFINER). Projeta cost_price/sale_price/suggested_price de proposito: useCatalogoPim.ts consome esses campos para recompra. O recorte e a projecao + o WHERE, nao o GRANT. NAO religar security_invoker=true. |
@@ -2172,7 +2172,7 @@ SELECT p.id AS pim_product_id,
    FROM products p
      JOIN suppliers s ON s.id = p.supplier_id
      LEFT JOIN product_variants v ON v.product_id = p.id AND v.is_active
-  WHERE p.is_active AND NOT COALESCE(p.is_deleted, false) AND s.active AND s.is_product_supplier;
+  WHERE p.is_active AND NOT COALESCE(p.is_deleted, false) AND s.active AND s.is_product_supplier AND can_view_all_sales();
 ```
 
 ## public.v_compras_precos_faixa (view)
@@ -2181,7 +2181,7 @@ SELECT p.id AS pim_product_id,
 |---|---|
 | owner | postgres |
 | security_invoker | não |
-| opções | security_invoker=false |
+| opções |  |
 | depende de | public.product_customization_prices |
 | populada | n/a |
 | comentário | Faixas de preco por quantidade para o bridge PIM (SECURITY DEFINER). Projeta unit_cost/unit_price de proposito (PimPrecoFaixa). NAO religar security_invoker=true. |
@@ -2209,7 +2209,7 @@ SELECT pcp.product_id AS pim_product_id,
             t.price_val AS unit_cost,
             t.ord
            FROM UNNEST(pcp.min_qty, pcp.price) WITH ORDINALITY t(qty_min_val, price_val, ord)) band
-  WHERE array_length(pcp.min_qty, 1) > 0;
+  WHERE array_length(pcp.min_qty, 1) > 0 AND can_view_all_sales();
 ```
 
 ## public.v_compras_precos_variante (view)
@@ -2218,67 +2218,76 @@ SELECT pcp.product_id AS pim_product_id,
 |---|---|
 | owner | postgres |
 | security_invoker | não |
-| opções | security_invoker=false |
+| opções |  |
 | depende de | public.vw_variant_sale_prices |
 | populada | n/a |
 | comentário | Precos por variante para o bridge PIM (SECURITY DEFINER). Depende de vw_variant_sale_prices, que nao tem GRANT SELECT para anon. NAO religar security_invoker=true. |
 
 
 ```sql
-SELECT vw_variant_sale_prices.product_id AS pim_product_id,
-    vw_variant_sale_prices.variant_id AS pim_variant_id,
-    1 AS tier,
-    vw_variant_sale_prices.min_qty_1 AS qty_min,
-    vw_variant_sale_prices.min_qty_2 - 1 AS qty_max,
-    vw_variant_sale_prices.cost_price_1 AS unit_cost,
-    vw_variant_sale_prices.sale_price_1 AS unit_price,
-    'vw_variant_sale_prices'::text AS source
-   FROM vw_variant_sale_prices
-  WHERE vw_variant_sale_prices.min_qty_1 IS NOT NULL
-UNION ALL
- SELECT vw_variant_sale_prices.product_id AS pim_product_id,
-    vw_variant_sale_prices.variant_id AS pim_variant_id,
-    2 AS tier,
-    vw_variant_sale_prices.min_qty_2 AS qty_min,
-    vw_variant_sale_prices.min_qty_3 - 1 AS qty_max,
-    vw_variant_sale_prices.cost_price_2 AS unit_cost,
-    vw_variant_sale_prices.sale_price_2 AS unit_price,
-    'vw_variant_sale_prices'::text AS source
-   FROM vw_variant_sale_prices
-  WHERE vw_variant_sale_prices.min_qty_2 IS NOT NULL
-UNION ALL
- SELECT vw_variant_sale_prices.product_id AS pim_product_id,
-    vw_variant_sale_prices.variant_id AS pim_variant_id,
-    3 AS tier,
-    vw_variant_sale_prices.min_qty_3 AS qty_min,
-    vw_variant_sale_prices.min_qty_4 - 1 AS qty_max,
-    vw_variant_sale_prices.cost_price_3 AS unit_cost,
-    vw_variant_sale_prices.sale_price_3 AS unit_price,
-    'vw_variant_sale_prices'::text AS source
-   FROM vw_variant_sale_prices
-  WHERE vw_variant_sale_prices.min_qty_3 IS NOT NULL
-UNION ALL
- SELECT vw_variant_sale_prices.product_id AS pim_product_id,
-    vw_variant_sale_prices.variant_id AS pim_variant_id,
-    4 AS tier,
-    vw_variant_sale_prices.min_qty_4 AS qty_min,
-    vw_variant_sale_prices.min_qty_5 - 1 AS qty_max,
-    vw_variant_sale_prices.cost_price_4 AS unit_cost,
-    vw_variant_sale_prices.sale_price_4 AS unit_price,
-    'vw_variant_sale_prices'::text AS source
-   FROM vw_variant_sale_prices
-  WHERE vw_variant_sale_prices.min_qty_4 IS NOT NULL
-UNION ALL
- SELECT vw_variant_sale_prices.product_id AS pim_product_id,
-    vw_variant_sale_prices.variant_id AS pim_variant_id,
-    5 AS tier,
-    vw_variant_sale_prices.min_qty_5 AS qty_min,
-    NULL::integer AS qty_max,
-    vw_variant_sale_prices.cost_price_5 AS unit_cost,
-    vw_variant_sale_prices.sale_price_5 AS unit_price,
-    'vw_variant_sale_prices'::text AS source
-   FROM vw_variant_sale_prices
-  WHERE vw_variant_sale_prices.min_qty_5 IS NOT NULL;
+SELECT pim_product_id,
+    pim_variant_id,
+    tier,
+    qty_min,
+    qty_max,
+    unit_cost,
+    unit_price,
+    source
+   FROM ( SELECT vw_variant_sale_prices.product_id AS pim_product_id,
+            vw_variant_sale_prices.variant_id AS pim_variant_id,
+            1 AS tier,
+            vw_variant_sale_prices.min_qty_1 AS qty_min,
+            vw_variant_sale_prices.min_qty_2 - 1 AS qty_max,
+            vw_variant_sale_prices.cost_price_1 AS unit_cost,
+            vw_variant_sale_prices.sale_price_1 AS unit_price,
+            'vw_variant_sale_prices'::text AS source
+           FROM vw_variant_sale_prices
+          WHERE vw_variant_sale_prices.min_qty_1 IS NOT NULL
+        UNION ALL
+         SELECT vw_variant_sale_prices.product_id AS pim_product_id,
+            vw_variant_sale_prices.variant_id AS pim_variant_id,
+            2 AS tier,
+            vw_variant_sale_prices.min_qty_2 AS qty_min,
+            vw_variant_sale_prices.min_qty_3 - 1 AS qty_max,
+            vw_variant_sale_prices.cost_price_2 AS unit_cost,
+            vw_variant_sale_prices.sale_price_2 AS unit_price,
+            'vw_variant_sale_prices'::text AS source
+           FROM vw_variant_sale_prices
+          WHERE vw_variant_sale_prices.min_qty_2 IS NOT NULL
+        UNION ALL
+         SELECT vw_variant_sale_prices.product_id AS pim_product_id,
+            vw_variant_sale_prices.variant_id AS pim_variant_id,
+            3 AS tier,
+            vw_variant_sale_prices.min_qty_3 AS qty_min,
+            vw_variant_sale_prices.min_qty_4 - 1 AS qty_max,
+            vw_variant_sale_prices.cost_price_3 AS unit_cost,
+            vw_variant_sale_prices.sale_price_3 AS unit_price,
+            'vw_variant_sale_prices'::text AS source
+           FROM vw_variant_sale_prices
+          WHERE vw_variant_sale_prices.min_qty_3 IS NOT NULL
+        UNION ALL
+         SELECT vw_variant_sale_prices.product_id AS pim_product_id,
+            vw_variant_sale_prices.variant_id AS pim_variant_id,
+            4 AS tier,
+            vw_variant_sale_prices.min_qty_4 AS qty_min,
+            vw_variant_sale_prices.min_qty_5 - 1 AS qty_max,
+            vw_variant_sale_prices.cost_price_4 AS unit_cost,
+            vw_variant_sale_prices.sale_price_4 AS unit_price,
+            'vw_variant_sale_prices'::text AS source
+           FROM vw_variant_sale_prices
+          WHERE vw_variant_sale_prices.min_qty_4 IS NOT NULL
+        UNION ALL
+         SELECT vw_variant_sale_prices.product_id AS pim_product_id,
+            vw_variant_sale_prices.variant_id AS pim_variant_id,
+            5 AS tier,
+            vw_variant_sale_prices.min_qty_5 AS qty_min,
+            NULL::integer AS qty_max,
+            vw_variant_sale_prices.cost_price_5 AS unit_cost,
+            vw_variant_sale_prices.sale_price_5 AS unit_price,
+            'vw_variant_sale_prices'::text AS source
+           FROM vw_variant_sale_prices
+          WHERE vw_variant_sale_prices.min_qty_5 IS NOT NULL) q
+  WHERE can_view_all_sales();
 ```
 
 ## public.v_connection_health (view)
