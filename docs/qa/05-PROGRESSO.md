@@ -240,17 +240,59 @@ Severidade das etapas: Média 158 · Alta 79 · Baixa 54 · Crítica 9
     de fluxo legítimo). Resumo em `work/quote-status-transitions-sql/sql-test-results.json`.
     Teste vermelho por desenho: passa inteiro quando a etapa 094 entrar, sem alteração no teste.
 - [ ] 094 — Trigger de transição de status válida em `quotes` — onda 3 — Alta — APROVAÇÃO
-- [ ] 095 — Um único caminho de escrita de status no front — onda 3 — Alta
-- [ ] 096 — `useDiscountApproval` passa a escrever status pelo caminho único — onda 3 — Alta
+- [x] 095 — Um único caminho de escrita de status no front — onda 3 — Alta
+  - Evidência 095: criado `src/lib/quotes/status-transition.ts` com
+    `assertQuoteStatusTransition` (valida pelo mapa, emite telemetria e lança
+    `QuoteStatusTransitionError`) e `updateQuoteStatusSafely` (lê o status atual
+    quando o chamador não o tem, valida, faz o UPDATE e traduz o 23514 do banco
+    em mensagem legível). 12 testes em
+    `src/lib/quotes/__tests__/status-transition.test.ts` — 12/12 verdes.
+  - Decisão: `quoteService.updateQuoteStatus` (src/services/quoteService.ts:433)
+    **não** foi reusado; ele já é guardado mas carrega e-mail transacional e
+    histórico, contrato diferente dos 4 pontos de escrita da onda 3. O serviço novo
+    tem escopo só de guarda + escrita, então os pontos migrados não mudam de
+    comportamento além da validação.
+- [x] 096 — `useDiscountApproval` passa a escrever status pelo caminho único — onda 3 — Alta
+  - Evidência 096: o fallback legado de `requestApproval` (quando o client não tem
+    `rpc`) passou a chamar `updateQuoteStatusSafely({ to: 'pending_approval' })` em
+    vez do `update({ status })` cru; o `catch` ganhou um ramo para
+    `QuoteStatusTransitionError` que mostra a mensagem pronta em vez do genérico.
+    O caminho canônico (RPC `request_discount_approval_transactional`) não mudou.
 - [~] 097 — `DiscountApprovalQueue` passa a escrever status pelo caminho único — onda 3 — Alta — NÃO APLICÁVEL
   - Evidência 097: `src/components/admin/DiscountApprovalQueue.tsx` tem **0 imports** no repositório
     (verificado por varredura em `src/`): é componente órfão. A escrita de status na linha 162 nunca
     executa em produção, então migrá-la para o caminho único não muda comportamento. A remoção do
     arquivo é a etapa 276. Reabrir esta etapa só se o componente voltar a ser montado.
-- [ ] 098 — `DiscountRequestDetailPage` passa a escrever status pelo caminho único — onda 3 — Alta
-- [ ] 099 — `QuoteViewPage` passa a escrever status pelo caminho único — onda 3 — Alta
-- [ ] 100 — Remover o bypass `pending → pending_approval` do builder — onda 3 — Média
-- [ ] 101 — Fazer `assertDiscountApprovalTransition` valer em todos os pontos de escrita — onda 3 — Baixa
+- [x] 098 — `DiscountRequestDetailPage` passa a escrever status pelo caminho único — onda 3 — Alta
+  - Evidência 098: a tela `/admin/aprovacoes-desconto/:id` trocou o
+    `quotes.update({ status: approved ? 'pending' : 'draft' })` por
+    `updateQuoteStatusSafely({ to: approved ? 'pending' : 'draft' })`; o
+    `onError` já usa `sanitizeError`, então a mensagem do serviço chega ao toast.
+- [x] 099 — `QuoteViewPage` passa a escrever status pelo caminho único — onda 3 — Alta
+  - Evidência 099: o item "Cancelar Sincronização" (`sent → pending`) trocou o
+    UPDATE direto por `updateQuoteStatusSafely({ from: quote.status, to: 'pending' })`
+    — par que o mapa permite, então o comportamento em produção é o mesmo, agora
+    com a guarda. O import de `supabase` saiu do arquivo (ficou sem uso).
+- [x] 100 — Remover o bypass `pending → pending_approval` do builder — onda 3 — Média
+  - Evidência 100: escolha registrada — **a transição é legítima**. A RPC
+    `request_discount_approval_transactional` aceita orçamento em
+    `draft|pending|pending_approval` e grava `pending_approval`
+    (`supabase/migrations/20260829115000_...sql:35,78-90`), e o builder já oferece
+    o botão "Solicitar aprovação" para cotação `pending`. Então o par entrou em
+    `QUOTE_VALID_TRANSITIONS.pending` (SSOT) e o bypass
+    `isApprovalRequestFromEditable` foi removido de `useQuoteBuilderState.ts` —
+    agora só o mapa decide. Efeito colateral medido: o teste SQL da etapa 093
+    passou de 70/30 para **69/31** pares (proibidos/permitidos), com 54 aceitos
+    indevidamente pelo banco e 0 regressões entre os permitidos.
+- [x] 101 — Fazer `assertDiscountApprovalTransition` valer em todos os pontos de escrita — onda 3 — Baixa
+  - Evidência 101: a asserção agora roda também no fallback de
+    `discountApprovalResponder.ts` (antes do UPDATE em
+    `discount_approval_requests`), além da tela de detalhe. O comentário do
+    módulo deixou de afirmar cobertura genérica e passa a listar os dois call
+    sites reais, deixando claro que o caminho canônico (RPC transacional)
+    valida no banco. Motivo de não centralizar no serviço da 095: aquele serviço
+    escreve em `quotes`, não em `discount_approval_requests` — misturar as duas
+    máquinas de estado num módulo só esconderia a diferença de autoridade.
 - [ ] 102 — Fazer `discount_approval_requests` chegar a `expired` — onda 3 — Média — APROVAÇÃO
 - [ ] 103 — Teste que prova a soma das linhas não fechando com o subtotal — onda 3 — Média
 - [ ] 104 — Decidir e documentar onde o arredondamento acontece — onda 3 — Média — APROVAÇÃO

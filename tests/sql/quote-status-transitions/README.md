@@ -12,8 +12,8 @@ o mesmo teste, sem alteração, deve passar inteiro.
    imprime o mapa como JSON. Os pares **não são redigitados** no teste: se o
    mapa mudar, o teste acompanha.
 2. O runner deriva todos os pares `de → para`:
-   - **proibidos** = todo par que não está no mapa do FE (70 pares hoje);
-   - **permitidos** = todo par que está no mapa (30 pares hoje).
+   - **proibidos** = todo par que não está no mapa do FE (69 pares hoje);
+   - **permitidos** = todo par que está no mapa (31 pares hoje).
 3. Sobe um `postgres:17` descartável com `--network none`, label de posse e
    `POSTGRES_HOST_AUTH_METHOD=trust`. Nunca lê `DATABASE_URL` nem credencial
    Supabase; nunca conecta em PostgreSQL externo.
@@ -31,16 +31,20 @@ o mesmo teste, sem alteração, deve passar inteiro.
 
 | Métrica | Valor |
 | --- | --- |
-| Pares proibidos derivados do FE | 70 |
-| Aceitos pelo banco (deveriam falhar) | **55** |
+| Pares proibidos derivados do FE | 69 |
+| Aceitos pelo banco (deveriam falhar) | **54** |
 | Rejeitados corretamente pelo banco | 15 |
-| Pares permitidos pelo FE | 30 |
-| Permitidos aceitos pelo banco | 30 (nenhuma regressão de fluxo) |
+| Pares permitidos pelo FE | 31 |
+| Permitidos aceitos pelo banco | 31 (nenhuma regressão de fluxo) |
 
 Os 15 pares proibidos que o banco já rejeita são os que saem de `approved` e
 `converted` — a única coisa que `fn_quotes_enforce_immutability` valida hoje.
 Todo o resto passa: `cancelled → approved`, `rejected → approved`,
 `draft → converted`, `sent → draft`, entre outros.
+
+Os números acima são derivados do mapa a cada execução (o runner imprime
+`forbiddenPairs`/`allowedPairs` no JSON). Depois da etapa 100 o par
+`pending → pending_approval` passou de proibido para permitido, por isso 69/31.
 
 Saída completa na execução em `work/quote-status-transitions-sql/sql-test-results.json`
 (`forbiddenAcceptedByDatabase`, `allowedRejectedByDatabase`).
