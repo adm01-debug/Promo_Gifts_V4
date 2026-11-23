@@ -44,10 +44,12 @@ export function useQuotesDashboard() {
   const [selectedClientId, setSelectedClientId] = useState<string>('all');
   const [clients, setClients] = useState<Client[]>([]);
   const [loadingClients, setLoadingClients] = useState(true);
+  const [clientsError, setClientsError] = useState<unknown>(null);
 
   useEffect(() => {
     (async () => {
       setLoadingClients(true);
+      setClientsError(null);
       try {
         const data = await selectCrm<Client>('companies', {
           select: 'id,nome_fantasia',
@@ -58,7 +60,15 @@ export function useQuotesDashboard() {
 
         setClients(data.map((c: Client) => ({ id: c.id, name: c.nome_fantasia || c.id })));
       } catch (err) {
-        logger.error('Error fetching clients:', err);
+        // Sem contexto (qual tabela, qual filtro) o log não permitia reproduzir a
+        // falha: o painel cai no fallback de clientes vindos das próprias cotações.
+        logger.error('Falha ao carregar clientes do dashboard de orçamentos', {
+          table: 'companies',
+          filters: { is_customer: true },
+          limit: 200,
+          error: err,
+        });
+        setClientsError(err ?? new Error('Falha ao carregar clientes'));
       }
       setLoadingClients(false);
     })();
@@ -309,6 +319,7 @@ export function useQuotesDashboard() {
     clients,
     quotesClients,
     loadingClients,
+    clientsError,
     selectedClientName,
     metrics,
     funnel,
