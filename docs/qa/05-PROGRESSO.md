@@ -470,10 +470,10 @@ Severidade das etapas: Média 158 · Alta 79 · Baixa 54 · Crítica 9
 - [ ] 179 — Limitar o `backoff_seconds` que vem do banco — onda 5 — Média
 - [ ] 180 — Teto de bytes e conversão eficiente em `analyze-logo-colors` — onda 5 — Média
 - [ ] 181 — Trocar a consulta de geolocalização em claro de `validate-access` — onda 5 — Média
-- [ ] 182 — Teste que prova a corrida na tabela de preço da técnica — onda 5 — Alta
-- [ ] 183 — Cancelar a busca anterior em `useTechniquePricingOptions` — onda 5 — Alta
-- [ ] 184 — Varredura do padrão "dois `await` e um `setState` sem guarda" — onda 5 — Média
-- [ ] 185 — Teste e correção da corrida em `InlinePriceCalculator` — onda 5 — Alta
+- [x] 182 — Teste que prova a corrida na tabela de preço da técnica — onda 5 — Alta
+- [x] 183 — Cancelar a busca anterior em `useTechniquePricingOptions` — onda 5 — Alta
+- [x] 184 — Varredura do padrão "dois `await` e um `setState` sem guarda" — onda 5 — Média
+- [x] 185 — Teste e correção da corrida em `InlinePriceCalculator` — onda 5 — Alta
 - [ ] 186 — Invalidar `['quote-item-counts']` nas mutations de orçamento — onda 5 — Média
 - [ ] 187 — Varredura de `queryKey` definida e nunca invalidada — onda 5 — Média
 - [ ] 188 — Unificar a contagem de aprovações de desconto num único hook — onda 5 — Média
@@ -681,3 +681,51 @@ $ npx vitest run src/lib/__tests__/profile-preferences.test.ts
   ok propaga o erro da gravacao em vez de engolir
 Revertendo o helper para gravacao do objeto inteiro, o primeiro caso falha.
 ```
+### Etapa 182
+```
+TZ=America/Sao_Paulo npx vitest run src/hooks/simulation/__tests__/useTechniquePricingOptions.race.test.tsx
+ × mantém a tabela da técnica escolhida quando a resposta anterior chega depois
+   → expected [ 2 ] to deeply equal [ 5 ]
+ × não deixa a busca anterior apagar as técnicas que vieram depois
+   → expected [] to deeply equal [ { value: 5, label: '5 cores' } ]
+ Test Files  1 failed (1)
+      Tests  2 failed (2)
+```
+O teste controla a ordem das respostas (a da técnica nova primeiro, a da anterior depois) e falha
+hoje mostrando a tabela da técnica antiga no estado — ACH-042 confirmado.
+
+### Etapa 183
+```
+mesmo comando, depois da correção:
+ ✓ mantém a tabela da técnica escolhida quando a resposta anterior chega depois
+ ✓ não deixa a busca anterior apagar as técnicas que vieram depois
+ Test Files  1 passed (1)
+      Tests  2 passed (2)
+```
+`useTechniquePricingOptions.ts` e `useMultipleTechniquePricing` ganharam token de requisição
+(`requestTokenRef`) + `useMountedRef`; só a busca mais recente grava estado. Assinatura dos dois
+hooks inalterada. `npx tsc -p tsconfig.app.json --noEmit` → exit 0.
+
+### Etapa 184
+```
+python3 /tmp/pgv4out/scan184.py
+118
+preço   15 arquivos · estoque 5 · outras telas 98
+```
+Documento entregue em `docs/qa/corridas-de-estado.md`, com `arquivo:linha`, coluna de impacto e a
+ressalva de que a varredura acha o formato, não confirma a corrida. Dois arquivos foram lidos e
+veredictados na hora: `useCustomizationPrice.ts` (só `loading`/`error`, baixo impacto) e
+`useStockSelection.ts` (falso positivo — `setState` síncrono).
+
+### Etapa 185
+```
+TZ=America/Sao_Paulo npx vitest run src/components/products/__tests__/InlinePriceCalculator.race.test.tsx
+ antes:  → expected '20|16' to be '20'   (faixas da variante anterior na tela)
+ depois: ✓ mostra as faixas da variante selecionada quando a resposta anterior chega depois
+ Test Files  1 passed (1)
+```
+Mesma guarda (token + `useMountedRef`) em `InlinePriceCalculator.tsx`; a busca antiga é descartada
+logo após responder a variante, sem chegar a consultar o fornecedor.
+`npx eslint` nos 5 arquivos tocados → 0 problemas. `npx tsc -p tsconfig.app.json --noEmit` → exit 0.
+`vitest run` dos 5 arquivos relacionados (races + `QuantityCalculator.addToQuote` +
+`TechniqueCard` + `useLegacyLintLifecycle`) → 31 passed.

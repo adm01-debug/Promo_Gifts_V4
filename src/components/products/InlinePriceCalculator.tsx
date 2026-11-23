@@ -3,7 +3,8 @@
  * Table + Calculator extracted to sub-components.
  */
 import { dbInvoke } from '@/lib/db/postgrest';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
+import { useMountedRef } from '@/hooks/common/useMountedRef';
 import { ChevronDown, ChevronUp, Calculator } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
@@ -109,6 +110,8 @@ export function InlinePriceCalculator({
     setCustomQuantity((prev) => Math.max(prev, minQuantity));
   }, [minQuantity]);
   const [isLoading, setIsLoading] = useState(false);
+  const requestTokenRef = useRef(0);
+  const mountedRef = useMountedRef();
 
   useEffect(() => {
     async function fetchPriceTiers() {
@@ -116,6 +119,10 @@ export function InlinePriceCalculator({
         setPriceTiers([]);
         return;
       }
+      // Troca rápida de variante: só a busca mais recente pode gravar as faixas,
+      // senão a resposta atrasada da variante anterior mostra o preço errado.
+      const token = ++requestTokenRef.current;
+      const isCurrent = () => requestTokenRef.current === token && mountedRef.current;
       setIsLoading(true);
       try {
         const variantFilters: Record<string, unknown> = { product_id: productId, is_active: true };
@@ -127,6 +134,7 @@ export function InlinePriceCalculator({
           filters: variantFilters,
         });
         const variants = variantResponse?.records ?? [];
+        if (!isCurrent()) return;
         if (variants.length === 0) {
           setPriceTiers([]);
           setIsLoading(false);
@@ -141,6 +149,7 @@ export function InlinePriceCalculator({
           filters: { variant_id: targetVariantId, is_active: true, is_preferred: true },
         });
         const sources = sourceResponse?.records ?? [];
+        if (!isCurrent()) return;
         if (sources.length > 0) {
           setPriceTiers(
             extractPriceTiersFromSource(sources[0] as SupplierSourcePricing, basePrice),
@@ -150,9 +159,10 @@ export function InlinePriceCalculator({
         }
       } catch (error) {
         logger.error('Error fetching price tiers:', error);
+        if (!isCurrent()) return;
         setPriceTiers([]);
       } finally {
-        setIsLoading(false);
+        if (isCurrent()) setIsLoading(false);
       }
     }
     fetchPriceTiers();
@@ -160,7 +170,7 @@ export function InlinePriceCalculator({
     // mas estava na dep list — causava re-fetch desnecessário ao trocar variante.
     // O reset de customQuantity é tratado pelo useEffect acima.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [productId, variantId, basePrice]);
+  }, [productId, variantId, basePrice, mountedRef]);
 
   const getCustomPrice = (qty: number) => {
     if (priceTiers.length === 0) return { unitPrice: basePrice, discount: 0 };
