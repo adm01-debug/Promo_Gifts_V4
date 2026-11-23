@@ -6,6 +6,7 @@ import { getBreaker } from '../_shared/circuit-breaker.ts';
 import { circuitOpenResponse, CircuitOpenError, getAllBreakerStatuses } from '../_shared/external-fetch.ts';
 import { AsyncLocalStorage } from "node:async_hooks";
 import { getOrCreateRequestId, REQUEST_ID_HEADER } from "../_shared/request-id.ts";
+import { safeErrorResponse } from "../_shared/error-response.ts";
 import { resolveCredentials, warmupCredentials, buildCredentialsHealth } from "../_shared/credentials.ts";
 import { assertSwitchEnabled } from "../_shared/kill_switch.ts";
 import { readJwtAal } from "../_shared/authorize.ts";
@@ -732,8 +733,7 @@ async function handleInsert(crm: SupabaseClient, body: CrmQuery): Promise<Respon
 
   if (error) {
     if (isOptionalQuoteTable(table) && isMissingTableError(error, table)) return createOptionalWriteError(table);
-    console.error("CRM insert error:", { code: error.code ?? "unknown", message: error.message });
-    return jsonResponse({ error: error.message, code: error.code }, mapPostgrestErrorStatus(error, status));
+    return safeErrorResponse(error, { logLabel: "[crm-db-bridge] CRM insert error", publicMessage: "db_error", status: mapPostgrestErrorStatus(error, status) });
   }
   return jsonResponse({ data: result, count: result?.length || 0 });
 }
@@ -756,8 +756,7 @@ async function handleUpdate(crm: SupabaseClient, body: CrmQuery): Promise<Respon
   }
   if (error) {
     if (isOptionalQuoteTable(table) && isMissingTableError(error, table)) return createOptionalWriteError(table);
-    console.error("CRM update error:", { code: error.code ?? "unknown", message: error.message });
-    return jsonResponse({ error: error.message, code: error.code }, mapPostgrestErrorStatus(error, status));
+    return safeErrorResponse(error, { logLabel: "[crm-db-bridge] CRM update error", publicMessage: "db_error", status: mapPostgrestErrorStatus(error, status) });
   }
   return jsonResponse({ data: result, count: result?.length || 0 });
 }
@@ -775,8 +774,7 @@ async function handleDelete(crm: SupabaseClient, body: CrmQuery): Promise<Respon
   const { error, status } = await query;
   if (error) {
     if (isOptionalQuoteTable(table) && isMissingTableError(error, table)) return createOptionalWriteError(table);
-    console.error("CRM delete error:", { code: error.code ?? "unknown", message: error.message });
-    return jsonResponse({ error: error.message, code: error.code }, mapPostgrestErrorStatus(error, status));
+    return safeErrorResponse(error, { logLabel: "[crm-db-bridge] CRM delete error", publicMessage: "db_error", status: mapPostgrestErrorStatus(error, status) });
   }
   return jsonResponse({ data: null, success: true });
 }
@@ -798,9 +796,8 @@ async function handleSelect(crm: SupabaseClient, body: CrmQuery, sellerId?: numb
   if (id) {
     const { data, error, status } = await query.eq("id", id).single();
     if (error) {
-      console.error(`[SELECT] single error: code=${error.code}, message=${error.message}`);
       if (isOptionalQuoteTable(table) && isMissingTableError(error, table)) return createOptionalSelectFallback(table, true);
-      return jsonResponse({ error: error.message, code: error.code }, mapPostgrestErrorStatus(error, status));
+      return safeErrorResponse(error, { logLabel: "[crm-db-bridge] SELECT single error", publicMessage: "db_error", status: mapPostgrestErrorStatus(error, status) });
     }
     return jsonResponse({ data: stripInternalRelations(data), count: 1 });
   }
@@ -826,7 +823,7 @@ async function handleSelect(crm: SupabaseClient, body: CrmQuery, sellerId?: numb
         code: "statement_timeout",
       }, 504);
     }
-    return jsonResponse({ error: error.message, code: error.code }, mappedStatus);
+    return safeErrorResponse(error, { logLabel: "[crm-db-bridge] SELECT list error", publicMessage: "db_error", status: mappedStatus });
   }
   return jsonResponse({ data: stripInternalRelations(data || []), count });
 }
@@ -857,7 +854,7 @@ async function handleSearch(crm: SupabaseClient, body: CrmQuery, sellerId?: numb
         code: "statement_timeout",
       }, 504);
     }
-    return jsonResponse({ error: error.message, code: error.code }, mappedStatus);
+    return safeErrorResponse(error, { logLabel: "[crm-db-bridge] search error", publicMessage: "db_error", status: mappedStatus });
   }
   const records = stripInternalRelations(data || []);
   return jsonResponse({ data: records, count: records.length });
@@ -1083,8 +1080,7 @@ Deno.serve((req) => {
   } catch (error: unknown) {
     breaker.recordFailure();
     const elapsed = Math.round(performance.now() - reqStartedAt);
-    console.error(`[crm-runtime] [req_id=${requestId}] error_ms=${elapsed} was_cold=${wasCold} ${error instanceof Error ? error.message : String(error)}`);
-    return jsonResponse({ error: error instanceof Error ? error.message : "Internal error" }, 500);
+    return safeErrorResponse(error, { logLabel: `[crm-db-bridge] [req_id=${requestId}] unhandled error`, publicMessage: "internal_error", status: 500 });
   }
   });
 });
