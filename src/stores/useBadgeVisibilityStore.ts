@@ -1,9 +1,8 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import { supabase } from '@/integrations/supabase/client';
-import type { Json } from '@/integrations/supabase/types';
 
 import { logger } from '@/lib/logger';
+import { mergeProfilePreferences } from '@/lib/profile-preferences';
 interface ThemeSettings {
   light: boolean;
   dark: boolean;
@@ -52,27 +51,7 @@ export const useBadgeVisibilityStore = create<BadgeVisibilityStore>()(
 
         if (userId) {
           try {
-            const { data: profile, error: fetchError } = await supabase
-              .from('profiles')
-              .select('preferences')
-              .eq('user_id', userId)
-              .maybeSingle();
-            if (fetchError) throw fetchError;
-            const { error: updateError } = await supabase
-              .from('profiles')
-              .update({
-                preferences: {
-                  ...(profile !== null &&
-                  profile.preferences !== null &&
-                  typeof profile.preferences === 'object' &&
-                  !Array.isArray(profile.preferences)
-                    ? (profile.preferences as Record<string, Json | undefined>)
-                    : {}),
-                  badge_visibility: newRouteSettings,
-                } as unknown as Json,
-              })
-              .eq('user_id', userId);
-            if (updateError) throw updateError;
+            await mergeProfilePreferences(userId, { badge_visibility: newRouteSettings });
             return true;
           } catch (err) {
             logger.error('[BadgeVisibilityStore] Sync failed:', err);
@@ -95,27 +74,7 @@ export const useBadgeVisibilityStore = create<BadgeVisibilityStore>()(
 
         if (userId) {
           try {
-            const { data: profile, error: fetchError } = await supabase
-              .from('profiles')
-              .select('preferences')
-              .eq('user_id', userId)
-              .maybeSingle();
-            if (fetchError) throw fetchError;
-            const { error: updateError } = await supabase
-              .from('profiles')
-              .update({
-                preferences: {
-                  ...(profile !== null &&
-                  profile.preferences !== null &&
-                  typeof profile.preferences === 'object' &&
-                  !Array.isArray(profile.preferences)
-                    ? (profile.preferences as Record<string, Json | undefined>)
-                    : {}),
-                  badge_visibility: newRouteSettings,
-                } as unknown as Json,
-              })
-              .eq('user_id', userId);
-            if (updateError) throw updateError;
+            await mergeProfilePreferences(userId, { badge_visibility: newRouteSettings });
             return true;
           } catch (err) {
             logger.error('[BadgeVisibilityStore] Sync failed:', err);

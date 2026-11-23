@@ -423,12 +423,12 @@ Severidade das etapas: Média 158 · Alta 79 · Baixa 54 · Crítica 9
 - [ ] 138 — Gate que impede teste apontando para módulo que não existe — onda 3 — Média
 - [ ] 139 — Criar a FK de `art_file_attachments.user_id` — onda 3 — Baixa — APROVAÇÃO
 - [ ] 140 — Varredura de coluna usada em policy sem FK — onda 3 — Média
-- [ ] 141 — Helper único para atualizar `profiles.preferences` sem perder escrita — onda 3 — Média — APROVAÇÃO
-- [ ] 142 — `useCatalogPreferences` passa a usar o helper — onda 3 — Média
+- [x] 141 — Helper único para atualizar `profiles.preferences` sem perder escrita — onda 3 — Média — APROVAÇÃO
+- [x] 142 — `useCatalogPreferences` passa a usar o helper — onda 3 — Média
 - [ ] 143 — `useSimulatorPreferences` passa a usar o helper e deixa o erro visível — onda 3 — Média
-- [ ] 144 — `useBadgeVisibilityStore` passa a usar o helper nos dois pontos — onda 3 — Média
-- [ ] 145 — `useExpertChat` passa a usar o helper — onda 3 — Baixa
-- [ ] 146 — Teste de escrita perdida em `profiles.preferences` — onda 3 — Média
+- [x] 144 — `useBadgeVisibilityStore` passa a usar o helper nos dois pontos — onda 3 — Média
+- [x] 145 — `useExpertChat` passa a usar o helper — onda 3 — Baixa
+- [x] 146 — Teste de escrita perdida em `profiles.preferences` — onda 3 — Média
 - [ ] 147 — Verificação recorrente de registro órfão nas relações críticas — onda 3 — Média — APROVAÇÃO
 - [ ] 148 — Reconciliação da Onda 3: conferir que os números de cotação fecham — onda 3 — Alta
 
@@ -616,7 +616,7 @@ Severidade das etapas: Média 158 · Alta 79 · Baixa 54 · Crítica 9
 
 | Etapa | Motivo | Quem destrava |
 |---|---|---|
-|  |  |  |
+| 143 | A gravação já usa o helper e expõe `saveError`, mas `useSimulatorPreferences`/`useSimulation` não têm nenhum consumidor em `src/` (só a barrel `src/hooks/simulation/index.ts`). Não existe tela para exibir o erro, e o status de sincronização nunca apareceu na UI. | Dono: decidir entre remover o código morto ou criar a tela do simulador que consuma o hook |
 
 ---
 
@@ -636,4 +636,48 @@ grep -rn "dispatcher-auth" supabase/functions/ --include='*.ts'
 ### Etapa NNN
 ```
 (saída)
+```
+
+### Etapa 141
+```
+Arquivo novo: src/lib/profile-preferences.ts (fila de escrita por contexto + merge com
+releitura de conferência e ate 4 tentativas).
+$ npx vitest run src/lib/__tests__/profile-preferences.test.ts
+Test Files  1 passed (1) | Tests  4 passed (4)   (5 execucoes seguidas, sem flake)
+```
+
+### Etapa 142
+```
+src/hooks/products/useCatalogPreferences.ts
+- mutationFn passou a chamar mergeProfilePreferences(user.id, { catalog: prefs }) em vez de
+  gravar o objeto inteiro.
+- onSuccess acrescenta invalidateQueries(['catalog-preferences', user?.id]) (antes faltava).
+- efeito de hidratacao guardado por hydratedFromCloudRef: o valor da nuvem so sobrescreve
+  estado/localStorage na primeira hidratacao, entao um refetch nao reverte mais a escolha.
+$ npx tsc -p tsconfig.app.json --noEmit  ->  exit 0
+```
+
+### Etapa 144
+```
+src/stores/useBadgeVisibilityStore.ts: os dois pontos (toggleBadges e setBadgesEnabled)
+passaram a chamar mergeProfilePreferences(userId, { badge_visibility: newRouteSettings }).
+O `syncError` que a UI ja consome (IntelligenceBadges) continua sendo preenchido no catch.
+$ npx vitest run src/stores/__tests__/useBadgeVisibilityStore.test.ts  -> ver rodape
+```
+
+### Etapa 145
+```
+src/components/expert/chat/useExpertChat.ts: handleToggleAutoPlayTts grava
+mergeProfilePreferences(user.id, { flow_autoplay_tts: next }). O `catch {}` vazio virou
+`catch (err)` com logger.warn e contexto (o chat continua funcionando).
+```
+
+### Etapa 146
+```
+$ npx vitest run src/lib/__tests__/profile-preferences.test.ts
+  ok duas abas gravando chaves diferentes preservam as duas (ACH-039)
+  ok nao grava quando as chaves pedidas ja tem o valor atual
+  ok preserva chaves que o hook chamador nao conhece
+  ok propaga o erro da gravacao em vez de engolir
+Revertendo o helper para gravacao do objeto inteiro, o primeiro caso falha.
 ```

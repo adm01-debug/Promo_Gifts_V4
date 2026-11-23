@@ -8,9 +8,9 @@ import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { useQuery, useMutation } from '@tanstack/react-query';
 import type { TechniqueSettings } from '@/types/simulation';
-import type { Json } from '@/integrations/supabase/types';
 
 import { logger } from '@/lib/logger';
+import { mergeProfilePreferences } from '@/lib/profile-preferences';
 interface SimulatorPreferences {
   lastQuantity: number;
   lastProductId: string | null;
@@ -70,28 +70,7 @@ export function useSimulatorPreferences() {
   const saveToCloudMutation = useMutation({
     mutationFn: async (prefs: SimulatorPreferences) => {
       if (!user) return;
-
-      // First, fetch existing preferences to merge
-      const { data: existingData } = await supabase
-        .from('profiles')
-        .select('preferences')
-        .eq('user_id', user.id)
-        .maybeSingle();
-
-      const existingPrefs = (existingData?.preferences as Record<string, unknown>) || {};
-
-      const { error } = await supabase
-        .from('profiles')
-        .update({
-          // merged JSON-serializable preferences persisted in profiles.preferences
-          preferences: {
-            ...existingPrefs,
-            simulator: prefs,
-          } as unknown as Json,
-        })
-        .eq('user_id', user.id);
-
-      if (error) throw error;
+      await mergeProfilePreferences(user.id, { simulator: prefs });
     },
     onError: (error) => {
       logger.error('Error saving preferences to cloud:', error);
@@ -254,6 +233,11 @@ export function useSimulatorPreferences() {
     preferences,
     isLoaded,
     isSyncing: saveToCloudMutation.isPending,
+    // O erro de gravação precisa chegar à interface: antes ele morria no log e o
+    // usuário acreditava ter salvo (ACH-038).
+    saveError: saveToCloudMutation.error
+      ? 'Não foi possível salvar suas preferências na nuvem.'
+      : null,
     setLastQuantity,
     setLastProductId,
     setLastTechniques,

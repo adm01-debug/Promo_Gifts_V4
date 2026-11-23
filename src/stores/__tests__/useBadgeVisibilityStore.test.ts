@@ -1,44 +1,19 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { useBadgeVisibilityStore } from '../useBadgeVisibilityStore';
 
-// Define the mock structure (vi.hoisted: disponível quando a factory vi.mock roda)
-const mockSupabase = vi.hoisted(() => ({
-  from: vi.fn().mockReturnThis(),
-  select: vi.fn().mockReturnThis(),
-  eq: vi.fn().mockReturnThis(),
-  update: vi.fn().mockReturnThis(),
-  maybeSingle: vi.fn(),
-}));
+const mergeProfilePreferences = vi.hoisted(() => vi.fn());
 
-// Mock the lazy client
-vi.mock('@/integrations/supabase/client', () => ({
-  supabase: mockSupabase,
-}));
+vi.mock('@/lib/profile-preferences', () => ({ mergeProfilePreferences }));
 
 describe('useBadgeVisibilityStore', () => {
   beforeEach(() => {
-    // Reset store state before each test
     useBadgeVisibilityStore.setState({
       routeSettings: {},
       badgesEnabled: true,
       syncError: null,
     });
     vi.clearAllMocks();
-
-    // Default chain behavior
-    mockSupabase.from.mockReturnThis();
-    mockSupabase.select.mockReturnThis();
-    mockSupabase.update.mockReturnThis();
-
-    mockSupabase.eq.mockImplementation(() => {
-      const result = {
-        ...mockSupabase,
-        then: (resolve: (value: { error: null }) => void) => resolve({ error: null }),
-      };
-      return result;
-    });
-
-    mockSupabase.maybeSingle.mockResolvedValue({ data: { preferences: {} }, error: null });
+    mergeProfilePreferences.mockResolvedValue(undefined);
   });
 
   it('should initialize with default values', () => {
@@ -65,19 +40,30 @@ describe('useBadgeVisibilityStore', () => {
     expect(isBadgeEnabled('/anywhere', 'light')).toBe(false);
   });
 
-  it('should sync with backend if userId is provided', async () => {
+  it('should merge only the badge_visibility key when syncing (ACH-039)', async () => {
     const { toggleBadges } = useBadgeVisibilityStore.getState();
+
     const success = await toggleBadges('/home', 'light', 'user-123');
 
     expect(success).toBe(true);
-    expect(mockSupabase.from).toHaveBeenCalledWith('profiles');
+    expect(mergeProfilePreferences).toHaveBeenCalledWith('user-123', {
+      badge_visibility: { '/home': { light: false, dark: true } },
+    });
+  });
+
+  it('should merge only the badge_visibility key on setBadgesEnabled too', async () => {
+    const { setBadgesEnabled } = useBadgeVisibilityStore.getState();
+
+    const success = await setBadgesEnabled('/home', 'dark', false, 'user-123');
+
+    expect(success).toBe(true);
+    expect(mergeProfilePreferences).toHaveBeenCalledWith('user-123', {
+      badge_visibility: { '/home': { light: true, dark: false } },
+    });
   });
 
   it('should handle backend sync failure and set syncError', async () => {
-    mockSupabase.maybeSingle.mockResolvedValueOnce({
-      data: null,
-      error: new Error('Network error'),
-    });
+    mergeProfilePreferences.mockRejectedValueOnce(new Error('Network error'));
 
     const { toggleBadges } = useBadgeVisibilityStore.getState();
     const success = await toggleBadges('/home', 'light', 'user-123');
