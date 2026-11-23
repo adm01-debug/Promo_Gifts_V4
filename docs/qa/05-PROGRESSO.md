@@ -49,7 +49,7 @@ Severidade das etapas: Média 158 · Alta 79 · Baixa 54 · Crítica 9
 - [ ] 016 — Rotacionar a chave `service_role` do projeto de produção — onda 1 — Crítica — APROVAÇÃO
 - [ ] 017 — Conferir no banco se a chave vazada foi usada — onda 1 — Alta — APROVAÇÃO
 - [ ] 018 — Limpar as entradas `[ROTACIONAR]` do `.gitleaks.toml` depois da rotação — onda 1 — Média — APROVAÇÃO
-- [ ] 019 — Provar a tautologia e escrever o teste que falha antes da correção — onda 1 — Alta
+- [~] 019 — Provar a tautologia e escrever o teste que falha antes da correção — onda 1 — Alta
 - [ ] 020 — Corrigir as policies tautológicas de `attribute_definitions` — onda 1 — Alta — APROVAÇÃO
 - [ ] 021 — Corrigir as policies tautológicas de `attribute_groups` — onda 1 — Alta — APROVAÇÃO
 - [ ] 022 — Corrigir as policies tautológicas de `material_types` — onda 1 — Alta — APROVAÇÃO
