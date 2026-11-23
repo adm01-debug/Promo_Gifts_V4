@@ -294,18 +294,62 @@ Severidade das etapas: Média 158 · Alta 79 · Baixa 54 · Crítica 9
     escreve em `quotes`, não em `discount_approval_requests` — misturar as duas
     máquinas de estado num módulo só esconderia a diferença de autoridade.
 - [ ] 102 — Fazer `discount_approval_requests` chegar a `expired` — onda 3 — Média — APROVAÇÃO
-- [ ] 103 — Teste que prova a soma das linhas não fechando com o subtotal — onda 3 — Média
+- [x] 103 — Teste que prova a soma das linhas não fechando com o subtotal — onda 3 — Média
+  - Evidência 103: `src/lib/quotes/__tests__/markup-divergence.test.ts` monta o caso
+    do achado (1,01 × 7 com markup de 13%) e compara as duas definições de
+    markup: por linha (`applyNegotiationMarkup`, `round2(unit_price * factor)`,
+    usado em `useQuoteViewData.ts:124` e `QuoteViewPage.tsx:120`) contra o
+    agregado (`calculateQuoteTotals`, `round2(realSubtotal * (1 + markup/100))`,
+    `quoteHelpers.ts:88`). Prova numérica via `npx tsx`:
+    `{"unitarioComMarkup":1.14,"somaDasLinhas":7.98,"subtotalPersistido":7.99,"diferenca":0.01}`.
+    O teste roda como `it.fails` (único idioma do repo para defeito ainda não
+    corrigido — precedente em `tests/a11y/magazine-a11y.test.tsx:146`) porque a
+    correção depende da decisão de arredondamento da etapa 104, que é APROVAÇÃO.
+    Ele vira `it` assim que a 104/105 entrarem, sem mudar o cenário.
 - [ ] 104 — Decidir e documentar onde o arredondamento acontece — onda 3 — Média — APROVAÇÃO
 - [ ] 105 — Alinhar o cálculo agregado à decisão de arredondamento — onda 3 — Média
 - [ ] 106 — Garantir que o PDF usa o mesmo total do banco — onda 3 — Média
 - [ ] 107 — Teste de centavo no PDF da proposta — onda 3 — Média
-- [ ] 108 — Teste que prova o trigger gravando desconto em dois campos ao mesmo tempo — onda 3 — Alta
+- [x] 108 — Teste que prova o trigger gravando desconto em dois campos ao mesmo tempo — onda 3 — Alta
+  - Evidência 108: `tests/sql/quote-discount-invariant/` (`discount-fixture.sql` +
+    `run-tests.py` + `README.md`, script `npm run test:quote-discount-invariant:postgres`).
+    O fixture reproduz **sem corrigir** `fn_quote_items_calc_subtotal`
+    (`SCHEMA_LIVE.sql:38710`) e `fn_quotes_recalc_subtotal_from_items` (idem
+    `:38853`) mais as tabelas `quotes`/`quote_items` e os triggers que as chamam;
+    o runner sobe `postgres:17` com `--network none`, label de posse e
+    `BEGIN/ROLLBACK` (nada persiste, `productionTouched: false`). Saída medida:
+    `FAIL invariante de desconto unico em public.quotes` →
+    `{"discount_percent": 10.0, "discount_amount": 10.0, "subtotal": 100.0, "total": 90.0}`
+    com `invariantViolated: true` e exit 1. É vermelho por desenho: a correção é a
+    etapa 109 (APROVAÇÃO). O entrypoint do `postgres:17` derruba o servidor de
+    bootstrap e o runner reaplica a fixture até o servidor definitivo subir.
 - [ ] 109 — Alinhar `fn_quotes_recalc_subtotal_from_items` ao invariante de um campo de desconto — onda 3 — Alta — APROVAÇÃO
 - [ ] 110 — Confirmar que o alarme de corrupção parou de disparar em cotação normal — onda 3 — Média
 - [ ] 111 — Alinhar as duas funções do banco quanto ao desconto por item — onda 3 — Média — APROVAÇÃO
 - [ ] 112 — Constraint que impede desconto percentual e absoluto preenchidos juntos — onda 3 — Média — APROVAÇÃO
-- [ ] 113 — Teste do subtotal no caminho kit → cotação — onda 3 — Média
-- [ ] 114 — Alinhar `price-calculator.ts` à definição de subtotal do banco — onda 3 — Média
+- [x] 113 — Teste do subtotal no caminho kit → cotação — onda 3 — Média
+  - Evidência 113: `src/lib/kit-builder/__tests__/subtotal-personalization.test.ts`
+    compara `pricing.subtotal` com o que o banco grava
+    (`SUM(quantity * unit_price + personalization_cost)`, `SCHEMA_LIVE.sql:38853`).
+    Antes da 114 o kit mostrava só caixa + itens e o banco regravava com a
+    personalização: diferença exata de 20,00 no cenário (caixa 3,00 + caneca
+    8,00 × 2, kit de 10, gravação 20,00). Ficou `it.fails` enquanto a 114 não
+    existia; com a 114 entrou como verificação de regressão (`it`) e passa.
+- [x] 114 — Alinhar `price-calculator.ts` à definição de subtotal do banco — onda 3 — Média
+  - Evidência 114: `calculateTotalKitPrice` (`src/lib/kit-builder/price-calculator.ts`)
+    passou a expor `productsPrice` (caixa + itens, sem personalização), `subtotal`
+    a incluir a personalização — exatamente o que
+    `fn_quotes_recalc_subtotal_from_items` grava — e `total = subtotal` (antes
+    `subtotal + personalizationPrice`, que passaria a contar em dobro). Os dois
+    consumidores que mostram a linha “Produtos” foram apontados para
+    `productsPrice`: `KitPricingCard.tsx:124` e `kitPdfGenerator.ts:364`. O payload
+    de cotação (`useKitBuilderQuote.ts:218`) continua em `pricing.subtotal`, agora
+    com o mesmo número que o banco regrava. Verificado: `npm run typecheck` exit 0;
+    `eslint` nos 4 arquivos sem achados; `vitest run` em `src/lib/quotes`,
+    `src/lib/kit-builder`, `tests/lib/kit-builder-price.test.ts`,
+    `src/components/kit-builder` e `tests/pages/kit-builder`
+    → **20 arquivos, 234 testes verdes + 1 expected fail** (o `it.fails` da 103, que
+    depende da 104).
 - [ ] 115 — Levantar os três tratamentos de `shipping_cost` e escolher um — onda 3 — Baixa — APROVAÇÃO
 - [ ] 116 — Unificar o tratamento de `shipping_cost` no total — onda 3 — Média
 - [ ] 117 — Escrever a fórmula canônica do total da cotação — onda 3 — Média — APROVAÇÃO
