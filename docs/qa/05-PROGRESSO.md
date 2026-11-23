@@ -322,11 +322,58 @@ Severidade das etapas: Média 158 · Alta 79 · Baixa 54 · Crítica 9
 - [ ] 128 — Tela para o dono configurar a alçada de desconto — onda 3 — Média
 - [ ] 129 — Reconciliar os degraus de desconto do documento manual com o implementado — onda 3 — Média — APROVAÇÃO
 - [ ] 130 — Responder, no documento de regras, as dúvidas em aberto que esta auditoria fechou — onda 3 — Baixa
-- [ ] 131 — Registrar a linha de base da suíte completa de testes — onda 3 — Alta
-- [ ] 132 — Resolver os testes de kit-builder que importam um componente que não existe — onda 3 — Alta
-- [ ] 133 — Corrigir os 14 casos de `KitBuilderPage.test.tsx` — onda 3 — Alta
-- [ ] 134 — Corrigir `KitSummary.weight.test.tsx` — onda 3 — Alta
-- [ ] 135 — Corrigir `QuoteCommentsSection.test.tsx` — onda 3 — Alta
+- [x] 131 — Registrar a linha de base da suíte completa de testes — onda 3 — Alta
+  - Evidência 131: criado `docs/qa/suite-baseline.md` com a medição da suíte completa no commit
+    `4b02d228` (base de `main` desta PR) — `Test Files 9 failed | 1741 passed | 131 skipped (1881)`
+    e `Tests 30 failed | 32886 passed | 1 expected fail | 1148 skipped | 24 todo (34089)` —, a tabela
+    dos 9 arquivos com a mensagem de erro de cada grupo e o comando de reprodução. O plano
+    (`docs/qa/04-PLANO.md:3639`) foi escrito sobre `ded84e9` (7 arquivos / 26 casos); a linha de base
+    mudou e os dois arquivos novos (`rls-ach013-tautologia`, `DiscountRequestDetailPage`) estão
+    registrados como **fora** do escopo 131–136.
+- [x] 132 — Resolver os testes de kit-builder que importam um componente que não existe — onda 3 — Alta
+  - Evidência 132: removidos `tests/components/kit-builder/FreightEstimator.test.tsx` e o bloco
+    `describe("FreightEstimator")` de `tests/components/kit-builder/KitBuilderComponents.test.tsx`
+    (4 casos com `await import`), mais o nome no cabeçalho do arquivo. O componente foi **removido de
+    propósito**, não renomeado: `gh api 'repos/adm01-debug/Promo_Gifts_V4/commits?path=src/components/kit-builder/FreightEstimator.tsx'`
+    devolve 8 commits e o mais antigo, `4eddf85d` =
+    `feat(kit): plano de volumes do kit no lugar do FreightEstimator (etapa 52) (#3951)`, lista
+    `removed src/components/kit-builder/FreightEstimator.tsx`. O substituto está em uso:
+    `FreightPlanPanel` + `useKitFreightPlan` (`src/components/kit-builder/KitSummary.tsx:15-16`).
+    Antes: suíte dos dois arquivos vermelha por `Failed to resolve import`. Depois:
+    `npx vitest run tests/components/kit-builder/` → verde.
+- [x] 133 — Corrigir os 14 casos de `KitBuilderPage.test.tsx` — onda 3 — Alta
+  - Evidência 133: os 22 casos (o plano dizia 14; a base atual tem 22) falhavam todos com
+    `Error: No QueryClient set, use QueryClientProvider to set one`, lançado por
+    `useProductMeasures` (`src/hooks/freight/useProductMeasures.ts:58`) ← `useKitFreightPlan` ←
+    `KitMobileSummaryBar.tsx:48`, que o teste não mocka. Não era import quebrado nem perda de
+    comportamento: o teste montava a página com `render()` cru. Trocado `render()` por
+    `renderWithProviders` (`tests/components/render-helpers.tsx`, que já traz
+    `QueryClientProvider` + `MemoryRouter` + `TooltipProvider` + `SellerCartProvider` e os mocks de
+    supabase/auth/sonner) nos 24 sites, removido o `MemoryRouter` manual e o import agora sem uso.
+    Evidência: `npx vitest run tests/components/kit-builder/ tests/components/QuoteCommentsSection.test.tsx tests/components/pages/KitBuilderPage.test.tsx`
+    → `Test Files 24 passed (24)` / `Tests 178 passed (178)`.
+- [x] 134 — Corrigir `KitSummary.weight.test.tsx` — onda 3 — Alta
+  - Evidência 134: **era o teste, não o componente** — e o teste era órfão do componente removido
+    na etapa 52. `tests/components/kit-builder/KitSummary.weight.test.tsx` mockava
+    `@/components/kit-builder/FreightEstimator` (que não existe) e assertava
+    `data-testid="unknown-weight-count"`, testid que não existe em `src/components/kit-builder/KitSummary.tsx`;
+    a falha real era `No QueryClient set` (usava `render()` cru). A regra de negócio que ele
+    descreve — **peso zero não é medição** — está implementada e coberta em três camadas:
+    `isKnownMeasure` (`src/lib/freight/units.ts:98`, `Number.isFinite && > 0`, SSOT),
+    `summarizeKitWeight` (`src/lib/kit-builder/weight.ts:19-36`),
+    `itemDentroDaCaixa`/`kitFechado` (`src/lib/freight/fromKit.ts:53-56`, peso 0 → `missing: ['weight']`)
+    e a falha fechada de `planFreight` (`:271-279`, `dados_insuficientes` + `missing`), com testes em
+    `tests/lib/kit-builder/weight.test.ts` (inclui "conta caixa com peso zero como peso desconhecido")
+    e `src/lib/freight/__tests__/fromKit.test.ts:137-152`, `:160-168`. Arquivo removido por ser ruído
+    do mesmo módulo removido; a garantia de frete continua coberta na lib e no painel.
+- [x] 135 — Corrigir `QuoteCommentsSection.test.tsx` — onda 3 — Alta
+  - Evidência 135: a asserção é que estava velha, não o comportamento. `tests/components/QuoteCommentsSection.test.tsx:206`
+    esperava `Remova as respostas antes de excluir este comentário.`; o componente diz
+    `Remova suas respostas antes de excluir este comentário.` (`src/components/quotes/QuoteCommentsSection.tsx:348`
+    no `title` e `:362` no aviso). A regra está intacta e não foi tocada:
+    `disabled={isSubmitting || hasReplies}` bloqueia a exclusão do comentário raiz com respostas (`:345`),
+    `isAuthor && hasReplies` mostra o aviso (`:360`) e as respostas seguem na tela
+    (`Resposta preservada` continua asserida). Ajustado só o texto do teste.
 - [ ] 136 — Coordenar `drift-baseline.test.mjs` com a PR aberta do gate E40 — onda 3 — Média
 - [ ] 137 — Fazer a suíte inteira bloquear merge — onda 3 — Alta — APROVAÇÃO
 - [ ] 138 — Gate que impede teste apontando para módulo que não existe — onda 3 — Média
