@@ -875,9 +875,6 @@ Deno.serve((req) => {
     if (killResponse) return killResponse;
 
   const diagOp = await detectDiagOp(req);
-  if (diagOp === "ping") {
-    return jsonResponse({ ok: true, ts: Date.now() });
-  }
 
   const reqStartedAt = performance.now();
   const wasCold = requestCount === 0;
@@ -906,6 +903,9 @@ Deno.serve((req) => {
     }
 
     // Hardening 4.6: Diagnosticos sensiveis exigem autenticacao e role elevada.
+    // ACH-030: ping agora exige auth — sem credencial → 401. Invocacao faturavel
+    // ilimitada sem credencial era o risco (ping nao devolve dado, mas conta fatura).
+    if (diagOp === "ping") return jsonResponse({ ok: true, ts: Date.now() });
     if (diagOp === "diag") return jsonResponse(buildDiagSnapshot());
     if (diagOp === "creds_health") return jsonResponse(await buildCredsHealthSnapshot());
     if (diagOp === "breaker_status") {

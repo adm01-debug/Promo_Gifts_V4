@@ -75,7 +75,7 @@ Severidade das etapas: Média 158 · Alta 79 · Baixa 54 · Crítica 9
 - [ ] 042 — Restringir o alcance do `e2e-cleanup` a dados marcados como de teste — onda 1 — Média
 - [~] 043 — Ligar `_shared/url-allowlist.ts` no `webhook-dispatcher` — onda 1 — Alta
 - [ ] 044 — Ligar o bloqueio da allowlist de URL depois do período de observação — onda 1 — Alta
-- [ ] 045 — Exigir auth antes de responder `op=ping` no `crm-db-bridge` — onda 1 — Média
+- [~] 045 — Exigir auth antes de responder `op=ping` no `crm-db-bridge` — onda 1 — Média
 - [ ] 046 — Fechar `stock_daily_summary` à leitura irrestrita de qualquer conta logada — onda 1 — Média — APROVAÇÃO
 - [ ] 047 — Fechar `xbz_upload_mapping`, `product_properties` e `supplier_import_batches` à leitura irrestrita — onda 1 — Média — APROVAÇÃO
 - [ ] 048 — Inventariar e decidir as ~138 policies de SELECT com `USING (true)` — onda 1 — Média
