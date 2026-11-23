@@ -73,4 +73,22 @@ describe('contrato de colunas das views SECURITY DEFINER públicas', () => {
     const r = run(['--live', f]);
     expect(r.status, r.stderr).toBe(0);
   });
+
+  // QA Etapa 005 (ACH-005): a partir desta etapa, a query SQL do script
+  // descobre TODAS as views públicas com grant anon, em vez de filtrar por
+  // PUBLIC_VIEWS. Isso torna alcançável a linha que acusa "view pública no
+  // banco sem entrada no contrato". Este teste exercita exatamente isso.
+  it('script falha quando o banco expõe view nova fora do contrato', () => {
+    const dir = mkdtempSync(join(tmpdir(), 'pvc-'));
+    // Injeta uma view fictícia com grant anon que não existe no contrato
+    const live = [
+      ...PUBLIC_VIEWS.map((relname) => ({ relname, columns: [...CONTRACT.views[relname].columns] })),
+      { relname: 'v_nova_view_sem_contrato', columns: ['id', 'cost_price'] },
+    ];
+    const f = join(dir, 'live.json');
+    writeFileSync(f, JSON.stringify(live));
+    const r = run(['--live', f]);
+    expect(r.status).toBe(1);
+    expect(r.stderr).toMatch(/v_nova_view_sem_contrato/);
+  });
 });

@@ -101,14 +101,22 @@ export const SENSITIVE_PATTERNS = [
   { label: 'pii-address', re: /endereco|address|\bcep\b/i },
 ];
 
+// QA Etapa 005 (ACH-005): a query descobere TODAS as views públicas com
+// grant SELECT para anon, em vez de filtrar pela lista fixa PUBLIC_VIEWS.
+// Isso torna a linha `r.relname: view pública no banco sem entrada no contrato`
+// (linha ~202) alcançável, fechando o gap que permitiu v_compras_* chegarem
+// à produção com cost_price exposto sem o CI reclamar.
+// PUBLIC_VIEWS continua usada para o sentido inverso: view no contrato mas
+// ausente no banco (linhas ~178-181, `diffLive`).
 const SQL = `
   SELECT c.relname,
          json_agg(a.attname ORDER BY a.attnum) AS columns
   FROM pg_class c
   JOIN pg_namespace n ON n.oid = c.relnamespace
   JOIN pg_attribute a ON a.attrelid = c.oid AND a.attnum > 0 AND NOT a.attisdropped
-  WHERE n.nspname = 'public' AND c.relkind = 'v'
-    AND c.relname IN (${PUBLIC_VIEWS.map((v) => `'${v}'`).join(', ')})
+  WHERE n.nspname = 'public'
+    AND c.relkind IN ('v', 'm')
+    AND has_table_privilege('anon', c.oid, 'SELECT')
   GROUP BY 1
   ORDER BY 1;
 `.trim();
