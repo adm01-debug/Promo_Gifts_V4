@@ -203229,12 +203229,6 @@
           "table": "v_commemorative_dates_with_colors"
         },
         {
-          "grantee": "anon",
-          "privileges": "SELECT",
-          "schema": "public",
-          "table": "v_compras_catalogo"
-        },
-        {
           "grantee": "authenticated",
           "privileges": "SELECT",
           "schema": "public",
@@ -203247,12 +203241,6 @@
           "table": "v_compras_catalogo"
         },
         {
-          "grantee": "anon",
-          "privileges": "SELECT",
-          "schema": "public",
-          "table": "v_compras_precos_faixa"
-        },
-        {
           "grantee": "authenticated",
           "privileges": "SELECT",
           "schema": "public",
@@ -203263,12 +203251,6 @@
           "privileges": "DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE",
           "schema": "public",
           "table": "v_compras_precos_faixa"
-        },
-        {
-          "grantee": "anon",
-          "privileges": "SELECT",
-          "schema": "public",
-          "table": "v_compras_precos_variante"
         },
         {
           "grantee": "authenticated",

@@ -2,6 +2,10 @@
 
 Diff semântico gerado a cada coleta em que algo mudou.
 
+## 2026-11-23 15:34 UTC
+
+- **grants** removido (3): `public.v_compras_catalogo:anon`, `public.v_compras_precos_faixa:anon`, `public.v_compras_precos_variante:anon`
+
 ## 2026-11-23 13:01 UTC
 
 - **realtime** removido (1): `supabase_realtime_messages_publication:realtime.messages_2026_11_19`

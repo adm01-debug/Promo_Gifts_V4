@@ -1094,13 +1094,10 @@ Roles da API: `anon` (sem login), `authenticated` (logado), `service_role` (bypa
 | public.v_commemorative_dates_calendar | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
 | public.v_commemorative_dates_with_colors | authenticated | SELECT |
 | public.v_commemorative_dates_with_colors | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
-| public.v_compras_catalogo | anon | SELECT |
 | public.v_compras_catalogo | authenticated | SELECT |
 | public.v_compras_catalogo | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
-| public.v_compras_precos_faixa | anon | SELECT |
 | public.v_compras_precos_faixa | authenticated | SELECT |
 | public.v_compras_precos_faixa | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
-| public.v_compras_precos_variante | anon | SELECT |
 | public.v_compras_precos_variante | authenticated | SELECT |
 | public.v_compras_precos_variante | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
 | public.v_connection_health | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
