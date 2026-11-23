@@ -150,6 +150,10 @@ export function useKitComments(kitId: string | undefined) {
       });
       if (error) throw error;
     },
+    // A atualização NÃO pode depender do realtime: `kit_comments` não está na publicação
+    // `supabase_realtime` (ACH-035), então o canal conecta e nunca entrega evento. Sem esta
+    // invalidação quem comenta não vê o próprio comentário até recarregar.
+    onSuccess: () => qc.invalidateQueries({ queryKey: key }),
     onError: (e: Error) => toast.error('Operação falhou', { description: sanitizeError(e) }),
   });
 
@@ -158,6 +162,7 @@ export function useKitComments(kitId: string | undefined) {
       const { error } = await supabase.from('kit_comments').update({ resolved: true }).eq('id', id);
       if (error) throw error;
     },
+    onSuccess: () => qc.invalidateQueries({ queryKey: key }),
   });
 
   return {

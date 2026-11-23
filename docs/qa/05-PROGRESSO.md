@@ -147,9 +147,23 @@ Severidade das etapas: Média 158 · Alta 79 · Baixa 54 · Crítica 9
   - Validação: `npx tsc --noEmit` exit 0; `npx eslint` nos 5 arquivos tocados sem problemas;
     `npx vitest run src/hooks src/components/admin src/pages/admin` → 163 arquivos, 2885 testes verdes.
 - [ ] 083 — Reforçar o teto de desconto no banco, não só no front — onda 2 — Alta — APROVAÇÃO
-- [ ] 084 — Invalidar `['role-permissions']` depois de gravar permissões de papel — onda 2 — Alta
-- [ ] 085 — Substituir o `useState` local de `RolePermissionsPage` pela query compartilhada — onda 2 — Média
-- [ ] 086 — Invalidar a lista de comentários depois de comentar no kit — onda 2 — Alta
+- [x] 084 — Invalidar `['role-permissions']` depois de gravar permissões de papel — onda 2 — Alta
+- [x] 085 — Substituir o `useState` local de `RolePermissionsPage` pela query compartilhada — onda 2 — Média
+- [x] 086 — Invalidar a lista de comentários depois de comentar no kit — onda 2 — Alta
+  - Evidência 084: no sucesso da gravação a página invalida `['role-permissions']` (a família de
+    chaves que `useRBAC` lê). `RolePermissionsPage.invalidate.test.tsx` afirma a chamada; com a
+    invalidação removida localmente o teste falha (prova).
+  - Evidência 085: `RolePermissionsPage` não tem mais `useState` de leitura — `permissions` e
+    `rolePermissions` vêm de `useQuery` (`['permissions-catalog']` e `['role-permissions','all']`),
+    com `staleTime` de 5 min. Restou apenas o estado de edição (`pendingChanges`) e `isSaving`.
+    `RolePermissionsPage.save.test.tsx` (7 casos) segue verde com o provider de cache.
+  - Evidência 086: `useKitComments` (`useKitCollaboration.ts`) invalida
+    `['kit-comments', kitId]` no `onSuccess` de `postComment` e de `resolveComment`.
+    `useKitCollaboration.invalidate.test.tsx` (2 casos) cobre as duas; revertendo os `onSuccess`
+    os 2 casos falham (prova). Realtime mantido intacto (decisão da etapa 087).
+  - Validação: `npm run typecheck` exit 0; `npx eslint` nos arquivos tocados sem problemas;
+    `npx vitest run src/pages/admin src/hooks/quotes src/hooks/kit-builder src/components/admin`
+    → 55 arquivos, 665 testes verdes.
 - [ ] 087 — Decidir e registrar se `kit_comments` entra no realtime — onda 2 — Média — APROVAÇÃO
 - [ ] 088 — Fazer o fallback da colaboração cobrir também a ausência de publicação — onda 2 — Média
 - [ ] 089 — Corrigir a comparação de `href` que impede o badge de aprovações aparecer — onda 2 — Média
