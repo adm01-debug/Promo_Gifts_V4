@@ -96,8 +96,8 @@ Severidade das etapas: Média 158 · Alta 79 · Baixa 54 · Crítica 9
 
 ## Onda 2 — Fluxos principais quebrados
 
-- [ ] 063 — Teste que prova o round-trip do template perdendo o custo — onda 2 — Crítica
-- [ ] 064 — Gravar `total_cost` ao aplicar o template — onda 2 — Crítica
+- [~] 063 — Teste que prova o round-trip do template perdendo o custo — onda 2 — Crítica
+- [~] 064 — Gravar `total_cost` ao aplicar o template — onda 2 — Crítica
 - [ ] 065 — Verificar as cotações já criadas por template sem custo de personalização — onda 2 — Alta — APROVAÇÃO
 - [ ] 066 — Unificar a fórmula de custo de personalização num único módulo — onda 2 — Média
 - [ ] 067 — Mover `/magazine/print` para fora do `ProtectedRoute` — onda 2 — Alta

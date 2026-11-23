@@ -32,6 +32,19 @@ export interface EntradaDeTotal {
   discount_amount?: number | null;
 }
 
+/**
+ * Calcula o custo total de uma personalização de template para uma quantidade.
+ * Fórmula canônica: unitCost × qty + setupCost
+ */
+export function calcPersonalizationTotalCost(
+  p: { unitCost?: number | null; setupCost?: number | null },
+  qty: number,
+): number {
+  const unit = typeof p.unitCost === 'number' && Number.isFinite(p.unitCost) ? p.unitCost : 0;
+  const setup = typeof p.setupCost === 'number' && Number.isFinite(p.setupCost) ? p.setupCost : 0;
+  return unit * qty + setup;
+}
+
 function numeroUsavel(v: unknown): v is number {
   return typeof v === 'number' && Number.isFinite(v);
 }
