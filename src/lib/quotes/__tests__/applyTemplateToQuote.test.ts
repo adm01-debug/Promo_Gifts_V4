@@ -244,3 +244,44 @@ describe('applyTemplateToQuote — campos comerciais', () => {
     expect(s.setItems).toHaveBeenCalledWith([]);
   });
 });
+
+// ---------------------------------------------------------------------------
+// Etapa 063 — round-trip: template com personalização → applyTemplateToQuote → calculateQuoteTotals
+// Prova que total_cost é propagado corretamente pelo fluxo completo.
+// ---------------------------------------------------------------------------
+import { calculateQuoteTotals } from '@/hooks/quotes/quoteHelpers';
+
+describe('round-trip: personalização de template chega em calculateQuoteTotals (ACH-084)', () => {
+  const itemComPersonalizacao: QuoteTemplateItem = {
+    productId: 'p-round',
+    productSku: 'SKU-RT',
+    productName: 'Camiseta',
+    quantity: 10,
+    unitPrice: 20,
+    personalizations: [
+      {
+        techniqueId: 'tec-seri',
+        techniqueName: 'Serigrafia',
+        colorsCount: 2,
+        unitCost: 1.5, // por peça
+        setupCost: 50, // custo fixo de setup
+      },
+    ],
+  };
+
+  it('total calculado por calculateQuoteTotals bate com totalDoTemplate', () => {
+    const s = alvo();
+    applyTemplateToQuote(template({ items: [itemComPersonalizacao] }), s);
+
+    // Pega os QuoteItems que foram passados para setItems
+    const setItemsMock = s.setItems as ReturnType<typeof vi.fn>;
+    expect(setItemsMock).toHaveBeenCalledOnce();
+    const quoteItems: QuoteItem[] = setItemsMock.mock.calls[0][0];
+    expect(quoteItems).toHaveLength(1);
+
+    const { subtotal } = calculateQuoteTotals({}, quoteItems);
+
+    // totalDoTemplate: 10*20 + (1.5*10 + 50) = 200 + 65 = 265
+    expect(subtotal).toBe(265);
+  });
+});

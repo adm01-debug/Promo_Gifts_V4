@@ -32,6 +32,7 @@
  *    duplicar item silenciosamente.
  */
 import type { QuoteTemplate, QuoteTemplateItem } from '@/hooks/quotes/useQuoteTemplates';
+import { calcPersonalizationTotalCost } from './templateTotal';
 import type { QuoteItem } from '@/hooks/quotes/quoteTypes';
 
 /** Setters do construtor que a aplicação de template usa. */
@@ -104,6 +105,10 @@ export function fromTemplateItems(itens: QuoteTemplateItem[]): QuoteItem[] {
             positions_count: numeroFinito(p.positionsCount) ?? undefined,
             unit_cost: numeroFinito(p.unitCost) ?? undefined,
             setup_cost: numeroFinito(p.setupCost) ?? undefined,
+            total_cost: calcPersonalizationTotalCost(
+              { unitCost: p.unitCost, setupCost: p.setupCost },
+              item.quantity,
+            ),
           },
         ];
       });
