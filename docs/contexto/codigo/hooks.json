@@ -6412,7 +6412,7 @@
    "hooks_exportados": [
     "useCollectionsContext"
    ],
-   "linhas": 81,
+   "linhas": 84,
    "dominio": "contexts",
    "tabelas": [],
    "rpcs": [],
@@ -7743,7 +7743,7 @@
    "hooks_exportados": [
     "useCollections"
    ],
-   "linhas": 728,
+   "linhas": 735,
    "dominio": "hooks/collections",
    "tabelas": [
     "collection_items",
@@ -10184,7 +10184,7 @@
     "useKitCollaborators",
     "useKitComments"
    ],
-   "linhas": 170,
+   "linhas": 194,
    "dominio": "hooks/kit-builder",
    "tabelas": [
     "kit_collaborators",
@@ -10207,7 +10207,7 @@
    "usado_por_arquivos": [
     "src/hooks/kit-builder/index.ts"
    ],
-   "coberto_por_testes": 0
+   "coberto_por_testes": 2
   },
   {
    "arquivo": "src/hooks/kit-builder/useKitFitsValidation.ts",
@@ -10823,7 +10823,7 @@
    "hooks_exportados": [
     "useCatalogState"
    ],
-   "linhas": 832,
+   "linhas": 836,
    "dominio": "hooks/products",
    "tabelas": [],
    "rpcs": [],
@@ -12285,7 +12285,7 @@
    "hooks_exportados": [
     "useDiscountApproval"
    ],
-   "linhas": 432,
+   "linhas": 451,
    "dominio": "hooks/quotes",
    "tabelas": [
     "admin_audit_log",
@@ -12410,7 +12410,7 @@
    "hooks_exportados": [
     "useQuoteBuilderState"
    ],
-   "linhas": 1104,
+   "linhas": 1102,
    "dominio": "hooks/quotes",
    "tabelas": [
     "quotes"
@@ -12605,7 +12605,7 @@
    "hooks_exportados": [
     "useQuoteTemplates"
    ],
-   "linhas": 482,
+   "linhas": 484,
    "dominio": "hooks/quotes",
    "tabelas": [
     "profiles",
@@ -12692,7 +12692,7 @@
    "hooks_exportados": [
     "useSellerDiscountLimits"
    ],
-   "linhas": 118,
+   "linhas": 154,
    "dominio": "hooks/quotes",
    "tabelas": [
     "seller_discount_limits"
@@ -12702,15 +12702,16 @@
    "hooks_internos": [
     "useAuth",
     "useCallback",
-    "useEffect",
-    "useState"
+    "useQuery",
+    "useQueryClient",
+    "useRef"
    ],
    "canais_realtime": [],
    "usado_por": 1,
    "usado_por_arquivos": [
     "src/hooks/quotes/index.ts"
    ],
-   "coberto_por_testes": 2
+   "coberto_por_testes": 3
   },
   {
    "arquivo": "src/hooks/simulation/index.ts",
@@ -14590,7 +14591,7 @@
    "hooks_exportados": [
     "useCollectionsPageState"
    ],
-   "linhas": 311,
+   "linhas": 317,
    "dominio": "pages/collections",
    "tabelas": [],
    "rpcs": [],
@@ -14616,7 +14617,7 @@
    "hooks_exportados": [
     "useFiltersPageState"
    ],
-   "linhas": 934,
+   "linhas": 940,
    "dominio": "pages/filters",
    "tabelas": [],
    "rpcs": [],

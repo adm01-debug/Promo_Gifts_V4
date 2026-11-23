@@ -18,13 +18,13 @@
    "src/components (78)"
   ],
   "servicos_logica": [
-   "src/lib (267)",
+   "src/lib (268)",
    "src/utils (33)",
    "src/services (16)"
   ],
   "testes": [
-   "tests/ (1098)",
-   "co-localizado (__tests__) (774)",
+   "tests/ (1100)",
+   "co-localizado (__tests__) (784)",
    "e2e/ (627)"
   ],
   "edge_functions": "supabase/functions",
@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "fix(qa): etapas 072-079 - erro de catalogo, colecoes e templates separados do vazio (#4023)",
    "fix: Etapas 069-070 — alinhar ROLE_RANK em dispatcher-auth (ACH-022) (#4022)",
    "fix: Etapas 067-068 — impressao publica de revista sem login (ACH-046) (#4020)",
    "fix: Etapas 063-064 — total_cost em personalizacoes de template (ACH-084) (#4019)",
-   "feat: Etapas 057-060 — adotar safeErrorResponse em 5 edge functions (ACH-030) (#4018)",
-   "feat: Etapa 042 — restringir e2e-cleanup a quotes marcadas [E2E] (ACH-071) (#4017)"
+   "feat: Etapas 057-060 — adotar safeErrorResponse em 5 edge functions (ACH-030) (#4018)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",

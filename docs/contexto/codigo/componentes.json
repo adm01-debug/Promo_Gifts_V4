@@ -7140,7 +7140,7 @@
     "CatalogContent"
    ],
    "export_default": null,
-   "linhas": 261,
+   "linhas": 282,
    "dominio": "components/catalog",
    "hooks_locais": [
     "useCatalogSelection"
@@ -7516,7 +7516,7 @@
    "hooks_locais": [],
    "tabelas": [],
    "edges": [],
-   "usado_por": 13,
+   "usado_por": 15,
    "orfao": false
   },
   {
@@ -8156,7 +8156,7 @@
     "SupplierComparisonModal"
    ],
    "export_default": null,
-   "linhas": 915,
+   "linhas": 959,
    "dominio": "components/compare",
    "hooks_locais": [
     "useSupplierComparison"
@@ -11267,7 +11267,7 @@
     "SidebarNavGroup"
    ],
    "export_default": null,
-   "linhas": 298,
+   "linhas": 303,
    "dominio": "components/layout",
    "hooks_locais": [
     "useAuth",
@@ -11275,7 +11275,7 @@
    ],
    "tabelas": [],
    "edges": [],
-   "usado_por": 1,
+   "usado_por": 2,
    "orfao": false
   },
   {
@@ -11284,7 +11284,7 @@
     "SidebarReorganized"
    ],
    "export_default": null,
-   "linhas": 681,
+   "linhas": 679,
    "dominio": "components/layout",
    "hooks_locais": [
     "useAuth",
@@ -14496,7 +14496,7 @@
     "AdminTemplatesManager"
    ],
    "export_default": null,
-   "linhas": 249,
+   "linhas": 259,
    "dominio": "components/quotes",
    "hooks_locais": [
     "useQuoteTemplates"
@@ -15213,7 +15213,7 @@
     "QuoteTemplatesList"
    ],
    "export_default": null,
-   "linhas": 432,
+   "linhas": 443,
    "dominio": "components/quotes",
    "hooks_locais": [
     "useQuoteTemplates",
@@ -17644,7 +17644,7 @@
     "CollectionsProvider"
    ],
    "export_default": null,
-   "linhas": 81,
+   "linhas": 84,
    "dominio": "contexts",
    "hooks_locais": [
     "useCollections",
@@ -18431,14 +18431,13 @@
     "DiscountRequestDetailPage"
    ],
    "export_default": "DiscountRequestDetailPage",
-   "linhas": 283,
+   "linhas": 287,
    "dominio": "pages/admin",
    "hooks_locais": [
     "useAuth"
    ],
    "tabelas": [
-    "discount_approval_requests",
-    "quotes"
+    "discount_approval_requests"
    ],
    "edges": [],
    "usado_por": 1,
@@ -18602,7 +18601,7 @@
     "RolePermissionsPage"
    ],
    "export_default": "RolePermissionsPage",
-   "linhas": 500,
+   "linhas": 514,
    "dominio": "pages/admin",
    "hooks_locais": [
     "useToast"
@@ -18639,7 +18638,7 @@
     "SellerDiscountLimitsAdminPage"
    ],
    "export_default": "SellerDiscountLimitsAdminPage",
-   "linhas": 566,
+   "linhas": 568,
    "dominio": "pages/admin",
    "hooks_locais": [
     "useAuth"
@@ -18992,7 +18991,7 @@
     "CollectionsPage"
    ],
    "export_default": "CollectionsPage",
-   "linhas": 490,
+   "linhas": 498,
    "dominio": "pages/collections",
    "hooks_locais": [
     "useCollectionsGlobalShortcuts",
@@ -19158,7 +19157,7 @@
     "Index"
    ],
    "export_default": "Index",
-   "linhas": 227,
+   "linhas": 229,
    "dominio": "pages",
    "hooks_locais": [
     "useCatalogState",
@@ -20062,7 +20061,7 @@
     "FiltersPage"
    ],
    "export_default": "FiltersPage",
-   "linhas": 836,
+   "linhas": 846,
    "dominio": "pages/products",
    "hooks_locais": [
     "useComparisonStore",
@@ -20437,16 +20436,14 @@
     "QuoteViewPage"
    ],
    "export_default": "QuoteViewPage",
-   "linhas": 621,
+   "linhas": 623,
    "dominio": "pages/quotes",
    "hooks_locais": [
     "useDiscountApproval",
     "useQuoteViewData",
     "useQuotes"
    ],
-   "tabelas": [
-    "quotes"
-   ],
+   "tabelas": [],
    "edges": [],
    "usado_por": 2,
    "orfao": false

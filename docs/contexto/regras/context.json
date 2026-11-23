@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "3b7dc18c4358a4f27932a45967e90eda5ac764ab",
+  "sha": "4b02d228383656213215d9b3f58c1f44ad7da9c5",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-23 13:42 UTC",
-  "files_total": 11149,
-  "code_files": 9150,
-  "code_lines": 1299242
+  "generated_at": "2026-11-23 16:20 UTC",
+  "files_total": 11166,
+  "code_files": 9164,
+  "code_lines": 1301177
  },
  "version": "1.3.2",
- "facts_hash": "ab88534348c25169",
+ "facts_hash": "69b8e1c854af155f",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -188,6 +188,7 @@
    "test": "TZ=America/Sao_Paulo vitest run",
    "test:quote-rpc:postgres": "node scripts/simulate-quote-rpc-proposals.mjs",
    "test:device-trust:postgres": "python3 tests/sql/device-trust/run-tests.py --output-dir work/device-trust-sql",
+   "test:quote-transitions:postgres": "python3 tests/sql/quote-status-transitions/run-tests.py --output-dir work/quote-status-transitions-sql",
    "check:quote-rpc:canonical": "node scripts/check-quote-rpc-canonical-readiness.mjs",
    "test:quality": "TZ=America/Sao_Paulo vitest run --exclude 'tests/hooks/**'",
    "test:ci-core": "TZ=America/Sao_Paulo STRICT_TEST_SIDE_EFFECTS=1 vitest run tests/contracts/migrated-endpoints.contract.test.ts src/lib/theme-presets.test.ts tests/components/products/ProductSparkline.labels.test.tsx src/pages/filters/__tests__/FiltersPage.sorting.test.tsx src/components/products/__tests__/ProductSortAccessibility.test.tsx tests/unit/supabase-schema-contract.test.ts tests/unit/favorites-migration.test.ts tests/unit/trending-score.test.ts tests/unit/variant-matching.test.ts tests/unit/text-utils.test.ts tests/unit/print-area-grouping.test.ts tests/unit/format.test.ts tests/unit/to-error-message.test.ts tests/unit/catalog-stock-status.test.ts tests/unit/masked-suffix.test.ts tests/unit/forecast.test.ts tests/unit/stock-chart-utils.test.ts tests/unit/novelty-dates.test.ts tests/unit/sensitive-masking.test.ts tests/unit/error-kind-inference.test.ts tests/unit/connection-error-copy.test.ts tests/unit/roles.test.ts tests/unit/supplier-colors.test.ts tests/unit/date-utils.test.ts tests/unit/format-utils.test.ts tests/unit/quote-status-config.test.ts tests/config/vitest-config-smoke.test.ts tests/config/e2e-http-status.test.ts tests/scripts/check-supabase-reference-catalog.test.mjs tests/scripts/check-migration-filename-contract.test.mjs tests/scripts/check-schema-reference-drift.test.mjs tests/scripts/check-result-contract.test.mjs tests/scripts/check-production-harnesses.test.mjs tests/scripts/check-dependency-audit.test.mjs tests/scripts/e2e-relevance.test.mjs tests/scripts/check-types-inventory-drift.test.mjs tests/scripts/check-pptx-image-parser-exposure.test.mjs tests/scripts/contexto-produtores.test.mjs tests/scripts/rpc-live-evidence-contract.test.mjs tests/scripts/strict-test-side-effects-contract.test.mjs tests/security/lint-0011-drift.test.ts tests/security/lint-0029-drift.test.ts tests/security/secdef-anon-drift.test.ts tests/security/security-definer-acl-gate.test.ts src/components/mockup/logo-editor/__tests__/LogoControls.test.tsx src/hooks/mockup/__tests__/mockupAreas.preserve.test.ts src/hooks/mockup/__tests__/mockupBatch.partial.test.ts src/hooks/mockup/__tests__/mockupDimensions.guard.test.ts src/hooks/mockup/__tests__/mockupEntry.params.test.ts src/hooks/mockup/__tests__/mockupGeneration.abort.test.ts src/hooks/mockup/__tests__/mockupRestore.selection.test.ts src/hooks/mockup/__tests__/useMockupGenerator.techniques.test.ts tests/components/mockup/acceptance/grupo1.acceptance.test.tsx tests/components/mockup/acceptance/grupo3.acceptance.test.tsx tests/components/mockup/acceptance/grupo4.acceptance.test.tsx tests/components/mockup/acceptance/grupo5.acceptance.test.tsx tests/components/mockup/acceptance/grupo6.acceptance.test.tsx tests/components/mockup/acceptance/grupo7.acceptance.test.tsx src/hooks/simulation/__tests__/useLogoColorAnalysis.test.ts src/components/mockup/__tests__/mockupA11y.slice2.test.tsx src/hooks/mockup/__tests__/mockupSelectionSnapshot.test.ts src/components/mockup/__tests__/MockupResultCard.states.test.tsx src/components/mockup/__tests__/MockupResultCard.preserved.test.tsx src/hooks/mockup/__tests__/mockupProjectSaved.test.ts src/pages/mockups/mockup-generator/__tests__/fichaDaAreaDaImagem.test.ts src/hooks/mockup/__tests__/trocaDeProjeto.test.ts tests/edge-functions/mockup-assistant.test.ts tests/security/crm-db-bridge-ownership.test.ts",
@@ -1128,11 +1129,11 @@
   ],
   "package_manager": "npm",
   "languages": {
-   ".sql": 3494,
-   ".ts": 3167,
-   ".tsx": 2018,
+   ".sql": 3495,
+   ".ts": 3171,
+   ".tsx": 2026,
    ".mjs": 455,
-   ".py": 16,
+   ".py": 17,
    ".js": 7
   },
   "monorepo_packages": [],
@@ -139233,7 +139234,7 @@
      "log_user_logout",
      "restore_seller_cart"
     ],
-    "deps_count": 295
+    "deps_count": 297
    },
    {
     "path": "",
@@ -139288,7 +139289,7 @@
      "request_discount_approval_transactional",
      "respond_discount_approval_transactional"
     ],
-    "deps_count": 246
+    "deps_count": 247
    },
    {
     "path": "",
@@ -139474,7 +139475,7 @@
      "restore_seller_cart",
      "search_records_rerank"
     ],
-    "deps_count": 315
+    "deps_count": 316
    },
    {
     "path": "",
@@ -140004,7 +140005,7 @@
      "request_discount_approval_transactional",
      "respond_discount_approval_transactional"
     ],
-    "deps_count": 243
+    "deps_count": 244
    },
    {
     "path": "*",
@@ -140621,7 +140622,7 @@
      "respond_discount_approval_transactional",
      "save_custom_kit_atomic"
     ],
-    "deps_count": 253
+    "deps_count": 254
    },
    {
     "path": "/dropbox",
@@ -141254,7 +141255,7 @@
      "request_discount_approval_transactional",
      "respond_discount_approval_transactional"
     ],
-    "deps_count": 214
+    "deps_count": 215
    },
    {
     "path": "/orcamentos/dashboard",
@@ -141344,7 +141345,7 @@
      "request_discount_approval_transactional",
      "respond_discount_approval_transactional"
     ],
-    "deps_count": 161
+    "deps_count": 162
    },
    {
     "path": "/orcamentos/novo",
@@ -141404,7 +141405,7 @@
      "respond_discount_approval_transactional",
      "restore_seller_cart"
     ],
-    "deps_count": 299
+    "deps_count": 300
    },
    {
     "path": "/orcamentos/templates",
@@ -146473,7 +146474,7 @@
     "file": ".github/workflows/wraparound-monitor-report.yml"
    }
   ],
-  "components_count": 1758,
+  "components_count": 1763,
   "hooks": [
    {
     "name": "useQuoteComments",
@@ -151189,8 +151190,8 @@
   },
   {
    "module": "src/components",
-   "files": 1480,
-   "lines": 290479,
+   "files": 1485,
+   "lines": 290999,
    "tables": [
     "admin_audit_log",
     "art_file_attachments",
@@ -151462,7 +151463,7 @@
   {
    "module": "src/contexts",
    "files": 20,
-   "lines": 5331,
+   "lines": 5334,
    "tables": [],
    "exports": [
     "AuthContext.tsx: AppRole, Profile, AuthContext, AuthProvider, useAuth",
@@ -151553,8 +151554,8 @@
   },
   {
    "module": "src/hooks",
-   "files": 508,
-   "lines": 94339,
+   "files": 511,
+   "lines": 94730,
    "tables": [
     "admin_audit_log",
     "admin_settings",
@@ -151746,6 +151747,7 @@
     "src/hooks/__tests__/useQuoteItems.autoexpand.test.ts",
     "src/hooks/__tests__/useQuoteItems.minQuantity.test.ts",
     "src/hooks/__tests__/useSearchHistory.test.ts",
+    "src/hooks/__tests__/useSellerDiscountLimits.propagation.test.tsx",
     "src/hooks/admin/index.ts",
     "src/hooks/admin/useAdminKitTemplates.ts",
     "src/hooks/admin/useAdminSessions.ts",
@@ -151790,8 +151792,7 @@
     "src/hooks/bi/useClientBI.ts",
     "src/hooks/bi/useClientCategoryAffinity.ts",
     "src/hooks/bi/useClientHealthScore.ts",
-    "src/hooks/bi/useClientOrdersHistory.ts",
-    "src/hooks/bi/useClientSeasonality.ts"
+    "src/hooks/bi/useClientOrdersHistory.ts"
    ]
   },
   {
@@ -151844,8 +151845,8 @@
   },
   {
    "module": "src/lib",
-   "files": 418,
-   "lines": 64718,
+   "files": 420,
+   "lines": 65074,
    "tables": [
     "...",
     "companies",
@@ -152052,8 +152053,8 @@
   },
   {
    "module": "src/pages",
-   "files": 374,
-   "lines": 86359,
+   "files": 376,
+   "lines": 86692,
    "tables": [
     "ai_usage_events",
     "bot_detection_log",
@@ -152239,6 +152240,7 @@
     "src/pages/admin/engraving-schema-diff.ts",
     "src/pages/admin/__tests__/AdminFreteSettingsPage.test.tsx",
     "src/pages/admin/__tests__/AdminProductFormPage.shipsSeparately.test.tsx",
+    "src/pages/admin/__tests__/RolePermissionsPage.invalidate.test.tsx",
     "src/pages/admin/__tests__/RolePermissionsPage.save.test.tsx",
     "src/pages/admin/ai-usage/AiCharts.tsx",
     "src/pages/admin/ai-usage/AiQuotaManager.tsx",
@@ -152252,8 +152254,7 @@
     "src/pages/admin/telemetry/useHighLimitTelemetry.ts",
     "src/pages/admin/telemetry/useOptimizationMetrics.ts",
     "src/pages/admin/telemetry/useOptimizationQueue.ts",
-    "src/pages/admin/telemetry/usePlatformFailureAlert.ts",
-    "src/pages/admin/telemetry/usePlatformFailureMetrics.ts"
+    "src/pages/admin/telemetry/usePlatformFailureAlert.ts"
    ]
   },
   {
@@ -153330,8 +153331,8 @@
   },
   {
    "module": "tests",
-   "files": 1114,
-   "lines": 176322,
+   "files": 1116,
+   "lines": 176654,
    "tables": [
     "bot_detection_log",
     "clients",
@@ -155374,10 +155375,8 @@
      "recovery/src-legacy/src/pages/quote-view/QuoteBitrixSync.ts",
      "src/components/admin/DiscountApprovalQueue.tsx",
      "src/hooks/quotes/discountApprovalResponder.ts",
-     "src/hooks/quotes/useDiscountApproval.ts",
      "src/hooks/quotes/useQuoteVersions.ts",
      "src/lib/security/rls-denial-logger.ts",
-     "src/pages/quotes/QuoteViewPage.tsx",
      "src/pages/quotes/quote-view/QuoteBitrixSync.ts",
      "src/services/quoteService.ts",
      "supabase/functions/crm-callback-reprocess/index.ts",
@@ -155406,7 +155405,7 @@
      "src/hooks/quotes/useDiscountApproval.ts",
      "src/hooks/quotes/useNextQuoteNumberPreview.ts",
      "src/hooks/quotes/useQuoteBuilderState.ts",
-     "src/pages/admin/DiscountRequestDetailPage.tsx",
+     "src/lib/quotes/status-transition.ts",
      "src/pages/quotes/quote-view/QuoteActionHandlers.ts",
      "src/services/quoteService.ts",
      "tests/scripts/inventario-rotas.test.mjs"
@@ -164071,6 +164070,11 @@
     "values": "last-used | name-asc | price-desc | recent | usage-desc"
    },
    {
+    "file": "src/components/layout/sidebar/pending-approval-badge.ts",
+    "name": "PENDING_DISCOUNT_APPROVALS_QUERY_KEY",
+    "values": "'pending-discount-approvals-count'"
+   },
+   {
     "file": "src/components/mockup/MockupCompletionStates.tsx",
     "name": "MockupCompletionStatus",
     "values": "done | error | idle | running"
@@ -168478,6 +168482,10 @@
     "msg": "Máximo 4 produtos"
    },
    {
+    "file": "src/components/compare/SupplierComparisonModal.tsx",
+    "msg": "Não foi possível exportar o relatório."
+   },
+   {
     "file": "src/components/dashboard/MyDiscountRequestsWidget.tsx",
     "msg": "Tempo real indisponível. Atualizando por polling a cada poucos segundos."
    },
@@ -170406,6 +170414,14 @@
     "msg": "Nenhuma faixa de preço encontrada para quantidade ${quantity}"
    },
    {
+    "file": "src/lib/quotes/status-transition.ts",
+    "msg": "Orçamento não encontrado"
+   },
+   {
+    "file": "src/lib/quotes/status-transition.ts",
+    "msg": "Status de orçamento inválido na chamada de transição."
+   },
+   {
     "file": "src/lib/supabase/rest-client.ts",
     "msg": "Missing table in query key"
    },
@@ -170912,6 +170928,10 @@
    {
     "file": "src/pages/products/CartsListPage.tsx",
     "msg": "Carrinho vazio"
+   },
+   {
+    "file": "src/pages/products/FiltersPage.tsx",
+    "msg": ">\n                    <EmptyState\n                      variant="
    },
    {
     "file": "src/pages/products/SellerCartsPage.tsx",
@@ -171876,6 +171896,50 @@
    {
     "file": "tests/sql/quote-comments/run-tests.py",
     "msg": "concurrent insert failed: "
+   },
+   {
+    "file": "tests/sql/quote-status-transitions/run-tests.py",
+    "msg": "Cannot verify disposable-container ownership; no container was removed."
+   },
+   {
+    "file": "tests/sql/quote-status-transitions/run-tests.py",
+    "msg": "Could not read QUOTE_VALID_TRANSITIONS from the FE module: "
+   },
+   {
+    "file": "tests/sql/quote-status-transitions/run-tests.py",
+    "msg": "Could not start the disposable PostgreSQL 17 container: "
+   },
+   {
+    "file": "tests/sql/quote-status-transitions/run-tests.py",
+    "msg": "Disposable PostgreSQL did not become ready within 30 seconds."
+   },
+   {
+    "file": "tests/sql/quote-status-transitions/run-tests.py",
+    "msg": "Disposable-container label mismatch; no container was removed."
+   },
+   {
+    "file": "tests/sql/quote-status-transitions/run-tests.py",
+    "msg": "Failed to remove the owned disposable PostgreSQL container: "
+   },
+   {
+    "file": "tests/sql/quote-status-transitions/run-tests.py",
+    "msg": "Local Docker daemon is unavailable: "
+   },
+   {
+    "file": "tests/sql/quote-status-transitions/run-tests.py",
+    "msg": "No forbidden pairs derived from the FE map; the test would assert nothing."
+   },
+   {
+    "file": "tests/sql/quote-status-transitions/run-tests.py",
+    "msg": "QUOTE_VALID_TRANSITIONS came back empty; refusing to run a vacuous test."
+   },
+   {
+    "file": "tests/sql/quote-status-transitions/run-tests.py",
+    "msg": "Unexpected extractor output (not JSON): "
+   },
+   {
+    "file": "tests/sql/quote-status-transitions/run-tests.py",
+    "msg": "fixture.sql failed: "
    },
    {
     "file": "tests/sw/sw-harness.ts",
@@ -175014,6 +175078,10 @@
     "text": "descartada nao pode soltar a consulta que a substituiu."
    },
    {
+    "file": "src/hooks/kit-builder/useKitCollaboration.ts",
+    "text": "A atualização NÃO pode depender do realtime: `kit_comments` não está na publicação"
+   },
+   {
     "file": "src/hooks/kit-builder/useKitStockValidation.ts",
     "text": "* Hook para validação de estoque dos itens do Kit Builder"
    },
@@ -175675,7 +175743,15 @@
    },
    {
     "file": "src/hooks/quotes/useSellerDiscountLimits.ts",
-    "text": "Fetch own limit (for sellers)"
+    "text": "admin reduzir o limite — bug de dinheiro."
+   },
+   {
+    "file": "src/hooks/quotes/useSellerDiscountLimits.ts",
+    "text": "* Agora o proprio limite e a lista vem de `useQuery`, sob a mesma chave-raiz que"
+   },
+   {
+    "file": "src/hooks/quotes/useSellerDiscountLimits.ts",
+    "text": "Limite do proprio vendedor (ativo no mount, como antes)."
    },
    {
     "file": "src/hooks/quotes/useSellerDiscountLimits.ts",
@@ -175684,6 +175760,10 @@
    {
     "file": "src/hooks/quotes/useSellerDiscountLimits.ts",
     "text": "as \"no limit configured\" and allowing unlimited discounts."
+   },
+   {
+    "file": "src/hooks/quotes/useSellerDiscountLimits.ts",
+    "text": "Lista completa (somente admin) — carregada sob demanda, como antes."
    },
    {
     "file": "src/hooks/quotes/useSellerDiscountLimits.ts",
@@ -177183,6 +177263,10 @@
    },
    {
     "file": "src/pages/admin/RolePermissionsPage.tsx",
+    "text": "Fonte unica de leitura: catalogo de permissoes e vinculo papel->permissao vem do cache."
+   },
+   {
+    "file": "src/pages/admin/RolePermissionsPage.tsx",
     "text": "(0 linhas seria lido como \"sem permissão\")."
    },
    {
@@ -177204,6 +177288,10 @@
    {
     "file": "src/pages/admin/SellerDiscountLimitsAdminPage.tsx",
     "text": "---------- Mutation: salvar limite + notas ----------"
+   },
+   {
+    "file": "src/pages/admin/SellerDiscountLimitsAdminPage.tsx",
+    "text": "Mesmo limite lido pelo builder de orçamento (useSellerDiscountLimits)."
    },
    {
     "file": "src/pages/admin/telemetry/useHighLimitTelemetry.ts",
@@ -201186,6 +201274,11 @@
     "value": "200"
    },
    {
+    "file": "src/hooks/kit-builder/useKitCollaboration.ts",
+    "name": "KIT_COMMENTS_FALLBACK_REFETCH_MS",
+    "value": "45"
+   },
+   {
     "file": "src/hooks/kit-builder/useKitStockForecast.ts",
     "name": "BUFFER_DAYS",
     "value": "3"
@@ -203450,7 +203543,7 @@
    {
     "file": "src/lib/quote-status-config.ts",
     "name": "QUOTE_VALID_TRANSITIONS",
-    "body": "draft: ['pending', 'pending_approval', 'sent', 'cancelled'], pending_approval: ['draft', 'pending', 'cancelled'], pending: ['draft', 'sent', 'expired', 'cancelled'], sent: ['approved', 'rejected', 'viewed', 'pending', 'expired', 'cancelled'], viewed: ['approved', 'rejected', 'pending', 'expired', 'cancelled'], approved: ['converted'], // committed: DB rejects ->sent/->cancelled (see note above) converted: [], rejected: ['draft', 'sent', 'cancelled'], expired: ['draft', 'pending', 'sent', 'cancelled'], cancelled: [],"
+    "body": "draft: ['pending', 'pending_approval', 'sent', 'cancelled'], pending_approval: ['draft', 'pending', 'cancelled'], pending: ['draft', 'pending_approval', 'sent', 'expired', 'cancelled'], sent: ['approved', 'rejected', 'viewed', 'pending', 'expired', 'cancelled'], viewed: ['approved', 'rejected', 'pending', 'expired', 'cancelled'], approved: ['converted'], // committed: DB rejects ->sent/->cancelled (see note above) converted: [], rejected: ['draft', 'sent', 'cancelled'], expired: ['draft', 'pending', 'sent', 'cancelled'], cancelled: [],"
    }
   ],
   "status_values": [
@@ -210255,12 +210348,6 @@
    {
     "file": "src/hooks/quotes/useDiscountApproval.ts",
     "field": "status",
-    "value": "pending_approval",
-    "kind": "escreve"
-   },
-   {
-    "file": "src/hooks/quotes/useDiscountApproval.ts",
-    "field": "status",
     "value": "approved",
     "kind": "compara"
    },
@@ -210340,12 +210427,6 @@
     "file": "src/hooks/quotes/useQuoteBuilderState.ts",
     "field": "status",
     "value": "draft",
-    "kind": "compara"
-   },
-   {
-    "file": "src/hooks/quotes/useQuoteBuilderState.ts",
-    "field": "status",
-    "value": "pending_approval",
     "kind": "compara"
    },
    {
@@ -213329,12 +213410,6 @@
     "field": "status",
     "value": "ok",
     "kind": "compara"
-   },
-   {
-    "file": "src/pages/quotes/QuoteViewPage.tsx",
-    "field": "status",
-    "value": "pending",
-    "kind": "escreve"
    },
    {
     "file": "src/pages/quotes/QuoteViewPage.tsx",
@@ -221654,6 +221729,10 @@
    },
    {
     "file": "src/pages/admin/KitTemplatesMetricsPage.tsx",
+    "line": "staleTime: 5 * 60 * 1000,"
+   },
+   {
+    "file": "src/pages/admin/RolePermissionsPage.tsx",
     "line": "staleTime: 5 * 60 * 1000,"
    },
    {
@@ -235817,6 +235896,22 @@
     "name": "ensures the selection button and layout trigger are visible in the right group"
    },
    {
+    "file": "src/components/catalog/__tests__/CatalogContent.error.test.tsx",
+    "name": "CatalogContent / erro de catálogo (etapa 075)"
+   },
+   {
+    "file": "src/components/catalog/__tests__/CatalogContent.error.test.tsx",
+    "name": "com erro ativo NÃO mostra "
+   },
+   {
+    "file": "src/components/catalog/__tests__/CatalogContent.error.test.tsx",
+    "name": "sem erro e sem produtos mostra o vazio legítimo"
+   },
+   {
+    "file": "src/components/catalog/__tests__/CatalogContent.error.test.tsx",
+    "name": "clicar em "
+   },
+   {
     "file": "src/components/catalog/__tests__/CatalogToolbar.test.tsx",
     "name": "CatalogToolbar Alignment and Responsiveness"
    },
@@ -236031,6 +236126,22 @@
    {
     "file": "src/components/common/spotlight/__tests__/SpotlightItems.test.ts",
     "name": "todo item tem título e categoria para a paleta agrupar"
+   },
+   {
+    "file": "src/components/compare/__tests__/SupplierComparisonModal.export.test.tsx",
+    "name": "SupplierComparisonModal — exportar relatório"
+   },
+   {
+    "file": "src/components/compare/__tests__/SupplierComparisonModal.export.test.tsx",
+    "name": "expõe o botão com nome acessível"
+   },
+   {
+    "file": "src/components/compare/__tests__/SupplierComparisonModal.export.test.tsx",
+    "name": "exporta os fornecedores filtrados quando clicado"
+   },
+   {
+    "file": "src/components/compare/__tests__/SupplierComparisonModal.export.test.tsx",
+    "name": "avisa o usuário quando a exportação falha"
    },
    {
     "file": "src/components/compare/__tests__/SupplierComparisonModal.test.tsx",
@@ -238807,6 +238918,42 @@
    {
     "file": "src/components/layout/__tests__/LayoutIntegrity.test.tsx",
     "name": "MainLayout should have valid JSX/Syntax"
+   },
+   {
+    "file": "src/components/layout/__tests__/SidebarReorganized.badge.test.ts",
+    "name": "withPendingApprovalBadge"
+   },
+   {
+    "file": "src/components/layout/__tests__/SidebarReorganized.badge.test.ts",
+    "name": "aplica o badge no item marcado, mesmo com href diferente da aba"
+   },
+   {
+    "file": "src/components/layout/__tests__/SidebarReorganized.badge.test.ts",
+    "name": "não marca nada quando a contagem é zero ou indefinida"
+   },
+   {
+    "file": "src/components/layout/__tests__/SidebarReorganized.badge.test.ts",
+    "name": "não marca nada para quem não é admin"
+   },
+   {
+    "file": "src/components/layout/__tests__/SidebarReorganized.badge.test.ts",
+    "name": "não muta o array de entrada"
+   },
+   {
+    "file": "src/components/layout/__tests__/SidebarReorganized.badge.test.ts",
+    "name": "mantém os demais grupos intactos"
+   },
+   {
+    "file": "src/components/layout/__tests__/SidebarReorganized.badge.test.ts",
+    "name": "chave de cache única (etapa 090)"
+   },
+   {
+    "file": "src/components/layout/__tests__/SidebarReorganized.badge.test.ts",
+    "name": "a sidebar usa a constante compartilhada, não uma string literal"
+   },
+   {
+    "file": "src/components/layout/__tests__/SidebarReorganized.badge.test.ts",
+    "name": "o intervalo efetivo é o mesmo do header (60 s), sem 30 s órfão"
    },
    {
     "file": "src/components/layout/__tests__/SidebarReorganized.tooltips.test.ts",
@@ -244069,6 +244216,26 @@
     "name": "estados terminais (rejected/expired/cancelled) substituem último step"
    },
    {
+    "file": "src/components/quotes/__tests__/QuoteTemplatesList.error.test.tsx",
+    "name": "telas de template — erro não pode virar lista vazia"
+   },
+   {
+    "file": "src/components/quotes/__tests__/QuoteTemplatesList.error.test.tsx",
+    "name": "QuoteTemplatesList mostra falha quando o hook tem error"
+   },
+   {
+    "file": "src/components/quotes/__tests__/QuoteTemplatesList.error.test.tsx",
+    "name": "QuoteTemplatesList mantem o vazio legitimo quando nao ha error"
+   },
+   {
+    "file": "src/components/quotes/__tests__/QuoteTemplatesList.error.test.tsx",
+    "name": "AdminTemplatesManager mostra falha quando o hook tem error"
+   },
+   {
+    "file": "src/components/quotes/__tests__/QuoteTemplatesList.error.test.tsx",
+    "name": "AdminTemplatesManager mantem o vazio legitimo quando nao ha error"
+   },
+   {
     "file": "src/components/quotes/__tests__/QuotesConfigurableList.approve.test.tsx",
     "name": "QuotesConfigurableList — aprovar da lista"
    },
@@ -247569,6 +247736,14 @@
     "name": "should clear history for a specific type"
    },
    {
+    "file": "src/hooks/__tests__/useSellerDiscountLimits.propagation.test.tsx",
+    "name": "teto de desconto — propagacao painel -> builder (ACH-033)"
+   },
+   {
+    "file": "src/hooks/__tests__/useSellerDiscountLimits.propagation.test.tsx",
+    "name": "builder le o teto novo depois que o admin grava outro limite"
+   },
+   {
     "file": "src/hooks/admin/__tests__/useIntelligenceBadgeSettings.fuzz.test.ts",
     "name": "useIntelligenceBadgeSettings — fuzz na sanitização"
    },
@@ -248855,6 +249030,30 @@
    {
     "file": "src/hooks/kit-builder/useKitPriceValidation.test.ts",
     "name": "não permite orçamento sem nenhuma linha comercial"
+   },
+   {
+    "file": "src/hooks/kit-builder/__tests__/useKitCollaboration.fallback.test.tsx",
+    "name": "useKitComments - etapa 088: refetch de seguranca"
+   },
+   {
+    "file": "src/hooks/kit-builder/__tests__/useKitCollaboration.fallback.test.tsx",
+    "name": "invalida os comentarios no intervalo de fallback, mesmo com canal SUBSCRIBED"
+   },
+   {
+    "file": "src/hooks/kit-builder/__tests__/useKitCollaboration.fallback.test.tsx",
+    "name": "nao agenda refetch quando nao ha kit"
+   },
+   {
+    "file": "src/hooks/kit-builder/__tests__/useKitCollaboration.invalidate.test.tsx",
+    "name": "useKitComments - etapa 086"
+   },
+   {
+    "file": "src/hooks/kit-builder/__tests__/useKitCollaboration.invalidate.test.tsx",
+    "name": "invalida a lista de comentarios depois de comentar"
+   },
+   {
+    "file": "src/hooks/kit-builder/__tests__/useKitCollaboration.invalidate.test.tsx",
+    "name": "invalida a lista de comentarios depois de resolver"
    },
    {
     "file": "src/hooks/mockup/useMockupTechniquesLoad.test.ts",
@@ -259997,6 +260196,62 @@
     "name": "recusa modo de entrega fora do par aceito pela tela"
    },
    {
+    "file": "src/lib/quotes/__tests__/status-transition.test.ts",
+    "name": "assertQuoteStatusTransition"
+   },
+   {
+    "file": "src/lib/quotes/__tests__/status-transition.test.ts",
+    "name": "não lança para par permitido pelo mapa"
+   },
+   {
+    "file": "src/lib/quotes/__tests__/status-transition.test.ts",
+    "name": "não lança quando o status não muda"
+   },
+   {
+    "file": "src/lib/quotes/__tests__/status-transition.test.ts",
+    "name": "lança QuoteStatusTransitionError e emite telemetria para par proibido"
+   },
+   {
+    "file": "src/lib/quotes/__tests__/status-transition.test.ts",
+    "name": "aceita o orçamento inteiro no lugar do status cru"
+   },
+   {
+    "file": "src/lib/quotes/__tests__/status-transition.test.ts",
+    "name": "rejeita valor que não é status conhecido"
+   },
+   {
+    "file": "src/lib/quotes/__tests__/status-transition.test.ts",
+    "name": "updateQuoteStatusSafely"
+   },
+   {
+    "file": "src/lib/quotes/__tests__/status-transition.test.ts",
+    "name": "escreve no banco quando o par é permitido e o status de origem é informado"
+   },
+   {
+    "file": "src/lib/quotes/__tests__/status-transition.test.ts",
+    "name": "não escreve no banco quando o par é proibido"
+   },
+   {
+    "file": "src/lib/quotes/__tests__/status-transition.test.ts",
+    "name": "lê o status atual do banco quando o chamador não informa"
+   },
+   {
+    "file": "src/lib/quotes/__tests__/status-transition.test.ts",
+    "name": "bloqueia com base no status lido do banco"
+   },
+   {
+    "file": "src/lib/quotes/__tests__/status-transition.test.ts",
+    "name": "não envia UPDATE quando o status já é o destino"
+   },
+   {
+    "file": "src/lib/quotes/__tests__/status-transition.test.ts",
+    "name": "traduz a recusa de transição do banco em erro legível"
+   },
+   {
+    "file": "src/lib/quotes/__tests__/status-transition.test.ts",
+    "name": "propaga erro do banco que não é de transição"
+   },
+   {
     "file": "src/lib/quotes/__tests__/templateTotal.test.ts",
     "name": "totalDoTemplate"
    },
@@ -262095,6 +262350,14 @@
    {
     "file": "src/pages/admin/__tests__/AdminProductFormPage.shipsSeparately.test.tsx",
     "name": "criar produto (e duplicar, que cria um novo) invalida o cache de medidas"
+   },
+   {
+    "file": "src/pages/admin/__tests__/RolePermissionsPage.invalidate.test.tsx",
+    "name": "RolePermissionsPage - etapa 084: invalida role-permissions"
+   },
+   {
+    "file": "src/pages/admin/__tests__/RolePermissionsPage.invalidate.test.tsx",
+    "name": "invalida a familia role-permissions depois de salvar"
    },
    {
     "file": "src/pages/admin/__tests__/RolePermissionsPage.save.test.tsx",
@@ -264487,6 +264750,18 @@
    {
     "file": "src/pages/products/__tests__/CartShippingDeadlineLayout.test.ts",
     "name": "header stack em mobile (flex-col) e alinha em linha no sm+"
+   },
+   {
+    "file": "src/pages/products/__tests__/FiltersPage.error.test.tsx",
+    "name": "FiltersPage / erro de catálogo (etapa 075)"
+   },
+   {
+    "file": "src/pages/products/__tests__/FiltersPage.error.test.tsx",
+    "name": "com erro ativo NÃO mostra "
+   },
+   {
+    "file": "src/pages/products/__tests__/FiltersPage.error.test.tsx",
+    "name": "clicar em "
    },
    {
     "file": "src/pages/products/__tests__/applyVoiceFilters.test.ts",
@@ -359447,8 +359722,7 @@
       "compara:src/hooks/quotes/useQuoteBuilderState.ts",
       "compara:src/pages/quotes/QuoteViewPage.tsx",
       "compara:src/services/quoteService.ts",
-      "escreve:recovery/src-legacy/src/hooks/useDiscountApproval.ts",
-      "escreve:src/hooks/quotes/useDiscountApproval.ts"
+      "escreve:recovery/src-legacy/src/hooks/useDiscountApproval.ts"
      ],
      "active": [
       "compara:src/components/admin/connections/DataSourceDebugTab.tsx",
@@ -367275,6 +367549,8 @@
    "tests/sql/approved_plan_execution_test.sql",
    "tests/sql/contract_smoke_schema.sql",
    "tests/sql/quote-rpc-fixture.sql",
+   "tests/sql/quote-status-transitions/fixture.sql",
+   "tests/sql/quote-status-transitions/run-tests.py",
    "tests/sql/wave1_forward_only_migrations_test.sql",
    "tests/ssot/ssot-gates.fuzz.test.ts"
   ],
@@ -451901,7 +452177,7 @@
   },
   "src/components/catalog/CatalogContent.tsx": {
    "path": "src/components/catalog/CatalogContent.tsx",
-   "lines": 261,
+   "lines": 282,
    "exports": [
     "const CatalogContent"
    ],
@@ -451973,6 +452249,18 @@
    "doc": "useCatalogSelection — Shared selection + bulk-action logic for CatalogContent. Extracted to eliminate 3x duplication of BulkActionBar wiring.",
    "hooks": [
     "useCatalogSelection"
+   ]
+  },
+  "src/components/catalog/__tests__/CatalogContent.error.test.tsx": {
+   "path": "src/components/catalog/__tests__/CatalogContent.error.test.tsx",
+   "lines": 114,
+   "is_test": true,
+   "doc": "Etapa 075 — Impede erro de catálogo voltar a parecer \"vazio\". ACH-027: quando a query de catálogo falha (banco fora, RLS), a vitrine e o /filtros mostravam \"Nenhum produto encontrado\". Este teste trava que o estado de erro NÃO renderize o vazio e que o botão \"Tentar novamente\" chame o refetch.",
+   "tests": [
+    "CatalogContent / erro de catálogo (etapa 075)",
+    "com erro ativo NÃO mostra ",
+    "sem erro e sem produtos mostra o vazio legítimo",
+    "clicar em "
    ]
   },
   "src/components/catalog/__tests__/CatalogToolbar.test.tsx": {
@@ -452926,9 +453214,12 @@
   },
   "src/components/compare/SupplierComparisonModal.tsx": {
    "path": "src/components/compare/SupplierComparisonModal.tsx",
-   "lines": 915,
+   "lines": 959,
    "exports": [
     "function SupplierComparisonModal"
+   ],
+   "errors": [
+    "Não foi possível exportar o relatório."
    ],
    "calc_fns": [
     {
@@ -452948,6 +453239,18 @@
    "lines": 306,
    "exports": [
     "function SyncedZoomGallery"
+   ]
+  },
+  "src/components/compare/__tests__/SupplierComparisonModal.export.test.tsx": {
+   "path": "src/components/compare/__tests__/SupplierComparisonModal.export.test.tsx",
+   "lines": 124,
+   "is_test": true,
+   "doc": "Etapa 091 / ACH-048 + ACH-078 — o botão \"Exportar Relatório\" não tinha ação e não tinha nome acessível.",
+   "tests": [
+    "SupplierComparisonModal — exportar relatório",
+    "expõe o botão com nome acessível",
+    "exporta os fornecedores filtrados quando clicado",
+    "avisa o usuário quando a exportação falha"
    ]
   },
   "src/components/compare/__tests__/SupplierComparisonModal.test.tsx": {
@@ -457735,7 +458038,7 @@
   },
   "src/components/layout/SidebarReorganized.tsx": {
    "path": "src/components/layout/SidebarReorganized.tsx",
-   "lines": 681,
+   "lines": 679,
    "exports": [
     "const SidebarReorganized"
    ],
@@ -457839,6 +458142,23 @@
     "MainLayout should have valid JSX/Syntax"
    ]
   },
+  "src/components/layout/__tests__/SidebarReorganized.badge.test.ts": {
+   "path": "src/components/layout/__tests__/SidebarReorganized.badge.test.ts",
+   "lines": 90,
+   "is_test": true,
+   "doc": "Etapa 089 / ACH-037 — o badge de aprovações pendentes nunca renderizava. O item de menu aponta para `/admin/usuarios`, mas o código comparava `item.href === '/admin/usuarios?tab=discounts'`, o que nunca era verdade. A correspondência agora usa `badgeKey`.",
+   "tests": [
+    "withPendingApprovalBadge",
+    "aplica o badge no item marcado, mesmo com href diferente da aba",
+    "não marca nada quando a contagem é zero ou indefinida",
+    "não marca nada para quem não é admin",
+    "não muta o array de entrada",
+    "mantém os demais grupos intactos",
+    "chave de cache única (etapa 090)",
+    "a sidebar usa a constante compartilhada, não uma string literal",
+    "o intervalo efetivo é o mesmo do header (60 s), sem 30 s órfão"
+   ]
+  },
   "src/components/layout/__tests__/SidebarReorganized.tooltips.test.ts": {
    "path": "src/components/layout/__tests__/SidebarReorganized.tooltips.test.ts",
    "lines": 99,
@@ -457881,11 +458201,26 @@
   },
   "src/components/layout/sidebar/SidebarNavGroup.tsx": {
    "path": "src/components/layout/sidebar/SidebarNavGroup.tsx",
-   "lines": 298,
+   "lines": 303,
    "exports": [
     "interface NavItem",
     "interface NavGroup",
     "const SidebarNavGroup"
+   ]
+  },
+  "src/components/layout/sidebar/pending-approval-badge.ts": {
+   "path": "src/components/layout/sidebar/pending-approval-badge.ts",
+   "lines": 36,
+   "exports": [
+    "const PENDING_DISCOUNT_APPROVALS_QUERY_KEY",
+    "const PENDING_DISCOUNT_APPROVALS_BADGE_KEY",
+    "function withPendingApprovalBadge"
+   ],
+   "enums": [
+    {
+     "name": "PENDING_DISCOUNT_APPROVALS_QUERY_KEY",
+     "values": "'pending-discount-approvals-count'"
+    }
    ]
   },
   "src/components/layout/sidebar/__tests__/RestrictedRouteNotice.request-access.test.tsx": {
@@ -464291,7 +464626,7 @@
   },
   "src/components/quotes/AdminTemplatesManager.tsx": {
    "path": "src/components/quotes/AdminTemplatesManager.tsx",
-   "lines": 249,
+   "lines": 259,
    "exports": [
     "function AdminTemplatesManager"
    ],
@@ -465084,7 +465419,7 @@
   },
   "src/components/quotes/QuoteTemplatesList.tsx": {
    "path": "src/components/quotes/QuoteTemplatesList.tsx",
-   "lines": 432,
+   "lines": 443,
    "exports": [
     "function QuoteTemplatesList"
    ],
@@ -466057,6 +466392,19 @@
     "mantém steps acessíveis em viewport %s (%spx)",
     "não usa cores arbitrárias do Tailwind (regressão de contraste)",
     "estados terminais (rejected/expired/cancelled) substituem último step"
+   ]
+  },
+  "src/components/quotes/__tests__/QuoteTemplatesList.error.test.tsx": {
+   "path": "src/components/quotes/__tests__/QuoteTemplatesList.error.test.tsx",
+   "lines": 67,
+   "is_test": true,
+   "doc": "Etapa 078 (ACH-029): as telas de template precisam MOSTRAR a falha. `useQuoteTemplates` ja expunha `error` (`useQuoteTemplates.ts:110-111`) e nenhum consumidor lia: com o banco recusando, as duas telas caiam no vazio legitimo (\"Nenhum template encontrado\" / \"Não há templates cadastrados\"), que suger …",
+   "tests": [
+    "telas de template — erro não pode virar lista vazia",
+    "QuoteTemplatesList mostra falha quando o hook tem error",
+    "QuoteTemplatesList mantem o vazio legitimo quando nao ha error",
+    "AdminTemplatesManager mostra falha quando o hook tem error",
+    "AdminTemplatesManager mantem o vazio legitimo quando nao ha error"
    ]
   },
   "src/components/quotes/__tests__/QuotesConfigurableList.approve.test.tsx": {
@@ -469786,7 +470134,7 @@
   },
   "src/contexts/CollectionsContext.tsx": {
    "path": "src/contexts/CollectionsContext.tsx",
-   "lines": 81,
+   "lines": 84,
    "exports": [
     "function CollectionsProvider",
     "function useCollectionsContext"
@@ -470902,6 +471250,20 @@
     "should prioritize latest additions",
     "should remove items from history",
     "should clear history for a specific type"
+   ]
+  },
+  "src/hooks/__tests__/useSellerDiscountLimits.propagation.test.tsx": {
+   "path": "src/hooks/__tests__/useSellerDiscountLimits.propagation.test.tsx",
+   "lines": 88,
+   "is_test": true,
+   "rule_comments": [
+    "* Etapa 080 (ACH-033) — o teto de desconto tem de propagar do painel para o builder.",
+    "propria mutation/react-query. O admin reduz o limite, o vendedor segue com o antigo"
+   ],
+   "doc": "Etapa 080 (ACH-033) — o teto de desconto tem de propagar do painel para o builder. Hoje `useSellerDiscountLimits` guarda `myLimit` em `useState` e busca so no mount (`useSellerDiscountLimits.ts:23,33`), enquanto os paineis de admin escrevem pela propria mutation/react-query. O admin reduz o limite, …",
+   "tests": [
+    "teto de desconto — propagacao painel -> builder (ACH-033)",
+    "builder le o teto novo depois que o admin grava outro limite"
    ]
   },
   "src/hooks/admin/index.ts": {
@@ -472340,7 +472702,7 @@
   },
   "src/hooks/collections/useCollections.ts": {
    "path": "src/hooks/collections/useCollections.ts",
-   "lines": 728,
+   "lines": 735,
    "exports": [
     "interface CollectionVariantInfo",
     "interface CollectionProductItem",
@@ -476244,8 +476606,9 @@
   },
   "src/hooks/kit-builder/useKitCollaboration.ts": {
    "path": "src/hooks/kit-builder/useKitCollaboration.ts",
-   "lines": 170,
+   "lines": 194,
    "exports": [
+    "const KIT_COMMENTS_FALLBACK_REFETCH_MS",
     "interface KitCollaboratorRow",
     "interface KitCommentRow",
     "function useKitCollaborators",
@@ -476304,6 +476667,12 @@
     "Operação falhou",
     "Usuário não encontrado para esse email"
    ],
+   "params": [
+    {
+     "name": "KIT_COMMENTS_FALLBACK_REFETCH_MS",
+     "value": "45"
+    }
+   ],
    "status_values": [
     {
      "field": "status",
@@ -476315,6 +476684,9 @@
      "value": "TIMED_OUT",
      "kind": "compara"
     }
+   ],
+   "rule_comments": [
+    "A atualização NÃO pode depender do realtime: `kit_comments` não está na publicação"
    ],
    "doc": "useKitCollaboration — colaboradores e comentários do kit (com realtime).",
    "hooks": [
@@ -476806,6 +477178,28 @@
    "doc": "useTemplateSnapshot — Captura o estado atual do Kit Builder e persiste como kit_template (admin). Útil para \"Salvar como template do sistema\" diretamente do builder.",
    "hooks": [
     "useTemplateSnapshot"
+   ]
+  },
+  "src/hooks/kit-builder/__tests__/useKitCollaboration.fallback.test.tsx": {
+   "path": "src/hooks/kit-builder/__tests__/useKitCollaboration.fallback.test.tsx",
+   "lines": 82,
+   "is_test": true,
+   "doc": "Prova da etapa 088 (ACH-035): com a tabela fora da publicacao `supabase_realtime`, o canal conecta (SUBSCRIBED) e nunca entrega evento. O refetch de baixa frequencia e o que faz o comentario de outro usuario aparecer.",
+   "tests": [
+    "useKitComments - etapa 088: refetch de seguranca",
+    "invalida os comentarios no intervalo de fallback, mesmo com canal SUBSCRIBED",
+    "nao agenda refetch quando nao ha kit"
+   ]
+  },
+  "src/hooks/kit-builder/__tests__/useKitCollaboration.invalidate.test.tsx": {
+   "path": "src/hooks/kit-builder/__tests__/useKitCollaboration.invalidate.test.tsx",
+   "lines": 89,
+   "is_test": true,
+   "doc": "Prova da etapa 086 (ACH-035): comentar/resolver no kit invalida a lista de comentarios. Causa raiz: `kit_comments` NAO esta na publicacao `supabase_realtime`, entao a assinatura realtime conecta mas nunca entrega evento. A invalidacao no sucesso das duas mutations e o que faz o comentario aparecer s …",
+   "tests": [
+    "useKitComments - etapa 086",
+    "invalida a lista de comentarios depois de comentar",
+    "invalida a lista de comentarios depois de resolver"
    ]
   },
   "src/hooks/mockup/index.ts": {
@@ -478047,7 +478441,7 @@
   },
   "src/hooks/products/useCatalogState.ts": {
    "path": "src/hooks/products/useCatalogState.ts",
-   "lines": 832,
+   "lines": 836,
    "exports": [
     "function useCatalogState"
    ],
@@ -480823,7 +481217,7 @@
   },
   "src/hooks/quotes/discountApprovalResponder.ts": {
    "path": "src/hooks/quotes/discountApprovalResponder.ts",
-   "lines": 176,
+   "lines": 184,
    "exports": [
     "type RespondToApproval",
     "function createRespondToApproval"
@@ -481146,7 +481540,7 @@
   },
   "src/hooks/quotes/useDiscountApproval.ts": {
    "path": "src/hooks/quotes/useDiscountApproval.ts",
-   "lines": 432,
+   "lines": 451,
    "exports": [
     "interface DiscountApprovalRequest",
     "interface DiscountApprovalWithQuote",
@@ -481163,7 +481557,7 @@
     },
     {
      "table": "quotes",
-     "op": "update"
+     "op": "select"
     },
     {
      "table": "quotes",
@@ -481206,7 +481600,8 @@
      "discount_percent",
      "id",
      "negotiation_markup_percent",
-     "real_discount_percent"
+     "real_discount_percent",
+     "status"
     ],
     "profiles": [
      "email",
@@ -481228,11 +481623,6 @@
     {
      "field": "status",
      "value": "approved",
-     "kind": "escreve"
-    },
-    {
-     "field": "status",
-     "value": "pending_approval",
      "kind": "escreve"
     },
     {
@@ -481456,7 +481846,7 @@
   },
   "src/hooks/quotes/useQuoteBuilderState.ts": {
    "path": "src/hooks/quotes/useQuoteBuilderState.ts",
-   "lines": 1104,
+   "lines": 1102,
    "exports": [
     "function useQuoteBuilderState"
    ],
@@ -481505,11 +481895,6 @@
     {
      "field": "status",
      "value": "draft",
-     "kind": "compara"
-    },
-    {
-     "field": "status",
-     "value": "pending_approval",
      "kind": "compara"
     },
     {
@@ -481714,7 +482099,7 @@
   },
   "src/hooks/quotes/useQuoteTemplates.ts": {
    "path": "src/hooks/quotes/useQuoteTemplates.ts",
-   "lines": 482,
+   "lines": 484,
    "exports": [
     "function useQuoteTemplates"
    ],
@@ -481962,9 +482347,10 @@
   },
   "src/hooks/quotes/useSellerDiscountLimits.ts": {
    "path": "src/hooks/quotes/useSellerDiscountLimits.ts",
-   "lines": 118,
+   "lines": 154,
    "exports": [
     "interface SellerDiscountLimit",
+    "const SELLER_DISCOUNT_LIMITS_KEY",
     "function useSellerDiscountLimits"
    ],
    "tables": [
@@ -481998,13 +482384,15 @@
    ],
    "rule_comments": [
     "* useSellerDiscountLimits — Gerencia limites de desconto por vendedor",
-    "Fetch own limit (for sellers)",
+    "admin reduzir o limite — bug de dinheiro.",
+    "* Agora o proprio limite e a lista vem de `useQuery`, sob a mesma chave-raiz que",
+    "Limite do proprio vendedor (ativo no mount, como antes).",
     "BUG-LIMIT-SILENT-FAIL FIX: previously errors were silently swallowed.",
     "as \"no limit configured\" and allowing unlimited discounts.",
+    "Lista completa (somente admin) — carregada sob demanda, como antes.",
     "Set/update limit for a seller",
     "Delete limit"
    ],
-   "doc": "useSellerDiscountLimits — Gerencia limites de desconto por vendedor",
    "hooks": [
     "useSellerDiscountLimits"
    ]
@@ -482503,7 +482891,7 @@
   },
   "src/hooks/quotes/__tests__/useSellerDiscountLimits.guard.test.ts": {
    "path": "src/hooks/quotes/__tests__/useSellerDiscountLimits.guard.test.ts",
-   "lines": 67,
+   "lines": 84,
    "is_test": true,
    "doc": "Guard regression — useSellerDiscountLimits.setLimit Garante que setLimit NAO faz upsert quando userId esta ausente (vendedor sem vinculo de conta). Defesa de UX complementar a constraint NOT NULL + FK -> profiles do banco (evita o erro 23502).",
    "tests": [
@@ -482514,7 +482902,7 @@
   },
   "src/hooks/quotes/__tests__/useSellerDiscountLimits.test.ts": {
    "path": "src/hooks/quotes/__tests__/useSellerDiscountLimits.test.ts",
-   "lines": 247,
+   "lines": 264,
    "is_test": true,
    "rule_comments": [
     "* Gerencia limites de desconto por vendedor.",
@@ -485311,7 +485699,7 @@
   },
   "src/lib/discount-approval-status-config.ts": {
    "path": "src/lib/discount-approval-status-config.ts",
-   "lines": 71,
+   "lines": 77,
    "exports": [
     "type DiscountApprovalStatus",
     "const DAR_VALID_TRANSITIONS",
@@ -485945,7 +486333,7 @@
    "transition_maps": [
     {
      "name": "QUOTE_VALID_TRANSITIONS",
-     "body": "draft: ['pending', 'pending_approval', 'sent', 'cancelled'], pending_approval: ['draft', 'pending', 'cancelled'], pending: ['draft', 'sent', 'expired', 'cancelled'], sent: ['approved', 'rejected', 'viewed', 'pending', 'expired', 'cancelled'], viewed: ['approved', 'rejected', 'pending', 'expired', 'cancelled'], approved: ['converted'], // committed: DB rejects ->sent/->cancelled (see note above) converted: [], rejected: ['draft', 'sent', 'cancelled'], expired: ['draft', 'pending', 'sent', 'cancelled'], cancelled: [],"
+     "body": "draft: ['pending', 'pending_approval', 'sent', 'cancelled'], pending_approval: ['draft', 'pending', 'cancelled'], pending: ['draft', 'pending_approval', 'sent', 'expired', 'cancelled'], sent: ['approved', 'rejected', 'viewed', 'pending', 'expired', 'cancelled'], viewed: ['approved', 'rejected', 'pending', 'expired', 'cancelled'], approved: ['converted'], // committed: DB rejects ->sent/->cancelled (see note above) converted: [], rejected: ['draft', 'sent', 'cancelled'], expired: ['draft', 'pending', 'sent', 'cancelled'], cancelled: [],"
     }
    ],
    "rule_comments": [
@@ -494126,6 +494514,32 @@
    ],
    "doc": "SSOT do layout responsivo da lista de orçamentos. Esses valores são consumidos por: - `QuotesConfigurableList` (vars CSS `--quotes-row-h` e `--quotes-chrome-h`) - specs E2E (`e2e/helpers/quotes-layout.ts` reflete os mesmos números) `chromeHeight(viewportWidth)` retorna o espaço (px) reservado pelo h …"
   },
+  "src/lib/quotes/status-transition.ts": {
+   "path": "src/lib/quotes/status-transition.ts",
+   "lines": 181,
+   "exports": [
+    "class QuoteStatusTransitionError",
+    "interface UpdateQuoteStatusInput",
+    "interface UpdateQuoteStatusResult",
+    "interface QuoteStatusTarget",
+    "function assertQuoteStatusTransition",
+    "function updateQuoteStatusSafely"
+   ],
+   "tables": [
+    {
+     "table": "quotes",
+     "op": "ref"
+    },
+    {
+     "table": "quotes",
+     "op": "ref"
+    }
+   ],
+   "errors": [
+    "Orçamento não encontrado",
+    "Status de orçamento inválido na chamada de transição."
+   ]
+  },
   "src/lib/quotes/templateTotal.ts": {
    "path": "src/lib/quotes/templateTotal.ts",
    "lines": 112,
@@ -494388,6 +494802,27 @@
     "recusa data de validade que não é uma data de calendário",
     "recusa item sem os campos que a tela usa para calcular o total",
     "recusa modo de entrega fora do par aceito pela tela"
+   ]
+  },
+  "src/lib/quotes/__tests__/status-transition.test.ts": {
+   "path": "src/lib/quotes/__tests__/status-transition.test.ts",
+   "lines": 169,
+   "is_test": true,
+   "tests": [
+    "assertQuoteStatusTransition",
+    "não lança para par permitido pelo mapa",
+    "não lança quando o status não muda",
+    "lança QuoteStatusTransitionError e emite telemetria para par proibido",
+    "aceita o orçamento inteiro no lugar do status cru",
+    "rejeita valor que não é status conhecido",
+    "updateQuoteStatusSafely",
+    "escreve no banco quando o par é permitido e o status de origem é informado",
+    "não escreve no banco quando o par é proibido",
+    "lê o status atual do banco quando o chamador não informa",
+    "bloqueia com base no status lido do banco",
+    "não envia UPDATE quando o status já é o destino",
+    "traduz a recusa de transição do banco em erro legível",
+    "propaga erro do banco que não é de transição"
    ]
   },
   "src/lib/quotes/__tests__/templateTotal.test.ts": {
@@ -496468,7 +496903,7 @@
   },
   "src/pages/Index.tsx": {
    "path": "src/pages/Index.tsx",
-   "lines": 227,
+   "lines": 229,
    "exports": [
     "function Index"
    ],
@@ -497400,7 +497835,7 @@
   },
   "src/pages/admin/DiscountRequestDetailPage.tsx": {
    "path": "src/pages/admin/DiscountRequestDetailPage.tsx",
-   "lines": 283,
+   "lines": 287,
    "exports": [
     "function DiscountRequestDetailPage"
    ],
@@ -497411,10 +497846,6 @@
     },
     {
      "table": "discount_approval_requests",
-     "op": "ref"
-    },
-    {
-     "table": "quotes",
      "op": "ref"
     }
    ],
@@ -497642,7 +498073,7 @@
   },
   "src/pages/admin/RolePermissionsPage.tsx": {
    "path": "src/pages/admin/RolePermissionsPage.tsx",
-   "lines": 500,
+   "lines": 514,
    "exports": [
     "function RolePermissionsPage"
    ],
@@ -497686,7 +498117,11 @@
     "role"
    ],
    "rule_comments": [
+    "Fonte unica de leitura: catalogo de permissoes e vinculo papel->permissao vem do cache.",
     "(0 linhas seria lido como \"sem permissão\")."
+   ],
+   "temporal": [
+    "staleTime: 5 * 60 * 1000,"
    ],
    "pagination": [
     "1"
@@ -497724,7 +498159,7 @@
   },
   "src/pages/admin/SellerDiscountLimitsAdminPage.tsx": {
    "path": "src/pages/admin/SellerDiscountLimitsAdminPage.tsx",
-   "lines": 566,
+   "lines": 568,
    "exports": [
     "function SellerDiscountLimitsAdminPage"
    ],
@@ -497828,7 +498263,8 @@
     "• Tabela de vendedores: limite editável, notas, métricas de impacto (pendentes/aprovadas/negadas)",
     "• Painel de requisições recentes que excederam o limite",
     "---------- Requisições recentes que excederam limite ----------",
-    "---------- Mutation: salvar limite + notas ----------"
+    "---------- Mutation: salvar limite + notas ----------",
+    "Mesmo limite lido pelo builder de orçamento (useSellerDiscountLimits)."
    ],
    "doc": "SellerDiscountLimitsAdminPage — Tela admin para configurar `seller_discount_limits` e visualizar o impacto direto nas `discount_approval_requests`. Estrutura: • Header explicativo + regras gerais (como o limite afeta o fluxo) • Tabela de vendedores: limite editável, notas, métricas de impacto (pende …",
    "pagination": [
@@ -497950,9 +498386,19 @@
     "criar produto (e duplicar, que cria um novo) invalida o cache de medidas"
    ]
   },
+  "src/pages/admin/__tests__/RolePermissionsPage.invalidate.test.tsx": {
+   "path": "src/pages/admin/__tests__/RolePermissionsPage.invalidate.test.tsx",
+   "lines": 80,
+   "is_test": true,
+   "doc": "Prova da etapa 084 (ACH-034): gravar permissoes de papel invalida a familia de chaves `role-permissions`, que e a que o RBAC le (useRBAC.tsx, staleTime 5 min). Sem a invalidacao, a UI continuaria liberando/escondendo acoes pelo conjunto antigo.",
+   "tests": [
+    "RolePermissionsPage - etapa 084: invalida role-permissions",
+    "invalida a familia role-permissions depois de salvar"
+   ]
+  },
   "src/pages/admin/__tests__/RolePermissionsPage.save.test.tsx": {
    "path": "src/pages/admin/__tests__/RolePermissionsPage.save.test.tsx",
-   "lines": 272,
+   "lines": 281,
    "is_test": true,
    "role_checks": [
     "filters",
@@ -499117,7 +499563,7 @@
   },
   "src/pages/collections/CollectionsPage.tsx": {
    "path": "src/pages/collections/CollectionsPage.tsx",
-   "lines": 490,
+   "lines": 498,
    "exports": [
     "function CollectionsPage"
    ],
@@ -499152,7 +499598,7 @@
   },
   "src/pages/collections/useCollectionsPageState.ts": {
    "path": "src/pages/collections/useCollectionsPageState.ts",
-   "lines": 311,
+   "lines": 317,
    "exports": [
     "function useCollectionsPageState"
    ],
@@ -499288,7 +499734,7 @@
   },
   "src/pages/filters/useFiltersPageState.ts": {
    "path": "src/pages/filters/useFiltersPageState.ts",
-   "lines": 934,
+   "lines": 940,
    "exports": [
     "function useFiltersPageState"
    ],
@@ -502100,13 +502546,16 @@
   },
   "src/pages/products/FiltersPage.tsx": {
    "path": "src/pages/products/FiltersPage.tsx",
-   "lines": 836,
+   "lines": 846,
    "exports": [
     "function FiltersPage"
    ],
    "navigates": [
     "/novidades",
     "/produto/"
+   ],
+   "errors": [
+    ">\n                    <EmptyState\n                      variant="
    ],
    "status_values": [
     {
@@ -502416,6 +502865,17 @@
     "input e badge coexistem na mesma linha (wrapper inline-flex flex-wrap)",
     "grupo de ações permanece ancorado à direita e com gap progressivo",
     "header stack em mobile (flex-col) e alinha em linha no sm+"
+   ]
+  },
+  "src/pages/products/__tests__/FiltersPage.error.test.tsx": {
+   "path": "src/pages/products/__tests__/FiltersPage.error.test.tsx",
+   "lines": 190,
+   "is_test": true,
+   "doc": "Etapa 075 — Impede erro de catálogo voltar a parecer \"vazio\" no /filtros e /produtos. ACH-027: quando a query de catálogo falha (banco fora, RLS), o FiltersPage mostrava \"Nenhum produto encontrado\". Este teste trava que o estado de erro NÃO renderize o vazio e que o botão \"Tentar novamente\" chame o …",
+   "tests": [
+    "FiltersPage / erro de catálogo (etapa 075)",
+    "com erro ativo NÃO mostra ",
+    "clicar em "
    ]
   },
   "src/pages/products/__tests__/applyVoiceFilters.test.ts": {
@@ -503351,21 +503811,10 @@
   },
   "src/pages/quotes/QuoteViewPage.tsx": {
    "path": "src/pages/quotes/QuoteViewPage.tsx",
-   "lines": 621,
+   "lines": 623,
    "exports": [
     "function QuoteViewPage"
    ],
-   "tables": [
-    {
-     "table": "quotes",
-     "op": "update"
-    }
-   ],
-   "table_cols": {
-    "quotes": [
-     "id"
-    ]
-   },
    "navigates": [
     "/orcamentos",
     "/orcamentos/"
@@ -503378,11 +503827,6 @@
     "Não foi possível restaurar o orçamento."
    ],
    "status_values": [
-    {
-     "field": "status",
-     "value": "pending",
-     "kind": "escreve"
-    },
     {
      "field": "status",
      "value": "pending",
@@ -560514,6 +560958,39 @@
     "pins.stdin.close(); pins.wait(timeout=10)"
    ]
   },
+  "tests/sql/quote-status-transitions/fixture.sql": {
+   "path": "tests/sql/quote-status-transitions/fixture.sql",
+   "lines": 104,
+   "uses_service_role": true
+  },
+  "tests/sql/quote-status-transitions/run-tests.py": {
+   "path": "tests/sql/quote-status-transitions/run-tests.py",
+   "lines": 228,
+   "exports": [
+    "def docker",
+    "def cleanup_owned_container",
+    "def load_transitions",
+    "def forbidden_pairs",
+    "def allowed_pairs",
+    "def main",
+    "def run_cases"
+   ],
+   "errors": [
+    "Cannot verify disposable-container ownership; no container was removed.",
+    "Could not read QUOTE_VALID_TRANSITIONS from the FE module: ",
+    "Could not start the disposable PostgreSQL 17 container: ",
+    "Disposable PostgreSQL did not become ready within 30 seconds.",
+    "Disposable-container label mismatch; no container was removed.",
+    "Failed to remove the owned disposable PostgreSQL container: ",
+    "Local Docker daemon is unavailable: ",
+    "No forbidden pairs derived from the FE map; the test would assert nothing.",
+    "QUOTE_VALID_TRANSITIONS came back empty; refusing to run a vacuous test.",
+    "Unexpected extractor output (not JSON): ",
+    "fixture.sql failed: "
+   ],
+   "doc": "!/usr/bin/env python3",
+   "uses_service_role": true
+  },
   "tests/ssot/publish-ssot-schema.test.ts": {
    "path": "tests/ssot/publish-ssot-schema.test.ts",
    "lines": 107,
@@ -562833,10 +563310,66 @@
   }
  },
  "git": {
-  "sha": "3b7dc18c4358a4f27932a45967e90eda5ac764ab",
+  "sha": "4b02d228383656213215d9b3f58c1f44ad7da9c5",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "4b02d22",
+    "date": "2026-11-23",
+    "author": "adm01-debug",
+    "subject": "fix(qa): etapas 072-079 - erro de catalogo, colecoes e templates separados do vazio (#4023)",
+    "files": [
+     "docs/qa/05-PROGRESSO.md",
+     "docs/qa/telas-sem-estado-de-erro.md",
+     "package.json",
+     "src/components/catalog/CatalogContent.tsx",
+     "src/components/catalog/__tests__/CatalogContent.error.test.tsx",
+     "src/components/compare/SupplierComparisonModal.tsx",
+     "src/components/compare/__tests__/SupplierComparisonModal.export.test.tsx",
+     "src/components/layout/SidebarReorganized.tsx",
+     "src/components/layout/__tests__/SidebarReorganized.badge.test.ts",
+     "src/components/layout/sidebar/SidebarNavGroup.tsx",
+     "src/components/layout/sidebar/pending-approval-badge.ts",
+     "src/components/quotes/AdminTemplatesManager.tsx",
+     "src/components/quotes/QuoteTemplatesList.tsx",
+     "src/components/quotes/__tests__/QuoteTemplatesList.error.test.tsx",
+     "src/contexts/CollectionsContext.tsx",
+     "src/hooks/__tests__/useSellerDiscountLimits.propagation.test.tsx",
+     "src/hooks/collections/useCollections.ts",
+     "src/hooks/kit-builder/__tests__/useKitCollaboration.fallback.test.tsx",
+     "src/hooks/kit-builder/__tests__/useKitCollaboration.invalidate.test.tsx",
+     "src/hooks/kit-builder/useKitCollaboration.ts",
+     "src/hooks/products/useCatalogState.ts",
+     "src/hooks/quotes/__tests__/useSellerDiscountLimits.guard.test.ts",
+     "src/hooks/quotes/__tests__/useSellerDiscountLimits.test.ts",
+     "src/hooks/quotes/discountApprovalResponder.ts",
+     "src/hooks/quotes/useDiscountApproval.ts",
+     "src/hooks/quotes/useQuoteBuilderState.ts",
+     "src/hooks/quotes/useQuoteTemplates.ts",
+     "src/hooks/quotes/useSellerDiscountLimits.ts",
+     "src/lib/discount-approval-status-config.ts",
+     "src/lib/quote-status-config.ts",
+     "src/lib/quotes/__tests__/status-transition.test.ts",
+     "src/lib/quotes/status-transition.ts",
+     "src/pages/Index.tsx",
+     "src/pages/admin/DiscountRequestDetailPage.tsx",
+     "src/pages/admin/RolePermissionsPage.tsx",
+     "src/pages/admin/SellerDiscountLimitsAdminPage.tsx",
+     "src/pages/admin/__tests__/RolePermissionsPage.invalidate.test.tsx",
+     "src/pages/admin/__tests__/RolePermissionsPage.save.test.tsx",
+     "src/pages/collections/CollectionsPage.tsx",
+     "src/pages/collections/useCollectionsPageState.ts",
+     "src/pages/filters/useFiltersPageState.ts",
+     "src/pages/products/FiltersPage.tsx",
+     "src/pages/products/__tests__/FiltersPage.error.test.tsx",
+     "src/pages/quotes/QuoteViewPage.tsx",
+     "tests/sql/quote-status-transitions/README.md",
+     "tests/sql/quote-status-transitions/extract-transitions.mts",
+     "tests/sql/quote-status-transitions/fixture.sql",
+     "tests/sql/quote-status-transitions/run-tests.py"
+    ]
+   },
    {
     "sha": "3b7dc18",
     "date": "2026-11-23",
@@ -563146,25 +563679,20 @@
      "package-lock.json",
      "package.json"
     ]
-   },
-   {
-    "sha": "8ab7ae0",
-    "date": "2026-11-22",
-    "author": "adm01-debug",
-    "subject": "docs: recibo E15 da aplicacao de 20261121223000 (#3977)",
-    "files": [
-     "supabase/MIGRATIONS_SYNC_LOG.md"
-    ]
    }
   ],
   "hot_files": [
    [
     "docs/qa/05-PROGRESSO.md",
-    13
+    14
    ],
    [
     "supabase/MIGRATIONS_SYNC_LOG.md",
-    10
+    9
+   ],
+   [
+    "package.json",
+    3
    ],
    [
     "supabase/functions/crm-db-bridge/index.ts",
@@ -563211,31 +563739,27 @@
     2
    ],
    [
-    "package.json",
-    2
-   ],
-   [
-    "supabase/functions/_shared/authorize.ts",
+    "docs/qa/telas-sem-estado-de-erro.md",
     1
    ],
    [
-    "supabase/functions/_shared/dispatcher-auth.ts",
+    "src/components/catalog/CatalogContent.tsx",
     1
    ],
    [
-    "supabase/functions/_shared/role-rank-parity.test.ts",
+    "src/components/catalog/__tests__/CatalogContent.error.test.tsx",
     1
    ],
    [
-    "src/routes/__tests__/magazine-print-public.integration.test.tsx",
+    "src/components/compare/SupplierComparisonModal.tsx",
     1
    ],
    [
-    "src/routes/public-routes.tsx",
+    "src/components/compare/__tests__/SupplierComparisonModal.export.test.tsx",
     1
    ],
    [
-    "src/routes/tools-routes.tsx",
+    "src/components/layout/SidebarReorganized.tsx",
     1
    ]
   ]

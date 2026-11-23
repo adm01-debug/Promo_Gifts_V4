@@ -1,6 +1,6 @@
 # 11 · GLOSSÁRIO, DADOS DE REFERÊNCIA E LACUNAS
 
-> Gerado automaticamente por AI Context Sync v1.3.2 · commit `3b7dc18c43` · branch `main` · 2026-11-23 13:42 UTC
+> Gerado automaticamente por AI Context Sync v1.3.2 · commit `4b02d22838` · branch `main` · 2026-11-23 16:20 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## Glossário do domínio (entidades do sistema)
@@ -307,7 +307,7 @@
 | `product_packagings` | Relação entre produtos e embalagens disponíveis | 11 colunas | migration |
 | `product_physical` | [ARQ 2026-06-26] Satélite physical (buffer WRITE-ONLY; não lido por view/função/FK).  | 21 colunas | migration |
 | `product_price_freshness_overrides` | Override local da janela de validade de preço por produto (30/60/90 dias). Sobrescreve o valor padrão de 60 dias e tem precedência sobre qualquer valor que venha a ser exposto pelo BD externo no futuro. | 6 colunas | migration |
-| … +523 linhas — lista completa em `context.json` | | | |
+| … +524 linhas — lista completa em `context.json` | | | |
 
 ## Dados de referência (seed — planos, categorias, perfis fixos)
 

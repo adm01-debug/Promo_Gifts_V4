@@ -2562,8 +2562,8 @@
   {
    "modulo": "components/catalog",
    "arquivos": 8,
-   "testes": 3,
-   "linhas": 2052,
+   "testes": 4,
+   "linhas": 2073,
    "itens_menu": [],
    "telas": [],
    "rotas_http": [],
@@ -4418,8 +4418,8 @@
   {
    "modulo": "components/compare",
    "arquivos": 23,
-   "testes": 1,
-   "linhas": 4191,
+   "testes": 2,
+   "linhas": 4235,
    "itens_menu": [],
    "telas": [],
    "rotas_http": [],
@@ -9059,9 +9059,9 @@
   },
   {
    "modulo": "components/layout",
-   "arquivos": 18,
-   "testes": 18,
-   "linhas": 3616,
+   "arquivos": 19,
+   "testes": 19,
+   "linhas": 3655,
    "itens_menu": [],
    "telas": [
     "/admin/comissoes",
@@ -13843,8 +13843,8 @@
   {
    "modulo": "components/quotes",
    "arquivos": 62,
-   "testes": 39,
-   "linhas": 13496,
+   "testes": 40,
+   "linhas": 13517,
    "itens_menu": [],
    "telas": [],
    "rotas_http": [],
@@ -16704,7 +16704,7 @@
    "modulo": "contexts",
    "arquivos": 10,
    "testes": 4,
-   "linhas": 2216,
+   "linhas": 2219,
    "itens_menu": [],
    "telas": [],
    "rotas_http": [],
@@ -17422,7 +17422,7 @@
   {
    "modulo": "hooks/__tests__",
    "arquivos": 0,
-   "testes": 24,
+   "testes": 25,
    "linhas": 0,
    "itens_menu": [],
    "telas": [],
@@ -17918,7 +17918,7 @@
    "modulo": "hooks/collections",
    "arquivos": 3,
    "testes": 0,
-   "linhas": 1011,
+   "linhas": 1018,
    "itens_menu": [],
    "telas": [],
    "rotas_http": [],
@@ -20659,8 +20659,8 @@
   {
    "modulo": "hooks/kit-builder",
    "arquivos": 24,
-   "testes": 1,
-   "linhas": 4393,
+   "testes": 3,
+   "linhas": 4417,
    "itens_menu": [],
    "telas": [],
    "rotas_http": [],
@@ -21233,7 +21233,7 @@
    "modulo": "hooks/products",
    "arquivos": 72,
    "testes": 34,
-   "linhas": 14468,
+   "linhas": 14472,
    "itens_menu": [],
    "telas": [],
    "rotas_http": [],
@@ -21840,7 +21840,7 @@
    "modulo": "hooks/quotes",
    "arquivos": 27,
    "testes": 22,
-   "linhas": 5701,
+   "linhas": 5764,
    "itens_menu": [],
    "telas": [],
    "rotas_http": [],
@@ -23376,6 +23376,7 @@
     "lib/kit-builder",
     "lib/kit-library",
     "lib/pdf",
+    "lib/quotes",
     "lib/security",
     "lib/supabase",
     "lib/telemetry",
@@ -23406,7 +23407,7 @@
    "modulo": "lib",
    "arquivos": 58,
    "testes": 1,
-   "linhas": 8916,
+   "linhas": 8922,
    "itens_menu": [],
    "telas": [],
    "rotas_http": [],
@@ -26340,9 +26341,9 @@
   },
   {
    "modulo": "lib/quotes",
-   "arquivos": 10,
-   "testes": 10,
-   "linhas": 1262,
+   "arquivos": 11,
+   "testes": 11,
+   "linhas": 1443,
    "itens_menu": [],
    "telas": [],
    "rotas_http": [],
@@ -26777,7 +26778,9 @@
    ],
    "diretos": {
     "edges": [],
-    "tabelas": [],
+    "tabelas": [
+     "quotes"
+    ],
     "rpcs": []
    },
    "importado_por_outros_modulos": [
@@ -26785,14 +26788,18 @@
     "components/pdf",
     "components/quotes",
     "hooks/quotes",
+    "pages/admin",
     "pages/quotes"
    ],
    "depende_de_modulos": [
     "components/quotes",
     "hooks/quotes",
+    "integrations/supabase",
     "lib",
     "lib/customization",
-    "lib/freight"
+    "lib/freight",
+    "lib/telemetry",
+    "types"
    ],
    "pacotes_externos": [
     "jspdf",
@@ -27096,6 +27103,7 @@
     "lib/auth",
     "lib/edge",
     "lib/external-db",
+    "lib/quotes",
     "lib/supabase",
     "pages/kit-builder",
     "pages/magazine",
@@ -27177,7 +27185,7 @@
    "modulo": "pages",
    "arquivos": 7,
    "testes": 0,
-   "linhas": 1801,
+   "linhas": 1803,
    "itens_menu": [
     "Catálogo de Produtos",
     "Início",
@@ -28204,8 +28212,8 @@
   {
    "modulo": "pages/admin",
    "arquivos": 60,
-   "testes": 3,
-   "linhas": 15661,
+   "testes": 4,
+   "linhas": 15681,
    "itens_menu": [
     "Acesso & Bots",
     "Auditoria RBAC",
@@ -28992,7 +29000,6 @@
      "permissions",
      "profiles",
      "query_telemetry",
-     "quotes",
      "request_rate_limits",
      "rls_denial_log",
      "role_permissions",
@@ -29046,6 +29053,7 @@
     "lib/external-db",
     "lib/kit-builder",
     "lib/personalization",
+    "lib/quotes",
     "lib/rbac",
     "lib/security",
     "pages/tools",
@@ -30505,7 +30513,7 @@
    "modulo": "pages/collections",
    "arquivos": 3,
    "testes": 0,
-   "linhas": 1512,
+   "linhas": 1526,
    "itens_menu": [
     "Coleções",
     "Coleções Personalizadas"
@@ -31046,7 +31054,7 @@
    "modulo": "pages/filters",
    "arquivos": 3,
    "testes": 4,
-   "linhas": 1485,
+   "linhas": 1491,
    "itens_menu": [],
    "telas": [],
    "rotas_http": [],
@@ -33509,8 +33517,8 @@
   {
    "modulo": "pages/products",
    "arquivos": 24,
-   "testes": 24,
-   "linhas": 8082,
+   "testes": 25,
+   "linhas": 8092,
    "itens_menu": [
     "Carrinhos",
     "Comparador de Produtos",
@@ -34091,7 +34099,7 @@
    "modulo": "pages/quotes",
    "arquivos": 16,
    "testes": 44,
-   "linhas": 4701,
+   "linhas": 4703,
    "itens_menu": [
     "Gestão de Orçamentos",
     "Novo Orçamento",
@@ -37055,6 +37063,7 @@
     "lib/inventory",
     "lib/personalization",
     "lib/products",
+    "lib/quotes",
     "lib/security",
     "pages/advanced-price-search",
     "pages/bi",

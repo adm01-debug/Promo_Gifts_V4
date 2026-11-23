@@ -1,8 +1,8 @@
 {
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
- "nos": 2952,
- "arestas": 11675,
+ "nos": 2954,
+ "arestas": 11687,
  "hubs": [
   {
    "arquivo": "src/lib/utils.ts",
@@ -30,7 +30,7 @@
   },
   {
    "arquivo": "src/components/ui/tooltip.tsx",
-   "importado_por": 307
+   "importado_por": 308
   },
   {
    "arquivo": "src/components/ui/input.tsx",
@@ -82,7 +82,7 @@
   },
   {
    "arquivo": "src/types/product-catalog.ts",
-   "importado_por": 92
+   "importado_por": 93
   },
   {
    "arquivo": "src/hooks/intelligence/index.ts",
@@ -639,7 +639,7 @@
   {
    "modulo": "integrations/supabase",
    "depende_de": 3,
-   "importado_por": 72
+   "importado_por": 73
   },
   {
    "modulo": "hooks/products",
@@ -649,7 +649,7 @@
   {
    "modulo": "types",
    "depende_de": 4,
-   "importado_por": 51
+   "importado_por": 52
   },
   {
    "modulo": "utils",
@@ -683,7 +683,7 @@
   },
   {
    "modulo": "pages/admin",
-   "depende_de": 34,
+   "depende_de": 35,
    "importado_por": 3
   },
   {
@@ -712,14 +712,14 @@
    "importado_por": 7
   },
   {
+   "modulo": "lib/telemetry",
+   "depende_de": 2,
+   "importado_por": 29
+  },
+  {
    "modulo": "components/common",
    "depende_de": 12,
    "importado_por": 18
-  },
-  {
-   "modulo": "lib/telemetry",
-   "depende_de": 2,
-   "importado_por": 28
   }
  ],
  "arestas_em": "docs/contexto/codigo/grafo-arestas.json"

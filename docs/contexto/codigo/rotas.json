@@ -2554,7 +2554,7 @@
     "status",
     "supervisor"
    ],
-   "arquivos_puxados": 493
+   "arquivos_puxados": 494
   },
   {
    "protegida": false,
@@ -2758,7 +2758,7 @@
    "canais_realtime": [],
    "flags": [],
    "papeis": [],
-   "arquivos_puxados": 41
+   "arquivos_puxados": 45
   },
   {
    "protegida": false,
@@ -7718,6 +7718,7 @@
     "useProfileRoles",
     "usePushNotifications",
     "useQuery",
+    "useQueryClient",
     "useReducedMotion",
     "useRef",
     "useScroll",
@@ -9593,7 +9594,7 @@
     "supervisor",
     "vendedor"
    ],
-   "arquivos_puxados": 540
+   "arquivos_puxados": 541
   },
   {
    "protegida": true,
@@ -14812,7 +14813,7 @@
     "status",
     "supervisor"
    ],
-   "arquivos_puxados": 431
+   "arquivos_puxados": 432
   },
   {
    "protegida": false,
@@ -17013,7 +17014,7 @@
     "status",
     "supervisor"
    ],
-   "arquivos_puxados": 507
+   "arquivos_puxados": 508
   },
   {
    "protegida": false,
@@ -22138,7 +22139,7 @@
     "tablist",
     "tooltip"
    ],
-   "arquivos_puxados": 540
+   "arquivos_puxados": 541
   },
   {
    "protegida": false,
@@ -27946,7 +27947,7 @@
     "tablist",
     "toolbar"
    ],
-   "arquivos_puxados": 628
+   "arquivos_puxados": 629
   },
   {
    "protegida": false,
@@ -28662,7 +28663,7 @@
     "status",
     "supervisor"
    ],
-   "arquivos_puxados": 530
+   "arquivos_puxados": 531
   },
   {
    "protegida": false,
@@ -29451,7 +29452,7 @@
     "tab",
     "tablist"
    ],
-   "arquivos_puxados": 565
+   "arquivos_puxados": 566
   },
   {
    "protegida": false,
@@ -30161,7 +30162,7 @@
     "status",
     "supervisor"
    ],
-   "arquivos_puxados": 487
+   "arquivos_puxados": 488
   },
   {
    "protegida": false,
@@ -30871,7 +30872,7 @@
     "status",
     "supervisor"
    ],
-   "arquivos_puxados": 483
+   "arquivos_puxados": 484
   },
   {
    "protegida": false,
@@ -31680,7 +31681,7 @@
     "tablist",
     "toolbar"
    ],
-   "arquivos_puxados": 628
+   "arquivos_puxados": 629
   },
   {
    "protegida": false,
@@ -32467,7 +32468,7 @@
     "tab",
     "tablist"
    ],
-   "arquivos_puxados": 565
+   "arquivos_puxados": 566
   },
   {
    "protegida": false,
@@ -33414,7 +33415,7 @@
     "supervisor",
     "switch"
    ],
-   "arquivos_puxados": 523
+   "arquivos_puxados": 525
   },
   {
    "protegida": false,
@@ -34192,7 +34193,7 @@
     "tablist",
     "tooltip"
    ],
-   "arquivos_puxados": 540
+   "arquivos_puxados": 541
   },
   {
    "protegida": false,
@@ -36757,7 +36758,7 @@
     "status",
     "supervisor"
    ],
-   "arquivos_puxados": 506
+   "arquivos_puxados": 507
   },
   {
    "protegida": false,

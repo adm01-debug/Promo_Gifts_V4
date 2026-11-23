@@ -5440,7 +5440,8 @@
    "src/components/ui/tabs.tsx",
    "src/components/ui/tooltip.tsx",
    "src/hooks/products/index.ts",
-   "src/lib/utils.ts"
+   "src/lib/utils.ts",
+   "src/utils/excelExport.ts"
   ],
   "src/components/compare/SyncedZoomGallery.tsx": [
    "src/components/ui/OptimizedImage.tsx",
@@ -7036,6 +7037,7 @@
    "src/components/layout/sidebar/RestrictedRouteNotice.tsx",
    "src/components/layout/sidebar/SidebarBrandHeader.tsx",
    "src/components/layout/sidebar/SidebarNavGroup.tsx",
+   "src/components/layout/sidebar/pending-approval-badge.ts",
    "src/components/ui/FocusTrap.tsx",
    "src/components/ui/button.tsx",
    "src/contexts/AuthContext.tsx",
@@ -7080,6 +7082,9 @@
    "src/lib/navigation/restricted-routes.ts",
    "src/lib/routePrefetch.ts",
    "src/lib/utils.ts"
+  ],
+  "src/components/layout/sidebar/pending-approval-badge.ts": [
+   "src/components/layout/sidebar/SidebarNavGroup.tsx"
   ],
   "src/components/loading/LoadingOverlay.tsx": [
    "src/components/a11y/index.ts",
@@ -11676,7 +11681,9 @@
    "src/hooks/quotes/discountApprovalResponder.ts",
    "src/integrations/supabase/client.ts",
    "src/lib/logger.ts",
-   "src/lib/security/rls-denial-logger.ts"
+   "src/lib/quotes/status-transition.ts",
+   "src/lib/security/rls-denial-logger.ts",
+   "src/types/quote.ts"
   ],
   "src/hooks/quotes/useFreightPlanOptions.ts": [
    "src/lib/freight/index.ts"
@@ -12811,6 +12818,12 @@
   "src/lib/quotes/quoteDraftRecovery.ts": [
    "src/hooks/quotes/quoteTypes.ts"
   ],
+  "src/lib/quotes/status-transition.ts": [
+   "src/integrations/supabase/client.ts",
+   "src/lib/quote-status-config.ts",
+   "src/lib/telemetry/quoteStatusTelemetry.ts",
+   "src/types/quote.ts"
+  ],
   "src/lib/quotes/templateTotal.ts": [
    "src/hooks/quotes/useQuoteTemplates.ts"
   ],
@@ -13432,6 +13445,7 @@
    "src/contexts/AuthContext.tsx",
    "src/integrations/supabase/client.ts",
    "src/lib/discount-approval-status-config.ts",
+   "src/lib/quotes/status-transition.ts",
    "src/lib/security/sanitize-error.ts"
   ],
   "src/pages/admin/EmaHealthPage.tsx": [
@@ -13931,6 +13945,7 @@
    "src/components/collections/CollectionsHeatmap.tsx",
    "src/components/collections/ExternalCollectionCard.tsx",
    "src/components/collections/ExternalCollectionTableView.tsx",
+   "src/components/common/EmptyState.tsx",
    "src/components/products/LayoutPopover.tsx",
    "src/components/seo/PageSEO.tsx",
    "src/components/ui/ConfirmDialog.tsx",
@@ -14673,6 +14688,7 @@
    "src/components/catalog/BulkAddToCartModal.tsx",
    "src/components/catalog/BulkVariantWizard.tsx",
    "src/components/collections/AddToCollectionModal.tsx",
+   "src/components/common/EmptyState.tsx",
    "src/components/filters/FilterPanel.tsx",
    "src/components/filters/PresetsBar.tsx",
    "src/components/products/BulkActionBar.tsx",
@@ -14945,9 +14961,9 @@
    "src/components/ui/skeleton.tsx",
    "src/hooks/quotes/index.ts",
    "src/hooks/quotes/quoteMarkup.ts",
-   "src/integrations/supabase/client.ts",
    "src/lib/freight/index.ts",
    "src/lib/quote-status-config.ts",
+   "src/lib/quotes/status-transition.ts",
    "src/pages/quotes/quote-view/QuoteUnavailableState.tsx",
    "src/pages/quotes/quote-view/useQuoteViewData.ts",
    "src/utils/undoToast.tsx"

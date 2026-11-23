@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.3.2 · commit `3b7dc18c43` · branch `main` · 2026-11-23 13:42 UTC
+> Gerado automaticamente por AI Context Sync v1.3.2 · commit `4b02d22838` · branch `main` · 2026-11-23 16:20 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -1554,7 +1554,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
   ```
 - **QUOTE_VALID_TRANSITIONS** (`src/lib/quote-status-config.ts`):
   ```ts
-  draft: ['pending', 'pending_approval', 'sent', 'cancelled'], pending_approval: ['draft', 'pending', 'cancelled'], pending: ['draft', 'sent', 'expired', 'cancelled'], sent: ['approved', 'rejected', 'viewed', 'pending', 'expired', 'cancelled'], viewed: ['approved', 'rejected', 'pending', 'expired', 'cancelled'], approved: ['converted'], // committed: DB rejects ->sent/->cancelled (see note above) converted: [], rejected: ['draft', 'sent', 'cancelled'], expired: ['draft', 'pending', 'sent', 'cancelled'], cancelled: [],
+  draft: ['pending', 'pending_approval', 'sent', 'cancelled'], pending_approval: ['draft', 'pending', 'cancelled'], pending: ['draft', 'pending_approval', 'sent', 'expired', 'cancelled'], sent: ['approved', 'rejected', 'viewed', 'pending', 'expired', 'cancelled'], viewed: ['approved', 'rejected', 'pending', 'expired', 'cancelled'], approved: ['converted'], // committed: DB rejects ->sent/->cancelled (see note above) converted: [], rejected: ['draft', 'sent', 'cancelled'], expired: ['draft', 'pending', 'sent', 'cancelled'], cancelled: [],
   ```
 
 ### E.3 Valores de status usados no código (escreve / compara / filtra)
@@ -1827,7 +1827,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `status` | `pass` | compara, escreve | `supabase/functions/full-op-diagnostics/index.ts` |
 | `status` | `passed` | compara, escreve | `src/components/admin/connections/SmokeTestChecklist.tsx` |
 | `status` | `pending` | compara, escreve, filtra | `recovery/src-legacy/src/hooks/useDiscountApproval.ts`<br>`recovery/src-legacy/src/hooks/usePasswordResetRequests.ts`<br>`recovery/src-legacy/src/pages/QuoteViewPage.tsx`<br>`src/components/admin/DiscountApprovalFilterBar.tsx`<br>`src/components/admin/DiscountApprovalHeaderBadge.tsx`<br>… +22 |
-| `status` | `pending_approval` | compara, escreve | `recovery/src-legacy/src/hooks/useDiscountApproval.ts`<br>`recovery/src-legacy/src/hooks/useQuoteBuilderState.ts`<br>`recovery/src-legacy/src/pages/QuoteViewPage.tsx`<br>`src/components/quotes/QuoteKanbanBoard.tsx`<br>`src/components/quotes/QuoteStatusTimeline.tsx`<br>… +5 |
+| `status` | `pending_approval` | compara, escreve | `recovery/src-legacy/src/hooks/useDiscountApproval.ts`<br>`recovery/src-legacy/src/hooks/useQuoteBuilderState.ts`<br>`recovery/src-legacy/src/pages/QuoteViewPage.tsx`<br>`src/components/quotes/QuoteKanbanBoard.tsx`<br>`src/components/quotes/QuoteStatusTimeline.tsx`<br>… +4 |
 | `status` | `processing` | compara, escreve | `src/components/ui/StatusBadge.tsx`<br>`supabase/functions/product-webhook/index.ts`<br>`supabase/functions/word-magic/index.ts`<br>`supabase/migrations/20250103090000_mockup_ai_complete.sql` |
 | `status` | `pronto_orcamento` | compara | `recovery/src-legacy/src/components/cart/CartHealthChecklist.tsx`<br>`src/components/cart/CartHealthChecklist.tsx` |
 | `status` | `published` | compara, escreve, filtra | `src/lib/security/magazine-guard.ts`<br>`src/pages/magazine/MagazineEditorPage.tsx`<br>`src/pages/magazine/MagazineListPage.tsx`<br>`src/pages/magazine/PublicMagazineView.tsx`<br>`src/pages/magazine/hooks/useMagazineGoldImport.ts`<br>… +8 |
@@ -1959,6 +1959,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | BoxViewMode | grid \| list | `src/components/kit-builder/BoxSelector.types.ts` |
 | Occasion | birthday \| event \| reactivation \| vip \| welcome \| year-end | `src/components/kit-builder/KitOccasionSelector.tsx` |
 | SortOption | last-used \| name-asc \| price-desc \| recent \| usage-desc | `src/components/kit-library/KitLibraryFilters.tsx` |
+| PENDING_DISCOUNT_APPROVALS_QUERY_KEY | 'pending-discount-approvals-count' | `src/components/layout/sidebar/pending-approval-badge.ts` |
 | MockupCompletionStatus | done \| error \| idle \| running | `src/components/mockup/MockupCompletionStates.tsx` |
 | MOCKUP_KILL_SWITCHES | 'edge_generate_mockup' | `src/components/mockup/MockupSwitchNotice.tsx` |
 | TechniqueCategory | digital \| laser \| other \| serigrafia | `src/components/mockup/techniqueColorUtils.ts` |
@@ -2166,8 +2167,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | PriceFreshnessStatus | aging \| fresh \| stale \| unknown | `src/utils/price-freshness.ts` |
 | AppRole | dev \| supervisor \| admin \| agente \| vendedor | `supabase/functions/_shared/authorize.ts` |
 | TriggeredBy | manual \| cron \| webhook | `supabase/functions/_shared/connection-test-runner.ts` |
-| ErrorKind | timeout \| network \| dns \| http \| auth \| config \| unknown | `supabase/functions/_shared/connection-test-runner.ts` |
-| … +25 linhas — lista completa em `context.json` | | |
+| … +26 linhas — lista completa em `context.json` | | |
 
 ## F. Validações de entrada
 
@@ -5885,6 +5885,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `SNAPSHOT_WINDOW_DAYS` | `180` | `src/hooks/inventory/useSupplierReliability.ts` |
 | `AUTO_SAVE_DELAY_MS` | `5000` | `src/hooks/kit-builder/useKitAutoSave.ts` |
 | `PRODUCT_PAGE_SIZE` | `200` | `src/hooks/kit-builder/useKitBuilderQueries.ts` |
+| `KIT_COMMENTS_FALLBACK_REFETCH_MS` | `45` | `src/hooks/kit-builder/useKitCollaboration.ts` |
 | `BUFFER_DAYS` | `3` | `src/hooks/kit-builder/useKitStockForecast.ts` |
 | `STOCK_PAGE_SIZE` | `500` | `src/hooks/kit-builder/useKitStockValidation.ts` |
 | `STOCK_PRODUCT_BATCH_SIZE` | `100` | `src/hooks/kit-builder/useKitStockValidation.ts` |
@@ -5911,8 +5912,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `CART_ITEM_DEBOUNCE_MS` | `300` | `src/hooks/products/useDebouncedCartItemActions.ts` |
 | `CART_ITEM_DEBOUNCE_MS_MIN` | `0` | `src/hooks/products/useDebouncedCartItemActions.ts` |
 | `CART_ITEM_DEBOUNCE_MS_MAX` | `2000` | `src/hooks/products/useDebouncedCartItemActions.ts` |
-| `MS_PER_DAY` | `1000` | `src/hooks/products/useNovelties.helpers.ts` |
-| … +420 linhas — lista completa em `context.json` | | |
+| … +421 linhas — lista completa em `context.json` | | |
 
 ### H.2 Prazos, expirações e janelas de tempo
 
@@ -6218,7 +6218,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `staleTime: 5 * 60 * 1000,` | `src/hooks/auth/useRBAC.tsx` |
 | `staleTime: 5 * 60 * 1000,` | `src/hooks/bi/useClientAffinity.ts` |
 | `const NINETY_DAYS = 90 * 24 * 60 * 60 * 1000;` | `src/hooks/bi/useClientCategoryAffinity.ts` |
-| … +401 linhas — lista completa em `context.json` | |
+| … +402 linhas — lista completa em `context.json` | |
 
 ### H.3 Limites de paginação
 
@@ -6701,7 +6701,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | allowlist inválida: versions contém duplicatas | `scripts/check-supabase-migration-ledger.mjs` |
 | allowlist inválida: versions contém valor vazio/não textual | `scripts/check-supabase-migration-ledger.mjs` |
 | allowlist inválida: versions deve ser array não vazio | `scripts/check-supabase-migration-ledger.mjs` |
-| … +1361 linhas — lista completa em `context.json` | |
+| … +1376 linhas — lista completa em `context.json` | |
 
 ## J. Controle de acesso no código (checagens de perfil/permissão)
 
@@ -6825,7 +6825,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `admin` | `supabase/migrations/20261112120500_fix_optimization_queue_rpcs_dev_access.sql` |
 | `anon` | `tests/edge-functions/live/_live-client.ts` |
 
-## K. Testes como especificação (23680 testes em 2375 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (23729 testes em 2385 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -7129,7 +7129,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `src/lib/auth/__tests__/checkLoginGate.test.ts` | 19 | isOperationalGateBlock · allowed=false + reason operacional %s → true · %o → false · gateBlockMessage … |
 | `src/lib/auth/__tests__/oauth-error-explainer.test.ts` | 19 | explainOAuthError · config errors (admin needs to act) · mapeia redirect_uri_mismatch com hint sobre console do provedor · detecta redirect uri mismatch pela descrição quando code é genérico … |
 | `src/lib/external-db/rest-native.test.ts` | 19 | isRestNativeEligible · whitelisted COM coluna de busca → elegível mesmo com _search · A1: whitelisted SEM coluna de busca → continua elegível com _search · não-whitelisted → inelegível … |
-| … +2075 linhas — lista completa em `context.json` | | |
+| … +2085 linhas — lista completa em `context.json` | | |
 
 ## L. Eventos de webhook tratados (contratos com sistemas externos)
 
@@ -7597,4 +7597,4 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | * Card "Prazo de produção" do orçamento: em quantos dias úteis o pedido fica | `src/components/freight-plan/ProductionLeadTimeCard.tsx` |
 | pronto para envio, qual item define esse prazo e de onde vem cada número. | `src/components/freight-plan/ProductionLeadTimeCard.tsx` |
 | deliveryMode={deliveryMode}            // 'data' \| 'prazo' do orçamento | `src/components/freight-plan/ProductionLeadTimeCard.tsx` |
-| … +1477 linhas — lista completa em `context.json` | |
+| … +1483 linhas — lista completa em `context.json` | |

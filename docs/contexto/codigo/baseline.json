@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "3b7dc18c4358a4f27932a45967e90eda5ac764ab",
+  "commit": "4b02d228383656213215d9b3f58c1f44ad7da9c5",
   "branch": "main",
-  "data_commit": "2026-11-23T10:38:00-03:00",
+  "data_commit": "2026-11-23T12:22:14-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "4b02d22",
+    "data": "2026-11-23",
+    "assunto": "fix(qa): etapas 072-079 - erro de catalogo, colecoes e templates separados do vazio (#4023)"
+   },
    {
     "sha": "3b7dc18",
     "data": "2026-11-23",
@@ -126,14 +131,9 @@
     "sha": "0a339aa",
     "data": "2026-11-22",
     "assunto": "chore(schema-snapshot): snapshot semanal 2026-W47 (run 45026234350) (#3982)"
-   },
-   {
-    "sha": "3aa6694",
-    "data": "2026-11-22",
-    "assunto": "fix: alinhar recibo da 20261121203000 com a linha E15 (aplicada) (#3980)"
    }
   ],
-  "arquivos_mudados_7d": 970,
+  "arquivos_mudados_7d": 734,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -149,7 +149,7 @@
    },
    {
     "pasta": "src/components/quotes",
-    "mudancas": 125
+    "mudancas": 128
    },
    {
     "pasta": "tests/edge-functions/live",
@@ -157,7 +157,7 @@
    },
    {
     "pasta": "src/hooks/products",
-    "mudancas": 113
+    "mudancas": 114
    },
    {
     "pasta": "src/lib/freight",
@@ -177,7 +177,7 @@
    },
    {
     "pasta": "src/pages/quotes",
-    "mudancas": 84
+    "mudancas": 85
    },
    {
     "pasta": "supabase/functions/_shared",
@@ -185,15 +185,15 @@
    },
    {
     "pasta": "src/pages/admin",
-    "mudancas": 76
+    "mudancas": 81
+   },
+   {
+    "pasta": "src/hooks/quotes",
+    "mudancas": 78
    },
    {
     "pasta": "src/components/ui",
     "mudancas": 73
-   },
-   {
-    "pasta": "src/hooks/quotes",
-    "mudancas": 71
    }
   ],
   "arquivos_mais_mudados_90d": [
@@ -203,7 +203,7 @@
    },
    {
     "arquivo": "package.json",
-    "mudancas": 30
+    "mudancas": 31
    },
    {
     "arquivo": "package-lock.json",
@@ -215,7 +215,7 @@
    },
    {
     "arquivo": "docs/qa/05-PROGRESSO.md",
-    "mudancas": 13
+    "mudancas": 14
    },
    {
     "arquivo": "docs/coordenacao/conflitos-semanticos.md",
@@ -242,6 +242,10 @@
     "mudancas": 6
    },
    {
+    "arquivo": "src/hooks/quotes/useQuoteBuilderState.ts",
+    "mudancas": 6
+   },
+   {
     "arquivo": "src/integrations/supabase/types.ts",
     "mudancas": 6
    },
@@ -254,11 +258,19 @@
     "mudancas": 5
    },
    {
+    "arquivo": "src/components/quotes/AdminTemplatesManager.tsx",
+    "mudancas": 5
+   },
+   {
     "arquivo": "src/components/quotes/QuoteAutoSave.tsx",
     "mudancas": 5
    },
    {
-    "arquivo": "src/hooks/quotes/useQuoteBuilderState.ts",
+    "arquivo": "src/components/quotes/QuoteTemplatesList.tsx",
+    "mudancas": 5
+   },
+   {
+    "arquivo": "src/hooks/quotes/useQuoteTemplates.ts",
     "mudancas": 5
    },
    {
@@ -284,18 +296,6 @@
    {
     "arquivo": "src/components/kit-builder/PersonalizationConfig.tsx",
     "mudancas": 4
-   },
-   {
-    "arquivo": "src/components/quotes/AdminTemplatesManager.tsx",
-    "mudancas": 4
-   },
-   {
-    "arquivo": "src/components/quotes/QuoteTemplatesList.tsx",
-    "mudancas": 4
-   },
-   {
-    "arquivo": "src/hooks/freight/index.ts",
-    "mudancas": 4
    }
   ],
   "autores_30d": [
@@ -318,9 +318,9 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 11221,
-  "arquivos_codigo": 5657,
-  "linhas_codigo": 1073474,
+  "arquivos_total": 11238,
+  "arquivos_codigo": 5671,
+  "linhas_codigo": 1075311,
   "rotas": 141,
   "rotas_http_backend": 13,
   "vistas_por_id": 0,
@@ -332,10 +332,10 @@
   "tabelas": 531,
   "migrations": 3127,
   "cron_jobs": 122,
-  "testes": 2705,
+  "testes": 2717,
   "workflows": 89,
   "scripts": 284,
-  "docs_md": 1501
+  "docs_md": 1503
  },
  "por_pasta": {
   ".github/scripts": {
@@ -1903,8 +1903,8 @@
    "linhas": 130
   },
   "src/components": {
-   "arquivos": 1480,
-   "linhas": 290480
+   "arquivos": 1485,
+   "linhas": 291000
   },
   "src/config": {
    "arquivos": 1,
@@ -1916,7 +1916,7 @@
   },
   "src/contexts": {
    "arquivos": 20,
-   "linhas": 5331
+   "linhas": 5334
   },
   "src/data": {
    "arquivos": 3,
@@ -1927,16 +1927,16 @@
    "linhas": 7
   },
   "src/hooks": {
-   "arquivos": 508,
-   "linhas": 94339
+   "arquivos": 511,
+   "linhas": 94730
   },
   "src/integrations": {
    "arquivos": 11,
    "linhas": 66760
   },
   "src/lib": {
-   "arquivos": 417,
-   "linhas": 64708
+   "arquivos": 419,
+   "linhas": 65064
   },
   "src/logic": {
    "arquivos": 4,
@@ -1947,8 +1947,8 @@
    "linhas": 63
   },
   "src/pages": {
-   "arquivos": 374,
-   "linhas": 86359
+   "arquivos": 376,
+   "linhas": 86692
   },
   "src/routes": {
    "arquivos": 16,
@@ -2191,8 +2191,8 @@
    "linhas": 37
   },
   "tests/sql": {
-   "arquivos": 2,
-   "linhas": 457
+   "arquivos": 4,
+   "linhas": 691
   },
   "tests/ssot": {
    "arquivos": 8,
@@ -2330,7 +2330,7 @@
   },
   {
    "arquivo": "src/hooks/quotes/useQuoteBuilderState.ts",
-   "linhas": 1104
+   "linhas": 1102
   },
   {
    "arquivo": "supabase/functions/crm-db-bridge/index.ts",
@@ -2353,6 +2353,10 @@
    "linhas": 1012
   },
   {
+   "arquivo": "src/components/compare/SupplierComparisonModal.tsx",
+   "linhas": 959
+  },
+  {
    "arquivo": "recovery/src-legacy/src/hooks/useMagicUpState.ts",
    "linhas": 955
   },
@@ -2365,19 +2369,15 @@
    "linhas": 940
   },
   {
+   "arquivo": "src/pages/filters/useFiltersPageState.ts",
+   "linhas": 940
+  },
+  {
    "arquivo": "src/components/products/ProductListItem.tsx",
    "linhas": 938
   },
   {
-   "arquivo": "src/pages/filters/useFiltersPageState.ts",
-   "linhas": 934
-  },
-  {
    "arquivo": "scripts/ai-context/gerar.mjs",
-   "linhas": 924
-  },
-  {
-   "arquivo": "src/components/search/useGlobalSearch.ts",
    "linhas": 924
   }
  ],
@@ -2387,7 +2387,7 @@
   "ts_ignore": 0,
   "eslint_disable": 24,
   "todos": 111,
-  "arquivos_acima_500_linhas": 185
+  "arquivos_acima_500_linhas": 186
  },
  "todos": [
   {
