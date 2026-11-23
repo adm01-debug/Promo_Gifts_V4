@@ -3,9 +3,9 @@
  "format_version": 2,
  "stack": {
   "linguagens": [
-   "TypeScript (5197)",
-   "SQL (3495)",
-   "Markdown (1503)",
+   "TypeScript (5198)",
+   "SQL (3496)",
+   "Markdown (1505)",
    "JavaScript (462)",
    "JSON (132)",
    "YAML (117)",
@@ -333,6 +333,7 @@
    "test:maintenance": "node --test scripts/maintenance/maintenance.unit.mjs",
    "test:price-freshness": "TZ=America/Sao_Paulo bash -c 'set -euo pipefail; files=( tests/utils/price-freshness*.test.ts tests/components/PriceFreshnessBadge*.test.tsx ); vitest run \"${files[@]}\" --coverage --coverage.reporter=text --coverage.reporter=json-summary --coverage.reporter=html --coverage.include=src/utils/price-freshness.ts --coverage.include=src/components/products/PriceFreshnessBadge.tsx --coverage.thresholds.statements=0 --coverage.thresholds.branches=0 --coverage.thresholds.functions=0 --coverage.thresholds.lines=0 && node scripts/check-price-freshness-coverage.mjs'",
    "test:quality": "TZ=America/Sao_Paulo vitest run --exclude 'tests/hooks/**'",
+   "test:quote-discount-invariant:postgres": "python3 tests/sql/quote-discount-invariant/run-tests.py --output-dir work/quote-discount-invariant-sql",
    "test:quote-rpc:postgres": "node scripts/simulate-quote-rpc-proposals.mjs",
    "test:quote-transitions:postgres": "python3 tests/sql/quote-status-transitions/run-tests.py --output-dir work/quote-status-transitions-sql",
    "test:replenishment:dashboard": "node scripts/replenishment-ci/metrics-dashboard.mjs",
@@ -4298,12 +4299,12 @@
    "arquivos_md": 11
   },
   {
-   "pasta": "docs/validation",
+   "pasta": "docs/qa",
    "arquivos_md": 11
   },
   {
-   "pasta": "docs/qa",
-   "arquivos_md": 10
+   "pasta": "docs/validation",
+   "arquivos_md": 11
   },
   {
    "pasta": "docs/architecture",

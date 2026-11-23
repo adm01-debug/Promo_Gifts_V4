@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.3.2 · commit `06620fcbb1` · branch `main` · 2026-11-23 21:15 UTC
+> Gerado automaticamente por AI Context Sync v1.3.2 · commit `5eaf98ad33` · branch `main` · 2026-11-23 21:59 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -4672,7 +4672,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
   ```
 - **calculateTotalKitPrice(box: KitBox | null, items: KitItem[], personalization: KitPersonalization, kitQuantity = 1,)** — `src/lib/kit-builder/price-calculator.ts`
   ```
-  boxPrice: number; itemsPrice: number; personalizationPrice: number; subtotal: number; total: number; unitPrice: number;
+  boxPrice: number; itemsPrice: number; /** Caixa + itens, sem personalizacao. E o valor da linha "Produtos". */ productsPrice: number; personalizationPrice: number; /** Inclui a personalizacao — e o que o banco grava em quotes.subtotal. */ subtotal: number; total: number; unitPrice: number;
   ```
 - **calculateSavings(kitPrice: number, individualItemsPrice: number,)** — `src/lib/kit-builder/price-calculator.ts`
   ```
@@ -5605,6 +5605,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `// default e bloqueava 100% do tráfego anônimo no gateway. Corrigido.` | `supabase/functions/magazine-reader-state-write/index.ts` |
 | `// Add exact hash matches first (100% relevance)` | `supabase/functions/product-visual-search/index.ts` |
 | `// callEdge) + 20% de margem — um valor fixo menor que esse budget corta a` | `tests/edge-functions/live/_live-suite.ts` |
+| `# Cenario real: vendedor digita 10% de desconto e adiciona as linhas.` | `tests/sql/quote-discount-invariant/run-tests.py` |
 
 ## H. Parâmetros de negócio (constantes, prazos, limites)
 
@@ -6701,7 +6702,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | allowlist inválida: versions contém duplicatas | `scripts/check-supabase-migration-ledger.mjs` |
 | allowlist inválida: versions contém valor vazio/não textual | `scripts/check-supabase-migration-ledger.mjs` |
 | allowlist inválida: versions deve ser array não vazio | `scripts/check-supabase-migration-ledger.mjs` |
-| … +1376 linhas — lista completa em `context.json` | |
+| … +1386 linhas — lista completa em `context.json` | |
 
 ## J. Controle de acesso no código (checagens de perfil/permissão)
 
@@ -6825,7 +6826,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `admin` | `supabase/migrations/20261112120500_fix_optimization_queue_rpcs_dev_access.sql` |
 | `anon` | `tests/edge-functions/live/_live-client.ts` |
 
-## K. Testes como especificação (23729 testes em 2385 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (23693 testes em 2385 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -6924,7 +6925,6 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `src/pages/magazine/__tests__/stepValidation.test.ts` | 34 | validateStep identity · bloqueia se título vazio · bloqueia se título apenas espaços · NÃO bloqueia se título preenchido … |
 | `src/lib/freight/__tests__/units.test.ts` | 33 | mmToCm · converte milímetro em centímetro · não arrasta erro de ponto flutuante · não perde o empate por imprecisão binária … |
 | `src/lib/security/__tests__/sanitize-adversarial.test.ts` | 33 | sanitizeUrl — G1 WHATWG decimal IP normalisation · blocks http://2130706433 (decimal 127.0.0.1) · blocks http://2886729729 (decimal 172.16.0.1 — RFC1918) · blocks http://167772161 (decimal 10.0.0.1 — RFC1918) … |
-| `tests/components/kit-builder/FreightEstimator.test.tsx` | 33 | FreightEstimator — tabela transportadora (default) · peso zero → alerta de peso não informado visível · 0g → exibe peso 0.0kg · 1000g (1kg) → faixa ≤5kg = R$ 18,00 … |
 | `tests/edge-functions/integration/data-ops.test.ts` | 33 | external-db-bridge · SELECT com tabela válida → 200 + rows · SELECT com filtro WHERE → 200 · INSERT → 200 + inserted_id … |
 | `tests/scripts/check-conflict-ledger.test.mjs` | 33 | check-conflict-ledger: comportamento básico (sem bug) · sem GITHUB_BASE_REF/GITHUB_HEAD_REF, pula a verificação com exit 0 · sem commits de merge semântico, passa com exit 0 · commit merge(pr-N): sem atualizar o ledger + --gate => exit 1 … |
 | `tests/scripts/check-workflow-contracts.test.mjs` | 33 | C1 — permissions · flags workflow without top-level permissions · accepts workflow with top-level permissions · C2 — concurrency … |
@@ -7043,7 +7043,6 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `src/lib/edge/__tests__/invokeExport.test.ts` | 22 | invokeEventsToCSV · gera header + linhas com ISO · escapa vírgula, aspas e quebra de linha · lida com campos ausentes (latencyMs/errorKind/attempts) … |
 | `tests/components/PriceFreshnessBadge.colorMatrix.test.tsx` | 22 | PriceFreshnessBadge — matriz cromática + conteúdo pt-BR (status × variant) · variant=inline (PDP / Quick View) · fresh: emerald-700 +  · aging: amber-700 + ainda usa label  … |
 | `tests/components/PriceFreshnessBadge.copyAssertions.test.tsx` | 22 | PriceFreshnessBadge — cópia pt-BR exata por variant · variant=inline (PDP / Quick View) · fresh:  · aging:  … |
-| `tests/components/kit-builder/KitBuilderComponents.test.tsx` | 22 | KitVisualPreview · renders null when no box · renders box preview with items · shows correct fill color for normal usage … |
 | `tests/contracts/product-webhook.contract.test.ts` | 22 | contract: product-webhook v1 (compat com produção) · aceita payload válido (upsert, default v1) · aceita produto com campos opcionais ricos · payload sem body → 400 missing_body … |
 | `tests/e2e/favorites-module.test.ts` | 22 | E2E Favoritos — Gestão de Listas · identifica a lista padrão corretamente · valida token de compartilhamento ativo · calcula total de itens entre todas as listas … |
 | `tests/e2e/ui-components.test.tsx` | 22 | E2E UI — Button Variants · renders  · default variant renders · E2E UI — Button Sizes … |
@@ -7129,6 +7128,8 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `src/lib/auth/__tests__/checkLoginGate.test.ts` | 19 | isOperationalGateBlock · allowed=false + reason operacional %s → true · %o → false · gateBlockMessage … |
 | `src/lib/auth/__tests__/oauth-error-explainer.test.ts` | 19 | explainOAuthError · config errors (admin needs to act) · mapeia redirect_uri_mismatch com hint sobre console do provedor · detecta redirect uri mismatch pela descrição quando code é genérico … |
 | `src/lib/external-db/rest-native.test.ts` | 19 | isRestNativeEligible · whitelisted COM coluna de busca → elegível mesmo com _search · A1: whitelisted SEM coluna de busca → continua elegível com _search · não-whitelisted → inelegível … |
+| `src/lib/inventory/__tests__/stock-filter.test.ts` | 19 | stock-filter — pipeline de seleção/agregação/montagem · normalize remove acentos e diferencia caixa · selectMatchingVariants retorna todas as variações quando não há filtro de cor · cor  … |
+| `src/lib/lead-time/__tests__/personalizationLeadTime.test.ts` | 19 | resolvePersonalizationLeadTime · prazo registrado vence a tabela: frente = 4 (a faixa 100..499 diria 5) · registrado sem production_days cai na tabela: verso com 100 un = faixa 100..499 = 5 · sem linha cadastrada para o local usa a tabela pela técnica: lateral com 100 un = 5 … |
 | … +2085 linhas — lista completa em `context.json` | | |
 
 ## L. Eventos de webhook tratados (contratos com sistemas externos)
@@ -7597,4 +7598,4 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | * Card "Prazo de produção" do orçamento: em quantos dias úteis o pedido fica | `src/components/freight-plan/ProductionLeadTimeCard.tsx` |
 | pronto para envio, qual item define esse prazo e de onde vem cada número. | `src/components/freight-plan/ProductionLeadTimeCard.tsx` |
 | deliveryMode={deliveryMode}            // 'data' \| 'prazo' do orçamento | `src/components/freight-plan/ProductionLeadTimeCard.tsx` |
-| … +1483 linhas — lista completa em `context.json` | |
+| … +1486 linhas — lista completa em `context.json` | |

@@ -2,11 +2,21 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "06620fcbb178b371abaafb1ca1b75b07ab8b066d",
+  "commit": "5eaf98ad331ced29e88902b129a1c7b7787e9398",
   "branch": "main",
-  "data_commit": "2026-11-23T18:06:30-03:00",
+  "data_commit": "2026-11-23T18:57:37-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "5eaf98a",
+    "data": "2026-11-23",
+    "assunto": "fix(qa): etapas 103, 108, 113 e 114 - subtotal do kit alinhado ao banco (#4024)"
+   },
+   {
+    "sha": "35aa001",
+    "data": "2026-11-23",
+    "assunto": "fix(qa): etapas 131-135 - baseline da suite e testes do kit-builder (#4025)"
+   },
    {
     "sha": "06620fc",
     "data": "2026-11-23",
@@ -121,19 +131,9 @@
     "sha": "4eddd73",
     "data": "2026-11-22",
     "assunto": "docs(migrations-log): recibo E15 — aplicação de 20261122180000 (#3987)"
-   },
-   {
-    "sha": "e883e2f",
-    "data": "2026-11-22",
-    "assunto": "fix: move cabeçalho -- Rollback: para as primeiras 40 linhas da 20261122180000 (#3986)"
-   },
-   {
-    "sha": "20c63c3",
-    "data": "2026-11-22",
-    "assunto": "fix: devolve security_invoker=false às views p06 e de compras (#3981)"
    }
   ],
-  "arquivos_mudados_7d": 714,
+  "arquivos_mudados_7d": 725,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -169,7 +169,7 @@
    },
    {
     "pasta": "src/components/mockup",
-    "mudancas": 164
+    "mudancas": 163
    },
    {
     "pasta": "supabase/functions/_shared",
@@ -193,7 +193,7 @@
    },
    {
     "pasta": "src/components/kit-builder",
-    "mudancas": 112
+    "mudancas": 113
    }
   ],
   "arquivos_mais_mudados_90d": [
@@ -203,18 +203,18 @@
    },
    {
     "arquivo": "package.json",
-    "mudancas": 30
+    "mudancas": 29
    },
    {
     "arquivo": "package-lock.json",
     "mudancas": 21
    },
    {
-    "arquivo": "CHANGELOG.md",
-    "mudancas": 15
+    "arquivo": "docs/qa/05-PROGRESSO.md",
+    "mudancas": 17
    },
    {
-    "arquivo": "docs/qa/05-PROGRESSO.md",
+    "arquivo": "CHANGELOG.md",
     "mudancas": 15
    },
    {
@@ -266,15 +266,15 @@
     "mudancas": 6
    },
    {
-    "arquivo": "src/pages/mockups/MockupGenerator.tsx",
-    "mudancas": 6
-   },
-   {
     "arquivo": "src/components/kit-builder/KitSummary.tsx",
     "mudancas": 5
    },
    {
     "arquivo": "src/components/kit-builder/PersonalizationConfig.tsx",
+    "mudancas": 5
+   },
+   {
+    "arquivo": "src/components/kit-builder/kit-summary/KitPricingCard.tsx",
     "mudancas": 5
    },
    {
@@ -309,7 +309,7 @@
    },
    {
     "autor": "Claude",
-    "commits": 9
+    "commits": 7
    },
    {
     "autor": "dependabot[bot]",
@@ -318,9 +318,9 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 11238,
-  "arquivos_codigo": 5671,
-  "linhas_codigo": 1075311,
+  "arquivos_total": 11243,
+  "arquivos_codigo": 5673,
+  "linhas_codigo": 1075281,
   "rotas": 141,
   "rotas_http_backend": 13,
   "vistas_por_id": 0,
@@ -332,10 +332,10 @@
   "tabelas": 531,
   "migrations": 3127,
   "cron_jobs": 122,
-  "testes": 2717,
+  "testes": 2718,
   "workflows": 89,
   "scripts": 284,
-  "docs_md": 1503
+  "docs_md": 1505
  },
  "por_pasta": {
   ".github/scripts": {
@@ -1935,8 +1935,8 @@
    "linhas": 66760
   },
   "src/lib": {
-   "arquivos": 419,
-   "linhas": 65064
+   "arquivos": 421,
+   "linhas": 65199
   },
   "src/logic": {
    "arquivos": 4,
@@ -1975,8 +1975,8 @@
    "linhas": 4467
   },
   "src/utils": {
-   "arquivos": 61,
-   "linhas": 9251
+   "arquivos": 62,
+   "linhas": 9260
   },
   "supabase/functions": {
    "arquivos": 279,
@@ -2055,8 +2055,8 @@
    "linhas": 141
   },
   "tests/components": {
-   "arquivos": 168,
-   "linhas": 36442
+   "arquivos": 166,
+   "linhas": 36109
   },
   "tests/config": {
    "arquivos": 6,
@@ -2191,8 +2191,8 @@
    "linhas": 37
   },
   "tests/sql": {
-   "arquivos": 4,
-   "linhas": 691
+   "arquivos": 5,
+   "linhas": 850
   },
   "tests/ssot": {
    "arquivos": 8,
@@ -2387,7 +2387,7 @@
   "ts_ignore": 0,
   "eslint_disable": 24,
   "todos": 111,
-  "arquivos_acima_500_linhas": 186
+  "arquivos_acima_500_linhas": 185
  },
  "todos": [
   {

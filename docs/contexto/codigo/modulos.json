@@ -25907,8 +25907,8 @@
   {
    "modulo": "lib/kit-builder",
    "arquivos": 13,
-   "testes": 3,
-   "linhas": 2086,
+   "testes": 4,
+   "linhas": 2096,
    "itens_menu": [],
    "telas": [],
    "rotas_http": [],
@@ -26342,7 +26342,7 @@
   {
    "modulo": "lib/quotes",
    "arquivos": 11,
-   "testes": 11,
+   "testes": 12,
    "linhas": 1443,
    "itens_menu": [],
    "telas": [],
@@ -37182,9 +37182,9 @@
   },
   {
    "modulo": "utils",
-   "arquivos": 34,
+   "arquivos": 35,
    "testes": 3,
-   "linhas": 5696,
+   "linhas": 5705,
    "itens_menu": [],
    "telas": [],
    "rotas_http": [],

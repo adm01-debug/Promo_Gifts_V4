@@ -15554,10 +15554,14 @@
   "src/utils/excelExport.ts": [
    "src/lib/date-utils.ts"
   ],
+  "src/utils/kitPdfFooter.ts": [
+   "src/utils/kitPdfPrimitives.ts"
+  ],
   "src/utils/kitPdfGenerator.ts": [
    "src/lib/freight/index.ts",
    "src/lib/kit-builder/index.ts",
    "src/lib/kit-builder/pricing-availability.ts",
+   "src/utils/kitPdfFooter.ts",
    "src/utils/kitPdfPrimitives.ts"
   ],
   "src/utils/kitPdfPrimitives.ts": [

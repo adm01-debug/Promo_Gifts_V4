@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "06620fcbb178b371abaafb1ca1b75b07ab8b066d",
+  "sha": "5eaf98ad331ced29e88902b129a1c7b7787e9398",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-23 21:15 UTC",
-  "files_total": 11166,
-  "code_files": 9164,
-  "code_lines": 1301177
+  "generated_at": "2026-11-23 21:59 UTC",
+  "files_total": 11171,
+  "code_files": 9167,
+  "code_lines": 1301284
  },
  "version": "1.3.2",
- "facts_hash": "69b8e1c854af155f",
+ "facts_hash": "d2da30518b277046",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -189,6 +189,7 @@
    "test:quote-rpc:postgres": "node scripts/simulate-quote-rpc-proposals.mjs",
    "test:device-trust:postgres": "python3 tests/sql/device-trust/run-tests.py --output-dir work/device-trust-sql",
    "test:quote-transitions:postgres": "python3 tests/sql/quote-status-transitions/run-tests.py --output-dir work/quote-status-transitions-sql",
+   "test:quote-discount-invariant:postgres": "python3 tests/sql/quote-discount-invariant/run-tests.py --output-dir work/quote-discount-invariant-sql",
    "check:quote-rpc:canonical": "node scripts/check-quote-rpc-canonical-readiness.mjs",
    "test:quality": "TZ=America/Sao_Paulo vitest run --exclude 'tests/hooks/**'",
    "test:ci-core": "TZ=America/Sao_Paulo STRICT_TEST_SIDE_EFFECTS=1 vitest run tests/contracts/migrated-endpoints.contract.test.ts src/lib/theme-presets.test.ts tests/components/products/ProductSparkline.labels.test.tsx src/pages/filters/__tests__/FiltersPage.sorting.test.tsx src/components/products/__tests__/ProductSortAccessibility.test.tsx tests/unit/supabase-schema-contract.test.ts tests/unit/favorites-migration.test.ts tests/unit/trending-score.test.ts tests/unit/variant-matching.test.ts tests/unit/text-utils.test.ts tests/unit/print-area-grouping.test.ts tests/unit/format.test.ts tests/unit/to-error-message.test.ts tests/unit/catalog-stock-status.test.ts tests/unit/masked-suffix.test.ts tests/unit/forecast.test.ts tests/unit/stock-chart-utils.test.ts tests/unit/novelty-dates.test.ts tests/unit/sensitive-masking.test.ts tests/unit/error-kind-inference.test.ts tests/unit/connection-error-copy.test.ts tests/unit/roles.test.ts tests/unit/supplier-colors.test.ts tests/unit/date-utils.test.ts tests/unit/format-utils.test.ts tests/unit/quote-status-config.test.ts tests/config/vitest-config-smoke.test.ts tests/config/e2e-http-status.test.ts tests/scripts/check-supabase-reference-catalog.test.mjs tests/scripts/check-migration-filename-contract.test.mjs tests/scripts/check-schema-reference-drift.test.mjs tests/scripts/check-result-contract.test.mjs tests/scripts/check-production-harnesses.test.mjs tests/scripts/check-dependency-audit.test.mjs tests/scripts/e2e-relevance.test.mjs tests/scripts/check-types-inventory-drift.test.mjs tests/scripts/check-pptx-image-parser-exposure.test.mjs tests/scripts/contexto-produtores.test.mjs tests/scripts/rpc-live-evidence-contract.test.mjs tests/scripts/strict-test-side-effects-contract.test.mjs tests/security/lint-0011-drift.test.ts tests/security/lint-0029-drift.test.ts tests/security/secdef-anon-drift.test.ts tests/security/security-definer-acl-gate.test.ts src/components/mockup/logo-editor/__tests__/LogoControls.test.tsx src/hooks/mockup/__tests__/mockupAreas.preserve.test.ts src/hooks/mockup/__tests__/mockupBatch.partial.test.ts src/hooks/mockup/__tests__/mockupDimensions.guard.test.ts src/hooks/mockup/__tests__/mockupEntry.params.test.ts src/hooks/mockup/__tests__/mockupGeneration.abort.test.ts src/hooks/mockup/__tests__/mockupRestore.selection.test.ts src/hooks/mockup/__tests__/useMockupGenerator.techniques.test.ts tests/components/mockup/acceptance/grupo1.acceptance.test.tsx tests/components/mockup/acceptance/grupo3.acceptance.test.tsx tests/components/mockup/acceptance/grupo4.acceptance.test.tsx tests/components/mockup/acceptance/grupo5.acceptance.test.tsx tests/components/mockup/acceptance/grupo6.acceptance.test.tsx tests/components/mockup/acceptance/grupo7.acceptance.test.tsx src/hooks/simulation/__tests__/useLogoColorAnalysis.test.ts src/components/mockup/__tests__/mockupA11y.slice2.test.tsx src/hooks/mockup/__tests__/mockupSelectionSnapshot.test.ts src/components/mockup/__tests__/MockupResultCard.states.test.tsx src/components/mockup/__tests__/MockupResultCard.preserved.test.tsx src/hooks/mockup/__tests__/mockupProjectSaved.test.ts src/pages/mockups/mockup-generator/__tests__/fichaDaAreaDaImagem.test.ts src/hooks/mockup/__tests__/trocaDeProjeto.test.ts tests/edge-functions/mockup-assistant.test.ts tests/security/crm-db-bridge-ownership.test.ts",
@@ -1129,11 +1130,11 @@
   ],
   "package_manager": "npm",
   "languages": {
-   ".sql": 3495,
-   ".ts": 3171,
-   ".tsx": 2026,
+   ".sql": 3496,
+   ".ts": 3174,
+   ".tsx": 2024,
    ".mjs": 455,
-   ".py": 17,
+   ".py": 18,
    ".js": 7
   },
   "monorepo_packages": [],
@@ -139516,10 +139517,36 @@
     "path": "",
     "file": "tests/components/pages/KitBuilderPage.test.tsx",
     "component": "KitBuilderPage.test",
-    "tables_transitive": [],
-    "invokes_transitive": [],
-    "rpc_transitive": [],
-    "deps_count": 0
+    "tables_transitive": [
+     "cart_templates",
+     "catalog_analytics",
+     "category_icons",
+     "order_items",
+     "orders",
+     "product_price_freshness_overrides",
+     "product_variants",
+     "product_views",
+     "profiles",
+     "quote_items",
+     "search_analytics",
+     "seller_cart_items",
+     "seller_carts",
+     "user_roles",
+     "video_variant_links"
+    ],
+    "invokes_transitive": [
+     "crm-db-bridge",
+     "external-db-bridge",
+     "mcp-keys-issue"
+    ],
+    "rpc_transitive": [
+     "fn_batch_update_cart_item_sort_order",
+     "fn_get_similar_products",
+     "get_catalog_bestseller_page",
+     "get_profile_and_roles",
+     "log_user_logout"
+    ],
+    "deps_count": 83
    },
    {
     "path": "",
@@ -139956,7 +139983,7 @@
      "save_custom_kit_atomic",
      "set_custom_kit_pinned"
     ],
-    "deps_count": 171
+    "deps_count": 172
    },
    {
     "path": "",
@@ -146474,7 +146501,7 @@
     "file": ".github/workflows/wraparound-monitor-report.yml"
    }
   ],
-  "components_count": 1763,
+  "components_count": 1761,
   "hooks": [
    {
     "name": "useQuoteComments",
@@ -151845,8 +151872,8 @@
   },
   {
    "module": "src/lib",
-   "files": 420,
-   "lines": 65074,
+   "files": 422,
+   "lines": 65209,
    "tables": [
     "...",
     "companies",
@@ -152659,8 +152686,8 @@
   },
   {
    "module": "src/utils",
-   "files": 61,
-   "lines": 9251,
+   "files": 62,
+   "lines": 9260,
    "tables": [],
    "exports": [
     "br-schemas.ts: cpfOptionalSchema, cepOptionalSchema, phoneBrOptionalSchema, assertPersistableCpf, assertPersistableCep, assertPersistablePhoneBr",
@@ -152677,6 +152704,7 @@
     "excelExport.ts: ExcelExportConfig, ExcelColumn, exportToExcel, exportMultipleSheets, formatPercentage, formatStatus",
     "image-utils.ts: ImageTypeCode, ProductImageMeta, GroupedImages, CdnVariant, isImageDeliveryUrl, getCdnUrl",
     "imageProxy.ts: getProxiedImageUrl, needsProxy, deriveOriginalUrl, deriveSpotOriginalUrlFromWorker",
+    "kitPdfFooter.ts: drawFooter",
     "kitPdfGenerator.ts: generateKitPDF, downloadKitPDF, exportKitPdf",
     "kitPdfPrimitives.ts: RgbColor, PRIMARY, GRAY_800, GRAY_500, WHITE, PERSONALIZATION",
     "laser-logo-processor.ts: LaserToneConfig, processLogoForLaser, processLogoForSerigrafia",
@@ -152748,6 +152776,7 @@
     "src/utils/excelExport.ts",
     "src/utils/image-utils.ts",
     "src/utils/imageProxy.ts",
+    "src/utils/kitPdfFooter.ts",
     "src/utils/kitPdfGenerator.ts",
     "src/utils/kitPdfPrimitives.ts",
     "src/utils/laser-logo-processor.ts",
@@ -153332,7 +153361,7 @@
   {
    "module": "tests",
    "files": 1116,
-   "lines": 176654,
+   "lines": 176617,
    "tables": [
     "bot_detection_log",
     "clients",
@@ -171898,6 +171927,46 @@
     "msg": "concurrent insert failed: "
    },
    {
+    "file": "tests/sql/quote-discount-invariant/run-tests.py",
+    "msg": "Cannot verify disposable-container ownership; no container was removed."
+   },
+   {
+    "file": "tests/sql/quote-discount-invariant/run-tests.py",
+    "msg": "Could not start the disposable PostgreSQL 17 container: "
+   },
+   {
+    "file": "tests/sql/quote-discount-invariant/run-tests.py",
+    "msg": "Disposable PostgreSQL did not become ready within 30 seconds."
+   },
+   {
+    "file": "tests/sql/quote-discount-invariant/run-tests.py",
+    "msg": "Disposable-container label mismatch; no container was removed."
+   },
+   {
+    "file": "tests/sql/quote-discount-invariant/run-tests.py",
+    "msg": "Failed to remove the owned disposable PostgreSQL container: "
+   },
+   {
+    "file": "tests/sql/quote-discount-invariant/run-tests.py",
+    "msg": "Local Docker daemon is unavailable: "
+   },
+   {
+    "file": "tests/sql/quote-discount-invariant/run-tests.py",
+    "msg": "Required reviewed file is missing: "
+   },
+   {
+    "file": "tests/sql/quote-discount-invariant/run-tests.py",
+    "msg": "Scenario failed: "
+   },
+   {
+    "file": "tests/sql/quote-discount-invariant/run-tests.py",
+    "msg": "discount-fixture.sql failed: "
+   },
+   {
+    "file": "tests/sql/quote-discount-invariant/run-tests.py",
+    "msg": "discount-fixture.sql never ran: server stayed unavailable"
+   },
+   {
     "file": "tests/sql/quote-status-transitions/run-tests.py",
     "msg": "Cannot verify disposable-container ownership; no container was removed."
    },
@@ -178122,6 +178191,14 @@
     "text": "Retorna array de supplier_codes únicos (apenas numéricos)."
    },
    {
+    "file": "src/utils/kitPdfGenerator.ts",
+    "text": "`pricing.productsPrice` e o que a linha de produtos deve mostrar."
+   },
+   {
+    "file": "src/utils/kitPdfGenerator.ts",
+    "text": "`pricing.productsPrice` e o que a linha de produtos deve mostrar."
+   },
+   {
     "file": "src/utils/kitPdfPrimitives.ts",
     "text": "* Mora em arquivo próprio porque `kitPdfGenerator.ts` encostou no limite de 500"
    },
@@ -179544,6 +179621,10 @@
    {
     "file": "tests/p0/_mocks.ts",
     "text": "entre testes. Importe apenas o que precisar — os testes ainda estão `.skip`,"
+   },
+   {
+    "file": "tests/sql/quote-discount-invariant/run-tests.py",
+    "text": "Cenario real: vendedor digita 10% de desconto e adiciona as linhas."
    },
    {
     "file": "tests/utils/deterministicTime.ts",
@@ -218871,7 +218952,7 @@
     "file": "src/lib/kit-builder/price-calculator.ts",
     "name": "calculateTotalKitPrice",
     "params": "box: KitBox | null, items: KitItem[], personalization: KitPersonalization, kitQuantity = 1,",
-    "body": "boxPrice: number; itemsPrice: number; personalizationPrice: number; subtotal: number; total: number; unitPrice: number;"
+    "body": "boxPrice: number; itemsPrice: number; /** Caixa + itens, sem personalizacao. E o valor da linha \"Produtos\". */ productsPrice: number; personalizationPrice: number; /** Inclui a personalizacao — e o que o banco grava em quotes.subtotal. */ subtotal: number; total: number; unitPrice: number;"
    },
    {
     "file": "src/lib/kit-builder/price-calculator.ts",
@@ -223748,6 +223829,10 @@
    {
     "file": "tests/edge-functions/live/_live-suite.ts",
     "line": "// callEdge) + 20% de margem — um valor fixo menor que esse budget corta a"
+   },
+   {
+    "file": "tests/sql/quote-discount-invariant/run-tests.py",
+    "line": "# Cenario real: vendedor digita 10% de desconto e adiciona as linhas."
    }
   ],
   "tests": [
@@ -258936,6 +259021,18 @@
     "name": "só status realmente publicados recebem o selo "
    },
    {
+    "file": "src/lib/kit-builder/__tests__/subtotal-personalization.test.ts",
+    "name": "ACH-092 - subtotal do kit x subtotal persistido (etapa 113)"
+   },
+   {
+    "file": "src/lib/kit-builder/__tests__/subtotal-personalization.test.ts",
+    "name": "o subtotal exibido pelo kit e igual ao subtotal que o banco grava"
+   },
+   {
+    "file": "src/lib/kit-builder/__tests__/subtotal-personalization.test.ts",
+    "name": "mantem caixa + itens em productsPrice, separado da personalizacao"
+   },
+   {
     "file": "src/lib/kit-builder/__tests__/transform-to-kit-box-maxweight.test.ts",
     "name": "transformToKitBox maxWeight (D1)"
    },
@@ -260034,6 +260131,10 @@
    {
     "file": "src/lib/quotes/__tests__/exportDiscountAuditPdf.test.ts",
     "name": "formata percentuais próximos ao maxAllowedPercent (boundary 9,99% / 10,00% / 10,01%)"
+   },
+   {
+    "file": "src/lib/quotes/__tests__/markup-divergence.test.ts",
+    "name": "ACH-091 — markup por linha x markup sobre o agregado (etapa 103)"
    },
    {
     "file": "src/lib/quotes/__tests__/personalizationSummary.parity.test.ts",
@@ -279492,138 +279593,6 @@
     "name": "renders a favorite toggle on the box card that updates the shared store"
    },
    {
-    "file": "tests/components/kit-builder/FreightEstimator.test.tsx",
-    "name": "FreightEstimator — tabela transportadora (default)"
-   },
-   {
-    "file": "tests/components/kit-builder/FreightEstimator.test.tsx",
-    "name": "peso zero → alerta de peso não informado visível"
-   },
-   {
-    "file": "tests/components/kit-builder/FreightEstimator.test.tsx",
-    "name": "0g → exibe peso 0.0kg"
-   },
-   {
-    "file": "tests/components/kit-builder/FreightEstimator.test.tsx",
-    "name": "1000g (1kg) → faixa ≤5kg = R$ 18,00"
-   },
-   {
-    "file": "tests/components/kit-builder/FreightEstimator.test.tsx",
-    "name": "5000g (5kg) → faixa ≤5kg = R$ 18,00 (boundary inclusive)"
-   },
-   {
-    "file": "tests/components/kit-builder/FreightEstimator.test.tsx",
-    "name": "5001g → faixa ≤10kg = R$ 28,00"
-   },
-   {
-    "file": "tests/components/kit-builder/FreightEstimator.test.tsx",
-    "name": "10000g (10kg) → faixa ≤10kg = R$ 28,00 (boundary inclusive)"
-   },
-   {
-    "file": "tests/components/kit-builder/FreightEstimator.test.tsx",
-    "name": "10001g → faixa ≤30kg = R$ 45,00"
-   },
-   {
-    "file": "tests/components/kit-builder/FreightEstimator.test.tsx",
-    "name": "30000g (30kg) → faixa ≤30kg = R$ 45,00"
-   },
-   {
-    "file": "tests/components/kit-builder/FreightEstimator.test.tsx",
-    "name": "30001g → faixa ≤100kg = R$ 80,00"
-   },
-   {
-    "file": "tests/components/kit-builder/FreightEstimator.test.tsx",
-    "name": "100000g (100kg) → faixa ≤100kg = R$ 80,00"
-   },
-   {
-    "file": "tests/components/kit-builder/FreightEstimator.test.tsx",
-    "name": "100001g → faixa >100kg = R$ 120,00 (último tier)"
-   },
-   {
-    "file": "tests/components/kit-builder/FreightEstimator.test.tsx",
-    "name": "FreightEstimator — multiplicação por kitQuantity"
-   },
-   {
-    "file": "tests/components/kit-builder/FreightEstimator.test.tsx",
-    "name": "2 kits × 2000g = 4kg → faixa ≤5kg = R$ 18,00"
-   },
-   {
-    "file": "tests/components/kit-builder/FreightEstimator.test.tsx",
-    "name": "5 kits × 1200g = 6kg → faixa ≤10kg = R$ 28,00"
-   },
-   {
-    "file": "tests/components/kit-builder/FreightEstimator.test.tsx",
-    "name": "preço por kit = preço total / kitQuantity"
-   },
-   {
-    "file": "tests/components/kit-builder/FreightEstimator.test.tsx",
-    "name": "kitQuantity=1 exibe mesmo valor em "
-   },
-   {
-    "file": "tests/components/kit-builder/FreightEstimator.test.tsx",
-    "name": "FreightEstimator — troca de modalidade"
-   },
-   {
-    "file": "tests/components/kit-builder/FreightEstimator.test.tsx",
-    "name": "renders com "
-   },
-   {
-    "file": "tests/components/kit-builder/FreightEstimator.test.tsx",
-    "name": "exibe "
-   },
-   {
-    "file": "tests/components/kit-builder/FreightEstimator.test.tsx",
-    "name": "exibe nota de valores estimados"
-   },
-   {
-    "file": "tests/components/kit-builder/FreightEstimator.test.tsx",
-    "name": "FreightEstimator — valores extremos e erro"
-   },
-   {
-    "file": "tests/components/kit-builder/FreightEstimator.test.tsx",
-    "name": "peso muito alto (999999g) → tier infinito = R$ 120,00"
-   },
-   {
-    "file": "tests/components/kit-builder/FreightEstimator.test.tsx",
-    "name": "kitQuantity=100 × 500g = 50kg → faixa ≤100kg = R$ 80,00"
-   },
-   {
-    "file": "tests/components/kit-builder/FreightEstimator.test.tsx",
-    "name": "peso negativo → trata como 0g"
-   },
-   {
-    "file": "tests/components/kit-builder/FreightEstimator.test.tsx",
-    "name": "kitQuantity=0 → trata como 1 kit para estimativa (evita divisão por zero)"
-   },
-   {
-    "file": "tests/components/kit-builder/FreightEstimator.test.tsx",
-    "name": "Infinity grams → fallback para tier máximo"
-   },
-   {
-    "file": "tests/components/kit-builder/FreightEstimator.test.tsx",
-    "name": "FreightEstimator — aviso de estimativa parcial (etapa 15)"
-   },
-   {
-    "file": "tests/components/kit-builder/FreightEstimator.test.tsx",
-    "name": "itemsWithUnknownWeight > 0 → mostra aviso de estimativa parcial com a contagem"
-   },
-   {
-    "file": "tests/components/kit-builder/FreightEstimator.test.tsx",
-    "name": "1 item sem peso → usa singular"
-   },
-   {
-    "file": "tests/components/kit-builder/FreightEstimator.test.tsx",
-    "name": "peso parcial tem prioridade sobre o aviso genérico de "
-   },
-   {
-    "file": "tests/components/kit-builder/FreightEstimator.test.tsx",
-    "name": "sem itens de peso desconhecido (default) preserva o aviso genérico existente"
-   },
-   {
-    "file": "tests/components/kit-builder/FreightEstimator.test.tsx",
-    "name": "peso total conhecido e sem itens de peso desconhecido → nenhum aviso de peso"
-   },
-   {
     "file": "tests/components/kit-builder/ItemCard.stock.test.tsx",
     "name": "StockBadge — 4 estados"
    },
@@ -279829,26 +279798,6 @@
    },
    {
     "file": "tests/components/kit-builder/KitBuilderComponents.test.tsx",
-    "name": "FreightEstimator"
-   },
-   {
-    "file": "tests/components/kit-builder/KitBuilderComponents.test.tsx",
-    "name": "renders with default values"
-   },
-   {
-    "file": "tests/components/kit-builder/KitBuilderComponents.test.tsx",
-    "name": "calculates freight for different weight ranges"
-   },
-   {
-    "file": "tests/components/kit-builder/KitBuilderComponents.test.tsx",
-    "name": "handles zero weight gracefully"
-   },
-   {
-    "file": "tests/components/kit-builder/KitBuilderComponents.test.tsx",
-    "name": "handles large quantities"
-   },
-   {
-    "file": "tests/components/kit-builder/KitBuilderComponents.test.tsx",
     "name": "DiscontinuedItemsAlert"
    },
    {
@@ -279994,14 +279943,6 @@
    {
     "file": "tests/components/kit-builder/KitSummary.stock.test.ts",
     "name": "exibe previsão somente após o estoque ser confirmado"
-   },
-   {
-    "file": "tests/components/kit-builder/KitSummary.weight.test.tsx",
-    "name": "KitSummary — propaga peso desconhecido ao estimador de frete"
-   },
-   {
-    "file": "tests/components/kit-builder/KitSummary.weight.test.tsx",
-    "name": "conta zero, ausente e caixa sem peso, sem tratar zero como medição"
    },
    {
     "file": "tests/components/kit-builder/PersonalizationConfig.behavior.test.tsx",
@@ -492763,7 +492704,7 @@
   },
   "src/lib/kit-builder/price-calculator.ts": {
    "path": "src/lib/kit-builder/price-calculator.ts",
-   "lines": 222,
+   "lines": 232,
    "exports": [
     "function calculateBoxPrice",
     "function calculateItemsPrice",
@@ -492799,7 +492740,7 @@
     {
      "name": "calculateTotalKitPrice",
      "params": "box: KitBox | null, items: KitItem[], personalization: KitPersonalization, kitQuantity = 1,",
-     "body": "boxPrice: number; itemsPrice: number; personalizationPrice: number; subtotal: number; total: number; unitPrice: number;"
+     "body": "boxPrice: number; itemsPrice: number; /** Caixa + itens, sem personalizacao. E o valor da linha \"Produtos\". */ productsPrice: number; personalizationPrice: number; /** Inclui a personalizacao — e o que o banco grava em quotes.subtotal. */ subtotal: number; total: number; unitPrice: number;"
     },
     {
      "name": "calculateSavings",
@@ -492996,6 +492937,22 @@
     "mapeia os status reais do app",
     "ready nunca é ",
     "só status realmente publicados recebem o selo "
+   ]
+  },
+  "src/lib/kit-builder/__tests__/subtotal-personalization.test.ts": {
+   "path": "src/lib/kit-builder/__tests__/subtotal-personalization.test.ts",
+   "lines": 79,
+   "is_test": true,
+   "params": [
+    {
+     "name": "KIT_QUANTITY",
+     "value": "10"
+    }
+   ],
+   "tests": [
+    "ACH-092 - subtotal do kit x subtotal persistido (etapa 113)",
+    "o subtotal exibido pelo kit e igual ao subtotal que o banco grava",
+    "mantem caixa + itens em productsPrice, separado da personalizacao"
    ]
   },
   "src/lib/kit-builder/__tests__/transform-to-kit-box-maxweight.test.ts": {
@@ -494739,6 +494696,28 @@
     "não vaza ",
     "renderiza múltiplas decisões em ordem (requested → rejected → requested → approved)",
     "formata percentuais próximos ao maxAllowedPercent (boundary 9,99% / 10,00% / 10,01%)"
+   ]
+  },
+  "src/lib/quotes/__tests__/markup-divergence.test.ts": {
+   "path": "src/lib/quotes/__tests__/markup-divergence.test.ts",
+   "lines": 46,
+   "is_test": true,
+   "params": [
+    {
+     "name": "MARKUP",
+     "value": "13"
+    },
+    {
+     "name": "UNIT_PRICE",
+     "value": "1.01"
+    },
+    {
+     "name": "QUANTITY",
+     "value": "7"
+    }
+   ],
+   "tests": [
+    "ACH-091 — markup por linha x markup sobre o agregado (etapa 103)"
    ]
   },
   "src/lib/quotes/__tests__/personalizationSummary.parity.test.ts": {
@@ -509860,9 +509839,16 @@
     "// XBZ Brindes — 67.96% (maior supplier) — CDN de imagens"
    ]
   },
+  "src/utils/kitPdfFooter.ts": {
+   "path": "src/utils/kitPdfFooter.ts",
+   "lines": 21,
+   "exports": [
+    "function drawFooter"
+   ]
+  },
   "src/utils/kitPdfGenerator.ts": {
    "path": "src/utils/kitPdfGenerator.ts",
-   "lines": 501,
+   "lines": 489,
    "exports": [
     "function generateKitPDF",
     "function downloadKitPDF",
@@ -509870,6 +509856,10 @@
    ],
    "errors": [
     "Não foi possível gerar o PDF do kit"
+   ],
+   "rule_comments": [
+    "`pricing.productsPrice` e o que a linha de produtos deve mostrar.",
+    "`pricing.productsPrice` e o que a linha de produtos deve mostrar."
    ],
    "doc": "Kit PDF Generator Generates a professional PDF for an assembled kit with composition, price breakdown, and personalization details.",
    "calc_fns": [
@@ -541923,47 +541913,6 @@
     "renders a favorite toggle on the box card that updates the shared store"
    ]
   },
-  "tests/components/kit-builder/FreightEstimator.test.tsx": {
-   "path": "tests/components/kit-builder/FreightEstimator.test.tsx",
-   "lines": 200,
-   "is_test": true,
-   "doc": "tests/components/kit-builder/FreightEstimator.test.tsx Testes unitários do FreightEstimator. Cobre: tabela de frete por faixa de peso, troca de modalidade, kitQuantity multiplicador, edge cases (0g, extremos, Infinity).",
-   "tests": [
-    "FreightEstimator — tabela transportadora (default)",
-    "peso zero → alerta de peso não informado visível",
-    "0g → exibe peso 0.0kg",
-    "1000g (1kg) → faixa ≤5kg = R$ 18,00",
-    "5000g (5kg) → faixa ≤5kg = R$ 18,00 (boundary inclusive)",
-    "5001g → faixa ≤10kg = R$ 28,00",
-    "10000g (10kg) → faixa ≤10kg = R$ 28,00 (boundary inclusive)",
-    "10001g → faixa ≤30kg = R$ 45,00",
-    "30000g (30kg) → faixa ≤30kg = R$ 45,00",
-    "30001g → faixa ≤100kg = R$ 80,00",
-    "100000g (100kg) → faixa ≤100kg = R$ 80,00",
-    "100001g → faixa >100kg = R$ 120,00 (último tier)",
-    "FreightEstimator — multiplicação por kitQuantity",
-    "2 kits × 2000g = 4kg → faixa ≤5kg = R$ 18,00",
-    "5 kits × 1200g = 6kg → faixa ≤10kg = R$ 28,00",
-    "preço por kit = preço total / kitQuantity",
-    "kitQuantity=1 exibe mesmo valor em ",
-    "FreightEstimator — troca de modalidade",
-    "renders com ",
-    "exibe ",
-    "exibe nota de valores estimados",
-    "FreightEstimator — valores extremos e erro",
-    "peso muito alto (999999g) → tier infinito = R$ 120,00",
-    "kitQuantity=100 × 500g = 50kg → faixa ≤100kg = R$ 80,00",
-    "peso negativo → trata como 0g",
-    "kitQuantity=0 → trata como 1 kit para estimativa (evita divisão por zero)",
-    "Infinity grams → fallback para tier máximo",
-    "FreightEstimator — aviso de estimativa parcial (etapa 15)",
-    "itemsWithUnknownWeight > 0 → mostra aviso de estimativa parcial com a contagem",
-    "1 item sem peso → usa singular",
-    "peso parcial tem prioridade sobre o aviso genérico de ",
-    "sem itens de peso desconhecido (default) preserva o aviso genérico existente",
-    "peso total conhecido e sem itens de peso desconhecido → nenhum aviso de peso"
-   ]
-  },
   "tests/components/kit-builder/ItemCard.stock.test.tsx": {
    "path": "tests/components/kit-builder/ItemCard.stock.test.tsx",
    "lines": 110,
@@ -542051,9 +542000,9 @@
   },
   "tests/components/kit-builder/KitBuilderComponents.test.tsx": {
    "path": "tests/components/kit-builder/KitBuilderComponents.test.tsx",
-   "lines": 305,
+   "lines": 276,
    "is_test": true,
-   "doc": "Comprehensive tests for Kit Builder components Covers: KitVisualPreview, FreightEstimator, DiscontinuedItemsAlert, KitComparisonDialog, KitSmartSuggestions, KitSummary",
+   "doc": "Comprehensive tests for Kit Builder components Covers: KitVisualPreview, DiscontinuedItemsAlert, KitComparisonDialog, KitSmartSuggestions, KitSummary",
    "tests": [
     "KitVisualPreview",
     "renders null when no box",
@@ -542061,11 +542010,6 @@
     "shows correct fill color for normal usage",
     "shows warning color when >80% usage",
     "shows danger color when >100% usage",
-    "FreightEstimator",
-    "renders with default values",
-    "calculates freight for different weight ranges",
-    "handles zero weight gracefully",
-    "handles large quantities",
     "DiscontinuedItemsAlert",
     "renders without items",
     "renders with items and checks for discontinued",
@@ -542156,15 +542100,6 @@
     "KitSummary — previsão de estoque",
     "não promete disponibilidade durante leitura inconclusiva",
     "exibe previsão somente após o estoque ser confirmado"
-   ]
-  },
-  "tests/components/kit-builder/KitSummary.weight.test.tsx": {
-   "path": "tests/components/kit-builder/KitSummary.weight.test.tsx",
-   "lines": 100,
-   "is_test": true,
-   "tests": [
-    "KitSummary — propaga peso desconhecido ao estimador de frete",
-    "conta zero, ausente e caixa sem peso, sem tratar zero como medição"
    ]
   },
   "tests/components/kit-builder/PersonalizationConfig.behavior.test.tsx": {
@@ -542861,7 +542796,7 @@
   },
   "tests/components/pages/KitBuilderPage.test.tsx": {
    "path": "tests/components/pages/KitBuilderPage.test.tsx",
-   "lines": 472,
+   "lines": 468,
    "is_test": true,
    "errors": [
     "${name}.${prop} não foi passado",
@@ -560958,6 +560893,39 @@
     "pins.stdin.close(); pins.wait(timeout=10)"
    ]
   },
+  "tests/sql/quote-discount-invariant/discount-fixture.sql": {
+   "path": "tests/sql/quote-discount-invariant/discount-fixture.sql",
+   "lines": 137
+  },
+  "tests/sql/quote-discount-invariant/run-tests.py": {
+   "path": "tests/sql/quote-discount-invariant/run-tests.py",
+   "lines": 159,
+   "exports": [
+    "def docker",
+    "def cleanup_owned_container",
+    "def main",
+    "def run_cases"
+   ],
+   "errors": [
+    "Cannot verify disposable-container ownership; no container was removed.",
+    "Could not start the disposable PostgreSQL 17 container: ",
+    "Disposable PostgreSQL did not become ready within 30 seconds.",
+    "Disposable-container label mismatch; no container was removed.",
+    "Failed to remove the owned disposable PostgreSQL container: ",
+    "Local Docker daemon is unavailable: ",
+    "Required reviewed file is missing: ",
+    "Scenario failed: ",
+    "discount-fixture.sql failed: ",
+    "discount-fixture.sql never ran: server stayed unavailable"
+   ],
+   "rule_comments": [
+    "Cenario real: vendedor digita 10% de desconto e adiciona as linhas."
+   ],
+   "doc": "!/usr/bin/env python3",
+   "percents": [
+    "# Cenario real: vendedor digita 10% de desconto e adiciona as linhas."
+   ]
+  },
   "tests/sql/quote-status-transitions/fixture.sql": {
    "path": "tests/sql/quote-status-transitions/fixture.sql",
    "lines": 104,
@@ -563310,10 +563278,44 @@
   }
  },
  "git": {
-  "sha": "06620fcbb178b371abaafb1ca1b75b07ab8b066d",
+  "sha": "5eaf98ad331ced29e88902b129a1c7b7787e9398",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "5eaf98a",
+    "date": "2026-11-23",
+    "author": "adm01-debug",
+    "subject": "fix(qa): etapas 103, 108, 113 e 114 - subtotal do kit alinhado ao banco (#4024)",
+    "files": [
+     "docs/qa/05-PROGRESSO.md",
+     "package.json",
+     "src/components/kit-builder/kit-summary/KitPricingCard.tsx",
+     "src/lib/kit-builder/__tests__/subtotal-personalization.test.ts",
+     "src/lib/kit-builder/price-calculator.ts",
+     "src/lib/quotes/__tests__/markup-divergence.test.ts",
+     "src/utils/kitPdfFooter.ts",
+     "src/utils/kitPdfGenerator.ts",
+     "tests/sql/quote-discount-invariant/README.md",
+     "tests/sql/quote-discount-invariant/discount-fixture.sql",
+     "tests/sql/quote-discount-invariant/run-tests.py"
+    ]
+   },
+   {
+    "sha": "35aa001",
+    "date": "2026-11-23",
+    "author": "adm01-debug",
+    "subject": "fix(qa): etapas 131-135 - baseline da suite e testes do kit-builder (#4025)",
+    "files": [
+     "docs/qa/05-PROGRESSO.md",
+     "docs/qa/suite-baseline.md",
+     "tests/components/QuoteCommentsSection.test.tsx",
+     "tests/components/kit-builder/FreightEstimator.test.tsx",
+     "tests/components/kit-builder/KitBuilderComponents.test.tsx",
+     "tests/components/kit-builder/KitSummary.weight.test.tsx",
+     "tests/components/pages/KitBuilderPage.test.tsx"
+    ]
+   },
    {
     "sha": "06620fc",
     "date": "2026-11-23",
@@ -563655,40 +563657,23 @@
      "supabase/migrations-snapshot/SCHEMA_LIVE.sql",
      "supabase/migrations-snapshot/SNAPSHOT_META.json"
     ]
-   },
-   {
-    "sha": "3aa6694",
-    "date": "2026-11-22",
-    "author": "adm01-debug",
-    "subject": "fix: alinhar recibo da 20261121203000 com a linha E15 (aplicada) (#3980)",
-    "files": [
-     "supabase/MIGRATIONS_SYNC_LOG.md"
-    ]
-   },
-   {
-    "sha": "aba6acf",
-    "date": "2026-11-22",
-    "author": "github-actions[bot]",
-    "subject": "chore(main): release gifts-store 1.19.0 (#3978)",
-    "files": [
-     ".release-please-manifest.json",
-     "CHANGELOG.md",
-     "package-lock.json",
-     "package.json"
-    ]
    }
   ],
   "hot_files": [
    [
     "docs/qa/05-PROGRESSO.md",
-    15
+    17
    ],
    [
     "supabase/MIGRATIONS_SYNC_LOG.md",
-    7
+    6
    ],
    [
     "package.json",
+    2
+   ],
+   [
+    "src/components/kit-builder/kit-summary/KitPricingCard.tsx",
     2
    ],
    [
@@ -563724,39 +563709,35 @@
     2
    ],
    [
-    ".security/rls-no-policy-allowlist.json",
+    "src/lib/kit-builder/__tests__/subtotal-personalization.test.ts",
     1
    ],
    [
-    ".as-assertions-baseline.json",
+    "src/lib/kit-builder/price-calculator.ts",
     1
    ],
    [
-    ".eslint-disable-baseline.json",
+    "src/lib/quotes/__tests__/markup-divergence.test.ts",
     1
    ],
    [
-    ".file-size-baseline.json",
+    "src/utils/kitPdfFooter.ts",
     1
    ],
    [
-    "docs/qa/telas-sem-estado-de-erro.md",
+    "src/utils/kitPdfGenerator.ts",
     1
    ],
    [
-    "src/components/catalog/CatalogContent.tsx",
+    "tests/sql/quote-discount-invariant/README.md",
     1
    ],
    [
-    "src/components/catalog/__tests__/CatalogContent.error.test.tsx",
+    "tests/sql/quote-discount-invariant/discount-fixture.sql",
     1
    ],
    [
-    "src/components/compare/SupplierComparisonModal.tsx",
-    1
-   ],
-   [
-    "src/components/compare/__tests__/SupplierComparisonModal.export.test.tsx",
+    "tests/sql/quote-discount-invariant/run-tests.py",
     1
    ]
   ]

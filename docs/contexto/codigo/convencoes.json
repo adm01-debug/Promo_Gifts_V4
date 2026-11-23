@@ -19,12 +19,12 @@
   ],
   "servicos_logica": [
    "src/lib (268)",
-   "src/utils (33)",
+   "src/utils (34)",
    "src/services (16)"
   ],
   "testes": [
-   "tests/ (1100)",
-   "co-localizado (__tests__) (784)",
+   "tests/ (1099)",
+   "co-localizado (__tests__) (786)",
    "e2e/ (627)"
   ],
   "edge_functions": "supabase/functions",
@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "fix(qa): etapas 103, 108, 113 e 114 - subtotal do kit alinhado ao banco (#4024)",
+   "fix(qa): etapas 131-135 - baseline da suite e testes do kit-builder (#4025)",
    "chore(security): documentar deny-all das 6 tabelas de auditoria no allowlist de RLS (#4028)",
    "chore: consolidar baselines de ratchet (as-assertions, file-size, eslint-disable) (#4027)",
-   "fix: referencia completa da migration do orcamento em 05-PROGRESSO (#4026)",
-   "fix(qa): etapas 072-079 - erro de catalogo, colecoes e templates separados do vazio (#4023)",
-   "fix: Etapas 069-070 — alinhar ROLE_RANK em dispatcher-auth (ACH-022) (#4022)"
+   "fix: referencia completa da migration do orcamento em 05-PROGRESSO (#4026)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",

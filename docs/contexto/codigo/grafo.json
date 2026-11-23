@@ -1,8 +1,8 @@
 {
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
- "nos": 2954,
- "arestas": 11687,
+ "nos": 2955,
+ "arestas": 11689,
  "hubs": [
   {
    "arquivo": "src/lib/utils.ts",
@@ -66,7 +66,7 @@
   },
   {
    "arquivo": "src/lib/kit-builder/index.ts",
-   "importado_por": 117
+   "importado_por": 116
   },
   {
    "arquivo": "supabase/functions/_shared/cors.ts",

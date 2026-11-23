@@ -5,22 +5,22 @@
   "vitest",
   "playwright"
  ],
- "total": 2717,
+ "total": 2718,
  "por_tipo": {
   "contrato": 70,
   "e2e": 679,
-  "pytest": 7,
+  "pytest": 8,
   "qa": 17,
   "unit": 1944
  },
  "onde_ficam": [
   {
    "padrao": "tests/",
-   "arquivos": 1100
+   "arquivos": 1099
   },
   {
    "padrao": "co-localizado (__tests__)",
-   "arquivos": 784
+   "arquivos": 786
   },
   {
    "padrao": "e2e/",
@@ -10536,6 +10536,16 @@
    "casos": 3
   },
   {
+   "arquivo": "src/lib/kit-builder/__tests__/subtotal-personalization.test.ts",
+   "tipo": "unit",
+   "linhas": 79,
+   "testa": [
+    "src/lib/kit-builder/price-calculator.ts",
+    "src/lib/kit-builder/types.ts"
+   ],
+   "casos": 2
+  },
+  {
    "arquivo": "src/lib/kit-builder/__tests__/transform-to-kit-box-maxweight.test.ts",
    "tipo": "unit",
    "linhas": 45,
@@ -10694,6 +10704,17 @@
     "src/lib/quotes/exportDiscountAuditPdf.ts"
    ],
    "casos": 8
+  },
+  {
+   "arquivo": "src/lib/quotes/__tests__/markup-divergence.test.ts",
+   "tipo": "unit",
+   "linhas": 46,
+   "testa": [
+    "src/hooks/quotes/quoteHelpers.ts",
+    "src/hooks/quotes/quoteMarkup.ts",
+    "src/hooks/quotes/quoteTypes.ts"
+   ],
+   "casos": 0
   },
   {
    "arquivo": "src/lib/quotes/__tests__/personalizationSummary.parity.test.ts",
@@ -14543,13 +14564,6 @@
    "casos": 9
   },
   {
-   "arquivo": "tests/components/kit-builder/FreightEstimator.test.tsx",
-   "tipo": "unit",
-   "linhas": 200,
-   "testa": [],
-   "casos": 28
-  },
-  {
    "arquivo": "tests/components/kit-builder/ItemCard.stock.test.tsx",
    "tipo": "unit",
    "linhas": 110,
@@ -14602,14 +14616,14 @@
   {
    "arquivo": "tests/components/kit-builder/KitBuilderComponents.test.tsx",
    "tipo": "unit",
-   "linhas": 305,
+   "linhas": 276,
    "testa": [
     "src/components/kit-builder/DiscontinuedItemsAlert.tsx",
     "src/components/kit-builder/KitComparisonDialog.tsx",
     "src/components/kit-builder/KitSmartSuggestions.tsx",
     "src/components/kit-builder/KitVisualPreview.tsx"
    ],
-   "casos": 17
+   "casos": 13
   },
   {
    "arquivo": "tests/components/kit-builder/KitBuilderHeader.test.tsx",
@@ -14679,16 +14693,6 @@
     "src/components/kit-builder/KitSummary.tsx"
    ],
    "casos": 2
-  },
-  {
-   "arquivo": "tests/components/kit-builder/KitSummary.weight.test.tsx",
-   "tipo": "unit",
-   "linhas": 100,
-   "testa": [
-    "src/components/kit-builder/KitSummary.tsx",
-    "src/lib/kit-builder/index.ts"
-   ],
-   "casos": 1
   },
   {
    "arquivo": "tests/components/kit-builder/PersonalizationConfig.behavior.test.tsx",
@@ -15244,7 +15248,7 @@
   {
    "arquivo": "tests/components/pages/KitBuilderPage.test.tsx",
    "tipo": "unit",
-   "linhas": 472,
+   "linhas": 468,
    "testa": [
     "src/pages/kit-builder/KitBuilderPage.tsx"
    ],
@@ -22445,6 +22449,13 @@
    "casos": 0
   },
   {
+   "arquivo": "tests/sql/quote-discount-invariant/run-tests.py",
+   "tipo": "pytest",
+   "linhas": 159,
+   "testa": [],
+   "casos": 0
+  },
+  {
    "arquivo": "tests/sql/quote-status-transitions/extract-transitions.mts",
    "tipo": "unit",
    "linhas": 6,
@@ -23484,7 +23495,7 @@
   "src/components/kit-builder/KitOnboardingTour.tsx": 1,
   "src/components/kit-builder/KitPresentablePreview.tsx": 2,
   "src/components/kit-builder/KitSmartSuggestions.tsx": 1,
-  "src/components/kit-builder/KitSummary.tsx": 2,
+  "src/components/kit-builder/KitSummary.tsx": 1,
   "src/components/kit-builder/KitVisualPreview.tsx": 1,
   "src/components/kit-builder/PersonalizationConfig.tsx": 2,
   "src/components/kit-builder/VirtualizedKitItemList.tsx": 1,
@@ -23832,10 +23843,10 @@
   "src/hooks/products/useVoiceFilterApply.ts": 2,
   "src/hooks/quotes/index.ts": 22,
   "src/hooks/quotes/quoteDraftApply.ts": 3,
-  "src/hooks/quotes/quoteHelpers.ts": 9,
-  "src/hooks/quotes/quoteMarkup.ts": 1,
+  "src/hooks/quotes/quoteHelpers.ts": 10,
+  "src/hooks/quotes/quoteMarkup.ts": 2,
   "src/hooks/quotes/quoteTemplateItemGuard.ts": 1,
-  "src/hooks/quotes/quoteTypes.ts": 16,
+  "src/hooks/quotes/quoteTypes.ts": 17,
   "src/hooks/quotes/restoredDraftBase.ts": 2,
   "src/hooks/quotes/useAutoSaveQuote.ts": 8,
   "src/hooks/quotes/useDiscountApproval.ts": 3,
@@ -23992,13 +24003,13 @@
   "src/lib/inventory/supplier-reliability/types.ts": 4,
   "src/lib/json-value.ts": 1,
   "src/lib/kit-builder/ai-composition.ts": 2,
-  "src/lib/kit-builder/index.ts": 41,
+  "src/lib/kit-builder/index.ts": 40,
   "src/lib/kit-builder/item-sort.ts": 1,
   "src/lib/kit-builder/persistence.ts": 6,
-  "src/lib/kit-builder/price-calculator.ts": 2,
+  "src/lib/kit-builder/price-calculator.ts": 3,
   "src/lib/kit-builder/pricing-availability.ts": 2,
   "src/lib/kit-builder/snapshot/read-draft.ts": 1,
-  "src/lib/kit-builder/types.ts": 6,
+  "src/lib/kit-builder/types.ts": 7,
   "src/lib/kit-builder/volume-calculator.ts": 1,
   "src/lib/kit-builder/weight.ts": 1,
   "src/lib/kit-library/buildCustomKitInsert.ts": 2,

@@ -1,7 +1,7 @@
 {
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
- "total": 351,
+ "total": 352,
  "por_camada": {
   "api": 4,
   "config": 1,
@@ -11,7 +11,7 @@
   "python": 9,
   "services": 16,
   "stores": 9,
-  "utils": 33
+  "utils": 34
  },
  "arquivos": [
   {
@@ -5162,7 +5162,7 @@
     "pages/kit-builder",
     "utils"
    ],
-   "coberto_por_testes": 41,
+   "coberto_por_testes": 40,
    "orfao": false
   },
   {
@@ -5237,7 +5237,7 @@
     "generatePriceBreakdown"
    ],
    "export_default": null,
-   "linhas": 222,
+   "linhas": 232,
    "tabelas": [],
    "rpcs": [],
    "edges": [],
@@ -5251,7 +5251,7 @@
     "hooks/kit-builder",
     "lib/kit-builder"
    ],
-   "coberto_por_testes": 2,
+   "coberto_por_testes": 3,
    "orfao": false
   },
   {
@@ -5352,7 +5352,7 @@
     "lib/freight",
     "lib/kit-builder"
    ],
-   "coberto_por_testes": 6,
+   "coberto_por_testes": 7,
    "orfao": false
   },
   {
@@ -10226,6 +10226,31 @@
    "orfao": false
   },
   {
+   "arquivo": "src/utils/kitPdfFooter.ts",
+   "camada": "utils",
+   "exports": [
+    "drawFooter"
+   ],
+   "export_default": null,
+   "linhas": 21,
+   "tabelas": [],
+   "rpcs": [],
+   "edges": [],
+   "env": [],
+   "externos": [
+    "jspdf"
+   ],
+   "zod_schemas": 0,
+   "flags": [],
+   "papeis": [],
+   "usado_por": 1,
+   "usado_por_modulos": [
+    "utils"
+   ],
+   "coberto_por_testes": 0,
+   "orfao": false
+  },
+  {
    "arquivo": "src/utils/kitPdfGenerator.ts",
    "camada": "utils",
    "exports": [
@@ -10234,7 +10259,7 @@
     "generateKitPDF"
    ],
    "export_default": null,
-   "linhas": 501,
+   "linhas": 489,
    "tabelas": [],
    "rpcs": [],
    "edges": [],
@@ -10281,7 +10306,7 @@
    "zod_schemas": 0,
    "flags": [],
    "papeis": [],
-   "usado_por": 1,
+   "usado_por": 2,
    "usado_por_modulos": [
     "utils"
    ],
