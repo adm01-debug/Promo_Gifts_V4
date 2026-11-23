@@ -121,7 +121,7 @@ export function KitPricingCard({
                 Produtos ({kitQuantity} {kitQuantity === 1 ? 'kit' : 'kits'})
               </span>
               <span>
-                {pricesKnown ? formatCurrency(pricing.subtotal / divisor) : 'Não informado'}
+                {pricesKnown ? formatCurrency(pricing.productsPrice / divisor) : 'Não informado'}
               </span>
             </div>
             {pricing.personalizationPrice > 0 && (
