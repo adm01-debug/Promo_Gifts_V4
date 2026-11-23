@@ -225,11 +225,28 @@ Severidade das etapas: Média 158 · Alta 79 · Baixa 54 · Crítica 9
 
 ## Onda 3 — Integridade de dados, regras de negócio e a rede de teste
 
-- [ ] 093 — Teste que prova o banco aceitando transição proibida de status — onda 3 — Alta
+- [x] 093 — Teste que prova o banco aceitando transição proibida de status — onda 3 — Alta
+  - Evidência 093: criado `tests/sql/quote-status-transitions/` com `extract-transitions.mts`,
+    `fixture.sql`, `run-tests.py` e `README.md`, mais o script `npm run test:quote-transitions:postgres`.
+    Os pares **não** são redigitados: `extract-transitions.mts` importa `QUOTE_VALID_TRANSITIONS` de
+    `src/lib/quote-status-config.ts` e o runner deriva os 70 pares proibidos e os 30 permitidos.
+    `fixture.sql` reproduz o `CHECK valid_quote_status` de produção
+    (`supabase/migrations-snapshot/SCHEMA_LIVE.sql:8940`) e o corpo atual de
+    `fn_quotes_enforce_immutability` (idem, `:38779`), sem corrigi-lo. Container `postgres:17`
+    descartável, `--network none`, label de posse, cada par em `BEGIN; INSERT; UPDATE; ROLLBACK`.
+    Saída: **55 dos 70 pares proibidos foram aceitos pelo banco** (`cancelled → approved`,
+    `rejected → approved`, `draft → converted`, `sent → draft`, entre outros); 15 rejeitados — só os
+    que saem de `approved`/`converted`. Os **30 pares permitidos passaram todos** (nenhuma regressão
+    de fluxo legítimo). Resumo em `work/quote-status-transitions-sql/sql-test-results.json`.
+    Teste vermelho por desenho: passa inteiro quando a etapa 094 entrar, sem alteração no teste.
 - [ ] 094 — Trigger de transição de status válida em `quotes` — onda 3 — Alta — APROVAÇÃO
 - [ ] 095 — Um único caminho de escrita de status no front — onda 3 — Alta
 - [ ] 096 — `useDiscountApproval` passa a escrever status pelo caminho único — onda 3 — Alta
-- [ ] 097 — `DiscountApprovalQueue` passa a escrever status pelo caminho único — onda 3 — Alta
+- [~] 097 — `DiscountApprovalQueue` passa a escrever status pelo caminho único — onda 3 — Alta — NÃO APLICÁVEL
+  - Evidência 097: `src/components/admin/DiscountApprovalQueue.tsx` tem **0 imports** no repositório
+    (verificado por varredura em `src/`): é componente órfão. A escrita de status na linha 162 nunca
+    executa em produção, então migrá-la para o caminho único não muda comportamento. A remoção do
+    arquivo é a etapa 276. Reabrir esta etapa só se o componente voltar a ser montado.
 - [ ] 098 — `DiscountRequestDetailPage` passa a escrever status pelo caminho único — onda 3 — Alta
 - [ ] 099 — `QuoteViewPage` passa a escrever status pelo caminho único — onda 3 — Alta
 - [ ] 100 — Remover o bypass `pending → pending_approval` do builder — onda 3 — Média
