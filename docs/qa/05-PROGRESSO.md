@@ -277,7 +277,7 @@ Severidade das etapas: Média 158 · Alta 79 · Baixa 54 · Crítica 9
   - Evidência 100: escolha registrada — **a transição é legítima**. A RPC
     `request_discount_approval_transactional` aceita orçamento em
     `draft|pending|pending_approval` e grava `pending_approval`
-    (`supabase/migrations/20260829115000_...sql:35,78-90`), e o builder já oferece
+    (`supabase/migrations/20260829115000_discount_approval_pending_reuse_and_markup_audit.sql:34-37,78-90`), e o builder já oferece
     o botão "Solicitar aprovação" para cotação `pending`. Então o par entrou em
     `QUOTE_VALID_TRANSITIONS.pending` (SSOT) e o bypass
     `isApprovalRequestFromEditable` foi removido de `useQuoteBuilderState.ts` —
