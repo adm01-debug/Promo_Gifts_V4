@@ -12601,7 +12601,7 @@
    "hooks_exportados": [
     "useQuotes"
    ],
-   "linhas": 415,
+   "linhas": 416,
    "dominio": "hooks/quotes",
    "tabelas": [],
    "rpcs": [],
@@ -12709,7 +12709,7 @@
     "src/hooks/quotes/index.ts",
     "src/hooks/quotes/useQuoteFunnel.ts"
    ],
-   "coberto_por_testes": 0
+   "coberto_por_testes": 1
   },
   {
    "arquivo": "src/hooks/quotes/useSellerDiscountLimits.ts",
@@ -12735,7 +12735,7 @@
    "usado_por_arquivos": [
     "src/hooks/quotes/index.ts"
    ],
-   "coberto_por_testes": 3
+   "coberto_por_testes": 4
   },
   {
    "arquivo": "src/hooks/simulation/index.ts",
@@ -15120,7 +15120,7 @@
    "hooks_exportados": [
     "useQuotesDashboard"
    ],
-   "linhas": 318,
+   "linhas": 329,
    "dominio": "pages/quotes",
    "tabelas": [],
    "rpcs": [],

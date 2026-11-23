@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e de hora em hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `cdf7daae4ed696178fa6435251cef544271bf8a2` (2026-11-23T20:06:53-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e de hora em hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `e142753481ac8093ed22ddc56275dc644aad8140` (2026-11-23T20:25:17-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -14,7 +14,7 @@ Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR
 Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua tarefa; não carregue tudo.
 
 ## Stack
-- linguagens: TypeScript (5203), SQL (3496), Markdown (1506), JavaScript (462), JSON (132), YAML (117), Shell (27), HTML (20)
+- linguagens: TypeScript (5205), SQL (3496), Markdown (1507), JavaScript (462), JSON (132), YAML (117), Shell (27), HTML (20)
 - linguagem_principal: TypeScript
 - framework: React
 - backend_http: n/d
@@ -34,9 +34,9 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 ## Números
 | item | qtd |
 |---|---|
-| arquivos_total | 11249 |
-| arquivos_codigo | 5678 |
-| linhas_codigo | 1075603 |
+| arquivos_total | 11252 |
+| arquivos_codigo | 5680 |
+| linhas_codigo | 1075691 |
 | rotas | 141 |
 | rotas_http_backend | 13 |
 | vistas_por_id | 0 |
@@ -48,17 +48,17 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 | tabelas | 531 |
 | migrations | 3127 |
 | cron_jobs | 122 |
-| testes | 2721 |
+| testes | 2722 |
 | workflows | 89 |
 | scripts | 284 |
-| docs_md | 1506 |
+| docs_md | 1507 |
 
 ## Onde ficam as coisas
 - telas: src/pages (114), src/components (3), api/health.ts (1)
 - componentes: src/components (980), src/pages (182), recovery/src-legacy (100)
 - hooks: src/hooks (315), recovery/src-legacy (196), src/components (78)
 - servicos_logica: src/lib (269), src/utils (34), src/services (16)
-- testes: tests/ (1099), co-localizado (__tests__) (789), e2e/ (627)
+- testes: tests/ (1099), co-localizado (__tests__) (790), e2e/ (627)
 - edge_functions: supabase/functions
 - migrations: supabase/migrations
 - scripts: scripts/ci-local (11), scripts/lib (7), scripts/graphify (4)
@@ -121,7 +121,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 | hooks/kit-builder | 0 | 0 | 24 | 26 | 0 | 9 |
 | hooks/mockup | 0 | 0 | 14 | 271 | 4 | 41 |
 | hooks/products | 0 | 0 | 72 | 283 | 4 | 42 |
-| hooks/quotes | 0 | 0 | 27 | 306 | 4 | 53 |
+| hooks/quotes | 0 | 0 | 28 | 306 | 4 | 53 |
 | hooks/simulation | 0 | 0 | 17 | 46 | 0 | 5 |
 | hooks/simulator | 0 | 0 | 8 | 52 | 0 | 6 |
 | hooks/stock | 0 | 0 | 13 | 37 | 0 | 8 |
@@ -599,8 +599,8 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - possiveis_segredos_no_codigo: 7 — ex.: scripts/ai-context/cenarios.mjs:102, src/components/admin/connections/__tests__/ConnectionSecurity.unit.test.tsx:9, src/integrations/supabase/client.ts:27
 
 ## Grafo de código (graphify)
-- 50906 nós · 86319 arestas · 2837 comunidades · grafo do commit `cdf7daae`
-- comunidades maiores: vitest (955), ref_components (834), ref_integrations (608), ref_node_child_process (520), @tanstack/react-query (444), ref_hooks (421), sonner (415), ref_types (382), nav.ts (370), react (361), ref_node_fs (347), react-router-dom (333)
+- 50924 nós · 86337 arestas · 2819 comunidades · grafo do commit `e1427534`
+- comunidades maiores: vitest (942), ref_components (692), ref_integrations (681), ref_node_child_process (502), @tanstack/react-query (446), ref_hooks (430), react-router-dom (394), ref_types (394), ref_utils (360), sonner (352), ref_node_fs (345), nav.ts (330)
 - símbolos mais chamados: gotoAndSettle() (e2e/helpers/nav.ts), re (?), json (?), q() (scripts/supabase_snapshot/snapshot.py), analyze() (tests/scripts/test_personalization_artifact_diagnostics.py), outer() (tests/scripts/test_personalization_artifact_diagnostics.py), useExternalDatabase() (recovery/src-legacy/src/hooks/useExternalDatabase.ts), concludeCheck() (scripts/check-result-contract.mjs), querySupabaseReadOnly() (scripts/supabase-read-only-query.mjs), loginAs() (e2e/helpers/auth.ts), inner() (tests/scripts/test_personalization_artifact_diagnostics.py), excluded_sql() (scripts/supabase_snapshot/snapshot.py)
 - consulta local: `graphify query "<pergunta>"`, `graphify path "<A>" "<B>"`, `graphify explain "<X>"`
 
@@ -608,7 +608,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - supabase/MIGRATIONS_SYNC_LOG.md (65)
 - package.json (29)
 - package-lock.json (21)
-- docs/qa/05-PROGRESSO.md (19)
+- docs/qa/05-PROGRESSO.md (20)
 - CHANGELOG.md (15)
 - docs/coordenacao/conflitos-semanticos.md (11)
 - .github/workflows/deploy-gates.yml (10)
@@ -1194,10 +1194,11 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - `docs/motor-v2-test-report.md` — 🧪 Relatório Exaustivo de Testes — Motor V2 (Bronze Layer) (401 linhas)
 - `docs/notifications-module-audit.md` — Auditoria — Módulo "Notificações de Estoque" (sino do header) (110 linhas)
 - `docs/prod-readiness.md` — Prontidão para produção — inventário e prova (1148 linhas)
-- subpastas de docs/: docs/arquivo (92), docs/redeploy (27), docs/agentes (26), docs/estado (26), docs/plans (24), docs/db (14), docs/audits (12), docs/ci (12), docs/qa (12), docs/adr (11), docs/auditoria-planejado-nao-executado-2026-10-11 (11), docs/hardening (11), docs/validation (11), docs/architecture (9), docs/runbooks (8), docs/bugs (6), docs/security (6), docs/sessoes (5), docs/suppliers (5), docs/arquitetura (4), docs/audit (4), docs/operations (4), docs/pendencias (4), docs/testing (4), docs/RUNBOOKS (3), docs/contexto (3), docs/design (3), docs/fabrica-vps (3), docs/faxina-261114 (3), docs/observability (3), docs/reports (3), docs/INCIDENTS (2), docs/contracts (2), docs/coordenacao (2), docs/edge-functions (2), docs/frete (2), docs/historico (2), docs/incidente-2026-10-13 (2), docs/prompts (2), docs/e2e (1), docs/graphify (1), docs/incidents (1), docs/migrations (1), docs/pipelines (1), docs/postmortems (1), docs/promo-champions (1), docs/storage (1), docs/workflows (1)
+- subpastas de docs/: docs/arquivo (92), docs/redeploy (27), docs/agentes (26), docs/estado (26), docs/plans (24), docs/db (14), docs/qa (13), docs/audits (12), docs/ci (12), docs/adr (11), docs/auditoria-planejado-nao-executado-2026-10-11 (11), docs/hardening (11), docs/validation (11), docs/architecture (9), docs/runbooks (8), docs/bugs (6), docs/security (6), docs/sessoes (5), docs/suppliers (5), docs/arquitetura (4), docs/audit (4), docs/operations (4), docs/pendencias (4), docs/testing (4), docs/RUNBOOKS (3), docs/contexto (3), docs/design (3), docs/fabrica-vps (3), docs/faxina-261114 (3), docs/observability (3), docs/reports (3), docs/INCIDENTS (2), docs/contracts (2), docs/coordenacao (2), docs/edge-functions (2), docs/frete (2), docs/historico (2), docs/incidente-2026-10-13 (2), docs/prompts (2), docs/e2e (1), docs/graphify (1), docs/incidents (1), docs/migrations (1), docs/pipelines (1), docs/postmortems (1), docs/promo-champions (1), docs/storage (1), docs/workflows (1)
 - CHANGELOG topo: [1.19.0](https://github.com/adm01-debug/Promo_Gifts_V4/compare/gifts-store-v1.18.0...gifts-store-v1.19.0) (2026-11-22)
 
 ## Últimos commits
+- 2026-11-23 `e142753` fix(hooks): centralizar invalidacao do cache de orcamentos (#4031)
 - 2026-11-23 `cdf7daa` fix(hooks): resposta atrasada nao sobrescreve mais preco da tecnica (182-185) (#4030)
 - 2026-11-23 `e8a15b4` feat(hooks): merge parcial em profiles.preferences (etapas 141-146) (#4029)
 - 2026-11-23 `5eaf98a` fix(qa): etapas 103, 108, 113 e 114 - subtotal do kit alinhado ao banco (#4024)
@@ -1212,7 +1213,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-23 `aeef004` feat: Etapas 057-060 — adotar safeErrorResponse em 5 edge functions (ACH-030) (#4018)
 - 2026-11-23 `ec295ba` feat: Etapa 042 — restringir e2e-cleanup a quotes marcadas [E2E] (ACH-071) (#4017)
 - 2026-11-23 `0f0ccc3` feat: Etapa 041 — alarme explícito de dessincronia no e2e-cleanup (ACH-071) (#4016)
-- 2026-11-23 `0b17fd8` feat: Etapa 044 — ligar bloqueio efetivo allowlist no webhook-dispatcher (ACH-009) (#4015)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

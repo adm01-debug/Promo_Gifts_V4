@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "cdf7daae4ed696178fa6435251cef544271bf8a2",
+  "commit": "e142753481ac8093ed22ddc56275dc644aad8140",
   "branch": "main",
-  "data_commit": "2026-11-23T20:06:53-03:00",
+  "data_commit": "2026-11-23T20:25:17-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "e142753",
+    "data": "2026-11-23",
+    "assunto": "fix(hooks): centralizar invalidacao do cache de orcamentos (#4031)"
+   },
    {
     "sha": "cdf7daa",
     "data": "2026-11-23",
@@ -126,14 +131,9 @@
     "sha": "7600d95",
     "data": "2026-11-22",
     "assunto": "fix: corrigir cadeia invoker das views de compras e composicoes (#3989)"
-   },
-   {
-    "sha": "d519f4e",
-    "data": "2026-11-22",
-    "assunto": "chore(schema-snapshot): snapshot semanal 2026-W47 (run 45033672701) (#3988)"
    }
   ],
-  "arquivos_mudados_7d": 737,
+  "arquivos_mudados_7d": 740,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -169,7 +169,7 @@
    },
    {
     "pasta": "src/components/mockup",
-    "mudancas": 163
+    "mudancas": 162
    },
    {
     "pasta": "supabase/functions/_shared",
@@ -185,11 +185,11 @@
    },
    {
     "pasta": "src/pages/quotes",
-    "mudancas": 137
+    "mudancas": 138
    },
    {
     "pasta": "src/hooks/quotes",
-    "mudancas": 120
+    "mudancas": 123
    },
    {
     "pasta": "src/components/kit-builder",
@@ -211,7 +211,7 @@
    },
    {
     "arquivo": "docs/qa/05-PROGRESSO.md",
-    "mudancas": 19
+    "mudancas": 20
    },
    {
     "arquivo": "CHANGELOG.md",
@@ -309,7 +309,7 @@
    },
    {
     "autor": "Claude",
-    "commits": 5
+    "commits": 4
    },
    {
     "autor": "dependabot[bot]",
@@ -318,9 +318,9 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 11249,
-  "arquivos_codigo": 5678,
-  "linhas_codigo": 1075603,
+  "arquivos_total": 11252,
+  "arquivos_codigo": 5680,
+  "linhas_codigo": 1075691,
   "rotas": 141,
   "rotas_http_backend": 13,
   "vistas_por_id": 0,
@@ -332,10 +332,10 @@
   "tabelas": 531,
   "migrations": 3127,
   "cron_jobs": 122,
-  "testes": 2721,
+  "testes": 2722,
   "workflows": 89,
   "scripts": 284,
-  "docs_md": 1506
+  "docs_md": 1507
  },
  "por_pasta": {
   ".github/scripts": {
@@ -1927,8 +1927,8 @@
    "linhas": 7
   },
   "src/hooks": {
-   "arquivos": 513,
-   "linhas": 94818
+   "arquivos": 515,
+   "linhas": 94895
   },
   "src/integrations": {
    "arquivos": 11,
@@ -1948,7 +1948,7 @@
   },
   "src/pages": {
    "arquivos": 376,
-   "linhas": 86692
+   "linhas": 86703
   },
   "src/routes": {
    "arquivos": 16,

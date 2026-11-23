@@ -11782,6 +11782,7 @@
   "src/hooks/quotes/useQuotes.ts": [
    "src/contexts/AuthContext.tsx",
    "src/contexts/OrganizationContext.tsx",
+   "src/hooks/quotes/quoteCacheInvalidation.ts",
    "src/hooks/quotes/quoteTypes.ts",
    "src/integrations/supabase/client.ts",
    "src/lib/auth/visibility-scope.ts",

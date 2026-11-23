@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "cdf7daae4ed696178fa6435251cef544271bf8a2",
+  "sha": "e142753481ac8093ed22ddc56275dc644aad8140",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-23 23:08 UTC",
-  "files_total": 11177,
-  "code_files": 9172,
-  "code_lines": 1301606
+  "generated_at": "2026-11-23 23:26 UTC",
+  "files_total": 11180,
+  "code_files": 9174,
+  "code_lines": 1301694
  },
  "version": "1.3.2",
- "facts_hash": "5ef366dea6abd83d",
+ "facts_hash": "192d2a9ef3ecdecc",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -1131,7 +1131,7 @@
   "package_manager": "npm",
   "languages": {
    ".sql": 3496,
-   ".ts": 3177,
+   ".ts": 3179,
    ".tsx": 2026,
    ".mjs": 455,
    ".py": 18,
@@ -139290,7 +139290,7 @@
      "request_discount_approval_transactional",
      "respond_discount_approval_transactional"
     ],
-    "deps_count": 247
+    "deps_count": 248
    },
    {
     "path": "",
@@ -140032,7 +140032,7 @@
      "request_discount_approval_transactional",
      "respond_discount_approval_transactional"
     ],
-    "deps_count": 244
+    "deps_count": 245
    },
    {
     "path": "*",
@@ -140649,7 +140649,7 @@
      "respond_discount_approval_transactional",
      "save_custom_kit_atomic"
     ],
-    "deps_count": 254
+    "deps_count": 255
    },
    {
     "path": "/dropbox",
@@ -141282,7 +141282,7 @@
      "request_discount_approval_transactional",
      "respond_discount_approval_transactional"
     ],
-    "deps_count": 215
+    "deps_count": 216
    },
    {
     "path": "/orcamentos/dashboard",
@@ -141372,7 +141372,7 @@
      "request_discount_approval_transactional",
      "respond_discount_approval_transactional"
     ],
-    "deps_count": 162
+    "deps_count": 163
    },
    {
     "path": "/orcamentos/novo",
@@ -141432,7 +141432,7 @@
      "respond_discount_approval_transactional",
      "restore_seller_cart"
     ],
-    "deps_count": 300
+    "deps_count": 301
    },
    {
     "path": "/orcamentos/templates",
@@ -151585,8 +151585,8 @@
   },
   {
    "module": "src/hooks",
-   "files": 513,
-   "lines": 94818,
+   "files": 515,
+   "lines": 94895,
    "tables": [
     "admin_audit_log",
     "admin_settings",
@@ -152086,7 +152086,7 @@
   {
    "module": "src/pages",
    "files": 376,
-   "lines": 86692,
+   "lines": 86703,
    "tables": [
     "ai_usage_events",
     "bot_detection_log",
@@ -175670,6 +175670,14 @@
    {
     "file": "src/hooks/quotes/discountApprovalResponder.ts",
     "text": "* discountApprovalResponder — decisão do admin sobre solicitação de desconto."
+   },
+   {
+    "file": "src/hooks/quotes/quoteCacheInvalidation.ts",
+    "text": "* A coluna \"itens\" da lista, o widget de pedidos de desconto e o limite de"
+   },
+   {
+    "file": "src/hooks/quotes/quoteCacheInvalidation.ts",
+    "text": "desconto do vendedor leem o MESMO dado que as mutations de orçamento alteram,"
    },
    {
     "file": "src/hooks/quotes/quoteDraftApply.ts",
@@ -218375,6 +218383,12 @@
     "body": "const colorMap = new Map<string, ColorSummary>(); // Agregar estoque atual por cor for (const v of variants) { const name = v.color_name || 'Sem cor'; const existing = colorMap.get(name); if (existing) { existing.currentStock += v.stock_quantity || 0; } else { colorMap.set(name, { name, hex: v.color_hex, thumbnail: v.selected_thumbnail, currentStock: v.stock_quantity || 0, incomingTotal: 0, incomingCount: 0, }); } } // Agregar previsões de reposição por cor for (const entry of stockEntries) { co …"
    },
    {
+    "file": "src/hooks/quotes/quoteCacheInvalidation.ts",
+    "name": "invalidateQuoteCaches",
+    "params": "queryClient: QueryInvalidator",
+    "body": "for (const queryKey of QUOTE_DEPENDENT_QUERY_KEYS) { void queryClient.invalidateQueries({ queryKey }); }"
+   },
+   {
     "file": "src/hooks/quotes/quoteDraftApply.ts",
     "name": "applyDraftToBuilder",
     "params": "draft: RecoveredQuoteDraft, s: QuoteDraftApplyTarget",
@@ -218426,7 +218440,7 @@
     "file": "src/hooks/quotes/useQuotes.ts",
     "name": "invalidateAll",
     "params": "",
-    "body": "queryClient.invalidateQueries({ queryKey: ['quotes'] });"
+    "body": "invalidateQuoteCaches(queryClient);"
    },
    {
     "file": "src/hooks/simulation/useGravacaoPriceV2.ts",
@@ -252129,6 +252143,18 @@
    {
     "file": "src/hooks/quotes/__tests__/handoff-clear-autosave.functional.test.ts",
     "name": "clearAutoSave retornado pelo hook remove a chave correta do localStorage"
+   },
+   {
+    "file": "src/hooks/quotes/__tests__/quoteCacheInvalidation.test.ts",
+    "name": "invalidateQuoteCaches"
+   },
+   {
+    "file": "src/hooks/quotes/__tests__/quoteCacheInvalidation.test.ts",
+    "name": "invalida a contagem de itens, os widgets e o limite de desconto junto com a lista"
+   },
+   {
+    "file": "src/hooks/quotes/__tests__/quoteCacheInvalidation.test.ts",
+    "name": "mantém as chaves iguais às dos módulos donos"
    },
    {
     "file": "src/hooks/quotes/__tests__/quoteDraftApply.test.ts",
@@ -481270,6 +481296,26 @@
    "lines": 16,
    "doc": "Exporting all hooks from quotes"
   },
+  "src/hooks/quotes/quoteCacheInvalidation.ts": {
+   "path": "src/hooks/quotes/quoteCacheInvalidation.ts",
+   "lines": 33,
+   "exports": [
+    "const QUOTE_DEPENDENT_QUERY_KEYS",
+    "function invalidateQuoteCaches"
+   ],
+   "rule_comments": [
+    "* A coluna \"itens\" da lista, o widget de pedidos de desconto e o limite de",
+    "desconto do vendedor leem o MESMO dado que as mutations de orçamento alteram,"
+   ],
+   "doc": "Invalidação de cache das telas de orçamento. A coluna \"itens\" da lista, o widget de pedidos de desconto e o limite de desconto do vendedor leem o MESMO dado que as mutations de orçamento alteram, cada um com a própria chave. Invalidar só `['quotes']` deixava esses números mostrando o estado anterior …",
+   "calc_fns": [
+    {
+     "name": "invalidateQuoteCaches",
+     "params": "queryClient: QueryInvalidator",
+     "body": "for (const queryKey of QUOTE_DEPENDENT_QUERY_KEYS) { void queryClient.invalidateQueries({ queryKey }); }"
+    }
+   ]
+  },
   "src/hooks/quotes/quoteDraftApply.ts": {
    "path": "src/hooks/quotes/quoteDraftApply.ts",
    "lines": 307,
@@ -482293,7 +482339,7 @@
   },
   "src/hooks/quotes/useQuotes.ts": {
    "path": "src/hooks/quotes/useQuotes.ts",
-   "lines": 415,
+   "lines": 416,
    "exports": [
     "function useQuotes"
    ],
@@ -482340,7 +482386,7 @@
     {
      "name": "invalidateAll",
      "params": "",
-     "body": "queryClient.invalidateQueries({ queryKey: ['quotes'] });"
+     "body": "invalidateQuoteCaches(queryClient);"
     }
    ],
    "temporal": [
@@ -482460,6 +482506,16 @@
     "handoff que chama clearAutoSave() antes de habilitar → onRestore não roda",
     "SEM clearAutoSave() no handoff, o rascunho antigo é restaurado (comportamento do bug)",
     "clearAutoSave retornado pelo hook remove a chave correta do localStorage"
+   ]
+  },
+  "src/hooks/quotes/__tests__/quoteCacheInvalidation.test.ts": {
+   "path": "src/hooks/quotes/__tests__/quoteCacheInvalidation.test.ts",
+   "lines": 43,
+   "is_test": true,
+   "tests": [
+    "invalidateQuoteCaches",
+    "invalida a contagem de itens, os widgets e o limite de desconto junto com a lista",
+    "mantém as chaves iguais às dos módulos donos"
    ]
   },
   "src/hooks/quotes/__tests__/quoteDraftApply.test.ts": {
@@ -505029,7 +505085,7 @@
   },
   "src/pages/quotes/quotes-dashboard/useQuotesDashboard.ts": {
    "path": "src/pages/quotes/quotes-dashboard/useQuotesDashboard.ts",
-   "lines": 318,
+   "lines": 329,
    "exports": [
     "function formatCurrency",
     "function formatResponseTime",
@@ -563369,10 +563425,24 @@
   }
  },
  "git": {
-  "sha": "cdf7daae4ed696178fa6435251cef544271bf8a2",
+  "sha": "e142753481ac8093ed22ddc56275dc644aad8140",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "e142753",
+    "date": "2026-11-23",
+    "author": "adm01-debug",
+    "subject": "fix(hooks): centralizar invalidacao do cache de orcamentos (#4031)",
+    "files": [
+     "docs/qa/05-PROGRESSO.md",
+     "docs/qa/querykeys-sem-invalidacao.md",
+     "src/hooks/quotes/__tests__/quoteCacheInvalidation.test.ts",
+     "src/hooks/quotes/quoteCacheInvalidation.ts",
+     "src/hooks/quotes/useQuotes.ts",
+     "src/pages/quotes/quotes-dashboard/useQuotesDashboard.ts"
+    ]
+   },
    {
     "sha": "cdf7daa",
     "date": "2026-11-23",
@@ -563748,21 +563818,12 @@
      "supabase/migrations/20261122180000_restore_definer_views_p06_e_compras.sql",
      "supabase/rollbacks/20261122180000_rollback.sql"
     ]
-   },
-   {
-    "sha": "2121d82",
-    "date": "2026-11-22",
-    "author": "github-actions[bot]",
-    "subject": "chore(security): atualiza baseline assinado de RLS policies (#3985)",
-    "files": [
-     ".security/policies-baseline.json"
-    ]
    }
   ],
   "hot_files": [
    [
     "docs/qa/05-PROGRESSO.md",
-    19
+    20
    ],
    [
     "supabase/MIGRATIONS_SYNC_LOG.md",
@@ -563797,6 +563858,26 @@
     2
    ],
    [
+    "docs/qa/querykeys-sem-invalidacao.md",
+    1
+   ],
+   [
+    "src/hooks/quotes/__tests__/quoteCacheInvalidation.test.ts",
+    1
+   ],
+   [
+    "src/hooks/quotes/quoteCacheInvalidation.ts",
+    1
+   ],
+   [
+    "src/hooks/quotes/useQuotes.ts",
+    1
+   ],
+   [
+    "src/pages/quotes/quotes-dashboard/useQuotesDashboard.ts",
+    1
+   ],
+   [
     "docs/qa/corridas-de-estado.md",
     1
    ],
@@ -563818,26 +563899,6 @@
    ],
    [
     "src/hooks/simulation/useTechniquePricingOptions.ts",
-    1
-   ],
-   [
-    "src/components/expert/chat/useExpertChat.ts",
-    1
-   ],
-   [
-    "src/hooks/products/useCatalogPreferences.ts",
-    1
-   ],
-   [
-    "src/hooks/simulation/useSimulatorPreferences.ts",
-    1
-   ],
-   [
-    "src/lib/__tests__/profile-preferences.test.ts",
-    1
-   ],
-   [
-    "src/lib/profile-preferences.ts",
     1
    ]
   ]

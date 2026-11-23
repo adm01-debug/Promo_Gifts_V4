@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.3.2 · commit `cdf7daae4e` · branch `main` · 2026-11-23 23:08 UTC
+> Gerado automaticamente por AI Context Sync v1.3.2 · commit `e142753481` · branch `main` · 2026-11-23 23:26 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -4278,6 +4278,10 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
   ```
   const colorMap = new Map<string, ColorSummary>(); // Agregar estoque atual por cor for (const v of variants) { const name = v.color_name || 'Sem cor'; const existing = colorMap.get(name); if (existing) { existing.currentStock += v.stock_quantity || 0; } else { colorMap.set(name, { name, hex: v.color_hex, thumbnail: v.selected_thumbnail, currentStock: v.stock_quantity || 0, incomingTotal: 0, incomingCount: 0, }); } } // Agregar previsões de reposição por cor for (const entry of stockEntries) { co …
   ```
+- **invalidateQuoteCaches(queryClient: QueryInvalidator)** — `src/hooks/quotes/quoteCacheInvalidation.ts`
+  ```
+  for (const queryKey of QUOTE_DEPENDENT_QUERY_KEYS) { void queryClient.invalidateQueries({ queryKey }); }
+  ```
 - **applyDraftToBuilder(draft: RecoveredQuoteDraft, s: QuoteDraftApplyTarget)** — `src/hooks/quotes/quoteDraftApply.ts`
   ```
   if (draft.clientId) s.setClientId(draft.clientId); if (draft.contactId) s.setContactId(draft.contactId); if (draft.companyInfo) s.setCompanyInfo(draft.companyInfo); if (draft.contactInfo) s.setContactInfo(draft.contactInfo); if (draft.items) s.setItems(draft.items); if (draft.discountType) s.setDiscountType(draft.discountType); if (typeof draft.discountValue === 'number') s.setDiscountValue(draft.discountValue); if (typeof draft.negotiationMarkup === 'number' && draft.negotiationMarkup > 0) { s. …
@@ -4312,7 +4316,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
   ```
 - **invalidateAll()** — `src/hooks/quotes/useQuotes.ts`
   ```
-  queryClient.invalidateQueries({ queryKey: ['quotes'] });
+  invalidateQuoteCaches(queryClient);
   ```
 - **mapPriceResponseToFlat(resp: Record<string, unknown>)** — `src/hooks/simulation/useGravacaoPriceV2.ts`
   ```
@@ -6826,7 +6830,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `admin` | `supabase/migrations/20261112120500_fix_optimization_queue_rpcs_dev_access.sql` |
 | `anon` | `tests/edge-functions/live/_live-client.ts` |
 
-## K. Testes como especificação (23704 testes em 2388 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (23707 testes em 2389 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -7130,7 +7134,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `src/lib/external-db/rest-native.test.ts` | 19 | isRestNativeEligible · whitelisted COM coluna de busca → elegível mesmo com _search · A1: whitelisted SEM coluna de busca → continua elegível com _search · não-whitelisted → inelegível … |
 | `src/lib/inventory/__tests__/stock-filter.test.ts` | 19 | stock-filter — pipeline de seleção/agregação/montagem · normalize remove acentos e diferencia caixa · selectMatchingVariants retorna todas as variações quando não há filtro de cor · cor  … |
 | `src/lib/lead-time/__tests__/personalizationLeadTime.test.ts` | 19 | resolvePersonalizationLeadTime · prazo registrado vence a tabela: frente = 4 (a faixa 100..499 diria 5) · registrado sem production_days cai na tabela: verso com 100 un = faixa 100..499 = 5 · sem linha cadastrada para o local usa a tabela pela técnica: lateral com 100 un = 5 … |
-| … +2088 linhas — lista completa em `context.json` | | |
+| … +2089 linhas — lista completa em `context.json` | | |
 
 ## L. Eventos de webhook tratados (contratos com sistemas externos)
 
@@ -7598,4 +7602,4 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | * Card "Prazo de produção" do orçamento: em quantos dias úteis o pedido fica | `src/components/freight-plan/ProductionLeadTimeCard.tsx` |
 | pronto para envio, qual item define esse prazo e de onde vem cada número. | `src/components/freight-plan/ProductionLeadTimeCard.tsx` |
 | deliveryMode={deliveryMode}            // 'data' \| 'prazo' do orçamento | `src/components/freight-plan/ProductionLeadTimeCard.tsx` |
-| … +1487 linhas — lista completa em `context.json` | |
+| … +1489 linhas — lista completa em `context.json` | |

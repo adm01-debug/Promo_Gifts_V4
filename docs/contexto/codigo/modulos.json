@@ -21881,9 +21881,9 @@
   },
   {
    "modulo": "hooks/quotes",
-   "arquivos": 27,
-   "testes": 22,
-   "linhas": 5764,
+   "arquivos": 28,
+   "testes": 23,
+   "linhas": 5798,
    "itens_menu": [],
    "telas": [],
    "rotas_http": [],
@@ -34167,7 +34167,7 @@
    "modulo": "pages/quotes",
    "arquivos": 16,
    "testes": 44,
-   "linhas": 4703,
+   "linhas": 4714,
    "itens_menu": [
     "Gestão de Orçamentos",
     "Novo Orçamento",
