@@ -13281,9 +13281,11 @@
     "InlinePriceCalculator"
    ],
    "export_default": null,
-   "linhas": 251,
+   "linhas": 261,
    "dominio": "components/products",
-   "hooks_locais": [],
+   "hooks_locais": [
+    "useMountedRef"
+   ],
    "tabelas": [],
    "edges": [],
    "usado_por": 1,

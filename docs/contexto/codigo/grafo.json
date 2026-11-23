@@ -1,8 +1,8 @@
 {
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
- "nos": 2956,
- "arestas": 11691,
+ "nos": 2957,
+ "arestas": 11693,
  "hubs": [
   {
    "arquivo": "src/lib/utils.ts",
@@ -658,7 +658,7 @@
   },
   {
    "modulo": "components/products",
-   "depende_de": 31,
+   "depende_de": 32,
    "importado_por": 17
   },
   {
@@ -687,14 +687,14 @@
    "importado_por": 3
   },
   {
+   "modulo": "hooks/common",
+   "depende_de": 11,
+   "importado_por": 25
+  },
+  {
    "modulo": "hooks/ui",
    "depende_de": 8,
    "importado_por": 27
-  },
-  {
-   "modulo": "hooks/common",
-   "depende_de": 11,
-   "importado_por": 23
   },
   {
    "modulo": "lib/security",

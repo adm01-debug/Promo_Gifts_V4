@@ -13,7 +13,7 @@
    "recovery/src-legacy (100)"
   ],
   "hooks": [
-   "src/hooks (314)",
+   "src/hooks (315)",
    "recovery/src-legacy (196)",
    "src/components (78)"
   ],
@@ -24,7 +24,7 @@
   ],
   "testes": [
    "tests/ (1099)",
-   "co-localizado (__tests__) (787)",
+   "co-localizado (__tests__) (789)",
    "e2e/ (627)"
   ],
   "edge_functions": "supabase/functions",
@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "fix(hooks): resposta atrasada nao sobrescreve mais preco da tecnica (182-185) (#4030)",
    "feat(hooks): merge parcial em profiles.preferences (etapas 141-146) (#4029)",
    "fix(qa): etapas 103, 108, 113 e 114 - subtotal do kit alinhado ao banco (#4024)",
    "fix(qa): etapas 131-135 - baseline da suite e testes do kit-builder (#4025)",
-   "chore(security): documentar deny-all das 6 tabelas de auditoria no allowlist de RLS (#4028)",
-   "chore: consolidar baselines de ratchet (as-assertions, file-size, eslint-disable) (#4027)"
+   "chore(security): documentar deny-all das 6 tabelas de auditoria no allowlist de RLS (#4028)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",

@@ -1,7 +1,7 @@
 {
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
- "total": 645,
+ "total": 646,
  "hooks": [
   {
    "arquivo": "docs/agentes/resgates/quote-comments/codigo/useQuoteComments.ts",
@@ -8068,6 +8068,28 @@
    "coberto_por_testes": 2
   },
   {
+   "arquivo": "src/hooks/common/useMountedRef.ts",
+   "hooks_exportados": [
+    "useMountedRef"
+   ],
+   "linhas": 19,
+   "dominio": "hooks/common",
+   "tabelas": [],
+   "rpcs": [],
+   "edges": [],
+   "hooks_internos": [
+    "useEffect",
+    "useRef"
+   ],
+   "canais_realtime": [],
+   "usado_por": 2,
+   "usado_por_arquivos": [
+    "src/components/products/InlinePriceCalculator.tsx",
+    "src/hooks/simulation/useTechniquePricingOptions.ts"
+   ],
+   "coberto_por_testes": 0
+  },
+  {
    "arquivo": "src/hooks/common/useNetworkStatus.ts",
    "hooks_exportados": [
     "useNetworkStatus"
@@ -13037,7 +13059,7 @@
     "useMultipleTechniquePricing",
     "useTechniquePricingOptions"
    ],
-   "linhas": 233,
+   "linhas": 247,
    "dominio": "hooks/simulation",
    "tabelas": [],
    "rpcs": [],
@@ -13045,6 +13067,8 @@
    "hooks_internos": [
     "useEffect",
     "useMemo",
+    "useMountedRef",
+    "useRef",
     "useState"
    ],
    "canais_realtime": [],
@@ -13053,7 +13077,7 @@
     "src/hooks/simulation/index.ts",
     "src/hooks/simulation/useSimulation.ts"
    ],
-   "coberto_por_testes": 1
+   "coberto_por_testes": 2
   },
   {
    "arquivo": "src/hooks/simulation/useTechniqueRecommendations.ts",

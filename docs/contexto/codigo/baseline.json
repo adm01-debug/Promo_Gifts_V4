@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "e8a15b47c2accbb35119323f3732977a589586b8",
+  "commit": "cdf7daae4ed696178fa6435251cef544271bf8a2",
   "branch": "main",
-  "data_commit": "2026-11-23T19:19:28-03:00",
+  "data_commit": "2026-11-23T20:06:53-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "cdf7daa",
+    "data": "2026-11-23",
+    "assunto": "fix(hooks): resposta atrasada nao sobrescreve mais preco da tecnica (182-185) (#4030)"
+   },
    {
     "sha": "e8a15b4",
     "data": "2026-11-23",
@@ -126,14 +131,9 @@
     "sha": "d519f4e",
     "data": "2026-11-22",
     "assunto": "chore(schema-snapshot): snapshot semanal 2026-W47 (run 45033672701) (#3988)"
-   },
-   {
-    "sha": "94a724a",
-    "data": "2026-11-22",
-    "assunto": "feat: informa frete e tributos nao incluidos no total do kit (#3990)"
    }
   ],
-  "arquivos_mudados_7d": 732,
+  "arquivos_mudados_7d": 737,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -145,7 +145,7 @@
    },
    {
     "pasta": "src/components/products",
-    "mudancas": 305
+    "mudancas": 307
    },
    {
     "pasta": "tests/edge-functions/live",
@@ -211,7 +211,7 @@
    },
    {
     "arquivo": "docs/qa/05-PROGRESSO.md",
-    "mudancas": 18
+    "mudancas": 19
    },
    {
     "arquivo": "CHANGELOG.md",
@@ -219,7 +219,7 @@
    },
    {
     "arquivo": "docs/coordenacao/conflitos-semanticos.md",
-    "mudancas": 12
+    "mudancas": 11
    },
    {
     "arquivo": ".github/workflows/deploy-gates.yml",
@@ -309,7 +309,7 @@
    },
    {
     "autor": "Claude",
-    "commits": 6
+    "commits": 5
    },
    {
     "autor": "dependabot[bot]",
@@ -318,24 +318,24 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 11245,
-  "arquivos_codigo": 5675,
-  "linhas_codigo": 1075392,
+  "arquivos_total": 11249,
+  "arquivos_codigo": 5678,
+  "linhas_codigo": 1075603,
   "rotas": 141,
   "rotas_http_backend": 13,
   "vistas_por_id": 0,
   "itens_menu": 72,
   "modulos": 169,
   "componentes": 1281,
-  "hooks": 645,
+  "hooks": 646,
   "edge_functions": 112,
   "tabelas": 531,
   "migrations": 3127,
   "cron_jobs": 122,
-  "testes": 2719,
+  "testes": 2721,
   "workflows": 89,
   "scripts": 284,
-  "docs_md": 1505
+  "docs_md": 1506
  },
  "por_pasta": {
   ".github/scripts": {
@@ -1903,8 +1903,8 @@
    "linhas": 130
   },
   "src/components": {
-   "arquivos": 1485,
-   "linhas": 290980
+   "arquivos": 1486,
+   "linhas": 291074
   },
   "src/config": {
    "arquivos": 1,
@@ -1927,8 +1927,8 @@
    "linhas": 7
   },
   "src/hooks": {
-   "arquivos": 511,
-   "linhas": 94701
+   "arquivos": 513,
+   "linhas": 94818
   },
   "src/integrations": {
    "arquivos": 11,

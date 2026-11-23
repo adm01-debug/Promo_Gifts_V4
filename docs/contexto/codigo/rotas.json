@@ -184,6 +184,7 @@
     "useMockupEntryParams",
     "useMockupGenerator",
     "useMockupTechniquesLoad",
+    "useMountedRef",
     "useMultipleTechniquePricing",
     "useMutation",
     "useNavigate",
@@ -512,6 +513,7 @@
     "useMockupEntryParams",
     "useMockupGenerator",
     "useMockupTechniquesLoad",
+    "useMountedRef",
     "useMultipleTechniquePricing",
     "useNetworkStatus",
     "useNomesTecnicasPreco",
@@ -785,7 +787,7 @@
     "tablist",
     "tooltip"
    ],
-   "arquivos_puxados": 549
+   "arquivos_puxados": 550
   },
   {
    "protegida": false,
@@ -1299,6 +1301,7 @@
     "useMockupEntryParams",
     "useMockupGenerator",
     "useMockupTechniquesLoad",
+    "useMountedRef",
     "useMultipleTechniquePricing",
     "useMutation",
     "useNavigate",
@@ -1582,6 +1585,7 @@
     "useMockupEntryParams",
     "useMockupGenerator",
     "useMockupTechniquesLoad",
+    "useMountedRef",
     "useMultipleTechniquePricing",
     "useNetworkStatus",
     "useNomesTecnicasPreco",
@@ -1805,7 +1809,7 @@
     "status",
     "supervisor"
    ],
-   "arquivos_puxados": 413
+   "arquivos_puxados": 414
   },
   {
    "protegida": false,
@@ -2005,6 +2009,7 @@
     "useMockupEntryParams",
     "useMockupGenerator",
     "useMockupTechniquesLoad",
+    "useMountedRef",
     "useMultipleTechniquePricing",
     "useMutation",
     "useNavigate",
@@ -2305,6 +2310,7 @@
     "useMockupEntryParams",
     "useMockupGenerator",
     "useMockupTechniquesLoad",
+    "useMountedRef",
     "useMultipleTechniquePricing",
     "useNetworkStatus",
     "useNomesTecnicasPreco",
@@ -2554,7 +2560,7 @@
     "status",
     "supervisor"
    ],
-   "arquivos_puxados": 495
+   "arquivos_puxados": 496
   },
   {
    "protegida": false,
@@ -3040,6 +3046,7 @@
     "useMockupEntryParams",
     "useMockupGenerator",
     "useMockupTechniquesLoad",
+    "useMountedRef",
     "useMultipleTechniquePricing",
     "useMutation",
     "useNavigate",
@@ -3359,6 +3366,7 @@
     "useMockupEntryParams",
     "useMockupGenerator",
     "useMockupTechniquesLoad",
+    "useMountedRef",
     "useMultipleTechniquePricing",
     "useNetworkStatus",
     "useNomesTecnicasPreco",
@@ -3615,7 +3623,7 @@
     "status",
     "supervisor"
    ],
-   "arquivos_puxados": 571
+   "arquivos_puxados": 572
   },
   {
    "protegida": true,
@@ -3792,6 +3800,7 @@
     "useMockupEntryParams",
     "useMockupGenerator",
     "useMockupTechniquesLoad",
+    "useMountedRef",
     "useMultipleTechniquePricing",
     "useMutation",
     "useNavigate",
@@ -4110,6 +4119,7 @@
     "useMockupEntryParams",
     "useMockupGenerator",
     "useMockupTechniquesLoad",
+    "useMountedRef",
     "useMultipleTechniquePricing",
     "useNetworkStatus",
     "useNewSupplierForm",
@@ -4376,7 +4386,7 @@
     "tab",
     "tablist"
    ],
-   "arquivos_puxados": 586
+   "arquivos_puxados": 587
   },
   {
    "protegida": true,
@@ -4653,6 +4663,7 @@
     "useMockupEntryParams",
     "useMockupGenerator",
     "useMockupTechniquesLoad",
+    "useMountedRef",
     "useMultipleTechniquePricing",
     "useMutation",
     "useNavigate",
@@ -4973,6 +4984,7 @@
     "useMockupEntryParams",
     "useMockupGenerator",
     "useMockupTechniquesLoad",
+    "useMountedRef",
     "useMultipleTechniquePricing",
     "useNetworkStatus",
     "useNomesTecnicasPreco",
@@ -5247,7 +5259,7 @@
     "switch",
     "toolbar"
    ],
-   "arquivos_puxados": 566
+   "arquivos_puxados": 567
   },
   {
    "protegida": true,
@@ -5439,6 +5451,7 @@
     "useMockupEntryParams",
     "useMockupGenerator",
     "useMockupTechniquesLoad",
+    "useMountedRef",
     "useMultipleTechniquePricing",
     "useMutation",
     "useNavigate",
@@ -5722,6 +5735,7 @@
     "useMockupEntryParams",
     "useMockupGenerator",
     "useMockupTechniquesLoad",
+    "useMountedRef",
     "useMultipleTechniquePricing",
     "useNetworkStatus",
     "useNomesTecnicasPreco",
@@ -5946,7 +5960,7 @@
     "status",
     "supervisor"
    ],
-   "arquivos_puxados": 419
+   "arquivos_puxados": 420
   },
   {
    "protegida": true,
@@ -6159,6 +6173,7 @@
     "useMockupEntryParams",
     "useMockupGenerator",
     "useMockupTechniquesLoad",
+    "useMountedRef",
     "useMultipleTechniquePricing",
     "useMutation",
     "useNavigate",
@@ -6442,6 +6457,7 @@
     "useMockupEntryParams",
     "useMockupGenerator",
     "useMockupTechniquesLoad",
+    "useMountedRef",
     "useMultipleTechniquePricing",
     "useNetworkStatus",
     "useNomesTecnicasPreco",
@@ -6665,7 +6681,7 @@
     "status",
     "supervisor"
    ],
-   "arquivos_puxados": 415
+   "arquivos_puxados": 416
   },
   {
    "protegida": true,
@@ -9005,6 +9021,7 @@
     "useMockupEntryParams",
     "useMockupGenerator",
     "useMockupTechniquesLoad",
+    "useMountedRef",
     "useMultipleTechniquePricing",
     "useMutation",
     "useNavigate",
@@ -9325,6 +9342,7 @@
     "useMockupEntryParams",
     "useMockupGenerator",
     "useMockupTechniquesLoad",
+    "useMountedRef",
     "useMultipleTechniquePricing",
     "useNetworkStatus",
     "useNomesTecnicasPreco",
@@ -9594,7 +9612,7 @@
     "supervisor",
     "vendedor"
    ],
-   "arquivos_puxados": 542
+   "arquivos_puxados": 543
   },
   {
    "protegida": true,
@@ -9865,6 +9883,7 @@
     "useMockupEntryParams",
     "useMockupGenerator",
     "useMockupTechniquesLoad",
+    "useMountedRef",
     "useMultipleTechniquePricing",
     "useMutation",
     "useNavigate",
@@ -10149,6 +10168,7 @@
     "useMockupEntryParams",
     "useMockupGenerator",
     "useMockupTechniquesLoad",
+    "useMountedRef",
     "useMultipleTechniquePricing",
     "useNetworkStatus",
     "useNomesTecnicasPreco",
@@ -10373,7 +10393,7 @@
     "status",
     "supervisor"
    ],
-   "arquivos_puxados": 416
+   "arquivos_puxados": 417
   },
   {
    "protegida": true,
@@ -10533,6 +10553,7 @@
     "useMockupEntryParams",
     "useMockupGenerator",
     "useMockupTechniquesLoad",
+    "useMountedRef",
     "useMultipleTechniquePricing",
     "useMutation",
     "useNavigate",
@@ -10816,6 +10837,7 @@
     "useMockupEntryParams",
     "useMockupGenerator",
     "useMockupTechniquesLoad",
+    "useMountedRef",
     "useMultipleTechniquePricing",
     "useNetworkStatus",
     "useNomesTecnicasPreco",
@@ -11039,7 +11061,7 @@
     "status",
     "supervisor"
    ],
-   "arquivos_puxados": 414
+   "arquivos_puxados": 415
   },
   {
    "protegida": true,
@@ -11444,6 +11466,7 @@
     "useMockupEntryParams",
     "useMockupGenerator",
     "useMockupTechniquesLoad",
+    "useMountedRef",
     "useMultipleTechniquePricing",
     "useMutation",
     "useNavigate",
@@ -11728,6 +11751,7 @@
     "useMockupEntryParams",
     "useMockupGenerator",
     "useMockupTechniquesLoad",
+    "useMountedRef",
     "useMultipleTechniquePricing",
     "useNetworkStatus",
     "useNomesTecnicasPreco",
@@ -11951,7 +11975,7 @@
     "status",
     "supervisor"
    ],
-   "arquivos_puxados": 417
+   "arquivos_puxados": 418
   },
   {
    "protegida": false,
@@ -12161,6 +12185,7 @@
     "useMockupEntryParams",
     "useMockupGenerator",
     "useMockupTechniquesLoad",
+    "useMountedRef",
     "useMultipleTechniquePricing",
     "useMutation",
     "useNavigate",
@@ -12448,6 +12473,7 @@
     "useMockupEntryParams",
     "useMockupGenerator",
     "useMockupTechniquesLoad",
+    "useMountedRef",
     "useMultipleTechniquePricing",
     "useNetworkStatus",
     "useNomesTecnicasPreco",
@@ -12675,7 +12701,7 @@
     "tab",
     "tablist"
    ],
-   "arquivos_puxados": 433
+   "arquivos_puxados": 434
   },
   {
    "protegida": false,
@@ -12837,6 +12863,7 @@
     "useMockupEntryParams",
     "useMockupGenerator",
     "useMockupTechniquesLoad",
+    "useMountedRef",
     "useMultipleTechniquePricing",
     "useMutation",
     "useNavigate",
@@ -13128,6 +13155,7 @@
     "useMockupEntryParams",
     "useMockupGenerator",
     "useMockupTechniquesLoad",
+    "useMountedRef",
     "useMultipleTechniquePricing",
     "useNetworkStatus",
     "useNomesTecnicasPreco",
@@ -13355,7 +13383,7 @@
     "status",
     "supervisor"
    ],
-   "arquivos_puxados": 442
+   "arquivos_puxados": 443
   },
   {
    "protegida": false,
@@ -13516,6 +13544,7 @@
     "useMockupEntryParams",
     "useMockupGenerator",
     "useMockupTechniquesLoad",
+    "useMountedRef",
     "useMultipleTechniquePricing",
     "useMutation",
     "useNavigate",
@@ -13803,6 +13832,7 @@
     "useMockupEntryParams",
     "useMockupGenerator",
     "useMockupTechniquesLoad",
+    "useMountedRef",
     "useMultipleTechniquePricing",
     "useNetworkStatus",
     "useNomesTecnicasPreco",
@@ -14030,7 +14060,7 @@
     "status",
     "supervisor"
    ],
-   "arquivos_puxados": 432
+   "arquivos_puxados": 433
   },
   {
    "protegida": false,
@@ -14294,6 +14324,7 @@
     "useMockupEntryParams",
     "useMockupGenerator",
     "useMockupTechniquesLoad",
+    "useMountedRef",
     "useMultipleTechniquePricing",
     "useMutation",
     "useNavigate",
@@ -14584,6 +14615,7 @@
     "useMockupEntryParams",
     "useMockupGenerator",
     "useMockupTechniquesLoad",
+    "useMountedRef",
     "useMultipleTechniquePricing",
     "useNetworkStatus",
     "useNomesTecnicasPreco",
@@ -14813,7 +14845,7 @@
     "status",
     "supervisor"
    ],
-   "arquivos_puxados": 433
+   "arquivos_puxados": 434
   },
   {
    "protegida": false,
@@ -14988,6 +15020,7 @@
     "useMockupEntryParams",
     "useMockupGenerator",
     "useMockupTechniquesLoad",
+    "useMountedRef",
     "useMultipleTechniquePricing",
     "useMutation",
     "useNavigate",
@@ -15308,6 +15341,7 @@
     "useMockupEntryParams",
     "useMockupGenerator",
     "useMockupTechniquesLoad",
+    "useMountedRef",
     "useMultipleTechniquePricing",
     "useNetworkStatus",
     "useNomesTecnicasPreco",
@@ -15565,7 +15599,7 @@
     "tablist",
     "tooltip"
    ],
-   "arquivos_puxados": 506
+   "arquivos_puxados": 507
   },
   {
    "protegida": false,
@@ -15756,6 +15790,7 @@
     "useMockupEntryParams",
     "useMockupGenerator",
     "useMockupTechniquesLoad",
+    "useMountedRef",
     "useMultipleTechniquePricing",
     "useMutation",
     "useNavigate",
@@ -16046,6 +16081,7 @@
     "useMockupEntryParams",
     "useMockupGenerator",
     "useMockupTechniquesLoad",
+    "useMountedRef",
     "useMultipleTechniquePricing",
     "useNetworkStatus",
     "useNomesTecnicasPreco",
@@ -16275,7 +16311,7 @@
     "status",
     "supervisor"
    ],
-   "arquivos_puxados": 444
+   "arquivos_puxados": 445
   },
   {
    "protegida": false,
@@ -16462,6 +16498,7 @@
     "useMockupEntryParams",
     "useMockupGenerator",
     "useMockupTechniquesLoad",
+    "useMountedRef",
     "useMultipleTechniquePricing",
     "useMutation",
     "useNavigate",
@@ -16763,6 +16800,7 @@
     "useMockupEntryParams",
     "useMockupGenerator",
     "useMockupTechniquesLoad",
+    "useMountedRef",
     "useMultipleTechniquePricing",
     "useNetworkStatus",
     "useNomesTecnicasPreco",
@@ -17014,7 +17052,7 @@
     "status",
     "supervisor"
    ],
-   "arquivos_puxados": 509
+   "arquivos_puxados": 510
   },
   {
    "protegida": false,
@@ -17213,6 +17251,7 @@
     "useMockupEntryParams",
     "useMockupGenerator",
     "useMockupTechniquesLoad",
+    "useMountedRef",
     "useMultipleTechniquePricing",
     "useMutation",
     "useNavigate",
@@ -17510,6 +17549,7 @@
     "useMockupEntryParams",
     "useMockupGenerator",
     "useMockupTechniquesLoad",
+    "useMountedRef",
     "useMultipleTechniquePricing",
     "useNetworkStatus",
     "useNomesTecnicasPreco",
@@ -17743,7 +17783,7 @@
     "status",
     "supervisor"
    ],
-   "arquivos_puxados": 442
+   "arquivos_puxados": 443
   },
   {
    "protegida": false,
@@ -17924,6 +17964,7 @@
     "useMockupEntryParams",
     "useMockupGenerator",
     "useMockupTechniquesLoad",
+    "useMountedRef",
     "useMultipleTechniquePricing",
     "useMutation",
     "useNavigate",
@@ -18255,6 +18296,7 @@
     "useMockupEntryParams",
     "useMockupGenerator",
     "useMockupTechniquesLoad",
+    "useMountedRef",
     "useMultipleTechniquePricing",
     "useNetworkStatus",
     "useNomesTecnicasPreco",
@@ -18524,7 +18566,7 @@
     "supervisor",
     "table"
    ],
-   "arquivos_puxados": 524
+   "arquivos_puxados": 525
   },
   {
    "protegida": false,
@@ -18684,6 +18726,7 @@
     "useMockupEntryParams",
     "useMockupGenerator",
     "useMockupTechniquesLoad",
+    "useMountedRef",
     "useMultipleTechniquePricing",
     "useMutation",
     "useNavigate",
@@ -18967,6 +19010,7 @@
     "useMockupEntryParams",
     "useMockupGenerator",
     "useMockupTechniquesLoad",
+    "useMountedRef",
     "useMultipleTechniquePricing",
     "useNetworkStatus",
     "useNomesTecnicasPreco",
@@ -19190,7 +19234,7 @@
     "status",
     "supervisor"
    ],
-   "arquivos_puxados": 413
+   "arquivos_puxados": 414
   },
   {
    "protegida": false,
@@ -19365,6 +19409,7 @@
     "useMockupEntryParams",
     "useMockupGenerator",
     "useMockupTechniquesLoad",
+    "useMountedRef",
     "useMultipleTechniquePricing",
     "useMutation",
     "useNavigate",
@@ -19683,6 +19728,7 @@
     "useMockupEntryParams",
     "useMockupGenerator",
     "useMockupTechniquesLoad",
+    "useMountedRef",
     "useMultipleTechniquePricing",
     "useNetworkStatus",
     "useNomesTecnicasPreco",
@@ -19943,7 +19989,7 @@
     "tablist",
     "tooltip"
    ],
-   "arquivos_puxados": 514
+   "arquivos_puxados": 515
   },
   {
    "protegida": false,
@@ -20116,6 +20162,7 @@
     "useMockupEntryParams",
     "useMockupGenerator",
     "useMockupTechniquesLoad",
+    "useMountedRef",
     "useMultipleTechniquePricing",
     "useMutation",
     "useNavigate",
@@ -20414,6 +20461,7 @@
     "useMockupEntryParams",
     "useMockupGenerator",
     "useMockupTechniquesLoad",
+    "useMountedRef",
     "useMultipleTechniquePricing",
     "useNetworkStatus",
     "useNomesTecnicasPreco",
@@ -20647,7 +20695,7 @@
     "supervisor",
     "user"
    ],
-   "arquivos_puxados": 462
+   "arquivos_puxados": 463
   },
   {
    "protegida": false,
@@ -20815,6 +20863,7 @@
     "useMockupEntryParams",
     "useMockupGenerator",
     "useMockupTechniquesLoad",
+    "useMountedRef",
     "useMultipleTechniquePricing",
     "useMutation",
     "useNavigate",
@@ -21107,6 +21156,7 @@
     "useMockupEntryParams",
     "useMockupGenerator",
     "useMockupTechniquesLoad",
+    "useMountedRef",
     "useMultipleTechniquePricing",
     "useNetworkStatus",
     "useNomesTecnicasPreco",
@@ -21336,7 +21386,7 @@
     "status",
     "supervisor"
    ],
-   "arquivos_puxados": 425
+   "arquivos_puxados": 426
   },
   {
    "protegida": false,
@@ -21540,6 +21590,7 @@
     "useMockupEntryParams",
     "useMockupGenerator",
     "useMockupTechniquesLoad",
+    "useMountedRef",
     "useMultipleTechniquePricing",
     "useMutation",
     "useNavigate",
@@ -21868,6 +21919,7 @@
     "useMockupEntryParams",
     "useMockupGenerator",
     "useMockupTechniquesLoad",
+    "useMountedRef",
     "useMultipleTechniquePricing",
     "useNetworkStatus",
     "useNomesTecnicasPreco",
@@ -22139,7 +22191,7 @@
     "tablist",
     "tooltip"
    ],
-   "arquivos_puxados": 542
+   "arquivos_puxados": 543
   },
   {
    "protegida": false,
@@ -22363,6 +22415,7 @@
     "useMockupEntryParams",
     "useMockupGenerator",
     "useMockupTechniquesLoad",
+    "useMountedRef",
     "useMultipleTechniquePricing",
     "useMutation",
     "useNavigate",
@@ -22671,6 +22724,7 @@
     "useMockupEntryParams",
     "useMockupGenerator",
     "useMockupTechniquesLoad",
+    "useMountedRef",
     "useMultipleTechniquePricing",
     "useNetworkStatus",
     "useNomesTecnicasPreco",
@@ -22914,7 +22968,7 @@
     "status",
     "supervisor"
    ],
-   "arquivos_puxados": 463
+   "arquivos_puxados": 464
   },
   {
    "protegida": false,
@@ -23187,6 +23241,7 @@
     "useMagazineProductFavorites",
     "useMagazinePublish",
     "useMemo",
+    "useMountedRef",
     "useMultipleTechniquePricing",
     "useMutation",
     "useNavigate",
@@ -23253,6 +23308,7 @@
     "useMagazineEditor",
     "useMagazineProductFavorites",
     "useMagazinePublish",
+    "useMountedRef",
     "useMultipleTechniquePricing",
     "useNomesTecnicasPreco",
     "useOverlayInteractivity",
@@ -23332,7 +23388,7 @@
     "spinbutton",
     "status"
    ],
-   "arquivos_puxados": 193
+   "arquivos_puxados": 194
   },
   {
    "protegida": false,
@@ -23680,6 +23736,7 @@
     "useMockupEntryParams",
     "useMockupGenerator",
     "useMockupTechniquesLoad",
+    "useMountedRef",
     "useMultipleTechniquePricing",
     "useMutation",
     "useNavigate",
@@ -23963,6 +24020,7 @@
     "useMockupEntryParams",
     "useMockupGenerator",
     "useMockupTechniquesLoad",
+    "useMountedRef",
     "useMultipleTechniquePricing",
     "useNetworkStatus",
     "useNomesTecnicasPreco",
@@ -24192,7 +24250,7 @@
     "tab",
     "tablist"
    ],
-   "arquivos_puxados": 436
+   "arquivos_puxados": 437
   },
   {
    "protegida": false,
@@ -24352,6 +24410,7 @@
     "useMockupEntryParams",
     "useMockupGenerator",
     "useMockupTechniquesLoad",
+    "useMountedRef",
     "useMultipleTechniquePricing",
     "useMutation",
     "useNavigate",
@@ -24635,6 +24694,7 @@
     "useMockupEntryParams",
     "useMockupGenerator",
     "useMockupTechniquesLoad",
+    "useMountedRef",
     "useMultipleTechniquePricing",
     "useNetworkStatus",
     "useNomesTecnicasPreco",
@@ -24858,7 +24918,7 @@
     "status",
     "supervisor"
    ],
-   "arquivos_puxados": 419
+   "arquivos_puxados": 420
   },
   {
    "protegida": false,
@@ -25172,6 +25232,7 @@
     "useMockupGenerator",
     "useMockupKillSwitch",
     "useMockupTechniquesLoad",
+    "useMountedRef",
     "useMultipleTechniquePricing",
     "useMutation",
     "useNavigate",
@@ -25467,6 +25528,7 @@
     "useMockupGenerator",
     "useMockupKillSwitch",
     "useMockupTechniquesLoad",
+    "useMountedRef",
     "useMultipleTechniquePricing",
     "useNetworkStatus",
     "useNomesTecnicasPreco",
@@ -25701,7 +25763,7 @@
     "supervisor",
     "user"
    ],
-   "arquivos_puxados": 470
+   "arquivos_puxados": 471
   },
   {
    "protegida": false,
@@ -25861,6 +25923,7 @@
     "useMockupEntryParams",
     "useMockupGenerator",
     "useMockupTechniquesLoad",
+    "useMountedRef",
     "useMultipleTechniquePricing",
     "useMutation",
     "useNavigate",
@@ -26144,6 +26207,7 @@
     "useMockupEntryParams",
     "useMockupGenerator",
     "useMockupTechniquesLoad",
+    "useMountedRef",
     "useMultipleTechniquePricing",
     "useNetworkStatus",
     "useNomesTecnicasPreco",
@@ -26367,7 +26431,7 @@
     "status",
     "supervisor"
    ],
-   "arquivos_puxados": 416
+   "arquivos_puxados": 417
   },
   {
    "protegida": false,
@@ -26563,6 +26627,7 @@
     "useMockupEntryParams",
     "useMockupGenerator",
     "useMockupTechniquesLoad",
+    "useMountedRef",
     "useMultipleTechniquePricing",
     "useMutation",
     "useNavigate",
@@ -26879,6 +26944,7 @@
     "useMockupEntryParams",
     "useMockupGenerator",
     "useMockupTechniquesLoad",
+    "useMountedRef",
     "useMultipleTechniquePricing",
     "useNetworkStatus",
     "useNomesTecnicasPreco",
@@ -27138,7 +27204,7 @@
     "tablist",
     "tooltip"
    ],
-   "arquivos_puxados": 504
+   "arquivos_puxados": 505
   },
   {
    "protegida": false,
@@ -27315,6 +27381,7 @@
     "useMockupEntryParams",
     "useMockupGenerator",
     "useMockupTechniquesLoad",
+    "useMountedRef",
     "useMultipleTechniquePricing",
     "useMutation",
     "useNavigate",
@@ -27658,6 +27725,7 @@
     "useMockupEntryParams",
     "useMockupGenerator",
     "useMockupTechniquesLoad",
+    "useMountedRef",
     "useMultipleTechniquePricing",
     "useNetworkStatus",
     "useNextQuoteNumberPreview",
@@ -27947,7 +28015,7 @@
     "tablist",
     "toolbar"
    ],
-   "arquivos_puxados": 630
+   "arquivos_puxados": 631
   },
   {
    "protegida": false,
@@ -28112,6 +28180,7 @@
     "useMockupEntryParams",
     "useMockupGenerator",
     "useMockupTechniquesLoad",
+    "useMountedRef",
     "useMultipleTechniquePricing",
     "useMutation",
     "useNavigate",
@@ -28412,6 +28481,7 @@
     "useMockupEntryParams",
     "useMockupGenerator",
     "useMockupTechniquesLoad",
+    "useMountedRef",
     "useMultipleTechniquePricing",
     "useNetworkStatus",
     "useNomesTecnicasPreco",
@@ -28663,7 +28733,7 @@
     "status",
     "supervisor"
    ],
-   "arquivos_puxados": 532
+   "arquivos_puxados": 533
   },
   {
    "protegida": false,
@@ -28839,6 +28909,7 @@
     "useMockupEntryParams",
     "useMockupGenerator",
     "useMockupTechniquesLoad",
+    "useMountedRef",
     "useMultipleTechniquePricing",
     "useMutation",
     "useNavigate",
@@ -29173,6 +29244,7 @@
     "useMockupEntryParams",
     "useMockupGenerator",
     "useMockupTechniquesLoad",
+    "useMountedRef",
     "useMultipleTechniquePricing",
     "useNetworkStatus",
     "useNextQuoteNumberPreview",
@@ -29452,7 +29524,7 @@
     "tab",
     "tablist"
    ],
-   "arquivos_puxados": 567
+   "arquivos_puxados": 568
   },
   {
    "protegida": false,
@@ -29616,6 +29688,7 @@
     "useMockupEntryParams",
     "useMockupGenerator",
     "useMockupTechniquesLoad",
+    "useMountedRef",
     "useMultipleTechniquePricing",
     "useMutation",
     "useNavigate",
@@ -29915,6 +29988,7 @@
     "useMockupEntryParams",
     "useMockupGenerator",
     "useMockupTechniquesLoad",
+    "useMountedRef",
     "useMultipleTechniquePricing",
     "useNetworkStatus",
     "useNomesTecnicasPreco",
@@ -30162,7 +30236,7 @@
     "status",
     "supervisor"
    ],
-   "arquivos_puxados": 489
+   "arquivos_puxados": 490
   },
   {
    "protegida": false,
@@ -30325,6 +30399,7 @@
     "useMockupEntryParams",
     "useMockupGenerator",
     "useMockupTechniquesLoad",
+    "useMountedRef",
     "useMultipleTechniquePricing",
     "useMutation",
     "useNavigate",
@@ -30626,6 +30701,7 @@
     "useMockupEntryParams",
     "useMockupGenerator",
     "useMockupTechniquesLoad",
+    "useMountedRef",
     "useMultipleTechniquePricing",
     "useNetworkStatus",
     "useNomesTecnicasPreco",
@@ -30872,7 +30948,7 @@
     "status",
     "supervisor"
    ],
-   "arquivos_puxados": 485
+   "arquivos_puxados": 486
   },
   {
    "protegida": false,
@@ -31049,6 +31125,7 @@
     "useMockupEntryParams",
     "useMockupGenerator",
     "useMockupTechniquesLoad",
+    "useMountedRef",
     "useMultipleTechniquePricing",
     "useMutation",
     "useNavigate",
@@ -31392,6 +31469,7 @@
     "useMockupEntryParams",
     "useMockupGenerator",
     "useMockupTechniquesLoad",
+    "useMountedRef",
     "useMultipleTechniquePricing",
     "useNetworkStatus",
     "useNextQuoteNumberPreview",
@@ -31681,7 +31759,7 @@
     "tablist",
     "toolbar"
    ],
-   "arquivos_puxados": 630
+   "arquivos_puxados": 631
   },
   {
    "protegida": false,
@@ -31855,6 +31933,7 @@
     "useMockupEntryParams",
     "useMockupGenerator",
     "useMockupTechniquesLoad",
+    "useMountedRef",
     "useMultipleTechniquePricing",
     "useMutation",
     "useNavigate",
@@ -32189,6 +32268,7 @@
     "useMockupEntryParams",
     "useMockupGenerator",
     "useMockupTechniquesLoad",
+    "useMountedRef",
     "useMultipleTechniquePricing",
     "useNetworkStatus",
     "useNextQuoteNumberPreview",
@@ -32468,7 +32548,7 @@
     "tab",
     "tablist"
    ],
-   "arquivos_puxados": 567
+   "arquivos_puxados": 568
   },
   {
    "protegida": false,
@@ -32836,6 +32916,7 @@
     "useMockupEntryParams",
     "useMockupGenerator",
     "useMockupTechniquesLoad",
+    "useMountedRef",
     "useMultipleTechniquePricing",
     "useMutation",
     "useNavigate",
@@ -33153,6 +33234,7 @@
     "useMockupEntryParams",
     "useMockupGenerator",
     "useMockupTechniquesLoad",
+    "useMountedRef",
     "useMultipleTechniquePricing",
     "useNetworkStatus",
     "useNomesTecnicasPreco",
@@ -33415,7 +33497,7 @@
     "supervisor",
     "switch"
    ],
-   "arquivos_puxados": 526
+   "arquivos_puxados": 527
   },
   {
    "protegida": false,
@@ -33594,6 +33676,7 @@
     "useMockupEntryParams",
     "useMockupGenerator",
     "useMockupTechniquesLoad",
+    "useMountedRef",
     "useMultipleTechniquePricing",
     "useMutation",
     "useNavigate",
@@ -33922,6 +34005,7 @@
     "useMockupEntryParams",
     "useMockupGenerator",
     "useMockupTechniquesLoad",
+    "useMountedRef",
     "useMultipleTechniquePricing",
     "useNetworkStatus",
     "useNomesTecnicasPreco",
@@ -34193,7 +34277,7 @@
     "tablist",
     "tooltip"
    ],
-   "arquivos_puxados": 542
+   "arquivos_puxados": 543
   },
   {
    "protegida": false,
@@ -34468,6 +34552,7 @@
     "useMockupEntryParams",
     "useMockupGenerator",
     "useMockupTechniquesLoad",
+    "useMountedRef",
     "useMultipleTechniquePricing",
     "useMutation",
     "useNavigate",
@@ -34751,6 +34836,7 @@
     "useMockupEntryParams",
     "useMockupGenerator",
     "useMockupTechniquesLoad",
+    "useMountedRef",
     "useMultipleTechniquePricing",
     "useNetworkStatus",
     "useNomesTecnicasPreco",
@@ -34976,7 +35062,7 @@
     "status",
     "supervisor"
    ],
-   "arquivos_puxados": 414
+   "arquivos_puxados": 415
   },
   {
    "protegida": false,
@@ -35151,6 +35237,7 @@
     "useMockupEntryParams",
     "useMockupGenerator",
     "useMockupTechniquesLoad",
+    "useMountedRef",
     "useMultipleTechniquePricing",
     "useMutation",
     "useNavigate",
@@ -35470,6 +35557,7 @@
     "useMockupEntryParams",
     "useMockupGenerator",
     "useMockupTechniquesLoad",
+    "useMountedRef",
     "useMultipleTechniquePricing",
     "useNetworkStatus",
     "useNomesTecnicasPreco",
@@ -35733,7 +35821,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 513
+   "arquivos_puxados": 514
   },
   {
    "protegida": false,
@@ -35911,6 +35999,7 @@
     "useLogoColorAnalysis",
     "useLogoColorAnalysisByArea",
     "useMemo",
+    "useMountedRef",
     "useMultipleTechniquePricing",
     "useMutation",
     "useNavigate",
@@ -35974,6 +36063,7 @@
     "useLivePricePreview",
     "useLogoColorAnalysis",
     "useLogoColorAnalysisByArea",
+    "useMountedRef",
     "useMultipleTechniquePricing",
     "useNomesTecnicasPreco",
     "useOverlayInteractivity",
@@ -36034,7 +36124,7 @@
     "listbox",
     "menu"
    ],
-   "arquivos_puxados": 168
+   "arquivos_puxados": 169
   },
   {
    "protegida": false,
@@ -36200,6 +36290,7 @@
     "useMockupEntryParams",
     "useMockupGenerator",
     "useMockupTechniquesLoad",
+    "useMountedRef",
     "useMultipleTechniquePricing",
     "useMutation",
     "useNavigate",
@@ -36505,6 +36596,7 @@
     "useMockupEntryParams",
     "useMockupGenerator",
     "useMockupTechniquesLoad",
+    "useMountedRef",
     "useMultipleTechniquePricing",
     "useNetworkStatus",
     "useNomesTecnicasPreco",
@@ -36758,7 +36850,7 @@
     "status",
     "supervisor"
    ],
-   "arquivos_puxados": 508
+   "arquivos_puxados": 509
   },
   {
    "protegida": false,
@@ -36918,6 +37010,7 @@
     "useMockupEntryParams",
     "useMockupGenerator",
     "useMockupTechniquesLoad",
+    "useMountedRef",
     "useMultipleTechniquePricing",
     "useMutation",
     "useNavigate",
@@ -37201,6 +37294,7 @@
     "useMockupEntryParams",
     "useMockupGenerator",
     "useMockupTechniquesLoad",
+    "useMountedRef",
     "useMultipleTechniquePricing",
     "useNetworkStatus",
     "useNomesTecnicasPreco",
@@ -37424,7 +37518,7 @@
     "status",
     "supervisor"
    ],
-   "arquivos_puxados": 437
+   "arquivos_puxados": 438
   },
   {
    "protegida": false,
@@ -37591,6 +37685,7 @@
     "useMockupEntryParams",
     "useMockupGenerator",
     "useMockupTechniquesLoad",
+    "useMountedRef",
     "useMultipleTechniquePricing",
     "useMutation",
     "useNavigate",
@@ -37895,6 +37990,7 @@
     "useMockupEntryParams",
     "useMockupGenerator",
     "useMockupTechniquesLoad",
+    "useMountedRef",
     "useMultipleTechniquePricing",
     "useNetworkStatus",
     "useNomesTecnicasPreco",
@@ -38138,7 +38234,7 @@
     "status",
     "supervisor"
    ],
-   "arquivos_puxados": 452
+   "arquivos_puxados": 453
   },
   {
    "protegida": false,

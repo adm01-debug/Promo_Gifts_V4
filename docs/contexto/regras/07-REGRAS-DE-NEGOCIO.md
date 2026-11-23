@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.3.2 · commit `e8a15b47c2` · branch `main` · 2026-11-23 22:23 UTC
+> Gerado automaticamente por AI Context Sync v1.3.2 · commit `cdf7daae4e` · branch `main` · 2026-11-23 23:08 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -4020,7 +4020,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
   ```
 - **fetchPriceTiers()** — `src/components/products/InlinePriceCalculator.tsx`
   ```
-  if (!productId) { setPriceTiers([]); return; } setIsLoading(true); try { const variantFilters: Record<string, unknown> = { product_id: productId, is_active: true }; if (variantId) variantFilters.id = variantId; const variantResponse = await dbInvoke<{ id: string }>({ table: 'product_variants', operation: 'select', select: 'id', filters: variantFilters, }); const variants = variantResponse?.records ?? []; if (variants.length === 0) { setPriceTiers([]); setIsLoading(false); return; } const targetV …
+  if (!productId) { setPriceTiers([]); return; } // Troca rápida de variante: só a busca mais recente pode gravar as faixas, // senão a resposta atrasada da variante anterior mostra o preço errado. const token = ++requestTokenRef.current; const isCurrent = () => requestTokenRef.current === token && mountedRef.current; setIsLoading(true); try { const variantFilters: Record<string, unknown> = { product_id: productId, is_active: true }; if (variantId) variantFilters.id = variantId; const variantRespo …
   ```
 - **PriceFreshnessThresholdEditor({ productId, currentEffectiveDays }: Props)** — `src/components/products/PriceFreshnessThresholdEditor.tsx`
   ```
@@ -6826,7 +6826,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `admin` | `supabase/migrations/20261112120500_fix_optimization_queue_rpcs_dev_access.sql` |
 | `anon` | `tests/edge-functions/live/_live-client.ts` |
 
-## K. Testes como especificação (23699 testes em 2386 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (23704 testes em 2388 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -7130,7 +7130,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `src/lib/external-db/rest-native.test.ts` | 19 | isRestNativeEligible · whitelisted COM coluna de busca → elegível mesmo com _search · A1: whitelisted SEM coluna de busca → continua elegível com _search · não-whitelisted → inelegível … |
 | `src/lib/inventory/__tests__/stock-filter.test.ts` | 19 | stock-filter — pipeline de seleção/agregação/montagem · normalize remove acentos e diferencia caixa · selectMatchingVariants retorna todas as variações quando não há filtro de cor · cor  … |
 | `src/lib/lead-time/__tests__/personalizationLeadTime.test.ts` | 19 | resolvePersonalizationLeadTime · prazo registrado vence a tabela: frente = 4 (a faixa 100..499 diria 5) · registrado sem production_days cai na tabela: verso com 100 un = faixa 100..499 = 5 · sem linha cadastrada para o local usa a tabela pela técnica: lateral com 100 un = 5 … |
-| … +2086 linhas — lista completa em `context.json` | | |
+| … +2088 linhas — lista completa em `context.json` | | |
 
 ## L. Eventos de webhook tratados (contratos com sistemas externos)
 
@@ -7598,4 +7598,4 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | * Card "Prazo de produção" do orçamento: em quantos dias úteis o pedido fica | `src/components/freight-plan/ProductionLeadTimeCard.tsx` |
 | pronto para envio, qual item define esse prazo e de onde vem cada número. | `src/components/freight-plan/ProductionLeadTimeCard.tsx` |
 | deliveryMode={deliveryMode}            // 'data' \| 'prazo' do orçamento | `src/components/freight-plan/ProductionLeadTimeCard.tsx` |
-| … +1486 linhas — lista completa em `context.json` | |
+| … +1487 linhas — lista completa em `context.json` | |

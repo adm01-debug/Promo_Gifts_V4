@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "e8a15b47c2accbb35119323f3732977a589586b8",
+  "sha": "cdf7daae4ed696178fa6435251cef544271bf8a2",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-23 22:23 UTC",
-  "files_total": 11173,
-  "code_files": 9169,
-  "code_lines": 1301395
+  "generated_at": "2026-11-23 23:08 UTC",
+  "files_total": 11177,
+  "code_files": 9172,
+  "code_lines": 1301606
  },
  "version": "1.3.2",
- "facts_hash": "da00886969bbe9cd",
+ "facts_hash": "5ef366dea6abd83d",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -1131,8 +1131,8 @@
   "package_manager": "npm",
   "languages": {
    ".sql": 3496,
-   ".ts": 3176,
-   ".tsx": 2024,
+   ".ts": 3177,
+   ".tsx": 2026,
    ".mjs": 455,
    ".py": 18,
    ".js": 7
@@ -139090,7 +139090,7 @@
     "rpc_transitive": [
      "fn_my_rpc"
     ],
-    "deps_count": 99
+    "deps_count": 100
    },
    {
     "path": "",
@@ -139235,7 +139235,7 @@
      "log_user_logout",
      "restore_seller_cart"
     ],
-    "deps_count": 298
+    "deps_count": 299
    },
    {
     "path": "",
@@ -139931,7 +139931,7 @@
      "get_promo_sales_ranking",
      "restore_seller_cart"
     ],
-    "deps_count": 192
+    "deps_count": 193
    },
    {
     "path": "",
@@ -141627,7 +141627,7 @@
      "get_profile_and_roles",
      "log_user_logout"
     ],
-    "deps_count": 195
+    "deps_count": 196
    },
    {
     "path": "/tendencias",
@@ -146501,7 +146501,7 @@
     "file": ".github/workflows/wraparound-monitor-report.yml"
    }
   ],
-  "components_count": 1761,
+  "components_count": 1762,
   "hooks": [
    {
     "name": "useQuoteComments",
@@ -148390,6 +148390,10 @@
    {
     "name": "useListUrlState",
     "file": "src/hooks/common/useListUrlState.ts"
+   },
+   {
+    "name": "useMountedRef",
+    "file": "src/hooks/common/useMountedRef.ts"
    },
    {
     "name": "useNetworkStatus",
@@ -151217,8 +151221,8 @@
   },
   {
    "module": "src/components",
-   "files": 1485,
-   "lines": 290979,
+   "files": 1486,
+   "lines": 291073,
    "tables": [
     "admin_audit_log",
     "art_file_attachments",
@@ -151581,8 +151585,8 @@
   },
   {
    "module": "src/hooks",
-   "files": 511,
-   "lines": 94701,
+   "files": 513,
+   "lines": 94818,
    "tables": [
     "admin_audit_log",
     "admin_settings",
@@ -175874,6 +175878,10 @@
    {
     "file": "src/hooks/simulation/useTechniquePricing.ts",
     "text": "Direct supabase.from() calls must use the real table with PT column names."
+   },
+   {
+    "file": "src/hooks/simulation/useTechniquePricingOptions.ts",
+    "text": "Trocar de técnica rápido não pode deixar a resposta anterior sobrescrever"
    },
    {
     "file": "src/hooks/simulator/wizardReducer.ts",
@@ -217980,7 +217988,7 @@
     "file": "src/components/products/InlinePriceCalculator.tsx",
     "name": "fetchPriceTiers",
     "params": "",
-    "body": "if (!productId) { setPriceTiers([]); return; } setIsLoading(true); try { const variantFilters: Record<string, unknown> = { product_id: productId, is_active: true }; if (variantId) variantFilters.id = variantId; const variantResponse = await dbInvoke<{ id: string }>({ table: 'product_variants', operation: 'select', select: 'id', filters: variantFilters, }); const variants = variantResponse?.records ?? []; if (variants.length === 0) { setPriceTiers([]); setIsLoading(false); return; } const targetV …"
+    "body": "if (!productId) { setPriceTiers([]); return; } // Troca rápida de variante: só a busca mais recente pode gravar as faixas, // senão a resposta atrasada da variante anterior mostra o preço errado. const token = ++requestTokenRef.current; const isCurrent = () => requestTokenRef.current === token && mountedRef.current; setIsLoading(true); try { const variantFilters: Record<string, unknown> = { product_id: productId, is_active: true }; if (variantId) variantFilters.id = variantId; const variantRespo …"
    },
    {
     "file": "src/components/products/PriceFreshnessThresholdEditor.tsx",
@@ -242351,6 +242359,14 @@
     "name": "ZoomableGallery should be free of tooltips on main images"
    },
    {
+    "file": "src/components/products/__tests__/InlinePriceCalculator.race.test.tsx",
+    "name": "corrida na busca de faixas de preço (ACH-043)"
+   },
+   {
+    "file": "src/components/products/__tests__/InlinePriceCalculator.race.test.tsx",
+    "name": "mostra as faixas da variante selecionada quando a resposta anterior chega depois"
+   },
+   {
     "file": "src/components/products/__tests__/ProductCardActions.pointer.test.tsx",
     "name": "ProductCardActions — pointer-events"
    },
@@ -253233,6 +253249,18 @@
    {
     "file": "src/hooks/simulation/__tests__/useLogoColorAnalysis.test.ts",
     "name": "carrega imagem remota com crossOrigin anonymous (data: URL não precisa)"
+   },
+   {
+    "file": "src/hooks/simulation/__tests__/useTechniquePricingOptions.race.test.tsx",
+    "name": "corrida na busca de tabela de preço (ACH-042)"
+   },
+   {
+    "file": "src/hooks/simulation/__tests__/useTechniquePricingOptions.race.test.tsx",
+    "name": "mantém a tabela da técnica escolhida quando a resposta anterior chega depois"
+   },
+   {
+    "file": "src/hooks/simulation/__tests__/useTechniquePricingOptions.race.test.tsx",
+    "name": "não deixa a busca anterior apagar as técnicas que vieram depois"
    },
    {
     "file": "src/hooks/stock/__tests__/ema-pipeline-health.contract.test.tsx",
@@ -462159,7 +462187,7 @@
   },
   "src/components/products/InlinePriceCalculator.tsx": {
    "path": "src/components/products/InlinePriceCalculator.tsx",
-   "lines": 251,
+   "lines": 261,
    "exports": [
     "function InlinePriceCalculator"
    ],
@@ -462182,7 +462210,7 @@
     {
      "name": "fetchPriceTiers",
      "params": "",
-     "body": "if (!productId) { setPriceTiers([]); return; } setIsLoading(true); try { const variantFilters: Record<string, unknown> = { product_id: productId, is_active: true }; if (variantId) variantFilters.id = variantId; const variantResponse = await dbInvoke<{ id: string }>({ table: 'product_variants', operation: 'select', select: 'id', filters: variantFilters, }); const variants = variantResponse?.records ?? []; if (variants.length === 0) { setPriceTiers([]); setIsLoading(false); return; } const targetV …"
+     "body": "if (!productId) { setPriceTiers([]); return; } // Troca rápida de variante: só a busca mais recente pode gravar as faixas, // senão a resposta atrasada da variante anterior mostra o preço errado. const token = ++requestTokenRef.current; const isCurrent = () => requestTokenRef.current === token && mountedRef.current; setIsLoading(true); try { const variantFilters: Record<string, unknown> = { product_id: productId, is_active: true }; if (variantId) variantFilters.id = variantId; const variantRespo …"
     }
    ]
   },
@@ -463506,6 +463534,15 @@
     "ProductGallery should be free of tooltips on main images",
     "QuickViewGallery should be free of tooltips on main images",
     "ZoomableGallery should be free of tooltips on main images"
+   ]
+  },
+  "src/components/products/__tests__/InlinePriceCalculator.race.test.tsx": {
+   "path": "src/components/products/__tests__/InlinePriceCalculator.race.test.tsx",
+   "lines": 84,
+   "is_test": true,
+   "tests": [
+    "corrida na busca de faixas de preço (ACH-043)",
+    "mostra as faixas da variante selecionada quando a resposta anterior chega depois"
    ]
   },
   "src/components/products/__tests__/ProductCardActions.pointer.test.tsx": {
@@ -472983,6 +473020,16 @@
    ],
    "hooks": [
     "useListUrlState"
+   ]
+  },
+  "src/hooks/common/useMountedRef.ts": {
+   "path": "src/hooks/common/useMountedRef.ts",
+   "lines": 19,
+   "exports": [
+    "function useMountedRef"
+   ],
+   "hooks": [
+    "useMountedRef"
    ]
   },
   "src/hooks/common/useNetworkStatus.ts": {
@@ -483254,13 +483301,16 @@
   },
   "src/hooks/simulation/useTechniquePricingOptions.ts": {
    "path": "src/hooks/simulation/useTechniquePricingOptions.ts",
-   "lines": 233,
+   "lines": 247,
    "exports": [
     "interface ColorOption",
     "interface SizeOption",
     "interface TechniquePricingInfo",
     "function useTechniquePricingOptions",
     "function useMultipleTechniquePricing"
+   ],
+   "rule_comments": [
+    "Trocar de técnica rápido não pode deixar a resposta anterior sobrescrever"
    ],
    "doc": "src/hooks/useTechniquePricingOptions.ts",
    "hooks": [
@@ -483340,6 +483390,16 @@
     "passa o AbortSignal para a edge e aborta a análise anterior",
     "erro de carregamento da imagem vira estado de erro visível e recuperável",
     "carrega imagem remota com crossOrigin anonymous (data: URL não precisa)"
+   ]
+  },
+  "src/hooks/simulation/__tests__/useTechniquePricingOptions.race.test.tsx": {
+   "path": "src/hooks/simulation/__tests__/useTechniquePricingOptions.race.test.tsx",
+   "lines": 84,
+   "is_test": true,
+   "tests": [
+    "corrida na busca de tabela de preço (ACH-042)",
+    "mantém a tabela da técnica escolhida quando a resposta anterior chega depois",
+    "não deixa a busca anterior apagar as técnicas que vieram depois"
    ]
   },
   "src/hooks/simulator/index.ts": {
@@ -563309,10 +563369,25 @@
   }
  },
  "git": {
-  "sha": "e8a15b47c2accbb35119323f3732977a589586b8",
+  "sha": "cdf7daae4ed696178fa6435251cef544271bf8a2",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "cdf7daa",
+    "date": "2026-11-23",
+    "author": "adm01-debug",
+    "subject": "fix(hooks): resposta atrasada nao sobrescreve mais preco da tecnica (182-185) (#4030)",
+    "files": [
+     "docs/qa/05-PROGRESSO.md",
+     "docs/qa/corridas-de-estado.md",
+     "src/components/products/InlinePriceCalculator.tsx",
+     "src/components/products/__tests__/InlinePriceCalculator.race.test.tsx",
+     "src/hooks/common/useMountedRef.ts",
+     "src/hooks/simulation/__tests__/useTechniquePricingOptions.race.test.tsx",
+     "src/hooks/simulation/useTechniquePricingOptions.ts"
+    ]
+   },
    {
     "sha": "e8a15b4",
     "date": "2026-11-23",
@@ -563682,25 +563757,16 @@
     "files": [
      ".security/policies-baseline.json"
     ]
-   },
-   {
-    "sha": "c5cbd37",
-    "date": "2026-11-22",
-    "author": "github-actions[bot]",
-    "subject": "docs(migrations-log): recibo E15 — aplicação de 20261120041000 (#3984)",
-    "files": [
-     "supabase/MIGRATIONS_SYNC_LOG.md"
-    ]
    }
   ],
   "hot_files": [
    [
     "docs/qa/05-PROGRESSO.md",
-    18
+    19
    ],
    [
     "supabase/MIGRATIONS_SYNC_LOG.md",
-    6
+    5
    ],
    [
     "package.json",
@@ -563731,6 +563797,30 @@
     2
    ],
    [
+    "docs/qa/corridas-de-estado.md",
+    1
+   ],
+   [
+    "src/components/products/InlinePriceCalculator.tsx",
+    1
+   ],
+   [
+    "src/components/products/__tests__/InlinePriceCalculator.race.test.tsx",
+    1
+   ],
+   [
+    "src/hooks/common/useMountedRef.ts",
+    1
+   ],
+   [
+    "src/hooks/simulation/__tests__/useTechniquePricingOptions.race.test.tsx",
+    1
+   ],
+   [
+    "src/hooks/simulation/useTechniquePricingOptions.ts",
+    1
+   ],
+   [
     "src/components/expert/chat/useExpertChat.ts",
     1
    ],
@@ -563748,30 +563838,6 @@
    ],
    [
     "src/lib/profile-preferences.ts",
-    1
-   ],
-   [
-    "src/stores/__tests__/useBadgeVisibilityStore.test.ts",
-    1
-   ],
-   [
-    "src/stores/useBadgeVisibilityStore.ts",
-    1
-   ],
-   [
-    "src/lib/kit-builder/__tests__/subtotal-personalization.test.ts",
-    1
-   ],
-   [
-    "src/lib/kit-builder/price-calculator.ts",
-    1
-   ],
-   [
-    "src/lib/quotes/__tests__/markup-divergence.test.ts",
-    1
-   ],
-   [
-    "src/utils/kitPdfFooter.ts",
     1
    ]
   ]
