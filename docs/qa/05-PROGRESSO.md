@@ -71,7 +71,7 @@ Severidade das etapas: Média 158 · Alta 79 · Baixa 54 · Crítica 9
 - [ ] 038 — Trigger `BEFORE DELETE` protegendo cotação aprovada ou convertida — onda 1 — Alta — APROVAÇÃO
 - [ ] 039 — Revisar o `ON DELETE CASCADE` de `quote_items` — onda 1 — Média — APROVAÇÃO
 - [~] 040 — Confirmação explícita na exclusão em massa de cotações — onda 1 — Média
-- [ ] 041 — Alarme quando a allowlist e o segredo do `e2e-cleanup` saem de sincronia — onda 1 — Média
+- [~] 041 — Alarme quando a allowlist e o segredo do `e2e-cleanup` saem de sincronia — onda 1 — Média
 - [ ] 042 — Restringir o alcance do `e2e-cleanup` a dados marcados como de teste — onda 1 — Média
 - [~] 043 — Ligar `_shared/url-allowlist.ts` no `webhook-dispatcher` — onda 1 — Alta
 - [~] 044 — Ligar o bloqueio da allowlist de URL depois do período de observação — onda 1 — Alta
