@@ -1,4 +1,4 @@
-import { Trash2 } from 'lucide-react';
+import { Trash2, AlertTriangle } from 'lucide-react';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -20,11 +20,15 @@ interface QuotesBulkDeleteDialogProps {
   filteredQuotes: Quote[];
 }
 
+// QA Etapa 040 (ACH-098): statuses que o trigger BEFORE DELETE protege
+const PROTECTED_STATUSES = new Set(['approved', 'converted']);
+
 /**
  * Diálogo de exclusão em lote da lista de orçamentos — preview de IDs,
  * loading com progresso e cancelamento que preserva a seleção.
  *
  * Extraído de `QuotesListPage.tsx` (gate de tamanho de arquivo: 500 linhas).
+ * Etapa 040: distingue "serão apagadas" vs "ignoradas (aprovadas/convertidas)".
  */
 export function QuotesBulkDeleteDialog({
   bulkDeleteIds,
@@ -34,6 +38,13 @@ export function QuotesBulkDeleteDialog({
   handleBulkDelete,
   filteredQuotes,
 }: QuotesBulkDeleteDialogProps) {
+  // Partição: deletáveis vs protegidas (aprovadas/convertidas)
+  const toDeleteCount = bulkDeleteIds.filter((id) => {
+    const q = filteredQuotes.find((quote) => quote.id === id);
+    return !q || !PROTECTED_STATUSES.has(q.status);
+  }).length;
+  const skippedCount = bulkDeleteIds.length - toDeleteCount;
+
   return (
     <AlertDialog
       open={bulkDeleteIds.length > 0}
@@ -68,7 +79,9 @@ export function QuotesBulkDeleteDialog({
                 <AlertDialogTitle className="text-sm font-semibold leading-tight tracking-tight text-foreground">
                   {isBulkDeleting
                     ? `Excluindo ${bulkDeleteProgress.done}/${bulkDeleteProgress.total}…`
-                    : `Excluir ${bulkDeleteIds.length} orçamento${bulkDeleteIds.length === 1 ? '' : 's'}?`}
+                    : toDeleteCount === 0
+                      ? `${bulkDeleteIds.length} orçamento${bulkDeleteIds.length === 1 ? '' : 's'} não pode${bulkDeleteIds.length === 1 ? '' : 'm'} ser excluído${bulkDeleteIds.length === 1 ? '' : 's'}`
+                      : `Excluir ${toDeleteCount} orçamento${toDeleteCount === 1 ? '' : 's'}?`}
                 </AlertDialogTitle>
                 <AlertDialogDescription asChild>
                   <div className="space-y-2 text-xs leading-relaxed text-muted-foreground">
@@ -99,11 +112,33 @@ export function QuotesBulkDeleteDialog({
                       </>
                     ) : (
                       <>
-                        <p>
-                          {bulkDeleteIds.length === 1
-                            ? 'O orçamento será removido — você pode desfazer por até 8 segundos após a confirmação.'
-                            : 'Os orçamentos serão removidos — você pode desfazer por até 8 segundos após a confirmação.'}
-                        </p>
+                        {/* QA Etapa 040: exibe contagem particionada quando há protegidas */}
+                        {skippedCount > 0 && (
+                          <div
+                            data-testid="quotes-bulk-delete-skipped-warning"
+                            className="flex items-start gap-2 rounded-md border border-amber-500/30 bg-amber-500/10 px-3 py-2 text-[11px] text-amber-700 dark:text-amber-400"
+                          >
+                            <AlertTriangle className="mt-px h-3.5 w-3.5 flex-shrink-0" />
+                            <span>
+                              <strong>
+                                {toDeleteCount > 0
+                                  ? `${toDeleteCount} serão apagado${toDeleteCount === 1 ? '' : 's'}, `
+                                  : ''}
+                                {skippedCount} ignorado{skippedCount === 1 ? '' : 's'}
+                              </strong>{' '}
+                              — orçamento{skippedCount === 1 ? '' : 's'} aprovado
+                              {skippedCount === 1 ? '' : 's'} ou convertido
+                              {skippedCount === 1 ? '' : 's'} não podem ser excluídos.
+                            </span>
+                          </div>
+                        )}
+                        {toDeleteCount > 0 && (
+                          <p>
+                            {toDeleteCount === 1
+                              ? 'O orçamento será removido — você pode desfazer por até 8 segundos após a confirmação.'
+                              : 'Os orçamentos serão removidos — você pode desfazer por até 8 segundos após a confirmação.'}
+                          </p>
+                        )}
                         {(() => {
                           const preview = filteredQuotes
                             .filter((q) => q.id && bulkDeleteIds.includes(q.id))
@@ -144,16 +179,18 @@ export function QuotesBulkDeleteDialog({
             </AlertDialogCancel>
             <AlertDialogAction
               data-testid="quotes-bulk-delete-confirm"
-              disabled={isBulkDeleting}
+              disabled={isBulkDeleting || toDeleteCount === 0}
               onClick={(e) => {
                 e.preventDefault();
                 void handleBulkDelete();
               }}
-              className="inline-flex h-[26px] min-h-[26px] items-center rounded-md bg-destructive px-3.5 text-xs font-semibold text-destructive-foreground hover:bg-destructive/90"
+              className="inline-flex h-[26px] min-h-[26px] items-center rounded-md bg-destructive px-3.5 text-xs font-semibold text-destructive-foreground hover:bg-destructive/90 disabled:opacity-50"
             >
               {isBulkDeleting
                 ? `Excluindo… (${bulkDeleteProgress.done}/${bulkDeleteProgress.total})`
-                : `Excluir ${bulkDeleteIds.length}`}
+                : toDeleteCount === 0
+                  ? 'Nada a excluir'
+                  : `Excluir ${toDeleteCount}`}
             </AlertDialogAction>
           </AlertDialogFooter>
         </div>
