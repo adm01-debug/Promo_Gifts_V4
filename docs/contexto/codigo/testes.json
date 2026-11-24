@@ -22368,7 +22368,7 @@
   {
    "arquivo": "tests/security/public-views-columns.test.ts",
    "tipo": "unit",
-   "linhas": 77,
+   "linhas": 79,
    "testa": [],
    "casos": 7
   },

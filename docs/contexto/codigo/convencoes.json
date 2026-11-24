@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "feat(security): etapa 006 — registrar v_compras_catalogo e v_compras_precos_faixa no contrato (#4008)",
    "chore: corrige status das migrations 20261122180000/20261122200000 no ledger (#4036)",
    "chore(db): documentar reconciliacao da DDL do assistente do Supabase (#4033)",
    "chore(schema-snapshot): snapshot semanal 2026-W48 (run 45293671035) (#4034)",
-   "chore(security): atualiza baseline assinado de RLS policies (#4032)",
-   "fix(hooks): centralizar invalidacao do cache de orcamentos (#4031)"
+   "chore(security): atualiza baseline assinado de RLS policies (#4032)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",

@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e de hora em hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `d65ace2c5d36a659efcdff9eb2f7195d5cad7a84` (2026-11-23T22:17:08-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e de hora em hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `e87db75175db7457d47e260fd193deb4b48142ee` (2026-11-24T09:00:05Z).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -36,7 +36,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 |---|---|
 | arquivos_total | 11252 |
 | arquivos_codigo | 5680 |
-| linhas_codigo | 1075691 |
+| linhas_codigo | 1075693 |
 | rotas | 141 |
 | rotas_http_backend | 13 |
 | vistas_por_id | 0 |
@@ -599,7 +599,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - possiveis_segredos_no_codigo: 7 — ex.: scripts/ai-context/cenarios.mjs:102, src/components/admin/connections/__tests__/ConnectionSecurity.unit.test.tsx:9, src/integrations/supabase/client.ts:27
 
 ## Grafo de código (graphify)
-- 50926 nós · 86340 arestas · 2872 comunidades · grafo do commit `d65ace2c`
+- 50926 nós · 86340 arestas · 2872 comunidades · grafo do commit `e87db751`
 - comunidades maiores: vitest (896), ref_components (775), ref_integrations (595), ref_node_child_process (501), ref_hooks (449), ref_lib (447), react-router-dom (370), @tanstack/react-query (370), gotoAndSettle (367), ref_types (366), ref_node_fs (321), scripts (312)
 - símbolos mais chamados: gotoAndSettle() (e2e/helpers/nav.ts), re (?), json (?), q() (scripts/supabase_snapshot/snapshot.py), analyze() (tests/scripts/test_personalization_artifact_diagnostics.py), outer() (tests/scripts/test_personalization_artifact_diagnostics.py), useExternalDatabase() (recovery/src-legacy/src/hooks/useExternalDatabase.ts), concludeCheck() (scripts/check-result-contract.mjs), querySupabaseReadOnly() (scripts/supabase-read-only-query.mjs), loginAs() (e2e/helpers/auth.ts), inner() (tests/scripts/test_personalization_artifact_diagnostics.py), excluded_sql() (scripts/supabase_snapshot/snapshot.py)
 - consulta local: `graphify query "<pergunta>"`, `graphify path "<A>" "<B>"`, `graphify explain "<X>"`
@@ -607,7 +607,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 ## Hotspots (arquivos mais alterados, 90 dias)
 - supabase/MIGRATIONS_SYNC_LOG.md (64)
 - package.json (27)
-- docs/qa/05-PROGRESSO.md (20)
+- docs/qa/05-PROGRESSO.md (21)
 - package-lock.json (20)
 - CHANGELOG.md (14)
 - docs/agentes/resgates/2026-11-16-auditoria-branches.md (10)
@@ -1198,6 +1198,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - CHANGELOG topo: [1.19.0](https://github.com/adm01-debug/Promo_Gifts_V4/compare/gifts-store-v1.18.0...gifts-store-v1.19.0) (2026-11-22)
 
 ## Últimos commits
+- 2026-11-24 `e87db75` feat(security): etapa 006 — registrar v_compras_catalogo e v_compras_precos_faixa no contrato (#4008)
 - 2026-11-23 `d65ace2` chore: corrige status das migrations 20261122180000/20261122200000 no ledger (#4036)
 - 2026-11-23 `35b8704` chore(db): documentar reconciliacao da DDL do assistente do Supabase (#4033)
 - 2026-11-23 `918511e` chore(schema-snapshot): snapshot semanal 2026-W48 (run 45293671035) (#4034)
@@ -1212,7 +1213,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-23 `075a1e0` fix: referencia completa da migration do orcamento em 05-PROGRESSO (#4026)
 - 2026-11-23 `4b02d22` fix(qa): etapas 072-079 - erro de catalogo, colecoes e templates separados do vazio (#4023)
 - 2026-11-23 `3b7dc18` fix: Etapas 069-070 — alinhar ROLE_RANK em dispatcher-auth (ACH-022) (#4022)
-- 2026-11-23 `ce11844` fix: Etapas 067-068 — impressao publica de revista sem login (ACH-046) (#4020)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

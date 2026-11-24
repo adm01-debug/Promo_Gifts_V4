@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "d65ace2c5d36a659efcdff9eb2f7195d5cad7a84",
+  "sha": "e87db75175db7457d47e260fd193deb4b48142ee",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-24 01:21 UTC",
+  "generated_at": "2026-11-24 09:18 UTC",
   "files_total": 11180,
   "code_files": 9174,
-  "code_lines": 1301694
+  "code_lines": 1301696
  },
  "version": "1.3.2",
- "facts_hash": "6da5a56ec4e4c7b0",
+ "facts_hash": "870c882d69f0e30a",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -153369,7 +153369,7 @@
   {
    "module": "tests",
    "files": 1116,
-   "lines": 176617,
+   "lines": 176619,
    "tables": [
     "bot_detection_log",
     "clients",
@@ -312768,7 +312768,7 @@
    },
    {
     "file": "tests/security/public-views-columns.test.ts",
-    "name": "cobre exatamente as 8 views expostas ao anon"
+    "name": "cobre exatamente as 10 views expostas ao anon"
    },
    {
     "file": "tests/security/public-views-columns.test.ts",
@@ -560640,7 +560640,7 @@
   },
   "tests/security/public-views-columns.test.ts": {
    "path": "tests/security/public-views-columns.test.ts",
-   "lines": 77,
+   "lines": 79,
    "is_test": true,
    "params": [
     {
@@ -560650,7 +560650,7 @@
    ],
    "tests": [
     "contrato de colunas das views SECURITY DEFINER públicas",
-    "cobre exatamente as 8 views expostas ao anon",
+    "cobre exatamente as 10 views expostas ao anon",
     "v_suppliers_public nunca expõe credenciais/markup/contato",
     "v_tabela_preco_gravacao_oficial_public nunca expõe custos internos",
     "v_products_public declara as colunas mascaradas como NULL",
@@ -563431,10 +563431,21 @@
   }
  },
  "git": {
-  "sha": "d65ace2c5d36a659efcdff9eb2f7195d5cad7a84",
+  "sha": "e87db75175db7457d47e260fd193deb4b48142ee",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "e87db75",
+    "date": "2026-11-24",
+    "author": "adm01-debug",
+    "subject": "feat(security): etapa 006 — registrar v_compras_catalogo e v_compras_precos_faixa no contrato (#4008)",
+    "files": [
+     ".security/public-views-columns.json",
+     "docs/qa/05-PROGRESSO.md",
+     "tests/security/public-views-columns.test.ts"
+    ]
+   },
    {
     "sha": "d65ace2",
     "date": "2026-11-23",
@@ -563812,41 +563823,16 @@
      "supabase/migrations/20261122200000_fix_cadeia_views_compras_e_compositions.sql",
      "supabase/rollbacks/20261122200000_rollback.sql"
     ]
-   },
-   {
-    "sha": "d519f4e",
-    "date": "2026-11-22",
-    "author": "github-actions[bot]",
-    "subject": "chore(schema-snapshot): snapshot semanal 2026-W47 (run 45033672701) (#3988)",
-    "files": [
-     "supabase/baseline/20261122180000_baseline_schema.sql",
-     "supabase/baseline/20261122180000_ledger_versions.json",
-     "supabase/migrations-snapshot/ALL_IN_ONE.sql",
-     "supabase/migrations-snapshot/SCHEMA_LIVE.sql",
-     "supabase/migrations-snapshot/SNAPSHOT_META.json"
-    ]
    }
   ],
   "hot_files": [
    [
     "docs/qa/05-PROGRESSO.md",
-    20
+    21
    ],
    [
     "supabase/MIGRATIONS_SYNC_LOG.md",
     4
-   ],
-   [
-    "supabase/migrations-snapshot/ALL_IN_ONE.sql",
-    2
-   ],
-   [
-    "supabase/migrations-snapshot/SCHEMA_LIVE.sql",
-    2
-   ],
-   [
-    "supabase/migrations-snapshot/SNAPSHOT_META.json",
-    2
    ],
    [
     "package.json",
@@ -563869,11 +563855,31 @@
     2
    ],
    [
+    ".security/public-views-columns.json",
+    1
+   ],
+   [
+    "tests/security/public-views-columns.test.ts",
+    1
+   ],
+   [
     "supabase/baseline/20261122200000_baseline_schema.sql",
     1
    ],
    [
     "supabase/baseline/20261122200000_ledger_versions.json",
+    1
+   ],
+   [
+    "supabase/migrations-snapshot/ALL_IN_ONE.sql",
+    1
+   ],
+   [
+    "supabase/migrations-snapshot/SCHEMA_LIVE.sql",
+    1
+   ],
+   [
+    "supabase/migrations-snapshot/SNAPSHOT_META.json",
     1
    ],
    [
@@ -563898,14 +563904,6 @@
    ],
    [
     "src/pages/quotes/quotes-dashboard/useQuotesDashboard.ts",
-    1
-   ],
-   [
-    "docs/qa/corridas-de-estado.md",
-    1
-   ],
-   [
-    "src/components/products/InlinePriceCalculator.tsx",
     1
    ]
   ]
