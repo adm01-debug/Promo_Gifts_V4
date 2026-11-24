@@ -35,7 +35,7 @@ Severidade das etapas: Média 158 · Alta 79 · Baixa 54 · Crítica 9
 - [x] 002 — Mascarar `cost_price` e os campos de fornecedor em `v_compras_catalogo` — onda 1 — Crítica — APROVAÇÃO — concluída pela revogação do grant de `anon` (mascarar coluna foi rejeitado): ver Evidências
 - [x] 003 — Mascarar `unit_cost` em `v_compras_precos_faixa` — onda 1 — Crítica — APROVAÇÃO — concluída pela revogação do grant de `anon` (mascarar coluna foi rejeitado): ver Evidências
 - [x] 004 — Decidir o destino de `v_compras_precos_variante`, que hoje responde 401 ao `anon` — onda 1 — Alta — APROVAÇÃO — decidido: revogar o grant de `anon`: ver Evidências
-- [ ] 005 — Fazer o gate de views públicas descobrir view nova em vez de conferir uma lista fixa — onda 1 — Alta — APROVAÇÃO — tentativa em #4007 fechada; medição do bloqueio em Evidências
+- [x] 005 — Fazer o gate de views públicas descobrir view nova em vez de conferir uma lista fixa — onda 1 — Alta — APROVAÇÃO — concluída em #4049: ver Evidências
 - [x] 006 — Registrar as três views de compras no contrato de views públicas — onda 1 — Alta — concluída em #4008 (`e87db751`)
 - [-] 007 — Fechar `tabela_preco_gravacao_oficial_faixa` ao anônimo — onda 1 — Alta — APROVAÇÃO — premissa refutada; ver Evidências
 - [ ] 008 — Fazer o gate de drift rodar também sobre matviews e sobre grants de tabela ao `anon` — onda 1 — Média — APROVAÇÃO
@@ -826,18 +826,23 @@ foi fechada em 2026-11-24 com a mesma evidência. Reforço medido: `public.fn_ve
 original da etapa, faria a própria verificação de saúde do banco passar a acusar `FALTA anon SELECT`. Detalhe em
 `docs/agentes/resgates/2026-11-24-auditoria-branches-restantes.md`.
 
-**Etapa 005 — tentativa descartada, com o bloqueio medido.** A PR #4007 trocava o filtro fixo por
-`has_table_privilege('anon', c.oid, 'SELECT')`. Medido no dump de produção
-(`supabase/migrations-snapshot/SCHEMA_LIVE.sql`, 2026-11-24T00:14:33Z): `public` tem **200** objetos
-(196 views + 4 matviews) e o contrato `.security/public-views-columns.json` cobre **10**; o `anon` lê objetos
-sem grant explícito (`categories` → 200) porque o projeto usa
-`ALTER DEFAULT PRIVILEGES ... GRANT ALL ON TABLES TO anon` em `public`. Com a consulta aberta, a checagem
-"view pública no banco sem entrada no contrato" passaria a acusar **190** objetos e o gate ficaria vermelho
-permanente. Pior: **39** desses 190 têm identificador de coluna que casa com os próprios padrões sensíveis do
-gate — `cost`/`custo`/`supplier_price`/`ncm`/`bitrix_`/`email`/`phone`/`cpf`/`cnpj`/`endereco` — e **31** são de
-custo. Exemplos com custo real exposto: `v_products_complete`, `vw_product_notebook_complete`,
-`vw_asia_products_*`, `mv_stock_rupture_alert` e `vw_spot_price_alerts` (`cost_price`),
-`v_compras_precos_variante` (`unit_cost`), `v_monthly_costs` (`cost_usd`).
-Consequência: a etapa correta é **revogar `anon` das views internas de `public` primeiro**; só depois o gate pode
-passar a descobrir view nova. A contagem sai do próprio dump:
-`grep -c 'CREATE .* VIEW "public"' supabase/migrations-snapshot/SCHEMA_LIVE.sql` → 200.
+**Etapa 005 — fechada em #4049, com a medição anterior corrigida.** A PR #4007 trocava o filtro fixo por
+`has_table_privilege('anon', c.oid, 'SELECT')` sem allowlist e foi fechada. O bloqueio que ela media estava
+**superestimado**: `public` tem 200 objetos (196 views + 4 matviews) e o contrato cobre 10, mas o `anon` lê
+**15** — 8 do contrato e 7 fora dele, todos de catálogo e sem coluna de custo depois da `20261124163000`:
+`mv_product_compositions`, `v_color_nuances_public`, `v_kit_component_print_areas_public`,
+`v_personalization_techniques_public`, `v_print_area_techniques_public`, `v_site_products_public`,
+`v_tags_public`. As duas views de compras não entram porque a `20261124140000` revogou o grant delas.
+Medição no dump (`SCHEMA_LIVE.sql`, 2026-11-24T00:14:33Z): das 509 linhas `GRANT ... TO "anon"` em `public` do
+dump, **16** views/matviews têm SELECT de tabela — as 15 acima mais `vw_variant_sale_prices`, cujo grant caiu
+também na `20261124140000` — e **45** são **tabelas**, que não são escopo desta etapa (são a 008).
+`ALTER DEFAULT PRIVILEGES ... ON TABLES TO anon` concede apenas `REFERENCES,TRIGGER,MAINTAIN`, **não** SELECT,
+logo não existe leitura implícita de view nova — a contagem de 190 vinha de creditar ao `anon` um privilégio
+que ele não tem.
+Entregue: a descoberta varre todo objeto de `public` (`relkind in ('v','m')`, grant de tabela **ou** de
+coluna), `.security/anon-select-allowlist.json` congela as 7 views e suas colunas, o contrato passa a declarar
+`anon_select` por view (as duas de compras ficam `false`, então uma re-concessão de grant também falha o gate),
+e o passo `E118i` do `deploy-gates.yml` ganhou `SUPABASE_ACCESS_TOKEN` + `--require-live` — antes rodava sem
+credencial, caía em `static-pass` e era cego. Testes: `tests/security/public-views-columns.test.ts` e
+`tests/scripts/check-public-views-drift.test.mjs` (26 casos), incluindo objeto novo fora do contrato, allowlist
+obsoleta, coluna nova legível por anon e re-concessão de grant em view `anon_select=false`.
