@@ -821,7 +821,10 @@ em `.security/public-views-columns.json`.
 **Etapa 007 — premissa refutada (`[-]`).** `tabela_preco_gravacao_oficial_faixa.preco_unitario` é o preço de
 **venda** oficial, público por design desde `20260717173348_*` (policy `..._public_read` para `anon` + view
 espelho). O cabeçalho de `20261124140000` registra a rejeição e o motivo; a PR #4009 (mascarar `preco_unitario`)
-foi fechada em 2026-11-24 com a mesma evidência.
+foi fechada em 2026-11-24 com a mesma evidência. Reforço medido: `public.fn_verify_anon_catalog_grants()`
+(`SCHEMA_LIVE.sql:53373`) **exige** `anon SELECT` nessa tabela — a revogação do grant, que era o objetivo
+original da etapa, faria a própria verificação de saúde do banco passar a acusar `FALTA anon SELECT`. Detalhe em
+`docs/agentes/resgates/2026-11-24-auditoria-branches-restantes.md`.
 
 **Etapa 005 — tentativa descartada, com o bloqueio medido.** A PR #4007 trocava o filtro fixo por
 `has_table_privilege('anon', c.oid, 'SELECT')`. Medido no dump de produção
