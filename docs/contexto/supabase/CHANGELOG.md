@@ -2,6 +2,10 @@
 
 Diff semântico gerado a cada coleta em que algo mudou.
 
+## 2026-11-24 18:21 UTC
+
+- **migrations** adicionado (1): `20261124171500_internal_managed_schema_dictionary`
+
 ## 2026-11-24 17:17 UTC
 
 - **colunas** adicionado (7): `internal.managed_schema_dictionary.description`, `internal.managed_schema_dictionary.object_name`, `internal.managed_schema_dictionary.object_type`, `internal.managed_schema_dictionary.partition_of`, `internal.managed_schema_dictionary.reviewed_at`, `internal.managed_schema_dictionary.schema_name`, `internal.managed_schema_dictionary.service_name`

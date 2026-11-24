@@ -241302,6 +241302,12 @@
         "statements": 9,
         "statements_sha": "2d9920002d3ba239",
         "version": "20261124140000"
+      },
+      {
+        "name": "internal_managed_schema_dictionary",
+        "statements": 4,
+        "statements_sha": "8725429bf3483ca0",
+        "version": "20261124171500"
       }
     ],
     "policies": [
