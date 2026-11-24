@@ -73,6 +73,12 @@
       "reason": "Deny-all intencional. Ledger de resultados da bateria de testes de auditoria; escrito/lido por prod_audit.assert(), prod_audit.quick_regression_check() e prod_audit.recent_failures() (supabase/migrations/20260512000000_bootstrap_missing_application_schemas.sql:576,788,820) e por public.fn_deploy_readiness_check (supabase/migrations/20260513000000_reconcile_orphan_functions_from_prod.sql). Todas owner postgres, nenhuma exposta como RPC ao cliente. Nenhuma policy em supabase/migrations/. Zero referências em src/ e supabase/functions/ (grep 2026-11-23).",
       "secdef_fn": "prod_audit.assert",
       "cron_job": null
+    },
+    {
+      "table": "internal.managed_schema_dictionary",
+      "reason": "Deny-all por desenho, nao por esquecimento: a tabela nasceu em producao em 2026-11-24 ja com `ALTER TABLE ... ENABLE ROW LEVEL SECURITY` e nenhuma policy, e o diff do schema (artifact schema-reconciliation-evidence da run 45442049128) nao registra nenhum GRANT no objeto — nem anon nem authenticated tem privilegio, e o schema `internal` nao e exposto pelo PostgREST. Dicionario de objetos gerenciados (schema_name/object_type/object_name/service_name/description/partition_of/reviewed_at): registro de inventario do proprio banco, escrito e lido por ferramenta administrativa com service_role (bypassrls). Zero consumidores em src/, supabase/functions/ e cron jobs do repo (grep em main + todas as refs remotas, 2026-11-24). Canonicalizada pela migration 20261124171500, que reproduz o estado vivo e roda como no-op.",
+      "secdef_fn": null,
+      "cron_job": null
     }
   ]
 }
