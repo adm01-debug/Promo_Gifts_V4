@@ -35,7 +35,7 @@ Severidade das etapas: Média 158 · Alta 79 · Baixa 54 · Crítica 9
 - [x] 002 — Mascarar `cost_price` e os campos de fornecedor em `v_compras_catalogo` — onda 1 — Crítica — APROVAÇÃO — concluída pela revogação do grant de `anon` (mascarar coluna foi rejeitado): ver Evidências
 - [x] 003 — Mascarar `unit_cost` em `v_compras_precos_faixa` — onda 1 — Crítica — APROVAÇÃO — concluída pela revogação do grant de `anon` (mascarar coluna foi rejeitado): ver Evidências
 - [x] 004 — Decidir o destino de `v_compras_precos_variante`, que hoje responde 401 ao `anon` — onda 1 — Alta — APROVAÇÃO — decidido: revogar o grant de `anon`: ver Evidências
-- [x] 005 — Fazer o gate de views públicas descobrir view nova em vez de conferir uma lista fixa — onda 1 — Alta — APROVAÇÃO — tentativa em #4007 fechada e refeita com allowlist: ver Evidências
+- [x] 005 — Fazer o gate de views públicas descobrir view nova em vez de conferir uma lista fixa — onda 1 — Alta — APROVAÇÃO — concluída em #4049: ver Evidências
 - [x] 006 — Registrar as três views de compras no contrato de views públicas — onda 1 — Alta — concluída em #4008 (`e87db751`)
 - [-] 007 — Fechar `tabela_preco_gravacao_oficial_faixa` ao anônimo — onda 1 — Alta — APROVAÇÃO — premissa refutada; ver Evidências
 - [ ] 008 — Fazer o gate de drift rodar também sobre matviews e sobre grants de tabela ao `anon` — onda 1 — Média — APROVAÇÃO
@@ -826,7 +826,7 @@ foi fechada em 2026-11-24 com a mesma evidência. Reforço medido: `public.fn_ve
 original da etapa, faria a própria verificação de saúde do banco passar a acusar `FALTA anon SELECT`. Detalhe em
 `docs/agentes/resgates/2026-11-24-auditoria-branches-restantes.md`.
 
-**Etapa 005 — fechada, com a medição anterior corrigida.** A PR #4007 trocava o filtro fixo por
+**Etapa 005 — fechada em #4049, com a medição anterior corrigida.** A PR #4007 trocava o filtro fixo por
 `has_table_privilege('anon', c.oid, 'SELECT')` sem allowlist e foi fechada. O bloqueio que ela media estava
 **superestimado**: `public` tem 200 objetos (196 views + 4 matviews) e o contrato cobre 10, mas o `anon` lê
 **15** — 8 do contrato e 7 fora dele, todos de catálogo e sem coluna de custo depois da `20261124163000`:
