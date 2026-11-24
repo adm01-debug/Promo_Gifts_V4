@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e de hora em hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `e142753481ac8093ed22ddc56275dc644aad8140` (2026-11-23T20:25:17-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e de hora em hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `918511e68f276e681d50ad84ff6b0958db584844` (2026-11-23T21:18:14-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -599,14 +599,14 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - possiveis_segredos_no_codigo: 7 — ex.: scripts/ai-context/cenarios.mjs:102, src/components/admin/connections/__tests__/ConnectionSecurity.unit.test.tsx:9, src/integrations/supabase/client.ts:27
 
 ## Grafo de código (graphify)
-- 50924 nós · 86337 arestas · 2819 comunidades · grafo do commit `e1427534`
+- 50924 nós · 86337 arestas · 2819 comunidades · grafo do commit `918511e6`
 - comunidades maiores: vitest (942), ref_components (692), ref_integrations (681), ref_node_child_process (502), @tanstack/react-query (446), ref_hooks (430), react-router-dom (394), ref_types (394), ref_utils (360), sonner (352), ref_node_fs (345), nav.ts (330)
 - símbolos mais chamados: gotoAndSettle() (e2e/helpers/nav.ts), re (?), json (?), q() (scripts/supabase_snapshot/snapshot.py), analyze() (tests/scripts/test_personalization_artifact_diagnostics.py), outer() (tests/scripts/test_personalization_artifact_diagnostics.py), useExternalDatabase() (recovery/src-legacy/src/hooks/useExternalDatabase.ts), concludeCheck() (scripts/check-result-contract.mjs), querySupabaseReadOnly() (scripts/supabase-read-only-query.mjs), loginAs() (e2e/helpers/auth.ts), inner() (tests/scripts/test_personalization_artifact_diagnostics.py), excluded_sql() (scripts/supabase_snapshot/snapshot.py)
 - consulta local: `graphify query "<pergunta>"`, `graphify path "<A>" "<B>"`, `graphify explain "<X>"`
 
 ## Hotspots (arquivos mais alterados, 90 dias)
-- supabase/MIGRATIONS_SYNC_LOG.md (65)
-- package.json (29)
+- supabase/MIGRATIONS_SYNC_LOG.md (63)
+- package.json (28)
 - package-lock.json (21)
 - docs/qa/05-PROGRESSO.md (20)
 - CHANGELOG.md (15)
@@ -1198,6 +1198,8 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - CHANGELOG topo: [1.19.0](https://github.com/adm01-debug/Promo_Gifts_V4/compare/gifts-store-v1.18.0...gifts-store-v1.19.0) (2026-11-22)
 
 ## Últimos commits
+- 2026-11-23 `918511e` chore(schema-snapshot): snapshot semanal 2026-W48 (run 45293671035) (#4034)
+- 2026-11-23 `53b4218` chore(security): atualiza baseline assinado de RLS policies (#4032)
 - 2026-11-23 `e142753` fix(hooks): centralizar invalidacao do cache de orcamentos (#4031)
 - 2026-11-23 `cdf7daa` fix(hooks): resposta atrasada nao sobrescreve mais preco da tecnica (182-185) (#4030)
 - 2026-11-23 `e8a15b4` feat(hooks): merge parcial em profiles.preferences (etapas 141-146) (#4029)
@@ -1211,8 +1213,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-23 `ce11844` fix: Etapas 067-068 — impressao publica de revista sem login (ACH-046) (#4020)
 - 2026-11-23 `384b16e` fix: Etapas 063-064 — total_cost em personalizacoes de template (ACH-084) (#4019)
 - 2026-11-23 `aeef004` feat: Etapas 057-060 — adotar safeErrorResponse em 5 edge functions (ACH-030) (#4018)
-- 2026-11-23 `ec295ba` feat: Etapa 042 — restringir e2e-cleanup a quotes marcadas [E2E] (ACH-071) (#4017)
-- 2026-11-23 `0f0ccc3` feat: Etapa 041 — alarme explícito de dessincronia no e2e-cleanup (ACH-071) (#4016)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

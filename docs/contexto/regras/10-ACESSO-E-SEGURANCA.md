@@ -1,6 +1,6 @@
 # 10 · ACESSO E SEGURANÇA — quem pode o quê
 
-> Gerado automaticamente por AI Context Sync v1.3.2 · commit `e142753481` · branch `main` · 2026-11-23 23:26 UTC
+> Gerado automaticamente por AI Context Sync v1.3.2 · commit `918511e68f` · branch `main` · 2026-11-24 00:19 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## Perfis / roles identificados
@@ -100,7 +100,7 @@
 | `cf_recon.remediation` | enabled | — | — | — | — |
 | `cf_recon_inflight` | enabled | — | — | — | — |
 | `city_whitelist` | enabled | authenticated: is_admin_or_above((SELECT auth.uid())) | authenticated: is_admin_or_above((SELECT auth.uid())) | authenticated: is_admin_or_above((SELECT auth.uid())) | authenticated: is_admin_or_above((SELECT auth.uid())) |
-| `classification_audit.category_suggestions` | não encontrado | sem RLS | sem RLS | sem RLS | sem RLS |
+| `classification_audit.category_suggestions` | enabled | — | — | — | — |
 | `classify_functions_registry` | enabled | — | — | — | — |
 | `client_contacts` | não encontrado | sem RLS | sem RLS | sem RLS | sem RLS |
 | `client_notes` | não encontrado | sem RLS | sem RLS | sem RLS | sem RLS |
@@ -286,11 +286,11 @@
 | `point_transactions` | não encontrado | sem RLS | sem RLS | sem RLS | sem RLS |
 | `price_history` | enabled | public: ("public"."has_role"(( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid"), 'admin'::"public"."app_role") OR "public"."has_role"(( SE | — | — | — |
 | `print_area_techniques` | enabled | — | — | — | — |
-| `prod_audit.category_keywords` | não encontrado | sem RLS | sem RLS | sem RLS | sem RLS |
-| `prod_audit.category_suggestions` | não encontrado | sem RLS | sem RLS | sem RLS | sem RLS |
-| `prod_audit.classification_rules` | não encontrado | sem RLS | sem RLS | sem RLS | sem RLS |
-| `prod_audit.product_features` | não encontrado | sem RLS | sem RLS | sem RLS | sem RLS |
-| `prod_audit.test_results` | não encontrado | sem RLS | sem RLS | sem RLS | sem RLS |
+| `prod_audit.category_keywords` | enabled | — | — | — | — |
+| `prod_audit.category_suggestions` | enabled | — | — | — | — |
+| `prod_audit.classification_rules` | enabled | — | — | — | — |
+| `prod_audit.product_features` | enabled | — | — | — | — |
+| `prod_audit.test_results` | enabled | — | — | — | — |
 | `product_ai_content` | enabled | service_role: true<br>anon, authenticated: true | service_role: true | service_role: true | service_role: true |
 | `product_ai_history` | enabled | — | — | — | — |
 | `product_attributes` | enabled | public: is_active = true AND is_visible = true<br>authenticated: true<br>service_role: true | service_role: true | service_role: true | service_role: true |

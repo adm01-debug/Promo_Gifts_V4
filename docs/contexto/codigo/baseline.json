@@ -2,11 +2,21 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "e142753481ac8093ed22ddc56275dc644aad8140",
+  "commit": "918511e68f276e681d50ad84ff6b0958db584844",
   "branch": "main",
-  "data_commit": "2026-11-23T20:25:17-03:00",
+  "data_commit": "2026-11-23T21:18:14-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "918511e",
+    "data": "2026-11-23",
+    "assunto": "chore(schema-snapshot): snapshot semanal 2026-W48 (run 45293671035) (#4034)"
+   },
+   {
+    "sha": "53b4218",
+    "data": "2026-11-23",
+    "assunto": "chore(security): atualiza baseline assinado de RLS policies (#4032)"
+   },
    {
     "sha": "e142753",
     "data": "2026-11-23",
@@ -121,19 +131,9 @@
     "sha": "ded84e9",
     "data": "2026-11-22",
     "assunto": "docs(migrations-log): recibo E15 — aplicação de 20261122200000 (#3992)"
-   },
-   {
-    "sha": "23b0135",
-    "data": "2026-11-22",
-    "assunto": "chore: remover palavra CONCURRENTLY de comment de view (destrava preflight E15) (#3991)"
-   },
-   {
-    "sha": "7600d95",
-    "data": "2026-11-22",
-    "assunto": "fix: corrigir cadeia invoker das views de compras e composicoes (#3989)"
    }
   ],
-  "arquivos_mudados_7d": 740,
+  "arquivos_mudados_7d": 738,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -149,7 +149,7 @@
    },
    {
     "pasta": "tests/edge-functions/live",
-    "mudancas": 233
+    "mudancas": 232
    },
    {
     "pasta": "src/hooks/products",
@@ -173,7 +173,7 @@
    },
    {
     "pasta": "supabase/functions/_shared",
-    "mudancas": 159
+    "mudancas": 155
    },
    {
     "pasta": "src/components/ui",
@@ -199,11 +199,11 @@
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "supabase/MIGRATIONS_SYNC_LOG.md",
-    "mudancas": 65
+    "mudancas": 63
    },
    {
     "arquivo": "package.json",
-    "mudancas": 29
+    "mudancas": 28
    },
    {
     "arquivo": "package-lock.json",
@@ -301,15 +301,15 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 258
+    "commits": 256
    },
    {
     "autor": "github-actions[bot]",
-    "commits": 41
+    "commits": 43
    },
    {
     "autor": "Claude",
-    "commits": 4
+    "commits": 2
    },
    {
     "autor": "dependabot[bot]",
