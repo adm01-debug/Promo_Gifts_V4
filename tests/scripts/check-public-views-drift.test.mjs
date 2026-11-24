@@ -17,11 +17,14 @@
 // complementa testando a lógica pura unitariamente, sem custo de spawn.
 import { describe, expect, it } from 'vitest';
 import {
+  diffAnonTables,
   diffLive,
   findUnacknowledgedSensitiveColumns,
+  loadAnonTablesBaseline,
   loadContract,
   PUBLIC_VIEWS,
   SENSITIVE_PATTERNS,
+  validateAnonTablesBaseline,
   validateContractStructure,
 } from '../../scripts/check-public-views-drift.mjs';
 
@@ -138,5 +141,66 @@ describe('diffLive (mutation: coluna extra aparecendo ao vivo)', () => {
     expect(errors.some((e) => e.includes('v_new_unlisted_public') && e.includes('sem entrada no contrato'))).toBe(
       true,
     );
+  });
+});
+
+// ─── Etapa 008: tabelas legíveis por anon (o gate antes só olhava view/matview) ─
+
+describe('baseline de tabelas legíveis por anon (.security/anon-tables-baseline.json)', () => {
+  it('passa a validação estrutural hoje (0 erros)', () => {
+    expect(validateAnonTablesBaseline(loadAnonTablesBaseline())).toEqual([]);
+  });
+
+  it('registra as tabelas internas que ainda têm grant herdado, como dívida explícita', () => {
+    const doc = loadAnonTablesBaseline();
+    const internas = doc.tables.filter((t) => t.exposure === 'interno-grant-herdado').map((t) => t.table);
+    expect(internas).toContain('video_sim_results');
+    expect(internas).toContain('system_settings');
+  });
+
+  it('tabela nova legível por anon fora da baseline falha o gate', () => {
+    const doc = { tables: [{ table: 'categorias_publicas', exposure: 'catalogo-publico', reason: 'x' }] };
+    const errors = diffAnonTables(doc, [
+      { relname: 'categorias_publicas', relkind: 'r', anon_select: true, anon_columns: ['id'] },
+      { relname: 'tabela_nova_sem_revisao', relkind: 'r', anon_select: true, anon_columns: ['id', 'custo'] },
+    ]);
+    expect(errors).toHaveLength(1);
+    expect(errors[0]).toContain('tabela_nova_sem_revisao');
+    expect(errors[0]).toContain('anon-tables-baseline.json');
+  });
+
+  it('tabela com SELECT só por coluna (relkind r) também conta como exposta', () => {
+    const errors = diffAnonTables({ tables: [] }, [
+      { relname: 'suppliers', relkind: 'r', anon_select: false, anon_columns: ['id', 'name'] },
+    ]);
+    expect(errors).toHaveLength(1);
+    expect(errors[0]).toContain('suppliers');
+  });
+
+  it('entrada da baseline sem privilégio no banco falha — revogação exige limpar a linha', () => {
+    const doc = { tables: [{ table: 'ja_revogada', exposure: 'catalogo-publico', reason: 'x' }] };
+    const errors = diffAnonTables(doc, [{ relname: 'ja_revogada', relkind: 'r', anon_select: false, anon_columns: [] }]);
+    expect(errors).toHaveLength(1);
+    expect(errors[0]).toContain('remover a entrada');
+  });
+
+  it('tabela sem privilégio e fora da baseline não gera ruído', () => {
+    const errors = diffAnonTables({ tables: [] }, [
+      { relname: 'quotes', relkind: 'r', anon_select: false, anon_columns: [] },
+      { relname: 'v_products_public', relkind: 'v', anon_select: true, anon_columns: ['id'] },
+    ]);
+    expect(errors).toEqual([]);
+  });
+
+  it('entrada sem reason ou com TODO é rejeitada na validação estrutural', () => {
+    const errors = validateAnonTablesBaseline({
+      measured_at: '2026-11-24',
+      tables: [
+        { table: 'a', exposure: 'catalogo-publico' },
+        { table: 'b', exposure: 'catalogo-publico', reason: 'TODO revisar' },
+        { table: 'c', exposure: 'outro', reason: 'ok' },
+      ],
+    });
+    expect(errors).toHaveLength(3);
   });
 });

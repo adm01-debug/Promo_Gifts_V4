@@ -90,6 +90,11 @@ const ROOT = path.resolve(__dirname, '..');
 const CONTRACT_PATH = path.join(ROOT, '.security/public-views-columns.json');
 const ANON_ALLOWLIST_PATH = path.join(ROOT, '.security/anon-select-allowlist.json');
 
+// Tabelas (relkind r/p) legiveis por anon nao passam pelo contrato de views nem pela
+// allowlist de views: sem esta baseline o gate so olhava view/matview e um `GRANT
+// SELECT ... TO anon` em tabela nova ficava invisivel no CI (etapa 008 do QA).
+const ANON_TABLES_BASELINE_PATH = path.join(ROOT, '.security/anon-tables-baseline.json');
+
 // Views do contrato. As duas de compras entram com `anon_select: false`
 // (grant anon revogado pela migration 20261124140000); as outras 8 seguem
 // legíveis pelo anon.
@@ -147,7 +152,7 @@ function buildAnonSql() {
     SELECT c.oid, c.relname, c.relkind
     FROM pg_class c
     JOIN pg_namespace n ON n.oid = c.relnamespace
-    WHERE n.nspname = 'public' AND c.relkind IN ('v', 'm')
+    WHERE n.nspname = 'public' AND c.relkind IN ('v', 'm', 'r', 'p')
   )
   SELECT o.relname,
          o.relkind,
@@ -311,6 +316,8 @@ export function diffAnonExposure(contract, allowlist, anonRows) {
   const exposed = new Map();
 
   for (const row of anonRows ?? []) {
+    // Tabelas tem regra propria (diffAnonTables): nome na baseline, sem congelar colunas.
+    if (row.relkind === 'r' || row.relkind === 'p') continue;
     const cols = Array.isArray(row.anon_columns) ? row.anon_columns : [];
     if (row.anon_select === true || cols.length > 0) {
       exposed.set(row.relname, {
@@ -375,6 +382,63 @@ export function diffAnonExposure(contract, allowlist, anonRows) {
   return errors;
 }
 
+export function loadAnonTablesBaseline(baselinePath = ANON_TABLES_BASELINE_PATH) {
+  return JSON.parse(readFileSync(baselinePath, 'utf8'));
+}
+
+export function validateAnonTablesBaseline(doc) {
+  const errors = [];
+  const tables = doc?.tables;
+  if (!Array.isArray(tables)) return ['anon-tables-baseline: campo tables ausente ou inválido'];
+  if (!doc.measured_at || !/^\d{4}-\d{2}-\d{2}$/.test(String(doc.measured_at))) {
+    errors.push('anon-tables-baseline: measured_at ausente ou fora de YYYY-MM-DD');
+  }
+  const seen = new Set();
+  for (const entry of tables) {
+    const name = entry?.table;
+    if (!name || typeof name !== 'string') {
+      errors.push(`anon-tables-baseline: entrada sem 'table' válido: ${JSON.stringify(entry)}`);
+      continue;
+    }
+    if (seen.has(name)) errors.push(`anon-tables-baseline: ${name} aparece mais de uma vez`);
+    seen.add(name);
+    if (!entry.reason || typeof entry.reason !== 'string') {
+      errors.push(`anon-tables-baseline: ${name} sem campo 'reason'`);
+    } else if (/\b(TODO|FIXME|WIP)\b/.test(entry.reason)) {
+      errors.push(`anon-tables-baseline: ${name} com marcador de pendência na reason`);
+    }
+    if (!['catalogo-publico', 'interno-grant-herdado'].includes(entry.exposure)) {
+      errors.push(`anon-tables-baseline: ${name} com exposure inválido (${entry.exposure})`);
+    }
+  }
+  return errors;
+}
+
+export function diffAnonTables(baseline, anonRows) {
+  const errors = [];
+  const declared = new Set((baseline?.tables ?? []).map((t) => t.table));
+  const exposed = new Set();
+  for (const row of anonRows ?? []) {
+    if (row.relkind !== 'r' && row.relkind !== 'p') continue;
+    const cols = Array.isArray(row.anon_columns) ? row.anon_columns : [];
+    if (row.anon_select === true || cols.length > 0) exposed.add(row.relname);
+  }
+  for (const name of exposed) {
+    if (declared.has(name)) continue;
+    errors.push(
+      `${name} (tabela): SELECT de anon sem entrada em .security/anon-tables-baseline.json ` +
+        `(grant novo em tabela fora do repo) — revisar antes de liberar`,
+    );
+  }
+  for (const name of declared) {
+    if (exposed.has(name)) continue;
+    errors.push(
+      `${name}: baseline declara SELECT de anon e o privilégio NÃO existe mais — remover a entrada`,
+    );
+  }
+  return errors;
+}
+
 function summarizeAcknowledged(contract) {
   const lines = [];
   for (const [view, spec] of Object.entries(contract.views ?? {})) {
@@ -420,9 +484,11 @@ async function fetchLive(contract) {
 export async function main() {
   const contract = loadContract();
   const anonAllowlist = loadAnonAllowlist();
+  const anonTables = loadAnonTablesBaseline();
   const structuralErrors = [
     ...validateContractStructure(contract),
     ...validateAnonAllowlistIntegrity(anonAllowlist),
+    ...validateAnonTablesBaseline(anonTables),
   ];
 
   let liveRows = null;
@@ -467,7 +533,8 @@ export async function main() {
 
   const liveErrors = liveRows ? diffLive(contract, liveRows) : [];
   const anonErrors = anonRows ? diffAnonExposure(contract, anonAllowlist, anonRows) : [];
-  const allErrors = [...structuralErrors, ...liveErrors, ...anonErrors];
+  const tableErrors = anonRows ? diffAnonTables(anonTables, anonRows) : [];
+  const allErrors = [...structuralErrors, ...liveErrors, ...anonErrors, ...tableErrors];
   const acknowledgedLines = summarizeAcknowledged(contract);
 
   if (allErrors.length) {
@@ -496,7 +563,7 @@ export async function main() {
   return concludeCheck({
     check: 'public-views-drift',
     status: CHECK_RESULT_STATUS.PASSED,
-    summary: `${PUBLIC_VIEWS.length} views do contrato OK (live); ${anonRows ? anonRows.length : 0} objeto(s) de public conferido(s) para anon; ${acknowledgedLines.length} achado(s) sensível(is) já reconhecido(s)`,
+    summary: `${PUBLIC_VIEWS.length} views do contrato OK (live); ${anonRows ? anonRows.length : 0} objeto(s) de public conferido(s) para anon (${anonTables.tables.length} tabela(s) na baseline); ${acknowledgedLines.length} achado(s) sensível(is) já reconhecido(s)`,
     details: { acknowledgedFindings: acknowledgedLines },
   });
 }

@@ -38,7 +38,7 @@ Severidade das etapas: Média 158 · Alta 79 · Baixa 54 · Crítica 9
 - [x] 005 — Fazer o gate de views públicas descobrir view nova em vez de conferir uma lista fixa — onda 1 — Alta — APROVAÇÃO — concluída em #4049: ver Evidências
 - [x] 006 — Registrar as três views de compras no contrato de views públicas — onda 1 — Alta — concluída em #4008 (`e87db751`)
 - [-] 007 — Fechar `tabela_preco_gravacao_oficial_faixa` ao anônimo — onda 1 — Alta — APROVAÇÃO — premissa refutada; ver Evidências
-- [ ] 008 — Fazer o gate de drift rodar também sobre grants de tabela ao `anon` — onda 1 — Média — APROVAÇÃO — medição de 2026-11-24 em "Evidências": 5 tabelas de `public` entregam linhas ao `anon` e 3 têm grant sem linha visível; o que falta é o gate enxergar `relkind` `'r'` para travar a próxima — matview já está coberta (a descoberta usa `relkind in ('v','m')`); o furo que sobra são as **45 tabelas** de `public` com SELECT concedido ao `anon` medidas no dump da etapa 005, que não entram na consulta (`scripts/check-public-views-drift.mjs`, `buildAnonSql`)
+- [ ] 008 — Fazer o gate de drift rodar também sobre grants de tabela ao `anon` — onda 1 — Média — APROVAÇÃO — **gate implementado em #4059** (baseline de 36 tabelas + `relkind 'r','p'`), aguardando aprovação; medição de 2026-11-24 em "Evidências": 5 tabelas de `public` entregam linhas ao `anon` e 3 têm grant sem linha visível; o que falta é o gate enxergar `relkind` `'r'` para travar a próxima — matview já está coberta (a descoberta usa `relkind in ('v','m')`); o furo que sobra são as **45 tabelas** de `public` com SELECT concedido ao `anon` medidas no dump da etapa 005, que não entram na consulta (`scripts/check-public-views-drift.mjs`, `buildAnonSql`)
 - [ ] 009 — Tornar o guarda de required checks capaz de ver mais de um check — onda 1 — Crítica — APROVAÇÃO
 - [ ] 010 — Pôr o CodeQL de fato como check obrigatório de `main` — onda 1 — Crítica — APROVAÇÃO
 - [ ] 011 — Fazer `static-checks.yml` bloquear merge — onda 1 — Alta — APROVAÇÃO
@@ -894,10 +894,23 @@ colunas). Produção confirmada no bundle servido: `products-filters-panel-BNa6e
 206 1007    video_sim_results                      (sup, yid, queue_status, cur_w, cur_h, err)
 ```
 
+Medição completa do dia (mesmo método, sobre os **61 objetos** que o dump de 23/11 concedia ao `anon`):
+**49 respondem** (36 tabelas + 13 views/matviews) e **12 devolvem 401** — as revogações de `20261124140000`
+e `20261124163000` pegaram 9 tabelas (`markup_configurations`, `suppliers`, `products`, `print_area_techniques`,
+`product_properties`, `product_tags`, `variant_supplier_sources`, `kit_component_print_areas`,
+`product_kit_components`) e 3 views (`v_product_properties_public`, `v_product_tags_public`,
+`vw_variant_sale_prices`). 45 − 9 = 36: a conta fecha com a linha 41.
+
 Leitura: as quatro com linhas são de catálogo — preço por faixa, variantes e técnicas alimentam a página
 pública e a calculadora, então o grant é funcional (é a premissa que a etapa 007 refutou). `video_sim_results`
 é resultado de simulação interna e não tem consumidor público conhecido: exposição sem uso.
 `product_fiscal`, `product_supply` e `system_settings` hoje devolvem 0 linha por RLS, mas o **grant** existe —
 qualquer policy de SELECT futura passa a entregar a tabela inteira ao anônimo. O gate
-(`scripts/check-public-views-drift.mjs`, `buildAnonSql`) só consulta `relkind in ('v','m')`, então nenhum
-desses oito casos aparece no CI.
+(`scripts/check-public-views-drift.mjs`, `buildAnonSql`) consultava só `relkind in ('v','m')`, então nenhum
+desses oito casos aparecia no CI.
+
+**Corrigido em #4059** (aguardando aprovação, Regra 8): `buildAnonSql` passou a trazer `relkind 'r'`/`'p'` e o
+gate compara as tabelas com `.security/anon-tables-baseline.json` — 36 entradas, 23 `catalogo-publico` e 13
+`interno-grant-herdado` (as que devem ser revogadas depois). Tabela nova legível por anon **falha** o gate;
+entrada sem privilégio no banco também falha (revogação obriga limpar a linha). Colunas de tabela **não** estão
+congeladas nesta versão — o congelamento por coluna continua só em view/matview.
