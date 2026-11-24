@@ -23,13 +23,16 @@
 -- nascer do repo. Sem COMMENT ON TABLE de proposito: o objeto vivo nao tem
 -- comentario e adicionar um viraria drift novo.
 --
+-- Gate 1.12 (soft-delete): o statement tem `-- soft-delete-exempt:` porque o estado vivo
+-- nao tem `deleted_at`/`archived_at` e adicionar uma coluna aqui divergiria do que o E40 compara.
+--
 -- Rollback: `supabase/rollbacks/20261124171500_rollback.sql` (DROP TABLE). Em
 -- producao o objeto e ANTERIOR a esta migration: dropar so com confirmacao de que
 -- nenhum consumidor passou a usa-lo.
 
 CREATE SCHEMA IF NOT EXISTS internal;
 
-CREATE TABLE IF NOT EXISTS internal.managed_schema_dictionary (
+CREATE TABLE IF NOT EXISTS internal.managed_schema_dictionary ( -- soft-delete-exempt: dicionario/registro de inventario espelhado do estado vivo, sem coluna de soft-delete em producao; adicionar uma aqui criaria drift novo
   schema_name text NOT NULL,
   object_type text NOT NULL,
   object_name text NOT NULL,
