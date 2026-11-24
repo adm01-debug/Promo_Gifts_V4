@@ -28,7 +28,7 @@ import {
 // ─── loadContract + validateContractStructure sobre o contrato real ───────
 
 describe('contrato real (.security/public-views-columns.json)', () => {
-  it('cobre exatamente as 8 views SECURITY DEFINER expostas ao anon', () => {
+  it('cobre exatamente as 10 views do contrato público', () => {
     const contract = loadContract();
     expect(Object.keys(contract.views).sort()).toEqual([...PUBLIC_VIEWS].sort());
   });
