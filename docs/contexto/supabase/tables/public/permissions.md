@@ -1,5 +1,7 @@
 # public.permissions
 
+> Catálogo de permissões disponíveis na aplicação. Cada permissão possui um código, uma categoria e rótulos para exibição e documentação.
+
 | propriedade | valor |
 |---|---|
 | tipo | table |
@@ -16,11 +18,11 @@
 
 | # | coluna | tipo | nullable | default | identity/generated | comentário |
 |---|---|---|---|---|---|---|
-| 1 | `code` | `text` | não |  |  |  |
-| 2 | `category` | `text` | não |  |  |  |
-| 3 | `label` | `text` | não |  |  |  |
-| 4 | `description` | `text` | sim |  |  |  |
-| 5 | `created_at` | `timestamp with time zone` | não | `now()` |  |  |
+| 1 | `code` | `text` | não |  |  | Código identificador da permissão. |
+| 2 | `category` | `text` | não |  |  | Categoria usada para agrupar permissões relacionadas. |
+| 3 | `label` | `text` | não |  |  | Rótulo legível da permissão para exibição. |
+| 4 | `description` | `text` | sim |  |  | Descrição do propósito da permissão. |
+| 5 | `created_at` | `timestamp with time zone` | não | `now()` |  | Data e hora de criação da permissão. |
 
 
 ## Constraints

@@ -19,19 +19,19 @@
 |---|---|---|---|---|---|---|
 | 1 | `id` | `uuid` | não | `gen_random_uuid()` |  |  |
 | 2 | `quote_id` | `uuid` | não |  |  |  |
-| 3 | `product_id` | `uuid` | sim |  |  |  |
+| 3 | `product_id` | `uuid` | sim |  |  | Vínculo opcional com public.products.id (FK existente). Pode ser NULL para item manual/sem produto de catálogo; product_name, product_sku, product_description e product_image_url guardam o snapshot comercial do item. |
 | 4 | `product_sku` | `text` | sim |  |  |  |
 | 5 | `product_name` | `text` | não |  |  |  |
 | 6 | `product_description` | `text` | sim |  |  |  |
 | 7 | `product_image_url` | `text` | sim |  |  |  |
 | 8 | `has_personalization` | `boolean` | sim | `false` |  |  |
 | 9 | `personalization_config` | `jsonb` | sim |  |  |  |
-| 10 | `personalization_cost` | `numeric(10,2)` | sim | `0` |  |  |
+| 10 | `personalization_cost` | `numeric(10,2)` | sim | `0` |  | Valor monetário de personalização associado ao item do orçamento, em BRL (reais com centavos). Não confundir com frete ou impostos. |
 | 11 | `quantity` | `integer` | não | `1` |  |  |
-| 12 | `unit_price` | `numeric(10,2)` | não |  |  |  |
+| 12 | `unit_price` | `numeric(10,2)` | não |  |  | Preço unitário comercial do produto no orçamento, em BRL (reais com centavos), sem frete e sem impostos. Não armazenar centavos como inteiro. |
 | 13 | `discount_percentage` | `numeric(5,2)` | sim | `0` |  |  |
-| 14 | `discount_amount` | `numeric(10,2)` | sim | `0` |  |  |
-| 15 | `subtotal` | `numeric(10,2)` | não |  |  |  |
+| 14 | `discount_amount` | `numeric(10,2)` | sim | `0` |  | Valor do desconto aplicado especificamente a esta linha, em BRL (reais com centavos); distinto do desconto global em quotes.discount_amount. |
+| 15 | `subtotal` | `numeric(10,2)` | não |  |  | Valor da linha do orçamento em BRL (reais com centavos), conforme cálculo da aplicação. Não repetir frete ou impostos do cabeçalho do orçamento. |
 | 16 | `mockup_urls` | `jsonb` | sim | `'[]'::jsonb` |  |  |
 | 17 | `artwork_urls` | `jsonb` | sim | `'[]'::jsonb` |  |  |
 | 18 | `notes` | `text` | sim |  |  |  |
@@ -50,7 +50,7 @@
 | 32 | `price_confirmed_at` | `timestamp with time zone` | sim |  |  | Timestamp em que vendedor confirmou preço com fornecedor. Quando NOT NULL suprime badge de defasagem. |
 | 33 | `selected_packaging_id` | `uuid` | sim |  |  | Embalagem opcional escolhida (products.product_type=packaging). Fundacao do ciclo de venda de embalagens (2026-06-26). |
 | 34 | `selected_packaging_name` | `text` | sim |  |  | Snapshot do nome da embalagem opcional no momento da escolha. |
-| 35 | `selected_packaging_unit_cost` | `numeric(12,2)` | sim |  |  | Custo unitario da embalagem opcional no momento da escolha (snapshot). |
+| 35 | `selected_packaging_unit_cost` | `numeric(12,2)` | sim |  |  | Custo unitário snapshot da embalagem opcional escolhida, em BRL (reais com centavos). Mantém o custo observado na escolha, não o preço de venda do produto principal. |
 | 36 | `product_variant_id` | `uuid` | sim |  |  |  |
 
 

@@ -1,5 +1,7 @@
 # public.organizations
 
+> Organizações cadastradas na aplicação. Agrupa usuários e registros de negócio que pertencem a uma mesma organização.
+
 | propriedade | valor |
 |---|---|
 | tipo | table |
@@ -17,15 +19,15 @@
 
 | # | coluna | tipo | nullable | default | identity/generated | comentário |
 |---|---|---|---|---|---|---|
-| 1 | `id` | `uuid` | não | `gen_random_uuid()` |  |  |
-| 2 | `name` | `text` | não |  |  |  |
-| 3 | `created_at` | `timestamp with time zone` | não | `now()` |  |  |
+| 1 | `id` | `uuid` | não | `gen_random_uuid()` |  | Identificador UUID da organização. |
+| 2 | `name` | `text` | não |  |  | Nome de exibição da organização. |
+| 3 | `created_at` | `timestamp with time zone` | não | `now()` |  | Data e hora de criação da organização. |
 | 4 | `slug` | `text` | não |  |  | Alinhado ao Lovable em 2026-05-22 (Wave 3.1.B). Identificador URL-safe da organizacao. |
-| 5 | `logo_url` | `text` | sim |  |  |  |
-| 6 | `description` | `text` | sim |  |  |  |
-| 7 | `is_active` | `boolean` | não | `true` |  |  |
-| 8 | `settings` | `jsonb` | sim | `'{}'::jsonb` |  |  |
-| 9 | `updated_at` | `timestamp with time zone` | não | `now()` |  |  |
+| 5 | `logo_url` | `text` | sim |  |  | URL do logotipo da organização. |
+| 6 | `description` | `text` | sim |  |  | Descrição da organização. |
+| 7 | `is_active` | `boolean` | não | `true` |  | Indica se a organização está ativa. |
+| 8 | `settings` | `jsonb` | sim | `'{}'::jsonb` |  | Configurações específicas da organização, armazenadas como JSONB. |
+| 9 | `updated_at` | `timestamp with time zone` | não | `now()` |  | Data e hora da última atualização da organização. |
 
 
 ## Constraints

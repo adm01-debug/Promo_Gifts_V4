@@ -1,10 +1,10 @@
 {
  "meta": {
-  "sha": "cdf7e3b4f560eb5d291c57b75edffbf0265a788c",
+  "sha": "c6581c0610a35df48f58e7664f191f4f0cf43cf7",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-24 15:12 UTC",
-  "files_total": 11185,
+  "generated_at": "2026-11-24 16:18 UTC",
+  "files_total": 11186,
   "code_files": 9178,
   "code_lines": 1302508
  },
@@ -563721,10 +563721,20 @@
   }
  },
  "git": {
-  "sha": "cdf7e3b4f560eb5d291c57b75edffbf0265a788c",
+  "sha": "c6581c0610a35df48f58e7664f191f4f0cf43cf7",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "c6581c0",
+    "date": "2026-11-24",
+    "author": "adm01-debug",
+    "subject": "docs: etapas 001-004 e 006 do QA concluídas com evidência; 007 refutada; 005 reescopada (#4044)",
+    "files": [
+     "docs/qa/05-PROGRESSO.md",
+     "docs/qa/evidencia-compras-views.md"
+    ]
+   },
    {
     "sha": "cdf7e3b",
     "date": "2026-11-24",
@@ -564107,16 +564117,6 @@
      "src/pages/quotes/components/QuotesBulkDeleteDialog.tsx",
      "src/pages/quotes/useQuotesListPage.ts"
     ]
-   },
-   {
-    "sha": "6fb570a",
-    "date": "2026-11-23",
-    "author": "adm01-debug",
-    "subject": "feat: Etapa 043 — url-allowlist em modo observador no webhook-dispatcher (ACH-009) (#4012)",
-    "files": [
-     "docs/qa/05-PROGRESSO.md",
-     "supabase/functions/webhook-dispatcher/index.ts"
-    ]
    }
   ],
   "hot_files": [
@@ -564149,8 +564149,8 @@
     2
    ],
    [
-    "supabase/functions/webhook-dispatcher/index.ts",
-    2
+    "docs/qa/evidencia-compras-views.md",
+    1
    ],
    [
     "docs/coordenacao/conflitos-semanticos.md",

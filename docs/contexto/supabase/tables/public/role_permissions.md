@@ -1,5 +1,7 @@
 # public.role_permissions
 
+> Associa papéis de aplicação às permissões concedidas a cada papel.
+
 | propriedade | valor |
 |---|---|
 | tipo | table |
@@ -16,10 +18,10 @@
 
 | # | coluna | tipo | nullable | default | identity/generated | comentário |
 |---|---|---|---|---|---|---|
-| 1 | `id` | `uuid` | não | `gen_random_uuid()` |  |  |
-| 2 | `role` | `app_role` | não |  |  |  |
-| 3 | `permission_code` | `text` | não |  |  |  |
-| 4 | `created_at` | `timestamp with time zone` | não | `now()` |  |  |
+| 1 | `id` | `uuid` | não | `gen_random_uuid()` |  | Identificador UUID do vínculo entre papel e permissão. |
+| 2 | `role` | `app_role` | não |  |  | Papel de aplicação ao qual a permissão é concedida. |
+| 3 | `permission_code` | `text` | não |  |  | Código da permissão concedida ao papel. |
+| 4 | `created_at` | `timestamp with time zone` | não | `now()` |  | Data e hora de criação do vínculo. |
 
 
 ## Constraints

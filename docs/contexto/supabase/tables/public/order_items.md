@@ -18,19 +18,19 @@
 |---|---|---|---|---|---|---|
 | 1 | `id` | `uuid` | não | `gen_random_uuid()` |  |  |
 | 2 | `order_id` | `uuid` | sim |  |  |  |
-| 3 | `product_id` | `uuid` | sim |  |  |  |
+| 3 | `product_id` | `uuid` | sim |  |  | Vínculo opcional com public.products.id (FK existente). Pode ser NULL; os campos product_name, product_sku, product_description e product_image_url preservam o snapshot do item no pedido. |
 | 4 | `quantity` | `integer` | não | `1` |  |  |
-| 5 | `unit_price` | `numeric(10,2)` | não |  |  |  |
-| 6 | `subtotal` | `numeric(10,2)` | não |  |  |  |
+| 5 | `unit_price` | `numeric(10,2)` | não |  |  | Preço unitário comercial do produto no pedido, em BRL (reais com centavos), sem frete e sem impostos. |
+| 6 | `subtotal` | `numeric(10,2)` | não |  |  | Valor da linha do pedido em BRL (reais com centavos), conforme cálculo da aplicação. Frete e impostos do cabeçalho permanecem separados. |
 | 7 | `created_at` | `timestamp with time zone` | não | `now()` |  |  |
-| 8 | `quote_item_id` | `uuid` | sim |  |  |  |
+| 8 | `quote_item_id` | `uuid` | sim |  |  | Referência opcional ao item de orçamento que originou esta linha. A coluna não possui FK declarada no schema; tratá-la como referência lógica, não como integridade referencial garantida. |
 | 9 | `product_sku` | `text` | sim |  |  |  |
 | 10 | `product_name` | `text` | sim |  |  |  |
 | 11 | `product_description` | `text` | sim |  |  |  |
 | 12 | `product_image_url` | `text` | sim |  |  |  |
 | 13 | `personalization_config` | `jsonb` | sim |  |  |  |
-| 14 | `personalization_cost` | `numeric(10,2)` | sim | `0` |  |  |
-| 15 | `discount_amount` | `numeric(10,2)` | sim | `0` |  |  |
+| 14 | `personalization_cost` | `numeric(10,2)` | sim | `0` |  | Valor monetário da personalização associada à linha do pedido, em BRL (reais com centavos). Não confundir com frete ou impostos. |
+| 15 | `discount_amount` | `numeric(10,2)` | sim | `0` |  | Valor do desconto aplicado especificamente a esta linha do pedido, em BRL (reais com centavos); distinto de orders.discount_amount. |
 | 16 | `production_status` | `text` | sim | `'pending'::text` |  |  |
 | 17 | `production_notes` | `text` | sim |  |  |  |
 | 18 | `updated_at` | `timestamp with time zone` | sim | `now()` |  |  |

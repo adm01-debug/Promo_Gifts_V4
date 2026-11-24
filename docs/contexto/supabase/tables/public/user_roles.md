@@ -18,10 +18,10 @@
 
 | # | coluna | tipo | nullable | default | identity/generated | comentário |
 |---|---|---|---|---|---|---|
-| 1 | `user_id` | `uuid` | não |  |  |  |
-| 2 | `role` | `app_role` | não |  |  |  |
-| 3 | `created_at` | `timestamp with time zone` | não | `now()` |  |  |
-| 4 | `granted_by` | `uuid` | sim |  |  |  |
+| 1 | `user_id` | `uuid` | não |  |  | Identificador da conta de usuário à qual o papel foi concedido. |
+| 2 | `role` | `app_role` | não |  |  | Papel de aplicação concedido ao usuário. Um usuário pode ter mais de um papel. |
+| 3 | `created_at` | `timestamp with time zone` | não | `now()` |  | Data e hora em que o papel foi concedido. |
+| 4 | `granted_by` | `uuid` | sim |  |  | Usuário que concedeu o papel, quando registrado. |
 
 
 ## Constraints

@@ -24,13 +24,13 @@
 | 5 | `created_by` | `uuid` | sim |  |  |  |
 | 6 | `assigned_to` | `uuid` | sim |  |  |  |
 | 7 | `status` | `text` | sim | `'draft'::text` |  |  |
-| 8 | `stage` | `text` | sim | `'elaboration'::text` |  |  |
+| 8 | `stage` | `text` | sim | `'elaboration'::text` |  | Etapa comercial recomendada do funil, distinta de quotes.status (estado operacional). Vocabulário recomendado: elaboration (preparação; valor padrão atual), internal_approval (aprovação interna), sent_to_client (enviado ao cliente), negotiation (negociação/revisões), won (ganho; normalmente aprovado ou convertido em pedido) e lost (encerrado sem conversão). Documentação apenas: a coluna não possui CHECK e valores adicionais não são bloqueados pelo banco. |
 | 9 | `priority` | `text` | sim | `'normal'::text` |  |  |
-| 10 | `subtotal` | `numeric(10,2)` | sim | `0` |  |  |
-| 12 | `discount_amount` | `numeric(10,2)` | sim | `0` |  |  |
-| 13 | `shipping_cost` | `numeric(10,2)` | sim | `0` |  |  |
-| 14 | `tax_amount` | `numeric(10,2)` | sim | `0` |  |  |
-| 15 | `total` | `numeric(10,2)` | sim | `0` |  |  |
+| 10 | `subtotal` | `numeric(10,2)` | sim | `0` |  | Subtotal comercial dos produtos/itens do orçamento em BRL (reais, com centavos; não centavos inteiros). Exclui frete e impostos, registrados separadamente. O subtotal apresentado pode refletir negotiation_markup_percent; real_subtotal registra a base interna sem esse markup. Convenção documental: subtotal antes do desconto global do orçamento. |
+| 12 | `discount_amount` | `numeric(10,2)` | sim | `0` |  | Valor monetário do desconto global do orçamento, em BRL (reais com centavos), separado de discount_percent. Convention: subtrair do subtotal ao obter o total; não inclui frete nem impostos. |
+| 13 | `shipping_cost` | `numeric(10,2)` | sim | `0` |  | Custo de frete do orçamento em BRL (reais com centavos), mantido separado do subtotal dos produtos. |
+| 14 | `tax_amount` | `numeric(10,2)` | sim | `0` |  | Valor total de impostos do orçamento em BRL (reais com centavos), mantido separado do subtotal dos produtos e do frete. |
+| 15 | `total` | `numeric(10,2)` | sim | `0` |  | Total comercial recomendado em BRL (reais com centavos): subtotal - discount_amount + shipping_cost + tax_amount. Documentação da regra de negócio; a coluna não é gerada nem possui constraint que imponha essa fórmula. |
 | 16 | `valid_until` | `date` | sim |  |  |  |
 | 17 | `estimated_delivery_days` | `integer` | sim |  |  |  |
 | 18 | `notes` | `text` | sim |  |  |  |
@@ -44,17 +44,17 @@
 | 27 | `viewed_at` | `timestamp with time zone` | sim |  |  |  |
 | 28 | `view_count` | `integer` | sim | `0` |  |  |
 | 29 | `last_sent_at` | `timestamp with time zone` | sim |  |  |  |
-| 30 | `converted_to_order_id` | `uuid` | sim |  |  |  |
+| 30 | `converted_to_order_id` | `uuid` | sim |  |  | Referência lógica ao pedido criado a partir deste orçamento. O schema atual não declara FK para converted_to_order_id; não presumir integridade referencial imposta pelo banco. |
 | 31 | `converted_at` | `timestamp with time zone` | sim |  |  |  |
 | 32 | `conversion_notes` | `text` | sim |  |  |  |
 | 33 | `created_at` | `timestamp with time zone` | sim | `now()` |  |  |
 | 34 | `updated_at` | `timestamp with time zone` | sim | `now()` |  |  |
 | 35 | `organization_id` | `uuid` | não |  |  |  |
 | 36 | `seller_id` | `uuid` | não |  |  | [Etapa 7] Espelho de created_by. Hook applySellerScope filtra por seller_id por padrão. Sincronizado via trigger. |
-| 37 | `discount_percent` | `numeric(5,2)` | sim | `0` |  | Desconto exposto ao cliente (% sobre subtotal). Coexiste com discount_percentage legacy — código novo usa discount_percent. |
-| 38 | `negotiation_markup_percent` | `numeric(5,2)` | sim | `0` |  | Markup INTERNO 0–50%. Infla subtotal apresentado para criar margem psicológica de desconto. NUNCA exposto ao cliente. |
-| 39 | `real_subtotal` | `numeric(10,2)` | sim | `0` |  | Subtotal real (sem markup de negociação). Calculado por trigger no cutover. Read-only. |
-| 40 | `real_discount_percent` | `numeric(5,2)` | sim | `0` |  | Desconto efetivo real vs real_subtotal. Validado contra alçada do vendedor. Read-only. |
+| 37 | `discount_percent` | `numeric(5,2)` | sim | `0` |  | Percentual de desconto comercial apresentado ao cliente (0–100), aplicado sobre a base comercial do orçamento; distinto do valor monetário discount_amount e do markup interno negotiation_markup_percent. |
+| 38 | `negotiation_markup_percent` | `numeric(5,2)` | sim | `0` |  | Percentual de markup interno de negociação. Pode elevar o subtotal apresentado; é interno, não deve ser exposto ao cliente nem confundido com imposto ou desconto. |
+| 39 | `real_subtotal` | `numeric(10,2)` | sim | `0` |  | Subtotal real dos produtos em BRL, antes de qualquer markup de negociação. Campo interno calculado pela aplicação/trigger; não inclui frete nem impostos. |
+| 40 | `real_discount_percent` | `numeric(5,2)` | sim | `0` |  | Percentual de desconto efetivo calculado em relação a real_subtotal; campo interno usado na validação da alçada do vendedor, distinto do desconto mostrado ao cliente. |
 | 41 | `version` | `integer` | não | `1` |  |  |
 | 42 | `client_email` | `text` | sim |  |  |  |
 | 43 | `client_phone` | `text` | sim |  |  |  |

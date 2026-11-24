@@ -1,5 +1,7 @@
 # public.workspace_notifications
 
+> Notificações de espaço de trabalho direcionadas a usuários, com categoria, tipo, estado de leitura e metadados.
+
 | propriedade | valor |
 |---|---|
 | tipo | table |
@@ -16,18 +18,18 @@
 
 | # | coluna | tipo | nullable | default | identity/generated | comentário |
 |---|---|---|---|---|---|---|
-| 1 | `id` | `uuid` | não | `gen_random_uuid()` |  |  |
-| 2 | `user_id` | `uuid` | não |  |  |  |
-| 3 | `title` | `text` | não |  |  |  |
-| 4 | `message` | `text` | não |  |  |  |
-| 5 | `type` | `text` | não | `'info'::text` |  |  |
-| 6 | `category` | `text` | não | `'system'::text` |  |  |
-| 7 | `is_read` | `boolean` | não | `false` |  |  |
-| 8 | `action_url` | `text` | sim |  |  |  |
-| 9 | `metadata` | `jsonb` | sim | `'{}'::jsonb` |  |  |
-| 10 | `created_at` | `timestamp with time zone` | não | `now()` |  |  |
-| 12 | `search_vector` | `tsvector` | sim |  |  |  |
-| 13 | `idempotency_key` | `text` | sim |  |  |  |
+| 1 | `id` | `uuid` | não | `gen_random_uuid()` |  | Identificador UUID da notificação. |
+| 2 | `user_id` | `uuid` | não |  |  | Usuário destinatário da notificação. |
+| 3 | `title` | `text` | não |  |  | Título da notificação. |
+| 4 | `message` | `text` | não |  |  | Conteúdo textual da notificação. |
+| 5 | `type` | `text` | não | `'info'::text` |  | Tipo da notificação. O valor padrão é info. |
+| 6 | `category` | `text` | não | `'system'::text` |  | Categoria da notificação. O valor padrão é system. |
+| 7 | `is_read` | `boolean` | não | `false` |  | Indica se a notificação foi marcada como lida. |
+| 8 | `action_url` | `text` | sim |  |  | URL opcional associada à ação da notificação. |
+| 9 | `metadata` | `jsonb` | sim | `'{}'::jsonb` |  | Metadados adicionais da notificação em formato JSONB. |
+| 10 | `created_at` | `timestamp with time zone` | não | `now()` |  | Data e hora de criação da notificação. |
+| 12 | `search_vector` | `tsvector` | sim |  |  | Vetor de texto usado para busca textual nas notificações. |
+| 13 | `idempotency_key` | `text` | sim |  |  | Chave opcional para identificar e evitar notificações duplicadas. |
 
 
 ## Constraints

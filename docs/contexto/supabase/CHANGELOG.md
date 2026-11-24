@@ -2,6 +2,11 @@
 
 Diff semântico gerado a cada coleta em que algo mudou.
 
+## 2026-11-24 16:20 UTC
+
+- **colunas** alterado (142): `public.device_login_notifications.created_at`, `public.device_login_notifications.device_id`, `public.device_login_notifications.email_sent`, `public.device_login_notifications.id`, `public.device_login_notifications.ip_address`, `public.device_login_notifications.location`, `public.device_login_notifications.user_agent`, `public.device_login_notifications.user_id`, `public.notification_preferences.created_at`, `public.notification_preferences.email_notifications`, `public.notification_preferences.id`, `public.notification_preferences.marketing`, `public.notification_preferences.order_updates`, `public.notification_preferences.push_notifications`, `public.notification_preferences.quote_updates`, `public.notification_preferences.system_announcements`, `public.notification_preferences.updated_at`, `public.notification_preferences.user_id`, `public.notifications.action_url`, `public.notifications.created_at`, `public.notifications.data`, `public.notifications.id`, `public.notifications.is_read`, `public.notifications.message`, `public.notifications.priority`, `public.notifications.read_at`, `public.notifications.title`, `public.notifications.type`, `public.notifications.user_id`, `public.order_items.discount_amount`, `public.order_items.personalization_cost`, `public.order_items.product_id`, `public.order_items.quote_item_id`, `public.order_items.subtotal`, `public.order_items.unit_price`, `public.orders.delivery_time`, `public.orders.discount_amount`, `public.orders.paid_amount`, `public.orders.payment_method`, `public.orders.payment_terms` … (+102)
+- **tabelas** alterado (10): `public.notification_preferences`, `public.notifications`, `public.organization_members`, `public.organizations`, `public.permissions`, `public.profiles`, `public.push_subscriptions`, `public.role_permissions`, `public.user_notification_preferences`, `public.workspace_notifications`
+
 ## 2026-11-24 15:18 UTC
 
 - **functions** alterado (1): `public.can_view_all_sales()`

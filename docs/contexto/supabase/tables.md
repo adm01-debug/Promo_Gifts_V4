@@ -210,17 +210,17 @@ Um arquivo por tabela em `tables/<schema>/<tabela>.md` (colunas, constraints, í
 | [public.navigation_analytics](tables/public/navigation_analytics.md) | table | sim | 2 | 5 | não |  |
 | [public.ncm_codes](tables/public/ncm_codes.md) | table | sim | 1 | 18 | não | Tabela de referência NCM (Nomenclatura Comum do Mercosul) - códigos fiscais válidos com descrição e hierarquia |
 | [public.notebook_features](tables/public/notebook_features.md) | table | sim | 1 | 8 | não |  |
-| [public.notification_preferences](tables/public/notification_preferences.md) | table | sim | 5 | 10 | não |  |
+| [public.notification_preferences](tables/public/notification_preferences.md) | table | sim | 5 | 10 | não | Preferências de notificação por usuário para canais e categorias de eventos. |
 | [public.notification_templates](tables/public/notification_templates.md) | table | sim | 4 | 9 | não |  |
-| [public.notifications](tables/public/notifications.md) | table | sim | 2 | 11 | sim |  |
+| [public.notifications](tables/public/notifications.md) | table | sim | 2 | 11 | sim | Notificações direcionadas a usuários, com conteúdo, prioridade, estado de leitura e dados auxiliares. |
 | [public.ops_grant_audit](tables/public/ops_grant_audit.md) | table | sim | 1 | 5 | não |  |
 | [public.optimization_queue](tables/public/optimization_queue.md) | table | sim | 1 | 14 | não |  |
 | [public.optimization_queue_runs](tables/public/optimization_queue_runs.md) | table | sim | 1 | 8 | não |  |
 | [public.order_item_personalizations](tables/public/order_item_personalizations.md) | table | sim | 1 | 11 | não |  |
 | [public.order_items](tables/public/order_items.md) | table | sim | 4 | 18 | sim |  |
 | [public.orders](tables/public/orders.md) | table | sim | 4 | 37 | sim |  |
-| [public.organization_members](tables/public/organization_members.md) | table | sim | 4 | 8 | não |  |
-| [public.organizations](tables/public/organizations.md) | table | sim | 4 | 9 | não |  |
+| [public.organization_members](tables/public/organization_members.md) | table | sim | 4 | 8 | não | Registros de participação de usuários em organizações, incluindo papel, convite e data de entrada. |
+| [public.organizations](tables/public/organizations.md) | table | sim | 4 | 9 | não | Organizações cadastradas na aplicação. Agrupa usuários e registros de negócio que pertencem a uma mesma organização. |
 | [public.outbound_webhooks](tables/public/outbound_webhooks.md) | table | sim | 1 | 19 | não |  |
 | [public.ownership_audit_reports](tables/public/ownership_audit_reports.md) | table | sim | 3 | 11 | não |  |
 | [public.ownership_repair_logs](tables/public/ownership_repair_logs.md) | table | sim | 1 | 13 | não |  |
@@ -232,7 +232,7 @@ Um arquivo por tabela em `tables/<schema>/<tabela>.md` (colunas, constraints, í
 | [public.paper_rulings](tables/public/paper_rulings.md) | table | sim | 1 | 8 | não | Tipo de pauta do papel interno do caderno |
 | [public.paper_weights](tables/public/paper_weights.md) | table | sim | 1 | 8 | não | Gramatura em g/m² do papel dos cadernos |
 | [public.password_reset_requests](tables/public/password_reset_requests.md) | table | sim | 3 | 8 | não | Migrado do Lovable em 2026-05-22 (Lote A). Reset de senha aprovado manualmente. |
-| [public.permissions](tables/public/permissions.md) | table | sim | 4 | 5 | não |  |
+| [public.permissions](tables/public/permissions.md) | table | sim | 4 | 5 | não | Catálogo de permissões disponíveis na aplicação. Cada permissão possui um código, uma categoria e rótulos para exibição e documentação. |
 | [public.personalization_simulations](tables/public/personalization_simulations.md) | table | sim | 4 | 11 | não | Simulacoes de personalizacao salvas por vendedor. Consumida por src/hooks/simulation/useSimulation.ts. |
 | [public.personalization_technique_mappings](tables/public/personalization_technique_mappings.md) | table | sim | 1 | 7 | não | Ponte entre personalization_techniques (geração de mockup) e tecnicas_gravacao (precificação). Permite que uma técnica de UI mapeie para 1+ grupos de preço. Criado 2026-06-23 — fix Bug #5 arquitetura gravação. |
 | [public.personalization_techniques](tables/public/personalization_techniques.md) | table | sim | 5 | 10 | não |  |
@@ -294,10 +294,10 @@ Um arquivo por tabela em `tables/<schema>/<tabela>.md` (colunas, constraints, í
 | [public.produtos_padronizacao](tables/public/produtos_padronizacao.md) | table | sim | 1 | 77 | não | SILVER oficial (Medallion). Bronze->Silver via fn_standardize_supplier (de-para supplier_field_mappings + fn_apply_transform); Silver->Gold via fn_promote_supplier. Fonte canonica de padronizacao de produtos. |
 | [public.produtos_padronizacao_variantes](tables/public/produtos_padronizacao_variantes.md) | table | sim | 2 | 54 | não | SILVER oficial (Medallion) — variantes. Staging raw_id->pad_id->variant_id. Bronze->Silver via fn_standardize_variant; Silver->Gold via fn_promote_variants_of_parent. |
 | [public.produtos_site_padronizacao](tables/public/produtos_site_padronizacao.md) | table | sim | 1 | 51 | não | Silver intermediario (DE->PARA) da VITRINE xbzbrindes (site_data do Bronze). Grao = produto-pai (CodigoAmigavel limpo). Espelha convencoes de produtos_padronizacao. Merge para Gold via promote (fase seguinte). |
-| [public.profiles](tables/public/profiles.md) | table | sim | 3 | 15 | não |  |
+| [public.profiles](tables/public/profiles.md) | table | sim | 3 | 15 | não | Perfil de aplicação vinculado a uma conta do Supabase Auth. Guarda informações de contato e de exibição, além da organização associada. A autorização usa public.user_roles como fonte de verdade; não editar manualmente a coluna role. |
 | [public.property_definitions](tables/public/property_definitions.md) | table | sim | 1 | 12 | não | Catálogo de propriedades de produtos (baseado na API SPOT) |
 | [public.public_token_failures](tables/public/public_token_failures.md) | table | sim | 2 | 8 | não | Migrado do Lovable em 2026-05-22 (Lote A). Anti-bruteforce de tokens públicos. |
-| [public.push_subscriptions](tables/public/push_subscriptions.md) | table | sim | 5 | 7 | não |  |
+| [public.push_subscriptions](tables/public/push_subscriptions.md) | table | sim | 5 | 7 | não | Inscrições de usuários para receber notificações push. |
 | [public.qa_image_coverage_log](tables/public/qa_image_coverage_log.md) | table | sim | 4 | 5 | não |  |
 | [public.query_telemetry](tables/public/query_telemetry.md) | table | sim | 3 | 18 | não |  |
 | [public.quote_approval_tokens](tables/public/quote_approval_tokens.md) | table | sim | 4 | 20 | não | Migrado do Lovable em 2026-05-22 (Lote A). Tokens públicos com assinatura eletrônica MP 2.200-2/2001. |
@@ -316,7 +316,7 @@ Um arquivo por tabela em `tables/<schema>/<tabela>.md` (colunas, constraints, í
 | [public.rls_denial_log](tables/public/rls_denial_log.md) | table | sim | 4 | 16 | não |  |
 | [public.role_migration_batches](tables/public/role_migration_batches.md) | table | sim | 4 | 14 | não |  |
 | [public.role_migration_items](tables/public/role_migration_items.md) | table | sim | 4 | 12 | não |  |
-| [public.role_permissions](tables/public/role_permissions.md) | table | sim | 4 | 4 | não |  |
+| [public.role_permissions](tables/public/role_permissions.md) | table | sim | 4 | 4 | não | Associa papéis de aplicação às permissões concedidas a cada papel. |
 | [public.roles](tables/public/roles.md) | table | sim | 1 | 4 | não | Registro de roles para a tela admin (RolesPage). Semeado do enum app_role. |
 | [public.sales_goals](tables/public/sales_goals.md) | table | sim | 1 | 15 | não | Sales goals by seller and period. Consumed by useSalesGoals. |
 | [public.saved_filters](tables/public/saved_filters.md) | table | sim | 4 | 11 | não |  |
@@ -406,7 +406,7 @@ Um arquivo por tabela em `tables/<schema>/<tabela>.md` (colunas, constraints, í
 | [public.user_filter_presets](tables/public/user_filter_presets.md) | table | sim | 4 | 8 | não |  |
 | [public.user_ip_allowlist](tables/public/user_ip_allowlist.md) | table | sim | 4 | 7 | não |  |
 | [public.user_known_devices](tables/public/user_known_devices.md) | table | sim | 1 | 7 | não | Migrado do Lovable em 2026-05-22 (Lote A). Devices reconhecidos (detect-new-device). |
-| [public.user_notification_preferences](tables/public/user_notification_preferences.md) | table | sim | 4 | 7 | não |  |
+| [public.user_notification_preferences](tables/public/user_notification_preferences.md) | table | sim | 4 | 7 | não | Preferências individuais por usuário e categoria para notificações no aplicativo e por push. |
 | [public.user_onboarding](tables/public/user_onboarding.md) | table | sim | 3 | 9 | não |  |
 | [public.user_organizations](tables/public/user_organizations.md) | table | sim | 4 | 5 | não | Membership user→organização. Backfill na Etapa 6 com 4 users na org única (5db5aee1...). Necessário pras funções user_belongs_to_org/is_org_owner_or_admin retornarem true. |
 | [public.user_preferences](tables/public/user_preferences.md) | table | sim | 3 | 7 | não |  |
@@ -430,7 +430,7 @@ Um arquivo por tabela em `tables/<schema>/<tabela>.md` (colunas, constraints, í
 | [public.webhook_dispatcher_log](tables/public/webhook_dispatcher_log.md) | table | sim | 1 | 16 | não | Log de deliveries do trigger trg_quotes_notify_champions → Champions V2. Criado em 2026-07-10. ANTI-REGRESSÃO v1. |
 | [public.webhook_outbox](tables/public/webhook_outbox.md) | table | sim | 1 | 11 | não | FIX QBP-05 (2026-06-22): Outbox assíncrono para webhooks de orçamento. Substitui http_post() síncrono no trigger dispatch_quote_webhook_event, eliminando latência de até 5s por transação de orçamento. |
 | [public.webhook_request_nonces](tables/public/webhook_request_nonces.md) | table | sim | 1 | 6 | não |  |
-| [public.workspace_notifications](tables/public/workspace_notifications.md) | table | sim | 4 | 12 | sim |  |
+| [public.workspace_notifications](tables/public/workspace_notifications.md) | table | sim | 4 | 12 | sim | Notificações de espaço de trabalho direcionadas a usuários, com categoria, tipo, estado de leitura e metadados. |
 | [public.xbz_gallery_staging](tables/public/xbz_gallery_staging.md) | table | sim | 1 | 28 | não | Staging para pipeline N8N de extração de imagens gallery D1-D10 do site XBZ. Criada em 27/02/2026. |
 | [public.xbz_upload_mapping](tables/public/xbz_upload_mapping.md) | table | sim | 1 | 8 | não | Rastreia requisições pg_net para upload de imagens XBZ ao Cloudflare Images |
 | [supplier_stricker.canceled_products](tables/supplier_stricker/canceled_products.md) | table | sim | 1 | 5 | não | Produtos descontinuados do portfólio Stricker |

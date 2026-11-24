@@ -19,11 +19,11 @@
 
 | # | coluna | tipo | nullable | default | identity/generated | comentário |
 |---|---|---|---|---|---|---|
-| 1 | `organization_id` | `uuid` | não |  |  |  |
-| 2 | `user_id` | `uuid` | não |  |  |  |
-| 3 | `role` | `org_role` | não | `'member'::org_role` |  |  |
-| 4 | `created_at` | `timestamp with time zone` | não | `now()` |  |  |
-| 5 | `updated_at` | `timestamp with time zone` | não | `now()` |  |  |
+| 1 | `organization_id` | `uuid` | não |  |  | Organização à qual o usuário pertence. |
+| 2 | `user_id` | `uuid` | não |  |  | Identificador do usuário associado à organização. |
+| 3 | `role` | `org_role` | não | `'member'::org_role` |  | Papel do usuário dentro da organização: owner, admin ou member. |
+| 4 | `created_at` | `timestamp with time zone` | não | `now()` |  | Data e hora de criação do vínculo entre usuário e organização. |
+| 5 | `updated_at` | `timestamp with time zone` | não | `now()` |  | Data e hora da última atualização do vínculo. |
 
 
 ## Constraints

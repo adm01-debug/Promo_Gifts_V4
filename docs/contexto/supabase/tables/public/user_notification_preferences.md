@@ -1,5 +1,7 @@
 # public.user_notification_preferences
 
+> Preferências individuais por usuário e categoria para notificações no aplicativo e por push.
+
 | propriedade | valor |
 |---|---|
 | tipo | table |
@@ -16,13 +18,13 @@
 
 | # | coluna | tipo | nullable | default | identity/generated | comentário |
 |---|---|---|---|---|---|---|
-| 1 | `id` | `uuid` | não | `gen_random_uuid()` |  |  |
-| 2 | `user_id` | `uuid` | não | `auth.uid()` |  |  |
-| 3 | `category` | `text` | não |  |  |  |
-| 4 | `in_app_enabled` | `boolean` | não | `true` |  |  |
-| 5 | `push_enabled` | `boolean` | não | `false` |  |  |
-| 6 | `created_at` | `timestamp with time zone` | não | `now()` |  |  |
-| 7 | `updated_at` | `timestamp with time zone` | não | `now()` |  |  |
+| 1 | `id` | `uuid` | não | `gen_random_uuid()` |  | Identificador UUID da preferência. |
+| 2 | `user_id` | `uuid` | não | `auth.uid()` |  | Usuário ao qual a preferência se aplica. Por padrão, recebe o identificador de auth.uid(). |
+| 3 | `category` | `text` | não |  |  | Categoria de notificação à qual esta preferência se aplica. |
+| 4 | `in_app_enabled` | `boolean` | não | `true` |  | Indica se notificações da categoria podem aparecer no aplicativo. |
+| 5 | `push_enabled` | `boolean` | não | `false` |  | Indica se notificações da categoria podem ser enviadas por push. |
+| 6 | `created_at` | `timestamp with time zone` | não | `now()` |  | Data e hora de criação da preferência. |
+| 7 | `updated_at` | `timestamp with time zone` | não | `now()` |  | Data e hora da última atualização da preferência. |
 
 
 ## Constraints

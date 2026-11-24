@@ -18,10 +18,10 @@
 
 | # | coluna | tipo | nullable | default | identity/generated | comentário |
 |---|---|---|---|---|---|---|
-| 1 | `id` | `uuid` | não | `gen_random_uuid()` |  |  |
-| 2 | `name` | `text` | não |  |  |  |
-| 3 | `description` | `text` | sim |  |  |  |
-| 4 | `created_at` | `timestamp with time zone` | não | `now()` |  |  |
+| 1 | `id` | `uuid` | não | `gen_random_uuid()` |  | Identificador UUID do papel exibido na tela administrativa. |
+| 2 | `name` | `text` | não |  |  | Nome do papel. |
+| 3 | `description` | `text` | sim |  |  | Descrição legível do papel. |
+| 4 | `created_at` | `timestamp with time zone` | não | `now()` |  | Data e hora de criação do registro do papel. |
 
 
 ## Constraints

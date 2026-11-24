@@ -1,5 +1,7 @@
 # public.organization_members
 
+> Registros de participação de usuários em organizações, incluindo papel, convite e data de entrada.
+
 | propriedade | valor |
 |---|---|
 | tipo | table |
@@ -16,14 +18,14 @@
 
 | # | coluna | tipo | nullable | default | identity/generated | comentário |
 |---|---|---|---|---|---|---|
-| 1 | `id` | `uuid` | não | `gen_random_uuid()` |  |  |
-| 2 | `organization_id` | `uuid` | não |  |  |  |
-| 3 | `user_id` | `uuid` | não |  |  |  |
-| 4 | `role` | `org_role` | não | `'member'::org_role` |  |  |
-| 5 | `invited_by` | `uuid` | sim |  |  |  |
-| 6 | `joined_at` | `timestamp with time zone` | não | `now()` |  |  |
-| 7 | `created_at` | `timestamp with time zone` | não | `now()` |  |  |
-| 8 | `updated_at` | `timestamp with time zone` | não | `now()` |  |  |
+| 1 | `id` | `uuid` | não | `gen_random_uuid()` |  | Identificador UUID do registro de participação. |
+| 2 | `organization_id` | `uuid` | não |  |  | Organização à qual o usuário foi associado. |
+| 3 | `user_id` | `uuid` | não |  |  | Identificador do usuário associado à organização. |
+| 4 | `role` | `org_role` | não | `'member'::org_role` |  | Papel do usuário na organização: owner, admin ou member. |
+| 5 | `invited_by` | `uuid` | sim |  |  | Identificador do usuário que enviou o convite, quando informado. |
+| 6 | `joined_at` | `timestamp with time zone` | não | `now()` |  | Data e hora em que a participação foi registrada como iniciada. |
+| 7 | `created_at` | `timestamp with time zone` | não | `now()` |  | Data e hora de criação do registro. |
+| 8 | `updated_at` | `timestamp with time zone` | não | `now()` |  | Data e hora da última atualização do registro. |
 
 
 ## Constraints

@@ -16841,7 +16841,7 @@
         "type": "boolean"
       },
       {
-        "comment": null,
+        "comment": "Identificador UUID do registro de notificação de login.",
         "default": "gen_random_uuid()",
         "generated": null,
         "identity": null,
@@ -16854,7 +16854,7 @@
         "type": "uuid"
       },
       {
-        "comment": null,
+        "comment": "Usuário associado ao evento de login em novo dispositivo ou endereço IP.",
         "default": null,
         "generated": null,
         "identity": null,
@@ -16867,7 +16867,7 @@
         "type": "uuid"
       },
       {
-        "comment": null,
+        "comment": "Identificador do dispositivo, quando informado.",
         "default": null,
         "generated": null,
         "identity": null,
@@ -16880,7 +16880,7 @@
         "type": "text"
       },
       {
-        "comment": null,
+        "comment": "Endereço IP associado ao login, quando informado.",
         "default": null,
         "generated": null,
         "identity": null,
@@ -16893,7 +16893,7 @@
         "type": "text"
       },
       {
-        "comment": null,
+        "comment": "User-Agent do cliente associado ao login, quando informado.",
         "default": null,
         "generated": null,
         "identity": null,
@@ -16906,7 +16906,7 @@
         "type": "text"
       },
       {
-        "comment": null,
+        "comment": "Localização associada ao login, quando informada.",
         "default": null,
         "generated": null,
         "identity": null,
@@ -16919,7 +16919,7 @@
         "type": "text"
       },
       {
-        "comment": null,
+        "comment": "Indica se foi enviado um e-mail referente à notificação.",
         "default": "false",
         "generated": null,
         "identity": null,
@@ -16932,7 +16932,7 @@
         "type": "boolean"
       },
       {
-        "comment": null,
+        "comment": "Data e hora de criação da notificação.",
         "default": "now()",
         "generated": null,
         "identity": null,
@@ -35197,7 +35197,7 @@
         "type": "timestamp with time zone"
       },
       {
-        "comment": null,
+        "comment": "Identificador UUID das preferências.",
         "default": "gen_random_uuid()",
         "generated": null,
         "identity": null,
@@ -35210,7 +35210,7 @@
         "type": "uuid"
       },
       {
-        "comment": null,
+        "comment": "Usuário ao qual as preferências se aplicam.",
         "default": null,
         "generated": null,
         "identity": null,
@@ -35223,7 +35223,7 @@
         "type": "uuid"
       },
       {
-        "comment": null,
+        "comment": "Indica se o usuário aceita notificações por e-mail.",
         "default": "true",
         "generated": null,
         "identity": null,
@@ -35236,7 +35236,7 @@
         "type": "boolean"
       },
       {
-        "comment": null,
+        "comment": "Indica se o usuário aceita notificações push.",
         "default": "true",
         "generated": null,
         "identity": null,
@@ -35249,7 +35249,7 @@
         "type": "boolean"
       },
       {
-        "comment": null,
+        "comment": "Indica se o usuário aceita notificações sobre atualizações de cotações.",
         "default": "true",
         "generated": null,
         "identity": null,
@@ -35262,7 +35262,7 @@
         "type": "boolean"
       },
       {
-        "comment": null,
+        "comment": "Indica se o usuário aceita notificações sobre atualizações de pedidos.",
         "default": "true",
         "generated": null,
         "identity": null,
@@ -35275,7 +35275,7 @@
         "type": "boolean"
       },
       {
-        "comment": null,
+        "comment": "Indica se o usuário aceita comunicados do sistema.",
         "default": "true",
         "generated": null,
         "identity": null,
@@ -35288,7 +35288,7 @@
         "type": "boolean"
       },
       {
-        "comment": null,
+        "comment": "Indica se o usuário aceita comunicações de marketing.",
         "default": "false",
         "generated": null,
         "identity": null,
@@ -35301,7 +35301,7 @@
         "type": "boolean"
       },
       {
-        "comment": null,
+        "comment": "Data e hora de criação das preferências.",
         "default": "now()",
         "generated": null,
         "identity": null,
@@ -35314,7 +35314,7 @@
         "type": "timestamp with time zone"
       },
       {
-        "comment": null,
+        "comment": "Data e hora da última atualização das preferências.",
         "default": "now()",
         "generated": null,
         "identity": null,
@@ -35444,7 +35444,7 @@
         "type": "timestamp with time zone"
       },
       {
-        "comment": null,
+        "comment": "Identificador UUID da notificação.",
         "default": "gen_random_uuid()",
         "generated": null,
         "identity": null,
@@ -35457,7 +35457,7 @@
         "type": "uuid"
       },
       {
-        "comment": null,
+        "comment": "Usuário destinatário da notificação.",
         "default": null,
         "generated": null,
         "identity": null,
@@ -35470,7 +35470,7 @@
         "type": "uuid"
       },
       {
-        "comment": null,
+        "comment": "Tipo da notificação.",
         "default": null,
         "generated": null,
         "identity": null,
@@ -35483,7 +35483,7 @@
         "type": "text"
       },
       {
-        "comment": null,
+        "comment": "Título da notificação.",
         "default": null,
         "generated": null,
         "identity": null,
@@ -35496,7 +35496,7 @@
         "type": "text"
       },
       {
-        "comment": null,
+        "comment": "Conteúdo textual da notificação.",
         "default": null,
         "generated": null,
         "identity": null,
@@ -35509,7 +35509,7 @@
         "type": "text"
       },
       {
-        "comment": null,
+        "comment": "Dados adicionais da notificação em formato JSONB.",
         "default": "'{}'::jsonb",
         "generated": null,
         "identity": null,
@@ -35522,7 +35522,7 @@
         "type": "jsonb"
       },
       {
-        "comment": null,
+        "comment": "Data e hora em que a notificação foi marcada como lida, quando disponível.",
         "default": null,
         "generated": null,
         "identity": null,
@@ -35535,7 +35535,7 @@
         "type": "timestamp with time zone"
       },
       {
-        "comment": null,
+        "comment": "URL de destino associada à ação da notificação, quando houver.",
         "default": null,
         "generated": null,
         "identity": null,
@@ -35548,7 +35548,7 @@
         "type": "text"
       },
       {
-        "comment": null,
+        "comment": "Indica se a notificação está marcada como lida.",
         "default": "false",
         "generated": null,
         "identity": null,
@@ -35561,7 +35561,7 @@
         "type": "boolean"
       },
       {
-        "comment": null,
+        "comment": "Prioridade atribuída à notificação.",
         "default": "'normal'::text",
         "generated": null,
         "identity": null,
@@ -35574,7 +35574,7 @@
         "type": "text"
       },
       {
-        "comment": null,
+        "comment": "Data e hora de criação da notificação.",
         "default": "now()",
         "generated": null,
         "identity": null,
@@ -36107,7 +36107,7 @@
         "type": "uuid"
       },
       {
-        "comment": null,
+        "comment": "Vínculo opcional com public.products.id (FK existente). Pode ser NULL; os campos product_name, product_sku, product_description e product_image_url preservam o snapshot do item no pedido.",
         "default": null,
         "generated": null,
         "identity": null,
@@ -36133,7 +36133,7 @@
         "type": "integer"
       },
       {
-        "comment": null,
+        "comment": "Preço unitário comercial do produto no pedido, em BRL (reais com centavos), sem frete e sem impostos.",
         "default": null,
         "generated": null,
         "identity": null,
@@ -36146,7 +36146,7 @@
         "type": "numeric(10,2)"
       },
       {
-        "comment": null,
+        "comment": "Valor da linha do pedido em BRL (reais com centavos), conforme cálculo da aplicação. Frete e impostos do cabeçalho permanecem separados.",
         "default": null,
         "generated": null,
         "identity": null,
@@ -36172,7 +36172,7 @@
         "type": "timestamp with time zone"
       },
       {
-        "comment": null,
+        "comment": "Referência opcional ao item de orçamento que originou esta linha. A coluna não possui FK declarada no schema; tratá-la como referência lógica, não como integridade referencial garantida.",
         "default": null,
         "generated": null,
         "identity": null,
@@ -36250,7 +36250,7 @@
         "type": "jsonb"
       },
       {
-        "comment": null,
+        "comment": "Valor monetário da personalização associada à linha do pedido, em BRL (reais com centavos). Não confundir com frete ou impostos.",
         "default": "0",
         "generated": null,
         "identity": null,
@@ -36263,7 +36263,7 @@
         "type": "numeric(10,2)"
       },
       {
-        "comment": null,
+        "comment": "Valor do desconto aplicado especificamente a esta linha do pedido, em BRL (reais com centavos); distinto de orders.discount_amount.",
         "default": "0",
         "generated": null,
         "identity": null,
@@ -36354,7 +36354,7 @@
         "type": "text"
       },
       {
-        "comment": "Wave 3.2.A 2026-05-22: renomeado de total_amount. Consolidacao Lovable.",
+        "comment": "Total comercial recomendado em BRL (reais com centavos): subtotal - discount_amount + shipping_cost + tax_amount. Documentação da regra de negócio; a coluna não é gerada nem possui constraint que imponha essa fórmula.",
         "default": "0",
         "generated": null,
         "identity": null,
@@ -36367,7 +36367,7 @@
         "type": "numeric(10,2)"
       },
       {
-        "comment": null,
+        "comment": "Forma de pagamento recomendada: pix, boleto, credit_card, bank_transfer, cash ou other. Usar códigos em minúsculas. Documentação apenas: coluna text sem CHECK; outros valores ainda podem ser gravados.",
         "default": null,
         "generated": null,
         "identity": null,
@@ -36458,7 +36458,7 @@
         "type": "timestamp with time zone"
       },
       {
-        "comment": null,
+        "comment": "Referência lógica opcional ao orçamento de origem (public.quotes.id), normalmente preenchida na conversão de orçamento em pedido. O schema atual não declara FK para esta coluna.",
         "default": null,
         "generated": null,
         "identity": null,
@@ -36523,7 +36523,7 @@
         "type": "text"
       },
       {
-        "comment": null,
+        "comment": "Subtotal dos produtos/itens do pedido em BRL (reais, com centavos; não centavos inteiros), sem frete e sem impostos. Convenção documental: antes do desconto global do pedido.",
         "default": "0",
         "generated": null,
         "identity": null,
@@ -36536,7 +36536,7 @@
         "type": "numeric(10,2)"
       },
       {
-        "comment": null,
+        "comment": "Valor monetário do desconto global do pedido, em BRL (reais com centavos). Convention: subtrair do subtotal ao obter o total.",
         "default": "0",
         "generated": null,
         "identity": null,
@@ -36549,7 +36549,7 @@
         "type": "numeric(10,2)"
       },
       {
-        "comment": null,
+        "comment": "Custo de frete do pedido em BRL (reais com centavos), separado dos valores dos produtos.",
         "default": "0",
         "generated": null,
         "identity": null,
@@ -36562,7 +36562,7 @@
         "type": "numeric(10,2)"
       },
       {
-        "comment": null,
+        "comment": "Valor total de impostos do pedido em BRL (reais com centavos), separado do subtotal dos produtos e do frete.",
         "default": "0",
         "generated": null,
         "identity": null,
@@ -36575,7 +36575,7 @@
         "type": "numeric(10,2)"
       },
       {
-        "comment": null,
+        "comment": "Total acumulado já recebido para o pedido, em BRL (reais com centavos). É um valor pago, não o total do pedido nem o saldo em aberto.",
         "default": "0",
         "generated": null,
         "identity": null,
@@ -36588,7 +36588,7 @@
         "type": "numeric(10,2)"
       },
       {
-        "comment": null,
+        "comment": "Condição comercial de pagamento em texto livre. Representações recomendadas: avista, N dias, N/N/... dias (ex.: 30/60/90 dias) ou sob consulta; preservar condições negociadas usando texto claro e consistente. Não é um enum nem possui CHECK.",
         "default": null,
         "generated": null,
         "identity": null,
@@ -36614,7 +36614,7 @@
         "type": "date"
       },
       {
-        "comment": null,
+        "comment": "Snapshot do endereço de entrega em JSONB. Formato canônico: objeto com recipient_name, street, number, district, city, state (UF brasileira), postal_code (CEP 00000-000) e country (código ISO alpha-2; BR no Brasil). Chaves opcionais: complement e reference. number é texto para aceitar s/n. Coluna nullable; estrutura não é validada pelo banco. Não confundir com delivery_address, campo textual legado.",
         "default": null,
         "generated": null,
         "identity": null,
@@ -36627,7 +36627,7 @@
         "type": "jsonb"
       },
       {
-        "comment": null,
+        "comment": "Meio de transporte recomendado: correios, transportadora, retirada, motoboy, entrega_propria ou outro. Representa como será a entrega, não quem paga o frete. Documentação apenas: coluna text sem CHECK.",
         "default": null,
         "generated": null,
         "identity": null,
@@ -36770,7 +36770,7 @@
         "type": "text"
       },
       {
-        "comment": null,
+        "comment": "Responsabilidade/modalidade do frete. Vocabulário recomendado, alinhado ao CHECK existente em quotes.shipping_type: cif, fob e fob_pre (FOB com custo de frete pré-negociado). Não confundir com shipping_method. Documentação apenas: esta coluna de orders é text e não possui CHECK.",
         "default": null,
         "generated": null,
         "identity": null,
@@ -36783,7 +36783,7 @@
         "type": "text"
       },
       {
-        "comment": null,
+        "comment": "Prazo estimado/prometido de entrega em texto: usar imediato, N dias úteis, N a M dias úteis ou sob consulta. Para data-calendário específica, usar estimated_delivery_date. Documentação apenas: coluna text sem CHECK.",
         "default": null,
         "generated": null,
         "identity": null,
@@ -36796,7 +36796,7 @@
         "type": "text"
       },
       {
-        "comment": null,
+        "comment": "Identificador UUID do registro de participação.",
         "default": "gen_random_uuid()",
         "generated": null,
         "identity": null,
@@ -36809,7 +36809,7 @@
         "type": "uuid"
       },
       {
-        "comment": null,
+        "comment": "Organização à qual o usuário foi associado.",
         "default": null,
         "generated": null,
         "identity": null,
@@ -36822,7 +36822,7 @@
         "type": "uuid"
       },
       {
-        "comment": null,
+        "comment": "Identificador do usuário associado à organização.",
         "default": null,
         "generated": null,
         "identity": null,
@@ -36835,7 +36835,7 @@
         "type": "uuid"
       },
       {
-        "comment": null,
+        "comment": "Papel do usuário na organização: owner, admin ou member.",
         "default": "'member'::org_role",
         "generated": null,
         "identity": null,
@@ -36848,7 +36848,7 @@
         "type": "org_role"
       },
       {
-        "comment": null,
+        "comment": "Identificador do usuário que enviou o convite, quando informado.",
         "default": null,
         "generated": null,
         "identity": null,
@@ -36861,7 +36861,7 @@
         "type": "uuid"
       },
       {
-        "comment": null,
+        "comment": "Data e hora em que a participação foi registrada como iniciada.",
         "default": "now()",
         "generated": null,
         "identity": null,
@@ -36874,7 +36874,7 @@
         "type": "timestamp with time zone"
       },
       {
-        "comment": null,
+        "comment": "Data e hora de criação do registro.",
         "default": "now()",
         "generated": null,
         "identity": null,
@@ -36887,7 +36887,7 @@
         "type": "timestamp with time zone"
       },
       {
-        "comment": null,
+        "comment": "Data e hora da última atualização do registro.",
         "default": "now()",
         "generated": null,
         "identity": null,
@@ -36900,7 +36900,7 @@
         "type": "timestamp with time zone"
       },
       {
-        "comment": null,
+        "comment": "Identificador UUID da organização.",
         "default": "gen_random_uuid()",
         "generated": null,
         "identity": null,
@@ -36913,7 +36913,7 @@
         "type": "uuid"
       },
       {
-        "comment": null,
+        "comment": "Nome de exibição da organização.",
         "default": null,
         "generated": null,
         "identity": null,
@@ -36926,7 +36926,7 @@
         "type": "text"
       },
       {
-        "comment": null,
+        "comment": "Data e hora de criação da organização.",
         "default": "now()",
         "generated": null,
         "identity": null,
@@ -36952,7 +36952,7 @@
         "type": "text"
       },
       {
-        "comment": null,
+        "comment": "URL do logotipo da organização.",
         "default": null,
         "generated": null,
         "identity": null,
@@ -36965,7 +36965,7 @@
         "type": "text"
       },
       {
-        "comment": null,
+        "comment": "Descrição da organização.",
         "default": null,
         "generated": null,
         "identity": null,
@@ -36978,7 +36978,7 @@
         "type": "text"
       },
       {
-        "comment": null,
+        "comment": "Indica se a organização está ativa.",
         "default": "true",
         "generated": null,
         "identity": null,
@@ -36991,7 +36991,7 @@
         "type": "boolean"
       },
       {
-        "comment": null,
+        "comment": "Configurações específicas da organização, armazenadas como JSONB.",
         "default": "'{}'::jsonb",
         "generated": null,
         "identity": null,
@@ -37004,7 +37004,7 @@
         "type": "jsonb"
       },
       {
-        "comment": null,
+        "comment": "Data e hora da última atualização da organização.",
         "default": "now()",
         "generated": null,
         "identity": null,
@@ -38603,7 +38603,7 @@
         "type": "uuid"
       },
       {
-        "comment": null,
+        "comment": "Código identificador da permissão.",
         "default": null,
         "generated": null,
         "identity": null,
@@ -38616,7 +38616,7 @@
         "type": "text"
       },
       {
-        "comment": null,
+        "comment": "Categoria usada para agrupar permissões relacionadas.",
         "default": null,
         "generated": null,
         "identity": null,
@@ -38629,7 +38629,7 @@
         "type": "text"
       },
       {
-        "comment": null,
+        "comment": "Rótulo legível da permissão para exibição.",
         "default": null,
         "generated": null,
         "identity": null,
@@ -38642,7 +38642,7 @@
         "type": "text"
       },
       {
-        "comment": null,
+        "comment": "Descrição do propósito da permissão.",
         "default": null,
         "generated": null,
         "identity": null,
@@ -38655,7 +38655,7 @@
         "type": "text"
       },
       {
-        "comment": null,
+        "comment": "Data e hora de criação da permissão.",
         "default": "now()",
         "generated": null,
         "identity": null,
@@ -54255,7 +54255,7 @@
         "type": "boolean"
       },
       {
-        "comment": null,
+        "comment": "Identificador UUID do registro de perfil.",
         "default": "gen_random_uuid()",
         "generated": null,
         "identity": null,
@@ -54268,7 +54268,7 @@
         "type": "uuid"
       },
       {
-        "comment": null,
+        "comment": "E-mail associado ao perfil.",
         "default": null,
         "generated": null,
         "identity": null,
@@ -54281,7 +54281,7 @@
         "type": "text"
       },
       {
-        "comment": null,
+        "comment": "Nome completo do usuário para exibição.",
         "default": null,
         "generated": null,
         "identity": null,
@@ -54307,7 +54307,7 @@
         "type": "text"
       },
       {
-        "comment": null,
+        "comment": "Data e hora de criação do perfil.",
         "default": "now()",
         "generated": null,
         "identity": null,
@@ -54320,7 +54320,7 @@
         "type": "timestamp with time zone"
       },
       {
-        "comment": null,
+        "comment": "Data e hora da última atualização do perfil.",
         "default": "now()",
         "generated": null,
         "identity": null,
@@ -54333,7 +54333,7 @@
         "type": "timestamp with time zone"
       },
       {
-        "comment": null,
+        "comment": "URL do avatar do usuário.",
         "default": null,
         "generated": null,
         "identity": null,
@@ -54346,7 +54346,7 @@
         "type": "text"
       },
       {
-        "comment": null,
+        "comment": "Telefone de contato do usuário.",
         "default": null,
         "generated": null,
         "identity": null,
@@ -54359,7 +54359,7 @@
         "type": "text"
       },
       {
-        "comment": null,
+        "comment": "Departamento ou área do usuário.",
         "default": null,
         "generated": null,
         "identity": null,
@@ -54372,7 +54372,7 @@
         "type": "text"
       },
       {
-        "comment": null,
+        "comment": "Indica se o perfil está ativo.",
         "default": "true",
         "generated": null,
         "identity": null,
@@ -54385,7 +54385,7 @@
         "type": "boolean"
       },
       {
-        "comment": null,
+        "comment": "Data e hora do último login registrado.",
         "default": null,
         "generated": null,
         "identity": null,
@@ -54398,7 +54398,7 @@
         "type": "timestamp with time zone"
       },
       {
-        "comment": null,
+        "comment": "Preferências do usuário armazenadas como JSONB.",
         "default": "'{}'::jsonb",
         "generated": null,
         "identity": null,
@@ -54424,7 +54424,7 @@
         "type": "integer"
       },
       {
-        "comment": null,
+        "comment": "Identificador da conta correspondente em auth.users.",
         "default": null,
         "generated": null,
         "identity": null,
@@ -54437,7 +54437,7 @@
         "type": "uuid"
       },
       {
-        "comment": null,
+        "comment": "Organização associada ao perfil.",
         "default": null,
         "generated": null,
         "identity": null,
@@ -54710,7 +54710,7 @@
         "type": "timestamp with time zone"
       },
       {
-        "comment": null,
+        "comment": "Identificador UUID da inscrição push.",
         "default": "gen_random_uuid()",
         "generated": null,
         "identity": null,
@@ -54723,7 +54723,7 @@
         "type": "uuid"
       },
       {
-        "comment": null,
+        "comment": "Usuário associado à inscrição push.",
         "default": null,
         "generated": null,
         "identity": null,
@@ -54736,7 +54736,7 @@
         "type": "uuid"
       },
       {
-        "comment": null,
+        "comment": "Endpoint do serviço push associado à inscrição do navegador.",
         "default": null,
         "generated": null,
         "identity": null,
@@ -54749,7 +54749,7 @@
         "type": "text"
       },
       {
-        "comment": null,
+        "comment": "Chaves de inscrição push armazenadas como JSONB.",
         "default": null,
         "generated": null,
         "identity": null,
@@ -54762,7 +54762,7 @@
         "type": "jsonb"
       },
       {
-        "comment": null,
+        "comment": "Indica se a inscrição push está ativa.",
         "default": "true",
         "generated": null,
         "identity": null,
@@ -54775,7 +54775,7 @@
         "type": "boolean"
       },
       {
-        "comment": null,
+        "comment": "Data e hora de criação da inscrição push.",
         "default": "now()",
         "generated": null,
         "identity": null,
@@ -54788,7 +54788,7 @@
         "type": "timestamp with time zone"
       },
       {
-        "comment": null,
+        "comment": "Data e hora da última atualização da inscrição push.",
         "default": "now()",
         "generated": null,
         "identity": null,
@@ -55906,7 +55906,7 @@
         "type": "uuid"
       },
       {
-        "comment": null,
+        "comment": "Vínculo opcional com public.products.id (FK existente). Pode ser NULL para item manual/sem produto de catálogo; product_name, product_sku, product_description e product_image_url guardam o snapshot comercial do item.",
         "default": null,
         "generated": null,
         "identity": null,
@@ -55997,7 +55997,7 @@
         "type": "jsonb"
       },
       {
-        "comment": null,
+        "comment": "Valor monetário de personalização associado ao item do orçamento, em BRL (reais com centavos). Não confundir com frete ou impostos.",
         "default": "0",
         "generated": null,
         "identity": null,
@@ -56023,7 +56023,7 @@
         "type": "integer"
       },
       {
-        "comment": null,
+        "comment": "Preço unitário comercial do produto no orçamento, em BRL (reais com centavos), sem frete e sem impostos. Não armazenar centavos como inteiro.",
         "default": null,
         "generated": null,
         "identity": null,
@@ -56049,7 +56049,7 @@
         "type": "numeric(5,2)"
       },
       {
-        "comment": null,
+        "comment": "Valor do desconto aplicado especificamente a esta linha, em BRL (reais com centavos); distinto do desconto global em quotes.discount_amount.",
         "default": "0",
         "generated": null,
         "identity": null,
@@ -56062,7 +56062,7 @@
         "type": "numeric(10,2)"
       },
       {
-        "comment": null,
+        "comment": "Valor da linha do orçamento em BRL (reais com centavos), conforme cálculo da aplicação. Não repetir frete ou impostos do cabeçalho do orçamento.",
         "default": null,
         "generated": null,
         "identity": null,
@@ -56309,7 +56309,7 @@
         "type": "text"
       },
       {
-        "comment": "Custo unitario da embalagem opcional no momento da escolha (snapshot).",
+        "comment": "Custo unitário snapshot da embalagem opcional escolhida, em BRL (reais com centavos). Mantém o custo observado na escolha, não o preço de venda do produto principal.",
         "default": null,
         "generated": null,
         "identity": null,
@@ -56816,7 +56816,7 @@
         "type": "text"
       },
       {
-        "comment": null,
+        "comment": "Etapa comercial recomendada do funil, distinta de quotes.status (estado operacional). Vocabulário recomendado: elaboration (preparação; valor padrão atual), internal_approval (aprovação interna), sent_to_client (enviado ao cliente), negotiation (negociação/revisões), won (ganho; normalmente aprovado ou convertido em pedido) e lost (encerrado sem conversão). Documentação apenas: a coluna não possui CHECK e valores adicionais não são bloqueados pelo banco.",
         "default": "'elaboration'::text",
         "generated": null,
         "identity": null,
@@ -56842,7 +56842,7 @@
         "type": "text"
       },
       {
-        "comment": null,
+        "comment": "Subtotal comercial dos produtos/itens do orçamento em BRL (reais, com centavos; não centavos inteiros). Exclui frete e impostos, registrados separadamente. O subtotal apresentado pode refletir negotiation_markup_percent; real_subtotal registra a base interna sem esse markup. Convenção documental: subtotal antes do desconto global do orçamento.",
         "default": "0",
         "generated": null,
         "identity": null,
@@ -56855,7 +56855,7 @@
         "type": "numeric(10,2)"
       },
       {
-        "comment": null,
+        "comment": "Valor monetário do desconto global do orçamento, em BRL (reais com centavos), separado de discount_percent. Convention: subtrair do subtotal ao obter o total; não inclui frete nem impostos.",
         "default": "0",
         "generated": null,
         "identity": null,
@@ -56868,7 +56868,7 @@
         "type": "numeric(10,2)"
       },
       {
-        "comment": null,
+        "comment": "Custo de frete do orçamento em BRL (reais com centavos), mantido separado do subtotal dos produtos.",
         "default": "0",
         "generated": null,
         "identity": null,
@@ -56881,7 +56881,7 @@
         "type": "numeric(10,2)"
       },
       {
-        "comment": null,
+        "comment": "Valor total de impostos do orçamento em BRL (reais com centavos), mantido separado do subtotal dos produtos e do frete.",
         "default": "0",
         "generated": null,
         "identity": null,
@@ -56894,7 +56894,7 @@
         "type": "numeric(10,2)"
       },
       {
-        "comment": null,
+        "comment": "Total comercial recomendado em BRL (reais com centavos): subtotal - discount_amount + shipping_cost + tax_amount. Documentação da regra de negócio; a coluna não é gerada nem possui constraint que imponha essa fórmula.",
         "default": "0",
         "generated": null,
         "identity": null,
@@ -57076,7 +57076,7 @@
         "type": "timestamp with time zone"
       },
       {
-        "comment": null,
+        "comment": "Referência lógica ao pedido criado a partir deste orçamento. O schema atual não declara FK para converted_to_order_id; não presumir integridade referencial imposta pelo banco.",
         "default": null,
         "generated": null,
         "identity": null,
@@ -57167,7 +57167,7 @@
         "type": "uuid"
       },
       {
-        "comment": "Desconto exposto ao cliente (% sobre subtotal). Coexiste com discount_percentage legacy — código novo usa discount_percent.",
+        "comment": "Percentual de desconto comercial apresentado ao cliente (0–100), aplicado sobre a base comercial do orçamento; distinto do valor monetário discount_amount e do markup interno negotiation_markup_percent.",
         "default": "0",
         "generated": null,
         "identity": null,
@@ -57180,7 +57180,7 @@
         "type": "numeric(5,2)"
       },
       {
-        "comment": "Markup INTERNO 0–50%. Infla subtotal apresentado para criar margem psicológica de desconto. NUNCA exposto ao cliente.",
+        "comment": "Percentual de markup interno de negociação. Pode elevar o subtotal apresentado; é interno, não deve ser exposto ao cliente nem confundido com imposto ou desconto.",
         "default": "0",
         "generated": null,
         "identity": null,
@@ -57193,7 +57193,7 @@
         "type": "numeric(5,2)"
       },
       {
-        "comment": "Subtotal real (sem markup de negociação). Calculado por trigger no cutover. Read-only.",
+        "comment": "Subtotal real dos produtos em BRL, antes de qualquer markup de negociação. Campo interno calculado pela aplicação/trigger; não inclui frete nem impostos.",
         "default": "0",
         "generated": null,
         "identity": null,
@@ -57206,7 +57206,7 @@
         "type": "numeric(10,2)"
       },
       {
-        "comment": "Desconto efetivo real vs real_subtotal. Validado contra alçada do vendedor. Read-only.",
+        "comment": "Percentual de desconto efetivo calculado em relação a real_subtotal; campo interno usado na validação da alçada do vendedor, distinto do desconto mostrado ao cliente.",
         "default": "0",
         "generated": null,
         "identity": null,
@@ -58506,7 +58506,7 @@
         "type": "timestamp with time zone"
       },
       {
-        "comment": null,
+        "comment": "Identificador UUID do vínculo entre papel e permissão.",
         "default": "gen_random_uuid()",
         "generated": null,
         "identity": null,
@@ -58519,7 +58519,7 @@
         "type": "uuid"
       },
       {
-        "comment": null,
+        "comment": "Papel de aplicação ao qual a permissão é concedida.",
         "default": null,
         "generated": null,
         "identity": null,
@@ -58532,7 +58532,7 @@
         "type": "app_role"
       },
       {
-        "comment": null,
+        "comment": "Código da permissão concedida ao papel.",
         "default": null,
         "generated": null,
         "identity": null,
@@ -58545,7 +58545,7 @@
         "type": "text"
       },
       {
-        "comment": null,
+        "comment": "Data e hora de criação do vínculo.",
         "default": "now()",
         "generated": null,
         "identity": null,
@@ -58558,7 +58558,7 @@
         "type": "timestamp with time zone"
       },
       {
-        "comment": null,
+        "comment": "Identificador UUID do papel exibido na tela administrativa.",
         "default": "gen_random_uuid()",
         "generated": null,
         "identity": null,
@@ -58571,7 +58571,7 @@
         "type": "uuid"
       },
       {
-        "comment": null,
+        "comment": "Nome do papel.",
         "default": null,
         "generated": null,
         "identity": null,
@@ -58584,7 +58584,7 @@
         "type": "text"
       },
       {
-        "comment": null,
+        "comment": "Descrição legível do papel.",
         "default": null,
         "generated": null,
         "identity": null,
@@ -58597,7 +58597,7 @@
         "type": "text"
       },
       {
-        "comment": null,
+        "comment": "Data e hora de criação do registro do papel.",
         "default": "now()",
         "generated": null,
         "identity": null,
@@ -71623,7 +71623,7 @@
         "type": "boolean"
       },
       {
-        "comment": null,
+        "comment": "Identificador UUID da preferência.",
         "default": "gen_random_uuid()",
         "generated": null,
         "identity": null,
@@ -71636,7 +71636,7 @@
         "type": "uuid"
       },
       {
-        "comment": null,
+        "comment": "Usuário ao qual a preferência se aplica. Por padrão, recebe o identificador de auth.uid().",
         "default": "auth.uid()",
         "generated": null,
         "identity": null,
@@ -71649,7 +71649,7 @@
         "type": "uuid"
       },
       {
-        "comment": null,
+        "comment": "Categoria de notificação à qual esta preferência se aplica.",
         "default": null,
         "generated": null,
         "identity": null,
@@ -71662,7 +71662,7 @@
         "type": "text"
       },
       {
-        "comment": null,
+        "comment": "Indica se notificações da categoria podem aparecer no aplicativo.",
         "default": "true",
         "generated": null,
         "identity": null,
@@ -71675,7 +71675,7 @@
         "type": "boolean"
       },
       {
-        "comment": null,
+        "comment": "Indica se notificações da categoria podem ser enviadas por push.",
         "default": "false",
         "generated": null,
         "identity": null,
@@ -71688,7 +71688,7 @@
         "type": "boolean"
       },
       {
-        "comment": null,
+        "comment": "Data e hora de criação da preferência.",
         "default": "now()",
         "generated": null,
         "identity": null,
@@ -71701,7 +71701,7 @@
         "type": "timestamp with time zone"
       },
       {
-        "comment": null,
+        "comment": "Data e hora da última atualização da preferência.",
         "default": "now()",
         "generated": null,
         "identity": null,
@@ -71831,7 +71831,7 @@
         "type": "timestamp with time zone"
       },
       {
-        "comment": null,
+        "comment": "Organização à qual o usuário pertence.",
         "default": null,
         "generated": null,
         "identity": null,
@@ -71844,7 +71844,7 @@
         "type": "uuid"
       },
       {
-        "comment": null,
+        "comment": "Identificador do usuário associado à organização.",
         "default": null,
         "generated": null,
         "identity": null,
@@ -71857,7 +71857,7 @@
         "type": "uuid"
       },
       {
-        "comment": null,
+        "comment": "Papel do usuário dentro da organização: owner, admin ou member.",
         "default": "'member'::org_role",
         "generated": null,
         "identity": null,
@@ -71870,7 +71870,7 @@
         "type": "org_role"
       },
       {
-        "comment": null,
+        "comment": "Data e hora de criação do vínculo entre usuário e organização.",
         "default": "now()",
         "generated": null,
         "identity": null,
@@ -71883,7 +71883,7 @@
         "type": "timestamp with time zone"
       },
       {
-        "comment": null,
+        "comment": "Data e hora da última atualização do vínculo.",
         "default": "now()",
         "generated": null,
         "identity": null,
@@ -71987,7 +71987,7 @@
         "type": "jsonb"
       },
       {
-        "comment": null,
+        "comment": "Identificador da conta de usuário à qual o papel foi concedido.",
         "default": null,
         "generated": null,
         "identity": null,
@@ -72000,7 +72000,7 @@
         "type": "uuid"
       },
       {
-        "comment": null,
+        "comment": "Papel de aplicação concedido ao usuário. Um usuário pode ter mais de um papel.",
         "default": null,
         "generated": null,
         "identity": null,
@@ -72013,7 +72013,7 @@
         "type": "app_role"
       },
       {
-        "comment": null,
+        "comment": "Data e hora em que o papel foi concedido.",
         "default": "now()",
         "generated": null,
         "identity": null,
@@ -72026,7 +72026,7 @@
         "type": "timestamp with time zone"
       },
       {
-        "comment": null,
+        "comment": "Usuário que concedeu o papel, quando registrado.",
         "default": null,
         "generated": null,
         "identity": null,
@@ -107542,7 +107542,7 @@
         "type": "timestamp with time zone"
       },
       {
-        "comment": null,
+        "comment": "Identificador UUID da notificação.",
         "default": "gen_random_uuid()",
         "generated": null,
         "identity": null,
@@ -107555,7 +107555,7 @@
         "type": "uuid"
       },
       {
-        "comment": null,
+        "comment": "Usuário destinatário da notificação.",
         "default": null,
         "generated": null,
         "identity": null,
@@ -107568,7 +107568,7 @@
         "type": "uuid"
       },
       {
-        "comment": null,
+        "comment": "Título da notificação.",
         "default": null,
         "generated": null,
         "identity": null,
@@ -107581,7 +107581,7 @@
         "type": "text"
       },
       {
-        "comment": null,
+        "comment": "Conteúdo textual da notificação.",
         "default": null,
         "generated": null,
         "identity": null,
@@ -107594,7 +107594,7 @@
         "type": "text"
       },
       {
-        "comment": null,
+        "comment": "Tipo da notificação. O valor padrão é info.",
         "default": "'info'::text",
         "generated": null,
         "identity": null,
@@ -107607,7 +107607,7 @@
         "type": "text"
       },
       {
-        "comment": null,
+        "comment": "Categoria da notificação. O valor padrão é system.",
         "default": "'system'::text",
         "generated": null,
         "identity": null,
@@ -107620,7 +107620,7 @@
         "type": "text"
       },
       {
-        "comment": null,
+        "comment": "Indica se a notificação foi marcada como lida.",
         "default": "false",
         "generated": null,
         "identity": null,
@@ -107633,7 +107633,7 @@
         "type": "boolean"
       },
       {
-        "comment": null,
+        "comment": "URL opcional associada à ação da notificação.",
         "default": null,
         "generated": null,
         "identity": null,
@@ -107646,7 +107646,7 @@
         "type": "text"
       },
       {
-        "comment": null,
+        "comment": "Metadados adicionais da notificação em formato JSONB.",
         "default": "'{}'::jsonb",
         "generated": null,
         "identity": null,
@@ -107659,7 +107659,7 @@
         "type": "jsonb"
       },
       {
-        "comment": null,
+        "comment": "Data e hora de criação da notificação.",
         "default": "now()",
         "generated": null,
         "identity": null,
@@ -107672,7 +107672,7 @@
         "type": "timestamp with time zone"
       },
       {
-        "comment": null,
+        "comment": "Vetor de texto usado para busca textual nas notificações.",
         "default": null,
         "generated": null,
         "identity": null,
@@ -107685,7 +107685,7 @@
         "type": "tsvector"
       },
       {
-        "comment": null,
+        "comment": "Chave opcional para identificar e evitar notificações duplicadas.",
         "default": null,
         "generated": null,
         "identity": null,
@@ -258253,7 +258253,7 @@
         "schema": "public"
       },
       {
-        "comment": null,
+        "comment": "Preferências de notificação por usuário para canais e categorias de eventos.",
         "from_extension": false,
         "is_partition": false,
         "kind": "table",
@@ -258283,7 +258283,7 @@
         "schema": "public"
       },
       {
-        "comment": null,
+        "comment": "Notificações direcionadas a usuários, com conteúdo, prioridade, estado de leitura e dados auxiliares.",
         "from_extension": false,
         "is_partition": false,
         "kind": "table",
@@ -258388,7 +258388,7 @@
         "schema": "public"
       },
       {
-        "comment": null,
+        "comment": "Registros de participação de usuários em organizações, incluindo papel, convite e data de entrada.",
         "from_extension": false,
         "is_partition": false,
         "kind": "table",
@@ -258403,7 +258403,7 @@
         "schema": "public"
       },
       {
-        "comment": null,
+        "comment": "Organizações cadastradas na aplicação. Agrupa usuários e registros de negócio que pertencem a uma mesma organização.",
         "from_extension": false,
         "is_partition": false,
         "kind": "table",
@@ -258583,7 +258583,7 @@
         "schema": "public"
       },
       {
-        "comment": null,
+        "comment": "Catálogo de permissões disponíveis na aplicação. Cada permissão possui um código, uma categoria e rótulos para exibição e documentação.",
         "from_extension": false,
         "is_partition": false,
         "kind": "table",
@@ -259513,7 +259513,7 @@
         "schema": "public"
       },
       {
-        "comment": null,
+        "comment": "Perfil de aplicação vinculado a uma conta do Supabase Auth. Guarda informações de contato e de exibição, além da organização associada. A autorização usa public.user_roles como fonte de verdade; não editar manualmente a coluna role.",
         "from_extension": false,
         "is_partition": false,
         "kind": "table",
@@ -259558,7 +259558,7 @@
         "schema": "public"
       },
       {
-        "comment": null,
+        "comment": "Inscrições de usuários para receber notificações push.",
         "from_extension": false,
         "is_partition": false,
         "kind": "table",
@@ -259843,7 +259843,7 @@
         "schema": "public"
       },
       {
-        "comment": null,
+        "comment": "Associa papéis de aplicação às permissões concedidas a cada papel.",
         "from_extension": false,
         "is_partition": false,
         "kind": "table",
@@ -261193,7 +261193,7 @@
         "schema": "public"
       },
       {
-        "comment": null,
+        "comment": "Preferências individuais por usuário e categoria para notificações no aplicativo e por push.",
         "from_extension": false,
         "is_partition": false,
         "kind": "table",
@@ -261553,7 +261553,7 @@
         "schema": "public"
       },
       {
-        "comment": null,
+        "comment": "Notificações de espaço de trabalho direcionadas a usuários, com categoria, tipo, estado de leitura e metadados.",
         "from_extension": false,
         "is_partition": false,
         "kind": "table",

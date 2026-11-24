@@ -1,5 +1,7 @@
 # public.profiles
 
+> Perfil de aplicação vinculado a uma conta do Supabase Auth. Guarda informações de contato e de exibição, além da organização associada. A autorização usa public.user_roles como fonte de verdade; não editar manualmente a coluna role.
+
 | propriedade | valor |
 |---|---|
 | tipo | table |
@@ -17,21 +19,21 @@
 
 | # | coluna | tipo | nullable | default | identity/generated | comentário |
 |---|---|---|---|---|---|---|
-| 1 | `id` | `uuid` | não | `gen_random_uuid()` |  |  |
-| 2 | `email` | `text` | sim |  |  |  |
-| 3 | `full_name` | `text` | sim |  |  |  |
+| 1 | `id` | `uuid` | não | `gen_random_uuid()` |  | Identificador UUID do registro de perfil. |
+| 2 | `email` | `text` | sim |  |  | E-mail associado ao perfil. |
+| 3 | `full_name` | `text` | sim |  |  | Nome completo do usuário para exibição. |
 | 4 | `role` | `text` | sim | `'user'::text` |  | DERIVADO/read-only (vocabulario EN: admin/manager/sales). Fonte de verdade = public.user_roles (enum PT). Sincronizado pelo trigger user_roles_sync_profile_role via fn_map_role_enum_to_profile. Nao escrever manualmente. |
-| 5 | `created_at` | `timestamp with time zone` | não | `now()` |  |  |
-| 6 | `updated_at` | `timestamp with time zone` | não | `now()` |  |  |
-| 7 | `avatar_url` | `text` | sim |  |  |  |
-| 8 | `phone` | `text` | sim |  |  |  |
-| 9 | `department` | `text` | sim |  |  |  |
-| 10 | `is_active` | `boolean` | sim | `true` |  |  |
-| 11 | `last_login_at` | `timestamp with time zone` | sim |  |  |  |
-| 12 | `preferences` | `jsonb` | sim | `'{}'::jsonb` |  |  |
+| 5 | `created_at` | `timestamp with time zone` | não | `now()` |  | Data e hora de criação do perfil. |
+| 6 | `updated_at` | `timestamp with time zone` | não | `now()` |  | Data e hora da última atualização do perfil. |
+| 7 | `avatar_url` | `text` | sim |  |  | URL do avatar do usuário. |
+| 8 | `phone` | `text` | sim |  |  | Telefone de contato do usuário. |
+| 9 | `department` | `text` | sim |  |  | Departamento ou área do usuário. |
+| 10 | `is_active` | `boolean` | sim | `true` |  | Indica se o perfil está ativo. |
+| 11 | `last_login_at` | `timestamp with time zone` | sim |  |  | Data e hora do último login registrado. |
+| 12 | `preferences` | `jsonb` | sim | `'{}'::jsonb` |  | Preferências do usuário armazenadas como JSONB. |
 | 13 | `bitrix_id` | `integer` | sim |  |  | ID do usuário no Bitrix24 CRM |
-| 14 | `user_id` | `uuid` | sim |  |  |  |
-| 15 | `organization_id` | `uuid` | sim |  |  |  |
+| 14 | `user_id` | `uuid` | sim |  |  | Identificador da conta correspondente em auth.users. |
+| 15 | `organization_id` | `uuid` | sim |  |  | Organização associada ao perfil. |
 
 
 ## Constraints

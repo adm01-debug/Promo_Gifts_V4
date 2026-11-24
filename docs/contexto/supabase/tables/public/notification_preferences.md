@@ -1,5 +1,7 @@
 # public.notification_preferences
 
+> Preferências de notificação por usuário para canais e categorias de eventos.
+
 | propriedade | valor |
 |---|---|
 | tipo | table |
@@ -16,16 +18,16 @@
 
 | # | coluna | tipo | nullable | default | identity/generated | comentário |
 |---|---|---|---|---|---|---|
-| 1 | `id` | `uuid` | não | `gen_random_uuid()` |  |  |
-| 2 | `user_id` | `uuid` | não |  |  |  |
-| 3 | `email_notifications` | `boolean` | sim | `true` |  |  |
-| 4 | `push_notifications` | `boolean` | sim | `true` |  |  |
-| 5 | `quote_updates` | `boolean` | sim | `true` |  |  |
-| 6 | `order_updates` | `boolean` | sim | `true` |  |  |
-| 7 | `system_announcements` | `boolean` | sim | `true` |  |  |
-| 8 | `marketing` | `boolean` | sim | `false` |  |  |
-| 9 | `created_at` | `timestamp with time zone` | sim | `now()` |  |  |
-| 10 | `updated_at` | `timestamp with time zone` | sim | `now()` |  |  |
+| 1 | `id` | `uuid` | não | `gen_random_uuid()` |  | Identificador UUID das preferências. |
+| 2 | `user_id` | `uuid` | não |  |  | Usuário ao qual as preferências se aplicam. |
+| 3 | `email_notifications` | `boolean` | sim | `true` |  | Indica se o usuário aceita notificações por e-mail. |
+| 4 | `push_notifications` | `boolean` | sim | `true` |  | Indica se o usuário aceita notificações push. |
+| 5 | `quote_updates` | `boolean` | sim | `true` |  | Indica se o usuário aceita notificações sobre atualizações de cotações. |
+| 6 | `order_updates` | `boolean` | sim | `true` |  | Indica se o usuário aceita notificações sobre atualizações de pedidos. |
+| 7 | `system_announcements` | `boolean` | sim | `true` |  | Indica se o usuário aceita comunicados do sistema. |
+| 8 | `marketing` | `boolean` | sim | `false` |  | Indica se o usuário aceita comunicações de marketing. |
+| 9 | `created_at` | `timestamp with time zone` | sim | `now()` |  | Data e hora de criação das preferências. |
+| 10 | `updated_at` | `timestamp with time zone` | sim | `now()` |  | Data e hora da última atualização das preferências. |
 
 
 ## Constraints

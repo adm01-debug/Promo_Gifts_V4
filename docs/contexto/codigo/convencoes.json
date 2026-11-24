@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "docs: etapas 001-004 e 006 do QA concluídas com evidência; 007 refutada; 005 reescopada (#4044)",
    "chore: recibo de aplicacao - 20261124140000 (E15) e status aplicada das duas de 24/11 (#4043)",
    "docs(migrations-log): recibo E15 — aplicação de 20261124120000 (#4041)",
    "fix: fecha a superficie de custo do anon sem mascarar as views de compras (#4039)",
-   "fix: gate de anon-grants mede pelo catalogo e revoga escrita morta de anon (#4038)",
-   "fix: Gate E40 passa a acusar migration já coberta pelo baseline que mudou depois do dump (#4040)"
+   "fix: gate de anon-grants mede pelo catalogo e revoga escrita morta de anon (#4038)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",

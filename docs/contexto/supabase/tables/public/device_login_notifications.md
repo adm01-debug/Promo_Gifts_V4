@@ -18,14 +18,14 @@
 
 | # | coluna | tipo | nullable | default | identity/generated | comentário |
 |---|---|---|---|---|---|---|
-| 1 | `id` | `uuid` | não | `gen_random_uuid()` |  |  |
-| 2 | `user_id` | `uuid` | não |  |  |  |
-| 3 | `device_id` | `text` | sim |  |  |  |
-| 4 | `ip_address` | `text` | sim |  |  |  |
-| 5 | `user_agent` | `text` | sim |  |  |  |
-| 6 | `location` | `text` | sim |  |  |  |
-| 7 | `email_sent` | `boolean` | não | `false` |  |  |
-| 8 | `created_at` | `timestamp with time zone` | não | `now()` |  |  |
+| 1 | `id` | `uuid` | não | `gen_random_uuid()` |  | Identificador UUID do registro de notificação de login. |
+| 2 | `user_id` | `uuid` | não |  |  | Usuário associado ao evento de login em novo dispositivo ou endereço IP. |
+| 3 | `device_id` | `text` | sim |  |  | Identificador do dispositivo, quando informado. |
+| 4 | `ip_address` | `text` | sim |  |  | Endereço IP associado ao login, quando informado. |
+| 5 | `user_agent` | `text` | sim |  |  | User-Agent do cliente associado ao login, quando informado. |
+| 6 | `location` | `text` | sim |  |  | Localização associada ao login, quando informada. |
+| 7 | `email_sent` | `boolean` | não | `false` |  | Indica se foi enviado um e-mail referente à notificação. |
+| 8 | `created_at` | `timestamp with time zone` | não | `now()` |  | Data e hora de criação da notificação. |
 
 
 ## Constraints

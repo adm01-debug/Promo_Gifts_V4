@@ -1,5 +1,7 @@
 # public.push_subscriptions
 
+> Inscrições de usuários para receber notificações push.
+
 | propriedade | valor |
 |---|---|
 | tipo | table |
@@ -16,13 +18,13 @@
 
 | # | coluna | tipo | nullable | default | identity/generated | comentário |
 |---|---|---|---|---|---|---|
-| 1 | `id` | `uuid` | não | `gen_random_uuid()` |  |  |
-| 2 | `user_id` | `uuid` | não |  |  |  |
-| 3 | `endpoint` | `text` | não |  |  |  |
-| 4 | `keys` | `jsonb` | não |  |  |  |
-| 5 | `is_active` | `boolean` | sim | `true` |  |  |
-| 6 | `created_at` | `timestamp with time zone` | sim | `now()` |  |  |
-| 7 | `updated_at` | `timestamp with time zone` | sim | `now()` |  |  |
+| 1 | `id` | `uuid` | não | `gen_random_uuid()` |  | Identificador UUID da inscrição push. |
+| 2 | `user_id` | `uuid` | não |  |  | Usuário associado à inscrição push. |
+| 3 | `endpoint` | `text` | não |  |  | Endpoint do serviço push associado à inscrição do navegador. |
+| 4 | `keys` | `jsonb` | não |  |  | Chaves de inscrição push armazenadas como JSONB. |
+| 5 | `is_active` | `boolean` | sim | `true` |  | Indica se a inscrição push está ativa. |
+| 6 | `created_at` | `timestamp with time zone` | sim | `now()` |  | Data e hora de criação da inscrição push. |
+| 7 | `updated_at` | `timestamp with time zone` | sim | `now()` |  | Data e hora da última atualização da inscrição push. |
 
 
 ## Constraints

@@ -20,28 +20,28 @@
 | 1 | `id` | `uuid` | não | `gen_random_uuid()` |  |  |
 | 2 | `order_number` | `text` | não |  |  |  |
 | 6 | `status` | `text` | sim | `'pending'::text` |  |  |
-| 7 | `total` | `numeric(10,2)` | não | `0` |  | Wave 3.2.A 2026-05-22: renomeado de total_amount. Consolidacao Lovable. |
-| 8 | `payment_method` | `text` | sim |  |  |  |
+| 7 | `total` | `numeric(10,2)` | não | `0` |  | Total comercial recomendado em BRL (reais com centavos): subtotal - discount_amount + shipping_cost + tax_amount. Documentação da regra de negócio; a coluna não é gerada nem possui constraint que imponha essa fórmula. |
+| 8 | `payment_method` | `text` | sim |  |  | Forma de pagamento recomendada: pix, boleto, credit_card, bank_transfer, cash ou other. Usar códigos em minúsculas. Documentação apenas: coluna text sem CHECK; outros valores ainda podem ser gravados. |
 | 9 | `payment_status` | `text` | sim | `'pending'::text` |  |  |
 | 10 | `delivery_address` | `text` | sim |  |  |  |
 | 11 | `notes` | `text` | sim |  |  |  |
 | 12 | `created_by` | `uuid` | sim |  |  |  |
 | 13 | `created_at` | `timestamp with time zone` | não | `now()` |  |  |
 | 14 | `updated_at` | `timestamp with time zone` | não | `now()` |  |  |
-| 15 | `quote_id` | `uuid` | sim |  |  |  |
+| 15 | `quote_id` | `uuid` | sim |  |  | Referência lógica opcional ao orçamento de origem (public.quotes.id), normalmente preenchida na conversão de orçamento em pedido. O schema atual não declara FK para esta coluna. |
 | 16 | `client_id` | `uuid` | sim |  |  |  |
 | 17 | `client_name` | `text` | sim |  |  |  |
 | 18 | `assigned_to` | `uuid` | sim |  |  |  |
 | 19 | `fulfillment_status` | `text` | sim | `'pending'::text` |  |  |
-| 20 | `subtotal` | `numeric(10,2)` | sim | `0` |  |  |
-| 21 | `discount_amount` | `numeric(10,2)` | sim | `0` |  |  |
-| 22 | `shipping_cost` | `numeric(10,2)` | sim | `0` |  |  |
-| 23 | `tax_amount` | `numeric(10,2)` | sim | `0` |  |  |
-| 24 | `paid_amount` | `numeric(10,2)` | sim | `0` |  |  |
-| 25 | `payment_terms` | `text` | sim |  |  |  |
+| 20 | `subtotal` | `numeric(10,2)` | sim | `0` |  | Subtotal dos produtos/itens do pedido em BRL (reais, com centavos; não centavos inteiros), sem frete e sem impostos. Convenção documental: antes do desconto global do pedido. |
+| 21 | `discount_amount` | `numeric(10,2)` | sim | `0` |  | Valor monetário do desconto global do pedido, em BRL (reais com centavos). Convention: subtrair do subtotal ao obter o total. |
+| 22 | `shipping_cost` | `numeric(10,2)` | sim | `0` |  | Custo de frete do pedido em BRL (reais com centavos), separado dos valores dos produtos. |
+| 23 | `tax_amount` | `numeric(10,2)` | sim | `0` |  | Valor total de impostos do pedido em BRL (reais com centavos), separado do subtotal dos produtos e do frete. |
+| 24 | `paid_amount` | `numeric(10,2)` | sim | `0` |  | Total acumulado já recebido para o pedido, em BRL (reais com centavos). É um valor pago, não o total do pedido nem o saldo em aberto. |
+| 25 | `payment_terms` | `text` | sim |  |  | Condição comercial de pagamento em texto livre. Representações recomendadas: avista, N dias, N/N/... dias (ex.: 30/60/90 dias) ou sob consulta; preservar condições negociadas usando texto claro e consistente. Não é um enum nem possui CHECK. |
 | 26 | `payment_due_date` | `date` | sim |  |  |  |
-| 27 | `shipping_address` | `jsonb` | sim |  |  |  |
-| 28 | `shipping_method` | `text` | sim |  |  |  |
+| 27 | `shipping_address` | `jsonb` | sim |  |  | Snapshot do endereço de entrega em JSONB. Formato canônico: objeto com recipient_name, street, number, district, city, state (UF brasileira), postal_code (CEP 00000-000) e country (código ISO alpha-2; BR no Brasil). Chaves opcionais: complement e reference. number é texto para aceitar s/n. Coluna nullable; estrutura não é validada pelo banco. Não confundir com delivery_address, campo textual legado. |
+| 28 | `shipping_method` | `text` | sim |  |  | Meio de transporte recomendado: correios, transportadora, retirada, motoboy, entrega_propria ou outro. Representa como será a entrega, não quem paga o frete. Documentação apenas: coluna text sem CHECK. |
 | 30 | `estimated_delivery_date` | `date` | sim |  |  |  |
 | 31 | `delivered_at` | `timestamp with time zone` | sim |  |  |  |
 | 32 | `internal_notes` | `text` | sim |  |  |  |
@@ -52,8 +52,8 @@
 | 38 | `client_email` | `text` | sim |  |  |  |
 | 39 | `client_phone` | `text` | sim |  |  |  |
 | 40 | `tracking_number` | `text` | sim |  |  | Wave 3.2.A 2026-05-22: substitui tracking_code (drop). Padrao Lovable. |
-| 41 | `shipping_type` | `text` | sim |  |  |  |
-| 42 | `delivery_time` | `text` | sim |  |  |  |
+| 41 | `shipping_type` | `text` | sim |  |  | Responsabilidade/modalidade do frete. Vocabulário recomendado, alinhado ao CHECK existente em quotes.shipping_type: cif, fob e fob_pre (FOB com custo de frete pré-negociado). Não confundir com shipping_method. Documentação apenas: esta coluna de orders é text e não possui CHECK. |
+| 42 | `delivery_time` | `text` | sim |  |  | Prazo estimado/prometido de entrega em texto: usar imediato, N dias úteis, N a M dias úteis ou sob consulta. Para data-calendário específica, usar estimated_delivery_date. Documentação apenas: coluna text sem CHECK. |
 
 
 ## Constraints

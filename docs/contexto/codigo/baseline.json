@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "cdf7e3b4f560eb5d291c57b75edffbf0265a788c",
+  "commit": "c6581c0610a35df48f58e7664f191f4f0cf43cf7",
   "branch": "main",
-  "data_commit": "2026-11-24T12:09:54-03:00",
+  "data_commit": "2026-11-24T13:04:37-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "c6581c0",
+    "data": "2026-11-24",
+    "assunto": "docs: etapas 001-004 e 006 do QA concluídas com evidência; 007 refutada; 005 reescopada (#4044)"
+   },
    {
     "sha": "cdf7e3b",
     "data": "2026-11-24",
@@ -126,14 +131,9 @@
     "sha": "aeef004",
     "data": "2026-11-23",
     "assunto": "feat: Etapas 057-060 — adotar safeErrorResponse em 5 edge functions (ACH-030) (#4018)"
-   },
-   {
-    "sha": "ec295ba",
-    "data": "2026-11-23",
-    "assunto": "feat: Etapa 042 — restringir e2e-cleanup a quotes marcadas [E2E] (ACH-071) (#4017)"
    }
   ],
-  "arquivos_mudados_7d": 670,
+  "arquivos_mudados_7d": 671,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -207,7 +207,7 @@
    },
    {
     "arquivo": "docs/qa/05-PROGRESSO.md",
-    "mudancas": 21
+    "mudancas": 22
    },
    {
     "arquivo": "package-lock.json",
@@ -223,11 +223,11 @@
    },
    {
     "arquivo": "docs/coordenacao/conflitos-semanticos.md",
-    "mudancas": 10
+    "mudancas": 9
    },
    {
     "arquivo": ".github/workflows/deploy-gates.yml",
-    "mudancas": 9
+    "mudancas": 8
    },
    {
     "arquivo": "src/lib/freight/index.ts",
@@ -314,7 +314,7 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 11257,
+  "arquivos_total": 11258,
   "arquivos_codigo": 5680,
   "linhas_codigo": 1076005,
   "rotas": 141,
@@ -331,7 +331,7 @@
   "testes": 2722,
   "workflows": 89,
   "scripts": 284,
-  "docs_md": 1507
+  "docs_md": 1508
  },
  "por_pasta": {
   ".github/scripts": {
