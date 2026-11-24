@@ -2,11 +2,21 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "76cd9fb744be621838a60074877d1fd214d71858",
+  "commit": "20eb648e890da34308a4c1ff1c087c1377eeeb21",
   "branch": "main",
-  "data_commit": "2026-11-24T17:10:13-03:00",
+  "data_commit": "2026-11-24T17:25:58-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "20eb648",
+    "data": "2026-11-24",
+    "assunto": "docs(audit): audita as 23 PRs de agente fechadas sem merge (#4058)"
+   },
+   {
+    "sha": "a66bde9",
+    "data": "2026-11-24",
+    "assunto": "docs(qa): mede o grant de tabela ao anon e registra na etapa 008 (#4057)"
+   },
    {
     "sha": "76cd9fb",
     "data": "2026-11-24",
@@ -121,19 +131,9 @@
     "sha": "35b8704",
     "data": "2026-11-23",
     "assunto": "chore(db): documentar reconciliacao da DDL do assistente do Supabase (#4033)"
-   },
-   {
-    "sha": "918511e",
-    "data": "2026-11-23",
-    "assunto": "chore(schema-snapshot): snapshot semanal 2026-W48 (run 45293671035) (#4034)"
-   },
-   {
-    "sha": "53b4218",
-    "data": "2026-11-23",
-    "assunto": "chore(security): atualiza baseline assinado de RLS policies (#4032)"
    }
   ],
-  "arquivos_mudados_7d": 677,
+  "arquivos_mudados_7d": 670,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -203,7 +203,7 @@
    },
    {
     "arquivo": "docs/qa/05-PROGRESSO.md",
-    "mudancas": 25
+    "mudancas": 26
    },
    {
     "arquivo": "package.json",
@@ -310,7 +310,7 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 11265,
+  "arquivos_total": 11266,
   "arquivos_codigo": 5682,
   "linhas_codigo": 1076417,
   "rotas": 141,
@@ -327,7 +327,7 @@
   "testes": 2723,
   "workflows": 89,
   "scripts": 284,
-  "docs_md": 1509
+  "docs_md": 1510
  },
  "por_pasta": {
   ".github/scripts": {

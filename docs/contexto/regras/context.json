@@ -1,10 +1,10 @@
 {
  "meta": {
-  "sha": "76cd9fb744be621838a60074877d1fd214d71858",
+  "sha": "20eb648e890da34308a4c1ff1c087c1377eeeb21",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-24 20:15 UTC",
-  "files_total": 11194,
+  "generated_at": "2026-11-24 21:15 UTC",
+  "files_total": 11195,
   "code_files": 9184,
   "code_lines": 1303180
  },
@@ -563906,10 +563906,28 @@
   }
  },
  "git": {
-  "sha": "76cd9fb744be621838a60074877d1fd214d71858",
+  "sha": "20eb648e890da34308a4c1ff1c087c1377eeeb21",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "20eb648",
+    "date": "2026-11-24",
+    "author": "adm01-debug",
+    "subject": "docs(audit): audita as 23 PRs de agente fechadas sem merge (#4058)",
+    "files": [
+     "docs/coordenacao/auditoria-prs-fechadas.md"
+    ]
+   },
+   {
+    "sha": "a66bde9",
+    "date": "2026-11-24",
+    "author": "adm01-debug",
+    "subject": "docs(qa): mede o grant de tabela ao anon e registra na etapa 008 (#4057)",
+    "files": [
+     "docs/qa/05-PROGRESSO.md"
+    ]
+   },
    {
     "sha": "76cd9fb",
     "date": "2026-11-24",
@@ -564216,50 +564234,16 @@
      "src/stores/__tests__/useBadgeVisibilityStore.test.ts",
      "src/stores/useBadgeVisibilityStore.ts"
     ]
-   },
-   {
-    "sha": "5eaf98a",
-    "date": "2026-11-23",
-    "author": "adm01-debug",
-    "subject": "fix(qa): etapas 103, 108, 113 e 114 - subtotal do kit alinhado ao banco (#4024)",
-    "files": [
-     "docs/qa/05-PROGRESSO.md",
-     "package.json",
-     "src/components/kit-builder/kit-summary/KitPricingCard.tsx",
-     "src/lib/kit-builder/__tests__/subtotal-personalization.test.ts",
-     "src/lib/kit-builder/price-calculator.ts",
-     "src/lib/quotes/__tests__/markup-divergence.test.ts",
-     "src/utils/kitPdfFooter.ts",
-     "src/utils/kitPdfGenerator.ts",
-     "tests/sql/quote-discount-invariant/README.md",
-     "tests/sql/quote-discount-invariant/discount-fixture.sql",
-     "tests/sql/quote-discount-invariant/run-tests.py"
-    ]
-   },
-   {
-    "sha": "35aa001",
-    "date": "2026-11-23",
-    "author": "adm01-debug",
-    "subject": "fix(qa): etapas 131-135 - baseline da suite e testes do kit-builder (#4025)",
-    "files": [
-     "docs/qa/05-PROGRESSO.md",
-     "docs/qa/suite-baseline.md",
-     "tests/components/QuoteCommentsSection.test.tsx",
-     "tests/components/kit-builder/FreightEstimator.test.tsx",
-     "tests/components/kit-builder/KitBuilderComponents.test.tsx",
-     "tests/components/kit-builder/KitSummary.weight.test.tsx",
-     "tests/components/pages/KitBuilderPage.test.tsx"
-    ]
    }
   ],
   "hot_files": [
    [
-    "docs/qa/05-PROGRESSO.md",
+    "supabase/MIGRATIONS_SYNC_LOG.md",
     10
    ],
    [
-    "supabase/MIGRATIONS_SYNC_LOG.md",
-    10
+    "docs/qa/05-PROGRESSO.md",
+    9
    ],
    [
     "src/lib/fetch-print-areas.ts",
@@ -564292,6 +564276,10 @@
    [
     "tests/scripts/drift-baseline.test.mjs",
     2
+   ],
+   [
+    "docs/coordenacao/auditoria-prs-fechadas.md",
+    1
    ],
    [
     "graphify-out/GRAPH_REPORT.md",
@@ -564327,10 +564315,6 @@
    ],
    [
     "supabase/rollbacks/20261124163000_rollback.sql",
-    1
-   ],
-   [
-    ".security/rls-no-policy-allowlist.json",
     1
    ]
   ]
