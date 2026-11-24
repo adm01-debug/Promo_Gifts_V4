@@ -778,8 +778,8 @@ SELECT q.seller_id,
 | campo | valor |
 |---|---|
 | owner | postgres |
-| security_invoker | sim |
-| opções | security_invoker=true |
+| security_invoker | não |
+| opções | security_invoker=false |
 | depende de | analytics.categories_tree_visual |
 | populada | n/a |
 | comentário | Wrapper para analytics.categories_tree_visual (catálogo de árvore de categorias). T20 redeploy 2026-05. |
@@ -933,8 +933,8 @@ SELECT source_supplier,
 | campo | valor |
 |---|---|
 | owner | postgres |
-| security_invoker | sim |
-| opções | security_invoker=true |
+| security_invoker | não |
+| opções | security_invoker=false |
 | depende de | analytics.mv_product_cards |
 | populada | n/a |
 | comentário | VIEW pública de exposição (PostgREST só enxerga public). Dados materializados em analytics.mv_product_cards (matview real, índice único, refresh CONCURRENTLY). Atualizada de hora em hora pelo cron job 47 "refresh-all-materialized-views" (30 * * * *). Apesar do prefixo mv_, ESTE objeto em public é uma VIEW comum — NUNCA rode REFRESH MATERIALIZED VIEW aqui (rode em analytics.*). Defasagem máx vs products ~1h. |
@@ -1064,8 +1064,8 @@ SELECT pi.id,
 | campo | valor |
 |---|---|
 | owner | postgres |
-| security_invoker | sim |
-| opções | security_invoker=true |
+| security_invoker | não |
+| opções | security_invoker=false |
 | depende de | analytics.mv_product_intelligence |
 | populada | n/a |
 | comentário |  |
@@ -1239,8 +1239,8 @@ WITH ema_raw AS (
 | campo | valor |
 |---|---|
 | owner | postgres |
-| security_invoker | sim |
-| opções | security_invoker=true |
+| security_invoker | não |
+| opções | security_invoker=false |
 | depende de | analytics.mv_stock_velocity |
 | populada | n/a |
 | comentário | SECURITY DEFINER POR DESIGN (reloptions vazio). Wrapper PostgREST sobre analytics.mv_stock_velocity. authenticated NÃO tem SELECT em analytics schema. anon: REVOKED (dados operacionais internos). ANTI-REGRESSÃO fix_version 20260717c. |

@@ -2,6 +2,12 @@
 
 Diff semântico gerado a cada coleta em que algo mudou.
 
+## 2026-11-24 00:35 UTC
+
+- **functions** alterado (4): `public.fn_anon_catalog_grant_audit_run()`, `public.fn_qa_check_image_coverage()`, `public.fn_qa_scan_imageless_products()`, `public.is_admin_or_above(_user_id uuid)`
+- **lints** adicionado (4): `view_security_definer:public.categories_tree_visual`, `view_security_definer:public.mv_product_cards`, `view_security_definer:public.mv_product_intelligence`, `view_security_definer:public.mv_stock_velocity`
+- **views** alterado (4): `public.categories_tree_visual`, `public.mv_product_cards`, `public.mv_product_intelligence`, `public.mv_stock_velocity`
+
 ## 2026-11-23 23:20 UTC
 
 - **functions** alterado (7): `public.can_view_all_sales()`, `public.check_login_rate_limit(_email text, _ip text)`, `public.fn_product_active_for_rls(p_id uuid)`, `public.fn_super_filtro(p_search_term text, p_category_slug text, p_category_id uuid, p_brands text[], p_only_in_stock boolean, p_min_price numeric, p_max_price numeric, p_target_audiences text[], p_is_kit boolean, p_is_textil boolean, p_is_thermal boolean, p_has_gift_box boolean, p_material_groups text[], p_technique_groups text[], p_color_groups text[], p_date_slugs text[], p_endomarketing boolean, p_limit integer, p_offset integer, p_sort text)`, `public.fn_super_filtro_facets(p_search_term text, p_category_slug text, p_category_id uuid, p_brands text[], p_only_in_stock boolean, p_min_price numeric, p_max_price numeric, p_target_audiences text[], p_is_kit boolean, p_is_textil boolean, p_is_thermal boolean, p_has_gift_box boolean, p_material_groups text[], p_technique_groups text[], p_color_groups text[], p_date_slugs text[], p_endomarketing boolean)`, `public.fn_super_filtro_price_range(p_brands text[], p_category_slug text, p_target_audiences text[], p_is_textil boolean, p_is_thermal boolean, p_only_in_stock boolean)`, `public.get_catalog_bestseller_page(p_sort text, p_limit integer, p_offset integer)`

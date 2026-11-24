@@ -34,8 +34,8 @@ Gerado automaticamente a cada hora pelo workflow `contexto.yml` (job `banco`) na
 | buckets | 11 |
 | edge functions | n/d |
 | webhooks | 0 |
-| lints ALTA | 12 |
-| lints total | 24 |
+| lints ALTA | 16 |
+| lints total | 28 |
 
 ## Estado das fontes do mapa de referências
 

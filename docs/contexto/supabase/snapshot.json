@@ -149011,10 +149011,10 @@
         },
         "comment": null,
         "config": [
-          "search_path=public"
+          "search_path=pg_catalog, public, pg_temp"
         ],
         "definition": null,
-        "definition_sha": "0bac2ecdb9131bd1",
+        "definition_sha": "3741904a53ff4a76",
         "execute_api_roles": "authenticated, service_role",
         "execute_public": false,
         "is_trigger_fn": false,
@@ -165240,10 +165240,10 @@
         },
         "comment": null,
         "config": [
-          "search_path=public"
+          "search_path=pg_catalog, public, pg_temp"
         ],
         "definition": null,
-        "definition_sha": "d2addcc65afb6181",
+        "definition_sha": "bb55d08dcb33361e",
         "execute_api_roles": "authenticated, service_role",
         "execute_public": false,
         "is_trigger_fn": false,
@@ -165277,10 +165277,10 @@
         },
         "comment": null,
         "config": [
-          "search_path=public"
+          "search_path=pg_catalog, public, pg_temp"
         ],
         "definition": null,
-        "definition_sha": "2ab8c459258ed5a1",
+        "definition_sha": "e2467d2e2bde0524",
         "execute_api_roles": "authenticated, service_role",
         "execute_public": false,
         "is_trigger_fn": false,
@@ -183614,6 +183614,7 @@
             "public.enforce_user_id_owner",
             "public.fn_admin_run_smoke_tests",
             "public.fn_admin_smoke_tests_dashboard",
+            "public.fn_anon_catalog_grant_audit_run",
             "public.fn_apply_print_profiles",
             "public.fn_approve_product_deactivation",
             "public.fn_dryrun_standardize_supplier",
@@ -183621,6 +183622,8 @@
             "public.fn_process_asia_stock_pending",
             "public.fn_process_raw_v2",
             "public.fn_purge_spr_history",
+            "public.fn_qa_check_image_coverage",
+            "public.fn_qa_scan_imageless_products",
             "public.fn_reject_product_deactivation",
             "public.fn_run_and_persist_smoke_tests",
             "public.fn_run_smoke_tests",
@@ -224700,7 +224703,31 @@
       {
         "code": "view_security_definer",
         "detail": "View em public sem security_invoker: executa como owner e ignora RLS das tabelas base.",
+        "object": "public.categories_tree_visual",
+        "severity": "ALTA"
+      },
+      {
+        "code": "view_security_definer",
+        "detail": "View em public sem security_invoker: executa como owner e ignora RLS das tabelas base.",
+        "object": "public.mv_product_cards",
+        "severity": "ALTA"
+      },
+      {
+        "code": "view_security_definer",
+        "detail": "View em public sem security_invoker: executa como owner e ignora RLS das tabelas base.",
         "object": "public.mv_product_compositions",
+        "severity": "ALTA"
+      },
+      {
+        "code": "view_security_definer",
+        "detail": "View em public sem security_invoker: executa como owner e ignora RLS das tabelas base.",
+        "object": "public.mv_product_intelligence",
+        "severity": "ALTA"
+      },
+      {
+        "code": "view_security_definer",
+        "detail": "View em public sem security_invoker: executa como owner e ignora RLS das tabelas base.",
+        "object": "public.mv_stock_velocity",
         "severity": "ALTA"
       },
       {
@@ -268088,12 +268115,12 @@
         "kind": "view",
         "name": "categories_tree_visual",
         "options": [
-          "security_invoker=true"
+          "security_invoker=false"
         ],
         "owner": "postgres",
         "populated": null,
         "schema": "public",
-        "security_invoker": true
+        "security_invoker": false
       },
       {
         "comment": "PROXY VIEW sobre public.categories. SECURITY DEFINER POR DESIGN (reloptions vazio). Restaurada em 20260717, fix_version 20260717c.",
@@ -268184,12 +268211,12 @@
         "kind": "view",
         "name": "mv_product_cards",
         "options": [
-          "security_invoker=true"
+          "security_invoker=false"
         ],
         "owner": "postgres",
         "populated": null,
         "schema": "public",
-        "security_invoker": true
+        "security_invoker": false
       },
       {
         "comment": "VIEW publica sobre a matview analytics.mv_product_compositions (refresh pelo cron 47, horario). public.mv_* e VIEW, nao matview - nao rode REFRESH aqui. SECURITY DEFINER desde 20261122200000 porque a matview-base nao concede SELECT a anon nem suporta RLS. NAO religar security_invoker=true.",
@@ -268231,12 +268258,12 @@
         "kind": "view",
         "name": "mv_product_intelligence",
         "options": [
-          "security_invoker=true"
+          "security_invoker=false"
         ],
         "owner": "postgres",
         "populated": null,
         "schema": "public",
-        "security_invoker": true
+        "security_invoker": false
       },
       {
         "comment": null,
@@ -268263,12 +268290,12 @@
         "kind": "view",
         "name": "mv_stock_velocity",
         "options": [
-          "security_invoker=true"
+          "security_invoker=false"
         ],
         "owner": "postgres",
         "populated": null,
         "schema": "public",
-        "security_invoker": true
+        "security_invoker": false
       },
       {
         "comment": "Agregado de confiabilidade por fornecedor para consumo direto do frontend. Score 0-100 = 60% pontualidade + 40% cumprimento de quantidade. Banda: high>=85, medium>=60, low<60, unknown se sem histórico. Refresh: CONCURRENTLY a cada 15 min via pg_cron job refresh-mv-supplier-reliability. Índice único em supplier_id habilitado para REFRESH CONCURRENTLY.",
