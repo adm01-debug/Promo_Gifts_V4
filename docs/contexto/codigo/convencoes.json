@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "docs(qa): registra a regressao da lista de colunas e o escopo da etapa 008 (#4056)",
+   "docs: regenera GRAPH_REPORT.md com o graphify 0.9.115 e camada semântica (#4037)",
    "fix: hooks de areas de gravacao pedem colunas explicitas (#4055)",
    "fix: leitura de areas de gravacao segue a projecao da view publica (#4054)",
-   "fix: gate de views publicas enxerga view nova legivel por anon (QA etapa 005) (#4049)",
-   "fix: area de gravacao legivel por anon com colunas explicitas (#4053)",
-   "docs(migrations-log): recibo E15 — aplicação de 20261124163000 (#4052)"
+   "fix: gate de views publicas enxerga view nova legivel por anon (QA etapa 005) (#4049)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",

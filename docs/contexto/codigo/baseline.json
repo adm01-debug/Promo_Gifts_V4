@@ -2,11 +2,21 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "9238b311331cf81ecf7df65b83cfc9a70f7abbd6",
+  "commit": "76cd9fb744be621838a60074877d1fd214d71858",
   "branch": "main",
-  "data_commit": "2026-11-24T16:46:11-03:00",
+  "data_commit": "2026-11-24T17:10:13-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "76cd9fb",
+    "data": "2026-11-24",
+    "assunto": "docs(qa): registra a regressao da lista de colunas e o escopo da etapa 008 (#4056)"
+   },
+   {
+    "sha": "1f8101b",
+    "data": "2026-11-24",
+    "assunto": "docs: regenera GRAPH_REPORT.md com o graphify 0.9.115 e camada semântica (#4037)"
+   },
    {
     "sha": "9238b31",
     "data": "2026-11-24",
@@ -121,19 +131,9 @@
     "sha": "53b4218",
     "data": "2026-11-23",
     "assunto": "chore(security): atualiza baseline assinado de RLS policies (#4032)"
-   },
-   {
-    "sha": "e142753",
-    "data": "2026-11-23",
-    "assunto": "fix(hooks): centralizar invalidacao do cache de orcamentos (#4031)"
-   },
-   {
-    "sha": "cdf7daa",
-    "data": "2026-11-23",
-    "assunto": "fix(hooks): resposta atrasada nao sobrescreve mais preco da tecnica (182-185) (#4030)"
    }
   ],
-  "arquivos_mudados_7d": 676,
+  "arquivos_mudados_7d": 677,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -199,19 +199,19 @@
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "supabase/MIGRATIONS_SYNC_LOG.md",
-    "mudancas": 69
+    "mudancas": 68
    },
    {
     "arquivo": "docs/qa/05-PROGRESSO.md",
-    "mudancas": 24
+    "mudancas": 25
    },
    {
     "arquivo": "package.json",
-    "mudancas": 24
+    "mudancas": 23
    },
    {
     "arquivo": "package-lock.json",
-    "mudancas": 18
+    "mudancas": 17
    },
    {
     "arquivo": "CHANGELOG.md",

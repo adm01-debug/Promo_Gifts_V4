@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e de hora em hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `9238b311331cf81ecf7df65b83cfc9a70f7abbd6` (2026-11-24T16:46:11-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e de hora em hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `76cd9fb744be621838a60074877d1fd214d71858` (2026-11-24T17:10:13-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -599,16 +599,16 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - possiveis_segredos_no_codigo: 7 — ex.: scripts/ai-context/cenarios.mjs:102, src/components/admin/connections/__tests__/ConnectionSecurity.unit.test.tsx:9, src/integrations/supabase/client.ts:27
 
 ## Grafo de código (graphify)
-- 50966 nós · 86413 arestas · 2885 comunidades · grafo do commit `9238b311`
-- comunidades maiores: vitest (1149), ref_components (782), ref_integrations (620), @tanstack/react-query (527), ref_node_child_process (504), ref_hooks (472), ref_node_fs (394), ref_types (371), ref_utils (364), react (363), sonner (327), gotoAndSettle (325)
+- 50967 nós · 86417 arestas · 2732 comunidades · grafo do commit `76cd9fb7`
+- comunidades maiores: ref_components (815), vitest (781), react (603), ref_lib (581), ref_node_child_process (495), ref_hooks (418), @tanstack/react-query (416), ref_types (383), nav.ts (378), react-router-dom (368), ref_node_fs (361), sonner (353)
 - símbolos mais chamados: gotoAndSettle() (e2e/helpers/nav.ts), re (?), json (?), q() (scripts/supabase_snapshot/snapshot.py), analyze() (tests/scripts/test_personalization_artifact_diagnostics.py), outer() (tests/scripts/test_personalization_artifact_diagnostics.py), useExternalDatabase() (recovery/src-legacy/src/hooks/useExternalDatabase.ts), concludeCheck() (scripts/check-result-contract.mjs), querySupabaseReadOnly() (scripts/supabase-read-only-query.mjs), loginAs() (e2e/helpers/auth.ts), inner() (tests/scripts/test_personalization_artifact_diagnostics.py), excluded_sql() (scripts/supabase_snapshot/snapshot.py)
 - consulta local: `graphify query "<pergunta>"`, `graphify path "<A>" "<B>"`, `graphify explain "<X>"`
 
 ## Hotspots (arquivos mais alterados, 90 dias)
-- supabase/MIGRATIONS_SYNC_LOG.md (69)
-- docs/qa/05-PROGRESSO.md (24)
-- package.json (24)
-- package-lock.json (18)
+- supabase/MIGRATIONS_SYNC_LOG.md (68)
+- docs/qa/05-PROGRESSO.md (25)
+- package.json (23)
+- package-lock.json (17)
 - CHANGELOG.md (14)
 - docs/agentes/resgates/2026-11-16-auditoria-branches.md (10)
 - docs/coordenacao/conflitos-semanticos.md (10)
@@ -1198,6 +1198,8 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - CHANGELOG topo: [1.19.0](https://github.com/adm01-debug/Promo_Gifts_V4/compare/gifts-store-v1.18.0...gifts-store-v1.19.0) (2026-11-22)
 
 ## Últimos commits
+- 2026-11-24 `76cd9fb` docs(qa): registra a regressao da lista de colunas e o escopo da etapa 008 (#4056)
+- 2026-11-24 `1f8101b` docs: regenera GRAPH_REPORT.md com o graphify 0.9.115 e camada semântica (#4037)
 - 2026-11-24 `9238b31` fix: hooks de areas de gravacao pedem colunas explicitas (#4055)
 - 2026-11-24 `519b6a3` fix: leitura de areas de gravacao segue a projecao da view publica (#4054)
 - 2026-11-24 `810bfd1` fix: gate de views publicas enxerga view nova legivel por anon (QA etapa 005) (#4049)
@@ -1211,8 +1213,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-24 `22ca37e` docs: auditoria das branches restantes e reforco da refutacao da etapa 007 (#4045)
 - 2026-11-24 `c6581c0` docs: etapas 001-004 e 006 do QA concluídas com evidência; 007 refutada; 005 reescopada (#4044)
 - 2026-11-24 `cdf7e3b` chore: recibo de aplicacao - 20261124140000 (E15) e status aplicada das duas de 24/11 (#4043)
-- 2026-11-24 `18075a9` docs(migrations-log): recibo E15 — aplicação de 20261124120000 (#4041)
-- 2026-11-24 `a0daeda` fix: fecha a superficie de custo do anon sem mascarar as views de compras (#4039)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

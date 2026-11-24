@@ -1,9 +1,9 @@
 {
  "meta": {
-  "sha": "9238b311331cf81ecf7df65b83cfc9a70f7abbd6",
+  "sha": "76cd9fb744be621838a60074877d1fd214d71858",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-24 19:47 UTC",
+  "generated_at": "2026-11-24 20:15 UTC",
   "files_total": 11194,
   "code_files": 9184,
   "code_lines": 1303180
@@ -563906,10 +563906,28 @@
   }
  },
  "git": {
-  "sha": "9238b311331cf81ecf7df65b83cfc9a70f7abbd6",
+  "sha": "76cd9fb744be621838a60074877d1fd214d71858",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "76cd9fb",
+    "date": "2026-11-24",
+    "author": "adm01-debug",
+    "subject": "docs(qa): registra a regressao da lista de colunas e o escopo da etapa 008 (#4056)",
+    "files": [
+     "docs/qa/05-PROGRESSO.md"
+    ]
+   },
+   {
+    "sha": "1f8101b",
+    "date": "2026-11-24",
+    "author": "adm01-debug",
+    "subject": "docs: regenera GRAPH_REPORT.md com o graphify 0.9.115 e camada semântica (#4037)",
+    "files": [
+     "graphify-out/GRAPH_REPORT.md"
+    ]
+   },
    {
     "sha": "9238b31",
     "date": "2026-11-24",
@@ -564232,36 +564250,16 @@
      "tests/components/kit-builder/KitSummary.weight.test.tsx",
      "tests/components/pages/KitBuilderPage.test.tsx"
     ]
-   },
-   {
-    "sha": "06620fc",
-    "date": "2026-11-23",
-    "author": "adm01-debug",
-    "subject": "chore(security): documentar deny-all das 6 tabelas de auditoria no allowlist de RLS (#4028)",
-    "files": [
-     ".security/rls-no-policy-allowlist.json"
-    ]
-   },
-   {
-    "sha": "d9b382b",
-    "date": "2026-11-23",
-    "author": "adm01-debug",
-    "subject": "chore: consolidar baselines de ratchet (as-assertions, file-size, eslint-disable) (#4027)",
-    "files": [
-     ".as-assertions-baseline.json",
-     ".eslint-disable-baseline.json",
-     ".file-size-baseline.json"
-    ]
    }
   ],
   "hot_files": [
    [
-    "supabase/MIGRATIONS_SYNC_LOG.md",
+    "docs/qa/05-PROGRESSO.md",
     10
    ],
    [
-    "docs/qa/05-PROGRESSO.md",
-    9
+    "supabase/MIGRATIONS_SYNC_LOG.md",
+    10
    ],
    [
     "src/lib/fetch-print-areas.ts",
@@ -564288,16 +564286,16 @@
     2
    ],
    [
-    ".security/rls-no-policy-allowlist.json",
-    2
-   ],
-   [
     "scripts/drift-baseline.mjs",
     2
    ],
    [
     "tests/scripts/drift-baseline.test.mjs",
     2
+   ],
+   [
+    "graphify-out/GRAPH_REPORT.md",
+    1
    ],
    [
     "src/hooks/simulation/usePrintAreas.ts",
@@ -564332,7 +564330,7 @@
     1
    ],
    [
-    "supabase/migrations/20261124171500_internal_managed_schema_dictionary.sql",
+    ".security/rls-no-policy-allowlist.json",
     1
    ]
   ]
