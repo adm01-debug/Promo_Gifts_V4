@@ -161,10 +161,10 @@ describe('CLI --from-file', () => {
 
 describe('ANON_WRITE_GRANTS_SQL', () => {
   it('mede por has_table_privilege, não pela view filtrada information_schema', () => {
-    // Regressão de 14/11: medindo por information_schema.role_table_grants o gate
-    // reportou liveGrantCount: 0 enquanto dois dumps do vivo listavam 221 tabelas com
-    // GRANT de escrita para anon. A view esconde linhas cujo grantor não é papel
-    // habilitado na sessão; has_table_privilege lê pg_class.relacl e não esconde nada.
+    // information_schema.role_table_grants só mostra o que a sessão tem direito de ver
+    // (grantor ou grantee como papel habilitado). Medido em PG 17.11: sessão de
+    // superusuário vê tudo, sessão alheia esconde a linha. A resposta do gate não pode
+    // depender de quem o executa; has_table_privilege() lê pg_class.relacl.
     expect(ANON_WRITE_GRANTS_SQL).toMatch(/has_table_privilege\(\s*'anon'/);
     expect(ANON_WRITE_GRANTS_SQL).not.toMatch(/information_schema/);
   });

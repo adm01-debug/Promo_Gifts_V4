@@ -399,12 +399,17 @@ ORDER BY jobname;
 
 ### 8.5 GRANT de escrita para anon (esperado: 0)
 
-Use **esta** query. `information_schema.role_table_grants` é uma view filtrada por
-"o grantor ou o grantee é um papel habilitado na sessão": GRANT dado por outro grantor
-(ex.: o assistente do Supabase via Management API) não aparece, e a medição dá 0 com
-o privilégio existindo — foi o que ocorreu em 14/11 (o gate reportou `liveGrantCount: 0`
-enquanto dois `pg_dump` do vivo, de 23/11 e 24/11, listavam ~220 tabelas com GRANT para
-`anon`).
+Use **esta** query. Ela não depende de quem está consultando: `information_schema.role_table_grants`
+é uma view filtrada por "o grantor ou o grantee é um papel habilitado na sessão". Medido em
+PostgreSQL 17.11: sessão de superusuário vê o GRANT de qualquer grantor; sessão sem relação com
+o grantor nem com o grantee **não vê a linha** — e a resposta do gate não pode mudar conforme o
+papel da sessão.
+
+Estado de 24/11: o dump do vivo (`supabase db dump --linked`) lista escrita de `anon` em 221
+tabelas de `public`. A medição de 14/11 deu 0 (run `43609177864`): `pg_dump` lê `pg_class.relacl`
+e não inventa ACL, então os privilégios foram (re)introduzidos nessa janela — a janela de DDL que o
+assistente do Supabase aplicou em 23/11 (`supabase/MIGRATIONS_SYNC_LOG.md`), o risco que
+`docs/INCIDENTE_2026-10-13_BASELINE.md` já alertava.
 
 ```sql
 SELECT c.relname AS table_name, p.priv AS privilege_type

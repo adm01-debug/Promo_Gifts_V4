@@ -3,13 +3,15 @@
 -- privilegio ja e garantia morta -- RLS ligada e nenhuma policy de escrita aplicavel a
 -- `anon` nem a `public` (PUBLIC).
 --
--- Por que existe: dois dumps do vivo (`supabase db dump --linked`, 23/11 e 24/11) listam
--- `GRANT ... TO "anon"` de escrita em 221 tabelas de public, enquanto o gate
--- scripts/check-anon-write-grants.mjs mediu 0 em 14/11 -- a consulta dele usava
--- information_schema.role_table_grants, view filtrada por "grantor ou grantee e papel
--- habilitado na sessao", cega para GRANT dado por outro grantor. Com RLS ligada e sem
--- policy de escrita para anon nao ha exploit hoje, so superficie: uma policy mal escrita
--- depois vira escrita anonima real.
+-- Por que existe: o dump do vivo (supabase/baseline/20261122200000_baseline_schema.sql,
+-- pg_dump do schema public) lista GRANT de escrita para anon em 221 tabelas -- pg_dump le
+-- pg_class.relacl e nao inventa ACL. Em 14/11 o gate scripts/check-anon-write-grants.mjs
+-- mediu 0 (run 43609177864); os privilegios foram (re)introduzidos na janela seguinte, a
+-- mesma em que o assistente do Supabase aplicou DDL em 23/11 (MIGRATIONS_SYNC_LOG.md) --
+-- risco que docs/INCIDENTE_2026-10-13_BASELINE.md ja alertava ("um GRANT ALL generico de
+-- uma migration futura reintroduzindo o problema"). Com RLS ligada e sem policy de escrita
+-- para anon nao ha exploit hoje, so superficie: uma policy mal escrita depois vira escrita
+-- anonima real.
 --
 -- Escopo deliberadamente conservador: SO mexe onde `relrowsecurity` esta ligada (o
 -- privilegio e inalcancavel por RLS) -- zero mudanca de comportamento observavel. Tabela
