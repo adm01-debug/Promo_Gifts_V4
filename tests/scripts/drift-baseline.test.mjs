@@ -4,6 +4,7 @@
 import { afterEach, describe, expect, it } from 'vitest';
 import { existsSync, mkdirSync, mkdtempSync, readdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { spawnSync } from 'node:child_process';
+import { createHash } from 'node:crypto';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import {
@@ -11,14 +12,18 @@ import {
   REPLAY_SEED_SQL,
   byCodeUnit,
   collapseSqlWhitespace,
+  collectMigrationDigests,
   dropDumpLossyFunctions,
   extractFunctionStatements,
   filterDiff,
   findBaseline,
+  findEditedSnapshotMigrations,
   findSecrets,
   loadAllowlist,
   looksLikeSchemaDump,
   maxNumericVersion,
+  migrationFileDigest,
+  migrationHashesName,
   prepareWorkdir,
   sanitizeBaselineForReplay,
   sanitizeReplayMigration,
@@ -1093,5 +1098,89 @@ describe('versões só de ledger (P09)', () => {
       appliedVersions: [...ledgerOnly, '20261114014500'],
     });
     expect(replay).toEqual(['20261114014500_p09_reconcile_ledger_schema_migrations.sql']);
+  });
+});
+
+describe('integridade das migrations cobertas pelo baseline', () => {
+  const BASELINE = '20260928212000';
+  const COBERTA = '20260928212000_back_link.sql';
+  const POS_DUMP = '20261016090000_nova.sql';
+  const CORPO_COBERTA = '-- coberta\nselect 1;\n';
+  const CORPO_NOVA = '-- nova\nselect 2;\n';
+
+  function sha256sql(sql) {
+    return createHash('sha256').update(sql.replace(/\r\n/g, '\n')).digest('hex');
+  }
+
+  function repoComManifesto({ comManifesto = true, crlf = false } = {}) {
+    const root = fixtureRepo({
+      baselineVersion: BASELINE,
+      ledgerVersions: [BASELINE],
+      migrations: [COBERTA, POS_DUMP],
+    });
+    const corpos = { [COBERTA]: CORPO_COBERTA, [POS_DUMP]: CORPO_NOVA };
+    const files = [];
+    for (const [name, corpo] of Object.entries(corpos)) {
+      writeFileSync(join(root, 'supabase', 'migrations', name), crlf ? corpo.replace(/\n/g, '\r\n') : corpo);
+      files.push({ name, sha256: sha256sql(corpo) });
+    }
+    if (comManifesto) {
+      writeFileSync(
+        join(root, 'supabase', 'baseline', migrationHashesName(BASELINE)),
+        JSON.stringify({ baseline_version: BASELINE, generated_at: '2026-01-01T00:00:00.000Z', files }),
+      );
+    }
+    return root;
+  }
+
+  it('sem manifesto avisa em vez de fingir integridade', () => {
+    const root = repoComManifesto({ comManifesto: false });
+    const res = findEditedSnapshotMigrations({ rootDir: root, baseline: findBaseline(root) });
+    expect(res.manifestMissing).toBe(true);
+    expect(res.changed).toEqual([]);
+    expect(res.missing).toEqual([]);
+    expect(res.covered).toBeGreaterThan(0);
+  });
+
+  it('migration coberta e intacta passa, inclusive com CRLF', () => {
+    for (const crlf of [false, true]) {
+      const root = repoComManifesto({ crlf });
+      const res = findEditedSnapshotMigrations({ rootDir: root, baseline: findBaseline(root) });
+      expect(res.manifestMissing).toBe(false);
+      expect(res.changed).toEqual([]);
+      expect(res.missing).toEqual([]);
+    }
+  });
+
+  it('editar migration já coberta pelo dump é acusado e derruba o prepare-workdir', () => {
+    const root = repoComManifesto();
+    writeFileSync(
+      join(root, 'supabase', 'migrations', COBERTA),
+      '-- coberta\nselect 1;\ncreate table public.novo(x int);\n',
+    );
+    const res = findEditedSnapshotMigrations({ rootDir: root, baseline: findBaseline(root) });
+    expect(res.changed).toEqual([COBERTA]);
+    expect(() => prepareWorkdir({
+      rootDir: root,
+      outDir: join(tmp(), 'wd'),
+      appliedVersions: [BASELINE],
+      projectRef: 'x',
+    })).toThrow(/migration já coberta pelo baseline/);
+  });
+
+  it('apagar migration coberta é acusado como ausente', () => {
+    const root = repoComManifesto();
+    rmSync(join(root, 'supabase', 'migrations', COBERTA));
+    const res = findEditedSnapshotMigrations({ rootDir: root, baseline: findBaseline(root) });
+    expect(res.missing).toEqual([COBERTA]);
+    expect(res.changed).toEqual([]);
+  });
+
+  it('collectMigrationDigests cobre só as versões pedidas e normaliza CRLF', () => {
+    const root = repoComManifesto({ crlf: true });
+    const digests = collectMigrationDigests({ rootDir: root, versions: [BASELINE] });
+    expect(digests.map((d) => d.name)).toEqual([COBERTA]);
+    expect(digests[0].sha256).toBe(sha256sql(CORPO_COBERTA));
+    expect(digests[0].sha256).toBe(migrationFileDigest(CORPO_COBERTA.replace(/\n/g, '\r\n')));
   });
 });
