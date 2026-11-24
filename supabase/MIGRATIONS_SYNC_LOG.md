@@ -2976,8 +2976,8 @@ Forward-only e idempotente (`SET (security_invoker = false)` repetido é no-op).
 
 | versão | arquivo | sha256 | status |
 |---|---|---|---|
-| `20261122180000` | `restore_definer_views_p06_e_compras` | `0557bb14d32b939ea057ee211025f64d44987f8c14fb6339fa03c771b59bb3e9` | aguardando aplicação via `db-apply-migration.yml` (`version=20261122180000`) — DDL em produção, regra 8 |
-| `20261122200000` | `fix_cadeia_views_compras_e_compositions` | `3120c7fe446a3b190d768c7de6c1c40af900f9678cef8d5b97e54f62e9b725b2` | aguardando aplicação via `db-apply-migration.yml` (`version=20261122200000`) — DDL em produção, regra 8 |
+| `20261122180000` | `restore_definer_views_p06_e_compras` | `0557bb14d32b939ea057ee211025f64d44987f8c14fb6339fa03c771b59bb3e9` | aplicada — versão presente no ledger remoto (`supabase/baseline/20261122200000_ledger_versions.json`, snapshot de 2026-11-23) |
+| `20261122200000` | `fix_cadeia_views_compras_e_compositions` | `3120c7fe446a3b190d768c7de6c1c40af900f9678cef8d5b97e54f62e9b725b2` | aplicada — é o `max(version)` do ledger remoto; o baseline rotacionado leva o nome dela (`supabase/baseline/20261122200000_baseline_schema.sql`, PR #4034) |
 
 ## Reconciliacao 2026-11-23 - DDL aplicada pelo assistente do Supabase
 
