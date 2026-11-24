@@ -491,8 +491,19 @@ jobs:
       - name: Gate E118h — schema-reference-drift (bloqueante)
         if: needs.changes.outputs.docs_only != 'true'
         run: node scripts/check-schema-reference-drift.mjs
-      - name: Gate E118i — public-views-drift (bloqueante)
-        if: needs.changes.outputs.docs_only != 'true'
+      # QA etapa 005 (2026-11-24): o passo rodava sem credencial, entao o live
+      # fetch caia em static-pass e uma view NOVA com GRANT SELECT para anon
+      # passava despercebida. Agora exige live no mesmo padrao do Gate 1.13:
+      # fork/Dependabot (que nao recebem SUPABASE_ACCESS_TOKEN) seguem no modo
+      # estatico; o resto compara contrato + anon-select-allowlist com o banco.
+      - name: Gate E118i — public-views-drift live (bloqueante)
+        if: needs.changes.outputs.docs_only != 'true' && github.actor != 'dependabot[bot]' && (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository)
+        run: node scripts/check-public-views-drift.mjs --require-live
+        env:
+          SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+          SUPABASE_PROJECT_REF: doufsxqlfjyuvxuezpln
+      - name: Gate E118i — public-views-drift estatico em PR de fork ou do Dependabot
+        if: needs.changes.outputs.docs_only != 'true' && github.event_name == 'pull_request' && (github.event.pull_request.head.repo.full_name != github.repository || github.actor == 'dependabot[bot]')
         run: node scripts/check-public-views-drift.mjs
       - name: Gate E118j — proposed-configs (bloqueante)
         if: needs.changes.outputs.docs_only != 'true'

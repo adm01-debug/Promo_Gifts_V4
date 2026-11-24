@@ -25,6 +25,7 @@
  *   prepare-workdir --ledger <json do migration list> --out <dir>
  *   filter-diff --diff <arquivo> --allowlist <arquivo> [--workdir <dir>]   (imprime o resíduo)
  */
+import { createHash } from 'node:crypto';
 import { existsSync, mkdirSync, readdirSync, readFileSync, realpathSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { pathToFileURL } from 'node:url';
@@ -315,6 +316,49 @@ export function ledgerSnapshotName(version) {
   return `${version}_ledger_versions.json`;
 }
 
+// Manifesto de integridade das migrations no instante da rotação do baseline:
+// versão -> { nome do arquivo, sha256 do arquivo }. Sem ele o baseline é uma
+// caixa-preta: o dump é aceito como verdade e uma migration já coberta que muda
+// depois da rotação nunca é replayada, então o `db diff` compara o shadow com a
+// produção usando a definição ANTIGA do repositório e passa verde.
+export function migrationHashesName(version) {
+  return `${version}_migration_hashes.json`;
+}
+
+// O dump é feito a partir do arquivo em disco; normalizar CRLF evita acusar
+// diferença só por causa do checkout (autocrlf no Windows).
+export function migrationFileDigest(content) {
+  return createHash('sha256').update(content.replace(/\r\n/g, '\n')).digest('hex');
+}
+
+function readMigrationHashes(hashesPath, version) {
+  const label = migrationHashesName(version);
+  let document;
+  try {
+    document = JSON.parse(readFileSync(hashesPath, 'utf8'));
+  } catch (error) {
+    throw new Error(`${label} ilegível: ${error.message}`);
+  }
+  if (!document || typeof document !== 'object') throw new Error(`${label} não é um objeto JSON`);
+  if (String(document.baseline_version) !== version) {
+    throw new Error(`${label}: baseline_version ${JSON.stringify(document.baseline_version)} difere da versão do arquivo (${version})`);
+  }
+  const { files } = document;
+  if (!Array.isArray(files)) throw new Error(`${label}: "files" ausente ou não é uma lista`);
+  const byVersion = new Map();
+  for (const entry of files) {
+    const name = entry && entry.name;
+    const digest = entry && entry.sha256;
+    const match = MIGRATION_RE.exec(String(name));
+    if (!match) throw new Error(`${label}: nome de migration inválido: ${JSON.stringify(name)}`);
+    if (typeof digest !== 'string' || !/^[0-9a-f]{64}$/.test(digest)) {
+      throw new Error(`${label}: hash inválido para ${name}`);
+    }
+    byVersion.set(match[1], { name, digest });
+  }
+  return byVersion;
+}
+
 export function findBaseline(rootDir) {
   const dir = join(rootDir, BASELINE_DIR);
   if (!existsSync(dir)) return null;
@@ -325,7 +369,16 @@ export function findBaseline(rootDir) {
   const ledgerPath = join(dir, ledgerSnapshotName(version));
   if (!existsSync(ledgerPath)) throw new Error(`baseline ${found[0]} sem ${ledgerSnapshotName(version)}`);
   const snapshot = readLedgerSnapshot(ledgerPath, version);
-  return { version, file: join(dir, found[0]), name: found[0], versions: new Set(snapshot.versions) };
+  const hashesPath = join(dir, migrationHashesName(version));
+  const hashes = existsSync(hashesPath) ? readMigrationHashes(hashesPath, version) : null;
+  return {
+    version,
+    file: join(dir, found[0]),
+    name: found[0],
+    versions: new Set(snapshot.versions),
+    hashes,
+    hashesPath: hashes ? hashesPath : null,
+  };
 }
 
 // Um JSON sem `versions` (ou com versões que não são texto) viraria um Set vazio
@@ -359,6 +412,61 @@ export function selectReplayMigrations({ files, baselineVersions, appliedVersion
     .filter(({ m }) => m && applied.has(m[1]) && !baselineVersions.has(m[1]))
     .map(({ f }) => f)
     .sort(byCodeUnit);
+}
+
+/**
+ * sha256 de cada arquivo de `supabase/migrations/` cuja versão está em `versions`.
+ * Lista de objetos (e não mapa nome→hash) de propósito: com o mapa, um nome de
+ * migration com "api"/"key" dividia a linha do JSON com o hash e o Gate E23
+ * (gitleaks, regra generic-api-key) acusava 90 falsos positivos.
+ */
+export function collectMigrationDigests({ rootDir, versions }) {
+  const migrationsDir = join(rootDir, 'supabase', 'migrations');
+  const wanted = new Set(versions);
+  const digests = [];
+  for (const name of readdirSync(migrationsDir)) {
+    const match = MIGRATION_RE.exec(name);
+    if (!match || !wanted.has(match[1])) continue;
+    digests.push({ name, sha256: migrationFileDigest(readFileSync(join(migrationsDir, name), 'utf8')) });
+  }
+  return digests.sort((a, b) => byCodeUnit(a.name, b.name));
+}
+
+/**
+ * Migrations cuja versão JÁ está coberta pelo dump (portanto nunca replayadas)
+ * mas cujo arquivo mudou depois da rotação do baseline. É o ponto cego do
+ * `selectReplayMigrations`: o dump representa o estado do arquivo na data da
+ * rotação; se o arquivo muda depois, o repositorio passa a declarar um schema
+ * que nem o shadow nem a produção têm, e o drift-check (que confia no dump)
+ * fica verde. Aqui isso vira erro explícito.
+ *
+ * Sem manifesto (`hashes === null`, baselines rotacionados antes desta
+ * checagem existir) devolve `manifestMissing: true` e nada é julgado.
+ */
+export function findEditedSnapshotMigrations({ rootDir, baseline }) {
+  const migrationsDir = join(rootDir, 'supabase', 'migrations');
+  const present = new Set(readdirSync(migrationsDir));
+  if (!baseline.hashes) {
+    return { covered: baseline.versions.size, changed: [], missing: [], manifestMissing: true };
+  }
+  const changed = [];
+  const missing = [];
+  for (const version of baseline.versions) {
+    const entry = baseline.hashes.get(version);
+    if (!entry) continue; // versão sem arquivo na rotação (ex.: 001, 20260712)
+    if (!present.has(entry.name)) {
+      missing.push(entry.name);
+      continue;
+    }
+    const digest = migrationFileDigest(readFileSync(join(migrationsDir, entry.name), 'utf8'));
+    if (digest !== entry.digest) changed.push(entry.name);
+  }
+  return {
+    covered: baseline.versions.size,
+    changed: changed.sort(byCodeUnit),
+    missing: missing.sort(byCodeUnit),
+    manifestMissing: false,
+  };
 }
 
 // O shadow aplica em ordem de nome; tudo que vem depois do baseline ganha
@@ -411,6 +519,25 @@ export function prepareWorkdir({ rootDir, outDir, appliedVersions, projectRef })
   if (!/^[A-Za-z0-9_-]+$/.test(String(projectRef))) throw new Error(`project ref inválido: ${JSON.stringify(projectRef)}`);
   const baseline = findBaseline(rootDir);
   if (!baseline) throw new Error(`nenhum baseline em ${BASELINE_DIR}`);
+  const snapshotCheck = findEditedSnapshotMigrations({ rootDir, baseline });
+  if (snapshotCheck.changed.length || snapshotCheck.missing.length) {
+    const lines = [
+      ...snapshotCheck.changed.map((f) => `  ${f} (conteúdo mudou depois da rotação)`),
+      ...snapshotCheck.missing.map((f) => `  ${f} (existe no baseline, sumiu do repositório)`),
+    ].join('\n');
+    throw new Error(
+      `migration já coberta pelo baseline ${baseline.version} não é mais a que o dump representa:\n${lines}\n` +
+        'O drift-check não enxerga o que essas versões declaram, porque elas nunca são replayadas.\n' +
+        'Corrija de um dos dois jeitos: (a) reverta a edição e faça a mudança numa migration NOVA com versão > ' +
+        `${baseline.version}; (b) se a mudança já está em produção, rotacione o baseline (schema-snapshot-export.yml).`,
+    );
+  }
+  if (snapshotCheck.manifestMissing) {
+    console.error(
+      `[drift-baseline] aviso: baseline ${baseline.version} sem ${migrationHashesName(baseline.version)}; ` +
+        'migration já coberta que mudar depois da rotação continua invisível até a próxima rotação.',
+    );
+  }
   const migrationsDir = join(rootDir, 'supabase', 'migrations');
   const replay = selectReplayMigrations({
     files: readdirSync(migrationsDir),
@@ -435,6 +562,8 @@ export function prepareWorkdir({ rootDir, outDir, appliedVersions, projectRef })
   });
   return {
     baselineVersion: baseline.version,
+    snapshotCovered: snapshotCheck.covered,
+    snapshotManifest: baseline.hashes ? 'present' : 'missing',
     replayed: replay,
     workdir: outDir,
     removedStatements: sanitized.removed,
@@ -1218,11 +1347,33 @@ const SESSION_NOISE_EXACT = new Set([
   'set check_function_bodies = off;',
 ]);
 
+// `supabase db diff` n?o tem ALTER INDEX: quando a defini??o re-renderiza
+// diferente (aspas, qualifica??o do ops class) ele emite drop + create do MESMO
+// ?ndice. O drop entra na allowlist como ru?do; o create ? a outra metade do
+// mesmo rebuild, n?o objeto novo ? sai junto (sen?o o res?duo nunca zera).
+const INDEX_DROP_NOISE_RE = /^drop[ \t]+index[ \t]+if[ \t]+exists[ \t]+"([^"]+)"\."([^"]+)"[ \t]*;$/i;
+const INDEX_CREATE_RE =
+  /^create[ \t]+(?:unique[ \t]+)?index[ \t]+(?:concurrently[ \t]+)?(?:if[ \t]+not[ \t]+exists[ \t]+)?("?)([a-z0-9_]+)\1[ \t]/i;
+
 export function filterDiff(diffSql, allowlist) {
-  return splitDiffStatements(diffSql).filter((stmt) => {
-    const first = stmt.split('\n').find((l) => l.trim() && !l.trim().startsWith('--')) ?? '';
-    if (SESSION_NOISE_EXACT.has(first.trim().toLowerCase())) return false;
-    return !allowlist.some((re) => re.test(first.trim()));
+  const firstLine = (stmt) =>
+    (stmt.split('\n').find((l) => l.trim() && !l.trim().startsWith('--')) ?? '').trim();
+  const kept = [];
+  const rebuiltIndexes = new Set();
+  for (const stmt of splitDiffStatements(diffSql)) {
+    const first = firstLine(stmt);
+    if (SESSION_NOISE_EXACT.has(first.toLowerCase())) continue;
+    if (allowlist.some((re) => re.test(first))) {
+      const drop = first.match(INDEX_DROP_NOISE_RE);
+      if (drop) rebuiltIndexes.add(drop[2]);
+      continue;
+    }
+    kept.push(stmt);
+  }
+  if (!rebuiltIndexes.size) return kept;
+  return kept.filter((stmt) => {
+    const created = firstLine(stmt).match(INDEX_CREATE_RE);
+    return !created || !rebuiltIndexes.has(created[2]);
   });
 }
 
