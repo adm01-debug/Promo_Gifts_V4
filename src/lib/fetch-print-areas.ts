@@ -10,43 +10,13 @@
  * "Failed to send a request to the Edge Function" na página de produto.
  */
 import { dbInvoke } from '@/lib/db/postgrest';
+import { PRINT_AREA_PUBLIC_COLUMNS } from '@/lib/print-area-columns';
 import { logger } from '@/lib/logger';
 import {
   adaptPrintAreaTechniqueRows,
   adaptTabelaPrecoRows,
   type TabelaPrecoCanonical,
 } from '@/lib/personalization/adapters';
-
-/**
- * Colunas pedidas na leitura de areas de gravacao.
- *
- * O caminho NAO vai na tabela: `dbInvoke` resolve `print_area_techniques` pelo
- * `GOLD_READ_ALIASES` para `v_print_area_techniques_public`
- * (`src/integrations/supabase/gold-relations.ts:386`), cuja projecao e exatamente
- * a lista abaixo — geometria/ordem das areas, sem custo e sem `production_days`.
- *
- * Lista explicita = contrato da view. Pedir coluna que a view nao projeta
- * responde 400/42703 (`column v_print_area_techniques_public.production_days
- * does not exist`, medido na REST de producao em 2026-11-24 e o que derrubava a
- * leitura para `[]`). Nao acrescentar coluna aqui sem antes alterar a view.
- */
-const PRINT_AREA_SELECT_ANON = [
-  'id',
-  'product_id',
-  'tabela_preco_id',
-  'location_code',
-  'location_name',
-  'location_order',
-  'max_width',
-  'max_height',
-  'is_curved',
-  'shape',
-  'technique_order',
-  'is_active',
-  'notes',
-  'created_at',
-  'updated_at',
-].join(',');
 
 export interface PrintAreaFromProduct {
   id: string;
@@ -95,7 +65,7 @@ export async function fetchPrintAreasFromProduct(
     const areasResult = await dbInvoke<Record<string, unknown>>({
       table: 'print_area_techniques',
       operation: 'select',
-      select: PRINT_AREA_SELECT_ANON,
+      select: PRINT_AREA_PUBLIC_COLUMNS,
       filters: { product_id: productId, is_active: true },
       orderBy: { column: 'technique_order', ascending: true },
       limit: 50,
