@@ -17,6 +17,36 @@ import {
   type TabelaPrecoCanonical,
 } from '@/lib/personalization/adapters';
 
+/**
+ * Colunas que `anon` pode ler em `print_area_techniques`.
+ *
+ * A tabela tem GRANT por COLUNA (migration 20261124163000 revogou `unit_cost` do
+ * `anon`) e o PostgREST expande `select=*` para a tabela inteira: com grant por
+ * coluna a expansao bate em `unit_cost` e responde 401/42501 (medido na REST de
+ * producao em 2026-11-24). Lista explicita = exatamente as colunas concedidas,
+ * mesmo padrao de `useKitBuilderQueries` (`select: 'location_code, ...'`).
+ * Grant de tabela continua valendo para `authenticated` (wizard admin le/edita
+ * `unit_cost`), por isso a lista e usada so aqui, no caminho de leitura.
+ */
+const PRINT_AREA_SELECT_ANON = [
+  'id',
+  'product_id',
+  'tabela_preco_id',
+  'location_code',
+  'location_name',
+  'location_order',
+  'max_width',
+  'max_height',
+  'is_curved',
+  'shape',
+  'technique_order',
+  'is_active',
+  'notes',
+  'production_days',
+  'created_at',
+  'updated_at',
+].join(',');
+
 export interface PrintAreaFromProduct {
   id: string;
   product_id: string;
@@ -64,6 +94,7 @@ export async function fetchPrintAreasFromProduct(
     const areasResult = await dbInvoke<Record<string, unknown>>({
       table: 'print_area_techniques',
       operation: 'select',
+      select: PRINT_AREA_SELECT_ANON,
       filters: { product_id: productId, is_active: true },
       orderBy: { column: 'technique_order', ascending: true },
       limit: 50,
