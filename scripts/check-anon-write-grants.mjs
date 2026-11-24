@@ -50,11 +50,21 @@ const REQUIRE_LIVE = shouldRequireLive(argv);
 const fromFileArg = argv.find((a) => a.startsWith('--from-file='));
 
 // docs/SCHEMA_REFERENCE.md §8.5
-const SQL = `
-  SELECT DISTINCT table_name, privilege_type
-  FROM information_schema.role_table_grants
-  WHERE table_schema='public' AND grantee='anon'
-    AND privilege_type IN ('INSERT','UPDATE','DELETE')
+//
+// Medição independente da sessão. information_schema.role_table_grants é uma view filtrada
+// por "o grantor ou o grantee é um papel habilitado na sessão": medido em PG 17.11, uma
+// sessão de superusuário enxerga o GRANT de qualquer grantor, mas uma sessão sem relação
+// com o grantor nem com o grantee esconde a linha — o gate não pode depender de quem o
+// executa para dizer se o P1 está fechado. has_table_privilege() lê pg_class.relacl direto
+// (inclusive grant a PUBLIC) e responde igual em qualquer sessão.
+export const ANON_WRITE_GRANTS_SQL = `
+  SELECT c.relname AS table_name, p.priv AS privilege_type
+  FROM pg_class c
+  JOIN pg_namespace n ON n.oid = c.relnamespace
+  CROSS JOIN (VALUES ('INSERT'), ('UPDATE'), ('DELETE')) AS p(priv)
+  WHERE n.nspname = 'public'
+    AND c.relkind IN ('r', 'p', 'f')
+    AND has_table_privilege('anon', c.oid, p.priv)
   ORDER BY table_name, privilege_type;
 `.trim();
 
@@ -84,7 +94,7 @@ export function computeViolations({ liveGrants, allowlist }) {
 }
 
 async function fetchLiveGrants() {
-  return querySupabaseReadOnly(SQL);
+  return querySupabaseReadOnly(ANON_WRITE_GRANTS_SQL);
 }
 
 async function main() {

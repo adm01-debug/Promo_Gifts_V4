@@ -12,7 +12,11 @@ import { mkdtempSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { computeViolations, loadAllowlist } from '../../scripts/check-anon-write-grants.mjs';
+import {
+  ANON_WRITE_GRANTS_SQL,
+  computeViolations,
+  loadAllowlist,
+} from '../../scripts/check-anon-write-grants.mjs';
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '../..');
 const SCRIPT = resolve(ROOT, 'scripts/check-anon-write-grants.mjs');
@@ -150,5 +154,27 @@ describe('CLI --from-file', () => {
     const out = result.stdout + result.stderr;
     expect(out).toContain('failed');
     expect(out).toContain('orders.DELETE');
+  });
+});
+
+// ─── SQL de medição (anti-cegueira) ─────────────────────────────────────────
+
+describe('ANON_WRITE_GRANTS_SQL', () => {
+  it('mede por has_table_privilege, não pela view filtrada information_schema', () => {
+    // information_schema.role_table_grants só mostra o que a sessão tem direito de ver
+    // (grantor ou grantee como papel habilitado). Medido em PG 17.11: sessão de
+    // superusuário vê tudo, sessão alheia esconde a linha. A resposta do gate não pode
+    // depender de quem o executa; has_table_privilege() lê pg_class.relacl.
+    expect(ANON_WRITE_GRANTS_SQL).toMatch(/has_table_privilege\(\s*'anon'/);
+    expect(ANON_WRITE_GRANTS_SQL).not.toMatch(/information_schema/);
+  });
+
+  it('cobre INSERT, UPDATE e DELETE em public no shape {table_name, privilege_type}', () => {
+    for (const priv of ['INSERT', 'UPDATE', 'DELETE']) {
+      expect(ANON_WRITE_GRANTS_SQL).toContain(`('${priv}')`);
+    }
+    expect(ANON_WRITE_GRANTS_SQL).toContain("n.nspname = 'public'");
+    expect(ANON_WRITE_GRANTS_SQL).toMatch(/AS table_name/);
+    expect(ANON_WRITE_GRANTS_SQL).toMatch(/AS privilege_type/);
   });
 });
