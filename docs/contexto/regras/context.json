@@ -1,9 +1,9 @@
 {
  "meta": {
-  "sha": "35b8704414df04b33a2e4b0f4a5d3a0ef9585be2",
+  "sha": "d65ace2c5d36a659efcdff9eb2f7195d5cad7a84",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-24 00:37 UTC",
+  "generated_at": "2026-11-24 01:21 UTC",
   "files_total": 11180,
   "code_files": 9174,
   "code_lines": 1301694
@@ -563431,10 +563431,19 @@
   }
  },
  "git": {
-  "sha": "35b8704414df04b33a2e4b0f4a5d3a0ef9585be2",
+  "sha": "d65ace2c5d36a659efcdff9eb2f7195d5cad7a84",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "d65ace2",
+    "date": "2026-11-23",
+    "author": "adm01-debug",
+    "subject": "chore: corrige status das migrations 20261122180000/20261122200000 no ledger (#4036)",
+    "files": [
+     "supabase/MIGRATIONS_SYNC_LOG.md"
+    ]
+   },
    {
     "sha": "35b8704",
     "date": "2026-11-23",
@@ -563816,15 +563825,6 @@
      "supabase/migrations-snapshot/SCHEMA_LIVE.sql",
      "supabase/migrations-snapshot/SNAPSHOT_META.json"
     ]
-   },
-   {
-    "sha": "94a724a",
-    "date": "2026-11-22",
-    "author": "adm01-debug",
-    "subject": "feat: informa frete e tributos nao incluidos no total do kit (#3990)",
-    "files": [
-     "src/components/kit-builder/kit-summary/KitPricingCard.tsx"
-    ]
    }
   ],
   "hot_files": [
@@ -563834,7 +563834,7 @@
    ],
    [
     "supabase/MIGRATIONS_SYNC_LOG.md",
-    3
+    4
    ],
    [
     "supabase/migrations-snapshot/ALL_IN_ONE.sql",
@@ -563850,10 +563850,6 @@
    ],
    [
     "package.json",
-    2
-   ],
-   [
-    "src/components/kit-builder/kit-summary/KitPricingCard.tsx",
     2
    ],
    [
@@ -563906,6 +563902,10 @@
    ],
    [
     "docs/qa/corridas-de-estado.md",
+    1
+   ],
+   [
+    "src/components/products/InlinePriceCalculator.tsx",
     1
    ]
   ]

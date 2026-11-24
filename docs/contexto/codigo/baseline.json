@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "35b8704414df04b33a2e4b0f4a5d3a0ef9585be2",
+  "commit": "d65ace2c5d36a659efcdff9eb2f7195d5cad7a84",
   "branch": "main",
-  "data_commit": "2026-11-23T21:33:52-03:00",
+  "data_commit": "2026-11-23T22:17:08-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "d65ace2",
+    "data": "2026-11-23",
+    "assunto": "chore: corrige status das migrations 20261122180000/20261122200000 no ledger (#4036)"
+   },
    {
     "sha": "35b8704",
     "data": "2026-11-23",
@@ -126,74 +131,69 @@
     "sha": "13b9bae",
     "data": "2026-11-23",
     "assunto": "feat: Etapa 014 — descoberta automática de harnesses /__visual/ no gate de produção (#4010)"
-   },
-   {
-    "sha": "042c212",
-    "data": "2026-11-23",
-    "assunto": "docs(qa): auditoria exaustiva de QA — 103 achados e plano de 300 etapas (#3994)"
    }
   ],
-  "arquivos_mudados_7d": 738,
+  "arquivos_mudados_7d": 735,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
-    "mudancas": 696
+    "mudancas": 388
    },
    {
     "pasta": "recovery/src-legacy/src",
-    "mudancas": 634
+    "mudancas": 317
    },
    {
     "pasta": "src/components/products",
-    "mudancas": 307
-   },
-   {
-    "pasta": "tests/edge-functions/live",
-    "mudancas": 232
-   },
-   {
-    "pasta": "src/hooks/products",
-    "mudancas": 218
-   },
-   {
-    "pasta": "src/components/quotes",
-    "mudancas": 215
-   },
-   {
-    "pasta": "src/pages/magazine",
-    "mudancas": 184
-   },
-   {
-    "pasta": "src/components/inventory",
-    "mudancas": 166
-   },
-   {
-    "pasta": "src/components/mockup",
-    "mudancas": 160
-   },
-   {
-    "pasta": "supabase/functions/_shared",
     "mudancas": 155
    },
    {
-    "pasta": "src/components/ui",
-    "mudancas": 146
+    "pasta": "src/components/quotes",
+    "mudancas": 128
    },
    {
-    "pasta": "src/pages/admin",
-    "mudancas": 141
+    "pasta": "tests/edge-functions/live",
+    "mudancas": 116
+   },
+   {
+    "pasta": "src/hooks/products",
+    "mudancas": 115
+   },
+   {
+    "pasta": "src/lib/freight",
+    "mudancas": 103
+   },
+   {
+    "pasta": "src/pages/magazine",
+    "mudancas": 92
    },
    {
     "pasta": "src/pages/quotes",
-    "mudancas": 138
+    "mudancas": 86
+   },
+   {
+    "pasta": "src/components/inventory",
+    "mudancas": 85
+   },
+   {
+    "pasta": "src/components/mockup",
+    "mudancas": 84
    },
    {
     "pasta": "src/hooks/quotes",
-    "mudancas": 123
+    "mudancas": 81
    },
    {
-    "pasta": "src/components/kit-builder",
-    "mudancas": 113
+    "pasta": "src/pages/admin",
+    "mudancas": 81
+   },
+   {
+    "pasta": "supabase/functions/_shared",
+    "mudancas": 80
+   },
+   {
+    "pasta": "src/components/ui",
+    "mudancas": 73
    }
   ],
   "arquivos_mais_mudados_90d": [
@@ -203,34 +203,30 @@
    },
    {
     "arquivo": "package.json",
-    "mudancas": 28
-   },
-   {
-    "arquivo": "package-lock.json",
-    "mudancas": 21
+    "mudancas": 27
    },
    {
     "arquivo": "docs/qa/05-PROGRESSO.md",
     "mudancas": 20
    },
    {
+    "arquivo": "package-lock.json",
+    "mudancas": 20
+   },
+   {
     "arquivo": "CHANGELOG.md",
-    "mudancas": 15
-   },
-   {
-    "arquivo": "docs/coordenacao/conflitos-semanticos.md",
-    "mudancas": 11
-   },
-   {
-    "arquivo": ".github/workflows/deploy-gates.yml",
-    "mudancas": 10
+    "mudancas": 14
    },
    {
     "arquivo": "docs/agentes/resgates/2026-11-16-auditoria-branches.md",
     "mudancas": 10
    },
    {
-    "arquivo": "src/pages/quotes/QuoteBuilderPage.tsx",
+    "arquivo": "docs/coordenacao/conflitos-semanticos.md",
+    "mudancas": 10
+   },
+   {
+    "arquivo": ".github/workflows/deploy-gates.yml",
     "mudancas": 9
    },
    {
@@ -238,27 +234,19 @@
     "mudancas": 8
    },
    {
+    "arquivo": "src/pages/quotes/QuoteBuilderPage.tsx",
+    "mudancas": 8
+   },
+   {
     "arquivo": "audit/supabase-reference-catalog.temporary.json",
-    "mudancas": 7
+    "mudancas": 6
    },
    {
     "arquivo": "src/hooks/quotes/useQuoteBuilderState.ts",
-    "mudancas": 7
+    "mudancas": 6
    },
    {
     "arquivo": "src/integrations/supabase/types.ts",
-    "mudancas": 7
-   },
-   {
-    "arquivo": "scripts/automation.config.json",
-    "mudancas": 6
-   },
-   {
-    "arquivo": "src/components/quotes/QuoteAutoSave.tsx",
-    "mudancas": 6
-   },
-   {
-    "arquivo": "src/hooks/quotes/useQuoteTemplates.ts",
     "mudancas": 6
    },
    {
@@ -266,19 +254,7 @@
     "mudancas": 6
    },
    {
-    "arquivo": "src/components/kit-builder/KitSummary.tsx",
-    "mudancas": 5
-   },
-   {
-    "arquivo": "src/components/kit-builder/PersonalizationConfig.tsx",
-    "mudancas": 5
-   },
-   {
-    "arquivo": "src/components/kit-builder/kit-summary/KitPricingCard.tsx",
-    "mudancas": 5
-   },
-   {
-    "arquivo": "src/components/layout/SidebarReorganized.tsx",
+    "arquivo": "scripts/automation.config.json",
     "mudancas": 5
    },
    {
@@ -286,16 +262,40 @@
     "mudancas": 5
    },
    {
+    "arquivo": "src/components/quotes/QuoteAutoSave.tsx",
+    "mudancas": 5
+   },
+   {
     "arquivo": "src/components/quotes/QuoteTemplatesList.tsx",
     "mudancas": 5
    },
    {
-    "arquivo": "src/hooks/quotes/useQuoteVersions.ts",
+    "arquivo": "src/hooks/quotes/useQuoteTemplates.ts",
     "mudancas": 5
    },
    {
-    "arquivo": "src/pages/kit-builder/KitBuilderPage.tsx",
-    "mudancas": 5
+    "arquivo": "docs/agentes/resgates/2026-11-19-migrations-orfas-e-o-portao-retroativo.md",
+    "mudancas": 4
+   },
+   {
+    "arquivo": "src/components/admin/shipping-boxes/__tests__/ShippingBoxesManager.test.tsx",
+    "mudancas": 4
+   },
+   {
+    "arquivo": "src/components/kit-builder/KitSummary.tsx",
+    "mudancas": 4
+   },
+   {
+    "arquivo": "src/components/kit-builder/PersonalizationConfig.tsx",
+    "mudancas": 4
+   },
+   {
+    "arquivo": "src/components/kit-builder/kit-summary/KitPricingCard.tsx",
+    "mudancas": 4
+   },
+   {
+    "arquivo": "src/components/layout/SidebarReorganized.tsx",
+    "mudancas": 4
    }
   ],
   "autores_30d": [
@@ -306,10 +306,6 @@
    {
     "autor": "github-actions[bot]",
     "commits": 43
-   },
-   {
-    "autor": "Claude",
-    "commits": 1
    },
    {
     "autor": "dependabot[bot]",
