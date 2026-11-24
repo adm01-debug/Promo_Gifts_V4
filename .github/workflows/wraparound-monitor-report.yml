@@ -29,7 +29,7 @@ name: wraparound-monitor-report
 
 on:
   schedule:
-    - cron: '30 5 * * *' # diário, 05:30 UTC (E89: movido de 06:15→05:30 — evita colisão com quote-number-hardening-verify em 06:15; ≥20min de ci-security-drift segunda)
+    - cron: '47 5 * * *' # diário, 05:47 UTC (E89: movido de 06:15→05:47 — evita colisão com quote-number-hardening-verify em 06:15; ≥20min de ci-security-drift segunda · E19: :30 colidia com policies-baseline)
   workflow_dispatch:
 
 permissions:

@@ -31,7 +31,7 @@ name: Policies Baseline
 # Este workflow fica com o que só ele faz: varredura semanal agendada e o seed via dispatch.
 on:
   schedule:
-    - cron: '30 10 * * 1' # semanal, segunda 10:30 UTC — E89: ≥20min after security-definer-acl-multi-env (10:09)
+    - cron: '38 10 * * 1' # semanal, segunda 10:38 UTC — E89: ≥20min after security-definer-acl-multi-env (10:09) · E19: :30 colidia com wraparound-monitor-report
   workflow_dispatch:
     inputs:
       seed:
