@@ -1,9 +1,9 @@
 {
  "meta": {
-  "sha": "18075a906d03872b82ff091ba1887b2f19b57845",
+  "sha": "cdf7e3b4f560eb5d291c57b75edffbf0265a788c",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-24 14:54 UTC",
+  "generated_at": "2026-11-24 15:12 UTC",
   "files_total": 11185,
   "code_files": 9178,
   "code_lines": 1302508
@@ -563721,10 +563721,19 @@
   }
  },
  "git": {
-  "sha": "18075a906d03872b82ff091ba1887b2f19b57845",
+  "sha": "cdf7e3b4f560eb5d291c57b75edffbf0265a788c",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "cdf7e3b",
+    "date": "2026-11-24",
+    "author": "adm01-debug",
+    "subject": "chore: recibo de aplicacao - 20261124140000 (E15) e status aplicada das duas de 24/11 (#4043)",
+    "files": [
+     "supabase/MIGRATIONS_SYNC_LOG.md"
+    ]
+   },
    {
     "sha": "18075a9",
     "date": "2026-11-24",
@@ -564108,26 +564117,16 @@
      "docs/qa/05-PROGRESSO.md",
      "supabase/functions/webhook-dispatcher/index.ts"
     ]
-   },
-   {
-    "sha": "59e624b",
-    "date": "2026-11-23",
-    "author": "adm01-debug",
-    "subject": "feat: Etapa 019 — prova de tautologia RLS em attribute_definitions/groups (ACH-013) (#4011)",
-    "files": [
-     "docs/qa/05-PROGRESSO.md",
-     "tests/security/rls-ach013-tautologia.test.ts"
-    ]
    }
   ],
   "hot_files": [
    [
     "docs/qa/05-PROGRESSO.md",
-    19
+    18
    ],
    [
     "supabase/MIGRATIONS_SYNC_LOG.md",
-    5
+    6
    ],
    [
     "scripts/drift-baseline.mjs",

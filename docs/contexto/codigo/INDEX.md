@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e de hora em hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `18075a906d03872b82ff091ba1887b2f19b57845` (2026-11-24T11:53:37-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e de hora em hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `cdf7e3b4f560eb5d291c57b75edffbf0265a788c` (2026-11-24T12:09:54-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -599,16 +599,16 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - possiveis_segredos_no_codigo: 7 — ex.: scripts/ai-context/cenarios.mjs:102, src/components/admin/connections/__tests__/ConnectionSecurity.unit.test.tsx:9, src/integrations/supabase/client.ts:27
 
 ## Grafo de código (graphify)
-- 50933 nós · 86370 arestas · 2916 comunidades · grafo do commit `18075a90`
+- 50933 nós · 86370 arestas · 2916 comunidades · grafo do commit `cdf7e3b4`
 - comunidades maiores: vitest (884), ref_components (787), ref_integrations (597), ref_node_child_process (490), ref_lib (484), @tanstack/react-query (440), ref_hooks (411), ref_types (396), react-router-dom (356), gotoAndSettle (338), sonner (338), ref_utils (321)
 - símbolos mais chamados: gotoAndSettle() (e2e/helpers/nav.ts), re (?), json (?), q() (scripts/supabase_snapshot/snapshot.py), analyze() (tests/scripts/test_personalization_artifact_diagnostics.py), outer() (tests/scripts/test_personalization_artifact_diagnostics.py), useExternalDatabase() (recovery/src-legacy/src/hooks/useExternalDatabase.ts), concludeCheck() (scripts/check-result-contract.mjs), querySupabaseReadOnly() (scripts/supabase-read-only-query.mjs), loginAs() (e2e/helpers/auth.ts), inner() (tests/scripts/test_personalization_artifact_diagnostics.py), excluded_sql() (scripts/supabase_snapshot/snapshot.py)
 - consulta local: `graphify query "<pergunta>"`, `graphify path "<A>" "<B>"`, `graphify explain "<X>"`
 
 ## Hotspots (arquivos mais alterados, 90 dias)
-- supabase/MIGRATIONS_SYNC_LOG.md (65)
-- package.json (27)
+- supabase/MIGRATIONS_SYNC_LOG.md (66)
+- package.json (26)
 - docs/qa/05-PROGRESSO.md (21)
-- package-lock.json (20)
+- package-lock.json (19)
 - CHANGELOG.md (14)
 - docs/agentes/resgates/2026-11-16-auditoria-branches.md (10)
 - docs/coordenacao/conflitos-semanticos.md (10)
@@ -1198,6 +1198,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - CHANGELOG topo: [1.19.0](https://github.com/adm01-debug/Promo_Gifts_V4/compare/gifts-store-v1.18.0...gifts-store-v1.19.0) (2026-11-22)
 
 ## Últimos commits
+- 2026-11-24 `cdf7e3b` chore: recibo de aplicacao - 20261124140000 (E15) e status aplicada das duas de 24/11 (#4043)
 - 2026-11-24 `18075a9` docs(migrations-log): recibo E15 — aplicação de 20261124120000 (#4041)
 - 2026-11-24 `a0daeda` fix: fecha a superficie de custo do anon sem mascarar as views de compras (#4039)
 - 2026-11-24 `cbb46a8` fix: gate de anon-grants mede pelo catalogo e revoga escrita morta de anon (#4038)
@@ -1212,7 +1213,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-23 `cdf7daa` fix(hooks): resposta atrasada nao sobrescreve mais preco da tecnica (182-185) (#4030)
 - 2026-11-23 `e8a15b4` feat(hooks): merge parcial em profiles.preferences (etapas 141-146) (#4029)
 - 2026-11-23 `5eaf98a` fix(qa): etapas 103, 108, 113 e 114 - subtotal do kit alinhado ao banco (#4024)
-- 2026-11-23 `35aa001` fix(qa): etapas 131-135 - baseline da suite e testes do kit-builder (#4025)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`
