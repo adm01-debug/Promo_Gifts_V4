@@ -15,7 +15,7 @@ const ANON_ALLOWLIST = JSON.parse(readFileSync('.security/anon-select-allowlist.
   objects: { object: string; relkind: string; columns: string[]; reason: string }[];
 };
 const ANON_TABLES = JSON.parse(readFileSync('.security/anon-tables-baseline.json', 'utf8')) as {
-  tables: { table: string; exposure: string; reason: string }[];
+  tables: { table: string; exposure: string; reason: string; columns?: string[] | null }[];
 };
 
 const PUBLIC_VIEWS = [
@@ -67,8 +67,8 @@ function buildLive() {
       relname: t.table,
       relkind: 'r',
       anon_select: true,
-      columns: ['id'],
-      anon_columns: ['id'],
+      columns: t.columns ?? ['id'],
+      anon_columns: t.columns ?? ['id'],
     })),
   ];
   return { contract, anon };
