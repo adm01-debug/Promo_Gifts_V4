@@ -105,3 +105,43 @@ Para recuperar qualquer uma: `git fetch origin refs/pull/<N>/head && git branch 
 208 linhas de trabalho não mergeado sem teste, e as branches de automação (`contexto`, `gh-pages`,
 `ratchet`, `ci-metrics`, `inventario`, `docs/graphify-report`, `release-please`, `dependabot/*`), que
 têm PR aberta ou são linhagem própria de publicação.
+
+## Decisão — draft E40 (`ba4c7fb0`): enterrado, com o SHA arquivado · 2026-11-24
+
+Branches `claude/chore-fix-e40-drift-normalization-261122-2350` e `e40draft`: **mesma ponta**,
+`ba4c7fb0f`, commit de trabalho `82ecb7858` ("chore: generalizar normalizacao do Gate E40 para
+views/matviews/policies"). PR #3993 **fechada sem merge**.
+
+O que a branch faz: `+207/−1` em `scripts/drift-baseline.mjs`, só isso. Acrescenta
+`stripMonitoredSchemaQual` (linha 1196 na versão do draft) mais normalizações de views, matviews e
+policies, para calar os 30 statements de drift falso que o `db diff` produz por diferença de
+serialização do dump (aspas, qualificação de schema, `as permissive`/`for all`, `with no data`).
+
+**Por que não retomar:**
+
+1. O ruído que ela atacava já está contido na `main` pela allowlist justificada da #4035
+   (`supabase/baseline/drift-allowlist.txt`). O Gate E40 está verde **sem** este código.
+2. O mecanismo troca falso positivo por falso negativo. `stripMonitoredSchemaQual` apaga o prefixo
+   de schema em qualquer `schema.objeto` cujo schema esteja em `MONITORED_SCHEMAS`, dentro do corpo
+   do objeto: um `public.foo` que passe a existir só no shadow — ou só no dump — deixa de contar
+   como drift. Num gate de drift, silêncio indevido é pior que o ruído original.
+3. Sem teste novo, e a PR foi fechada.
+
+**Trabalho preservado — nada se perde.** Ref de arquivo criada via API em 2026-11-24:
+
+```
+refs/agents-archive/e40-drift-normalization-20261122 -> ba4c7fb0f418a8483e4a1a85e1e487437c4a2983
+```
+
+`ba4c7fb0f` contém `82ecb7858` na sua linhagem, então um único ref guarda os dois. Recuperar:
+
+```bash
+git fetch origin refs/agents-archive/e40-drift-normalization-20261122:refs/agents-archive/e40-drift-normalization-20261122
+git switch -c resgate-e40 refs/agents-archive/e40-drift-normalization-20261122
+```
+
+A PR #3993 também segue acessível por `refs/pull/3993/head`.
+
+Branches remotas removidas **depois** do arquivamento (`e40draft` e
+`claude/chore-fix-e40-drift-normalization-261122-2350`). Se o ruído do `db diff` voltar, a
+normalização arquivada é a referência — mas entra com teste que prove que ela **não** mascara drift real.
