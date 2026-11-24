@@ -1218,11 +1218,33 @@ const SESSION_NOISE_EXACT = new Set([
   'set check_function_bodies = off;',
 ]);
 
+// `supabase db diff` n?o tem ALTER INDEX: quando a defini??o re-renderiza
+// diferente (aspas, qualifica??o do ops class) ele emite drop + create do MESMO
+// ?ndice. O drop entra na allowlist como ru?do; o create ? a outra metade do
+// mesmo rebuild, n?o objeto novo ? sai junto (sen?o o res?duo nunca zera).
+const INDEX_DROP_NOISE_RE = /^drop[ \t]+index[ \t]+if[ \t]+exists[ \t]+"([^"]+)"\."([^"]+)"[ \t]*;$/i;
+const INDEX_CREATE_RE =
+  /^create[ \t]+(?:unique[ \t]+)?index[ \t]+(?:concurrently[ \t]+)?(?:if[ \t]+not[ \t]+exists[ \t]+)?("?)([a-z0-9_]+)\1[ \t]/i;
+
 export function filterDiff(diffSql, allowlist) {
-  return splitDiffStatements(diffSql).filter((stmt) => {
-    const first = stmt.split('\n').find((l) => l.trim() && !l.trim().startsWith('--')) ?? '';
-    if (SESSION_NOISE_EXACT.has(first.trim().toLowerCase())) return false;
-    return !allowlist.some((re) => re.test(first.trim()));
+  const firstLine = (stmt) =>
+    (stmt.split('\n').find((l) => l.trim() && !l.trim().startsWith('--')) ?? '').trim();
+  const kept = [];
+  const rebuiltIndexes = new Set();
+  for (const stmt of splitDiffStatements(diffSql)) {
+    const first = firstLine(stmt);
+    if (SESSION_NOISE_EXACT.has(first.toLowerCase())) continue;
+    if (allowlist.some((re) => re.test(first))) {
+      const drop = first.match(INDEX_DROP_NOISE_RE);
+      if (drop) rebuiltIndexes.add(drop[2]);
+      continue;
+    }
+    kept.push(stmt);
+  }
+  if (!rebuiltIndexes.size) return kept;
+  return kept.filter((stmt) => {
+    const created = firstLine(stmt).match(INDEX_CREATE_RE);
+    return !created || !rebuiltIndexes.has(created[2]);
   });
 }
 

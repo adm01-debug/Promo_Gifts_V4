@@ -224,6 +224,25 @@ describe('filterDiff', () => {
   it('allowlist vazia não esconde nada', () => {
     expect(filterDiff('alter table "public"."t" add column c int;', [])).toHaveLength(1);
   });
+
+  it('drop de indice na allowlist leva junto o create do MESMO indice (rebuild do db diff)', () => {
+    const allowlist = loadAllowlist('^drop index if exists "prod_audit"\\."idx_pf_name_trgm"\\;\n');
+    const diff = [
+      'drop index if exists "prod_audit"."idx_pf_name_trgm";',
+      'CREATE INDEX idx_pf_name_trgm ON prod_audit.product_features USING gin (name_normalized gin_trgm_ops);',
+      'CREATE INDEX idx_outro ON prod_audit.product_features USING gin (name_normalized gin_trgm_ops);',
+    ].join('\n');
+    expect(filterDiff(diff, allowlist)).toEqual([
+      'CREATE INDEX idx_outro ON prod_audit.product_features USING gin (name_normalized gin_trgm_ops);',
+    ]);
+  });
+
+  it('create de indice sem drop allowlistado continua no residuo', () => {
+    const allowlist = loadAllowlist('^drop index if exists "prod_audit"\\."idx_pf_name_trgm"\\;\n');
+    const diff =
+      'CREATE INDEX idx_pf_name_trgm ON prod_audit.product_features USING gin (name_normalized gin_trgm_ops);';
+    expect(filterDiff(diff, allowlist)).toHaveLength(1);
+  });
 });
 
 describe('findSecrets', () => {
