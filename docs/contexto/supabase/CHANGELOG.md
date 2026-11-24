@@ -2,6 +2,10 @@
 
 Diff semântico gerado a cada coleta em que algo mudou.
 
+## 2026-11-24 14:19 UTC
+
+- **roles** alterado (1): `authenticator`
+
 ## 2026-11-24 13:19 UTC
 
 - **colunas** alterado (170): `public.attribute_definitions.created_at`, `public.attribute_definitions.data_type`, `public.attribute_definitions.default_value`, `public.attribute_definitions.description`, `public.attribute_definitions.display_name`, `public.attribute_definitions.display_order`, `public.attribute_definitions.group_id`, `public.attribute_definitions.id`, `public.attribute_definitions.is_active`, `public.attribute_definitions.is_comparable`, `public.attribute_definitions.is_filterable`, `public.attribute_definitions.is_required`, `public.attribute_definitions.is_searchable`, `public.attribute_definitions.is_visible`, `public.attribute_definitions.name`, `public.attribute_definitions.organization_id`, `public.attribute_definitions.possible_values`, `public.attribute_definitions.slug`, `public.attribute_definitions.unit`, `public.attribute_definitions.updated_at`, `public.attribute_definitions.validation_rules`, `public.attribute_groups.created_at`, `public.attribute_groups.description`, `public.attribute_groups.display_order`, `public.attribute_groups.icon`, `public.attribute_groups.id`, `public.attribute_groups.is_active`, `public.attribute_groups.name`, `public.attribute_groups.organization_id`, `public.attribute_groups.slug`, `public.attribute_groups.updated_at`, `public.b2b_collection_products.added_at`, `public.b2b_collection_products.b2b_collection_id`, `public.b2b_collection_products.display_order`, `public.b2b_collection_products.id`, `public.b2b_collection_products.product_id`, `public.b2b_collections.created_at`, `public.b2b_collections.created_by`, `public.b2b_collections.description`, `public.b2b_collections.display_order` … (+130)
