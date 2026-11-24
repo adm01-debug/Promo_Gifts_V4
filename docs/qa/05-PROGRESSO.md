@@ -38,7 +38,7 @@ Severidade das etapas: Média 158 · Alta 79 · Baixa 54 · Crítica 9
 - [x] 005 — Fazer o gate de views públicas descobrir view nova em vez de conferir uma lista fixa — onda 1 — Alta — APROVAÇÃO — concluída em #4049: ver Evidências
 - [x] 006 — Registrar as três views de compras no contrato de views públicas — onda 1 — Alta — concluída em #4008 (`e87db751`)
 - [-] 007 — Fechar `tabela_preco_gravacao_oficial_faixa` ao anônimo — onda 1 — Alta — APROVAÇÃO — premissa refutada; ver Evidências
-- [ ] 008 — Fazer o gate de drift rodar também sobre matviews e sobre grants de tabela ao `anon` — onda 1 — Média — APROVAÇÃO
+- [ ] 008 — Fazer o gate de drift rodar também sobre grants de tabela ao `anon` — onda 1 — Média — APROVAÇÃO — matview já está coberta (a descoberta usa `relkind in ('v','m')`); o furo que sobra são as **45 tabelas** de `public` com SELECT concedido ao `anon` medidas no dump da etapa 005, que não entram na consulta (`scripts/check-public-views-drift.mjs`, `buildAnonSql`)
 - [ ] 009 — Tornar o guarda de required checks capaz de ver mais de um check — onda 1 — Crítica — APROVAÇÃO
 - [ ] 010 — Pôr o CodeQL de fato como check obrigatório de `main` — onda 1 — Crítica — APROVAÇÃO
 - [ ] 011 — Fazer `static-checks.yml` bloquear merge — onda 1 — Alta — APROVAÇÃO
@@ -614,7 +614,7 @@ Severidade das etapas: Média 158 · Alta 79 · Baixa 54 · Crítica 9
 
 | Data | Etapa em que apareceu | O que é | arquivo:linha |
 |---|---|---|---|
-|  |  |  |  |
+| 2026-11-24 | 005 (pós-merge do #4053) | O `select` anon das áreas de gravação pedia `production_days`, coluna que não existe na projeção de `v_print_area_techniques_public` → PostgREST 400/42703, exceção engolida pelo chamador e as áreas de gravação sumiam da página de produto. Corrigido no #4054 (lista = as 15 colunas da view, teste de igualdade estrita) e travado no #4055 (constante única `PRINT_AREA_PUBLIC_COLUMNS`, compartilhada com o hook que ainda usava `select('*')` e tomava 401) | `src/lib/print-area-columns.ts`, `src/lib/fetch-print-areas.ts`, `src/hooks/simulation/usePrintAreas.ts`, `src/lib/__tests__/fetch-print-areas.anonSelect.test.ts` |
 
 ---
 
@@ -846,3 +846,31 @@ e o passo `E118i` do `deploy-gates.yml` ganhou `SUPABASE_ACCESS_TOKEN` + `--requ
 credencial, caía em `static-pass` e era cego. Testes: `tests/security/public-views-columns.test.ts` e
 `tests/scripts/check-public-views-drift.test.mjs` (26 casos), incluindo objeto novo fora do contrato, allowlist
 obsoleta, coluna nova legível por anon e re-concessão de grant em view `anon_select=false`.
+
+### Etapa 005 — regressão da lista de colunas do anon (2026-11-24)
+
+> Corrige o que a etapa 005 deixou passar: o gate ficou verde, mas a lista de colunas que o site manda no
+> `select` tinha uma coluna fora da projeção da view.
+
+Medição em produção (`https://doufsxqlfjyuvxuezpln.supabase.co`, chave `sb_publishable_*` extraída do
+`app-shell-*.js` publicado):
+
+```
+GET /rest/v1/v_print_area_techniques_public?select=*&limit=1        -> 200  (15 colunas)
+GET /rest/v1/v_print_area_techniques_public?select=...,production_days -> 400 42703
+      "column v_print_area_techniques_public.production_days does not exist"
+GET /rest/v1/print_area_techniques?select=*&limit=1                 -> 401 42501  (grant por coluna)
+GET /rest/v1/print_area_techniques?select=<15 colunas>&limit=1       -> 200
+GET /rest/v1/print_area_techniques?select=unit_cost&limit=1          -> 401  (revogação intacta)
+```
+
+Causa: `dbInvoke` resolve `print_area_techniques` por `GOLD_READ_ALIASES`
+(`src/integrations/supabase/gold-relations.ts:386`) para a view de leitura, e a migration `20261124163000`
+deixou a **tabela** com 16 colunas (grant por coluna) e a **view** com 15 — `production_days` só existe na
+tabela. Nenhum erro aparecia na tela porque `fetchPrintAreasFromProduct` captura a exceção e devolve `[]`.
+
+Entregue: #4054 (`519b6a367`, lista = 15 colunas da view + teste que exige igualdade estrita e proíbe
+`unit_cost`/`production_days`) e #4055 (`9238b3113`, `src/lib/print-area-columns.ts` como fonte única,
+consumida por `fetch-print-areas.ts` e por `usePrintAreas.ts`, que passou de `select('*')` para as mesmas 15
+colunas). Produção confirmada no bundle servido: `products-filters-panel-BNa6euT4.js` contém
+`id,product_id,tabela_preco_id,...,created_at,updated_at` e não contém `production_days` nem `unit_cost`.
