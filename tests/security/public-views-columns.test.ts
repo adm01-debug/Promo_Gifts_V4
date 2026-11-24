@@ -10,6 +10,8 @@ const CONTRACT = JSON.parse(readFileSync('.security/public-views-columns.json', 
 };
 
 const PUBLIC_VIEWS = [
+  'v_compras_catalogo',
+  'v_compras_precos_faixa',
   'v_kit_component_media_public',
   'v_product_compositions_public',
   'v_product_properties_public',
@@ -25,7 +27,7 @@ function run(args: string[] = []) {
 }
 
 describe('contrato de colunas das views SECURITY DEFINER públicas', () => {
-  it('cobre exatamente as 8 views expostas ao anon', () => {
+  it('cobre exatamente as 10 views expostas ao anon', () => {
     expect(Object.keys(CONTRACT.views).sort()).toEqual([...PUBLIC_VIEWS].sort());
   });
 
