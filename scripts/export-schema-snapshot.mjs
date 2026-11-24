@@ -40,8 +40,10 @@ import {
   BASELINE_NAME_RE,
   buildBaselineSql,
   byCodeUnit,
+  collectMigrationDigests,
   findSecrets,
   ledgerSnapshotName,
+  migrationHashesName,
   looksLikeSchemaDump,
   maxNumericVersion,
 } from './drift-baseline.mjs';
@@ -226,7 +228,13 @@ function dumpLiveSchema(ledger) {
   const dir = join(ROOT, BASELINE_DIR);
   mkdirSync(dir, { recursive: true });
   for (const f of readdirSync(dir)) {
-    if (BASELINE_NAME_RE.test(f) || /^\d{14}_ledger_versions\.json$/.test(f)) rmSync(join(dir, f));
+    if (
+      BASELINE_NAME_RE.test(f)
+      || /^\d{14}_ledger_versions\.json$/.test(f)
+      || /^\d{14}_migration_hashes\.json$/.test(f)
+    ) {
+      rmSync(join(dir, f));
+    }
   }
   writeFileSync(
     join(dir, `${version}_baseline_schema.sql`),
@@ -236,7 +244,16 @@ function dumpLiveSchema(ledger) {
     join(dir, ledgerSnapshotName(version)),
     `${JSON.stringify({ baseline_version: version, generated_at: generatedAt, versions: [...versions].sort(byCodeUnit) }, null, 2)}\n`,
   );
-  ok(`Baseline ${version} gerado (${versions.length} versões no ledger).`);
+  // Integridade das migrations na data da rotação: é o que permite ao
+  // drift-check acusar, mais tarde, uma migration já coberta pelo dump cujo
+  // arquivo mudou (sem isso o dump é aceito como verdade e a mudança fica
+  // invisível para sempre).
+  const digests = collectMigrationDigests({ rootDir: ROOT, versions });
+  writeFileSync(
+    join(dir, migrationHashesName(version)),
+    `${JSON.stringify({ baseline_version: version, generated_at: generatedAt, files: digests }, null, 2)}\n`,
+  );
+  ok(`Baseline ${version} gerado (${versions.length} versões no ledger, ${digests.length} arquivos com hash).`);
   return { ok: true, bytes: sql.length, baselineVersion: version, ledgerVersions: versions.length };
 }
 
