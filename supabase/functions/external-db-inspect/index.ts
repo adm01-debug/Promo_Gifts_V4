@@ -3,6 +3,7 @@ import { getCredential } from '../_shared/credentials.ts';
 import { createClient } from "npm:@supabase/supabase-js@2.49.4";
 import { z } from "npm:zod@3.23.8";
 import { runBotProtection } from '../_shared/bot-protection.ts';
+import { safeErrorResponse } from '../_shared/error-response.ts';
 
 const BodySchema = z.object({
   mode: z.enum(['tables', 'columns']).default('tables'),
@@ -122,7 +123,8 @@ Deno.serve(async (req) => {
           .limit(1);
 
         if (error) {
-          return jsonResponse({ success: false, table: tableName, error: error.message });
+          console.error('[external-db-inspect] single table error:', error.message, error.code ?? '');
+          return jsonResponse({ success: false, table: tableName, error: "db_error" });
         }
 
         const columns = data?.length ? Object.keys(data[0]) : [];
@@ -161,7 +163,8 @@ Deno.serve(async (req) => {
               .limit(1);
 
             if (error) {
-              return { name: tbl, exists: false, columns: [], rowCount: 0, error: error.message };
+              console.error(`[external-db-inspect] table ${tbl} error:`, error.message, error.code ?? '');
+              return { name: tbl, exists: false, columns: [], rowCount: 0, error: "db_error" };
             }
             return {
               name: tbl,
@@ -191,8 +194,6 @@ Deno.serve(async (req) => {
       missingTables: missingTables.map(t => ({ name: t.name, error: t.error })),
     });
   } catch (error) {
-    const errorMessage = error instanceof Error ? error.message : 'Erro desconhecido';
-    console.error('[INSPECT] Error:', errorMessage);
-    return jsonResponse({ error: errorMessage }, 500);
+    return safeErrorResponse(error, { logLabel: "[external-db-inspect] unhandled error", publicMessage: "internal_error", corsHeaders: corsHeadersRef.current });
   }
 });

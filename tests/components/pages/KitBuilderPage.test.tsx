@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { act, fireEvent, render, screen } from "@testing-library/react";
+import { act, fireEvent, screen } from "@testing-library/react";
+import { renderWithProviders } from "../render-helpers";
 import type React from "react";
-import { MemoryRouter } from "react-router-dom";
 
 const captured = vi.hoisted(() => ({}) as Record<string, Record<string, unknown>>);
 function capture(name: string, testId: string) {
@@ -177,7 +177,7 @@ describe("KitBuilderPage", () => {
   it("renderiza o passo box (padrão)", async () => {
     mockUseKitBuilderPageState.mockReturnValue(makeState("box"));
 
-    render(<KitBuilderPage />);
+    renderWithProviders(<KitBuilderPage />);
 
     expect(screen.getByTestId("kit-builder-header")).toBeInTheDocument();
     expect(screen.getByTestId("wizard-steps")).toBeInTheDocument();
@@ -189,7 +189,7 @@ describe("KitBuilderPage", () => {
   it("renderiza o passo items", async () => {
     mockUseKitBuilderPageState.mockReturnValue(makeState("items"));
 
-    render(<KitBuilderPage />);
+    renderWithProviders(<KitBuilderPage />);
 
     expect(screen.getByTestId("kit-builder-header")).toBeInTheDocument();
     expect(screen.getByTestId("item-selector")).toBeInTheDocument();
@@ -198,7 +198,7 @@ describe("KitBuilderPage", () => {
   it("renderiza o passo personalization", async () => {
     mockUseKitBuilderPageState.mockReturnValue(makeState("personalization"));
 
-    render(<KitBuilderPage />);
+    renderWithProviders(<KitBuilderPage />);
 
     expect(screen.getByTestId("kit-builder-header")).toBeInTheDocument();
     expect(screen.getByTestId("personalization-config")).toBeInTheDocument();
@@ -207,7 +207,7 @@ describe("KitBuilderPage", () => {
   it("renderiza o passo summary com KitSummary", async () => {
     mockUseKitBuilderPageState.mockReturnValue(makeState("summary"));
 
-    render(<KitBuilderPage />);
+    renderWithProviders(<KitBuilderPage />);
 
     expect(screen.getByTestId("kit-builder-header")).toBeInTheDocument();
     expect(screen.getByTestId("kit-summary")).toBeInTheDocument();
@@ -218,7 +218,7 @@ describe("KitBuilderPage", () => {
       makeState("box", { isLoadingBoxes: true }),
     );
 
-    render(<KitBuilderPage />);
+    renderWithProviders(<KitBuilderPage />);
 
     expect(screen.getByTestId("box-selector")).toBeInTheDocument();
   });
@@ -228,7 +228,7 @@ describe("KitBuilderPage", () => {
       makeState("items", { isLoadingItems: true }),
     );
 
-    render(<KitBuilderPage />);
+    renderWithProviders(<KitBuilderPage />);
 
     expect(screen.getByTestId("item-selector")).toBeInTheDocument();
   });
@@ -238,7 +238,7 @@ describe("KitBuilderPage", () => {
       makeState("summary", { currentKitId: "kit-abc-123" }),
     );
 
-    render(<KitBuilderPage />);
+    renderWithProviders(<KitBuilderPage />);
 
     expect(screen.getByTestId("kit-summary")).toBeInTheDocument();
   });
@@ -248,7 +248,7 @@ describe("KitBuilderPage", () => {
     s.meta.isCreatingQuote = true;
     mockUseKitBuilderPageState.mockReturnValue(s);
 
-    render(<KitBuilderPage />);
+    renderWithProviders(<KitBuilderPage />);
 
     expect(screen.getByTestId("kit-summary")).toBeInTheDocument();
   });
@@ -257,7 +257,7 @@ describe("KitBuilderPage", () => {
     it("box: retry recarrega caixas, editar itens e guia", async () => {
       const s = makeState("box");
       mockUseKitBuilderPageState.mockReturnValue(s);
-      render(<KitBuilderPage />);
+      renderWithProviders(<KitBuilderPage />);
 
       await call("BoxSelector", "onRetry");
       expect(s.state.refetchBoxes).toHaveBeenCalledTimes(1);
@@ -269,7 +269,7 @@ describe("KitBuilderPage", () => {
     it("box: falha no retry não propaga erro", async () => {
       const s = makeState("box", { refetchBoxes: vi.fn().mockRejectedValue(new Error("x")) });
       mockUseKitBuilderPageState.mockReturnValue(s);
-      render(<KitBuilderPage />);
+      renderWithProviders(<KitBuilderPage />);
 
       await call("BoxSelector", "onRetry");
       expect(s.state.refetchBoxes).toHaveBeenCalledTimes(1);
@@ -278,7 +278,7 @@ describe("KitBuilderPage", () => {
     it("items: retry recarrega itens", async () => {
       const s = makeState("items", { refetchItems: vi.fn().mockRejectedValue(new Error("x")) });
       mockUseKitBuilderPageState.mockReturnValue(s);
-      render(<KitBuilderPage />);
+      renderWithProviders(<KitBuilderPage />);
 
       await call("ItemSelector", "onRetry");
       expect(s.state.refetchItems).toHaveBeenCalledTimes(1);
@@ -287,7 +287,7 @@ describe("KitBuilderPage", () => {
     it("personalization: editar itens volta para o passo items", async () => {
       const s = makeState("personalization");
       mockUseKitBuilderPageState.mockReturnValue(s);
-      render(<KitBuilderPage />);
+      renderWithProviders(<KitBuilderPage />);
 
       await call("PersonalizationConfig", "onEditItems");
       expect(s.actions.goToStep).toHaveBeenCalledWith("items");
@@ -298,7 +298,7 @@ describe("KitBuilderPage", () => {
     it("summary: adicionar ao orçamento, editar caixa, salvar rascunho e exportar PDF", async () => {
       const s = makeState("summary", { currentKitId: "kit-1", quoteClient: { id: "c1" } });
       mockUseKitBuilderPageState.mockReturnValue(s);
-      render(<KitBuilderPage />);
+      renderWithProviders(<KitBuilderPage />);
 
       await call("KitSummary", "onAddToQuote");
       expect(s.actions.handleAddToQuote).toHaveBeenCalledWith(
@@ -321,7 +321,7 @@ describe("KitBuilderPage", () => {
     it("header: tentar autosave de novo chama retryAutoSave", async () => {
       const s = makeState("box");
       mockUseKitBuilderPageState.mockReturnValue(s);
-      render(<KitBuilderPage />);
+      renderWithProviders(<KitBuilderPage />);
 
       await call("KitBuilderHeader", "onRetryAutoSave");
       expect(s.actions.retryAutoSave).toHaveBeenCalledTimes(1);
@@ -330,7 +330,7 @@ describe("KitBuilderPage", () => {
     it("botões Voltar e Continuar navegam no wizard", () => {
       const s = makeState("box");
       mockUseKitBuilderPageState.mockReturnValue(s);
-      render(<KitBuilderPage />);
+      renderWithProviders(<KitBuilderPage />);
 
       fireEvent.click(screen.getByRole("button", { name: "Voltar" }));
       fireEvent.click(screen.getByRole("button", { name: "Continuar" }));
@@ -343,7 +343,7 @@ describe("KitBuilderPage", () => {
     it("aplicar sugestão de IA inicia o fluxo items-first e aplica a sugestão", async () => {
       const s = makeState("box", { isLanding: true });
       mockUseKitBuilderPageState.mockReturnValue(s);
-      render(<KitBuilderPage />);
+      renderWithProviders(<KitBuilderPage />);
 
       expect(screen.getByTestId("kit-maker-landing")).toBeInTheDocument();
       expect(screen.queryByTestId("kit-builder-header")).not.toBeInTheDocument();
@@ -356,7 +356,7 @@ describe("KitBuilderPage", () => {
     it("atalhos de edição ficam desligados na landing", () => {
       const s = makeState("box", { isLanding: true });
       mockUseKitBuilderPageState.mockReturnValue(s);
-      render(<KitBuilderPage />);
+      renderWithProviders(<KitBuilderPage />);
 
       fireEvent.keyDown(window, { key: "s", ctrlKey: true });
       expect(s.actions.handleSaveKit).not.toHaveBeenCalled();
@@ -367,7 +367,7 @@ describe("KitBuilderPage", () => {
     it("Ctrl+S salva, Ctrl+Z desfaz, Ctrl+Shift+Z e Ctrl+Y refazem", () => {
       const s = makeState("box");
       mockUseKitBuilderPageState.mockReturnValue(s);
-      render(<KitBuilderPage />);
+      renderWithProviders(<KitBuilderPage />);
 
       fireEvent.keyDown(window, { key: "s", ctrlKey: true });
       expect(s.actions.handleSaveKit).toHaveBeenCalledTimes(1);
@@ -381,7 +381,7 @@ describe("KitBuilderPage", () => {
     it("sem Ctrl/Cmd nada acontece", () => {
       const s = makeState("box");
       mockUseKitBuilderPageState.mockReturnValue(s);
-      render(<KitBuilderPage />);
+      renderWithProviders(<KitBuilderPage />);
 
       fireEvent.keyDown(window, { key: "s" });
       fireEvent.keyDown(window, { key: "z" });
@@ -392,7 +392,7 @@ describe("KitBuilderPage", () => {
     it("em campo de texto só Ctrl+S funciona", () => {
       const s = makeState("box");
       mockUseKitBuilderPageState.mockReturnValue(s);
-      render(
+      renderWithProviders(
         <>
           <KitBuilderPage />
           <input data-testid="campo" />
@@ -409,7 +409,7 @@ describe("KitBuilderPage", () => {
     it("remove o listener ao desmontar", () => {
       const s = makeState("box");
       mockUseKitBuilderPageState.mockReturnValue(s);
-      const { unmount } = render(<KitBuilderPage />);
+      const { unmount } = renderWithProviders(<KitBuilderPage />);
       unmount();
 
       fireEvent.keyDown(window, { key: "s", ctrlKey: true });
@@ -419,7 +419,7 @@ describe("KitBuilderPage", () => {
 
   it('preserva a tela existente para quantidade já verificada', async () => {
     mockUseKitBuilderPageState.mockReturnValue(makeState('summary'));
-    const view = render(<KitBuilderPage />);
+    const view = renderWithProviders(<KitBuilderPage />);
     await screen.findByTestId('kit-summary');
     const originalMarkup = view.container.innerHTML;
     mockUseKitBuilderPageState.mockReturnValue(
@@ -437,7 +437,7 @@ describe("KitBuilderPage", () => {
   it('pede confirmação explícita do preset para quantidade histórica ausente sem chamar salvar', () => {
     const model = makeState('summary', { quantityNeedsConfirmation: true, kitQuantity: 1 });
     mockUseKitBuilderPageState.mockReturnValue(model);
-    render(<KitBuilderPage />);
+    renderWithProviders(<KitBuilderPage />);
     expect(screen.getByRole('alert')).toHaveTextContent('Quantidade não informada');
     expect(model.actions.setKitQuantity).not.toHaveBeenCalled();
     expect(model.actions.handleSaveKit).not.toHaveBeenCalled();
@@ -448,7 +448,7 @@ describe("KitBuilderPage", () => {
 
   it('bloqueia a edição durante a hidratação do snapshot', () => {
     mockUseKitBuilderPageState.mockReturnValue(makeState('summary', { isHydrating: true }));
-    render(<KitBuilderPage />);
+    renderWithProviders(<KitBuilderPage />);
     expect(screen.getByRole('status')).toHaveTextContent('Carregando kit salvo');
     expect(screen.queryByTestId('kit-builder-header')).not.toBeInTheDocument();
   });
@@ -456,11 +456,7 @@ describe("KitBuilderPage", () => {
   it('mantém o erro original e a biblioteca acessível sem regravar rascunho inválido', () => {
     const model = makeState('summary', { hydrationError: 'Snapshot histórico incompatível' });
     mockUseKitBuilderPageState.mockReturnValue(model);
-    render(
-      <MemoryRouter>
-        <KitBuilderPage />
-      </MemoryRouter>,
-    );
+    renderWithProviders(<KitBuilderPage />);
     expect(screen.getByRole('alert')).toHaveTextContent('Snapshot histórico incompatível');
     expect(screen.getByRole('link', { name: 'Voltar à biblioteca de kits' })).toHaveAttribute(
       'href',

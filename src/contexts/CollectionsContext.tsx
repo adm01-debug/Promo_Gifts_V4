@@ -11,6 +11,9 @@ import type { Product } from '@/types/product-catalog';
 interface CollectionsContextType {
   collections: Collection[];
   isLoaded: boolean;
+  /** Falha de carregamento das coleções (distinta de lista vazia). */
+  loadError: string | null;
+  isLoadError: boolean;
   createCollection: (
     name: string,
     description?: string,

@@ -214,6 +214,9 @@ export function useQuotesListPage() {
    *  - snapshot pré-delete (para suportar "Desfazer" via toast por 8s);
    *  - progresso done/total (UI mostra feedback enquanto roda);
    *  - tolerância a falhas parciais (cada delete é independente);
+   *  - cotações aprovadas/convertidas são ignoradas (exibidas no dialog
+   *    antes da confirmação — etapa 040 ACH-098); o banco as rejeitaria de
+   *    qualquer forma após a etapa 038 (trigger BEFORE DELETE);
    *  - se TUDO falhar, mantém `bulkDeleteIds` e seleção visual (não emite
    *    `quotes:bulk-delete-confirmed`) para o usuário tentar de novo;
    *  - se ≥1 sucesso, emite `quotes:bulk-delete-confirmed` que limpa a
@@ -223,12 +226,31 @@ export function useQuotesListPage() {
     const ids = [...bulkDeleteIds];
     if (ids.length === 0) return;
 
+    // QA Etapa 040 (ACH-098): particiona entre apagáveis e ignorados.
+    // Cotações aprovadas/convertidas são históricas — o trigger (etapa 038)
+    // as rejeitaria; a UI as pula e informa o usuário.
+    const PROTECTED_STATUSES = ['approved', 'converted'] as const;
+    const toDelete = ids.filter((id) => {
+      const q = quotes.find((quote) => quote.id === id);
+      return !q || !PROTECTED_STATUSES.includes(q.status as (typeof PROTECTED_STATUSES)[number]);
+    });
+    const skippedCount = ids.length - toDelete.length;
+
+    if (toDelete.length === 0) {
+      // Todos selecionados são protegidos — nada a fazer.
+      toast.info(
+        `${skippedCount} orçamento${skippedCount === 1 ? '' : 's'} ignorado${skippedCount === 1 ? '' : 's'}: aprovado${skippedCount === 1 ? '' : 's'} ou convertido${skippedCount === 1 ? '' : 's'} não podem ser excluídos.`,
+      );
+      setBulkDeleteIds([]);
+      return;
+    }
+
     setIsBulkDeleting(true);
-    setBulkDeleteProgress({ done: 0, total: ids.length });
+    setBulkDeleteProgress({ done: 0, total: toDelete.length });
 
     // 1) snapshot completo (quote + items) ANTES do delete — necessário p/ Desfazer.
     const snapshots: Quote[] = [];
-    for (const id of ids) {
+    for (const id of toDelete) {
       try {
         const full = await fetchQuote(id);
         if (full) snapshots.push(full);
@@ -240,19 +262,19 @@ export function useQuotesListPage() {
     // 2) delete sequencial com contagem.
     const failed: string[] = [];
     let done = 0;
-    for (const id of ids) {
+    for (const id of toDelete) {
       const ok = await deleteQuote(id);
       done += 1;
-      setBulkDeleteProgress({ done, total: ids.length });
+      setBulkDeleteProgress({ done, total: toDelete.length });
       if (!ok) failed.push(id);
     }
 
     setIsBulkDeleting(false);
-    const successCount = ids.length - failed.length;
+    const successCount = toDelete.length - failed.length;
 
     if (successCount === 0) {
       // Tudo falhou: preserva bulkDeleteIds e seleção visual para retry.
-      toast.error(`Não foi possível excluir os ${ids.length} orçamentos. Tente novamente.`);
+      toast.error(`Não foi possível excluir os ${toDelete.length} orçamentos. Tente novamente.`);
       setBulkDeleteProgress({ done: 0, total: 0 });
       return;
     }
@@ -264,10 +286,15 @@ export function useQuotesListPage() {
       window.dispatchEvent(new CustomEvent('quotes:bulk-delete-confirmed'));
     }
 
-    if (failed.length > 0) {
-      toast.warning(
-        `${successCount} excluído(s), ${failed.length} falhou(aram). Tente novamente para os pendentes.`,
-      );
+    if (failed.length > 0 || skippedCount > 0) {
+      const parts: string[] = [];
+      if (failed.length > 0)
+        parts.push(`${failed.length} falhou(aram) — tente novamente para os pendentes`);
+      if (skippedCount > 0)
+        parts.push(
+          `${skippedCount} ignorado${skippedCount === 1 ? '' : 's'} (aprovado${skippedCount === 1 ? '' : 's'}/convertido${skippedCount === 1 ? '' : 's'})`,
+        );
+      toast.warning(`${successCount} excluído(s). ${parts.join('; ')}.`);
     }
 
     // 3) toast com "Desfazer" — restaura via createQuote.
@@ -310,7 +337,7 @@ export function useQuotesListPage() {
         }
       },
     });
-  }, [bulkDeleteIds, deleteQuote, fetchQuote, createQuote]);
+  }, [bulkDeleteIds, deleteQuote, fetchQuote, createQuote, quotes]);
 
   /** Fecha o dialog SEM limpar a seleção visual — atende ao requisito do PO. */
   const cancelBulkDelete = useCallback(() => {

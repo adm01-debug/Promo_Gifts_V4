@@ -14,9 +14,26 @@
  *   - fetchAllLimits: carrega lista completa
  *   - estado inicial: limits=[], myLimit=null, isLoading=false
  */
+import { createElement, useRef, type ReactNode } from 'react';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { renderHook, act, waitFor } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { useSellerDiscountLimits } from '../useSellerDiscountLimits';
+
+// Wrapper de teste: provê um QueryClient isolado por render tree.
+function TestProviders({ children }: { children: ReactNode }) {
+  const clientRef = useRef<QueryClient | null>(null);
+  if (!clientRef.current) {
+    clientRef.current = new QueryClient({
+      defaultOptions: { queries: { retry: false, gcTime: 0 }, mutations: { retry: false } },
+    });
+  }
+  return createElement(QueryClientProvider, { client: clientRef.current }, children);
+}
+
+const renderHookWithProviders = (hook: () => ReturnType<typeof useSellerDiscountLimits>) =>
+  renderHook(hook, { wrapper: TestProviders });
+
 
 // ── Mocks ─────────────────────────────────────────────────────────────────────
 const mockMaybeSingle = vi.fn();
@@ -67,14 +84,14 @@ beforeEach(() => {
 // ── Estado inicial ────────────────────────────────────────────────────────────
 describe('estado inicial', () => {
   it('limits=[], myLimit=null, isLoading=false', () => {
-    const { result } = renderHook(() => useSellerDiscountLimits());
+    const { result } = renderHookWithProviders(() => useSellerDiscountLimits());
     expect(result.current.limits).toEqual([]);
     expect(result.current.myLimit).toBeNull();
     expect(result.current.isLoading).toBe(false);
   });
 
   it('expõe as 5 funções esperadas', () => {
-    const { result } = renderHook(() => useSellerDiscountLimits());
+    const { result } = renderHookWithProviders(() => useSellerDiscountLimits());
     expect(typeof result.current.fetchAllLimits).toBe('function');
     expect(typeof result.current.fetchMyLimit).toBe('function');
     expect(typeof result.current.setLimit).toBe('function');
@@ -90,7 +107,7 @@ describe('fetchMyLimit', () => {
     });
     mockSelect.mockReturnValue({ eq: eqFn });
 
-    const { result } = renderHook(() => useSellerDiscountLimits());
+    const { result } = renderHookWithProviders(() => useSellerDiscountLimits());
     await waitFor(() => expect(result.current.myLimit).toBe(15));
   });
 
@@ -100,7 +117,7 @@ describe('fetchMyLimit', () => {
     });
     mockSelect.mockReturnValue({ eq: eqFn });
 
-    const { result } = renderHook(() => useSellerDiscountLimits());
+    const { result } = renderHookWithProviders(() => useSellerDiscountLimits());
     await waitFor(() => expect(mockSelect).toHaveBeenCalled());
     expect(result.current.myLimit).toBeNull();
   });
@@ -110,7 +127,7 @@ describe('fetchMyLimit', () => {
     vi.mocked(useAuth).mockReturnValueOnce({ user: null } as never);
     const { supabase } = await import('@/integrations/supabase/client');
 
-    renderHook(() => useSellerDiscountLimits());
+    renderHookWithProviders(() => useSellerDiscountLimits());
     await new Promise((r) => {
       setTimeout(r, 50);
     });
@@ -127,7 +144,7 @@ describe('fetchMyLimit', () => {
     mockSelect.mockReturnValue({ eq: eqFn });
 
     const { logger } = await import('@/lib/logger');
-    const { result } = renderHook(() => useSellerDiscountLimits());
+    const { result } = renderHookWithProviders(() => useSellerDiscountLimits());
     await waitFor(() => expect(mockSelect).toHaveBeenCalled());
 
     expect(vi.mocked(logger.error)).toHaveBeenCalledWith(
@@ -144,7 +161,7 @@ describe('setLimit', () => {
     const { supabase } = await import('@/integrations/supabase/client');
     mockUpsert.mockReturnValue({ error: null });
 
-    const { result } = renderHook(() => useSellerDiscountLimits());
+    const { result } = renderHookWithProviders(() => useSellerDiscountLimits());
     await act(async () => {
       await result.current.setLimit('seller-abc', 20, 'aprovado pela diretoria');
     });
@@ -165,7 +182,7 @@ describe('setLimit', () => {
     mockUpsert.mockReturnValue({ error: null });
     const { toast } = await import('sonner');
 
-    const { result } = renderHook(() => useSellerDiscountLimits());
+    const { result } = renderHookWithProviders(() => useSellerDiscountLimits());
     let outcome: boolean | undefined;
     await act(async () => {
       outcome = await result.current.setLimit('s1', 15);
@@ -179,7 +196,7 @@ describe('setLimit', () => {
     mockUpsert.mockReturnValue({ error: { message: 'RLS denied' } });
     const { toast } = await import('sonner');
 
-    const { result } = renderHook(() => useSellerDiscountLimits());
+    const { result } = renderHookWithProviders(() => useSellerDiscountLimits());
     let outcome: boolean | undefined;
     await act(async () => {
       outcome = await result.current.setLimit('s1', 99);
@@ -193,7 +210,7 @@ describe('setLimit', () => {
     const { useAuth } = await import('@/contexts/AuthContext');
     vi.mocked(useAuth).mockReturnValue({ user: null } as never);
 
-    const { result } = renderHook(() => useSellerDiscountLimits());
+    const { result } = renderHookWithProviders(() => useSellerDiscountLimits());
     let outcome: boolean | undefined;
     await act(async () => {
       outcome = await result.current.setLimit('s1', 15);
@@ -215,7 +232,7 @@ describe('deleteLimit', () => {
     } as never);
     const { toast } = await import('sonner');
 
-    const { result } = renderHook(() => useSellerDiscountLimits());
+    const { result } = renderHookWithProviders(() => useSellerDiscountLimits());
     let outcome: boolean | undefined;
     await act(async () => {
       outcome = await result.current.deleteLimit('limit-123');
@@ -234,7 +251,7 @@ describe('deleteLimit', () => {
     } as never);
     const { toast } = await import('sonner');
 
-    const { result } = renderHook(() => useSellerDiscountLimits());
+    const { result } = renderHookWithProviders(() => useSellerDiscountLimits());
     let outcome: boolean | undefined;
     await act(async () => {
       outcome = await result.current.deleteLimit('limit-999');

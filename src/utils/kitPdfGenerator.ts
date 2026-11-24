@@ -33,6 +33,7 @@ import {
   setText,
   WHITE,
 } from './kitPdfPrimitives';
+import { drawFooter } from './kitPdfFooter';
 
 interface KitPdfOptions {
   kitState: KitState;
@@ -358,8 +359,12 @@ function drawPriceBreakdown(
   doc.setFontSize(8);
   doc.setFont('helvetica', 'normal');
   setText(doc, GRAY_500);
-  doc.text(`Subtotal (${kitQuantity} kit${kitQuantity > 1 ? 's' : ''})`, 114, totalBoxY + 7);
-  doc.text(formatCurrency(pricing.subtotal), 192, totalBoxY + 7, { align: 'right' });
+  // `pricing.subtotal` inclui a personalizacao (linha propria logo abaixo);
+  // `pricing.productsPrice` e o que a linha de produtos deve mostrar.
+  // `pricing.subtotal` ja inclui a personalizacao (linha propria logo abaixo);
+  // `pricing.productsPrice` e o que a linha de produtos deve mostrar.
+  doc.text(`Produtos (${kitQuantity} kit${kitQuantity > 1 ? 's' : ''})`, 114, totalBoxY + 7);
+  doc.text(formatCurrency(pricing.productsPrice), 192, totalBoxY + 7, { align: 'right' });
 
   if (pricing.personalizationPrice > 0) {
     doc.text('Personalização', 114, totalBoxY + 13);
@@ -407,23 +412,6 @@ function drawFreightSummary(
   setText(doc, GRAY_800);
   doc.text(clientText, 14, y);
   return y + 8;
-}
-
-function drawFooter(doc: jsPDF) {
-  const pageHeight = doc.internal.pageSize.getHeight();
-  const pageCount = doc.getNumberOfPages();
-  for (let page = 1; page <= pageCount; page++) {
-    doc.setPage(page);
-    doc.setFontSize(7);
-    doc.setFont('helvetica', 'normal');
-    setText(doc, GRAY_500);
-    doc.text(
-      'Valores estimados, sujeitos a confirmação. Preços de personalização podem variar conforme arte final.',
-      14,
-      pageHeight - 10,
-    );
-    doc.text(`Página ${page} de ${pageCount}`, 196, pageHeight - 10, { align: 'right' });
-  }
 }
 
 export function generateKitPDF(options: KitPdfOptions): Blob {
