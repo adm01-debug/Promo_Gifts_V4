@@ -135,6 +135,27 @@
 
 | role | privilégios |
 |---|---|
-| anon | SELECT |
 | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
+
+
+Grants por coluna:
+
+| coluna | role | privilégios |
+|---|---|---|
+| created_at | anon | SELECT |
+| id | anon | SELECT |
+| is_active | anon | SELECT |
+| is_curved | anon | SELECT |
+| location_code | anon | SELECT |
+| location_name | anon | SELECT |
+| location_order | anon | SELECT |
+| max_height | anon | SELECT |
+| max_width | anon | SELECT |
+| notes | anon | SELECT |
+| product_id | anon | SELECT |
+| production_days | anon | SELECT |
+| shape | anon | SELECT |
+| tabela_preco_id | anon | SELECT |
+| technique_order | anon | SELECT |
+| updated_at | anon | SELECT |

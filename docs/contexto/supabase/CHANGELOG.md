@@ -2,6 +2,15 @@
 
 Diff semântico gerado a cada coleta em que algo mudou.
 
+## 2026-11-24 19:15 UTC
+
+- **colunas** removido (1): `public.v_print_area_techniques_public.unit_cost`
+- **colunas** alterado (2): `public.v_print_area_techniques_public.created_at`, `public.v_print_area_techniques_public.updated_at`
+- **functions** alterado (1): `public.fn_verify_anon_catalog_grants()`
+- **grants** removido (1): `public.print_area_techniques:anon`
+- **migrations** adicionado (1): `20261124163000_revoke_anon_unit_cost_print_areas`
+- **views** alterado (1): `public.v_print_area_techniques_public`
+
 ## 2026-11-24 18:21 UTC
 
 - **migrations** adicionado (1): `20261124171500_internal_managed_schema_dictionary`

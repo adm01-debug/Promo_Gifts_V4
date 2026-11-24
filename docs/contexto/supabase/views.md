@@ -3563,7 +3563,7 @@ SELECT id,
 | opções | security_invoker=true |
 | depende de | public.print_area_techniques |
 | populada | n/a |
-| comentário |  |
+| comentário | Areas de gravacao publicas (geometria/ordem). NAO projeta unit_cost: custo de gravacao e dado interno (restaurado o contrato do bloco M4 de 20260611150000). security_invoker=true de proposito (P06, 20260716) - o anon le a tabela por GRANT por coluna, sem unit_cost. |
 
 
 ```sql
@@ -3580,7 +3580,6 @@ SELECT id,
     technique_order,
     is_active,
     notes,
-    unit_cost,
     created_at,
     updated_at
    FROM print_area_techniques

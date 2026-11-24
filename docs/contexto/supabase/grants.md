@@ -528,7 +528,6 @@ Roles da API: `anon` (sem login), `authenticated` (logado), `service_role` (bypa
 | public.pipeline_run_log | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
 | public.price_history | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | public.price_history | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
-| public.print_area_techniques | anon | SELECT |
 | public.print_area_techniques | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | public.print_area_techniques | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
 | public.product_ai_content | anon | SELECT |
@@ -1303,6 +1302,22 @@ Roles da API: `anon` (sem login), `authenticated` (logado), `service_role` (bypa
 | public.kit_component_print_areas.max_width | anon | SELECT |
 | public.kit_component_print_areas.shape | anon | SELECT |
 | public.kit_component_print_areas.technique_order | anon | SELECT |
+| public.print_area_techniques.created_at | anon | SELECT |
+| public.print_area_techniques.id | anon | SELECT |
+| public.print_area_techniques.is_active | anon | SELECT |
+| public.print_area_techniques.is_curved | anon | SELECT |
+| public.print_area_techniques.location_code | anon | SELECT |
+| public.print_area_techniques.location_name | anon | SELECT |
+| public.print_area_techniques.location_order | anon | SELECT |
+| public.print_area_techniques.max_height | anon | SELECT |
+| public.print_area_techniques.max_width | anon | SELECT |
+| public.print_area_techniques.notes | anon | SELECT |
+| public.print_area_techniques.product_id | anon | SELECT |
+| public.print_area_techniques.production_days | anon | SELECT |
+| public.print_area_techniques.shape | anon | SELECT |
+| public.print_area_techniques.tabela_preco_id | anon | SELECT |
+| public.print_area_techniques.technique_order | anon | SELECT |
+| public.print_area_techniques.updated_at | anon | SELECT |
 | public.product_kit_components.id | anon | SELECT |
 | public.product_kit_components.kit_product_id | anon | SELECT |
 | public.products.id | anon | SELECT |
