@@ -50,11 +50,22 @@ const REQUIRE_LIVE = shouldRequireLive(argv);
 const fromFileArg = argv.find((a) => a.startsWith('--from-file='));
 
 // docs/SCHEMA_REFERENCE.md §8.5
-const SQL = `
-  SELECT DISTINCT table_name, privilege_type
-  FROM information_schema.role_table_grants
-  WHERE table_schema='public' AND grantee='anon'
-    AND privilege_type IN ('INSERT','UPDATE','DELETE')
+//
+// Medição AUTORITATIVA. information_schema.role_table_grants é uma view filtrada por
+// "o grantor ou o grantee é um papel habilitado na sessão": quando o GRANT veio de outro
+// grantor (ex.: o assistente do Supabase pela Management API), a linha some e o gate
+// reporta 0 com o privilégio existindo — foi o que aconteceu em 14/11 (liveGrantCount: 0)
+// enquanto dois pg_dump do vivo (23/11 e 24/11) listavam GRANT ... TO "anon" em ~220
+// tabelas de public. has_table_privilege() lê pg_class.relacl direto (inclusive grant a
+// PUBLIC) e não esconde linha.
+export const ANON_WRITE_GRANTS_SQL = `
+  SELECT c.relname AS table_name, p.priv AS privilege_type
+  FROM pg_class c
+  JOIN pg_namespace n ON n.oid = c.relnamespace
+  CROSS JOIN (VALUES ('INSERT'), ('UPDATE'), ('DELETE')) AS p(priv)
+  WHERE n.nspname = 'public'
+    AND c.relkind IN ('r', 'p', 'f')
+    AND has_table_privilege('anon', c.oid, p.priv)
   ORDER BY table_name, privilege_type;
 `.trim();
 
@@ -84,7 +95,7 @@ export function computeViolations({ liveGrants, allowlist }) {
 }
 
 async function fetchLiveGrants() {
-  return querySupabaseReadOnly(SQL);
+  return querySupabaseReadOnly(ANON_WRITE_GRANTS_SQL);
 }
 
 async function main() {

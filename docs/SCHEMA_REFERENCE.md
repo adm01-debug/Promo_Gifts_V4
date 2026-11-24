@@ -397,7 +397,31 @@ ORDER BY jobname;
 
 </details>
 
-### 8.5 GRANT de escrita para anon (P1 — FECHADO, esperado: 0)
+### 8.5 GRANT de escrita para anon (esperado: 0)
+
+Use **esta** query. `information_schema.role_table_grants` é uma view filtrada por
+"o grantor ou o grantee é um papel habilitado na sessão": GRANT dado por outro grantor
+(ex.: o assistente do Supabase via Management API) não aparece, e a medição dá 0 com
+o privilégio existindo — foi o que ocorreu em 14/11 (o gate reportou `liveGrantCount: 0`
+enquanto dois `pg_dump` do vivo, de 23/11 e 24/11, listavam ~220 tabelas com GRANT para
+`anon`).
+
+```sql
+SELECT c.relname AS table_name, p.priv AS privilege_type
+FROM pg_class c
+JOIN pg_namespace n ON n.oid = c.relnamespace
+CROSS JOIN (VALUES ('INSERT'), ('UPDATE'), ('DELETE')) AS p(priv)
+WHERE n.nspname = 'public'
+  AND c.relkind IN ('r', 'p', 'f')
+  AND has_table_privilege('anon', c.oid, p.priv)
+ORDER BY table_name, privilege_type;
+```
+
+`has_table_privilege()` lê `pg_class.relacl` direto (inclui grant a `PUBLIC`) e é imune
+ao filtro. Gate permanente: `node scripts/check-anon-write-grants.mjs --require-live`.
+
+<details><summary>Query antiga (cega — arquivada para histórico)</summary>
+
 ```sql
 SELECT DISTINCT table_name, privilege_type
 FROM information_schema.role_table_grants
@@ -405,6 +429,8 @@ WHERE table_schema='public' AND grantee='anon'
   AND privilege_type IN ('INSERT','UPDATE','DELETE')
 ORDER BY table_name;
 ```
+
+</details>
 
 ### 8.6 Views sem security_invoker (hoje: 8, ver P6)
 ```sql
