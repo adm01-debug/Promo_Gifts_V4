@@ -19,6 +19,9 @@ import { authorizeDispatcher } from "../_shared/dispatcher-auth.ts";
 import { assertSwitchEnabled } from "../_shared/kill_switch.ts";
 import { getCredential } from "../_shared/credentials.ts";
 import { getBreaker } from "../_shared/circuit-breaker.ts";
+// QA Etapa 043 (ACH-009): url-allowlist conectada em modo observador.
+// Registra would-block sem bloquear. Etapa 044 liga o bloqueio efetivo.
+import { validateExternalUrl } from "../_shared/url-allowlist.ts";
 
 const corsHeaders = buildPublicCorsHeaders({ allowMethods: "POST, OPTIONS" });
 
@@ -157,6 +160,26 @@ Deno.serve(async (req) => {
       // fix_version=2026-07-09-webhook-header-compat: lê signature_header do registro (x-webhook-signature para Champions V2)
       const _sigHdr = ((hook as {signature_header?: string}).signature_header) ?? "X-Signature-256";
       if (secret) headers[_sigHdr] = "sha256=" + await hmacSign(bodyJson, secret);
+      // ACH-009 bloqueio efetivo: recusa destinos fora da allowlist
+      const _allowlistCheckTest = validateExternalUrl(hook.url);
+      const _hostTest = (() => { try { return new URL(hook.url).hostname; } catch { return hook.url; } })();
+      if (!_allowlistCheckTest.ok) {
+        console.error(JSON.stringify({
+          level: "error", context: "allowlist", mode: "enforce",
+          verdict: "blocked", host: _hostTest,
+          reason: _allowlistCheckTest.reason, test_mode: true,
+        }));
+        return new Response(JSON.stringify({
+          ok: false,
+          error: "allowlist_blocked",
+          host: _hostTest,
+          reason: _allowlistCheckTest.reason,
+          message: `Destino bloqueado pela allowlist: ${_hostTest}. Adicione o host à allowlist para habilitar entregas.`,
+        }), { status: 403, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+      } else {
+        console.log(JSON.stringify({ level: "info", context: "allowlist", verdict: "pass",
+          host: _hostTest, test_mode: true }));
+      }
       const start = Date.now();
       try {
         const res = await fetch(hook.url, { method: "POST", headers, body: bodyJson });
@@ -301,6 +324,27 @@ Deno.serve(async (req) => {
           // fix_version=2026-07-09-webhook-header-compat: lê signature_header do registro (x-webhook-signature para Champions V2)
           const _sigHdr = ((hook as {signature_header?: string}).signature_header) ?? "X-Signature-256";
           if (secret) headers[_sigHdr] = "sha256=" + await hmacSign(bodyJson, secret);
+
+          // ACH-009 bloqueio efetivo: recusa destinos fora da allowlist
+          const _allowlistCheck = validateExternalUrl(hook.url);
+          const _host = (() => { try { return new URL(hook.url).hostname; } catch { return hook.url; } })();
+          if (!_allowlistCheck.ok) {
+            console.error(JSON.stringify({
+              level: "error", context: "allowlist", mode: "enforce",
+              verdict: "blocked", host: _host,
+              reason: _allowlistCheck.reason, webhook_id: hook.id, event,
+            }));
+            await supabase.from("webhook_deliveries").insert({
+              webhook_id: hook.id, event, payload: payload ?? null, payload_hash: phash,
+              status_code: null, response_body_truncated: `allowlist_blocked:${_host}`,
+              attempt, success: false,
+              error_message: `allowlist_blocked: host '${_host}' não está na allowlist. Adicione-o para habilitar entregas.`,
+            });
+            break; // não tenta retry — a URL é a causa, não a rede
+          } else {
+            console.log(JSON.stringify({ level: "info", context: "allowlist", verdict: "pass",
+              host: _host, webhook_id: hook.id }));
+          }
 
           const res = await fetch(hook.url, { method: "POST", headers, body: bodyJson });
           const respText = (await res.text()).slice(0, 4000);

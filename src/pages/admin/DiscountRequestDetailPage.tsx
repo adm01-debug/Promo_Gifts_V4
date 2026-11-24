@@ -25,6 +25,7 @@ import {
   assertDiscountApprovalTransition,
   darDecisionTarget,
 } from '@/lib/discount-approval-status-config';
+import { updateQuoteStatusSafely } from '@/lib/quotes/status-transition';
 
 interface RequestRow {
   id: string;
@@ -102,11 +103,14 @@ export default function DiscountRequestDetailPage() {
         })
         .eq('id', id);
       if (error) throw error;
-      const { error: quoteError } = await supabase
-        .from('quotes') // rls-allow: admin (admin-routes); atualiza status do orçamento vinculado; RLS admin policy
-        .update({ status: approved ? 'pending' : 'draft' })
-        .eq('id', data.quote_id);
-      if (quoteError) throw quoteError;
+      // Etapa 098 (ACH-086): a escrita de status do orçamento vinculado passa
+      // pelo caminho único, que lê o status atual, valida o par no mapa do FE e
+      // só então faz o UPDATE (erro do banco vira mensagem legível no toast).
+      await updateQuoteStatusSafely({
+        quoteId: data.quote_id,
+        to: approved ? 'pending' : 'draft',
+        source: 'ui',
+      });
     },
     onSuccess: () => {
       toast.success('Decisão registrada');

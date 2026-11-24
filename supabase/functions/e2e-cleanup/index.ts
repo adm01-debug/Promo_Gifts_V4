@@ -136,6 +136,7 @@ Deno.serve(async (req: Request) => {
   const SERVICE_KEY = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? '';
   const supabase = createClient(SUPABASE_URL, SERVICE_KEY);
 
+  const requestId = crypto.randomUUID();
   const { value: cleanupToken } = await resolveCredential('E2E_CLEANUP_TOKEN');
   const { value: allowedEmailsRaw } = await resolveCredential('E2E_CLEANUP_ALLOWED_EMAILS');
   const ALLOWED_EMAILS = new Set(
@@ -144,6 +145,21 @@ Deno.serve(async (req: Request) => {
       .map((e: string) => e.trim().toLowerCase())
       .filter(Boolean),
   );
+
+  // ACH-071: alarme de dessincronia — loga erro explícito quando configuração
+  // obrigatória está ausente, em vez de recusar em silêncio.
+  if (!cleanupToken) {
+    console.error(JSON.stringify({
+      level: 'error', context: 'e2e-cleanup', request_id: requestId,
+      alarm: 'missing_token', message: 'E2E_CLEANUP_TOKEN ausente — função está operacional mas nenhuma requisicao sera autenticada.',
+    }));
+  }
+  if (ALLOWED_EMAILS.size === 0) {
+    console.error(JSON.stringify({
+      level: 'error', context: 'e2e-cleanup', request_id: requestId,
+      alarm: 'empty_allowlist', message: 'E2E_CLEANUP_ALLOWED_EMAILS vazio — nenhum email sera autorizado (dessincronia com token).',
+    }));
+  }
 
   // 1. Auth
   const incomingToken = req.headers.get('x-e2e-cleanup-token') ?? '';
@@ -397,6 +413,12 @@ Deno.serve(async (req: Request) => {
       // sem nameFilterPrefix podem tocar estas tabelas e o storage.
       // Quotes são tratadas separadamente porque quote_items não possui
       // seller_id; a FK ON DELETE CASCADE remove os itens atomicamente.
+      //
+      // ACH-071 (etapa 042): segunda barreira de segurança — só apaga quotes
+      // com client_name começando em '[E2E]'. Mesmo que a allowlist de email
+      // seja misconfigured e um usuário real seja apagado, as quotes reais
+      // (sem o prefixo) não serão tocadas.
+      const E2E_CLIENT_NAME_PREFIX = '[E2E]%';
       const {
         data: fullQuoteRows,
         count: fullQuoteCount,
@@ -405,6 +427,7 @@ Deno.serve(async (req: Request) => {
         .from('quotes')
         .select('id', { count: 'exact' })
         .eq('seller_id', userId)
+        .like('client_name', E2E_CLIENT_NAME_PREFIX)
         .limit(1000);
       if (fullQuoteLookupError) {
         errors.quotes_lookup = fullQuoteLookupError.message;
@@ -428,7 +451,8 @@ Deno.serve(async (req: Request) => {
           const { count, error } = await supabase
             .from('quotes')
             .delete({ count: 'exact' })
-            .eq('seller_id', userId);
+            .eq('seller_id', userId)
+            .like('client_name', E2E_CLIENT_NAME_PREFIX);
           if (error) errors.quotes = error.message;
           else {
             deleted.quotes = count ?? 0;

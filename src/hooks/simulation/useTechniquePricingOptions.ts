@@ -1,6 +1,7 @@
 // src/hooks/useTechniquePricingOptions.ts
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useRef } from 'react';
 import { dbInvoke } from '@/lib/db/postgrest';
+import { useMountedRef } from '@/hooks/common/useMountedRef';
 
 import { logger } from '@/lib/logger';
 interface PriceTableEntry {
@@ -53,12 +54,18 @@ export interface TechniquePricingInfo {
 export function useTechniquePricingOptions(techniqueCode: string | null): TechniquePricingInfo {
   const [tables, setTables] = useState<PriceTableEntry[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+  const requestTokenRef = useRef(0);
+  const mountedRef = useMountedRef();
 
   useEffect(() => {
     if (!techniqueCode) {
       setTables([]);
       return;
     }
+    // Trocar de técnica rápido não pode deixar a resposta anterior sobrescrever
+    // a tabela da técnica escolhida: só a busca mais recente grava estado.
+    const token = ++requestTokenRef.current;
+    const isCurrent = () => requestTokenRef.current === token && mountedRef.current;
     const fetchTables = async () => {
       setIsLoading(true);
       try {
@@ -69,16 +76,18 @@ export function useTechniquePricingOptions(techniqueCode: string | null): Techni
           filters: { table_code: techniqueCode },
           limit: 100,
         });
+        if (!isCurrent()) return;
         setTables((result.records || []) as PriceTableEntry[]);
       } catch (err) {
         logger.error('Error fetching technique pricing tables:', err);
+        if (!isCurrent()) return;
         setTables([]);
       } finally {
-        setIsLoading(false);
+        if (isCurrent()) setIsLoading(false);
       }
     };
     fetchTables();
-  }, [techniqueCode]);
+  }, [techniqueCode, mountedRef]);
 
   const hasPriceByColor = useMemo(() => tables.some((t) => t.price_by_color), [tables]);
   const hasPriceByArea = useMemo(() => tables.some((t) => t.price_by_area), [tables]);
@@ -145,6 +154,8 @@ export function useTechniquePricingOptions(techniqueCode: string | null): Techni
 export function useMultipleTechniquePricing(techniqueCodes: string[]) {
   const [allTables, setAllTables] = useState<Record<string, PriceTableEntry[]>>({});
   const [isLoading, setIsLoading] = useState(false);
+  const requestTokenRef = useRef(0);
+  const mountedRef = useMountedRef();
   const techniqueCodesKey = techniqueCodes.join(',');
 
   useEffect(() => {
@@ -153,6 +164,8 @@ export function useMultipleTechniquePricing(techniqueCodes: string[]) {
       setAllTables({});
       return;
     }
+    const token = ++requestTokenRef.current;
+    const isCurrent = () => requestTokenRef.current === token && mountedRef.current;
     const fetchAll = async () => {
       setIsLoading(true);
       const results: Record<string, PriceTableEntry[]> = {};
@@ -172,11 +185,12 @@ export function useMultipleTechniquePricing(techniqueCodes: string[]) {
           }
         }),
       );
+      if (!isCurrent()) return;
       setAllTables(results);
       setIsLoading(false);
     };
     fetchAll();
-  }, [techniqueCodesKey]);
+  }, [techniqueCodesKey, mountedRef]);
 
   const getPricingInfo = (code: string): Omit<TechniquePricingInfo, 'isLoading'> => {
     const tables = allTables[code] || [];

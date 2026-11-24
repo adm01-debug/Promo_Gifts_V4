@@ -4,6 +4,7 @@ import { z } from "npm:zod@3.23.8";
 import { castRpcResult } from "../_shared/supabase-client-adapter.ts";
 import { safeJson } from "../_shared/json-parser.ts";
 import { getOrCreateRequestId, REQUEST_ID_HEADER } from "../_shared/request-id.ts";
+import { safeErrorResponse } from "../_shared/error-response.ts";
 import { createStructuredLogger } from "../_shared/structured-logger.ts";
 import { readJwtAal } from "../_shared/authorize.ts";
 
@@ -390,7 +391,7 @@ Deno.serve(async (req) => {
         .select('role')
         .eq('user_id', payload.user_id);
       if (targetErr) {
-        return jsonRes(corsHeaders, { error: targetErr.message }, 500);
+        return safeErrorResponse(targetErr, { corsHeaders, logLabel: "[manage-users] fetch user_roles error", publicMessage: "db_error" });
       }
       const previousRole = targetRows?.[0]?.role ?? 'vendedor';
       const normalizedPrev =
@@ -419,7 +420,7 @@ Deno.serve(async (req) => {
           .insert({ user_id: payload.user_id, role: payload.new_role }));
       }
       if (upsertErr) {
-        return jsonRes(corsHeaders, { error: upsertErr.message }, 500);
+        return safeErrorResponse(upsertErr, { corsHeaders, logLabel: "[manage-users] upsert user_roles error", publicMessage: "db_error" });
       }
 
       // Auditoria
@@ -452,7 +453,6 @@ Deno.serve(async (req) => {
     return jsonRes(corsHeaders, { error: 'Ação inválida' }, 400);
 
   } catch (error: unknown) {
-    const msg = error instanceof Error ? error.message : 'Erro interno';
-    return jsonRes(corsHeaders, { error: msg }, 500);
+    return safeErrorResponse(error, { corsHeaders, logLabel: "[manage-users] unhandled error", publicMessage: "internal_error" });
   }
 });

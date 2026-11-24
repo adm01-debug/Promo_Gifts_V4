@@ -2976,5 +2976,54 @@ Forward-only e idempotente (`SET (security_invoker = false)` repetido é no-op).
 
 | versão | arquivo | sha256 | status |
 |---|---|---|---|
-| `20261122180000` | `restore_definer_views_p06_e_compras` | `0557bb14d32b939ea057ee211025f64d44987f8c14fb6339fa03c771b59bb3e9` | aguardando aplicação via `db-apply-migration.yml` (`version=20261122180000`) — DDL em produção, regra 8 |
-| `20261122200000` | `fix_cadeia_views_compras_e_compositions` | `3120c7fe446a3b190d768c7de6c1c40af900f9678cef8d5b97e54f62e9b725b2` | aguardando aplicação via `db-apply-migration.yml` (`version=20261122200000`) — DDL em produção, regra 8 |
+| `20261122180000` | `restore_definer_views_p06_e_compras` | `0557bb14d32b939ea057ee211025f64d44987f8c14fb6339fa03c771b59bb3e9` | aplicada — versão presente no ledger remoto (`supabase/baseline/20261122200000_ledger_versions.json`, snapshot de 2026-11-23) |
+| `20261122200000` | `fix_cadeia_views_compras_e_compositions` | `3120c7fe446a3b190d768c7de6c1c40af900f9678cef8d5b97e54f62e9b725b2` | aplicada — é o `max(version)` do ledger remoto; o baseline rotacionado leva o nome dela (`supabase/baseline/20261122200000_baseline_schema.sql`, PR #4034) |
+
+## Reconciliacao 2026-11-23 - DDL aplicada pelo assistente do Supabase
+
+O assistente de IA do Supabase aplicou, em 2026-11-23, um pacote de melhorias de seguranca e de
+performance direto no projeto canonico (`doufsxqlfjyuvxuezpln`), com autorizacao do dono do
+negocio. Nenhuma dessas mudancas tem entrada em `supabase_migrations.schema_migrations`, entao o
+`db diff` do `db-schema-drift-check` passou a acusar drift e o Gate E40 ficou vermelho em toda PR
+que toca `supabase/migrations/`.
+
+Inventario do que mudou em relacao ao baseline `20261122180000`:
+
+| objeto | mudanca |
+|---|---|
+| `orders` (`orders_insert`, `orders_select`, `orders_update`) | mesmo predicado, reescrito na forma com initplan (`( SELECT auth.uid() AS uid)`, `( SELECT public.can_view_all_sales() AS can_view_all_sales)`) |
+| `order_items` (`order_items_insert`, `order_items_select`, `order_items_update`) | idem, initplan em `can_view_all_sales()` |
+| `product_commemorative_dates.pcd_oa_read_all` | passou a liberar tambem registros ativos (`is_active = true`) para `authenticated` |
+| `product_commemorative_dates.pcd_read_public` | perdeu `authenticated` (`{anon,authenticated}` -> `{anon}`); esse papel agora cai em `pcd_oa_read_all` |
+| `public.business_calendar`, `public.freight_settings` | indices novos nas FKs `created_by` / `updated_by` |
+| `prod_audit.*` (5 tabelas) e `classification_audit.category_suggestions` | `ENABLE ROW LEVEL SECURITY` sem policy: deny-by-default para `anon`/`authenticated`, acesso so por `service_role` |
+
+As tabelas de auditoria nao sao lidas pelo app (`src/` e `supabase/functions/` nao referenciam
+`prod_audit` nem `classification_audit`), entao o deny-by-default nao remove funcionalidade.
+
+### Como foi reconciliado
+
+Nao por migration espelho. O replay do `db-schema-drift-check` so aplica migrations presentes no
+ledger canonico (`selectReplayMigrations` filtra por `appliedVersions` em
+`scripts/drift-baseline.mjs`), entao um arquivo novo em `supabase/migrations/` que nunca foi
+aplicado nao reproduz o estado vivo e o E40 continuaria vermelho. Registrar a versao no ledger
+exigiria escrita em producao (`db-apply-migration.yml`, `mode=repair-only`, regra 8) e o E051
+obriga a girar o baseline logo depois.
+
+Reconciliacao aplicada: `schema-snapshot-export.yml` com `force_rotate: true` (run `45293671035`,
+2026-11-24). O dump ao vivo virou o baseline `20261122200000`
+(`supabase/baseline/20261122200000_baseline_schema.sql` + `20261122200000_ledger_versions.json`,
+que substituem o `20261122180000`), mergeado em
+`chore(schema-snapshot): snapshot semanal 2026-W48 (#4034)` (`918511e6`). Com B = maior versao do
+ledger, nada sobra para replay: o shadow passa a ser igual ao vivo e o Gate E40 fica verde sem
+DDL nova em producao e sem entrada nova no ledger.
+
+O baseline assinado de policies (`.security/policies-baseline.json`) foi regenerado do mesmo
+estado vivo por `policies-baseline.yml` (`seed=true`) e mergeado em
+`chore(security): atualiza baseline assinado de RLS policies (#4032)`: e ele que o Gate 1.13
+(`check-policies-baseline --require-live`) compara contra `pg_policies`.
+
+Rollback do pacote: as definicoes anteriores das 8 policies estao no baseline antigo
+`20261122180000_baseline_schema.sql` (removido de `main` em `918511e6`) e no
+`.security/policies-baseline.json` de `53b42181^` (sha256 `b9b74e0f`). Reverter exige recriar as
+policies com aquelas definicoes via `db-apply-migration.yml` (regra 8).

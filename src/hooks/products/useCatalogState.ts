@@ -265,6 +265,8 @@ export function useCatalogState() {
     hasNextPage,
     fetchNextPage,
     refetch: refetchCatalog,
+    isError: isCatalogError,
+    error: catalogError,
   } = useProductsCatalog({
     search: debouncedServerSearch,
     categories: filters.categories,
@@ -790,6 +792,8 @@ export function useCatalogState() {
     isLoadingMore,
     isInitialCatalogLoad,
     isLoading,
+    isCatalogError,
+    catalogError,
     isBackgroundFetching: isFetchingNextPage,
     paginatedProducts,
     filteredProducts,

@@ -733,23 +733,21 @@ export function useQuoteBuilderState() {
           }
         }
 
-        // BUG-008 FIX: Validate status transition before hitting DB
-        const isApprovalRequestFromEditable =
-          status === 'pending_approval' &&
-          ['draft', 'pending', 'pending_approval'].includes(currentStatus ?? '');
+        // BUG-008 FIX: Validate status transition before hitting DB.
+        // Etapa 100 (ACH-087): o bypass local de pending -> pending_approval
+        // existia porque esse par faltava no mapa. O par entrou em
+        // QUOTE_VALID_TRANSITIONS (SSOT) e o bypass saiu: so o mapa decide.
         if (
           isEditMode &&
           quoteId &&
           currentStatus &&
           currentStatus !== status &&
-          !isApprovalRequestFromEditable
+          !isValidQuoteTransition(currentStatus as QuoteStatus, status as QuoteStatus)
         ) {
-          if (!isValidQuoteTransition(currentStatus as QuoteStatus, status as QuoteStatus)) {
-            toast.error(
-              `Não é possível alterar o status de "${getQuoteStatusLabel(currentStatus)}" para "${getQuoteStatusLabel(status)}".`,
-            );
-            return;
-          }
+          toast.error(
+            `Não é possível alterar o status de "${getQuoteStatusLabel(currentStatus)}" para "${getQuoteStatusLabel(status)}".`,
+          );
+          return;
         }
 
         // Bloqueio de fechamento: preços defasados precisam de confirmação

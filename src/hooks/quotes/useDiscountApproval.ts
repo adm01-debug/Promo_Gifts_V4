@@ -10,6 +10,8 @@ import { logRlsDenial } from '@/lib/security/rls-denial-logger';
 import { createRespondToApproval } from './discountApprovalResponder';
 
 import { logger } from '@/lib/logger';
+import { updateQuoteStatusSafely } from '@/lib/quotes/status-transition';
+import type { QuoteStatus } from '@/types/quote';
 export interface DiscountApprovalRequest {
   id: string;
   quote_id: string;
@@ -203,12 +205,23 @@ export function useDiscountApproval() {
           // IMPORTANT: throw on failure — a swallowed error here would leave an
           // orphaned approval request row while the quote stays editable, allowing
           // the seller to overwrite the discount under admin review.
-          const { error: statusError } = await supabase
+          // Etapa 096 (ACH-086): passa pelo caminho único de escrita de status,
+          // que valida o par (draft|pending → pending_approval) no mapa do FE e
+          // traduz o erro do banco em mensagem legível antes de chegar ao toast.
+          const { data: quoteRow } = await supabase
             // rls-allow: fluxo de aprovação admin/seller; RLS filtra por papel
             .from('quotes')
-            .update({ status: 'pending_approval' })
-            .eq('id', quoteId);
-          if (statusError) {
+            .select('status')
+            .eq('id', quoteId)
+            .maybeSingle();
+          try {
+            await updateQuoteStatusSafely({
+              quoteId,
+              from: (quoteRow?.status as QuoteStatus | undefined) ?? 'draft',
+              to: 'pending_approval',
+              source: 'ui',
+            });
+          } catch (statusError) {
             logger.error('Failed to set quote status to pending_approval:', statusError);
             throw statusError;
           }
@@ -309,6 +322,12 @@ export function useDiscountApproval() {
               'Falha temporária do servidor (5xx). Aguarde alguns segundos e tente novamente.',
               { duration: 8000 },
             );
+          } else if (e?.name === 'QuoteStatusTransitionError') {
+            // Etapa 096: mensagem já pronta para o usuário vinda do caminho único
+            // de escrita de status (par proibido pelo mapa ou recusa do banco).
+            toast.error(msg || 'Não é possível solicitar aprovação para este orçamento.', {
+              duration: 8000,
+            });
           } else {
             toast.error('Erro ao solicitar aprovação. Tente novamente em instantes.');
           }
