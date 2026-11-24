@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "cbb46a8cc96fc2a36b7d580ffe2c5d8b272e1408",
+  "sha": "a0daedaf6c63b577d379ca5bf382fa93fa2aaad2",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-24 13:57 UTC",
-  "files_total": 11183,
-  "code_files": 9176,
-  "code_lines": 1302350
+  "generated_at": "2026-11-24 14:24 UTC",
+  "files_total": 11185,
+  "code_files": 9178,
+  "code_lines": 1302508
  },
  "version": "1.3.2",
- "facts_hash": "add039b2724acbfd",
+ "facts_hash": "d7fb47e56c804f29",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -1130,7 +1130,7 @@
   ],
   "package_manager": "npm",
   "languages": {
-   ".sql": 3498,
+   ".sql": 3500,
    ".ts": 3179,
    ".tsx": 2026,
    ".mjs": 455,
@@ -96166,6 +96166,7 @@
    "supabase/migrations/20261122180000_restore_definer_views_p06_e_compras.sql",
    "supabase/migrations/20261122200000_fix_cadeia_views_compras_e_compositions.sql",
    "supabase/migrations/20261124120000_revoke_anon_write_grants_public.sql",
+   "supabase/migrations/20261124140000_close_anon_cost_surface.sql",
    "supabase/rollbacks/20260511235950_rollback.sql",
    "supabase/rollbacks/20260511235959_rollback.sql",
    "supabase/rollbacks/20260611014515_fn_dryrun_standardize_supplier_real_rollback.sql",
@@ -96298,6 +96299,7 @@
    "supabase/rollbacks/20261122180000_rollback.sql",
    "supabase/rollbacks/20261122200000_rollback.sql",
    "supabase/rollbacks/20261124120000_rollback.sql",
+   "supabase/rollbacks/20261124140000_rollback.sql",
    "supabase/rollbacks/rollback_20261025002500_analyze_tables_p03.sql",
    "supabase/sql-legacy/001_notification_system.sql",
    "supabase/sql-legacy/002_notification_preferences.sql",
@@ -134029,6 +134031,62 @@
    },
    {
     "kind": "revoke",
+    "privs": "select",
+    "object": "v_compras_catalogo",
+    "objkind": "table",
+    "roles": "anon",
+    "src": "supabase/migrations/20261124140000_close_anon_cost_surface.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "select",
+    "object": "v_compras_precos_faixa",
+    "objkind": "table",
+    "roles": "anon",
+    "src": "supabase/migrations/20261124140000_close_anon_cost_surface.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "select",
+    "object": "v_compras_precos_variante",
+    "objkind": "table",
+    "roles": "anon",
+    "src": "supabase/migrations/20261124140000_close_anon_cost_surface.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "select",
+    "object": "variant_supplier_sources",
+    "objkind": "table",
+    "roles": "anon",
+    "src": "supabase/migrations/20261124140000_close_anon_cost_surface.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "select",
+    "object": "markup_configurations",
+    "objkind": "table",
+    "roles": "anon",
+    "src": "supabase/migrations/20261124140000_close_anon_cost_surface.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "select",
+    "object": "vw_variant_sale_prices",
+    "objkind": "table",
+    "roles": "anon",
+    "src": "supabase/migrations/20261124140000_close_anon_cost_surface.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "select",
+    "object": "suppliers",
+    "objkind": "table",
+    "roles": "anon",
+    "src": "supabase/migrations/20261124140000_close_anon_cost_surface.sql"
+   },
+   {
+    "kind": "revoke",
     "privs": "all",
     "object": "fn_dryrun_standardize_supplier",
     "objkind": "function",
@@ -135346,6 +135404,54 @@
     "objkind": "table",
     "roles": "anon",
     "src": "supabase/rollbacks/20261122200000_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "select",
+    "object": "v_compras_catalogo",
+    "objkind": "table",
+    "roles": "anon",
+    "src": "supabase/rollbacks/20261124140000_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "select",
+    "object": "v_compras_precos_faixa",
+    "objkind": "table",
+    "roles": "anon",
+    "src": "supabase/rollbacks/20261124140000_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "select",
+    "object": "v_compras_precos_variante",
+    "objkind": "table",
+    "roles": "anon",
+    "src": "supabase/rollbacks/20261124140000_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "select",
+    "object": "variant_supplier_sources",
+    "objkind": "table",
+    "roles": "anon",
+    "src": "supabase/rollbacks/20261124140000_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "select",
+    "object": "markup_configurations",
+    "objkind": "table",
+    "roles": "anon",
+    "src": "supabase/rollbacks/20261124140000_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "select",
+    "object": "vw_variant_sale_prices",
+    "objkind": "table",
+    "roles": "anon",
+    "src": "supabase/rollbacks/20261124140000_rollback.sql"
    },
    {
     "kind": "grant",
@@ -153095,8 +153201,8 @@
   },
   {
    "module": "supabase/migrations",
-   "files": 3127,
-   "lines": 227324,
+   "files": 3128,
+   "lines": 227465,
    "tables": [
     "...",
     "admin_audit_log",
@@ -153194,8 +153300,8 @@
   },
   {
    "module": "supabase/rollbacks",
-   "files": 133,
-   "lines": 5140,
+   "files": 134,
+   "lines": 5157,
    "tables": [],
    "exports": [],
    "docs": [],
@@ -405461,6 +405567,62 @@
    },
    {
     "kind": "revoke",
+    "privs": "select",
+    "object": "v_compras_catalogo",
+    "objkind": "table",
+    "roles": "anon",
+    "src": "supabase/migrations/20261124140000_close_anon_cost_surface.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "select",
+    "object": "v_compras_precos_faixa",
+    "objkind": "table",
+    "roles": "anon",
+    "src": "supabase/migrations/20261124140000_close_anon_cost_surface.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "select",
+    "object": "v_compras_precos_variante",
+    "objkind": "table",
+    "roles": "anon",
+    "src": "supabase/migrations/20261124140000_close_anon_cost_surface.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "select",
+    "object": "variant_supplier_sources",
+    "objkind": "table",
+    "roles": "anon",
+    "src": "supabase/migrations/20261124140000_close_anon_cost_surface.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "select",
+    "object": "markup_configurations",
+    "objkind": "table",
+    "roles": "anon",
+    "src": "supabase/migrations/20261124140000_close_anon_cost_surface.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "select",
+    "object": "vw_variant_sale_prices",
+    "objkind": "table",
+    "roles": "anon",
+    "src": "supabase/migrations/20261124140000_close_anon_cost_surface.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "select",
+    "object": "suppliers",
+    "objkind": "table",
+    "roles": "anon",
+    "src": "supabase/migrations/20261124140000_close_anon_cost_surface.sql"
+   },
+   {
+    "kind": "revoke",
     "privs": "all",
     "object": "fn_dryrun_standardize_supplier",
     "objkind": "function",
@@ -406778,6 +406940,54 @@
     "objkind": "table",
     "roles": "anon",
     "src": "supabase/rollbacks/20261122200000_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "select",
+    "object": "v_compras_catalogo",
+    "objkind": "table",
+    "roles": "anon",
+    "src": "supabase/rollbacks/20261124140000_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "select",
+    "object": "v_compras_precos_faixa",
+    "objkind": "table",
+    "roles": "anon",
+    "src": "supabase/rollbacks/20261124140000_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "select",
+    "object": "v_compras_precos_variante",
+    "objkind": "table",
+    "roles": "anon",
+    "src": "supabase/rollbacks/20261124140000_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "select",
+    "object": "variant_supplier_sources",
+    "objkind": "table",
+    "roles": "anon",
+    "src": "supabase/rollbacks/20261124140000_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "select",
+    "object": "markup_configurations",
+    "objkind": "table",
+    "roles": "anon",
+    "src": "supabase/rollbacks/20261124140000_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "select",
+    "object": "vw_variant_sale_prices",
+    "objkind": "table",
+    "roles": "anon",
+    "src": "supabase/rollbacks/20261124140000_rollback.sql"
    },
    {
     "kind": "grant",
@@ -537305,6 +537515,10 @@
    "path": "supabase/migrations/20261124120000_revoke_anon_write_grants_public.sql",
    "lines": 112
   },
+  "supabase/migrations/20261124140000_close_anon_cost_surface.sql": {
+   "path": "supabase/migrations/20261124140000_close_anon_cost_surface.sql",
+   "lines": 141
+  },
   "supabase/rollbacks/20260511235950_rollback.sql": {
    "path": "supabase/rollbacks/20260511235950_rollback.sql",
    "lines": 5
@@ -537851,6 +538065,10 @@
   "supabase/rollbacks/20261124120000_rollback.sql": {
    "path": "supabase/rollbacks/20261124120000_rollback.sql",
    "lines": 230
+  },
+  "supabase/rollbacks/20261124140000_rollback.sql": {
+   "path": "supabase/rollbacks/20261124140000_rollback.sql",
+   "lines": 17
   },
   "supabase/rollbacks/rollback_20261025002500_analyze_tables_p03.sql": {
    "path": "supabase/rollbacks/rollback_20261025002500_analyze_tables_p03.sql",
@@ -563503,10 +563721,22 @@
   }
  },
  "git": {
-  "sha": "cbb46a8cc96fc2a36b7d580ffe2c5d8b272e1408",
+  "sha": "a0daedaf6c63b577d379ca5bf382fa93fa2aaad2",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "a0daeda",
+    "date": "2026-11-24",
+    "author": "adm01-debug",
+    "subject": "fix: fecha a superficie de custo do anon sem mascarar as views de compras (#4039)",
+    "files": [
+     "docs/coordenacao/conflitos-semanticos.md",
+     "supabase/MIGRATIONS_SYNC_LOG.md",
+     "supabase/migrations/20261124140000_close_anon_cost_surface.sql",
+     "supabase/rollbacks/20261124140000_rollback.sql"
+    ]
+   },
    {
     "sha": "cbb46a8",
     "date": "2026-11-24",
@@ -563889,30 +564119,16 @@
      "docs/qa/05-PROGRESSO.md",
      "scripts/check-production-harnesses.mjs"
     ]
-   },
-   {
-    "sha": "042c212",
-    "date": "2026-11-23",
-    "author": "adm01-debug",
-    "subject": "docs(qa): auditoria exaustiva de QA — 103 achados e plano de 300 etapas (#3994)",
-    "files": [
-     "docs/qa/00-RESUMO.md",
-     "docs/qa/01-INVENTARIO.md",
-     "docs/qa/02-CENARIOS.md",
-     "docs/qa/03-ACHADOS.md",
-     "docs/qa/04-PLANO.md",
-     "docs/qa/05-PROGRESSO.md"
-    ]
    }
   ],
   "hot_files": [
    [
     "docs/qa/05-PROGRESSO.md",
-    21
+    20
    ],
    [
     "supabase/MIGRATIONS_SYNC_LOG.md",
-    3
+    4
    ],
    [
     "scripts/drift-baseline.mjs",
@@ -563937,6 +564153,18 @@
    [
     "supabase/functions/webhook-dispatcher/index.ts",
     2
+   ],
+   [
+    "docs/coordenacao/conflitos-semanticos.md",
+    1
+   ],
+   [
+    "supabase/migrations/20261124140000_close_anon_cost_surface.sql",
+    1
+   ],
+   [
+    "supabase/rollbacks/20261124140000_rollback.sql",
+    1
    ],
    [
     "docs/SCHEMA_REFERENCE.md",
@@ -563972,18 +564200,6 @@
    ],
    [
     ".security/public-views-columns.json",
-    1
-   ],
-   [
-    "tests/security/public-views-columns.test.ts",
-    1
-   ],
-   [
-    "supabase/baseline/20261122200000_baseline_schema.sql",
-    1
-   ],
-   [
-    "supabase/baseline/20261122200000_ledger_versions.json",
     1
    ]
   ]

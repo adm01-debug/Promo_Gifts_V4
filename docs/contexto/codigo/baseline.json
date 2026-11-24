@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "cbb46a8cc96fc2a36b7d580ffe2c5d8b272e1408",
+  "commit": "a0daedaf6c63b577d379ca5bf382fa93fa2aaad2",
   "branch": "main",
-  "data_commit": "2026-11-24T10:55:53-03:00",
+  "data_commit": "2026-11-24T11:23:21-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "a0daeda",
+    "data": "2026-11-24",
+    "assunto": "fix: fecha a superficie de custo do anon sem mascarar as views de compras (#4039)"
+   },
    {
     "sha": "cbb46a8",
     "data": "2026-11-24",
@@ -126,14 +131,9 @@
     "sha": "0b17fd8",
     "data": "2026-11-23",
     "assunto": "feat: Etapa 044 — ligar bloqueio efetivo allowlist no webhook-dispatcher (ACH-009) (#4015)"
-   },
-   {
-    "sha": "ec29a17",
-    "data": "2026-11-23",
-    "assunto": "fix: Etapa 045 — exigir auth antes de responder op=ping no crm-db-bridge (ACH-030) (#4014)"
    }
   ],
-  "arquivos_mudados_7d": 674,
+  "arquivos_mudados_7d": 670,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -199,7 +199,7 @@
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "supabase/MIGRATIONS_SYNC_LOG.md",
-    "mudancas": 64
+    "mudancas": 65
    },
    {
     "arquivo": "package.json",
@@ -218,11 +218,11 @@
     "mudancas": 14
    },
    {
-    "arquivo": "docs/agentes/resgates/2026-11-16-auditoria-branches.md",
-    "mudancas": 10
+    "arquivo": "docs/coordenacao/conflitos-semanticos.md",
+    "mudancas": 11
    },
    {
-    "arquivo": "docs/coordenacao/conflitos-semanticos.md",
+    "arquivo": "docs/agentes/resgates/2026-11-16-auditoria-branches.md",
     "mudancas": 10
    },
    {
@@ -301,11 +301,11 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 257
+    "commits": 258
    },
    {
     "autor": "github-actions[bot]",
-    "commits": 42
+    "commits": 41
    },
    {
     "autor": "dependabot[bot]",
@@ -314,7 +314,7 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 11255,
+  "arquivos_total": 11257,
   "arquivos_codigo": 5680,
   "linhas_codigo": 1076005,
   "rotas": 141,
@@ -326,7 +326,7 @@
   "hooks": 646,
   "edge_functions": 112,
   "tabelas": 531,
-  "migrations": 3128,
+  "migrations": 3129,
   "cron_jobs": 122,
   "testes": 2722,
   "workflows": 89,
