@@ -1243,7 +1243,7 @@
   {
    "arquivo": "scripts/check-public-views-drift.mjs",
    "descricao": "* check-public-views-drift.mjs",
-   "linhas": 310,
+   "linhas": 510,
    "env": [],
    "npm_scripts": [
     "check:public-views-drift"

@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "fbbd4ff0251c7337828f25671957ccef767ecd1d",
+  "sha": "810bfd16463701c5196b3c9f72d551e3af47f9e0",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-24 18:56 UTC",
-  "files_total": 11192,
+  "generated_at": "2026-11-24 18:59 UTC",
+  "files_total": 11193,
   "code_files": 9183,
-  "code_lines": 1302843
+  "code_lines": 1303145
  },
  "version": "1.3.2",
- "facts_hash": "b05d61656c549649",
+ "facts_hash": "150ea8a0d9f9bba4",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -151149,7 +151149,7 @@
   {
    "module": "scripts",
    "files": 300,
-   "lines": 65337,
+   "lines": 65537,
    "tables": [
     "a",
     "b",
@@ -153530,7 +153530,7 @@
   {
    "module": "tests",
    "files": 1116,
-   "lines": 176753,
+   "lines": 176855,
    "tables": [
     "bot_detection_log",
     "clients",
@@ -307757,7 +307757,7 @@
    },
    {
     "file": "tests/scripts/check-public-views-drift.test.mjs",
-    "name": "cobre exatamente as 8 views SECURITY DEFINER expostas ao anon"
+    "name": "cobre exatamente as 10 views do contrato público"
    },
    {
     "file": "tests/scripts/check-public-views-drift.test.mjs",
@@ -312961,7 +312961,7 @@
    },
    {
     "file": "tests/security/public-views-columns.test.ts",
-    "name": "cobre exatamente as 10 views expostas ao anon"
+    "name": "cobre exatamente as 10 views do contrato público"
    },
    {
     "file": "tests/security/public-views-columns.test.ts",
@@ -312986,6 +312986,30 @@
    {
     "file": "tests/security/public-views-columns.test.ts",
     "name": "script passa em modo live quando o banco bate com o contrato"
+   },
+   {
+    "file": "tests/security/public-views-columns.test.ts",
+    "name": "script passa em modo live com a exposição anon descrita pelo contrato + allowlist"
+   },
+   {
+    "file": "tests/security/public-views-columns.test.ts",
+    "name": "script falha quando objeto de public fica legível por anon fora do contrato"
+   },
+   {
+    "file": "tests/security/public-views-columns.test.ts",
+    "name": "script falha quando a allowlist está obsoleta (objeto perdeu o grant anon)"
+   },
+   {
+    "file": "tests/security/public-views-columns.test.ts",
+    "name": "script falha quando uma coluna nova passa a ser legível por anon em objeto da allowlist"
+   },
+   {
+    "file": "tests/security/public-views-columns.test.ts",
+    "name": "script falha quando o anon recupera SELECT em view marcada anon_select=false"
+   },
+   {
+    "file": "tests/security/public-views-columns.test.ts",
+    "name": "script falha quando o contrato espera SELECT anon e a view não tem o grant"
    },
    {
     "file": "tests/security/restore-seller-cart-rpc.test.ts",
@@ -438482,7 +438506,7 @@
   },
   "scripts/check-public-views-drift.mjs": {
    "path": "scripts/check-public-views-drift.mjs",
-   "lines": 310,
+   "lines": 510,
    "exports": [
     "const PUBLIC_VIEWS",
     "const SENSITIVE_PATTERNS",
@@ -438490,18 +438514,27 @@
     "function findUnacknowledgedSensitiveColumns",
     "function validateContractStructure",
     "function diffLive",
+    "function loadAnonAllowlist",
+    "function validateAnonAllowlistIntegrity",
+    "function diffAnonExposure",
     "function main"
    ],
    "rule_comments": [
     "`forbidden` de cada view, que já existia mas é uma lista fixa por view,",
-    "`forbidden` de uma view que apareça ao vivo."
+    "`forbidden` de uma view que apareça ao vivo.",
+    "`reason` real (sem marcador de pendência), de `columns` congeladas e não pode"
    ],
    "doc": "!/usr/bin/env node",
    "calc_fns": [
     {
      "name": "validateContractStructure",
      "params": "contract",
-     "body": "const views = contract.views ?? {}; const errors = []; for (const [view, spec] of Object.entries(views)) { if (!Array.isArray(spec.columns) || spec.columns.length === 0) { errors.push(`${view}: lista de colunas vazia`); continue; } const dup = spec.columns.filter((c, i) => spec.columns.indexOf(c) !== i); if (dup.length) errors.push(`${view}: colunas duplicadas ${dup.join(', ')}`); for (const f of spec.forbidden ?? []) { if (spec.columns.includes(f)) errors.push(`${view}: coluna proibida presente …"
+     "body": "const views = contract.views ?? {}; const errors = []; for (const [view, spec] of Object.entries(views)) { if (spec.anon_select !== undefined && typeof spec.anon_select !== 'boolean') { errors.push(`${view}: anon_select precisa ser booleano`); } if (!Array.isArray(spec.columns) || spec.columns.length === 0) { errors.push(`${view}: lista de colunas vazia`); continue; } const dup = spec.columns.filter((c, i) => spec.columns.indexOf(c) !== i); if (dup.length) errors.push(`${view}: colunas duplicada …"
+    },
+    {
+     "name": "validateAnonAllowlistIntegrity",
+     "params": "doc",
+     "body": "const errors = []; const objects = doc.objects; if (!Array.isArray(objects)) return ['anon-select-allowlist: campo objects ausente ou inválido']; const seen = new Set(); for (const entry of objects) { const name = entry.object; if (!name || typeof name !== 'string') { errors.push(`anon-select-allowlist: entrada sem 'object' válido: ${JSON.stringify(entry)}`); continue; } if (seen.has(name)) errors.push(`anon-select-allowlist: ${name} aparece mais de uma vez`); seen.add(name); if (!entry.reason | …"
     }
    ],
    "uses_service_role": true
@@ -557932,7 +557965,7 @@
    "doc": "PLANO_DBA E16 — testa scripts/check-public-views-drift.mjs, o gate que substitui scripts/check-public-views-columns.mjs (PR #1830, auditoria r3, 2026-09-05) como dono do contrato `.security/public-views-columns.json` (as 8 views `v_*_public` com `security_invoker=false`, todas com SELECT para `anon` …",
    "tests": [
     "contrato real (.security/public-views-columns.json)",
-    "cobre exatamente as 8 views SECURITY DEFINER expostas ao anon",
+    "cobre exatamente as 10 views do contrato público",
     "passa a validação estrutural hoje (0 erros) — nenhuma coluna sensível sem allowlist",
     "v_products_public documenta ncm_code/ncm_id/bitrix_product_id como REQUER-PO",
     "findUnacknowledgedSensitiveColumns",
@@ -561069,7 +561102,7 @@
   },
   "tests/security/public-views-columns.test.ts": {
    "path": "tests/security/public-views-columns.test.ts",
-   "lines": 79,
+   "lines": 181,
    "is_test": true,
    "params": [
     {
@@ -561079,13 +561112,19 @@
    ],
    "tests": [
     "contrato de colunas das views SECURITY DEFINER públicas",
-    "cobre exatamente as 10 views expostas ao anon",
+    "cobre exatamente as 10 views do contrato público",
     "v_suppliers_public nunca expõe credenciais/markup/contato",
     "v_tabela_preco_gravacao_oficial_public nunca expõe custos internos",
     "v_products_public declara as colunas mascaradas como NULL",
     "script passa com o contrato atual",
     "script falha quando o banco expõe coluna nova ou proibida",
-    "script passa em modo live quando o banco bate com o contrato"
+    "script passa em modo live quando o banco bate com o contrato",
+    "script passa em modo live com a exposição anon descrita pelo contrato + allowlist",
+    "script falha quando objeto de public fica legível por anon fora do contrato",
+    "script falha quando a allowlist está obsoleta (objeto perdeu o grant anon)",
+    "script falha quando uma coluna nova passa a ser legível por anon em objeto da allowlist",
+    "script falha quando o anon recupera SELECT em view marcada anon_select=false",
+    "script falha quando o contrato espera SELECT anon e a view não tem o grant"
    ]
   },
   "tests/security/restore-seller-cart-rpc.test.ts": {
@@ -563860,10 +563899,25 @@
   }
  },
  "git": {
-  "sha": "fbbd4ff0251c7337828f25671957ccef767ecd1d",
+  "sha": "810bfd16463701c5196b3c9f72d551e3af47f9e0",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "810bfd1",
+    "date": "2026-11-24",
+    "author": "adm01-debug",
+    "subject": "fix: gate de views publicas enxerga view nova legivel por anon (QA etapa 005) (#4049)",
+    "files": [
+     ".github/workflows/deploy-gates.yml",
+     ".security/anon-select-allowlist.json",
+     ".security/public-views-columns.json",
+     "docs/qa/05-PROGRESSO.md",
+     "scripts/check-public-views-drift.mjs",
+     "tests/scripts/check-public-views-drift.test.mjs",
+     "tests/security/public-views-columns.test.ts"
+    ]
+   },
    {
     "sha": "fbbd4ff",
     "date": "2026-11-24",
@@ -564235,18 +564289,6 @@
      "tests/sql/quote-status-transitions/fixture.sql",
      "tests/sql/quote-status-transitions/run-tests.py"
     ]
-   },
-   {
-    "sha": "3b7dc18",
-    "date": "2026-11-23",
-    "author": "adm01-debug",
-    "subject": "fix: Etapas 069-070 — alinhar ROLE_RANK em dispatcher-auth (ACH-022) (#4022)",
-    "files": [
-     "docs/qa/05-PROGRESSO.md",
-     "supabase/functions/_shared/authorize.ts",
-     "supabase/functions/_shared/dispatcher-auth.ts",
-     "supabase/functions/_shared/role-rank-parity.test.ts"
-    ]
    }
   ],
   "hot_files": [
@@ -564261,6 +564303,14 @@
    [
     "docs/agentes/resgates/2026-11-24-auditoria-branches-restantes.md",
     3
+   ],
+   [
+    ".security/public-views-columns.json",
+    2
+   ],
+   [
+    "tests/security/public-views-columns.test.ts",
+    2
    ],
    [
     "docs/coordenacao/conflitos-semanticos.md",
@@ -564281,6 +564331,22 @@
    [
     "package.json",
     2
+   ],
+   [
+    ".github/workflows/deploy-gates.yml",
+    1
+   ],
+   [
+    ".security/anon-select-allowlist.json",
+    1
+   ],
+   [
+    "scripts/check-public-views-drift.mjs",
+    1
+   ],
+   [
+    "tests/scripts/check-public-views-drift.test.mjs",
+    1
    ],
    [
     "src/lib/__tests__/fetch-print-areas.anonSelect.test.ts",
@@ -564304,30 +564370,6 @@
    ],
    [
     "supabase/rollbacks/20261124171500_rollback.sql",
-    1
-   ],
-   [
-    "docs/qa/evidencia-compras-views.md",
-    1
-   ],
-   [
-    "supabase/migrations/20261124140000_close_anon_cost_surface.sql",
-    1
-   ],
-   [
-    "supabase/rollbacks/20261124140000_rollback.sql",
-    1
-   ],
-   [
-    "docs/SCHEMA_REFERENCE.md",
-    1
-   ],
-   [
-    "scripts/check-anon-write-grants.mjs",
-    1
-   ],
-   [
-    "supabase/migrations/20261124120000_revoke_anon_write_grants_public.sql",
     1
    ]
   ]

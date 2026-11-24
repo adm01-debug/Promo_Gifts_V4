@@ -22377,9 +22377,9 @@
   {
    "arquivo": "tests/security/public-views-columns.test.ts",
    "tipo": "unit",
-   "linhas": 79,
+   "linhas": 181,
    "testa": [],
-   "casos": 7
+   "casos": 13
   },
   {
    "arquivo": "tests/security/restore-seller-cart-rpc.test.ts",

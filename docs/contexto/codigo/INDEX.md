@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e de hora em hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `fbbd4ff0251c7337828f25671957ccef767ecd1d` (2026-11-24T15:55:36-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e de hora em hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `810bfd16463701c5196b3c9f72d551e3af47f9e0` (2026-11-24T15:55:42-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -36,7 +36,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 |---|---|
 | arquivos_total | 11264 |
 | arquivos_codigo | 5681 |
-| linhas_codigo | 1076080 |
+| linhas_codigo | 1076382 |
 | rotas | 141 |
 | rotas_http_backend | 13 |
 | vistas_por_id | 0 |
@@ -599,22 +599,22 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - possiveis_segredos_no_codigo: 7 — ex.: scripts/ai-context/cenarios.mjs:102, src/components/admin/connections/__tests__/ConnectionSecurity.unit.test.tsx:9, src/integrations/supabase/client.ts:27
 
 ## Grafo de código (graphify)
-- 50953 nós · 86390 arestas · 2851 comunidades · grafo do commit `fbbd4ff0`
-- comunidades maiores: vitest (851), ref_components (821), ref_integrations (598), ref_lib (581), ref_node_child_process (538), ref_hooks (455), ref_types (392), @tanstack/react-query (372), gotoAndSettle (362), react-router-dom (351), react (342), sonner (331)
+- 50963 nós · 86410 arestas · 2844 comunidades · grafo do commit `810bfd16`
+- comunidades maiores: vitest (836), react (555), lucide-react (547), react-router-dom (427), ref_node_child_process (416), ref_hooks (404), ref_integrations (387), ref_types (387), @tanstack/react-query (378), ref_components (353), sonner (332), cors.ts (323)
 - símbolos mais chamados: gotoAndSettle() (e2e/helpers/nav.ts), re (?), json (?), q() (scripts/supabase_snapshot/snapshot.py), analyze() (tests/scripts/test_personalization_artifact_diagnostics.py), outer() (tests/scripts/test_personalization_artifact_diagnostics.py), useExternalDatabase() (recovery/src-legacy/src/hooks/useExternalDatabase.ts), concludeCheck() (scripts/check-result-contract.mjs), querySupabaseReadOnly() (scripts/supabase-read-only-query.mjs), loginAs() (e2e/helpers/auth.ts), inner() (tests/scripts/test_personalization_artifact_diagnostics.py), excluded_sql() (scripts/supabase_snapshot/snapshot.py)
 - consulta local: `graphify query "<pergunta>"`, `graphify path "<A>" "<B>"`, `graphify explain "<X>"`
 
 ## Hotspots (arquivos mais alterados, 90 dias)
 - supabase/MIGRATIONS_SYNC_LOG.md (69)
+- docs/qa/05-PROGRESSO.md (24)
 - package.json (24)
-- docs/qa/05-PROGRESSO.md (23)
 - package-lock.json (18)
 - CHANGELOG.md (14)
 - docs/agentes/resgates/2026-11-16-auditoria-branches.md (10)
 - docs/coordenacao/conflitos-semanticos.md (10)
+- .github/workflows/deploy-gates.yml (8)
 - src/lib/freight/index.ts (8)
 - src/pages/quotes/QuoteBuilderPage.tsx (8)
-- .github/workflows/deploy-gates.yml (7)
 - audit/supabase-reference-catalog.temporary.json (6)
 - src/hooks/quotes/useQuoteBuilderState.ts (6)
 - src/integrations/supabase/types.ts (6)
@@ -1198,6 +1198,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - CHANGELOG topo: [1.19.0](https://github.com/adm01-debug/Promo_Gifts_V4/compare/gifts-store-v1.18.0...gifts-store-v1.19.0) (2026-11-22)
 
 ## Últimos commits
+- 2026-11-24 `810bfd1` fix: gate de views publicas enxerga view nova legivel por anon (QA etapa 005) (#4049)
 - 2026-11-24 `fbbd4ff` fix: area de gravacao legivel por anon com colunas explicitas (#4053)
 - 2026-11-24 `a1b5482` docs(migrations-log): recibo E15 — aplicação de 20261124163000 (#4052)
 - 2026-11-24 `2de2ccd` fix: fecha leitura anon de print_area_techniques.unit_cost (#4047)
@@ -1212,7 +1213,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-24 `a0daeda` fix: fecha a superficie de custo do anon sem mascarar as views de compras (#4039)
 - 2026-11-24 `cbb46a8` fix: gate de anon-grants mede pelo catalogo e revoga escrita morta de anon (#4038)
 - 2026-11-24 `2d5016c` fix: Gate E40 passa a acusar migration já coberta pelo baseline que mudou depois do dump (#4040)
-- 2026-11-24 `7468ec8` fix: zera ruido de round-trip no Gate E40 (#4035)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

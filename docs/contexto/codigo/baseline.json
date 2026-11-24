@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "fbbd4ff0251c7337828f25671957ccef767ecd1d",
+  "commit": "810bfd16463701c5196b3c9f72d551e3af47f9e0",
   "branch": "main",
-  "data_commit": "2026-11-24T15:55:36-03:00",
+  "data_commit": "2026-11-24T15:55:42-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "810bfd1",
+    "data": "2026-11-24",
+    "assunto": "fix: gate de views publicas enxerga view nova legivel por anon (QA etapa 005) (#4049)"
+   },
    {
     "sha": "fbbd4ff",
     "data": "2026-11-24",
@@ -126,14 +131,9 @@
     "sha": "5eaf98a",
     "data": "2026-11-23",
     "assunto": "fix(qa): etapas 103, 108, 113 e 114 - subtotal do kit alinhado ao banco (#4024)"
-   },
-   {
-    "sha": "35aa001",
-    "data": "2026-11-23",
-    "assunto": "fix(qa): etapas 131-135 - baseline da suite e testes do kit-builder (#4025)"
    }
   ],
-  "arquivos_mudados_7d": 671,
+  "arquivos_mudados_7d": 675,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -202,12 +202,12 @@
     "mudancas": 69
    },
    {
-    "arquivo": "package.json",
+    "arquivo": "docs/qa/05-PROGRESSO.md",
     "mudancas": 24
    },
    {
-    "arquivo": "docs/qa/05-PROGRESSO.md",
-    "mudancas": 23
+    "arquivo": "package.json",
+    "mudancas": 24
    },
    {
     "arquivo": "package-lock.json",
@@ -226,16 +226,16 @@
     "mudancas": 10
    },
    {
+    "arquivo": ".github/workflows/deploy-gates.yml",
+    "mudancas": 8
+   },
+   {
     "arquivo": "src/lib/freight/index.ts",
     "mudancas": 8
    },
    {
     "arquivo": "src/pages/quotes/QuoteBuilderPage.tsx",
     "mudancas": 8
-   },
-   {
-    "arquivo": ".github/workflows/deploy-gates.yml",
-    "mudancas": 7
    },
    {
     "arquivo": "audit/supabase-reference-catalog.temporary.json",
@@ -312,7 +312,7 @@
  "contagens": {
   "arquivos_total": 11264,
   "arquivos_codigo": 5681,
-  "linhas_codigo": 1076080,
+  "linhas_codigo": 1076382,
   "rotas": 141,
   "rotas_http_backend": 13,
   "vistas_por_id": 0,
@@ -1312,7 +1312,7 @@
   },
   "scripts/check-public-views-drift.mjs": {
    "arquivos": 1,
-   "linhas": 310
+   "linhas": 510
   },
   "scripts/check-quote-rpc-canonical-readiness.mjs": {
    "arquivos": 1,
@@ -2160,7 +2160,7 @@
   },
   "tests/security": {
    "arquivos": 30,
-   "linhas": 3032
+   "linhas": 3134
   },
   "tests/setup-ref-warning-capture.ts": {
    "arquivos": 1,
@@ -2378,8 +2378,8 @@
   "console_log": 1308,
   "ts_ignore": 0,
   "eslint_disable": 24,
-  "todos": 111,
-  "arquivos_acima_500_linhas": 185
+  "todos": 113,
+  "arquivos_acima_500_linhas": 186
  },
  "todos": [
   {
@@ -2561,6 +2561,18 @@
    "linha": 153,
    "tipo": "TODO",
    "texto": "\\b/.test(String(e.reason)))"
+  },
+  {
+   "arquivo": "scripts/check-public-views-drift.mjs",
+   "linha": 49,
+   "tipo": "TODO",
+   "texto": "objeto de `public` (view ou matview) que o"
+  },
+  {
+   "arquivo": "scripts/check-public-views-drift.mjs",
+   "linha": 285,
+   "tipo": "TODO",
+   "texto": "|PENDENTE|FALTA|PLACEHOLDER/i.test(entry.reason)) {"
   },
   {
    "arquivo": "scripts/check-rls-no-policy-drift.mjs",
