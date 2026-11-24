@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "810bfd16463701c5196b3c9f72d551e3af47f9e0",
+  "commit": "519b6a367943dd0465bfbc97d78d4952f8497cd7",
   "branch": "main",
-  "data_commit": "2026-11-24T15:55:42-03:00",
+  "data_commit": "2026-11-24T16:13:33-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "519b6a3",
+    "data": "2026-11-24",
+    "assunto": "fix: leitura de areas de gravacao segue a projecao da view publica (#4054)"
+   },
    {
     "sha": "810bfd1",
     "data": "2026-11-24",
@@ -126,11 +131,6 @@
     "sha": "e8a15b4",
     "data": "2026-11-23",
     "assunto": "feat(hooks): merge parcial em profiles.preferences (etapas 141-146) (#4029)"
-   },
-   {
-    "sha": "5eaf98a",
-    "data": "2026-11-23",
-    "assunto": "fix(qa): etapas 103, 108, 113 e 114 - subtotal do kit alinhado ao banco (#4024)"
    }
   ],
   "arquivos_mudados_7d": 675,
@@ -312,7 +312,7 @@
  "contagens": {
   "arquivos_total": 11264,
   "arquivos_codigo": 5681,
-  "linhas_codigo": 1076382,
+  "linhas_codigo": 1076402,
   "rotas": 141,
   "rotas_http_backend": 13,
   "vistas_por_id": 0,
@@ -1928,7 +1928,7 @@
   },
   "src/lib": {
    "arquivos": 424,
-   "linhas": 65489
+   "linhas": 65509
   },
   "src/logic": {
    "arquivos": 4,

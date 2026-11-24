@@ -9614,7 +9614,7 @@
   {
    "arquivo": "src/lib/__tests__/fetch-print-areas.anonSelect.test.ts",
    "tipo": "unit",
-   "linhas": 44,
+   "linhas": 63,
    "testa": [
     "src/lib/fetch-print-areas.ts"
    ],

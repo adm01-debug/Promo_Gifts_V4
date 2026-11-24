@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "810bfd16463701c5196b3c9f72d551e3af47f9e0",
+  "sha": "519b6a367943dd0465bfbc97d78d4952f8497cd7",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-24 18:59 UTC",
+  "generated_at": "2026-11-24 19:17 UTC",
   "files_total": 11193,
   "code_files": 9183,
-  "code_lines": 1303145
+  "code_lines": 1303165
  },
  "version": "1.3.2",
- "facts_hash": "150ea8a0d9f9bba4",
+ "facts_hash": "702e726478e1bb54",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -152044,7 +152044,7 @@
   {
    "module": "src/lib",
    "files": 425,
-   "lines": 65499,
+   "lines": 65519,
    "tables": [
     "...",
     "companies",
@@ -486356,7 +486356,7 @@
   },
   "src/lib/fetch-print-areas.ts": {
    "path": "src/lib/fetch-print-areas.ts",
-   "lines": 191,
+   "lines": 192,
    "exports": [
     "interface PrintAreaFromProduct",
     "function fetchPrintAreasFromProduct"
@@ -487369,9 +487369,9 @@
   },
   "src/lib/__tests__/fetch-print-areas.anonSelect.test.ts": {
    "path": "src/lib/__tests__/fetch-print-areas.anonSelect.test.ts",
-   "lines": 44,
+   "lines": 63,
    "is_test": true,
-   "doc": "Regressao (2026-11-24): `print_area_techniques` passou a ter GRANT por COLUNA para `anon` (migration 20261124163000 revoga `unit_cost` do `anon`). Com grant por coluna, o PostgREST expande `select=*` para a tabela inteira e responde 401/42501 para `anon` — medido na REST de producao: antes 200, depo …",
+   "doc": "Contrato da leitura de areas de gravacao (2026-11-24). `dbInvoke` resolve `print_area_techniques` para `v_print_area_techniques_public` (GOLD_READ_ALIASES), cuja projecao tem 15 colunas — sem `unit_cost` e sem `production_days`. Pedir coluna fora da projecao responde 400/42703 e a leitura cai para ` …",
    "tests": [
     "fetchPrintAreasFromProduct — select explicito para anon",
     "pede colunas explicitas (sem unit_cost) em print_area_techniques"
@@ -563899,10 +563899,20 @@
   }
  },
  "git": {
-  "sha": "810bfd16463701c5196b3c9f72d551e3af47f9e0",
+  "sha": "519b6a367943dd0465bfbc97d78d4952f8497cd7",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "519b6a3",
+    "date": "2026-11-24",
+    "author": "adm01-debug",
+    "subject": "fix: leitura de areas de gravacao segue a projecao da view publica (#4054)",
+    "files": [
+     "src/lib/__tests__/fetch-print-areas.anonSelect.test.ts",
+     "src/lib/fetch-print-areas.ts"
+    ]
+   },
    {
     "sha": "810bfd1",
     "date": "2026-11-24",
@@ -564233,68 +564243,12 @@
     "files": [
      "docs/qa/05-PROGRESSO.md"
     ]
-   },
-   {
-    "sha": "4b02d22",
-    "date": "2026-11-23",
-    "author": "adm01-debug",
-    "subject": "fix(qa): etapas 072-079 - erro de catalogo, colecoes e templates separados do vazio (#4023)",
-    "files": [
-     "docs/qa/05-PROGRESSO.md",
-     "docs/qa/telas-sem-estado-de-erro.md",
-     "package.json",
-     "src/components/catalog/CatalogContent.tsx",
-     "src/components/catalog/__tests__/CatalogContent.error.test.tsx",
-     "src/components/compare/SupplierComparisonModal.tsx",
-     "src/components/compare/__tests__/SupplierComparisonModal.export.test.tsx",
-     "src/components/layout/SidebarReorganized.tsx",
-     "src/components/layout/__tests__/SidebarReorganized.badge.test.ts",
-     "src/components/layout/sidebar/SidebarNavGroup.tsx",
-     "src/components/layout/sidebar/pending-approval-badge.ts",
-     "src/components/quotes/AdminTemplatesManager.tsx",
-     "src/components/quotes/QuoteTemplatesList.tsx",
-     "src/components/quotes/__tests__/QuoteTemplatesList.error.test.tsx",
-     "src/contexts/CollectionsContext.tsx",
-     "src/hooks/__tests__/useSellerDiscountLimits.propagation.test.tsx",
-     "src/hooks/collections/useCollections.ts",
-     "src/hooks/kit-builder/__tests__/useKitCollaboration.fallback.test.tsx",
-     "src/hooks/kit-builder/__tests__/useKitCollaboration.invalidate.test.tsx",
-     "src/hooks/kit-builder/useKitCollaboration.ts",
-     "src/hooks/products/useCatalogState.ts",
-     "src/hooks/quotes/__tests__/useSellerDiscountLimits.guard.test.ts",
-     "src/hooks/quotes/__tests__/useSellerDiscountLimits.test.ts",
-     "src/hooks/quotes/discountApprovalResponder.ts",
-     "src/hooks/quotes/useDiscountApproval.ts",
-     "src/hooks/quotes/useQuoteBuilderState.ts",
-     "src/hooks/quotes/useQuoteTemplates.ts",
-     "src/hooks/quotes/useSellerDiscountLimits.ts",
-     "src/lib/discount-approval-status-config.ts",
-     "src/lib/quote-status-config.ts",
-     "src/lib/quotes/__tests__/status-transition.test.ts",
-     "src/lib/quotes/status-transition.ts",
-     "src/pages/Index.tsx",
-     "src/pages/admin/DiscountRequestDetailPage.tsx",
-     "src/pages/admin/RolePermissionsPage.tsx",
-     "src/pages/admin/SellerDiscountLimitsAdminPage.tsx",
-     "src/pages/admin/__tests__/RolePermissionsPage.invalidate.test.tsx",
-     "src/pages/admin/__tests__/RolePermissionsPage.save.test.tsx",
-     "src/pages/collections/CollectionsPage.tsx",
-     "src/pages/collections/useCollectionsPageState.ts",
-     "src/pages/filters/useFiltersPageState.ts",
-     "src/pages/products/FiltersPage.tsx",
-     "src/pages/products/__tests__/FiltersPage.error.test.tsx",
-     "src/pages/quotes/QuoteViewPage.tsx",
-     "tests/sql/quote-status-transitions/README.md",
-     "tests/sql/quote-status-transitions/extract-transitions.mts",
-     "tests/sql/quote-status-transitions/fixture.sql",
-     "tests/sql/quote-status-transitions/run-tests.py"
-    ]
    }
   ],
   "hot_files": [
    [
     "docs/qa/05-PROGRESSO.md",
-    11
+    10
    ],
    [
     "supabase/MIGRATIONS_SYNC_LOG.md",
@@ -564303,6 +564257,14 @@
    [
     "docs/agentes/resgates/2026-11-24-auditoria-branches-restantes.md",
     3
+   ],
+   [
+    "src/lib/__tests__/fetch-print-areas.anonSelect.test.ts",
+    2
+   ],
+   [
+    "src/lib/fetch-print-areas.ts",
+    2
    ],
    [
     ".security/public-views-columns.json",
@@ -564329,10 +564291,6 @@
     2
    ],
    [
-    "package.json",
-    2
-   ],
-   [
     ".github/workflows/deploy-gates.yml",
     1
    ],
@@ -564349,14 +564307,6 @@
     1
    ],
    [
-    "src/lib/__tests__/fetch-print-areas.anonSelect.test.ts",
-    1
-   ],
-   [
-    "src/lib/fetch-print-areas.ts",
-    1
-   ],
-   [
     "supabase/migrations/20261124163000_revoke_anon_unit_cost_print_areas.sql",
     1
    ],
@@ -564370,6 +564320,10 @@
    ],
    [
     "supabase/rollbacks/20261124171500_rollback.sql",
+    1
+   ],
+   [
+    "docs/qa/evidencia-compras-views.md",
     1
    ]
   ]
