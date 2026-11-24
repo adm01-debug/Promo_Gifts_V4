@@ -8144,7 +8144,7 @@
         "type": "timestamp with time zone"
       },
       {
-        "comment": null,
+        "comment": "Identificador UUID da definição de atributo.",
         "default": "gen_random_uuid()",
         "generated": null,
         "identity": null,
@@ -8157,7 +8157,7 @@
         "type": "uuid"
       },
       {
-        "comment": null,
+        "comment": "Organização à qual pertence a definição de atributo.",
         "default": null,
         "generated": null,
         "identity": null,
@@ -8170,7 +8170,7 @@
         "type": "uuid"
       },
       {
-        "comment": null,
+        "comment": "Grupo ao qual pertence a definição, quando houver.",
         "default": null,
         "generated": null,
         "identity": null,
@@ -8183,7 +8183,7 @@
         "type": "uuid"
       },
       {
-        "comment": null,
+        "comment": "Nome interno do atributo.",
         "default": null,
         "generated": null,
         "identity": null,
@@ -8196,7 +8196,7 @@
         "type": "character varying(100)"
       },
       {
-        "comment": null,
+        "comment": "Slug estável do atributo para identificação em código ou integrações.",
         "default": null,
         "generated": null,
         "identity": null,
@@ -8209,7 +8209,7 @@
         "type": "character varying(100)"
       },
       {
-        "comment": null,
+        "comment": "Rótulo do atributo apresentado na interface.",
         "default": null,
         "generated": null,
         "identity": null,
@@ -8222,7 +8222,7 @@
         "type": "character varying(150)"
       },
       {
-        "comment": null,
+        "comment": "Descrição do significado ou uso do atributo.",
         "default": null,
         "generated": null,
         "identity": null,
@@ -8235,7 +8235,7 @@
         "type": "text"
       },
       {
-        "comment": null,
+        "comment": "Tipo do valor do atributo: text, number, boolean, select ou multiselect.",
         "default": "'text'::character varying",
         "generated": null,
         "identity": null,
@@ -8248,7 +8248,7 @@
         "type": "character varying(20)"
       },
       {
-        "comment": null,
+        "comment": "Unidade de medida associada ao atributo, quando aplicável.",
         "default": null,
         "generated": null,
         "identity": null,
@@ -8261,7 +8261,7 @@
         "type": "character varying(30)"
       },
       {
-        "comment": null,
+        "comment": "Valor padrão do atributo, quando configurado.",
         "default": null,
         "generated": null,
         "identity": null,
@@ -8274,7 +8274,7 @@
         "type": "text"
       },
       {
-        "comment": null,
+        "comment": "Valores permitidos para atributos do tipo select ou multiselect, armazenados em JSONB.",
         "default": null,
         "generated": null,
         "identity": null,
@@ -8287,7 +8287,7 @@
         "type": "jsonb"
       },
       {
-        "comment": null,
+        "comment": "Regras adicionais de validação do valor, armazenadas em JSONB.",
         "default": null,
         "generated": null,
         "identity": null,
@@ -8300,7 +8300,7 @@
         "type": "jsonb"
       },
       {
-        "comment": null,
+        "comment": "Indica se o atributo é obrigatório.",
         "default": "false",
         "generated": null,
         "identity": null,
@@ -8313,7 +8313,7 @@
         "type": "boolean"
       },
       {
-        "comment": null,
+        "comment": "Indica se o atributo pode ser usado para filtrar produtos.",
         "default": "true",
         "generated": null,
         "identity": null,
@@ -8326,7 +8326,7 @@
         "type": "boolean"
       },
       {
-        "comment": null,
+        "comment": "Indica se o atributo pode ser usado na comparação de produtos.",
         "default": "true",
         "generated": null,
         "identity": null,
@@ -8339,7 +8339,7 @@
         "type": "boolean"
       },
       {
-        "comment": null,
+        "comment": "Indica se o atributo deve ser exibido na interface.",
         "default": "true",
         "generated": null,
         "identity": null,
@@ -8352,7 +8352,7 @@
         "type": "boolean"
       },
       {
-        "comment": null,
+        "comment": "Indica se o atributo pode ser considerado na busca.",
         "default": "false",
         "generated": null,
         "identity": null,
@@ -8365,7 +8365,7 @@
         "type": "boolean"
       },
       {
-        "comment": null,
+        "comment": "Ordem de exibição do atributo.",
         "default": "0",
         "generated": null,
         "identity": null,
@@ -8378,7 +8378,7 @@
         "type": "integer"
       },
       {
-        "comment": null,
+        "comment": "Indica se a definição do atributo está ativa.",
         "default": "true",
         "generated": null,
         "identity": null,
@@ -8391,7 +8391,7 @@
         "type": "boolean"
       },
       {
-        "comment": null,
+        "comment": "Data e hora de criação da definição do atributo.",
         "default": "now()",
         "generated": null,
         "identity": null,
@@ -8404,7 +8404,7 @@
         "type": "timestamp with time zone"
       },
       {
-        "comment": null,
+        "comment": "Data e hora da última atualização da definição do atributo.",
         "default": "now()",
         "generated": null,
         "identity": null,
@@ -8664,7 +8664,7 @@
         "type": "timestamp with time zone"
       },
       {
-        "comment": null,
+        "comment": "Identificador UUID do grupo de atributos.",
         "default": "gen_random_uuid()",
         "generated": null,
         "identity": null,
@@ -8677,7 +8677,7 @@
         "type": "uuid"
       },
       {
-        "comment": null,
+        "comment": "Organização à qual pertence o grupo de atributos.",
         "default": null,
         "generated": null,
         "identity": null,
@@ -8690,7 +8690,7 @@
         "type": "uuid"
       },
       {
-        "comment": null,
+        "comment": "Nome de exibição do grupo de atributos.",
         "default": null,
         "generated": null,
         "identity": null,
@@ -8703,7 +8703,7 @@
         "type": "character varying(100)"
       },
       {
-        "comment": null,
+        "comment": "Slug do grupo de atributos para identificação estável.",
         "default": null,
         "generated": null,
         "identity": null,
@@ -8716,7 +8716,7 @@
         "type": "character varying(100)"
       },
       {
-        "comment": null,
+        "comment": "Descrição do grupo de atributos.",
         "default": null,
         "generated": null,
         "identity": null,
@@ -8729,7 +8729,7 @@
         "type": "text"
       },
       {
-        "comment": null,
+        "comment": "Identificador do ícone usado para representar o grupo na interface.",
         "default": null,
         "generated": null,
         "identity": null,
@@ -8742,7 +8742,7 @@
         "type": "character varying(50)"
       },
       {
-        "comment": null,
+        "comment": "Ordem de exibição do grupo.",
         "default": "0",
         "generated": null,
         "identity": null,
@@ -8755,7 +8755,7 @@
         "type": "integer"
       },
       {
-        "comment": null,
+        "comment": "Indica se o grupo está ativo.",
         "default": "true",
         "generated": null,
         "identity": null,
@@ -8768,7 +8768,7 @@
         "type": "boolean"
       },
       {
-        "comment": null,
+        "comment": "Data e hora de criação do grupo.",
         "default": "now()",
         "generated": null,
         "identity": null,
@@ -8781,7 +8781,7 @@
         "type": "timestamp with time zone"
       },
       {
-        "comment": null,
+        "comment": "Data e hora da última atualização do grupo.",
         "default": "now()",
         "generated": null,
         "identity": null,
@@ -9223,7 +9223,7 @@
         "type": "timestamp with time zone"
       },
       {
-        "comment": null,
+        "comment": "Identificador UUID do vínculo entre coleção B2B e produto.",
         "default": "gen_random_uuid()",
         "generated": null,
         "identity": null,
@@ -9236,7 +9236,7 @@
         "type": "uuid"
       },
       {
-        "comment": null,
+        "comment": "Coleção B2B à qual o produto foi adicionado.",
         "default": null,
         "generated": null,
         "identity": null,
@@ -9249,7 +9249,7 @@
         "type": "uuid"
       },
       {
-        "comment": null,
+        "comment": "Produto associado à coleção B2B.",
         "default": null,
         "generated": null,
         "identity": null,
@@ -9262,7 +9262,7 @@
         "type": "uuid"
       },
       {
-        "comment": null,
+        "comment": "Ordem de exibição do produto na coleção B2B.",
         "default": "0",
         "generated": null,
         "identity": null,
@@ -9275,7 +9275,7 @@
         "type": "integer"
       },
       {
-        "comment": null,
+        "comment": "Data e hora em que o produto foi adicionado à coleção B2B.",
         "default": "now()",
         "generated": null,
         "identity": null,
@@ -9288,7 +9288,7 @@
         "type": "timestamp with time zone"
       },
       {
-        "comment": null,
+        "comment": "Identificador UUID da coleção B2B.",
         "default": "gen_random_uuid()",
         "generated": null,
         "identity": null,
@@ -9301,7 +9301,7 @@
         "type": "uuid"
       },
       {
-        "comment": null,
+        "comment": "Nome de exibição da coleção B2B.",
         "default": null,
         "generated": null,
         "identity": null,
@@ -9314,7 +9314,7 @@
         "type": "text"
       },
       {
-        "comment": null,
+        "comment": "Slug único da coleção B2B.",
         "default": null,
         "generated": null,
         "identity": null,
@@ -9327,7 +9327,7 @@
         "type": "text"
       },
       {
-        "comment": null,
+        "comment": "Descrição da coleção B2B.",
         "default": null,
         "generated": null,
         "identity": null,
@@ -9340,7 +9340,7 @@
         "type": "text"
       },
       {
-        "comment": null,
+        "comment": "URL da imagem associada à coleção B2B.",
         "default": null,
         "generated": null,
         "identity": null,
@@ -9353,7 +9353,7 @@
         "type": "text"
       },
       {
-        "comment": null,
+        "comment": "Indica se a coleção B2B está marcada como pública.",
         "default": "false",
         "generated": null,
         "identity": null,
@@ -9366,7 +9366,7 @@
         "type": "boolean"
       },
       {
-        "comment": null,
+        "comment": "Indica se a coleção B2B está marcada como destaque.",
         "default": "false",
         "generated": null,
         "identity": null,
@@ -9379,7 +9379,7 @@
         "type": "boolean"
       },
       {
-        "comment": null,
+        "comment": "Ordem de exibição da coleção B2B.",
         "default": "0",
         "generated": null,
         "identity": null,
@@ -9392,7 +9392,7 @@
         "type": "integer"
       },
       {
-        "comment": null,
+        "comment": "Usuário que criou a coleção B2B, quando registrado.",
         "default": null,
         "generated": null,
         "identity": null,
@@ -9405,7 +9405,7 @@
         "type": "uuid"
       },
       {
-        "comment": null,
+        "comment": "Data e hora de criação da coleção B2B.",
         "default": "now()",
         "generated": null,
         "identity": null,
@@ -9418,7 +9418,7 @@
         "type": "timestamp with time zone"
       },
       {
-        "comment": null,
+        "comment": "Data e hora da última atualização da coleção B2B.",
         "default": "now()",
         "generated": null,
         "identity": null,
@@ -9431,7 +9431,7 @@
         "type": "timestamp with time zone"
       },
       {
-        "comment": null,
+        "comment": "Organização à qual pertence a coleção B2B.",
         "default": null,
         "generated": null,
         "identity": null,
@@ -10250,7 +10250,7 @@
         "type": "timestamp with time zone"
       },
       {
-        "comment": null,
+        "comment": "Identificador UUID da categoria.",
         "default": "gen_random_uuid()",
         "generated": null,
         "identity": null,
@@ -10263,7 +10263,7 @@
         "type": "uuid"
       },
       {
-        "comment": null,
+        "comment": "Nome de exibição da categoria.",
         "default": null,
         "generated": null,
         "identity": null,
@@ -10289,7 +10289,7 @@
         "type": "text"
       },
       {
-        "comment": null,
+        "comment": "Descrição da categoria.",
         "default": null,
         "generated": null,
         "identity": null,
@@ -10302,7 +10302,7 @@
         "type": "text"
       },
       {
-        "comment": null,
+        "comment": "Categoria pai. NULL indica uma categoria raiz; preenchido, indica uma subcategoria.",
         "default": null,
         "generated": null,
         "identity": null,
@@ -10315,7 +10315,7 @@
         "type": "uuid"
       },
       {
-        "comment": null,
+        "comment": "Data e hora de criação da categoria.",
         "default": "now()",
         "generated": null,
         "identity": null,
@@ -10328,7 +10328,7 @@
         "type": "timestamp with time zone"
       },
       {
-        "comment": null,
+        "comment": "Slug único da categoria. O comentário da tabela identifica este campo como legado; considere a compatibilidade com consumidores existentes antes de alterar seu uso.",
         "default": null,
         "generated": null,
         "identity": null,
@@ -10380,7 +10380,7 @@
         "type": "boolean"
       },
       {
-        "comment": null,
+        "comment": "Data e hora da última atualização da categoria.",
         "default": "now()",
         "generated": null,
         "identity": null,
@@ -10393,7 +10393,7 @@
         "type": "timestamp with time zone"
       },
       {
-        "comment": null,
+        "comment": "Organização à qual a categoria pertence.",
         "default": "'5db5aee1-064b-4ef4-9193-345dcd8274ea'::uuid",
         "generated": null,
         "identity": null,
@@ -10419,7 +10419,7 @@
         "type": "integer"
       },
       {
-        "comment": null,
+        "comment": "Data e hora da última modificação correspondente no Bitrix24, quando disponível.",
         "default": null,
         "generated": null,
         "identity": null,
@@ -10432,7 +10432,7 @@
         "type": "timestamp with time zone"
       },
       {
-        "comment": null,
+        "comment": "Data e hora da sincronização da categoria com o sistema externo.",
         "default": null,
         "generated": null,
         "identity": null,
@@ -10484,7 +10484,7 @@
         "type": "text"
       },
       {
-        "comment": null,
+        "comment": "Indica se a categoria deve estar visível na interface.",
         "default": "true",
         "generated": null,
         "identity": null,
@@ -10497,7 +10497,7 @@
         "type": "boolean"
       },
       {
-        "comment": null,
+        "comment": "Cor da categoria em formato hexadecimal, por exemplo #A1B2C3.",
         "default": null,
         "generated": null,
         "identity": null,
@@ -10510,7 +10510,7 @@
         "type": "text"
       },
       {
-        "comment": null,
+        "comment": "Título SEO da categoria.",
         "default": null,
         "generated": null,
         "identity": null,
@@ -10523,7 +10523,7 @@
         "type": "text"
       },
       {
-        "comment": null,
+        "comment": "Descrição SEO da categoria.",
         "default": null,
         "generated": null,
         "identity": null,
@@ -10536,7 +10536,7 @@
         "type": "text"
       },
       {
-        "comment": null,
+        "comment": "Palavras-chave SEO da categoria, armazenadas como array de texto.",
         "default": null,
         "generated": null,
         "identity": null,
@@ -10588,7 +10588,7 @@
         "type": "integer"
       },
       {
-        "comment": null,
+        "comment": "Identificador do usuário que criou a categoria, quando registrado.",
         "default": null,
         "generated": null,
         "identity": null,
@@ -10601,7 +10601,7 @@
         "type": "uuid"
       },
       {
-        "comment": null,
+        "comment": "Identificador do usuário que atualizou a categoria por último, quando registrado.",
         "default": null,
         "generated": null,
         "identity": null,
@@ -10614,7 +10614,7 @@
         "type": "uuid"
       },
       {
-        "comment": null,
+        "comment": "Data e hora da exclusão lógica da categoria. NULL indica que não há exclusão lógica registrada.",
         "default": null,
         "generated": null,
         "identity": null,
@@ -10653,7 +10653,7 @@
         "type": "text"
       },
       {
-        "comment": null,
+        "comment": "Metadados estruturados da categoria armazenados em JSONB.",
         "default": null,
         "generated": null,
         "identity": null,
@@ -10978,7 +10978,7 @@
         "type": "smallint"
       },
       {
-        "comment": null,
+        "comment": "Identificador UUID do atributo da categoria.",
         "default": "gen_random_uuid()",
         "generated": null,
         "identity": null,
@@ -10991,7 +10991,7 @@
         "type": "uuid"
       },
       {
-        "comment": null,
+        "comment": "Categoria à qual pertence o atributo.",
         "default": null,
         "generated": null,
         "identity": null,
@@ -11004,7 +11004,7 @@
         "type": "uuid"
       },
       {
-        "comment": null,
+        "comment": "Chave que identifica o atributo dentro da categoria.",
         "default": null,
         "generated": null,
         "identity": null,
@@ -11017,7 +11017,7 @@
         "type": "text"
       },
       {
-        "comment": null,
+        "comment": "Valor do atributo da categoria.",
         "default": null,
         "generated": null,
         "identity": null,
@@ -11030,7 +11030,7 @@
         "type": "text"
       },
       {
-        "comment": null,
+        "comment": "Tipo declarado do valor: text, number, boolean ou json.",
         "default": null,
         "generated": null,
         "identity": null,
@@ -11043,7 +11043,7 @@
         "type": "text"
       },
       {
-        "comment": null,
+        "comment": "Indica se o atributo pode ser usado como filtro.",
         "default": "false",
         "generated": null,
         "identity": null,
@@ -11056,7 +11056,7 @@
         "type": "boolean"
       },
       {
-        "comment": null,
+        "comment": "Ordem de apresentação do atributo.",
         "default": "0",
         "generated": null,
         "identity": null,
@@ -11069,7 +11069,7 @@
         "type": "integer"
       },
       {
-        "comment": null,
+        "comment": "Data e hora de criação do atributo.",
         "default": "now()",
         "generated": null,
         "identity": null,
@@ -11082,7 +11082,7 @@
         "type": "timestamp with time zone"
       },
       {
-        "comment": null,
+        "comment": "Data e hora da última atualização do atributo.",
         "default": "now()",
         "generated": null,
         "identity": null,
@@ -11784,7 +11784,7 @@
         "type": "timestamp with time zone"
       },
       {
-        "comment": null,
+        "comment": "Identificador UUID do vínculo entre categoria e público-alvo.",
         "default": "gen_random_uuid()",
         "generated": null,
         "identity": null,
@@ -11797,7 +11797,7 @@
         "type": "uuid"
       },
       {
-        "comment": null,
+        "comment": "Categoria associada ao público-alvo.",
         "default": null,
         "generated": null,
         "identity": null,
@@ -11810,7 +11810,7 @@
         "type": "uuid"
       },
       {
-        "comment": null,
+        "comment": "Público-alvo associado à categoria.",
         "default": null,
         "generated": null,
         "identity": null,
@@ -11823,7 +11823,7 @@
         "type": "uuid"
       },
       {
-        "comment": null,
+        "comment": "Indica se este é o público-alvo principal da categoria.",
         "default": "false",
         "generated": null,
         "identity": null,
@@ -11836,7 +11836,7 @@
         "type": "boolean"
       },
       {
-        "comment": null,
+        "comment": "Relevância do vínculo, em uma escala de 1 a 10.",
         "default": "5",
         "generated": null,
         "identity": null,
@@ -11849,7 +11849,7 @@
         "type": "integer"
       },
       {
-        "comment": null,
+        "comment": "Ordem de exibição do público-alvo para a categoria.",
         "default": "0",
         "generated": null,
         "identity": null,
@@ -11862,7 +11862,7 @@
         "type": "integer"
       },
       {
-        "comment": null,
+        "comment": "Indica se o vínculo está ativo.",
         "default": "true",
         "generated": null,
         "identity": null,
@@ -11875,7 +11875,7 @@
         "type": "boolean"
       },
       {
-        "comment": null,
+        "comment": "Data e hora de criação do vínculo.",
         "default": "now()",
         "generated": null,
         "identity": null,
@@ -11888,7 +11888,7 @@
         "type": "timestamp with time zone"
       },
       {
-        "comment": null,
+        "comment": "Data e hora da última atualização do vínculo.",
         "default": "now()",
         "generated": null,
         "identity": null,
@@ -12447,7 +12447,7 @@
         "type": "timestamp with time zone"
       },
       {
-        "comment": null,
+        "comment": "Identificador UUID do item da coleção.",
         "default": "gen_random_uuid()",
         "generated": null,
         "identity": null,
@@ -12460,7 +12460,7 @@
         "type": "uuid"
       },
       {
-        "comment": null,
+        "comment": "Coleção à qual o item pertence.",
         "default": null,
         "generated": null,
         "identity": null,
@@ -12473,7 +12473,7 @@
         "type": "uuid"
       },
       {
-        "comment": null,
+        "comment": "Identificador textual do produto associado ao item.",
         "default": null,
         "generated": null,
         "identity": null,
@@ -12486,7 +12486,7 @@
         "type": "text"
       },
       {
-        "comment": null,
+        "comment": "Nome da cor selecionada para o item, quando informada.",
         "default": null,
         "generated": null,
         "identity": null,
@@ -12499,7 +12499,7 @@
         "type": "text"
       },
       {
-        "comment": null,
+        "comment": "Cor do item em formato hexadecimal, quando informada.",
         "default": null,
         "generated": null,
         "identity": null,
@@ -12512,7 +12512,7 @@
         "type": "text"
       },
       {
-        "comment": null,
+        "comment": "URL da miniatura do item.",
         "default": null,
         "generated": null,
         "identity": null,
@@ -12525,7 +12525,7 @@
         "type": "text"
       },
       {
-        "comment": null,
+        "comment": "Ordem de exibição do item na coleção.",
         "default": "0",
         "generated": null,
         "identity": null,
@@ -12538,7 +12538,7 @@
         "type": "integer"
       },
       {
-        "comment": null,
+        "comment": "Data e hora de criação do registro do item.",
         "default": "now()",
         "generated": null,
         "identity": null,
@@ -12551,7 +12551,7 @@
         "type": "timestamp with time zone"
       },
       {
-        "comment": null,
+        "comment": "Observações associadas ao item da coleção.",
         "default": null,
         "generated": null,
         "identity": null,
@@ -12564,7 +12564,7 @@
         "type": "text"
       },
       {
-        "comment": null,
+        "comment": "Preço registrado quando o item foi salvo, em reais (BRL). Pode incluir centavos.",
         "default": null,
         "generated": null,
         "identity": null,
@@ -12577,7 +12577,7 @@
         "type": "numeric(12,2)"
       },
       {
-        "comment": null,
+        "comment": "Data e hora em que o item foi adicionado à coleção.",
         "default": "now()",
         "generated": null,
         "identity": null,
@@ -12759,7 +12759,7 @@
         "type": "timestamp with time zone"
       },
       {
-        "comment": null,
+        "comment": "Identificador UUID do vínculo entre coleção e produto.",
         "default": "gen_random_uuid()",
         "generated": null,
         "identity": null,
@@ -12772,7 +12772,7 @@
         "type": "uuid"
       },
       {
-        "comment": null,
+        "comment": "Coleção associada ao vínculo.",
         "default": null,
         "generated": null,
         "identity": null,
@@ -12785,7 +12785,7 @@
         "type": "uuid"
       },
       {
-        "comment": null,
+        "comment": "Produto associado ao vínculo.",
         "default": null,
         "generated": null,
         "identity": null,
@@ -12798,7 +12798,7 @@
         "type": "uuid"
       },
       {
-        "comment": null,
+        "comment": "Ordem de exibição do produto na coleção.",
         "default": "0",
         "generated": null,
         "identity": null,
@@ -12811,7 +12811,7 @@
         "type": "integer"
       },
       {
-        "comment": null,
+        "comment": "Data e hora de criação do vínculo entre coleção e produto.",
         "default": "now()",
         "generated": null,
         "identity": null,
@@ -12824,7 +12824,7 @@
         "type": "timestamp with time zone"
       },
       {
-        "comment": null,
+        "comment": "Identificador UUID da coleção.",
         "default": "gen_random_uuid()",
         "generated": null,
         "identity": null,
@@ -12837,7 +12837,7 @@
         "type": "uuid"
       },
       {
-        "comment": null,
+        "comment": "Usuário proprietário da coleção.",
         "default": null,
         "generated": null,
         "identity": null,
@@ -12850,7 +12850,7 @@
         "type": "uuid"
       },
       {
-        "comment": null,
+        "comment": "Nome da coleção.",
         "default": null,
         "generated": null,
         "identity": null,
@@ -12863,7 +12863,7 @@
         "type": "text"
       },
       {
-        "comment": null,
+        "comment": "Descrição da coleção.",
         "default": null,
         "generated": null,
         "identity": null,
@@ -12876,7 +12876,7 @@
         "type": "text"
       },
       {
-        "comment": null,
+        "comment": "Indica se a coleção está marcada como destaque.",
         "default": "false",
         "generated": null,
         "identity": null,
@@ -12889,7 +12889,7 @@
         "type": "boolean"
       },
       {
-        "comment": null,
+        "comment": "Cor do ícone da coleção, quando configurada.",
         "default": "'#3b82f6'::text",
         "generated": null,
         "identity": null,
@@ -12902,7 +12902,7 @@
         "type": "text"
       },
       {
-        "comment": null,
+        "comment": "Data e hora de criação da coleção.",
         "default": "now()",
         "generated": null,
         "identity": null,
@@ -12915,7 +12915,7 @@
         "type": "timestamp with time zone"
       },
       {
-        "comment": null,
+        "comment": "Data e hora da última atualização da coleção.",
         "default": "now()",
         "generated": null,
         "identity": null,
@@ -12928,7 +12928,7 @@
         "type": "timestamp with time zone"
       },
       {
-        "comment": null,
+        "comment": "Ícone associado à coleção.",
         "default": "'📁'::text",
         "generated": null,
         "identity": null,
@@ -12941,7 +12941,7 @@
         "type": "text"
       },
       {
-        "comment": null,
+        "comment": "Identificador textual do cliente associado à coleção, quando informado.",
         "default": null,
         "generated": null,
         "identity": null,
@@ -12954,7 +12954,7 @@
         "type": "text"
       },
       {
-        "comment": null,
+        "comment": "Nome do cliente associado à coleção, quando informado.",
         "default": null,
         "generated": null,
         "identity": null,
@@ -12967,7 +12967,7 @@
         "type": "text"
       },
       {
-        "comment": null,
+        "comment": "Token usado para localizar ou compartilhar a coleção.",
         "default": null,
         "generated": null,
         "identity": null,
@@ -12980,7 +12980,7 @@
         "type": "text"
       },
       {
-        "comment": null,
+        "comment": "Data e hora de expiração do compartilhamento, quando definida.",
         "default": null,
         "generated": null,
         "identity": null,
@@ -12993,7 +12993,7 @@
         "type": "timestamp with time zone"
       },
       {
-        "comment": null,
+        "comment": "Indica se a coleção está configurada como pública.",
         "default": "false",
         "generated": null,
         "identity": null,
@@ -13006,7 +13006,7 @@
         "type": "boolean"
       },
       {
-        "comment": null,
+        "comment": "Indica se a coleção foi marcada como excluída logicamente.",
         "default": "false",
         "generated": null,
         "identity": null,
@@ -40800,7 +40800,7 @@
         "type": "uuid"
       },
       {
-        "comment": null,
+        "comment": "Identificador UUID do vínculo entre produto e categoria.",
         "default": "gen_random_uuid()",
         "generated": null,
         "identity": null,
@@ -40813,7 +40813,7 @@
         "type": "uuid"
       },
       {
-        "comment": null,
+        "comment": "Produto associado à categoria.",
         "default": null,
         "generated": null,
         "identity": null,
@@ -40826,7 +40826,7 @@
         "type": "uuid"
       },
       {
-        "comment": null,
+        "comment": "Categoria associada ao produto.",
         "default": null,
         "generated": null,
         "identity": null,
@@ -40839,7 +40839,7 @@
         "type": "uuid"
       },
       {
-        "comment": null,
+        "comment": "Indica se esta é a categoria principal do produto.",
         "default": "false",
         "generated": null,
         "identity": null,
@@ -40852,7 +40852,7 @@
         "type": "boolean"
       },
       {
-        "comment": null,
+        "comment": "Ordem de exibição do vínculo ou da categoria para o produto.",
         "default": "0",
         "generated": null,
         "identity": null,
@@ -40865,7 +40865,7 @@
         "type": "integer"
       },
       {
-        "comment": null,
+        "comment": "Data e hora de criação do vínculo entre produto e categoria.",
         "default": "now()",
         "generated": null,
         "identity": null,
@@ -46806,7 +46806,7 @@
         "type": "timestamp with time zone"
       },
       {
-        "comment": null,
+        "comment": "Identificador UUID do registro de propriedade do produto.",
         "default": "gen_random_uuid()",
         "generated": null,
         "identity": null,
@@ -46819,7 +46819,7 @@
         "type": "uuid"
       },
       {
-        "comment": null,
+        "comment": "Produto ao qual a propriedade está associada.",
         "default": null,
         "generated": null,
         "identity": null,
@@ -46832,7 +46832,7 @@
         "type": "uuid"
       },
       {
-        "comment": null,
+        "comment": "Definição normalizada da propriedade, quando associada ao catálogo de propriedades.",
         "default": null,
         "generated": null,
         "identity": null,
@@ -46897,7 +46897,7 @@
         "type": "text"
       },
       {
-        "comment": null,
+        "comment": "Data e hora de criação do registro da propriedade.",
         "default": "now()",
         "generated": null,
         "identity": null,
@@ -46910,7 +46910,7 @@
         "type": "timestamp with time zone"
       },
       {
-        "comment": null,
+        "comment": "Data e hora da última atualização do registro da propriedade.",
         "default": "now()",
         "generated": null,
         "identity": null,
@@ -48106,7 +48106,7 @@
         "type": "timestamp with time zone"
       },
       {
-        "comment": null,
+        "comment": "Identificador UUID do vínculo entre produto e tag.",
         "default": "gen_random_uuid()",
         "generated": null,
         "identity": null,
@@ -48119,7 +48119,7 @@
         "type": "uuid"
       },
       {
-        "comment": null,
+        "comment": "Produto associado à tag.",
         "default": null,
         "generated": null,
         "identity": null,
@@ -48132,7 +48132,7 @@
         "type": "uuid"
       },
       {
-        "comment": null,
+        "comment": "Tag associada ao produto.",
         "default": null,
         "generated": null,
         "identity": null,
@@ -48145,7 +48145,7 @@
         "type": "uuid"
       },
       {
-        "comment": null,
+        "comment": "Data e hora de criação do vínculo entre produto e tag.",
         "default": "now()",
         "generated": null,
         "identity": null,
@@ -48158,7 +48158,7 @@
         "type": "timestamp with time zone"
       },
       {
-        "comment": null,
+        "comment": "Identificador UUID do vínculo entre produto e público-alvo.",
         "default": "gen_random_uuid()",
         "generated": null,
         "identity": null,
@@ -48171,7 +48171,7 @@
         "type": "uuid"
       },
       {
-        "comment": null,
+        "comment": "Produto associado ao público-alvo.",
         "default": null,
         "generated": null,
         "identity": null,
@@ -48184,7 +48184,7 @@
         "type": "uuid"
       },
       {
-        "comment": null,
+        "comment": "Público-alvo associado ao produto.",
         "default": null,
         "generated": null,
         "identity": null,
@@ -48197,7 +48197,7 @@
         "type": "uuid"
       },
       {
-        "comment": null,
+        "comment": "Origem do vínculo: category (herdado da categoria) ou manual.",
         "default": "'category'::character varying",
         "generated": null,
         "identity": null,
@@ -48210,7 +48210,7 @@
         "type": "character varying(20)"
       },
       {
-        "comment": null,
+        "comment": "Categoria associada à origem do vínculo, quando informada.",
         "default": null,
         "generated": null,
         "identity": null,
@@ -48223,7 +48223,7 @@
         "type": "uuid"
       },
       {
-        "comment": null,
+        "comment": "Indica se o produto deve ser destacado para este público-alvo.",
         "default": "false",
         "generated": null,
         "identity": null,
@@ -48236,7 +48236,7 @@
         "type": "boolean"
       },
       {
-        "comment": null,
+        "comment": "Relevância do vínculo, em uma escala de 1 a 10.",
         "default": "5",
         "generated": null,
         "identity": null,
@@ -48249,7 +48249,7 @@
         "type": "integer"
       },
       {
-        "comment": null,
+        "comment": "Indica se o vínculo está ativo.",
         "default": "true",
         "generated": null,
         "identity": null,
@@ -48262,7 +48262,7 @@
         "type": "boolean"
       },
       {
-        "comment": null,
+        "comment": "Data e hora de criação do vínculo.",
         "default": "now()",
         "generated": null,
         "identity": null,
@@ -48275,7 +48275,7 @@
         "type": "timestamp with time zone"
       },
       {
-        "comment": null,
+        "comment": "Data e hora da última atualização do vínculo.",
         "default": "now()",
         "generated": null,
         "identity": null,
@@ -54450,7 +54450,7 @@
         "type": "uuid"
       },
       {
-        "comment": null,
+        "comment": "Identificador UUID da definição da propriedade.",
         "default": "gen_random_uuid()",
         "generated": null,
         "identity": null,
@@ -54489,7 +54489,7 @@
         "type": "text"
       },
       {
-        "comment": null,
+        "comment": "Nome da propriedade em inglês, quando disponível.",
         "default": null,
         "generated": null,
         "identity": null,
@@ -54541,7 +54541,7 @@
         "type": "boolean"
       },
       {
-        "comment": null,
+        "comment": "Indica se a propriedade é usada como indicador de produto premium.",
         "default": "false",
         "generated": null,
         "identity": null,
@@ -54554,7 +54554,7 @@
         "type": "boolean"
       },
       {
-        "comment": null,
+        "comment": "Ordem de exibição da propriedade.",
         "default": "0",
         "generated": null,
         "identity": null,
@@ -54567,7 +54567,7 @@
         "type": "integer"
       },
       {
-        "comment": null,
+        "comment": "Indica se a definição da propriedade está ativa.",
         "default": "true",
         "generated": null,
         "identity": null,
@@ -54580,7 +54580,7 @@
         "type": "boolean"
       },
       {
-        "comment": null,
+        "comment": "Data e hora de criação da definição da propriedade.",
         "default": "now()",
         "generated": null,
         "identity": null,
@@ -54593,7 +54593,7 @@
         "type": "timestamp with time zone"
       },
       {
-        "comment": null,
+        "comment": "Data e hora da última atualização da definição da propriedade.",
         "default": "now()",
         "generated": null,
         "identity": null,
@@ -70544,7 +70544,7 @@
         "type": "numeric(8,2)"
       },
       {
-        "comment": null,
+        "comment": "Identificador UUID da tag.",
         "default": "gen_random_uuid()",
         "generated": null,
         "identity": null,
@@ -70557,7 +70557,7 @@
         "type": "uuid"
       },
       {
-        "comment": null,
+        "comment": "Organização à qual a tag pertence.",
         "default": null,
         "generated": null,
         "identity": null,
@@ -70570,7 +70570,7 @@
         "type": "uuid"
       },
       {
-        "comment": null,
+        "comment": "Nome de exibição da tag.",
         "default": null,
         "generated": null,
         "identity": null,
@@ -70583,7 +70583,7 @@
         "type": "character varying(100)"
       },
       {
-        "comment": null,
+        "comment": "Slug da tag para identificação em URLs ou integrações.",
         "default": null,
         "generated": null,
         "identity": null,
@@ -70596,7 +70596,7 @@
         "type": "character varying(100)"
       },
       {
-        "comment": null,
+        "comment": "Cor da tag em formato hexadecimal, quando informada.",
         "default": null,
         "generated": null,
         "identity": null,
@@ -70609,7 +70609,7 @@
         "type": "character varying(7)"
       },
       {
-        "comment": null,
+        "comment": "Descrição da tag.",
         "default": null,
         "generated": null,
         "identity": null,
@@ -70622,7 +70622,7 @@
         "type": "text"
       },
       {
-        "comment": null,
+        "comment": "Contagem de usos da tag, mantida como valor agregado.",
         "default": "0",
         "generated": null,
         "identity": null,
@@ -70635,7 +70635,7 @@
         "type": "integer"
       },
       {
-        "comment": null,
+        "comment": "Indica se a tag está ativa para uso.",
         "default": "true",
         "generated": null,
         "identity": null,
@@ -70648,7 +70648,7 @@
         "type": "boolean"
       },
       {
-        "comment": null,
+        "comment": "Data e hora de criação da tag.",
         "default": "now()",
         "generated": null,
         "identity": null,
@@ -70661,7 +70661,7 @@
         "type": "timestamp with time zone"
       },
       {
-        "comment": null,
+        "comment": "Data e hora da última atualização da tag.",
         "default": "now()",
         "generated": null,
         "identity": null,
@@ -70674,7 +70674,7 @@
         "type": "timestamp with time zone"
       },
       {
-        "comment": null,
+        "comment": "Identificador UUID do público-alvo.",
         "default": "gen_random_uuid()",
         "generated": null,
         "identity": null,
@@ -70687,7 +70687,7 @@
         "type": "uuid"
       },
       {
-        "comment": null,
+        "comment": "Organização à qual pertence o público-alvo, quando informado.",
         "default": null,
         "generated": null,
         "identity": null,
@@ -70700,7 +70700,7 @@
         "type": "uuid"
       },
       {
-        "comment": null,
+        "comment": "Nome de exibição do público-alvo.",
         "default": null,
         "generated": null,
         "identity": null,
@@ -70713,7 +70713,7 @@
         "type": "character varying(100)"
       },
       {
-        "comment": null,
+        "comment": "Slug único do público-alvo.",
         "default": null,
         "generated": null,
         "identity": null,
@@ -70726,7 +70726,7 @@
         "type": "character varying(100)"
       },
       {
-        "comment": null,
+        "comment": "Descrição do público-alvo.",
         "default": null,
         "generated": null,
         "identity": null,
@@ -70739,7 +70739,7 @@
         "type": "text"
       },
       {
-        "comment": null,
+        "comment": "Categoria de classificação do público-alvo.",
         "default": null,
         "generated": null,
         "identity": null,
@@ -70752,7 +70752,7 @@
         "type": "character varying(50)"
       },
       {
-        "comment": null,
+        "comment": "Nome do ícone usado para representar o público-alvo.",
         "default": null,
         "generated": null,
         "identity": null,
@@ -70765,7 +70765,7 @@
         "type": "character varying(50)"
       },
       {
-        "comment": null,
+        "comment": "Cor associada ao público-alvo em formato hexadecimal.",
         "default": null,
         "generated": null,
         "identity": null,
@@ -70778,7 +70778,7 @@
         "type": "character varying(7)"
       },
       {
-        "comment": null,
+        "comment": "Ordem de exibição do público-alvo.",
         "default": "0",
         "generated": null,
         "identity": null,
@@ -70791,7 +70791,7 @@
         "type": "integer"
       },
       {
-        "comment": null,
+        "comment": "Indica se o público-alvo está ativo.",
         "default": "true",
         "generated": null,
         "identity": null,
@@ -70804,7 +70804,7 @@
         "type": "boolean"
       },
       {
-        "comment": null,
+        "comment": "Data e hora de criação do público-alvo.",
         "default": "now()",
         "generated": null,
         "identity": null,
@@ -70817,7 +70817,7 @@
         "type": "timestamp with time zone"
       },
       {
-        "comment": null,
+        "comment": "Data e hora da última atualização do público-alvo.",
         "default": "now()",
         "generated": null,
         "identity": null,
@@ -256678,7 +256678,7 @@
         "schema": "public"
       },
       {
-        "comment": null,
+        "comment": "Definições de atributos de produtos: nome, tipo de dado, unidade, valores possíveis, validação e comportamento de exibição ou filtragem.",
         "from_extension": false,
         "is_partition": false,
         "kind": "table",
@@ -256708,7 +256708,7 @@
         "schema": "public"
       },
       {
-        "comment": null,
+        "comment": "Grupos usados para organizar definições de atributos de produtos dentro de uma organização.",
         "from_extension": false,
         "is_partition": false,
         "kind": "table",
@@ -256768,7 +256768,7 @@
         "schema": "public"
       },
       {
-        "comment": null,
+        "comment": "Vínculos entre coleções B2B e produtos, com ordenação própria.",
         "from_extension": false,
         "is_partition": false,
         "kind": "table",
@@ -256783,7 +256783,7 @@
         "schema": "public"
       },
       {
-        "comment": null,
+        "comment": "Coleções B2B de produtos, com visibilidade, destaque e ordenação próprios. Esta tabela é distinta de public.collections.",
         "from_extension": false,
         "is_partition": false,
         "kind": "table",
@@ -257023,7 +257023,7 @@
         "schema": "public"
       },
       {
-        "comment": null,
+        "comment": "Vínculos entre categorias e públicos-alvo, com prioridade e relevância configuráveis.",
         "from_extension": false,
         "is_partition": false,
         "kind": "table",
@@ -257128,7 +257128,7 @@
         "schema": "public"
       },
       {
-        "comment": null,
+        "comment": "Itens de produto guardados em uma coleção. Os campos de produto, cor e preço armazenam valores próprios do item da coleção.",
         "from_extension": false,
         "is_partition": false,
         "kind": "table",
@@ -257173,7 +257173,7 @@
         "schema": "public"
       },
       {
-        "comment": null,
+        "comment": "Coleções de produtos criadas por usuários, com opções de compartilhamento e associação a clientes. Esta tabela é distinta de public.b2b_collections.",
         "from_extension": false,
         "is_partition": false,
         "kind": "table",
@@ -260293,7 +260293,7 @@
         "schema": "public"
       },
       {
-        "comment": null,
+        "comment": "Vínculos entre produtos e públicos-alvo. A origem registra se o vínculo foi herdado da categoria ou adicionado manualmente.",
         "from_extension": false,
         "is_partition": false,
         "kind": "table",
@@ -261973,7 +261973,7 @@
         "schema": "public"
       },
       {
-        "comment": null,
+        "comment": "Catálogo de públicos-alvo que podem ser associados a categorias e produtos.",
         "from_extension": false,
         "is_partition": false,
         "kind": "table",

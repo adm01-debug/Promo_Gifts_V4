@@ -1,5 +1,7 @@
 # public.attribute_groups
 
+> Grupos usados para organizar definições de atributos de produtos dentro de uma organização.
+
 | propriedade | valor |
 |---|---|
 | tipo | table |
@@ -16,16 +18,16 @@
 
 | # | coluna | tipo | nullable | default | identity/generated | comentário |
 |---|---|---|---|---|---|---|
-| 1 | `id` | `uuid` | não | `gen_random_uuid()` |  |  |
-| 2 | `organization_id` | `uuid` | não |  |  |  |
-| 3 | `name` | `character varying(100)` | não |  |  |  |
-| 4 | `slug` | `character varying(100)` | não |  |  |  |
-| 5 | `description` | `text` | sim |  |  |  |
-| 6 | `icon` | `character varying(50)` | sim |  |  |  |
-| 7 | `display_order` | `integer` | sim | `0` |  |  |
-| 8 | `is_active` | `boolean` | sim | `true` |  |  |
-| 9 | `created_at` | `timestamp with time zone` | sim | `now()` |  |  |
-| 10 | `updated_at` | `timestamp with time zone` | sim | `now()` |  |  |
+| 1 | `id` | `uuid` | não | `gen_random_uuid()` |  | Identificador UUID do grupo de atributos. |
+| 2 | `organization_id` | `uuid` | não |  |  | Organização à qual pertence o grupo de atributos. |
+| 3 | `name` | `character varying(100)` | não |  |  | Nome de exibição do grupo de atributos. |
+| 4 | `slug` | `character varying(100)` | não |  |  | Slug do grupo de atributos para identificação estável. |
+| 5 | `description` | `text` | sim |  |  | Descrição do grupo de atributos. |
+| 6 | `icon` | `character varying(50)` | sim |  |  | Identificador do ícone usado para representar o grupo na interface. |
+| 7 | `display_order` | `integer` | sim | `0` |  | Ordem de exibição do grupo. |
+| 8 | `is_active` | `boolean` | sim | `true` |  | Indica se o grupo está ativo. |
+| 9 | `created_at` | `timestamp with time zone` | sim | `now()` |  | Data e hora de criação do grupo. |
+| 10 | `updated_at` | `timestamp with time zone` | sim | `now()` |  | Data e hora da última atualização do grupo. |
 
 
 ## Constraints

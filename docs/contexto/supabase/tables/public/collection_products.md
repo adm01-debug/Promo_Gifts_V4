@@ -18,11 +18,11 @@
 
 | # | coluna | tipo | nullable | default | identity/generated | comentário |
 |---|---|---|---|---|---|---|
-| 1 | `id` | `uuid` | não | `gen_random_uuid()` |  |  |
-| 2 | `collection_id` | `uuid` | não |  |  |  |
-| 3 | `product_id` | `uuid` | não |  |  |  |
-| 4 | `display_order` | `integer` | não | `0` |  |  |
-| 5 | `created_at` | `timestamp with time zone` | não | `now()` |  |  |
+| 1 | `id` | `uuid` | não | `gen_random_uuid()` |  | Identificador UUID do vínculo entre coleção e produto. |
+| 2 | `collection_id` | `uuid` | não |  |  | Coleção associada ao vínculo. |
+| 3 | `product_id` | `uuid` | não |  |  | Produto associado ao vínculo. |
+| 4 | `display_order` | `integer` | não | `0` |  | Ordem de exibição do produto na coleção. |
+| 5 | `created_at` | `timestamp with time zone` | não | `now()` |  | Data e hora de criação do vínculo entre coleção e produto. |
 
 
 ## Constraints

@@ -19,15 +19,15 @@
 
 | # | coluna | tipo | nullable | default | identity/generated | comentário |
 |---|---|---|---|---|---|---|
-| 1 | `id` | `uuid` | não | `gen_random_uuid()` |  |  |
-| 2 | `product_id` | `uuid` | não |  |  |  |
-| 3 | `property_definition_id` | `uuid` | sim |  |  |  |
+| 1 | `id` | `uuid` | não | `gen_random_uuid()` |  | Identificador UUID do registro de propriedade do produto. |
+| 2 | `product_id` | `uuid` | não |  |  | Produto ao qual a propriedade está associada. |
+| 3 | `property_definition_id` | `uuid` | sim |  |  | Definição normalizada da propriedade, quando associada ao catálogo de propriedades. |
 | 4 | `property_code` | `text` | não |  |  | Código da propriedade (redundância para performance) |
 | 5 | `property_value` | `text` | sim |  |  | Valor quando aplicável (ex: tempo em horas) |
 | 6 | `source` | `text` | sim | `'api_spot'::text` |  | Origem: api_spot, manual, inferred |
 | 7 | `raw_value` | `text` | sim |  |  | Valor original da API |
-| 8 | `created_at` | `timestamp with time zone` | sim | `now()` |  |  |
-| 9 | `updated_at` | `timestamp with time zone` | sim | `now()` |  |  |
+| 8 | `created_at` | `timestamp with time zone` | sim | `now()` |  | Data e hora de criação do registro da propriedade. |
+| 9 | `updated_at` | `timestamp with time zone` | sim | `now()` |  | Data e hora da última atualização do registro da propriedade. |
 
 
 ## Constraints

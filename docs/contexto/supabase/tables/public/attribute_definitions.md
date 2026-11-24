@@ -1,5 +1,7 @@
 # public.attribute_definitions
 
+> Definições de atributos de produtos: nome, tipo de dado, unidade, valores possíveis, validação e comportamento de exibição ou filtragem.
+
 | propriedade | valor |
 |---|---|
 | tipo | table |
@@ -16,27 +18,27 @@
 
 | # | coluna | tipo | nullable | default | identity/generated | comentário |
 |---|---|---|---|---|---|---|
-| 1 | `id` | `uuid` | não | `gen_random_uuid()` |  |  |
-| 2 | `organization_id` | `uuid` | não |  |  |  |
-| 3 | `group_id` | `uuid` | sim |  |  |  |
-| 4 | `name` | `character varying(100)` | não |  |  |  |
-| 5 | `slug` | `character varying(100)` | não |  |  |  |
-| 6 | `display_name` | `character varying(150)` | não |  |  |  |
-| 7 | `description` | `text` | sim |  |  |  |
-| 8 | `data_type` | `character varying(20)` | sim | `'text'::character varying` |  |  |
-| 9 | `unit` | `character varying(30)` | sim |  |  |  |
-| 10 | `default_value` | `text` | sim |  |  |  |
-| 11 | `possible_values` | `jsonb` | sim |  |  |  |
-| 12 | `validation_rules` | `jsonb` | sim |  |  |  |
-| 13 | `is_required` | `boolean` | sim | `false` |  |  |
-| 14 | `is_filterable` | `boolean` | sim | `true` |  |  |
-| 15 | `is_comparable` | `boolean` | sim | `true` |  |  |
-| 16 | `is_visible` | `boolean` | sim | `true` |  |  |
-| 17 | `is_searchable` | `boolean` | sim | `false` |  |  |
-| 18 | `display_order` | `integer` | sim | `0` |  |  |
-| 19 | `is_active` | `boolean` | sim | `true` |  |  |
-| 20 | `created_at` | `timestamp with time zone` | sim | `now()` |  |  |
-| 21 | `updated_at` | `timestamp with time zone` | sim | `now()` |  |  |
+| 1 | `id` | `uuid` | não | `gen_random_uuid()` |  | Identificador UUID da definição de atributo. |
+| 2 | `organization_id` | `uuid` | não |  |  | Organização à qual pertence a definição de atributo. |
+| 3 | `group_id` | `uuid` | sim |  |  | Grupo ao qual pertence a definição, quando houver. |
+| 4 | `name` | `character varying(100)` | não |  |  | Nome interno do atributo. |
+| 5 | `slug` | `character varying(100)` | não |  |  | Slug estável do atributo para identificação em código ou integrações. |
+| 6 | `display_name` | `character varying(150)` | não |  |  | Rótulo do atributo apresentado na interface. |
+| 7 | `description` | `text` | sim |  |  | Descrição do significado ou uso do atributo. |
+| 8 | `data_type` | `character varying(20)` | sim | `'text'::character varying` |  | Tipo do valor do atributo: text, number, boolean, select ou multiselect. |
+| 9 | `unit` | `character varying(30)` | sim |  |  | Unidade de medida associada ao atributo, quando aplicável. |
+| 10 | `default_value` | `text` | sim |  |  | Valor padrão do atributo, quando configurado. |
+| 11 | `possible_values` | `jsonb` | sim |  |  | Valores permitidos para atributos do tipo select ou multiselect, armazenados em JSONB. |
+| 12 | `validation_rules` | `jsonb` | sim |  |  | Regras adicionais de validação do valor, armazenadas em JSONB. |
+| 13 | `is_required` | `boolean` | sim | `false` |  | Indica se o atributo é obrigatório. |
+| 14 | `is_filterable` | `boolean` | sim | `true` |  | Indica se o atributo pode ser usado para filtrar produtos. |
+| 15 | `is_comparable` | `boolean` | sim | `true` |  | Indica se o atributo pode ser usado na comparação de produtos. |
+| 16 | `is_visible` | `boolean` | sim | `true` |  | Indica se o atributo deve ser exibido na interface. |
+| 17 | `is_searchable` | `boolean` | sim | `false` |  | Indica se o atributo pode ser considerado na busca. |
+| 18 | `display_order` | `integer` | sim | `0` |  | Ordem de exibição do atributo. |
+| 19 | `is_active` | `boolean` | sim | `true` |  | Indica se a definição do atributo está ativa. |
+| 20 | `created_at` | `timestamp with time zone` | sim | `now()` |  | Data e hora de criação da definição do atributo. |
+| 21 | `updated_at` | `timestamp with time zone` | sim | `now()` |  | Data e hora da última atualização da definição do atributo. |
 
 
 ## Constraints

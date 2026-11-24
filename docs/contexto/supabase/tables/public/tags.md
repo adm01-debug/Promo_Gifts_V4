@@ -19,16 +19,16 @@
 
 | # | coluna | tipo | nullable | default | identity/generated | comentário |
 |---|---|---|---|---|---|---|
-| 1 | `id` | `uuid` | não | `gen_random_uuid()` |  |  |
-| 2 | `organization_id` | `uuid` | não |  |  |  |
-| 3 | `name` | `character varying(100)` | não |  |  |  |
-| 4 | `slug` | `character varying(100)` | não |  |  |  |
-| 5 | `color_hex` | `character varying(7)` | sim |  |  |  |
-| 6 | `description` | `text` | sim |  |  |  |
-| 7 | `usage_count` | `integer` | sim | `0` |  |  |
-| 8 | `is_active` | `boolean` | sim | `true` |  |  |
-| 9 | `created_at` | `timestamp with time zone` | sim | `now()` |  |  |
-| 10 | `updated_at` | `timestamp with time zone` | sim | `now()` |  |  |
+| 1 | `id` | `uuid` | não | `gen_random_uuid()` |  | Identificador UUID da tag. |
+| 2 | `organization_id` | `uuid` | não |  |  | Organização à qual a tag pertence. |
+| 3 | `name` | `character varying(100)` | não |  |  | Nome de exibição da tag. |
+| 4 | `slug` | `character varying(100)` | não |  |  | Slug da tag para identificação em URLs ou integrações. |
+| 5 | `color_hex` | `character varying(7)` | sim |  |  | Cor da tag em formato hexadecimal, quando informada. |
+| 6 | `description` | `text` | sim |  |  | Descrição da tag. |
+| 7 | `usage_count` | `integer` | sim | `0` |  | Contagem de usos da tag, mantida como valor agregado. |
+| 8 | `is_active` | `boolean` | sim | `true` |  | Indica se a tag está ativa para uso. |
+| 9 | `created_at` | `timestamp with time zone` | sim | `now()` |  | Data e hora de criação da tag. |
+| 10 | `updated_at` | `timestamp with time zone` | sim | `now()` |  | Data e hora da última atualização da tag. |
 
 
 ## Constraints

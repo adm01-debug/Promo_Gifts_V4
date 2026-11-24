@@ -1,5 +1,7 @@
 # public.product_target_audiences
 
+> Vínculos entre produtos e públicos-alvo. A origem registra se o vínculo foi herdado da categoria ou adicionado manualmente.
+
 | propriedade | valor |
 |---|---|
 | tipo | table |
@@ -16,16 +18,16 @@
 
 | # | coluna | tipo | nullable | default | identity/generated | comentário |
 |---|---|---|---|---|---|---|
-| 1 | `id` | `uuid` | não | `gen_random_uuid()` |  |  |
-| 2 | `product_id` | `uuid` | não |  |  |  |
-| 3 | `target_audience_id` | `uuid` | não |  |  |  |
-| 4 | `source` | `character varying(20)` | sim | `'category'::character varying` |  |  |
-| 5 | `category_id` | `uuid` | sim |  |  |  |
-| 6 | `is_featured` | `boolean` | sim | `false` |  |  |
-| 7 | `relevance_score` | `integer` | sim | `5` |  |  |
-| 8 | `is_active` | `boolean` | não | `true` |  |  |
-| 9 | `created_at` | `timestamp with time zone` | sim | `now()` |  |  |
-| 10 | `updated_at` | `timestamp with time zone` | sim | `now()` |  |  |
+| 1 | `id` | `uuid` | não | `gen_random_uuid()` |  | Identificador UUID do vínculo entre produto e público-alvo. |
+| 2 | `product_id` | `uuid` | não |  |  | Produto associado ao público-alvo. |
+| 3 | `target_audience_id` | `uuid` | não |  |  | Público-alvo associado ao produto. |
+| 4 | `source` | `character varying(20)` | sim | `'category'::character varying` |  | Origem do vínculo: category (herdado da categoria) ou manual. |
+| 5 | `category_id` | `uuid` | sim |  |  | Categoria associada à origem do vínculo, quando informada. |
+| 6 | `is_featured` | `boolean` | sim | `false` |  | Indica se o produto deve ser destacado para este público-alvo. |
+| 7 | `relevance_score` | `integer` | sim | `5` |  | Relevância do vínculo, em uma escala de 1 a 10. |
+| 8 | `is_active` | `boolean` | não | `true` |  | Indica se o vínculo está ativo. |
+| 9 | `created_at` | `timestamp with time zone` | sim | `now()` |  | Data e hora de criação do vínculo. |
+| 10 | `updated_at` | `timestamp with time zone` | sim | `now()` |  | Data e hora da última atualização do vínculo. |
 
 
 ## Constraints

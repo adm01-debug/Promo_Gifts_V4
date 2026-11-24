@@ -19,12 +19,12 @@
 
 | # | coluna | tipo | nullable | default | identity/generated | comentário |
 |---|---|---|---|---|---|---|
-| 1 | `id` | `uuid` | não | `gen_random_uuid()` |  |  |
-| 2 | `product_id` | `uuid` | não |  |  |  |
-| 3 | `category_id` | `uuid` | não |  |  |  |
-| 4 | `is_primary` | `boolean` | sim | `false` |  |  |
-| 5 | `display_order` | `integer` | sim | `0` |  |  |
-| 6 | `created_at` | `timestamp with time zone` | sim | `now()` |  |  |
+| 1 | `id` | `uuid` | não | `gen_random_uuid()` |  | Identificador UUID do vínculo entre produto e categoria. |
+| 2 | `product_id` | `uuid` | não |  |  | Produto associado à categoria. |
+| 3 | `category_id` | `uuid` | não |  |  | Categoria associada ao produto. |
+| 4 | `is_primary` | `boolean` | sim | `false` |  | Indica se esta é a categoria principal do produto. |
+| 5 | `display_order` | `integer` | sim | `0` |  | Ordem de exibição do vínculo ou da categoria para o produto. |
+| 6 | `created_at` | `timestamp with time zone` | sim | `now()` |  | Data e hora de criação do vínculo entre produto e categoria. |
 
 
 ## Constraints

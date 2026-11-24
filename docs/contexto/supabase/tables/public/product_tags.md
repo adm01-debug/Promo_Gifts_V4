@@ -19,10 +19,10 @@
 
 | # | coluna | tipo | nullable | default | identity/generated | comentário |
 |---|---|---|---|---|---|---|
-| 1 | `id` | `uuid` | não | `gen_random_uuid()` |  |  |
-| 2 | `product_id` | `uuid` | não |  |  |  |
-| 3 | `tag_id` | `uuid` | não |  |  |  |
-| 4 | `created_at` | `timestamp with time zone` | sim | `now()` |  |  |
+| 1 | `id` | `uuid` | não | `gen_random_uuid()` |  | Identificador UUID do vínculo entre produto e tag. |
+| 2 | `product_id` | `uuid` | não |  |  | Produto associado à tag. |
+| 3 | `tag_id` | `uuid` | não |  |  | Tag associada ao produto. |
+| 4 | `created_at` | `timestamp with time zone` | sim | `now()` |  | Data e hora de criação do vínculo entre produto e tag. |
 
 
 ## Constraints

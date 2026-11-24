@@ -1,5 +1,7 @@
 # public.collection_items
 
+> Itens de produto guardados em uma coleção. Os campos de produto, cor e preço armazenam valores próprios do item da coleção.
+
 | propriedade | valor |
 |---|---|
 | tipo | table |
@@ -16,17 +18,17 @@
 
 | # | coluna | tipo | nullable | default | identity/generated | comentário |
 |---|---|---|---|---|---|---|
-| 1 | `id` | `uuid` | não | `gen_random_uuid()` |  |  |
-| 2 | `collection_id` | `uuid` | não |  |  |  |
-| 3 | `product_id` | `text` | não |  |  |  |
-| 4 | `color_name` | `text` | sim |  |  |  |
-| 5 | `color_hex` | `text` | sim |  |  |  |
-| 6 | `thumbnail_url` | `text` | sim |  |  |  |
-| 7 | `sort_order` | `integer` | sim | `0` |  |  |
-| 8 | `created_at` | `timestamp with time zone` | não | `now()` |  |  |
-| 9 | `notes` | `text` | sim |  |  |  |
-| 10 | `price_at_save` | `numeric(12,2)` | sim |  |  |  |
-| 11 | `added_at` | `timestamp with time zone` | sim | `now()` |  |  |
+| 1 | `id` | `uuid` | não | `gen_random_uuid()` |  | Identificador UUID do item da coleção. |
+| 2 | `collection_id` | `uuid` | não |  |  | Coleção à qual o item pertence. |
+| 3 | `product_id` | `text` | não |  |  | Identificador textual do produto associado ao item. |
+| 4 | `color_name` | `text` | sim |  |  | Nome da cor selecionada para o item, quando informada. |
+| 5 | `color_hex` | `text` | sim |  |  | Cor do item em formato hexadecimal, quando informada. |
+| 6 | `thumbnail_url` | `text` | sim |  |  | URL da miniatura do item. |
+| 7 | `sort_order` | `integer` | sim | `0` |  | Ordem de exibição do item na coleção. |
+| 8 | `created_at` | `timestamp with time zone` | não | `now()` |  | Data e hora de criação do registro do item. |
+| 9 | `notes` | `text` | sim |  |  | Observações associadas ao item da coleção. |
+| 10 | `price_at_save` | `numeric(12,2)` | sim |  |  | Preço registrado quando o item foi salvo, em reais (BRL). Pode incluir centavos. |
+| 11 | `added_at` | `timestamp with time zone` | sim | `now()` |  | Data e hora em que o item foi adicionado à coleção. |
 
 
 ## Constraints

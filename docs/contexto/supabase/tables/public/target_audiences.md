@@ -1,5 +1,7 @@
 # public.target_audiences
 
+> Catálogo de públicos-alvo que podem ser associados a categorias e produtos.
+
 | propriedade | valor |
 |---|---|
 | tipo | table |
@@ -17,18 +19,18 @@
 
 | # | coluna | tipo | nullable | default | identity/generated | comentário |
 |---|---|---|---|---|---|---|
-| 1 | `id` | `uuid` | não | `gen_random_uuid()` |  |  |
-| 2 | `organization_id` | `uuid` | sim |  |  |  |
-| 3 | `name` | `character varying(100)` | não |  |  |  |
-| 4 | `slug` | `character varying(100)` | não |  |  |  |
-| 5 | `description` | `text` | sim |  |  |  |
-| 6 | `category` | `character varying(50)` | sim |  |  |  |
-| 7 | `icon_name` | `character varying(50)` | sim |  |  |  |
-| 8 | `color_hex` | `character varying(7)` | sim |  |  |  |
-| 9 | `display_order` | `integer` | sim | `0` |  |  |
-| 10 | `is_active` | `boolean` | não | `true` |  |  |
-| 11 | `created_at` | `timestamp with time zone` | sim | `now()` |  |  |
-| 12 | `updated_at` | `timestamp with time zone` | sim | `now()` |  |  |
+| 1 | `id` | `uuid` | não | `gen_random_uuid()` |  | Identificador UUID do público-alvo. |
+| 2 | `organization_id` | `uuid` | sim |  |  | Organização à qual pertence o público-alvo, quando informado. |
+| 3 | `name` | `character varying(100)` | não |  |  | Nome de exibição do público-alvo. |
+| 4 | `slug` | `character varying(100)` | não |  |  | Slug único do público-alvo. |
+| 5 | `description` | `text` | sim |  |  | Descrição do público-alvo. |
+| 6 | `category` | `character varying(50)` | sim |  |  | Categoria de classificação do público-alvo. |
+| 7 | `icon_name` | `character varying(50)` | sim |  |  | Nome do ícone usado para representar o público-alvo. |
+| 8 | `color_hex` | `character varying(7)` | sim |  |  | Cor associada ao público-alvo em formato hexadecimal. |
+| 9 | `display_order` | `integer` | sim | `0` |  | Ordem de exibição do público-alvo. |
+| 10 | `is_active` | `boolean` | não | `true` |  | Indica se o público-alvo está ativo. |
+| 11 | `created_at` | `timestamp with time zone` | sim | `now()` |  | Data e hora de criação do público-alvo. |
+| 12 | `updated_at` | `timestamp with time zone` | sim | `now()` |  | Data e hora da última atualização do público-alvo. |
 
 
 ## Constraints

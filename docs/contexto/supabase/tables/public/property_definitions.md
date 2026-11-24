@@ -19,18 +19,18 @@
 
 | # | coluna | tipo | nullable | default | identity/generated | comentário |
 |---|---|---|---|---|---|---|
-| 1 | `id` | `uuid` | não | `gen_random_uuid()` |  |  |
+| 1 | `id` | `uuid` | não | `gen_random_uuid()` |  | Identificador UUID da definição da propriedade. |
 | 2 | `code` | `text` | não |  |  | Código único normalizado da propriedade |
 | 3 | `name_pt` | `text` | não |  |  | Nome em português (igual ao valor da API SPOT) |
-| 4 | `name_en` | `text` | sim |  |  |  |
+| 4 | `name_en` | `text` | sim |  |  | Nome da propriedade em inglês, quando disponível. |
 | 5 | `category` | `text` | não |  |  | Categoria: thermal, material, certification, feature, packaging, sustainability, writing, notebook, electronics |
 | 6 | `icon_code` | `text` | sim |  |  | Código do ícone (Lucide icons) |
 | 7 | `is_thermal_indicator` | `boolean` | sim | `false` |  | Se TRUE, indica que o produto é térmico |
-| 8 | `is_premium_indicator` | `boolean` | sim | `false` |  |  |
-| 9 | `display_order` | `integer` | sim | `0` |  |  |
-| 10 | `active` | `boolean` | sim | `true` |  |  |
-| 11 | `created_at` | `timestamp with time zone` | sim | `now()` |  |  |
-| 12 | `updated_at` | `timestamp with time zone` | sim | `now()` |  |  |
+| 8 | `is_premium_indicator` | `boolean` | sim | `false` |  | Indica se a propriedade é usada como indicador de produto premium. |
+| 9 | `display_order` | `integer` | sim | `0` |  | Ordem de exibição da propriedade. |
+| 10 | `active` | `boolean` | sim | `true` |  | Indica se a definição da propriedade está ativa. |
+| 11 | `created_at` | `timestamp with time zone` | sim | `now()` |  | Data e hora de criação da definição da propriedade. |
+| 12 | `updated_at` | `timestamp with time zone` | sim | `now()` |  | Data e hora da última atualização da definição da propriedade. |
 
 
 ## Constraints

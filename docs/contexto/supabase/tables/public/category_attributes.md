@@ -18,15 +18,15 @@
 
 | # | coluna | tipo | nullable | default | identity/generated | comentário |
 |---|---|---|---|---|---|---|
-| 1 | `id` | `uuid` | não | `gen_random_uuid()` |  |  |
-| 2 | `category_id` | `uuid` | não |  |  |  |
-| 3 | `attribute_key` | `text` | não |  |  |  |
-| 4 | `attribute_value` | `text` | sim |  |  |  |
-| 5 | `attribute_type` | `text` | sim |  |  |  |
-| 6 | `is_filterable` | `boolean` | sim | `false` |  |  |
-| 7 | `display_order` | `integer` | sim | `0` |  |  |
-| 8 | `created_at` | `timestamp with time zone` | sim | `now()` |  |  |
-| 9 | `updated_at` | `timestamp with time zone` | sim | `now()` |  |  |
+| 1 | `id` | `uuid` | não | `gen_random_uuid()` |  | Identificador UUID do atributo da categoria. |
+| 2 | `category_id` | `uuid` | não |  |  | Categoria à qual pertence o atributo. |
+| 3 | `attribute_key` | `text` | não |  |  | Chave que identifica o atributo dentro da categoria. |
+| 4 | `attribute_value` | `text` | sim |  |  | Valor do atributo da categoria. |
+| 5 | `attribute_type` | `text` | sim |  |  | Tipo declarado do valor: text, number, boolean ou json. |
+| 6 | `is_filterable` | `boolean` | sim | `false` |  | Indica se o atributo pode ser usado como filtro. |
+| 7 | `display_order` | `integer` | sim | `0` |  | Ordem de apresentação do atributo. |
+| 8 | `created_at` | `timestamp with time zone` | sim | `now()` |  | Data e hora de criação do atributo. |
+| 9 | `updated_at` | `timestamp with time zone` | sim | `now()` |  | Data e hora da última atualização do atributo. |
 
 
 ## Constraints

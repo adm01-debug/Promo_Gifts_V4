@@ -1,5 +1,7 @@
 # public.category_target_audiences
 
+> Vínculos entre categorias e públicos-alvo, com prioridade e relevância configuráveis.
+
 | propriedade | valor |
 |---|---|
 | tipo | table |
@@ -17,15 +19,15 @@
 
 | # | coluna | tipo | nullable | default | identity/generated | comentário |
 |---|---|---|---|---|---|---|
-| 1 | `id` | `uuid` | não | `gen_random_uuid()` |  |  |
-| 2 | `category_id` | `uuid` | não |  |  |  |
-| 3 | `target_audience_id` | `uuid` | não |  |  |  |
-| 4 | `is_primary` | `boolean` | sim | `false` |  |  |
-| 5 | `relevance_score` | `integer` | sim | `5` |  |  |
-| 6 | `display_order` | `integer` | sim | `0` |  |  |
-| 7 | `is_active` | `boolean` | não | `true` |  |  |
-| 8 | `created_at` | `timestamp with time zone` | sim | `now()` |  |  |
-| 9 | `updated_at` | `timestamp with time zone` | sim | `now()` |  |  |
+| 1 | `id` | `uuid` | não | `gen_random_uuid()` |  | Identificador UUID do vínculo entre categoria e público-alvo. |
+| 2 | `category_id` | `uuid` | não |  |  | Categoria associada ao público-alvo. |
+| 3 | `target_audience_id` | `uuid` | não |  |  | Público-alvo associado à categoria. |
+| 4 | `is_primary` | `boolean` | sim | `false` |  | Indica se este é o público-alvo principal da categoria. |
+| 5 | `relevance_score` | `integer` | sim | `5` |  | Relevância do vínculo, em uma escala de 1 a 10. |
+| 6 | `display_order` | `integer` | sim | `0` |  | Ordem de exibição do público-alvo para a categoria. |
+| 7 | `is_active` | `boolean` | não | `true` |  | Indica se o vínculo está ativo. |
+| 8 | `created_at` | `timestamp with time zone` | sim | `now()` |  | Data e hora de criação do vínculo. |
+| 9 | `updated_at` | `timestamp with time zone` | sim | `now()` |  | Data e hora da última atualização do vínculo. |
 
 
 ## Constraints

@@ -1,5 +1,7 @@
 # public.b2b_collection_products
 
+> Vínculos entre coleções B2B e produtos, com ordenação própria.
+
 | propriedade | valor |
 |---|---|
 | tipo | table |
@@ -16,11 +18,11 @@
 
 | # | coluna | tipo | nullable | default | identity/generated | comentário |
 |---|---|---|---|---|---|---|
-| 1 | `id` | `uuid` | não | `gen_random_uuid()` |  |  |
-| 2 | `b2b_collection_id` | `uuid` | não |  |  |  |
-| 3 | `product_id` | `uuid` | não |  |  |  |
-| 4 | `display_order` | `integer` | sim | `0` |  |  |
-| 5 | `added_at` | `timestamp with time zone` | sim | `now()` |  |  |
+| 1 | `id` | `uuid` | não | `gen_random_uuid()` |  | Identificador UUID do vínculo entre coleção B2B e produto. |
+| 2 | `b2b_collection_id` | `uuid` | não |  |  | Coleção B2B à qual o produto foi adicionado. |
+| 3 | `product_id` | `uuid` | não |  |  | Produto associado à coleção B2B. |
+| 4 | `display_order` | `integer` | sim | `0` |  | Ordem de exibição do produto na coleção B2B. |
+| 5 | `added_at` | `timestamp with time zone` | sim | `now()` |  | Data e hora em que o produto foi adicionado à coleção B2B. |
 
 
 ## Constraints

@@ -1,5 +1,7 @@
 # public.collections
 
+> Coleções de produtos criadas por usuários, com opções de compartilhamento e associação a clientes. Esta tabela é distinta de public.b2b_collections.
+
 | propriedade | valor |
 |---|---|
 | tipo | table |
@@ -16,21 +18,21 @@
 
 | # | coluna | tipo | nullable | default | identity/generated | comentário |
 |---|---|---|---|---|---|---|
-| 1 | `id` | `uuid` | não | `gen_random_uuid()` |  |  |
-| 2 | `user_id` | `uuid` | não |  |  |  |
-| 3 | `name` | `text` | não |  |  |  |
-| 4 | `description` | `text` | sim |  |  |  |
-| 5 | `is_featured` | `boolean` | não | `false` |  |  |
-| 6 | `icon_color` | `text` | sim | `'#3b82f6'::text` |  |  |
-| 7 | `created_at` | `timestamp with time zone` | não | `now()` |  |  |
-| 8 | `updated_at` | `timestamp with time zone` | não | `now()` |  |  |
-| 9 | `icon` | `text` | sim | `'📁'::text` |  |  |
-| 10 | `client_id` | `text` | sim |  |  |  |
-| 11 | `client_name` | `text` | sim |  |  |  |
-| 12 | `share_token` | `text` | sim |  |  |  |
-| 13 | `share_expires_at` | `timestamp with time zone` | sim |  |  |  |
-| 14 | `is_public` | `boolean` | não | `false` |  |  |
-| 15 | `is_deleted` | `boolean` | não | `false` |  |  |
+| 1 | `id` | `uuid` | não | `gen_random_uuid()` |  | Identificador UUID da coleção. |
+| 2 | `user_id` | `uuid` | não |  |  | Usuário proprietário da coleção. |
+| 3 | `name` | `text` | não |  |  | Nome da coleção. |
+| 4 | `description` | `text` | sim |  |  | Descrição da coleção. |
+| 5 | `is_featured` | `boolean` | não | `false` |  | Indica se a coleção está marcada como destaque. |
+| 6 | `icon_color` | `text` | sim | `'#3b82f6'::text` |  | Cor do ícone da coleção, quando configurada. |
+| 7 | `created_at` | `timestamp with time zone` | não | `now()` |  | Data e hora de criação da coleção. |
+| 8 | `updated_at` | `timestamp with time zone` | não | `now()` |  | Data e hora da última atualização da coleção. |
+| 9 | `icon` | `text` | sim | `'📁'::text` |  | Ícone associado à coleção. |
+| 10 | `client_id` | `text` | sim |  |  | Identificador textual do cliente associado à coleção, quando informado. |
+| 11 | `client_name` | `text` | sim |  |  | Nome do cliente associado à coleção, quando informado. |
+| 12 | `share_token` | `text` | sim |  |  | Token usado para localizar ou compartilhar a coleção. |
+| 13 | `share_expires_at` | `timestamp with time zone` | sim |  |  | Data e hora de expiração do compartilhamento, quando definida. |
+| 14 | `is_public` | `boolean` | não | `false` |  | Indica se a coleção está configurada como pública. |
+| 15 | `is_deleted` | `boolean` | não | `false` |  | Indica se a coleção foi marcada como excluída logicamente. |
 
 
 ## Constraints

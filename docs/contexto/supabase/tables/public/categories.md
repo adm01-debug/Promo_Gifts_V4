@@ -19,38 +19,38 @@
 
 | # | coluna | tipo | nullable | default | identity/generated | comentário |
 |---|---|---|---|---|---|---|
-| 1 | `id` | `uuid` | não | `gen_random_uuid()` |  |  |
-| 2 | `name` | `text` | não |  |  |  |
+| 1 | `id` | `uuid` | não | `gen_random_uuid()` |  | Identificador UUID da categoria. |
+| 2 | `name` | `text` | não |  |  | Nome de exibição da categoria. |
 | 3 | `icon` | `text` | sim |  |  | Nome PascalCase de ícone Lucide React (ex: Coffee, Wine, PawPrint, Gamepad2). Regra: 1º char maiúsculo [A-Z], 2º char MINÚSCULO obrigatório [a-z], resto alphanumerico [a-zA-Z0-9]*. Constraint chk_icon_lucide_format: ^[A-Z][a-z][a-zA-Z0-9]*$ Garante que "COFFEE" (all-caps), "NULL" (string), siglas "TV"/"USB" sejam rejeitados. Todos os ícones reais do Lucide React seguem este padrão. Fonte de verdade: este campo. archive.category_icons é legada/arquivada. |
-| 4 | `description` | `text` | sim |  |  |  |
-| 5 | `parent_id` | `uuid` | sim |  |  |  |
-| 8 | `created_at` | `timestamp with time zone` | não | `now()` |  |  |
-| 9 | `slug` | `text` | não |  |  |  |
+| 4 | `description` | `text` | sim |  |  | Descrição da categoria. |
+| 5 | `parent_id` | `uuid` | sim |  |  | Categoria pai. NULL indica uma categoria raiz; preenchido, indica uma subcategoria. |
+| 8 | `created_at` | `timestamp with time zone` | não | `now()` |  | Data e hora de criação da categoria. |
+| 9 | `slug` | `text` | não |  |  | Slug único da categoria. O comentário da tabela identifica este campo como legado; considere a compatibilidade com consumidores existentes antes de alterar seu uso. |
 | 10 | `image_url` | `text` | sim |  |  | URL pública da imagem de capa da categoria, servida pelo Cloudflare Images CDN.  PADRÃO CANÔNICO (naming convention obrigatório para novas imagens):   https://imagedelivery.net/vKMs9Ow8bA_enuhLXZ2HAw/cat-{slug}/public  COMPONENTES DA URL:   • Account hash : vKMs9Ow8bA_enuhLXZ2HAw  (ID fixo da conta CF da Promo Brindes)   • Image ID     : cat-{slug}               (prefixo "cat-" + slug da categoria)   • Variant      : public                   (entrega pública sem autenticação)  ESCOPO ATUAL (2026-06-23):   • Apenas categorias level=1 (raiz/parent_id IS NULL) têm image_url preenchido.   • Level 2-5: intencionalmente NULL (navegação secundária sem imagem de capa).   • Cobertura: 26/26 categorias raiz ativas (100%).  REGRAS DE NEGÓCIO:   • Para fazer upload da imagem no Cloudflare Images, o image_id DEVE ser "cat-{slug}".   • Se o slug mudar, a imagem no Cloudflare NÃO é renomeada automaticamente —     apenas o registro no banco é atualizado pelo trigger     trg_sync_image_url_on_slug_update (criado em 2026-06-23).   • URLs fora do padrão canônico (customizadas) são aceitas e preservadas pelo trigger.   • Formato validado pelo CHECK constraint: chk_categories_image_url_format     (padrão: ^https://imagedelivery\.net/[A-Za-z0-9_-]+/[A-Za-z0-9_-]+/[A-Za-z0-9_-]+$).  CONSUMERS ATIVOS:   • RPC  get_root_categories()            → menu principal / home do catálogo   • RPC  get_category_with_children()     → página de listagem de categoria   • VIEW vw_sitemap_categories            → sitemap XML (SEO / Google Image Search)   • VIEW vw_sitemap_all                   → união de sitemaps   • VIEW vw_category_completeness         → score de completude (15 pontos)  ATENÇÃO: O campo é nullable. Não adicionar URL se a imagem não existir no CF — a URL seria válida no banco mas geraria 404 no CDN. |
 | 11 | `display_order` | `integer` | sim | `0` |  | Ordem de exibição (0=primeiro) |
 | 12 | `is_active` | `boolean` | não | `true` |  | CAMPO CANÔNICO de status de categoria. Controla visibilidade no catálogo, filtros e índices.  Ao inativar uma categoria, setar is_active=false e propagar para subcategorias se necessário. O campo legado "active" (Bitrix24) foi eliminado em 2026-06-22 após verificação de zero consumidores. |
-| 13 | `updated_at` | `timestamp with time zone` | sim | `now()` |  |  |
-| 14 | `organization_id` | `uuid` | não | `'5db5aee1-064b-4ef4-9193-345dcd8274ea'::uuid` |  |  |
+| 13 | `updated_at` | `timestamp with time zone` | sim | `now()` |  | Data e hora da última atualização da categoria. |
+| 14 | `organization_id` | `uuid` | não | `'5db5aee1-064b-4ef4-9193-345dcd8274ea'::uuid` |  | Organização à qual a categoria pertence. |
 | 15 | `bitrix_id` | `integer` | sim |  |  | ID original da categoria no Bitrix24 para sincronização |
-| 16 | `bitrix_modified_at` | `timestamp with time zone` | sim |  |  |  |
-| 17 | `synced_at` | `timestamp with time zone` | sim |  |  |  |
+| 16 | `bitrix_modified_at` | `timestamp with time zone` | sim |  |  | Data e hora da última modificação correspondente no Bitrix24, quando disponível. |
+| 17 | `synced_at` | `timestamp with time zone` | sim |  |  | Data e hora da sincronização da categoria com o sistema externo. |
 | 18 | `sync_status` | `text` | sim | `'synced'::text` |  | Status de sincronização da categoria com sistemas externos. Valores: synced (OK), pending (aguardando sync), error (falhou). DEFAULT synced adicionado em 2026-06-23 — backfill de 477 NULLs para synced realizado. |
 | 19 | `level` | `integer` | não | `1` |  | Nível na hierarquia (1=raiz, 2=sub, 3=sub-sub, etc) |
 | 20 | `path` | `text` | sim |  |  | Materialized path para queries rápidas ex: /124/282/ |
-| 21 | `is_visible` | `boolean` | sim | `true` |  |  |
-| 22 | `color_hex` | `text` | sim |  |  |  |
-| 23 | `meta_title` | `text` | sim |  |  |  |
-| 24 | `meta_description` | `text` | sim |  |  |  |
-| 25 | `meta_keywords` | `text[]` | sim |  |  |  |
+| 21 | `is_visible` | `boolean` | sim | `true` |  | Indica se a categoria deve estar visível na interface. |
+| 22 | `color_hex` | `text` | sim |  |  | Cor da categoria em formato hexadecimal, por exemplo #A1B2C3. |
+| 23 | `meta_title` | `text` | sim |  |  | Título SEO da categoria. |
+| 24 | `meta_description` | `text` | sim |  |  | Descrição SEO da categoria. |
+| 25 | `meta_keywords` | `text[]` | sim |  |  | Palavras-chave SEO da categoria, armazenadas como array de texto. |
 | 26 | `products_count` | `integer` | não | `0` |  | CACHE: Contagem de produtos ativos (p.is_active=true) vinculados a esta categoria via product_category_assignments (PCA). Inclui todos os PCA, não só is_primary. Atualizado pelo trigger fn_trigger_sync_pca_products_count (via PCA DML) e pelo cron category-resync-weekly (dom 02h). NÃO conta via products.category_id direto. |
 | 27 | `children_count` | `integer` | sim | `0` |  | CACHE: Total de subcategorias DIRETAS (parent_id = este id). Mantido em sincronia pelo trigger trigger_update_children_count (AFTER INSERT/DELETE/UPDATE OF parent_id). Zero inconsistências. |
 | 28 | `descendants_count` | `integer` | sim | `0` |  | CACHE: Total de TODAS as categorias descendentes (filhos, netos, ...). Mantido em sincronia pelo trigger trg_sync_descendants_count (AFTER INSERT/DELETE/UPDATE OF parent_id). Reconstruído via cron refresh-category-ancestors (diário 01h). |
-| 29 | `created_by` | `uuid` | sim |  |  |  |
-| 30 | `updated_by` | `uuid` | sim |  |  |  |
-| 31 | `deleted_at` | `timestamp with time zone` | sim |  |  |  |
+| 29 | `created_by` | `uuid` | sim |  |  | Identificador do usuário que criou a categoria, quando registrado. |
+| 30 | `updated_by` | `uuid` | sim |  |  | Identificador do usuário que atualizou a categoria por último, quando registrado. |
+| 31 | `deleted_at` | `timestamp with time zone` | sim |  |  | Data e hora da exclusão lógica da categoria. NULL indica que não há exclusão lógica registrada. |
 | 32 | `full_path_readable` | `text` | sim |  |  | Caminho legível (ex: BAR \| COZINHA > COPOS > VIDRO) |
 | 33 | `ai_summary` | `text` | sim |  |  | Resumo da categoria para IAs |
-| 34 | `schema_json` | `jsonb` | sim |  |  |  |
+| 34 | `schema_json` | `jsonb` | sim |  |  | Metadados estruturados da categoria armazenados em JSONB. |
 | 35 | `seo_priority` | `numeric(2,1)` | sim | `0.7` |  | Prioridade no sitemap (0.0 a 1.0) |
 | 36 | `min_order_quantity` | `integer` | sim | `1` |  | Quantidade mínima de pedido padrão para produtos desta categoria. Produtos podem ter override via products.min_order_quantity. Exemplos: Canetas=50, Mochilas=10, Chaveiros=100 |
 | 38 | `active` | `boolean` | sim | `is_active` | s |  |

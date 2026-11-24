@@ -1,5 +1,7 @@
 # public.b2b_collections
 
+> Coleções B2B de produtos, com visibilidade, destaque e ordenação próprios. Esta tabela é distinta de public.collections.
+
 | propriedade | valor |
 |---|---|
 | tipo | table |
@@ -16,18 +18,18 @@
 
 | # | coluna | tipo | nullable | default | identity/generated | comentário |
 |---|---|---|---|---|---|---|
-| 1 | `id` | `uuid` | não | `gen_random_uuid()` |  |  |
-| 2 | `name` | `text` | não |  |  |  |
-| 3 | `slug` | `text` | não |  |  |  |
-| 4 | `description` | `text` | sim |  |  |  |
-| 5 | `image_url` | `text` | sim |  |  |  |
-| 6 | `is_public` | `boolean` | sim | `false` |  |  |
-| 7 | `is_featured` | `boolean` | sim | `false` |  |  |
-| 8 | `display_order` | `integer` | sim | `0` |  |  |
-| 9 | `created_by` | `uuid` | sim |  |  |  |
-| 10 | `created_at` | `timestamp with time zone` | sim | `now()` |  |  |
-| 11 | `updated_at` | `timestamp with time zone` | sim | `now()` |  |  |
-| 12 | `organization_id` | `uuid` | sim |  |  |  |
+| 1 | `id` | `uuid` | não | `gen_random_uuid()` |  | Identificador UUID da coleção B2B. |
+| 2 | `name` | `text` | não |  |  | Nome de exibição da coleção B2B. |
+| 3 | `slug` | `text` | não |  |  | Slug único da coleção B2B. |
+| 4 | `description` | `text` | sim |  |  | Descrição da coleção B2B. |
+| 5 | `image_url` | `text` | sim |  |  | URL da imagem associada à coleção B2B. |
+| 6 | `is_public` | `boolean` | sim | `false` |  | Indica se a coleção B2B está marcada como pública. |
+| 7 | `is_featured` | `boolean` | sim | `false` |  | Indica se a coleção B2B está marcada como destaque. |
+| 8 | `display_order` | `integer` | sim | `0` |  | Ordem de exibição da coleção B2B. |
+| 9 | `created_by` | `uuid` | sim |  |  | Usuário que criou a coleção B2B, quando registrado. |
+| 10 | `created_at` | `timestamp with time zone` | sim | `now()` |  | Data e hora de criação da coleção B2B. |
+| 11 | `updated_at` | `timestamp with time zone` | sim | `now()` |  | Data e hora da última atualização da coleção B2B. |
+| 12 | `organization_id` | `uuid` | sim |  |  | Organização à qual pertence a coleção B2B. |
 
 
 ## Constraints
