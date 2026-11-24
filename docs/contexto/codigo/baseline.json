@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "918511e68f276e681d50ad84ff6b0958db584844",
+  "commit": "35b8704414df04b33a2e4b0f4a5d3a0ef9585be2",
   "branch": "main",
-  "data_commit": "2026-11-23T21:18:14-03:00",
+  "data_commit": "2026-11-23T21:33:52-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "35b8704",
+    "data": "2026-11-23",
+    "assunto": "chore(db): documentar reconciliacao da DDL do assistente do Supabase (#4033)"
+   },
    {
     "sha": "918511e",
     "data": "2026-11-23",
@@ -126,11 +131,6 @@
     "sha": "042c212",
     "data": "2026-11-23",
     "assunto": "docs(qa): auditoria exaustiva de QA — 103 achados e plano de 300 etapas (#3994)"
-   },
-   {
-    "sha": "ded84e9",
-    "data": "2026-11-22",
-    "assunto": "docs(migrations-log): recibo E15 — aplicação de 20261122200000 (#3992)"
    }
   ],
   "arquivos_mudados_7d": 738,
@@ -169,7 +169,7 @@
    },
    {
     "pasta": "src/components/mockup",
-    "mudancas": 162
+    "mudancas": 160
    },
    {
     "pasta": "supabase/functions/_shared",
@@ -199,7 +199,7 @@
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "supabase/MIGRATIONS_SYNC_LOG.md",
-    "mudancas": 63
+    "mudancas": 64
    },
    {
     "arquivo": "package.json",
@@ -309,7 +309,7 @@
    },
    {
     "autor": "Claude",
-    "commits": 2
+    "commits": 1
    },
    {
     "autor": "dependabot[bot]",
