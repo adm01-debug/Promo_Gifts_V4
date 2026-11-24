@@ -38,7 +38,7 @@ Severidade das etapas: Média 158 · Alta 79 · Baixa 54 · Crítica 9
 - [x] 005 — Fazer o gate de views públicas descobrir view nova em vez de conferir uma lista fixa — onda 1 — Alta — APROVAÇÃO — concluída em #4049: ver Evidências
 - [x] 006 — Registrar as três views de compras no contrato de views públicas — onda 1 — Alta — concluída em #4008 (`e87db751`)
 - [-] 007 — Fechar `tabela_preco_gravacao_oficial_faixa` ao anônimo — onda 1 — Alta — APROVAÇÃO — premissa refutada; ver Evidências
-- [ ] 008 — Fazer o gate de drift rodar também sobre grants de tabela ao `anon` — onda 1 — Média — APROVAÇÃO — matview já está coberta (a descoberta usa `relkind in ('v','m')`); o furo que sobra são as **45 tabelas** de `public` com SELECT concedido ao `anon` medidas no dump da etapa 005, que não entram na consulta (`scripts/check-public-views-drift.mjs`, `buildAnonSql`)
+- [ ] 008 — Fazer o gate de drift rodar também sobre grants de tabela ao `anon` — onda 1 — Média — APROVAÇÃO — medição de 2026-11-24 em "Evidências": 5 tabelas de `public` entregam linhas ao `anon` e 3 têm grant sem linha visível; o que falta é o gate enxergar `relkind` `'r'` para travar a próxima — matview já está coberta (a descoberta usa `relkind in ('v','m')`); o furo que sobra são as **45 tabelas** de `public` com SELECT concedido ao `anon` medidas no dump da etapa 005, que não entram na consulta (`scripts/check-public-views-drift.mjs`, `buildAnonSql`)
 - [ ] 009 — Tornar o guarda de required checks capaz de ver mais de um check — onda 1 — Crítica — APROVAÇÃO
 - [ ] 010 — Pôr o CodeQL de fato como check obrigatório de `main` — onda 1 — Crítica — APROVAÇÃO
 - [ ] 011 — Fazer `static-checks.yml` bloquear merge — onda 1 — Alta — APROVAÇÃO
@@ -874,3 +874,30 @@ Entregue: #4054 (`519b6a367`, lista = 15 colunas da view + teste que exige igual
 consumida por `fetch-print-areas.ts` e por `usePrintAreas.ts`, que passou de `select('*')` para as mesmas 15
 colunas). Produção confirmada no bundle servido: `products-filters-panel-BNa6euT4.js` contém
 `id,product_id,tabela_preco_id,...,created_at,updated_at` e não contém `production_days` nem `unit_cost`.
+
+### Etapa 008 — medição do grant de tabela ao `anon` (2026-11-24)
+
+> Read-only em produção, sem credencial de serviço: chave `sb_publishable_*` do bundle publicado +
+> `Prefer: count=exact` / `Range: 0-0` para ler a contagem real de linhas, não só o status.
+
+```
+200 */0     product_fiscal                        (grant existe, RLS devolve 0 linha)
+200 */0     product_supply                        (grant existe, RLS devolve 0 linha)
+200 */0     system_settings                       (grant existe, RLS devolve 0 linha)
+401 42501   suppliers  select=default_markup_percent
+401 42501   markup_configurations select=*
+401 42501   variant_supplier_sources select=*
+401 42501   print_area_techniques select=*        (grant por coluna; unit_cost segue 401)
+206 952     tabela_preco_gravacao_oficial_faixa   (preco_unitario por faixa de quantidade)
+206 20767   product_variants                      (sku, attributes, stock_quantity, images)
+206 16      tecnicas_gravacao                     (codigo, nome, slug, ativo)
+206 1007    video_sim_results                      (sup, yid, queue_status, cur_w, cur_h, err)
+```
+
+Leitura: as quatro com linhas são de catálogo — preço por faixa, variantes e técnicas alimentam a página
+pública e a calculadora, então o grant é funcional (é a premissa que a etapa 007 refutou). `video_sim_results`
+é resultado de simulação interna e não tem consumidor público conhecido: exposição sem uso.
+`product_fiscal`, `product_supply` e `system_settings` hoje devolvem 0 linha por RLS, mas o **grant** existe —
+qualquer policy de SELECT futura passa a entregar a tabela inteira ao anônimo. O gate
+(`scripts/check-public-views-drift.mjs`, `buildAnonSql`) só consulta `relkind in ('v','m')`, então nenhum
+desses oito casos aparece no CI.
