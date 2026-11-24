@@ -83,3 +83,25 @@ Três medições que impedem o merge como está:
 Veredicto: etapa 007 = premissa refutada, não se aplica a revogação. A criação da view, isolada, não
 agrega (o caminho de leitura do `anon` é intencional e a tabela não expõe custo) e criaria mais uma
 superfície pública fora do contrato de views públicas.
+## Cleanup executado — 2026-11-24 17:30 UTC
+
+Depois da auditoria acima, 7 branches tiveram o ref apagado. Todas tinham PR (aberta e fechada por
+mim, ou mergeada) e por isso o commit continua acessível por `refs/pull/<N>/head` — verificado com
+`git fetch origin refs/pull/<N>/head` **depois** do apagamento:
+
+| branch apagada | topo | PR | commit ainda alcançável |
+| --- | --- | --- | --- |
+| `claude/chore-qa-etapa-001-compras-261123-1100` | `c5445e01` | #4003 | sim (conteúdo resgatado em #4044) |
+| `claude/fix-qa-etapa-002-mask-compras-catalogo-261123-1100` | `7e8f88c3` | #4004 | sim |
+| `claude/fix-qa-etapa-003-mask-compras-faixa-261123-1115` | `53088da7` | #4005 | sim |
+| `claude/fix-qa-etapa-004-revoke-variante-anon-261123-1130` | `6d299f97` | #4006 | sim (superada pela `20261124140000`) |
+| `claude/fix-qa-etapa-005-open-view-gate-261123-1200` | `d7523182` | #4007 | sim (base reaproveitável na etapa 005) |
+| `claude/fix-qa-etapa-007-view-faixa-public-261123-1300` | `1fed190f` | #4009 | sim (premissa refutada) |
+| `e15-receipt-20261124140000-45414013226` | `fc1344e6` | #4043 | sim (linha do recibo já na `main`) |
+
+Para recuperar qualquer uma: `git fetch origin refs/pull/<N>/head && git branch <nome> <sha>`.
+
+**Mantidas de propósito:** `claude/chore-fix-e40-drift-normalization-261122-2350` (`ba4c7fb0`), por ter
+208 linhas de trabalho não mergeado sem teste, e as branches de automação (`contexto`, `gh-pages`,
+`ratchet`, `ci-metrics`, `inventario`, `docs/graphify-report`, `release-please`, `dependabot/*`), que
+têm PR aberta ou são linhagem própria de publicação.
