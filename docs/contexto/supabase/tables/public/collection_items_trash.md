@@ -1,5 +1,7 @@
 # public.collection_items_trash
 
+> Lixeira temporária de itens removidos de coleções. Preserva os dados originais do item e a data de remoção/expiração para recuperação conforme a política da aplicação.
+
 | propriedade | valor |
 |---|---|
 | tipo | table |

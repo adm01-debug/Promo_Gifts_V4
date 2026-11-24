@@ -1,5 +1,7 @@
 # public.enrichment_log
 
+> Histórico de tentativas de enriquecimento de contatos, incluindo provedor, nível, sucesso, dados encontrados, erros, créditos/custo e duração.
+
 | propriedade | valor |
 |---|---|
 | tipo | table |

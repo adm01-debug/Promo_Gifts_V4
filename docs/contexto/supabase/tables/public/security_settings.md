@@ -1,5 +1,7 @@
 # public.security_settings
 
+> Configurações de segurança em formato chave/valor JSONB. Alterações devem ser restritas e auditadas; documentar em cada registro o escopo e os efeitos da configuração.
+
 | propriedade | valor |
 |---|---|
 | tipo | table |

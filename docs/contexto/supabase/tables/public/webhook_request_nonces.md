@@ -1,5 +1,7 @@
 # public.webhook_request_nonces
 
+> Nonces de requisições webhook usados para detectar repetição/replay, com fonte, timestamp da requisição e expiração.
+
 | propriedade | valor |
 |---|---|
 | tipo | table |

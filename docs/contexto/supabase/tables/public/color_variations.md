@@ -1,5 +1,7 @@
 # public.color_variations
 
+> Catálogo de cores/variações canônicas com nome, hexadecimal, grupo e nuance. Usado por variantes de produto, imagens, equivalências de fornecedor e componentes de kits.
+
 | propriedade | valor |
 |---|---|
 | tipo | table |

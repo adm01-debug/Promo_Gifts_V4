@@ -1,5 +1,7 @@
 # public.eco_backfill_log_20260625
 
+> Trilha do backfill ecológico executado em 2026-06-25, registrando produto/material e se os vínculos de categoria/data foram criados pela operação.
+
 | propriedade | valor |
 |---|---|
 | tipo | table |

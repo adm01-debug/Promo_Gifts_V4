@@ -1,5 +1,7 @@
 # public.saved_trends_views
 
+> Visões de tendências salvas por usuário, com nome e filtros JSONB para reabrir uma análise configurada.
+
 | propriedade | valor |
 |---|---|
 | tipo | table |

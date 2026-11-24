@@ -1,5 +1,7 @@
 # public.user_token_revocations
 
+> Marcadores de revogação de tokens por usuário, com instante, JTI, expiração e motivo. Usado para invalidar sessões/tokens emitidos anteriormente.
+
 | propriedade | valor |
 |---|---|
 | tipo | table |

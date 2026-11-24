@@ -1,5 +1,7 @@
 # public.magazine_public_view_events_2026_09
 
+> Partição mensal de 2026-09 da tabela public.magazine_public_view_events. Os eventos armazenam hashes e metadados de visualização pública; consultar a tabela pai para buscas unificadas.
+
 | propriedade | valor |
 |---|---|
 | tipo | table |

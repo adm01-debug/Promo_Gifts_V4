@@ -1,5 +1,7 @@
 # public.magazines
 
+> Cabeçalho de revistas/catálogos comerciais. Guarda proprietário/organização, branding, opções de conteúdo, template, publicação/arquivamento, token público e controle de edição concorrente.
+
 | propriedade | valor |
 |---|---|
 | tipo | table |

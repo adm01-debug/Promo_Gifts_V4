@@ -1,5 +1,7 @@
 # public.collection_item_reactions
 
+> Reações anônimas a itens de coleções compartilhadas, identificadas por collection_id/item_id e anon_id; hashes reduzem a exposição de IP.
+
 | propriedade | valor |
 |---|---|
 | tipo | table |

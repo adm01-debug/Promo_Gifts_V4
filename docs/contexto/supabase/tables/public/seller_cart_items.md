@@ -1,5 +1,7 @@
 # public.seller_cart_items
 
+> Linhas de produto de um carrinho do vendedor. Guarda snapshots de nome, SKU, imagem, preço unitário, quantidade, cor e observações; cart_id liga ao cabeçalho.
+
 | propriedade | valor |
 |---|---|
 | tipo | table |

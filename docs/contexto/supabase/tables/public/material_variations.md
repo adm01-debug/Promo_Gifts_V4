@@ -1,5 +1,7 @@
 # public.material_variations
 
+> Variações ou especificações de um tipo de material. type_id identifica o material-pai; specifications guarda propriedades estruturadas específicas da variação.
+
 | propriedade | valor |
 |---|---|
 | tipo | table |

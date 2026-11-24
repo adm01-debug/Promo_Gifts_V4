@@ -1,5 +1,7 @@
 # public.mcp_access_violations
 
+> Eventos de violações de autorização MCP, com operação, origem, chave-alvo e contexto técnico para investigação.
+
 | propriedade | valor |
 |---|---|
 | tipo | table |

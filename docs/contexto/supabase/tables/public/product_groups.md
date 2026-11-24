@@ -1,5 +1,7 @@
 # public.product_groups
 
+> Grupos de produtos que compartilham templates de componentes e regras de personalização; group_code identifica o grupo e is_active controla seu uso.
+
 | propriedade | valor |
 |---|---|
 | tipo | table |

@@ -1,5 +1,7 @@
 # public.pipeline_health_log
 
+> Snapshots de saúde do pipeline com contagens de resultados críticos, avisos e verificações aprovadas, além do JSON detalhado.
+
 | propriedade | valor |
 |---|---|
 | tipo | table |

@@ -1,5 +1,7 @@
 # public.inbound_webhook_events
 
+> Eventos recebidos por endpoints de webhook. Guarda payload/headers, validade da assinatura, processamento, resultado/erro e chave de idempotência; proteger payloads que possam conter dados pessoais ou segredos.
+
 | propriedade | valor |
 |---|---|
 | tipo | table |

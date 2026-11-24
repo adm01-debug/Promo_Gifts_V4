@@ -1,5 +1,7 @@
 # public.mcp_full_grantors
 
+> Registro de concessões de acesso MCP full, com usuário, concedente, justificativa e data. Deve ser tratado como controle administrativo sensível.
+
 | propriedade | valor |
 |---|---|
 | tipo | table |

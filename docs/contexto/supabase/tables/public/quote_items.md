@@ -1,5 +1,7 @@
 # public.quote_items
 
+> Linhas de produtos incluídas em um orçamento. Um item pode vincular-se opcionalmente a public.products e public.product_variants; campos textuais guardam snapshots para manter a proposta estável. Personalizações e embalagens opcionais são registradas separadamente ou por seus campos próprios.
+
 | propriedade | valor |
 |---|---|
 | tipo | table |

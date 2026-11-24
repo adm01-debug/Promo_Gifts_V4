@@ -1,5 +1,7 @@
 # public.user_filter_presets
 
+> Predefinições de filtros associadas a usuários. filters armazena os critérios JSON; is_global distingue presets compartilhados de presets pessoais.
+
 | propriedade | valor |
 |---|---|
 | tipo | table |

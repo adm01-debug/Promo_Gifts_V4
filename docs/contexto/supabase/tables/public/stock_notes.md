@@ -1,5 +1,7 @@
 # public.stock_notes
 
+> Notas operacionais associadas a uma variante e opcionalmente a um fornecedor, com autoria, fixação e exclusão lógica.
+
 | propriedade | valor |
 |---|---|
 | tipo | table |

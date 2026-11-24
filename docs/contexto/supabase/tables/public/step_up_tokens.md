@@ -1,5 +1,7 @@
 # public.step_up_tokens
 
+> Tokens de curta duração para autorizar ações step-up. Armazena hash do token, desafio, ação-alvo, consumo e expiração; nunca guardar o token em claro.
+
 | propriedade | valor |
 |---|---|
 | tipo | table |

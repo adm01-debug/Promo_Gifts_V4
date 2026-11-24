@@ -1,5 +1,7 @@
 # public.product_search_logs
 
+> Telemetria agregada de buscas de produtos: consulta, filtros, número de resultados e latência. Não guarda o conjunto completo de produtos retornados.
+
 | propriedade | valor |
 |---|---|
 | tipo | table |

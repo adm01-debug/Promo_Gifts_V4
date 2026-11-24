@@ -1,6 +1,6 @@
 # public.product_group_components
 
-> Product-group component templates inherited by products in the group.
+> Componentes de personalização padrão herdáveis por produtos de um grupo, com código/nome, ordenação e indicação de personalizabilidade.
 
 | propriedade | valor |
 |---|---|

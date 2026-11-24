@@ -1,5 +1,7 @@
 # public.magic_up_reactions
 
+> Reações de usuários a gerações Magic Up, com tipo de reação e metadados técnicos de origem.
+
 | propriedade | valor |
 |---|---|
 | tipo | table |

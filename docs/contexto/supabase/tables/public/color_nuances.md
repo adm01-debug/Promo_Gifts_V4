@@ -1,5 +1,7 @@
 # public.color_nuances
 
+> Vocabulário de nuances de cor associado a grupos/variações canônicas, inclusive para sincronização com enums de cor do Bitrix24.
+
 | propriedade | valor |
 |---|---|
 | tipo | table |

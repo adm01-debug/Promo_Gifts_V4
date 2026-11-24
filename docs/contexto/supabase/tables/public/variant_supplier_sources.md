@@ -1,6 +1,6 @@
 # public.variant_supplier_sources
 
-> Fonte dados por variante x fornecedor. BACKLOG: cost_price_1..5+min_qty_1..5 → supplier_price_tiers; next_quantity/date_1..6 → variant_restock_schedule. Bloqueado por 24+ refs frontend.
+> Registro de fornecimento no grão variante × fornecedor. Mantém estoque, disponibilidade, origem e preços por faixa de quantidade; product_variants identifica a variante e suppliers identifica a fonte comercial. É fonte operacional para preço/estoque por fornecedor; snapshots e resumos históricos ficam em tabelas próprias.
 
 | propriedade | valor |
 |---|---|

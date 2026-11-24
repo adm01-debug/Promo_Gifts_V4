@@ -1,5 +1,7 @@
 # public.supplier_video_requirements
 
+> Requisitos técnicos de vídeo por fornecedor: dimensões mínimas/ideais, duração, tamanho máximo e formatos permitidos. Usado para validar vídeos antes de ingestão/publicação.
+
 | propriedade | valor |
 |---|---|
 | tipo | table |

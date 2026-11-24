@@ -1,6 +1,6 @@
 # public.product_tags
 
-> Bug RLS corrigido na Etapa 6: removida product_tags_public_read que anulava _select_org.
+> Tabela de associação N:N entre produtos e tags. Cada linha liga product_id a tag_id; a definição e o escopo da tag ficam em public.tags. Mantém também o contexto das correções de RLS registradas anteriormente.
 
 | propriedade | valor |
 |---|---|

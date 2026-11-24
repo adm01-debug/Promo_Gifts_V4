@@ -1,5 +1,7 @@
 # public.magazine_public_view_events
 
+> Eventos particionados de visualização de revistas públicas. Guarda hashes de token/IP/agente, página, sessão e referer host; usar a tabela pai para consultas unificadas.
+
 | propriedade | valor |
 |---|---|
 | tipo | partitioned |

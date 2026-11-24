@@ -1,5 +1,7 @@
 # public.integration_credentials
 
+> Referências e valores de credenciais de integrações externas, com provedor, tipo, estado, expiração e auditoria de atualização. Nunca inserir valores secretos em comentários, logs ou metadados de documentação; restringir o acesso ao mecanismo de secrets/roles apropriado.
+
 | propriedade | valor |
 |---|---|
 | tipo | table |

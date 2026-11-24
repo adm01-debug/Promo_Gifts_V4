@@ -1,5 +1,7 @@
 # public.connection_test_history
 
+> Histórico de testes de conectividade de uma external_connection, incluindo latência por fase de rede, resposta HTTP, erro e origem do teste.
+
 | propriedade | valor |
 |---|---|
 | tipo | table |

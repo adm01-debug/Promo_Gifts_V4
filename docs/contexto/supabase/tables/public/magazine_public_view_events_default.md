@@ -1,5 +1,7 @@
 # public.magazine_public_view_events_default
 
+> Partição DEFAULT da tabela public.magazine_public_view_events para datas fora das partições mensais existentes.
+
 | propriedade | valor |
 |---|---|
 | tipo | table |

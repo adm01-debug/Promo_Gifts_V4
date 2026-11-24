@@ -1,5 +1,7 @@
 # public.paper_colors
 
+> Vocabulário de cores do papel interno de cadernos e materiais gráficos.
+
 | propriedade | valor |
 |---|---|
 | tipo | table |

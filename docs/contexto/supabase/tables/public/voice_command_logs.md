@@ -1,5 +1,7 @@
 # public.voice_command_logs
 
+> Histórico de comandos de voz processados, com transcrição, ação interpretada, resposta, payload e resultado. Revisar retenção e acesso por conter texto potencialmente sensível.
+
 | propriedade | valor |
 |---|---|
 | tipo | table |

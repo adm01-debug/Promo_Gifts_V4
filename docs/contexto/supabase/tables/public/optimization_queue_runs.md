@@ -1,5 +1,7 @@
 # public.optimization_queue_runs
 
+> Histórico de execuções de itens da optimization_queue, com status, guardrail, duração, executor e notas.
+
 | propriedade | valor |
 |---|---|
 | tipo | table |

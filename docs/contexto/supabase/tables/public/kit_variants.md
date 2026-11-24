@@ -1,5 +1,7 @@
 # public.kit_variants
 
+> Variações nomeadas de um kit mestre, com snapshots de caixa/itens/personalização, quantidade, preço e ordenação próprios.
+
 | propriedade | valor |
 |---|---|
 | tipo | table |

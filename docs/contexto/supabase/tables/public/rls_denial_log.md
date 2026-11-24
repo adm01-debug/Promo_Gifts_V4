@@ -1,5 +1,7 @@
 # public.rls_denial_log
 
+> Registro de negações de acesso por Row Level Security, com usuário, objeto, operação, endpoint, erro e contexto de diagnóstico. Tratar campos de IP, e-mail e agente de usuário como dados sensíveis.
+
 | propriedade | valor |
 |---|---|
 | tipo | table |

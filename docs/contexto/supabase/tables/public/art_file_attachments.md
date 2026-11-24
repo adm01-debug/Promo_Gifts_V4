@@ -1,5 +1,7 @@
 # public.art_file_attachments
 
+> Arquivos de arte anexados por usuário a mockup e/ou cotação, com metadados do arquivo, caminho/URL e notas.
+
 | propriedade | valor |
 |---|---|
 | tipo | table |

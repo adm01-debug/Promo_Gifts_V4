@@ -1,5 +1,7 @@
 # public.magic_up_brand_kits
 
+> Configurações de identidade de marca para campanhas Magic Up: logos, cores, tom, estilo e vocabulário obrigatório/proibido.
+
 | propriedade | valor |
 |---|---|
 | tipo | table |

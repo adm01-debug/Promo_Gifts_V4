@@ -1,5 +1,7 @@
 # public.pipeline_control
 
+> Chaves de controle operacional que permitem habilitar/desabilitar partes do pipeline, com nota e timestamp de alteração.
+
 | propriedade | valor |
 |---|---|
 | tipo | table |

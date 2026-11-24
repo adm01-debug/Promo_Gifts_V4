@@ -1,5 +1,7 @@
 # public.order_item_personalizations
 
+> Detalhes de personalização associados a uma linha de pedido: técnica, local, imagem/texto e ajuste de preço. order_item_id identifica a linha comercial.
+
 | propriedade | valor |
 |---|---|
 | tipo | table |

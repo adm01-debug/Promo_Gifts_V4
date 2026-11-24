@@ -1,5 +1,7 @@
 # public.supplier_categories
 
+> Categorias brutas recebidas dos fornecedores, com código, nome, código do pai, nível e payload original. O mapeamento para categorias canônicas da aplicação é mantido separadamente em supplier_category_mappings.
+
 | propriedade | valor |
 |---|---|
 | tipo | table |

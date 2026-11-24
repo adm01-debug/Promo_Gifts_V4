@@ -1,5 +1,7 @@
 # public.magazine_duplicate_requests
 
+> Ledger de idempotência para pedidos de duplicação de revistas. A chave composta por ator e idempotency_key impede cópias duplicadas e relaciona origem/edição solicitada ao novo registro.
+
 | propriedade | valor |
 |---|---|
 | tipo | table |

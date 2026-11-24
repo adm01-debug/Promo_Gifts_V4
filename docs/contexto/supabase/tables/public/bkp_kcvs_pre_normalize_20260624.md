@@ -1,5 +1,7 @@
 # public._bkp_kcvs_pre_normalize_20260624
 
+> Backup de kit_component_variant_skus anterior à normalização executada em 2026-06-24. Preserva os valores pré-alteração para comparação e recuperação revisada.
+
 | propriedade | valor |
 |---|---|
 | tipo | table |

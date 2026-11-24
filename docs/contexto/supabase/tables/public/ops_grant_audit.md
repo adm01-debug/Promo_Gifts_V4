@@ -1,5 +1,7 @@
 # public.ops_grant_audit
 
+> Auditoria resumida de alterações de grants operacionais, registrando assinatura da função, roles corrigidas, origem e instante da execução.
+
 | propriedade | valor |
 |---|---|
 | tipo | table |

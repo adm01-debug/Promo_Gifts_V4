@@ -1,5 +1,7 @@
 # public.supplier_subtype_category_map
 
+> Mapeamento por fornecedor entre descrição/código de subtipo externo e categoria canônica public.categories, com método de correspondência e timestamps de manutenção.
+
 | propriedade | valor |
 |---|---|
 | tipo | table |

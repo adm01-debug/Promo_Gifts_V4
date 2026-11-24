@@ -1,5 +1,7 @@
 # public.favorite_items_trash
 
+> Lixeira temporária de itens removidos de favoritos, preservando snapshot e dados de ordenação para possível restauração até expires_at.
+
 | propriedade | valor |
 |---|---|
 | tipo | table |

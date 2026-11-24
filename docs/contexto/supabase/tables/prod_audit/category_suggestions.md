@@ -1,5 +1,7 @@
 # prod_audit.category_suggestions
 
+> Histórico de sugestões de categoria produzidas por regras de auditoria para produtos. Guarda produto, categoria sugerida, caminho, categorias atuais, confiança, motivo e decisão reviewed/accepted; aceitar uma sugestão não deve ser presumido como atualização automática do catálogo.
+
 | propriedade | valor |
 |---|---|
 | tipo | table |

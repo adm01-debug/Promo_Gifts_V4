@@ -1,5 +1,7 @@
 # public.magazine_templates
 
+> Templates personalizados de revista pertencentes a um usuário e opcionalmente compartilhados na organização; preserva branding e configurações de conteúdo.
+
 | propriedade | valor |
 |---|---|
 | tipo | table |

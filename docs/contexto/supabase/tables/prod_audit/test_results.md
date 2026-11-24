@@ -1,5 +1,7 @@
 # prod_audit.test_results
 
+> Resultados de testes de auditoria de produção. Cada linha representa um teste de um lote, com categoria, severidade, resultado, valores esperados/observados, detalhes e duração; serve como evidência de validação, não como dado operacional do catálogo.
+
 | propriedade | valor |
 |---|---|
 | tipo | table |

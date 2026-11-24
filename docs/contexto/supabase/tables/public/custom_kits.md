@@ -1,6 +1,6 @@
 # public.custom_kits
 
-> Wave 3.3.A 2026-05-22: removidos 19 campos legacy. Schema consolidado.
+> Kits montados por usuários, com estado de rascunho, itens, embalagem, personalização e preço agregado. kit_variants guarda alternativas nomeadas do kit; itens/componentes de catálogo são modelados separadamente. Schema consolidado na Wave 3.3.A.
 
 | propriedade | valor |
 |---|---|

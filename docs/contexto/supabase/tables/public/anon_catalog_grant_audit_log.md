@@ -1,5 +1,7 @@
 # public.anon_catalog_grant_audit_log
 
+> Snapshots de auditoria dos grants de leitura do catálogo para anon, com contagem de violações e detalhes JSON da checagem.
+
 | propriedade | valor |
 |---|---|
 | tipo | table |

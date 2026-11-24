@@ -1,5 +1,7 @@
 # public.commemorative_date_exclusions
 
+> Exceções que removem um produto ou uma variante da associação automática/manual com uma data comemorativa, com motivo e autoria quando disponíveis.
+
 | propriedade | valor |
 |---|---|
 | tipo | table |

@@ -1,5 +1,7 @@
 # public._bkp_kit_dims_20260619
 
+> Backup dos campos dimensionais de kits em products capturado em 2026-06-19 antes da alteração de dimensões. Usar apenas para auditoria ou restauração revisada.
+
 | propriedade | valor |
 |---|---|
 | tipo | table |

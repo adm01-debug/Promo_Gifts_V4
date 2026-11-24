@@ -1,5 +1,7 @@
 # public.variation_types
 
+> Catálogo de tipos de variação de produto (por exemplo, tamanho ou capacidade), com código, rótulo, tipo de valor e configuração de obrigatoriedade.
+
 | propriedade | valor |
 |---|---|
 | tipo | table |

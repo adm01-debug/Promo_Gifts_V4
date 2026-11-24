@@ -1,5 +1,7 @@
 # public.product_relationships
 
+> Relações direcionadas entre produtos, classificadas por relationship_type. product_id é a origem e related_product_id o destino; is_bidirectional indica se a relação deve ser interpretada nos dois sentidos.
+
 | propriedade | valor |
 |---|---|
 | tipo | table |

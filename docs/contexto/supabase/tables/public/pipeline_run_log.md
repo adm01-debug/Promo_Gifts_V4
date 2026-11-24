@@ -1,5 +1,7 @@
 # public.pipeline_run_log
 
+> Histórico de execuções de jobs do pipeline, com início/fim, duração, estado, tamanho do lote, resultado JSON e erro.
+
 | propriedade | valor |
 |---|---|
 | tipo | table |

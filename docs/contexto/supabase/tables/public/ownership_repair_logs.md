@@ -1,5 +1,7 @@
 # public.ownership_repair_logs
 
+> Trilha de ações de correção de registros sem proprietário válido, com tipo de problema, ação, linhas afetadas, modo dry-run, executor e erro.
+
 | propriedade | valor |
 |---|---|
 | tipo | table |

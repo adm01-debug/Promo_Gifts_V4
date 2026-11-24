@@ -1,5 +1,7 @@
 # public.query_telemetry
 
+> Telemetria agregada de operações de banco/RPC, incluindo duração, contagem, paginação, cache, cold start e erros para identificar consultas lentas ou falhas.
+
 | propriedade | valor |
 |---|---|
 | tipo | table |

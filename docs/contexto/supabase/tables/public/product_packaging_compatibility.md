@@ -1,6 +1,6 @@
 # public.product_packaging_compatibility
 
-> Compatibilidade entre produtos e embalagens vendidas SEPARADAMENTE (COM SKU próprio)
+> Compatibilidade entre produtos e embalagens vendidas SEPARADAMENTE (COM SKU próprio). A linha registra o par produto/embalagem, folgas dimensionais, avaliação de encaixe, recomendação, verificação e notas.
 
 | propriedade | valor |
 |---|---|

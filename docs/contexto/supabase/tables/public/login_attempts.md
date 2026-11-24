@@ -1,5 +1,7 @@
 # public.login_attempts
 
+> Trilha de tentativas de autenticação usada para auditoria, detecção de abuso e regras de lockout. verified indica se a tentativa bem-sucedida teve sessão validada pela Edge Function.
+
 | propriedade | valor |
 |---|---|
 | tipo | table |

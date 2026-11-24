@@ -1,5 +1,7 @@
 # public.color_equivalences
 
+> De-para entre uma cor de fornecedor (supplier_colors) e a variação/nuance canônica Promo. verified/is_active controlam a confiança operacional; is_primary indica o mapeamento principal quando há alternativas.
+
 | propriedade | valor |
 |---|---|
 | tipo | table |

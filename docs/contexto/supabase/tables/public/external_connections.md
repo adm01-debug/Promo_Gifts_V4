@@ -1,5 +1,7 @@
 # public.external_connections
 
+> Cadastro de conexões a serviços externos, com tipo, configuração não secreta, referências a secrets e estado do último teste. Segredos devem permanecer no cofre/armazenamento de secrets.
+
 | propriedade | valor |
 |---|---|
 | tipo | table |

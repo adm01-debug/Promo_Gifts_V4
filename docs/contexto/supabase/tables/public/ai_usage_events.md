@@ -1,5 +1,7 @@
 # public.ai_usage_events
 
+> Eventos resumidos de uso de IA por usuário/função, com tipo de evento e metadados opcionais. Não confundir com ai_usage_logs, que registra consumo detalhado por chamada.
+
 | propriedade | valor |
 |---|---|
 | tipo | table |

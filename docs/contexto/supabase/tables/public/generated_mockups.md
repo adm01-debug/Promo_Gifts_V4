@@ -1,5 +1,7 @@
 # public.generated_mockups
 
+> Resultados individuais de geração de mockup, com imagem, parâmetros de produto/área/técnica, custo, qualidade e estado de aprovação.
+
 | propriedade | valor |
 |---|---|
 | tipo | table |

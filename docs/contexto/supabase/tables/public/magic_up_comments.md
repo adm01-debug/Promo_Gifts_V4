@@ -1,5 +1,7 @@
 # public.magic_up_comments
 
+> Comentários de usuários sobre gerações Magic Up, com autoria de exibição e opção de visibilidade pública.
+
 | propriedade | valor |
 |---|---|
 | tipo | table |

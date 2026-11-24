@@ -1,5 +1,7 @@
 # public.system_settings
 
+> Configurações globais da aplicação em formato chave/valor JSONB, com registro de atualização. Usar description para documentar finalidade e formato esperado de cada chave.
+
 | propriedade | valor |
 |---|---|
 | tipo | table |

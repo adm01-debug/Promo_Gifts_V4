@@ -1,5 +1,7 @@
 # public.auto_tag_rules
 
+> Regras configuráveis de atribuição automática de tags a produtos. Cada regra define condição, campo/operador/valor, prioridade, tag de destino e estado ativo.
+
 | propriedade | valor |
 |---|---|
 | tipo | table |

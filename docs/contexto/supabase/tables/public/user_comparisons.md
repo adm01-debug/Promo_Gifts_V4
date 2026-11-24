@@ -1,5 +1,7 @@
 # public.user_comparisons
 
+> Comparações de produtos salvas por usuário, com itens em JSONB e opções de compartilhamento público por token e validade.
+
 | propriedade | valor |
 |---|---|
 | tipo | table |

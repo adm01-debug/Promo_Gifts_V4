@@ -1,5 +1,7 @@
 # public.mockup_templates
 
+> Modelos reutilizáveis de mockup por produto, com áreas, técnica padrão, cores e estado de publicação.
+
 | propriedade | valor |
 |---|---|
 | tipo | table |

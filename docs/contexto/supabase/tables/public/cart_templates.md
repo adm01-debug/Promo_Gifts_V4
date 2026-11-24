@@ -1,5 +1,7 @@
 # public.cart_templates
 
+> Modelos pessoais de carrinho que guardam conjuntos de itens em JSONB para reutilização pelo usuário.
+
 | propriedade | valor |
 |---|---|
 | tipo | table |

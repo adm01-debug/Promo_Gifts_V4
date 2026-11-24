@@ -1,5 +1,7 @@
 # public.binding_types
 
+> Vocabulário de tipos de encadernação para especificações de cadernos e materiais gráficos.
+
 | propriedade | valor |
 |---|---|
 | tipo | table |

@@ -1,5 +1,7 @@
 # public.commemorative_date_colors
 
+> Associa grupos canônicos de cores a datas comemorativas e registra prioridade/score de correspondência para curadoria e campanhas.
+
 | propriedade | valor |
 |---|---|
 | tipo | table |

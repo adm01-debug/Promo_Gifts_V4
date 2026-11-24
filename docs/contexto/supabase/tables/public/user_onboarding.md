@@ -1,5 +1,7 @@
 # public.user_onboarding
 
+> Estado de onboarding por usuário, incluindo progresso, etapas concluídas e timestamps de início/conclusão. user_id identifica a conta Supabase Auth.
+
 | propriedade | valor |
 |---|---|
 | tipo | table |

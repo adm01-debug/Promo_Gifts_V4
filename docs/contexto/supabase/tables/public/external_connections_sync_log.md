@@ -1,5 +1,7 @@
 # public.external_connections_sync_log
 
+> Histórico de execuções de sincronização de conexões externas, com tipo, estado, contagens, duração e metadados/erro. Não armazena credenciais.
+
 | propriedade | valor |
 |---|---|
 | tipo | table |

@@ -1,5 +1,7 @@
 # public.mockup_generation_jobs
 
+> Solicitações em lote de geração de mockups. Guarda usuário, produto, técnica, parâmetros visuais, estado, contagens e custos estimados/reais do job.
+
 | propriedade | valor |
 |---|---|
 | tipo | table |

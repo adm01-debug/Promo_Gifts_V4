@@ -1,6 +1,6 @@
 # public.product_category_assignments
 
-> Bug RLS corrigido na Etapa 6: removida product_category_assignments_public_read que anulava _select_org.
+> Relação canônica N:N entre produtos e categorias. Cada linha atribui um produto a uma categoria; is_primary marca a categoria principal e display_order controla a ordenação. É a fonte canônica para vínculos múltiplos, distinta dos campos legados em products.
 
 | propriedade | valor |
 |---|---|

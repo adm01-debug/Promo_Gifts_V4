@@ -1,5 +1,7 @@
 # public.video_validation_log
 
+> Resultados de validação de vídeos: metadados técnicos observados, status, validade, problemas e recomendações, associados a vídeo/produto/fornecedor quando disponíveis.
+
 | propriedade | valor |
 |---|---|
 | tipo | table |

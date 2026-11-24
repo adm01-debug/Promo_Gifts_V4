@@ -1,5 +1,7 @@
 # public.video_types
 
+> Vocabulário de tipos de vídeo de produto, com nomes, categoria e parâmetros de reprodução. product_videos.video_type_id referencia este catálogo.
+
 | propriedade | valor |
 |---|---|
 | tipo | table |

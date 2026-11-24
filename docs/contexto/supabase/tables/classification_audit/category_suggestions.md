@@ -1,5 +1,7 @@
 # classification_audit.category_suggestions
 
+> Evidências detalhadas de candidatos de categoria por produto, incluindo pontuação, quantidade e tokens correspondentes, conflitos de material/tipo e sinais de aprovação automática. É uma trilha de análise; os vínculos efetivos ficam em public.product_category_assignments.
+
 | propriedade | valor |
 |---|---|
 | tipo | table |

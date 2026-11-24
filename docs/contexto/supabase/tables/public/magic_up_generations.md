@@ -1,5 +1,7 @@
 # public.magic_up_generations
 
+> Gerações de conteúdo/imagem Magic Up, com prompt, produto, canal, modelo, resultado, qualidade, status, tags e metadados.
+
 | propriedade | valor |
 |---|---|
 | tipo | table |

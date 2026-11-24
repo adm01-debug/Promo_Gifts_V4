@@ -1,5 +1,7 @@
 # public.recently_viewed_products
 
+> Histórico de produtos visualizados por usuário, ordenável por viewed_at para compor a seção de visualizações recentes.
+
 | propriedade | valor |
 |---|---|
 | tipo | table |

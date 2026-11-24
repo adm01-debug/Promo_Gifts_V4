@@ -1,5 +1,7 @@
 # public.user_preferences
 
+> Preferências de interface e análise por usuário, incluindo pesos/ordem de colunas de comparação e estados de filtros em JSONB.
+
 | propriedade | valor |
 |---|---|
 | tipo | table |

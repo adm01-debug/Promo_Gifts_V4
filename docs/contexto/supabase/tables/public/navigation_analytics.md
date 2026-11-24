@@ -1,5 +1,7 @@
 # public.navigation_analytics
 
+> Eventos de navegação registrados para análise de uso, com usuário opcional, tipo do evento, payload JSON e timestamp.
+
 | propriedade | valor |
 |---|---|
 | tipo | table |

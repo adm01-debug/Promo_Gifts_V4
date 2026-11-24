@@ -1,5 +1,7 @@
 # public.mockup_prompt_history
 
+> Histórico de alterações de prompts, preservando conteúdo anterior/novo, modelo, versão, autor e observações.
+
 | propriedade | valor |
 |---|---|
 | tipo | table |

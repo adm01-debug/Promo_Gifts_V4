@@ -1,5 +1,7 @@
 # public.user_ip_allowlist
 
+> Endereços IP autorizados individualmente por usuário. is_active permite desativar uma autorização sem remover o registro; esta lista é distinta da allowlist global.
+
 | propriedade | valor |
 |---|---|
 | tipo | table |

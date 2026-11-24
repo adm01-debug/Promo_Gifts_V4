@@ -1,5 +1,7 @@
 # public.enriched_contacts
 
+> Cadastro enriquecido de contatos profissionais, com perfis, e-mails/telefones, confiança e origem dos dados. Contém dados pessoais; aplicar políticas de acesso e retenção apropriadas.
+
 | propriedade | valor |
 |---|---|
 | tipo | table |

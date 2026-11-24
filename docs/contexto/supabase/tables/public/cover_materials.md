@@ -1,5 +1,7 @@
 # public.cover_materials
 
+> Vocabulário de materiais de capa, incluindo indicação de sustentabilidade quando aplicável.
+
 | propriedade | valor |
 |---|---|
 | tipo | table |

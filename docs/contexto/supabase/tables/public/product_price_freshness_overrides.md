@@ -1,5 +1,7 @@
 # public.product_price_freshness_overrides
 
+> Exceções por produto ao limite padrão de frescor de preço. threshold_days é restrito às janelas configuradas (30, 60 ou 90 dias) e atualizado com autoria/timestamps.
+
 | propriedade | valor |
 |---|---|
 | tipo | table |

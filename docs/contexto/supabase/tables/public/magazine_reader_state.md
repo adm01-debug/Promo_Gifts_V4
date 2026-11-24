@@ -1,5 +1,7 @@
 # public.magazine_reader_state
 
+> Estado de leitura de um visitante para uma revista compartilhada, associado ao hash do token e fingerprint; armazena última página e bookmarks sem guardar o token público em claro.
+
 | propriedade | valor |
 |---|---|
 | tipo | table |

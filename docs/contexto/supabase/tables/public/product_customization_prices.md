@@ -1,5 +1,7 @@
 # public.product_customization_prices
 
+> Preços de personalização por produto, serviço, tabela, componente e local. min_qty e price são arrays pareados por faixa; currency indica a moeda dos valores.
+
 | propriedade | valor |
 |---|---|
 | tipo | table |

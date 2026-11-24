@@ -1,5 +1,7 @@
 # public.cover_finishes
 
+> Vocabulário de acabamentos de capa de cadernos e materiais gráficos.
+
 | propriedade | valor |
 |---|---|
 | tipo | table |

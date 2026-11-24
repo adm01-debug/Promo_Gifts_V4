@@ -1,5 +1,7 @@
 # public.mockup_prompt_configs
 
+> Configurações versionadas de prompts de mockup por config_key, com modelo, técnica opcional e estado ativo.
+
 | propriedade | valor |
 |---|---|
 | tipo | table |

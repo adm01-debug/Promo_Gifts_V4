@@ -1,5 +1,7 @@
 # public.e2e_cleanup_rate_limit
 
+> Controle transitório de rate limit para operações de limpeza E2E, indexado por chave e janela de execução.
+
 | propriedade | valor |
 |---|---|
 | tipo | table |

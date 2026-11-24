@@ -1,5 +1,7 @@
 # public.magazine_items
 
+> Produtos incluídos em uma revista, com posição/página, variante de cor opcional, snapshot do produto e overrides específicos da publicação.
+
 | propriedade | valor |
 |---|---|
 | tipo | table |

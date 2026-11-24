@@ -1,5 +1,7 @@
 # public.expert_messages
 
+> Mensagens ordenadas de uma conversa Expert, com papel do emissor, conteúdo e timestamp.
+
 | propriedade | valor |
 |---|---|
 | tipo | table |

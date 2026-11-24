@@ -39,11 +39,11 @@ BACKLOG:
 | 5 | `category_id` | `uuid` | não |  |  |  |
 | 6 | `supplier_id` | `uuid` | não |  |  |  |
 | 7 | `cost_price` | `numeric(10,2)` | sim |  |  | Custo do fornecedor. Null em v_products_public (segurança). Fonte: pipeline. |
-| 8 | `sale_price` | `numeric(10,2)` | sim |  |  | Preço de venda (cost × markup). Mantido por trigger. Exibido no frontend. |
+| 8 | `sale_price` | `numeric(10,2)` | sim |  |  | Preço unitário de venda do produto no catálogo, em BRL (reais com centavos; não centavos inteiros). Preço do produto sem frete e sem impostos; não confundir com shipping_cost/tax_amount de orçamento ou pedido. O valor pode ser mantido por trigger conforme custo e markup. |
 | 9 | `stock_quantity` | `integer` | sim | `0` |  | Estoque total denormalizado. Cache da soma de variant_supplier_sources. Mantido por trg_sync_stock_*. |
 | 13 | `created_at` | `timestamp with time zone` | não | `now()` |  |  |
 | 14 | `updated_at` | `timestamp with time zone` | não | `now()` |  |  |
-| 16 | `suggested_price` | `numeric(10,2)` | sim |  |  | Preço sugerido do fornecedor. ~97% preenchido. Pode diferir do sale_price calculado. |
+| 16 | `suggested_price` | `numeric(10,2)` | sim |  |  | Preço sugerido pelo fornecedor, em BRL (reais com centavos). Referência de catálogo; pode diferir de products.sale_price e não inclui frete/impostos do orçamento ou pedido. |
 | 21 | `images` | `jsonb` | sim | `'[]'::jsonb` |  | Cache jsonb galeria. Espelho de product_images (~72k linhas). Prefer product_images para queries completas. |
 | 22 | `primary_image_url` | `text` | sim |  |  | URL imagem principal (Cloudflare Images). 99%+ preenchido. Pré-calculado para listagens. |
 | 23 | `videos` | `jsonb` | sim | `'[]'::jsonb` |  | Cache jsonb vídeos. Espelho de product_videos. |

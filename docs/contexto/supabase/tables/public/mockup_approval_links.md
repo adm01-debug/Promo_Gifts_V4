@@ -1,5 +1,7 @@
 # public.mockup_approval_links
 
+> Links tokenizados para revisão/aprovação de um job de mockup por cliente, com validade, limites de uso, acessos e decisão.
+
 | propriedade | valor |
 |---|---|
 | tipo | table |

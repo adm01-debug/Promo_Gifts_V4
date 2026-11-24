@@ -1,5 +1,7 @@
 # public.hardening_health_snapshots
 
+> Snapshots do resultado de verificações de hardening, com pontuação, falhas e detalhes JSON para acompanhar a postura de segurança ao longo do tempo.
+
 | propriedade | valor |
 |---|---|
 | tipo | table |

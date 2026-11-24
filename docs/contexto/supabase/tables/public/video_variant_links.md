@@ -1,5 +1,7 @@
 # public.video_variant_links
 
+> Vínculos auxiliares entre identificadores de vídeo e variante/produto, com rótulo e cor da variante e código do fornecedor.
+
 | propriedade | valor |
 |---|---|
 | tipo | table |

@@ -1,5 +1,7 @@
 # public.expert_conversations
 
+> Conversas do módulo Expert associadas a um vendedor e, opcionalmente, a um cliente; guarda título e timestamps.
+
 | propriedade | valor |
 |---|---|
 | tipo | table |

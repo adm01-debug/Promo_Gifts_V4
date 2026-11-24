@@ -1,5 +1,7 @@
 # public.eco_date_reconcile_log_20260626
 
+> Trilha de reconciliação de associações ecológicas/data comemorativa por produto, com SKU/nome quando disponível e timestamp da revisão.
+
 | propriedade | valor |
 |---|---|
 | tipo | table |

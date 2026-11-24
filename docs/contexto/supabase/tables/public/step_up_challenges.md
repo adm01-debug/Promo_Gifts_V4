@@ -1,5 +1,7 @@
 # public.step_up_challenges
 
+> Desafios temporários de autenticação reforçada para ações privilegiadas. Guarda somente hash do OTP e estado/limites de verificação, não o código em texto claro.
+
 | propriedade | valor |
 |---|---|
 | tipo | table |

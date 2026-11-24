@@ -1,5 +1,7 @@
 # public.optimization_queue
 
+> Fila de propostas de otimização operacional, com prioridade, categoria, status, guardrail e resultado/erro da execução.
+
 | propriedade | valor |
 |---|---|
 | tipo | table |

@@ -1,6 +1,6 @@
 # public.tags
 
-> Bug RLS corrigido na Etapa 6: removida tags_public_read que anulava _select_org.
+> Catálogo de tags da aplicação, com escopo organizacional, nome/slug, cor e estado. A associação de tags a produtos é mantida em public.product_tags. Mantém também o contexto das correções de RLS registradas anteriormente.
 
 | propriedade | valor |
 |---|---|

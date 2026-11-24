@@ -1,5 +1,7 @@
 # supplier_stricker.category_mappings
 
+> De-para entre códigos/nome de tipo e subtipo da Stricker e uma categoria canônica em public.categories. Usado para orientar a classificação de produtos importados; category_id nulo ou is_mapped=false indica mapeamento ainda não resolvido.
+
 | propriedade | valor |
 |---|---|
 | tipo | table |

@@ -1,5 +1,7 @@
 # public.product_component_locations
 
+> Locais de personalização associados a um componente específico de produto, com limites de área/dimensão, imagem de referência e estado ativo.
+
 | propriedade | valor |
 |---|---|
 | tipo | table |

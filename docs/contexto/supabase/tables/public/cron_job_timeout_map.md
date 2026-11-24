@@ -1,5 +1,7 @@
 # public.cron_job_timeout_map
 
+> Mapa de timeout operacional por nome de job pg_cron, com duração máxima em segundos e descrição.
+
 | propriedade | valor |
 |---|---|
 | tipo | table |

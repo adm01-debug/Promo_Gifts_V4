@@ -1,5 +1,7 @@
 # public.sm_worker_partitions
 
+> Controle de partições de trabalho dos workers Só Marcas. Registra contagens de SKUs/imagens, erros, estado e timestamps de execução por worker_id.
+
 | propriedade | valor |
 |---|---|
 | tipo | table |

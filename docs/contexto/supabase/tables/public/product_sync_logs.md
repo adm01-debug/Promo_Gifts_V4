@@ -1,5 +1,7 @@
 # public.product_sync_logs
 
+> Resumo de execuções de sincronização de produtos, com origem, estado, contagens, duração, payload de diagnóstico e erro.
+
 | propriedade | valor |
 |---|---|
 | tipo | table |

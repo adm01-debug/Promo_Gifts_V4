@@ -1,5 +1,7 @@
 # public.ip_access_control
 
+> Regras globais de allow/block por endereço IP, com motivo, expiração e autoria. Não confundir com allowlists de usuário ou de país.
+
 | propriedade | valor |
 |---|---|
 | tipo | table |

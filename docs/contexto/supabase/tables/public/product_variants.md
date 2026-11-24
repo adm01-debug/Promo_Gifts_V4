@@ -1,6 +1,6 @@
 # public.product_variants
 
-> Políticas RLS: product_variants_anon_read (is_active=true) + product_variants_public_read (authenticated, true). Separação fix_version 20260717 — anon não vê variantes inativas.
+> Tabela canônica de variantes/SKUs de um produto. Cada linha representa uma combinação vendável de cor, tamanho ou capacidade, com atributos, disponibilidade, imagens e sincronização; preços e estoque por fornecedor vivem em public.variant_supplier_sources. RLS também restringe variantes inativas conforme as políticas existentes.
 
 | propriedade | valor |
 |---|---|

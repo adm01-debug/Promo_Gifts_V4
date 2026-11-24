@@ -1,5 +1,7 @@
 # public._bkp_orphan_active_variants_20260619
 
+> Backup de segurança de variantes ativas órfãs capturado em 2026-06-19 antes de uma limpeza/reconciliação. Preserva os valores originais para auditoria e eventual recuperação controlada.
+
 | propriedade | valor |
 |---|---|
 | tipo | table |

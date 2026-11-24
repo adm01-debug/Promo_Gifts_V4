@@ -1,5 +1,7 @@
 # public.magazine_public_reactions
 
+> Reações de visitantes a uma revista pública, página ou item, identificadas por fingerprint e hash de IP para reduzir duplicidade e exposição de dados.
+
 | propriedade | valor |
 |---|---|
 | tipo | table |

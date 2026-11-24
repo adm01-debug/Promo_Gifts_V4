@@ -1,5 +1,7 @@
 # public.spot_health_log
 
+> Snapshots de saúde do catálogo SPOT, agregando cobertura de produtos/imagens e estado de vídeos/importação para acompanhamento operacional.
+
 | propriedade | valor |
 |---|---|
 | tipo | table |

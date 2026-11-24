@@ -1,5 +1,7 @@
 # public.bot_detection_log
 
+> Eventos de detecção automatizada de bots e abuso, com IP, agente de usuário, score, ação tomada e metadados. A coluna blocked distingue bloqueio efetivo de mera observação.
+
 | propriedade | valor |
 |---|---|
 | tipo | table |

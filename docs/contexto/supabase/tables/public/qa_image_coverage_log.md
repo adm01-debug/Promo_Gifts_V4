@@ -1,5 +1,7 @@
 # public.qa_image_coverage_log
 
+> Snapshots de varreduras de cobertura/qualidade de imagens, com contagens críticas, itens sem normalização e amostra de diagnóstico.
+
 | propriedade | valor |
 |---|---|
 | tipo | table |

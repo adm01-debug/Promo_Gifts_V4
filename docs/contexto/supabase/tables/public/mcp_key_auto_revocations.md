@@ -1,5 +1,7 @@
 # public.mcp_key_auto_revocations
 
+> Auditoria de revogações automáticas de chaves MCP, indicando chave, criador, origem e motivo da revogação.
+
 | propriedade | valor |
 |---|---|
 | tipo | table |

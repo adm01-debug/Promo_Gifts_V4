@@ -1,5 +1,7 @@
 # public.outbound_webhooks
 
+> Configuração de webhooks de saída: destino, eventos inscritos, referência a segredo, versão do contrato, retry e estado operacional. O segredo é referenciado, não deve ser embutido na URL, descrição ou comentário.
+
 | propriedade | valor |
 |---|---|
 | tipo | table |

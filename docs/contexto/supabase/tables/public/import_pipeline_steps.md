@@ -1,5 +1,7 @@
 # public.import_pipeline_steps
 
+> Catálogo/estado das etapas do pipeline de importação, incluindo dependências, status, execução e resultado. etapa identifica a ordem lógica; resultado e error_message guardam evidências da execução.
+
 | propriedade | valor |
 |---|---|
 | tipo | table |

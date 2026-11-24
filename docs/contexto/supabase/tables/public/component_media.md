@@ -1,5 +1,7 @@
 # public.component_media
 
+> Mídias de componentes de produto, com tipo image/video, URL, título, ordem e indicação de capa. component_id e product_id são identificadores textuais sem FK declarada no schema atual.
+
 | propriedade | valor |
 |---|---|
 | tipo | table |

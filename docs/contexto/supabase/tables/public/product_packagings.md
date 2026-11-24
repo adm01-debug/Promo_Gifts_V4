@@ -1,6 +1,6 @@
 # public.product_packagings
 
-> Relação entre produtos e embalagens disponíveis
+> Relação entre produtos e embalagens disponíveis. Cada linha associa um produto do catálogo a uma embalagem e registra a natureza da relação (included, optional, required, default), preço adicional, moeda e quantidade mínima.
 
 | propriedade | valor |
 |---|---|

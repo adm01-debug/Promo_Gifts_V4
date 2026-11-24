@@ -1,5 +1,7 @@
 # public.orders
 
+> Pedidos comerciais confirmados, com estado operacional, pagamento, cliente, vendedor, endereço e totais. Os itens ficam em public.order_items. Campos quote_id e conversão são referências lógicas quando não houver FK declarada; comentários de coluna descrevem as convenções monetárias e de entrega.
+
 | propriedade | valor |
 |---|---|
 | tipo | table |

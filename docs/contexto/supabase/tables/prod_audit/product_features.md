@@ -1,5 +1,7 @@
 # prod_audit.product_features
 
+> Projeção de auditoria de sinais textuais por produto. Armazena tokens, materiais, cores, flags de características e categorias atuais derivados do catálogo para análise/classificação; não substitui public.products nem suas tabelas relacionais canônicas.
+
 | propriedade | valor |
 |---|---|
 | tipo | table |

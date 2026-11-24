@@ -2944,6 +2944,97 @@
         "type": "text"
       },
       {
+        "comment": "Nome do schema documentado.",
+        "default": null,
+        "generated": null,
+        "identity": null,
+        "is_enum": false,
+        "name": "schema_name",
+        "nullable": false,
+        "position": 1,
+        "schema": "internal",
+        "table": "managed_schema_dictionary",
+        "type": "text"
+      },
+      {
+        "comment": "Tipo do objeto catalogado: schema ou table.",
+        "default": null,
+        "generated": null,
+        "identity": null,
+        "is_enum": false,
+        "name": "object_type",
+        "nullable": false,
+        "position": 2,
+        "schema": "internal",
+        "table": "managed_schema_dictionary",
+        "type": "text"
+      },
+      {
+        "comment": "Nome do schema ou da tabela dentro do schema.",
+        "default": null,
+        "generated": null,
+        "identity": null,
+        "is_enum": false,
+        "name": "object_name",
+        "nullable": false,
+        "position": 3,
+        "schema": "internal",
+        "table": "managed_schema_dictionary",
+        "type": "text"
+      },
+      {
+        "comment": "Serviço Supabase ou extensão responsável pelo namespace.",
+        "default": null,
+        "generated": null,
+        "identity": null,
+        "is_enum": false,
+        "name": "service_name",
+        "nullable": false,
+        "position": 4,
+        "schema": "internal",
+        "table": "managed_schema_dictionary",
+        "type": "text"
+      },
+      {
+        "comment": "Descrição semântica baseada nos metadados observados; não substitui documentação oficial nem autoriza escrita direta em objetos gerenciados.",
+        "default": null,
+        "generated": null,
+        "identity": null,
+        "is_enum": false,
+        "name": "description",
+        "nullable": false,
+        "position": 5,
+        "schema": "internal",
+        "table": "managed_schema_dictionary",
+        "type": "text"
+      },
+      {
+        "comment": "Relação textual com a tabela particionada pai, quando aplicável.",
+        "default": null,
+        "generated": null,
+        "identity": null,
+        "is_enum": false,
+        "name": "partition_of",
+        "nullable": true,
+        "position": 6,
+        "schema": "internal",
+        "table": "managed_schema_dictionary",
+        "type": "text"
+      },
+      {
+        "comment": "Momento em que a descrição foi incluída/revisada no dicionário.",
+        "default": "now()",
+        "generated": null,
+        "identity": null,
+        "is_enum": false,
+        "name": "reviewed_at",
+        "nullable": false,
+        "position": 7,
+        "schema": "internal",
+        "table": "managed_schema_dictionary",
+        "type": "timestamp with time zone"
+      },
+      {
         "comment": null,
         "default": null,
         "generated": null,
@@ -49367,7 +49458,7 @@
         "type": "numeric(10,2)"
       },
       {
-        "comment": "Preço de venda (cost × markup). Mantido por trigger. Exibido no frontend.",
+        "comment": "Preço unitário de venda do produto no catálogo, em BRL (reais com centavos; não centavos inteiros). Preço do produto sem frete e sem impostos; não confundir com shipping_cost/tax_amount de orçamento ou pedido. O valor pode ser mantido por trigger conforme custo e markup.",
         "default": null,
         "generated": null,
         "identity": null,
@@ -49419,7 +49510,7 @@
         "type": "timestamp with time zone"
       },
       {
-        "comment": "Preço sugerido do fornecedor. ~97% preenchido. Pode diferir do sale_price calculado.",
+        "comment": "Preço sugerido pelo fornecedor, em BRL (reais com centavos). Referência de catálogo; pode diferir de products.sale_price e não inclui frete/impostos do orçamento ou pedido.",
         "default": null,
         "generated": null,
         "identity": null,
@@ -56400,7 +56491,7 @@
         "type": "jsonb"
       },
       {
-        "comment": null,
+        "comment": "Condição padrão de pagamento em texto livre. Formatos recomendados: avista, N dias, N/N/... dias ou sob consulta. Ajustar ao negociar; não é enum nem possui CHECK.",
         "default": null,
         "generated": null,
         "identity": null,
@@ -56413,7 +56504,7 @@
         "type": "text"
       },
       {
-        "comment": null,
+        "comment": "Prazo padrão prometido em texto para o template: imediato, N dias úteis, N a M dias úteis ou sob consulta. Rever/confirmar antes de aplicar ao orçamento.",
         "default": null,
         "generated": null,
         "identity": null,
@@ -56530,7 +56621,7 @@
         "type": "jsonb"
       },
       {
-        "comment": null,
+        "comment": "Percentual de desconto padrão do template (percentual, não valor monetário). O valor em reais correspondente é registrado separadamente em discount_amount.",
         "default": "0",
         "generated": null,
         "identity": null,
@@ -56543,7 +56634,7 @@
         "type": "numeric"
       },
       {
-        "comment": null,
+        "comment": "Valor monetário de desconto padrão do template em BRL (reais com centavos), distinto de discount_percent.",
         "default": "0",
         "generated": null,
         "identity": null,
@@ -56595,7 +56686,7 @@
         "type": "integer"
       },
       {
-        "comment": "FIX-07 (2026-06-23): Campo adicionado para restaurar modalidade de frete ao aplicar template.",
+        "comment": "Modalidade/responsabilidade de frete padrão do template. Valores permitidos pelo CHECK: cif, fob e fob_pre (FOB com custo pré-negociado). Não representa o meio de transporte.",
         "default": null,
         "generated": null,
         "identity": null,
@@ -56608,7 +56699,7 @@
         "type": "text"
       },
       {
-        "comment": "FIX-07 (2026-06-23): Campo adicionado para restaurar forma de pagamento ao aplicar template.",
+        "comment": "Forma de pagamento padrão a preencher ao aplicar o template. Vocabulário recomendado: pix, boleto, credit_card, bank_transfer, cash ou other; usar códigos minúsculos. Documentação apenas, sem CHECK.",
         "default": null,
         "generated": null,
         "identity": null,
@@ -56621,7 +56712,7 @@
         "type": "text"
       },
       {
-        "comment": "FIX-07 (2026-06-23): Campo adicionado para restaurar custo de frete FOB pré-negociado ao aplicar template.",
+        "comment": "Custo de frete padrão do template em BRL (reais com centavos), especialmente para custo FOB pré-negociado; não é preço unitário de produto.",
         "default": "0",
         "generated": null,
         "identity": null,
@@ -56959,7 +57050,7 @@
         "type": "text"
       },
       {
-        "comment": null,
+        "comment": "Condição comercial de pagamento em texto livre. Formatos recomendados: avista, N dias, N/N/... dias (ex.: 30/60/90 dias) ou sob consulta. Manter condições negociadas legíveis; não é um enum e não possui CHECK.",
         "default": null,
         "generated": null,
         "identity": null,
@@ -57284,7 +57375,7 @@
         "type": "text"
       },
       {
-        "comment": null,
+        "comment": "Prazo estimado/prometido para exibição em texto: imediato, N dias úteis, N a M dias úteis ou sob consulta. Para prazo numérico usar estimated_delivery_days; não confundir com estimated_delivery_date do pedido.",
         "default": null,
         "generated": null,
         "identity": null,
@@ -57297,7 +57388,7 @@
         "type": "text"
       },
       {
-        "comment": null,
+        "comment": "Modalidade/responsabilidade do frete. Valores permitidos pelo CHECK desta coluna: cif, fob, fob_pre (FOB com custo pré-negociado). Não confundir com shipping_method.",
         "default": null,
         "generated": null,
         "identity": null,
@@ -57401,7 +57492,7 @@
         "type": "text"
       },
       {
-        "comment": null,
+        "comment": "Meio de transporte recomendado: correios, transportadora, retirada, motoboy, entrega_propria ou outro. Descreve como será a entrega; shipping_type descreve a responsabilidade/modalidade do frete.",
         "default": null,
         "generated": null,
         "identity": null,
@@ -57440,7 +57531,7 @@
         "type": "boolean"
       },
       {
-        "comment": null,
+        "comment": "Forma de pagamento recomendada: pix, boleto, credit_card, bank_transfer, cash ou other; usar códigos minúsculos. Documentação apenas: coluna text sem CHECK, portanto não é enum fechado.",
         "default": null,
         "generated": null,
         "identity": null,
@@ -113397,6 +113488,42 @@
         "schema": "classification_audit",
         "table": "category_suggestions",
         "type": "UNIQUE",
+        "validated": true
+      },
+      {
+        "columns": [
+          "object_type"
+        ],
+        "deferrable": false,
+        "definition": "CHECK (object_type = ANY (ARRAY['schema'::text, 'table'::text]))",
+        "name": "managed_schema_dictionary_object_type_check",
+        "on_delete": null,
+        "on_update": null,
+        "ref_columns": [],
+        "ref_schema": null,
+        "ref_table": null,
+        "schema": "internal",
+        "table": "managed_schema_dictionary",
+        "type": "CHECK",
+        "validated": true
+      },
+      {
+        "columns": [
+          "schema_name",
+          "object_type",
+          "object_name"
+        ],
+        "deferrable": false,
+        "definition": "PRIMARY KEY (schema_name, object_type, object_name)",
+        "name": "managed_schema_dictionary_pkey",
+        "on_delete": null,
+        "on_update": null,
+        "ref_columns": [],
+        "ref_schema": null,
+        "ref_table": null,
+        "schema": "internal",
+        "table": "managed_schema_dictionary",
+        "type": "PRIMARY KEY",
         "validated": true
       },
       {
@@ -204770,6 +204897,22 @@
       },
       {
         "columns": [
+          "schema_name",
+          "object_type",
+          "object_name"
+        ],
+        "definition": "CREATE UNIQUE INDEX managed_schema_dictionary_pkey ON internal.managed_schema_dictionary USING btree (schema_name, object_type, object_name)",
+        "is_primary": true,
+        "is_unique": true,
+        "is_valid": true,
+        "method": "btree",
+        "name": "managed_schema_dictionary_pkey",
+        "predicate": null,
+        "schema": "internal",
+        "table": "managed_schema_dictionary"
+      },
+      {
+        "columns": [
           "leaf_category_id"
         ],
         "definition": "CREATE INDEX idx_mv_product_leaf_category_leaf_id ON internal.mv_product_leaf_category USING btree (leaf_category_id)",
@@ -254625,49 +254768,49 @@
     ],
     "schemas": [
       {
-        "comment": "Materialized views internas/analíticas. Não exposto via PostgREST. Acesso via views wrapper em public ou via service_role. Criado em T20 do redeploy 2026-05.",
+        "comment": "Schema interno de objetos analíticos e materialized views. Não destinado à exposição direta pelo PostgREST; acesso conforme os privilégios do banco e as views/RPCs de consumo autorizadas.",
         "name": "analytics",
         "owner": "postgres",
         "usage_api_roles": "anon, authenticated, service_role"
       },
       {
-        "comment": null,
+        "comment": "Namespace para objetos de banco específicos da camada API do projeto. Revisar privilégios e exposição via PostgREST antes de adicionar ou publicar objetos.",
         "name": "api",
         "owner": "postgres",
         "usage_api_roles": "anon, authenticated"
       },
       {
-        "comment": "Schema de reconciliação Cloudflare Images × DB. Criado 2026-06-16 durante auditoria forense.\nContém: cf_image (mirror CF), crawl_run (histórico de crawls), cf_ghost_check_queue (IDs suspeitos),\naction_log (log imutável de decisões), remediation (plano de remediações), metric_snapshot (KPIs).",
+        "comment": "Schema de reconciliação entre o inventário do Cloudflare Images e os metadados mantidos no banco. Contém mirror de imagens, execuções de crawl, métricas, fila de verificações e trilha de ações/remediações.",
         "name": "cf_recon",
         "owner": "postgres",
         "usage_api_roles": null
       },
       {
-        "comment": null,
+        "comment": "Área de auditoria das sugestões de classificação de categorias. Guarda candidatos, sinais, pontuações e resultados intermediários para revisão; não substitui os vínculos canônicos em public.product_category_assignments.",
         "name": "classification_audit",
         "owner": "postgres",
         "usage_api_roles": null
       },
       {
-        "comment": null,
+        "comment": "Namespace reservado para objetos internos específicos do projeto. Não tratar como contrato público da aplicação; revisar privilégios e dependências antes de expor ou alterar objetos neste schema.",
         "name": "internal",
         "owner": "postgres",
         "usage_api_roles": "anon, authenticated"
       },
       {
-        "comment": null,
+        "comment": "Área de auditoria e suporte à classificação de produtos. Contém evidências de testes, regras e projeções de atributos/categorias usadas para revisar resultados de classificação; não é a fonte de verdade do catálogo de produção.",
         "name": "prod_audit",
         "owner": "postgres",
         "usage_api_roles": null
       },
       {
-        "comment": "@graphql({\"max_rows\": 30, \"inflect_names\": false})",
+        "comment": "Schema principal da aplicação Promo Brindes. Contém o catálogo Gold, organizações, cotações, pedidos, usuários de aplicação e módulos operacionais. Tabelas acessadas pela API conforme configuração do PostgREST e políticas RLS; consultar os comentários de cada tabela/coluna para a semântica específica.",
         "name": "public",
         "owner": "pg_database_owner",
         "usage_api_roles": "anon, authenticated, service_role"
       },
       {
-        "comment": "Dados brutos sincronizados da API Stricker (SPOT Gifts Brasil)",
+        "comment": "Área de integração com o catálogo da Stricker/SPOT. Contém espelhos sincronizados da API do fornecedor, estruturas de staging, categorias externas e tabelas de apoio para mapear produtos, variantes, estoque, cores e personalização para o modelo canônico da aplicação.",
         "name": "supplier_stricker",
         "owner": "postgres",
         "usage_api_roles": "service_role"
@@ -255253,7 +255396,7 @@
         "schema": "cf_recon"
       },
       {
-        "comment": null,
+        "comment": "Evidências detalhadas de candidatos de categoria por produto, incluindo pontuação, quantidade e tokens correspondentes, conflitos de material/tipo e sinais de aprovação automática. É uma trilha de análise; os vínculos efetivos ficam em public.product_category_assignments.",
         "from_extension": false,
         "is_partition": false,
         "kind": "table",
@@ -255268,7 +255411,22 @@
         "schema": "classification_audit"
       },
       {
-        "comment": null,
+        "comment": "Dicionário independente dos schemas e tabelas gerenciados pelo Supabase e extensões instaladas. Documenta finalidade e relações observáveis sem alterar os comentários nem a estrutura dos objetos gerenciados.",
+        "from_extension": false,
+        "is_partition": false,
+        "kind": "table",
+        "name": "managed_schema_dictionary",
+        "owner": "postgres",
+        "parent": null,
+        "partition_bound": null,
+        "partition_key": null,
+        "replica_identity": "default",
+        "rls_enabled": true,
+        "rls_forced": false,
+        "schema": "internal"
+      },
+      {
+        "comment": "Projeção de auditoria de categorias e palavras-chave normalizadas. Mantém tokens e flags de segmentos (cliente, material, ecológico e kit) derivados da hierarquia de public.categories para apoiar análise de classificação; refreshed_at indica a atualização da projeção.",
         "from_extension": false,
         "is_partition": false,
         "kind": "table",
@@ -255283,7 +255441,7 @@
         "schema": "prod_audit"
       },
       {
-        "comment": null,
+        "comment": "Histórico de sugestões de categoria produzidas por regras de auditoria para produtos. Guarda produto, categoria sugerida, caminho, categorias atuais, confiança, motivo e decisão reviewed/accepted; aceitar uma sugestão não deve ser presumido como atualização automática do catálogo.",
         "from_extension": false,
         "is_partition": false,
         "kind": "table",
@@ -255298,7 +255456,7 @@
         "schema": "prod_audit"
       },
       {
-        "comment": null,
+        "comment": "Regras configuráveis que geram sugestões de classificação de produtos. Cada regra combina condições textuais do produto com critérios de categoria-alvo, nível de confiança e estado active; revisar regras antes de alterar a classificação de produção.",
         "from_extension": false,
         "is_partition": false,
         "kind": "table",
@@ -255313,7 +255471,7 @@
         "schema": "prod_audit"
       },
       {
-        "comment": null,
+        "comment": "Projeção de auditoria de sinais textuais por produto. Armazena tokens, materiais, cores, flags de características e categorias atuais derivados do catálogo para análise/classificação; não substitui public.products nem suas tabelas relacionais canônicas.",
         "from_extension": false,
         "is_partition": false,
         "kind": "table",
@@ -255328,7 +255486,7 @@
         "schema": "prod_audit"
       },
       {
-        "comment": null,
+        "comment": "Resultados de testes de auditoria de produção. Cada linha representa um teste de um lote, com categoria, severidade, resultado, valores esperados/observados, detalhes e duração; serve como evidência de validação, não como dado operacional do catálogo.",
         "from_extension": false,
         "is_partition": false,
         "kind": "table",
@@ -255388,7 +255546,7 @@
         "schema": "public"
       },
       {
-        "comment": null,
+        "comment": "Backup de kit_component_variant_skus anterior à normalização executada em 2026-06-24. Preserva os valores pré-alteração para comparação e recuperação revisada.",
         "from_extension": false,
         "is_partition": false,
         "kind": "table",
@@ -255418,7 +255576,7 @@
         "schema": "public"
       },
       {
-        "comment": null,
+        "comment": "Backup dos campos dimensionais de kits em products capturado em 2026-06-19 antes da alteração de dimensões. Usar apenas para auditoria ou restauração revisada.",
         "from_extension": false,
         "is_partition": false,
         "kind": "table",
@@ -255463,7 +255621,7 @@
         "schema": "public"
       },
       {
-        "comment": null,
+        "comment": "Backup de segurança de variantes ativas órfãs capturado em 2026-06-19 antes de uma limpeza/reconciliação. Preserva os valores originais para auditoria e eventual recuperação controlada.",
         "from_extension": false,
         "is_partition": false,
         "kind": "table",
@@ -255478,7 +255636,7 @@
         "schema": "public"
       },
       {
-        "comment": null,
+        "comment": "Resultados detalhados de testes de regressão de percentuais/limiares, incluindo valores de entrada, bloco esperado/observado e aprovação do caso.",
         "from_extension": false,
         "is_partition": false,
         "kind": "table",
@@ -255628,7 +255786,7 @@
         "schema": "public"
       },
       {
-        "comment": null,
+        "comment": "Eventos resumidos de uso de IA por usuário/função, com tipo de evento e metadados opcionais. Não confundir com ai_usage_logs, que registra consumo detalhado por chamada.",
         "from_extension": false,
         "is_partition": false,
         "kind": "table",
@@ -255688,7 +255846,7 @@
         "schema": "public"
       },
       {
-        "comment": null,
+        "comment": "Snapshots de auditoria dos grants de leitura do catálogo para anon, com contagem de violações e detalhes JSON da checagem.",
         "from_extension": false,
         "is_partition": false,
         "kind": "table",
@@ -255718,7 +255876,7 @@
         "schema": "public"
       },
       {
-        "comment": null,
+        "comment": "Arquivos de arte anexados por usuário a mockup e/ou cotação, com metadados do arquivo, caminho/URL e notas.",
         "from_extension": false,
         "is_partition": false,
         "kind": "table",
@@ -255733,7 +255891,7 @@
         "schema": "public"
       },
       {
-        "comment": null,
+        "comment": "Fila de ingestão de imagens do fornecedor Asia Import. Cada registro identifica produto-pai/variante, URL de origem, tipo/ordem da imagem, tentativas e estado de upload/promoção para product_images.",
         "from_extension": false,
         "is_partition": false,
         "kind": "table",
@@ -255838,7 +255996,7 @@
         "schema": "public"
       },
       {
-        "comment": null,
+        "comment": "Regras configuráveis de atribuição automática de tags a produtos. Cada regra define condição, campo/operador/valor, prioridade, tag de destino e estado ativo.",
         "from_extension": false,
         "is_partition": false,
         "kind": "table",
@@ -255883,7 +256041,7 @@
         "schema": "public"
       },
       {
-        "comment": null,
+        "comment": "Snapshot de segurança dos vínculos produto–ramo de atividade capturado em 2026-06-25 para auditoria ou restauração controlada.",
         "from_extension": false,
         "is_partition": false,
         "kind": "table",
@@ -255898,7 +256056,7 @@
         "schema": "public"
       },
       {
-        "comment": null,
+        "comment": "Vocabulário de cores de espiral/encadernação, com código hexadecimal opcional.",
         "from_extension": false,
         "is_partition": false,
         "kind": "table",
@@ -255913,7 +256071,7 @@
         "schema": "public"
       },
       {
-        "comment": null,
+        "comment": "Vocabulário de tipos de encadernação para especificações de cadernos e materiais gráficos.",
         "from_extension": false,
         "is_partition": false,
         "kind": "table",
@@ -255928,7 +256086,7 @@
         "schema": "public"
       },
       {
-        "comment": null,
+        "comment": "Eventos de detecção automatizada de bots e abuso, com IP, agente de usuário, score, ação tomada e metadados. A coluna blocked distingue bloqueio efetivo de mera observação.",
         "from_extension": false,
         "is_partition": false,
         "kind": "table",
@@ -255958,7 +256116,7 @@
         "schema": "public"
       },
       {
-        "comment": null,
+        "comment": "Modelos pessoais de carrinho que guardam conjuntos de itens em JSONB para reutilização pelo usuário.",
         "from_extension": false,
         "is_partition": false,
         "kind": "table",
@@ -256093,7 +256251,7 @@
         "schema": "public"
       },
       {
-        "comment": null,
+        "comment": "Representações de relações hierárquicas/importadas entre categorias, com IDs e nomes dos pais/filhos, referências Bitrix e profundidade. Para a hierarquia canônica do catálogo, usar categories.parent_id e category_ancestors.",
         "from_extension": false,
         "is_partition": false,
         "kind": "table",
@@ -256198,7 +256356,7 @@
         "schema": "public"
       },
       {
-        "comment": null,
+        "comment": "Reações anônimas a itens de coleções compartilhadas, identificadas por collection_id/item_id e anon_id; hashes reduzem a exposição de IP.",
         "from_extension": false,
         "is_partition": false,
         "kind": "table",
@@ -256228,7 +256386,7 @@
         "schema": "public"
       },
       {
-        "comment": null,
+        "comment": "Lixeira temporária de itens removidos de coleções. Preserva os dados originais do item e a data de remoção/expiração para recuperação conforme a política da aplicação.",
         "from_extension": false,
         "is_partition": false,
         "kind": "table",
@@ -256273,7 +256431,7 @@
         "schema": "public"
       },
       {
-        "comment": null,
+        "comment": "De-para entre uma cor de fornecedor (supplier_colors) e a variação/nuance canônica Promo. verified/is_active controlam a confiança operacional; is_primary indica o mapeamento principal quando há alternativas.",
         "from_extension": false,
         "is_partition": false,
         "kind": "table",
@@ -256288,7 +256446,7 @@
         "schema": "public"
       },
       {
-        "comment": null,
+        "comment": "Catálogo de grupos cromáticos usado para organizar variações canônicas de cor. color_variations.color_group_id é a referência canônica; group_id permanece como vínculo legado.",
         "from_extension": false,
         "is_partition": false,
         "kind": "table",
@@ -256303,7 +256461,7 @@
         "schema": "public"
       },
       {
-        "comment": null,
+        "comment": "Vocabulário de nuances de cor associado a grupos/variações canônicas, inclusive para sincronização com enums de cor do Bitrix24.",
         "from_extension": false,
         "is_partition": false,
         "kind": "table",
@@ -256333,7 +256491,7 @@
         "schema": "public"
       },
       {
-        "comment": null,
+        "comment": "Catálogo de cores/variações canônicas com nome, hexadecimal, grupo e nuance. Usado por variantes de produto, imagens, equivalências de fornecedor e componentes de kits.",
         "from_extension": false,
         "is_partition": false,
         "kind": "table",
@@ -256348,7 +256506,7 @@
         "schema": "public"
       },
       {
-        "comment": null,
+        "comment": "Associa grupos canônicos de cores a datas comemorativas e registra prioridade/score de correspondência para curadoria e campanhas.",
         "from_extension": false,
         "is_partition": false,
         "kind": "table",
@@ -256363,7 +256521,7 @@
         "schema": "public"
       },
       {
-        "comment": null,
+        "comment": "Exceções que removem um produto ou uma variante da associação automática/manual com uma data comemorativa, com motivo e autoria quando disponíveis.",
         "from_extension": false,
         "is_partition": false,
         "kind": "table",
@@ -256408,7 +256566,7 @@
         "schema": "public"
       },
       {
-        "comment": null,
+        "comment": "Padrões de endereço de e-mail por domínio de empresa, com confiança, servidor MX, provedor e sinais de domínio catch-all.",
         "from_extension": false,
         "is_partition": false,
         "kind": "table",
@@ -256423,7 +256581,7 @@
         "schema": "public"
       },
       {
-        "comment": null,
+        "comment": "Reações anônimas a itens de uma comparação compartilhada, identificados pelo comparison_id e item_index.",
         "from_extension": false,
         "is_partition": false,
         "kind": "table",
@@ -256438,7 +256596,7 @@
         "schema": "public"
       },
       {
-        "comment": null,
+        "comment": "Mídias de componentes de produto, com tipo image/video, URL, título, ordem e indicação de capa. component_id e product_id são identificadores textuais sem FK declarada no schema atual.",
         "from_extension": false,
         "is_partition": false,
         "kind": "table",
@@ -256453,7 +256611,7 @@
         "schema": "public"
       },
       {
-        "comment": null,
+        "comment": "Histórico de testes de conectividade de uma external_connection, incluindo latência por fase de rede, resposta HTTP, erro e origem do teste.",
         "from_extension": false,
         "is_partition": false,
         "kind": "table",
@@ -256483,7 +256641,7 @@
         "schema": "public"
       },
       {
-        "comment": null,
+        "comment": "Auditoria de sessões de conversa, com usuário, início/fim, estimativa de tokens, estado e metadados do cliente.",
         "from_extension": false,
         "is_partition": false,
         "kind": "table",
@@ -256498,7 +256656,7 @@
         "schema": "public"
       },
       {
-        "comment": null,
+        "comment": "Estado de entrega de eventos de conversa, com erro e timestamp da última atualização.",
         "from_extension": false,
         "is_partition": false,
         "kind": "table",
@@ -256513,7 +256671,7 @@
         "schema": "public"
       },
       {
-        "comment": null,
+        "comment": "Histórico de eventos multimodais de conversa (texto, imagem, áudio, vídeo, arquivo ou sistema), com payload de mídia, tokens e request_id.",
         "from_extension": false,
         "is_partition": false,
         "kind": "table",
@@ -256528,7 +256686,7 @@
         "schema": "public"
       },
       {
-        "comment": null,
+        "comment": "Vocabulário de acabamentos de capa de cadernos e materiais gráficos.",
         "from_extension": false,
         "is_partition": false,
         "kind": "table",
@@ -256543,7 +256701,7 @@
         "schema": "public"
       },
       {
-        "comment": null,
+        "comment": "Vocabulário de materiais de capa, incluindo indicação de sustentabilidade quando aplicável.",
         "from_extension": false,
         "is_partition": false,
         "kind": "table",
@@ -256558,7 +256716,7 @@
         "schema": "public"
       },
       {
-        "comment": null,
+        "comment": "Vocabulário de tipos de capa utilizados nas especificações de cadernos e materiais gráficos.",
         "from_extension": false,
         "is_partition": false,
         "kind": "table",
@@ -256603,7 +256761,7 @@
         "schema": "public"
       },
       {
-        "comment": null,
+        "comment": "Mapa de timeout operacional por nome de job pg_cron, com duração máxima em segundos e descrição.",
         "from_extension": false,
         "is_partition": false,
         "kind": "table",
@@ -256618,7 +256776,7 @@
         "schema": "public"
       },
       {
-        "comment": null,
+        "comment": "Auditoria de sessões/job queries terminadas pelo watchdog, incluindo PID, job, duração e trecho de consulta para investigação.",
         "from_extension": false,
         "is_partition": false,
         "kind": "table",
@@ -256633,7 +256791,7 @@
         "schema": "public"
       },
       {
-        "comment": "Wave 3.3.A 2026-05-22: removidos 19 campos legacy. Schema consolidado.",
+        "comment": "Kits montados por usuários, com estado de rascunho, itens, embalagem, personalização e preço agregado. kit_variants guarda alternativas nomeadas do kit; itens/componentes de catálogo são modelados separadamente. Schema consolidado na Wave 3.3.A.",
         "from_extension": false,
         "is_partition": false,
         "kind": "table",
@@ -256648,7 +256806,7 @@
         "schema": "public"
       },
       {
-        "comment": null,
+        "comment": "Cache de respostas/insights de dashboard por usuário, função e cache_key, com modelo, duração e expiração. O payload é transitório e pode ser regenerado.",
         "from_extension": false,
         "is_partition": false,
         "kind": "table",
@@ -256663,7 +256821,7 @@
         "schema": "public"
       },
       {
-        "comment": null,
+        "comment": "Snapshots de utilização de conexões do banco, incluindo conexões totais/ativas, transações ociosas, limite e percentual de uso; top_users guarda agregados de diagnóstico.",
         "from_extension": false,
         "is_partition": false,
         "kind": "table",
@@ -256738,7 +256896,7 @@
         "schema": "public"
       },
       {
-        "comment": null,
+        "comment": "Controle transitório de rate limit para operações de limpeza E2E, indexado por chave e janela de execução.",
         "from_extension": false,
         "is_partition": false,
         "kind": "table",
@@ -256753,7 +256911,7 @@
         "schema": "public"
       },
       {
-        "comment": null,
+        "comment": "Trilha do backfill ecológico executado em 2026-06-25, registrando produto/material e se os vínculos de categoria/data foram criados pela operação.",
         "from_extension": false,
         "is_partition": false,
         "kind": "table",
@@ -256768,7 +256926,7 @@
         "schema": "public"
       },
       {
-        "comment": null,
+        "comment": "Trilha de reconciliação de associações ecológicas/data comemorativa por produto, com SKU/nome quando disponível e timestamp da revisão.",
         "from_extension": false,
         "is_partition": false,
         "kind": "table",
@@ -256843,7 +257001,7 @@
         "schema": "public"
       },
       {
-        "comment": null,
+        "comment": "Cadastro enriquecido de contatos profissionais, com perfis, e-mails/telefones, confiança e origem dos dados. Contém dados pessoais; aplicar políticas de acesso e retenção apropriadas.",
         "from_extension": false,
         "is_partition": false,
         "kind": "table",
@@ -256858,7 +257016,7 @@
         "schema": "public"
       },
       {
-        "comment": null,
+        "comment": "Histórico de tentativas de enriquecimento de contatos, incluindo provedor, nível, sucesso, dados encontrados, erros, créditos/custo e duração.",
         "from_extension": false,
         "is_partition": false,
         "kind": "table",
@@ -256873,7 +257031,7 @@
         "schema": "public"
       },
       {
-        "comment": null,
+        "comment": "Conversas do módulo Expert associadas a um vendedor e, opcionalmente, a um cliente; guarda título e timestamps.",
         "from_extension": false,
         "is_partition": false,
         "kind": "table",
@@ -256888,7 +257046,7 @@
         "schema": "public"
       },
       {
-        "comment": null,
+        "comment": "Mensagens ordenadas de uma conversa Expert, com papel do emissor, conteúdo e timestamp.",
         "from_extension": false,
         "is_partition": false,
         "kind": "table",
@@ -256903,7 +257061,7 @@
         "schema": "public"
       },
       {
-        "comment": null,
+        "comment": "Cadastro de conexões a serviços externos, com tipo, configuração não secreta, referências a secrets e estado do último teste. Segredos devem permanecer no cofre/armazenamento de secrets.",
         "from_extension": false,
         "is_partition": false,
         "kind": "table",
@@ -256918,7 +257076,7 @@
         "schema": "public"
       },
       {
-        "comment": null,
+        "comment": "Histórico de execuções de sincronização de conexões externas, com tipo, estado, contagens, duração e metadados/erro. Não armazena credenciais.",
         "from_extension": false,
         "is_partition": false,
         "kind": "table",
@@ -256948,7 +257106,7 @@
         "schema": "public"
       },
       {
-        "comment": null,
+        "comment": "Produtos salvos em listas de favoritos, com variante opcional, snapshot de atributos, anotação, preço observado e posição. A propriedade da lista define o escopo de acesso.",
         "from_extension": false,
         "is_partition": false,
         "kind": "table",
@@ -256963,7 +257121,7 @@
         "schema": "public"
       },
       {
-        "comment": null,
+        "comment": "Lixeira temporária de itens removidos de favoritos, preservando snapshot e dados de ordenação para possível restauração até expires_at.",
         "from_extension": false,
         "is_partition": false,
         "kind": "table",
@@ -257023,7 +257181,7 @@
         "schema": "public"
       },
       {
-        "comment": null,
+        "comment": "Lembretes de acompanhamento vinculados a uma cotação, com responsável, data agendada, tipo e estado de envio/conclusão.",
         "from_extension": false,
         "is_partition": false,
         "kind": "table",
@@ -257053,7 +257211,7 @@
         "schema": "public"
       },
       {
-        "comment": null,
+        "comment": "Eventos de telemetria do frontend, como erros e medições de desempenho, com contexto opcional de usuário/sessão. Não registrar tokens, segredos ou dados pessoais desnecessários.",
         "from_extension": false,
         "is_partition": false,
         "kind": "table",
@@ -257068,7 +257226,7 @@
         "schema": "public"
       },
       {
-        "comment": null,
+        "comment": "Resultados individuais de geração de mockup, com imagem, parâmetros de produto/área/técnica, custo, qualidade e estado de aprovação.",
         "from_extension": false,
         "is_partition": false,
         "kind": "table",
@@ -257083,7 +257241,7 @@
         "schema": "public"
       },
       {
-        "comment": null,
+        "comment": "Lista de países permitidos para regras de controle geográfico, identificados por código ISO e com estado ativo/inativo.",
         "from_extension": false,
         "is_partition": false,
         "kind": "table",
@@ -257098,7 +257256,7 @@
         "schema": "public"
       },
       {
-        "comment": null,
+        "comment": "Snapshots do resultado de verificações de hardening, com pontuação, falhas e detalhes JSON para acompanhar a postura de segurança ao longo do tempo.",
         "from_extension": false,
         "is_partition": false,
         "kind": "table",
@@ -257143,7 +257301,7 @@
         "schema": "public"
       },
       {
-        "comment": null,
+        "comment": "Catálogo/estado das etapas do pipeline de importação, incluindo dependências, status, execução e resultado. etapa identifica a ordem lógica; resultado e error_message guardam evidências da execução.",
         "from_extension": false,
         "is_partition": false,
         "kind": "table",
@@ -257173,7 +257331,7 @@
         "schema": "public"
       },
       {
-        "comment": null,
+        "comment": "Eventos recebidos por endpoints de webhook. Guarda payload/headers, validade da assinatura, processamento, resultado/erro e chave de idempotência; proteger payloads que possam conter dados pessoais ou segredos.",
         "from_extension": false,
         "is_partition": false,
         "kind": "table",
@@ -257218,7 +257376,7 @@
         "schema": "public"
       },
       {
-        "comment": null,
+        "comment": "Registro de execução por feed e fornecedor, com run_id, duração, contagens fetched/upserted/skipped/errors, estado e amostras de erro.",
         "from_extension": false,
         "is_partition": false,
         "kind": "table",
@@ -257233,7 +257391,7 @@
         "schema": "public"
       },
       {
-        "comment": null,
+        "comment": "Referências e valores de credenciais de integrações externas, com provedor, tipo, estado, expiração e auditoria de atualização. Nunca inserir valores secretos em comentários, logs ou metadados de documentação; restringir o acesso ao mecanismo de secrets/roles apropriado.",
         "from_extension": false,
         "is_partition": false,
         "kind": "table",
@@ -257248,7 +257406,7 @@
         "schema": "public"
       },
       {
-        "comment": null,
+        "comment": "Regras globais de allow/block por endereço IP, com motivo, expiração e autoria. Não confundir com allowlists de usuário ou de país.",
         "from_extension": false,
         "is_partition": false,
         "kind": "table",
@@ -257293,7 +257451,7 @@
         "schema": "public"
       },
       {
-        "comment": null,
+        "comment": "Permissões de colaboração por usuário em um kit customizado, incluindo nível view/edit, convite e autor do convite.",
         "from_extension": false,
         "is_partition": false,
         "kind": "table",
@@ -257308,7 +257466,7 @@
         "schema": "public"
       },
       {
-        "comment": null,
+        "comment": "Comentários em kits customizados, com encadeamento opcional por parent_id e âncora opcional para um item. resolved marca se a discussão foi resolvida.",
         "from_extension": false,
         "is_partition": false,
         "kind": "table",
@@ -257443,7 +257601,7 @@
         "schema": "public"
       },
       {
-        "comment": null,
+        "comment": "Ledger de idempotência de salvamento de kits por request_id, registrando usuário, kit persistido e data da solicitação.",
         "from_extension": false,
         "is_partition": false,
         "kind": "table",
@@ -257488,7 +257646,7 @@
         "schema": "public"
       },
       {
-        "comment": null,
+        "comment": "Dimensões e peso típicos por tipo de componente de kit, com intervalos de referência e notas para apoiar validação/enriquecimento; não são medidas confirmadas de um componente específico.",
         "from_extension": false,
         "is_partition": false,
         "kind": "table",
@@ -257503,7 +257661,7 @@
         "schema": "public"
       },
       {
-        "comment": null,
+        "comment": "Variações nomeadas de um kit mestre, com snapshots de caixa/itens/personalização, quantidade, preço e ordenação próprios.",
         "from_extension": false,
         "is_partition": false,
         "kind": "table",
@@ -257518,7 +257676,7 @@
         "schema": "public"
       },
       {
-        "comment": null,
+        "comment": "Trilha de tentativas de autenticação usada para auditoria, detecção de abuso e regras de lockout. verified indica se a tentativa bem-sucedida teve sessão validada pela Edge Function.",
         "from_extension": false,
         "is_partition": false,
         "kind": "table",
@@ -257533,7 +257691,7 @@
         "schema": "public"
       },
       {
-        "comment": null,
+        "comment": "Ledger de idempotência para pedidos de duplicação de revistas. A chave composta por ator e idempotency_key impede cópias duplicadas e relaciona origem/edição solicitada ao novo registro.",
         "from_extension": false,
         "is_partition": false,
         "kind": "table",
@@ -257548,7 +257706,7 @@
         "schema": "public"
       },
       {
-        "comment": null,
+        "comment": "Produtos incluídos em uma revista, com posição/página, variante de cor opcional, snapshot do produto e overrides específicos da publicação.",
         "from_extension": false,
         "is_partition": false,
         "kind": "table",
@@ -257563,7 +257721,7 @@
         "schema": "public"
       },
       {
-        "comment": null,
+        "comment": "Reações de visitantes a uma revista pública, página ou item, identificadas por fingerprint e hash de IP para reduzir duplicidade e exposição de dados.",
         "from_extension": false,
         "is_partition": false,
         "kind": "table",
@@ -257578,7 +257736,7 @@
         "schema": "public"
       },
       {
-        "comment": null,
+        "comment": "Eventos particionados de visualização de revistas públicas. Guarda hashes de token/IP/agente, página, sessão e referer host; usar a tabela pai para consultas unificadas.",
         "from_extension": false,
         "is_partition": false,
         "kind": "partitioned",
@@ -257593,7 +257751,7 @@
         "schema": "public"
       },
       {
-        "comment": null,
+        "comment": "Partição mensal de 2026-07 da tabela public.magazine_public_view_events. Os eventos armazenam hashes e metadados de visualização pública; consultar a tabela pai para buscas unificadas.",
         "from_extension": false,
         "is_partition": true,
         "kind": "table",
@@ -257608,7 +257766,7 @@
         "schema": "public"
       },
       {
-        "comment": null,
+        "comment": "Partição mensal de 2026-08 da tabela public.magazine_public_view_events. Os eventos armazenam hashes e metadados de visualização pública; consultar a tabela pai para buscas unificadas.",
         "from_extension": false,
         "is_partition": true,
         "kind": "table",
@@ -257623,7 +257781,7 @@
         "schema": "public"
       },
       {
-        "comment": null,
+        "comment": "Partição mensal de 2026-09 da tabela public.magazine_public_view_events. Os eventos armazenam hashes e metadados de visualização pública; consultar a tabela pai para buscas unificadas.",
         "from_extension": false,
         "is_partition": true,
         "kind": "table",
@@ -257638,7 +257796,7 @@
         "schema": "public"
       },
       {
-        "comment": null,
+        "comment": "Partição mensal de 2026-10 da tabela public.magazine_public_view_events. Os eventos armazenam hashes e metadados de visualização pública; consultar a tabela pai para buscas unificadas.",
         "from_extension": false,
         "is_partition": true,
         "kind": "table",
@@ -257653,7 +257811,7 @@
         "schema": "public"
       },
       {
-        "comment": null,
+        "comment": "Partição mensal de 2026-11 da tabela public.magazine_public_view_events. Os eventos armazenam hashes e metadados de visualização pública; consultar a tabela pai para buscas unificadas.",
         "from_extension": false,
         "is_partition": true,
         "kind": "table",
@@ -257668,7 +257826,7 @@
         "schema": "public"
       },
       {
-        "comment": null,
+        "comment": "Partição mensal de 2026-12 da tabela public.magazine_public_view_events. Os eventos armazenam hashes e metadados de visualização pública; consultar a tabela pai para buscas unificadas.",
         "from_extension": false,
         "is_partition": true,
         "kind": "table",
@@ -257683,7 +257841,7 @@
         "schema": "public"
       },
       {
-        "comment": null,
+        "comment": "Partição mensal de 2027-01 da tabela public.magazine_public_view_events. Os eventos armazenam hashes e metadados de visualização pública; consultar a tabela pai para buscas unificadas.",
         "from_extension": false,
         "is_partition": true,
         "kind": "table",
@@ -257698,7 +257856,7 @@
         "schema": "public"
       },
       {
-        "comment": null,
+        "comment": "Partição mensal de 2027-02 da tabela public.magazine_public_view_events. Os eventos armazenam hashes e metadados de visualização pública; consultar a tabela pai para buscas unificadas.",
         "from_extension": false,
         "is_partition": true,
         "kind": "table",
@@ -257713,7 +257871,7 @@
         "schema": "public"
       },
       {
-        "comment": null,
+        "comment": "Partição DEFAULT da tabela public.magazine_public_view_events para datas fora das partições mensais existentes.",
         "from_extension": false,
         "is_partition": true,
         "kind": "table",
@@ -257728,7 +257886,7 @@
         "schema": "public"
       },
       {
-        "comment": null,
+        "comment": "Estado de leitura de um visitante para uma revista compartilhada, associado ao hash do token e fingerprint; armazena última página e bookmarks sem guardar o token público em claro.",
         "from_extension": false,
         "is_partition": false,
         "kind": "table",
@@ -257743,7 +257901,7 @@
         "schema": "public"
       },
       {
-        "comment": null,
+        "comment": "Templates personalizados de revista pertencentes a um usuário e opcionalmente compartilhados na organização; preserva branding e configurações de conteúdo.",
         "from_extension": false,
         "is_partition": false,
         "kind": "table",
@@ -257758,7 +257916,7 @@
         "schema": "public"
       },
       {
-        "comment": null,
+        "comment": "Catálogo de templates de revista disponíveis, com família visual, quantidade de produtos por página e estado ativo.",
         "from_extension": false,
         "is_partition": false,
         "kind": "table",
@@ -257773,7 +257931,7 @@
         "schema": "public"
       },
       {
-        "comment": "Singleton. Marca d'água do rollup de view_count. Garante exactly-once entre o cron horário e o nightly.",
+        "comment": "Registro singleton de marca d’água que coordena o processamento exactly-once dos eventos públicos de visualização para atualizar view_count.",
         "from_extension": false,
         "is_partition": false,
         "kind": "table",
@@ -257788,7 +257946,7 @@
         "schema": "public"
       },
       {
-        "comment": null,
+        "comment": "Cabeçalho de revistas/catálogos comerciais. Guarda proprietário/organização, branding, opções de conteúdo, template, publicação/arquivamento, token público e controle de edição concorrente.",
         "from_extension": false,
         "is_partition": false,
         "kind": "table",
@@ -257803,7 +257961,7 @@
         "schema": "public"
       },
       {
-        "comment": null,
+        "comment": "Configurações de identidade de marca para campanhas Magic Up: logos, cores, tom, estilo e vocabulário obrigatório/proibido.",
         "from_extension": false,
         "is_partition": false,
         "kind": "table",
@@ -257818,7 +257976,7 @@
         "schema": "public"
       },
       {
-        "comment": null,
+        "comment": "Briefings de campanhas Magic Up por usuário/cliente, incluindo objetivo, canal, público, tom, CTA, ocasião e estado.",
         "from_extension": false,
         "is_partition": false,
         "kind": "table",
@@ -257833,7 +257991,7 @@
         "schema": "public"
       },
       {
-        "comment": null,
+        "comment": "Comentários de usuários sobre gerações Magic Up, com autoria de exibição e opção de visibilidade pública.",
         "from_extension": false,
         "is_partition": false,
         "kind": "table",
@@ -257848,7 +258006,7 @@
         "schema": "public"
       },
       {
-        "comment": null,
+        "comment": "Gerações de conteúdo/imagem Magic Up, com prompt, produto, canal, modelo, resultado, qualidade, status, tags e metadados.",
         "from_extension": false,
         "is_partition": false,
         "kind": "table",
@@ -257863,7 +258021,7 @@
         "schema": "public"
       },
       {
-        "comment": null,
+        "comment": "Compartilhamentos públicos tokenizados de gerações ou campanhas Magic Up, com validade, permissões e estado.",
         "from_extension": false,
         "is_partition": false,
         "kind": "table",
@@ -257878,7 +258036,7 @@
         "schema": "public"
       },
       {
-        "comment": null,
+        "comment": "Reações de usuários a gerações Magic Up, com tipo de reação e metadados técnicos de origem.",
         "from_extension": false,
         "is_partition": false,
         "kind": "table",
@@ -257908,7 +258066,7 @@
         "schema": "public"
       },
       {
-        "comment": null,
+        "comment": "De-para entre um material recebido de fornecedor e o catálogo Promo de grupos, tipos ou variações. match_level indica o nível do mapeamento e match_quality/confidence_score registram sua qualidade.",
         "from_extension": false,
         "is_partition": false,
         "kind": "table",
@@ -257938,7 +258096,7 @@
         "schema": "public"
       },
       {
-        "comment": null,
+        "comment": "Trilha de reconciliação produto–material de 2026-06-26, com motivo e timestamp por vínculo revisado.",
         "from_extension": false,
         "is_partition": false,
         "kind": "table",
@@ -257953,7 +258111,7 @@
         "schema": "public"
       },
       {
-        "comment": null,
+        "comment": "Catálogo canônico de materiais, organizado por material_groups. Referenciado por relações de materiais de produtos e por componentes de kits.",
         "from_extension": false,
         "is_partition": false,
         "kind": "table",
@@ -257968,7 +258126,7 @@
         "schema": "public"
       },
       {
-        "comment": null,
+        "comment": "Variações ou especificações de um tipo de material. type_id identifica o material-pai; specifications guarda propriedades estruturadas específicas da variação.",
         "from_extension": false,
         "is_partition": false,
         "kind": "table",
@@ -257983,7 +258141,7 @@
         "schema": "public"
       },
       {
-        "comment": null,
+        "comment": "Eventos de violações de autorização MCP, com operação, origem, chave-alvo e contexto técnico para investigação.",
         "from_extension": false,
         "is_partition": false,
         "kind": "table",
@@ -257998,7 +258156,7 @@
         "schema": "public"
       },
       {
-        "comment": null,
+        "comment": "Registro de chaves de API MCP com hash, prefixo, escopos, expiração, revogação e rotação. A chave secreta em si não deve ser armazenada nesta tabela nem compartilhada em logs.",
         "from_extension": false,
         "is_partition": false,
         "kind": "table",
@@ -258013,7 +258171,7 @@
         "schema": "public"
       },
       {
-        "comment": null,
+        "comment": "Registro de concessões de acesso MCP full, com usuário, concedente, justificativa e data. Deve ser tratado como controle administrativo sensível.",
         "from_extension": false,
         "is_partition": false,
         "kind": "table",
@@ -258028,7 +258186,7 @@
         "schema": "public"
       },
       {
-        "comment": null,
+        "comment": "Auditoria de revogações automáticas de chaves MCP, indicando chave, criador, origem e motivo da revogação.",
         "from_extension": false,
         "is_partition": false,
         "kind": "table",
@@ -258043,7 +258201,7 @@
         "schema": "public"
       },
       {
-        "comment": null,
+        "comment": "Armazenamento key/value interno do MCP em JSONB, com timestamp de atualização e lock_until para coordenação temporária.",
         "from_extension": false,
         "is_partition": false,
         "kind": "table",
@@ -258073,7 +258231,7 @@
         "schema": "public"
       },
       {
-        "comment": null,
+        "comment": "Snapshots de cobertura de enriquecimento por fornecedor e camada Bronze/Silver/Gold, incluindo percentuais de atributos preenchidos para acompanhar a qualidade do pipeline.",
         "from_extension": false,
         "is_partition": false,
         "kind": "table",
@@ -258088,7 +258246,7 @@
         "schema": "public"
       },
       {
-        "comment": null,
+        "comment": "Links tokenizados para revisão/aprovação de um job de mockup por cliente, com validade, limites de uso, acessos e decisão.",
         "from_extension": false,
         "is_partition": false,
         "kind": "table",
@@ -258103,7 +258261,7 @@
         "schema": "public"
       },
       {
-        "comment": null,
+        "comment": "Livro-razão de créditos de mockup: concessões, cobranças, reembolsos e compras, com saldo antes/depois e referência opcional ao job/mockup.",
         "from_extension": false,
         "is_partition": false,
         "kind": "table",
@@ -258118,7 +258276,7 @@
         "schema": "public"
       },
       {
-        "comment": null,
+        "comment": "Saldo e limites de créditos de geração de mockup por usuário, incluindo acumulados de ganhos, gastos e consumo por período.",
         "from_extension": false,
         "is_partition": false,
         "kind": "table",
@@ -258133,7 +258291,7 @@
         "schema": "public"
       },
       {
-        "comment": null,
+        "comment": "Estado salvo de um rascunho de mockup por usuário e draft_key, incluindo produto, cliente, técnica, áreas e dados de logo.",
         "from_extension": false,
         "is_partition": false,
         "kind": "table",
@@ -258148,7 +258306,7 @@
         "schema": "public"
       },
       {
-        "comment": null,
+        "comment": "Solicitações em lote de geração de mockups. Guarda usuário, produto, técnica, parâmetros visuais, estado, contagens e custos estimados/reais do job.",
         "from_extension": false,
         "is_partition": false,
         "kind": "table",
@@ -258163,7 +258321,7 @@
         "schema": "public"
       },
       {
-        "comment": null,
+        "comment": "Configurações versionadas de prompts de mockup por config_key, com modelo, técnica opcional e estado ativo.",
         "from_extension": false,
         "is_partition": false,
         "kind": "table",
@@ -258178,7 +258336,7 @@
         "schema": "public"
       },
       {
-        "comment": null,
+        "comment": "Histórico de alterações de prompts, preservando conteúdo anterior/novo, modelo, versão, autor e observações.",
         "from_extension": false,
         "is_partition": false,
         "kind": "table",
@@ -258193,7 +258351,7 @@
         "schema": "public"
       },
       {
-        "comment": null,
+        "comment": "Modelos reutilizáveis de mockup por produto, com áreas, técnica padrão, cores e estado de publicação.",
         "from_extension": false,
         "is_partition": false,
         "kind": "table",
@@ -258208,7 +258366,7 @@
         "schema": "public"
       },
       {
-        "comment": null,
+        "comment": "Eventos de navegação registrados para análise de uso, com usuário opcional, tipo do evento, payload JSON e timestamp.",
         "from_extension": false,
         "is_partition": false,
         "kind": "table",
@@ -258238,7 +258396,7 @@
         "schema": "public"
       },
       {
-        "comment": null,
+        "comment": "Catálogo de features e acessórios possíveis para cadernos; public.product_notebook_features associa as features confirmadas aos produtos.",
         "from_extension": false,
         "is_partition": false,
         "kind": "table",
@@ -258268,7 +258426,7 @@
         "schema": "public"
       },
       {
-        "comment": null,
+        "comment": "Modelos reutilizáveis de notificações, identificados por code, com assunto, corpo e lista JSON de variáveis esperadas. is_active controla disponibilidade para envio.",
         "from_extension": false,
         "is_partition": false,
         "kind": "table",
@@ -258298,7 +258456,7 @@
         "schema": "public"
       },
       {
-        "comment": null,
+        "comment": "Auditoria resumida de alterações de grants operacionais, registrando assinatura da função, roles corrigidas, origem e instante da execução.",
         "from_extension": false,
         "is_partition": false,
         "kind": "table",
@@ -258313,7 +258471,7 @@
         "schema": "public"
       },
       {
-        "comment": null,
+        "comment": "Fila de propostas de otimização operacional, com prioridade, categoria, status, guardrail e resultado/erro da execução.",
         "from_extension": false,
         "is_partition": false,
         "kind": "table",
@@ -258328,7 +258486,7 @@
         "schema": "public"
       },
       {
-        "comment": null,
+        "comment": "Histórico de execuções de itens da optimization_queue, com status, guardrail, duração, executor e notas.",
         "from_extension": false,
         "is_partition": false,
         "kind": "table",
@@ -258343,7 +258501,7 @@
         "schema": "public"
       },
       {
-        "comment": null,
+        "comment": "Detalhes de personalização associados a uma linha de pedido: técnica, local, imagem/texto e ajuste de preço. order_item_id identifica a linha comercial.",
         "from_extension": false,
         "is_partition": false,
         "kind": "table",
@@ -258358,7 +258516,7 @@
         "schema": "public"
       },
       {
-        "comment": null,
+        "comment": "Linhas de produtos de um pedido. product_id é opcional e os campos de nome/SKU/descrição/imagem preservam um snapshot da linha; quote_item_id pode apontar logicamente para a linha de orçamento de origem. Valores de linha não substituem frete/impostos do cabeçalho.",
         "from_extension": false,
         "is_partition": false,
         "kind": "table",
@@ -258373,7 +258531,7 @@
         "schema": "public"
       },
       {
-        "comment": null,
+        "comment": "Pedidos comerciais confirmados, com estado operacional, pagamento, cliente, vendedor, endereço e totais. Os itens ficam em public.order_items. Campos quote_id e conversão são referências lógicas quando não houver FK declarada; comentários de coluna descrevem as convenções monetárias e de entrega.",
         "from_extension": false,
         "is_partition": false,
         "kind": "table",
@@ -258418,7 +258576,7 @@
         "schema": "public"
       },
       {
-        "comment": null,
+        "comment": "Configuração de webhooks de saída: destino, eventos inscritos, referência a segredo, versão do contrato, retry e estado operacional. O segredo é referenciado, não deve ser embutido na URL, descrição ou comentário.",
         "from_extension": false,
         "is_partition": false,
         "kind": "table",
@@ -258433,7 +258591,7 @@
         "schema": "public"
       },
       {
-        "comment": null,
+        "comment": "Relatórios de auditoria de propriedade de dados, com contagens de problemas de owner/RLS, detalhes e cobertura por tabela.",
         "from_extension": false,
         "is_partition": false,
         "kind": "table",
@@ -258448,7 +258606,7 @@
         "schema": "public"
       },
       {
-        "comment": null,
+        "comment": "Trilha de ações de correção de registros sem proprietário válido, com tipo de problema, ação, linhas afetadas, modo dry-run, executor e erro.",
         "from_extension": false,
         "is_partition": false,
         "kind": "table",
@@ -258463,7 +258621,7 @@
         "schema": "public"
       },
       {
-        "comment": null,
+        "comment": "Parâmetros de configuração usados pelo algoritmo de descoberta/avaliação de compatibilidade de embalagens, armazenados como chave/valor.",
         "from_extension": false,
         "is_partition": false,
         "kind": "table",
@@ -258508,7 +258666,7 @@
         "schema": "public"
       },
       {
-        "comment": null,
+        "comment": "Vocabulário de cores do papel interno de cadernos e materiais gráficos.",
         "from_extension": false,
         "is_partition": false,
         "kind": "table",
@@ -258628,7 +258786,7 @@
         "schema": "public"
       },
       {
-        "comment": null,
+        "comment": "Catálogo de técnicas de personalização usadas na geração de mockups e configuração de áreas. O mapeamento para códigos/tabelas de preço é mantido separadamente em personalization_technique_mappings.",
         "from_extension": false,
         "is_partition": false,
         "kind": "table",
@@ -258643,7 +258801,7 @@
         "schema": "public"
       },
       {
-        "comment": null,
+        "comment": "Chaves de controle operacional que permitem habilitar/desabilitar partes do pipeline, com nota e timestamp de alteração.",
         "from_extension": false,
         "is_partition": false,
         "kind": "table",
@@ -258658,7 +258816,7 @@
         "schema": "public"
       },
       {
-        "comment": null,
+        "comment": "Snapshots de saúde do pipeline com contagens de resultados críticos, avisos e verificações aprovadas, além do JSON detalhado.",
         "from_extension": false,
         "is_partition": false,
         "kind": "table",
@@ -258688,7 +258846,7 @@
         "schema": "public"
       },
       {
-        "comment": null,
+        "comment": "Histórico de execuções de jobs do pipeline, com início/fim, duração, estado, tamanho do lote, resultado JSON e erro.",
         "from_extension": false,
         "is_partition": false,
         "kind": "table",
@@ -258793,7 +258951,7 @@
         "schema": "public"
       },
       {
-        "comment": "Bug RLS corrigido na Etapa 6: removida product_category_assignments_public_read que anulava _select_org.",
+        "comment": "Relação canônica N:N entre produtos e categorias. Cada linha atribui um produto a uma categoria; is_primary marca a categoria principal e display_order controla a ordenação. É a fonte canônica para vínculos múltiplos, distinta dos campos legados em products.",
         "from_extension": false,
         "is_partition": false,
         "kind": "table",
@@ -258823,7 +258981,7 @@
         "schema": "public"
       },
       {
-        "comment": "Personalization techniques available for each product-component location.",
+        "comment": "Técnicas de personalização permitidas por local de componente, com código composto opcional, máximo de cores e técnica padrão.",
         "from_extension": false,
         "is_partition": false,
         "kind": "table",
@@ -258838,7 +258996,7 @@
         "schema": "public"
       },
       {
-        "comment": null,
+        "comment": "Locais de personalização associados a um componente específico de produto, com limites de área/dimensão, imagem de referência e estado ativo.",
         "from_extension": false,
         "is_partition": false,
         "kind": "table",
@@ -258853,7 +259011,7 @@
         "schema": "public"
       },
       {
-        "comment": null,
+        "comment": "Componentes de personalização específicos de produtos, com código, nome, estado e ordenação. product_id é texto e não possui FK declarada no schema atual.",
         "from_extension": false,
         "is_partition": false,
         "kind": "table",
@@ -258868,7 +259026,7 @@
         "schema": "public"
       },
       {
-        "comment": null,
+        "comment": "Preços de personalização por produto, serviço, tabela, componente e local. min_qty e price são arrays pareados por faixa; currency indica a moeda dos valores.",
         "from_extension": false,
         "is_partition": false,
         "kind": "table",
@@ -258898,7 +259056,7 @@
         "schema": "public"
       },
       {
-        "comment": "Tokens de autorização one-shot para desativação de produtos.\n\nPROPÓSITO: Mecanismo de segurança que garante a regra de negócio central:\n\"Nenhum produto é desativado sem aprovação explícita de admin+\".\n\nFLUXO COMPLETO:\n  1. Admin aprova via fn_approve_product_deactivation()\n     → cria token { product_id, request_id, authorized_by, used=false, expires_at }\n  2. A função executa UPDATE products SET is_active=false\n  3. Trigger fn_block_unauthorized_product_deactivation() intercepta o UPDATE\n     → verifica se existe token válido (used=false AND expires_at > now())\n     → SIM: permite desativação + marca used=true\n     → NÃO: reverte is_active e bloqueia silenciosamente\n  4. Token é deletado imediatamente após uso (auditoria fica nos registros used=true)\n\nFUNÇÕES DEPENDENTES:\n  - fn_approve_product_deactivation()             → cria token + dispara UPDATE\n  - fn_block_unauthorized_product_deactivation()  → trigger BEFORE UPDATE/INSERT em products\n  - soft_delete_product()                         → path de soft delete, também cria token one-shot\n\nCONSTRAINT DE INTEGRIDADE:\n  - FK fk_auth_product_cascade: product_id → products.id (CASCADE)\n    → token só pode ser criado para produtos existentes\n    → se o produto for deletado, o token é removido em cascata\n\nCAMPOS:\n  - product_id    → produto a ser desativado (FK → products.id)\n  - request_id    → FK product_deactivation_requests (rastreabilidade)\n  - authorized_by → UUID do admin que aprovou\n  - authorized_at → criação do token\n  - expires_at    → TTL curto (token não reutilizável após expirar)\n  - used          → true após consumo (linha mantida como auditoria)\n\nHISTÓRICO: 397 registros de Jun/2026 = desativações aprovadas e executadas (todos used=true).\nRENOMEADA em 2026-06-15: era _deactivation_auth (prefixo _ era enganoso — tabela é ativa e crítica).",
+        "comment": "Tokens de autorização one-shot para desativação de produtos. Protege a regra: nenhum produto é desativado sem aprovação explícita de admin+.\n\nFLUXO: fn_approve_product_deactivation() cria token curto para product_id/request_id/authorized_by; o trigger fn_block_unauthorized_product_deactivation() valida token não usado e não expirado durante a desativação e o consome. Sem token válido, a desativação é revertida/bloqueada. soft_delete_product() também usa este mecanismo.\n\nINTEGRIDADE: product_id referencia products.id com cascade; request_id referencia a solicitação de aprovação. Campos de autorização e validade formam a trilha técnica do consumo.\n\nHistórico documentado em 2026-06: tokens consumidos de desativações aprovadas. Renomeada em 2026-06-15 de _deactivation_auth para deixar claro que é tabela ativa e crítica. Não remover nem contornar o trigger de proteção.",
         "from_extension": false,
         "is_partition": false,
         "kind": "table",
@@ -258958,7 +259116,7 @@
         "schema": "public"
       },
       {
-        "comment": "Product-group component templates inherited by products in the group.",
+        "comment": "Componentes de personalização padrão herdáveis por produtos de um grupo, com código/nome, ordenação e indicação de personalizabilidade.",
         "from_extension": false,
         "is_partition": false,
         "kind": "table",
@@ -259003,7 +259161,7 @@
         "schema": "public"
       },
       {
-        "comment": null,
+        "comment": "Associação de produtos a product_groups, com flag use_group_rules para indicar se o produto herda as regras do grupo.",
         "from_extension": false,
         "is_partition": false,
         "kind": "table",
@@ -259018,7 +259176,7 @@
         "schema": "public"
       },
       {
-        "comment": null,
+        "comment": "Grupos de produtos que compartilham templates de componentes e regras de personalização; group_code identifica o grupo e is_active controla seu uso.",
         "from_extension": false,
         "is_partition": false,
         "kind": "table",
@@ -259048,7 +259206,7 @@
         "schema": "public"
       },
       {
-        "comment": "Embalagens ORIGINAIS que já vêm com o produto. SEM SKU próprio, SEM preço separado.",
+        "comment": "Embalagens ORIGINAIS que já vêm com o produto. SEM SKU próprio, SEM preço separado. O registro pode guardar material, cor, dimensões, possibilidade de personalização, fornecedor e origem de ingestão.",
         "from_extension": false,
         "is_partition": false,
         "kind": "table",
@@ -259153,7 +259311,7 @@
         "schema": "public"
       },
       {
-        "comment": "Compatibilidade entre produtos e embalagens vendidas SEPARADAMENTE (COM SKU próprio)",
+        "comment": "Compatibilidade entre produtos e embalagens vendidas SEPARADAMENTE (COM SKU próprio). A linha registra o par produto/embalagem, folgas dimensionais, avaliação de encaixe, recomendação, verificação e notas.",
         "from_extension": false,
         "is_partition": false,
         "kind": "table",
@@ -259168,7 +259326,7 @@
         "schema": "public"
       },
       {
-        "comment": "Relação entre produtos e embalagens disponíveis",
+        "comment": "Relação entre produtos e embalagens disponíveis. Cada linha associa um produto do catálogo a uma embalagem e registra a natureza da relação (included, optional, required, default), preço adicional, moeda e quantidade mínima.",
         "from_extension": false,
         "is_partition": false,
         "kind": "table",
@@ -259198,7 +259356,7 @@
         "schema": "public"
       },
       {
-        "comment": null,
+        "comment": "Exceções por produto ao limite padrão de frescor de preço. threshold_days é restrito às janelas configuradas (30, 60 ou 90 dias) e atualizado com autoria/timestamps.",
         "from_extension": false,
         "is_partition": false,
         "kind": "table",
@@ -259213,7 +259371,7 @@
         "schema": "public"
       },
       {
-        "comment": null,
+        "comment": "Configuração de posições de impressão por produto, ordenada por position_index, com códigos/nomes de local, técnicas e referências visuais em JSON/texto.",
         "from_extension": false,
         "is_partition": false,
         "kind": "table",
@@ -259258,7 +259416,7 @@
         "schema": "public"
       },
       {
-        "comment": null,
+        "comment": "Relações direcionadas entre produtos, classificadas por relationship_type. product_id é a origem e related_product_id o destino; is_bidirectional indica se a relação deve ser interpretada nos dois sentidos.",
         "from_extension": false,
         "is_partition": false,
         "kind": "table",
@@ -259273,7 +259431,7 @@
         "schema": "public"
       },
       {
-        "comment": null,
+        "comment": "Telemetria agregada de buscas de produtos: consulta, filtros, número de resultados e latência. Não guarda o conjunto completo de produtos retornados.",
         "from_extension": false,
         "is_partition": false,
         "kind": "table",
@@ -259348,7 +259506,7 @@
         "schema": "public"
       },
       {
-        "comment": null,
+        "comment": "Resumo de execuções de sincronização de produtos, com origem, estado, contagens, duração, payload de diagnóstico e erro.",
         "from_extension": false,
         "is_partition": false,
         "kind": "table",
@@ -259363,7 +259521,7 @@
         "schema": "public"
       },
       {
-        "comment": "Bug RLS corrigido na Etapa 6: removida product_tags_public_read que anulava _select_org.",
+        "comment": "Tabela de associação N:N entre produtos e tags. Cada linha liga product_id a tag_id; a definição e o escopo da tag ficam em public.tags. Mantém também o contexto das correções de RLS registradas anteriormente.",
         "from_extension": false,
         "is_partition": false,
         "kind": "table",
@@ -259393,7 +259551,7 @@
         "schema": "public"
       },
       {
-        "comment": "Políticas RLS: product_variants_anon_read (is_active=true) + product_variants_public_read (authenticated, true). Separação fix_version 20260717 — anon não vê variantes inativas.",
+        "comment": "Tabela canônica de variantes/SKUs de um produto. Cada linha representa uma combinação vendável de cor, tamanho ou capacidade, com atributos, disponibilidade, imagens e sincronização; preços e estoque por fornecedor vivem em public.variant_supplier_sources. RLS também restringe variantes inativas conforme as políticas existentes.",
         "from_extension": false,
         "is_partition": false,
         "kind": "table",
@@ -259423,7 +259581,7 @@
         "schema": "public"
       },
       {
-        "comment": null,
+        "comment": "Eventos de visualização de produtos, com snapshot opcional de SKU/nome, vendedor e tipo da visualização; alimenta métricas de popularidade e contadores.",
         "from_extension": false,
         "is_partition": false,
         "kind": "table",
@@ -259573,7 +259731,7 @@
         "schema": "public"
       },
       {
-        "comment": null,
+        "comment": "Snapshots de varreduras de cobertura/qualidade de imagens, com contagens críticas, itens sem normalização e amostra de diagnóstico.",
         "from_extension": false,
         "is_partition": false,
         "kind": "table",
@@ -259588,7 +259746,7 @@
         "schema": "public"
       },
       {
-        "comment": null,
+        "comment": "Telemetria agregada de operações de banco/RPC, incluindo duração, contagem, paginação, cache, cold start e erros para identificar consultas lentas ou falhas.",
         "from_extension": false,
         "is_partition": false,
         "kind": "table",
@@ -259633,7 +259791,7 @@
         "schema": "public"
       },
       {
-        "comment": null,
+        "comment": "Rascunhos de cotação por usuário, armazenados como JSONB antes de serem persistidos como registro definitivo em public.quotes.",
         "from_extension": false,
         "is_partition": false,
         "kind": "table",
@@ -259678,7 +259836,7 @@
         "schema": "public"
       },
       {
-        "comment": null,
+        "comment": "Linhas de produtos incluídas em um orçamento. Um item pode vincular-se opcionalmente a public.products e public.product_variants; campos textuais guardam snapshots para manter a proposta estável. Personalizações e embalagens opcionais são registradas separadamente ou por seus campos próprios.",
         "from_extension": false,
         "is_partition": false,
         "kind": "table",
@@ -259693,7 +259851,7 @@
         "schema": "public"
       },
       {
-        "comment": "Wave 3.3.C.1 2026-05-22: unificado (seller-owned + system templates). seller_id opcional, suporta ambos os usos.",
+        "comment": "Modelos reutilizáveis de orçamento por vendedor ou sistema. Podem pré-preencher itens, condições comerciais, pagamento, prazo e modalidade/custo de frete; revisar preço, desconto, estoque e disponibilidade antes de aplicar a uma nova cotação. Schema unificado na Wave 3.3.C.1.",
         "from_extension": false,
         "is_partition": false,
         "kind": "table",
@@ -259708,7 +259866,7 @@
         "schema": "public"
       },
       {
-        "comment": null,
+        "comment": "Snapshots imutáveis de versões de um orçamento, associados a quotes.id e numerados por version_number. snapshot registra o estado capturado; change_summary descreve a alteração que originou a versão.",
         "from_extension": false,
         "is_partition": false,
         "kind": "table",
@@ -259723,7 +259881,7 @@
         "schema": "public"
       },
       {
-        "comment": null,
+        "comment": "Orçamentos comerciais e seu ciclo de vida: status operacional, etapa de funil, itens, condições, aprovação de desconto e conversão em pedido. Os itens ficam em public.quote_items. Subtotais reais e apresentados diferenciam markup interno; frete e impostos são campos separados.",
         "from_extension": false,
         "is_partition": false,
         "kind": "table",
@@ -259768,7 +259926,7 @@
         "schema": "public"
       },
       {
-        "comment": null,
+        "comment": "Histórico de produtos visualizados por usuário, ordenável por viewed_at para compor a seção de visualizações recentes.",
         "from_extension": false,
         "is_partition": false,
         "kind": "table",
@@ -259783,7 +259941,7 @@
         "schema": "public"
       },
       {
-        "comment": null,
+        "comment": "Contadores de rate limit por identificador e endpoint, com janela temporal e bloqueio opcional. Dados operacionais transitórios usados para limitar requisições.",
         "from_extension": false,
         "is_partition": false,
         "kind": "table",
@@ -259798,7 +259956,7 @@
         "schema": "public"
       },
       {
-        "comment": null,
+        "comment": "Registro de negações de acesso por Row Level Security, com usuário, objeto, operação, endpoint, erro e contexto de diagnóstico. Tratar campos de IP, e-mail e agente de usuário como dados sensíveis.",
         "from_extension": false,
         "is_partition": false,
         "kind": "table",
@@ -259813,7 +259971,7 @@
         "schema": "public"
       },
       {
-        "comment": null,
+        "comment": "Lotes de migração de papéis de usuários, com motivo, responsável, modo dry-run, status, totais e duração.",
         "from_extension": false,
         "is_partition": false,
         "kind": "table",
@@ -259828,7 +259986,7 @@
         "schema": "public"
       },
       {
-        "comment": null,
+        "comment": "Ações individuais de migração de papel por usuário dentro de um lote, com papel anterior/novo, operação, resultado e erro.",
         "from_extension": false,
         "is_partition": false,
         "kind": "table",
@@ -259888,7 +260046,7 @@
         "schema": "public"
       },
       {
-        "comment": null,
+        "comment": "Filtros salvos pelo usuário para reutilização. filter_config guarda a definição estruturada do filtro; category, description, icon e color são metadados de organização/apresentação.",
         "from_extension": false,
         "is_partition": false,
         "kind": "table",
@@ -259903,7 +260061,7 @@
         "schema": "public"
       },
       {
-        "comment": null,
+        "comment": "Visões de tendências salvas por usuário, com nome e filtros JSONB para reabrir uma análise configurada.",
         "from_extension": false,
         "is_partition": false,
         "kind": "table",
@@ -259918,7 +260076,7 @@
         "schema": "public"
       },
       {
-        "comment": null,
+        "comment": "Relatórios agendados por usuário, com tipo, frequência, destinatário, filtros e próximo horário de execução.",
         "from_extension": false,
         "is_partition": false,
         "kind": "table",
@@ -260008,7 +260166,7 @@
         "schema": "public"
       },
       {
-        "comment": null,
+        "comment": "Eventos agregáveis de busca, com termo, contexto, quantidade de resultados e vendedor associado quando disponível.",
         "from_extension": false,
         "is_partition": false,
         "kind": "table",
@@ -260023,7 +260181,7 @@
         "schema": "public"
       },
       {
-        "comment": null,
+        "comment": "Histórico de consultas de busca, filtros aplicados, quantidade de resultados e eventual produto clicado. Uso analítico/UX; não é fonte de eventos de busca do catálogo em tempo real.",
         "from_extension": false,
         "is_partition": false,
         "kind": "table",
@@ -260053,7 +260211,7 @@
         "schema": "public"
       },
       {
-        "comment": null,
+        "comment": "Configurações de segurança em formato chave/valor JSONB. Alterações devem ser restritas e auditadas; documentar em cada registro o escopo e os efeitos da configuração.",
         "from_extension": false,
         "is_partition": false,
         "kind": "table",
@@ -260068,7 +260226,7 @@
         "schema": "public"
       },
       {
-        "comment": null,
+        "comment": "Linhas de produto de um carrinho do vendedor. Guarda snapshots de nome, SKU, imagem, preço unitário, quantidade, cor e observações; cart_id liga ao cabeçalho.",
         "from_extension": false,
         "is_partition": false,
         "kind": "table",
@@ -260083,7 +260241,7 @@
         "schema": "public"
       },
       {
-        "comment": null,
+        "comment": "Carrinhos de trabalho de um vendedor associados a uma empresa cliente, com estado de preparação, prazo de envio, notas e versionamento otimista.",
         "from_extension": false,
         "is_partition": false,
         "kind": "table",
@@ -260158,7 +260316,7 @@
         "schema": "public"
       },
       {
-        "comment": null,
+        "comment": "Rascunhos do assistente de simulação de produto, com dados do produto, quantidade, personalizações e etapa atual do fluxo em JSONB.",
         "from_extension": false,
         "is_partition": false,
         "kind": "table",
@@ -260203,7 +260361,7 @@
         "schema": "public"
       },
       {
-        "comment": null,
+        "comment": "Controle de partições de trabalho dos workers Só Marcas. Registra contagens de SKUs/imagens, erros, estado e timestamps de execução por worker_id.",
         "from_extension": false,
         "is_partition": false,
         "kind": "table",
@@ -260233,7 +260391,7 @@
         "schema": "public"
       },
       {
-        "comment": null,
+        "comment": "Snapshots de saúde do catálogo SPOT, agregando cobertura de produtos/imagens e estado de vídeos/importação para acompanhamento operacional.",
         "from_extension": false,
         "is_partition": false,
         "kind": "table",
@@ -260263,7 +260421,7 @@
         "schema": "public"
       },
       {
-        "comment": null,
+        "comment": "Auditoria de verificações step-up para ações administrativas de alto risco, registrando ação, challenge/token associados e metadados de contexto; não armazenar segredos em metadata.",
         "from_extension": false,
         "is_partition": false,
         "kind": "table",
@@ -260278,7 +260436,7 @@
         "schema": "public"
       },
       {
-        "comment": null,
+        "comment": "Desafios temporários de autenticação reforçada para ações privilegiadas. Guarda somente hash do OTP e estado/limites de verificação, não o código em texto claro.",
         "from_extension": false,
         "is_partition": false,
         "kind": "table",
@@ -260293,7 +260451,7 @@
         "schema": "public"
       },
       {
-        "comment": null,
+        "comment": "Tokens de curta duração para autorizar ações step-up. Armazena hash do token, desafio, ação-alvo, consumo e expiração; nunca guardar o token em claro.",
         "from_extension": false,
         "is_partition": false,
         "kind": "table",
@@ -260323,7 +260481,7 @@
         "schema": "public"
       },
       {
-        "comment": null,
+        "comment": "Notas operacionais associadas a uma variante e opcionalmente a um fornecedor, com autoria, fixação e exclusão lógica.",
         "from_extension": false,
         "is_partition": false,
         "kind": "table",
@@ -260353,7 +260511,7 @@
         "schema": "public"
       },
       {
-        "comment": null,
+        "comment": "Inventário de atributos descobertos na API de cada fornecedor, com chave/nome original, tipo, unidade, exemplos e payload. Registra se o atributo foi mapeado para o vocabulário interno.",
         "from_extension": false,
         "is_partition": false,
         "kind": "table",
@@ -260383,7 +260541,7 @@
         "schema": "public"
       },
       {
-        "comment": null,
+        "comment": "Categorias brutas recebidas dos fornecedores, com código, nome, código do pai, nível e payload original. O mapeamento para categorias canônicas da aplicação é mantido separadamente em supplier_category_mappings.",
         "from_extension": false,
         "is_partition": false,
         "kind": "table",
@@ -260413,7 +260571,7 @@
         "schema": "public"
       },
       {
-        "comment": null,
+        "comment": "Espelho por fornecedor das cores recebidas de APIs, incluindo códigos e payloads brutos. color_variation_id permite associar uma cor externa a public.color_variations.",
         "from_extension": false,
         "is_partition": false,
         "kind": "table",
@@ -260428,7 +260586,7 @@
         "schema": "public"
       },
       {
-        "comment": null,
+        "comment": "Landing bruta de opções de personalização por produto/fornecedor. Preserva códigos de serviço/tabela, componente/local, custo e payload original antes da normalização.",
         "from_extension": false,
         "is_partition": false,
         "kind": "table",
@@ -260443,7 +260601,7 @@
         "schema": "public"
       },
       {
-        "comment": "Bronze (layer) das tabelas de preco de gravacao por fornecedor. Grao = table_code_option (catalogo-wide, ~289 p/ SPOT). Aplicabilidade por SKU ja vive em supplier_products_raw.raw_data (CustomizationTables/Area1/TableCodes1...).",
+        "comment": "Bronze (layer) das tabelas de preço de gravação por fornecedor. Grão = table_code_option (catálogo-wide, ~289 para SPOT). A aplicabilidade por SKU permanece em supplier_products_raw.raw_data (CustomizationTables/Area1/TableCodes1...); raw_data preserva o payload de origem.",
         "from_extension": false,
         "is_partition": false,
         "kind": "table",
@@ -260503,7 +260661,7 @@
         "schema": "public"
       },
       {
-        "comment": "Bug RLS GRAVE corrigido na Etapa 6: supplier_materials_public_read liberava pra anon. Removida.",
+        "comment": "Inventário de materiais expostos por APIs de fornecedores, preservando chave/nome e payload bruto. A normalização para materiais canônicos é registrada em public.material_equivalences; acesso público foi removido por política de segurança.",
         "from_extension": false,
         "is_partition": false,
         "kind": "table",
@@ -260518,7 +260676,7 @@
         "schema": "public"
       },
       {
-        "comment": "Fornecedores que vendem cada embalagem",
+        "comment": "Fornecedores que vendem cada embalagem. Registra código/nome no fornecedor, preço unitário, moeda, quantidade mínima, disponibilidade e prazo de entrega.",
         "from_extension": false,
         "is_partition": false,
         "kind": "table",
@@ -260563,7 +260721,7 @@
         "schema": "public"
       },
       {
-        "comment": null,
+        "comment": "Partição mensal de 2026-08 da tabela append-only public.supplier_products_raw_history. Contém snapshots anteriores de payloads Bronze conforme a política de retenção do pai.",
         "from_extension": false,
         "is_partition": true,
         "kind": "table",
@@ -260578,7 +260736,7 @@
         "schema": "public"
       },
       {
-        "comment": null,
+        "comment": "Partição mensal de 2026-09 da tabela append-only public.supplier_products_raw_history. Contém snapshots anteriores de payloads Bronze conforme a política de retenção do pai.",
         "from_extension": false,
         "is_partition": true,
         "kind": "table",
@@ -260593,7 +260751,7 @@
         "schema": "public"
       },
       {
-        "comment": null,
+        "comment": "Partição mensal de 2026-10 da tabela append-only public.supplier_products_raw_history. Contém snapshots anteriores de payloads Bronze conforme a política de retenção do pai.",
         "from_extension": false,
         "is_partition": true,
         "kind": "table",
@@ -260608,7 +260766,7 @@
         "schema": "public"
       },
       {
-        "comment": null,
+        "comment": "Partição mensal de 2026-11 da tabela append-only public.supplier_products_raw_history. Contém snapshots anteriores de payloads Bronze conforme a política de retenção do pai.",
         "from_extension": false,
         "is_partition": true,
         "kind": "table",
@@ -260623,7 +260781,7 @@
         "schema": "public"
       },
       {
-        "comment": null,
+        "comment": "Partição mensal de 2026-12 da tabela append-only public.supplier_products_raw_history. Contém snapshots anteriores de payloads Bronze conforme a política de retenção do pai.",
         "from_extension": false,
         "is_partition": true,
         "kind": "table",
@@ -260638,7 +260796,7 @@
         "schema": "public"
       },
       {
-        "comment": null,
+        "comment": "Partição mensal de 2027-01 da tabela append-only public.supplier_products_raw_history. Contém snapshots anteriores de payloads Bronze conforme a política de retenção do pai.",
         "from_extension": false,
         "is_partition": true,
         "kind": "table",
@@ -260653,7 +260811,7 @@
         "schema": "public"
       },
       {
-        "comment": null,
+        "comment": "Partição mensal de 2027-02 da tabela append-only public.supplier_products_raw_history. Contém snapshots anteriores de payloads Bronze conforme a política de retenção do pai.",
         "from_extension": false,
         "is_partition": true,
         "kind": "table",
@@ -260668,7 +260826,7 @@
         "schema": "public"
       },
       {
-        "comment": null,
+        "comment": "Partição mensal de 2027-03 da tabela append-only public.supplier_products_raw_history. Contém snapshots anteriores de payloads Bronze conforme a política de retenção do pai.",
         "from_extension": false,
         "is_partition": true,
         "kind": "table",
@@ -260683,7 +260841,7 @@
         "schema": "public"
       },
       {
-        "comment": null,
+        "comment": "Partição mensal de 2027-04 da tabela append-only public.supplier_products_raw_history. Contém snapshots anteriores de payloads Bronze conforme a política de retenção do pai.",
         "from_extension": false,
         "is_partition": true,
         "kind": "table",
@@ -260698,7 +260856,7 @@
         "schema": "public"
       },
       {
-        "comment": null,
+        "comment": "Partição mensal de 2027-05 da tabela append-only public.supplier_products_raw_history. Contém snapshots anteriores de payloads Bronze conforme a política de retenção do pai.",
         "from_extension": false,
         "is_partition": true,
         "kind": "table",
@@ -260713,7 +260871,7 @@
         "schema": "public"
       },
       {
-        "comment": null,
+        "comment": "Partição mensal de 2027-06 da tabela append-only public.supplier_products_raw_history. Contém snapshots anteriores de payloads Bronze conforme a política de retenção do pai.",
         "from_extension": false,
         "is_partition": true,
         "kind": "table",
@@ -260728,7 +260886,7 @@
         "schema": "public"
       },
       {
-        "comment": null,
+        "comment": "Partição mensal de 2027-07 da tabela append-only public.supplier_products_raw_history. Contém snapshots anteriores de payloads Bronze conforme a política de retenção do pai.",
         "from_extension": false,
         "is_partition": true,
         "kind": "table",
@@ -260743,7 +260901,7 @@
         "schema": "public"
       },
       {
-        "comment": null,
+        "comment": "Partição mensal de 2027-08 da tabela append-only public.supplier_products_raw_history. Contém snapshots anteriores de payloads Bronze conforme a política de retenção do pai.",
         "from_extension": false,
         "is_partition": true,
         "kind": "table",
@@ -260758,7 +260916,7 @@
         "schema": "public"
       },
       {
-        "comment": null,
+        "comment": "Partição mensal de 2027-09 da tabela append-only public.supplier_products_raw_history. Contém snapshots anteriores de payloads Bronze conforme a política de retenção do pai.",
         "from_extension": false,
         "is_partition": true,
         "kind": "table",
@@ -260773,7 +260931,7 @@
         "schema": "public"
       },
       {
-        "comment": null,
+        "comment": "Partição mensal de 2027-10 da tabela append-only public.supplier_products_raw_history. Contém snapshots anteriores de payloads Bronze conforme a política de retenção do pai.",
         "from_extension": false,
         "is_partition": true,
         "kind": "table",
@@ -260788,7 +260946,7 @@
         "schema": "public"
       },
       {
-        "comment": null,
+        "comment": "Partição mensal de 2027-11 da tabela append-only public.supplier_products_raw_history. Contém snapshots anteriores de payloads Bronze conforme a política de retenção do pai.",
         "from_extension": false,
         "is_partition": true,
         "kind": "table",
@@ -260803,7 +260961,7 @@
         "schema": "public"
       },
       {
-        "comment": null,
+        "comment": "Partição mensal de 2027-12 da tabela append-only public.supplier_products_raw_history. Contém snapshots anteriores de payloads Bronze conforme a política de retenção do pai.",
         "from_extension": false,
         "is_partition": true,
         "kind": "table",
@@ -260878,7 +261036,7 @@
         "schema": "public"
       },
       {
-        "comment": null,
+        "comment": "Mapeamento por fornecedor entre descrição/código de subtipo externo e categoria canônica public.categories, com método de correspondência e timestamps de manutenção.",
         "from_extension": false,
         "is_partition": false,
         "kind": "table",
@@ -260923,7 +261081,7 @@
         "schema": "public"
       },
       {
-        "comment": null,
+        "comment": "Requisitos técnicos de vídeo por fornecedor: dimensões mínimas/ideais, duração, tamanho máximo e formatos permitidos. Usado para validar vídeos antes de ingestão/publicação.",
         "from_extension": false,
         "is_partition": false,
         "kind": "table",
@@ -260998,7 +261156,7 @@
         "schema": "public"
       },
       {
-        "comment": null,
+        "comment": "Configurações globais da aplicação em formato chave/valor JSONB, com registro de atualização. Usar description para documentar finalidade e formato esperado de cada chave.",
         "from_extension": false,
         "is_partition": false,
         "kind": "table",
@@ -261043,7 +261201,7 @@
         "schema": "public"
       },
       {
-        "comment": "Bug RLS corrigido na Etapa 6: removida tags_public_read que anulava _select_org.",
+        "comment": "Catálogo de tags da aplicação, com escopo organizacional, nome/slug, cor e estado. A associação de tags a produtos é mantida em public.product_tags. Mantém também o contexto das correções de RLS registradas anteriormente.",
         "from_extension": false,
         "is_partition": false,
         "kind": "table",
@@ -261118,7 +261276,7 @@
         "schema": "public"
       },
       {
-        "comment": null,
+        "comment": "Comparações de produtos salvas por usuário, com itens em JSONB e opções de compartilhamento público por token e validade.",
         "from_extension": false,
         "is_partition": false,
         "kind": "table",
@@ -261148,7 +261306,7 @@
         "schema": "public"
       },
       {
-        "comment": null,
+        "comment": "Predefinições de filtros associadas a usuários. filters armazena os critérios JSON; is_global distingue presets compartilhados de presets pessoais.",
         "from_extension": false,
         "is_partition": false,
         "kind": "table",
@@ -261163,7 +261321,7 @@
         "schema": "public"
       },
       {
-        "comment": null,
+        "comment": "Endereços IP autorizados individualmente por usuário. is_active permite desativar uma autorização sem remover o registro; esta lista é distinta da allowlist global.",
         "from_extension": false,
         "is_partition": false,
         "kind": "table",
@@ -261208,7 +261366,7 @@
         "schema": "public"
       },
       {
-        "comment": null,
+        "comment": "Estado de onboarding por usuário, incluindo progresso, etapas concluídas e timestamps de início/conclusão. user_id identifica a conta Supabase Auth.",
         "from_extension": false,
         "is_partition": false,
         "kind": "table",
@@ -261223,7 +261381,7 @@
         "schema": "public"
       },
       {
-        "comment": "Membership user→organização. Backfill na Etapa 6 com 4 users na org única (5db5aee1...). Necessário pras funções user_belongs_to_org/is_org_owner_or_admin retornarem true.",
+        "comment": "Associação canônica entre contas Auth e organizações, com papel owner/admin/member. Usada por helpers de autorização organizacional; não confundir com public.organization_members, que mantém outro contrato de aplicação.",
         "from_extension": false,
         "is_partition": false,
         "kind": "table",
@@ -261238,7 +261396,7 @@
         "schema": "public"
       },
       {
-        "comment": null,
+        "comment": "Preferências de interface e análise por usuário, incluindo pesos/ordem de colunas de comparação e estados de filtros em JSONB.",
         "from_extension": false,
         "is_partition": false,
         "kind": "table",
@@ -261268,7 +261426,7 @@
         "schema": "public"
       },
       {
-        "comment": null,
+        "comment": "Histórico pessoal de consultas de busca de um usuário, com tipo, contagem de resultados, metadados e opção de fixar consultas importantes.",
         "from_extension": false,
         "is_partition": false,
         "kind": "table",
@@ -261283,7 +261441,7 @@
         "schema": "public"
       },
       {
-        "comment": null,
+        "comment": "Marcadores de revogação de tokens por usuário, com instante, JTI, expiração e motivo. Usado para invalidar sessões/tokens emitidos anteriormente.",
         "from_extension": false,
         "is_partition": false,
         "kind": "table",
@@ -261313,7 +261471,7 @@
         "schema": "public"
       },
       {
-        "comment": "Fonte dados por variante x fornecedor. BACKLOG: cost_price_1..5+min_qty_1..5 → supplier_price_tiers; next_quantity/date_1..6 → variant_restock_schedule. Bloqueado por 24+ refs frontend.",
+        "comment": "Registro de fornecimento no grão variante × fornecedor. Mantém estoque, disponibilidade, origem e preços por faixa de quantidade; product_variants identifica a variante e suppliers identifica a fonte comercial. É fonte operacional para preço/estoque por fornecedor; snapshots e resumos históricos ficam em tabelas próprias.",
         "from_extension": false,
         "is_partition": false,
         "kind": "table",
@@ -261328,7 +261486,7 @@
         "schema": "public"
       },
       {
-        "comment": null,
+        "comment": "Catálogo de tipos de variação de produto (por exemplo, tamanho ou capacidade), com código, rótulo, tipo de valor e configuração de obrigatoriedade.",
         "from_extension": false,
         "is_partition": false,
         "kind": "table",
@@ -261343,7 +261501,7 @@
         "schema": "public"
       },
       {
-        "comment": null,
+        "comment": "Valores permitidos de cada tipo de variação. product_variants.size_id pode referenciar um valor; value é o código e label é o rótulo de exibição.",
         "from_extension": false,
         "is_partition": false,
         "kind": "table",
@@ -261373,7 +261531,7 @@
         "schema": "public"
       },
       {
-        "comment": null,
+        "comment": "Resultados temporários de verificação/simulação de vídeos por fornecedor e YouTube ID, incluindo dimensões atuais/máximas, estado de fila e erro.",
         "from_extension": false,
         "is_partition": false,
         "kind": "table",
@@ -261388,7 +261546,7 @@
         "schema": "public"
       },
       {
-        "comment": null,
+        "comment": "Vocabulário de tipos de vídeo de produto, com nomes, categoria e parâmetros de reprodução. product_videos.video_type_id referencia este catálogo.",
         "from_extension": false,
         "is_partition": false,
         "kind": "table",
@@ -261403,7 +261561,7 @@
         "schema": "public"
       },
       {
-        "comment": null,
+        "comment": "Resultados de validação de vídeos: metadados técnicos observados, status, validade, problemas e recomendações, associados a vídeo/produto/fornecedor quando disponíveis.",
         "from_extension": false,
         "is_partition": false,
         "kind": "table",
@@ -261418,7 +261576,7 @@
         "schema": "public"
       },
       {
-        "comment": null,
+        "comment": "Vínculos auxiliares entre identificadores de vídeo e variante/produto, com rótulo e cor da variante e código do fornecedor.",
         "from_extension": false,
         "is_partition": false,
         "kind": "table",
@@ -261433,7 +261591,7 @@
         "schema": "public"
       },
       {
-        "comment": null,
+        "comment": "Feedback de usuários sobre resultados de busca visual, incluindo análise original, correção, termos de busca, produto associado e relevância percebida.",
         "from_extension": false,
         "is_partition": false,
         "kind": "table",
@@ -261448,7 +261606,7 @@
         "schema": "public"
       },
       {
-        "comment": null,
+        "comment": "Histórico de comandos de voz processados, com transcrição, ação interpretada, resposta, payload e resultado. Revisar retenção e acesso por conter texto potencialmente sensível.",
         "from_extension": false,
         "is_partition": false,
         "kind": "table",
@@ -261463,7 +261621,7 @@
         "schema": "public"
       },
       {
-        "comment": null,
+        "comment": "Tentativas de entrega de webhooks de saída, com evento, resposta HTTP, estado de sucesso, erro e número da tentativa. payload pode conter dados comerciais e deve ser tratado conforme as permissões de acesso.",
         "from_extension": false,
         "is_partition": false,
         "kind": "table",
@@ -261478,7 +261636,7 @@
         "schema": "public"
       },
       {
-        "comment": null,
+        "comment": "Locks/idempotência de entrega por webhook e hash do payload. Impede que workers concorrentes processem simultaneamente a mesma combinação.",
         "from_extension": false,
         "is_partition": false,
         "kind": "table",
@@ -261493,7 +261651,7 @@
         "schema": "public"
       },
       {
-        "comment": null,
+        "comment": "Métricas de chamadas webhook, incluindo direção, endpoint, status HTTP, duração, tentativas, payload e falhas. metadata não deve conter secrets ou headers de autenticação.",
         "from_extension": false,
         "is_partition": false,
         "kind": "table",
@@ -261538,7 +261696,7 @@
         "schema": "public"
       },
       {
-        "comment": null,
+        "comment": "Nonces de requisições webhook usados para detectar repetição/replay, com fonte, timestamp da requisição e expiração.",
         "from_extension": false,
         "is_partition": false,
         "kind": "table",
@@ -261568,7 +261726,7 @@
         "schema": "public"
       },
       {
-        "comment": "Staging para pipeline N8N de extração de imagens gallery D1-D10 do site XBZ. Criada em 27/02/2026.",
+        "comment": "Staging para o pipeline N8N de extração das imagens de galeria D1–D10 do site XBZ. Cada registro acompanha SKU, URL de origem, tipo/ordem, status de upload e vínculo posterior à imagem canônica em product_images. Criada em 27/02/2026.",
         "from_extension": false,
         "is_partition": false,
         "kind": "table",
@@ -261613,7 +261771,7 @@
         "schema": "supplier_stricker"
       },
       {
-        "comment": null,
+        "comment": "De-para entre códigos/nome de tipo e subtipo da Stricker e uma categoria canônica em public.categories. Usado para orientar a classificação de produtos importados; category_id nulo ou is_mapped=false indica mapeamento ainda não resolvido.",
         "from_extension": false,
         "is_partition": false,
         "kind": "table",
@@ -261808,7 +261966,7 @@
         "schema": "supplier_stricker"
       },
       {
-        "comment": null,
+        "comment": "Staging temporário do feed de estoque Stricker, em grão de SKU. Preserva quantidades atuais e previsões de reposição recebidas, além do payload bruto em raw_json, antes da promoção para as tabelas canônicas de estoque.",
         "from_extension": false,
         "is_partition": false,
         "kind": "table",

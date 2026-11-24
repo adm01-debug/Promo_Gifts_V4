@@ -1,6 +1,6 @@
 # public.supplier_materials
 
-> Bug RLS GRAVE corrigido na Etapa 6: supplier_materials_public_read liberava pra anon. Removida.
+> Inventário de materiais expostos por APIs de fornecedores, preservando chave/nome e payload bruto. A normalização para materiais canônicos é registrada em public.material_equivalences; acesso público foi removido por política de segurança.
 
 | propriedade | valor |
 |---|---|

@@ -1,5 +1,7 @@
 # public.comparison_reactions
 
+> Reações anônimas a itens de uma comparação compartilhada, identificados pelo comparison_id e item_index.
+
 | propriedade | valor |
 |---|---|
 | tipo | table |

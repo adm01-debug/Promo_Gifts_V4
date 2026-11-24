@@ -1,5 +1,7 @@
 # public.binding_colors
 
+> Vocabulário de cores de espiral/encadernação, com código hexadecimal opcional.
+
 | propriedade | valor |
 |---|---|
 | tipo | table |

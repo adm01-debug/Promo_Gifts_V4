@@ -1,5 +1,7 @@
 # public._qa_pct_results
 
+> Resultados detalhados de testes de regressão de percentuais/limiares, incluindo valores de entrada, bloco esperado/observado e aprovação do caso.
+
 | propriedade | valor |
 |---|---|
 | tipo | table |

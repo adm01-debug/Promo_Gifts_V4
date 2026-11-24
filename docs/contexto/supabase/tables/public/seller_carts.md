@@ -1,5 +1,7 @@
 # public.seller_carts
 
+> Carrinhos de trabalho de um vendedor associados a uma empresa cliente, com estado de preparação, prazo de envio, notas e versionamento otimista.
+
 | propriedade | valor |
 |---|---|
 | tipo | table |

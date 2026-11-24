@@ -19,13 +19,13 @@ Gerado automaticamente a cada hora pelo workflow `contexto.yml` (job `banco`) na
 
 | categoria | quantidade |
 |---|---|
-| tabelas | 446 |
-| colunas | 8708 |
+| tabelas | 447 |
+| colunas | 8715 |
 | views | 222 |
 | functions | 1360 |
 | triggers | 428 |
 | policies (RLS) | 1087 |
-| índices | 1357 |
+| índices | 1358 |
 | tipos/enums | 17 |
 | extensões | 18 |
 | cron jobs | 143 |

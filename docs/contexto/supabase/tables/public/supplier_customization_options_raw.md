@@ -1,5 +1,7 @@
 # public.supplier_customization_options_raw
 
+> Landing bruta de opções de personalização por produto/fornecedor. Preserva códigos de serviço/tabela, componente/local, custo e payload original antes da normalização.
+
 | propriedade | valor |
 |---|---|
 | tipo | table |

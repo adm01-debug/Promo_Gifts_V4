@@ -1,5 +1,7 @@
 # public.packaging_compatibility_config
 
+> Parâmetros de configuração usados pelo algoritmo de descoberta/avaliação de compatibilidade de embalagens, armazenados como chave/valor.
+
 | propriedade | valor |
 |---|---|
 | tipo | table |

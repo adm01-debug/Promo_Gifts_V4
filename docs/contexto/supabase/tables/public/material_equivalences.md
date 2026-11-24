@@ -1,5 +1,7 @@
 # public.material_equivalences
 
+> De-para entre um material recebido de fornecedor e o catálogo Promo de grupos, tipos ou variações. match_level indica o nível do mapeamento e match_quality/confidence_score registram sua qualidade.
+
 | propriedade | valor |
 |---|---|
 | tipo | table |

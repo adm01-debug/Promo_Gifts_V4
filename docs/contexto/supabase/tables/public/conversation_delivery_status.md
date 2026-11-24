@@ -1,5 +1,7 @@
 # public.conversation_delivery_status
 
+> Estado de entrega de eventos de conversa, com erro e timestamp da última atualização.
+
 | propriedade | valor |
 |---|---|
 | tipo | table |

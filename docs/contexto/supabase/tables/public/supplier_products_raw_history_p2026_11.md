@@ -1,5 +1,7 @@
 # public.supplier_products_raw_history_p2026_11
 
+> Partição mensal de 2026-11 da tabela append-only public.supplier_products_raw_history. Contém snapshots anteriores de payloads Bronze conforme a política de retenção do pai.
+
 | propriedade | valor |
 |---|---|
 | tipo | table |

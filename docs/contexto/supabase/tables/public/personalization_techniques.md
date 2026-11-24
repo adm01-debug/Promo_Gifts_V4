@@ -1,5 +1,7 @@
 # public.personalization_techniques
 
+> Catálogo de técnicas de personalização usadas na geração de mockups e configuração de áreas. O mapeamento para códigos/tabelas de preço é mantido separadamente em personalization_technique_mappings.
+
 | propriedade | valor |
 |---|---|
 | tipo | table |

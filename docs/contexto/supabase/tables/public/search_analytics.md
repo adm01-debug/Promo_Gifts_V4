@@ -1,5 +1,7 @@
 # public.search_analytics
 
+> Eventos agregáveis de busca, com termo, contexto, quantidade de resultados e vendedor associado quando disponível.
+
 | propriedade | valor |
 |---|---|
 | tipo | table |

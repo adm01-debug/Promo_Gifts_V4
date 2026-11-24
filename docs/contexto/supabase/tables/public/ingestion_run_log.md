@@ -1,5 +1,7 @@
 # public.ingestion_run_log
 
+> Registro de execução por feed e fornecedor, com run_id, duração, contagens fetched/upserted/skipped/errors, estado e amostras de erro.
+
 | propriedade | valor |
 |---|---|
 | tipo | table |

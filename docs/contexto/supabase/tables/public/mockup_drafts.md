@@ -1,5 +1,7 @@
 # public.mockup_drafts
 
+> Estado salvo de um rascunho de mockup por usuário e draft_key, incluindo produto, cliente, técnica, áreas e dados de logo.
+
 | propriedade | valor |
 |---|---|
 | tipo | table |

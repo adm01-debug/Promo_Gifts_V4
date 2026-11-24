@@ -1,5 +1,7 @@
 # public.simulator_wizard_drafts
 
+> Rascunhos do assistente de simulação de produto, com dados do produto, quantidade, personalizações e etapa atual do fluxo em JSONB.
+
 | propriedade | valor |
 |---|---|
 | tipo | table |

@@ -1,6 +1,6 @@
 # public.product_component_location_techniques
 
-> Personalization techniques available for each product-component location.
+> Técnicas de personalização permitidas por local de componente, com código composto opcional, máximo de cores e técnica padrão.
 
 | propriedade | valor |
 |---|---|

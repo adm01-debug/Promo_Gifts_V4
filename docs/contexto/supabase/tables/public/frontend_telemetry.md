@@ -1,5 +1,7 @@
 # public.frontend_telemetry
 
+> Eventos de telemetria do frontend, como erros e medições de desempenho, com contexto opcional de usuário/sessão. Não registrar tokens, segredos ou dados pessoais desnecessários.
+
 | propriedade | valor |
 |---|---|
 | tipo | table |

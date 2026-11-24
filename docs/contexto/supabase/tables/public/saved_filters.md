@@ -1,5 +1,7 @@
 # public.saved_filters
 
+> Filtros salvos pelo usuário para reutilização. filter_config guarda a definição estruturada do filtro; category, description, icon e color são metadados de organização/apresentação.
+
 | propriedade | valor |
 |---|---|
 | tipo | table |

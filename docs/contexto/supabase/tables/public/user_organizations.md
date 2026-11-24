@@ -1,6 +1,6 @@
 # public.user_organizations
 
-> Membership user→organização. Backfill na Etapa 6 com 4 users na org única (5db5aee1...). Necessário pras funções user_belongs_to_org/is_org_owner_or_admin retornarem true.
+> Associação canônica entre contas Auth e organizações, com papel owner/admin/member. Usada por helpers de autorização organizacional; não confundir com public.organization_members, que mantém outro contrato de aplicação.
 
 | propriedade | valor |
 |---|---|

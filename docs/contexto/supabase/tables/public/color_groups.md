@@ -1,5 +1,7 @@
 # public.color_groups
 
+> Catálogo de grupos cromáticos usado para organizar variações canônicas de cor. color_variations.color_group_id é a referência canônica; group_id permanece como vínculo legado.
+
 | propriedade | valor |
 |---|---|
 | tipo | table |

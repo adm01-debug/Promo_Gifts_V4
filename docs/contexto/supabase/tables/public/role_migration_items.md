@@ -1,5 +1,7 @@
 # public.role_migration_items
 
+> Ações individuais de migração de papel por usuário dentro de um lote, com papel anterior/novo, operação, resultado e erro.
+
 | propriedade | valor |
 |---|---|
 | tipo | table |

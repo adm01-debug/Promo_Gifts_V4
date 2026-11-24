@@ -1,5 +1,7 @@
 # public.mockup_credit_transactions
 
+> Livro-razão de créditos de mockup: concessões, cobranças, reembolsos e compras, com saldo antes/depois e referência opcional ao job/mockup.
+
 | propriedade | valor |
 |---|---|
 | tipo | table |

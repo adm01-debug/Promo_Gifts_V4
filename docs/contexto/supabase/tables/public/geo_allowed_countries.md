@@ -1,5 +1,7 @@
 # public.geo_allowed_countries
 
+> Lista de países permitidos para regras de controle geográfico, identificados por código ISO e com estado ativo/inativo.
+
 | propriedade | valor |
 |---|---|
 | tipo | table |

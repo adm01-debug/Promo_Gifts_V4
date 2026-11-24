@@ -1,5 +1,7 @@
 # public.category_relationships
 
+> Representações de relações hierárquicas/importadas entre categorias, com IDs e nomes dos pais/filhos, referências Bitrix e profundidade. Para a hierarquia canônica do catálogo, usar categories.parent_id e category_ancestors.
+
 | propriedade | valor |
 |---|---|
 | tipo | table |

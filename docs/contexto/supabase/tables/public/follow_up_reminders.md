@@ -1,5 +1,7 @@
 # public.follow_up_reminders
 
+> Lembretes de acompanhamento vinculados a uma cotação, com responsável, data agendada, tipo e estado de envio/conclusão.
+
 | propriedade | valor |
 |---|---|
 | tipo | table |

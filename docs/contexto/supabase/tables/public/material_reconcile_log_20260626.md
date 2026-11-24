@@ -1,5 +1,7 @@
 # public.material_reconcile_log_20260626
 
+> Trilha de reconciliação produto–material de 2026-06-26, com motivo e timestamp por vínculo revisado.
+
 | propriedade | valor |
 |---|---|
 | tipo | table |

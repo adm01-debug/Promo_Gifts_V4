@@ -1,5 +1,7 @@
 # public.magic_up_campaigns
 
+> Briefings de campanhas Magic Up por usuário/cliente, incluindo objetivo, canal, público, tom, CTA, ocasião e estado.
+
 | propriedade | valor |
 |---|---|
 | tipo | table |

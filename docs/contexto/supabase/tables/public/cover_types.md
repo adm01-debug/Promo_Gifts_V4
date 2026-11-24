@@ -1,5 +1,7 @@
 # public.cover_types
 
+> Vocabulário de tipos de capa utilizados nas especificações de cadernos e materiais gráficos.
+
 | propriedade | valor |
 |---|---|
 | tipo | table |

@@ -1,5 +1,7 @@
 # public.product_components
 
+> Componentes de personalização específicos de produtos, com código, nome, estado e ordenação. product_id é texto e não possui FK declarada no schema atual.
+
 | propriedade | valor |
 |---|---|
 | tipo | table |

@@ -1,5 +1,7 @@
 # public.db_connection_snapshots
 
+> Snapshots de utilização de conexões do banco, incluindo conexões totais/ativas, transações ociosas, limite e percentual de uso; top_users guarda agregados de diagnóstico.
+
 | propriedade | valor |
 |---|---|
 | tipo | table |

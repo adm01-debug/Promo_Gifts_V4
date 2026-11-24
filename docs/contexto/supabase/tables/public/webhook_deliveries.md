@@ -1,5 +1,7 @@
 # public.webhook_deliveries
 
+> Tentativas de entrega de webhooks de saída, com evento, resposta HTTP, estado de sucesso, erro e número da tentativa. payload pode conter dados comerciais e deve ser tratado conforme as permissões de acesso.
+
 | propriedade | valor |
 |---|---|
 | tipo | table |

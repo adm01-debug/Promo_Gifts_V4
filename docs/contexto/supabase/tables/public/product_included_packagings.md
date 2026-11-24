@@ -1,6 +1,6 @@
 # public.product_included_packagings
 
-> Embalagens ORIGINAIS que já vêm com o produto. SEM SKU próprio, SEM preço separado.
+> Embalagens ORIGINAIS que já vêm com o produto. SEM SKU próprio, SEM preço separado. O registro pode guardar material, cor, dimensões, possibilidade de personalização, fornecedor e origem de ingestão.
 
 | propriedade | valor |
 |---|---|

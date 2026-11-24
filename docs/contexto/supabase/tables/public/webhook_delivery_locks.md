@@ -1,5 +1,7 @@
 # public.webhook_delivery_locks
 
+> Locks/idempotência de entrega por webhook e hash do payload. Impede que workers concorrentes processem simultaneamente a mesma combinação.
+
 | propriedade | valor |
 |---|---|
 | tipo | table |

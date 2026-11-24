@@ -1,40 +1,12 @@
 # public.product_deactivation_tokens
 
-> Tokens de autorização one-shot para desativação de produtos.
+> Tokens de autorização one-shot para desativação de produtos. Protege a regra: nenhum produto é desativado sem aprovação explícita de admin+.
 
-PROPÓSITO: Mecanismo de segurança que garante a regra de negócio central:
-"Nenhum produto é desativado sem aprovação explícita de admin+".
+FLUXO: fn_approve_product_deactivation() cria token curto para product_id/request_id/authorized_by; o trigger fn_block_unauthorized_product_deactivation() valida token não usado e não expirado durante a desativação e o consome. Sem token válido, a desativação é revertida/bloqueada. soft_delete_product() também usa este mecanismo.
 
-FLUXO COMPLETO:
-  1. Admin aprova via fn_approve_product_deactivation()
-     → cria token { product_id, request_id, authorized_by, used=false, expires_at }
-  2. A função executa UPDATE products SET is_active=false
-  3. Trigger fn_block_unauthorized_product_deactivation() intercepta o UPDATE
-     → verifica se existe token válido (used=false AND expires_at > now())
-     → SIM: permite desativação + marca used=true
-     → NÃO: reverte is_active e bloqueia silenciosamente
-  4. Token é deletado imediatamente após uso (auditoria fica nos registros used=true)
+INTEGRIDADE: product_id referencia products.id com cascade; request_id referencia a solicitação de aprovação. Campos de autorização e validade formam a trilha técnica do consumo.
 
-FUNÇÕES DEPENDENTES:
-  - fn_approve_product_deactivation()             → cria token + dispara UPDATE
-  - fn_block_unauthorized_product_deactivation()  → trigger BEFORE UPDATE/INSERT em products
-  - soft_delete_product()                         → path de soft delete, também cria token one-shot
-
-CONSTRAINT DE INTEGRIDADE:
-  - FK fk_auth_product_cascade: product_id → products.id (CASCADE)
-    → token só pode ser criado para produtos existentes
-    → se o produto for deletado, o token é removido em cascata
-
-CAMPOS:
-  - product_id    → produto a ser desativado (FK → products.id)
-  - request_id    → FK product_deactivation_requests (rastreabilidade)
-  - authorized_by → UUID do admin que aprovou
-  - authorized_at → criação do token
-  - expires_at    → TTL curto (token não reutilizável após expirar)
-  - used          → true após consumo (linha mantida como auditoria)
-
-HISTÓRICO: 397 registros de Jun/2026 = desativações aprovadas e executadas (todos used=true).
-RENOMEADA em 2026-06-15: era _deactivation_auth (prefixo _ era enganoso — tabela é ativa e crítica).
+Histórico documentado em 2026-06: tokens consumidos de desativações aprovadas. Renomeada em 2026-06-15 de _deactivation_auth para deixar claro que é tabela ativa e crítica. Não remover nem contornar o trigger de proteção.
 
 | propriedade | valor |
 |---|---|

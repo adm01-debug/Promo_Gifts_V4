@@ -1,5 +1,7 @@
 # public.video_sim_results
 
+> Resultados temporários de verificação/simulação de vídeos por fornecedor e YouTube ID, incluindo dimensões atuais/máximas, estado de fila e erro.
+
 | propriedade | valor |
 |---|---|
 | tipo | table |

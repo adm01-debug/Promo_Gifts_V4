@@ -1,5 +1,7 @@
 # supplier_stricker.stg_stock
 
+> Staging temporário do feed de estoque Stricker, em grão de SKU. Preserva quantidades atuais e previsões de reposição recebidas, além do payload bruto em raw_json, antes da promoção para as tabelas canônicas de estoque.
+
 | propriedade | valor |
 |---|---|
 | tipo | table |

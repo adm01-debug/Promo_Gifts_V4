@@ -1,5 +1,7 @@
 # public.webhook_delivery_metrics
 
+> Métricas de chamadas webhook, incluindo direção, endpoint, status HTTP, duração, tentativas, payload e falhas. metadata não deve conter secrets ou headers de autenticação.
+
 | propriedade | valor |
 |---|---|
 | tipo | table |

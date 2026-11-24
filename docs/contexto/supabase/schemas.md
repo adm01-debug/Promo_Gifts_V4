@@ -4,11 +4,11 @@ Schemas internos do Supabase ficam fora da introspecção geral (`_analytics, _r
 
 | schema | owner | USAGE para roles da API | comentário |
 |---|---|---|---|
-| analytics | postgres | anon, authenticated, service_role | Materialized views internas/analíticas. Não exposto via PostgREST. Acesso via views wrapper em public ou via service_role. Criado em T20 do redeploy 2026-05. |
-| api | postgres | anon, authenticated |  |
-| cf_recon | postgres |  | Schema de reconciliação Cloudflare Images × DB. Criado 2026-06-16 durante auditoria forense. Contém: cf_image (mirror CF), crawl_run (histórico de crawls), cf_ghost_check_queue (IDs suspeitos), action_log (log imutável de decisões), remediation (plano de remediações), metric_snapshot (KPIs). |
-| classification_audit | postgres |  |  |
-| internal | postgres | anon, authenticated |  |
-| prod_audit | postgres |  |  |
-| public | pg_database_owner | anon, authenticated, service_role | @graphql({"max_rows": 30, "inflect_names": false}) |
-| supplier_stricker | postgres | service_role | Dados brutos sincronizados da API Stricker (SPOT Gifts Brasil) |
+| analytics | postgres | anon, authenticated, service_role | Schema interno de objetos analíticos e materialized views. Não destinado à exposição direta pelo PostgREST; acesso conforme os privilégios do banco e as views/RPCs de consumo autorizadas. |
+| api | postgres | anon, authenticated | Namespace para objetos de banco específicos da camada API do projeto. Revisar privilégios e exposição via PostgREST antes de adicionar ou publicar objetos. |
+| cf_recon | postgres |  | Schema de reconciliação entre o inventário do Cloudflare Images e os metadados mantidos no banco. Contém mirror de imagens, execuções de crawl, métricas, fila de verificações e trilha de ações/remediações. |
+| classification_audit | postgres |  | Área de auditoria das sugestões de classificação de categorias. Guarda candidatos, sinais, pontuações e resultados intermediários para revisão; não substitui os vínculos canônicos em public.product_category_assignments. |
+| internal | postgres | anon, authenticated | Namespace reservado para objetos internos específicos do projeto. Não tratar como contrato público da aplicação; revisar privilégios e dependências antes de expor ou alterar objetos neste schema. |
+| prod_audit | postgres |  | Área de auditoria e suporte à classificação de produtos. Contém evidências de testes, regras e projeções de atributos/categorias usadas para revisar resultados de classificação; não é a fonte de verdade do catálogo de produção. |
+| public | pg_database_owner | anon, authenticated, service_role | Schema principal da aplicação Promo Brindes. Contém o catálogo Gold, organizações, cotações, pedidos, usuários de aplicação e módulos operacionais. Tabelas acessadas pela API conforme configuração do PostgREST e políticas RLS; consultar os comentários de cada tabela/coluna para a semântica específica. |
+| supplier_stricker | postgres | service_role | Área de integração com o catálogo da Stricker/SPOT. Contém espelhos sincronizados da API do fornecedor, estruturas de staging, categorias externas e tabelas de apoio para mapear produtos, variantes, estoque, cores e personalização para o modelo canônico da aplicação. |

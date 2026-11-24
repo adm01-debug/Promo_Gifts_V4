@@ -1,5 +1,7 @@
 # public.magazine_templates_catalog
 
+> Catálogo de templates de revista disponíveis, com família visual, quantidade de produtos por página e estado ativo.
+
 | propriedade | valor |
 |---|---|
 | tipo | table |

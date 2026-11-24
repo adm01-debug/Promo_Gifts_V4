@@ -1,5 +1,7 @@
 # public.role_migration_batches
 
+> Lotes de migração de papéis de usuários, com motivo, responsável, modo dry-run, status, totais e duração.
+
 | propriedade | valor |
 |---|---|
 | tipo | table |

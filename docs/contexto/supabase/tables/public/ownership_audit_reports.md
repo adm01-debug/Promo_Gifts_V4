@@ -1,5 +1,7 @@
 # public.ownership_audit_reports
 
+> Relatórios de auditoria de propriedade de dados, com contagens de problemas de owner/RLS, detalhes e cobertura por tabela.
+
 | propriedade | valor |
 |---|---|
 | tipo | table |

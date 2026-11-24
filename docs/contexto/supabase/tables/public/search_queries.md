@@ -1,5 +1,7 @@
 # public.search_queries
 
+> Histórico de consultas de busca, filtros aplicados, quantidade de resultados e eventual produto clicado. Uso analítico/UX; não é fonte de eventos de busca do catálogo em tempo real.
+
 | propriedade | valor |
 |---|---|
 | tipo | table |

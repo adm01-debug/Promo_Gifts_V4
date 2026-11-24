@@ -1,5 +1,7 @@
 # public.product_group_members
 
+> Associação de produtos a product_groups, com flag use_group_rules para indicar se o produto herda as regras do grupo.
+
 | propriedade | valor |
 |---|---|
 | tipo | table |

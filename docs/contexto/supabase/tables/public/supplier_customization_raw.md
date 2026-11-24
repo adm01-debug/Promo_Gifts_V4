@@ -1,6 +1,6 @@
 # public.supplier_customization_raw
 
-> Bronze (layer) das tabelas de preco de gravacao por fornecedor. Grao = table_code_option (catalogo-wide, ~289 p/ SPOT). Aplicabilidade por SKU ja vive em supplier_products_raw.raw_data (CustomizationTables/Area1/TableCodes1...).
+> Bronze (layer) das tabelas de preço de gravação por fornecedor. Grão = table_code_option (catálogo-wide, ~289 para SPOT). A aplicabilidade por SKU permanece em supplier_products_raw.raw_data (CustomizationTables/Area1/TableCodes1...); raw_data preserva o payload de origem.
 
 | propriedade | valor |
 |---|---|

@@ -1,5 +1,7 @@
 # public.user_search_history
 
+> Histórico pessoal de consultas de busca de um usuário, com tipo, contagem de resultados, metadados e opção de fixar consultas importantes.
+
 | propriedade | valor |
 |---|---|
 | tipo | table |

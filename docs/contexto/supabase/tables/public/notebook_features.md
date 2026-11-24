@@ -1,5 +1,7 @@
 # public.notebook_features
 
+> Catálogo de features e acessórios possíveis para cadernos; public.product_notebook_features associa as features confirmadas aos produtos.
+
 | propriedade | valor |
 |---|---|
 | tipo | table |

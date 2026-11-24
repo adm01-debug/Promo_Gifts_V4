@@ -1,5 +1,7 @@
 # public.medallion_coverage_snapshots
 
+> Snapshots de cobertura de enriquecimento por fornecedor e camada Bronze/Silver/Gold, incluindo percentuais de atributos preenchidos para acompanhar a qualidade do pipeline.
+
 | propriedade | valor |
 |---|---|
 | tipo | table |

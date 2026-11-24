@@ -1,5 +1,7 @@
 # public.conversation_event_history
 
+> Histórico de eventos multimodais de conversa (texto, imagem, áudio, vídeo, arquivo ou sistema), com payload de mídia, tokens e request_id.
+
 | propriedade | valor |
 |---|---|
 | tipo | table |

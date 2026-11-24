@@ -1,5 +1,7 @@
 # public.supplier_colors
 
+> Espelho por fornecedor das cores recebidas de APIs, incluindo códigos e payloads brutos. color_variation_id permite associar uma cor externa a public.color_variations.
+
 | propriedade | valor |
 |---|---|
 | tipo | table |

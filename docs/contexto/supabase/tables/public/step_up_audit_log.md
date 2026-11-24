@@ -1,5 +1,7 @@
 # public.step_up_audit_log
 
+> Auditoria de verificações step-up para ações administrativas de alto risco, registrando ação, challenge/token associados e metadados de contexto; não armazenar segredos em metadata.
+
 | propriedade | valor |
 |---|---|
 | tipo | table |

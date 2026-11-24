@@ -1,5 +1,7 @@
 # public.magic_up_public_shares
 
+> Compartilhamentos públicos tokenizados de gerações ou campanhas Magic Up, com validade, permissões e estado.
+
 | propriedade | valor |
 |---|---|
 | tipo | table |

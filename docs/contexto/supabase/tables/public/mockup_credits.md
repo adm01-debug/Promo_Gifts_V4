@@ -1,5 +1,7 @@
 # public.mockup_credits
 
+> Saldo e limites de créditos de geração de mockup por usuário, incluindo acumulados de ganhos, gastos e consumo por período.
+
 | propriedade | valor |
 |---|---|
 | tipo | table |

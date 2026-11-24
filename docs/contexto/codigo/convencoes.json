@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "docs: registra o cleanup das 7 branches obsoletas e como recupera-las (#4046)",
+   "docs: auditoria das branches restantes e reforco da refutacao da etapa 007 (#4045)",
    "docs: etapas 001-004 e 006 do QA concluídas com evidência; 007 refutada; 005 reescopada (#4044)",
    "chore: recibo de aplicacao - 20261124140000 (E15) e status aplicada das duas de 24/11 (#4043)",
-   "docs(migrations-log): recibo E15 — aplicação de 20261124120000 (#4041)",
-   "fix: fecha a superficie de custo do anon sem mascarar as views de compras (#4039)",
-   "fix: gate de anon-grants mede pelo catalogo e revoga escrita morta de anon (#4038)"
+   "docs(migrations-log): recibo E15 — aplicação de 20261124120000 (#4041)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",

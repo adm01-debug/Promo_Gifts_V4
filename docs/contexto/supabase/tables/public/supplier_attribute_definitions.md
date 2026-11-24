@@ -1,5 +1,7 @@
 # public.supplier_attribute_definitions
 
+> Inventário de atributos descobertos na API de cada fornecedor, com chave/nome original, tipo, unidade, exemplos e payload. Registra se o atributo foi mapeado para o vocabulário interno.
+
 | propriedade | valor |
 |---|---|
 | tipo | table |

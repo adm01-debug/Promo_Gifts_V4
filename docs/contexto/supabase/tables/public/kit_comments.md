@@ -1,5 +1,7 @@
 # public.kit_comments
 
+> Comentários em kits customizados, com encadeamento opcional por parent_id e âncora opcional para um item. resolved marca se a discussão foi resolvida.
+
 | propriedade | valor |
 |---|---|
 | tipo | table |

@@ -1,5 +1,7 @@
 # public.product_print_positions
 
+> Configuração de posições de impressão por produto, ordenada por position_index, com códigos/nomes de local, técnicas e referências visuais em JSON/texto.
+
 | propriedade | valor |
 |---|---|
 | tipo | table |

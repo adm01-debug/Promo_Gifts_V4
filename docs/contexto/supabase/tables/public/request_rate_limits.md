@@ -1,5 +1,7 @@
 # public.request_rate_limits
 
+> Contadores de rate limit por identificador e endpoint, com janela temporal e bloqueio opcional. Dados operacionais transitórios usados para limitar requisições.
+
 | propriedade | valor |
 |---|---|
 | tipo | table |

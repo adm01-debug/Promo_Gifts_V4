@@ -1,5 +1,7 @@
 # prod_audit.classification_rules
 
+> Regras configuráveis que geram sugestões de classificação de produtos. Cada regra combina condições textuais do produto com critérios de categoria-alvo, nível de confiança e estado active; revisar regras antes de alterar a classificação de produção.
+
 | propriedade | valor |
 |---|---|
 | tipo | table |

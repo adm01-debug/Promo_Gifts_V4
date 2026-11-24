@@ -1,5 +1,7 @@
 # public.quote_versions
 
+> Snapshots imutáveis de versões de um orçamento, associados a quotes.id e numerados por version_number. snapshot registra o estado capturado; change_summary descreve a alteração que originou a versão.
+
 | propriedade | valor |
 |---|---|
 | tipo | table |

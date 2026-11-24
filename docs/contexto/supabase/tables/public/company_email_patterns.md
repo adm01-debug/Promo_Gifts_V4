@@ -1,5 +1,7 @@
 # public.company_email_patterns
 
+> Padrões de endereço de e-mail por domínio de empresa, com confiança, servidor MX, provedor e sinais de domínio catch-all.
+
 | propriedade | valor |
 |---|---|
 | tipo | table |

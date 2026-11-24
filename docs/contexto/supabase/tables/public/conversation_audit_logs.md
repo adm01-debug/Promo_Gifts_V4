@@ -1,5 +1,7 @@
 # public.conversation_audit_logs
 
+> Auditoria de sessões de conversa, com usuário, início/fim, estimativa de tokens, estado e metadados do cliente.
+
 | propriedade | valor |
 |---|---|
 | tipo | table |

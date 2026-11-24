@@ -1,5 +1,7 @@
 # public.favorite_items
 
+> Produtos salvos em listas de favoritos, com variante opcional, snapshot de atributos, anotação, preço observado e posição. A propriedade da lista define o escopo de acesso.
+
 | propriedade | valor |
 |---|---|
 | tipo | table |

@@ -1,5 +1,7 @@
 # public.kit_typical_dims
 
+> Dimensões e peso típicos por tipo de componente de kit, com intervalos de referência e notas para apoiar validação/enriquecimento; não são medidas confirmadas de um componente específico.
+
 | propriedade | valor |
 |---|---|
 | tipo | table |

@@ -1,5 +1,7 @@
 # public.scheduled_reports
 
+> Relatórios agendados por usuário, com tipo, frequência, destinatário, filtros e próximo horário de execução.
+
 | propriedade | valor |
 |---|---|
 | tipo | table |

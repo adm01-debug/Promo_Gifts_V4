@@ -1,10 +1,10 @@
 {
  "meta": {
-  "sha": "c6581c0610a35df48f58e7664f191f4f0cf43cf7",
+  "sha": "53f9c0481b230646b5d61ea2abe42df938581213",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-24 16:18 UTC",
-  "files_total": 11186,
+  "generated_at": "2026-11-24 17:16 UTC",
+  "files_total": 11187,
   "code_files": 9178,
   "code_lines": 1302508
  },
@@ -563721,10 +563721,29 @@
   }
  },
  "git": {
-  "sha": "c6581c0610a35df48f58e7664f191f4f0cf43cf7",
+  "sha": "53f9c0481b230646b5d61ea2abe42df938581213",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "53f9c04",
+    "date": "2026-11-24",
+    "author": "adm01-debug",
+    "subject": "docs: registra o cleanup das 7 branches obsoletas e como recupera-las (#4046)",
+    "files": [
+     "docs/agentes/resgates/2026-11-24-auditoria-branches-restantes.md"
+    ]
+   },
+   {
+    "sha": "22ca37e",
+    "date": "2026-11-24",
+    "author": "adm01-debug",
+    "subject": "docs: auditoria das branches restantes e reforco da refutacao da etapa 007 (#4045)",
+    "files": [
+     "docs/agentes/resgates/2026-11-24-auditoria-branches-restantes.md",
+     "docs/qa/05-PROGRESSO.md"
+    ]
+   },
    {
     "sha": "c6581c0",
     "date": "2026-11-24",
@@ -564096,37 +564115,20 @@
      "docs/qa/05-PROGRESSO.md",
      "supabase/functions/webhook-dispatcher/index.ts"
     ]
-   },
-   {
-    "sha": "ec29a17",
-    "date": "2026-11-23",
-    "author": "adm01-debug",
-    "subject": "fix: Etapa 045 — exigir auth antes de responder op=ping no crm-db-bridge (ACH-030) (#4014)",
-    "files": [
-     "docs/qa/05-PROGRESSO.md",
-     "supabase/functions/crm-db-bridge/index.ts"
-    ]
-   },
-   {
-    "sha": "28515a1",
-    "date": "2026-11-23",
-    "author": "adm01-debug",
-    "subject": "feat: Etapa 040 — confirmacao explicita na exclusao em massa (ACH-098) (#4013)",
-    "files": [
-     "docs/qa/05-PROGRESSO.md",
-     "src/pages/quotes/components/QuotesBulkDeleteDialog.tsx",
-     "src/pages/quotes/useQuotesListPage.ts"
-    ]
    }
   ],
   "hot_files": [
    [
     "docs/qa/05-PROGRESSO.md",
-    18
+    17
    ],
    [
     "supabase/MIGRATIONS_SYNC_LOG.md",
     6
+   ],
+   [
+    "docs/agentes/resgates/2026-11-24-auditoria-branches-restantes.md",
+    2
    ],
    [
     "scripts/drift-baseline.mjs",
@@ -564138,10 +564140,6 @@
    ],
    [
     "package.json",
-    2
-   ],
-   [
-    "supabase/functions/crm-db-bridge/index.ts",
     2
    ],
    [

@@ -1,6 +1,6 @@
 # public.quote_templates
 
-> Wave 3.3.C.1 2026-05-22: unificado (seller-owned + system templates). seller_id opcional, suporta ambos os usos.
+> Modelos reutilizáveis de orçamento por vendedor ou sistema. Podem pré-preencher itens, condições comerciais, pagamento, prazo e modalidade/custo de frete; revisar preço, desconto, estoque e disponibilidade antes de aplicar a uma nova cotação. Schema unificado na Wave 3.3.C.1.
 
 | propriedade | valor |
 |---|---|
@@ -23,8 +23,8 @@
 | 3 | `description` | `text` | sim |  |  |  |
 | 4 | `category` | `text` | sim |  |  |  |
 | 5 | `items` | `jsonb` | não | `'[]'::jsonb` |  |  |
-| 6 | `payment_terms` | `text` | sim |  |  |  |
-| 7 | `delivery_time` | `text` | sim |  |  |  |
+| 6 | `payment_terms` | `text` | sim |  |  | Condição padrão de pagamento em texto livre. Formatos recomendados: avista, N dias, N/N/... dias ou sob consulta. Ajustar ao negociar; não é enum nem possui CHECK. |
+| 7 | `delivery_time` | `text` | sim |  |  | Prazo padrão prometido em texto para o template: imediato, N dias úteis, N a M dias úteis ou sob consulta. Rever/confirmar antes de aplicar ao orçamento. |
 | 8 | `notes` | `text` | sim |  |  |  |
 | 9 | `is_active` | `boolean` | sim | `true` |  |  |
 | 10 | `usage_count` | `integer` | sim | `0` |  |  |
@@ -33,14 +33,14 @@
 | 13 | `updated_at` | `timestamp with time zone` | sim | `now()` |  |  |
 | 14 | `seller_id` | `uuid` | sim |  |  |  |
 | 15 | `template_data` | `jsonb` | sim | `'{}'::jsonb` |  |  |
-| 16 | `discount_percent` | `numeric` | sim | `0` |  |  |
-| 17 | `discount_amount` | `numeric` | sim | `0` |  |  |
+| 16 | `discount_percent` | `numeric` | sim | `0` |  | Percentual de desconto padrão do template (percentual, não valor monetário). O valor em reais correspondente é registrado separadamente em discount_amount. |
+| 17 | `discount_amount` | `numeric` | sim | `0` |  | Valor monetário de desconto padrão do template em BRL (reais com centavos), distinto de discount_percent. |
 | 18 | `internal_notes` | `text` | sim |  |  |  |
 | 19 | `is_default` | `boolean` | sim | `false` |  |  |
 | 20 | `validity_days` | `integer` | sim | `30` |  |  |
-| 21 | `shipping_type` | `text` | sim |  |  | FIX-07 (2026-06-23): Campo adicionado para restaurar modalidade de frete ao aplicar template. |
-| 22 | `payment_method` | `text` | sim |  |  | FIX-07 (2026-06-23): Campo adicionado para restaurar forma de pagamento ao aplicar template. |
-| 23 | `shipping_cost` | `numeric` | sim | `0` |  | FIX-07 (2026-06-23): Campo adicionado para restaurar custo de frete FOB pré-negociado ao aplicar template. |
+| 21 | `shipping_type` | `text` | sim |  |  | Modalidade/responsabilidade de frete padrão do template. Valores permitidos pelo CHECK: cif, fob e fob_pre (FOB com custo pré-negociado). Não representa o meio de transporte. |
+| 22 | `payment_method` | `text` | sim |  |  | Forma de pagamento padrão a preencher ao aplicar o template. Vocabulário recomendado: pix, boleto, credit_card, bank_transfer, cash ou other; usar códigos minúsculos. Documentação apenas, sem CHECK. |
+| 23 | `shipping_cost` | `numeric` | sim | `0` |  | Custo de frete padrão do template em BRL (reais com centavos), especialmente para custo FOB pré-negociado; não é preço unitário de produto. |
 
 
 ## Constraints

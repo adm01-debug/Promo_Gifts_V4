@@ -1,5 +1,7 @@
 # public.backup_produto_ramo_atividade_20260625
 
+> Snapshot de segurança dos vínculos produto–ramo de atividade capturado em 2026-06-25 para auditoria ou restauração controlada.
+
 | propriedade | valor |
 |---|---|
 | tipo | table |

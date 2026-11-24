@@ -1,5 +1,7 @@
 # public.magazine_public_view_events_2027_02
 
+> Partição mensal de 2027-02 da tabela public.magazine_public_view_events. Os eventos armazenam hashes e metadados de visualização pública; consultar a tabela pai para buscas unificadas.
+
 | propriedade | valor |
 |---|---|
 | tipo | table |

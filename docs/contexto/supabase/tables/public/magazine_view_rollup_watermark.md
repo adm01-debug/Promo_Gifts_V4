@@ -1,6 +1,6 @@
 # public.magazine_view_rollup_watermark
 
-> Singleton. Marca d'água do rollup de view_count. Garante exactly-once entre o cron horário e o nightly.
+> Registro singleton de marca d’água que coordena o processamento exactly-once dos eventos públicos de visualização para atualizar view_count.
 
 | propriedade | valor |
 |---|---|

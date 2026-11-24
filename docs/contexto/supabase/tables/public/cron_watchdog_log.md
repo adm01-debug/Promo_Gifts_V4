@@ -1,5 +1,7 @@
 # public.cron_watchdog_log
 
+> Auditoria de sessões/job queries terminadas pelo watchdog, incluindo PID, job, duração e trecho de consulta para investigação.
+
 | propriedade | valor |
 |---|---|
 | tipo | table |

@@ -1,5 +1,7 @@
 # public.quote_drafts
 
+> Rascunhos de cotação por usuário, armazenados como JSONB antes de serem persistidos como registro definitivo em public.quotes.
+
 | propriedade | valor |
 |---|---|
 | tipo | table |

@@ -31,6 +31,7 @@ Uso e tamanho em `stats.md`.
 | classification_audit.category_suggestions | idx_sug_gap | btree | already_assigned, score | não | sim |  |
 | classification_audit.category_suggestions | idx_sug_product | btree | product_id | não | sim |  |
 | classification_audit.category_suggestions | idx_sug_score | btree | score | não | sim |  |
+| internal.managed_schema_dictionary | managed_schema_dictionary_pkey | btree | schema_name, object_type, object_name | sim | sim |  |
 | internal.mv_product_leaf_category | idx_mv_product_leaf_category_leaf_id | btree | leaf_category_id | não | sim |  |
 | internal.mv_product_leaf_category | idx_mv_product_leaf_category_product_id | btree | product_id, leaf_category_id, leaf_category_name, leaf_category_level, leaf_category_slug, leaf_category_id_safe | sim | sim |  |
 | prod_audit.category_keywords | category_keywords_pkey | btree | category_id | sim | sim |  |

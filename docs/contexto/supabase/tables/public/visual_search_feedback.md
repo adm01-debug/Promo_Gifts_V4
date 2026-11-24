@@ -1,5 +1,7 @@
 # public.visual_search_feedback
 
+> Feedback de usuários sobre resultados de busca visual, incluindo análise original, correção, termos de busca, produto associado e relevância percebida.
+
 | propriedade | valor |
 |---|---|
 | tipo | table |

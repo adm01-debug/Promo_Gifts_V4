@@ -1,5 +1,7 @@
 # public.material_types
 
+> Catálogo canônico de materiais, organizado por material_groups. Referenciado por relações de materiais de produtos e por componentes de kits.
+
 | propriedade | valor |
 |---|---|
 | tipo | table |

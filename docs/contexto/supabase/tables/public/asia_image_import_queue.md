@@ -1,5 +1,7 @@
 # public.asia_image_import_queue
 
+> Fila de ingestão de imagens do fornecedor Asia Import. Cada registro identifica produto-pai/variante, URL de origem, tipo/ordem da imagem, tentativas e estado de upload/promoção para product_images.
+
 | propriedade | valor |
 |---|---|
 | tipo | table |

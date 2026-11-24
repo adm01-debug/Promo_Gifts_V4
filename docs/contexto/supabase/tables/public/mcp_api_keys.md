@@ -1,5 +1,7 @@
 # public.mcp_api_keys
 
+> Registro de chaves de API MCP com hash, prefixo, escopos, expiração, revogação e rotação. A chave secreta em si não deve ser armazenada nesta tabela nem compartilhada em logs.
+
 | propriedade | valor |
 |---|---|
 | tipo | table |

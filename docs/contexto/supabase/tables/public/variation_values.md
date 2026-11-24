@@ -1,5 +1,7 @@
 # public.variation_values
 
+> Valores permitidos de cada tipo de variação. product_variants.size_id pode referenciar um valor; value é o código e label é o rótulo de exibição.
+
 | propriedade | valor |
 |---|---|
 | tipo | table |

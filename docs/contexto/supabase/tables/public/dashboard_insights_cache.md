@@ -1,5 +1,7 @@
 # public.dashboard_insights_cache
 
+> Cache de respostas/insights de dashboard por usuário, função e cache_key, com modelo, duração e expiração. O payload é transitório e pode ser regenerado.
+
 | propriedade | valor |
 |---|---|
 | tipo | table |

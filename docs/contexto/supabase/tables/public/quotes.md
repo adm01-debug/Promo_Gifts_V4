@@ -1,5 +1,7 @@
 # public.quotes
 
+> Orçamentos comerciais e seu ciclo de vida: status operacional, etapa de funil, itens, condições, aprovação de desconto e conversão em pedido. Os itens ficam em public.quote_items. Subtotais reais e apresentados diferenciam markup interno; frete e impostos são campos separados.
+
 | propriedade | valor |
 |---|---|
 | tipo | table |
@@ -35,7 +37,7 @@
 | 17 | `estimated_delivery_days` | `integer` | sim |  |  |  |
 | 18 | `notes` | `text` | sim |  |  |  |
 | 19 | `internal_notes` | `text` | sim |  |  |  |
-| 20 | `payment_terms` | `text` | sim |  |  |  |
+| 20 | `payment_terms` | `text` | sim |  |  | Condição comercial de pagamento em texto livre. Formatos recomendados: avista, N dias, N/N/... dias (ex.: 30/60/90 dias) ou sob consulta. Manter condições negociadas legíveis; não é um enum e não possui CHECK. |
 | 22 | `tags` | `jsonb` | sim | `'[]'::jsonb` |  |  |
 | 23 | `approval_token` | `text` | sim |  |  |  |
 | 24 | `approved_at` | `timestamp with time zone` | sim |  |  |  |
@@ -60,8 +62,8 @@
 | 43 | `client_phone` | `text` | sim |  |  |  |
 | 44 | `client_company` | `text` | sim |  |  |  |
 | 45 | `client_cnpj` | `text` | sim |  |  |  |
-| 46 | `delivery_time` | `text` | sim |  |  |  |
-| 47 | `shipping_type` | `text` | sim |  |  |  |
+| 46 | `delivery_time` | `text` | sim |  |  | Prazo estimado/prometido para exibição em texto: imediato, N dias úteis, N a M dias úteis ou sob consulta. Para prazo numérico usar estimated_delivery_days; não confundir com estimated_delivery_date do pedido. |
+| 47 | `shipping_type` | `text` | sim |  |  | Modalidade/responsabilidade do frete. Valores permitidos pelo CHECK desta coluna: cif, fob, fob_pre (FOB com custo pré-negociado). Não confundir com shipping_method. |
 | 48 | `bitrix_deal_id` | `text` | sim |  |  |  |
 | 49 | `bitrix_quote_id` | `text` | sim |  |  |  |
 | 50 | `synced_to_bitrix` | `boolean` | não | `false` |  |  |
@@ -69,10 +71,10 @@
 | 52 | `client_response` | `text` | sim |  |  |  |
 | 53 | `client_response_at` | `timestamp with time zone` | sim |  |  |  |
 | 54 | `client_response_notes` | `text` | sim |  |  |  |
-| 55 | `shipping_method` | `text` | sim |  |  |  |
+| 55 | `shipping_method` | `text` | sim |  |  | Meio de transporte recomendado: correios, transportadora, retirada, motoboy, entrega_propria ou outro. Descreve como será a entrega; shipping_type descreve a responsabilidade/modalidade do frete. |
 | 56 | `parent_quote_id` | `uuid` | sim |  |  | Wave 3.2.C 2026-05-22: versionamento de orcamento, FK auto-referente. |
 | 57 | `is_latest_version` | `boolean` | não | `true` |  | Wave 3.2.C 2026-05-22: marca a versao mais recente para queries (paridade Lovable). |
-| 58 | `payment_method` | `text` | sim |  |  |  |
+| 58 | `payment_method` | `text` | sim |  |  | Forma de pagamento recomendada: pix, boleto, credit_card, bank_transfer, cash ou other; usar códigos minúsculos. Documentação apenas: coluna text sem CHECK, portanto não é enum fechado. |
 | 59 | `sent_at` | `timestamp with time zone` | sim |  |  |  |
 | 60 | `contact_id` | `uuid` | sim |  |  | ID do contato no CRM externo (pgxfvjmuubtbowutlide). Sem FK — banco externo. |
 | 61 | `discount_approval_status` | `text` | sim |  |  |  |

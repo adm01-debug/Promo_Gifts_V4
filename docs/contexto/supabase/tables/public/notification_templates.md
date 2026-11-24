@@ -1,5 +1,7 @@
 # public.notification_templates
 
+> Modelos reutilizáveis de notificações, identificados por code, com assunto, corpo e lista JSON de variáveis esperadas. is_active controla disponibilidade para envio.
+
 | propriedade | valor |
 |---|---|
 | tipo | table |

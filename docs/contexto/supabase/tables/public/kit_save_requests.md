@@ -1,5 +1,7 @@
 # public.kit_save_requests
 
+> Ledger de idempotência de salvamento de kits por request_id, registrando usuário, kit persistido e data da solicitação.
+
 | propriedade | valor |
 |---|---|
 | tipo | table |

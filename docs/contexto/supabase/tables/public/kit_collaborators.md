@@ -1,5 +1,7 @@
 # public.kit_collaborators
 
+> Permissões de colaboração por usuário em um kit customizado, incluindo nível view/edit, convite e autor do convite.
+
 | propriedade | valor |
 |---|---|
 | tipo | table |

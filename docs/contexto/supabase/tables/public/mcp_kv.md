@@ -1,5 +1,7 @@
 # public.mcp_kv
 
+> Armazenamento key/value interno do MCP em JSONB, com timestamp de atualização e lock_until para coordenação temporária.
+
 | propriedade | valor |
 |---|---|
 | tipo | table |

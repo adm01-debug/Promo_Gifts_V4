@@ -1,5 +1,7 @@
 # public.order_items
 
+> Linhas de produtos de um pedido. product_id é opcional e os campos de nome/SKU/descrição/imagem preservam um snapshot da linha; quote_item_id pode apontar logicamente para a linha de orçamento de origem. Valores de linha não substituem frete/impostos do cabeçalho.
+
 | propriedade | valor |
 |---|---|
 | tipo | table |

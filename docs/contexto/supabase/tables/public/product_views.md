@@ -1,5 +1,7 @@
 # public.product_views
 
+> Eventos de visualização de produtos, com snapshot opcional de SKU/nome, vendedor e tipo da visualização; alimenta métricas de popularidade e contadores.
+
 | propriedade | valor |
 |---|---|
 | tipo | table |

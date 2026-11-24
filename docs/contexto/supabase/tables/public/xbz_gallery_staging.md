@@ -1,6 +1,6 @@
 # public.xbz_gallery_staging
 
-> Staging para pipeline N8N de extração de imagens gallery D1-D10 do site XBZ. Criada em 27/02/2026.
+> Staging para o pipeline N8N de extração das imagens de galeria D1–D10 do site XBZ. Cada registro acompanha SKU, URL de origem, tipo/ordem, status de upload e vínculo posterior à imagem canônica em product_images. Criada em 27/02/2026.
 
 | propriedade | valor |
 |---|---|

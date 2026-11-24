@@ -1,5 +1,7 @@
 # prod_audit.category_keywords
 
+> Projeção de auditoria de categorias e palavras-chave normalizadas. Mantém tokens e flags de segmentos (cliente, material, ecológico e kit) derivados da hierarquia de public.categories para apoiar análise de classificação; refreshed_at indica a atualização da projeção.
+
 | propriedade | valor |
 |---|---|
 | tipo | table |

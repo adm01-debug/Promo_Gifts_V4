@@ -1,6 +1,6 @@
 # public.supplier_packagings
 
-> Fornecedores que vendem cada embalagem
+> Fornecedores que vendem cada embalagem. Registra código/nome no fornecedor, preço unitário, moeda, quantidade mínima, disponibilidade e prazo de entrega.
 
 | propriedade | valor |
 |---|---|
