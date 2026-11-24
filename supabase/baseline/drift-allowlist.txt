@@ -12,3 +12,67 @@
 #     o remoto não tem) entra aqui; objeto criado em produção sem migration
 #     NÃO entra — vira migration espelho (REGRA #8, docs/db/POLITICA_DDL.md).
 
+
+# ---------------------------------------------------------------- 2026-11-24
+# Ruido de round-trip do proprio diff: baseline e pg_dump (identificador
+# qualificado e aspeado, ex. "public"."fn"()) e o lado comparado e catalogo
+# vivo deparseado (ex. public.fn() ou fn() conforme search_path). Como o
+# db diff nao tem ALTER POLICY / ALTER MATERIALIZED VIEW / ALTER VIEW, ele
+# reescreve o objeto inteiro (drop + create) mesmo quando a definicao e a
+# mesma. Idem indice/constraint: drop + create do MESMO objeto quando o texto
+# re-renderiza diferente (aspas, NOT VALID / convalidated).
+# Evidencia: run 45298375477 do db-schema-drift-check na main, baseline
+# 20261122200000 (rotacionado na PR #4034). Todos os pares abaixo referenciam
+# o mesmo objeto com definicao identica fora quoting / qualificacao / FOR ALL
+# implicito. Nenhum objeto destas listas foi criado, alterado ou removido em
+# producao fora de migration desde a rotacao do baseline.
+# Se algum destes objetos mudar de verdade, a entrada esconde a mudanca:
+# confira em supabase/migrations-snapshot/SCHEMA_LIVE.sql ou na migration
+# correspondente antes de confiar no gate.
+#
+# -- materialized views / views: re-render (public. qualificado no dump)
+^drop materialized view if exists "analytics"\."categories_tree_visual"\;
+^create materialized view "analytics"\."categories_tree_visual"
+^drop materialized view if exists "analytics"\."mv_material_group_stats"\;
+^create materialized view "analytics"\."mv_material_group_stats"
+^drop materialized view if exists "analytics"\."mv_media_health"\;
+^create materialized view "analytics"\."mv_media_health"
+^drop materialized view if exists "analytics"\."mv_product_cards"\;
+^create materialized view "analytics"\."mv_product_cards"
+^drop materialized view if exists "analytics"\."mv_product_compositions"\;
+^create materialized view "analytics"\."mv_product_compositions"
+^drop materialized view if exists "analytics"\."mv_product_intelligence"\;
+^create materialized view "analytics"\."mv_product_intelligence"
+^drop materialized view if exists "analytics"\."mv_stock_velocity"\;
+^create materialized view "analytics"\."mv_stock_velocity"
+^drop materialized view if exists "internal"\."mv_product_leaf_category"\;
+^create materialized view "internal"\."mv_product_leaf_category"
+^create or replace view "cf_recon"\."v_cf_orphans"
+^create or replace view "cf_recon"\."v_divergence"
+^create or replace view "cf_recon"\."v_health_dashboard"
+^create or replace view "cf_recon"\."v_inactive_alive"
+^create or replace view "cf_recon"\."v_products_without_active_image"
+^create or replace view "cf_recon"\."v_verification_queue"
+^create or replace view "classification_audit"\."v_gaps_acionaveis"
+^create or replace view "classification_audit"\."v_kits_para_revisao"
+#
+# -- policies cf_recon.admin_only: FOR ALL implicito no dump
+^drop policy "admin_only" on "cf_recon"\."action_log"\;
+^drop policy "admin_only" on "cf_recon"\."cf_ghost_check_queue"\;
+^drop policy "admin_only" on "cf_recon"\."cf_image"\;
+^drop policy "admin_only" on "cf_recon"\."crawl_run"\;
+^drop policy "admin_only" on "cf_recon"\."metric_snapshot"\;
+^drop policy "admin_only" on "cf_recon"\."remediation"\;
+^create policy "admin_only"
+#
+# -- indices trigram de prod_audit: ops class renderizada com/sem aspas
+^drop index if exists "prod_audit"\."idx_catkw_name_trgm"\;
+^drop index if exists "prod_audit"\."idx_pf_name_trgm"\;
+#
+# -- FKs de staging supplier_stricker: NOT VALID / convalidated no round-trip
+^alter table "supplier_stricker"\."category_mappings" add constraint "category_mappings_category_id_fkey"
+^alter table "supplier_stricker"\."category_mappings" drop constraint "category_mappings_category_id_fkey"\;
+^alter table "supplier_stricker"\."category_mappings" validate constraint "category_mappings_category_id_fkey"\;
+^alter table "supplier_stricker"\."stg_product_types" add constraint "stg_product_types_mapped_to_category_id_fkey"
+^alter table "supplier_stricker"\."stg_product_types" drop constraint "stg_product_types_mapped_to_category_id_fkey"\;
+^alter table "supplier_stricker"\."stg_product_types" validate constraint "stg_product_types_mapped_to_category_id_fkey"\;
