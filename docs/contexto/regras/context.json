@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "e87db75175db7457d47e260fd193deb4b48142ee",
+  "sha": "7468ec85568fadd04f7b4eb150c319bd85e18085",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-24 09:18 UTC",
+  "generated_at": "2026-11-24 10:19 UTC",
   "files_total": 11180,
   "code_files": 9174,
-  "code_lines": 1301696
+  "code_lines": 1301737
  },
  "version": "1.3.2",
- "facts_hash": "870c882d69f0e30a",
+ "facts_hash": "33a252fc07336c89",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -150988,7 +150988,7 @@
   {
    "module": "scripts",
    "files": 300,
-   "lines": 65159,
+   "lines": 65181,
    "tables": [
     "a",
     "b",
@@ -153369,7 +153369,7 @@
   {
    "module": "tests",
    "files": 1116,
-   "lines": 176619,
+   "lines": 176638,
    "tables": [
     "bot_detection_log",
     "clients",
@@ -309408,6 +309408,14 @@
    },
    {
     "file": "tests/scripts/drift-baseline.test.mjs",
+    "name": "drop de indice na allowlist leva junto o create do MESMO indice (rebuild do db diff)"
+   },
+   {
+    "file": "tests/scripts/drift-baseline.test.mjs",
+    "name": "create de indice sem drop allowlistado continua no residuo"
+   },
+   {
+    "file": "tests/scripts/drift-baseline.test.mjs",
     "name": "findSecrets"
    },
    {
@@ -309645,14 +309653,6 @@
    {
     "file": "tests/scripts/drift-baseline.test.mjs",
     "name": "literal com espaço diferente mantém a função no resíduo (Codex P1)"
-   },
-   {
-    "file": "tests/scripts/drift-baseline.test.mjs",
-    "name": "dropDumpLossyFunctions — cabeçalho preserva literais e identificadores (Codex P1)"
-   },
-   {
-    "file": "tests/scripts/drift-baseline.test.mjs",
-    "name": "DEFAULT com caixa diferente é diferença real e fica no resíduo"
    },
    {
     "file": "tests/scripts/e2e-cart-artifact-safety.test.mjs",
@@ -438991,7 +438991,7 @@
   },
   "scripts/drift-baseline.mjs": {
    "path": "scripts/drift-baseline.mjs",
-   "lines": 1283,
+   "lines": 1305,
    "exports": [
     "const BASELINE_DIR",
     "const BASELINE_NAME_RE",
@@ -558484,7 +558484,7 @@
   },
   "tests/scripts/drift-baseline.test.mjs": {
    "path": "tests/scripts/drift-baseline.test.mjs",
-   "lines": 1079,
+   "lines": 1098,
    "is_test": true,
    "doc": "Testa scripts/drift-baseline.mjs: montagem da pasta de replay do db-schema-drift-check (baseline + migrations aplicadas depois do dump), filtro de ruído do diff e varredura de segredos do dump.",
    "tests": [
@@ -558506,6 +558506,8 @@
     "filterDiff",
     "remove comentários, linhas vazias, ",
     "allowlist vazia não esconde nada",
+    "drop de indice na allowlist leva junto o create do MESMO indice (rebuild do db diff)",
+    "create de indice sem drop allowlistado continua no residuo",
     "findSecrets",
     "acha JWT, PAT do Supabase e token Cloudflare, e ignora o ID do projeto",
     "findSecrets — anon key pública",
@@ -558565,9 +558567,7 @@
     "collapseSqlWhitespace — literais preservados",
     "normaliza espaço fora de literal e mantém o de dentro",
     "mantém o \\\\n depois de comentário de linha",
-    "literal com espaço diferente mantém a função no resíduo (Codex P1)",
-    "dropDumpLossyFunctions — cabeçalho preserva literais e identificadores (Codex P1)",
-    "DEFAULT com caixa diferente é diferença real e fica no resíduo"
+    "literal com espaço diferente mantém a função no resíduo (Codex P1)"
    ],
    "uses_service_role": true
   },
@@ -563431,10 +563431,21 @@
   }
  },
  "git": {
-  "sha": "e87db75175db7457d47e260fd193deb4b48142ee",
+  "sha": "7468ec85568fadd04f7b4eb150c319bd85e18085",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "7468ec8",
+    "date": "2026-11-24",
+    "author": "adm01-debug",
+    "subject": "fix: zera ruido de round-trip no Gate E40 (#4035)",
+    "files": [
+     "scripts/drift-baseline.mjs",
+     "supabase/baseline/drift-allowlist.txt",
+     "tests/scripts/drift-baseline.test.mjs"
+    ]
+   },
    {
     "sha": "e87db75",
     "date": "2026-11-24",
@@ -563812,17 +563823,6 @@
     "files": [
      "supabase/migrations/20261122200000_fix_cadeia_views_compras_e_compositions.sql"
     ]
-   },
-   {
-    "sha": "7600d95",
-    "date": "2026-11-22",
-    "author": "adm01-debug",
-    "subject": "fix: corrigir cadeia invoker das views de compras e composicoes (#3989)",
-    "files": [
-     "supabase/MIGRATIONS_SYNC_LOG.md",
-     "supabase/migrations/20261122200000_fix_cadeia_views_compras_e_compositions.sql",
-     "supabase/rollbacks/20261122200000_rollback.sql"
-    ]
    }
   ],
   "hot_files": [
@@ -563832,7 +563832,7 @@
    ],
    [
     "supabase/MIGRATIONS_SYNC_LOG.md",
-    4
+    3
    ],
    [
     "package.json",
@@ -563851,8 +563851,16 @@
     2
    ],
    [
-    "supabase/migrations/20261122200000_fix_cadeia_views_compras_e_compositions.sql",
-    2
+    "scripts/drift-baseline.mjs",
+    1
+   ],
+   [
+    "supabase/baseline/drift-allowlist.txt",
+    1
+   ],
+   [
+    "tests/scripts/drift-baseline.test.mjs",
+    1
    ],
    [
     ".security/public-views-columns.json",
@@ -563896,14 +563904,6 @@
    ],
    [
     "src/hooks/quotes/quoteCacheInvalidation.ts",
-    1
-   ],
-   [
-    "src/hooks/quotes/useQuotes.ts",
-    1
-   ],
-   [
-    "src/pages/quotes/quotes-dashboard/useQuotesDashboard.ts",
     1
    ]
   ]

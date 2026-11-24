@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "e87db75175db7457d47e260fd193deb4b48142ee",
+  "commit": "7468ec85568fadd04f7b4eb150c319bd85e18085",
   "branch": "main",
-  "data_commit": "2026-11-24T09:00:05Z",
+  "data_commit": "2026-11-24T07:16:51-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "7468ec8",
+    "data": "2026-11-24",
+    "assunto": "fix: zera ruido de round-trip no Gate E40 (#4035)"
+   },
    {
     "sha": "e87db75",
     "data": "2026-11-24",
@@ -126,14 +131,9 @@
     "sha": "6fb570a",
     "data": "2026-11-23",
     "assunto": "feat: Etapa 043 — url-allowlist em modo observador no webhook-dispatcher (ACH-009) (#4012)"
-   },
-   {
-    "sha": "59e624b",
-    "data": "2026-11-23",
-    "assunto": "feat: Etapa 019 — prova de tautologia RLS em attribute_definitions/groups (ACH-013) (#4011)"
    }
   ],
-  "arquivos_mudados_7d": 669,
+  "arquivos_mudados_7d": 670,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -316,7 +316,7 @@
  "contagens": {
   "arquivos_total": 11252,
   "arquivos_codigo": 5680,
-  "linhas_codigo": 1075693,
+  "linhas_codigo": 1075734,
   "rotas": 141,
   "rotas_http_backend": 13,
   "vistas_por_id": 0,
@@ -1496,7 +1496,7 @@
   },
   "scripts/drift-baseline.mjs": {
    "arquivos": 1,
-   "linhas": 1283
+   "linhas": 1305
   },
   "scripts/dry-run-migration-draft.mjs": {
    "arquivos": 1,
@@ -2156,7 +2156,7 @@
   },
   "tests/scripts": {
    "arquivos": 182,
-   "linhas": 29263
+   "linhas": 29282
   },
   "tests/search": {
    "arquivos": 1,
@@ -2302,7 +2302,7 @@
   },
   {
    "arquivo": "scripts/drift-baseline.mjs",
-   "linhas": 1283
+   "linhas": 1305
   },
   {
    "arquivo": "src/pages/tools/VisualSearchPage.tsx",
