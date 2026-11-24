@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "2e83b04fe1afb0d7b796a0953939dc722387e537",
+  "commit": "c790e808862241ea61f2795b97066a6d5341e769",
   "branch": "main",
-  "data_commit": "2026-11-24T14:59:57-03:00",
+  "data_commit": "2026-11-24T15:03:38-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "c790e80",
+    "data": "2026-11-24",
+    "assunto": "docs(migrations-log): recibo E15 — aplicação de 20261124171500 (#4051)"
+   },
    {
     "sha": "2e83b04",
     "data": "2026-11-24",
@@ -126,11 +131,6 @@
     "sha": "075a1e0",
     "data": "2026-11-23",
     "assunto": "fix: referencia completa da migration do orcamento em 05-PROGRESSO (#4026)"
-   },
-   {
-    "sha": "4b02d22",
-    "data": "2026-11-23",
-    "assunto": "fix(qa): etapas 072-079 - erro de catalogo, colecoes e templates separados do vazio (#4023)"
    }
   ],
   "arquivos_mudados_7d": 667,
@@ -301,11 +301,11 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 257
+    "commits": 256
    },
    {
     "autor": "github-actions[bot]",
-    "commits": 42
+    "commits": 43
    },
    {
     "autor": "dependabot[bot]",

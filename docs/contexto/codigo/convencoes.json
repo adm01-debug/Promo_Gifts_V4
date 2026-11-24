@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "docs(migrations-log): recibo E15 — aplicação de 20261124171500 (#4051)",
    "fix: canonicaliza internal.managed_schema_dictionary criada direto em produção (#4048)",
    "docs: enterra o draft E40 com o SHA arquivado em refs/agents-archive (#4050)",
    "docs: registra o cleanup das 7 branches obsoletas e como recupera-las (#4046)",
-   "docs: auditoria das branches restantes e reforco da refutacao da etapa 007 (#4045)",
-   "docs: etapas 001-004 e 006 do QA concluídas com evidência; 007 refutada; 005 reescopada (#4044)"
+   "docs: auditoria das branches restantes e reforco da refutacao da etapa 007 (#4045)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",

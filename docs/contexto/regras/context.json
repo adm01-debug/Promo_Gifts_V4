@@ -1,9 +1,9 @@
 {
  "meta": {
-  "sha": "2e83b04fe1afb0d7b796a0953939dc722387e537",
+  "sha": "c790e808862241ea61f2795b97066a6d5341e769",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-24 18:01 UTC",
+  "generated_at": "2026-11-24 18:05 UTC",
   "files_total": 11189,
   "code_files": 9180,
   "code_lines": 1302590
@@ -563732,10 +563732,19 @@
   }
  },
  "git": {
-  "sha": "2e83b04fe1afb0d7b796a0953939dc722387e537",
+  "sha": "c790e808862241ea61f2795b97066a6d5341e769",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "c790e80",
+    "date": "2026-11-24",
+    "author": "github-actions[bot]",
+    "subject": "docs(migrations-log): recibo E15 — aplicação de 20261124171500 (#4051)",
+    "files": [
+     "supabase/MIGRATIONS_SYNC_LOG.md"
+    ]
+   },
    {
     "sha": "2e83b04",
     "date": "2026-11-24",
@@ -564117,26 +564126,16 @@
      "supabase/functions/manage-users/index.ts",
      "supabase/functions/step-up-verify/index.ts"
     ]
-   },
-   {
-    "sha": "ec295ba",
-    "date": "2026-11-23",
-    "author": "adm01-debug",
-    "subject": "feat: Etapa 042 — restringir e2e-cleanup a quotes marcadas [E2E] (ACH-071) (#4017)",
-    "files": [
-     "docs/qa/05-PROGRESSO.md",
-     "supabase/functions/e2e-cleanup/index.ts"
-    ]
    }
   ],
   "hot_files": [
    [
     "docs/qa/05-PROGRESSO.md",
-    15
+    14
    ],
    [
     "supabase/MIGRATIONS_SYNC_LOG.md",
-    7
+    8
    ],
    [
     "docs/agentes/resgates/2026-11-24-auditoria-branches-restantes.md",
