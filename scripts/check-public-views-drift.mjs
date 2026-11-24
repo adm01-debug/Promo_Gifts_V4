@@ -407,7 +407,10 @@ export function validateAnonTablesBaseline(doc) {
     } else if (/\b(TODO|FIXME|WIP)\b/.test(entry.reason)) {
       errors.push(`anon-tables-baseline: ${name} com marcador de pendência na reason`);
     }
-    if (!['catalogo-publico', 'interno-grant-herdado'].includes(entry.exposure)) {
+    if (entry.columns !== undefined && entry.columns !== null && !Array.isArray(entry.columns)) {
+      errors.push(`anon-tables-baseline: ${name} com 'columns' inválido (array ou null)`);
+    }
+    if (!['catalogo-publico', 'catalogo-publico-por-coluna', 'interno-grant-herdado'].includes(entry.exposure)) {
       errors.push(`anon-tables-baseline: ${name} com exposure inválido (${entry.exposure})`);
     }
   }
@@ -416,21 +419,41 @@ export function validateAnonTablesBaseline(doc) {
 
 export function diffAnonTables(baseline, anonRows) {
   const errors = [];
-  const declared = new Set((baseline?.tables ?? []).map((t) => t.table));
-  const exposed = new Set();
+  const declared = new Map((baseline?.tables ?? []).map((t) => [t.table, t]));
+  const exposed = new Map();
   for (const row of anonRows ?? []) {
     if (row.relkind !== 'r' && row.relkind !== 'p') continue;
-    const cols = Array.isArray(row.anon_columns) ? row.anon_columns : [];
-    if (row.anon_select === true || cols.length > 0) exposed.add(row.relname);
+    const anonCols = Array.isArray(row.anon_columns) ? row.anon_columns : [];
+    const allCols = Array.isArray(row.columns) ? row.columns : [];
+    if (row.anon_select === true || anonCols.length > 0) {
+      exposed.set(row.relname, {
+        tableWide: row.anon_select === true,
+        columns: anonCols.length > 0 ? anonCols : allCols,
+      });
+    }
   }
-  for (const name of exposed) {
-    if (declared.has(name)) continue;
-    errors.push(
-      `${name} (tabela): SELECT de anon sem entrada em .security/anon-tables-baseline.json ` +
-        `(grant novo em tabela fora do repo) — revisar antes de liberar`,
-    );
+  for (const [name, info] of exposed) {
+    const entry = declared.get(name);
+    if (!entry) {
+      const scope = info.tableWide ? 'tabela inteira' : `colunas: ${info.columns.join(', ')}`;
+      errors.push(
+        `${name} (tabela): SELECT de anon sem entrada em .security/anon-tables-baseline.json ` +
+          `(${scope}) — revisar antes de liberar`,
+      );
+      continue;
+    }
+    const expected = Array.isArray(entry.columns) ? entry.columns : null;
+    if (!expected) continue; // v1: entrada sem `columns` não congela coluna
+    const extra = info.columns.filter((c) => !expected.includes(c));
+    const missing = expected.filter((c) => !info.columns.includes(c));
+    if (extra.length) {
+      errors.push(`${name}: coluna NOVA legível por anon (revisar antes de expor): ${extra.join(', ')}`);
+    }
+    if (missing.length) {
+      errors.push(`${name}: colunas da baseline ausentes no banco: ${missing.join(', ')}`);
+    }
   }
-  for (const name of declared) {
+  for (const name of declared.keys()) {
     if (exposed.has(name)) continue;
     errors.push(
       `${name}: baseline declara SELECT de anon e o privilégio NÃO existe mais — remover a entrada`,

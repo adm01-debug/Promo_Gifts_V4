@@ -192,6 +192,29 @@ describe('baseline de tabelas legíveis por anon (.security/anon-tables-baseline
     expect(errors).toEqual([]);
   });
 
+  it('entrada com columns congela a coluna: coluna nova legível por anon falha', () => {
+    const doc = {
+      tables: [{ table: 'products', exposure: 'catalogo-publico-por-coluna', reason: 'x', columns: ['id', 'name'] }],
+    };
+    expect(
+      diffAnonTables(doc, [
+        { relname: 'products', relkind: 'r', anon_select: false, anon_columns: ['id', 'name'], columns: ['id', 'name', 'cost_price'] },
+      ]),
+    ).toEqual([]);
+    const errors = diffAnonTables(doc, [
+      { relname: 'products', relkind: 'r', anon_select: false, anon_columns: ['id', 'name', 'cost_price'], columns: ['id', 'name', 'cost_price'] },
+    ]);
+    expect(errors).toHaveLength(1);
+    expect(errors[0]).toContain('cost_price');
+  });
+
+  it('entrada sem columns (null) não congela coluna, só o nome', () => {
+    const doc = { tables: [{ table: 'tags', exposure: 'catalogo-publico', reason: 'x', columns: null }] };
+    expect(
+      diffAnonTables(doc, [{ relname: 'tags', relkind: 'r', anon_select: true, anon_columns: ['a', 'b', 'c'], columns: ['a', 'b', 'c'] }]),
+    ).toEqual([]);
+  });
+
   it('entrada sem reason ou com TODO é rejeitada na validação estrutural', () => {
     const errors = validateAnonTablesBaseline({
       measured_at: '2026-11-24',
