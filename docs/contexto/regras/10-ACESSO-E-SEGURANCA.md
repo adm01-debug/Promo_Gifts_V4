@@ -1,6 +1,6 @@
 # 10 · ACESSO E SEGURANÇA — quem pode o quê
 
-> Gerado automaticamente por AI Context Sync v1.3.2 · commit `c790e80886` · branch `main` · 2026-11-24 18:05 UTC
+> Gerado automaticamente por AI Context Sync v1.3.2 · commit `a1b5482b22` · branch `main` · 2026-11-24 18:40 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## Perfis / roles identificados
@@ -327,7 +327,7 @@
 
 > `—` com RLS ligado = ninguém além de service_role. `sem RLS` = qualquer chave anon lê/escreve tudo.
 
-## Onde o RLS é IGNORADO (service_role) — 843 arquivo(s)
+## Onde o RLS é IGNORADO (service_role) — 845 arquivo(s)
 
 - `auditoria-supabase/propostas/P01_rls_restrictive_correcao.sql`
 - `auditoria-supabase/propostas/P10_func_new_001_fn_cron_guard_revoke.sql`
@@ -479,7 +479,7 @@
 - `supabase/functions/hash-product-images/index.ts`
 - `supabase/functions/health-check/index.ts`
 - `supabase/functions/load-test/index.ts`
-- … +693 (lista completa em `context.json`)
+- … +695 (lista completa em `context.json`)
 
 ## Funções SQL `SECURITY DEFINER` (rodam com privilégio do dono, ignoram RLS)
 
@@ -1218,7 +1218,7 @@ Middleware matcher (Next.js): nenhum
 | grant | anon | insert | `kill_switch_hits` |
 | grant | anon | insert, update, delete, references, trigger | `external_connections` |
 | grant | anon | maintain | `external_connections` |
-| grant | anon | select | `system_kill_switches`, `products`, `products`, `products`, `public`, `somarcas_catalogo_publico`, `somarcas_catalogo_publico`, `analytics.mv_product_compositions`, `discount_approval_requests`, `discount_approval_requests`, `category_icons`, `discount_approval_requests`, `workspace_notifications`, `discount_approval_requests`, `workspace_notifications` … +79 |
+| grant | anon | select | `system_kill_switches`, `products`, `products`, `products`, `public`, `somarcas_catalogo_publico`, `somarcas_catalogo_publico`, `analytics.mv_product_compositions`, `discount_approval_requests`, `discount_approval_requests`, `category_icons`, `discount_approval_requests`, `workspace_notifications`, `discount_approval_requests`, `workspace_notifications` … +80 |
 | grant | anon | select, insert, update | `magazine_reader_state` |
 | grant | anon | select, insert, update, delete, references, trigger | `mockup_approval_links` |
 | grant | anon, authenticated | execute | `check_login_rate_limit`, `get_public_schema_signatures`, `get_catalog_bestseller_page`, `get_catalog_bestseller_ids`, `get_catalog_bestseller_page`, `fn_get_product_intelligence_all`, `fn_get_all_leaf_categories`, `get_catalog_bestseller_page`, `get_promo_sales_ranking`, `get_catalog_bestseller_page`, `get_catalog_bestseller_page`, `fn_get_reposicao_listing`, `get_catalog_bestseller_page`, `get_promo_sales_90d_by_product`, `fn_get_similar_products` |
@@ -1226,7 +1226,7 @@ Middleware matcher (Next.js): nenhum
 | grant | anon, authenticated | select | `v_products_public`, `v_products_public`, `v_suppliers_public`, `system_settings`, `video_sim_results`, `product_novelties`, `v_product_active_badge`, `v_product_active_badge`, `v_product_active_badge`, `v_products_public`, `v_catalog_stats`, `mv_product_leaf_category`, `mv_product_leaf_category`, `v_catalog_stats`, `category_ancestors` … +24 |
 | grant | anon, authenticated | usage, select | `kill_switch_hits_id_seq` |
 | grant | anon, authenticated, service_role | execute | `claim_webhook_delivery`, `release_webhook_delivery_lock`, `cleanup_stale_webhook_locks`, `fn_video_set_dimensions`, `fn_video_queue_old_uid`, `fn_video_queue_recover_stuck`, `fn_video_sim_export`, `fn_video_sim_upsert`, `fn_super_filtro_product_ids`, `fn_super_filtro_product_ids`, `fn_ema_kpi_by_level`, `fn_ema_kpi_by_level`, `fn_ema_kpi_by_level`, `fn_super_filtro_product_ids`, `get_sitemap_public` … +1 |
-| grant | anon, authenticated, service_role | select | `system_kill_switches`, `vw_product_novelties_active`, `vw_novelties_home_highlights`, `vw_novelties_home_highlights`, `v_variant_sale_prices_public`, `v_products_min_price`, `v_print_area_techniques_public`, `v_product_properties_public`, `v_product_compositions_public`, `v_kit_component_media_public`, `v_tags_public`, `v_product_tags_public`, `v_personalization_techniques_public`, `v_color_nuances_public`, `v_kit_component_print_areas_public` … +5 |
+| grant | anon, authenticated, service_role | select | `system_kill_switches`, `vw_product_novelties_active`, `vw_novelties_home_highlights`, `vw_novelties_home_highlights`, `v_variant_sale_prices_public`, `v_products_min_price`, `v_print_area_techniques_public`, `v_product_properties_public`, `v_product_compositions_public`, `v_kit_component_media_public`, `v_tags_public`, `v_product_tags_public`, `v_personalization_techniques_public`, `v_color_nuances_public`, `v_kit_component_print_areas_public` … +7 |
 | grant | anon, service_role | execute | `fn_dequeue_ai_enrichment`, `fn_save_ai_enrichment_results`, `fn_enqueue_ai_enrichment`, `fn_enqueue_ai_enrichment`, `fn_dequeue_ai_enrichment`, `fn_dequeue_ai_enrichment`, `fn_save_ai_enrichment_results`, `fn_dequeue_ai_enrichment` |
 | grant | anon, service_role | select | `vw_ai_enrichment_status` |
 | grant | authenticated | all | `user_preferences` |
@@ -1289,12 +1289,12 @@ Middleware matcher (Next.js): nenhum
 | revoke | anon | insert, update, delete, truncate, trigger, references, select | `suppliers` |
 | revoke | anon | insert, update, references | `supplier_products_raw`, `supplier_products_raw`, `import_staging_images`, `color_analysis_staging`, `xbz_gallery_staging`, `scraper_images_staging`, `sm_images_staging`, `_asia_api_staging` |
 | revoke | anon | maintain | `external_connections` |
-| revoke | anon | select | `v_kill_switch_hits_summary`, `v_smoke_tests_latest_run`, `v_smoke_tests_trend`, `v_smoke_tests_latest_run`, `v_smoke_tests_trend`, `products`, `products`, `products`, `products`, `_asia_api_staging`, `_backup_produtos_padronizacao_20260604`, `ai_function_routing`, `ai_provider_quotas`, `ai_providers`, `ai_routing_decisions` … +81 |
+| revoke | anon | select | `v_kill_switch_hits_summary`, `v_smoke_tests_latest_run`, `v_smoke_tests_trend`, `v_smoke_tests_latest_run`, `v_smoke_tests_trend`, `products`, `products`, `products`, `products`, `_asia_api_staging`, `_backup_produtos_padronizacao_20260604`, `ai_function_routing`, `ai_provider_quotas`, `ai_providers`, `ai_routing_decisions` … +83 |
 | revoke | anon, PUBLIC | execute | `fn_rupture_quick_stats`, `fn_ema_kpi_by_level`, `fn_rupture_anomalia_report`, `fn_rupture_by_level`, `fn_rupture_health_check` |
 | revoke | anon, authenticated | all | `slow_queries_view`, `get_edge_function_secret`, `webhook_request_nonces`, `get_edge_functions_base_url`, `mcp_sessions`, `supplier_customization_raw`, `fn_resync_product_media`, `fn_resync_product_media`, `fn_resync_product_media`, `fn_resync_product_media`, `mv_product_images_audit`, `v_product_images_quality_gap`, `vw_image_type_dropblockers`, `mv_product_images_audit`, `mcp_kv` … +28 |
 | revoke | anon, authenticated | all privileges | `_cf_images_audit`, `_img_divergence_audit`, `cf_recon.cf_image`, `cf_recon.cf_ghost_check_queue`, `cf_recon.action_log`, `cf_recon.crawl_run`, `cf_recon.metric_snapshot`, `cf_recon.remediation`, `archive`, `archive`, `archive`, `backup`, `backup`, `archive`, `backup` … +2 |
 | revoke | anon, authenticated | execute | `cleanup_expired_webhook_request_nonces`, `get_public_schema_signatures`, `upsert_supplier_stock_raw`, `upsert_supplier_customization_raw`, `fn_autolink_canonical_on_content_hash`, `reconcile_cf_image_status`, `fn_handle_canonical_root_soft_delete`, `fn_prevent_canonical_chain`, `fn_autolink_canonical_on_content_hash`, `fn_relink_former_deps_on_root_becomes_dep`, `fn_product_images_health_check`, `fn_autolink_canonical_on_content_hash`, `fn_autolink_canonical_on_content_hash`, `fn_autolink_canonical_on_content_hash`, `fn_repair_canonical_chains` … +21 |
-| revoke | anon, authenticated | insert, update, delete, references, trigger | `v_catalog_stats` |
+| revoke | anon, authenticated | insert, update, delete, references, trigger | `v_catalog_stats`, `v_print_area_techniques_public` |
 | revoke | anon, authenticated | insert, update, delete, truncate | `category_ancestors`, `mv_stock_rupture_alert` |
 | revoke | anon, authenticated | select | `vw_stock_quantity_outliers`, `vw_orphan_active_variants`, `v_cf_drift_dashboard`, `vw_stock_quantity_outliers`, `vw_orphan_active_variants`, `v_cf_drift_dashboard` |
 | revoke | anon, authenticated | select, insert, update, delete | `_backup_stock_daily_summary_20260618`, `_bkp_kit_dims_20260619`, `_bkp_orphan_active_variants_20260619`, `cron_job_timeout_map`, `cron_watchdog_log` |

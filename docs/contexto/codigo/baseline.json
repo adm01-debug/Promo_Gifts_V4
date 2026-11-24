@@ -2,11 +2,21 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "c790e808862241ea61f2795b97066a6d5341e769",
+  "commit": "a1b5482b220c4697ec5727302ef7722346eead8f",
   "branch": "main",
-  "data_commit": "2026-11-24T15:03:38-03:00",
+  "data_commit": "2026-11-24T15:38:52-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "a1b5482",
+    "data": "2026-11-24",
+    "assunto": "docs(migrations-log): recibo E15 — aplicação de 20261124163000 (#4052)"
+   },
+   {
+    "sha": "2de2ccd",
+    "data": "2026-11-24",
+    "assunto": "fix: fecha leitura anon de print_area_techniques.unit_cost (#4047)"
+   },
    {
     "sha": "c790e80",
     "data": "2026-11-24",
@@ -121,19 +131,9 @@
     "sha": "06620fc",
     "data": "2026-11-23",
     "assunto": "chore(security): documentar deny-all das 6 tabelas de auditoria no allowlist de RLS (#4028)"
-   },
-   {
-    "sha": "d9b382b",
-    "data": "2026-11-23",
-    "assunto": "chore: consolidar baselines de ratchet (as-assertions, file-size, eslint-disable) (#4027)"
-   },
-   {
-    "sha": "075a1e0",
-    "data": "2026-11-23",
-    "assunto": "fix: referencia completa da migration do orcamento em 05-PROGRESSO (#4026)"
    }
   ],
-  "arquivos_mudados_7d": 667,
+  "arquivos_mudados_7d": 669,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -199,11 +199,11 @@
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "supabase/MIGRATIONS_SYNC_LOG.md",
-    "mudancas": 67
+    "mudancas": 69
    },
    {
     "arquivo": "package.json",
-    "mudancas": 26
+    "mudancas": 24
    },
    {
     "arquivo": "docs/qa/05-PROGRESSO.md",
@@ -211,7 +211,7 @@
    },
    {
     "arquivo": "package-lock.json",
-    "mudancas": 19
+    "mudancas": 18
    },
    {
     "arquivo": "CHANGELOG.md",
@@ -223,7 +223,7 @@
    },
    {
     "arquivo": "docs/coordenacao/conflitos-semanticos.md",
-    "mudancas": 9
+    "mudancas": 10
    },
    {
     "arquivo": "src/lib/freight/index.ts",
@@ -254,10 +254,6 @@
     "mudancas": 6
    },
    {
-    "arquivo": "scripts/automation.config.json",
-    "mudancas": 5
-   },
-   {
     "arquivo": "src/components/quotes/AdminTemplatesManager.tsx",
     "mudancas": 5
    },
@@ -275,6 +271,10 @@
    },
    {
     "arquivo": "docs/agentes/resgates/2026-11-19-migrations-orfas-e-o-portao-retroativo.md",
+    "mudancas": 4
+   },
+   {
+    "arquivo": "scripts/automation.config.json",
     "mudancas": 4
    },
    {
@@ -305,16 +305,12 @@
    },
    {
     "autor": "github-actions[bot]",
-    "commits": 43
-   },
-   {
-    "autor": "dependabot[bot]",
-    "commits": 1
+    "commits": 44
    }
   ]
  },
  "contagens": {
-  "arquivos_total": 11261,
+  "arquivos_total": 11263,
   "arquivos_codigo": 5680,
   "linhas_codigo": 1076005,
   "rotas": 141,
@@ -326,7 +322,7 @@
   "hooks": 646,
   "edge_functions": 112,
   "tabelas": 532,
-  "migrations": 3130,
+  "migrations": 3131,
   "cron_jobs": 122,
   "testes": 2722,
   "workflows": 89,

@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.3.2 · commit `c790e80886` · branch `main` · 2026-11-24 18:05 UTC
+> Gerado automaticamente por AI Context Sync v1.3.2 · commit `a1b5482b22` · branch `main` · 2026-11-24 18:40 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -3361,7 +3361,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `v_pipeline_next_step` | `SELECT "id", "fase", "etapa", "titulo", "descricao", "comando_resumo", "dependencia", "status", "resultado", "error_message", "started_at", "completed_at", "created_at", "updated_at" FROM "public"."import_pipeline_steps" WHERE ((("status")::"text" = ANY ((ARRAY['pending'::character varying, 'error': …` |
 | `v_pipeline_progress` | `SELECT "fase", "count"(*) AS "total_etapas", "count"(*) FILTER (WHERE (("status")::"text" = 'done'::"text")) AS "concluidas", "count"(*) FILTER (WHERE (("status")::"text" = 'running'::"text")) AS "em_andamento", "count"(*) FILTER (WHERE (("status")::"text" = 'error'::"text")) AS "com_erro", "count"( …` |
 | `v_price_history_safe` | `SELECT "id", "variant_id", "change_type", "change_reason", "changed_by", "changed_at", "source" FROM "public"."price_history"` |
-| `v_print_area_techniques_public` | `SELECT id, product_id, tabela_preco_id, location_code, location_name, location_order, max_width, max_height, is_curved, shape, technique_order, is_active, notes, unit_cost, created_at, updated_at FROM public.print_area_techniques WHERE is_active = true` |
+| `v_print_area_techniques_public` | `SELECT "id", "product_id", "tabela_preco_id", "location_code", "location_name", "location_order", "max_width", "max_height", "is_curved", "shape", "technique_order", "is_active", "notes", "unit_cost", "created_at", "updated_at" FROM public.print_area_techniques WHERE is_active = true` |
 | `v_product_active_badge` | `SELECT p.id AS product_id, p.sku, p.name, p.is_active, p.is_stockout, p.is_new, p.is_bestseller, p.is_featured, false AS is_on_sale, p.has_gift_box, p.has_commercial_packaging, p.stock_quantity > 0 AND p.stock_quantity <= s.low_stock_threshold AS is_low_stock, p.is_active AND p.price_last_verified_a …` |
 | `v_product_compositions_public` | `SELECT mpc.product_id, mpc.product_name, mpc.total_materials, mpc.total_percentage, mpc.materials_detail FROM analytics.mv_product_compositions mpc JOIN public.products p ON p.id = mpc.product_id AND p.is_active = true AND p.is_deleted IS NOT TRUE` |
 | `v_product_image_hash_duplicates` | `SELECT content_hash, COUNT(*) AS duplicate_count, array_agg(cloudflare_image_id ORDER BY cloudflare_image_id) AS cf_ids, array_agg(id ORDER BY cloudflare_image_id) AS image_ids, MIN(created_at) AS oldest_upload FROM product_images WHERE content_hash IS NOT NULL AND deleted_at IS NULL GROUP BY conten …` |
