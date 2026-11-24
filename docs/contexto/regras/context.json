@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "7468ec85568fadd04f7b4eb150c319bd85e18085",
+  "sha": "2d5016ccb70062940131c1bb6c57fc2bb6054a35",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-24 10:19 UTC",
-  "files_total": 11180,
+  "generated_at": "2026-11-24 13:21 UTC",
+  "files_total": 11181,
   "code_files": 9174,
-  "code_lines": 1301737
+  "code_lines": 1301972
  },
  "version": "1.3.2",
- "facts_hash": "33a252fc07336c89",
+ "facts_hash": "ada22b009d90861f",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -150988,7 +150988,7 @@
   {
    "module": "scripts",
    "files": 300,
-   "lines": 65181,
+   "lines": 65327,
    "tables": [
     "a",
     "b",
@@ -153369,7 +153369,7 @@
   {
    "module": "tests",
    "files": 1116,
-   "lines": 176638,
+   "lines": 176727,
    "tables": [
     "bot_detection_log",
     "clients",
@@ -166695,6 +166695,14 @@
    },
    {
     "file": "scripts/drift-baseline.mjs",
+    "msg": "${label}: hash inválido para ${name}"
+   },
+   {
+    "file": "scripts/drift-baseline.mjs",
+    "msg": "${label}: nome de migration inválido: ${JSON.stringify(name)}"
+   },
+   {
+    "file": "scripts/drift-baseline.mjs",
     "msg": "baseline ${found[0]} sem ${ledgerSnapshotName(version)}"
    },
    {
@@ -166716,6 +166724,10 @@
    {
     "file": "scripts/drift-baseline.mjs",
     "msg": "mais de um baseline em ${BASELINE_DIR}: ${found.join("
+   },
+   {
+    "file": "scripts/drift-baseline.mjs",
+    "msg": "migration já coberta pelo baseline ${baseline.version} não é mais a que o dump representa:\\n${lines}\\n"
    },
    {
     "file": "scripts/drift-baseline.mjs",
@@ -438991,7 +439003,7 @@
   },
   "scripts/drift-baseline.mjs": {
    "path": "scripts/drift-baseline.mjs",
-   "lines": 1305,
+   "lines": 1434,
    "exports": [
     "const BASELINE_DIR",
     "const BASELINE_NAME_RE",
@@ -439008,8 +439020,12 @@
     "function looksLikeSchemaDump",
     "function buildBaselineSql",
     "function ledgerSnapshotName",
+    "function migrationHashesName",
+    "function migrationFileDigest",
     "function findBaseline",
     "function selectReplayMigrations",
+    "function collectMigrationDigests",
+    "function findEditedSnapshotMigrations",
     "function replayFileName",
     "function sanitizeReplayMigration",
     "function prepareWorkdir",
@@ -439032,12 +439048,15 @@
     "${label} não é um objeto JSON",
     "${label}: ",
     "${label}: baseline_version ${JSON.stringify(document.baseline_version)} difere da versão do arquivo (${version})",
+    "${label}: hash inválido para ${name}",
+    "${label}: nome de migration inválido: ${JSON.stringify(name)}",
     "baseline ${found[0]} sem ${ledgerSnapshotName(version)}",
     "drift-allowlist: entrada genérica demais (${l}) — casaria ",
     "drift-allowlist: entrada genérica demais (${l}) — nenhum objeto entre aspas (só schema/papel ou nada); nomeie o objeto",
     "drift-allowlist: entrada genérica demais (${l}) — use só texto literal (^, $ e pontuação escapada); nomeie o objeto",
     "drift-allowlist: regex inválida na linha ${idx + 1} (${l}) — ${err.message}",
     "mais de um baseline em ${BASELINE_DIR}: ${found.join(",
+    "migration já coberta pelo baseline ${baseline.version} não é mais a que o dump representa:\\n${lines}\\n",
     "nenhum baseline em ${BASELINE_DIR}",
     "project ref inválido: ${JSON.stringify(projectRef)}"
    ],
@@ -439062,6 +439081,7 @@
     "(dropDumpLossyFunctions). Nenhuma regra esconde mudança de comportamento.",
     "Mesma regra do CLI (`^([0-9]+)_(.*)\\.sql$`): a versão é o prefixo numérico, de",
     "Esta semente B+1 recria apenas as pré-condições históricas e é idempotente.",
+    "(gitleaks, regra generic-api-key) acusava 90 falsos positivos.",
     "tráfego concorrente; remover apenas CONCURRENTLY preserva o índice resultante",
     "como token inválido quando ele abre a migration. Normalize somente a cópia",
     "duplas não pode virar início de string/comentário.",
@@ -439193,7 +439213,7 @@
   },
   "scripts/export-schema-snapshot.mjs": {
    "path": "scripts/export-schema-snapshot.mjs",
-   "lines": 310,
+   "lines": 327,
    "env": [
     "PATH",
     "SUPABASE_ACCESS_TOKEN",
@@ -558484,8 +558504,30 @@
   },
   "tests/scripts/drift-baseline.test.mjs": {
    "path": "tests/scripts/drift-baseline.test.mjs",
-   "lines": 1098,
+   "lines": 1187,
    "is_test": true,
+   "params": [
+    {
+     "name": "BASELINE",
+     "value": "'20260928212000'"
+    },
+    {
+     "name": "COBERTA",
+     "value": "'20260928212000_back_link.sql'"
+    },
+    {
+     "name": "POS_DUMP",
+     "value": "'20261016090000_nova.sql'"
+    },
+    {
+     "name": "CORPO_COBERTA",
+     "value": "'-- coberta\\nselect 1;\\n'"
+    },
+    {
+     "name": "CORPO_NOVA",
+     "value": "'-- nova\\nselect 2;\\n'"
+    }
+   ],
    "doc": "Testa scripts/drift-baseline.mjs: montagem da pasta de replay do db-schema-drift-check (baseline + migrations aplicadas depois do dump), filtro de ruído do diff e varredura de segredos do dump.",
    "tests": [
     "selectReplayMigrations",
@@ -563431,10 +563473,22 @@
   }
  },
  "git": {
-  "sha": "7468ec85568fadd04f7b4eb150c319bd85e18085",
+  "sha": "2d5016ccb70062940131c1bb6c57fc2bb6054a35",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "2d5016c",
+    "date": "2026-11-24",
+    "author": "adm01-debug",
+    "subject": "fix: Gate E40 passa a acusar migration já coberta pelo baseline que mudou depois do dump (#4040)",
+    "files": [
+     "scripts/drift-baseline.mjs",
+     "scripts/export-schema-snapshot.mjs",
+     "supabase/baseline/20261122200000_migration_hashes.json",
+     "tests/scripts/drift-baseline.test.mjs"
+    ]
+   },
    {
     "sha": "7468ec8",
     "date": "2026-11-24",
@@ -563814,15 +563868,6 @@
     "files": [
      "supabase/MIGRATIONS_SYNC_LOG.md"
     ]
-   },
-   {
-    "sha": "23b0135",
-    "date": "2026-11-22",
-    "author": "adm01-debug",
-    "subject": "chore: remover palavra CONCURRENTLY de comment de view (destrava preflight E15) (#3991)",
-    "files": [
-     "supabase/migrations/20261122200000_fix_cadeia_views_compras_e_compositions.sql"
-    ]
    }
   ],
   "hot_files": [
@@ -563833,6 +563878,14 @@
    [
     "supabase/MIGRATIONS_SYNC_LOG.md",
     3
+   ],
+   [
+    "scripts/drift-baseline.mjs",
+    2
+   ],
+   [
+    "tests/scripts/drift-baseline.test.mjs",
+    2
    ],
    [
     "package.json",
@@ -563851,15 +563904,15 @@
     2
    ],
    [
-    "scripts/drift-baseline.mjs",
+    "scripts/export-schema-snapshot.mjs",
+    1
+   ],
+   [
+    "supabase/baseline/20261122200000_migration_hashes.json",
     1
    ],
    [
     "supabase/baseline/drift-allowlist.txt",
-    1
-   ],
-   [
-    "tests/scripts/drift-baseline.test.mjs",
     1
    ],
    [
@@ -563896,14 +563949,6 @@
    ],
    [
     "docs/qa/querykeys-sem-invalidacao.md",
-    1
-   ],
-   [
-    "src/hooks/quotes/__tests__/quoteCacheInvalidation.test.ts",
-    1
-   ],
-   [
-    "src/hooks/quotes/quoteCacheInvalidation.ts",
     1
    ]
   ]

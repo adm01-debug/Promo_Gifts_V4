@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "7468ec85568fadd04f7b4eb150c319bd85e18085",
+  "commit": "2d5016ccb70062940131c1bb6c57fc2bb6054a35",
   "branch": "main",
-  "data_commit": "2026-11-24T07:16:51-03:00",
+  "data_commit": "2026-11-24T10:19:39-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "2d5016c",
+    "data": "2026-11-24",
+    "assunto": "fix: Gate E40 passa a acusar migration já coberta pelo baseline que mudou depois do dump (#4040)"
+   },
    {
     "sha": "7468ec8",
     "data": "2026-11-24",
@@ -126,11 +131,6 @@
     "sha": "28515a1",
     "data": "2026-11-23",
     "assunto": "feat: Etapa 040 — confirmacao explicita na exclusao em massa (ACH-098) (#4013)"
-   },
-   {
-    "sha": "6fb570a",
-    "data": "2026-11-23",
-    "assunto": "feat: Etapa 043 — url-allowlist em modo observador no webhook-dispatcher (ACH-009) (#4012)"
    }
   ],
   "arquivos_mudados_7d": 670,
@@ -278,6 +278,10 @@
     "mudancas": 4
    },
    {
+    "arquivo": "scripts/drift-baseline.mjs",
+    "mudancas": 4
+   },
+   {
     "arquivo": "src/components/admin/shipping-boxes/__tests__/ShippingBoxesManager.test.tsx",
     "mudancas": 4
    },
@@ -291,10 +295,6 @@
    },
    {
     "arquivo": "src/components/kit-builder/kit-summary/KitPricingCard.tsx",
-    "mudancas": 4
-   },
-   {
-    "arquivo": "src/components/layout/SidebarReorganized.tsx",
     "mudancas": 4
    }
   ],
@@ -314,9 +314,9 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 11252,
+  "arquivos_total": 11253,
   "arquivos_codigo": 5680,
-  "linhas_codigo": 1075734,
+  "linhas_codigo": 1075969,
   "rotas": 141,
   "rotas_http_backend": 13,
   "vistas_por_id": 0,
@@ -1496,7 +1496,7 @@
   },
   "scripts/drift-baseline.mjs": {
    "arquivos": 1,
-   "linhas": 1305
+   "linhas": 1434
   },
   "scripts/dry-run-migration-draft.mjs": {
    "arquivos": 1,
@@ -1532,7 +1532,7 @@
   },
   "scripts/export-schema-snapshot.mjs": {
    "arquivos": 1,
-   "linhas": 310
+   "linhas": 327
   },
   "scripts/extract-types-inventory.mjs": {
    "arquivos": 1,
@@ -2156,7 +2156,7 @@
   },
   "tests/scripts": {
    "arquivos": 182,
-   "linhas": 29282
+   "linhas": 29371
   },
   "tests/search": {
    "arquivos": 1,
@@ -2297,12 +2297,12 @@
    "linhas": 1480
   },
   {
-   "arquivo": "src/components/kit-builder/PersonalizationConfig.tsx",
-   "linhas": 1403
+   "arquivo": "scripts/drift-baseline.mjs",
+   "linhas": 1434
   },
   {
-   "arquivo": "scripts/drift-baseline.mjs",
-   "linhas": 1305
+   "arquivo": "src/components/kit-builder/PersonalizationConfig.tsx",
+   "linhas": 1403
   },
   {
    "arquivo": "src/pages/tools/VisualSearchPage.tsx",
@@ -2652,7 +2652,7 @@
   },
   {
    "arquivo": "scripts/drift-baseline.mjs",
-   "linha": 633,
+   "linha": 762,
    "tipo": "TODO",
    "texto": "objeto (ex.: `.*`, `^create table`, `public`)."
   },
