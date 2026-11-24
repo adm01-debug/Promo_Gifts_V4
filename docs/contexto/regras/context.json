@@ -1,9 +1,9 @@
 {
  "meta": {
-  "sha": "a0daedaf6c63b577d379ca5bf382fa93fa2aaad2",
+  "sha": "18075a906d03872b82ff091ba1887b2f19b57845",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-24 14:24 UTC",
+  "generated_at": "2026-11-24 14:54 UTC",
   "files_total": 11185,
   "code_files": 9178,
   "code_lines": 1302508
@@ -563721,10 +563721,19 @@
   }
  },
  "git": {
-  "sha": "a0daedaf6c63b577d379ca5bf382fa93fa2aaad2",
+  "sha": "18075a906d03872b82ff091ba1887b2f19b57845",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "18075a9",
+    "date": "2026-11-24",
+    "author": "github-actions[bot]",
+    "subject": "docs(migrations-log): recibo E15 — aplicação de 20261124120000 (#4041)",
+    "files": [
+     "supabase/MIGRATIONS_SYNC_LOG.md"
+    ]
+   },
    {
     "sha": "a0daeda",
     "date": "2026-11-24",
@@ -564109,26 +564118,16 @@
      "docs/qa/05-PROGRESSO.md",
      "tests/security/rls-ach013-tautologia.test.ts"
     ]
-   },
-   {
-    "sha": "13b9bae",
-    "date": "2026-11-23",
-    "author": "adm01-debug",
-    "subject": "feat: Etapa 014 — descoberta automática de harnesses /__visual/ no gate de produção (#4010)",
-    "files": [
-     "docs/qa/05-PROGRESSO.md",
-     "scripts/check-production-harnesses.mjs"
-    ]
    }
   ],
   "hot_files": [
    [
     "docs/qa/05-PROGRESSO.md",
-    20
+    19
    ],
    [
     "supabase/MIGRATIONS_SYNC_LOG.md",
-    4
+    5
    ],
    [
     "scripts/drift-baseline.mjs",
