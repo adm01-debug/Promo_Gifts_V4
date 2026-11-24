@@ -1,11 +1,28 @@
-# Resgate: comentarios em orcamento (`quote_comments`) — INERTE
+# Resgate: comentarios em orcamento (`quote_comments`) — ATIVO, PLANO JA EXECUTADO
 
-**Estado: desligado de proposito. Nada nesta pasta roda, builda, importa ou toca o banco.**
+**Estado: reativado e em producao desde 2026-11-20 (PR #3944). Nao ha mais nada para ligar.**
 
-Esta pasta guarda a feature "comentarios em orcamento" inteira e terminada, parada. Ela foi
-cancelada pelo dono e **continua cancelada**. O objetivo deste resgate e so um: se um dia o dono
-decidir reverter o cancelamento, o trabalho ja esta pronto e nao precisa ser reescrito. Ligar e
-decisao dele, num segundo passo, pelo roteiro no fim deste arquivo.
+> Aviso de 26/11/2026. Este README descrevia um resgate **inerte** enquanto a feature estava
+> cancelada. O dono reverteu o cancelamento e o roteiro do fim deste arquivo foi executado ao pe
+> da letra na PR #3944. Quem ler este documento a partir de agora deve trata-lo como **rastro
+> historico**, nao como instrucao. Reconferido contra a `main` `20eb648e89`:
+
+| Peca | Onde esta na main hoje |
+|---|---|
+| Hook | `src/hooks/useQuoteComments.ts` |
+| Componente | `src/components/quotes/QuoteCommentsSection.tsx` |
+| Montagem | `src/pages/quotes/QuoteViewPage.tsx:41` (import) e `:542` (`{id && <QuoteCommentsSection key={id} quoteId={id} />}`) |
+| Migration aplicada | `supabase/migrations/20261120180000_restore_quote_comments_scoped_threads.sql` |
+| Testes | `tests/hooks/useQuoteComments.test.ts`, `tests/components/QuoteCommentsSection.test.tsx` |
+
+Prova byte a byte de que a migration aplicada e o SQL desta pasta sao o mesmo arquivo: sha256 do
+arquivo da main `aec27e3458b5d54992901ca205415ed05fb711893e5b0a8ec783982672327514`; sha256 do SQL
+daqui `ffafbad5c04e75167e425c7684e42a97403591210834b8aabaea944f10eb73cd`. O unico diff entre os
+dois e a linha `-- Rollback:`, que passou a apontar para `20261120180000_rollback.sql`. Versao
+nova, como o roteiro exigia.
+
+Por que o resto deste texto fala em "cancelada": a decisao de 27/06/2026 e o cancelamento
+continuam historicos. O que mudou foi a decisao do dono, em 20/11/2026.
 
 ## Por que a feature esta cancelada
 
@@ -90,14 +107,21 @@ o mesmo hash que a propria branch documentava, o que confirma que a copia nao fo
 - **O que a main ja tem** — `fetch-all-pages`, `AuthContext`, `logger`, `ConfirmDialog`. O hook e o
   componente importam esses modulos de `@/`; nada foi duplicado.
 
-### Nao tocado, e nao deve ser
+### A trava anti-comentarios foi REMOVIDA — nao a recrie
 
-- `scripts/check-no-quote-comments.mjs` — a trava do dono.
-- `.github/workflows/ci-security-drift.yml` — quem a aciona.
-- `e2e/routes/quotes/view-no-comments-network.spec.ts` — spec que ja esta na main e afirma que a
-  pagina de orcamento nao faz chamada de comentarios. Faz parte da trava.
+Os tres arquivos abaixo existiam para manter a feature desligada. A PR #3944 os removeu porque,
+com o codigo de volta em `src/`, a trava passava a reprovar a propria `main`:
 
-Nenhum dos tres foi alterado neste resgate, e nenhuma excecao foi adicionada a eles.
+- `scripts/check-no-quote-comments.mjs` — removido por `cfd7f833bb` (101 linhas deletadas).
+- `e2e/routes/quotes/view-no-comments-network.spec.ts` — removido pelo mesmo commit (39 linhas).
+- `.github/workflows/ci-security-drift.yml` — segue na main, mas **nao aciona mais** essa trava
+  (o passo saiu junto; hoje ele chama `check-tsc-baseline.mjs`, `check-invoke-direct-calls.mjs` e
+  o teste de `check-file-size-baseline`).
+
+**Recriar a trava, afrouxar ou adicionar excecao a ela quebra a CI da main** — ela passaria a
+reprovar `src/hooks/useQuoteComments.ts` e `src/components/quotes/QuoteCommentsSection.tsx`, que
+hoje sao producao. Se voce precisa do texto original por curiosidade historica:
+`git show cfd7f833bb^:scripts/check-no-quote-comments.mjs`.
 
 ## O que o codigo faz (para a decisao de negocio)
 
@@ -119,9 +143,13 @@ Nenhum dos tres foi alterado neste resgate, e nenhuma excecao foi adicionada a e
 A branch pediu uma excecao fora da lista da politica de soft-delete e deixou isso explicito para
 revisao. Veja `testes-sql/README-original.md`.
 
-## Como ligar (roteiro para o dono)
+## Roteiro que ja foi executado (rastro, nao instrucao)
 
-Nesta ordem. Os passos 1 e 7 sao decisoes dele; os outros sao execucao.
+**Executado na PR #3944, em 20/11/2026.** O dono decidiu reverter o cancelamento (passo 1), o SQL
+foi copiado para `supabase/migrations/` com versao nova `20261120180000` (passo 2), `types.ts` foi
+regenerado (passo 3), o codigo foi para `src/` (passo 4), a montagem entrou na pagina viva
+(passo 5), os testes foram para `tests/` (passo 6) e a trava foi decidida — removida (passo 7).
+Os passos abaixo ficam como registro do que era esperado de cada etapa.
 
 1. **Decidir reverter o cancelamento.** Nada abaixo deve ser feito sem isso. O cancelamento de
    27/06 tinha justificativa escrita; convem reler antes.
