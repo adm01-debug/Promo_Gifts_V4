@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.3.2 · commit `2d5016ccb7` · branch `main` · 2026-11-24 13:21 UTC
+> Gerado automaticamente por AI Context Sync v1.3.2 · commit `cbb46a8cc9` · branch `main` · 2026-11-24 13:57 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -6830,7 +6830,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `admin` | `supabase/migrations/20261112120500_fix_optimization_queue_rpcs_dev_access.sql` |
 | `anon` | `tests/edge-functions/live/_live-client.ts` |
 
-## K. Testes como especificação (23707 testes em 2389 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (23710 testes em 2389 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -7122,6 +7122,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `tests/integration/freight-quest/quote-freight-integration.test.ts` | 20 | quote-sync — integração com frete · sync_quote com shipping_type=fob_pre → total inclui frete · sync_quote com shipping_type=cif → total NÃO inclui frete · quoteId inválido (não-UUID) → 400 validation error … |
 | `tests/lib/rbac-permissions.test.ts` | 20 | RBAC Permission Matrix · admin · has access to everything · manager … |
 | `tests/pages/QuoteBuilder.test.ts` | 20 | QuoteBuilder — Item Calculations · calculates single item total · calculates quote subtotal · handles empty items list … |
+| `tests/scripts/check-anon-write-grants.test.mjs` | 20 | loadAllowlist · devolve grants=[] quando o arquivo não existe · lê grants de um arquivo válido · tolera arquivo sem campo grants (array vazio) … |
 | `tests/scripts/check-no-inline-cors.test.mjs` | 20 | check-no-inline-cors — repositório real · passa (exit 0) contra supabase/functions/ real do repo · check-no-inline-cors — cenários básicos · passa quando supabase/functions/ está vazio … |
 | `tests/scripts/inventario-banco.test.mjs` | 20 | extrairInventario · aceita a resposta da Management API, do MCP (texto embrulhado), a linha do psql e o objeto direto · recusa entrada incompleta, vazia ou de outra versao · montarInventario … |
 | `tests/types/quote-types.test.ts` | 20 | QuoteHistoryEntry shape · has all required fields · allows nullable fields · metadata defaults to empty object … |
@@ -7133,7 +7134,6 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `src/lib/auth/__tests__/oauth-error-explainer.test.ts` | 19 | explainOAuthError · config errors (admin needs to act) · mapeia redirect_uri_mismatch com hint sobre console do provedor · detecta redirect uri mismatch pela descrição quando code é genérico … |
 | `src/lib/external-db/rest-native.test.ts` | 19 | isRestNativeEligible · whitelisted COM coluna de busca → elegível mesmo com _search · A1: whitelisted SEM coluna de busca → continua elegível com _search · não-whitelisted → inelegível … |
 | `src/lib/inventory/__tests__/stock-filter.test.ts` | 19 | stock-filter — pipeline de seleção/agregação/montagem · normalize remove acentos e diferencia caixa · selectMatchingVariants retorna todas as variações quando não há filtro de cor · cor  … |
-| `src/lib/lead-time/__tests__/personalizationLeadTime.test.ts` | 19 | resolvePersonalizationLeadTime · prazo registrado vence a tabela: frente = 4 (a faixa 100..499 diria 5) · registrado sem production_days cai na tabela: verso com 100 un = faixa 100..499 = 5 · sem linha cadastrada para o local usa a tabela pela técnica: lateral com 100 un = 5 … |
 | … +2089 linhas — lista completa em `context.json` | | |
 
 ## L. Eventos de webhook tratados (contratos com sistemas externos)

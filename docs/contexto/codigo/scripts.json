@@ -272,7 +272,7 @@
   {
    "arquivo": "scripts/check-anon-write-grants.mjs",
    "descricao": "* check-anon-write-grants.mjs",
-   "linhas": 157,
+   "linhas": 167,
    "env": [],
    "npm_scripts": [],
    "workflows": [

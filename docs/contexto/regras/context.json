@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "2d5016ccb70062940131c1bb6c57fc2bb6054a35",
+  "sha": "cbb46a8cc96fc2a36b7d580ffe2c5d8b272e1408",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-24 13:21 UTC",
-  "files_total": 11181,
-  "code_files": 9174,
-  "code_lines": 1301972
+  "generated_at": "2026-11-24 13:57 UTC",
+  "files_total": 11183,
+  "code_files": 9176,
+  "code_lines": 1302350
  },
  "version": "1.3.2",
- "facts_hash": "ada22b009d90861f",
+ "facts_hash": "add039b2724acbfd",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -1130,7 +1130,7 @@
   ],
   "package_manager": "npm",
   "languages": {
-   ".sql": 3496,
+   ".sql": 3498,
    ".ts": 3179,
    ".tsx": 2026,
    ".mjs": 455,
@@ -96165,6 +96165,7 @@
    "supabase/migrations/20261122100000_compras_views_canonicas.sql",
    "supabase/migrations/20261122180000_restore_definer_views_p06_e_compras.sql",
    "supabase/migrations/20261122200000_fix_cadeia_views_compras_e_compositions.sql",
+   "supabase/migrations/20261124120000_revoke_anon_write_grants_public.sql",
    "supabase/rollbacks/20260511235950_rollback.sql",
    "supabase/rollbacks/20260511235959_rollback.sql",
    "supabase/rollbacks/20260611014515_fn_dryrun_standardize_supplier_real_rollback.sql",
@@ -96296,6 +96297,7 @@
    "supabase/rollbacks/20261122100000_rollback.sql",
    "supabase/rollbacks/20261122180000_rollback.sql",
    "supabase/rollbacks/20261122200000_rollback.sql",
+   "supabase/rollbacks/20261124120000_rollback.sql",
    "supabase/rollbacks/rollback_20261025002500_analyze_tables_p03.sql",
    "supabase/sql-legacy/001_notification_system.sql",
    "supabase/sql-legacy/002_notification_preferences.sql",
@@ -150988,7 +150990,7 @@
   {
    "module": "scripts",
    "files": 300,
-   "lines": 65327,
+   "lines": 65337,
    "tables": [
     "a",
     "b",
@@ -151019,7 +151021,7 @@
     "bundle-size-report.mjs: buildReport",
     "capacity-growth-projection.mjs: computeProjections",
     "check-anon-insert-rate-guard.mjs: REQUIRED_TABLES, LIVE_SQL, validateManifest, computeMissingGuards, migrationCreatesGuard, findPlannedGuards",
-    "check-anon-write-grants.mjs: loadAllowlist, computeViolations",
+    "check-anon-write-grants.mjs: ANON_WRITE_GRANTS_SQL, loadAllowlist, computeViolations",
     "check-chunk-cycles.mjs: auditChunkCycles",
     "check-critical-coverage.mjs: SUMMARY_PATH, TOLERANCE_PP, CRITICAL_MODULES, TRACKED_FILES, findCoverageEntry, getMetricSnapshot",
     "check-dependency-audit.mjs: RISK_REVIEW_DEADLINE, REVIEWED_MINIMATCH_VIA, REVIEWED_MINIMATCH_EFFECTS, REVIEWED_MINIMATCH_RANGES, REVIEWED_PICOMATCH_VIA, evaluateAuditReport",
@@ -153093,8 +153095,8 @@
   },
   {
    "module": "supabase/migrations",
-   "files": 3126,
-   "lines": 227212,
+   "files": 3127,
+   "lines": 227324,
    "tables": [
     "...",
     "admin_audit_log",
@@ -153192,8 +153194,8 @@
   },
   {
    "module": "supabase/rollbacks",
-   "files": 132,
-   "lines": 4910,
+   "files": 133,
+   "lines": 5140,
    "tables": [],
    "exports": [],
    "docs": [],
@@ -153369,7 +153371,7 @@
   {
    "module": "tests",
    "files": 1116,
-   "lines": 176727,
+   "lines": 176753,
    "tables": [
     "bot_detection_log",
     "clients",
@@ -305371,6 +305373,18 @@
     "name": "falha (exit 1) quando o arquivo injetado tem um grant fora da allowlist — reabertura do P1"
    },
    {
+    "file": "tests/scripts/check-anon-write-grants.test.mjs",
+    "name": "ANON_WRITE_GRANTS_SQL"
+   },
+   {
+    "file": "tests/scripts/check-anon-write-grants.test.mjs",
+    "name": "mede por has_table_privilege, não pela view filtrada information_schema"
+   },
+   {
+    "file": "tests/scripts/check-anon-write-grants.test.mjs",
+    "name": "cobre INSERT, UPDATE e DELETE em public no shape {table_name, privilege_type}"
+   },
+   {
     "file": "tests/scripts/check-any-type-baseline.test.mjs",
     "name": "check-any-type-baseline conta múltiplas ocorrências de "
    },
@@ -436973,13 +436987,15 @@
   },
   "scripts/check-anon-write-grants.mjs": {
    "path": "scripts/check-anon-write-grants.mjs",
-   "lines": 157,
+   "lines": 167,
    "exports": [
+    "const ANON_WRITE_GRANTS_SQL",
     "function loadAllowlist",
     "function computeViolations"
    ],
    "rule_comments": [
-    "SQL, nunca PostgREST/OpenAPI — REGRA #8 corolário)."
+    "SQL, nunca PostgREST/OpenAPI — REGRA #8 corolário).",
+    "com o grantor nem com o grantee esconde a linha — o gate não pode depender de quem o"
    ],
    "doc": "!/usr/bin/env node",
    "calc_fns": [
@@ -537285,6 +537301,10 @@
    "lines": 113,
    "uses_service_role": true
   },
+  "supabase/migrations/20261124120000_revoke_anon_write_grants_public.sql": {
+   "path": "supabase/migrations/20261124120000_revoke_anon_write_grants_public.sql",
+   "lines": 112
+  },
   "supabase/rollbacks/20260511235950_rollback.sql": {
    "path": "supabase/rollbacks/20260511235950_rollback.sql",
    "lines": 5
@@ -537827,6 +537847,10 @@
   "supabase/rollbacks/20261122200000_rollback.sql": {
    "path": "supabase/rollbacks/20261122200000_rollback.sql",
    "lines": 17
+  },
+  "supabase/rollbacks/20261124120000_rollback.sql": {
+   "path": "supabase/rollbacks/20261124120000_rollback.sql",
+   "lines": 230
   },
   "supabase/rollbacks/rollback_20261025002500_analyze_tables_p03.sql": {
    "path": "supabase/rollbacks/rollback_20261025002500_analyze_tables_p03.sql",
@@ -556266,8 +556290,11 @@
   },
   "tests/scripts/check-anon-write-grants.test.mjs": {
    "path": "tests/scripts/check-anon-write-grants.test.mjs",
-   "lines": 155,
+   "lines": 181,
    "is_test": true,
+   "rule_comments": [
+    "superusuário vê tudo, sessão alheia esconde a linha. A resposta do gate não pode"
+   ],
    "doc": "PLANO_DBA E22 — testa scripts/check-anon-write-grants.mjs, o gate permanente que falha se `anon` tiver GRANT de INSERT/UPDATE/DELETE em qualquer tabela `public` fora da allowlist deliberadamente vazia (.security/anon-write-grants-allowlist.json). Mesmo padrão de tests/scripts/check-ledger-manifest-d …",
    "tests": [
     "loadAllowlist",
@@ -556286,7 +556313,10 @@
     "degrada para inconclusive (exit 2) com --require-live e sem credenciais",
     "CLI --from-file",
     "passa (exit 0) quando o arquivo injetado não tem grants de escrita para anon",
-    "falha (exit 1) quando o arquivo injetado tem um grant fora da allowlist — reabertura do P1"
+    "falha (exit 1) quando o arquivo injetado tem um grant fora da allowlist — reabertura do P1",
+    "ANON_WRITE_GRANTS_SQL",
+    "mede por has_table_privilege, não pela view filtrada information_schema",
+    "cobre INSERT, UPDATE e DELETE em public no shape {table_name, privilege_type}"
    ]
   },
   "tests/scripts/check-any-type-baseline.test.mjs": {
@@ -563473,10 +563503,24 @@
   }
  },
  "git": {
-  "sha": "2d5016ccb70062940131c1bb6c57fc2bb6054a35",
+  "sha": "cbb46a8cc96fc2a36b7d580ffe2c5d8b272e1408",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "cbb46a8",
+    "date": "2026-11-24",
+    "author": "adm01-debug",
+    "subject": "fix: gate de anon-grants mede pelo catalogo e revoga escrita morta de anon (#4038)",
+    "files": [
+     "docs/SCHEMA_REFERENCE.md",
+     "scripts/check-anon-write-grants.mjs",
+     "supabase/MIGRATIONS_SYNC_LOG.md",
+     "supabase/migrations/20261124120000_revoke_anon_write_grants_public.sql",
+     "supabase/rollbacks/20261124120000_rollback.sql",
+     "tests/scripts/check-anon-write-grants.test.mjs"
+    ]
+   },
    {
     "sha": "2d5016c",
     "date": "2026-11-24",
@@ -563859,15 +563903,6 @@
      "docs/qa/04-PLANO.md",
      "docs/qa/05-PROGRESSO.md"
     ]
-   },
-   {
-    "sha": "ded84e9",
-    "date": "2026-11-22",
-    "author": "github-actions[bot]",
-    "subject": "docs(migrations-log): recibo E15 — aplicação de 20261122200000 (#3992)",
-    "files": [
-     "supabase/MIGRATIONS_SYNC_LOG.md"
-    ]
    }
   ],
   "hot_files": [
@@ -563904,6 +563939,26 @@
     2
    ],
    [
+    "docs/SCHEMA_REFERENCE.md",
+    1
+   ],
+   [
+    "scripts/check-anon-write-grants.mjs",
+    1
+   ],
+   [
+    "supabase/migrations/20261124120000_revoke_anon_write_grants_public.sql",
+    1
+   ],
+   [
+    "supabase/rollbacks/20261124120000_rollback.sql",
+    1
+   ],
+   [
+    "tests/scripts/check-anon-write-grants.test.mjs",
+    1
+   ],
+   [
     "scripts/export-schema-snapshot.mjs",
     1
    ],
@@ -563929,26 +563984,6 @@
    ],
    [
     "supabase/baseline/20261122200000_ledger_versions.json",
-    1
-   ],
-   [
-    "supabase/migrations-snapshot/ALL_IN_ONE.sql",
-    1
-   ],
-   [
-    "supabase/migrations-snapshot/SCHEMA_LIVE.sql",
-    1
-   ],
-   [
-    "supabase/migrations-snapshot/SNAPSHOT_META.json",
-    1
-   ],
-   [
-    ".security/policies-baseline.json",
-    1
-   ],
-   [
-    "docs/qa/querykeys-sem-invalidacao.md",
     1
    ]
   ]

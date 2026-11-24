@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "2d5016ccb70062940131c1bb6c57fc2bb6054a35",
+  "commit": "cbb46a8cc96fc2a36b7d580ffe2c5d8b272e1408",
   "branch": "main",
-  "data_commit": "2026-11-24T10:19:39-03:00",
+  "data_commit": "2026-11-24T10:55:53-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "cbb46a8",
+    "data": "2026-11-24",
+    "assunto": "fix: gate de anon-grants mede pelo catalogo e revoga escrita morta de anon (#4038)"
+   },
    {
     "sha": "2d5016c",
     "data": "2026-11-24",
@@ -126,14 +131,9 @@
     "sha": "ec29a17",
     "data": "2026-11-23",
     "assunto": "fix: Etapa 045 — exigir auth antes de responder op=ping no crm-db-bridge (ACH-030) (#4014)"
-   },
-   {
-    "sha": "28515a1",
-    "data": "2026-11-23",
-    "assunto": "feat: Etapa 040 — confirmacao explicita na exclusao em massa (ACH-098) (#4013)"
    }
   ],
-  "arquivos_mudados_7d": 670,
+  "arquivos_mudados_7d": 674,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -301,11 +301,11 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 256
+    "commits": 257
    },
    {
     "autor": "github-actions[bot]",
-    "commits": 43
+    "commits": 42
    },
    {
     "autor": "dependabot[bot]",
@@ -314,9 +314,9 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 11253,
+  "arquivos_total": 11255,
   "arquivos_codigo": 5680,
-  "linhas_codigo": 1075969,
+  "linhas_codigo": 1076005,
   "rotas": 141,
   "rotas_http_backend": 13,
   "vistas_por_id": 0,
@@ -326,7 +326,7 @@
   "hooks": 646,
   "edge_functions": 112,
   "tabelas": 531,
-  "migrations": 3127,
+  "migrations": 3128,
   "cron_jobs": 122,
   "testes": 2722,
   "workflows": 89,
@@ -996,7 +996,7 @@
   },
   "scripts/check-anon-write-grants.mjs": {
    "arquivos": 1,
-   "linhas": 157
+   "linhas": 167
   },
   "scripts/check-any-type-baseline.mjs": {
    "arquivos": 1,
@@ -2156,7 +2156,7 @@
   },
   "tests/scripts": {
    "arquivos": 182,
-   "linhas": 29371
+   "linhas": 29397
   },
   "tests/search": {
    "arquivos": 1,

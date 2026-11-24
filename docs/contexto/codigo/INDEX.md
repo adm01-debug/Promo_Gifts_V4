@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e de hora em hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `2d5016ccb70062940131c1bb6c57fc2bb6054a35` (2026-11-24T10:19:39-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e de hora em hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `cbb46a8cc96fc2a36b7d580ffe2c5d8b272e1408` (2026-11-24T10:55:53-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -14,7 +14,7 @@ Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR
 Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua tarefa; não carregue tudo.
 
 ## Stack
-- linguagens: TypeScript (5205), SQL (3496), Markdown (1507), JavaScript (462), JSON (133), YAML (117), Shell (27), HTML (20)
+- linguagens: TypeScript (5205), SQL (3498), Markdown (1507), JavaScript (462), JSON (133), YAML (117), Shell (27), HTML (20)
 - linguagem_principal: TypeScript
 - framework: React
 - backend_http: n/d
@@ -34,9 +34,9 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 ## Números
 | item | qtd |
 |---|---|
-| arquivos_total | 11253 |
+| arquivos_total | 11255 |
 | arquivos_codigo | 5680 |
-| linhas_codigo | 1075969 |
+| linhas_codigo | 1076005 |
 | rotas | 141 |
 | rotas_http_backend | 13 |
 | vistas_por_id | 0 |
@@ -46,7 +46,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 | hooks | 646 |
 | edge_functions | 112 |
 | tabelas | 531 |
-| migrations | 3127 |
+| migrations | 3128 |
 | cron_jobs | 122 |
 | testes | 2722 |
 | workflows | 89 |
@@ -599,8 +599,8 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - possiveis_segredos_no_codigo: 7 — ex.: scripts/ai-context/cenarios.mjs:102, src/components/admin/connections/__tests__/ConnectionSecurity.unit.test.tsx:9, src/integrations/supabase/client.ts:27
 
 ## Grafo de código (graphify)
-- 50933 nós · 86369 arestas · 2876 comunidades · grafo do commit `2d5016cc`
-- comunidades maiores: ref_components (763), ref_hooks (746), ref_integrations (614), vitest (610), ref_node_child_process (469), @tanstack/react-query (426), ref_utils (396), ref_types (364), ref_node_fs (349), react (340), gotoAndSettle (338), react-router-dom (325)
+- 50933 nós · 86370 arestas · 2916 comunidades · grafo do commit `cbb46a8c`
+- comunidades maiores: vitest (884), ref_components (787), ref_integrations (597), ref_node_child_process (490), ref_lib (484), @tanstack/react-query (440), ref_hooks (411), ref_types (396), react-router-dom (356), gotoAndSettle (338), sonner (338), ref_utils (321)
 - símbolos mais chamados: gotoAndSettle() (e2e/helpers/nav.ts), re (?), json (?), q() (scripts/supabase_snapshot/snapshot.py), analyze() (tests/scripts/test_personalization_artifact_diagnostics.py), outer() (tests/scripts/test_personalization_artifact_diagnostics.py), useExternalDatabase() (recovery/src-legacy/src/hooks/useExternalDatabase.ts), concludeCheck() (scripts/check-result-contract.mjs), querySupabaseReadOnly() (scripts/supabase-read-only-query.mjs), loginAs() (e2e/helpers/auth.ts), inner() (tests/scripts/test_personalization_artifact_diagnostics.py), excluded_sql() (scripts/supabase_snapshot/snapshot.py)
 - consulta local: `graphify query "<pergunta>"`, `graphify path "<A>" "<B>"`, `graphify explain "<X>"`
 
@@ -1162,7 +1162,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - `docs/RUNBOOK_COLAPSO_2026-05-24.md` — 🚨 Runbook — Colapso Promo Gifts v4 (2026-05-24) (154 linhas)
 - `docs/RUNBOOK_CONNECTIONS.md` — 🔌 Runbook — Módulo `/admin/conexoes` (261 linhas)
 - `docs/RUNBOOK_QUOTE_NUMBER_HARDENING.md` — Runbook — Hardening do `generate_quote_number` (143 linhas)
-- `docs/SCHEMA_REFERENCE.md` — SCHEMA_REFERENCE.md — Banco Canônico PromoGifts (Gold/Medallion) (482 linhas)
+- `docs/SCHEMA_REFERENCE.md` — SCHEMA_REFERENCE.md — Banco Canônico PromoGifts (Gold/Medallion) (513 linhas)
 - `docs/SECURITY-DEFINER-PATTERN.md` — Padrão SECURITY DEFINER + RLS no PromoGifts (164 linhas)
 - `docs/SECURITY.md` — Security Best Practices (23 linhas)
 - `docs/SECURITY_ALERTS.md` — 🛡️ Security Alerts — Configuração Completa (95 linhas)
@@ -1198,6 +1198,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - CHANGELOG topo: [1.19.0](https://github.com/adm01-debug/Promo_Gifts_V4/compare/gifts-store-v1.18.0...gifts-store-v1.19.0) (2026-11-22)
 
 ## Últimos commits
+- 2026-11-24 `cbb46a8` fix: gate de anon-grants mede pelo catalogo e revoga escrita morta de anon (#4038)
 - 2026-11-24 `2d5016c` fix: Gate E40 passa a acusar migration já coberta pelo baseline que mudou depois do dump (#4040)
 - 2026-11-24 `7468ec8` fix: zera ruido de round-trip no Gate E40 (#4035)
 - 2026-11-24 `e87db75` feat(security): etapa 006 — registrar v_compras_catalogo e v_compras_precos_faixa no contrato (#4008)
@@ -1212,7 +1213,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-23 `35aa001` fix(qa): etapas 131-135 - baseline da suite e testes do kit-builder (#4025)
 - 2026-11-23 `06620fc` chore(security): documentar deny-all das 6 tabelas de auditoria no allowlist de RLS (#4028)
 - 2026-11-23 `d9b382b` chore: consolidar baselines de ratchet (as-assertions, file-size, eslint-disable) (#4027)
-- 2026-11-23 `075a1e0` fix: referencia completa da migration do orcamento em 05-PROGRESSO (#4026)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

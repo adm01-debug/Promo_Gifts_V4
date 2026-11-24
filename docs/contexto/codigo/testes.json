@@ -20899,11 +20899,11 @@
   {
    "arquivo": "tests/scripts/check-anon-write-grants.test.mjs",
    "tipo": "unit",
-   "linhas": 155,
+   "linhas": 181,
    "testa": [
     "scripts/check-anon-write-grants.mjs"
    ],
-   "casos": 13
+   "casos": 15
   },
   {
    "arquivo": "tests/scripts/check-any-type-baseline.test.mjs",

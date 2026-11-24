@@ -4,7 +4,7 @@
  "stack": {
   "linguagens": [
    "TypeScript (5205)",
-   "SQL (3496)",
+   "SQL (3498)",
    "Markdown (1507)",
    "JavaScript (462)",
    "JSON (133)",
@@ -4095,7 +4095,7 @@
   {
    "arquivo": "docs/SCHEMA_REFERENCE.md",
    "titulo": "SCHEMA_REFERENCE.md — Banco Canônico PromoGifts (Gold/Medallion)",
-   "linhas": 482
+   "linhas": 513
   },
   {
    "arquivo": "docs/SECURITY-DEFINER-PATTERN.md",
