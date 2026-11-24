@@ -77,6 +77,5 @@ _nenhum_
 
 | role | privilégios |
 |---|---|
-| anon | INSERT, REFERENCES, TRIGGER |
 | authenticated | INSERT, REFERENCES, SELECT, TRIGGER |
 | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |

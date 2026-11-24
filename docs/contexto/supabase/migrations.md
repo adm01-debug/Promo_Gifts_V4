@@ -3012,3 +3012,5 @@ SQL em `migrations/<versao>_<nome>.sql`. Mudanças feitas pelo Dashboard/SQL Edi
 | 20261122100000 | [compras_views_canonicas](migrations/20261122100000_compras_views_canonicas.sql) | 9 |
 | 20261122180000 | [restore_definer_views_p06_e_compras](migrations/20261122180000_restore_definer_views_p06_e_compras.sql) | 15 |
 | 20261122200000 | [fix_cadeia_views_compras_e_compositions](migrations/20261122200000_fix_cadeia_views_compras_e_compositions.sql) | 7 |
+| 20261124120000 | [revoke_anon_write_grants_public](migrations/20261124120000_revoke_anon_write_grants_public.sql) | 2 |
+| 20261124140000 | [close_anon_cost_surface](migrations/20261124140000_close_anon_cost_surface.sql) | 9 |

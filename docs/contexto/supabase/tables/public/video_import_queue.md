@@ -114,6 +114,5 @@ Consumida pelo VPS /workspace/xbz_video_import.js em background.
 
 | role | privilégios |
 |---|---|
-| anon | DELETE, INSERT, REFERENCES, TRIGGER, UPDATE |
 | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |

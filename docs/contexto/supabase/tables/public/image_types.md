@@ -146,6 +146,5 @@ cada tipo é um registro com metadados que controlam comportamento no frontend e
 
 | role | privilégios |
 |---|---|
-| anon | DELETE, INSERT, REFERENCES, TRIGGER, UPDATE |
 | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |

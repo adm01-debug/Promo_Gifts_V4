@@ -142493,9 +142493,13 @@
             {
               "file": "supabase/migrations/20261114170921_fix_rls_orders_order_items_seller_scope.sql",
               "hits": 12
+            },
+            {
+              "file": "supabase/migrations/20261124140000_close_anon_cost_surface.sql",
+              "hits": 4
             }
           ],
-          "code_total_files": 18,
+          "code_total_files": 19,
           "cron": [],
           "db": [],
           "triggers": [],
@@ -195753,13 +195757,6 @@
         },
         {
           "column": "default_markup_percent",
-          "grantee": "anon",
-          "privileges": "SELECT",
-          "schema": "public",
-          "table": "suppliers"
-        },
-        {
-          "column": "default_markup_percent",
           "grantee": "authenticated",
           "privileges": "SELECT",
           "schema": "public",
@@ -196948,12 +196945,6 @@
           "table": "ai_providers"
         },
         {
-          "grantee": "anon",
-          "privileges": "DELETE, INSERT, REFERENCES, TRIGGER, UPDATE",
-          "schema": "public",
-          "table": "ai_routing_decisions"
-        },
-        {
           "grantee": "authenticated",
           "privileges": "DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE",
           "schema": "public",
@@ -196964,12 +196955,6 @@
           "privileges": "DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE",
           "schema": "public",
           "table": "ai_routing_decisions"
-        },
-        {
-          "grantee": "anon",
-          "privileges": "DELETE, INSERT, REFERENCES, TRIGGER, UPDATE",
-          "schema": "public",
-          "table": "ai_usage_events"
         },
         {
           "grantee": "authenticated",
@@ -196994,12 +196979,6 @@
           "privileges": "DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE",
           "schema": "public",
           "table": "ai_usage_logs"
-        },
-        {
-          "grantee": "anon",
-          "privileges": "DELETE, INSERT, REFERENCES, TRIGGER, UPDATE",
-          "schema": "public",
-          "table": "ai_usage_quotas"
         },
         {
           "grantee": "authenticated",
@@ -197050,12 +197029,6 @@
           "table": "anon_insert_rate"
         },
         {
-          "grantee": "anon",
-          "privileges": "DELETE, INSERT, REFERENCES, TRIGGER, UPDATE",
-          "schema": "public",
-          "table": "art_file_attachments"
-        },
-        {
           "grantee": "authenticated",
           "privileges": "DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE",
           "schema": "public",
@@ -197120,12 +197093,6 @@
           "privileges": "DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE",
           "schema": "public",
           "table": "attribute_definitions"
-        },
-        {
-          "grantee": "anon",
-          "privileges": "DELETE, INSERT, REFERENCES, TRIGGER, UPDATE",
-          "schema": "public",
-          "table": "attribute_equivalences"
         },
         {
           "grantee": "authenticated",
@@ -197170,12 +197137,6 @@
           "table": "audit_log"
         },
         {
-          "grantee": "anon",
-          "privileges": "INSERT, REFERENCES, TRIGGER",
-          "schema": "public",
-          "table": "audit_log_gravacao"
-        },
-        {
           "grantee": "authenticated",
           "privileges": "INSERT, REFERENCES, SELECT, TRIGGER",
           "schema": "public",
@@ -197188,12 +197149,6 @@
           "table": "audit_log_gravacao"
         },
         {
-          "grantee": "anon",
-          "privileges": "DELETE, INSERT, REFERENCES, TRIGGER, UPDATE",
-          "schema": "public",
-          "table": "auto_tag_rules"
-        },
-        {
           "grantee": "authenticated",
           "privileges": "DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE",
           "schema": "public",
@@ -197206,12 +197161,6 @@
           "table": "auto_tag_rules"
         },
         {
-          "grantee": "anon",
-          "privileges": "DELETE, INSERT, REFERENCES, TRIGGER, UPDATE",
-          "schema": "public",
-          "table": "b2b_collection_products"
-        },
-        {
           "grantee": "authenticated",
           "privileges": "DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE",
           "schema": "public",
@@ -197222,12 +197171,6 @@
           "privileges": "DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE",
           "schema": "public",
           "table": "b2b_collection_products"
-        },
-        {
-          "grantee": "anon",
-          "privileges": "DELETE, INSERT, REFERENCES, TRIGGER, UPDATE",
-          "schema": "public",
-          "table": "b2b_collections"
         },
         {
           "grantee": "authenticated",
@@ -197320,12 +197263,6 @@
           "table": "business_calendar"
         },
         {
-          "grantee": "anon",
-          "privileges": "DELETE, INSERT, REFERENCES, TRIGGER, UPDATE",
-          "schema": "public",
-          "table": "cart_templates"
-        },
-        {
           "grantee": "authenticated",
           "privileges": "DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE",
           "schema": "public",
@@ -197386,12 +197323,6 @@
           "table": "categories_tree_visual"
         },
         {
-          "grantee": "anon",
-          "privileges": "DELETE, INSERT, REFERENCES, TRIGGER, UPDATE",
-          "schema": "public",
-          "table": "category_accessory_categories"
-        },
-        {
           "grantee": "authenticated",
           "privileges": "DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE",
           "schema": "public",
@@ -197402,12 +197333,6 @@
           "privileges": "DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE",
           "schema": "public",
           "table": "category_accessory_categories"
-        },
-        {
-          "grantee": "anon",
-          "privileges": "DELETE, INSERT, REFERENCES, TRIGGER, UPDATE",
-          "schema": "public",
-          "table": "category_ancestors"
         },
         {
           "grantee": "authenticated",
@@ -197434,12 +197359,6 @@
           "table": "category_attributes"
         },
         {
-          "grantee": "anon",
-          "privileges": "DELETE, INSERT, REFERENCES, TRIGGER, UPDATE",
-          "schema": "public",
-          "table": "category_colors"
-        },
-        {
           "grantee": "authenticated",
           "privileges": "DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE",
           "schema": "public",
@@ -197452,12 +197371,6 @@
           "table": "category_colors"
         },
         {
-          "grantee": "anon",
-          "privileges": "DELETE, INSERT, REFERENCES, TRIGGER, UPDATE",
-          "schema": "public",
-          "table": "category_commemorative_dates"
-        },
-        {
           "grantee": "authenticated",
           "privileges": "DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE",
           "schema": "public",
@@ -197468,12 +197381,6 @@
           "privileges": "DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE",
           "schema": "public",
           "table": "category_commemorative_dates"
-        },
-        {
-          "grantee": "anon",
-          "privileges": "DELETE, INSERT, REFERENCES, TRIGGER, UPDATE",
-          "schema": "public",
-          "table": "category_copywriting_config"
         },
         {
           "grantee": "authenticated",
@@ -197500,12 +197407,6 @@
           "table": "category_icons"
         },
         {
-          "grantee": "anon",
-          "privileges": "DELETE, INSERT, REFERENCES, TRIGGER, UPDATE",
-          "schema": "public",
-          "table": "category_relationships"
-        },
-        {
           "grantee": "authenticated",
           "privileges": "DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE",
           "schema": "public",
@@ -197518,12 +197419,6 @@
           "table": "category_relationships"
         },
         {
-          "grantee": "anon",
-          "privileges": "DELETE, INSERT, REFERENCES, TRIGGER, UPDATE",
-          "schema": "public",
-          "table": "category_target_audiences"
-        },
-        {
           "grantee": "authenticated",
           "privileges": "DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE",
           "schema": "public",
@@ -197534,12 +197429,6 @@
           "privileges": "DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE",
           "schema": "public",
           "table": "category_target_audiences"
-        },
-        {
-          "grantee": "anon",
-          "privileges": "DELETE, INSERT, REFERENCES, TRIGGER, UPDATE",
-          "schema": "public",
-          "table": "category_variation_types"
         },
         {
           "grantee": "authenticated",
@@ -197572,12 +197461,6 @@
           "table": "city_whitelist"
         },
         {
-          "grantee": "anon",
-          "privileges": "DELETE, INSERT, REFERENCES, TRIGGER, UPDATE",
-          "schema": "public",
-          "table": "classify_functions_registry"
-        },
-        {
           "grantee": "authenticated",
           "privileges": "DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE",
           "schema": "public",
@@ -197624,12 +197507,6 @@
           "privileges": "DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE",
           "schema": "public",
           "table": "collection_item_reactions"
-        },
-        {
-          "grantee": "anon",
-          "privileges": "DELETE, INSERT, REFERENCES, TRIGGER, UPDATE",
-          "schema": "public",
-          "table": "collection_items"
         },
         {
           "grantee": "authenticated",
@@ -197884,12 +197761,6 @@
           "table": "comparison_reactions"
         },
         {
-          "grantee": "anon",
-          "privileges": "DELETE, INSERT, REFERENCES, TRIGGER, UPDATE",
-          "schema": "public",
-          "table": "component_media"
-        },
-        {
           "grantee": "authenticated",
           "privileges": "DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE",
           "schema": "public",
@@ -197900,12 +197771,6 @@
           "privileges": "DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE",
           "schema": "public",
           "table": "component_media"
-        },
-        {
-          "grantee": "anon",
-          "privileges": "DELETE, INSERT, REFERENCES, TRIGGER, UPDATE",
-          "schema": "public",
-          "table": "connection_test_history"
         },
         {
           "grantee": "authenticated",
@@ -197921,7 +197786,7 @@
         },
         {
           "grantee": "anon",
-          "privileges": "DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE",
+          "privileges": "SELECT",
           "schema": "public",
           "table": "content_articles"
         },
@@ -197950,12 +197815,6 @@
           "table": "conversation_audit_logs"
         },
         {
-          "grantee": "anon",
-          "privileges": "DELETE, INSERT, REFERENCES, TRIGGER, UPDATE",
-          "schema": "public",
-          "table": "conversation_delivery_status"
-        },
-        {
           "grantee": "authenticated",
           "privileges": "DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE",
           "schema": "public",
@@ -197966,12 +197825,6 @@
           "privileges": "DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE",
           "schema": "public",
           "table": "conversation_delivery_status"
-        },
-        {
-          "grantee": "anon",
-          "privileges": "DELETE, INSERT, REFERENCES, TRIGGER, UPDATE",
-          "schema": "public",
-          "table": "conversation_event_history"
         },
         {
           "grantee": "authenticated",
@@ -198038,12 +197891,6 @@
           "privileges": "DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE",
           "schema": "public",
           "table": "cover_types"
-        },
-        {
-          "grantee": "anon",
-          "privileges": "DELETE, INSERT, REFERENCES, TRIGGER, UPDATE",
-          "schema": "public",
-          "table": "crm_callback_events"
         },
         {
           "grantee": "authenticated",
@@ -198100,12 +197947,6 @@
           "table": "cron_watchdog_log"
         },
         {
-          "grantee": "anon",
-          "privileges": "DELETE, INSERT, REFERENCES, TRIGGER, UPDATE",
-          "schema": "public",
-          "table": "custom_kits"
-        },
-        {
           "grantee": "authenticated",
           "privileges": "DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE",
           "schema": "public",
@@ -198116,12 +197957,6 @@
           "privileges": "DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE",
           "schema": "public",
           "table": "custom_kits"
-        },
-        {
-          "grantee": "anon",
-          "privileges": "DELETE, INSERT, REFERENCES, TRIGGER, UPDATE",
-          "schema": "public",
-          "table": "dashboard_insights_cache"
         },
         {
           "grantee": "authenticated",
@@ -198208,12 +198043,6 @@
           "table": "e2e_cleanup_rate_limit"
         },
         {
-          "grantee": "anon",
-          "privileges": "DELETE, INSERT, REFERENCES, TRIGGER, UPDATE",
-          "schema": "public",
-          "table": "eco_backfill_log_20260625"
-        },
-        {
           "grantee": "authenticated",
           "privileges": "DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE",
           "schema": "public",
@@ -198224,12 +198053,6 @@
           "privileges": "DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE",
           "schema": "public",
           "table": "eco_backfill_log_20260625"
-        },
-        {
-          "grantee": "anon",
-          "privileges": "DELETE, INSERT, REFERENCES, TRIGGER, UPDATE",
-          "schema": "public",
-          "table": "eco_date_reconcile_log_20260626"
         },
         {
           "grantee": "authenticated",
@@ -198244,12 +198067,6 @@
           "table": "eco_date_reconcile_log_20260626"
         },
         {
-          "grantee": "anon",
-          "privileges": "DELETE, INSERT, REFERENCES, TRIGGER, UPDATE",
-          "schema": "public",
-          "table": "eco_material_config"
-        },
-        {
           "grantee": "authenticated",
           "privileges": "DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE",
           "schema": "public",
@@ -198260,12 +198077,6 @@
           "privileges": "DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE",
           "schema": "public",
           "table": "eco_material_config"
-        },
-        {
-          "grantee": "anon",
-          "privileges": "DELETE, INSERT, REFERENCES, TRIGGER, UPDATE",
-          "schema": "public",
-          "table": "edge_function_invocations"
         },
         {
           "grantee": "authenticated",
@@ -198346,12 +198157,6 @@
           "table": "enrichment_log"
         },
         {
-          "grantee": "anon",
-          "privileges": "DELETE, INSERT, REFERENCES, TRIGGER, UPDATE",
-          "schema": "public",
-          "table": "expert_conversations"
-        },
-        {
           "grantee": "authenticated",
           "privileges": "DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE",
           "schema": "public",
@@ -198362,12 +198167,6 @@
           "privileges": "DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE",
           "schema": "public",
           "table": "expert_conversations"
-        },
-        {
-          "grantee": "anon",
-          "privileges": "DELETE, INSERT, REFERENCES, TRIGGER, UPDATE",
-          "schema": "public",
-          "table": "expert_messages"
         },
         {
           "grantee": "authenticated",
@@ -198394,12 +198193,6 @@
           "table": "external_connections"
         },
         {
-          "grantee": "anon",
-          "privileges": "DELETE, INSERT, REFERENCES, TRIGGER, UPDATE",
-          "schema": "public",
-          "table": "external_connections_sync_log"
-        },
-        {
           "grantee": "authenticated",
           "privileges": "DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE",
           "schema": "public",
@@ -198431,7 +198224,7 @@
         },
         {
           "grantee": "anon",
-          "privileges": "DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE",
+          "privileges": "SELECT",
           "schema": "public",
           "table": "favorite_items"
         },
@@ -198448,12 +198241,6 @@
           "table": "favorite_items"
         },
         {
-          "grantee": "anon",
-          "privileges": "DELETE, INSERT, REFERENCES, TRIGGER, UPDATE",
-          "schema": "public",
-          "table": "favorite_items_trash"
-        },
-        {
           "grantee": "authenticated",
           "privileges": "DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE",
           "schema": "public",
@@ -198467,7 +198254,7 @@
         },
         {
           "grantee": "anon",
-          "privileges": "DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE",
+          "privileges": "SELECT",
           "schema": "public",
           "table": "favorite_lists"
         },
@@ -198484,12 +198271,6 @@
           "table": "favorite_lists"
         },
         {
-          "grantee": "anon",
-          "privileges": "DELETE, INSERT, REFERENCES, TRIGGER, UPDATE",
-          "schema": "public",
-          "table": "feminine_color_config"
-        },
-        {
           "grantee": "authenticated",
           "privileges": "DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE",
           "schema": "public",
@@ -198502,12 +198283,6 @@
           "table": "feminine_color_config"
         },
         {
-          "grantee": "anon",
-          "privileges": "DELETE, INSERT, REFERENCES, TRIGGER, UPDATE",
-          "schema": "public",
-          "table": "file_scan_logs"
-        },
-        {
           "grantee": "authenticated",
           "privileges": "DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE",
           "schema": "public",
@@ -198518,12 +198293,6 @@
           "privileges": "DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE",
           "schema": "public",
           "table": "file_scan_logs"
-        },
-        {
-          "grantee": "anon",
-          "privileges": "DELETE, INSERT, REFERENCES, TRIGGER, UPDATE",
-          "schema": "public",
-          "table": "follow_up_reminders"
         },
         {
           "grantee": "authenticated",
@@ -198568,12 +198337,6 @@
           "table": "frontend_telemetry"
         },
         {
-          "grantee": "anon",
-          "privileges": "DELETE, INSERT, REFERENCES, TRIGGER, UPDATE",
-          "schema": "public",
-          "table": "generated_mockups"
-        },
-        {
           "grantee": "authenticated",
           "privileges": "DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE",
           "schema": "public",
@@ -198586,12 +198349,6 @@
           "table": "generated_mockups"
         },
         {
-          "grantee": "anon",
-          "privileges": "DELETE, INSERT, REFERENCES, TRIGGER, UPDATE",
-          "schema": "public",
-          "table": "geo_allowed_countries"
-        },
-        {
           "grantee": "authenticated",
           "privileges": "DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE",
           "schema": "public",
@@ -198602,12 +198359,6 @@
           "privileges": "DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE",
           "schema": "public",
           "table": "geo_allowed_countries"
-        },
-        {
-          "grantee": "anon",
-          "privileges": "DELETE, INSERT, REFERENCES, TRIGGER, UPDATE",
-          "schema": "public",
-          "table": "hardening_health_snapshots"
         },
         {
           "grantee": "authenticated",
@@ -198628,12 +198379,6 @@
           "table": "image_backfill_queue"
         },
         {
-          "grantee": "anon",
-          "privileges": "DELETE, INSERT, REFERENCES, TRIGGER, UPDATE",
-          "schema": "public",
-          "table": "image_types"
-        },
-        {
           "grantee": "authenticated",
           "privileges": "DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE",
           "schema": "public",
@@ -198644,12 +198389,6 @@
           "privileges": "DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE",
           "schema": "public",
           "table": "image_types"
-        },
-        {
-          "grantee": "anon",
-          "privileges": "DELETE, INSERT, REFERENCES, TRIGGER, UPDATE",
-          "schema": "public",
-          "table": "import_pipeline_steps"
         },
         {
           "grantee": "authenticated",
@@ -198664,12 +198403,6 @@
           "table": "import_pipeline_steps"
         },
         {
-          "grantee": "anon",
-          "privileges": "DELETE, INSERT, REFERENCES, TRIGGER, UPDATE",
-          "schema": "public",
-          "table": "inbound_webhook_endpoints"
-        },
-        {
           "grantee": "authenticated",
           "privileges": "DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE",
           "schema": "public",
@@ -198680,12 +198413,6 @@
           "privileges": "DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE",
           "schema": "public",
           "table": "inbound_webhook_endpoints"
-        },
-        {
-          "grantee": "anon",
-          "privileges": "DELETE, INSERT, REFERENCES, TRIGGER, UPDATE",
-          "schema": "public",
-          "table": "inbound_webhook_events"
         },
         {
           "grantee": "authenticated",
@@ -198700,12 +198427,6 @@
           "table": "inbound_webhook_events"
         },
         {
-          "grantee": "anon",
-          "privileges": "DELETE, INSERT, REFERENCES, TRIGGER, UPDATE",
-          "schema": "public",
-          "table": "included_packaging_print_areas"
-        },
-        {
           "grantee": "authenticated",
           "privileges": "DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE",
           "schema": "public",
@@ -198716,12 +198437,6 @@
           "privileges": "DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE",
           "schema": "public",
           "table": "included_packaging_print_areas"
-        },
-        {
-          "grantee": "anon",
-          "privileges": "DELETE, INSERT, REFERENCES, TRIGGER, UPDATE",
-          "schema": "public",
-          "table": "included_packaging_techniques"
         },
         {
           "grantee": "authenticated",
@@ -198808,12 +198523,6 @@
           "table": "kill_switch_hits"
         },
         {
-          "grantee": "anon",
-          "privileges": "DELETE, INSERT, REFERENCES, TRIGGER, UPDATE",
-          "schema": "public",
-          "table": "kit_collaborators"
-        },
-        {
           "grantee": "authenticated",
           "privileges": "DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE",
           "schema": "public",
@@ -198824,12 +198533,6 @@
           "privileges": "DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE",
           "schema": "public",
           "table": "kit_collaborators"
-        },
-        {
-          "grantee": "anon",
-          "privileges": "DELETE, INSERT, REFERENCES, TRIGGER, UPDATE",
-          "schema": "public",
-          "table": "kit_comments"
         },
         {
           "grantee": "authenticated",
@@ -198844,12 +198547,6 @@
           "table": "kit_comments"
         },
         {
-          "grantee": "anon",
-          "privileges": "DELETE, INSERT, REFERENCES, TRIGGER, UPDATE",
-          "schema": "public",
-          "table": "kit_component_enrichment_raw"
-        },
-        {
           "grantee": "authenticated",
           "privileges": "DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE",
           "schema": "public",
@@ -198862,12 +198559,6 @@
           "table": "kit_component_enrichment_raw"
         },
         {
-          "grantee": "anon",
-          "privileges": "DELETE, INSERT, REFERENCES, TRIGGER, UPDATE",
-          "schema": "public",
-          "table": "kit_component_ficha_staging"
-        },
-        {
           "grantee": "authenticated",
           "privileges": "DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE",
           "schema": "public",
@@ -198878,12 +198569,6 @@
           "privileges": "DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE",
           "schema": "public",
           "table": "kit_component_ficha_staging"
-        },
-        {
-          "grantee": "anon",
-          "privileges": "DELETE, INSERT, REFERENCES, TRIGGER, UPDATE",
-          "schema": "public",
-          "table": "kit_component_padronizacao"
         },
         {
           "grantee": "authenticated",
@@ -198922,12 +198607,6 @@
           "table": "kit_component_types"
         },
         {
-          "grantee": "anon",
-          "privileges": "DELETE, INSERT, REFERENCES, TRIGGER, UPDATE",
-          "schema": "public",
-          "table": "kit_component_variant_skus"
-        },
-        {
           "grantee": "authenticated",
           "privileges": "DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE",
           "schema": "public",
@@ -198938,12 +198617,6 @@
           "privileges": "DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE",
           "schema": "public",
           "table": "kit_component_variant_skus"
-        },
-        {
-          "grantee": "anon",
-          "privileges": "DELETE, INSERT, REFERENCES, TRIGGER, UPDATE",
-          "schema": "public",
-          "table": "kit_ficha_session_log"
         },
         {
           "grantee": "authenticated",
@@ -198994,12 +198667,6 @@
           "table": "kit_save_requests"
         },
         {
-          "grantee": "anon",
-          "privileges": "DELETE, INSERT, REFERENCES, TRIGGER, UPDATE",
-          "schema": "public",
-          "table": "kit_share_tokens"
-        },
-        {
           "grantee": "authenticated",
           "privileges": "DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE",
           "schema": "public",
@@ -199010,12 +198677,6 @@
           "privileges": "DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE",
           "schema": "public",
           "table": "kit_share_tokens"
-        },
-        {
-          "grantee": "anon",
-          "privileges": "DELETE, INSERT, REFERENCES, TRIGGER, UPDATE",
-          "schema": "public",
-          "table": "kit_templates"
         },
         {
           "grantee": "authenticated",
@@ -199031,7 +198692,7 @@
         },
         {
           "grantee": "anon",
-          "privileges": "DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE",
+          "privileges": "SELECT",
           "schema": "public",
           "table": "kit_typical_dims"
         },
@@ -199210,12 +198871,6 @@
           "table": "magazine_templates_catalog"
         },
         {
-          "grantee": "anon",
-          "privileges": "DELETE, INSERT, REFERENCES, TRIGGER, UPDATE",
-          "schema": "public",
-          "table": "magazine_view_rollup_watermark"
-        },
-        {
           "grantee": "authenticated",
           "privileges": "DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE",
           "schema": "public",
@@ -199240,12 +198895,6 @@
           "table": "magazines"
         },
         {
-          "grantee": "anon",
-          "privileges": "DELETE, INSERT, REFERENCES, TRIGGER, UPDATE",
-          "schema": "public",
-          "table": "magic_up_brand_kits"
-        },
-        {
           "grantee": "authenticated",
           "privileges": "DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE",
           "schema": "public",
@@ -199256,12 +198905,6 @@
           "privileges": "DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE",
           "schema": "public",
           "table": "magic_up_brand_kits"
-        },
-        {
-          "grantee": "anon",
-          "privileges": "DELETE, INSERT, REFERENCES, TRIGGER, UPDATE",
-          "schema": "public",
-          "table": "magic_up_campaigns"
         },
         {
           "grantee": "authenticated",
@@ -199276,12 +198919,6 @@
           "table": "magic_up_campaigns"
         },
         {
-          "grantee": "anon",
-          "privileges": "DELETE, INSERT, REFERENCES, TRIGGER, UPDATE",
-          "schema": "public",
-          "table": "magic_up_comments"
-        },
-        {
           "grantee": "authenticated",
           "privileges": "DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE",
           "schema": "public",
@@ -199292,12 +198929,6 @@
           "privileges": "DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE",
           "schema": "public",
           "table": "magic_up_comments"
-        },
-        {
-          "grantee": "anon",
-          "privileges": "DELETE, INSERT, REFERENCES, TRIGGER, UPDATE",
-          "schema": "public",
-          "table": "magic_up_generations"
         },
         {
           "grantee": "authenticated",
@@ -199312,12 +198943,6 @@
           "table": "magic_up_generations"
         },
         {
-          "grantee": "anon",
-          "privileges": "DELETE, INSERT, REFERENCES, TRIGGER, UPDATE",
-          "schema": "public",
-          "table": "magic_up_public_shares"
-        },
-        {
           "grantee": "authenticated",
           "privileges": "DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE",
           "schema": "public",
@@ -199328,12 +198953,6 @@
           "privileges": "DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE",
           "schema": "public",
           "table": "magic_up_public_shares"
-        },
-        {
-          "grantee": "anon",
-          "privileges": "DELETE, INSERT, REFERENCES, TRIGGER, UPDATE",
-          "schema": "public",
-          "table": "magic_up_reactions"
         },
         {
           "grantee": "authenticated",
@@ -199348,12 +198967,6 @@
           "table": "magic_up_reactions"
         },
         {
-          "grantee": "anon",
-          "privileges": "DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE",
-          "schema": "public",
-          "table": "markup_configurations"
-        },
-        {
           "grantee": "authenticated",
           "privileges": "DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE",
           "schema": "public",
@@ -199364,12 +198977,6 @@
           "privileges": "DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE",
           "schema": "public",
           "table": "markup_configurations"
-        },
-        {
-          "grantee": "anon",
-          "privileges": "DELETE, INSERT, REFERENCES, TRIGGER, UPDATE",
-          "schema": "public",
-          "table": "material_equivalences"
         },
         {
           "grantee": "authenticated",
@@ -199394,12 +199001,6 @@
           "privileges": "DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE",
           "schema": "public",
           "table": "material_groups"
-        },
-        {
-          "grantee": "anon",
-          "privileges": "DELETE, INSERT, REFERENCES, TRIGGER, UPDATE",
-          "schema": "public",
-          "table": "material_reconcile_log_20260626"
         },
         {
           "grantee": "authenticated",
@@ -199516,12 +199117,6 @@
           "table": "mcp_sessions"
         },
         {
-          "grantee": "anon",
-          "privileges": "DELETE, INSERT, REFERENCES, TRIGGER, UPDATE",
-          "schema": "public",
-          "table": "medallion_coverage_snapshots"
-        },
-        {
           "grantee": "authenticated",
           "privileges": "DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE",
           "schema": "public",
@@ -199546,12 +199141,6 @@
           "table": "mockup_approval_links"
         },
         {
-          "grantee": "anon",
-          "privileges": "DELETE, INSERT, REFERENCES, TRIGGER, UPDATE",
-          "schema": "public",
-          "table": "mockup_credit_transactions"
-        },
-        {
           "grantee": "authenticated",
           "privileges": "DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE",
           "schema": "public",
@@ -199582,12 +199171,6 @@
           "table": "mockup_credits"
         },
         {
-          "grantee": "anon",
-          "privileges": "DELETE, INSERT, REFERENCES, TRIGGER, UPDATE",
-          "schema": "public",
-          "table": "mockup_drafts"
-        },
-        {
           "grantee": "authenticated",
           "privileges": "DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE",
           "schema": "public",
@@ -199598,12 +199181,6 @@
           "privileges": "DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE",
           "schema": "public",
           "table": "mockup_drafts"
-        },
-        {
-          "grantee": "anon",
-          "privileges": "DELETE, INSERT, REFERENCES, TRIGGER, UPDATE",
-          "schema": "public",
-          "table": "mockup_generation_jobs"
         },
         {
           "grantee": "authenticated",
@@ -199738,12 +199315,6 @@
           "table": "mv_stock_velocity"
         },
         {
-          "grantee": "anon",
-          "privileges": "DELETE, INSERT, REFERENCES, TRIGGER, UPDATE",
-          "schema": "public",
-          "table": "navigation_analytics"
-        },
-        {
           "grantee": "authenticated",
           "privileges": "DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE",
           "schema": "public",
@@ -199754,12 +199325,6 @@
           "privileges": "DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE",
           "schema": "public",
           "table": "navigation_analytics"
-        },
-        {
-          "grantee": "anon",
-          "privileges": "DELETE, INSERT, REFERENCES, TRIGGER, UPDATE",
-          "schema": "public",
-          "table": "ncm_codes"
         },
         {
           "grantee": "authenticated",
@@ -199792,12 +199357,6 @@
           "table": "notebook_features"
         },
         {
-          "grantee": "anon",
-          "privileges": "DELETE, INSERT, REFERENCES, TRIGGER, UPDATE",
-          "schema": "public",
-          "table": "notification_preferences"
-        },
-        {
           "grantee": "authenticated",
           "privileges": "DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE",
           "schema": "public",
@@ -199876,12 +199435,6 @@
           "table": "optimization_queue"
         },
         {
-          "grantee": "anon",
-          "privileges": "DELETE, INSERT, REFERENCES, TRIGGER, UPDATE",
-          "schema": "public",
-          "table": "optimization_queue_runs"
-        },
-        {
           "grantee": "authenticated",
           "privileges": "DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE",
           "schema": "public",
@@ -199892,12 +199445,6 @@
           "privileges": "DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE",
           "schema": "public",
           "table": "optimization_queue_runs"
-        },
-        {
-          "grantee": "anon",
-          "privileges": "DELETE, INSERT, REFERENCES, TRIGGER, UPDATE",
-          "schema": "public",
-          "table": "order_item_personalizations"
         },
         {
           "grantee": "authenticated",
@@ -199964,12 +199511,6 @@
           "privileges": "DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE",
           "schema": "public",
           "table": "organization_members"
-        },
-        {
-          "grantee": "anon",
-          "privileges": "DELETE, INSERT, REFERENCES, TRIGGER, UPDATE",
-          "schema": "public",
-          "table": "organizations"
         },
         {
           "grantee": "authenticated",
@@ -200014,12 +199555,6 @@
           "table": "ownership_audit_reports"
         },
         {
-          "grantee": "anon",
-          "privileges": "DELETE, INSERT, REFERENCES, TRIGGER, UPDATE",
-          "schema": "public",
-          "table": "ownership_repair_logs"
-        },
-        {
           "grantee": "authenticated",
           "privileges": "DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE",
           "schema": "public",
@@ -200030,12 +199565,6 @@
           "privileges": "DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE",
           "schema": "public",
           "table": "ownership_repair_logs"
-        },
-        {
-          "grantee": "anon",
-          "privileges": "DELETE, INSERT, REFERENCES, TRIGGER, UPDATE",
-          "schema": "public",
-          "table": "packaging_compatibility_config"
         },
         {
           "grantee": "authenticated",
@@ -200050,12 +199579,6 @@
           "table": "packaging_compatibility_config"
         },
         {
-          "grantee": "anon",
-          "privileges": "DELETE, INSERT, REFERENCES, TRIGGER, UPDATE",
-          "schema": "public",
-          "table": "packaging_types"
-        },
-        {
           "grantee": "authenticated",
           "privileges": "DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE",
           "schema": "public",
@@ -200066,12 +199589,6 @@
           "privileges": "DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE",
           "schema": "public",
           "table": "packaging_types"
-        },
-        {
-          "grantee": "anon",
-          "privileges": "DELETE, INSERT, REFERENCES, TRIGGER, UPDATE",
-          "schema": "public",
-          "table": "packagings"
         },
         {
           "grantee": "authenticated",
@@ -200204,12 +199721,6 @@
           "privileges": "DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE",
           "schema": "public",
           "table": "personalization_simulations"
-        },
-        {
-          "grantee": "anon",
-          "privileges": "DELETE, INSERT, REFERENCES, TRIGGER, UPDATE",
-          "schema": "public",
-          "table": "personalization_technique_mappings"
         },
         {
           "grantee": "authenticated",
@@ -200345,7 +199856,7 @@
         },
         {
           "grantee": "anon",
-          "privileges": "DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE",
+          "privileges": "SELECT",
           "schema": "public",
           "table": "product_ai_content"
         },
@@ -200381,7 +199892,7 @@
         },
         {
           "grantee": "anon",
-          "privileges": "DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE",
+          "privileges": "SELECT",
           "schema": "public",
           "table": "product_attributes"
         },
@@ -200429,7 +199940,7 @@
         },
         {
           "grantee": "anon",
-          "privileges": "DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE",
+          "privileges": "SELECT",
           "schema": "public",
           "table": "product_commemorative_dates"
         },
@@ -200458,12 +199969,6 @@
           "table": "product_component_location_techniques"
         },
         {
-          "grantee": "anon",
-          "privileges": "DELETE, INSERT, REFERENCES, TRIGGER, UPDATE",
-          "schema": "public",
-          "table": "product_component_locations"
-        },
-        {
           "grantee": "authenticated",
           "privileges": "DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE",
           "schema": "public",
@@ -200476,12 +199981,6 @@
           "table": "product_component_locations"
         },
         {
-          "grantee": "anon",
-          "privileges": "DELETE, INSERT, REFERENCES, TRIGGER, UPDATE",
-          "schema": "public",
-          "table": "product_components"
-        },
-        {
           "grantee": "authenticated",
           "privileges": "DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE",
           "schema": "public",
@@ -200492,12 +199991,6 @@
           "privileges": "DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE",
           "schema": "public",
           "table": "product_components"
-        },
-        {
-          "grantee": "anon",
-          "privileges": "DELETE, INSERT, REFERENCES, TRIGGER, UPDATE",
-          "schema": "public",
-          "table": "product_customization_prices"
         },
         {
           "grantee": "authenticated",
@@ -200542,12 +200035,6 @@
           "table": "product_endomarketing"
         },
         {
-          "grantee": "anon",
-          "privileges": "DELETE, INSERT, REFERENCES, TRIGGER, UPDATE",
-          "schema": "public",
-          "table": "product_faqs"
-        },
-        {
           "grantee": "authenticated",
           "privileges": "DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE",
           "schema": "public",
@@ -200561,7 +200048,7 @@
         },
         {
           "grantee": "anon",
-          "privileges": "DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE",
+          "privileges": "SELECT",
           "schema": "public",
           "table": "product_fiscal"
         },
@@ -200648,12 +200135,6 @@
           "privileges": "DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE",
           "schema": "public",
           "table": "product_images"
-        },
-        {
-          "grantee": "anon",
-          "privileges": "DELETE, INSERT, REFERENCES, TRIGGER, UPDATE",
-          "schema": "public",
-          "table": "product_included_packagings"
         },
         {
           "grantee": "authenticated",
@@ -200752,12 +200233,6 @@
           "table": "product_novelties"
         },
         {
-          "grantee": "anon",
-          "privileges": "DELETE, INSERT, REFERENCES, TRIGGER, UPDATE",
-          "schema": "public",
-          "table": "product_packaging"
-        },
-        {
           "grantee": "authenticated",
           "privileges": "DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE",
           "schema": "public",
@@ -200770,12 +200245,6 @@
           "table": "product_packaging"
         },
         {
-          "grantee": "anon",
-          "privileges": "DELETE, INSERT, REFERENCES, TRIGGER, UPDATE",
-          "schema": "public",
-          "table": "product_packaging_compatibility"
-        },
-        {
           "grantee": "authenticated",
           "privileges": "DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE",
           "schema": "public",
@@ -200786,12 +200255,6 @@
           "privileges": "DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE",
           "schema": "public",
           "table": "product_packaging_compatibility"
-        },
-        {
-          "grantee": "anon",
-          "privileges": "DELETE, INSERT, REFERENCES, TRIGGER, UPDATE",
-          "schema": "public",
-          "table": "product_packagings"
         },
         {
           "grantee": "authenticated",
@@ -200824,12 +200287,6 @@
           "table": "product_physical"
         },
         {
-          "grantee": "anon",
-          "privileges": "DELETE, INSERT, REFERENCES, TRIGGER, UPDATE",
-          "schema": "public",
-          "table": "product_price_freshness_overrides"
-        },
-        {
           "grantee": "authenticated",
           "privileges": "DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE",
           "schema": "public",
@@ -200840,12 +200297,6 @@
           "privileges": "DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE",
           "schema": "public",
           "table": "product_price_freshness_overrides"
-        },
-        {
-          "grantee": "anon",
-          "privileges": "DELETE, INSERT, REFERENCES, TRIGGER, UPDATE",
-          "schema": "public",
-          "table": "product_print_positions"
         },
         {
           "grantee": "authenticated",
@@ -200876,12 +200327,6 @@
           "privileges": "DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE",
           "schema": "public",
           "table": "product_properties"
-        },
-        {
-          "grantee": "anon",
-          "privileges": "DELETE, INSERT, REFERENCES, TRIGGER, UPDATE",
-          "schema": "public",
-          "table": "product_qa_image_alerts"
         },
         {
           "grantee": "authenticated",
@@ -200908,12 +200353,6 @@
           "table": "product_relationships"
         },
         {
-          "grantee": "anon",
-          "privileges": "DELETE, INSERT, REFERENCES, TRIGGER, UPDATE",
-          "schema": "public",
-          "table": "product_search_logs"
-        },
-        {
           "grantee": "authenticated",
           "privileges": "DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE",
           "schema": "public",
@@ -200927,7 +200366,7 @@
         },
         {
           "grantee": "anon",
-          "privileges": "DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE",
+          "privileges": "SELECT",
           "schema": "public",
           "table": "product_seo"
         },
@@ -200944,12 +200383,6 @@
           "table": "product_seo"
         },
         {
-          "grantee": "anon",
-          "privileges": "DELETE, INSERT, REFERENCES, TRIGGER, UPDATE",
-          "schema": "public",
-          "table": "product_similarity_group_members"
-        },
-        {
           "grantee": "authenticated",
           "privileges": "DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE",
           "schema": "public",
@@ -200960,12 +200393,6 @@
           "privileges": "DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE",
           "schema": "public",
           "table": "product_similarity_group_members"
-        },
-        {
-          "grantee": "anon",
-          "privileges": "DELETE, INSERT, REFERENCES, TRIGGER, UPDATE",
-          "schema": "public",
-          "table": "product_similarity_groups"
         },
         {
           "grantee": "authenticated",
@@ -200981,7 +200408,7 @@
         },
         {
           "grantee": "anon",
-          "privileges": "DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE",
+          "privileges": "SELECT",
           "schema": "public",
           "table": "product_supply"
         },
@@ -200996,12 +200423,6 @@
           "privileges": "DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE",
           "schema": "public",
           "table": "product_supply"
-        },
-        {
-          "grantee": "anon",
-          "privileges": "DELETE, INSERT, REFERENCES, TRIGGER, UPDATE",
-          "schema": "public",
-          "table": "product_sync_logs"
         },
         {
           "grantee": "authenticated",
@@ -201032,12 +200453,6 @@
           "privileges": "DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE",
           "schema": "public",
           "table": "product_tags"
-        },
-        {
-          "grantee": "anon",
-          "privileges": "DELETE, INSERT, REFERENCES, TRIGGER, UPDATE",
-          "schema": "public",
-          "table": "product_target_audiences"
         },
         {
           "grantee": "authenticated",
@@ -201166,12 +200581,6 @@
           "table": "produtos_padronizacao_variantes"
         },
         {
-          "grantee": "anon",
-          "privileges": "DELETE, INSERT, REFERENCES, TRIGGER, UPDATE",
-          "schema": "public",
-          "table": "produtos_site_padronizacao"
-        },
-        {
           "grantee": "authenticated",
           "privileges": "DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE",
           "schema": "public",
@@ -201196,12 +200605,6 @@
           "table": "profiles"
         },
         {
-          "grantee": "anon",
-          "privileges": "DELETE, INSERT, REFERENCES, TRIGGER, UPDATE",
-          "schema": "public",
-          "table": "property_definitions"
-        },
-        {
           "grantee": "authenticated",
           "privileges": "DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE",
           "schema": "public",
@@ -201212,12 +200615,6 @@
           "privileges": "DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE",
           "schema": "public",
           "table": "property_definitions"
-        },
-        {
-          "grantee": "anon",
-          "privileges": "DELETE, INSERT, REFERENCES, TRIGGER, UPDATE",
-          "schema": "public",
-          "table": "public_token_failures"
         },
         {
           "grantee": "authenticated",
@@ -201232,12 +200629,6 @@
           "table": "public_token_failures"
         },
         {
-          "grantee": "anon",
-          "privileges": "DELETE, INSERT, REFERENCES, TRIGGER, UPDATE",
-          "schema": "public",
-          "table": "push_subscriptions"
-        },
-        {
           "grantee": "authenticated",
           "privileges": "DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE",
           "schema": "public",
@@ -201250,12 +200641,6 @@
           "table": "push_subscriptions"
         },
         {
-          "grantee": "anon",
-          "privileges": "DELETE, INSERT, REFERENCES, TRIGGER, UPDATE",
-          "schema": "public",
-          "table": "qa_image_coverage_log"
-        },
-        {
           "grantee": "authenticated",
           "privileges": "DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE",
           "schema": "public",
@@ -201266,12 +200651,6 @@
           "privileges": "DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE",
           "schema": "public",
           "table": "qa_image_coverage_log"
-        },
-        {
-          "grantee": "anon",
-          "privileges": "DELETE, INSERT, REFERENCES, TRIGGER, UPDATE",
-          "schema": "public",
-          "table": "query_telemetry"
         },
         {
           "grantee": "authenticated",
@@ -201430,12 +200809,6 @@
           "table": "ramo_atividade_filho"
         },
         {
-          "grantee": "anon",
-          "privileges": "DELETE, INSERT, REFERENCES, TRIGGER, UPDATE",
-          "schema": "public",
-          "table": "recently_viewed_products"
-        },
-        {
           "grantee": "authenticated",
           "privileges": "DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE",
           "schema": "public",
@@ -201446,12 +200819,6 @@
           "privileges": "DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE",
           "schema": "public",
           "table": "recently_viewed_products"
-        },
-        {
-          "grantee": "anon",
-          "privileges": "DELETE, INSERT, REFERENCES, TRIGGER, UPDATE",
-          "schema": "public",
-          "table": "request_rate_limits"
         },
         {
           "grantee": "authenticated",
@@ -201466,12 +200833,6 @@
           "table": "request_rate_limits"
         },
         {
-          "grantee": "anon",
-          "privileges": "DELETE, INSERT, REFERENCES, TRIGGER, UPDATE",
-          "schema": "public",
-          "table": "rls_denial_log"
-        },
-        {
           "grantee": "authenticated",
           "privileges": "DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE",
           "schema": "public",
@@ -201482,12 +200843,6 @@
           "privileges": "DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE",
           "schema": "public",
           "table": "rls_denial_log"
-        },
-        {
-          "grantee": "anon",
-          "privileges": "DELETE, INSERT, REFERENCES, TRIGGER, UPDATE",
-          "schema": "public",
-          "table": "role_migration_batches"
         },
         {
           "grantee": "authenticated",
@@ -201502,12 +200857,6 @@
           "table": "role_migration_batches"
         },
         {
-          "grantee": "anon",
-          "privileges": "DELETE, INSERT, REFERENCES, TRIGGER, UPDATE",
-          "schema": "public",
-          "table": "role_migration_items"
-        },
-        {
           "grantee": "authenticated",
           "privileges": "DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE",
           "schema": "public",
@@ -201518,12 +200867,6 @@
           "privileges": "DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE",
           "schema": "public",
           "table": "role_migration_items"
-        },
-        {
-          "grantee": "anon",
-          "privileges": "DELETE, INSERT, REFERENCES, TRIGGER, UPDATE",
-          "schema": "public",
-          "table": "role_permissions"
         },
         {
           "grantee": "authenticated",
@@ -201580,12 +200923,6 @@
           "table": "saved_filters"
         },
         {
-          "grantee": "anon",
-          "privileges": "DELETE, INSERT, REFERENCES, TRIGGER, UPDATE",
-          "schema": "public",
-          "table": "saved_trends_views"
-        },
-        {
           "grantee": "authenticated",
           "privileges": "DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE",
           "schema": "public",
@@ -201596,12 +200933,6 @@
           "privileges": "DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE",
           "schema": "public",
           "table": "saved_trends_views"
-        },
-        {
-          "grantee": "anon",
-          "privileges": "DELETE, INSERT, REFERENCES, TRIGGER, UPDATE",
-          "schema": "public",
-          "table": "scheduled_reports"
         },
         {
           "grantee": "authenticated",
@@ -201616,12 +200947,6 @@
           "table": "scheduled_reports"
         },
         {
-          "grantee": "anon",
-          "privileges": "DELETE, INSERT, REFERENCES, TRIGGER, UPDATE",
-          "schema": "public",
-          "table": "schema_drift_allowlist"
-        },
-        {
           "grantee": "authenticated",
           "privileges": "DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE",
           "schema": "public",
@@ -201632,12 +200957,6 @@
           "privileges": "DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE",
           "schema": "public",
           "table": "schema_drift_allowlist"
-        },
-        {
-          "grantee": "anon",
-          "privileges": "DELETE, INSERT, REFERENCES, TRIGGER, UPDATE",
-          "schema": "public",
-          "table": "schema_drift_log"
         },
         {
           "grantee": "authenticated",
@@ -201652,12 +200971,6 @@
           "table": "schema_drift_log"
         },
         {
-          "grantee": "anon",
-          "privileges": "DELETE, INSERT, REFERENCES, TRIGGER, UPDATE",
-          "schema": "public",
-          "table": "schema_signature_baseline"
-        },
-        {
           "grantee": "authenticated",
           "privileges": "DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE",
           "schema": "public",
@@ -201670,12 +200983,6 @@
           "table": "schema_signature_baseline"
         },
         {
-          "grantee": "anon",
-          "privileges": "DELETE, INSERT, REFERENCES, TRIGGER, UPDATE",
-          "schema": "public",
-          "table": "schema_signature_drift_allowlist"
-        },
-        {
           "grantee": "authenticated",
           "privileges": "DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE",
           "schema": "public",
@@ -201686,12 +200993,6 @@
           "privileges": "DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE",
           "schema": "public",
           "table": "schema_signature_drift_allowlist"
-        },
-        {
-          "grantee": "anon",
-          "privileges": "DELETE, INSERT, REFERENCES, TRIGGER, UPDATE",
-          "schema": "public",
-          "table": "schema_signature_drift_log"
         },
         {
           "grantee": "authenticated",
@@ -201722,12 +201023,6 @@
           "privileges": "DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE",
           "schema": "public",
           "table": "search_analytics"
-        },
-        {
-          "grantee": "anon",
-          "privileges": "DELETE, INSERT, REFERENCES, TRIGGER, UPDATE",
-          "schema": "public",
-          "table": "search_queries"
         },
         {
           "grantee": "authenticated",
@@ -201766,12 +201061,6 @@
           "table": "security_settings"
         },
         {
-          "grantee": "anon",
-          "privileges": "DELETE, INSERT, REFERENCES, TRIGGER, UPDATE",
-          "schema": "public",
-          "table": "seller_cart_items"
-        },
-        {
           "grantee": "authenticated",
           "privileges": "DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE",
           "schema": "public",
@@ -201782,12 +201071,6 @@
           "privileges": "DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE",
           "schema": "public",
           "table": "seller_cart_items"
-        },
-        {
-          "grantee": "anon",
-          "privileges": "DELETE, INSERT, REFERENCES, TRIGGER, UPDATE",
-          "schema": "public",
-          "table": "seller_carts"
         },
         {
           "grantee": "authenticated",
@@ -201826,12 +201109,6 @@
           "table": "seo_audit_log"
         },
         {
-          "grantee": "anon",
-          "privileges": "DELETE, INSERT, REFERENCES, TRIGGER, UPDATE",
-          "schema": "public",
-          "table": "seo_redirects"
-        },
-        {
           "grantee": "authenticated",
           "privileges": "DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE",
           "schema": "public",
@@ -201856,12 +201133,6 @@
           "table": "shipping_boxes"
         },
         {
-          "grantee": "anon",
-          "privileges": "DELETE, INSERT, REFERENCES, TRIGGER, UPDATE",
-          "schema": "public",
-          "table": "simulator_wizard_drafts"
-        },
-        {
           "grantee": "authenticated",
           "privileges": "DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE",
           "schema": "public",
@@ -201872,12 +201143,6 @@
           "privileges": "DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE",
           "schema": "public",
           "table": "simulator_wizard_drafts"
-        },
-        {
-          "grantee": "anon",
-          "privileges": "DELETE, INSERT, REFERENCES, TRIGGER, UPDATE",
-          "schema": "public",
-          "table": "sm_category_pages"
         },
         {
           "grantee": "authenticated",
@@ -201892,12 +201157,6 @@
           "table": "sm_category_pages"
         },
         {
-          "grantee": "anon",
-          "privileges": "DELETE, INSERT, REFERENCES, TRIGGER, UPDATE",
-          "schema": "public",
-          "table": "sm_site_url_map"
-        },
-        {
           "grantee": "authenticated",
           "privileges": "DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE",
           "schema": "public",
@@ -201908,12 +201167,6 @@
           "privileges": "DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE",
           "schema": "public",
           "table": "sm_site_url_map"
-        },
-        {
-          "grantee": "anon",
-          "privileges": "DELETE, INSERT, REFERENCES, TRIGGER, UPDATE",
-          "schema": "public",
-          "table": "sm_worker_partitions"
         },
         {
           "grantee": "authenticated",
@@ -201950,12 +201203,6 @@
           "privileges": "DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE",
           "schema": "public",
           "table": "somarcas_catalogo_publico"
-        },
-        {
-          "grantee": "anon",
-          "privileges": "DELETE, INSERT, REFERENCES, TRIGGER, UPDATE",
-          "schema": "public",
-          "table": "spot_health_log"
         },
         {
           "grantee": "authenticated",
@@ -202102,12 +201349,6 @@
           "table": "supplier_branches"
         },
         {
-          "grantee": "anon",
-          "privileges": "DELETE, INSERT, REFERENCES, TRIGGER, UPDATE",
-          "schema": "public",
-          "table": "supplier_categories"
-        },
-        {
           "grantee": "authenticated",
           "privileges": "DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE",
           "schema": "public",
@@ -202118,12 +201359,6 @@
           "privileges": "DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE",
           "schema": "public",
           "table": "supplier_categories"
-        },
-        {
-          "grantee": "anon",
-          "privileges": "DELETE, INSERT, REFERENCES, TRIGGER, UPDATE",
-          "schema": "public",
-          "table": "supplier_category_mappings"
         },
         {
           "grantee": "authenticated",
@@ -202174,12 +201409,6 @@
           "table": "supplier_customization_raw"
         },
         {
-          "grantee": "anon",
-          "privileges": "DELETE, INSERT, REFERENCES, TRIGGER, UPDATE",
-          "schema": "public",
-          "table": "supplier_field_mappings"
-        },
-        {
           "grantee": "authenticated",
           "privileges": "DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE",
           "schema": "public",
@@ -202192,12 +201421,6 @@
           "table": "supplier_field_mappings"
         },
         {
-          "grantee": "anon",
-          "privileges": "DELETE, INSERT, REFERENCES, TRIGGER, UPDATE",
-          "schema": "public",
-          "table": "supplier_field_priority"
-        },
-        {
           "grantee": "authenticated",
           "privileges": "DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE",
           "schema": "public",
@@ -202208,12 +201431,6 @@
           "privileges": "DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE",
           "schema": "public",
           "table": "supplier_field_priority"
-        },
-        {
-          "grantee": "anon",
-          "privileges": "DELETE, INSERT, REFERENCES, TRIGGER, UPDATE",
-          "schema": "public",
-          "table": "supplier_import_batches"
         },
         {
           "grantee": "authenticated",
@@ -202238,12 +201455,6 @@
           "privileges": "DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE",
           "schema": "public",
           "table": "supplier_materials"
-        },
-        {
-          "grantee": "anon",
-          "privileges": "DELETE, INSERT, REFERENCES, TRIGGER, UPDATE",
-          "schema": "public",
-          "table": "supplier_packagings"
         },
         {
           "grantee": "authenticated",
@@ -202282,12 +201493,6 @@
           "table": "supplier_products_raw_history"
         },
         {
-          "grantee": "anon",
-          "privileges": "DELETE, INSERT, REFERENCES, TRIGGER, UPDATE",
-          "schema": "public",
-          "table": "supplier_products_raw_history_p2026_08"
-        },
-        {
           "grantee": "authenticated",
           "privileges": "DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE",
           "schema": "public",
@@ -202300,12 +201505,6 @@
           "table": "supplier_products_raw_history_p2026_08"
         },
         {
-          "grantee": "anon",
-          "privileges": "DELETE, INSERT, REFERENCES, TRIGGER, UPDATE",
-          "schema": "public",
-          "table": "supplier_products_raw_history_p2026_09"
-        },
-        {
           "grantee": "authenticated",
           "privileges": "DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE",
           "schema": "public",
@@ -202316,12 +201515,6 @@
           "privileges": "DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE",
           "schema": "public",
           "table": "supplier_products_raw_history_p2026_09"
-        },
-        {
-          "grantee": "anon",
-          "privileges": "DELETE, INSERT, REFERENCES, TRIGGER, UPDATE",
-          "schema": "public",
-          "table": "supplier_products_raw_history_p2026_10"
         },
         {
           "grantee": "authenticated",
@@ -202612,12 +201805,6 @@
           "table": "supplier_replenishment_events"
         },
         {
-          "grantee": "anon",
-          "privileges": "DELETE, INSERT, REFERENCES, TRIGGER, UPDATE",
-          "schema": "public",
-          "table": "supplier_settings"
-        },
-        {
           "grantee": "authenticated",
           "privileges": "DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE",
           "schema": "public",
@@ -202631,7 +201818,7 @@
         },
         {
           "grantee": "anon",
-          "privileges": "DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE",
+          "privileges": "SELECT",
           "schema": "public",
           "table": "supplier_sub_brands"
         },
@@ -202648,12 +201835,6 @@
           "table": "supplier_sub_brands"
         },
         {
-          "grantee": "anon",
-          "privileges": "DELETE, INSERT, REFERENCES, TRIGGER, UPDATE",
-          "schema": "public",
-          "table": "supplier_subtype_category_map"
-        },
-        {
           "grantee": "authenticated",
           "privileges": "DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE",
           "schema": "public",
@@ -202664,12 +201845,6 @@
           "privileges": "DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE",
           "schema": "public",
           "table": "supplier_subtype_category_map"
-        },
-        {
-          "grantee": "anon",
-          "privileges": "DELETE, INSERT, REFERENCES, TRIGGER, UPDATE",
-          "schema": "public",
-          "table": "supplier_unit_conversions"
         },
         {
           "grantee": "authenticated",
@@ -202684,12 +201859,6 @@
           "table": "supplier_unit_conversions"
         },
         {
-          "grantee": "anon",
-          "privileges": "DELETE, INSERT, REFERENCES, TRIGGER, UPDATE",
-          "schema": "public",
-          "table": "supplier_value_mappings"
-        },
-        {
           "grantee": "authenticated",
           "privileges": "DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE",
           "schema": "public",
@@ -202700,12 +201869,6 @@
           "privileges": "DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE",
           "schema": "public",
           "table": "supplier_value_mappings"
-        },
-        {
-          "grantee": "anon",
-          "privileges": "DELETE, INSERT, REFERENCES, TRIGGER, UPDATE",
-          "schema": "public",
-          "table": "supplier_video_requirements"
         },
         {
           "grantee": "authenticated",
@@ -202732,12 +201895,6 @@
           "table": "suppliers"
         },
         {
-          "grantee": "anon",
-          "privileges": "DELETE, INSERT, REFERENCES, TRIGGER, UPDATE",
-          "schema": "public",
-          "table": "system_changelog"
-        },
-        {
           "grantee": "authenticated",
           "privileges": "DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE",
           "schema": "public",
@@ -202748,12 +201905,6 @@
           "privileges": "DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE",
           "schema": "public",
           "table": "system_changelog"
-        },
-        {
-          "grantee": "anon",
-          "privileges": "DELETE, INSERT, REFERENCES, TRIGGER, UPDATE",
-          "schema": "public",
-          "table": "system_documentation"
         },
         {
           "grantee": "authenticated",
@@ -202787,7 +201938,7 @@
         },
         {
           "grantee": "anon",
-          "privileges": "DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE",
+          "privileges": "SELECT",
           "schema": "public",
           "table": "system_settings"
         },
@@ -202850,12 +202001,6 @@
           "privileges": "DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE",
           "schema": "public",
           "table": "tags"
-        },
-        {
-          "grantee": "anon",
-          "privileges": "DELETE, INSERT, REFERENCES, TRIGGER, UPDATE",
-          "schema": "public",
-          "table": "target_audiences"
         },
         {
           "grantee": "authenticated",
@@ -202964,12 +202109,6 @@
           "privileges": "DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE",
           "schema": "public",
           "table": "user_filter_presets"
-        },
-        {
-          "grantee": "anon",
-          "privileges": "DELETE, INSERT, REFERENCES, TRIGGER, UPDATE",
-          "schema": "public",
-          "table": "user_ip_allowlist"
         },
         {
           "grantee": "authenticated",
@@ -204034,69 +203173,57 @@
           "table": "variant_commemorative_dates"
         },
         {
+          "grantee": "authenticated",
+          "privileges": "DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE",
+          "schema": "public",
+          "table": "variant_supplier_sources"
+        },
+        {
+          "grantee": "service_role",
+          "privileges": "DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE",
+          "schema": "public",
+          "table": "variant_supplier_sources"
+        },
+        {
+          "grantee": "authenticated",
+          "privileges": "DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE",
+          "schema": "public",
+          "table": "variation_types"
+        },
+        {
+          "grantee": "service_role",
+          "privileges": "DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE",
+          "schema": "public",
+          "table": "variation_types"
+        },
+        {
+          "grantee": "authenticated",
+          "privileges": "DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE",
+          "schema": "public",
+          "table": "variation_values"
+        },
+        {
+          "grantee": "service_role",
+          "privileges": "DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE",
+          "schema": "public",
+          "table": "variation_values"
+        },
+        {
+          "grantee": "authenticated",
+          "privileges": "DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE",
+          "schema": "public",
+          "table": "video_import_queue"
+        },
+        {
+          "grantee": "service_role",
+          "privileges": "DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE",
+          "schema": "public",
+          "table": "video_import_queue"
+        },
+        {
           "grantee": "anon",
           "privileges": "SELECT",
           "schema": "public",
-          "table": "variant_supplier_sources"
-        },
-        {
-          "grantee": "authenticated",
-          "privileges": "DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE",
-          "schema": "public",
-          "table": "variant_supplier_sources"
-        },
-        {
-          "grantee": "service_role",
-          "privileges": "DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE",
-          "schema": "public",
-          "table": "variant_supplier_sources"
-        },
-        {
-          "grantee": "authenticated",
-          "privileges": "DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE",
-          "schema": "public",
-          "table": "variation_types"
-        },
-        {
-          "grantee": "service_role",
-          "privileges": "DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE",
-          "schema": "public",
-          "table": "variation_types"
-        },
-        {
-          "grantee": "authenticated",
-          "privileges": "DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE",
-          "schema": "public",
-          "table": "variation_values"
-        },
-        {
-          "grantee": "service_role",
-          "privileges": "DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE",
-          "schema": "public",
-          "table": "variation_values"
-        },
-        {
-          "grantee": "anon",
-          "privileges": "DELETE, INSERT, REFERENCES, TRIGGER, UPDATE",
-          "schema": "public",
-          "table": "video_import_queue"
-        },
-        {
-          "grantee": "authenticated",
-          "privileges": "DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE",
-          "schema": "public",
-          "table": "video_import_queue"
-        },
-        {
-          "grantee": "service_role",
-          "privileges": "DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE",
-          "schema": "public",
-          "table": "video_import_queue"
-        },
-        {
-          "grantee": "anon",
-          "privileges": "DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE",
-          "schema": "public",
           "table": "video_sim_results"
         },
         {
@@ -204112,12 +203239,6 @@
           "table": "video_sim_results"
         },
         {
-          "grantee": "anon",
-          "privileges": "DELETE, INSERT, REFERENCES, TRIGGER, UPDATE",
-          "schema": "public",
-          "table": "video_types"
-        },
-        {
           "grantee": "authenticated",
           "privileges": "DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE",
           "schema": "public",
@@ -204128,12 +203249,6 @@
           "privileges": "DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE",
           "schema": "public",
           "table": "video_types"
-        },
-        {
-          "grantee": "anon",
-          "privileges": "DELETE, INSERT, REFERENCES, TRIGGER, UPDATE",
-          "schema": "public",
-          "table": "video_validation_log"
         },
         {
           "grantee": "authenticated",
@@ -204166,12 +203281,6 @@
           "table": "video_variant_links"
         },
         {
-          "grantee": "anon",
-          "privileges": "DELETE, INSERT, REFERENCES, TRIGGER, UPDATE",
-          "schema": "public",
-          "table": "visual_search_feedback"
-        },
-        {
           "grantee": "authenticated",
           "privileges": "DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE",
           "schema": "public",
@@ -204182,12 +203291,6 @@
           "privileges": "DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE",
           "schema": "public",
           "table": "visual_search_feedback"
-        },
-        {
-          "grantee": "anon",
-          "privileges": "DELETE, INSERT, REFERENCES, TRIGGER, UPDATE",
-          "schema": "public",
-          "table": "voice_command_logs"
         },
         {
           "grantee": "authenticated",
@@ -204814,12 +203917,6 @@
           "table": "vw_thermal_products"
         },
         {
-          "grantee": "anon",
-          "privileges": "SELECT",
-          "schema": "public",
-          "table": "vw_variant_sale_prices"
-        },
-        {
           "grantee": "authenticated",
           "privileges": "SELECT",
           "schema": "public",
@@ -204880,12 +203977,6 @@
           "table": "webhook_deliveries"
         },
         {
-          "grantee": "anon",
-          "privileges": "DELETE, INSERT, REFERENCES, TRIGGER, UPDATE",
-          "schema": "public",
-          "table": "webhook_delivery_locks"
-        },
-        {
           "grantee": "authenticated",
           "privileges": "DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE",
           "schema": "public",
@@ -204910,12 +204001,6 @@
           "table": "webhook_delivery_metrics"
         },
         {
-          "grantee": "anon",
-          "privileges": "DELETE, INSERT, REFERENCES, TRIGGER, UPDATE",
-          "schema": "public",
-          "table": "webhook_dispatcher_log"
-        },
-        {
           "grantee": "authenticated",
           "privileges": "DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE",
           "schema": "public",
@@ -204926,12 +204011,6 @@
           "privileges": "DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE",
           "schema": "public",
           "table": "webhook_dispatcher_log"
-        },
-        {
-          "grantee": "anon",
-          "privileges": "DELETE, INSERT, REFERENCES, TRIGGER, UPDATE",
-          "schema": "public",
-          "table": "webhook_outbox"
         },
         {
           "grantee": "authenticated",
@@ -204974,12 +204053,6 @@
           "privileges": "DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE",
           "schema": "public",
           "table": "xbz_gallery_staging"
-        },
-        {
-          "grantee": "anon",
-          "privileges": "DELETE, INSERT, REFERENCES, TRIGGER, UPDATE",
-          "schema": "public",
-          "table": "xbz_upload_mapping"
         },
         {
           "grantee": "authenticated",
@@ -242074,6 +241147,18 @@
         "statements": 7,
         "statements_sha": "b2e27f42cba29882",
         "version": "20261122200000"
+      },
+      {
+        "name": "revoke_anon_write_grants_public",
+        "statements": 2,
+        "statements_sha": "c57857bc205eaaf5",
+        "version": "20261124120000"
+      },
+      {
+        "name": "close_anon_cost_surface",
+        "statements": 9,
+        "statements_sha": "2d9920002d3ba239",
+        "version": "20261124140000"
       }
     ],
     "policies": [

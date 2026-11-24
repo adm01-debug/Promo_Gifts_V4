@@ -2,6 +2,13 @@
 
 Diff semântico gerado a cada coleta em que algo mudou.
 
+## 2026-11-24 15:18 UTC
+
+- **functions** alterado (1): `public.can_view_all_sales()`
+- **grants** removido (154): `public.ai_routing_decisions:anon`, `public.ai_usage_events:anon`, `public.ai_usage_quotas:anon`, `public.art_file_attachments:anon`, `public.attribute_equivalences:anon`, `public.audit_log_gravacao:anon`, `public.auto_tag_rules:anon`, `public.b2b_collection_products:anon`, `public.b2b_collections:anon`, `public.cart_templates:anon`, `public.category_accessory_categories:anon`, `public.category_ancestors:anon`, `public.category_colors:anon`, `public.category_commemorative_dates:anon`, `public.category_copywriting_config:anon`, `public.category_relationships:anon`, `public.category_target_audiences:anon`, `public.category_variation_types:anon`, `public.classify_functions_registry:anon`, `public.collection_items:anon`, `public.component_media:anon`, `public.connection_test_history:anon`, `public.conversation_delivery_status:anon`, `public.conversation_event_history:anon`, `public.crm_callback_events:anon`, `public.custom_kits:anon`, `public.dashboard_insights_cache:anon`, `public.eco_backfill_log_20260625:anon`, `public.eco_date_reconcile_log_20260626:anon`, `public.eco_material_config:anon`, `public.edge_function_invocations:anon`, `public.expert_conversations:anon`, `public.expert_messages:anon`, `public.external_connections_sync_log:anon`, `public.favorite_items_trash:anon`, `public.feminine_color_config:anon`, `public.file_scan_logs:anon`, `public.follow_up_reminders:anon`, `public.generated_mockups:anon`, `public.geo_allowed_countries:anon` … (+114)
+- **grants** alterado (13): `public.content_articles:anon`, `public.favorite_items:anon`, `public.favorite_lists:anon`, `public.kit_typical_dims:anon`, `public.product_ai_content:anon`, `public.product_attributes:anon`, `public.product_commemorative_dates:anon`, `public.product_fiscal:anon`, `public.product_seo:anon`, `public.product_supply:anon`, `public.supplier_sub_brands:anon`, `public.system_settings:anon`, `public.video_sim_results:anon`
+- **migrations** adicionado (2): `20261124120000_revoke_anon_write_grants_public`, `20261124140000_close_anon_cost_surface`
+
 ## 2026-11-24 14:19 UTC
 
 - **roles** alterado (1): `authenticator`

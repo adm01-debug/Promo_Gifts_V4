@@ -46,15 +46,12 @@ Roles da API: `anon` (sem login), `authenticated` (logado), `service_role` (bypa
 | public.ai_providers | anon | DELETE, INSERT, REFERENCES, TRIGGER, UPDATE |
 | public.ai_providers | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | public.ai_providers | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
-| public.ai_routing_decisions | anon | DELETE, INSERT, REFERENCES, TRIGGER, UPDATE |
 | public.ai_routing_decisions | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | public.ai_routing_decisions | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
-| public.ai_usage_events | anon | DELETE, INSERT, REFERENCES, TRIGGER, UPDATE |
 | public.ai_usage_events | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | public.ai_usage_events | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
 | public.ai_usage_logs | authenticated | REFERENCES, SELECT, TRIGGER |
 | public.ai_usage_logs | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
-| public.ai_usage_quotas | anon | DELETE, INSERT, REFERENCES, TRIGGER, UPDATE |
 | public.ai_usage_quotas | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | public.ai_usage_quotas | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
 | public.analytics_events | anon | DELETE, INSERT, REFERENCES, TRIGGER, UPDATE |
@@ -63,7 +60,6 @@ Roles da API: `anon` (sem login), `authenticated` (logado), `service_role` (bypa
 | public.anon_catalog_grant_audit_log | authenticated | SELECT |
 | public.anon_catalog_grant_audit_log | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
 | public.anon_insert_rate | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
-| public.art_file_attachments | anon | DELETE, INSERT, REFERENCES, TRIGGER, UPDATE |
 | public.art_file_attachments | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | public.art_file_attachments | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
 | public.asia_image_import_queue | anon | DELETE, INSERT, REFERENCES, TRIGGER, UPDATE |
@@ -75,7 +71,6 @@ Roles da API: `anon` (sem login), `authenticated` (logado), `service_role` (bypa
 | public.attribute_definitions | anon | DELETE, INSERT, REFERENCES, TRIGGER, UPDATE |
 | public.attribute_definitions | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | public.attribute_definitions | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
-| public.attribute_equivalences | anon | DELETE, INSERT, REFERENCES, TRIGGER, UPDATE |
 | public.attribute_equivalences | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | public.attribute_equivalences | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
 | public.attribute_groups | anon | DELETE, INSERT, REFERENCES, TRIGGER, UPDATE |
@@ -83,16 +78,12 @@ Roles da API: `anon` (sem login), `authenticated` (logado), `service_role` (bypa
 | public.attribute_groups | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
 | public.audit_log | authenticated | INSERT, SELECT |
 | public.audit_log | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
-| public.audit_log_gravacao | anon | INSERT, REFERENCES, TRIGGER |
 | public.audit_log_gravacao | authenticated | INSERT, REFERENCES, SELECT, TRIGGER |
 | public.audit_log_gravacao | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
-| public.auto_tag_rules | anon | DELETE, INSERT, REFERENCES, TRIGGER, UPDATE |
 | public.auto_tag_rules | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | public.auto_tag_rules | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
-| public.b2b_collection_products | anon | DELETE, INSERT, REFERENCES, TRIGGER, UPDATE |
 | public.b2b_collection_products | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | public.b2b_collection_products | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
-| public.b2b_collections | anon | DELETE, INSERT, REFERENCES, TRIGGER, UPDATE |
 | public.b2b_collections | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | public.b2b_collections | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
 | public.backup_produto_ramo_atividade_20260625 | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
@@ -108,7 +99,6 @@ Roles da API: `anon` (sem login), `authenticated` (logado), `service_role` (bypa
 | public.bot_detection_log | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
 | public.business_calendar | authenticated | DELETE, INSERT, SELECT, UPDATE |
 | public.business_calendar | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
-| public.cart_templates | anon | DELETE, INSERT, REFERENCES, TRIGGER, UPDATE |
 | public.cart_templates | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | public.cart_templates | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
 | public.catalog_analytics | anon | DELETE, INSERT, REFERENCES, TRIGGER, UPDATE |
@@ -119,38 +109,29 @@ Roles da API: `anon` (sem login), `authenticated` (logado), `service_role` (bypa
 | public.categories | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
 | public.categories_tree_visual | authenticated | SELECT |
 | public.categories_tree_visual | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
-| public.category_accessory_categories | anon | DELETE, INSERT, REFERENCES, TRIGGER, UPDATE |
 | public.category_accessory_categories | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | public.category_accessory_categories | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
-| public.category_ancestors | anon | DELETE, INSERT, REFERENCES, TRIGGER, UPDATE |
 | public.category_ancestors | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | public.category_ancestors | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
 | public.category_attributes | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | public.category_attributes | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
-| public.category_colors | anon | DELETE, INSERT, REFERENCES, TRIGGER, UPDATE |
 | public.category_colors | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | public.category_colors | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
-| public.category_commemorative_dates | anon | DELETE, INSERT, REFERENCES, TRIGGER, UPDATE |
 | public.category_commemorative_dates | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | public.category_commemorative_dates | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
-| public.category_copywriting_config | anon | DELETE, INSERT, REFERENCES, TRIGGER, UPDATE |
 | public.category_copywriting_config | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | public.category_copywriting_config | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
 | public.category_icons | authenticated | SELECT |
 | public.category_icons | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
-| public.category_relationships | anon | DELETE, INSERT, REFERENCES, TRIGGER, UPDATE |
 | public.category_relationships | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | public.category_relationships | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
-| public.category_target_audiences | anon | DELETE, INSERT, REFERENCES, TRIGGER, UPDATE |
 | public.category_target_audiences | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | public.category_target_audiences | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
-| public.category_variation_types | anon | DELETE, INSERT, REFERENCES, TRIGGER, UPDATE |
 | public.category_variation_types | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | public.category_variation_types | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
 | public.cf_recon_inflight | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
 | public.city_whitelist | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | public.city_whitelist | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
-| public.classify_functions_registry | anon | DELETE, INSERT, REFERENCES, TRIGGER, UPDATE |
 | public.classify_functions_registry | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | public.classify_functions_registry | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
 | public.cnpj_backfill_audit | anon | DELETE, INSERT, REFERENCES, TRIGGER, UPDATE |
@@ -159,7 +140,6 @@ Roles da API: `anon` (sem login), `authenticated` (logado), `service_role` (bypa
 | public.collection_item_reactions | anon | DELETE, INSERT, REFERENCES, TRIGGER, UPDATE |
 | public.collection_item_reactions | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | public.collection_item_reactions | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
-| public.collection_items | anon | DELETE, INSERT, REFERENCES, TRIGGER, UPDATE |
 | public.collection_items | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | public.collection_items | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
 | public.collection_items_trash | anon | DELETE, INSERT, REFERENCES, TRIGGER, UPDATE |
@@ -202,21 +182,17 @@ Roles da API: `anon` (sem login), `authenticated` (logado), `service_role` (bypa
 | public.comparison_reactions | anon | DELETE, INSERT, REFERENCES, TRIGGER, UPDATE |
 | public.comparison_reactions | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | public.comparison_reactions | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
-| public.component_media | anon | DELETE, INSERT, REFERENCES, TRIGGER, UPDATE |
 | public.component_media | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | public.component_media | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
-| public.connection_test_history | anon | DELETE, INSERT, REFERENCES, TRIGGER, UPDATE |
 | public.connection_test_history | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | public.connection_test_history | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
-| public.content_articles | anon | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
+| public.content_articles | anon | SELECT |
 | public.content_articles | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | public.content_articles | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
 | public.conversation_audit_logs | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | public.conversation_audit_logs | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
-| public.conversation_delivery_status | anon | DELETE, INSERT, REFERENCES, TRIGGER, UPDATE |
 | public.conversation_delivery_status | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | public.conversation_delivery_status | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
-| public.conversation_event_history | anon | DELETE, INSERT, REFERENCES, TRIGGER, UPDATE |
 | public.conversation_event_history | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | public.conversation_event_history | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
 | public.cover_finishes | anon | REFERENCES, TRIGGER |
@@ -228,7 +204,6 @@ Roles da API: `anon` (sem login), `authenticated` (logado), `service_role` (bypa
 | public.cover_types | anon | REFERENCES, TRIGGER |
 | public.cover_types | authenticated | REFERENCES, SELECT, TRIGGER |
 | public.cover_types | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
-| public.crm_callback_events | anon | DELETE, INSERT, REFERENCES, TRIGGER, UPDATE |
 | public.crm_callback_events | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | public.crm_callback_events | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
 | public.crm_seller_identity_links | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
@@ -238,10 +213,8 @@ Roles da API: `anon` (sem login), `authenticated` (logado), `service_role` (bypa
 | public.cron_watchdog_log | anon | REFERENCES, TRIGGER |
 | public.cron_watchdog_log | authenticated | REFERENCES, TRIGGER |
 | public.cron_watchdog_log | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
-| public.custom_kits | anon | DELETE, INSERT, REFERENCES, TRIGGER, UPDATE |
 | public.custom_kits | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | public.custom_kits | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
-| public.dashboard_insights_cache | anon | DELETE, INSERT, REFERENCES, TRIGGER, UPDATE |
 | public.dashboard_insights_cache | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | public.dashboard_insights_cache | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
 | public.db_connection_snapshots | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
@@ -256,16 +229,12 @@ Roles da API: `anon` (sem login), `authenticated` (logado), `service_role` (bypa
 | public.e2e_cleanup_audit | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
 | public.e2e_cleanup_rate_limit | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | public.e2e_cleanup_rate_limit | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
-| public.eco_backfill_log_20260625 | anon | DELETE, INSERT, REFERENCES, TRIGGER, UPDATE |
 | public.eco_backfill_log_20260625 | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | public.eco_backfill_log_20260625 | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
-| public.eco_date_reconcile_log_20260626 | anon | DELETE, INSERT, REFERENCES, TRIGGER, UPDATE |
 | public.eco_date_reconcile_log_20260626 | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | public.eco_date_reconcile_log_20260626 | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
-| public.eco_material_config | anon | DELETE, INSERT, REFERENCES, TRIGGER, UPDATE |
 | public.eco_material_config | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | public.eco_material_config | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
-| public.edge_function_invocations | anon | DELETE, INSERT, REFERENCES, TRIGGER, UPDATE |
 | public.edge_function_invocations | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | public.edge_function_invocations | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
 | public.edge_rate_limits | anon | DELETE, INSERT, REFERENCES, TRIGGER, UPDATE |
@@ -279,36 +248,29 @@ Roles da API: `anon` (sem login), `authenticated` (logado), `service_role` (bypa
 | public.enrichment_log | anon | DELETE, INSERT, REFERENCES, TRIGGER, UPDATE |
 | public.enrichment_log | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | public.enrichment_log | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
-| public.expert_conversations | anon | DELETE, INSERT, REFERENCES, TRIGGER, UPDATE |
 | public.expert_conversations | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | public.expert_conversations | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
-| public.expert_messages | anon | DELETE, INSERT, REFERENCES, TRIGGER, UPDATE |
 | public.expert_messages | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | public.expert_messages | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
 | public.external_connections | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | public.external_connections | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
-| public.external_connections_sync_log | anon | DELETE, INSERT, REFERENCES, TRIGGER, UPDATE |
 | public.external_connections_sync_log | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | public.external_connections_sync_log | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
 | public.favorite_item_reactions | anon | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | public.favorite_item_reactions | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | public.favorite_item_reactions | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
-| public.favorite_items | anon | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
+| public.favorite_items | anon | SELECT |
 | public.favorite_items | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | public.favorite_items | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
-| public.favorite_items_trash | anon | DELETE, INSERT, REFERENCES, TRIGGER, UPDATE |
 | public.favorite_items_trash | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | public.favorite_items_trash | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
-| public.favorite_lists | anon | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
+| public.favorite_lists | anon | SELECT |
 | public.favorite_lists | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | public.favorite_lists | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
-| public.feminine_color_config | anon | DELETE, INSERT, REFERENCES, TRIGGER, UPDATE |
 | public.feminine_color_config | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | public.feminine_color_config | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
-| public.file_scan_logs | anon | DELETE, INSERT, REFERENCES, TRIGGER, UPDATE |
 | public.file_scan_logs | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | public.file_scan_logs | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
-| public.follow_up_reminders | anon | DELETE, INSERT, REFERENCES, TRIGGER, UPDATE |
 | public.follow_up_reminders | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | public.follow_up_reminders | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
 | public.freight_settings | authenticated | SELECT, UPDATE |
@@ -316,32 +278,23 @@ Roles da API: `anon` (sem login), `authenticated` (logado), `service_role` (bypa
 | public.frontend_telemetry | anon | INSERT |
 | public.frontend_telemetry | authenticated | INSERT, SELECT |
 | public.frontend_telemetry | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
-| public.generated_mockups | anon | DELETE, INSERT, REFERENCES, TRIGGER, UPDATE |
 | public.generated_mockups | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | public.generated_mockups | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
-| public.geo_allowed_countries | anon | DELETE, INSERT, REFERENCES, TRIGGER, UPDATE |
 | public.geo_allowed_countries | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | public.geo_allowed_countries | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
-| public.hardening_health_snapshots | anon | DELETE, INSERT, REFERENCES, TRIGGER, UPDATE |
 | public.hardening_health_snapshots | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | public.hardening_health_snapshots | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
 | public.image_backfill_queue | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
-| public.image_types | anon | DELETE, INSERT, REFERENCES, TRIGGER, UPDATE |
 | public.image_types | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | public.image_types | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
-| public.import_pipeline_steps | anon | DELETE, INSERT, REFERENCES, TRIGGER, UPDATE |
 | public.import_pipeline_steps | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | public.import_pipeline_steps | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
-| public.inbound_webhook_endpoints | anon | DELETE, INSERT, REFERENCES, TRIGGER, UPDATE |
 | public.inbound_webhook_endpoints | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | public.inbound_webhook_endpoints | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
-| public.inbound_webhook_events | anon | DELETE, INSERT, REFERENCES, TRIGGER, UPDATE |
 | public.inbound_webhook_events | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | public.inbound_webhook_events | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
-| public.included_packaging_print_areas | anon | DELETE, INSERT, REFERENCES, TRIGGER, UPDATE |
 | public.included_packaging_print_areas | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | public.included_packaging_print_areas | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
-| public.included_packaging_techniques | anon | DELETE, INSERT, REFERENCES, TRIGGER, UPDATE |
 | public.included_packaging_techniques | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | public.included_packaging_techniques | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
 | public.ingestion_run_log | anon | DELETE, INSERT, REFERENCES, TRIGGER, UPDATE |
@@ -356,29 +309,22 @@ Roles da API: `anon` (sem login), `authenticated` (logado), `service_role` (bypa
 | public.kill_switch_hits | anon | DELETE, INSERT, REFERENCES, TRIGGER, UPDATE |
 | public.kill_switch_hits | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | public.kill_switch_hits | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
-| public.kit_collaborators | anon | DELETE, INSERT, REFERENCES, TRIGGER, UPDATE |
 | public.kit_collaborators | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | public.kit_collaborators | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
-| public.kit_comments | anon | DELETE, INSERT, REFERENCES, TRIGGER, UPDATE |
 | public.kit_comments | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | public.kit_comments | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
-| public.kit_component_enrichment_raw | anon | DELETE, INSERT, REFERENCES, TRIGGER, UPDATE |
 | public.kit_component_enrichment_raw | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | public.kit_component_enrichment_raw | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
-| public.kit_component_ficha_staging | anon | DELETE, INSERT, REFERENCES, TRIGGER, UPDATE |
 | public.kit_component_ficha_staging | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | public.kit_component_ficha_staging | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
-| public.kit_component_padronizacao | anon | DELETE, INSERT, REFERENCES, TRIGGER, UPDATE |
 | public.kit_component_padronizacao | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | public.kit_component_padronizacao | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
 | public.kit_component_print_areas | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | public.kit_component_print_areas | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
 | public.kit_component_types | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | public.kit_component_types | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
-| public.kit_component_variant_skus | anon | DELETE, INSERT, REFERENCES, TRIGGER, UPDATE |
 | public.kit_component_variant_skus | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | public.kit_component_variant_skus | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
-| public.kit_ficha_session_log | anon | DELETE, INSERT, REFERENCES, TRIGGER, UPDATE |
 | public.kit_ficha_session_log | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | public.kit_ficha_session_log | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
 | public.kit_quote_requests | anon | REFERENCES, TRIGGER |
@@ -387,13 +333,11 @@ Roles da API: `anon` (sem login), `authenticated` (logado), `service_role` (bypa
 | public.kit_save_requests | anon | REFERENCES, TRIGGER |
 | public.kit_save_requests | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | public.kit_save_requests | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
-| public.kit_share_tokens | anon | DELETE, INSERT, REFERENCES, TRIGGER, UPDATE |
 | public.kit_share_tokens | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | public.kit_share_tokens | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
-| public.kit_templates | anon | DELETE, INSERT, REFERENCES, TRIGGER, UPDATE |
 | public.kit_templates | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | public.kit_templates | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
-| public.kit_typical_dims | anon | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
+| public.kit_typical_dims | anon | SELECT |
 | public.kit_typical_dims | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | public.kit_typical_dims | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
 | public.kit_variants | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
@@ -423,38 +367,28 @@ Roles da API: `anon` (sem login), `authenticated` (logado), `service_role` (bypa
 | public.magazine_templates | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
 | public.magazine_templates_catalog | authenticated | REFERENCES, SELECT, TRIGGER |
 | public.magazine_templates_catalog | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
-| public.magazine_view_rollup_watermark | anon | DELETE, INSERT, REFERENCES, TRIGGER, UPDATE |
 | public.magazine_view_rollup_watermark | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | public.magazine_view_rollup_watermark | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
 | public.magazines | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | public.magazines | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
-| public.magic_up_brand_kits | anon | DELETE, INSERT, REFERENCES, TRIGGER, UPDATE |
 | public.magic_up_brand_kits | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | public.magic_up_brand_kits | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
-| public.magic_up_campaigns | anon | DELETE, INSERT, REFERENCES, TRIGGER, UPDATE |
 | public.magic_up_campaigns | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | public.magic_up_campaigns | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
-| public.magic_up_comments | anon | DELETE, INSERT, REFERENCES, TRIGGER, UPDATE |
 | public.magic_up_comments | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | public.magic_up_comments | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
-| public.magic_up_generations | anon | DELETE, INSERT, REFERENCES, TRIGGER, UPDATE |
 | public.magic_up_generations | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | public.magic_up_generations | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
-| public.magic_up_public_shares | anon | DELETE, INSERT, REFERENCES, TRIGGER, UPDATE |
 | public.magic_up_public_shares | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | public.magic_up_public_shares | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
-| public.magic_up_reactions | anon | DELETE, INSERT, REFERENCES, TRIGGER, UPDATE |
 | public.magic_up_reactions | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | public.magic_up_reactions | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
-| public.markup_configurations | anon | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | public.markup_configurations | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | public.markup_configurations | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
-| public.material_equivalences | anon | DELETE, INSERT, REFERENCES, TRIGGER, UPDATE |
 | public.material_equivalences | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | public.material_equivalences | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
 | public.material_groups | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | public.material_groups | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
-| public.material_reconcile_log_20260626 | anon | DELETE, INSERT, REFERENCES, TRIGGER, UPDATE |
 | public.material_reconcile_log_20260626 | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | public.material_reconcile_log_20260626 | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
 | public.material_types | anon | SELECT |
@@ -474,21 +408,17 @@ Roles da API: `anon` (sem login), `authenticated` (logado), `service_role` (bypa
 | public.mcp_key_auto_revocations | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
 | public.mcp_kv | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
 | public.mcp_sessions | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
-| public.medallion_coverage_snapshots | anon | DELETE, INSERT, REFERENCES, TRIGGER, UPDATE |
 | public.medallion_coverage_snapshots | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | public.medallion_coverage_snapshots | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
 | public.mockup_approval_links | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | public.mockup_approval_links | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
-| public.mockup_credit_transactions | anon | DELETE, INSERT, REFERENCES, TRIGGER, UPDATE |
 | public.mockup_credit_transactions | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | public.mockup_credit_transactions | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
 | public.mockup_credits | anon | DELETE, INSERT, REFERENCES, TRIGGER, UPDATE |
 | public.mockup_credits | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | public.mockup_credits | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
-| public.mockup_drafts | anon | DELETE, INSERT, REFERENCES, TRIGGER, UPDATE |
 | public.mockup_drafts | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | public.mockup_drafts | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
-| public.mockup_generation_jobs | anon | DELETE, INSERT, REFERENCES, TRIGGER, UPDATE |
 | public.mockup_generation_jobs | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | public.mockup_generation_jobs | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
 | public.mockup_prompt_configs | anon | DELETE, INSERT, REFERENCES, TRIGGER, UPDATE |
@@ -511,16 +441,13 @@ Roles da API: `anon` (sem login), `authenticated` (logado), `service_role` (bypa
 | public.mv_product_intelligence | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
 | public.mv_stock_velocity | authenticated | SELECT |
 | public.mv_stock_velocity | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
-| public.navigation_analytics | anon | DELETE, INSERT, REFERENCES, TRIGGER, UPDATE |
 | public.navigation_analytics | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | public.navigation_analytics | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
-| public.ncm_codes | anon | DELETE, INSERT, REFERENCES, TRIGGER, UPDATE |
 | public.ncm_codes | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | public.ncm_codes | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
 | public.notebook_features | anon | REFERENCES, TRIGGER |
 | public.notebook_features | authenticated | REFERENCES, SELECT, TRIGGER |
 | public.notebook_features | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
-| public.notification_preferences | anon | DELETE, INSERT, REFERENCES, TRIGGER, UPDATE |
 | public.notification_preferences | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | public.notification_preferences | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
 | public.notification_templates | anon | DELETE, INSERT, REFERENCES, TRIGGER, UPDATE |
@@ -534,10 +461,8 @@ Roles da API: `anon` (sem login), `authenticated` (logado), `service_role` (bypa
 | public.ops_grant_audit | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
 | public.optimization_queue | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | public.optimization_queue | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
-| public.optimization_queue_runs | anon | DELETE, INSERT, REFERENCES, TRIGGER, UPDATE |
 | public.optimization_queue_runs | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | public.optimization_queue_runs | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
-| public.order_item_personalizations | anon | DELETE, INSERT, REFERENCES, TRIGGER, UPDATE |
 | public.order_item_personalizations | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | public.order_item_personalizations | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
 | public.order_items | anon | DELETE, INSERT, REFERENCES, TRIGGER, UPDATE |
@@ -549,7 +474,6 @@ Roles da API: `anon` (sem login), `authenticated` (logado), `service_role` (bypa
 | public.organization_members | anon | DELETE, INSERT, REFERENCES, TRIGGER, UPDATE |
 | public.organization_members | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | public.organization_members | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
-| public.organizations | anon | DELETE, INSERT, REFERENCES, TRIGGER, UPDATE |
 | public.organizations | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | public.organizations | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
 | public.outbound_webhooks | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
@@ -557,16 +481,12 @@ Roles da API: `anon` (sem login), `authenticated` (logado), `service_role` (bypa
 | public.ownership_audit_reports | anon | DELETE, INSERT, REFERENCES, TRIGGER, UPDATE |
 | public.ownership_audit_reports | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | public.ownership_audit_reports | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
-| public.ownership_repair_logs | anon | DELETE, INSERT, REFERENCES, TRIGGER, UPDATE |
 | public.ownership_repair_logs | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | public.ownership_repair_logs | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
-| public.packaging_compatibility_config | anon | DELETE, INSERT, REFERENCES, TRIGGER, UPDATE |
 | public.packaging_compatibility_config | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | public.packaging_compatibility_config | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
-| public.packaging_types | anon | DELETE, INSERT, REFERENCES, TRIGGER, UPDATE |
 | public.packaging_types | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | public.packaging_types | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
-| public.packagings | anon | DELETE, INSERT, REFERENCES, TRIGGER, UPDATE |
 | public.packagings | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | public.packagings | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
 | public.paper_colors | anon | REFERENCES, TRIGGER |
@@ -589,7 +509,6 @@ Roles da API: `anon` (sem login), `authenticated` (logado), `service_role` (bypa
 | public.permissions | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
 | public.personalization_simulations | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | public.personalization_simulations | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
-| public.personalization_technique_mappings | anon | DELETE, INSERT, REFERENCES, TRIGGER, UPDATE |
 | public.personalization_technique_mappings | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | public.personalization_technique_mappings | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
 | public.personalization_techniques | anon | SELECT |
@@ -612,13 +531,13 @@ Roles da API: `anon` (sem login), `authenticated` (logado), `service_role` (bypa
 | public.print_area_techniques | anon | SELECT |
 | public.print_area_techniques | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | public.print_area_techniques | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
-| public.product_ai_content | anon | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
+| public.product_ai_content | anon | SELECT |
 | public.product_ai_content | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | public.product_ai_content | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
 | public.product_ai_history | anon | REFERENCES, TRIGGER |
 | public.product_ai_history | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | public.product_ai_history | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
-| public.product_attributes | anon | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
+| public.product_attributes | anon | SELECT |
 | public.product_attributes | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | public.product_attributes | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
 | public.product_badge_definitions | anon | REFERENCES, SELECT, TRIGGER |
@@ -626,18 +545,15 @@ Roles da API: `anon` (sem login), `authenticated` (logado), `service_role` (bypa
 | public.product_badge_definitions | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
 | public.product_category_assignments | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | public.product_category_assignments | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
-| public.product_commemorative_dates | anon | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
+| public.product_commemorative_dates | anon | SELECT |
 | public.product_commemorative_dates | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | public.product_commemorative_dates | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
 | public.product_component_location_techniques | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | public.product_component_location_techniques | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
-| public.product_component_locations | anon | DELETE, INSERT, REFERENCES, TRIGGER, UPDATE |
 | public.product_component_locations | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | public.product_component_locations | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
-| public.product_components | anon | DELETE, INSERT, REFERENCES, TRIGGER, UPDATE |
 | public.product_components | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | public.product_components | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
-| public.product_customization_prices | anon | DELETE, INSERT, REFERENCES, TRIGGER, UPDATE |
 | public.product_customization_prices | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | public.product_customization_prices | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
 | public.product_deactivation_requests | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
@@ -645,10 +561,9 @@ Roles da API: `anon` (sem login), `authenticated` (logado), `service_role` (bypa
 | public.product_deactivation_tokens | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
 | public.product_endomarketing | authenticated | DELETE, INSERT, SELECT, UPDATE |
 | public.product_endomarketing | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
-| public.product_faqs | anon | DELETE, INSERT, REFERENCES, TRIGGER, UPDATE |
 | public.product_faqs | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | public.product_faqs | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
-| public.product_fiscal | anon | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
+| public.product_fiscal | anon | SELECT |
 | public.product_fiscal | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | public.product_fiscal | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
 | public.product_group_components | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
@@ -663,7 +578,6 @@ Roles da API: `anon` (sem login), `authenticated` (logado), `service_role` (bypa
 | public.product_groups | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
 | public.product_images | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | public.product_images | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
-| public.product_included_packagings | anon | DELETE, INSERT, REFERENCES, TRIGGER, UPDATE |
 | public.product_included_packagings | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | public.product_included_packagings | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
 | public.product_kit_components | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
@@ -680,54 +594,43 @@ Roles da API: `anon` (sem login), `authenticated` (logado), `service_role` (bypa
 | public.product_novelties | anon | SELECT |
 | public.product_novelties | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | public.product_novelties | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
-| public.product_packaging | anon | DELETE, INSERT, REFERENCES, TRIGGER, UPDATE |
 | public.product_packaging | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | public.product_packaging | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
-| public.product_packaging_compatibility | anon | DELETE, INSERT, REFERENCES, TRIGGER, UPDATE |
 | public.product_packaging_compatibility | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | public.product_packaging_compatibility | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
-| public.product_packagings | anon | DELETE, INSERT, REFERENCES, TRIGGER, UPDATE |
 | public.product_packagings | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | public.product_packagings | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
 | public.product_physical | anon | SELECT |
 | public.product_physical | authenticated | SELECT |
 | public.product_physical | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
-| public.product_price_freshness_overrides | anon | DELETE, INSERT, REFERENCES, TRIGGER, UPDATE |
 | public.product_price_freshness_overrides | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | public.product_price_freshness_overrides | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
-| public.product_print_positions | anon | DELETE, INSERT, REFERENCES, TRIGGER, UPDATE |
 | public.product_print_positions | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | public.product_print_positions | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
 | public.product_properties | anon | SELECT |
 | public.product_properties | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | public.product_properties | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
-| public.product_qa_image_alerts | anon | DELETE, INSERT, REFERENCES, TRIGGER, UPDATE |
 | public.product_qa_image_alerts | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | public.product_qa_image_alerts | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
 | public.product_relationships | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | public.product_relationships | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
-| public.product_search_logs | anon | DELETE, INSERT, REFERENCES, TRIGGER, UPDATE |
 | public.product_search_logs | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | public.product_search_logs | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
-| public.product_seo | anon | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
+| public.product_seo | anon | SELECT |
 | public.product_seo | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | public.product_seo | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
-| public.product_similarity_group_members | anon | DELETE, INSERT, REFERENCES, TRIGGER, UPDATE |
 | public.product_similarity_group_members | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | public.product_similarity_group_members | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
-| public.product_similarity_groups | anon | DELETE, INSERT, REFERENCES, TRIGGER, UPDATE |
 | public.product_similarity_groups | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | public.product_similarity_groups | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
-| public.product_supply | anon | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
+| public.product_supply | anon | SELECT |
 | public.product_supply | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | public.product_supply | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
-| public.product_sync_logs | anon | DELETE, INSERT, REFERENCES, TRIGGER, UPDATE |
 | public.product_sync_logs | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | public.product_sync_logs | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
 | public.product_tags | anon | SELECT |
 | public.product_tags | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | public.product_tags | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
-| public.product_target_audiences | anon | DELETE, INSERT, REFERENCES, TRIGGER, UPDATE |
 | public.product_target_audiences | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | public.product_target_audiences | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
 | public.product_variants | anon | SELECT |
@@ -749,24 +652,18 @@ Roles da API: `anon` (sem login), `authenticated` (logado), `service_role` (bypa
 | public.produtos_padronizacao | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
 | public.produtos_padronizacao_variantes | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | public.produtos_padronizacao_variantes | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
-| public.produtos_site_padronizacao | anon | DELETE, INSERT, REFERENCES, TRIGGER, UPDATE |
 | public.produtos_site_padronizacao | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | public.produtos_site_padronizacao | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
 | public.profiles | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | public.profiles | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
-| public.property_definitions | anon | DELETE, INSERT, REFERENCES, TRIGGER, UPDATE |
 | public.property_definitions | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | public.property_definitions | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
-| public.public_token_failures | anon | DELETE, INSERT, REFERENCES, TRIGGER, UPDATE |
 | public.public_token_failures | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | public.public_token_failures | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
-| public.push_subscriptions | anon | DELETE, INSERT, REFERENCES, TRIGGER, UPDATE |
 | public.push_subscriptions | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | public.push_subscriptions | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
-| public.qa_image_coverage_log | anon | DELETE, INSERT, REFERENCES, TRIGGER, UPDATE |
 | public.qa_image_coverage_log | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | public.qa_image_coverage_log | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
-| public.query_telemetry | anon | DELETE, INSERT, REFERENCES, TRIGGER, UPDATE |
 | public.query_telemetry | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | public.query_telemetry | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
 | public.quote_approval_tokens | authenticated | DELETE, INSERT, SELECT, UPDATE |
@@ -793,22 +690,16 @@ Roles da API: `anon` (sem login), `authenticated` (logado), `service_role` (bypa
 | public.ramo_atividade_filho | anon | SELECT |
 | public.ramo_atividade_filho | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | public.ramo_atividade_filho | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
-| public.recently_viewed_products | anon | DELETE, INSERT, REFERENCES, TRIGGER, UPDATE |
 | public.recently_viewed_products | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | public.recently_viewed_products | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
-| public.request_rate_limits | anon | DELETE, INSERT, REFERENCES, TRIGGER, UPDATE |
 | public.request_rate_limits | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | public.request_rate_limits | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
-| public.rls_denial_log | anon | DELETE, INSERT, REFERENCES, TRIGGER, UPDATE |
 | public.rls_denial_log | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | public.rls_denial_log | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
-| public.role_migration_batches | anon | DELETE, INSERT, REFERENCES, TRIGGER, UPDATE |
 | public.role_migration_batches | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | public.role_migration_batches | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
-| public.role_migration_items | anon | DELETE, INSERT, REFERENCES, TRIGGER, UPDATE |
 | public.role_migration_items | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | public.role_migration_items | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
-| public.role_permissions | anon | DELETE, INSERT, REFERENCES, TRIGGER, UPDATE |
 | public.role_permissions | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | public.role_permissions | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
 | public.roles | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
@@ -818,69 +709,53 @@ Roles da API: `anon` (sem login), `authenticated` (logado), `service_role` (bypa
 | public.saved_filters | anon | DELETE, INSERT, REFERENCES, TRIGGER, UPDATE |
 | public.saved_filters | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | public.saved_filters | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
-| public.saved_trends_views | anon | DELETE, INSERT, REFERENCES, TRIGGER, UPDATE |
 | public.saved_trends_views | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | public.saved_trends_views | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
-| public.scheduled_reports | anon | DELETE, INSERT, REFERENCES, TRIGGER, UPDATE |
 | public.scheduled_reports | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | public.scheduled_reports | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
-| public.schema_drift_allowlist | anon | DELETE, INSERT, REFERENCES, TRIGGER, UPDATE |
 | public.schema_drift_allowlist | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | public.schema_drift_allowlist | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
-| public.schema_drift_log | anon | DELETE, INSERT, REFERENCES, TRIGGER, UPDATE |
 | public.schema_drift_log | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | public.schema_drift_log | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
-| public.schema_signature_baseline | anon | DELETE, INSERT, REFERENCES, TRIGGER, UPDATE |
 | public.schema_signature_baseline | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | public.schema_signature_baseline | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
-| public.schema_signature_drift_allowlist | anon | DELETE, INSERT, REFERENCES, TRIGGER, UPDATE |
 | public.schema_signature_drift_allowlist | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | public.schema_signature_drift_allowlist | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
-| public.schema_signature_drift_log | anon | DELETE, INSERT, REFERENCES, TRIGGER, UPDATE |
 | public.schema_signature_drift_log | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | public.schema_signature_drift_log | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
 | public.search_analytics | anon | DELETE, INSERT, REFERENCES, TRIGGER, UPDATE |
 | public.search_analytics | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | public.search_analytics | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
-| public.search_queries | anon | DELETE, INSERT, REFERENCES, TRIGGER, UPDATE |
 | public.search_queries | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | public.search_queries | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
 | public.secret_rotation_log | authenticated | REFERENCES, SELECT, TRIGGER |
 | public.secret_rotation_log | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
 | public.security_settings | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | public.security_settings | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
-| public.seller_cart_items | anon | DELETE, INSERT, REFERENCES, TRIGGER, UPDATE |
 | public.seller_cart_items | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | public.seller_cart_items | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
-| public.seller_carts | anon | DELETE, INSERT, REFERENCES, TRIGGER, UPDATE |
 | public.seller_carts | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | public.seller_carts | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
 | public.seller_discount_limits | authenticated | DELETE, INSERT, SELECT, UPDATE |
 | public.seller_discount_limits | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
 | public.seo_audit_log | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | public.seo_audit_log | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
-| public.seo_redirects | anon | DELETE, INSERT, REFERENCES, TRIGGER, UPDATE |
 | public.seo_redirects | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | public.seo_redirects | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
 | public.shipping_boxes | authenticated | INSERT, SELECT, UPDATE |
 | public.shipping_boxes | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
-| public.simulator_wizard_drafts | anon | DELETE, INSERT, REFERENCES, TRIGGER, UPDATE |
 | public.simulator_wizard_drafts | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | public.simulator_wizard_drafts | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
-| public.sm_category_pages | anon | DELETE, INSERT, REFERENCES, TRIGGER, UPDATE |
 | public.sm_category_pages | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | public.sm_category_pages | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
-| public.sm_site_url_map | anon | DELETE, INSERT, REFERENCES, TRIGGER, UPDATE |
 | public.sm_site_url_map | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | public.sm_site_url_map | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
-| public.sm_worker_partitions | anon | DELETE, INSERT, REFERENCES, TRIGGER, UPDATE |
 | public.sm_worker_partitions | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | public.sm_worker_partitions | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
 | public.smoke_test_runs | authenticated | SELECT |
 | public.smoke_test_runs | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
 | public.somarcas_catalogo_publico | authenticated | SELECT |
 | public.somarcas_catalogo_publico | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
-| public.spot_health_log | anon | DELETE, INSERT, REFERENCES, TRIGGER, UPDATE |
 | public.spot_health_log | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | public.spot_health_log | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
 | public.spot_typecode_map | anon | REFERENCES, SELECT, TRIGGER |
@@ -905,10 +780,8 @@ Roles da API: `anon` (sem login), `authenticated` (logado), `service_role` (bypa
 | public.supplier_attribute_definitions | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
 | public.supplier_branches | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | public.supplier_branches | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
-| public.supplier_categories | anon | DELETE, INSERT, REFERENCES, TRIGGER, UPDATE |
 | public.supplier_categories | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | public.supplier_categories | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
-| public.supplier_category_mappings | anon | DELETE, INSERT, REFERENCES, TRIGGER, UPDATE |
 | public.supplier_category_mappings | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | public.supplier_category_mappings | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
 | public.supplier_colors | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
@@ -917,31 +790,24 @@ Roles da API: `anon` (sem login), `authenticated` (logado), `service_role` (bypa
 | public.supplier_customization_options_raw | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | public.supplier_customization_options_raw | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
 | public.supplier_customization_raw | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
-| public.supplier_field_mappings | anon | DELETE, INSERT, REFERENCES, TRIGGER, UPDATE |
 | public.supplier_field_mappings | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | public.supplier_field_mappings | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
-| public.supplier_field_priority | anon | DELETE, INSERT, REFERENCES, TRIGGER, UPDATE |
 | public.supplier_field_priority | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | public.supplier_field_priority | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
-| public.supplier_import_batches | anon | DELETE, INSERT, REFERENCES, TRIGGER, UPDATE |
 | public.supplier_import_batches | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | public.supplier_import_batches | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
 | public.supplier_materials | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | public.supplier_materials | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
-| public.supplier_packagings | anon | DELETE, INSERT, REFERENCES, TRIGGER, UPDATE |
 | public.supplier_packagings | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | public.supplier_packagings | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
 | public.supplier_products_raw | authenticated | SELECT |
 | public.supplier_products_raw | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
 | public.supplier_products_raw_history | authenticated | SELECT |
 | public.supplier_products_raw_history | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
-| public.supplier_products_raw_history_p2026_08 | anon | DELETE, INSERT, REFERENCES, TRIGGER, UPDATE |
 | public.supplier_products_raw_history_p2026_08 | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | public.supplier_products_raw_history_p2026_08 | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
-| public.supplier_products_raw_history_p2026_09 | anon | DELETE, INSERT, REFERENCES, TRIGGER, UPDATE |
 | public.supplier_products_raw_history_p2026_09 | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | public.supplier_products_raw_history_p2026_09 | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
-| public.supplier_products_raw_history_p2026_10 | anon | DELETE, INSERT, REFERENCES, TRIGGER, UPDATE |
 | public.supplier_products_raw_history_p2026_10 | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | public.supplier_products_raw_history_p2026_10 | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
 | public.supplier_products_raw_history_p2026_11 | anon | REFERENCES, TRIGGER |
@@ -990,36 +856,29 @@ Roles da API: `anon` (sem login), `authenticated` (logado), `service_role` (bypa
 | public.supplier_property_mappings | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
 | public.supplier_replenishment_events | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | public.supplier_replenishment_events | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
-| public.supplier_settings | anon | DELETE, INSERT, REFERENCES, TRIGGER, UPDATE |
 | public.supplier_settings | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | public.supplier_settings | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
-| public.supplier_sub_brands | anon | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
+| public.supplier_sub_brands | anon | SELECT |
 | public.supplier_sub_brands | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | public.supplier_sub_brands | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
-| public.supplier_subtype_category_map | anon | DELETE, INSERT, REFERENCES, TRIGGER, UPDATE |
 | public.supplier_subtype_category_map | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | public.supplier_subtype_category_map | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
-| public.supplier_unit_conversions | anon | DELETE, INSERT, REFERENCES, TRIGGER, UPDATE |
 | public.supplier_unit_conversions | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | public.supplier_unit_conversions | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
-| public.supplier_value_mappings | anon | DELETE, INSERT, REFERENCES, TRIGGER, UPDATE |
 | public.supplier_value_mappings | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | public.supplier_value_mappings | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
-| public.supplier_video_requirements | anon | DELETE, INSERT, REFERENCES, TRIGGER, UPDATE |
 | public.supplier_video_requirements | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | public.supplier_video_requirements | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
 | public.suppliers | authenticated | DELETE, INSERT, REFERENCES, TRIGGER, UPDATE |
 | public.suppliers | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
-| public.system_changelog | anon | DELETE, INSERT, REFERENCES, TRIGGER, UPDATE |
 | public.system_changelog | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | public.system_changelog | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
-| public.system_documentation | anon | DELETE, INSERT, REFERENCES, TRIGGER, UPDATE |
 | public.system_documentation | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | public.system_documentation | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
 | public.system_kill_switches | anon | SELECT |
 | public.system_kill_switches | authenticated | SELECT |
 | public.system_kill_switches | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
-| public.system_settings | anon | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
+| public.system_settings | anon | SELECT |
 | public.system_settings | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | public.system_settings | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
 | public.tabela_preco_gravacao_oficial | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
@@ -1030,7 +889,6 @@ Roles da API: `anon` (sem login), `authenticated` (logado), `service_role` (bypa
 | public.tags | anon | SELECT |
 | public.tags | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | public.tags | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
-| public.target_audiences | anon | DELETE, INSERT, REFERENCES, TRIGGER, UPDATE |
 | public.target_audiences | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | public.target_audiences | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
 | public.tecnicas_gravacao | anon | SELECT |
@@ -1049,7 +907,6 @@ Roles da API: `anon` (sem login), `authenticated` (logado), `service_role` (bypa
 | public.user_filter_presets | anon | DELETE, INSERT, REFERENCES, TRIGGER, UPDATE |
 | public.user_filter_presets | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | public.user_filter_presets | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
-| public.user_ip_allowlist | anon | DELETE, INSERT, REFERENCES, TRIGGER, UPDATE |
 | public.user_ip_allowlist | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | public.user_ip_allowlist | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
 | public.user_known_devices | anon | DELETE, INSERT, REFERENCES, TRIGGER, UPDATE |
@@ -1227,32 +1084,26 @@ Roles da API: `anon` (sem login), `authenticated` (logado), `service_role` (bypa
 | public.variant_commemorative_dates | anon | DELETE, INSERT, REFERENCES, TRIGGER, UPDATE |
 | public.variant_commemorative_dates | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | public.variant_commemorative_dates | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
-| public.variant_supplier_sources | anon | SELECT |
 | public.variant_supplier_sources | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | public.variant_supplier_sources | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
 | public.variation_types | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | public.variation_types | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
 | public.variation_values | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | public.variation_values | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
-| public.video_import_queue | anon | DELETE, INSERT, REFERENCES, TRIGGER, UPDATE |
 | public.video_import_queue | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | public.video_import_queue | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
-| public.video_sim_results | anon | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
+| public.video_sim_results | anon | SELECT |
 | public.video_sim_results | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | public.video_sim_results | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
-| public.video_types | anon | DELETE, INSERT, REFERENCES, TRIGGER, UPDATE |
 | public.video_types | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | public.video_types | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
-| public.video_validation_log | anon | DELETE, INSERT, REFERENCES, TRIGGER, UPDATE |
 | public.video_validation_log | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | public.video_validation_log | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
 | public.video_variant_links | anon | DELETE, INSERT, REFERENCES, TRIGGER, UPDATE |
 | public.video_variant_links | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | public.video_variant_links | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
-| public.visual_search_feedback | anon | DELETE, INSERT, REFERENCES, TRIGGER, UPDATE |
 | public.visual_search_feedback | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | public.visual_search_feedback | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
-| public.voice_command_logs | anon | DELETE, INSERT, REFERENCES, TRIGGER, UPDATE |
 | public.voice_command_logs | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | public.voice_command_logs | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
 | public.vw_active_products_missing_gold_images | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
@@ -1357,7 +1208,6 @@ Roles da API: `anon` (sem login), `authenticated` (logado), `service_role` (bypa
 | public.vw_supplier_products_raw_status | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
 | public.vw_system_health_quick | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
 | public.vw_thermal_products | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
-| public.vw_variant_sale_prices | anon | SELECT |
 | public.vw_variant_sale_prices | authenticated | SELECT |
 | public.vw_variant_sale_prices | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
 | public.vw_xbz_products_by_category | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
@@ -1368,15 +1218,12 @@ Roles da API: `anon` (sem login), `authenticated` (logado), `service_role` (bypa
 | public.webhook_deliveries | anon | DELETE, INSERT, REFERENCES, TRIGGER, UPDATE |
 | public.webhook_deliveries | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | public.webhook_deliveries | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
-| public.webhook_delivery_locks | anon | DELETE, INSERT, REFERENCES, TRIGGER, UPDATE |
 | public.webhook_delivery_locks | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | public.webhook_delivery_locks | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
 | public.webhook_delivery_metrics | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | public.webhook_delivery_metrics | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
-| public.webhook_dispatcher_log | anon | DELETE, INSERT, REFERENCES, TRIGGER, UPDATE |
 | public.webhook_dispatcher_log | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | public.webhook_dispatcher_log | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
-| public.webhook_outbox | anon | DELETE, INSERT, REFERENCES, TRIGGER, UPDATE |
 | public.webhook_outbox | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | public.webhook_outbox | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
 | public.webhook_request_nonces | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
@@ -1384,7 +1231,6 @@ Roles da API: `anon` (sem login), `authenticated` (logado), `service_role` (bypa
 | public.workspace_notifications | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
 | public.xbz_gallery_staging | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | public.xbz_gallery_staging | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
-| public.xbz_upload_mapping | anon | DELETE, INSERT, REFERENCES, TRIGGER, UPDATE |
 | public.xbz_upload_mapping | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | public.xbz_upload_mapping | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
 | storage.bucket_lifecycle_states | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
@@ -1474,7 +1320,6 @@ Roles da API: `anon` (sem login), `authenticated` (logado), `service_role` (bypa
 | public.suppliers.contact_name | authenticated | SELECT |
 | public.suppliers.contact_person | authenticated | SELECT |
 | public.suppliers.created_at | authenticated | SELECT |
-| public.suppliers.default_markup_percent | anon | SELECT |
 | public.suppliers.default_markup_percent | authenticated | SELECT |
 | public.suppliers.delivery_time_days | authenticated | SELECT |
 | public.suppliers.email | authenticated | SELECT |
