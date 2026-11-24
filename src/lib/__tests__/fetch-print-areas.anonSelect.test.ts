@@ -1,10 +1,13 @@
 /**
- * Regressao (2026-11-24): `print_area_techniques` passou a ter GRANT por COLUNA
- * para `anon` (migration 20261124163000 revoga `unit_cost` do `anon`). Com grant
- * por coluna, o PostgREST expande `select=*` para a tabela inteira e responde
- * 401/42501 para `anon` — medido na REST de producao: antes 200, depois 401.
+ * Contrato da leitura de areas de gravacao (2026-11-24).
  *
- * O teste trava o contrato da leitura: colunas explicitas, sem `unit_cost`.
+ * `dbInvoke` resolve `print_area_techniques` para `v_print_area_techniques_public`
+ * (GOLD_READ_ALIASES), cuja projecao tem 15 colunas — sem `unit_cost` e sem
+ * `production_days`. Pedir coluna fora da projecao responde 400/42703 e a leitura
+ * cai para `[]` (medido na REST de producao).
+ *
+ * O teste trava a lista exata: igualdade estrita, para que coluna nova so entre
+ * junto com a alteracao da view.
  */
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
@@ -35,9 +38,25 @@ describe('fetchPrintAreasFromProduct — select explicito para anon', () => {
     expect(select).not.toBe('*');
 
     const cols = select!.split(',').map((c) => c.trim());
+    expect(cols).toEqual([
+      'id',
+      'product_id',
+      'tabela_preco_id',
+      'location_code',
+      'location_name',
+      'location_order',
+      'max_width',
+      'max_height',
+      'is_curved',
+      'shape',
+      'technique_order',
+      'is_active',
+      'notes',
+      'created_at',
+      'updated_at',
+    ]);
+    // Fora da projecao: 42703 (coluna inexistente) / 42501 (custo sem grant).
     expect(cols).not.toContain('unit_cost');
-    expect(cols).toEqual(
-      expect.arrayContaining(['id', 'product_id', 'production_days', 'technique_order']),
-    );
+    expect(cols).not.toContain('production_days');
   });
 });

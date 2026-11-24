@@ -18,15 +18,17 @@ import {
 } from '@/lib/personalization/adapters';
 
 /**
- * Colunas que `anon` pode ler em `print_area_techniques`.
+ * Colunas pedidas na leitura de areas de gravacao.
  *
- * A tabela tem GRANT por COLUNA (migration 20261124163000 revogou `unit_cost` do
- * `anon`) e o PostgREST expande `select=*` para a tabela inteira: com grant por
- * coluna a expansao bate em `unit_cost` e responde 401/42501 (medido na REST de
- * producao em 2026-11-24). Lista explicita = exatamente as colunas concedidas,
- * mesmo padrao de `useKitBuilderQueries` (`select: 'location_code, ...'`).
- * Grant de tabela continua valendo para `authenticated` (wizard admin le/edita
- * `unit_cost`), por isso a lista e usada so aqui, no caminho de leitura.
+ * O caminho NAO vai na tabela: `dbInvoke` resolve `print_area_techniques` pelo
+ * `GOLD_READ_ALIASES` para `v_print_area_techniques_public`
+ * (`src/integrations/supabase/gold-relations.ts:386`), cuja projecao e exatamente
+ * a lista abaixo — geometria/ordem das areas, sem custo e sem `production_days`.
+ *
+ * Lista explicita = contrato da view. Pedir coluna que a view nao projeta
+ * responde 400/42703 (`column v_print_area_techniques_public.production_days
+ * does not exist`, medido na REST de producao em 2026-11-24 e o que derrubava a
+ * leitura para `[]`). Nao acrescentar coluna aqui sem antes alterar a view.
  */
 const PRINT_AREA_SELECT_ANON = [
   'id',
@@ -42,7 +44,6 @@ const PRINT_AREA_SELECT_ANON = [
   'technique_order',
   'is_active',
   'notes',
-  'production_days',
   'created_at',
   'updated_at',
 ].join(',');
