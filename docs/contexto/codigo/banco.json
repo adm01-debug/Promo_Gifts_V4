@@ -8,7 +8,7 @@
   "supabase/migrations",
   "typeorm"
  ],
- "migrations": 3129,
+ "migrations": 3130,
  "seeds": [],
  "avisos": [
   "324 bloco(s) com DDL dinâmico (EXECUTE format/...) não modelado — policies/colunas criadas dinamicamente podem faltar; confira no banco vivo"
@@ -19454,6 +19454,69 @@
    ],
    "sem_rls": false,
    "nao_usada": false
+  },
+  "internal.managed_schema_dictionary": {
+   "colunas": {
+    "description": {
+     "tipo": "text",
+     "nn": true,
+     "pk": false,
+     "default": null,
+     "ref": null
+    },
+    "object_name": {
+     "tipo": "text",
+     "nn": true,
+     "pk": false,
+     "default": null,
+     "ref": null
+    },
+    "object_type": {
+     "tipo": "text",
+     "nn": true,
+     "pk": false,
+     "default": null,
+     "ref": null
+    },
+    "partition_of": {
+     "tipo": "text",
+     "nn": false,
+     "pk": false,
+     "default": null,
+     "ref": null
+    },
+    "reviewed_at": {
+     "tipo": "timestamp with time zone",
+     "nn": true,
+     "pk": false,
+     "default": "now()",
+     "ref": null
+    },
+    "schema_name": {
+     "tipo": "text",
+     "nn": true,
+     "pk": false,
+     "default": null,
+     "ref": null
+    },
+    "service_name": {
+     "tipo": "text",
+     "nn": true,
+     "pk": false,
+     "default": null,
+     "ref": null
+    }
+   },
+   "rls": true,
+   "policies": [],
+   "indices": [],
+   "fks": [],
+   "criada_em": "20261124171500_internal_managed_schema_dictionary.sql",
+   "usada_no_front": 0,
+   "usada_em_edges": [],
+   "triggers": [],
+   "sem_rls": false,
+   "nao_usada": true
   },
   "internal.mv_product_leaf_category": {
    "colunas": {},
