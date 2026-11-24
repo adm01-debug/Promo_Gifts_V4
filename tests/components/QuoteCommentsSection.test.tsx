@@ -203,7 +203,7 @@ describe('quote comments interface', () => {
     renderSection();
     expect(screen.getByRole('button', { name: 'Excluir', exact: true })).toBeDisabled();
     expect(
-      screen.getByText('Remova as respostas antes de excluir este comentário.'),
+      screen.getByText('Remova suas respostas antes de excluir este comentário.'),
     ).toBeInTheDocument();
     expect(screen.getByText('Resposta preservada')).toBeInTheDocument();
     expect(screen.getAllByRole('button', { name: 'Responder' })).toHaveLength(1);

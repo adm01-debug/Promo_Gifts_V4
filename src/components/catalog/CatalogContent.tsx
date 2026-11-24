@@ -57,6 +57,10 @@ interface CatalogContentProps {
   onViewModeChange?: (mode: ViewMode) => void;
   /** BUG-SCROLL-01 FIX: chave de reset de scroll — ver useCatalogState e VirtualizedProductGrid */
   scrollResetKey?: string;
+  /** Erro de carga do catálogo (etapa 074): separa erro real de "nenhum resultado" */
+  isCatalogError?: boolean;
+  /** Refetch do catálogo quando o usuário clica em "Tentar novamente" (etapa 074) */
+  onRetryCatalog?: () => void;
 }
 
 export const CatalogContent = memo(
@@ -96,6 +100,8 @@ export const CatalogContent = memo(
     activeFiltersCount = 0,
     onViewModeChange,
     scrollResetKey,
+    isCatalogError = false,
+    onRetryCatalog,
   }: CatalogContentProps) => {
     const selection = useCatalogSelection(paginatedProducts, selectionMode, onSelectedCountChange);
     const { selectedIds, toggleSelect: onToggleSelect } = selection;
@@ -140,6 +146,21 @@ export const CatalogContent = memo(
             selectionMode={selectionMode}
           />
         </div>
+      );
+    }
+
+    if (isCatalogError) {
+      return (
+        <EmptyState
+          variant="error"
+          title="Não foi possível carregar os produtos"
+          description="Ocorreu um erro ao buscar o catálogo. Tente novamente."
+          action={
+            onRetryCatalog
+              ? { label: 'Tentar novamente', onClick: onRetryCatalog }
+              : undefined
+          }
+        />
       );
     }
 

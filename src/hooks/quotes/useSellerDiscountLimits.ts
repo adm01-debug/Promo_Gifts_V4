@@ -1,7 +1,18 @@
 /**
  * useSellerDiscountLimits — Gerencia limites de desconto por vendedor
+ *
+ * Etapas 081/082 (ACH-033): o teto do vendedor vivia em `useState` + fetch no
+ * mount, sem participar do cache do react-query e sem forma de ser invalidado.
+ * Os paineis de admin escrevem pela mutation e invalidam a chave
+ * `['seller-discount-limits']`; enquanto o builder (`useQuoteBuilderState.ts:67`)
+ * lia um valor que nunca mudava, o vendedor seguia com o teto antigo depois de o
+ * admin reduzir o limite — bug de dinheiro.
+ *
+ * Agora o proprio limite e a lista vem de `useQuery`, sob a mesma chave-raiz que
+ * os paineis invalidam, e `setLimit` invalida essa chave localmente.
  */
-import { useState, useEffect, useCallback } from 'react';
+import { useCallback, useRef } from 'react';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { toast } from 'sonner';
@@ -17,40 +28,62 @@ export interface SellerDiscountLimit {
   updated_at: string;
 }
 
+/** Chave-raiz compartilhada com os paineis de admin (invalidação por prefixo). */
+export const SELLER_DISCOUNT_LIMITS_KEY = 'seller-discount-limits';
+
 export function useSellerDiscountLimits() {
   const { user } = useAuth();
-  const [limits, setLimits] = useState<SellerDiscountLimit[]>([]);
-  const [myLimit, setMyLimit] = useState<number | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
+  const qc = useQueryClient();
 
-  // Fetch own limit (for sellers)
+  // Limite do proprio vendedor (ativo no mount, como antes).
+  const myLimitQuery = useQuery({
+    queryKey: [SELLER_DISCOUNT_LIMITS_KEY, user?.id ?? 'anon', 'my'],
+    enabled: Boolean(user),
+    queryFn: async (): Promise<number | null> => {
+      const { data, error } = await supabase
+        .from('seller_discount_limits')
+        .select('*')
+        .eq('user_id', user!.id)
+        .maybeSingle();
+      // BUG-LIMIT-SILENT-FAIL FIX: previously errors were silently swallowed.
+      // A network failure or RLS denial would leave myLimit=null, treating it
+      // as "no limit configured" and allowing unlimited discounts.
+      if (error) logger.error('Error fetching seller discount limit:', error);
+      return data?.max_discount_percent ?? null;
+    },
+  });
+
+  // Lista completa (somente admin) — carregada sob demanda, como antes.
+  const allQuery = useQuery({
+    queryKey: [SELLER_DISCOUNT_LIMITS_KEY, 'all'],
+    enabled: false,
+    queryFn: async (): Promise<SellerDiscountLimit[]> => {
+      const { data, error } = await supabase
+        .from('seller_discount_limits')
+        .select('*')
+        .order('created_at', { ascending: false });
+      if (error) {
+        logger.error('Error fetching discount limits:', error);
+        throw error;
+      }
+      return (data || []) as SellerDiscountLimit[];
+    },
+  });
+
+  // Refs para manter as funcoes publicas estaveis (consumidores as usam como
+  // dependencia de useEffect; uma identidade nova por render geraria loop).
+  const refetchMyLimitRef = useRef(myLimitQuery.refetch);
+  refetchMyLimitRef.current = myLimitQuery.refetch;
+  const refetchAllLimitsRef = useRef(allQuery.refetch);
+  refetchAllLimitsRef.current = allQuery.refetch;
+
   const fetchMyLimit = useCallback(async () => {
     if (!user) return;
-    const { data, error } = await supabase
-      .from('seller_discount_limits')
-      .select('*')
-      .eq('user_id', user.id)
-      .maybeSingle();
-    // BUG-LIMIT-SILENT-FAIL FIX: previously errors were silently swallowed.
-    // A network failure or RLS denial would leave myLimit=null, treating it
-    // as "no limit configured" and allowing unlimited discounts.
-    if (error) logger.error('Error fetching seller discount limit:', error);
-    setMyLimit(data?.max_discount_percent ?? null);
+    await refetchMyLimitRef.current();
   }, [user]);
 
-  // Fetch all limits (for admins)
   const fetchAllLimits = useCallback(async () => {
-    setIsLoading(true);
-    const { data, error } = await supabase
-      .from('seller_discount_limits')
-      .select('*')
-      .order('created_at', { ascending: false });
-    if (error) {
-      logger.error('Error fetching discount limits:', error);
-    } else {
-      setLimits((data || []) as SellerDiscountLimit[]);
-    }
-    setIsLoading(false);
+    await refetchAllLimitsRef.current();
   }, []);
 
   // Set/update limit for a seller
@@ -77,6 +110,9 @@ export function useSellerDiscountLimits() {
         );
         if (error) throw error;
         toast.success('Limite de desconto atualizado!');
+        // Etapa 082: fecha a janela de teto desatualizado para todos os leitores
+        // da chave (builder do vendedor inclusive).
+        await qc.invalidateQueries({ queryKey: [SELLER_DISCOUNT_LIMITS_KEY] });
         return true;
       } catch (err) {
         logger.error('Error setting discount limit:', err);
@@ -84,31 +120,31 @@ export function useSellerDiscountLimits() {
         return false;
       }
     },
-    [user],
+    [user, qc],
   );
 
   // Delete limit
-  const deleteLimit = useCallback(async (limitId: string): Promise<boolean> => {
-    try {
-      const { error } = await supabase.from('seller_discount_limits').delete().eq('id', limitId);
-      if (error) throw error;
-      toast.success('Limite removido');
-      return true;
-    } catch (err) {
-      logger.error('Error deleting limit:', err);
-      toast.error('Erro ao remover limite');
-      return false;
-    }
-  }, []);
-
-  useEffect(() => {
-    fetchMyLimit();
-  }, [fetchMyLimit]);
+  const deleteLimit = useCallback(
+    async (limitId: string): Promise<boolean> => {
+      try {
+        const { error } = await supabase.from('seller_discount_limits').delete().eq('id', limitId);
+        if (error) throw error;
+        toast.success('Limite removido');
+        await qc.invalidateQueries({ queryKey: [SELLER_DISCOUNT_LIMITS_KEY] });
+        return true;
+      } catch (err) {
+        logger.error('Error deleting limit:', err);
+        toast.error('Erro ao remover limite');
+        return false;
+      }
+    },
+    [qc],
+  );
 
   return {
-    limits,
-    myLimit,
-    isLoading,
+    limits: allQuery.data ?? [],
+    myLimit: myLimitQuery.data ?? null,
+    isLoading: allQuery.isFetching,
     fetchAllLimits,
     fetchMyLimit,
     setLimit,

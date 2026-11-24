@@ -82,7 +82,10 @@ export function calculateTotalKitPrice(
 ): {
   boxPrice: number;
   itemsPrice: number;
+  /** Caixa + itens, sem personalizacao. E o valor da linha "Produtos". */
+  productsPrice: number;
   personalizationPrice: number;
+  /** Inclui a personalizacao — e o que o banco grava em quotes.subtotal. */
   subtotal: number;
   total: number;
   unitPrice: number;
@@ -92,13 +95,20 @@ export function calculateTotalKitPrice(
   const itemsPrice = itemsPricePerKit * kitQuantity;
   const personalizationPrice = calculatePersonalizationPrice(personalization, items, kitQuantity);
 
-  const subtotal = Math.round((boxPrice + itemsPrice) * 100) / 100;
-  const total = Math.round((subtotal + personalizationPrice) * 100) / 100;
+  // ACH-092 (etapa 114): o subtotal inclui a personalizacao, que e exatamente o
+  // que fn_quotes_recalc_subtotal_from_items grava em quotes.subtotal
+  // (SUM(quantity * unit_price + personalization_cost)). Antes ele mostrava
+  // caixa + itens e o banco regravava com a personalizacao, entao o numero que o
+  // vendedor via ao montar o kit nao era o numero salvo.
+  const productsPrice = Math.round((boxPrice + itemsPrice) * 100) / 100;
+  const subtotal = Math.round((productsPrice + personalizationPrice) * 100) / 100;
+  const total = subtotal;
   const unitPrice = kitQuantity > 0 ? Math.round((total / kitQuantity) * 100) / 100 : 0;
 
   return {
     boxPrice,
     itemsPrice,
+    productsPrice,
     personalizationPrice,
     subtotal,
     total,

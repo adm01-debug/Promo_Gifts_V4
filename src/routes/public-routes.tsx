@@ -9,7 +9,9 @@ import {
   TermsPage,
   PrivacyPage,
   PublicMagazineView,
+  MagazinePrintPage,
 } from './lazy-pages';
+import { MagazineErrorBoundary } from '@/pages/magazine/components/MagazineErrorBoundary';
 
 // Dev-only harnesses. The import itself is gated so production builds neither
 // expose the public routes nor ship their implementation chunks.
@@ -54,6 +56,14 @@ export const publicRoutes = (
     <Route path="/termos" element={<TermsPage />} />
     <Route path="/privacidade" element={<PrivacyPage />} />
     <Route path="/revista-publica/:token" element={<PublicMagazineView />} />
+    <Route
+      path="/magazine/print"
+      element={
+        <MagazineErrorBoundary>
+          <MagazinePrintPage />
+        </MagazineErrorBoundary>
+      }
+    />
     {ColorSwatchesHarness && (
       <Route path="/__test/color-swatches" element={<ColorSwatchesHarness />} />
     )}

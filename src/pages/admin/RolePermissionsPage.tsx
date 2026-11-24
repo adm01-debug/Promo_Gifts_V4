@@ -1,4 +1,5 @@
-import { useState, useEffect, useCallback, useMemo } from 'react';
+import { useState, useEffect, useCallback, useMemo, useRef } from 'react';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { BackButton } from '@/components/common/BackButton';
 import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -45,52 +46,65 @@ const ROLES: { value: AppRole; label: string; description: string; icon: React.R
   },
 ];
 
+const EMPTY_PERMISSIONS: Permission[] = [];
+const EMPTY_ROLE_PERMISSIONS: RolePermission[] = [];
+
 export default function RolePermissionsPage() {
-  const [permissions, setPermissions] = useState<Permission[]>([]);
-  const [rolePermissions, setRolePermissions] = useState<RolePermission[]>([]);
   const [selectedRole, setSelectedRole] = useState<AppRole>('supervisor');
-  const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [pendingChanges, setPendingChanges] = useState<Map<string, boolean>>(new Map());
   const { toast } = useToast();
+  const qc = useQueryClient();
+  const toastedErrorRef = useRef<unknown>(null);
 
-  const fetchData = useCallback(
-    async (isCancelled: () => boolean = () => false) => {
-      try {
-        const [permRes, rolePermRes] = await Promise.all([
-          supabase.from('permissions').select('*').order('category'),
-          supabase.from('role_permissions').select('*'),
-        ]);
-
-        if (isCancelled()) return;
-        if (permRes.error) throw permRes.error;
-        if (rolePermRes.error) throw rolePermRes.error;
-
-        setPermissions(permRes.data || []);
-        setRolePermissions(rolePermRes.data || []);
-      } catch (error: unknown) {
-        if (isCancelled()) return;
-        toast({
-          title: 'Erro ao carregar dados',
-          description: sanitizeError(error),
-          variant: 'destructive',
-        });
-      } finally {
-        if (!isCancelled()) setIsLoading(false);
-      }
+  // Fonte unica de leitura: catalogo de permissoes e vinculo papel->permissao vem do cache.
+  // CHAVE COMPARTILHADA: 'role-permissions' e a mesma familia usada por useRBAC, entao
+  // invalidar aqui revalida os guards de UI do app inteiro (ACH-034).
+  const permissionsQuery = useQuery({
+    queryKey: ['permissions-catalog'],
+    queryFn: async () => {
+      const { data, error } = await supabase.from('permissions').select('*').order('category');
+      if (error) throw error;
+      return (data ?? []) as Permission[];
     },
-    [toast],
-  );
+    staleTime: 5 * 60 * 1000,
+  });
+
+  const rolePermissionsQuery = useQuery({
+    queryKey: ['role-permissions', 'all'],
+    queryFn: async () => {
+      const { data, error } = await supabase.from('role_permissions').select('*');
+      if (error) throw error;
+      return (data ?? []) as RolePermission[];
+    },
+    staleTime: 5 * 60 * 1000,
+  });
+
+  const permissions = permissionsQuery.data ?? EMPTY_PERMISSIONS;
+  const rolePermissions = rolePermissionsQuery.data ?? EMPTY_ROLE_PERMISSIONS;
+  const isLoading = permissionsQuery.isLoading || rolePermissionsQuery.isLoading;
+  const loadError = permissionsQuery.error ?? rolePermissionsQuery.error;
 
   useEffect(() => {
-    // Guarda de cancelamento: evita setState após o unmount (em testes, o
-    // await pode resolver depois do teardown e vazar "window is not defined").
-    let cancelled = false;
-    void fetchData(() => cancelled);
-    return () => {
-      cancelled = true;
-    };
-  }, [fetchData]);
+    if (!loadError) {
+      toastedErrorRef.current = null;
+      return;
+    }
+    if (toastedErrorRef.current === loadError) return;
+    toastedErrorRef.current = loadError;
+    toast({
+      title: 'Erro ao carregar dados',
+      description: sanitizeError(loadError),
+      variant: 'destructive',
+    });
+  }, [loadError, toast]);
+
+  // Recarrega as duas listas do cache. 'role-permissions' e a familia de chaves do RBAC:
+  // invalidar aqui faz os guards de UI refletirem a alteracao sem esperar o staleTime.
+  const refreshData = useCallback(() => {
+    void qc.invalidateQueries({ queryKey: ['permissions-catalog'] });
+    void qc.invalidateQueries({ queryKey: ['role-permissions'] });
+  }, [qc]);
 
   const hasPermission = (permissionId: string, role: AppRole): boolean => {
     const key = `${role}-${permissionId}`;
@@ -175,7 +189,7 @@ export default function RolePermissionsPage() {
 
       toast({ title: 'Permissões atualizadas com sucesso!' });
       setPendingChanges(new Map());
-      fetchData();
+      refreshData();
     } catch (error: unknown) {
       toast({
         title: 'Erro ao salvar',
@@ -183,7 +197,7 @@ export default function RolePermissionsPage() {
         variant: 'destructive',
       });
       setPendingChanges(remaining);
-      fetchData();
+      refreshData();
     } finally {
       setIsSaving(false);
     }

@@ -31,7 +31,7 @@ interface AdminTemplatesManagerProps {
 }
 
 export function AdminTemplatesManager({ onEditTemplate }: AdminTemplatesManagerProps) {
-  const { allTemplates, sellers, loading, deleteTemplate, cloneTemplateToSeller } =
+  const { allTemplates, sellers, loading, deleteTemplate, cloneTemplateToSeller, error } =
     useQuoteTemplates();
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedSellerId, setSelectedSellerId] = useState<string>('all');
@@ -188,7 +188,17 @@ export function AdminTemplatesManager({ onEditTemplate }: AdminTemplatesManagerP
         <span>{Object.keys(templatesBySeller).length} vendedores</span>
       </div>
 
-      {filteredTemplates.length === 0 ? (
+      {error ? (
+        <Card>
+          <CardContent className="flex flex-col items-center justify-center py-12 text-center">
+            <FileText className="mb-4 h-12 w-12 text-destructive" />
+            <h3 className="mb-2 font-display text-lg font-medium">
+              Não foi possível carregar os templates
+            </h3>
+            <p className="text-muted-foreground">{error}</p>
+          </CardContent>
+        </Card>
+      ) : filteredTemplates.length === 0 ? (
         <Card>
           <CardContent className="flex flex-col items-center justify-center py-12 text-center">
             <FileText className="mb-4 h-12 w-12 text-muted-foreground" />

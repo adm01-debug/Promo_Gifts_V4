@@ -6,7 +6,10 @@ import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { logRlsDenial } from '@/lib/security/rls-denial-logger';
 import { logger } from '@/lib/logger';
-import { darDecisionTarget } from '@/lib/discount-approval-status-config';
+import {
+  assertDiscountApprovalTransition,
+  darDecisionTarget,
+} from '@/lib/discount-approval-status-config';
 interface ResponderDeps {
   user: { id: string } | null;
   invalidateWidget: () => void;
@@ -83,6 +86,11 @@ export function createRespondToApproval({
       const validUntilDate = approved
         ? new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString()
         : null;
+
+      // Etapa 101 (ACH-088): a guarda do DAR roda no ponto de escrita do FE,
+      // antes do UPDATE. Este e o fallback (o caminho canonico e a RPC
+      // respond_discount_approval_transactional, que valida no banco).
+      assertDiscountApprovalTransition('pending', darDecisionTarget(approved));
 
       let fallbackQuery = supabase
         // rls-allow: fluxo de aprovação admin/seller; RLS filtra por papel
