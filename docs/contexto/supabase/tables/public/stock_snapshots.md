@@ -19,26 +19,26 @@
 
 | # | coluna | tipo | nullable | default | identity/generated | comentário |
 |---|---|---|---|---|---|---|
-| 1 | `id` | `bigint` | não |  | a |  |
-| 2 | `variant_supplier_source_id` | `uuid` | não |  |  |  |
-| 3 | `supplier_id` | `uuid` | não |  |  |  |
-| 4 | `supplier_branch_id` | `uuid` | sim |  |  |  |
-| 5 | `variant_id` | `uuid` | não |  |  |  |
-| 6 | `product_id` | `uuid` | não |  |  |  |
-| 7 | `stock_main_old` | `integer` | sim |  |  |  |
-| 8 | `stock_main_new` | `integer` | sim |  |  |  |
-| 9 | `stock_main_delta` | `integer` | sim | `(stock_main_new - stock_main_old)` | s |  |
-| 10 | `stock_other_old` | `integer` | sim |  |  |  |
-| 11 | `stock_other_new` | `integer` | sim |  |  |  |
-| 12 | `stock_other_delta` | `integer` | sim | `(stock_other_new - stock_other_old)` | s |  |
-| 13 | `stock_total_old` | `integer` | sim | `(COALESCE(stock_main_old, 0) + COALESCE(stock_other_old, 0))` | s |  |
-| 14 | `stock_total_new` | `integer` | sim | `(COALESCE(stock_main_new, 0) + COALESCE(stock_other_new, 0))` | s |  |
-| 15 | `cost_price_old` | `numeric(12,4)` | sim |  |  |  |
-| 16 | `cost_price_new` | `numeric(12,4)` | sim |  |  |  |
-| 17 | `cost_price_delta` | `numeric(12,4)` | sim | `(cost_price_new - cost_price_old)` | s |  |
-| 18 | `change_type` | `character varying(20)` | não | `'stock'::character varying` |  |  |
-| 19 | `captured_at` | `timestamp with time zone` | não | `now()` |  |  |
-| 20 | `sync_source` | `character varying(50)` | sim | `'n8n'::character varying` |  |  |
+| 1 | `id` | `bigint` | não |  | a | Identificador sequencial do snapshot de estoque ou preço. |
+| 2 | `variant_supplier_source_id` | `uuid` | não |  |  | Registro de variante e fornecedor associado ao snapshot. |
+| 3 | `supplier_id` | `uuid` | não |  |  | Fornecedor associado ao snapshot. |
+| 4 | `supplier_branch_id` | `uuid` | sim |  |  | Filial do fornecedor associada ao snapshot, quando informada. |
+| 5 | `variant_id` | `uuid` | não |  |  | Variante associada ao snapshot. |
+| 6 | `product_id` | `uuid` | não |  |  | Produto associado à variante do snapshot. |
+| 7 | `stock_main_old` | `integer` | sim |  |  | Estoque no depósito principal antes da alteração registrada. |
+| 8 | `stock_main_new` | `integer` | sim |  |  | Estoque no depósito principal após a alteração registrada. |
+| 9 | `stock_main_delta` | `integer` | sim | `(stock_main_new - stock_main_old)` | s | Variação calculada do estoque principal: valor novo menos valor anterior. |
+| 10 | `stock_other_old` | `integer` | sim |  |  | Estoque em outros depósitos antes da alteração registrada. |
+| 11 | `stock_other_new` | `integer` | sim |  |  | Estoque em outros depósitos após a alteração registrada. |
+| 12 | `stock_other_delta` | `integer` | sim | `(stock_other_new - stock_other_old)` | s | Variação calculada do estoque em outros depósitos: valor novo menos valor anterior. |
+| 13 | `stock_total_old` | `integer` | sim | `(COALESCE(stock_main_old, 0) + COALESCE(stock_other_old, 0))` | s | Estoque total anterior, calculado pela soma dos estoques principal e de outros depósitos. |
+| 14 | `stock_total_new` | `integer` | sim | `(COALESCE(stock_main_new, 0) + COALESCE(stock_other_new, 0))` | s | Estoque total novo, calculado pela soma dos estoques principal e de outros depósitos. |
+| 15 | `cost_price_old` | `numeric(12,4)` | sim |  |  | Custo unitário anterior registrado para o fornecedor, em reais (BRL). Pode incluir centavos. |
+| 16 | `cost_price_new` | `numeric(12,4)` | sim |  |  | Custo unitário novo registrado para o fornecedor, em reais (BRL). Pode incluir centavos. |
+| 17 | `cost_price_delta` | `numeric(12,4)` | sim | `(cost_price_new - cost_price_old)` | s | Variação calculada do custo unitário: valor novo menos valor anterior, em reais (BRL). Pode incluir centavos. |
+| 18 | `change_type` | `character varying(20)` | não | `'stock'::character varying` |  | Tipo de alteração que originou o snapshot. |
+| 19 | `captured_at` | `timestamp with time zone` | não | `now()` |  | Data e hora em que a alteração foi registrada no snapshot. |
+| 20 | `sync_source` | `character varying(50)` | sim | `'n8n'::character varying` |  | Origem da sincronização que produziu o snapshot. |
 
 
 ## Constraints

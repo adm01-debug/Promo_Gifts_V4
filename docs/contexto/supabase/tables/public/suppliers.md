@@ -1,5 +1,7 @@
 # public.suppliers
 
+> Cadastro de fornecedores de produtos e serviços, com dados comerciais, contatos, condições de compra e configurações de integração e sincronização.
+
 | propriedade | valor |
 |---|---|
 | tipo | table |
@@ -17,30 +19,30 @@
 
 | # | coluna | tipo | nullable | default | identity/generated | comentário |
 |---|---|---|---|---|---|---|
-| 1 | `id` | `uuid` | não | `gen_random_uuid()` |  |  |
-| 2 | `name` | `text` | não |  |  |  |
-| 3 | `code` | `text` | não |  |  |  |
-| 4 | `cnpj` | `text` | sim |  |  |  |
-| 5 | `contact_name` | `text` | sim |  |  |  |
-| 6 | `email` | `text` | sim |  |  |  |
-| 7 | `phone` | `text` | sim |  |  |  |
-| 8 | `address` | `text` | sim |  |  |  |
-| 9 | `active` | `boolean` | sim | `true` |  |  |
-| 10 | `created_at` | `timestamp with time zone` | não | `now()` |  |  |
-| 11 | `website` | `text` | sim |  |  |  |
-| 12 | `contact_person` | `text` | sim |  |  |  |
-| 13 | `payment_terms` | `text` | sim |  |  |  |
-| 14 | `delivery_time_days` | `integer` | sim |  |  |  |
-| 15 | `minimum_order_value` | `numeric(10,2)` | sim |  |  |  |
-| 16 | `notes` | `text` | sim |  |  |  |
-| 17 | `updated_at` | `timestamp with time zone` | sim | `now()` |  |  |
-| 18 | `organization_id` | `uuid` | sim |  |  |  |
-| 19 | `trading_name` | `character varying(255)` | sim |  |  |  |
-| 20 | `api_type` | `character varying(20)` | sim |  |  |  |
-| 21 | `api_base_url` | `text` | sim |  |  |  |
-| 22 | `api_credentials` | `jsonb` | sim |  |  |  |
-| 23 | `min_order_value` | `numeric(10,2)` | sim |  |  |  |
-| 24 | `shipping_terms` | `text` | sim |  |  |  |
+| 1 | `id` | `uuid` | não | `gen_random_uuid()` |  | Identificador UUID do fornecedor. |
+| 2 | `name` | `text` | não |  |  | Nome do fornecedor. |
+| 3 | `code` | `text` | não |  |  | Código interno único usado para identificar o fornecedor. |
+| 4 | `cnpj` | `text` | sim |  |  | CNPJ do fornecedor, armazenado sem pontuação quando preenchido. |
+| 5 | `contact_name` | `text` | sim |  |  | Nome do contato principal do fornecedor. |
+| 6 | `email` | `text` | sim |  |  | E-mail de contato do fornecedor. |
+| 7 | `phone` | `text` | sim |  |  | Telefone de contato do fornecedor. |
+| 8 | `address` | `text` | sim |  |  | Endereço do fornecedor. |
+| 9 | `active` | `boolean` | sim | `true` |  | Indica se o fornecedor está ativo. |
+| 10 | `created_at` | `timestamp with time zone` | não | `now()` |  | Data e hora de criação do cadastro do fornecedor. |
+| 11 | `website` | `text` | sim |  |  | Endereço do site do fornecedor. |
+| 12 | `contact_person` | `text` | sim |  |  | Pessoa de contato do fornecedor. |
+| 13 | `payment_terms` | `text` | sim |  |  | Condições de pagamento oferecidas pelo fornecedor. |
+| 14 | `delivery_time_days` | `integer` | sim |  |  | Prazo de entrega informado pelo fornecedor, em dias. |
+| 15 | `minimum_order_value` | `numeric(10,2)` | sim |  |  | Valor mínimo de pedido registrado para o fornecedor, em reais (BRL). Pode incluir centavos. |
+| 16 | `notes` | `text` | sim |  |  | Observações internas sobre o fornecedor. |
+| 17 | `updated_at` | `timestamp with time zone` | sim | `now()` |  | Data e hora da última atualização do cadastro do fornecedor. |
+| 18 | `organization_id` | `uuid` | sim |  |  | Organização à qual o fornecedor pertence. |
+| 19 | `trading_name` | `character varying(255)` | sim |  |  | Nome fantasia do fornecedor. |
+| 20 | `api_type` | `character varying(20)` | sim |  |  | Tipo de integração de API configurado para o fornecedor. |
+| 21 | `api_base_url` | `text` | sim |  |  | URL base da API do fornecedor. |
+| 22 | `api_credentials` | `jsonb` | sim |  |  | Configurações de autenticação da integração do fornecedor. Evite armazenar segredos em texto claro; prefira referências a secrets gerenciados. |
+| 23 | `min_order_value` | `numeric(10,2)` | sim |  |  | Valor mínimo de pedido registrado para o fornecedor, em reais (BRL). Pode incluir centavos. |
+| 24 | `shipping_terms` | `text` | sim |  |  | Condições de frete oferecidas ou exigidas pelo fornecedor. |
 | 25 | `default_markup_percent` | `numeric(5,2)` | sim | `50.00` |  | Markup padrão em % para produtos deste fornecedor. Ex: 50 = preço venda é 1.5x o custo |
 | 26 | `is_product_supplier` | `boolean` | sim | `true` |  | Indica se o fornecedor fornece produtos para revenda |
 | 27 | `is_engraving_supplier` | `boolean` | sim | `false` |  | Indica se o fornecedor oferece serviços de gravação/personalização |
@@ -54,7 +56,7 @@
 | 35 | `api_requests_current_hour` | `integer` | sim | `0` |  | Contador de requisições na hora atual (resetado a cada hora) |
 | 36 | `api_requests_reset_at` | `timestamp with time zone` | sim | `now()` |  | Timestamp do último reset do contador de requisições |
 | 37 | `state_uf` | `character varying(2)` | sim |  |  | UF da matriz do fornecedor. Para filiais especificas, usar supplier_branches. |
-| 38 | `tax_regime` | `character varying(30)` | sim |  |  |  |
+| 38 | `tax_regime` | `character varying(30)` | sim |  |  | Regime tributário informado para o fornecedor. |
 | 39 | `inscricao_estadual` | `character varying(20)` | sim |  |  | IE principal do fornecedor (da matriz). Para IE de filiais, usar supplier_branches.inscricao_estadual |
 | 40 | `phone2` | `character varying(30)` | sim |  |  | Telefone fixo secundário |
 | 41 | `logo_url` | `text` | sim |  |  | URL do logo do fornecedor |

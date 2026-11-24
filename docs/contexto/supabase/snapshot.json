@@ -48288,7 +48288,7 @@
         "type": "timestamp with time zone"
       },
       {
-        "comment": null,
+        "comment": "Identificador UUID da variante do produto.",
         "default": "gen_random_uuid()",
         "generated": null,
         "identity": null,
@@ -48301,7 +48301,7 @@
         "type": "uuid"
       },
       {
-        "comment": null,
+        "comment": "Produto ao qual esta variante pertence.",
         "default": null,
         "generated": null,
         "identity": null,
@@ -48314,7 +48314,7 @@
         "type": "uuid"
       },
       {
-        "comment": null,
+        "comment": "SKU único da variante.",
         "default": null,
         "generated": null,
         "identity": null,
@@ -48327,7 +48327,7 @@
         "type": "text"
       },
       {
-        "comment": null,
+        "comment": "Nome de exibição da variante.",
         "default": null,
         "generated": null,
         "identity": null,
@@ -48340,7 +48340,7 @@
         "type": "text"
       },
       {
-        "comment": null,
+        "comment": "Atributos da variante armazenados em JSON, por exemplo cor ou tamanho.",
         "default": null,
         "generated": null,
         "identity": null,
@@ -48353,7 +48353,7 @@
         "type": "jsonb"
       },
       {
-        "comment": null,
+        "comment": "Quantidade de estoque registrada para a variante.",
         "default": "0",
         "generated": null,
         "identity": null,
@@ -48366,7 +48366,7 @@
         "type": "integer"
       },
       {
-        "comment": null,
+        "comment": "Imagens associadas à variante, armazenadas em JSON.",
         "default": "'[]'::jsonb",
         "generated": null,
         "identity": null,
@@ -48379,7 +48379,7 @@
         "type": "jsonb"
       },
       {
-        "comment": null,
+        "comment": "Indica se a variante está ativa.",
         "default": "true",
         "generated": null,
         "identity": null,
@@ -48392,7 +48392,7 @@
         "type": "boolean"
       },
       {
-        "comment": null,
+        "comment": "Data e hora de criação da variante.",
         "default": "now()",
         "generated": null,
         "identity": null,
@@ -48405,7 +48405,7 @@
         "type": "timestamp with time zone"
       },
       {
-        "comment": null,
+        "comment": "Data e hora da última atualização da variante.",
         "default": "now()",
         "generated": null,
         "identity": null,
@@ -48418,7 +48418,7 @@
         "type": "timestamp with time zone"
       },
       {
-        "comment": null,
+        "comment": "SKU da variante no sistema Promo, quando informado.",
         "default": null,
         "generated": null,
         "identity": null,
@@ -48431,7 +48431,7 @@
         "type": "character varying(50)"
       },
       {
-        "comment": null,
+        "comment": "Identificador da cor canônica associada à variante.",
         "default": null,
         "generated": null,
         "identity": null,
@@ -48444,7 +48444,7 @@
         "type": "uuid"
       },
       {
-        "comment": null,
+        "comment": "Identificador do valor de tamanho associado à variante.",
         "default": null,
         "generated": null,
         "identity": null,
@@ -48457,7 +48457,7 @@
         "type": "uuid"
       },
       {
-        "comment": null,
+        "comment": "SKU da variante no sistema do fornecedor.",
         "default": null,
         "generated": null,
         "identity": null,
@@ -48470,7 +48470,7 @@
         "type": "character varying(100)"
       },
       {
-        "comment": null,
+        "comment": "Código da cor da variante.",
         "default": null,
         "generated": null,
         "identity": null,
@@ -48483,7 +48483,7 @@
         "type": "character varying(20)"
       },
       {
-        "comment": null,
+        "comment": "Nome da cor da variante.",
         "default": null,
         "generated": null,
         "identity": null,
@@ -48496,7 +48496,7 @@
         "type": "character varying(100)"
       },
       {
-        "comment": null,
+        "comment": "Código hexadecimal da cor da variante.",
         "default": null,
         "generated": null,
         "identity": null,
@@ -48574,7 +48574,7 @@
         "type": "character varying(500)"
       },
       {
-        "comment": null,
+        "comment": "Identificador do produto correspondente no Bitrix24.",
         "default": null,
         "generated": null,
         "identity": null,
@@ -48587,7 +48587,7 @@
         "type": "integer"
       },
       {
-        "comment": null,
+        "comment": "Código da variante conforme o campo CodigoXbz da integração XBZ.",
         "default": null,
         "generated": null,
         "identity": null,
@@ -48782,7 +48782,7 @@
         "type": "date"
       },
       {
-        "comment": null,
+        "comment": "Data prevista para a próxima entrada de estoque da variante.",
         "default": null,
         "generated": null,
         "identity": null,
@@ -48795,7 +48795,7 @@
         "type": "date"
       },
       {
-        "comment": null,
+        "comment": "Quantidade prevista na próxima entrada de estoque da variante.",
         "default": null,
         "generated": null,
         "identity": null,
@@ -48808,7 +48808,7 @@
         "type": "integer"
       },
       {
-        "comment": null,
+        "comment": "Identificador externo da variante no sistema do fornecedor.",
         "default": null,
         "generated": null,
         "identity": null,
@@ -62757,7 +62757,7 @@
         "type": "timestamp with time zone"
       },
       {
-        "comment": null,
+        "comment": "Identificador sequencial do resumo diário.",
         "default": null,
         "generated": null,
         "identity": "a",
@@ -62770,7 +62770,7 @@
         "type": "bigint"
       },
       {
-        "comment": null,
+        "comment": "Registro de variante e fornecedor resumido.",
         "default": null,
         "generated": null,
         "identity": null,
@@ -62783,7 +62783,7 @@
         "type": "uuid"
       },
       {
-        "comment": null,
+        "comment": "Fornecedor associado ao resumo diário.",
         "default": null,
         "generated": null,
         "identity": null,
@@ -62796,7 +62796,7 @@
         "type": "uuid"
       },
       {
-        "comment": null,
+        "comment": "Filial do fornecedor associada ao resumo, quando informada.",
         "default": null,
         "generated": null,
         "identity": null,
@@ -62809,7 +62809,7 @@
         "type": "uuid"
       },
       {
-        "comment": null,
+        "comment": "Variante associada ao resumo diário.",
         "default": null,
         "generated": null,
         "identity": null,
@@ -62822,7 +62822,7 @@
         "type": "uuid"
       },
       {
-        "comment": null,
+        "comment": "Produto associado à variante resumida.",
         "default": null,
         "generated": null,
         "identity": null,
@@ -62835,7 +62835,7 @@
         "type": "uuid"
       },
       {
-        "comment": null,
+        "comment": "Data a que se refere o resumo.",
         "default": null,
         "generated": null,
         "identity": null,
@@ -62848,7 +62848,7 @@
         "type": "date"
       },
       {
-        "comment": null,
+        "comment": "Estoque no início do dia.",
         "default": null,
         "generated": null,
         "identity": null,
@@ -62861,7 +62861,7 @@
         "type": "integer"
       },
       {
-        "comment": null,
+        "comment": "Estoque no fim do dia.",
         "default": null,
         "generated": null,
         "identity": null,
@@ -62874,7 +62874,7 @@
         "type": "integer"
       },
       {
-        "comment": null,
+        "comment": "Estoque mínimo observado durante o dia.",
         "default": null,
         "generated": null,
         "identity": null,
@@ -62887,7 +62887,7 @@
         "type": "integer"
       },
       {
-        "comment": null,
+        "comment": "Estoque máximo observado durante o dia.",
         "default": null,
         "generated": null,
         "identity": null,
@@ -62900,7 +62900,7 @@
         "type": "integer"
       },
       {
-        "comment": null,
+        "comment": "Variação líquida do estoque durante o dia.",
         "default": null,
         "generated": null,
         "identity": null,
@@ -62913,7 +62913,7 @@
         "type": "integer"
       },
       {
-        "comment": null,
+        "comment": "Unidades removidas do estoque durante o dia.",
         "default": "0",
         "generated": null,
         "identity": null,
@@ -62926,7 +62926,7 @@
         "type": "integer"
       },
       {
-        "comment": null,
+        "comment": "Unidades adicionadas ao estoque durante o dia.",
         "default": "0",
         "generated": null,
         "identity": null,
@@ -62939,7 +62939,7 @@
         "type": "integer"
       },
       {
-        "comment": null,
+        "comment": "Indica se foi detectado aumento de estoque durante o dia.",
         "default": "false",
         "generated": null,
         "identity": null,
@@ -62952,7 +62952,7 @@
         "type": "boolean"
       },
       {
-        "comment": null,
+        "comment": "Quantidade total associada às reposições detectadas durante o dia.",
         "default": "0",
         "generated": null,
         "identity": null,
@@ -62965,7 +62965,7 @@
         "type": "integer"
       },
       {
-        "comment": null,
+        "comment": "Número de reposições detectadas durante o dia.",
         "default": "0",
         "generated": null,
         "identity": null,
@@ -62978,7 +62978,7 @@
         "type": "smallint"
       },
       {
-        "comment": null,
+        "comment": "Custo unitário no início do dia, em reais (BRL). Pode incluir centavos.",
         "default": null,
         "generated": null,
         "identity": null,
@@ -62991,7 +62991,7 @@
         "type": "numeric(12,4)"
       },
       {
-        "comment": null,
+        "comment": "Custo unitário no fim do dia, em reais (BRL). Pode incluir centavos.",
         "default": null,
         "generated": null,
         "identity": null,
@@ -63004,7 +63004,7 @@
         "type": "numeric(12,4)"
       },
       {
-        "comment": null,
+        "comment": "Indica se o custo unitário mudou durante o dia.",
         "default": "false",
         "generated": null,
         "identity": null,
@@ -63017,7 +63017,7 @@
         "type": "boolean"
       },
       {
-        "comment": null,
+        "comment": "Quantidade de sincronizações consideradas no resumo diário.",
         "default": "0",
         "generated": null,
         "identity": null,
@@ -63030,7 +63030,7 @@
         "type": "smallint"
       },
       {
-        "comment": null,
+        "comment": "Data e hora de criação do resumo diário.",
         "default": "now()",
         "generated": null,
         "identity": null,
@@ -63173,7 +63173,7 @@
         "type": "timestamp with time zone"
       },
       {
-        "comment": null,
+        "comment": "Identificador sequencial do snapshot de estoque ou preço.",
         "default": null,
         "generated": null,
         "identity": "a",
@@ -63186,7 +63186,7 @@
         "type": "bigint"
       },
       {
-        "comment": null,
+        "comment": "Registro de variante e fornecedor associado ao snapshot.",
         "default": null,
         "generated": null,
         "identity": null,
@@ -63199,7 +63199,7 @@
         "type": "uuid"
       },
       {
-        "comment": null,
+        "comment": "Fornecedor associado ao snapshot.",
         "default": null,
         "generated": null,
         "identity": null,
@@ -63212,7 +63212,7 @@
         "type": "uuid"
       },
       {
-        "comment": null,
+        "comment": "Filial do fornecedor associada ao snapshot, quando informada.",
         "default": null,
         "generated": null,
         "identity": null,
@@ -63225,7 +63225,7 @@
         "type": "uuid"
       },
       {
-        "comment": null,
+        "comment": "Variante associada ao snapshot.",
         "default": null,
         "generated": null,
         "identity": null,
@@ -63238,7 +63238,7 @@
         "type": "uuid"
       },
       {
-        "comment": null,
+        "comment": "Produto associado à variante do snapshot.",
         "default": null,
         "generated": null,
         "identity": null,
@@ -63251,7 +63251,7 @@
         "type": "uuid"
       },
       {
-        "comment": null,
+        "comment": "Estoque no depósito principal antes da alteração registrada.",
         "default": null,
         "generated": null,
         "identity": null,
@@ -63264,7 +63264,7 @@
         "type": "integer"
       },
       {
-        "comment": null,
+        "comment": "Estoque no depósito principal após a alteração registrada.",
         "default": null,
         "generated": null,
         "identity": null,
@@ -63277,7 +63277,7 @@
         "type": "integer"
       },
       {
-        "comment": null,
+        "comment": "Variação calculada do estoque principal: valor novo menos valor anterior.",
         "default": "(stock_main_new - stock_main_old)",
         "generated": "s",
         "identity": null,
@@ -63290,7 +63290,7 @@
         "type": "integer"
       },
       {
-        "comment": null,
+        "comment": "Estoque em outros depósitos antes da alteração registrada.",
         "default": null,
         "generated": null,
         "identity": null,
@@ -63303,7 +63303,7 @@
         "type": "integer"
       },
       {
-        "comment": null,
+        "comment": "Estoque em outros depósitos após a alteração registrada.",
         "default": null,
         "generated": null,
         "identity": null,
@@ -63316,7 +63316,7 @@
         "type": "integer"
       },
       {
-        "comment": null,
+        "comment": "Variação calculada do estoque em outros depósitos: valor novo menos valor anterior.",
         "default": "(stock_other_new - stock_other_old)",
         "generated": "s",
         "identity": null,
@@ -63329,7 +63329,7 @@
         "type": "integer"
       },
       {
-        "comment": null,
+        "comment": "Estoque total anterior, calculado pela soma dos estoques principal e de outros depósitos.",
         "default": "(COALESCE(stock_main_old, 0) + COALESCE(stock_other_old, 0))",
         "generated": "s",
         "identity": null,
@@ -63342,7 +63342,7 @@
         "type": "integer"
       },
       {
-        "comment": null,
+        "comment": "Estoque total novo, calculado pela soma dos estoques principal e de outros depósitos.",
         "default": "(COALESCE(stock_main_new, 0) + COALESCE(stock_other_new, 0))",
         "generated": "s",
         "identity": null,
@@ -63355,7 +63355,7 @@
         "type": "integer"
       },
       {
-        "comment": null,
+        "comment": "Custo unitário anterior registrado para o fornecedor, em reais (BRL). Pode incluir centavos.",
         "default": null,
         "generated": null,
         "identity": null,
@@ -63368,7 +63368,7 @@
         "type": "numeric(12,4)"
       },
       {
-        "comment": null,
+        "comment": "Custo unitário novo registrado para o fornecedor, em reais (BRL). Pode incluir centavos.",
         "default": null,
         "generated": null,
         "identity": null,
@@ -63381,7 +63381,7 @@
         "type": "numeric(12,4)"
       },
       {
-        "comment": null,
+        "comment": "Variação calculada do custo unitário: valor novo menos valor anterior, em reais (BRL). Pode incluir centavos.",
         "default": "(cost_price_new - cost_price_old)",
         "generated": "s",
         "identity": null,
@@ -63394,7 +63394,7 @@
         "type": "numeric(12,4)"
       },
       {
-        "comment": null,
+        "comment": "Tipo de alteração que originou o snapshot.",
         "default": "'stock'::character varying",
         "generated": null,
         "identity": null,
@@ -63407,7 +63407,7 @@
         "type": "character varying(20)"
       },
       {
-        "comment": null,
+        "comment": "Data e hora em que a alteração foi registrada no snapshot.",
         "default": "now()",
         "generated": null,
         "identity": null,
@@ -63420,7 +63420,7 @@
         "type": "timestamp with time zone"
       },
       {
-        "comment": null,
+        "comment": "Origem da sincronização que produziu o snapshot.",
         "default": "'n8n'::character varying",
         "generated": null,
         "identity": null,
@@ -68880,7 +68880,7 @@
         "type": "timestamp with time zone"
       },
       {
-        "comment": null,
+        "comment": "Identificador UUID do fornecedor.",
         "default": "gen_random_uuid()",
         "generated": null,
         "identity": null,
@@ -68893,7 +68893,7 @@
         "type": "uuid"
       },
       {
-        "comment": null,
+        "comment": "Nome do fornecedor.",
         "default": null,
         "generated": null,
         "identity": null,
@@ -68906,7 +68906,7 @@
         "type": "text"
       },
       {
-        "comment": null,
+        "comment": "Código interno único usado para identificar o fornecedor.",
         "default": null,
         "generated": null,
         "identity": null,
@@ -68919,7 +68919,7 @@
         "type": "text"
       },
       {
-        "comment": null,
+        "comment": "CNPJ do fornecedor, armazenado sem pontuação quando preenchido.",
         "default": null,
         "generated": null,
         "identity": null,
@@ -68932,7 +68932,7 @@
         "type": "text"
       },
       {
-        "comment": null,
+        "comment": "Nome do contato principal do fornecedor.",
         "default": null,
         "generated": null,
         "identity": null,
@@ -68945,7 +68945,7 @@
         "type": "text"
       },
       {
-        "comment": null,
+        "comment": "E-mail de contato do fornecedor.",
         "default": null,
         "generated": null,
         "identity": null,
@@ -68958,7 +68958,7 @@
         "type": "text"
       },
       {
-        "comment": null,
+        "comment": "Telefone de contato do fornecedor.",
         "default": null,
         "generated": null,
         "identity": null,
@@ -68971,7 +68971,7 @@
         "type": "text"
       },
       {
-        "comment": null,
+        "comment": "Endereço do fornecedor.",
         "default": null,
         "generated": null,
         "identity": null,
@@ -68984,7 +68984,7 @@
         "type": "text"
       },
       {
-        "comment": null,
+        "comment": "Indica se o fornecedor está ativo.",
         "default": "true",
         "generated": null,
         "identity": null,
@@ -68997,7 +68997,7 @@
         "type": "boolean"
       },
       {
-        "comment": null,
+        "comment": "Data e hora de criação do cadastro do fornecedor.",
         "default": "now()",
         "generated": null,
         "identity": null,
@@ -69010,7 +69010,7 @@
         "type": "timestamp with time zone"
       },
       {
-        "comment": null,
+        "comment": "Endereço do site do fornecedor.",
         "default": null,
         "generated": null,
         "identity": null,
@@ -69023,7 +69023,7 @@
         "type": "text"
       },
       {
-        "comment": null,
+        "comment": "Pessoa de contato do fornecedor.",
         "default": null,
         "generated": null,
         "identity": null,
@@ -69036,7 +69036,7 @@
         "type": "text"
       },
       {
-        "comment": null,
+        "comment": "Condições de pagamento oferecidas pelo fornecedor.",
         "default": null,
         "generated": null,
         "identity": null,
@@ -69049,7 +69049,7 @@
         "type": "text"
       },
       {
-        "comment": null,
+        "comment": "Prazo de entrega informado pelo fornecedor, em dias.",
         "default": null,
         "generated": null,
         "identity": null,
@@ -69062,7 +69062,7 @@
         "type": "integer"
       },
       {
-        "comment": null,
+        "comment": "Valor mínimo de pedido registrado para o fornecedor, em reais (BRL). Pode incluir centavos.",
         "default": null,
         "generated": null,
         "identity": null,
@@ -69075,7 +69075,7 @@
         "type": "numeric(10,2)"
       },
       {
-        "comment": null,
+        "comment": "Observações internas sobre o fornecedor.",
         "default": null,
         "generated": null,
         "identity": null,
@@ -69088,7 +69088,7 @@
         "type": "text"
       },
       {
-        "comment": null,
+        "comment": "Data e hora da última atualização do cadastro do fornecedor.",
         "default": "now()",
         "generated": null,
         "identity": null,
@@ -69101,7 +69101,7 @@
         "type": "timestamp with time zone"
       },
       {
-        "comment": null,
+        "comment": "Organização à qual o fornecedor pertence.",
         "default": null,
         "generated": null,
         "identity": null,
@@ -69114,7 +69114,7 @@
         "type": "uuid"
       },
       {
-        "comment": null,
+        "comment": "Nome fantasia do fornecedor.",
         "default": null,
         "generated": null,
         "identity": null,
@@ -69127,7 +69127,7 @@
         "type": "character varying(255)"
       },
       {
-        "comment": null,
+        "comment": "Tipo de integração de API configurado para o fornecedor.",
         "default": null,
         "generated": null,
         "identity": null,
@@ -69140,7 +69140,7 @@
         "type": "character varying(20)"
       },
       {
-        "comment": null,
+        "comment": "URL base da API do fornecedor.",
         "default": null,
         "generated": null,
         "identity": null,
@@ -69153,7 +69153,7 @@
         "type": "text"
       },
       {
-        "comment": null,
+        "comment": "Configurações de autenticação da integração do fornecedor. Evite armazenar segredos em texto claro; prefira referências a secrets gerenciados.",
         "default": null,
         "generated": null,
         "identity": null,
@@ -69166,7 +69166,7 @@
         "type": "jsonb"
       },
       {
-        "comment": null,
+        "comment": "Valor mínimo de pedido registrado para o fornecedor, em reais (BRL). Pode incluir centavos.",
         "default": null,
         "generated": null,
         "identity": null,
@@ -69179,7 +69179,7 @@
         "type": "numeric(10,2)"
       },
       {
-        "comment": null,
+        "comment": "Condições de frete oferecidas ou exigidas pelo fornecedor.",
         "default": null,
         "generated": null,
         "identity": null,
@@ -69361,7 +69361,7 @@
         "type": "character varying(2)"
       },
       {
-        "comment": null,
+        "comment": "Regime tributário informado para o fornecedor.",
         "default": null,
         "generated": null,
         "identity": null,
@@ -91474,7 +91474,7 @@
         "type": "timestamp with time zone"
       },
       {
-        "comment": null,
+        "comment": "Identificador UUID do registro de estoque e preço da variante por fornecedor.",
         "default": "gen_random_uuid()",
         "generated": null,
         "identity": null,
@@ -91487,7 +91487,7 @@
         "type": "uuid"
       },
       {
-        "comment": null,
+        "comment": "Organização à qual pertence este registro de variante e fornecedor.",
         "default": null,
         "generated": null,
         "identity": null,
@@ -91500,7 +91500,7 @@
         "type": "uuid"
       },
       {
-        "comment": null,
+        "comment": "Variante do produto associada a este registro.",
         "default": null,
         "generated": null,
         "identity": null,
@@ -91513,7 +91513,7 @@
         "type": "uuid"
       },
       {
-        "comment": null,
+        "comment": "Fornecedor que disponibiliza a variante.",
         "default": null,
         "generated": null,
         "identity": null,
@@ -91539,7 +91539,7 @@
         "type": "integer"
       },
       {
-        "comment": null,
+        "comment": "Origem dos dados de estoque e preço deste registro.",
         "default": "'manual'::character varying",
         "generated": null,
         "identity": null,
@@ -91552,7 +91552,7 @@
         "type": "character varying(50)"
       },
       {
-        "comment": null,
+        "comment": "Data e hora da última sincronização bem-sucedida com o fornecedor.",
         "default": null,
         "generated": null,
         "identity": null,
@@ -91565,7 +91565,7 @@
         "type": "timestamp with time zone"
       },
       {
-        "comment": null,
+        "comment": "Estado da sincronização deste registro com o fornecedor.",
         "default": "'synced'::character varying",
         "generated": null,
         "identity": null,
@@ -91578,7 +91578,7 @@
         "type": "character varying(50)"
       },
       {
-        "comment": null,
+        "comment": "Detalhes do erro da última sincronização, quando houver.",
         "default": null,
         "generated": null,
         "identity": null,
@@ -91591,7 +91591,7 @@
         "type": "text"
       },
       {
-        "comment": null,
+        "comment": "Data e hora da última atualização do registro.",
         "default": "now()",
         "generated": null,
         "identity": null,
@@ -91617,7 +91617,7 @@
         "type": "integer"
       },
       {
-        "comment": null,
+        "comment": "Data prevista para a reposição indicada no slot 1.",
         "default": null,
         "generated": null,
         "identity": null,
@@ -91643,7 +91643,7 @@
         "type": "integer"
       },
       {
-        "comment": null,
+        "comment": "Data prevista para a reposição indicada no slot 2.",
         "default": null,
         "generated": null,
         "identity": null,
@@ -91669,7 +91669,7 @@
         "type": "integer"
       },
       {
-        "comment": null,
+        "comment": "Data prevista para a reposição indicada no slot 3.",
         "default": null,
         "generated": null,
         "identity": null,
@@ -92306,7 +92306,7 @@
         "type": "date"
       },
       {
-        "comment": null,
+        "comment": "Valor registrado no campo your_price para a variante e o fornecedor, em reais (BRL). Pode incluir centavos.",
         "default": null,
         "generated": null,
         "identity": null,
@@ -261853,7 +261853,7 @@
         "schema": "public"
       },
       {
-        "comment": null,
+        "comment": "Cadastro de fornecedores de produtos e serviços, com dados comerciais, contatos, condições de compra e configurações de integração e sincronização.",
         "from_extension": false,
         "is_partition": false,
         "kind": "table",

@@ -19,30 +19,30 @@
 
 | # | coluna | tipo | nullable | default | identity/generated | comentário |
 |---|---|---|---|---|---|---|
-| 1 | `id` | `uuid` | não | `gen_random_uuid()` |  |  |
-| 2 | `product_id` | `uuid` | não |  |  |  |
-| 3 | `sku` | `text` | não |  |  |  |
-| 4 | `name` | `text` | não |  |  |  |
-| 5 | `attributes` | `jsonb` | não |  |  |  |
-| 7 | `stock_quantity` | `integer` | sim | `0` |  |  |
-| 8 | `images` | `jsonb` | sim | `'[]'::jsonb` |  |  |
-| 9 | `is_active` | `boolean` | não | `true` |  |  |
-| 10 | `created_at` | `timestamp with time zone` | sim | `now()` |  |  |
-| 11 | `updated_at` | `timestamp with time zone` | sim | `now()` |  |  |
-| 12 | `sku_promo` | `character varying(50)` | sim |  |  |  |
-| 13 | `color_id` | `uuid` | sim |  |  |  |
-| 14 | `size_id` | `uuid` | sim |  |  |  |
-| 31 | `supplier_sku` | `character varying(100)` | sim |  |  |  |
-| 33 | `color_code` | `character varying(20)` | sim |  |  |  |
-| 34 | `color_name` | `character varying(100)` | sim |  |  |  |
-| 35 | `color_hex` | `character varying(10)` | sim |  |  |  |
+| 1 | `id` | `uuid` | não | `gen_random_uuid()` |  | Identificador UUID da variante do produto. |
+| 2 | `product_id` | `uuid` | não |  |  | Produto ao qual esta variante pertence. |
+| 3 | `sku` | `text` | não |  |  | SKU único da variante. |
+| 4 | `name` | `text` | não |  |  | Nome de exibição da variante. |
+| 5 | `attributes` | `jsonb` | não |  |  | Atributos da variante armazenados em JSON, por exemplo cor ou tamanho. |
+| 7 | `stock_quantity` | `integer` | sim | `0` |  | Quantidade de estoque registrada para a variante. |
+| 8 | `images` | `jsonb` | sim | `'[]'::jsonb` |  | Imagens associadas à variante, armazenadas em JSON. |
+| 9 | `is_active` | `boolean` | não | `true` |  | Indica se a variante está ativa. |
+| 10 | `created_at` | `timestamp with time zone` | sim | `now()` |  | Data e hora de criação da variante. |
+| 11 | `updated_at` | `timestamp with time zone` | sim | `now()` |  | Data e hora da última atualização da variante. |
+| 12 | `sku_promo` | `character varying(50)` | sim |  |  | SKU da variante no sistema Promo, quando informado. |
+| 13 | `color_id` | `uuid` | sim |  |  | Identificador da cor canônica associada à variante. |
+| 14 | `size_id` | `uuid` | sim |  |  | Identificador do valor de tamanho associado à variante. |
+| 31 | `supplier_sku` | `character varying(100)` | sim |  |  | SKU da variante no sistema do fornecedor. |
+| 33 | `color_code` | `character varying(20)` | sim |  |  | Código da cor da variante. |
+| 34 | `color_name` | `character varying(100)` | sim |  |  | Nome da cor da variante. |
+| 35 | `color_hex` | `character varying(10)` | sim |  |  | Código hexadecimal da cor da variante. |
 | 36 | `size_code` | `character varying(10)` | sim |  |  | Código do tamanho padronizado: P, M, G, GG, XGG |
 | 37 | `capacity_ml` | `integer` | sim |  |  | Capacidade em MILILITROS (padrão do sistema) |
 | 41 | `last_sync_at` | `timestamp with time zone` | sim |  |  | Data/hora da última sincronização |
 | 42 | `last_sync_supplier_id` | `uuid` | sim |  |  | ID do fornecedor da última sincronização |
 | 45 | `selected_thumbnail` | `character varying(500)` | sim |  |  | URL da imagem principal SELECIONADA para exibir no e-commerce. Usada em listagens, carrinho, e como og:image em compartilhamentos. Pode vir de qualquer fornecedor - escolha a melhor! |
-| 47 | `bitrix_product_id` | `integer` | sim |  |  |  |
-| 48 | `CodigoXbz` | `text` | sim |  |  |  |
+| 47 | `bitrix_product_id` | `integer` | sim |  |  | Identificador do produto correspondente no Bitrix24. |
+| 48 | `CodigoXbz` | `text` | sim |  |  | Código da variante conforme o campo CodigoXbz da integração XBZ. |
 | 50 | `size_length_cm` | `numeric(6,2)` | sim |  |  | GOLD: comprimento do têxtil por SKU em cm. Origem: prata (pipeline). NULL para não-têxteis |
 | 51 | `size_width_cm` | `numeric(6,2)` | sim |  |  | GOLD: largura do têxtil por SKU em cm. Origem: prata (pipeline). NULL para não-têxteis |
 | 52 | `next_quantity_1` | `integer` | sim |  |  | Quantidade prevista na próxima reposição (janela 1). Fonte: VSS do fornecedor preferido. |
@@ -57,9 +57,9 @@
 | 61 | `next_date_5` | `date` | sim |  |  | SPOT: NextDate5 (data da 5ª janela de reposição) |
 | 62 | `next_quantity_6` | `integer` | sim |  |  | SPOT: NextQuantity6 (6ª janela de reposição) |
 | 63 | `next_date_6` | `date` | sim |  |  | SPOT: NextDate6 (data da 6ª janela de reposição) |
-| 66 | `next_entry_date` | `date` | sim |  |  |  |
-| 67 | `next_entry_quantity` | `integer` | sim |  |  |  |
-| 68 | `supplier_external_id` | `text` | sim |  |  |  |
+| 66 | `next_entry_date` | `date` | sim |  |  | Data prevista para a próxima entrada de estoque da variante. |
+| 67 | `next_entry_quantity` | `integer` | sim |  |  | Quantidade prevista na próxima entrada de estoque da variante. |
+| 68 | `supplier_external_id` | `text` | sim |  |  | Identificador externo da variante no sistema do fornecedor. |
 
 
 ## Constraints

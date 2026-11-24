@@ -2,6 +2,11 @@
 
 Diff semântico gerado a cada coleta em que algo mudou.
 
+## 2026-11-24 12:25 UTC
+
+- **colunas** alterado (102): `public.product_variants.CodigoXbz`, `public.product_variants.attributes`, `public.product_variants.bitrix_product_id`, `public.product_variants.color_code`, `public.product_variants.color_hex`, `public.product_variants.color_id`, `public.product_variants.color_name`, `public.product_variants.created_at`, `public.product_variants.id`, `public.product_variants.images`, `public.product_variants.is_active`, `public.product_variants.name`, `public.product_variants.next_entry_date`, `public.product_variants.next_entry_quantity`, `public.product_variants.product_id`, `public.product_variants.size_id`, `public.product_variants.sku`, `public.product_variants.sku_promo`, `public.product_variants.stock_quantity`, `public.product_variants.supplier_external_id`, `public.product_variants.supplier_sku`, `public.product_variants.updated_at`, `public.stock_daily_summary.cost_price_close`, `public.stock_daily_summary.cost_price_open`, `public.stock_daily_summary.created_at`, `public.stock_daily_summary.id`, `public.stock_daily_summary.net_change`, `public.stock_daily_summary.price_changed`, `public.stock_daily_summary.product_id`, `public.stock_daily_summary.restock_count`, `public.stock_daily_summary.restock_detected`, `public.stock_daily_summary.restock_quantity`, `public.stock_daily_summary.stock_close`, `public.stock_daily_summary.stock_max`, `public.stock_daily_summary.stock_min`, `public.stock_daily_summary.stock_open`, `public.stock_daily_summary.summary_date`, `public.stock_daily_summary.supplier_branch_id`, `public.stock_daily_summary.supplier_id`, `public.stock_daily_summary.sync_count` … (+62)
+- **tabelas** alterado (1): `public.suppliers`
+
 ## 2026-11-24 04:21 UTC
 
 - **realtime** removido (1): `supabase_realtime_messages_publication:realtime.messages_2026_11_20`

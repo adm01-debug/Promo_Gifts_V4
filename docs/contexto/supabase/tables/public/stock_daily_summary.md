@@ -19,28 +19,28 @@
 
 | # | coluna | tipo | nullable | default | identity/generated | comentário |
 |---|---|---|---|---|---|---|
-| 1 | `id` | `bigint` | não |  | a |  |
-| 2 | `variant_supplier_source_id` | `uuid` | não |  |  |  |
-| 3 | `supplier_id` | `uuid` | não |  |  |  |
-| 4 | `supplier_branch_id` | `uuid` | sim |  |  |  |
-| 5 | `variant_id` | `uuid` | não |  |  |  |
-| 6 | `product_id` | `uuid` | não |  |  |  |
-| 7 | `summary_date` | `date` | não |  |  |  |
-| 8 | `stock_open` | `integer` | sim |  |  |  |
-| 9 | `stock_close` | `integer` | sim |  |  |  |
-| 10 | `stock_min` | `integer` | sim |  |  |  |
-| 11 | `stock_max` | `integer` | sim |  |  |  |
-| 12 | `net_change` | `integer` | sim |  |  |  |
-| 13 | `units_depleted` | `integer` | sim | `0` |  |  |
-| 14 | `units_restocked` | `integer` | sim | `0` |  |  |
-| 15 | `restock_detected` | `boolean` | sim | `false` |  |  |
-| 16 | `restock_quantity` | `integer` | sim | `0` |  |  |
-| 17 | `restock_count` | `smallint` | sim | `0` |  |  |
-| 18 | `cost_price_open` | `numeric(12,4)` | sim |  |  |  |
-| 19 | `cost_price_close` | `numeric(12,4)` | sim |  |  |  |
-| 20 | `price_changed` | `boolean` | sim | `false` |  |  |
-| 21 | `sync_count` | `smallint` | sim | `0` |  |  |
-| 22 | `created_at` | `timestamp with time zone` | não | `now()` |  |  |
+| 1 | `id` | `bigint` | não |  | a | Identificador sequencial do resumo diário. |
+| 2 | `variant_supplier_source_id` | `uuid` | não |  |  | Registro de variante e fornecedor resumido. |
+| 3 | `supplier_id` | `uuid` | não |  |  | Fornecedor associado ao resumo diário. |
+| 4 | `supplier_branch_id` | `uuid` | sim |  |  | Filial do fornecedor associada ao resumo, quando informada. |
+| 5 | `variant_id` | `uuid` | não |  |  | Variante associada ao resumo diário. |
+| 6 | `product_id` | `uuid` | não |  |  | Produto associado à variante resumida. |
+| 7 | `summary_date` | `date` | não |  |  | Data a que se refere o resumo. |
+| 8 | `stock_open` | `integer` | sim |  |  | Estoque no início do dia. |
+| 9 | `stock_close` | `integer` | sim |  |  | Estoque no fim do dia. |
+| 10 | `stock_min` | `integer` | sim |  |  | Estoque mínimo observado durante o dia. |
+| 11 | `stock_max` | `integer` | sim |  |  | Estoque máximo observado durante o dia. |
+| 12 | `net_change` | `integer` | sim |  |  | Variação líquida do estoque durante o dia. |
+| 13 | `units_depleted` | `integer` | sim | `0` |  | Unidades removidas do estoque durante o dia. |
+| 14 | `units_restocked` | `integer` | sim | `0` |  | Unidades adicionadas ao estoque durante o dia. |
+| 15 | `restock_detected` | `boolean` | sim | `false` |  | Indica se foi detectado aumento de estoque durante o dia. |
+| 16 | `restock_quantity` | `integer` | sim | `0` |  | Quantidade total associada às reposições detectadas durante o dia. |
+| 17 | `restock_count` | `smallint` | sim | `0` |  | Número de reposições detectadas durante o dia. |
+| 18 | `cost_price_open` | `numeric(12,4)` | sim |  |  | Custo unitário no início do dia, em reais (BRL). Pode incluir centavos. |
+| 19 | `cost_price_close` | `numeric(12,4)` | sim |  |  | Custo unitário no fim do dia, em reais (BRL). Pode incluir centavos. |
+| 20 | `price_changed` | `boolean` | sim | `false` |  | Indica se o custo unitário mudou durante o dia. |
+| 21 | `sync_count` | `smallint` | sim | `0` |  | Quantidade de sincronizações consideradas no resumo diário. |
+| 22 | `created_at` | `timestamp with time zone` | não | `now()` |  | Data e hora de criação do resumo diário. |
 | 23 | `restock_zero_to_positive` | `boolean` | não | `false` |  | TRUE se em qualquer snapshot do dia o stock_total_old=0 E stock_total_new>0 (transição real de zero-para-positivo). Diferente de restock_detected que marca qualquer delta positivo — este campo é semanticamente correto para o módulo Reposição. |
 
 

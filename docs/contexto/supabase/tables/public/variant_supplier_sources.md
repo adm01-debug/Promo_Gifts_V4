@@ -19,22 +19,22 @@
 
 | # | coluna | tipo | nullable | default | identity/generated | comentário |
 |---|---|---|---|---|---|---|
-| 1 | `id` | `uuid` | não | `gen_random_uuid()` |  |  |
-| 2 | `organization_id` | `uuid` | não |  |  |  |
-| 3 | `variant_id` | `uuid` | não |  |  |  |
-| 4 | `supplier_id` | `uuid` | não |  |  |  |
+| 1 | `id` | `uuid` | não | `gen_random_uuid()` |  | Identificador UUID do registro de estoque e preço da variante por fornecedor. |
+| 2 | `organization_id` | `uuid` | não |  |  | Organização à qual pertence este registro de variante e fornecedor. |
+| 3 | `variant_id` | `uuid` | não |  |  | Variante do produto associada a este registro. |
+| 4 | `supplier_id` | `uuid` | não |  |  | Fornecedor que disponibiliza a variante. |
 | 5 | `quantity` | `integer` | sim | `0` |  | Quantidade em estoque deste fornecedor para esta variante. Trigger sincroniza cache em products.stock_quantity. |
-| 6 | `source` | `character varying(50)` | sim | `'manual'::character varying` |  |  |
-| 7 | `last_synced_at` | `timestamp with time zone` | sim |  |  |  |
-| 8 | `sync_status` | `character varying(50)` | sim | `'synced'::character varying` |  |  |
-| 9 | `sync_error` | `text` | sim |  |  |  |
-| 10 | `updated_at` | `timestamp with time zone` | sim | `now()` |  |  |
+| 6 | `source` | `character varying(50)` | sim | `'manual'::character varying` |  | Origem dos dados de estoque e preço deste registro. |
+| 7 | `last_synced_at` | `timestamp with time zone` | sim |  |  | Data e hora da última sincronização bem-sucedida com o fornecedor. |
+| 8 | `sync_status` | `character varying(50)` | sim | `'synced'::character varying` |  | Estado da sincronização deste registro com o fornecedor. |
+| 9 | `sync_error` | `text` | sim |  |  | Detalhes do erro da última sincronização, quando houver. |
+| 10 | `updated_at` | `timestamp with time zone` | sim | `now()` |  | Data e hora da última atualização do registro. |
 | 12 | `next_quantity_1` | `integer` | sim |  |  |  |
-| 13 | `next_date_1` | `date` | sim |  |  |  |
+| 13 | `next_date_1` | `date` | sim |  |  | Data prevista para a reposição indicada no slot 1. |
 | 14 | `next_quantity_2` | `integer` | sim |  |  |  |
-| 15 | `next_date_2` | `date` | sim |  |  |  |
+| 15 | `next_date_2` | `date` | sim |  |  | Data prevista para a reposição indicada no slot 2. |
 | 16 | `next_quantity_3` | `integer` | sim |  |  |  |
-| 17 | `next_date_3` | `date` | sim |  |  |  |
+| 17 | `next_date_3` | `date` | sim |  |  | Data prevista para a reposição indicada no slot 3. |
 | 18 | `supplier_sku` | `character varying(100)` | sim |  |  | SKU/código desta variante no sistema do fornecedor. Ex: XBZ usa "01320-AZ", SPOT usa "22900-105" |
 | 19 | `supplier_color_code` | `character varying(50)` | sim |  |  | Código da cor no sistema do fornecedor. Ex: SPOT usa "104" para Azul, XBZ usa "AZ" |
 | 20 | `supplier_color_name` | `character varying(100)` | sim |  |  | Nome da cor como o fornecedor chama. Ex: "Azul Royal", "Azul Marinho", "Navy Blue" |
@@ -83,7 +83,7 @@
 | 63 | `next_date_4` | `date` | sim |  |  | Data restock slot 4. Hoje 0 registros. DROP requer refatoração coordenada. |
 | 64 | `next_date_5` | `date` | sim |  |  | Data restock slot 5. Hoje 0 registros. |
 | 65 | `next_date_6` | `date` | sim |  |  | Data restock slot 6. Hoje 0 registros. |
-| 66 | `your_price` | `numeric` | sim |  |  |  |
+| 66 | `your_price` | `numeric` | sim |  |  | Valor registrado no campo your_price para a variante e o fornecedor, em reais (BRL). Pode incluir centavos. |
 
 
 ## Constraints

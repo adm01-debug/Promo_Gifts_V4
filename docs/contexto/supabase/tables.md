@@ -389,7 +389,7 @@ Um arquivo por tabela em `tables/<schema>/<tabela>.md` (colunas, constraints, í
 | [public.supplier_unit_conversions](tables/public/supplier_unit_conversions.md) | table | sim | 1 | 10 | não | Regras de conversão de unidades (global ou por fornecedor) |
 | [public.supplier_value_mappings](tables/public/supplier_value_mappings.md) | table | sim | 1 | 10 | não | Mapeamento de valores específicos (tamanhos, cores, status) |
 | [public.supplier_video_requirements](tables/public/supplier_video_requirements.md) | table | sim | 1 | 15 | não |  |
-| [public.suppliers](tables/public/suppliers.md) | table | sim | 5 | 42 | não |  |
+| [public.suppliers](tables/public/suppliers.md) | table | sim | 5 | 42 | não | Cadastro de fornecedores de produtos e serviços, com dados comerciais, contatos, condições de compra e configurações de integração e sincronização. |
 | [public.system_changelog](tables/public/system_changelog.md) | table | sim | 2 | 9 | não | Changelog histórico de otimizações aplicadas ao sistema. Auditoria perene de mudanças estruturais. |
 | [public.system_documentation](tables/public/system_documentation.md) | table | sim | 1 | 8 | não | [META] Documentação do sistema dentro do próprio banco. |
 | [public.system_kill_switches](tables/public/system_kill_switches.md) | table | sim | 5 | 7 | não | Switches para desligar features/edge-functions legadas a quente. Edge functions devem checar esta tabela antes de processar. |
