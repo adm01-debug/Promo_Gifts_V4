@@ -1,6 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent, waitFor, act } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 type RP = { id: string; role: string; permission_code: string };
 const db: {
@@ -100,11 +101,17 @@ function seed() {
   }));
 }
 
+const testQueryClient = new QueryClient({
+  defaultOptions: { queries: { retry: false, gcTime: 0 } },
+});
+
 async function renderPage() {
   render(
-    <MemoryRouter>
-      <RolePermissionsPage />
-    </MemoryRouter>,
+    <QueryClientProvider client={testQueryClient}>
+      <MemoryRouter>
+        <RolePermissionsPage />
+      </MemoryRouter>
+    </QueryClientProvider>,
   );
   await screen.findAllByText('L-p1');
 }
@@ -118,6 +125,8 @@ function saveBtn() {
 
 describe('RolePermissionsPage — salvar com falha parcial e concorrência', () => {
   beforeEach(() => {
+    // Cache isolado por teste: sem isto o staleTime de 5 min serve dados do teste anterior.
+    testQueryClient.clear();
     seed();
     calls.length = 0;
     deleteCount = 0;

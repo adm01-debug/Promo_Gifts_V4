@@ -44,12 +44,12 @@ Severidade das etapas: Média 158 · Alta 79 · Baixa 54 · Crítica 9
 - [ ] 011 — Fazer `static-checks.yml` bloquear merge — onda 1 — Alta — APROVAÇÃO
 - [ ] 012 — Tirar `docs/`, `tests/` e `e2e/` da allowlist do gitleaks — onda 1 — Alta — APROVAÇÃO
 - [ ] 013 — Fazer o gate de segredo varrer o histórico, não só a árvore de trabalho — onda 1 — Alta — APROVAÇÃO
-- [ ] 014 — Estender `check-production-harnesses.mjs` a `/__visual/` e aos 9 harnesses de `AppRoutes.tsx` — onda 1 — Média
+- [~] 014 — Estender `check-production-harnesses.mjs` a `/__visual/` e aos 9 harnesses de `AppRoutes.tsx` — onda 1 — Média
 - [ ] 015 — Levantar o alcance da chave `service_role` vazada e preparar a rotação — onda 1 — Crítica — APROVAÇÃO
 - [ ] 016 — Rotacionar a chave `service_role` do projeto de produção — onda 1 — Crítica — APROVAÇÃO
 - [ ] 017 — Conferir no banco se a chave vazada foi usada — onda 1 — Alta — APROVAÇÃO
 - [ ] 018 — Limpar as entradas `[ROTACIONAR]` do `.gitleaks.toml` depois da rotação — onda 1 — Média — APROVAÇÃO
-- [ ] 019 — Provar a tautologia e escrever o teste que falha antes da correção — onda 1 — Alta
+- [~] 019 — Provar a tautologia e escrever o teste que falha antes da correção — onda 1 — Alta
 - [ ] 020 — Corrigir as policies tautológicas de `attribute_definitions` — onda 1 — Alta — APROVAÇÃO
 - [ ] 021 — Corrigir as policies tautológicas de `attribute_groups` — onda 1 — Alta — APROVAÇÃO
 - [ ] 022 — Corrigir as policies tautológicas de `material_types` — onda 1 — Alta — APROVAÇÃO
@@ -70,12 +70,12 @@ Severidade das etapas: Média 158 · Alta 79 · Baixa 54 · Crítica 9
 - [ ] 037 — Remover a função `current_user_role()` — onda 1 — Média — APROVAÇÃO
 - [ ] 038 — Trigger `BEFORE DELETE` protegendo cotação aprovada ou convertida — onda 1 — Alta — APROVAÇÃO
 - [ ] 039 — Revisar o `ON DELETE CASCADE` de `quote_items` — onda 1 — Média — APROVAÇÃO
-- [ ] 040 — Confirmação explícita na exclusão em massa de cotações — onda 1 — Média
-- [ ] 041 — Alarme quando a allowlist e o segredo do `e2e-cleanup` saem de sincronia — onda 1 — Média
-- [ ] 042 — Restringir o alcance do `e2e-cleanup` a dados marcados como de teste — onda 1 — Média
-- [ ] 043 — Ligar `_shared/url-allowlist.ts` no `webhook-dispatcher` — onda 1 — Alta
-- [ ] 044 — Ligar o bloqueio da allowlist de URL depois do período de observação — onda 1 — Alta
-- [ ] 045 — Exigir auth antes de responder `op=ping` no `crm-db-bridge` — onda 1 — Média
+- [~] 040 — Confirmação explícita na exclusão em massa de cotações — onda 1 — Média
+- [~] 041 — Alarme quando a allowlist e o segredo do `e2e-cleanup` saem de sincronia — onda 1 — Média
+- [~] 042 — Restringir o alcance do `e2e-cleanup` a dados marcados como de teste — onda 1 — Média
+- [~] 043 — Ligar `_shared/url-allowlist.ts` no `webhook-dispatcher` — onda 1 — Alta
+- [~] 044 — Ligar o bloqueio da allowlist de URL depois do período de observação — onda 1 — Alta
+- [~] 045 — Exigir auth antes de responder `op=ping` no `crm-db-bridge` — onda 1 — Média
 - [ ] 046 — Fechar `stock_daily_summary` à leitura irrestrita de qualquer conta logada — onda 1 — Média — APROVAÇÃO
 - [ ] 047 — Fechar `xbz_upload_mapping`, `product_properties` e `supplier_import_batches` à leitura irrestrita — onda 1 — Média — APROVAÇÃO
 - [ ] 048 — Inventariar e decidir as ~138 policies de SELECT com `USING (true)` — onda 1 — Média
@@ -87,70 +87,269 @@ Severidade das etapas: Média 158 · Alta 79 · Baixa 54 · Crítica 9
 - [ ] 054 — Revisar as 9 funções `SECURITY DEFINER` executáveis por `anon` — onda 1 — Média — APROVAÇÃO
 - [ ] 055 — Triagem das 112 funções `SECURITY DEFINER` executáveis por usuário logado — onda 1 — Média — APROVAÇÃO
 - [ ] 056 — Revogar os grants de `anon` abertos para a cadeia das views de compras — onda 1 — Média — APROVAÇÃO
-- [ ] 057 — Parar de devolver erro cru do Postgres na `crm-db-bridge` — onda 1 — Média
-- [ ] 058 — Adotar o helper de erro em `manage-users` — onda 1 — Média
-- [ ] 059 — Adotar o helper de erro em `step-up-verify` e `external-db-inspect` — onda 1 — Média
-- [ ] 060 — Adotar o helper de erro em `force-global-logout` — onda 1 — Baixa
+- [~] 057 — Parar de devolver erro cru do Postgres na `crm-db-bridge` — onda 1 — Média
+- [~] 058 — Adotar o helper de erro em `manage-users` — onda 1 — Média
+- [~] 059 — Adotar o helper de erro em `step-up-verify` e `external-db-inspect` — onda 1 — Média
+- [~] 060 — Adotar o helper de erro em `force-global-logout` — onda 1 — Baixa
 - [ ] 061 — Gate que exige o helper de erro em edge function nova — onda 1 — Média — APROVAÇÃO
 - [ ] 062 — Varredura de segredo em `recovery/`, fixtures e artefatos versionados — onda 1 — Média — APROVAÇÃO
 
 ## Onda 2 — Fluxos principais quebrados
 
-- [ ] 063 — Teste que prova o round-trip do template perdendo o custo — onda 2 — Crítica
-- [ ] 064 — Gravar `total_cost` ao aplicar o template — onda 2 — Crítica
+- [~] 063 — Teste que prova o round-trip do template perdendo o custo — onda 2 — Crítica
+- [~] 064 — Gravar `total_cost` ao aplicar o template — onda 2 — Crítica
 - [ ] 065 — Verificar as cotações já criadas por template sem custo de personalização — onda 2 — Alta — APROVAÇÃO
 - [ ] 066 — Unificar a fórmula de custo de personalização num único módulo — onda 2 — Média
-- [ ] 067 — Mover `/magazine/print` para fora do `ProtectedRoute` — onda 2 — Alta
-- [ ] 068 — Teste de rota garantindo que a impressão pública não exige login — onda 2 — Média
-- [ ] 069 — Acrescentar `admin` ao `ROLE_RANK` do `dispatcher-auth` — onda 2 — Alta
-- [ ] 070 — Gate que compara os mapas de papel dos dois helpers de autorização — onda 2 — Média
-- [ ] 071 — Conferir se outros consumidores de `dispatcher-auth` estavam negando admin — onda 2 — Média
-- [ ] 072 — Expor o erro do catálogo em `useCatalogState` — onda 2 — Alta
-- [ ] 073 — Estado de erro em `/produtos` e `/filtros` — onda 2 — Alta
-- [ ] 074 — Estado de erro na vitrine inicial — onda 2 — Alta
-- [ ] 075 — Teste que impede erro voltar a parecer vazio no catálogo — onda 2 — Média
-- [ ] 076 — Propagar o erro de carga em `useCollections` — onda 2 — Alta
-- [ ] 077 — Estado de erro em `/colecoes`, separado do vazio com CTA — onda 2 — Alta
-- [ ] 078 — Fazer os consumidores de `useQuoteTemplates` lerem o `error` — onda 2 — Alta
-- [ ] 079 — Fazer `fetchAllTemplates` registrar o erro em vez de engolir — onda 2 — Média
-- [ ] 080 — Teste que prova o teto de desconto ficando desatualizado — onda 2 — Alta
-- [ ] 081 — Migrar `useSellerDiscountLimits` para react-query — onda 2 — Alta
-- [ ] 082 — Invalidar o limite de desconto depois de alterá-lo — onda 2 — Alta
+- [~] 067 — Mover `/magazine/print` para fora do `ProtectedRoute` — onda 2 — Alta
+- [~] 068 — Teste de rota garantindo que a impressão pública não exige login — onda 2 — Média
+- [~] 069 — Acrescentar `admin` ao `ROLE_RANK` do `dispatcher-auth` — onda 2 — Alta
+- [~] 070 — Gate que compara os mapas de papel dos dois helpers de autorização — onda 2 — Média
+- [x] 071 — Conferir se outros consumidores de `dispatcher-auth` estavam negando admin — onda 2 — Média
+- [x] 072 — Expor o erro do catálogo em `useCatalogState` — onda 2 — Alta
+- [x] 073 — Estado de erro em `/produtos` e `/filtros` — onda 2 — Alta
+- [x] 074 — Estado de erro na vitrine inicial — onda 2 — Alta
+- [x] 075 — Teste que impede erro voltar a parecer vazio no catálogo — onda 2 — Média
+  - Evidência 073/074: `FiltersPage.tsx` e `CatalogContent.tsx` agora separam erro (`isCatalogError`)
+    de vazio (`shouldShowEmptyState`) usando `EmptyState variant="error"` com botão "Tentar novamente".
+  - Evidência 075: `CatalogContent.error.test.tsx` (3 casos) e `FiltersPage.error.test.tsx` (2 casos) passam.
+    Revertendo 073/074 localmente, os testes falham (prova: ramo de erro desabilitado → 2 testes falham).
+  - `useCatalogState`/`useFiltersPageState` já expõem `isCatalogError`/`catalogError`/`refetchCatalog`.
+- [x] 076 — Propagar o erro de carga em `useCollections` — onda 2 — Alta
+- [x] 077 — Estado de erro em `/colecoes`, separado do vazio com CTA — onda 2 — Alta
+  - Evidência 076: `useCollections.ts` agora expõe `loadError`/`isLoadError` (setado nos erros de
+    `collections` e `collection_items`; limpo no sucesso). `CollectionsContext`/`useCollectionsPageState`
+    propagam os campos.
+  - Evidência 077: `CollectionsPage.tsx` mostra `EmptyState variant="error"` com "Tentar novamente" e
+    esconde o CTA de criar coleção (`CollectionsEmptyStateSmart`) quando `state.isLoadError`.
+- [x] 078 — Fazer os consumidores de `useQuoteTemplates` lerem o `error` — onda 2 — Alta
+- [x] 079 — Fazer `fetchAllTemplates` registrar o erro em vez de engolir — onda 2 — Média
+  - Evidência 078: `QuoteTemplatesList.tsx` e `AdminTemplatesManager.tsx` leem `error` do hook e
+    renderizam o bloco de falha antes do vazio (`Não foi possível carregar os templates`).
+    `QuoteTemplatesList.error.test.tsx` (4 casos) cobre erro e vazio legítimo nas duas telas; com o
+    ramo de erro desabilitado localmente os 2 casos de erro falham (prova).
+  - Evidência 079: `useQuoteTemplates.fetchAllTemplates` agora chama
+    `setError('Erro ao carregar templates')` no catch, usando o mesmo estado de `fetchTemplates`
+    (sem `errorAll`).
+- [x] 080 — Teste que prova o teto de desconto ficando desatualizado — onda 2 — Alta
+- [x] 081 — Migrar `useSellerDiscountLimits` para react-query — onda 2 — Alta
+- [x] 082 — Invalidar o limite de desconto depois de alterá-lo — onda 2 — Alta
+  - Evidência 080: `useSellerDiscountLimits.propagation.test.tsx` monta dois consumidores no mesmo
+    `QueryClient` (painel admin grava, builder de orçamento lê). Antes da 081 falhava com
+    `- Expected 2 / + Received 5` (teto antigo permanecia no builder) — bug provado.
+  - Evidência 081: `useSellerDiscountLimits.ts` migrado para `useQuery` com
+    `SELLER_DISCOUNT_LIMITS_KEY`; `setLimit`/`deleteLimit` invalidam
+    `['seller-discount-limits']`. `fetchMyLimit`/`fetchAllLimits` mantêm identidade estável via
+    `useRef` (contrato exigido por `DiscountManagementPanel.tsx`). Testes antigos
+    (`useSellerDiscountLimits.test.ts` 12 casos, `.guard.test.ts` 2 casos) migrados para
+    `QueryClientProvider` e verdes.
+  - Evidência 082: `SellerDiscountLimitsAdminPage.tsx` (mutation `save`) agora também invalida
+    `['seller-discount-limits']`, a chave lida pelo builder (`SellerDiscountLimitsPanel.tsx:27`).
+  - Validação: `npx tsc --noEmit` exit 0; `npx eslint` nos 5 arquivos tocados sem problemas;
+    `npx vitest run src/hooks src/components/admin src/pages/admin` → 163 arquivos, 2885 testes verdes.
 - [ ] 083 — Reforçar o teto de desconto no banco, não só no front — onda 2 — Alta — APROVAÇÃO
-- [ ] 084 — Invalidar `['role-permissions']` depois de gravar permissões de papel — onda 2 — Alta
-- [ ] 085 — Substituir o `useState` local de `RolePermissionsPage` pela query compartilhada — onda 2 — Média
-- [ ] 086 — Invalidar a lista de comentários depois de comentar no kit — onda 2 — Alta
+- [x] 084 — Invalidar `['role-permissions']` depois de gravar permissões de papel — onda 2 — Alta
+- [x] 085 — Substituir o `useState` local de `RolePermissionsPage` pela query compartilhada — onda 2 — Média
+- [x] 086 — Invalidar a lista de comentários depois de comentar no kit — onda 2 — Alta
+  - Evidência 084: no sucesso da gravação a página invalida `['role-permissions']` (a família de
+    chaves que `useRBAC` lê). `RolePermissionsPage.invalidate.test.tsx` afirma a chamada; com a
+    invalidação removida localmente o teste falha (prova).
+  - Evidência 085: `RolePermissionsPage` não tem mais `useState` de leitura — `permissions` e
+    `rolePermissions` vêm de `useQuery` (`['permissions-catalog']` e `['role-permissions','all']`),
+    com `staleTime` de 5 min. Restou apenas o estado de edição (`pendingChanges`) e `isSaving`.
+    `RolePermissionsPage.save.test.tsx` (7 casos) segue verde com o provider de cache.
+  - Evidência 086: `useKitComments` (`useKitCollaboration.ts`) invalida
+    `['kit-comments', kitId]` no `onSuccess` de `postComment` e de `resolveComment`.
+    `useKitCollaboration.invalidate.test.tsx` (2 casos) cobre as duas; revertendo os `onSuccess`
+    os 2 casos falham (prova). Realtime mantido intacto (decisão da etapa 087).
+  - Validação: `npm run typecheck` exit 0; `npx eslint` nos arquivos tocados sem problemas;
+    `npx vitest run src/pages/admin src/hooks/quotes src/hooks/kit-builder src/components/admin`
+    → 55 arquivos, 665 testes verdes.
 - [ ] 087 — Decidir e registrar se `kit_comments` entra no realtime — onda 2 — Média — APROVAÇÃO
-- [ ] 088 — Fazer o fallback da colaboração cobrir também a ausência de publicação — onda 2 — Média
-- [ ] 089 — Corrigir a comparação de `href` que impede o badge de aprovações aparecer — onda 2 — Média
-- [ ] 090 — Desligar o `refetchInterval` órfão do badge — onda 2 — Baixa
-- [ ] 091 — Dar ação ao botão "Exportar Relatório" da comparação de fornecedores — onda 2 — Média
-- [ ] 092 — Varredura dirigida de "erro virando vazio" nas demais telas de fluxo principal — onda 2 — Média
+- [x] 088 — Fazer o fallback da colaboração cobrir também a ausência de publicação — onda 2 — Média
+  - Evidência 088: `useKitComments` (`src/hooks/kit-builder/useKitCollaboration.ts`) exporta
+    `KIT_COMMENTS_FALLBACK_REFETCH_MS = 45_000` e mantém um `setInterval` que invalida
+    `['kit-comments', kitId]` com `refetchType: 'active'`. O canal realtime conecta (SUBSCRIBED)
+    mesmo quando `kit_comments` não está em `supabase_realtime` e nunca entrega evento —
+    sem o fallback, a lista só atualizava ao recarregar a página.
+    `useKitCollaboration.fallback.test.tsx` (2 casos, `vi.useFakeTimers()`) simula exatamente esse
+    cenário: o mock do canal **sempre** chama `cb('SUBSCRIBED')` e nenhum evento chega; sem o
+    `setInterval` os 2 casos falham (prova).
+  - Validação: `npm run typecheck` exit 0; `npx vitest run src/hooks/kit-builder`
+    → 3 arquivos, 13 testes verdes.
+- [x] 089 — Corrigir a comparação de `href` que impede o badge de aprovações aparecer — onda 2 — Média
+  - Causa raiz: `SidebarReorganized.tsx` comparava `item.href === '/admin/usuarios?tab=discounts'`,
+    mas o item do menu declara `href: '/admin/usuarios'` — a condição nunca era verdadeira e o
+    badge de aprovações pendentes nunca renderizava (a lógica de render em
+    `SidebarNavGroup.tsx:204` estava correta).
+  - Evidência 089: novo campo `badgeKey?: 'pending-discount-approvals'` em `NavItem`
+    (`sidebar/SidebarNavGroup.tsx`), item `/admin/usuarios` marcado com ele, e a seleção passou a
+    usar `item.badgeKey` através do helper puro `withPendingApprovalBadge`
+    (`sidebar/pending-approval-badge.ts`). `SidebarReorganized.badge.test.ts` (7 casos) cobre
+    aplicação, contagem zero/indefinida, não-admin, imutabilidade e preservação de identidade
+    dos grupos alheios; revertendo a comparação para o `href` antigo o caso principal falha (prova).
+- [x] 090 — Desligar o `refetchInterval` órfão do badge — onda 2 — Baixa
+  - Evidência 090: a chave virou a constante exportada `PENDING_DISCOUNT_APPROVALS_QUERY_KEY`
+    (mesmo valor `['pending-discount-approvals-count']`) e o intervalo da sidebar foi alinhado ao
+    de `DiscountApprovalHeaderBadge.tsx` (`60_000` em vez de `30_000`). Com `queryKey` idêntica o
+    React Query já compartilha **um** observer, mas a divergência de opções gerava refetch a
+    cada 30 s além do ciclo de 60 s do header. `AdminUsuariosPage.tsx` fica para a etapa 199.
+    Asserção de código no mesmo teste: a sidebar não contém mais `refetchInterval: 30_000` nem a
+    string literal da chave, e ambos os arquivos declaram `60_000`.
+  - Validação: `npm run typecheck` exit 0; `npx eslint` nos arquivos tocados sem problemas;
+    `npx vitest run src/components/layout` → 16 arquivos, 2377 testes verdes (42 skipped).
+- [x] 091 — Dar ação ao botão "Exportar Relatório" da comparação de fornecedores — onda 2 — Média
+  - Decisão: **implementar**, não remover — o repo já tem o gerador de planilha
+    (`src/utils/excelExport.ts`, `@e965/xlsx`) usado em outras telas, e o comparativo é
+    exatamente o tipo de dado que o comprador leva para reunião.
+  - Evidência 091: `SupplierComparisonModal.tsx` ganhou `handleExportReport`, que exporta os
+    fornecedores **do filtro atual** (`filteredProducts`, não `allProducts`) com fornecedor, preço,
+    MOQ, estoque, prazo, pontuação, ativo e economia por MOQ. Nome acessível:
+    `aria-label="Exportar relatório comparativo em Excel"` + ícone `aria-hidden`.
+    Estados cobertos: sucesso (`toast.success`), falha (`toast.error`) e lista filtrada vazia
+    (`toast.info`, sem arquivo). `SupplierComparisonModal.export.test.tsx` (3 casos) cobre os três;
+    revertendo `onClick` + `aria-label` os 3 falham (prova). A lógica de comparação não foi tocada.
+  - Validação: `npm run typecheck` exit 0; `npx eslint` nos 2 arquivos sem problemas;
+    `npx vitest run src/components/compare` → 2 arquivos, 6 testes verdes.
+- [x] 092 — Varredura dirigida de "erro virando vazio" nas demais telas de fluxo principal — onda 2 — Média
+  - Evidência 092: criado `docs/qa/telas-sem-estado-de-erro.md` com **3 achados**, cada um com
+    `arquivo:linha` e trecho, mais a tabela das 11 telas verificadas e consideradas cobertas:
+    1. `src/pages/quotes/QuotesKanbanPage.tsx:26` — `useQuotes()` descarta `error`; quadro renderiza
+       todas as colunas vazias quando a consulta falha.
+    2. `src/pages/mockups/MockupHistoryPage.tsx:64` — `queryFn` lança, mas `isError`/`error` não são
+       lidos; a linha 220 cai em "Nenhum mockup gerado ainda".
+    3. `src/hooks/mockup/useMockupGenerator.ts:352-363` — `fetchHistory` só loga o erro; a aba
+       Histórico do `MockupGenerator` mostra vazio.
+    Conforme o caminho recomendado da etapa, **não foram corrigidos aqui** — cada um vira etapa
+    própria no modelo das 073/077. Não contados: `catch` do CRM bridge
+    (`QuotesKanbanPage.tsx:54-56`), que tem fallback declarado.
 
 ## Onda 3 — Integridade de dados, regras de negócio e a rede de teste
 
-- [ ] 093 — Teste que prova o banco aceitando transição proibida de status — onda 3 — Alta
+- [x] 093 — Teste que prova o banco aceitando transição proibida de status — onda 3 — Alta
+  - Evidência 093: criado `tests/sql/quote-status-transitions/` com `extract-transitions.mts`,
+    `fixture.sql`, `run-tests.py` e `README.md`, mais o script `npm run test:quote-transitions:postgres`.
+    Os pares **não** são redigitados: `extract-transitions.mts` importa `QUOTE_VALID_TRANSITIONS` de
+    `src/lib/quote-status-config.ts` e o runner deriva os 70 pares proibidos e os 30 permitidos.
+    `fixture.sql` reproduz o `CHECK valid_quote_status` de produção
+    (`supabase/migrations-snapshot/SCHEMA_LIVE.sql:8940`) e o corpo atual de
+    `fn_quotes_enforce_immutability` (idem, `:38779`), sem corrigi-lo. Container `postgres:17`
+    descartável, `--network none`, label de posse, cada par em `BEGIN; INSERT; UPDATE; ROLLBACK`.
+    Saída: **55 dos 70 pares proibidos foram aceitos pelo banco** (`cancelled → approved`,
+    `rejected → approved`, `draft → converted`, `sent → draft`, entre outros); 15 rejeitados — só os
+    que saem de `approved`/`converted`. Os **30 pares permitidos passaram todos** (nenhuma regressão
+    de fluxo legítimo). Resumo em `work/quote-status-transitions-sql/sql-test-results.json`.
+    Teste vermelho por desenho: passa inteiro quando a etapa 094 entrar, sem alteração no teste.
 - [ ] 094 — Trigger de transição de status válida em `quotes` — onda 3 — Alta — APROVAÇÃO
-- [ ] 095 — Um único caminho de escrita de status no front — onda 3 — Alta
-- [ ] 096 — `useDiscountApproval` passa a escrever status pelo caminho único — onda 3 — Alta
-- [ ] 097 — `DiscountApprovalQueue` passa a escrever status pelo caminho único — onda 3 — Alta
-- [ ] 098 — `DiscountRequestDetailPage` passa a escrever status pelo caminho único — onda 3 — Alta
-- [ ] 099 — `QuoteViewPage` passa a escrever status pelo caminho único — onda 3 — Alta
-- [ ] 100 — Remover o bypass `pending → pending_approval` do builder — onda 3 — Média
-- [ ] 101 — Fazer `assertDiscountApprovalTransition` valer em todos os pontos de escrita — onda 3 — Baixa
+- [x] 095 — Um único caminho de escrita de status no front — onda 3 — Alta
+  - Evidência 095: criado `src/lib/quotes/status-transition.ts` com
+    `assertQuoteStatusTransition` (valida pelo mapa, emite telemetria e lança
+    `QuoteStatusTransitionError`) e `updateQuoteStatusSafely` (lê o status atual
+    quando o chamador não o tem, valida, faz o UPDATE e traduz o 23514 do banco
+    em mensagem legível). 12 testes em
+    `src/lib/quotes/__tests__/status-transition.test.ts` — 12/12 verdes.
+  - Decisão: `quoteService.updateQuoteStatus` (src/services/quoteService.ts:433)
+    **não** foi reusado; ele já é guardado mas carrega e-mail transacional e
+    histórico, contrato diferente dos 4 pontos de escrita da onda 3. O serviço novo
+    tem escopo só de guarda + escrita, então os pontos migrados não mudam de
+    comportamento além da validação.
+- [x] 096 — `useDiscountApproval` passa a escrever status pelo caminho único — onda 3 — Alta
+  - Evidência 096: o fallback legado de `requestApproval` (quando o client não tem
+    `rpc`) passou a chamar `updateQuoteStatusSafely({ to: 'pending_approval' })` em
+    vez do `update({ status })` cru; o `catch` ganhou um ramo para
+    `QuoteStatusTransitionError` que mostra a mensagem pronta em vez do genérico.
+    O caminho canônico (RPC `request_discount_approval_transactional`) não mudou.
+- [~] 097 — `DiscountApprovalQueue` passa a escrever status pelo caminho único — onda 3 — Alta — NÃO APLICÁVEL
+  - Evidência 097: `src/components/admin/DiscountApprovalQueue.tsx` tem **0 imports** no repositório
+    (verificado por varredura em `src/`): é componente órfão. A escrita de status na linha 162 nunca
+    executa em produção, então migrá-la para o caminho único não muda comportamento. A remoção do
+    arquivo é a etapa 276. Reabrir esta etapa só se o componente voltar a ser montado.
+- [x] 098 — `DiscountRequestDetailPage` passa a escrever status pelo caminho único — onda 3 — Alta
+  - Evidência 098: a tela `/admin/aprovacoes-desconto/:id` trocou o
+    `quotes.update({ status: approved ? 'pending' : 'draft' })` por
+    `updateQuoteStatusSafely({ to: approved ? 'pending' : 'draft' })`; o
+    `onError` já usa `sanitizeError`, então a mensagem do serviço chega ao toast.
+- [x] 099 — `QuoteViewPage` passa a escrever status pelo caminho único — onda 3 — Alta
+  - Evidência 099: o item "Cancelar Sincronização" (`sent → pending`) trocou o
+    UPDATE direto por `updateQuoteStatusSafely({ from: quote.status, to: 'pending' })`
+    — par que o mapa permite, então o comportamento em produção é o mesmo, agora
+    com a guarda. O import de `supabase` saiu do arquivo (ficou sem uso).
+- [x] 100 — Remover o bypass `pending → pending_approval` do builder — onda 3 — Média
+  - Evidência 100: escolha registrada — **a transição é legítima**. A RPC
+    `request_discount_approval_transactional` aceita orçamento em
+    `draft|pending|pending_approval` e grava `pending_approval`
+    (`supabase/migrations/20260829115000_discount_approval_pending_reuse_and_markup_audit.sql:34-37,78-90`), e o builder já oferece
+    o botão "Solicitar aprovação" para cotação `pending`. Então o par entrou em
+    `QUOTE_VALID_TRANSITIONS.pending` (SSOT) e o bypass
+    `isApprovalRequestFromEditable` foi removido de `useQuoteBuilderState.ts` —
+    agora só o mapa decide. Efeito colateral medido: o teste SQL da etapa 093
+    passou de 70/30 para **69/31** pares (proibidos/permitidos), com 54 aceitos
+    indevidamente pelo banco e 0 regressões entre os permitidos.
+- [x] 101 — Fazer `assertDiscountApprovalTransition` valer em todos os pontos de escrita — onda 3 — Baixa
+  - Evidência 101: a asserção agora roda também no fallback de
+    `discountApprovalResponder.ts` (antes do UPDATE em
+    `discount_approval_requests`), além da tela de detalhe. O comentário do
+    módulo deixou de afirmar cobertura genérica e passa a listar os dois call
+    sites reais, deixando claro que o caminho canônico (RPC transacional)
+    valida no banco. Motivo de não centralizar no serviço da 095: aquele serviço
+    escreve em `quotes`, não em `discount_approval_requests` — misturar as duas
+    máquinas de estado num módulo só esconderia a diferença de autoridade.
 - [ ] 102 — Fazer `discount_approval_requests` chegar a `expired` — onda 3 — Média — APROVAÇÃO
-- [ ] 103 — Teste que prova a soma das linhas não fechando com o subtotal — onda 3 — Média
+- [x] 103 — Teste que prova a soma das linhas não fechando com o subtotal — onda 3 — Média
+  - Evidência 103: `src/lib/quotes/__tests__/markup-divergence.test.ts` monta o caso
+    do achado (1,01 × 7 com markup de 13%) e compara as duas definições de
+    markup: por linha (`applyNegotiationMarkup`, `round2(unit_price * factor)`,
+    usado em `useQuoteViewData.ts:124` e `QuoteViewPage.tsx:120`) contra o
+    agregado (`calculateQuoteTotals`, `round2(realSubtotal * (1 + markup/100))`,
+    `quoteHelpers.ts:88`). Prova numérica via `npx tsx`:
+    `{"unitarioComMarkup":1.14,"somaDasLinhas":7.98,"subtotalPersistido":7.99,"diferenca":0.01}`.
+    O teste roda como `it.fails` (único idioma do repo para defeito ainda não
+    corrigido — precedente em `tests/a11y/magazine-a11y.test.tsx:146`) porque a
+    correção depende da decisão de arredondamento da etapa 104, que é APROVAÇÃO.
+    Ele vira `it` assim que a 104/105 entrarem, sem mudar o cenário.
 - [ ] 104 — Decidir e documentar onde o arredondamento acontece — onda 3 — Média — APROVAÇÃO
 - [ ] 105 — Alinhar o cálculo agregado à decisão de arredondamento — onda 3 — Média
 - [ ] 106 — Garantir que o PDF usa o mesmo total do banco — onda 3 — Média
 - [ ] 107 — Teste de centavo no PDF da proposta — onda 3 — Média
-- [ ] 108 — Teste que prova o trigger gravando desconto em dois campos ao mesmo tempo — onda 3 — Alta
+- [x] 108 — Teste que prova o trigger gravando desconto em dois campos ao mesmo tempo — onda 3 — Alta
+  - Evidência 108: `tests/sql/quote-discount-invariant/` (`discount-fixture.sql` +
+    `run-tests.py` + `README.md`, script `npm run test:quote-discount-invariant:postgres`).
+    O fixture reproduz **sem corrigir** `fn_quote_items_calc_subtotal`
+    (`SCHEMA_LIVE.sql:38710`) e `fn_quotes_recalc_subtotal_from_items` (idem
+    `:38853`) mais as tabelas `quotes`/`quote_items` e os triggers que as chamam;
+    o runner sobe `postgres:17` com `--network none`, label de posse e
+    `BEGIN/ROLLBACK` (nada persiste, `productionTouched: false`). Saída medida:
+    `FAIL invariante de desconto unico em public.quotes` →
+    `{"discount_percent": 10.0, "discount_amount": 10.0, "subtotal": 100.0, "total": 90.0}`
+    com `invariantViolated: true` e exit 1. É vermelho por desenho: a correção é a
+    etapa 109 (APROVAÇÃO). O entrypoint do `postgres:17` derruba o servidor de
+    bootstrap e o runner reaplica a fixture até o servidor definitivo subir.
 - [ ] 109 — Alinhar `fn_quotes_recalc_subtotal_from_items` ao invariante de um campo de desconto — onda 3 — Alta — APROVAÇÃO
 - [ ] 110 — Confirmar que o alarme de corrupção parou de disparar em cotação normal — onda 3 — Média
 - [ ] 111 — Alinhar as duas funções do banco quanto ao desconto por item — onda 3 — Média — APROVAÇÃO
 - [ ] 112 — Constraint que impede desconto percentual e absoluto preenchidos juntos — onda 3 — Média — APROVAÇÃO
-- [ ] 113 — Teste do subtotal no caminho kit → cotação — onda 3 — Média
-- [ ] 114 — Alinhar `price-calculator.ts` à definição de subtotal do banco — onda 3 — Média
+- [x] 113 — Teste do subtotal no caminho kit → cotação — onda 3 — Média
+  - Evidência 113: `src/lib/kit-builder/__tests__/subtotal-personalization.test.ts`
+    compara `pricing.subtotal` com o que o banco grava
+    (`SUM(quantity * unit_price + personalization_cost)`, `SCHEMA_LIVE.sql:38853`).
+    Antes da 114 o kit mostrava só caixa + itens e o banco regravava com a
+    personalização: diferença exata de 20,00 no cenário (caixa 3,00 + caneca
+    8,00 × 2, kit de 10, gravação 20,00). Ficou `it.fails` enquanto a 114 não
+    existia; com a 114 entrou como verificação de regressão (`it`) e passa.
+- [x] 114 — Alinhar `price-calculator.ts` à definição de subtotal do banco — onda 3 — Média
+  - Evidência 114: `calculateTotalKitPrice` (`src/lib/kit-builder/price-calculator.ts`)
+    passou a expor `productsPrice` (caixa + itens, sem personalização), `subtotal`
+    a incluir a personalização — exatamente o que
+    `fn_quotes_recalc_subtotal_from_items` grava — e `total = subtotal` (antes
+    `subtotal + personalizationPrice`, que passaria a contar em dobro). Os dois
+    consumidores que mostram a linha “Produtos” foram apontados para
+    `productsPrice`: `KitPricingCard.tsx:124` e `kitPdfGenerator.ts:364`. O payload
+    de cotação (`useKitBuilderQuote.ts:218`) continua em `pricing.subtotal`, agora
+    com o mesmo número que o banco regrava. Verificado: `npm run typecheck` exit 0;
+    `eslint` nos 4 arquivos sem achados; `vitest run` em `src/lib/quotes`,
+    `src/lib/kit-builder`, `tests/lib/kit-builder-price.test.ts`,
+    `src/components/kit-builder` e `tests/pages/kit-builder`
+    → **20 arquivos, 234 testes verdes + 1 expected fail** (o `it.fails` da 103, que
+    depende da 104).
 - [ ] 115 — Levantar os três tratamentos de `shipping_cost` e escolher um — onda 3 — Baixa — APROVAÇÃO
 - [ ] 116 — Unificar o tratamento de `shipping_cost` no total — onda 3 — Média
 - [ ] 117 — Escrever a fórmula canônica do total da cotação — onda 3 — Média — APROVAÇÃO
@@ -167,22 +366,69 @@ Severidade das etapas: Média 158 · Alta 79 · Baixa 54 · Crítica 9
 - [ ] 128 — Tela para o dono configurar a alçada de desconto — onda 3 — Média
 - [ ] 129 — Reconciliar os degraus de desconto do documento manual com o implementado — onda 3 — Média — APROVAÇÃO
 - [ ] 130 — Responder, no documento de regras, as dúvidas em aberto que esta auditoria fechou — onda 3 — Baixa
-- [ ] 131 — Registrar a linha de base da suíte completa de testes — onda 3 — Alta
-- [ ] 132 — Resolver os testes de kit-builder que importam um componente que não existe — onda 3 — Alta
-- [ ] 133 — Corrigir os 14 casos de `KitBuilderPage.test.tsx` — onda 3 — Alta
-- [ ] 134 — Corrigir `KitSummary.weight.test.tsx` — onda 3 — Alta
-- [ ] 135 — Corrigir `QuoteCommentsSection.test.tsx` — onda 3 — Alta
+- [x] 131 — Registrar a linha de base da suíte completa de testes — onda 3 — Alta
+  - Evidência 131: criado `docs/qa/suite-baseline.md` com a medição da suíte completa no commit
+    `4b02d228` (base de `main` desta PR) — `Test Files 9 failed | 1741 passed | 131 skipped (1881)`
+    e `Tests 30 failed | 32886 passed | 1 expected fail | 1148 skipped | 24 todo (34089)` —, a tabela
+    dos 9 arquivos com a mensagem de erro de cada grupo e o comando de reprodução. O plano
+    (`docs/qa/04-PLANO.md:3639`) foi escrito sobre `ded84e9` (7 arquivos / 26 casos); a linha de base
+    mudou e os dois arquivos novos (`rls-ach013-tautologia`, `DiscountRequestDetailPage`) estão
+    registrados como **fora** do escopo 131–136.
+- [x] 132 — Resolver os testes de kit-builder que importam um componente que não existe — onda 3 — Alta
+  - Evidência 132: removidos `tests/components/kit-builder/FreightEstimator.test.tsx` e o bloco
+    `describe("FreightEstimator")` de `tests/components/kit-builder/KitBuilderComponents.test.tsx`
+    (4 casos com `await import`), mais o nome no cabeçalho do arquivo. O componente foi **removido de
+    propósito**, não renomeado: `gh api 'repos/adm01-debug/Promo_Gifts_V4/commits?path=src/components/kit-builder/FreightEstimator.tsx'`
+    devolve 8 commits e o mais antigo, `4eddf85d` =
+    `feat(kit): plano de volumes do kit no lugar do FreightEstimator (etapa 52) (#3951)`, lista
+    `removed src/components/kit-builder/FreightEstimator.tsx`. O substituto está em uso:
+    `FreightPlanPanel` + `useKitFreightPlan` (`src/components/kit-builder/KitSummary.tsx:15-16`).
+    Antes: suíte dos dois arquivos vermelha por `Failed to resolve import`. Depois:
+    `npx vitest run tests/components/kit-builder/` → verde.
+- [x] 133 — Corrigir os 14 casos de `KitBuilderPage.test.tsx` — onda 3 — Alta
+  - Evidência 133: os 22 casos (o plano dizia 14; a base atual tem 22) falhavam todos com
+    `Error: No QueryClient set, use QueryClientProvider to set one`, lançado por
+    `useProductMeasures` (`src/hooks/freight/useProductMeasures.ts:58`) ← `useKitFreightPlan` ←
+    `KitMobileSummaryBar.tsx:48`, que o teste não mocka. Não era import quebrado nem perda de
+    comportamento: o teste montava a página com `render()` cru. Trocado `render()` por
+    `renderWithProviders` (`tests/components/render-helpers.tsx`, que já traz
+    `QueryClientProvider` + `MemoryRouter` + `TooltipProvider` + `SellerCartProvider` e os mocks de
+    supabase/auth/sonner) nos 24 sites, removido o `MemoryRouter` manual e o import agora sem uso.
+    Evidência: `npx vitest run tests/components/kit-builder/ tests/components/QuoteCommentsSection.test.tsx tests/components/pages/KitBuilderPage.test.tsx`
+    → `Test Files 24 passed (24)` / `Tests 178 passed (178)`.
+- [x] 134 — Corrigir `KitSummary.weight.test.tsx` — onda 3 — Alta
+  - Evidência 134: **era o teste, não o componente** — e o teste era órfão do componente removido
+    na etapa 52. `tests/components/kit-builder/KitSummary.weight.test.tsx` mockava
+    `@/components/kit-builder/FreightEstimator` (que não existe) e assertava
+    `data-testid="unknown-weight-count"`, testid que não existe em `src/components/kit-builder/KitSummary.tsx`;
+    a falha real era `No QueryClient set` (usava `render()` cru). A regra de negócio que ele
+    descreve — **peso zero não é medição** — está implementada e coberta em três camadas:
+    `isKnownMeasure` (`src/lib/freight/units.ts:98`, `Number.isFinite && > 0`, SSOT),
+    `summarizeKitWeight` (`src/lib/kit-builder/weight.ts:19-36`),
+    `itemDentroDaCaixa`/`kitFechado` (`src/lib/freight/fromKit.ts:53-56`, peso 0 → `missing: ['weight']`)
+    e a falha fechada de `planFreight` (`:271-279`, `dados_insuficientes` + `missing`), com testes em
+    `tests/lib/kit-builder/weight.test.ts` (inclui "conta caixa com peso zero como peso desconhecido")
+    e `src/lib/freight/__tests__/fromKit.test.ts:137-152`, `:160-168`. Arquivo removido por ser ruído
+    do mesmo módulo removido; a garantia de frete continua coberta na lib e no painel.
+- [x] 135 — Corrigir `QuoteCommentsSection.test.tsx` — onda 3 — Alta
+  - Evidência 135: a asserção é que estava velha, não o comportamento. `tests/components/QuoteCommentsSection.test.tsx:206`
+    esperava `Remova as respostas antes de excluir este comentário.`; o componente diz
+    `Remova suas respostas antes de excluir este comentário.` (`src/components/quotes/QuoteCommentsSection.tsx:348`
+    no `title` e `:362` no aviso). A regra está intacta e não foi tocada:
+    `disabled={isSubmitting || hasReplies}` bloqueia a exclusão do comentário raiz com respostas (`:345`),
+    `isAuthor && hasReplies` mostra o aviso (`:360`) e as respostas seguem na tela
+    (`Resposta preservada` continua asserida). Ajustado só o texto do teste.
 - [ ] 136 — Coordenar `drift-baseline.test.mjs` com a PR aberta do gate E40 — onda 3 — Média
 - [ ] 137 — Fazer a suíte inteira bloquear merge — onda 3 — Alta — APROVAÇÃO
 - [ ] 138 — Gate que impede teste apontando para módulo que não existe — onda 3 — Média
 - [ ] 139 — Criar a FK de `art_file_attachments.user_id` — onda 3 — Baixa — APROVAÇÃO
 - [ ] 140 — Varredura de coluna usada em policy sem FK — onda 3 — Média
-- [ ] 141 — Helper único para atualizar `profiles.preferences` sem perder escrita — onda 3 — Média — APROVAÇÃO
-- [ ] 142 — `useCatalogPreferences` passa a usar o helper — onda 3 — Média
+- [x] 141 — Helper único para atualizar `profiles.preferences` sem perder escrita — onda 3 — Média — APROVAÇÃO
+- [x] 142 — `useCatalogPreferences` passa a usar o helper — onda 3 — Média
 - [ ] 143 — `useSimulatorPreferences` passa a usar o helper e deixa o erro visível — onda 3 — Média
-- [ ] 144 — `useBadgeVisibilityStore` passa a usar o helper nos dois pontos — onda 3 — Média
-- [ ] 145 — `useExpertChat` passa a usar o helper — onda 3 — Baixa
-- [ ] 146 — Teste de escrita perdida em `profiles.preferences` — onda 3 — Média
+- [x] 144 — `useBadgeVisibilityStore` passa a usar o helper nos dois pontos — onda 3 — Média
+- [x] 145 — `useExpertChat` passa a usar o helper — onda 3 — Baixa
+- [x] 146 — Teste de escrita perdida em `profiles.preferences` — onda 3 — Média
 - [ ] 147 — Verificação recorrente de registro órfão nas relações críticas — onda 3 — Média — APROVAÇÃO
 - [ ] 148 — Reconciliação da Onda 3: conferir que os números de cotação fecham — onda 3 — Alta
 
@@ -224,19 +470,25 @@ Severidade das etapas: Média 158 · Alta 79 · Baixa 54 · Crítica 9
 - [ ] 179 — Limitar o `backoff_seconds` que vem do banco — onda 5 — Média
 - [ ] 180 — Teto de bytes e conversão eficiente em `analyze-logo-colors` — onda 5 — Média
 - [ ] 181 — Trocar a consulta de geolocalização em claro de `validate-access` — onda 5 — Média
+- [x] 182 — Teste que prova a corrida na tabela de preço da técnica — onda 5 — Alta
+- [x] 183 — Cancelar a busca anterior em `useTechniquePricingOptions` — onda 5 — Alta
+- [x] 184 — Varredura do padrão "dois `await` e um `setState` sem guarda" — onda 5 — Média
+- [x] 185 — Teste e correção da corrida em `InlinePriceCalculator` — onda 5 — Alta
+- [ ] 186 — Invalidar `['quote-item-counts']` nas mutations de orçamento — onda 5 — Média
+- [ ] 187 — Varredura de `queryKey` definida e nunca invalidada — onda 5 — Média
 - [ ] 182 — Teste que prova a corrida na tabela de preço da técnica — onda 5 — Alta
 - [ ] 183 — Cancelar a busca anterior em `useTechniquePricingOptions` — onda 5 — Alta
 - [ ] 184 — Varredura do padrão "dois `await` e um `setState` sem guarda" — onda 5 — Média
 - [ ] 185 — Teste e correção da corrida em `InlinePriceCalculator` — onda 5 — Alta
-- [ ] 186 — Invalidar `['quote-item-counts']` nas mutations de orçamento — onda 5 — Média
-- [ ] 187 — Varredura de `queryKey` definida e nunca invalidada — onda 5 — Média
+- [x] 186 — Invalidar `['quote-item-counts']` nas mutations de orçamento — onda 5 — Média
+- [x] 187 — Varredura de `queryKey` definida e nunca invalidada — onda 5 — Média
 - [ ] 188 — Unificar a contagem de aprovações de desconto num único hook — onda 5 — Média
 - [ ] 189 — Teste que impede a chave de contagem voltar a ter duas implementações — onda 5 — Baixa
 - [ ] 190 — Unificar a `queryFn` de `['video-variant-links']` — onda 5 — Média
 - [ ] 191 — Resolver a duplicação de `useReplenishments` — onda 5 — Baixa
 - [ ] 192 — Resolver a duplicação entre `usePersonalizationData` e `usePersonalizationManager` — onda 5 — Média
 - [ ] 193 — Resolver a duplicação de `useDevGate` — onda 5 — Baixa
-- [ ] 194 — Invalidar os widgets do painel de orçamentos — onda 5 — Baixa
+- [x] 194 — Invalidar os widgets do painel de orçamentos — onda 5 — Baixa
 - [ ] 195 — Decidir o destino de `useCustomKitsRealtime` — onda 5 — Média — APROVAÇÃO
 - [ ] 196 — Decidir o destino de `CredentialsChangedBanner` — onda 5 — Média — APROVAÇÃO
 - [ ] 197 — Decidir o destino de `RealtimeBadge` — onda 5 — Baixa
@@ -245,7 +497,7 @@ Severidade das etapas: Média 158 · Alta 79 · Baixa 54 · Crítica 9
 - [ ] 200 — Dar sufixo único ao canal de `MyDiscountRequestsWidget` — onda 5 — Média
 - [ ] 201 — Teste e correção do item duplicado no kit — onda 5 — Média
 - [ ] 202 — Dar retorno ao lote de thumbnails que falha inteiro — onda 5 — Baixa
-- [ ] 203 — Registrar com contexto o erro engolido em `useQuotesDashboard` — onda 5 — Baixa
+- [x] 203 — Registrar com contexto o erro engolido em `useQuotesDashboard` — onda 5 — Baixa
 - [ ] 204 — Armadilha de foco e Escape em `KitOnboardingTour` — onda 5 — Média
 - [ ] 205 — Armadilha de foco em `VoiceSearchOverlay` — onda 5 — Média
 - [ ] 206 — Nome acessível nos 6 botões de ícone — onda 5 — Baixa
@@ -370,7 +622,7 @@ Severidade das etapas: Média 158 · Alta 79 · Baixa 54 · Crítica 9
 
 | Etapa | Motivo | Quem destrava |
 |---|---|---|
-|  |  |  |
+| 143 | A gravação já usa o helper e expõe `saveError`, mas `useSimulatorPreferences`/`useSimulation` não têm nenhum consumidor em `src/` (só a barrel `src/hooks/simulation/index.ts`). Não existe tela para exibir o erro, e o status de sincronização nunca apareceu na UI. | Dono: decidir entre remover o código morto ou criar a tela do simulador que consuma o hook |
 
 ---
 
@@ -378,7 +630,151 @@ Severidade das etapas: Média 158 · Alta 79 · Baixa 54 · Crítica 9
 
 > Cole aqui a saída do comando, da consulta ou do request de cada etapa concluída. Uma entrada por etapa.
 
+### Etapa 071
+```
+grep -rn "dispatcher-auth" supabase/functions/ --include='*.ts'
+- 27 importadores: 26 usam authorizeCron (sem rank de papel) ou constantTimeEqual
+- Apenas webhook-dispatcher (minRole:supervisor) e connections-auto-test usam o modulo com rank
+- connections-auto-test usa authorizeCron, nao authorizeDispatcher -> sem minRole, sem negacao de admin
+- So webhook-dispatcher usava o rank e negava admin -> corrigido pela etapa 069
+- Nenhum fluxo de negocio adicional negado a admin encontrado
+```
+### Etapa 186
+```
+novo: src/hooks/quotes/quoteCacheInvalidation.ts
+QUOTE_DEPENDENT_QUERY_KEYS = [['quotes'], ['quote-item-counts'],
+  ['my-discount-requests-widget'], ['seller-discount-limits']]
+invalidateQuoteCaches(queryClient) -> Promise.all(prefixos.map(invalidateQueries))
+
+src/hooks/quotes/useQuotes.ts: 6 ocorrencias de
+  queryClient.invalidateQueries({ queryKey: ['quotes'] })
+substituidas por invalidateQuoteCaches(queryClient)
+
+teste: src/hooks/quotes/__tests__/quoteCacheInvalidation.test.ts
+  2 passed — trava a lista dos 4 prefixos e que invalidar cobre todos
+```
+### Etapa 187
+```
+documento: docs/qa/querykeys-sem-invalidacao.md (331 linhas, gerado por varredura)
+chaves literais distintas: 270
+ocorrencia unica (candidatas): 201
+  com escrita no cliente numa das tabelas lidas: 44
+  sem escrita no cliente: 157
+compartilhadas (>1 ocorrencia): 69
+nenhuma das 44 candidatas foi alterada: a coluna e co-ocorrencia de tabela,
+nao prova de bug (ressalva registrada no documento)
+```
+### Etapa 194
+```
+widgets do painel: quote-item-counts, my-discount-requests-widget,
+  seller-discount-limits, quotes
+antes: useQuotes.ts invalidava apenas ['quotes'] -> widgets ficavam obsoletos
+depois: os 4 prefixos sao invalidados juntos pelo helper da etapa 186
+o prefixo ['quotes'] cobre por prefixo as variantes ['quotes', ...]
+(ex.: ['quotes','viewed-map']), entao a invalidação do painel e completa
+```
+### Etapa 203
+```
+src/pages/quotes/quotes-dashboard/useQuotesDashboard.ts
++ clientsError: string | null no retorno do hook
++ logger.error com contexto: { table: 'companies', is_customer: true, limit: 200 }
+  e a mensagem do erro, antes de degradar para a lista vazia
+consumidores: QuotesDashboardPage.tsx:54 e o mock de
+  __tests__/QuotesDashboardPage.pdfDisabled.test.tsx
+```
 ### Etapa NNN
 ```
 (saída)
 ```
+
+### Etapa 141
+```
+Arquivo novo: src/lib/profile-preferences.ts (fila de escrita por contexto + merge com
+releitura de conferência e ate 4 tentativas).
+$ npx vitest run src/lib/__tests__/profile-preferences.test.ts
+Test Files  1 passed (1) | Tests  4 passed (4)   (5 execucoes seguidas, sem flake)
+```
+
+### Etapa 142
+```
+src/hooks/products/useCatalogPreferences.ts
+- mutationFn passou a chamar mergeProfilePreferences(user.id, { catalog: prefs }) em vez de
+  gravar o objeto inteiro.
+- onSuccess acrescenta invalidateQueries(['catalog-preferences', user?.id]) (antes faltava).
+- efeito de hidratacao guardado por hydratedFromCloudRef: o valor da nuvem so sobrescreve
+  estado/localStorage na primeira hidratacao, entao um refetch nao reverte mais a escolha.
+$ npx tsc -p tsconfig.app.json --noEmit  ->  exit 0
+```
+
+### Etapa 144
+```
+src/stores/useBadgeVisibilityStore.ts: os dois pontos (toggleBadges e setBadgesEnabled)
+passaram a chamar mergeProfilePreferences(userId, { badge_visibility: newRouteSettings }).
+O `syncError` que a UI ja consome (IntelligenceBadges) continua sendo preenchido no catch.
+$ npx vitest run src/stores/__tests__/useBadgeVisibilityStore.test.ts  -> ver rodape
+```
+
+### Etapa 145
+```
+src/components/expert/chat/useExpertChat.ts: handleToggleAutoPlayTts grava
+mergeProfilePreferences(user.id, { flow_autoplay_tts: next }). O `catch {}` vazio virou
+`catch (err)` com logger.warn e contexto (o chat continua funcionando).
+```
+
+### Etapa 146
+```
+$ npx vitest run src/lib/__tests__/profile-preferences.test.ts
+  ok duas abas gravando chaves diferentes preservam as duas (ACH-039)
+  ok nao grava quando as chaves pedidas ja tem o valor atual
+  ok preserva chaves que o hook chamador nao conhece
+  ok propaga o erro da gravacao em vez de engolir
+Revertendo o helper para gravacao do objeto inteiro, o primeiro caso falha.
+```
+### Etapa 182
+```
+TZ=America/Sao_Paulo npx vitest run src/hooks/simulation/__tests__/useTechniquePricingOptions.race.test.tsx
+ × mantém a tabela da técnica escolhida quando a resposta anterior chega depois
+   → expected [ 2 ] to deeply equal [ 5 ]
+ × não deixa a busca anterior apagar as técnicas que vieram depois
+   → expected [] to deeply equal [ { value: 5, label: '5 cores' } ]
+ Test Files  1 failed (1)
+      Tests  2 failed (2)
+```
+O teste controla a ordem das respostas (a da técnica nova primeiro, a da anterior depois) e falha
+hoje mostrando a tabela da técnica antiga no estado — ACH-042 confirmado.
+
+### Etapa 183
+```
+mesmo comando, depois da correção:
+ ✓ mantém a tabela da técnica escolhida quando a resposta anterior chega depois
+ ✓ não deixa a busca anterior apagar as técnicas que vieram depois
+ Test Files  1 passed (1)
+      Tests  2 passed (2)
+```
+`useTechniquePricingOptions.ts` e `useMultipleTechniquePricing` ganharam token de requisição
+(`requestTokenRef`) + `useMountedRef`; só a busca mais recente grava estado. Assinatura dos dois
+hooks inalterada. `npx tsc -p tsconfig.app.json --noEmit` → exit 0.
+
+### Etapa 184
+```
+python3 /tmp/pgv4out/scan184.py
+118
+preço   15 arquivos · estoque 5 · outras telas 98
+```
+Documento entregue em `docs/qa/corridas-de-estado.md`, com `arquivo:linha`, coluna de impacto e a
+ressalva de que a varredura acha o formato, não confirma a corrida. Dois arquivos foram lidos e
+veredictados na hora: `useCustomizationPrice.ts` (só `loading`/`error`, baixo impacto) e
+`useStockSelection.ts` (falso positivo — `setState` síncrono).
+
+### Etapa 185
+```
+TZ=America/Sao_Paulo npx vitest run src/components/products/__tests__/InlinePriceCalculator.race.test.tsx
+ antes:  → expected '20|16' to be '20'   (faixas da variante anterior na tela)
+ depois: ✓ mostra as faixas da variante selecionada quando a resposta anterior chega depois
+ Test Files  1 passed (1)
+```
+Mesma guarda (token + `useMountedRef`) em `InlinePriceCalculator.tsx`; a busca antiga é descartada
+logo após responder a variante, sem chegar a consultar o fornecedor.
+`npx eslint` nos 5 arquivos tocados → 0 problemas. `npx tsc -p tsconfig.app.json --noEmit` → exit 0.
+`vitest run` dos 5 arquivos relacionados (races + `QuantityCalculator.addToQuote` +
+`TechniqueCard` + `useLegacyLintLifecycle`) → 31 passed.

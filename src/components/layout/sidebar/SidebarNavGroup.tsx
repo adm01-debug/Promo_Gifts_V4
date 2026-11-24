@@ -20,6 +20,11 @@ export interface NavItem {
   devOnly?: boolean;
   requiredPermission?: { action: string; resource: string };
   badge?: number | string;
+  /**
+   * Identificador estável consumido por badges dinâmicos (ex.: contagem de aprovações).
+   * A correspondência não depende da string de URL, que muda com query string.
+   */
+  badgeKey?: 'pending-discount-approvals';
   exact?: boolean;
   children?: NavItem[];
   shortcut?: string;

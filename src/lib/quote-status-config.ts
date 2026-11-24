@@ -120,7 +120,7 @@ export function getQuoteStatusColor(status: string): string {
 export const QUOTE_VALID_TRANSITIONS: Readonly<Record<QuoteStatus, readonly QuoteStatus[]>> = {
   draft: ['pending', 'pending_approval', 'sent', 'cancelled'],
   pending_approval: ['draft', 'pending', 'cancelled'],
-  pending: ['draft', 'sent', 'expired', 'cancelled'],
+  pending: ['draft', 'pending_approval', 'sent', 'expired', 'cancelled'],
   sent: ['approved', 'rejected', 'viewed', 'pending', 'expired', 'cancelled'],
   viewed: ['approved', 'rejected', 'pending', 'expired', 'cancelled'],
   approved: ['converted'], // committed: DB rejects ->sent/->cancelled (see note above)

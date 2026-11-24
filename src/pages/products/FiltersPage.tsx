@@ -39,6 +39,7 @@ import {
   Search,
 } from 'lucide-react';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
+import { EmptyState } from '@/components/common/EmptyState';
 import { LayoutPopover } from '@/components/products/LayoutPopover';
 import { SmartSearchInput } from '@/components/search';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
@@ -760,6 +761,15 @@ export default function FiltersPage() {
                       onComplete={sel.handleWizardComplete}
                     />
                   </>
+                ) : state.isCatalogError ? (
+                  <div data-state="catalog-error" role="alert">
+                    <EmptyState
+                      variant="error"
+                      title="Não foi possível carregar os produtos"
+                      description="Ocorreu um erro ao buscar o catálogo. Tente novamente."
+                      action={{ label: 'Tentar novamente', onClick: () => state.refetchCatalog() }}
+                    />
+                  </div>
                 ) : (
                   <div className="rounded-xl border border-dashed border-border/60 bg-gradient-to-b from-muted/20 to-muted/5 py-16 text-center">
                     <div className="mb-5 inline-flex h-16 w-16 items-center justify-center rounded-2xl bg-muted/40">

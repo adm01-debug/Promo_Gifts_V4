@@ -128,6 +128,7 @@ function dbToCollection(row: DbCollectionRow, items: DbCollectionItemRow[]): Col
 export function useCollections(options?: { enabled?: boolean }) {
   const [collections, setCollections] = useState<Collection[]>([]);
   const [isLoaded, setIsLoaded] = useState(false);
+  const [loadError, setLoadError] = useState<string | null>(null);
   // BUG-HEAD-GUARD FIX (2026-06-23): HEAD em collections sem guard.
   const { user, rolesLoaded } = useAuth();
   const pendingCreatesRef = useRef(new Map<string, PromiseLike<boolean>>());
@@ -146,12 +147,14 @@ export function useCollections(options?: { enabled?: boolean }) {
 
     if (error) {
       logger.error('Error loading collections:', error);
+      setLoadError(error.message || 'Não foi possível carregar as coleções.');
       setIsLoaded(true);
       return;
     }
 
     if (!colRows || colRows.length === 0) {
       setCollections([]);
+      setLoadError(null);
       setIsLoaded(true);
       return;
     }
@@ -167,6 +170,7 @@ export function useCollections(options?: { enabled?: boolean }) {
       .order('sort_order', { ascending: true });
     if (itemRowsErr) {
       logger.error('[useCollections] failed to load collection items:', itemRowsErr);
+      setLoadError(itemRowsErr.message || 'Não foi possível carregar os itens das coleções.');
       setIsLoaded(true);
       return;
     }
@@ -181,6 +185,7 @@ export function useCollections(options?: { enabled?: boolean }) {
     const mapped = colRows.map((row) => dbToCollection(row, itemsByCollection.get(row.id) || []));
 
     setCollections(mapped);
+    setLoadError(null);
     setIsLoaded(true);
   }, [user?.id, options?.enabled]);
 
@@ -707,6 +712,8 @@ export function useCollections(options?: { enabled?: boolean }) {
   return {
     collections,
     isLoaded,
+    loadError,
+    isLoadError: loadError !== null,
     createCollection,
     updateCollection,
     deleteCollection,

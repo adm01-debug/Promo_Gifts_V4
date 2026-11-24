@@ -180,7 +180,9 @@ Deno.serve(async (req) => {
           action_label: actionLabel,
           metadata: { reason: "rpc_error", detail: error.message, step: "request" },
         });
-        return json({ error: error.message }, 429);
+        // ACH-030: mensagem de negócio — esconde detalhe do banco mas mantém
+        // o motivo para o cliente (rate_limit vs falha interna).
+        return json({ error: "rate_limit_exceeded" }, 429);
       }
 
       const row = Array.isArray(data) ? data[0] : data;
@@ -332,7 +334,9 @@ Deno.serve(async (req) => {
           challenge_id: body.challenge_id,
           metadata: { reason: "otp_invalid", detail: error.message, step: "verify_otp" },
         });
-        return json({ error: error.message }, 400);
+        // ACH-030: mensagem de negócio clara para o usuário (código inválido
+        // ou expirado), sem expor detalhe do Postgres.
+        return json({ error: "otp_invalid" }, 400);
       }
 
       const row = Array.isArray(data) ? data[0] : data;

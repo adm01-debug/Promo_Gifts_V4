@@ -126,14 +126,6 @@ export const toolsRoutes = (
         </MagazineRoute>
       }
     />
-    <Route
-      path="/magazine/print"
-      element={
-        <MagazineRoute>
-          <MagazinePrintPage />
-        </MagazineRoute>
-      }
-    />
     {PromoFlixPlayground && (
       <Route path="/promoflix-playground" element={<PromoFlixPlayground />} />
     )}
