@@ -1656,6 +1656,7 @@ Após VACUUM ANALYZE executado pelos jobs temporários `vacuum-snapshots-now` e
 | `20261122200000` | `ed7c54cf89a8112e66e9d482eb13bd509c971361281ad22a3643a15bf088fe3b` | — | GitHub Actions (db-apply-migration.yml, disparado por adm01-debug, aprovado por adm01-debug) | E15 | 2026-11-22 18:21:01 UTC | job post-check da run 45054471365 confirmou a version no ledger | aplicada |
 | `20261124120000` | `2e8f72b9eece8a746e74c9d3d5b1ef259d8e8573bf999881336c1e89760118aa` | — | GitHub Actions (db-apply-migration.yml, disparado por adm01-debug, aprovado por @JoaquimAtaides (dono, autorizou no chat 2026-11-24)) | E15 | 2026-11-24 14:24:29 UTC | job post-check da run 45413588570 confirmou a version no ledger | aplicada |
 | `20261124140000` | `dda04ee7fbe2c4902776a17efda9f876852e92811fdb539e19633ab3595029e2` | — | GitHub Actions (db-apply-migration.yml, disparado por adm01-debug, aprovado por @JoaquimAtaides (dono, autorizou no chat 2026-11-24)) | E15 | 2026-11-24 14:26:52 UTC | job post-check da run 45414013226 confirmou a version no ledger | aplicada |
+| `20261124171500` | `5286edaf3ece04dde0f27ff392585357bb20ccea57a8228acf98c8d4a56c7070` | — | GitHub Actions (db-apply-migration.yml, disparado por adm01-debug, aprovado por @JoaquimAtaides (dono do negocio; aprovou a canonicalizacao do objeto criado fora do repo em 2026-11-24)) | repair | 2026-11-24 18:00:56 UTC | repair-only: SQL não executado; apenas registro no ledger (E052) | registrada-sem-aplicar |
 
 ## 2026-11-08 — Reconciliação de `e2e_cleanup_audit`
 
