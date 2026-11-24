@@ -45,6 +45,10 @@ import { SidebarBrandHeader } from './sidebar/SidebarBrandHeader';
 import { FocusTrap } from '@/components/ui/FocusTrap';
 import { useMediaQuery } from '@/hooks/ui/useMediaQuery';
 import { SidebarNavGroup, type NavGroup } from './sidebar/SidebarNavGroup';
+import {
+  PENDING_DISCOUNT_APPROVALS_QUERY_KEY,
+  withPendingApprovalBadge,
+} from './sidebar/pending-approval-badge';
 import { RestrictedRouteNotice } from './sidebar/RestrictedRouteNotice';
 import { isDevOnlyPath, isAdminOnlyPath } from '@/lib/navigation/restricted-routes';
 import { isNavItemActive } from '@/lib/navigation/active-match';
@@ -250,6 +254,7 @@ const navGroups: NavGroup[] = [
         icon: Users,
         label: 'Usuários',
         href: '/admin/usuarios',
+        badgeKey: 'pending-discount-approvals',
         adminOnly: true,
         tooltip: 'Gerencie a equipe: cadastre vendedores, defina permissões e alçadas.',
       },
@@ -451,7 +456,7 @@ export const SidebarReorganized = React.memo(
     // page load. Sem esses flags, React Query v5 aborta o fetch em voo quando
     // enabled transita, e o browser loga "Falha ao carregar Buscar: HEAD".
     const { data: pendingApprovalCount } = useQuery({
-      queryKey: ['pending-discount-approvals-count'],
+      queryKey: PENDING_DISCOUNT_APPROVALS_QUERY_KEY,
       queryFn: async () => {
         const { count } = await supabase
           // rls-allow: admin-only badge query, guarded by `enabled: isAdmin`
@@ -464,7 +469,10 @@ export const SidebarReorganized = React.memo(
         return count || 0;
       },
       enabled: rolesLoaded && Boolean(isAdmin), // rolesLoaded garante JWT pronto — FIX 2026-06-18 BUG-DAR-401
-      refetchInterval: 30_000,
+      // Etapa 090 / ACH-037: mesma chave e mesmas opcoes do DiscountApprovalHeaderBadge.
+      // Antes eram 30 s aqui e 60 s no header — mas com queryKey igual o React Query ja
+      // compartilha UM observer, entao o intervalo efetivo passa a ser o do header (60 s).
+      refetchInterval: 60_000,
       staleTime: 15_000,
       retry: 0,
       retryOnMount: false,
@@ -472,20 +480,10 @@ export const SidebarReorganized = React.memo(
       refetchOnReconnect: false, // BUG-SIDEBAR-ABORT: evita abort extra ao reconectar
     });
 
-    const enrichedNavGroups = useMemo(() => {
-      if (!isAdmin || !pendingApprovalCount) return navGroups;
-      return navGroups.map((group) => {
-        if (group.id !== 'admin') return group;
-        return {
-          ...group,
-          items: group.items.map((item) =>
-            item.href === '/admin/usuarios?tab=discounts'
-              ? { ...item, badge: pendingApprovalCount }
-              : item,
-          ),
-        };
-      });
-    }, [isAdmin, pendingApprovalCount]);
+    const enrichedNavGroups = useMemo(
+      () => withPendingApprovalBadge(navGroups, pendingApprovalCount, Boolean(isAdmin)),
+      [isAdmin, pendingApprovalCount],
+    );
 
     const toggleCollapse = () => setIsCollapsed((c) => !c);
 

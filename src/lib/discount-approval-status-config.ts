@@ -57,6 +57,12 @@ const STATUS_LABEL: Record<DiscountApprovalStatus, string> = {
  * Lança erro descritivo quando a transição não é permitida. Usado como
  * defesa-em-profundidade nos pontos de escrita do FE (a autoridade final é o
  * banco — ver cabeçalho do arquivo).
+ *
+ * Chamado hoje em: `DiscountRequestDetailPage.respond` (decisão pela tela) e
+ * no fallback de `discountApprovalResponder` (quando a RPC transacional não
+ * existe no client). O caminho canônico — a RPC
+ * `respond_discount_approval_transactional` — valida no banco e não passa
+ * por aqui.
  */
 export function assertDiscountApprovalTransition(
   from: DiscountApprovalStatus,

@@ -170,6 +170,9 @@ export function useFiltersPageState() {
     hasNextPage,
     fetchNextPage,
     isFetchingNextPage,
+    isError: isCatalogError,
+    error: catalogError,
+    refetch: refetchCatalog,
   } = useProductsCatalog({
     search: serverSearchTerm,
     // BUG-DB-01 FIX (2026-06-18): categoria NAO e filtrada server-side aqui.
@@ -899,6 +902,9 @@ export function useFiltersPageState() {
     searchParams,
     realProducts,
     isLoadingProducts,
+    isCatalogError,
+    catalogError,
+    refetchCatalog,
     isFullyLoaded,
     totalEstimate,
     loadedCount,

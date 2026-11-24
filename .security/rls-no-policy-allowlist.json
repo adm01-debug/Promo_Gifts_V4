@@ -37,6 +37,42 @@
       "reason": "Deny-all intencional desde a criacao (nasce assim, migration 20261107134429). Mapeamento 1:1 entre a identidade canonica (auth.users.id) e o id inteiro do vendedor no CRM externo, lido e gravado SOMENTE pela edge function crm-db-bridge com service_role (bypassrls), em resolveCrmSellerId: consulta o vinculo e, se nao existir, cria pelo bootstrap por e-mail. A propria migration faz REVOKE ALL de PUBLIC, anon e authenticated e GRANT SELECT, INSERT apenas a service_role, portanto policy para esses papeis seria codigo morto: nem chegariam a ser avaliadas. Expor a tabela por PostgREST permitiria a um vendedor descobrir o crm_seller_id de outro, que e justamente a chave de escopo de carteira que esta PR introduz. Zero consumidores em src/ (grep confirmado em 2026-11-15): o front nunca toca esta tabela, so a edge function. Linha removida por ON DELETE CASCADE quando o usuario sai de auth.users.",
       "secdef_fn": "nenhuma: acesso exclusivo da edge function crm-db-bridge via service_role",
       "cron_job": null
+    },
+    {
+      "table": "classification_audit.category_suggestions",
+      "reason": "Deny-all intencional. Tabela de auditoria da classificação de produtos, veio no bootstrap do prod (supabase/migrations/20260512000000_bootstrap_missing_application_schemas.sql:406). Lida/escrita apenas por classification_audit.apply_high_confidence_suggestions(p_dry_run boolean, p_min_matches integer), que é SECURITY DEFINER (LANGUAGE plpgsql SECURITY DEFINER) com owner postgres/rolbypassrls. Nenhuma policy para ela existe em supabase/migrations/. Zero referências em src/ e supabase/functions/ (grep 2026-11-23).",
+      "secdef_fn": "classification_audit.apply_high_confidence_suggestions",
+      "cron_job": null
+    },
+    {
+      "table": "prod_audit.category_keywords",
+      "reason": "Deny-all intencional. Glossário de palavras-chave do classificador de categoria, veio no bootstrap do prod (supabase/migrations/20260512000000_bootstrap_missing_application_schemas.sql:834). Consumida apenas por prod_audit.score_product_category(p_product_id uuid, p_category_id uuid), função owner postgres (bypassrls), não exposta como RPC ao cliente. Nenhuma policy em supabase/migrations/. Zero referências em src/ e supabase/functions/ (grep 2026-11-23).",
+      "secdef_fn": "prod_audit.score_product_category",
+      "cron_job": null
+    },
+    {
+      "table": "prod_audit.category_suggestions",
+      "reason": "Deny-all intencional. Fila de sugestões de categoria da rotina de auditoria; TRUNCATE + INSERT feitos por prod_audit.generate_category_suggestions() (RETURNS integer, supabase/migrations/20260512000000_bootstrap_missing_application_schemas.sql:642-785), owner postgres, rodada pelo dono no SQL editor e não exposta como RPC. Nenhuma policy em supabase/migrations/. Zero referências em src/ e supabase/functions/ (grep 2026-11-23).",
+      "secdef_fn": "prod_audit.generate_category_suggestions",
+      "cron_job": null
+    },
+    {
+      "table": "prod_audit.classification_rules",
+      "reason": "Deny-all intencional. Regras ativas do relatório de gap de classificação — lidas por prod_audit.classification_gap_report() (supabase/migrations/20260512000000_bootstrap_missing_application_schemas.sql:591) e por prod_audit.generate_category_suggestions() (:597, WHERE active). Ambas do owner postgres, não expostas como RPC. Nenhuma policy em supabase/migrations/. Zero referências em src/ e supabase/functions/ (grep 2026-11-23).",
+      "secdef_fn": "prod_audit.classification_gap_report",
+      "cron_job": null
+    },
+    {
+      "table": "prod_audit.product_features",
+      "reason": "Deny-all intencional. Features por produto usadas pelo classificador; lidas por prod_audit.score_product_category, prod_audit.generate_category_suggestions e prod_audit.classification_gap_report (supabase/migrations/20260512000000_bootstrap_missing_application_schemas.sql:601,668,843), todas owner postgres e nenhuma exposta como RPC. Nenhuma policy em supabase/migrations/. Zero referências em src/ e supabase/functions/ (grep 2026-11-23).",
+      "secdef_fn": "prod_audit.generate_category_suggestions",
+      "cron_job": null
+    },
+    {
+      "table": "prod_audit.test_results",
+      "reason": "Deny-all intencional. Ledger de resultados da bateria de testes de auditoria; escrito/lido por prod_audit.assert(), prod_audit.quick_regression_check() e prod_audit.recent_failures() (supabase/migrations/20260512000000_bootstrap_missing_application_schemas.sql:576,788,820) e por public.fn_deploy_readiness_check (supabase/migrations/20260513000000_reconcile_orphan_functions_from_prod.sql). Todas owner postgres, nenhuma exposta como RPC ao cliente. Nenhuma policy em supabase/migrations/. Zero referências em src/ e supabase/functions/ (grep 2026-11-23).",
+      "secdef_fn": "prod_audit.assert",
+      "cron_job": null
     }
   ]
 }

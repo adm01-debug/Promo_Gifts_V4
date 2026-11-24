@@ -22,6 +22,7 @@ import { CollectionsHeatmap } from '@/components/collections/CollectionsHeatmap'
 import { CollectionsEmptyStateSmart } from '@/components/collections/CollectionsEmptyStateSmart';
 import { useCollectionsGlobalShortcuts } from '@/hooks/favorites';
 import { PageSEO } from '@/components/seo/PageSEO';
+import { EmptyState } from '@/components/common/EmptyState';
 import { Button } from '@/components/ui/button';
 import { LayoutPopover } from '@/components/products/LayoutPopover';
 import { Input } from '@/components/ui/input';
@@ -394,6 +395,13 @@ export default function CollectionsPage() {
                 Nenhuma coleção corresponde a "{searchQuery}"
               </p>
             </div>
+          ) : state.isLoadError ? (
+            <EmptyState
+              variant="error"
+              title="Não foi possível carregar suas coleções"
+              description={state.loadError || 'Ocorreu um erro ao buscar suas coleções. Tente novamente.'}
+              action={{ label: 'Tentar novamente', onClick: () => window.location.reload() }}
+            />
           ) : (
             <motion.div
               initial={{ opacity: 0, scale: 0.95 }}

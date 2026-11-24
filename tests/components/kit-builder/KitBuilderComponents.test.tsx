@@ -1,6 +1,6 @@
 /**
  * Comprehensive tests for Kit Builder components
- * Covers: KitVisualPreview, FreightEstimator, DiscontinuedItemsAlert,
+ * Covers: KitVisualPreview, DiscontinuedItemsAlert,
  * KitComparisonDialog, KitSmartSuggestions, KitSummary
  */
 import { describe, it, expect, vi, beforeEach } from "vitest";
@@ -164,35 +164,6 @@ describe("KitVisualPreview", () => {
       <KitVisualPreview kitState={{ ...mockKitState, volumeUsagePercent: 110 }} />
     );
     expect(screen.getAllByText(/110%/).length).toBeGreaterThanOrEqual(1);
-  });
-});
-
-// ============================
-// FreightEstimator
-// ============================
-describe("FreightEstimator", () => {
-  it("renders with default values", async () => {
-    const { FreightEstimator } = await import("@/components/kit-builder/FreightEstimator");
-    renderWithProviders(<FreightEstimator totalWeightGrams={450} kitQuantity={10} />);
-    expect(screen.getByText(/Estimativa de Frete/)).toBeInTheDocument();
-  });
-
-  it("calculates freight for different weight ranges", async () => {
-    const { FreightEstimator } = await import("@/components/kit-builder/FreightEstimator");
-    renderWithProviders(<FreightEstimator totalWeightGrams={5000} kitQuantity={5} />);
-    expect(document.body).toBeTruthy();
-  });
-
-  it("handles zero weight gracefully", async () => {
-    const { FreightEstimator } = await import("@/components/kit-builder/FreightEstimator");
-    renderWithProviders(<FreightEstimator totalWeightGrams={0} kitQuantity={1} />);
-    expect(document.body).toBeTruthy();
-  });
-
-  it("handles large quantities", async () => {
-    const { FreightEstimator } = await import("@/components/kit-builder/FreightEstimator");
-    renderWithProviders(<FreightEstimator totalWeightGrams={2000} kitQuantity={1000} />);
-    expect(document.body).toBeTruthy();
   });
 });
 

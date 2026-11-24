@@ -173,6 +173,8 @@ export default function Index() {
           activeFiltersCount={catalog.activeFiltersCount}
           onViewModeChange={catalog.setViewMode}
           scrollResetKey={catalog.scrollResetKey}
+          isCatalogError={catalog.isCatalogError}
+          onRetryCatalog={catalog.refetchCatalog}
         />
       </div>
 
