@@ -17,6 +17,7 @@ import { useQuery } from '@tanstack/react-query';
 import { untypedFrom } from '@/lib/supabase-untyped';
 import type { PrintAreaWithTechniques, TecnicaGravacao, AreaShape } from '@/types/gravacao';
 import { logger } from '@/lib/logger';
+import { PRINT_AREA_PUBLIC_COLUMNS } from '@/lib/print-area-columns';
 import {
   adaptPrintAreaTechniqueRows,
   adaptTabelaPrecoRows,
@@ -29,10 +30,14 @@ import {
  * Busca areas de gravacao de um produto via print_area_techniques (PostgREST nativo).
  * BUG-14 FIX: era via external-db-bridge. Substituido por supabase.from().
  */
+function isRecordRow(value: unknown): value is Record<string, unknown> {
+  return typeof value === 'object' && value !== null && !Array.isArray(value);
+}
+
 async function fetchProductPrintAreas(productId: string): Promise<PrintAreaTechniqueCanonical[]> {
   try {
     const { data, error } = await untypedFrom('print_area_techniques')
-      .select('*')
+      .select(PRINT_AREA_PUBLIC_COLUMNS)
       .eq('product_id', productId)
       .eq('is_active', true)
       .order('technique_order', { ascending: true })
@@ -42,7 +47,13 @@ async function fetchProductPrintAreas(productId: string): Promise<PrintAreaTechn
       logger.warn('[usePrintAreas] Erro ao buscar print_area_techniques:', error.message);
       return [];
     }
-    return adaptPrintAreaTechniqueRows(data || []);
+    // `select` com string nao-literal volta tipado como GenericStringError[]; o
+    // guard estreita para linha sem cast (Gate 1.9 conta `as unknown as`).
+    const rows: Record<string, unknown>[] = [];
+    for (const row of Array.isArray(data) ? data : []) {
+      if (isRecordRow(row)) rows.push(row);
+    }
+    return adaptPrintAreaTechniqueRows(rows);
   } catch (err) {
     logger.warn('[usePrintAreas] Excecao ao buscar areas:', err);
     return [];
