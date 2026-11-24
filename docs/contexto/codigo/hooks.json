@@ -12958,7 +12958,7 @@
     "useTechniqueStats",
     "useTechniques"
    ],
-   "linhas": 178,
+   "linhas": 189,
    "dominio": "hooks/simulation",
    "tabelas": [],
    "rpcs": [],

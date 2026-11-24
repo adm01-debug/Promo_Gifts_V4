@@ -18,7 +18,7 @@
    "src/components (78)"
   ],
   "servicos_logica": [
-   "src/lib (269)",
+   "src/lib (270)",
    "src/utils (34)",
    "src/services (16)"
   ],
@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "fix: hooks de areas de gravacao pedem colunas explicitas (#4055)",
    "fix: leitura de areas de gravacao segue a projecao da view publica (#4054)",
    "fix: gate de views publicas enxerga view nova legivel por anon (QA etapa 005) (#4049)",
    "fix: area de gravacao legivel por anon com colunas explicitas (#4053)",
-   "docs(migrations-log): recibo E15 — aplicação de 20261124163000 (#4052)",
-   "fix: fecha leitura anon de print_area_techniques.unit_cost (#4047)"
+   "docs(migrations-log): recibo E15 — aplicação de 20261124163000 (#4052)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",

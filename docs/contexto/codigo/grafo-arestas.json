@@ -11858,6 +11858,7 @@
   "src/hooks/simulation/usePrintAreas.ts": [
    "src/lib/logger.ts",
    "src/lib/personalization/adapters/index.ts",
+   "src/lib/print-area-columns.ts",
    "src/lib/supabase-untyped.ts",
    "src/types/gravacao.ts"
   ],
@@ -12440,7 +12441,8 @@
   "src/lib/fetch-print-areas.ts": [
    "src/lib/db/postgrest.ts",
    "src/lib/logger.ts",
-   "src/lib/personalization/adapters/index.ts"
+   "src/lib/personalization/adapters/index.ts",
+   "src/lib/print-area-columns.ts"
   ],
   "src/lib/filters/voiceFilterPatch.ts": [
    "src/components/filters/FilterPanel.tsx",

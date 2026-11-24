@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "519b6a367943dd0465bfbc97d78d4952f8497cd7",
+  "commit": "9238b311331cf81ecf7df65b83cfc9a70f7abbd6",
   "branch": "main",
-  "data_commit": "2026-11-24T16:13:33-03:00",
+  "data_commit": "2026-11-24T16:46:11-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "9238b31",
+    "data": "2026-11-24",
+    "assunto": "fix: hooks de areas de gravacao pedem colunas explicitas (#4055)"
+   },
    {
     "sha": "519b6a3",
     "data": "2026-11-24",
@@ -126,14 +131,9 @@
     "sha": "cdf7daa",
     "data": "2026-11-23",
     "assunto": "fix(hooks): resposta atrasada nao sobrescreve mais preco da tecnica (182-185) (#4030)"
-   },
-   {
-    "sha": "e8a15b4",
-    "data": "2026-11-23",
-    "assunto": "feat(hooks): merge parcial em profiles.preferences (etapas 141-146) (#4029)"
    }
   ],
-  "arquivos_mudados_7d": 675,
+  "arquivos_mudados_7d": 676,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -149,7 +149,7 @@
    },
    {
     "pasta": "src/components/quotes",
-    "mudancas": 128
+    "mudancas": 127
    },
    {
     "pasta": "tests/edge-functions/live",
@@ -258,10 +258,6 @@
     "mudancas": 5
    },
    {
-    "arquivo": "src/components/quotes/QuoteAutoSave.tsx",
-    "mudancas": 5
-   },
-   {
     "arquivo": "src/components/quotes/QuoteTemplatesList.tsx",
     "mudancas": 5
    },
@@ -296,6 +292,10 @@
    {
     "arquivo": "src/components/kit-builder/kit-summary/KitPricingCard.tsx",
     "mudancas": 4
+   },
+   {
+    "arquivo": "src/components/layout/SidebarReorganized.tsx",
+    "mudancas": 4
    }
   ],
   "autores_30d": [
@@ -310,9 +310,9 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 11264,
-  "arquivos_codigo": 5681,
-  "linhas_codigo": 1076402,
+  "arquivos_total": 11265,
+  "arquivos_codigo": 5682,
+  "linhas_codigo": 1076417,
   "rotas": 141,
   "rotas_http_backend": 13,
   "vistas_por_id": 0,
@@ -1920,15 +1920,15 @@
   },
   "src/hooks": {
    "arquivos": 515,
-   "linhas": 94895
+   "linhas": 94906
   },
   "src/integrations": {
    "arquivos": 11,
    "linhas": 66760
   },
   "src/lib": {
-   "arquivos": 424,
-   "linhas": 65509
+   "arquivos": 425,
+   "linhas": 65513
   },
   "src/logic": {
    "arquivos": 4,

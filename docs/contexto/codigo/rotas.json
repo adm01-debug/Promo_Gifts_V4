@@ -787,7 +787,7 @@
     "tablist",
     "tooltip"
    ],
-   "arquivos_puxados": 550
+   "arquivos_puxados": 551
   },
   {
    "protegida": false,
@@ -1809,7 +1809,7 @@
     "status",
     "supervisor"
    ],
-   "arquivos_puxados": 414
+   "arquivos_puxados": 415
   },
   {
    "protegida": false,
@@ -2560,7 +2560,7 @@
     "status",
     "supervisor"
    ],
-   "arquivos_puxados": 497
+   "arquivos_puxados": 498
   },
   {
    "protegida": false,
@@ -3623,7 +3623,7 @@
     "status",
     "supervisor"
    ],
-   "arquivos_puxados": 572
+   "arquivos_puxados": 573
   },
   {
    "protegida": true,
@@ -4386,7 +4386,7 @@
     "tab",
     "tablist"
    ],
-   "arquivos_puxados": 587
+   "arquivos_puxados": 588
   },
   {
    "protegida": true,
@@ -5259,7 +5259,7 @@
     "switch",
     "toolbar"
    ],
-   "arquivos_puxados": 567
+   "arquivos_puxados": 568
   },
   {
    "protegida": true,
@@ -5960,7 +5960,7 @@
     "status",
     "supervisor"
    ],
-   "arquivos_puxados": 420
+   "arquivos_puxados": 421
   },
   {
    "protegida": true,
@@ -6681,7 +6681,7 @@
     "status",
     "supervisor"
    ],
-   "arquivos_puxados": 416
+   "arquivos_puxados": 417
   },
   {
    "protegida": true,
@@ -9612,7 +9612,7 @@
     "supervisor",
     "vendedor"
    ],
-   "arquivos_puxados": 544
+   "arquivos_puxados": 545
   },
   {
    "protegida": true,
@@ -10393,7 +10393,7 @@
     "status",
     "supervisor"
    ],
-   "arquivos_puxados": 417
+   "arquivos_puxados": 418
   },
   {
    "protegida": true,
@@ -11061,7 +11061,7 @@
     "status",
     "supervisor"
    ],
-   "arquivos_puxados": 415
+   "arquivos_puxados": 416
   },
   {
    "protegida": true,
@@ -11975,7 +11975,7 @@
     "status",
     "supervisor"
    ],
-   "arquivos_puxados": 418
+   "arquivos_puxados": 419
   },
   {
    "protegida": false,
@@ -12701,7 +12701,7 @@
     "tab",
     "tablist"
    ],
-   "arquivos_puxados": 434
+   "arquivos_puxados": 435
   },
   {
    "protegida": false,
@@ -13383,7 +13383,7 @@
     "status",
     "supervisor"
    ],
-   "arquivos_puxados": 443
+   "arquivos_puxados": 444
   },
   {
    "protegida": false,
@@ -14060,7 +14060,7 @@
     "status",
     "supervisor"
    ],
-   "arquivos_puxados": 433
+   "arquivos_puxados": 434
   },
   {
    "protegida": false,
@@ -14845,7 +14845,7 @@
     "status",
     "supervisor"
    ],
-   "arquivos_puxados": 434
+   "arquivos_puxados": 435
   },
   {
    "protegida": false,
@@ -15599,7 +15599,7 @@
     "tablist",
     "tooltip"
    ],
-   "arquivos_puxados": 507
+   "arquivos_puxados": 508
   },
   {
    "protegida": false,
@@ -16311,7 +16311,7 @@
     "status",
     "supervisor"
    ],
-   "arquivos_puxados": 445
+   "arquivos_puxados": 446
   },
   {
    "protegida": false,
@@ -17052,7 +17052,7 @@
     "status",
     "supervisor"
    ],
-   "arquivos_puxados": 511
+   "arquivos_puxados": 512
   },
   {
    "protegida": false,
@@ -17783,7 +17783,7 @@
     "status",
     "supervisor"
    ],
-   "arquivos_puxados": 443
+   "arquivos_puxados": 444
   },
   {
    "protegida": false,
@@ -18566,7 +18566,7 @@
     "supervisor",
     "table"
    ],
-   "arquivos_puxados": 525
+   "arquivos_puxados": 526
   },
   {
    "protegida": false,
@@ -19234,7 +19234,7 @@
     "status",
     "supervisor"
    ],
-   "arquivos_puxados": 414
+   "arquivos_puxados": 415
   },
   {
    "protegida": false,
@@ -19989,7 +19989,7 @@
     "tablist",
     "tooltip"
    ],
-   "arquivos_puxados": 515
+   "arquivos_puxados": 516
   },
   {
    "protegida": false,
@@ -20695,7 +20695,7 @@
     "supervisor",
     "user"
    ],
-   "arquivos_puxados": 463
+   "arquivos_puxados": 464
   },
   {
    "protegida": false,
@@ -21386,7 +21386,7 @@
     "status",
     "supervisor"
    ],
-   "arquivos_puxados": 426
+   "arquivos_puxados": 427
   },
   {
    "protegida": false,
@@ -22191,7 +22191,7 @@
     "tablist",
     "tooltip"
    ],
-   "arquivos_puxados": 543
+   "arquivos_puxados": 544
   },
   {
    "protegida": false,
@@ -22968,7 +22968,7 @@
     "status",
     "supervisor"
    ],
-   "arquivos_puxados": 464
+   "arquivos_puxados": 465
   },
   {
    "protegida": false,
@@ -23388,7 +23388,7 @@
     "spinbutton",
     "status"
    ],
-   "arquivos_puxados": 194
+   "arquivos_puxados": 195
   },
   {
    "protegida": false,
@@ -24250,7 +24250,7 @@
     "tab",
     "tablist"
    ],
-   "arquivos_puxados": 437
+   "arquivos_puxados": 438
   },
   {
    "protegida": false,
@@ -24918,7 +24918,7 @@
     "status",
     "supervisor"
    ],
-   "arquivos_puxados": 420
+   "arquivos_puxados": 421
   },
   {
    "protegida": false,
@@ -25763,7 +25763,7 @@
     "supervisor",
     "user"
    ],
-   "arquivos_puxados": 471
+   "arquivos_puxados": 472
   },
   {
    "protegida": false,
@@ -26431,7 +26431,7 @@
     "status",
     "supervisor"
    ],
-   "arquivos_puxados": 417
+   "arquivos_puxados": 418
   },
   {
    "protegida": false,
@@ -27204,7 +27204,7 @@
     "tablist",
     "tooltip"
    ],
-   "arquivos_puxados": 505
+   "arquivos_puxados": 506
   },
   {
    "protegida": false,
@@ -28015,7 +28015,7 @@
     "tablist",
     "toolbar"
    ],
-   "arquivos_puxados": 632
+   "arquivos_puxados": 633
   },
   {
    "protegida": false,
@@ -28733,7 +28733,7 @@
     "status",
     "supervisor"
    ],
-   "arquivos_puxados": 534
+   "arquivos_puxados": 535
   },
   {
    "protegida": false,
@@ -29524,7 +29524,7 @@
     "tab",
     "tablist"
    ],
-   "arquivos_puxados": 569
+   "arquivos_puxados": 570
   },
   {
    "protegida": false,
@@ -30236,7 +30236,7 @@
     "status",
     "supervisor"
    ],
-   "arquivos_puxados": 491
+   "arquivos_puxados": 492
   },
   {
    "protegida": false,
@@ -30948,7 +30948,7 @@
     "status",
     "supervisor"
    ],
-   "arquivos_puxados": 487
+   "arquivos_puxados": 488
   },
   {
    "protegida": false,
@@ -31759,7 +31759,7 @@
     "tablist",
     "toolbar"
    ],
-   "arquivos_puxados": 632
+   "arquivos_puxados": 633
   },
   {
    "protegida": false,
@@ -32548,7 +32548,7 @@
     "tab",
     "tablist"
    ],
-   "arquivos_puxados": 569
+   "arquivos_puxados": 570
   },
   {
    "protegida": false,
@@ -33497,7 +33497,7 @@
     "supervisor",
     "switch"
    ],
-   "arquivos_puxados": 527
+   "arquivos_puxados": 528
   },
   {
    "protegida": false,
@@ -34277,7 +34277,7 @@
     "tablist",
     "tooltip"
    ],
-   "arquivos_puxados": 543
+   "arquivos_puxados": 544
   },
   {
    "protegida": false,
@@ -35062,7 +35062,7 @@
     "status",
     "supervisor"
    ],
-   "arquivos_puxados": 415
+   "arquivos_puxados": 416
   },
   {
    "protegida": false,
@@ -35821,7 +35821,7 @@
     "toolbar",
     "tooltip"
    ],
-   "arquivos_puxados": 514
+   "arquivos_puxados": 515
   },
   {
    "protegida": false,
@@ -36124,7 +36124,7 @@
     "listbox",
     "menu"
    ],
-   "arquivos_puxados": 169
+   "arquivos_puxados": 170
   },
   {
    "protegida": false,
@@ -36850,7 +36850,7 @@
     "status",
     "supervisor"
    ],
-   "arquivos_puxados": 510
+   "arquivos_puxados": 511
   },
   {
    "protegida": false,
@@ -37518,7 +37518,7 @@
     "status",
     "supervisor"
    ],
-   "arquivos_puxados": 438
+   "arquivos_puxados": 439
   },
   {
    "protegida": false,
@@ -38234,7 +38234,7 @@
     "status",
     "supervisor"
    ],
-   "arquivos_puxados": 453
+   "arquivos_puxados": 454
   },
   {
    "protegida": false,
