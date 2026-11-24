@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "20eb648e890da34308a4c1ff1c087c1377eeeb21",
+  "commit": "36d409ab1bcb77bf48eef0f7d15df86c21f6aa0f",
   "branch": "main",
-  "data_commit": "2026-11-24T17:25:58-03:00",
+  "data_commit": "2026-11-24T19:36:50-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "36d409a",
+    "data": "2026-11-24",
+    "assunto": "chore: dossie de quote_comments passa a refletir a feature reativada (#3944) (#4062)"
+   },
    {
     "sha": "20eb648",
     "data": "2026-11-24",
@@ -126,14 +131,9 @@
     "sha": "d65ace2",
     "data": "2026-11-23",
     "assunto": "chore: corrige status das migrations 20261122180000/20261122200000 no ledger (#4036)"
-   },
-   {
-    "sha": "35b8704",
-    "data": "2026-11-23",
-    "assunto": "chore(db): documentar reconciliacao da DDL do assistente do Supabase (#4033)"
    }
   ],
-  "arquivos_mudados_7d": 670,
+  "arquivos_mudados_7d": 657,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",

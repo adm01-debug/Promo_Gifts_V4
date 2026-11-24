@@ -1,9 +1,9 @@
 {
  "meta": {
-  "sha": "20eb648e890da34308a4c1ff1c087c1377eeeb21",
+  "sha": "36d409ab1bcb77bf48eef0f7d15df86c21f6aa0f",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-24 21:15 UTC",
+  "generated_at": "2026-11-24 23:14 UTC",
   "files_total": 11195,
   "code_files": 9184,
   "code_lines": 1303180
@@ -563906,10 +563906,19 @@
   }
  },
  "git": {
-  "sha": "20eb648e890da34308a4c1ff1c087c1377eeeb21",
+  "sha": "36d409ab1bcb77bf48eef0f7d15df86c21f6aa0f",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "36d409a",
+    "date": "2026-11-24",
+    "author": "adm01-debug",
+    "subject": "chore: dossie de quote_comments passa a refletir a feature reativada (#3944) (#4062)",
+    "files": [
+     "docs/agentes/resgates/quote-comments/README.md"
+    ]
+   },
    {
     "sha": "20eb648",
     "date": "2026-11-24",
@@ -564218,22 +564227,6 @@
      "src/hooks/simulation/__tests__/useTechniquePricingOptions.race.test.tsx",
      "src/hooks/simulation/useTechniquePricingOptions.ts"
     ]
-   },
-   {
-    "sha": "e8a15b4",
-    "date": "2026-11-23",
-    "author": "adm01-debug",
-    "subject": "feat(hooks): merge parcial em profiles.preferences (etapas 141-146) (#4029)",
-    "files": [
-     "docs/qa/05-PROGRESSO.md",
-     "src/components/expert/chat/useExpertChat.ts",
-     "src/hooks/products/useCatalogPreferences.ts",
-     "src/hooks/simulation/useSimulatorPreferences.ts",
-     "src/lib/__tests__/profile-preferences.test.ts",
-     "src/lib/profile-preferences.ts",
-     "src/stores/__tests__/useBadgeVisibilityStore.test.ts",
-     "src/stores/useBadgeVisibilityStore.ts"
-    ]
    }
   ],
   "hot_files": [
@@ -564243,7 +564236,7 @@
    ],
    [
     "docs/qa/05-PROGRESSO.md",
-    9
+    8
    ],
    [
     "src/lib/fetch-print-areas.ts",
@@ -564276,6 +564269,10 @@
    [
     "tests/scripts/drift-baseline.test.mjs",
     2
+   ],
+   [
+    "docs/agentes/resgates/quote-comments/README.md",
+    1
    ],
    [
     "docs/coordenacao/auditoria-prs-fechadas.md",
@@ -564311,10 +564308,6 @@
    ],
    [
     "supabase/migrations/20261124163000_revoke_anon_unit_cost_print_areas.sql",
-    1
-   ],
-   [
-    "supabase/rollbacks/20261124163000_rollback.sql",
     1
    ]
   ]

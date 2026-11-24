@@ -1,7 +1,7 @@
 # Graph Report - Promo_Gifts_V4  (2026-11-24)
 
 ## Corpus Check
-- 7372 files · ~6,806,962 words
+- 7372 files · ~6,807,220 words
 - Verdict: corpus is large enough that graph structure adds value.
 - Unclassified: 68 file(s) not represented in the graph (top: (none) 27, .css 10, .tsv 9)
 
@@ -11,7 +11,7 @@
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `20eb648e`
+- Built from commit: `36d409ab`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -653,7 +653,7 @@
 - RankingFilterToolbar.tsx
 - Relatório de Arquitetura Back-End — Análise Sênior Exaustiva
 - A5 — Relatório de Validação
-- Resgate: comentarios em orcamento (`quote_comments`) — INERTE
+- Resgate: comentarios em orcamento (`quote_comments`) — ATIVO, PLANO JA EXECUTADO
 - 3. Problemas priorizados
 - 5. Achados NÃO auto-corrigidos (remediação documentada)
 - useStockVelocityPrefetch.ts
@@ -5434,9 +5434,9 @@ Nodes (17): 1. Sumário Executivo, 2. Metodologia e Escopo, 4. Roadmap de Corre�
 Cohesion: 0.11
 Nodes (17): 1. BLOQUEANTE — Adicionar entradas de placeholder em MIGRATIONS_SYNC_LOG.md, 2. ATENÇÃO — Outer BEGIN/COMMIT nas migrations A3, 3. INFORMATIVO — Lint pré-existente (não bloqueante), A5 — Relatório de Validação, Gate 0 SSOT: PASSOU, Gate 0 validate-config: PASSOU, Gate 1.3.3 — Migrations Sync Log: FALHOU (BLOQUEANTE), Gate 1.3 Preflight: NÃO VERIFICADO (+9 more)
 
-### Community 637 - "Resgate: comentarios em orcamento (`quote_comments`) — INERTE"
+### Community 637 - "Resgate: comentarios em orcamento (`quote_comments`) — ATIVO, PLANO JA EXECUTADO"
 Cohesion: 0.11
-Nodes (17): Como ligar (roteiro para o dono), Entrou adaptado, Entrou como esta (copia byte a byte), Ficou fora, de proposito, Inventario: o que entrou, o que foi adaptado, o que ficou fora, Nao tocado, e nao deve ser, O que o codigo faz (para a decisao de negocio), Por que a feature esta cancelada (+9 more)
+Nodes (17): A trava anti-comentarios foi REMOVIDA — nao a recrie, Entrou adaptado, Entrou como esta (copia byte a byte), Ficou fora, de proposito, Inventario: o que entrou, o que foi adaptado, o que ficou fora, O que o codigo faz (para a decisao de negocio), Por que a feature esta cancelada, Por que o SQL esta aqui e NAO em `supabase/migrations/` (+9 more)
 
 ### Community 638 - "3. Problemas priorizados"
 Cohesion: 0.11
