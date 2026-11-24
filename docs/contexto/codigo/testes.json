@@ -5,13 +5,13 @@
   "vitest",
   "playwright"
  ],
- "total": 2722,
+ "total": 2723,
  "por_tipo": {
   "contrato": 70,
   "e2e": 679,
   "pytest": 8,
   "qa": 17,
-  "unit": 1948
+  "unit": 1949
  },
  "onde_ficam": [
   {
@@ -20,7 +20,7 @@
   },
   {
    "padrao": "co-localizado (__tests__)",
-   "arquivos": 790
+   "arquivos": 791
   },
   {
    "padrao": "e2e/",
@@ -9610,6 +9610,15 @@
     "src/lib/external-rpc.ts"
    ],
    "casos": 2
+  },
+  {
+   "arquivo": "src/lib/__tests__/fetch-print-areas.anonSelect.test.ts",
+   "tipo": "unit",
+   "linhas": 44,
+   "testa": [
+    "src/lib/fetch-print-areas.ts"
+   ],
+   "casos": 1
   },
   {
    "arquivo": "src/lib/__tests__/format-utils.test.ts",
@@ -24000,6 +24009,7 @@
   "src/lib/external-db/tables.ts": 1,
   "src/lib/external-rpc.ts": 7,
   "src/lib/feature-flags.ts": 2,
+  "src/lib/fetch-print-areas.ts": 1,
   "src/lib/filters/voiceFilterPatch.ts": 2,
   "src/lib/forecast.ts": 1,
   "src/lib/format-utils.ts": 2,

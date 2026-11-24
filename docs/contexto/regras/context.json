@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "a1b5482b220c4697ec5727302ef7722346eead8f",
+  "sha": "fbbd4ff0251c7337828f25671957ccef767ecd1d",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-24 18:40 UTC",
-  "files_total": 11191,
-  "code_files": 9182,
-  "code_lines": 1302768
+  "generated_at": "2026-11-24 18:56 UTC",
+  "files_total": 11192,
+  "code_files": 9183,
+  "code_lines": 1302843
  },
  "version": "1.3.2",
- "facts_hash": "efe98411321faecc",
+ "facts_hash": "b05d61656c549649",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -1131,7 +1131,7 @@
   "package_manager": "npm",
   "languages": {
    ".sql": 3504,
-   ".ts": 3179,
+   ".ts": 3180,
    ".tsx": 2026,
    ".mjs": 455,
    ".py": 18,
@@ -152043,8 +152043,8 @@
   },
   {
    "module": "src/lib",
-   "files": 424,
-   "lines": 65424,
+   "files": 425,
+   "lines": 65499,
    "tables": [
     "...",
     "companies",
@@ -152209,6 +152209,7 @@
     "src/lib/__tests__/chunk-recovery.url-cleanup.test.ts",
     "src/lib/__tests__/discount-approval-status-config.transitions.test.ts",
     "src/lib/__tests__/external-rpc.test.ts",
+    "src/lib/__tests__/fetch-print-areas.anonSelect.test.ts",
     "src/lib/__tests__/format-utils.test.ts",
     "src/lib/__tests__/json-value.test.ts",
     "src/lib/__tests__/latency-percentiles.test.ts",
@@ -152223,8 +152224,7 @@
     "src/lib/__tests__/sentry.scrub.test.ts",
     "src/lib/__tests__/sentry.tunnel.test.ts",
     "src/lib/__tests__/sw-register.reload-cap.test.ts",
-    "src/lib/access/access-denied-strings.tsx",
-    "src/lib/access/access-policy.test.ts"
+    "src/lib/access/access-denied-strings.tsx"
    ]
   },
   {
@@ -254122,6 +254122,14 @@
    {
     "file": "src/lib/__tests__/external-rpc.test.ts",
     "name": "propaga erro não-retryável após a chamada bem-sucedida do client"
+   },
+   {
+    "file": "src/lib/__tests__/fetch-print-areas.anonSelect.test.ts",
+    "name": "fetchPrintAreasFromProduct — select explicito para anon"
+   },
+   {
+    "file": "src/lib/__tests__/fetch-print-areas.anonSelect.test.ts",
+    "name": "pede colunas explicitas (sem unit_cost) em print_area_techniques"
    },
    {
     "file": "src/lib/__tests__/format-utils.test.ts",
@@ -486315,7 +486323,7 @@
   },
   "src/lib/fetch-print-areas.ts": {
    "path": "src/lib/fetch-print-areas.ts",
-   "lines": 160,
+   "lines": 191,
    "exports": [
     "interface PrintAreaFromProduct",
     "function fetchPrintAreasFromProduct"
@@ -487324,6 +487332,16 @@
     "invokeExternalRpc — binding de ",
     "preserva o contexto do supabase (não estoura ",
     "propaga erro não-retryável após a chamada bem-sucedida do client"
+   ]
+  },
+  "src/lib/__tests__/fetch-print-areas.anonSelect.test.ts": {
+   "path": "src/lib/__tests__/fetch-print-areas.anonSelect.test.ts",
+   "lines": 44,
+   "is_test": true,
+   "doc": "Regressao (2026-11-24): `print_area_techniques` passou a ter GRANT por COLUNA para `anon` (migration 20261124163000 revoga `unit_cost` do `anon`). Com grant por coluna, o PostgREST expande `select=*` para a tabela inteira e responde 401/42501 para `anon` — medido na REST de producao: antes 200, depo …",
+   "tests": [
+    "fetchPrintAreasFromProduct — select explicito para anon",
+    "pede colunas explicitas (sem unit_cost) em print_area_techniques"
    ]
   },
   "src/lib/__tests__/format-utils.test.ts": {
@@ -563842,10 +563860,20 @@
   }
  },
  "git": {
-  "sha": "a1b5482b220c4697ec5727302ef7722346eead8f",
+  "sha": "fbbd4ff0251c7337828f25671957ccef767ecd1d",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "fbbd4ff",
+    "date": "2026-11-24",
+    "author": "adm01-debug",
+    "subject": "fix: area de gravacao legivel por anon com colunas explicitas (#4053)",
+    "files": [
+     "src/lib/__tests__/fetch-print-areas.anonSelect.test.ts",
+     "src/lib/fetch-print-areas.ts"
+    ]
+   },
    {
     "sha": "a1b5482",
     "date": "2026-11-24",
@@ -564219,24 +564247,12 @@
      "supabase/functions/_shared/dispatcher-auth.ts",
      "supabase/functions/_shared/role-rank-parity.test.ts"
     ]
-   },
-   {
-    "sha": "ce11844",
-    "date": "2026-11-23",
-    "author": "adm01-debug",
-    "subject": "fix: Etapas 067-068 — impressao publica de revista sem login (ACH-046) (#4020)",
-    "files": [
-     "docs/qa/05-PROGRESSO.md",
-     "src/routes/__tests__/magazine-print-public.integration.test.tsx",
-     "src/routes/public-routes.tsx",
-     "src/routes/tools-routes.tsx"
-    ]
    }
   ],
   "hot_files": [
    [
     "docs/qa/05-PROGRESSO.md",
-    12
+    11
    ],
    [
     "supabase/MIGRATIONS_SYNC_LOG.md",
@@ -564265,6 +564281,14 @@
    [
     "package.json",
     2
+   ],
+   [
+    "src/lib/__tests__/fetch-print-areas.anonSelect.test.ts",
+    1
+   ],
+   [
+    "src/lib/fetch-print-areas.ts",
+    1
    ],
    [
     "supabase/migrations/20261124163000_revoke_anon_unit_cost_print_areas.sql",
@@ -564304,14 +564328,6 @@
    ],
    [
     "supabase/migrations/20261124120000_revoke_anon_write_grants_public.sql",
-    1
-   ],
-   [
-    "supabase/rollbacks/20261124120000_rollback.sql",
-    1
-   ],
-   [
-    "tests/scripts/check-anon-write-grants.test.mjs",
     1
    ]
   ]

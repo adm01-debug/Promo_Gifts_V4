@@ -3792,7 +3792,7 @@
     "fetchPrintAreasFromProduct"
    ],
    "export_default": null,
-   "linhas": 160,
+   "linhas": 191,
    "tabelas": [],
    "rpcs": [],
    "edges": [],
@@ -3806,7 +3806,7 @@
     "hooks/simulation",
     "lib/external-db"
    ],
-   "coberto_por_testes": 0,
+   "coberto_por_testes": 1,
    "orfao": false
   },
   {

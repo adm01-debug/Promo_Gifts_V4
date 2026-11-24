@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "a1b5482b220c4697ec5727302ef7722346eead8f",
+  "commit": "fbbd4ff0251c7337828f25671957ccef767ecd1d",
   "branch": "main",
-  "data_commit": "2026-11-24T15:38:52-03:00",
+  "data_commit": "2026-11-24T15:55:36-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "fbbd4ff",
+    "data": "2026-11-24",
+    "assunto": "fix: area de gravacao legivel por anon com colunas explicitas (#4053)"
+   },
    {
     "sha": "a1b5482",
     "data": "2026-11-24",
@@ -126,14 +131,9 @@
     "sha": "35aa001",
     "data": "2026-11-23",
     "assunto": "fix(qa): etapas 131-135 - baseline da suite e testes do kit-builder (#4025)"
-   },
-   {
-    "sha": "06620fc",
-    "data": "2026-11-23",
-    "assunto": "chore(security): documentar deny-all das 6 tabelas de auditoria no allowlist de RLS (#4028)"
    }
   ],
-  "arquivos_mudados_7d": 669,
+  "arquivos_mudados_7d": 671,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -310,9 +310,9 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 11263,
-  "arquivos_codigo": 5680,
-  "linhas_codigo": 1076005,
+  "arquivos_total": 11264,
+  "arquivos_codigo": 5681,
+  "linhas_codigo": 1076080,
   "rotas": 141,
   "rotas_http_backend": 13,
   "vistas_por_id": 0,
@@ -324,7 +324,7 @@
   "tabelas": 532,
   "migrations": 3131,
   "cron_jobs": 122,
-  "testes": 2722,
+  "testes": 2723,
   "workflows": 89,
   "scripts": 284,
   "docs_md": 1509
@@ -1927,8 +1927,8 @@
    "linhas": 66760
   },
   "src/lib": {
-   "arquivos": 423,
-   "linhas": 65414
+   "arquivos": 424,
+   "linhas": 65489
   },
   "src/logic": {
    "arquivos": 4,
