@@ -3051,3 +3051,14 @@ Rollback do pacote: as definicoes anteriores das 8 policies estao no baseline an
 `20261122180000_baseline_schema.sql` (removido de `main` em `918511e6`) e no
 `.security/policies-baseline.json` de `53b42181^` (sha256 `b9b74e0f`). Reverter exige recriar as
 policies com aquelas definicoes via `db-apply-migration.yml` (regra 8).
+
+## Fila de aplicacao ? migrations pendentes (E15)
+
+Registro da migration que entra no repositorio antes de rodar em producao. A linha
+fica `pendente` ate o `db-apply-migration.yml` gravar o recibo de aplicacao na secao
+`## Recibos ? E15 (workflow de aplica??o controlada)`; depois disso, o status desta
+tabela e atualizado para `aplicada`.
+
+| versao | arquivo | motivo | status |
+|---|---|---|---|
+| `20261125213000` | `20261125213000_e25_unschedule_orphan_history_crons.sql` | remove os cron jobs orfaos `supplier-history-partition-maintenance` e `supplier-history-default-partition-alert`, que apontam para `fn_ensure_history_partitions` inexistente; precisa rodar antes da `20260916193000` (cujo `$precondition$` aborta se os jobs existirem) | pendente |
