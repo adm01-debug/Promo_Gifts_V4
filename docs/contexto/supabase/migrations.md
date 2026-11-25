@@ -3022,3 +3022,4 @@ SQL em `migrations/<versao>_<nome>.sql`. Mudanças feitas pelo Dashboard/SQL Edi
 | 20261125131000 | [tripwire_anon_v5_reconcilia](migrations/20261125131000_tripwire_anon_v5_reconcilia.sql) | 4 |
 | 20261125160000 | [restaura_grant_anon_mv_product_compositions](migrations/20261125160000_restaura_grant_anon_mv_product_compositions.sql) | 2 |
 | 20261125173000 | [idx_sds_summary_date_supplier_aplicavel](migrations/20261125173000_idx_sds_summary_date_supplier_aplicavel.sql) | 3 |
+| 20261125180000 | [fix_comment_v_tabela_gravacao_publica](migrations/20261125180000_fix_comment_v_tabela_gravacao_publica.sql) | 2 |

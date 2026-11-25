@@ -241473,6 +241473,12 @@
         "statements": 3,
         "statements_sha": "e108b95856bd5805",
         "version": "20261125173000"
+      },
+      {
+        "name": "fix_comment_v_tabela_gravacao_publica",
+        "statements": 2,
+        "statements_sha": "90789771cbe2fe45",
+        "version": "20261125180000"
       }
     ],
     "policies": [
@@ -269212,7 +269218,7 @@
         "security_invoker": false
       },
       {
-        "comment": "Tabela de preco de gravacao oficial (SECURITY DEFINER). NAO religar security_invoker=true nem re-expor a tabela base ao anon: exigiria GRANT em 37 colunas. Regressao de 2026-11-22 revertida pela 20261122180000.",
+        "comment": "Tabela de preco de gravacao oficial (SECURITY DEFINER). NAO religar security_invoker=true nem re-expor a tabela base ao anon: exigiria GRANT em 37 colunas. Regressao de 2026-11-22 revertida pela 20261122180000. Projecao conferida em pg_attribute (20261125150000): custo_setup, markup_percent, custo_aplicacao, custo_termo_transferencia, custo_queima_forno e faturamento_minimo NAO estao na view; custo_setup_por_cor e custo_manuseio_por_peca ESTAO, porem sao BOOLEAN (flags \"cobra taxa por cor?\" e \"cobra taxa de manuseio por peca?\"), nao valores em R$. O texto de 20260717173348 afirmava que as duas estavam excluidas - era falso.",
         "definition": " SELECT id,\n    codigo_tabela,\n    codigo,\n    codigo_curto,\n    nome,\n    nome_grupo,\n    descricao,\n    grupo_tecnica,\n    cobra_por_cor,\n    max_cores,\n    desconto_segunda_cor,\n    desconto_terceira_cor,\n    desconto_quarta_cor_mais,\n    preco_minimo_unitario,\n    preco_maximo_unitario,\n    cobra_por_area,\n    area_maxima_cm2,\n    area_maxima_texto,\n    cobra_por_pontos,\n    max_pontos,\n    usa_faixa_dimensional,\n    opcoes_modificadores,\n    tom_options,\n    cobra_aplicacao,\n    cobra_queima_forno,\n    cobra_termo_transferencia,\n    custo_setup_por_cor,\n    custo_manuseio_por_peca,\n    quantidade_corte,\n    tipo_setup,\n    validade_inicio,\n    validade_fim,\n    ordem_exibicao,\n    tecnica_variante_id,\n    ativo,\n    created_at,\n    updated_at\n   FROM tabela_preco_gravacao_oficial\n  WHERE ativo = true;",
         "depends_on": [
           "public.tabela_preco_gravacao_oficial"

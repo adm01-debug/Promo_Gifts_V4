@@ -5592,7 +5592,7 @@ WITH metrics AS (
 | opções | security_invoker=false |
 | depende de | public.tabela_preco_gravacao_oficial |
 | populada | n/a |
-| comentário | Tabela de preco de gravacao oficial (SECURITY DEFINER). NAO religar security_invoker=true nem re-expor a tabela base ao anon: exigiria GRANT em 37 colunas. Regressao de 2026-11-22 revertida pela 20261122180000. |
+| comentário | Tabela de preco de gravacao oficial (SECURITY DEFINER). NAO religar security_invoker=true nem re-expor a tabela base ao anon: exigiria GRANT em 37 colunas. Regressao de 2026-11-22 revertida pela 20261122180000. Projecao conferida em pg_attribute (20261125150000): custo_setup, markup_percent, custo_aplicacao, custo_termo_transferencia, custo_queima_forno e faturamento_minimo NAO estao na view; custo_setup_por_cor e custo_manuseio_por_peca ESTAO, porem sao BOOLEAN (flags "cobra taxa por cor?" e "cobra taxa de manuseio por peca?"), nao valores em R$. O texto de 20260717173348 afirmava que as duas estavam excluidas - era falso. |
 
 
 ```sql

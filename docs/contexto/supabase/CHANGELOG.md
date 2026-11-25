@@ -2,6 +2,11 @@
 
 Diff semântico gerado a cada coleta em que algo mudou.
 
+## 2026-11-25 18:20 UTC
+
+- **migrations** adicionado (1): `20261125180000_fix_comment_v_tabela_gravacao_publica`
+- **views** alterado (1): `public.v_tabela_preco_gravacao_oficial_public`
+
 ## 2026-11-25 17:16 UTC
 
 - **functions** alterado (1): `public.fn_market_intelligence_macro(p_days integer, p_supplier_id uuid)`
