@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "4e083f644c28c01e7914181f82dc9ea070f0d137",
+  "sha": "33f01308bc9f2f09432e07c1cbca8122b3642a27",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-25 12:00 UTC",
+  "generated_at": "2026-11-25 12:12 UTC",
   "files_total": 11200,
   "code_files": 9188,
-  "code_lines": 1304069
+  "code_lines": 1304070
  },
  "version": "1.3.2",
- "facts_hash": "4393a80466627017",
+ "facts_hash": "04847d783f81243f",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -153291,7 +153291,7 @@
   {
    "module": "supabase/migrations",
    "files": 3132,
-   "lines": 228000,
+   "lines": 228001,
    "tables": [
     "...",
     "admin_audit_log",
@@ -537818,7 +537818,7 @@
   },
   "supabase/migrations/20261125120000_revoke_anon_internal_grants_public.sql": {
    "path": "supabase/migrations/20261125120000_revoke_anon_internal_grants_public.sql",
-   "lines": 262,
+   "lines": 263,
    "uses_service_role": true
   },
   "supabase/rollbacks/20260511235950_rollback.sql": {
@@ -564046,10 +564046,21 @@
   }
  },
  "git": {
-  "sha": "4e083f644c28c01e7914181f82dc9ea070f0d137",
+  "sha": "33f01308bc9f2f09432e07c1cbca8122b3642a27",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "33f0130",
+    "date": "2026-11-25",
+    "author": "adm01-debug",
+    "subject": "fix(db): tripwire da 20261125120000 declara pg_temp no search_path (E066) (#4070)",
+    "files": [
+     "docs/qa/05-PROGRESSO.md",
+     "supabase/MIGRATIONS_SYNC_LOG.md",
+     "supabase/migrations/20261125120000_revoke_anon_internal_grants_public.sql"
+    ]
+   },
    {
     "sha": "4e083f6",
     "date": "2026-11-25",
@@ -564358,28 +564369,16 @@
      "supabase/rollbacks/20261124120000_rollback.sql",
      "tests/scripts/check-anon-write-grants.test.mjs"
     ]
-   },
-   {
-    "sha": "2d5016c",
-    "date": "2026-11-24",
-    "author": "adm01-debug",
-    "subject": "fix: Gate E40 passa a acusar migration já coberta pelo baseline que mudou depois do dump (#4040)",
-    "files": [
-     "scripts/drift-baseline.mjs",
-     "scripts/export-schema-snapshot.mjs",
-     "supabase/baseline/20261122200000_migration_hashes.json",
-     "tests/scripts/drift-baseline.test.mjs"
-    ]
    }
   ],
   "hot_files": [
    [
     "supabase/MIGRATIONS_SYNC_LOG.md",
-    10
+    11
    ],
    [
     "docs/qa/05-PROGRESSO.md",
-    7
+    8
    ],
    [
     "src/lib/fetch-print-areas.ts",
@@ -564390,19 +564389,15 @@
     3
    ],
    [
+    "supabase/migrations/20261125120000_revoke_anon_internal_grants_public.sql",
+    2
+   ],
+   [
     ".security/anon-tables-baseline.json",
     2
    ],
    [
     "docs/coordenacao/auditoria-prs-fechadas.md",
-    2
-   ],
-   [
-    "scripts/drift-baseline.mjs",
-    2
-   ],
-   [
-    "tests/scripts/drift-baseline.test.mjs",
     2
    ],
    [
@@ -564434,10 +564429,6 @@
     1
    ],
    [
-    "supabase/migrations/20261125120000_revoke_anon_internal_grants_public.sql",
-    1
-   ],
-   [
     "supabase/rollbacks/20261125120000_rollback.sql",
     1
    ],
@@ -564451,6 +564442,14 @@
    ],
    [
     ".security/secdef-anon-allowlist.json",
+    1
+   ],
+   [
+    "docs/agentes/resgates/2026-11-18-inventario-trabalho-nao-ligado.md",
+    1
+   ],
+   [
+    "docs/agentes/resgates/2026-11-18-recibo-adjudicacao.md",
     1
    ]
   ]

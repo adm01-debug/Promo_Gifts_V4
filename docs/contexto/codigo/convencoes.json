@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "fix(db): tripwire da 20261125120000 declara pg_temp no search_path (E066) (#4070)",
    "chore(deps): bump @hookform/resolvers de 5.9.1 para 7.0.8 (#4068)",
    "fix(db): revoga SELECT de anon nas 13 tabelas internas de public (QA etapa 008) (#4065)",
    "fix(db): revoga execute de anon na funcao que reescreve a classificacao do catalogo (#4064)",
-   "chore(security): corrige reason defasado de fn_global_search no allowlist secdef-anon (#4066)",
-   "feat: testid do CTA de geracao de mockup e regressao que roda de verdade (#4063)"
+   "chore(security): corrige reason defasado de fn_global_search no allowlist secdef-anon (#4066)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",

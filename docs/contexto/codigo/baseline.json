@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "4e083f644c28c01e7914181f82dc9ea070f0d137",
+  "commit": "33f01308bc9f2f09432e07c1cbca8122b3642a27",
   "branch": "main",
-  "data_commit": "2026-11-25T11:55:41Z",
+  "data_commit": "2026-11-25T09:02:24-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "33f0130",
+    "data": "2026-11-25",
+    "assunto": "fix(db): tripwire da 20261125120000 declara pg_temp no search_path (E066) (#4070)"
+   },
    {
     "sha": "4e083f6",
     "data": "2026-11-25",
@@ -126,14 +131,9 @@
     "sha": "22ca37e",
     "data": "2026-11-24",
     "assunto": "docs: auditoria das branches restantes e reforco da refutacao da etapa 007 (#4045)"
-   },
-   {
-    "sha": "c6581c0",
-    "data": "2026-11-24",
-    "assunto": "docs: etapas 001-004 e 006 do QA concluídas com evidência; 007 refutada; 005 reescopada (#4044)"
    }
   ],
-  "arquivos_mudados_7d": 652,
+  "arquivos_mudados_7d": 648,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -199,11 +199,11 @@
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "supabase/MIGRATIONS_SYNC_LOG.md",
-    "mudancas": 70
+    "mudancas": 71
    },
    {
     "arquivo": "docs/qa/05-PROGRESSO.md",
-    "mudancas": 28
+    "mudancas": 29
    },
    {
     "arquivo": "package.json",
@@ -218,12 +218,12 @@
     "mudancas": 14
    },
    {
-    "arquivo": "docs/agentes/resgates/2026-11-16-auditoria-branches.md",
+    "arquivo": "docs/coordenacao/conflitos-semanticos.md",
     "mudancas": 10
    },
    {
-    "arquivo": "docs/coordenacao/conflitos-semanticos.md",
-    "mudancas": 10
+    "arquivo": "docs/agentes/resgates/2026-11-16-auditoria-branches.md",
+    "mudancas": 9
    },
    {
     "arquivo": ".github/workflows/deploy-gates.yml",
