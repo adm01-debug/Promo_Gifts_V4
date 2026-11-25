@@ -1,9 +1,9 @@
 {
  "meta": {
-  "sha": "4eae35f0d5ef209110f28dd14218f3adc834d606",
+  "sha": "1b03dfa608666d7630732aa578de8044095c3c11",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-25 17:03 UTC",
+  "generated_at": "2026-11-25 17:07 UTC",
   "files_total": 11206,
   "code_files": 9194,
   "code_lines": 1304652
@@ -564823,10 +564823,19 @@
   }
  },
  "git": {
-  "sha": "4eae35f0d5ef209110f28dd14218f3adc834d606",
+  "sha": "1b03dfa608666d7630732aa578de8044095c3c11",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "1b03dfa",
+    "date": "2026-11-25",
+    "author": "github-actions[bot]",
+    "subject": "docs(migrations-log): recibo E15 — aplicação de 20261125173000 (#4094)",
+    "files": [
+     "supabase/MIGRATIONS_SYNC_LOG.md"
+    ]
+   },
    {
     "sha": "4eae35f",
     "date": "2026-11-25",
@@ -565132,31 +565141,16 @@
      "src/lib/__tests__/fetch-print-areas.anonSelect.test.ts",
      "src/lib/fetch-print-areas.ts"
     ]
-   },
-   {
-    "sha": "810bfd1",
-    "date": "2026-11-24",
-    "author": "adm01-debug",
-    "subject": "fix: gate de views publicas enxerga view nova legivel por anon (QA etapa 005) (#4049)",
-    "files": [
-     ".github/workflows/deploy-gates.yml",
-     ".security/anon-select-allowlist.json",
-     ".security/public-views-columns.json",
-     "docs/qa/05-PROGRESSO.md",
-     "scripts/check-public-views-drift.mjs",
-     "tests/scripts/check-public-views-drift.test.mjs",
-     "tests/security/public-views-columns.test.ts"
-    ]
    }
   ],
   "hot_files": [
    [
     "supabase/MIGRATIONS_SYNC_LOG.md",
-    11
+    12
    ],
    [
     "docs/qa/05-PROGRESSO.md",
-    8
+    7
    ],
    [
     "package-lock.json",
@@ -565171,27 +565165,11 @@
     3
    ],
    [
-    ".github/workflows/deploy-gates.yml",
-    2
-   ],
-   [
     "supabase/migrations/20261125120000_revoke_anon_internal_grants_public.sql",
     2
    ],
    [
     "docs/coordenacao/auditoria-prs-fechadas.md",
-    2
-   ],
-   [
-    "scripts/check-public-views-drift.mjs",
-    2
-   ],
-   [
-    "tests/scripts/check-public-views-drift.test.mjs",
-    2
-   ],
-   [
-    "tests/security/public-views-columns.test.ts",
     2
    ],
    [
@@ -565228,6 +565206,22 @@
    ],
    [
     "supabase/migrations-snapshot/SCHEMA_LIVE.sql",
+    1
+   ],
+   [
+    "supabase/migrations-snapshot/SNAPSHOT_META.json",
+    1
+   ],
+   [
+    "supabase/migrations/20261125160000_restaura_grant_anon_mv_product_compositions.sql",
+    1
+   ],
+   [
+    "supabase/rollbacks/20261125160000_rollback.sql",
+    1
+   ],
+   [
+    ".release-please-manifest.json",
     1
    ]
   ]

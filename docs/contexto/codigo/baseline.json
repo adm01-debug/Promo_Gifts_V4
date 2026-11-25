@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "4eae35f0d5ef209110f28dd14218f3adc834d606",
+  "commit": "1b03dfa608666d7630732aa578de8044095c3c11",
   "branch": "main",
-  "data_commit": "2026-11-25T14:02:17-03:00",
+  "data_commit": "2026-11-25T14:05:56-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "1b03dfa",
+    "data": "2026-11-25",
+    "assunto": "docs(migrations-log): recibo E15 — aplicação de 20261125173000 (#4094)"
+   },
    {
     "sha": "4eae35f",
     "data": "2026-11-25",
@@ -126,11 +131,6 @@
     "sha": "20eb648",
     "data": "2026-11-24",
     "assunto": "docs(audit): audita as 23 PRs de agente fechadas sem merge (#4058)"
-   },
-   {
-    "sha": "a66bde9",
-    "data": "2026-11-24",
-    "assunto": "docs(qa): mede o grant de tabela ao anon e registra na etapa 008 (#4057)"
    }
   ],
   "arquivos_mudados_7d": 607,
@@ -188,18 +188,18 @@
     "mudancas": 81
    },
    {
-    "pasta": "supabase/functions/_shared",
+    "pasta": "supabase/MIGRATIONS_SYNC_LOG.md",
     "mudancas": 80
    },
    {
-    "pasta": "supabase/MIGRATIONS_SYNC_LOG.md",
-    "mudancas": 79
+    "pasta": "supabase/functions/_shared",
+    "mudancas": 80
    }
   ],
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "supabase/MIGRATIONS_SYNC_LOG.md",
-    "mudancas": 79
+    "mudancas": 80
    },
    {
     "arquivo": "docs/qa/05-PROGRESSO.md",
@@ -301,11 +301,11 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 253
+    "commits": 252
    },
    {
     "autor": "github-actions[bot]",
-    "commits": 47
+    "commits": 48
    }
   ]
  },
