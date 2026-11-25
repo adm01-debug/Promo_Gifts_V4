@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "7a7c936013b6f728c9c53757021171422f0cb7cd",
+  "sha": "3b588910dad5b5725a65107c930f0129092ef733",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-25 18:14 UTC",
-  "files_total": 11208,
-  "code_files": 9196,
-  "code_lines": 1304892
+  "generated_at": "2026-11-25 18:46 UTC",
+  "files_total": 11209,
+  "code_files": 9197,
+  "code_lines": 1305220
  },
  "version": "1.3.2",
- "facts_hash": "4b5e52716d23bf3e",
+ "facts_hash": "ee03d115ae729368",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -1130,7 +1130,7 @@
   ],
   "package_manager": "npm",
   "languages": {
-   ".sql": 3516,
+   ".sql": 3517,
    ".ts": 3180,
    ".tsx": 2026,
    ".mjs": 456,
@@ -49732,6 +49732,26 @@
     "src": "supabase/migrations/20260911172000_kit_maker_quote_idempotency.sql"
    },
    {
+    "name": "hist_all_service",
+    "table": "supplier_products_raw_history_default",
+    "cmd": "ALL",
+    "roles": "service_role",
+    "mode": "permissive",
+    "using": "true",
+    "check": "true",
+    "src": "supabase/migrations/20260916193000_e25_supplier_history_partition_automation.sql"
+   },
+   {
+    "name": "hist_select_admin",
+    "table": "supplier_products_raw_history_default",
+    "cmd": "SELECT",
+    "roles": "authenticated",
+    "mode": "permissive",
+    "using": "public.is_admin_or_above((SELECT auth.uid()))",
+    "check": "",
+    "src": "supabase/migrations/20260916193000_e25_supplier_history_partition_automation.sql"
+   },
+   {
     "name": "Authenticated users can view mockup assets",
     "table": "storage.objects",
     "cmd": "SELECT",
@@ -76651,19 +76671,6 @@
      "variant_supplier_sources"
     ]
    },
-   "fn_ensure_history_partitions": {
-    "args": "p_months_ahead integer DEFAULT 3",
-    "returns": "integer",
-    "lang": "plpgsql",
-    "src": "supabase/migrations/20260916193000_e25_supplier_history_partition_automation.sql",
-    "security_definer": true,
-    "search_path": true,
-    "body": "DECLARE v_created integer := 0; v_i integer; v_month date; v_name text; BEGIN FOR v_i IN 0..p_months_ahead LOOP v_month := (date_trunc('month', now()) + make_interval(months => v_i))::date; v_name := 'supplier_products_raw_history_p' || to_char(v_month, 'YYYY_MM'); IF NOT EXISTS ( SELECT 1 FROM pg_class WHERE relname = v_name AND relnamespace = 'public'::regnamespace ) THEN EXECUTE format( 'CREATE TABLE public.%I PARTITION OF public.supplier_products_raw_history FOR VALUES FROM (%L) TO (%L)', v_name, v_month, (v_month + interval '1 month')::date ); v_created := v_created + 1; END IF; END LOOP; RETURN v_created; END;",
-    "raises": [],
-    "tables": [
-     "pg_class"
-    ]
-   },
    "increment_discount_approval_version": {
     "args": "",
     "returns": "trigger",
@@ -96187,6 +96194,7 @@
    "supabase/rollbacks/20260511235959_rollback.sql",
    "supabase/rollbacks/20260611014515_fn_dryrun_standardize_supplier_real_rollback.sql",
    "supabase/rollbacks/20260611124000_fn_dryrun_standardize_supplier_real_rollback.sql",
+   "supabase/rollbacks/20260916193000_rollback.sql",
    "supabase/rollbacks/20260916202000_rollback.sql",
    "supabase/rollbacks/20260917061500_rollback.sql",
    "supabase/rollbacks/20260917070000_rollback.sql",
@@ -96921,6 +96929,7 @@
    "spot_cf_upload_queue": "enabled",
    "spot_eu_image_diff_queue": "enabled",
    "_backup_stock_daily_summary_20260618": "enabled",
+   "supplier_products_raw_history_default": "enabled",
    "ops.table_size_history": "enabled",
    "ops.pgss_history": "enabled",
    "ops.wraparound_monitor_log": "enabled"
@@ -131961,6 +131970,22 @@
    {
     "kind": "revoke",
     "privs": "execute",
+    "object": "fn_ensure_history_partitions",
+    "objkind": "function",
+    "roles": "PUBLIC, anon, authenticated",
+    "src": "supabase/migrations/20260916193000_e25_supplier_history_partition_automation.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_ensure_history_partitions",
+    "objkind": "function",
+    "roles": "service_role",
+    "src": "supabase/migrations/20260916193000_e25_supplier_history_partition_automation.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
     "object": "fn_super_filtro",
     "objkind": "function",
     "roles": "PUBLIC",
@@ -151908,7 +151933,7 @@
   {
    "module": "scripts",
    "files": 301,
-   "lines": 65949,
+   "lines": 65990,
    "tables": [
     "a",
     "b",
@@ -154014,7 +154039,7 @@
   {
    "module": "supabase/migrations",
    "files": 3136,
-   "lines": 228526,
+   "lines": 228588,
    "tables": [
     "...",
     "admin_audit_log",
@@ -154112,8 +154137,8 @@
   },
   {
    "module": "supabase/rollbacks",
-   "files": 142,
-   "lines": 5417,
+   "files": 143,
+   "lines": 5464,
    "tables": [],
    "exports": [],
    "docs": [],
@@ -154124,6 +154149,7 @@
     "supabase/rollbacks/20260511235959_rollback.sql",
     "supabase/rollbacks/20260611014515_fn_dryrun_standardize_supplier_real_rollback.sql",
     "supabase/rollbacks/20260611124000_fn_dryrun_standardize_supplier_real_rollback.sql",
+    "supabase/rollbacks/20260916193000_rollback.sql",
     "supabase/rollbacks/20260916202000_rollback.sql",
     "supabase/rollbacks/20260917061500_rollback.sql",
     "supabase/rollbacks/20260917070000_rollback.sql",
@@ -154198,8 +154224,7 @@
     "supabase/rollbacks/20261112120300_rollback.sql",
     "supabase/rollbacks/20261112120400_rollback.sql",
     "supabase/rollbacks/20261112120500_rollback.sql",
-    "supabase/rollbacks/20261112120600_rollback.sql",
-    "supabase/rollbacks/20261112120700_rollback.sql"
+    "supabase/rollbacks/20261112120600_rollback.sql"
    ]
   },
   {
@@ -154289,7 +154314,7 @@
   {
    "module": "tests",
    "files": 1115,
-   "lines": 177080,
+   "lines": 177258,
    "tables": [
     "bot_detection_log",
     "clients",
@@ -167595,6 +167620,10 @@
    },
    {
     "file": "scripts/drift-baseline.mjs",
+    "msg": "${fileName}: esperada 1 ocorrencia da checagem de ACL de plataforma; encontrada(s) ${ocorrencias}. "
+   },
+   {
+    "file": "scripts/drift-baseline.mjs",
     "msg": "${fileName}: esperado(s) ${expected} CREATE INDEX CONCURRENTLY no replay; encontrado(s) ${rewritten}"
    },
    {
@@ -172788,6 +172817,10 @@
    {
     "file": "supabase/migrations/20261022193000_incidente_2026_10_22_alivio_carga_cron.sql",
     "msg": ",       "
+   },
+   {
+    "file": "supabase/rollbacks/20260916193000_rollback.sql",
+    "msg": ") THEN\n    PERFORM cron.unschedule("
    },
    {
     "file": "supabase/rollbacks/20261022193000_rollback.sql",
@@ -305768,6 +305801,30 @@
    },
    {
     "file": "tests/scripts/append-migration-receipt.test.mjs",
+    "name": "upsertReceiptRow"
+   },
+   {
+    "file": "tests/scripts/append-migration-receipt.test.mjs",
+    "name": "substitui a linha existente com status "
+   },
+   {
+    "file": "tests/scripts/append-migration-receipt.test.mjs",
+    "name": "append quando ainda não existe linha da versão (replaced: false)"
+   },
+   {
+    "file": "tests/scripts/append-migration-receipt.test.mjs",
+    "name": "é idempotente: reaplicar o mesmo recibo não cria segunda linha"
+   },
+   {
+    "file": "tests/scripts/append-migration-receipt.test.mjs",
+    "name": "não mexe em linha de outra versão"
+   },
+   {
+    "file": "tests/scripts/append-migration-receipt.test.mjs",
+    "name": "lança erro se a seção não existir"
+   },
+   {
+    "file": "tests/scripts/append-migration-receipt.test.mjs",
     "name": "parseCliOptions"
    },
    {
@@ -310376,6 +310433,34 @@
    },
    {
     "file": "tests/scripts/drift-baseline.test.mjs",
+    "name": "aceita a migration real da #4093 (1 índice CONCURRENTLY) no replay do shadow"
+   },
+   {
+    "file": "tests/scripts/drift-baseline.test.mjs",
+    "name": "neutraliza só a checagem de ACL da extensão gerida pela plataforma no replay"
+   },
+   {
+    "file": "tests/scripts/drift-baseline.test.mjs",
+    "name": "não neutraliza a v4 do tripwire, que registra a mesma checagem sem abortar"
+   },
+   {
+    "file": "tests/scripts/drift-baseline.test.mjs",
+    "name": "falha fechado se a migration do caveat não tiver exatamente uma checagem de ACL"
+   },
+   {
+    "file": "tests/scripts/drift-baseline.test.mjs",
+    "name": "allowlist de reescrita do replay"
+   },
+   {
+    "file": "tests/scripts/drift-baseline.test.mjs",
+    "name": "cobre toda migration pós-baseline com CREATE INDEX CONCURRENTLY"
+   },
+   {
+    "file": "tests/scripts/drift-baseline.test.mjs",
+    "name": "cada entrada do allowlist bate com a contagem real do arquivo"
+   },
+   {
+    "file": "tests/scripts/drift-baseline.test.mjs",
     "name": "prepareWorkdir"
    },
    {
@@ -310625,34 +310710,6 @@
    {
     "file": "tests/scripts/drift-baseline.test.mjs",
     "name": "não reescreve dentro de corpo de função (dollar-quote)"
-   },
-   {
-    "file": "tests/scripts/drift-baseline.test.mjs",
-    "name": "ordena os roles de CREATE POLICY e preserva as policies de ordem própria em produção"
-   },
-   {
-    "file": "tests/scripts/drift-baseline.test.mjs",
-    "name": "policy com "
-   },
-   {
-    "file": "tests/scripts/drift-baseline.test.mjs",
-    "name": "prepareWorkdir — semente de privilégios padrão"
-   },
-   {
-    "file": "tests/scripts/drift-baseline.test.mjs",
-    "name": "grava a semente antes do baseline e ela revoga os privilégios padrão do shadow"
-   },
-   {
-    "file": "tests/scripts/drift-baseline.test.mjs",
-    "name": "dropDumpLossyFunctions"
-   },
-   {
-    "file": "tests/scripts/drift-baseline.test.mjs",
-    "name": "descarta a função que só difere por comentário de coluna 0 e espaçamento"
-   },
-   {
-    "file": "tests/scripts/drift-baseline.test.mjs",
-    "name": "mantém a função quando o corpo muda de verdade"
    },
    {
     "file": "tests/scripts/e2e-cart-artifact-safety.test.mjs",
@@ -327425,6 +327482,26 @@
     "using": "",
     "check": "(SELECT auth.uid()) = user_id",
     "src": "supabase/migrations/20260911172000_kit_maker_quote_idempotency.sql"
+   },
+   {
+    "name": "hist_all_service",
+    "table": "supplier_products_raw_history_default",
+    "cmd": "ALL",
+    "roles": "service_role",
+    "mode": "permissive",
+    "using": "true",
+    "check": "true",
+    "src": "supabase/migrations/20260916193000_e25_supplier_history_partition_automation.sql"
+   },
+   {
+    "name": "hist_select_admin",
+    "table": "supplier_products_raw_history_default",
+    "cmd": "SELECT",
+    "roles": "authenticated",
+    "mode": "permissive",
+    "using": "public.is_admin_or_above((SELECT auth.uid()))",
+    "check": "",
+    "src": "supabase/migrations/20260916193000_e25_supplier_history_partition_automation.sql"
    },
    {
     "name": "Authenticated users can view mockup assets",
@@ -354346,19 +354423,6 @@
      "variant_supplier_sources"
     ]
    },
-   "fn_ensure_history_partitions": {
-    "args": "p_months_ahead integer DEFAULT 3",
-    "returns": "integer",
-    "lang": "plpgsql",
-    "src": "supabase/migrations/20260916193000_e25_supplier_history_partition_automation.sql",
-    "security_definer": true,
-    "search_path": true,
-    "body": "DECLARE v_created integer := 0; v_i integer; v_month date; v_name text; BEGIN FOR v_i IN 0..p_months_ahead LOOP v_month := (date_trunc('month', now()) + make_interval(months => v_i))::date; v_name := 'supplier_products_raw_history_p' || to_char(v_month, 'YYYY_MM'); IF NOT EXISTS ( SELECT 1 FROM pg_class WHERE relname = v_name AND relnamespace = 'public'::regnamespace ) THEN EXECUTE format( 'CREATE TABLE public.%I PARTITION OF public.supplier_products_raw_history FOR VALUES FROM (%L) TO (%L)', v_name, v_month, (v_month + interval '1 month')::date ); v_created := v_created + 1; END IF; END LOOP; RETURN v_created; END;",
-    "raises": [],
-    "tables": [
-     "pg_class"
-    ]
-   },
    "increment_discount_approval_version": {
     "args": "",
     "returns": "trigger",
@@ -368486,6 +368550,7 @@
    "supabase/migrations/20260909221000_magazine_view_events_rls_initplan.sql",
    "supabase/migrations/20260912205759_catalog_e24_zapp_catalog_stats.sql",
    "supabase/migrations/20260915113458_zapp_catalog_stats_revoke_authenticated.sql",
+   "supabase/migrations/20260916193000_e25_supplier_history_partition_automation.sql",
    "supabase/migrations/20260916200000_e17_revoke_public_fn_super_filtro.sql",
    "supabase/migrations/20260916201000_e19_comment_rls_deny_intentional.sql",
    "supabase/migrations/20260916202000_e23_force_rls_secret_tables.sql",
@@ -368793,7 +368858,6 @@
    "fn_enrich_kits_daily",
    "fn_enrich_pen_categories",
    "fn_enrich_properties_batch",
-   "fn_ensure_history_partitions",
    "fn_ensure_seller_discount_limit",
    "fn_expire_novelties",
    "fn_expire_novelties_with_stats",
@@ -404369,6 +404433,22 @@
    {
     "kind": "revoke",
     "privs": "execute",
+    "object": "fn_ensure_history_partitions",
+    "objkind": "function",
+    "roles": "PUBLIC, anon, authenticated",
+    "src": "supabase/migrations/20260916193000_e25_supplier_history_partition_automation.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "fn_ensure_history_partitions",
+    "objkind": "function",
+    "roles": "service_role",
+    "src": "supabase/migrations/20260916193000_e25_supplier_history_partition_automation.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
     "object": "fn_super_filtro",
     "objkind": "function",
     "roles": "PUBLIC",
@@ -437969,7 +438049,7 @@
   },
   "scripts/append-migration-receipt.mjs": {
    "path": "scripts/append-migration-receipt.mjs",
-   "lines": 164,
+   "lines": 168,
    "exports": [
     "const DEFAULT_LOG_PATH",
     "const SECTION_HEADING",
@@ -437992,7 +438072,7 @@
     }
    ],
    "rule_comments": [
-    "* Regra: detecta linha com `\\`<version>\\`` E a palavra \"pendente\" (case-"
+    "* Regra: o gate E75 (`countVersionOccurrences`) conta a primeira célula de cada"
    ],
    "doc": "!/usr/bin/env node"
   },
@@ -440288,7 +440368,7 @@
   },
   "scripts/drift-baseline.mjs": {
    "path": "scripts/drift-baseline.mjs",
-   "lines": 1617,
+   "lines": 1654,
    "exports": [
     "const BASELINE_DIR",
     "const BASELINE_NAME_RE",
@@ -440312,6 +440392,7 @@
     "function collectMigrationDigests",
     "function findEditedSnapshotMigrations",
     "function replayFileName",
+    "const REPLAY_PIPELINE_REWRITES",
     "function sanitizeReplayMigration",
     "function prepareWorkdir",
     "function sanitizeBaselineForReplay",
@@ -440329,6 +440410,7 @@
     "SUPABASE_PROJECT_REF"
    ],
    "errors": [
+    "${fileName}: esperada 1 ocorrencia da checagem de ACL de plataforma; encontrada(s) ${ocorrencias}. ",
     "${fileName}: esperado(s) ${expected} CREATE INDEX CONCURRENTLY no replay; encontrado(s) ${rewritten}",
     "${label} ilegível: ${error.message}",
     "${label} não é um objeto JSON",
@@ -440369,6 +440451,8 @@
     "Esta semente B+1 recria apenas as pré-condições históricas e é idempotente.",
     "(gitleaks, regra generic-api-key) acusava 90 falsos positivos.",
     "tráfego concorrente; remover apenas CONCURRENTLY preserva o índice resultante",
+    "SET ROLE falham (este último com \"permission denied to set role\"), e o REVOKE",
+    "de PUBLIC apenas emite warning sem efeito. Como não há privilégio para alinhar",
     "como token inválido quando ele abre a migration. Normalize somente a cópia",
     "duplas não pode virar início de string/comentário.",
     "argumentos) não pode puxar o `(` de um comando posterior. O `;` e os nomes são",
@@ -537670,14 +537754,15 @@
   },
   "supabase/migrations/20260916193000_e25_supplier_history_partition_automation.sql": {
    "path": "supabase/migrations/20260916193000_e25_supplier_history_partition_automation.sql",
-   "lines": 170,
+   "lines": 232,
    "errors": [
     " AND active) THEN\n    RAISE EXCEPTION ",
     ")\n  ) THEN\n    RAISE EXCEPTION "
    ],
    "temporal": [
     "v_name, v_month, (v_month + interval '1 month')::date"
-   ]
+   ],
+   "uses_service_role": true
   },
   "supabase/migrations/20260916200000_e17_revoke_public_fn_super_filtro.sql": {
    "path": "supabase/migrations/20260916200000_e17_revoke_public_fn_super_filtro.sql",
@@ -538661,6 +538746,13 @@
    "path": "supabase/rollbacks/20260611124000_fn_dryrun_standardize_supplier_real_rollback.sql",
    "lines": 83,
    "uses_service_role": true
+  },
+  "supabase/rollbacks/20260916193000_rollback.sql": {
+   "path": "supabase/rollbacks/20260916193000_rollback.sql",
+   "lines": 47,
+   "errors": [
+    ") THEN\n    PERFORM cron.unschedule("
+   ]
   },
   "supabase/rollbacks/20260916202000_rollback.sql": {
    "path": "supabase/rollbacks/20260916202000_rollback.sql",
@@ -557365,8 +557457,14 @@
   },
   "tests/scripts/append-migration-receipt.test.mjs": {
    "path": "tests/scripts/append-migration-receipt.test.mjs",
-   "lines": 171,
+   "lines": 267,
    "is_test": true,
+   "params": [
+    {
+     "name": "VERSION",
+     "value": "'20261130120000'"
+    }
+   ],
    "rule_comments": [
     "A linha anterior deve ser o separador da tabela E15, não a de \"Outra seção\"."
    ],
@@ -557380,6 +557478,12 @@
     "preserva múltiplas inserções em ordem (a segunda vai depois da primeira)",
     "lança erro se a seção não existir",
     "funciona contra o MIGRATIONS_SYNC_LOG.md real do repo (seção E15 já existe, vazia)",
+    "upsertReceiptRow",
+    "substitui a linha existente com status ",
+    "append quando ainda não existe linha da versão (replaced: false)",
+    "é idempotente: reaplicar o mesmo recibo não cria segunda linha",
+    "não mexe em linha de outra versão",
+    "lança erro se a seção não existir",
     "parseCliOptions",
     "exige --version",
     "converte --log-path para logPath (camelCase)",
@@ -559918,7 +560022,7 @@
   },
   "tests/scripts/drift-baseline.test.mjs": {
    "path": "tests/scripts/drift-baseline.test.mjs",
-   "lines": 1254,
+   "lines": 1336,
    "is_test": true,
    "params": [
     {
@@ -559954,6 +560058,13 @@
     "falha fechado se a migration histórica mudar e não tiver exatamente dois índices",
     "aceita a migration real da #3550 (1 índice CONCURRENTLY) no replay do shadow",
     "não reescreve migrations fora do allowlist de compatibilidade do pipeline",
+    "aceita a migration real da #4093 (1 índice CONCURRENTLY) no replay do shadow",
+    "neutraliza só a checagem de ACL da extensão gerida pela plataforma no replay",
+    "não neutraliza a v4 do tripwire, que registra a mesma checagem sem abortar",
+    "falha fechado se a migration do caveat não tiver exatamente uma checagem de ACL",
+    "allowlist de reescrita do replay",
+    "cobre toda migration pós-baseline com CREATE INDEX CONCURRENTLY",
+    "cada entrada do allowlist bate com a contagem real do arquivo",
     "prepareWorkdir",
     "reescreve CONCURRENTLY somente na cópia temporária do replay",
     "monta config.toml com PG 17, o baseline e o replay renumerado em ordem",
@@ -560016,14 +560127,7 @@
     "sanitizeBaselineForReplay — round-trip do dump",
     "popula materialized views vazias no shadow sem alterar a definição nem texto fora da cláusula",
     "passa o ARRAY de varchar por ",
-    "não reescreve dentro de corpo de função (dollar-quote)",
-    "ordena os roles de CREATE POLICY e preserva as policies de ordem própria em produção",
-    "policy com ",
-    "prepareWorkdir — semente de privilégios padrão",
-    "grava a semente antes do baseline e ela revoga os privilégios padrão do shadow",
-    "dropDumpLossyFunctions",
-    "descarta a função que só difere por comentário de coluna 0 e espaçamento",
-    "mantém a função quando o corpo muda de verdade"
+    "não reescreve dentro de corpo de função (dollar-quote)"
    ],
    "uses_service_role": true
   },
@@ -564893,10 +564997,42 @@
   }
  },
  "git": {
-  "sha": "7a7c936013b6f728c9c53757021171422f0cb7cd",
+  "sha": "3b588910dad5b5725a65107c930f0129092ef733",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "3b58891",
+    "date": "2026-11-25",
+    "author": "adm01-debug",
+    "subject": "fix(e25): incorpora o hardening RLS da #4084 e completa a automacao de particoes (nunca aplicada) (#4102)",
+    "files": [
+     "supabase/MIGRATIONS_SYNC_LOG.md",
+     "supabase/migrations/20260916193000_e25_supplier_history_partition_automation.sql",
+     "supabase/rollbacks/20260916193000_rollback.sql"
+    ]
+   },
+   {
+    "sha": "f0454b7",
+    "date": "2026-11-25",
+    "author": "adm01-debug",
+    "subject": "fix: recibo de migration substitui linha existente de qualquer status (E75) (#4100)",
+    "files": [
+     "docs/db/POLITICA_DDL.md",
+     "scripts/append-migration-receipt.mjs",
+     "tests/scripts/append-migration-receipt.test.mjs"
+    ]
+   },
+   {
+    "sha": "4db7811",
+    "date": "2026-11-25",
+    "author": "adm01-debug",
+    "subject": "fix(ci): destrava o replay do E40 (ACL de extensao da plataforma) (#4089)",
+    "files": [
+     "scripts/drift-baseline.mjs",
+     "tests/scripts/drift-baseline.test.mjs"
+    ]
+   },
    {
     "sha": "7a7c936",
     "date": "2026-11-25",
@@ -565187,47 +565323,16 @@
      "scripts/drift-baseline.mjs",
      "tests/scripts/drift-baseline.test.mjs"
     ]
-   },
-   {
-    "sha": "ddd8488",
-    "date": "2026-11-25",
-    "author": "adm01-debug",
-    "subject": "feat(security): gate enxerga SELECT de anon em tabela, não só view (#4059)",
-    "files": [
-     ".security/anon-tables-baseline.json",
-     "docs/qa/05-PROGRESSO.md",
-     "scripts/check-public-views-drift.mjs",
-     "tests/scripts/check-public-views-drift.test.mjs",
-     "tests/security/public-views-columns.test.ts"
-    ]
-   },
-   {
-    "sha": "36d409a",
-    "date": "2026-11-24",
-    "author": "adm01-debug",
-    "subject": "chore: dossie de quote_comments passa a refletir a feature reativada (#3944) (#4062)",
-    "files": [
-     "docs/agentes/resgates/quote-comments/README.md"
-    ]
-   },
-   {
-    "sha": "20eb648",
-    "date": "2026-11-24",
-    "author": "adm01-debug",
-    "subject": "docs(audit): audita as 23 PRs de agente fechadas sem merge (#4058)",
-    "files": [
-     "docs/coordenacao/auditoria-prs-fechadas.md"
-    ]
    }
   ],
   "hot_files": [
    [
     "supabase/MIGRATIONS_SYNC_LOG.md",
-    16
+    17
    ],
    [
     "docs/qa/05-PROGRESSO.md",
-    5
+    4
    ],
    [
     "package-lock.json",
@@ -565238,8 +565343,12 @@
     3
    ],
    [
-    ".security/anon-tables-baseline.json",
-    3
+    "scripts/drift-baseline.mjs",
+    2
+   ],
+   [
+    "tests/scripts/drift-baseline.test.mjs",
+    2
    ],
    [
     "supabase/migrations-snapshot/ALL_IN_ONE.sql",
@@ -565254,12 +565363,32 @@
     2
    ],
    [
+    ".security/anon-tables-baseline.json",
+    2
+   ],
+   [
     "supabase/migrations/20261125120000_revoke_anon_internal_grants_public.sql",
     2
    ],
    [
-    "docs/coordenacao/auditoria-prs-fechadas.md",
-    2
+    "supabase/migrations/20260916193000_e25_supplier_history_partition_automation.sql",
+    1
+   ],
+   [
+    "supabase/rollbacks/20260916193000_rollback.sql",
+    1
+   ],
+   [
+    "docs/db/POLITICA_DDL.md",
+    1
+   ],
+   [
+    "scripts/append-migration-receipt.mjs",
+    1
+   ],
+   [
+    "tests/scripts/append-migration-receipt.test.mjs",
+    1
    ],
    [
     "scripts/check-migration-receipts.mjs",
@@ -565275,30 +565404,6 @@
    ],
    [
     "supabase/rollbacks/20261125180000_rollback.sql",
-    1
-   ],
-   [
-    "supabase/migrations/20261125150000_fix_comment_v_tabela_gravacao_publica.sql",
-    1
-   ],
-   [
-    "supabase/rollbacks/20261125150000_rollback.sql",
-    1
-   ],
-   [
-    "supabase/baseline/20261125173000_baseline_schema.sql",
-    1
-   ],
-   [
-    "supabase/baseline/20261125173000_ledger_versions.json",
-    1
-   ],
-   [
-    "supabase/migrations/20261125173000_idx_sds_summary_date_supplier_aplicavel.sql",
-    1
-   ],
-   [
-    "supabase/rollbacks/20261125173000_rollback.sql",
     1
    ]
   ]

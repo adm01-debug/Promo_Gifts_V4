@@ -2,11 +2,26 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "7a7c936013b6f728c9c53757021171422f0cb7cd",
+  "commit": "3b588910dad5b5725a65107c930f0129092ef733",
   "branch": "main",
-  "data_commit": "2026-11-25T15:13:14-03:00",
+  "data_commit": "2026-11-25T15:44:47-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "3b58891",
+    "data": "2026-11-25",
+    "assunto": "fix(e25): incorpora o hardening RLS da #4084 e completa a automacao de particoes (nunca aplicada) (#4102)"
+   },
+   {
+    "sha": "f0454b7",
+    "data": "2026-11-25",
+    "assunto": "fix: recibo de migration substitui linha existente de qualquer status (E75) (#4100)"
+   },
+   {
+    "sha": "4db7811",
+    "data": "2026-11-25",
+    "assunto": "fix(ci): destrava o replay do E40 (ACL de extensao da plataforma) (#4089)"
+   },
    {
     "sha": "7a7c936",
     "data": "2026-11-25",
@@ -116,24 +131,9 @@
     "sha": "bf0575d",
     "data": "2026-11-25",
     "assunto": "fix(db): revoga SELECT de anon nas 13 tabelas internas de public (QA etapa 008) (#4065)"
-   },
-   {
-    "sha": "4a102dd",
-    "data": "2026-11-25",
-    "assunto": "fix(db): revoga execute de anon na funcao que reescreve a classificacao do catalogo (#4064)"
-   },
-   {
-    "sha": "629c14f",
-    "data": "2026-11-25",
-    "assunto": "chore(security): corrige reason defasado de fn_global_search no allowlist secdef-anon (#4066)"
-   },
-   {
-    "sha": "2cf0263",
-    "data": "2026-11-25",
-    "assunto": "feat: testid do CTA de geracao de mockup e regressao que roda de verdade (#4063)"
    }
   ],
-  "arquivos_mudados_7d": 599,
+  "arquivos_mudados_7d": 588,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -207,7 +207,7 @@
    },
    {
     "arquivo": "package.json",
-    "mudancas": 24
+    "mudancas": 23
    },
    {
     "arquivo": "package-lock.json",
@@ -230,12 +230,12 @@
     "mudancas": 8
    },
    {
-    "arquivo": ".github/workflows/deploy-gates.yml",
+    "arquivo": "docs/agentes/resgates/2026-11-16-auditoria-branches.md",
     "mudancas": 7
    },
    {
-    "arquivo": "docs/agentes/resgates/2026-11-16-auditoria-branches.md",
-    "mudancas": 7
+    "arquivo": ".github/workflows/deploy-gates.yml",
+    "mudancas": 6
    },
    {
     "arquivo": "audit/supabase-reference-catalog.temporary.json",
@@ -270,6 +270,10 @@
     "mudancas": 5
    },
    {
+    "arquivo": "scripts/drift-baseline.mjs",
+    "mudancas": 5
+   },
+   {
     "arquivo": "src/components/quotes/AdminTemplatesManager.tsx",
     "mudancas": 5
    },
@@ -282,19 +286,15 @@
     "mudancas": 5
    },
    {
+    "arquivo": "tests/scripts/drift-baseline.test.mjs",
+    "mudancas": 5
+   },
+   {
     "arquivo": "docs/agentes/resgates/2026-11-19-migrations-orfas-e-o-portao-retroativo.md",
     "mudancas": 4
    },
    {
-    "arquivo": "scripts/drift-baseline.mjs",
-    "mudancas": 4
-   },
-   {
     "arquivo": "src/components/admin/shipping-boxes/__tests__/ShippingBoxesManager.test.tsx",
-    "mudancas": 4
-   },
-   {
-    "arquivo": "src/components/kit-builder/KitSummary.tsx",
     "mudancas": 4
    }
   ],
@@ -310,9 +310,9 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 11278,
+  "arquivos_total": 11279,
   "arquivos_codigo": 5682,
-  "linhas_codigo": 1077068,
+  "linhas_codigo": 1077287,
   "rotas": 141,
   "rotas_http_backend": 13,
   "vistas_por_id": 0,
@@ -928,7 +928,7 @@
   },
   "scripts/append-migration-receipt.mjs": {
    "arquivos": 1,
-   "linhas": 164
+   "linhas": 168
   },
   "scripts/audit-credentials.mjs": {
    "arquivos": 1,
@@ -1492,7 +1492,7 @@
   },
   "scripts/drift-baseline.mjs": {
    "arquivos": 1,
-   "linhas": 1617
+   "linhas": 1654
   },
   "scripts/dry-run-migration-draft.mjs": {
    "arquivos": 1,
@@ -2156,7 +2156,7 @@
   },
   "tests/scripts": {
    "arquivos": 182,
-   "linhas": 29642
+   "linhas": 29820
   },
   "tests/search": {
    "arquivos": 1,
@@ -2294,7 +2294,7 @@
   },
   {
    "arquivo": "scripts/drift-baseline.mjs",
-   "linhas": 1617
+   "linhas": 1654
   },
   {
    "arquivo": "supabase/functions/expert-chat/index.ts",
@@ -2670,7 +2670,7 @@
   },
   {
    "arquivo": "scripts/drift-baseline.mjs",
-   "linha": 762,
+   "linha": 799,
    "tipo": "TODO",
    "texto": "objeto (ex.: `.*`, `^create table`, `public`)."
   },
@@ -3191,7 +3191,6 @@
    "product_specifications",
    "scraper_images_staging",
    "sm_images_staging",
-   "supplier_products_raw_history_default",
    "user_organizations",
    "webhook_delivery_locks",
    "xbz_gallery_staging"

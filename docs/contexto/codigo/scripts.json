@@ -67,7 +67,7 @@
   {
    "arquivo": "scripts/append-migration-receipt.mjs",
    "descricao": "* append-migration-receipt.mjs",
-   "linhas": 164,
+   "linhas": 168,
    "env": [],
    "npm_scripts": [],
    "workflows": [
@@ -1978,7 +1978,7 @@
   {
    "arquivo": "scripts/drift-baseline.mjs",
    "descricao": "* drift-baseline.mjs — baseline do schema de produção para o drift-check.",
-   "linhas": 1617,
+   "linhas": 1654,
    "env": [
     "SUPABASE_PROJECT_REF"
    ],

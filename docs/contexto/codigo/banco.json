@@ -45862,15 +45862,28 @@
   },
   "supplier_products_raw_history_default": {
    "colunas": {},
-   "rls": false,
-   "policies": [],
+   "rls": true,
+   "policies": [
+    {
+     "nome": "hist_all_service",
+     "comando": "all",
+     "para": "service_role",
+     "tipo": "permissive"
+    },
+    {
+     "nome": "hist_select_admin",
+     "comando": "select",
+     "para": "authenticated",
+     "tipo": "permissive"
+    }
+   ],
    "indices": [],
    "fks": [],
    "criada_em": "20260916193000_e25_supplier_history_partition_automation.sql",
    "usada_no_front": 0,
    "usada_em_edges": [],
    "triggers": [],
-   "sem_rls": true,
+   "sem_rls": false,
    "nao_usada": true
   },
   "supplier_products_raw_history_legacy": {

@@ -4,7 +4,7 @@
  "stack": {
   "linguagens": [
    "TypeScript (5206)",
-   "SQL (3516)",
+   "SQL (3517)",
    "Markdown (1510)",
    "JavaScript (463)",
    "JSON (133)",
@@ -5906,7 +5906,6 @@
    "product_specifications",
    "scraper_images_staging",
    "sm_images_staging",
-   "supplier_products_raw_history_default",
    "user_organizations",
    "webhook_delivery_locks",
    "xbz_gallery_staging"
