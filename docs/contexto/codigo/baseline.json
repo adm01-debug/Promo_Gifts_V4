@@ -2,11 +2,26 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "036e217dedb16d41a147162684f4ef44c9bb546a",
+  "commit": "48fa6b5b24deb9a474646e4bb64b24e6ef7c95d4",
   "branch": "main",
-  "data_commit": "2026-11-25T19:36:07-03:00",
+  "data_commit": "2026-11-25T19:54:51-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "48fa6b5",
+    "data": "2026-11-25",
+    "assunto": "chore: rollbacks das migrations de sent_at e anti-fraude de preco (#4131)"
+   },
+   {
+    "sha": "26aa4a8",
+    "data": "2026-11-25",
+    "assunto": "fix: cabecalho de rollback na 20261125213000 (destrava preflight E15) (#4132)"
+   },
+   {
+    "sha": "8eeee4f",
+    "data": "2026-11-25",
+    "assunto": "fix(db): remove crons orfaos de particao do historico (E25) (#4121)"
+   },
    {
     "sha": "036e217",
     "data": "2026-11-25",
@@ -116,24 +131,9 @@
     "sha": "7a7c936",
     "data": "2026-11-25",
     "assunto": "fix: exige status final no recibo de migration aceito pelo gate E055 (#4099)"
-   },
-   {
-    "sha": "aa0240f",
-    "data": "2026-11-25",
-    "assunto": "docs(migrations-log): recibo E15 — aplicação de 20261125180000 (#4098)"
-   },
-   {
-    "sha": "88a358e",
-    "data": "2026-11-25",
-    "assunto": "fix: aplica o COMMENT da view de gravacao (cabecalho com Rollback:) (#4097)"
-   },
-   {
-    "sha": "46f5863",
-    "data": "2026-11-25",
-    "assunto": "fix: corrige COMMENT da view de preco de gravacao publica (retoma #4080) (#4096)"
    }
   ],
-  "arquivos_mudados_7d": 559,
+  "arquivos_mudados_7d": 565,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -169,7 +169,7 @@
    },
    {
     "pasta": "supabase/MIGRATIONS_SYNC_LOG.md",
-    "mudancas": 90
+    "mudancas": 92
    },
    {
     "pasta": "src/pages/quotes",
@@ -199,7 +199,7 @@
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "supabase/MIGRATIONS_SYNC_LOG.md",
-    "mudancas": 90
+    "mudancas": 92
    },
    {
     "arquivo": "docs/qa/05-PROGRESSO.md",
@@ -207,11 +207,11 @@
    },
    {
     "arquivo": "package.json",
-    "mudancas": 23
+    "mudancas": 22
    },
    {
     "arquivo": "package-lock.json",
-    "mudancas": 20
+    "mudancas": 19
    },
    {
     "arquivo": "CHANGELOG.md",
@@ -310,7 +310,7 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 11281,
+  "arquivos_total": 11285,
   "arquivos_codigo": 5682,
   "linhas_codigo": 1077287,
   "rotas": 141,
@@ -322,7 +322,7 @@
   "hooks": 646,
   "edge_functions": 112,
   "tabelas": 532,
-  "migrations": 3137,
+  "migrations": 3138,
   "cron_jobs": 122,
   "testes": 2722,
   "workflows": 89,

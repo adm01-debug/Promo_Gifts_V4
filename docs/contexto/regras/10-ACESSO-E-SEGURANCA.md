@@ -1,6 +1,6 @@
 # 10 · ACESSO E SEGURANÇA — quem pode o quê
 
-> Gerado automaticamente por AI Context Sync v1.3.2 · commit `036e217ded` · branch `main` · 2026-11-25 22:51 UTC
+> Gerado automaticamente por AI Context Sync v1.3.2 · commit `48fa6b5b24` · branch `main` · 2026-11-25 23:12 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## Perfis / roles identificados
@@ -1084,7 +1084,6 @@
 - `org_has_any_members`
 - `ownership_check_orphans`
 - `permanent_delete_record`
-- `prevent_non_admin_quote_item_price_change`
 - `prevent_profile_role_change`
 - `prevent_role_self_update`
 - `process_notifications_queue`
@@ -1124,7 +1123,6 @@
 - `send_digest_notification`
 - `set_connection_failure_window_minutes`
 - `set_connections_auto_test_interval`
-- `set_quote_sent_at`
 - `sincronizar_estoque_spot`
 - `snapshot_hardening_status`
 - `soft_delete_record`
@@ -1325,7 +1323,7 @@ Middleware matcher (Next.js): nenhum
 | revoke | public, anon | all | `execute_role_migration_batch`, `mcp_kv_try_lock`, `zapp_catalog_stats` |
 | revoke | public, anon | execute | `is_admin`, `is_admin`, `is_admin_strict`, `can_view_all_sales`, `can_manage_quotes`, `revoke_all_user_tokens`, `is_seller_only`, `can_view_audit_logs`, `is_manager_or_admin` |
 | revoke | public, anon, authenticated | all | `record_public_token_failure`, `fn_get_spot_access_key`, `fn_resolve_supplier`, `fn_ingest_bronze_batch`, `fn_bronze_mark_absent`, `fn_ingestion_run_open`, `fn_ingestion_run_close`, `fn_ingestion_health`, `fn_upsert_stock_to_bronze`, `fn_sync_stock_bronze_to_gold`, `fn_upsert_asia_wp_batch`, `fn_upsert_asia_wp_batch`, `fn_ingest_customization_options_batch`, `fn_asia_wp_to_canonical`, `fn_upsert_asia_wp_batch` … +9 |
-| revoke | public, anon, authenticated | execute | `audit_rls_matrix`, `cleanup_expired_collection_trash`, `sync_external_connections_from_credentials`, `cron_invoke_edge`, `get_platform_failure_metrics`, `repair_ownership_orphans`, `revoke_all_user_tokens`, `sync_external_connections_from_credentials` |
+| revoke | public, anon, authenticated | execute | `audit_rls_matrix`, `cleanup_expired_collection_trash`, `sync_external_connections_from_credentials`, `cron_invoke_edge`, `get_platform_failure_metrics`, `repair_ownership_orphans`, `revoke_all_user_tokens`, `sync_external_connections_from_credentials`, `set_quote_sent_at`, `prevent_non_admin_quote_item_price_change` |
 | revoke | service_role | execute | `classification_audit.apply_high_confidence_suggestions` |
 
 ## Riscos de acesso detectados

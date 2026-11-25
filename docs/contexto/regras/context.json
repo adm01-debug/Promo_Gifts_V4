@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "036e217dedb16d41a147162684f4ef44c9bb546a",
+  "sha": "48fa6b5b24deb9a474646e4bb64b24e6ef7c95d4",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-25 22:51 UTC",
-  "files_total": 11211,
-  "code_files": 9197,
-  "code_lines": 1305232
+  "generated_at": "2026-11-25 23:12 UTC",
+  "files_total": 11215,
+  "code_files": 9201,
+  "code_lines": 1305348
  },
  "version": "1.3.2",
- "facts_hash": "991684dcf5784022",
+ "facts_hash": "39394fb46fd46d99",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -1130,7 +1130,7 @@
   ],
   "package_manager": "npm",
   "languages": {
-   ".sql": 3517,
+   ".sql": 3521,
    ".ts": 3180,
    ".tsx": 2026,
    ".mjs": 456,
@@ -54738,15 +54738,6 @@
     "src": "supabase/migrations/20260620170001_fix_favorites_gaps_11_12.sql"
    },
    {
-    "name": "trg_set_quote_sent_at",
-    "when": "BEFORE INSERT OR UPDATE",
-    "table": "quotes",
-    "function": "set_quote_sent_at",
-    "condition": "",
-    "each": "row",
-    "src": "supabase/migrations/20260620190001_populate_quotes_sent_at.sql"
-   },
-   {
     "name": "trg_fl_assign_position",
     "when": "BEFORE INSERT",
     "table": "favorite_lists",
@@ -55060,15 +55051,6 @@
     "condition": "",
     "each": "row",
     "src": "supabase/migrations/20260627193546_fix_trigger_price_verified_remove_column_filter_20260627.sql"
-   },
-   {
-    "name": "trg_prevent_non_admin_quote_item_price_change",
-    "when": "BEFORE UPDATE OF UNIT_PRICE",
-    "table": "quote_items",
-    "function": "prevent_non_admin_quote_item_price_change",
-    "condition": "",
-    "each": "row",
-    "src": "supabase/migrations/20260629142224_7e644177-527b-4b92-93a3-79ffee40ca4a.sql"
    },
    {
     "name": "trg_cascade_product_deactivation",
@@ -76382,17 +76364,6 @@
      "favorite_lists"
     ]
    },
-   "set_quote_sent_at": {
-    "args": "",
-    "returns": "trigger",
-    "lang": "plpgsql",
-    "src": "supabase/migrations/20260620190001_populate_quotes_sent_at.sql",
-    "security_definer": true,
-    "search_path": true,
-    "body": "begin if new.status = 'sent' and new.sent_at is null and (tg_op = 'INSERT' or old.status is distinct from 'sent') then new.sent_at := now(); end if; return new; end;",
-    "raises": [],
-    "tables": []
-   },
    "fn_favorite_lists_assign_position": {
     "args": "",
     "returns": "trigger",
@@ -76536,21 +76507,6 @@
      "products",
      "seo_audit_log",
      "v_score"
-    ]
-   },
-   "prevent_non_admin_quote_item_price_change": {
-    "args": "",
-    "returns": "TRIGGER",
-    "lang": "plpgsql",
-    "src": "supabase/migrations/20260629142224_7e644177-527b-4b92-93a3-79ffee40ca4a.sql",
-    "security_definer": true,
-    "search_path": true,
-    "body": "DECLARE v_uid uuid := auth.uid(); v_is_admin boolean := false; BEGIN IF v_uid IS NULL THEN RETURN NEW; END IF; IF NEW.unit_price IS NOT DISTINCT FROM OLD.unit_price THEN RETURN NEW; END IF; BEGIN v_is_admin := public.has_role(v_uid, 'admin'::app_role) OR public.has_role(v_uid, 'supervisor'::app_role) OR public.can_view_all_sales(); EXCEPTION WHEN OTHERS THEN v_is_admin := false; END; IF NOT v_is_admin THEN RAISE EXCEPTION 'Preço unitário (unit_price) não pode ser alterado por este usuário. O preço vem do catálogo e é somente leitura.' USING ERRCODE = '42501', HINT = 'Solicite a um administrador para ajustar o preço, se necessário.'; END IF; RETURN NEW; END;",
-    "raises": [
-     "Preço unitário (unit_price) não pode ser alterado por este usuário. O preço vem do catálogo e é somente leitura."
-    ],
-    "tables": [
-     "OLD"
     ]
    },
    "set_crm_callback_events_updated_at": {
@@ -96200,10 +96156,13 @@
    "supabase/migrations/20261125160000_restaura_grant_anon_mv_product_compositions.sql",
    "supabase/migrations/20261125173000_idx_sds_summary_date_supplier_aplicavel.sql",
    "supabase/migrations/20261125180000_fix_comment_v_tabela_gravacao_publica.sql",
+   "supabase/migrations/20261125213000_e25_unschedule_orphan_history_crons.sql",
    "supabase/rollbacks/20260511235950_rollback.sql",
    "supabase/rollbacks/20260511235959_rollback.sql",
    "supabase/rollbacks/20260611014515_fn_dryrun_standardize_supplier_real_rollback.sql",
    "supabase/rollbacks/20260611124000_fn_dryrun_standardize_supplier_real_rollback.sql",
+   "supabase/rollbacks/20260620190001_rollback.sql",
+   "supabase/rollbacks/20260629142224_rollback.sql",
    "supabase/rollbacks/20260916193000_rollback.sql",
    "supabase/rollbacks/20260916202000_rollback.sql",
    "supabase/rollbacks/20260917061500_rollback.sql",
@@ -96342,6 +96301,7 @@
    "supabase/rollbacks/20261125160000_rollback.sql",
    "supabase/rollbacks/20261125173000_rollback.sql",
    "supabase/rollbacks/20261125180000_rollback.sql",
+   "supabase/rollbacks/20261125213000_rollback.sql",
    "supabase/rollbacks/rollback_20261025002500_analyze_tables_p03.sql",
    "supabase/sql-legacy/001_notification_system.sql",
    "supabase/sql-legacy/002_notification_preferences.sql",
@@ -127092,6 +127052,14 @@
    {
     "kind": "revoke",
     "privs": "execute",
+    "object": "set_quote_sent_at",
+    "objkind": "function",
+    "roles": "public, anon, authenticated",
+    "src": "supabase/migrations/20260620190001_populate_quotes_sent_at.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
     "object": "fn_get_reposicao_listing",
     "objkind": "function",
     "roles": "anon",
@@ -129464,6 +129432,14 @@
     "objkind": "table",
     "roles": "service_role",
     "src": "supabase/migrations/20260627155804_v_products_public_v2_expose_new_cols_20260627.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "prevent_non_admin_quote_item_price_change",
+    "objkind": "function",
+    "roles": "public, anon, authenticated",
+    "src": "supabase/migrations/20260629142224_7e644177-527b-4b92-93a3-79ffee40ca4a.sql"
    },
    {
     "kind": "revoke",
@@ -154064,8 +154040,8 @@
   },
   {
    "module": "supabase/migrations",
-   "files": 3136,
-   "lines": 228600,
+   "files": 3137,
+   "lines": 228680,
    "tables": [
     "...",
     "admin_audit_log",
@@ -154163,8 +154139,8 @@
   },
   {
    "module": "supabase/rollbacks",
-   "files": 143,
-   "lines": 5464,
+   "files": 146,
+   "lines": 5500,
    "tables": [],
    "exports": [],
    "docs": [],
@@ -154175,6 +154151,8 @@
     "supabase/rollbacks/20260511235959_rollback.sql",
     "supabase/rollbacks/20260611014515_fn_dryrun_standardize_supplier_real_rollback.sql",
     "supabase/rollbacks/20260611124000_fn_dryrun_standardize_supplier_real_rollback.sql",
+    "supabase/rollbacks/20260620190001_rollback.sql",
+    "supabase/rollbacks/20260629142224_rollback.sql",
     "supabase/rollbacks/20260916193000_rollback.sql",
     "supabase/rollbacks/20260916202000_rollback.sql",
     "supabase/rollbacks/20260917061500_rollback.sql",
@@ -154248,9 +154226,7 @@
     "supabase/rollbacks/20261112120100_rollback.sql",
     "supabase/rollbacks/20261112120200_rollback.sql",
     "supabase/rollbacks/20261112120300_rollback.sql",
-    "supabase/rollbacks/20261112120400_rollback.sql",
-    "supabase/rollbacks/20261112120500_rollback.sql",
-    "supabase/rollbacks/20261112120600_rollback.sql"
+    "supabase/rollbacks/20261112120400_rollback.sql"
    ]
   },
   {
@@ -172844,6 +172820,14 @@
    {
     "file": "supabase/migrations/20261022193000_incidente_2026_10_22_alivio_carga_cron.sql",
     "msg": ",       "
+   },
+   {
+    "file": "supabase/migrations/20261125213000_e25_unschedule_orphan_history_crons.sql",
+    "msg": "\n  ];\n  v_job text;\n  v_present text;\nBEGIN\n  IF to_regprocedure("
+   },
+   {
+    "file": "supabase/migrations/20261125213000_e25_unschedule_orphan_history_crons.sql",
+    "msg": ")\n  ) THEN\n    RAISE EXCEPTION "
    },
    {
     "file": "supabase/rollbacks/20260916193000_rollback.sql",
@@ -332517,15 +332501,6 @@
     "src": "supabase/migrations/20260620170001_fix_favorites_gaps_11_12.sql"
    },
    {
-    "name": "trg_set_quote_sent_at",
-    "when": "BEFORE INSERT OR UPDATE",
-    "table": "quotes",
-    "function": "set_quote_sent_at",
-    "condition": "",
-    "each": "row",
-    "src": "supabase/migrations/20260620190001_populate_quotes_sent_at.sql"
-   },
-   {
     "name": "trg_fl_assign_position",
     "when": "BEFORE INSERT",
     "table": "favorite_lists",
@@ -332839,15 +332814,6 @@
     "condition": "",
     "each": "row",
     "src": "supabase/migrations/20260627193546_fix_trigger_price_verified_remove_column_filter_20260627.sql"
-   },
-   {
-    "name": "trg_prevent_non_admin_quote_item_price_change",
-    "when": "BEFORE UPDATE OF UNIT_PRICE",
-    "table": "quote_items",
-    "function": "prevent_non_admin_quote_item_price_change",
-    "condition": "",
-    "each": "row",
-    "src": "supabase/migrations/20260629142224_7e644177-527b-4b92-93a3-79ffee40ca4a.sql"
    },
    {
     "name": "trg_cascade_product_deactivation",
@@ -354161,17 +354127,6 @@
      "favorite_lists"
     ]
    },
-   "set_quote_sent_at": {
-    "args": "",
-    "returns": "trigger",
-    "lang": "plpgsql",
-    "src": "supabase/migrations/20260620190001_populate_quotes_sent_at.sql",
-    "security_definer": true,
-    "search_path": true,
-    "body": "begin if new.status = 'sent' and new.sent_at is null and (tg_op = 'INSERT' or old.status is distinct from 'sent') then new.sent_at := now(); end if; return new; end;",
-    "raises": [],
-    "tables": []
-   },
    "fn_favorite_lists_assign_position": {
     "args": "",
     "returns": "trigger",
@@ -354315,21 +354270,6 @@
      "products",
      "seo_audit_log",
      "v_score"
-    ]
-   },
-   "prevent_non_admin_quote_item_price_change": {
-    "args": "",
-    "returns": "TRIGGER",
-    "lang": "plpgsql",
-    "src": "supabase/migrations/20260629142224_7e644177-527b-4b92-93a3-79ffee40ca4a.sql",
-    "security_definer": true,
-    "search_path": true,
-    "body": "DECLARE v_uid uuid := auth.uid(); v_is_admin boolean := false; BEGIN IF v_uid IS NULL THEN RETURN NEW; END IF; IF NEW.unit_price IS NOT DISTINCT FROM OLD.unit_price THEN RETURN NEW; END IF; BEGIN v_is_admin := public.has_role(v_uid, 'admin'::app_role) OR public.has_role(v_uid, 'supervisor'::app_role) OR public.can_view_all_sales(); EXCEPTION WHEN OTHERS THEN v_is_admin := false; END; IF NOT v_is_admin THEN RAISE EXCEPTION 'Preço unitário (unit_price) não pode ser alterado por este usuário. O preço vem do catálogo e é somente leitura.' USING ERRCODE = '42501', HINT = 'Solicite a um administrador para ajustar o preço, se necessário.'; END IF; RETURN NEW; END;",
-    "raises": [
-     "Preço unitário (unit_price) não pode ser alterado por este usuário. O preço vem do catálogo e é somente leitura."
-    ],
-    "tables": [
-     "OLD"
     ]
    },
    "set_crm_callback_events_updated_at": {
@@ -369334,7 +369274,6 @@
    "org_has_any_members",
    "ownership_check_orphans",
    "permanent_delete_record",
-   "prevent_non_admin_quote_item_price_change",
    "prevent_profile_role_change",
    "prevent_role_self_update",
    "process_notifications_queue",
@@ -369374,7 +369313,6 @@
    "send_digest_notification",
    "set_connection_failure_window_minutes",
    "set_connections_auto_test_interval",
-   "set_quote_sent_at",
    "sincronizar_estoque_spot",
    "snapshot_hardening_status",
    "soft_delete_record",
@@ -399598,6 +399536,14 @@
    {
     "kind": "revoke",
     "privs": "execute",
+    "object": "set_quote_sent_at",
+    "objkind": "function",
+    "roles": "public, anon, authenticated",
+    "src": "supabase/migrations/20260620190001_populate_quotes_sent_at.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
     "object": "fn_get_reposicao_listing",
     "objkind": "function",
     "roles": "anon",
@@ -401970,6 +401916,14 @@
     "objkind": "table",
     "roles": "service_role",
     "src": "supabase/migrations/20260627155804_v_products_public_v2_expose_new_cols_20260627.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "prevent_non_admin_quote_item_price_change",
+    "objkind": "function",
+    "roles": "public, anon, authenticated",
+    "src": "supabase/migrations/20260629142224_7e644177-527b-4b92-93a3-79ffee40ca4a.sql"
    },
    {
     "kind": "revoke",
@@ -533822,7 +533776,7 @@
   },
   "supabase/migrations/20260620190001_populate_quotes_sent_at.sql": {
    "path": "supabase/migrations/20260620190001_populate_quotes_sent_at.sql",
-   "lines": 38
+   "lines": 42
   },
   "supabase/migrations/20260620190002_faxina_tier3b_b1_archive_dead_fns_views.sql": {
    "path": "supabase/migrations/20260620190002_faxina_tier3b_b1_archive_dead_fns_views.sql",
@@ -536226,7 +536180,7 @@
   },
   "supabase/migrations/20260629142224_7e644177-527b-4b92-93a3-79ffee40ca4a.sql": {
    "path": "supabase/migrations/20260629142224_7e644177-527b-4b92-93a3-79ffee40ca4a.sql",
-   "lines": 50,
+   "lines": 54,
    "role_checks": [
     "admin",
     "supervisor"
@@ -538799,6 +538753,14 @@
    "path": "supabase/migrations/20261125180000_fix_comment_v_tabela_gravacao_publica.sql",
    "lines": 105
   },
+  "supabase/migrations/20261125213000_e25_unschedule_orphan_history_crons.sql": {
+   "path": "supabase/migrations/20261125213000_e25_unschedule_orphan_history_crons.sql",
+   "lines": 72,
+   "errors": [
+    "\n  ];\n  v_job text;\n  v_present text;\nBEGIN\n  IF to_regprocedure(",
+    ")\n  ) THEN\n    RAISE EXCEPTION "
+   ]
+  },
   "supabase/rollbacks/20260511235950_rollback.sql": {
    "path": "supabase/rollbacks/20260511235950_rollback.sql",
    "lines": 5
@@ -538816,6 +538778,14 @@
    "path": "supabase/rollbacks/20260611124000_fn_dryrun_standardize_supplier_real_rollback.sql",
    "lines": 83,
    "uses_service_role": true
+  },
+  "supabase/rollbacks/20260620190001_rollback.sql": {
+   "path": "supabase/rollbacks/20260620190001_rollback.sql",
+   "lines": 6
+  },
+  "supabase/rollbacks/20260629142224_rollback.sql": {
+   "path": "supabase/rollbacks/20260629142224_rollback.sql",
+   "lines": 5
   },
   "supabase/rollbacks/20260916193000_rollback.sql": {
    "path": "supabase/rollbacks/20260916193000_rollback.sql",
@@ -539390,6 +539360,10 @@
   "supabase/rollbacks/20261125180000_rollback.sql": {
    "path": "supabase/rollbacks/20261125180000_rollback.sql",
    "lines": 13
+  },
+  "supabase/rollbacks/20261125213000_rollback.sql": {
+   "path": "supabase/rollbacks/20261125213000_rollback.sql",
+   "lines": 25
   },
   "supabase/rollbacks/rollback_20261025002500_analyze_tables_p03.sql": {
    "path": "supabase/rollbacks/rollback_20261025002500_analyze_tables_p03.sql",
@@ -565067,10 +565041,43 @@
   }
  },
  "git": {
-  "sha": "036e217dedb16d41a147162684f4ef44c9bb546a",
+  "sha": "48fa6b5b24deb9a474646e4bb64b24e6ef7c95d4",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "48fa6b5",
+    "date": "2026-11-25",
+    "author": "adm01-debug",
+    "subject": "chore: rollbacks das migrations de sent_at e anti-fraude de preco (#4131)",
+    "files": [
+     "supabase/MIGRATIONS_SYNC_LOG.md",
+     "supabase/migrations/20260620190001_populate_quotes_sent_at.sql",
+     "supabase/migrations/20260629142224_7e644177-527b-4b92-93a3-79ffee40ca4a.sql",
+     "supabase/rollbacks/20260620190001_rollback.sql",
+     "supabase/rollbacks/20260629142224_rollback.sql"
+    ]
+   },
+   {
+    "sha": "26aa4a8",
+    "date": "2026-11-25",
+    "author": "adm01-debug",
+    "subject": "fix: cabecalho de rollback na 20261125213000 (destrava preflight E15) (#4132)",
+    "files": [
+     "supabase/migrations/20261125213000_e25_unschedule_orphan_history_crons.sql"
+    ]
+   },
+   {
+    "sha": "8eeee4f",
+    "date": "2026-11-25",
+    "author": "adm01-debug",
+    "subject": "fix(db): remove crons orfaos de particao do historico (E25) (#4121)",
+    "files": [
+     "supabase/MIGRATIONS_SYNC_LOG.md",
+     "supabase/migrations/20261125213000_e25_unschedule_orphan_history_crons.sql",
+     "supabase/rollbacks/20261125213000_rollback.sql"
+    ]
+   },
    {
     "sha": "036e217",
     "date": "2026-11-25",
@@ -565338,41 +565345,6 @@
     "files": [
      "supabase/MIGRATIONS_SYNC_LOG.md"
     ]
-   },
-   {
-    "sha": "4eae35f",
-    "date": "2026-11-25",
-    "author": "adm01-debug",
-    "subject": "fix: corrige approved-by do indice de stock_daily_summary (#4092) (#4093)",
-    "files": [
-     "supabase/MIGRATIONS_SYNC_LOG.md",
-     "supabase/migrations/20261125173000_idx_sds_summary_date_supplier_aplicavel.sql",
-     "supabase/rollbacks/20261125173000_rollback.sql"
-    ]
-   },
-   {
-    "sha": "4107894",
-    "date": "2026-11-25",
-    "author": "adm01-debug",
-    "subject": "perf: torna aplicavel o indice de stock_daily_summary do market-intel (#4092)",
-    "files": [
-     "supabase/MIGRATIONS_SYNC_LOG.md",
-     "supabase/migrations/20261125170000_idx_sds_summary_date_supplier_aplicavel.sql",
-     "supabase/rollbacks/20261125170000_rollback.sql"
-    ]
-   },
-   {
-    "sha": "69afa3c",
-    "date": "2026-11-25",
-    "author": "adm01-debug",
-    "subject": "chore(schema-snapshot): snapshot semanal 2026-W48 (run 45647674999) (#4083)",
-    "files": [
-     "supabase/baseline/20261125131000_baseline_schema.sql",
-     "supabase/baseline/20261125131000_ledger_versions.json",
-     "supabase/migrations-snapshot/ALL_IN_ONE.sql",
-     "supabase/migrations-snapshot/SCHEMA_LIVE.sql",
-     "supabase/migrations-snapshot/SNAPSHOT_META.json"
-    ]
    }
   ],
   "hot_files": [
@@ -565381,16 +565353,20 @@
     18
    ],
    [
+    "supabase/migrations/20261125213000_e25_unschedule_orphan_history_crons.sql",
+    2
+   ],
+   [
     "supabase/migrations-snapshot/ALL_IN_ONE.sql",
-    3
+    2
    ],
    [
     "supabase/migrations-snapshot/SCHEMA_LIVE.sql",
-    3
+    2
    ],
    [
     "supabase/migrations-snapshot/SNAPSHOT_META.json",
-    3
+    2
    ],
    [
     "package-lock.json",
@@ -565399,6 +565375,26 @@
    [
     "package.json",
     2
+   ],
+   [
+    "supabase/migrations/20260620190001_populate_quotes_sent_at.sql",
+    1
+   ],
+   [
+    "supabase/migrations/20260629142224_7e644177-527b-4b92-93a3-79ffee40ca4a.sql",
+    1
+   ],
+   [
+    "supabase/rollbacks/20260620190001_rollback.sql",
+    1
+   ],
+   [
+    "supabase/rollbacks/20260629142224_rollback.sql",
+    1
+   ],
+   [
+    "supabase/rollbacks/20261125213000_rollback.sql",
+    1
    ],
    [
     "supabase/migrations/20261114160000_perf_idx_sds_restock_counts.sql",
@@ -565430,30 +565426,6 @@
    ],
    [
     "CHANGELOG.md",
-    1
-   ],
-   [
-    "supabase/baseline/20261125173000_cron_jobs.json",
-    1
-   ],
-   [
-    "docs/prod-readiness.md",
-    1
-   ],
-   [
-    ".security/policies-baseline.json",
-    1
-   ],
-   [
-    "supabase/migrations/20260916193000_e25_supplier_history_partition_automation.sql",
-    1
-   ],
-   [
-    "supabase/rollbacks/20260916193000_rollback.sql",
-    1
-   ],
-   [
-    "docs/db/POLITICA_DDL.md",
     1
    ]
   ]
