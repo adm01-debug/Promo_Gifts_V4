@@ -135,7 +135,7 @@ São migrations **já na `main`** esperando o `db-apply-migration.yml`:
 | `KillSwitchBanner.tsx` + `useKillSwitchBanner.ts` | ausentes da `main`; vinham de PR fechada |
 | gate `check-zod-pinning.mjs` | toca `.github/workflows/`, logo cai no Git 7 do AGENTS.md: PR fica aberta e chama o dono |
 | item 8 de `2026-11-18-pendencias-abertas.md` | reavaliar os 5 testes julgados obsoletos nas branches `codex-fix-gate1` e `claude-fix-pr3517` |
-| `tests/e2e/mockup-regressions.spec.ts:15` | espera `data-testid="mockup-generate-button"`, que **nenhum arquivo vivo fornece** desde a remoção do `GenerateButton` — spec falso-verde |
+| `tests/e2e/mockup-regressions.spec.ts:15` | **RESOLVIDO em 25/11/2026** — o `data-testid="mockup-generate-button"` passou a existir no CTA vivo e o contrato virou caso real em `src/components/mockup/__tests__/MockupLayoutButtons.test.tsx`. O `.spec.ts` órfão, que nenhum runner coletava, foi removido |
 | `.eslint-baseline.json` | 3 entradas órfãs (linhas 24, 30, 35) apontando para arquivos aposentados |
 
 ## 6. Painéis que seguem obsoletos — não tentar de novo
