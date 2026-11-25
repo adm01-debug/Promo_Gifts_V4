@@ -1,9 +1,9 @@
 {
  "meta": {
-  "sha": "2e4913f89ff897c815c97bb987c7e0e27e2d0f34",
+  "sha": "5c65a1802cdd12b16df8142a012b67c5ecb0733f",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-25 16:21 UTC",
+  "generated_at": "2026-11-25 16:33 UTC",
   "files_total": 11204,
   "code_files": 9192,
   "code_lines": 1304598
@@ -564130,10 +564130,19 @@
   }
  },
  "git": {
-  "sha": "2e4913f89ff897c815c97bb987c7e0e27e2d0f34",
+  "sha": "5c65a1802cdd12b16df8142a012b67c5ecb0733f",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "5c65a18",
+    "date": "2026-11-25",
+    "author": "adm01-debug",
+    "subject": "docs: recibos de 20261115130100 e 20261119110500 no ledger (#4090)",
+    "files": [
+     "supabase/MIGRATIONS_SYNC_LOG.md"
+    ]
+   },
    {
     "sha": "2e4913f",
     "date": "2026-11-25",
@@ -564440,15 +564449,6 @@
      "supabase/MIGRATIONS_SYNC_LOG.md",
      "supabase/migrations/20261124163000_revoke_anon_unit_cost_print_areas.sql",
      "supabase/rollbacks/20261124163000_rollback.sql"
-    ]
-   },
-   {
-    "sha": "c790e80",
-    "date": "2026-11-24",
-    "author": "github-actions[bot]",
-    "subject": "docs(migrations-log): recibo E15 — aplicação de 20261124171500 (#4051)",
-    "files": [
-     "supabase/MIGRATIONS_SYNC_LOG.md"
     ]
    }
   ],

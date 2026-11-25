@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "2e4913f89ff897c815c97bb987c7e0e27e2d0f34",
+  "commit": "5c65a1802cdd12b16df8142a012b67c5ecb0733f",
   "branch": "main",
-  "data_commit": "2026-11-25T13:16:31-03:00",
+  "data_commit": "2026-11-25T13:31:07-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "5c65a18",
+    "data": "2026-11-25",
+    "assunto": "docs: recibos de 20261115130100 e 20261119110500 no ledger (#4090)"
+   },
    {
     "sha": "2e4913f",
     "data": "2026-11-25",
@@ -126,11 +131,6 @@
     "sha": "9238b31",
     "data": "2026-11-24",
     "assunto": "fix: hooks de areas de gravacao pedem colunas explicitas (#4055)"
-   },
-   {
-    "sha": "519b6a3",
-    "data": "2026-11-24",
-    "assunto": "fix: leitura de areas de gravacao segue a projecao da view publica (#4054)"
    }
   ],
   "arquivos_mudados_7d": 611,
@@ -193,13 +193,13 @@
    },
    {
     "pasta": "supabase/MIGRATIONS_SYNC_LOG.md",
-    "mudancas": 76
+    "mudancas": 77
    }
   ],
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "supabase/MIGRATIONS_SYNC_LOG.md",
-    "mudancas": 76
+    "mudancas": 77
    },
    {
     "arquivo": "docs/qa/05-PROGRESSO.md",
