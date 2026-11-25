@@ -12,11 +12,25 @@
 -- (public.magazine_ensure_view_event_partitions + cron 'magazine-partition-maintenance',
 -- jobid 301, ativo, roda diariamente às 04:00) sem introduzir nova extensão.
 --
--- Diferença deliberada do padrão espelhado: as partições de
--- supplier_products_raw_history não têm GRANT nem policy por partição (controle de
--- acesso vive só na tabela-mãe — confirmado via information_schema.role_table_grants
--- e pg_policy sobre supplier_products_raw_history_p2026_09, ambos vazios). A função
--- abaixo por isso não replica os passos de RLS/GRANT por partição do espelho.
+-- CORREÇÃO (2026-11-25) — a premissa original desta seção estava errada.
+-- Texto anterior: "as partições não têm GRANT nem policy por partição (controle de
+-- acesso vive só na tabela-mãe); a função por isso não replica os passos de
+-- RLS/GRANT por partição do espelho". Isso só era verdade para as partições
+-- p2026_* naquele instante — e porque estavam assim, o Supabase acusou
+-- `rls_disabled_in_public` nelas.
+-- RLS é por RELAÇÃO e NÃO é herdada por partição: uma partição sem
+-- `ENABLE ROW LEVEL SECURITY` fica fora do alcance do RLS da mãe quando é
+-- consultada diretamente (o que o PostgREST permite). O incidente já aconteceu
+-- neste mesmo conjunto de tabelas em
+-- 20261104100000_partitions_supplier_products_raw_history_2027.sql:14-52
+-- (10 partições criadas sem RLS) e precisou ser corrigido depois em
+-- 20261112140000_fix_rls_supplier_products_raw_history_p2027.sql.
+-- Como a função abaixo cria partições NOVAS em produção todo mês, ela precisa
+-- nascer criando RLS + policies — senão cada execução do cron reabre o incidente
+-- uma vez por mês, de forma silenciosa. O bloco por partição replica exatamente
+-- fn_purge_spr_history JOB 3 (20260903093431_spr_partition_policies_parity_and_smoke_relkind.sql),
+-- que é o criador de partições já em produção.
+-- A partição DEFAULT recebe o mesmo tratamento, por DDL explícita abaixo.
 --
 -- Rede de segurança: partição DEFAULT (supplier_products_raw_history_default), hoje
 -- inexistente. Sem ela, um INSERT com captured_at fora de qualquer partição futura
@@ -81,6 +95,12 @@ BEGIN
         'CREATE TABLE public.%I PARTITION OF public.supplier_products_raw_history FOR VALUES FROM (%L) TO (%L)',
         v_name, v_month, (v_month + interval '1 month')::date
       );
+      -- RLS é por relação e NÃO é herdada: a partição nasce protegida, com as mesmas
+      -- duas policies das irmãs (paridade 2026-09-03). Sem isto, cada mês o cron
+      -- reabriria o achado `rls_disabled_in_public` do Supabase.
+      EXECUTE format('ALTER TABLE public.%I ENABLE ROW LEVEL SECURITY', v_name);
+      EXECUTE format('CREATE POLICY hist_all_service ON public.%I FOR ALL TO service_role USING (true) WITH CHECK (true)', v_name);
+      EXECUTE format('CREATE POLICY hist_select_admin ON public.%I FOR SELECT TO authenticated USING (public.is_admin_or_above((SELECT auth.uid())))', v_name);
       v_created := v_created + 1;
     END IF;
   END LOOP;
@@ -96,6 +116,12 @@ COMMENT ON FUNCTION public.fn_ensure_history_partitions(integer) IS
   'via cron supplier-history-partition-maintenance (job separado supplier-history-default-'
   'partition-alert cobre o caso de falha desta manutenção).';
 
+-- Hardening: a função é SECURITY DEFINER e escreve DDL; sem REVOKE ela ficaria
+-- exposta como RPC do PostgREST para anon/authenticated. Mesmo padrão de
+-- 20260716000029_revoke_auth_internal_mvs_and_secdef_pipeline_fns.sql.
+REVOKE EXECUTE ON FUNCTION public.fn_ensure_history_partitions(integer) FROM PUBLIC, anon, authenticated;
+GRANT EXECUTE ON FUNCTION public.fn_ensure_history_partitions(integer) TO service_role;
+
 -- Backfill imediato: cobre até bem depois do prazo de 2026-12-15 (6 meses à frente
 -- de 2026-09 = até 2027-02 inclusive), independente do que o cron diário venha a fazer.
 SELECT public.fn_ensure_history_partitions(6);
@@ -103,6 +129,14 @@ SELECT public.fn_ensure_history_partitions(6);
 -- Partição DEFAULT — rede de segurança contra falha de manutenção futura.
 CREATE TABLE public.supplier_products_raw_history_default
   PARTITION OF public.supplier_products_raw_history DEFAULT;
+
+-- A DEFAULT também é uma relação: precisa de RLS + policies próprias, senão o
+-- PostgREST a expõe sem filtro (mesmo achado rls_disabled_in_public).
+ALTER TABLE public.supplier_products_raw_history_default ENABLE ROW LEVEL SECURITY;
+CREATE POLICY hist_all_service ON public.supplier_products_raw_history_default
+  FOR ALL TO service_role USING (true) WITH CHECK (true);
+CREATE POLICY hist_select_admin ON public.supplier_products_raw_history_default
+  FOR SELECT TO authenticated USING (public.is_admin_or_above((SELECT auth.uid())));
 
 COMMENT ON TABLE public.supplier_products_raw_history_default IS
   'Rede de segurança E25: recebe linhas de supplier_products_raw_history com captured_at '
@@ -140,6 +174,7 @@ $do$;$cron$
 DO $postcondition$
 DECLARE
   v_future_partitions integer;
+  v_unprotected text;
 BEGIN
   SELECT count(*) INTO v_future_partitions
   FROM pg_class
@@ -152,6 +187,29 @@ BEGIN
 
   IF to_regclass('public.supplier_products_raw_history_default') IS NULL THEN
     RAISE EXCEPTION 'Pós-condição falhou: partição DEFAULT não foi criada';
+  END IF;
+
+  -- Invariante de segurança: nenhuma partição desta família pode existir sem RLS
+  -- ativo e sem as duas policies. Foi exatamente essa ausência que gerou o achado
+  -- rls_disabled_in_public corrigido em 20261112140000. Falhar aqui aborta a
+  -- migration inteira (transação única), então nada fica meio-aplicado.
+  SELECT string_agg(c.relname, ', ' ORDER BY c.relname) INTO v_unprotected
+  FROM pg_class c
+  JOIN pg_namespace n ON n.oid = c.relnamespace
+  WHERE n.nspname = 'public'
+    AND c.relkind IN ('r', 'p')
+    AND c.relispartition
+    AND c.relname LIKE 'supplier_products_raw_history_%'
+    AND (
+      NOT c.relrowsecurity
+      OR (SELECT count(*) FROM pg_policies p
+           WHERE p.schemaname = 'public'
+             AND p.tablename = c.relname
+             AND p.policyname IN ('hist_all_service', 'hist_select_admin')) <> 2
+    );
+
+  IF v_unprotected IS NOT NULL THEN
+    RAISE EXCEPTION 'Pós-condição falhou: partições sem RLS ou sem as 2 policies: %', v_unprotected;
   END IF;
 
   IF NOT EXISTS (SELECT 1 FROM cron.job WHERE jobname = 'supplier-history-partition-maintenance' AND active) THEN
