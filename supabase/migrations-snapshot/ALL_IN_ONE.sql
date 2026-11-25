@@ -1,7 +1,7 @@
 -- ==============================================================
 -- ALL_IN_ONE.sql — snapshot concatenado de supabase/migrations/
--- Gerado em: 2026-11-25T17:12:58.367Z
--- Total de arquivos: 3136
+-- Gerado em: 2026-11-25T20:49:37.869Z
+-- Total de arquivos: 3137
 -- Ordem: alfabética (mesmo critério do Supabase CLI)
 -- Uso: APENAS auditoria/leitura. NÃO aplicar direto no banco.
 -- SSOT continua sendo os arquivos individuais em supabase/migrations/.
@@ -248631,6 +248631,10 @@ WHERE slug = 'google' AND secret_name = 'GOOGLE_API_KEY';
 -- Plano: docs/plans/PLANO_DBA_CORRECOES_MELHORIAS_50_ETAPAS_2026-09-16.md (linhas 520-531)
 -- Prazo duro citado no plano: 2026-12-15 (última partição mensal viva hoje é p2026_12).
 --
+-- Rollback: supabase/rollbacks/20260916193000_rollback.sql (remove os 2 jobs de cron, a
+--           função fn_ensure_history_partitions e a partição DEFAULT apenas se estiver
+--           vazia; as partições mensais ficam — guardam dados reais).
+--
 -- Correção ao texto do plano: a coluna de particionamento é `captured_at`,
 -- não `created_at` como o texto do plano menciona. Confirmado ao vivo via
 -- pg_partitioned_table/pg_attribute em 2026-09-16.
@@ -248641,11 +248645,25 @@ WHERE slug = 'google' AND secret_name = 'GOOGLE_API_KEY';
 -- (public.magazine_ensure_view_event_partitions + cron 'magazine-partition-maintenance',
 -- jobid 301, ativo, roda diariamente às 04:00) sem introduzir nova extensão.
 --
--- Diferença deliberada do padrão espelhado: as partições de
--- supplier_products_raw_history não têm GRANT nem policy por partição (controle de
--- acesso vive só na tabela-mãe — confirmado via information_schema.role_table_grants
--- e pg_policy sobre supplier_products_raw_history_p2026_09, ambos vazios). A função
--- abaixo por isso não replica os passos de RLS/GRANT por partição do espelho.
+-- CORREÇÃO (2026-11-25) — a premissa original desta seção estava errada.
+-- Texto anterior: "as partições não têm GRANT nem policy por partição (controle de
+-- acesso vive só na tabela-mãe); a função por isso não replica os passos de
+-- RLS/GRANT por partição do espelho". Isso só era verdade para as partições
+-- p2026_* naquele instante — e porque estavam assim, o Supabase acusou
+-- `rls_disabled_in_public` nelas.
+-- RLS é por RELAÇÃO e NÃO é herdada por partição: uma partição sem
+-- `ENABLE ROW LEVEL SECURITY` fica fora do alcance do RLS da mãe quando é
+-- consultada diretamente (o que o PostgREST permite). O incidente já aconteceu
+-- neste mesmo conjunto de tabelas em
+-- 20261104100000_partitions_supplier_products_raw_history_2027.sql:14-52
+-- (10 partições criadas sem RLS) e precisou ser corrigido depois em
+-- 20261112140000_fix_rls_supplier_products_raw_history_p2027.sql.
+-- Como a função abaixo cria partições NOVAS em produção todo mês, ela precisa
+-- nascer criando RLS + policies — senão cada execução do cron reabre o incidente
+-- uma vez por mês, de forma silenciosa. O bloco por partição replica exatamente
+-- fn_purge_spr_history JOB 3 (20260903093431_spr_partition_policies_parity_and_smoke_relkind.sql),
+-- que é o criador de partições já em produção.
+-- A partição DEFAULT recebe o mesmo tratamento, por DDL explícita abaixo.
 --
 -- Rede de segurança: partição DEFAULT (supplier_products_raw_history_default), hoje
 -- inexistente. Sem ela, um INSERT com captured_at fora de qualquer partição futura
@@ -248710,6 +248728,12 @@ BEGIN
         'CREATE TABLE public.%I PARTITION OF public.supplier_products_raw_history FOR VALUES FROM (%L) TO (%L)',
         v_name, v_month, (v_month + interval '1 month')::date
       );
+      -- RLS é por relação e NÃO é herdada: a partição nasce protegida, com as mesmas
+      -- duas policies das irmãs (paridade 2026-09-03). Sem isto, cada mês o cron
+      -- reabriria o achado `rls_disabled_in_public` do Supabase.
+      EXECUTE format('ALTER TABLE public.%I ENABLE ROW LEVEL SECURITY', v_name);
+      EXECUTE format('CREATE POLICY hist_all_service ON public.%I FOR ALL TO service_role USING (true) WITH CHECK (true)', v_name);
+      EXECUTE format('CREATE POLICY hist_select_admin ON public.%I FOR SELECT TO authenticated USING (public.is_admin_or_above((SELECT auth.uid())))', v_name);
       v_created := v_created + 1;
     END IF;
   END LOOP;
@@ -248725,6 +248749,12 @@ COMMENT ON FUNCTION public.fn_ensure_history_partitions(integer) IS
   'via cron supplier-history-partition-maintenance (job separado supplier-history-default-'
   'partition-alert cobre o caso de falha desta manutenção).';
 
+-- Hardening: a função é SECURITY DEFINER e escreve DDL; sem REVOKE ela ficaria
+-- exposta como RPC do PostgREST para anon/authenticated. Mesmo padrão de
+-- 20260716000029_revoke_auth_internal_mvs_and_secdef_pipeline_fns.sql.
+REVOKE EXECUTE ON FUNCTION public.fn_ensure_history_partitions(integer) FROM PUBLIC, anon, authenticated;
+GRANT EXECUTE ON FUNCTION public.fn_ensure_history_partitions(integer) TO service_role;
+
 -- Backfill imediato: cobre até bem depois do prazo de 2026-12-15 (6 meses à frente
 -- de 2026-09 = até 2027-02 inclusive), independente do que o cron diário venha a fazer.
 SELECT public.fn_ensure_history_partitions(6);
@@ -248732,6 +248762,14 @@ SELECT public.fn_ensure_history_partitions(6);
 -- Partição DEFAULT — rede de segurança contra falha de manutenção futura.
 CREATE TABLE public.supplier_products_raw_history_default
   PARTITION OF public.supplier_products_raw_history DEFAULT;
+
+-- A DEFAULT também é uma relação: precisa de RLS + policies próprias, senão o
+-- PostgREST a expõe sem filtro (mesmo achado rls_disabled_in_public).
+ALTER TABLE public.supplier_products_raw_history_default ENABLE ROW LEVEL SECURITY;
+CREATE POLICY hist_all_service ON public.supplier_products_raw_history_default
+  FOR ALL TO service_role USING (true) WITH CHECK (true);
+CREATE POLICY hist_select_admin ON public.supplier_products_raw_history_default
+  FOR SELECT TO authenticated USING (public.is_admin_or_above((SELECT auth.uid())));
 
 COMMENT ON TABLE public.supplier_products_raw_history_default IS
   'Rede de segurança E25: recebe linhas de supplier_products_raw_history com captured_at '
@@ -248769,6 +248807,7 @@ $do$;$cron$
 DO $postcondition$
 DECLARE
   v_future_partitions integer;
+  v_unprotected text;
 BEGIN
   SELECT count(*) INTO v_future_partitions
   FROM pg_class
@@ -248781,6 +248820,29 @@ BEGIN
 
   IF to_regclass('public.supplier_products_raw_history_default') IS NULL THEN
     RAISE EXCEPTION 'Pós-condição falhou: partição DEFAULT não foi criada';
+  END IF;
+
+  -- Invariante de segurança: nenhuma partição desta família pode existir sem RLS
+  -- ativo e sem as duas policies. Foi exatamente essa ausência que gerou o achado
+  -- rls_disabled_in_public corrigido em 20261112140000. Falhar aqui aborta a
+  -- migration inteira (transação única), então nada fica meio-aplicado.
+  SELECT string_agg(c.relname, ', ' ORDER BY c.relname) INTO v_unprotected
+  FROM pg_class c
+  JOIN pg_namespace n ON n.oid = c.relnamespace
+  WHERE n.nspname = 'public'
+    AND c.relkind IN ('r', 'p')
+    AND c.relispartition
+    AND c.relname LIKE 'supplier_products_raw_history_%'
+    AND (
+      NOT c.relrowsecurity
+      OR (SELECT count(*) FROM pg_policies p
+           WHERE p.schemaname = 'public'
+             AND p.tablename = c.relname
+             AND p.policyname IN ('hist_all_service', 'hist_select_admin')) <> 2
+    );
+
+  IF v_unprotected IS NOT NULL THEN
+    RAISE EXCEPTION 'Pós-condição falhou: partições sem RLS ou sem as 2 policies: %', v_unprotected;
   END IF;
 
   IF NOT EXISTS (SELECT 1 FROM cron.job WHERE jobname = 'supplier-history-partition-maintenance' AND active) THEN
@@ -256014,6 +256076,17 @@ $$;
 -- Evidência: auditoria 2026-10-27 docs/db/PGMQ_AND_SECRETS_AUDIT_2026-10-27.md
 -- Rollback: supabase/rollbacks/20261027230000_rollback.sql
 --   (reinsere as 3 entradas stale: WEBHOOK_DISPATCHER_URL, WEBHOOK_SECRET, ASIA_INGESTION_CRON_SECRET)
+--
+-- Revisao 2026-11-25 (antes do apply): pre-condicoes reverificadas no canonico.
+--   * Os 3 consumidores sao defensivos: public.fn_process_webhook_outbox_batch chama a
+--     funcao dentro de BEGIN/EXCEPTION com endpoint hardcoded de fallback
+--     (supabase/migrations-snapshot/SCHEMA_LIVE.sql:36751) e o cron process-webhook-outbox
+--     esta desabilitado desde a P0 de 2026-06-23; supabase/functions/_shared/dispatcher-auth.ts:102
+--     trata erro/vazio como "" e autentica por env WEBHOOK_DISPATCHER_SECRET; e
+--     supabase/functions/asia-ingestion/index.ts:89 le ASIA_INGESTION_CRON_SECRET do proprio env.
+--   * ASIA_INGESTION_CRON_SECRET nao aparece em nenhum outro ponto do canonico alem do allowlist.
+--   * search_path passa a incluir pg_temp (E066): sem ele a funcao SECURITY DEFINER fica
+--     exposta a shadowing por objetos de sessao temporarios.
 
 -- ── PRÉ-CONDIÇÃO: função existe e ainda contém as entradas stale ──────────────
 DO $$
@@ -256035,7 +256108,7 @@ CREATE OR REPLACE FUNCTION public.get_edge_function_secret(_name text)
 RETURNS text
 LANGUAGE plpgsql
 SECURITY DEFINER
-SET search_path = public, vault
+SET search_path = vault, public, pg_temp
 AS $$
 DECLARE
   _secret text;
@@ -266449,3 +266522,111 @@ END
 $verify$;
 
 -- <<< END 20261125173000_idx_sds_summary_date_supplier_aplicavel.sql <<<
+
+-- >>> BEGIN 20261125180000_fix_comment_v_tabela_gravacao_publica.sql >>>
+-- 20261125180000 - corrige o COMMENT da view de preco de gravacao publica
+--
+-- Rollback: supabase/rollbacks/20261125180000_rollback.sql
+--
+-- Causa: o texto gravado em 20260717173348_secure_tabela_gravacao_anon_definer_v1.sql (linhas 43-48)
+-- afirmava que `custo_setup_por_cor` e `custo_manuseio_por_peca` estavam EXCLUIDOS da projecao.
+-- pg_attribute prova o contrario: a view projeta as duas colunas (posicoes 27 e 28 de 37).
+-- A 20261117073000 ja registrava a divergencia (linhas 232-234) e a deixou para o dono.
+--
+-- Estado do banco antes desta migration (medido em 2026-11-25 no dump do projeto canonico
+-- doufsxqlfjyuvxuezpln, supabase/migrations-snapshot/SCHEMA_LIVE.sql:90047): o texto antigo NAO
+-- esta mais vivo - a 20261122180000 o substituiu ao reverter o security_invoker. O texto vivo,
+-- porem, so fala da trava de security_invoker e NAO desmente a afirmacao antiga nem explica as
+-- duas colunas `custo_*`, entao a leitura de quem consulta o catalogo continua levando a supor
+-- custo fora da view. Esta migration parte do texto VIVO (byte a byte) e acrescenta o fato medido.
+--
+-- O que esta migration faz: reescreve o texto do comentario. Nenhum privilegio, grant, policy ou
+-- definicao de view muda - e DDL de catalogo (obj_description) apenas.
+--
+-- O que o comentario corrigido passa a dizer, e que o post-check prova contra pg_catalog:
+--   * custo monetario continua FORA da view (custo_setup, markup_percent, custo_aplicacao,
+--     custo_termo_transferencia, custo_queima_forno, faturamento_minimo) - ausentes de pg_attribute;
+--   * `custo_setup_por_cor` e `custo_manuseio_por_peca` estao PRESENTES, mas sao BOOLEAN (flags
+--     "cobra taxa por cor?" / "cobra taxa de manuseio por peca?"), nao valores em R$;
+--   * a trava operacional segue a mesma: NAO reverter para security_invoker=true nem re-expor a
+--     tabela base ao anon (a definicao da view depende de SECURITY DEFINER).
+--
+-- Forward-only e idempotente: rodar de novo grava o mesmo texto.
+-- Rollback em supabase/rollbacks/20261125150000_rollback.sql (volta ao texto vivo de hoje).
+
+COMMENT ON VIEW public.v_tabela_preco_gravacao_oficial_public IS
+  'Tabela de preco de gravacao oficial (SECURITY DEFINER). NAO religar security_invoker=true nem re-expor a tabela base ao anon: exigiria GRANT em 37 colunas. Regressao de 2026-11-22 revertida pela 20261122180000. Projecao conferida em pg_attribute (20261125150000): custo_setup, markup_percent, custo_aplicacao, custo_termo_transferencia, custo_queima_forno e faturamento_minimo NAO estao na view; custo_setup_por_cor e custo_manuseio_por_peca ESTAO, porem sao BOOLEAN (flags "cobra taxa por cor?" e "cobra taxa de manuseio por peca?"), nao valores em R$. O texto de 20260717173348 afirmava que as duas estavam excluidas - era falso.';
+
+
+-- ---------------------------------------------------------------------------
+-- Post-check: o comentario tem de descrever a projecao real (pg_catalog), o custo
+-- monetario tem de continuar ausente e o anon tem de continuar lendo a view.
+-- ---------------------------------------------------------------------------
+DO $verify$
+DECLARE
+  v_comment   text;
+  v_ncols     int;
+  v_missing   text[] := '{}';
+  v_leaked    text[] := '{}';
+  v_forbidden text[] := ARRAY['custo_setup','markup_percent','custo_aplicacao',
+                              'custo_termo_transferencia','custo_queima_forno','faturamento_minimo'];
+  v_typename  text;
+  v_name      text;
+BEGIN
+  v_comment := obj_description('public.v_tabela_preco_gravacao_oficial_public'::regclass, 'pg_class');
+
+  IF v_comment IS NULL OR position('20261125150000' in v_comment) = 0 THEN
+    RAISE EXCEPTION 'comment da view nao foi gravado (obj_description nao contem a marca da 20261125150000)';
+  END IF;
+
+  -- custo monetario nao pode aparecer na projecao
+  FOREACH v_name IN ARRAY v_forbidden LOOP
+    IF EXISTS (
+      SELECT 1 FROM pg_attribute
+      WHERE attrelid = 'public.v_tabela_preco_gravacao_oficial_public'::regclass
+        AND attname = v_name AND attnum > 0 AND NOT attisdropped
+    ) THEN
+      v_leaked := v_leaked || v_name;
+    END IF;
+  END LOOP;
+  IF array_length(v_leaked, 1) > 0 THEN
+    RAISE EXCEPTION 'custo monetario nao esta ausente da projecao: %', array_to_string(v_leaked, ', ');
+  END IF;
+
+  -- as duas flags tem de existir E ser boolean (o comentario novo afirma isso)
+  FOREACH v_name IN ARRAY ARRAY['custo_setup_por_cor','custo_manuseio_por_peca'] LOOP
+    SELECT t.typname INTO v_typename
+    FROM pg_attribute a
+    JOIN pg_type t ON t.oid = a.atttypid
+    WHERE a.attrelid = 'public.v_tabela_preco_gravacao_oficial_public'::regclass
+      AND a.attname = v_name AND a.attnum > 0 AND NOT a.attisdropped;
+    IF v_typename IS NULL THEN
+      v_missing := v_missing || v_name;
+    ELSIF v_typename <> 'bool' THEN
+      RAISE EXCEPTION 'a coluna % nao e boolean (tipo %): o comentario novo estaria errado', v_name, v_typename;
+    END IF;
+  END LOOP;
+  IF array_length(v_missing, 1) > 0 THEN
+    RAISE EXCEPTION 'coluna(s) que o comentario descreve como presentes nao existem na view: %',
+      array_to_string(v_missing, ', ');
+  END IF;
+
+  -- funcionalidade preservada: anon continua lendo a view
+  IF NOT has_table_privilege('anon', 'public.v_tabela_preco_gravacao_oficial_public', 'SELECT') THEN
+    RAISE EXCEPTION 'anon perdeu SELECT na view - esta migration nao podia tocar privilegio';
+  END IF;
+
+  -- o comentario cita "37 colunas": avisa (sem abortar) se a projecao ja nao tiver esse tamanho
+  SELECT count(*) INTO v_ncols
+  FROM pg_attribute
+  WHERE attrelid = 'public.v_tabela_preco_gravacao_oficial_public'::regclass
+    AND attnum > 0 AND NOT attisdropped;
+  IF v_ncols <> 37 THEN
+    RAISE WARNING 'a view tem % colunas e nao 37: o texto do comentario precisa de nova revisao', v_ncols;
+  END IF;
+
+  RAISE NOTICE 'ok: comment corrigido, custo monetario ausente, 2 flags boolean presentes, anon segue com SELECT';
+END
+$verify$;
+
+-- <<< END 20261125180000_fix_comment_v_tabela_gravacao_publica.sql <<<
