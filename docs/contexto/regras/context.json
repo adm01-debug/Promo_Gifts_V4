@@ -1,9 +1,9 @@
 {
  "meta": {
-  "sha": "74b2b8738ef279d41d4d800df4354e125024ebd8",
+  "sha": "2bbfb0bfbf38118a5325278ffdff0094e96e5049",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-25 21:03 UTC",
+  "generated_at": "2026-11-25 21:26 UTC",
   "files_total": 11210,
   "code_files": 9197,
   "code_lines": 1305231
@@ -565067,10 +565067,19 @@
   }
  },
  "git": {
-  "sha": "74b2b8738ef279d41d4d800df4354e125024ebd8",
+  "sha": "2bbfb0bfbf38118a5325278ffdff0094e96e5049",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "2bbfb0b",
+    "date": "2026-11-25",
+    "author": "adm01-debug",
+    "subject": "fix(ci): recibo final da 20261120040000 destrava o gate E055 (#4127)",
+    "files": [
+     "supabase/MIGRATIONS_SYNC_LOG.md"
+    ]
+   },
    {
     "sha": "74b2b87",
     "date": "2026-11-25",
@@ -565368,15 +565377,6 @@
      "CHANGELOG.md",
      "package-lock.json",
      "package.json"
-    ]
-   },
-   {
-    "sha": "f57f0cd",
-    "date": "2026-11-25",
-    "author": "adm01-debug",
-    "subject": "docs(migrations-log): remove a linha de pre-registro duplicada da 20261125131000 (#4078)",
-    "files": [
-     "supabase/MIGRATIONS_SYNC_LOG.md"
     ]
    }
   ],

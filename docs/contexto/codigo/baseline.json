@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "74b2b8738ef279d41d4d800df4354e125024ebd8",
+  "commit": "2bbfb0bfbf38118a5325278ffdff0094e96e5049",
   "branch": "main",
-  "data_commit": "2026-11-25T18:02:16-03:00",
+  "data_commit": "2026-11-25T18:25:42-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "2bbfb0b",
+    "data": "2026-11-25",
+    "assunto": "fix(ci): recibo final da 20261120040000 destrava o gate E055 (#4127)"
+   },
    {
     "sha": "74b2b87",
     "data": "2026-11-25",
@@ -126,14 +131,9 @@
     "sha": "4eae35f",
     "data": "2026-11-25",
     "assunto": "fix: corrige approved-by do indice de stock_daily_summary (#4092) (#4093)"
-   },
-   {
-    "sha": "4107894",
-    "data": "2026-11-25",
-    "assunto": "perf: torna aplicavel o indice de stock_daily_summary do market-intel (#4092)"
    }
   ],
-  "arquivos_mudados_7d": 574,
+  "arquivos_mudados_7d": 573,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -169,7 +169,7 @@
    },
    {
     "pasta": "supabase/MIGRATIONS_SYNC_LOG.md",
-    "mudancas": 88
+    "mudancas": 89
    },
    {
     "pasta": "src/pages/quotes",
@@ -199,7 +199,7 @@
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "supabase/MIGRATIONS_SYNC_LOG.md",
-    "mudancas": 88
+    "mudancas": 89
    },
    {
     "arquivo": "docs/qa/05-PROGRESSO.md",
@@ -207,15 +207,15 @@
    },
    {
     "arquivo": "package.json",
-    "mudancas": 24
+    "mudancas": 23
    },
    {
     "arquivo": "package-lock.json",
-    "mudancas": 21
+    "mudancas": 20
    },
    {
     "arquivo": "CHANGELOG.md",
-    "mudancas": 16
+    "mudancas": 15
    },
    {
     "arquivo": "docs/coordenacao/conflitos-semanticos.md",

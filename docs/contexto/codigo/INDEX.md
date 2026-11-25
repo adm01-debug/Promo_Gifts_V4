@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e de hora em hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `74b2b8738ef279d41d4d800df4354e125024ebd8` (2026-11-25T18:02:16-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e de hora em hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `2bbfb0bfbf38118a5325278ffdff0094e96e5049` (2026-11-25T18:25:42-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -599,17 +599,17 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - possiveis_segredos_no_codigo: 7 — ex.: scripts/ai-context/cenarios.mjs:102, src/components/admin/connections/__tests__/ConnectionSecurity.unit.test.tsx:9, src/integrations/supabase/client.ts:27
 
 ## Grafo de código (graphify)
-- 51013 nós · 86500 arestas · 2874 comunidades · grafo do commit `74b2b873`
+- 51013 nós · 86500 arestas · 2874 comunidades · grafo do commit `2bbfb0bf`
 - comunidades maiores: vitest (1050), ref_components (727), react (598), @tanstack/react-query (476), ref_node_child_process (423), ref_hooks (390), sonner (349), react-router-dom (348), gotoAndSettle (342), scripts (312), ref_node_fs (311), getCorsHeaders (280)
 - símbolos mais chamados: gotoAndSettle() (e2e/helpers/nav.ts), re (?), json (?), q() (scripts/supabase_snapshot/snapshot.py), analyze() (tests/scripts/test_personalization_artifact_diagnostics.py), outer() (tests/scripts/test_personalization_artifact_diagnostics.py), useExternalDatabase() (recovery/src-legacy/src/hooks/useExternalDatabase.ts), concludeCheck() (scripts/check-result-contract.mjs), querySupabaseReadOnly() (scripts/supabase-read-only-query.mjs), loginAs() (e2e/helpers/auth.ts), inner() (tests/scripts/test_personalization_artifact_diagnostics.py), excluded_sql() (scripts/supabase_snapshot/snapshot.py)
 - consulta local: `graphify query "<pergunta>"`, `graphify path "<A>" "<B>"`, `graphify explain "<X>"`
 
 ## Hotspots (arquivos mais alterados, 90 dias)
-- supabase/MIGRATIONS_SYNC_LOG.md (88)
+- supabase/MIGRATIONS_SYNC_LOG.md (89)
 - docs/qa/05-PROGRESSO.md (31)
-- package.json (24)
-- package-lock.json (21)
-- CHANGELOG.md (16)
+- package.json (23)
+- package-lock.json (20)
+- CHANGELOG.md (15)
 - docs/coordenacao/conflitos-semanticos.md (9)
 - src/lib/freight/index.ts (8)
 - src/pages/quotes/QuoteBuilderPage.tsx (8)
@@ -1198,6 +1198,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - CHANGELOG topo: [1.20.1](https://github.com/adm01-debug/Promo_Gifts_V4/compare/gifts-store-v1.20.0...gifts-store-v1.20.1) (2026-11-25)
 
 ## Últimos commits
+- 2026-11-25 `2bbfb0b` fix(ci): recibo final da 20261120040000 destrava o gate E055 (#4127)
 - 2026-11-25 `74b2b87` chore(schema-snapshot): snapshot semanal 2026-W48 (run 45697871384) (#4123)
 - 2026-11-25 `de33a8d` docs(migrations-log): recibo E15 — aplicação de 20261120040000 (#4118)
 - 2026-11-25 `fd4bdb0` docs(migrations-log): recibo E15 — aplicação de 20261125074200 (#4116)
@@ -1212,7 +1213,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-25 `7987262` docs(e25): registra a aplicacao em producao e resolve o risco em prod-readiness (#4104)
 - 2026-11-25 `d7dbf20` chore(security): atualiza baseline assinado de RLS policies (#4107)
 - 2026-11-25 `f7c5a7d` docs(migrations-log): recibo E15 — aplicação de 20260916193000 (#4103)
-- 2026-11-25 `3b58891` fix(e25): incorpora o hardening RLS da #4084 e completa a automacao de particoes (nunca aplicada) (#4102)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`
