@@ -978,7 +978,7 @@
   {
    "arquivo": "scripts/check-migration-receipts.mjs",
    "descricao": "* check-migration-receipts.mjs (P200-E055)",
-   "linhas": 239,
+   "linhas": 270,
    "env": [],
    "npm_scripts": [
     "check:migration-receipts"

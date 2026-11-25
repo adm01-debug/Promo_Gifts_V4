@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e de hora em hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `aa0240f3b91631739fc4fd61e383ed218b3361ec` (2026-11-25T14:56:23-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e de hora em hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `7a7c936013b6f728c9c53757021171422f0cb7cd` (2026-11-25T15:13:14-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -36,7 +36,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 |---|---|
 | arquivos_total | 11278 |
 | arquivos_codigo | 5682 |
-| linhas_codigo | 1076946 |
+| linhas_codigo | 1077068 |
 | rotas | 141 |
 | rotas_http_backend | 13 |
 | vistas_por_id | 0 |
@@ -599,16 +599,16 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - possiveis_segredos_no_codigo: 7 — ex.: scripts/ai-context/cenarios.mjs:102, src/components/admin/connections/__tests__/ConnectionSecurity.unit.test.tsx:9, src/integrations/supabase/client.ts:27
 
 ## Grafo de código (graphify)
-- 51005 nós · 86485 arestas · 2824 comunidades · grafo do commit `aa0240f3`
-- comunidades maiores: vitest (1194), ref_components (725), ref_lib (591), react (529), ref_node_child_process (497), @tanstack/react-query (496), react-router-dom (358), sonner (346), gotoAndSettle (328), scripts (312), cors.ts (301), ref_node_fs (296)
+- 51008 nós · 86492 arestas · 2821 comunidades · grafo do commit `7a7c9360`
+- comunidades maiores: ref_integrations (643), vitest (634), lucide-react (620), ref_components (596), react-router-dom (524), ref_node_child_process (499), ref_hooks (443), react (383), ref_node_fs (375), @tanstack/react-query (374), ref_types (373), cors.ts (354)
 - símbolos mais chamados: gotoAndSettle() (e2e/helpers/nav.ts), re (?), json (?), q() (scripts/supabase_snapshot/snapshot.py), analyze() (tests/scripts/test_personalization_artifact_diagnostics.py), outer() (tests/scripts/test_personalization_artifact_diagnostics.py), useExternalDatabase() (recovery/src-legacy/src/hooks/useExternalDatabase.ts), concludeCheck() (scripts/check-result-contract.mjs), querySupabaseReadOnly() (scripts/supabase-read-only-query.mjs), loginAs() (e2e/helpers/auth.ts), inner() (tests/scripts/test_personalization_artifact_diagnostics.py), excluded_sql() (scripts/supabase_snapshot/snapshot.py)
 - consulta local: `graphify query "<pergunta>"`, `graphify path "<A>" "<B>"`, `graphify explain "<X>"`
 
 ## Hotspots (arquivos mais alterados, 90 dias)
-- supabase/MIGRATIONS_SYNC_LOG.md (83)
+- supabase/MIGRATIONS_SYNC_LOG.md (84)
 - docs/qa/05-PROGRESSO.md (31)
-- package.json (25)
-- package-lock.json (20)
+- package.json (24)
+- package-lock.json (19)
 - CHANGELOG.md (15)
 - docs/coordenacao/conflitos-semanticos.md (10)
 - src/lib/freight/index.ts (8)
@@ -1198,6 +1198,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - CHANGELOG topo: [1.20.0](https://github.com/adm01-debug/Promo_Gifts_V4/compare/gifts-store-v1.19.0...gifts-store-v1.20.0) (2026-11-25)
 
 ## Últimos commits
+- 2026-11-25 `7a7c936` fix: exige status final no recibo de migration aceito pelo gate E055 (#4099)
 - 2026-11-25 `aa0240f` docs(migrations-log): recibo E15 — aplicação de 20261125180000 (#4098)
 - 2026-11-25 `88a358e` fix: aplica o COMMENT da view de gravacao (cabecalho com Rollback:) (#4097)
 - 2026-11-25 `46f5863` fix: corrige COMMENT da view de preco de gravacao publica (retoma #4080) (#4096)
@@ -1212,7 +1213,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-25 `f57f0cd` docs(migrations-log): remove a linha de pre-registro duplicada da 20261125131000 (#4078)
 - 2026-11-25 `513be5a` docs(migrations-log): recibo E15 — aplicação de 20261125131000 (#4077)
 - 2026-11-25 `8c250b0` fix: restaura EXECUTE de anon no helper de RLS e reconcilia tripwire v5 (#4076)
-- 2026-11-25 `2fbd19f` chore(ci): bump actions/dependency-review-action para v5.0.1 (#4069)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

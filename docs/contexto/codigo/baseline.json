@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "aa0240f3b91631739fc4fd61e383ed218b3361ec",
+  "commit": "7a7c936013b6f728c9c53757021171422f0cb7cd",
   "branch": "main",
-  "data_commit": "2026-11-25T14:56:23-03:00",
+  "data_commit": "2026-11-25T15:13:14-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "7a7c936",
+    "data": "2026-11-25",
+    "assunto": "fix: exige status final no recibo de migration aceito pelo gate E055 (#4099)"
+   },
    {
     "sha": "aa0240f",
     "data": "2026-11-25",
@@ -126,14 +131,9 @@
     "sha": "2cf0263",
     "data": "2026-11-25",
     "assunto": "feat: testid do CTA de geracao de mockup e regressao que roda de verdade (#4063)"
-   },
-   {
-    "sha": "4d25f2d",
-    "data": "2026-11-25",
-    "assunto": "fix(ci): jitter E19 nos crons em :00/:30 + recupera o medidor de cron (#4061)"
    }
   ],
-  "arquivos_mudados_7d": 605,
+  "arquivos_mudados_7d": 599,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -176,11 +176,11 @@
     "mudancas": 85
    },
    {
-    "pasta": "src/components/mockup",
-    "mudancas": 83
+    "pasta": "supabase/MIGRATIONS_SYNC_LOG.md",
+    "mudancas": 84
    },
    {
-    "pasta": "supabase/MIGRATIONS_SYNC_LOG.md",
+    "pasta": "src/components/mockup",
     "mudancas": 83
    },
    {
@@ -199,7 +199,7 @@
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "supabase/MIGRATIONS_SYNC_LOG.md",
-    "mudancas": 83
+    "mudancas": 84
    },
    {
     "arquivo": "docs/qa/05-PROGRESSO.md",
@@ -207,11 +207,11 @@
    },
    {
     "arquivo": "package.json",
-    "mudancas": 25
+    "mudancas": 24
    },
    {
     "arquivo": "package-lock.json",
-    "mudancas": 20
+    "mudancas": 19
    },
    {
     "arquivo": "CHANGELOG.md",
@@ -312,7 +312,7 @@
  "contagens": {
   "arquivos_total": 11278,
   "arquivos_codigo": 5682,
-  "linhas_codigo": 1076946,
+  "linhas_codigo": 1077068,
   "rotas": 141,
   "rotas_http_backend": 13,
   "vistas_por_id": 0,
@@ -1224,7 +1224,7 @@
   },
   "scripts/check-migration-receipts.mjs": {
    "arquivos": 1,
-   "linhas": 239
+   "linhas": 270
   },
   "scripts/check-migrations-sync-log-gate.mjs": {
    "arquivos": 1,
@@ -2156,7 +2156,7 @@
   },
   "tests/scripts": {
    "arquivos": 182,
-   "linhas": 29551
+   "linhas": 29642
   },
   "tests/search": {
    "arquivos": 1,

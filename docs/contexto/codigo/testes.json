@@ -21219,9 +21219,9 @@
   {
    "arquivo": "tests/scripts/check-migration-receipts.test.mjs",
    "tipo": "unit",
-   "linhas": 128,
+   "linhas": 219,
    "testa": [],
-   "casos": 5
+   "casos": 9
   },
   {
    "arquivo": "tests/scripts/check-migrations-sync-log-gate.test.mjs",

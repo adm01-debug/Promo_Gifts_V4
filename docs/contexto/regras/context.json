@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "aa0240f3b91631739fc4fd61e383ed218b3361ec",
+  "sha": "7a7c936013b6f728c9c53757021171422f0cb7cd",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-25 17:58 UTC",
+  "generated_at": "2026-11-25 18:14 UTC",
   "files_total": 11208,
   "code_files": 9196,
-  "code_lines": 1304770
+  "code_lines": 1304892
  },
  "version": "1.3.2",
- "facts_hash": "3900007eef82f50c",
+ "facts_hash": "4b5e52716d23bf3e",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -151908,7 +151908,7 @@
   {
    "module": "scripts",
    "files": 301,
-   "lines": 65918,
+   "lines": 65949,
    "tables": [
     "a",
     "b",
@@ -154289,7 +154289,7 @@
   {
    "module": "tests",
    "files": 1115,
-   "lines": 176989,
+   "lines": 177080,
    "tables": [
     "bot_detection_log",
     "clients",
@@ -307743,6 +307743,26 @@
     "name": "exit 1 quando a versão não aparece no log"
    },
    {
+    "file": "tests/scripts/check-migration-receipts.test.mjs",
+    "name": "hasReceiptForVersion — status não-final não conta como recibo"
+   },
+   {
+    "file": "tests/scripts/check-migration-receipts.test.mjs",
+    "name": "exit 1 com status "
+   },
+   {
+    "file": "tests/scripts/check-migration-receipts.test.mjs",
+    "name": "exit 0 com status "
+   },
+   {
+    "file": "tests/scripts/check-migration-receipts.test.mjs",
+    "name": "exit 0 quando o pré-registro não-final convive com a linha "
+   },
+   {
+    "file": "tests/scripts/check-migration-receipts.test.mjs",
+    "name": "exit 1 quando só existe o pré-registro não-final da versão"
+   },
+   {
     "file": "tests/scripts/check-migrations-sync-log-gate.test.mjs",
     "name": "extractMigrationVersion"
    },
@@ -439066,16 +439086,16 @@
   },
   "scripts/check-migration-receipts.mjs": {
    "path": "scripts/check-migration-receipts.mjs",
-   "lines": 239,
+   "lines": 270,
    "rule_comments": [
-    "Linha \"pendente-only\" (contém a versão mas apenas status pendente, sem \"aplicada\")"
+    "apenas mencione \"pendente\"/\"aguardando\" no meio do texto."
    ],
    "doc": "!/usr/bin/env node",
    "calc_fns": [
     {
      "name": "validateSyncLogIntegrity",
      "params": "content",
-     "body": "if (!content || content.trim().length === 0) { return ['arquivo MIGRATIONS_SYNC_LOG.md está vazio']; } // Conta versões em linhas de tabela (1ª célula), não em cabeçalhos de seção. // Cabeçalhos como \"## Recibos — ... (versão > `20260623111612`)\" têm 14 dígitos // mas não são recibos individuais. const receiptLines = content.split('\\n').filter((l) => { if (!l.trimStart().startsWith('|')) return false; const firstCell = l.split('|')[1] ?? ''; return /`\\d{14}/.test(firstCell); }); if (receiptLines …"
+     "body": "if (!content || content.trim().length === 0) { return ['arquivo MIGRATIONS_SYNC_LOG.md está vazio']; } // Conta versões em linhas de tabela (1ª célula), não em cabeçalhos de seção. // Cabeçalhos como \"## Recibos — ... (versão > `20260623111612`)\" têm 14 dígitos // mas não são recibos individuais. const receiptLines = content.split('\\n').filter((l) => { if (!l.trimStart().startsWith('|')) return false; const firstCell = l."
     }
    ],
    "temporal": [
@@ -558539,8 +558559,11 @@
   },
   "tests/scripts/check-migration-receipts.test.mjs": {
    "path": "tests/scripts/check-migration-receipts.test.mjs",
-   "lines": 128,
+   "lines": 219,
    "is_test": true,
+   "rule_comments": [
+    "475 linhas do ledger usam este status de recibo retroativo — não pode virar falso negativo."
+   ],
    "doc": "Testa scripts/check-migration-receipts.mjs (gate E055 — recibo de migration em supabase/MIGRATIONS_SYNC_LOG.md). O script resolve o caminho do log como `path.resolve(__dirname, '..', 'supabase/MIGRATIONS_SYNC_LOG.md')`, relativo à sua própria localização (import.meta.url), não ao cwd. Por isso, para …",
    "tests": [
     "hasReceiptForVersion — versão com metacaractere de regex",
@@ -558549,7 +558572,12 @@
     "continua reconhecendo corretamente um recibo presente mesmo quando a versão contém metacaractere",
     "check-migration-receipts — regressão com versão canônica",
     "exit 0 quando a versão tem recibo ",
-    "exit 1 quando a versão não aparece no log"
+    "exit 1 quando a versão não aparece no log",
+    "hasReceiptForVersion — status não-final não conta como recibo",
+    "exit 1 com status ",
+    "exit 0 com status ",
+    "exit 0 quando o pré-registro não-final convive com a linha ",
+    "exit 1 quando só existe o pré-registro não-final da versão"
    ]
   },
   "tests/scripts/check-migrations-sync-log-gate.test.mjs": {
@@ -564865,10 +564893,21 @@
   }
  },
  "git": {
-  "sha": "aa0240f3b91631739fc4fd61e383ed218b3361ec",
+  "sha": "7a7c936013b6f728c9c53757021171422f0cb7cd",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "7a7c936",
+    "date": "2026-11-25",
+    "author": "adm01-debug",
+    "subject": "fix: exige status final no recibo de migration aceito pelo gate E055 (#4099)",
+    "files": [
+     "scripts/check-migration-receipts.mjs",
+     "supabase/MIGRATIONS_SYNC_LOG.md",
+     "tests/scripts/check-migration-receipts.test.mjs"
+    ]
+   },
    {
     "sha": "aa0240f",
     "date": "2026-11-25",
@@ -565179,25 +565218,16 @@
     "files": [
      "docs/coordenacao/auditoria-prs-fechadas.md"
     ]
-   },
-   {
-    "sha": "a66bde9",
-    "date": "2026-11-24",
-    "author": "adm01-debug",
-    "subject": "docs(qa): mede o grant de tabela ao anon e registra na etapa 008 (#4057)",
-    "files": [
-     "docs/qa/05-PROGRESSO.md"
-    ]
    }
   ],
   "hot_files": [
    [
     "supabase/MIGRATIONS_SYNC_LOG.md",
-    15
+    16
    ],
    [
     "docs/qa/05-PROGRESSO.md",
-    6
+    5
    ],
    [
     "package-lock.json",
@@ -565232,6 +565262,14 @@
     2
    ],
    [
+    "scripts/check-migration-receipts.mjs",
+    1
+   ],
+   [
+    "tests/scripts/check-migration-receipts.test.mjs",
+    1
+   ],
+   [
     "supabase/migrations/20261125180000_fix_comment_v_tabela_gravacao_publica.sql",
     1
    ],
@@ -565261,14 +565299,6 @@
    ],
    [
     "supabase/rollbacks/20261125173000_rollback.sql",
-    1
-   ],
-   [
-    "supabase/migrations/20261125170000_idx_sds_summary_date_supplier_aplicavel.sql",
-    1
-   ],
-   [
-    "supabase/rollbacks/20261125170000_rollback.sql",
     1
    ]
   ]
