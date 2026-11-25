@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "b389b08f0078844c6b56ad5f92830b3ad726f68d",
+  "commit": "fd4bdb06629bdc052b62b7d4ad7f07b584fbd5bc",
   "branch": "main",
-  "data_commit": "2026-11-25T17:31:55-03:00",
+  "data_commit": "2026-11-25T17:35:48-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "fd4bdb0",
+    "data": "2026-11-25",
+    "assunto": "docs(migrations-log): recibo E15 — aplicação de 20261125074200 (#4116)"
+   },
    {
     "sha": "b389b08",
     "data": "2026-11-25",
@@ -126,14 +131,9 @@
     "sha": "5c65a18",
     "data": "2026-11-25",
     "assunto": "docs: recibos de 20261115130100 e 20261119110500 no ledger (#4090)"
-   },
-   {
-    "sha": "2e4913f",
-    "data": "2026-11-25",
-    "assunto": "fix: restaura grant anon na view publica de composicao de produto (#4081)"
    }
   ],
-  "arquivos_mudados_7d": 577,
+  "arquivos_mudados_7d": 576,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -169,7 +169,7 @@
    },
    {
     "pasta": "supabase/MIGRATIONS_SYNC_LOG.md",
-    "mudancas": 87
+    "mudancas": 88
    },
    {
     "pasta": "src/pages/quotes",
@@ -199,7 +199,7 @@
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "supabase/MIGRATIONS_SYNC_LOG.md",
-    "mudancas": 87
+    "mudancas": 88
    },
    {
     "arquivo": "docs/qa/05-PROGRESSO.md",
@@ -207,7 +207,7 @@
    },
    {
     "arquivo": "package.json",
-    "mudancas": 25
+    "mudancas": 24
    },
    {
     "arquivo": "package-lock.json",
@@ -301,11 +301,11 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 246
+    "commits": 245
    },
    {
     "autor": "github-actions[bot]",
-    "commits": 54
+    "commits": 55
    }
   ]
  },
