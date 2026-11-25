@@ -1,9 +1,9 @@
 {
  "meta": {
-  "sha": "3b588910dad5b5725a65107c930f0129092ef733",
+  "sha": "f7c5a7decb9133fd1bdff1587c6f230ff80744b2",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-25 18:46 UTC",
+  "generated_at": "2026-11-25 18:51 UTC",
   "files_total": 11209,
   "code_files": 9197,
   "code_lines": 1305220
@@ -564997,10 +564997,19 @@
   }
  },
  "git": {
-  "sha": "3b588910dad5b5725a65107c930f0129092ef733",
+  "sha": "f7c5a7decb9133fd1bdff1587c6f230ff80744b2",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "f7c5a7d",
+    "date": "2026-11-25",
+    "author": "github-actions[bot]",
+    "subject": "docs(migrations-log): recibo E15 — aplicação de 20260916193000 (#4103)",
+    "files": [
+     "supabase/MIGRATIONS_SYNC_LOG.md"
+    ]
+   },
    {
     "sha": "3b58891",
     "date": "2026-11-25",
@@ -565312,23 +565321,12 @@
      "scripts/automation.config.json",
      "scripts/list-cron-schedules.mjs"
     ]
-   },
-   {
-    "sha": "19de836",
-    "date": "2026-11-25",
-    "author": "adm01-debug",
-    "subject": "feat(ci): recupera o filtro de ruido de views e policies no E40 (#4060)",
-    "files": [
-     "docs/coordenacao/auditoria-prs-fechadas.md",
-     "scripts/drift-baseline.mjs",
-     "tests/scripts/drift-baseline.test.mjs"
-    ]
    }
   ],
   "hot_files": [
    [
     "supabase/MIGRATIONS_SYNC_LOG.md",
-    17
+    18
    ],
    [
     "docs/qa/05-PROGRESSO.md",
@@ -565341,14 +565339,6 @@
    [
     "package.json",
     3
-   ],
-   [
-    "scripts/drift-baseline.mjs",
-    2
-   ],
-   [
-    "tests/scripts/drift-baseline.test.mjs",
-    2
    ],
    [
     "supabase/migrations-snapshot/ALL_IN_ONE.sql",
@@ -565388,6 +565378,14 @@
    ],
    [
     "tests/scripts/append-migration-receipt.test.mjs",
+    1
+   ],
+   [
+    "scripts/drift-baseline.mjs",
+    1
+   ],
+   [
+    "tests/scripts/drift-baseline.test.mjs",
     1
    ],
    [

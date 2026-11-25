@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "3b588910dad5b5725a65107c930f0129092ef733",
+  "commit": "f7c5a7decb9133fd1bdff1587c6f230ff80744b2",
   "branch": "main",
-  "data_commit": "2026-11-25T15:44:47-03:00",
+  "data_commit": "2026-11-25T15:49:43-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "f7c5a7d",
+    "data": "2026-11-25",
+    "assunto": "docs(migrations-log): recibo E15 — aplicação de 20260916193000 (#4103)"
+   },
    {
     "sha": "3b58891",
     "data": "2026-11-25",
@@ -126,11 +131,6 @@
     "sha": "4e083f6",
     "data": "2026-11-25",
     "assunto": "chore(deps): bump @hookform/resolvers de 5.9.1 para 7.0.8 (#4068)"
-   },
-   {
-    "sha": "bf0575d",
-    "data": "2026-11-25",
-    "assunto": "fix(db): revoga SELECT de anon nas 13 tabelas internas de public (QA etapa 008) (#4065)"
    }
   ],
   "arquivos_mudados_7d": 588,
@@ -177,7 +177,7 @@
    },
    {
     "pasta": "supabase/MIGRATIONS_SYNC_LOG.md",
-    "mudancas": 84
+    "mudancas": 85
    },
    {
     "pasta": "src/components/mockup",
@@ -199,7 +199,7 @@
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "supabase/MIGRATIONS_SYNC_LOG.md",
-    "mudancas": 84
+    "mudancas": 85
    },
    {
     "arquivo": "docs/qa/05-PROGRESSO.md",
@@ -301,11 +301,11 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 250
+    "commits": 249
    },
    {
     "autor": "github-actions[bot]",
-    "commits": 50
+    "commits": 51
    }
   ]
  },

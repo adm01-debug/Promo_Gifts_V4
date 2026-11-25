@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "docs(migrations-log): recibo E15 — aplicação de 20260916193000 (#4103)",
    "fix(e25): incorpora o hardening RLS da #4084 e completa a automacao de particoes (nunca aplicada) (#4102)",
    "fix: recibo de migration substitui linha existente de qualquer status (E75) (#4100)",
    "fix(ci): destrava o replay do E40 (ACL de extensao da plataforma) (#4089)",
-   "fix: exige status final no recibo de migration aceito pelo gate E055 (#4099)",
-   "docs(migrations-log): recibo E15 — aplicação de 20261125180000 (#4098)"
+   "fix: exige status final no recibo de migration aceito pelo gate E055 (#4099)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",
