@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "4a102ddf81e5e3b0a12013b8935269d9865d5eda",
+  "commit": "bf0575d2d5ddc3158979def87222745dae9114d6",
   "branch": "main",
-  "data_commit": "2026-11-25T08:27:13-03:00",
+  "data_commit": "2026-11-25T08:33:18-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "bf0575d",
+    "data": "2026-11-25",
+    "assunto": "fix(db): revoga SELECT de anon nas 13 tabelas internas de public (QA etapa 008) (#4065)"
+   },
    {
     "sha": "4a102dd",
     "data": "2026-11-25",
@@ -126,14 +131,9 @@
     "sha": "cdf7e3b",
     "data": "2026-11-24",
     "assunto": "chore: recibo de aplicacao - 20261124140000 (E15) e status aplicada das duas de 24/11 (#4043)"
-   },
-   {
-    "sha": "18075a9",
-    "data": "2026-11-24",
-    "assunto": "docs(migrations-log): recibo E15 — aplicação de 20261124120000 (#4041)"
    }
   ],
-  "arquivos_mudados_7d": 650,
+  "arquivos_mudados_7d": 652,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -199,11 +199,11 @@
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "supabase/MIGRATIONS_SYNC_LOG.md",
-    "mudancas": 69
+    "mudancas": 70
    },
    {
     "arquivo": "docs/qa/05-PROGRESSO.md",
-    "mudancas": 27
+    "mudancas": 28
    },
    {
     "arquivo": "package.json",
@@ -310,7 +310,7 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 11268,
+  "arquivos_total": 11270,
   "arquivos_codigo": 5682,
   "linhas_codigo": 1076946,
   "rotas": 141,
@@ -322,7 +322,7 @@
   "hooks": 646,
   "edge_functions": 112,
   "tabelas": 532,
-  "migrations": 3132,
+  "migrations": 3133,
   "cron_jobs": 122,
   "testes": 2722,
   "workflows": 89,

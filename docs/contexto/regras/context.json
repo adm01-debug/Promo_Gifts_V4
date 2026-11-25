@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "4a102ddf81e5e3b0a12013b8935269d9865d5eda",
+  "sha": "bf0575d2d5ddc3158979def87222745dae9114d6",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-25 11:28 UTC",
-  "files_total": 11198,
-  "code_files": 9186,
-  "code_lines": 1303775
+  "generated_at": "2026-11-25 11:35 UTC",
+  "files_total": 11200,
+  "code_files": 9188,
+  "code_lines": 1304069
  },
  "version": "1.3.2",
- "facts_hash": "3f539d1929371cfa",
+ "facts_hash": "4393a80466627017",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -1130,7 +1130,7 @@
   ],
   "package_manager": "npm",
   "languages": {
-   ".sql": 3506,
+   ".sql": 3508,
    ".ts": 3180,
    ".tsx": 2026,
    ".mjs": 456,
@@ -67940,7 +67940,7 @@
     "args": "",
     "returns": "TABLE(object_name text, object_kind text, issue text)",
     "lang": "plpgsql",
-    "src": "supabase/migrations/20261008230000_restringir_anon_mockup_approval_links.sql",
+    "src": "supabase/migrations/20261125120000_revoke_anon_internal_grants_public.sql",
     "security_definer": true,
     "search_path": true,
     "body": "BEGIN RETURN QUERY WITH req(sch, nm) AS (VALUES ('public','v_products_public'),('public','v_suppliers_public'), ('public','v_variant_sale_prices_public'), ('public','v_tabela_preco_gravacao_oficial_public'), ('public','v_color_nuances_public'),('public','v_kit_component_media_public'), ('public','v_kit_component_print_areas_public'), ('public','v_personalization_techniques_public'), ('public','v_print_area_techniques_public'),('public','v_product_compositions_public'), ('public','v_product_properties_public'),('public','v_product_tags_public'), ('public','v_tags_public'), ('public','mv_product_compositions'), ('internal','mv_product_leaf_category'),('analytics','mv_product_compositions'), (' …",
@@ -96170,6 +96170,7 @@
    "supabase/migrations/20261124163000_revoke_anon_unit_cost_print_areas.sql",
    "supabase/migrations/20261124171500_internal_managed_schema_dictionary.sql",
    "supabase/migrations/20261125074200_revoke_anon_apply_classification_suggestions.sql",
+   "supabase/migrations/20261125120000_revoke_anon_internal_grants_public.sql",
    "supabase/rollbacks/20260511235950_rollback.sql",
    "supabase/rollbacks/20260511235959_rollback.sql",
    "supabase/rollbacks/20260611014515_fn_dryrun_standardize_supplier_real_rollback.sql",
@@ -96306,6 +96307,7 @@
    "supabase/rollbacks/20261124163000_rollback.sql",
    "supabase/rollbacks/20261124171500_rollback.sql",
    "supabase/rollbacks/20261125074200_rollback.sql",
+   "supabase/rollbacks/20261125120000_rollback.sql",
    "supabase/rollbacks/rollback_20261025002500_analyze_tables_p03.sql",
    "supabase/sql-legacy/001_notification_system.sql",
    "supabase/sql-legacy/002_notification_preferences.sql",
@@ -153288,8 +153290,8 @@
   },
   {
    "module": "supabase/migrations",
-   "files": 3131,
-   "lines": 227738,
+   "files": 3132,
+   "lines": 228000,
    "tables": [
     "...",
     "admin_audit_log",
@@ -153387,8 +153389,8 @@
   },
   {
    "module": "supabase/rollbacks",
-   "files": 137,
-   "lines": 5210,
+   "files": 138,
+   "lines": 5242,
    "tables": [],
    "exports": [],
    "docs": [],
@@ -344890,7 +344892,7 @@
     "args": "",
     "returns": "TABLE(object_name text, object_kind text, issue text)",
     "lang": "plpgsql",
-    "src": "supabase/migrations/20261008230000_restringir_anon_mockup_approval_links.sql",
+    "src": "supabase/migrations/20261125120000_revoke_anon_internal_grants_public.sql",
     "security_definer": true,
     "search_path": true,
     "body": "BEGIN RETURN QUERY WITH req(sch, nm) AS (VALUES ('public','v_products_public'),('public','v_suppliers_public'), ('public','v_variant_sale_prices_public'), ('public','v_tabela_preco_gravacao_oficial_public'), ('public','v_color_nuances_public'),('public','v_kit_component_media_public'), ('public','v_kit_component_print_areas_public'), ('public','v_personalization_techniques_public'), ('public','v_print_area_techniques_public'),('public','v_product_compositions_public'), ('public','v_product_properties_public'),('public','v_product_tags_public'), ('public','v_tags_public'), ('public','mv_product_compositions'), ('internal','mv_product_leaf_category'),('analytics','mv_product_compositions'), (' …",
@@ -367792,6 +367794,7 @@
    "supabase/migrations/20261122200000_fix_cadeia_views_compras_e_compositions.sql",
    "supabase/migrations/20261124163000_revoke_anon_unit_cost_print_areas.sql",
    "supabase/migrations/20261125074200_revoke_anon_apply_classification_suggestions.sql",
+   "supabase/migrations/20261125120000_revoke_anon_internal_grants_public.sql",
    "supabase/rollbacks/20260611014515_fn_dryrun_standardize_supplier_real_rollback.sql",
    "supabase/rollbacks/20260611124000_fn_dryrun_standardize_supplier_real_rollback.sql",
    "supabase/rollbacks/20260917061500_rollback.sql",
@@ -537813,6 +537816,11 @@
    "lines": 58,
    "uses_service_role": true
   },
+  "supabase/migrations/20261125120000_revoke_anon_internal_grants_public.sql": {
+   "path": "supabase/migrations/20261125120000_revoke_anon_internal_grants_public.sql",
+   "lines": 262,
+   "uses_service_role": true
+  },
   "supabase/rollbacks/20260511235950_rollback.sql": {
    "path": "supabase/rollbacks/20260511235950_rollback.sql",
    "lines": 5
@@ -538377,6 +538385,10 @@
    "path": "supabase/rollbacks/20261125074200_rollback.sql",
    "lines": 8,
    "uses_service_role": true
+  },
+  "supabase/rollbacks/20261125120000_rollback.sql": {
+   "path": "supabase/rollbacks/20261125120000_rollback.sql",
+   "lines": 32
   },
   "supabase/rollbacks/rollback_20261025002500_analyze_tables_p03.sql": {
    "path": "supabase/rollbacks/rollback_20261025002500_analyze_tables_p03.sql",
@@ -564034,10 +564046,23 @@
   }
  },
  "git": {
-  "sha": "4a102ddf81e5e3b0a12013b8935269d9865d5eda",
+  "sha": "bf0575d2d5ddc3158979def87222745dae9114d6",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "bf0575d",
+    "date": "2026-11-25",
+    "author": "adm01-debug",
+    "subject": "fix(db): revoga SELECT de anon nas 13 tabelas internas de public (QA etapa 008) (#4065)",
+    "files": [
+     ".security/anon-tables-baseline.json",
+     "docs/qa/05-PROGRESSO.md",
+     "supabase/MIGRATIONS_SYNC_LOG.md",
+     "supabase/migrations/20261125120000_revoke_anon_internal_grants_public.sql",
+     "supabase/rollbacks/20261125120000_rollback.sql"
+    ]
+   },
    {
     "sha": "4a102dd",
     "date": "2026-11-25",
@@ -564346,23 +564371,12 @@
      "supabase/baseline/drift-allowlist.txt",
      "tests/scripts/drift-baseline.test.mjs"
     ]
-   },
-   {
-    "sha": "e87db75",
-    "date": "2026-11-24",
-    "author": "adm01-debug",
-    "subject": "feat(security): etapa 006 — registrar v_compras_catalogo e v_compras_precos_faixa no contrato (#4008)",
-    "files": [
-     ".security/public-views-columns.json",
-     "docs/qa/05-PROGRESSO.md",
-     "tests/security/public-views-columns.test.ts"
-    ]
    }
   ],
   "hot_files": [
    [
     "supabase/MIGRATIONS_SYNC_LOG.md",
-    9
+    10
    ],
    [
     "docs/qa/05-PROGRESSO.md",
@@ -564377,16 +564391,16 @@
     3
    ],
    [
-    "tests/security/public-views-columns.test.ts",
-    3
-   ],
-   [
     "src/lib/fetch-print-areas.ts",
     3
    ],
    [
     "docs/agentes/resgates/2026-11-24-auditoria-branches-restantes.md",
     3
+   ],
+   [
+    ".security/anon-tables-baseline.json",
+    2
    ],
    [
     "docs/coordenacao/auditoria-prs-fechadas.md",
@@ -564401,16 +564415,24 @@
     2
    ],
    [
-    "src/lib/__tests__/fetch-print-areas.anonSelect.test.ts",
+    "tests/security/public-views-columns.test.ts",
     2
    ],
    [
-    ".security/public-views-columns.json",
+    "src/lib/__tests__/fetch-print-areas.anonSelect.test.ts",
     2
    ],
    [
     "docs/coordenacao/conflitos-semanticos.md",
     2
+   ],
+   [
+    "supabase/migrations/20261125120000_revoke_anon_internal_grants_public.sql",
+    1
+   ],
+   [
+    "supabase/rollbacks/20261125120000_rollback.sql",
+    1
    ],
    [
     "supabase/migrations/20261125074200_revoke_anon_apply_classification_suggestions.sql",
@@ -564430,14 +564452,6 @@
    ],
    [
     "docs/agentes/resgates/2026-11-18-recibo-adjudicacao.md",
-    1
-   ],
-   [
-    "src/components/mockup/__tests__/MockupLayoutButtons.test.tsx",
-    1
-   ],
-   [
-    "src/components/mockup/approval/MockupLayoutButtons.tsx",
     1
    ]
   ]

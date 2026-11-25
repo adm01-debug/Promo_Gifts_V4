@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "fix(db): revoga SELECT de anon nas 13 tabelas internas de public (QA etapa 008) (#4065)",
    "fix(db): revoga execute de anon na funcao que reescreve a classificacao do catalogo (#4064)",
    "chore(security): corrige reason defasado de fn_global_search no allowlist secdef-anon (#4066)",
    "feat: testid do CTA de geracao de mockup e regressao que roda de verdade (#4063)",
-   "fix(ci): jitter E19 nos crons em :00/:30 + recupera o medidor de cron (#4061)",
-   "feat(ci): recupera o filtro de ruido de views e policies no E40 (#4060)"
+   "fix(ci): jitter E19 nos crons em :00/:30 + recupera o medidor de cron (#4061)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",
