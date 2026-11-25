@@ -4698,6 +4698,21 @@
         "manual"
       ],
       "reason": "Gerador manual do seed das caixas de transporte: le scripts/freight/caixas.csv e escreve o SQL de uma migration de dados e do rollback. Nao grava no banco e nao roda em CI; a migration gerada vai por PR e db-apply-migration.yml. O dispatcher nao executa esta operacao."
+    },
+    {
+      "id": "cron-jitter-e19",
+      "kind": "legacy",
+      "files": [
+        "scripts/list-cron-schedules.mjs"
+      ],
+      "manual": [
+        "node",
+        "scripts/list-cron-schedules.mjs"
+      ],
+      "triggers": [
+        "manual"
+      ],
+      "reason": "Medidor do criterio E19 (nenhum cron em :00/:30 e nenhum minuto com mais de um cron usando SUPABASE_ACCESS_TOKEN). Le os .github/workflows por regex, nao chama API e nao altera arquivos; roda na mao antes de mexer em cron."
     }
   ],
   "ci": [
