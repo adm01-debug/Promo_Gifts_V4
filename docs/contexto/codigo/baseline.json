@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "7987262ad67be0900ea59bbd401ae76df933e766",
+  "commit": "36833fda740d589040e4df4eb305f92c74e4beef",
   "branch": "main",
-  "data_commit": "2026-11-25T16:22:38-03:00",
+  "data_commit": "2026-11-25T16:22:44-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "36833fd",
+    "data": "2026-11-25",
+    "assunto": "fix: snapshot de cron jobs com os jobs da E25 (destrava o drift E037) (#4106)"
+   },
    {
     "sha": "7987262",
     "data": "2026-11-25",
@@ -126,14 +131,9 @@
     "sha": "a7d3044",
     "data": "2026-11-25",
     "assunto": "chore: remove da baseline as 13 tabelas cujo grant anon foi revogado (#4075)"
-   },
-   {
-    "sha": "e557288",
-    "data": "2026-11-25",
-    "assunto": "docs(migrations-log): recibo E15 — aplicação de 20261125120000 (#4073)"
    }
   ],
-  "arquivos_mudados_7d": 583,
+  "arquivos_mudados_7d": 580,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -310,7 +310,7 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 11279,
+  "arquivos_total": 11280,
   "arquivos_codigo": 5682,
   "linhas_codigo": 1077287,
   "rotas": 141,

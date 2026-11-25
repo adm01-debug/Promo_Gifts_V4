@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "fix: snapshot de cron jobs com os jobs da E25 (destrava o drift E037) (#4106)",
    "docs(e25): registra a aplicacao em producao e resolve o risco em prod-readiness (#4104)",
    "chore(security): atualiza baseline assinado de RLS policies (#4107)",
    "docs(migrations-log): recibo E15 — aplicação de 20260916193000 (#4103)",
-   "fix(e25): incorpora o hardening RLS da #4084 e completa a automacao de particoes (nunca aplicada) (#4102)",
-   "fix: recibo de migration substitui linha existente de qualquer status (E75) (#4100)"
+   "fix(e25): incorpora o hardening RLS da #4084 e completa a automacao de particoes (nunca aplicada) (#4102)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",

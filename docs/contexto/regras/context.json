@@ -1,10 +1,10 @@
 {
  "meta": {
-  "sha": "7987262ad67be0900ea59bbd401ae76df933e766",
+  "sha": "36833fda740d589040e4df4eb305f92c74e4beef",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-25 19:23 UTC",
-  "files_total": 11209,
+  "generated_at": "2026-11-25 19:27 UTC",
+  "files_total": 11210,
   "code_files": 9197,
   "code_lines": 1305220
  },
@@ -564997,10 +564997,19 @@
   }
  },
  "git": {
-  "sha": "7987262ad67be0900ea59bbd401ae76df933e766",
+  "sha": "36833fda740d589040e4df4eb305f92c74e4beef",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "36833fd",
+    "date": "2026-11-25",
+    "author": "adm01-debug",
+    "subject": "fix: snapshot de cron jobs com os jobs da E25 (destrava o drift E037) (#4106)",
+    "files": [
+     "supabase/baseline/20261125173000_cron_jobs.json"
+    ]
+   },
    {
     "sha": "7987262",
     "date": "2026-11-25",
@@ -565304,15 +565313,6 @@
      "supabase/migrations/20261125074200_revoke_anon_apply_classification_suggestions.sql",
      "supabase/rollbacks/20261125074200_rollback.sql"
     ]
-   },
-   {
-    "sha": "629c14f",
-    "date": "2026-11-25",
-    "author": "adm01-debug",
-    "subject": "chore(security): corrige reason defasado de fn_global_search no allowlist secdef-anon (#4066)",
-    "files": [
-     ".security/secdef-anon-allowlist.json"
-    ]
    }
   ],
   "hot_files": [
@@ -565353,6 +565353,10 @@
     2
    ],
    [
+    "supabase/baseline/20261125173000_cron_jobs.json",
+    1
+   ],
+   [
     "docs/prod-readiness.md",
     1
    ],
@@ -565390,10 +565394,6 @@
    ],
    [
     "scripts/check-migration-receipts.mjs",
-    1
-   ],
-   [
-    "tests/scripts/check-migration-receipts.test.mjs",
     1
    ]
   ]
