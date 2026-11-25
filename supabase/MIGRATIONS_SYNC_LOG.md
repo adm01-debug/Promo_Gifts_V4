@@ -1658,6 +1658,7 @@ Após VACUUM ANALYZE executado pelos jobs temporários `vacuum-snapshots-now` e
 | `20261124140000` | `dda04ee7fbe2c4902776a17efda9f876852e92811fdb539e19633ab3595029e2` | — | GitHub Actions (db-apply-migration.yml, disparado por adm01-debug, aprovado por @JoaquimAtaides (dono, autorizou no chat 2026-11-24)) | E15 | 2026-11-24 14:26:52 UTC | job post-check da run 45414013226 confirmou a version no ledger | aplicada |
 | `20261124171500` | `5286edaf3ece04dde0f27ff392585357bb20ccea57a8228acf98c8d4a56c7070` | — | GitHub Actions (db-apply-migration.yml, disparado por adm01-debug, aprovado por @JoaquimAtaides (dono do negocio; aprovou a canonicalizacao do objeto criado fora do repo em 2026-11-24)) | repair | 2026-11-24 18:00:56 UTC | repair-only: SQL não executado; apenas registro no ledger (E052) | registrada-sem-aplicar |
 | `20261124163000` | `c3dc05c1d5cbec1725b296ef4bc3572fa48cbc68ab0f2cc18ba5a69a03c0cd53` | — | GitHub Actions (db-apply-migration.yml, disparado por adm01-debug, aprovado por @JoaquimAtaides (dono do negocio; aprovou o fechamento da leitura anon de print_area_techniques.unit_cost)) | E15 | 2026-11-24 18:28:32 UTC | job post-check da run 45459676569 confirmou a version no ledger | aplicada |
+| `20261125074200` | `ba3e1a2b19b9dee538911df6d3d45eaafef2bdb8414fb07df3e0568e0a727fd2` | — | Copilot (Management API Supabase /database/query) | E15 | 2026-11-25 10:44:00 UTC | anon=false authenticated=false service_role=true | aplicada — hotfix via Management API antes do merge; PR #4064 |
 
 ## 2026-11-08 — Reconciliação de `e2e_cleanup_audit`
 
