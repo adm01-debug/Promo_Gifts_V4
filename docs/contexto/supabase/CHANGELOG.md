@@ -2,6 +2,10 @@
 
 Diff semântico gerado a cada coleta em que algo mudou.
 
+## 2026-11-25 23:26 UTC
+
+- **functions** alterado (1): `public.fn_ensure_history_partitions(p_months_ahead integer)`
+
 ## 2026-11-25 22:23 UTC
 
 - **indexes** adicionado (1): `public.idx_sds_restock_zero_to_pos_date`
