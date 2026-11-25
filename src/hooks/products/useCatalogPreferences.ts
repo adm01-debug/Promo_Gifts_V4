@@ -1,14 +1,14 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
-import { useQuery, useMutation } from '@tanstack/react-query';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import type { SortOption } from '@/hooks/products/useCatalogState';
-import type { Json } from '@/integrations/supabase/types';
 import { useToast } from '@/hooks/ui/use-toast';
 // BUG-PREF-01 FIX: importar SORT_OPTIONS para validar sortBy ao carregar de storage.
 import { SORT_OPTIONS } from '@/constants/filters';
 
 import { logger } from '@/lib/logger';
+import { mergeProfilePreferences } from '@/lib/profile-preferences';
 interface CatalogPreferences {
   sortBy: SortOption;
   lastSearchTerm?: string;
@@ -41,6 +41,8 @@ function sanitizeSortBy(val: unknown): SortOption {
 export function useCatalogPreferences() {
   const { user } = useAuth();
   const { toast } = useToast();
+  const queryClient = useQueryClient();
+  const hydratedFromCloudRef = useRef(false);
   const [preferences, setPreferencesState] = useState<CatalogPreferences>(DEFAULT_PREFERENCES);
   const [isLoaded, setIsLoaded] = useState(false);
 
@@ -78,33 +80,18 @@ export function useCatalogPreferences() {
   const { mutate: saveToCloud } = useMutation({
     mutationFn: async (prefs: CatalogPreferences) => {
       if (!user) return;
-
-      const { data: existingData } = await supabase
-        .from('profiles')
-        .select('preferences')
-        .eq('user_id', user.id)
-        .maybeSingle();
-
-      const existingPrefs = (existingData?.preferences as Record<string, unknown>) || {};
-
-      const { error } = await supabase
-        .from('profiles')
-        .update({
-          preferences: {
-            ...existingPrefs,
-            catalog: prefs,
-          } as unknown as Json,
-        })
-        .eq('user_id', user.id);
-
-      if (error) throw error;
+      await mergeProfilePreferences(user.id, { catalog: prefs });
+    },
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: ['catalog-preferences', user?.id] });
     },
   });
 
   useEffect(() => {
     const loadPreferences = () => {
       try {
-        if (cloudPreferences) {
+        if (cloudPreferences && !hydratedFromCloudRef.current) {
+          hydratedFromCloudRef.current = true;
           // BUG-PREF-01 FIX: Validar sortBy antes de aplicar ao state.
           // Cloud data pode conter valor stale de versão anterior do app
           // (ex: 'relevance'). Normalizar para 'name' se inválido.

@@ -1,7 +1,7 @@
 {
   "version": 1,
   "pending_seed": false,
-  "generated_at": "2026-11-22T13:36:59.488Z",
+  "generated_at": "2026-11-23T23:26:56.412Z",
   "project_ref": "doufsxqlfjyuvxuezpln",
   "schemas_checked": [
     "public",
@@ -13,7 +13,7 @@
     "prod_audit",
     "supplier_stricker"
   ],
-  "sha256": "b74d31e7540d4fac8cd94ee1914205cda07dccf314c5bfe7d51bf4f8247d40ad",
+  "sha256": "4c8abf7a6b496f5d5108a57d8851e95f05e7f646811f08b7a382c0f5cf2bf32b",
   "policies": [
     {
       "schemaname": "cf_recon",
@@ -4773,7 +4773,7 @@
       "roles": "{authenticated}",
       "cmd": "INSERT",
       "qual": "",
-      "with_check": "(can_view_all_sales() OR (EXISTS ( SELECT 1\n   FROM orders o\n  WHERE ((o.id = order_items.order_id) AND ((o.seller_id = auth.uid()) OR (has_role(auth.uid(), 'supervisor'::app_role) AND ((o.organization_id IS NULL) OR (o.organization_id IN ( SELECT get_user_org_ids(auth.uid()) AS get_user_org_ids)))))))))"
+      "with_check": "(( SELECT can_view_all_sales() AS can_view_all_sales) OR (EXISTS ( SELECT 1\n   FROM orders o\n  WHERE ((o.id = order_items.order_id) AND ((o.seller_id = ( SELECT auth.uid() AS uid)) OR (( SELECT has_role(( SELECT auth.uid() AS uid), 'supervisor'::app_role) AS has_role) AND ((o.organization_id IS NULL) OR (o.organization_id IN ( SELECT get_user_org_ids(( SELECT auth.uid() AS uid)) AS get_user_org_ids)))))))))"
     },
     {
       "schemaname": "public",
@@ -4782,7 +4782,7 @@
       "permissive": "PERMISSIVE",
       "roles": "{public}",
       "cmd": "SELECT",
-      "qual": "(can_view_all_sales() OR (EXISTS ( SELECT 1\n   FROM orders o\n  WHERE ((o.id = order_items.order_id) AND ((o.seller_id = auth.uid()) OR (has_role(auth.uid(), 'supervisor'::app_role) AND ((o.organization_id IS NULL) OR (o.organization_id IN ( SELECT get_user_org_ids(auth.uid()) AS get_user_org_ids)))))))))",
+      "qual": "(( SELECT can_view_all_sales() AS can_view_all_sales) OR (EXISTS ( SELECT 1\n   FROM orders o\n  WHERE ((o.id = order_items.order_id) AND ((o.seller_id = ( SELECT auth.uid() AS uid)) OR (( SELECT has_role(( SELECT auth.uid() AS uid), 'supervisor'::app_role) AS has_role) AND ((o.organization_id IS NULL) OR (o.organization_id IN ( SELECT get_user_org_ids(( SELECT auth.uid() AS uid)) AS get_user_org_ids)))))))))",
       "with_check": ""
     },
     {
@@ -4792,8 +4792,8 @@
       "permissive": "PERMISSIVE",
       "roles": "{public}",
       "cmd": "UPDATE",
-      "qual": "(can_view_all_sales() OR (EXISTS ( SELECT 1\n   FROM orders o\n  WHERE ((o.id = order_items.order_id) AND ((o.seller_id = auth.uid()) OR (has_role(auth.uid(), 'supervisor'::app_role) AND ((o.organization_id IS NULL) OR (o.organization_id IN ( SELECT get_user_org_ids(auth.uid()) AS get_user_org_ids)))))))))",
-      "with_check": "(can_view_all_sales() OR (EXISTS ( SELECT 1\n   FROM orders o\n  WHERE ((o.id = order_items.order_id) AND ((o.seller_id = auth.uid()) OR (has_role(auth.uid(), 'supervisor'::app_role) AND ((o.organization_id IS NULL) OR (o.organization_id IN ( SELECT get_user_org_ids(auth.uid()) AS get_user_org_ids)))))))))"
+      "qual": "(( SELECT can_view_all_sales() AS can_view_all_sales) OR (EXISTS ( SELECT 1\n   FROM orders o\n  WHERE ((o.id = order_items.order_id) AND ((o.seller_id = ( SELECT auth.uid() AS uid)) OR (( SELECT has_role(( SELECT auth.uid() AS uid), 'supervisor'::app_role) AS has_role) AND ((o.organization_id IS NULL) OR (o.organization_id IN ( SELECT get_user_org_ids(( SELECT auth.uid() AS uid)) AS get_user_org_ids)))))))))",
+      "with_check": "(( SELECT can_view_all_sales() AS can_view_all_sales) OR (EXISTS ( SELECT 1\n   FROM orders o\n  WHERE ((o.id = order_items.order_id) AND ((o.seller_id = ( SELECT auth.uid() AS uid)) OR (( SELECT has_role(( SELECT auth.uid() AS uid), 'supervisor'::app_role) AS has_role) AND ((o.organization_id IS NULL) OR (o.organization_id IN ( SELECT get_user_org_ids(( SELECT auth.uid() AS uid)) AS get_user_org_ids)))))))))"
     },
     {
       "schemaname": "public",
@@ -4813,7 +4813,7 @@
       "roles": "{authenticated}",
       "cmd": "INSERT",
       "qual": "",
-      "with_check": "(can_view_all_sales() OR (seller_id = auth.uid()))"
+      "with_check": "(( SELECT can_view_all_sales() AS can_view_all_sales) OR (seller_id = ( SELECT auth.uid() AS uid)))"
     },
     {
       "schemaname": "public",
@@ -4822,7 +4822,7 @@
       "permissive": "PERMISSIVE",
       "roles": "{public}",
       "cmd": "SELECT",
-      "qual": "(can_view_all_sales() OR (has_role(auth.uid(), 'supervisor'::app_role) AND ((organization_id IS NULL) OR (organization_id IN ( SELECT get_user_org_ids(auth.uid()) AS get_user_org_ids)))) OR (seller_id = auth.uid()))",
+      "qual": "(( SELECT can_view_all_sales() AS can_view_all_sales) OR (( SELECT has_role(( SELECT auth.uid() AS uid), 'supervisor'::app_role) AS has_role) AND ((organization_id IS NULL) OR (organization_id IN ( SELECT get_user_org_ids(( SELECT auth.uid() AS uid)) AS get_user_org_ids)))) OR (seller_id = ( SELECT auth.uid() AS uid)))",
       "with_check": ""
     },
     {
@@ -4832,8 +4832,8 @@
       "permissive": "PERMISSIVE",
       "roles": "{public}",
       "cmd": "UPDATE",
-      "qual": "(can_view_all_sales() OR (has_role(auth.uid(), 'supervisor'::app_role) AND ((organization_id IS NULL) OR (organization_id IN ( SELECT get_user_org_ids(auth.uid()) AS get_user_org_ids)))) OR (seller_id = auth.uid()))",
-      "with_check": "(can_view_all_sales() OR (has_role(auth.uid(), 'supervisor'::app_role) AND ((organization_id IS NULL) OR (organization_id IN ( SELECT get_user_org_ids(auth.uid()) AS get_user_org_ids)))) OR (seller_id = auth.uid()))"
+      "qual": "(( SELECT can_view_all_sales() AS can_view_all_sales) OR (( SELECT has_role(( SELECT auth.uid() AS uid), 'supervisor'::app_role) AS has_role) AND ((organization_id IS NULL) OR (organization_id IN ( SELECT get_user_org_ids(( SELECT auth.uid() AS uid)) AS get_user_org_ids)))) OR (seller_id = ( SELECT auth.uid() AS uid)))",
+      "with_check": "(( SELECT can_view_all_sales() AS can_view_all_sales) OR (( SELECT has_role(( SELECT auth.uid() AS uid), 'supervisor'::app_role) AS has_role) AND ((organization_id IS NULL) OR (organization_id IN ( SELECT get_user_org_ids(( SELECT auth.uid() AS uid)) AS get_user_org_ids)))) OR (seller_id = ( SELECT auth.uid() AS uid)))"
     },
     {
       "schemaname": "public",
@@ -5492,7 +5492,7 @@
       "permissive": "PERMISSIVE",
       "roles": "{authenticated}",
       "cmd": "SELECT",
-      "qual": "(EXISTS ( SELECT 1\n   FROM products p\n  WHERE ((p.id = product_commemorative_dates.product_id) AND (p.organization_id IN ( SELECT uo.organization_id\n           FROM user_organizations uo\n          WHERE ((uo.user_id = ( SELECT auth.uid() AS uid)) AND (uo.role = ANY (ARRAY['owner'::org_role, 'admin'::org_role]))))))))",
+      "qual": "((is_active = true) OR (EXISTS ( SELECT 1\n   FROM products p\n  WHERE ((p.id = product_commemorative_dates.product_id) AND (p.organization_id IN ( SELECT uo.organization_id\n           FROM user_organizations uo\n          WHERE ((uo.user_id = ( SELECT auth.uid() AS uid)) AND (uo.role = ANY (ARRAY['owner'::org_role, 'admin'::org_role])))))))))",
       "with_check": ""
     },
     {
@@ -5510,7 +5510,7 @@
       "tablename": "product_commemorative_dates",
       "policyname": "pcd_read_public",
       "permissive": "PERMISSIVE",
-      "roles": "{anon,authenticated}",
+      "roles": "{anon}",
       "cmd": "SELECT",
       "qual": "(is_active = true)",
       "with_check": ""

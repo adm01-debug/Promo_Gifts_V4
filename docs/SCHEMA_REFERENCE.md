@@ -397,7 +397,36 @@ ORDER BY jobname;
 
 </details>
 
-### 8.5 GRANT de escrita para anon (P1 — FECHADO, esperado: 0)
+### 8.5 GRANT de escrita para anon (esperado: 0)
+
+Use **esta** query. Ela não depende de quem está consultando: `information_schema.role_table_grants`
+é uma view filtrada por "o grantor ou o grantee é um papel habilitado na sessão". Medido em
+PostgreSQL 17.11: sessão de superusuário vê o GRANT de qualquer grantor; sessão sem relação com
+o grantor nem com o grantee **não vê a linha** — e a resposta do gate não pode mudar conforme o
+papel da sessão.
+
+Estado de 24/11: o dump do vivo (`supabase db dump --linked`) lista escrita de `anon` em 221
+tabelas de `public`. A medição de 14/11 deu 0 (run `43609177864`): `pg_dump` lê `pg_class.relacl`
+e não inventa ACL, então os privilégios foram (re)introduzidos nessa janela — a janela de DDL que o
+assistente do Supabase aplicou em 23/11 (`supabase/MIGRATIONS_SYNC_LOG.md`), o risco que
+`docs/INCIDENTE_2026-10-13_BASELINE.md` já alertava.
+
+```sql
+SELECT c.relname AS table_name, p.priv AS privilege_type
+FROM pg_class c
+JOIN pg_namespace n ON n.oid = c.relnamespace
+CROSS JOIN (VALUES ('INSERT'), ('UPDATE'), ('DELETE')) AS p(priv)
+WHERE n.nspname = 'public'
+  AND c.relkind IN ('r', 'p', 'f')
+  AND has_table_privilege('anon', c.oid, p.priv)
+ORDER BY table_name, privilege_type;
+```
+
+`has_table_privilege()` lê `pg_class.relacl` direto (inclui grant a `PUBLIC`) e é imune
+ao filtro. Gate permanente: `node scripts/check-anon-write-grants.mjs --require-live`.
+
+<details><summary>Query antiga (cega — arquivada para histórico)</summary>
+
 ```sql
 SELECT DISTINCT table_name, privilege_type
 FROM information_schema.role_table_grants
@@ -405,6 +434,8 @@ WHERE table_schema='public' AND grantee='anon'
   AND privilege_type IN ('INSERT','UPDATE','DELETE')
 ORDER BY table_name;
 ```
+
+</details>
 
 ### 8.6 Views sem security_invoker (hoje: 8, ver P6)
 ```sql

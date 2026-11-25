@@ -22,6 +22,7 @@ import {
 } from '../FlowFilterPanel';
 
 import { logger } from '@/lib/logger';
+import { mergeProfilePreferences } from '@/lib/profile-preferences';
 import { useOrganization } from '@/contexts/OrganizationContext';
 export interface Message {
   id?: string;
@@ -663,31 +664,10 @@ export function useExpertChat({
         data: { user },
       } = await supabase.auth.getUser();
       if (user) {
-        // BUG-EXPERTCHAT-TTS-PREF-SELECT-SILENT-FAIL FIX: if SELECT failed, profile was null
-        // and currentPrefs became {}, causing the UPDATE to overwrite all other preferences.
-        const { data: profile, error: profileFetchErr } = await supabase
-          .from('profiles')
-          .select('preferences')
-          .eq('user_id', user.id)
-          .maybeSingle();
-        if (profileFetchErr) {
-          logger.warn(
-            '[expert-chat] Could not fetch profile prefs — TTS pref not persisted:',
-            profileFetchErr,
-          );
-          return;
-        }
-        const currentPrefs = (profile?.preferences as Record<string, unknown>) || {};
-        // BUG-EXPERTCHAT-TTS-PREF-UPDATE-SILENT-FAIL FIX: bare await swallowed RLS errors.
-        const { error: prefErr } = await supabase
-          .from('profiles')
-          .update({ preferences: { ...currentPrefs, flow_autoplay_tts: next } })
-          .eq('user_id', user.id);
-        if (prefErr)
-          logger.warn('[expert-chat] TTS preference update failed (non-fatal):', prefErr);
+        await mergeProfilePreferences(user.id, { flow_autoplay_tts: next });
       }
-    } catch {
-      /* empty */
+    } catch (err) {
+      logger.warn('[expert-chat] TTS preference update failed (non-fatal):', err);
     }
   }, []);
 

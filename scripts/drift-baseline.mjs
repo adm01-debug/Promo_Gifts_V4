@@ -25,6 +25,7 @@
  *   prepare-workdir --ledger <json do migration list> --out <dir>
  *   filter-diff --diff <arquivo> --allowlist <arquivo> [--workdir <dir>]   (imprime o resíduo)
  */
+import { createHash } from 'node:crypto';
 import { existsSync, mkdirSync, readdirSync, readFileSync, realpathSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { pathToFileURL } from 'node:url';
@@ -315,6 +316,49 @@ export function ledgerSnapshotName(version) {
   return `${version}_ledger_versions.json`;
 }
 
+// Manifesto de integridade das migrations no instante da rotação do baseline:
+// versão -> { nome do arquivo, sha256 do arquivo }. Sem ele o baseline é uma
+// caixa-preta: o dump é aceito como verdade e uma migration já coberta que muda
+// depois da rotação nunca é replayada, então o `db diff` compara o shadow com a
+// produção usando a definição ANTIGA do repositório e passa verde.
+export function migrationHashesName(version) {
+  return `${version}_migration_hashes.json`;
+}
+
+// O dump é feito a partir do arquivo em disco; normalizar CRLF evita acusar
+// diferença só por causa do checkout (autocrlf no Windows).
+export function migrationFileDigest(content) {
+  return createHash('sha256').update(content.replace(/\r\n/g, '\n')).digest('hex');
+}
+
+function readMigrationHashes(hashesPath, version) {
+  const label = migrationHashesName(version);
+  let document;
+  try {
+    document = JSON.parse(readFileSync(hashesPath, 'utf8'));
+  } catch (error) {
+    throw new Error(`${label} ilegível: ${error.message}`);
+  }
+  if (!document || typeof document !== 'object') throw new Error(`${label} não é um objeto JSON`);
+  if (String(document.baseline_version) !== version) {
+    throw new Error(`${label}: baseline_version ${JSON.stringify(document.baseline_version)} difere da versão do arquivo (${version})`);
+  }
+  const { files } = document;
+  if (!Array.isArray(files)) throw new Error(`${label}: "files" ausente ou não é uma lista`);
+  const byVersion = new Map();
+  for (const entry of files) {
+    const name = entry && entry.name;
+    const digest = entry && entry.sha256;
+    const match = MIGRATION_RE.exec(String(name));
+    if (!match) throw new Error(`${label}: nome de migration inválido: ${JSON.stringify(name)}`);
+    if (typeof digest !== 'string' || !/^[0-9a-f]{64}$/.test(digest)) {
+      throw new Error(`${label}: hash inválido para ${name}`);
+    }
+    byVersion.set(match[1], { name, digest });
+  }
+  return byVersion;
+}
+
 export function findBaseline(rootDir) {
   const dir = join(rootDir, BASELINE_DIR);
   if (!existsSync(dir)) return null;
@@ -325,7 +369,16 @@ export function findBaseline(rootDir) {
   const ledgerPath = join(dir, ledgerSnapshotName(version));
   if (!existsSync(ledgerPath)) throw new Error(`baseline ${found[0]} sem ${ledgerSnapshotName(version)}`);
   const snapshot = readLedgerSnapshot(ledgerPath, version);
-  return { version, file: join(dir, found[0]), name: found[0], versions: new Set(snapshot.versions) };
+  const hashesPath = join(dir, migrationHashesName(version));
+  const hashes = existsSync(hashesPath) ? readMigrationHashes(hashesPath, version) : null;
+  return {
+    version,
+    file: join(dir, found[0]),
+    name: found[0],
+    versions: new Set(snapshot.versions),
+    hashes,
+    hashesPath: hashes ? hashesPath : null,
+  };
 }
 
 // Um JSON sem `versions` (ou com versões que não são texto) viraria um Set vazio
@@ -359,6 +412,61 @@ export function selectReplayMigrations({ files, baselineVersions, appliedVersion
     .filter(({ m }) => m && applied.has(m[1]) && !baselineVersions.has(m[1]))
     .map(({ f }) => f)
     .sort(byCodeUnit);
+}
+
+/**
+ * sha256 de cada arquivo de `supabase/migrations/` cuja versão está em `versions`.
+ * Lista de objetos (e não mapa nome→hash) de propósito: com o mapa, um nome de
+ * migration com "api"/"key" dividia a linha do JSON com o hash e o Gate E23
+ * (gitleaks, regra generic-api-key) acusava 90 falsos positivos.
+ */
+export function collectMigrationDigests({ rootDir, versions }) {
+  const migrationsDir = join(rootDir, 'supabase', 'migrations');
+  const wanted = new Set(versions);
+  const digests = [];
+  for (const name of readdirSync(migrationsDir)) {
+    const match = MIGRATION_RE.exec(name);
+    if (!match || !wanted.has(match[1])) continue;
+    digests.push({ name, sha256: migrationFileDigest(readFileSync(join(migrationsDir, name), 'utf8')) });
+  }
+  return digests.sort((a, b) => byCodeUnit(a.name, b.name));
+}
+
+/**
+ * Migrations cuja versão JÁ está coberta pelo dump (portanto nunca replayadas)
+ * mas cujo arquivo mudou depois da rotação do baseline. É o ponto cego do
+ * `selectReplayMigrations`: o dump representa o estado do arquivo na data da
+ * rotação; se o arquivo muda depois, o repositorio passa a declarar um schema
+ * que nem o shadow nem a produção têm, e o drift-check (que confia no dump)
+ * fica verde. Aqui isso vira erro explícito.
+ *
+ * Sem manifesto (`hashes === null`, baselines rotacionados antes desta
+ * checagem existir) devolve `manifestMissing: true` e nada é julgado.
+ */
+export function findEditedSnapshotMigrations({ rootDir, baseline }) {
+  const migrationsDir = join(rootDir, 'supabase', 'migrations');
+  const present = new Set(readdirSync(migrationsDir));
+  if (!baseline.hashes) {
+    return { covered: baseline.versions.size, changed: [], missing: [], manifestMissing: true };
+  }
+  const changed = [];
+  const missing = [];
+  for (const version of baseline.versions) {
+    const entry = baseline.hashes.get(version);
+    if (!entry) continue; // versão sem arquivo na rotação (ex.: 001, 20260712)
+    if (!present.has(entry.name)) {
+      missing.push(entry.name);
+      continue;
+    }
+    const digest = migrationFileDigest(readFileSync(join(migrationsDir, entry.name), 'utf8'));
+    if (digest !== entry.digest) changed.push(entry.name);
+  }
+  return {
+    covered: baseline.versions.size,
+    changed: changed.sort(byCodeUnit),
+    missing: missing.sort(byCodeUnit),
+    manifestMissing: false,
+  };
 }
 
 // O shadow aplica em ordem de nome; tudo que vem depois do baseline ganha
@@ -411,6 +519,25 @@ export function prepareWorkdir({ rootDir, outDir, appliedVersions, projectRef })
   if (!/^[A-Za-z0-9_-]+$/.test(String(projectRef))) throw new Error(`project ref inválido: ${JSON.stringify(projectRef)}`);
   const baseline = findBaseline(rootDir);
   if (!baseline) throw new Error(`nenhum baseline em ${BASELINE_DIR}`);
+  const snapshotCheck = findEditedSnapshotMigrations({ rootDir, baseline });
+  if (snapshotCheck.changed.length || snapshotCheck.missing.length) {
+    const lines = [
+      ...snapshotCheck.changed.map((f) => `  ${f} (conteúdo mudou depois da rotação)`),
+      ...snapshotCheck.missing.map((f) => `  ${f} (existe no baseline, sumiu do repositório)`),
+    ].join('\n');
+    throw new Error(
+      `migration já coberta pelo baseline ${baseline.version} não é mais a que o dump representa:\n${lines}\n` +
+        'O drift-check não enxerga o que essas versões declaram, porque elas nunca são replayadas.\n' +
+        'Corrija de um dos dois jeitos: (a) reverta a edição e faça a mudança numa migration NOVA com versão > ' +
+        `${baseline.version}; (b) se a mudança já está em produção, rotacione o baseline (schema-snapshot-export.yml).`,
+    );
+  }
+  if (snapshotCheck.manifestMissing) {
+    console.error(
+      `[drift-baseline] aviso: baseline ${baseline.version} sem ${migrationHashesName(baseline.version)}; ` +
+        'migration já coberta que mudar depois da rotação continua invisível até a próxima rotação.',
+    );
+  }
   const migrationsDir = join(rootDir, 'supabase', 'migrations');
   const replay = selectReplayMigrations({
     files: readdirSync(migrationsDir),
@@ -435,6 +562,8 @@ export function prepareWorkdir({ rootDir, outDir, appliedVersions, projectRef })
   });
   return {
     baselineVersion: baseline.version,
+    snapshotCovered: snapshotCheck.covered,
+    snapshotManifest: baseline.hashes ? 'present' : 'missing',
     replayed: replay,
     workdir: outDir,
     removedStatements: sanitized.removed,
@@ -1157,6 +1286,183 @@ export function dropDumpLossyFunctions(diffSql, shadowSql) {
   return { sql: out, dropped };
 }
 
+// Esquemas de aplicação monitorados (SSOT: supabase/baseline/schemas.txt). Só a
+// qualificação destes é removida na normalização de objetos, para não mascarar
+// diferença real de schema entre o baseline e o remoto.
+const MONITORED_SCHEMAS = new Set([
+  'public', 'analytics', 'api', 'cf_recon', 'classification_audit',
+  'internal', 'prod_audit', 'supplier_stricker',
+]);
+
+// Início de um objeto de schema que o `pg_dump` serializa de um jeito e o
+// `supabase db diff` de outro (ruído de serialização): views, matviews e
+// policies. Não inclui tabelas (o diff as trata por CREATE TABLE, que o dump
+// emite com mesma estrutura) nem funções (já cobertas por dropDumpLossyFunctions).
+const SCHEMA_OBJECT_START = /^[ \t]*CREATE[ \t]+(?:OR[ \t]+REPLACE[ \t]+)?(VIEW|MATERIALIZED[ \t]+VIEW|POLICY)\b/gim;
+
+// Extrai os statements de VIEW/MATVIEW/POLICY de um SQL (baseline ou diff),
+// respeitando literais/identificadores entre aspas via codeMask + statementEnd.
+function extractSchemaObjectStatements(sql) {
+  const found = [];
+  const mask = codeMask(sql);
+  SCHEMA_OBJECT_START.lastIndex = 0;
+  let start;
+  while ((start = SCHEMA_OBJECT_START.exec(sql)) !== null) {
+    const keyword = start.index + (start[0].length - start[0].trimStart().length);
+    if (!mask[keyword]) continue;
+    const stmtStart = start.index;
+    const end = stmtStart + statementEnd(sql.slice(stmtStart));
+    found.push({ start: stmtStart, end, text: sql.slice(stmtStart, end) });
+    SCHEMA_OBJECT_START.lastIndex = end;
+  }
+  return found;
+}
+
+// Remove a qualificação de schema (`schema.obj` -> `obj`) apenas para os schemas
+// monitorados. O `pg_dump` qualifica (`"public"."foo"`) e o `db diff` nem sempre
+// (`FROM foo`); após normalizeHeader ambos viram `schema.obj`/`obj`, e esta
+// passada normaliza a diferença de serialização.
+function stripMonitoredSchemaQual(text) {
+  const re = /(^|[ (,\n])([A-Za-z_][A-Za-z0-9_]*|"[A-Za-z_][A-Za-z0-9_]*")\s*\.\s*([A-Za-z_][A-Za-z0-9_]*|"[A-Za-z_][A-Za-z0-9_]*")/g;
+  return text.replace(re, (m, prefix, schema, obj) => {
+    const plain = schema.replace(/"/g, '').toLowerCase();
+    if (!MONITORED_SCHEMAS.has(plain)) return m;
+    return `${prefix}${obj}`;
+  });
+}
+
+// Identifica "o mesmo objeto" entre baseline e diff: tipo + nome qualificado.
+// Para policy o nome da tabela entra na assinatura (várias policies com o mesmo
+// nome em tabelas diferentes). Nome/tabela são lower-cased e sem aspas.
+function schemaObjectSignature(text) {
+  const full = text.trim();
+  const first = full.split('\n')[0];
+  const m = /^create (?:or replace )?(materialized view|view|policy)\s+/i.exec(first);
+  if (!m) return null;
+  const kind = m[1].toLowerCase();
+  if (kind === 'policy') {
+    const after = first.slice(m[0].length);
+    const nameM = /^\s*("?[^"\s]+"?)/i.exec(after);
+    const name = (nameM ? nameM[1] : '').replace(/"/g, '').toLowerCase();
+    const onM = /\bon\s+("[^"]+"|[\w]+)(?:\s*\.\s*("[^"]+"|[\w]+))?\s+/i.exec(full);
+    const tbl = onM ? (onM[2] || onM[1]).replace(/"/g, '').toLowerCase() : '';
+    return `policy|${name}|${tbl}`;
+  }
+  const rest = first.slice(m[0].length);
+  let name = '';
+  let i = 0;
+  while (i < rest.length && !/[\s(=\n]/.test(rest[i])) { name += rest[i]; i += 1; }
+  return `${kind}|${name.toLowerCase().replace(/"/g, '')}`;
+}
+
+// Assinatura de um `DROP <tipo> ... <nome>` (prelúdio que o `db diff` emite antes
+// de recriar): tipo + nome qualificado, no mesmo formato de schemaObjectSignature.
+function schemaObjectDropSignature(text) {
+  // `DROP POLICY` não aceita `IF EXISTS` (o `db diff` o omite); para views e
+  // matviews o `db diff` emite `IF EXISTS`. O texto pode vir sem o `;` final
+  // (o extrator corta nele).
+  const m = /^drop[ \t]+(materialized[ \t]+view|view|policy)[ \t]+(?:if[ \t]+exists[ \t]+)?(.+?)[ \t]*;?\s*$/i.exec(text.trim());
+  if (!m) return null;
+  const kind = m[1].toLowerCase();
+  const target = m[2].trim().replace(/"/g, '').toLowerCase();
+  if (kind === 'policy') {
+    const onM = /\bon\s+([\w.]+)\s*$/i.exec(target);
+    if (!onM) return null;
+    const name = target.replace(/\bon\s+[\w.]+\s*$/i, '').trim();
+    const tbl = onM[1].split('.').pop();
+    return `policy|${name}|${tbl}`;
+  }
+  return `${kind}|${target.replace(/\bon\s+.*$/i, '').trim()}`;
+}
+
+// Normaliza um objeto de schema para comparação, tratando apenas as diferenças
+// de serialização (não de semântica):
+//  - policy: `as permissive`/`for all` são defaults que o dump omite;
+//  - matview: `with no data` é emitido pelo dump, mas não pelo `db diff`;
+//  - aspas redundantes e qualificação de schema dos esquemas monitorados;
+//  - espaçamento e caixa de palavra-chave/identificador sem aspas.
+// `WITH ("security_invoker"='true')` fica intacto: não é default e, se o remoto
+// perder essa cláusula, o texto normalizado difere e o objeto permanece no
+// resíduo (drift real, não ruído).
+function normalizeSchemaObject(text) {
+  let t = text.replace(/\bas[ \t]+permissive\b/g, ' ').replace(/\bfor[ \t]+all\b/g, ' ');
+  t = t.replace(/\s*with[ \t]+no[ \t]+data\s*$/i, ' ');
+  t = normalizeHeader(t);
+  t = stripMonitoredSchemaQual(t);
+  return collapseSqlWhitespace(t);
+}
+
+// E040: o `pg_dump` do baseline e o `supabase db diff` serializam views, matviews
+// e policies de formas diferentes (aspas, qualificação de schema, defaults que um
+// omite). Um objeto que existe nos dois lados com a MESMA definição normalizada é
+// ruído do dump, não drift. Esta função remove esses objetos do resíduo, mantendo
+// no diff aqueles cuja definição normalizada difere (ex.: view que perdeu
+// `security_invoker=true` em produção).
+export function dropDumpLossyViewsPolicies(diffSql, shadowSql) {
+  const current = new Map();
+  for (const statement of extractSchemaObjectStatements(shadowSql)) {
+    const sig = schemaObjectSignature(statement.text);
+    if (!sig) continue;
+    current.set(sig, normalizeSchemaObject(statement.text));
+  }
+  // Mapeia cada DROP do diff (prelúdio de recriação) à assinatura do objeto.
+  const DROP_START = /^[ \t]*DROP[ \t]+(MATERIALIZED[ \t]+VIEW|VIEW|POLICY)[ \t]+/gim;
+  const dropRanges = [];
+  const mask = codeMask(diffSql);
+  DROP_START.lastIndex = 0;
+  let m;
+  while ((m = DROP_START.exec(diffSql)) !== null) {
+    const kw = m.index + (m[0].length - m[0].trimStart().length);
+    if (!mask[kw]) continue;
+    const start = m.index;
+    const end = start + statementEnd(diffSql.slice(start));
+    dropRanges.push({ start, end, text: diffSql.slice(start, end) });
+    DROP_START.lastIndex = end;
+  }
+  const dropsBySig = new Map();
+  for (const d of dropRanges) {
+    const sig = schemaObjectDropSignature(d.text);
+    if (sig) dropsBySig.set(sig, d);
+  }
+  // Cada objeto de ruído gera um par `drop; create;` no diff. Os drops de todos
+  // os objetos costumam vir agrupados antes dos creates, então processar com um
+  // `cursor` sequencial deixaria os drops órfãos. Identificamos o bloco
+  // contíguo [menor drop.start, maior statement.end] entre os objetos de ruído e
+  // o removemos inteiro, desde que nenhum objeto NÃO-dropado (drift real) esteja
+  // dentro desse span. Se houver sobreposição com um objeto legítimo, removemos
+  // apenas os intervalos de cada par (mais conservador).
+  // Intervalos a remover: o CREATE do objeto de ruído e o DROP correspondente
+  // (o `db diff` emite o drop como prelúdio da recriação). Ambos são statements
+  // completos, então nenhum objeto legítimo cai dentro deles: basta apagar os
+  // intervalos, sem fundir spans nem re-inserir nada.
+  const noiseRanges = [];
+  const dropped = [];
+  for (const statement of extractSchemaObjectStatements(diffSql)) {
+    const sig = schemaObjectSignature(statement.text);
+    if (!sig || current.get(sig) !== normalizeSchemaObject(statement.text)) continue;
+    noiseRanges.push({ start: statement.start, end: statement.end });
+    const drop = dropsBySig.get(sig);
+    if (drop) noiseRanges.push({ start: drop.start, end: drop.end });
+    dropped.push(sig);
+  }
+  if (!noiseRanges.length) return { sql: diffSql, dropped };
+  noiseRanges.sort((a, b) => a.start - b.start);
+  const merged = [];
+  for (const n of noiseRanges) {
+    const last = merged[merged.length - 1];
+    if (last && n.start <= last.end) last.end = Math.max(last.end, n.end);
+    else merged.push({ ...n });
+  }
+  let out = '';
+  let cursor = 0;
+  for (const s of merged) {
+    out += diffSql.slice(cursor, s.start);
+    cursor = s.end;
+  }
+  out += diffSql.slice(cursor);
+  return { sql: out, dropped };
+}
+
 // E038: agrupa linhas em statements SQL antes de filtrar. Sem agrupamento,
 // um statement multi-linha como `CREATE INDEX … ON … (col);` teria só a
 // primeira linha removida pela allowlist, deixando as continuações como ruído.
@@ -1218,11 +1524,36 @@ const SESSION_NOISE_EXACT = new Set([
   'set check_function_bodies = off;',
 ]);
 
+// `supabase db diff` n?o tem ALTER INDEX: quando a defini??o re-renderiza
+// diferente (aspas, qualifica??o do ops class) ele emite drop + create do MESMO
+// ?ndice. O drop entra na allowlist como ru?do; o create ? a outra metade do
+// mesmo rebuild, n?o objeto novo ? sai junto (sen?o o res?duo nunca zera).
+const INDEX_DROP_NOISE_RE = /^drop[ \t]+index[ \t]+if[ \t]+exists[ \t]+"([^"]+)"\."([^"]+)"[ \t]*;$/i;
+const INDEX_CREATE_RE =
+  /^create[ \t]+(?:unique[ \t]+)?index[ \t]+(?:concurrently[ \t]+)?(?:if[ \t]+not[ \t]+exists[ \t]+)?("?)([a-z0-9_]+)\1[ \t]/i;
+
 export function filterDiff(diffSql, allowlist) {
-  return splitDiffStatements(diffSql).filter((stmt) => {
-    const first = stmt.split('\n').find((l) => l.trim() && !l.trim().startsWith('--')) ?? '';
-    if (SESSION_NOISE_EXACT.has(first.trim().toLowerCase())) return false;
-    return !allowlist.some((re) => re.test(first.trim()));
+  const firstLine = (stmt) =>
+    (stmt.split('\n').find((l) => l.trim() && !l.trim().startsWith('--')) ?? '').trim();
+  const kept = [];
+  const rebuiltIndexes = new Set();
+  for (const stmt of splitDiffStatements(diffSql)) {
+    const first = firstLine(stmt);
+    if (SESSION_NOISE_EXACT.has(first.toLowerCase())) continue;
+    // Statements que sobraram como ruído da remoção de objetos (só `;` ou símbolos
+    // soltos) não representam mudança de schema.
+    if (/^[;\s]*$/.test(first)) continue;
+    if (allowlist.some((re) => re.test(first))) {
+      const drop = first.match(INDEX_DROP_NOISE_RE);
+      if (drop) rebuiltIndexes.add(drop[2]);
+      continue;
+    }
+    kept.push(stmt);
+  }
+  if (!rebuiltIndexes.size) return kept;
+  return kept.filter((stmt) => {
+    const created = firstLine(stmt).match(INDEX_CREATE_RE);
+    return !created || !rebuiltIndexes.has(created[2]);
   });
 }
 
@@ -1260,6 +1591,9 @@ export function runCli(argv = process.argv.slice(2), rootDir = process.cwd()) {
         .join('\n');
       const lossy = dropDumpLossyFunctions(diffSql, shadowSql);
       diffSql = lossy.sql;
+      const lossyObjs = dropDumpLossyViewsPolicies(diffSql, shadowSql);
+      diffSql = lossyObjs.sql;
+      console.error(`drift-baseline: ${lossyObjs.dropped.length} view(s)/matview(s)/policy(s) iguais ao replay exceto serialização (ruído do dump) fora do resíduo`);
       console.error(`drift-baseline: ${lossy.dropped.length} função(ões) iguais ao replay exceto comentário de coluna 0 (ruído do dump) fora do resíduo`);
     }
     const residue = filterDiff(diffSql, allowlist);

@@ -10,6 +10,7 @@
  * "Failed to send a request to the Edge Function" na página de produto.
  */
 import { dbInvoke } from '@/lib/db/postgrest';
+import { PRINT_AREA_PUBLIC_COLUMNS } from '@/lib/print-area-columns';
 import { logger } from '@/lib/logger';
 import {
   adaptPrintAreaTechniqueRows,
@@ -64,6 +65,7 @@ export async function fetchPrintAreasFromProduct(
     const areasResult = await dbInvoke<Record<string, unknown>>({
       table: 'print_area_techniques',
       operation: 'select',
+      select: PRINT_AREA_PUBLIC_COLUMNS,
       filters: { product_id: productId, is_active: true },
       orderBy: { column: 'technique_order', ascending: true },
       limit: 50,
