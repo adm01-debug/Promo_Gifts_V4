@@ -1670,6 +1670,7 @@ Após VACUUM ANALYZE executado pelos jobs temporários `vacuum-snapshots-now` e
 | `20261027230000` | `784249aa608def03cc39a30a424baf0e59709b818ff3a3c587370cec55832c8d` | — | GitHub Actions (db-apply-migration.yml, disparado por adm01-debug, aprovado por @adm01-debug) | E15 | 2026-11-25 20:07:28 UTC | job post-check da run 45691759493 confirmou a version no ledger | aplicada |
 | `20261108230000` | `73174dd8978ed1d0f44fdc76d2c60aba1add07b0bf728bee263bafe24ec921d2` | — | GitHub Actions (db-apply-migration.yml, disparado por adm01-debug, aprovado por @adm01-debug) | E15 | 2026-11-25 20:12:44 UTC | job post-check da run 45692395050 confirmou a version no ledger | aplicada |
 | `20261120040000` | `4c0007b4b8f8b608a12693dba5173cab8726627618393ecf61c378af310d4346` | — | GitHub Actions (db-apply-migration.yml, disparado por adm01-debug, aprovado por adm01-debug) | reconciliação E055 | 2026-11-25 20:38:03 UTC | efeitos conferidos em produção no dump `SCHEMA_LIVE.sql` de 2026-11-25T20:55:49Z: `quotes.freight_plan`, `quotes.freight_mix_mode`, `quotes.show_freight_plan_to_client`, `quotes_freight_mix_mode_check`, `quotes_freight_plan_shape_check` e os 3 `COMMENT ON COLUMN` | aplicada |
+| `20261114160000` | `71368c808e5725ba7b49114394b2e274fa7a3c1985b821879a64eeb61cf8d549` | — | GitHub Actions (db-apply-migration.yml, disparado por adm01-debug, aprovado por adm01-debug) | E15 | 2026-11-25 22:12:55 UTC | job post-check da run 45710140526 confirmou a version no ledger | aplicada |
 
 ## 2026-11-08 — Reconciliação de `e2e_cleanup_audit`
 
