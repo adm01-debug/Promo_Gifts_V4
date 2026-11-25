@@ -8,6 +8,7 @@ import { createHash } from 'node:crypto';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import {
+  REPLAY_PIPELINE_REWRITES,
   REPLAY_SEED_NAME,
   REPLAY_SEED_SQL,
   byCodeUnit,
@@ -135,6 +136,83 @@ describe('sanitizeReplayMigration', () => {
   it('não reescreve migrations fora do allowlist de compatibilidade do pipeline', () => {
     const sql = 'CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_a ON public.a(id);';
     expect(sanitizeReplayMigration('20261109999999_future.sql', sql)).toBe(sql);
+  });
+
+  it('aceita a migration real da #4093 (1 índice CONCURRENTLY) no replay do shadow', () => {
+    const fileName = '20261125173000_idx_sds_summary_date_supplier_aplicavel.sql';
+    const sql = readFileSync(join('supabase', 'migrations', fileName), 'utf8');
+    const out = sanitizeReplayMigration(fileName, sql);
+    expect(out).not.toMatch(/^\s*CREATE\s+(?:UNIQUE\s+)?INDEX\s+CONCURRENTLY\b/im);
+    expect(out).toMatch(/^CREATE INDEX IF NOT EXISTS idx_sds_summary_date_supplier$/m);
+  });
+
+  it('neutraliza só a checagem de ACL da extensão gerida pela plataforma no replay', () => {
+    const fileName = '20261125131000_tripwire_anon_v5_reconcilia.sql';
+    const sql = readFileSync(join('supabase', 'migrations', fileName), 'utf8');
+    const out = sanitizeReplayMigration(fileName, sql);
+
+    expect(out).toContain('WHERE false; -- replay: ACL de extensao gerida pela plataforma');
+    expect(out).not.toContain("has_table_privilege('anon', 'extensions.pg_stat_statements'");
+    // as demais checagens do tripwire continuam no replay
+    expect(out).toContain("'public.get_promo_sales_ranking'");
+    expect(out).toContain("fn_product_active_for_rls");
+    expect(out.split('\n').length).toBe(sql.split('\n').length);
+  });
+
+  it('não neutraliza a v4 do tripwire, que registra a mesma checagem sem abortar', () => {
+    const fileName = '20261125120000_revoke_anon_internal_grants_public.sql';
+    const sql = readFileSync(join('supabase', 'migrations', fileName), 'utf8');
+    expect(sanitizeReplayMigration(fileName, sql)).toBe(sql);
+  });
+
+  it('falha fechado se a migration do caveat não tiver exatamente uma checagem de ACL', () => {
+    const fileName = '20261125131000_tripwire_anon_v5_reconcilia.sql';
+    const linha =
+      "WHERE has_table_privilege('anon', 'extensions.pg_stat_statements'::regclass, 'SELECT');";
+    for (const count of [0, 2]) {
+      const sql = Array.from({ length: count }, () => linha).join('\n');
+      expect(() => sanitizeReplayMigration(fileName, sql)).toThrow(
+        new RegExp(`esperada 1 ocorrencia da checagem de ACL de plataforma; encontrada\\(s\\) ${count}`),
+      );
+    }
+  });
+});
+
+describe('allowlist de reescrita do replay', () => {
+  // Toda migration posterior ao snapshot do baseline é aplicada no shadow pelo
+  // pipeline do libpq, que recusa CREATE INDEX CONCURRENTLY (SQLSTATE 25001).
+  // Sem esta guarda, uma migration nova quebra o Gate E40 em todas as PRs.
+  it('cobre toda migration pós-baseline com CREATE INDEX CONCURRENTLY', () => {
+    const repoRoot = join(import.meta.dirname, '..', '..');
+    const migrationsDir = join(repoRoot, 'supabase', 'migrations');
+    const baseline = findBaseline(repoRoot);
+    const ocorrencia = /^\s*CREATE\s+(?:UNIQUE\s+)?INDEX\s+CONCURRENTLY\b/im;
+    // Só as versões posteriores ao snapshot são replayadas: as anteriores que
+    // não estão no ledger de produção nunca passam pelo pipeline, e cobri-las
+    // aqui só criaria entradas mortas no allowlist.
+    const pendentes = readdirSync(migrationsDir)
+      .filter((file) => /^\d{14}_[\s\S]*\.sql$/.test(file))
+      .filter((file) => file.slice(0, 14) > baseline.version)
+      .map((file) => ({ file, sql: readFileSync(join(migrationsDir, file), 'utf8') }))
+      .filter(({ sql }) => ocorrencia.test(sql));
+
+    for (const { file, sql } of pendentes) {
+      expect(
+        sanitizeReplayMigration(file, sql),
+        `${file}: falta entrada em REPLAY_PIPELINE_REWRITES (scripts/drift-baseline.mjs)`,
+      ).not.toMatch(ocorrencia);
+    }
+  });
+
+  // A contagem do allowlist é fail-closed no replay. Se o arquivo mudar, o E40
+  // quebra; aqui a mesma checagem roda no vitest, antes do CI.
+  it('cada entrada do allowlist bate com a contagem real do arquivo', () => {
+    expect(REPLAY_PIPELINE_REWRITES.size).toBeGreaterThan(0);
+    for (const fileName of REPLAY_PIPELINE_REWRITES.keys()) {
+      const caminho = join('supabase', 'migrations', fileName);
+      if (!existsSync(caminho)) continue; // arquivo histórico pode sair na rotação do baseline
+      expect(() => sanitizeReplayMigration(fileName, readFileSync(caminho, 'utf8')), fileName).not.toThrow();
+    }
   });
 });
 
@@ -1164,7 +1242,11 @@ describe('versões só de ledger (P09)', () => {
       baselineVersions: baseline.versions,
       appliedVersions: [...ledgerOnly, '20261114014500'],
     });
-    expect(replay).toEqual(['20261114014500_p09_reconcile_ledger_schema_migrations.sql']);
+    // A própria 20261114014500 também está no snapshot do baseline (o assert acima
+    // prova isso), então não sobra nada para replayar — que é o que o título do
+    // teste afirma. A expectativa anterior (replayar a própria p09) contradizia o
+    // assert da linha de cima e ficou obsoleta na rotação do baseline em #4060.
+    expect(replay).toEqual([]);
   });
 });
 

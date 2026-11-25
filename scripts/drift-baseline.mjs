@@ -481,24 +481,61 @@ export function replayFileName(baselineVersion, index, original) {
 // válida no workflow oficial (sessão standalone). No shadow descartável não há
 // tráfego concorrente; remover apenas CONCURRENTLY preserva o índice resultante
 // sem alterar o arquivo histórico nem esconder outros erros SQL.
-const REPLAY_PIPELINE_REWRITES = new Map([
+export const REPLAY_PIPELINE_REWRITES = new Map([
   ['20261101140003_sb0006_index_kit_fk_user_id.sql', { concurrentlyIndexes: 2 }],
   ['20261113235000_perf_idx_products_active_created_at_desc.sql', { concurrentlyIndexes: 1 }],
   ['20261114014100_idx_fk_stock_and_missing_perf_indexes.sql', { concurrentlyIndexes: 11 }],
   ['20261114160000_perf_idx_sds_restock_counts.sql', { concurrentlyIndexes: 1 }],
   ['20261115130000_idx_sds_summary_date_supplier_include.sql', { concurrentlyIndexes: 1 }],
+  ['20261125173000_idx_sds_summary_date_supplier_aplicavel.sql', { concurrentlyIndexes: 1 }],
 ]);
+
+  // O shadow do CLI nasce com privilégio que a produção não tem e que o role do
+// replay não consegue revogar: `CREATE EXTENSION pg_stat_statements` encontra a
+// extension já instalada pela imagem, cujo ACL medido é
+// `{supabase_admin=...,=r/supabase_admin,postgres=...}` — ou seja SELECT para
+// PUBLIC, herdado por `anon`. Medido no replay: has_table_privilege('anon', ...)
+// = true; em produção = false. O role do replay é `postgres` sem superuser e sem
+// membership em `supabase_admin` (owner do objeto): REVOKE, ALTER OWNER e
+// SET ROLE falham (este último com "permission denied to set role"), e o REVOKE
+// de PUBLIC apenas emite warning sem efeito. Como não há privilégio para alinhar
+// o ACL do shadow, a cópia temporária neutraliza só esta checagem; o arquivo
+// histórico e a produção mantêm a trava ativa. O find/replace é verificado para
+// que uma mudança futura na migration falhe em vez de passar em silêncio.
+const REPLAY_PLATFORM_ACL_CAVEAT = new Map([
+  [
+    '20261125131000_tripwire_anon_v5_reconcilia.sql',
+    {
+      statement: "WHERE has_table_privilege('anon', 'extensions.pg_stat_statements'::regclass, 'SELECT');",
+      replacement: 'WHERE false; -- replay: ACL de extensao gerida pela plataforma',
+    },
+  ],
+]);
+
+function neutralizarAclDePlataforma(fileName, sql) {
+  const caveat = REPLAY_PLATFORM_ACL_CAVEAT.get(fileName);
+  if (!caveat) return sql;
+  const ocorrencias = sql.split(caveat.statement).length - 1;
+  if (ocorrencias !== 1) {
+    throw new Error(
+      `${fileName}: esperada 1 ocorrencia da checagem de ACL de plataforma; encontrada(s) ${ocorrencias}. ` +
+        'A migration mudou: revise REPLAY_PLATFORM_ACL_CAVEAT antes de replayar.',
+    );
+  }
+  return sql.replace(caveat.statement, caveat.replacement);
+}
 
 export function sanitizeReplayMigration(fileName, sql) {
   // Alguns editores gravam um BOM UTF-8. O PostgreSQL/libpq interpreta U+FEFF
   // como token inválido quando ele abre a migration. Normalize somente a cópia
   // temporária do replay; o arquivo histórico e qualquer U+FEFF interno ficam intactos.
   const normalizedSql = sql.startsWith('\uFEFF') ? sql.slice(1) : sql;
+  const replaySql = neutralizarAclDePlataforma(fileName, normalizedSql);
   const expected = REPLAY_PIPELINE_REWRITES.get(fileName)?.concurrentlyIndexes;
-  if (expected === undefined) return normalizedSql;
+  if (expected === undefined) return replaySql;
 
   let rewritten = 0;
-  const output = normalizedSql.replace(
+  const output = replaySql.replace(
     /^(\s*CREATE\s+(?:UNIQUE\s+)?INDEX)\s+CONCURRENTLY\b/gim,
     (statement) => {
       rewritten += 1;

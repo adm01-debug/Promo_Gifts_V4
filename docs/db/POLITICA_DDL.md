@@ -61,7 +61,10 @@ o caminho de reconciliação autorizado é `mode: repair-only`:
   arquivo `.sql` novo/modificado em `supabase/migrations/` não tiver recibo correspondente.
   O gate também detecta versões duplicadas no log (mais de 1 ocorrência da mesma versão).
 - **Prevenção de duplicatas**: `scripts/append-migration-receipt.mjs` faz upsert — se já
-  existe linha `pendente` para a versão, substitui ela em vez de anexar nova linha.
+  existe uma linha da versão na seção (qualquer status: `pendente`, `aguardando_merge`,
+  `registrada-sem-aplicar` ou `aplicada`), substitui ela em vez de anexar nova linha. Trocar
+  só a linha `pendente` era o que gerava recibo duplicado quando o pré-registro da PR usava
+  `aguardando_merge`, e o gate acima reprova versão duplicada.
 
 ## Por que isso importa (casos medidos)
 
@@ -151,5 +154,5 @@ Para validar o ciclo completo sem tocar o banco de produção:
   o ledger.
 - `scripts/check-migrations-sync-log-gate.mjs` — gate de PR: verifica recibos em
   `supabase/MIGRATIONS_SYNC_LOG.md`, detecta duplicatas e `pendente` sem adição no PR (E75).
-- `scripts/append-migration-receipt.mjs` — escreve/atualiza recibo no log; faz upsert de
-  linha `pendente` → `aplicada` em vez de sempre anexar (E75).
+- `scripts/append-migration-receipt.mjs` — escreve/atualiza recibo no log; faz upsert da
+  linha existente da versão (qualquer status) em vez de sempre anexar (E75).
