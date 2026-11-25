@@ -71,12 +71,16 @@ export function appendReceiptRow({ logContent, heading = SECTION_HEADING, row })
 }
 
 /**
- * E75: upsert seguro — se já existe uma linha "pendente" para a versão,
- * substitui ela pela nova linha "aplicada" em vez de criar um duplicado.
+ * E75: upsert seguro — se já existe uma linha para a versão, substitui ela pela
+ * nova linha em vez de criar um duplicado.
  *
- * Regra: detecta linha com `\`<version>\`` E a palavra "pendente" (case-
- * insensitive) na mesma linha. Se encontrada dentro da seção heading, troca.
- * Caso contrário, appenda normalmente.
+ * Regra: o gate E75 (`countVersionOccurrences`) conta a primeira célula de cada
+ * seção e reprova versão duplicada, então a seção aceita **uma** linha por
+ * versão. Qualquer linha já existente para a versão dentro da seção heading é
+ * substituída, não só as marcadas "pendente": `registrada-sem-aplicar`
+ * (repair-only) e `aguardando_merge` (pré-registro feito na PR da migration)
+ * também precisam ser trocadas — era exatamente aí que nasciam os duplicados.
+ * Se não houver linha, appenda normalmente.
  *
  * Retorna { content: string, replaced: boolean }.
  */
@@ -95,7 +99,7 @@ export function upsertReceiptRow({ logContent, version, heading = SECTION_HEADIN
 
   for (let i = headingIdx + 1; i < sectionEnd; i += 1) {
     const l = lines[i];
-    if (l.includes(versionTag) && /pendente/i.test(l)) {
+    if (l.includes(versionTag)) {
       const newLines = [...lines];
       newLines[i] = row;
       return { content: newLines.join('\n'), replaced: true };
@@ -143,7 +147,7 @@ export function runCli(argv = process.argv.slice(2)) {
   let updated;
   let replaced = false;
   try {
-    // E75: upsert — substitui linha "pendente" existente em vez de duplicar
+    // E75: upsert — substitui a linha existente da versão (qualquer status) em vez de duplicar
     const result = upsertReceiptRow({ logContent, version: opts.version, row });
     updated = result.content;
     replaced = result.replaced;
@@ -154,7 +158,7 @@ export function runCli(argv = process.argv.slice(2)) {
   }
 
   writeFileSync(logPath, updated, 'utf8');
-  const action = replaced ? 'atualizado (pendente→aplicada)' : 'adicionado';
+  const action = replaced ? 'atualizado (linha existente substituída)' : 'adicionado';
   process.stdout.write(`[append-migration-receipt] recibo de ${opts.version} ${action} em ${logPath}.\n`);
 }
 
