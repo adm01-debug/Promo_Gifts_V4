@@ -2,21 +2,18 @@ CREATE OR REPLACE FUNCTION public.get_edge_function_secret(_name text)
  RETURNS text
  LANGUAGE plpgsql
  SECURITY DEFINER
- SET search_path TO 'vault', 'public'
+ SET search_path TO 'vault', 'public', 'pg_temp'
 AS $function$
 DECLARE
   _secret text;
 BEGIN
   IF _name NOT IN (
     'WEBHOOK_DISPATCHER_SECRET',
-    'WEBHOOK_DISPATCHER_URL',
-    'WEBHOOK_SECRET',
     'CONNECTIONS_AUTO_TEST_SECRET',
     'CRON_SECRET',
     'HASH_PRODUCT_IMAGES_CRON_SECRET',
     'GENERATE_BLURHASHES_CRON_SECRET',
-    'BACKFILL_DIM_CRON_SECRET',
-    'ASIA_INGESTION_CRON_SECRET'
+    'BACKFILL_DIM_CRON_SECRET'
   ) THEN
     RAISE EXCEPTION 'Nome de secret nao autorizado: %', _name
       USING ERRCODE = 'insufficient_privilege';

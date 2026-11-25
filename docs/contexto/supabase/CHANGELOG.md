@@ -2,6 +2,12 @@
 
 Diff semântico gerado a cada coleta em que algo mudou.
 
+## 2026-11-25 20:19 UTC
+
+- **cron jobs** removido (1): `235:image-dimensions-backfill`
+- **functions** alterado (2): `public.get_edge_function_secret(_name text)`, `public.get_edge_functions_base_url()`
+- **migrations** adicionado (2): `20261027230000_cleanup_get_edge_function_secret_allowlist`, `20261108230000_remove_broken_cron_image_dimensions_backfill`
+
 ## 2026-11-25 19:15 UTC
 
 - **colunas** adicionado (7): `public.supplier_products_raw_history_default.captured_at`, `public.supplier_products_raw_history_default.content_hash`, `public.supplier_products_raw_history_default.id`, `public.supplier_products_raw_history_default.raw_data`, `public.supplier_products_raw_history_default.raw_id`, `public.supplier_products_raw_history_default.supplier_id`, `public.supplier_products_raw_history_default.supplier_reference`

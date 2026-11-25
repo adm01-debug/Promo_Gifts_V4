@@ -2922,6 +2922,7 @@ SQL em `migrations/<versao>_<nome>.sql`. Mudanças feitas pelo Dashboard/SQL Edi
 | 20261027140000 | [stagger_cron_burst_schedules](migrations/20261027140000_stagger_cron_burst_schedules.sql) | 7 |
 | 20261027160000 | [deactivate_image_dimensions_backfill_cron](migrations/20261027160000_deactivate_image_dimensions_backfill_cron.sql) | 3 |
 | 20261027180000 | [reactivate_generate_blurhashes_safe_schedule](migrations/20261027180000_reactivate_generate_blurhashes_safe_schedule.sql) | 3 |
+| 20261027230000 | [cleanup_get_edge_function_secret_allowlist](migrations/20261027230000_cleanup_get_edge_function_secret_allowlist.sql) | 5 |
 | 20261029160339 | [add_kill_switch_hits_anon_rate_guard](migrations/20261029160339_add_kill_switch_hits_anon_rate_guard.sql) | 2 |
 | 20261031000000 | [create_stock_notes](migrations/20261031000000_create_stock_notes.sql) | 1 |
 | 20261101000002 | [revoke_anon_color_synonym_map_p15](migrations/20261101000002_revoke_anon_color_synonym_map_p15.sql) | 2 |
@@ -2957,6 +2958,7 @@ SQL em `migrations/<versao>_<nome>.sql`. Mudanças feitas pelo Dashboard/SQL Edi
 | 20261107180000 | [security_fix_suppliers_authenticated_credential_leak_v2](migrations/20261107180000_security_fix_suppliers_authenticated_credential_leak_v2.sql) | 4 |
 | 20261108001500 | [reconcile_e2e_cleanup_audit](migrations/20261108001500_reconcile_e2e_cleanup_audit.sql) | 20 |
 | 20261108223100 | [drop_perf002_incident_ddl_survivor](migrations/20261108223100_drop_perf002_incident_ddl_survivor.sql) | 1 |
+| 20261108230000 | [remove_broken_cron_image_dimensions_backfill](migrations/20261108230000_remove_broken_cron_image_dimensions_backfill.sql) | 1 |
 | 20261108235500 | [restrict_art_files_public_read_to_quotes](migrations/20261108235500_restrict_art_files_public_read_to_quotes.sql) | 5 |
 | 20261111191000 | [restore_get_sitemap_public_anon_execute](migrations/20261111191000_restore_get_sitemap_public_anon_execute.sql) | 2 |
 | 20261112011000 | [fix_sb0003_fn_get_rupture_alerts](migrations/20261112011000_fix_sb0003_fn_get_rupture_alerts.sql) | 3 |

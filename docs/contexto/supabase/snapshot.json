@@ -140262,15 +140262,6 @@
           "username": "postgres"
         },
         {
-          "active": false,
-          "command": "\nSELECT net.http_post(\n    url := public.get_edge_functions_base_url() || '/functions/v1/run-script',\n    headers := jsonb_build_object(\n      'Content-Type', 'application/json',\n      'x-cron-secret', public.get_edge_function_secret('CRON_SECRET')\n    ),\n    body := '{\"script\":\"image-dimensions-worker\"}'::jsonb,\n    timeout_milliseconds := 55000)\n",
-          "database": "postgres",
-          "jobid": 235,
-          "jobname": "image-dimensions-backfill",
-          "schedule": "31 */3 * * *",
-          "username": "postgres"
-        },
-        {
           "active": true,
           "command": "SELECT public.fn_cron_safe_run(136::bigint, $sql$\n    UPDATE image_backfill_queue SET created_at = NOW()\n    WHERE status = 'pending' AND created_at <= NOW() - INTERVAL '22 hours';\n  $sql$, 30000, 'backfill-queue-expiry');",
           "database": "postgres",
@@ -179974,7 +179965,6 @@
             "211:connections-auto-test",
             "217:process-queue",
             "222:backfill-image-dimensions",
-            "235:image-dimensions-backfill",
             "242:generate-blurhashes",
             "243:hash-product-images",
             "254:collections-watcher",
@@ -179989,10 +179979,10 @@
         },
         "comment": "Whitelist de secrets autorizados: WEBHOOK_DISPATCHER_SECRET, WEBHOOK_DISPATCHER_URL, WEBHOOK_SECRET, CONNECTIONS_AUTO_TEST_SECRET, CRON_SECRET, HASH_PRODUCT_IMAGES_CRON_SECRET, GENERATE_BLURHASHES_CRON_SECRET, BACKFILL_DIM_CRON_SECRET",
         "config": [
-          "search_path=vault, public"
+          "search_path=vault, public, pg_temp"
         ],
         "definition": null,
-        "definition_sha": "0f87c562a60190bf",
+        "definition_sha": "6a2f2db010c61d7a",
         "execute_api_roles": "service_role",
         "execute_public": false,
         "is_trigger_fn": false,
@@ -180071,7 +180061,6 @@
           "code_total_files": 14,
           "cron": [
             "222:backfill-image-dimensions",
-            "235:image-dimensions-backfill",
             "242:generate-blurhashes",
             "243:hash-product-images"
           ],
@@ -241079,6 +241068,12 @@
         "version": "20261027180000"
       },
       {
+        "name": "cleanup_get_edge_function_secret_allowlist",
+        "statements": 5,
+        "statements_sha": "a962d8dee0f42408",
+        "version": "20261027230000"
+      },
+      {
         "name": "add_kill_switch_hits_anon_rate_guard",
         "statements": 2,
         "statements_sha": "e9c88371ab8ee3ce",
@@ -241286,6 +241281,12 @@
         "statements": 1,
         "statements_sha": "1ad01b55e10c6cd9",
         "version": "20261108223100"
+      },
+      {
+        "name": "remove_broken_cron_image_dimensions_backfill",
+        "statements": 1,
+        "statements_sha": "fd515b0a68578520",
+        "version": "20261108230000"
       },
       {
         "name": "restrict_art_files_public_read_to_quotes",
