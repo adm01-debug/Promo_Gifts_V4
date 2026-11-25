@@ -2,6 +2,10 @@
 -- Plano: docs/plans/PLANO_DBA_CORRECOES_MELHORIAS_50_ETAPAS_2026-09-16.md (linhas 520-531)
 -- Prazo duro citado no plano: 2026-12-15 (última partição mensal viva hoje é p2026_12).
 --
+-- Rollback: supabase/rollbacks/20260916193000_rollback.sql (remove os 2 jobs de cron, a
+--           função fn_ensure_history_partitions e a partição DEFAULT apenas se estiver
+--           vazia; as partições mensais ficam — guardam dados reais).
+--
 -- Correção ao texto do plano: a coluna de particionamento é `captured_at`,
 -- não `created_at` como o texto do plano menciona. Confirmado ao vivo via
 -- pg_partitioned_table/pg_attribute em 2026-09-16.

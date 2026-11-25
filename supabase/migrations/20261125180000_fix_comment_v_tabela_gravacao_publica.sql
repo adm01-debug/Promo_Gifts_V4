@@ -1,4 +1,6 @@
--- 20261125150000 - corrige o COMMENT da view de preco de gravacao publica
+-- 20261125180000 - corrige o COMMENT da view de preco de gravacao publica
+--
+-- Rollback: supabase/rollbacks/20261125180000_rollback.sql
 --
 -- Causa: o texto gravado em 20260717173348_secure_tabela_gravacao_anon_definer_v1.sql (linhas 43-48)
 -- afirmava que `custo_setup_por_cor` e `custo_manuseio_por_peca` estavam EXCLUIDOS da projecao.

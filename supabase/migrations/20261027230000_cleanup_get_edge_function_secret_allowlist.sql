@@ -9,6 +9,17 @@
 -- Evidência: auditoria 2026-10-27 docs/db/PGMQ_AND_SECRETS_AUDIT_2026-10-27.md
 -- Rollback: supabase/rollbacks/20261027230000_rollback.sql
 --   (reinsere as 3 entradas stale: WEBHOOK_DISPATCHER_URL, WEBHOOK_SECRET, ASIA_INGESTION_CRON_SECRET)
+--
+-- Revisao 2026-11-25 (antes do apply): pre-condicoes reverificadas no canonico.
+--   * Os 3 consumidores sao defensivos: public.fn_process_webhook_outbox_batch chama a
+--     funcao dentro de BEGIN/EXCEPTION com endpoint hardcoded de fallback
+--     (supabase/migrations-snapshot/SCHEMA_LIVE.sql:36751) e o cron process-webhook-outbox
+--     esta desabilitado desde a P0 de 2026-06-23; supabase/functions/_shared/dispatcher-auth.ts:102
+--     trata erro/vazio como "" e autentica por env WEBHOOK_DISPATCHER_SECRET; e
+--     supabase/functions/asia-ingestion/index.ts:89 le ASIA_INGESTION_CRON_SECRET do proprio env.
+--   * ASIA_INGESTION_CRON_SECRET nao aparece em nenhum outro ponto do canonico alem do allowlist.
+--   * search_path passa a incluir pg_temp (E066): sem ele a funcao SECURITY DEFINER fica
+--     exposta a shadowing por objetos de sessao temporarios.
 
 -- ── PRÉ-CONDIÇÃO: função existe e ainda contém as entradas stale ──────────────
 DO $$
@@ -30,7 +41,7 @@ CREATE OR REPLACE FUNCTION public.get_edge_function_secret(_name text)
 RETURNS text
 LANGUAGE plpgsql
 SECURITY DEFINER
-SET search_path = public, vault
+SET search_path = vault, public, pg_temp
 AS $$
 DECLARE
   _secret text;

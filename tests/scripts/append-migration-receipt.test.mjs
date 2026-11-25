@@ -12,6 +12,7 @@ import {
   formatReceiptRow,
   parseCliOptions,
   SECTION_HEADING,
+  upsertReceiptRow,
 } from '../../scripts/append-migration-receipt.mjs';
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '../..');
@@ -107,6 +108,101 @@ describe('appendReceiptRow', () => {
     const row = '| `20990101000000` | `h` | `m` | teste | E15 | d | p | s |';
     const updated = appendReceiptRow({ logContent: real, row });
     expect(updated).toContain(row);
+  });
+});
+
+// ─── upsertReceiptRow ───────────────────────────────────────────────────────
+
+describe('upsertReceiptRow', () => {
+  const VERSION = '20261130120000';
+  const tag = `\`${VERSION}\``;
+  const finalRow = formatReceiptRow({
+    version: VERSION,
+    executor: 'CI',
+    metodo: 'E15',
+    dataUtc: '2026-11-30',
+    posCheck: 'ok',
+    status: 'aplicada',
+  });
+  const countRows = (content) => content.split('\n').filter((l) => l.includes(tag)).length;
+
+  // O E75 reprova versão duplicada na seção (conta a primeira célula), então a
+  // linha pré-existente tem de ser substituída — qualquer que seja o status.
+  // `aguardando_merge` é o caso real que gerou o duplicado da 20261125131000.
+  for (const status of ['pendente', 'aguardando_merge', 'registrada-sem-aplicar', 'aplicada']) {
+    it(`substitui a linha existente com status "${status}" em vez de duplicar`, () => {
+      const preExisting = formatReceiptRow({
+        version: VERSION,
+        executor: 'CI',
+        metodo: 'E15',
+        dataUtc: '2026-11-29',
+        posCheck: 'aguardando',
+        status,
+      });
+      const withRow = appendReceiptRow({ logContent: SAMPLE_LOG, row: preExisting });
+
+      const { content, replaced } = upsertReceiptRow({
+        logContent: withRow,
+        version: VERSION,
+        row: finalRow,
+      });
+
+      expect(replaced).toBe(true);
+      expect(countRows(content)).toBe(1);
+      expect(content).toContain(finalRow);
+      expect(content).not.toContain(preExisting);
+      // A seção vizinha continua intacta.
+      expect(content).toContain('| 1 | 2 |');
+    });
+  }
+
+  it('append quando ainda não existe linha da versão (replaced: false)', () => {
+    const { content, replaced } = upsertReceiptRow({
+      logContent: SAMPLE_LOG,
+      version: VERSION,
+      row: finalRow,
+    });
+
+    expect(replaced).toBe(false);
+    expect(countRows(content)).toBe(1);
+    expect(content).toContain(finalRow);
+  });
+
+  it('é idempotente: reaplicar o mesmo recibo não cria segunda linha', () => {
+    const once = upsertReceiptRow({ logContent: SAMPLE_LOG, version: VERSION, row: finalRow });
+    const twice = upsertReceiptRow({ logContent: once.content, version: VERSION, row: finalRow });
+
+    expect(countRows(twice.content)).toBe(1);
+  });
+
+  it('não mexe em linha de outra versão', () => {
+    const otherRow = formatReceiptRow({
+      version: '20261130130000',
+      executor: 'CI',
+      metodo: 'E15',
+      dataUtc: '2026-11-30',
+      posCheck: 'ok',
+      status: 'aplicada',
+    });
+    const withOther = appendReceiptRow({ logContent: SAMPLE_LOG, row: otherRow });
+
+    const { content, replaced } = upsertReceiptRow({
+      logContent: withOther,
+      version: VERSION,
+      row: finalRow,
+    });
+
+    expect(replaced).toBe(false);
+    expect(content).toContain(otherRow);
+    expect(content).toContain(finalRow);
+    // A contagem acompanha tags da versão-alvo: a linha da outra versão não é tocada.
+    expect(countRows(content)).toBe(1);
+  });
+
+  it('lança erro se a seção não existir', () => {
+    expect(() =>
+      upsertReceiptRow({ logContent: '# log sem a seção E15', version: VERSION, row: finalRow }),
+    ).toThrow(/não encontrada/);
   });
 });
 
