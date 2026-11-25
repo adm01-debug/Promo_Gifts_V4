@@ -97,7 +97,7 @@ CREATE OR REPLACE FUNCTION public.fn_verify_anon_catalog_grants()
 RETURNS TABLE(object_name text, object_kind text, issue text)
 LANGUAGE plpgsql
 SECURITY DEFINER
-SET search_path TO 'public'
+SET search_path TO 'public', 'pg_temp'
 AS $fn$
 BEGIN
   -- (1) Views/tabelas que DEVEM ter anon SELECT (v4: sem as 13 revogadas na 20261125120000)
