@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "69afa3c56a199185a56df3b6992f1c68fc5529c9",
+  "sha": "4107894fcdb72ae1d2680e960fafe54f36f7006d",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-25 16:37 UTC",
-  "files_total": 11204,
-  "code_files": 9192,
-  "code_lines": 1304598
+  "generated_at": "2026-11-25 16:49 UTC",
+  "files_total": 11206,
+  "code_files": 9194,
+  "code_lines": 1304652
  },
  "version": "1.3.2",
- "facts_hash": "13378edd020bf58b",
+ "facts_hash": "43969074c5786d90",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -1130,7 +1130,7 @@
   ],
   "package_manager": "npm",
   "languages": {
-   ".sql": 3512,
+   ".sql": 3514,
    ".ts": 3180,
    ".tsx": 2026,
    ".mjs": 456,
@@ -90564,6 +90564,14 @@
     "src": "supabase/migrations/20261120180000_restore_quote_comments_scoped_threads.sql"
    },
    {
+    "name": "idx_sds_summary_date_supplier",
+    "table": "stock_daily_summary",
+    "columns": "summary_date, supplier_id",
+    "unique": false,
+    "where": "",
+    "src": "supabase/migrations/20261125170000_idx_sds_summary_date_supplier_aplicavel.sql"
+   },
+   {
     "name": "idx_user_organizations_user",
     "table": "user_organizations",
     "columns": "user_id",
@@ -96173,6 +96181,7 @@
    "supabase/migrations/20261125120000_revoke_anon_internal_grants_public.sql",
    "supabase/migrations/20261125131000_tripwire_anon_v5_reconcilia.sql",
    "supabase/migrations/20261125160000_restaura_grant_anon_mv_product_compositions.sql",
+   "supabase/migrations/20261125170000_idx_sds_summary_date_supplier_aplicavel.sql",
    "supabase/rollbacks/20260511235950_rollback.sql",
    "supabase/rollbacks/20260511235959_rollback.sql",
    "supabase/rollbacks/20260611014515_fn_dryrun_standardize_supplier_real_rollback.sql",
@@ -96312,6 +96321,7 @@
    "supabase/rollbacks/20261125120000_rollback.sql",
    "supabase/rollbacks/20261125131000_rollback.sql",
    "supabase/rollbacks/20261125160000_rollback.sql",
+   "supabase/rollbacks/20261125170000_rollback.sql",
    "supabase/rollbacks/rollback_20261025002500_analyze_tables_p03.sql",
    "supabase/sql-legacy/001_notification_system.sql",
    "supabase/sql-legacy/002_notification_preferences.sql",
@@ -153985,8 +153995,8 @@
   },
   {
    "module": "supabase/migrations",
-   "files": 3134,
-   "lines": 228371,
+   "files": 3135,
+   "lines": 228421,
    "tables": [
     "...",
     "admin_audit_log",
@@ -154084,8 +154094,8 @@
   },
   {
    "module": "supabase/rollbacks",
-   "files": 140,
-   "lines": 5400,
+   "files": 141,
+   "lines": 5404,
    "tables": [],
    "exports": [],
    "docs": [],
@@ -538572,6 +538582,10 @@
    "path": "supabase/migrations/20261125160000_restaura_grant_anon_mv_product_compositions.sql",
    "lines": 87
   },
+  "supabase/migrations/20261125170000_idx_sds_summary_date_supplier_aplicavel.sql": {
+   "path": "supabase/migrations/20261125170000_idx_sds_summary_date_supplier_aplicavel.sql",
+   "lines": 50
+  },
   "supabase/rollbacks/20260511235950_rollback.sql": {
    "path": "supabase/rollbacks/20260511235950_rollback.sql",
    "lines": 5
@@ -539148,6 +539162,10 @@
   "supabase/rollbacks/20261125160000_rollback.sql": {
    "path": "supabase/rollbacks/20261125160000_rollback.sql",
    "lines": 7
+  },
+  "supabase/rollbacks/20261125170000_rollback.sql": {
+   "path": "supabase/rollbacks/20261125170000_rollback.sql",
+   "lines": 4
   },
   "supabase/rollbacks/rollback_20261025002500_analyze_tables_p03.sql": {
    "path": "supabase/rollbacks/rollback_20261025002500_analyze_tables_p03.sql",
@@ -564805,10 +564823,21 @@
   }
  },
  "git": {
-  "sha": "69afa3c56a199185a56df3b6992f1c68fc5529c9",
+  "sha": "4107894fcdb72ae1d2680e960fafe54f36f7006d",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "4107894",
+    "date": "2026-11-25",
+    "author": "adm01-debug",
+    "subject": "perf: torna aplicavel o indice de stock_daily_summary do market-intel (#4092)",
+    "files": [
+     "supabase/MIGRATIONS_SYNC_LOG.md",
+     "supabase/migrations/20261125170000_idx_sds_summary_date_supplier_aplicavel.sql",
+     "supabase/rollbacks/20261125170000_rollback.sql"
+    ]
+   },
    {
     "sha": "69afa3c",
     "date": "2026-11-25",
@@ -565117,15 +565146,6 @@
      "src/lib/__tests__/fetch-print-areas.anonSelect.test.ts",
      "src/lib/fetch-print-areas.ts"
     ]
-   },
-   {
-    "sha": "a1b5482",
-    "date": "2026-11-24",
-    "author": "github-actions[bot]",
-    "subject": "docs(migrations-log): recibo E15 — aplicação de 20261124163000 (#4052)",
-    "files": [
-     "supabase/MIGRATIONS_SYNC_LOG.md"
-    ]
    }
   ],
   "hot_files": [
@@ -565182,6 +565202,14 @@
     2
    ],
    [
+    "supabase/migrations/20261125170000_idx_sds_summary_date_supplier_aplicavel.sql",
+    1
+   ],
+   [
+    "supabase/rollbacks/20261125170000_rollback.sql",
+    1
+   ],
+   [
     "supabase/baseline/20261125131000_baseline_schema.sql",
     1
    ],
@@ -565199,14 +565227,6 @@
    ],
    [
     "supabase/migrations-snapshot/SNAPSHOT_META.json",
-    1
-   ],
-   [
-    "supabase/migrations/20261125160000_restaura_grant_anon_mv_product_compositions.sql",
-    1
-   ],
-   [
-    "supabase/rollbacks/20261125160000_rollback.sql",
     1
    ]
   ]

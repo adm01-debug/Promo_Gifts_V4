@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "69afa3c56a199185a56df3b6992f1c68fc5529c9",
+  "commit": "4107894fcdb72ae1d2680e960fafe54f36f7006d",
   "branch": "main",
-  "data_commit": "2026-11-25T13:35:53-03:00",
+  "data_commit": "2026-11-25T13:48:39-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "4107894",
+    "data": "2026-11-25",
+    "assunto": "perf: torna aplicavel o indice de stock_daily_summary do market-intel (#4092)"
+   },
    {
     "sha": "69afa3c",
     "data": "2026-11-25",
@@ -126,14 +131,9 @@
     "sha": "76cd9fb",
     "data": "2026-11-24",
     "assunto": "docs(qa): registra a regressao da lista de colunas e o escopo da etapa 008 (#4056)"
-   },
-   {
-    "sha": "1f8101b",
-    "data": "2026-11-24",
-    "assunto": "docs: regenera GRAPH_REPORT.md com o graphify 0.9.115 e camada semântica (#4037)"
    }
   ],
-  "arquivos_mudados_7d": 613,
+  "arquivos_mudados_7d": 615,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -149,7 +149,7 @@
    },
    {
     "pasta": "src/components/quotes",
-    "mudancas": 126
+    "mudancas": 125
    },
    {
     "pasta": "tests/edge-functions/live",
@@ -193,13 +193,13 @@
    },
    {
     "pasta": "supabase/MIGRATIONS_SYNC_LOG.md",
-    "mudancas": 77
+    "mudancas": 78
    }
   ],
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "supabase/MIGRATIONS_SYNC_LOG.md",
-    "mudancas": 77
+    "mudancas": 78
    },
    {
     "arquivo": "docs/qa/05-PROGRESSO.md",
@@ -310,7 +310,7 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 11274,
+  "arquivos_total": 11276,
   "arquivos_codigo": 5682,
   "linhas_codigo": 1076946,
   "rotas": 141,
@@ -322,7 +322,7 @@
   "hooks": 646,
   "edge_functions": 112,
   "tabelas": 532,
-  "migrations": 3135,
+  "migrations": 3136,
   "cron_jobs": 122,
   "testes": 2722,
   "workflows": 89,
