@@ -3016,3 +3016,4 @@ SQL em `migrations/<versao>_<nome>.sql`. Mudanças feitas pelo Dashboard/SQL Edi
 | 20261124140000 | [close_anon_cost_surface](migrations/20261124140000_close_anon_cost_surface.sql) | 9 |
 | 20261124163000 | [revoke_anon_unit_cost_print_areas](migrations/20261124163000_revoke_anon_unit_cost_print_areas.sql) | 9 |
 | 20261124171500 | [internal_managed_schema_dictionary](migrations/20261124171500_internal_managed_schema_dictionary.sql) | 4 |
+| 20261125120000 | [revoke_anon_internal_grants_public](migrations/20261125120000_revoke_anon_internal_grants_public.sql) | 4 |

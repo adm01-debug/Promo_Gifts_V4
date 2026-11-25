@@ -2,10 +2,10 @@ CREATE OR REPLACE FUNCTION public.fn_verify_anon_catalog_grants()
  RETURNS TABLE(object_name text, object_kind text, issue text)
  LANGUAGE plpgsql
  SECURITY DEFINER
- SET search_path TO 'public'
+ SET search_path TO 'public', 'pg_temp'
 AS $function$
 BEGIN
-  -- (1) Views/tabelas que DEVEM ter anon SELECT
+  -- (1) Views/tabelas que DEVEM ter anon SELECT (v4: sem as 13 revogadas na 20261125120000)
   RETURN QUERY
   WITH req(sch, nm) AS (VALUES
     -- Views DEFINER (catálogo principal)
@@ -23,22 +23,21 @@ BEGIN
     ('public','mv_product_compositions'),
     ('internal','mv_product_leaf_category'),('analytics','mv_product_compositions'),
     -- Tabelas de catálogo (não sensíveis)
-    ('public','categories'),('public','collection_products'),('public','collections'),
+    ('public','categories'),
     ('public','color_groups'),('public','color_synonym_map'),('public','color_variations'),
-    ('public','content_articles'),('public','favorite_item_reactions'),
-    ('public','favorite_items'),('public','favorite_lists'),('public','kit_typical_dims'),
+    ('public','kit_typical_dims'),
     ('public','material_types'),('public','mockup_approval_links'),
-    ('public','print_area_techniques'),('public','product_ai_content'),
+    ('public','print_area_techniques'),
     ('public','product_attributes'),('public','product_badge_definitions'),
-    ('public','product_commemorative_dates'),('public','product_fiscal'),
+    ('public','product_commemorative_dates'),
     ('public','product_kit_components'),('public','product_materials'),
-    ('public','product_novelties'),('public','product_physical'),('public','product_seo'),
-    ('public','product_supply'),('public','product_variants'),
+    ('public','product_novelties'),('public','product_physical'),
+    ('public','product_variants'),
     ('public','produto_ramo_atividade'),('public','ramo_atividade'),
     ('public','ramo_atividade_filho'),('public','spot_typecode_map'),
-    ('public','supplier_sub_brands'),('public','system_kill_switches'),
+    ('public','supplier_sub_brands'),
     ('public','tabela_preco_gravacao_oficial_faixa'),  -- faixa de preço de venda OK
-    ('public','tecnicas_gravacao'),('public','video_sim_results'),
+    ('public','tecnicas_gravacao'),
     ('public','color_nuances'),('public','kit_component_print_areas'),
     ('public','personalization_techniques'),('public','product_properties'),
     ('public','tags'),('public','product_tags')
@@ -64,7 +63,15 @@ BEGIN
   FROM (VALUES ('variant_supplier_sources'),('markup_configurations'),('user_organizations'),
                ('quotes'),('quote_items'),
                ('products'),('suppliers'),   -- custo/credenciais
-               ('tabela_preco_gravacao_oficial'))  -- NOVO v3: custo_setup/markup
+               ('tabela_preco_gravacao_oficial'),  -- NOVO v3: custo_setup/markup
+               -- v4 (migration 20261125120000, QA etapa 008): grant herdado do legado
+               -- revogado em 2026-11-25. Baseline medido em .security/anon-tables-baseline.json
+               -- (2026-11-24) marcava as 13 como 'interno-grant-herdado'. Reaparecer aqui = regressao.
+               ('collection_products'),('collections'),('content_articles'),
+               ('favorite_item_reactions'),('favorite_items'),('favorite_lists'),
+               ('product_ai_content'),('product_fiscal'),('product_seo'),
+               ('product_supply'),('system_kill_switches'),('system_settings'),
+               ('video_sim_results'))
              v(nm)
   WHERE to_regclass('public.'||v.nm) IS NOT NULL
     AND has_table_privilege('anon', ('public.'||v.nm)::regclass, 'SELECT');

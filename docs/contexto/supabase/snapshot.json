@@ -140904,8 +140904,13 @@
       {
         "args": "p_dry_run boolean, p_min_matches integer",
         "callers": {
-          "code": [],
-          "code_total_files": 0,
+          "code": [
+            {
+              "file": "supabase/migrations/20261125074200_revoke_anon_apply_classification_suggestions.sql",
+              "hits": 4
+            }
+          ],
+          "code_total_files": 1,
           "cron": [],
           "db": [],
           "triggers": [],
@@ -175829,9 +175834,13 @@
             {
               "file": "supabase/migrations/20261124163000_revoke_anon_unit_cost_print_areas.sql",
               "hits": 1
+            },
+            {
+              "file": "supabase/migrations/20261125120000_revoke_anon_internal_grants_public.sql",
+              "hits": 2
             }
           ],
-          "code_total_files": 3,
+          "code_total_files": 4,
           "cron": [],
           "db": [
             "public.fn_anon_catalog_grant_audit_run"
@@ -175841,10 +175850,10 @@
         },
         "comment": "Tripwire anti-regressao v3 (fix_version 20260717). Cobre: 56+ objetos obrigatórios, 8 travas de sensíveis (products/suppliers/tabela_gravacao/pg_stat_statements), 6 RPCs (5 seguros + fn_product_active_for_rls), 9 views DEFINER, produto_variants is_active policy. 0 linhas = saudável.",
         "config": [
-          "search_path=public"
+          "search_path=public, pg_temp"
         ],
         "definition": null,
-        "definition_sha": "21b0e8240a3e2c3e",
+        "definition_sha": "abff6e695ec52934",
         "execute_api_roles": "authenticated, service_role",
         "execute_public": false,
         "is_trigger_fn": false,
@@ -182747,7 +182756,7 @@
               "hits": 1
             }
           ],
-          "code_total_files": 187,
+          "code_total_files": 188,
           "cron": [],
           "db": [
             "public._can_act_on_behalf_of_others",
@@ -197769,12 +197778,6 @@
           "table": "collection_items_trash"
         },
         {
-          "grantee": "anon",
-          "privileges": "SELECT",
-          "schema": "public",
-          "table": "collection_products"
-        },
-        {
           "grantee": "authenticated",
           "privileges": "DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE",
           "schema": "public",
@@ -197785,12 +197788,6 @@
           "privileges": "DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE",
           "schema": "public",
           "table": "collection_products"
-        },
-        {
-          "grantee": "anon",
-          "privileges": "SELECT",
-          "schema": "public",
-          "table": "collections"
         },
         {
           "grantee": "authenticated",
@@ -198013,12 +198010,6 @@
           "privileges": "DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE",
           "schema": "public",
           "table": "connection_test_history"
-        },
-        {
-          "grantee": "anon",
-          "privileges": "SELECT",
-          "schema": "public",
-          "table": "content_articles"
         },
         {
           "grantee": "authenticated",
@@ -198436,7 +198427,7 @@
         },
         {
           "grantee": "anon",
-          "privileges": "DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE",
+          "privileges": "DELETE, INSERT, REFERENCES, TRIGGER, UPDATE",
           "schema": "public",
           "table": "favorite_item_reactions"
         },
@@ -198451,12 +198442,6 @@
           "privileges": "DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE",
           "schema": "public",
           "table": "favorite_item_reactions"
-        },
-        {
-          "grantee": "anon",
-          "privileges": "SELECT",
-          "schema": "public",
-          "table": "favorite_items"
         },
         {
           "grantee": "authenticated",
@@ -198481,12 +198466,6 @@
           "privileges": "DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE",
           "schema": "public",
           "table": "favorite_items_trash"
-        },
-        {
-          "grantee": "anon",
-          "privileges": "SELECT",
-          "schema": "public",
-          "table": "favorite_lists"
         },
         {
           "grantee": "authenticated",
@@ -200079,12 +200058,6 @@
           "table": "print_area_techniques"
         },
         {
-          "grantee": "anon",
-          "privileges": "SELECT",
-          "schema": "public",
-          "table": "product_ai_content"
-        },
-        {
           "grantee": "authenticated",
           "privileges": "DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE",
           "schema": "public",
@@ -200271,12 +200244,6 @@
           "table": "product_faqs"
         },
         {
-          "grantee": "anon",
-          "privileges": "SELECT",
-          "schema": "public",
-          "table": "product_fiscal"
-        },
-        {
           "grantee": "authenticated",
           "privileges": "DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE",
           "schema": "public",
@@ -200589,12 +200556,6 @@
           "table": "product_search_logs"
         },
         {
-          "grantee": "anon",
-          "privileges": "SELECT",
-          "schema": "public",
-          "table": "product_seo"
-        },
-        {
           "grantee": "authenticated",
           "privileges": "DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE",
           "schema": "public",
@@ -200629,12 +200590,6 @@
           "privileges": "DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE",
           "schema": "public",
           "table": "product_similarity_groups"
-        },
-        {
-          "grantee": "anon",
-          "privileges": "SELECT",
-          "schema": "public",
-          "table": "product_supply"
         },
         {
           "grantee": "authenticated",
@@ -202143,12 +202098,6 @@
           "table": "system_documentation"
         },
         {
-          "grantee": "anon",
-          "privileges": "SELECT",
-          "schema": "public",
-          "table": "system_kill_switches"
-        },
-        {
           "grantee": "authenticated",
           "privileges": "SELECT",
           "schema": "public",
@@ -202159,12 +202108,6 @@
           "privileges": "DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE",
           "schema": "public",
           "table": "system_kill_switches"
-        },
-        {
-          "grantee": "anon",
-          "privileges": "SELECT",
-          "schema": "public",
-          "table": "system_settings"
         },
         {
           "grantee": "authenticated",
@@ -203443,12 +203386,6 @@
           "privileges": "DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE",
           "schema": "public",
           "table": "video_import_queue"
-        },
-        {
-          "grantee": "anon",
-          "privileges": "SELECT",
-          "schema": "public",
-          "table": "video_sim_results"
         },
         {
           "grantee": "authenticated",
@@ -241411,6 +241348,12 @@
         "statements": 4,
         "statements_sha": "8725429bf3483ca0",
         "version": "20261124171500"
+      },
+      {
+        "name": "revoke_anon_internal_grants_public",
+        "statements": 4,
+        "statements_sha": "123c4e386e6b7b8a",
+        "version": "20261125120000"
       }
     ],
     "policies": [

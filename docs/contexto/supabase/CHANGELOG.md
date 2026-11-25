@@ -2,6 +2,13 @@
 
 Diff semântico gerado a cada coleta em que algo mudou.
 
+## 2026-11-25 12:29 UTC
+
+- **functions** alterado (3): `classification_audit.apply_high_confidence_suggestions(p_dry_run boolean, p_min_matches integer)`, `public.fn_verify_anon_catalog_grants()`, `public.has_role(_user_id uuid, _role app_role)`
+- **grants** removido (12): `public.collection_products:anon`, `public.collections:anon`, `public.content_articles:anon`, `public.favorite_items:anon`, `public.favorite_lists:anon`, `public.product_ai_content:anon`, `public.product_fiscal:anon`, `public.product_seo:anon`, `public.product_supply:anon`, `public.system_kill_switches:anon`, `public.system_settings:anon`, `public.video_sim_results:anon`
+- **grants** alterado (1): `public.favorite_item_reactions:anon`
+- **migrations** adicionado (1): `20261125120000_revoke_anon_internal_grants_public`
+
 ## 2026-11-25 11:21 UTC
 
 - **functions** alterado (1): `classification_audit.apply_high_confidence_suggestions(p_dry_run boolean, p_min_matches integer)`
