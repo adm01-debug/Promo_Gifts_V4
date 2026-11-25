@@ -1,7 +1,7 @@
 -- ==============================================================
 -- ALL_IN_ONE.sql — snapshot concatenado de supabase/migrations/
--- Gerado em: 2026-11-24T00:07:49.596Z
--- Total de arquivos: 3127
+-- Gerado em: 2026-11-25T15:42:57.212Z
+-- Total de arquivos: 3134
 -- Ordem: alfabética (mesmo critério do Supabase CLI)
 -- Uso: APENAS auditoria/leitura. NÃO aplicar direto no banco.
 -- SSOT continua sendo os arquivos individuais em supabase/migrations/.
@@ -265213,3 +265213,1096 @@ begin
 end $$;
 
 -- <<< END 20261122200000_fix_cadeia_views_compras_e_compositions.sql <<<
+
+-- >>> BEGIN 20261124120000_revoke_anon_write_grants_public.sql >>>
+-- 20261124120000_revoke_anon_write_grants_public.sql
+-- Hardening: revoga os privilegios de ESCRITA de `anon` nas tabelas de `public` onde o
+-- privilegio ja e garantia morta -- RLS ligada e nenhuma policy de escrita aplicavel a
+-- `anon` nem a `public` (PUBLIC).
+--
+-- Por que existe: o dump do vivo (supabase/baseline/20261122200000_baseline_schema.sql,
+-- pg_dump do schema public) lista GRANT de escrita para anon em 221 tabelas -- pg_dump le
+-- pg_class.relacl e nao inventa ACL. Em 14/11 o gate scripts/check-anon-write-grants.mjs
+-- mediu 0 (run 43609177864); os privilegios foram (re)introduzidos na janela seguinte, a
+-- mesma em que o assistente do Supabase aplicou DDL em 23/11 (MIGRATIONS_SYNC_LOG.md) --
+-- risco que docs/INCIDENTE_2026-10-13_BASELINE.md ja alertava ("um GRANT ALL generico de
+-- uma migration futura reintroduzindo o problema"). Com RLS ligada e sem policy de escrita
+-- para anon nao ha exploit hoje, so superficie: uma policy mal escrita depois vira escrita
+-- anonima real.
+--
+-- Escopo deliberadamente conservador: SO mexe onde `relrowsecurity` esta ligada (o
+-- privilegio e inalcancavel por RLS) -- zero mudanca de comportamento observavel. Tabela
+-- com RLS desligada e escrita para anon seria exploit, nao privilegio morto, e se
+-- resolve ligando RLS, nao revogando aqui.
+--
+-- Idempotente e sem lista hardcoded: decide tabela por tabela em tempo de aplicacao.
+--
+-- Rollback: supabase/rollbacks/20261124120000_rollback.sql (restitui os GRANTs exatamente como
+-- estavam no baseline de producao de 2026-11-24).
+
+DO $$
+DECLARE
+  v_table text;
+  v_count int := 0;
+BEGIN
+  FOR v_table IN
+    SELECT c.relname
+      FROM pg_class c
+      JOIN pg_namespace n ON n.oid = c.relnamespace
+     WHERE n.nspname = 'public'
+       AND c.relkind IN ('r', 'p', 'f')
+       AND c.relrowsecurity
+       AND (has_table_privilege('anon', c.oid, 'INSERT')
+         OR has_table_privilege('anon', c.oid, 'UPDATE')
+         OR has_table_privilege('anon', c.oid, 'DELETE'))
+       AND NOT EXISTS (
+         SELECT 1
+           FROM pg_policies p
+          WHERE p.schemaname = n.nspname
+            AND p.tablename = c.relname
+            AND upper(p.cmd) IN ('INSERT', 'UPDATE', 'DELETE', 'ALL')
+            AND ('anon'::name = ANY (p.roles) OR 'public'::name = ANY (p.roles))
+       )
+     ORDER BY c.relname
+  LOOP
+    EXECUTE format(
+      'REVOKE INSERT, UPDATE, DELETE, TRUNCATE, REFERENCES, TRIGGER ON TABLE public.%I FROM anon',
+      v_table
+    );
+    v_count := v_count + 1;
+  END LOOP;
+
+  RAISE NOTICE '[revoke_anon_write_grants_public] % tabela(s) de public endurecida(s)', v_count;
+END
+$$;
+
+-- Post-check: o predicado acima nao pode mais casar nenhuma linha.
+DO $$
+DECLARE
+  v_left int;
+  v_with_policy int;
+BEGIN
+  SELECT count(*)
+    INTO v_left
+    FROM pg_class c
+    JOIN pg_namespace n ON n.oid = c.relnamespace
+   WHERE n.nspname = 'public'
+     AND c.relkind IN ('r', 'p', 'f')
+     AND c.relrowsecurity
+     AND (has_table_privilege('anon', c.oid, 'INSERT')
+       OR has_table_privilege('anon', c.oid, 'UPDATE')
+       OR has_table_privilege('anon', c.oid, 'DELETE'))
+     AND NOT EXISTS (
+       SELECT 1
+         FROM pg_policies p
+        WHERE p.schemaname = n.nspname
+          AND p.tablename = c.relname
+          AND upper(p.cmd) IN ('INSERT', 'UPDATE', 'DELETE', 'ALL')
+          AND ('anon'::name = ANY (p.roles) OR 'public'::name = ANY (p.roles))
+     );
+
+  IF v_left > 0 THEN
+    RAISE EXCEPTION '[revoke_anon_write_grants_public] % tabela(s) ainda com escrita para anon', v_left;
+  END IF;
+
+  SELECT count(*)
+    INTO v_with_policy
+    FROM pg_class c
+    JOIN pg_namespace n ON n.oid = c.relnamespace
+   WHERE n.nspname = 'public'
+     AND c.relkind IN ('r', 'p', 'f')
+     AND (has_table_privilege('anon', c.oid, 'INSERT')
+       OR has_table_privilege('anon', c.oid, 'UPDATE')
+       OR has_table_privilege('anon', c.oid, 'DELETE'))
+     AND EXISTS (
+       SELECT 1
+         FROM pg_policies p
+        WHERE p.schemaname = n.nspname
+          AND p.tablename = c.relname
+          AND upper(p.cmd) IN ('INSERT', 'UPDATE', 'DELETE', 'ALL')
+          AND ('anon'::name = ANY (p.roles) OR 'public'::name = ANY (p.roles))
+     );
+
+  RAISE NOTICE '[revoke_anon_write_grants_public] escrita anon mantida por policy em % tabela(s) (telemetria/leitura publica)', v_with_policy;
+END
+$$;
+
+-- <<< END 20261124120000_revoke_anon_write_grants_public.sql <<<
+
+-- >>> BEGIN 20261124140000_close_anon_cost_surface.sql >>>
+-- Migration: 20261124140000_close_anon_cost_surface.sql
+-- Rollback: supabase/rollbacks/20261124140000_rollback.sql
+--
+-- QA etapas 002/003/004 assumidas do lote que ficou em branches de outro agente.
+-- Recorte por CREDENCIAL (quem pode ler), nunca por COLUNA (o que a view projeta).
+--
+-- Estado medido no dump ao vivo `supabase/baseline/20261122200000_baseline_schema.sql`:
+--
+--   objeto                              | anon (GRANT)            | policy/clausula que barra o anon
+--   ------------------------------------|-------------------------|-------------------------------------
+--   v_compras_catalogo                  | so MAINTAIN             | WHERE can_view_all_sales() = false
+--   v_compras_precos_faixa              | so MAINTAIN             | WHERE can_view_all_sales() = false
+--   v_compras_precos_variante           | so MAINTAIN             | WHERE can_view_all_sales() = false
+--   variant_supplier_sources            | SELECT                  | RLS por auth.uid() -> NULL -> 0 linhas
+--   markup_configurations               | SELECT + escrita        | RLS sem policy p/ anon -> 0 linhas
+--   vw_variant_sale_prices              | SELECT                  | invoker=true; vss barra -> 0 linhas
+--   suppliers (col. default_markup_%)   | SELECT(coluna)          | RLS -> 0 linhas
+--
+-- Ou seja: hoje o anon NAO le custo/markup em nenhum desses objetos. O que o repositorio
+-- declara, porem, e outra coisa:
+--   * `20261122100000_compras_views_canonicas.sql` concedeu SELECT a `anon` nas 3 views de
+--     compras; em producao isso ja foi revogado fora do repo. Num banco reconstruido pelas
+--     migrations, a unica coisa entre o anon e o custo de compra e a clausula
+--     `WHERE can_view_all_sales()` dentro da view - exatamente a clausula que a etapa 002
+--     reescreve. Basta alguem editar a view e esquecer o WHERE para o GRANT do repo virar
+--     vazamento real. Revogar aqui remove a municao.
+--   * `variant_supplier_sources`, `markup_configurations`, `vw_variant_sale_prices` e a
+--     coluna `suppliers.default_markup_percent` estao concedidos a `anon` no repo e no vivo,
+--     sustentados apenas por RLS. Mesmo raciocinio: o privilegio nao deve existir.
+--
+-- O que esta migration NAO faz, de proposito (evita regressao de negocio):
+--   * NAO mascara `cost_price`, `sale_price`, `suggested_price`, `supplier_reference` nem
+--     `supplier_external_id` em `v_compras_catalogo`, nem `unit_cost`/`handling_cost` em
+--     `v_compras_precos_faixa` (era o conteudo das etapas 002/003 - rejeitadas):
+--       - `Promo_Supply_V2/src/pages/gerar-ordem/GerarOrdem.tsx:274` usa `supplier_reference`
+--         como `codigo_fornecedor` (o codigo que o fornecedor recebe no pedido);
+--       - `v_compras_precos_faixa.unit_cost` e `band.unit_cost` = `pcp.price[i]`, isto e o
+--         PRECO da faixa: e a unica coluna monetaria nao nula da view e vira o
+--         `valor_unitario` da cotacao
+--         (`Promo_Supply_V2/docs/planos/PLANO_PROMO_SUPPLY_SO_COMPRAS_CATALOGO_NO_PROMO_GIFTS.md`
+--         L213 e L354). Mascarar zeraria a cotacao inteira.
+--     A fronteira de custo dessas views e a credencial (app interno = `authenticated`).
+--   * NAO revoga nada de `tabela_preco_gravacao_oficial_faixa`: a coluna exposta la e
+--     `preco_unitario` = preco de VENDA, publico por design desde `20260717173348_*`
+--     (policy `..._public_read` para `anon` + view publica espelho). Etapa 007 rejeitada.
+--
+-- Seguranca da operacao:
+--   * `REVOKE` e idempotente: reaplicar nao muda nada e nao falha.
+--   * As views publicas do site sao SECURITY DEFINER (`v_products_public`,
+--     `v_variant_sale_prices_public`, `v_compras_*`, `v_tabela_preco_gravacao_oficial_public`
+--     - decisao registrada em `20261122180000_restore_definer_views_p06_e_compras.sql`):
+--     executam como owner e nao dependem de GRANT em `anon` nas tabelas-base.
+--   * `authenticated` nao perde nada (o post-check abaixo aborta a transacao se perder).
+
+revoke select on table public.v_compras_catalogo        from anon;
+revoke select on table public.v_compras_precos_faixa    from anon;
+revoke select on table public.v_compras_precos_variante from anon;
+revoke select on table public.variant_supplier_sources  from anon;
+revoke select on table public.markup_configurations     from anon;
+revoke select on table public.vw_variant_sale_prices    from anon;
+-- Em `suppliers` o repositorio declara SELECT de COLUNA; um banco reconstruido pode ter
+-- SELECT de TABELA. Revogar as duas formas e idempotente quando uma nao existe.
+revoke select on table public.suppliers from anon;
+revoke select (default_markup_percent) on table public.suppliers from anon;
+
+-- Post-check: se qualquer afirmacao abaixo falhar, a transacao inteira aborta e nada e aplicado.
+
+do $$
+declare
+  v_obj  text;
+  v_bad  text;
+  v_miss text;
+  v_def  text;
+begin
+  -- 1. anon nao pode ter SELECT (de tabela nem de coluna) nos objetos sensiveis.
+  select string_agg(c.relname, ', ' order by c.relname) into v_bad
+    from pg_class c
+    join pg_namespace n on n.oid = c.relnamespace
+   where n.nspname = 'public'
+     and c.relname = any (array[
+           'v_compras_catalogo', 'v_compras_precos_faixa', 'v_compras_precos_variante',
+           'variant_supplier_sources', 'markup_configurations', 'vw_variant_sale_prices',
+           'suppliers'])
+     and (has_table_privilege('anon', c.oid, 'select')
+          or exists (select 1
+                       from pg_attribute a
+                      where a.attrelid = c.oid
+                        and a.attnum > 0
+                        and not a.attisdropped
+                        and has_column_privilege('anon', c.oid, a.attnum, 'select')));
+  if v_bad is not null then
+    raise exception 'anon ainda tem SELECT em: %', v_bad;
+  end if;
+
+  -- 2. authenticated nao pode perder SELECT de tabela. `suppliers` fica fora de proposito:
+  --    ele nunca teve SELECT de tabela para authenticated, so grants por coluna.
+  select string_agg(c.relname, ', ' order by c.relname) into v_miss
+    from pg_class c
+    join pg_namespace n on n.oid = c.relnamespace
+   where n.nspname = 'public'
+     and c.relname = any (array[
+           'v_compras_catalogo', 'v_compras_precos_faixa', 'v_compras_precos_variante',
+           'variant_supplier_sources', 'markup_configurations', 'vw_variant_sale_prices'])
+     and not has_table_privilege('authenticated', c.oid, 'select');
+  if v_miss is not null then
+    raise exception 'authenticated perdeu SELECT em: %', v_miss;
+  end if;
+
+  -- 3. Anti-regressao das etapas 002/003: a projecao de negocio tem que continuar existindo
+  --    e nao pode estar mascarada com NULL::<tipo> AS <coluna>.
+  for v_obj, v_def in
+    select t.view_name, pg_get_viewdef(format('public.%I', t.view_name)::regclass, true)
+      from (values ('v_compras_catalogo'), ('v_compras_precos_faixa')) as t(view_name)
+  loop
+    if v_obj = 'v_compras_catalogo'
+       and v_def ~* 'null::[a-z0-9 ]+ as (cost_price|sale_price|suggested_price|supplier_reference|supplier_external_id)' then
+      raise exception 'v_compras_catalogo com coluna de negocio mascarada (etapa 002 rejeitada)';
+    end if;
+    if v_obj = 'v_compras_precos_faixa'
+       and v_def ~* 'null::[a-z0-9 ]+ as (unit_cost|handling_cost)' then
+      raise exception 'v_compras_precos_faixa com coluna de negocio mascarada (etapa 003 rejeitada)';
+    end if;
+  end loop;
+
+  -- 4. As views publicas do site continuam SECURITY DEFINER: se alguem religar
+  --    security_invoker=true nelas, o anon deixa de ler o catalogo (regressao silenciosa).
+  select string_agg(c.relname, ', ' order by c.relname) into v_bad
+    from pg_class c
+    join pg_namespace n on n.oid = c.relnamespace
+   where n.nspname = 'public'
+     and c.relname = any (array[
+           'v_products_public', 'v_variant_sale_prices_public',
+           'v_compras_catalogo', 'v_compras_precos_faixa', 'v_compras_precos_variante',
+           'v_tabela_preco_gravacao_oficial_public'])
+     and coalesce(array_to_string(c.reloptions, ','), '') ~~ '%security_invoker=true%';
+  if v_bad is not null then
+    raise exception 'view publica com security_invoker=true (site cego para anon): %', v_bad;
+  end if;
+end
+$$;
+
+-- <<< END 20261124140000_close_anon_cost_surface.sql <<<
+
+-- >>> BEGIN 20261124163000_revoke_anon_unit_cost_print_areas.sql >>>
+-- Migration: 20261124163000_revoke_anon_unit_cost_print_areas.sql
+-- Rollback: supabase/rollbacks/20261124163000_rollback.sql
+--
+-- Fecha o ultimo vazamento de custo real da superficie `anon` em `public`:
+-- `print_area_techniques.unit_cost` (numeric(10,4), COMMENT: "Custo unitario de gravacao
+-- sobrescrito para este produto") era legivel por qualquer portador da chave anon por DOIS
+-- caminhos, medidos no dump ao vivo `supabase/migrations-snapshot/SCHEMA_LIVE.sql`
+-- (2026-11-24T00:14:33Z):
+--
+--   1. direto na TABELA — `GRANT SELECT ON print_area_techniques TO anon` + policy
+--      `pat_select_anon` (`FOR SELECT TO anon USING (is_active = true)`, linha 108749 do dump);
+--   2. pela view publica `v_print_area_techniques_public` (`security_invoker = true`,
+--      `WHERE is_active = true`), que projeta `unit_cost` na lista de colunas.
+--
+-- O caminho (2) e regressao de um hardening documentado: `20260611150000_medallion_front_
+-- public_contract_hardening.sql` (bloco M4) define a view como "apenas geometria/ordem das areas
+-- de gravacao (nada sensivel)" e NAO inclui `unit_cost`;
+-- `20260623184459_melhoria_12_v_print_area_techniques_public_rebuild_v2.sql` reconstruiu a view
+-- depois com a coluna, sem justificativa no arquivo. O front segue declarando o contrato antigo:
+-- `src/integrations/supabase/gold-relations.ts:386` — "areas de gravacao sem custo".
+--
+-- Nenhum consumo do anon depende da coluna: `src/lib/personalization/adapters/print-area.adapter.ts`,
+-- `src/lib/fetch-print-areas.ts` e `src/lib/lead-time/*` nao referenciam `unit_cost`; o editor de
+-- gravacao do admin le a TABELA como `authenticated` (`useEngravingWizard.ts`,
+-- `untypedFrom('print_area_techniques')`), que mantem SELECT na coluna.
+--
+-- O que esta migration faz:
+--   * troca o GRANT de tabela do `anon` por GRANT por COLUNA, sem `unit_cost`;
+--   * recria `v_print_area_techniques_public` sem `unit_cost`, preservando
+--     `security_invoker = true` e o filtro `is_active = true` (nenhum comportamento de leitura muda);
+--   * re-concede SELECT na view para `anon`, `authenticated` e `service_role` —
+--     `fn_verify_anon_catalog_grants()` (20260717173510, lista de objetos) exige `anon SELECT`
+--     nesta view e passaria a acusar FALTA sem o re-grant;
+--   * post-check que aborta a transacao se o custo continuar legivel pelo anon, se o anon perder
+--     a geometria, ou se o `authenticated` perder `unit_cost`.
+--
+-- O que NAO faz, de proposito: `tabela_preco_gravacao_oficial_faixa.preco_unitario` e
+-- `v_compras_precos_faixa.unit_cost` continuam como estao — ali o valor e PRECO de venda/cotacao e
+-- a leitura anon e decisao registrada (ver 20261124140000_close_anon_cost_surface.sql).
+--
+-- Seguranca da operacao: `REVOKE`/`GRANT` sao idempotentes; o DROP/CREATE da view e o unico passo
+-- nao idempotente, e roda dentro da transacao do apply.
+
+-- 1) Tabela: anon deixa de ter SELECT de tabela, recebe SELECT por coluna (sem unit_cost).
+REVOKE SELECT ON TABLE public.print_area_techniques FROM anon;
+
+GRANT SELECT (
+  id,
+  product_id,
+  tabela_preco_id,
+  location_code,
+  location_name,
+  location_order,
+  max_width,
+  max_height,
+  is_curved,
+  shape,
+  technique_order,
+  is_active,
+  notes,
+  production_days,
+  created_at,
+  updated_at
+) ON TABLE public.print_area_techniques TO anon;
+
+-- 2) View publica: mesma projecao de antes, sem a coluna de custo.
+--    Sem CASCADE de proposito: se houver dependente, o DROP falha e nada e aplicado.
+DROP VIEW IF EXISTS public.v_print_area_techniques_public;
+
+CREATE VIEW public.v_print_area_techniques_public WITH (security_invoker = true) AS
+SELECT
+  "id",
+  "product_id",
+  "tabela_preco_id",
+  "location_code",
+  "location_name",
+  "location_order",
+  "max_width",
+  "max_height",
+  "is_curved",
+  "shape",
+  "technique_order",
+  "is_active",
+  "notes",
+  "created_at",
+  "updated_at"
+FROM public.print_area_techniques
+WHERE is_active = true;
+
+ALTER VIEW public.v_print_area_techniques_public OWNER TO postgres;
+
+COMMENT ON VIEW public.v_print_area_techniques_public IS 'Areas de gravacao publicas (geometria/ordem). NAO projeta unit_cost: custo de gravacao e dado interno (restaurado o contrato do bloco M4 de 20260611150000). security_invoker=true de proposito (P06, 20260716) - o anon le a tabela por GRANT por coluna, sem unit_cost.';
+
+GRANT SELECT ON public.v_print_area_techniques_public TO anon, authenticated, service_role;
+REVOKE INSERT, UPDATE, DELETE, REFERENCES, TRIGGER ON public.v_print_area_techniques_public FROM anon, authenticated;
+
+-- 3) Post-check: aborta a transacao se qualquer afirmacao abaixo falhar.
+DO $$
+DECLARE
+  v_rows bigint;
+  v_custo_legivel boolean := false;
+BEGIN
+  IF has_column_privilege('anon', 'public.print_area_techniques', 'unit_cost', 'select') THEN
+    RAISE EXCEPTION 'anon ainda tem GRANT na coluna print_area_techniques.unit_cost';
+  END IF;
+
+  IF NOT has_column_privilege('anon', 'public.print_area_techniques', 'product_id', 'select') THEN
+    RAISE EXCEPTION 'anon perdeu leitura das colunas de geometria das areas de gravacao';
+  END IF;
+
+  IF NOT has_table_privilege('anon', 'public.v_print_area_techniques_public', 'select') THEN
+    RAISE EXCEPTION 'anon perdeu SELECT na view publica de areas de gravacao';
+  END IF;
+
+  IF NOT has_column_privilege('authenticated', 'public.print_area_techniques', 'unit_cost', 'select') THEN
+    RAISE EXCEPTION 'authenticated perdeu unit_cost - editor de gravacao do admin quebraria';
+  END IF;
+
+  IF EXISTS (
+    SELECT 1 FROM pg_attribute a
+    WHERE a.attrelid = 'public.v_print_area_techniques_public'::regclass
+      AND a.attname = 'unit_cost'
+      AND a.attnum > 0
+      AND NOT a.attisdropped
+  ) THEN
+    RAISE EXCEPTION 'v_print_area_techniques_public ainda projeta unit_cost';
+  END IF;
+
+  -- Prova funcional: le como anon de verdade.
+  SET LOCAL ROLE anon;
+  SELECT count(*) INTO v_rows FROM public.v_print_area_techniques_public;
+  BEGIN
+    PERFORM unit_cost FROM public.print_area_techniques LIMIT 1;
+    v_custo_legivel := true;
+  EXCEPTION WHEN insufficient_privilege THEN
+    v_custo_legivel := false;
+  END;
+  RESET ROLE;
+
+  IF v_custo_legivel THEN
+    RAISE EXCEPTION 'anon ainda consegue ler print_area_techniques.unit_cost';
+  END IF;
+
+  RAISE NOTICE 'ok: anon le % linhas da view publica e nao le unit_cost', v_rows;
+END $$;
+
+-- <<< END 20261124163000_revoke_anon_unit_cost_print_areas.sql <<<
+
+-- >>> BEGIN 20261124171500_internal_managed_schema_dictionary.sql >>>
+-- 20261124171500_internal_managed_schema_dictionary.sql
+--
+-- Canonicaliza um objeto que passou a existir em producao (doufsxqlfjyuvxuezpln)
+-- sem migration: `internal.managed_schema_dictionary`.
+--
+-- Evidencia de quando apareceu: o Gate E40 estava verde na `main` (`53f9c048`, run
+-- 45437509004, 2026-11-24 16:28Z) e ficou vermelho na PR #4047 (run 45442049128,
+-- 16:56Z) acusando exatamente este objeto como "criado direto em producao sem
+-- migration" (artifact schema-reconciliation-evidence). Nenhum arquivo, branch ou
+-- PR do repo referencia o nome (grep em `main` + todas as refs remotas, 2026-11-24),
+-- entao a DDL veio de fora do repo — mesmo padrao da reconciliacao de 2026-11-23
+-- documentada em `supabase/MIGRATIONS_SYNC_LOG.md`.
+--
+-- Este arquivo reproduz o estado vivo: mesmas colunas e ordem, mesmo default,
+-- mesma PK (schema_name, object_type, object_name), mesmo CHECK
+-- (object_type in ('schema','table')) e RLS ligada sem policy (deny-all; o diff do
+-- schema nao registra nenhum GRANT no objeto, entao anon/authenticated nao tem
+-- privilegio algum — a entrada correspondente esta em
+-- `.security/rls-no-policy-allowlist.json`).
+--
+-- Idempotente por desenho: em producao o objeto ja existe e todo statement aqui e
+-- no-op (nada e recriado, nenhum dado e tocado); em ambiente novo a tabela passa a
+-- nascer do repo. Sem COMMENT ON TABLE de proposito: o objeto vivo nao tem
+-- comentario e adicionar um viraria drift novo.
+--
+-- Gate 1.12 (soft-delete): o statement tem `-- soft-delete-exempt:` porque o estado vivo
+-- nao tem `deleted_at`/`archived_at` e adicionar uma coluna aqui divergiria do que o E40 compara.
+--
+-- Rollback: `supabase/rollbacks/20261124171500_rollback.sql` (DROP TABLE). Em
+-- producao o objeto e ANTERIOR a esta migration: dropar so com confirmacao de que
+-- nenhum consumidor passou a usa-lo.
+
+CREATE SCHEMA IF NOT EXISTS internal;
+
+CREATE TABLE IF NOT EXISTS internal.managed_schema_dictionary ( -- soft-delete-exempt: dicionario/registro de inventario espelhado do estado vivo, sem coluna de soft-delete em producao; adicionar uma aqui criaria drift novo
+  schema_name text NOT NULL,
+  object_type text NOT NULL,
+  object_name text NOT NULL,
+  service_name text NOT NULL,
+  description text NOT NULL,
+  partition_of text,
+  reviewed_at timestamp with time zone NOT NULL DEFAULT now()
+);
+
+ALTER TABLE internal.managed_schema_dictionary ENABLE ROW LEVEL SECURITY;
+
+DO $$
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1 FROM pg_constraint
+     WHERE conrelid = 'internal.managed_schema_dictionary'::regclass
+       AND conname = 'managed_schema_dictionary_pkey'
+  ) THEN
+    ALTER TABLE internal.managed_schema_dictionary
+      ADD CONSTRAINT managed_schema_dictionary_pkey
+      PRIMARY KEY (schema_name, object_type, object_name);
+  END IF;
+
+  IF NOT EXISTS (
+    SELECT 1 FROM pg_constraint
+     WHERE conrelid = 'internal.managed_schema_dictionary'::regclass
+       AND conname = 'managed_schema_dictionary_object_type_check'
+  ) THEN
+    ALTER TABLE internal.managed_schema_dictionary
+      ADD CONSTRAINT managed_schema_dictionary_object_type_check
+      CHECK (object_type IN ('schema', 'table'));
+  END IF;
+END $$;
+
+-- <<< END 20261124171500_internal_managed_schema_dictionary.sql <<<
+
+-- >>> BEGIN 20261125074200_revoke_anon_apply_classification_suggestions.sql >>>
+-- Migration: 20261125074200_revoke_anon_apply_classification_suggestions.sql
+-- Rollback: supabase/rollbacks/20261125074200_rollback.sql
+--
+-- Fecha escrita de catalogo por qualquer portador da chave anon.
+--
+-- `classification_audit.apply_high_confidence_suggestions(p_dry_run boolean, p_min_matches integer)`
+-- e SECURITY DEFINER, `SET search_path TO 'public', 'classification_audit'`, e NAO possui nenhuma
+-- checagem de identidade: `pg_get_functiondef` nao referencia `auth.uid()`, `has_role()`,
+-- `is_admin*` ou `is_supervisor*` em nenhum ponto do corpo.
+--
+-- Com `p_dry_run = false` o corpo executa:
+--   INSERT INTO product_category_assignments (product_id, category_id, is_primary)
+--   SELECT ... FROM classification_audit.category_suggestions ... WHERE s.matches >= p_min_matches;
+--
+-- O ACL medido em producao (projeto doufsxqlfjyuvxuezpln, 2026-11-25T10:37Z) era `=X/postgres`,
+-- ou seja o grant default de PUBLIC — `has_function_privilege('anon', ...)` = true e
+-- `has_function_privilege('authenticated', ...)` = true. A chave anon vai no bundle do front,
+-- entao qualquer visitante podia chamar a RPC com `p_min_matches = 0` e reescrever a
+-- classificacao do catalogo inteiro (filtros, facetas do super-filtro e URLs indexadas passam a
+-- depender de dado adulterado).
+--
+-- Nenhum consumidor depende do grant: `apply_high_confidence_suggestions` nao aparece em `src/`
+-- (grep 2026-11-25: 0 ocorrencias fora de dumps `SCHEMA_LIVE.sql`, `ALL_IN_ONE.sql`,
+-- `baseline/20261015140000_baseline_schema.sql`, `docs/db/BACKUP_SCHEMA_ONLY_2026-09-16.sql` e do
+-- bootstrap `20260512000000_bootstrap_missing_application_schemas.sql`). E ferramenta de DBA/auditoria,
+-- executada por automacao com `service_role`.
+--
+-- O que esta migration faz:
+--   * REVOKE EXECUTE de PUBLIC (cobre anon e authenticated pelo grant default);
+--   * GRANT EXECUTE explicito para service_role, preservando a automacao de auditoria;
+--   * post-check que aborta a transacao se anon ou authenticated ainda puderem executar, ou se o
+--     service_role perder o privilegio.
+--
+-- O que NAO faz, de proposito:
+--   * nao toca `classification_audit.has_material_conflict`, `has_type_conflict`,
+--     `matches_category_prefix` e `validate_match_phrase` — sao predicados puros, sem efeito
+--     colateral, e permanecem executaveis por PUBLIC (contrato atual de leitura);
+--   * nao mexe em `check_login_rate_limit`, `request_password_reset`, `submit_quote_response` nem
+--     nos `fn_super_filtro*` — expositores intencionais do fluxo anonimo;
+--   * nao altera o corpo da funcao (nenhuma mudanca de comportamento para service_role).
+--
+-- Seguranca da operacao: REVOKE/GRANT sao idempotentes e reversiveis pelo rollback.
+
+REVOKE EXECUTE ON FUNCTION classification_audit.apply_high_confidence_suggestions(boolean, integer) FROM PUBLIC;
+GRANT EXECUTE ON FUNCTION classification_audit.apply_high_confidence_suggestions(boolean, integer) TO service_role;
+
+DO $$
+BEGIN
+  IF has_function_privilege('anon', 'classification_audit.apply_high_confidence_suggestions(boolean,integer)', 'EXECUTE') THEN
+    RAISE EXCEPTION 'pos-check falhou: anon ainda executa apply_high_confidence_suggestions';
+  END IF;
+  IF has_function_privilege('authenticated', 'classification_audit.apply_high_confidence_suggestions(boolean,integer)', 'EXECUTE') THEN
+    RAISE EXCEPTION 'pos-check falhou: authenticated ainda executa apply_high_confidence_suggestions';
+  END IF;
+  IF NOT has_function_privilege('service_role', 'classification_audit.apply_high_confidence_suggestions(boolean,integer)', 'EXECUTE') THEN
+    RAISE EXCEPTION 'pos-check falhou: service_role perdeu o privilegio';
+  END IF;
+END $$;
+-- <<< END 20261125074200_revoke_anon_apply_classification_suggestions.sql <<<
+
+-- >>> BEGIN 20261125120000_revoke_anon_internal_grants_public.sql >>>
+-- Migration: 20261125120000_revoke_anon_internal_grants_public.sql
+-- Rollback: supabase/rollbacks/20261125120000_rollback.sql
+--
+-- QA etapa 008: fecha as 13 tabelas de `public` que o role `anon` ainda le por GRANT de SELECT
+-- herdado do legado (fora do repo), sem nenhum consumidor anonimo.
+--
+-- Origem da lista: `.security/anon-tables-baseline.json` (medicao de 2026-11-24, mergeada em #4059),
+-- que classifica 42 tabelas legiveis por `anon` em 25 `catalogo-publico`, 4 `catalogo-publico-por-coluna`
+-- e **13 `interno-grant-herdado`** ? estas ultimas registradas com a nota "a revogacao e a etapa 008 do
+-- QA docs/qa/05-PROGRESSO.md". `docs/qa/05-PROGRESSO.md` (secao "Etapa 008") repete o mesmo numero.
+--
+-- Estado medido (PostgREST com a chave publicavel do bundle, 2026-11-24):
+--   * 12 das 13 devolvem 200 com count 0 ? a RLS nao tem policy de SELECT para `anon`, entao o grant e
+--     vestigial: nada que hoje funciona depende dele;
+--   * `video_sim_results` devolve 200 com **1007 linhas** ? resultado de simulacao de video e dado
+--     interno, sem consumidor publico conhecido: vazamento efetivo, nao apenas grant orfao.
+--
+-- Por que revogar em vez de deixar como esta: grant de tabela e um contrato latente. Qualquer policy de
+-- SELECT futura nessas tabelas passa a entregar a tabela inteira ao anonimo sem novo grant, e o gate
+-- E118i so acusa a existencia do grant, nao o uso.
+--
+-- O que NAO muda (verificado no codigo):
+--   * `authenticated` e `service_role` mantem SELECT (post-check aborta a transacao se perderem):
+--     favoritos (`src/hooks/favorites/useFavoriteLists.ts`, `useFavoriteQuickAdd.ts`), colecoes
+--     (`src/hooks/collections/useCollections.ts`) e o painel de kill switches
+--     (`src/lib/external-db/kill-switch-client.ts`) seguem intactos;
+--   * `system_settings`: o unico leitor anonimo e `src/components/providers/AppBootstrap.tsx`
+--     (maintenance_mode). Ali `if (error) { logger.error(...); return; }` deixa `maintenanceMode` em
+--     `false` ? exatamente o que ja acontece hoje, quando a RLS devolve 0 linha. Troca "lista vazia"
+--     por "sem privilegio", mesmo resultado visivel;
+--   * nenhuma migration re-concede estes 13 a `anon` depois desta (ultima que concedia era o dump do
+--     legado; as de 2026-11-24 so revogam).
+--
+-- Tripwire: `fn_verify_anon_catalog_grants()` v4 troca as 12 tabelas da lista "DEVEM ter anon SELECT"
+-- para a lista "NAO podem ter anon SELECT" (junto com `system_settings`, que nunca esteve la). Reaparecer
+-- grant em qualquer uma das 13 passa a ser acusado pela auditoria agendada
+-- (`20260717144811_schedule_anon_catalog_grant_audit_v1.sql`) em vez de passar em silencio.
+--
+-- Nota operacional: este repo compara `.security/anon-tables-baseline.json` com o banco AO VIVO
+-- (`scripts/check-public-views-drift.mjs --require-live`). Depois que esta migration for aplicada, as 13
+-- entradas da baseline passam a ser "entrada sem efeito" e o gate fica vermelho ate serem removidas ?
+-- a remocao e uma PR de follow-up obrigatoria (13 linhas), nao pode vir antes, senao o mesmo gate fica
+-- vermelho pelo motivo inverso ("SELECT de anon sem entrada").
+
+DO $revoke$
+DECLARE
+  v_tables text[] := ARRAY[
+    'collections',
+    'collection_products',
+    'content_articles',
+    'favorite_item_reactions',
+    'favorite_items',
+    'favorite_lists',
+    'product_ai_content',
+    'product_fiscal',
+    'product_seo',
+    'product_supply',
+    'system_kill_switches',
+    'system_settings',
+    'video_sim_results'
+  ];
+  v_name text;
+  v_left text[] := '{}';
+  v_n int := 0;
+BEGIN
+  FOREACH v_name IN ARRAY v_tables LOOP
+    IF to_regclass('public.' || v_name) IS NULL THEN
+      RAISE EXCEPTION 'tabela public.% nao existe: baseline e banco divergiram, revisar antes de revogar', v_name;
+    END IF;
+
+    IF has_table_privilege('anon', ('public.' || v_name)::regclass, 'SELECT') THEN
+      EXECUTE format('REVOKE SELECT ON TABLE public.%I FROM anon', v_name);
+      v_n := v_n + 1;
+    END IF;
+
+    IF has_table_privilege('anon', ('public.' || v_name)::regclass, 'SELECT') THEN
+      v_left := v_left || v_name;
+    END IF;
+
+    IF NOT has_table_privilege('authenticated', ('public.' || v_name)::regclass, 'SELECT') THEN
+      RAISE EXCEPTION 'authenticated perdeu SELECT em public.% - painel/feature quebraria', v_name;
+    END IF;
+  END LOOP;
+
+  IF array_length(v_left, 1) > 0 THEN
+    RAISE EXCEPTION 'anon ainda tem SELECT em: %', array_to_string(v_left, ', ');
+  END IF;
+
+  RAISE NOTICE 'ok: SELECT de anon revogado em % de % tabelas (as demais ja estavam limpas)', v_n, array_length(v_tables, 1);
+END
+$revoke$;
+
+-- ---------------------------------------------------------------------------
+-- Tripwire v4: as 13 saem da lista de obrigatorios e entram na de proibidos.
+-- ---------------------------------------------------------------------------
+CREATE OR REPLACE FUNCTION public.fn_verify_anon_catalog_grants()
+RETURNS TABLE(object_name text, object_kind text, issue text)
+LANGUAGE plpgsql
+SECURITY DEFINER
+-- pg_temp por ultimo: fecha o vetor de shadowing que o preflight (--require-live) acusou.
+SET search_path TO 'public', 'pg_temp'
+AS $fn$
+BEGIN
+  -- (1) Views/tabelas que DEVEM ter anon SELECT (v4: sem as 13 revogadas na 20261125120000)
+  RETURN QUERY
+  WITH req(sch, nm) AS (VALUES
+    -- Views DEFINER (catálogo principal)
+    ('public','v_products_public'),('public','v_suppliers_public'),
+    ('public','v_variant_sale_prices_public'),
+    ('public','v_tabela_preco_gravacao_oficial_public'),
+    -- 9 views _public
+    ('public','v_color_nuances_public'),('public','v_kit_component_media_public'),
+    ('public','v_kit_component_print_areas_public'),
+    ('public','v_personalization_techniques_public'),
+    ('public','v_print_area_techniques_public'),('public','v_product_compositions_public'),
+    ('public','v_product_properties_public'),('public','v_product_tags_public'),
+    ('public','v_tags_public'),
+    -- Matviews cross-schema
+    ('public','mv_product_compositions'),
+    ('internal','mv_product_leaf_category'),('analytics','mv_product_compositions'),
+    -- Tabelas de catálogo (não sensíveis)
+    ('public','categories'),
+    ('public','color_groups'),('public','color_synonym_map'),('public','color_variations'),
+    ('public','kit_typical_dims'),
+    ('public','material_types'),('public','mockup_approval_links'),
+    ('public','print_area_techniques'),
+    ('public','product_attributes'),('public','product_badge_definitions'),
+    ('public','product_commemorative_dates'),
+    ('public','product_kit_components'),('public','product_materials'),
+    ('public','product_novelties'),('public','product_physical'),
+    ('public','product_variants'),
+    ('public','produto_ramo_atividade'),('public','ramo_atividade'),
+    ('public','ramo_atividade_filho'),('public','spot_typecode_map'),
+    ('public','supplier_sub_brands'),
+    ('public','tabela_preco_gravacao_oficial_faixa'),  -- faixa de preço de venda OK
+    ('public','tecnicas_gravacao'),
+    ('public','color_nuances'),('public','kit_component_print_areas'),
+    ('public','personalization_techniques'),('public','product_properties'),
+    ('public','tags'),('public','product_tags')
+  )
+  SELECT req.sch||'.'||req.nm, 'table/view'::text, 'FALTA anon SELECT'::text
+  FROM req
+  WHERE to_regclass(req.sch||'.'||req.nm) IS NULL
+     OR NOT has_table_privilege('anon', (req.sch||'.'||req.nm)::regclass, 'SELECT');
+
+  -- (2) Funções com anon EXECUTE obrigatório
+  RETURN QUERY
+  SELECT 'public.'||v.fn, 'function'::text, 'FALTA anon EXECUTE'::text
+  FROM (VALUES ('fn_super_filtro'),('fn_super_filtro_facets'),('fn_super_filtro_price_range'),
+               ('fn_global_search'),('get_catalog_bestseller_page'),
+               ('fn_product_active_for_rls')) v(fn)  -- NOVO v3
+  WHERE EXISTS (SELECT 1 FROM pg_proc WHERE proname=v.fn AND pronamespace='public'::regnamespace)
+    AND NOT has_function_privilege('anon',
+          (SELECT oid FROM pg_proc WHERE proname=v.fn AND pronamespace='public'::regnamespace LIMIT 1),'EXECUTE');
+
+  -- (3) Tabelas SENSÍVEIS que NÃO podem ter anon SELECT
+  RETURN QUERY
+  SELECT 'public.'||v.nm, 'table'::text, 'VAZAMENTO: anon SELECT em tabela sensível'::text
+  FROM (VALUES ('variant_supplier_sources'),('markup_configurations'),('user_organizations'),
+               ('quotes'),('quote_items'),
+               ('products'),('suppliers'),   -- custo/credenciais
+               ('tabela_preco_gravacao_oficial'),  -- NOVO v3: custo_setup/markup
+               -- v4 (migration 20261125120000, QA etapa 008): grant herdado do legado
+               -- revogado em 2026-11-25. Baseline medido em .security/anon-tables-baseline.json
+               -- (2026-11-24) marcava as 13 como 'interno-grant-herdado'. Reaparecer aqui = regressao.
+               ('collection_products'),('collections'),('content_articles'),
+               ('favorite_item_reactions'),('favorite_items'),('favorite_lists'),
+               ('product_ai_content'),('product_fiscal'),('product_seo'),
+               ('product_supply'),('system_kill_switches'),('system_settings'),
+               ('video_sim_results'))
+             v(nm)
+  WHERE to_regclass('public.'||v.nm) IS NOT NULL
+    AND has_table_privilege('anon', ('public.'||v.nm)::regclass, 'SELECT');
+
+  -- (4) pg_stat_statements NÃO pode ter anon SELECT (information disclosure de queries)
+  RETURN QUERY
+  SELECT 'extensions.pg_stat_statements', 'system_view'::text,
+         'VAZAMENTO: anon lê queries SQL internas'::text
+  WHERE has_table_privilege('anon', 'extensions.pg_stat_statements'::regclass, 'SELECT');
+
+  -- (5) Funções sensíveis que NÃO devem ter anon EXECUTE
+  RETURN QUERY
+  SELECT 'public.get_promo_sales_ranking', 'function'::text,
+         'VAZAMENTO: anon executa ranking de vendas'::text
+  WHERE EXISTS (SELECT 1 FROM pg_proc WHERE proname='get_promo_sales_ranking' AND pronamespace='public'::regnamespace)
+    AND has_function_privilege('anon',
+          (SELECT oid FROM pg_proc WHERE proname='get_promo_sales_ranking' AND pronamespace='public'::regnamespace LIMIT 1),'EXECUTE');
+
+  -- (6) Views críticas devem ser SECURITY DEFINER (security_invoker=false)
+  RETURN QUERY
+  SELECT 'public.'||v.nm, 'view'::text, 'RISCO: view sensível com security_invoker=true'::text
+  FROM (VALUES ('v_products_public'),('v_suppliers_public'),
+               ('v_variant_sale_prices_public'),
+               ('v_tabela_preco_gravacao_oficial_public'),  -- NOVO v3
+               ('v_kit_component_media_public'),('v_kit_component_print_areas_public'),
+               ('v_product_compositions_public'),('v_product_properties_public'),
+               ('v_product_tags_public')) v(nm)
+  WHERE to_regclass('public.'||v.nm) IS NOT NULL
+    AND COALESCE((SELECT option_value FROM pg_options_to_table(
+        (SELECT reloptions FROM pg_class WHERE relname=v.nm AND relnamespace='public'::regnamespace))
+      WHERE option_name='security_invoker'), 'false') = 'true';
+
+  -- (7) NOVO v3: product_variants anon deve ter política com is_active filter
+  RETURN QUERY
+  SELECT 'public.product_variants', 'rls_policy'::text,
+         'RISCO: política anon sem filtro is_active (202 variantes inativas expostas)'::text
+  WHERE EXISTS (
+    SELECT 1 FROM pg_policies
+    WHERE schemaname='public' AND tablename='product_variants'
+      AND cmd IN ('SELECT','ALL')
+      AND 'anon'=ANY(roles)
+      AND qual='true'
+  );
+END $fn$;
+
+COMMENT ON FUNCTION public.fn_verify_anon_catalog_grants() IS
+  'Tripwire anti-regressao v3 (fix_version 20260717). Cobre: 56+ objetos obrigatórios, '
+  '8 travas de sensíveis (products/suppliers/tabela_gravacao/pg_stat_statements), '
+  '6 RPCs (5 seguros + fn_product_active_for_rls), 9 views DEFINER, '
+  'produto_variants is_active policy. 0 linhas = saudável.';
+
+
+-- ---------------------------------------------------------------------------
+-- Post-check: nenhuma das 13 pode aparecer no tripwire (nem FALTA nem VAZAMENTO)
+-- e o anon nao le mais nenhuma delas nem por coluna.
+-- ---------------------------------------------------------------------------
+DO $verify$
+DECLARE
+  v_tables text[] := ARRAY[
+    'collections','collection_products','content_articles','favorite_item_reactions',
+    'favorite_items','favorite_lists','product_ai_content','product_fiscal','product_seo',
+    'product_supply','system_kill_switches','system_settings','video_sim_results'
+  ];
+  v_name text;
+  v_bad text[] := '{}';
+  v_col text;
+BEGIN
+  FOREACH v_name IN ARRAY v_tables LOOP
+    IF EXISTS (
+      SELECT 1 FROM public.fn_verify_anon_catalog_grants() f
+      WHERE f.object_name = 'public.' || v_name
+    ) THEN
+      v_bad := v_bad || v_name;
+    END IF;
+
+    FOR v_col IN
+      SELECT a.attname FROM pg_attribute a
+      WHERE a.attrelid = ('public.' || v_name)::regclass
+        AND a.attnum > 0 AND NOT a.attisdropped
+        AND has_column_privilege('anon', a.attrelid, a.attnum, 'SELECT')
+    LOOP
+      RAISE EXCEPTION 'anon ainda le public.%.% por grant de coluna', v_name, v_col;
+    END LOOP;
+  END LOOP;
+
+  IF array_length(v_bad, 1) > 0 THEN
+    RAISE EXCEPTION 'tripwire ainda acusa as tabelas: %', array_to_string(v_bad, ', ');
+  END IF;
+
+  RAISE NOTICE 'ok: 13 tabelas fora do alcance do anon e tripwire v4 sem achado';
+END
+$verify$;
+
+-- <<< END 20261125120000_revoke_anon_internal_grants_public.sql <<<
+
+-- >>> BEGIN 20261125131000_tripwire_anon_v5_reconcilia.sql >>>
+-- Migration: 20261125131000_tripwire_anon_v5_reconcilia.sql
+-- Rollback: supabase/rollbacks/20261125131000_rollback.sql
+-- ============================================================================
+-- Tripwire anti-regressao de grants do catalogo publico: v4 -> v5.
+--
+-- POR QUE (medido em producao `doufsxqlfjyuvxuezpln`, 2026-11-25 13:0x UTC):
+--
+--   1) FALSO POSITIVO da v4 (3 objetos). O bloco (1) da v4 usa so
+--      `has_table_privilege(...)` e essa funcao IGNORA grant de coluna. Medido:
+--         print_area_techniques     16 de 17 colunas com anon SELECT (sem unit_cost)
+--         kit_component_print_areas 11 de 14
+--         product_kit_components     2 de 55
+--      O anon le esses objetos hoje (`.security/anon-tables-baseline.json` os
+--      lista como `catalogo-publico-por-coluna`) e o tripwire os acusava como
+--      "FALTA anon SELECT". Alarme falso cronico: o PostgREST responde 200 para
+--      anon nos tres. v5 troca a checagem por "SELECT de tabela OU de coluna".
+--
+--   2) EXPECTATIVA OBSOLETA (3 objetos). Saem de "DEVEM ter anon SELECT" e
+--      entram em "NAO podem ter anon SELECT":
+--         public.mockup_approval_links      fechado de proposito pela
+--                                           20261008230000 (anon = 0 tabela e
+--                                           0 coluna, medido)
+--         internal.mv_product_leaf_category  e
+--         analytics.mv_product_compositions  matviews internas: anon e
+--                                           authenticated = 0 tabela e 0 coluna,
+--                                           medido; o catalogo as le por views
+--                                           DEFINER (v_products_public).
+--      Reaparecer grant de leitura em qualquer um dos tres = regressao (bloco 8).
+--
+--   3) EXPECTATIVA OBSOLETA (1 funcao). `fn_global_search` sai do bloco (2):
+--      o EXECUTE de anon foi revogado DE PROPOSITO em
+--      20261119094500_reafirma_revogacoes_anteriores_ao_baseline.sql:59. A busca
+--      global (`src/components/search/GlobalSearch.tsx:134`) e de usuario
+--      autenticado, que mantem o grant. v5 passa a acusar (bloco 5b) se o anon
+--      voltar a executa-la.
+--
+--   4) VIEWS COM security_invoker=true (3). A v4 exigia DEFINER em 9 views; tres
+--      delas estao invoker=true por decisao posterior e explicita (P06,
+--      20261117073000: "views com security_invoker=false ignoram o RLS das
+--      tabelas-base"). v5 aponta essas tres para o sentido correto (bloco 9:
+--      DEVEM continuar invoker), em vez de pedir o contrario.
+--
+--   5) BUG REAL DE PRODUCAO encontrado por varredura PostgREST (anon key, 15
+--      views/matviews anon-legiveis, `?limit=1`): 2 views respondiam
+--         HTTP 401 {"message":"permission denied for function fn_product_active_for_rls"}
+--         public.v_product_properties_public
+--         public.v_product_tags_public
+--      Causa: as policies `product_properties_anon_read` e
+--      `product_tags_anon_read` usam `fn_product_active_for_rls(product_id)`
+--      (criada em 20260717161653 justamente porque "com products revogado do
+--      anon, o EXISTS falhava com 42501") e o EXECUTE de anon nela foi revogado
+--      fora do repo depois de 20260717161748 (que o concedeu) e depois de
+--      .security/lint-0029-allowlist.json:199, que registra "EXECUTE tambem
+--      concedido a anon por ser usado em policy de catalogo publico". Sem o
+--      grant, as duas views invoker=true quebram para visitante anonimo.
+--      Esta migration restaura o grant. O tripwire v4 ja acusava
+--      "FALTA anon EXECUTE" para essa funcao — era alarme verdadeiro.
+--
+-- Escopo: 1 GRANT EXECUTE (anon) + CREATE OR REPLACE da funcao de auditoria.
+-- Nenhum REVOKE, nenhum DDL de dado, nenhuma policy alterada.
+-- Rollback: supabase/rollbacks/20261125131000_rollback.sql
+-- ============================================================================
+
+-- ---------------------------------------------------------------------------
+-- 1) Restaura o EXECUTE de anon no helper usado pelas policies de catalogo.
+--    Sem isto: public.v_product_properties_public e public.v_product_tags_public
+--    respondem 401 para anon (medido em 2026-11-25).
+-- ---------------------------------------------------------------------------
+GRANT EXECUTE ON FUNCTION public.fn_product_active_for_rls(uuid) TO anon;
+
+-- ---------------------------------------------------------------------------
+-- 2) Tripwire v5
+-- ---------------------------------------------------------------------------
+CREATE OR REPLACE FUNCTION public.fn_verify_anon_catalog_grants()
+RETURNS TABLE(object_name text, object_kind text, issue text)
+LANGUAGE plpgsql
+SECURITY DEFINER
+-- pg_temp por ultimo: fecha o vetor de shadowing que o preflight (--require-live) acusou.
+SET search_path TO 'public', 'pg_temp'
+AS $fn$
+BEGIN
+  -- (1) Views/tabelas que DEVEM ser legiveis por anon.
+  --     v5: grant de COLUNA tambem conta (has_table_privilege ignora attacl).
+  RETURN QUERY
+  WITH req(sch, nm) AS (VALUES
+    -- Views DEFINER (catalogo principal)
+    ('public','v_products_public'),('public','v_suppliers_public'),
+    ('public','v_variant_sale_prices_public'),
+    ('public','v_tabela_preco_gravacao_oficial_public'),
+    -- 9 views _public
+    ('public','v_color_nuances_public'),('public','v_kit_component_media_public'),
+    ('public','v_kit_component_print_areas_public'),
+    ('public','v_personalization_techniques_public'),
+    ('public','v_print_area_techniques_public'),('public','v_product_compositions_public'),
+    ('public','v_product_properties_public'),('public','v_product_tags_public'),
+    ('public','v_tags_public'),
+    -- Matview publica (as internas sairam na v5: ver bloco 8)
+    ('public','mv_product_compositions'),
+    -- Tabelas de catalogo (nao sensiveis)
+    ('public','categories'),
+    ('public','color_groups'),('public','color_synonym_map'),('public','color_variations'),
+    ('public','kit_typical_dims'),
+    ('public','material_types'),
+    ('public','print_area_techniques'),
+    ('public','product_attributes'),('public','product_badge_definitions'),
+    ('public','product_commemorative_dates'),
+    ('public','product_kit_components'),('public','product_materials'),
+    ('public','product_novelties'),('public','product_physical'),
+    ('public','product_variants'),
+    ('public','produto_ramo_atividade'),('public','ramo_atividade'),
+    ('public','ramo_atividade_filho'),('public','spot_typecode_map'),
+    ('public','supplier_sub_brands'),
+    ('public','tabela_preco_gravacao_oficial_faixa'),  -- faixa de preco de venda OK
+    ('public','tecnicas_gravacao'),
+    ('public','color_nuances'),('public','kit_component_print_areas'),
+    ('public','personalization_techniques'),('public','product_properties'),
+    ('public','tags'),('public','product_tags')
+  )
+  SELECT req.sch||'.'||req.nm, 'table/view'::text, 'FALTA anon SELECT'::text
+  FROM req
+  WHERE to_regclass(req.sch||'.'||req.nm) IS NULL
+     OR NOT (
+       has_table_privilege('anon', (req.sch||'.'||req.nm)::regclass, 'SELECT')
+       OR EXISTS (
+         SELECT 1 FROM pg_attribute a
+         WHERE a.attrelid = (req.sch||'.'||req.nm)::regclass
+           AND a.attnum > 0 AND NOT a.attisdropped
+           AND has_column_privilege('anon', a.attrelid, a.attnum, 'SELECT')
+       )
+     );
+
+  -- (2) Funcoes com anon EXECUTE obrigatorio
+  --     v5: fn_global_search saiu (revogada de proposito em 20261119094500).
+  RETURN QUERY
+  SELECT 'public.'||v.fn, 'function'::text, 'FALTA anon EXECUTE'::text
+  FROM (VALUES ('fn_super_filtro'),('fn_super_filtro_facets'),('fn_super_filtro_price_range'),
+               ('get_catalog_bestseller_page'),
+               ('fn_product_active_for_rls')) v(fn)  -- NOVO v3: exigido pelas policies de catalogo
+  WHERE EXISTS (SELECT 1 FROM pg_proc WHERE proname=v.fn AND pronamespace='public'::regnamespace)
+    AND NOT has_function_privilege('anon',
+          (SELECT oid FROM pg_proc WHERE proname=v.fn AND pronamespace='public'::regnamespace LIMIT 1),'EXECUTE');
+
+  -- (3) Tabelas SENSIVEIS que NAO podem ter anon SELECT
+  RETURN QUERY
+  SELECT 'public.'||v.nm, 'table'::text, 'VAZAMENTO: anon SELECT em tabela sensivel'::text
+  FROM (VALUES ('variant_supplier_sources'),('markup_configurations'),('user_organizations'),
+               ('quotes'),('quote_items'),
+               ('products'),('suppliers'),   -- custo/credenciais
+               ('tabela_preco_gravacao_oficial'),  -- NOVO v3: custo_setup/markup
+               -- v4 (migration 20261125120000, QA etapa 008): grant herdado do legado
+               -- revogado em 2026-11-25. Baseline medido em .security/anon-tables-baseline.json
+               -- (2026-11-24) marcava as 13 como 'interno-grant-herdado'. Reaparecer aqui = regressao.
+               ('collection_products'),('collections'),('content_articles'),
+               ('favorite_item_reactions'),('favorite_items'),('favorite_lists'),
+               ('product_ai_content'),('product_fiscal'),('product_seo'),
+               ('product_supply'),('system_kill_switches'),('system_settings'),
+               ('video_sim_results'))
+             v(nm)
+  WHERE to_regclass('public.'||v.nm) IS NOT NULL
+    AND has_table_privilege('anon', ('public.'||v.nm)::regclass, 'SELECT');
+
+  -- (4) pg_stat_statements NAO pode ter anon SELECT (information disclosure de queries)
+  RETURN QUERY
+  SELECT 'extensions.pg_stat_statements', 'system_view'::text,
+         'VAZAMENTO: anon le queries SQL internas'::text
+  WHERE has_table_privilege('anon', 'extensions.pg_stat_statements'::regclass, 'SELECT');
+
+  -- (5) Funcoes sensiveis que NAO devem ter anon EXECUTE
+  RETURN QUERY
+  SELECT 'public.get_promo_sales_ranking', 'function'::text,
+         'VAZAMENTO: anon executa ranking de vendas'::text
+  WHERE EXISTS (SELECT 1 FROM pg_proc WHERE proname='get_promo_sales_ranking' AND pronamespace='public'::regnamespace)
+    AND has_function_privilege('anon',
+          (SELECT oid FROM pg_proc WHERE proname='get_promo_sales_ranking' AND pronamespace='public'::regnamespace LIMIT 1),'EXECUTE');
+
+  -- (5b) NOVO v5: fn_global_search — anon revogado de proposito (20261119094500:59).
+  RETURN QUERY
+  SELECT 'public.fn_global_search', 'function'::text,
+         'VAZAMENTO: anon executa busca global (revogada em 20261119094500)'::text
+  WHERE EXISTS (SELECT 1 FROM pg_proc WHERE proname='fn_global_search' AND pronamespace='public'::regnamespace)
+    AND has_function_privilege('anon',
+          (SELECT oid FROM pg_proc WHERE proname='fn_global_search' AND pronamespace='public'::regnamespace LIMIT 1),'EXECUTE');
+
+  -- (6) Views criticas devem ser SECURITY DEFINER (security_invoker=false).
+  --     v5: saem as 3 que sao invoker por decisao explicita (P06 20261117073000);
+  --     elas passam para o bloco 9, no sentido correto.
+  RETURN QUERY
+  SELECT 'public.'||v.nm, 'view'::text, 'RISCO: view sensivel com security_invoker=true'::text
+  FROM (VALUES ('v_products_public'),('v_suppliers_public'),
+               ('v_variant_sale_prices_public'),
+               ('v_tabela_preco_gravacao_oficial_public'),  -- NOVO v3
+               ('v_kit_component_media_public'),
+               ('v_product_compositions_public')) v(nm)
+  WHERE to_regclass('public.'||v.nm) IS NOT NULL
+    AND COALESCE((SELECT option_value FROM pg_options_to_table(
+        (SELECT reloptions FROM pg_class WHERE relname=v.nm AND relnamespace='public'::regnamespace))
+      WHERE option_name='security_invoker'), 'false') = 'true';
+
+  -- (7) product_variants anon deve ter politica com is_active filter
+  RETURN QUERY
+  SELECT 'public.product_variants', 'rls_policy'::text,
+         'RISCO: politica anon sem filtro is_active (202 variantes inativas expostas)'::text
+  WHERE EXISTS (
+    SELECT 1 FROM pg_policies
+    WHERE schemaname='public' AND tablename='product_variants'
+      AND cmd IN ('SELECT','ALL')
+      AND 'anon'=ANY(roles)
+      AND qual='true'
+  );
+
+  -- (8) NOVO v5: objetos que NAO podem ser legiveis por anon de forma alguma
+  --     (tabela OU coluna). Saíram do bloco (1) porque o fechamento foi decidido:
+  --       mockup_approval_links      -> 20261008230000
+  --       internal/analytics matviews -> leitura so por views DEFINER
+  RETURN QUERY
+  WITH fechado(sch, nm) AS (VALUES
+    ('public','mockup_approval_links'),
+    ('internal','mv_product_leaf_category'),
+    ('analytics','mv_product_compositions')
+  )
+  SELECT fechado.sch||'.'||fechado.nm, 'table/view'::text,
+         'VAZAMENTO: anon voltou a ler objeto fechado por decisao'::text
+  FROM fechado
+  WHERE to_regclass(fechado.sch||'.'||fechado.nm) IS NOT NULL
+    AND (has_table_privilege('anon', (fechado.sch||'.'||fechado.nm)::regclass, 'SELECT')
+         OR EXISTS (
+           SELECT 1 FROM pg_attribute a
+           WHERE a.attrelid = (fechado.sch||'.'||fechado.nm)::regclass
+             AND a.attnum > 0 AND NOT a.attisdropped
+             AND has_column_privilege('anon', a.attrelid, a.attnum, 'SELECT')
+         ));
+
+  -- (9) NOVO v5: views de catalogo que DEVEM ser security_invoker=true.
+  --     Com invoker=true elas respeitam as policies das tabelas-base (P06,
+  --     20261117073000) e dependem de anon EXECUTE em fn_product_active_for_rls
+  --     (garantido pelo bloco 2). Voltar para definer re-expoe a base mascarada.
+  RETURN QUERY
+  SELECT 'public.'||v.nm, 'view'::text,
+         'RISCO: view de catalogo invoker-by-design voltou a definer (re-expoe RLS)'::text
+  FROM (VALUES ('v_kit_component_print_areas_public'),
+               ('v_product_properties_public'),('v_product_tags_public')) v(nm)
+  WHERE to_regclass('public.'||v.nm) IS NOT NULL
+    AND COALESCE((SELECT option_value FROM pg_options_to_table(
+        (SELECT reloptions FROM pg_class WHERE relname=v.nm AND relnamespace='public'::regnamespace))
+      WHERE option_name='security_invoker'), 'false') <> 'true';
+END $fn$;
+
+COMMENT ON FUNCTION public.fn_verify_anon_catalog_grants() IS
+  'Tripwire anti-regressao v5 (2026-11-25). Cobre: 41 objetos obrigatorios (grant de tabela OU de coluna), '
+  '5 RPCs anon (4 de busca + fn_product_active_for_rls, exigido pelas policies de catalogo), '
+  '22 travas de objetos sensiveis (public/13 da etapa 008 + mockup_approval_links + 2 matviews internas), '
+  'pg_stat_statements, 2 funcoes proibidas para anon (ranking de vendas e fn_global_search), '
+  '6 views DEFINER, 3 views invoker-by-design e a policy is_active de product_variants. '
+  '0 linhas = saudavel.';
+
+-- ---------------------------------------------------------------------------
+-- Post-check: o bug das 2 views esta fechado e o tripwire nao acusa nada.
+-- ---------------------------------------------------------------------------
+DO $verify$
+DECLARE
+  v_n bigint;
+  v_list text;
+BEGIN
+  IF NOT has_function_privilege('anon', 'public.fn_product_active_for_rls(uuid)', 'EXECUTE') THEN
+    RAISE EXCEPTION 'anon continua sem EXECUTE em fn_product_active_for_rls: v_product_properties_public e v_product_tags_public seguem 401 para visitante';
+  END IF;
+
+  SELECT count(*), string_agg(object_name||' ['||issue||']', '; ')
+    INTO v_n, v_list
+  FROM public.fn_verify_anon_catalog_grants();
+
+  IF v_n > 0 THEN
+    RAISE EXCEPTION 'tripwire v5 com % achado(s): %', v_n, v_list;
+  END IF;
+
+  IF has_table_privilege('anon', 'public.mockup_approval_links'::regclass, 'SELECT') THEN
+    RAISE EXCEPTION 'anon passou a ler public.mockup_approval_links';
+  END IF;
+
+  RAISE NOTICE 'ok: anon EXECUTE restaurado em fn_product_active_for_rls e tripwire v5 sem achado';
+END
+$verify$;
+
+-- <<< END 20261125131000_tripwire_anon_v5_reconcilia.sql <<<
