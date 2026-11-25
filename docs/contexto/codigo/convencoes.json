@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "fix: aplica o COMMENT da view de gravacao (cabecalho com Rollback:) (#4097)",
    "fix: corrige COMMENT da view de preco de gravacao publica (retoma #4080) (#4096)",
    "chore(schema-snapshot): snapshot semanal 2026-W48 (run 45661905897) (#4095)",
    "docs(migrations-log): recibo E15 — aplicação de 20261125173000 (#4094)",
-   "fix: corrige approved-by do indice de stock_daily_summary (#4092) (#4093)",
-   "perf: torna aplicavel o indice de stock_daily_summary do market-intel (#4092)"
+   "fix: corrige approved-by do indice de stock_daily_summary (#4092) (#4093)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",

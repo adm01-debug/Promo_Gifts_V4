@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "46f58634b23fbb890c87a0979e8f2227966d1613",
+  "commit": "88a358e841687f729b67344b407315429df66082",
   "branch": "main",
-  "data_commit": "2026-11-25T14:38:47-03:00",
+  "data_commit": "2026-11-25T14:53:14-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "88a358e",
+    "data": "2026-11-25",
+    "assunto": "fix: aplica o COMMENT da view de gravacao (cabecalho com Rollback:) (#4097)"
+   },
    {
     "sha": "46f5863",
     "data": "2026-11-25",
@@ -126,14 +131,9 @@
     "sha": "19de836",
     "data": "2026-11-25",
     "assunto": "feat(ci): recupera o filtro de ruido de views e policies no E40 (#4060)"
-   },
-   {
-    "sha": "ddd8488",
-    "data": "2026-11-25",
-    "assunto": "feat(security): gate enxerga SELECT de anon em tabela, não só view (#4059)"
    }
   ],
-  "arquivos_mudados_7d": 603,
+  "arquivos_mudados_7d": 605,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -180,15 +180,15 @@
     "mudancas": 83
    },
    {
+    "pasta": "supabase/MIGRATIONS_SYNC_LOG.md",
+    "mudancas": 82
+   },
+   {
     "pasta": "src/hooks/quotes",
     "mudancas": 81
    },
    {
     "pasta": "src/pages/admin",
-    "mudancas": 81
-   },
-   {
-    "pasta": "supabase/MIGRATIONS_SYNC_LOG.md",
     "mudancas": 81
    },
    {
@@ -199,7 +199,7 @@
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "supabase/MIGRATIONS_SYNC_LOG.md",
-    "mudancas": 81
+    "mudancas": 82
    },
    {
     "arquivo": "docs/qa/05-PROGRESSO.md",
@@ -207,7 +207,7 @@
    },
    {
     "arquivo": "package.json",
-    "mudancas": 26
+    "mudancas": 25
    },
    {
     "arquivo": "package-lock.json",
