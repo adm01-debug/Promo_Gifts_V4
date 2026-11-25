@@ -979,3 +979,42 @@ Na mesma janela ? condi??o do gate `E118i --require-live`, que compara a baselin
 (25 `catalogo-publico` + 4 `catalogo-publico-por-coluna`). Os grants de `authenticated` e `service_role`
 nas 13 permanecem (o post-check da migration abortaria a transa??o se tivessem sido tocados) e o tripwire
 `fn_verify_anon_catalog_grants()` v4 passa a tratar as 13 como proibidas em vez de obrigat?rias.
+### Etapa 009 — tripwire v5 e restaura??o do EXECUTE de anon (2026-11-25)
+
+Depois da aplica??o da `20261125120000`, o tripwire `public.fn_verify_anon_catalog_grants()` (v4) passou a acusar
+**11 achados**. Medi??o em produ??o (`doufsxqlfjyuvxuezpln`: PostgREST com a chave anon, `pg_attribute.attacl` e
+`aclexplode`) mostrou **9 falso positivo / expectativa obsoleta** e **2 regress?es reais**:
+
+| Grupo | Medi??o | Erro da v4 |
+| --- | --- | --- |
+| `print_area_techniques` 16/17 colunas, `kit_component_print_areas` 11/14, `product_kit_components` 2/55 | anon l? as tr?s (PostgREST 200) | bloco (1) usa s? `has_table_privilege`, que ignora grant **de coluna** |
+| `public.mockup_approval_links` | 0 tabela, 0 coluna | exigia grant fechado de prop?sito pela `20261008230000` |
+| `internal.mv_product_leaf_category`, `analytics.mv_product_compositions` | 0/0 para anon **e** authenticated | exigia grant em matviews internas lidas pelo cat?logo via view DEFINER |
+| `rpc/fn_global_search` | 401 para anon, intencional (`20261119094500` L59) | exigia o EXECUTE que a pr?pria sequ?ncia revogou |
+| 3 views `_public` no bloco (6) | `security_invoker=true` por decis?o do P06 (`20261117073000`) | pedia `security_invoker=false` em views que s?o invoker por desenho |
+
+As 2 regress?es reais: `public.v_product_properties_public` e `public.v_product_tags_public` respondiam **HTTP 401**
+para anon (`{"code":"42501","message":"permission denied for function fn_product_active_for_rls"}`). As policies
+`product_properties_anon_read` / `product_tags_anon_read` chamam `public.fn_product_active_for_rls(uuid)` e, como as
+views s?o `security_invoker=true`, o RLS ? avaliado como anon ? que havia perdido o EXECUTE, documentado como
+necess?rio em `.security/lint-0029-allowlist.json:199` e na pr?pria `20261117073000`. Duas p?ginas de produto
+ficaram sem os blocos de propriedades e de tags.
+
+Corre??o: migration `20261125131000` (`GRANT EXECUTE ON FUNCTION public.fn_product_active_for_rls(uuid) TO anon` +
+tripwire v5) e rollback em `supabase/rollbacks/20261125131000_rollback.sql`. A v5 corrige o bloco (1) para
+considerar grant de coluna, remove `fn_global_search` do bloco (2) e passa a **proibi-lo** no bloco (5b), reduz o
+bloco (6) a 6 views DEFINER, cobre os 3 objetos fechados de prop?sito no bloco (8) e **exige** `security_invoker=true`
+nas 3 views invoker-by-design no bloco (9).
+
+Valida??o por dry-run real em produ??o, dentro de `BEGIN; ... ROLLBACK;` (nada persistido):
+- migration → `{"achados":0,"anon_exec":true,"marca":"v5"}`;
+- rollback → `{"achados":11,"anon_exec":false,"marca":"v4"}`;
+- estado de produ??o reconferido depois do rollback: `{"achados":11,"anon_exec":false,"marca":"v4"}` (inalterado).
+- `node scripts/preflight-migration-apply.mjs --version=20261125131000` → `status":"passed"`.
+
+Na mesma janela o `MIGRATIONS_SYNC_LOG.md` foi reconciliado. A linha de pre-registro da `20261125120000`
+(status `registrada-sem-aplicar`, "aguardando `db-apply-migration.yml`") foi removida: ela duplicava a versao e
+reprovava o gate E75 (`versoes duplicadas no log: 20261125120000(x2)`) em qualquer PR que tocasse
+`supabase/migrations/**` - e recibo duplicado e exatamente o que faz outro agente redispatchar a aplicacao.
+Sobrou o recibo real (`aplicada`, run `45609989922`) e o recibo novo da `20261125131000` entrou logo abaixo.
+A linha longa da tabela de detalhes tambem saiu de "devem sair" para o estado aplicado (PR #4075, merge `a7d30440f`).
