@@ -1,7 +1,7 @@
 {
   "version": 1,
   "pending_seed": false,
-  "generated_at": "2026-11-23T23:26:56.412Z",
+  "generated_at": "2026-11-25T19:05:47.633Z",
   "project_ref": "doufsxqlfjyuvxuezpln",
   "schemas_checked": [
     "public",
@@ -13,7 +13,7 @@
     "prod_audit",
     "supplier_stricker"
   ],
-  "sha256": "4c8abf7a6b496f5d5108a57d8851e95f05e7f646811f08b7a382c0f5cf2bf32b",
+  "sha256": "80c1819246e31f3605fc99af5bcd657c895580fb34af03a09d305461fb561090",
   "policies": [
     {
       "schemaname": "cf_recon",
@@ -8513,6 +8513,26 @@
       "roles": "{authenticated}",
       "cmd": "SELECT",
       "qual": "is_admin_or_above(( SELECT ( SELECT auth.uid() AS uid) AS uid))",
+      "with_check": ""
+    },
+    {
+      "schemaname": "public",
+      "tablename": "supplier_products_raw_history_default",
+      "policyname": "hist_all_service",
+      "permissive": "PERMISSIVE",
+      "roles": "{service_role}",
+      "cmd": "ALL",
+      "qual": "true",
+      "with_check": "true"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "supplier_products_raw_history_default",
+      "policyname": "hist_select_admin",
+      "permissive": "PERMISSIVE",
+      "roles": "{authenticated}",
+      "cmd": "SELECT",
+      "qual": "is_admin_or_above(( SELECT auth.uid() AS uid))",
       "with_check": ""
     },
     {
