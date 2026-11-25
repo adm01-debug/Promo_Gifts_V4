@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "5c65a1802cdd12b16df8142a012b67c5ecb0733f",
+  "commit": "69afa3c56a199185a56df3b6992f1c68fc5529c9",
   "branch": "main",
-  "data_commit": "2026-11-25T13:31:07-03:00",
+  "data_commit": "2026-11-25T13:35:53-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "69afa3c",
+    "data": "2026-11-25",
+    "assunto": "chore(schema-snapshot): snapshot semanal 2026-W48 (run 45647674999) (#4083)"
+   },
    {
     "sha": "5c65a18",
     "data": "2026-11-25",
@@ -126,14 +131,9 @@
     "sha": "1f8101b",
     "data": "2026-11-24",
     "assunto": "docs: regenera GRAPH_REPORT.md com o graphify 0.9.115 e camada semântica (#4037)"
-   },
-   {
-    "sha": "9238b31",
-    "data": "2026-11-24",
-    "assunto": "fix: hooks de areas de gravacao pedem colunas explicitas (#4055)"
    }
   ],
-  "arquivos_mudados_7d": 611,
+  "arquivos_mudados_7d": 613,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -270,6 +270,18 @@
     "mudancas": 5
    },
    {
+    "arquivo": "supabase/migrations-snapshot/ALL_IN_ONE.sql",
+    "mudancas": 5
+   },
+   {
+    "arquivo": "supabase/migrations-snapshot/SCHEMA_LIVE.sql",
+    "mudancas": 5
+   },
+   {
+    "arquivo": "supabase/migrations-snapshot/SNAPSHOT_META.json",
+    "mudancas": 5
+   },
+   {
     "arquivo": "docs/agentes/resgates/2026-11-19-migrations-orfas-e-o-portao-retroativo.md",
     "mudancas": 4
    },
@@ -283,18 +295,6 @@
    },
    {
     "arquivo": "src/components/kit-builder/KitSummary.tsx",
-    "mudancas": 4
-   },
-   {
-    "arquivo": "src/components/kit-builder/PersonalizationConfig.tsx",
-    "mudancas": 4
-   },
-   {
-    "arquivo": "src/components/kit-builder/kit-summary/KitPricingCard.tsx",
-    "mudancas": 4
-   },
-   {
-    "arquivo": "src/components/layout/SidebarReorganized.tsx",
     "mudancas": 4
    }
   ],

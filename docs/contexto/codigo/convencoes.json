@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "chore(schema-snapshot): snapshot semanal 2026-W48 (run 45647674999) (#4083)",
    "docs: recibos de 20261115130100 e 20261119110500 no ledger (#4090)",
    "fix: restaura grant anon na view publica de composicao de produto (#4081)",
    "chore(main): release gifts-store 1.20.0 (#3983)",
-   "docs(migrations-log): remove a linha de pre-registro duplicada da 20261125131000 (#4078)",
-   "docs(migrations-log): recibo E15 — aplicação de 20261125131000 (#4077)"
+   "docs(migrations-log): remove a linha de pre-registro duplicada da 20261125131000 (#4078)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",

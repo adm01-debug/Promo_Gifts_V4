@@ -1,6 +1,6 @@
 # 11 · GLOSSÁRIO, DADOS DE REFERÊNCIA E LACUNAS
 
-> Gerado automaticamente por AI Context Sync v1.3.2 · commit `5c65a1802c` · branch `main` · 2026-11-25 16:33 UTC
+> Gerado automaticamente por AI Context Sync v1.3.2 · commit `69afa3c56a` · branch `main` · 2026-11-25 16:37 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## Glossário do domínio (entidades do sistema)
@@ -13,7 +13,7 @@
 | `_deprecated_silver_products_20260606` | Camada Silver — produto normalizado por fornecedor.  | 54 colunas | migration |
 | `_deprecated_silver_variants_20260606` | Camada Silver — variante normalizada por fornecedor.  | 42 colunas | migration |
 | `_p06_before` | _(sem COMMENT ON TABLE — significado não documentado)_ | 2 colunas | migration |
-| `_qa_pct_results` | _(sem COMMENT ON TABLE — significado não documentado)_ | 10 colunas | migration |
+| `_qa_pct_results` | Resultados detalhados de testes de regressão de percentuais/limiares, incluindo valores de entrada, bloco esperado/observado e aprovação do caso. | 10 colunas | migration |
 | `access_blocked_log` | Log de acessos bloqueados pelo sistema de segurança (geo/IP blocking).  STATUS: Tabela pronta e estruturada — aguarda implementação do escritor (edge function). ⚠️ NENHUMA função ou trigger escreve aqui ainda. 0 registros em jun/2026.  PROPÓSITO:   Registrar toda tentativa de acesso bloqueada pelas regras de segurança:   bloqueio por IP, geolocalização, país não permitido, cidade bloqueada, etc.   Serve como auditoria forense e base para alertas de segurança.  ESCRITOR PENDENTE (a implementar):   Edge function 'geo-access-control' deve inserir aqui ao bloquear um acesso.    🔑 OBRIGATÓRIO: a edge function DEVE usar a chave service_role (não anon).      A policy de INSERT exige authenticated + is_admin_or_above().      Requisições bloqueadas são anônimas — só service_role bypassa a RLS.      Se usar anon key, o INSERT falha silenciosamente e o log fica vazio.    Exemplo de chamada via supabaseAdmin (service_role):     const supabaseAdmin = createClient(url, SERVICE_ROLE_KEY);     await supabaseAdmin.from('access_blocked_log').insert({       ip_address: req.ip,       block_reason: 'country_not_allowed',       email: user?.email ?? null,       city, state, country,       user_agent: req.headers['user-agent']     });    Razões válidas para block_reason:     - 'ip_blocked'          → IP na lista negra (ip_access_control)     - 'country_not_allowed'  → país fora de geo_allowed_countries     - 'city_blocked'         → cidade na blacklist (city_whitelist)     - 'rate_limit'           → muitas tentativas em curto período     - 'suspicious_pattern'   → comportamento anômalo detectado  RLS POLICIES (2 ativas):   - INSERT: authenticated + is_admin_or_above() → inserção manual por admin   - SELECT: authenticated + is_admin_or_above() → leitura de auditoria por admin   - UPDATE: sem policy → log imutável (append-only por design)   - DELETE: sem policy → auditoria preservada permanentemente   ⚠️ Edge function não usa estas policies — usa service_role que bypassa RLS.  ÍNDICES (criados em 2026-06-15):   - idx_access_blocked_log_created_at (created_at DESC) → queries de auditoria por período   - idx_access_blocked_log_ip (ip_address) → busca de IP específico bloqueado  TABELAS DO MESMO ECOSSISTEMA DE SEGURANÇA:   - ip_access_control      → define IPs bloqueados/permitidos (1 regra ativa)   - login_attempts         → log de tentativas de login (1.240 registros ativos)   - ip_whitelist           → IPs sempre permitidos (vazia — a preencher)   - city_whitelist         → cidades permitidas/bloqueadas (vazia — a preencher)   - geo_allowed_countries  → países permitidos (vazia — a preencher)   - user_allowed_ips       → IPs liberados por usuário (vazia — a preencher)  CAMPOS:   - id           → uuid gerado automaticamente   - email        → conta que tentou acessar (nullable — pode ser anônimo)   - ip_address   → IP de origem (obrigatório, NOT NULL)   - city/state/country → geolocalização do IP (via serviço externo)   - block_reason → motivo do bloqueio (obrigatório, NOT NULL)   - user_agent   → browser/dispositivo de origem   - created_at   → timestamp automático (now()) | 9 colunas | migration |
 | `access_security_settings` | Singleton de configuracao de seguranca do sistema (sempre 1 linha). Criada em 2026-05-24, provavelmente pelo Lovable ao montar o painel admin de seguranca.  PROPOSITO: armazenar os parametros globais que controlam:   • bloqueio por IP (ip_whitelist_enabled + tabela ip_whitelist)   • bloqueio por cidade (city_whitelist_enabled + tabela city_whitelist)   • bloqueio de localizacoes desconhecidas (block_unknown_locations)   • lockout por tentativas falhas (max_failed_attempts + lockout_duration_minutes)   • modo strict (strict_access_mode)  ESTADO ATUAL (2026-06-15): FEATURE INCOMPLETA   • Frontend consegue ler e gravar esta tabela via RLS (admin/dev).   • NENHUMA funcao Postgres le esses flags e age sobre eles.   • Ou seja: mesmo que ip_whitelist_enabled = true, NADA e bloqueado.   • A tabela e um cockpit sem motor.  ECOSSISTEMA RELACIONADO (tabelas irmas):   • ip_whitelist             (0 linhas) — lista de IPs permitidos   • city_whitelist           (0 linhas) — lista de cidades permitidas   • access_blocked_log       (0 linhas) — log de acessos bloqueados   • login_attempts           (1.240 linhas) — UNICA tabela ativa do ecosistema   • auth_login_attempts      (0 linhas) — duplicata inativa de login_attempts   • ip_access_control        (1 linha)  — controle adicional de IP   • device_login_notifications (0 linhas)   • security_settings        (0 linhas) — alternativa key-value, vazia   • mcp_access_violations    (0 linhas)  PROXIMO PASSO: implementar fn_enforce_security_settings() e fn_check_login_allowed(p_ip, p_user_id, p_city) que leiam esta tabela e apliquem os bloqueios. Ver comentario de roadmap nas colunas abaixo.  NAO ARQUIVAR / NAO DROPAR — tabela de feature incompleta, nao abandonada. | 9 colunas | migration |
 | `achievements` | _(sem COMMENT ON TABLE — significado não documentado)_ | 12 colunas | migration |
@@ -31,7 +31,7 @@
 | `ai_models` | Models offered by each provider. capabilities JSON: {chat,vision_in,image_out,streaming,tools,json_mode,reasoning,multilingual}. Costs in USD/1M tokens (editable). | 14 colunas | migration |
 | `ai_providers` | AI provider catalog (Lovable, OpenAI, Anthropic, Google, DeepSeek, custom). Managed via /admin/conexoes. | 21 colunas | migration |
 | `ai_routing_decisions` | Per-call audit of router decisions. attempted_outcomes is an array of {model_id, status, error_kind, latency_ms} mirroring attempted_models order. | 14 colunas | migration |
-| `ai_usage_events` | _(sem COMMENT ON TABLE — significado não documentado)_ | 6 colunas | migration |
+| `ai_usage_events` | Eventos resumidos de uso de IA por usuário/função, com tipo de evento e metadados opcionais. Não confundir com ai_usage_logs, que registra consumo detalhado por chamada. | 6 colunas | migration |
 | `ai_usage_logs` | Per-call AI usage events. Inserted as status=pending by acquire_ai_quota, then UPDATEd to success/error after the call completes. Read by useAiUsage hook for dashboards. | 14 colunas | migration |
 | `ai_usage_quotas` | Per-role monthly AI request limits. Looked up by check_ai_quota using user primary role. Editable by admin/dev via UI. | 6 colunas | migration |
 | `analytics_events` | [Etapa 7] RLS corrigido: SELECT escopado a self+supervisor (era USING true vazando). INSERT permite anon (tracking público) sem atribuir a user. DELETE só dev. | 3 colunas | migration |
@@ -39,31 +39,31 @@
 | `anon_insert_rate` | Contadores (tabela\|ip\|minuto) do guard fn_anon_insert_rate_guard. Só o trigger (SECURITY DEFINER) escreve; purga via cron anon-insert-rate-purge. | 3 colunas | migration |
 | `app_vitals` | _(sem COMMENT ON TABLE — significado não documentado)_ | 9 colunas | migration |
 | `archive._cleanup_manifest` | Audit log of the database faxina (cleanup). One row per object moved public->archive, with evidence, enabling precise one-command rollback. | 10 colunas | migration |
-| `art_file_attachments` | _(sem COMMENT ON TABLE — significado não documentado)_ | 13 colunas | migration |
-| `asia_image_import_queue` | _(sem COMMENT ON TABLE — significado não documentado)_ | 16 colunas | migration |
+| `art_file_attachments` | Arquivos de arte anexados por usuário a mockup e/ou cotação, com metadados do arquivo, caminho/URL e notas. | 13 colunas | migration |
+| `asia_image_import_queue` | Fila de ingestão de imagens do fornecedor Asia Import. Cada registro identifica produto-pai/variante, URL de origem, tipo/ordem da imagem, tentativas e estado de upload/promoção para product_images. | 16 colunas | migration |
 | `asia_legacy_upload_queue` | Upload CF Images para 382 produtos ASIA/XBZ com primary_image_url não-CF. Criado em 2026-06-10. | 13 colunas | migration |
 | `asia_upload_mapping` | Rastreia requisições pg_net para upload de imagens Asia Import ao Cloudflare Images | 8 colunas | migration |
-| `attribute_definitions` | _(sem COMMENT ON TABLE — significado não documentado)_ | 21 colunas | migration |
+| `attribute_definitions` | Definições de atributos de produtos: nome, tipo de dado, unidade, valores possíveis, validação e comportamento de exibição ou filtragem. | 21 colunas | migration |
 | `attribute_equivalences` | De-para entre valores de atributos de fornecedores e atributos padronizados do catálogo Promo Brindes.  | 19 colunas | migration |
-| `attribute_groups` | _(sem COMMENT ON TABLE — significado não documentado)_ | 10 colunas | migration |
+| `attribute_groups` | Grupos usados para organizar definições de atributos de produtos dentro de uma organização. | 10 colunas | migration |
 | `audit_log` | Trilha de auditoria generica por entidade (application-level), escrita por useAuditLog.logAction (INSERT/UPDATE/DELETE) e lida por fetchAuditHistory/fetchAllAuditLogs. Imutavel; leitura dev-only (can_view_audit_logs); embed profiles:user_id via FK. fix_version 2026-06-26. NAO adicionar triggers (duplicaria escritas da app). | 10 colunas | migration |
 | `audit_log_gravacao` | Audit log de mudanças em tabela_preco_gravacao_oficial e _faixa. RLS ativada em 2026-05-09 (Etapa 1 plano unificação). Triggers SECDEF bypassam RLS p/ INSERT. | 10 colunas | migration |
 | `audit_logs` | _(sem COMMENT ON TABLE — significado não documentado)_ | 6 colunas | migration |
 | `audit_trail` | _(sem COMMENT ON TABLE — significado não documentado)_ | 3 colunas | migration |
 | `auth.users` | Auth: Stores user login data within a secure schema. | 3 colunas | migration |
 | `auth_login_attempts` | Versao mais recente de login_attempts (com metadata). Atualmente vazia. login_attempts e a tabela populada (203 registros). Consolidacao pendente. | 7 colunas | migration |
-| `auto_tag_rules` | _(sem COMMENT ON TABLE — significado não documentado)_ | 13 colunas | migration |
-| `b2b_collection_products` | _(sem COMMENT ON TABLE — significado não documentado)_ | 5 colunas | migration |
-| `b2b_collections` | _(sem COMMENT ON TABLE — significado não documentado)_ | 12 colunas | migration |
-| `binding_colors` | _(sem COMMENT ON TABLE — significado não documentado)_ | 8 colunas | migration |
-| `binding_types` | _(sem COMMENT ON TABLE — significado não documentado)_ | 10 colunas | migration |
+| `auto_tag_rules` | Regras configuráveis de atribuição automática de tags a produtos. Cada regra define condição, campo/operador/valor, prioridade, tag de destino e estado ativo. | 13 colunas | migration |
+| `b2b_collection_products` | Vínculos entre coleções B2B e produtos, com ordenação própria. | 5 colunas | migration |
+| `b2b_collections` | Coleções B2B de produtos, com visibilidade, destaque e ordenação próprios. Esta tabela é distinta de public.collections. | 12 colunas | migration |
+| `binding_colors` | Vocabulário de cores de espiral/encadernação, com código hexadecimal opcional. | 8 colunas | migration |
+| `binding_types` | Vocabulário de tipos de encadernação para especificações de cadernos e materiais gráficos. | 10 colunas | migration |
 | `bitrix_clients` | Cache local de clientes do CRM (Bitrix). Consumida por QuotesKanbanPage e useSimulation. | 5 colunas | migration |
 | `bitrix_deals` | _(sem COMMENT ON TABLE — significado não documentado)_ | 11 colunas | migration |
 | `bitrix_sync_logs` | _(sem COMMENT ON TABLE — significado não documentado)_ | 8 colunas | migration |
-| `bot_detection_log` | _(sem COMMENT ON TABLE — significado não documentado)_ | 9 colunas | migration |
+| `bot_detection_log` | Eventos de detecção automatizada de bots e abuso, com IP, agente de usuário, score, ação tomada e metadados. A coluna blocked distingue bloqueio efetivo de mera observação. | 9 colunas | migration |
 | `business_calendar` | Feriados em que não se conta dia útil no prazo de produção (src/lib/lead-time). Uma linha por data. Sábado e domingo não entram: a biblioteca já os pula. | 4 colunas | migration |
 | `cache_entries` | _(sem COMMENT ON TABLE — significado não documentado)_ | 3 colunas | migration |
-| `cart_templates` | _(sem COMMENT ON TABLE — significado não documentado)_ | 7 colunas | migration |
+| `cart_templates` | Modelos pessoais de carrinho que guardam conjuntos de itens em JSONB para reutilização pelo usuário. | 7 colunas | migration |
 | `catalog_analytics` | Analytics de eventos do catálogo. event_type válidos: sort, search, click, filter, view, add_to_quote. Expandido 2026-06-12. | 5 colunas | migration |
 | `categories` | Árvore hierárquica de categorias (max 6 níveis, auto-referenciada via parent_id). CAMPOS CANÔNICOS: is_active (status), path (materialized path /uuid1/uuid2/), products_count (cache PCA). LEGADOS: active (= is_active), slug (UNIQUE). Dois tipos de raiz: taxonomia canônica (Bar\|Cozinha etc.) e coleções endomarketing (Brindes\|Unimed etc.). | 16 colunas | migration |
 | `category_accessory_categories` | Vincula categorias de produtos a categorias de acessórios/embalagens disponíveis. | 11 colunas | migration |
@@ -73,8 +73,8 @@
 | `category_commemorative_dates` | Vincula categorias de produtos às datas comemorativas relevantes. | 10 colunas | migration |
 | `category_copywriting_config` | Configuração de copywriting por categoria para geração de descrições com IA | 20 colunas | migration |
 | `category_icons` | _(sem COMMENT ON TABLE — significado não documentado)_ | 8 colunas | migration |
-| `category_relationships` | _(sem COMMENT ON TABLE — significado não documentado)_ | 10 colunas | migration |
-| `category_target_audiences` | _(sem COMMENT ON TABLE — significado não documentado)_ | 9 colunas | migration |
+| `category_relationships` | Representações de relações hierárquicas/importadas entre categorias, com IDs e nomes dos pais/filhos, referências Bitrix e profundidade. Para a hierarquia canônica do catálogo, usar categories.parent_id e category_ancestors. | 10 colunas | migration |
+| `category_target_audiences` | Vínculos entre categorias e públicos-alvo, com prioridade e relevância configuráveis. | 9 colunas | migration |
 | `category_variation_types` | Vincula tipos de variação às categorias. Subcategorias herdam da categoria pai. | 9 colunas | migration |
 | `cf_recon.action_log` | Log permanente e imutável de todas as decisões tomadas sobre imagens CF. actor default = claude. Não fazer DELETE nesta tabela — é evidência de auditoria. | 11 colunas | migration |
 | `cf_recon.cf_ghost_check_queue` | Fila de verificação de IDs CF suspeitos. 17.834 checked_dead (infer. estatística 325 amostras), 7 false_positive (xbz-15465p-* uploadados APÓS o ghost check). Nenhum ghost_dead tem produto ativo no DB — pure histórico de IDs deletados do CF. | 7 colunas | migration |
@@ -84,48 +84,48 @@
 | `cf_recon.remediation` | Plano de remediações pendentes. status: open\|in_progress\|done\|cancelled. Linkar às entradas de action_log quando executado. | 8 colunas | migration |
 | `cf_recon_inflight` | Mapa request_id->image_id das sondas pg_net em voo (reconciliação CF). | 3 colunas | migration |
 | `city_whitelist` | Lista de cidades autorizadas para acesso ao sistema. Consumida por fn_check_login_allowed() quando access_security_settings.city_whitelist_enabled = true.  DEPENDENCIA: requer resolucao de IP -> cidade antes de chamar fn_check_login_allowed (p_city). Sem servico de geolocalizacao (ex: ip-api.com), este controle fica inativo mesmo com city_whitelist_enabled = true.  REGRA: tabela vazia + flag ativo = FAIL OPEN (nao bloqueia). Comparacao case-insensitive: upper(city_name) = upper(p_city).  UNIQUE em (city_name, state, country_code) — ja existia. Indice parcial: idx_city_whitelist_active_city. | 7 colunas | migration |
-| `classification_audit.category_suggestions` | _(sem COMMENT ON TABLE — significado não documentado)_ | 15 colunas | migration |
+| `classification_audit.category_suggestions` | Evidências detalhadas de candidatos de categoria por produto, incluindo pontuação, quantidade e tokens correspondentes, conflitos de material/tipo e sinais de aprovação automática. É uma trilha de análise; os vínculos efetivos ficam em public.product_category_assignments. | 15 colunas | migration |
 | `classify_functions_registry` | Registro de funções de classificação automática de produtos. Adicionar nova função = INSERT nesta tabela. O trigger lê dinamicamente. Criada em 31/01/2026. | 8 colunas | migration |
 | `client_contacts` | _(sem COMMENT ON TABLE — significado não documentado)_ | 11 colunas | migration |
 | `client_notes` | _(sem COMMENT ON TABLE — significado não documentado)_ | 7 colunas | migration |
-| `collection_item_reactions` | _(sem COMMENT ON TABLE — significado não documentado)_ | 8 colunas | migration |
-| `collection_items` | _(sem COMMENT ON TABLE — significado não documentado)_ | 10 colunas | migration |
-| `collection_items_trash` | _(sem COMMENT ON TABLE — significado não documentado)_ | 13 colunas | migration |
+| `collection_item_reactions` | Reações anônimas a itens de coleções compartilhadas, identificadas por collection_id/item_id e anon_id; hashes reduzem a exposição de IP. | 8 colunas | migration |
+| `collection_items` | Itens de produto guardados em uma coleção. Os campos de produto, cor e preço armazenam valores próprios do item da coleção. | 10 colunas | migration |
+| `collection_items_trash` | Lixeira temporária de itens removidos de coleções. Preserva os dados originais do item e a data de remoção/expiração para recuperação conforme a política da aplicação. | 13 colunas | migration |
 | `collection_products` | Bridge migration F1 (2026-05-15): tabela necessária para compat com hook useExternalCollections.ts. Em fase posterior decidir se mantém ou consolida com b2b_collection_products (que tem 4433 linhas). | 5 colunas | migration |
-| `collections` | _(sem COMMENT ON TABLE — significado não documentado)_ | 10 colunas | migration |
+| `collections` | Coleções de produtos criadas por usuários, com opções de compartilhamento e associação a clientes. Esta tabela é distinta de public.b2b_collections. | 10 colunas | migration |
 | `color_analysis_staging` | _(sem COMMENT ON TABLE — significado não documentado)_ | 1 colunas | migration |
-| `color_equivalences` | _(sem COMMENT ON TABLE — significado não documentado)_ | 16 colunas | migration |
-| `color_groups` | _(sem COMMENT ON TABLE — significado não documentado)_ | 9 colunas | migration |
-| `color_nuances` | _(sem COMMENT ON TABLE — significado não documentado)_ | 8 colunas | migration |
+| `color_equivalences` | De-para entre uma cor de fornecedor (supplier_colors) e a variação/nuance canônica Promo. verified/is_active controlam a confiança operacional; is_primary indica o mapeamento principal quando há alternativas. | 16 colunas | migration |
+| `color_groups` | Catálogo de grupos cromáticos usado para organizar variações canônicas de cor. color_variations.color_group_id é a referência canônica; group_id permanece como vínculo legado. | 9 colunas | migration |
+| `color_nuances` | Vocabulário de nuances de cor associado a grupos/variações canônicas, inclusive para sincronização com enums de cor do Bitrix24. | 8 colunas | migration |
 | `color_synonym_map` | Mapeamento de nomes de cores do fornecedor para color_variations canônico. Usado para corrigir discrepâncias entre como o fornecedor nomeia as cores nas imagens vs como o pipeline de variantes as padroniza. Exemplos: Fumê (XBZ) → Preto, Cinza Claro (XBZ) → Cinza. Alimentado por fn_link_images_to_variants_by_synonym() para backfill do variant_id. | 9 colunas | migration |
-| `color_variations` | _(sem COMMENT ON TABLE — significado não documentado)_ | 10 colunas | migration |
-| `commemorative_date_colors` | _(sem COMMENT ON TABLE — significado não documentado)_ | 6 colunas | migration |
-| `commemorative_date_exclusions` | _(sem COMMENT ON TABLE — significado não documentado)_ | 7 colunas | migration |
+| `color_variations` | Catálogo de cores/variações canônicas com nome, hexadecimal, grupo e nuance. Usado por variantes de produto, imagens, equivalências de fornecedor e componentes de kits. | 10 colunas | migration |
+| `commemorative_date_colors` | Associa grupos canônicos de cores a datas comemorativas e registra prioridade/score de correspondência para curadoria e campanhas. | 6 colunas | migration |
+| `commemorative_date_exclusions` | Exceções que removem um produto ou uma variante da associação automática/manual com uma data comemorativa, com motivo e autoria quando disponíveis. | 7 colunas | migration |
 | `commemorative_dates` | Cadastro de datas comemorativas para associar produtos | 24 colunas | migration |
 | `companies` | Branding white-label por cliente. Consumida por src/lib/pdf/whitelabel-comparison.ts. | 6 colunas | migration |
 | `company_addresses` | _(sem COMMENT ON TABLE — significado não documentado)_ | 18 colunas | migration |
 | `company_contacts` | _(sem COMMENT ON TABLE — significado não documentado)_ | 19 colunas | migration |
-| `company_email_patterns` | _(sem COMMENT ON TABLE — significado não documentado)_ | 12 colunas | migration |
-| `comparison_reactions` | _(sem COMMENT ON TABLE — significado não documentado)_ | 8 colunas | migration |
-| `component_media` | _(sem COMMENT ON TABLE — significado não documentado)_ | 10 colunas | migration |
-| `connection_test_history` | _(sem COMMENT ON TABLE — significado não documentado)_ | 12 colunas | migration |
+| `company_email_patterns` | Padrões de endereço de e-mail por domínio de empresa, com confiança, servidor MX, provedor e sinais de domínio catch-all. | 12 colunas | migration |
+| `comparison_reactions` | Reações anônimas a itens de uma comparação compartilhada, identificados pelo comparison_id e item_index. | 8 colunas | migration |
+| `component_media` | Mídias de componentes de produto, com tipo image/video, URL, título, ordem e indicação de capa. component_id e product_id são identificadores textuais sem FK declarada no schema atual. | 10 colunas | migration |
+| `connection_test_history` | Histórico de testes de conectividade de uma external_connection, incluindo latência por fase de rede, resposta HTTP, erro e origem do teste. | 12 colunas | migration |
 | `contact_emails` | _(sem COMMENT ON TABLE — significado não documentado)_ | 6 colunas | migration |
 | `contact_phones` | _(sem COMMENT ON TABLE — significado não documentado)_ | 7 colunas | migration |
 | `content_articles` | SEO M5 (2026-06-27): Artigos de blog para Topical Authority. Documentada em DOC_MODULO_SEO_COMPLETO.md como "content_articles" mas nunca criada. fix_version: seo_content_articles_v1_20260627 Lovable bot: NÃO alterar constraints de status nem remover RLS policies. | 20 colunas | migration |
-| `conversation_audit_logs` | _(sem COMMENT ON TABLE — significado não documentado)_ | 9 colunas | migration |
-| `conversation_delivery_status` | _(sem COMMENT ON TABLE — significado não documentado)_ | 5 colunas | migration |
-| `conversation_event_history` | _(sem COMMENT ON TABLE — significado não documentado)_ | 10 colunas | migration |
+| `conversation_audit_logs` | Auditoria de sessões de conversa, com usuário, início/fim, estimativa de tokens, estado e metadados do cliente. | 9 colunas | migration |
+| `conversation_delivery_status` | Estado de entrega de eventos de conversa, com erro e timestamp da última atualização. | 5 colunas | migration |
+| `conversation_event_history` | Histórico de eventos multimodais de conversa (texto, imagem, áudio, vídeo, arquivo ou sistema), com payload de mídia, tokens e request_id. | 10 colunas | migration |
 | `cotacao_eventos` | Histórico completo de eventos de tracking por cotação. Imutável. | 8 colunas | migration |
 | `cotacoes` | Cotações de frete realizadas via painel log.atomicabr.com.br. Auditoria — não deletar. | 19 colunas | migration |
-| `cover_finishes` | _(sem COMMENT ON TABLE — significado não documentado)_ | 8 colunas | migration |
-| `cover_materials` | _(sem COMMENT ON TABLE — significado não documentado)_ | 9 colunas | migration |
-| `cover_types` | _(sem COMMENT ON TABLE — significado não documentado)_ | 8 colunas | migration |
+| `cover_finishes` | Vocabulário de acabamentos de capa de cadernos e materiais gráficos. | 8 colunas | migration |
+| `cover_materials` | Vocabulário de materiais de capa, incluindo indicação de sustentabilidade quando aplicável. | 9 colunas | migration |
+| `cover_types` | Vocabulário de tipos de capa utilizados nas especificações de cadernos e materiais gráficos. | 8 colunas | migration |
 | `crm_callback_events` | Auditoria + chave de idempotência dos callbacks recebidos do CRM Promo Champions V2 via edge function receive-crm-callback. | 9 colunas | migration |
-| `cron_job_timeout_map` | _(sem COMMENT ON TABLE — significado não documentado)_ | 3 colunas | migration |
-| `cron_watchdog_log` | _(sem COMMENT ON TABLE — significado não documentado)_ | 7 colunas | migration |
-| `custom_kits` | Wave 3.3.A 2026-05-22: removidos 19 campos legacy. Schema consolidado. | 19 colunas | migration |
-| `dashboard_insights_cache` | _(sem COMMENT ON TABLE — significado não documentado)_ | 11 colunas | migration |
-| `db_connection_snapshots` | _(sem COMMENT ON TABLE — significado não documentado)_ | 9 colunas | migration |
+| `cron_job_timeout_map` | Mapa de timeout operacional por nome de job pg_cron, com duração máxima em segundos e descrição. | 3 colunas | migration |
+| `cron_watchdog_log` | Auditoria de sessões/job queries terminadas pelo watchdog, incluindo PID, job, duração e trecho de consulta para investigação. | 7 colunas | migration |
+| `custom_kits` | Kits montados por usuários, com estado de rascunho, itens, embalagem, personalização e preço agregado. kit_variants guarda alternativas nomeadas do kit; itens/componentes de catálogo são modelados separadamente. Schema consolidado na Wave 3.3.A. | 19 colunas | migration |
+| `dashboard_insights_cache` | Cache de respostas/insights de dashboard por usuário, função e cache_key, com modelo, duração e expiração. O payload é transitório e pode ser regenerado. | 11 colunas | migration |
+| `db_connection_snapshots` | Snapshots de utilização de conexões do banco, incluindo conexões totais/ativas, transações ociosas, limite e percentual de uso; top_users guarda agregados de diagnóstico. | 9 colunas | migration |
 | `device_login_notifications` | Notificações de login em novo dispositivo/IP. Escrita: edge detect-new-device (service_role). Leitura: dono via RLS. Consumida em realtime por usePushNotifications. | 8 colunas | migration |
 | `discount_approval_audit` | Trilha de auditoria de aprovações de desconto. Reconciliada em 2026-06-25  | 13 colunas | migration |
 | `discount_approval_requests` | Workflow de aprovação de desconto acima do limite. Vendedor solicita, supervisor+ aprova/rejeita. Schema oficial extraído de useDiscountApproval.ts. | 6 colunas | migration |
@@ -134,42 +134,42 @@
 | `eco_material_config` | Lista de materiais considerados ecológicos para auto-link com categoria Ecologia e Dia do Meio Ambiente | 5 colunas | migration |
 | `edge_function_invocations` | Logs de invocações de edge functions. Edges escrevem via service_role. NÃO inserir secrets/auth headers em request_metadata. Cleanup periódico via purge_edge_invocations_old() ou cron job. | 11 colunas | migration |
 | `edge_rate_limits` | Migrado do Lovable em 2026-05-22 (Lote B). Rate limit transitório (chave -> contador + reset_at). Dados NÃO migrados (transitórios). | 5 colunas | migration |
-| `enriched_contacts` | _(sem COMMENT ON TABLE — significado não documentado)_ | 38 colunas | migration |
-| `enrichment_log` | _(sem COMMENT ON TABLE — significado não documentado)_ | 11 colunas | migration |
+| `enriched_contacts` | Cadastro enriquecido de contatos profissionais, com perfis, e-mails/telefones, confiança e origem dos dados. Contém dados pessoais; aplicar políticas de acesso e retenção apropriadas. | 38 colunas | migration |
+| `enrichment_log` | Histórico de tentativas de enriquecimento de contatos, incluindo provedor, nível, sucesso, dados encontrados, erros, créditos/custo e duração. | 11 colunas | migration |
 | `entity_versions` | _(sem COMMENT ON TABLE — significado não documentado)_ | 8 colunas | migration |
-| `expert_conversations` | _(sem COMMENT ON TABLE — significado não documentado)_ | 6 colunas | migration |
-| `expert_messages` | _(sem COMMENT ON TABLE — significado não documentado)_ | 5 colunas | migration |
-| `external_connections` | _(sem COMMENT ON TABLE — significado não documentado)_ | 14 colunas | migration |
-| `external_connections_sync_log` | _(sem COMMENT ON TABLE — significado não documentado)_ | 13 colunas | migration |
+| `expert_conversations` | Conversas do módulo Expert associadas a um vendedor e, opcionalmente, a um cliente; guarda título e timestamps. | 6 colunas | migration |
+| `expert_messages` | Mensagens ordenadas de uma conversa Expert, com papel do emissor, conteúdo e timestamp. | 5 colunas | migration |
+| `external_connections` | Cadastro de conexões a serviços externos, com tipo, configuração não secreta, referências a secrets e estado do último teste. Segredos devem permanecer no cofre/armazenamento de secrets. | 14 colunas | migration |
+| `external_connections_sync_log` | Histórico de execuções de sincronização de conexões externas, com tipo, estado, contagens, duração e metadados/erro. Não armazena credenciais. | 13 colunas | migration |
 | `favorite_item_reactions` | Migrado do Lovable em 2026-05-22 (Lote C). Reações públicas em listas de favoritos compartilhadas. | 8 colunas | migration |
-| `favorite_items` | _(sem COMMENT ON TABLE — significado não documentado)_ | 11 colunas | migration |
-| `favorite_items_trash` | _(sem COMMENT ON TABLE — significado não documentado)_ | 11 colunas | migration |
+| `favorite_items` | Produtos salvos em listas de favoritos, com variante opcional, snapshot de atributos, anotação, preço observado e posição. A propriedade da lista define o escopo de acesso. | 11 colunas | migration |
+| `favorite_items_trash` | Lixeira temporária de itens removidos de favoritos, preservando snapshot e dados de ordenação para possível restauração até expires_at. | 11 colunas | migration |
 | `favorite_lists` | Listas de favoritos por usuário. Cada user tem 1 lista default automática (criada via ensure_default_favorite_list). Suporta compartilhamento via shared_token com TTL. | 15 colunas | migration |
 | `feature_flags` | _(sem COMMENT ON TABLE — significado não documentado)_ | 3 colunas | migration |
 | `feminine_color_config` | Lista de grupos de cores consideradas femininas para auto-link com target_audience e datas comemorativas | 5 colunas | migration |
 | `file_scan_logs` | Auditoria de scans VirusTotal em uploads. user_id obrigatório (manifest edge secure-upload). | 8 colunas | migration |
-| `follow_up_reminders` | _(sem COMMENT ON TABLE — significado não documentado)_ | 9 colunas | migration |
+| `follow_up_reminders` | Lembretes de acompanhamento vinculados a uma cotação, com responsável, data agendada, tipo e estado de envio/conclusão. | 9 colunas | migration |
 | `freight_settings` | Parâmetros globais do cálculo de frete (linha única). Lidos pelo motor em src/lib/freight; alterados só por admin em /admin/frete. | 9 colunas | migration |
 | `frontend_telemetry` | ATENCAO: Auditoria 20260602 - user_id = NULL em 100% dos registros. Bug de instrumentacao no frontend. | 10 colunas | migration |
 | `future_stock_entries` | _(sem COMMENT ON TABLE — significado não documentado)_ | 21 colunas | migration |
-| `generated_mockups` | _(sem COMMENT ON TABLE — significado não documentado)_ | 20 colunas | migration |
-| `geo_allowed_countries` | _(sem COMMENT ON TABLE — significado não documentado)_ | 6 colunas | migration |
-| `hardening_health_snapshots` | _(sem COMMENT ON TABLE — significado não documentado)_ | 7 colunas | migration |
+| `generated_mockups` | Resultados individuais de geração de mockup, com imagem, parâmetros de produto/área/técnica, custo, qualidade e estado de aprovação. | 20 colunas | migration |
+| `geo_allowed_countries` | Lista de países permitidos para regras de controle geográfico, identificados por código ISO e com estado ativo/inativo. | 6 colunas | migration |
+| `hardening_health_snapshots` | Snapshots do resultado de verificações de hardening, com pontuação, falhas e detalhes JSON para acompanhar a postura de segurança ao longo do tempo. | 7 colunas | migration |
 | `image_backfill_queue` | Fila de backfill de metadados (blurhash, hash, dims, file_size, reupload). 2026-06-17 — Claude. | 14 colunas | migration |
 | `image_types` | Vocabulário oficial de tipos semânticos de imagem da Promo Brindes. Esta tabela é o DICIONÁRIO que classifica cada foto em product_images. Pense nela como um enum gerenciável: em vez de hardcodar 'main', 'gallery' etc. no app, cada tipo é um registro com metadados que controlam comportamento no frontend e no pipeline.  ━━━ O QUE É ━━━ 18 tipos cadastrados (jun/2026). Exemplos:   main     → foto principal/capa do produto na cor selecionada   gallery  → ângulos extras (d2, d3...) sem cor específica   set      → foto mostrando todas as cores disponíveis juntas   location → foto indicando ONDE no produto a gravação vai   area     → diagrama técnico da área de gravação com dimensões   component→ peça isolada do produto (ex: tampa de caneta)   logo     → produto COM logotipo do cliente já aplicado  ━━━ COMO FUNCIONA ━━━ 1. Cada registro define metadados que controlam exibição e pipeline:      display_priority → ordem na galeria (10=main vai primeiro, 99=other vai por último)      show_in_gallery  → FALSE para tipos internos (mockup, thumbnail) — não aparecem no front      is_color_specific→ TRUE = imagem varia por cor; FALSE = é genérica (mesma para todas as cores)      is_primary_candidate→ TRUE = pode ser is_primary=true em product_images  2. A coluna code é a chave funcional — é o que o pipeline, triggers e funções usam.    O id UUID é usado como FK em product_images.image_type_id e supplier_image_suffix_mappings.image_type_id.  3. A tabela é relativamente estática. Novos tipos são raros e exigem:    a) INSERT em image_types    b) UPDATE do CHECK CONSTRAINT em product_images.image_type (alerta via trg_image_types_check_reminder)    c) Atualizar fn_image_types_check_constraint_reminder com o novo code na lista  ━━━ COM QUEM CONVIVE ━━━   product_images              → image_type_id FK, image_type varchar (dual-column, sempre em sync)   supplier_image_suffix_mappings → image_type_id FK (DE-PARA: sufixo do supplier → tipo interno)   vw_image_type_coherence     → monitor de divergência entre os dois campos   vw_image_type_dropblockers  → lista tudo que bloqueia DROP COLUMN de image_type   fn_auto_classify_product_image → hardcoda os UUIDs desta tabela no código   fn_sync_image_type_code     → consulta esta tabela para sincronizar os dois campos  ━━━ COMO RECUPERAR QUANDO TRAVA ━━━   -- Checar divergências entre image_type varchar e image_type_id FK:   SELECT * FROM vw_image_type_coherence;    -- Reconstruir sincronização manual de toda a tabela product_images:   UPDATE product_images pi   SET image_type = it.code   FROM image_types it WHERE it.id = pi.image_type_id   AND pi.image_type != it.code;    -- Ver quem usa este vocabulary além do DB:   SELECT * FROM vw_image_type_dropblockers;  ━━━ O QUE FOI CORRIGIDO ━━━   2026-06-17: Adicionado trigger trg_image_types_check_reminder (AFTER INSERT/UPDATE OF code)   → emite RAISE WARNING quando novo tipo é inserido mas não está no CHECK CONSTRAINT   de product_images.image_type — previne silenciosamente a divergência CHECK vs FK. | 21 colunas | migration |
-| `import_pipeline_steps` | _(sem COMMENT ON TABLE — significado não documentado)_ | 14 colunas | migration |
+| `import_pipeline_steps` | Catálogo/estado das etapas do pipeline de importação, incluindo dependências, status, execução e resultado. etapa identifica a ordem lógica; resultado e error_message guardam evidências da execução. | 14 colunas | migration |
 | `import_staging_images` | _(sem COMMENT ON TABLE — significado não documentado)_ | 1 colunas | migration |
 | `inbound_webhook_endpoints` | Wave 3.3.C.2 2026-05-22: unificado HMAC+api-key. 2 endpoints migrados do Lovable (created_by NULL, original guardado em metadata). | 7 colunas | migration |
-| `inbound_webhook_events` | _(sem COMMENT ON TABLE — significado não documentado)_ | 11 colunas | migration |
+| `inbound_webhook_events` | Eventos recebidos por endpoints de webhook. Guarda payload/headers, validade da assinatura, processamento, resultado/erro e chave de idempotência; proteger payloads que possam conter dados pessoais ou segredos. | 11 colunas | migration |
 | `included_packaging_print_areas` | Áreas de gravação das embalagens ORIGINAIS/inclusas (product_included_packagings). Dimensões de área em MM (padrão de gravação). Análogo a kit_component_print_areas. | 15 colunas | migration |
 | `included_packaging_techniques` | Técnicas de personalização permitidas em embalagens ORIGINAIS/inclusas, com custos. FK opcional para personalization_techniques. | 16 colunas | migration |
-| `ingestion_run_log` | _(sem COMMENT ON TABLE — significado não documentado)_ | 14 colunas | migration |
-| `integration_credentials` | _(sem COMMENT ON TABLE — significado não documentado)_ | 9 colunas | migration |
-| `ip_access_control` | _(sem COMMENT ON TABLE — significado não documentado)_ | 8 colunas | migration |
+| `ingestion_run_log` | Registro de execução por feed e fornecedor, com run_id, duração, contagens fetched/upserted/skipped/errors, estado e amostras de erro. | 14 colunas | migration |
+| `integration_credentials` | Referências e valores de credenciais de integrações externas, com provedor, tipo, estado, expiração e auditoria de atualização. Nunca inserir valores secretos em comentários, logs ou metadados de documentação; restringir o acesso ao mecanismo de secrets/roles apropriado. | 9 colunas | migration |
+| `ip_access_control` | Regras globais de allow/block por endereço IP, com motivo, expiração e autoria. Não confundir com allowlists de usuário ou de país. | 8 colunas | migration |
 | `ip_whitelist` | Lista de IPs autorizados para acesso ao sistema. Consumida por fn_check_login_allowed() quando access_security_settings.ip_whitelist_enabled = true.  REGRA: se esta tabela estiver VAZIA e o flag estiver ativo, fn_check_login_allowed aplica FAIL OPEN (nao bloqueia ninguem) para evitar lockout acidental de todos os usuarios.  Populate com os IPs fixos dos usuarios admin/dev antes de ativar ip_whitelist_enabled = true na tabela access_security_settings.  Indice parcial: idx_ip_whitelist_active_ip (is_active=true). UNIQUE constraint em ip_address (ja existia). | 6 colunas | migration |
 | `kill_switch_hits` | Telemetria de hits do kill-switch (front-end e back-end). Sem PII. Permite decidir quando é seguro desligar definitivamente uma função descontinuada. Rotação semanal via cron — ver kill_switch_hits_purge_weekly. | 8 colunas | migration |
-| `kit_collaborators` | _(sem COMMENT ON TABLE — significado não documentado)_ | 8 colunas | migration |
-| `kit_comments` | _(sem COMMENT ON TABLE — significado não documentado)_ | 9 colunas | migration |
+| `kit_collaborators` | Permissões de colaboração por usuário em um kit customizado, incluindo nível view/edit, convite e autor do convite. | 8 colunas | migration |
+| `kit_comments` | Comentários em kits customizados, com encadeamento opcional por parent_id e âncora opcional para um item. resolved marca se a discussão foi resolvida. | 9 colunas | migration |
 | `kit_component_enrichment_raw` | BRONZE: Recebe dados brutos de dimensões físicas de componentes de kits.    Qualquer fonte deposita aqui sem validação prévia.    Processado por fn_standardize_kit_component() → kit_component_padronizacao. | 22 colunas | migration |
 | `kit_component_ficha_staging` | Staging do parse da ficha tecnica (PDF XBZ). O job de ingestao (n8n/edge) insere 1 linha por peca; fn_promote_kit_ficha_staging casa cada peca ao componente e grava medida REAL respeitando procedencia. | 20 colunas | migration |
 | `kit_component_padronizacao` | PRATA: Dimensões físicas padronizadas de componentes de kits.    Alimentada a partir de kit_component_enrichment_raw via fn_standardize_kit_component().    Requer aprovação (padronizacao_status=approved) antes de promover ao gold.    Campos length/width/height/diameter/circumference = dimensões do ITEM.    Campos pkg_* = dimensões da EMBALAGEM (quando is_packaging=TRUE). | 41 colunas | migration |
@@ -177,134 +177,134 @@
 | `kit_component_variant_skus` | Identidade materializada de cada componente POR VARIANTE de kit. component_sku = SKU_variante-slot (ex.: 18891A-PRE-K1).  | 16 colunas | migration |
 | `kit_ficha_session_log` | Auditoria da sessao de decomposicao/criacao de kits via ficha tecnica XBZ (medidas reais buscadas do Postgres). Base para revert reversivel. | 8 colunas | migration |
 | `kit_quote_requests` | Idempotency ledger for authenticated Kit Maker quote submissions. | 5 colunas | migration |
-| `kit_save_requests` | _(sem COMMENT ON TABLE — significado não documentado)_ | 4 colunas | migration |
+| `kit_save_requests` | Ledger de idempotência de salvamento de kits por request_id, registrando usuário, kit persistido e data da solicitação. | 4 colunas | migration |
 | `kit_share_tokens` | Migrado do Lovable em 2026-05-22 (Lote C). Tokens públicos de compartilhamento de kits customizados. | 11 colunas | migration |
 | `kit_templates` | Templates curados de kits. Vendedor clona via increment_kit_template_usage RPC. Schema extraído de useKitTemplates.ts. | 18 colunas | migration |
-| `kit_typical_dims` | _(sem COMMENT ON TABLE — significado não documentado)_ | 15 colunas | migration |
-| `kit_variants` | _(sem COMMENT ON TABLE — significado não documentado)_ | 11 colunas | migration |
+| `kit_typical_dims` | Dimensões e peso típicos por tipo de componente de kit, com intervalos de referência e notas para apoiar validação/enriquecimento; não são medidas confirmadas de um componente específico. | 15 colunas | migration |
+| `kit_variants` | Variações nomeadas de um kit mestre, com snapshots de caixa/itens/personalização, quantidade, preço e ordenação próprios. | 11 colunas | migration |
 | `login_attempts` | Tabela legada com 203 registros. auth_login_attempts e a versao mais nova (campo metadata adicional) mas esta vazia. Consolidacao pendente. | 9 colunas | migration |
 | `magazine_duplicate_requests` | RLS deny-all intencional (E19, 2026-09-16): RLS ligada, zero policies — só  | 8 colunas | migration |
-| `magazine_items` | _(sem COMMENT ON TABLE — significado não documentado)_ | 10 colunas | migration |
-| `magazine_public_reactions` | _(sem COMMENT ON TABLE — significado não documentado)_ | 8 colunas | migration |
-| `magazine_public_view_events` | _(sem COMMENT ON TABLE — significado não documentado)_ | 9 colunas | migration |
-| `magazine_public_view_events_2026_07` | _(sem COMMENT ON TABLE — significado não documentado)_ | 9 colunas | migration |
-| `magazine_public_view_events_2026_08` | _(sem COMMENT ON TABLE — significado não documentado)_ | 9 colunas | migration |
-| `magazine_public_view_events_2026_09` | _(sem COMMENT ON TABLE — significado não documentado)_ | 9 colunas | migration |
-| `magazine_public_view_events_2026_10` | _(sem COMMENT ON TABLE — significado não documentado)_ | 9 colunas | migration |
-| `magazine_public_view_events_2026_11` | _(sem COMMENT ON TABLE — significado não documentado)_ | 9 colunas | migration |
-| `magazine_public_view_events_2026_12` | _(sem COMMENT ON TABLE — significado não documentado)_ | 9 colunas | migration |
-| `magazine_public_view_events_2027_01` | _(sem COMMENT ON TABLE — significado não documentado)_ | 9 colunas | migration |
-| `magazine_public_view_events_2027_02` | _(sem COMMENT ON TABLE — significado não documentado)_ | 9 colunas | migration |
-| `magazine_public_view_events_default` | _(sem COMMENT ON TABLE — significado não documentado)_ | 9 colunas | migration |
-| `magazine_reader_state` | _(sem COMMENT ON TABLE — significado não documentado)_ | 8 colunas | migration |
-| `magazine_templates` | _(sem COMMENT ON TABLE — significado não documentado)_ | 10 colunas | migration |
-| `magazine_templates_catalog` | _(sem COMMENT ON TABLE — significado não documentado)_ | 1 colunas | migration |
+| `magazine_items` | Produtos incluídos em uma revista, com posição/página, variante de cor opcional, snapshot do produto e overrides específicos da publicação. | 10 colunas | migration |
+| `magazine_public_reactions` | Reações de visitantes a uma revista pública, página ou item, identificadas por fingerprint e hash de IP para reduzir duplicidade e exposição de dados. | 8 colunas | migration |
+| `magazine_public_view_events` | Eventos particionados de visualização de revistas públicas. Guarda hashes de token/IP/agente, página, sessão e referer host; usar a tabela pai para consultas unificadas. | 9 colunas | migration |
+| `magazine_public_view_events_2026_07` | Partição mensal de 2026-07 da tabela public.magazine_public_view_events. Os eventos armazenam hashes e metadados de visualização pública; consultar a tabela pai para buscas unificadas. | 9 colunas | migration |
+| `magazine_public_view_events_2026_08` | Partição mensal de 2026-08 da tabela public.magazine_public_view_events. Os eventos armazenam hashes e metadados de visualização pública; consultar a tabela pai para buscas unificadas. | 9 colunas | migration |
+| `magazine_public_view_events_2026_09` | Partição mensal de 2026-09 da tabela public.magazine_public_view_events. Os eventos armazenam hashes e metadados de visualização pública; consultar a tabela pai para buscas unificadas. | 9 colunas | migration |
+| `magazine_public_view_events_2026_10` | Partição mensal de 2026-10 da tabela public.magazine_public_view_events. Os eventos armazenam hashes e metadados de visualização pública; consultar a tabela pai para buscas unificadas. | 9 colunas | migration |
+| `magazine_public_view_events_2026_11` | Partição mensal de 2026-11 da tabela public.magazine_public_view_events. Os eventos armazenam hashes e metadados de visualização pública; consultar a tabela pai para buscas unificadas. | 9 colunas | migration |
+| `magazine_public_view_events_2026_12` | Partição mensal de 2026-12 da tabela public.magazine_public_view_events. Os eventos armazenam hashes e metadados de visualização pública; consultar a tabela pai para buscas unificadas. | 9 colunas | migration |
+| `magazine_public_view_events_2027_01` | Partição mensal de 2027-01 da tabela public.magazine_public_view_events. Os eventos armazenam hashes e metadados de visualização pública; consultar a tabela pai para buscas unificadas. | 9 colunas | migration |
+| `magazine_public_view_events_2027_02` | Partição mensal de 2027-02 da tabela public.magazine_public_view_events. Os eventos armazenam hashes e metadados de visualização pública; consultar a tabela pai para buscas unificadas. | 9 colunas | migration |
+| `magazine_public_view_events_default` | Partição DEFAULT da tabela public.magazine_public_view_events para datas fora das partições mensais existentes. | 9 colunas | migration |
+| `magazine_reader_state` | Estado de leitura de um visitante para uma revista compartilhada, associado ao hash do token e fingerprint; armazena última página e bookmarks sem guardar o token público em claro. | 8 colunas | migration |
+| `magazine_templates` | Templates personalizados de revista pertencentes a um usuário e opcionalmente compartilhados na organização; preserva branding e configurações de conteúdo. | 10 colunas | migration |
+| `magazine_templates_catalog` | Catálogo de templates de revista disponíveis, com família visual, quantidade de produtos por página e estado ativo. | 1 colunas | migration |
 | `magazine_view_rollup_watermark` | Singleton. Marca d'água do rollup de view_count. Garante exactly-once entre o cron horário e o nightly. | 2 colunas | migration |
-| `magazines` | _(sem COMMENT ON TABLE — significado não documentado)_ | 17 colunas | migration |
-| `magic_up_brand_kits` | _(sem COMMENT ON TABLE — significado não documentado)_ | 15 colunas | migration |
-| `magic_up_campaigns` | _(sem COMMENT ON TABLE — significado não documentado)_ | 15 colunas | migration |
-| `magic_up_comments` | _(sem COMMENT ON TABLE — significado não documentado)_ | 7 colunas | migration |
-| `magic_up_generations` | _(sem COMMENT ON TABLE — significado não documentado)_ | 10 colunas | migration |
-| `magic_up_public_shares` | _(sem COMMENT ON TABLE — significado não documentado)_ | 12 colunas | migration |
-| `magic_up_reactions` | _(sem COMMENT ON TABLE — significado não documentado)_ | 7 colunas | migration |
+| `magazines` | Cabeçalho de revistas/catálogos comerciais. Guarda proprietário/organização, branding, opções de conteúdo, template, publicação/arquivamento, token público e controle de edição concorrente. | 17 colunas | migration |
+| `magic_up_brand_kits` | Configurações de identidade de marca para campanhas Magic Up: logos, cores, tom, estilo e vocabulário obrigatório/proibido. | 15 colunas | migration |
+| `magic_up_campaigns` | Briefings de campanhas Magic Up por usuário/cliente, incluindo objetivo, canal, público, tom, CTA, ocasião e estado. | 15 colunas | migration |
+| `magic_up_comments` | Comentários de usuários sobre gerações Magic Up, com autoria de exibição e opção de visibilidade pública. | 7 colunas | migration |
+| `magic_up_generations` | Gerações de conteúdo/imagem Magic Up, com prompt, produto, canal, modelo, resultado, qualidade, status, tags e metadados. | 10 colunas | migration |
+| `magic_up_public_shares` | Compartilhamentos públicos tokenizados de gerações ou campanhas Magic Up, com validade, permissões e estado. | 12 colunas | migration |
+| `magic_up_reactions` | Reações de usuários a gerações Magic Up, com tipo de reação e metadados técnicos de origem. | 7 colunas | migration |
 | `markup_configurations` | Configurações de markup por nível hierárquico (SKU > Produto > Categoria > Fornecedor > Geral) | 13 colunas | migration |
-| `material_equivalences` | _(sem COMMENT ON TABLE — significado não documentado)_ | 11 colunas | migration |
+| `material_equivalences` | De-para entre um material recebido de fornecedor e o catálogo Promo de grupos, tipos ou variações. match_level indica o nível do mapeamento e match_quality/confidence_score registram sua qualidade. | 11 colunas | migration |
 | `material_groups` | Grupos de materiais para categorização (Metais, Plásticos, Tecidos, etc). Suporta multi-tenancy via organization_id. | 11 colunas | migration |
-| `material_types` | _(sem COMMENT ON TABLE — significado não documentado)_ | 11 colunas | migration |
-| `material_variations` | _(sem COMMENT ON TABLE — significado não documentado)_ | 11 colunas | migration |
-| `mcp_access_violations` | _(sem COMMENT ON TABLE — significado não documentado)_ | 11 colunas | migration |
-| `mcp_api_keys` | _(sem COMMENT ON TABLE — significado não documentado)_ | 13 colunas | migration |
+| `material_types` | Catálogo canônico de materiais, organizado por material_groups. Referenciado por relações de materiais de produtos e por componentes de kits. | 11 colunas | migration |
+| `material_variations` | Variações ou especificações de um tipo de material. type_id identifica o material-pai; specifications guarda propriedades estruturadas específicas da variação. | 11 colunas | migration |
+| `mcp_access_violations` | Eventos de violações de autorização MCP, com operação, origem, chave-alvo e contexto técnico para investigação. | 11 colunas | migration |
+| `mcp_api_keys` | Registro de chaves de API MCP com hash, prefixo, escopos, expiração, revogação e rotação. A chave secreta em si não deve ser armazenada nesta tabela nem compartilhada em logs. | 13 colunas | migration |
 | `mcp_full_grantors` | Whitelist explícita de admins autorizados a emitir/escalar chaves MCP com escopo "*" (Full Access). | 4 colunas | migration |
-| `mcp_key_auto_revocations` | _(sem COMMENT ON TABLE — significado não documentado)_ | 7 colunas | migration |
-| `mcp_kv` | _(sem COMMENT ON TABLE — significado não documentado)_ | 4 colunas | migration |
+| `mcp_key_auto_revocations` | Auditoria de revogações automáticas de chaves MCP, indicando chave, criador, origem e motivo da revogação. | 7 colunas | migration |
+| `mcp_kv` | Armazenamento key/value interno do MCP em JSONB, com timestamp de atualização e lock_until para coordenação temporária. | 4 colunas | migration |
 | `mcp_sessions` | Sessoes de portais externos usadas por MCPs (cookie + auto-refresh). | 6 colunas | migration |
-| `medallion_coverage_snapshots` | _(sem COMMENT ON TABLE — significado não documentado)_ | 13 colunas | migration |
-| `mockup_approval_links` | _(sem COMMENT ON TABLE — significado não documentado)_ | 11 colunas | migration |
-| `mockup_credit_transactions` | _(sem COMMENT ON TABLE — significado não documentado)_ | 12 colunas | migration |
-| `mockup_credits` | _(sem COMMENT ON TABLE — significado não documentado)_ | 13 colunas | migration |
-| `mockup_drafts` | _(sem COMMENT ON TABLE — significado não documentado)_ | 13 colunas | migration |
-| `mockup_generation_jobs` | _(sem COMMENT ON TABLE — significado não documentado)_ | 27 colunas | migration |
-| `mockup_prompt_configs` | _(sem COMMENT ON TABLE — significado não documentado)_ | 10 colunas | migration |
-| `mockup_prompt_history` | _(sem COMMENT ON TABLE — significado não documentado)_ | 10 colunas | migration |
-| `mockup_templates` | _(sem COMMENT ON TABLE — significado não documentado)_ | 14 colunas | migration |
-| `navigation_analytics` | _(sem COMMENT ON TABLE — significado não documentado)_ | 5 colunas | migration |
+| `medallion_coverage_snapshots` | Snapshots de cobertura de enriquecimento por fornecedor e camada Bronze/Silver/Gold, incluindo percentuais de atributos preenchidos para acompanhar a qualidade do pipeline. | 13 colunas | migration |
+| `mockup_approval_links` | Links tokenizados para revisão/aprovação de um job de mockup por cliente, com validade, limites de uso, acessos e decisão. | 11 colunas | migration |
+| `mockup_credit_transactions` | Livro-razão de créditos de mockup: concessões, cobranças, reembolsos e compras, com saldo antes/depois e referência opcional ao job/mockup. | 12 colunas | migration |
+| `mockup_credits` | Saldo e limites de créditos de geração de mockup por usuário, incluindo acumulados de ganhos, gastos e consumo por período. | 13 colunas | migration |
+| `mockup_drafts` | Estado salvo de um rascunho de mockup por usuário e draft_key, incluindo produto, cliente, técnica, áreas e dados de logo. | 13 colunas | migration |
+| `mockup_generation_jobs` | Solicitações em lote de geração de mockups. Guarda usuário, produto, técnica, parâmetros visuais, estado, contagens e custos estimados/reais do job. | 27 colunas | migration |
+| `mockup_prompt_configs` | Configurações versionadas de prompts de mockup por config_key, com modelo, técnica opcional e estado ativo. | 10 colunas | migration |
+| `mockup_prompt_history` | Histórico de alterações de prompts, preservando conteúdo anterior/novo, modelo, versão, autor e observações. | 10 colunas | migration |
+| `mockup_templates` | Modelos reutilizáveis de mockup por produto, com áreas, técnica padrão, cores e estado de publicação. | 14 colunas | migration |
+| `navigation_analytics` | Eventos de navegação registrados para análise de uso, com usuário opcional, tipo do evento, payload JSON e timestamp. | 5 colunas | migration |
 | `ncm_codes` | Tabela de referência NCM (Nomenclatura Comum do Mercosul) - códigos fiscais válidos com descrição e hierarquia | 18 colunas | migration |
-| `notebook_features` | _(sem COMMENT ON TABLE — significado não documentado)_ | 8 colunas | migration |
-| `notification_preferences` | _(sem COMMENT ON TABLE — significado não documentado)_ | 21 colunas | migration |
-| `notification_templates` | _(sem COMMENT ON TABLE — significado não documentado)_ | 9 colunas | migration |
-| `notifications` | _(sem COMMENT ON TABLE — significado não documentado)_ | 25 colunas | migration |
+| `notebook_features` | Catálogo de features e acessórios possíveis para cadernos; public.product_notebook_features associa as features confirmadas aos produtos. | 8 colunas | migration |
+| `notification_preferences` | Preferências de notificação por usuário para canais e categorias de eventos. | 21 colunas | migration |
+| `notification_templates` | Modelos reutilizáveis de notificações, identificados por code, com assunto, corpo e lista JSON de variáveis esperadas. is_active controla disponibilidade para envio. | 9 colunas | migration |
+| `notifications` | Notificações direcionadas a usuários, com conteúdo, prioridade, estado de leitura e dados auxiliares. | 25 colunas | migration |
 | `ops.pgss_history` | PLANO_DBA E40 — snapshot semanal de extensions.pg_stat_statements (filtrado a  | 8 colunas | migration |
 | `ops.table_size_history` | PLANO_DBA E30 — série histórica diária de pg_total_relation_size()/reltuples por  | 5 colunas | migration |
 | `ops.wraparound_monitor_log` | PLANO_DBA E33 — snapshot diário de risco de wraparound de XID/multixact,  | 8 colunas | migration |
-| `ops_grant_audit` | _(sem COMMENT ON TABLE — significado não documentado)_ | 5 colunas | migration |
+| `ops_grant_audit` | Auditoria resumida de alterações de grants operacionais, registrando assinatura da função, roles corrigidas, origem e instante da execução. | 5 colunas | migration |
 | `optimization_logs` | _(sem COMMENT ON TABLE — significado não documentado)_ | 3 colunas | migration |
-| `optimization_queue` | _(sem COMMENT ON TABLE — significado não documentado)_ | 14 colunas | migration |
-| `optimization_queue_runs` | _(sem COMMENT ON TABLE — significado não documentado)_ | 8 colunas | migration |
+| `optimization_queue` | Fila de propostas de otimização operacional, com prioridade, categoria, status, guardrail e resultado/erro da execução. | 14 colunas | migration |
+| `optimization_queue_runs` | Histórico de execuções de itens da optimization_queue, com status, guardrail, duração, executor e notas. | 8 colunas | migration |
 | `order_history` | _(sem COMMENT ON TABLE — significado não documentado)_ | 9 colunas | migration |
-| `order_item_personalizations` | _(sem COMMENT ON TABLE — significado não documentado)_ | 11 colunas | migration |
-| `order_items` | _(sem COMMENT ON TABLE — significado não documentado)_ | 11 colunas | migration |
-| `orders` | _(sem COMMENT ON TABLE — significado não documentado)_ | 24 colunas | migration |
-| `organization_members` | _(sem COMMENT ON TABLE — significado não documentado)_ | 2 colunas | migration |
-| `organizations` | _(sem COMMENT ON TABLE — significado não documentado)_ | 1 colunas | migration |
-| `outbound_webhooks` | _(sem COMMENT ON TABLE — significado não documentado)_ | 7 colunas | migration |
-| `ownership_audit_reports` | _(sem COMMENT ON TABLE — significado não documentado)_ | 10 colunas | migration |
-| `ownership_repair_logs` | _(sem COMMENT ON TABLE — significado não documentado)_ | 13 colunas | migration |
-| `packaging_compatibility_config` | _(sem COMMENT ON TABLE — significado não documentado)_ | 5 colunas | migration |
+| `order_item_personalizations` | Detalhes de personalização associados a uma linha de pedido: técnica, local, imagem/texto e ajuste de preço. order_item_id identifica a linha comercial. | 11 colunas | migration |
+| `order_items` | Linhas de produtos de um pedido. product_id é opcional e os campos de nome/SKU/descrição/imagem preservam um snapshot da linha; quote_item_id pode apontar logicamente para a linha de orçamento de origem. Valores de linha não substituem frete/impostos do cabeçalho. | 11 colunas | migration |
+| `orders` | Pedidos comerciais confirmados, com estado operacional, pagamento, cliente, vendedor, endereço e totais. Os itens ficam em public.order_items. Campos quote_id e conversão são referências lógicas quando não houver FK declarada; comentários de coluna descrevem as convenções monetárias e de entrega. | 24 colunas | migration |
+| `organization_members` | Registros de participação de usuários em organizações, incluindo papel, convite e data de entrada. | 2 colunas | migration |
+| `organizations` | Organizações cadastradas na aplicação. Agrupa usuários e registros de negócio que pertencem a uma mesma organização. | 1 colunas | migration |
+| `outbound_webhooks` | Configuração de webhooks de saída: destino, eventos inscritos, referência a segredo, versão do contrato, retry e estado operacional. O segredo é referenciado, não deve ser embutido na URL, descrição ou comentário. | 7 colunas | migration |
+| `ownership_audit_reports` | Relatórios de auditoria de propriedade de dados, com contagens de problemas de owner/RLS, detalhes e cobertura por tabela. | 10 colunas | migration |
+| `ownership_repair_logs` | Trilha de ações de correção de registros sem proprietário válido, com tipo de problema, ação, linhas afetadas, modo dry-run, executor e erro. | 13 colunas | migration |
+| `packaging_compatibility_config` | Parâmetros de configuração usados pelo algoritmo de descoberta/avaliação de compatibilidade de embalagens, armazenados como chave/valor. | 5 colunas | migration |
 | `packaging_types` | Tipos/categorias de embalagem (caixa papelão, estojo, etc.) | 10 colunas | migration |
 | `packagings` | Cadastro de embalagens com dimensões e características | 22 colunas | migration |
-| `paper_colors` | _(sem COMMENT ON TABLE — significado não documentado)_ | 8 colunas | migration |
+| `paper_colors` | Vocabulário de cores do papel interno de cadernos e materiais gráficos. | 8 colunas | migration |
 | `paper_formats` | Formatos ISO/B de papel para cadernos e blocos | 10 colunas | migration |
 | `paper_rulings` | Tipo de pauta do papel interno do caderno | 8 colunas | migration |
 | `paper_weights` | Gramatura em g/m² do papel dos cadernos | 8 colunas | migration |
 | `password_reset_requests` | Migrado do Lovable em 2026-05-22 (Lote A). Reset de senha aprovado manualmente. | 8 colunas | migration |
-| `permissions` | _(sem COMMENT ON TABLE — significado não documentado)_ | 7 colunas | migration |
+| `permissions` | Catálogo de permissões disponíveis na aplicação. Cada permissão possui um código, uma categoria e rótulos para exibição e documentação. | 7 colunas | migration |
 | `personalization_locations` | _(sem COMMENT ON TABLE — significado não documentado)_ | 6 colunas | migration |
 | `personalization_simulations` | Simulações de personalização salvas por vendedor. Consumida por src/hooks/simulation/useSimulation.ts. | 13 colunas | migration |
 | `personalization_sizes` | _(sem COMMENT ON TABLE — significado não documentado)_ | 10 colunas | migration |
 | `personalization_technique_mappings` | Ponte entre personalization_techniques (geração de mockup) e tecnicas_gravacao (precificação).  | 7 colunas | migration |
-| `personalization_techniques` | _(sem COMMENT ON TABLE — significado não documentado)_ | 11 colunas | migration |
-| `pipeline_control` | _(sem COMMENT ON TABLE — significado não documentado)_ | 4 colunas | migration |
-| `pipeline_health_log` | _(sem COMMENT ON TABLE — significado não documentado)_ | 5 colunas | migration |
+| `personalization_techniques` | Catálogo de técnicas de personalização usadas na geração de mockups e configuração de áreas. O mapeamento para códigos/tabelas de preço é mantido separadamente em personalization_technique_mappings. | 11 colunas | migration |
+| `pipeline_control` | Chaves de controle operacional que permitem habilitar/desabilitar partes do pipeline, com nota e timestamp de alteração. | 4 colunas | migration |
+| `pipeline_health_log` | Snapshots de saúde do pipeline com contagens de resultados críticos, avisos e verificações aprovadas, além do JSON detalhado. | 5 colunas | migration |
 | `pipeline_known_issues` | Registro centralizado de bugs, gaps e anomalias conhecidos no pipeline de dados. Serve como rastreabilidade para auditoria e priorização de correções. | 16 colunas | migration |
-| `pipeline_run_log` | _(sem COMMENT ON TABLE — significado não documentado)_ | 9 colunas | migration |
+| `pipeline_run_log` | Histórico de execuções de jobs do pipeline, com início/fim, duração, estado, tamanho do lote, resultado JSON e erro. | 9 colunas | migration |
 | `point_transactions` | _(sem COMMENT ON TABLE — significado não documentado)_ | 8 colunas | migration |
 | `price_history` | Histórico de todas as alterações de preço/custo para auditoria | 5 colunas | migration |
 | `print_area_techniques` | FONTE UNICA de verdade para áreas de gravação por produto. Dados da técnica (nome, código, max_cores, custo_setup) vêm via JOIN com tabela_preco_gravacao_oficial usando tabela_preco_id. Campos como technique_name e setup_cost NÃO são armazenados aqui - são resolvidos via FK. | 17 colunas | migration |
-| `prod_audit.category_keywords` | _(sem COMMENT ON TABLE — significado não documentado)_ | 13 colunas | migration |
-| `prod_audit.category_suggestions` | _(sem COMMENT ON TABLE — significado não documentado)_ | 13 colunas | migration |
-| `prod_audit.classification_rules` | _(sem COMMENT ON TABLE — significado não documentado)_ | 10 colunas | migration |
-| `prod_audit.product_features` | _(sem COMMENT ON TABLE — significado não documentado)_ | 14 colunas | migration |
-| `prod_audit.test_results` | _(sem COMMENT ON TABLE — significado não documentado)_ | 11 colunas | migration |
+| `prod_audit.category_keywords` | Projeção de auditoria de categorias e palavras-chave normalizadas. Mantém tokens e flags de segmentos (cliente, material, ecológico e kit) derivados da hierarquia de public.categories para apoiar análise de classificação; refreshed_at indica a atualização da projeção. | 13 colunas | migration |
+| `prod_audit.category_suggestions` | Histórico de sugestões de categoria produzidas por regras de auditoria para produtos. Guarda produto, categoria sugerida, caminho, categorias atuais, confiança, motivo e decisão reviewed/accepted; aceitar uma sugestão não deve ser presumido como atualização automática do catálogo. | 13 colunas | migration |
+| `prod_audit.classification_rules` | Regras configuráveis que geram sugestões de classificação de produtos. Cada regra combina condições textuais do produto com critérios de categoria-alvo, nível de confiança e estado active; revisar regras antes de alterar a classificação de produção. | 10 colunas | migration |
+| `prod_audit.product_features` | Projeção de auditoria de sinais textuais por produto. Armazena tokens, materiais, cores, flags de características e categorias atuais derivados do catálogo para análise/classificação; não substitui public.products nem suas tabelas relacionais canônicas. | 14 colunas | migration |
+| `prod_audit.test_results` | Resultados de testes de auditoria de produção. Cada linha representa um teste de um lote, com categoria, severidade, resultado, valores esperados/observados, detalhes e duração; serve como evidência de validação, não como dado operacional do catálogo. | 11 colunas | migration |
 | `product_ai_content` | [fix_version:satellite_ai_20260627] Satélite 1:1 de conteúdo gerado por AI.  Colunas: ai_title, ai_description, ai_summary, ai_version, ai_model, ai_generated_at.  Colunas extras para roadmap: key_benefits[], use_cases[], ai_keywords[].  Sincronizado por trg_sync_product_ai_content. | 13 colunas | migration |
 | `product_ai_history` | Histórico de todas as gerações AI por produto. Inclui: ai_title, ai_description, ai_summary, schema_json, tokens, tempo, provedor. | 18 colunas | migration |
 | `product_attributes` | Atributos estruturados por produto Gold — material, capacidade, BPA free, etc.  | 16 colunas | migration |
 | `product_badge_definitions` | Registro canonico de governanca das badges de PRODUTOS (nome, cores, icones, onde/como usar, regra de negocio, prioridade, config). Aditivo: nao altera o calculo/render existente. fix_version=pbd_v1_20260627. ANTI-REGRESSAO: nao remover RLS; manter SET search_path nas fns fn_pbd_*; badge_key e imutavel; badges is_system nao sao deletaveis. | 28 colunas | migration |
-| `product_category_assignments` | Bug RLS corrigido na Etapa 6: removida product_category_assignments_public_read que anulava _select_org. | 6 colunas | migration |
+| `product_category_assignments` | Relação canônica N:N entre produtos e categorias. Cada linha atribui um produto a uma categoria; is_primary marca a categoria principal e display_order controla a ordenação. É a fonte canônica para vínculos múltiplos, distinta dos campos legados em products. | 6 colunas | migration |
 | `product_commemorative_dates` | Vincula produtos às datas comemorativas. Pode ser herdado da categoria ou manual. | 12 colunas | migration |
 | `product_comparisons` | _(sem COMMENT ON TABLE — significado não documentado)_ | 6 colunas | migration |
 | `product_component_location_techniques` | Personalization techniques available for each product-component location. | 9 colunas | migration |
-| `product_component_locations` | _(sem COMMENT ON TABLE — significado não documentado)_ | 12 colunas | migration |
-| `product_components` | _(sem COMMENT ON TABLE — significado não documentado)_ | 9 colunas | migration |
-| `product_customization_prices` | _(sem COMMENT ON TABLE — significado não documentado)_ | 15 colunas | migration |
+| `product_component_locations` | Locais de personalização associados a um componente específico de produto, com limites de área/dimensão, imagem de referência e estado ativo. | 12 colunas | migration |
+| `product_components` | Componentes de personalização específicos de produtos, com código, nome, estado e ordenação. product_id é texto e não possui FK declarada no schema atual. | 9 colunas | migration |
+| `product_customization_prices` | Preços de personalização por produto, serviço, tabela, componente e local. min_qty e price são arrays pareados por faixa; currency indica a moeda dos valores. | 15 colunas | migration |
 | `product_deactivation_requests` | Solicitações de desativação de produtos — requerem aprovação de usuário credenciado (admin+). Regra: produto NUNCA é desativado automaticamente pelo pipeline. | 22 colunas | migration |
-| `product_deactivation_tokens` | Tokens de autorização one-shot para desativação de produtos.  PROPÓSITO: Mecanismo de segurança que garante a regra de negócio central: "Nenhum produto é desativado sem aprovação explícita de admin+".  FLUXO COMPLETO:   1. Admin aprova via fn_approve_product_deactivation()      → cria token { product_id, request_id, authorized_by, used=false, expires_at }   2. A função executa UPDATE products SET is_active=false   3. Trigger fn_block_unauthorized_product_deactivation() intercepta o UPDATE      → verifica se existe token válido (used=false AND expires_at > now())      → SIM: permite desativação + marca used=true      → NÃO: reverte is_active e bloqueia silenciosamente   4. Token é deletado imediatamente após uso (auditoria fica nos registros used=true)  FUNÇÕES DEPENDENTES:   - fn_approve_product_deactivation()             → cria token + dispara UPDATE   - fn_block_unauthorized_product_deactivation()  → trigger BEFORE UPDATE/INSERT em products   - soft_delete_product()                         → path de soft delete, também cria token one-shot  CONSTRAINT DE INTEGRIDADE:   - FK fk_auth_product_cascade: product_id → products.id (CASCADE)     → token só pode ser criado para produtos existentes     → se o produto for deletado, o token é removido em cascata  CAMPOS:   - product_id    → produto a ser desativado (FK → products.id)   - request_id    → FK product_deactivation_requests (rastreabilidade)   - authorized_by → UUID do admin que aprovou   - authorized_at → criação do token   - expires_at    → TTL curto (token não reutilizável após expirar)   - used          → true após consumo (linha mantida como auditoria)  HISTÓRICO: 397 registros de Jun/2026 = desativações aprovadas e executadas (todos used=true). RENOMEADA em 2026-06-15: era _deactivation_auth (prefixo _ era enganoso — tabela é ativa e crítica). | 7 colunas | migration |
+| `product_deactivation_tokens` | Tokens de autorização one-shot para desativação de produtos. Protege a regra: nenhum produto é desativado sem aprovação explícita de admin+.  FLUXO: fn_approve_product_deactivation() cria token curto para product_id/request_id/authorized_by; o trigger fn_block_unauthorized_product_deactivation() valida token não usado e não expirado durante a desativação e o consome. Sem token válido, a desativação é revertida/bloqueada. soft_delete_product() também usa este mecanismo.  INTEGRIDADE: product_id referencia products.id com cascade; request_id referencia a solicitação de aprovação. Campos de autorização e validade formam a trilha técnica do consumo.  Histórico documentado em 2026-06: tokens consumidos de desativações aprovadas. Renomeada em 2026-06-15 de _deactivation_auth para deixar claro que é tabela ativa e crítica. Não remover nem contornar o trigger de proteção. | 7 colunas | migration |
 | `product_faqs` | Perguntas frequentes para SEO (FAQ Schema) e citação por IAs. Podem ser por produto, categoria ou gerais. | 17 colunas | migration |
 | `product_fiscal` | [fix_version:satellite_fiscal_20260627] Satélite 1:1 de dados fiscais/tributários.  Colunas migradas de products: ncm_id, ncm_code, ipi_rate, tax_reference_state.  Colunas novas (pipeline futuro): ean, gtin, warranty_months, cst_icms, cest.  Sincronizado por trg_sync_product_fiscal. | 13 colunas | migration |
 | `product_group_components` | Product-group component templates inherited by products in the group. | 10 colunas | migration |
 | `product_group_location_techniques` | Personalization techniques available for each product-group location. | 8 colunas | migration |
 | `product_group_locations` | Product-group personalization locations inherited by group products. | 13 colunas | migration |
-| `product_group_members` | _(sem COMMENT ON TABLE — significado não documentado)_ | 6 colunas | migration |
-| `product_groups` | _(sem COMMENT ON TABLE — significado não documentado)_ | 7 colunas | migration |
+| `product_group_members` | Associação de produtos a product_groups, com flag use_group_rules para indicar se o produto herda as regras do grupo. | 6 colunas | migration |
+| `product_groups` | Grupos de produtos que compartilham templates de componentes e regras de personalização; group_code identifica o grupo e is_active controla seu uso. | 7 colunas | migration |
 | `product_images` | Tabela-fato de mídia do catálogo (camada Gold). 1 linha = 1 imagem física de produto hospedada no Cloudflare Images. É a fonte da verdade de imagens; os campos desnormalizados em products (images, primary_image_url, og_image_url, set_image_url, primary_image_fallback_url) são MANTIDOS pelos triggers desta tabela. RLS ativo (leitura pública só de ativas; escrita restrita a org owner/admin). Fornecedores ativos: SPOT, XBZ, SOMARCAS, ASIA. 88BRINDES: piloto descontinuado (14 imagens inativas, produto Chapéu ecoflex arquivado). | 7 colunas | migration |
-| `product_included_packagings` | Embalagens ORIGINAIS que já vêm com o produto. SEM SKU próprio, SEM preço separado. | 28 colunas | migration |
+| `product_included_packagings` | Embalagens ORIGINAIS que já vêm com o produto. SEM SKU próprio, SEM preço separado. O registro pode guardar material, cor, dimensões, possibilidade de personalização, fornecedor e origem de ingestão. | 28 colunas | migration |
 | `product_kit_components` | Componentes de kits-produtos (catálogo). RLS via organization membership. Bug corrigido na Etapa 4: removida policy public_read que sobrepunha restrição. | 2 colunas | migration |
 | `product_materials` | Tabela de relacionamento N:N entre produtos e materiais. Permite especificar parte do produto (corpo, tampa) e percentual de cada material. | 13 colunas | migration |
 | `product_notebook_features` | Features e acessórios dos cadernos (N:N). Cada linha = 1 feature confirmada para 1 produto. | 6 colunas | migration |
 | `product_notebook_specs` | Especificações técnicas de produtos de material gráfico (cadernos, blocos, agendas). 1 linha por produto. FK → products (Gold). | 18 colunas | migration |
 | `product_novelties` | Controla o ciclo de vida do selo "NOVO" nos produtos.  | 14 colunas | migration |
 | `product_packaging` | [ARQ 2026-06-26] Fonte SILVER de embalagem. LIDA por fn_promote_packaging_to_gold para  | 27 colunas | migration |
-| `product_packaging_compatibility` | Compatibilidade entre produtos e embalagens vendidas SEPARADAMENTE (COM SKU próprio) | 26 colunas | migration |
-| `product_packagings` | Relação entre produtos e embalagens disponíveis | 11 colunas | migration |
+| `product_packaging_compatibility` | Compatibilidade entre produtos e embalagens vendidas SEPARADAMENTE (COM SKU próprio). A linha registra o par produto/embalagem, folgas dimensionais, avaliação de encaixe, recomendação, verificação e notas. | 26 colunas | migration |
+| `product_packagings` | Relação entre produtos e embalagens disponíveis. Cada linha associa um produto do catálogo a uma embalagem e registra a natureza da relação (included, optional, required, default), preço adicional, moeda e quantidade mínima. | 11 colunas | migration |
 | `product_physical` | [ARQ 2026-06-26] Satélite physical (buffer WRITE-ONLY; não lido por view/função/FK).  | 21 colunas | migration |
 | `product_price_freshness_overrides` | Override local da janela de validade de preço por produto (30/60/90 dias). Sobrescreve o valor padrão de 60 dias e tem precedência sobre qualquer valor que venha a ser exposto pelo BD externo no futuro. | 6 colunas | migration |
 | … +524 linhas — lista completa em `context.json` | | | |
@@ -715,7 +715,7 @@
 - `quote_approval_tokens.status` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.
 - `kit_share_tokens.status` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.
 - `_deprecated_silver_images_queue_20260606.img_status` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.
-- 268/498 tabelas sem `COMMENT ON TABLE` — o significado de negócio não está no schema: `optimization_queue`, `quotes`, `magazines`, `material_types`, `quotes_inbound`, `webhook_inbound_dedupe`, `webhook_inbound_log`, `magazine_items`, `magazine_reader_state`, `magazine_templates`, `admin_audit_log_y2025m12`, `admin_audit_log_y2026m01` …
+- 65/498 tabelas sem `COMMENT ON TABLE` — o significado de negócio não está no schema: `quotes_inbound`, `webhook_inbound_dedupe`, `webhook_inbound_log`, `admin_audit_log_y2025m12`, `admin_audit_log_y2026m01`, `admin_audit_log_y2026m02`, `admin_audit_log_y2026m03`, `admin_audit_log_y2026m04`, `admin_audit_log_y2026m05`, `admin_audit_log_y2026m06`, `app_vitals`, `audit_logs` …
 - Há tabelas usadas no código sem migration no repo — o schema real pode ter sido alterado pelo painel.
 
 ## Regras manuais presentes
