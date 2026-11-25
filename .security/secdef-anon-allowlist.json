@@ -8,7 +8,7 @@
     },
     {
       "fn": "public.fn_global_search(p_term text, p_limit integer, p_types text[])",
-      "reason": "SECDEF necessário: agrega múltiplas tabelas com regras de visibilidade que anon não deveria decidir sozinho via RLS direta. anon precisa de EXECUTE: é a busca global do catálogo público, sem autenticação. search_path fixo; parâmetros tipados. RISCO CONHECIDO, não bloqueante: p_limit não tem clamp superior no corpo da função (diferente de fn_super_filtro) — follow-up recomendado em E17 (2026-09-16) para adicionar LEAST(p_limit, 100) numa migration futura; não crítico hoje porque expõe só catálogo público, não dado sensível."
+      "reason": "SECDEF necessário: agrega múltiplas tabelas com regras de visibilidade que anon não deveria decidir sozinho via RLS direta. anon precisa de EXECUTE: é a busca global do catálogo público, sem autenticação. search_path fixo; parâmetros tipados. Clamp confirmado no corpo em 2026-11-25: v_lim_each := GREATEST(1, LEAST(p_limit, 100) / GREATEST(array_length(p_types, 1), 1)) — o follow-up de E17 (2026-09-16) está atendido. A branch de quotes só executa com auth.uid() IS NOT NULL, então anon não recebe dado de orçamento."
     },
     {
       "fn": "public.fn_product_active_for_rls(p_id uuid)",
