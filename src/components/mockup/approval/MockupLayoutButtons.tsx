@@ -316,6 +316,7 @@ export function MockupLayoutButtons({
             <span className="min-w-[8.5rem] flex-1">
               <Button
                 size="sm"
+                data-testid="mockup-generate-button"
                 onClick={handleGenerateMockup}
                 disabled={
                   !activeArea?.logoPreview || !!isGeneratingMockup || !!generationBlockedReason

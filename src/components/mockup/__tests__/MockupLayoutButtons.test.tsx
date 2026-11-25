@@ -130,6 +130,16 @@ describe('MockupLayoutButtons — Gerar Mockup / Gerar documento', () => {
       expect(btn(name).textContent).not.toMatch(/\bIA\b/);
     }
   });
+
+  // Contrato pedido por testes/e2e/mockup-regressions.spec.ts, que procurava este testid e
+  // nunca rodou (Playwright só coleta e2e/). Aqui o contrato é verificado de verdade.
+  it('expoe data-testid="mockup-generate-button" no CTA de geração', async () => {
+    const { onGenerateMockup } = setup();
+    const cta = screen.getByTestId('mockup-generate-button');
+    expect(cta).toBe(btn(/Gerar Mockup/));
+    fireEvent.click(cta);
+    await waitFor(() => expect(onGenerateMockup).toHaveBeenCalledTimes(1));
+  });
 });
 
 describe('Página do gerador — botões no mobile', () => {
@@ -137,7 +147,10 @@ describe('Página do gerador — botões no mobile', () => {
   const HIDES_ON_MOBILE = /(^|[\s"])(hidden|invisible|sr-only)([\s"]|$)/;
 
   it('MockupGenerator injeta os botões no cabeçalho do LogoPositionEditor sem wrapper responsivo', () => {
-    const src = readFileSync(resolve(__dirname, '../../../pages/mockups/MockupGenerator.tsx'), 'utf8');
+    const src = readFileSync(
+      resolve(__dirname, '../../../pages/mockups/MockupGenerator.tsx'),
+      'utf8',
+    );
     const m = /headerActions=\{\s*<MockupLayoutButtons\b/.exec(src);
     expect(m).not.toBeNull();
     // nenhuma das divs que envolvem o editor na página esconde no mobile

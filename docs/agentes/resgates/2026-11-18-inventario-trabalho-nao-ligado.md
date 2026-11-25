@@ -123,9 +123,11 @@ Obsoletos comprovados nesse conjunto: os 7 testes de `external-db-bridge/`
 - Medição de 2026-11-18: rodando a suíte **com** `tests/e2e/**` incluído, o total
   vai a 1.737 arquivos / 30.716 testes com 14 falhas — ou seja, a grande maioria
   desses órfãos passa e pode ser coletada.
-- `tests/e2e/mockup-regressions.spec.ts:15` procura `data-testid="mockup-generate-button"`,
-  que **não existe** no CTA vivo (`src/components/mockup/approval/MockupLayoutButtons.tsx:308-325`):
-  o spec é falso-verde duplo — não roda, e se rodasse não acharia o botão.
+- `tests/e2e/mockup-regressions.spec.ts:15` procurava `data-testid="mockup-generate-button"`,
+  que **não existia** no CTA vivo (`src/components/mockup/approval/MockupLayoutButtons.tsx:308-325`):
+  falso-verde duplo — não rodava, e se rodasse não acharia o botão.
+  **RESOLVIDO em 25/11/2026**: o testid passou a existir no CTA e o contrato virou caso real em
+  `src/components/mockup/__tests__/MockupLayoutButtons.test.tsx`; o `.spec.ts` órfão foi removido.
 
 ---
 
