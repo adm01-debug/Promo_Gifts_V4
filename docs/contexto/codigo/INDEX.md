@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e de hora em hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `020fab799bf6c44007c069709478cf003e13ef04` (2026-11-25T09:28:55-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e de hora em hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `2fbd19fd1a856959c10f269fcbac7c67d75ecf86` (2026-11-25T09:55:48-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -599,7 +599,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - possiveis_segredos_no_codigo: 7 — ex.: scripts/ai-context/cenarios.mjs:102, src/components/admin/connections/__tests__/ConnectionSecurity.unit.test.tsx:9, src/integrations/supabase/client.ts:27
 
 ## Grafo de código (graphify)
-- 51001 nós · 86481 arestas · 2915 comunidades · grafo do commit `020fab79`
+- 51001 nós · 86481 arestas · 2915 comunidades · grafo do commit `2fbd19fd`
 - comunidades maiores: vitest (977), ref_components (771), ref_integrations (601), ref_node_child_process (525), @tanstack/react-query (441), ref_hooks (434), react-router-dom (403), sonner (359), react (342), ref_types (341), ref_utils (325), cors.ts (319)
 - símbolos mais chamados: gotoAndSettle() (e2e/helpers/nav.ts), re (?), json (?), q() (scripts/supabase_snapshot/snapshot.py), analyze() (tests/scripts/test_personalization_artifact_diagnostics.py), outer() (tests/scripts/test_personalization_artifact_diagnostics.py), useExternalDatabase() (recovery/src-legacy/src/hooks/useExternalDatabase.ts), concludeCheck() (scripts/check-result-contract.mjs), querySupabaseReadOnly() (scripts/supabase-read-only-query.mjs), loginAs() (e2e/helpers/auth.ts), inner() (tests/scripts/test_personalization_artifact_diagnostics.py), excluded_sql() (scripts/supabase_snapshot/snapshot.py)
 - consulta local: `graphify query "<pergunta>"`, `graphify path "<A>" "<B>"`, `graphify explain "<X>"`
@@ -611,8 +611,8 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - package-lock.json (19)
 - CHANGELOG.md (14)
 - docs/coordenacao/conflitos-semanticos.md (10)
+- .github/workflows/deploy-gates.yml (9)
 - docs/agentes/resgates/2026-11-16-auditoria-branches.md (9)
-- .github/workflows/deploy-gates.yml (8)
 - src/lib/freight/index.ts (8)
 - src/pages/quotes/QuoteBuilderPage.tsx (8)
 - audit/supabase-reference-catalog.temporary.json (6)
@@ -1198,6 +1198,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - CHANGELOG topo: [1.19.0](https://github.com/adm01-debug/Promo_Gifts_V4/compare/gifts-store-v1.18.0...gifts-store-v1.19.0) (2026-11-22)
 
 ## Últimos commits
+- 2026-11-25 `2fbd19f` chore(ci): bump actions/dependency-review-action para v5.0.1 (#4069)
 - 2026-11-25 `020fab7` chore(deps): bump do grupo production-minor-patch (10 pacotes) sobre a main atual (#4067)
 - 2026-11-25 `a7d3044` chore: remove da baseline as 13 tabelas cujo grant anon foi revogado (#4075)
 - 2026-11-25 `e557288` docs(migrations-log): recibo E15 — aplicação de 20261125120000 (#4073)
@@ -1212,7 +1213,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-25 `ddd8488` feat(security): gate enxerga SELECT de anon em tabela, não só view (#4059)
 - 2026-11-24 `36d409a` chore: dossie de quote_comments passa a refletir a feature reativada (#3944) (#4062)
 - 2026-11-24 `20eb648` docs(audit): audita as 23 PRs de agente fechadas sem merge (#4058)
-- 2026-11-24 `a66bde9` docs(qa): mede o grant de tabela ao anon e registra na etapa 008 (#4057)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

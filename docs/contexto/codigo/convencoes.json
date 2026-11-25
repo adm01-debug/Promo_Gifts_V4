@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "chore(ci): bump actions/dependency-review-action para v5.0.1 (#4069)",
    "chore(deps): bump do grupo production-minor-patch (10 pacotes) sobre a main atual (#4067)",
    "chore: remove da baseline as 13 tabelas cujo grant anon foi revogado (#4075)",
    "docs(migrations-log): recibo E15 — aplicação de 20261125120000 (#4073)",
-   "fix(db): tripwire da 20261125120000 declara pg_temp no search_path (E066) (#4070)",
-   "chore(deps): bump @hookform/resolvers de 5.9.1 para 7.0.8 (#4068)"
+   "fix(db): tripwire da 20261125120000 declara pg_temp no search_path (E066) (#4070)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",

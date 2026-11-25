@@ -1,9 +1,9 @@
 {
  "meta": {
-  "sha": "020fab799bf6c44007c069709478cf003e13ef04",
+  "sha": "2fbd19fd1a856959c10f269fcbac7c67d75ecf86",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-25 12:34 UTC",
+  "generated_at": "2026-11-25 12:57 UTC",
   "files_total": 11200,
   "code_files": 9188,
   "code_lines": 1304070
@@ -564046,10 +564046,19 @@
   }
  },
  "git": {
-  "sha": "020fab799bf6c44007c069709478cf003e13ef04",
+  "sha": "2fbd19fd1a856959c10f269fcbac7c67d75ecf86",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "2fbd19f",
+    "date": "2026-11-25",
+    "author": "adm01-debug",
+    "subject": "chore(ci): bump actions/dependency-review-action para v5.0.1 (#4069)",
+    "files": [
+     ".github/workflows/deploy-gates.yml"
+    ]
+   },
    {
     "sha": "020fab7",
     "date": "2026-11-25",
@@ -564354,15 +564363,6 @@
      "docs/qa/05-PROGRESSO.md",
      "docs/qa/evidencia-compras-views.md"
     ]
-   },
-   {
-    "sha": "cdf7e3b",
-    "date": "2026-11-24",
-    "author": "adm01-debug",
-    "subject": "chore: recibo de aplicacao - 20261124140000 (E15) e status aplicada das duas de 24/11 (#4043)",
-    "files": [
-     "supabase/MIGRATIONS_SYNC_LOG.md"
-    ]
    }
   ],
   "hot_files": [
@@ -564372,7 +564372,7 @@
    ],
    [
     "supabase/MIGRATIONS_SYNC_LOG.md",
-    9
+    8
    ],
    [
     ".security/anon-tables-baseline.json",
@@ -564385,6 +564385,10 @@
    [
     "docs/agentes/resgates/2026-11-24-auditoria-branches-restantes.md",
     3
+   ],
+   [
+    ".github/workflows/deploy-gates.yml",
+    2
    ],
    [
     "package-lock.json",
@@ -564440,10 +564444,6 @@
    ],
    [
     "docs/agentes/resgates/2026-11-18-recibo-adjudicacao.md",
-    1
-   ],
-   [
-    "src/components/mockup/__tests__/MockupLayoutButtons.test.tsx",
     1
    ]
   ]
