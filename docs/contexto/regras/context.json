@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "06894b0d04ec2c1e00a8a7fd728530f9ad742b52",
+  "sha": "0792fac96b007e5d545af7710af73f342466eaf2",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-25 23:48 UTC",
-  "files_total": 11213,
-  "code_files": 9199,
-  "code_lines": 1305251
+  "generated_at": "2026-11-25 23:56 UTC",
+  "files_total": 11217,
+  "code_files": 9202,
+  "code_lines": 1305275
  },
  "version": "1.3.2",
- "facts_hash": "e0044ba67989a7e7",
+ "facts_hash": "7ae16a43a354c056",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -1130,7 +1130,7 @@
   ],
   "package_manager": "npm",
   "languages": {
-   ".sql": 3519,
+   ".sql": 3522,
    ".ts": 3180,
    ".tsx": 2026,
    ".mjs": 456,
@@ -42242,183 +42242,6 @@
     "constraints": [],
     "src": "supabase/migrations/20260709164214_fix_color_swatches_xbz_to_cf_urls_2026_07.sql",
     "comment": "",
-    "origin": "migration"
-   },
-   "ops.table_size_history": {
-    "columns": [
-     {
-      "name": "captured_at",
-      "type": "timestamptz NOT NULL DEFAULT now()",
-      "fk": "",
-      "generated": "",
-      "src": "supabase/migrations/20260916211500_e30_ops_table_size_history.sql"
-     },
-     {
-      "name": "schema_name",
-      "type": "text NOT NULL",
-      "fk": "",
-      "generated": "",
-      "src": "supabase/migrations/20260916211500_e30_ops_table_size_history.sql"
-     },
-     {
-      "name": "table_name",
-      "type": "text NOT NULL",
-      "fk": "",
-      "generated": "",
-      "src": "supabase/migrations/20260916211500_e30_ops_table_size_history.sql"
-     },
-     {
-      "name": "total_bytes",
-      "type": "bigint NOT NULL",
-      "fk": "",
-      "generated": "",
-      "src": "supabase/migrations/20260916211500_e30_ops_table_size_history.sql"
-     },
-     {
-      "name": "live_tup",
-      "type": "bigint NOT NULL",
-      "fk": "",
-      "generated": "",
-      "src": "supabase/migrations/20260916211500_e30_ops_table_size_history.sql"
-     }
-    ],
-    "constraints": [
-     "PRIMARY KEY (captured_at, schema_name, table_name)"
-    ],
-    "src": "supabase/migrations/20260916211500_e30_ops_table_size_history.sql",
-    "comment": "PLANO_DBA E30 — série histórica diária de pg_total_relation_size()/reltuples por ",
-    "origin": "migration"
-   },
-   "ops.pgss_history": {
-    "columns": [
-     {
-      "name": "captured_at",
-      "type": "timestamptz NOT NULL DEFAULT now()",
-      "fk": "",
-      "generated": "",
-      "src": "supabase/migrations/20260917150000_e40_ops_pgss_history.sql"
-     },
-     {
-      "name": "queryid",
-      "type": "bigint NOT NULL",
-      "fk": "",
-      "generated": "",
-      "src": "supabase/migrations/20260917150000_e40_ops_pgss_history.sql"
-     },
-     {
-      "name": "fn_name",
-      "type": "text",
-      "fk": "",
-      "generated": "",
-      "src": "supabase/migrations/20260917150000_e40_ops_pgss_history.sql"
-     },
-     {
-      "name": "calls",
-      "type": "bigint NOT NULL",
-      "fk": "",
-      "generated": "",
-      "src": "supabase/migrations/20260917150000_e40_ops_pgss_history.sql"
-     },
-     {
-      "name": "total_exec_time",
-      "type": "double precision NOT NULL",
-      "fk": "",
-      "generated": "",
-      "src": "supabase/migrations/20260917150000_e40_ops_pgss_history.sql"
-     },
-     {
-      "name": "mean_exec_time",
-      "type": "double precision NOT NULL",
-      "fk": "",
-      "generated": "",
-      "src": "supabase/migrations/20260917150000_e40_ops_pgss_history.sql"
-     },
-     {
-      "name": "stddev_exec_time",
-      "type": "double precision NOT NULL",
-      "fk": "",
-      "generated": "",
-      "src": "supabase/migrations/20260917150000_e40_ops_pgss_history.sql"
-     },
-     {
-      "name": "max_exec_time",
-      "type": "double precision NOT NULL",
-      "fk": "",
-      "generated": "",
-      "src": "supabase/migrations/20260917150000_e40_ops_pgss_history.sql"
-     }
-    ],
-    "constraints": [
-     "PRIMARY KEY (captured_at, queryid)"
-    ],
-    "src": "supabase/migrations/20260917150000_e40_ops_pgss_history.sql",
-    "comment": "PLANO_DBA E40 — snapshot semanal de extensions.pg_stat_statements (filtrado a ",
-    "origin": "migration"
-   },
-   "ops.wraparound_monitor_log": {
-    "columns": [
-     {
-      "name": "id",
-      "type": "bigint GENERATED ALWAYS AS IDENTITY PRIMARY KEY",
-      "fk": "",
-      "generated": "",
-      "src": "supabase/migrations/20260917160000_e33_ops_wraparound_monitor.sql"
-     },
-     {
-      "name": "captured_at",
-      "type": "timestamptz NOT NULL DEFAULT now()",
-      "fk": "",
-      "generated": "",
-      "src": "supabase/migrations/20260917160000_e33_ops_wraparound_monitor.sql"
-     },
-     {
-      "name": "metric",
-      "type": "text NOT NULL",
-      "fk": "",
-      "generated": "",
-      "src": "supabase/migrations/20260917160000_e33_ops_wraparound_monitor.sql"
-     },
-     {
-      "name": "object_name",
-      "type": "text",
-      "fk": "",
-      "generated": "",
-      "src": "supabase/migrations/20260917160000_e33_ops_wraparound_monitor.sql"
-     },
-     {
-      "name": "value_numeric",
-      "type": "numeric",
-      "fk": "",
-      "generated": "",
-      "src": "supabase/migrations/20260917160000_e33_ops_wraparound_monitor.sql"
-     },
-     {
-      "name": "value_pct",
-      "type": "numeric",
-      "fk": "",
-      "generated": "",
-      "src": "supabase/migrations/20260917160000_e33_ops_wraparound_monitor.sql"
-     },
-     {
-      "name": "unit",
-      "type": "text",
-      "fk": "",
-      "generated": "",
-      "src": "supabase/migrations/20260917160000_e33_ops_wraparound_monitor.sql"
-     },
-     {
-      "name": "detail",
-      "type": "jsonb",
-      "fk": "",
-      "generated": "",
-      "src": "supabase/migrations/20260917160000_e33_ops_wraparound_monitor.sql"
-     }
-    ],
-    "constraints": [
-     "CONSTRAINT wraparound_monitor_log_metric_check CHECK (metric IN ('xid_age', 'mxid_age', 'sequence_pct_used', 'replication_slot_retained_bytes', 'toast_pct_of_heap'))"
-    ],
-    "src": "supabase/migrations/20260917160000_e33_ops_wraparound_monitor.sql",
-    "comment": "PLANO_DBA E33 — snapshot diário de risco de wraparound de XID/multixact, ",
     "origin": "migration"
    },
    "_p06_before": {
@@ -96164,10 +95987,13 @@
    "supabase/rollbacks/20260629142224_rollback.sql",
    "supabase/rollbacks/20260916193000_rollback.sql",
    "supabase/rollbacks/20260916202000_rollback.sql",
+   "supabase/rollbacks/20260916211500_rollback.sql",
    "supabase/rollbacks/20260917061500_rollback.sql",
    "supabase/rollbacks/20260917070000_rollback.sql",
    "supabase/rollbacks/20260917090000_rollback.sql",
    "supabase/rollbacks/20260917100000_rollback.sql",
+   "supabase/rollbacks/20260917150000_rollback.sql",
+   "supabase/rollbacks/20260917160000_rollback.sql",
    "supabase/rollbacks/20261015150000_rollback.sql",
    "supabase/rollbacks/20261018000041_rollback.sql",
    "supabase/rollbacks/20261018000042_rollback.sql",
@@ -151462,8 +151288,8 @@
   },
   {
    "module": "e2e",
-   "files": 628,
-   "lines": 76217,
+   "files": 637,
+   "lines": 76845,
    "tables": [
     "discount_approval_requests",
     "quote_items"
@@ -151513,10 +151339,10 @@
    "docs": [
     "agente-permissions.spec.ts: E2E: Agente (Vendedor) Permissions & Navigation Valida o fluxo de acesso e bloqueio específico para o perfil de Agente. Garante que a comunicação de erro (403) seja contextual ao papel de vendedor.",
     "auth.spec.ts: E2E: Auth — login happy path + estados de erro. Migrado para helpers SSOT (loginViaUI, gotoAndSettle, expectVisibleByTestId).",
+    "carts-excellence.spec.ts: Carrinhos E2E Tests - Onda Excelência UX 10/10",
     "carts-module.spec.ts: E2E: Carts Module — Public Coverage (no auth required) Testa o módulo de carrinhos (/carrinhos) SEM autenticação. Estes testes verificam: 1. Acesso e redirecionamento para /auth 2. Páginas de carrinho estão protegidas 3. URLs individuais (/carrinhos/:cartId) também protegidas 4. Não vaza dados para …",
-    "catalog-scroll-stress.spec.ts: BATERIA DE TESTES DE SCROLL - PÁGINA DE CATÁLOGO (FILTERS PAGE) Foco: Virtualização, Infinite Scroll, Estabilidade da Barra de Filtros e Scroll to Top.",
-    "catalog.spec.ts: E2E: Catalog & Filters - All critical routes",
-    "collections-module.spec.ts: E2E: Collections Module — Public Coverage (no auth required) Testa o módulo de coleções (/colecoes) SEM autenticação. Estes testes verificam: 1. Acesso e redirecionamento para /auth 2. Páginas de coleção estão protegidas 3. URLs individuais (/colecoes/:id) também protegidas 4. Não vaza dados de cole …"
+    "catalog-flows.spec.ts: E2E: Catalog - Full User Flows & Critical Paths Covers: Filter combinations, layout switching, bulk actions, and deep linking.",
+    "catalog-scroll-stress.spec.ts: BATERIA DE TESTES DE SCROLL - PÁGINA DE CATÁLOGO (FILTERS PAGE) Foco: Virtualização, Infinite Scroll, Estabilidade da Barra de Filtros e Scroll to Top."
    ],
    "deps": [
     "@axe-core/playwright",
@@ -151549,8 +151375,11 @@
     "e2e/auth-stability.spec.ts",
     "e2e/auth.spec.ts",
     "e2e/business-flows.spec.ts",
+    "e2e/carts-excellence.spec.ts",
     "e2e/carts-module.spec.ts",
     "e2e/catalog-exhaustive-validation.spec.ts",
+    "e2e/catalog-flow.spec.ts",
+    "e2e/catalog-flows.spec.ts",
     "e2e/catalog-regression.spec.ts",
     "e2e/catalog-resilience.spec.ts",
     "e2e/catalog-scroll-stress.spec.ts",
@@ -151592,6 +151421,7 @@
     "e2e/novidades-gaps.spec.ts",
     "e2e/optimized-image-detection.spec.ts",
     "e2e/optimized-image-visual.spec.ts",
+    "e2e/optimized-image.spec.ts",
     "e2e/packaging-filter.spec.ts",
     "e2e/price-freshness.spec.ts",
     "e2e/product-card-click.spec.ts",
@@ -151605,18 +151435,14 @@
     "e2e/product-colors.spec.ts",
     "e2e/product-detail-exhaustive.spec.ts",
     "e2e/product-detail-price-size.spec.ts",
+    "e2e/product-gallery-tooltip.spec.ts",
     "e2e/product-grid-colors-hydration.spec.ts",
+    "e2e/product-out-of-stock-carousel.spec.ts",
     "e2e/product-quick-actions.spec.ts",
     "e2e/products-module.spec.ts",
     "e2e/products-postgrest-load.spec.ts",
     "e2e/promoflix-player.spec.ts",
-    "e2e/protected-routes.spec.ts",
-    "e2e/quote-autosave-calculations.spec.ts",
-    "e2e/quote-builder-delivery.spec.ts",
-    "e2e/quote-builder-layout.spec.ts",
-    "e2e/quote-builder-navigation.spec.ts",
-    "e2e/quote-builder-personalization-ux.spec.ts",
-    "e2e/quote-builder-shipping-validation.spec.ts"
+    "e2e/protected-routes.spec.ts"
    ]
   },
   {
@@ -154137,8 +153963,8 @@
   },
   {
    "module": "supabase/rollbacks",
-   "files": 145,
-   "lines": 5475,
+   "files": 148,
+   "lines": 5499,
    "tables": [],
    "exports": [],
    "docs": [],
@@ -154153,10 +153979,13 @@
     "supabase/rollbacks/20260629142224_rollback.sql",
     "supabase/rollbacks/20260916193000_rollback.sql",
     "supabase/rollbacks/20260916202000_rollback.sql",
+    "supabase/rollbacks/20260916211500_rollback.sql",
     "supabase/rollbacks/20260917061500_rollback.sql",
     "supabase/rollbacks/20260917070000_rollback.sql",
     "supabase/rollbacks/20260917090000_rollback.sql",
     "supabase/rollbacks/20260917100000_rollback.sql",
+    "supabase/rollbacks/20260917150000_rollback.sql",
+    "supabase/rollbacks/20260917160000_rollback.sql",
     "supabase/rollbacks/20261015150000_rollback.sql",
     "supabase/rollbacks/20261018000041_rollback.sql",
     "supabase/rollbacks/20261018000042_rollback.sql",
@@ -154221,10 +154050,7 @@
     "supabase/rollbacks/20261111222500_rollback.sql",
     "supabase/rollbacks/20261112011000_rollback.sql",
     "supabase/rollbacks/20261112120000_rollback.sql",
-    "supabase/rollbacks/20261112120100_rollback.sql",
-    "supabase/rollbacks/20261112120200_rollback.sql",
-    "supabase/rollbacks/20261112120300_rollback.sql",
-    "supabase/rollbacks/20261112120400_rollback.sql"
+    "supabase/rollbacks/20261112120100_rollback.sql"
    ]
   },
   {
@@ -154313,8 +154139,8 @@
   },
   {
    "module": "tests",
-   "files": 1115,
-   "lines": 177258,
+   "files": 1106,
+   "lines": 176630,
    "tables": [
     "bot_detection_log",
     "clients",
@@ -161408,7 +161234,6 @@
    "personalization_locations",
    "personalization_sizes",
    "personalization_technique_mappings",
-   "pgss_history",
    "pipeline_control",
    "pipeline_health_log",
    "pipeline_known_issues",
@@ -161539,7 +161364,6 @@
    "system_changelog",
    "system_documentation",
    "system_error_logs",
-   "table_size_history",
    "tags",
    "tecnicas_gravacao",
    "template_versions",
@@ -161572,7 +161396,6 @@
    "webhook_outbox",
    "webhook_request_nonces",
    "websocket_sessions",
-   "wraparound_monitor_log",
    "xbz_gallery_staging",
    "xbz_upload_mapping"
   ],
@@ -200797,96 +200620,6 @@
     "rule": "default now()"
    },
    {
-    "table": "ops.table_size_history",
-    "column": "captured_at",
-    "rule": "default now()"
-   },
-   {
-    "table": "ops.table_size_history",
-    "column": "schema_name",
-    "rule": "obrigatório"
-   },
-   {
-    "table": "ops.table_size_history",
-    "column": "table_name",
-    "rule": "obrigatório"
-   },
-   {
-    "table": "ops.table_size_history",
-    "column": "total_bytes",
-    "rule": "obrigatório"
-   },
-   {
-    "table": "ops.table_size_history",
-    "column": "live_tup",
-    "rule": "obrigatório"
-   },
-   {
-    "table": "ops.table_size_history",
-    "column": "(tabela)",
-    "rule": "PRIMARY KEY (captured_at, schema_name, table_name)"
-   },
-   {
-    "table": "ops.pgss_history",
-    "column": "captured_at",
-    "rule": "default now()"
-   },
-   {
-    "table": "ops.pgss_history",
-    "column": "queryid",
-    "rule": "obrigatório"
-   },
-   {
-    "table": "ops.pgss_history",
-    "column": "calls",
-    "rule": "obrigatório"
-   },
-   {
-    "table": "ops.pgss_history",
-    "column": "total_exec_time",
-    "rule": "obrigatório"
-   },
-   {
-    "table": "ops.pgss_history",
-    "column": "mean_exec_time",
-    "rule": "obrigatório"
-   },
-   {
-    "table": "ops.pgss_history",
-    "column": "stddev_exec_time",
-    "rule": "obrigatório"
-   },
-   {
-    "table": "ops.pgss_history",
-    "column": "max_exec_time",
-    "rule": "obrigatório"
-   },
-   {
-    "table": "ops.pgss_history",
-    "column": "(tabela)",
-    "rule": "PRIMARY KEY (captured_at, queryid)"
-   },
-   {
-    "table": "ops.wraparound_monitor_log",
-    "column": "id",
-    "rule": "PK"
-   },
-   {
-    "table": "ops.wraparound_monitor_log",
-    "column": "captured_at",
-    "rule": "default now()"
-   },
-   {
-    "table": "ops.wraparound_monitor_log",
-    "column": "metric",
-    "rule": "obrigatório"
-   },
-   {
-    "table": "ops.wraparound_monitor_log",
-    "column": "(tabela)",
-    "rule": "CONSTRAINT wraparound_monitor_log_metric_check CHECK (metric IN ('xid_age', 'mxid_age', 'sequence_pct_used', 'replication_slot_retained_bytes', 'toast_pct_of_heap'))"
-   },
-   {
     "table": "_p06_before",
     "column": "metric",
     "rule": "PK"
@@ -225347,6 +225080,22 @@
     "name": "User management audit"
    },
    {
+    "file": "e2e/carts-excellence.spec.ts",
+    "name": "Módulo de Carrinhos - Fluxos Críticos"
+   },
+   {
+    "file": "e2e/carts-excellence.spec.ts",
+    "name": "Criação de novo carrinho via Picker"
+   },
+   {
+    "file": "e2e/carts-excellence.spec.ts",
+    "name": "Gestão de itens: Adição, Quantidade e Notas"
+   },
+   {
+    "file": "e2e/carts-excellence.spec.ts",
+    "name": "Saúde do Carrinho e Conversão para Orçamento"
+   },
+   {
     "file": "e2e/carts-module.spec.ts",
     "name": "Carts Module - Public Access (No Auth)"
    },
@@ -225437,6 +225186,34 @@
    {
     "file": "e2e/catalog-exhaustive-validation.spec.ts",
     "name": "Stress Test: Virtualization performance (5000+ simulation)"
+   },
+   {
+    "file": "e2e/catalog-flow.spec.ts",
+    "name": "Catalog E2E Suite"
+   },
+   {
+    "file": "e2e/catalog-flow.spec.ts",
+    "name": "should simulate a full user flow: sort, search, filter and paginate"
+   },
+   {
+    "file": "e2e/catalog-flow.spec.ts",
+    "name": "should display empty state when no products match"
+   },
+   {
+    "file": "e2e/catalog-flows.spec.ts",
+    "name": "Catalog Full Flows"
+   },
+   {
+    "file": "e2e/catalog-flows.spec.ts",
+    "name": "Flow: Complete Search to Bulk Action"
+   },
+   {
+    "file": "e2e/catalog-flows.spec.ts",
+    "name": "Flow: Deep Linking & Sharing State"
+   },
+   {
+    "file": "e2e/catalog-flows.spec.ts",
+    "name": "Responsiveness: Toolbar Alignment"
    },
    {
     "file": "e2e/catalog-regression.spec.ts",
@@ -226499,6 +226276,18 @@
     "name": "should be responsive (mobile viewport)"
    },
    {
+    "file": "e2e/optimized-image.spec.ts",
+    "name": "OptimizedImage Blur-up Effect"
+   },
+   {
+    "file": "e2e/optimized-image.spec.ts",
+    "name": "should show blur-up transition and eventually show clear image"
+   },
+   {
+    "file": "e2e/optimized-image.spec.ts",
+    "name": "should show error state when image fails to load"
+   },
+   {
     "file": "e2e/packaging-filter.spec.ts",
     "name": "Módulo: Embalagem — Testes E2E de Filtro e Tooltip"
    },
@@ -226767,6 +226556,18 @@
     "name": "preço e sufixo /un alinham na mesma baseline em múltiplas larguras"
    },
    {
+    "file": "e2e/product-gallery-tooltip.spec.ts",
+    "name": "Product Gallery - Visual & Interaction Audit"
+   },
+   {
+    "file": "e2e/product-gallery-tooltip.spec.ts",
+    "name": "should not show tooltip or unintended overlays when hovering product photo in PDP"
+   },
+   {
+    "file": "e2e/product-gallery-tooltip.spec.ts",
+    "name": "should not show tooltip in QuickView gallery"
+   },
+   {
     "file": "e2e/product-grid-colors-hydration.spec.ts",
     "name": "ProductGrid — Hidratação de Cores e Fallbacks"
    },
@@ -226781,6 +226582,14 @@
    {
     "file": "e2e/product-grid-colors-hydration.spec.ts",
     "name": "Cache: voltar do PDP usa cache (sem refetch) e mantém a cor selecionada no card"
+   },
+   {
+    "file": "e2e/product-out-of-stock-carousel.spec.ts",
+    "name": "Out of Stock Badge — Carousel positioning"
+   },
+   {
+    "file": "e2e/product-out-of-stock-carousel.spec.ts",
+    "name": "Badge stays in top-left while scrolling carousel"
    },
    {
     "file": "e2e/product-quick-actions.spec.ts",
@@ -227399,6 +227208,30 @@
     "name": "Cores dos botões Carrinho e Orçamento (Desktop)"
    },
    {
+    "file": "e2e/replenishment-flows.spec.ts",
+    "name": "Módulo de Reposição - Fluxos Críticos"
+   },
+   {
+    "file": "e2e/replenishment-flows.spec.ts",
+    "name": "Deve carregar KPIs de reposição e lista de produtos"
+   },
+   {
+    "file": "e2e/replenishment-flows.spec.ts",
+    "name": "Deve permitir filtrar por pesquisa textual"
+   },
+   {
+    "file": "e2e/replenishment-flows.spec.ts",
+    "name": "Deve alternar modos de visualização (Grid/Lista/Tabela)"
+   },
+   {
+    "file": "e2e/replenishment-flows.spec.ts",
+    "name": "Deve ativar modo de seleção em massa"
+   },
+   {
+    "file": "e2e/replenishment-flows.spec.ts",
+    "name": "Deve navegar para os detalhes do produto ao clicar"
+   },
+   {
     "file": "e2e/replenishment-stress.spec.ts",
     "name": "Reposição Module - Stress & Load Testing"
    },
@@ -227575,6 +227408,18 @@
     "name": "Acessibilidade: Navegação por teclado"
    },
    {
+    "file": "e2e/role-badge-no-tooltip.spec.ts",
+    "name": "RoleBadge - Tooltip Audit"
+   },
+   {
+    "file": "e2e/role-badge-no-tooltip.spec.ts",
+    "name": "should not show tooltip or native title on hover (Desktop)"
+   },
+   {
+    "file": "e2e/role-badge-no-tooltip.spec.ts",
+    "name": "should not show explanation on long-press (Mobile)"
+   },
+   {
     "file": "e2e/sidebar-logo.spec.ts",
     "name": "Sidebar Logo Visual Regression"
    },
@@ -227717,6 +227562,14 @@
    {
     "file": "e2e/stock-module.spec.ts",
     "name": "should handle navigation from other auth-required pages"
+   },
+   {
+    "file": "e2e/stock-regression.spec.ts",
+    "name": "Estoque Dashboard E2E"
+   },
+   {
+    "file": "e2e/stock-regression.spec.ts",
+    "name": "should load stock data correctly and handle filters/pagination/sorting"
    },
    {
     "file": "e2e/super-filtro-exaustivo.spec.ts",
@@ -285079,50 +284932,6 @@
     "name": "abc"
    },
    {
-    "file": "tests/e2e/carts-excellence.spec.ts",
-    "name": "Módulo de Carrinhos - Fluxos Críticos"
-   },
-   {
-    "file": "tests/e2e/carts-excellence.spec.ts",
-    "name": "Criação de novo carrinho via Picker"
-   },
-   {
-    "file": "tests/e2e/carts-excellence.spec.ts",
-    "name": "Gestão de itens: Adição, Quantidade e Notas"
-   },
-   {
-    "file": "tests/e2e/carts-excellence.spec.ts",
-    "name": "Saúde do Carrinho e Conversão para Orçamento"
-   },
-   {
-    "file": "tests/e2e/catalog-flow.spec.ts",
-    "name": "Catalog E2E Suite"
-   },
-   {
-    "file": "tests/e2e/catalog-flow.spec.ts",
-    "name": "should simulate a full user flow: sort, search, filter and paginate"
-   },
-   {
-    "file": "tests/e2e/catalog-flow.spec.ts",
-    "name": "should display empty state when no products match"
-   },
-   {
-    "file": "tests/e2e/catalog-flows.spec.ts",
-    "name": "Catalog Full Flows"
-   },
-   {
-    "file": "tests/e2e/catalog-flows.spec.ts",
-    "name": "Flow: Complete Search to Bulk Action"
-   },
-   {
-    "file": "tests/e2e/catalog-flows.spec.ts",
-    "name": "Flow: Deep Linking & Sharing State"
-   },
-   {
-    "file": "tests/e2e/catalog-flows.spec.ts",
-    "name": "Responsiveness: Toolbar Alignment"
-   },
-   {
     "file": "tests/e2e/catalog-price-freshness-badge.test.tsx",
     "name": "E2E Catálogo — visibilidade do PriceFreshnessBadge por host"
    },
@@ -286227,18 +286036,6 @@
     "name": "CI Visual: Gera snapshot técnico e valida headings de seção"
    },
    {
-    "file": "tests/e2e/optimized-image.spec.ts",
-    "name": "OptimizedImage Blur-up Effect"
-   },
-   {
-    "file": "tests/e2e/optimized-image.spec.ts",
-    "name": "should show blur-up transition and eventually show clear image"
-   },
-   {
-    "file": "tests/e2e/optimized-image.spec.ts",
-    "name": "should show error state when image fails to load"
-   },
-   {
     "file": "tests/e2e/performance.test.ts",
     "name": "E2E Performance — Lazy Loading"
    },
@@ -287103,26 +286900,6 @@
     "name": "CSV export includes size column"
    },
    {
-    "file": "tests/e2e/product-gallery-tooltip.spec.ts",
-    "name": "Product Gallery - Visual & Interaction Audit"
-   },
-   {
-    "file": "tests/e2e/product-gallery-tooltip.spec.ts",
-    "name": "should not show tooltip or unintended overlays when hovering product photo in PDP"
-   },
-   {
-    "file": "tests/e2e/product-gallery-tooltip.spec.ts",
-    "name": "should not show tooltip in QuickView gallery"
-   },
-   {
-    "file": "tests/e2e/product-out-of-stock-carousel.spec.ts",
-    "name": "Out of Stock Badge — Carousel positioning"
-   },
-   {
-    "file": "tests/e2e/product-out-of-stock-carousel.spec.ts",
-    "name": "Badge stays in top-left while scrolling carousel"
-   },
-   {
     "file": "tests/e2e/products-catalog.test.ts",
     "name": "E2E Catalog — Product Filtering"
    },
@@ -287703,42 +287480,6 @@
     "name": "action "
    },
    {
-    "file": "tests/e2e/replenishment-flows.spec.ts",
-    "name": "Módulo de Reposição - Fluxos Críticos"
-   },
-   {
-    "file": "tests/e2e/replenishment-flows.spec.ts",
-    "name": "Deve carregar KPIs de reposição e lista de produtos"
-   },
-   {
-    "file": "tests/e2e/replenishment-flows.spec.ts",
-    "name": "Deve permitir filtrar por pesquisa textual"
-   },
-   {
-    "file": "tests/e2e/replenishment-flows.spec.ts",
-    "name": "Deve alternar modos de visualização (Grid/Lista/Tabela)"
-   },
-   {
-    "file": "tests/e2e/replenishment-flows.spec.ts",
-    "name": "Deve ativar modo de seleção em massa"
-   },
-   {
-    "file": "tests/e2e/replenishment-flows.spec.ts",
-    "name": "Deve navegar para os detalhes do produto ao clicar"
-   },
-   {
-    "file": "tests/e2e/role-badge-no-tooltip.spec.ts",
-    "name": "RoleBadge - Tooltip Audit"
-   },
-   {
-    "file": "tests/e2e/role-badge-no-tooltip.spec.ts",
-    "name": "should not show tooltip or native title on hover (Desktop)"
-   },
-   {
-    "file": "tests/e2e/role-badge-no-tooltip.spec.ts",
-    "name": "should not show explanation on long-press (Mobile)"
-   },
-   {
     "file": "tests/e2e/seller-carts.test.ts",
     "name": "Módulo de Carrinhos (E2E Exhaustive)"
    },
@@ -287805,14 +287546,6 @@
    {
     "file": "tests/e2e/seller-carts.test.ts",
     "name": "deve exportar itens no formato aceito pelo construtor de orçamentos"
-   },
-   {
-    "file": "tests/e2e/stock-regression.spec.ts",
-    "name": "Estoque Dashboard E2E"
-   },
-   {
-    "file": "tests/e2e/stock-regression.spec.ts",
-    "name": "should load stock data correctly and handle filters/pagination/sorting"
    },
    {
     "file": "tests/e2e/tools-simulator.test.ts",
@@ -364465,27 +364198,6 @@
      "public: auth.uid() = user_id"
     ]
    },
-   "ops.pgss_history": {
-    "rls": "enabled",
-    "SELECT": [],
-    "INSERT": [],
-    "UPDATE": [],
-    "DELETE": []
-   },
-   "ops.table_size_history": {
-    "rls": "enabled",
-    "SELECT": [],
-    "INSERT": [],
-    "UPDATE": [],
-    "DELETE": []
-   },
-   "ops.wraparound_monitor_log": {
-    "rls": "enabled",
-    "SELECT": [],
-    "INSERT": [],
-    "UPDATE": [],
-    "DELETE": []
-   },
    "ops_grant_audit": {
     "rls": "enabled",
     "SELECT": [
@@ -410599,9 +410311,6 @@
     "updated_at"
    ],
    "swatch_url_map": [],
-   "ops.table_size_history": [],
-   "ops.pgss_history": [],
-   "ops.wraparound_monitor_log": [],
    "_p06_before": [],
    "webhook_configs": [
     "created_at"
@@ -410773,13 +410482,7 @@
     "email"
    ]
   ],
-  "money_float": [
-   [
-    "ops.pgss_history",
-    "total_exec_time",
-    "double precision NOT NULL"
-   ]
-  ],
+  "money_float": [],
   "money_cols": [
    [
     "quotes",
@@ -411340,16 +411043,6 @@
     "_deprecated_silver_variants_20260606",
     "cost_price_10",
     "NUMERIC(12,4)"
-   ],
-   [
-    "ops.table_size_history",
-    "total_bytes",
-    "bigint"
-   ],
-   [
-    "ops.pgss_history",
-    "total_exec_time",
-    "double"
    ],
    [
     "webhook_configs",
@@ -413268,11 +412961,6 @@
     ]
    },
    {
-    "kind": "dinheiro",
-    "msg": "`ops.pgss_history.total_exec_time` guarda dinheiro em `double precision NOT NULL` (ponto flutuante) — arredondamento imprevisível; padrão é numeric",
-    "where": []
-   },
-   {
     "kind": "edge",
     "msg": "edge function `a` invocada mas não existe em supabase/functions/",
     "where": [
@@ -415092,7 +414780,7 @@
    "`quote_approval_tokens.status` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.",
    "`kit_share_tokens.status` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.",
    "`_deprecated_silver_images_queue_20260606.img_status` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.",
-   "65/499 tabelas sem `COMMENT ON TABLE` — o significado de negócio não está no schema: `quotes_inbound`, `webhook_inbound_dedupe`, `webhook_inbound_log`, `admin_audit_log_y2025m12`, `admin_audit_log_y2026m01`, `admin_audit_log_y2026m02`, `admin_audit_log_y2026m03`, `admin_audit_log_y2026m04`, `admin_audit_log_y2026m05`, `admin_audit_log_y2026m06`, `app_vitals`, `audit_logs` …",
+   "65/496 tabelas sem `COMMENT ON TABLE` — o significado de negócio não está no schema: `quotes_inbound`, `webhook_inbound_dedupe`, `webhook_inbound_log`, `admin_audit_log_y2025m12`, `admin_audit_log_y2026m01`, `admin_audit_log_y2026m02`, `admin_audit_log_y2026m03`, `admin_audit_log_y2026m04`, `admin_audit_log_y2026m05`, `admin_audit_log_y2026m06`, `app_vitals`, `audit_logs` …",
    "Há tabelas usadas no código sem migration no repo — o schema real pode ter sido alterado pelo painel."
   ]
  },
@@ -416140,6 +415828,21 @@
     "User management audit"
    ]
   },
+  "e2e/carts-excellence.spec.ts": {
+   "path": "e2e/carts-excellence.spec.ts",
+   "lines": 68,
+   "is_test": true,
+   "rule_comments": [
+    "Deve redirecionar para o Builder de Orçamento"
+   ],
+   "doc": "Carrinhos E2E Tests - Onda Excelência UX 10/10",
+   "tests": [
+    "Módulo de Carrinhos - Fluxos Críticos",
+    "Criação de novo carrinho via Picker",
+    "Gestão de itens: Adição, Quantidade e Notas",
+    "Saúde do Carrinho e Conversão para Orçamento"
+   ]
+  },
   "e2e/carts-module.spec.ts": {
    "path": "e2e/carts-module.spec.ts",
    "lines": 281,
@@ -416191,6 +415894,28 @@
     "Responsive: Full width across all viewports",
     "Filters & Sorting: Should reset scroll and refresh correctly",
     "Stress Test: Virtualization performance (5000+ simulation)"
+   ]
+  },
+  "e2e/catalog-flow.spec.ts": {
+   "path": "e2e/catalog-flow.spec.ts",
+   "lines": 68,
+   "is_test": true,
+   "tests": [
+    "Catalog E2E Suite",
+    "should simulate a full user flow: sort, search, filter and paginate",
+    "should display empty state when no products match"
+   ]
+  },
+  "e2e/catalog-flows.spec.ts": {
+   "path": "e2e/catalog-flows.spec.ts",
+   "lines": 82,
+   "is_test": true,
+   "doc": "E2E: Catalog - Full User Flows & Critical Paths Covers: Filter combinations, layout switching, bulk actions, and deep linking.",
+   "tests": [
+    "Catalog Full Flows",
+    "Flow: Complete Search to Bulk Action",
+    "Flow: Deep Linking & Sharing State",
+    "Responsiveness: Toolbar Alignment"
    ]
   },
   "e2e/catalog-regression.spec.ts": {
@@ -417014,6 +416739,20 @@
     "should be responsive (mobile viewport)"
    ]
   },
+  "e2e/optimized-image.spec.ts": {
+   "path": "e2e/optimized-image.spec.ts",
+   "lines": 47,
+   "is_test": true,
+   "temporal": [
+    "await expect(mainImage).toHaveClass(/opacity-100/, { timeout: 10000 });",
+    "await expect(page.locator('text=Erro ao carregar')).toBeVisible({ timeout: 10000 });"
+   ],
+   "tests": [
+    "OptimizedImage Blur-up Effect",
+    "should show blur-up transition and eventually show clear image",
+    "should show error state when image fails to load"
+   ]
+  },
   "e2e/packaging-filter.spec.ts": {
    "path": "e2e/packaging-filter.spec.ts",
    "lines": 58,
@@ -417267,6 +417006,16 @@
     "preço e sufixo /un alinham na mesma baseline em múltiplas larguras"
    ]
   },
+  "e2e/product-gallery-tooltip.spec.ts": {
+   "path": "e2e/product-gallery-tooltip.spec.ts",
+   "lines": 73,
+   "is_test": true,
+   "tests": [
+    "Product Gallery - Visual & Interaction Audit",
+    "should not show tooltip or unintended overlays when hovering product photo in PDP",
+    "should not show tooltip in QuickView gallery"
+   ]
+  },
   "e2e/product-grid-colors-hydration.spec.ts": {
    "path": "e2e/product-grid-colors-hydration.spec.ts",
    "lines": 140,
@@ -417290,6 +417039,18 @@
     "Skeletons das bolinhas somem e viram cores reais após a hidratação",
     "PDP: se a hidratação falhar, exibe ",
     "Cache: voltar do PDP usa cache (sem refetch) e mantém a cor selecionada no card"
+   ]
+  },
+  "e2e/product-out-of-stock-carousel.spec.ts": {
+   "path": "e2e/product-out-of-stock-carousel.spec.ts",
+   "lines": 98,
+   "is_test": true,
+   "temporal": [
+    "if (!(await badgeLocator.isVisible({ timeout: 5000 }).catch(() => false))) {"
+   ],
+   "tests": [
+    "Out of Stock Badge — Carousel positioning",
+    "Badge stays in top-left while scrolling carousel"
    ]
   },
   "e2e/product-quick-actions.spec.ts": {
@@ -417726,6 +417487,19 @@
     "Cores dos botões Carrinho e Orçamento (Desktop)"
    ]
   },
+  "e2e/replenishment-flows.spec.ts": {
+   "path": "e2e/replenishment-flows.spec.ts",
+   "lines": 67,
+   "is_test": true,
+   "tests": [
+    "Módulo de Reposição - Fluxos Críticos",
+    "Deve carregar KPIs de reposição e lista de produtos",
+    "Deve permitir filtrar por pesquisa textual",
+    "Deve alternar modos de visualização (Grid/Lista/Tabela)",
+    "Deve ativar modo de seleção em massa",
+    "Deve navegar para os detalhes do produto ao clicar"
+   ]
+  },
   "e2e/replenishment-stress.spec.ts": {
    "path": "e2e/replenishment-stress.spec.ts",
    "lines": 229,
@@ -417848,6 +417622,19 @@
     "Acessibilidade: Navegação por teclado"
    ]
   },
+  "e2e/role-badge-no-tooltip.spec.ts": {
+   "path": "e2e/role-badge-no-tooltip.spec.ts",
+   "lines": 69,
+   "is_test": true,
+   "temporal": [
+    "await expect(roleBadge).toBeVisible({ timeout: 10000 });"
+   ],
+   "tests": [
+    "RoleBadge - Tooltip Audit",
+    "should not show tooltip or native title on hover (Desktop)",
+    "should not show explanation on long-press (Mobile)"
+   ]
+  },
   "e2e/sidebar-logo.spec.ts": {
    "path": "e2e/sidebar-logo.spec.ts",
    "lines": 55,
@@ -417967,6 +417754,18 @@
     "should handle deep linking with various filters",
     "should handle browser back/forward navigation",
     "should handle navigation from other auth-required pages"
+   ]
+  },
+  "e2e/stock-regression.spec.ts": {
+   "path": "e2e/stock-regression.spec.ts",
+   "lines": 56,
+   "is_test": true,
+   "temporal": [
+    "await expect(loadingState).not.toBeVisible({ timeout: 45000 });"
+   ],
+   "tests": [
+    "Estoque Dashboard E2E",
+    "should load stock data correctly and handle filters/pagination/sorting"
    ]
   },
   "e2e/super-filtro-exaustivo.spec.ts": {
@@ -538780,6 +538579,10 @@
    "path": "supabase/rollbacks/20260916202000_rollback.sql",
    "lines": 9
   },
+  "supabase/rollbacks/20260916211500_rollback.sql": {
+   "path": "supabase/rollbacks/20260916211500_rollback.sql",
+   "lines": 12
+  },
   "supabase/rollbacks/20260917061500_rollback.sql": {
    "path": "supabase/rollbacks/20260917061500_rollback.sql",
    "lines": 39,
@@ -538800,6 +538603,14 @@
     "WHERE status='processing' AND locked_at < now() - interval '1 hour' AND attempts >= max_attempts;",
     "WHERE status='processing' AND locked_at < now() - interval '2 hours' AND attempts < max_attempts;"
    ]
+  },
+  "supabase/rollbacks/20260917150000_rollback.sql": {
+   "path": "supabase/rollbacks/20260917150000_rollback.sql",
+   "lines": 6
+  },
+  "supabase/rollbacks/20260917160000_rollback.sql": {
+   "path": "supabase/rollbacks/20260917160000_rollback.sql",
+   "lines": 6
   },
   "supabase/rollbacks/20261015150000_rollback.sql": {
    "path": "supabase/rollbacks/20261015150000_rollback.sql",
@@ -546168,43 +545979,6 @@
     "abc"
    ]
   },
-  "tests/e2e/carts-excellence.spec.ts": {
-   "path": "tests/e2e/carts-excellence.spec.ts",
-   "lines": 68,
-   "is_test": true,
-   "rule_comments": [
-    "Deve redirecionar para o Builder de Orçamento"
-   ],
-   "doc": "Carrinhos E2E Tests - Onda Excelência UX 10/10",
-   "tests": [
-    "Módulo de Carrinhos - Fluxos Críticos",
-    "Criação de novo carrinho via Picker",
-    "Gestão de itens: Adição, Quantidade e Notas",
-    "Saúde do Carrinho e Conversão para Orçamento"
-   ]
-  },
-  "tests/e2e/catalog-flow.spec.ts": {
-   "path": "tests/e2e/catalog-flow.spec.ts",
-   "lines": 68,
-   "is_test": true,
-   "tests": [
-    "Catalog E2E Suite",
-    "should simulate a full user flow: sort, search, filter and paginate",
-    "should display empty state when no products match"
-   ]
-  },
-  "tests/e2e/catalog-flows.spec.ts": {
-   "path": "tests/e2e/catalog-flows.spec.ts",
-   "lines": 82,
-   "is_test": true,
-   "doc": "E2E: Catalog - Full User Flows & Critical Paths Covers: Filter combinations, layout switching, bulk actions, and deep linking.",
-   "tests": [
-    "Catalog Full Flows",
-    "Flow: Complete Search to Bulk Action",
-    "Flow: Deep Linking & Sharing State",
-    "Responsiveness: Toolbar Alignment"
-   ]
-  },
   "tests/e2e/catalog-price-freshness-badge.test.tsx": {
    "path": "tests/e2e/catalog-price-freshness-badge.test.tsx",
    "lines": 299,
@@ -546708,20 +546482,6 @@
     "CI Visual: Gera snapshot técnico e valida headings de seção"
    ]
   },
-  "tests/e2e/optimized-image.spec.ts": {
-   "path": "tests/e2e/optimized-image.spec.ts",
-   "lines": 47,
-   "is_test": true,
-   "temporal": [
-    "await expect(mainImage).toHaveClass(/opacity-100/, { timeout: 10000 });",
-    "await expect(page.locator('text=Erro ao carregar')).toBeVisible({ timeout: 10000 });"
-   ],
-   "tests": [
-    "OptimizedImage Blur-up Effect",
-    "should show blur-up transition and eventually show clear image",
-    "should show error state when image fails to load"
-   ]
-  },
   "tests/e2e/performance.test.ts": {
    "path": "tests/e2e/performance.test.ts",
    "lines": 99,
@@ -547035,28 +546795,6 @@
     "CSV export includes size column"
    ]
   },
-  "tests/e2e/product-gallery-tooltip.spec.ts": {
-   "path": "tests/e2e/product-gallery-tooltip.spec.ts",
-   "lines": 73,
-   "is_test": true,
-   "tests": [
-    "Product Gallery - Visual & Interaction Audit",
-    "should not show tooltip or unintended overlays when hovering product photo in PDP",
-    "should not show tooltip in QuickView gallery"
-   ]
-  },
-  "tests/e2e/product-out-of-stock-carousel.spec.ts": {
-   "path": "tests/e2e/product-out-of-stock-carousel.spec.ts",
-   "lines": 98,
-   "is_test": true,
-   "temporal": [
-    "if (!(await badgeLocator.isVisible({ timeout: 5000 }).catch(() => false))) {"
-   ],
-   "tests": [
-    "Out of Stock Badge — Carousel positioning",
-    "Badge stays in top-left while scrolling carousel"
-   ]
-  },
   "tests/e2e/products-catalog.test.ts": {
    "path": "tests/e2e/products-catalog.test.ts",
    "lines": 201,
@@ -547309,32 +547047,6 @@
     "action "
    ]
   },
-  "tests/e2e/replenishment-flows.spec.ts": {
-   "path": "tests/e2e/replenishment-flows.spec.ts",
-   "lines": 67,
-   "is_test": true,
-   "tests": [
-    "Módulo de Reposição - Fluxos Críticos",
-    "Deve carregar KPIs de reposição e lista de produtos",
-    "Deve permitir filtrar por pesquisa textual",
-    "Deve alternar modos de visualização (Grid/Lista/Tabela)",
-    "Deve ativar modo de seleção em massa",
-    "Deve navegar para os detalhes do produto ao clicar"
-   ]
-  },
-  "tests/e2e/role-badge-no-tooltip.spec.ts": {
-   "path": "tests/e2e/role-badge-no-tooltip.spec.ts",
-   "lines": 69,
-   "is_test": true,
-   "temporal": [
-    "await expect(roleBadge).toBeVisible({ timeout: 10000 });"
-   ],
-   "tests": [
-    "RoleBadge - Tooltip Audit",
-    "should not show tooltip or native title on hover (Desktop)",
-    "should not show explanation on long-press (Mobile)"
-   ]
-  },
   "tests/e2e/seller-carts.test.ts": {
    "path": "tests/e2e/seller-carts.test.ts",
    "lines": 215,
@@ -547374,18 +547086,6 @@
     "deve simular a adição de um item sugerido (cross-sell)",
     "Integração: Conversão para Orçamento",
     "deve exportar itens no formato aceito pelo construtor de orçamentos"
-   ]
-  },
-  "tests/e2e/stock-regression.spec.ts": {
-   "path": "tests/e2e/stock-regression.spec.ts",
-   "lines": 56,
-   "is_test": true,
-   "temporal": [
-    "await expect(loadingState).not.toBeVisible({ timeout: 45000 });"
-   ],
-   "tests": [
-    "Estoque Dashboard E2E",
-    "should load stock data correctly and handle filters/pagination/sorting"
    ]
   },
   "tests/e2e/tools-simulator.test.ts": {
@@ -565019,10 +564719,69 @@
   }
  },
  "git": {
-  "sha": "06894b0d04ec2c1e00a8a7fd728530f9ad742b52",
+  "sha": "0792fac96b007e5d545af7710af73f342466eaf2",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "0792fac",
+    "date": "2026-11-25",
+    "author": "adm01-debug",
+    "subject": "fix(ci): snapshot de cron/event triggers via pooler (E037) (#4124)",
+    "files": [
+     ".github/workflows/schema-snapshot-export.yml"
+    ]
+   },
+   {
+    "sha": "0c2d7c6",
+    "date": "2026-11-25",
+    "author": "adm01-debug",
+    "subject": "chore(test): liga 9 specs Playwright orfaos de tests/e2e/ ao runner (#4122)",
+    "files": [
+     "docs/estado/10_TESTES.md",
+     "e2e/carts-excellence.spec.ts",
+     "e2e/catalog-flow.spec.ts",
+     "e2e/catalog-flows.spec.ts",
+     "e2e/optimized-image.spec.ts",
+     "e2e/product-gallery-tooltip.spec.ts",
+     "e2e/product-out-of-stock-carousel.spec.ts",
+     "e2e/replenishment-flows.spec.ts",
+     "e2e/role-badge-no-tooltip.spec.ts",
+     "e2e/stock-regression.spec.ts"
+    ]
+   },
+   {
+    "sha": "872034f",
+    "date": "2026-11-25",
+    "author": "github-actions[bot]",
+    "subject": "chore(main): release gifts-store 1.20.2 (#4112)",
+    "files": [
+     ".release-please-manifest.json",
+     "CHANGELOG.md",
+     "package-lock.json",
+     "package.json"
+    ]
+   },
+   {
+    "sha": "121a114",
+    "date": "2026-11-25",
+    "author": "adm01-debug",
+    "subject": "chore: rollback das migrations ops (E30/E33/E40) (#4120)",
+    "files": [
+     "supabase/rollbacks/20260916211500_rollback.sql",
+     "supabase/rollbacks/20260917150000_rollback.sql",
+     "supabase/rollbacks/20260917160000_rollback.sql"
+    ]
+   },
+   {
+    "sha": "6aad536",
+    "date": "2026-11-25",
+    "author": "adm01-debug",
+    "subject": "docs(db): reconciliacao das 125 migrations fora do ledger com evidencia do dump (#4129)",
+    "files": [
+     "supabase/MIGRATIONS_RECONCILIACAO_20261125.md"
+    ]
+   },
    {
     "sha": "06894b0",
     "date": "2026-11-25",
@@ -565270,142 +565029,87 @@
      "scripts/drift-baseline.mjs",
      "tests/scripts/drift-baseline.test.mjs"
     ]
-   },
-   {
-    "sha": "7a7c936",
-    "date": "2026-11-25",
-    "author": "adm01-debug",
-    "subject": "fix: exige status final no recibo de migration aceito pelo gate E055 (#4099)",
-    "files": [
-     "scripts/check-migration-receipts.mjs",
-     "supabase/MIGRATIONS_SYNC_LOG.md",
-     "tests/scripts/check-migration-receipts.test.mjs"
-    ]
-   },
-   {
-    "sha": "aa0240f",
-    "date": "2026-11-25",
-    "author": "github-actions[bot]",
-    "subject": "docs(migrations-log): recibo E15 — aplicação de 20261125180000 (#4098)",
-    "files": [
-     "supabase/MIGRATIONS_SYNC_LOG.md"
-    ]
-   },
-   {
-    "sha": "88a358e",
-    "date": "2026-11-25",
-    "author": "adm01-debug",
-    "subject": "fix: aplica o COMMENT da view de gravacao (cabecalho com Rollback:) (#4097)",
-    "files": [
-     "supabase/MIGRATIONS_SYNC_LOG.md",
-     "supabase/migrations/20261125180000_fix_comment_v_tabela_gravacao_publica.sql",
-     "supabase/rollbacks/20261125180000_rollback.sql"
-    ]
-   },
-   {
-    "sha": "46f5863",
-    "date": "2026-11-25",
-    "author": "adm01-debug",
-    "subject": "fix: corrige COMMENT da view de preco de gravacao publica (retoma #4080) (#4096)",
-    "files": [
-     "supabase/MIGRATIONS_SYNC_LOG.md",
-     "supabase/migrations/20261125150000_fix_comment_v_tabela_gravacao_publica.sql",
-     "supabase/rollbacks/20261125150000_rollback.sql"
-    ]
-   },
-   {
-    "sha": "33fa8db",
-    "date": "2026-11-25",
-    "author": "github-actions[bot]",
-    "subject": "chore(schema-snapshot): snapshot semanal 2026-W48 (run 45661905897) (#4095)",
-    "files": [
-     "supabase/baseline/20261125173000_baseline_schema.sql",
-     "supabase/baseline/20261125173000_ledger_versions.json",
-     "supabase/migrations-snapshot/ALL_IN_ONE.sql",
-     "supabase/migrations-snapshot/SCHEMA_LIVE.sql",
-     "supabase/migrations-snapshot/SNAPSHOT_META.json"
-    ]
    }
   ],
   "hot_files": [
    [
     "supabase/MIGRATIONS_SYNC_LOG.md",
-    18
+    14
+   ],
+   [
+    "package-lock.json",
+    3
+   ],
+   [
+    "package.json",
+    3
    ],
    [
     "supabase/migrations/20261125213000_e25_unschedule_orphan_history_crons.sql",
     3
    ],
    [
+    ".release-please-manifest.json",
+    2
+   ],
+   [
+    "CHANGELOG.md",
+    2
+   ],
+   [
     "supabase/rollbacks/20261125213000_rollback.sql",
     2
    ],
    [
-    "supabase/migrations-snapshot/ALL_IN_ONE.sql",
-    2
-   ],
-   [
-    "supabase/migrations-snapshot/SCHEMA_LIVE.sql",
-    2
-   ],
-   [
-    "supabase/migrations-snapshot/SNAPSHOT_META.json",
-    2
-   ],
-   [
-    "package-lock.json",
-    2
-   ],
-   [
-    "package.json",
-    2
-   ],
-   [
-    "supabase/migrations/20260620190001_populate_quotes_sent_at.sql",
+    ".github/workflows/schema-snapshot-export.yml",
     1
    ],
    [
-    "supabase/migrations/20260629142224_7e644177-527b-4b92-93a3-79ffee40ca4a.sql",
+    "docs/estado/10_TESTES.md",
     1
    ],
    [
-    "supabase/rollbacks/20260620190001_rollback.sql",
+    "e2e/carts-excellence.spec.ts",
     1
    ],
    [
-    "supabase/rollbacks/20260629142224_rollback.sql",
+    "e2e/catalog-flow.spec.ts",
     1
    ],
    [
-    "supabase/migrations/20261114160000_perf_idx_sds_restock_counts.sql",
+    "e2e/catalog-flows.spec.ts",
     1
    ],
    [
-    "supabase/baseline/20261125220000_cron_jobs.json",
+    "e2e/optimized-image.spec.ts",
     1
    ],
    [
-    "supabase/baseline/20261125180000_baseline_schema.sql",
+    "e2e/product-gallery-tooltip.spec.ts",
     1
    ],
    [
-    "supabase/baseline/20261125180000_ledger_versions.json",
+    "e2e/product-out-of-stock-carousel.spec.ts",
     1
    ],
    [
-    "supabase/migrations/20261027230000_cleanup_get_edge_function_secret_allowlist.sql",
+    "e2e/replenishment-flows.spec.ts",
     1
    ],
    [
-    "supabase/rollbacks/20261027230000_rollback.sql",
+    "e2e/role-badge-no-tooltip.spec.ts",
     1
    ],
    [
-    ".release-please-manifest.json",
+    "e2e/stock-regression.spec.ts",
     1
    ],
    [
-    "CHANGELOG.md",
+    "supabase/rollbacks/20260916211500_rollback.sql",
+    1
+   ],
+   [
+    "supabase/rollbacks/20260917150000_rollback.sql",
     1
    ]
   ]

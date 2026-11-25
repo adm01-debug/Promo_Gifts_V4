@@ -2,11 +2,36 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "06894b0d04ec2c1e00a8a7fd728530f9ad742b52",
+  "commit": "0792fac96b007e5d545af7710af73f342466eaf2",
   "branch": "main",
-  "data_commit": "2026-11-25T20:32:25-03:00",
+  "data_commit": "2026-11-25T20:44:52-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "0792fac",
+    "data": "2026-11-25",
+    "assunto": "fix(ci): snapshot de cron/event triggers via pooler (E037) (#4124)"
+   },
+   {
+    "sha": "0c2d7c6",
+    "data": "2026-11-25",
+    "assunto": "chore(test): liga 9 specs Playwright orfaos de tests/e2e/ ao runner (#4122)"
+   },
+   {
+    "sha": "872034f",
+    "data": "2026-11-25",
+    "assunto": "chore(main): release gifts-store 1.20.2 (#4112)"
+   },
+   {
+    "sha": "121a114",
+    "data": "2026-11-25",
+    "assunto": "chore: rollback das migrations ops (E30/E33/E40) (#4120)"
+   },
+   {
+    "sha": "6aad536",
+    "data": "2026-11-25",
+    "assunto": "docs(db): reconciliacao das 125 migrations fora do ledger com evidencia do dump (#4129)"
+   },
    {
     "sha": "06894b0",
     "data": "2026-11-25",
@@ -106,34 +131,9 @@
     "sha": "7987262",
     "data": "2026-11-25",
     "assunto": "docs(e25): registra a aplicacao em producao e resolve o risco em prod-readiness (#4104)"
-   },
-   {
-    "sha": "d7dbf20",
-    "data": "2026-11-25",
-    "assunto": "chore(security): atualiza baseline assinado de RLS policies (#4107)"
-   },
-   {
-    "sha": "f7c5a7d",
-    "data": "2026-11-25",
-    "assunto": "docs(migrations-log): recibo E15 — aplicação de 20260916193000 (#4103)"
-   },
-   {
-    "sha": "3b58891",
-    "data": "2026-11-25",
-    "assunto": "fix(e25): incorpora o hardening RLS da #4084 e completa a automacao de particoes (nunca aplicada) (#4102)"
-   },
-   {
-    "sha": "f0454b7",
-    "data": "2026-11-25",
-    "assunto": "fix: recibo de migration substitui linha existente de qualquer status (E75) (#4100)"
-   },
-   {
-    "sha": "4db7811",
-    "data": "2026-11-25",
-    "assunto": "fix(ci): destrava o replay do E40 (ACL de extensao da plataforma) (#4089)"
    }
   ],
-  "arquivos_mudados_7d": 555,
+  "arquivos_mudados_7d": 570,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -207,15 +207,15 @@
    },
    {
     "arquivo": "package.json",
-    "mudancas": 21
+    "mudancas": 22
    },
    {
     "arquivo": "package-lock.json",
-    "mudancas": 18
+    "mudancas": 19
    },
    {
     "arquivo": "CHANGELOG.md",
-    "mudancas": 14
+    "mudancas": 15
    },
    {
     "arquivo": "docs/coordenacao/conflitos-semanticos.md",
@@ -282,10 +282,6 @@
     "mudancas": 5
    },
    {
-    "arquivo": ".github/workflows/deploy-gates.yml",
-    "mudancas": 4
-   },
-   {
     "arquivo": "docs/agentes/resgates/2026-11-19-migrations-orfas-e-o-portao-retroativo.md",
     "mudancas": 4
    },
@@ -295,6 +291,10 @@
    },
    {
     "arquivo": "src/components/kit-builder/KitSummary.tsx",
+    "mudancas": 4
+   },
+   {
+    "arquivo": "src/components/kit-builder/PersonalizationConfig.tsx",
     "mudancas": 4
    }
   ],
@@ -310,7 +310,7 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 11283,
+  "arquivos_total": 11287,
   "arquivos_codigo": 5682,
   "linhas_codigo": 1077287,
   "rotas": 141,
@@ -327,7 +327,7 @@
   "testes": 2722,
   "workflows": 89,
   "scripts": 285,
-  "docs_md": 1510
+  "docs_md": 1511
  },
  "por_pasta": {
   ".github/scripts": {
@@ -426,6 +426,10 @@
    "arquivos": 43,
    "linhas": 5278
   },
+  "e2e/carts-excellence.spec.ts": {
+   "arquivos": 1,
+   "linhas": 68
+  },
   "e2e/carts-module.spec.ts": {
    "arquivos": 1,
    "linhas": 281
@@ -437,6 +441,14 @@
   "e2e/catalog-exhaustive-validation.spec.ts": {
    "arquivos": 1,
    "linhas": 138
+  },
+  "e2e/catalog-flow.spec.ts": {
+   "arquivos": 1,
+   "linhas": 68
+  },
+  "e2e/catalog-flows.spec.ts": {
+   "arquivos": 1,
+   "linhas": 82
   },
   "e2e/catalog-regression.spec.ts": {
    "arquivos": 1,
@@ -630,6 +642,10 @@
    "arquivos": 1,
    "linhas": 105
   },
+  "e2e/optimized-image.spec.ts": {
+   "arquivos": 1,
+   "linhas": 47
+  },
   "e2e/orcamentos": {
    "arquivos": 1,
    "linhas": 78
@@ -686,9 +702,17 @@
    "arquivos": 1,
    "linhas": 82
   },
+  "e2e/product-gallery-tooltip.spec.ts": {
+   "arquivos": 1,
+   "linhas": 73
+  },
   "e2e/product-grid-colors-hydration.spec.ts": {
    "arquivos": 1,
    "linhas": 140
+  },
+  "e2e/product-out-of-stock-carousel.spec.ts": {
+   "arquivos": 1,
+   "linhas": 98
   },
   "e2e/product-quick-actions.spec.ts": {
    "arquivos": 1,
@@ -786,6 +810,10 @@
    "arquivos": 1,
    "linhas": 70
   },
+  "e2e/replenishment-flows.spec.ts": {
+   "arquivos": 1,
+   "linhas": 67
+  },
   "e2e/replenishment-stress.spec.ts": {
    "arquivos": 1,
    "linhas": 229
@@ -801,6 +829,10 @@
   "e2e/reposicao-exaustivo.spec.ts": {
    "arquivos": 1,
    "linhas": 171
+  },
+  "e2e/role-badge-no-tooltip.spec.ts": {
+   "arquivos": 1,
+   "linhas": 69
   },
   "e2e/routes": {
    "arquivos": 91,
@@ -833,6 +865,10 @@
   "e2e/stock-module.spec.ts": {
    "arquivos": 1,
    "linhas": 321
+  },
+  "e2e/stock-regression.spec.ts": {
+   "arquivos": 1,
+   "linhas": 56
   },
   "e2e/super-filtro-exaustivo.spec.ts": {
    "arquivos": 1,
@@ -2067,8 +2103,8 @@
    "linhas": 5251
   },
   "tests/e2e": {
-   "arquivos": 47,
-   "linhas": 7749
+   "arquivos": 38,
+   "linhas": 7121
   },
   "tests/e2e-customization": {
    "arquivos": 1,

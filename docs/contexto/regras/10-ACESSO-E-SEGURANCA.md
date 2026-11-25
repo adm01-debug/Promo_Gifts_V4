@@ -1,6 +1,6 @@
 # 10 · ACESSO E SEGURANÇA — quem pode o quê
 
-> Gerado automaticamente por AI Context Sync v1.3.2 · commit `06894b0d04` · branch `main` · 2026-11-25 23:48 UTC
+> Gerado automaticamente por AI Context Sync v1.3.2 · commit `0792fac96b` · branch `main` · 2026-11-25 23:56 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## Perfis / roles identificados
@@ -249,9 +249,6 @@
 | `notification_preferences` | enabled | public: ( SELECT auth.uid()) = user_id<br>public: auth.uid() = user_id | public: ( SELECT auth.uid()) = user_id<br>public: auth.uid() = user_id | public: ( SELECT auth.uid()) = user_id<br>public: auth.uid() = user_id | public: ( SELECT auth.uid()) = user_id<br>public: auth.uid() = user_id |
 | `notification_templates` | enabled | authenticated: is_supervisor_or_above((SELECT auth.uid())) | public: false | public: false | public: false |
 | `notifications` | enabled | public: ("user_id" = ( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid"))<br>public: auth.uid() = user_id | public: true | public: ("user_id" = ( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid"))<br>public: auth.uid() = user_id | public: auth.uid() = user_id |
-| `ops.pgss_history` | enabled | — | — | — | — |
-| `ops.table_size_history` | enabled | — | — | — | — |
-| `ops.wraparound_monitor_log` | enabled | — | — | — | — |
 | `ops_grant_audit` | enabled | PUBLIC: FALSE | PUBLIC: FALSE | PUBLIC: FALSE | PUBLIC: FALSE |
 | `optimization_logs` | enabled | public: true | — | — | — |
 | `optimization_queue` | enabled | authenticated: public.is_dev(auth.uid()) | authenticated: public.is_dev(auth.uid()) | authenticated: public.is_dev(auth.uid()) | authenticated: public.is_dev(auth.uid()) |
@@ -323,7 +320,10 @@
 | `product_packagings` | enabled | — | — | — | — |
 | `product_physical` | enabled | authenticated: true<br>service_role: true | service_role: true | service_role: true | service_role: true |
 | `product_price_freshness_overrides` | enabled | — | authenticated: has_role((SELECT auth.uid()), 'admin'::app_role) | authenticated: has_role((SELECT auth.uid()), 'admin'::app_role) | authenticated: has_role((SELECT auth.uid()), 'admin'::app_role) |
-| … +199 linhas — lista completa em `context.json` | | | | | |
+| `product_print_positions` | enabled | public: true | — | — | — |
+| `product_properties` | enabled | anon: public.fn_product_active_for_rls(product_id) | — | — | — |
+| `product_qa_image_alerts` | enabled | authenticated: true<br>authenticated: is_admin_or_above((SELECT auth.uid())) | authenticated: is_admin_or_above((SELECT auth.uid())) | authenticated: is_admin_or_above((SELECT auth.uid())) | authenticated: is_admin_or_above((SELECT auth.uid())) |
+| … +196 linhas — lista completa em `context.json` | | | | | |
 
 > `—` com RLS ligado = ninguém além de service_role. `sem RLS` = qualquer chave anon lê/escreve tudo.
 
@@ -1972,6 +1972,4 @@ Middleware matcher (Next.js): nenhum
 | `_deprecated_silver_variants_20260606` | `cost_price_8` | `NUMERIC(12,4)` |
 | `_deprecated_silver_variants_20260606` | `cost_price_9` | `NUMERIC(12,4)` |
 | `_deprecated_silver_variants_20260606` | `cost_price_10` | `NUMERIC(12,4)` |
-| `ops.table_size_history` | `total_bytes` | `bigint` |
-| `ops.pgss_history` | `total_exec_time` | `double` |
 | `webhook_configs` | `total_calls` | `INT` |

@@ -1,6 +1,6 @@
 # 11 · GLOSSÁRIO, DADOS DE REFERÊNCIA E LACUNAS
 
-> Gerado automaticamente por AI Context Sync v1.3.2 · commit `06894b0d04` · branch `main` · 2026-11-25 23:48 UTC
+> Gerado automaticamente por AI Context Sync v1.3.2 · commit `0792fac96b` · branch `main` · 2026-11-25 23:56 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## Glossário do domínio (entidades do sistema)
@@ -233,9 +233,6 @@
 | `notification_preferences` | Preferências de notificação por usuário para canais e categorias de eventos. | 21 colunas | migration |
 | `notification_templates` | Modelos reutilizáveis de notificações, identificados por code, com assunto, corpo e lista JSON de variáveis esperadas. is_active controla disponibilidade para envio. | 9 colunas | migration |
 | `notifications` | Notificações direcionadas a usuários, com conteúdo, prioridade, estado de leitura e dados auxiliares. | 25 colunas | migration |
-| `ops.pgss_history` | PLANO_DBA E40 — snapshot semanal de extensions.pg_stat_statements (filtrado a  | 8 colunas | migration |
-| `ops.table_size_history` | PLANO_DBA E30 — série histórica diária de pg_total_relation_size()/reltuples por  | 5 colunas | migration |
-| `ops.wraparound_monitor_log` | PLANO_DBA E33 — snapshot diário de risco de wraparound de XID/multixact,  | 8 colunas | migration |
 | `ops_grant_audit` | Auditoria resumida de alterações de grants operacionais, registrando assinatura da função, roles corrigidas, origem e instante da execução. | 5 colunas | migration |
 | `optimization_logs` | _(sem COMMENT ON TABLE — significado não documentado)_ | 3 colunas | migration |
 | `optimization_queue` | Fila de propostas de otimização operacional, com prioridade, categoria, status, guardrail e resultado/erro da execução. | 14 colunas | migration |
@@ -307,7 +304,10 @@
 | `product_packagings` | Relação entre produtos e embalagens disponíveis. Cada linha associa um produto do catálogo a uma embalagem e registra a natureza da relação (included, optional, required, default), preço adicional, moeda e quantidade mínima. | 11 colunas | migration |
 | `product_physical` | [ARQ 2026-06-26] Satélite physical (buffer WRITE-ONLY; não lido por view/função/FK).  | 21 colunas | migration |
 | `product_price_freshness_overrides` | Override local da janela de validade de preço por produto (30/60/90 dias). Sobrescreve o valor padrão de 60 dias e tem precedência sobre qualquer valor que venha a ser exposto pelo BD externo no futuro. | 6 colunas | migration |
-| … +525 linhas — lista completa em `context.json` | | | |
+| `product_print_positions` | Configuração de posições de impressão por produto, ordenada por position_index, com códigos/nomes de local, técnicas e referências visuais em JSON/texto. | 18 colunas | migration |
+| `product_properties` | Relacionamento entre produtos e suas propriedades | 9 colunas | migration |
+| `product_qa_image_alerts` | Tabela de qualidade: rastreia produtos ativos que foram ativados ou encontrados sem imagem. Regra de negócio violada: "nenhum produto ativo pode existir sem ao menos uma imagem".  ━━━ CICLO DE VIDA DE UM ALERTA ━━━ ABERTO    → is_resolved=false, resolved_at=NULL RESOLVIDO → is_resolved=true,  resolved_at=timestamp, resolution_notes=motivo  ━━━ FONTES DE CRIAÇÃO (2 caminhos) ━━━ 1. Trigger em tempo real  — products: BEFORE UPDATE    Função: fn_qa_alert_on_activate_without_image()    Gatilho: qualquer UPDATE que mude is_active de false/NULL → true    Efeito: além do alerta, seta products.sync_status = 'activated_no_image' (18 chars, MAX varchar(20))     2. Varredura periódica — pg_cron 'qa-imageless-products' (a cada 30 minutos)    Função: fn_qa_scan_imageless_products()    Detecta produtos que escaparam do trigger (ex.: criados diretamente em pipeline mode)    Também auto-resolve alertas de produtos que já sanaram a situação  ━━━ AUTO-RESOLUÇÃO (fn_qa_scan_imageless_products) ━━━ Um alerta aberto é marcado is_resolved=true automaticamente quando:   • O produto recebeu uma imagem  (row ativa em product_images, primary_image_url, ou images JSONB)   • O produto foi desativado      (is_active=false)   • O produto foi deletado        (is_deleted=true) Para forçar uma varredura manual: SELECT * FROM fn_qa_scan_imageless_products();  ━━━ RELACIONAMENTOS ━━━ • products (FK product_id, ON DELETE CASCADE) — produto monitorado • supplier_id, sku_promo, product_name        — denormalizados no momento do alerta   (para leitura rápida sem JOIN, mesmo se o produto for deletado depois)  ━━━ QUEM ALIMENTA / CONSOME ━━━ Escreve:  trigger fn_qa_alert_on_activate_without_image() \| fn_qa_scan_imageless_products() Lê:       dashboards de qualidade \| rotinas de re-ativação pós-imagem \| n8n workflows de alerta NÃO deve ser editado manualmente — gerenciado exclusivamente pelas funções acima.  ━━━ ÍNDICES ━━━ • idx_pqia_product_id   — busca por produto • idx_pqia_is_resolved  — WHERE is_resolved=false (alertas abertos) • idx_pqia_detected_at  — ordenação por data de detecção  | 11 colunas | migration |
+| … +522 linhas — lista completa em `context.json` | | | |
 
 ## Dados de referência (seed — planos, categorias, perfis fixos)
 
@@ -647,7 +647,7 @@
 | rls | `supplier_products_raw`: RLS ligado sem nenhuma política → só service_role acessa |  |
 | rls | `supplier_settings`: RLS ligado sem nenhuma política → só service_role acessa | `src/hooks/products/useSupplierDefaultLeadTime.ts`<br>`src/services/productionLeadTimeService.ts` |
 | rls | `suppliers`: front faz SELECT mas nenhuma política RLS permite SELECT → vai falhar/retornar vazio para usuários | `src/services/freightReadinessService.ts` |
-| … +258 linhas — lista completa em `context.json` | | |
+| … +257 linhas — lista completa em `context.json` | | |
 
 ## Lacunas — o que este contexto NÃO consegue responder (perguntas para o dono do negócio)
 
@@ -715,7 +715,7 @@
 - `quote_approval_tokens.status` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.
 - `kit_share_tokens.status` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.
 - `_deprecated_silver_images_queue_20260606.img_status` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.
-- 65/499 tabelas sem `COMMENT ON TABLE` — o significado de negócio não está no schema: `quotes_inbound`, `webhook_inbound_dedupe`, `webhook_inbound_log`, `admin_audit_log_y2025m12`, `admin_audit_log_y2026m01`, `admin_audit_log_y2026m02`, `admin_audit_log_y2026m03`, `admin_audit_log_y2026m04`, `admin_audit_log_y2026m05`, `admin_audit_log_y2026m06`, `app_vitals`, `audit_logs` …
+- 65/496 tabelas sem `COMMENT ON TABLE` — o significado de negócio não está no schema: `quotes_inbound`, `webhook_inbound_dedupe`, `webhook_inbound_log`, `admin_audit_log_y2025m12`, `admin_audit_log_y2026m01`, `admin_audit_log_y2026m02`, `admin_audit_log_y2026m03`, `admin_audit_log_y2026m04`, `admin_audit_log_y2026m05`, `admin_audit_log_y2026m06`, `app_vitals`, `audit_logs` …
 - Há tabelas usadas no código sem migration no repo — o schema real pode ter sido alterado pelo painel.
 
 ## Regras manuais presentes

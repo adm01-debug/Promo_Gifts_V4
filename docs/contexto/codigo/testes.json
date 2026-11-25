@@ -16,7 +16,7 @@
  "onde_ficam": [
   {
    "padrao": "tests/",
-   "arquivos": 1098
+   "arquivos": 1089
   },
   {
    "padrao": "co-localizado (__tests__)",
@@ -24,7 +24,7 @@
   },
   {
    "padrao": "e2e/",
-   "arquivos": 627
+   "arquivos": 636
   },
   {
    "padrao": "co-localizado (*.test)",
@@ -547,6 +547,13 @@
    "casos": 2
   },
   {
+   "arquivo": "e2e/carts-excellence.spec.ts",
+   "tipo": "e2e",
+   "linhas": 68,
+   "testa": [],
+   "casos": 3
+  },
+  {
    "arquivo": "e2e/carts-module.spec.ts",
    "tipo": "e2e",
    "linhas": 281,
@@ -559,6 +566,20 @@
    "linhas": 138,
    "testa": [],
    "casos": 5
+  },
+  {
+   "arquivo": "e2e/catalog-flow.spec.ts",
+   "tipo": "e2e",
+   "linhas": 68,
+   "testa": [],
+   "casos": 2
+  },
+  {
+   "arquivo": "e2e/catalog-flows.spec.ts",
+   "tipo": "e2e",
+   "linhas": 82,
+   "testa": [],
+   "casos": 3
   },
   {
    "arquivo": "e2e/catalog-regression.spec.ts",
@@ -2754,6 +2775,13 @@
    "casos": 3
   },
   {
+   "arquivo": "e2e/optimized-image.spec.ts",
+   "tipo": "e2e",
+   "linhas": 47,
+   "testa": [],
+   "casos": 2
+  },
+  {
    "arquivo": "e2e/orcamentos/list-url-state-restore.spec.ts",
    "tipo": "e2e",
    "linhas": 78,
@@ -2852,11 +2880,25 @@
    "casos": 3
   },
   {
+   "arquivo": "e2e/product-gallery-tooltip.spec.ts",
+   "tipo": "e2e",
+   "linhas": 73,
+   "testa": [],
+   "casos": 2
+  },
+  {
    "arquivo": "e2e/product-grid-colors-hydration.spec.ts",
    "tipo": "e2e",
    "linhas": 140,
    "testa": [],
    "casos": 4
+  },
+  {
+   "arquivo": "e2e/product-out-of-stock-carousel.spec.ts",
+   "tipo": "e2e",
+   "linhas": 98,
+   "testa": [],
+   "casos": 2
   },
   {
    "arquivo": "e2e/product-quick-actions.spec.ts",
@@ -3439,6 +3481,13 @@
    "casos": 4
   },
   {
+   "arquivo": "e2e/replenishment-flows.spec.ts",
+   "tipo": "e2e",
+   "linhas": 67,
+   "testa": [],
+   "casos": 5
+  },
+  {
    "arquivo": "e2e/replenishment-stress.spec.ts",
    "tipo": "e2e",
    "linhas": 229,
@@ -3472,6 +3521,13 @@
    "linhas": 171,
    "testa": [],
    "casos": 9
+  },
+  {
+   "arquivo": "e2e/role-badge-no-tooltip.spec.ts",
+   "tipo": "e2e",
+   "linhas": 69,
+   "testa": [],
+   "casos": 2
   },
   {
    "arquivo": "e2e/routes/_catalog.ts",
@@ -4172,6 +4228,13 @@
    "linhas": 321,
    "testa": [],
    "casos": 15
+  },
+  {
+   "arquivo": "e2e/stock-regression.spec.ts",
+   "tipo": "e2e",
+   "linhas": 56,
+   "testa": [],
+   "casos": 1
   },
   {
    "arquivo": "e2e/super-filtro-exaustivo.spec.ts",
@@ -16159,27 +16222,6 @@
    "casos": 34
   },
   {
-   "arquivo": "tests/e2e/carts-excellence.spec.ts",
-   "tipo": "e2e",
-   "linhas": 68,
-   "testa": [],
-   "casos": 3
-  },
-  {
-   "arquivo": "tests/e2e/catalog-flow.spec.ts",
-   "tipo": "e2e",
-   "linhas": 68,
-   "testa": [],
-   "casos": 2
-  },
-  {
-   "arquivo": "tests/e2e/catalog-flows.spec.ts",
-   "tipo": "e2e",
-   "linhas": 82,
-   "testa": [],
-   "casos": 3
-  },
-  {
    "arquivo": "tests/e2e/catalog-price-freshness-badge.test.tsx",
    "tipo": "e2e",
    "linhas": 299,
@@ -16387,13 +16429,6 @@
    "casos": 4
   },
   {
-   "arquivo": "tests/e2e/optimized-image.spec.ts",
-   "tipo": "e2e",
-   "linhas": 47,
-   "testa": [],
-   "casos": 2
-  },
-  {
    "arquivo": "tests/e2e/performance.test.ts",
    "tipo": "e2e",
    "linhas": 99,
@@ -16436,20 +16471,6 @@
    "casos": 31
   },
   {
-   "arquivo": "tests/e2e/product-gallery-tooltip.spec.ts",
-   "tipo": "e2e",
-   "linhas": 73,
-   "testa": [],
-   "casos": 2
-  },
-  {
-   "arquivo": "tests/e2e/product-out-of-stock-carousel.spec.ts",
-   "tipo": "e2e",
-   "linhas": 98,
-   "testa": [],
-   "casos": 2
-  },
-  {
    "arquivo": "tests/e2e/products-catalog.test.ts",
    "tipo": "e2e",
    "linhas": 201,
@@ -16478,32 +16499,11 @@
    "casos": 53
   },
   {
-   "arquivo": "tests/e2e/replenishment-flows.spec.ts",
-   "tipo": "e2e",
-   "linhas": 67,
-   "testa": [],
-   "casos": 5
-  },
-  {
-   "arquivo": "tests/e2e/role-badge-no-tooltip.spec.ts",
-   "tipo": "e2e",
-   "linhas": 69,
-   "testa": [],
-   "casos": 2
-  },
-  {
    "arquivo": "tests/e2e/seller-carts.test.ts",
    "tipo": "e2e",
    "linhas": 215,
    "testa": [],
    "casos": 11
-  },
-  {
-   "arquivo": "tests/e2e/stock-regression.spec.ts",
-   "tipo": "e2e",
-   "linhas": 56,
-   "testa": [],
-   "casos": 1
   },
   {
    "arquivo": "tests/e2e/tools-simulator.test.ts",

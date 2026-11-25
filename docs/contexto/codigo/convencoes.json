@@ -23,9 +23,9 @@
    "src/services (16)"
   ],
   "testes": [
-   "tests/ (1098)",
+   "tests/ (1089)",
    "co-localizado (__tests__) (791)",
-   "e2e/ (627)"
+   "e2e/ (636)"
   ],
   "edge_functions": "supabase/functions",
   "migrations": "supabase/migrations",
@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
-   "fix: reverte E25 falso-positivo (jobs nao eram orfaos) (#4134)",
-   "chore: rollbacks das migrations de sent_at e anti-fraude de preco (#4131)",
-   "fix: cabecalho de rollback na 20261125213000 (destrava preflight E15) (#4132)",
-   "fix(db): remove crons orfaos de particao do historico (E25) (#4121)",
-   "docs(migrations-log): recibo E15 — aplicação de 20261114160000 (#4130)"
+   "fix(ci): snapshot de cron/event triggers via pooler (E037) (#4124)",
+   "chore(test): liga 9 specs Playwright orfaos de tests/e2e/ ao runner (#4122)",
+   "chore(main): release gifts-store 1.20.2 (#4112)",
+   "chore: rollback das migrations ops (E30/E33/E40) (#4120)",
+   "docs(db): reconciliacao das 125 migrations fora do ledger com evidencia do dump (#4129)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",
