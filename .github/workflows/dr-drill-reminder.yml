@@ -7,7 +7,7 @@ name: DR Drill Reminder
 on:
   schedule:
     # Primeira segunda-feira de jan/abr/jul/out às 09:00 UTC (aproximado via cron mensal)
-    - cron: '0 9 1-7 1,4,7,10 1'
+    - cron: '7 9 1-7 1,4,7,10 1' # E19: minuto :00 proibido — jitter de 7min
   workflow_dispatch:
 
 permissions:
