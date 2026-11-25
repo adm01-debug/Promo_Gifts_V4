@@ -1,9 +1,9 @@
 {
  "meta": {
-  "sha": "f7c5a7decb9133fd1bdff1587c6f230ff80744b2",
+  "sha": "d7dbf2069c0418d72384bc7546c834057eaa0810",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-25 18:51 UTC",
+  "generated_at": "2026-11-25 19:13 UTC",
   "files_total": 11209,
   "code_files": 9197,
   "code_lines": 1305220
@@ -564997,10 +564997,19 @@
   }
  },
  "git": {
-  "sha": "f7c5a7decb9133fd1bdff1587c6f230ff80744b2",
+  "sha": "d7dbf2069c0418d72384bc7546c834057eaa0810",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "d7dbf20",
+    "date": "2026-11-25",
+    "author": "github-actions[bot]",
+    "subject": "chore(security): atualiza baseline assinado de RLS policies (#4107)",
+    "files": [
+     ".security/policies-baseline.json"
+    ]
+   },
    {
     "sha": "f7c5a7d",
     "date": "2026-11-25",
@@ -565307,20 +565316,6 @@
      "src/components/mockup/approval/MockupLayoutButtons.tsx",
      "tests/e2e/mockup-regressions.spec.ts"
     ]
-   },
-   {
-    "sha": "4d25f2d",
-    "date": "2026-11-25",
-    "author": "adm01-debug",
-    "subject": "fix(ci): jitter E19 nos crons em :00/:30 + recupera o medidor de cron (#4061)",
-    "files": [
-     ".github/workflows/dr-drill-reminder.yml",
-     ".github/workflows/e2e-focused.yml",
-     ".github/workflows/policies-baseline.yml",
-     ".github/workflows/wraparound-monitor-report.yml",
-     "scripts/automation.config.json",
-     "scripts/list-cron-schedules.mjs"
-    ]
    }
   ],
   "hot_files": [
@@ -565361,6 +565356,10 @@
     2
    ],
    [
+    ".security/policies-baseline.json",
+    1
+   ],
+   [
     "supabase/migrations/20260916193000_e25_supplier_history_partition_automation.sql",
     1
    ],
@@ -565398,10 +565397,6 @@
    ],
    [
     "supabase/migrations/20261125180000_fix_comment_v_tabela_gravacao_publica.sql",
-    1
-   ],
-   [
-    "supabase/rollbacks/20261125180000_rollback.sql",
     1
    ]
   ]

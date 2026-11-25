@@ -794,6 +794,9 @@ Roles da API: `anon` (sem login), `authenticated` (logado), `service_role` (bypa
 | public.supplier_products_raw | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
 | public.supplier_products_raw_history | authenticated | SELECT |
 | public.supplier_products_raw_history | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
+| public.supplier_products_raw_history_default | anon | REFERENCES, TRIGGER |
+| public.supplier_products_raw_history_default | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
+| public.supplier_products_raw_history_default | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
 | public.supplier_products_raw_history_p2026_08 | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
 | public.supplier_products_raw_history_p2026_08 | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
 | public.supplier_products_raw_history_p2026_09 | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |

@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "f7c5a7decb9133fd1bdff1587c6f230ff80744b2",
+  "commit": "d7dbf2069c0418d72384bc7546c834057eaa0810",
   "branch": "main",
-  "data_commit": "2026-11-25T15:49:43-03:00",
+  "data_commit": "2026-11-25T16:06:31-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "d7dbf20",
+    "data": "2026-11-25",
+    "assunto": "chore(security): atualiza baseline assinado de RLS policies (#4107)"
+   },
    {
     "sha": "f7c5a7d",
     "data": "2026-11-25",
@@ -126,14 +131,9 @@
     "sha": "33f0130",
     "data": "2026-11-25",
     "assunto": "fix(db): tripwire da 20261125120000 declara pg_temp no search_path (E066) (#4070)"
-   },
-   {
-    "sha": "4e083f6",
-    "data": "2026-11-25",
-    "assunto": "chore(deps): bump @hookform/resolvers de 5.9.1 para 7.0.8 (#4068)"
    }
   ],
-  "arquivos_mudados_7d": 588,
+  "arquivos_mudados_7d": 582,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -301,11 +301,11 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 249
+    "commits": 248
    },
    {
     "autor": "github-actions[bot]",
-    "commits": 51
+    "commits": 52
    }
   ]
  },

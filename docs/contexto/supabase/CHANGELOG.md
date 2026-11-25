@@ -2,6 +2,19 @@
 
 Diff semântico gerado a cada coleta em que algo mudou.
 
+## 2026-11-25 19:15 UTC
+
+- **colunas** adicionado (7): `public.supplier_products_raw_history_default.captured_at`, `public.supplier_products_raw_history_default.content_hash`, `public.supplier_products_raw_history_default.id`, `public.supplier_products_raw_history_default.raw_data`, `public.supplier_products_raw_history_default.raw_id`, `public.supplier_products_raw_history_default.supplier_id`, `public.supplier_products_raw_history_default.supplier_reference`
+- **constraints** adicionado (1): `public.supplier_products_raw_history_default.supplier_products_raw_history_default_pkey`
+- **cron jobs** adicionado (2): `318:supplier-history-partition-maintenance`, `319:supplier-history-default-partition-alert`
+- **functions** adicionado (1): `public.fn_ensure_history_partitions(p_months_ahead integer)`
+- **functions** alterado (2): `public.fn_cron_safe_run(p_key bigint, p_sql text, p_timeout_ms integer, p_job_label text)`, `public.is_admin_or_above(_user_id uuid)`
+- **grants** adicionado (3): `public.supplier_products_raw_history_default:anon`, `public.supplier_products_raw_history_default:authenticated`, `public.supplier_products_raw_history_default:service_role`
+- **indexes** adicionado (1): `public.supplier_products_raw_history_default_pkey`
+- **migrations** adicionado (1): `20260916193000_e25_supplier_history_partition_automation`
+- **policies (RLS)** adicionado (2): `public.supplier_products_raw_history_default.hist_all_service`, `public.supplier_products_raw_history_default.hist_select_admin`
+- **tabelas** adicionado (1): `public.supplier_products_raw_history_default`
+
 ## 2026-11-25 18:20 UTC
 
 - **migrations** adicionado (1): `20261125180000_fix_comment_v_tabela_gravacao_publica`

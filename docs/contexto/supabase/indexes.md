@@ -1133,6 +1133,7 @@ Uso e tamanho em `stats.md`.
 | public.supplier_products_raw | uq_spr_supplier_sku | btree | supplier_id, supplier_sku | sim | sim |  |
 | public.supplier_products_raw | uq_supplier_product_raw | btree | supplier_id, supplier_reference | sim | sim |  |
 | public.supplier_products_raw_history | supplier_products_raw_history_pkey1 | btree | id, captured_at | sim | sim |  |
+| public.supplier_products_raw_history_default | supplier_products_raw_history_default_pkey | btree | id, captured_at | sim | sim |  |
 | public.supplier_products_raw_history_p2026_08 | supplier_products_raw_history_p2026_08_pkey | btree | id, captured_at | sim | sim |  |
 | public.supplier_products_raw_history_p2026_09 | supplier_products_raw_history_p2026_09_pkey | btree | id, captured_at | sim | sim |  |
 | public.supplier_products_raw_history_p2026_10 | supplier_products_raw_history_p2026_10_pkey | btree | id, captured_at | sim | sim |  |

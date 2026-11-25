@@ -855,6 +855,8 @@ Visão consolidada (inclui `storage.objects` e `realtime.messages`); detalhes po
 | public.supplier_products_raw | spr_select_admin | SELECT | PERMISSIVE | authenticated | `is_admin_or_above(( SELECT ( SELECT auth.uid() AS uid) AS uid))` |  |
 | public.supplier_products_raw_history | hist_all_service | ALL | PERMISSIVE | service_role | `true` | `true` |
 | public.supplier_products_raw_history | hist_select_admin | SELECT | PERMISSIVE | authenticated | `is_admin_or_above(( SELECT ( SELECT auth.uid() AS uid) AS uid))` |  |
+| public.supplier_products_raw_history_default | hist_all_service | ALL | PERMISSIVE | service_role | `true` | `true` |
+| public.supplier_products_raw_history_default | hist_select_admin | SELECT | PERMISSIVE | authenticated | `is_admin_or_above(( SELECT auth.uid() AS uid))` |  |
 | public.supplier_products_raw_history_p2026_08 | hist_all_service | ALL | PERMISSIVE | service_role | `true` | `true` |
 | public.supplier_products_raw_history_p2026_08 | hist_select_admin | SELECT | PERMISSIVE | authenticated | `is_admin_or_above(( SELECT ( SELECT auth.uid() AS uid) AS uid))` |  |
 | public.supplier_products_raw_history_p2026_09 | hist_all_service | ALL | PERMISSIVE | service_role | `true` | `true` |

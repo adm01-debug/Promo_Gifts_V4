@@ -2866,6 +2866,7 @@ SQL em `migrations/<versao>_<nome>.sql`. Mudanças feitas pelo Dashboard/SQL Edi
 | 20260912205759 | [catalog_e24_zapp_catalog_stats](migrations/20260912205759_catalog_e24_zapp_catalog_stats.sql) | 1 |
 | 20260915113458 | [](migrations/20260915113458.sql) | 0 |
 | 20260916155725 | [catalog_stats_price_range_top_colors_materials](migrations/20260916155725_catalog_stats_price_range_top_colors_materials.sql) | 1 |
+| 20260916193000 | [e25_supplier_history_partition_automation](migrations/20260916193000_e25_supplier_history_partition_automation.sql) | 14 |
 | 20260916202000 | [e23_force_rls_secret_tables](migrations/20260916202000_e23_force_rls_secret_tables.sql) | 12 |
 | 20260917061500 | [e18_revoke_authenticated_authz_gaps](migrations/20260917061500_e18_revoke_authenticated_authz_gaps.sql) | 6 |
 | 20260922170000 | [signup_identity_safe_default](migrations/20260922170000_signup_identity_safe_default.sql) | 3 |
