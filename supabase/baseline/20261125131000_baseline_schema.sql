@@ -1,6 +1,6 @@
 -- =============================================================================
--- Baseline do schema de produção (doufsxqlfjyuvxuezpln) — versão 20261122200000
--- Gerado em 2026-11-24T00:14:33.399Z por scripts/export-schema-snapshot.mjs (supabase db dump --linked).
+-- Baseline do schema de produção (doufsxqlfjyuvxuezpln) — versão 20261125131000
+-- Gerado em 2026-11-25T15:49:25.481Z por scripts/export-schema-snapshot.mjs (supabase db dump --linked).
 -- Uso exclusivo: ponto de partida do replay do db-schema-drift-check.
 -- NÃO é migration: não aplicar em produção, não copiar para supabase/migrations/.
 -- Não contém: dados, jobs do pg_cron, storage, vault, schema auth, publications,
@@ -28,7 +28,7 @@ CREATE SCHEMA IF NOT EXISTS "analytics";
 ALTER SCHEMA "analytics" OWNER TO "postgres";
 
 
-COMMENT ON SCHEMA "analytics" IS 'Materialized views internas/analíticas. Não exposto via PostgREST. Acesso via views wrapper em public ou via service_role. Criado em T20 do redeploy 2026-05.';
+COMMENT ON SCHEMA "analytics" IS 'Schema interno de objetos analíticos e materialized views. Não destinado à exposição direta pelo PostgREST; acesso conforme os privilégios do banco e as views/RPCs de consumo autorizadas.';
 
 
 
@@ -38,15 +38,17 @@ CREATE SCHEMA IF NOT EXISTS "api";
 ALTER SCHEMA "api" OWNER TO "postgres";
 
 
+COMMENT ON SCHEMA "api" IS 'Namespace para objetos de banco específicos da camada API do projeto. Revisar privilégios e exposição via PostgREST antes de adicionar ou publicar objetos.';
+
+
+
 CREATE SCHEMA IF NOT EXISTS "cf_recon";
 
 
 ALTER SCHEMA "cf_recon" OWNER TO "postgres";
 
 
-COMMENT ON SCHEMA "cf_recon" IS 'Schema de reconciliação Cloudflare Images × DB. Criado 2026-06-16 durante auditoria forense.
-Contém: cf_image (mirror CF), crawl_run (histórico de crawls), cf_ghost_check_queue (IDs suspeitos),
-action_log (log imutável de decisões), remediation (plano de remediações), metric_snapshot (KPIs).';
+COMMENT ON SCHEMA "cf_recon" IS 'Schema de reconciliação entre o inventário do Cloudflare Images e os metadados mantidos no banco. Contém mirror de imagens, execuções de crawl, métricas, fila de verificações e trilha de ações/remediações.';
 
 
 
@@ -54,6 +56,10 @@ CREATE SCHEMA IF NOT EXISTS "classification_audit";
 
 
 ALTER SCHEMA "classification_audit" OWNER TO "postgres";
+
+
+COMMENT ON SCHEMA "classification_audit" IS 'Área de auditoria das sugestões de classificação de categorias. Guarda candidatos, sinais, pontuações e resultados intermediários para revisão; não substitui os vínculos canônicos em public.product_category_assignments.';
+
 
 
 CREATE EXTENSION IF NOT EXISTS "pg_cron" WITH SCHEMA "pg_catalog";
@@ -69,6 +75,10 @@ CREATE SCHEMA IF NOT EXISTS "internal";
 ALTER SCHEMA "internal" OWNER TO "postgres";
 
 
+COMMENT ON SCHEMA "internal" IS 'Namespace reservado para objetos internos específicos do projeto. Não tratar como contrato público da aplicação; revisar privilégios e dependências antes de expor ou alterar objetos neste schema.';
+
+
+
 CREATE EXTENSION IF NOT EXISTS "pg_net" WITH SCHEMA "extensions";
 
 
@@ -82,7 +92,11 @@ CREATE SCHEMA IF NOT EXISTS "prod_audit";
 ALTER SCHEMA "prod_audit" OWNER TO "postgres";
 
 
-COMMENT ON SCHEMA "public" IS '@graphql({"max_rows": 30, "inflect_names": false})';
+COMMENT ON SCHEMA "prod_audit" IS 'Área de auditoria e suporte à classificação de produtos. Contém evidências de testes, regras e projeções de atributos/categorias usadas para revisar resultados de classificação; não é a fonte de verdade do catálogo de produção.';
+
+
+
+COMMENT ON SCHEMA "public" IS 'Schema principal da aplicação Promo Brindes. Contém o catálogo Gold, organizações, cotações, pedidos, usuários de aplicação e módulos operacionais. Tabelas acessadas pela API conforme configuração do PostgREST e políticas RLS; consultar os comentários de cada tabela/coluna para a semântica específica.';
 
 
 
@@ -99,7 +113,7 @@ CREATE SCHEMA IF NOT EXISTS "supplier_stricker";
 ALTER SCHEMA "supplier_stricker" OWNER TO "postgres";
 
 
-COMMENT ON SCHEMA "supplier_stricker" IS 'Dados brutos sincronizados da API Stricker (SPOT Gifts Brasil)';
+COMMENT ON SCHEMA "supplier_stricker" IS 'Área de integração com o catálogo da Stricker/SPOT. Contém espelhos sincronizados da API do fornecedor, estruturas de staging, categorias externas e tabelas de apoio para mapear produtos, variantes, estoque, cores e personalização para o modelo canônico da aplicação.';
 
 
 
@@ -3121,6 +3135,10 @@ CREATE TABLE IF NOT EXISTS "public"."optimization_queue" (
 
 
 ALTER TABLE "public"."optimization_queue" OWNER TO "postgres";
+
+
+COMMENT ON TABLE "public"."optimization_queue" IS 'Fila de propostas de otimização operacional, com prioridade, categoria, status, guardrail e resultado/erro da execução.';
+
 
 
 CREATE OR REPLACE FUNCTION "public"."claim_next_optimization"() RETURNS "public"."optimization_queue"
@@ -8955,23 +8973,71 @@ ALTER TABLE ONLY "public"."quotes" REPLICA IDENTITY FULL;
 ALTER TABLE "public"."quotes" OWNER TO "postgres";
 
 
+COMMENT ON TABLE "public"."quotes" IS 'Orçamentos comerciais e seu ciclo de vida: status operacional, etapa de funil, itens, condições, aprovação de desconto e conversão em pedido. Os itens ficam em public.quote_items. Subtotais reais e apresentados diferenciam markup interno; frete e impostos são campos separados.';
+
+
+
+COMMENT ON COLUMN "public"."quotes"."stage" IS 'Etapa comercial recomendada do funil, distinta de quotes.status (estado operacional). Vocabulário recomendado: elaboration (preparação; valor padrão atual), internal_approval (aprovação interna), sent_to_client (enviado ao cliente), negotiation (negociação/revisões), won (ganho; normalmente aprovado ou convertido em pedido) e lost (encerrado sem conversão). Documentação apenas: a coluna não possui CHECK e valores adicionais não são bloqueados pelo banco.';
+
+
+
+COMMENT ON COLUMN "public"."quotes"."subtotal" IS 'Subtotal comercial dos produtos/itens do orçamento em BRL (reais, com centavos; não centavos inteiros). Exclui frete e impostos, registrados separadamente. O subtotal apresentado pode refletir negotiation_markup_percent; real_subtotal registra a base interna sem esse markup. Convenção documental: subtotal antes do desconto global do orçamento.';
+
+
+
+COMMENT ON COLUMN "public"."quotes"."discount_amount" IS 'Valor monetário do desconto global do orçamento, em BRL (reais com centavos), separado de discount_percent. Convention: subtrair do subtotal ao obter o total; não inclui frete nem impostos.';
+
+
+
+COMMENT ON COLUMN "public"."quotes"."shipping_cost" IS 'Custo de frete do orçamento em BRL (reais com centavos), mantido separado do subtotal dos produtos.';
+
+
+
+COMMENT ON COLUMN "public"."quotes"."tax_amount" IS 'Valor total de impostos do orçamento em BRL (reais com centavos), mantido separado do subtotal dos produtos e do frete.';
+
+
+
+COMMENT ON COLUMN "public"."quotes"."total" IS 'Total comercial recomendado em BRL (reais com centavos): subtotal - discount_amount + shipping_cost + tax_amount. Documentação da regra de negócio; a coluna não é gerada nem possui constraint que imponha essa fórmula.';
+
+
+
+COMMENT ON COLUMN "public"."quotes"."payment_terms" IS 'Condição comercial de pagamento em texto livre. Formatos recomendados: avista, N dias, N/N/... dias (ex.: 30/60/90 dias) ou sob consulta. Manter condições negociadas legíveis; não é um enum e não possui CHECK.';
+
+
+
+COMMENT ON COLUMN "public"."quotes"."converted_to_order_id" IS 'Referência lógica ao pedido criado a partir deste orçamento. O schema atual não declara FK para converted_to_order_id; não presumir integridade referencial imposta pelo banco.';
+
+
+
 COMMENT ON COLUMN "public"."quotes"."seller_id" IS '[Etapa 7] Espelho de created_by. Hook applySellerScope filtra por seller_id por padrão. Sincronizado via trigger.';
 
 
 
-COMMENT ON COLUMN "public"."quotes"."discount_percent" IS 'Desconto exposto ao cliente (% sobre subtotal). Coexiste com discount_percentage legacy — código novo usa discount_percent.';
+COMMENT ON COLUMN "public"."quotes"."discount_percent" IS 'Percentual de desconto comercial apresentado ao cliente (0–100), aplicado sobre a base comercial do orçamento; distinto do valor monetário discount_amount e do markup interno negotiation_markup_percent.';
 
 
 
-COMMENT ON COLUMN "public"."quotes"."negotiation_markup_percent" IS 'Markup INTERNO 0–50%. Infla subtotal apresentado para criar margem psicológica de desconto. NUNCA exposto ao cliente.';
+COMMENT ON COLUMN "public"."quotes"."negotiation_markup_percent" IS 'Percentual de markup interno de negociação. Pode elevar o subtotal apresentado; é interno, não deve ser exposto ao cliente nem confundido com imposto ou desconto.';
 
 
 
-COMMENT ON COLUMN "public"."quotes"."real_subtotal" IS 'Subtotal real (sem markup de negociação). Calculado por trigger no cutover. Read-only.';
+COMMENT ON COLUMN "public"."quotes"."real_subtotal" IS 'Subtotal real dos produtos em BRL, antes de qualquer markup de negociação. Campo interno calculado pela aplicação/trigger; não inclui frete nem impostos.';
 
 
 
-COMMENT ON COLUMN "public"."quotes"."real_discount_percent" IS 'Desconto efetivo real vs real_subtotal. Validado contra alçada do vendedor. Read-only.';
+COMMENT ON COLUMN "public"."quotes"."real_discount_percent" IS 'Percentual de desconto efetivo calculado em relação a real_subtotal; campo interno usado na validação da alçada do vendedor, distinto do desconto mostrado ao cliente.';
+
+
+
+COMMENT ON COLUMN "public"."quotes"."delivery_time" IS 'Prazo estimado/prometido para exibição em texto: imediato, N dias úteis, N a M dias úteis ou sob consulta. Para prazo numérico usar estimated_delivery_days; não confundir com estimated_delivery_date do pedido.';
+
+
+
+COMMENT ON COLUMN "public"."quotes"."shipping_type" IS 'Modalidade/responsabilidade do frete. Valores permitidos pelo CHECK desta coluna: cif, fob, fob_pre (FOB com custo pré-negociado). Não confundir com shipping_method.';
+
+
+
+COMMENT ON COLUMN "public"."quotes"."shipping_method" IS 'Meio de transporte recomendado: correios, transportadora, retirada, motoboy, entrega_propria ou outro. Descreve como será a entrega; shipping_type descreve a responsabilidade/modalidade do frete.';
 
 
 
@@ -8980,6 +9046,10 @@ COMMENT ON COLUMN "public"."quotes"."parent_quote_id" IS 'Wave 3.2.C 2026-05-22:
 
 
 COMMENT ON COLUMN "public"."quotes"."is_latest_version" IS 'Wave 3.2.C 2026-05-22: marca a versao mais recente para queries (paridade Lovable).';
+
+
+
+COMMENT ON COLUMN "public"."quotes"."payment_method" IS 'Forma de pagamento recomendada: pix, boleto, credit_card, bank_transfer, cash ou other; usar códigos minúsculos. Documentação apenas: coluna text sem CHECK, portanto não é enum fechado.';
 
 
 
@@ -28005,6 +28075,94 @@ COMMENT ON TABLE "public"."stock_daily_summary" IS 'Camada 2: Resumo diário de 
 
 
 
+COMMENT ON COLUMN "public"."stock_daily_summary"."id" IS 'Identificador sequencial do resumo diário.';
+
+
+
+COMMENT ON COLUMN "public"."stock_daily_summary"."variant_supplier_source_id" IS 'Registro de variante e fornecedor resumido.';
+
+
+
+COMMENT ON COLUMN "public"."stock_daily_summary"."supplier_id" IS 'Fornecedor associado ao resumo diário.';
+
+
+
+COMMENT ON COLUMN "public"."stock_daily_summary"."supplier_branch_id" IS 'Filial do fornecedor associada ao resumo, quando informada.';
+
+
+
+COMMENT ON COLUMN "public"."stock_daily_summary"."variant_id" IS 'Variante associada ao resumo diário.';
+
+
+
+COMMENT ON COLUMN "public"."stock_daily_summary"."product_id" IS 'Produto associado à variante resumida.';
+
+
+
+COMMENT ON COLUMN "public"."stock_daily_summary"."summary_date" IS 'Data a que se refere o resumo.';
+
+
+
+COMMENT ON COLUMN "public"."stock_daily_summary"."stock_open" IS 'Estoque no início do dia.';
+
+
+
+COMMENT ON COLUMN "public"."stock_daily_summary"."stock_close" IS 'Estoque no fim do dia.';
+
+
+
+COMMENT ON COLUMN "public"."stock_daily_summary"."stock_min" IS 'Estoque mínimo observado durante o dia.';
+
+
+
+COMMENT ON COLUMN "public"."stock_daily_summary"."stock_max" IS 'Estoque máximo observado durante o dia.';
+
+
+
+COMMENT ON COLUMN "public"."stock_daily_summary"."net_change" IS 'Variação líquida do estoque durante o dia.';
+
+
+
+COMMENT ON COLUMN "public"."stock_daily_summary"."units_depleted" IS 'Unidades removidas do estoque durante o dia.';
+
+
+
+COMMENT ON COLUMN "public"."stock_daily_summary"."units_restocked" IS 'Unidades adicionadas ao estoque durante o dia.';
+
+
+
+COMMENT ON COLUMN "public"."stock_daily_summary"."restock_detected" IS 'Indica se foi detectado aumento de estoque durante o dia.';
+
+
+
+COMMENT ON COLUMN "public"."stock_daily_summary"."restock_quantity" IS 'Quantidade total associada às reposições detectadas durante o dia.';
+
+
+
+COMMENT ON COLUMN "public"."stock_daily_summary"."restock_count" IS 'Número de reposições detectadas durante o dia.';
+
+
+
+COMMENT ON COLUMN "public"."stock_daily_summary"."cost_price_open" IS 'Custo unitário no início do dia, em reais (BRL). Pode incluir centavos.';
+
+
+
+COMMENT ON COLUMN "public"."stock_daily_summary"."cost_price_close" IS 'Custo unitário no fim do dia, em reais (BRL). Pode incluir centavos.';
+
+
+
+COMMENT ON COLUMN "public"."stock_daily_summary"."price_changed" IS 'Indica se o custo unitário mudou durante o dia.';
+
+
+
+COMMENT ON COLUMN "public"."stock_daily_summary"."sync_count" IS 'Quantidade de sincronizações consideradas no resumo diário.';
+
+
+
+COMMENT ON COLUMN "public"."stock_daily_summary"."created_at" IS 'Data e hora de criação do resumo diário.';
+
+
+
 COMMENT ON COLUMN "public"."stock_daily_summary"."restock_zero_to_positive" IS 'TRUE se em qualquer snapshot do dia o stock_total_old=0 E stock_total_new>0 (transição real de zero-para-positivo). Diferente de restock_detected que marca qualquer delta positivo — este campo é semanticamente correto para o módulo Reposição.';
 
 
@@ -28090,11 +28248,59 @@ ALTER TABLE ONLY "public"."variant_supplier_sources" REPLICA IDENTITY FULL;
 ALTER TABLE "public"."variant_supplier_sources" OWNER TO "postgres";
 
 
-COMMENT ON TABLE "public"."variant_supplier_sources" IS 'Fonte dados por variante x fornecedor. BACKLOG: cost_price_1..5+min_qty_1..5 → supplier_price_tiers; next_quantity/date_1..6 → variant_restock_schedule. Bloqueado por 24+ refs frontend.';
+COMMENT ON TABLE "public"."variant_supplier_sources" IS 'Registro de fornecimento no grão variante × fornecedor. Mantém estoque, disponibilidade, origem e preços por faixa de quantidade; product_variants identifica a variante e suppliers identifica a fonte comercial. É fonte operacional para preço/estoque por fornecedor; snapshots e resumos históricos ficam em tabelas próprias.';
+
+
+
+COMMENT ON COLUMN "public"."variant_supplier_sources"."id" IS 'Identificador UUID do registro de estoque e preço da variante por fornecedor.';
+
+
+
+COMMENT ON COLUMN "public"."variant_supplier_sources"."organization_id" IS 'Organização à qual pertence este registro de variante e fornecedor.';
+
+
+
+COMMENT ON COLUMN "public"."variant_supplier_sources"."variant_id" IS 'Variante do produto associada a este registro.';
+
+
+
+COMMENT ON COLUMN "public"."variant_supplier_sources"."supplier_id" IS 'Fornecedor que disponibiliza a variante.';
 
 
 
 COMMENT ON COLUMN "public"."variant_supplier_sources"."quantity" IS 'Quantidade em estoque deste fornecedor para esta variante. Trigger sincroniza cache em products.stock_quantity.';
+
+
+
+COMMENT ON COLUMN "public"."variant_supplier_sources"."source" IS 'Origem dos dados de estoque e preço deste registro.';
+
+
+
+COMMENT ON COLUMN "public"."variant_supplier_sources"."last_synced_at" IS 'Data e hora da última sincronização bem-sucedida com o fornecedor.';
+
+
+
+COMMENT ON COLUMN "public"."variant_supplier_sources"."sync_status" IS 'Estado da sincronização deste registro com o fornecedor.';
+
+
+
+COMMENT ON COLUMN "public"."variant_supplier_sources"."sync_error" IS 'Detalhes do erro da última sincronização, quando houver.';
+
+
+
+COMMENT ON COLUMN "public"."variant_supplier_sources"."updated_at" IS 'Data e hora da última atualização do registro.';
+
+
+
+COMMENT ON COLUMN "public"."variant_supplier_sources"."next_date_1" IS 'Data prevista para a reposição indicada no slot 1.';
+
+
+
+COMMENT ON COLUMN "public"."variant_supplier_sources"."next_date_2" IS 'Data prevista para a reposição indicada no slot 2.';
+
+
+
+COMMENT ON COLUMN "public"."variant_supplier_sources"."next_date_3" IS 'Data prevista para a reposição indicada no slot 3.';
 
 
 
@@ -28282,6 +28488,10 @@ COMMENT ON COLUMN "public"."variant_supplier_sources"."next_date_6" IS 'Data res
 
 
 
+COMMENT ON COLUMN "public"."variant_supplier_sources"."your_price" IS 'Valor registrado no campo your_price para a variante e o fornecedor, em reais (BRL). Pode incluir centavos.';
+
+
+
 COMMENT ON CONSTRAINT "chk_vss_cost_price_not_zero" ON "public"."variant_supplier_sources" IS 'cost_price nunca 0 em variant_supplier_sources. Usar NULL para preço desconhecido.';
 
 
@@ -28421,6 +28631,106 @@ CREATE TABLE IF NOT EXISTS "public"."suppliers" (
 ALTER TABLE "public"."suppliers" OWNER TO "postgres";
 
 
+COMMENT ON TABLE "public"."suppliers" IS 'Cadastro de fornecedores de produtos e serviços, com dados comerciais, contatos, condições de compra e configurações de integração e sincronização.';
+
+
+
+COMMENT ON COLUMN "public"."suppliers"."id" IS 'Identificador UUID do fornecedor.';
+
+
+
+COMMENT ON COLUMN "public"."suppliers"."name" IS 'Nome do fornecedor.';
+
+
+
+COMMENT ON COLUMN "public"."suppliers"."code" IS 'Código interno único usado para identificar o fornecedor.';
+
+
+
+COMMENT ON COLUMN "public"."suppliers"."cnpj" IS 'CNPJ do fornecedor, armazenado sem pontuação quando preenchido.';
+
+
+
+COMMENT ON COLUMN "public"."suppliers"."contact_name" IS 'Nome do contato principal do fornecedor.';
+
+
+
+COMMENT ON COLUMN "public"."suppliers"."email" IS 'E-mail de contato do fornecedor.';
+
+
+
+COMMENT ON COLUMN "public"."suppliers"."phone" IS 'Telefone de contato do fornecedor.';
+
+
+
+COMMENT ON COLUMN "public"."suppliers"."address" IS 'Endereço do fornecedor.';
+
+
+
+COMMENT ON COLUMN "public"."suppliers"."active" IS 'Indica se o fornecedor está ativo.';
+
+
+
+COMMENT ON COLUMN "public"."suppliers"."created_at" IS 'Data e hora de criação do cadastro do fornecedor.';
+
+
+
+COMMENT ON COLUMN "public"."suppliers"."website" IS 'Endereço do site do fornecedor.';
+
+
+
+COMMENT ON COLUMN "public"."suppliers"."contact_person" IS 'Pessoa de contato do fornecedor.';
+
+
+
+COMMENT ON COLUMN "public"."suppliers"."payment_terms" IS 'Condições de pagamento oferecidas pelo fornecedor.';
+
+
+
+COMMENT ON COLUMN "public"."suppliers"."delivery_time_days" IS 'Prazo de entrega informado pelo fornecedor, em dias.';
+
+
+
+COMMENT ON COLUMN "public"."suppliers"."minimum_order_value" IS 'Valor mínimo de pedido registrado para o fornecedor, em reais (BRL). Pode incluir centavos.';
+
+
+
+COMMENT ON COLUMN "public"."suppliers"."notes" IS 'Observações internas sobre o fornecedor.';
+
+
+
+COMMENT ON COLUMN "public"."suppliers"."updated_at" IS 'Data e hora da última atualização do cadastro do fornecedor.';
+
+
+
+COMMENT ON COLUMN "public"."suppliers"."organization_id" IS 'Organização à qual o fornecedor pertence.';
+
+
+
+COMMENT ON COLUMN "public"."suppliers"."trading_name" IS 'Nome fantasia do fornecedor.';
+
+
+
+COMMENT ON COLUMN "public"."suppliers"."api_type" IS 'Tipo de integração de API configurado para o fornecedor.';
+
+
+
+COMMENT ON COLUMN "public"."suppliers"."api_base_url" IS 'URL base da API do fornecedor.';
+
+
+
+COMMENT ON COLUMN "public"."suppliers"."api_credentials" IS 'Configurações de autenticação da integração do fornecedor. Evite armazenar segredos em texto claro; prefira referências a secrets gerenciados.';
+
+
+
+COMMENT ON COLUMN "public"."suppliers"."min_order_value" IS 'Valor mínimo de pedido registrado para o fornecedor, em reais (BRL). Pode incluir centavos.';
+
+
+
+COMMENT ON COLUMN "public"."suppliers"."shipping_terms" IS 'Condições de frete oferecidas ou exigidas pelo fornecedor.';
+
+
+
 COMMENT ON COLUMN "public"."suppliers"."default_markup_percent" IS 'Markup padrão em % para produtos deste fornecedor. Ex: 50 = preço venda é 1.5x o custo';
 
 
@@ -28470,6 +28780,10 @@ COMMENT ON COLUMN "public"."suppliers"."api_requests_reset_at" IS 'Timestamp do 
 
 
 COMMENT ON COLUMN "public"."suppliers"."state_uf" IS 'UF da matriz do fornecedor. Para filiais especificas, usar supplier_branches.';
+
+
+
+COMMENT ON COLUMN "public"."suppliers"."tax_regime" IS 'Regime tributário informado para o fornecedor.';
 
 
 
@@ -53338,13 +53652,14 @@ ALTER FUNCTION "public"."fn_variant_sparkline"("p_variant_id" "uuid", "p_days" i
 
 CREATE OR REPLACE FUNCTION "public"."fn_verify_anon_catalog_grants"() RETURNS TABLE("object_name" "text", "object_kind" "text", "issue" "text")
     LANGUAGE "plpgsql" SECURITY DEFINER
-    SET "search_path" TO 'public'
+    SET "search_path" TO 'public', 'pg_temp'
     AS $$
 BEGIN
-  -- (1) Views/tabelas que DEVEM ter anon SELECT
+  -- (1) Views/tabelas que DEVEM ser legiveis por anon.
+  --     v5: grant de COLUNA tambem conta (has_table_privilege ignora attacl).
   RETURN QUERY
   WITH req(sch, nm) AS (VALUES
-    -- Views DEFINER (catálogo principal)
+    -- Views DEFINER (catalogo principal)
     ('public','v_products_public'),('public','v_suppliers_public'),
     ('public','v_variant_sale_prices_public'),
     ('public','v_tabela_preco_gravacao_oficial_public'),
@@ -53355,26 +53670,24 @@ BEGIN
     ('public','v_print_area_techniques_public'),('public','v_product_compositions_public'),
     ('public','v_product_properties_public'),('public','v_product_tags_public'),
     ('public','v_tags_public'),
-    -- Matviews cross-schema
+    -- Matview publica (as internas sairam na v5: ver bloco 8)
     ('public','mv_product_compositions'),
-    ('internal','mv_product_leaf_category'),('analytics','mv_product_compositions'),
-    -- Tabelas de catálogo (não sensíveis)
-    ('public','categories'),('public','collection_products'),('public','collections'),
+    -- Tabelas de catalogo (nao sensiveis)
+    ('public','categories'),
     ('public','color_groups'),('public','color_synonym_map'),('public','color_variations'),
-    ('public','content_articles'),('public','favorite_item_reactions'),
-    ('public','favorite_items'),('public','favorite_lists'),('public','kit_typical_dims'),
-    ('public','material_types'),('public','mockup_approval_links'),
-    ('public','print_area_techniques'),('public','product_ai_content'),
+    ('public','kit_typical_dims'),
+    ('public','material_types'),
+    ('public','print_area_techniques'),
     ('public','product_attributes'),('public','product_badge_definitions'),
-    ('public','product_commemorative_dates'),('public','product_fiscal'),
+    ('public','product_commemorative_dates'),
     ('public','product_kit_components'),('public','product_materials'),
-    ('public','product_novelties'),('public','product_physical'),('public','product_seo'),
-    ('public','product_supply'),('public','product_variants'),
+    ('public','product_novelties'),('public','product_physical'),
+    ('public','product_variants'),
     ('public','produto_ramo_atividade'),('public','ramo_atividade'),
     ('public','ramo_atividade_filho'),('public','spot_typecode_map'),
-    ('public','supplier_sub_brands'),('public','system_kill_switches'),
-    ('public','tabela_preco_gravacao_oficial_faixa'),  -- faixa de preço de venda OK
-    ('public','tecnicas_gravacao'),('public','video_sim_results'),
+    ('public','supplier_sub_brands'),
+    ('public','tabela_preco_gravacao_oficial_faixa'),  -- faixa de preco de venda OK
+    ('public','tecnicas_gravacao'),
     ('public','color_nuances'),('public','kit_component_print_areas'),
     ('public','personalization_techniques'),('public','product_properties'),
     ('public','tags'),('public','product_tags')
@@ -53382,36 +53695,53 @@ BEGIN
   SELECT req.sch||'.'||req.nm, 'table/view'::text, 'FALTA anon SELECT'::text
   FROM req
   WHERE to_regclass(req.sch||'.'||req.nm) IS NULL
-     OR NOT has_table_privilege('anon', (req.sch||'.'||req.nm)::regclass, 'SELECT');
+     OR NOT (
+       has_table_privilege('anon', (req.sch||'.'||req.nm)::regclass, 'SELECT')
+       OR EXISTS (
+         SELECT 1 FROM pg_attribute a
+         WHERE a.attrelid = (req.sch||'.'||req.nm)::regclass
+           AND a.attnum > 0 AND NOT a.attisdropped
+           AND has_column_privilege('anon', a.attrelid, a.attnum, 'SELECT')
+       )
+     );
 
-  -- (2) Funções com anon EXECUTE obrigatório
+  -- (2) Funcoes com anon EXECUTE obrigatorio
+  --     v5: fn_global_search saiu (revogada de proposito em 20261119094500).
   RETURN QUERY
   SELECT 'public.'||v.fn, 'function'::text, 'FALTA anon EXECUTE'::text
   FROM (VALUES ('fn_super_filtro'),('fn_super_filtro_facets'),('fn_super_filtro_price_range'),
-               ('fn_global_search'),('get_catalog_bestseller_page'),
-               ('fn_product_active_for_rls')) v(fn)  -- NOVO v3
+               ('get_catalog_bestseller_page'),
+               ('fn_product_active_for_rls')) v(fn)  -- NOVO v3: exigido pelas policies de catalogo
   WHERE EXISTS (SELECT 1 FROM pg_proc WHERE proname=v.fn AND pronamespace='public'::regnamespace)
     AND NOT has_function_privilege('anon',
           (SELECT oid FROM pg_proc WHERE proname=v.fn AND pronamespace='public'::regnamespace LIMIT 1),'EXECUTE');
 
-  -- (3) Tabelas SENSÍVEIS que NÃO podem ter anon SELECT
+  -- (3) Tabelas SENSIVEIS que NAO podem ter anon SELECT
   RETURN QUERY
-  SELECT 'public.'||v.nm, 'table'::text, 'VAZAMENTO: anon SELECT em tabela sensível'::text
+  SELECT 'public.'||v.nm, 'table'::text, 'VAZAMENTO: anon SELECT em tabela sensivel'::text
   FROM (VALUES ('variant_supplier_sources'),('markup_configurations'),('user_organizations'),
                ('quotes'),('quote_items'),
                ('products'),('suppliers'),   -- custo/credenciais
-               ('tabela_preco_gravacao_oficial'))  -- NOVO v3: custo_setup/markup
+               ('tabela_preco_gravacao_oficial'),  -- NOVO v3: custo_setup/markup
+               -- v4 (migration 20261125120000, QA etapa 008): grant herdado do legado
+               -- revogado em 2026-11-25. Baseline medido em .security/anon-tables-baseline.json
+               -- (2026-11-24) marcava as 13 como 'interno-grant-herdado'. Reaparecer aqui = regressao.
+               ('collection_products'),('collections'),('content_articles'),
+               ('favorite_item_reactions'),('favorite_items'),('favorite_lists'),
+               ('product_ai_content'),('product_fiscal'),('product_seo'),
+               ('product_supply'),('system_kill_switches'),('system_settings'),
+               ('video_sim_results'))
              v(nm)
   WHERE to_regclass('public.'||v.nm) IS NOT NULL
     AND has_table_privilege('anon', ('public.'||v.nm)::regclass, 'SELECT');
 
-  -- (4) pg_stat_statements NÃO pode ter anon SELECT (information disclosure de queries)
+  -- (4) pg_stat_statements NAO pode ter anon SELECT (information disclosure de queries)
   RETURN QUERY
   SELECT 'extensions.pg_stat_statements', 'system_view'::text,
-         'VAZAMENTO: anon lê queries SQL internas'::text
+         'VAZAMENTO: anon le queries SQL internas'::text
   WHERE has_table_privilege('anon', 'extensions.pg_stat_statements'::regclass, 'SELECT');
 
-  -- (5) Funções sensíveis que NÃO devem ter anon EXECUTE
+  -- (5) Funcoes sensiveis que NAO devem ter anon EXECUTE
   RETURN QUERY
   SELECT 'public.get_promo_sales_ranking', 'function'::text,
          'VAZAMENTO: anon executa ranking de vendas'::text
@@ -53419,24 +53749,33 @@ BEGIN
     AND has_function_privilege('anon',
           (SELECT oid FROM pg_proc WHERE proname='get_promo_sales_ranking' AND pronamespace='public'::regnamespace LIMIT 1),'EXECUTE');
 
-  -- (6) Views críticas devem ser SECURITY DEFINER (security_invoker=false)
+  -- (5b) NOVO v5: fn_global_search — anon revogado de proposito (20261119094500:59).
   RETURN QUERY
-  SELECT 'public.'||v.nm, 'view'::text, 'RISCO: view sensível com security_invoker=true'::text
+  SELECT 'public.fn_global_search', 'function'::text,
+         'VAZAMENTO: anon executa busca global (revogada em 20261119094500)'::text
+  WHERE EXISTS (SELECT 1 FROM pg_proc WHERE proname='fn_global_search' AND pronamespace='public'::regnamespace)
+    AND has_function_privilege('anon',
+          (SELECT oid FROM pg_proc WHERE proname='fn_global_search' AND pronamespace='public'::regnamespace LIMIT 1),'EXECUTE');
+
+  -- (6) Views criticas devem ser SECURITY DEFINER (security_invoker=false).
+  --     v5: saem as 3 que sao invoker por decisao explicita (P06 20261117073000);
+  --     elas passam para o bloco 9, no sentido correto.
+  RETURN QUERY
+  SELECT 'public.'||v.nm, 'view'::text, 'RISCO: view sensivel com security_invoker=true'::text
   FROM (VALUES ('v_products_public'),('v_suppliers_public'),
                ('v_variant_sale_prices_public'),
                ('v_tabela_preco_gravacao_oficial_public'),  -- NOVO v3
-               ('v_kit_component_media_public'),('v_kit_component_print_areas_public'),
-               ('v_product_compositions_public'),('v_product_properties_public'),
-               ('v_product_tags_public')) v(nm)
+               ('v_kit_component_media_public'),
+               ('v_product_compositions_public')) v(nm)
   WHERE to_regclass('public.'||v.nm) IS NOT NULL
     AND COALESCE((SELECT option_value FROM pg_options_to_table(
         (SELECT reloptions FROM pg_class WHERE relname=v.nm AND relnamespace='public'::regnamespace))
       WHERE option_name='security_invoker'), 'false') = 'true';
 
-  -- (7) NOVO v3: product_variants anon deve ter política com is_active filter
+  -- (7) product_variants anon deve ter politica com is_active filter
   RETURN QUERY
   SELECT 'public.product_variants', 'rls_policy'::text,
-         'RISCO: política anon sem filtro is_active (202 variantes inativas expostas)'::text
+         'RISCO: politica anon sem filtro is_active (202 variantes inativas expostas)'::text
   WHERE EXISTS (
     SELECT 1 FROM pg_policies
     WHERE schemaname='public' AND tablename='product_variants'
@@ -53444,13 +53783,49 @@ BEGIN
       AND 'anon'=ANY(roles)
       AND qual='true'
   );
+
+  -- (8) NOVO v5: objetos que NAO podem ser legiveis por anon de forma alguma
+  --     (tabela OU coluna). Saíram do bloco (1) porque o fechamento foi decidido:
+  --       mockup_approval_links      -> 20261008230000
+  --       internal/analytics matviews -> leitura so por views DEFINER
+  RETURN QUERY
+  WITH fechado(sch, nm) AS (VALUES
+    ('public','mockup_approval_links'),
+    ('internal','mv_product_leaf_category'),
+    ('analytics','mv_product_compositions')
+  )
+  SELECT fechado.sch||'.'||fechado.nm, 'table/view'::text,
+         'VAZAMENTO: anon voltou a ler objeto fechado por decisao'::text
+  FROM fechado
+  WHERE to_regclass(fechado.sch||'.'||fechado.nm) IS NOT NULL
+    AND (has_table_privilege('anon', (fechado.sch||'.'||fechado.nm)::regclass, 'SELECT')
+         OR EXISTS (
+           SELECT 1 FROM pg_attribute a
+           WHERE a.attrelid = (fechado.sch||'.'||fechado.nm)::regclass
+             AND a.attnum > 0 AND NOT a.attisdropped
+             AND has_column_privilege('anon', a.attrelid, a.attnum, 'SELECT')
+         ));
+
+  -- (9) NOVO v5: views de catalogo que DEVEM ser security_invoker=true.
+  --     Com invoker=true elas respeitam as policies das tabelas-base (P06,
+  --     20261117073000) e dependem de anon EXECUTE em fn_product_active_for_rls
+  --     (garantido pelo bloco 2). Voltar para definer re-expoe a base mascarada.
+  RETURN QUERY
+  SELECT 'public.'||v.nm, 'view'::text,
+         'RISCO: view de catalogo invoker-by-design voltou a definer (re-expoe RLS)'::text
+  FROM (VALUES ('v_kit_component_print_areas_public'),
+               ('v_product_properties_public'),('v_product_tags_public')) v(nm)
+  WHERE to_regclass('public.'||v.nm) IS NOT NULL
+    AND COALESCE((SELECT option_value FROM pg_options_to_table(
+        (SELECT reloptions FROM pg_class WHERE relname=v.nm AND relnamespace='public'::regnamespace))
+      WHERE option_name='security_invoker'), 'false') <> 'true';
 END $$;
 
 
 ALTER FUNCTION "public"."fn_verify_anon_catalog_grants"() OWNER TO "postgres";
 
 
-COMMENT ON FUNCTION "public"."fn_verify_anon_catalog_grants"() IS 'Tripwire anti-regressao v3 (fix_version 20260717). Cobre: 56+ objetos obrigatórios, 8 travas de sensíveis (products/suppliers/tabela_gravacao/pg_stat_statements), 6 RPCs (5 seguros + fn_product_active_for_rls), 9 views DEFINER, produto_variants is_active policy. 0 linhas = saudável.';
+COMMENT ON FUNCTION "public"."fn_verify_anon_catalog_grants"() IS 'Tripwire anti-regressao v5 (2026-11-25). Cobre: 41 objetos obrigatorios (grant de tabela OU de coluna), 5 RPCs anon (4 de busca + fn_product_active_for_rls, exigido pelas policies de catalogo), 22 travas de objetos sensiveis (public/13 da etapa 008 + mockup_approval_links + 2 matviews internas), pg_stat_statements, 2 funcoes proibidas para anon (ranking de vendas e fn_global_search), 6 views DEFINER, 3 views invoker-by-design e a policy is_active de product_variants. 0 linhas = saudavel.';
 
 
 
@@ -57430,7 +57805,31 @@ COMMENT ON TABLE "public"."categories" IS 'Árvore hierárquica de categorias (m
 
 
 
+COMMENT ON COLUMN "public"."categories"."id" IS 'Identificador UUID da categoria.';
+
+
+
+COMMENT ON COLUMN "public"."categories"."name" IS 'Nome de exibição da categoria.';
+
+
+
 COMMENT ON COLUMN "public"."categories"."icon" IS 'Nome PascalCase de ícone Lucide React (ex: Coffee, Wine, PawPrint, Gamepad2). Regra: 1º char maiúsculo [A-Z], 2º char MINÚSCULO obrigatório [a-z], resto alphanumerico [a-zA-Z0-9]*. Constraint chk_icon_lucide_format: ^[A-Z][a-z][a-zA-Z0-9]*$ Garante que "COFFEE" (all-caps), "NULL" (string), siglas "TV"/"USB" sejam rejeitados. Todos os ícones reais do Lucide React seguem este padrão. Fonte de verdade: este campo. archive.category_icons é legada/arquivada.';
+
+
+
+COMMENT ON COLUMN "public"."categories"."description" IS 'Descrição da categoria.';
+
+
+
+COMMENT ON COLUMN "public"."categories"."parent_id" IS 'Categoria pai. NULL indica uma categoria raiz; preenchido, indica uma subcategoria.';
+
+
+
+COMMENT ON COLUMN "public"."categories"."created_at" IS 'Data e hora de criação da categoria.';
+
+
+
+COMMENT ON COLUMN "public"."categories"."slug" IS 'Slug único da categoria. O comentário da tabela identifica este campo como legado; considere a compatibilidade com consumidores existentes antes de alterar seu uso.';
 
 
 
@@ -57480,7 +57879,23 @@ O campo legado "active" (Bitrix24) foi eliminado em 2026-06-22 após verificaç�
 
 
 
+COMMENT ON COLUMN "public"."categories"."updated_at" IS 'Data e hora da última atualização da categoria.';
+
+
+
+COMMENT ON COLUMN "public"."categories"."organization_id" IS 'Organização à qual a categoria pertence.';
+
+
+
 COMMENT ON COLUMN "public"."categories"."bitrix_id" IS 'ID original da categoria no Bitrix24 para sincronização';
+
+
+
+COMMENT ON COLUMN "public"."categories"."bitrix_modified_at" IS 'Data e hora da última modificação correspondente no Bitrix24, quando disponível.';
+
+
+
+COMMENT ON COLUMN "public"."categories"."synced_at" IS 'Data e hora da sincronização da categoria com o sistema externo.';
 
 
 
@@ -57496,6 +57911,26 @@ COMMENT ON COLUMN "public"."categories"."path" IS 'Materialized path para querie
 
 
 
+COMMENT ON COLUMN "public"."categories"."is_visible" IS 'Indica se a categoria deve estar visível na interface.';
+
+
+
+COMMENT ON COLUMN "public"."categories"."color_hex" IS 'Cor da categoria em formato hexadecimal, por exemplo #A1B2C3.';
+
+
+
+COMMENT ON COLUMN "public"."categories"."meta_title" IS 'Título SEO da categoria.';
+
+
+
+COMMENT ON COLUMN "public"."categories"."meta_description" IS 'Descrição SEO da categoria.';
+
+
+
+COMMENT ON COLUMN "public"."categories"."meta_keywords" IS 'Palavras-chave SEO da categoria, armazenadas como array de texto.';
+
+
+
 COMMENT ON COLUMN "public"."categories"."products_count" IS 'CACHE: Contagem de produtos ativos (p.is_active=true) vinculados a esta categoria via product_category_assignments (PCA). Inclui todos os PCA, não só is_primary. Atualizado pelo trigger fn_trigger_sync_pca_products_count (via PCA DML) e pelo cron category-resync-weekly (dom 02h). NÃO conta via products.category_id direto.';
 
 
@@ -57508,11 +57943,27 @@ COMMENT ON COLUMN "public"."categories"."descendants_count" IS 'CACHE: Total de 
 
 
 
+COMMENT ON COLUMN "public"."categories"."created_by" IS 'Identificador do usuário que criou a categoria, quando registrado.';
+
+
+
+COMMENT ON COLUMN "public"."categories"."updated_by" IS 'Identificador do usuário que atualizou a categoria por último, quando registrado.';
+
+
+
+COMMENT ON COLUMN "public"."categories"."deleted_at" IS 'Data e hora da exclusão lógica da categoria. NULL indica que não há exclusão lógica registrada.';
+
+
+
 COMMENT ON COLUMN "public"."categories"."full_path_readable" IS 'Caminho legível (ex: BAR | COZINHA > COPOS > VIDRO)';
 
 
 
 COMMENT ON COLUMN "public"."categories"."ai_summary" IS 'Resumo da categoria para IAs';
+
+
+
+COMMENT ON COLUMN "public"."categories"."schema_json" IS 'Metadados estruturados da categoria armazenados em JSONB.';
 
 
 
@@ -57569,7 +58020,31 @@ WITH ("autovacuum_vacuum_scale_factor"='0.05', "autovacuum_analyze_scale_factor"
 ALTER TABLE "public"."product_category_assignments" OWNER TO "postgres";
 
 
-COMMENT ON TABLE "public"."product_category_assignments" IS 'Bug RLS corrigido na Etapa 6: removida product_category_assignments_public_read que anulava _select_org.';
+COMMENT ON TABLE "public"."product_category_assignments" IS 'Relação canônica N:N entre produtos e categorias. Cada linha atribui um produto a uma categoria; is_primary marca a categoria principal e display_order controla a ordenação. É a fonte canônica para vínculos múltiplos, distinta dos campos legados em products.';
+
+
+
+COMMENT ON COLUMN "public"."product_category_assignments"."id" IS 'Identificador UUID do vínculo entre produto e categoria.';
+
+
+
+COMMENT ON COLUMN "public"."product_category_assignments"."product_id" IS 'Produto associado à categoria.';
+
+
+
+COMMENT ON COLUMN "public"."product_category_assignments"."category_id" IS 'Categoria associada ao produto.';
+
+
+
+COMMENT ON COLUMN "public"."product_category_assignments"."is_primary" IS 'Indica se esta é a categoria principal do produto.';
+
+
+
+COMMENT ON COLUMN "public"."product_category_assignments"."display_order" IS 'Ordem de exibição do vínculo ou da categoria para o produto.';
+
+
+
+COMMENT ON COLUMN "public"."product_category_assignments"."created_at" IS 'Data e hora de criação do vínculo entre produto e categoria.';
 
 
 
@@ -57840,7 +58315,7 @@ COMMENT ON COLUMN "public"."products"."cost_price" IS 'Custo do fornecedor. Null
 
 
 
-COMMENT ON COLUMN "public"."products"."sale_price" IS 'Preço de venda (cost × markup). Mantido por trigger. Exibido no frontend.';
+COMMENT ON COLUMN "public"."products"."sale_price" IS 'Preço unitário de venda do produto no catálogo, em BRL (reais com centavos; não centavos inteiros). Preço do produto sem frete e sem impostos; não confundir com shipping_cost/tax_amount de orçamento ou pedido. O valor pode ser mantido por trigger conforme custo e markup.';
 
 
 
@@ -57848,7 +58323,7 @@ COMMENT ON COLUMN "public"."products"."stock_quantity" IS 'Estoque total denorma
 
 
 
-COMMENT ON COLUMN "public"."products"."suggested_price" IS 'Preço sugerido do fornecedor. ~97% preenchido. Pode diferir do sale_price calculado.';
+COMMENT ON COLUMN "public"."products"."suggested_price" IS 'Preço sugerido pelo fornecedor, em BRL (reais com centavos). Referência de catálogo; pode diferir de products.sale_price e não inclui frete/impostos do orçamento ou pedido.';
 
 
 
@@ -64344,6 +64819,10 @@ CREATE TABLE IF NOT EXISTS "public"."magazines" (
 ALTER TABLE "public"."magazines" OWNER TO "postgres";
 
 
+COMMENT ON TABLE "public"."magazines" IS 'Cabeçalho de revistas/catálogos comerciais. Guarda proprietário/organização, branding, opções de conteúdo, template, publicação/arquivamento, token público e controle de edição concorrente.';
+
+
+
 CREATE OR REPLACE FUNCTION "public"."magazine_lock_v2"("p_magazine_id" "uuid", "p_expected_edit_version" bigint, "p_allow_deleted" boolean DEFAULT false) RETURNS "public"."magazines"
     LANGUAGE "plpgsql" SECURITY DEFINER
     SET "search_path" TO 'public'
@@ -69905,7 +70384,7 @@ CREATE TABLE IF NOT EXISTS "public"."custom_kits" (
 ALTER TABLE "public"."custom_kits" OWNER TO "postgres";
 
 
-COMMENT ON TABLE "public"."custom_kits" IS 'Wave 3.3.A 2026-05-22: removidos 19 campos legacy. Schema consolidado.';
+COMMENT ON TABLE "public"."custom_kits" IS 'Kits montados por usuários, com estado de rascunho, itens, embalagem, personalização e preço agregado. kit_variants guarda alternativas nomeadas do kit; itens/componentes de catálogo são modelados separadamente. Schema consolidado na Wave 3.3.A.';
 
 
 
@@ -73620,6 +74099,10 @@ CREATE TABLE IF NOT EXISTS "public"."material_types" (
 ALTER TABLE "public"."material_types" OWNER TO "postgres";
 
 
+COMMENT ON TABLE "public"."material_types" IS 'Catálogo canônico de materiais, organizado por material_groups. Referenciado por relações de materiais de produtos e por componentes de kits.';
+
+
+
 CREATE TABLE IF NOT EXISTS "public"."product_materials" (
     "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
     "organization_id" "uuid" NOT NULL,
@@ -74200,7 +74683,75 @@ ALTER TABLE ONLY "public"."product_variants" ALTER COLUMN "color_id" SET STATIST
 ALTER TABLE "public"."product_variants" OWNER TO "postgres";
 
 
-COMMENT ON TABLE "public"."product_variants" IS 'Políticas RLS: product_variants_anon_read (is_active=true) + product_variants_public_read (authenticated, true). Separação fix_version 20260717 — anon não vê variantes inativas.';
+COMMENT ON TABLE "public"."product_variants" IS 'Tabela canônica de variantes/SKUs de um produto. Cada linha representa uma combinação vendável de cor, tamanho ou capacidade, com atributos, disponibilidade, imagens e sincronização; preços e estoque por fornecedor vivem em public.variant_supplier_sources. RLS também restringe variantes inativas conforme as políticas existentes.';
+
+
+
+COMMENT ON COLUMN "public"."product_variants"."id" IS 'Identificador UUID da variante do produto.';
+
+
+
+COMMENT ON COLUMN "public"."product_variants"."product_id" IS 'Produto ao qual esta variante pertence.';
+
+
+
+COMMENT ON COLUMN "public"."product_variants"."sku" IS 'SKU único da variante.';
+
+
+
+COMMENT ON COLUMN "public"."product_variants"."name" IS 'Nome de exibição da variante.';
+
+
+
+COMMENT ON COLUMN "public"."product_variants"."attributes" IS 'Atributos da variante armazenados em JSON, por exemplo cor ou tamanho.';
+
+
+
+COMMENT ON COLUMN "public"."product_variants"."stock_quantity" IS 'Quantidade de estoque registrada para a variante.';
+
+
+
+COMMENT ON COLUMN "public"."product_variants"."images" IS 'Imagens associadas à variante, armazenadas em JSON.';
+
+
+
+COMMENT ON COLUMN "public"."product_variants"."is_active" IS 'Indica se a variante está ativa.';
+
+
+
+COMMENT ON COLUMN "public"."product_variants"."created_at" IS 'Data e hora de criação da variante.';
+
+
+
+COMMENT ON COLUMN "public"."product_variants"."updated_at" IS 'Data e hora da última atualização da variante.';
+
+
+
+COMMENT ON COLUMN "public"."product_variants"."sku_promo" IS 'SKU da variante no sistema Promo, quando informado.';
+
+
+
+COMMENT ON COLUMN "public"."product_variants"."color_id" IS 'Identificador da cor canônica associada à variante.';
+
+
+
+COMMENT ON COLUMN "public"."product_variants"."size_id" IS 'Identificador do valor de tamanho associado à variante.';
+
+
+
+COMMENT ON COLUMN "public"."product_variants"."supplier_sku" IS 'SKU da variante no sistema do fornecedor.';
+
+
+
+COMMENT ON COLUMN "public"."product_variants"."color_code" IS 'Código da cor da variante.';
+
+
+
+COMMENT ON COLUMN "public"."product_variants"."color_name" IS 'Nome da cor da variante.';
+
+
+
+COMMENT ON COLUMN "public"."product_variants"."color_hex" IS 'Código hexadecimal da cor da variante.';
 
 
 
@@ -74223,6 +74774,14 @@ COMMENT ON COLUMN "public"."product_variants"."last_sync_supplier_id" IS 'ID do 
 COMMENT ON COLUMN "public"."product_variants"."selected_thumbnail" IS 'URL da imagem principal SELECIONADA para exibir no e-commerce.
 Usada em listagens, carrinho, e como og:image em compartilhamentos.
 Pode vir de qualquer fornecedor - escolha a melhor!';
+
+
+
+COMMENT ON COLUMN "public"."product_variants"."bitrix_product_id" IS 'Identificador do produto correspondente no Bitrix24.';
+
+
+
+COMMENT ON COLUMN "public"."product_variants"."CodigoXbz" IS 'Código da variante conforme o campo CodigoXbz da integração XBZ.';
 
 
 
@@ -74279,6 +74838,18 @@ COMMENT ON COLUMN "public"."product_variants"."next_quantity_6" IS 'SPOT: NextQu
 
 
 COMMENT ON COLUMN "public"."product_variants"."next_date_6" IS 'SPOT: NextDate6 (data da 6ª janela de reposição)';
+
+
+
+COMMENT ON COLUMN "public"."product_variants"."next_entry_date" IS 'Data prevista para a próxima entrada de estoque da variante.';
+
+
+
+COMMENT ON COLUMN "public"."product_variants"."next_entry_quantity" IS 'Quantidade prevista na próxima entrada de estoque da variante.';
+
+
+
+COMMENT ON COLUMN "public"."product_variants"."supplier_external_id" IS 'Identificador externo da variante no sistema do fornecedor.';
 
 
 
@@ -74773,6 +75344,10 @@ CREATE TABLE IF NOT EXISTS "classification_audit"."category_suggestions" (
 ALTER TABLE "classification_audit"."category_suggestions" OWNER TO "postgres";
 
 
+COMMENT ON TABLE "classification_audit"."category_suggestions" IS 'Evidências detalhadas de candidatos de categoria por produto, incluindo pontuação, quantidade e tokens correspondentes, conflitos de material/tipo e sinais de aprovação automática. É uma trilha de análise; os vínculos efetivos ficam em public.product_category_assignments.';
+
+
+
 CREATE SEQUENCE IF NOT EXISTS "classification_audit"."category_suggestions_id_seq"
     START WITH 1
     INCREMENT BY 1
@@ -74848,6 +75423,53 @@ COMMENT ON VIEW "classification_audit"."v_kits_para_revisao" IS 'Kits/conjuntos 
 
 
 
+CREATE TABLE IF NOT EXISTS "internal"."managed_schema_dictionary" (
+    "schema_name" "text" NOT NULL,
+    "object_type" "text" NOT NULL,
+    "object_name" "text" NOT NULL,
+    "service_name" "text" NOT NULL,
+    "description" "text" NOT NULL,
+    "partition_of" "text",
+    "reviewed_at" timestamp with time zone DEFAULT "now"() NOT NULL,
+    CONSTRAINT "managed_schema_dictionary_object_type_check" CHECK (("object_type" = ANY (ARRAY['schema'::"text", 'table'::"text"])))
+);
+
+
+ALTER TABLE "internal"."managed_schema_dictionary" OWNER TO "postgres";
+
+
+COMMENT ON TABLE "internal"."managed_schema_dictionary" IS 'Dicionário independente dos schemas e tabelas gerenciados pelo Supabase e extensões instaladas. Documenta finalidade e relações observáveis sem alterar os comentários nem a estrutura dos objetos gerenciados.';
+
+
+
+COMMENT ON COLUMN "internal"."managed_schema_dictionary"."schema_name" IS 'Nome do schema documentado.';
+
+
+
+COMMENT ON COLUMN "internal"."managed_schema_dictionary"."object_type" IS 'Tipo do objeto catalogado: schema ou table.';
+
+
+
+COMMENT ON COLUMN "internal"."managed_schema_dictionary"."object_name" IS 'Nome do schema ou da tabela dentro do schema.';
+
+
+
+COMMENT ON COLUMN "internal"."managed_schema_dictionary"."service_name" IS 'Serviço Supabase ou extensão responsável pelo namespace.';
+
+
+
+COMMENT ON COLUMN "internal"."managed_schema_dictionary"."description" IS 'Descrição semântica baseada nos metadados observados; não substitui documentação oficial nem autoriza escrita direta em objetos gerenciados.';
+
+
+
+COMMENT ON COLUMN "internal"."managed_schema_dictionary"."partition_of" IS 'Relação textual com a tabela particionada pai, quando aplicável.';
+
+
+
+COMMENT ON COLUMN "internal"."managed_schema_dictionary"."reviewed_at" IS 'Momento em que a descrição foi incluída/revisada no dicionário.';
+
+
+
 CREATE TABLE IF NOT EXISTS "prod_audit"."category_keywords" (
     "category_id" "uuid" NOT NULL,
     "level" integer,
@@ -74868,6 +75490,10 @@ CREATE TABLE IF NOT EXISTS "prod_audit"."category_keywords" (
 ALTER TABLE "prod_audit"."category_keywords" OWNER TO "postgres";
 
 
+COMMENT ON TABLE "prod_audit"."category_keywords" IS 'Projeção de auditoria de categorias e palavras-chave normalizadas. Mantém tokens e flags de segmentos (cliente, material, ecológico e kit) derivados da hierarquia de public.categories para apoiar análise de classificação; refreshed_at indica a atualização da projeção.';
+
+
+
 CREATE TABLE IF NOT EXISTS "prod_audit"."category_suggestions" (
     "id" bigint NOT NULL,
     "product_id" "uuid" NOT NULL,
@@ -74886,6 +75512,10 @@ CREATE TABLE IF NOT EXISTS "prod_audit"."category_suggestions" (
 
 
 ALTER TABLE "prod_audit"."category_suggestions" OWNER TO "postgres";
+
+
+COMMENT ON TABLE "prod_audit"."category_suggestions" IS 'Histórico de sugestões de categoria produzidas por regras de auditoria para produtos. Guarda produto, categoria sugerida, caminho, categorias atuais, confiança, motivo e decisão reviewed/accepted; aceitar uma sugestão não deve ser presumido como atualização automática do catálogo.';
+
 
 
 CREATE SEQUENCE IF NOT EXISTS "prod_audit"."category_suggestions_id_seq"
@@ -74919,6 +75549,10 @@ CREATE TABLE IF NOT EXISTS "prod_audit"."classification_rules" (
 
 
 ALTER TABLE "prod_audit"."classification_rules" OWNER TO "postgres";
+
+
+COMMENT ON TABLE "prod_audit"."classification_rules" IS 'Regras configuráveis que geram sugestões de classificação de produtos. Cada regra combina condições textuais do produto com critérios de categoria-alvo, nível de confiança e estado active; revisar regras antes de alterar a classificação de produção.';
+
 
 
 CREATE SEQUENCE IF NOT EXISTS "prod_audit"."classification_rules_id_seq"
@@ -74958,6 +75592,10 @@ CREATE TABLE IF NOT EXISTS "prod_audit"."product_features" (
 ALTER TABLE "prod_audit"."product_features" OWNER TO "postgres";
 
 
+COMMENT ON TABLE "prod_audit"."product_features" IS 'Projeção de auditoria de sinais textuais por produto. Armazena tokens, materiais, cores, flags de características e categorias atuais derivados do catálogo para análise/classificação; não substitui public.products nem suas tabelas relacionais canônicas.';
+
+
+
 CREATE TABLE IF NOT EXISTS "prod_audit"."test_results" (
     "id" bigint NOT NULL,
     "batch" "text" NOT NULL,
@@ -74976,6 +75614,10 @@ CREATE TABLE IF NOT EXISTS "prod_audit"."test_results" (
 
 
 ALTER TABLE "prod_audit"."test_results" OWNER TO "postgres";
+
+
+COMMENT ON TABLE "prod_audit"."test_results" IS 'Resultados de testes de auditoria de produção. Cada linha representa um teste de um lote, com categoria, severidade, resultado, valores esperados/observados, detalhes e duração; serve como evidência de validação, não como dado operacional do catálogo.';
+
 
 
 CREATE SEQUENCE IF NOT EXISTS "prod_audit"."test_results_id_seq"
@@ -75098,6 +75740,10 @@ CREATE TABLE IF NOT EXISTS "public"."_bkp_kcvs_pre_normalize_20260624" (
 ALTER TABLE "public"."_bkp_kcvs_pre_normalize_20260624" OWNER TO "postgres";
 
 
+COMMENT ON TABLE "public"."_bkp_kcvs_pre_normalize_20260624" IS 'Backup de kit_component_variant_skus anterior à normalização executada em 2026-06-24. Preserva os valores pré-alteração para comparação e recuperação revisada.';
+
+
+
 CREATE TABLE IF NOT EXISTS "public"."_bkp_kit_color_from_name_20260624" (
     "id" "uuid" NOT NULL,
     "old_color" character varying(50),
@@ -75129,6 +75775,10 @@ CREATE TABLE IF NOT EXISTS "public"."_bkp_kit_dims_20260619" (
 
 
 ALTER TABLE "public"."_bkp_kit_dims_20260619" OWNER TO "postgres";
+
+
+COMMENT ON TABLE "public"."_bkp_kit_dims_20260619" IS 'Backup dos campos dimensionais de kits em products capturado em 2026-06-19 antes da alteração de dimensões. Usar apenas para auditoria ou restauração revisada.';
+
 
 
 CREATE TABLE IF NOT EXISTS "public"."_bkp_kit_packing_type_20260624" (
@@ -75206,6 +75856,10 @@ CREATE TABLE IF NOT EXISTS "public"."_bkp_orphan_active_variants_20260619" (
 ALTER TABLE "public"."_bkp_orphan_active_variants_20260619" OWNER TO "postgres";
 
 
+COMMENT ON TABLE "public"."_bkp_orphan_active_variants_20260619" IS 'Backup de segurança de variantes ativas órfãs capturado em 2026-06-19 antes de uma limpeza/reconciliação. Preserva os valores originais para auditoria e eventual recuperação controlada.';
+
+
+
 CREATE TABLE IF NOT EXISTS "public"."_qa_pct_results" (
     "id" integer NOT NULL,
     "family" "text",
@@ -75221,6 +75875,10 @@ CREATE TABLE IF NOT EXISTS "public"."_qa_pct_results" (
 
 
 ALTER TABLE "public"."_qa_pct_results" OWNER TO "postgres";
+
+
+COMMENT ON TABLE "public"."_qa_pct_results" IS 'Resultados detalhados de testes de regressão de percentuais/limiares, incluindo valores de entrada, bloco esperado/observado e aprovação do caso.';
+
 
 
 CREATE SEQUENCE IF NOT EXISTS "public"."_qa_pct_results_id_seq"
@@ -76148,6 +76806,10 @@ CREATE TABLE IF NOT EXISTS "public"."dashboard_insights_cache" (
 ALTER TABLE "public"."dashboard_insights_cache" OWNER TO "postgres";
 
 
+COMMENT ON TABLE "public"."dashboard_insights_cache" IS 'Cache de respostas/insights de dashboard por usuário, função e cache_key, com modelo, duração e expiração. O payload é transitório e pode ser regenerado.';
+
+
+
 CREATE OR REPLACE VIEW "public"."ai_insights_cache" WITH ("security_invoker"='true') AS
  SELECT "id",
     "user_id",
@@ -76288,6 +76950,10 @@ CREATE TABLE IF NOT EXISTS "public"."ai_usage_events" (
 ALTER TABLE "public"."ai_usage_events" OWNER TO "postgres";
 
 
+COMMENT ON TABLE "public"."ai_usage_events" IS 'Eventos resumidos de uso de IA por usuário/função, com tipo de evento e metadados opcionais. Não confundir com ai_usage_logs, que registra consumo detalhado por chamada.';
+
+
+
 CREATE TABLE IF NOT EXISTS "public"."ai_usage_logs" (
     "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
     "user_id" "uuid",
@@ -76367,6 +77033,10 @@ CREATE TABLE IF NOT EXISTS "public"."anon_catalog_grant_audit_log" (
 ALTER TABLE "public"."anon_catalog_grant_audit_log" OWNER TO "postgres";
 
 
+COMMENT ON TABLE "public"."anon_catalog_grant_audit_log" IS 'Snapshots de auditoria dos grants de leitura do catálogo para anon, com contagem de violações e detalhes JSON da checagem.';
+
+
+
 ALTER TABLE "public"."anon_catalog_grant_audit_log" ALTER COLUMN "id" ADD GENERATED ALWAYS AS IDENTITY (
     SEQUENCE NAME "public"."anon_catalog_grant_audit_log_id_seq"
     START WITH 1
@@ -76412,6 +77082,10 @@ CREATE TABLE IF NOT EXISTS "public"."art_file_attachments" (
 ALTER TABLE "public"."art_file_attachments" OWNER TO "postgres";
 
 
+COMMENT ON TABLE "public"."art_file_attachments" IS 'Arquivos de arte anexados por usuário a mockup e/ou cotação, com metadados do arquivo, caminho/URL e notas.';
+
+
+
 CREATE TABLE IF NOT EXISTS "public"."asia_image_import_queue" (
     "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
     "codigo_pai" "text" NOT NULL,
@@ -76435,6 +77109,10 @@ CREATE TABLE IF NOT EXISTS "public"."asia_image_import_queue" (
 
 
 ALTER TABLE "public"."asia_image_import_queue" OWNER TO "postgres";
+
+
+COMMENT ON TABLE "public"."asia_image_import_queue" IS 'Fila de ingestão de imagens do fornecedor Asia Import. Cada registro identifica produto-pai/variante, URL de origem, tipo/ordem da imagem, tentativas e estado de upload/promoção para product_images.';
+
 
 
 CREATE TABLE IF NOT EXISTS "public"."asia_upload_mapping" (
@@ -76500,6 +77178,94 @@ CREATE TABLE IF NOT EXISTS "public"."attribute_definitions" (
 ALTER TABLE "public"."attribute_definitions" OWNER TO "postgres";
 
 
+COMMENT ON TABLE "public"."attribute_definitions" IS 'Definições de atributos de produtos: nome, tipo de dado, unidade, valores possíveis, validação e comportamento de exibição ou filtragem.';
+
+
+
+COMMENT ON COLUMN "public"."attribute_definitions"."id" IS 'Identificador UUID da definição de atributo.';
+
+
+
+COMMENT ON COLUMN "public"."attribute_definitions"."organization_id" IS 'Organização à qual pertence a definição de atributo.';
+
+
+
+COMMENT ON COLUMN "public"."attribute_definitions"."group_id" IS 'Grupo ao qual pertence a definição, quando houver.';
+
+
+
+COMMENT ON COLUMN "public"."attribute_definitions"."name" IS 'Nome interno do atributo.';
+
+
+
+COMMENT ON COLUMN "public"."attribute_definitions"."slug" IS 'Slug estável do atributo para identificação em código ou integrações.';
+
+
+
+COMMENT ON COLUMN "public"."attribute_definitions"."display_name" IS 'Rótulo do atributo apresentado na interface.';
+
+
+
+COMMENT ON COLUMN "public"."attribute_definitions"."description" IS 'Descrição do significado ou uso do atributo.';
+
+
+
+COMMENT ON COLUMN "public"."attribute_definitions"."data_type" IS 'Tipo do valor do atributo: text, number, boolean, select ou multiselect.';
+
+
+
+COMMENT ON COLUMN "public"."attribute_definitions"."unit" IS 'Unidade de medida associada ao atributo, quando aplicável.';
+
+
+
+COMMENT ON COLUMN "public"."attribute_definitions"."default_value" IS 'Valor padrão do atributo, quando configurado.';
+
+
+
+COMMENT ON COLUMN "public"."attribute_definitions"."possible_values" IS 'Valores permitidos para atributos do tipo select ou multiselect, armazenados em JSONB.';
+
+
+
+COMMENT ON COLUMN "public"."attribute_definitions"."validation_rules" IS 'Regras adicionais de validação do valor, armazenadas em JSONB.';
+
+
+
+COMMENT ON COLUMN "public"."attribute_definitions"."is_required" IS 'Indica se o atributo é obrigatório.';
+
+
+
+COMMENT ON COLUMN "public"."attribute_definitions"."is_filterable" IS 'Indica se o atributo pode ser usado para filtrar produtos.';
+
+
+
+COMMENT ON COLUMN "public"."attribute_definitions"."is_comparable" IS 'Indica se o atributo pode ser usado na comparação de produtos.';
+
+
+
+COMMENT ON COLUMN "public"."attribute_definitions"."is_visible" IS 'Indica se o atributo deve ser exibido na interface.';
+
+
+
+COMMENT ON COLUMN "public"."attribute_definitions"."is_searchable" IS 'Indica se o atributo pode ser considerado na busca.';
+
+
+
+COMMENT ON COLUMN "public"."attribute_definitions"."display_order" IS 'Ordem de exibição do atributo.';
+
+
+
+COMMENT ON COLUMN "public"."attribute_definitions"."is_active" IS 'Indica se a definição do atributo está ativa.';
+
+
+
+COMMENT ON COLUMN "public"."attribute_definitions"."created_at" IS 'Data e hora de criação da definição do atributo.';
+
+
+
+COMMENT ON COLUMN "public"."attribute_definitions"."updated_at" IS 'Data e hora da última atualização da definição do atributo.';
+
+
+
 CREATE TABLE IF NOT EXISTS "public"."attribute_equivalences" (
     "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
     "supplier_id" "uuid" NOT NULL,
@@ -76547,6 +77313,50 @@ CREATE TABLE IF NOT EXISTS "public"."attribute_groups" (
 
 
 ALTER TABLE "public"."attribute_groups" OWNER TO "postgres";
+
+
+COMMENT ON TABLE "public"."attribute_groups" IS 'Grupos usados para organizar definições de atributos de produtos dentro de uma organização.';
+
+
+
+COMMENT ON COLUMN "public"."attribute_groups"."id" IS 'Identificador UUID do grupo de atributos.';
+
+
+
+COMMENT ON COLUMN "public"."attribute_groups"."organization_id" IS 'Organização à qual pertence o grupo de atributos.';
+
+
+
+COMMENT ON COLUMN "public"."attribute_groups"."name" IS 'Nome de exibição do grupo de atributos.';
+
+
+
+COMMENT ON COLUMN "public"."attribute_groups"."slug" IS 'Slug do grupo de atributos para identificação estável.';
+
+
+
+COMMENT ON COLUMN "public"."attribute_groups"."description" IS 'Descrição do grupo de atributos.';
+
+
+
+COMMENT ON COLUMN "public"."attribute_groups"."icon" IS 'Identificador do ícone usado para representar o grupo na interface.';
+
+
+
+COMMENT ON COLUMN "public"."attribute_groups"."display_order" IS 'Ordem de exibição do grupo.';
+
+
+
+COMMENT ON COLUMN "public"."attribute_groups"."is_active" IS 'Indica se o grupo está ativo.';
+
+
+
+COMMENT ON COLUMN "public"."attribute_groups"."created_at" IS 'Data e hora de criação do grupo.';
+
+
+
+COMMENT ON COLUMN "public"."attribute_groups"."updated_at" IS 'Data e hora da última atualização do grupo.';
+
 
 
 CREATE TABLE IF NOT EXISTS "public"."audit_log" (
@@ -76627,6 +77437,10 @@ CREATE TABLE IF NOT EXISTS "public"."auto_tag_rules" (
 ALTER TABLE "public"."auto_tag_rules" OWNER TO "postgres";
 
 
+COMMENT ON TABLE "public"."auto_tag_rules" IS 'Regras configuráveis de atribuição automática de tags a produtos. Cada regra define condição, campo/operador/valor, prioridade, tag de destino e estado ativo.';
+
+
+
 CREATE TABLE IF NOT EXISTS "public"."b2b_collection_products" (
     "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
     "b2b_collection_id" "uuid" NOT NULL,
@@ -76637,6 +77451,30 @@ CREATE TABLE IF NOT EXISTS "public"."b2b_collection_products" (
 
 
 ALTER TABLE "public"."b2b_collection_products" OWNER TO "postgres";
+
+
+COMMENT ON TABLE "public"."b2b_collection_products" IS 'Vínculos entre coleções B2B e produtos, com ordenação própria.';
+
+
+
+COMMENT ON COLUMN "public"."b2b_collection_products"."id" IS 'Identificador UUID do vínculo entre coleção B2B e produto.';
+
+
+
+COMMENT ON COLUMN "public"."b2b_collection_products"."b2b_collection_id" IS 'Coleção B2B à qual o produto foi adicionado.';
+
+
+
+COMMENT ON COLUMN "public"."b2b_collection_products"."product_id" IS 'Produto associado à coleção B2B.';
+
+
+
+COMMENT ON COLUMN "public"."b2b_collection_products"."display_order" IS 'Ordem de exibição do produto na coleção B2B.';
+
+
+
+COMMENT ON COLUMN "public"."b2b_collection_products"."added_at" IS 'Data e hora em que o produto foi adicionado à coleção B2B.';
+
 
 
 CREATE TABLE IF NOT EXISTS "public"."b2b_collections" (
@@ -76658,6 +77496,58 @@ CREATE TABLE IF NOT EXISTS "public"."b2b_collections" (
 ALTER TABLE "public"."b2b_collections" OWNER TO "postgres";
 
 
+COMMENT ON TABLE "public"."b2b_collections" IS 'Coleções B2B de produtos, com visibilidade, destaque e ordenação próprios. Esta tabela é distinta de public.collections.';
+
+
+
+COMMENT ON COLUMN "public"."b2b_collections"."id" IS 'Identificador UUID da coleção B2B.';
+
+
+
+COMMENT ON COLUMN "public"."b2b_collections"."name" IS 'Nome de exibição da coleção B2B.';
+
+
+
+COMMENT ON COLUMN "public"."b2b_collections"."slug" IS 'Slug único da coleção B2B.';
+
+
+
+COMMENT ON COLUMN "public"."b2b_collections"."description" IS 'Descrição da coleção B2B.';
+
+
+
+COMMENT ON COLUMN "public"."b2b_collections"."image_url" IS 'URL da imagem associada à coleção B2B.';
+
+
+
+COMMENT ON COLUMN "public"."b2b_collections"."is_public" IS 'Indica se a coleção B2B está marcada como pública.';
+
+
+
+COMMENT ON COLUMN "public"."b2b_collections"."is_featured" IS 'Indica se a coleção B2B está marcada como destaque.';
+
+
+
+COMMENT ON COLUMN "public"."b2b_collections"."display_order" IS 'Ordem de exibição da coleção B2B.';
+
+
+
+COMMENT ON COLUMN "public"."b2b_collections"."created_by" IS 'Usuário que criou a coleção B2B, quando registrado.';
+
+
+
+COMMENT ON COLUMN "public"."b2b_collections"."created_at" IS 'Data e hora de criação da coleção B2B.';
+
+
+
+COMMENT ON COLUMN "public"."b2b_collections"."updated_at" IS 'Data e hora da última atualização da coleção B2B.';
+
+
+
+COMMENT ON COLUMN "public"."b2b_collections"."organization_id" IS 'Organização à qual pertence a coleção B2B.';
+
+
+
 CREATE TABLE IF NOT EXISTS "public"."backup_produto_ramo_atividade_20260625" (
     "id" "uuid" NOT NULL,
     "produto_id" "uuid",
@@ -76667,6 +77557,10 @@ CREATE TABLE IF NOT EXISTS "public"."backup_produto_ramo_atividade_20260625" (
 
 
 ALTER TABLE "public"."backup_produto_ramo_atividade_20260625" OWNER TO "postgres";
+
+
+COMMENT ON TABLE "public"."backup_produto_ramo_atividade_20260625" IS 'Snapshot de segurança dos vínculos produto–ramo de atividade capturado em 2026-06-25 para auditoria ou restauração controlada.';
+
 
 
 CREATE TABLE IF NOT EXISTS "public"."profiles" (
@@ -76692,11 +77586,67 @@ CREATE TABLE IF NOT EXISTS "public"."profiles" (
 ALTER TABLE "public"."profiles" OWNER TO "postgres";
 
 
+COMMENT ON TABLE "public"."profiles" IS 'Perfil de aplicação vinculado a uma conta do Supabase Auth. Guarda informações de contato e de exibição, além da organização associada. A autorização usa public.user_roles como fonte de verdade; não editar manualmente a coluna role.';
+
+
+
+COMMENT ON COLUMN "public"."profiles"."id" IS 'Identificador UUID do registro de perfil.';
+
+
+
+COMMENT ON COLUMN "public"."profiles"."email" IS 'E-mail associado ao perfil.';
+
+
+
+COMMENT ON COLUMN "public"."profiles"."full_name" IS 'Nome completo do usuário para exibição.';
+
+
+
 COMMENT ON COLUMN "public"."profiles"."role" IS 'DERIVADO/read-only (vocabulario EN: admin/manager/sales). Fonte de verdade = public.user_roles (enum PT). Sincronizado pelo trigger user_roles_sync_profile_role via fn_map_role_enum_to_profile. Nao escrever manualmente.';
 
 
 
+COMMENT ON COLUMN "public"."profiles"."created_at" IS 'Data e hora de criação do perfil.';
+
+
+
+COMMENT ON COLUMN "public"."profiles"."updated_at" IS 'Data e hora da última atualização do perfil.';
+
+
+
+COMMENT ON COLUMN "public"."profiles"."avatar_url" IS 'URL do avatar do usuário.';
+
+
+
+COMMENT ON COLUMN "public"."profiles"."phone" IS 'Telefone de contato do usuário.';
+
+
+
+COMMENT ON COLUMN "public"."profiles"."department" IS 'Departamento ou área do usuário.';
+
+
+
+COMMENT ON COLUMN "public"."profiles"."is_active" IS 'Indica se o perfil está ativo.';
+
+
+
+COMMENT ON COLUMN "public"."profiles"."last_login_at" IS 'Data e hora do último login registrado.';
+
+
+
+COMMENT ON COLUMN "public"."profiles"."preferences" IS 'Preferências do usuário armazenadas como JSONB.';
+
+
+
 COMMENT ON COLUMN "public"."profiles"."bitrix_id" IS 'ID do usuário no Bitrix24 CRM';
+
+
+
+COMMENT ON COLUMN "public"."profiles"."user_id" IS 'Identificador da conta correspondente em auth.users.';
+
+
+
+COMMENT ON COLUMN "public"."profiles"."organization_id" IS 'Organização associada ao perfil.';
 
 
 
@@ -76747,6 +77697,10 @@ CREATE TABLE IF NOT EXISTS "public"."binding_colors" (
 ALTER TABLE "public"."binding_colors" OWNER TO "postgres";
 
 
+COMMENT ON TABLE "public"."binding_colors" IS 'Vocabulário de cores de espiral/encadernação, com código hexadecimal opcional.';
+
+
+
 CREATE TABLE IF NOT EXISTS "public"."binding_types" (
     "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
     "code" character varying(20) NOT NULL,
@@ -76764,6 +77718,10 @@ CREATE TABLE IF NOT EXISTS "public"."binding_types" (
 ALTER TABLE "public"."binding_types" OWNER TO "postgres";
 
 
+COMMENT ON TABLE "public"."binding_types" IS 'Vocabulário de tipos de encadernação para especificações de cadernos e materiais gráficos.';
+
+
+
 CREATE TABLE IF NOT EXISTS "public"."bot_detection_log" (
     "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
     "ip_address" "text" NOT NULL,
@@ -76778,6 +77736,10 @@ CREATE TABLE IF NOT EXISTS "public"."bot_detection_log" (
 
 
 ALTER TABLE "public"."bot_detection_log" OWNER TO "postgres";
+
+
+COMMENT ON TABLE "public"."bot_detection_log" IS 'Eventos de detecção automatizada de bots e abuso, com IP, agente de usuário, score, ação tomada e metadados. A coluna blocked distingue bloqueio efetivo de mera observação.';
+
 
 
 COMMENT ON COLUMN "public"."bot_detection_log"."blocked" IS 'Marca se a deteccao resultou em bloqueio efetivo do IP. Adicionado 2026-05-22 (Lote F).';
@@ -76828,6 +77790,10 @@ CREATE TABLE IF NOT EXISTS "public"."cart_templates" (
 
 
 ALTER TABLE "public"."cart_templates" OWNER TO "postgres";
+
+
+COMMENT ON TABLE "public"."cart_templates" IS 'Modelos pessoais de carrinho que guardam conjuntos de itens em JSONB para reutilização pelo usuário.';
+
 
 
 CREATE TABLE IF NOT EXISTS "public"."catalog_analytics" (
@@ -76922,6 +77888,42 @@ ALTER TABLE "public"."category_attributes" OWNER TO "postgres";
 
 
 COMMENT ON TABLE "public"."category_attributes" IS 'Atributos customizados por categoria (ex: material_permitido, tamanho_minimo)';
+
+
+
+COMMENT ON COLUMN "public"."category_attributes"."id" IS 'Identificador UUID do atributo da categoria.';
+
+
+
+COMMENT ON COLUMN "public"."category_attributes"."category_id" IS 'Categoria à qual pertence o atributo.';
+
+
+
+COMMENT ON COLUMN "public"."category_attributes"."attribute_key" IS 'Chave que identifica o atributo dentro da categoria.';
+
+
+
+COMMENT ON COLUMN "public"."category_attributes"."attribute_value" IS 'Valor do atributo da categoria.';
+
+
+
+COMMENT ON COLUMN "public"."category_attributes"."attribute_type" IS 'Tipo declarado do valor: text, number, boolean ou json.';
+
+
+
+COMMENT ON COLUMN "public"."category_attributes"."is_filterable" IS 'Indica se o atributo pode ser usado como filtro.';
+
+
+
+COMMENT ON COLUMN "public"."category_attributes"."display_order" IS 'Ordem de apresentação do atributo.';
+
+
+
+COMMENT ON COLUMN "public"."category_attributes"."created_at" IS 'Data e hora de criação do atributo.';
+
+
+
+COMMENT ON COLUMN "public"."category_attributes"."updated_at" IS 'Data e hora da última atualização do atributo.';
 
 
 
@@ -77080,6 +78082,10 @@ CREATE TABLE IF NOT EXISTS "public"."category_relationships" (
 ALTER TABLE "public"."category_relationships" OWNER TO "postgres";
 
 
+COMMENT ON TABLE "public"."category_relationships" IS 'Representações de relações hierárquicas/importadas entre categorias, com IDs e nomes dos pais/filhos, referências Bitrix e profundidade. Para a hierarquia canônica do catálogo, usar categories.parent_id e category_ancestors.';
+
+
+
 CREATE TABLE IF NOT EXISTS "public"."category_target_audiences" (
     "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
     "category_id" "uuid" NOT NULL,
@@ -77095,6 +78101,46 @@ CREATE TABLE IF NOT EXISTS "public"."category_target_audiences" (
 
 
 ALTER TABLE "public"."category_target_audiences" OWNER TO "postgres";
+
+
+COMMENT ON TABLE "public"."category_target_audiences" IS 'Vínculos entre categorias e públicos-alvo, com prioridade e relevância configuráveis.';
+
+
+
+COMMENT ON COLUMN "public"."category_target_audiences"."id" IS 'Identificador UUID do vínculo entre categoria e público-alvo.';
+
+
+
+COMMENT ON COLUMN "public"."category_target_audiences"."category_id" IS 'Categoria associada ao público-alvo.';
+
+
+
+COMMENT ON COLUMN "public"."category_target_audiences"."target_audience_id" IS 'Público-alvo associado à categoria.';
+
+
+
+COMMENT ON COLUMN "public"."category_target_audiences"."is_primary" IS 'Indica se este é o público-alvo principal da categoria.';
+
+
+
+COMMENT ON COLUMN "public"."category_target_audiences"."relevance_score" IS 'Relevância do vínculo, em uma escala de 1 a 10.';
+
+
+
+COMMENT ON COLUMN "public"."category_target_audiences"."display_order" IS 'Ordem de exibição do público-alvo para a categoria.';
+
+
+
+COMMENT ON COLUMN "public"."category_target_audiences"."is_active" IS 'Indica se o vínculo está ativo.';
+
+
+
+COMMENT ON COLUMN "public"."category_target_audiences"."created_at" IS 'Data e hora de criação do vínculo.';
+
+
+
+COMMENT ON COLUMN "public"."category_target_audiences"."updated_at" IS 'Data e hora da última atualização do vínculo.';
+
 
 
 CREATE TABLE IF NOT EXISTS "public"."category_variation_types" (
@@ -77296,6 +78342,10 @@ CREATE TABLE IF NOT EXISTS "public"."collection_item_reactions" (
 ALTER TABLE "public"."collection_item_reactions" OWNER TO "postgres";
 
 
+COMMENT ON TABLE "public"."collection_item_reactions" IS 'Reações anônimas a itens de coleções compartilhadas, identificadas por collection_id/item_id e anon_id; hashes reduzem a exposição de IP.';
+
+
+
 CREATE TABLE IF NOT EXISTS "public"."collection_items" (
     "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
     "collection_id" "uuid" NOT NULL,
@@ -77312,6 +78362,54 @@ CREATE TABLE IF NOT EXISTS "public"."collection_items" (
 
 
 ALTER TABLE "public"."collection_items" OWNER TO "postgres";
+
+
+COMMENT ON TABLE "public"."collection_items" IS 'Itens de produto guardados em uma coleção. Os campos de produto, cor e preço armazenam valores próprios do item da coleção.';
+
+
+
+COMMENT ON COLUMN "public"."collection_items"."id" IS 'Identificador UUID do item da coleção.';
+
+
+
+COMMENT ON COLUMN "public"."collection_items"."collection_id" IS 'Coleção à qual o item pertence.';
+
+
+
+COMMENT ON COLUMN "public"."collection_items"."product_id" IS 'Identificador textual do produto associado ao item.';
+
+
+
+COMMENT ON COLUMN "public"."collection_items"."color_name" IS 'Nome da cor selecionada para o item, quando informada.';
+
+
+
+COMMENT ON COLUMN "public"."collection_items"."color_hex" IS 'Cor do item em formato hexadecimal, quando informada.';
+
+
+
+COMMENT ON COLUMN "public"."collection_items"."thumbnail_url" IS 'URL da miniatura do item.';
+
+
+
+COMMENT ON COLUMN "public"."collection_items"."sort_order" IS 'Ordem de exibição do item na coleção.';
+
+
+
+COMMENT ON COLUMN "public"."collection_items"."created_at" IS 'Data e hora de criação do registro do item.';
+
+
+
+COMMENT ON COLUMN "public"."collection_items"."notes" IS 'Observações associadas ao item da coleção.';
+
+
+
+COMMENT ON COLUMN "public"."collection_items"."price_at_save" IS 'Preço registrado quando o item foi salvo, em reais (BRL). Pode incluir centavos.';
+
+
+
+COMMENT ON COLUMN "public"."collection_items"."added_at" IS 'Data e hora em que o item foi adicionado à coleção.';
+
 
 
 CREATE TABLE IF NOT EXISTS "public"."collection_items_trash" (
@@ -77334,6 +78432,10 @@ CREATE TABLE IF NOT EXISTS "public"."collection_items_trash" (
 ALTER TABLE "public"."collection_items_trash" OWNER TO "postgres";
 
 
+COMMENT ON TABLE "public"."collection_items_trash" IS 'Lixeira temporária de itens removidos de coleções. Preserva os dados originais do item e a data de remoção/expiração para recuperação conforme a política da aplicação.';
+
+
+
 CREATE TABLE IF NOT EXISTS "public"."collection_products" (
     "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
     "collection_id" "uuid" NOT NULL,
@@ -77347,6 +78449,26 @@ ALTER TABLE "public"."collection_products" OWNER TO "postgres";
 
 
 COMMENT ON TABLE "public"."collection_products" IS 'Bridge migration F1 (2026-05-15): tabela necessária para compat com hook useExternalCollections.ts. Em fase posterior decidir se mantém ou consolida com b2b_collection_products (que tem 4433 linhas).';
+
+
+
+COMMENT ON COLUMN "public"."collection_products"."id" IS 'Identificador UUID do vínculo entre coleção e produto.';
+
+
+
+COMMENT ON COLUMN "public"."collection_products"."collection_id" IS 'Coleção associada ao vínculo.';
+
+
+
+COMMENT ON COLUMN "public"."collection_products"."product_id" IS 'Produto associado ao vínculo.';
+
+
+
+COMMENT ON COLUMN "public"."collection_products"."display_order" IS 'Ordem de exibição do produto na coleção.';
+
+
+
+COMMENT ON COLUMN "public"."collection_products"."created_at" IS 'Data e hora de criação do vínculo entre coleção e produto.';
 
 
 
@@ -77370,6 +78492,70 @@ CREATE TABLE IF NOT EXISTS "public"."collections" (
 
 
 ALTER TABLE "public"."collections" OWNER TO "postgres";
+
+
+COMMENT ON TABLE "public"."collections" IS 'Coleções de produtos criadas por usuários, com opções de compartilhamento e associação a clientes. Esta tabela é distinta de public.b2b_collections.';
+
+
+
+COMMENT ON COLUMN "public"."collections"."id" IS 'Identificador UUID da coleção.';
+
+
+
+COMMENT ON COLUMN "public"."collections"."user_id" IS 'Usuário proprietário da coleção.';
+
+
+
+COMMENT ON COLUMN "public"."collections"."name" IS 'Nome da coleção.';
+
+
+
+COMMENT ON COLUMN "public"."collections"."description" IS 'Descrição da coleção.';
+
+
+
+COMMENT ON COLUMN "public"."collections"."is_featured" IS 'Indica se a coleção está marcada como destaque.';
+
+
+
+COMMENT ON COLUMN "public"."collections"."icon_color" IS 'Cor do ícone da coleção, quando configurada.';
+
+
+
+COMMENT ON COLUMN "public"."collections"."created_at" IS 'Data e hora de criação da coleção.';
+
+
+
+COMMENT ON COLUMN "public"."collections"."updated_at" IS 'Data e hora da última atualização da coleção.';
+
+
+
+COMMENT ON COLUMN "public"."collections"."icon" IS 'Ícone associado à coleção.';
+
+
+
+COMMENT ON COLUMN "public"."collections"."client_id" IS 'Identificador textual do cliente associado à coleção, quando informado.';
+
+
+
+COMMENT ON COLUMN "public"."collections"."client_name" IS 'Nome do cliente associado à coleção, quando informado.';
+
+
+
+COMMENT ON COLUMN "public"."collections"."share_token" IS 'Token usado para localizar ou compartilhar a coleção.';
+
+
+
+COMMENT ON COLUMN "public"."collections"."share_expires_at" IS 'Data e hora de expiração do compartilhamento, quando definida.';
+
+
+
+COMMENT ON COLUMN "public"."collections"."is_public" IS 'Indica se a coleção está configurada como pública.';
+
+
+
+COMMENT ON COLUMN "public"."collections"."is_deleted" IS 'Indica se a coleção foi marcada como excluída logicamente.';
+
 
 
 CREATE TABLE IF NOT EXISTS "public"."color_equivalences" (
@@ -77396,6 +78582,10 @@ WITH ("autovacuum_vacuum_threshold"='50', "autovacuum_analyze_threshold"='50', "
 ALTER TABLE "public"."color_equivalences" OWNER TO "postgres";
 
 
+COMMENT ON TABLE "public"."color_equivalences" IS 'De-para entre uma cor de fornecedor (supplier_colors) e a variação/nuance canônica Promo. verified/is_active controlam a confiança operacional; is_primary indica o mapeamento principal quando há alternativas.';
+
+
+
 COMMENT ON COLUMN "public"."color_equivalences"."is_primary" IS 'Equivalencia primaria/canonica desta supplier_color. Backfill por precedencia: match_quality(exact>close>approximate) > confidence_score DESC > internal_code num ASC > id. Garantido <=1 ativa por supplier_color via uq_color_equivalences_one_primary. fix_version 2026-06-26 - NAO REMOVER (anti-regressao).';
 
 
@@ -77417,6 +78607,10 @@ CREATE TABLE IF NOT EXISTS "public"."color_groups" (
 
 
 ALTER TABLE "public"."color_groups" OWNER TO "postgres";
+
+
+COMMENT ON TABLE "public"."color_groups" IS 'Catálogo de grupos cromáticos usado para organizar variações canônicas de cor. color_variations.color_group_id é a referência canônica; group_id permanece como vínculo legado.';
+
 
 
 COMMENT ON COLUMN "public"."color_groups"."bitrix_id" IS 'ID da propriedade no Bitrix24 (iblock_id=25) onde grupos de cor são armazenados. Valor canônico: 930 (GRUPO | COR). Enum values individuais são sincronizados via XML_ID=slug do grupo.';
@@ -77442,6 +78636,10 @@ CREATE TABLE IF NOT EXISTS "public"."color_nuances" (
 
 
 ALTER TABLE "public"."color_nuances" OWNER TO "postgres";
+
+
+COMMENT ON TABLE "public"."color_nuances" IS 'Vocabulário de nuances de cor associado a grupos/variações canônicas, inclusive para sincronização com enums de cor do Bitrix24.';
+
 
 
 COMMENT ON COLUMN "public"."color_nuances"."bitrix_id" IS 'ID da propriedade no Bitrix24 (iblock_id=25) onde nuances de cor são armazenadas. Valor canônico: 932 (NUANCE | COR). Enum values individuais são sincronizados via XML_ID=slug da nuance.';
@@ -77498,6 +78696,10 @@ CREATE TABLE IF NOT EXISTS "public"."color_variations" (
 ALTER TABLE "public"."color_variations" OWNER TO "postgres";
 
 
+COMMENT ON TABLE "public"."color_variations" IS 'Catálogo de cores/variações canônicas com nome, hexadecimal, grupo e nuance. Usado por variantes de produto, imagens, equivalências de fornecedor e componentes de kits.';
+
+
+
 COMMENT ON COLUMN "public"."color_variations"."group_id" IS 'FK LEGADO — em sincronia com color_group_id. Manter por compatibilidade. Usar color_group_id em queries novas.';
 
 
@@ -77527,6 +78729,10 @@ CREATE TABLE IF NOT EXISTS "public"."commemorative_date_colors" (
 ALTER TABLE "public"."commemorative_date_colors" OWNER TO "postgres";
 
 
+COMMENT ON TABLE "public"."commemorative_date_colors" IS 'Associa grupos canônicos de cores a datas comemorativas e registra prioridade/score de correspondência para curadoria e campanhas.';
+
+
+
 CREATE TABLE IF NOT EXISTS "public"."commemorative_date_exclusions" (
     "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
     "commemorative_date_id" "uuid" NOT NULL,
@@ -77540,6 +78746,10 @@ CREATE TABLE IF NOT EXISTS "public"."commemorative_date_exclusions" (
 
 
 ALTER TABLE "public"."commemorative_date_exclusions" OWNER TO "postgres";
+
+
+COMMENT ON TABLE "public"."commemorative_date_exclusions" IS 'Exceções que removem um produto ou uma variante da associação automática/manual com uma data comemorativa, com motivo e autoria quando disponíveis.';
+
 
 
 CREATE TABLE IF NOT EXISTS "public"."commemorative_dates" (
@@ -77628,6 +78838,10 @@ CREATE TABLE IF NOT EXISTS "public"."company_email_patterns" (
 ALTER TABLE "public"."company_email_patterns" OWNER TO "postgres";
 
 
+COMMENT ON TABLE "public"."company_email_patterns" IS 'Padrões de endereço de e-mail por domínio de empresa, com confiança, servidor MX, provedor e sinais de domínio catch-all.';
+
+
+
 CREATE TABLE IF NOT EXISTS "public"."comparison_reactions" (
     "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
     "comparison_id" "uuid" NOT NULL,
@@ -77641,6 +78855,10 @@ CREATE TABLE IF NOT EXISTS "public"."comparison_reactions" (
 
 
 ALTER TABLE "public"."comparison_reactions" OWNER TO "postgres";
+
+
+COMMENT ON TABLE "public"."comparison_reactions" IS 'Reações anônimas a itens de uma comparação compartilhada, identificados pelo comparison_id e item_index.';
+
 
 
 CREATE TABLE IF NOT EXISTS "public"."component_media" (
@@ -77659,6 +78877,10 @@ CREATE TABLE IF NOT EXISTS "public"."component_media" (
 
 
 ALTER TABLE "public"."component_media" OWNER TO "postgres";
+
+
+COMMENT ON TABLE "public"."component_media" IS 'Mídias de componentes de produto, com tipo image/video, URL, título, ordem e indicação de capa. component_id e product_id são identificadores textuais sem FK declarada no schema atual.';
+
 
 
 CREATE TABLE IF NOT EXISTS "public"."connection_test_history" (
@@ -77688,6 +78910,10 @@ CREATE TABLE IF NOT EXISTS "public"."connection_test_history" (
 
 
 ALTER TABLE "public"."connection_test_history" OWNER TO "postgres";
+
+
+COMMENT ON TABLE "public"."connection_test_history" IS 'Histórico de testes de conectividade de uma external_connection, incluindo latência por fase de rede, resposta HTTP, erro e origem do teste.';
+
 
 
 CREATE TABLE IF NOT EXISTS "public"."content_articles" (
@@ -77744,6 +78970,10 @@ CREATE TABLE IF NOT EXISTS "public"."conversation_audit_logs" (
 ALTER TABLE "public"."conversation_audit_logs" OWNER TO "postgres";
 
 
+COMMENT ON TABLE "public"."conversation_audit_logs" IS 'Auditoria de sessões de conversa, com usuário, início/fim, estimativa de tokens, estado e metadados do cliente.';
+
+
+
 CREATE TABLE IF NOT EXISTS "public"."conversation_delivery_status" (
     "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
     "event_id" "uuid" NOT NULL,
@@ -77754,6 +78984,10 @@ CREATE TABLE IF NOT EXISTS "public"."conversation_delivery_status" (
 
 
 ALTER TABLE "public"."conversation_delivery_status" OWNER TO "postgres";
+
+
+COMMENT ON TABLE "public"."conversation_delivery_status" IS 'Estado de entrega de eventos de conversa, com erro e timestamp da última atualização.';
+
 
 
 CREATE TABLE IF NOT EXISTS "public"."conversation_event_history" (
@@ -77773,6 +79007,10 @@ CREATE TABLE IF NOT EXISTS "public"."conversation_event_history" (
 ALTER TABLE "public"."conversation_event_history" OWNER TO "postgres";
 
 
+COMMENT ON TABLE "public"."conversation_event_history" IS 'Histórico de eventos multimodais de conversa (texto, imagem, áudio, vídeo, arquivo ou sistema), com payload de mídia, tokens e request_id.';
+
+
+
 CREATE TABLE IF NOT EXISTS "public"."cover_finishes" (
     "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
     "code" character varying(20) NOT NULL,
@@ -77786,6 +79024,10 @@ CREATE TABLE IF NOT EXISTS "public"."cover_finishes" (
 
 
 ALTER TABLE "public"."cover_finishes" OWNER TO "postgres";
+
+
+COMMENT ON TABLE "public"."cover_finishes" IS 'Vocabulário de acabamentos de capa de cadernos e materiais gráficos.';
+
 
 
 CREATE TABLE IF NOT EXISTS "public"."cover_materials" (
@@ -77804,6 +79046,10 @@ CREATE TABLE IF NOT EXISTS "public"."cover_materials" (
 ALTER TABLE "public"."cover_materials" OWNER TO "postgres";
 
 
+COMMENT ON TABLE "public"."cover_materials" IS 'Vocabulário de materiais de capa, incluindo indicação de sustentabilidade quando aplicável.';
+
+
+
 CREATE TABLE IF NOT EXISTS "public"."cover_types" (
     "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
     "code" character varying(20) NOT NULL,
@@ -77817,6 +79063,10 @@ CREATE TABLE IF NOT EXISTS "public"."cover_types" (
 
 
 ALTER TABLE "public"."cover_types" OWNER TO "postgres";
+
+
+COMMENT ON TABLE "public"."cover_types" IS 'Vocabulário de tipos de capa utilizados nas especificações de cadernos e materiais gráficos.';
+
 
 
 CREATE TABLE IF NOT EXISTS "public"."crm_callback_events" (
@@ -77872,6 +79122,10 @@ CREATE TABLE IF NOT EXISTS "public"."cron_job_timeout_map" (
 ALTER TABLE "public"."cron_job_timeout_map" OWNER TO "postgres";
 
 
+COMMENT ON TABLE "public"."cron_job_timeout_map" IS 'Mapa de timeout operacional por nome de job pg_cron, com duração máxima em segundos e descrição.';
+
+
+
 CREATE TABLE IF NOT EXISTS "public"."cron_watchdog_log" (
     "id" bigint NOT NULL,
     "killed_at" timestamp with time zone DEFAULT "now"(),
@@ -77884,6 +79138,10 @@ CREATE TABLE IF NOT EXISTS "public"."cron_watchdog_log" (
 
 
 ALTER TABLE "public"."cron_watchdog_log" OWNER TO "postgres";
+
+
+COMMENT ON TABLE "public"."cron_watchdog_log" IS 'Auditoria de sessões/job queries terminadas pelo watchdog, incluindo PID, job, duração e trecho de consulta para investigação.';
+
 
 
 CREATE SEQUENCE IF NOT EXISTS "public"."cron_watchdog_log_id_seq"
@@ -77915,6 +79173,10 @@ CREATE TABLE IF NOT EXISTS "public"."db_connection_snapshots" (
 
 
 ALTER TABLE "public"."db_connection_snapshots" OWNER TO "postgres";
+
+
+COMMENT ON TABLE "public"."db_connection_snapshots" IS 'Snapshots de utilização de conexões do banco, incluindo conexões totais/ativas, transações ociosas, limite e percentual de uso; top_users guarda agregados de diagnóstico.';
+
 
 
 CREATE SEQUENCE IF NOT EXISTS "public"."db_connection_snapshots_id_seq"
@@ -77950,6 +79212,38 @@ ALTER TABLE "public"."device_login_notifications" OWNER TO "postgres";
 
 
 COMMENT ON TABLE "public"."device_login_notifications" IS 'Notificações de login em novo dispositivo/IP. Escrita: edge detect-new-device (service_role). Leitura: dono via RLS. Consumida em realtime por usePushNotifications.';
+
+
+
+COMMENT ON COLUMN "public"."device_login_notifications"."id" IS 'Identificador UUID do registro de notificação de login.';
+
+
+
+COMMENT ON COLUMN "public"."device_login_notifications"."user_id" IS 'Usuário associado ao evento de login em novo dispositivo ou endereço IP.';
+
+
+
+COMMENT ON COLUMN "public"."device_login_notifications"."device_id" IS 'Identificador do dispositivo, quando informado.';
+
+
+
+COMMENT ON COLUMN "public"."device_login_notifications"."ip_address" IS 'Endereço IP associado ao login, quando informado.';
+
+
+
+COMMENT ON COLUMN "public"."device_login_notifications"."user_agent" IS 'User-Agent do cliente associado ao login, quando informado.';
+
+
+
+COMMENT ON COLUMN "public"."device_login_notifications"."location" IS 'Localização associada ao login, quando informada.';
+
+
+
+COMMENT ON COLUMN "public"."device_login_notifications"."email_sent" IS 'Indica se foi enviado um e-mail referente à notificação.';
+
+
+
+COMMENT ON COLUMN "public"."device_login_notifications"."created_at" IS 'Data e hora de criação da notificação.';
 
 
 
@@ -78023,6 +79317,10 @@ CREATE TABLE IF NOT EXISTS "public"."e2e_cleanup_rate_limit" (
 ALTER TABLE "public"."e2e_cleanup_rate_limit" OWNER TO "postgres";
 
 
+COMMENT ON TABLE "public"."e2e_cleanup_rate_limit" IS 'Controle transitório de rate limit para operações de limpeza E2E, indexado por chave e janela de execução.';
+
+
+
 CREATE TABLE IF NOT EXISTS "public"."eco_backfill_log_20260625" (
     "id" bigint NOT NULL,
     "material_type_name" "text" NOT NULL,
@@ -78034,6 +79332,10 @@ CREATE TABLE IF NOT EXISTS "public"."eco_backfill_log_20260625" (
 
 
 ALTER TABLE "public"."eco_backfill_log_20260625" OWNER TO "postgres";
+
+
+COMMENT ON TABLE "public"."eco_backfill_log_20260625" IS 'Trilha do backfill ecológico executado em 2026-06-25, registrando produto/material e se os vínculos de categoria/data foram criados pela operação.';
+
 
 
 CREATE SEQUENCE IF NOT EXISTS "public"."eco_backfill_log_20260625_id_seq"
@@ -78061,6 +79363,10 @@ CREATE TABLE IF NOT EXISTS "public"."eco_date_reconcile_log_20260626" (
 
 
 ALTER TABLE "public"."eco_date_reconcile_log_20260626" OWNER TO "postgres";
+
+
+COMMENT ON TABLE "public"."eco_date_reconcile_log_20260626" IS 'Trilha de reconciliação de associações ecológicas/data comemorativa por produto, com SKU/nome quando disponível e timestamp da revisão.';
+
 
 
 CREATE TABLE IF NOT EXISTS "public"."eco_material_config" (
@@ -78185,6 +79491,10 @@ CREATE TABLE IF NOT EXISTS "public"."enriched_contacts" (
 ALTER TABLE "public"."enriched_contacts" OWNER TO "postgres";
 
 
+COMMENT ON TABLE "public"."enriched_contacts" IS 'Cadastro enriquecido de contatos profissionais, com perfis, e-mails/telefones, confiança e origem dos dados. Contém dados pessoais; aplicar políticas de acesso e retenção apropriadas.';
+
+
+
 CREATE TABLE IF NOT EXISTS "public"."enrichment_log" (
     "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
     "contact_id" "uuid",
@@ -78203,6 +79513,10 @@ CREATE TABLE IF NOT EXISTS "public"."enrichment_log" (
 ALTER TABLE "public"."enrichment_log" OWNER TO "postgres";
 
 
+COMMENT ON TABLE "public"."enrichment_log" IS 'Histórico de tentativas de enriquecimento de contatos, incluindo provedor, nível, sucesso, dados encontrados, erros, créditos/custo e duração.';
+
+
+
 CREATE TABLE IF NOT EXISTS "public"."expert_conversations" (
     "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
     "seller_id" "uuid" NOT NULL,
@@ -78216,6 +79530,10 @@ CREATE TABLE IF NOT EXISTS "public"."expert_conversations" (
 ALTER TABLE "public"."expert_conversations" OWNER TO "postgres";
 
 
+COMMENT ON TABLE "public"."expert_conversations" IS 'Conversas do módulo Expert associadas a um vendedor e, opcionalmente, a um cliente; guarda título e timestamps.';
+
+
+
 CREATE TABLE IF NOT EXISTS "public"."expert_messages" (
     "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
     "conversation_id" "uuid" NOT NULL,
@@ -78226,6 +79544,10 @@ CREATE TABLE IF NOT EXISTS "public"."expert_messages" (
 
 
 ALTER TABLE "public"."expert_messages" OWNER TO "postgres";
+
+
+COMMENT ON TABLE "public"."expert_messages" IS 'Mensagens ordenadas de uma conversa Expert, com papel do emissor, conteúdo e timestamp.';
+
 
 
 CREATE TABLE IF NOT EXISTS "public"."external_connections" (
@@ -78254,6 +79576,10 @@ ALTER TABLE ONLY "public"."external_connections" FORCE ROW LEVEL SECURITY;
 ALTER TABLE "public"."external_connections" OWNER TO "postgres";
 
 
+COMMENT ON TABLE "public"."external_connections" IS 'Cadastro de conexões a serviços externos, com tipo, configuração não secreta, referências a secrets e estado do último teste. Segredos devem permanecer no cofre/armazenamento de secrets.';
+
+
+
 CREATE TABLE IF NOT EXISTS "public"."external_connections_sync_log" (
     "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
     "connection_id" "uuid",
@@ -78271,6 +79597,10 @@ CREATE TABLE IF NOT EXISTS "public"."external_connections_sync_log" (
 
 
 ALTER TABLE "public"."external_connections_sync_log" OWNER TO "postgres";
+
+
+COMMENT ON TABLE "public"."external_connections_sync_log" IS 'Histórico de execuções de sincronização de conexões externas, com tipo, estado, contagens, duração e metadados/erro. Não armazena credenciais.';
+
 
 
 CREATE TABLE IF NOT EXISTS "public"."favorite_item_reactions" (
@@ -78311,6 +79641,10 @@ CREATE TABLE IF NOT EXISTS "public"."favorite_items" (
 ALTER TABLE "public"."favorite_items" OWNER TO "postgres";
 
 
+COMMENT ON TABLE "public"."favorite_items" IS 'Produtos salvos em listas de favoritos, com variante opcional, snapshot de atributos, anotação, preço observado e posição. A propriedade da lista define o escopo de acesso.';
+
+
+
 CREATE TABLE IF NOT EXISTS "public"."favorite_items_trash" (
     "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
     "original_id" "uuid",
@@ -78329,6 +79663,10 @@ CREATE TABLE IF NOT EXISTS "public"."favorite_items_trash" (
 
 
 ALTER TABLE "public"."favorite_items_trash" OWNER TO "postgres";
+
+
+COMMENT ON TABLE "public"."favorite_items_trash" IS 'Lixeira temporária de itens removidos de favoritos, preservando snapshot e dados de ordenação para possível restauração até expires_at.';
+
 
 
 CREATE TABLE IF NOT EXISTS "public"."favorite_lists" (
@@ -78412,6 +79750,10 @@ CREATE TABLE IF NOT EXISTS "public"."follow_up_reminders" (
 
 
 ALTER TABLE "public"."follow_up_reminders" OWNER TO "postgres";
+
+
+COMMENT ON TABLE "public"."follow_up_reminders" IS 'Lembretes de acompanhamento vinculados a uma cotação, com responsável, data agendada, tipo e estado de envio/conclusão.';
+
 
 
 CREATE TABLE IF NOT EXISTS "public"."freight_settings" (
@@ -78498,6 +79840,10 @@ CREATE TABLE IF NOT EXISTS "public"."frontend_telemetry" (
 ALTER TABLE "public"."frontend_telemetry" OWNER TO "postgres";
 
 
+COMMENT ON TABLE "public"."frontend_telemetry" IS 'Eventos de telemetria do frontend, como erros e medições de desempenho, com contexto opcional de usuário/sessão. Não registrar tokens, segredos ou dados pessoais desnecessários.';
+
+
+
 CREATE TABLE IF NOT EXISTS "public"."generated_mockups" (
     "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
     "job_id" "uuid",
@@ -78544,6 +79890,10 @@ CREATE TABLE IF NOT EXISTS "public"."generated_mockups" (
 ALTER TABLE "public"."generated_mockups" OWNER TO "postgres";
 
 
+COMMENT ON TABLE "public"."generated_mockups" IS 'Resultados individuais de geração de mockup, com imagem, parâmetros de produto/área/técnica, custo, qualidade e estado de aprovação.';
+
+
+
 CREATE TABLE IF NOT EXISTS "public"."geo_allowed_countries" (
     "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
     "country_code" character(2) NOT NULL,
@@ -78555,6 +79905,10 @@ CREATE TABLE IF NOT EXISTS "public"."geo_allowed_countries" (
 
 
 ALTER TABLE "public"."geo_allowed_countries" OWNER TO "postgres";
+
+
+COMMENT ON TABLE "public"."geo_allowed_countries" IS 'Lista de países permitidos para regras de controle geográfico, identificados por código ISO e com estado ativo/inativo.';
+
 
 
 CREATE TABLE IF NOT EXISTS "public"."hardening_health_snapshots" (
@@ -78569,6 +79923,10 @@ CREATE TABLE IF NOT EXISTS "public"."hardening_health_snapshots" (
 
 
 ALTER TABLE "public"."hardening_health_snapshots" OWNER TO "postgres";
+
+
+COMMENT ON TABLE "public"."hardening_health_snapshots" IS 'Snapshots do resultado de verificações de hardening, com pontuação, falhas e detalhes JSON para acompanhar a postura de segurança ao longo do tempo.';
+
 
 
 CREATE TABLE IF NOT EXISTS "public"."image_backfill_queue" (
@@ -78873,6 +80231,10 @@ CREATE TABLE IF NOT EXISTS "public"."import_pipeline_steps" (
 ALTER TABLE "public"."import_pipeline_steps" OWNER TO "postgres";
 
 
+COMMENT ON TABLE "public"."import_pipeline_steps" IS 'Catálogo/estado das etapas do pipeline de importação, incluindo dependências, status, execução e resultado. etapa identifica a ordem lógica; resultado e error_message guardam evidências da execução.';
+
+
+
 CREATE SEQUENCE IF NOT EXISTS "public"."import_pipeline_steps_id_seq"
     AS integer
     START WITH 1
@@ -78935,6 +80297,10 @@ CREATE TABLE IF NOT EXISTS "public"."inbound_webhook_events" (
 
 
 ALTER TABLE "public"."inbound_webhook_events" OWNER TO "postgres";
+
+
+COMMENT ON TABLE "public"."inbound_webhook_events" IS 'Eventos recebidos por endpoints de webhook. Guarda payload/headers, validade da assinatura, processamento, resultado/erro e chave de idempotência; proteger payloads que possam conter dados pessoais ou segredos.';
+
 
 
 COMMENT ON COLUMN "public"."inbound_webhook_events"."contract_version" IS 'Versao de contrato negociada via header accept-version. Default 1 (compat com payloads legados).';
@@ -79027,6 +80393,10 @@ CREATE TABLE IF NOT EXISTS "public"."ingestion_run_log" (
 ALTER TABLE "public"."ingestion_run_log" OWNER TO "postgres";
 
 
+COMMENT ON TABLE "public"."ingestion_run_log" IS 'Registro de execução por feed e fornecedor, com run_id, duração, contagens fetched/upserted/skipped/errors, estado e amostras de erro.';
+
+
+
 ALTER TABLE "public"."ingestion_run_log" ALTER COLUMN "id" ADD GENERATED ALWAYS AS IDENTITY (
     SEQUENCE NAME "public"."ingestion_run_log_id_seq"
     START WITH 1
@@ -79061,6 +80431,10 @@ ALTER TABLE ONLY "public"."integration_credentials" FORCE ROW LEVEL SECURITY;
 
 
 ALTER TABLE "public"."integration_credentials" OWNER TO "postgres";
+
+
+COMMENT ON TABLE "public"."integration_credentials" IS 'Referências e valores de credenciais de integrações externas, com provedor, tipo, estado, expiração e auditoria de atualização. Nunca inserir valores secretos em comentários, logs ou metadados de documentação; restringir o acesso ao mecanismo de secrets/roles apropriado.';
+
 
 
 COMMENT ON COLUMN "public"."integration_credentials"."secret_name" IS 'Nome canônico do secret (ex: BITRIX_API_KEY, EXTERNAL_PROMOBRIND_URL). Match com helper supabase/functions/_shared/credentials.ts.';
@@ -79102,6 +80476,10 @@ CREATE TABLE IF NOT EXISTS "public"."ip_access_control" (
 
 
 ALTER TABLE "public"."ip_access_control" OWNER TO "postgres";
+
+
+COMMENT ON TABLE "public"."ip_access_control" IS 'Regras globais de allow/block por endereço IP, com motivo, expiração e autoria. Não confundir com allowlists de usuário ou de país.';
+
 
 
 CREATE TABLE IF NOT EXISTS "public"."ip_whitelist" (
@@ -79208,6 +80586,10 @@ CREATE TABLE IF NOT EXISTS "public"."kit_collaborators" (
 ALTER TABLE "public"."kit_collaborators" OWNER TO "postgres";
 
 
+COMMENT ON TABLE "public"."kit_collaborators" IS 'Permissões de colaboração por usuário em um kit customizado, incluindo nível view/edit, convite e autor do convite.';
+
+
+
 CREATE TABLE IF NOT EXISTS "public"."kit_comments" (
     "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
     "kit_id" "uuid" NOT NULL,
@@ -79222,6 +80604,10 @@ CREATE TABLE IF NOT EXISTS "public"."kit_comments" (
 
 
 ALTER TABLE "public"."kit_comments" OWNER TO "postgres";
+
+
+COMMENT ON TABLE "public"."kit_comments" IS 'Comentários em kits customizados, com encadeamento opcional por parent_id e âncora opcional para um item. resolved marca se a discussão foi resolvida.';
+
 
 
 CREATE TABLE IF NOT EXISTS "public"."kit_component_enrichment_raw" (
@@ -79545,6 +80931,10 @@ CREATE TABLE IF NOT EXISTS "public"."kit_save_requests" (
 ALTER TABLE "public"."kit_save_requests" OWNER TO "postgres";
 
 
+COMMENT ON TABLE "public"."kit_save_requests" IS 'Ledger de idempotência de salvamento de kits por request_id, registrando usuário, kit persistido e data da solicitação.';
+
+
+
 CREATE TABLE IF NOT EXISTS "public"."kit_share_tokens" (
     "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
     "kit_id" "uuid" NOT NULL,
@@ -79620,6 +81010,10 @@ CREATE TABLE IF NOT EXISTS "public"."kit_typical_dims" (
 ALTER TABLE "public"."kit_typical_dims" OWNER TO "postgres";
 
 
+COMMENT ON TABLE "public"."kit_typical_dims" IS 'Dimensões e peso típicos por tipo de componente de kit, com intervalos de referência e notas para apoiar validação/enriquecimento; não são medidas confirmadas de um componente específico.';
+
+
+
 CREATE TABLE IF NOT EXISTS "public"."kit_variants" (
     "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
     "kit_master_id" "uuid" NOT NULL,
@@ -79636,6 +81030,10 @@ CREATE TABLE IF NOT EXISTS "public"."kit_variants" (
 
 
 ALTER TABLE "public"."kit_variants" OWNER TO "postgres";
+
+
+COMMENT ON TABLE "public"."kit_variants" IS 'Variações nomeadas de um kit mestre, com snapshots de caixa/itens/personalização, quantidade, preço e ordenação próprios.';
+
 
 
 CREATE TABLE IF NOT EXISTS "public"."login_attempts" (
@@ -79655,6 +81053,10 @@ ALTER TABLE ONLY "public"."login_attempts" REPLICA IDENTITY FULL;
 
 
 ALTER TABLE "public"."login_attempts" OWNER TO "postgres";
+
+
+COMMENT ON TABLE "public"."login_attempts" IS 'Trilha de tentativas de autenticação usada para auditoria, detecção de abuso e regras de lockout. verified indica se a tentativa bem-sucedida teve sessão validada pela Edge Function.';
+
 
 
 COMMENT ON COLUMN "public"."login_attempts"."verified" IS 'true somente quando a edge log-login-attempt validou a sessão do usuário (Authorization Bearer + e-mail casado) para linhas success=true. fn_check_login_allowed ignora success não verificado ao zerar o contador de lockout.';
@@ -79677,6 +81079,10 @@ CREATE TABLE IF NOT EXISTS "public"."magazine_duplicate_requests" (
 ALTER TABLE "public"."magazine_duplicate_requests" OWNER TO "postgres";
 
 
+COMMENT ON TABLE "public"."magazine_duplicate_requests" IS 'Ledger de idempotência para pedidos de duplicação de revistas. A chave composta por ator e idempotency_key impede cópias duplicadas e relaciona origem/edição solicitada ao novo registro.';
+
+
+
 CREATE TABLE IF NOT EXISTS "public"."magazine_items" (
     "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
     "magazine_id" "uuid" NOT NULL,
@@ -79694,6 +81100,10 @@ CREATE TABLE IF NOT EXISTS "public"."magazine_items" (
 ALTER TABLE "public"."magazine_items" OWNER TO "postgres";
 
 
+COMMENT ON TABLE "public"."magazine_items" IS 'Produtos incluídos em uma revista, com posição/página, variante de cor opcional, snapshot do produto e overrides específicos da publicação.';
+
+
+
 CREATE TABLE IF NOT EXISTS "public"."magazine_public_reactions" (
     "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
     "magazine_id" "uuid" NOT NULL,
@@ -79707,6 +81117,10 @@ CREATE TABLE IF NOT EXISTS "public"."magazine_public_reactions" (
 
 
 ALTER TABLE "public"."magazine_public_reactions" OWNER TO "postgres";
+
+
+COMMENT ON TABLE "public"."magazine_public_reactions" IS 'Reações de visitantes a uma revista pública, página ou item, identificadas por fingerprint e hash de IP para reduzir duplicidade e exposição de dados.';
+
 
 
 CREATE TABLE IF NOT EXISTS "public"."magazine_public_view_events" (
@@ -79724,6 +81138,10 @@ PARTITION BY RANGE ("viewed_at");
 
 
 ALTER TABLE "public"."magazine_public_view_events" OWNER TO "postgres";
+
+
+COMMENT ON TABLE "public"."magazine_public_view_events" IS 'Eventos particionados de visualização de revistas públicas. Guarda hashes de token/IP/agente, página, sessão e referer host; usar a tabela pai para consultas unificadas.';
+
 
 
 CREATE SEQUENCE IF NOT EXISTS "public"."magazine_public_view_events_id_seq"
@@ -79757,6 +81175,10 @@ CREATE TABLE IF NOT EXISTS "public"."magazine_public_view_events_2026_07" (
 ALTER TABLE "public"."magazine_public_view_events_2026_07" OWNER TO "postgres";
 
 
+COMMENT ON TABLE "public"."magazine_public_view_events_2026_07" IS 'Partição mensal de 2026-07 da tabela public.magazine_public_view_events. Os eventos armazenam hashes e metadados de visualização pública; consultar a tabela pai para buscas unificadas.';
+
+
+
 CREATE TABLE IF NOT EXISTS "public"."magazine_public_view_events_2026_08" (
     "id" bigint DEFAULT "nextval"('"public"."magazine_public_view_events_id_seq"'::"regclass") NOT NULL,
     "magazine_id" "uuid" NOT NULL,
@@ -79771,6 +81193,10 @@ CREATE TABLE IF NOT EXISTS "public"."magazine_public_view_events_2026_08" (
 
 
 ALTER TABLE "public"."magazine_public_view_events_2026_08" OWNER TO "postgres";
+
+
+COMMENT ON TABLE "public"."magazine_public_view_events_2026_08" IS 'Partição mensal de 2026-08 da tabela public.magazine_public_view_events. Os eventos armazenam hashes e metadados de visualização pública; consultar a tabela pai para buscas unificadas.';
+
 
 
 CREATE TABLE IF NOT EXISTS "public"."magazine_public_view_events_2026_09" (
@@ -79789,6 +81215,10 @@ CREATE TABLE IF NOT EXISTS "public"."magazine_public_view_events_2026_09" (
 ALTER TABLE "public"."magazine_public_view_events_2026_09" OWNER TO "postgres";
 
 
+COMMENT ON TABLE "public"."magazine_public_view_events_2026_09" IS 'Partição mensal de 2026-09 da tabela public.magazine_public_view_events. Os eventos armazenam hashes e metadados de visualização pública; consultar a tabela pai para buscas unificadas.';
+
+
+
 CREATE TABLE IF NOT EXISTS "public"."magazine_public_view_events_2026_10" (
     "id" bigint DEFAULT "nextval"('"public"."magazine_public_view_events_id_seq"'::"regclass") NOT NULL,
     "magazine_id" "uuid" NOT NULL,
@@ -79803,6 +81233,10 @@ CREATE TABLE IF NOT EXISTS "public"."magazine_public_view_events_2026_10" (
 
 
 ALTER TABLE "public"."magazine_public_view_events_2026_10" OWNER TO "postgres";
+
+
+COMMENT ON TABLE "public"."magazine_public_view_events_2026_10" IS 'Partição mensal de 2026-10 da tabela public.magazine_public_view_events. Os eventos armazenam hashes e metadados de visualização pública; consultar a tabela pai para buscas unificadas.';
+
 
 
 CREATE TABLE IF NOT EXISTS "public"."magazine_public_view_events_2026_11" (
@@ -79821,6 +81255,10 @@ CREATE TABLE IF NOT EXISTS "public"."magazine_public_view_events_2026_11" (
 ALTER TABLE "public"."magazine_public_view_events_2026_11" OWNER TO "postgres";
 
 
+COMMENT ON TABLE "public"."magazine_public_view_events_2026_11" IS 'Partição mensal de 2026-11 da tabela public.magazine_public_view_events. Os eventos armazenam hashes e metadados de visualização pública; consultar a tabela pai para buscas unificadas.';
+
+
+
 CREATE TABLE IF NOT EXISTS "public"."magazine_public_view_events_2026_12" (
     "id" bigint DEFAULT "nextval"('"public"."magazine_public_view_events_id_seq"'::"regclass") NOT NULL,
     "magazine_id" "uuid" NOT NULL,
@@ -79835,6 +81273,10 @@ CREATE TABLE IF NOT EXISTS "public"."magazine_public_view_events_2026_12" (
 
 
 ALTER TABLE "public"."magazine_public_view_events_2026_12" OWNER TO "postgres";
+
+
+COMMENT ON TABLE "public"."magazine_public_view_events_2026_12" IS 'Partição mensal de 2026-12 da tabela public.magazine_public_view_events. Os eventos armazenam hashes e metadados de visualização pública; consultar a tabela pai para buscas unificadas.';
+
 
 
 CREATE TABLE IF NOT EXISTS "public"."magazine_public_view_events_2027_01" (
@@ -79853,6 +81295,10 @@ CREATE TABLE IF NOT EXISTS "public"."magazine_public_view_events_2027_01" (
 ALTER TABLE "public"."magazine_public_view_events_2027_01" OWNER TO "postgres";
 
 
+COMMENT ON TABLE "public"."magazine_public_view_events_2027_01" IS 'Partição mensal de 2027-01 da tabela public.magazine_public_view_events. Os eventos armazenam hashes e metadados de visualização pública; consultar a tabela pai para buscas unificadas.';
+
+
+
 CREATE TABLE IF NOT EXISTS "public"."magazine_public_view_events_2027_02" (
     "id" bigint DEFAULT "nextval"('"public"."magazine_public_view_events_id_seq"'::"regclass") NOT NULL,
     "magazine_id" "uuid" NOT NULL,
@@ -79867,6 +81313,10 @@ CREATE TABLE IF NOT EXISTS "public"."magazine_public_view_events_2027_02" (
 
 
 ALTER TABLE "public"."magazine_public_view_events_2027_02" OWNER TO "postgres";
+
+
+COMMENT ON TABLE "public"."magazine_public_view_events_2027_02" IS 'Partição mensal de 2027-02 da tabela public.magazine_public_view_events. Os eventos armazenam hashes e metadados de visualização pública; consultar a tabela pai para buscas unificadas.';
+
 
 
 CREATE TABLE IF NOT EXISTS "public"."magazine_public_view_events_default" (
@@ -79885,6 +81335,10 @@ CREATE TABLE IF NOT EXISTS "public"."magazine_public_view_events_default" (
 ALTER TABLE "public"."magazine_public_view_events_default" OWNER TO "postgres";
 
 
+COMMENT ON TABLE "public"."magazine_public_view_events_default" IS 'Partição DEFAULT da tabela public.magazine_public_view_events para datas fora das partições mensais existentes.';
+
+
+
 CREATE TABLE IF NOT EXISTS "public"."magazine_reader_state" (
     "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
     "magazine_token_hash" "text" NOT NULL,
@@ -79900,6 +81354,10 @@ CREATE TABLE IF NOT EXISTS "public"."magazine_reader_state" (
 
 
 ALTER TABLE "public"."magazine_reader_state" OWNER TO "postgres";
+
+
+COMMENT ON TABLE "public"."magazine_reader_state" IS 'Estado de leitura de um visitante para uma revista compartilhada, associado ao hash do token e fingerprint; armazena última página e bookmarks sem guardar o token público em claro.';
+
 
 
 CREATE TABLE IF NOT EXISTS "public"."magazine_templates" (
@@ -79920,6 +81378,10 @@ CREATE TABLE IF NOT EXISTS "public"."magazine_templates" (
 ALTER TABLE "public"."magazine_templates" OWNER TO "postgres";
 
 
+COMMENT ON TABLE "public"."magazine_templates" IS 'Templates personalizados de revista pertencentes a um usuário e opcionalmente compartilhados na organização; preserva branding e configurações de conteúdo.';
+
+
+
 CREATE TABLE IF NOT EXISTS "public"."magazine_templates_catalog" (
     "template_id" "text" NOT NULL,
     "family" "text" NOT NULL,
@@ -79933,6 +81395,10 @@ CREATE TABLE IF NOT EXISTS "public"."magazine_templates_catalog" (
 ALTER TABLE "public"."magazine_templates_catalog" OWNER TO "postgres";
 
 
+COMMENT ON TABLE "public"."magazine_templates_catalog" IS 'Catálogo de templates de revista disponíveis, com família visual, quantidade de produtos por página e estado ativo.';
+
+
+
 CREATE TABLE IF NOT EXISTS "public"."magazine_view_rollup_watermark" (
     "id" boolean DEFAULT true NOT NULL,
     "last_rolled_at" timestamp with time zone DEFAULT "now"() NOT NULL,
@@ -79943,7 +81409,7 @@ CREATE TABLE IF NOT EXISTS "public"."magazine_view_rollup_watermark" (
 ALTER TABLE "public"."magazine_view_rollup_watermark" OWNER TO "postgres";
 
 
-COMMENT ON TABLE "public"."magazine_view_rollup_watermark" IS 'Singleton. Marca d''água do rollup de view_count. Garante exactly-once entre o cron horário e o nightly.';
+COMMENT ON TABLE "public"."magazine_view_rollup_watermark" IS 'Registro singleton de marca d’água que coordena o processamento exactly-once dos eventos públicos de visualização para atualizar view_count.';
 
 
 
@@ -79969,6 +81435,10 @@ CREATE TABLE IF NOT EXISTS "public"."magic_up_brand_kits" (
 ALTER TABLE "public"."magic_up_brand_kits" OWNER TO "postgres";
 
 
+COMMENT ON TABLE "public"."magic_up_brand_kits" IS 'Configurações de identidade de marca para campanhas Magic Up: logos, cores, tom, estilo e vocabulário obrigatório/proibido.';
+
+
+
 CREATE TABLE IF NOT EXISTS "public"."magic_up_campaigns" (
     "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
     "user_id" "uuid" NOT NULL,
@@ -79991,6 +81461,10 @@ CREATE TABLE IF NOT EXISTS "public"."magic_up_campaigns" (
 ALTER TABLE "public"."magic_up_campaigns" OWNER TO "postgres";
 
 
+COMMENT ON TABLE "public"."magic_up_campaigns" IS 'Briefings de campanhas Magic Up por usuário/cliente, incluindo objetivo, canal, público, tom, CTA, ocasião e estado.';
+
+
+
 CREATE TABLE IF NOT EXISTS "public"."magic_up_comments" (
     "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
     "user_id" "uuid" NOT NULL,
@@ -80003,6 +81477,10 @@ CREATE TABLE IF NOT EXISTS "public"."magic_up_comments" (
 
 
 ALTER TABLE "public"."magic_up_comments" OWNER TO "postgres";
+
+
+COMMENT ON TABLE "public"."magic_up_comments" IS 'Comentários de usuários sobre gerações Magic Up, com autoria de exibição e opção de visibilidade pública.';
+
 
 
 CREATE TABLE IF NOT EXISTS "public"."magic_up_generations" (
@@ -80034,6 +81512,10 @@ CREATE TABLE IF NOT EXISTS "public"."magic_up_generations" (
 ALTER TABLE "public"."magic_up_generations" OWNER TO "postgres";
 
 
+COMMENT ON TABLE "public"."magic_up_generations" IS 'Gerações de conteúdo/imagem Magic Up, com prompt, produto, canal, modelo, resultado, qualidade, status, tags e metadados.';
+
+
+
 CREATE TABLE IF NOT EXISTS "public"."magic_up_public_shares" (
     "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
     "user_id" "uuid" NOT NULL,
@@ -80054,6 +81536,10 @@ CREATE TABLE IF NOT EXISTS "public"."magic_up_public_shares" (
 ALTER TABLE "public"."magic_up_public_shares" OWNER TO "postgres";
 
 
+COMMENT ON TABLE "public"."magic_up_public_shares" IS 'Compartilhamentos públicos tokenizados de gerações ou campanhas Magic Up, com validade, permissões e estado.';
+
+
+
 CREATE TABLE IF NOT EXISTS "public"."magic_up_reactions" (
     "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
     "user_id" "uuid" NOT NULL,
@@ -80066,6 +81552,10 @@ CREATE TABLE IF NOT EXISTS "public"."magic_up_reactions" (
 
 
 ALTER TABLE "public"."magic_up_reactions" OWNER TO "postgres";
+
+
+COMMENT ON TABLE "public"."magic_up_reactions" IS 'Reações de usuários a gerações Magic Up, com tipo de reação e metadados técnicos de origem.';
+
 
 
 CREATE TABLE IF NOT EXISTS "public"."markup_configurations" (
@@ -80147,6 +81637,10 @@ CREATE TABLE IF NOT EXISTS "public"."material_equivalences" (
 ALTER TABLE "public"."material_equivalences" OWNER TO "postgres";
 
 
+COMMENT ON TABLE "public"."material_equivalences" IS 'De-para entre um material recebido de fornecedor e o catálogo Promo de grupos, tipos ou variações. match_level indica o nível do mapeamento e match_quality/confidence_score registram sua qualidade.';
+
+
+
 CREATE TABLE IF NOT EXISTS "public"."material_reconcile_log_20260626" (
     "id" bigint NOT NULL,
     "product_id" "uuid" NOT NULL,
@@ -80157,6 +81651,10 @@ CREATE TABLE IF NOT EXISTS "public"."material_reconcile_log_20260626" (
 
 
 ALTER TABLE "public"."material_reconcile_log_20260626" OWNER TO "postgres";
+
+
+COMMENT ON TABLE "public"."material_reconcile_log_20260626" IS 'Trilha de reconciliação produto–material de 2026-06-26, com motivo e timestamp por vínculo revisado.';
+
 
 
 CREATE SEQUENCE IF NOT EXISTS "public"."material_reconcile_log_20260626_id_seq"
@@ -80190,6 +81688,10 @@ CREATE TABLE IF NOT EXISTS "public"."material_variations" (
 
 
 ALTER TABLE "public"."material_variations" OWNER TO "postgres";
+
+
+COMMENT ON TABLE "public"."material_variations" IS 'Variações ou especificações de um tipo de material. type_id identifica o material-pai; specifications guarda propriedades estruturadas específicas da variação.';
+
 
 
 CREATE OR REPLACE VIEW "public"."materials_complete" WITH ("security_invoker"='true') AS
@@ -80232,6 +81734,10 @@ CREATE TABLE IF NOT EXISTS "public"."mcp_access_violations" (
 ALTER TABLE "public"."mcp_access_violations" OWNER TO "postgres";
 
 
+COMMENT ON TABLE "public"."mcp_access_violations" IS 'Eventos de violações de autorização MCP, com operação, origem, chave-alvo e contexto técnico para investigação.';
+
+
+
 CREATE TABLE IF NOT EXISTS "public"."mcp_api_keys" (
     "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
     "name" "text" NOT NULL,
@@ -80255,6 +81761,10 @@ ALTER TABLE ONLY "public"."mcp_api_keys" FORCE ROW LEVEL SECURITY;
 ALTER TABLE "public"."mcp_api_keys" OWNER TO "postgres";
 
 
+COMMENT ON TABLE "public"."mcp_api_keys" IS 'Registro de chaves de API MCP com hash, prefixo, escopos, expiração, revogação e rotação. A chave secreta em si não deve ser armazenada nesta tabela nem compartilhada em logs.';
+
+
+
 CREATE TABLE IF NOT EXISTS "public"."mcp_full_grantors" (
     "user_id" "uuid" NOT NULL,
     "granted_by" "uuid",
@@ -80264,6 +81774,10 @@ CREATE TABLE IF NOT EXISTS "public"."mcp_full_grantors" (
 
 
 ALTER TABLE "public"."mcp_full_grantors" OWNER TO "postgres";
+
+
+COMMENT ON TABLE "public"."mcp_full_grantors" IS 'Registro de concessões de acesso MCP full, com usuário, concedente, justificativa e data. Deve ser tratado como controle administrativo sensível.';
+
 
 
 CREATE TABLE IF NOT EXISTS "public"."mcp_key_auto_revocations" (
@@ -80281,6 +81795,10 @@ CREATE TABLE IF NOT EXISTS "public"."mcp_key_auto_revocations" (
 ALTER TABLE "public"."mcp_key_auto_revocations" OWNER TO "postgres";
 
 
+COMMENT ON TABLE "public"."mcp_key_auto_revocations" IS 'Auditoria de revogações automáticas de chaves MCP, indicando chave, criador, origem e motivo da revogação.';
+
+
+
 CREATE TABLE IF NOT EXISTS "public"."mcp_kv" (
     "k" "text" NOT NULL,
     "v" "jsonb" NOT NULL,
@@ -80290,6 +81808,10 @@ CREATE TABLE IF NOT EXISTS "public"."mcp_kv" (
 
 
 ALTER TABLE "public"."mcp_kv" OWNER TO "postgres";
+
+
+COMMENT ON TABLE "public"."mcp_kv" IS 'Armazenamento key/value interno do MCP em JSONB, com timestamp de atualização e lock_until para coordenação temporária.';
+
 
 
 CREATE TABLE IF NOT EXISTS "public"."mcp_sessions" (
@@ -80329,6 +81851,10 @@ CREATE TABLE IF NOT EXISTS "public"."medallion_coverage_snapshots" (
 ALTER TABLE "public"."medallion_coverage_snapshots" OWNER TO "postgres";
 
 
+COMMENT ON TABLE "public"."medallion_coverage_snapshots" IS 'Snapshots de cobertura de enriquecimento por fornecedor e camada Bronze/Silver/Gold, incluindo percentuais de atributos preenchidos para acompanhar a qualidade do pipeline.';
+
+
+
 ALTER TABLE "public"."medallion_coverage_snapshots" ALTER COLUMN "id" ADD GENERATED ALWAYS AS IDENTITY (
     SEQUENCE NAME "public"."medallion_coverage_snapshots_id_seq"
     START WITH 1
@@ -80363,6 +81889,10 @@ CREATE TABLE IF NOT EXISTS "public"."mockup_approval_links" (
 ALTER TABLE "public"."mockup_approval_links" OWNER TO "postgres";
 
 
+COMMENT ON TABLE "public"."mockup_approval_links" IS 'Links tokenizados para revisão/aprovação de um job de mockup por cliente, com validade, limites de uso, acessos e decisão.';
+
+
+
 CREATE TABLE IF NOT EXISTS "public"."mockup_credit_transactions" (
     "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
     "user_id" "uuid" NOT NULL,
@@ -80381,6 +81911,10 @@ CREATE TABLE IF NOT EXISTS "public"."mockup_credit_transactions" (
 
 
 ALTER TABLE "public"."mockup_credit_transactions" OWNER TO "postgres";
+
+
+COMMENT ON TABLE "public"."mockup_credit_transactions" IS 'Livro-razão de créditos de mockup: concessões, cobranças, reembolsos e compras, com saldo antes/depois e referência opcional ao job/mockup.';
+
 
 
 CREATE TABLE IF NOT EXISTS "public"."mockup_credits" (
@@ -80404,6 +81938,10 @@ CREATE TABLE IF NOT EXISTS "public"."mockup_credits" (
 ALTER TABLE "public"."mockup_credits" OWNER TO "postgres";
 
 
+COMMENT ON TABLE "public"."mockup_credits" IS 'Saldo e limites de créditos de geração de mockup por usuário, incluindo acumulados de ganhos, gastos e consumo por período.';
+
+
+
 CREATE TABLE IF NOT EXISTS "public"."mockup_drafts" (
     "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
     "user_id" "uuid" NOT NULL,
@@ -80422,6 +81960,10 @@ CREATE TABLE IF NOT EXISTS "public"."mockup_drafts" (
 
 
 ALTER TABLE "public"."mockup_drafts" OWNER TO "postgres";
+
+
+COMMENT ON TABLE "public"."mockup_drafts" IS 'Estado salvo de um rascunho de mockup por usuário e draft_key, incluindo produto, cliente, técnica, áreas e dados de logo.';
+
 
 
 CREATE TABLE IF NOT EXISTS "public"."mockup_generation_jobs" (
@@ -80460,6 +82002,10 @@ CREATE TABLE IF NOT EXISTS "public"."mockup_generation_jobs" (
 ALTER TABLE "public"."mockup_generation_jobs" OWNER TO "postgres";
 
 
+COMMENT ON TABLE "public"."mockup_generation_jobs" IS 'Solicitações em lote de geração de mockups. Guarda usuário, produto, técnica, parâmetros visuais, estado, contagens e custos estimados/reais do job.';
+
+
+
 COMMENT ON COLUMN "public"."mockup_generation_jobs"."client_id" IS 'FK pra bitrix_clients removida na Etapa 5 — tabela não existe ainda. Quando bitrix_clients for criada, adicionar REFERENCES.';
 
 
@@ -80481,6 +82027,10 @@ CREATE TABLE IF NOT EXISTS "public"."mockup_prompt_configs" (
 ALTER TABLE "public"."mockup_prompt_configs" OWNER TO "postgres";
 
 
+COMMENT ON TABLE "public"."mockup_prompt_configs" IS 'Configurações versionadas de prompts de mockup por config_key, com modelo, técnica opcional e estado ativo.';
+
+
+
 CREATE TABLE IF NOT EXISTS "public"."mockup_prompt_history" (
     "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
     "config_id" "uuid" NOT NULL,
@@ -80496,6 +82046,10 @@ CREATE TABLE IF NOT EXISTS "public"."mockup_prompt_history" (
 
 
 ALTER TABLE "public"."mockup_prompt_history" OWNER TO "postgres";
+
+
+COMMENT ON TABLE "public"."mockup_prompt_history" IS 'Histórico de alterações de prompts, preservando conteúdo anterior/novo, modelo, versão, autor e observações.';
+
 
 
 CREATE TABLE IF NOT EXISTS "public"."mockup_templates" (
@@ -80516,6 +82070,10 @@ CREATE TABLE IF NOT EXISTS "public"."mockup_templates" (
 
 
 ALTER TABLE "public"."mockup_templates" OWNER TO "postgres";
+
+
+COMMENT ON TABLE "public"."mockup_templates" IS 'Modelos reutilizáveis de mockup por produto, com áreas, técnica padrão, cores e estado de publicação.';
+
 
 
 CREATE MATERIALIZED VIEW "public"."mv_ema_kpi_by_level" AS
@@ -80769,6 +82327,10 @@ CREATE TABLE IF NOT EXISTS "public"."navigation_analytics" (
 ALTER TABLE "public"."navigation_analytics" OWNER TO "postgres";
 
 
+COMMENT ON TABLE "public"."navigation_analytics" IS 'Eventos de navegação registrados para análise de uso, com usuário opcional, tipo do evento, payload JSON e timestamp.';
+
+
+
 CREATE TABLE IF NOT EXISTS "public"."ncm_codes" (
     "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
     "code" character varying(8) NOT NULL,
@@ -80830,6 +82392,10 @@ CREATE TABLE IF NOT EXISTS "public"."notebook_features" (
 ALTER TABLE "public"."notebook_features" OWNER TO "postgres";
 
 
+COMMENT ON TABLE "public"."notebook_features" IS 'Catálogo de features e acessórios possíveis para cadernos; public.product_notebook_features associa as features confirmadas aos produtos.';
+
+
+
 CREATE TABLE IF NOT EXISTS "public"."notification_preferences" (
     "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
     "user_id" "uuid" NOT NULL,
@@ -80847,6 +82413,50 @@ CREATE TABLE IF NOT EXISTS "public"."notification_preferences" (
 ALTER TABLE "public"."notification_preferences" OWNER TO "postgres";
 
 
+COMMENT ON TABLE "public"."notification_preferences" IS 'Preferências de notificação por usuário para canais e categorias de eventos.';
+
+
+
+COMMENT ON COLUMN "public"."notification_preferences"."id" IS 'Identificador UUID das preferências.';
+
+
+
+COMMENT ON COLUMN "public"."notification_preferences"."user_id" IS 'Usuário ao qual as preferências se aplicam.';
+
+
+
+COMMENT ON COLUMN "public"."notification_preferences"."email_notifications" IS 'Indica se o usuário aceita notificações por e-mail.';
+
+
+
+COMMENT ON COLUMN "public"."notification_preferences"."push_notifications" IS 'Indica se o usuário aceita notificações push.';
+
+
+
+COMMENT ON COLUMN "public"."notification_preferences"."quote_updates" IS 'Indica se o usuário aceita notificações sobre atualizações de cotações.';
+
+
+
+COMMENT ON COLUMN "public"."notification_preferences"."order_updates" IS 'Indica se o usuário aceita notificações sobre atualizações de pedidos.';
+
+
+
+COMMENT ON COLUMN "public"."notification_preferences"."system_announcements" IS 'Indica se o usuário aceita comunicados do sistema.';
+
+
+
+COMMENT ON COLUMN "public"."notification_preferences"."marketing" IS 'Indica se o usuário aceita comunicações de marketing.';
+
+
+
+COMMENT ON COLUMN "public"."notification_preferences"."created_at" IS 'Data e hora de criação das preferências.';
+
+
+
+COMMENT ON COLUMN "public"."notification_preferences"."updated_at" IS 'Data e hora da última atualização das preferências.';
+
+
+
 CREATE TABLE IF NOT EXISTS "public"."notification_templates" (
     "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
     "code" "text" NOT NULL,
@@ -80861,6 +82471,10 @@ CREATE TABLE IF NOT EXISTS "public"."notification_templates" (
 
 
 ALTER TABLE "public"."notification_templates" OWNER TO "postgres";
+
+
+COMMENT ON TABLE "public"."notification_templates" IS 'Modelos reutilizáveis de notificações, identificados por code, com assunto, corpo e lista JSON de variáveis esperadas. is_active controla disponibilidade para envio.';
+
 
 
 CREATE TABLE IF NOT EXISTS "public"."notifications" (
@@ -80883,6 +82497,54 @@ ALTER TABLE ONLY "public"."notifications" REPLICA IDENTITY FULL;
 ALTER TABLE "public"."notifications" OWNER TO "postgres";
 
 
+COMMENT ON TABLE "public"."notifications" IS 'Notificações direcionadas a usuários, com conteúdo, prioridade, estado de leitura e dados auxiliares.';
+
+
+
+COMMENT ON COLUMN "public"."notifications"."id" IS 'Identificador UUID da notificação.';
+
+
+
+COMMENT ON COLUMN "public"."notifications"."user_id" IS 'Usuário destinatário da notificação.';
+
+
+
+COMMENT ON COLUMN "public"."notifications"."type" IS 'Tipo da notificação.';
+
+
+
+COMMENT ON COLUMN "public"."notifications"."title" IS 'Título da notificação.';
+
+
+
+COMMENT ON COLUMN "public"."notifications"."message" IS 'Conteúdo textual da notificação.';
+
+
+
+COMMENT ON COLUMN "public"."notifications"."data" IS 'Dados adicionais da notificação em formato JSONB.';
+
+
+
+COMMENT ON COLUMN "public"."notifications"."read_at" IS 'Data e hora em que a notificação foi marcada como lida, quando disponível.';
+
+
+
+COMMENT ON COLUMN "public"."notifications"."action_url" IS 'URL de destino associada à ação da notificação, quando houver.';
+
+
+
+COMMENT ON COLUMN "public"."notifications"."is_read" IS 'Indica se a notificação está marcada como lida.';
+
+
+
+COMMENT ON COLUMN "public"."notifications"."priority" IS 'Prioridade atribuída à notificação.';
+
+
+
+COMMENT ON COLUMN "public"."notifications"."created_at" IS 'Data e hora de criação da notificação.';
+
+
+
 CREATE TABLE IF NOT EXISTS "public"."ops_grant_audit" (
     "id" bigint NOT NULL,
     "at" timestamp with time zone DEFAULT "now"(),
@@ -80893,6 +82555,10 @@ CREATE TABLE IF NOT EXISTS "public"."ops_grant_audit" (
 
 
 ALTER TABLE "public"."ops_grant_audit" OWNER TO "postgres";
+
+
+COMMENT ON TABLE "public"."ops_grant_audit" IS 'Auditoria resumida de alterações de grants operacionais, registrando assinatura da função, roles corrigidas, origem e instante da execução.';
+
 
 
 CREATE SEQUENCE IF NOT EXISTS "public"."ops_grant_audit_id_seq"
@@ -80925,6 +82591,10 @@ CREATE TABLE IF NOT EXISTS "public"."optimization_queue_runs" (
 ALTER TABLE "public"."optimization_queue_runs" OWNER TO "postgres";
 
 
+COMMENT ON TABLE "public"."optimization_queue_runs" IS 'Histórico de execuções de itens da optimization_queue, com status, guardrail, duração, executor e notas.';
+
+
+
 CREATE TABLE IF NOT EXISTS "public"."order_item_personalizations" (
     "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
     "order_item_id" "uuid" NOT NULL,
@@ -80941,6 +82611,10 @@ CREATE TABLE IF NOT EXISTS "public"."order_item_personalizations" (
 
 
 ALTER TABLE "public"."order_item_personalizations" OWNER TO "postgres";
+
+
+COMMENT ON TABLE "public"."order_item_personalizations" IS 'Detalhes de personalização associados a uma linha de pedido: técnica, local, imagem/texto e ajuste de preço. order_item_id identifica a linha comercial.';
+
 
 
 CREATE TABLE IF NOT EXISTS "public"."order_items" (
@@ -80972,6 +82646,34 @@ ALTER TABLE ONLY "public"."order_items" REPLICA IDENTITY FULL;
 
 
 ALTER TABLE "public"."order_items" OWNER TO "postgres";
+
+
+COMMENT ON TABLE "public"."order_items" IS 'Linhas de produtos de um pedido. product_id é opcional e os campos de nome/SKU/descrição/imagem preservam um snapshot da linha; quote_item_id pode apontar logicamente para a linha de orçamento de origem. Valores de linha não substituem frete/impostos do cabeçalho.';
+
+
+
+COMMENT ON COLUMN "public"."order_items"."product_id" IS 'Vínculo opcional com public.products.id (FK existente). Pode ser NULL; os campos product_name, product_sku, product_description e product_image_url preservam o snapshot do item no pedido.';
+
+
+
+COMMENT ON COLUMN "public"."order_items"."unit_price" IS 'Preço unitário comercial do produto no pedido, em BRL (reais com centavos), sem frete e sem impostos.';
+
+
+
+COMMENT ON COLUMN "public"."order_items"."subtotal" IS 'Valor da linha do pedido em BRL (reais com centavos), conforme cálculo da aplicação. Frete e impostos do cabeçalho permanecem separados.';
+
+
+
+COMMENT ON COLUMN "public"."order_items"."quote_item_id" IS 'Referência opcional ao item de orçamento que originou esta linha. A coluna não possui FK declarada no schema; tratá-la como referência lógica, não como integridade referencial garantida.';
+
+
+
+COMMENT ON COLUMN "public"."order_items"."personalization_cost" IS 'Valor monetário da personalização associada à linha do pedido, em BRL (reais com centavos). Não confundir com frete ou impostos.';
+
+
+
+COMMENT ON COLUMN "public"."order_items"."discount_amount" IS 'Valor do desconto aplicado especificamente a esta linha do pedido, em BRL (reais com centavos); distinto de orders.discount_amount.';
+
 
 
 CREATE TABLE IF NOT EXISTS "public"."orders" (
@@ -81024,7 +82726,51 @@ ALTER TABLE ONLY "public"."orders" REPLICA IDENTITY FULL;
 ALTER TABLE "public"."orders" OWNER TO "postgres";
 
 
-COMMENT ON COLUMN "public"."orders"."total" IS 'Wave 3.2.A 2026-05-22: renomeado de total_amount. Consolidacao Lovable.';
+COMMENT ON TABLE "public"."orders" IS 'Pedidos comerciais confirmados, com estado operacional, pagamento, cliente, vendedor, endereço e totais. Os itens ficam em public.order_items. Campos quote_id e conversão são referências lógicas quando não houver FK declarada; comentários de coluna descrevem as convenções monetárias e de entrega.';
+
+
+
+COMMENT ON COLUMN "public"."orders"."total" IS 'Total comercial recomendado em BRL (reais com centavos): subtotal - discount_amount + shipping_cost + tax_amount. Documentação da regra de negócio; a coluna não é gerada nem possui constraint que imponha essa fórmula.';
+
+
+
+COMMENT ON COLUMN "public"."orders"."payment_method" IS 'Forma de pagamento recomendada: pix, boleto, credit_card, bank_transfer, cash ou other. Usar códigos em minúsculas. Documentação apenas: coluna text sem CHECK; outros valores ainda podem ser gravados.';
+
+
+
+COMMENT ON COLUMN "public"."orders"."quote_id" IS 'Referência lógica opcional ao orçamento de origem (public.quotes.id), normalmente preenchida na conversão de orçamento em pedido. O schema atual não declara FK para esta coluna.';
+
+
+
+COMMENT ON COLUMN "public"."orders"."subtotal" IS 'Subtotal dos produtos/itens do pedido em BRL (reais, com centavos; não centavos inteiros), sem frete e sem impostos. Convenção documental: antes do desconto global do pedido.';
+
+
+
+COMMENT ON COLUMN "public"."orders"."discount_amount" IS 'Valor monetário do desconto global do pedido, em BRL (reais com centavos). Convention: subtrair do subtotal ao obter o total.';
+
+
+
+COMMENT ON COLUMN "public"."orders"."shipping_cost" IS 'Custo de frete do pedido em BRL (reais com centavos), separado dos valores dos produtos.';
+
+
+
+COMMENT ON COLUMN "public"."orders"."tax_amount" IS 'Valor total de impostos do pedido em BRL (reais com centavos), separado do subtotal dos produtos e do frete.';
+
+
+
+COMMENT ON COLUMN "public"."orders"."paid_amount" IS 'Total acumulado já recebido para o pedido, em BRL (reais com centavos). É um valor pago, não o total do pedido nem o saldo em aberto.';
+
+
+
+COMMENT ON COLUMN "public"."orders"."payment_terms" IS 'Condição comercial de pagamento em texto livre. Representações recomendadas: avista, N dias, N/N/... dias (ex.: 30/60/90 dias) ou sob consulta; preservar condições negociadas usando texto claro e consistente. Não é um enum nem possui CHECK.';
+
+
+
+COMMENT ON COLUMN "public"."orders"."shipping_address" IS 'Snapshot do endereço de entrega em JSONB. Formato canônico: objeto com recipient_name, street, number, district, city, state (UF brasileira), postal_code (CEP 00000-000) e country (código ISO alpha-2; BR no Brasil). Chaves opcionais: complement e reference. number é texto para aceitar s/n. Coluna nullable; estrutura não é validada pelo banco. Não confundir com delivery_address, campo textual legado.';
+
+
+
+COMMENT ON COLUMN "public"."orders"."shipping_method" IS 'Meio de transporte recomendado: correios, transportadora, retirada, motoboy, entrega_propria ou outro. Representa como será a entrega, não quem paga o frete. Documentação apenas: coluna text sem CHECK.';
 
 
 
@@ -81037,6 +82783,14 @@ COMMENT ON COLUMN "public"."orders"."client_company" IS 'Nome da empresa cliente
 
 
 COMMENT ON COLUMN "public"."orders"."tracking_number" IS 'Wave 3.2.A 2026-05-22: substitui tracking_code (drop). Padrao Lovable.';
+
+
+
+COMMENT ON COLUMN "public"."orders"."shipping_type" IS 'Responsabilidade/modalidade do frete. Vocabulário recomendado, alinhado ao CHECK existente em quotes.shipping_type: cif, fob e fob_pre (FOB com custo de frete pré-negociado). Não confundir com shipping_method. Documentação apenas: esta coluna de orders é text e não possui CHECK.';
+
+
+
+COMMENT ON COLUMN "public"."orders"."delivery_time" IS 'Prazo estimado/prometido de entrega em texto: usar imediato, N dias úteis, N a M dias úteis ou sob consulta. Para data-calendário específica, usar estimated_delivery_date. Documentação apenas: coluna text sem CHECK.';
 
 
 
@@ -81055,6 +82809,42 @@ CREATE TABLE IF NOT EXISTS "public"."organization_members" (
 ALTER TABLE "public"."organization_members" OWNER TO "postgres";
 
 
+COMMENT ON TABLE "public"."organization_members" IS 'Registros de participação de usuários em organizações, incluindo papel, convite e data de entrada.';
+
+
+
+COMMENT ON COLUMN "public"."organization_members"."id" IS 'Identificador UUID do registro de participação.';
+
+
+
+COMMENT ON COLUMN "public"."organization_members"."organization_id" IS 'Organização à qual o usuário foi associado.';
+
+
+
+COMMENT ON COLUMN "public"."organization_members"."user_id" IS 'Identificador do usuário associado à organização.';
+
+
+
+COMMENT ON COLUMN "public"."organization_members"."role" IS 'Papel do usuário na organização: owner, admin ou member.';
+
+
+
+COMMENT ON COLUMN "public"."organization_members"."invited_by" IS 'Identificador do usuário que enviou o convite, quando informado.';
+
+
+
+COMMENT ON COLUMN "public"."organization_members"."joined_at" IS 'Data e hora em que a participação foi registrada como iniciada.';
+
+
+
+COMMENT ON COLUMN "public"."organization_members"."created_at" IS 'Data e hora de criação do registro.';
+
+
+
+COMMENT ON COLUMN "public"."organization_members"."updated_at" IS 'Data e hora da última atualização do registro.';
+
+
+
 CREATE TABLE IF NOT EXISTS "public"."organizations" (
     "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
     "name" "text" NOT NULL,
@@ -81071,7 +82861,43 @@ CREATE TABLE IF NOT EXISTS "public"."organizations" (
 ALTER TABLE "public"."organizations" OWNER TO "postgres";
 
 
+COMMENT ON TABLE "public"."organizations" IS 'Organizações cadastradas na aplicação. Agrupa usuários e registros de negócio que pertencem a uma mesma organização.';
+
+
+
+COMMENT ON COLUMN "public"."organizations"."id" IS 'Identificador UUID da organização.';
+
+
+
+COMMENT ON COLUMN "public"."organizations"."name" IS 'Nome de exibição da organização.';
+
+
+
+COMMENT ON COLUMN "public"."organizations"."created_at" IS 'Data e hora de criação da organização.';
+
+
+
 COMMENT ON COLUMN "public"."organizations"."slug" IS 'Alinhado ao Lovable em 2026-05-22 (Wave 3.1.B). Identificador URL-safe da organizacao.';
+
+
+
+COMMENT ON COLUMN "public"."organizations"."logo_url" IS 'URL do logotipo da organização.';
+
+
+
+COMMENT ON COLUMN "public"."organizations"."description" IS 'Descrição da organização.';
+
+
+
+COMMENT ON COLUMN "public"."organizations"."is_active" IS 'Indica se a organização está ativa.';
+
+
+
+COMMENT ON COLUMN "public"."organizations"."settings" IS 'Configurações específicas da organização, armazenadas como JSONB.';
+
+
+
+COMMENT ON COLUMN "public"."organizations"."updated_at" IS 'Data e hora da última atualização da organização.';
 
 
 
@@ -81103,6 +82929,10 @@ CREATE TABLE IF NOT EXISTS "public"."outbound_webhooks" (
 ALTER TABLE "public"."outbound_webhooks" OWNER TO "postgres";
 
 
+COMMENT ON TABLE "public"."outbound_webhooks" IS 'Configuração de webhooks de saída: destino, eventos inscritos, referência a segredo, versão do contrato, retry e estado operacional. O segredo é referenciado, não deve ser embutido na URL, descrição ou comentário.';
+
+
+
 CREATE TABLE IF NOT EXISTS "public"."ownership_audit_reports" (
     "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
     "generated_at" timestamp with time zone DEFAULT "now"() NOT NULL,
@@ -81119,6 +82949,10 @@ CREATE TABLE IF NOT EXISTS "public"."ownership_audit_reports" (
 
 
 ALTER TABLE "public"."ownership_audit_reports" OWNER TO "postgres";
+
+
+COMMENT ON TABLE "public"."ownership_audit_reports" IS 'Relatórios de auditoria de propriedade de dados, com contagens de problemas de owner/RLS, detalhes e cobertura por tabela.';
+
 
 
 CREATE TABLE IF NOT EXISTS "public"."ownership_repair_logs" (
@@ -81143,6 +82977,10 @@ CREATE TABLE IF NOT EXISTS "public"."ownership_repair_logs" (
 ALTER TABLE "public"."ownership_repair_logs" OWNER TO "postgres";
 
 
+COMMENT ON TABLE "public"."ownership_repair_logs" IS 'Trilha de ações de correção de registros sem proprietário válido, com tipo de problema, ação, linhas afetadas, modo dry-run, executor e erro.';
+
+
+
 CREATE TABLE IF NOT EXISTS "public"."packaging_compatibility_config" (
     "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
     "config_key" character varying(50) NOT NULL,
@@ -81153,6 +82991,10 @@ CREATE TABLE IF NOT EXISTS "public"."packaging_compatibility_config" (
 
 
 ALTER TABLE "public"."packaging_compatibility_config" OWNER TO "postgres";
+
+
+COMMENT ON TABLE "public"."packaging_compatibility_config" IS 'Parâmetros de configuração usados pelo algoritmo de descoberta/avaliação de compatibilidade de embalagens, armazenados como chave/valor.';
+
 
 
 CREATE TABLE IF NOT EXISTS "public"."packaging_types" (
@@ -81222,6 +83064,10 @@ CREATE TABLE IF NOT EXISTS "public"."paper_colors" (
 
 
 ALTER TABLE "public"."paper_colors" OWNER TO "postgres";
+
+
+COMMENT ON TABLE "public"."paper_colors" IS 'Vocabulário de cores do papel interno de cadernos e materiais gráficos.';
+
 
 
 CREATE TABLE IF NOT EXISTS "public"."paper_formats" (
@@ -81315,6 +83161,30 @@ CREATE TABLE IF NOT EXISTS "public"."permissions" (
 ALTER TABLE "public"."permissions" OWNER TO "postgres";
 
 
+COMMENT ON TABLE "public"."permissions" IS 'Catálogo de permissões disponíveis na aplicação. Cada permissão possui um código, uma categoria e rótulos para exibição e documentação.';
+
+
+
+COMMENT ON COLUMN "public"."permissions"."code" IS 'Código identificador da permissão.';
+
+
+
+COMMENT ON COLUMN "public"."permissions"."category" IS 'Categoria usada para agrupar permissões relacionadas.';
+
+
+
+COMMENT ON COLUMN "public"."permissions"."label" IS 'Rótulo legível da permissão para exibição.';
+
+
+
+COMMENT ON COLUMN "public"."permissions"."description" IS 'Descrição do propósito da permissão.';
+
+
+
+COMMENT ON COLUMN "public"."permissions"."created_at" IS 'Data e hora de criação da permissão.';
+
+
+
 CREATE TABLE IF NOT EXISTS "public"."personalization_simulations" (
     "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
     "seller_id" "uuid" NOT NULL,
@@ -81372,6 +83242,10 @@ CREATE TABLE IF NOT EXISTS "public"."personalization_techniques" (
 ALTER TABLE "public"."personalization_techniques" OWNER TO "postgres";
 
 
+COMMENT ON TABLE "public"."personalization_techniques" IS 'Catálogo de técnicas de personalização usadas na geração de mockups e configuração de áreas. O mapeamento para códigos/tabelas de preço é mantido separadamente em personalization_technique_mappings.';
+
+
+
 CREATE TABLE IF NOT EXISTS "public"."pipeline_control" (
     "name" "text" NOT NULL,
     "enabled" boolean DEFAULT true NOT NULL,
@@ -81381,6 +83255,10 @@ CREATE TABLE IF NOT EXISTS "public"."pipeline_control" (
 
 
 ALTER TABLE "public"."pipeline_control" OWNER TO "postgres";
+
+
+COMMENT ON TABLE "public"."pipeline_control" IS 'Chaves de controle operacional que permitem habilitar/desabilitar partes do pipeline, com nota e timestamp de alteração.';
+
 
 
 CREATE TABLE IF NOT EXISTS "public"."pipeline_health_log" (
@@ -81394,6 +83272,10 @@ CREATE TABLE IF NOT EXISTS "public"."pipeline_health_log" (
 
 
 ALTER TABLE "public"."pipeline_health_log" OWNER TO "postgres";
+
+
+COMMENT ON TABLE "public"."pipeline_health_log" IS 'Snapshots de saúde do pipeline com contagens de resultados críticos, avisos e verificações aprovadas, além do JSON detalhado.';
+
 
 
 CREATE TABLE IF NOT EXISTS "public"."pipeline_known_issues" (
@@ -81441,6 +83323,10 @@ CREATE TABLE IF NOT EXISTS "public"."pipeline_run_log" (
 
 
 ALTER TABLE "public"."pipeline_run_log" OWNER TO "postgres";
+
+
+COMMENT ON TABLE "public"."pipeline_run_log" IS 'Histórico de execuções de jobs do pipeline, com início/fim, duração, estado, tamanho do lote, resultado JSON e erro.';
+
 
 
 ALTER TABLE "public"."pipeline_run_log" ALTER COLUMN "id" ADD GENERATED ALWAYS AS IDENTITY (
@@ -81799,7 +83685,7 @@ CREATE TABLE IF NOT EXISTS "public"."product_component_location_techniques" (
 ALTER TABLE "public"."product_component_location_techniques" OWNER TO "postgres";
 
 
-COMMENT ON TABLE "public"."product_component_location_techniques" IS 'Personalization techniques available for each product-component location.';
+COMMENT ON TABLE "public"."product_component_location_techniques" IS 'Técnicas de personalização permitidas por local de componente, com código composto opcional, máximo de cores e técnica padrão.';
 
 
 
@@ -81823,6 +83709,10 @@ CREATE TABLE IF NOT EXISTS "public"."product_component_locations" (
 ALTER TABLE "public"."product_component_locations" OWNER TO "postgres";
 
 
+COMMENT ON TABLE "public"."product_component_locations" IS 'Locais de personalização associados a um componente específico de produto, com limites de área/dimensão, imagem de referência e estado ativo.';
+
+
+
 CREATE TABLE IF NOT EXISTS "public"."product_components" (
     "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
     "product_id" "text" NOT NULL,
@@ -81837,6 +83727,10 @@ CREATE TABLE IF NOT EXISTS "public"."product_components" (
 
 
 ALTER TABLE "public"."product_components" OWNER TO "postgres";
+
+
+COMMENT ON TABLE "public"."product_components" IS 'Componentes de personalização específicos de produtos, com código, nome, estado e ordenação. product_id é texto e não possui FK declarada no schema atual.';
+
 
 
 CREATE TABLE IF NOT EXISTS "public"."product_customization_prices" (
@@ -81860,6 +83754,10 @@ WITH ("autovacuum_vacuum_scale_factor"='0.05', "autovacuum_analyze_scale_factor"
 
 
 ALTER TABLE "public"."product_customization_prices" OWNER TO "postgres";
+
+
+COMMENT ON TABLE "public"."product_customization_prices" IS 'Preços de personalização por produto, serviço, tabela, componente e local. min_qty e price são arrays pareados por faixa; currency indica a moeda dos valores.';
+
 
 
 CREATE TABLE IF NOT EXISTS "public"."product_deactivation_requests" (
@@ -81911,41 +83809,13 @@ CREATE TABLE IF NOT EXISTS "public"."product_deactivation_tokens" (
 ALTER TABLE "public"."product_deactivation_tokens" OWNER TO "postgres";
 
 
-COMMENT ON TABLE "public"."product_deactivation_tokens" IS 'Tokens de autorização one-shot para desativação de produtos.
+COMMENT ON TABLE "public"."product_deactivation_tokens" IS 'Tokens de autorização one-shot para desativação de produtos. Protege a regra: nenhum produto é desativado sem aprovação explícita de admin+.
 
-PROPÓSITO: Mecanismo de segurança que garante a regra de negócio central:
-"Nenhum produto é desativado sem aprovação explícita de admin+".
+FLUXO: fn_approve_product_deactivation() cria token curto para product_id/request_id/authorized_by; o trigger fn_block_unauthorized_product_deactivation() valida token não usado e não expirado durante a desativação e o consome. Sem token válido, a desativação é revertida/bloqueada. soft_delete_product() também usa este mecanismo.
 
-FLUXO COMPLETO:
-  1. Admin aprova via fn_approve_product_deactivation()
-     → cria token { product_id, request_id, authorized_by, used=false, expires_at }
-  2. A função executa UPDATE products SET is_active=false
-  3. Trigger fn_block_unauthorized_product_deactivation() intercepta o UPDATE
-     → verifica se existe token válido (used=false AND expires_at > now())
-     → SIM: permite desativação + marca used=true
-     → NÃO: reverte is_active e bloqueia silenciosamente
-  4. Token é deletado imediatamente após uso (auditoria fica nos registros used=true)
+INTEGRIDADE: product_id referencia products.id com cascade; request_id referencia a solicitação de aprovação. Campos de autorização e validade formam a trilha técnica do consumo.
 
-FUNÇÕES DEPENDENTES:
-  - fn_approve_product_deactivation()             → cria token + dispara UPDATE
-  - fn_block_unauthorized_product_deactivation()  → trigger BEFORE UPDATE/INSERT em products
-  - soft_delete_product()                         → path de soft delete, também cria token one-shot
-
-CONSTRAINT DE INTEGRIDADE:
-  - FK fk_auth_product_cascade: product_id → products.id (CASCADE)
-    → token só pode ser criado para produtos existentes
-    → se o produto for deletado, o token é removido em cascata
-
-CAMPOS:
-  - product_id    → produto a ser desativado (FK → products.id)
-  - request_id    → FK product_deactivation_requests (rastreabilidade)
-  - authorized_by → UUID do admin que aprovou
-  - authorized_at → criação do token
-  - expires_at    → TTL curto (token não reutilizável após expirar)
-  - used          → true após consumo (linha mantida como auditoria)
-
-HISTÓRICO: 397 registros de Jun/2026 = desativações aprovadas e executadas (todos used=true).
-RENOMEADA em 2026-06-15: era _deactivation_auth (prefixo _ era enganoso — tabela é ativa e crítica).';
+Histórico documentado em 2026-06: tokens consumidos de desativações aprovadas. Renomeada em 2026-06-15 de _deactivation_auth para deixar claro que é tabela ativa e crítica. Não remover nem contornar o trigger de proteção.';
 
 
 
@@ -82041,7 +83911,7 @@ CREATE TABLE IF NOT EXISTS "public"."product_group_components" (
 ALTER TABLE "public"."product_group_components" OWNER TO "postgres";
 
 
-COMMENT ON TABLE "public"."product_group_components" IS 'Product-group component templates inherited by products in the group.';
+COMMENT ON TABLE "public"."product_group_components" IS 'Componentes de personalização padrão herdáveis por produtos de um grupo, com código/nome, ordenação e indicação de personalizabilidade.';
 
 
 
@@ -82101,6 +83971,10 @@ CREATE TABLE IF NOT EXISTS "public"."product_group_members" (
 ALTER TABLE "public"."product_group_members" OWNER TO "postgres";
 
 
+COMMENT ON TABLE "public"."product_group_members" IS 'Associação de produtos a product_groups, com flag use_group_rules para indicar se o produto herda as regras do grupo.';
+
+
+
 CREATE TABLE IF NOT EXISTS "public"."product_groups" (
     "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
     "group_code" "text" NOT NULL,
@@ -82113,6 +83987,10 @@ CREATE TABLE IF NOT EXISTS "public"."product_groups" (
 
 
 ALTER TABLE "public"."product_groups" OWNER TO "postgres";
+
+
+COMMENT ON TABLE "public"."product_groups" IS 'Grupos de produtos que compartilham templates de componentes e regras de personalização; group_code identifica o grupo e is_active controla seu uso.';
+
 
 
 CREATE TABLE IF NOT EXISTS "public"."product_included_packagings" (
@@ -82151,7 +84029,7 @@ CREATE TABLE IF NOT EXISTS "public"."product_included_packagings" (
 ALTER TABLE "public"."product_included_packagings" OWNER TO "postgres";
 
 
-COMMENT ON TABLE "public"."product_included_packagings" IS 'Embalagens ORIGINAIS que já vêm com o produto. SEM SKU próprio, SEM preço separado.';
+COMMENT ON TABLE "public"."product_included_packagings" IS 'Embalagens ORIGINAIS que já vêm com o produto. SEM SKU próprio, SEM preço separado. O registro pode guardar material, cor, dimensões, possibilidade de personalização, fornecedor e origem de ingestão.';
 
 
 
@@ -82586,7 +84464,7 @@ CREATE TABLE IF NOT EXISTS "public"."product_packaging_compatibility" (
 ALTER TABLE "public"."product_packaging_compatibility" OWNER TO "postgres";
 
 
-COMMENT ON TABLE "public"."product_packaging_compatibility" IS 'Compatibilidade entre produtos e embalagens vendidas SEPARADAMENTE (COM SKU próprio)';
+COMMENT ON TABLE "public"."product_packaging_compatibility" IS 'Compatibilidade entre produtos e embalagens vendidas SEPARADAMENTE (COM SKU próprio). A linha registra o par produto/embalagem, folgas dimensionais, avaliação de encaixe, recomendação, verificação e notas.';
 
 
 
@@ -82620,7 +84498,7 @@ CREATE TABLE IF NOT EXISTS "public"."product_packagings" (
 ALTER TABLE "public"."product_packagings" OWNER TO "postgres";
 
 
-COMMENT ON TABLE "public"."product_packagings" IS 'Relação entre produtos e embalagens disponíveis';
+COMMENT ON TABLE "public"."product_packagings" IS 'Relação entre produtos e embalagens disponíveis. Cada linha associa um produto do catálogo a uma embalagem e registra a natureza da relação (included, optional, required, default), preço adicional, moeda e quantidade mínima.';
 
 
 
@@ -82694,6 +84572,10 @@ CREATE TABLE IF NOT EXISTS "public"."product_price_freshness_overrides" (
 ALTER TABLE "public"."product_price_freshness_overrides" OWNER TO "postgres";
 
 
+COMMENT ON TABLE "public"."product_price_freshness_overrides" IS 'Exceções por produto ao limite padrão de frescor de preço. threshold_days é restrito às janelas configuradas (30, 60 ou 90 dias) e atualizado com autoria/timestamps.';
+
+
+
 CREATE TABLE IF NOT EXISTS "public"."product_print_positions" (
     "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
     "product_id" "uuid" NOT NULL,
@@ -82719,6 +84601,10 @@ CREATE TABLE IF NOT EXISTS "public"."product_print_positions" (
 ALTER TABLE "public"."product_print_positions" OWNER TO "postgres";
 
 
+COMMENT ON TABLE "public"."product_print_positions" IS 'Configuração de posições de impressão por produto, ordenada por position_index, com códigos/nomes de local, técnicas e referências visuais em JSON/texto.';
+
+
+
 CREATE TABLE IF NOT EXISTS "public"."product_properties" (
     "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
     "product_id" "uuid" NOT NULL,
@@ -82740,6 +84626,18 @@ COMMENT ON TABLE "public"."product_properties" IS 'Relacionamento entre produtos
 
 
 
+COMMENT ON COLUMN "public"."product_properties"."id" IS 'Identificador UUID do registro de propriedade do produto.';
+
+
+
+COMMENT ON COLUMN "public"."product_properties"."product_id" IS 'Produto ao qual a propriedade está associada.';
+
+
+
+COMMENT ON COLUMN "public"."product_properties"."property_definition_id" IS 'Definição normalizada da propriedade, quando associada ao catálogo de propriedades.';
+
+
+
 COMMENT ON COLUMN "public"."product_properties"."property_code" IS 'Código da propriedade (redundância para performance)';
 
 
@@ -82753,6 +84651,14 @@ COMMENT ON COLUMN "public"."product_properties"."source" IS 'Origem: api_spot, m
 
 
 COMMENT ON COLUMN "public"."product_properties"."raw_value" IS 'Valor original da API';
+
+
+
+COMMENT ON COLUMN "public"."product_properties"."created_at" IS 'Data e hora de criação do registro da propriedade.';
+
+
+
+COMMENT ON COLUMN "public"."product_properties"."updated_at" IS 'Data e hora da última atualização do registro da propriedade.';
 
 
 
@@ -82898,6 +84804,10 @@ WITH ("autovacuum_vacuum_cost_limit"='2000', "autovacuum_vacuum_scale_factor"='0
 ALTER TABLE "public"."product_relationships" OWNER TO "postgres";
 
 
+COMMENT ON TABLE "public"."product_relationships" IS 'Relações direcionadas entre produtos, classificadas por relationship_type. product_id é a origem e related_product_id o destino; is_bidirectional indica se a relação deve ser interpretada nos dois sentidos.';
+
+
+
 CREATE TABLE IF NOT EXISTS "public"."product_search_logs" (
     "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
     "query" "text" NOT NULL,
@@ -82909,6 +84819,10 @@ CREATE TABLE IF NOT EXISTS "public"."product_search_logs" (
 
 
 ALTER TABLE "public"."product_search_logs" OWNER TO "postgres";
+
+
+COMMENT ON TABLE "public"."product_search_logs" IS 'Telemetria agregada de buscas de produtos: consulta, filtros, número de resultados e latência. Não guarda o conjunto completo de produtos retornados.';
+
 
 
 CREATE TABLE IF NOT EXISTS "public"."product_seo" (
@@ -83042,6 +84956,10 @@ CREATE TABLE IF NOT EXISTS "public"."product_sync_logs" (
 ALTER TABLE "public"."product_sync_logs" OWNER TO "postgres";
 
 
+COMMENT ON TABLE "public"."product_sync_logs" IS 'Resumo de execuções de sincronização de produtos, com origem, estado, contagens, duração, payload de diagnóstico e erro.';
+
+
+
 COMMENT ON COLUMN "public"."product_sync_logs"."products_received" IS 'Alinhado ao Lovable 2026-05-22 (Wave 3.1.B). Total recebido do fornecedor.';
 
 
@@ -83058,7 +84976,23 @@ WITH ("autovacuum_vacuum_scale_factor"='0.05', "autovacuum_analyze_scale_factor"
 ALTER TABLE "public"."product_tags" OWNER TO "postgres";
 
 
-COMMENT ON TABLE "public"."product_tags" IS 'Bug RLS corrigido na Etapa 6: removida product_tags_public_read que anulava _select_org.';
+COMMENT ON TABLE "public"."product_tags" IS 'Tabela de associação N:N entre produtos e tags. Cada linha liga product_id a tag_id; a definição e o escopo da tag ficam em public.tags. Mantém também o contexto das correções de RLS registradas anteriormente.';
+
+
+
+COMMENT ON COLUMN "public"."product_tags"."id" IS 'Identificador UUID do vínculo entre produto e tag.';
+
+
+
+COMMENT ON COLUMN "public"."product_tags"."product_id" IS 'Produto associado à tag.';
+
+
+
+COMMENT ON COLUMN "public"."product_tags"."tag_id" IS 'Tag associada ao produto.';
+
+
+
+COMMENT ON COLUMN "public"."product_tags"."created_at" IS 'Data e hora de criação do vínculo entre produto e tag.';
 
 
 
@@ -83079,6 +85013,50 @@ CREATE TABLE IF NOT EXISTS "public"."product_target_audiences" (
 
 
 ALTER TABLE "public"."product_target_audiences" OWNER TO "postgres";
+
+
+COMMENT ON TABLE "public"."product_target_audiences" IS 'Vínculos entre produtos e públicos-alvo. A origem registra se o vínculo foi herdado da categoria ou adicionado manualmente.';
+
+
+
+COMMENT ON COLUMN "public"."product_target_audiences"."id" IS 'Identificador UUID do vínculo entre produto e público-alvo.';
+
+
+
+COMMENT ON COLUMN "public"."product_target_audiences"."product_id" IS 'Produto associado ao público-alvo.';
+
+
+
+COMMENT ON COLUMN "public"."product_target_audiences"."target_audience_id" IS 'Público-alvo associado ao produto.';
+
+
+
+COMMENT ON COLUMN "public"."product_target_audiences"."source" IS 'Origem do vínculo: category (herdado da categoria) ou manual.';
+
+
+
+COMMENT ON COLUMN "public"."product_target_audiences"."category_id" IS 'Categoria associada à origem do vínculo, quando informada.';
+
+
+
+COMMENT ON COLUMN "public"."product_target_audiences"."is_featured" IS 'Indica se o produto deve ser destacado para este público-alvo.';
+
+
+
+COMMENT ON COLUMN "public"."product_target_audiences"."relevance_score" IS 'Relevância do vínculo, em uma escala de 1 a 10.';
+
+
+
+COMMENT ON COLUMN "public"."product_target_audiences"."is_active" IS 'Indica se o vínculo está ativo.';
+
+
+
+COMMENT ON COLUMN "public"."product_target_audiences"."created_at" IS 'Data e hora de criação do vínculo.';
+
+
+
+COMMENT ON COLUMN "public"."product_target_audiences"."updated_at" IS 'Data e hora da última atualização do vínculo.';
+
 
 
 CREATE TABLE IF NOT EXISTS "public"."product_videos" (
@@ -83187,6 +85165,10 @@ CREATE TABLE IF NOT EXISTS "public"."product_views" (
 
 
 ALTER TABLE "public"."product_views" OWNER TO "postgres";
+
+
+COMMENT ON TABLE "public"."product_views" IS 'Eventos de visualização de produtos, com snapshot opcional de SKU/nome, vendedor e tipo da visualização; alimenta métricas de popularidade e contadores.';
+
 
 
 COMMENT ON COLUMN "public"."product_views"."product_id" IS 'UUID do produto visualizado. FK para products.id. Migrado de TEXT→UUID em 2026-06-12.';
@@ -83649,11 +85631,19 @@ COMMENT ON TABLE "public"."property_definitions" IS 'Catálogo de propriedades d
 
 
 
+COMMENT ON COLUMN "public"."property_definitions"."id" IS 'Identificador UUID da definição da propriedade.';
+
+
+
 COMMENT ON COLUMN "public"."property_definitions"."code" IS 'Código único normalizado da propriedade';
 
 
 
 COMMENT ON COLUMN "public"."property_definitions"."name_pt" IS 'Nome em português (igual ao valor da API SPOT)';
+
+
+
+COMMENT ON COLUMN "public"."property_definitions"."name_en" IS 'Nome da propriedade em inglês, quando disponível.';
 
 
 
@@ -83666,6 +85656,26 @@ COMMENT ON COLUMN "public"."property_definitions"."icon_code" IS 'Código do íc
 
 
 COMMENT ON COLUMN "public"."property_definitions"."is_thermal_indicator" IS 'Se TRUE, indica que o produto é térmico';
+
+
+
+COMMENT ON COLUMN "public"."property_definitions"."is_premium_indicator" IS 'Indica se a propriedade é usada como indicador de produto premium.';
+
+
+
+COMMENT ON COLUMN "public"."property_definitions"."display_order" IS 'Ordem de exibição da propriedade.';
+
+
+
+COMMENT ON COLUMN "public"."property_definitions"."active" IS 'Indica se a definição da propriedade está ativa.';
+
+
+
+COMMENT ON COLUMN "public"."property_definitions"."created_at" IS 'Data e hora de criação da definição da propriedade.';
+
+
+
+COMMENT ON COLUMN "public"."property_definitions"."updated_at" IS 'Data e hora da última atualização da definição da propriedade.';
 
 
 
@@ -83703,6 +85713,38 @@ CREATE TABLE IF NOT EXISTS "public"."push_subscriptions" (
 ALTER TABLE "public"."push_subscriptions" OWNER TO "postgres";
 
 
+COMMENT ON TABLE "public"."push_subscriptions" IS 'Inscrições de usuários para receber notificações push.';
+
+
+
+COMMENT ON COLUMN "public"."push_subscriptions"."id" IS 'Identificador UUID da inscrição push.';
+
+
+
+COMMENT ON COLUMN "public"."push_subscriptions"."user_id" IS 'Usuário associado à inscrição push.';
+
+
+
+COMMENT ON COLUMN "public"."push_subscriptions"."endpoint" IS 'Endpoint do serviço push associado à inscrição do navegador.';
+
+
+
+COMMENT ON COLUMN "public"."push_subscriptions"."keys" IS 'Chaves de inscrição push armazenadas como JSONB.';
+
+
+
+COMMENT ON COLUMN "public"."push_subscriptions"."is_active" IS 'Indica se a inscrição push está ativa.';
+
+
+
+COMMENT ON COLUMN "public"."push_subscriptions"."created_at" IS 'Data e hora de criação da inscrição push.';
+
+
+
+COMMENT ON COLUMN "public"."push_subscriptions"."updated_at" IS 'Data e hora da última atualização da inscrição push.';
+
+
+
 CREATE TABLE IF NOT EXISTS "public"."qa_image_coverage_log" (
     "id" bigint NOT NULL,
     "ran_at" timestamp with time zone DEFAULT "now"() NOT NULL,
@@ -83713,6 +85755,10 @@ CREATE TABLE IF NOT EXISTS "public"."qa_image_coverage_log" (
 
 
 ALTER TABLE "public"."qa_image_coverage_log" OWNER TO "postgres";
+
+
+COMMENT ON TABLE "public"."qa_image_coverage_log" IS 'Snapshots de varreduras de cobertura/qualidade de imagens, com contagens críticas, itens sem normalização e amostra de diagnóstico.';
+
 
 
 ALTER TABLE "public"."qa_image_coverage_log" ALTER COLUMN "id" ADD GENERATED ALWAYS AS IDENTITY (
@@ -83751,6 +85797,10 @@ CREATE TABLE IF NOT EXISTS "public"."query_telemetry" (
 ALTER TABLE "public"."query_telemetry" OWNER TO "postgres";
 
 
+COMMENT ON TABLE "public"."query_telemetry" IS 'Telemetria agregada de operações de banco/RPC, incluindo duração, contagem, paginação, cache, cold start e erros para identificar consultas lentas ou falhas.';
+
+
+
 CREATE TABLE IF NOT EXISTS "public"."quote_comments" (
     "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
     "quote_id" "uuid" NOT NULL,
@@ -83783,6 +85833,10 @@ CREATE TABLE IF NOT EXISTS "public"."quote_drafts" (
 
 
 ALTER TABLE "public"."quote_drafts" OWNER TO "postgres";
+
+
+COMMENT ON TABLE "public"."quote_drafts" IS 'Rascunhos de cotação por usuário, armazenados como JSONB antes de serem persistidos como registro definitivo em public.quotes.';
+
 
 
 CREATE TABLE IF NOT EXISTS "public"."quote_history" (
@@ -83888,6 +85942,30 @@ ALTER TABLE ONLY "public"."quote_items" REPLICA IDENTITY FULL;
 ALTER TABLE "public"."quote_items" OWNER TO "postgres";
 
 
+COMMENT ON TABLE "public"."quote_items" IS 'Linhas de produtos incluídas em um orçamento. Um item pode vincular-se opcionalmente a public.products e public.product_variants; campos textuais guardam snapshots para manter a proposta estável. Personalizações e embalagens opcionais são registradas separadamente ou por seus campos próprios.';
+
+
+
+COMMENT ON COLUMN "public"."quote_items"."product_id" IS 'Vínculo opcional com public.products.id (FK existente). Pode ser NULL para item manual/sem produto de catálogo; product_name, product_sku, product_description e product_image_url guardam o snapshot comercial do item.';
+
+
+
+COMMENT ON COLUMN "public"."quote_items"."personalization_cost" IS 'Valor monetário de personalização associado ao item do orçamento, em BRL (reais com centavos). Não confundir com frete ou impostos.';
+
+
+
+COMMENT ON COLUMN "public"."quote_items"."unit_price" IS 'Preço unitário comercial do produto no orçamento, em BRL (reais com centavos), sem frete e sem impostos. Não armazenar centavos como inteiro.';
+
+
+
+COMMENT ON COLUMN "public"."quote_items"."discount_amount" IS 'Valor do desconto aplicado especificamente a esta linha, em BRL (reais com centavos); distinto do desconto global em quotes.discount_amount.';
+
+
+
+COMMENT ON COLUMN "public"."quote_items"."subtotal" IS 'Valor da linha do orçamento em BRL (reais com centavos), conforme cálculo da aplicação. Não repetir frete ou impostos do cabeçalho do orçamento.';
+
+
+
 COMMENT ON COLUMN "public"."quote_items"."sort_order" IS 'Ordem de apresentação. Coexiste com display_order legacy — código novo usa sort_order.';
 
 
@@ -83908,7 +85986,7 @@ COMMENT ON COLUMN "public"."quote_items"."selected_packaging_name" IS 'Snapshot 
 
 
 
-COMMENT ON COLUMN "public"."quote_items"."selected_packaging_unit_cost" IS 'Custo unitario da embalagem opcional no momento da escolha (snapshot).';
+COMMENT ON COLUMN "public"."quote_items"."selected_packaging_unit_cost" IS 'Custo unitário snapshot da embalagem opcional escolhida, em BRL (reais com centavos). Mantém o custo observado na escolha, não o preço de venda do produto principal.';
 
 
 
@@ -83949,19 +86027,35 @@ CREATE TABLE IF NOT EXISTS "public"."quote_templates" (
 ALTER TABLE "public"."quote_templates" OWNER TO "postgres";
 
 
-COMMENT ON TABLE "public"."quote_templates" IS 'Wave 3.3.C.1 2026-05-22: unificado (seller-owned + system templates). seller_id opcional, suporta ambos os usos.';
+COMMENT ON TABLE "public"."quote_templates" IS 'Modelos reutilizáveis de orçamento por vendedor ou sistema. Podem pré-preencher itens, condições comerciais, pagamento, prazo e modalidade/custo de frete; revisar preço, desconto, estoque e disponibilidade antes de aplicar a uma nova cotação. Schema unificado na Wave 3.3.C.1.';
 
 
 
-COMMENT ON COLUMN "public"."quote_templates"."shipping_type" IS 'FIX-07 (2026-06-23): Campo adicionado para restaurar modalidade de frete ao aplicar template.';
+COMMENT ON COLUMN "public"."quote_templates"."payment_terms" IS 'Condição padrão de pagamento em texto livre. Formatos recomendados: avista, N dias, N/N/... dias ou sob consulta. Ajustar ao negociar; não é enum nem possui CHECK.';
 
 
 
-COMMENT ON COLUMN "public"."quote_templates"."payment_method" IS 'FIX-07 (2026-06-23): Campo adicionado para restaurar forma de pagamento ao aplicar template.';
+COMMENT ON COLUMN "public"."quote_templates"."delivery_time" IS 'Prazo padrão prometido em texto para o template: imediato, N dias úteis, N a M dias úteis ou sob consulta. Rever/confirmar antes de aplicar ao orçamento.';
 
 
 
-COMMENT ON COLUMN "public"."quote_templates"."shipping_cost" IS 'FIX-07 (2026-06-23): Campo adicionado para restaurar custo de frete FOB pré-negociado ao aplicar template.';
+COMMENT ON COLUMN "public"."quote_templates"."discount_percent" IS 'Percentual de desconto padrão do template (percentual, não valor monetário). O valor em reais correspondente é registrado separadamente em discount_amount.';
+
+
+
+COMMENT ON COLUMN "public"."quote_templates"."discount_amount" IS 'Valor monetário de desconto padrão do template em BRL (reais com centavos), distinto de discount_percent.';
+
+
+
+COMMENT ON COLUMN "public"."quote_templates"."shipping_type" IS 'Modalidade/responsabilidade de frete padrão do template. Valores permitidos pelo CHECK: cif, fob e fob_pre (FOB com custo pré-negociado). Não representa o meio de transporte.';
+
+
+
+COMMENT ON COLUMN "public"."quote_templates"."payment_method" IS 'Forma de pagamento padrão a preencher ao aplicar o template. Vocabulário recomendado: pix, boleto, credit_card, bank_transfer, cash ou other; usar códigos minúsculos. Documentação apenas, sem CHECK.';
+
+
+
+COMMENT ON COLUMN "public"."quote_templates"."shipping_cost" IS 'Custo de frete padrão do template em BRL (reais com centavos), especialmente para custo FOB pré-negociado; não é preço unitário de produto.';
 
 
 
@@ -83977,6 +86071,10 @@ CREATE TABLE IF NOT EXISTS "public"."quote_versions" (
 
 
 ALTER TABLE "public"."quote_versions" OWNER TO "postgres";
+
+
+COMMENT ON TABLE "public"."quote_versions" IS 'Snapshots imutáveis de versões de um orçamento, associados a quotes.id e numerados por version_number. snapshot registra o estado capturado; change_summary descreve a alteração que originou a versão.';
+
 
 
 CREATE TABLE IF NOT EXISTS "public"."ramo_atividade" (
@@ -84032,6 +86130,10 @@ CREATE TABLE IF NOT EXISTS "public"."recently_viewed_products" (
 ALTER TABLE "public"."recently_viewed_products" OWNER TO "postgres";
 
 
+COMMENT ON TABLE "public"."recently_viewed_products" IS 'Histórico de produtos visualizados por usuário, ordenável por viewed_at para compor a seção de visualizações recentes.';
+
+
+
 CREATE TABLE IF NOT EXISTS "public"."request_rate_limits" (
     "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
     "identifier" "text" NOT NULL,
@@ -84046,6 +86148,10 @@ WITH ("autovacuum_vacuum_scale_factor"='0.03');
 
 
 ALTER TABLE "public"."request_rate_limits" OWNER TO "postgres";
+
+
+COMMENT ON TABLE "public"."request_rate_limits" IS 'Contadores de rate limit por identificador e endpoint, com janela temporal e bloqueio opcional. Dados operacionais transitórios usados para limitar requisições.';
+
 
 
 CREATE TABLE IF NOT EXISTS "public"."rls_denial_log" (
@@ -84072,6 +86178,10 @@ CREATE TABLE IF NOT EXISTS "public"."rls_denial_log" (
 ALTER TABLE "public"."rls_denial_log" OWNER TO "postgres";
 
 
+COMMENT ON TABLE "public"."rls_denial_log" IS 'Registro de negações de acesso por Row Level Security, com usuário, objeto, operação, endpoint, erro e contexto de diagnóstico. Tratar campos de IP, e-mail e agente de usuário como dados sensíveis.';
+
+
+
 CREATE TABLE IF NOT EXISTS "public"."role_migration_batches" (
     "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
     "label" "text" NOT NULL,
@@ -84091,6 +86201,10 @@ CREATE TABLE IF NOT EXISTS "public"."role_migration_batches" (
 
 
 ALTER TABLE "public"."role_migration_batches" OWNER TO "postgres";
+
+
+COMMENT ON TABLE "public"."role_migration_batches" IS 'Lotes de migração de papéis de usuários, com motivo, responsável, modo dry-run, status, totais e duração.';
+
 
 
 CREATE TABLE IF NOT EXISTS "public"."role_migration_items" (
@@ -84113,6 +86227,10 @@ CREATE TABLE IF NOT EXISTS "public"."role_migration_items" (
 ALTER TABLE "public"."role_migration_items" OWNER TO "postgres";
 
 
+COMMENT ON TABLE "public"."role_migration_items" IS 'Ações individuais de migração de papel por usuário dentro de um lote, com papel anterior/novo, operação, resultado e erro.';
+
+
+
 CREATE TABLE IF NOT EXISTS "public"."role_permissions" (
     "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
     "role" "public"."app_role" NOT NULL,
@@ -84122,6 +86240,26 @@ CREATE TABLE IF NOT EXISTS "public"."role_permissions" (
 
 
 ALTER TABLE "public"."role_permissions" OWNER TO "postgres";
+
+
+COMMENT ON TABLE "public"."role_permissions" IS 'Associa papéis de aplicação às permissões concedidas a cada papel.';
+
+
+
+COMMENT ON COLUMN "public"."role_permissions"."id" IS 'Identificador UUID do vínculo entre papel e permissão.';
+
+
+
+COMMENT ON COLUMN "public"."role_permissions"."role" IS 'Papel de aplicação ao qual a permissão é concedida.';
+
+
+
+COMMENT ON COLUMN "public"."role_permissions"."permission_code" IS 'Código da permissão concedida ao papel.';
+
+
+
+COMMENT ON COLUMN "public"."role_permissions"."created_at" IS 'Data e hora de criação do vínculo.';
+
 
 
 CREATE TABLE IF NOT EXISTS "public"."roles" (
@@ -84136,6 +86274,22 @@ ALTER TABLE "public"."roles" OWNER TO "postgres";
 
 
 COMMENT ON TABLE "public"."roles" IS 'Registro de roles para a tela admin (RolesPage). Semeado do enum app_role.';
+
+
+
+COMMENT ON COLUMN "public"."roles"."id" IS 'Identificador UUID do papel exibido na tela administrativa.';
+
+
+
+COMMENT ON COLUMN "public"."roles"."name" IS 'Nome do papel.';
+
+
+
+COMMENT ON COLUMN "public"."roles"."description" IS 'Descrição legível do papel.';
+
+
+
+COMMENT ON COLUMN "public"."roles"."created_at" IS 'Data e hora de criação do registro do papel.';
 
 
 
@@ -84184,6 +86338,10 @@ CREATE TABLE IF NOT EXISTS "public"."saved_filters" (
 ALTER TABLE "public"."saved_filters" OWNER TO "postgres";
 
 
+COMMENT ON TABLE "public"."saved_filters" IS 'Filtros salvos pelo usuário para reutilização. filter_config guarda a definição estruturada do filtro; category, description, icon e color são metadados de organização/apresentação.';
+
+
+
 CREATE TABLE IF NOT EXISTS "public"."saved_trends_views" (
     "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
     "user_id" "uuid" NOT NULL,
@@ -84195,6 +86353,10 @@ CREATE TABLE IF NOT EXISTS "public"."saved_trends_views" (
 
 
 ALTER TABLE "public"."saved_trends_views" OWNER TO "postgres";
+
+
+COMMENT ON TABLE "public"."saved_trends_views" IS 'Visões de tendências salvas por usuário, com nome e filtros JSONB para reabrir uma análise configurada.';
+
 
 
 CREATE TABLE IF NOT EXISTS "public"."scheduled_reports" (
@@ -84216,6 +86378,10 @@ CREATE TABLE IF NOT EXISTS "public"."scheduled_reports" (
 
 
 ALTER TABLE "public"."scheduled_reports" OWNER TO "postgres";
+
+
+COMMENT ON TABLE "public"."scheduled_reports" IS 'Relatórios agendados por usuário, com tipo, frequência, destinatário, filtros e próximo horário de execução.';
+
 
 
 CREATE TABLE IF NOT EXISTS "public"."schema_drift_allowlist" (
@@ -84341,6 +86507,10 @@ CREATE TABLE IF NOT EXISTS "public"."search_analytics" (
 ALTER TABLE "public"."search_analytics" OWNER TO "postgres";
 
 
+COMMENT ON TABLE "public"."search_analytics" IS 'Eventos agregáveis de busca, com termo, contexto, quantidade de resultados e vendedor associado quando disponível.';
+
+
+
 CREATE TABLE IF NOT EXISTS "public"."search_queries" (
     "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
     "user_id" "uuid",
@@ -84353,6 +86523,10 @@ CREATE TABLE IF NOT EXISTS "public"."search_queries" (
 
 
 ALTER TABLE "public"."search_queries" OWNER TO "postgres";
+
+
+COMMENT ON TABLE "public"."search_queries" IS 'Histórico de consultas de busca, filtros aplicados, quantidade de resultados e eventual produto clicado. Uso analítico/UX; não é fonte de eventos de busca do catálogo em tempo real.';
+
 
 
 CREATE TABLE IF NOT EXISTS "public"."secret_rotation_log" (
@@ -84390,6 +86564,10 @@ CREATE TABLE IF NOT EXISTS "public"."security_settings" (
 ALTER TABLE "public"."security_settings" OWNER TO "postgres";
 
 
+COMMENT ON TABLE "public"."security_settings" IS 'Configurações de segurança em formato chave/valor JSONB. Alterações devem ser restritas e auditadas; documentar em cada registro o escopo e os efeitos da configuração.';
+
+
+
 CREATE TABLE IF NOT EXISTS "public"."seller_cart_items" (
     "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
     "cart_id" "uuid" NOT NULL,
@@ -84414,6 +86592,10 @@ CREATE TABLE IF NOT EXISTS "public"."seller_cart_items" (
 ALTER TABLE "public"."seller_cart_items" OWNER TO "postgres";
 
 
+COMMENT ON TABLE "public"."seller_cart_items" IS 'Linhas de produto de um carrinho do vendedor. Guarda snapshots de nome, SKU, imagem, preço unitário, quantidade, cor e observações; cart_id liga ao cabeçalho.';
+
+
+
 CREATE TABLE IF NOT EXISTS "public"."seller_carts" (
     "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
     "seller_id" "uuid" NOT NULL,
@@ -84432,6 +86614,10 @@ CREATE TABLE IF NOT EXISTS "public"."seller_carts" (
 
 
 ALTER TABLE "public"."seller_carts" OWNER TO "postgres";
+
+
+COMMENT ON TABLE "public"."seller_carts" IS 'Carrinhos de trabalho de um vendedor associados a uma empresa cliente, com estado de preparação, prazo de envio, notas e versionamento otimista.';
+
 
 
 COMMENT ON COLUMN "public"."seller_carts"."shipping_deadline" IS 'Prazo p/ envio: data limite (DATE) para enviar o pedido ao cliente. Null quando não definido.';
@@ -84650,6 +86836,10 @@ CREATE TABLE IF NOT EXISTS "public"."simulator_wizard_drafts" (
 ALTER TABLE "public"."simulator_wizard_drafts" OWNER TO "postgres";
 
 
+COMMENT ON TABLE "public"."simulator_wizard_drafts" IS 'Rascunhos do assistente de simulação de produto, com dados do produto, quantidade, personalizações e etapa atual do fluxo em JSONB.';
+
+
+
 CREATE TABLE IF NOT EXISTS "public"."sm_category_pages" (
     "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
     "name" "text" NOT NULL,
@@ -84744,6 +86934,10 @@ CREATE TABLE IF NOT EXISTS "public"."sm_worker_partitions" (
 
 
 ALTER TABLE "public"."sm_worker_partitions" OWNER TO "postgres";
+
+
+COMMENT ON TABLE "public"."sm_worker_partitions" IS 'Controle de partições de trabalho dos workers Só Marcas. Registra contagens de SKUs/imagens, erros, estado e timestamps de execução por worker_id.';
+
 
 
 CREATE SEQUENCE IF NOT EXISTS "public"."sm_worker_partitions_id_seq"
@@ -84956,6 +87150,10 @@ CREATE TABLE IF NOT EXISTS "public"."spot_health_log" (
 ALTER TABLE "public"."spot_health_log" OWNER TO "postgres";
 
 
+COMMENT ON TABLE "public"."spot_health_log" IS 'Snapshots de saúde do catálogo SPOT, agregando cobertura de produtos/imagens e estado de vídeos/importação para acompanhamento operacional.';
+
+
+
 CREATE TABLE IF NOT EXISTS "public"."spot_typecode_map" (
     "legacy_code" "text" NOT NULL,
     "canonical_code" "text" NOT NULL,
@@ -84989,6 +87187,10 @@ CREATE TABLE IF NOT EXISTS "public"."step_up_audit_log" (
 ALTER TABLE "public"."step_up_audit_log" OWNER TO "postgres";
 
 
+COMMENT ON TABLE "public"."step_up_audit_log" IS 'Auditoria de verificações step-up para ações administrativas de alto risco, registrando ação, challenge/token associados e metadados de contexto; não armazenar segredos em metadata.';
+
+
+
 CREATE TABLE IF NOT EXISTS "public"."step_up_challenges" (
     "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
     "user_id" "uuid" NOT NULL,
@@ -85010,6 +87212,10 @@ CREATE TABLE IF NOT EXISTS "public"."step_up_challenges" (
 ALTER TABLE "public"."step_up_challenges" OWNER TO "postgres";
 
 
+COMMENT ON TABLE "public"."step_up_challenges" IS 'Desafios temporários de autenticação reforçada para ações privilegiadas. Guarda somente hash do OTP e estado/limites de verificação, não o código em texto claro.';
+
+
+
 CREATE TABLE IF NOT EXISTS "public"."step_up_tokens" (
     "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
     "user_id" "uuid" NOT NULL,
@@ -85027,6 +87233,10 @@ ALTER TABLE ONLY "public"."step_up_tokens" FORCE ROW LEVEL SECURITY;
 
 
 ALTER TABLE "public"."step_up_tokens" OWNER TO "postgres";
+
+
+COMMENT ON TABLE "public"."step_up_tokens" IS 'Tokens de curta duração para autorizar ações step-up. Armazena hash do token, desafio, ação-alvo, consumo e expiração; nunca guardar o token em claro.';
+
 
 
 ALTER TABLE "public"."stock_daily_summary" ALTER COLUMN "id" ADD GENERATED ALWAYS AS IDENTITY (
@@ -85054,6 +87264,10 @@ CREATE TABLE IF NOT EXISTS "public"."stock_notes" (
 
 
 ALTER TABLE "public"."stock_notes" OWNER TO "postgres";
+
+
+COMMENT ON TABLE "public"."stock_notes" IS 'Notas operacionais associadas a uma variante e opcionalmente a um fornecedor, com autoria, fixação e exclusão lógica.';
+
 
 
 CREATE TABLE IF NOT EXISTS "public"."stock_snapshots" (
@@ -85085,6 +87299,86 @@ ALTER TABLE "public"."stock_snapshots" OWNER TO "postgres";
 
 
 COMMENT ON TABLE "public"."stock_snapshots" IS 'Camada 1: Snapshots brutos de mudanças de estoque e preço dos fornecedores. Retenção: 14 dias. Capturado automaticamente via trigger em variant_supplier_sources.';
+
+
+
+COMMENT ON COLUMN "public"."stock_snapshots"."id" IS 'Identificador sequencial do snapshot de estoque ou preço.';
+
+
+
+COMMENT ON COLUMN "public"."stock_snapshots"."variant_supplier_source_id" IS 'Registro de variante e fornecedor associado ao snapshot.';
+
+
+
+COMMENT ON COLUMN "public"."stock_snapshots"."supplier_id" IS 'Fornecedor associado ao snapshot.';
+
+
+
+COMMENT ON COLUMN "public"."stock_snapshots"."supplier_branch_id" IS 'Filial do fornecedor associada ao snapshot, quando informada.';
+
+
+
+COMMENT ON COLUMN "public"."stock_snapshots"."variant_id" IS 'Variante associada ao snapshot.';
+
+
+
+COMMENT ON COLUMN "public"."stock_snapshots"."product_id" IS 'Produto associado à variante do snapshot.';
+
+
+
+COMMENT ON COLUMN "public"."stock_snapshots"."stock_main_old" IS 'Estoque no depósito principal antes da alteração registrada.';
+
+
+
+COMMENT ON COLUMN "public"."stock_snapshots"."stock_main_new" IS 'Estoque no depósito principal após a alteração registrada.';
+
+
+
+COMMENT ON COLUMN "public"."stock_snapshots"."stock_main_delta" IS 'Variação calculada do estoque principal: valor novo menos valor anterior.';
+
+
+
+COMMENT ON COLUMN "public"."stock_snapshots"."stock_other_old" IS 'Estoque em outros depósitos antes da alteração registrada.';
+
+
+
+COMMENT ON COLUMN "public"."stock_snapshots"."stock_other_new" IS 'Estoque em outros depósitos após a alteração registrada.';
+
+
+
+COMMENT ON COLUMN "public"."stock_snapshots"."stock_other_delta" IS 'Variação calculada do estoque em outros depósitos: valor novo menos valor anterior.';
+
+
+
+COMMENT ON COLUMN "public"."stock_snapshots"."stock_total_old" IS 'Estoque total anterior, calculado pela soma dos estoques principal e de outros depósitos.';
+
+
+
+COMMENT ON COLUMN "public"."stock_snapshots"."stock_total_new" IS 'Estoque total novo, calculado pela soma dos estoques principal e de outros depósitos.';
+
+
+
+COMMENT ON COLUMN "public"."stock_snapshots"."cost_price_old" IS 'Custo unitário anterior registrado para o fornecedor, em reais (BRL). Pode incluir centavos.';
+
+
+
+COMMENT ON COLUMN "public"."stock_snapshots"."cost_price_new" IS 'Custo unitário novo registrado para o fornecedor, em reais (BRL). Pode incluir centavos.';
+
+
+
+COMMENT ON COLUMN "public"."stock_snapshots"."cost_price_delta" IS 'Variação calculada do custo unitário: valor novo menos valor anterior, em reais (BRL). Pode incluir centavos.';
+
+
+
+COMMENT ON COLUMN "public"."stock_snapshots"."change_type" IS 'Tipo de alteração que originou o snapshot.';
+
+
+
+COMMENT ON COLUMN "public"."stock_snapshots"."captured_at" IS 'Data e hora em que a alteração foi registrada no snapshot.';
+
+
+
+COMMENT ON COLUMN "public"."stock_snapshots"."sync_source" IS 'Origem da sincronização que produziu o snapshot.';
 
 
 
@@ -85122,6 +87416,10 @@ CREATE TABLE IF NOT EXISTS "public"."supplier_attribute_definitions" (
 
 
 ALTER TABLE "public"."supplier_attribute_definitions" OWNER TO "postgres";
+
+
+COMMENT ON TABLE "public"."supplier_attribute_definitions" IS 'Inventário de atributos descobertos na API de cada fornecedor, com chave/nome original, tipo, unidade, exemplos e payload. Registra se o atributo foi mapeado para o vocabulário interno.';
+
 
 
 CREATE TABLE IF NOT EXISTS "public"."supplier_branches" (
@@ -85193,6 +87491,10 @@ CREATE TABLE IF NOT EXISTS "public"."supplier_categories" (
 ALTER TABLE "public"."supplier_categories" OWNER TO "postgres";
 
 
+COMMENT ON TABLE "public"."supplier_categories" IS 'Categorias brutas recebidas dos fornecedores, com código, nome, código do pai, nível e payload original. O mapeamento para categorias canônicas da aplicação é mantido separadamente em supplier_category_mappings.';
+
+
+
 CREATE TABLE IF NOT EXISTS "public"."supplier_category_mappings" (
     "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
     "supplier_category_id" "uuid" NOT NULL,
@@ -85243,6 +87545,10 @@ CREATE TABLE IF NOT EXISTS "public"."supplier_colors" (
 ALTER TABLE "public"."supplier_colors" OWNER TO "postgres";
 
 
+COMMENT ON TABLE "public"."supplier_colors" IS 'Espelho por fornecedor das cores recebidas de APIs, incluindo códigos e payloads brutos. color_variation_id permite associar uma cor externa a public.color_variations.';
+
+
+
 CREATE TABLE IF NOT EXISTS "public"."supplier_customization_options_raw" (
     "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
     "supplier_id" "uuid" NOT NULL,
@@ -85261,6 +87567,10 @@ CREATE TABLE IF NOT EXISTS "public"."supplier_customization_options_raw" (
 
 
 ALTER TABLE "public"."supplier_customization_options_raw" OWNER TO "postgres";
+
+
+COMMENT ON TABLE "public"."supplier_customization_options_raw" IS 'Landing bruta de opções de personalização por produto/fornecedor. Preserva códigos de serviço/tabela, componente/local, custo e payload original antes da normalização.';
+
 
 
 CREATE TABLE IF NOT EXISTS "public"."supplier_customization_raw" (
@@ -85286,7 +87596,7 @@ CREATE TABLE IF NOT EXISTS "public"."supplier_customization_raw" (
 ALTER TABLE "public"."supplier_customization_raw" OWNER TO "postgres";
 
 
-COMMENT ON TABLE "public"."supplier_customization_raw" IS 'Bronze (layer) das tabelas de preco de gravacao por fornecedor. Grao = table_code_option (catalogo-wide, ~289 p/ SPOT). Aplicabilidade por SKU ja vive em supplier_products_raw.raw_data (CustomizationTables/Area1/TableCodes1...).';
+COMMENT ON TABLE "public"."supplier_customization_raw" IS 'Bronze (layer) das tabelas de preço de gravação por fornecedor. Grão = table_code_option (catálogo-wide, ~289 para SPOT). A aplicabilidade por SKU permanece em supplier_products_raw.raw_data (CustomizationTables/Area1/TableCodes1...); raw_data preserva o payload de origem.';
 
 
 
@@ -85408,7 +87718,7 @@ CREATE TABLE IF NOT EXISTS "public"."supplier_materials" (
 ALTER TABLE "public"."supplier_materials" OWNER TO "postgres";
 
 
-COMMENT ON TABLE "public"."supplier_materials" IS 'Bug RLS GRAVE corrigido na Etapa 6: supplier_materials_public_read liberava pra anon. Removida.';
+COMMENT ON TABLE "public"."supplier_materials" IS 'Inventário de materiais expostos por APIs de fornecedores, preservando chave/nome e payload bruto. A normalização para materiais canônicos é registrada em public.material_equivalences; acesso público foi removido por política de segurança.';
 
 
 
@@ -85433,7 +87743,7 @@ CREATE TABLE IF NOT EXISTS "public"."supplier_packagings" (
 ALTER TABLE "public"."supplier_packagings" OWNER TO "postgres";
 
 
-COMMENT ON TABLE "public"."supplier_packagings" IS 'Fornecedores que vendem cada embalagem';
+COMMENT ON TABLE "public"."supplier_packagings" IS 'Fornecedores que vendem cada embalagem. Registra código/nome no fornecedor, preço unitário, moeda, quantidade mínima, disponibilidade e prazo de entrega.';
 
 
 
@@ -85470,6 +87780,10 @@ CREATE TABLE IF NOT EXISTS "public"."supplier_products_raw_history_p2026_08" (
 ALTER TABLE "public"."supplier_products_raw_history_p2026_08" OWNER TO "postgres";
 
 
+COMMENT ON TABLE "public"."supplier_products_raw_history_p2026_08" IS 'Partição mensal de 2026-08 da tabela append-only public.supplier_products_raw_history. Contém snapshots anteriores de payloads Bronze conforme a política de retenção do pai.';
+
+
+
 CREATE TABLE IF NOT EXISTS "public"."supplier_products_raw_history_p2026_09" (
     "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
     "raw_id" "uuid",
@@ -85482,6 +87796,10 @@ CREATE TABLE IF NOT EXISTS "public"."supplier_products_raw_history_p2026_09" (
 
 
 ALTER TABLE "public"."supplier_products_raw_history_p2026_09" OWNER TO "postgres";
+
+
+COMMENT ON TABLE "public"."supplier_products_raw_history_p2026_09" IS 'Partição mensal de 2026-09 da tabela append-only public.supplier_products_raw_history. Contém snapshots anteriores de payloads Bronze conforme a política de retenção do pai.';
+
 
 
 CREATE TABLE IF NOT EXISTS "public"."supplier_products_raw_history_p2026_10" (
@@ -85498,6 +87816,10 @@ CREATE TABLE IF NOT EXISTS "public"."supplier_products_raw_history_p2026_10" (
 ALTER TABLE "public"."supplier_products_raw_history_p2026_10" OWNER TO "postgres";
 
 
+COMMENT ON TABLE "public"."supplier_products_raw_history_p2026_10" IS 'Partição mensal de 2026-10 da tabela append-only public.supplier_products_raw_history. Contém snapshots anteriores de payloads Bronze conforme a política de retenção do pai.';
+
+
+
 CREATE TABLE IF NOT EXISTS "public"."supplier_products_raw_history_p2026_11" (
     "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
     "raw_id" "uuid",
@@ -85510,6 +87832,10 @@ CREATE TABLE IF NOT EXISTS "public"."supplier_products_raw_history_p2026_11" (
 
 
 ALTER TABLE "public"."supplier_products_raw_history_p2026_11" OWNER TO "postgres";
+
+
+COMMENT ON TABLE "public"."supplier_products_raw_history_p2026_11" IS 'Partição mensal de 2026-11 da tabela append-only public.supplier_products_raw_history. Contém snapshots anteriores de payloads Bronze conforme a política de retenção do pai.';
+
 
 
 CREATE TABLE IF NOT EXISTS "public"."supplier_products_raw_history_p2026_12" (
@@ -85526,6 +87852,10 @@ CREATE TABLE IF NOT EXISTS "public"."supplier_products_raw_history_p2026_12" (
 ALTER TABLE "public"."supplier_products_raw_history_p2026_12" OWNER TO "postgres";
 
 
+COMMENT ON TABLE "public"."supplier_products_raw_history_p2026_12" IS 'Partição mensal de 2026-12 da tabela append-only public.supplier_products_raw_history. Contém snapshots anteriores de payloads Bronze conforme a política de retenção do pai.';
+
+
+
 CREATE TABLE IF NOT EXISTS "public"."supplier_products_raw_history_p2027_01" (
     "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
     "raw_id" "uuid",
@@ -85538,6 +87868,10 @@ CREATE TABLE IF NOT EXISTS "public"."supplier_products_raw_history_p2027_01" (
 
 
 ALTER TABLE "public"."supplier_products_raw_history_p2027_01" OWNER TO "postgres";
+
+
+COMMENT ON TABLE "public"."supplier_products_raw_history_p2027_01" IS 'Partição mensal de 2027-01 da tabela append-only public.supplier_products_raw_history. Contém snapshots anteriores de payloads Bronze conforme a política de retenção do pai.';
+
 
 
 CREATE TABLE IF NOT EXISTS "public"."supplier_products_raw_history_p2027_02" (
@@ -85554,6 +87888,10 @@ CREATE TABLE IF NOT EXISTS "public"."supplier_products_raw_history_p2027_02" (
 ALTER TABLE "public"."supplier_products_raw_history_p2027_02" OWNER TO "postgres";
 
 
+COMMENT ON TABLE "public"."supplier_products_raw_history_p2027_02" IS 'Partição mensal de 2027-02 da tabela append-only public.supplier_products_raw_history. Contém snapshots anteriores de payloads Bronze conforme a política de retenção do pai.';
+
+
+
 CREATE TABLE IF NOT EXISTS "public"."supplier_products_raw_history_p2027_03" (
     "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
     "raw_id" "uuid",
@@ -85566,6 +87904,10 @@ CREATE TABLE IF NOT EXISTS "public"."supplier_products_raw_history_p2027_03" (
 
 
 ALTER TABLE "public"."supplier_products_raw_history_p2027_03" OWNER TO "postgres";
+
+
+COMMENT ON TABLE "public"."supplier_products_raw_history_p2027_03" IS 'Partição mensal de 2027-03 da tabela append-only public.supplier_products_raw_history. Contém snapshots anteriores de payloads Bronze conforme a política de retenção do pai.';
+
 
 
 CREATE TABLE IF NOT EXISTS "public"."supplier_products_raw_history_p2027_04" (
@@ -85582,6 +87924,10 @@ CREATE TABLE IF NOT EXISTS "public"."supplier_products_raw_history_p2027_04" (
 ALTER TABLE "public"."supplier_products_raw_history_p2027_04" OWNER TO "postgres";
 
 
+COMMENT ON TABLE "public"."supplier_products_raw_history_p2027_04" IS 'Partição mensal de 2027-04 da tabela append-only public.supplier_products_raw_history. Contém snapshots anteriores de payloads Bronze conforme a política de retenção do pai.';
+
+
+
 CREATE TABLE IF NOT EXISTS "public"."supplier_products_raw_history_p2027_05" (
     "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
     "raw_id" "uuid",
@@ -85594,6 +87940,10 @@ CREATE TABLE IF NOT EXISTS "public"."supplier_products_raw_history_p2027_05" (
 
 
 ALTER TABLE "public"."supplier_products_raw_history_p2027_05" OWNER TO "postgres";
+
+
+COMMENT ON TABLE "public"."supplier_products_raw_history_p2027_05" IS 'Partição mensal de 2027-05 da tabela append-only public.supplier_products_raw_history. Contém snapshots anteriores de payloads Bronze conforme a política de retenção do pai.';
+
 
 
 CREATE TABLE IF NOT EXISTS "public"."supplier_products_raw_history_p2027_06" (
@@ -85610,6 +87960,10 @@ CREATE TABLE IF NOT EXISTS "public"."supplier_products_raw_history_p2027_06" (
 ALTER TABLE "public"."supplier_products_raw_history_p2027_06" OWNER TO "postgres";
 
 
+COMMENT ON TABLE "public"."supplier_products_raw_history_p2027_06" IS 'Partição mensal de 2027-06 da tabela append-only public.supplier_products_raw_history. Contém snapshots anteriores de payloads Bronze conforme a política de retenção do pai.';
+
+
+
 CREATE TABLE IF NOT EXISTS "public"."supplier_products_raw_history_p2027_07" (
     "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
     "raw_id" "uuid",
@@ -85622,6 +87976,10 @@ CREATE TABLE IF NOT EXISTS "public"."supplier_products_raw_history_p2027_07" (
 
 
 ALTER TABLE "public"."supplier_products_raw_history_p2027_07" OWNER TO "postgres";
+
+
+COMMENT ON TABLE "public"."supplier_products_raw_history_p2027_07" IS 'Partição mensal de 2027-07 da tabela append-only public.supplier_products_raw_history. Contém snapshots anteriores de payloads Bronze conforme a política de retenção do pai.';
+
 
 
 CREATE TABLE IF NOT EXISTS "public"."supplier_products_raw_history_p2027_08" (
@@ -85638,6 +87996,10 @@ CREATE TABLE IF NOT EXISTS "public"."supplier_products_raw_history_p2027_08" (
 ALTER TABLE "public"."supplier_products_raw_history_p2027_08" OWNER TO "postgres";
 
 
+COMMENT ON TABLE "public"."supplier_products_raw_history_p2027_08" IS 'Partição mensal de 2027-08 da tabela append-only public.supplier_products_raw_history. Contém snapshots anteriores de payloads Bronze conforme a política de retenção do pai.';
+
+
+
 CREATE TABLE IF NOT EXISTS "public"."supplier_products_raw_history_p2027_09" (
     "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
     "raw_id" "uuid",
@@ -85650,6 +88012,10 @@ CREATE TABLE IF NOT EXISTS "public"."supplier_products_raw_history_p2027_09" (
 
 
 ALTER TABLE "public"."supplier_products_raw_history_p2027_09" OWNER TO "postgres";
+
+
+COMMENT ON TABLE "public"."supplier_products_raw_history_p2027_09" IS 'Partição mensal de 2027-09 da tabela append-only public.supplier_products_raw_history. Contém snapshots anteriores de payloads Bronze conforme a política de retenção do pai.';
+
 
 
 CREATE TABLE IF NOT EXISTS "public"."supplier_products_raw_history_p2027_10" (
@@ -85666,6 +88032,10 @@ CREATE TABLE IF NOT EXISTS "public"."supplier_products_raw_history_p2027_10" (
 ALTER TABLE "public"."supplier_products_raw_history_p2027_10" OWNER TO "postgres";
 
 
+COMMENT ON TABLE "public"."supplier_products_raw_history_p2027_10" IS 'Partição mensal de 2027-10 da tabela append-only public.supplier_products_raw_history. Contém snapshots anteriores de payloads Bronze conforme a política de retenção do pai.';
+
+
+
 CREATE TABLE IF NOT EXISTS "public"."supplier_products_raw_history_p2027_11" (
     "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
     "raw_id" "uuid",
@@ -85680,6 +88050,10 @@ CREATE TABLE IF NOT EXISTS "public"."supplier_products_raw_history_p2027_11" (
 ALTER TABLE "public"."supplier_products_raw_history_p2027_11" OWNER TO "postgres";
 
 
+COMMENT ON TABLE "public"."supplier_products_raw_history_p2027_11" IS 'Partição mensal de 2027-11 da tabela append-only public.supplier_products_raw_history. Contém snapshots anteriores de payloads Bronze conforme a política de retenção do pai.';
+
+
+
 CREATE TABLE IF NOT EXISTS "public"."supplier_products_raw_history_p2027_12" (
     "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
     "raw_id" "uuid",
@@ -85692,6 +88066,10 @@ CREATE TABLE IF NOT EXISTS "public"."supplier_products_raw_history_p2027_12" (
 
 
 ALTER TABLE "public"."supplier_products_raw_history_p2027_12" OWNER TO "postgres";
+
+
+COMMENT ON TABLE "public"."supplier_products_raw_history_p2027_12" IS 'Partição mensal de 2027-12 da tabela append-only public.supplier_products_raw_history. Contém snapshots anteriores de payloads Bronze conforme a política de retenção do pai.';
+
 
 
 CREATE TABLE IF NOT EXISTS "public"."supplier_property_mappings" (
@@ -85800,6 +88178,10 @@ CREATE TABLE IF NOT EXISTS "public"."supplier_subtype_category_map" (
 ALTER TABLE "public"."supplier_subtype_category_map" OWNER TO "postgres";
 
 
+COMMENT ON TABLE "public"."supplier_subtype_category_map" IS 'Mapeamento por fornecedor entre descrição/código de subtipo externo e categoria canônica public.categories, com método de correspondência e timestamps de manutenção.';
+
+
+
 CREATE TABLE IF NOT EXISTS "public"."supplier_unit_conversions" (
     "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
     "supplier_id" "uuid",
@@ -85896,6 +88278,10 @@ CREATE TABLE IF NOT EXISTS "public"."supplier_video_requirements" (
 ALTER TABLE "public"."supplier_video_requirements" OWNER TO "postgres";
 
 
+COMMENT ON TABLE "public"."supplier_video_requirements" IS 'Requisitos técnicos de vídeo por fornecedor: dimensões mínimas/ideais, duração, tamanho máximo e formatos permitidos. Usado para validar vídeos antes de ingestão/publicação.';
+
+
+
 CREATE TABLE IF NOT EXISTS "public"."system_changelog" (
     "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
     "executed_at" timestamp with time zone DEFAULT "now"() NOT NULL,
@@ -85970,6 +88356,10 @@ CREATE TABLE IF NOT EXISTS "public"."system_settings" (
 
 
 ALTER TABLE "public"."system_settings" OWNER TO "postgres";
+
+
+COMMENT ON TABLE "public"."system_settings" IS 'Configurações globais da aplicação em formato chave/valor JSONB, com registro de atualização. Usar description para documentar finalidade e formato esperado de cada chave.';
+
 
 
 COMMENT ON COLUMN "public"."system_settings"."description" IS 'Alinhado ao Lovable 2026-05-22 (Wave 3.1.B). Descricao legivel da configuracao.';
@@ -86125,7 +88515,47 @@ CREATE TABLE IF NOT EXISTS "public"."tags" (
 ALTER TABLE "public"."tags" OWNER TO "postgres";
 
 
-COMMENT ON TABLE "public"."tags" IS 'Bug RLS corrigido na Etapa 6: removida tags_public_read que anulava _select_org.';
+COMMENT ON TABLE "public"."tags" IS 'Catálogo de tags da aplicação, com escopo organizacional, nome/slug, cor e estado. A associação de tags a produtos é mantida em public.product_tags. Mantém também o contexto das correções de RLS registradas anteriormente.';
+
+
+
+COMMENT ON COLUMN "public"."tags"."id" IS 'Identificador UUID da tag.';
+
+
+
+COMMENT ON COLUMN "public"."tags"."organization_id" IS 'Organização à qual a tag pertence.';
+
+
+
+COMMENT ON COLUMN "public"."tags"."name" IS 'Nome de exibição da tag.';
+
+
+
+COMMENT ON COLUMN "public"."tags"."slug" IS 'Slug da tag para identificação em URLs ou integrações.';
+
+
+
+COMMENT ON COLUMN "public"."tags"."color_hex" IS 'Cor da tag em formato hexadecimal, quando informada.';
+
+
+
+COMMENT ON COLUMN "public"."tags"."description" IS 'Descrição da tag.';
+
+
+
+COMMENT ON COLUMN "public"."tags"."usage_count" IS 'Contagem de usos da tag, mantida como valor agregado.';
+
+
+
+COMMENT ON COLUMN "public"."tags"."is_active" IS 'Indica se a tag está ativa para uso.';
+
+
+
+COMMENT ON COLUMN "public"."tags"."created_at" IS 'Data e hora de criação da tag.';
+
+
+
+COMMENT ON COLUMN "public"."tags"."updated_at" IS 'Data e hora da última atualização da tag.';
 
 
 
@@ -86146,6 +88576,58 @@ CREATE TABLE IF NOT EXISTS "public"."target_audiences" (
 
 
 ALTER TABLE "public"."target_audiences" OWNER TO "postgres";
+
+
+COMMENT ON TABLE "public"."target_audiences" IS 'Catálogo de públicos-alvo que podem ser associados a categorias e produtos.';
+
+
+
+COMMENT ON COLUMN "public"."target_audiences"."id" IS 'Identificador UUID do público-alvo.';
+
+
+
+COMMENT ON COLUMN "public"."target_audiences"."organization_id" IS 'Organização à qual pertence o público-alvo, quando informado.';
+
+
+
+COMMENT ON COLUMN "public"."target_audiences"."name" IS 'Nome de exibição do público-alvo.';
+
+
+
+COMMENT ON COLUMN "public"."target_audiences"."slug" IS 'Slug único do público-alvo.';
+
+
+
+COMMENT ON COLUMN "public"."target_audiences"."description" IS 'Descrição do público-alvo.';
+
+
+
+COMMENT ON COLUMN "public"."target_audiences"."category" IS 'Categoria de classificação do público-alvo.';
+
+
+
+COMMENT ON COLUMN "public"."target_audiences"."icon_name" IS 'Nome do ícone usado para representar o público-alvo.';
+
+
+
+COMMENT ON COLUMN "public"."target_audiences"."color_hex" IS 'Cor associada ao público-alvo em formato hexadecimal.';
+
+
+
+COMMENT ON COLUMN "public"."target_audiences"."display_order" IS 'Ordem de exibição do público-alvo.';
+
+
+
+COMMENT ON COLUMN "public"."target_audiences"."is_active" IS 'Indica se o público-alvo está ativo.';
+
+
+
+COMMENT ON COLUMN "public"."target_audiences"."created_at" IS 'Data e hora de criação do público-alvo.';
+
+
+
+COMMENT ON COLUMN "public"."target_audiences"."updated_at" IS 'Data e hora da última atualização do público-alvo.';
+
 
 
 CREATE TABLE IF NOT EXISTS "public"."tecnicas_gravacao" (
@@ -86218,6 +88700,10 @@ CREATE TABLE IF NOT EXISTS "public"."user_comparisons" (
 ALTER TABLE "public"."user_comparisons" OWNER TO "postgres";
 
 
+COMMENT ON TABLE "public"."user_comparisons" IS 'Comparações de produtos salvas por usuário, com itens em JSONB e opções de compartilhamento público por token e validade.';
+
+
+
 CREATE TABLE IF NOT EXISTS "public"."user_favorites" (
     "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
     "user_id" "uuid" NOT NULL,
@@ -86249,6 +88735,10 @@ CREATE TABLE IF NOT EXISTS "public"."user_filter_presets" (
 ALTER TABLE "public"."user_filter_presets" OWNER TO "postgres";
 
 
+COMMENT ON TABLE "public"."user_filter_presets" IS 'Predefinições de filtros associadas a usuários. filters armazena os critérios JSON; is_global distingue presets compartilhados de presets pessoais.';
+
+
+
 CREATE TABLE IF NOT EXISTS "public"."user_ip_allowlist" (
     "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
     "user_id" "uuid" NOT NULL,
@@ -86261,6 +88751,10 @@ CREATE TABLE IF NOT EXISTS "public"."user_ip_allowlist" (
 
 
 ALTER TABLE "public"."user_ip_allowlist" OWNER TO "postgres";
+
+
+COMMENT ON TABLE "public"."user_ip_allowlist" IS 'Endereços IP autorizados individualmente por usuário. is_active permite desativar uma autorização sem remover o registro; esta lista é distinta da allowlist global.';
+
 
 
 CREATE TABLE IF NOT EXISTS "public"."user_known_devices" (
@@ -86295,6 +88789,38 @@ CREATE TABLE IF NOT EXISTS "public"."user_notification_preferences" (
 ALTER TABLE "public"."user_notification_preferences" OWNER TO "postgres";
 
 
+COMMENT ON TABLE "public"."user_notification_preferences" IS 'Preferências individuais por usuário e categoria para notificações no aplicativo e por push.';
+
+
+
+COMMENT ON COLUMN "public"."user_notification_preferences"."id" IS 'Identificador UUID da preferência.';
+
+
+
+COMMENT ON COLUMN "public"."user_notification_preferences"."user_id" IS 'Usuário ao qual a preferência se aplica. Por padrão, recebe o identificador de auth.uid().';
+
+
+
+COMMENT ON COLUMN "public"."user_notification_preferences"."category" IS 'Categoria de notificação à qual esta preferência se aplica.';
+
+
+
+COMMENT ON COLUMN "public"."user_notification_preferences"."in_app_enabled" IS 'Indica se notificações da categoria podem aparecer no aplicativo.';
+
+
+
+COMMENT ON COLUMN "public"."user_notification_preferences"."push_enabled" IS 'Indica se notificações da categoria podem ser enviadas por push.';
+
+
+
+COMMENT ON COLUMN "public"."user_notification_preferences"."created_at" IS 'Data e hora de criação da preferência.';
+
+
+
+COMMENT ON COLUMN "public"."user_notification_preferences"."updated_at" IS 'Data e hora da última atualização da preferência.';
+
+
+
 CREATE TABLE IF NOT EXISTS "public"."user_onboarding" (
     "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
     "user_id" "uuid" NOT NULL,
@@ -86311,6 +88837,10 @@ CREATE TABLE IF NOT EXISTS "public"."user_onboarding" (
 ALTER TABLE "public"."user_onboarding" OWNER TO "postgres";
 
 
+COMMENT ON TABLE "public"."user_onboarding" IS 'Estado de onboarding por usuário, incluindo progresso, etapas concluídas e timestamps de início/conclusão. user_id identifica a conta Supabase Auth.';
+
+
+
 CREATE TABLE IF NOT EXISTS "public"."user_organizations" (
     "organization_id" "uuid" NOT NULL,
     "user_id" "uuid" NOT NULL,
@@ -86323,7 +88853,27 @@ CREATE TABLE IF NOT EXISTS "public"."user_organizations" (
 ALTER TABLE "public"."user_organizations" OWNER TO "postgres";
 
 
-COMMENT ON TABLE "public"."user_organizations" IS 'Membership user→organização. Backfill na Etapa 6 com 4 users na org única (5db5aee1...). Necessário pras funções user_belongs_to_org/is_org_owner_or_admin retornarem true.';
+COMMENT ON TABLE "public"."user_organizations" IS 'Associação canônica entre contas Auth e organizações, com papel owner/admin/member. Usada por helpers de autorização organizacional; não confundir com public.organization_members, que mantém outro contrato de aplicação.';
+
+
+
+COMMENT ON COLUMN "public"."user_organizations"."organization_id" IS 'Organização à qual o usuário pertence.';
+
+
+
+COMMENT ON COLUMN "public"."user_organizations"."user_id" IS 'Identificador do usuário associado à organização.';
+
+
+
+COMMENT ON COLUMN "public"."user_organizations"."role" IS 'Papel do usuário dentro da organização: owner, admin ou member.';
+
+
+
+COMMENT ON COLUMN "public"."user_organizations"."created_at" IS 'Data e hora de criação do vínculo entre usuário e organização.';
+
+
+
+COMMENT ON COLUMN "public"."user_organizations"."updated_at" IS 'Data e hora da última atualização do vínculo.';
 
 
 
@@ -86341,6 +88891,10 @@ CREATE TABLE IF NOT EXISTS "public"."user_preferences" (
 ALTER TABLE "public"."user_preferences" OWNER TO "postgres";
 
 
+COMMENT ON TABLE "public"."user_preferences" IS 'Preferências de interface e análise por usuário, incluindo pesos/ordem de colunas de comparação e estados de filtros em JSONB.';
+
+
+
 CREATE TABLE IF NOT EXISTS "public"."user_roles" (
     "user_id" "uuid" NOT NULL,
     "role" "public"."app_role" NOT NULL,
@@ -86353,6 +88907,22 @@ ALTER TABLE "public"."user_roles" OWNER TO "postgres";
 
 
 COMMENT ON TABLE "public"."user_roles" IS 'Source of truth para autorização. Multi-role suportado (1 user pode ter dev+supervisor). PK composto (user_id, role).';
+
+
+
+COMMENT ON COLUMN "public"."user_roles"."user_id" IS 'Identificador da conta de usuário à qual o papel foi concedido.';
+
+
+
+COMMENT ON COLUMN "public"."user_roles"."role" IS 'Papel de aplicação concedido ao usuário. Um usuário pode ter mais de um papel.';
+
+
+
+COMMENT ON COLUMN "public"."user_roles"."created_at" IS 'Data e hora em que o papel foi concedido.';
+
+
+
+COMMENT ON COLUMN "public"."user_roles"."granted_by" IS 'Usuário que concedeu o papel, quando registrado.';
 
 
 
@@ -86372,6 +88942,10 @@ CREATE TABLE IF NOT EXISTS "public"."user_search_history" (
 ALTER TABLE "public"."user_search_history" OWNER TO "postgres";
 
 
+COMMENT ON TABLE "public"."user_search_history" IS 'Histórico pessoal de consultas de busca de um usuário, com tipo, contagem de resultados, metadados e opção de fixar consultas importantes.';
+
+
+
 CREATE TABLE IF NOT EXISTS "public"."user_token_revocations" (
     "user_id" "uuid" NOT NULL,
     "revoked_at" timestamp with time zone DEFAULT "now"() NOT NULL,
@@ -86384,6 +88958,10 @@ ALTER TABLE ONLY "public"."user_token_revocations" FORCE ROW LEVEL SECURITY;
 
 
 ALTER TABLE "public"."user_token_revocations" OWNER TO "postgres";
+
+
+COMMENT ON TABLE "public"."user_token_revocations" IS 'Marcadores de revogação de tokens por usuário, com instante, JTI, expiração e motivo. Usado para invalidar sessões/tokens emitidos anteriormente.';
+
 
 
 CREATE OR REPLACE VIEW "public"."v_ai_function_routing_effective" WITH ("security_invoker"='true') AS
@@ -87047,7 +89625,7 @@ CREATE OR REPLACE VIEW "public"."v_compras_catalogo" AS
    FROM (("public"."products" "p"
      JOIN "public"."suppliers" "s" ON (("s"."id" = "p"."supplier_id")))
      LEFT JOIN "public"."product_variants" "v" ON ((("v"."product_id" = "p"."id") AND "v"."is_active")))
-  WHERE ("p"."is_active" AND (NOT COALESCE("p"."is_deleted", false)) AND "s"."active" AND "s"."is_product_supplier" AND "public"."can_view_all_sales"());
+  WHERE ("p"."is_active" AND (NOT COALESCE("p"."is_deleted", false)) AND "s"."active" AND "s"."is_product_supplier" AND (("auth"."uid"() IS NULL) OR "public"."can_view_all_sales"()));
 
 
 ALTER VIEW "public"."v_compras_catalogo" OWNER TO "postgres";
@@ -87079,7 +89657,7 @@ CREATE OR REPLACE VIEW "public"."v_compras_precos_faixa" AS
             "t"."price_val" AS "unit_cost",
             "t"."ord"
            FROM UNNEST("pcp"."min_qty", "pcp"."price") WITH ORDINALITY "t"("qty_min_val", "price_val", "ord")) "band")
-  WHERE (("array_length"("pcp"."min_qty", 1) > 0) AND "public"."can_view_all_sales"());
+  WHERE (("array_length"("pcp"."min_qty", 1) > 0) AND (("auth"."uid"() IS NULL) OR "public"."can_view_all_sales"()));
 
 
 ALTER VIEW "public"."v_compras_precos_faixa" OWNER TO "postgres";
@@ -87187,7 +89765,7 @@ CREATE OR REPLACE VIEW "public"."v_compras_precos_variante" AS
             'vw_variant_sale_prices'::"text" AS "source"
            FROM "public"."vw_variant_sale_prices"
           WHERE ("vw_variant_sale_prices"."min_qty_5" IS NOT NULL)) "q"
-  WHERE "public"."can_view_all_sales"();
+  WHERE (("auth"."uid"() IS NULL) OR "public"."can_view_all_sales"());
 
 
 ALTER VIEW "public"."v_compras_precos_variante" OWNER TO "postgres";
@@ -88325,7 +90903,6 @@ CREATE OR REPLACE VIEW "public"."v_print_area_techniques_public" WITH ("security
     "technique_order",
     "is_active",
     "notes",
-    "unit_cost",
     "created_at",
     "updated_at"
    FROM "public"."print_area_techniques"
@@ -88333,6 +90910,10 @@ CREATE OR REPLACE VIEW "public"."v_print_area_techniques_public" WITH ("security
 
 
 ALTER VIEW "public"."v_print_area_techniques_public" OWNER TO "postgres";
+
+
+COMMENT ON VIEW "public"."v_print_area_techniques_public" IS 'Areas de gravacao publicas (geometria/ordem). NAO projeta unit_cost: custo de gravacao e dado interno (restaurado o contrato do bloco M4 de 20260611150000). security_invoker=true de proposito (P06, 20260716) - o anon le a tabela por GRANT por coluna, sem unit_cost.';
+
 
 
 CREATE OR REPLACE VIEW "public"."v_product_active_badge" WITH ("security_invoker"='true') AS
@@ -90199,6 +92780,10 @@ CREATE TABLE IF NOT EXISTS "public"."video_validation_log" (
 ALTER TABLE "public"."video_validation_log" OWNER TO "postgres";
 
 
+COMMENT ON TABLE "public"."video_validation_log" IS 'Resultados de validação de vídeos: metadados técnicos observados, status, validade, problemas e recomendações, associados a vídeo/produto/fornecedor quando disponíveis.';
+
+
+
 CREATE OR REPLACE VIEW "public"."v_video_validation_recent" WITH ("security_invoker"='true') AS
  SELECT "vvl"."validated_at",
     "vvl"."action_type",
@@ -90335,6 +92920,10 @@ CREATE TABLE IF NOT EXISTS "public"."variation_types" (
 ALTER TABLE "public"."variation_types" OWNER TO "postgres";
 
 
+COMMENT ON TABLE "public"."variation_types" IS 'Catálogo de tipos de variação de produto (por exemplo, tamanho ou capacidade), com código, rótulo, tipo de valor e configuração de obrigatoriedade.';
+
+
+
 CREATE TABLE IF NOT EXISTS "public"."variation_values" (
     "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
     "organization_id" "uuid" NOT NULL,
@@ -90350,6 +92939,10 @@ CREATE TABLE IF NOT EXISTS "public"."variation_values" (
 
 
 ALTER TABLE "public"."variation_values" OWNER TO "postgres";
+
+
+COMMENT ON TABLE "public"."variation_values" IS 'Valores permitidos de cada tipo de variação. product_variants.size_id pode referenciar um valor; value é o código e label é o rótulo de exibição.';
+
 
 
 CREATE TABLE IF NOT EXISTS "public"."video_import_queue" (
@@ -90426,6 +93019,10 @@ CREATE TABLE IF NOT EXISTS "public"."video_sim_results" (
 ALTER TABLE "public"."video_sim_results" OWNER TO "postgres";
 
 
+COMMENT ON TABLE "public"."video_sim_results" IS 'Resultados temporários de verificação/simulação de vídeos por fornecedor e YouTube ID, incluindo dimensões atuais/máximas, estado de fila e erro.';
+
+
+
 CREATE TABLE IF NOT EXISTS "public"."video_types" (
     "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
     "code" character varying(50) NOT NULL,
@@ -90448,6 +93045,10 @@ CREATE TABLE IF NOT EXISTS "public"."video_types" (
 ALTER TABLE "public"."video_types" OWNER TO "postgres";
 
 
+COMMENT ON TABLE "public"."video_types" IS 'Vocabulário de tipos de vídeo de produto, com nomes, categoria e parâmetros de reprodução. product_videos.video_type_id referencia este catálogo.';
+
+
+
 CREATE TABLE IF NOT EXISTS "public"."video_variant_links" (
     "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
     "video_id" "text" NOT NULL,
@@ -90461,6 +93062,10 @@ CREATE TABLE IF NOT EXISTS "public"."video_variant_links" (
 
 
 ALTER TABLE "public"."video_variant_links" OWNER TO "postgres";
+
+
+COMMENT ON TABLE "public"."video_variant_links" IS 'Vínculos auxiliares entre identificadores de vídeo e variante/produto, com rótulo e cor da variante e código do fornecedor.';
+
 
 
 CREATE TABLE IF NOT EXISTS "public"."visual_search_feedback" (
@@ -90480,6 +93085,10 @@ CREATE TABLE IF NOT EXISTS "public"."visual_search_feedback" (
 ALTER TABLE "public"."visual_search_feedback" OWNER TO "postgres";
 
 
+COMMENT ON TABLE "public"."visual_search_feedback" IS 'Feedback de usuários sobre resultados de busca visual, incluindo análise original, correção, termos de busca, produto associado e relevância percebida.';
+
+
+
 CREATE TABLE IF NOT EXISTS "public"."voice_command_logs" (
     "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
     "user_id" "uuid" NOT NULL,
@@ -90494,6 +93103,10 @@ CREATE TABLE IF NOT EXISTS "public"."voice_command_logs" (
 
 
 ALTER TABLE "public"."voice_command_logs" OWNER TO "postgres";
+
+
+COMMENT ON TABLE "public"."voice_command_logs" IS 'Histórico de comandos de voz processados, com transcrição, ação interpretada, resposta, payload e resultado. Revisar retenção e acesso por conter texto potencialmente sensível.';
+
 
 
 CREATE OR REPLACE VIEW "public"."vw_active_products_missing_gold_images" WITH ("security_invoker"='true') AS
@@ -93847,6 +96460,10 @@ CREATE TABLE IF NOT EXISTS "public"."webhook_deliveries" (
 ALTER TABLE "public"."webhook_deliveries" OWNER TO "postgres";
 
 
+COMMENT ON TABLE "public"."webhook_deliveries" IS 'Tentativas de entrega de webhooks de saída, com evento, resposta HTTP, estado de sucesso, erro e número da tentativa. payload pode conter dados comerciais e deve ser tratado conforme as permissões de acesso.';
+
+
+
 CREATE TABLE IF NOT EXISTS "public"."webhook_delivery_locks" (
     "webhook_id" "uuid" NOT NULL,
     "payload_hash" "text" NOT NULL,
@@ -93855,6 +96472,10 @@ CREATE TABLE IF NOT EXISTS "public"."webhook_delivery_locks" (
 
 
 ALTER TABLE "public"."webhook_delivery_locks" OWNER TO "postgres";
+
+
+COMMENT ON TABLE "public"."webhook_delivery_locks" IS 'Locks/idempotência de entrega por webhook e hash do payload. Impede que workers concorrentes processem simultaneamente a mesma combinação.';
+
 
 
 CREATE TABLE IF NOT EXISTS "public"."webhook_delivery_metrics" (
@@ -93877,6 +96498,10 @@ CREATE TABLE IF NOT EXISTS "public"."webhook_delivery_metrics" (
 
 
 ALTER TABLE "public"."webhook_delivery_metrics" OWNER TO "postgres";
+
+
+COMMENT ON TABLE "public"."webhook_delivery_metrics" IS 'Métricas de chamadas webhook, incluindo direção, endpoint, status HTTP, duração, tentativas, payload e falhas. metadata não deve conter secrets ou headers de autenticação.';
+
 
 
 CREATE TABLE IF NOT EXISTS "public"."webhook_outbox" (
@@ -93915,6 +96540,10 @@ CREATE TABLE IF NOT EXISTS "public"."webhook_request_nonces" (
 ALTER TABLE "public"."webhook_request_nonces" OWNER TO "postgres";
 
 
+COMMENT ON TABLE "public"."webhook_request_nonces" IS 'Nonces de requisições webhook usados para detectar repetição/replay, com fonte, timestamp da requisição e expiração.';
+
+
+
 CREATE TABLE IF NOT EXISTS "public"."workspace_notifications" (
     "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
     "user_id" "uuid" NOT NULL,
@@ -93934,6 +96563,58 @@ ALTER TABLE ONLY "public"."workspace_notifications" REPLICA IDENTITY FULL;
 
 
 ALTER TABLE "public"."workspace_notifications" OWNER TO "postgres";
+
+
+COMMENT ON TABLE "public"."workspace_notifications" IS 'Notificações de espaço de trabalho direcionadas a usuários, com categoria, tipo, estado de leitura e metadados.';
+
+
+
+COMMENT ON COLUMN "public"."workspace_notifications"."id" IS 'Identificador UUID da notificação.';
+
+
+
+COMMENT ON COLUMN "public"."workspace_notifications"."user_id" IS 'Usuário destinatário da notificação.';
+
+
+
+COMMENT ON COLUMN "public"."workspace_notifications"."title" IS 'Título da notificação.';
+
+
+
+COMMENT ON COLUMN "public"."workspace_notifications"."message" IS 'Conteúdo textual da notificação.';
+
+
+
+COMMENT ON COLUMN "public"."workspace_notifications"."type" IS 'Tipo da notificação. O valor padrão é info.';
+
+
+
+COMMENT ON COLUMN "public"."workspace_notifications"."category" IS 'Categoria da notificação. O valor padrão é system.';
+
+
+
+COMMENT ON COLUMN "public"."workspace_notifications"."is_read" IS 'Indica se a notificação foi marcada como lida.';
+
+
+
+COMMENT ON COLUMN "public"."workspace_notifications"."action_url" IS 'URL opcional associada à ação da notificação.';
+
+
+
+COMMENT ON COLUMN "public"."workspace_notifications"."metadata" IS 'Metadados adicionais da notificação em formato JSONB.';
+
+
+
+COMMENT ON COLUMN "public"."workspace_notifications"."created_at" IS 'Data e hora de criação da notificação.';
+
+
+
+COMMENT ON COLUMN "public"."workspace_notifications"."search_vector" IS 'Vetor de texto usado para busca textual nas notificações.';
+
+
+
+COMMENT ON COLUMN "public"."workspace_notifications"."idempotency_key" IS 'Chave opcional para identificar e evitar notificações duplicadas.';
+
 
 
 CREATE TABLE IF NOT EXISTS "public"."xbz_gallery_staging" (
@@ -93973,7 +96654,7 @@ CREATE TABLE IF NOT EXISTS "public"."xbz_gallery_staging" (
 ALTER TABLE "public"."xbz_gallery_staging" OWNER TO "postgres";
 
 
-COMMENT ON TABLE "public"."xbz_gallery_staging" IS 'Staging para pipeline N8N de extração de imagens gallery D1-D10 do site XBZ. Criada em 27/02/2026.';
+COMMENT ON TABLE "public"."xbz_gallery_staging" IS 'Staging para o pipeline N8N de extração das imagens de galeria D1–D10 do site XBZ. Cada registro acompanha SKU, URL de origem, tipo/ordem, status de upload e vínculo posterior à imagem canônica em product_images. Criada em 27/02/2026.';
 
 
 
@@ -94041,6 +96722,10 @@ CREATE TABLE IF NOT EXISTS "supplier_stricker"."category_mappings" (
 
 
 ALTER TABLE "supplier_stricker"."category_mappings" OWNER TO "postgres";
+
+
+COMMENT ON TABLE "supplier_stricker"."category_mappings" IS 'De-para entre códigos/nome de tipo e subtipo da Stricker e uma categoria canônica em public.categories. Usado para orientar a classificação de produtos importados; category_id nulo ou is_mapped=false indica mapeamento ainda não resolvido.';
+
 
 
 CREATE TABLE IF NOT EXISTS "supplier_stricker"."colors" (
@@ -94595,6 +97280,10 @@ CREATE TABLE IF NOT EXISTS "supplier_stricker"."stg_stock" (
 ALTER TABLE "supplier_stricker"."stg_stock" OWNER TO "postgres";
 
 
+COMMENT ON TABLE "supplier_stricker"."stg_stock" IS 'Staging temporário do feed de estoque Stricker, em grão de SKU. Preserva quantidades atuais e previsões de reposição recebidas, além do payload bruto em raw_json, antes da promoção para as tabelas canônicas de estoque.';
+
+
+
 CREATE TABLE IF NOT EXISTS "supplier_stricker"."stocks" (
     "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
     "sku" character varying(30) NOT NULL,
@@ -94992,6 +97681,11 @@ ALTER TABLE ONLY "classification_audit"."category_suggestions"
 
 ALTER TABLE ONLY "classification_audit"."category_suggestions"
     ADD CONSTRAINT "category_suggestions_product_id_category_id_key" UNIQUE ("product_id", "category_id");
+
+
+
+ALTER TABLE ONLY "internal"."managed_schema_dictionary"
+    ADD CONSTRAINT "managed_schema_dictionary_pkey" PRIMARY KEY ("schema_name", "object_type", "object_name");
 
 
 
@@ -105331,6 +108025,9 @@ ALTER TABLE "cf_recon"."remediation" ENABLE ROW LEVEL SECURITY;
 ALTER TABLE "classification_audit"."category_suggestions" ENABLE ROW LEVEL SECURITY;
 
 
+ALTER TABLE "internal"."managed_schema_dictionary" ENABLE ROW LEVEL SECURITY;
+
+
 ALTER TABLE "prod_audit"."category_keywords" ENABLE ROW LEVEL SECURITY;
 
 
@@ -111431,6 +114128,11 @@ GRANT USAGE ON SCHEMA "supplier_stricker" TO "service_role";
 
 
 
+REVOKE ALL ON FUNCTION "classification_audit"."apply_high_confidence_suggestions"("p_dry_run" boolean, "p_min_matches" integer) FROM PUBLIC;
+GRANT ALL ON FUNCTION "classification_audit"."apply_high_confidence_suggestions"("p_dry_run" boolean, "p_min_matches" integer) TO "service_role";
+
+
+
 
 
 
@@ -114496,7 +117198,7 @@ GRANT ALL ON TABLE "public"."stock_daily_summary" TO "service_role";
 
 
 
-GRANT SELECT,MAINTAIN ON TABLE "public"."variant_supplier_sources" TO "anon";
+GRANT MAINTAIN ON TABLE "public"."variant_supplier_sources" TO "anon";
 GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."variant_supplier_sources" TO "authenticated";
 GRANT ALL ON TABLE "public"."variant_supplier_sources" TO "service_role";
 
@@ -114605,7 +117307,6 @@ GRANT SELECT("shipping_terms") ON TABLE "public"."suppliers" TO "authenticated";
 
 
 GRANT SELECT("default_markup_percent") ON TABLE "public"."suppliers" TO "authenticated";
-GRANT SELECT("default_markup_percent") ON TABLE "public"."suppliers" TO "anon";
 
 
 
@@ -115487,6 +118188,7 @@ GRANT ALL ON FUNCTION "public"."fn_process_webhook_outbox_batch"("_batch_size" i
 REVOKE ALL ON FUNCTION "public"."fn_product_active_for_rls"("p_id" "uuid") FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."fn_product_active_for_rls"("p_id" "uuid") TO "authenticated";
 GRANT ALL ON FUNCTION "public"."fn_product_active_for_rls"("p_id" "uuid") TO "service_role";
+GRANT ALL ON FUNCTION "public"."fn_product_active_for_rls"("p_id" "uuid") TO "anon";
 
 
 
@@ -117560,7 +120262,7 @@ GRANT ALL ON TABLE "public"."categories" TO "service_role";
 
 
 
-GRANT INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."category_ancestors" TO "anon";
+GRANT MAINTAIN ON TABLE "public"."category_ancestors" TO "anon";
 GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."category_ancestors" TO "authenticated";
 GRANT ALL ON TABLE "public"."category_ancestors" TO "service_role";
 
@@ -119323,7 +122025,7 @@ GRANT ALL ON FUNCTION "public"."set_connections_auto_test_interval"("minutes" in
 
 
 
-GRANT INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."custom_kits" TO "anon";
+GRANT MAINTAIN ON TABLE "public"."custom_kits" TO "anon";
 GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."custom_kits" TO "authenticated";
 GRANT ALL ON TABLE "public"."custom_kits" TO "service_role";
 
@@ -120090,7 +122792,7 @@ GRANT ALL ON TABLE "public"."ai_function_routing" TO "service_role";
 
 
 
-GRANT INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."dashboard_insights_cache" TO "anon";
+GRANT MAINTAIN ON TABLE "public"."dashboard_insights_cache" TO "anon";
 GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."dashboard_insights_cache" TO "authenticated";
 GRANT ALL ON TABLE "public"."dashboard_insights_cache" TO "service_role";
 
@@ -120114,13 +122816,13 @@ GRANT ALL ON TABLE "public"."ai_providers" TO "service_role";
 
 
 
-GRANT INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."ai_routing_decisions" TO "anon";
+GRANT MAINTAIN ON TABLE "public"."ai_routing_decisions" TO "anon";
 GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."ai_routing_decisions" TO "authenticated";
 GRANT ALL ON TABLE "public"."ai_routing_decisions" TO "service_role";
 
 
 
-GRANT INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."ai_usage_events" TO "anon";
+GRANT MAINTAIN ON TABLE "public"."ai_usage_events" TO "anon";
 GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."ai_usage_events" TO "authenticated";
 GRANT ALL ON TABLE "public"."ai_usage_events" TO "service_role";
 
@@ -120131,7 +122833,7 @@ GRANT ALL ON TABLE "public"."ai_usage_logs" TO "service_role";
 
 
 
-GRANT INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."ai_usage_quotas" TO "anon";
+GRANT MAINTAIN ON TABLE "public"."ai_usage_quotas" TO "anon";
 GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."ai_usage_quotas" TO "authenticated";
 GRANT ALL ON TABLE "public"."ai_usage_quotas" TO "service_role";
 
@@ -120159,7 +122861,7 @@ GRANT ALL ON TABLE "public"."anon_insert_rate" TO "service_role";
 
 
 
-GRANT INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."art_file_attachments" TO "anon";
+GRANT MAINTAIN ON TABLE "public"."art_file_attachments" TO "anon";
 GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."art_file_attachments" TO "authenticated";
 GRANT ALL ON TABLE "public"."art_file_attachments" TO "service_role";
 
@@ -120189,7 +122891,7 @@ GRANT ALL ON TABLE "public"."attribute_definitions" TO "service_role";
 
 
 
-GRANT INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."attribute_equivalences" TO "anon";
+GRANT MAINTAIN ON TABLE "public"."attribute_equivalences" TO "anon";
 GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."attribute_equivalences" TO "authenticated";
 GRANT ALL ON TABLE "public"."attribute_equivalences" TO "service_role";
 
@@ -120206,7 +122908,7 @@ GRANT SELECT,INSERT ON TABLE "public"."audit_log" TO "authenticated";
 
 
 
-GRANT INSERT,REFERENCES,TRIGGER,MAINTAIN ON TABLE "public"."audit_log_gravacao" TO "anon";
+GRANT MAINTAIN ON TABLE "public"."audit_log_gravacao" TO "anon";
 GRANT SELECT,INSERT,REFERENCES,TRIGGER,MAINTAIN ON TABLE "public"."audit_log_gravacao" TO "authenticated";
 GRANT ALL ON TABLE "public"."audit_log_gravacao" TO "service_role";
 
@@ -120218,19 +122920,19 @@ GRANT ALL ON SEQUENCE "public"."audit_log_gravacao_id_seq" TO "service_role";
 
 
 
-GRANT INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."auto_tag_rules" TO "anon";
+GRANT MAINTAIN ON TABLE "public"."auto_tag_rules" TO "anon";
 GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."auto_tag_rules" TO "authenticated";
 GRANT ALL ON TABLE "public"."auto_tag_rules" TO "service_role";
 
 
 
-GRANT INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."b2b_collection_products" TO "anon";
+GRANT MAINTAIN ON TABLE "public"."b2b_collection_products" TO "anon";
 GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."b2b_collection_products" TO "authenticated";
 GRANT ALL ON TABLE "public"."b2b_collection_products" TO "service_role";
 
 
 
-GRANT INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."b2b_collections" TO "anon";
+GRANT MAINTAIN ON TABLE "public"."b2b_collections" TO "anon";
 GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."b2b_collections" TO "authenticated";
 GRANT ALL ON TABLE "public"."b2b_collections" TO "service_role";
 
@@ -120273,7 +122975,7 @@ GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE "public"."business_calendar" TO "auth
 
 
 
-GRANT INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."cart_templates" TO "anon";
+GRANT MAINTAIN ON TABLE "public"."cart_templates" TO "anon";
 GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."cart_templates" TO "authenticated";
 GRANT ALL ON TABLE "public"."cart_templates" TO "service_role";
 
@@ -120290,7 +122992,7 @@ GRANT SELECT ON TABLE "public"."categories_tree_visual" TO "authenticated";
 
 
 
-GRANT INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."category_accessory_categories" TO "anon";
+GRANT MAINTAIN ON TABLE "public"."category_accessory_categories" TO "anon";
 GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."category_accessory_categories" TO "authenticated";
 GRANT ALL ON TABLE "public"."category_accessory_categories" TO "service_role";
 
@@ -120302,19 +123004,19 @@ GRANT ALL ON TABLE "public"."category_attributes" TO "service_role";
 
 
 
-GRANT INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."category_colors" TO "anon";
+GRANT MAINTAIN ON TABLE "public"."category_colors" TO "anon";
 GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."category_colors" TO "authenticated";
 GRANT ALL ON TABLE "public"."category_colors" TO "service_role";
 
 
 
-GRANT INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."category_commemorative_dates" TO "anon";
+GRANT MAINTAIN ON TABLE "public"."category_commemorative_dates" TO "anon";
 GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."category_commemorative_dates" TO "authenticated";
 GRANT ALL ON TABLE "public"."category_commemorative_dates" TO "service_role";
 
 
 
-GRANT INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."category_copywriting_config" TO "anon";
+GRANT MAINTAIN ON TABLE "public"."category_copywriting_config" TO "anon";
 GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."category_copywriting_config" TO "authenticated";
 GRANT ALL ON TABLE "public"."category_copywriting_config" TO "service_role";
 
@@ -120326,19 +123028,19 @@ GRANT ALL ON TABLE "public"."category_icons" TO "service_role";
 
 
 
-GRANT INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."category_relationships" TO "anon";
+GRANT MAINTAIN ON TABLE "public"."category_relationships" TO "anon";
 GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."category_relationships" TO "authenticated";
 GRANT ALL ON TABLE "public"."category_relationships" TO "service_role";
 
 
 
-GRANT INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."category_target_audiences" TO "anon";
+GRANT MAINTAIN ON TABLE "public"."category_target_audiences" TO "anon";
 GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."category_target_audiences" TO "authenticated";
 GRANT ALL ON TABLE "public"."category_target_audiences" TO "service_role";
 
 
 
-GRANT INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."category_variation_types" TO "anon";
+GRANT MAINTAIN ON TABLE "public"."category_variation_types" TO "anon";
 GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."category_variation_types" TO "authenticated";
 GRANT ALL ON TABLE "public"."category_variation_types" TO "service_role";
 
@@ -120353,7 +123055,7 @@ GRANT ALL ON TABLE "public"."city_whitelist" TO "service_role";
 
 
 
-GRANT INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."classify_functions_registry" TO "anon";
+GRANT MAINTAIN ON TABLE "public"."classify_functions_registry" TO "anon";
 GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."classify_functions_registry" TO "authenticated";
 GRANT ALL ON TABLE "public"."classify_functions_registry" TO "service_role";
 
@@ -120383,7 +123085,7 @@ GRANT ALL ON TABLE "public"."collection_item_reactions" TO "service_role";
 
 
 
-GRANT INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."collection_items" TO "anon";
+GRANT MAINTAIN ON TABLE "public"."collection_items" TO "anon";
 GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."collection_items" TO "authenticated";
 GRANT ALL ON TABLE "public"."collection_items" TO "service_role";
 
@@ -120397,11 +123099,10 @@ GRANT ALL ON TABLE "public"."collection_items_trash" TO "service_role";
 
 GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."collection_products" TO "authenticated";
 GRANT ALL ON TABLE "public"."collection_products" TO "service_role";
-GRANT SELECT ON TABLE "public"."collection_products" TO "anon";
 
 
 
-GRANT SELECT,MAINTAIN ON TABLE "public"."collections" TO "anon";
+GRANT MAINTAIN ON TABLE "public"."collections" TO "anon";
 GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."collections" TO "authenticated";
 GRANT ALL ON TABLE "public"."collections" TO "service_role";
 
@@ -120472,19 +123173,19 @@ GRANT ALL ON TABLE "public"."comparison_reactions" TO "service_role";
 
 
 
-GRANT INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."component_media" TO "anon";
+GRANT MAINTAIN ON TABLE "public"."component_media" TO "anon";
 GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."component_media" TO "authenticated";
 GRANT ALL ON TABLE "public"."component_media" TO "service_role";
 
 
 
-GRANT INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."connection_test_history" TO "anon";
+GRANT MAINTAIN ON TABLE "public"."connection_test_history" TO "anon";
 GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."connection_test_history" TO "authenticated";
 GRANT ALL ON TABLE "public"."connection_test_history" TO "service_role";
 
 
 
-GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."content_articles" TO "anon";
+GRANT MAINTAIN ON TABLE "public"."content_articles" TO "anon";
 GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."content_articles" TO "authenticated";
 GRANT ALL ON TABLE "public"."content_articles" TO "service_role";
 
@@ -120495,13 +123196,13 @@ GRANT ALL ON TABLE "public"."conversation_audit_logs" TO "service_role";
 
 
 
-GRANT INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."conversation_delivery_status" TO "anon";
+GRANT MAINTAIN ON TABLE "public"."conversation_delivery_status" TO "anon";
 GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."conversation_delivery_status" TO "authenticated";
 GRANT ALL ON TABLE "public"."conversation_delivery_status" TO "service_role";
 
 
 
-GRANT INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."conversation_event_history" TO "anon";
+GRANT MAINTAIN ON TABLE "public"."conversation_event_history" TO "anon";
 GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."conversation_event_history" TO "authenticated";
 GRANT ALL ON TABLE "public"."conversation_event_history" TO "service_role";
 
@@ -120525,7 +123226,7 @@ GRANT ALL ON TABLE "public"."cover_types" TO "service_role";
 
 
 
-GRANT INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."crm_callback_events" TO "anon";
+GRANT MAINTAIN ON TABLE "public"."crm_callback_events" TO "anon";
 GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."crm_callback_events" TO "authenticated";
 GRANT ALL ON TABLE "public"."crm_callback_events" TO "service_role";
 
@@ -120584,7 +123285,7 @@ GRANT ALL ON TABLE "public"."e2e_cleanup_rate_limit" TO "service_role";
 
 
 
-GRANT INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."eco_backfill_log_20260625" TO "anon";
+GRANT MAINTAIN ON TABLE "public"."eco_backfill_log_20260625" TO "anon";
 GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."eco_backfill_log_20260625" TO "authenticated";
 GRANT ALL ON TABLE "public"."eco_backfill_log_20260625" TO "service_role";
 
@@ -120596,19 +123297,19 @@ GRANT ALL ON SEQUENCE "public"."eco_backfill_log_20260625_id_seq" TO "service_ro
 
 
 
-GRANT INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."eco_date_reconcile_log_20260626" TO "anon";
+GRANT MAINTAIN ON TABLE "public"."eco_date_reconcile_log_20260626" TO "anon";
 GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."eco_date_reconcile_log_20260626" TO "authenticated";
 GRANT ALL ON TABLE "public"."eco_date_reconcile_log_20260626" TO "service_role";
 
 
 
-GRANT INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."eco_material_config" TO "anon";
+GRANT MAINTAIN ON TABLE "public"."eco_material_config" TO "anon";
 GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."eco_material_config" TO "authenticated";
 GRANT ALL ON TABLE "public"."eco_material_config" TO "service_role";
 
 
 
-GRANT INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."edge_function_invocations" TO "anon";
+GRANT MAINTAIN ON TABLE "public"."edge_function_invocations" TO "anon";
 GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."edge_function_invocations" TO "authenticated";
 GRANT ALL ON TABLE "public"."edge_function_invocations" TO "service_role";
 
@@ -120637,13 +123338,13 @@ GRANT ALL ON TABLE "public"."enrichment_log" TO "service_role";
 
 
 
-GRANT INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."expert_conversations" TO "anon";
+GRANT MAINTAIN ON TABLE "public"."expert_conversations" TO "anon";
 GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."expert_conversations" TO "authenticated";
 GRANT ALL ON TABLE "public"."expert_conversations" TO "service_role";
 
 
 
-GRANT INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."expert_messages" TO "anon";
+GRANT MAINTAIN ON TABLE "public"."expert_messages" TO "anon";
 GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."expert_messages" TO "authenticated";
 GRANT ALL ON TABLE "public"."expert_messages" TO "service_role";
 
@@ -120654,49 +123355,49 @@ GRANT ALL ON TABLE "public"."external_connections" TO "service_role";
 
 
 
-GRANT INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."external_connections_sync_log" TO "anon";
+GRANT MAINTAIN ON TABLE "public"."external_connections_sync_log" TO "anon";
 GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."external_connections_sync_log" TO "authenticated";
 GRANT ALL ON TABLE "public"."external_connections_sync_log" TO "service_role";
 
 
 
-GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."favorite_item_reactions" TO "anon";
+GRANT INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."favorite_item_reactions" TO "anon";
 GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."favorite_item_reactions" TO "authenticated";
 GRANT ALL ON TABLE "public"."favorite_item_reactions" TO "service_role";
 
 
 
-GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."favorite_items" TO "anon";
+GRANT MAINTAIN ON TABLE "public"."favorite_items" TO "anon";
 GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."favorite_items" TO "authenticated";
 GRANT ALL ON TABLE "public"."favorite_items" TO "service_role";
 
 
 
-GRANT INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."favorite_items_trash" TO "anon";
+GRANT MAINTAIN ON TABLE "public"."favorite_items_trash" TO "anon";
 GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."favorite_items_trash" TO "authenticated";
 GRANT ALL ON TABLE "public"."favorite_items_trash" TO "service_role";
 
 
 
-GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."favorite_lists" TO "anon";
+GRANT MAINTAIN ON TABLE "public"."favorite_lists" TO "anon";
 GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."favorite_lists" TO "authenticated";
 GRANT ALL ON TABLE "public"."favorite_lists" TO "service_role";
 
 
 
-GRANT INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."feminine_color_config" TO "anon";
+GRANT MAINTAIN ON TABLE "public"."feminine_color_config" TO "anon";
 GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."feminine_color_config" TO "authenticated";
 GRANT ALL ON TABLE "public"."feminine_color_config" TO "service_role";
 
 
 
-GRANT INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."file_scan_logs" TO "anon";
+GRANT MAINTAIN ON TABLE "public"."file_scan_logs" TO "anon";
 GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."file_scan_logs" TO "authenticated";
 GRANT ALL ON TABLE "public"."file_scan_logs" TO "service_role";
 
 
 
-GRANT INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."follow_up_reminders" TO "anon";
+GRANT MAINTAIN ON TABLE "public"."follow_up_reminders" TO "anon";
 GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."follow_up_reminders" TO "authenticated";
 GRANT ALL ON TABLE "public"."follow_up_reminders" TO "service_role";
 
@@ -120713,19 +123414,19 @@ GRANT ALL ON TABLE "public"."frontend_telemetry" TO "service_role";
 
 
 
-GRANT INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."generated_mockups" TO "anon";
+GRANT MAINTAIN ON TABLE "public"."generated_mockups" TO "anon";
 GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."generated_mockups" TO "authenticated";
 GRANT ALL ON TABLE "public"."generated_mockups" TO "service_role";
 
 
 
-GRANT INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."geo_allowed_countries" TO "anon";
+GRANT MAINTAIN ON TABLE "public"."geo_allowed_countries" TO "anon";
 GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."geo_allowed_countries" TO "authenticated";
 GRANT ALL ON TABLE "public"."geo_allowed_countries" TO "service_role";
 
 
 
-GRANT INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."hardening_health_snapshots" TO "anon";
+GRANT MAINTAIN ON TABLE "public"."hardening_health_snapshots" TO "anon";
 GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."hardening_health_snapshots" TO "authenticated";
 GRANT ALL ON TABLE "public"."hardening_health_snapshots" TO "service_role";
 
@@ -120735,13 +123436,13 @@ GRANT ALL ON TABLE "public"."image_backfill_queue" TO "service_role";
 
 
 
-GRANT INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."image_types" TO "anon";
+GRANT MAINTAIN ON TABLE "public"."image_types" TO "anon";
 GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."image_types" TO "authenticated";
 GRANT ALL ON TABLE "public"."image_types" TO "service_role";
 
 
 
-GRANT INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."import_pipeline_steps" TO "anon";
+GRANT MAINTAIN ON TABLE "public"."import_pipeline_steps" TO "anon";
 GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."import_pipeline_steps" TO "authenticated";
 GRANT ALL ON TABLE "public"."import_pipeline_steps" TO "service_role";
 
@@ -120753,25 +123454,25 @@ GRANT ALL ON SEQUENCE "public"."import_pipeline_steps_id_seq" TO "service_role";
 
 
 
-GRANT INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."inbound_webhook_endpoints" TO "anon";
+GRANT MAINTAIN ON TABLE "public"."inbound_webhook_endpoints" TO "anon";
 GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."inbound_webhook_endpoints" TO "authenticated";
 GRANT ALL ON TABLE "public"."inbound_webhook_endpoints" TO "service_role";
 
 
 
-GRANT INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."inbound_webhook_events" TO "anon";
+GRANT MAINTAIN ON TABLE "public"."inbound_webhook_events" TO "anon";
 GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."inbound_webhook_events" TO "authenticated";
 GRANT ALL ON TABLE "public"."inbound_webhook_events" TO "service_role";
 
 
 
-GRANT INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."included_packaging_print_areas" TO "anon";
+GRANT MAINTAIN ON TABLE "public"."included_packaging_print_areas" TO "anon";
 GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."included_packaging_print_areas" TO "authenticated";
 GRANT ALL ON TABLE "public"."included_packaging_print_areas" TO "service_role";
 
 
 
-GRANT INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."included_packaging_techniques" TO "anon";
+GRANT MAINTAIN ON TABLE "public"."included_packaging_techniques" TO "anon";
 GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."included_packaging_techniques" TO "authenticated";
 GRANT ALL ON TABLE "public"."included_packaging_techniques" TO "service_role";
 
@@ -120816,31 +123517,31 @@ GRANT ALL ON SEQUENCE "public"."kill_switch_hits_id_seq" TO "service_role";
 
 
 
-GRANT INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."kit_collaborators" TO "anon";
+GRANT MAINTAIN ON TABLE "public"."kit_collaborators" TO "anon";
 GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."kit_collaborators" TO "authenticated";
 GRANT ALL ON TABLE "public"."kit_collaborators" TO "service_role";
 
 
 
-GRANT INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."kit_comments" TO "anon";
+GRANT MAINTAIN ON TABLE "public"."kit_comments" TO "anon";
 GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."kit_comments" TO "authenticated";
 GRANT ALL ON TABLE "public"."kit_comments" TO "service_role";
 
 
 
-GRANT INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."kit_component_enrichment_raw" TO "anon";
+GRANT MAINTAIN ON TABLE "public"."kit_component_enrichment_raw" TO "anon";
 GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."kit_component_enrichment_raw" TO "authenticated";
 GRANT ALL ON TABLE "public"."kit_component_enrichment_raw" TO "service_role";
 
 
 
-GRANT INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."kit_component_ficha_staging" TO "anon";
+GRANT MAINTAIN ON TABLE "public"."kit_component_ficha_staging" TO "anon";
 GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."kit_component_ficha_staging" TO "authenticated";
 GRANT ALL ON TABLE "public"."kit_component_ficha_staging" TO "service_role";
 
 
 
-GRANT INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."kit_component_padronizacao" TO "anon";
+GRANT MAINTAIN ON TABLE "public"."kit_component_padronizacao" TO "anon";
 GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."kit_component_padronizacao" TO "authenticated";
 GRANT ALL ON TABLE "public"."kit_component_padronizacao" TO "service_role";
 
@@ -120902,13 +123603,13 @@ GRANT ALL ON TABLE "public"."kit_component_types" TO "service_role";
 
 
 
-GRANT INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."kit_component_variant_skus" TO "anon";
+GRANT MAINTAIN ON TABLE "public"."kit_component_variant_skus" TO "anon";
 GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."kit_component_variant_skus" TO "authenticated";
 GRANT ALL ON TABLE "public"."kit_component_variant_skus" TO "service_role";
 
 
 
-GRANT INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."kit_ficha_session_log" TO "anon";
+GRANT MAINTAIN ON TABLE "public"."kit_ficha_session_log" TO "anon";
 GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."kit_ficha_session_log" TO "authenticated";
 GRANT ALL ON TABLE "public"."kit_ficha_session_log" TO "service_role";
 
@@ -120926,19 +123627,19 @@ GRANT ALL ON TABLE "public"."kit_save_requests" TO "service_role";
 
 
 
-GRANT INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."kit_share_tokens" TO "anon";
+GRANT MAINTAIN ON TABLE "public"."kit_share_tokens" TO "anon";
 GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."kit_share_tokens" TO "authenticated";
 GRANT ALL ON TABLE "public"."kit_share_tokens" TO "service_role";
 
 
 
-GRANT INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."kit_templates" TO "anon";
+GRANT MAINTAIN ON TABLE "public"."kit_templates" TO "anon";
 GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."kit_templates" TO "authenticated";
 GRANT ALL ON TABLE "public"."kit_templates" TO "service_role";
 
 
 
-GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."kit_typical_dims" TO "anon";
+GRANT SELECT,MAINTAIN ON TABLE "public"."kit_typical_dims" TO "anon";
 GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."kit_typical_dims" TO "authenticated";
 GRANT ALL ON TABLE "public"."kit_typical_dims" TO "service_role";
 
@@ -121032,61 +123733,61 @@ GRANT ALL ON TABLE "public"."magazine_templates_catalog" TO "service_role";
 
 
 
-GRANT INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."magazine_view_rollup_watermark" TO "anon";
+GRANT MAINTAIN ON TABLE "public"."magazine_view_rollup_watermark" TO "anon";
 GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."magazine_view_rollup_watermark" TO "authenticated";
 GRANT ALL ON TABLE "public"."magazine_view_rollup_watermark" TO "service_role";
 
 
 
-GRANT INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."magic_up_brand_kits" TO "anon";
+GRANT MAINTAIN ON TABLE "public"."magic_up_brand_kits" TO "anon";
 GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."magic_up_brand_kits" TO "authenticated";
 GRANT ALL ON TABLE "public"."magic_up_brand_kits" TO "service_role";
 
 
 
-GRANT INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."magic_up_campaigns" TO "anon";
+GRANT MAINTAIN ON TABLE "public"."magic_up_campaigns" TO "anon";
 GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."magic_up_campaigns" TO "authenticated";
 GRANT ALL ON TABLE "public"."magic_up_campaigns" TO "service_role";
 
 
 
-GRANT INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."magic_up_comments" TO "anon";
+GRANT MAINTAIN ON TABLE "public"."magic_up_comments" TO "anon";
 GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."magic_up_comments" TO "authenticated";
 GRANT ALL ON TABLE "public"."magic_up_comments" TO "service_role";
 
 
 
-GRANT INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."magic_up_generations" TO "anon";
+GRANT MAINTAIN ON TABLE "public"."magic_up_generations" TO "anon";
 GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."magic_up_generations" TO "authenticated";
 GRANT ALL ON TABLE "public"."magic_up_generations" TO "service_role";
 
 
 
-GRANT INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."magic_up_public_shares" TO "anon";
+GRANT MAINTAIN ON TABLE "public"."magic_up_public_shares" TO "anon";
 GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."magic_up_public_shares" TO "authenticated";
 GRANT ALL ON TABLE "public"."magic_up_public_shares" TO "service_role";
 
 
 
-GRANT INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."magic_up_reactions" TO "anon";
+GRANT MAINTAIN ON TABLE "public"."magic_up_reactions" TO "anon";
 GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."magic_up_reactions" TO "authenticated";
 GRANT ALL ON TABLE "public"."magic_up_reactions" TO "service_role";
 
 
 
-GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."markup_configurations" TO "anon";
+GRANT MAINTAIN ON TABLE "public"."markup_configurations" TO "anon";
 GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."markup_configurations" TO "authenticated";
 GRANT ALL ON TABLE "public"."markup_configurations" TO "service_role";
 
 
 
-GRANT INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."material_equivalences" TO "anon";
+GRANT MAINTAIN ON TABLE "public"."material_equivalences" TO "anon";
 GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."material_equivalences" TO "authenticated";
 GRANT ALL ON TABLE "public"."material_equivalences" TO "service_role";
 
 
 
-GRANT INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."material_reconcile_log_20260626" TO "anon";
+GRANT MAINTAIN ON TABLE "public"."material_reconcile_log_20260626" TO "anon";
 GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."material_reconcile_log_20260626" TO "authenticated";
 GRANT ALL ON TABLE "public"."material_reconcile_log_20260626" TO "service_role";
 
@@ -121138,7 +123839,7 @@ GRANT ALL ON TABLE "public"."mcp_sessions" TO "service_role";
 
 
 
-GRANT INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."medallion_coverage_snapshots" TO "anon";
+GRANT MAINTAIN ON TABLE "public"."medallion_coverage_snapshots" TO "anon";
 GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."medallion_coverage_snapshots" TO "authenticated";
 GRANT ALL ON TABLE "public"."medallion_coverage_snapshots" TO "service_role";
 
@@ -121155,7 +123856,7 @@ GRANT ALL ON TABLE "public"."mockup_approval_links" TO "service_role";
 
 
 
-GRANT INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."mockup_credit_transactions" TO "anon";
+GRANT MAINTAIN ON TABLE "public"."mockup_credit_transactions" TO "anon";
 GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."mockup_credit_transactions" TO "authenticated";
 GRANT ALL ON TABLE "public"."mockup_credit_transactions" TO "service_role";
 
@@ -121167,13 +123868,13 @@ GRANT ALL ON TABLE "public"."mockup_credits" TO "service_role";
 
 
 
-GRANT INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."mockup_drafts" TO "anon";
+GRANT MAINTAIN ON TABLE "public"."mockup_drafts" TO "anon";
 GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."mockup_drafts" TO "authenticated";
 GRANT ALL ON TABLE "public"."mockup_drafts" TO "service_role";
 
 
 
-GRANT INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."mockup_generation_jobs" TO "anon";
+GRANT MAINTAIN ON TABLE "public"."mockup_generation_jobs" TO "anon";
 GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."mockup_generation_jobs" TO "authenticated";
 GRANT ALL ON TABLE "public"."mockup_generation_jobs" TO "service_role";
 
@@ -121216,7 +123917,6 @@ GRANT ALL ON TABLE "public"."mv_product_cards" TO "service_role";
 
 GRANT ALL ON TABLE "public"."mv_product_compositions" TO "service_role";
 GRANT SELECT ON TABLE "public"."mv_product_compositions" TO "authenticated";
-GRANT SELECT ON TABLE "public"."mv_product_compositions" TO "anon";
 
 
 
@@ -121234,13 +123934,13 @@ GRANT ALL ON TABLE "public"."mv_stock_velocity" TO "service_role";
 
 
 
-GRANT INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."navigation_analytics" TO "anon";
+GRANT MAINTAIN ON TABLE "public"."navigation_analytics" TO "anon";
 GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."navigation_analytics" TO "authenticated";
 GRANT ALL ON TABLE "public"."navigation_analytics" TO "service_role";
 
 
 
-GRANT INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."ncm_codes" TO "anon";
+GRANT MAINTAIN ON TABLE "public"."ncm_codes" TO "anon";
 GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."ncm_codes" TO "authenticated";
 GRANT ALL ON TABLE "public"."ncm_codes" TO "service_role";
 
@@ -121252,7 +123952,7 @@ GRANT ALL ON TABLE "public"."notebook_features" TO "service_role";
 
 
 
-GRANT INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."notification_preferences" TO "anon";
+GRANT MAINTAIN ON TABLE "public"."notification_preferences" TO "anon";
 GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."notification_preferences" TO "authenticated";
 GRANT ALL ON TABLE "public"."notification_preferences" TO "service_role";
 
@@ -121282,13 +123982,13 @@ GRANT ALL ON SEQUENCE "public"."ops_grant_audit_id_seq" TO "service_role";
 
 
 
-GRANT INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."optimization_queue_runs" TO "anon";
+GRANT MAINTAIN ON TABLE "public"."optimization_queue_runs" TO "anon";
 GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."optimization_queue_runs" TO "authenticated";
 GRANT ALL ON TABLE "public"."optimization_queue_runs" TO "service_role";
 
 
 
-GRANT INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."order_item_personalizations" TO "anon";
+GRANT MAINTAIN ON TABLE "public"."order_item_personalizations" TO "anon";
 GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."order_item_personalizations" TO "authenticated";
 GRANT ALL ON TABLE "public"."order_item_personalizations" TO "service_role";
 
@@ -121312,7 +124012,7 @@ GRANT ALL ON TABLE "public"."organization_members" TO "service_role";
 
 
 
-GRANT INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."organizations" TO "anon";
+GRANT MAINTAIN ON TABLE "public"."organizations" TO "anon";
 GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."organizations" TO "authenticated";
 GRANT ALL ON TABLE "public"."organizations" TO "service_role";
 
@@ -121329,25 +124029,25 @@ GRANT ALL ON TABLE "public"."ownership_audit_reports" TO "service_role";
 
 
 
-GRANT INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."ownership_repair_logs" TO "anon";
+GRANT MAINTAIN ON TABLE "public"."ownership_repair_logs" TO "anon";
 GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."ownership_repair_logs" TO "authenticated";
 GRANT ALL ON TABLE "public"."ownership_repair_logs" TO "service_role";
 
 
 
-GRANT INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."packaging_compatibility_config" TO "anon";
+GRANT MAINTAIN ON TABLE "public"."packaging_compatibility_config" TO "anon";
 GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."packaging_compatibility_config" TO "authenticated";
 GRANT ALL ON TABLE "public"."packaging_compatibility_config" TO "service_role";
 
 
 
-GRANT INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."packaging_types" TO "anon";
+GRANT MAINTAIN ON TABLE "public"."packaging_types" TO "anon";
 GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."packaging_types" TO "authenticated";
 GRANT ALL ON TABLE "public"."packaging_types" TO "service_role";
 
 
 
-GRANT INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."packagings" TO "anon";
+GRANT MAINTAIN ON TABLE "public"."packagings" TO "anon";
 GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."packagings" TO "authenticated";
 GRANT ALL ON TABLE "public"."packagings" TO "service_role";
 
@@ -121394,7 +124094,7 @@ GRANT ALL ON TABLE "public"."personalization_simulations" TO "service_role";
 
 
 
-GRANT INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."personalization_technique_mappings" TO "anon";
+GRANT MAINTAIN ON TABLE "public"."personalization_technique_mappings" TO "anon";
 GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."personalization_technique_mappings" TO "authenticated";
 GRANT ALL ON TABLE "public"."personalization_technique_mappings" TO "service_role";
 
@@ -121442,13 +124142,77 @@ GRANT ALL ON TABLE "public"."price_history" TO "service_role";
 
 
 
-GRANT SELECT,MAINTAIN ON TABLE "public"."print_area_techniques" TO "anon";
+GRANT MAINTAIN ON TABLE "public"."print_area_techniques" TO "anon";
 GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."print_area_techniques" TO "authenticated";
 GRANT ALL ON TABLE "public"."print_area_techniques" TO "service_role";
 
 
 
-GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."product_ai_content" TO "anon";
+GRANT SELECT("id") ON TABLE "public"."print_area_techniques" TO "anon";
+
+
+
+GRANT SELECT("tabela_preco_id") ON TABLE "public"."print_area_techniques" TO "anon";
+
+
+
+GRANT SELECT("max_width") ON TABLE "public"."print_area_techniques" TO "anon";
+
+
+
+GRANT SELECT("max_height") ON TABLE "public"."print_area_techniques" TO "anon";
+
+
+
+GRANT SELECT("is_curved") ON TABLE "public"."print_area_techniques" TO "anon";
+
+
+
+GRANT SELECT("shape") ON TABLE "public"."print_area_techniques" TO "anon";
+
+
+
+GRANT SELECT("technique_order") ON TABLE "public"."print_area_techniques" TO "anon";
+
+
+
+GRANT SELECT("is_active") ON TABLE "public"."print_area_techniques" TO "anon";
+
+
+
+GRANT SELECT("created_at") ON TABLE "public"."print_area_techniques" TO "anon";
+
+
+
+GRANT SELECT("updated_at") ON TABLE "public"."print_area_techniques" TO "anon";
+
+
+
+GRANT SELECT("product_id") ON TABLE "public"."print_area_techniques" TO "anon";
+
+
+
+GRANT SELECT("location_code") ON TABLE "public"."print_area_techniques" TO "anon";
+
+
+
+GRANT SELECT("location_name") ON TABLE "public"."print_area_techniques" TO "anon";
+
+
+
+GRANT SELECT("location_order") ON TABLE "public"."print_area_techniques" TO "anon";
+
+
+
+GRANT SELECT("notes") ON TABLE "public"."print_area_techniques" TO "anon";
+
+
+
+GRANT SELECT("production_days") ON TABLE "public"."print_area_techniques" TO "anon";
+
+
+
+GRANT MAINTAIN ON TABLE "public"."product_ai_content" TO "anon";
 GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."product_ai_content" TO "authenticated";
 GRANT ALL ON TABLE "public"."product_ai_content" TO "service_role";
 
@@ -121460,7 +124224,7 @@ GRANT ALL ON TABLE "public"."product_ai_history" TO "service_role";
 
 
 
-GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."product_attributes" TO "anon";
+GRANT SELECT,MAINTAIN ON TABLE "public"."product_attributes" TO "anon";
 GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."product_attributes" TO "authenticated";
 GRANT ALL ON TABLE "public"."product_attributes" TO "service_role";
 
@@ -121472,7 +124236,7 @@ GRANT ALL ON TABLE "public"."product_badge_definitions" TO "service_role";
 
 
 
-GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."product_commemorative_dates" TO "anon";
+GRANT SELECT,MAINTAIN ON TABLE "public"."product_commemorative_dates" TO "anon";
 GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."product_commemorative_dates" TO "authenticated";
 GRANT ALL ON TABLE "public"."product_commemorative_dates" TO "service_role";
 
@@ -121483,19 +124247,19 @@ GRANT ALL ON TABLE "public"."product_component_location_techniques" TO "service_
 
 
 
-GRANT INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."product_component_locations" TO "anon";
+GRANT MAINTAIN ON TABLE "public"."product_component_locations" TO "anon";
 GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."product_component_locations" TO "authenticated";
 GRANT ALL ON TABLE "public"."product_component_locations" TO "service_role";
 
 
 
-GRANT INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."product_components" TO "anon";
+GRANT MAINTAIN ON TABLE "public"."product_components" TO "anon";
 GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."product_components" TO "authenticated";
 GRANT ALL ON TABLE "public"."product_components" TO "service_role";
 
 
 
-GRANT INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."product_customization_prices" TO "anon";
+GRANT MAINTAIN ON TABLE "public"."product_customization_prices" TO "anon";
 GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."product_customization_prices" TO "authenticated";
 GRANT ALL ON TABLE "public"."product_customization_prices" TO "service_role";
 
@@ -121515,13 +124279,13 @@ GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE "public"."product_endomarketing" TO "
 
 
 
-GRANT INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."product_faqs" TO "anon";
+GRANT MAINTAIN ON TABLE "public"."product_faqs" TO "anon";
 GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."product_faqs" TO "authenticated";
 GRANT ALL ON TABLE "public"."product_faqs" TO "service_role";
 
 
 
-GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."product_fiscal" TO "anon";
+GRANT MAINTAIN ON TABLE "public"."product_fiscal" TO "anon";
 GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."product_fiscal" TO "authenticated";
 GRANT ALL ON TABLE "public"."product_fiscal" TO "service_role";
 
@@ -121554,7 +124318,7 @@ GRANT ALL ON TABLE "public"."product_groups" TO "service_role";
 
 
 
-GRANT INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."product_included_packagings" TO "anon";
+GRANT MAINTAIN ON TABLE "public"."product_included_packagings" TO "anon";
 GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."product_included_packagings" TO "authenticated";
 GRANT ALL ON TABLE "public"."product_included_packagings" TO "service_role";
 
@@ -121592,19 +124356,19 @@ GRANT ALL ON TABLE "public"."product_novelties" TO "service_role";
 
 
 
-GRANT INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."product_packaging" TO "anon";
+GRANT MAINTAIN ON TABLE "public"."product_packaging" TO "anon";
 GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."product_packaging" TO "authenticated";
 GRANT ALL ON TABLE "public"."product_packaging" TO "service_role";
 
 
 
-GRANT INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."product_packaging_compatibility" TO "anon";
+GRANT MAINTAIN ON TABLE "public"."product_packaging_compatibility" TO "anon";
 GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."product_packaging_compatibility" TO "authenticated";
 GRANT ALL ON TABLE "public"."product_packaging_compatibility" TO "service_role";
 
 
 
-GRANT INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."product_packagings" TO "anon";
+GRANT MAINTAIN ON TABLE "public"."product_packagings" TO "anon";
 GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."product_packagings" TO "authenticated";
 GRANT ALL ON TABLE "public"."product_packagings" TO "service_role";
 
@@ -121616,13 +124380,13 @@ GRANT SELECT ON TABLE "public"."product_physical" TO "anon";
 
 
 
-GRANT INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."product_price_freshness_overrides" TO "anon";
+GRANT MAINTAIN ON TABLE "public"."product_price_freshness_overrides" TO "anon";
 GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."product_price_freshness_overrides" TO "authenticated";
 GRANT ALL ON TABLE "public"."product_price_freshness_overrides" TO "service_role";
 
 
 
-GRANT INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."product_print_positions" TO "anon";
+GRANT MAINTAIN ON TABLE "public"."product_print_positions" TO "anon";
 GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."product_print_positions" TO "authenticated";
 GRANT ALL ON TABLE "public"."product_print_positions" TO "service_role";
 
@@ -121634,7 +124398,7 @@ GRANT ALL ON TABLE "public"."product_properties" TO "service_role";
 
 
 
-GRANT INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."product_qa_image_alerts" TO "anon";
+GRANT MAINTAIN ON TABLE "public"."product_qa_image_alerts" TO "anon";
 GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."product_qa_image_alerts" TO "authenticated";
 GRANT ALL ON TABLE "public"."product_qa_image_alerts" TO "service_role";
 
@@ -121646,37 +124410,37 @@ GRANT ALL ON TABLE "public"."product_relationships" TO "service_role";
 
 
 
-GRANT INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."product_search_logs" TO "anon";
+GRANT MAINTAIN ON TABLE "public"."product_search_logs" TO "anon";
 GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."product_search_logs" TO "authenticated";
 GRANT ALL ON TABLE "public"."product_search_logs" TO "service_role";
 
 
 
-GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."product_seo" TO "anon";
+GRANT MAINTAIN ON TABLE "public"."product_seo" TO "anon";
 GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."product_seo" TO "authenticated";
 GRANT ALL ON TABLE "public"."product_seo" TO "service_role";
 
 
 
-GRANT INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."product_similarity_group_members" TO "anon";
+GRANT MAINTAIN ON TABLE "public"."product_similarity_group_members" TO "anon";
 GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."product_similarity_group_members" TO "authenticated";
 GRANT ALL ON TABLE "public"."product_similarity_group_members" TO "service_role";
 
 
 
-GRANT INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."product_similarity_groups" TO "anon";
+GRANT MAINTAIN ON TABLE "public"."product_similarity_groups" TO "anon";
 GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."product_similarity_groups" TO "authenticated";
 GRANT ALL ON TABLE "public"."product_similarity_groups" TO "service_role";
 
 
 
-GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."product_supply" TO "anon";
+GRANT MAINTAIN ON TABLE "public"."product_supply" TO "anon";
 GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."product_supply" TO "authenticated";
 GRANT ALL ON TABLE "public"."product_supply" TO "service_role";
 
 
 
-GRANT INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."product_sync_logs" TO "anon";
+GRANT MAINTAIN ON TABLE "public"."product_sync_logs" TO "anon";
 GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."product_sync_logs" TO "authenticated";
 GRANT ALL ON TABLE "public"."product_sync_logs" TO "service_role";
 
@@ -121688,7 +124452,7 @@ GRANT ALL ON TABLE "public"."product_tags" TO "service_role";
 
 
 
-GRANT INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."product_target_audiences" TO "anon";
+GRANT MAINTAIN ON TABLE "public"."product_target_audiences" TO "anon";
 GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."product_target_audiences" TO "authenticated";
 GRANT ALL ON TABLE "public"."product_target_audiences" TO "service_role";
 
@@ -121729,31 +124493,31 @@ GRANT ALL ON TABLE "public"."produtos_padronizacao_variantes" TO "service_role";
 
 
 
-GRANT INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."produtos_site_padronizacao" TO "anon";
+GRANT MAINTAIN ON TABLE "public"."produtos_site_padronizacao" TO "anon";
 GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."produtos_site_padronizacao" TO "authenticated";
 GRANT ALL ON TABLE "public"."produtos_site_padronizacao" TO "service_role";
 
 
 
-GRANT INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."property_definitions" TO "anon";
+GRANT MAINTAIN ON TABLE "public"."property_definitions" TO "anon";
 GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."property_definitions" TO "authenticated";
 GRANT ALL ON TABLE "public"."property_definitions" TO "service_role";
 
 
 
-GRANT INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."public_token_failures" TO "anon";
+GRANT MAINTAIN ON TABLE "public"."public_token_failures" TO "anon";
 GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."public_token_failures" TO "authenticated";
 GRANT ALL ON TABLE "public"."public_token_failures" TO "service_role";
 
 
 
-GRANT INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."push_subscriptions" TO "anon";
+GRANT MAINTAIN ON TABLE "public"."push_subscriptions" TO "anon";
 GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."push_subscriptions" TO "authenticated";
 GRANT ALL ON TABLE "public"."push_subscriptions" TO "service_role";
 
 
 
-GRANT INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."qa_image_coverage_log" TO "anon";
+GRANT MAINTAIN ON TABLE "public"."qa_image_coverage_log" TO "anon";
 GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."qa_image_coverage_log" TO "authenticated";
 GRANT ALL ON TABLE "public"."qa_image_coverage_log" TO "service_role";
 
@@ -121765,7 +124529,7 @@ GRANT ALL ON SEQUENCE "public"."qa_image_coverage_log_id_seq" TO "service_role";
 
 
 
-GRANT INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."query_telemetry" TO "anon";
+GRANT MAINTAIN ON TABLE "public"."query_telemetry" TO "anon";
 GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."query_telemetry" TO "authenticated";
 GRANT ALL ON TABLE "public"."query_telemetry" TO "service_role";
 
@@ -121818,37 +124582,37 @@ GRANT ALL ON TABLE "public"."ramo_atividade_filho" TO "service_role";
 
 
 
-GRANT INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."recently_viewed_products" TO "anon";
+GRANT MAINTAIN ON TABLE "public"."recently_viewed_products" TO "anon";
 GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."recently_viewed_products" TO "authenticated";
 GRANT ALL ON TABLE "public"."recently_viewed_products" TO "service_role";
 
 
 
-GRANT INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."request_rate_limits" TO "anon";
+GRANT MAINTAIN ON TABLE "public"."request_rate_limits" TO "anon";
 GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."request_rate_limits" TO "authenticated";
 GRANT ALL ON TABLE "public"."request_rate_limits" TO "service_role";
 
 
 
-GRANT INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."rls_denial_log" TO "anon";
+GRANT MAINTAIN ON TABLE "public"."rls_denial_log" TO "anon";
 GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."rls_denial_log" TO "authenticated";
 GRANT ALL ON TABLE "public"."rls_denial_log" TO "service_role";
 
 
 
-GRANT INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."role_migration_batches" TO "anon";
+GRANT MAINTAIN ON TABLE "public"."role_migration_batches" TO "anon";
 GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."role_migration_batches" TO "authenticated";
 GRANT ALL ON TABLE "public"."role_migration_batches" TO "service_role";
 
 
 
-GRANT INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."role_migration_items" TO "anon";
+GRANT MAINTAIN ON TABLE "public"."role_migration_items" TO "anon";
 GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."role_migration_items" TO "authenticated";
 GRANT ALL ON TABLE "public"."role_migration_items" TO "service_role";
 
 
 
-GRANT INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."role_permissions" TO "anon";
+GRANT MAINTAIN ON TABLE "public"."role_permissions" TO "anon";
 GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."role_permissions" TO "authenticated";
 GRANT ALL ON TABLE "public"."role_permissions" TO "service_role";
 
@@ -121870,37 +124634,37 @@ GRANT ALL ON TABLE "public"."saved_filters" TO "service_role";
 
 
 
-GRANT INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."saved_trends_views" TO "anon";
+GRANT MAINTAIN ON TABLE "public"."saved_trends_views" TO "anon";
 GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."saved_trends_views" TO "authenticated";
 GRANT ALL ON TABLE "public"."saved_trends_views" TO "service_role";
 
 
 
-GRANT INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."scheduled_reports" TO "anon";
+GRANT MAINTAIN ON TABLE "public"."scheduled_reports" TO "anon";
 GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."scheduled_reports" TO "authenticated";
 GRANT ALL ON TABLE "public"."scheduled_reports" TO "service_role";
 
 
 
-GRANT INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."schema_drift_allowlist" TO "anon";
+GRANT MAINTAIN ON TABLE "public"."schema_drift_allowlist" TO "anon";
 GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."schema_drift_allowlist" TO "authenticated";
 GRANT ALL ON TABLE "public"."schema_drift_allowlist" TO "service_role";
 
 
 
-GRANT INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."schema_drift_log" TO "anon";
+GRANT MAINTAIN ON TABLE "public"."schema_drift_log" TO "anon";
 GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."schema_drift_log" TO "authenticated";
 GRANT ALL ON TABLE "public"."schema_drift_log" TO "service_role";
 
 
 
-GRANT INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."schema_signature_baseline" TO "anon";
+GRANT MAINTAIN ON TABLE "public"."schema_signature_baseline" TO "anon";
 GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."schema_signature_baseline" TO "authenticated";
 GRANT ALL ON TABLE "public"."schema_signature_baseline" TO "service_role";
 
 
 
-GRANT INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."schema_signature_drift_allowlist" TO "anon";
+GRANT MAINTAIN ON TABLE "public"."schema_signature_drift_allowlist" TO "anon";
 GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."schema_signature_drift_allowlist" TO "authenticated";
 GRANT ALL ON TABLE "public"."schema_signature_drift_allowlist" TO "service_role";
 
@@ -121912,7 +124676,7 @@ GRANT ALL ON SEQUENCE "public"."schema_signature_drift_allowlist_id_seq" TO "ser
 
 
 
-GRANT INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."schema_signature_drift_log" TO "anon";
+GRANT MAINTAIN ON TABLE "public"."schema_signature_drift_log" TO "anon";
 GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."schema_signature_drift_log" TO "authenticated";
 GRANT ALL ON TABLE "public"."schema_signature_drift_log" TO "service_role";
 
@@ -121924,7 +124688,7 @@ GRANT ALL ON TABLE "public"."search_analytics" TO "service_role";
 
 
 
-GRANT INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."search_queries" TO "anon";
+GRANT MAINTAIN ON TABLE "public"."search_queries" TO "anon";
 GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."search_queries" TO "authenticated";
 GRANT ALL ON TABLE "public"."search_queries" TO "service_role";
 
@@ -121940,13 +124704,13 @@ GRANT ALL ON TABLE "public"."security_settings" TO "service_role";
 
 
 
-GRANT INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."seller_cart_items" TO "anon";
+GRANT MAINTAIN ON TABLE "public"."seller_cart_items" TO "anon";
 GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."seller_cart_items" TO "authenticated";
 GRANT ALL ON TABLE "public"."seller_cart_items" TO "service_role";
 
 
 
-GRANT INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."seller_carts" TO "anon";
+GRANT MAINTAIN ON TABLE "public"."seller_carts" TO "anon";
 GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."seller_carts" TO "authenticated";
 GRANT ALL ON TABLE "public"."seller_carts" TO "service_role";
 
@@ -121962,7 +124726,7 @@ GRANT ALL ON TABLE "public"."seo_audit_log" TO "service_role";
 
 
 
-GRANT INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."seo_redirects" TO "anon";
+GRANT MAINTAIN ON TABLE "public"."seo_redirects" TO "anon";
 GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."seo_redirects" TO "authenticated";
 GRANT ALL ON TABLE "public"."seo_redirects" TO "service_role";
 
@@ -121973,25 +124737,25 @@ GRANT SELECT,INSERT,UPDATE ON TABLE "public"."shipping_boxes" TO "authenticated"
 
 
 
-GRANT INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."simulator_wizard_drafts" TO "anon";
+GRANT MAINTAIN ON TABLE "public"."simulator_wizard_drafts" TO "anon";
 GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."simulator_wizard_drafts" TO "authenticated";
 GRANT ALL ON TABLE "public"."simulator_wizard_drafts" TO "service_role";
 
 
 
-GRANT INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."sm_category_pages" TO "anon";
+GRANT MAINTAIN ON TABLE "public"."sm_category_pages" TO "anon";
 GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."sm_category_pages" TO "authenticated";
 GRANT ALL ON TABLE "public"."sm_category_pages" TO "service_role";
 
 
 
-GRANT INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."sm_site_url_map" TO "anon";
+GRANT MAINTAIN ON TABLE "public"."sm_site_url_map" TO "anon";
 GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."sm_site_url_map" TO "authenticated";
 GRANT ALL ON TABLE "public"."sm_site_url_map" TO "service_role";
 
 
 
-GRANT INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."sm_worker_partitions" TO "anon";
+GRANT MAINTAIN ON TABLE "public"."sm_worker_partitions" TO "anon";
 GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."sm_worker_partitions" TO "authenticated";
 GRANT ALL ON TABLE "public"."sm_worker_partitions" TO "service_role";
 
@@ -122018,7 +124782,7 @@ GRANT ALL ON TABLE "public"."somarcas_catalogo_publico" TO "service_role";
 
 
 
-GRANT INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."spot_health_log" TO "anon";
+GRANT MAINTAIN ON TABLE "public"."spot_health_log" TO "anon";
 GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."spot_health_log" TO "authenticated";
 GRANT ALL ON TABLE "public"."spot_health_log" TO "service_role";
 
@@ -122081,13 +124845,13 @@ GRANT ALL ON TABLE "public"."supplier_branches" TO "service_role";
 
 
 
-GRANT INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."supplier_categories" TO "anon";
+GRANT MAINTAIN ON TABLE "public"."supplier_categories" TO "anon";
 GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."supplier_categories" TO "authenticated";
 GRANT ALL ON TABLE "public"."supplier_categories" TO "service_role";
 
 
 
-GRANT INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."supplier_category_mappings" TO "anon";
+GRANT MAINTAIN ON TABLE "public"."supplier_category_mappings" TO "anon";
 GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."supplier_category_mappings" TO "authenticated";
 GRANT ALL ON TABLE "public"."supplier_category_mappings" TO "service_role";
 
@@ -122109,19 +124873,19 @@ GRANT ALL ON TABLE "public"."supplier_customization_raw" TO "service_role";
 
 
 
-GRANT INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."supplier_field_mappings" TO "anon";
+GRANT MAINTAIN ON TABLE "public"."supplier_field_mappings" TO "anon";
 GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."supplier_field_mappings" TO "authenticated";
 GRANT ALL ON TABLE "public"."supplier_field_mappings" TO "service_role";
 
 
 
-GRANT INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."supplier_field_priority" TO "anon";
+GRANT MAINTAIN ON TABLE "public"."supplier_field_priority" TO "anon";
 GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."supplier_field_priority" TO "authenticated";
 GRANT ALL ON TABLE "public"."supplier_field_priority" TO "service_role";
 
 
 
-GRANT INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."supplier_import_batches" TO "anon";
+GRANT MAINTAIN ON TABLE "public"."supplier_import_batches" TO "anon";
 GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."supplier_import_batches" TO "authenticated";
 GRANT ALL ON TABLE "public"."supplier_import_batches" TO "service_role";
 
@@ -122133,7 +124897,7 @@ GRANT ALL ON TABLE "public"."supplier_materials" TO "service_role";
 
 
 
-GRANT INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."supplier_packagings" TO "anon";
+GRANT MAINTAIN ON TABLE "public"."supplier_packagings" TO "anon";
 GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."supplier_packagings" TO "authenticated";
 GRANT ALL ON TABLE "public"."supplier_packagings" TO "service_role";
 
@@ -122144,19 +124908,19 @@ GRANT ALL ON TABLE "public"."supplier_products_raw_history" TO "service_role";
 
 
 
-GRANT INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."supplier_products_raw_history_p2026_08" TO "anon";
+GRANT MAINTAIN ON TABLE "public"."supplier_products_raw_history_p2026_08" TO "anon";
 GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."supplier_products_raw_history_p2026_08" TO "authenticated";
 GRANT ALL ON TABLE "public"."supplier_products_raw_history_p2026_08" TO "service_role";
 
 
 
-GRANT INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."supplier_products_raw_history_p2026_09" TO "anon";
+GRANT MAINTAIN ON TABLE "public"."supplier_products_raw_history_p2026_09" TO "anon";
 GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."supplier_products_raw_history_p2026_09" TO "authenticated";
 GRANT ALL ON TABLE "public"."supplier_products_raw_history_p2026_09" TO "service_role";
 
 
 
-GRANT INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."supplier_products_raw_history_p2026_10" TO "anon";
+GRANT MAINTAIN ON TABLE "public"."supplier_products_raw_history_p2026_10" TO "anon";
 GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."supplier_products_raw_history_p2026_10" TO "authenticated";
 GRANT ALL ON TABLE "public"."supplier_products_raw_history_p2026_10" TO "service_role";
 
@@ -122252,61 +125016,61 @@ GRANT ALL ON TABLE "public"."supplier_property_mappings" TO "service_role";
 
 
 
-GRANT INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."supplier_settings" TO "anon";
+GRANT MAINTAIN ON TABLE "public"."supplier_settings" TO "anon";
 GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."supplier_settings" TO "authenticated";
 GRANT ALL ON TABLE "public"."supplier_settings" TO "service_role";
 
 
 
-GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."supplier_sub_brands" TO "anon";
+GRANT SELECT,MAINTAIN ON TABLE "public"."supplier_sub_brands" TO "anon";
 GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."supplier_sub_brands" TO "authenticated";
 GRANT ALL ON TABLE "public"."supplier_sub_brands" TO "service_role";
 
 
 
-GRANT INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."supplier_subtype_category_map" TO "anon";
+GRANT MAINTAIN ON TABLE "public"."supplier_subtype_category_map" TO "anon";
 GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."supplier_subtype_category_map" TO "authenticated";
 GRANT ALL ON TABLE "public"."supplier_subtype_category_map" TO "service_role";
 
 
 
-GRANT INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."supplier_unit_conversions" TO "anon";
+GRANT MAINTAIN ON TABLE "public"."supplier_unit_conversions" TO "anon";
 GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."supplier_unit_conversions" TO "authenticated";
 GRANT ALL ON TABLE "public"."supplier_unit_conversions" TO "service_role";
 
 
 
-GRANT INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."supplier_value_mappings" TO "anon";
+GRANT MAINTAIN ON TABLE "public"."supplier_value_mappings" TO "anon";
 GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."supplier_value_mappings" TO "authenticated";
 GRANT ALL ON TABLE "public"."supplier_value_mappings" TO "service_role";
 
 
 
-GRANT INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."supplier_video_requirements" TO "anon";
+GRANT MAINTAIN ON TABLE "public"."supplier_video_requirements" TO "anon";
 GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."supplier_video_requirements" TO "authenticated";
 GRANT ALL ON TABLE "public"."supplier_video_requirements" TO "service_role";
 
 
 
-GRANT INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."system_changelog" TO "anon";
+GRANT MAINTAIN ON TABLE "public"."system_changelog" TO "anon";
 GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."system_changelog" TO "authenticated";
 GRANT ALL ON TABLE "public"."system_changelog" TO "service_role";
 
 
 
-GRANT INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."system_documentation" TO "anon";
+GRANT MAINTAIN ON TABLE "public"."system_documentation" TO "anon";
 GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."system_documentation" TO "authenticated";
 GRANT ALL ON TABLE "public"."system_documentation" TO "service_role";
 
 
 
-GRANT SELECT,MAINTAIN ON TABLE "public"."system_kill_switches" TO "anon";
+GRANT MAINTAIN ON TABLE "public"."system_kill_switches" TO "anon";
 GRANT SELECT,MAINTAIN ON TABLE "public"."system_kill_switches" TO "authenticated";
 GRANT ALL ON TABLE "public"."system_kill_switches" TO "service_role";
 
 
 
-GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."system_settings" TO "anon";
+GRANT MAINTAIN ON TABLE "public"."system_settings" TO "anon";
 GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."system_settings" TO "authenticated";
 GRANT ALL ON TABLE "public"."system_settings" TO "service_role";
 
@@ -122330,7 +125094,7 @@ GRANT ALL ON TABLE "public"."tags" TO "service_role";
 
 
 
-GRANT INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."target_audiences" TO "anon";
+GRANT MAINTAIN ON TABLE "public"."target_audiences" TO "anon";
 GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."target_audiences" TO "authenticated";
 GRANT ALL ON TABLE "public"."target_audiences" TO "service_role";
 
@@ -122370,7 +125134,7 @@ GRANT ALL ON TABLE "public"."user_filter_presets" TO "service_role";
 
 
 
-GRANT INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."user_ip_allowlist" TO "anon";
+GRANT MAINTAIN ON TABLE "public"."user_ip_allowlist" TO "anon";
 GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."user_ip_allowlist" TO "authenticated";
 GRANT ALL ON TABLE "public"."user_ip_allowlist" TO "service_role";
 
@@ -122516,7 +125280,7 @@ GRANT ALL ON TABLE "public"."v_compras_precos_faixa" TO "service_role";
 
 
 
-GRANT SELECT,MAINTAIN ON TABLE "public"."vw_variant_sale_prices" TO "anon";
+GRANT MAINTAIN ON TABLE "public"."vw_variant_sale_prices" TO "anon";
 GRANT SELECT,MAINTAIN ON TABLE "public"."vw_variant_sale_prices" TO "authenticated";
 GRANT ALL ON TABLE "public"."vw_variant_sale_prices" TO "service_role";
 
@@ -122949,7 +125713,7 @@ GRANT ALL ON TABLE "public"."v_video_dashboard" TO "service_role";
 
 
 
-GRANT INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."video_validation_log" TO "anon";
+GRANT MAINTAIN ON TABLE "public"."video_validation_log" TO "anon";
 GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."video_validation_log" TO "authenticated";
 GRANT ALL ON TABLE "public"."video_validation_log" TO "service_role";
 
@@ -122973,7 +125737,7 @@ GRANT ALL ON TABLE "public"."v_videos_with_urls" TO "service_role";
 
 
 
-GRANT INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."webhook_dispatcher_log" TO "anon";
+GRANT MAINTAIN ON TABLE "public"."webhook_dispatcher_log" TO "anon";
 GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."webhook_dispatcher_log" TO "authenticated";
 GRANT ALL ON TABLE "public"."webhook_dispatcher_log" TO "service_role";
 
@@ -122997,19 +125761,19 @@ GRANT ALL ON TABLE "public"."variation_values" TO "service_role";
 
 
 
-GRANT INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."video_import_queue" TO "anon";
+GRANT MAINTAIN ON TABLE "public"."video_import_queue" TO "anon";
 GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."video_import_queue" TO "authenticated";
 GRANT ALL ON TABLE "public"."video_import_queue" TO "service_role";
 
 
 
-GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."video_sim_results" TO "anon";
+GRANT MAINTAIN ON TABLE "public"."video_sim_results" TO "anon";
 GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."video_sim_results" TO "authenticated";
 GRANT ALL ON TABLE "public"."video_sim_results" TO "service_role";
 
 
 
-GRANT INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."video_types" TO "anon";
+GRANT MAINTAIN ON TABLE "public"."video_types" TO "anon";
 GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."video_types" TO "authenticated";
 GRANT ALL ON TABLE "public"."video_types" TO "service_role";
 
@@ -123021,13 +125785,13 @@ GRANT ALL ON TABLE "public"."video_variant_links" TO "service_role";
 
 
 
-GRANT INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."visual_search_feedback" TO "anon";
+GRANT MAINTAIN ON TABLE "public"."visual_search_feedback" TO "anon";
 GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."visual_search_feedback" TO "authenticated";
 GRANT ALL ON TABLE "public"."visual_search_feedback" TO "service_role";
 
 
 
-GRANT INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."voice_command_logs" TO "anon";
+GRANT MAINTAIN ON TABLE "public"."voice_command_logs" TO "anon";
 GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."voice_command_logs" TO "authenticated";
 GRANT ALL ON TABLE "public"."voice_command_logs" TO "service_role";
 
@@ -123565,7 +126329,7 @@ GRANT ALL ON TABLE "public"."webhook_deliveries" TO "service_role";
 
 
 
-GRANT INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."webhook_delivery_locks" TO "anon";
+GRANT MAINTAIN ON TABLE "public"."webhook_delivery_locks" TO "anon";
 GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."webhook_delivery_locks" TO "authenticated";
 GRANT ALL ON TABLE "public"."webhook_delivery_locks" TO "service_role";
 
@@ -123576,7 +126340,7 @@ GRANT ALL ON TABLE "public"."webhook_delivery_metrics" TO "service_role";
 
 
 
-GRANT INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."webhook_outbox" TO "anon";
+GRANT MAINTAIN ON TABLE "public"."webhook_outbox" TO "anon";
 GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."webhook_outbox" TO "authenticated";
 GRANT ALL ON TABLE "public"."webhook_outbox" TO "service_role";
 
@@ -123597,7 +126361,7 @@ GRANT ALL ON TABLE "public"."xbz_gallery_staging" TO "service_role";
 
 
 
-GRANT INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."xbz_upload_mapping" TO "anon";
+GRANT MAINTAIN ON TABLE "public"."xbz_upload_mapping" TO "anon";
 GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."xbz_upload_mapping" TO "authenticated";
 GRANT ALL ON TABLE "public"."xbz_upload_mapping" TO "service_role";
 
