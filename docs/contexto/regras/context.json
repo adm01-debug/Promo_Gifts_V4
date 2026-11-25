@@ -1,9 +1,9 @@
 {
  "meta": {
-  "sha": "d7dbf2069c0418d72384bc7546c834057eaa0810",
+  "sha": "7987262ad67be0900ea59bbd401ae76df933e766",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-25 19:13 UTC",
+  "generated_at": "2026-11-25 19:23 UTC",
   "files_total": 11209,
   "code_files": 9197,
   "code_lines": 1305220
@@ -564997,10 +564997,20 @@
   }
  },
  "git": {
-  "sha": "d7dbf2069c0418d72384bc7546c834057eaa0810",
+  "sha": "7987262ad67be0900ea59bbd401ae76df933e766",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "7987262",
+    "date": "2026-11-25",
+    "author": "adm01-debug",
+    "subject": "docs(e25): registra a aplicacao em producao e resolve o risco em prod-readiness (#4104)",
+    "files": [
+     "docs/prod-readiness.md",
+     "supabase/MIGRATIONS_SYNC_LOG.md"
+    ]
+   },
    {
     "sha": "d7dbf20",
     "date": "2026-11-25",
@@ -565303,25 +565313,12 @@
     "files": [
      ".security/secdef-anon-allowlist.json"
     ]
-   },
-   {
-    "sha": "2cf0263",
-    "date": "2026-11-25",
-    "author": "adm01-debug",
-    "subject": "feat: testid do CTA de geracao de mockup e regressao que roda de verdade (#4063)",
-    "files": [
-     "docs/agentes/resgates/2026-11-18-inventario-trabalho-nao-ligado.md",
-     "docs/agentes/resgates/2026-11-18-recibo-adjudicacao.md",
-     "src/components/mockup/__tests__/MockupLayoutButtons.test.tsx",
-     "src/components/mockup/approval/MockupLayoutButtons.tsx",
-     "tests/e2e/mockup-regressions.spec.ts"
-    ]
    }
   ],
   "hot_files": [
    [
     "supabase/MIGRATIONS_SYNC_LOG.md",
-    18
+    19
    ],
    [
     "docs/qa/05-PROGRESSO.md",
@@ -565354,6 +565351,10 @@
    [
     "supabase/migrations/20261125120000_revoke_anon_internal_grants_public.sql",
     2
+   ],
+   [
+    "docs/prod-readiness.md",
+    1
    ],
    [
     ".security/policies-baseline.json",
@@ -565393,10 +565394,6 @@
    ],
    [
     "tests/scripts/check-migration-receipts.test.mjs",
-    1
-   ],
-   [
-    "supabase/migrations/20261125180000_fix_comment_v_tabela_gravacao_publica.sql",
     1
    ]
   ]

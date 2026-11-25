@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "d7dbf2069c0418d72384bc7546c834057eaa0810",
+  "commit": "7987262ad67be0900ea59bbd401ae76df933e766",
   "branch": "main",
-  "data_commit": "2026-11-25T16:06:31-03:00",
+  "data_commit": "2026-11-25T16:22:38-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "7987262",
+    "data": "2026-11-25",
+    "assunto": "docs(e25): registra a aplicacao em producao e resolve o risco em prod-readiness (#4104)"
+   },
    {
     "sha": "d7dbf20",
     "data": "2026-11-25",
@@ -126,14 +131,9 @@
     "sha": "e557288",
     "data": "2026-11-25",
     "assunto": "docs(migrations-log): recibo E15 — aplicação de 20261125120000 (#4073)"
-   },
-   {
-    "sha": "33f0130",
-    "data": "2026-11-25",
-    "assunto": "fix(db): tripwire da 20261125120000 declara pg_temp no search_path (E066) (#4070)"
    }
   ],
-  "arquivos_mudados_7d": 582,
+  "arquivos_mudados_7d": 583,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -172,11 +172,11 @@
     "mudancas": 86
    },
    {
-    "pasta": "src/components/inventory",
-    "mudancas": 85
+    "pasta": "supabase/MIGRATIONS_SYNC_LOG.md",
+    "mudancas": 86
    },
    {
-    "pasta": "supabase/MIGRATIONS_SYNC_LOG.md",
+    "pasta": "src/components/inventory",
     "mudancas": 85
    },
    {
@@ -199,7 +199,7 @@
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "supabase/MIGRATIONS_SYNC_LOG.md",
-    "mudancas": 85
+    "mudancas": 86
    },
    {
     "arquivo": "docs/qa/05-PROGRESSO.md",
@@ -230,15 +230,15 @@
     "mudancas": 8
    },
    {
-    "arquivo": "docs/agentes/resgates/2026-11-16-auditoria-branches.md",
-    "mudancas": 7
-   },
-   {
     "arquivo": ".github/workflows/deploy-gates.yml",
     "mudancas": 6
    },
    {
     "arquivo": "audit/supabase-reference-catalog.temporary.json",
+    "mudancas": 6
+   },
+   {
+    "arquivo": "docs/agentes/resgates/2026-11-16-auditoria-branches.md",
     "mudancas": 6
    },
    {
