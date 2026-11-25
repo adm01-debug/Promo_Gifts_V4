@@ -97,6 +97,18 @@ jobs:
       SUPABASE_ACCESS_TOKEN: ${{ (github.event_name == 'schedule' || github.event_name == 'workflow_dispatch') && secrets.SUPABASE_ACCESS_TOKEN || '' }}
       SUPABASE_DB_PASSWORD: ${{ (github.event_name == 'schedule' || github.event_name == 'workflow_dispatch') && secrets.SUPABASE_DB_PASSWORD || '' }}
       SUPABASE_PROJECT_REF: doufsxqlfjyuvxuezpln
+      # E037: o host direto db.<ref>.supabase.co e IPv6-only e o runner nao tem
+      # rota IPv6 (run 45697871384: "Network is unreachable"), entao os snapshots
+      # de cron/event triggers nunca eram gerados e o drift de cron ficava
+      # impossivel de zerar. Os secrets PG* (Supavisor, IPv4, porta 5432) sao os
+      # mesmos que db-apply-migration.yml usa com sucesso.
+      PGHOST: ${{ (github.event_name == 'schedule' || github.event_name == 'workflow_dispatch') && secrets.PGHOST || '' }}
+      PGUSER: ${{ (github.event_name == 'schedule' || github.event_name == 'workflow_dispatch') && secrets.PGUSER || '' }}
+      PGPASSWORD: ${{ (github.event_name == 'schedule' || github.event_name == 'workflow_dispatch') && secrets.PGPASSWORD || '' }}
+      PGDATABASE: ${{ (github.event_name == 'schedule' || github.event_name == 'workflow_dispatch') && secrets.PGDATABASE || '' }}
+      PGPORT: ${{ (github.event_name == 'schedule' || github.event_name == 'workflow_dispatch') && secrets.PGPORT || '5432' }}
+      PGSSLMODE: require
+      PGCONNECT_TIMEOUT: '15'
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -140,7 +152,7 @@ jobs:
         run: node scripts/export-schema-snapshot.mjs
 
       - name: Export event triggers snapshot (E036)
-        if: env.SUPABASE_DB_PASSWORD != ''
+        if: env.PGHOST != ''
         continue-on-error: true  # psql direto via IPv6 pode falhar do runner — snapshot é observacional
         run: |
           set -euo pipefail
@@ -152,10 +164,7 @@ jobs:
           fi
           fname="${bases[0]##*/}"
           B="${fname%_baseline_schema.sql}"
-          PGPASSWORD="${SUPABASE_DB_PASSWORD}" psql \
-            -h "db.${SUPABASE_PROJECT_REF}.supabase.co" \
-            -U postgres \
-            -d postgres \
+          psql -X -w \
             -t -A -c \
             "SELECT COALESCE(json_agg(t ORDER BY t.evtname),'[]'::json) FROM (SELECT evtname,evtevent,evtenabled,evtfoid::regproc::text AS evtfunc FROM pg_event_trigger) t;" \
             | tr -d '\n' > /tmp/event_triggers.json
@@ -165,7 +174,7 @@ jobs:
           echo "::notice::${count} event trigger(s) exportados → ${B}_event_triggers.json"
 
       - name: Export cron jobs snapshot (E037)
-        if: env.SUPABASE_DB_PASSWORD != ''
+        if: env.PGHOST != ''
         continue-on-error: true  # psql direto via IPv6 pode falhar do runner — snapshot é observacional
         run: |
           set -euo pipefail
@@ -178,10 +187,7 @@ jobs:
           fname="${bases[0]##*/}"
           B="${fname%_baseline_schema.sql}"
           # E037: cron.job (pg_cron) — falha silenciosa se extensão ausente
-          PGPASSWORD="${SUPABASE_DB_PASSWORD}" psql \
-            -h "db.${SUPABASE_PROJECT_REF}.supabase.co" \
-            -U postgres \
-            -d postgres \
+          psql -X -w \
             -t -A -c \
             "SELECT COALESCE(json_agg(t ORDER BY t.jobname),'[]'::json) FROM (SELECT jobid::text,jobname,schedule,command,nodename,active FROM cron.job) t;" \
             2>/tmp/cron_err.txt | tr -d '\n' > /tmp/cron_jobs.json || {
@@ -202,7 +208,7 @@ jobs:
       # artifact separado (não misturar com supabase/baseline/ para não mudar o
       # common-prefix do artifact principal e quebrar os cp existentes).
       - name: Export recovery dump (E072)
-        if: env.SUPABASE_DB_PASSWORD != ''
+        if: env.PGHOST != ''
         continue-on-error: true  # psql direto via IPv6 pode falhar do runner — recovery dump é observacional
         run: |
           set -euo pipefail
@@ -219,11 +225,8 @@ jobs:
           cp "${bases[0]}" "$RECOVERY_STAGING/BACKUP_SCHEMA_ONLY_${TODAY}.sql"
           # Ledger de migrations. Grava em staging para nunca publicar arquivo
           # parcial/vazio quando o runner não alcança o host IPv6 do Postgres.
-          PGPASSWORD="${SUPABASE_DB_PASSWORD}" psql \
-            -h "db.${SUPABASE_PROJECT_REF}.supabase.co" \
-            -U postgres \
-            -d postgres \
-            -c "COPY (SELECT version, inserted_at FROM supabase_migrations.schema_migrations ORDER BY version) TO STDOUT WITH CSV HEADER;" \
+          psql -X -w \
+            -c "COPY (SELECT version, name FROM supabase_migrations.schema_migrations ORDER BY version) TO STDOUT WITH CSV HEADER;" \
             > "$RECOVERY_STAGING/LEDGER_DATA_${TODAY}.sql"
           test -s "$RECOVERY_STAGING/LEDGER_DATA_${TODAY}.sql"
           test "$(wc -l < "$RECOVERY_STAGING/LEDGER_DATA_${TODAY}.sql")" -gt 1
