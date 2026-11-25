@@ -5,6 +5,17 @@ Todas as mudanças notáveis deste projeto são documentadas neste arquivo.
 O formato é baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/),
 e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR/).
 
+## [1.20.2](https://github.com/adm01-debug/Promo_Gifts_V4/compare/gifts-store-v1.20.1...gifts-store-v1.20.2) (2026-11-25)
+
+
+### Bug Fixes
+
+* cabecalho de rollback na 20261125213000 (destrava preflight E15) ([#4132](https://github.com/adm01-debug/Promo_Gifts_V4/issues/4132)) ([26aa4a8](https://github.com/adm01-debug/Promo_Gifts_V4/commit/26aa4a8c3cbaf0eb4632851354638c45242bba0d))
+* **ci:** recibo final da 20261120040000 destrava o gate E055 ([#4127](https://github.com/adm01-debug/Promo_Gifts_V4/issues/4127)) ([2bbfb0b](https://github.com/adm01-debug/Promo_Gifts_V4/commit/2bbfb0bfbf38118a5325278ffdff0094e96e5049))
+* **db:** remove crons orfaos de particao do historico (E25) ([#4121](https://github.com/adm01-debug/Promo_Gifts_V4/issues/4121)) ([8eeee4f](https://github.com/adm01-debug/Promo_Gifts_V4/commit/8eeee4ff304ff78706eb32bdf8a80a674c91d4c5))
+* **migration:** allowlist do dispatcher com pg_temp no search_path (E066) ([#4111](https://github.com/adm01-debug/Promo_Gifts_V4/issues/4111)) ([3ea746a](https://github.com/adm01-debug/Promo_Gifts_V4/commit/3ea746a1ff6639dec13cc10f652e02fa2fcd0cd3))
+* reverte E25 falso-positivo (jobs nao eram orfaos) ([#4134](https://github.com/adm01-debug/Promo_Gifts_V4/issues/4134)) ([06894b0](https://github.com/adm01-debug/Promo_Gifts_V4/commit/06894b0d04ec2c1e00a8a7fd728530f9ad742b52))
+
 ## [1.20.1](https://github.com/adm01-debug/Promo_Gifts_V4/compare/gifts-store-v1.20.0...gifts-store-v1.20.1) (2026-11-25)
 
 
