@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "fix(db): revoga execute de anon na funcao que reescreve a classificacao do catalogo (#4064)",
+   "chore(security): corrige reason defasado de fn_global_search no allowlist secdef-anon (#4066)",
    "feat: testid do CTA de geracao de mockup e regressao que roda de verdade (#4063)",
    "fix(ci): jitter E19 nos crons em :00/:30 + recupera o medidor de cron (#4061)",
-   "feat(ci): recupera o filtro de ruido de views e policies no E40 (#4060)",
-   "feat(security): gate enxerga SELECT de anon em tabela, não só view (#4059)",
-   "chore: dossie de quote_comments passa a refletir a feature reativada (#3944) (#4062)"
+   "feat(ci): recupera o filtro de ruido de views e policies no E40 (#4060)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",

@@ -1,6 +1,6 @@
 # 10 · ACESSO E SEGURANÇA — quem pode o quê
 
-> Gerado automaticamente por AI Context Sync v1.3.2 · commit `2cf0263847` · branch `main` · 2026-11-25 11:13 UTC
+> Gerado automaticamente por AI Context Sync v1.3.2 · commit `4a102ddf81` · branch `main` · 2026-11-25 11:28 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## Perfis / roles identificados
@@ -327,7 +327,7 @@
 
 > `—` com RLS ligado = ninguém além de service_role. `sem RLS` = qualquer chave anon lê/escreve tudo.
 
-## Onde o RLS é IGNORADO (service_role) — 845 arquivo(s)
+## Onde o RLS é IGNORADO (service_role) — 847 arquivo(s)
 
 - `auditoria-supabase/propostas/P01_rls_restrictive_correcao.sql`
 - `auditoria-supabase/propostas/P10_func_new_001_fn_cron_guard_revoke.sql`
@@ -479,7 +479,7 @@
 - `supabase/functions/hash-product-images/index.ts`
 - `supabase/functions/health-check/index.ts`
 - `supabase/functions/load-test/index.ts`
-- … +695 (lista completa em `context.json`)
+- … +697 (lista completa em `context.json`)
 
 ## Funções SQL `SECURITY DEFINER` (rodam com privilégio do dono, ignoram RLS)
 
@@ -1212,7 +1212,7 @@ Middleware matcher (Next.js): nenhum
 
 | Ação | Para/De | Privilégios | Objetos |
 |---|---|---|---|
-| grant | PUBLIC | execute | `claim_webhook_delivery`, `release_webhook_delivery_lock`, `cleanup_stale_webhook_locks`, `fn_cron_guard` |
+| grant | PUBLIC | execute | `claim_webhook_delivery`, `release_webhook_delivery_lock`, `cleanup_stale_webhook_locks`, `fn_cron_guard`, `classification_audit.apply_high_confidence_suggestions` |
 | grant | PUBLIC, anon | execute | `fn_audit_role_changes`, `fn_auto_classify_kit_product`, `fn_auto_classify_packing`, `fn_auto_classify_product_image`, `fn_auto_criar_equivalencia_spot`, `fn_auto_link_eco_material`, `fn_auto_link_feminine_color`, `fn_auto_set_same_supplier`, `fn_auto_vincular_cor_variante`, `fn_block_unauthorized_product_deactivation`, `fn_category_copywriting_updated`, `fn_color_equiv_clear_primary_on_inactive`, `fn_color_equiv_ensure_primary`, `fn_color_equiv_ensure_primary_stmt`, `fn_cor_generate_slug` … +91 |
 | grant | anon | execute | `get_quote_token_by_value`, `submit_quote_response`, `fn_should_apply_kill_switch`, `fn_log_search_analytics`, `is_org_owner_or_admin`, `is_org_owner_or_admin`, `mcp_kv_get`, `mcp_kv_set`, `mcp_kv_try_lock`, `fn_get_reposicao_listing`, `fn_get_reposicao_metrics`, `fn_get_replenishment_stats`, `fn_xbz_enqueue_videos`, `get_favorite_list_counts`, `get_favorite_list_counts` … +54 |
 | grant | anon | insert | `kill_switch_hits` |
@@ -1257,7 +1257,7 @@ Middleware matcher (Next.js): nenhum
 | grant | postgres, service_role, authenticated | execute | `fn_categories_health_check` |
 | grant | service_role | all | `quotes_inbound`, `webhook_inbound_dedupe`, `webhook_inbound_log`, `crm_callback_events`, `magazine_reader_state`, `magazines`, `magazine_items`, `magazine_templates`, `user_roles`, `order_items`, `admin_audit_log`, `admin_audit_log`, `visual_search_feedback`, `system_error_logs`, `public` … +54 |
 | grant | service_role | all privileges | `cf_recon.cf_image`, `cf_recon.cf_ghost_check_queue`, `cf_recon.action_log`, `cf_recon.crawl_run`, `cf_recon.metric_snapshot`, `cf_recon.remediation` |
-| grant | service_role | execute | `increment_webhook_dedupe_hit`, `claim_webhook_delivery`, `release_webhook_delivery_lock`, `cleanup_stale_webhook_locks`, `get_edge_invoke_summary`, `purge_expired_step_up_artifacts`, `record_public_token_failure`, `public`, `get_edge_function_secret`, `get_edge_function_secret`, `check_edge_rate_limit`, `cleanup_expired_edge_rate_limits`, `record_schema_drift_result`, `fn_trigger_schema_drift_fetch`, `fn_compute_and_record_drift` … +182 |
+| grant | service_role | execute | `increment_webhook_dedupe_hit`, `claim_webhook_delivery`, `release_webhook_delivery_lock`, `cleanup_stale_webhook_locks`, `get_edge_invoke_summary`, `purge_expired_step_up_artifacts`, `record_public_token_failure`, `public`, `get_edge_function_secret`, `get_edge_function_secret`, `check_edge_rate_limit`, `cleanup_expired_edge_rate_limits`, `record_schema_drift_result`, `fn_trigger_schema_drift_fetch`, `fn_compute_and_record_drift` … +183 |
 | grant | service_role | select | `slow_queries_view`, `v_ai_function_routing_effective`, `v_ai_function_routing_effective`, `archive`, `v_product_images_quality_gap`, `v_product_images_quality_gap`, `mv_product_images_audit`, `v_product_images_quality_gap`, `vw_image_type_dropblockers`, `mv_product_images_audit`, `v_cf_drift_dashboard`, `v_cf_drift_dashboard`, `v_cf_drift_dashboard`, `v_ai_function_routing_effective`, `mv_stock_rupture_alert` |
 | grant | service_role | select, insert | `crm_seller_identity_links` |
 | grant | service_role | select, insert, delete | `webhook_request_nonces` |
@@ -1267,7 +1267,7 @@ Middleware matcher (Next.js): nenhum
 | grant | service_role, authenticated | execute | `record_mcp_access_violation`, `fn_sm_pipeline_health`, `fn_expire_novelties`, `fn_check_schema_signature_drift` |
 | grant | service_role, postgres | execute | `increment_webhook_stats` |
 | revoke | PUBLIC | all | `get_edge_invoke_summary`, `_can_act_on_behalf_of_others`, `_get_user_primary_role`, `acquire_ai_quota`, `admin_active_sessions`, `admin_execute_role_migration_batch`, `admin_revoke_user_sessions`, `apply_transform`, `assert_quote_discount_integrity`, `audit_mcp_api_keys_changes`, `audit_mcp_key_insert`, `audit_mcp_key_revoke`, `audit_ownership_orphans`, `audit_rls_coverage`, `audit_rls_matrix` … +2668 |
-| revoke | PUBLIC | execute | `fn_magazine_public_token`, `public`, `can_access_quote`, `org_has_any_members`, `org_has_any_members`, `get_edge_function_secret`, `create_organization_with_owner`, `get_quote_token_by_value`, `submit_quote_response`, `get_public_schema_signatures`, `public`, `check_webhook_dedup`, `process_notifications_queue`, `process_notifications_queue`, `process_notifications_queue` … +42 |
+| revoke | PUBLIC | execute | `fn_magazine_public_token`, `public`, `can_access_quote`, `org_has_any_members`, `org_has_any_members`, `get_edge_function_secret`, `create_organization_with_owner`, `get_quote_token_by_value`, `submit_quote_response`, `get_public_schema_signatures`, `public`, `check_webhook_dedup`, `process_notifications_queue`, `process_notifications_queue`, `process_notifications_queue` … +43 |
 | revoke | PUBLIC | insert, update, delete, truncate, trigger, references | `anon_catalog_grant_audit_log`, `anon_catalog_grant_audit_log` |
 | revoke | PUBLIC | select | `vw_product_availability`, `extensions.pg_stat_statements`, `extensions.pg_stat_statements_info` |
 | revoke | PUBLIC, anon | all | `fn_get_reposicao_variants_summary`, `check_hardening_status`, `record_mcp_access_violation`, `fn_reconcile_stock_gold`, `fn_pipeline_health`, `fn_generate_market_insights_cache`, `request_discount_approval_transactional`, `respond_discount_approval_transactional`, `request_discount_approval_transactional`, `request_discount_approval_transactional`, `create_quote_with_discount_approval_transactional`, `update_quote_with_discount_approval_transactional`, `request_discount_approval_transactional`, `request_discount_approval_transactional`, `magazine_add_items_atomic` … +22 |
@@ -1327,6 +1327,7 @@ Middleware matcher (Next.js): nenhum
 | revoke | public, anon | execute | `is_admin`, `is_admin`, `is_admin_strict`, `can_view_all_sales`, `can_manage_quotes`, `revoke_all_user_tokens`, `is_seller_only`, `can_view_audit_logs`, `is_manager_or_admin` |
 | revoke | public, anon, authenticated | all | `record_public_token_failure`, `fn_get_spot_access_key`, `fn_resolve_supplier`, `fn_ingest_bronze_batch`, `fn_bronze_mark_absent`, `fn_ingestion_run_open`, `fn_ingestion_run_close`, `fn_ingestion_health`, `fn_upsert_stock_to_bronze`, `fn_sync_stock_bronze_to_gold`, `fn_upsert_asia_wp_batch`, `fn_upsert_asia_wp_batch`, `fn_ingest_customization_options_batch`, `fn_asia_wp_to_canonical`, `fn_upsert_asia_wp_batch` … +9 |
 | revoke | public, anon, authenticated | execute | `audit_rls_matrix`, `cleanup_expired_collection_trash`, `sync_external_connections_from_credentials`, `cron_invoke_edge`, `get_platform_failure_metrics`, `repair_ownership_orphans`, `revoke_all_user_tokens`, `sync_external_connections_from_credentials` |
+| revoke | service_role | execute | `classification_audit.apply_high_confidence_suggestions` |
 
 ## Riscos de acesso detectados
 

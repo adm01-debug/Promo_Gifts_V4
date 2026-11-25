@@ -2,11 +2,21 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "2cf0263847c9c0369bf7aabe0b65b731a99ae2c0",
+  "commit": "4a102ddf81e5e3b0a12013b8935269d9865d5eda",
   "branch": "main",
-  "data_commit": "2026-11-25T08:08:28-03:00",
+  "data_commit": "2026-11-25T08:27:13-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "4a102dd",
+    "data": "2026-11-25",
+    "assunto": "fix(db): revoga execute de anon na funcao que reescreve a classificacao do catalogo (#4064)"
+   },
+   {
+    "sha": "629c14f",
+    "data": "2026-11-25",
+    "assunto": "chore(security): corrige reason defasado de fn_global_search no allowlist secdef-anon (#4066)"
+   },
    {
     "sha": "2cf0263",
     "data": "2026-11-25",
@@ -121,19 +131,9 @@
     "sha": "18075a9",
     "data": "2026-11-24",
     "assunto": "docs(migrations-log): recibo E15 — aplicação de 20261124120000 (#4041)"
-   },
-   {
-    "sha": "a0daeda",
-    "data": "2026-11-24",
-    "assunto": "fix: fecha a superficie de custo do anon sem mascarar as views de compras (#4039)"
-   },
-   {
-    "sha": "cbb46a8",
-    "data": "2026-11-24",
-    "assunto": "fix: gate de anon-grants mede pelo catalogo e revoga escrita morta de anon (#4038)"
    }
   ],
-  "arquivos_mudados_7d": 647,
+  "arquivos_mudados_7d": 650,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -168,16 +168,16 @@
     "mudancas": 92
    },
    {
-    "pasta": "src/components/mockup",
-    "mudancas": 86
-   },
-   {
     "pasta": "src/pages/quotes",
     "mudancas": 86
    },
    {
     "pasta": "src/components/inventory",
     "mudancas": 85
+   },
+   {
+    "pasta": "src/components/mockup",
+    "mudancas": 84
    },
    {
     "pasta": "src/hooks/quotes",
@@ -199,7 +199,7 @@
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "supabase/MIGRATIONS_SYNC_LOG.md",
-    "mudancas": 68
+    "mudancas": 69
    },
    {
     "arquivo": "docs/qa/05-PROGRESSO.md",
@@ -310,7 +310,7 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 11266,
+  "arquivos_total": 11268,
   "arquivos_codigo": 5682,
   "linhas_codigo": 1076946,
   "rotas": 141,
@@ -322,7 +322,7 @@
   "hooks": 646,
   "edge_functions": 112,
   "tabelas": 532,
-  "migrations": 3131,
+  "migrations": 3132,
   "cron_jobs": 122,
   "testes": 2722,
   "workflows": 89,

@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "2cf0263847c9c0369bf7aabe0b65b731a99ae2c0",
+  "sha": "4a102ddf81e5e3b0a12013b8935269d9865d5eda",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-25 11:13 UTC",
-  "files_total": 11196,
-  "code_files": 9184,
-  "code_lines": 1303709
+  "generated_at": "2026-11-25 11:28 UTC",
+  "files_total": 11198,
+  "code_files": 9186,
+  "code_lines": 1303775
  },
  "version": "1.3.2",
- "facts_hash": "95d45186b1956c76",
+ "facts_hash": "3f539d1929371cfa",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -1130,7 +1130,7 @@
   ],
   "package_manager": "npm",
   "languages": {
-   ".sql": 3504,
+   ".sql": 3506,
    ".ts": 3180,
    ".tsx": 2026,
    ".mjs": 456,
@@ -96169,6 +96169,7 @@
    "supabase/migrations/20261124140000_close_anon_cost_surface.sql",
    "supabase/migrations/20261124163000_revoke_anon_unit_cost_print_areas.sql",
    "supabase/migrations/20261124171500_internal_managed_schema_dictionary.sql",
+   "supabase/migrations/20261125074200_revoke_anon_apply_classification_suggestions.sql",
    "supabase/rollbacks/20260511235950_rollback.sql",
    "supabase/rollbacks/20260511235959_rollback.sql",
    "supabase/rollbacks/20260611014515_fn_dryrun_standardize_supplier_real_rollback.sql",
@@ -96304,6 +96305,7 @@
    "supabase/rollbacks/20261124140000_rollback.sql",
    "supabase/rollbacks/20261124163000_rollback.sql",
    "supabase/rollbacks/20261124171500_rollback.sql",
+   "supabase/rollbacks/20261125074200_rollback.sql",
    "supabase/rollbacks/rollback_20261025002500_analyze_tables_p03.sql",
    "supabase/sql-legacy/001_notification_system.sql",
    "supabase/sql-legacy/002_notification_preferences.sql",
@@ -134116,6 +134118,22 @@
    },
    {
     "kind": "revoke",
+    "privs": "execute",
+    "object": "classification_audit.apply_high_confidence_suggestions",
+    "objkind": "function",
+    "roles": "PUBLIC",
+    "src": "supabase/migrations/20261125074200_revoke_anon_apply_classification_suggestions.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "classification_audit.apply_high_confidence_suggestions",
+    "objkind": "function",
+    "roles": "service_role",
+    "src": "supabase/migrations/20261125074200_revoke_anon_apply_classification_suggestions.sql"
+   },
+   {
+    "kind": "revoke",
     "privs": "all",
     "object": "fn_dryrun_standardize_supplier",
     "objkind": "function",
@@ -135505,6 +135523,22 @@
     "objkind": "table",
     "roles": "anon, authenticated, service_role",
     "src": "supabase/rollbacks/20261124163000_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "classification_audit.apply_high_confidence_suggestions",
+    "objkind": "function",
+    "roles": "PUBLIC",
+    "src": "supabase/rollbacks/20261125074200_rollback.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "classification_audit.apply_high_confidence_suggestions",
+    "objkind": "function",
+    "roles": "service_role",
+    "src": "supabase/rollbacks/20261125074200_rollback.sql"
    },
    {
     "kind": "grant",
@@ -153254,8 +153288,8 @@
   },
   {
    "module": "supabase/migrations",
-   "files": 3130,
-   "lines": 227680,
+   "files": 3131,
+   "lines": 227738,
    "tables": [
     "...",
     "admin_audit_log",
@@ -153353,8 +153387,8 @@
   },
   {
    "module": "supabase/rollbacks",
-   "files": 136,
-   "lines": 5202,
+   "files": 137,
+   "lines": 5210,
    "tables": [],
    "exports": [],
    "docs": [],
@@ -367757,6 +367791,7 @@
    "supabase/migrations/20261121183000_v_compras_precos_faixa.sql",
    "supabase/migrations/20261122200000_fix_cadeia_views_compras_e_compositions.sql",
    "supabase/migrations/20261124163000_revoke_anon_unit_cost_print_areas.sql",
+   "supabase/migrations/20261125074200_revoke_anon_apply_classification_suggestions.sql",
    "supabase/rollbacks/20260611014515_fn_dryrun_standardize_supplier_real_rollback.sql",
    "supabase/rollbacks/20260611124000_fn_dryrun_standardize_supplier_real_rollback.sql",
    "supabase/rollbacks/20260917061500_rollback.sql",
@@ -367770,6 +367805,7 @@
    "supabase/rollbacks/20261112120600_rollback.sql",
    "supabase/rollbacks/20261112120700_rollback.sql",
    "supabase/rollbacks/20261124163000_rollback.sql",
+   "supabase/rollbacks/20261125074200_rollback.sql",
    "supabase/sql-legacy/20260615_002_fix_ai_quota_and_cache_bugs.sql",
    "supabase/sql-legacy/20260621_fix_console_bugs_404_403.sql",
    "supabase/sql-legacy/20260621_fix_create_rpc_get_promo_sales_90d_by_product.sql",
@@ -405762,6 +405798,22 @@
    },
    {
     "kind": "revoke",
+    "privs": "execute",
+    "object": "classification_audit.apply_high_confidence_suggestions",
+    "objkind": "function",
+    "roles": "PUBLIC",
+    "src": "supabase/migrations/20261125074200_revoke_anon_apply_classification_suggestions.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "classification_audit.apply_high_confidence_suggestions",
+    "objkind": "function",
+    "roles": "service_role",
+    "src": "supabase/migrations/20261125074200_revoke_anon_apply_classification_suggestions.sql"
+   },
+   {
+    "kind": "revoke",
     "privs": "all",
     "object": "fn_dryrun_standardize_supplier",
     "objkind": "function",
@@ -407151,6 +407203,22 @@
     "objkind": "table",
     "roles": "anon, authenticated, service_role",
     "src": "supabase/rollbacks/20261124163000_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "classification_audit.apply_high_confidence_suggestions",
+    "objkind": "function",
+    "roles": "PUBLIC",
+    "src": "supabase/rollbacks/20261125074200_rollback.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "classification_audit.apply_high_confidence_suggestions",
+    "objkind": "function",
+    "roles": "service_role",
+    "src": "supabase/rollbacks/20261125074200_rollback.sql"
    },
    {
     "kind": "grant",
@@ -537740,6 +537808,11 @@
    "path": "supabase/migrations/20261124171500_internal_managed_schema_dictionary.sql",
    "lines": 69
   },
+  "supabase/migrations/20261125074200_revoke_anon_apply_classification_suggestions.sql": {
+   "path": "supabase/migrations/20261125074200_revoke_anon_apply_classification_suggestions.sql",
+   "lines": 58,
+   "uses_service_role": true
+  },
   "supabase/rollbacks/20260511235950_rollback.sql": {
    "path": "supabase/rollbacks/20260511235950_rollback.sql",
    "lines": 5
@@ -538299,6 +538372,11 @@
   "supabase/rollbacks/20261124171500_rollback.sql": {
    "path": "supabase/rollbacks/20261124171500_rollback.sql",
    "lines": 13
+  },
+  "supabase/rollbacks/20261125074200_rollback.sql": {
+   "path": "supabase/rollbacks/20261125074200_rollback.sql",
+   "lines": 8,
+   "uses_service_role": true
   },
   "supabase/rollbacks/rollback_20261025002500_analyze_tables_p03.sql": {
    "path": "supabase/rollbacks/rollback_20261025002500_analyze_tables_p03.sql",
@@ -563956,10 +564034,30 @@
   }
  },
  "git": {
-  "sha": "2cf0263847c9c0369bf7aabe0b65b731a99ae2c0",
+  "sha": "4a102ddf81e5e3b0a12013b8935269d9865d5eda",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "4a102dd",
+    "date": "2026-11-25",
+    "author": "adm01-debug",
+    "subject": "fix(db): revoga execute de anon na funcao que reescreve a classificacao do catalogo (#4064)",
+    "files": [
+     "supabase/MIGRATIONS_SYNC_LOG.md",
+     "supabase/migrations/20261125074200_revoke_anon_apply_classification_suggestions.sql",
+     "supabase/rollbacks/20261125074200_rollback.sql"
+    ]
+   },
+   {
+    "sha": "629c14f",
+    "date": "2026-11-25",
+    "author": "adm01-debug",
+    "subject": "chore(security): corrige reason defasado de fn_global_search no allowlist secdef-anon (#4066)",
+    "files": [
+     ".security/secdef-anon-allowlist.json"
+    ]
+   },
    {
     "sha": "2cf0263",
     "date": "2026-11-25",
@@ -564259,30 +564357,12 @@
      "docs/qa/05-PROGRESSO.md",
      "tests/security/public-views-columns.test.ts"
     ]
-   },
-   {
-    "sha": "d65ace2",
-    "date": "2026-11-23",
-    "author": "adm01-debug",
-    "subject": "chore: corrige status das migrations 20261122180000/20261122200000 no ledger (#4036)",
-    "files": [
-     "supabase/MIGRATIONS_SYNC_LOG.md"
-    ]
-   },
-   {
-    "sha": "35b8704",
-    "date": "2026-11-23",
-    "author": "adm01-debug",
-    "subject": "chore(db): documentar reconciliacao da DDL do assistente do Supabase (#4033)",
-    "files": [
-     "supabase/MIGRATIONS_SYNC_LOG.md"
-    ]
    }
   ],
   "hot_files": [
    [
     "supabase/MIGRATIONS_SYNC_LOG.md",
-    10
+    9
    ],
    [
     "docs/qa/05-PROGRESSO.md",
@@ -564333,6 +564413,18 @@
     2
    ],
    [
+    "supabase/migrations/20261125074200_revoke_anon_apply_classification_suggestions.sql",
+    1
+   ],
+   [
+    "supabase/rollbacks/20261125074200_rollback.sql",
+    1
+   ],
+   [
+    ".security/secdef-anon-allowlist.json",
+    1
+   ],
+   [
     "docs/agentes/resgates/2026-11-18-inventario-trabalho-nao-ligado.md",
     1
    ],
@@ -564346,18 +564438,6 @@
    ],
    [
     "src/components/mockup/approval/MockupLayoutButtons.tsx",
-    1
-   ],
-   [
-    "tests/e2e/mockup-regressions.spec.ts",
-    1
-   ],
-   [
-    ".github/workflows/dr-drill-reminder.yml",
-    1
-   ],
-   [
-    ".github/workflows/e2e-focused.yml",
     1
    ]
   ]
