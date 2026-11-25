@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "513be5abfdabdb4b73ba0495fd514da48bc614d6",
+  "commit": "f57f0cda65b5f93f62f42dc2a80459a5c679bed4",
   "branch": "main",
-  "data_commit": "2026-11-25T10:32:57-03:00",
+  "data_commit": "2026-11-25T10:43:14-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "f57f0cd",
+    "data": "2026-11-25",
+    "assunto": "docs(migrations-log): remove a linha de pre-registro duplicada da 20261125131000 (#4078)"
+   },
    {
     "sha": "513be5a",
     "data": "2026-11-25",
@@ -126,11 +131,6 @@
     "sha": "fbbd4ff",
     "data": "2026-11-24",
     "assunto": "fix: area de gravacao legivel por anon com colunas explicitas (#4053)"
-   },
-   {
-    "sha": "a1b5482",
-    "data": "2026-11-24",
-    "assunto": "docs(migrations-log): recibo E15 — aplicação de 20261124163000 (#4052)"
    }
   ],
   "arquivos_mudados_7d": 639,
@@ -193,13 +193,13 @@
    },
    {
     "pasta": "supabase/MIGRATIONS_SYNC_LOG.md",
-    "mudancas": 74
+    "mudancas": 75
    }
   ],
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "supabase/MIGRATIONS_SYNC_LOG.md",
-    "mudancas": 74
+    "mudancas": 75
    },
    {
     "arquivo": "docs/qa/05-PROGRESSO.md",

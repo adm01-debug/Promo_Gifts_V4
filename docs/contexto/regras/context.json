@@ -1,9 +1,9 @@
 {
  "meta": {
-  "sha": "513be5abfdabdb4b73ba0495fd514da48bc614d6",
+  "sha": "f57f0cda65b5f93f62f42dc2a80459a5c679bed4",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-25 13:34 UTC",
+  "generated_at": "2026-11-25 13:45 UTC",
   "files_total": 11202,
   "code_files": 9190,
   "code_lines": 1304504
@@ -564088,10 +564088,19 @@
   }
  },
  "git": {
-  "sha": "513be5abfdabdb4b73ba0495fd514da48bc614d6",
+  "sha": "f57f0cda65b5f93f62f42dc2a80459a5c679bed4",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "f57f0cd",
+    "date": "2026-11-25",
+    "author": "adm01-debug",
+    "subject": "docs(migrations-log): remove a linha de pre-registro duplicada da 20261125131000 (#4078)",
+    "files": [
+     "supabase/MIGRATIONS_SYNC_LOG.md"
+    ]
+   },
    {
     "sha": "513be5a",
     "date": "2026-11-25",
@@ -564397,21 +564406,12 @@
     "files": [
      "docs/agentes/resgates/2026-11-24-auditoria-branches-restantes.md"
     ]
-   },
-   {
-    "sha": "53f9c04",
-    "date": "2026-11-24",
-    "author": "adm01-debug",
-    "subject": "docs: registra o cleanup das 7 branches obsoletas e como recupera-las (#4046)",
-    "files": [
-     "docs/agentes/resgates/2026-11-24-auditoria-branches-restantes.md"
-    ]
    }
   ],
   "hot_files": [
    [
     "supabase/MIGRATIONS_SYNC_LOG.md",
-    10
+    11
    ],
    [
     "docs/qa/05-PROGRESSO.md",
@@ -564462,10 +564462,6 @@
     2
    ],
    [
-    "docs/agentes/resgates/2026-11-24-auditoria-branches-restantes.md",
-    2
-   ],
-   [
     "supabase/migrations/20261125131000_tripwire_anon_v5_reconcilia.sql",
     1
    ],
@@ -564487,6 +564483,10 @@
    ],
    [
     ".security/secdef-anon-allowlist.json",
+    1
+   ],
+   [
+    "docs/agentes/resgates/2026-11-18-inventario-trabalho-nao-ligado.md",
     1
    ]
   ]
