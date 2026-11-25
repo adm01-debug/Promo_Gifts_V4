@@ -1,5 +1,5 @@
--- Migration: 20261125120000_revoke_anon_internal_grants_public.sql
--- Rollback: supabase/rollbacks/20261125120000_rollback.sql
+-- Migration: 20261125114837_revoke_anon_internal_grants_public.sql
+-- Rollback: supabase/rollbacks/20261125114837_rollback.sql
 --
 -- QA etapa 008: fecha as 13 tabelas de `public` que o role `anon` ainda le por GRANT de SELECT
 -- herdado do legado (fora do repo), sem nenhum consumidor anonimo.
@@ -97,10 +97,11 @@ CREATE OR REPLACE FUNCTION public.fn_verify_anon_catalog_grants()
 RETURNS TABLE(object_name text, object_kind text, issue text)
 LANGUAGE plpgsql
 SECURITY DEFINER
-SET search_path TO 'public'
+-- pg_temp por último: fecha o vetor de shadowing que o preflight (--require-live) acusou.
+SET search_path TO 'public', 'pg_temp'
 AS $fn$
 BEGIN
-  -- (1) Views/tabelas que DEVEM ter anon SELECT (v4: sem as 13 revogadas na 20261125120000)
+  -- (1) Views/tabelas que DEVEM ter anon SELECT (v4: sem as 13 revogadas na 20261125114837)
   RETURN QUERY
   WITH req(sch, nm) AS (VALUES
     -- Views DEFINER (catálogo principal)
@@ -159,7 +160,7 @@ BEGIN
                ('quotes'),('quote_items'),
                ('products'),('suppliers'),   -- custo/credenciais
                ('tabela_preco_gravacao_oficial'),  -- NOVO v3: custo_setup/markup
-               -- v4 (migration 20261125120000, QA etapa 008): grant herdado do legado
+               -- v4 (migration 20261125114837, QA etapa 008): grant herdado do legado
                -- revogado em 2026-11-25. Baseline medido em .security/anon-tables-baseline.json
                -- (2026-11-24) marcava as 13 como 'interno-grant-herdado'. Reaparecer aqui = regressao.
                ('collection_products'),('collections'),('content_articles'),

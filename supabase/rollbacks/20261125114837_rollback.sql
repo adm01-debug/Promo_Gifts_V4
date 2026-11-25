@@ -1,4 +1,4 @@
--- Rollback: 20261125120000_revoke_anon_internal_grants_public.sql
+-- Rollback: 20261125114837_revoke_anon_internal_grants_public.sql
 -- Devolve o SELECT de anon nas 13 tabelas (estado anterior, herdado do legado).
 --
 -- Efeito colateral esperado e correto: o tripwire `fn_verify_anon_catalog_grants()` v4 mantem as 13 na
