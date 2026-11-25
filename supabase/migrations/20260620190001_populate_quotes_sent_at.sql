@@ -1,3 +1,4 @@
+-- Rollback: supabase/rollbacks/20260620190001_rollback.sql
 -- Populate quotes.sent_at so the quote-followup-reminders cron actually fires.
 --
 -- Bug: the edge fn filters `.not('sent_at','is',null).lte('sent_at', twoDaysAgo)`, but
@@ -10,7 +11,7 @@ create or replace function public.set_quote_sent_at()
 returns trigger
 language plpgsql
 security definer
-set search_path = public
+set search_path = public, pg_temp
 as $$
 begin
   -- Stamp the first time a quote enters 'sent' (covers INSERT-as-sent and UPDATE-to-sent),
