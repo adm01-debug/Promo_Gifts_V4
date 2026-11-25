@@ -184,3 +184,30 @@ guarda `COMMENT` e policies, mas nao guarda o resultado de um DO block.
 | `20261117172500` | `20261117172500_elevenlabs_credential.sql` |
 | `20261125074200` | `20261125074200_revoke_anon_apply_classification_suggestions.sql` |
 | `20261125180000` | `20261125180000_fix_comment_v_tabela_gravacao_publica.sql` |
+
+---
+
+## Adendo 2026-11-25T23:50Z — um dos "ausentes" era falso-positivo
+
+A tabela de *ausentes* acima foi montada contra
+`supabase/baseline/20261125173000_ledger_versions.json`. Esse arquivo tem 3021
+versões; o ledger de produção tem 3137. **A lacuna produz falsos-positivos.**
+
+Caso comprovado nesta sessão: `20260916193000_e25_supplier_history_partition_automation.sql`
+foi classificada como ausente, o outro agente abriu o #4121 para "remover os cron
+jobs órfãos" dessa etapa, e a produção respondeu:
+
+- preflight E15 (`run 45720922945`, job 1):
+  `version 20260916193000 já está em supabase_migrations.schema_migrations — reaplicação bloqueada` com `isInLedger: true`;
+- apply da `20261125213000` (`run 45716964171`, job 2):
+  `ERROR: Pre-condicao falhou: fn_ensure_history_partitions existe, os jobs nao sao orfaos`.
+
+Ou seja: função existe, automação de partições ativa, nenhum job órfão. O #4121 e
+o seu complemento #4132 foram revertidos (#4134) para não deixar em `main` uma
+migration cuja pré-condição nunca passa.
+
+**Regra para quem continuar este backlog:** nenhuma linha desta tabela autoriza
+DDL. Antes de agir, prove o estado com o preflight do E15
+(`--version=<v> --require-live`, que lê o ledger real) ou com um `repair-only`
+(`mode=repair-only`), nunca com o JSON do baseline nem com o `SCHEMA_LIVE.sql`
+antigo.
