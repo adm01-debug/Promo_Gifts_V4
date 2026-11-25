@@ -945,3 +945,25 @@ Dry-run em Postgres 17 descart?vel: migration aplica com `exit 0`, revoga 13/13,
 Pendente (Regra 8): a migration precisa ser aplicada ao banco de produ??o e, na mesma janela, as 13
 entradas devem sair de `.security/anon-tables-baseline.json` ? o gate `E118i --require-live` compara a
 baseline com o banco vivo e fica vermelho nos dois estados intermedi?rios.
+
+### Etapa 008 ? preflight bloqueou a aplica??o e a causa foi corrigida (2026-11-25)
+
+O dispatch de `db-apply-migration.yml` com `version=20261125120000` (run `45605544809`) morreu no job
+"1. Preflight (read-only)": o gate **E066** de `scripts/preflight-migration-apply.mjs` reprovou
+`public.fn_verify_anon_catalog_grants` por `SECURITY DEFINER` com `SET search_path TO 'public'` sem
+`pg_temp` ? vetor de shadowing por objeto tempor?rio. O defeito vinha da v3 (a v4 herdou o corpo).
+
+Corrigido na mesma migration, antes de qualquer aplica??o: `SET search_path TO 'public', 'pg_temp'`
+(padr?o j? usado em 31 migrations do repo; `pg_temp` por ?ltimo n?o reordena a resolu??o de `public`).
+Nenhum DDL chegou ao banco: os jobs "2. Apply", "3. P?s-check" e "4. Recibo" ficaram `skipped`.
+
+Verifica??o desta corre??o: `detectSecurityDefinerWithoutPgTemp` (o detector do pr?prio gate) devolve
+`["public.fn_verify_anon_catalog_grants"]` no arquivo da `main` e `[]` no arquivo corrigido; dry-run em
+Postgres 17 descart?vel volta a `exit 0` com os dois `NOTICE` (13/13 revogadas, tripwire v4 sem achado).
+O sha256 do recibo em `supabase/MIGRATIONS_SYNC_LOG.md` foi atualizado para o do arquivo corrigido.
+
+Complemento (mesma correcao, outra sessao de 2026-11-25): o PR que corrige o arquivo passa a ser
+necessario porque o gate "Recibo de migration em MIGRATIONS_SYNC_LOG.md" (E75) rejeita migration
+modificada cujo unico recibo diga "pendente" (`pendente_sem_adicao_no_pr`). O recibo da versao foi
+para "aguardando_merge" ? mesmo remendo documentado em `PENDENCIAS.md` #47 ? porque o SQL ainda nao
+foi aplicado em producao; o job "4. Recibo" volta o status para "aplicada" depois da aplicacao real.

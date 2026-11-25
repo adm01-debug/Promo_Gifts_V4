@@ -97,6 +97,7 @@ CREATE OR REPLACE FUNCTION public.fn_verify_anon_catalog_grants()
 RETURNS TABLE(object_name text, object_kind text, issue text)
 LANGUAGE plpgsql
 SECURITY DEFINER
+-- pg_temp por ultimo: fecha o vetor de shadowing que o preflight (--require-live) acusou.
 SET search_path TO 'public', 'pg_temp'
 AS $fn$
 BEGIN
