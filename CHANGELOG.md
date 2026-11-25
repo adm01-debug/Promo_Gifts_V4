@@ -5,6 +5,26 @@ Todas as mudanças notáveis deste projeto são documentadas neste arquivo.
 O formato é baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/),
 e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR/).
 
+## [1.20.1](https://github.com/adm01-debug/Promo_Gifts_V4/compare/gifts-store-v1.20.0...gifts-store-v1.20.1) (2026-11-25)
+
+
+### Bug Fixes
+
+* aplica o COMMENT da view de gravacao (cabecalho com Rollback:) ([#4097](https://github.com/adm01-debug/Promo_Gifts_V4/issues/4097)) ([88a358e](https://github.com/adm01-debug/Promo_Gifts_V4/commit/88a358e841687f729b67344b407315429df66082))
+* **ci:** destrava o replay do E40 (ACL de extensao da plataforma) ([#4089](https://github.com/adm01-debug/Promo_Gifts_V4/issues/4089)) ([4db7811](https://github.com/adm01-debug/Promo_Gifts_V4/commit/4db7811c01deb7c0b648ca70f4a1ef8c7923db3c))
+* corrige approved-by do indice de stock_daily_summary ([#4092](https://github.com/adm01-debug/Promo_Gifts_V4/issues/4092)) ([#4093](https://github.com/adm01-debug/Promo_Gifts_V4/issues/4093)) ([4eae35f](https://github.com/adm01-debug/Promo_Gifts_V4/commit/4eae35f0d5ef209110f28dd14218f3adc834d606))
+* corrige COMMENT da view de preco de gravacao publica (retoma [#4080](https://github.com/adm01-debug/Promo_Gifts_V4/issues/4080)) ([#4096](https://github.com/adm01-debug/Promo_Gifts_V4/issues/4096)) ([46f5863](https://github.com/adm01-debug/Promo_Gifts_V4/commit/46f58634b23fbb890c87a0979e8f2227966d1613))
+* **e25:** incorpora o hardening RLS da [#4084](https://github.com/adm01-debug/Promo_Gifts_V4/issues/4084) e completa a automacao de particoes (nunca aplicada) ([#4102](https://github.com/adm01-debug/Promo_Gifts_V4/issues/4102)) ([3b58891](https://github.com/adm01-debug/Promo_Gifts_V4/commit/3b588910dad5b5725a65107c930f0129092ef733))
+* exige status final no recibo de migration aceito pelo gate E055 ([#4099](https://github.com/adm01-debug/Promo_Gifts_V4/issues/4099)) ([7a7c936](https://github.com/adm01-debug/Promo_Gifts_V4/commit/7a7c936013b6f728c9c53757021171422f0cb7cd))
+* recibo de migration substitui linha existente de qualquer status (E75) ([#4100](https://github.com/adm01-debug/Promo_Gifts_V4/issues/4100)) ([f0454b7](https://github.com/adm01-debug/Promo_Gifts_V4/commit/f0454b751794ae19c75ffc6cf1e27965a3ab7277))
+* restaura grant anon na view publica de composicao de produto ([#4081](https://github.com/adm01-debug/Promo_Gifts_V4/issues/4081)) ([2e4913f](https://github.com/adm01-debug/Promo_Gifts_V4/commit/2e4913f89ff897c815c97bb987c7e0e27e2d0f34))
+* snapshot de cron jobs com os jobs da E25 (destrava o drift E037) ([#4106](https://github.com/adm01-debug/Promo_Gifts_V4/issues/4106)) ([36833fd](https://github.com/adm01-debug/Promo_Gifts_V4/commit/36833fda740d589040e4df4eb305f92c74e4beef))
+
+
+### Performance Improvements
+
+* torna aplicavel o indice de stock_daily_summary do market-intel ([#4092](https://github.com/adm01-debug/Promo_Gifts_V4/issues/4092)) ([4107894](https://github.com/adm01-debug/Promo_Gifts_V4/commit/4107894fcdb72ae1d2680e960fafe54f36f7006d))
+
 ## [1.20.0](https://github.com/adm01-debug/Promo_Gifts_V4/compare/gifts-store-v1.19.0...gifts-store-v1.20.0) (2026-11-25)
 
 
