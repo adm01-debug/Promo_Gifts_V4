@@ -2,6 +2,12 @@
 
 Diff semântico gerado a cada coleta em que algo mudou.
 
+## 2026-11-25 17:16 UTC
+
+- **functions** alterado (1): `public.fn_market_intelligence_macro(p_days integer, p_supplier_id uuid)`
+- **indexes** adicionado (1): `public.idx_sds_summary_date_supplier`
+- **migrations** adicionado (1): `20261125173000_idx_sds_summary_date_supplier_aplicavel`
+
 ## 2026-11-25 16:23 UTC
 
 - **colunas** adicionado (1): `public.crm_callback_events.updated_at`

@@ -161249,9 +161249,13 @@
             {
               "file": "supabase/migrations/20261115130000_idx_sds_summary_date_supplier_include.sql",
               "hits": 1
+            },
+            {
+              "file": "supabase/migrations/20261125173000_idx_sds_summary_date_supplier_aplicavel.sql",
+              "hits": 1
             }
           ],
-          "code_total_files": 1,
+          "code_total_files": 2,
           "cron": [],
           "db": [],
           "triggers": [],
@@ -219624,6 +219628,24 @@
       },
       {
         "columns": [
+          "summary_date",
+          "supplier_id",
+          "stock_close",
+          "units_depleted",
+          "units_restocked"
+        ],
+        "definition": "CREATE INDEX idx_sds_summary_date_supplier ON public.stock_daily_summary USING btree (summary_date, supplier_id) INCLUDE (stock_close, units_depleted, units_restocked)",
+        "is_primary": false,
+        "is_unique": false,
+        "is_valid": true,
+        "method": "btree",
+        "name": "idx_sds_summary_date_supplier",
+        "predicate": null,
+        "schema": "public",
+        "table": "stock_daily_summary"
+      },
+      {
+        "columns": [
           "variant_id"
         ],
         "definition": "CREATE INDEX idx_sds_variant_id ON public.stock_daily_summary USING btree (variant_id)",
@@ -241445,6 +241467,12 @@
         "statements": 2,
         "statements_sha": "ab8083a31c8f1855",
         "version": "20261125160000"
+      },
+      {
+        "name": "idx_sds_summary_date_supplier_aplicavel",
+        "statements": 3,
+        "statements_sha": "e108b95856bd5805",
+        "version": "20261125173000"
       }
     ],
     "policies": [
