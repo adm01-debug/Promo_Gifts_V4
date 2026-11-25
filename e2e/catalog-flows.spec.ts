@@ -2,8 +2,8 @@
  * E2E: Catalog - Full User Flows & Critical Paths
  * Covers: Filter combinations, layout switching, bulk actions, and deep linking.
  */
-import { test, expect } from "../fixtures/test-base";
-import { gotoAndSettle } from "../helpers/nav";
+import { test, expect } from "./fixtures/test-base";
+import { gotoAndSettle } from "./helpers/nav";
 
 test.describe("Catalog Full Flows", () => {
   test.beforeEach(async ({ page }) => {
